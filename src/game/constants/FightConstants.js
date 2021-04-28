@@ -29,16 +29,29 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			if (att <= 0) return 0;
 			def = Math.max(def, 0);
 			var dmg = att * att / (att + def);
+			
+			dmg = Math.round(dmg * 4)/4;
+			
 			return Math.max(1, dmg);
 		},
 		
 		getDamagePerSec: function (att, def, speed) {
 			let attackTime = this.getAttackTime(speed);
-			return this.getDamagePerHit(att, def)
+			return this.getDamagePerHit(att, def) / attackTime;
 		},
 		
 		getAttackTime: function (speed) {
 			return 1 / speed / this.FIGHT_SPEED_FACTOR;
+		},
+		
+		getFirstTurnTime: function (attackTime, startRoll) {
+			if (startRoll < 0.1) {
+				return attackTime * 0.5;
+			} else if (startRoll < 0.9) {
+				return attackTime;
+			} else {
+				return attackTime * 1.5;
+			}
 		},
 		
 		getHitsToKill: function (attackerAtt, defenderDef, defenderHP) {
@@ -49,9 +62,9 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			return this.getHitsToKill(attackerAtt, defenderDef, defenderHP) * this.getAttackTime(attackerSpeed);
 		},
 		
-		getStrength: function (att, def, speed, hp) {
-			var str = (att + def) / 100 * hp;
-			return Math.round(str * speed);
+		getStrength: function (att, def, speed, hp, shield) {
+			var str = (att + def + shield) / 100 * hp * speed;
+			return Math.round(str);
 		},
 		
 		getPlayerAttackTime: function (itemsComponent) {
@@ -108,7 +121,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			let att = this.getPlayerAtt(playerStamina, itemsComponent);
 			let def = this.getPlayerDef(playerStamina, itemsComponent);
 			let speed = this.getPlayerSpeed(itemsComponent);
-			return this.getStrength(att, def, speed, playerStamina.maxHP);
+			return this.getStrength(att, def, speed, playerStamina.maxHP, playerStamina.maxShield);
 		},
 		
 		getMaxFollowers: function (numCamps) {
@@ -156,32 +169,211 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 		getMissChance: function (participantType) {
 			if (participantType == this.PARTICIPANT_TYPE_FRIENDLY)
 				return 0.03;
-			return 0.06;
+			return 0.05;
 		},
 		
 		getCriticalHitChance: function (participantType) {
-			if (participantType == this.PARTICIPANT_TYPE_FRIENDLY)
-				return 0.07;
 			return 0.05;
+		},
+		
+		isWin: function (playerHP, enemyHP) {
+			return enemyHP <= 0 && playerHP > 0;
+		},
+		
+		getTurnScenarios: function (participantType, enemy, playerStamina, itemsComponent) {
+			let missChance = FightConstants.getMissChance(participantType);
+			let criticalChance = FightConstants.getCriticalHitChance(participantType);
+			let regularChance = 1 - missChance - criticalChance;
+			
+			let participantName = participantType == FightConstants.PARTICIPANT_TYPE_FRIENDLY ? "player" : "enemy";
+			let regularDamage = participantType == FightConstants.PARTICIPANT_TYPE_FRIENDLY ?
+				FightConstants.getDamageByPlayerPerHit(enemy, playerStamina, itemsComponent) :
+				FightConstants.getDamageByEnemyPerHit(enemy, playerStamina, itemsComponent);
+			
+			let result = [];
+			if (regularChance > 0) {
+				result.push({ probability: regularChance, type: "HIT", damage: regularDamage, logMessage: participantName + " hit: " + regularDamage })
+			}
+			if (missChance > 0) {
+				result.push({ probability: missChance, type: "MISS", damage: 0, logMessage: participantName + " missed" });
+			}
+			if (criticalChance > 0) {
+				let criticalDamage = regularDamage * 2;
+				result.push({ probability: criticalChance, type: "CRIT", damage: criticalDamage, logMessage: participantName + " critical hit: " + criticalDamage})
+			}
+			return result;
 		},
 		
 		getFightWinProbability: function(enemy, playerStamina, itemsComponent) {
 			if (!enemy) return 1;
-			var damageByEnemy = this.getDamageByEnemyPerSec(enemy, playerStamina, itemsComponent);
-			var damageByPlayer = this.getDamageByPlayerPerSec(enemy, playerStamina, itemsComponent);
 			
-			var damageByPlayerMin = damageByEnemy * -0.5;
-			var damageByPlayerMax = damageByEnemy * 0.5;
+			let maxTime = 60 * 10;
+			let endedBranches = [];
+			let activeBranches = [];
 			
-			var timeAliveEnemy = enemy.getMaxHP() / damageByPlayer * 1.05;
-			var timeAlivePlayerMin = playerStamina.maxHP / (damageByEnemy + damageByPlayerMax) * 0.95;
-			var timeAlivePlayerMax = playerStamina.maxHP / (damageByEnemy + damageByPlayerMin) * 1.05;
+			var playerAttackTime = FightConstants.getPlayerAttackTime(itemsComponent);
+			let enemyAttackTime = FightConstants.getEnemyAttackTime(enemy);
 			
-			var ratio = (timeAlivePlayerMax - timeAliveEnemy) / (timeAlivePlayerMax - timeAlivePlayerMin);
-			if (ratio < 0.05) ratio = 0.05;
-			if (ratio > 0.95) ratio = 0.95;
+			let rollIncrement = 0.05;
+			for (let i = 0; i <= 1; i += rollIncrement) {
+				for (let j = 0; j <= 1; j += rollIncrement) {
+					activeBranches.push({
+						nextTurnPlayer: FightConstants.getFirstTurnTime(playerAttackTime, i), nextTurnEnemy: FightConstants.getFirstTurnTime(enemyAttackTime, j),
+						playerHP: playerStamina.maxHP + playerStamina.maxShield, enemyHP: enemy.maxHP + enemy.maxShield,
+						playerTurns: [], enemyTurns: [],
+					 	isEnded: false,
+						probability: rollIncrement * rollIncrement
+					});
+				}
+			}
 			
-			return ratio;
+			let applyFightStepToBranch = function (branch, stepTime) {
+				let resultBranches = [];
+				
+				branch.nextTurnPlayer -= stepTime;
+				branch.nextTurnEnemy -= stepTime;
+				
+				let turnScenariosPlayer = [];
+				if (branch.nextTurnPlayer <= 0) {
+					turnScenariosPlayer = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_FRIENDLY, enemy, playerStamina, itemsComponent);
+					branch.nextTurnPlayer = playerAttackTime;
+				} else {
+					turnScenariosPlayer.push({ probability: 1, type: "WAIT", damage: 0 });
+				}
+				
+				let turnScenariosEnemy = [];
+				if (branch.nextTurnEnemy <= 0) {
+					turnScenariosEnemy = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_ENEMY, enemy, playerStamina, itemsComponent);
+					branch.nextTurnEnemy = enemyAttackTime;
+				} else {
+					turnScenariosEnemy.push({ probability: 1, type: "WAIT",  damage: 0 });
+				}
+				
+				for (let i = 0; i < turnScenariosPlayer.length; i++) {
+					let playerScenario = turnScenariosPlayer[i];
+					for (let j = 0; j < turnScenariosEnemy.length; j++) {
+						let enemyScenario = turnScenariosEnemy[j];
+						let playerHP = branch.playerHP - enemyScenario.damage;
+						let enemyHP = branch.enemyHP - playerScenario.damage;
+						let probability = branch.probability * playerScenario.probability * enemyScenario.probability;
+						let isEnded = playerHP <= 0 || enemyHP <= 0;
+						let resultBranch = {
+							nextTurnPlayer: branch.nextTurnPlayer, nextTurnEnemy: branch.nextTurnEnemy,
+							playerHP: playerHP, enemyHP: enemyHP,
+							playerTurns: branch.playerTurns.concat(playerScenario.type), enemyTurns: branch.enemyTurns.concat(enemyScenario.type),
+							isEnded: isEnded,
+							probability: probability
+						};
+						resultBranches.push(resultBranch);
+					}
+				}
+				
+				return resultBranches;
+			};
+			
+			let getBranchId = function (branch) {
+				return branch.nextTurnPlayer + "-" + branch.nextTurnEnemy + "-" + branch.isEnded + "-" + branch.playerHP + "-" + branch.enemyHP;
+			}
+			
+			let combineBranches = function (branches) {
+				let branchesById = {};
+				for (let i = 0; i < branches.length; i++) {
+					let branch = branches[i];
+					let id = getBranchId(branch);
+					if (branchesById[id]) {
+						branchesById[id].probability += branch.probability;
+					} else {
+						branchesById[id] = branch;
+					}
+				}
+				
+				let newActiveBranches = [];
+				for (let id in branchesById) {
+					newActiveBranches.push(branchesById[id]);
+				}
+				
+				activeBranches = newActiveBranches;
+			}
+			
+			log.i("getFightWinProbability vs " + enemy.name);
+			
+			let totalTime = 0;
+			let minNextTurn = Math.min(activeBranches[0].nextTurnPlayer, activeBranches[0].nextTurnEnemy);
+			let minProb = -1;
+			let maxProb = -1;
+			let minPlayerHP = -1;
+			let maxPlayerHP = -1;
+			let numDiscardedBranches = 0;
+			
+			while (activeBranches.length > 0) {
+				let stepTime = minNextTurn;
+				totalTime += stepTime;
+				minNextTurn = 5;
+				minProb = -1;
+				maxProb = -1;
+				minPlayerHP = -1;
+				maxPlayerHP = -1;
+				
+				// apply fight step to branches
+				let newActiveBranches = [];
+				for (let i = 0; i < activeBranches.length; i++) {
+					let branch = activeBranches[i];
+					if (branch.probability < 0.0000001) {
+						numDiscardedBranches++;
+						continue;
+					}
+					let resultBranches = applyFightStepToBranch(branch, stepTime);
+					for (let j = 0; j < resultBranches.length; j++) {
+						let resultBranch = resultBranches[j];
+						if (resultBranch.isEnded) {
+							endedBranches.push(resultBranch);
+						} else {
+							newActiveBranches.push(resultBranch);
+						}
+						minNextTurn = Math.min(minNextTurn, resultBranch.nextTurnPlayer, resultBranch.nextTurnEnemy);
+						minProb = minProb < 0 ? resultBranch.probability : Math.min(minProb, resultBranch.probability);
+						maxProb = maxProb < 0 ? resultBranch.probability : Math.max(maxProb, resultBranch.probability);
+						minPlayerHP = minPlayerHP < 0 ? resultBranch.playerHP : Math.min(minPlayerHP, resultBranch.playerHP);
+						maxPlayerHP = maxPlayerHP < 0 ? resultBranch.playerHP : Math.max(maxPlayerHP, resultBranch.playerHP);
+					}
+				}
+				activeBranches = newActiveBranches;
+				
+				combineBranches(activeBranches);
+				
+				if (totalTime > maxTime) {
+					log.w("interrupting fight branch calculation at " + activeBranches.length + " branches");
+					break;
+				}
+			}
+			
+			if (endedBranches.length == 0) {
+				log.w("couldn't calculate fight probability");
+				return 0;
+			}
+			
+			let isWin = function (branch) {
+				return FightConstants.isWin(branch.playerHP, branch.enemyHP);
+			};
+			
+			let result = 0;
+			let highestProbability = 0;
+			let mostProbableBranch = null;
+			for (let i = 0; i < endedBranches.length; i++) {
+				let win = isWin(endedBranches[i]);
+				if (win) {
+					result += endedBranches[i].probability;
+				}
+				if (endedBranches[i].probability > highestProbability) {
+					highestProbability = endedBranches[i].probability;
+					mostProbableBranch = endedBranches[i];
+				}
+			}
+			
+			log.i("done. ended branches: " + endedBranches.length + ", discarded: " + numDiscardedBranches + ", totalTime: " + totalTime + ", win chance: " + result);
+			log.i(mostProbableBranch);
+			
+			return result;
 		},
 		
 		getFightExpectedDuration: function (enemy, playerStamina, itemsComponent) {

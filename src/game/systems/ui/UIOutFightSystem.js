@@ -107,7 +107,7 @@ define([
 			$("#fight-bar-self").data("change-percent", playerChangeVal);
 			$("#fight-bar-self").data("change-time", this.lastDamageToPlayerUpdated);
 			$("#fight-bar-self").data("animation-length", this.progressBarAnimationLen);
-				
+			
 			$("#fight-bar-self-shield").data("progress-percent", playerShieldVal);
 			$("#fight-bar-self-shield").data("change-percent", playerChangeVal);
 			$("#fight-bar-self-shield").data("change-time", this.lastDamageToPlayerUpdated);
@@ -341,28 +341,6 @@ define([
 			if (this.state == state) return;
 			this.state = state;
 			this.refreshState();
-		},
-		
-		getFightChancesText: function (probability) {
-			if (probability >= 0.9) {
-				return "fairly harmless";
-			}
-			if (probability > 0.8) {
-				return "slightly unnerving";
-			}
-			if (probability > 0.6) {
-				return "intimidating";
-			}
-			if (probability >= 0.5) {
-				return "risky";
-			}
-			if (probability >= 0.4) {
-				return "dangerous";
-			}
-			if (probability >= 0.2) {
-				return "very dangerous";
-			}
-			return "deadly";
 		},
 		
 		getTitleByContext: function (encounterComponent) {

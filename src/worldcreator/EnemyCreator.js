@@ -26,6 +26,10 @@ define([
 		constructor: function () {},
 		
 		createEnemies: function () {
+			EnemyConstants.enemyDefinitions = {};
+			
+			// TODO check nouns and verbs for orphans (only one/few enemies using)
+			
 			for (enemyID in EnemyData) {
 				let def = EnemyData[enemyID];
 				let type = def.type;
@@ -121,7 +125,7 @@ define([
 		// get the difficulty level (1-3*15, corresponding to camp ordinal and step) of a given enemy
 		getEnemyDifficultyLevel: function (enemy) {
 			if (EnemyConstants.enemyDifficulties && EnemyConstants.enemyDifficulties[enemy.id]) return EnemyConstants.enemyDifficulties[enemy.id];
-			var enemyStats = FightConstants.getStrength(enemy.att, enemy.def, enemy.speed, enemy.maxHP);
+			var enemyStats = FightConstants.getStrength(enemy.att, enemy.def, enemy.speed, enemy.maxHP, enemy.maxShield);
 			var requiredStats;
 			var max = this.getDifficulty(WorldConstants.CAMPS_TOTAL, WorldConstants.CAMP_STEP_END);
 			for (var i = 1; i <= max; i++) {
@@ -160,25 +164,25 @@ define([
 
 		getTypicalStrength: function (campOrdinal, step, isHardLevel) {
 			if (campOrdinal < 0) campOrdinal = 0;
-			
-			// health
-			var typicalHealth = 100;
-			var healthyPerkFactor = PerkConstants.getPerk(PerkConstants.perkIds.healthBonus).effect;
-			if (campOrdinal >= WorldConstants.CAMPS_BEFORE_GROUND)
-				typicalHealth = typicalHealth * healthyPerkFactor;
-			if (campOrdinal < 1)
-				typicalHealth = 75;
 
-			// items
+			var typicalItems = this.getTypicalItems(campOrdinal, step, isHardLevel);
+			var typicalStamina = this.getTypicalStamina(campOrdinal, step, isHardLevel)
+			var result = FightConstants.getPlayerStrength(typicalStamina, typicalItems);
+			// log.i("typical strength: campOrdinal: " + campOrdinal + ", step: " + step + " -> " + result + " | " + numFollowers + " " + typicalHealth);
+			return result;
+		},
+		
+		getTypicalItems: function (campOrdinal, step, isHardLevel) {
 			var typicalItems = new ItemsComponent();
 			var typicalWeapon = ItemConstants.getDefaultWeapon(campOrdinal, step);
 			var typicalClothing = GameGlobals.itemsHelper.getDefaultClothing(campOrdinal, step, ItemConstants.itemBonusTypes.fight_def, isHardLevel);
 
-			if (typicalWeapon)
+			if (typicalWeapon) {
 				typicalItems.addItem(typicalWeapon, false);
+			}
 
 			if (typicalClothing.length > 0) {
-				for ( var i = 0; i < typicalClothing.length; i++ ) {
+				for (let i = 0; i < typicalClothing.length; i++) {
 					typicalItems.addItem(typicalClothing[i], false);
 				}
 			}
@@ -190,14 +194,25 @@ define([
 			}
 			
 			typicalItems.autoEquipAll();
-
+			return typicalItems;
+		},
+		
+		getTypicalStamina: function (campOrdinal, step, isHardLevel) {
+			var typicalHealth = 100;
+			var healthyPerkFactor = PerkConstants.getPerk(PerkConstants.perkIds.healthBonus).effect;
+			if (campOrdinal >= WorldConstants.CAMPS_BEFORE_GROUND)
+				typicalHealth = typicalHealth * healthyPerkFactor;
+			if (campOrdinal < 1)
+				typicalHealth = 75;
+				
+			let typicalItems = this.getTypicalItems(campOrdinal, step, isHardLevel);
+				
 			var typicalStamina = {};
 			typicalStamina.health = typicalHealth;
 			typicalStamina.maxHP = typicalHealth;
-			var result = FightConstants.getPlayerStrength(typicalStamina, typicalItems);
-			// log.i("typical strength: campOrdinal: " + campOrdinal + ", step: " + step + " -> " + result + " | " + numFollowers + " " + typicalHealth);
-			return result;
-		},
+			typicalStamina.maxShield = typicalItems.getCurrentBonus(ItemConstants.itemBonusTypes.fight_shield);
+			return typicalStamina;
+		}
 		
 	});
 

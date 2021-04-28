@@ -175,7 +175,7 @@ define([
 			this.engine.addSystem(new StaminaSystem(), SystemPriorities.update);
 			this.engine.addSystem(new BagSystem(), SystemPriorities.update);
 			this.engine.addSystem(new CollectorSystem(), SystemPriorities.update);
-			this.engine.addSystem(new FightSystem(), SystemPriorities.update);
+			this.engine.addSystem(new FightSystem(true), SystemPriorities.update);
 			this.engine.addSystem(new FollowerSystem(), SystemPriorities.update);
 			this.engine.addSystem(new PopulationSystem(), SystemPriorities.update);
 			this.engine.addSystem(new PerkSystem(), SystemPriorities.update);

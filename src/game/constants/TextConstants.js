@@ -426,6 +426,28 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			return text;
 		},
 		
+		getFightChancesText: function (probability) {
+			if (probability >= 0.9) {
+				return "fairly harmless";
+			}
+			if (probability > 0.8) {
+				return "slightly unnerving";
+			}
+			if (probability > 0.6) {
+				return "intimidating";
+			}
+			if (probability >= 0.5) {
+				return "risky";
+			}
+			if (probability >= 0.4) {
+				return "dangerous";
+			}
+			if (probability >= 0.2) {
+				return "very dangerous";
+			}
+			return "deadly";
+		},
+		
 		getLocaleName: function (locale, sectorFeatures, isShort) {
 			var condition = sectorFeatures.getCondition();
 			var modifier = "";
@@ -743,7 +765,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("sector-vision", { sectorType: wildcard }, "[A] [n-street] with some [an-decos] and [a-building] [n-buildings]");
 		DescriptionMapper.add("sector-vision", { sectorType: wildcard }, "[A] [a-street] [n-street] between some [n-buildings]");
 		DescriptionMapper.add("sector-vision", { isSurfaceLevel: false }, "[A] [n-street] at the base of an enormous pillar supporting the level above");
-		DescriptionMapper.add("sector-vision", { isSurfaceLevel: false, wear: b12 }, "[A] [a-street] [n-street] with long-abandoned buildings covered in strange moss");
+		DescriptionMapper.add("sector-vision", { isSurfaceLevel: false, wear: b12, sunlit: false }, "[A] [a-street] [n-street] with long-abandoned buildings covered in strange moss");
 		DescriptionMapper.add("sector-vision", { buildingDensity: b0, isGroundLevel: false }, "A system of bridges and passages connecting several buildings around a dizzying opening to the level below");
 		DescriptionMapper.add("sector-vision", { buildingDensity: b12, isGroundLevel: false, campable: false }, "[A] [a-street] bridge over the level below with separate levels for tram tracks, utilities and pedestrians");
 		DescriptionMapper.add("sector-vision", { buildingDensity: b22 }, "Some kind of [A] [a-sectortype] complex with several narrow passages this way and that");

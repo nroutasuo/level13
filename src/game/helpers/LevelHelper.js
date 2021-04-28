@@ -161,12 +161,6 @@ define([
 				if (node.gang.numAttempts - node.gang.numEnemiesDefeated > 1) {
 					continue;
 				}
-				// too low win chance
-				var enemy = EnemyConstants.getEnemy(node.gang.enemyID);
-				var winChance = FightConstants.getFightWinProbability(enemy, playerStamina, itemsComponent);
-				if (winChance < 0.5) {
-					continue;
-				}
 				// not visible and accessible
 				var sectors = this.getSectorsForGang(gangPosition);
 				var hasValidSector = false;

@@ -48,6 +48,17 @@ function (Ash, EnemyVO) {
 			return null;
 		},
 		
+		getAll: function () {
+			let result = [];
+			for (var type in this.enemyDefinitions ) {
+				for (var i in this.enemyDefinitions[type]) {
+					var enemy = this.enemyDefinitions[type][i];
+					result.push(enemy);
+				}
+			}
+			return result;
+		},
+		
 	};
 		
 	
