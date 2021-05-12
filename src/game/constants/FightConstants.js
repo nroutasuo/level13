@@ -12,7 +12,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 	var FightConstants = {
 	
 		FIGHT_PLAYER_BASE_ATT: 3,
-		FIGHT_PLAYER_BASE_DEF: 1,
+		FIGHT_PLAYER_BASE_DEF: 0,
 		MAX_FOLLOWER_MAX: 3,
 		
 		FIGHT_SPEED_FACTOR: 1,
@@ -92,13 +92,15 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 		
 		getPlayerDef: function (playerStamina, itemsComponent) {
 			var itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_def);
-			return this.FIGHT_PLAYER_BASE_DEF + itemBonus;
+			if (itemBonus > 0) return itemBonus;
+			return this.FIGHT_PLAYER_BASE_DEF;
 		},
 		
 		getPlayerDefDesc: function (playerStamina, itemsComponent) {
 			let itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_def);
-			let desc = "player: " + this.FIGHT_PLAYER_BASE_DEF;
-			if (itemBonus > 0) desc += "<br/>equipment: " + itemBonus;
+			let desc = "";
+			if (itemBonus > 0) desc += "equipment: " + itemBonus;
+			else desc += "player: " + this.FIGHT_PLAYER_BASE_DEF;
 			return desc;
 		},
 		
