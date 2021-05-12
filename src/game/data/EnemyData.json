@@ -8,8 +8,9 @@
 		"verbsDefeated": ["cleared"],
 		"campOrdinal": 1,
 		"difficulty": 0,
-		"attackRatio": 0.4,
-		"speed": 0.9,
+		"attackRatio": 0.6,
+		"speed": 1.1,
+		"size": 0.2,
 		"rarity": 30,
 		"droppedResources": [ "food" ]
 	},
@@ -24,6 +25,7 @@
 		"difficulty": 5,
 		"attackRatio": 0.9,
 		"speed": 0.75,
+		"size": 0.3,
 		"droppedResources": [ "food" ]
 	},
 	"security bot": {
@@ -35,8 +37,10 @@
 		"verbsDefeated": ["disabled"],
 		"campOrdinal": 3,
 		"difficulty": 5,
-		"attackRatio": 0.2,
-		"speed": 0.3,
+		"attackRatio": 0.55,
+		"size": 0.7,
+		"shieldRatio": 1,
+		"speed": 0.65,
 		"droppedResources": [ "metal", "fuel" ]
 	},
 	"giant scorpion": {
@@ -50,6 +54,7 @@
 		"difficulty": 5,
 		"attackRatio": 0.6,
 		"speed": 0.7,
+		"size": 0.5,
 		"droppedResources": [ "food" ]
 	},
 	"camel spider": {
@@ -63,6 +68,7 @@
 		"difficulty": 5,
 		"attackRatio": 0.3,
 		"speed": 1,
+		"size": 0.5,
 		"rarity": 35,
 		"droppedResources": [ "food" ]
 	},
@@ -77,6 +83,7 @@
 		"difficulty": 5,
 		"attackRatio": 0.3,
 		"speed": 0.75,
+		"shieldRatio": 1,
 		"rarity": 65,
 		"droppedResources": [ "metal" ]
 	},
@@ -91,6 +98,7 @@
 		"difficulty": 5,
 		"attackRatio": 0.3,
 		"speed": 1,
+		"size": 0.8,
 		"rarity": 35,
 		"droppedResources": [ "food" ]
 	},
@@ -105,6 +113,7 @@
 		"difficulty": 5,
 		"attackRatio": 0.3,
 		"speed": 0.9,
+		"size": 2,
 		"rarity": 75,
 		"droppedResources": [ "food" ]
 	},
@@ -119,6 +128,8 @@
 		"difficulty": 5,
 		"attackRatio": 0.5,
 		"speed": 0.8,
+		"shieldRatio": 1,
+		"shieldFactor": 0.5,
 		"rarity": 65,
 		"droppedResources": [ "metal", "fuel" ]
 	},
@@ -133,6 +144,8 @@
 		"difficulty": 5,
 		"attackRatio": 0.5,
 		"speed": 0.9,
+		"shieldRatio": 1,
+		"shieldFactor": 0.75,
 		"rarity": 60,
 		"droppedResources": [ "metal", "fuel" ]
 	},
@@ -147,6 +160,7 @@
 		"difficulty": 5,
 		"attackRatio": 0.3,
 		"speed": 0.8,
+		"size": 2,
 		"rarity": 75,
 		"droppedResources": [ "food" ]
 	},
@@ -161,6 +175,8 @@
 		"difficulty": 4,
 		"attackRatio": 0.5,
 		"speed": 1.25,
+		"shieldRatio": 1,
+		"shieldFactor": 0.75,
 		"rarity": 60,
 		"droppedResources": [ "metal" ]
 	},
@@ -173,8 +189,9 @@
 		"verbsDefeated": ["disabled"],
 		"campOrdinal": 11,
 		"difficulty": 4,
-		"attackRatio": 0.1,
+		"attackRatio": 0.15,
 		"speed": 0.5,
+		"shieldRatio": 1,
 		"rarity": 65,
 		"droppedResources": [ "metal" ]
 	},
@@ -189,6 +206,7 @@
 		"difficulty": 7,
 		"attackRatio": 0.2,
 		"speed": 0.5,
+		"shieldRatio": 1,
 		"rarity": 50,
 		"droppedResources": [ "metal" ]
 	},
@@ -201,8 +219,10 @@
 		"verbsDefeated": ["killed"],
 		"campOrdinal": 2,
 		"difficulty": 8,
-		"attackRatio": 1.25,
-		"speed": 0.6,
+		"attackRatio": 0.8,
+		"healthFactor": 0.7,
+		"speed": 0.75,
+		"size": 0.8,
 		"droppedResources": [ "food" ]
 	},
 	"gigantic spider": {
@@ -215,7 +235,8 @@
 		"campOrdinal": 4,
 		"difficulty": 5,
 		"attackRatio": 0.7,
-		"speed": 1,
+		"speed": 0.95,
+		"size": 0.8,
 		"rarity": 20,
 		"droppedResources": [ "food" ]
 	},
@@ -230,6 +251,7 @@
 		"difficulty": 5,
 		"attackRatio": 0.6,
 		"speed": 1,
+		"size": 0.3,
 		"rarity": 50,
 		"droppedResources": [ "food" ]
 	},
@@ -244,6 +266,7 @@
 		"difficulty": 5,
 		"attackRatio": 0.3,
 		"speed": 1,
+		"size": 0.5,
 		"rarity": 35,
 		"droppedResources": [ "food" ]
 	},
@@ -258,6 +281,7 @@
 		"difficulty": 5,
 		"attackRatio": 0.2,
 		"speed": 0.8,
+		"shieldRatio": 1,
 		"rarity": 50,
 		"droppedResources": [ "metal", "fuel" ]
 	},
@@ -272,6 +296,7 @@
 		"difficulty": 5,
 		"attackRatio": 0.7,
 		"speed": 0.8,
+		"shieldRatio": 1,
 		"rarity": 50,
 		"droppedResources": [ "metal", "fuel" ]
 	},
@@ -284,7 +309,7 @@
 		"verbsDefeated": ["driven away"],
 		"campOrdinal": 13,
 		"difficulty": 3,
-		"attackRatio": 0.6,
+		"attackRatio": 0.45,
 		"speed": 0.9,
 		"rarity": 45,
 		"droppedResources": [ "herbs" ]
@@ -298,7 +323,7 @@
 		"verbsDefeated": [],
 		"campOrdinal": 14,
 		"difficulty": 6,
-		"attackRatio": 0.8,
+		"attackRatio": 0.7,
 		"speed": 1,
 		"rarity": 75,
 		"droppedResources": [ "food", "water" ]
@@ -312,8 +337,9 @@
 		"verbsDefeated": [],
 		"campOrdinal": 14,
 		"difficulty": 8,
-		"attackRatio": 0.8,
+		"attackRatio": 0.6,
 		"speed": 1.1,
+		"size": 1.2,
 		"rarity": 90,
 		"droppedResources": [ "food" ]
 	},
@@ -327,7 +353,9 @@
 		"campOrdinal": 15,
 		"difficulty": 8,
 		"attackRatio": 0.6,
-		"speed": 1.1,
+		"healthFactor": 0.7,
+		"speed": 0.85,
+		"size": 1.2,
 		"rarity": 95,
 		"droppedResources": [ "food" ]
 	},
@@ -342,6 +370,7 @@
 		"difficulty": 5,
 		"attackRatio": 0.6,
 		"speed": 1.1,
+		"shieldRatio": 1,
 		"rarity": 50,
 		"droppedResources": [ "metal", "fuel" ]
 	},
@@ -354,8 +383,9 @@
 		"verbsDefeated": ["cleared"],
 		"campOrdinal": 2,
 		"difficulty": 4,
-		"attackRatio": 0.4,
+		"attackRatio": 0.7,
 		"speed": 1.1,
+		"size": 0.5,
 		"rarity": 50,
 		"droppedResources": [ "food" ]
 	},
@@ -368,8 +398,9 @@
 		"verbsDefeated": ["cleared"],
 		"campOrdinal": 3,
 		"difficulty": 2,
-		"attackRatio": 0.4,
+		"attackRatio": 0.6,
 		"speed": 1,
+		"size": 0.5,
 		"rarity": 50,
 		"droppedResources": [ "food" ]
 	},
@@ -384,6 +415,7 @@
 		"difficulty": 4,
 		"attackRatio": 0.4,
 		"speed": 0.9,
+		"size": 0.8,
 		"rarity": 50,
 		"droppedResources": [ "food" ]
 	},
@@ -397,6 +429,7 @@
 		"campOrdinal": 5,
 		"difficulty": 5,
 		"rarity": 1,
+		"size": 0.5,
 		"attackRatio": 0.7,
 		"droppedResources": [ "food" ]
 	},
@@ -411,6 +444,7 @@
 		"difficulty": 4,
 		"attackRatio": 0.4,
 		"speed": 1,
+		"size": 0.9,
 		"rarity": 50,
 		"droppedResources": [ "food" ]
 	},
@@ -439,6 +473,7 @@
 		"difficulty": 6,
 		"attackRatio": 0.4,
 		"speed": 0.8,
+		"size": 2,
 		"rarity": 50,
 		"droppedResources": [ "food" ]
 	},
@@ -453,6 +488,7 @@
 		"difficulty": 7,
 		"attackRatio": 0.4,
 		"speed": 1,
+		"size": 0.9,
 		"rarity": 50,
 		"droppedResources": [ "food" ]
 	},
@@ -494,7 +530,7 @@
 		"campOrdinal": 11,
 		"difficulty": 4,
 		"attackRatio": 0.4,
-		"speed": 1,
+		"speed": 1.05,
 		"rarity": 75,
 		"droppedResources": [ "food" ]
 	},
@@ -507,8 +543,9 @@
 		"verbsDefeated": ["cleared"],
 		"campOrdinal": 1,
 		"difficulty": 5,
-		"attackRatio": 0.4,
+		"attackRatio": 0.75,
 		"speed": 0.8,
+		"size": 0.1,
 		"rarity": 50,
 		"droppedResources": [ ]
 	},
@@ -523,6 +560,7 @@
 		"difficulty": 5,
 		"attackRatio": 0.8,
 		"speed": 1,
+		"size": 0.2,
 		"rarity": 20,
 		"droppedResources": []
 	},
@@ -537,6 +575,7 @@
 		"difficulty": 4,
 		"attackRatio": 0.2,
 		"speed": 0.5,
+		"shieldRatio": 1,
 		"rarity": 75,
 		"droppedResources": [ "metal" ]
 	},
@@ -551,6 +590,7 @@
 		"difficulty": 5,
 		"attackRatio": 0.8,
 		"speed": 1,
+		"size": 0.4,
 		"rarity": 20,
 		"droppedResources": []
 	},
@@ -564,7 +604,8 @@
 		"campOrdinal": 2,
 		"difficulty": 3,
 		"attackRatio": 0.8,
-		"speed": 0.1,
+		"speed": 0.5,
+		"size": 0.1,
 		"droppedResources": []
 	},
 	"radioactive cockroach": {
@@ -576,8 +617,9 @@
 		"verbsDefeated": ["cleared"],
 		"campOrdinal": 3,
 		"difficulty": 2,
-		"attackRatio": 0.9,
-		"speed": 0.1,
+		"attackRatio": 0.6,
+		"speed": 0.5,
+		"size": 0.2,
 		"droppedResources": []
 	},
 	"mutant spider": {
@@ -591,6 +633,7 @@
 		"difficulty": 5,
 		"attackRatio": 0.3,
 		"speed": 1,
+		"size": 0.4,
 		"rarity": 20,
 		"droppedResources": [ ]
 	},
@@ -603,8 +646,9 @@
 		"verbsDefeated": ["killed", "driven away"],
 		"campOrdinal": 7,
 		"difficulty": 4,
-		"rarity": 1,
 		"attackRatio": 0.6,
+		"size": 0.5,
+		"rarity": 1,
 		"droppedResources": []
 	},
 	"radiotrophic fungi": {
@@ -618,6 +662,7 @@
 		"difficulty": 6,
 		"attackRatio": 0.8,
 		"speed": 0.6,
+		"size": 0.5,
 		"droppedResources": [ "food" ]
 	},
 	"mutant dog": {
@@ -629,8 +674,9 @@
 		"verbsDefeated": ["killed", "driven away"],
 		"campOrdinal": 8,
 		"difficulty": 5,
-		"attackRatio": 1.1,
+		"attackRatio": 0.7,
 		"speed": 1.1,
+		"size": 0.5,
 		"droppedResources": []
 	},
 	"towering mutant dog": {
@@ -642,9 +688,10 @@
 		"verbsDefeated": ["killed", "driven away"],
 		"campOrdinal": 10,
 		"difficulty": 5,
-		"attackRatio": 1.1,
+		"attackRatio": 0.7,
 		"speed": 0.7,
 		"rarity": 20,
+		"size": 0.9,
 		"droppedResources": []
 	},
 	"mutant alligator": {
@@ -656,9 +703,10 @@
 		"verbsDefeated": ["killed", "driven away"],
 		"campOrdinal": 12,
 		"difficulty": 5,
-		"attackRatio": 1.1,
+		"attackRatio": 0.6,
 		"speed": 0.7,
 		"rarity": 30,
+		"size": 1.8,
 		"droppedResources": []
 	},
 	"wasp": {
@@ -670,8 +718,10 @@
 		"verbsDefeated": ["driven away"],
 		"campOrdinal": 0,
 		"difficulty": 1,
-		"attackRatio": 0.75,
-		"speed": 1.5,
+		"attackRatio": 0.85,
+		"healthFactor": 0.75,
+		"speed": 1,
+		"size": 0.1,
 		"rarity": 10,
 		"droppedResources": []
 	},
@@ -684,28 +734,30 @@
 		"verbsDefeated": ["driven away"],
 		"campOrdinal": 1,
 		"difficulty": 4,
-		"attackRatio": 0.25,
-		"speed": 1.5,
+		"attackRatio": 0.7,
+		"speed": 1,
+		"size": 0.1,
 		"rarity": 70,
 		"droppedResources": []
 	},
 	"thorny bush": {
 		"name": "thorny bush",
 		"type": "sunlit",
-		"nouns": ["urban pests"],
+		"nouns": ["urban pests", "vicious plants" ],
 		"groupNouns": ["cluster"],
 		"verbsActive": ["infested with", "covered in"],
 		"verbsDefeated": [],
 		"campOrdinal": 2,
 		"difficulty": 2,
-		"attackRatio": 0.8,
+		"attackRatio": 0.7,
 		"speed": 0.5,
+		"size": 0.8,
 		"droppedResources": [ "herbs" ]
 	},
 	"overgrown nettle": {
 		"name": "overgrown nettle",
 		"type": "sunlit",
-		"nouns": ["urban pests"],
+		"nouns": ["urban pests", "vicious plants"],
 		"groupNouns": ["cluster"],
 		"verbsActive": ["infested with", "covered in"],
 		"verbsDefeated": [],
@@ -713,6 +765,7 @@
 		"difficulty": 5,
 		"attackRatio": 0.8,
 		"speed": 0.25,
+		"size": 0.75,
 		"droppedResources": [ "food", "herbs" ]
 	},
 	"hawk": {
@@ -724,8 +777,9 @@
 		"verbsDefeated": [],
 		"campOrdinal": 3,
 		"difficulty": 9,
-		"attackRatio": 0.3,
+		"attackRatio": 0.65,
 		"speed": 1.1,
+		"size": 0.5,
 		"rarity": 50,
 		"droppedResources": [ "food" ]
 	},
@@ -740,6 +794,7 @@
 		"difficulty": 9,
 		"attackRatio": 0.3,
 		"speed": 1,
+		"size": 0.7,
 		"rarity": 50,
 		"droppedResources": [ "food" ]
 	},
@@ -752,6 +807,7 @@
 		"verbsDefeated": [],
 		"campOrdinal": 6,
 		"difficulty": 5,
+		"size": 0.4,
 		"rarity": 1,
 		"attackRatio": 0.7,
 		"droppedResources": [ "food" ]
@@ -766,7 +822,8 @@
 		"campOrdinal": 8,
 		"difficulty": 6,
 		"attackRatio": 0.8,
-		"speed": 0.6,
+		"speed": 0.9,
+		"size": 2,
 		"droppedResources": [ "food" ]
 	},
 	"drove of boars": {
@@ -805,7 +862,7 @@
 		"verbsDefeated": ["killed", "driven away"],
 		"campOrdinal": 15,
 		"difficulty": 5,
-		"attackRatio": 0.5,
+		"attackRatio": 0.55,
 		"speed": 0.9,
 		"rarity": 35,
 		"droppedResources": [ "food" ]
@@ -819,8 +876,10 @@
 		"verbsDefeated": ["cleared"],
 		"campOrdinal": 0,
 		"difficulty": 1,
-		"attackRatio": 0.4,
-		"speed": 2,
+		"attackRatio": 0.7,
+		"healthFactor": 0.5,
+		"speed": 1.1,
+		"size": 0.05,
 		"rarity": 10,
 		"droppedResources": [ "food" ]
 	},
@@ -833,8 +892,9 @@
 		"verbsDefeated": ["cleared", "driven away"],
 		"campOrdinal": 2,
 		"difficulty": 4,
-		"attackRatio": 0.4,
+		"attackRatio": 0.7,
 		"speed": 1.1,
+		"size": 0.3,
 		"rarity": 20,
 		"droppedResources": [ "food" ]
 	},
@@ -849,6 +909,7 @@
 		"difficulty": 6,
 		"attackRatio": 0.8,
 		"speed": 1,
+		"size": 0.6,
 		"rarity": 50,
 		"droppedResources": [ "food" ]
 	},
@@ -863,6 +924,7 @@
 		"difficulty": 5,
 		"attackRatio": 0.7,
 		"speed": 1,
+		"size": 0.7,
 		"rarity": 70,
 		"droppedResources": [ "food" ]
 	},
@@ -877,6 +939,7 @@
 		"difficulty": 5,
 		"attackRatio": 0.6,
 		"speed": 1,
+		"size": 0.3,
 		"rarity": 50,
 		"droppedResources": [ "food" ]
 	},
@@ -891,6 +954,7 @@
 		"difficulty": 4,
 		"attackRatio": 0.7,
 		"speed": 1,
+		"size": 0.6,
 		"rarity": 70,
 		"droppedResources": [ "food" ]
 	},
@@ -905,6 +969,7 @@
 		"difficulty": 5,
 		"attackRatio": 0.6,
 		"speed": 1,
+		"size": 0.7,
 		"rarity": 50,
 		"droppedResources": [ "food" ]
 	},
@@ -932,7 +997,8 @@
 		"campOrdinal": 5,
 		"difficulty": 5,
 		"attackRatio": 0.6,
-		"speed": 1,
+		"speed": 1.05,
+		"size": 0.5,
 		"rarity": 50,
 		"droppedResources": [ "food" ]
 	},
@@ -947,6 +1013,7 @@
 		"difficulty": 5,
 		"attackRatio": 0.6,
 		"speed": 1,
+		"size": 0.5,
 		"rarity": 50,
 		"droppedResources": [ "food" ]
 	},
@@ -961,6 +1028,7 @@
 		"difficulty": 5,
 		"attackRatio": 0.6,
 		"speed": 1,
+		"size": 0.5,
 		"rarity": 50,
 		"droppedResources": [ "food" ]
 	},
@@ -975,6 +1043,7 @@
 		"difficulty": 7,
 		"attackRatio": 0.5,
 		"speed": 0.9,
+		"size": 0.7,
 		"rarity": 85,
 		"droppedResources": [ "food" ]
 	},
@@ -989,6 +1058,7 @@
 		"difficulty": 8,
 		"attackRatio": 0.7,
 		"speed": 0.8,
+		"size": 1.2,
 		"rarity": 85,
 		"droppedResources": [ "food" ]
 	},
@@ -1001,8 +1071,9 @@
 		"verbsDefeated": ["killed", "driven away"],
 		"campOrdinal": 14,
 		"difficulty": 5,
-		"attackRatio": 0.8,
+		"attackRatio": 0.62,
 		"speed": 0.8,
+		"size": 1.2,
 		"rarity": 85,
 		"droppedResources": [ "food" ]
 	},
@@ -1017,6 +1088,7 @@
 		"difficulty": 4,
 		"attackRatio": 0.7,
 		"speed": 1.2,
+		"size": 0.5,
 		"rarity": 50,
 		"droppedResources": [ "food" ]
 	},
@@ -1031,6 +1103,7 @@
 		"difficulty": 4,
 		"attackRatio": 0.7,
 		"speed": 1.2,
+		"size": 0.5,
 		"rarity": 35,
 		"droppedResources": [ "food" ]
 	},
@@ -1043,7 +1116,7 @@
 		"verbsDefeated": ["driven away"],
 		"campOrdinal": 10,
 		"difficulty": 5,
-		"attackRatio": 1.25,
+		"attackRatio": 0.78,
 		"speed": 1.3,
 		"droppedResources": [ "food" ]
 	},
@@ -1056,8 +1129,10 @@
 		"verbsDefeated": ["disabled"],
 		"campOrdinal": 13,
 		"difficulty": 5,
-		"attackRatio": 0.8,
-		"speed": 1.2,
+		"attackRatio": 0.65,
+		"speed": 1.15,
+		"shieldRatio": 1,
+		"shieldFactor": 1.25,
 		"rarity": 85,
 		"droppedResources": [ "metal", "fuel" ]
 	},
@@ -1070,8 +1145,10 @@
 		"verbsDefeated": ["disabled"],
 		"campOrdinal": 14,
 		"difficulty": 6,
-		"attackRatio": 0.8,
+		"attackRatio": 0.7,
 		"speed": 1.2,
+		"shieldRatio": 1,
+		"shieldFactor": 1.25,
 		"rarity": 85,
 		"droppedResources": [ "metal", "fuel" ]
 	},
@@ -1089,8 +1166,8 @@
 		"rarity": 15,
 		"droppedResources": [ "food", "water" ]
 	},
-	"threathening mugger": {
-		"name": "threathening mugger",
+	"threatening mugger": {
+		"name": "threatening mugger",
 		"type": "water",
 		"nouns": ["bandits"],
 		"groupNouns": ["gang"],
@@ -1114,6 +1191,7 @@
 		"difficulty": 5,
 		"attackRatio": 0.6,
 		"speed": 1,
+		"size": 0.7,
 		"rarity": 40,
 		"droppedResources": [ "food" ]
 	},

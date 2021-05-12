@@ -8,7 +8,8 @@ define([
 	'game/constants/FightConstants',
 	'game/constants/WorldConstants',
 	'game/components/player/ItemsComponent',
-	'game/vos/EnemyVO'
+	'game/vos/EnemyVO',
+	'utils/MathUtils',
 ], function (
 	Ash,
 	EnemyData,
@@ -19,7 +20,8 @@ define([
 	FightConstants,
 	WorldConstants,
 	ItemsComponent,
-	EnemyVO
+	EnemyVO,
+	MathUtils
 ) {
 	var EnemyCreator = Ash.Class.extend({
 		
@@ -33,14 +35,21 @@ define([
 			for (enemyID in EnemyData) {
 				let def = EnemyData[enemyID];
 				let type = def.type;
-				let enemyVO = this.createEnemy(enemyID, def.name, type, def.nouns, def.groupNouns, def.verbsActive, def.verbsDefeated, def.campOrdinal || 0, def.difficulty || 5, def.attRatio || 0.5, def.speed || 1, def.rarity || 1, def.droppedResources);
+				let enemyVO = this.createEnemy(
+					enemyID, def.name, type,
+					def.nouns, def.groupNouns, def.verbsActive, def.verbsDefeated,
+					def.campOrdinal || 0, def.difficulty || 5,
+					def.attackRatio || 0.5, def.shieldRatio || 0, def.healthFactor || 1, def.shieldFactor || 1, def.size || 1, def.speed || 1,
+					def.rarity || 1,
+					def.droppedResources
+				);
 				if (!EnemyConstants.enemyDefinitions[type]) EnemyConstants.enemyDefinitions[type] = [];
 			 	EnemyConstants.enemyDefinitions[type].push(enemyVO);
 			}
 		},
 
-		// Enemy definitions (level: level ordinal, difficulty: 1-10, attRatio: 0-1, speed 0.5-1.5, rarity: 0-100)
-		createEnemy: function (id, name, type, nouns, groupN, activeV, defeatedV, campOrdinal, normalizedDifficulty, attRatio, speed, rarity, droppedResources) {
+		// Enemy definitions (difficulty: 1-10, attRatio: 0-1, shieldRatio: 0-1, healthFactor: 0-1, size: around 1, speed: around 1, rarity: 0-100)
+		createEnemy: function (id, name, type, nouns, groupN, activeV, defeatedV, campOrdinal, normalizedDifficulty, attRatio, shieldRatio, healthFactor, shieldFactor, size, speed, rarity, droppedResources) {
 			var reqStr = this.getRequiredStrength(campOrdinal, 2);
 			var reqStrPrev = this.getRequiredStrength(campOrdinal, 1);
 			var reqStrNext = this.getRequiredStrength(campOrdinal, 3);
@@ -50,23 +59,21 @@ define([
 				strengthMax = Math.max(2, reqStr + (reqStr - reqStrPrev) * 0.5);
 			}
 			
-			attRatio = Math.max(0.3, attRatio);
-			attRatio = Math.min(0.7, attRatio);
+			let attackFactor = MathUtils.clamp(attRatio, 0.1, 0.9);
+			
+			var typicalStamina = this.getTypicalStamina(campOrdinal, 2, false);
+			let staminaBase = typicalStamina.maxHP + typicalStamina.maxShield;
+			let sizeHPFactor = MathUtils.map(size, 0, 2, 0.5, 1.5);
+			let sizeShieldFactor = MathUtils.map(size, 0, 2, 0.75, 1.25);
+			let hp = Math.round(staminaBase * (1 - shieldRatio) * healthFactor * sizeHPFactor);
+			let shield = Math.round(staminaBase * shieldRatio * shieldFactor * sizeShieldFactor);
 			
 			// log.i("createEnemy " + name + " campOrdinal:" + campOrdinal + ", normalizedDifficulty: " + normalizedDifficulty + " strengthMin: " + strengthMin + ", strengthMax: " + strengthMax)
 			
 			var strength = strengthMin + (strengthMax - strengthMin) / 10 * normalizedDifficulty;
-			var hp = Math.round(100 + ((1-attRatio) - 0.5) * 50 + (normalizedDifficulty - 5)/10 * 50 + (campOrdinal - 5) * 5);
-			var stats = strength * 100 / hp;
-			var def = Math.max(campOrdinal, Math.round(stats * (1 - attRatio)));
-			var att = Math.max(campOrdinal, Math.round(stats * attRatio));
-			
-			// TODO formalize shield
-			var shield = 0;
-			if (name.indexOf("bot") >= 0) {
-				shield = Math.round(hp * 0.5);
-				hp = shield;
-			}
+			var stats = strength * 100 / (hp + shield) * (1 / speed);
+			var def = Math.max(1, Math.round(stats * (1 - attackFactor)));
+			var att = Math.max(1, Math.round(stats * attackFactor));
 			
 			droppedResources = droppedResources || [ ];
 			
@@ -146,7 +153,7 @@ define([
 		},
 		
 		getDifficulty: function (campOrdinal, step) {
-			return (campOrdinal - 1)*3+step;
+			return (campOrdinal - 1)*3 + step;
 		},
 		
 		getRequiredStrength: function (campOrdinal, step, isHardLevel) {
@@ -198,12 +205,20 @@ define([
 		},
 		
 		getTypicalStamina: function (campOrdinal, step, isHardLevel) {
-			var typicalHealth = 100;
-			var healthyPerkFactor = PerkConstants.getPerk(PerkConstants.perkIds.healthBonus).effect;
-			if (campOrdinal >= WorldConstants.CAMPS_BEFORE_GROUND)
-				typicalHealth = typicalHealth * healthyPerkFactor;
-			if (campOrdinal < 1)
-				typicalHealth = 75;
+			// TODO figure out when exactly player gets access to each of the health bonuses
+			var healthyPerkFactor = 1;
+			if (campOrdinal > 14)
+				healthyPerkFactor = PerkConstants.getPerk(PerkConstants.perkIds.healthBonus3).effect;
+			else if (campOrdinal > 10)
+				healthyPerkFactor = PerkConstants.getPerk(PerkConstants.perkIds.healthBonus2).effect;
+			else if (campOrdinal > 8)
+				healthyPerkFactor = PerkConstants.getPerk(PerkConstants.perkIds.healthBonus1).effect;
+			
+			var injuryFactor = 1;
+			if (campOrdinal <= 1 && step <= WorldConstants.CAMP_STEP_START)
+			 	injuryFactor = 0.5;
+			
+			let typicalHealth = Math.round(100 * healthyPerkFactor * injuryFactor);
 				
 			let typicalItems = this.getTypicalItems(campOrdinal, step, isHardLevel);
 				
@@ -211,6 +226,7 @@ define([
 			typicalStamina.health = typicalHealth;
 			typicalStamina.maxHP = typicalHealth;
 			typicalStamina.maxShield = typicalItems.getCurrentBonus(ItemConstants.itemBonusTypes.fight_shield);
+			
 			return typicalStamina;
 		}
 		
