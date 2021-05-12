@@ -1380,7 +1380,7 @@ define(['ash',
 
 		useHospital2: function () {
 			var perksComponent = this.playerStatsNodes.head.perks;
-			perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.healthAugment));
+			perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.healthBonus3));
 			this.addLogMessage(LogConstants.MSG_ID_USE_HOSPITAL2, "Improved health.");
 			this.forceResourceBarUpdate();
 		},

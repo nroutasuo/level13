@@ -13,8 +13,10 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 		perkIds: {
 			hunger: "hunger",
 			thirst: "thirst",
-			healthBonus: "health-1",
-			healthAugment: "health-2",
+			healthPenalty: "health--",
+			healthBonus1: "health-1",
+			healthBonus2: "health-2",
+			healthBonus3: "health-3",
 			hazardRadiation: "hazard-radiation",
 			hazardPoison: "hazard-poison",
 			hazardCold: "hazard-cold",
@@ -58,13 +60,16 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 		},
 	};
 	
+	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.healthBonus1, "Healthy", "Health", 1.1, "img/items/health-positive.png"));
+	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.healthBonus2, "Fit", "Health", 1.25, "img/items/health-positive.png"));
+	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.healthBonus3, "Augmented", "Health", 1.5, "img/items/health-positive.png"));
+	
 	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.hunger, "Hunger", "Health", 0.5, "img/items/health-negative.png"));
 	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.thirst, "Thirst", "Health", 0.5, "img/items/health-negative.png"));
-	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.healthBonus, "Healthy", "Health", 1.25, "img/items/health-positive.png"));
-	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.healthAugment, "Augmented", "Health", 1.25, "img/items/health-positive.png"));
 	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.hazardRadiation, "Radiation sickness", "Health", 0.25, "img/items/health-negative.png"));
 	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.hazardPoison, "Poisoned", "Health", 0.5, "img/items/health-negative.png"));
 	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.hazardCold, "Cold", "Health", 0.75, "img/items/health-negative.png"));
+	
 	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.encumbered, "Encumbered", "Movement", 1.5, "img/items/weight.png"));
 	
 	PerkConstants.perkDefinitions.stamina.push(new PerkVO(PerkConstants.perkIds.staminaBonus, "Energized", "Stamina", 1.5, "img/items/health-positive.png"));
