@@ -315,12 +315,18 @@ define([
 			if (this.state == FightPopupStateEnum.FIGHT_PENDING) {
 				var playerStamina = this.playerStatsNodes.head.stamina;
 				var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-				var chances = FightConstants.getFightWinProbability(currentEnemy, playerStamina, itemsComponent);
-				log.i("getFightWinProbability:" + chances);
-				var chancesText = TextConstants.getFightChancesText(chances);
-				var spanClass = chances < 0.4 ? "warning": "";
+				
+				FightConstants.getFightWinProbability(currentEnemy, playerStamina, itemsComponent).
+					then(chances => {
+						var chancesText = TextConstants.getFightChancesText(chances);
+						$(".fight-popup-chances").text(chancesText)
+						$(".fight-popup-chances").toggleClass("warning", chances < 0.4);
+							log.i("getFightWinProbability:" + chances + " (" + chancesText + ")");
+					})
+					.catch(ex => { log.e(ex) });
+
 				statsText += "<br/>";
-				statsText += "<span class='" + spanClass + "'>" + chancesText + "</span>";
+				statsText += "<span class='fight-popup-chances'></span>";
 			}
 			
 			$("#fight-popup-enemy-name").html(" " + currentEnemy.name + " ");
