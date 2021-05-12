@@ -54,12 +54,12 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			}
 		},
 		
-		getHitsToKill: function (attackerAtt, defenderDef, defenderHP) {
-			return Math.ceil(defenderHP / this.getDamagePerHit(attackerAtt, defenderDef));
+		getHitsToKill: function (attackerAtt, defenderDef, defenderHP, defenderShield) {
+			return Math.ceil((defenderHP + defenderShield) / this.getDamagePerHit(attackerAtt, defenderDef));
 		},
 		
-		getSecToKill: function (attackerAtt, attackerSpeed, defenderDef, defenderHP) {
-			return this.getHitsToKill(attackerAtt, defenderDef, defenderHP) * this.getAttackTime(attackerSpeed);
+		getSecToKill: function (attackerAtt, attackerSpeed, defenderDef, defenderHP, defenderShield) {
+			return this.getHitsToKill(attackerAtt, defenderDef, defenderHP, defenderShield) * this.getAttackTime(attackerSpeed);
 		},
 		
 		getStrength: function (att, def, speed, hp, shield) {
@@ -403,9 +403,10 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			let playerDef = this.getPlayerDef(playerStamina, itemsComponent);
 			let playerSpeed = this.getPlayerSpeed(itemsComponent);
 			let playerHP = playerStamina.maxHP;
+			let playerShield = playerStamina.maxShield;
 			return Math.min(
-				this.getSecToKill(playerAtt, playerSpeed, enemy.getDef(), enemy.getMaxHP()),
-				this.getSecToKill(enemy.getAtt(), enemy.getSpeed(), playerDef, playerHP)
+				this.getSecToKill(playerAtt, playerSpeed, enemy.getDef(), enemy.getMaxHP(), enemy.maxShield),
+				this.getSecToKill(enemy.getAtt(), enemy.getSpeed(), playerDef, playerHP, playerShield)
 			);
 		},
 				
