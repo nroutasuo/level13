@@ -171,24 +171,36 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			return this.getDamagePerHit(enemy.getAtt(), playerDef);
 		},
 		
-		getMissChance: function (participantType) {
-			if (participantType == this.PARTICIPANT_TYPE_FRIENDLY)
-				return 0.03;
-			return 0.05;
+		getMissChance: function (participantType, fightTime) {
+			fightTime = fightTime || 0;
+			let baseChance = participantType == this.PARTICIPANT_TYPE_FRIENDLY ? 0.03 : 0.05;
+			if (fightTime < 10)
+				return baseChance;
+			if (fightTime < 15)
+				return baseChance / 2;
+			return 0;
 		},
 		
-		getCriticalHitChance: function (participantType) {
-			return 0.05;
+		getCriticalHitChance: function (participantType, fightTime) {
+			fightTime = fightTime || 0;
+			let baseChance = 0.05;
+			if (fightTime < 5)
+				return baseChance;
+			if (fightTime < 10)
+				return baseChance * 1.5;
+			return baseChance * 2;
 		},
 		
 		isWin: function (playerHP, enemyHP) {
 			return enemyHP <= 0 && playerHP > 0;
 		},
 		
-		getTurnScenarios: function (participantType, enemy, playerStamina, itemsComponent) {
-			let missChance = FightConstants.getMissChance(participantType);
-			let criticalChance = FightConstants.getCriticalHitChance(participantType);
+		getTurnScenarios: function (participantType, enemy, playerStamina, itemsComponent, fightTime) {
+			let missChance = Math.round(FightConstants.getMissChance(participantType, fightTime) * 1000)/1000;
+			let criticalChance = Math.round(FightConstants.getCriticalHitChance(participantType, fightTime) * 1000)/1000;
 			let regularChance = 1 - missChance - criticalChance;
+			
+			log.i(participantType + " " + missChance + " | " + criticalChance + " | " + Math.round(regularChance * 1000)/1000);
 			
 			let participantName = participantType == FightConstants.PARTICIPANT_TYPE_FRIENDLY ? "player" : "enemy";
 			let regularDamage = participantType == FightConstants.PARTICIPANT_TYPE_FRIENDLY ?
@@ -314,7 +326,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 							numDiscardedBranches++;
 							continue;
 						}
-						let resultBranches = FightConstants.applyFightStepToProbabilityBranch(branch, enemy, playerStamina, itemsComponent, stepTime);
+						let resultBranches = FightConstants.applyFightStepToProbabilityBranch(branch, enemy, playerStamina, itemsComponent, stepTime, totalTime);
 						for (let j = 0; j < resultBranches.length; j++) {
 							let resultBranch = resultBranches[j];
 							if (resultBranch.isEnded) {
@@ -351,7 +363,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			});
 		},
 		
-		applyFightStepToProbabilityBranch: function (branch, enemy, playerStamina, itemsComponent, stepTime) {
+		applyFightStepToProbabilityBranch: function (branch, enemy, playerStamina, itemsComponent, stepTime, fightTime) {
 			let resultBranches = [];
 			
 			var playerAttackTime = FightConstants.getPlayerAttackTime(itemsComponent);
@@ -362,7 +374,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			
 			let turnScenariosPlayer = [];
 			if (branch.nextTurnPlayer <= 0) {
-				turnScenariosPlayer = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_FRIENDLY, enemy, playerStamina, itemsComponent);
+				turnScenariosPlayer = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_FRIENDLY, enemy, playerStamina, itemsComponent, fightTime);
 				branch.nextTurnPlayer = playerAttackTime;
 			} else {
 				turnScenariosPlayer.push({ probability: 1, type: "WAIT", damage: 0 });
@@ -370,7 +382,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			
 			let turnScenariosEnemy = [];
 			if (branch.nextTurnEnemy <= 0) {
-				turnScenariosEnemy = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_ENEMY, enemy, playerStamina, itemsComponent);
+				turnScenariosEnemy = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_ENEMY, enemy, playerStamina, itemsComponent, fightTime);
 				branch.nextTurnEnemy = enemyAttackTime;
 			} else {
 				turnScenariosEnemy.push({ probability: 1, type: "WAIT",  damage: 0 });

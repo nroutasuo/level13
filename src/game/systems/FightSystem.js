@@ -105,7 +105,7 @@ define([
 			var damageToEnemy = 0;
 			this.fightNodes.head.fight.nextTurnPlayer -= fightTime;
 			if (this.fightNodes.head.fight.nextTurnPlayer <= 0) {
-				let scenarios = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_FRIENDLY, enemy, playerStamina, itemsComponent);
+				let scenarios = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_FRIENDLY, enemy, playerStamina, itemsComponent, this.totalFightTime);
 				let scenario = this.pickTurnScenario(scenarios);
 				damageToEnemy = scenario.damage;
 				this.log(scenario.logMessage);
@@ -118,7 +118,7 @@ define([
 			if (itemEffects.enemyStunnedSeconds <= 0) {
 				this.fightNodes.head.fight.nextTurnEnemy -= fightTime;
 				if (this.fightNodes.head.fight.nextTurnEnemy <= 0) {
-					let scenarios = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_ENEMY, enemy, playerStamina, itemsComponent);
+					let scenarios = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_ENEMY, enemy, playerStamina, itemsComponent, this.totalFightTime);
 					let scenario = this.pickTurnScenario(scenarios);
 					damageToPlayer = scenario.damage;
 					this.log(scenario.logMessage);
