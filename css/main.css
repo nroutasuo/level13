@@ -422,6 +422,24 @@ body.dark table.borders td {
 body.dark table.borders th {
   background: #2f322f;
 }
+body.dark table.borders th.alt-1 {
+  background: #358;
+}
+body.dark table.borders th.alt-2 {
+  background: #385;
+}
+body.dark table.borders th.alt-3 {
+  background: #853;
+}
+body.dark table.borders td.alt-1 {
+  background: rgba(51, 85, 136, 0.2);
+}
+body.dark table.borders td.alt-2 {
+  background: rgba(51, 136, 85, 0.2);
+}
+body.dark table.borders td.alt-3 {
+  background: rgba(136, 85, 51, 0.2);
+}
 body.dark table th.sortable {
   background: #444;
   cursor: pointer;
@@ -2375,6 +2393,24 @@ body.sunlit table.borders td {
 }
 body.sunlit table.borders th {
   background: #e6e6e6;
+}
+body.sunlit table.borders th.alt-1 {
+  background: #6af;
+}
+body.sunlit table.borders th.alt-2 {
+  background: #6fa;
+}
+body.sunlit table.borders th.alt-3 {
+  background: #fa6;
+}
+body.sunlit table.borders td.alt-1 {
+  background: rgba(102, 170, 255, 0.2);
+}
+body.sunlit table.borders td.alt-2 {
+  background: rgba(102, 255, 170, 0.2);
+}
+body.sunlit table.borders td.alt-3 {
+  background: rgba(255, 170, 102, 0.2);
 }
 body.sunlit table th.sortable {
   background: #ddd;
