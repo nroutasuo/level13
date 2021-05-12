@@ -74,7 +74,9 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 		 
 		getPlayerAtt: function (playerStamina, itemsComponent) {
 			var itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att, ItemConstants.itemTypes.weapon);
-			var playerAtt = Math.floor(this.FIGHT_PLAYER_BASE_ATT + itemBonus);
+			var playerAtt = itemBonus;
+			if (itemBonus <= 0)
+				playerAtt = this.FIGHT_PLAYER_BASE_ATT;
 			var followerBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att, ItemConstants.itemTypes.follower);
 			return playerAtt + followerBonus;
 		},
@@ -83,8 +85,9 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			var itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att, ItemConstants.itemTypes.weapon);
 			var healthFactor = (playerStamina.health/100);
 			var followerBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att, ItemConstants.itemTypes.follower);
-			var desc = "player: " + this.FIGHT_PLAYER_BASE_ATT;
-			if (itemBonus > 0) desc += "<br/>equipment: " + itemBonus;
+			var desc = "";
+			if (itemBonus <= 0) desc += "player: " + this.FIGHT_PLAYER_BASE_ATT;
+			if (itemBonus > 0) desc += "equipment: " + itemBonus;
 			if (healthFactor < 1) desc += "<br/>health: -" + Math.round((1-healthFactor) * 1000) / 10 + "%";
 			if (followerBonus > 0) desc += "<br/>followers: " + followerBonus;
 			return desc;
