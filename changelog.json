@@ -1,6 +1,13 @@
 {
 	"versions": [
 		{
+			"version": "0.4.1",
+			"phase": "alpha",
+			"final": false,
+			"changes": [
+			]
+		},
+		{
 			"version": "0.3.3",
 			"requiredVersion": "0.3.1",
 			"released": "2021-03-23",
