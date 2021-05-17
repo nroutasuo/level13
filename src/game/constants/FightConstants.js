@@ -50,13 +50,16 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 		},
 		
 		getFirstTurnTime: function (attackTime, startRoll) {
-			if (startRoll < 0.1) {
+			let modifiedProbability = 0.2;
+			if (startRoll < (modifiedProbability / 4))
 				return attackTime * 0.5;
-			} else if (startRoll < 0.9) {
-				return attackTime;
-			} else {
+			if (startRoll < (modifiedProbability / 2))
+				return attackTime * 0.75;
+			if (startRoll > (1 - modifiedProbability / 4))
 				return attackTime * 1.5;
-			}
+			if (startRoll > (1 - modifiedProbability / 2))
+				return attackTime * 1.25;
+			return attackTime;
 		},
 		
 		getHitsToKill: function (attackerAtt, defenderDef, defenderHP, defenderShield) {
@@ -166,7 +169,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 		
 		getMissChance: function (participantType, fightTime) {
 			fightTime = fightTime || 0;
-			let baseChance = participantType == this.PARTICIPANT_TYPE_FRIENDLY ? 0.03 : 0.05;
+			let baseChance = participantType == this.PARTICIPANT_TYPE_FRIENDLY ? 0.025 : 0.05;
 			if (fightTime < 10)
 				return baseChance;
 			if (fightTime < 15)

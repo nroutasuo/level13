@@ -77,15 +77,20 @@ define([
 			enemy.resetHP();
 			enemy.resetShield();
 			
-			this.fightNodes.head.fight.nextTurnEnemy = startDelay + FightConstants.getFirstTurnTime(FightConstants.getEnemyAttackTime(enemy), Math.random());
-			this.fightNodes.head.fight.nextTurnPlayer = startDelay + FightConstants.getFirstTurnTime(FightConstants.getPlayerAttackTime(itemsComponent), Math.random());
+			let playerInitRoll = Math.random();
+			let nextTurnPlayer = startDelay + FightConstants.getFirstTurnTime(FightConstants.getPlayerAttackTime(itemsComponent), playerInitRoll);
+			let enemyInitRoll = Math.random();
+			let nextTurnEnemy = startDelay + FightConstants.getFirstTurnTime(FightConstants.getEnemyAttackTime(enemy), enemyInitRoll);
+			
+			this.fightNodes.head.fight.nextTurnPlayer = nextTurnPlayer;
+			this.fightNodes.head.fight.nextTurnEnemy = nextTurnEnemy;
 			this.totalFightTime = 0;
 			
 			var playerStamina = this.playerStatsNodes.head.stamina;
 			playerStamina.resetHP();
 			playerStamina.resetShield();
 			
-			this.log("init fight | enemy IV: " + enemy.getIVAverage());
+			this.log("init fight | enemy IV: " + enemy.getIVAverage() + " | next turn player: " + nextTurnPlayer + ", enemy: " + nextTurnEnemy);
 		},
 		
 		applyFightStep: function (time) {
@@ -119,19 +124,19 @@ define([
 			var damageByEnemy = 0;
 			var damageToPlayer = 0;
 			if (!isPlayerTurn) {
-			if (itemEffects.enemyStunnedSeconds <= 0) {
+				if (itemEffects.enemyStunnedSeconds <= 0) {
 					isEnemyTurn = true;
-				this.fightNodes.head.fight.nextTurnEnemy -= fightTime;
-				if (this.fightNodes.head.fight.nextTurnEnemy <= 0) {
-					let scenarios = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_ENEMY, enemy, playerStamina, itemsComponent, this.totalFightTime);
-					let scenario = this.pickTurnScenario(scenarios);
-					damageToPlayer = scenario.damage;
-					this.log(scenario.logMessage);
-					this.fightNodes.head.fight.nextTurnEnemy = FightConstants.getEnemyAttackTime(enemy);
+					this.fightNodes.head.fight.nextTurnEnemy -= fightTime;
+					if (this.fightNodes.head.fight.nextTurnEnemy <= 0) {
+						let scenarios = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_ENEMY, enemy, playerStamina, itemsComponent, this.totalFightTime);
+						let scenario = this.pickTurnScenario(scenarios);
+						damageToPlayer = scenario.damage;
+						this.log(scenario.logMessage);
+						this.fightNodes.head.fight.nextTurnEnemy = FightConstants.getEnemyAttackTime(enemy);
+					}
+				} else {
+					this.log("enemy stunned");
 				}
-			} else {
-				this.log("enemy stunned");
-			}
 			}
 			
 			// item effects: extra damage
