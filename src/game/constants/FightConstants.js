@@ -35,6 +35,11 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			return Math.max(1, dmg);
 		},
 		
+		getStrength: function (att, def) {
+			// two fight participants with similar strength will do similar damage per hit to each other
+			return att + att + def;
+		},
+		
 		getDamagePerSec: function (att, def, speed) {
 			let attackTime = this.getAttackTime(speed);
 			return this.getDamagePerHit(att, def) / attackTime;
@@ -60,11 +65,6 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 		
 		getSecToKill: function (attackerAtt, attackerSpeed, defenderDef, defenderHP, defenderShield) {
 			return this.getHitsToKill(attackerAtt, defenderDef, defenderHP, defenderShield) * this.getAttackTime(attackerSpeed);
-		},
-		
-		getStrength: function (att, def, speed, hp, shield) {
-			var str = (att + def + shield) / 100 * hp * speed;
-			return Math.round(str);
 		},
 		
 		getPlayerAttackTime: function (itemsComponent) {
@@ -120,13 +120,6 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			let weapon = weapons.length > 0 ? weapons[0] : null;
 			let weaponSpeedBonus = weapon ? weapon.getBonus(ItemConstants.itemBonusTypes.fight_speed) || 1 : 1;
 			return weaponSpeedBonus;
-		},
-		
-		getPlayerStrength: function (playerStamina, itemsComponent) {
-			let att = this.getPlayerAtt(playerStamina, itemsComponent);
-			let def = this.getPlayerDef(playerStamina, itemsComponent);
-			let speed = this.getPlayerSpeed(itemsComponent);
-			return this.getStrength(att, def, speed, playerStamina.maxHP, playerStamina.maxShield);
 		},
 		
 		getMaxFollowers: function (numCamps) {
@@ -199,8 +192,6 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			let missChance = Math.round(FightConstants.getMissChance(participantType, fightTime) * 1000)/1000;
 			let criticalChance = Math.round(FightConstants.getCriticalHitChance(participantType, fightTime) * 1000)/1000;
 			let regularChance = 1 - missChance - criticalChance;
-			
-			log.i(participantType + " " + missChance + " | " + criticalChance + " | " + Math.round(regularChance * 1000)/1000);
 			
 			let participantName = participantType == FightConstants.PARTICIPANT_TYPE_FRIENDLY ? "player" : "enemy";
 			let regularDamage = participantType == FightConstants.PARTICIPANT_TYPE_FRIENDLY ?

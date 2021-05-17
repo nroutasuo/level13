@@ -81,6 +81,16 @@ define(['ash'], function (Ash) {
 					return true;
 			}
 			return false;
+		},
+		
+		getCampAndStep: function (campOrdinal, step) {
+			if (step < WorldConstants.CAMP_STEP_START) {
+				return { campOrdinal: campOrdinal - 1, step: WorldConstants.CAMP_STEP_END };
+			}
+			if (step > WorldConstants.CAMP_STEP_END) {
+				return { campOrdinal: campOrdinal + 1, step: WorldConstants.CAMP_STEP_START };
+			}
+			return { campOrdinal: campOrdinal, step: step };
 		}
 		
 	};

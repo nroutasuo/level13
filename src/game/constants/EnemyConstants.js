@@ -33,10 +33,10 @@ function (Ash, EnemyVO) {
 		},
 		
 		// saved for convenience & startup speed
-		enemyDifficulties: null,
+		enemyDifficulties: {},
 		
 		getEnemy: function (enemyID) {
-			for (var type in this.enemyDefinitions ) {
+			for (var type in this.enemyDefinitions) {
 				for (var i in this.enemyDefinitions[type]) {
 					var enemy = this.enemyDefinitions[type][i];
 					if (enemy.id == enemyID) {
@@ -58,6 +58,10 @@ function (Ash, EnemyVO) {
 			}
 			return result;
 		},
+		
+		getDifficulty: function (enemy) {
+			return this.enemyDifficulties[enemy.id];
+		}
 		
 	};
 		

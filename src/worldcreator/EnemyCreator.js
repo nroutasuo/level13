@@ -44,40 +44,95 @@ define([
 					def.droppedResources
 				);
 				if (!EnemyConstants.enemyDefinitions[type]) EnemyConstants.enemyDefinitions[type] = [];
-			 	EnemyConstants.enemyDefinitions[type].push(enemyVO);
+			 	EnemyConstants.enemyDefinitions[type].push(enemyVO.cloneWithIV(50));
 			}
 		},
 
-		// Enemy definitions (difficulty: 1-10, attRatio: 0-1, shieldRatio: 0-1, healthFactor: 0-1, size: around 1, speed: around 1, rarity: 0-100)
+		// Enemy definitions (speed: around 1, rarity: 0-100)
 		createEnemy: function (id, name, type, nouns, groupN, activeV, defeatedV, campOrdinal, normalizedDifficulty, attRatio, shieldRatio, healthFactor, shieldFactor, size, speed, rarity, droppedResources) {
-			var reqStr = this.getRequiredStrength(campOrdinal, 2);
-			var reqStrPrev = this.getRequiredStrength(campOrdinal, 1);
-			var reqStrNext = this.getRequiredStrength(campOrdinal, 3);
-			var strengthMin = Math.max(0, reqStr - (reqStr - reqStrPrev) * 0.5);
-			var strengthMax = Math.max(2, reqStr + (reqStrNext - reqStr) * 0.5);
-			if (reqStr === reqStrNext) {
-				strengthMax = Math.max(2, reqStr + (reqStr - reqStrPrev) * 0.5);
+			// normalizedDifficulty (1-10) -> camp step and difficulty within camp step
+			normalizedDifficulty = MathUtils.clamp(normalizedDifficulty, 1, 10);
+			let step = 0;
+			let difficultyFactor = 0;
+			if (normalizedDifficulty <= 3) {
+				step = WorldConstants.CAMP_STEP_START;
+				difficultyFactor = MathUtils.map(normalizedDifficulty, 1, 3, 0, 1);
+			} else if (normalizedDifficulty <= 7) {
+				step = WorldConstants.CAMP_STEP_POI_2;
+				difficultyFactor = MathUtils.map(normalizedDifficulty, 4, 7, 0, 1);
+			} else  {
+				step = WorldConstants.CAMP_STEP_END;
+				difficultyFactor = MathUtils.map(normalizedDifficulty, 8, 10, 0, 1);
 			}
 			
+			// campOrdinal, step, attRatio (0-1) -> att and def
 			let attackFactor = MathUtils.clamp(attRatio, 0.1, 0.9);
+			let strength = this.getStatBase(campOrdinal, step, difficultyFactor, this.getPlayerStrength);
+			let def = Math.max(1, this.getAttack(strength, attackFactor));
+			let att = Math.max(1, this.getDefence(strength, attackFactor));
 			
-			var typicalStamina = this.getTypicalStamina(campOrdinal, 2, false);
-			let staminaBase = typicalStamina.maxHP + typicalStamina.maxShield;
+			// campOrdinal, step, shieldRatio (0-1), healthFactor (0-1), shieldFactor (0-1), size -> hp and shield
+			let hpshieldtotal = this.getStatBase(campOrdinal, step, difficultyFactor, this.getPlayerHpShield);
 			let sizeHPFactor = MathUtils.map(size, 0, 2, 0.5, 1.5);
 			let sizeShieldFactor = MathUtils.map(size, 0, 2, 0.75, 1.25);
-			let hp = Math.round(staminaBase * (1 - shieldRatio) * healthFactor * sizeHPFactor);
-			let shield = Math.round(staminaBase * shieldRatio * shieldFactor * sizeShieldFactor);
+			let hp = Math.round(hpshieldtotal * (1 - shieldRatio) * healthFactor * sizeHPFactor);
+			let shield = Math.round(hpshieldtotal * shieldRatio * shieldFactor * sizeShieldFactor);
 			
-			// log.i("createEnemy " + name + " campOrdinal:" + campOrdinal + ", normalizedDifficulty: " + normalizedDifficulty + " strengthMin: " + strengthMin + ", strengthMax: " + strengthMax)
-			
-			var strength = strengthMin + (strengthMax - strengthMin) / 10 * normalizedDifficulty;
-			var stats = strength * 100 / (hp + shield) * (1 / speed);
-			var def = Math.max(1, Math.round(stats * (1 - attackFactor)));
-			var att = Math.max(1, Math.round(stats * attackFactor));
-			
+			// normalize rest
+			speed = Math.max(speed, 0.1);
+			rarity = MathUtils.clamp(rarity, 1, 100);
 			droppedResources = droppedResources || [ ];
 			
+			EnemyConstants.enemyDifficulties[id] = this.getDifficulty(campOrdinal, step);
+
 			return new EnemyVO(id, name, type, nouns, groupN, activeV, defeatedV, att, def, hp, shield, speed, rarity, droppedResources);
+		},
+		
+		getStatBase: function (campOrdinal, step, difficultyFactor, statfunc) {
+			let current = statfunc.call(this, campOrdinal, step);
+			
+			let previousTotal = 0;
+			let previousNum = 0;
+			let prevCamp = campOrdinal;
+			let prevStep = step;
+			while (previousNum < 6 && prevCamp > 0) {
+				prevStep--;
+				if (prevStep < WorldConstants.CAMP_STEP_START) {
+					prevCamp--;
+					prevStep = WorldConstants.CAMP_STEP_END;
+				}
+				let previous = statfunc.call(this, prevCamp, prevStep);
+				previousTotal += previous;
+				previousNum++;
+				if (previousNum > 1 && previous < current) break;
+			}
+			
+			let min = previousTotal / previousNum;
+			let max = current;
+			
+			return MathUtils.map(difficultyFactor, 0, 1, min, max);
+		},
+		
+		getPlayerStrength: function (campOrdinal, step) {
+			let s = WorldConstants.getCampAndStep(campOrdinal, step);
+			let playerStamina = this.getTypicalStamina(campOrdinal, step);
+			let itemsComponent = this.getTypicalItems(campOrdinal, step);
+			return FightConstants.getStrength(FightConstants.getPlayerAtt(playerStamina, itemsComponent), FightConstants.getPlayerDef(playerStamina, itemsComponent));
+		},
+		
+		getAttack: function (strength, attackFactor) {
+			return (attackFactor * strength) / (attackFactor + 1); // assuming str = att + att + def
+		},
+		
+		getDefence: function (strength, attackFactor) {
+			let att = this.getAttack(strength, attackFactor);
+			return strength - 2 * att; // assuming str = att + att + def
+		},
+		
+		getPlayerHpShield: function (campOrdinal, step) {
+			let s = WorldConstants.getCampAndStep(campOrdinal, step);
+			let playerStamina = this.getTypicalStamina(campOrdinal, step);
+			return playerStamina.maxHP + playerStamina.maxShield;
 		},
 
 		// get enemies by type (string) and difficulty (campOrdinal and step)
@@ -86,8 +141,6 @@ define([
 		getEnemies: function (type, difficulty, restrictDifficulty) {
 			var enemies = [];
 			if (difficulty <= 0) return enemies;
-
-			if (!EnemyConstants.enemyDifficulties) this.saveEnemyDifficulties();
 
 			var enemy;
 			var enemyDifficulty;
@@ -115,33 +168,14 @@ define([
 
 			return enemies;
 		},
-		
-		saveEnemyDifficulties: function () {
-			EnemyConstants.enemyDifficulties = {};
-			var enemy;
-			var enemyDifficulty;
-			for (var type in EnemyConstants.enemyTypes) {
-				for (var i = 0; i < EnemyConstants.enemyDefinitions[type].length; i++) {
-					enemy = EnemyConstants.enemyDefinitions[type][i];
-					enemyDifficulty = this.getEnemyDifficultyLevel(enemy);
-					EnemyConstants.enemyDifficulties[enemy.id] = enemyDifficulty;
-				}
-			}
-		},
 
 		// get the difficulty level (1-3*15, corresponding to camp ordinal and step) of a given enemy
 		getEnemyDifficultyLevel: function (enemy) {
-			if (EnemyConstants.enemyDifficulties && EnemyConstants.enemyDifficulties[enemy.id]) return EnemyConstants.enemyDifficulties[enemy.id];
-			var enemyStats = FightConstants.getStrength(enemy.att, enemy.def, enemy.speed, enemy.maxHP, enemy.maxShield);
-			var requiredStats;
-			var max = this.getDifficulty(WorldConstants.CAMPS_TOTAL, WorldConstants.CAMP_STEP_END);
-			for (var i = 1; i <= max; i++) {
-				var campOrdinal = this.getCampOrdinalFromDifficulty(i);
-				var step = this.getStepFromDifficulty(i);
-				requiredStats = this.getRequiredStrength(campOrdinal, step, false);
-				if (requiredStats >= enemyStats) return i;
+			if (!EnemyConstants.enemyDifficulties && EnemyConstants.enemyDifficulties[enemy.id])  {
+				log.w("enemy difficulty not defined: " + enemy.id);
+				return 0;
 			}
-			return max;
+			return EnemyConstants.enemyDifficulties[enemy.id];
 		},
 		
 		getCampOrdinalFromDifficulty: function (difficulty) {
@@ -154,29 +188,6 @@ define([
 		
 		getDifficulty: function (campOrdinal, step) {
 			return (campOrdinal - 1)*3 + step;
-		},
-		
-		getRequiredStrength: function (campOrdinal, step, isHardLevel) {
-			var prevOrdinal = campOrdinal;
-			var prevStep = step - 1;
-			if (prevStep < WorldConstants.CAMP_STEP_START) {
-				prevOrdinal = campOrdinal - 1;
-				prevStep = WorldConstants.CAMP_STEP_END;
-			}
-			var typicalStrength = this.getTypicalStrength(campOrdinal, step, isHardLevel);
-			var typicalStrengthPrevious = this.getTypicalStrength(prevOrdinal, prevStep, isHardLevel);
-			var result = Math.ceil((typicalStrength + typicalStrengthPrevious) / 2);
-			return result;
-		},
-
-		getTypicalStrength: function (campOrdinal, step, isHardLevel) {
-			if (campOrdinal < 0) campOrdinal = 0;
-
-			var typicalItems = this.getTypicalItems(campOrdinal, step, isHardLevel);
-			var typicalStamina = this.getTypicalStamina(campOrdinal, step, isHardLevel)
-			var result = FightConstants.getPlayerStrength(typicalStamina, typicalItems);
-			// log.i("typical strength: campOrdinal: " + campOrdinal + ", step: " + step + " -> " + result + " | " + numFollowers + " " + typicalHealth);
-			return result;
 		},
 		
 		getTypicalItems: function (campOrdinal, step, isHardLevel) {
