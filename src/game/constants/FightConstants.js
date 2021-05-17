@@ -260,8 +260,6 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 					activeBranches = newActiveBranches;
 				}
 				
-				log.i("getFightWinProbability vs " + enemy.name);
-				
 				let totalTime = 0;
 				let minNextTurn = Math.min(activeBranches[0].nextTurnPlayer, activeBranches[0].nextTurnEnemy);
 				let minProb = -1;
@@ -293,9 +291,6 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 							mostProbableBranch = endedBranches[i];
 						}
 					}
-					
-					log.i("done. ended branches: " + endedBranches.length + ", discarded: " + numDiscardedBranches + ", totalTime: " + totalTime + ", win chance: " + result);
-					log.i(mostProbableBranch);
 					
 					resolve(result);
 				};
@@ -364,7 +359,9 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			branch.nextTurnEnemy -= stepTime;
 			
 			let turnScenariosPlayer = [];
+			let isPlayerTurn = false;
 			if (branch.nextTurnPlayer <= 0) {
+				isPlayerTurn = true;
 				turnScenariosPlayer = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_FRIENDLY, enemy, playerStamina, itemsComponent, fightTime);
 				branch.nextTurnPlayer = playerAttackTime;
 			} else {
@@ -372,7 +369,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			}
 			
 			let turnScenariosEnemy = [];
-			if (branch.nextTurnEnemy <= 0) {
+			if (!isPlayerTurn && branch.nextTurnEnemy <= 0) {
 				turnScenariosEnemy = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_ENEMY, enemy, playerStamina, itemsComponent, fightTime);
 				branch.nextTurnEnemy = enemyAttackTime;
 			} else {

@@ -102,9 +102,11 @@ define([
 			itemEffects.enemyStunnedSeconds = Math.max(itemEffects.enemyStunnedSeconds, 0);
 			
 			// player turn
+			var isPlayerTurn = false;
 			var damageToEnemy = 0;
 			this.fightNodes.head.fight.nextTurnPlayer -= fightTime;
 			if (this.fightNodes.head.fight.nextTurnPlayer <= 0) {
+				isPlayerTurn = true;
 				let scenarios = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_FRIENDLY, enemy, playerStamina, itemsComponent, this.totalFightTime);
 				let scenario = this.pickTurnScenario(scenarios);
 				damageToEnemy = scenario.damage;
@@ -113,9 +115,12 @@ define([
 			}
 			
 			// enemy turn
+			let isEnemyTurn = false;
 			var damageByEnemy = 0;
 			var damageToPlayer = 0;
+			if (!isPlayerTurn) {
 			if (itemEffects.enemyStunnedSeconds <= 0) {
+					isEnemyTurn = true;
 				this.fightNodes.head.fight.nextTurnEnemy -= fightTime;
 				if (this.fightNodes.head.fight.nextTurnEnemy <= 0) {
 					let scenarios = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_ENEMY, enemy, playerStamina, itemsComponent, this.totalFightTime);
@@ -126,6 +131,7 @@ define([
 				}
 			} else {
 				this.log("enemy stunned");
+			}
 			}
 			
 			// item effects: extra damage
