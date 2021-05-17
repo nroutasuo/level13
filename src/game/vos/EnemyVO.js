@@ -49,7 +49,6 @@ define(['ash'], function (Ash) {
 			
 			this.attIV = Math.round(Math.random() * 100);
 			this.defIV = Math.round(Math.random() * 100);
-			this.hpIV = Math.round(Math.random() * 100);
 			this.speedIV = Math.round(Math.random() * 100);
 			
 			this.enemyID = this.name.replace(/ /g, "-") + "-" + this.att + "-" + this.def;
@@ -77,10 +76,6 @@ define(['ash'], function (Ash) {
 		
 		getSpeed: function () {
 			return Math.round(this.getStat(this.speed * 100, this.speedIV)) / 100;
-		},
-		
-		getMaxHP: function () {
-			return this.getStat(this.maxHP, this.hpIV);
 		},
 		
 		getStat: function (baseStat, iv) {

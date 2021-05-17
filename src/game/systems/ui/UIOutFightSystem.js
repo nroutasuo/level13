@@ -235,8 +235,8 @@ define([
 			var sector = this.playerLocationNodes.head.entity;
 			var encounterComponent = sector.get(FightEncounterComponent);
 			var currentEnemy = encounterComponent.enemy;
-			$("#fight-bar-enemy").css("width", Math.ceil(currentEnemy.getMaxHP() / (currentEnemy.getMaxHP() + currentEnemy.maxShield) * 100) + "%");
-			$("#fight-bar-enemy-shield").css("width", Math.floor(currentEnemy.maxShield / (currentEnemy.getMaxHP() + currentEnemy.maxShield) * 100) + "%");
+			$("#fight-bar-enemy").css("width", Math.ceil(currentEnemy.maxHP / (currentEnemy.maxHP + currentEnemy.maxShield) * 100) + "%");
+			$("#fight-bar-enemy-shield").css("width", Math.floor(currentEnemy.maxShield / (currentEnemy.maxHP + currentEnemy.maxShield) * 100) + "%");
 			
 			var playerStamina = this.playerStatsNodes.head.stamina;
 			$("#fight-bar-self").css("width", Math.ceil(playerStamina.maxHP / (playerStamina.maxHP + playerStamina.maxShield) * 100) + "%");
@@ -310,12 +310,13 @@ define([
 			var enemiesComponent = sector.get(EnemiesComponent);
 			var currentEnemy = encounterComponent.enemy;
 			if (currentEnemy == null) return;
-			var statsText = " att: " + currentEnemy.getAtt() + " | def: " + currentEnemy.getDef() + " " + " | hp: " + currentEnemy.getMaxHP() + " ";
+			var statsText = " att: " + currentEnemy.getAtt() + " | def: " + currentEnemy.getDef() + " " + " | hp: " + currentEnemy.maxHP + " ";
 			
 			if (this.state == FightPopupStateEnum.FIGHT_PENDING) {
 				var playerStamina = this.playerStatsNodes.head.stamina;
 				var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 				
+				/*
 				FightConstants.getFightWinProbability(currentEnemy, playerStamina, itemsComponent).
 					then(chances => {
 						var chancesText = TextConstants.getFightChancesText(chances);
@@ -324,6 +325,7 @@ define([
 							log.i("getFightWinProbability:" + chances + " (" + chancesText + ")");
 					})
 					.catch(ex => { log.e(ex) });
+				*/
 
 				statsText += "<br/>";
 				statsText += "<span class='fight-popup-chances'></span>";

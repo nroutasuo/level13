@@ -408,7 +408,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			let playerHP = playerStamina.maxHP;
 			let playerShield = playerStamina.maxShield;
 			return Math.min(
-				this.getSecToKill(playerAtt, playerSpeed, enemy.getDef(), enemy.getMaxHP(), enemy.maxShield),
+				this.getSecToKill(playerAtt, playerSpeed, enemy.getDef(), enemy.maxHP, enemy.maxShield),
 				this.getSecToKill(enemy.getAtt(), enemy.getSpeed(), playerDef, playerHP, playerShield)
 			);
 		},
