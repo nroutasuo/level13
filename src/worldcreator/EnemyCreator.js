@@ -68,11 +68,11 @@ define([
 			// campOrdinal, step, attRatio (0-1) -> att and def
 			let attackFactor = MathUtils.clamp(attRatio, 0.1, 0.9);
 			let strength = this.getStatBase(campOrdinal, step, difficultyFactor, this.getPlayerStrength);
-			let def = Math.max(1, this.getAttack(strength, attackFactor));
-			let att = Math.max(1, this.getDefence(strength, attackFactor));
+			let att = Math.max(1, this.getAttack(strength, attackFactor, speed));
+			let def = Math.max(1, this.getDefence(strength, attackFactor, speed));
 			
 			// campOrdinal, step, shieldRatio (0-1), healthFactor (0-1), shieldFactor (0-1), size -> hp and shield
-			let hpshieldtotal = this.getStatBase(campOrdinal, step, difficultyFactor, this.getPlayerHpShield);
+			let hpshieldtotal = Math.max(10, this.getStatBase(campOrdinal, step, difficultyFactor, this.getPlayerHpShield));
 			let sizeHPFactor = MathUtils.map(size, 0, 2, 0.5, 1.5);
 			let sizeShieldFactor = MathUtils.map(size, 0, 2, 0.75, 1.25);
 			let hp = Math.round(hpshieldtotal * (1 - shieldRatio) * healthFactor * sizeHPFactor);
@@ -84,6 +84,8 @@ define([
 			droppedResources = droppedResources || [ ];
 			
 			EnemyConstants.enemyDifficulties[id] = this.getDifficulty(campOrdinal, step);
+			
+			// log.i("goal strength: " + strength + " | actual strength: " + FightConstants.getStrength(att, def, speed));
 
 			return new EnemyVO(id, name, type, nouns, groupN, activeV, defeatedV, att, def, hp, shield, speed, rarity, droppedResources);
 		},
@@ -107,30 +109,38 @@ define([
 				if (previousNum > 1 && previous < current) break;
 			}
 			
-			let min = previousTotal / previousNum;
+			let min = previousNum > 0 ? previousTotal / previousNum : 0;
 			let max = current;
 			
 			return MathUtils.map(difficultyFactor, 0, 1, min, max);
 		},
 		
 		getPlayerStrength: function (campOrdinal, step) {
-			let s = WorldConstants.getCampAndStep(campOrdinal, step);
 			let playerStamina = this.getTypicalStamina(campOrdinal, step);
 			let itemsComponent = this.getTypicalItems(campOrdinal, step);
-			return FightConstants.getStrength(FightConstants.getPlayerAtt(playerStamina, itemsComponent), FightConstants.getPlayerDef(playerStamina, itemsComponent));
+			let playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
+			let playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent);
+			let playerSpeed = FightConstants.getPlayerSpeed(itemsComponent);
+			return FightConstants.getStrength(playerAtt, playerDef, playerSpeed);
 		},
 		
-		getAttack: function (strength, attackFactor) {
-			return (attackFactor * strength) / (attackFactor + 1); // assuming str = att + att + def
+		
+		getAttack: function (strength, attackFactor, speed) {
+			return this.getAttDef(strength, speed) * attackFactor;
 		},
 		
-		getDefence: function (strength, attackFactor) {
-			let att = this.getAttack(strength, attackFactor);
-			return strength - 2 * att; // assuming str = att + att + def
+		getDefence: function (strength, attackFactor, speed) {
+			return this.getAttDef(strength, speed) * (1 - attackFactor);
+		},
+		
+		getAttDef: function (strength, speed) {
+			// str = att * (F + spd * F) + def;
+			// assuming att == def == ad
+			let ad = strength / (speed * FightConstants.STRENGTH_ATT_FACTOR + FightConstants.STRENGTH_ATT_FACTOR + 1);
+			return ad * 2;
 		},
 		
 		getPlayerHpShield: function (campOrdinal, step) {
-			let s = WorldConstants.getCampAndStep(campOrdinal, step);
 			let playerStamina = this.getTypicalStamina(campOrdinal, step);
 			return playerStamina.maxHP + playerStamina.maxShield;
 		},

@@ -20,6 +20,8 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 		PARTICIPANT_TYPE_FRIENDLY: 0,
 		PARTICIPANT_TYPE_ENEMY: 1,
 		
+		STRENGTH_ATT_FACTOR: 1,
+		
 		getDamagePerHit: function (att, def) {
 			// att scaled by att / def ratio:
 			// - if def = 0 -> dmg = att
@@ -35,9 +37,10 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			return Math.max(1, dmg);
 		},
 		
-		getStrength: function (att, def) {
-			// two fight participants with similar strength will do similar damage per hit to each other
-			return att + att + def;
+		// two fight participants with similar strength will do similar damage per sec to each other
+		// att matters more than def, and speed matters more in propotion to att than def
+		getStrength: function (att, def, spd) {
+			return att * (FightConstants.STRENGTH_ATT_FACTOR + spd * FightConstants.STRENGTH_ATT_FACTOR) + def;
 		},
 		
 		getDamagePerSec: function (att, def, speed) {
