@@ -401,6 +401,9 @@ body.dark .columns-child-small {
 body.dark table.fullwidth {
   width: 100%;
 }
+body.dark .balancing-tab table {
+  font-size: 80%;
+}
 body.dark table.spacious {
   margin: 5px 0px;
 }
@@ -2372,6 +2375,9 @@ body.sunlit .columns-child-small {
 }
 body.sunlit table.fullwidth {
   width: 100%;
+}
+body.sunlit .balancing-tab table {
+  font-size: 80%;
 }
 body.sunlit table.spacious {
   margin: 5px 0px;
