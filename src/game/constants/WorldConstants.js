@@ -83,14 +83,29 @@ define(['ash'], function (Ash) {
 			return false;
 		},
 		
-		getCampAndStep: function (campOrdinal, step) {
-			if (step < WorldConstants.CAMP_STEP_START) {
-				return { campOrdinal: campOrdinal - 1, step: WorldConstants.CAMP_STEP_END };
+		getCampAndStep: function (campOrdinal, step, offset) {
+			let resultOrdinal = campOrdinal;
+			let resultStep = step;
+			let currentOffset = offset;
+			while (currentOffset > 0) {
+				if (resultOrdinal == 15 && resultStep == WorldConstants.CAMP_STEP_END) break;
+				currentOffset--;
+				resultStep++;
+				if (resultStep > WorldConstants.CAMP_STEP_END) {
+					resultOrdinal++;
+					resultStep = WorldConstants.CAMP_STEP_START;
+				}
 			}
-			if (step > WorldConstants.CAMP_STEP_END) {
-				return { campOrdinal: campOrdinal + 1, step: WorldConstants.CAMP_STEP_START };
+			while (currentOffset < 0) {
+				if (resultOrdinal == 1 && resultStep == WorldConstants.CAMP_STEP_START) break;
+				currentOffset++;
+				resultStep--;
+				if (resultStep < WorldConstants.CAMP_STEP_START) {
+					resultOrdinal--;
+					resultStep = WorldConstants.CAMP_STEP_END;
+				}
 			}
-			return { campOrdinal: campOrdinal, step: step };
+			return { campOrdinal: resultOrdinal, step: resultStep };
 		}
 		
 	};

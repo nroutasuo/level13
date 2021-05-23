@@ -535,7 +535,7 @@ define([
 			if (levelVO.isCampable) {
 				stashIngredients = ItemConstants.getIngredientsToCraftMany(requiredEquipment);
 			} else {
-				requiredEquipment = this.itemsHelper.getRequiredEquipment(nextLevelVO.campOrdinal, WorldConstants.CAMP_STEP_POI_1, nextLevelVO.isHard);
+				requiredEquipment = this.itemsHelper.getRequiredEquipment(nextLevelVO.campOrdinal, WorldConstants.CAMP_STEP_START, nextLevelVO.isHard);
 				stashIngredients = ItemConstants.getIngredientsToCraftMany(requiredEquipment);
 			}
 			let numStashIngredients = MathUtils.clamp(Math.floor(stashIngredients.length / 2), 1, 3);
@@ -1204,7 +1204,8 @@ define([
 				var levelOrdinal = WorldCreatorHelper.getLevelOrdinalForCampOrdinal(seed, partner.campOrdinal);
 				var level = WorldCreatorHelper.getLevelForOrdinal(seed, levelOrdinal);
 				if (level == levelVO.level) {
-					var sectorVO = WorldCreatorRandom.randomSector(seed - 9393 + i * i, worldVO, levelVO, false);
+					var options = { excludingFeature: "camp" };
+					var sectorVO = WorldCreatorRandom.randomSectors(seed - 9393 + i * i, worldVO, levelVO, 1, 2, options)[0];
 					var locale = new LocaleVO(localeTypes.tradingpartner, true, false);
 					// WorldCreatorLogger.i("trade partner at " + sectorVO.position)
 					addLocale(sectorVO, locale);
