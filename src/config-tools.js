@@ -10,5 +10,7 @@ require.config({
 		lzstring: "../lib/lzstring",
 		game: "game"
 	},
+	
+	urlArgs: "v=1",
 
 });

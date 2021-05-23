@@ -23,6 +23,8 @@ require.config({
 			'isDebugOutputEnabled': false,
 			'isAutosaveEnabled': true,
 		}
-	}
+	},
+	
+	urlArgs: "v=0.4.1",
 
 });
