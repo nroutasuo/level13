@@ -1066,6 +1066,8 @@ define([
 				return { isValid: false, isBlocked: true, reason: "feature" };
 			}
 				
+			pendingSectors = pendingSectors || [];
+				
 			// blocking stage elements
 			if (stage) {
 				for (var levelStage in levelVO.stageCenterPositions) {
