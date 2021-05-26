@@ -148,7 +148,9 @@ define([
 			};
 						
 			// entrance to level ZONE_ENTRANCE
-			setAreaZone(passage1, WorldConstants.ZONE_ENTRANCE, 2, 2);
+			if (level != 13) {
+				setAreaZone(passage1, WorldConstants.ZONE_ENTRANCE, 2, 2);
+			}
 			
 			if (isCampableLevel) {
 				// camp:
@@ -1254,7 +1256,7 @@ define([
 					var isEasy = i <= countEasy;
 					var locale = new LocaleVO(localeType, isEasy, isEarly);
 					addLocale(sectorVO, locale);
-					// WorldCreatorLogger.i(levelVO.level + " added locale: isEarly:" + isEarly + ", distance to camp: " + WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO) + ", zone: " + sectorVO.zone);
+					// WorldCreatorLogger.i(sectorVO.position + " added locale: isEarly:" + isEarly + ", distance to camp: " + WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO) + ", zone: " + sectorVO.zone);
 					for (var j = 0; j < pathConstraints.length; j++) {
 						let criticalPathVO = new CriticalPathVO(pathConstraints[j].pathType, sectorVO.position, pathConstraints[j].startPosition);
 						WorldCreatorHelper.addCriticalPath(worldVO, criticalPathVO);
