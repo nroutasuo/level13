@@ -83,6 +83,14 @@ define([
 							if (level > 13 && levelVO.passageDownPosition) {
 								positions.push(levelVO.passageDownPosition);
 							}
+							if (level == 13) {
+								let pd2c = PositionConstants.subtract(levelVO.campPositions[0], levelVO.passageDownPosition);
+								let pu2c = PositionConstants.subtract(levelVO.campPositions[0], levelVO.passageUpPosition);
+								let total = PositionConstants.add(pd2c, pu2c);
+								let unit = PositionConstants.getUnitPosition(total);
+								let secondaryCenter = PositionConstants.multiply(unit, 5, true);
+								positions.push(secondaryCenter);
+							}
 							break;
 						case WorldConstants.CAMP_STAGE_LATE:
 							if (level <= 13 && levelVO.passageDownPosition) {

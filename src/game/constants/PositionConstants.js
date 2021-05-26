@@ -132,6 +132,14 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 			return Math.sqrt(xs + ys);
 		},
 		
+		getMagnitude: function (pos) {
+			var xs = pos.sectorX;
+			xs = xs * xs;
+			var ys = pos.sectorY;
+			ys = ys * ys;
+			return Math.sqrt(xs + ys);
+		},
+		
 		getBlockDistanceTo: function (sectorPosFrom, sectorPosTo) {
 			return Math.abs(sectorPosFrom.sectorX - sectorPosTo.sectorX) + (Math.abs(sectorPosFrom.sectorY - sectorPosTo.sectorY));
 		},
@@ -287,6 +295,25 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		
 		isLevelDirection: function (direction) {
 			return this.getLevelDirections().indexOf(direction) >= 0;
+		},
+		
+		subtract: function (pos1, pos2) {
+			return new PositionVO(pos1.level - pos2.level, pos1.sectorX - pos2.sectorX, pos1.sectorY - pos2.sectorY);
+		},
+		
+		add: function (pos1, pos2) {
+			return new PositionVO(pos1.level + pos2.level, pos1.sectorX + pos2.sectorX, pos1.sectorY + pos2.sectorY);
+		},
+		
+		multiply: function (pos, scalar, round) {
+			let result = new PositionVO(pos.level, pos.sectorX * scalar, pos.sectorY * scalar);
+			if (round) result.normalize();
+			return result;
+		},
+		
+		getUnitPosition: function (pos) {
+			let mag = this.getMagnitude(pos);
+			return new PositionVO(pos.level, pos.sectorX / mag, pos.sectorY / mag);
 		},
 		
 		isHorizontalDirection: function (direction) {
