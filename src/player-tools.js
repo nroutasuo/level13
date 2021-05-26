@@ -10,6 +10,7 @@ define([
 	
 	function registerButtonListeners() {
 		$("#fix-evidence-knife-compass").click(function () { applyFixEvidenceKnifeCompass(); });
+		$("#fix-blueprints-crafting").click(function () { applyFixBlueprintCrafting(); });
 		$("#fix-evidence-crafting").click(function () { applyFixEvidenceCrafting(); });
 		$("#fix-evidence-textile-arts").click(function () { applyFixEvidenceTextileArts(); });
 	}
@@ -105,6 +106,23 @@ define([
 		save.entitiesObject.player.Rumours.value = newValue;
 	}
 	
+	function fixSaveGrantBlueprints(save, upgradeID) {
+		if (UpgradeConstants.piecesByBlueprint[upgradeID]) {
+			let currentIndex = -1;
+			for (let i = 0; i < save.entitiesObject.tribe.Upgrades.newBlueprints.length; i++) {
+				if (save.entitiesObject.tribe.Upgrades.newBlueprints[i].upgradeId == upgradeID) {
+					currentIndex = i;
+					break;
+				}
+			}
+			if (currentIndex >= 0) {
+				save.entitiesObject.tribe.Upgrades.newBlueprints.splice(currentIndex, 1);
+			}
+			let blueprint = { upgradeId: upgradeID, maxPieces: UpgradeConstants.piecesByBlueprint[upgradeID], currentPieces: UpgradeConstants.piecesByBlueprint[upgradeID] };
+			save.entitiesObject.tribe.Upgrades.newBlueprints.push(blueprint);
+		}
+	}
+	
 	function applyFix(checkActions, fixActions, message) {
 		let save = loadSave();
 		let isSaveValid = validateSave(save);
@@ -139,6 +157,16 @@ define([
 			function (save) { fixSaveGrantRumours(save, 58) },
 		],
 			"Removed upgrade 'Knife' and reinbursed " + evidenceCost + " Evidence and " + rumourCost + " Rumours."
+		);
+	}
+	
+	function applyFixBlueprintCrafting() {
+		applyFix([
+			function (save) { return checkSaveHasUpgrade(save, "unlock_item_shoe1", false); }
+		],[
+			function (save) { fixSaveGrantBlueprints(save, "unlock_item_shoe1") },
+		],
+			"Added blueprint(s) for Crafting."
 		);
 	}
 	
