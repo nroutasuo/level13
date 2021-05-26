@@ -377,7 +377,7 @@ define([
 			var paths = getPaths(offset.x, offset.y);
 			for (var i = 0; i < paths.length; i++) {
 				var path = paths[i];
-				var pathResult = this.createPath(levelVO, path.startPos, path.dir, path.len, true, null, WorldCreatorConstants.CONNECTION_POINTS_PATH_ENDS);
+				var pathResult = this.createPath(levelVO, path.startPos, path.dir, path.len, true, null, WorldCreatorConstants.CONNECTION_POINTS_PATH_ENDS, i, paths.length);
 				result = result.concat(pathResult.path);
 			}
 			return result;
@@ -490,7 +490,7 @@ define([
 			var result = [];
 			var paths = this.getRectangleFromCenter(levelVO, i, center, w, h, forceComplete, isDiagonal, connectionPointsType);
 			for (var i = 0; i < paths.length; i++) {
-				var pathResult = this.createPath(levelVO, paths[i].startPos, paths[i].dir, paths[i].len, forceComplete, null, connectionPointsType);
+				var pathResult = this.createPath(levelVO, paths[i].startPos, paths[i].dir, paths[i].len, forceComplete, null, connectionPointsType, i, paths.length);
 				result = result.concat(pathResult.path);
 			}
 			return result;
@@ -506,7 +506,6 @@ define([
 				var connectionPointType = this.getPathConnectionPointType(connectionPointsType);
 				var path = this.getPathVO(levelVO, sideStartPos, currentDirection, sideLength, false, options, connectionPointType);
 				result.push(path);
-				if (!path.completed) return result;
 				sideStartPos = PositionConstants.getPositionOnPath(sideStartPos, currentDirection, sideLength - 1);
 				currentDirection = PositionConstants.getNextClockWise(currentDirection, false);
 			}
@@ -516,7 +515,7 @@ define([
 		createRectangle: function (levelVO, i, startPos, w, h, startDirection, options, forceComplete, connectionPointsType) {
 			var paths = this.getRectangle(levelVO, i, startPos, w, h, startDirection, options, forceComplete, connectionPointsType);
 			for (var i = 0; i < paths.length; i++) {
-				var pathResult = this.createPath(levelVO, paths[i].startPos, paths[i].dir, paths[i].len, forceComplete, options, paths[i].connectionPointType);
+				var pathResult = this.createPath(levelVO, paths[i].startPos, paths[i].dir, paths[i].len, forceComplete, options, paths[i].connectionPointType, i, paths.length);
 				if (!pathResult.completed) {
 					break;
 				}
@@ -761,7 +760,7 @@ define([
 			return result;
 		},
 		
-		getPath: function (levelVO, startPos, direction, len, forceComplete, options, connectionPointType) {
+		getPath: function (levelVO, startPos, direction, len, forceComplete, options, connectionPointType, shapeIndex, shapeLength) {
 			if (len < 1) return { path: [], completed: false, reason: "too short" };
 			var result = [];
 			var options = options || this.getDefaultOptions();
@@ -769,6 +768,8 @@ define([
 			var completed = true;
 			var isValid = true;
 			var reason = "";
+			
+			let isShapeEnd = !shapeLength || shapeIndex === 0 || shapeIndex === shapeLength - 1;
 			
 			for (var si = 0; si < len; si++) {
 				sectorPos = PositionConstants.getPositionOnPath(startPos, direction, si);
@@ -781,9 +782,19 @@ define([
 					return { path: result, completed: false, reason: positionCheck.reason };
 				}
 				
-				// stop path when intersecting existing paths
-				if (si > 0 && si < len - 1 && !forceComplete && sectorExists) {
-					return { path: result, completed: false, reason: "sector exists" };
+				if (!forceComplete && sectorExists) {
+					let isPathEnd = si == 0 || si == len - 1;
+					
+					// stop path when intersecting existing paths
+					if (!isPathEnd) {
+						return { path: result, completed: false, reason: "sector exists" };
+					}
+					
+					// stop path if shape intersecting existing sectors with wrong stage
+					let existingSector = levelVO.getSector(sectorPos.sectorX, sectorPos.sectorY);
+					if (!isShapeEnd && options.stage && existingSector.stage != options.stage && !options.canConnectToDifferentStage) {
+						return { path: result, completed: false, reason: "existing sector has wrong stage" };
+					}
 				}
 
 				if (sectorExists) {
@@ -821,13 +832,13 @@ define([
 			return { path: result, completed: completed, isValid: isValid, reason: reason };
 		},
 
-		createPath: function (levelVO, startPos, direction, len, forceComplete, options, connectionPointType) {
+		createPath: function (levelVO, startPos, direction, len, forceComplete, options, connectionPointType, shapeIndex, shapeLength) {
 			if (len < 1) return { path: [], completed: false, reason: "too short" };
 			var result = [];
 			var options = options || this.getDefaultOptions();
 			var sectorPos;
 			
-			var path = this.getPath(levelVO, startPos, direction, len, forceComplete, options, connectionPointType);
+			var path = this.getPath(levelVO, startPos, direction, len, forceComplete, options, connectionPointType, shapeIndex, shapeLength);
 			
 			if (!path.isValid) {
 				return { path: [], completed: false, reason: "get path: " + path.reason };
@@ -1065,7 +1076,7 @@ define([
 			if (WorldCreatorHelper.containsBlockingFeature(sectorPos, this.currentFeatures, true)) {
 				return { isValid: false, isBlocked: true, reason: "feature" };
 			}
-				
+			
 			pendingSectors = pendingSectors || [];
 				
 			// blocking stage elements
