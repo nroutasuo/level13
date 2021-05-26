@@ -1245,11 +1245,10 @@ define([
 					[ WorldConstants.ZONE_ENTRANCE, WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_POI_1, WorldConstants.ZONE_EXTRA_CAMPABLE ];
 				var options = { requireCentral: false, excludingFeature: "camp", pathConstraints: pathConstraints, excludedZones: excludedZones, numDuplicates: 2 };
 				var l = levelVO.level;
-				var sseed = seed - (isEarly ? 5555 : 0) + (l + 50) * 2;
+				var sseed = Math.abs(seed - (isEarly ? 5555 : 0) + (l + 50) * 2);
 				for (var i = 0; i < count; i++) {
 					var localePos = WorldCreatorRandom.randomSectors(sseed + i + i * 7394 * sseed + i * i * l + i, worldVO, levelVO, 1, 2, options);
 					var sectorVO = localePos[0];
-					if (!sectorVO) continue;
 					var s1 = sseed + sectorVO.position.sectorX * 871 + sectorVO.position.sectorY * 659;
 					var r1 = WorldCreatorRandom.random(s1);
 					var localeType = generator.getLocaleType(worldVO, levelVO, sectorVO, s1, isEarly);

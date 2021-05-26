@@ -83,7 +83,7 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 					sector = this.randomSector(s1, worldVO, levelVO, options.requireCentral, options.pathConstraints);
 					additionalRandom++;
 					if (additionalRandom > 100) {
-						WorldCreatorLogger.w("getRandomSectorsSmall: Couldn't find random sector " + (i+1) + "/" + numSectors + " (level: " + levelVO.level + ") | " + s1);
+						WorldCreatorLogger.w("getRandomSectorsSmall: Couldn't find random sector " + (i+1) + "/" + numSectors + " (level: " + levelVO.level + ") | " + s1 + " " + seed);
 						WorldCreatorLogger.i(options);
 						WorldCreatorLogger.i(counts);
 						WorldCreatorLogger.i(rejectedByReason);
