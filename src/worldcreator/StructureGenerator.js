@@ -182,10 +182,11 @@ define([
 			
 			// choose length and direction
 			var isDiagonal = WorldCreatorRandom.random(s3) < 0.9;
-			var xlen = 9 + WorldCreatorRandom.randomInt(s2, 0, 7) * 2;
+			let maxlen = Math.round(levelVO.numSectors / (numx + numy) / 1.75 / 2) * 2;
+			var xlen = Math.min(9 + WorldCreatorRandom.randomInt(s2, 0, 7) * 2, maxlen);
 			var xdist = l == 13 ? WorldCreatorConstants.START_RECT_SIZE - 1 : 2 + WorldCreatorRandom.randomInt(s1, 0, 6);
 			var xdir = PositionConstants.DIRECTION_EAST;
-			var ylen = 9 + WorldCreatorRandom.randomInt(s1, 0, 7) * 2;
+			var ylen = Math.min(9 + WorldCreatorRandom.randomInt(s1, 0, 7) * 2, maxlen);
 			var ydist = l == 13 ? WorldCreatorConstants.START_RECT_SIZE - 1 : 2 + WorldCreatorRandom.randomInt(s2, 0, 6);
 			var ydir = PositionConstants.DIRECTION_SOUTH;
 			
@@ -262,7 +263,7 @@ define([
 			var isDiagonal = WorldCreatorRandom.random(s1) < 0.15;
 			var minDiff = 4;
 			var minSize = 3;
-			var maxSize = levelVO.numSectors / 12;
+			var maxSize = Math.min(levelVO.numSectors / 12, 19);
 			var outerS = WorldCreatorRandom.randomInt(s2, minSize + minDiff, maxSize + 1);
 			if (outerS % 2 == 0) outerS--;
 			var innerS = WorldCreatorRandom.randomInt(s1, minSize, outerS - minDiff + 1);
@@ -280,13 +281,16 @@ define([
 					result = result.concat(StructureGenerator.getRectangleFromCenter(levelVO, 0, pos, innerS, innerS, false, isDiagonal));
 				}
 				result = result.concat(StructureGenerator.getRectangleFromCenter(levelVO, 0, pos, outerS, outerS, false, isDiagonal, WorldCreatorConstants.CONNECTION_POINTS_RECT_OUTER));
+				
+				var includeDiagonals = outerS - innerS > 4;
+				var connectionDirs = WorldCreatorRandom.randomDirections(s3 + 1001, numConnections, includeDiagonals);
 				for (var i = 0; i < numConnections; i ++) {
-					var includeDiagonals = outerS - innerS > 4;
-					var connectionDir = WorldCreatorRandom.randomDirections(s3 + i * 1001, 1, includeDiagonals)[0];
+					var connectionDir = connectionDirs[i];
 					var connectionStartPos = PositionConstants.getPositionOnPath(pos, connectionDir, Math.round(innerS/2));
 					var connectionLen = outerS / 2 - innerS / 2;
 					if (isDiagonal && !PositionConstants.isDiagonal(connectionDir)) connectionLen = outerS - innerS;
-					var connectionPathVO = StructureGenerator.getPathVO(levelVO, connectionStartPos, connectionDir, connectionLen);
+					let connectionPointType = connectionLen > 4 ? WorldCreatorConstants.CONNECTION_POINTS_PATH_MIDDLE : null;
+					var connectionPathVO = StructureGenerator.getPathVO(levelVO, connectionStartPos, connectionDir, connectionLen, false, null, connectionPointType);
 					result.push(connectionPathVO);
 				}
 				return result;
