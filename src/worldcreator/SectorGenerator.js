@@ -1247,7 +1247,7 @@ define([
 				var l = levelVO.level;
 				var sseed = Math.abs(seed - (isEarly ? 5555 : 0) + (l + 50) * 2);
 				for (var i = 0; i < count; i++) {
-					var localePos = WorldCreatorRandom.randomSectors(sseed + i + i * 7394 * sseed + i * i * l + i, worldVO, levelVO, 1, 2, options);
+					var localePos = WorldCreatorRandom.randomSectors(sseed + i + i * 72 * sseed + i * l + i, worldVO, levelVO, 1, 2, options);
 					var sectorVO = localePos[0];
 					var s1 = sseed + sectorVO.position.sectorX * 871 + sectorVO.position.sectorY * 659;
 					var r1 = WorldCreatorRandom.random(s1);

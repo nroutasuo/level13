@@ -74,13 +74,16 @@ define([
 			if (l == 13) {
 				validShapes = [ this.createCentralParallels, this.createCentralCrossings, this.createCentralRectanglesSide, this.createCentralRectanglesNested, this.createCentralRectanglesSimple ];
 			} else if (l == 14) {
-				validShapes = [ this.createCentralCrossings ];
+				validShapes = [];
 			} else if (l == worldVO.topLevel) {
 				validShapes = [ this.createCentralRectanglesNested ];
 			} else if (l == worldVO.bottomLevel) {
 				validShapes = [ this.createCentralRectanglesSide ];
 			} else {
 				validShapes = [ this.createCentralParallels, this.createCentralCrossings, this.createCentralPlaza, this.createCentralRectanglesSide, this.createCentralRectanglesNested, this.createCentralRectanglesSimple ];
+			}
+			if (validShapes.length == 0) {
+				return;
 			}
 			var index = WorldCreatorRandom.randomInt(s4, 0, validShapes.length);
 			var shape = validShapes[index];
@@ -116,6 +119,13 @@ define([
 					var result = this.createRectangleFromCenter(levelVO, 0, pos, s, s);
 					this.connectNewPath(worldVO, levelVO, existingSectors, result);
 				}
+				
+				var existingSectors = levelVO.sectors.concat();
+				let paddingY = 4;
+				let connectingPathStartPos = new PositionVO(levelVO.level, startX - 1, center.sectorY - Math.floor(s-1) - paddingY + 1);
+				let connectingPathLen = s + paddingY * 2;
+				let result2 = this.createPath(levelVO, connectingPathStartPos, PositionConstants.DIRECTION_SOUTH, connectingPathLen, true, null, WorldCreatorConstants.CONNECTION_POINTS_PATH_ALL);
+				this.connectNewPath(worldVO, levelVO, existingSectors, result2.path);
 			}
 		},
 		
@@ -289,7 +299,7 @@ define([
 					var connectionStartPos = PositionConstants.getPositionOnPath(pos, connectionDir, Math.round(innerS/2));
 					var connectionLen = outerS / 2 - innerS / 2;
 					if (isDiagonal && !PositionConstants.isDiagonal(connectionDir)) connectionLen = outerS - innerS;
-					let connectionPointType = connectionLen > 4 ? WorldCreatorConstants.CONNECTION_POINTS_PATH_MIDDLE : null;
+					let connectionPointType = connectionLen > 6 ? WorldCreatorConstants.CONNECTION_POINTS_PATH_MIDDLE : null;
 					var connectionPathVO = StructureGenerator.getPathVO(levelVO, connectionStartPos, connectionDir, connectionLen, false, null, connectionPointType);
 					result.push(connectionPathVO);
 				}
@@ -307,10 +317,11 @@ define([
 		
 		createCentralRectanglesSimple: function (s1, s2, s3, worldVO, levelVO, position, pois) {
 			var isDiagonal = WorldCreatorRandom.random(s1) < 0.25;
-			var size = 5 + WorldCreatorRandom.randomInt(s2, 0, 5) * 2;
+			var maxSize = Math.round(levelVO.numSectors / 7);
+			var size = Math.min(maxSize, 6 + WorldCreatorRandom.randomInt(s2, 0, 5) * 2);
 			var getPaths = function (ox, oy) {
 				var pos = new PositionVO(position.level, position.sectorX + ox, position.sectorY + oy)
-				var connectionPointType = size > 5 ? WorldCreatorConstants.CONNECTION_POINTS_RECT_ALL : WorldCreatorConstants.CONNECTION_POINTS_RECT_OUTER;
+				var connectionPointType = WorldCreatorConstants.CONNECTION_POINTS_RECT_ALL;
 				var result = StructureGenerator.getRectangleFromCenter(levelVO, 0, pos, size, size, true, isDiagonal, connectionPointType);
 				return result;
 			};
@@ -816,14 +827,18 @@ define([
 				}
 			}
 			
-			// for longer paths, check they don't have too high average neighbour count (excluding start and end pos) (blocks parallel diagonals and some really crowded cross-paths)
-			if (isValid && result.length > 5 && !forceComplete) {
+			// check paths don't have too high average neighbour count (excluding start and end pos) (blocks parallel diagonals and some really crowded cross-paths)
+			if (isValid && !forceComplete) {
 				let totalNeighbours = 0;
 				for (let i = 1; i < result.length - 1; i++) {
 					totalNeighbours += WorldCreatorHelper.getNeighbourCount(levelVO, result[i], result);
 				}
 				let averageNeighbours = totalNeighbours / (result.length - 2);
-				if (averageNeighbours > 3.5) {
+				if (result.length > 5 && averageNeighbours > 3.5) {
+					isValid = false;
+					reason = "path has too many neighbours";
+				}
+				if (result.length > 3 && averageNeighbours > 4.5) {
 					isValid = false;
 					reason = "path has too many neighbours";
 				}
