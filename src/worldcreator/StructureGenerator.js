@@ -76,11 +76,13 @@ define([
 			} else if (l == 14) {
 				validShapes = [];
 			} else if (l == worldVO.topLevel) {
-				validShapes = [ this.createCentralRectanglesNested ];
+				validShapes = [ this.createCentralRectanglesNested, this.centralGrid ];
 			} else if (l == worldVO.bottomLevel) {
 				validShapes = [ this.createCentralRectanglesSide ];
+			} else if (levelVO.isCampable) {
+				validShapes = [ this.createCentralParallels, this.createCentralCrossings, this.createCentralPlaza, this.createCentralRectanglesSide, this.createCentralRectanglesNested, this.createCentralRectanglesSimple, this.centralGrid ];
 			} else {
-				validShapes = [ this.createCentralParallels, this.createCentralCrossings, this.createCentralPlaza, this.createCentralRectanglesSide, this.createCentralRectanglesNested, this.createCentralRectanglesSimple ];
+				validShapes = [ this.createCentralParallels, this.createCentralCrossings, this.createCentralRectanglesSide, this.createCentralRectanglesNested, this.createCentralRectanglesSimple ];
 			}
 			if (validShapes.length == 0) {
 				return;
@@ -363,6 +365,40 @@ define([
 				makeCorner(PositionConstants.DIRECTION_WEST);
 				makeCorner(PositionConstants.DIRECTION_SOUTH);
 				makeCorner(PositionConstants.DIRECTION_EAST);
+			}
+		},
+		
+		centralGrid: function (s1, s2, s3, worldVO, levelVO, position, pois) {
+			let numMax = levelVO.numSectors >= 100 ? 3 : 2;
+			let isSymmetricalCount = WorldCreatorRandom.randomBool(s1);
+			let numX = WorldCreatorRandom.randomInt(s2 / 2, 2, numMax + 1);
+			let numY = isSymmetricalCount ? numX : WorldCreatorRandom.randomInt(s3 / 2, 2, numMax + 1);
+			let isSymmetricalSmallRects = WorldCreatorRandom.randomBool(s2);
+			let w = WorldCreatorRandom.randomInt(s1 * 2, 4, 8);;
+			let h = isSymmetricalSmallRects ? w : WorldCreatorRandom.randomInt(s3 * 2, 4, 8);
+			
+			let totalWidth = numX * w - (numX - 1);
+			let totalHeight = numY * h - (numY - 1);
+			
+			let startX = Math.round(position.sectorX + w/2 - totalWidth / 2);
+			let startY = Math.round(position.sectorY + h/2 - totalHeight / 2);
+			let getPaths = function (ox, oy) {
+				let result = [];
+				for (let x = 0; x < numX; x++) {
+					for (let y = 0; y < numY; y++) {
+						var connectionPointType = WorldCreatorConstants.CONNECTION_POINTS_RECT_CORNERS;
+						var pos = new PositionVO(position.level, startX + x*w - x + ox, startY + y*h - y + oy)
+						let pathResult = StructureGenerator.getRectangleFromCenter(levelVO, 0, pos, w, h, true, false, connectionPointType);
+						result = result.concat(pathResult);
+					}
+				}
+				return result;
+			};
+			let offset = this.getStructureOffset(levelVO, pois, getPaths);
+			let paths = getPaths(offset.x, offset.y);
+			for (var i = 0; i< paths.length; i++) {
+				var path = paths[i];
+				this.createPath(levelVO, path.startPos, path.dir, path.len, true, null, path.connectionPointType);
 			}
 		},
 		

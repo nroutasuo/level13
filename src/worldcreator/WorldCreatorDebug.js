@@ -141,6 +141,8 @@ function (Ash, ConsoleLogger, WorldConstants, WorldCreatorHelper, WorldCreatorLo
 				print += "\n";
 				print += y + "\t";
 				for (var x = minX; x <= maxX; x++) {
+					var position = { level: levelVO.level, sectorX: x, sectorY: y};
+					var features = worldVO.getFeaturesByPos(position);
 					if (levelVO.hasSector(x, y)) {
 						var sectorVO = levelVO.getSector(x, y);
 						var defaultColor = sectorVO.stage == WorldConstants.CAMP_STAGE_EARLY ? "#111" : "#abc";
@@ -159,6 +161,8 @@ function (Ash, ConsoleLogger, WorldConstants, WorldCreatorHelper, WorldCreatorLo
 							print += "{D|" + defaultColor + "} ";
 						else if (sectorVO.isCamp)
 							print += "{C|" + defaultColor + "} ";
+						else if (levelVO.levelCenterPosition.equals(position))
+							print += "{C|#eb2} ";
 						else if (sectorVO.isConnectionPoint)
 							print += "{c|" + defaultColor + "} ";
 						else if (sectorVO.isFill)
@@ -166,8 +170,6 @@ function (Ash, ConsoleLogger, WorldConstants, WorldCreatorHelper, WorldCreatorLo
 						else
 							print += "{+|" + defaultColor + "} ";
 					} else {
-						var position = { level: levelVO.level, sectorX: x, sectorY: y};
-						var features = worldVO.getFeaturesByPos(position);
 						if (levelVO.levelCenterPosition.equals(position)) {
 							print += "{C|#eb2} ";
 						} else if (levelVO.isInvalidPosition(position)) {
