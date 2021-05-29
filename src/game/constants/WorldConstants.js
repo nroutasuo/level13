@@ -71,6 +71,14 @@ define(['ash'], function (Ash) {
 			}
 		},
 		
+		getStageForStep: function (step) {
+			switch (step) {
+				case WorldConstants.CAMP_STEP_END: return WorldConstants.CAMP_STAGE_LATE;
+				case WorldConstants.CAMP_STEP_POI_2: return WorldConstants.CAMP_STAGE_LATE;
+				default: return WorldConstants.CAMP_STAGE_EARLY;
+			}
+		},
+		
 		isAllowedZone: function (stage, zone) {
 			var zoneStage = WorldConstants.getStage(zone);
 			if (stage == zoneStage) return true;
@@ -106,7 +114,23 @@ define(['ash'], function (Ash) {
 				}
 			}
 			return { campOrdinal: resultOrdinal, step: resultStep };
-		}
+		},
+		
+		isHigherCampOrdinalAndStage: function (campOrdinal, campStage, campOrdinal2, campStage2) {
+			if (campOrdinal > campOrdinal2)
+				return true;
+			if (campOrdinal == campOrdinal2 && campStage == WorldConstants.CAMP_STAGE_LATE && campStage2 == WorldConstants.CAMP_STAGE_EARLY)
+				return true;
+			return false;
+		},
+		
+		isHigherOrEqualCampOrdinalAndStage: function (campOrdinal, campStage, campOrdinal2, campStage2) {
+			if (campOrdinal > campOrdinal2)
+				return true;
+			if (campOrdinal == campOrdinal2 && campStage == campStage2)
+				return true;
+			return false;
+		},
 		
 	};
 	

@@ -1736,12 +1736,22 @@ define([
 				blockerTypes.push(MovementConstants.BLOCKER_TYPE_GAP);
 			}
 			
-			// TODO non-hardcoded levels
-			if (campOrdinal >= 7 && !isRadiatedLevel) {
+			var unlockToxicWasteOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_action_clear_waste_t");
+			let unlockToxicWasteStep = UpgradeConstants.getMinimumCampStepForUpgrade("unlock_action_clear_waste_t");
+			let unlockToxicWasteStage = WorldConstants.getStageForStep(unlockToxicWasteStep);
+			if (WorldConstants.isHigherOrEqualCampOrdinalAndStage(campOrdinal, campStage, unlockToxicWasteOrdinal, unlockToxicWasteStage) && !isRadiatedLevel) {
 				blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_TOXIC);
+				if (isPollutedLevel) {
+					blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_TOXIC);
+					blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_TOXIC);
+				}
 			}
 			
-			if (levelVO.level >= 14 && isRadiatedLevel) {
+			var unlockRadioactiveWasteOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_action_clear_waste_r");
+			let unlockRadioactiveWasteStep = UpgradeConstants.getMinimumCampStepForUpgrade("unlock_action_clear_waste_r");
+			let unlockRadioactiveWasteStage = WorldConstants.getStageForStep(unlockRadioactiveWasteStep);
+			if (WorldConstants.isHigherOrEqualCampOrdinalAndStage(campOrdinal, campStage, unlockRadioactiveWasteOrdinal, unlockRadioactiveWasteStage) && isRadiatedLevel) {
+				blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE);
 				blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE);
 			}
 			

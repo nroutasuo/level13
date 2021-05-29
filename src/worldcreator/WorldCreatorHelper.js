@@ -7,8 +7,9 @@ define([
 	'game/constants/LevelConstants',
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
+	'game/constants/UpgradeConstants',
 	'game/constants/WorldConstants',
-], function (Ash, ResourcesVO, WorldCreatorRandom, WorldCreatorConstants, LevelConstants, PositionConstants, SectorConstants, WorldConstants) {
+], function (Ash, ResourcesVO, WorldCreatorRandom, WorldCreatorConstants, LevelConstants, PositionConstants, SectorConstants, UpgradeConstants, WorldConstants) {
 
 	var WorldCreatorHelper = {
 		
@@ -375,6 +376,17 @@ define([
 			return !isCampableLevel && level !== bottomLevel && level < topLevel - 1;
 		},
 		
+		getNextUncampableLevelOrdinalForCampOrdinal: function (seed, campOrdinal) {
+			var campLevelOrdinal = this.getLevelOrdinalForCampOrdinal(seed, campOrdinal);
+			var camplessLevelOrdinals = this.getCamplessLevelOrdinals(seed);
+			for (var i = 0; i < camplessLevelOrdinals.length; i++) {
+				if (camplessLevelOrdinals[i] > campLevelOrdinal) {
+					return camplessLevelOrdinals[i];
+				}
+			}
+			return null;
+		},
+		
 		getNotCampableReason: function (seed, level) {
 			if (this.isCampableLevel(seed, level)) return null;
 			var bottomLevel = this.getBottomLevel(seed);
@@ -386,13 +398,28 @@ define([
 			if (campOrdinal > WorldConstants.CAMP_ORDINAL_LIMIT)
 				return LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT;
 			
+			let options = [];
 			var levelOrdinal = this.getLevelOrdinal(seed, level);
-			var rand = WorldCreatorRandom.random(seed % 4 + level + level * 8 + 88);
-			if (rand < 0.33 && levelOrdinal >= WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_RADIATION)
-				return LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
-			if (rand < 0.66 && levelOrdinal >= WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_POISON)
+			
+			var unlockToxicWasteCampOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_action_clear_waste_t");
+			if (levelOrdinal == this.getNextUncampableLevelOrdinalForCampOrdinal(seed, unlockToxicWasteCampOrdinal)) {
 				return LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
-			return LevelConstants.UNCAMPABLE_LEVEL_TYPE_SUPERSTITION;
+			}
+				
+			var unlockRadioactiveWasteCampOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_action_clear_waste_r");
+			if (levelOrdinal == this.getNextUncampableLevelOrdinalForCampOrdinal(seed, unlockRadioactiveWasteCampOrdinal)) {
+				return LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
+			}
+			
+			if (levelOrdinal >= WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_RADIATION)
+				options.push(LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION);
+			if (levelOrdinal >= WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_POISON)
+				options.push(LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION);
+				
+			if (options.length == 0)
+				return LevelConstants.UNCAMPABLE_LEVEL_TYPE_SUPERSTITION;
+				
+			return options[WorldCreatorRandom.randomInt(seed % 4 + level + level * 8 + 88, 0, options.length)];
 		},
 		
 		getCamplessLevelOrdinals: function (seed) {
