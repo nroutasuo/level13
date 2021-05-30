@@ -47,7 +47,7 @@ define([
 				var stageVO = stages[i];
 				this.generateLevelStage(seed, worldVO, levelVO, stageVO, 999);
 			}
-			
+				
 			// fill in annoying gaps (connect sectors that are close by direct distance but far by path length)
 			this.createGapFills(worldVO, levelVO);
 			
@@ -445,7 +445,8 @@ define([
 				var options = this.getDefaultOptions({ stage: stage, canConnectToDifferentStage: canConnectToDifferentStage });
 				var numBefore = numCurrent;
 				var numRemaining = numGoal - numCurrent;
-				if (attempts % 2 == 0 && numRemaining > 12) {
+				var makeRect = attempts % 2 == 0 && numRemaining > 12;
+				if (makeRect) {
 					this.createRectangles(seed, attempts, levelVO, options, numRemaining + numPadding);
 				} else {
 					this.createPaths(seed, attempts, levelVO, options, numRemaining + numPadding);
@@ -1432,10 +1433,8 @@ define([
 		getPathStartPositions: function (s1, s2, levelVO, options) {
 			// predefined connection points by stage (STAGE_LATE can include all stages)
 			var connectionPoints = levelVO.getPendingConnectionPoints(options.stage);
-			if (options.stage == WorldConstants.CAMP_STAGE_LATE) {
-				if (connectionPoints.length < 3 && WorldCreatorRandom.random(s1) < 0.25) {
-					connectionPoints = levelVO.getPendingConnectionPoints();
-				}
+			if (connectionPoints.length < 3 && options.canConnectToDifferentStage) {
+				connectionPoints = levelVO.getPendingConnectionPoints();
 			}
 			if (connectionPoints.length > 0) {
 				var maxi = WorldCreatorRandom.randomInt(s1, 0, Math.floor(connectionPoints.length / 2) + 1);
