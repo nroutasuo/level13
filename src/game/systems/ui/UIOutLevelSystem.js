@@ -113,6 +113,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.collectorCollectedSignal, this.updateOutImprovementsStatus);
 			GlobalSignals.add(this, GlobalSignals.movementBlockerClearedSignal, this.updateAll);
 			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
+			GlobalSignals.add(this, GlobalSignals.sectorRevealedSignal, this.onSectorRevealed);
 			this.rebuildVis();
 			this.updateUnlockedFeatures();
 		},
@@ -763,6 +764,10 @@ define([
 				return improvementNames.collector_food;
 			}
 			return null;
+		},
+		
+		onSectorRevealed: function () {
+			this.pendingUpdateMap = true;
 		}
 	});
 

@@ -93,6 +93,7 @@ define([
 		},
 		
 		updateAvailableProjects: function (updateTables) {
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (!this.playerLocationNodes.head) return;
 			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.projects;
 			var availableRegular = 0;

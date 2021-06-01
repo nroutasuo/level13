@@ -224,6 +224,7 @@ define([
 		},
 		
 		logAmbient: function () {
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (!this.playerLocationNodes.head || !this.playerLocationNodes.head.position) return;
 			
 			var playerFoodSource = GameGlobals.resourcesHelper.getCurrentStorage().resources;

@@ -793,7 +793,7 @@ define(['ash',
 				}
 				var resultPopupCallback = function (isTakeAll) {
 					GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, rewards);
-					if (logMsgSuccess) playerActionFunctions.addLogMessage(logMsgId, logMsgSuccess);
+					if (!GameGlobals.gameState.isAutoPlaying && logMsgSuccess) playerActionFunctions.addLogMessage(logMsgId, logMsgSuccess);
 					GameGlobals.playerActionResultsHelper.logResults(rewards);
 					playerActionFunctions.forceResourceBarUpdate();
 					playerActionFunctions.forceTabUpdate();
@@ -1745,11 +1745,13 @@ define(['ash',
 		},
 
 		forceResourceBarUpdate: function () {
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			var system = this.engine.getSystem(UIOutHeaderSystem);
 			system.lastUpdateTimeStamp = 0;
 		},
 
 		forceStatsBarUpdate: function () {
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			var system = this.engine.getSystem(UIOutHeaderSystem);
 			system.updateItems(true);
 			system.updatePerks(true);
@@ -1758,6 +1760,7 @@ define(['ash',
 		},
 
 		forceTabUpdate: function () {
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			var system = this.engine.getSystem(UIOutTabBarSystem);
 			system.updateTabVisibility();
 		},

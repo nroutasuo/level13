@@ -113,6 +113,7 @@
 		},
 
 		slowUpdate: function () {
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (!this.playerLocationNodes.head) return;
 			this.updateImprovements();
 			this.updateBubble();
@@ -337,6 +338,7 @@
 		},
 
 		updateImprovements: function () {
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (!this.playerLocationNodes.head) return;
 			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.in;
 			var campCount = GameGlobals.gameState.numCamps;

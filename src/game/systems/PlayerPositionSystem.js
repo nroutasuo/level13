@@ -36,6 +36,7 @@ define([
 		campNodes: null,
 
 		lastUpdatePosition: null,
+		visitedSectorsPendingRevealNeighbours: [],
 
 		constructor: function () { },
 
@@ -91,6 +92,8 @@ define([
 			var playerPos = this.playerPositionNodes.head.position;
 			if (!this.lastValidPosition || !this.lastValidPosition.equals(playerPos)) {
 				this.updateEntities(!this.lastUpdatePosition);
+			} else {
+				this.revealVisitedSectorsNeighbours();
 			}
 		},
 
@@ -183,6 +186,24 @@ define([
 			}
 		},
 
+		revealVisitedSectorsNeighbours: function () {
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
+			let visitedSector = this.visitedSectorsPendingRevealNeighbours.shift();
+			if (!visitedSector) return;
+			this.revealSectorNeighbours(visitedSector);
+		},
+		
+		revealSectorNeighbours: function (sectorEntity) {
+			var neighbours = GameGlobals.levelHelper.getSectorNeighboursMap(sectorEntity);
+			for (var direction in neighbours) {
+				var revealedNeighbour = neighbours[direction];
+				if (revealedNeighbour && !revealedNeighbour.has(RevealedComponent)) {
+					revealedNeighbour.add(new RevealedComponent());
+					GlobalSignals.sectorRevealedSignal.dispatch();
+				}
+			}
+		},
+
 		handleNewLevel: function (levelNode, levelPos) {
 			levelNode.entity.add(new VisitedComponent());
 			levelNode.entity.add(new RevealedComponent());
@@ -232,13 +253,7 @@ define([
 
 			var sectorPos = sectorEntity.get(PositionComponent);
 
-			var neighbours = GameGlobals.levelHelper.getSectorNeighboursMap(sectorEntity);
-			for (var direction in neighbours) {
-				var revealedNeighbour = neighbours[direction];
-				if (revealedNeighbour && !revealedNeighbour.has(RevealedComponent)) {
-					revealedNeighbour.add(new RevealedComponent());
-				}
-			}
+			this.visitedSectorsPendingRevealNeighbours.push(sectorEntity);
 
 			if (isNew) {
 				GameGlobals.gameState.numVisitedSectors++;

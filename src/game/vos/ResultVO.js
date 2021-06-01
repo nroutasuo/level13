@@ -64,6 +64,24 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			return this.gainedResources.getTotal() > 0 || this.gainedItems.length > 0;
 		},
 		
+		isEmpty: function () {
+			return this.gainedResources.getTotal() == 0
+				&& this.gainedCurrency == 0
+				&& this.lostResources.getTotal() == 0
+				&& this.lostCurrency == 0
+				&& this.gainedItems.length == 0
+				&& this.gainedFollowers.length == 0
+				&& this.lostItems.length == 0
+				&& this.lostFollowers.length == 0
+				&& this.gainedInjuries.length == 0
+				&& this.gainedBlueprintPiece == null
+				&& this.gainedPopulation == 0
+				&& this.gainedEvidence == 0
+				&& this.gainedRumours == 0
+				&& this.gainedFavour == 0
+				&& this.gainedReputation == 0;
+		},
+		
 		clone: function () {
 			var result = new ResultVO(this.action);
 			result.gainedResources = this.gainedResources.clone();

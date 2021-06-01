@@ -297,8 +297,9 @@ define([
 		},
 
 		collectRewards: function (isTakeAll, rewards, campSector) {
-			if (rewards == null)
+			if (rewards == null || rewards.isEmpty()) {
 				return;
+			}
 			
 			if (rewards.action == "scavenge") {
 				var excursionComponent = this.playerResourcesNodes.head.entity.get(ExcursionComponent);
@@ -767,16 +768,18 @@ define([
 					niStep = WorldConstants.CAMP_STEP_START;
 					niIsHardlevel = false;
 				}
-				var numAvailableGangs = GameGlobals.levelHelper.getNumAvailableGangs(campOrdinal, playerStamina, itemsComponent);
 				var neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(niCampOrdinal, step, niIsHardlevel, itemsComponent, true);
-				var neededIngredientProp = MathUtils.clamp(ingredientProbability * 10, 0.15, 0.35);
-				if (!GameGlobals.gameState.uiStatus.isHidden)
-					log.i("neededIngredient: " + (neededIngredient ? neededIngredient.id : "null") + ", prob: " + neededIngredientProp + ", gangs: " + numAvailableGangs);
-				if (neededIngredient && numAvailableGangs <= 1 && Math.random() < neededIngredientProp) {
-					var amount = Math.floor(Math.random() * efficiency * max) + 1;
-					var amount = Math.floor(Math.random() * efficiency * max) + 1;
-					for (var i = 0; i <= amount; i++) {
-						result.push(neededIngredient.clone());
+				if (neededIngredient) {
+					var neededIngredientProp = MathUtils.clamp(ingredientProbability * 10, 0.15, 0.35);
+					var numAvailableGangs = GameGlobals.levelHelper.getNumAvailableGangs(campOrdinal, playerStamina, itemsComponent);
+					if (!GameGlobals.gameState.uiStatus.isHidden)
+						log.i("neededIngredient: " + (neededIngredient ? neededIngredient.id : "null") + ", prob: " + neededIngredientProp + ", gangs: " + numAvailableGangs);
+					if (numAvailableGangs <= 1 && Math.random() < neededIngredientProp) {
+						var amount = Math.floor(Math.random() * efficiency * max) + 1;
+						var amount = Math.floor(Math.random() * efficiency * max) + 1;
+						for (var i = 0; i <= amount; i++) {
+							result.push(neededIngredient.clone());
+						}
 					}
 				}
 			}
