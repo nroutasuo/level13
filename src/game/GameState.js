@@ -178,8 +178,9 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 		},
 
 		pruneActionCooldowns: function () {
-			var now = new Date().getTime();
 			var cooldownkeys = Object.keys(this.actionCooldownEndTimestamps);
+			if (cooldownkeys.length < 10) return;
+			var now = new Date().getTime();
 			for (var i = 0; i < cooldownkeys.length; i++) {
 				var key = cooldownkeys[i];
 				var timestamp = this.actionCooldownEndTimestamps[key];

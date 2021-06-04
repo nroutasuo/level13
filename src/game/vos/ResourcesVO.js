@@ -62,6 +62,7 @@ define(['ash'], function (Ash) {
 		},
 		
 		addResource: function (res, amount) {
+			if (amount == 0) return;
 			this.cleanUp();
 			switch(res) {
 				case resourceNames.water: this.water += amount; break;

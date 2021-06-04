@@ -970,7 +970,7 @@ define(['ash',
 			var level = GameGlobals.levelHelper.getLevelEntityForSector(sector);
 			var position = sector.get(PositionComponent).getPosition();
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
-			log.i("Build camp " + position + " ordinal " + campOrdinal);
+			if (GameGlobals.gameFlowLogger.isEnabled) log.i("Build camp " + position + " ordinal " + campOrdinal);
 			var campComponent = new CampComponent(position.toString());
 			campComponent.foundedTimeStamp = GameGlobals.gameState.gameTime;
 			sector.add(campComponent);

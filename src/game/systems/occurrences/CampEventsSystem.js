@@ -109,6 +109,7 @@ define([
 		},
 
 		isCampValidForEvent: function (campNode, event) {
+			if (GameGlobals.gameState.isAutoPlaying) return false;
 			if (campNode.camp.population < 1) return false;
 			var improvements = campNode.entity.get(SectorImprovementsComponent);
 			switch (event) {

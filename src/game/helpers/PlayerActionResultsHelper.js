@@ -696,7 +696,7 @@ define([
 			}
 
 			// consolation prize: if found nothing (useful) at this point, add 1 metal every few tries
-			if (!this.isSomethingUsefulResources(results)) {
+			if (!GameGlobals.gameState.isAutoPlaying &&!this.isSomethingUsefulResources(results)) {
 				var excursionComponent = this.playerResourcesNodes.head.entity.get(ExcursionComponent);
 				var metalAmount = availableResources.getResource(resourceNames.metal);
 				if (metalAmount > 7 || (metalAmount > 3 && excursionComponent && excursionComponent.numConsecutiveScavengeUseless > 0)) {
@@ -917,7 +917,7 @@ define([
 			}
 
 			// map
-			if (itemTypeLimits.exploration > 0) {
+			if (itemTypeLimits.exploration > 00 && !GameGlobals.gameState.isAutoPlaying) {
 				var visitedSectors = GameGlobals.gameState.numVisitedSectors;
 				var numSectorsRequiredForMap = 5;
 				if (visitedSectors > numSectorsRequiredForMap && currentItems.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) <= 0) {
@@ -928,7 +928,7 @@ define([
 			}
 
 			// non-craftable level clothing
-			if (itemTypeLimits.clothing > 0) {
+			if (itemTypeLimits.clothing > 0 && !GameGlobals.gameState.isAutoPlaying) {
 				if (Math.random() < adjustedProbability * efficiency) {
 					var clothing = GameGlobals.itemsHelper.getScavengeNecessityClothing(campOrdinal, 1);
 					for (var i = 0; i < clothing.length; i++) {

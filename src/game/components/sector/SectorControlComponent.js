@@ -33,7 +33,6 @@ define(['ash'], function (Ash) {
 		addWin: function (localeId) {
 			if (!localeId) return;
 			if (!this.currentLocaleEnemies[localeId]) this.currentLocaleEnemies[localeId] = 0;
-			log.i("add win " + localeId + " " + this.currentLocaleEnemies[localeId]);
 			this.currentLocaleEnemies[localeId]--;
 		},
 		 

@@ -127,7 +127,6 @@ define([
 			if (!this.playerLocationNodes.head) return;
 
 			if (!posComponent.inCamp) {
-				this.updateLevelPage();
 				if (this.pendingUpdateMap)
 					this.rebuildVis();
 			}
@@ -136,6 +135,7 @@ define([
 		slowUpdate: function () {
 			if (!this.playerLocationNodes.head) return;
 			this.updateOutImprovementsStatus();
+			this.updateLevelPageActionsSlow();
 		},
 
 		updateAll: function () {
@@ -149,6 +149,7 @@ define([
 			this.updateStaticSectorElements();
 			this.updateSectorDescription();
 			this.updateLevelPageActions();
+			this.updateLevelPageActionsSlow();
 			this.updateUnlockedFeatures();
 			this.updateOutImprovementsList();
 			this.updateOutImprovementsStatus();
@@ -160,10 +161,9 @@ define([
 			GameGlobals.uiFunctions.toggle("#out-container-compass-actions", GameGlobals.gameState.unlockedFeatures.scout);
 		},
 
-		updateLevelPage: function () {
+		updateLevelPageActionsSlow: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 
 			var hasCamp = GameGlobals.levelHelper.getLevelEntityForSector(this.playerLocationNodes.head.entity).has(CampComponent);
 			var hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
