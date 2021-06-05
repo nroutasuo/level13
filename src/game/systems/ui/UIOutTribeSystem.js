@@ -70,15 +70,13 @@ define([
 
 		update: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
-			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.world;
-			if (isActive) this.updateNodes(isActive);
 			this.updateBubble();
 		},
 
 		slowUpdate: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.world;
-			if (!isActive) this.updateNodes(isActive);
+			this.updateNodes(isActive);
 		},
 
 		updateNodes: function (isActive) {
@@ -150,7 +148,9 @@ define([
 			}
 
 			// Update row
-			this.updateCampRow(node, rowID, isAlert, this.alerts[level]);
+			this.updateCampRowMisc(node, rowID, isAlert, this.alerts[level]);
+			this.updateCampRowResources(node, rowID);
+			this.updateCampRowStats(node, rowID);
 		},
 
 		updateCampNotifications: function (node) {
@@ -247,7 +247,7 @@ define([
 			GlobalSignals.elementCreatedSignal.dispatch();
 		},
 
-		updateCampRow: function (node, rowID, isAlert, alerts) {
+		updateCampRowMisc: function (node, rowID, isAlert, alerts) {
 			var camp = node.camp;
 			var level = node.entity.get(PositionComponent).level;
 			var playerPosComponent = this.playerPosNodes.head.position;
@@ -286,7 +286,17 @@ define([
 
 			var levelComponent = GameGlobals.levelHelper.getLevelEntityForSector(node.entity).get(LevelComponent);
 			$("#camp-overview tr#" + rowID + " .camp-overview-levelpop").text(levelComponent.populationFactor * 100 + "%");
-
+			
+			var resources = node.entity.get(ResourcesComponent);
+			var hasTradePost = improvements.getCount(improvementNames.tradepost) > 0;
+			var storageText = resources.storageCapacity;
+			if (!hasTradePost) {
+				storageText = "(" + resources.storageCapacity + ")";
+			}
+			$("#camp-overview tr#" + rowID + " .camp-overview-storage").text(storageText);
+		},
+		
+		updateCampRowResources: function (node, rowID) {
 			// TODO updateResourceIndicatorCallout is a performance bottleneck
 			var resources = node.entity.get(ResourcesComponent);
 			var resourceAcc = node.entity.get(ResourceAccumulationComponent);
@@ -310,6 +320,10 @@ define([
 				);
 				UIConstants.updateResourceIndicatorCallout("#" + rowID+"-"+name, resourceAcc.getSources(name));
 			}
+		},
+		
+		updateCampRowStats: function (node, rowID) {
+			var level = node.entity.get(PositionComponent).level;
 			
 			var evidenceComponent = this.playerStatsNodes.head.evidence;
 			var evidenceChange = evidenceComponent.accumulationPerCamp[level] || 0;
@@ -328,13 +342,6 @@ define([
 			GameGlobals.uiFunctions.toggle($("#camp-overview tr#" + rowID + " .camp-overview-stats-favour"), favourChange > 0);
 			this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-stats-favour .change-indicator"), favourChange);
 			UIConstants.updateCalloutContent("#camp-overview tr#" + rowID + " .camp-overview-stats-favour", "favour: " + UIConstants.roundValue(favourChange, true, true, 1000), true);
-			
-			var hasTradePost = improvements.getCount(improvementNames.tradepost) > 0;
-			var storageText = resources.storageCapacity;
-			if (!hasTradePost) {
-				storageText = "(" + resources.storageCapacity + ")";
-			}
-			$("#camp-overview tr#" + rowID + " .camp-overview-storage").text(storageText);
 		},
 
 		getAlertDescription: function (notificationType) {
