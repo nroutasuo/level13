@@ -310,7 +310,7 @@
         "type": "bag"
     },
     "cache_metal_1": {
-        "description": "Can probably be taken apart down for some scrap metal",
+        "description": "Can probably be taken apart for some scrap metal",
         "icon": "img/items/cahce-metal.png",
         "id": "cache_metal_1",
         "isCraftable": false,
@@ -323,7 +323,7 @@
         "type": "exploration"
     },
     "cache_metal_2": {
-        "description": "Can probably be taken apart down for some scrap metal",
+        "description": "Can probably be taken apart for some scrap metal",
         "icon": "img/items/cahce-metal.png",
         "id": "cache_metal_2",
         "isCraftable": false,
