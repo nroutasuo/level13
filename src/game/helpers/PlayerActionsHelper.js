@@ -163,7 +163,7 @@ define([
 		// returns an object containing:
 		// value: fraction the player has of requirements or 0 depending on req type (if 0, action is not available)
 		// reason: string to describe the non-passed requirement (for button explanations)
-		checkRequirements: function (action, doLog, otherSector) {
+		checkRequirements: function (action, doLog, otherSector, checksToSkip) {
 			if (!action) return { value: 0, reason: "No action" };
 			var sector = otherSector;
 			if (!sector) sector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
@@ -172,6 +172,11 @@ define([
 			var sectorID = sector.get(PositionComponent).positionId();
 			var reqsID = action + "-" + sectorID;
 			var ordinal = this.getActionOrdinal(action, sector);
+			
+			var shouldSkipCheck = function (reason) {
+				if (!checksToSkip) return false;
+				return checksToSkip.indexOf(reason) >= 0;
+			};
 
 			var checkRequirementsInternal = function (action, sector) {
 				var playerVision = this.playerStatsNodes.head.vision.value;
@@ -283,7 +288,7 @@ define([
 						}
 					}
 
-					if (requirements.population) {
+					if (requirements.population && !shouldSkipCheck(PlayerActionConstants.UNAVAILABLE_REASON_POPULATION)) {
 						var currentPopulation = campComponent ? Math.floor(campComponent.population) : 0;
 						var result = this.checkRequirementsRange(requirements.population, currentPopulation, "{min} population required", "Maximum {max} population", "workers required", "no workers allowed");
 						if (result) {

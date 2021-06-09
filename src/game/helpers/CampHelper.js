@@ -515,7 +515,7 @@ define([
 			return result;
 		},
 		
-		getDefaultWorkerAssignment: function (sector) {
+		getDefaultWorkerAssignment: function (sector, ignoreFoodWaterStatus) {
 			var campComponent = sector.get(CampComponent);
 			
 			var pop = campComponent.population;
@@ -524,8 +524,8 @@ define([
 			var currentFood = currentStorage.resources.getResource(resourceNames.food);
 			var currentWater = currentStorage.resources.getResource(resourceNames.water);
 			
-			var currentFoodRatio = currentFood / maxStorage;
-			var currentWaterRatio = currentWater / maxStorage;
+			var currentFoodRatio = ignoreFoodWaterStatus ? 1 : currentFood / maxStorage;
+			var currentWaterRatio = ignoreFoodWaterStatus ? 1 : currentWater / maxStorage;
 			
 			// sort worker types by priority
 			var workersByPrio = [[], [], []];
@@ -537,13 +537,20 @@ define([
 				switch (key) {
 					case CampConstants.workerTypes.trapper.id:
 						prio = 0;
-						min = Math.max(1, Math.floor(pop / (currentFoodRatio > 0.5 ? 5 : 3)));
+						min = Math.max(1, Math.floor(pop / (currentFoodRatio > 0.5 ? 4.75 : 3.5)));
 						preferred = min;
 						break;
 					case CampConstants.workerTypes.water.id:
 						prio = 0;
-						min = Math.max(1, Math.floor(pop / (currentWaterRatio > 0.5 ? 5 : 2.25)));
+						min = Math.max(1, Math.floor(pop / (currentWaterRatio > 0.5 ? 2.25 : 2)));
 						preferred = min;
+						break;
+					case CampConstants.workerTypes.gardener.id:
+					case CampConstants.workerTypes.chemist.id:
+					case CampConstants.workerTypes.rubbermaker.id:
+						prio = 0;
+						min = 1;
+						preferred = 2;
 						break;
 					case CampConstants.workerTypes.ropemaker.id:
 					case CampConstants.workerTypes.scavenger.id:

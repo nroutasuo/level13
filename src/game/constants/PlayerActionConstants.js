@@ -11,6 +11,7 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 		UNAVAILABLE_REASON_LOCKED_RESOURCES: 'Requires undiscovered resources.',
 		UNAVAILABLE_REASON_BAG_FULL: 'Bag full.',
 		UNAVAILABLE_REASON_NOT_IN_CAMP: 'Must be in camp to do this.',
+		UNAVAILABLE_REASON_POPULATION: "UNAVAILABLE_REASON_POPULATION",
 		DISABLED_REASON_NOT_ENOUGH_LEVEL_POP: 'Not enough people on this level.',
 		UNAVAILABLE_REASON_BUSY: 'Busy',
 		

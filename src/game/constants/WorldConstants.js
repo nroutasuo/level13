@@ -132,6 +132,14 @@ define(['ash'], function (Ash) {
 			return false;
 		},
 		
+		isHigherOrEqualCampOrdinalAndStep: function (campOrdinal, campStep, campOrdinal2, campStep2) {
+			if (campOrdinal > campOrdinal2)
+				return true;
+			if (campOrdinal == campOrdinal2 && campStep >= campStep2)
+				return true;
+			return false;
+		}
+		
 	};
 	
 	return WorldConstants;

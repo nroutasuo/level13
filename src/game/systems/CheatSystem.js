@@ -10,6 +10,7 @@ define(['ash',
 	'game/constants/FightConstants',
 	'game/constants/TradeConstants',
 	'game/constants/UpgradeConstants',
+	'game/constants/WorldConstants',
 	'game/components/common/CampComponent',
 	'game/components/common/PositionComponent',
 	'game/components/player/AutoPlayComponent',
@@ -38,6 +39,7 @@ define(['ash',
 	FightConstants,
 	TradeConstants,
 	UpgradeConstants,
+	WorldConstants,
 	CampComponent,
 	PositionComponent,
 	AutoPlayComponent,
@@ -455,11 +457,15 @@ define(['ash',
 				}
 		},
 
-		addTechs: function (campOrdinal) {
+		addTechs: function (campOrdinal, step) {
+			step = step || WorldConstants.CAMP_STEP_END;
 			var minOrdinal;
+			var minStep;
 			for (var id in UpgradeConstants.upgradeDefinitions) {
+				if (this.tribeUpgradesNodes.head.upgrades.hasUpgrade(id)) continue;
 				minOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(id);
-				if (minOrdinal <= campOrdinal) {
+				minStep = UpgradeConstants.getMinimumCampStepForUpgrade(id);
+				if (WorldConstants.isHigherOrEqualCampOrdinalAndStep(campOrdinal, step, minOrdinal, minStep)) {
 					this.addTech(id);
 				}
 			}
