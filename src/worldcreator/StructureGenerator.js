@@ -374,8 +374,9 @@ define([
 			let numX = WorldCreatorRandom.randomInt(s2 / 2, 2, numMax + 1);
 			let numY = isSymmetricalCount ? numX : WorldCreatorRandom.randomInt(s3 / 2, 2, numMax + 1);
 			let isSymmetricalSmallRects = WorldCreatorRandom.randomBool(s2);
-			let w = WorldCreatorRandom.randomInt(s1 * 2, 4, 8);;
-			let h = isSymmetricalSmallRects ? w : WorldCreatorRandom.randomInt(s3 * 2, 4, 8);
+			let maxSize = numX > 2 || numY > 2 ? 5 : 7;
+			let w = WorldCreatorRandom.randomInt(s1 * 2, 4, maxSize + 1);
+			let h = isSymmetricalSmallRects ? w : WorldCreatorRandom.randomInt(s3 * 2, 4, maxSize + 1);
 			
 			let totalWidth = numX * w - (numX - 1);
 			let totalHeight = numY * h - (numY - 1);
