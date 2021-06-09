@@ -91,7 +91,7 @@ define([
 		refresh: function () {
 			$("#tab-header h2").text("Tribe");
 			this.updateMessages();
-			this.updateNodes();
+			this.updateNodes(true);
 		},
 
 		updateBubble: function () {

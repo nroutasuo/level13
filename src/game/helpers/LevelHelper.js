@@ -637,6 +637,9 @@ define([
 						case MovementConstants.BLOCKER_TYPE_DEBRIS:
 							let actionName = "clear_debris_e";
 							let neighbour = this.getNeighbour(sectorEntity, direction);
+							if (!neighbour) {
+								log.w("no neighbour for clear debris action found at " + sectorPosition)
+							}
 							let neighbourFeaturesComponent = neighbour.get(SectorFeaturesComponent);
 							if (!featuresComponent.isEarlyZone() || !neighbourFeaturesComponent.isEarlyZone()) {
 								actionName = "clear_debris_l";

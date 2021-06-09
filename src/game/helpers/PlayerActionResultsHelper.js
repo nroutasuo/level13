@@ -769,7 +769,7 @@ define([
 					niIsHardlevel = false;
 				}
 				var neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(niCampOrdinal, step, niIsHardlevel, itemsComponent, true);
-				if (neededIngredient) {
+				if (neededIngredient && !GameGlobals.gameState.isAutoPlaying) {
 					var neededIngredientProp = MathUtils.clamp(ingredientProbability * 10, 0.15, 0.35);
 					var numAvailableGangs = GameGlobals.levelHelper.getNumAvailableGangs(campOrdinal, playerStamina, itemsComponent);
 					if (!GameGlobals.gameState.uiStatus.isHidden)

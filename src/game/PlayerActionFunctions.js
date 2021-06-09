@@ -626,8 +626,6 @@ define(['ash',
 					var partnerName = TradeConstants.getTradePartner(campOrdinal).name;
 					logMsgSuccess += "<br/>Found a new <span class='hl-functionality'>trading partner</span>. They call this place " + partnerName + ".";
 					tradingPartner = campOrdinal;
-				} else {
-					log.w("can't add trade partner - already found: camp ordinal " + campOrdinal);
 				}
 			}
 			if (localeVO.type == localeTypes.grove) {
@@ -785,7 +783,7 @@ define(['ash',
 				var player = playerActionFunctions.playerStatsNodes.head.entity;
 				var sector = playerActionFunctions.playerLocationNodes.head.entity;
 				var sectorStatus = sector.get(SectorStatusComponent);
-				player.add(new PlayerActionResultComponent(rewards));
+				if (!GameGlobals.gameState.isAutoPlaying) player.add(new PlayerActionResultComponent(rewards));
 				var popupMsg = logMsgSuccess;
 				if (rewards && rewards.foundStashVO) {
 					sectorStatus.stashesFound++;
@@ -1051,6 +1049,7 @@ define(['ash',
 			var position = this.getPositionVO(sectorPos);
 			var sector = this.getActionSector(action, sectorPos);
 			this.buildImprovement(action, improvementNames.greenhouse, sector);
+			GameGlobals.gameState.unlockedFeatures.resources.herbs = true;
 		},
 
 		buildTrap: function () {

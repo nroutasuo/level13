@@ -50,7 +50,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.upgradeUnlockedSignal, this.updateTabVisibility);
 			GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.updateTabVisibility);
 			GlobalSignals.add(this, GlobalSignals.popupClosedSignal, this.updateTabVisibility);
-			GlobalSignals.add(this, GlobalSignals.populationChangedSignal, this.updatteTabNames);
+			GlobalSignals.add(this, GlobalSignals.populationChangedSignal, this.updateTabNames);
 			
 			this.updateTabVisibility();
 		},
@@ -98,6 +98,7 @@ define([
 		},
 		
 		updateTabNames: function () {
+			if (!GameGlobals.gameState.uiStatus.isHidden) return;
 			var posHasCamp = this.currentLocationNodes.head && this.currentLocationNodes.head.entity.has(CampComponent);
 			var levelCamp = this.nearestCampNodes.head;
 			var currentCamp = levelCamp ? levelCamp.entity : null;

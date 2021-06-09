@@ -147,7 +147,7 @@ define([
 			var metalRequiredTools = time * node.camp.metalConsumptionPerSecondSmith;
 			if (metalRequiredTools > 0) {
 				var metalUsedTools = Math.min(availableResources.getResource(resourceNames.metal), metalRequiredTools);
-				var tools = time * (metalUsedTools / metalRequiredTools) * camp.node.getToolsProductionPerSecond;
+				var tools = time * (metalUsedTools / metalRequiredTools) * node.camp.getToolsProductionPerSecond;
 				campResources.addResource(resourceNames.tools, tools);
 				campResources.addResource(resourceNames.metal, -metalUsedTools);
 				resourceAccComponent.addChange(resourceNames.tools, tools / time, "Toolsmiths");
