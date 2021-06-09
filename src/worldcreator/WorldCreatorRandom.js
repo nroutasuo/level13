@@ -36,9 +36,10 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 		
 		getRandomSectorsSmall: function (seed, worldVO, levelVO, numSectors, options) {
 			var maxDuplicates = options.numDuplicates || 1;
-			var sectors = [];
+			var result = [];
+			var selectedSectors = {}; // id -> times selected
+			var checkedSectors = {}; // id -> times checked
 			
-			var counts = {};
 			var rejectedByReason = {};
 			
 			var addRejection = function (sectorVO, reason) {
@@ -51,7 +52,7 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 			var checkDuplicates = function (sectorVO) {
 				if (maxDuplicates === 0) return true;
 				if (!sectorVO) return false;
-				if (counts[sectorVO.id] && counts[sectorVO.id] >= maxDuplicates) {
+				if (selectedSectors[sectorVO.id] && selectedSectors[sectorVO.id] >= maxDuplicates) {
 					addRejection(sectorVO, "duplicate");
 					return false;
 				}
@@ -81,21 +82,26 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 				do {
 					var s1 = seed + (i + 1) * 369 + additionalRandom * 55;
 					sector = this.randomSector(s1, worldVO, levelVO, options.requireCentral, options.pathConstraints);
+					
+					if (!checkedSectors[sector.id]) checkedSectors[sector.id] = 0;
+					checkedSectors[sector.id]++;
+					
 					additionalRandom++;
-					if (additionalRandom > 100) {
+					if (additionalRandom > 500) {
 						WorldCreatorLogger.w("getRandomSectorsSmall: Couldn't find random sector " + (i+1) + "/" + numSectors + " (level: " + levelVO.level + ") | " + s1 + " " + seed);
 						WorldCreatorLogger.i(options);
-						WorldCreatorLogger.i(counts);
+						WorldCreatorLogger.i(selectedSectors);
+						WorldCreatorLogger.i(checkedSectors);
 						WorldCreatorLogger.i(rejectedByReason);
-						return sectors;
+						return result;
 					}
 				} while (!checkDuplicates(sector) || !checkExclusion(sector));
 				
-				sectors.push(sector);
-				if (!counts[sector.id]) counts[sector.id] = 0;
-				counts[sector.id]++;
+				result.push(sector);
+				if (!selectedSectors[sector.id]) selectedSectors[sector.id] = 0;
+				selectedSectors[sector.id]++;
 			}
-			return sectors;
+			return result;
 		},
 		
 		getRandomSectorsBig:function (seed, worldVO, levelVO, numSectors, options) {
