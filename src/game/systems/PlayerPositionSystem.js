@@ -62,7 +62,6 @@ define([
 			GlobalSignals.add(this, GlobalSignals.gameResetSignal, this.onGameStarted);
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.ontabChanged);
 			GlobalSignals.add(this, GlobalSignals.campBuiltSignal, this.updateCamps);
-			GlobalSignals.add(this, GlobalSignals.sectorScoutedSignal, this.onSectorScouted);
 		},
 
 		removeFromEngine: function (engine) {
@@ -82,10 +81,6 @@ define([
 		ontabChanged: function () {
 			this.lastUpdatePosition = null;
 			this.lastValidPosition = null;
-		},
-		
-		onSectorScouted: function () {
-			this.triggerEndMessage();
 		},
 
 		update: function (time) {
@@ -123,6 +118,7 @@ define([
 					levelNode.entity.add(new CurrentPlayerLocationComponent());
 					if (!levelNode.entity.has(VisitedComponent)) {
 						this.handleNewLevel(levelNode, levelpos, isInitLocation);
+						this.triggerEndMessage();
 					}
 					this.handleEnterLevel(levelNode, levelpos, isInitLocation);
 				} else if (levelpos != playerPos.level && levelNode.entity.has(CurrentPlayerLocationComponent)) {
@@ -285,23 +281,21 @@ define([
 		triggerEndMessage: function () {
 			var playerPos = this.playerPositionNodes.head.position;
 			var isLastAvailableLevel = this.isLastAvailableLevel(playerPos.level);
-			var sector = this.playerLocationNodes.head.entity;
-			var passages = sector.get(PassagesComponent);
-			if (isLastAvailableLevel && passages.passageUp) {
+			if (isLastAvailableLevel) {
 				this.showEndMessage();
 			}
 		},
 		
 		showEndMessage: function () {
 			setTimeout(function () {
-				gtag('event', 'level_14_passage_up_reached', { event_category: 'progression' })
-				var msg = "You've reached the end of the current version of Level 13. ";
-				msg += "You can continue exploring this level, but it will not be possible to repair the passage up yet. Congrats on surviving to the end!";
+				gtag('event', 'last_level_reached', { event_category: 'progression' })
+				var msg = "You've reached the last level of the current version of Level 13. ";
+				msg += "There will be some more things to discover here, but you will not be able to build the passage to the next level. Congrats on surviving to the end!";
 				msg += "<br/><br/>"
 				msg += "<span class='p-meta'>Thank you for playing this far. The developer would love to hear your feedback. You can use any of these channels:</span>";
 				msg += "<p>" + GameConstants.getFeedbackLinksHTML() + "</p>";
 				GameGlobals.uiFunctions.showInfoPopup(
-					"The end",
+					"Last level",
 					msg,
 					"Continue"
 				);
