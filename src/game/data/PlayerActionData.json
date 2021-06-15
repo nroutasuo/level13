@@ -153,8 +153,7 @@
                 "expCost": 2,
                 "requiredOrdinal": 8
             },
-            "resource_metal": {
-                "expCost": 50
+            "resource_metal": 50
             },
             "resource_rope": {
                 "constantCost": 5,
