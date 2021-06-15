@@ -15,12 +15,9 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 		DISABLED_REASON_NOT_ENOUGH_LEVEL_POP: 'Not enough people on this level.',
 		UNAVAILABLE_REASON_BUSY: 'Busy',
 		
-		// costs
-		// structure: resource: cost
-		// cost can be a simple number (baseCost) or a table with the following values
-		// [baseCost, linearScale, e1Scale, e2Scale, requiredOrdinal]
-		// additional keys: cost_factor_e1_base, cost_factor_e2_exp
-		// cost = baseCost + (linearScale * ordinal1) + (e1Scale * pow(e1Base, ordinal1-1)) + (e2Scale * (pow(ordinal2, e2Exp)))
+		loadData: function (data) {
+			Object.assign(this, data);
+		},
 
 		hasAction: function (action) {
 			return this.requirements[action] || this.costs[action] || this.cooldowns[action] || this.durations[action] || this.descriptions[action] || false;
@@ -121,7 +118,7 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 
 	};
 	
-	Object.assign(PlayerActionConstants, PlayerActionData);
+	PlayerActionConstants.loadData(PlayerActionData);
 
 	return PlayerActionConstants;
 

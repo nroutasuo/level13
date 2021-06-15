@@ -957,25 +957,6 @@ define([
 			}
 		},
 
-		getActionSecondaryOrdinal: function (action, otherSector) {
-			var baseActionID = this.getBaseActionID(action);
-			var ordinal = this.getActionOrdinal(action, otherSector);
-			switch (baseActionID) {
-				case "build_out_passage_down_stairs":
-				case "build_out_passage_down_elevator":
-				case "build_out_passage_down_hole":
-				case "build_out_passage_up_stairs":
-				case "build_out_passage_up_elevator":
-				case "build_out_passage_up_hole":
-					var levelOrdinal = ordinal;
-					var level = GameGlobals.gameState.getLevelForOrdinal(levelOrdinal);
-					var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
-					var result = GameGlobals.upgradeEffectsHelper.getExpectedBuildingUpgradeLevel(improvementNames.storage, campOrdinal);
-					return result;
-				default: return 1;
-			}
-		},
-
 		// Returns the cost factor of a given action, usually 1, but may depend on the current status for some actions
 		getCostFactor: function (action, cost, otherSector) {
 			if (!this.playerLocationNodes || !this.playerLocationNodes.head) return 1;
@@ -1108,12 +1089,11 @@ define([
 			return result;
 		},
 		
-		// NOTE: if you change this mess, keep GDD up to date
-		getCost: function (baseCost, linearScale, e1Scale, e1Base, e2Scale, e2Exp, ordinal1, ordinal2, statusFactor) {
-			var linearIncrease = linearScale * ordinal1;
-			var expIncrease1 = e1Scale * Math.pow(e1Base, ordinal1-1);
-			var expIncrease2 = e2Scale * Math.pow(ordinal2 - 1, e2Exp);
-			return (baseCost + linearIncrease + expIncrease1 + expIncrease2) * statusFactor;
+		getCost: function (constantCost, linearCost, expCost, expBase, ordinal, statusFactor) {
+			var constantPart = constantCost;
+			var linearPart = linearCost * ordinal;
+			var expPart = expCost * Math.pow(expBase, ordinal-1);
+			return (constantPart + linearPart + expPart) * statusFactor;
 		},
 
 		// NOTE: this should always return all possible costs as keys (even if value currently is 0)
@@ -1126,18 +1106,14 @@ define([
 			var sector = otherSector ? otherSector : (this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null);
 			var levelComponent = sector ? GameGlobals.levelHelper.getLevelEntityForSector(sector).get(LevelComponent) : null;
 
-			var ordinal1 = this.getActionOrdinal(action, sector);
-			var ordinal2 = this.getActionSecondaryOrdinal(action, sector);
-			
+			var ordinal = this.getActionOrdinal(action, sector);
 			var isOutpost = levelComponent ? levelComponent.populationFactor < 1 : false;
 			
-			return this.getCostsByOrdinal(action, multiplier, ordinal1, ordinal2, isOutpost, sector);
+			return this.getCostsByOrdinal(action, multiplier, ordinal, isOutpost, sector);
 		},
 		
-		getCostsByOrdinal: function (action, multiplier, ordinal1, ordinal2, isOutpost, sector) {
+		getCostsByOrdinal: function (action, multiplier, ordinal, isOutpost, sector) {
 			var result = {};
-			var skipRounding = false;
-			var isCampBuildAction = action.indexOf("build_in_") >= 0;
 
 			var baseActionID = this.getBaseActionID(action);
 			var costs = PlayerActionConstants.costs[action];
@@ -1146,56 +1122,78 @@ define([
 			}
 
 			if (costs) {
-				var e1Base = costs.cost_factor_e1_base || 1;
-				var e1BaseOutpost = costs.cost_factor_e1_base_outpost || e1Base;
-				var e2Exp = costs.cost_factor_e2_exp || 0;
-				var e2ExpOutpost = costs.cost_factor_e2_exp_outpost || e2Exp;
+				result = this.getCostsFromData(action, multiplier, ordinal, isOutpost, sector, costs);
+			}
+			
+			this.addDynamicCosts(action, multiplier, ordinal, isOutpost, sector, result);
 
-				var hasE1 = e1Base !== 1;
-				var hasE2 = e2Exp !== 0;
+			// round all costs, big ones to 5 and the rest to int
+			var skipRounding = this.isExactCostAction(baseActionID);
+			for(var key in result) {
+				if (!skipRounding && result[key] > 1000) {
+					result[key] = Math.round(result[key] / 5) * 5;
+				} else {
+					result[key] = Math.round(result[key]);
+				}
+			}
 
-				for (var key in costs) {
-					if (key.indexOf("cost_factor") >= 0) continue;
-					var statusFactor = this.getCostFactor(action, key, sector);
+			return result;
+		},
+		
+		getCostsFromData: function (action, multiplier, ordinal, isOutpost, sector, costs) {
+			let result = {};
+			
+			var isCampBuildAction = action.indexOf("build_in_") >= 0;
+			
+			var defaultConstantCost = 0;
+			var defaultLinearCost = 0;
+			var defaultExpCost = 0;
+			var defaultExpBase = isOutpost ? (costs.cost_factor_expBase_outpost || 1) : (costs.cost_factor_expBase || 1);
+			var defaultRequiredOrdinal = 0;
 
-					var value = costs[key];
-					var baseCost = 0;
+			for (var key in costs) {
+				if (key.indexOf("cost_factor") >= 0) continue;
 
-					var linearScale = 0;
-					var e1Scale = hasE1 ? 1 : 0;
-					var e2Scale = hasE2 ? 1 : 0;
-					var requiredOrdinal = 0;
+				var value = costs[key];
 
-					if (typeof value === "number") {
-						baseCost = hasE1 || hasE2 ? 0 : value;
-						e1Scale = hasE1 ? value : 0;
-						e2Scale = hasE2 ? value : 0;
-					} else if (typeof value === "object") {
-						baseCost = value[0];
-						if (value.length > 1) linearScale = value[1];
-						if (value.length > 2) e1Scale = value[2];
-						if (value.length > 3) e2Scale = value[3];
-						if (value.length > 4) requiredOrdinal = value[4];
-					}
+				var constantCost = defaultConstantCost;
+				var linearCost = defaultLinearCost;
+				var expCost = defaultExpCost;
+				var expBase = defaultExpBase;
+				var requiredOrdinal = defaultRequiredOrdinal;
 
-					if (ordinal1 < requiredOrdinal) {
-						result[key] = 0;
+				if (typeof value === "number") {
+					expCost = value;
+				} else if (typeof value === "object") {
+					if (value.constantCost) constantCost = value.constantCost;
+					if (value.linearCost) linearCost = value.linearCost;
+					if (value.expCost) expCost = value.expCost;
+					if (value.expBase) expBase = value.expBase;
+					if (value.requiredOrdinal) requiredOrdinal = value.requiredOrdinal;
+				}
+				var statusFactor = this.getCostFactor(action, key, sector);
+
+				if (ordinal < requiredOrdinal) {
+					result[key] = 0;
+				} else {
+					if (!isOutpost || !isCampBuildAction) {
+						var cost = this.getCost(constantCost, linearCost, expCost, expBase, ordinal, statusFactor) * multiplier;
+						result[key] = cost;
 					} else {
-						var cost = this.getCost(baseCost, linearScale, e1Scale, e1Base, e2Scale, e2Exp, ordinal1, ordinal2, statusFactor * multiplier);
-						if (!isOutpost || !isCampBuildAction) {
-							result[key] = cost;
-						} else {
-							var costOutpost = this.getCost(baseCost, linearScale, e1Scale, e1BaseOutpost, e2Scale, e2ExpOutpost, ordinal1, ordinal2, statusFactor * multiplier);
-							if (cost === costOutpost && e1Base === e1BaseOutpost && e2Exp === e2ExpOutpost) {
-								// default: unless outpost cost otherwise defined, just scale
-								costOutpost *= 1.25;
-							}
-							result[key] = costOutpost;
+						var costOutpost = this.getCost(constantCost, linearCost, expCost, expBaseOutpost, ordinal, statusFactor) * multiplier;
+						if (cost === costOutpost && expBase === expBaseOutpost) {
+							// default: unless outpost cost otherwise defined, just scale
+							costOutpost *= 1.25;
 						}
+						result[key] = costOutpost;
 					}
 				}
 			}
-			
+			return result;
+		},
+		
+		addDynamicCosts: function (action, multiplier, ordinal, isOutpost, sector, result) {
+			var baseActionID = this.getBaseActionID(action);
 			switch (baseActionID) {
 				case "move_camp_level":
 					var path = this.getPathToNearestCamp(sector);
@@ -1251,28 +1249,27 @@ define([
 						if (!result[key]) result[key] = 0;
 						result[key] += caravansComponent.pendingCaravan.sellAmount;
 					}
-					skipRounding = true;
 					break;
 					
+				case "build_out_passage_up_stairs":
+				case "build_out_passage_up_elevator":
+				case "build_out_passage_up_hole":
+				case "build_out_passage_down_stairs":
+				case "build_out_passage_down_elevator":
+				case "build_out_passage_down_hole":
+					var campOrdinal = ordinal;
+					var ordinal2 = GameGlobals.upgradeEffectsHelper.getExpectedBuildingUpgradeLevel(improvementNames.storage, campOrdinal);
+					var e2Scale = baseActionID.indexOf("_up_") >= 0 ? 5500 : 500;
+					var e2Exp = 2.3;
+					result.resource_metal = result.resource_metal + e2Scale * Math.pow(ordinal2 - 1, e2Exp);
+					break;
+				
 				case "nap":
 					if (GameGlobals.gameState.numCamps < 1) {
 						result = {};
 					}
 					break;
 			}
-
-			// round all costs, big ones to 5 and the rest to int
-			for(var key in result) {
-				if (result[key] > 1000) {
-					if (!skipRounding) {
-						result[key] = Math.round(result[key] / 5) * 5;
-					}
-				} else {
-					result[key] = Math.round(result[key]);
-				}
-			}
-
-			return result;
 		},
 		
 		addCosts: function (result, costs) {
@@ -1554,6 +1551,13 @@ define([
 
 				default: return false;
 			}
+		},
+		
+		isExactCostAction: function (baseActionID) {
+			switch (baseActionID) {
+				case "send_caravan": return true;
+			}
+			return false;
 		},
 		
 		getImprovementDisplayName: function (improvementID) {

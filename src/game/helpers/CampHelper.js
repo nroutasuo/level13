@@ -346,7 +346,7 @@ define([
 				for (var campOrdinal = 1; campOrdinal <= maxCampOrdinal; campOrdinal++) {
 					let storageCount = storageCounts[campOrdinal];
 					let isOutpost = this.isOutpost(campOrdinal);
-					let nextCost = GameGlobals.playerActionsHelper.getCostsByOrdinal("build_in_storage", 1, storageCount + 1, 1, isOutpost).resource_metal;
+					let nextCost = GameGlobals.playerActionsHelper.getCostsByOrdinal("build_in_storage", 1, storageCount + 1, isOutpost).resource_metal;
 					if (nextCost <= totalStorage) {
 						storageCounts[campOrdinal]++;
 						builtSomething = true;
@@ -406,7 +406,7 @@ define([
 			let actionName = GameGlobals.playerActionsHelper.getActionNameForImprovement(improvementName);
 			let getNextCost = function () {
 				let ordinal = result + 1;
-				return GameGlobals.playerActionsHelper.getCostsByOrdinal(actionName, 1, ordinal, 1, isOutpost).resource_metal;
+				return GameGlobals.playerActionsHelper.getCostsByOrdinal(actionName, 1, ordinal, isOutpost).resource_metal;
 			};
 			while (getNextCost() <= totalStorage) {
 				result++;
@@ -472,7 +472,7 @@ define([
 				}
 				
 				// check costs
-				let costs = GameGlobals.playerActionsHelper.getCostsByOrdinal(actionName, 1, ordinal, 1, isOutpost);
+				let costs = GameGlobals.playerActionsHelper.getCostsByOrdinal(actionName, 1, ordinal, isOutpost);
 				if (costs) {
 					for (let key in costs) {
 						if (key == "resource_fuel" && maxCampOrdinal < WorldConstants.CAMP_ORDINAL_FUEL) {

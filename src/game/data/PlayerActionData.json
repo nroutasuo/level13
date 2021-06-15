@@ -21,24 +21,24 @@
             "resource_rope": 500
         },
         "build_in_apothecary": {
-            "cost_factor_e1_base": 1.5,
+            "cost_factor_expBase": 1.5,
             "resource_metal": 100,
             "resource_rope": 50
         },
         "build_in_aqueduct": {
-            "cost_factor_e1_base": 2,
+            "cost_factor_expBase": 2,
             "resource_concrete": 50,
             "resource_metal": 300,
             "resource_rubber": 10
         },
         "build_in_barracks": {
-            "cost_factor_e1_base": 1.2,
+            "cost_factor_expBase": 1.2,
             "resource_concrete": 200,
             "resource_metal": 100,
             "resource_rope": 50
         },
         "build_in_campfire": {
-            "cost_factor_e1_base": 2,
+            "cost_factor_expBase": 2,
             "resource_food": 10,
             "resource_metal": 5
         },
@@ -46,28 +46,28 @@
             "resource_rope": 1000
         },
         "build_in_cementmill": {
-            "cost_factor_e1_base": 1.5,
+            "cost_factor_expBase": 1.5,
             "resource_fuel": 10,
             "resource_metal": 500,
             "resource_rope": 10
         },
         "build_in_darkfarm": {
-            "cost_factor_e1_base": 2,
+            "cost_factor_expBase": 2,
             "resource_fuel": 5,
             "resource_metal": 50,
             "resource_water": 20
         },
         "build_in_fortification": {
-            "cost_factor_e1_base": 1.5,
+            "cost_factor_expBase": 1.5,
             "resource_metal": 350,
             "resource_rope": 100
         },
         "build_in_fortification2": {
-            "cost_factor_e1_base": 1.5,
+            "cost_factor_expBase": 1.5,
             "resource_concrete": 100
         },
         "build_in_garden": {
-            "cost_factor_e1_base": 3,
+            "cost_factor_expBase": 3,
             "resource_metal": 100,
             "resource_rope": 50,
             "resource_water": 50
@@ -82,11 +82,11 @@
             "resource_rope": 30
         },
         "build_in_house": {
-            "cost_factor_e1_base": 2,
+            "cost_factor_expBase": 2,
             "resource_metal": 28
         },
         "build_in_house2": {
-            "cost_factor_e1_base": 1.75,
+            "cost_factor_expBase": 1.75,
             "resource_concrete": 100,
             "resource_metal": 800,
             "resource_rope": 50
@@ -97,7 +97,7 @@
             "resource_rope": 20
         },
         "build_in_library": {
-            "cost_factor_e1_base": 2,
+            "cost_factor_expBase": 2,
             "resource_metal": 200,
             "resource_rope": 150
         },
@@ -108,12 +108,12 @@
             "resource_rope": 100
         },
         "build_in_market": {
-            "cost_factor_e1_base": 1.5,
+            "cost_factor_expBase": 1.5,
             "resource_metal": 200,
             "resource_rope": 100
         },
         "build_in_radiotower": {
-            "cost_factor_e1_base": 1.5,
+            "cost_factor_expBase": 1.5,
             "resource_metal": 500,
             "resource_rope": 50
         },
@@ -129,7 +129,7 @@
             "resource_water": 50
         },
         "build_in_smithy": {
-            "cost_factor_e1_base": 1.5,
+            "cost_factor_expBase": 1.5,
             "resource_fuel": 10,
             "resource_metal": 200,
             "resource_rope": 50
@@ -139,35 +139,29 @@
             "resource_rope": 100
         },
         "build_in_stable": {
-            "cost_factor_e1_base": 1.75,
+            "cost_factor_expBase": 1.75,
             "resource_fuel": 30,
             "resource_metal": 200,
             "resource_rope": 50
         },
         "build_in_storage": {
-            "cost_factor_e1_base": 1.75,
-            "cost_factor_e1_base_outpost": 2.5,
-            "resource_concrete": [
-                20,
-                2,
-                2,
-                0,
-                8
-            ],
-            "resource_metal": [
-                0,
-                0,
-                50,
-                0,
-                0
-            ],
-            "resource_rope": [
-                5,
-                2,
-                2,
-                0,
-                2
-            ]
+            "cost_factor_expBase": 1.75,
+            "cost_factor_expBase_outpost": 2.5,
+            "resource_concrete": {
+                "constantCost": 20,
+                "linearCost": 2,
+                "expCost": 2,
+                "requiredOrdinal": 8
+            },
+            "resource_metal": {
+                "expCost": 50
+            },
+            "resource_rope": {
+                "constantCost": 5,
+                "linearCost": 2,
+                "expCost": 2,
+                "requiredOrdinal": 2
+            }
         },
         "build_in_temple": {
             "resource_food": 100,
@@ -197,87 +191,61 @@
             "resource_tools": 100
         },
         "build_out_passage_down_elevator": {
-            "cost_factor_e1_base": 1.35,
-            "cost_factor_e2_exp": 2.3,
-            "resource_fuel": [
-                10,
-                10,
-                0,
-                0,
-                0
-            ],
-            "resource_metal": [
-                0,
-                100,
-                50,
-                500,
-                0
-            ]
+            "cost_factor_expBase": 1.35,
+            "resource_fuel": {
+                "constantCost": 10,
+                "linearCost": 10,
+                "expCost": 0
+            },
+            "resource_metal": {
+                "linearCost": 100,
+                "expCost": 50
+            }
         },
         "build_out_passage_down_hole": {
-            "cost_factor_e1_base": 1.35,
-            "cost_factor_e2_exp": 2.3,
-            "resource_concrete": [
-                50,
-                25,
-                0,
-                0,
-                0
-            ],
-            "resource_metal": [
-                0,
-                100,
-                50,
-                500,
-                0
-            ]
+            "cost_factor_expBase": 1.35,
+            "resource_concrete": {
+                "constantCost": 50,
+                "linearCost": 25
+            },
+            "resource_metal": {
+                "linearCost": 100,
+                "expCost": 50
+            }
         },
         "build_out_passage_down_stairs": {
-            "cost_factor_e1_base": 1.35,
-            "cost_factor_e2_exp": 2.3,
-            "resource_metal": [
-                0,
-                100,
-                50,
-                500,
-                0
-            ],
+            "cost_factor_expBase": 1.35,
+            "resource_metal": {
+                "linearCost": 100,
+                "expCost": 50
+            },
             "resource_rope": 10
         },
         "build_out_passage_up_elevator": {
-            "cost_factor_e1_base": 1.295,
-            "cost_factor_e2_exp": 2.3,
+            "cost_factor_expBase": 1.295,
             "resource_fuel": 10,
-            "resource_metal": [
-                50,
-                100,
-                50,
-                5500,
-                0
-            ]
+            "resource_metal": {
+                "constantCost": 50,
+                "linearCost": 100,
+                "expCost": 50
+            }
         },
         "build_out_passage_up_hole": {
-            "cost_factor_e1_base": 1.295,
-            "cost_factor_e2_exp": 2.3,
+            "cost_factor_expBase": 1.295,
             "resource_concrete": 50,
-            "resource_metal": [
-                50,
-                100,
-                50,
-                5500,
-                0
-            ]
+            "resource_metal": {
+                "constantCost": 50,
+                "linearCost": 100,
+                "expCost": 50
+            }
         },
         "build_out_passage_up_stairs": {
-            "cost_factor_e1_base": 1.295,
-            "cost_factor_e2_exp": 2.3,
-            "resource_metal": [
-                50,
-                100,
-                50,
-                5500,
-                0
-            ],
+            "cost_factor_expBase": 1.295,
+            "resource_metal": {
+                "constantCost": 50,
+                "linearCost": 100,
+                "expCost": 50
+            },
             "resource_rope": 10
         },
         "build_out_spaceship1": {
@@ -611,157 +579,109 @@
             "rumours": 14859
         },
         "improve_in_apothecary": {
-            "cost_factor_e1_base": 2,
-            "resource_metal": [
-                30,
-                0,
-                5,
-                0,
-                0
-            ],
-            "resource_rope": [
-                10,
-                0,
-                5,
-                0,
-                0
-            ],
+            "cost_factor_expBase": 2,
+            "resource_metal": {
+                "constantCost": 30,
+                "expCost": 5
+            },
+            "resource_rope": {
+                "constantCost": 10,
+                "expCost": 5
+            },
             "resource_tools": 10
         },
         "improve_in_campfire": {
-            "cost_factor_e1_base": 2,
+            "cost_factor_expBase": 2,
             "resource_food": 5,
-            "resource_metal": [
-                2,
-                18,
-                10,
-                0,
-                0
-            ],
-            "resource_rope": [
-                5,
-                5,
-                0,
-                0,
-                2
-            ]
+            "resource_metal": {
+                "constantCost": 2,
+                "linearCost": 18,
+                "expCost": 10
+            },
+            "resource_rope": {
+                "constantCost": 5,
+                "linearCost": 5,
+                "expCost": 0,
+                "requiredOrdinal": 2
+            }
         },
         "improve_in_cementmill": {
-            "cost_factor_e1_base": 2,
-            "resource_metal": [
-                40,
-                0,
-                5,
-                0,
-                0
-            ],
-            "resource_rope": [
-                10,
-                0,
-                5,
-                0,
-                0
-            ],
+            "cost_factor_expBase": 2,
+            "resource_metal": {
+                "constantCost": 40,
+                "expCost": 5
+            },
+            "resource_rope": {
+                "constantCost": 10,
+                "expCost": 5
+            },
             "resource_tools": 10
         },
         "improve_in_generator": {
-            "cost_factor_e1_base": 1.5,
+            "cost_factor_expBase": 1.5,
             "resource_concrete": 50,
             "resource_fuel": 50,
-            "resource_metal": [
-                0,
-                0,
-                20,
-                0,
-                0
-            ]
+            "resource_metal": {
+                "expCost": 20
+            }
         },
         "improve_in_library": {
-            "cost_factor_e1_base": 1.8,
-            "resource_metal": [
-                55,
-                20,
-                10,
-                0,
-                0
-            ],
+            "cost_factor_expBase": 1.8,
+            "resource_metal": {
+                "constantCost": 55,
+                "linearCost": 20,
+                "expCost": 10
+            },
             "resource_rope": 50
         },
         "improve_in_market": {
-            "cost_factor_e1_base": 1.5,
-            "resource_metal": [
-                40,
-                50,
-                10,
-                0,
-                0
-            ],
-            "resource_rope": [
-                40,
-                50,
-                10,
-                0,
-                0
-            ]
+            "cost_factor_expBase": 1.5,
+            "resource_metal": {
+                "constantCost": 40,
+                "linearCost": 50,
+                "expCost": 10
+            },
+            "resource_rope": {
+                "constantCost": 40,
+                "linearCost": 50,
+                "expCost": 10
+            }
         },
         "improve_in_smithy": {
-            "cost_factor_e1_base": 2,
-            "resource_metal": [
-                100,
-                0,
-                5,
-                0,
-                0
-            ],
-            "resource_rope": [
-                50,
-                0,
-                5,
-                0,
-                0
-            ],
+            "cost_factor_expBase": 2,
+            "resource_metal": {
+                "constantCost": 100,
+                "expCost": 5
+            },
+            "resource_rope": {
+                "constantCost": 50,
+                "expCost": 5
+            },
             "resource_tools": 50
         },
         "improve_in_square": {
-            "cost_factor_e1_base": 1.25,
-            "resource_metal": [
-                0,
-                0,
-                80,
-                0,
-                0
-            ],
-            "resource_rope": [
-                0,
-                0,
-                20,
-                0,
-                0
-            ],
-            "resource_tools": [
-                0,
-                0,
-                10,
-                0,
-                2
-            ]
+            "cost_factor_expBase": 1.25,
+            "resource_metal": {
+                "expCost": 80
+            },
+            "resource_rope": {
+                "expCost": 20
+            },
+            "resource_tools": {
+                "expCost": 10,
+                "requiredOrdinal": 2
+            }
         },
         "improve_in_temple": {
-            "cost_factor_e1_base": 2,
-            "resource_herbs": [
-                50,
-                0,
-                5,
-                0,
-                0
-            ],
-            "resource_metal": [
-                50,
-                0,
-                5,
-                0,
-                0
-            ]
+            "cost_factor_expBase": 2,
+            "resource_herbs": {
+                "constantCost": 50,
+                "expCost": 5
+            },
+            "resource_metal": {
+                "constantCost": 50,
+                "expCost": 5
+            }
         },
         "launch": {
             "resource_fuel": 10000
@@ -1127,7 +1047,7 @@
         },
         "use_in_inn": {},
         "use_in_inn_select": {
-            "cost_factor_e1_base": 1.5,
+            "cost_factor_expBase": 1.5,
             "resource_food": 100,
             "resource_water": 15
         },
