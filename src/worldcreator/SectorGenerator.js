@@ -618,7 +618,7 @@ define([
 				var item = ItemConstants.getItemByID(consumableItems[i]);
 				if (!item) continue;
 				if (!this.itemsHelper.isAvailable(item, levelVO.campOrdinal, WorldConstants.CAMP_STEP_END, true, true, 9)) continue;
-				var req = ItemConstants.getRequiredCampAndStepToCraft(item);
+				var req = GameGlobals.itemsHelper.getRequiredCampAndStepToCraft(item);
 				validItems.push(item);
 			}
 			var numItems = Math.min(levelVO.isCampable ? 1 : 3, validItems.length);

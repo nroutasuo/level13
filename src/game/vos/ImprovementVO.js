@@ -135,6 +135,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			case improvementNames.passageDownStairs:
 			case improvementNames.passageDownElevator:
 			case improvementNames.passageDownHole:
+			case improvementNames.beacon:
 				return improvementTypes.level;
 
 			default:

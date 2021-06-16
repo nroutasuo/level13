@@ -178,55 +178,6 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			return result;
 		},
 		
-		requiredCampAndStepToCraftCache: {},
-		
-		getRequiredCampAndStepToCraft: function (item) {
-			if (ItemConstants.requiredCampAndStepToCraftCache[item.id]) {
-				return ItemConstants.requiredCampAndStepToCraftCache[item.id];
-			}
-			
-			var cacheAndReturn = function (res) {
-				ItemConstants.requiredCampAndStepToCraftCache[item.id] = res;
-				return res;
-			}
-			
-			var result = { campOrdinal: 0, step: 0 };
-			if (!item.craftable) return cacheAndReturn(result);
-			
-			var addRequirement = function (campOrdinal, step, source) {
-				if (campOrdinal > result.campOrdinal || (campOrdinal == result.campOrdinal && step > result.step)) {
-					result = { campOrdinal: campOrdinal, step: step };
-				}
-			};
-			
-			// upgrades
-			var reqs = PlayerActionConstants.requirements["craft_" + item.id];
-			if (reqs && reqs.upgrades) {
-				var requiredTech = Object.keys(reqs.upgrades);
-				for (var k = 0; k < requiredTech.length; k++) {
-					var campOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(requiredTech[k]);
-					var step = UpgradeConstants.getMinimumCampStepForUpgrade(requiredTech[k]);
-					addRequirement(campOrdinal, step, requiredTech[k]);
-				}
-			}
-			
-			// resources
-			var costs = PlayerActionConstants.costs["craft_" + item.id];
-			if (costs) {
-				if (costs && costs.resource_fuel && costs.resource_fuel > 0) {
-					addRequirement(WorldConstants.CAMP_ORDINAL_FUEL, WorldConstants.CAMP_STEP_POI_2, "fuel");
-				}
-				if (costs && costs.resource_rubber && costs.resource_rubber > 0) {
-					addRequirement(WorldConstants.CAMP_ORDINAL_GROUND, WorldConstants.CAMP_STEP_POI_2, "rubber");
-				}
-				if (costs && costs.resource_herbs && costs.resource_herbs > 0) {
-					addRequirement(WorldConstants.CAMP_ORDINAL_GROUND, WorldConstants.CAMP_STEP_POI_2, "herbs");
-				}
-			}
-			
-			return cacheAndReturn(result);
-		},
-		
 		getFollower: function (level, campCount, rand) {
 			rand = rand || Math.random();
 			var minStrength = campCount;

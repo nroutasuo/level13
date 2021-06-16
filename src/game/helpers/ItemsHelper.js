@@ -29,7 +29,7 @@ define([
 			
 			// craftable items: by craftable camp ordinal
 			if (item.craftable && includeCraftable) {
-				var req = ItemConstants.getRequiredCampAndStepToCraft(item);
+				var req = GameGlobals.itemsHelper.getRequiredCampAndStepToCraft(item);
 				result = req.campOrdinal < adjustedCampOrdinal || (req.campOrdinal == adjustedCampOrdinal && req.step <= adjustedStep);
 			}
 
@@ -222,6 +222,28 @@ define([
 			var weapon = ItemConstants.getDefaultWeapon(campOrdinal, step);
 			result.push(weapon);
 			return result;
+		},
+		
+		requiredCampAndStepToCraftCache: {},
+		
+		getRequiredCampAndStepToCraft: function (item) {
+			var cache = this.requiredCampAndStepToCraftCache;
+			
+			if (cache[item.id]) {
+				return cache[item.id];
+			}
+			
+			var cacheAndReturn = function (res) {
+				cache[item.id] = res;
+				return res;
+			}
+			
+			var result = { campOrdinal: 0, step: 0 };
+			if (!item.craftable) return cacheAndReturn(result);
+			
+			result = GameGlobals.playerActionsHelper.getMinimumCampAndStep("craft_" + item.id);
+			
+			return cacheAndReturn(result);
 		},
 		
 		getNeededIngredient: function (campOrdinal, step, isHardLevel, itemsComponent, isStrict) {
