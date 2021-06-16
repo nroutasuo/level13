@@ -146,15 +146,14 @@
         },
         "build_in_storage": {
             "cost_factor_expBase": 1.75,
-            "cost_factor_expBase_outpost": 2.5,
+            "cost_factor_expBaseOutpost": 2.5,
             "resource_concrete": {
                 "constantCost": 20,
                 "linearCost": 2,
                 "expCost": 2,
                 "requiredOrdinal": 8
             },
-            "resource_metal": 50
-            },
+            "resource_metal": 50,
             "resource_rope": {
                 "constantCost": 5,
                 "linearCost": 2,

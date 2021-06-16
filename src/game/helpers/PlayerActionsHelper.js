@@ -1144,11 +1144,15 @@ define([
 			let result = {};
 			
 			var isCampBuildAction = action.indexOf("build_in_") >= 0;
+			var defaultOutpostExpBaseFactor = 1.1;
 			
 			var defaultConstantCost = 0;
 			var defaultLinearCost = 0;
 			var defaultExpCost = 0;
-			var defaultExpBase = isOutpost ? (costs.cost_factor_expBase_outpost || 1) : (costs.cost_factor_expBase || 1);
+			var defaultExpBase = costs.cost_factor_expBase || 1;
+			if (isOutpost) {
+				defaultExpBase = costs.cost_factor_expBaseOutpost || defaultExpBase * defaultOutpostExpBaseFactor;
+			}
 			var defaultRequiredOrdinal = 0;
 
 			for (var key in costs) {
@@ -1168,25 +1172,21 @@ define([
 					if (value.constantCost) constantCost = value.constantCost;
 					if (value.linearCost) linearCost = value.linearCost;
 					if (value.expCost) expCost = value.expCost;
-					if (value.expBase) expBase = value.expBase;
+					if (value.expBase) {
+						expBase = value.expBase;
+						if (isOutpost) expBase = value.expBase * defaultOutpostExpBaseFactor;
+					}
+					if (isOutpost && value.expBaseOutpost) {
+						expBase = value.expBaseOutpost;
+					}
 					if (value.requiredOrdinal) requiredOrdinal = value.requiredOrdinal;
 				}
-				var statusFactor = this.getCostFactor(action, key, sector);
 
 				if (ordinal < requiredOrdinal) {
 					result[key] = 0;
 				} else {
-					if (!isOutpost || !isCampBuildAction) {
-						var cost = this.getCost(constantCost, linearCost, expCost, expBase, ordinal, statusFactor) * multiplier;
-						result[key] = cost;
-					} else {
-						var costOutpost = this.getCost(constantCost, linearCost, expCost, expBaseOutpost, ordinal, statusFactor) * multiplier;
-						if (cost === costOutpost && expBase === expBaseOutpost) {
-							// default: unless outpost cost otherwise defined, just scale
-							costOutpost *= 1.25;
-						}
-						result[key] = costOutpost;
-					}
+					var statusFactor = this.getCostFactor(action, key, sector);
+					result[key] = this.getCost(constantCost, linearCost, expCost, expBase, ordinal, statusFactor) * multiplier;
 				}
 			}
 			return result;
