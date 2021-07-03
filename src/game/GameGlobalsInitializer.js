@@ -6,6 +6,7 @@ define([
 	'game/UIFunctions',
 	'game/helpers/AutoPlayHelper',
 	'game/helpers/CampHelper',
+	'game/helpers/CampBalancingHelper',
 	'game/helpers/CampVisHelper',
 	'game/helpers/EndingHelper',
 	'game/helpers/FightHelper',
@@ -30,6 +31,7 @@ define([
 	UIFunctions,
 	AutoPlayHelper,
 	CampHelper,
+	CampBalancingHelper,
 	CampVisHelper,
 	EndingHelper,
 	FightHelper,
@@ -47,7 +49,6 @@ define([
 	UIMapHelper,
 	UITechTreeHelper,
 ) {
-	
 	var GameGlobalsInitializer = {
 		
 		init: function (engine) {
@@ -60,6 +61,7 @@ define([
 			GameGlobals.upgradeEffectsHelper = new UpgradeEffectsHelper();
 			GameGlobals.itemsHelper = new ItemsHelper();
 			GameGlobals.campHelper = new CampHelper(engine);
+			GameGlobals.campBalancingHelper = new CampBalancingHelper();
 			if (engine) {
 				GameGlobals.resourcesHelper = new ResourcesHelper(engine);
 				GameGlobals.levelHelper = new LevelHelper(engine);

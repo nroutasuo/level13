@@ -1,4 +1,4 @@
-define(['ash', 'game/GameGlobals'], function (Ash, GameGlobals) {
+define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 	
 	var CampConstants = {
 	
@@ -77,61 +77,79 @@ define(['ash', 'game/GameGlobals'], function (Ash, GameGlobals) {
 		workerTypes: {
 			scavenger: {
 				id: "scavenger",
+				resourceProduced: resourceNames.metal,
 			},
 			trapper: {
 				id: "trapper",
+				resourceProduced: resourceNames.food,
 			},
 			water: {
 				id: "water",
+				resourceProduced: resourceNames.water,
 			},
 			ropemaker: {
 				id: "ropemaker",
+				resourceProduced: resourceNames.rope,
 			},
 			chemist: {
 				id: "chemist",
-				getLimitNum: function (campOrdinal, improvements) { return GameGlobals.levelHelper.getCampClearedWorkshopCount(campOrdinal, resourceNames.fuel); },
+				resourceProduced: resourceNames.fuel,
+				getLimitNum: function (improvements, workshops) { return workshops.fuel || 0; },
 				getLimitText: function (num) { return num + " refineries cleared"; },
 			},
 			rubbermaker: {
 				id: "rubbermaker",
-				getLimitNum: function (campOrdinal, improvements) { return GameGlobals.levelHelper.getCampClearedWorkshopCount(campOrdinal, resourceNames.rubber); },
+				resourceProduced: resourceNames.rubber,
+				getLimitNum: function (improvements, workshops) { return workshops.rubber || 0; },
 				getLimitText: function (num) { return num + " plantations found"; },
 			},
 			gardener: {
 				id: "gardener",
-				getLimitNum: function (campOrdinal, improvements) { return GameGlobals.levelHelper.getCampBuiltOutImprovementsCount(campOrdinal, improvementNames.greenhouse); },
+				resourceProduced: resourceNames.herbs,
+				getLimitNum: function (improvements, workshops) { return workshops.herbs || 0; },
 				getLimitText: function (num) { return num + " greenhouses"; },
 			},
 			apothecary: {
 				id: "apothecary",
-				getLimitNum: function (level, improvements) { return improvements.getCount(improvementNames.apothecary); },
+				resourceProduced: resourceNames.medicine,
+				getLimitNum: function (improvements, workshops) { return improvements.getCount(improvementNames.apothecary); },
 				getLimitText: function (num) { return num + " apothecaries built"; },
 			},
 			toolsmith: {
 				id: "toolsmith",
-				getLimitNum: function (level, improvements) { return improvements.getCount(improvementNames.smithy); },
+				resourceProduced: resourceNames.tools,
+				getLimitNum: function (improvements, workshops) { return improvements.getCount(improvementNames.smithy); },
 				getLimitText: function (num) { return num + " smithies built"; },
 			},
 			concrete: {
 				id: "concrete",
-				getLimitNum: function (level, improvements) { return improvements.getCount(improvementNames.cementmill); },
+				resourceProduced: resourceNames.concrete,
+				getLimitNum: function (improvements, workshops) { return improvements.getCount(improvementNames.cementmill); },
 				getLimitText: function (num) { return num + " cement mills built"; },
 			},
 			scientist: {
 				id: "scientist",
-				getLimitNum: function (level, improvements) { return improvements.getCount(improvementNames.library); },
+				getLimitNum: function (improvements, workshops) { return improvements.getCount(improvementNames.library); },
 				getLimitText: function (num) { return num + " libraries built"; },
 			},
 			soldier: {
 				id: "soldier",
-				getLimitNum: function (level, improvements) { return improvements.getCount(improvementNames.barracks); },
+				getLimitNum: function (improvements, workshops) { return improvements.getCount(improvementNames.barracks); },
 				getLimitText: function (num) { return num + " barracks built"; },
 			},
 			cleric: {
 				id: "cleric",
-				getLimitNum: function (level, improvements) { return improvements.getCount(improvementNames.temple); },
+				getLimitNum: function (improvements, workshops) { return improvements.getCount(improvementNames.temple); },
 				getLimitText: function (num) { return num + " temples built"; },
 			},
+		},
+		
+		getWorkerIDByProducedResource: function (resourceName) {
+			for (var key in CampConstants.workerTypes) {
+				var def = CampConstants.workerTypes[key];
+				if (def.resourceProduced && def.resourceProduced == resourceName) return def.id;
+			}
+			return null;
 		},
 		
 		// storage capacity of one camp

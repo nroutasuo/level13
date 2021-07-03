@@ -254,12 +254,13 @@
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var posComponent = this.playerPosNodes.head.position;
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(posComponent.level);
+			var workshops = GameGlobals.levelHelper.getWorkshopsByResourceForCamp(campOrdinal);
 			
 			for (var key in CampConstants.workerTypes) {
 				var def = CampConstants.workerTypes[key];
 				var maxWorkers = GameGlobals.campHelper.getMaxWorkers(this.playerLocationNodes.head.entity, key);
 				if (maxWorkers <= 0) continue;
-				var num = def.getLimitNum(campOrdinal, improvements);
+				var num = def.getLimitNum(improvements, workshops);
 				var text = def.getLimitText(num);
 				UIConstants.updateCalloutContent("#in-assign-" + def.id + " .in-assign-worker-limit .info-callout-target", text, true);
 			}

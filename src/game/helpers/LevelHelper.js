@@ -705,6 +705,14 @@ define([
 			return result;
 		},
 		
+		getWorkshopsByResourceForCamp: function (campOrdinal) {
+			let workshops = {};
+			workshops.herbs = GameGlobals.levelHelper.getCampBuiltOutImprovementsCount(campOrdinal, improvementNames.greenhouse);
+			workshops.rubber = GameGlobals.levelHelper.getCampClearedWorkshopCount(campOrdinal, resourceNames.rubber);
+			workshops.fuel = GameGlobals.levelHelper.getCampClearedWorkshopCount(campOrdinal, resourceNames.fuel);
+			return workshops;
+		},
+		
 		getCampClearedWorkshopCount: function (campOrdinal, resourceName) {
 			var levels = GameGlobals.gameState.getLevelsForCamp(campOrdinal);
 			var result = 0;

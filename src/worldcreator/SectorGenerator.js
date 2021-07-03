@@ -2,6 +2,7 @@
 define([
 	'ash',
 	'utils/MathUtils',
+	'game/GameGlobals',
 	'game/constants/EnemyConstants',
 	'game/constants/ItemConstants',
 	'game/constants/LevelConstants',
@@ -25,7 +26,7 @@ define([
 	'worldcreator/WorldCreatorLogger',
 	'worldcreator/CriticalPathVO',
 ], function (
-	Ash, MathUtils,
+	Ash, MathUtils, GameGlobals,
 	EnemyConstants, ItemConstants, LevelConstants, LocaleConstants, MovementConstants, PositionConstants, SectorConstants, TradeConstants, UpgradeConstants, WorldConstants,
 	GangVO, LocaleVO, PathConstraintVO, PositionVO, ResourcesVO, StashVO,
 	WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug, WorldCreatorLogger, CriticalPathVO

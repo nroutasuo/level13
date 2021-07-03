@@ -1404,7 +1404,8 @@ define([
 				case improvementNames.passageDownStairs: return "build_out_passage_down_stairs";
 				case improvementNames.passageDownElevator: return "build_out_passage_down_elevator";
 				case improvementNames.passageDownHole: return "build_out_passage_down_hole";
-				case "build_out_camp": return "";
+				case improvementNames.greenhouse: return "build_out_greenhouse";
+				case improvementNames.camp: return "";
 				default:
 					if (!disableWarnings) {
 						log.w("No improvement action name found for improvement " + improvementName);
@@ -1536,7 +1537,7 @@ define([
 			}
 			
 			// resources
-			var costs = PlayerActionConstants.costs[action];
+			var costs = this.getCostsByOrdinal(action, 1, 1, false);
 			if (costs) {
 				if (costs && costs.resource_fuel && costs.resource_fuel > 0) {
 					addRequirement(WorldConstants.CAMP_ORDINAL_FUEL, WorldConstants.CAMP_STEP_POI_2, "fuel");
@@ -1547,6 +1548,11 @@ define([
 				if (costs && costs.resource_herbs && costs.resource_herbs > 0) {
 					addRequirement(WorldConstants.CAMP_ORDINAL_GROUND, WorldConstants.CAMP_STEP_POI_2, "herbs");
 				}
+			}
+			
+			// deity
+			if (reqs && reqs.deity) {
+				addRequirement(WorldConstants.CAMP_ORDINAL_GROUND, WorldConstants.CAMP_STEP_POI_2, "deity");
 			}
 			
 			return result;
