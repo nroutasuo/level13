@@ -22,20 +22,21 @@
         },
         "build_in_apothecary": {
             "cost_factor_expBase": 1.5,
-            "resource_metal": 100,
-            "resource_rope": 50
+            "resource_metal": 440,
+            "resource_rope": 200,
+			"resource_herbs": 60
         },
         "build_in_aqueduct": {
             "cost_factor_expBase": 2,
-            "resource_concrete": 50,
+            "resource_concrete": 180,
             "resource_metal": 300,
             "resource_rubber": 10
         },
         "build_in_barracks": {
             "cost_factor_expBase": 1.2,
-            "resource_concrete": 200,
-            "resource_metal": 100,
-            "resource_rope": 50
+            "resource_concrete": 330,
+            "resource_metal": 300,
+            "resource_rope": 200
         },
         "build_in_campfire": {
             "cost_factor_expBase": 2,
@@ -43,19 +44,27 @@
             "resource_metal": 5
         },
         "build_in_ceiling": {
-            "resource_rope": 1000
+            "resource_rope": 1000,
+			"resource_concrete": 300
         },
         "build_in_cementmill": {
             "cost_factor_expBase": 1.5,
-            "resource_fuel": 10,
-            "resource_metal": 500,
-            "resource_rope": 10
+            "resource_fuel": 15,
+            "resource_metal": 600,
+            "resource_rope": 200
         },
         "build_in_darkfarm": {
             "cost_factor_expBase": 2,
-            "resource_fuel": 5,
-            "resource_metal": 50,
-            "resource_water": 20
+            "resource_fuel": {
+				"linearCost": 8,
+				"expCost": 2,
+	            "expBase": 1.75
+			},
+            "resource_metal": {
+				"linearCost": 75,
+				"expCost": 15
+			},
+            "resource_water": 30
         },
         "build_in_fortification": {
             "cost_factor_expBase": 1.5,
@@ -64,13 +73,13 @@
         },
         "build_in_fortification2": {
             "cost_factor_expBase": 1.5,
-            "resource_concrete": 100
+            "resource_concrete": 400
         },
         "build_in_garden": {
             "cost_factor_expBase": 3,
-            "resource_metal": 100,
-            "resource_rope": 50,
-            "resource_water": 50
+            "resource_metal": 650,
+            "resource_rope": 300,
+            "resource_water": 800
         },
         "build_in_generator": {
             "resource_fuel": 200,
@@ -86,15 +95,15 @@
             "resource_metal": 28
         },
         "build_in_house2": {
-            "cost_factor_expBase": 1.75,
+            "cost_factor_expBase": 1.85,
             "resource_concrete": 100,
-            "resource_metal": 800,
-            "resource_rope": 50
+            "resource_metal": 900,
+            "resource_rope": 320
         },
         "build_in_inn": {
             "resource_fuel": 20,
             "resource_metal": 50,
-            "resource_rope": 20
+            "resource_rope": 50
         },
         "build_in_library": {
             "cost_factor_expBase": 2,
@@ -102,7 +111,6 @@
             "resource_rope": 150
         },
         "build_in_lights": {
-            "resource_concrete": 50,
             "resource_fuel": 50,
             "resource_metal": 200,
             "resource_rope": 100
@@ -113,26 +121,26 @@
             "resource_rope": 100
         },
         "build_in_radiotower": {
-            "cost_factor_expBase": 1.5,
-            "resource_metal": 500,
-            "resource_rope": 50
+            "resource_metal": 5000,
+            "resource_rope": 1200,
+			"resource_concrete": 200
         },
         "build_in_researchcenter": {
-            "resource_metal": 1200,
-            "resource_rope": 100,
+            "resource_metal": 1800,
+            "resource_rope": 500,
             "resource_rubber": 100,
-            "resource_water": 200
+            "resource_water": 500
         },
         "build_in_shrine": {
-            "resource_food": 50,
+            "resource_food": 200,
             "resource_metal": 100,
-            "resource_water": 50
+            "resource_water": 100
         },
         "build_in_smithy": {
             "cost_factor_expBase": 1.5,
-            "resource_fuel": 10,
-            "resource_metal": 200,
-            "resource_rope": 50
+            "resource_rubber": 30,
+            "resource_metal": 500,
+            "resource_rope": 100
         },
         "build_in_square": {
             "resource_metal": 200,
@@ -162,7 +170,7 @@
             }
         },
         "build_in_temple": {
-            "resource_food": 100,
+            "resource_food": 200,
             "resource_herbs": 50,
             "resource_metal": 200
         },
@@ -579,7 +587,7 @@
         "improve_in_apothecary": {
             "cost_factor_expBase": 2,
             "resource_metal": {
-                "constantCost": 30,
+                "constantCost": 130,
                 "expCost": 5
             },
             "resource_rope": {
@@ -1290,7 +1298,11 @@
                 "storage": [
                     1,
                     -1
-                ]
+                ],
+				"darkfarm": [
+					-1,
+					10
+				]
             },
             "upgrades": {
                 "unlock_building_darkfarm": true
@@ -1394,6 +1406,12 @@
                     -1
                 ]
             },
+            "level": {
+                "population": [
+                    1,
+                    -1
+                ]
+            },
             "upgrades": {
                 "unlock_building_house2": true
             }
@@ -1464,7 +1482,9 @@
             }
         },
         "build_in_radiotower": {
-            "improvements": {},
+            "improvements": {
+				"radiotower": [ -1, 1 ]
+			},
             "level": {
                 "population": [
                     1.1,
@@ -1484,6 +1504,12 @@
                 "researchcenter": [
                     -1,
                     1
+                ]
+            },
+            "level": {
+                "population": [
+                    1,
+                    -1
                 ]
             },
             "upgrades": {
@@ -1562,6 +1588,12 @@
                 "stable": [
                     -1,
                     2
+                ]
+            },
+            "level": {
+                "population": [
+                    1,
+                    -1
                 ]
             },
             "upgrades": {
