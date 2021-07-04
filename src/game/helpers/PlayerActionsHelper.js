@@ -1146,6 +1146,8 @@ define([
 			var isCampBuildAction = action.indexOf("build_in_") >= 0;
 			var defaultOutpostExpBaseFactor = 1.1;
 			
+			isOutpost = isOutpost && isCampBuildAction;
+			
 			var defaultConstantCost = 0;
 			var defaultLinearCost = 0;
 			var defaultExpCost = 0;
@@ -1249,19 +1251,6 @@ define([
 						if (!result[key]) result[key] = 0;
 						result[key] += caravansComponent.pendingCaravan.sellAmount;
 					}
-					break;
-					
-				case "build_out_passage_up_stairs":
-				case "build_out_passage_up_elevator":
-				case "build_out_passage_up_hole":
-				case "build_out_passage_down_stairs":
-				case "build_out_passage_down_elevator":
-				case "build_out_passage_down_hole":
-					var campOrdinal = ordinal;
-					var ordinal2 = GameGlobals.upgradeEffectsHelper.getExpectedBuildingUpgradeLevel(improvementNames.storage, campOrdinal);
-					var e2Scale = baseActionID.indexOf("_up_") >= 0 ? 5500 : 500;
-					var e2Exp = 2.3;
-					result.resource_metal = result.resource_metal + e2Scale * Math.pow(ordinal2 - 1, e2Exp);
 					break;
 				
 				case "nap":

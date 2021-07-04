@@ -237,7 +237,20 @@ define([
 			return { value: Math.max(0, result), sources: sources, penalties: penalties };
 		},
 		
-		getMaxImprovementCount: function (improvementName, actionName) {
+		getMaxImprovementActionOrdinal: function (improvementName, actionName) {
+			switch (improvementName) {
+				case improvementNames.passageUpStairs:
+				case improvementNames.passageUpElevator:
+				case improvementNames.passageUpHole:
+				case improvementNames.passageDownStairs:
+				case improvementNames.passageDownElevator:
+				case improvementNames.passageDownHole:
+					return WorldConstants.CAMPS_TOTAL;
+			}
+			return GameGlobals.campBalancingHelper.getMaxImprovementCountPerSector(improvementName, actionName);
+		},
+		
+		getMaxImprovementCountPerSector: function (improvementName, actionName) {
 			let reqs = PlayerActionConstants.requirements[actionName];
 			if (!reqs || !reqs.improvements) return -1;
 			

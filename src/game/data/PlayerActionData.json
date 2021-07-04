@@ -21,7 +21,7 @@
             "resource_rope": 500
         },
         "build_in_apothecary": {
-            "cost_factor_expBase": 1.5,
+            "cost_factor_expBase": 1.4,
             "resource_metal": 440,
             "resource_rope": 200,
 			"resource_herbs": 60
@@ -48,7 +48,7 @@
 			"resource_concrete": 300
         },
         "build_in_cementmill": {
-            "cost_factor_expBase": 1.5,
+            "cost_factor_expBase": 1.4,
             "resource_fuel": 15,
             "resource_metal": 600,
             "resource_rope": 200
@@ -116,7 +116,6 @@
             "resource_rope": 100
         },
         "build_in_market": {
-            "cost_factor_expBase": 1.5,
             "resource_metal": 200,
             "resource_rope": 100
         },
@@ -137,7 +136,7 @@
             "resource_water": 100
         },
         "build_in_smithy": {
-            "cost_factor_expBase": 1.5,
+            "cost_factor_expBase": 1.4,
             "resource_rubber": 30,
             "resource_metal": 500,
             "resource_rope": 100
@@ -197,7 +196,7 @@
             "resource_tools": 100
         },
         "build_out_passage_down_elevator": {
-            "cost_factor_expBase": 1.35,
+            "cost_factor_expBase": 2,
             "resource_fuel": {
                 "constantCost": 10,
                 "linearCost": 10,
@@ -209,7 +208,7 @@
             }
         },
         "build_out_passage_down_hole": {
-            "cost_factor_expBase": 1.35,
+            "cost_factor_expBase": 2,
             "resource_concrete": {
                 "constantCost": 50,
                 "linearCost": 25
@@ -220,7 +219,7 @@
             }
         },
         "build_out_passage_down_stairs": {
-            "cost_factor_expBase": 1.35,
+            "cost_factor_expBase": 2,
             "resource_metal": {
                 "linearCost": 100,
                 "expCost": 50
@@ -228,28 +227,28 @@
             "resource_rope": 10
         },
         "build_out_passage_up_elevator": {
-            "cost_factor_expBase": 1.295,
+            "cost_factor_expBase": 1.25,
             "resource_fuel": 10,
             "resource_metal": {
-                "constantCost": 50,
-                "linearCost": 100,
+	            "expBase": 1.5,
+                "linearCost": 450,
                 "expCost": 50
             }
         },
         "build_out_passage_up_hole": {
-            "cost_factor_expBase": 1.295,
+            "cost_factor_expBase": 1.25,
             "resource_concrete": 50,
             "resource_metal": {
-                "constantCost": 50,
-                "linearCost": 100,
+	            "expBase": 1.5,
+                "linearCost": 450,
                 "expCost": 50
             }
         },
         "build_out_passage_up_stairs": {
-            "cost_factor_expBase": 1.295,
+            "cost_factor_expBase": 1.25,
             "resource_metal": {
-                "constantCost": 50,
-                "linearCost": 100,
+	            "expBase": 1.5,
+                "linearCost": 450,
                 "expCost": 50
             },
             "resource_rope": 10
