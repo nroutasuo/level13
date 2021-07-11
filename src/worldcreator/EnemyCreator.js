@@ -226,7 +226,7 @@ define([
 		},
 		
 		getTypicalStamina: function (campOrdinal, step, isHardLevel) {
-			// TODO figure out when exactly player gets access to each of the health bonuses
+			// TODO figure out when exactly player gets access to each of the health bonuses (two from upgrades, last from exploring somehow)
 			var healthyPerkFactor = 1;
 			if (campOrdinal > 14)
 				healthyPerkFactor = PerkConstants.getPerk(PerkConstants.perkIds.healthBonus3).effect;
