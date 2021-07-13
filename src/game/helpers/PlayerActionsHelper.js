@@ -210,7 +210,11 @@ define([
 					return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveToReason[PositionConstants.DIRECTION_DOWN] };
 
 				if (action.indexOf("improve_in_") == 0) {
-					if (ordinal >= ImprovementConstants.maxLevel) {
+					let improvementID = action.replace("improve_in_", "");
+					let improvementName = improvementNames[improvementID];
+					let techLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementName, this.tribeUpgradesNodes.head.upgrades);
+					let maxLevel = ImprovementConstants.getMaxLevel(improvementID, techLevel);
+					if (ordinal >= maxLevel) {
 						return { value: 0, reason: "Max level" };
 					}
 				}
@@ -501,7 +505,7 @@ define([
 							var requiredValue = requirements.outgoingcaravan.available ? 1 : 0;
 							var totalCaravans = improvementComponent.getCount(improvementNames.stable);
 							var busyCaravans = caravansComponent.outgoingCaravans.length;
-							var currentValue =totalCaravans - busyCaravans;
+							var currentValue = totalCaravans - busyCaravans;
 							if (requiredValue > currentValue) {
 								return {value: 0, reason: "No available caravans."};
 							}
