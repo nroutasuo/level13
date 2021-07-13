@@ -120,6 +120,14 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			let def = this.campImprovements[improvementID];
 			let improvementLevelsPerTechLevel = def.improvementLevelsPerTechLevel || 0;
 			return improvementLevelsPerTechLevel * techLevel;
+		},
+		
+		getImprovementID: function (improvementName) {
+			for (var key in improvementNames) {
+				var name = improvementNames[key];
+				if (name == improvementName) return key;
+			}
+			return null;
 		}
 
 	};

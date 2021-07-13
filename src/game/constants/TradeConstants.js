@@ -210,7 +210,7 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 		},
 		
 		getCaravanCapacity: function (stableLevel) {
-			return stableLevel * 750;
+			return 500 * stableLevel;
 		}
 	
 	};

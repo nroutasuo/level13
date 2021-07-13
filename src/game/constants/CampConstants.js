@@ -17,7 +17,6 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		RUMOURS_PER_POP_PER_SEC_BASE: 0.0003,
 		RUMOUR_BONUS_PER_CAMPFIRE_BASE: 1.2,
 		RUMOURS_BONUS_PER_CAMPFIRE_PER_LEVEL: 0.1,
-		RUMOURS_BONUS_PER_CAMPFIRE_PER_UPGRADE: 0.2,
 		RUMOUR_BONUS_PER_MARKET_BASE: 1.1,
 		RUMOURS_BONUS_PER_MARKET_PER_UPGRADE: 0.01,
 		RUMOUR_BONUS_PER_INN_BASE: 1.1,
@@ -26,6 +25,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		
 		// Evidence
 		EVIDENCE_BONUS_PER_LIBRARY_LEVEL: 0.15,
+		EVIDENCE_BONUS_PER_RESEARCH_CENTER_LEVEL: 0.25,
 		
 		// Favour
 		FAVOUR_BONUS_PER_TEMPLE_LEVEL: 0.1,
@@ -153,10 +153,10 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		},
 		
 		// storage capacity of one camp
-		getStorageCapacity: function (storageCount, storageUpgradeLevel) {
+		getStorageCapacity: function (storageCount, storageLevel) {
 			var storagePerImprovement = CampConstants.STORAGE_PER_IMPROVEMENT;
-			if (storageUpgradeLevel > 1) storagePerImprovement = CampConstants.STORAGE_PER_IMPROVEMENT_LEVEL_2;
-			if (storageUpgradeLevel > 2) storagePerImprovement = CampConstants.STORAGE_PER_IMPROVEMENT_LEVEL_3;
+			if (storageLevel > 1) storagePerImprovement = CampConstants.STORAGE_PER_IMPROVEMENT_LEVEL_2;
+			if (storageLevel > 2) storagePerImprovement = CampConstants.STORAGE_PER_IMPROVEMENT_LEVEL_3;
 			return CampConstants.BASE_STORAGE + storageCount * storagePerImprovement;
 		},
 		
@@ -210,8 +210,8 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			return Math.floor(Math.pow(reputation - CampConstants.REPUTATION_TO_POPULATION_OFFSET, 1 / CampConstants.REPUTATION_TO_POPULATION_FACTOR));
 		},
 		
-		getSoldierDefence: function (upgradeLevel) {
-			return (1 + upgradeLevel);
+		getSoldierDefence: function (workerLevel, barracksLevel) {
+			return (1 + workerLevel + 0.25 * barracksLevel);
 		},
 		
 		getRumoursPerVisitMarket: function (marketLevel, marketUpgradeLevel) {
@@ -219,27 +219,31 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			return CampConstants.RUMOURS_PER_VISIT_MARKET_BASE + marketLevel + (marketUpgradeLevel - 1);
 		},
 		
-		getLibraryEvidenceGenerationPerSecond: function (libraryCount, libraryLevel, libraryUpgradeLevel) {
+		getLibraryEvidenceGenerationPerSecond: function (libraryCount, libraryLevel) {
 			var libraryLevelFactor = (1 + libraryLevel * CampConstants.EVIDENCE_BONUS_PER_LIBRARY_LEVEL);
-			return 0.0015 * libraryCount * libraryUpgradeLevel * libraryLevelFactor;
+			return 0.0015 * libraryCount * libraryLevelFactor;
 		},
 		
-		getCampfireRumourGenerationPerSecond: function (campfireCount, campfireLevel, campfireUpgradeLevel, accSpeedPopulation) {
+		getResearchCenterEvidenceGenerationPerSecond: function (centerCount, centerLevel) {
+			var levelFactor = (1 + centerLevel * CampConstants.EVIDENCE_BONUS_PER_RESEARCH_CENTER_LEVEL);
+			return 0.0015 * centerCount * levelFactor;
+		},
+		
+		getCampfireRumourGenerationPerSecond: function (campfireCount, campfireLevel, accSpeedPopulation) {
 			var campfireFactor = CampConstants.RUMOUR_BONUS_PER_CAMPFIRE_BASE;
 			campfireFactor += campfireLevel > 1 ? (campfireLevel - 1) * CampConstants.RUMOURS_BONUS_PER_CAMPFIRE_PER_LEVEL : 0;
-			campfireFactor += campfireUpgradeLevel > 1 ? (campfireUpgradeLevel - 1) * CampConstants.RUMOURS_BONUS_PER_CAMPFIRE_PER_UPGRADE : 0;
 			return campfireCount > 0 ? Math.pow(campfireFactor, campfireCount) * accSpeedPopulation - accSpeedPopulation : 0;
 		},
 		
-		getMarketRumourGenerationPerSecond: function (marketCount, marketUpgradeLevel, accSpeedPopulation) {
+		getMarketRumourGenerationPerSecond: function (marketCount, marketLevel, accSpeedPopulation) {
 			var marketFactor = CampConstants.RUMOUR_BONUS_PER_MARKET_BASE;
-			marketFactor += marketUpgradeLevel > 1 ? (marketUpgradeLevel - 1) * CampConstants.RUMOURS_BONUS_PER_MARKET_PER_UPGRADE : 0;
+			marketFactor += marketLevel > 1 ? (marketUpgradeLevel - 1) * CampConstants.RUMOURS_BONUS_PER_MARKET_PER_UPGRADE : 0;
 			return marketCount > 0 ? Math.pow(marketFactor, marketCount) * accSpeedPopulation - accSpeedPopulation : 0;
 		},
 		
-		getInnRumourGenerationPerSecond: function (innCount, innUpgradeLevel, accSpeedPopulation) {
+		getInnRumourGenerationPerSecond: function (innCount, innLevel, accSpeedPopulation) {
 			var innFactor = CampConstants.RUMOUR_BONUS_PER_INN_BASE;
-			innFactor += innUpgradeLevel > 1 ? (innUpgradeLevel - 1) * CampConstants.RUMOURS_BONUS_PER_INN_PER_UPGRADE : 0;
+			innFactor += innLevel > 1 ? (innLevel - 1) * CampConstants.RUMOURS_BONUS_PER_INN_PER_UPGRADE : 0;
 			return innCount > 0 ? Math.pow(innFactor, innCount) * accSpeedPopulation - accSpeedPopulation : 0;
 		},
 		

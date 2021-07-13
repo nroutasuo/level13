@@ -49,15 +49,17 @@ define([
 				var numScientists = 0;
 				for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
 					improvementsComponent = campNode.entity.get(SectorImprovementsComponent);
-					var accLibrary = GameGlobals.campHelper.getLibraryEvidenceGenerationPerSecond(improvementsComponent, libraryUpgradeLevel);
+					var accLibrary = GameGlobals.campHelper.getLibraryEvidenceGenerationPerSecond(improvementsComponent);
+					var accResearchCenter = GameGlobals.campHelper.getResearchCenterEvidenceGenerationPerSecond(improvementsComponent);
 					
 					numScientists = campNode.camp.assignedWorkers.scientist || 0;
 					var accScientists = GameGlobals.campHelper.getEvidenceProductionPerSecond(numScientists, improvementsComponent);
-					var accSpeedCamp = accLibrary + accScientists;
+					var accSpeedCamp = accLibrary + accResearchCenter + accScientists;
 					accSpeed += accSpeedCamp;
 					
 					evidenceComponent.addChange("Libraries", accLibrary, campNode.position.level);
 					evidenceComponent.addChange("Scientists", accScientists, campNode.position.level);
+					evidenceComponent.addChange("Research Center", accResearchCenter, campNode.position.level);
 					evidenceComponent.accumulation += accSpeed;
 					evidenceComponent.accumulationPerCamp[campNode.position.level] = accSpeedCamp;
 				}

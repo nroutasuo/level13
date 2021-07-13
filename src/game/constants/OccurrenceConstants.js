@@ -92,7 +92,7 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 		
 		getRaidDanger: function (improvements, soldiers, soldierLevel) {
 			soldiers = soldiers || 0;
-			var dangerPoints = this.getRaidDangerPoints(improvements)
+			var dangerPoints = this.getRaidDangerPoints(improvements);
 			var defencePoints = this.getRaidDefencePoints(improvements, soldiers, soldierLevel);
 			var result = (dangerPoints - defencePoints) / 25;
 			return Math.max(0, Math.min(1, result));
@@ -107,14 +107,16 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 		},
 		
 		getRaidDefencePoints: function (improvements, soldiers, soldierLevel) {
-			return CampConstants.CAMP_BASE_DEFENCE + this.getFortificationsDefencePoints(improvements) + this.getSoldierDefencePoints(soldiers, soldierLevel);
+			return CampConstants.CAMP_BASE_DEFENCE
+				+ this.getFortificationsDefencePoints(improvements)
+				+ this.getSoldierDefencePoints(soldiers, soldierLevel, improvements.getLevel(improvementNames.barracks));
 		},
 		
 		getRaidDefenceString: function (improvements, soldiers, soldierLevel) {
 			var result = "Base: " + CampConstants.CAMP_BASE_DEFENCE;
 			var fortificationsPoints = this.getFortificationsDefencePoints(improvements);
 			if (fortificationsPoints > 0) result += "<br/>Fortifications:" + fortificationsPoints;
-			var soldierPoints = this.getSoldierDefencePoints(soldiers, soldierLevel);
+			var soldierPoints = this.getSoldierDefencePoints(soldiers, soldierLevel, improvements.getLevel(improvementNames.barracks));
 			if (soldierPoints > 0) result += "<br/>Soldiers:" + soldierPoints;
 			return result;
 		},
@@ -125,10 +127,10 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 			return regularFortifications * CampConstants.FORTIFICATION_1_DEFENCE + improvedFortifications * CampConstants.FORTIFICATION_2_DEFENCE;
 		},
 		
-		getSoldierDefencePoints: function (soldiers, soldierLevel) {
+		getSoldierDefencePoints: function (soldiers, soldierLevel, barracksLevel) {
 			soldiers = soldiers || 0;
 			soldierLevel = soldierLevel || 0;
-			return soldiers * CampConstants.getSoldierDefence(soldierLevel);
+			return soldiers * CampConstants.getSoldierDefence(soldierLevel, barracksLevel);
 		},
 	
 	};

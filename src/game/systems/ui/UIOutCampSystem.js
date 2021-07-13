@@ -573,7 +573,8 @@
 					break;
 				case CampConstants.workerTypes.soldier.id:
 					var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
-					productionS = "camp defence +" + CampConstants.getSoldierDefence(soldierLevel);
+					let barracksLevel = improvements.getLevel(improvementNames.barracks);
+					productionS = "camp defence +" + CampConstants.getSoldierDefence(soldierLevel, barracksLevel);
 					break;
 				default:
 					log.w("no description defined for worker type: " + def.id);

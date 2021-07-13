@@ -5,6 +5,7 @@ define([
 	'game/constants/GameConstants',
 	'game/constants/CampConstants',
 	'game/constants/ImprovementConstants',
+	'game/constants/ItemConstants',
 	'game/constants/OccurrenceConstants',
 	'game/constants/WorldConstants',
 	'game/components/common/CampComponent',
@@ -14,9 +15,10 @@ define([
 	'game/nodes/sector/CampNode',
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/vos/ResourcesVO',
+	'game/vos/IncomingCaravanVO',
 	'worldcreator/WorldCreatorConstants',
-], function (Ash, GameGlobals, GameConstants, CampConstants, ImprovementConstants, OccurrenceConstants, WorldConstants,
-	CampComponent, PositionComponent, SectorImprovementsComponent, LevelComponent, CampNode, TribeUpgradesNode, ResourcesVO, WorldCreatorConstants) {
+], function (Ash, GameGlobals, GameConstants, CampConstants, ImprovementConstants, ItemConstants, OccurrenceConstants, WorldConstants,
+	CampComponent, PositionComponent, SectorImprovementsComponent, LevelComponent, CampNode, TribeUpgradesNode, ResourcesVO, IncomingCaravanVO, WorldCreatorConstants) {
 	
 	var CampHelper = Ash.Class.extend({
 		
@@ -114,17 +116,29 @@ define([
 			return workers * CampConstants.CONSUMPTION_METAL_PER_CONCRETE_PER_S * GameConstants.gameSpeedCamp;
 		},
 		
-		getLibraryEvidenceGenerationPerSecond: function (improvementsComponent, libraryUpgradeLevel) {
-			var libraryCount = improvementsComponent.getCount(improvementNames.library);
-			var libraryLevel = improvementsComponent.getLevel(improvementNames.library);
-			return CampConstants.getLibraryEvidenceGenerationPerSecond(libraryCount, libraryLevel, libraryUpgradeLevel) * GameConstants.gameSpeedCamp;
+		getDarkFarmProductionPerSecond: function (improvementsComponent) {
+			let count = improvementsComponent.getCount(improvementNames.darkfarm);
+			let level = improvementsComponent.getLevel(improvementNames.darkfarm);
+			return count * (0.01 + level * 0.05);
 		},
 		
-		getTempleFavourGenerationPerSecond: function (improvementsComponent, templeUpgradeLevel) {
+		getLibraryEvidenceGenerationPerSecond: function (improvementsComponent) {
+			var libraryCount = improvementsComponent.getCount(improvementNames.library);
+			var libraryLevel = improvementsComponent.getLevel(improvementNames.library);
+			return CampConstants.getLibraryEvidenceGenerationPerSecond(libraryCount, libraryLevel) * GameConstants.gameSpeedCamp;
+		},
+		
+		getResearchCenterEvidenceGenerationPerSecond: function (improvementsComponent) {
+			var centerCount = improvementsComponent.getCount(improvementNames.researchcenter);
+			var centerLevel = improvementsComponent.getLevel(improvementNames.researchcenter);
+			return CampConstants.getResearchCenterEvidenceGenerationPerSecond(centerCount, centerLevel) * GameConstants.gameSpeedCamp;
+		},
+		
+		getTempleFavourGenerationPerSecond: function (improvementsComponent) {
 			var templeCount = improvementsComponent.getCount(improvementNames.temple);
 			var templeLevel = improvementsComponent.getLevel(improvementNames.temple);
 			var templeLevelFactor = (1 + templeLevel * CampConstants.FAVOUR_BONUS_PER_TEMPLE_LEVEL);
-			return 0.0015 * templeCount * templeUpgradeLevel * templeLevelFactor * GameConstants.gameSpeedCamp;
+			return 0.0015 * templeCount * templeLevelFactor;
 		},
 		
 		getCampfireRumourGenerationPerSecond: function (improvementsComponent, campfireUpgradeLevel, accSpeedPopulation) {
@@ -133,15 +147,16 @@ define([
 			return CampConstants.getCampfireRumourGenerationPerSecond(campfireCount, campfireLevel, campfireUpgradeLevel, accSpeedPopulation);
 		},
 		
-		getMarketRumourGenerationPerSecond: function (improvementsComponent, marketUpgradeLevel, accSpeedPopulation) {
+		getMarketRumourGenerationPerSecond: function (improvementsComponent, accSpeedPopulation) {
 			var marketCount = improvementsComponent.getCount(improvementNames.market);
-			var marketLevel = 1;
-			return CampConstants.getMarketRumourGenerationPerSecond(marketCount, marketUpgradeLevel, accSpeedPopulation);
+			var marketLevel = improvementsComponent.getLevel(improvementNames.market);
+			return CampConstants.getMarketRumourGenerationPerSecond(marketCount, marketLevel, accSpeedPopulation);
 		},
 		
-		getInnRumourGenerationPerSecond: function (improvementsComponent, innUpgradeLevel, accSpeedPopulation) {
+		getInnRumourGenerationPerSecond: function (improvementsComponent, accSpeedPopulation) {
 			var innCount = improvementsComponent.getCount(improvementNames.inn);
-			return CampConstants.getInnRumourGenerationPerSecond(innCount, innUpgradeLevel, accSpeedPopulation);
+			let innLevel = improvementsComponent.getLevel(improvementNames.inn);
+			return CampConstants.getInnRumourGenerationPerSecond(innCount, innLevel, accSpeedPopulation);
 		},
 
 		getCampMaxPopulation: function (sector) {
@@ -372,7 +387,7 @@ define([
 			let prioritizeFood = ignoreFoodWaterStatus ? false : currentFood / maxStorage < 0.5;
 			let prioritizeWater = ignoreFoodWaterStatus ? false : currentWater / maxStorage < 0.5;
 			
-			return GameGlobals.campBalancingHelper.getDefaultWorkerAssignment(population, prioritizeFood, prioritizeWater, null, (id) => this.getMaxWorkers(sector, id));
+			return GameGlobals.campBalancingHelper.getDefaultWorkerAssignment(pop, prioritizeFood, prioritizeWater, null, (id) => this.getMaxWorkers(sector, id));
 		}
 	});
 	

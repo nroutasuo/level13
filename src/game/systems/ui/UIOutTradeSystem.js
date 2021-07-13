@@ -397,7 +397,8 @@ define([
 		},
 		
 		getCaravanCapacity: function () {
-			var stableLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.stable, this.tribeUpgradesNodes.head.upgrades);
+			var improvementsComponent = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+			var stableLevel = improvementsComponent.getLevel(improvementNames.stable);
 			return TradeConstants.getCaravanCapacity(stableLevel);
 		}
 

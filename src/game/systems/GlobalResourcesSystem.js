@@ -49,14 +49,12 @@ define([
 		updateCampsResources: function () {
 			var storageUpgradeLevel = this.getStorageUpgradeLevel();
 			
-			var campImprovements;
-			var storageCount;
-			var hasTradePost;
 			for (var node = this.campNodes.head; node; node = node.next) {
-				campImprovements = node.improvements;
-				storageCount = campImprovements.getCount(improvementNames.storage);
-				hasTradePost = campImprovements.getCount(improvementNames.tradepost) > 0;
-				node.resources.storageCapacity = CampConstants.getStorageCapacity(storageCount, storageUpgradeLevel);
+				let campImprovements = node.improvements;
+				let storageCount = campImprovements.getCount(improvementNames.storage);
+				let storageLevel = campImprovements.getLevel(improvementNames.storage);
+				let hasTradePost = campImprovements.getCount(improvementNames.tradepost) > 0;
+				node.resources.storageCapacity = CampConstants.getStorageCapacity(storageCount, storageLevel);
 				node.resources.limitToStorage(!hasTradePost);
 			}
 		},

@@ -175,6 +175,10 @@ define([
 						break;
 					case improvementNames.radio:
 						addValue(improvementVO.count * defaultBonus, "Radio");
+						break;;
+					case improvementNames.shrine:
+						let levelBonus = (level - 1) * 0.25;
+						addValue(improvementVO.count * defaultBonus * levelBonus, "Shrine");
 						break;
 					default:
 						addValue(improvementVO.count * defaultBonus, "Buildings");
@@ -263,6 +267,11 @@ define([
 			}
 			
 			return -1;
+		},
+		
+		getMaxImprovementLevel: function (improvementName, upgradeLevel) {
+			let improvementID = ImprovementConstants.getImprovementID(improvementName);
+			return ImprovementConstants.getMaxLevel(improvementID, upgradeLevel);
 		},
 		
 		getTotalMaxHousing: function (campOrdinal) {
@@ -435,7 +444,8 @@ define([
 				for (var campOrdinal = 1; campOrdinal <= maxCampOrdinal; campOrdinal++) {
 					if (!storageCounts[campOrdinal]) storageCounts[campOrdinal] = 0;
 					let storageCount = storageCounts[campOrdinal];
-					let campStorage = CampConstants.getStorageCapacity(storageCount, storageUpgradeLevel);
+					let storageLevel = GameGlobals.campBalancingHelper.getMaxImprovementLevel(improvementNames.storage, storageUpgradeLevel)
+					let campStorage = CampConstants.getStorageCapacity(storageCount, storageLevel);
 					totalStorage += campStorage;
 				}
 				
@@ -690,8 +700,10 @@ define([
 		
 		getWaterProductionPerSecond: function (workers, improvementsComponent, upgrades) {
 			workers = workers || 0;
+			let acqueductCount = improvementsComponent.getCount(improvementNames.aqueduct);
+			let acqueductLevel = improvementsComponent.getLevel(improvementNames.aqueduct);
 			var waterUpgradeBonus = this.getWorkerUpgradeBonus("collector", upgrades);
-			var waterImprovementBonus = 1 + (improvementsComponent.getCount(improvementNames.aqueduct) / 4);
+			var waterImprovementBonus = 1 + (acqueductCount / 4) + (acqueductLevel / 10);
 			return CampConstants.PRODUCTION_WATER_PER_WORKER_PER_S * workers * waterUpgradeBonus * waterImprovementBonus;
 		},
 		
