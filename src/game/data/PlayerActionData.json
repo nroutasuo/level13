@@ -1156,12 +1156,20 @@
         "fight_gang": "Clear the enemies blocking passage.",
         "flee": "Abandon what you were doing and run.",
         "improve_in_apothecary": "Increase efficiency",
+        "improve_in_barracks": "Improve soldiers",
         "improve_in_campfire": "Increase rumour generation",
         "improve_in_cementmill": "Increase efficiency",
+        "improve_in_fortification": "Increase defence bonus",
+        "improve_in_garden": "Increase reputation bonus",
         "improve_in_generator": "Increase reputation bonus",
+        "improve_in_inn": "Increase rumour generation",
         "improve_in_library": "Increase evidence generation",
-        "improve_in_market": "Increase rumours gained from visiting",
+        "improve_in_market": "Increase rumour generation",
+        "improve_in_radiotower": "Increase reputation bonus",
+        "improve_in_researchcenter": "Increase evidence generation",
         "improve_in_smithy": "Increase efficiency",
+        "improve_in_stable": "Improve caravan capacity",
+        "improve_in_shrine": "Increase reputation bonus",
         "improve_in_square": "Increase reputation bonus",
         "improve_in_temple": "Increase favour generation",
         "investigate": "Look for resources.",
@@ -2443,66 +2451,6 @@
                     -1
                 ],
                 "cementmill": [
-                    1,
-                    -1
-                ]
-            }
-        },
-        "improve_in_generator": {
-            "improvements": {
-                "camp": [
-                    1,
-                    -1
-                ],
-                "generator": [
-                    1,
-                    -1
-                ]
-            }
-        },
-        "improve_in_library": {
-            "improvements": {
-                "camp": [
-                    1,
-                    -1
-                ],
-                "library": [
-                    1,
-                    -1
-                ]
-            }
-        },
-        "improve_in_market": {
-            "improvements": {
-                "camp": [
-                    1,
-                    -1
-                ],
-                "market": [
-                    1,
-                    -1
-                ]
-            }
-        },
-        "improve_in_smithy": {
-            "improvements": {
-                "camp": [
-                    1,
-                    -1
-                ],
-                "smithy": [
-                    1,
-                    -1
-                ]
-            }
-        },
-        "improve_in_square": {
-            "improvements": {
-                "camp": [
-                    1,
-                    -1
-                ],
-                "square": [
                     1,
                     -1
                 ]

@@ -144,7 +144,7 @@ define([
 		getCampfireRumourGenerationPerSecond: function (improvementsComponent, campfireUpgradeLevel, accSpeedPopulation) {
 			var campfireCount = improvementsComponent.getCount(improvementNames.campfire);
 			var campfireLevel = improvementsComponent.getLevel(improvementNames.campfire);
-			return CampConstants.getCampfireRumourGenerationPerSecond(campfireCount, campfireLevel, campfireUpgradeLevel, accSpeedPopulation);
+			return CampConstants.getCampfireRumourGenerationPerSecond(campfireCount, campfireLevel, accSpeedPopulation);
 		},
 		
 		getMarketRumourGenerationPerSecond: function (improvementsComponent, accSpeedPopulation) {

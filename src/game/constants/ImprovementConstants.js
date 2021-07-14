@@ -12,6 +12,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 				description: "Increases rumour generation and unlocks upgrades.",
 				useActionName: "Sit down",
 				improvementLevelsPerTechLevel: 5,
+				logMsgImproved: "Made the campfire a bit cozier",
 			},
 			house: {
 				description: "A place for " + CampConstants.POPULATION_PER_HOUSE + " people to stay.",
@@ -41,6 +42,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			library: {
 				description: "Generates evidence.",
 				improvementLevelsPerTechLevel: 5,
+				logMsgImproved: "Upgraded the library",
 			},
 			darkfarm: {
 				description: "Produces food.",
@@ -114,12 +116,20 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 				description: "A dash of beauty in the concrete desert.",
  				improvementLevelsPerTechLevel: 1,
 			},
+			generator: {
+				logMsgImproved: "Fixed up the generator",
+			}
 		},
 		
 		getMaxLevel: function (improvementID, techLevel) {
+			techLevel = techLevel || 1;
 			let def = this.campImprovements[improvementID];
+			if (!def) {
+				log.i("no improvement def found: " + improvementID);
+				return 1;
+			}
 			let improvementLevelsPerTechLevel = def.improvementLevelsPerTechLevel || 0;
-			return improvementLevelsPerTechLevel * techLevel;
+			return Math.max(1, improvementLevelsPerTechLevel * techLevel);
 		},
 		
 		getImprovementID: function (improvementName) {
@@ -128,6 +138,11 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 				if (name == improvementName) return key;
 			}
 			return null;
+		},
+		
+		getImprovedLogMessage: function (improvementID) {
+			let def = this.campImprovements[improvementID];
+			return def.logMsgImproved || "Improved the " + improvementNames[improvementID];
 		}
 
 	};

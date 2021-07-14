@@ -209,9 +209,9 @@ define([
 				if (action === "move_level_down" && !movementOptionsComponent.canMoveTo[PositionConstants.DIRECTION_DOWN])
 					return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveToReason[PositionConstants.DIRECTION_DOWN] };
 
-				if (action.indexOf("improve_in_") == 0) {
-					let improvementID = action.replace("improve_in_", "");
-					let improvementName = improvementNames[improvementID];
+				if (this.isImproveBuildingAction(baseActionID)) {
+					let improvementName = this.getImprovementNameForAction(action);
+					let improvementID = this.getImprovementIDForAction(action);
 					let techLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementName, this.tribeUpgradesNodes.head.upgrades);
 					let maxLevel = ImprovementConstants.getMaxLevel(improvementID, techLevel);
 					if (ordinal >= maxLevel) {
@@ -1023,6 +1023,16 @@ define([
 			var sector = sector || (this.playerLocationNodes && this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null);
 			var baseActionID = this.getBaseActionID(action);
 			var requirements = {};
+			
+			if (this.isImproveBuildingAction(baseActionID)) {
+				requirements = PlayerActionConstants.requirements[baseActionID] || {};
+				let improvementID = this.getImprovementIDForAction(action);
+				requirements.improvements = requirements.improvements || {};
+				requirements.improvements.camp = [ 1, -1 ];
+				requirements.improvements[improvementID] = [ 1, - 1];
+				return requirements;
+			}
+			
 			switch (baseActionID) {
 				case "scout_locale_i":
 				case "scout_locale_u":
@@ -1315,6 +1325,7 @@ define([
 			if (!action) return action;
 			var getBaseActionIdInternal = function (a) {
 				if (a.indexOf("build_in_") >= 0) return a;
+				if (a.indexOf("improve_in_") >= 0) return "improve_in";
 				if (a.indexOf("scout_locale_i") >= 0) return "scout_locale_i";
 				if (a.indexOf("scout_locale_u") >= 0) return "scout_locale_u";
 				if (a.indexOf("craft_") >= 0) return "craft";
@@ -1407,6 +1418,12 @@ define([
 
 		getImprovementNameForAction: function(action, disableWarnings) {
 			var baseId = this.getBaseActionID(action);
+			
+			if (this.isImproveBuildingAction(baseId)) {
+				let improvementID = this.getImprovementIDForAction(action);
+				return improvementNames[improvementID];
+			}
+			
         	switch (baseId) {
 				case "build_out_collector_food": return improvementNames.collector_food;
                 case "build_out_collector_water": return improvementNames.collector_water;
@@ -1443,14 +1460,6 @@ define([
                 case "improve_in_market": return improvementNames.market;
                 case "build_in_radiotower": return improvementNames.radiotower;
                 case "build_in_researchcenter": return improvementNames.researchcenter;
-                case "improve_in_campfire": return improvementNames.campfire;
-                case "improve_in_library": return improvementNames.library;
-                case "improve_in_square": return improvementNames.square;
-                case "improve_in_generator": return improvementNames.generator;
-                case "improve_in_apothecary": return improvementNames.apothecary;
-                case "improve_in_smithy": return improvementNames.smithy;
-                case "improve_in_cementmill": return improvementNames.cementmill;
-                case "improve_in_temple": return improvementNames.temple;
                 case "build_out_passage_up_stairs": return improvementNames.passageUpStairs;
                 case "build_out_passage_up_elevator": return improvementNames.passageUpElevator;
                 case "build_out_passage_up_hole": return improvementNames.passageUpHole;
@@ -1471,6 +1480,15 @@ define([
 				log.w("No improvement name found for action " + action);
 			}
 			return "";
+		},
+		
+		getImprovementIDForAction: function (actionName) {
+			var baseId = this.getBaseActionID(actionName);
+			if (this.isImproveBuildingAction(baseId)) {
+				return actionName.replace("improve_in_", "");
+			}
+			let improvementName = this.getImprovementNameForAction(actionName);
+			return ImprovementConstants.getImprovementID(improvementName);
 		},
 		
 		getItemForCraftAction: function (actionName) {
@@ -1592,6 +1610,10 @@ define([
 				case "send_caravan": return true;
 			}
 			return false;
+		},
+		
+		isImproveBuildingAction: function (baseActionID) {
+			return baseActionID == "improve_in";
 		},
 		
 		getImprovementDisplayName: function (improvementID) {

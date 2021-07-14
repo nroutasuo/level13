@@ -5,6 +5,7 @@ define(['ash',
 	'game/constants/GameConstants',
 	'game/constants/CampConstants',
 	'game/constants/LogConstants',
+	'game/constants/ImprovementConstants',
 	'game/constants/PositionConstants',
 	'game/constants/MovementConstants',
 	'game/constants/PlayerActionConstants',
@@ -58,7 +59,7 @@ define(['ash',
 	'text/Text',
 	'utils/StringUtils'
 ], function (Ash, GameGlobals, GlobalSignals,
-	GameConstants, CampConstants, LogConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, UpgradeConstants, TextConstants,
+	GameConstants, CampConstants, LogConstants, ImprovementConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, UpgradeConstants, TextConstants,
 	PositionVO, LocaleVO,
 	PlayerPositionNode, FightNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
@@ -174,6 +175,7 @@ define(['ash',
 
 		performAction: function (action, param) {
 			var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
+			
 			switch (baseId) {
 				// Out improvements
 				case "build_out_collector_water": this.buildBucket(param); break;
@@ -221,15 +223,6 @@ define(['ash',
 				case "build_in_garden": this.buildGarden(param); break;
 				case "build_in_shrine": this.buildShrine(param); break;
 				case "build_in_temple": this.buildTemple(param); break;
-				case "improve_in_campfire": this.improveCampfire(param); break;
-				case "improve_in_library": this.improveLibrary(param); break;
-				case "improve_in_square": this.improveSquare(param); break;
-				case "improve_in_generator": this.improveGenerator(param); break;
-				case "improve_in_market": this.improveMarket(param); break;
-				case "improve_in_apothecary": this.improveApothecary(param); break;
-				case "improve_in_smithy": this.improveSmithy(param); break;
-				case "improve_in_cementmill": this.improveCementMill(param); break;
-				case "improve_in_temple": this.improveTemple(param); break;
 				case "use_in_home": this.useHome(param); break;
 				case "use_in_campfire": this.useCampfire(param); break;
 				case "use_in_market": this.useMarket(param); break;
@@ -238,6 +231,7 @@ define(['ash',
 				case "use_in_inn": this.useInn(param); break;
 				case "use_in_temple": this.useTemple(param); break;
 				case "use_in_shrine": this.useShrine(param); break;
+				case "improve_in": this.improveBuilding(param); break;
 				// Item actions
 				case "craft": this.craftItem(param); break;
 				case "equip": this.equipItem(param); break;
@@ -1260,51 +1254,21 @@ define(['ash',
 			}
 		},
 		
-		improveCampfire: function () {
-			this.improveImprovement("improve_in_campfire");
-			this.addLogMessage(LogConstants.MSG_ID_IMPROVED_CAMPFIRE, "Made the campfire a bit cozier.");
+		improveBuilding: function (param) {
+			let actionName = "improve_in_" + param;
+			let improvementID = param;
+			var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(actionName);
+			
+			var sector = this.playerLocationNodes.head.entity;
+			var improvementsComponent = sector.get(SectorImprovementsComponent);
+			improvementsComponent.improve(improvementName);
+			GlobalSignals.improvementBuiltSignal.dispatch();
+			this.forceResourceBarUpdate();
+			this.save();
+			
+			this.addLogMessage("MSG_ID_IMPROVE_" + param, ImprovementConstants.getImprovedLogMessage(improvementID));
 		},
 		
-		improveLibrary: function () {
-			this.improveImprovement("improve_in_library");
-			this.addLogMessage(LogConstants.MSG_ID_IMPROVED_LIBRARY, "Upgraded the library.");
-		},
-		
-		improveTemple: function () {
-			this.improveImprovement("improve_in_temple");
-			this.addLogMessage(LogConstants.MSG_ID_IMPROVED_TEMPLE, "Upgraded the temple.");
-		},
-		
-		improveSquare: function () {
-			this.improveImprovement("improve_in_square");
-			this.addLogMessage(LogConstants.MSG_ID_IMPROVED_SQUARE, "Upgraded the square.");
-		},
-		
-		improveGenerator: function () {
-			this.improveImprovement("improve_in_generator");
-			this.addLogMessage(LogConstants.MSG_ID_IMPROVED_GENERATOR, "Fixed up the generator.");
-		},
-		
-		improveMarket: function () {
-			this.improveImprovement("improve_in_market");
-			this.addLogMessage(LogConstants.MSG_ID_IMPROVED_MARKET, "Upgraded the market");
-		},
-		
-		improveApothecary: function () {
-			this.improveImprovement("improve_in_apothecary");
-			this.addLogMessage(LogConstants.MSG_ID_IMPROVED_APOTHECARY, "Improved the apothecaries.");
-		},
-		
-		improveSmithy: function () {
-			this.improveImprovement("improve_in_smithy");
-			this.addLogMessage(LogConstants.MSG_ID_IMPROVED_SMIHTY, "Improved the smithy.");
-		},
-		
-		improveCementMill: function () {
-			this.improveImprovement("improve_in_cementmill");
-			this.addLogMessage(LogConstants.MSG_ID_IMPROVED_CEMENTMILL, "Improved the cement mills.");
-		},
-
 		collectFood: function (param, amount) {
 			this.collectCollector("use_out_collector_food", "collector_food", amount);
 		},
@@ -1661,16 +1625,6 @@ define(['ash',
 			var sector = otherSector ? otherSector : this.playerLocationNodes.head.entity;
 			var improvementsComponent = sector.get(SectorImprovementsComponent);
 			improvementsComponent.add(improvementName);
-			GlobalSignals.improvementBuiltSignal.dispatch();
-			this.forceResourceBarUpdate();
-			this.save();
-		},
-		
-		improveImprovement: function (actionName) {
-			var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(actionName);
-			var sector = this.playerLocationNodes.head.entity;
-			var improvementsComponent = sector.get(SectorImprovementsComponent);
-			improvementsComponent.improve(improvementName);
 			GlobalSignals.improvementBuiltSignal.dispatch();
 			this.forceResourceBarUpdate();
 			this.save();
