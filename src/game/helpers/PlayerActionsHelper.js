@@ -1224,19 +1224,17 @@ define([
 					var localei = parseInt(action.split("_")[3]);
 					var sectorLocalesComponent = sector.get(SectorLocalesComponent);
 					var localeVO = sectorLocalesComponent.locales[localei];
-					if (localeVO) result = localeVO.costs;
+					if (localeVO) this.addCosts(result, localeVO.costs);
 					break;
 
 				case "use_item":
 				case "use_item_fight":
 					var itemName = action.replace(baseActionID + "_", "item_");
-					var itemCost = {};
-					itemCost[itemName] = 1;
-					result = itemCost;
+					result[itemName] = 1;
 					break;
 
 				case "unlock_upgrade":
-					result = { blueprint: 1 };
+					result.blueprint = 1;
 					break;
 
 				case "send_caravan":
@@ -1259,7 +1257,7 @@ define([
 				
 				case "nap":
 					if (GameGlobals.gameState.numCamps < 1) {
-						result = {};
+						result.stamina = 0;
 					}
 					break;
 			}
