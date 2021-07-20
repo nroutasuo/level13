@@ -230,9 +230,11 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		},
 		
 		getCampfireRumourGenerationPerSecond: function (campfireCount, campfireLevel, accSpeedPopulation) {
+			if (campfireCount <= 0) return 0;
+			if (accSpeedPopulation <= 0) return 0;
 			var campfireFactor = CampConstants.RUMOUR_BONUS_PER_CAMPFIRE_BASE;
 			campfireFactor += campfireLevel > 1 ? (campfireLevel - 1) * CampConstants.RUMOURS_BONUS_PER_CAMPFIRE_PER_LEVEL : 0;
-			return campfireCount > 0 ? Math.pow(campfireFactor, campfireCount) * accSpeedPopulation - accSpeedPopulation : 0;
+			return campfireCount * campfireFactor * accSpeedPopulation - accSpeedPopulation;
 		},
 		
 		getMarketRumourGenerationPerSecond: function (marketCount, marketLevel, accSpeedPopulation) {

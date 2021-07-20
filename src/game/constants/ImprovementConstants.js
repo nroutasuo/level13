@@ -2,7 +2,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 	
 	var ImprovementConstants = {
 
-		campImprovements: {
+		improvements: {
 			home: {
 				description: "Foundation of a camp.",
 				useActionName: "Rest",
@@ -37,7 +37,8 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			},
 			inn: {
 				description: "Increases rumours and enables recruitment.",
-				useActionName: "Recruit"
+				useActionName: "Recruit",
+				improvementLevelsPerTechLevel: 5,
 			},
 			library: {
 				description: "Generates evidence.",
@@ -118,18 +119,50 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			},
 			generator: {
 				logMsgImproved: "Fixed up the generator",
-			}
+			},
+			collector_water: {},
+			collector_food: {},
+			passageUpStairs: {},
+			passageUpElevator: {},
+			passageUpHole: {},
+			passageDownStairs: {},
+			passageDownElevator: {},
+			passageDownHole: {},
+			spaceship1: {},
+			spaceship2: {},
+			spaceship3: {},
 		},
 		
 		getMaxLevel: function (improvementID, techLevel) {
 			techLevel = techLevel || 1;
-			let def = this.campImprovements[improvementID];
+			let def = this.improvements[improvementID];
 			if (!def) {
-				log.i("no improvement def found: " + improvementID);
+				log.w("no improvement def found: " + improvementID);
 				return 1;
 			}
+			
+			if (techLevel < 1) {
+				return 1;
+			}
+			
 			let improvementLevelsPerTechLevel = def.improvementLevelsPerTechLevel || 0;
+			
 			return Math.max(1, improvementLevelsPerTechLevel * techLevel);
+		},
+		
+		getRequiredTechLevelForLevel: function (improvementID, level) {
+			let def = this.improvements[improvementID];
+			if (!def) {
+				log.w("no improvement def found: " + improvementID);
+				return 1;
+			}
+			
+			let improvementLevelsPerTechLevel = def.improvementLevelsPerTechLevel || 0;
+			if (improvementLevelsPerTechLevel < 1) {
+				return 1;
+			}
+			
+			return Math.ceil(level / improvementLevelsPerTechLevel);
 		},
 		
 		getImprovementID: function (improvementName) {
@@ -140,8 +173,12 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			return null;
 		},
 		
+		getImprovementActionOrdinalForImprovementLevel: function (improvementLevel) {
+			return improvementLevel - 1;
+		},
+		
 		getImprovedLogMessage: function (improvementID) {
-			let def = this.campImprovements[improvementID];
+			let def = this.improvements[improvementID];
 			return def.logMsgImproved || "Improved the " + improvementNames[improvementID];
 		}
 

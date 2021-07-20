@@ -250,6 +250,8 @@ define([
 				case improvementNames.passageDownElevator:
 				case improvementNames.passageDownHole:
 					return WorldConstants.CAMPS_TOTAL;
+				case improvementNames.greenhouse:
+					return 2;
 			}
 			return GameGlobals.campBalancingHelper.getMaxImprovementCountPerSector(improvementName, actionName);
 		},
@@ -270,8 +272,14 @@ define([
 		},
 		
 		getMaxImprovementLevel: function (improvementName, upgradeLevel) {
+			upgradeLevel = upgradeLevel || this.getMaxImprovementTechLevel(improvementName);
 			let improvementID = ImprovementConstants.getImprovementID(improvementName);
 			return ImprovementConstants.getMaxLevel(improvementID, upgradeLevel);
+		},
+		
+		getMaxImprovementTechLevel: function (improvementName) {
+			let numTechs = GameGlobals.upgradeEffectsHelper.getUpgradeIdsForImprovement(improvementName).length;
+			return numTechs + 1;
 		},
 		
 		getTotalMaxHousing: function (campOrdinal) {
@@ -387,8 +395,9 @@ define([
 			let numBuilt = 0;
 			while (builtSomething) {
 				builtSomething = false;
-				for (var improvementID in ImprovementConstants.campImprovements) {
+				for (var improvementID in ImprovementConstants.improvements) {
 					let improvementName = improvementNames[improvementID];
+					if (getImprovementType(improvementName) !== improvementTypes.camp) continue;
 					let actionName = GameGlobals.playerActionsHelper.getActionNameForImprovement(improvementName);
 					let ordinal = result.getCount(improvementName) + 1;
 					

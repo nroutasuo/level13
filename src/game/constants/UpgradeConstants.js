@@ -63,7 +63,7 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 			unlock_building_apothecary: "Basic knowledge of making herbal medicines.",
 			improve_worker_trapper_2: "Salting, smoking and pickling food to make it last longer.",
 			unlock_building_barracks: "A dedicated and trained class of workers for protecting and fighting.",
-			improve_building_campfire: "Turn the townfire into the pride of the settlement.",
+			improve_building_campfire_1: "Turn the townfire into the pride of the settlement.",
 			improve_building_inn: "Another useful way to raise spirits and bond groups.",
 			improve_building_market2: "Further improve trade by using lighter currency that is easier to carry around.",
 			unlock_item_weapon_8: "Better techniques for metal-working allow better weapons and more tools.",
@@ -286,8 +286,11 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 			return result;
 		},
 		
-		getMinimumCampOrdinalForUpgrade: function (upgrade) {
-			if (this.getMinimumCampOrdinalForUpgrade[upgrade]) return this.getMinimumCampOrdinalForUpgrade[upgrade];
+		getMinimumCampOrdinalForUpgrade: function (upgrade, ignoreCosts) {
+			if (!upgrade) return 1;
+			
+			// TODO also cache ignoreCosts version for each upgrade
+			if (!ignoreCosts && this.getMinimumCampOrdinalForUpgrade[upgrade]) return this.getMinimumCampOrdinalForUpgrade[upgrade];
 			
 			if (!this.upgradeDefinitions[upgrade]) {
 				log.w("no such upgrade: " + upgrade);
@@ -299,7 +302,7 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 			var requiredTech = this.getRequiredTech(upgrade);
 			var requiredTechCampOrdinal = 0;
 			for (var i = 0; i < requiredTech.length; i++) {
-				requiredTechCampOrdinal = Math.max(requiredTechCampOrdinal, this.getMinimumCampOrdinalForUpgrade(requiredTech[i]));
+				requiredTechCampOrdinal = Math.max(requiredTechCampOrdinal, this.getMinimumCampOrdinalForUpgrade(requiredTech[i], ignoreCosts));
 			}
 			
 			// blueprint
@@ -313,26 +316,29 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 			
 			// costs
 			var costCampOrdinal = 1;
-			var costs = PlayerActionConstants.costs[upgrade];
-			if (!costs) {
-				log.w("upgrade has no costs: " + upgrade);
-			} else {
-				if (costs.evidence) {
-					var evidenceOrdinal = TribeConstants.getFirstCampOrdinalWithMinStat("evidence", costs.evidence);
-					costCampOrdinal = Math.max(costCampOrdinal, evidenceOrdinal);
-				}
-				if (costs.rumours) {
-					var rumoursOrdinal = TribeConstants.getFirstCampOrdinalWithMinStat("rumours", costs.rumours);
-					costCampOrdinal = Math.max(costCampOrdinal, rumoursOrdinal);
-				}
-				if (costs.favour) {
-					costCampOrdinal = Math.max(costCampOrdinal, WorldConstants.CAMPS_BEFORE_GROUND);
-					var favourCampOrdinal = TribeConstants.getFirstCampOrdinalWithMinStat("favour", costs.favour);
-					costCampOrdinal = Math.max(costCampOrdinal, favourCampOrdinal);
+			if (!ignoreCosts) {
+				var costs = PlayerActionConstants.costs[upgrade];
+				if (!costs) {
+					log.w("upgrade has no costs: " + upgrade);
+				} else {
+					if (costs.evidence) {
+						var evidenceOrdinal = TribeConstants.getFirstCampOrdinalWithMinStat("evidence", costs.evidence);
+						costCampOrdinal = Math.max(costCampOrdinal, evidenceOrdinal);
+					}
+					if (costs.rumours) {
+						var rumoursOrdinal = TribeConstants.getFirstCampOrdinalWithMinStat("rumours", costs.rumours);
+						costCampOrdinal = Math.max(costCampOrdinal, rumoursOrdinal);
+					}
+					if (costs.favour) {
+						costCampOrdinal = Math.max(costCampOrdinal, WorldConstants.CAMPS_BEFORE_GROUND);
+						var favourCampOrdinal = TribeConstants.getFirstCampOrdinalWithMinStat("favour", costs.favour);
+						costCampOrdinal = Math.max(costCampOrdinal, favourCampOrdinal);
+					}
 				}
 			}
+			
 			result = Math.max(1, blueprintCampOrdinal, requiredTechCampOrdinal, costCampOrdinal);
-			this.getMinimumCampOrdinalForUpgrade[upgrade] = result;
+			if (!ignoreCosts) this.getMinimumCampOrdinalForUpgrade[upgrade] = result;
 			return result;
 		},
 	

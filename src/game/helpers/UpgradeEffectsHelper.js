@@ -180,7 +180,7 @@ define([
 		},
 		
 		getUpgradeIdsForImprovement: function (improvementName) {
-			return UpgradeConstants.improvingUpgradesByImprovement[improvementName];
+			return UpgradeConstants.improvingUpgradesByImprovement[improvementName] || [];
 		},
 		
 		getImprovementForOccurrence: function (occurrence) {

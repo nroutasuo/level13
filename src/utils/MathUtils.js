@@ -14,6 +14,7 @@ define(function () {
 		map: function (val, min1, max1, min2, max2) {
 			if (val < min1) val = min1;
 			if (val > max1) val = max1;
+			if (min1 == max1) return min2;
 			return (val - min1) * (max2 - min2) / (max1 - min1) + min2;
 		},
 		

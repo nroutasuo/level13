@@ -1018,6 +1018,24 @@ define([
 
 			return factor;
 		},
+		
+		getImproveBuildingActionReqs: function (improvementID) {
+			let result = {};
+			let improvementName = improvementNames[improvementID];
+			result.improvements = {};
+			result.improvements.camp = [ 1, -1 ];
+			result.improvements[improvementID] = [ 1, - 1];
+			
+			// if 1 improvement per tech level, improvement is locked until first tech that unlocks improvements
+			let improvementsPerTechLevel = ImprovementConstants.improvements[improvementID].improvementLevelsPerTechLevel || 0;
+			if (improvementsPerTechLevel == 1) {
+				let techs = GameGlobals.upgradeEffectsHelper.getUpgradeIdsForImprovement(improvementName);
+				result.upgrades = {};
+				result.upgrades[techs[0]] = true;
+			}
+			
+			return result;
+		},
 
 		getReqs: function (action, sector) {
 			var sector = sector || (this.playerLocationNodes && this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null);
@@ -1027,10 +1045,8 @@ define([
 			if (this.isImproveBuildingAction(baseActionID)) {
 				requirements = PlayerActionConstants.requirements[baseActionID] || {};
 				let improvementID = this.getImprovementIDForAction(action);
-				requirements.improvements = requirements.improvements || {};
-				requirements.improvements.camp = [ 1, -1 ];
-				requirements.improvements[improvementID] = [ 1, - 1];
-				return requirements;
+				let dynamicReqs = this.getImproveBuildingActionReqs(improvementID);
+				Object.assign(requirements, dynamicReqs);
 			}
 			
 			switch (baseActionID) {
@@ -1292,8 +1308,8 @@ define([
 				if (baseAction.indexOf("build_in_") == 0) {
 					var buildingKey = baseAction.replace("build_in_", "");
 					var baseDesc = "";
-					if (ImprovementConstants.campImprovements[buildingKey]) {
-						baseDesc = ImprovementConstants.campImprovements[buildingKey].description;
+					if (ImprovementConstants.improvements[buildingKey]) {
+						baseDesc = ImprovementConstants.improvements[buildingKey].description;
 					}
 					var reputationDesc = "";
 					var reputation = getImprovementReputationBonus(improvementName);
@@ -1535,11 +1551,11 @@ define([
 			};
 			
 			// upgrades
-			var reqs = PlayerActionConstants.requirements[action];
+			var reqs = this.getReqs(action);
 			if (reqs && reqs.upgrades) {
 				var requiredTech = Object.keys(reqs.upgrades);
 				for (var k = 0; k < requiredTech.length; k++) {
-					var campOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(requiredTech[k]);
+					var campOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(requiredTech[k], true);
 					var step = UpgradeConstants.getMinimumCampStepForUpgrade(requiredTech[k]);
 					addRequirement(campOrdinal, step, requiredTech[k]);
 				}
@@ -1556,6 +1572,18 @@ define([
 				}
 				if (costs && costs.resource_herbs && costs.resource_herbs > 0) {
 					addRequirement(WorldConstants.CAMP_ORDINAL_GROUND, WorldConstants.CAMP_STEP_POI_2, "herbs");
+				}
+			}
+			
+			// improvements
+			if (reqs && reqs.improvements) {
+				for (var improvementID in reqs.improvements) {
+					var range = reqs.improvements[improvementID];
+					var min = range[0];
+					if (min < 1) continue;
+					var buildAction = "build_in_" + improvementID;
+					var buildCampStep = this.getMinimumCampAndStep(buildAction);
+					addRequirement(buildCampStep.campOrdinal, buildCampStep.step, "required building");
 				}
 			}
 			

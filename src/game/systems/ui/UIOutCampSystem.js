@@ -270,8 +270,10 @@
 			var $table = $("#in-improvements table");
 			var trs = "";
 			this.elements.improvementRows = {};
-			for (var key in ImprovementConstants.campImprovements) {
-				var def = ImprovementConstants.campImprovements[key];
+			for (var key in ImprovementConstants.improvements) {
+				var def = ImprovementConstants.improvements[key];
+				var name = improvementNames[key];
+				if (getImprovementType(name) !== improvementTypes.camp) continue;
 				var tds = "";
 				var buildAction = "build_in_" + key;
 				var improveAction = "improve_in_" + key;
@@ -279,7 +281,6 @@
 				var useAction = "use_in_" + key;
 				var hasUseAction = PlayerActionConstants.hasAction(useAction);
 				
-				var name = improvementNames[key];
 				var buildButton = "<button class='action action-build action-location' action='" + buildAction +"'>" + name + "</button>";
 				var useButton = "";
 				if (hasUseAction) {

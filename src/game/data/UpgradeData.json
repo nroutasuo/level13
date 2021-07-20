@@ -19,7 +19,14 @@
         "id": "improve_building_barracks_3",
         "name": "Chain of Command"
     },
-    "improve_building_campfire": {
+    "improve_building_campfire_1": {
+        "effects": {
+            "improvesBuildings": "campfire"
+        },
+        "id": "improve_building_campfire_1",
+        "name": "Townfire"
+    },
+    "improve_building_campfire_2": {
         "blueprintCampOrdinal": 9,
         "blueprintIsCampless": false,
         "blueprintIsEarly": true,
@@ -27,15 +34,8 @@
         "effects": {
             "improvesBuildings": "campfire"
         },
-        "id": "improve_building_campfire",
-        "name": "Everfire"
-    },
-    "improve_building_campfire_2": {
-        "effects": {
-            "improvesBuildings": "campfire"
-        },
         "id": "improve_building_campfire_2",
-        "name": "Townfire"
+        "name": "Everfire"
     },
     "improve_building_cementmill": {
         "blueprintCampOrdinal": 9,
