@@ -21,7 +21,8 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		RUMOURS_BONUS_PER_MARKET_PER_UPGRADE: 0.01,
 		RUMOUR_BONUS_PER_INN_BASE: 1.1,
 		RUMOURS_BONUS_PER_INN_PER_UPGRADE: 0.01,
-		RUMOURS_PER_VISIT_MARKET_BASE: 0,
+		RUMOURS_PER_VISIT_CAMPFIRE_BASE: 1,
+		RUMOURS_PER_VISIT_MARKET_BASE: 2,
 		
 		// Evidence
 		EVIDENCE_BONUS_PER_LIBRARY_LEVEL: 0.15,
@@ -214,9 +215,16 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			return (1 + workerLevel + 0.25 * barracksLevel);
 		},
 		
-		getRumoursPerVisitMarket: function (marketLevel, marketUpgradeLevel) {
+		getRumoursPerVisitCampfire: function (campfireLevel, majorLevel) {
+			campfireLevel = campfireLevel || 1;
+			majorLevel = majorLevel || majorLevel;
+			return CampConstants.RUMOURS_PER_VISIT_CAMPFIRE_BASE * majorLevel;
+		},
+		
+		getRumoursPerVisitMarket: function (marketLevel, majorLevel) {
 			marketLevel = marketLevel || 1;
-			return CampConstants.RUMOURS_PER_VISIT_MARKET_BASE + marketLevel + (marketUpgradeLevel - 1);
+			majorLevel = majorLevel || majorLevel;
+			return CampConstants.RUMOURS_PER_VISIT_MARKET_BASE * majorLevel;
 		},
 		
 		getLibraryEvidenceGenerationPerSecond: function (libraryCount, libraryLevel) {
@@ -239,7 +247,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		
 		getMarketRumourGenerationPerSecond: function (marketCount, marketLevel, accSpeedPopulation) {
 			var marketFactor = CampConstants.RUMOUR_BONUS_PER_MARKET_BASE;
-			marketFactor += marketLevel > 1 ? (marketUpgradeLevel - 1) * CampConstants.RUMOURS_BONUS_PER_MARKET_PER_UPGRADE : 0;
+			marketFactor += marketLevel > 1 ? (marketLevel - 1) * CampConstants.RUMOURS_BONUS_PER_MARKET_PER_UPGRADE : 0;
 			return marketCount > 0 ? Math.pow(marketFactor, marketCount) * accSpeedPopulation - accSpeedPopulation : 0;
 		},
 		
@@ -249,8 +257,10 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			return innCount > 0 ? Math.pow(innFactor, innCount) * accSpeedPopulation - accSpeedPopulation : 0;
 		},
 		
-		getMeditatinSuccessRate: function (shrineLevel) {
-			return 0.4 + shrineLevel * 0.1;
+		getMeditationSuccessRate: function (shrineLevel, majorLevel) {
+			shrineLevel = shrineLevel || 1;
+			majorLevel = majorLevel || 1;
+			return 0.5 + (majorLevel - 1) * 0.2;
 		}
 	
 	};

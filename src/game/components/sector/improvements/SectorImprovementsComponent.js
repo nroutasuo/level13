@@ -1,5 +1,5 @@
 // Lists miscellaneous improvements that the given entity (should be a Sector) contains
-define(['ash', 'game/GameGlobals', 'game/vos/ImprovementVO'], function (Ash, GameGlobals, ImprovementVO) {
+define(['ash', 'game/GameGlobals', 'game/constants/ImprovementConstants', 'game/vos/ImprovementVO'], function (Ash, GameGlobals, ImprovementConstants, ImprovementVO) {
 	var SectorImprovementsComponent = Ash.Class.extend({
 
 		improvements: {},
@@ -57,6 +57,12 @@ define(['ash', 'game/GameGlobals', 'game/vos/ImprovementVO'], function (Ash, Gam
 			} else {
 				return 0;
 			}
+		},
+		
+		getMajorLevel: function (type) {
+			var level = this.getLevel(type);
+			var id = ImprovementConstants.getImprovementID(type);
+			return ImprovementConstants.getMajorLevel(id, level);
 		},
 
 		getVO: function(type) {

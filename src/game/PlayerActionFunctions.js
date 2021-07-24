@@ -1297,7 +1297,8 @@ define(['ash',
 			if (campSector) {
 				if (campComponent.rumourpool >= 1) {
 					campComponent.rumourpool--;
-					this.playerStatsNodes.head.rumours.value++;
+					var campfireLevel = improvementsComponent.getLevel(improvementNames.campfire);
+					this.playerStatsNodes.head.rumours.value += GameGlobals.campBalancingHelper.getRumoursPerVisitCampfire(campfireLevel);
 					this.addLogMessage(LogConstants.MSG_ID_USE_CAMPFIRE_SUCC, "Sat at the campfire to exchange stories about the corridors.");
 				} else {
 					this.addLogMessage(LogConstants.MSG_ID_USE_CAMPFIRE_FAIL, "Sat at the campfire to exchange stories, but there was nothing new.");
@@ -1319,8 +1320,7 @@ define(['ash',
 			// TODO move this check to startAction
 			if (campSector) {
 				var marketLevel = improvementsComponent.getLevel(improvementNames.market);
-				var marketUpgradeLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.market, this.tribeUpgradesNodes.head.upgrades);
-				this.playerStatsNodes.head.rumours.value += CampConstants.getRumoursPerVisitMarket(marketLevel, marketUpgradeLevel);
+				this.playerStatsNodes.head.rumours.value += GameGlobals.campBalancingHelper.getRumoursPerVisitMarket(marketLevel);
 				this.addLogMessage(LogConstants.MSG_ID_USE_MARKET, "Visited the market and listened to the latest gossip.");
 			} else {
 				log.w("No camp sector found.");
@@ -1397,15 +1397,21 @@ define(['ash',
 		},
 
 		useShrine: function () {
-			let shrineLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.shrine, this.tribeUpgradesNodes.head.upgrades);
-			let successChance = CampConstants.getMeditatinSuccessRate(shrineLevel);
-			log.i("success chance: " + successChance)
-			if (Math.random() < successChance) {
-				this.playerStatsNodes.head.entity.get(DeityComponent).favour += 1;
-				this.addLogMessage(LogConstants.MSG_ID_USE_SHRINE, "Spent some time listening to the spirits.");
-			} else {
-				this.addLogMessage(LogConstants.MSG_ID_USE_SHRINE, "Tried to meditate, but found no peace.");
+			var campSector = this.nearestCampNodes.head.entity;
+			var improvementsComponent = campSector.get(SectorImprovementsComponent);
+			
+			if (campSector) {
+				let shrineLevel = improvementsComponent.getLevel(improvementNames.shrine);
+				let successChance = GameGlobals.campBalancingHelper.getMeditationSuccessRate(shrineLevel);
+				log.i("meditation success chance: " + successChance)
+				if (Math.random() < successChance) {
+					this.playerStatsNodes.head.entity.get(DeityComponent).favour += 1;
+					this.addLogMessage(LogConstants.MSG_ID_USE_SHRINE, "Spent some time listening to the spirits.");
+				} else {
+					this.addLogMessage(LogConstants.MSG_ID_USE_SHRINE, "Tried to meditate, but found no peace.");
+				}
 			}
+			
 			this.completeAction("use_in_shrine");
 			this.forceStatsBarUpdate();
 		},

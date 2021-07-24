@@ -288,12 +288,11 @@
 				}
 				var improveButton = "";
 				if (hasImproveAction) {
-					improveButton = "<button class='action action-improve btn-compact' action='" + improveAction + "'>↑</button>";
+					improveButton = "<button class='action action-improve btn-compact' action='" + improveAction + "'></button>";
 				}
 				tds += "<td>" + buildButton + "</td>";
 				tds += "<td><span class='improvement-badge improvement-count'>0</span></td>";
 				tds += "<td style='position:relative'><span class='improvement-badge improvement-level'>0</span>";
-				tds += "<span class='improvement-badge improvement-upgrade-level'>0</span>";
 				tds += "</td>";
 				tds += "<td>" + improveButton + "</td>";
 				tds += "<td>" + useButton + "</td>";
@@ -319,8 +318,7 @@
 				var btnImprove = $(this).find(".action-improve");
 				var count = $(this).find(".improvement-count")
 				var level = $(this).find(".improvement-level")
-				var upgradeLevel = $(this).find(".improvement-upgrade-level")
-				result.push({ tr: $(this), btnUse: btnUse, btnImprove: btnImprove, count: count, level: level, upgradeLevel: upgradeLevel, id: id, action: buildAction, improveAction: improveAction, improvementName: improvementName });
+				result.push({ tr: $(this), btnUse: btnUse, btnImprove: btnImprove, count: count, level: level, id: id, action: buildAction, improveAction: improveAction, improvementName: improvementName });
 			});
 			this.elements.improvementRows = result;
 		},
@@ -370,15 +368,18 @@
 				}
 				var actionAvailable = GameGlobals.playerActionsHelper.checkAvailability(buildAction, false);
 				var existingImprovements = improvements.getCount(improvementName);
+				
 				var improvementLevel = improvements.getLevel(improvementName);
-				var upgradeLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementName, this.tribeUpgradesNodes.head.upgrades);
+				var maxImprovementLevel = GameGlobals.campHelper.getCurrentMaxImprovementLevel(improvementName);
+				var majorImprovementLevel = GameGlobals.campHelper.getCurrentMajorImprovementLevel(improvements, improvementName);
+				var isNextLevelMajor = GameGlobals.campHelper.getNextMajorImprovementLevel(improvements, improvementName) > majorImprovementLevel;
+				
 				elem.count.text(existingImprovements);
 				elem.count.toggleClass("badge-disabled", existingImprovements < 1);
 				elem.level.text(improvementLevel);
-				elem.level.toggleClass("badge-disabled", existingImprovements < 1 || !improveAction);
-				elem.upgradeLevel.text("+");
-				elem.upgradeLevel.toggleClass("badge-disabled", existingImprovements < 1);
-				GameGlobals.uiFunctions.toggle(elem.upgradeLevel, existingImprovements > 0 && upgradeLevel > 1);
+				elem.level.toggleClass("badge-disabled", existingImprovements < 1 || !improveAction || maxImprovementLevel <= 1);
+				
+				elem.btnImprove.find(".btn-label").text(isNextLevelMajor ? "▲" : "△")
 
 				var commonVisibilityRule = (buildActionEnabled || existingImprovements > 0 || showActionDisabledReason);
 				var specialVisibilityRule = true;
@@ -392,7 +393,7 @@
 				var isVisible = specialVisibilityRule && commonVisibilityRule;
 				GameGlobals.uiFunctions.toggle(elem.tr, isVisible);
 				GameGlobals.uiFunctions.toggle(elem.btnUse, existingImprovements > 0);
-				GameGlobals.uiFunctions.toggle(elem.btnImprove, existingImprovements > 0);
+				GameGlobals.uiFunctions.toggle(elem.btnImprove, existingImprovements > 0 && maxImprovementLevel > 1);
 				if (isVisible) visibleBuildingCount++;
 				if (actionAvailable) availableBuildingCount++;
 			}

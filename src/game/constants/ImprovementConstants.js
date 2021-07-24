@@ -12,6 +12,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 				description: "Increases rumour generation and unlocks upgrades.",
 				useActionName: "Sit down",
 				improvementLevelsPerTechLevel: 5,
+				improvementLevelsPerMajorLevel: 5,
 				logMsgImproved: "Made the campfire a bit cozier",
 			},
 			house: {
@@ -34,6 +35,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 				description: "Enables foreign traders to visit.",
 				useActionName: "Visit",
 				improvementLevelsPerTechLevel: 5,
+				improvementLevelsPerMajorLevel: 5,
 			},
 			inn: {
 				description: "Increases rumours and enables recruitment.",
@@ -62,6 +64,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 				description: "A place to connect to the strange spirits.",
 				useActionName: "Meditate",
 				improvementLevelsPerTechLevel: 5,
+				improvementLevelsPerMajorLevel: 5,
 			},
 			barracks: {
 				description: "Allows 10 soldiers.",
@@ -165,6 +168,21 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			return Math.ceil(level / improvementLevelsPerTechLevel);
 		},
 		
+		getMajorLevel: function (improvementID, level) {
+			let def = this.improvements[improvementID];
+			if (!def) {
+				log.w("no improvement def found: " + improvementID);
+				return 1;
+			}
+			
+			let improvementLevelsPerMajorLevel = def.improvementLevelsPerMajorLevel || 0;
+			if (improvementLevelsPerMajorLevel < 1) {
+				return 1;
+			}
+			
+			return 1 + Math.floor(level / improvementLevelsPerMajorLevel);
+		},
+		
 		getImprovementID: function (improvementName) {
 			for (var key in improvementNames) {
 				var name = improvementNames[key];
@@ -179,7 +197,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 		
 		getImprovedLogMessage: function (improvementID) {
 			let def = this.improvements[improvementID];
-			return def.logMsgImproved || "Improved the " + improvementNames[improvementID];
+			return def && def.logMsgImproved ? def.logMsgImproved : "Improved the " + improvementNames[improvementID];
 		}
 
 	};

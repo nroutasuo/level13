@@ -367,6 +367,23 @@ define([
 			return GameGlobals.campBalancingHelper.getMaxWorkers(workerID, improvements, upgrades, workshops);
 		},
 		
+		getCurrentMaxImprovementLevel: function (improvementName) {
+			let techLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementName, this.tribeUpgradesNodes.head.upgrades);
+			return GameGlobals.campBalancingHelper.getMaxImprovementLevel(improvementName, techLevel);
+		},
+		
+		getCurrentMajorImprovementLevel: function (improvementsComponent, improvementName) {
+			let level = improvementsComponent.getLevel(improvementName);
+			let id = ImprovementConstants.getImprovementID(improvementName);
+			return ImprovementConstants.getMajorLevel(id, level);
+		},
+		
+		getNextMajorImprovementLevel: function (improvementsComponent, improvementName) {
+			let level = improvementsComponent.getLevel(improvementName);
+			let id = ImprovementConstants.getImprovementID(improvementName);
+			return ImprovementConstants.getMajorLevel(id, level + 1);
+		},
+		
 		getTargetReputation: function (improvementsComponent, resourcesVO, population, populationFactor, danger) {
 			return GameGlobals.campBalancingHelper.getTargetReputation(improvementsComponent, resourcesVO, population, populationFactor, danger);
 		},

@@ -761,6 +761,27 @@ define([
 			return workers * CampConstants.PRODUCTION_CONCRETE_PER_WORKER_PER_S * concreteUpgradeBonus * levelBonus;
 		},
 		
+		getMeditationSuccessRate: function (shrineLevel) {
+			shrineLevel = shrineLevel || 1;
+			let id = ImprovementConstants.getImprovementID(improvementNames.shrine);
+			let majorLevel = ImprovementConstants.getMajorLevel(id, shrineLevel);
+			return CampConstants.getMeditationSuccessRate(shrineLevel, majorLevel);
+		},
+		
+		getRumoursPerVisitCampfire: function (campfireLevel) {
+			campfireLevel = campfireLevel || 1;
+			let id = ImprovementConstants.getImprovementID(improvementNames.campfire);
+			let majorLevel = ImprovementConstants.getMajorLevel(id, campfireLevel);
+			return CampConstants.getRumoursPerVisitCampfire(campfireLevel, majorLevel);
+		},
+		
+		getRumoursPerVisitMarket: function (marketLevel) {
+			marketLevel = marketLevel || 1;
+			let id = ImprovementConstants.getImprovementID(improvementNames.market);
+			let majorLevel = ImprovementConstants.getMajorLevel(id, marketLevel);
+			return CampConstants.getRumoursPerVisitMarket(marketLevel, majorLevel);
+		},
+		
 		getWorkerUpgradeBonus: function (workerID, upgrades) {
 			var upgradeBonus = 1;
 			var workerUpgrades = GameGlobals.upgradeEffectsHelper.getImprovingUpgradeIdsForWorker(workerID);
