@@ -227,7 +227,7 @@ define(['ash',
 				case "use_in_campfire": this.useCampfire(param); break;
 				case "use_in_market": this.useMarket(param); break;
 				case "use_in_hospital": this.useHospital(param); break;
-				case "use_in_hospital2": this.useHospital2(param); break;
+				case "use_in_hospital_2": this.useHospital2(param); break;
 				case "use_in_inn": this.useInn(param); break;
 				case "use_in_temple": this.useTemple(param); break;
 				case "use_in_shrine": this.useShrine(param); break;
@@ -1345,6 +1345,7 @@ define(['ash',
 			var perksComponent = this.playerStatsNodes.head.perks;
 			perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.healthBonus3));
 			this.addLogMessage(LogConstants.MSG_ID_USE_HOSPITAL2, "Improved health.");
+			this.completeAction("use_in_hospital_2");
 			this.forceResourceBarUpdate();
 		},
 

@@ -1170,7 +1170,7 @@
             "resource_water": 30
         },
         "use_in_hospital2": {
-            "resource_food": 15,
+			"resource_medicine": 100,
             "resource_water": 100
         },
         "use_in_inn": {},
@@ -1233,6 +1233,7 @@
         "use_in_campfire": "Collect rumours from the population.",
         "use_in_home": "Recover stamina.",
         "use_in_hospital": "Heal injuries.",
+		"use_in_hospital_2": "Improve overall health",
         "use_in_inn": "Recruit followers.",
         "use_in_market": "Go hear the latest gossip.",
         "use_in_shrine": "Reconnect with the spirits",
@@ -1251,6 +1252,7 @@
         "use_in_campfire": 5,
         "use_in_home": 60,
         "use_in_hospital": 180,
+		"use_in_hospital_2": 120,
         "use_in_market": 10,
         "use_in_shrine": 10,
         "use_in_temple": 5
@@ -1278,7 +1280,7 @@
         "scout": true,
         "use_in_home": false,
         "use_in_hospital": false,
-        "use_in_hospital2": false,
+        "use_in_hospital_2": false,
         "use_in_inn_cancel": false,
         "use_spring": true
     },
@@ -2273,11 +2275,6 @@
                 "unlock_action_clear_waste_r": true
             }
         },
-        "craft_use_in_hospital2": {
-            "upgrades": {
-                "improve_building_hospital_3": true
-            }
-        },
         "craft_weapon12": {
             "upgrades": {
                 "unlock_item_weapon_2": true
@@ -3206,11 +3203,23 @@
                 ]
             }
         },
-        "use_in_hospital2": {
+        "use_in_hospital_2": {
             "improvements": {
                 "hospital": [
                     1,
                     -1
+                ]
+            },
+			"improvementMajorLevel": {
+				"hospital": [
+					3,
+					-1
+				]
+			},
+            "perks": {
+                "Health": [
+                    -1,
+                    1.5
                 ]
             },
             "upgrades": {}

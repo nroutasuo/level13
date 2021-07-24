@@ -280,11 +280,17 @@
 				var hasImproveAction = PlayerActionConstants.hasAction(improveAction);
 				var useAction = "use_in_" + key;
 				var hasUseAction = PlayerActionConstants.hasAction(useAction);
+				var useActionExtra = "use_in_" + key + "_2";
+				var hasUseActionExtra = PlayerActionConstants.hasAction(useActionExtra);
 				
 				var buildButton = "<button class='action action-build action-location' action='" + buildAction +"'>" + name + "</button>";
 				var useButton = "";
 				if (hasUseAction) {
 					useButton = "<button class='action action-use action-location btn-narrow' action='" + useAction + "'>" + def.useActionName + "</button>";
+				}
+				var useButton2 = "";
+				if (hasUseActionExtra) {
+					useButton2 = "<button class='action action-use2 action-location btn-narrow' action='" + useActionExtra + "'>" + def.useActionName2 + "</button>";
 				}
 				var improveButton = "";
 				if (hasImproveAction) {
@@ -295,7 +301,7 @@
 				tds += "<td style='position:relative'><span class='improvement-badge improvement-level'>0</span>";
 				tds += "</td>";
 				tds += "<td>" + improveButton + "</td>";
-				tds += "<td>" + useButton + "</td>";
+				tds += "<td>" + useButton + "" + useButton2 + "</td>";
 				trs += "<tr id='in-improvements-" + key + "'>" + tds + "</tr>";
 			}
 			let ths = "<tr class='header-mini'><th></th><th>count</th><th>lvl</th><th></th><th></th></tr>"
@@ -315,10 +321,11 @@
 				var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(buildAction);
 				if (!improvementName) return;
 				var btnUse = $(this).find(".action-use");
+				var btnUse2 = $(this).find(".action-use2");
 				var btnImprove = $(this).find(".action-improve");
 				var count = $(this).find(".improvement-count")
 				var level = $(this).find(".improvement-level")
-				result.push({ tr: $(this), btnUse: btnUse, btnImprove: btnImprove, count: count, level: level, id: id, action: buildAction, improveAction: improveAction, improvementName: improvementName });
+				result.push({ tr: $(this), btnUse: btnUse, btnUse2: btnUse2, btnImprove: btnImprove, count: count, level: level, id: id, action: buildAction, improveAction: improveAction, improvementName: improvementName });
 			});
 			this.elements.improvementRows = result;
 		},
@@ -356,6 +363,7 @@
 				var id = elem.id;
 				var improveAction = elem.improveAction;
 				var improvementName = elem.improvementName;
+				var improvementID = ImprovementConstants.getImprovementID(improvementName);
 				var requirementCheck = GameGlobals.playerActionsHelper.checkRequirements(buildAction, false, null);
 				var buildActionEnabled = requirementCheck.value >= 1;
 				var showActionDisabledReason = false;
@@ -368,6 +376,12 @@
 				}
 				var actionAvailable = GameGlobals.playerActionsHelper.checkAvailability(buildAction, false);
 				var existingImprovements = improvements.getCount(improvementName);
+				
+				var useAction = "use_in_" + improvementID;
+				var useActionExtra = "use_in_" + improvementID + "_2";
+				var hasUseActionExtra = PlayerActionConstants.hasAction(useActionExtra);
+				var useActionAvailable = GameGlobals.playerActionsHelper.isRequirementsMet(useAction);
+				var useAction2Available = hasUseActionExtra && GameGlobals.playerActionsHelper.isRequirementsMet(useActionExtra);
 				
 				var improvementLevel = improvements.getLevel(improvementName);
 				var maxImprovementLevel = GameGlobals.campHelper.getCurrentMaxImprovementLevel(improvementName);
@@ -391,8 +405,10 @@
 				if (id === "in-improvements-market") specialVisibilityRule = hasTradePost;
 				if (id === "in-improvements-inn") specialVisibilityRule = hasTradePost;
 				var isVisible = specialVisibilityRule && commonVisibilityRule;
+				
 				GameGlobals.uiFunctions.toggle(elem.tr, isVisible);
-				GameGlobals.uiFunctions.toggle(elem.btnUse, existingImprovements > 0);
+				GameGlobals.uiFunctions.toggle(elem.btnUse, existingImprovements > 0 && !useAction2Available);
+				GameGlobals.uiFunctions.toggle(elem.btnUse2, existingImprovements > 0 && !useActionAvailable && useAction2Available);
 				GameGlobals.uiFunctions.toggle(elem.btnImprove, existingImprovements > 0 && maxImprovementLevel > 1);
 				if (isVisible) visibleBuildingCount++;
 				if (actionAvailable) availableBuildingCount++;

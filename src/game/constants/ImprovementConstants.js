@@ -29,7 +29,9 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			hospital: {
 				description: "Enables healing injuries.",
 				useActionName: "Treatment",
+				useActionName2: "Augment",
 				improvementLevelsPerTechLevel: 1,
+				improvementLevelsPerMajorLevel: 1,
 			},
 			market: {
 				description: "Enables foreign traders to visit.",
@@ -180,7 +182,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 				return 1;
 			}
 			
-			return 1 + Math.floor(level / improvementLevelsPerMajorLevel);
+			return Math.ceil(level / improvementLevelsPerMajorLevel);
 		},
 		
 		getImprovementID: function (improvementName) {

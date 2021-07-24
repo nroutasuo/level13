@@ -462,6 +462,12 @@ define(['ash',
 				return true;
 			}
 
+			if (GameGlobals.playerActionsHelper.checkAvailability("use_in_hospital_2")) {
+				GameGlobals.playerActionFunctions.useHospital();
+				this.logStep("used hospital 2");
+				return true;
+			}
+
 			if (GameGlobals.playerActionsHelper.checkAvailability("use_in_inn") && Math.random() < 0.05) {
 				var newFollower = GameGlobals.playerActionFunctions.useInn(true);
 				if (newFollower) {
