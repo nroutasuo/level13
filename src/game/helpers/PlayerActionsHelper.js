@@ -355,6 +355,24 @@ define([
 						}
 					}
 					
+					if (requirements.improvementMajorLevel) {
+						for (var improvementID in requirements.improvementMajorLevel) {
+							var amount = this.getCurrentImprovementMajorLevel(improvementComponent, campComponent, improvementID);
+							var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
+							
+							var range = requirements.improvementMajorLevel[improvementID];
+							
+							var result = this.checkRequirementsRange(range, amount,
+								"building level too low",
+								"building level too high"
+							);
+							if (result) {
+								result.reason.trim();
+								return result;
+							}
+						}
+					}
+					
 					if (requirements.improvementsOnLevel) {
 						var improvementRequirements = requirements.improvementsOnLevel;
 						for (var improvementID in improvementRequirements) {
@@ -1669,6 +1687,10 @@ define([
 				default:
 					return improvementComponent.getCount(improvementNames[improvementID]);
 			}
+		},
+		
+		getCurrentImprovementMajorLevel : function (improvementComponent, campComponent, improvementID) {
+			return improvementComponent.getMajorLevel(improvementNames[improvementID]);
 		},
 		
 		getCurrentImprovementCountOnLevel: function (level, improvementID) {
