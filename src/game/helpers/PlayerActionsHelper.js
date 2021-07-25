@@ -1320,39 +1320,62 @@ define([
 		},
 
 		getDescription: function (action) {
-			if (action) {
-				var baseAction = this.getBaseActionID(action);
-				var improvementName = this.getImprovementNameForAction(action, true);
-				if (baseAction.indexOf("build_in_") == 0) {
-					var buildingKey = baseAction.replace("build_in_", "");
-					var baseDesc = "";
-					if (ImprovementConstants.improvements[buildingKey]) {
-						baseDesc = ImprovementConstants.improvements[buildingKey].description;
-					}
-					var reputationDesc = "";
-					var reputation = getImprovementReputationBonus(improvementName);
-					if (reputation > 0) reputationDesc = "Reputation: " + reputation;
-					return baseDesc + (baseDesc && reputationDesc ? "<hr>" : "") + reputationDesc;
-				} else if (improvementName) {
-					return PlayerActionConstants.descriptions[action] || "";
-				} else if (PlayerActionConstants.descriptions[action]) {
-					return PlayerActionConstants.descriptions[action];
-				} else if (PlayerActionConstants.descriptions[baseAction]) {
-					return PlayerActionConstants.descriptions[baseAction];
-				} else {
-					switch(baseAction) {
-						case "craft":
-							var item = this.getItemForCraftAction(action);
-							return item.description + (item.getTotalBonus() === 0 ? "" : "<hr/>" + UIConstants.getItemBonusDescription(item, true, true));
-						case "use_item":
-						case "use_item_fight":
-							var item = this.getItemForCraftAction(action);
-							return item.description;
-						
-					}
+			if (!action) return "";
+			
+			let baseAction = this.getBaseActionID(action);
+			let improvementName = this.getImprovementNameForAction(action, true);
+			
+			if (baseAction.indexOf("build_in_") == 0) {
+				var buildingKey = baseAction.replace("build_in_", "");
+				var baseDesc = "";
+				if (ImprovementConstants.improvements[buildingKey]) {
+					baseDesc = ImprovementConstants.improvements[buildingKey].description;
+				}
+				var reputationDesc = "";
+				var reputation = getImprovementReputationBonus(improvementName);
+				if (reputation > 0) reputationDesc = "Reputation: " + reputation;
+				return baseDesc + (baseDesc && reputationDesc ? "<hr>" : "") + reputationDesc;
+			} else if (PlayerActionConstants.descriptions[action]) {
+				return PlayerActionConstants.descriptions[action];
+			} else if (PlayerActionConstants.descriptions[baseAction]) {
+				return PlayerActionConstants.descriptions[baseAction];
+			} else {
+				switch(baseAction) {
+					case "craft":
+						var item = this.getItemForCraftAction(action);
+						return item.description + (item.getTotalBonus() === 0 ? "" : "<hr/>" + UIConstants.getItemBonusDescription(item, true, true));
+					case "use_item":
+					case "use_item_fight":
+						var item = this.getItemForCraftAction(action);
+						return item.description;
+					case "improve_in":
+						return this.getImproveActionDescription(action);
 				}
 			}
+			
+			log.w("no description defined for action: " + action)
 			return "";
+		},
+		
+		getImproveActionDescription: function (action) {
+			let ordinal = this.getActionOrdinal(action);
+			let currentLevel = ordinal;
+			
+			let improvementName = this.getImprovementNameForAction(action);
+			let id = ImprovementConstants.getImprovementID(improvementName);
+			let majorLevelCurrent = ImprovementConstants.getMajorLevel(id, currentLevel);
+			let majorLevelNext = ImprovementConstants.getMajorLevel(id, currentLevel + 1);
+			var isNextLevelMajor = majorLevelNext > majorLevelCurrent;
+			
+			switch (action) {
+				case "improve_in_campfire":
+				case "improve_in_market":
+					return isNextLevelMajor ? "Increase rumour generation and rumours per visit" : "Increase rumour generation";
+				case "improve_in_shrine":
+					return isNextLevelMajor ? "Increase reputation bonus and meditation success chance" : "Increase reputation bonus";
+			}
+			
+			return "Improve " + improvementName;
 		},
 
 		getBaseActionID: function (action) {
@@ -1450,7 +1473,7 @@ define([
 			}
 		},
 
-		getImprovementNameForAction: function(action, disableWarnings) {
+		getImprovementNameForAction: function (action, disableWarnings) {
 			var baseId = this.getBaseActionID(action);
 			
 			if (this.isImproveBuildingAction(baseId)) {

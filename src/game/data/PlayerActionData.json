@@ -1203,19 +1203,19 @@
         "flee": "Abandon what you were doing and run.",
         "improve_in_apothecary": "Increase efficiency",
         "improve_in_barracks": "Improve soldiers",
-        "improve_in_campfire": "Increase rumour generation",
         "improve_in_cementmill": "Increase efficiency",
+        "improve_in_darkfarm": "Increase efficiency",
         "improve_in_fortification": "Increase defence bonus",
         "improve_in_garden": "Increase reputation bonus",
         "improve_in_generator": "Increase reputation bonus",
+		"improve_in_hospital": "Improve the hospital",
         "improve_in_inn": "Increase rumour generation",
         "improve_in_library": "Increase evidence generation",
-        "improve_in_market": "Increase rumour generation",
         "improve_in_radiotower": "Increase reputation bonus",
         "improve_in_researchcenter": "Increase evidence generation",
         "improve_in_smithy": "Increase efficiency",
         "improve_in_stable": "Improve caravan capacity",
-        "improve_in_shrine": "Increase reputation bonus",
+        "improve_in_storage": "Improve storage capacity",
         "improve_in_square": "Increase reputation bonus",
         "improve_in_temple": "Increase favour generation",
         "investigate": "Look for resources.",
@@ -2469,18 +2469,6 @@
                 "improve_worker_cleric_2": true
             }
         },
-        "improve_in_apothecary": {
-            "improvements": {
-                "apothecary": [
-                    1,
-                    -1
-                ],
-                "camp": [
-                    1,
-                    -1
-                ]
-            }
-        },
         "improve_in_campfire": {
             "improvements": {
                 "camp": [
@@ -2496,18 +2484,6 @@
                 1,
                 -1
             ]
-        },
-        "improve_in_cementmill": {
-            "improvements": {
-                "camp": [
-                    1,
-                    -1
-                ],
-                "cementmill": [
-                    1,
-                    -1
-                ]
-            }
         },
         "improve_worker_apothecary_3": {
             "upgrades": {

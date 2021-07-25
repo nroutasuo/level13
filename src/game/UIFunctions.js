@@ -426,7 +426,7 @@ define(['ash',
 				// always visible: description
 				var description = GameGlobals.playerActionsHelper.getDescription(action);
 				if (description) {
-					content += "<span>" + description + "</span>";
+					content += "<span class='action-description'>" + description + "</span>";
 				}
 
 				// visible if button is enabled: costs, special requirements, & risks

@@ -141,7 +141,7 @@ define([
 			return 0.0015 * templeCount * templeLevelFactor;
 		},
 		
-		getCampfireRumourGenerationPerSecond: function (improvementsComponent, campfireUpgradeLevel, accSpeedPopulation) {
+		getCampfireRumourGenerationPerSecond: function (improvementsComponent, accSpeedPopulation) {
 			var campfireCount = improvementsComponent.getCount(improvementNames.campfire);
 			var campfireLevel = improvementsComponent.getLevel(improvementNames.campfire);
 			return CampConstants.getCampfireRumourGenerationPerSecond(campfireCount, campfireLevel, accSpeedPopulation);

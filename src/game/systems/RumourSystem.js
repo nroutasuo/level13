@@ -39,8 +39,6 @@ define([
 			rumoursComponent.accSources = [];
 			rumoursComponent.accumulation = 0;
 			
-			var campfireUpgradeLevel = this.getImprovementUpgradeLevel(improvementNames.campfire);
-			
 			if (this.campNodes.head) {
 				var accSpeed = 0;
 				var improvementsComponent;
@@ -48,7 +46,7 @@ define([
 					improvementsComponent = campNode.entity.get(SectorImprovementsComponent);
 					
 					var accSpeedPopulation = CampConstants.RUMOURS_PER_POP_PER_SEC_BASE * Math.floor(campNode.camp.population || 0) * GameConstants.gameSpeedCamp;
-					var accSpeedCampfire = GameGlobals.campHelper.getCampfireRumourGenerationPerSecond(improvementsComponent, campfireUpgradeLevel, accSpeedPopulation) || 0;
+					var accSpeedCampfire = GameGlobals.campHelper.getCampfireRumourGenerationPerSecond(improvementsComponent, accSpeedPopulation) || 0;
 					var accSpeedMarket = GameGlobals.campHelper.getMarketRumourGenerationPerSecond(improvementsComponent, accSpeedPopulation) || 0;
 					var accSpeedInn = GameGlobals.campHelper.getInnRumourGenerationPerSecond(improvementsComponent, accSpeedPopulation) || 0;
 					
