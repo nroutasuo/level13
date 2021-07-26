@@ -80,7 +80,7 @@ define(['ash', 'game/GameGlobals', 'game/vos/PlayerActionVO'], function (Ash, Ga
 				case "use_in_home": return "resting";
 				case "use_in_campfire": return "discussing";
 				case "use_in_hospital": return "recovering";
-				case "use_in_hospital_2": return "boosting";
+				case "use_in_hospital_2": return "augmenting";
 				case "use_in_market": return "visiting";
 				case "use_in_temple": return "donating";
 				case "use_in_shrine": return "meditating";

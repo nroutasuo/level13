@@ -294,7 +294,7 @@
 				}
 				var improveButton = "";
 				if (hasImproveAction) {
-					improveButton = "<button class='action action-improve btn-compact' action='" + improveAction + "'></button>";
+					improveButton = "<button class='action action-improve btn-glyph-big' action='" + improveAction + "'></button>";
 				}
 				tds += "<td>" + buildButton + "</td>";
 				tds += "<td><span class='improvement-badge improvement-count'>0</span></td>";

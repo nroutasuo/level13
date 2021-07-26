@@ -958,6 +958,13 @@ define([
 				case "use_in_inn":
 					var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 					return itemsComponent.getEquipped(ItemConstants.itemTypes.follower).length;
+				
+				case "use_in_hospital_2":
+					let perksComponent = this.playerStatsNodes.head.perks;
+					let ordinal = 1;
+					if (perksComponent.hasPerk(PerkConstants.perkIds.healthBonus2))
+						ordinal = 2;
+					return ordinal;
 
 				case "build_out_passage_down_stairs":
 				case "build_out_passage_down_elevator":
@@ -1082,6 +1089,7 @@ define([
 					requirements.sector.scoutedLocales = {};
 					requirements.sector.scoutedLocales[localei] = false;
 					return requirements;
+					
 				case "fight_gang":
 					requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
 					var direction = parseInt(action.split("_")[2]);
@@ -1090,6 +1098,7 @@ define([
 					var blockerKey = "blocker" + directionName.toUpperCase();
 					requirements.sector[blockerKey] = true;
 					return requirements;
+					
 				case "clear_waste_t":
 				case "clear_waste_r":
 					requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
@@ -1097,6 +1106,7 @@ define([
 					requirements.sector = $.extend({}, PlayerActionConstants.requirements[baseActionID].sector);
 					requirements.sector["isWasteCleared_" + direction] = false;
 					return requirements;
+					
 				case "create_blueprint":
 					requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
 					let upgradeId = action.replace(baseActionID + "_", "");
@@ -1107,6 +1117,19 @@ define([
 						requirements.workers.cleric = [1, -1];
 					}
 					return requirements;
+					
+				case "use_in_hospital_2":
+					let ordinal = this.getActionOrdinal(action);
+					let perkID = ordinal == 1 ? PerkConstants.perkIds.healthBonus2 : PerkConstants.perkIds.healthBonus3;
+					let minLevel = ordinal + 1;
+					let maxHealth = PerkConstants.getPerk(perkID).effect;
+					requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
+					requirements.improvementMajorLevel = {};
+					requirements.improvementMajorLevel["hospital"] = [ minLevel, -1 ];
+					requirements.perks = {};
+					requirements.perks["Health"] = [ -1, maxHealth ];
+					return requirements;
+					
 				case "build_out_passage_up_stairs":
 				case "build_out_passage_up_elevator":
 				case "build_out_passage_up_hole":

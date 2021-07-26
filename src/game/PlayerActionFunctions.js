@@ -1343,7 +1343,12 @@ define(['ash',
 
 		useHospital2: function () {
 			var perksComponent = this.playerStatsNodes.head.perks;
-			perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.healthBonus3));
+			if (perksComponent.hasPerk(PerkConstants.perkIds.healthBonus2)) {
+				perksComponent.removePerkById(PerkConstants.perkIds.healthBonus2);
+				perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.healthBonus3));
+			} else {
+				perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.healthBonus2));
+			}
 			this.addLogMessage(LogConstants.MSG_ID_USE_HOSPITAL2, "Improved health.");
 			this.completeAction("use_in_hospital_2");
 			this.forceResourceBarUpdate();

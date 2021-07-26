@@ -1169,7 +1169,8 @@
             "resource_food": 50,
             "resource_water": 30
         },
-        "use_in_hospital2": {
+        "use_in_hospital_2": {
+			"cost_factor_expBase": 1.5,
 			"resource_medicine": 100,
             "resource_water": 100
         },
@@ -3185,20 +3186,7 @@
                     1,
                     -1
                 ]
-            },
-			"improvementMajorLevel": {
-				"hospital": [
-					3,
-					-1
-				]
-			},
-            "perks": {
-                "Health": [
-                    -1,
-                    1.5
-                ]
-            },
-            "upgrades": {}
+            }
         },
         "use_in_inn": {
             "busy": false,

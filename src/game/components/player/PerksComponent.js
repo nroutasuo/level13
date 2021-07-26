@@ -44,7 +44,7 @@ function (Ash, GlobalSignals, PerkVO, PerkConstants) {
 			return null;
 		},
 
-		getAll: function() {
+		getAll: function () {
 			var all = [];
 			for (var key in this.perks) {
 				for( var i = 0; i < this.perks[key].length; i++) {

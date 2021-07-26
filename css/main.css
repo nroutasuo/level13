@@ -401,6 +401,10 @@ body.dark .columns-child-small {
 body.dark table.fullwidth {
   width: 100%;
 }
+body.dark td,
+body.dark th {
+  transition: all 0.15s;
+}
 body.dark .balancing-tab table {
   font-size: 80%;
 }
@@ -450,6 +454,24 @@ body.dark table th.sortable {
 body.dark table.highlight-row tr:hover {
   background: rgba(255, 255, 255, 0.1);
 }
+body.dark table th.foldable-table-header {
+  background: #444;
+  cursor: pointer;
+}
+body.dark table th.foldable-table-header.folded-table-header {
+  background: #444;
+  font-weight: bold;
+  cursor: pointer;
+}
+body.dark td.folded-table-cell,
+body.dark th.folded-table-cell {
+  min-width: 1px !important;
+  overflow: hidden;
+  text-overflow: clip;
+  max-width: 1px;
+  padding: 0;
+  color: transparent;
+}
 body.dark td.minwidth {
   width: 5%;
 }
@@ -459,6 +481,10 @@ body.dark td.maxwidth {
 body.dark td.list-amount,
 body.dark td.list-storage {
   min-width: 30pt;
+  text-align: center;
+}
+body.dark td.list-ordinal {
+  min-width: 10pt;
   text-align: center;
 }
 body.dark td.list-description {
@@ -633,6 +659,12 @@ body.dark button.btn-glyph {
   text-align: center;
   border-width: 1px;
   border-radius: 1px;
+}
+body.dark button.btn-glyph-big {
+  width: auto !important;
+  min-width: 2.5em;
+  padding-left: 0;
+  padding-right: 0;
 }
 body.dark button.btn-meta {
   width: auto;
@@ -2376,6 +2408,10 @@ body.sunlit .columns-child-small {
 body.sunlit table.fullwidth {
   width: 100%;
 }
+body.sunlit td,
+body.sunlit th {
+  transition: all 0.15s;
+}
 body.sunlit .balancing-tab table {
   font-size: 80%;
 }
@@ -2425,6 +2461,24 @@ body.sunlit table th.sortable {
 body.sunlit table.highlight-row tr:hover {
   background: rgba(255, 255, 255, 0.1);
 }
+body.sunlit table th.foldable-table-header {
+  background: #ddd;
+  cursor: pointer;
+}
+body.sunlit table th.foldable-table-header.folded-table-header {
+  background: #ddd;
+  font-weight: bold;
+  cursor: pointer;
+}
+body.sunlit td.folded-table-cell,
+body.sunlit th.folded-table-cell {
+  min-width: 1px !important;
+  overflow: hidden;
+  text-overflow: clip;
+  max-width: 1px;
+  padding: 0;
+  color: transparent;
+}
 body.sunlit td.minwidth {
   width: 5%;
 }
@@ -2434,6 +2488,10 @@ body.sunlit td.maxwidth {
 body.sunlit td.list-amount,
 body.sunlit td.list-storage {
   min-width: 30pt;
+  text-align: center;
+}
+body.sunlit td.list-ordinal {
+  min-width: 10pt;
   text-align: center;
 }
 body.sunlit td.list-description {
@@ -2608,6 +2666,12 @@ body.sunlit button.btn-glyph {
   text-align: center;
   border-width: 1px;
   border-radius: 1px;
+}
+body.sunlit button.btn-glyph-big {
+  width: auto !important;
+  min-width: 2.5em;
+  padding-left: 0;
+  padding-right: 0;
 }
 body.sunlit button.btn-meta {
   width: auto;

@@ -106,6 +106,10 @@ table.fullwidth {
 	width: 100%;
 }
 
+td, th {
+	transition: all 0.15s;
+}
+
 .balancing-tab table {
 	font-size: 80%;
 }
@@ -171,6 +175,26 @@ table.highlight-row tr:hover {
 	background: rgba(255, 255, 255, 0.1);
 }
 
+table th.foldable-table-header {
+	background: @color-bg-element-2;
+	cursor: pointer;
+}
+
+table th.foldable-table-header.folded-table-header {
+	background: @color-bg-element-2;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+td.folded-table-cell, th.folded-table-cell {
+    min-width: 1px !important;
+    overflow: hidden;
+    text-overflow: clip;
+    max-width: 1px;
+    padding: 0;
+    color: transparent;
+}
+
 // TABLE CELL UTILITY CLASSES
 
 td.minwidth {
@@ -183,6 +207,11 @@ td.maxwidth {
 
 td.list-amount, td.list-storage {
 	min-width: 30pt;
+	text-align: center;
+}
+
+td.list-ordinal {
+	min-width: 10pt;
 	text-align: center;
 }
 
