@@ -292,7 +292,7 @@ define([
 				var improvedBuildings = GameGlobals.upgradeEffectsHelper.getImprovedBuildings(upgradeId);
 				if (improvedBuildings.length > 0) {
 					for (var i in improvedBuildings) {
-						effects += "improved " + improvedBuildings[i].toLowerCase();
+						effects += "improved " + this.getImprovementDisplayName(improvedBuildings[i]).toLowerCase();
 					}
 					effects += ", ";
 				}
@@ -357,7 +357,8 @@ define([
 		},
 		
 		getImprovementDisplayName: function (improvementName) {
-			return improvementName;
+			// TODO determine what improvement level to use (average? current camp?)
+			return ImprovementConstants.getImprovementDisplayName(improvementName);
 		},
 		
 	});

@@ -1262,11 +1262,12 @@ define(['ash',
 			var sector = this.playerLocationNodes.head.entity;
 			var improvementsComponent = sector.get(SectorImprovementsComponent);
 			improvementsComponent.improve(improvementName);
+			let level = improvementsComponent.getLevel(improvementName);
 			GlobalSignals.improvementBuiltSignal.dispatch();
 			this.forceResourceBarUpdate();
 			this.save();
 			
-			this.addLogMessage("MSG_ID_IMPROVE_" + param, ImprovementConstants.getImprovedLogMessage(improvementID));
+			this.addLogMessage("MSG_ID_IMPROVE_" + param, ImprovementConstants.getImprovedLogMessage(improvementID, level));
 		},
 		
 		collectFood: function (param, amount) {

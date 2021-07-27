@@ -182,7 +182,7 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 					for (let i = 0; i < buildings.length; i++) {
 						let building = buildings[i];
 						if (building.length < 2) continue;
-						addUpgradeEffectToList(UpgradeConstants.improvingUpgradesByImprovement, improvementNames[building], def.id);
+						addUpgradeEffectToList(UpgradeConstants.improvingUpgradesByImprovement, building, def.id);
 					}
 				}
 				if (def.effects.improvesWorker) {

@@ -2,11 +2,12 @@
 define([
 	'ash',
 	'game/GameGlobals',
+	'game/constants/ImprovementConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/OccurrenceConstants',
 	'game/vos/ImprovementVO',
-], function (Ash, GameGlobals, UpgradeConstants, PlayerActionConstants, OccurrenceConstants, ImprovementVO) {
+], function (Ash, GameGlobals, ImprovementConstants, UpgradeConstants, PlayerActionConstants, OccurrenceConstants, ImprovementVO) {
 	
 	var UpgradeEffectsHelper = Ash.Class.extend({
 		
@@ -179,7 +180,8 @@ define([
 		},
 		
 		getUpgradeIdsForImprovement: function (improvementName) {
-			return UpgradeConstants.improvingUpgradesByImprovement[improvementName] || [];
+			let id = ImprovementConstants.getImprovementID(improvementName);
+			return UpgradeConstants.improvingUpgradesByImprovement[id] || [];
 		},
 		
 		getImprovementForOccurrence: function (occurrence) {

@@ -283,7 +283,7 @@
 				var useActionExtra = "use_in_" + key + "_2";
 				var hasUseActionExtra = PlayerActionConstants.hasAction(useActionExtra);
 				
-				var buildButton = "<button class='action action-build action-location' action='" + buildAction +"'>" + name + "</button>";
+				var buildButton = "<button class='action action-build action-location' action='" + buildAction +"'>" + "" + "</button>";
 				var useButton = "";
 				if (hasUseAction) {
 					useButton = "<button class='action action-use action-location btn-narrow' action='" + useAction + "'>" + def.useActionName + "</button>";
@@ -320,12 +320,13 @@
 				var improveAction = $(this).find("button.action-improve").attr("action");
 				var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(buildAction);
 				if (!improvementName) return;
+				var btnBuild = $(this).find(".action-build");
 				var btnUse = $(this).find(".action-use");
 				var btnUse2 = $(this).find(".action-use2");
 				var btnImprove = $(this).find(".action-improve");
 				var count = $(this).find(".improvement-count")
 				var level = $(this).find(".improvement-level")
-				result.push({ tr: $(this), btnUse: btnUse, btnUse2: btnUse2, btnImprove: btnImprove, count: count, level: level, id: id, action: buildAction, improveAction: improveAction, improvementName: improvementName });
+				result.push({ tr: $(this), btnBuild: btnBuild, btnUse: btnUse, btnUse2: btnUse2, btnImprove: btnImprove, count: count, level: level, id: id, action: buildAction, improveAction: improveAction, improvementName: improvementName });
 			});
 			this.elements.improvementRows = result;
 		},
@@ -393,6 +394,7 @@
 				elem.level.text(improvementLevel);
 				elem.level.toggleClass("badge-disabled", existingImprovements < 1 || !improveAction || maxImprovementLevel <= 1);
 				
+				elem.btnBuild.find(".btn-label").text(ImprovementConstants.getImprovementDisplayName(improvementID, improvementLevel));
 				elem.btnImprove.find(".btn-label").text(isNextLevelMajor ? "▲" : "△")
 
 				var commonVisibilityRule = (buildActionEnabled || existingImprovements > 0 || showActionDisabledReason);

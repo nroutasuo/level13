@@ -1714,7 +1714,8 @@ define([
 				case "passageDown":
 					return "passage";
 				default:
-					return improvementNames[improvementID];
+					// TODO determine improvement level to use
+					return ImprovementConstants.getImprovementDisplayName(improvementID);
 			}
 		},
 		
