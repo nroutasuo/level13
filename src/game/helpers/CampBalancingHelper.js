@@ -380,7 +380,7 @@ define([
 				var defenceLimit = CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
 				var noDefences = danger > defenceLimit;
 				if (noDefences) {
-					if (improvementName != improvementNames.fortification && improvementName != improvementNames.fortification2) {
+					if (improvementName != improvementNames.fortification) {
 						return false;
 					}
 				}

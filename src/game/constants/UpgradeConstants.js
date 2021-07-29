@@ -52,7 +52,7 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 			unlock_item_weapon_11: "Improved war axes.",
 			unlock_item_clothing6: "Techniques for improving existing clothing for exploration",
 			improve_building_storage2: "Improving storage by controlling temperature.",
-			unlock_building_fortifications2: "Better fortifications",
+			improve_building_fortification_2: "Better fortifications",
 			unlock_item_clothing3h: "Good gloves to keep explorers safe",
 			unlock_item_clothing4he: "Protection against environmental hazards",
 			unlock_item_bag_3: "Unlock the automatic luggage.",

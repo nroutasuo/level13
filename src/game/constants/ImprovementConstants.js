@@ -92,12 +92,9 @@ define(['game/constants/CampConstants'], function (CampConstants) {
  				improvementLevelsPerTechLevel: 1,
 			},
 			fortification: {
-				description: "Camp defences: +" + CampConstants.FORTIFICATION_1_DEFENCE + ".",
-				improvementLevelsPerTechLevel: 1,
-			},
-			fortification2: {
-				description: "Camp defences: +" + CampConstants.FORTIFICATION_2_DEFENCE + ".",
-				improvementLevelsPerTechLevel: 1,
+				description: "Increases camp defences.",
+				improvementLevelsPerTechLevel: 5,
+				improvementLevelsPerMajorLevel: 5,
 			},
 			researchcenter: {
 				improvementLevelsPerTechLevel: 5,

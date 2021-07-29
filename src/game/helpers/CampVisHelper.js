@@ -79,7 +79,6 @@ function (Ash) {
 				case improvementNames.darkfarm:
 					return { x: s * 1.5, y: s * 1.25 };
 				case improvementNames.fortification:
-				case improvementNames.fortification2:
 					return { x: 1000, y: s * 1 };
 				case improvementNames.generator:
 					return { x: s * 0.9, y: s * 0.65 };
@@ -113,9 +112,7 @@ function (Ash) {
 		
 		isConflict: function (coords1, coords2, buildingType1, buildingType2) {
 			if (buildingType1 == improvementNames.fortification) return false;
-			if (buildingType1 == improvementNames.fortification2) return false;
 			if (buildingType2 == improvementNames.fortification) return false;
-			if (buildingType2 == improvementNames.fortification2) return false;
 			var width1 = this.getBuildingSize(buildingType1).x;
 			var width2 = this.getBuildingSize(buildingType2).x;
 			var x1 = coords1.x * this.gridX;
@@ -167,7 +164,6 @@ function (Ash) {
 			// z-coordinate: some buildings prefer foreground/bacgrkound
 			switch (buildingType) {
 				case improvementNames.fortification:
-				case improvementNames.fortification2:
 					if (coords.z < 2) return false;
 					break;
 				case improvementNames.campfire:

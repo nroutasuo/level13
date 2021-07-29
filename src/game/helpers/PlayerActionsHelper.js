@@ -1474,7 +1474,6 @@ define([
 				case improvementNames.temple: return "build_in_temple";
 				case improvementNames.barracks: return "build_in_barracks";
 				case improvementNames.fortification: return "build_in_fortification";
-				case improvementNames.fortification2: return "build_in_fortification2";
 				case improvementNames.aqueduct: return "build_in_aqueduct";
 				case improvementNames.stable: return "build_in_stable";
 				case improvementNames.market: return "build_in_market";
@@ -1533,7 +1532,6 @@ define([
                 case "build_in_temple": return improvementNames.temple;
                 case "build_in_barracks": return improvementNames.barracks;
                 case "build_in_fortification": return improvementNames.fortification;
-                case "build_in_fortification2": return improvementNames.fortification2;
                 case "build_in_aqueduct": return improvementNames.aqueduct;
                 case "build_in_stable": return improvementNames.stable;
                 case "build_in_market": return improvementNames.market;
@@ -1713,6 +1711,8 @@ define([
 				case "passageUp":
 				case "passageDown":
 					return "passage";
+				case "camp":
+					return "camp";
 				default:
 					// TODO determine improvement level to use
 					return ImprovementConstants.getImprovementDisplayName(improvementID);

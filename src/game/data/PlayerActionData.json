@@ -77,10 +77,6 @@
             "resource_metal": 350,
             "resource_rope": 100
         },
-        "build_in_fortification2": {
-            "cost_factor_expBase": 1.35,
-            "resource_concrete": 400
-        },
         "build_in_garden": {
             "resource_metal": 650,
             "resource_rope": 300,
@@ -710,6 +706,15 @@
             },
             "resource_tools": 5
         },
+		"improve_in_fortification": {
+            "cost_factor_expBase": 1.25,
+			"resource_metal": 100,
+            "resource_concrete": {
+				"linearCost": 50,
+				"requiredOrdinal": 5
+			},
+            "resource_rope": 100
+		},
         "improve_in_generator": {
             "cost_factor_expBase": 1.5,
             "resource_concrete": 50,
@@ -970,7 +975,7 @@
             "evidence": 117,
             "rumours": 70
         },
-        "unlock_building_fortifications2": {
+        "improve_building_fortification_2": {
             "rumours": 1717
         },
         "unlock_building_generator": {
@@ -1452,21 +1457,14 @@
                 "house": [
                     1,
                     -1
-                ]
+                ],
+				"fortification": [
+					-1,
+					1
+				]
             },
             "upgrades": {
                 "unlock_building_fortifications": true
-            }
-        },
-        "build_in_fortification2": {
-            "improvements": {
-                "house": [
-                    1,
-                    -1
-                ]
-            },
-            "upgrades": {
-                "unlock_building_fortifications2": true
             }
         },
         "build_in_garden": {
@@ -2848,7 +2846,7 @@
                 "unlock_building_square": true
             }
         },
-        "unlock_building_fortifications2": {
+        "improve_building_fortification_2": {
             "blueprint": 11,
             "upgrades": {
                 "unlock_building_cementmill": true

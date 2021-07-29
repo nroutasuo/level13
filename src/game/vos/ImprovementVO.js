@@ -38,7 +38,6 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		radiotower: "Radio tower",
 		barracks: "Barracks",
 		fortification: "Fortification",
-		fortification2: "Concrete Fortification",
 		stable: "Caravan Stable",
 		aqueduct: "Aqueduct",
 		researchcenter: "Research center",
@@ -109,7 +108,6 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 				case improvementNames.lights:
 					return 4;
 				case improvementNames.fortification:
-				case improvementNames.fortification2:
 					return 2;
 				default:
 					return 1;
@@ -153,7 +151,6 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			case improvementNames.cementmill:
 			case improvementNames.barracks:
 			case improvementNames.fortification:
-			case improvementNames.fortification2:
 			case improvementNames.storage:
 			case improvementNames.stable:
 				return 0;

@@ -253,7 +253,6 @@ define([
 					CanvasUtils.drawLine(this.ctx, xpx + xw*2, ypx + 2, xpx + xw*2, ybottom);
 					break;
 				case improvementNames.fortification:
-				case improvementNames.fortification2:
 					var logw = 3;
 					var logh = n == 0 ? size.y : n >= 4 ? size.y * 2 : size.y * 1.5;
 					var logd = 18;

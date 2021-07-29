@@ -63,6 +63,17 @@
         "id": "improve_building_collector_water_2",
         "name": "Better buckets"
     },
+    "improve_building_fortification_2": {
+        "blueprintCampOrdinal": 11,
+        "blueprintIsCampless": true,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 3,
+        "effects": {
+            "improvesBuildings": "fortification"
+        },
+        "id": "improve_building_fortification_2",
+        "name": "Concrete Fortifications"
+    },
     "improve_building_hospital": {
         "blueprintCampOrdinal": 11,
         "blueprintIsCampless": false,
@@ -441,15 +452,6 @@
         "effects": {},
         "id": "unlock_building_fortifications",
         "name": "Fortifications"
-    },
-    "unlock_building_fortifications2": {
-        "blueprintCampOrdinal": 11,
-        "blueprintIsCampless": true,
-        "blueprintIsEarly": false,
-        "blueprintPieces": 3,
-        "effects": {},
-        "id": "unlock_building_fortifications2",
-        "name": "Concrete Fortifications"
     },
     "unlock_building_generator": {
         "blueprintCampOrdinal": 6,

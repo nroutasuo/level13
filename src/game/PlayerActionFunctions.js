@@ -210,7 +210,6 @@ define(['ash',
 				case "build_in_library": this.buildLibrary(param); break;
 				case "build_in_market": this.buildMarket(param); break;
 				case "build_in_fortification": this.buildFortification(param); break;
-				case "build_in_fortification2": this.buildFortification2(param); break;
 				case "build_in_aqueduct": this.buildAqueduct(param); break;
 				case "build_in_stable": this.buildStable(param); break;
 				case "build_in_barracks": this.buildBarracks(param); break;
@@ -1114,11 +1113,6 @@ define(['ash',
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_FORTIFICATION, "Fortified the camp.");
 		},
 
-		buildFortification2: function () {
-			this.buildImprovement("build_in_fortification2", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_fortification2"));
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_FORTIFICATION, "Fortified the camp.");
-		},
-
 		buildAqueduct: function () {
 			this.buildImprovement("build_in_aqueduct", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_aqueduct"));
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_AQUEDUCT, "Built an aqueduct.");
@@ -1294,6 +1288,7 @@ define(['ash',
 		useCampfire: function () {
 			var campSector = this.nearestCampNodes.head.entity;
 			var campComponent = campSector.get(CampComponent);
+			var improvementsComponent = campSector.get(SectorImprovementsComponent);
 			// TODO move this check to startAction
 			if (campSector) {
 				if (campComponent.rumourpool >= 1) {

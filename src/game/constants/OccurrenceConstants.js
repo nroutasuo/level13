@@ -102,7 +102,6 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 			var dangerPoints = 0;
 			dangerPoints += improvements.getTotal(improvementTypes.camp);
 			dangerPoints -= improvements.getCount(improvementNames.fortification);
-			dangerPoints -= improvements.getCount(improvementNames.fortification2);
 			return dangerPoints * 0.9;
 		},
 		
@@ -122,9 +121,10 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 		},
 		
 		getFortificationsDefencePoints: function (improvements) {
-			var regularFortifications = improvements.getCount(improvementNames.fortification) || 0;
-			var improvedFortifications = improvements.getCount(improvementNames.fortification2) || 0;
-			return regularFortifications * CampConstants.FORTIFICATION_1_DEFENCE + improvedFortifications * CampConstants.FORTIFICATION_2_DEFENCE;
+			let count = improvements.getCount(improvementNames.fortification) || 0;
+			let level = improvements.getLevel(improvementNames.fortification) || 1;
+			let levelFactor = 1 + (level - 1) * 0.5;
+			return count * CampConstants.FORTIFICATION_1_DEFENCE * levelFactor;
 		},
 		
 		getSoldierDefencePoints: function (soldiers, soldierLevel, barracksLevel) {
