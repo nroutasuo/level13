@@ -812,6 +812,14 @@
                 "expCost": 5
             }
         },
+		"improve_out_collector_food": {
+            "cost_factor_expBase": 1.25,
+			"resource_metal": 8
+		},
+		"improve_out_collector_water": {
+            "cost_factor_expBase": 1.25,
+			"resource_metal": 8
+		},
         "improve_worker_apothecary_3": {
             "favour": 11
         },
@@ -1224,6 +1232,8 @@
         "improve_in_storage": "Improve storage capacity",
         "improve_in_square": "Increase reputation bonus",
         "improve_in_temple": "Increase favour generation",
+		"improve_out_collector_food": "Increase trap capacity",
+		"improve_out_collector_water": "Increase bucket capacity",
         "investigate": "Look for resources.",
         "launch": "Leave this planet and launch for the great unknown.",
         "leave_camp": "Venture out into the corridors.",
@@ -2469,21 +2479,17 @@
             }
         },
         "improve_in_campfire": {
-            "improvements": {
-                "camp": [
-                    1,
-                    -1
-                ],
-                "campfire": [
-                    1,
-                    -1
-                ]
-            },
             "population": [
                 1,
                 -1
             ]
         },
+		"improve_out_collector_food": {
+			
+		},
+		"improve_out_collector_water": {
+			
+		},
         "improve_worker_apothecary_3": {
             "upgrades": {
                 "improve_building_apothecary": true

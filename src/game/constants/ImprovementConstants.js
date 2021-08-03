@@ -125,8 +125,12 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			generator: {
 				logMsgImproved: "Fixed up the generator",
 			},
-			collector_water: {},
-			collector_food: {},
+			collector_water: {
+				improvementLevelsPerTechLevel: 1,
+			},
+			collector_food: {
+				improvementLevelsPerTechLevel: 1,
+			},
 			passageUpStairs: {},
 			passageUpElevator: {},
 			passageUpHole: {},

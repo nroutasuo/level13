@@ -196,6 +196,7 @@ define(['ash',
 				case "build_out_spaceship1": this.buildSpaceShip1(param); break;
 				case "build_out_spaceship2": this.buildSpaceShip2(param); break;
 				case "build_out_spaceship3": this.buildSpaceShip3(param); break;
+				case "improve_out": this.improveOutImprovement(param); break;
 				// In improvements
 				case "build_in_campfire": this.buildCampfire(param); break;
 				case "build_in_house": this.buildHouse(param); break;
@@ -1044,6 +1045,13 @@ define(['ash',
 			this.buildImprovement(action, improvementNames.greenhouse, sector);
 			GameGlobals.gameState.unlockedFeatures.resources.herbs = true;
 		},
+		
+		improveOutImprovement: function (param) {
+			let improvementID = param;
+			let actionName = "improve_out_" + improvementID;
+			let improvementName = improvementNames[improvementID];
+			this.improveImprovement(actionName, improvementName);
+		},
 
 		buildTrap: function () {
 			this.buildImprovement("build_out_collector_food", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_collector_food"));
@@ -1253,15 +1261,20 @@ define(['ash',
 			let improvementID = param;
 			var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(actionName);
 			
+			this.improveImprovement(actionName, improvementName);
+		},
+		
+		improveImprovement: function (actionName, improvementName) {
 			var sector = this.playerLocationNodes.head.entity;
 			var improvementsComponent = sector.get(SectorImprovementsComponent);
+			let improvementID = ImprovementConstants.getImprovementID(improvementName);
 			improvementsComponent.improve(improvementName);
 			let level = improvementsComponent.getLevel(improvementName);
 			GlobalSignals.improvementBuiltSignal.dispatch();
 			this.forceResourceBarUpdate();
 			this.save();
 			
-			this.addLogMessage("MSG_ID_IMPROVE_" + param, ImprovementConstants.getImprovedLogMessage(improvementID, level));
+			this.addLogMessage("MSG_ID_IMPROVE_" + improvementName, ImprovementConstants.getImprovedLogMessage(improvementID, level));
 		},
 		
 		collectFood: function (param, amount) {

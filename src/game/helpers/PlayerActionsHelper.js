@@ -1406,6 +1406,7 @@ define([
 			var getBaseActionIdInternal = function (a) {
 				if (a.indexOf("build_in_") >= 0) return a;
 				if (a.indexOf("improve_in_") >= 0) return "improve_in";
+				if (a.indexOf("improve_out") >= 0) return "improve_out";
 				if (a.indexOf("scout_locale_i") >= 0) return "scout_locale_i";
 				if (a.indexOf("scout_locale_u") >= 0) return "scout_locale_u";
 				if (a.indexOf("craft_") >= 0) return "craft";
@@ -1563,7 +1564,7 @@ define([
 		getImprovementIDForAction: function (actionName) {
 			var baseId = this.getBaseActionID(actionName);
 			if (this.isImproveBuildingAction(baseId)) {
-				return actionName.replace("improve_in_", "");
+				return actionName.replace("improve_in_", "").replace("improve_out_", "");
 			}
 			let improvementName = this.getImprovementNameForAction(actionName);
 			return ImprovementConstants.getImprovementID(improvementName);
@@ -1703,7 +1704,7 @@ define([
 		},
 		
 		isImproveBuildingAction: function (baseActionID) {
-			return baseActionID == "improve_in";
+			return baseActionID == "improve_in" || baseActionID == "improve_out";
 		},
 		
 		getImprovementDisplayName: function (improvementID) {

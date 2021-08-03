@@ -597,6 +597,12 @@ define([
 				collectorFoodCapacity > 0 ? (Math.floor(collectorFood.storedResources.food * 10) / 10) + " / " + collectorFoodCapacity : "");
 			$("#out-improvements-collector-water .list-storage").text(
 				collectorWaterCapacity > 0 ? (Math.floor(collectorWater.storedResources.water * 10) / 10) + " / " + collectorWaterCapacity : "");
+				
+			let bucketMaxLevel = GameGlobals.campHelper.getCurrentMaxImprovementLevel(improvementNames.collector_water);
+			let trapMaxLevel = GameGlobals.campHelper.getCurrentMaxImprovementLevel(improvementNames.collector_food);
+				
+			GameGlobals.uiFunctions.toggle("#out-action-improve-bucket", bucketMaxLevel > 1);
+			GameGlobals.uiFunctions.toggle("#out-action-improve-trap", trapMaxLevel > 1);
 		},
 
 		updateLocales: function () {
