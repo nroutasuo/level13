@@ -346,6 +346,10 @@
             "item_res_silk": 1,
             "resource_rope": 10
         },
+		"craft_clothing_head_27": {
+            "item_res_leather": 1,
+            "resource_rope": 30
+		},
         "craft_clothing_head_2": {
             "item_res_silk": 3,
             "resource_rope": 50

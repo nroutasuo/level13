@@ -374,7 +374,7 @@
     },
     "clothing_hands_2": {
         "bonuses": {
-            "def": 3,
+            "def": 4,
             "res_poison": 3,
             "res_rad": 3,
             "warmth": 5
@@ -394,7 +394,7 @@
     },
     "clothing_hands_25": {
         "bonuses": {
-            "def": 4,
+            "def": 6,
             "res_poison": 3,
             "res_rad": 3,
             "warmth": 5
@@ -414,7 +414,7 @@
     },
     "clothing_hands_3": {
         "bonuses": {
-            "def": 6,
+            "def": 9,
             "res_poison": 10,
             "res_rad": 5,
             "warmth": 7
@@ -434,7 +434,7 @@
     },
     "clothing_hands_4": {
         "bonuses": {
-            "def": 8,
+            "def": 10,
             "res_poison": 15,
             "res_rad": 15,
             "warmth": 15
@@ -454,7 +454,7 @@
     },
     "clothing_hands_5": {
         "bonuses": {
-            "def": 9,
+            "def": 12,
             "res_poison": 15,
             "res_rad": 15,
             "warmth": 15
@@ -474,7 +474,7 @@
     },
     "clothing_hands_l14": {
         "bonuses": {
-            "def": 6,
+            "def": 8,
             "res_poison": 10,
             "res_rad": 10,
             "warmth": 5
@@ -558,7 +558,24 @@
         "name": "Bike helmet",
         "rarityScavenge": 3,
         "rarityTrade": 1,
-        "requiredCampOrdinal": 5,
+        "requiredCampOrdinal": 3,
+        "source": "equipment",
+        "type": "clothing_head"
+    },
+    "clothing_head_27": {
+        "bonuses": {
+            "def": 5,
+            "res_poison": 1,
+            "res_rad": 1,
+            "warmth": 5
+        },
+        "description": "Protects the head from blows and the wind.",
+        "icon": "img/items/clothing-hat-plus.png",
+        "id": "clothing_head_27",
+        "isCraftable": true,
+        "isEquippable": true,
+        "name": "Leather helmet",
+        "requiredCampOrdinal": 4,
         "source": "equipment",
         "type": "clothing_head"
     },
@@ -570,7 +587,7 @@
             "shade": 10,
             "warmth": 5
         },
-        "description": "Perfect apparel for the post-apocalyptic hero.",
+        "description": "Perfect apparel for the post-apocalyptic adventurer.",
         "icon": "img/items/clothing-hat-2.png",
         "id": "clothing_head_3",
         "isCraftable": true,
@@ -706,7 +723,7 @@
     },
     "clothing_lower_2": {
         "bonuses": {
-            "def": 2,
+            "def": 3,
             "warmth": 5
         },
         "description": "Used to be the standard uniform in the dark levels of the City.",
@@ -724,7 +741,7 @@
     },
     "clothing_lower_3": {
         "bonuses": {
-            "def": 4,
+            "def": 5,
             "warmth": 8
         },
         "description": "Looks official, but not particularly protective.",
@@ -742,7 +759,7 @@
     },
     "clothing_lower_4": {
         "bonuses": {
-            "def": 6,
+            "def": 8,
             "shield": 10,
             "warmth": 10
         },
@@ -761,7 +778,7 @@
     },
     "clothing_lower_45": {
         "bonuses": {
-            "def": 9,
+            "def": 11,
             "res_poison": 5,
             "res_rad": 5,
             "shield": 10,
@@ -782,7 +799,7 @@
     },
     "clothing_lower_5": {
         "bonuses": {
-            "def": 7,
+            "def": 6,
             "res_poison": 1,
             "res_rad": 1,
             "warmth": 50
