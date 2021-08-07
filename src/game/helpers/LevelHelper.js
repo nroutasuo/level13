@@ -561,7 +561,8 @@ define([
 			var sectorPassagesComponent = sectorEntity.get(PassagesComponent);
 			var featuresComponent = sectorEntity.get(SectorFeaturesComponent);
 			var improvementsComponent = sectorEntity.get(SectorImprovementsComponent);
-			var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(sectorPosition.level);
+			let level = sectorPosition.level;
+			var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(level);
 
 			var scouted = statusComponent && statusComponent.scouted;
 			if (!scouted) return projects;
@@ -661,6 +662,13 @@ define([
 							projects.push(new LevelProjectVO(new ImprovementVO(improvement), actions[i], sectorPosition));
 						}
 					}
+				}
+			}
+			
+			// trade connector
+			if (this.isFirstScoutedSectorWithFeatureOnLevel(sectorEntity, "hasTradeConnectorSpot")) {
+				if (GameGlobals.playerActionsHelper.getCurrentImprovementCountOnLevel(level, "tradepost_connector") <= 0) {
+					projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.tradepost_connector), "build_out_tradepost_connector", sectorPosition));
 				}
 			}
 			
@@ -806,6 +814,40 @@ define([
 			var settings = { skipUnvisited: false, skipBlockers: true, omitWarnings: false };
 			var path = this.findPathTo(startSector, goalSector, settings);
 			return path && path.length >= 0;
+		},
+		
+		isScoutedSectorWithFeature: function (sector, feature) {
+			let statusComponent = sector.get(SectorStatusComponent);
+			if (!statusComponent.scouted) return false;
+			let featuresComponent = sector.get(SectorFeaturesComponent);
+			if (!featuresComponent[feature]) return false;
+			return true;
+		},
+		
+		getFirstScoutedSectorWithFeatureOnLevel: function (level, feature) {
+			let result = null;
+			let minTimestamp = null;
+				
+			for (var i = 0; i < this.sectorEntitiesByLevel[level].length; i++) {
+				var sector = this.sectorEntitiesByLevel[level][i];
+				if (!this.isScoutedSectorWithFeature(sector, feature)) continue;
+				
+				let timestamp = sector.get(SectorStatusComponent).scoutedTimestamp;
+				if (!minTimestamp || minTimestamp > timestamp) {
+					result = sector;
+					minTimestamp = timestamp;
+				}
+			}
+			
+			return result;
+		},
+		
+		isFirstScoutedSectorWithFeatureOnLevel: function (sector, feature) {
+			if (!this.isScoutedSectorWithFeature(sector, feature)) return false;
+			let level = sector.get(PositionComponent).level;
+			
+			let first = this.getFirstScoutedSectorWithFeatureOnLevel(level, feature);
+			return first == sector;
 		},
 		
 		getLevelLocales: function (level, includeScouted, localeBracket, excludeLocaleVO, requireBlueprints) {

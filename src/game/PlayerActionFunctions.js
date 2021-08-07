@@ -193,6 +193,7 @@ define(['ash',
 				case "build_out_passage_up_elevator": this.buildPassageUpElevator(param); break;
 				case "build_out_passage_up_hole": this.buildPassageUpHole(param); break;
 				case "build_out_greenhouse": this.buildGreenhouse(param); break;
+				case "build_out_tradepost_connector": this.buildTradeConnector(param); break;
 				case "build_out_spaceship1": this.buildSpaceShip1(param); break;
 				case "build_out_spaceship2": this.buildSpaceShip2(param); break;
 				case "build_out_spaceship3": this.buildSpaceShip3(param); break;
@@ -522,73 +523,83 @@ define(['ash',
 			var sector = this.playerLocationNodes.head.entity;
 			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-			if (!sectorStatus.scouted) {
-				if (!GameGlobals.gameState.unlockedFeatures.evidence) {
-					GameGlobals.gameState.unlockedFeatures.evidence = true;
-					GlobalSignals.featureUnlockedSignal.dispatch();
-				}
-
-				if (!GameGlobals.gameState.unlockedFeatures.scout) {
-					GameGlobals.gameState.unlockedFeatures.scout = true;
-					GlobalSignals.featureUnlockedSignal.dispatch();
-				}
-
-				var logMsg = "Scouted the area.";
-				var found = false;
-				var sunlit = featuresComponent.sunlit;
-				if (featuresComponent.hasSpring) {
-					found = true;
-					logMsg += "<br/>Found " + Text.addArticle(TextConstants.getSpringName(featuresComponent)) + ".";
-				}
-				
-				var workshopComponent = sector.get(WorkshopComponent);
-				if (workshopComponent && workshopComponent.isClearable) {
-					found = true;
-					logMsg += "<br/>Found " + Text.addArticle(TextConstants.getWorkshopName(workshopComponent.resource));
-				}
-				
-				if (featuresComponent.campable) {
-					if (!this.nearestCampNodes.head || this.nearestCampNodes.head.position.level != this.playerLocationNodes.head.position.level) {
-						found = true;
-						logMsg += "<br/>This seems like a good place for a camp.";
-					}
-				}
-
-				var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
-				if (passagesComponent.passageUp) {
-					found = true;
-					logMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageUp, PositionConstants.DIRECTION_UP, sunlit) + " ";
-				}
-
-				if (passagesComponent.passageDown) {
-					found = true;
-					logMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageDown, PositionConstants.DIRECTION_DOWN, sunlit) + " ";
-				}
-
-				var sectorLocalesComponent = sector.get(SectorLocalesComponent);
-				if (sectorLocalesComponent.locales.length > 0) {
-					found = true;
-					var locale = sectorLocalesComponent.locales[0];
-					if (sectorLocalesComponent.locales.length > 1)
-						logMsg += "<br/>There are some interesting buildings here.";
-					else
-						logMsg += "<br/>There is a " + TextConstants.getLocaleName(locale, featuresComponent, true).toLowerCase() + " here that seems worth investigating.";
-				}
-
-				var playerActionFunctions = this;
-				var successCallback = function () {
-					sectorStatus.scouted = true;
-					GlobalSignals.sectorScoutedSignal.dispatch();
-					playerActionFunctions.completeAction("scout");
-					playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
-					playerActionFunctions.save();
-				};
-
-				var logMsgId = found ? LogConstants.MSG_ID_SCOUT_FOUND_SOMETHING : LogConstants.MSG_ID_SCOUT;
-				this.handleOutActionResults("scout", logMsgId, logMsg, logMsg, logMsg, true, found, successCallback);
-			} else {
+			
+			if (sectorStatus.scouted) {
 				log.w("Sector already scouted.");
+				return;
 			}
+			
+			if (!GameGlobals.gameState.unlockedFeatures.evidence) {
+				GameGlobals.gameState.unlockedFeatures.evidence = true;
+				GlobalSignals.featureUnlockedSignal.dispatch();
+			}
+
+			if (!GameGlobals.gameState.unlockedFeatures.scout) {
+				GameGlobals.gameState.unlockedFeatures.scout = true;
+				GlobalSignals.featureUnlockedSignal.dispatch();
+			}
+			
+			var level = sector.get(PositionComponent).level;
+
+			var logMsg = "Scouted the area.";
+			var found = false;
+			var sunlit = featuresComponent.sunlit;
+			if (featuresComponent.hasSpring) {
+				found = true;
+				logMsg += "<br/>Found " + Text.addArticle(TextConstants.getSpringName(featuresComponent)) + ".";
+			}
+			
+			if (featuresComponent.hasTradeConnectorSpot && !GameGlobals.levelHelper.getFirstScoutedSectorWithFeatureOnLevel(level, "hasTradeConnectorSpot")) {
+				found = true;
+				logMsg += "<br/>Found a good place for a bigger building project.";
+			}
+			
+			var workshopComponent = sector.get(WorkshopComponent);
+			if (workshopComponent && workshopComponent.isClearable) {
+				found = true;
+				logMsg += "<br/>Found " + Text.addArticle(TextConstants.getWorkshopName(workshopComponent.resource));
+			}
+			
+			if (featuresComponent.campable) {
+				if (!this.nearestCampNodes.head || this.nearestCampNodes.head.position.level != this.playerLocationNodes.head.position.level) {
+					found = true;
+					logMsg += "<br/>This seems like a good place for a camp.";
+				}
+			}
+
+			var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
+			if (passagesComponent.passageUp) {
+				found = true;
+				logMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageUp, PositionConstants.DIRECTION_UP, sunlit) + " ";
+			}
+
+			if (passagesComponent.passageDown) {
+				found = true;
+				logMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageDown, PositionConstants.DIRECTION_DOWN, sunlit) + " ";
+			}
+
+			var sectorLocalesComponent = sector.get(SectorLocalesComponent);
+			if (sectorLocalesComponent.locales.length > 0) {
+				found = true;
+				var locale = sectorLocalesComponent.locales[0];
+				if (sectorLocalesComponent.locales.length > 1)
+					logMsg += "<br/>There are some interesting buildings here.";
+				else
+					logMsg += "<br/>There is a " + TextConstants.getLocaleName(locale, featuresComponent, true).toLowerCase() + " here that seems worth investigating.";
+			}
+
+			var playerActionFunctions = this;
+			var successCallback = function () {
+				sectorStatus.scouted = true;
+				sectorStatus.scoutedTimestamp = new Date().getTime();
+				GlobalSignals.sectorScoutedSignal.dispatch();
+				playerActionFunctions.completeAction("scout");
+				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
+				playerActionFunctions.save();
+			};
+
+			var logMsgId = found ? LogConstants.MSG_ID_SCOUT_FOUND_SOMETHING : LogConstants.MSG_ID_SCOUT;
+			this.handleOutActionResults("scout", logMsgId, logMsg, logMsg, logMsg, true, found, successCallback);
 		},
 
 		scoutLocale: function (i) {
@@ -1044,6 +1055,13 @@ define(['ash',
 			var sector = this.getActionSector(action, sectorPos);
 			this.buildImprovement(action, improvementNames.greenhouse, sector);
 			GameGlobals.gameState.unlockedFeatures.resources.herbs = true;
+		},
+		
+		buildTradeConnector: function (sectorPos) {
+			var action = "build_out_tradepost_connector";
+			var position = this.getPositionVO(sectorPos);
+			var sector = this.getActionSector(action, sectorPos);
+			this.buildImprovement(action, improvementNames.tradepost_connector, sector);
 		},
 		
 		improveOutImprovement: function (param) {

@@ -1487,6 +1487,7 @@ define([
 				case improvementNames.passageDownElevator: return "build_out_passage_down_elevator";
 				case improvementNames.passageDownHole: return "build_out_passage_down_hole";
 				case improvementNames.greenhouse: return "build_out_greenhouse";
+				case improvementNames.tradepost_connector: return "build_out_tradepost_connector";
 				case improvementNames.camp: return "";
 				default:
 					if (!disableWarnings) {
@@ -1676,6 +1677,7 @@ define([
 				case "accept_inventory": return true;
 
 				case "build_out_greenhouse": return true;
+				case "build_out_tradepost_connector": return true;
 				case "clear_debris": return true;
 				case "bridge_gap": return true;
 

@@ -13,6 +13,8 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 		weightedNumScavenges: 0,
 		stashesFound: 0,
 		
+		scoutedTimestamp: 0,
+		
 		glowStickSeconds: -100, // not saved
 		hazardReduction: null, // not saved
 
@@ -99,8 +101,10 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 				copy.dR = this.discoveredResources;
 			if (this.scavenged)
 				copy.sc = this.scavenged ? 1 : 0;
-			if (this.scouted)
+			if (this.scouted) {
 				copy.s = this.scouted ? 1 : 0;
+				copy.st = this.scoutedTimestamp ? this.scoutedTimestamp : 1;
+			}
 			if (this.localesScouted.length > 0)
 				copy.lS = this.localesScouted;
 			if (this.wasteClearedDirections && this.wasteClearedDirections.length > 0)
@@ -120,6 +124,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			this.discoveredResources = componentValues.dR ? componentValues.dR : [];
 			this.scavenged = typeof componentValues.sc !== "undefined" ? componentValues.sc : false;
 			this.scouted = typeof componentValues.s !== "undefined" ? componentValues.s : false;
+			this.scoutedTimestamp = typeof componentValues.st !== "undefined" ? componentValues.st : this.scouted ? 1 : null;
 			if (componentValues.lS && componentValues.lS.length > 0)
 				this.localesScouted = componentValues.lS;
 			else

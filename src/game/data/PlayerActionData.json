@@ -281,6 +281,11 @@
             "resource_rope": 5000,
             "resource_tools": 1000
         },
+		"build_out_tradepost_connector": {
+			"resource_concrete": 300,
+			"resource_fuel": 100,
+			"resource_rope": 1000
+		},
         "clear_debris_e": {
             "resource_rope": 30
         },
@@ -788,9 +793,9 @@
 			"resource_rope": 50
 		},
 		"improve_in_storage": {
-			"cost_factor_expBase": 1.25,
-			"resource_metal": 100,
-			"resource_rope": 500
+			"cost_factor_expBase": 1.5,
+			"resource_metal": 120,
+			"resource_rope": 100
 		},
         "improve_in_square": {
             "cost_factor_expBase": 1.25,
@@ -1210,6 +1215,7 @@
         "build_out_camp": "A place to rest.",
         "build_out_collector_food": "Accumulates food.",
         "build_out_collector_water": "Accumulates water.",
+		"build_out_tradepost_connector": "Allows traders and workers to cross the dangerous level",
         "clear_debris": "Clear the debris blocking the way.",
         "clear_waste_r": "Clear the radiactive waste.",
         "clear_waste_t": "Clear the pollution.",
@@ -1378,6 +1384,10 @@
                     -1
                 ]
             },
+            "population": [
+                5,
+                -1
+            ],
             "upgrades": {
                 "unlock_building_apothecary": true
             }
@@ -1440,7 +1450,7 @@
                 ]
             },
             "population": [
-                9,
+                5,
                 -1
             ],
             "upgrades": {
@@ -1703,7 +1713,7 @@
                 ]
             },
             "population": [
-                9,
+                5,
                 -1
             ],
             "upgrades": {

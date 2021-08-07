@@ -45,7 +45,8 @@ define([
 				// level-wide features 1
 				this.generateZones(seed, worldVO, levelVO);
 				this.generateStashes(seed, worldVO, levelVO);
-				this.generateWorksops(seed, worldVO, levelVO);
+				this.generateWorkshops(seed, worldVO, levelVO);
+				this.generateBuildingProjectSpots(seed, worldVO, levelVO);
 				
 				// level path features
 				levelVO.paths = this.generatePaths(seed, worldVO, levelVO);
@@ -632,7 +633,7 @@ define([
 			}
 		},
 		
-		generateWorksops: function (seed, worldVO, levelVO) {
+		generateWorkshops: function (seed, worldVO, levelVO) {
 			var campOrdinal = levelVO.campOrdinal;
 			var l = levelVO.level;
 			let levelIndex = WorldCreatorHelper.getLevelIndexForCamp(seed, campOrdinal, levelVO.level);
@@ -680,6 +681,21 @@ define([
 				for (var j = 0; j < pathConstraints.length; j++) {
 					let criticalPathVO = new CriticalPathVO(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, workshopSectors[i].position, pathConstraints[j].startPosition);
 					WorldCreatorHelper.addCriticalPath(worldVO, criticalPathVO);
+				}
+			}
+		},
+		
+		generateBuildingProjectSpots: function (seed, worldVO, levelVO) {
+			var campOrdinal = levelVO.campOrdinal;
+			var l = levelVO.level;
+			
+			if (l == 14) {
+				let excludedZones = [ WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_CAMP_TO_PASSAGE, WorldConstants.ZONE_EXTRA_CAMPABLE ];
+				var options = { excludingFeature: "camp", excludedZones: excludedZones };
+				let sectors = WorldCreatorRandom.randomSectors(seed / 2 + 1111, worldVO, levelVO, 3, 4, options);
+				for (var i = 0; i < sectors.length; i++) {
+					sectors[i].hasTradeConnectorSpot = true;
+					WorldCreatorLogger.i("tradeConnectorSpot: " + sectors[i].position);
 				}
 			}
 		},

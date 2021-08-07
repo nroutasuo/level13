@@ -101,6 +101,7 @@ define([
 			sectorFeatures.hazards = sectorVO.hazards;
 			sectorFeatures.sectorType = sectorVO.sectorType;
 			sectorFeatures.hasSpring = sectorVO.hasSpring;
+			sectorFeatures.hasTradeConnectorSpot = sectorVO.hasTradeConnectorSpot;
 			sectorFeatures.resourcesScavengable = sectorVO.resourcesScavengable;
 			sectorFeatures.resourcesCollectable = sectorVO.resourcesCollectable;
 			sectorFeatures.workshopResource = sectorVO.workshopResource;

@@ -31,7 +31,7 @@ define(
 		resourcesCollectable: null,
 		
 		constructor: function (level, criticalPaths, zone, buildingDensity, wear, damage, sectorType, sunlit, ground, hazards,
-							   campable, notCampableReason, resourcesScavengable, resourcesCollectable, hasSpring, stashes) {
+							   campable, notCampableReason, resourcesScavengable, resourcesCollectable, hasSpring, hasTradeConnectorSpot, stashes) {
 			this.level = level;
 			this.criticalPaths = criticalPaths;
 			this.zone = zone;
@@ -47,6 +47,7 @@ define(
 			this.resourcesScavengable = resourcesScavengable || new ResourcesVO();
 			this.resourcesCollectable = resourcesCollectable || new ResourcesVO();
 			this.hasSpring = hasSpring;
+			this.hasTradeConnectorSpot = hasTradeConnectorSpot;
 			this.stashes = stashes || [];
 		},
 		

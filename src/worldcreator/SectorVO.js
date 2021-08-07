@@ -25,6 +25,7 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			this.sunlit = false;
 			this.hazards = new EnvironmentalHazardsVO();
 			this.hasSpring = false;
+			this.hasTradeConnectorSpot = false;
 			this.resourcesScavengable = new ResourcesVO();
 			this.resourcesCollectable = new ResourcesVO();
 			this.numLocaleEnemies = {};

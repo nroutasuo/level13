@@ -17,6 +17,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		spaceship2: "Colony Shield",
 		spaceship3: "Colony Life Support",
 		greenhouse: "Greenhouse",
+		tradepost_connector: "Great Elevator",
 		
 		home: "Tent",
 		house: "Hut",
@@ -134,6 +135,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			case improvementNames.passageDownElevator:
 			case improvementNames.passageDownHole:
 			case improvementNames.beacon:
+			case improvementNames.tradepost_connector:
 				return improvementTypes.level;
 
 			default:

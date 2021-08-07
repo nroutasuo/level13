@@ -35,14 +35,10 @@ define([
 
 		update: function (time) {
 			var numCamps = 0;
-			var numTradePostCamps = 0;
 			
 			// Global improvements
 			for (var node = this.campNodes.head; node; node = node.next) {
 				var improvementsComponent = node.entity.get(SectorImprovementsComponent);
-				if (improvementsComponent.getCount(improvementNames.tradepost) > 0) {
-					numTradePostCamps++;
-				}
 				if (improvementsComponent.getCount(improvementNames.inn) > 0) {
 					if (!GameGlobals.gameState.unlockedFeatures.followers)
 						GlobalSignals.featureUnlockedSignal.dispatch();
@@ -69,7 +65,6 @@ define([
 				GameGlobals.gameState.numCamps = numCamps;
 				gtag('set', { 'max_camp': GameGlobals.gameState.numCamps });
 			}
-			GameGlobals.gameState.numTradePostCamps = numTradePostCamps;
 			
 			if (!GameGlobals.gameState.unlockedFeatures.projects) {
 				// TODO check with upgrade effects (has unlocked any upgrade that unlocks projects)

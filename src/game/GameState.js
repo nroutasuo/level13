@@ -13,7 +13,6 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.playTime = 0; // total active play time - gameTime minus fast-forwarded time
 			this.isPaused = false;
 			this.numCamps = 0;
-			this.numTradePostCamps = 0;
 			this.numVisitedSectors = 0;
 			this.isFinished = false;
 			this.playedVersions = [];
