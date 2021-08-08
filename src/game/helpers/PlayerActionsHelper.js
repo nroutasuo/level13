@@ -559,6 +559,15 @@ define([
 						}
 					}
 
+					if (requirements.camp) {
+						if (requirements.camp.isReachableByTribeTraders) {
+							let isCampReachableByTribeTraders = GameGlobals.levelHelper.isCampReachableByTribeTraders(sector);
+							if (!isCampReachableByTribeTraders) {
+								return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_NOT_REACHABLE_BY_TRADERS };
+							}
+						}
+					}
+
 					if (requirements.sector) {
 						if (requirements.sector.collectable_water) {
 							var hasWater = featuresComponent.resourcesCollectable.water > 0;

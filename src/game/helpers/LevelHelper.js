@@ -816,6 +816,18 @@ define([
 			return path && path.length >= 0;
 		},
 		
+		isCampReachableByTribeTraders: function (sector) {
+			let camp = sector.get(CampComponent);
+			if (!camp) return false;
+			let position = sector.get(PositionComponent);
+			if (position.level > 14) {
+				if (this.getLevelBuiltOutImprovementsCount(14, improvementNames.tradepost_connector) < 1) {
+					return false;
+				}
+			}
+			return true;
+		},
+		
 		isScoutedSectorWithFeature: function (sector, feature) {
 			let statusComponent = sector.get(SectorStatusComponent);
 			if (!statusComponent.scouted) return false;

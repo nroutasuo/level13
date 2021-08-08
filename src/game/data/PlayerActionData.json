@@ -1797,6 +1797,9 @@
                 ]
             },
             "numCamps": 2,
+			"camp": {
+				"isReachableByTribeTraders": true
+			},
             "upgrades": {
                 "unlock_building_tradingpost": true
             }

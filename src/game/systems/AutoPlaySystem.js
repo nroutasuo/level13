@@ -204,7 +204,7 @@ define(['ash',
 			var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
 			var injuries = perksComponent.getPerksByType(PerkConstants.perkTypes.injury);
 			var itemsComponent = this.itemsNodes.head.items;
-			var hasHospital = this.getTotalImprovementsCount(improvementNames.hospital) > 0;
+			var hasHospital = GameGlobals.autoPlayHelper.getTotalImprovementsCount(improvementNames.hospital) > 0;
 			if (injuries.length > 2 && hasHospital && currentFood > 5 && currentWater > 5 && !autoPlayComponent.isExploring)
 				return false;
 

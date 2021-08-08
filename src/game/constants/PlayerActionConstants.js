@@ -13,6 +13,7 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 		UNAVAILABLE_REASON_NOT_IN_CAMP: 'Must be in camp to do this.',
 		UNAVAILABLE_REASON_POPULATION: "UNAVAILABLE_REASON_POPULATION",
 		DISABLED_REASON_NOT_ENOUGH_LEVEL_POP: 'Not enough people on this level.',
+		DISABLED_REASON_NOT_REACHABLE_BY_TRADERS: "Camp not reachable by traders.",
 		UNAVAILABLE_REASON_BUSY: 'Busy',
 		
 		loadData: function (data) {
