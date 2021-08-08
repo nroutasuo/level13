@@ -6,19 +6,16 @@ define([
 	'game/constants/CampConstants',
 	'game/constants/ImprovementConstants',
 	'game/constants/ItemConstants',
-	'game/constants/OccurrenceConstants',
-	'game/constants/WorldConstants',
+	'game/constants/TradeConstants',
 	'game/components/common/CampComponent',
 	'game/components/common/PositionComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
-	'game/components/type/LevelComponent',
 	'game/nodes/sector/CampNode',
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/vos/ResourcesVO',
-	'game/vos/IncomingCaravanVO',
-	'worldcreator/WorldCreatorConstants',
-], function (Ash, GameGlobals, GameConstants, CampConstants, ImprovementConstants, ItemConstants, OccurrenceConstants, WorldConstants,
-	CampComponent, PositionComponent, SectorImprovementsComponent, LevelComponent, CampNode, TribeUpgradesNode, ResourcesVO, IncomingCaravanVO, WorldCreatorConstants) {
+	'game/vos/IncomingCaravanVO'
+], function (Ash, GameGlobals, GameConstants, CampConstants, ImprovementConstants, ItemConstants, TradeConstants,
+	CampComponent, PositionComponent, SectorImprovementsComponent, CampNode, TribeUpgradesNode, ResourcesVO, IncomingCaravanVO) {
 	
 	var CampHelper = Ash.Class.extend({
 		
@@ -329,7 +326,7 @@ define([
 				usesCurrency = true;
 			} else {
 				// 5) trading partner trader: buys and sells same stuff as partner, plus occational items, currency based on partner
-				var partner = this.getRandomTradePartner(campOrdinal);
+				var partner = TradeConstants.getRandomTradePartner(campOrdinal);
 				name = "trader from " + partner.name;
 				for (var i = 0; i < partner.sellsResources.length; i++) {
 					sellResources.addResource(partner.sellsResources[i], minResAmount + Math.random() * randResAmount);

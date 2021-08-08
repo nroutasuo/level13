@@ -1,8 +1,8 @@
 define([
 	'ash',
-	'game/constants/PlayerActionConstants', 'game/constants/ItemConstants', 'game/constants/UpgradeConstants', 'game/constants/BagConstants',
+	'game/constants/PlayerActionConstants', 'game/constants/ItemConstants', 'game/constants/UpgradeConstants', 'game/constants/BagConstants', 'game/constants/WorldConstants',
 	'game/vos/TradingPartnerVO', 'game/vos/IncomingCaravanVO', 'game/vos/ResourcesVO', 'game/vos/ResultVO'],
-function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, IncomingCaravanVO, ResourcesVO, ResultVO) {
+function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConstants, WorldConstants, TradingPartnerVO, IncomingCaravanVO, ResourcesVO, ResultVO) {
 	
 	var TradeConstants = {
 		
@@ -36,13 +36,26 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 		},
 		
 		getRandomTradePartner: function (campOrdinal) {
-			var options = [];
-			for (var i = 0; i < this.TRADING_PARTNERS.length; i++) {
-				if (this.TRADING_PARTNERS[i].campOrdinal <= campOrdinal + 2 && this.TRADING_PARTNERS[i].campOrdinal >= campOrdinal - 5) {
-					options.push(this.TRADING_PARTNERS[i]);
-				}
-			}
+			var options = this.getValidTradePartners(campOrdinal);
 			return options[Math.floor(Math.random() * options.length)];
+		},
+		
+		getValidTradePartners: function (campOrdinal) {
+			let result = [];
+			for (var i = 0; i < this.TRADING_PARTNERS.length; i++) {
+				let tradePartnerCampOrdinal = this.TRADING_PARTNERS[i].campOrdinal;
+				if (campOrdinal <= WorldConstants.CAMP_ORDINAL_GROUND && tradePartnerCampOrdinal > WorldConstants.CAMP_ORDINAL_GROUND)
+					return false;
+				if (campOrdinal > WorldConstants.CAMP_ORDINAL_GROUND && tradePartnerCampOrdinal <= WorldConstants.CAMP_ORDINAL_GROUND)
+					return false;
+				if (tradePartnerCampOrdinal > campOrdinal + 1)
+					return false;
+				if (tradePartnerCampOrdinal < campOrdinal - 5)
+					return false;
+				
+				result.push(this.TRADING_PARTNERS[i]);
+			}
+			return result;
 		},
 		
 		makeResultVO: function (outgoingCaravan) {
