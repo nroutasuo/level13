@@ -114,6 +114,10 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 		mergedMessages: [
 			["SCAVENGE", "SCOUT", "SCOUT"],
 		],
+		
+		getUniqueID: function () {
+			return "unique-" + Math.floor(Math.random() * 100000);
+		},
 
 		getMergedMsgID: function (messages) {
 			var messageIDsToMatch = [];

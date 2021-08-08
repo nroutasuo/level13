@@ -5,6 +5,7 @@ define([
 	'game/constants/UIConstants',
 	'game/constants/CampConstants',
 	'game/constants/OccurrenceConstants',
+	'game/constants/WorldConstants',
 	'game/nodes/sector/CampNode',
 	'game/nodes/PlayerPositionNode',
 	'game/nodes/player/PlayerStatsNode',
@@ -19,7 +20,7 @@ define([
 	'game/components/sector/events/RaidComponent',
 	'game/components/sector/OutgoingCaravansComponent'
 ], function (
-	Ash, GameGlobals, GlobalSignals, UIConstants, CampConstants, OccurrenceConstants,
+	Ash, GameGlobals, GlobalSignals, UIConstants, CampConstants, OccurrenceConstants, WorldConstants,
 	CampNode, PlayerPositionNode, PlayerStatsNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent, ResourceAccumulationComponent, DeityComponent, LevelComponent, SectorImprovementsComponent, TraderComponent, RaidComponent, OutgoingCaravansComponent
 ) {
@@ -41,10 +42,12 @@ define([
 			POP_UNASSIGNED: "population-unassigned",
 			POP_DECREASING: "population-decreasing",
 			POP_INCREASING: "population-increasing",
-			EVENT_OUTGOING_CARAVAN: "outoing-caravan"
+			EVENT_OUTGOING_CARAVAN: "outoing-caravan",
+			STATUS_NON_REACHABLE_BY_TRADERS: "not-reachable-by-traders",
 		},
 
 		constructor: function () {
+			this.initElements();
 			return this;
 		},
 
@@ -66,6 +69,16 @@ define([
 			this.campNodes = null;
 			this.playerPosNodes = null;
 			GlobalSignals.removeAll(this);
+		},
+		
+		initElements: function () {
+			for (let i = WorldConstants.CAMPS_TOTAL; i > WorldConstants.CAMP_ORDINAL_GROUND; i--) {
+				this.createCampRow(i, this.getCampRowID(i));
+			}
+			this.createLevel14Row();
+			for (let i = 1; i <= WorldConstants.CAMP_ORDINAL_GROUND; i++) {
+				this.createCampRow(i, this.getCampRowID(i));
+			}
 		},
 
 		update: function () {
@@ -90,8 +103,11 @@ define([
 
 		refresh: function () {
 			$("#tab-header h2").text("Tribe");
-			this.updateMessages();
 			this.updateNodes(true);
+			this.updateMessages();
+			
+			GameGlobals.uiFunctions.toggle(".camp-overview-lvl14", GameGlobals.gameState.numCamps > 8);
+			$(".camp-overview-lvl14 hr").toggleClass("warning", GameGlobals.levelHelper.getLevelBuiltOutImprovementsCount(14, improvementNames.tradepost_connector) <= 0);
 		},
 
 		updateBubble: function () {
@@ -132,7 +148,8 @@ define([
 			
 			var camp = node.camp;
 			var level = node.entity.get(PositionComponent).level;
-
+			var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+			
 			this.updateCampNotifications(node);
 
 			var isAlert = this.alerts[level].length > 0;
@@ -140,11 +157,14 @@ define([
 
 			if (!isActive) return;
 
-			var rowID = "summary-camp-" + level;
+			var rowID = this.getCampRowID(campOrdinal);
 			var row = $("#camp-overview tr#" + rowID);
+			
+			GameGlobals.uiFunctions.toggle(row, true);
 
 			if (row.length < 1) {
-				this.createCampRow(node, rowID);
+				log.w("camp row missing: " + campOrdinal);
+				return;
 			}
 
 			// Update row
@@ -198,17 +218,18 @@ define([
 					this.notifications[level].push(this.campNotificationTypes.EVENT_OUTGOING_CARAVAN);
 				}
 			}
+			
+			if (level > 14 && !GameGlobals.levelHelper.isCampReachableByTribeTraders(node.entity)) {
+				this.notifications[level].push(this.campNotificationTypes.STATUS_NON_REACHABLE_BY_TRADERS)
+			}
 		},
 
-		createCampRow: function (node, rowID) {
-			var camp = node.camp;
-			var level = node.entity.get(PositionComponent).level;
-
-			var rowHTML = "<tr id='" + rowID + "' class='lvl13-box-1 camp-overview-camp'>";
-			var btnID = "out-action-move-camp-" + level;
-			var btnAction = "move_camp_global_" + level;
-			rowHTML += "<td class='camp-overview-level'><div class='camp-overview-level-container lvl13-box-1'>" + level + "</div></td>";
-			rowHTML += "<td class='camp-overview-name'>" + camp.campName + "</td>";
+		createCampRow: function (campOrdinal, rowID) {
+			var rowHTML = "<tr id='" + rowID + "' class='camp-overview-camp'>";
+			var btnID = "out-action-move-camp-" + campOrdinal;
+			var btnAction = "move_camp_global_" + campOrdinal;
+			rowHTML += "<td class='camp-overview-level'><div class='camp-overview-level-container lvl13-box-1'></div></td>";
+			rowHTML += "<td class='camp-overview-name'></td>";
 			rowHTML += "<td class='camp-overview-population list-amount nowrap'><span class='value'></span><span class='change-indicator'></span></td>";
 			rowHTML += "<td class='camp-overview-reputation list-amount nowrap'><span class='value'></span><span class='change-indicator'></span></td>";
 			rowHTML += "<td class='camp-overview-raid list-amount'><span class='value'></span></span></td>";
@@ -241,10 +262,16 @@ define([
 			$("#" + btnID).click(function(e) {
 				GameGlobals.uiFunctions.onTabClicked(GameGlobals.uiFunctions.elementIDs.tabs.in, GameGlobals.gameState, GameGlobals.uiFunctions);
 			});
-			GameGlobals.uiFunctions.registerActionButtonListeners("#" + rowID);
-			GameGlobals.uiFunctions.generateButtonOverlays("#" + rowID);
-			GameGlobals.uiFunctions.generateCallouts("#" + rowID);
-			GlobalSignals.elementCreatedSignal.dispatch();
+			
+			var row = $("#camp-overview tr#" + rowID);
+			GameGlobals.uiFunctions.toggle(row, false);
+		},
+		
+		createLevel14Row: function () {
+			var rowHTML = "<tr class='camp-overview-special-row'>";
+			rowHTML += "<td class='camp-overview-lvl14' colspan=10><hr></td>";
+			rowHTML += "</tr>";
+			$("#camp-overview").append(rowHTML);
 		},
 
 		updateCampRowMisc: function (node, rowID, isAlert, alerts) {
@@ -259,6 +286,8 @@ define([
 			GameGlobals.uiFunctions.toggle("#camp-overview tr#" + rowID + " .camp-overview-btn button", !isPlayerInCampLevel);
 			$("#camp-overview tr#" + rowID + " .camp-overview-name").text(camp.campName);
 			GameGlobals.uiFunctions.toggle("#camp-overview tr#" + rowID + " .camp-overview-camp-bubble .bubble", isAlert);
+			
+			$("#camp-overview tr#" + rowID + " .camp-overview-level-container").text(level);
 
 			var alertDesc = "";
 			for (var i = 0; i < alerts.length; i++) {
@@ -372,6 +401,7 @@ define([
 				case this.campNotificationTypes.POP_DECREASING: return "Population is decreasing on level " + level + "!";
 				case this.campNotificationTypes.EVENT_OUTGOING_CARAVAN: return "Outgoing caravan on level " + level + ".";
 				case this.campNotificationTypes.POP_INCREASING: return "Population is increasing on level " + level + ".";
+				case this.campNotificationTypes.STATUS_NON_REACHABLE_BY_TRADERS: return "Camp on level " + level + " can't trade resources with other camps.";
 				default: return null;
 			}
 		},
@@ -384,8 +414,9 @@ define([
 				case this.campNotificationTypes.EVENT_TRADER: return 3;
 				case this.campNotificationTypes.POP_UNASSIGNED: return 2;
 				case this.campNotificationTypes.POP_DECREASING: return 1;
-				case this.campNotificationTypes.POP_INCREASING: return 5;
+				case this.campNotificationTypes.POP_INCREASING: return 6;
 				case this.campNotificationTypes.EVENT_OUTGOING_CARAVAN: return 4;
+				case this.campNotificationTypes.STATUS_NON_REACHABLE_BY_TRADERS: return 5;
 				default: return 5;
 			}
 		},
@@ -408,6 +439,10 @@ define([
 				return levelb - levela;
 			});
 			this.sortedCampNodes = nodes;
+		},
+		
+		getCampRowID: function (campOrdinal) {
+			return "summary-camp-" + campOrdinal;
 		},
 
 		onTabChanged: function () {

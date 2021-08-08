@@ -357,29 +357,31 @@ define(['ash',
 			this.forceResourceBarUpdate();
 		},
 
-		moveToCamp: function (level) {
-			var campSector = null;
-			var campPosition = null;
+		moveToCamp: function (param) {
+			let campOrdinal = parseInt(param);
+			let campSector = null;
 			for (var node = this.campNodes.head; node; node = node.next) {
-				campPosition = node.position;
-				if (campPosition.level === parseInt(level)) {
+				let campPosition = node.position;
+				let foundCampOrdinal = GameGlobals.gameState.getCampOrdinal(campPosition.level);
+				if (foundCampOrdinal == campOrdinal) {
 					campSector = node.entity;
 					break;
 				}
 			}
+			
+			if (!campSector) {
+				log.w("No camp found for level " + level);
+				return;
+			}
 
 			var playerPos = this.playerPositionNodes.head.position;
-			if (campSector) {
-				campPosition = campSector.get(PositionComponent);
-				playerPos.level = campPosition.level;
-				playerPos.sectorX = campPosition.sectorX;
-				playerPos.sectorY = campPosition.sectorY;
-				this.engine.getSystem(PlayerPositionSystem).update();
-				this.enterCamp(true);
-				GlobalSignals.playerMovedSignal.dispatch(playerPos);
-			} else {
-				log.w("No camp found for level " + level);
-			}
+			campPosition = campSector.get(PositionComponent);
+			playerPos.level = campPosition.level;
+			playerPos.sectorX = campPosition.sectorX;
+			playerPos.sectorY = campPosition.sectorY;
+			this.engine.getSystem(PlayerPositionSystem).update();
+			this.enterCamp(true);
+			GlobalSignals.playerMovedSignal.dispatch(playerPos);
 		},
 
 		moveResFromCampToBag: function (resourcesVO) {
@@ -995,6 +997,10 @@ define(['ash',
 			if (level.get(LevelComponent).populationFactor < 1) {
 				this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP_LEVEL_POPULATION, "There are few signs of human life on this level.");
 			}
+			if (position.level == 15) {
+				this.addLogMessage(LogConstants.getUniqueID(), "It will be difficult to trade resources with camps from below Level 14 from here.");
+			}
+			
 			GlobalSignals.improvementBuiltSignal.dispatch();
 			GlobalSignals.campBuiltSignal.dispatch();
 			this.forceResourceBarUpdate();

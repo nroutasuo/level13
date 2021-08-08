@@ -538,10 +538,13 @@
 			var showLevelStats = GameGlobals.gameState.numCamps > 1;
 			if (showLevelStats) {
 				var levelComponent = this.playerLevelNodes.head.level;
+				var hasAccessToTradeNetwork = GameGlobals.resourcesHelper.hasAccessToTradeNetwork(this.playerLocationNodes.head.entity);
 				$("#in-demographics-level-population .value").text(levelComponent.populationFactor * 100 + "%");
+				$("#in-demographics-trade-network .value").text(hasAccessToTradeNetwork ? "yes" : "no");
+				$("#in-demographics-trade-network .value").toggleClass("warning", !hasAccessToTradeNetwork);
 			}
 
-			GameGlobals.uiFunctions.toggle("#id-demographics-level", showLevelStats);
+			GameGlobals.uiFunctions.toggle("#in-demographics-level", showLevelStats);
 			GameGlobals.uiFunctions.toggle("#in-demographics", showCalendar || showRaid || showLevelStats);
 		},
 

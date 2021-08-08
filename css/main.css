@@ -692,6 +692,9 @@ body.dark div.container-btn-action {
 body.dark table div.container-btn-action {
   margin: 2px 2px;
 }
+body.dark table.dense div.container-btn-action {
+  margin: 2px 2px;
+}
 body.dark div.container-btn-action button {
   margin: -1px;
 }
@@ -1487,6 +1490,9 @@ body.dark li.li-item-negative,
 body.dark .item-slot-lost .item-count {
   color: #e64646 !important;
 }
+body.dark hr.warning {
+  border-color: #e64646 !important;
+}
 body.dark .warning.progress-wrap {
   background: #e64646 !important;
 }
@@ -1957,9 +1963,17 @@ body.dark .camp-overview-level-container {
   background: inherit;
   font-weight: bold;
 }
-body.dark #camp-overview tr {
+body.dark tr.camp-overview-camp {
   border-style: solid;
   border-width: 1px;
+}
+body.dark .camp-overview-lvl14 {
+  text-align: center;
+  height: 1em;
+}
+body.dark #camp-overview hr {
+  margin: 0;
+  border: 1px solid #444;
 }
 body.dark #resultlist-inventorymanagement-found ul li,
 body.dark #resultlist-loststuff-lost ul li {
@@ -2697,6 +2711,9 @@ body.sunlit div.container-btn-action {
   border-width: 0px;
 }
 body.sunlit table div.container-btn-action {
+  margin: 2px 2px;
+}
+body.sunlit table.dense div.container-btn-action {
   margin: 2px 2px;
 }
 body.sunlit div.container-btn-action button {
@@ -3494,6 +3511,9 @@ body.sunlit li.li-item-negative,
 body.sunlit .item-slot-lost .item-count {
   color: #e64646 !important;
 }
+body.sunlit hr.warning {
+  border-color: #e64646 !important;
+}
 body.sunlit .warning.progress-wrap {
   background: #e64646 !important;
 }
@@ -3964,9 +3984,17 @@ body.sunlit .camp-overview-level-container {
   background: inherit;
   font-weight: bold;
 }
-body.sunlit #camp-overview tr {
+body.sunlit tr.camp-overview-camp {
   border-style: solid;
   border-width: 1px;
+}
+body.sunlit .camp-overview-lvl14 {
+  text-align: center;
+  height: 1em;
+}
+body.sunlit #camp-overview hr {
+  margin: 0;
+  border: 1px solid #ddd;
 }
 body.sunlit #resultlist-inventorymanagement-found ul li,
 body.sunlit #resultlist-loststuff-lost ul li {
