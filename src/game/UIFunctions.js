@@ -554,8 +554,8 @@ define(['ash',
 				$(scope + " button.action").wrap("<div class='container-btn-action' />");
 				$.each($(scope + " div.container-btn-action"), function () {
 					let $container = $(this);
-					if ($container.find(".cooldown-reqs")) {
-						log.w("generating double button overlays: " + scope);
+					if ($container.find(".cooldown-reqs").length > 0) {
+						log.w("generating double button overlays: " + $(this) + " | " + scope);
 					} else {
 						$container.append("<div class='cooldown-reqs' />");
 					}
