@@ -208,6 +208,16 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			return names[index];
 		},
 		
+		getImproveActionName: function (improvementName) {
+			let improvementID = ImprovementConstants.getImprovementID(improvementName);
+			let improvementType = getImprovementType(improvementName);
+			if (improvementType == improvementTypes.camp) {
+				return "improve_in_" + improvementID;
+			} else {
+				return "improve_out_" + improvementID;
+			}
+		},
+		
 		getImprovementActionOrdinalForImprovementLevel: function (improvementLevel) {
 			return improvementLevel - 1;
 		},

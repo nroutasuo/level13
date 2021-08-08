@@ -305,7 +305,7 @@ define([
 		getDefaultImprovementsCache: {},
 		
 		getDefaultImprovements: function (maxCampOrdinal, campOrdinal, storage, maximize) {
-			let cacheKey = maxCampOrdinal + "-" + campOrdinal + "-" + storage + "-" + maximize;
+			let cacheKey = maxCampOrdinal + "-" + campOrdinal + "-" + storage + "-" + (maximize || false);
 			if (this.getDefaultImprovementsCache[cacheKey]) return this.getDefaultImprovementsCache[cacheKey];
 			
 			let isOutpost = this.isOutpost(campOrdinal);
@@ -380,7 +380,7 @@ define([
 				var defenceLimit = CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
 				var noDefences = danger > defenceLimit;
 				if (noDefences) {
-					if (improvementName != improvementNames.fortification) {
+					if (improvementName != improvementNames.fortification && improvementName != improvementNames.barracks && improvementName != improvementNames.square) {
 						return false;
 					}
 				}
@@ -390,31 +390,68 @@ define([
 				return true;
 			};
 			
+			let checkBuild = function (improvementName) {
+				let actionName = GameGlobals.playerActionsHelper.getActionNameForImprovement(improvementName);
+				let ordinal = result.getCount(improvementName) + 1;
+				
+				if (!canBuild(improvementName, actionName, ordinal)) {
+					return false;
+				}
+				
+				if (!shouldBuild(improvementName, actionName, ordinal)) {
+					return false;
+				}
+				
+				return true;
+			};
+			
+			let canImprove = function (improvementName, actionName, ordinal) {
+				if (!PlayerActionConstants.hasAction(actionName)) return false;
+				if (result.getCount(improvementName) < 1) return false;
+				
+				let upgradeLevel  = GameGlobals.upgradeEffectsHelper.getExpectedBuildingUpgradeLevel(improvementName, maxCampOrdinal);
+				let maxLevel = GameGlobals.campBalancingHelper.getMaxImprovementLevel(improvementName, upgradeLevel);
+				if (ordinal > maxLevel) return false;
+				
+				return true;
+			};
+			
+			let checkImprove = function (improvementName) {
+				let actionName = ImprovementConstants.getImproveActionName(improvementName);
+				let ordinal = result.getLevel(improvementName) + 1;
+				
+				if (!canImprove(improvementName, actionName, ordinal)) {
+					return false;
+				}
+				
+				return true;
+			};
+			
 			let result = new SectorImprovementsComponent();
+			
 			let builtSomething = true;
-			let numBuilt = 0;
-			while (builtSomething) {
+			let improvedSomething = false;
+			while (builtSomething || improvedSomething) {
 				builtSomething = false;
+				improvedSomething = false;
 				for (var improvementID in ImprovementConstants.improvements) {
 					let improvementName = improvementNames[improvementID];
 					if (getImprovementType(improvementName) !== improvementTypes.camp) continue;
-					let actionName = GameGlobals.playerActionsHelper.getActionNameForImprovement(improvementName);
-					let ordinal = result.getCount(improvementName) + 1;
 					
-					if (!canBuild(improvementName, actionName, ordinal)) {
-						continue;
+					if (checkBuild(improvementName)) {
+						builtSomething = true;
+						result.add(improvementName, 1);
+						break;
 					}
 					
-					if (!shouldBuild(improvementName, actionName, ordinal)) {
-						continue;
+					if (checkImprove(improvementName)) {
+						improvedSomething = true;
+						result.improve(improvementName);
+						break;
 					}
-					
-					builtSomething = true;
-					numBuilt++;
-					result.add(improvementName, 1);
-					break;
 				}
 			}
+			
 			this.getDefaultImprovementsCache[cacheKey] = result;
 			
 			return result;
