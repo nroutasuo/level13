@@ -163,6 +163,7 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 				log.w("No description found for upgrade id: " + def.id);
 			}
 			UpgradeConstants.upgradeDefinitions[def.id] = new UpgradeVO(def.id, def.name, desc);
+			UpgradeConstants.upgradeDefinitions[def.id].campOrdinal = def.campOrdinal;
 			
 			if (def.blueprintPieces) {
 				UpgradeConstants.piecesByBlueprint[def.id] = def.blueprintPieces;
@@ -357,6 +358,10 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 			
 			return result;
 		},
+		
+		getExpectedCampOrdinalForUpgrade: function (upgrade) {
+			return UpgradeConstants.upgradeDefinitions[upgrade].campOrdinal || 1;
+		}
 		
 	};
 	

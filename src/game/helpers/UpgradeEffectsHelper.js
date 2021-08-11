@@ -213,7 +213,7 @@ define([
 			var buildingUpgrade;
 			for (var i in buildingUpgrades) {
 				buildingUpgrade = buildingUpgrades[i];
-				var requiredTechCampOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(buildingUpgrade);
+				var requiredTechCampOrdinal = UpgradeConstants.getExpectedCampOrdinalForUpgrade(buildingUpgrade);
 				if (requiredTechCampOrdinal <= campOrdinal) upgradeLevel++;
 			}
 			return upgradeLevel;

@@ -271,6 +271,12 @@ define([
 			return -1;
 		},
 		
+		getMaxImprovementLevelOnCamp: function (campOrdinal, improvementName) {
+			let techLevel = GameGlobals.upgradeEffectsHelper.getExpectedBuildingUpgradeLevel(improvementName, campOrdinal);
+			if (techLevel == 0) return 0;
+			return this.getMaxImprovementLevel(improvementName, techLevel);
+		},
+		
 		getMaxImprovementLevel: function (improvementName, upgradeLevel) {
 			upgradeLevel = upgradeLevel || this.getMaxImprovementTechLevel(improvementName);
 			let improvementID = ImprovementConstants.getImprovementID(improvementName);

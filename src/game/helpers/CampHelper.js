@@ -134,8 +134,7 @@ define([
 		getTempleFavourGenerationPerSecond: function (improvementsComponent) {
 			var templeCount = improvementsComponent.getCount(improvementNames.temple);
 			var templeLevel = improvementsComponent.getLevel(improvementNames.temple);
-			var templeLevelFactor = (1 + templeLevel * CampConstants.FAVOUR_BONUS_PER_TEMPLE_LEVEL);
-			return 0.0015 * templeCount * templeLevelFactor;
+			return CampConstants.getTempleFavourGenerationPerSecond(templeCount, templeLevel) * GameConstants.gameSpeedCamp;
 		},
 		
 		getCampfireRumourGenerationPerSecond: function (improvementsComponent, accSpeedPopulation) {

@@ -10,8 +10,8 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		// Storage
 		BASE_STORAGE: 50,
 		STORAGE_PER_IMPROVEMENT: 50,
-		STORAGE_PER_IMPROVEMENT_LEVEL_2: 80,
-		STORAGE_PER_IMPROVEMENT_LEVEL_3: 150,
+		STORAGE_PER_IMPROVEMENT_LEVEL_2: 75,
+		STORAGE_PER_IMPROVEMENT_LEVEL_3: 125,
 		
 		// Rumours
 		RUMOURS_PER_POP_PER_SEC_BASE: 0.0003,
@@ -234,6 +234,13 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		getResearchCenterEvidenceGenerationPerSecond: function (centerCount, centerLevel) {
 			var levelFactor = (1 + centerLevel * CampConstants.EVIDENCE_BONUS_PER_RESEARCH_CENTER_LEVEL);
 			return 0.0015 * centerCount * levelFactor;
+		},
+		
+		getTempleFavourGenerationPerSecond: function (templeCount, templeLevel) {
+			if (templeCount <= 0) return 0;
+			templeLevel = templeLevel || 1;
+			var templeLevelFactor = (1 + templeLevel * CampConstants.FAVOUR_BONUS_PER_TEMPLE_LEVEL);
+			return 0.0015 * templeCount * templeLevelFactor;
 		},
 		
 		getCampfireRumourGenerationPerSecond: function (campfireCount, campfireLevel, accSpeedPopulation) {
