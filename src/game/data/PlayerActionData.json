@@ -638,7 +638,7 @@
         },
         "improve_building_market2": {
             "evidence": 216,
-            "favour": 140,
+            "favour": 140
         },
         "improve_building_market3": {
             "favour": 368,
@@ -2412,7 +2412,7 @@
             }
         },
         "improve_building_hospital": {
-            "blueprint": 11,
+            "blueprint": 11
         },
         "improve_building_hospital_3": {
             "upgrades": {
@@ -2853,7 +2853,7 @@
             }
         },
         "unlock_building_cementmill": {
-            "blueprint": 6,
+            "blueprint": 6
         },
         "unlock_building_darkfarm": {
             "blueprint": 2,
@@ -2906,7 +2906,7 @@
             "blueprint": 3
         },
         "unlock_building_lights": {
-            "blueprint": 5,
+            "blueprint": 5
         },
         "unlock_building_market": {
             "blueprint": 3,
