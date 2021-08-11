@@ -5,6 +5,22 @@
 			"phase": "alpha",
 			"final": false,
 			"changes": [
+				{
+					"type": "GB",
+					"summary": "Unlock more levels"
+				},
+				{
+					"type": "GB",
+					"summary": "Adjust balancing for buildings, crafting and upgrades"
+				},
+				{
+					"type": "GD",
+					"summary": "Make building effects clearer (upgrades unlock building levels, no automatic effects)"
+				},
+				{
+					"type": "GD",
+					"summary": "Add upgrades to traps and buckets"
+				}
 			]
 		},
 		{
