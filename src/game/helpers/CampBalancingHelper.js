@@ -348,7 +348,7 @@ define([
 				// check required upgrades
 				if (reqs && reqs.upgrades) {
 					var upgradeRequirements = reqs.upgrades;
-					for (var upgradeId in upgradeRequirements) {
+					for (let upgradeId in upgradeRequirements) {
 						var requirementBoolean = upgradeRequirements[upgradeId];
 						var requiredTechCampOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(upgradeId);
 						var hasBoolean = requiredTechCampOrdinal <= maxCampOrdinal;
@@ -542,11 +542,11 @@ define([
 			step = step || WorldConstants.CAMP_STEP_END;
 			var minOrdinal;
 			var minStep;
-			for (var id in UpgradeConstants.upgradeDefinitions) {
+			for (let id in UpgradeConstants.upgradeDefinitions) {
 				minOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(id);
 				minStep = UpgradeConstants.getMinimumCampStepForUpgrade(id);
 				if (WorldConstants.isHigherOrEqualCampOrdinalAndStep(campOrdinal, step, minOrdinal, minStep)) {
-					result.addUpgrade(upgradeID);
+					result.addUpgrade(id);
 				}
 			}
 			return result;
