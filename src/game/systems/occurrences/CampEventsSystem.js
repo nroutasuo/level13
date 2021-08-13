@@ -256,7 +256,7 @@ define([
 			var raidComponent = sectorEntity.get(RaidComponent);
 			var soldiers = sectorEntity.get(CampComponent).assignedWorkers.soldier;
 			var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
-			var danger =OccurrenceConstants.getRaidDanger(improvements, soldiers, soldierLevel);
+			var danger = OccurrenceConstants.getRaidDanger(improvements, soldiers, soldierLevel);
 			var raidRoll = Math.random();
 			raidComponent.victory = raidRoll > danger;
 			log.i("end raid: danger: " + danger + ", raidRoll: " + UIConstants.roundValue(raidRoll) + " -> victory: " + raidComponent.victory);

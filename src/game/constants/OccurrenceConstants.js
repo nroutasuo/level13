@@ -102,7 +102,7 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 			var dangerPoints = 0;
 			dangerPoints += improvements.getTotal(improvementTypes.camp);
 			dangerPoints -= improvements.getCount(improvementNames.fortification);
-			return dangerPoints * 0.9;
+			return Math.round(dangerPoints * 0.9);
 		},
 		
 		getRaidDefencePoints: function (improvements, soldiers, soldierLevel) {

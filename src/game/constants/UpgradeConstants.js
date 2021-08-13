@@ -322,18 +322,8 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 				if (!costs) {
 					log.w("upgrade has no costs: " + upgrade);
 				} else {
-					if (costs.evidence) {
-						var evidenceOrdinal = TribeConstants.getFirstCampOrdinalWithMinStat("evidence", costs.evidence);
-						costCampOrdinal = Math.max(costCampOrdinal, evidenceOrdinal);
-					}
-					if (costs.rumours) {
-						var rumoursOrdinal = TribeConstants.getFirstCampOrdinalWithMinStat("rumours", costs.rumours);
-						costCampOrdinal = Math.max(costCampOrdinal, rumoursOrdinal);
-					}
 					if (costs.favour) {
 						costCampOrdinal = Math.max(costCampOrdinal, WorldConstants.CAMPS_BEFORE_GROUND);
-						var favourCampOrdinal = TribeConstants.getFirstCampOrdinalWithMinStat("favour", costs.favour);
-						costCampOrdinal = Math.max(costCampOrdinal, favourCampOrdinal);
 					}
 				}
 			}

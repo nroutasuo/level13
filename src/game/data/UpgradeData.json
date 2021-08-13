@@ -426,7 +426,7 @@
         "name": "Aqueducts"
     },
     "unlock_building_barracks": {
-        "campOrdinal": "9",
+        "campOrdinal": "7",
         "effects": {
             "unlocksWorker": "soldier"
         },
