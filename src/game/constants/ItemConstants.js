@@ -54,6 +54,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			res_poison: "res_poison",
 			shade: "shade",
 		},
+		
 		itemDefinitions: { },
 
 		loadData: function (data) {
@@ -66,6 +67,24 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 					new ItemVO(item.id, item.name, item.type, item.requiredCampOrdinal, item.isEquippable, item.isCraftable, item.isUseable, item.rarityScavenge, item.rarityTrade, bonuses, item.icon, item.description, item.isSpecialEquipment)
 				);
 			}
+		},
+		
+		getItemTypeDisplayName: function (type, short) {
+			switch (type) {
+				case ItemConstants.itemTypes.clothing_over:
+					return short ? "over" : "clothing (over)";
+				case ItemConstants.itemTypes.clothing_upper:
+					return short ? "upper" : "clothing (upper body)";
+				case ItemConstants.itemTypes.clothing_lower:
+					return short ? "lower" : "clothing (lower body)";
+				case ItemConstants.itemTypes.clothing_hands:
+					return short ? "hands" : "clothing (hands)";
+				case ItemConstants.itemTypes.clothing_head:
+					return short ? "head" : "clothing (head)";
+				case ItemConstants.itemTypes.ingredient:
+					return short ? "ingredient" : "crafting ingredient";
+			}
+			return ItemConstants.itemTypes[type];
 		},
 		
 		isMultiplier: function (itemBonusType) {

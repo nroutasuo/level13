@@ -53,7 +53,7 @@ define([
 			$.each($("#container-equipment-slots .item-slot"), function () {
 				var rawType = $(this).attr("id").split("-")[2];
 				var itemTypeName = ItemConstants.itemTypes[rawType];
-				var typeDisplay = ItemConstants.itemTypes[rawType].toLowerCase();
+				var typeDisplay = ItemConstants.getItemTypeDisplayName(itemTypeName, true);
 				$(this).append("<span class='item-slot-type-empty'>" + typeDisplay + "</span>");
 				$(this).append("<span class='item-slot-type-equipped vision-text'>" + typeDisplay + "</span>");
 				$(this).append("<span class='item-slot-name '></span>");

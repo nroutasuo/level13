@@ -93,7 +93,7 @@ define(['ash',
 			var detail = " (" + this.getItemBonusDescription(item, true, false) + ")";
 			if (detail.length < 5) detail = "";
 			var weight = BagConstants.getItemCapacity(item);
-			var itemCalloutContent = "<b>" + item.name + "</b><br/>Type: " + item.type + " " + detail;
+			var itemCalloutContent = "<b>" + item.name + "</b><br/>Type: " + ItemConstants.getItemTypeDisplayName(item.type, false) + " " + detail;
 			if (item.type !== ItemConstants.itemTypes.follower)
 				itemCalloutContent += "</br>Weight: " + weight;
 			itemCalloutContent += "</br>" + item.description;
