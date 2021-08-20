@@ -471,6 +471,14 @@ body.dark th.folded-table-cell {
   max-width: 1px;
   padding: 0;
   color: transparent;
+  -webkit-user-select: none;
+  /* Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE10+/Edge */
+  user-select: none;
+  /* Standard */
 }
 body.dark td.minwidth {
   width: 5%;
@@ -2492,6 +2500,14 @@ body.sunlit th.folded-table-cell {
   max-width: 1px;
   padding: 0;
   color: transparent;
+  -webkit-user-select: none;
+  /* Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE10+/Edge */
+  user-select: none;
+  /* Standard */
 }
 body.sunlit td.minwidth {
   width: 5%;
