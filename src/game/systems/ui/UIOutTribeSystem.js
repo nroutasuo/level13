@@ -16,13 +16,14 @@ define([
 	'game/components/player/DeityComponent',
 	'game/components/type/LevelComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
+	'game/components/sector/events/RecruitComponent',
 	'game/components/sector/events/TraderComponent',
 	'game/components/sector/events/RaidComponent',
 	'game/components/sector/OutgoingCaravansComponent'
 ], function (
 	Ash, GameGlobals, GlobalSignals, UIConstants, CampConstants, OccurrenceConstants, WorldConstants,
 	CampNode, PlayerPositionNode, PlayerStatsNode, TribeUpgradesNode,
-	PositionComponent, ResourcesComponent, ResourceAccumulationComponent, DeityComponent, LevelComponent, SectorImprovementsComponent, TraderComponent, RaidComponent, OutgoingCaravansComponent
+	PositionComponent, ResourcesComponent, ResourceAccumulationComponent, DeityComponent, LevelComponent, SectorImprovementsComponent, RecruitComponent, TraderComponent, RaidComponent, OutgoingCaravansComponent
 ) {
 	var UIOutTribeSystem = Ash.System.extend({
 
@@ -39,6 +40,7 @@ define([
 			EVENT_RAID_ONGOING: "event_raid-ongoing",
 			EVENT_RAID_RECENT: "event_raid-recent",
 			EVENT_TRADER: "event_trader",
+			EVENT_RECRUIT: "event_recruit",
 			POP_UNASSIGNED: "population-unassigned",
 			POP_DECREASING: "population-decreasing",
 			POP_INCREASING: "population-increasing",
@@ -184,6 +186,7 @@ define([
 			this.notifications[level] = [];
 
 			var hasTrader = node.entity.has(TraderComponent);
+			var hasRecruit = node.entity.has(RecruitComponent);
 			var hasRaid = node.entity.has(RaidComponent);
 			var secondsSinceLastRaid = camp.lastRaid ? Math.floor((new Date() - camp.lastRaid.timestamp) / 1000) : 0;
 			var hasRecentRaid = camp.lastRaid && !camp.lastRaid.wasVictory && camp.lastRaid.isValid() && secondsSinceLastRaid < 60 * 60;
@@ -198,6 +201,10 @@ define([
 				}
 				if (hasRecentRaid) {
 					this.notifications[level].push(this.campNotificationTypes.EVENT_RAID_RECENT);
+				}
+				if (hasRecruit) {
+					this.alerts[level].push(this.campNotificationTypes.EVENT_RECRUIT);
+					this.notifications[level].push(this.campNotificationTypes.EVENT_RECRUIT);
 				}
 				if (hasTrader) {
 					this.alerts[level].push(this.campNotificationTypes.EVENT_TRADER);
@@ -377,6 +384,7 @@ define([
 			switch (notificationType) {
 				case this.campNotificationTypes.EVENT_RAID_ONGOING: return "raid";
 				case this.campNotificationTypes.EVENT_TRADER: return "trader";
+				case this.campNotificationTypes.EVENT_RECRUIT: return "adventurer";
 				case this.campNotificationTypes.POP_UNASSIGNED: return "unassigned workers";
 				case this.campNotificationTypes.POP_DECREASING: return "population decreasing";
 				case this.campNotificationTypes.EVENT_OUTGOING_CARAVAN: return "outgoing caravan";
@@ -397,6 +405,7 @@ define([
 					var timeS = "(" + UIConstants.getTimeSinceText(campComponent.lastRaid.timestamp) + " ago)";
 					return "There has been a raid on level " + level + " " + timeS + ". We need better defences.";
 				case this.campNotificationTypes.EVENT_TRADER: return "There is a trader currently on level " + level + ".";
+				case this.campNotificationTypes.EVENT_RECRUIT: return "There is a visiting adventurer currently on level " + level + ".";
 				case this.campNotificationTypes.POP_UNASSIGNED: return "Unassigned workers on level " + level + ".";
 				case this.campNotificationTypes.POP_DECREASING: return "Population is decreasing on level " + level + "!";
 				case this.campNotificationTypes.EVENT_OUTGOING_CARAVAN: return "Outgoing caravan on level " + level + ".";
@@ -412,6 +421,7 @@ define([
 				case this.campNotificationTypes.EVENT_RAID_ONGOING: return 2;
 				case this.campNotificationTypes.EVENT_RAID_RECENT: return 2;
 				case this.campNotificationTypes.EVENT_TRADER: return 3;
+				case this.campNotificationTypes.EVENT_RECRUIT: return 3;
 				case this.campNotificationTypes.POP_UNASSIGNED: return 2;
 				case this.campNotificationTypes.POP_DECREASING: return 1;
 				case this.campNotificationTypes.POP_INCREASING: return 6;

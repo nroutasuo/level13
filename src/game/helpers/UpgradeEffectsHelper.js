@@ -17,6 +17,7 @@ define([
 		
 		constructor: function () {
 			this.improvementsByOccurrence[OccurrenceConstants.campOccurrenceTypes.trader] = improvementNames.market;
+			this.improvementsByOccurrence[OccurrenceConstants.campOccurrenceTypes.recruit] = improvementNames.inn;
 		},
 		
 		getUnlockedBuildings: function (upgradeId) {

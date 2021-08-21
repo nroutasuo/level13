@@ -1,5 +1,5 @@
-define(['ash'],
-function (Ash) {
+define(['ash', 'game/vos/FollowerVO'],
+function (Ash, FollowerVO) {
 	
 	var FollowerConstants = {
 		
@@ -38,6 +38,12 @@ function (Ash) {
 		
 		getMaxFollowersInParty: function () {
 			return 3;
+		},
+		
+		getNewFollower: function () {
+			let id = Math.floor(Math.random() * 100000);
+			let icon = "img/followers/follower_yellow_f.png";
+			return new FollowerVO(id, "Name", "Description", FollowerConstants.abilityType.ATTACK, 1, icon);
 		}
 		
 	};

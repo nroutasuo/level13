@@ -4,6 +4,7 @@ define([
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
+	'game/constants/FollowerConstants',
 	'game/constants/LogConstants',
 	'game/constants/OccurrenceConstants',
 	'game/constants/TradeConstants',
@@ -17,6 +18,7 @@ define([
 	'game/components/common/PositionComponent',
 	'game/components/common/LogMessagesComponent',
 	'game/components/player/ItemsComponent',
+	'game/components/sector/events/RecruitComponent',
 	'game/components/sector/events/TraderComponent',
 	'game/components/sector/events/RaidComponent',
 	'game/components/sector/events/CampEventTimersComponent',
@@ -24,10 +26,10 @@ define([
 	'game/vos/RaidVO',
 	'text/Text'
 ], function (
-	Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, OccurrenceConstants, TradeConstants, TextConstants, UIConstants, WorldConstants,
+	Ash, GameGlobals, GlobalSignals, GameConstants, FollowerConstants, LogConstants, OccurrenceConstants, TradeConstants, TextConstants, UIConstants, WorldConstants,
 	PlayerResourcesNode, CampNode, TribeUpgradesNode,
 	CampComponent, PositionComponent, LogMessagesComponent, ItemsComponent,
-	TraderComponent, RaidComponent, CampEventTimersComponent,
+	RecruitComponent, TraderComponent, RaidComponent, CampEventTimersComponent,
 	SectorImprovementsComponent, RaidVO, Text) {
 
 	var CampEventsSystem = Ash.System.extend({
@@ -114,6 +116,7 @@ define([
 			var improvements = campNode.entity.get(SectorImprovementsComponent);
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.trader:
+				case OccurrenceConstants.campOccurrenceTypes.recruit:
 					return improvements.getCount(GameGlobals.upgradeEffectsHelper.getImprovementForOccurrence(event)) > 0;
 
 				case OccurrenceConstants.campOccurrenceTypes.raid:
@@ -130,6 +133,9 @@ define([
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.trader:
 					return campNode.entity.has(TraderComponent);
+					
+				case OccurrenceConstants.campOccurrenceTypes.recruit:
+					return campNode.entity.has(RecruitComponent);
 
 				case OccurrenceConstants.campOccurrenceTypes.raid:
 					return campNode.entity.has(RaidComponent);
@@ -178,6 +184,11 @@ define([
 				case OccurrenceConstants.campOccurrenceTypes.trader:
 					campNode.entity.remove(TraderComponent);
 					logMsg = "Trader leaves.";
+					break;
+					
+				case OccurrenceConstants.campOccurrenceTypes.recruit:
+					campNode.entity.remove(RecruitComponent);
+					logMsg = "Adventurer leaves.";
 					break;
 
 				case OccurrenceConstants.campOccurrenceTypes.raid:
@@ -237,6 +248,12 @@ define([
 					var caravan = GameGlobals.campHelper.getRandomIncomingCaravan(numCamps, GameGlobals.gameState.level, GameGlobals.gameState.unlockedFeatures.resources, neededIngredient);
 					campNode.entity.add(new TraderComponent(caravan));
 					logMsg = Text.capitalize(Text.addArticle(caravan.name)) + " arrives. ";
+					break;
+					
+				case OccurrenceConstants.campOccurrenceTypes.recruit:
+					let follower = FollowerConstants.getNewFollower();
+					campNode.entity.add(new RecruitComponent(follower));
+					logMsg = "An adventurer arrives at the Inn. ";
 					break;
 
 				case OccurrenceConstants.campOccurrenceTypes.raid:

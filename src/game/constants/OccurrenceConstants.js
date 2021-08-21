@@ -6,6 +6,7 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 		campOccurrenceTypes: {
 			trader: "trader",
 			raid: "raid",
+			recruit: "recruit"
 		},
 		
 		OCCURRENCE_CAMP_TRADER_LENGTH: 60 * 5,
@@ -16,6 +17,10 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 		OCCURRENCE_CAMP_RAID_LENGTH: 10,
 		OCCURRENCE_CAMP_RAID_COOLDOWN: 60 * 20,
 		OCCURRENCE_CAMP_RAID_VARIATION: 3,
+		
+		OCCURRENCE_CAMP_RECRUIT_LENGTH: 60 * 5,
+		OCCURRENCE_CAMP_RECRUIT_COOLDOWN: 60 * 20,
+		OCCURRENCE_CAMP_RECRUIT_VARIATION: 3,
 		
 		getTimeToNext: function (occurrenceType, isNew, upgradeLevel, campPopulation, numCamps) {
 			let minimumTime = this.getMinimumTimeToNext(occurrenceType, isNew, numCamps);
@@ -59,6 +64,9 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 				case this.campOccurrenceTypes.raid:
 					base = this.OCCURRENCE_CAMP_RAID_COOLDOWN;
 					break;
+				case this.campOccurrenceTypes.recruit:
+					base = this.OCCURRENCE_CAMP_RECRUIT_COOLDOWN;
+					break;
 			}
 			// decreasing frequency when lots of camps
 			let numCampsFactor = MathUtils.clamp(Math.ceil(numCamps / 2), 0.1, 10);
@@ -75,17 +83,24 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 				case this.campOccurrenceTypes.raid:
 					variation = this.OCCURRENCE_CAMP_RAID_VARIATION;
 					break;
+				
+				case this.campOccurrenceTypes.recruit:
+					variation = this.OCCURRENCE_CAMP_RECRUIT_VARIATION;
+					break;
 			}
 			return this.getMinimumTimeToNext(occurrenceType, isNew, numCamps) * variation;
 		},
 		
 		getDuration: function (occurrenceType) {
 			switch(occurrenceType) {
-			case this.campOccurrenceTypes.trader:
-				return this.OCCURRENCE_CAMP_TRADER_LENGTH;
-			
-			case this.campOccurrenceTypes.raid:
-				return this.OCCURRENCE_CAMP_RAID_LENGTH;
+				case this.campOccurrenceTypes.trader:
+					return this.OCCURRENCE_CAMP_TRADER_LENGTH;
+				
+				case this.campOccurrenceTypes.raid:
+					return this.OCCURRENCE_CAMP_RAID_LENGTH;
+				
+				case this.campOccurrenceTypes.recruit:
+					return this.OCCURRENCE_CAMP_RECRUIT_LENGTH;
 			}
 			return 0;
 		},

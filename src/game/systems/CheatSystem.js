@@ -188,6 +188,9 @@ define(['ash',
 			this.registerCheat(CheatConstants.CHEAT_NAME_TRADER, "Trigger an incoming trader immediately.", [], function (params) {
 				this.triggerTrader();
 			});
+			this.registerCheat(CheatConstants.CHEAT_NAME_RECRUIT, "Trigger an incoming recruit immediately.", [], function (params) {
+				this.triggerRecruit();
+			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_RAID, "Trigger a raid immediately.", [], function (params) {
 				this.triggerRaid();
 			});
@@ -617,6 +620,14 @@ define(['ash',
 			var campTimers = currentSector ? currentSector.get(CampEventTimersComponent) : null;
 			if (campTimers) {
 				campTimers.eventStartTimers["trader"] = 1;
+			}
+		},
+
+		triggerRecruit: function () {
+			var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
+			var campTimers = currentSector ? currentSector.get(CampEventTimersComponent) : null;
+			if (campTimers) {
+				campTimers.eventStartTimers["recruit"] = 1;
 			}
 		},
 

@@ -22,6 +22,7 @@
 	'game/components/sector/ReputationComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/events/CampEventTimersComponent',
+	'game/components/sector/events/RecruitComponent',
 	'game/components/sector/events/TraderComponent',
 	'game/components/sector/events/RaidComponent',
 ], function (
@@ -30,7 +31,7 @@
 	PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, DeityNode, TribeUpgradesNode,
 	PerksComponent,
 	CampComponent, OutgoingCaravansComponent, ReputationComponent, SectorImprovementsComponent, CampEventTimersComponent,
-	TraderComponent, RaidComponent
+	RecruitComponent, TraderComponent, RaidComponent
 ) {
 	var UIOutCampSystem = Ash.System.extend({
 
@@ -444,6 +445,16 @@
 				GameGlobals.uiFunctions.toggle("#in-occurrences-trader", hasTrader);
 				$("#in-occurrences-trader .progress-label").toggleClass("event-ending", isTraderLeaving);
 				$("#in-occurrences-trader").data("progress-percent", eventTimers.getEventTimePercentage(OccurrenceConstants.campOccurrenceTypes.trader));
+			}
+			
+			// Recruits
+			var hasRecruit = this.playerLocationNodes.head.entity.has(RecruitComponent);
+			hasEvents = hasEvents || hasRecruit;
+			if (isActive && showEvents) {
+				var isRecruitLeaving = hasRecruit && eventTimers.getEventTimeLeft(OccurrenceConstants.campOccurrenceTypes.recruit) < 5;
+				GameGlobals.uiFunctions.toggle("#in-occurrences-recruit", hasRecruit);
+				$("#in-occurrences-recruit .progress-label").toggleClass("event-ending", isTraderLeaving);
+				$("#in-occurrences-recruit").data("progress-percent", eventTimers.getEventTimePercentage(OccurrenceConstants.campOccurrenceTypes.recruit));
 			}
 
 			// Raiders
