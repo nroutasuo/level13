@@ -799,7 +799,8 @@ define([
 
 		getRewardFollowers: function (probability) {
 			var followers = [];
-			
+			// TODO FOLLOWERS
+			/*
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			var numCurrentFollowers = itemsComponent.getAllByType(ItemConstants.itemTypes.follower, true).length;
 			var numMaxFollowers = FightConstants.getMaxFollowers(GameGlobals.gameState.numCamps);
@@ -812,6 +813,7 @@ define([
 					followers.push(follower);
 				}
 			}
+			*/
 			return followers;
 		},
 
@@ -1075,9 +1077,6 @@ define([
 				case ItemConstants.itemTypes.uniqueEquipment:
 					itemLoseProbability = 0;
 					break;
-				case ItemConstants.itemTypes.follower:
-					itemLoseProbability = action === "despair" ? 1 : 0;
-					break;
 				case ItemConstants.itemTypes.clothing_over:
 				case ItemConstants.itemTypes.clothing_upper:
 				case ItemConstants.itemTypes.clothing_lower:
@@ -1103,9 +1102,11 @@ define([
 		
 		getLostFollowers: function (loseAllProbability, loseOneProbability) {
 			var lostFollowers = [];
+			// TODO FOLLOWERS
+			/*
 			if (loseAllProbability <= 0 && loseOneProbability <= 0)
 				return lostFollowers;
-				
+			
 			var playerFollowers = this.playerResourcesNodes.head.entity.get(ItemsComponent).getAllByType(ItemConstants.itemTypes.follower, true);
 			if (playerFollowers.length < 1)
 				return lostFollowers;
@@ -1119,7 +1120,7 @@ define([
 				var index = Math.floor(playerFollowers.length * Math.random());
 				lostFollowers =playerFollowers[index];
 			}
-			
+			*/
 			return lostFollowers;
 		},
 

@@ -483,7 +483,8 @@ define([
 					}
 					
 					if (typeof requirements.max_followers_reached !== "undefined") {
-						var numCurrentFollowers = itemsComponent.getAllByType(ItemConstants.itemTypes.follower, true).length;
+						var followersComponent = this.playerStatsNodes.head.followers;
+						var numCurrentFollowers = followersComponent.getAll().length;
 						var numMaxFollowers = FightConstants.getMaxFollowers(GameGlobals.gameState.numCamps);
 						var currentValue = numCurrentFollowers >= numMaxFollowers;
 						var requiredValue = requirements.max_followers_reached;
@@ -964,10 +965,6 @@ define([
 			}
 
 			switch (baseActionID) {
-				case "use_in_inn":
-					var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-					return itemsComponent.getEquipped(ItemConstants.itemTypes.follower).length;
-				
 				case "use_in_hospital_2":
 					let perksComponent = this.playerStatsNodes.head.perks;
 					let ordinal = 1;

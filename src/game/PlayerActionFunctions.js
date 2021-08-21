@@ -428,8 +428,6 @@ define(['ash',
 					item.carried = true;
 				} else if (item.type === ItemConstants.itemTypes.uniqueEquipment) {
 					item.carried = true;
-				} else if (item.type === ItemConstants.itemTypes.follower) {
-					// skip
 				} else {
 					var countCarried = selectedItems[item.id];
 					if (countCarried > 0) {
@@ -1388,6 +1386,8 @@ define(['ash',
 		},
 
 		useInn: function (auto) {
+			// TODO FOLLOWERS
+			/*
 			this.currentAction = "use_in_inn";
 			var sector = this.playerLocationNodes.head.entity;
 			var positionComponent = sector.get(PositionComponent);
@@ -1425,6 +1425,7 @@ define(['ash',
 			this.completeAction("use_in_inn");
 
 			return false;
+			*/
 		},
 
 		useTemple: function () {
@@ -1457,8 +1458,11 @@ define(['ash',
 
 		addFollower: function (follower) {
 			log.i("add follower " + follower.name, this);
+			// TODO FOLLOWERS
+			/*
 			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
 			itemsComponent.addItem(follower, false);
+			*/
 			this.addLogMessage(LogConstants.MSG_ID_ADD_FOLLOWER, "A wanderer agrees to travel together for awhile.");
 			this.forceResourceBarUpdate();
 			this.forceStatsBarUpdate();

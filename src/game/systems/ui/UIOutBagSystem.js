@@ -375,7 +375,6 @@ define([
 						}
 						break;
 
-					case ItemConstants.itemTypes.follower:
 					case ItemConstants.itemTypes.uniqueEquipment:
 						break;
 
@@ -408,7 +407,7 @@ define([
 
 		updateItemCount: function (isActive, item) {
 			if (GameGlobals.gameState.uiBagStatus.itemsOwnedSeen.indexOf(item.id) < 0) {
-				if (item.id !== "equipment_map" && item.type !== ItemConstants.itemTypes.follower) {
+				if (item.id !== "equipment_map") {
 					if (isActive || this.bubbleCleared) {
 						GameGlobals.gameState.uiBagStatus.itemsOwnedSeen.push(item.id);
 					}
@@ -525,7 +524,6 @@ define([
 				var item = items[i];
 				if (item.equipped) continue;
 				if (!item.equippable) continue;
-				if (item.type == ItemConstants.itemTypes.follower) continue;
 				var comparison = itemsComponent.getEquipmentComparison(item);
 				if (comparison > 0) return true;
 			}

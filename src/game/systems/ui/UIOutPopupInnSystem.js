@@ -37,6 +37,8 @@ var UIOutPopupInnSystem = Ash.System.extend({
 		},
 
 		refreshCurrent: function () {
+			// TODO FOLLOWERS
+			/*
 			var currentFollowers = this.itemNodes.head.items.getAllByType(ItemConstants.itemTypes.follower, true);
 			var numFollowers = currentFollowers.length;
 			$("#inn-popup-current-desc").text("Current followers: " + numFollowers + " / " + FightConstants.getMaxFollowers(GameGlobals.gameState.numCamps));
@@ -66,6 +68,7 @@ var UIOutPopupInnSystem = Ash.System.extend({
 				var followerID = $(this).attr("followerID");
 				sys.disbandFollower(followerID, sys);
 			});
+			*/
 		},
 		
 		refreshAvailable: function () {
@@ -98,10 +101,12 @@ var UIOutPopupInnSystem = Ash.System.extend({
 		},
 
 		selectFollower: function (followerID) {
+			/*
 			var follower = ItemConstants.getFollowerByID(followerID);
 			GameGlobals.playerActionsHelper.deductCosts("use_in_inn_select")
 			GameGlobals.playerActionFunctions.addFollower(follower);
 			GameGlobals.uiFunctions.popupManager.closePopup("inn-popup");
+			*/
 		},
 
 		disbandFollower: function (followerID) {

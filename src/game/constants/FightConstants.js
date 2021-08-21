@@ -83,14 +83,16 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			var playerAtt = itemBonus;
 			if (itemBonus <= 0)
 				playerAtt = this.FIGHT_PLAYER_BASE_ATT;
-			var followerBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att, ItemConstants.itemTypes.follower);
+			// TODO FOLLOWERS
+			var followerBonus = 0;//itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att, ItemConstants.itemTypes.follower);
 			return playerAtt + followerBonus;
 		},
 		 
 		getPlayerAttDesc: function (playerStamina, itemsComponent) {
 			var itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att, ItemConstants.itemTypes.weapon);
 			var healthFactor = (playerStamina.health/100);
-			var followerBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att, ItemConstants.itemTypes.follower);
+			// TODO FOLLOWERS
+			var followerBonus = 0;//itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att, ItemConstants.itemTypes.follower);
 			var desc = "";
 			if (itemBonus <= 0) desc += "player: " + this.FIGHT_PLAYER_BASE_ATT;
 			if (itemBonus > 0) desc += "equipment: " + itemBonus;

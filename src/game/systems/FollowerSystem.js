@@ -25,6 +25,8 @@ define([
 		},
 		
 		update: function () {
+			// TODO FOLLOWERS
+			/*
 			var itemsComponent = this.itemNodes.head.items;
 			var items = itemsComponent.getAllByType(ItemConstants.itemTypes.follower, true);
 			var max = FightConstants.getMaxFollowers(GameGlobals.gameState.numCamps);
@@ -32,6 +34,7 @@ define([
 				itemsComponent.discardItem(items[0], false);
 				return;
 			}
+			*/
 		},
 
 		

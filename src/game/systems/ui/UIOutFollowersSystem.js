@@ -12,8 +12,6 @@ define([
 		itemNodes: null,
 		
 		bubbleNumber: -1,
-		followerCount: -1,
-		lastShownFollowerCount: -1,
 
 		constructor: function () {
 			return this;
@@ -35,7 +33,6 @@ define([
 
 		update: function (time) {
 			var itemsComponent = this.itemNodes.head.items;
-			this.followerCount = itemsComponent.getCountByType(ItemConstants.itemTypes.follower);
 			this.updateBubble();
 		},
 		
@@ -46,7 +43,7 @@ define([
 		},
 		
 		updateBubble: function () {
-			var newBubbleNumber = 0;// Math.max(0, this.followerCount - this.lastShownFollowerCount);
+			var newBubbleNumber = 0;
 			if (this.bubbleNumber === newBubbleNumber)
 				return;
 			this.bubbleNumber = newBubbleNumber;
@@ -56,6 +53,8 @@ define([
 
 		updateItems: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
+			// TODO FOLLOWERS
+			/*
 			var itemsComponent = this.itemNodes.head.items;
 			var items = itemsComponent.getAllByType(ItemConstants.itemTypes.follower, true);
 			$("#list-followers").empty();
@@ -71,13 +70,11 @@ define([
 			GameGlobals.uiFunctions.toggle("#header-followers", showFollowers);
 			GameGlobals.uiFunctions.toggle("#followers-empty", showFollowers && !hasFollowers);
 			GameGlobals.uiFunctions.generateCallouts("#list-followers");
-			this.lastShownFollowerCount = this.followerCount;
+			*/
 		},
 		
 		onGameStarted: function () {
 			var itemsComponent = this.itemNodes.head.items;
-			this.followerCount = itemsComponent.getCountByType(ItemConstants.itemTypes.follower);
-			this.lastShownFollowerCount = this.followerCount;
 		},
 		
 		onTabChanged: function () {

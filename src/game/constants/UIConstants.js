@@ -94,8 +94,7 @@ define(['ash',
 			if (detail.length < 5) detail = "";
 			var weight = BagConstants.getItemCapacity(item);
 			var itemCalloutContent = "<b>" + item.name + "</b><br/>Type: " + ItemConstants.getItemTypeDisplayName(item.type, false) + " " + detail;
-			if (item.type !== ItemConstants.itemTypes.follower)
-				itemCalloutContent += "</br>Weight: " + weight;
+			itemCalloutContent += "</br>Weight: " + weight;
 			itemCalloutContent += "</br>" + item.description;
 			if (smallCallout) itemCalloutContent = item.name + (detail.length > 0 ? " " + detail : "");
 			
@@ -334,7 +333,6 @@ define(['ash',
 					case ItemConstants.itemTypes.uniqueEquipment: typeVal = 0; break;
 					case ItemConstants.itemTypes.artefact: typeVal = 31; break;
 					case ItemConstants.itemTypes.note: typeVal = 32; break;
-					case ItemConstants.itemTypes.follower: typeVal = 0; break;
 				}
 				return typeVal * 1000 - itemVO.getTotalBonus();
 			};

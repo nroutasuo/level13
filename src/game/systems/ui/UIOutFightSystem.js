@@ -264,6 +264,8 @@ define([
 			// followers
 			$("ul#list-fight-followers").empty();
 			this.numFollowers = 0;
+			// TODO FOLLOWERS
+			/*
 			var items = itemsComponent.getUnique(true);
 			for (var i = 0; i < items.length; i++) {
 				var item = items[i];
@@ -272,6 +274,7 @@ define([
 				$("ul#list-fight-followers").append("<li>" + UIConstants.getItemDiv(null, item, null, UIConstants.getItemCallout(item, true), true) + "</li>");
 			}
 			GameGlobals.uiFunctions.generateCallouts("ul#list-fight-followers");
+			*/
 			
 			GameGlobals.uiFunctions.toggle("#fight-popup-itemlist-separator", this.numFollowers > 0 && this.numItems > 0);
 			this.updateFightActive();

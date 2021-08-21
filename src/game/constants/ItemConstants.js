@@ -19,7 +19,6 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			clothing_head: "clothing_head",
 			shoes: "shoes",
 			bag: "bag",
-			follower: "follower",
 			// Special effects / one-use:
 			ingredient: "ingredient",
 			exploration: "exploration",
@@ -105,8 +104,6 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		},
 		
 		getItemByID: function (id) {
-			if (id.indexOf("follower-") >= 0)
-				return this.getFollowerByID(id);
 			for (var type in this.itemDefinitions ) {
 				for (var i in this.itemDefinitions[type]) {
 					var item = this.itemDefinitions[type][i];
@@ -133,7 +130,6 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 				case ItemConstants.itemTypes.clothing_lower:
 				case ItemConstants.itemTypes.clothing_head:
 				case ItemConstants.itemTypes.clothing_hands:
-				case ItemConstants.itemTypes.follower:
 					return ItemConstants.itemBonusTypes.fight_def;
 				default:
 					return null;
@@ -195,35 +191,6 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 				}
 			}
 			return result;
-		},
-		
-		getFollower: function (level, campCount, rand) {
-			rand = rand || Math.random();
-			var minStrength = campCount;
-			var maxStrength = 1.5 + campCount * 1.5;
-			var strengthDiff = maxStrength - minStrength;
-			var strength = Math.round(minStrength + strengthDiff * rand);
-			var type = "d";
-			if (level < 5)
-				type = "g";
-			if (level > 15)
-				type = "c";
-			var id = "follower-" + strength + "-" + type;
-			return this.getFollowerByID(id);
-		},
-		
-		getFollowerByID: function (id) {
-			var name = "Follower";
-			var type = this.itemTypes.follower;
-			var strength = parseInt(id.split("-")[1]);
-			var bonuses = {att: strength};
-
-			// TODO persist image depending on id
-			var icon = "img/items/follower-" + Math.floor(Math.random() * 4 + 1) + ".png";
-
-			// TODO more varied follower descriptions
-			var description = "A fellow traveller who has agreed to travel together.";
-			return new ItemVO(id, name, type, 1, true, false, false, -1, -1, bonuses, icon, description);
 		},
 		
 		getBag: function (campOrdinal) {

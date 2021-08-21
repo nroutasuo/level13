@@ -195,11 +195,11 @@ function (Ash, ItemVO, ItemConstants) {
 		},
 
 		isItemMultiEquippable: function (item) {
-			return item.type === ItemConstants.itemTypes.follower;
+			return false;
 		},
 
 		isItemUnequippable: function (item) {
-			return item.type !== ItemConstants.itemTypes.follower;
+			return true;
 		},
 
 		// Equips the given item regardless of whether it's better than the previous equipment
@@ -249,7 +249,7 @@ function (Ash, ItemVO, ItemConstants) {
 				if (!itemType || itemType === key) {
 					for (var i = 0; i < this.items[key].length; i++) {
 						var item = this.items[key][i];
-						if (item.equipped || itemType == ItemConstants.itemTypes.follower) {
+						if (item.equipped) {
 							let itemBonus = item.getBonus(bonusType);
 							if (isMultiplier) {
 								if (itemBonus != 0) {
@@ -416,8 +416,6 @@ function (Ash, ItemVO, ItemConstants) {
 
 			var getSortTypeValue = function (t) {
 			switch (t) {
-			case ItemConstants.itemTypes.follower:
-				return 0;
 				case ItemConstants.itemTypes.bag:
 				return 1;
 				case ItemConstants.itemTypes.weapon:

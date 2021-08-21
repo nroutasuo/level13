@@ -214,12 +214,6 @@ define([
 					typicalItems.addItem(typicalClothing[i], false);
 				}
 			}
-
-			// followers
-			var numFollowers = FightConstants.getTypicalNumFollowers(campOrdinal);
-			for (var f = 0; f < numFollowers; f++) {
-				typicalItems.addItem(ItemConstants.getFollower(13, campOrdinal, 0.5));
-			}
 			
 			typicalItems.autoEquipAll();
 			return typicalItems;

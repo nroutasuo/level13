@@ -172,9 +172,6 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 				case ItemConstants.itemTypes.bag:
 					value = Math.pow(((item.getTotalBonus() - 25) / 15), 1.75);
 					break;
-				case ItemConstants.itemTypes.follower:
-					value = 0;
-					break;
 				case ItemConstants.itemTypes.ingredient:
 					value = TradeConstants.VALUE_INGREDIENTS;
 					break;

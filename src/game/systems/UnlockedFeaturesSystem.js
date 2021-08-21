@@ -39,11 +39,6 @@ define([
 			// Global improvements
 			for (var node = this.campNodes.head; node; node = node.next) {
 				var improvementsComponent = node.entity.get(SectorImprovementsComponent);
-				if (improvementsComponent.getCount(improvementNames.inn) > 0) {
-					if (!GameGlobals.gameState.unlockedFeatures.followers)
-						GlobalSignals.featureUnlockedSignal.dispatch();
-					GameGlobals.gameState.unlockedFeatures.followers = true;
-				}
 				if (improvementsComponent.getCount(improvementNames.campfire) > 0) {
 					if (!GameGlobals.gameState.unlockedFeatures.upgrades)
 						GlobalSignals.featureUnlockedSignal.dispatch();
@@ -53,12 +48,6 @@ define([
 					improvementsComponent.add(improvementNames.home);
 				}
 				numCamps++;
-			}
-			
-			if (!GameGlobals.gameState.unlockedFeatures.followers) {
-				var itemsComponent = this.itemNodes.head.items;
-				var numFollowers = itemsComponent.getAllByType(ItemConstants.itemTypes.follower, true).length;
-				GameGlobals.gameState.unlockedFeatures.followers = GameGlobals.gameState.unlockedFeatures.followers || numFollowers > 0;
 			}
 			
 			if (GameGlobals.gameState.numCamps !== numCamps) {

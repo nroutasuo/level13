@@ -345,10 +345,6 @@ define([
 					var item = items[i];
 					var count = itemsComponent.getCount(item, inCamp);
 					switch (item.type) {
-						case ItemConstants.itemTypes.follower:
-							$("ul#list-items-followers").append("<li>" + UIConstants.getItemDiv(itemsComponent, item, null, UIConstants.getItemCallout(item, true), true) + "</li>");
-							break;
-
 						case ItemConstants.itemTypes.bag:
 						case ItemConstants.itemTypes.clothing_over:
 						case ItemConstants.itemTypes.clothing_upper:

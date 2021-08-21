@@ -176,9 +176,6 @@ define(['ash',
 			this.registerCheat(CheatConstants.CHEAT_NAME_PERK, "Add the given perk to the player.", ["perk id"], function (params) {
 				this.addPerk(params[0]);
 			});
-			this.registerCheat(CheatConstants.CHEAT_NAME_FOLLOWER, "Add random follower.", [], function (params) {
-				this.addFollower();
-			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_REVEAL_MAP, "Reveal the map (show important locations without scouting).", ["true/false"], function (params) {
 				this.revealMap(params[0]);
 			});
@@ -543,12 +540,6 @@ define(['ash',
 		equipBest: function () {
 			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
 			itemsComponent.autoEquipAll();
-		},
-
-		addFollower: function() {
-			var campCount = GameGlobals.gameState.numCamps;
-			var follower = ItemConstants.getFollower(this.playerPositionNodes.head.position.level, campCount);
-			GameGlobals.playerActionFunctions.addFollower(follower);
 		},
 
 		addPerk: function () {

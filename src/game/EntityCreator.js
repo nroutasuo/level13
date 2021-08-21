@@ -12,6 +12,7 @@ define([
 	'game/components/player/RumoursComponent',
 	'game/components/player/EvidenceComponent',
 	'game/components/player/DeityComponent',
+	'game/components/player/FollowersComponent',
 	'game/components/player/ItemsComponent',
 	'game/components/player/PerksComponent',
 	'game/components/type/GangComponent',
@@ -59,6 +60,7 @@ define([
 	RumoursComponent,
 	EvidenceComponent,
 	DeityComponent,
+	FollowersComponent,
 	ItemsComponent,
 	PerksComponent,
 	GangComponent,
@@ -111,6 +113,7 @@ define([
 				.add(new BagComponent(0))
 				.add(new VisionComponent(0))
 				.add(new ItemsComponent())
+				.add(new FollowersComponent())
 				.add(new PerksComponent())
 				.add(new StaminaComponent(1000))
 				.add(new ResourcesComponent(ItemConstants.PLAYER_DEFAULT_STORAGE))
@@ -126,6 +129,7 @@ define([
 					CurrencyComponent,
 					VisionComponent,
 					ItemsComponent,
+					FollowersComponent,
 					PerksComponent,
 					StaminaComponent,
 					PositionComponent,
