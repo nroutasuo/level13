@@ -13,7 +13,6 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 	
 		FIGHT_PLAYER_BASE_ATT: 3,
 		FIGHT_PLAYER_BASE_DEF: 0,
-		MAX_FOLLOWER_MAX: 3,
 		
 		FIGHT_SPEED_FACTOR: 1,
 		
@@ -128,20 +127,6 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			let weapon = weapons.length > 0 ? weapons[0] : null;
 			let weaponSpeedBonus = weapon ? weapon.getBonus(ItemConstants.itemBonusTypes.fight_speed) || 1 : 1;
 			return weaponSpeedBonus;
-		},
-		
-		getMaxFollowers: function (numCamps) {
-			var firstFollowerCamp = UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_building_inn");
-			var numFollowerCamps = numCamps - firstFollowerCamp + 1;
-			var totalFollowerCamps = (WorldConstants.CAMPS_TOTAL - firstFollowerCamp + 1);
-			var maxFollowers = Math.ceil(numFollowerCamps / totalFollowerCamps * this.MAX_FOLLOWER_MAX);
-			return Math.max(0, maxFollowers);
-		},
-		
-		getTypicalNumFollowers: function (numCamps) {
-			var firstFollowerCamp = UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_building_inn");
-			if (numCamps <= firstFollowerCamp) return 0;
-			return this.getMaxFollowers(numCamps);
 		},
 		
 		getEnemyAttackTime: function (enemy) {

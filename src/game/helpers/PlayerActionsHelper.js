@@ -482,12 +482,12 @@ define([
 						}
 					}
 					
-					if (typeof requirements.max_followers_reached !== "undefined") {
+					if (typeof requirements.max_followers_recruited_reached !== "undefined") {
 						var followersComponent = this.playerStatsNodes.head.followers;
 						var numCurrentFollowers = followersComponent.getAll().length;
-						var numMaxFollowers = FightConstants.getMaxFollowers(GameGlobals.gameState.numCamps);
+						var numMaxFollowers = GameGlobals.campHelper.getCurrentMaxFollowersRecruited();
 						var currentValue = numCurrentFollowers >= numMaxFollowers;
-						var requiredValue = requirements.max_followers_reached;
+						var requiredValue = requirements.max_followers_recruited_reached;
 						if (currentValue !== requiredValue) {
 							if (currentValue) reason = "Max followers reached.";
 							else reason = "Must have max followers to do this.";

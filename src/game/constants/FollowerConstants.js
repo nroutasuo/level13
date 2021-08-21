@@ -28,7 +28,17 @@ function (Ash) {
 			BRING_METAL: "bring_metal",
 		},
 		
+		getMaxFollowersRecruited: function (innMajorLevels) {
+			let result = 0;
+			for (let i = 0; i < innMajorLevels.length; i++) {
+				result += Math.max(0, innMajorLevels[i]);
+			}
+			return result;
+		},
 		
+		getMaxFollowersInParty: function () {
+			return 3;
+		}
 		
 	};
 	

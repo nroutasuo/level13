@@ -3217,7 +3217,7 @@
             "upgrades": {}
         },
         "use_in_inn_select": {
-            "max_followers_reached": false
+            "max_followers_recruited_reached": false
         },
         "use_in_market": {
             "busy": false,

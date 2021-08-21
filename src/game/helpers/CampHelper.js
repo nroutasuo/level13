@@ -4,6 +4,7 @@ define([
 	'game/GameGlobals',
 	'game/constants/GameConstants',
 	'game/constants/CampConstants',
+	'game/constants/FollowerConstants',
 	'game/constants/ImprovementConstants',
 	'game/constants/ItemConstants',
 	'game/constants/TradeConstants',
@@ -14,7 +15,7 @@ define([
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/vos/ResourcesVO',
 	'game/vos/IncomingCaravanVO'
-], function (Ash, GameGlobals, GameConstants, CampConstants, ImprovementConstants, ItemConstants, TradeConstants,
+], function (Ash, GameGlobals, GameConstants, CampConstants, FollowerConstants, ImprovementConstants, ItemConstants, TradeConstants,
 	CampComponent, PositionComponent, SectorImprovementsComponent, CampNode, TribeUpgradesNode, ResourcesVO, IncomingCaravanVO) {
 	
 	var CampHelper = Ash.Class.extend({
@@ -372,6 +373,19 @@ define([
 			let level = improvementsComponent.getLevel(improvementName);
 			let id = ImprovementConstants.getImprovementID(improvementName);
 			return ImprovementConstants.getMajorLevel(id, level);
+		},
+		
+		getCurrentMaxFollowersRecruited: function () {
+			let innMajorLevels = [];
+			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
+				let improvements = campNode.entity.get(SectorImprovementsComponent);
+				let count = improvements.getCount(improvementNames.inn);
+				if (count < 1) continue;
+				let level = improvements.getLevel(improvementNames.inn);
+				let majorLevel = ImprovementConstants.getMajorLevel("inn", level);
+				innMajorLevels.push(majorLevel);
+			}
+			return FollowerConstants.getMaxFollowersRecruited(innMajorLevels);
 		},
 		
 		getNextMajorImprovementLevel: function (improvementsComponent, improvementName) {

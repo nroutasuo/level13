@@ -38,7 +38,7 @@ define([
 		
 		refresh: function () {
 			$("#tab-header h2").text("Exploration party");
-			$("#followers-max").text("Maximum followers: " + FightConstants.getMaxFollowers(GameGlobals.gameState.numCamps));
+			$("#followers-max").text("Maximum followers: " + GameGlobals.campHelper.getCurrentMaxFollowersRecruited());
 			this.updateItems();
 		},
 		

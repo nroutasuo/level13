@@ -41,7 +41,7 @@ var UIOutPopupInnSystem = Ash.System.extend({
 			/*
 			var currentFollowers = this.itemNodes.head.items.getAllByType(ItemConstants.itemTypes.follower, true);
 			var numFollowers = currentFollowers.length;
-			$("#inn-popup-current-desc").text("Current followers: " + numFollowers + " / " + FightConstants.getMaxFollowers(GameGlobals.gameState.numCamps));
+			$("#inn-popup-current-desc").text("Current followers: " + numFollowers + " / " + GameGlobals.campHelper.getCurrentMaxFollowersRecruited());
 
 			$("table#inn-popup-current-followers").empty();
 			$("table#inn-popup-current-followers").append("<tr></tr>");

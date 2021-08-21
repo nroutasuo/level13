@@ -29,7 +29,7 @@ define([
 			/*
 			var itemsComponent = this.itemNodes.head.items;
 			var items = itemsComponent.getAllByType(ItemConstants.itemTypes.follower, true);
-			var max = FightConstants.getMaxFollowers(GameGlobals.gameState.numCamps);
+			var max = GameGlobals.campHelper.getCurrentMaxFollowersRecruited();
 			if (items.length > max) {
 				itemsComponent.discardItem(items[0], false);
 				return;
