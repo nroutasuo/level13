@@ -126,7 +126,9 @@ define([
 				if (typeof componentValues[valueKey] != 'object') {
 					component[valueKey] = componentValues[valueKey];
 				} else {
-					if (typeof component[valueKey] == "undefined") continue;
+					if (typeof component[valueKey] == "undefined") {
+						component[valueKey] = {};
+					}
 					for (var valueKey2 in componentValues[valueKey]) {
 						var value2 = componentValues[valueKey][valueKey2];
 						// log.i(valueKey2 + ": " + value2)
