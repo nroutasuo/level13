@@ -129,6 +129,14 @@ function (Ash, GameGlobals, LogConstants, LogMessageVO) {
 			return "Log";
 		},
 
+		getCustomSaveObject: function () {
+			var copy = {};
+			copy.messages = this.messages.slice(0, 10);
+			copy.messagesPendingMovement = this.messagesPendingMovement;
+			copy.hasNewMessages = this.hasNewMessages;
+			return copy;
+		},
+
 	});
 
 	return LogMessagesComponent;

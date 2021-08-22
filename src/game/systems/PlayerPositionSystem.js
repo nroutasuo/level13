@@ -202,7 +202,6 @@ define([
 
 		handleNewLevel: function (levelNode, levelPos) {
 			levelNode.entity.add(new VisitedComponent());
-			levelNode.entity.add(new RevealedComponent());
 			var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(levelPos);
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(levelPos);
 			GameGlobals.gameState.level = Math.max(GameGlobals.gameState.level, levelOrdinal);
@@ -244,8 +243,8 @@ define([
 		},
 
 		handleNewSector: function (sectorEntity, isNew) {
+			sectorEntity.remove(RevealedComponent);
 			sectorEntity.add(new VisitedComponent());
-			sectorEntity.add(new RevealedComponent());
 
 			var sectorPos = sectorEntity.get(PositionComponent);
 

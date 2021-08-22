@@ -66,6 +66,21 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 				return this.getType();
 			}
 		},
+
+		getCustomSaveObject: function () {
+			var copy = {};
+			copy.id = this.id;
+			copy.campName = this.campName;
+			copy.population = this.population;
+			copy.maxPopulation = this.maxPopulation;
+			copy.pendingPopulation = this.pendingPopulation;
+			copy.foundedTimeStamp = this.foundedTimeStamp;
+			copy.lastRaid = this.lastRaid;
+			copy.assignedWorkers = this.assignedWorkers;
+			copy.rumourpool = this.rumourpool;
+			copy.rumourpoolchecked = this.rumourpoolchecked;
+			return copy;
+		},
 	});
 
 	return CampComponent;

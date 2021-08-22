@@ -147,7 +147,7 @@ define([
 			var metalRequiredTools = time * node.camp.metalConsumptionPerSecondSmith;
 			if (metalRequiredTools > 0) {
 				var metalUsedTools = Math.min(availableResources.getResource(resourceNames.metal), metalRequiredTools);
-				var tools = time * (metalUsedTools / metalRequiredTools) * node.camp.getToolsProductionPerSecond;
+				var tools = time * (metalUsedTools / metalRequiredTools) * node.camp.toolsProductionPerSecond;
 				campResources.addResource(resourceNames.tools, tools);
 				campResources.addResource(resourceNames.metal, -metalUsedTools);
 				resourceAccComponent.addChange(resourceNames.tools, tools / time, "Toolsmiths");
@@ -181,7 +181,7 @@ define([
 			camp.herbConsumptionPerSecond = GameGlobals.campHelper.getHerbsConsumptionPerSecond(camp.assignedWorkers.apothecary);
 			camp.medicineProductionPerSecond = GameGlobals.campHelper.getMedicineProductionPerSecond(camp.assignedWorkers.apothecary, improvementsComponent);
 			camp.metalConsumptionPerSecondSmith = GameGlobals.campHelper.getMetalConsumptionPerSecondSmith(camp.assignedWorkers.toolsmith);
-			camp.getToolsProductionPerSecond = GameGlobals.campHelper.getToolsProductionPerSecond(camp.assignedWorkers.toolsmith, improvementsComponent);
+			camp.toolsProductionPerSecond = GameGlobals.campHelper.getToolsProductionPerSecond(camp.assignedWorkers.toolsmith, improvementsComponent);
 			camp.metalConsumptionPerSecondConcrete = GameGlobals.campHelper.getMetalConsumptionPerSecondConcrete(camp.assignedWorkers.concrete);
 			camp.concreteProductionPerSecond = GameGlobals.campHelper.getConcreteProductionPerSecond(camp.assignedWorkers.concrete, improvementsComponent);
 		},

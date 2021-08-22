@@ -114,7 +114,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			if (this.gapBridgedDirections && this.gapBridgedDirections.length > 0)
 				copy.bd = this.gapBridgedDirections;
 			if (this.weightedNumScavenges)
-				copy.sw = this.weightedNumScavenges;
+				copy.sw = Math.round(this.weightedNumScavenges * 10000)/10000;
 			if (this.stashesFound)
 				copy.sf = this.stashesFound;
 			return Object.keys(copy).length > 0 ? copy : null;
