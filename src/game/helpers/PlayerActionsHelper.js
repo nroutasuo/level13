@@ -1428,6 +1428,8 @@ define([
 				if (a.indexOf("clear_debris_") == 0) return "clear_debris";
 				if (a.indexOf("fight_gang_") >= 0) return "fight_gang";
 				if (a.indexOf("send_caravan_") >= 0) return "send_caravan";
+				if (a.indexOf("recruit_follower_") >= 0) return "recruit_follower";
+				if (a.indexOf("dismiss_recruit_") >= 0) return "dismiss_recruit";
 				if (a.indexOf("use_in_inn_select_") >= 0) return "use_in_inn_select";
 				if (a.indexOf("move_camp_global_") >= 0) return "move_camp_global";
 				if (a.indexOf("build_out_passage") >= 0) {

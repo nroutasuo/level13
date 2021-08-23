@@ -33,6 +33,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 		MSG_ID_START_SEND_CAMP: "MSG_ID_START_SEND_CAMP",
 		MSG_ID_FINISH_SEND_CAMP: "MSG_ID_FINISH_SEND_CAMP",
 		MSG_ID_TRADE_WITH_CARAVAN: "MSG_ID_TRADE_WITH_CARAVAN",
+		MSG_ID_RECRUIT: "MSG_ID_RECRUIT",
 
 		// out atmospheric and results
 		MSG_ID_ADD_HAZARD_PERK: "MSG_ID_ADD_HAZARD_PERK",

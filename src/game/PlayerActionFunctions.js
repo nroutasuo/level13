@@ -255,6 +255,8 @@ define(['ash',
 				case "fight_gang": this.fightGang(param); break;
 				case "send_caravan": this.sendCaravan(param); break;
 				case "trade_with_caravan": this.tradeWithCaravan(); break;
+				case "recruit_follower": this.recruitFollower(param); break;
+				case "dismiss_recruit": this.dismissRecruit(param); break;
 				case "nap": this.nap(param); break;
 				case "despair": this.despair(param); break;
 				case "unlock_upgrade": this.unlockUpgrade(param); break;
@@ -938,6 +940,33 @@ define(['ash',
 			GlobalSignals.inventoryChangedSignal.dispatch();
 			this.addLogMessage(LogConstants.MSG_ID_TRADE_WITH_CARAVAN, "Traded with a caravan.");
 		},
+		
+		recruitFollower: function (followerId) {
+			log.i("recruit follower: " + followerId);
+			let recruitComponent = GameGlobals.campHelper.findRecruitComponentWithFollowerId(followerId);
+			
+			if (!recruitComponent) {
+				log.w("no recruit found: " + followerId);
+				return;
+			}
+			
+			this.playerStatsNodes.head.followers.addFollower(recruitComponent.follower);
+			recruitComponent.isRecruited = true;
+			
+			this.addLogMessage(LogConstants.MSG_ID_RECRUIT, "Recruited a new follower.");
+		},
+		
+		dismissRecruit: function (followerId) {
+			log.i("dismiss recruit: " + followerId);
+			let recruitComponent = GameGlobals.campHelper.findRecruitComponentWithFollowerId(followerId);
+			
+			if (!recruitComponent) {
+				log.w("no recruit found: " + followerId);
+				return;
+			}
+			
+			recruitComponent.isDismissed = true;
+		},
 
 		fightGang: function (direction) {
 			var action = "fight_gang_" + direction;
@@ -1227,6 +1256,7 @@ define(['ash',
 
 		buildInn: function () {
 			this.buildImprovement("build_in_inn", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_inn"));
+			GameGlobals.gameState.unlockedFeatures.followers = true;
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_INN, "Built an inn. Maybe it will attract adventurers.");
 		},
 

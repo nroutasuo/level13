@@ -21,6 +21,10 @@ function (Ash, FollowerVO, FollowerConstants) {
 			}
 			return followersInParty;
 		},
+		
+		addFollower: function (follower) {
+			this.followers.push(follower);
+		},
 
 		getSaveKey: function () {
 			return "Followers";

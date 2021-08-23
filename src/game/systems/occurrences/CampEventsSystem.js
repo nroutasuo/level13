@@ -106,6 +106,11 @@ define([
 					var tradeComponent = campNode.entity.get(TraderComponent)
 					if (tradeComponent.isDismissed) return true;
 					break;
+				case OccurrenceConstants.campOccurrenceTypes.recruit:
+					var recruitComponent = campNode.entity.get(RecruitComponent)
+					if (recruitComponent.isDismissed) return true;
+					if (recruitComponent.isRecruited) return true;
+					break;
 			}
 			return false;
 		},
@@ -187,8 +192,12 @@ define([
 					break;
 					
 				case OccurrenceConstants.campOccurrenceTypes.recruit:
+					let recruitComponent = campNode.entity.get(RecruitComponent);
+					let wasRecruited = recruitComponent.isRecruited;
 					campNode.entity.remove(RecruitComponent);
-					logMsg = "Adventurer leaves.";
+					if (!wasRecruited) {
+						logMsg = "Adventurer leaves.";
+					}
 					break;
 
 				case OccurrenceConstants.campOccurrenceTypes.raid:
@@ -254,6 +263,7 @@ define([
 					let follower = FollowerConstants.getNewFollower();
 					campNode.entity.add(new RecruitComponent(follower));
 					logMsg = "An adventurer arrives at the Inn. ";
+					GameGlobals.gameState.unlockedFeatures.followers = true;
 					break;
 
 				case OccurrenceConstants.campOccurrenceTypes.raid:

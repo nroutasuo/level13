@@ -10,13 +10,14 @@ define([
 	'game/constants/TradeConstants',
 	'game/components/common/CampComponent',
 	'game/components/common/PositionComponent',
+	'game/components/sector/events/RecruitComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/nodes/sector/CampNode',
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/vos/ResourcesVO',
 	'game/vos/IncomingCaravanVO'
 ], function (Ash, GameGlobals, GameConstants, CampConstants, FollowerConstants, ImprovementConstants, ItemConstants, TradeConstants,
-	CampComponent, PositionComponent, SectorImprovementsComponent, CampNode, TribeUpgradesNode, ResourcesVO, IncomingCaravanVO) {
+	CampComponent, PositionComponent, RecruitComponent, SectorImprovementsComponent, CampNode, TribeUpgradesNode, ResourcesVO, IncomingCaravanVO) {
 	
 	var CampHelper = Ash.Class.extend({
 		
@@ -365,7 +366,7 @@ define([
 		},
 		
 		getCurrentMaxImprovementLevel: function (improvementName) {
-			let techLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementName, this.tribeUpgradesNodes.head.upgrades);
+            let techLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementName, this.tribeUpgradesNodes.head.upgrades);
 			return GameGlobals.campBalancingHelper.getMaxImprovementLevel(improvementName, techLevel);
 		},
 		
@@ -386,6 +387,18 @@ define([
 				innMajorLevels.push(majorLevel);
 			}
 			return FollowerConstants.getMaxFollowersRecruited(innMajorLevels);
+		},
+		
+		findRecruitComponentWithFollowerId: function (followerId) {
+			for (var node = this.campNodes.head; node; node = node.next) {
+				let campRecruitComponent = node.entity.get(RecruitComponent);
+				if (!campRecruitComponent) continue;
+				let campFollower = campRecruitComponent.follower;
+				if (campFollower.id == followerId) {
+					return campRecruitComponent;
+				}
+			}
+			return null;
 		},
 		
 		getNextMajorImprovementLevel: function (improvementsComponent, improvementName) {

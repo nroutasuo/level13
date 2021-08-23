@@ -5,10 +5,13 @@ define([
 	'game/constants/UIConstants',
 	'game/constants/ItemConstants',
 	'game/constants/FightConstants',
+	'game/components/sector/events/RecruitComponent',
+	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/ItemsNode',
-], function (Ash, GameGlobals, GlobalSignals, UIConstants, ItemConstants, FightConstants, ItemsNode) {
+], function (Ash, GameGlobals, GlobalSignals, UIConstants, ItemConstants, FightConstants, RecruitComponent, PlayerLocationNode, ItemsNode) {
 	var UIOutFollowersSystem = Ash.System.extend({
-
+		
+		playerLocationNodes: null,
 		itemNodes: null,
 		
 		bubbleNumber: -1,
@@ -18,6 +21,7 @@ define([
 		},
 
 		addToEngine: function (engine) {
+			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			this.itemNodes = engine.getNodeList(ItemsNode);
 			
 			GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
@@ -27,6 +31,7 @@ define([
 		},
 
 		removeFromEngine: function (engine) {
+			this.playerLocationNodes = null;
 			this.itemNodes = null;
 			GlobalSignals.removeAll(this);
 		},
@@ -40,15 +45,40 @@ define([
 			$("#tab-header h2").text("Exploration party");
 			$("#followers-max").text("Maximum followers: " + GameGlobals.campHelper.getCurrentMaxFollowersRecruited());
 			this.updateItems();
+			this.refreshRecruits();
 		},
 		
 		updateBubble: function () {
-			var newBubbleNumber = 0;
+			var newBubbleNumber = this.getNumRecruits();
 			if (this.bubbleNumber === newBubbleNumber)
 				return;
 			this.bubbleNumber = newBubbleNumber;
 			$("#switch-followers .bubble").text(this.bubbleNumber);
 			GameGlobals.uiFunctions.toggle("#switch-followers .bubble", this.bubbleNumber > 0);
+		},
+		
+		refreshRecruits: function () {
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
+			
+			// TODO FOLLOWERS call also when recruit leaves / arrives
+			let $table = $("#recruits-container table");
+			$table.empty();
+			
+			var recruitComponent = this.playerLocationNodes.head.entity.get(RecruitComponent);
+			GameGlobals.uiFunctions.toggle($("#recruits-empty-message"), recruitComponent == null);
+			if (recruitComponent && recruitComponent.follower) {
+				let follower = recruitComponent.follower;
+				let tr = "<tr>";
+				tr += "<td class='item-name'>Follower</td>";
+				tr += "<td><button class='action recruit-select' action='recruit_follower_" + follower.id + "'>Recruit</button></td>";
+				tr += "<td><button class='action recruit-dismiss btn-secondary' action='dismiss_recruit_" + follower.id + "'>Dismiss</button></td>";
+				tr += "</tr>";
+				$table.append(tr);
+			}
+
+			GameGlobals.uiFunctions.generateButtonOverlays("#recruits-container table");
+			GameGlobals.uiFunctions.generateCallouts("#recruits-container table");
+			GameGlobals.uiFunctions.registerActionButtonListeners("#recruits-container table");
 		},
 
 		updateItems: function () {
@@ -71,6 +101,12 @@ define([
 			GameGlobals.uiFunctions.toggle("#followers-empty", showFollowers && !hasFollowers);
 			GameGlobals.uiFunctions.generateCallouts("#list-followers");
 			*/
+		},
+		
+		getNumRecruits: function () {
+			var recruitComponent = this.playerLocationNodes.head.entity.get(RecruitComponent);
+			if (recruitComponent) return 1;
+			return 0;
 		},
 		
 		onGameStarted: function () {

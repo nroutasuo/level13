@@ -5,10 +5,12 @@ define(['ash', 'game/vos/FollowerVO'], function (Ash, FollowerVO) {
 
 		follower: null,
 		isDismissed: false,
+		isRecruited: false,
 
 		constructor: function (follower) {
 			this.follower = follower;
 			this.isDismissed = false;
+			this.isRecruited = false;
 		},
 
 		getSaveKey: function () {
