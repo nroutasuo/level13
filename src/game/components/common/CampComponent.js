@@ -71,8 +71,8 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 			var copy = {};
 			copy.id = this.id;
 			copy.campName = this.campName;
-			copy.population = this.population;
-			copy.maxPopulation = this.maxPopulation;
+			copy.population = this.population || 0;
+			copy.maxPopulation = this.maxPopulation || 0;
 			copy.pendingPopulation = this.pendingPopulation;
 			copy.foundedTimeStamp = this.foundedTimeStamp;
 			copy.lastRaid = this.lastRaid;

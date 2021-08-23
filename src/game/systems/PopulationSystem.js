@@ -64,7 +64,7 @@ define([
 			var improvements = node.entity.get(SectorImprovementsComponent);
 			var maxPopulation = CampConstants.getHousingCap(improvements);
 			
-			var changePerSec = camp.populationChangePerSecRaw;
+			var changePerSec = camp.populationChangePerSecRaw || 0;
 			var change = time * changePerSec * GameConstants.gameSpeedCamp;
 			var oldPopulation = camp.population;
 			var newPopulation = oldPopulation + change;
