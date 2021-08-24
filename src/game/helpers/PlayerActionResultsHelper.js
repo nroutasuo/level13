@@ -318,7 +318,8 @@ define([
 					}
 				}
 			}
-				
+			
+			var nearestCampNode = this.nearestCampNodes.head;
 			var currentStorage = campSector ? GameGlobals.resourcesHelper.getCurrentCampStorage(campSector) : GameGlobals.resourcesHelper.getCurrentStorage();
 			var playerPos = this.playerLocationNodes.head.position;
 
@@ -352,7 +353,8 @@ define([
 			if (rewards.gainedCurrency > 0)
 				GameGlobals.gameState.unlockedFeatures.currency = true;
 
-			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+			var itemsComponent = this.playerStatsNodes.head.items;
+			var followersComponent = this.playerStatsNodes.head.followers;
 			if (rewards.selectedItems) {
 				for (var i = 0; i < rewards.selectedItems.length; i++) {
 					itemsComponent.addItem(rewards.selectedItems[i], !playerPos.inCamp && !campSector);
@@ -360,8 +362,14 @@ define([
 			}
 
 			if (rewards.gainedFollowers) {
+				let maxFollowers = FollowerConstants.getMaxFollowersInParty();
 				for (var i = 0; i < rewards.gainedFollowers.length; i++) {
-					itemsComponent.addItem(rewards.gainedFollowers[i], false);
+					let follower = rewards.gainedFollowers[i];
+					if (followersComponent.getParty().length < maxFollowers) {
+						followersComponent.addFollower(follower, true);
+					} else if (nearestCampNode) {
+						nearestCampNode.camp.pendingRecruits.push(follower);
+					}
 				}
 			}
 
@@ -378,7 +386,7 @@ define([
 
 			if (rewards.lostFollowers) {
 				for (var i = 0; i < rewards.lostFollowers.length; i++) {
-					itemsComponent.discardItem(rewards.lostFollowers[i], false);
+					followersComponent.removeFollower(rewards.lostFollowers[i]);
 				}
 			}
 
@@ -396,7 +404,6 @@ define([
 			}
 
 			if (rewards.gainedPopulation > 0) {
-				var nearestCampNode = this.nearestCampNodes.head;
 				var campNode = this.campNodes.head;
 				if (nearestCampNode) {
 					nearestCampNode.camp.pendingPopulation += 1;

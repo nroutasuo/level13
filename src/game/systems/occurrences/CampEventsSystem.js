@@ -59,41 +59,52 @@ define([
 
 		update: function (time) {
 			if (GameGlobals.gameState.isPaused) return;
-
+			
 			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
 				var campTimers = campNode.entity.get(CampEventTimersComponent);
+				this.updateEventTimers(time, campTimers);
+				this.updatePendingEvents(campNode, campTimers);
+				this.updateEvents(campNode, campTimers);
+			}
+		},
+		
+		updateEventTimers: function (time, campTimers) {
+			var dt = time;
+			for (var key in OccurrenceConstants.campOccurrenceTypes) {
+				var event = OccurrenceConstants.campOccurrenceTypes[key];
+				if (campTimers.eventEndTimers[event] && campTimers.eventEndTimers[event] != OccurrenceConstants.EVENT_DURATION_INFINITE)
+					campTimers.eventEndTimers[event] -= dt;
+				if (campTimers.eventStartTimers[event])
+					campTimers.eventStartTimers[event] -= dt;
+			}
+		},
+		
+		updatePendingEvents: function (campNode, campTimers) {
+			if (campNode.camp.pendingRecruits.length > 0) {
+				campTimers.scheduleNext(OccurrenceConstants.campOccurrenceTypes.recruit, 0);
+			}
+		},
+			
+		updateEvents: function (campNode, campTimers) {
+			for (var key in OccurrenceConstants.campOccurrenceTypes) {
+				var event = OccurrenceConstants.campOccurrenceTypes[key];
+				let isValid = this.isCampValidForEvent(campNode, event);
+				let hasEvent = this.hasCampEvent(campNode, event);
 				
-				// update timers
-				var dt = time;
-				for (var key in OccurrenceConstants.campOccurrenceTypes) {
-					var event = OccurrenceConstants.campOccurrenceTypes[key];
-					if (campTimers.eventEndTimers[event])
-						campTimers.eventEndTimers[event] -= dt;
-					if (campTimers.eventStartTimers[event])
-						campTimers.eventStartTimers[event] -= dt;
-				}
-				
-				// check event changes
-				for (var key in OccurrenceConstants.campOccurrenceTypes) {
-					var event = OccurrenceConstants.campOccurrenceTypes[key];
-					let isValid = this.isCampValidForEvent(campNode, event);
-					let hasEvent = this.hasCampEvent(campNode, event);
-					
-					if (hasEvent) {
-						if (this.isEventEnded(campNode, event)) {
-							this.endEvent(campNode, event);
-						}
-					} else if (isValid) {
-						if (!this.isScheduled(campNode, event)) {
-							this.scheduleEvent(campNode, event);
-						} else {
-							if (campTimers.isTimeToStart(event)) {
-								this.startEvent(campNode, event);
-							}
-						}
-					} else {
-						this.removeTimer(campNode, event);
+				if (hasEvent) {
+					if (this.isEventEnded(campNode, event)) {
+						this.endEvent(campNode, event);
 					}
+				} else if (isValid) {
+					if (!this.isScheduled(campNode, event)) {
+						this.scheduleEvent(campNode, event);
+					} else {
+						if (campTimers.isTimeToStart(event)) {
+							this.startEvent(campNode, event);
+						}
+					}
+				} else {
+					this.removeTimer(campNode, event);
 				}
 			}
 		},
@@ -242,10 +253,6 @@ define([
 			var duration = OccurrenceConstants.getDuration(event);
 			var campPos = campNode.entity.get(PositionComponent);
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(campPos.level);
-			campTimers.onEventStarted(event, duration);
-			if (this.isNew(event))
-				GameGlobals.gameState.unlockedFeatures.events.push(event);
-			log.i("Start " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ") (" + duration + "s)");
 
 			var logMsg;
 			switch (event) {
@@ -260,10 +267,14 @@ define([
 					break;
 					
 				case OccurrenceConstants.campOccurrenceTypes.recruit:
-					let follower = FollowerConstants.getNewFollower();
-					campNode.entity.add(new RecruitComponent(follower));
-					logMsg = "An adventurer arrives at the Inn. ";
+					let hasPendingFollower = campNode.camp.pendingRecruits.length > 0;
+					let follower = hasPendingFollower ? campNode.camp.pendingRecruits.shift() : FollowerConstants.getNewFollower();
+					campNode.entity.add(new RecruitComponent(follower, hasPendingFollower));
+					logMsg = hasPendingFollower ? "Adventurer met when exploring is waiting at the inn." : "An adventurer arrives at the Inn. ";
 					GameGlobals.gameState.unlockedFeatures.followers = true;
+					if (hasPendingFollower) {
+						duration = OccurrenceConstants.EVENT_DURATION_INFINITE;
+					}
 					break;
 
 				case OccurrenceConstants.campOccurrenceTypes.raid:
@@ -271,6 +282,11 @@ define([
 					logMsg = "A raid! The camp is under attack.";
 					break;
 			}
+			
+			campTimers.onEventStarted(event, duration);
+			if (this.isNew(event))
+				GameGlobals.gameState.unlockedFeatures.events.push(event);
+			log.i("Start " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ") (" + duration + "s)");
 
 			if (this.isPlayerInCamp(campNode) && logMsg) {
 				this.addLogMessage(logMsg, null, null, campNode);
@@ -335,7 +351,7 @@ define([
 						log.i("camp " + campNode.position.level + ": next " + event + " in " + Math.round(campTimers.eventStartTimers[event]) + "s");
 					}
 					var minEndTime = Math.min(OccurrenceConstants.getDuration(event), 15);
-					if (campTimers.eventEndTimers[event]) {
+					if (campTimers.eventEndTimers[event] && campTimers.eventEndTimers[event] != OccurrenceConstants.EVENT_DURATION_INFINITE) {
 						campTimers.eventEndTimers[event] = Math.max(campTimers.eventEndTimers[event], minEndTime);
 						log.i("camp " + campNode.position.level + ": " + event + " ends in " + Math.round(campTimers.eventEndTimers[event]) + "s");
 					}

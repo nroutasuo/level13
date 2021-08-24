@@ -14,16 +14,26 @@ function (Ash, FollowerVO, FollowerConstants) {
 		
 		getParty: function () {
 			let followersInParty = [];
-			for (let i = 0; i < followers.length; i++) {
-				if (followers[i].inParty) {
-					followersInParty.push(followers[i]);
+			for (let i = 0; i < this.followers.length; i++) {
+				if (this.followers[i].inParty) {
+					followersInParty.push(this.followers[i]);
 				}
 			}
 			return followersInParty;
 		},
 		
-		addFollower: function (follower) {
+		addFollower: function (follower, addToParty) {
 			this.followers.push(follower);
+			follower.inParty = true;
+		},
+		
+		removeFollower: function (follower) {
+			var index = this.followers.indexOf(follower);
+			if (index <= 0) {
+				log.w("couldn't find follower to remove: " + follower.id);
+				return;
+			}
+  			this.followers.splice(index, 1);
 		},
 
 		getSaveKey: function () {

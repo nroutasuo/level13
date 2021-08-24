@@ -9,6 +9,8 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 			recruit: "recruit"
 		},
 		
+		EVENT_DURATION_INFINITE: -999,
+		
 		OCCURRENCE_CAMP_TRADER_LENGTH: 60 * 5,
 		OCCURRENCE_CAMP_TRADER_COOLDOWN: 60 * 25,
 		OCCURRENCE_CAMP_TRADER_COOLDOWN_START: 60,

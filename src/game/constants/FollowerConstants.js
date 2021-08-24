@@ -55,7 +55,6 @@ function (Ash, FollowerVO) {
 		},
 		
 		getPredefinedFollowerByID: function (followerID) {
-			debugger
 			let template = null;
 			for (let campOrdinal in this.predefinedFollowers) {
 				let t = this.predefinedFollowers[campOrdinal];
