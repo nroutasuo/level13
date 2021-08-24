@@ -7,6 +7,7 @@ define([
 	'game/constants/GameConstants',
 	'game/constants/ExplorationConstants',
 	'game/constants/FightConstants',
+	'game/constants/FollowerConstants',
 	'game/constants/LocaleConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/LogConstants',
@@ -43,6 +44,7 @@ define([
 	GameConstants,
 	ExplorationConstants,
 	FightConstants,
+	FollowerConstants,
 	LocaleConstants,
 	PlayerActionConstants,
 	LogConstants,
@@ -221,21 +223,26 @@ define([
 				rewards.gainedEvidence = ExplorationConstants.getScoutLocaleReward(localeVO.type, campOrdinal);
 			}
 			
-			if (localeVO.type !== localeTypes.tradingpartner && localeVO.type != localeTypes.grove) {
-				// population and followers
-				if (localeCategory !== "u") {
-					rewards.gainedFollowers = this.getRewardFollowers(0.1);
-					if (rewards.gainedFollowers.length == 0 && this.nearestCampNodes.head && campOrdinal > 1) {
-						rewards.gainedPopulation = Math.random() < 0.1 ? 1 : 0;
+			let followerID = localeVO.followerID;
+			if (followerID) {
+				rewards.gainedFollowers = [ FollowerConstants.getPredefinedFollowerByID(followerID) ];
+			} else {
+				if (localeVO.type !== localeTypes.tradingpartner && localeVO.type != localeTypes.grove) {
+					// population and followers
+					if (localeCategory !== "u") {
+						rewards.gainedFollowers = this.getRewardFollowers(0.1);
+						if (rewards.gainedFollowers.length == 0 && this.nearestCampNodes.head && campOrdinal > 1) {
+							rewards.gainedPopulation = Math.random() < 0.1 ? 1 : 0;
+						}
 					}
-				}
-				
-				// items and resources
-				if (localeCategory === "u") {
-					rewards.gainedResources = this.getRewardResources(1, 5 * localeDifficulty, efficiency, availableResources);
-					rewards.gainedItems = this.getRewardItems(0.5, 0, this.itemResultTypes.scavenge, 1, itemsComponent, campOrdinal, step, isHardLevel);
-				} else {
-					rewards.gainedItems = this.getRewardItems(0.25, 0, this.itemResultTypes.meet, 1, itemsComponent, campOrdinal, step, isHardLevel);
+					
+					// items and resources
+					if (localeCategory === "u") {
+						rewards.gainedResources = this.getRewardResources(1, 5 * localeDifficulty, efficiency, availableResources);
+						rewards.gainedItems = this.getRewardItems(0.5, 0, this.itemResultTypes.scavenge, 1, itemsComponent, campOrdinal, step, isHardLevel);
+					} else {
+						rewards.gainedItems = this.getRewardItems(0.25, 0, this.itemResultTypes.meet, 1, itemsComponent, campOrdinal, step, isHardLevel);
+					}
 				}
 			}
 

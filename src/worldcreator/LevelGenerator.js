@@ -1,6 +1,7 @@
 // Handles the first step of world generation, the abstract world template itself
 define([
 	'ash',
+	'game/constants/FollowerConstants',
 	'game/constants/PositionConstants',
 	'game/constants/WorldConstants',
 	'game/vos/PositionVO',
@@ -9,7 +10,7 @@ define([
 	'worldcreator/WorldCreatorRandom',
 	'worldcreator/LevelVO',
 	'worldcreator/ZoneVO',
-], function (Ash, PositionConstants, WorldConstants, PositionVO, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, LevelVO, ZoneVO) {
+], function (Ash, FollowerConstants, PositionConstants, WorldConstants, PositionVO, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, LevelVO, ZoneVO) {
 	
 	var LevelGenerator = {
 		
@@ -40,6 +41,7 @@ define([
 				levelVO.excursionStartPosition = this.getExcursionStartPosition(worldVO, levelVO);
 				levelVO.zones = this.generateZones(seed, levelVO);
 				levelVO.seaPadding = this.getSeaPadding(seed, levelVO);
+				levelVO.predefinedFollowers = this.getPredefinedFollowers(seed, l);
 				worldVO.addLevel(levelVO);
 			}
 		},
@@ -128,6 +130,16 @@ define([
 				return levelVO.passageUpPosition;
 			}
 			return levelVO.passageDownPosition;
+		},
+		
+		getPredefinedFollowers: function (seed, level) {
+			let result = [];
+			let isCampableLevel = WorldCreatorHelper.isCampableLevel(seed, level);
+			if (!isCampableLevel) return result;
+			let campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, level);
+			let follower = FollowerConstants.predefinedFollowers[campOrdinal];
+			if (!follower) return [];
+			return [ follower ];
 		},
 		
 		getSeaPadding: function (seed, levelVO) {

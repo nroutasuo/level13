@@ -1241,8 +1241,19 @@ define([
 				groveSector.hazards.pollution = 0;
 				addLocale(groveSector, groveLocale);
 			}
+			
+			// 3) spawn locales with hard-coded followers
+			for (let i = 0; i < levelVO.predefinedFollowers.length; i++) {
+				let follower = levelVO.predefinedFollowers[i];
+				let options = { excludingFeature: "workshopResource" };
+				let sector = WorldCreatorRandom.randomSectors(seed * 2, worldVO, levelVO, 1, 2, options)[0];
+				let locale = new LocaleVO(follower.localeType, true, false);
+				locale.followerID = follower.id;
+				addLocale(sector, locale);
+				WorldCreatorLogger.i("add follower locale at " + sector)
+			}
 
-			// 3) spawn other types (for blueprints)
+			// 4) spawn other types (for blueprints)
 			var createLocales = function (worldVO, levelVO, campOrdinal, isEarly, count, countEasy) {
 				var pathConstraints = [];
 				for (var j = 0; j < levelVO.campPositions.length; j++) {

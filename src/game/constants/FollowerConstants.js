@@ -28,6 +28,14 @@ function (Ash, FollowerVO) {
 			BRING_METAL: "bring_metal",
 		},
 		
+		// camp ordinal -> blueprint
+		predefinedFollowers: {
+			2: { id: 2, localeType: localeTypes.maintenance, abilityType: "attack" },
+			8: { id: 8, localeType: localeTypes.hermit, abilityType: "scavenge_supplies" },
+			10: { id: 10, localeType: localeTypes.market, abilityType: "cost_scout" },
+			14: { id: 14, localeType: localeTypes.library, abilityType: "scavenge_ingredients" },
+		},
+		
 		getMaxFollowersRecruited: function (innMajorLevels) {
 			let result = 0;
 			for (let i = 0; i < innMajorLevels.length; i++) {
@@ -41,10 +49,30 @@ function (Ash, FollowerVO) {
 		},
 		
 		getNewFollower: function () {
-			let id = Math.floor(Math.random() * 100000);
+			let id = 100 + Math.floor(Math.random() * 100000);
 			let icon = "img/followers/follower_yellow_f.png";
 			return new FollowerVO(id, "Name", "Description", FollowerConstants.abilityType.ATTACK, 1, icon);
-		}
+		},
+		
+		getPredefinedFollowerByID: function (followerID) {
+			debugger
+			let template = null;
+			for (let campOrdinal in this.predefinedFollowers) {
+				let t = this.predefinedFollowers[campOrdinal];
+				if (t.id == followerID) {
+					template = t;
+					break;
+				}
+			}
+			
+			if (!template) {
+				log.w("couldn't find template for predefined follower id:" + followerID);
+				return null;
+			}
+			
+			let icon = "img/followers/follower_red_m.png";
+			return new FollowerVO(followerID, "Name", "Description predefined", template.abilityType, 1, icon);
+		},
 		
 	};
 	
