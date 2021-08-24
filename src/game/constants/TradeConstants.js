@@ -45,13 +45,13 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 			for (var i = 0; i < this.TRADING_PARTNERS.length; i++) {
 				let tradePartnerCampOrdinal = this.TRADING_PARTNERS[i].campOrdinal;
 				if (campOrdinal <= WorldConstants.CAMP_ORDINAL_GROUND && tradePartnerCampOrdinal > WorldConstants.CAMP_ORDINAL_GROUND)
-					return false;
+					continue;
 				if (campOrdinal > WorldConstants.CAMP_ORDINAL_GROUND && tradePartnerCampOrdinal <= WorldConstants.CAMP_ORDINAL_GROUND)
-					return false;
+					continue;
 				if (tradePartnerCampOrdinal > campOrdinal + 1)
-					return false;
+					continue;
 				if (tradePartnerCampOrdinal < campOrdinal - 5)
-					return false;
+					continue;
 				
 				result.push(this.TRADING_PARTNERS[i]);
 			}
