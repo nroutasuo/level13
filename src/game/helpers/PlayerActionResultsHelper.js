@@ -230,7 +230,7 @@ define([
 				if (localeVO.type !== localeTypes.tradingpartner && localeVO.type != localeTypes.grove) {
 					// population and followers
 					if (localeCategory !== "u") {
-						rewards.gainedFollowers = this.getRewardFollowers(0.1);
+						rewards.gainedFollowers = this.getRewardFollowers(0.075);
 						if (rewards.gainedFollowers.length == 0 && this.nearestCampNodes.head && campOrdinal > 1) {
 							rewards.gainedPopulation = Math.random() < 0.1 ? 1 : 0;
 						}
@@ -806,21 +806,16 @@ define([
 
 		getRewardFollowers: function (probability) {
 			var followers = [];
-			// TODO FOLLOWERS
-			/*
-			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-			var numCurrentFollowers = itemsComponent.getAllByType(ItemConstants.itemTypes.follower, true).length;
-			var numMaxFollowers = FightConstants.getMaxFollowers(GameGlobals.gameState.numCamps);
-			if (numCurrentFollowers < numMaxFollowers)
-			{
-				if (Math.random() < probability) {
-					var playerPos = this.playerLocationNodes.head.position;
-					var campCount = GameGlobals.gameState.numCamps;
-					var follower = ItemConstants.getFollower(playerPos.level, campCount);
-					followers.push(follower);
-				}
+			
+			let campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
+			if (campOrdinal <= FollowerConstants.getFirstPredefinedFollowerCampOrdinal())
+				return followers;
+			
+			if (Math.random() < probability) {
+				var follower = FollowerConstants.getNewFollower();
+				followers.push(follower);
 			}
-			*/
+			
 			return followers;
 		},
 
