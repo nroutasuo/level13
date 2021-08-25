@@ -411,9 +411,9 @@ define([
 				return LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
 			}
 			
-			if (levelOrdinal >= WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_RADIATION)
+			if (campOrdinal >= WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_RADIATION)
 				options.push(LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION);
-			if (levelOrdinal >= WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_POISON)
+			if (campOrdinal >= WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_POISON)
 				options.push(LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION);
 				
 			if (options.length == 0)

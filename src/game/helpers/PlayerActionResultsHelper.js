@@ -371,6 +371,7 @@ define([
 						nearestCampNode.camp.pendingRecruits.push(follower);
 					}
 				}
+				GameGlobals.gameState.unlockedFeatures.followers = true;
 			}
 
 			if (rewards.gainedBlueprintPiece) {
@@ -819,7 +820,7 @@ define([
 				return followers;
 			
 			if (Math.random() < probability) {
-				var follower = FollowerConstants.getNewFollower();
+				var follower = FollowerConstants.getNewFollower(FollowerConstants.followerSource.SCOUT, GameGlobals.gameState.numCamps);
 				followers.push(follower);
 			}
 			

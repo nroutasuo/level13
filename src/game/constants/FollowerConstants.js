@@ -1,5 +1,5 @@
-define(['ash', 'game/vos/FollowerVO'],
-function (Ash, FollowerVO) {
+define(['ash', 'utils/MathUtils', 'game/vos/FollowerVO', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorConstants'],
+function (Ash, MathUtils, FollowerVO, WorldConstants, WorldCreatorConstants) {
 	
 	var FollowerConstants = {
 		
@@ -28,6 +28,13 @@ function (Ash, FollowerVO) {
 			BRING_METAL: "bring_metal",
 		},
 		
+		followerSource: {
+			SCOUT: "scout",
+			EVENT: "event"
+		},
+		
+		MAX_ABILITY_LEVEL: 100,
+		
 		// camp ordinal -> blueprint
 		predefinedFollowers: {
 			2: { id: 2, localeType: localeTypes.maintenance, abilityType: "attack" },
@@ -48,10 +55,23 @@ function (Ash, FollowerVO) {
 			return 3;
 		},
 		
-		getNewFollower: function () {
+		getNewFollower: function (source, campOrdinal) {
+			campOrdinal = campOrdinal || 1;
+			
 			let id = 100 + Math.floor(Math.random() * 100000);
+			
+			let availableAbilityTypes = this.getAvailableAbilityTypes(source, campOrdinal);
+			let abilityType = availableAbilityTypes[Math.floor(Math.random() * availableAbilityTypes.length)];
+			
+			let minAbilityLevel = MathUtils.map(campOrdinal - 1, 0, WorldConstants.CAMPS_TOTAL + 1, 1, 100);
+			let maxAbilityLevel = MathUtils.map(campOrdinal + 1, 0, WorldConstants.CAMPS_TOTAL + 1, 1, 100);
+			let abilityLevel = MathUtils.randomIntBetween(minAbilityLevel, maxAbilityLevel);
+			
+			let name = "Name";
+			let description = "Description";
 			let icon = "img/followers/follower_yellow_f.png";
-			return new FollowerVO(id, "Name", "Description", FollowerConstants.abilityType.ATTACK, 1, icon);
+			
+			return new FollowerVO(id, name, description, abilityType, abilityLevel, icon);
 		},
 		
 		getPredefinedFollowerByID: function (followerID) {
@@ -81,6 +101,51 @@ function (Ash, FollowerVO) {
 			result.resource_water = 50;
 			return result;
 		},
+		
+		getAvailableAbilityTypes: function (source, campOrdinal) {
+			let result = [];
+			let firstFollowerCampOrdinal = 2;
+			
+			result.push(FollowerConstants.abilityType.ATTACK);
+			result.push(FollowerConstants.abilityType.DEFENCE);
+			
+			// initial stepped unlocks after first follower
+			if (campOrdinal > firstFollowerCampOrdinal) {
+				result.push(FollowerConstants.abilityType.COST_SCOUT);
+			}
+			if (campOrdinal > firstFollowerCampOrdinal + 1) {
+				result.push(FollowerConstants.abilityType.COST_SCAVENGE);
+				result.push(FollowerConstants.abilityType.HAZARD_COLD);
+			}
+			if (campOrdinal > firstFollowerCampOrdinal + 2) {
+				result.push(FollowerConstants.abilityType.FIND_COLLECTORS);
+			}
+			if (campOrdinal > firstFollowerCampOrdinal + 3) {
+				result.push(FollowerConstants.abilityType.BRING_METAL);
+			}
+			
+			// hazards
+			if (campOrdinal >= WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_POISON) {
+				result.push(FollowerConstants.abilityType.HAZARD_POLLUTION);
+			}
+			if (campOrdinal >= WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_RADIATION) {
+				result.push(FollowerConstants.abilityType.HAZARD_RADIATION);
+			}
+			
+			// midgame
+			if (campOrdinal > WorldConstants.CAMP_ORDINAL_GROUND) {
+				result.push(FollowerConstants.abilityType.SCAVENGE_INGREDIENTS);
+				result.push(FollowerConstants.abilityType.SCAVENGE_SUPPLIES);
+			}
+			
+			// lategame
+			if (campOrdinal >= WorldConstants.CAMPS_TOTAL - 5) {
+				result.push(FollowerConstants.abilityType.COST_MOVEMENT);
+				result.push(FollowerConstants.abilityType.SCAVENGE_GENERAL);
+			}
+			
+			return result;
+		}
 		
 	};
 	

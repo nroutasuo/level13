@@ -18,6 +18,12 @@ define(function () {
 			return (val - min1) * (max2 - min2) / (max1 - min1) + min2;
 		},
 		
+		randomIntBetween: function (min, max) {
+			min = Math.ceil(min);
+			max = Math.floor(max);
+			return Math.floor(Math.random() * (max - min) + min);
+		},
+		
 		// simple weighted random: first item twice as likely to be selected as the second and so on
 		getWeightedRandom: function (min, max) {
 			var bag = [];

@@ -268,7 +268,9 @@ define([
 					
 				case OccurrenceConstants.campOccurrenceTypes.recruit:
 					let hasPendingFollower = campNode.camp.pendingRecruits.length > 0;
-					let follower = hasPendingFollower ? campNode.camp.pendingRecruits.shift() : FollowerConstants.getNewFollower();
+					let follower = hasPendingFollower ?
+						campNode.camp.pendingRecruits.shift() :
+						FollowerConstants.getNewFollower(FollowerConstants.followerSource.EVENT, GameGlobals.gameState.numCamps);
 					campNode.entity.add(new RecruitComponent(follower, hasPendingFollower));
 					logMsg = hasPendingFollower ? "Adventurer met when exploring is waiting at the inn." : "An adventurer arrives at the Inn. ";
 					GameGlobals.gameState.unlockedFeatures.followers = true;
