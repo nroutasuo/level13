@@ -73,6 +73,15 @@ function (Ash, FollowerVO) {
 			return new FollowerVO(followerID, "Name", "Description predefined", template.abilityType, 1, icon);
 		},
 		
+		getRecruitCost: function (follower, isFoundAsReward) {
+			// TODO FOLLOWERS define varying costs (food, water, medicine, silver)
+			if (isFoundAsReward) return {};
+			let result = {};
+			result.resource_food = 50;
+			result.resource_water = 50;
+			return result;
+		},
+		
 	};
 	
 	return FollowerConstants;

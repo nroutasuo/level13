@@ -6,15 +6,14 @@ define([
 	'game/constants/PositionConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/PlayerStatConstants',
+	'game/constants/FollowerConstants',
 	'game/constants/ImprovementConstants',
 	'game/constants/ItemConstants',
 	'game/constants/BagConstants',
 	'game/constants/MovementConstants',
 	'game/constants/UpgradeConstants',
-	'game/constants/FightConstants',
 	'game/constants/PerkConstants',
 	'game/constants/UIConstants',
-	'game/constants/TextConstants',
 	'game/constants/WorldConstants',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/player/PlayerResourcesNode',
@@ -38,18 +37,17 @@ define([
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/SectorLocalesComponent',
-	'game/components/sector/SectorControlComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/events/TraderComponent',
 	'game/components/common/CampComponent',
 	'game/vos/ResourcesVO',
 	'game/vos/ImprovementVO'
 ], function (
-	Ash, GameGlobals, GlobalSignals, PositionConstants, PlayerActionConstants, PlayerStatConstants, ImprovementConstants, ItemConstants, BagConstants, MovementConstants, UpgradeConstants, FightConstants, PerkConstants, UIConstants, TextConstants, WorldConstants,
+	Ash, GameGlobals, GlobalSignals, PositionConstants, PlayerActionConstants, PlayerStatConstants, FollowerConstants, ImprovementConstants, ItemConstants, BagConstants, MovementConstants, UpgradeConstants, PerkConstants, UIConstants, WorldConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	LevelComponent, CurrencyComponent, PositionComponent, PlayerActionComponent, BagComponent, ExcursionComponent, ItemsComponent, DeityComponent,
 	FightComponent, OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent,
-	SectorFeaturesComponent, SectorStatusComponent, SectorLocalesComponent, SectorControlComponent, SectorImprovementsComponent, TraderComponent,
+	SectorFeaturesComponent, SectorStatusComponent, SectorLocalesComponent, SectorImprovementsComponent, TraderComponent,
 	CampComponent,
 	ResourcesVO, ImprovementVO
 ) {
@@ -1298,6 +1296,14 @@ define([
 					var sectorLocalesComponent = sector.get(SectorLocalesComponent);
 					var localeVO = sectorLocalesComponent.locales[localei];
 					if (localeVO) this.addCosts(result, localeVO.costs);
+					break;
+				
+				case "recruit_follower":
+					let followerID = parseInt(action.replace(baseActionID + "_", ""));
+					let recruitComponent = GameGlobals.campHelper.findRecruitComponentWithFollowerId(followerID);
+					if (recruitComponent != null) {
+						this.addCosts(result, FollowerConstants.getRecruitCost(recruitComponent.follower, recruitComponent. isFoundAsReward));
+					}
 					break;
 
 				case "use_item":
