@@ -467,14 +467,6 @@ define(['ash',
 				this.logStep("used hospital 2");
 				return true;
 			}
-
-			if (GameGlobals.playerActionsHelper.checkAvailability("use_in_inn") && Math.random() < 0.05) {
-				var newFollower = GameGlobals.playerActionFunctions.useInn(true);
-				if (newFollower) {
-					this.logStep("used inn");
-					return true;
-				}
-			}
 		},
 
 		manageWorkers: function () {

@@ -395,7 +395,7 @@ define(['ash',
 							log.i($(button))
 							return "";
 						}
-						if (action === "take_all" || action === "accept_inventory" || action === "use_in_inn_cancel" || action === "fight")
+						if (action === "take_all" || action === "accept_inventory" || action === "fight")
 							return "";
 						return uiFunctions.generateActionButtonCallout(action);
 					});

@@ -1141,7 +1141,6 @@ define([
 				case "build_out_passage_down_elevator":
 				case "build_out_passage_down_hole":
 				case "move_camp_global":
-				case "use_in_inn_select":
 				case "send_caravan":
 				case "clear_debris_e":
 				case "clear_debris_l":
@@ -1436,7 +1435,6 @@ define([
 				if (a.indexOf("send_caravan_") >= 0) return "send_caravan";
 				if (a.indexOf("recruit_follower_") >= 0) return "recruit_follower";
 				if (a.indexOf("dismiss_recruit_") >= 0) return "dismiss_recruit";
-				if (a.indexOf("use_in_inn_select_") >= 0) return "use_in_inn_select";
 				if (a.indexOf("move_camp_global_") >= 0) return "move_camp_global";
 				if (a.indexOf("build_out_passage") >= 0) {
 					var parts = a.split("_");

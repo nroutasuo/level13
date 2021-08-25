@@ -229,7 +229,6 @@ define(['ash',
 				case "use_in_market": this.useMarket(param); break;
 				case "use_in_hospital": this.useHospital(param); break;
 				case "use_in_hospital_2": this.useHospital2(param); break;
-				case "use_in_inn": this.useInn(param); break;
 				case "use_in_temple": this.useTemple(param); break;
 				case "use_in_shrine": this.useShrine(param); break;
 				case "improve_in": this.improveBuilding(param); break;
@@ -953,6 +952,8 @@ define(['ash',
 			this.playerStatsNodes.head.followers.addFollower(recruitComponent.follower);
 			recruitComponent.isRecruited = true;
 			
+			GameGlobals.gameState.unlockedFeatures.followers = true;
+			
 			this.addLogMessage(LogConstants.MSG_ID_RECRUIT, "Recruited a new follower.");
 		},
 		
@@ -1413,49 +1414,6 @@ define(['ash',
 			this.addLogMessage(LogConstants.MSG_ID_USE_HOSPITAL2, "Improved health.");
 			this.completeAction("use_in_hospital_2");
 			this.forceResourceBarUpdate();
-		},
-
-		useInn: function (auto) {
-			// TODO FOLLOWERS
-			/*
-			this.currentAction = "use_in_inn";
-			var sector = this.playerLocationNodes.head.entity;
-			var positionComponent = sector.get(PositionComponent);
-			var campCount = GameGlobals.gameState.numCamps;
-			var maxAvailableFollowers = Math.max(0, Math.min(4, Math.floor(sector.get(CampComponent).population / 10))) + 1;
-			var numAvailableFollowers = Math.floor(Math.random() * maxAvailableFollowers) + 1;
-			var availableFollowers = [];
-			for (var i = 0; i < numAvailableFollowers; i++) {
-				availableFollowers.push(ItemConstants.getFollower(positionComponent.level, campCount));
-			}
-			if (auto) {
-				var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-				var currentFollowers = itemsComponent.getAllByType(ItemConstants.itemTypes.follower, true);
-				if (currentFollowers.length === 0 && availableFollowers.length > 0) {
-					this.addFollower(availableFollowers[0]);
-					return true;
-				} else {
-					for (var a1 = 0; a1 < availableFollowers.length; a1++) {
-						var follower = availableFollowers[a1];
-						for (var a2 = 0; a2 < currentFollowers.length; a2++) {
-							var oldFollower = currentFollowers[a2];
-							if (oldFollower.getBonusTotalBonus() < follower.getTotalBonus()) {
-								itemsComponent.discardItem(oldFollower, false);
-								this.addFollower(follower);
-								return true;
-							}
-						}
-					}
-				}
-			} else {
-				// TODO save somewhere better
-				GameGlobals.gameState.uiStatus.availableFollowers = availableFollowers;
-				GameGlobals.uiFunctions.showInnPopup(availableFollowers);
-			}
-			this.completeAction("use_in_inn");
-
-			return false;
-			*/
 		},
 
 		useTemple: function () {

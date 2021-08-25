@@ -44,7 +44,6 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			},
 			inn: {
 				description: "Increases rumours and enables recruitment.",
-				useActionName: "Recruit",
 				improvementLevelsPerTechLevel: 5,
 			},
 			library: {
