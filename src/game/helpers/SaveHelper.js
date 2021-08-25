@@ -135,9 +135,7 @@ define([
 						if (value2 === null) {
 							continue;
 						} else if (typeof value2 != 'object') {
-							if (valueKey2 != "id") {
-								component[valueKey][valueKey2] = value2;
-							}
+							component[valueKey][valueKey2] = value2;
 						} else if (parseInt(valueKey2) >= 0 && component[valueKey] instanceof Array) {
 							var valueKey2Int = parseInt(valueKey2);
 							if (!component[valueKey][valueKey2Int]) {
