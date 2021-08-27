@@ -40,7 +40,7 @@ function (Ash, MathUtils, FollowerVO, CultureConstants, WorldConstants, WorldCre
 			2: { id: 2, localeType: localeTypes.maintenance, abilityType: "attack", name: "Ilma", icon: "img/followers/follower_black_f.png" },
 			8: { id: 8, localeType: localeTypes.hermit, abilityType: "scavenge_supplies", name: "Zory", icon: "img/followers/follower_blue_m.png" },
 			10: { id: 10, localeType: localeTypes.market, abilityType: "cost_scout", name: "Erdene", icon: "img/followers/follower_green_m.png" },
-			14: { id: 14, localeType: localeTypes.library, abilityType: "scavenge_ingredients", "Arushi", icon: "img/followers/follower_yellow_f.png" },
+			14: { id: 14, localeType: localeTypes.library, abilityType: "scavenge_ingredients", name: "Arushi", icon: "img/followers/follower_yellow_f.png" },
 		},
 		
 		icons: [
@@ -204,6 +204,48 @@ function (Ash, MathUtils, FollowerVO, CultureConstants, WorldConstants, WorldCre
 				default:
 					log.w("no followerType defined for abilityType: " + abilityType);
 					return this.followerType.EXPLORER;
+			}
+		},
+		
+		getAbilityTypeDisplayName: function (abilityType) {
+			switch (abilityType) {
+				case this.abilityType.ATTACK: return "fight";
+				case this.abilityType.DEFENCE: return "fight";
+				case this.abilityType.COST_MOVEMENT: return "explorer";
+				case this.abilityType.COST_SCAVENGE: return "scavenger";
+				case this.abilityType.COST_SCOUT: return "scout";
+				case this.abilityType.HAZARD_COLD: return "cold specialist";
+				case this.abilityType.HAZARD_POLLUTION: return "pollution specialist";
+				case this.abilityType.HAZARD_RADIATION: return "radiation specialist";
+				case this.abilityType.FIND_COLLECTORS: return "trapper";
+				case this.abilityType.SCAVENGE_GENERAL: return "scavenger";
+				case this.abilityType.SCAVENGE_INGREDIENTS: return "crafter";
+				case this.abilityType.SCAVENGE_SUPPLIES: return "survivor";
+				case this.abilityType.BRING_METAL: return "builder";
+				default:
+					log.w("no display name defined for abilityType: " + abilityType);
+					return abilityType;
+			}
+		},
+		
+		getAbilityTypeDescription: function (abilityType) {
+			switch (abilityType) {
+				case this.abilityType.ATTACK: return "helps in fights";
+				case this.abilityType.DEFENCE: return "helps in fights";
+				case this.abilityType.COST_MOVEMENT: return "reduces stamina cost of movement";
+				case this.abilityType.COST_SCAVENGE: return "reduces stamina cost of scavenging";
+				case this.abilityType.COST_SCOUT: return "reduces stamina cost of scouting";
+				case this.abilityType.HAZARD_COLD: return "detects and protects against cold";
+				case this.abilityType.HAZARD_POLLUTION: return "detects and protects against pollution";
+				case this.abilityType.HAZARD_RADIATION: return "detects and protects against radiation";
+				case this.abilityType.FIND_COLLECTORS: return "finds spots for traps and buckets";
+				case this.abilityType.SCAVENGE_GENERAL: return "finds more everything when scavenging";
+				case this.abilityType.SCAVENGE_INGREDIENTS: return "finds more ingredients";
+				case this.abilityType.SCAVENGE_SUPPLIES: return "finds more supplies when scavenging";
+				case this.abilityType.BRING_METAL: return "carries back some metal to camp";
+				default:
+					log.w("no display name defined for abilityType: " + abilityType);
+					return abilityType;
 			}
 		},
 		

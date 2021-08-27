@@ -4,6 +4,7 @@ define(['ash',
 	'game/constants/StoryConstants',
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
+	'game/constants/FollowerConstants',
 	'game/constants/ItemConstants',
 	'game/constants/BagConstants',
 	'game/constants/PerkConstants',
@@ -17,7 +18,7 @@ define(['ash',
 	'game/components/common/VisitedComponent',
 	'utils/UIAnimations'
 ], function (Ash, GameGlobals,
-	StoryConstants, PositionConstants, SectorConstants, ItemConstants, BagConstants, PerkConstants, UpgradeConstants, PlayerActionConstants,
+	StoryConstants, PositionConstants, SectorConstants, FollowerConstants, ItemConstants, BagConstants, PerkConstants, UpgradeConstants, PlayerActionConstants,
 	PositionComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent,
 	PassagesComponent, VisitedComponent, UIAnimations) {
 
@@ -145,6 +146,35 @@ define(['ash',
 				html += "<li>" + this.getItemDiv(itemsComponent, item, amount, this.getItemCallout(item, true)) + "</li>";
 			}
 			return html;
+		},
+		
+		getFollowerDiv: function (follower) {
+			let classes = "item";
+			let div = "<div class='" + classes + "'>";
+			let calloutContent = this.getFollowerCallout(follower);
+			div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
+			div += "<img src='" + follower.icon + "'/>";
+			div += "</div>";
+			div += "</div>"
+			return div;
+		},
+		
+		getFollowerCallout: function (follower) {
+			var result = "<b>" + follower.name + "</b>";
+			result += "<br/>Ability: " + FollowerConstants.getAbilityTypeDisplayName(follower.abilityType) + " " + follower.abilityLevel;
+			result += "<br/>" + FollowerConstants.getAbilityTypeDescription(follower.abilityType);
+			
+			var makeButton = function (action, name) {
+				 return "<button class='action btn-narrow' action='" + action + "'>" + name + "</button>";
+			};
+
+			var options = "<div class='item-bag-options'>";
+			var action = "dismiss_follower" + follower.id;
+			options += makeButton(action, "Dismiss");
+			options += "</div>";
+			result += options;
+
+			return result;
 		},
 
 		getResourceLi: function (name, amount, isLost, simple) {

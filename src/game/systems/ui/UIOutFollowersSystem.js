@@ -7,12 +7,12 @@ define([
 	'game/constants/FightConstants',
 	'game/components/sector/events/RecruitComponent',
 	'game/nodes/PlayerLocationNode',
-	'game/nodes/player/ItemsNode',
-], function (Ash, GameGlobals, GlobalSignals, UIConstants, ItemConstants, FightConstants, RecruitComponent, PlayerLocationNode, ItemsNode) {
+	'game/nodes/player/PlayerStatsNode',
+], function (Ash, GameGlobals, GlobalSignals, UIConstants, ItemConstants, FightConstants, RecruitComponent, PlayerLocationNode, PlayerStatsNode) {
 	var UIOutFollowersSystem = Ash.System.extend({
 		
 		playerLocationNodes: null,
-		itemNodes: null,
+		playerStatsNodes: null,
 		
 		bubbleNumber: -1,
 
@@ -22,29 +22,27 @@ define([
 
 		addToEngine: function (engine) {
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
-			this.itemNodes = engine.getNodeList(ItemsNode);
+			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 			
 			GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
 			GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, this.onInventoryChanged);
-			GlobalSignals.add(this, GlobalSignals.equipmentChangedSignal, this.onEquipmentChanged);
 		},
 
 		removeFromEngine: function (engine) {
 			this.playerLocationNodes = null;
-			this.itemNodes = null;
+			this.playerStatsNodes = null;
 			GlobalSignals.removeAll(this);
 		},
 
 		update: function (time) {
-			var itemsComponent = this.itemNodes.head.items;
 			this.updateBubble();
 		},
 		
 		refresh: function () {
 			$("#tab-header h2").text("Exploration party");
 			$("#followers-max").text("Maximum followers: " + GameGlobals.campHelper.getCurrentMaxFollowersRecruited());
-			this.updateItems();
+			this.updateFollowers();
 			this.refreshRecruits();
 		},
 		
@@ -81,26 +79,24 @@ define([
 			GameGlobals.uiFunctions.registerActionButtonListeners("#recruits-container table");
 		},
 
-		updateItems: function () {
+		updateFollowers: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
-			// TODO FOLLOWERS
-			/*
-			var itemsComponent = this.itemNodes.head.items;
-			var items = itemsComponent.getAllByType(ItemConstants.itemTypes.follower, true);
+			
+			var followersComponent = this.playerStatsNodes.head.followers;
+			var followers = followersComponent.getAll();
 			$("#list-followers").empty();
-			for (var i = 0; i < items.length; i++) {
-				var item = items[i];
-				var li = "<li>" + UIConstants.getItemDiv(itemsComponent, item, null, UIConstants.getItemCallout(item), true) + "</li>";
+			for (var i = 0; i < followers.length; i++) {
+				var follower = followers[i];
+				var li = "<li>" + UIConstants.getFollowerDiv(follower) + "</li>";
 				$("#list-followers").append(li);
 			}
-
-			var hasFollowers = items.length > 0;
+			
+			var hasFollowers = followers.length > 0;
 			var showFollowers = hasFollowers || GameGlobals.gameState.unlockedFeatures.followers;
 			GameGlobals.uiFunctions.toggle("#list-followers", hasFollowers);
 			GameGlobals.uiFunctions.toggle("#header-followers", showFollowers);
 			GameGlobals.uiFunctions.toggle("#followers-empty", showFollowers && !hasFollowers);
 			GameGlobals.uiFunctions.generateCallouts("#list-followers");
-			*/
 		},
 		
 		getNumRecruits: function () {
@@ -110,7 +106,6 @@ define([
 		},
 		
 		onGameStarted: function () {
-			var itemsComponent = this.itemNodes.head.items;
 		},
 		
 		onTabChanged: function () {
@@ -120,11 +115,7 @@ define([
 		},
 		
 		onInventoryChanged: function () {
-			this.updateItems();
-		},
-		
-		onEquipmentChanged: function () {
-			this.updateItems();
+			this.updateFollowers();
 		},
 	
 	});
