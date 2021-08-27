@@ -28,7 +28,7 @@ Additional icons adapted from the above.
 
 --------------------------------------------------
 
-Items
+Items and followers
 
 Fugue Icons
 (C) 2013 Yusuke Kamiyamane

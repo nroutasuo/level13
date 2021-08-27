@@ -4,17 +4,15 @@ define(['ash'], function (Ash) {
 
 		id: "",
 		name: "",
-		description: "",
 		abilityType: null,
 		abilityLevel: 0,
 		icon: "",
 		
 		inParty: false,
 
-		constructor: function (id, name, description, abilityType, abilityLevel, icon) {
+		constructor: function (id, name, abilityType, abilityLevel, icon) {
 			this.id = id;
 			this.name = name;
-			this.description = description;
 			this.abilityType = abilityType;
 			this.abilityLevel = abilityLevel;
 			this.icon = icon;

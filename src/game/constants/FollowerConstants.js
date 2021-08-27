@@ -37,11 +37,31 @@ function (Ash, MathUtils, FollowerVO, CultureConstants, WorldConstants, WorldCre
 		
 		// camp ordinal -> blueprint
 		predefinedFollowers: {
-			2: { id: 2, localeType: localeTypes.maintenance, abilityType: "attack" },
-			8: { id: 8, localeType: localeTypes.hermit, abilityType: "scavenge_supplies" },
-			10: { id: 10, localeType: localeTypes.market, abilityType: "cost_scout" },
-			14: { id: 14, localeType: localeTypes.library, abilityType: "scavenge_ingredients" },
+			2: { id: 2, localeType: localeTypes.maintenance, abilityType: "attack", name: "Ilma", icon: "img/followers/follower_black_f.png" },
+			8: { id: 8, localeType: localeTypes.hermit, abilityType: "scavenge_supplies", name: "Zory", icon: "img/followers/follower_blue_m.png" },
+			10: { id: 10, localeType: localeTypes.market, abilityType: "cost_scout", name: "Erdene", icon: "img/followers/follower_green_m.png" },
+			14: { id: 14, localeType: localeTypes.library, abilityType: "scavenge_ingredients", "Arushi", icon: "img/followers/follower_yellow_f.png" },
 		},
+		
+		icons: [
+			// fighter
+			{ icon: "img/followers/follower_black_f.png", followerType: "fighter", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/followers/follower_black_m.png", followerType: "fighter" },
+			{ icon: "img/followers/follower_red_f.png", followerType: "fighter", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/followers/follower_red_m.png", followerType: "fighter" },
+			{ icon: "img/followers/follower_white_f.png", followerType: "fighter", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/followers/follower_white_m.png", followerType: "fighter" },
+			// explorer
+			{ icon: "img/followers/follower_gray_f.png", followerType: "explorer", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/followers/follower_gray_m.png", followerType: "explorer" },
+			{ icon: "img/followers/follower_green_f.png", followerType: "explorer", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/followers/follower_green_m.png", followerType: "explorer" },
+			// scavenger
+			{ icon: "img/followers/follower_blue_m.png", followerType: "scavenger" },
+			{ icon: "img/followers/follower_pink_f.png", followerType: "scavenger", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/followers/follower_yellow_f.png", followerType: "scavenger", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/followers/follower_yellow_m.png", followerType: "scavenger" },
+		],
 		
 		getMaxFollowersRecruited: function (innMajorLevels) {
 			let result = 0;
@@ -72,10 +92,9 @@ function (Ash, MathUtils, FollowerVO, CultureConstants, WorldConstants, WorldCre
 			let culturalHeritage = CultureConstants.getRandomCultures(MathUtils.randomIntBetween(0, 3), origin);
 			let name = CultureConstants.getRandomShortName(gender, origin, culturalHeritage);
 			
-			let description = "Description";
-			let icon = "img/followers/follower_yellow_f.png";
+			let icon = this.getRandomIcon(gender, abilityType);
 			
-			return new FollowerVO(id, name, description, abilityType, abilityLevel, icon);
+			return new FollowerVO(id, name, abilityType, abilityLevel, icon);
 		},
 		
 		getPredefinedFollowerByID: function (followerID) {
@@ -93,8 +112,7 @@ function (Ash, MathUtils, FollowerVO, CultureConstants, WorldConstants, WorldCre
 				return null;
 			}
 			
-			let icon = "img/followers/follower_red_m.png";
-			return new FollowerVO(followerID, "Name", "Description predefined", template.abilityType, 1, icon);
+			return new FollowerVO(followerID, template.name, template.abilityType, 1, template.icon);
 		},
 		
 		getRecruitCost: function (follower, isFoundAsReward) {
@@ -149,7 +167,45 @@ function (Ash, MathUtils, FollowerVO, CultureConstants, WorldConstants, WorldCre
 			}
 			
 			return result;
-		}
+		},
+		
+		getRandomIcon: function (gender, abilityType) {
+			var validIcons = [];
+			let followerType = this.getFollowerTypeForAbilityType(abilityType);
+			for (var i = 0; i < this.icons.length; i++) {
+				let iconDef = this.icons[i];
+				if (this.isValidIcon(iconDef, gender, followerType)) validIcons.push(iconDef);
+			}
+			return validIcons[Math.floor(Math.random() * validIcons.length)].icon;
+		},
+		
+		isValidIcon: function (iconDef, gender, followerType) {
+			if (!iconDef.icon) return false;
+			if (iconDef.gender && gender && gender != iconDef.gender) return false;
+			if (iconDef.followerType && followerType && followerType != iconDef.followerType) return false;
+			return true;
+		},
+		
+		getFollowerTypeForAbilityType: function (abilityType) {
+			switch (abilityType) {
+				case this.abilityType.ATTACK: return this.followerType.FIGHTER;
+				case this.abilityType.DEFENCE: return this.followerType.FIGHTER;
+				case this.abilityType.COST_MOVEMENT: return this.followerType.EXPLORER;
+				case this.abilityType.COST_SCAVENGE: return this.followerType.EXPLORER;
+				case this.abilityType.COST_SCOUT: return this.followerType.EXPLORER;
+				case this.abilityType.HAZARD_COLD: return this.followerType.EXPLORER;
+				case this.abilityType.HAZARD_POLLUTION: return this.followerType.EXPLORER;
+				case this.abilityType.HAZARD_RADIATION: return this.followerType.EXPLORER;
+				case this.abilityType.FIND_COLLECTORS: return this.followerType.EXPLORER;
+				case this.abilityType.SCAVENGE_GENERAL: return this.followerType.SCAVENGER;
+				case this.abilityType.SCAVENGE_INGREDIENTS: return this.followerType.SCAVENGER;
+				case this.abilityType.SCAVENGE_SUPPLIES: return this.followerType.SCAVENGER;
+				case this.abilityType.BRING_METAL: return this.followerType.SCAVENGER;
+				default:
+					log.w("no followerType defined for abilityType: " + abilityType);
+					return this.followerType.EXPLORER;
+			}
+		},
 		
 	};
 	
