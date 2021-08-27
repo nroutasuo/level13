@@ -815,12 +815,13 @@ define([
 		getRewardFollowers: function (probability) {
 			var followers = [];
 			
+			var playerPos = this.playerLocationNodes.head.position;
 			let campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
 			if (campOrdinal <= FollowerConstants.getFirstPredefinedFollowerCampOrdinal())
 				return followers;
 			
 			if (Math.random() < probability) {
-				var follower = FollowerConstants.getNewFollower(FollowerConstants.followerSource.SCOUT, GameGlobals.gameState.numCamps);
+				var follower = FollowerConstants.getNewFollower(FollowerConstants.followerSource.SCOUT, GameGlobals.gameState.numCamps, playerPos.level);
 				followers.push(follower);
 			}
 			

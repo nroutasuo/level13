@@ -1,5 +1,5 @@
-define(['ash', 'utils/MathUtils', 'game/vos/FollowerVO', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorConstants'],
-function (Ash, MathUtils, FollowerVO, WorldConstants, WorldCreatorConstants) {
+define(['ash', 'utils/MathUtils', 'game/vos/FollowerVO', 'game/constants/CultureConstants', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorConstants'],
+function (Ash, MathUtils, FollowerVO, CultureConstants, WorldConstants, WorldCreatorConstants) {
 	
 	var FollowerConstants = {
 		
@@ -55,7 +55,7 @@ function (Ash, MathUtils, FollowerVO, WorldConstants, WorldCreatorConstants) {
 			return 3;
 		},
 		
-		getNewFollower: function (source, campOrdinal) {
+		getNewFollower: function (source, campOrdinal, appearLevel) {
 			campOrdinal = campOrdinal || 1;
 			
 			let id = 100 + Math.floor(Math.random() * 100000);
@@ -67,7 +67,11 @@ function (Ash, MathUtils, FollowerVO, WorldConstants, WorldCreatorConstants) {
 			let maxAbilityLevel = MathUtils.map(campOrdinal + 1, 0, WorldConstants.CAMPS_TOTAL + 1, 1, 100);
 			let abilityLevel = MathUtils.randomIntBetween(minAbilityLevel, maxAbilityLevel);
 			
-			let name = "Name";
+			let gender = CultureConstants.getRandomGender();
+			let origin = CultureConstants.getRandomOrigin(appearLevel);
+			let culturalHeritage = CultureConstants.getRandomCultures(MathUtils.randomIntBetween(0, 3), origin);
+			let name = CultureConstants.getRandomShortName(gender, origin, culturalHeritage);
+			
 			let description = "Description";
 			let icon = "img/followers/follower_yellow_f.png";
 			
