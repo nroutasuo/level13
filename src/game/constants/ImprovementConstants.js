@@ -3,6 +3,9 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 	var ImprovementConstants = {
 
 		improvements: {
+			beacon: {
+				description: "Shines a light over a large area, making scavenging less dangerous.",
+			},
 			home: {
 				description: "Foundation of a camp.",
 				useActionName: "Rest",

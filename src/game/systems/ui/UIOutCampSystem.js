@@ -312,10 +312,12 @@
 			// TODO save elements already in the previous loop
 			var result = [];
 			$.each($("#in-improvements tr"), function () {
+				if ($(this).hasClass("header-mini")) return;
 				var id = $(this).attr("id");
 				var buildAction = $(this).find("button.action-build").attr("action");
 				if (!buildAction) {
 					log.w("In improvement tr without action name: #" + id);
+					log.i($(this))
 					return;
 				}
 				var improveAction = $(this).find("button.action-improve").attr("action");

@@ -135,7 +135,6 @@ define([
 			$.each($("#header-camp-population"), function () {
 				$(this).wrap("<div class='info-callout-target'></div>");
 			});
-			GameGlobals.uiFunctions.generateCallouts("#statsbar-self");
 		},
 
 		update: function (time) {

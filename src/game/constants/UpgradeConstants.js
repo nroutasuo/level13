@@ -94,6 +94,7 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 			unlock_building_inn: "Sometimes travellers pass by the camp. Perhaps we can offer them a place to sleep?",
 			unlock_building_market: "Trade with people from foreign camps and cooperatives.",
 			unlock_building_fortifications: "Constructions to keep unwelcome strangers away.",
+			unlock_building_fortifications2: "Build better fortifications.",
 			unlock_item_bag_1: "The art of crafting durable items out of leather.",
 			unlock_item_weapon_2: "Slightly more reliable than the shiv.",
 			unlock_clothing_basic: "Technique for making basic clothing.",

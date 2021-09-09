@@ -165,7 +165,6 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			return this.getHousingCap2(
 				improvementsComponent.getCount(improvementNames.house),
 				improvementsComponent.getCount(improvementNames.house2));
-			return result;
 		},
 		
 		getHousingCap2: function (numHouses, numHouses2) {
