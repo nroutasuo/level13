@@ -161,6 +161,7 @@ define(['ash',
 		
 		getFollowerCallout: function (follower) {
 			var result = "<b>" + follower.name + "</b>";
+			result += "<br/>In party: " + (follower.inParty ? "yes" : "no");
 			result += "<br/>Ability: " + FollowerConstants.getAbilityTypeDisplayName(follower.abilityType) + " " + follower.abilityLevel;
 			result += "<br/>" + FollowerConstants.getAbilityTypeDescription(follower.abilityType);
 			
@@ -169,8 +170,12 @@ define(['ash',
 			};
 
 			var options = "<div class='item-bag-options'>";
-			var action = "dismiss_follower_" + follower.id;
-			options += makeButton(action, "Dismiss");
+			options += makeButton("dismiss_follower_" + follower.id, "Dismiss");
+			if (!follower.inParty) {
+				options += makeButton("select_follower_" + follower.id, "Add to party");
+			} else {
+				options += makeButton("deselect_follower_" + follower.id, "Remove from party");
+			}
 			options += "</div>";
 			result += options;
 

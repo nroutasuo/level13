@@ -36,6 +36,10 @@ function (Ash, FollowerVO, FollowerConstants) {
 			follower.inParty = true;
 		},
 		
+		setFollowerInParty: function (follower, inParty) {
+			follower.inParty = inParty;
+		},
+		
 		removeFollower: function (follower) {
 			var index = this.followers.indexOf(follower);
 			if (index < 0) {

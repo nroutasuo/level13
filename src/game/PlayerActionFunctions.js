@@ -4,6 +4,7 @@ define(['ash',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
 	'game/constants/CampConstants',
+	'game/constants/FollowerConstants',
 	'game/constants/LogConstants',
 	'game/constants/ImprovementConstants',
 	'game/constants/PositionConstants',
@@ -59,7 +60,7 @@ define(['ash',
 	'text/Text',
 	'utils/StringUtils'
 ], function (Ash, GameGlobals, GlobalSignals,
-	GameConstants, CampConstants, LogConstants, ImprovementConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, UpgradeConstants, TextConstants,
+	GameConstants, CampConstants, FollowerConstants, LogConstants, ImprovementConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, UpgradeConstants, TextConstants,
 	PositionVO, LocaleVO,
 	PlayerPositionNode, FightNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
@@ -257,6 +258,8 @@ define(['ash',
 				case "recruit_follower": this.recruitFollower(param); break;
 				case "dismiss_recruit": this.dismissRecruit(param); break;
 				case "dismiss_follower": this.dismissFollower(param); break;
+				case "select_follower": this.selectFollower(param); break;
+				case "deselect_follower": this.deselectFollower(param); break;
 				case "nap": this.nap(param); break;
 				case "despair": this.despair(param); break;
 				case "unlock_upgrade": this.unlockUpgrade(param); break;
@@ -983,6 +986,50 @@ define(['ash',
 			
 			GlobalSignals.followersChangedSignal.dispatch();
 			this.addLogMessage(LogConstants.getUniqueID(), follower.name + " leaves.");
+		},
+		
+		selectFollower: function (followerID) {
+			let followersComponent = this.playerStatsNodes.head.followers;
+			let follower = followersComponent.getFollowerByID(followerID);
+			
+			if (follower.inParty) {
+				log.w("follower already in party");
+				return;
+			}
+			
+			let party = followersComponent.getParty();
+			let maxParty = FollowerConstants.getMaxFollowersInParty();
+			
+			if (party.length >= maxParty) {
+				log.w("can't select follower: party already at max");
+				return;
+			}
+			
+			if (!follower) {
+				log.w("no such follower: " + followerID);
+				return;
+			}
+			
+			followersComponent.setFollowerInParty(follower, true);
+			GlobalSignals.followersChangedSignal.dispatch();
+		},
+		
+		deselectFollower: function (followerID) {
+			let followersComponent = this.playerStatsNodes.head.followers;
+			let follower = followersComponent.getFollowerByID(followerID);
+			
+			if (!follower) {
+				log.w("no such follower: " + followerID);
+				return;
+			}
+			
+			if (!follower.inParty) {
+				log.w("can't deselect follower that is not in party");
+				return;
+			}
+			
+			followersComponent.setFollowerInParty(follower, false);
+			GlobalSignals.followersChangedSignal.dispatch();
 		},
 
 		fightGang: function (direction) {

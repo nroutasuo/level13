@@ -5,10 +5,11 @@ define([
 	'game/constants/UIConstants',
 	'game/constants/ItemConstants',
 	'game/constants/FightConstants',
+	'game/constants/FollowerConstants',
 	'game/components/sector/events/RecruitComponent',
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/PlayerStatsNode',
-], function (Ash, GameGlobals, GlobalSignals, UIConstants, ItemConstants, FightConstants, RecruitComponent, PlayerLocationNode, PlayerStatsNode) {
+], function (Ash, GameGlobals, GlobalSignals, UIConstants, ItemConstants, FightConstants, FollowerConstants, RecruitComponent, PlayerLocationNode, PlayerStatsNode) {
 	var UIOutFollowersSystem = Ash.System.extend({
 		
 		playerLocationNodes: null,
@@ -41,7 +42,11 @@ define([
 		
 		refresh: function () {
 			$("#tab-header h2").text("Exploration party");
-			$("#followers-max").text("Maximum followers: " + GameGlobals.campHelper.getCurrentMaxFollowersRecruited());
+			
+			let maxParty = FollowerConstants.getMaxFollowersInParty();
+			let maxRecruited = GameGlobals.campHelper.getCurrentMaxFollowersRecruited();
+			$("#followers-max").text("Maximum followers: " + maxRecruited + "(" + maxParty + ")");
+			
 			this.updateFollowers();
 			this.refreshRecruits();
 		},
