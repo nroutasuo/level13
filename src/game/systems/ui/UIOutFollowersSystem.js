@@ -26,7 +26,7 @@ define([
 			
 			GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
-			GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, this.onInventoryChanged);
+			GlobalSignals.add(this, GlobalSignals.followersChangedSignal, this.onFollowersChanged);
 		},
 
 		removeFromEngine: function (engine) {
@@ -97,6 +97,7 @@ define([
 			GameGlobals.uiFunctions.toggle("#header-followers", showFollowers);
 			GameGlobals.uiFunctions.toggle("#followers-empty", showFollowers && !hasFollowers);
 			GameGlobals.uiFunctions.generateCallouts("#list-followers");
+			GameGlobals.uiFunctions.registerActionButtonListeners("#list-followers");
 		},
 		
 		getNumRecruits: function () {
@@ -114,7 +115,7 @@ define([
 			}
 		},
 		
-		onInventoryChanged: function () {
+		onFollowersChanged: function () {
 			this.updateFollowers();
 		},
 	

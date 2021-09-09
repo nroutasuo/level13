@@ -1436,6 +1436,7 @@ define([
 				if (a.indexOf("fight_gang_") >= 0) return "fight_gang";
 				if (a.indexOf("send_caravan_") >= 0) return "send_caravan";
 				if (a.indexOf("recruit_follower_") >= 0) return "recruit_follower";
+				if (a.indexOf("dismiss_follower") >= 0) return "dismiss_follower";
 				if (a.indexOf("dismiss_recruit_") >= 0) return "dismiss_recruit";
 				if (a.indexOf("move_camp_global_") >= 0) return "move_camp_global";
 				if (a.indexOf("build_out_passage") >= 0) {

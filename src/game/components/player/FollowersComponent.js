@@ -22,6 +22,15 @@ function (Ash, FollowerVO, FollowerConstants) {
 			return followersInParty;
 		},
 		
+		getFollowerByID: function (followerID) {
+			for (let i = 0; i < this.followers.length; i++) {
+				if (this.followers[i].id == followerID) {
+					return this.followers[i];
+				}
+			}
+			return null;
+		},
+		
 		addFollower: function (follower, addToParty) {
 			this.followers.push(follower);
 			follower.inParty = true;
@@ -29,7 +38,7 @@ function (Ash, FollowerVO, FollowerConstants) {
 		
 		removeFollower: function (follower) {
 			var index = this.followers.indexOf(follower);
-			if (index <= 0) {
+			if (index < 0) {
 				log.w("couldn't find follower to remove: " + follower.id);
 				return;
 			}

@@ -256,6 +256,7 @@ define(['ash',
 				case "trade_with_caravan": this.tradeWithCaravan(); break;
 				case "recruit_follower": this.recruitFollower(param); break;
 				case "dismiss_recruit": this.dismissRecruit(param); break;
+				case "dismiss_follower": this.dismissFollower(param); break;
 				case "nap": this.nap(param); break;
 				case "despair": this.despair(param); break;
 				case "unlock_upgrade": this.unlockUpgrade(param); break;
@@ -941,7 +942,6 @@ define(['ash',
 		},
 		
 		recruitFollower: function (followerId) {
-			log.i("recruit follower: " + followerId);
 			let recruitComponent = GameGlobals.campHelper.findRecruitComponentWithFollowerId(followerId);
 			
 			if (!recruitComponent) {
@@ -953,6 +953,7 @@ define(['ash',
 			recruitComponent.isRecruited = true;
 			
 			GameGlobals.gameState.unlockedFeatures.followers = true;
+			GlobalSignals.followersChangedSignal.dispatch();
 			
 			this.addLogMessage(LogConstants.MSG_ID_RECRUIT, "Recruited a new follower.");
 		},
@@ -967,6 +968,21 @@ define(['ash',
 			}
 			
 			recruitComponent.isDismissed = true;
+		},
+		
+		dismissFollower: function (followerID) {
+			let followersComponent = this.playerStatsNodes.head.followers;
+			let follower = followersComponent.getFollowerByID(followerID);
+			
+			if (!follower) {
+				log.w("no such follower: " + followerID);
+				return;
+			}
+			
+			followersComponent.removeFollower(follower);
+			
+			GlobalSignals.followersChangedSignal.dispatch();
+			this.addLogMessage(LogConstants.getUniqueID(), follower.name + " leaves.");
 		},
 
 		fightGang: function (direction) {
@@ -1442,19 +1458,6 @@ define(['ash',
 			
 			this.completeAction("use_in_shrine");
 			this.forceStatsBarUpdate();
-		},
-
-		addFollower: function (follower) {
-			log.i("add follower " + follower.name, this);
-			// TODO FOLLOWERS
-			/*
-			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-			itemsComponent.addItem(follower, false);
-			*/
-			this.addLogMessage(LogConstants.MSG_ID_ADD_FOLLOWER, "A wanderer agrees to travel together for awhile.");
-			this.forceResourceBarUpdate();
-			this.forceStatsBarUpdate();
-			this.save();
 		},
 
 		craftItem: function (itemId) {

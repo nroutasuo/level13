@@ -169,7 +169,7 @@ define(['ash',
 			};
 
 			var options = "<div class='item-bag-options'>";
-			var action = "dismiss_follower" + follower.id;
+			var action = "dismiss_follower_" + follower.id;
 			options += makeButton(action, "Dismiss");
 			options += "</div>";
 			result += options;
