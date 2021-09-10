@@ -224,43 +224,19 @@ define(['ash',
 		
 		getAbilityTypeDisplayName: function (abilityType) {
 			switch (abilityType) {
-				case this.abilityType.ATTACK: return "attacker";
-				case this.abilityType.DEFENCE: return "defender";
-				case this.abilityType.COST_MOVEMENT: return "explorer";
-				case this.abilityType.COST_SCAVENGE: return "scavenger";
-				case this.abilityType.COST_SCOUT: return "scout";
-				case this.abilityType.HAZARD_COLD: return "cold specialist";
-				case this.abilityType.HAZARD_POLLUTION: return "pollution specialist";
-				case this.abilityType.HAZARD_RADIATION: return "radiation specialist";
-				case this.abilityType.FIND_COLLECTORS: return "trapper";
-				case this.abilityType.SCAVENGE_GENERAL: return "scavenger";
-				case this.abilityType.SCAVENGE_INGREDIENTS: return "crafter";
-				case this.abilityType.SCAVENGE_SUPPLIES: return "survivor";
+				case this.abilityType.ATTACK: return "attack";
+				case this.abilityType.DEFENCE: return "defence";
+				case this.abilityType.COST_MOVEMENT: return "trekking";
+				case this.abilityType.COST_SCAVENGE: return "scouring";
+				case this.abilityType.COST_SCOUT: return "scouting";
+				case this.abilityType.HAZARD_COLD: return "cold";
+				case this.abilityType.HAZARD_POLLUTION: return "pollution";
+				case this.abilityType.HAZARD_RADIATION: return "radiation";
+				case this.abilityType.FIND_COLLECTORS: return "trapping";
+				case this.abilityType.SCAVENGE_GENERAL: return "perception";
+				case this.abilityType.SCAVENGE_INGREDIENTS: return "crafting";
+				case this.abilityType.SCAVENGE_SUPPLIES: return "survival";
 				case this.abilityType.BRING_METAL: return "builder";
-				default:
-					log.w("no display name defined for abilityType: " + abilityType);
-					return abilityType;
-			}
-		},
-		
-		getAbilityDescription: function (follower) {
-			switch (follower.abilityType) {
-				case this.abilityType.ATTACK:
-				case this.abilityType.DEFENCE:
-					let att = this.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_att);
-					let def = this.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_def);
-					return "attack +" + att + ", defence +" + def;
-				case this.abilityType.COST_MOVEMENT: return "reduces stamina cost of movement";
-				case this.abilityType.COST_SCAVENGE: return "reduces stamina cost of scavenging";
-				case this.abilityType.COST_SCOUT: return "reduces stamina cost of scouting";
-				case this.abilityType.HAZARD_COLD: return "detects and protects against cold";
-				case this.abilityType.HAZARD_POLLUTION: return "detects and protects against pollution";
-				case this.abilityType.HAZARD_RADIATION: return "detects and protects against radiation";
-				case this.abilityType.FIND_COLLECTORS: return "finds spots for traps and buckets";
-				case this.abilityType.SCAVENGE_GENERAL: return "finds more everything when scavenging";
-				case this.abilityType.SCAVENGE_INGREDIENTS: return "finds more ingredients";
-				case this.abilityType.SCAVENGE_SUPPLIES: return "finds more supplies when scavenging";
-				case this.abilityType.BRING_METAL: return "carries back some metal to camp";
 				default:
 					log.w("no display name defined for abilityType: " + abilityType);
 					return abilityType;
@@ -280,26 +256,50 @@ define(['ash',
 		
 		getFollowerItemBonus: function (follower, itemBonusType) {
 			let roundingStep = 1;
-			let abilityLevel = 1;
+			let abilityLevel = 0;
 			let minBonus = 0;
 			let maxBonus = 0;
 			
 			switch (itemBonusType) {
 				case ItemConstants.itemBonusTypes.fight_att:
-					abilityLevel = FollowerConstants.getAbilityLevel(follower, FollowerConstants.abilityType.ATTACK);
+					abilityLevel = Math.max(
+						FollowerConstants.getAbilityLevel(follower, FollowerConstants.abilityType.ATTACK),
+						FollowerConstants.getAbilityLevel(follower, FollowerConstants.abilityType.DEFENCE) / 2,
+					);
 					minBonus = 3;
 					maxBonus = 100;
 					roundingStep = 3;
 					break;
 				case ItemConstants.itemBonusTypes.fight_def:
-					abilityLevel = FollowerConstants.getAbilityLevel(follower, FollowerConstants.abilityType.DEFENCE);
+					abilityLevel = Math.max(
+						FollowerConstants.getAbilityLevel(follower, FollowerConstants.abilityType.DEFENCE),
+						FollowerConstants.getAbilityLevel(follower, FollowerConstants.abilityType.ATTACK) / 2,
+					);
 					minBonus = 3;
 					maxBonus = 100;
 					roundingStep = 3;
 					break;
+				case ItemConstants.itemBonusTypes.movement:
+					abilityLevel = FollowerConstants.getAbilityLevel(follower, FollowerConstants.abilityType.COST_MOVEMENT);
+					minBonus = 0.9;
+					maxBonus = 0.7;
+					roundingStep = 0.1;
+					break;
+				case ItemConstants.itemBonusTypes.scavenge_cost:
+					abilityLevel = FollowerConstants.getAbilityLevel(follower, FollowerConstants.abilityType.COST_SCAVENGE);
+					minBonus = 0.6;
+					maxBonus = 0.3;
+					roundingStep = 0.3;
+					break;
+				case ItemConstants.itemBonusTypes.scout_cost:
+					abilityLevel = FollowerConstants.getAbilityLevel(follower, FollowerConstants.abilityType.COST_SCOUT);
+					minBonus = 0.9;
+					maxBonus = 0.6;
+					roundingStep = 0.15;
+					break;
 			}
 			
-			if (minBonus == 0 && maxBonus == 0) return;
+			if (abilityLevel == 0) return 0;
 			
 			let rawValue = MathUtils.map(abilityLevel, 1, 100, minBonus, maxBonus);
 			
@@ -309,11 +309,6 @@ define(['ash',
 		getAbilityLevel: function (follower, abilityType) {
 			if (follower.abilityType == abilityType) {
 				return follower.abilityLevel;
-			}
-			
-			if ((follower.abilityType == FollowerConstants.abilityType.ATTACK && abilityType == FollowerConstants.abilityType.DEFENCE) ||
-				(follower.abilityType == FollowerConstants.abilityType.DEFENCE && abilityType == FollowerConstants.abilityType.ATTACK)) {
-				return Math.round(follower.abilityLevel / 2);
 			}
 			
 			return 0;

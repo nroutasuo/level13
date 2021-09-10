@@ -549,6 +549,14 @@ define([
 						isVisible = GameGlobals.gameState.unlockedFeatures.camp;
 						flipNegative = true;
 						break;
+					
+					case ItemConstants.itemBonusTypes.scavenge_cost:
+					case ItemConstants.itemBonusTypes.scout_cost:
+						value *= followersComponent.getCurrentBonus(bonusType);
+						isVisible = value != 1;
+						value = Math.round(value * 10) / 10;
+						flipNegative = true;
+						break;
 
 					case ItemConstants.itemBonusTypes.light:
 					case ItemConstants.itemBonusTypes.bag:
@@ -559,6 +567,8 @@ define([
 						isVisible = true;
 						break;
 				}
+				
+				// TODO don't hide if animating to a hidden value (for example scavange cost when deselecting follower that gives a bonus)
 				UIAnimations.animateNumber($("#stats-equipment-" + bonusKey + " .value"), value, "", flipNegative, (v) => { return UIConstants.roundValue(v, true, true); });
 				GameGlobals.uiFunctions.toggle("#stats-equipment-" + bonusKey, isVisible && value > 0);
 				UIConstants.updateCalloutContent("#stats-equipment-" + bonusKey, detail);

@@ -990,7 +990,7 @@ define([
 			}
 		},
 
-		// Returns the cost factor of a given action, usually 1, but may depend on the current status for some actions
+		// Returns the cost factor of a given action, usually 1, but may depend on the current status (items, followers, perks etc) for some actions
 		getCostFactor: function (action, cost, otherSector) {
 			if (!this.playerLocationNodes || !this.playerLocationNodes.head) return 1;
 
@@ -1000,7 +1000,7 @@ define([
 			var playerEntity = this.playerStatsNodes.head.entity;
 
 			var getShoeBonus = function () {
-				var itemsComponent = playerEntity.get(ItemsComponent);
+				var itemsComponent = playerStatsNode.items;
 				var shoeBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.movement);
 				if (shoeBonus === 0) shoeBonus = 1;
 				return shoeBonus;
@@ -1017,6 +1017,11 @@ define([
 				let perksComponent = playerStatsNode.perks;
 				return GameGlobals.sectorHelper.getBeaconMovementBonus(sector, perksComponent);
 			}
+			
+			var getFollowerBonus = function (itemBonusType) {
+				let followersComponent = playerStatsNode.followers;
+				return followersComponent.getCurrentBonus(itemBonusType);
+			}
 
 			var factor = 1;
 			switch (action) {
@@ -1030,6 +1035,7 @@ define([
 				case "move_sector_nw":
 					if (cost == "stamina") {
 						factor *= getShoeBonus();
+						factor *= getFollowerBonus(ItemConstants.itemBonusTypes.movement);
 						factor *= getPerkBonus();
 						factor *= getBeaconBonus();
 					}
@@ -1039,10 +1045,22 @@ define([
 				case "move_camp_global":
 					if (cost == "stamina") {
 						factor *= getShoeBonus();
+						factor *= getFollowerBonus(ItemConstants.itemBonusTypes.movement);
 						factor *= getPerkBonus();
 					}
 					break;
-					
+				
+				case "scavenge":
+					if (cost == "stamina") {
+						factor *= getFollowerBonus(ItemConstants.itemBonusTypes.scavenge_cost);
+					}
+					break;
+				
+				case "scout":
+					if (cost == "stamina") {
+						factor *= getFollowerBonus(ItemConstants.itemBonusTypes.scout_cost);
+					}
+					break;
 			}
 
 			return factor;

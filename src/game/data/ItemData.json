@@ -1503,7 +1503,7 @@
     },
     "shoe_3": {
         "bonuses": {
-            "movement": 0.5
+            "movement": 0.7
         },
         "description": "Good shoes like these can make travelling much easier.",
         "icon": "img/items/shoe-3.png",

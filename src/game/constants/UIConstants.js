@@ -164,7 +164,7 @@ define(['ash',
 			result += "<br/>In party: " + (follower.inParty ? "yes" : "no");
 			result += "<br/>Type: " + FollowerConstants.getFollowerTypeDisplayName(follower.abilityType);
 			result += "<br/>Ability: " + FollowerConstants.getAbilityTypeDisplayName(follower.abilityType)
-				+ " (" + FollowerConstants.getAbilityDescription(follower) + ")";
+				+ " (" + UIConstants.getFollowerAbilityDescription(follower) + ")";
 			
 			var makeButton = function (action, name) {
 				 return "<button class='action btn-narrow' action='" + action + "'>" + name + "</button>";
@@ -181,6 +181,38 @@ define(['ash',
 			result += options;
 
 			return result;
+		},
+		
+		
+		
+		getFollowerAbilityDescription: function (follower) {
+			switch (follower.abilityType) {
+				case FollowerConstants.abilityType.ATTACK:
+				case FollowerConstants.abilityType.DEFENCE:
+					let att = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_att);
+					let def = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_def);
+					return "attack +" + att + ", defence +" + def;
+				case FollowerConstants.abilityType.COST_MOVEMENT:
+					let movementCostReduction = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.movement);
+					return "movement cost -" + UIConstants.getMultiplierBonusDisplayValue(movementCostReduction);
+				case FollowerConstants.abilityType.COST_SCAVENGE:
+					let scavengeCostReduction = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.scavenge_cost);
+					return "scavenge cost -" + UIConstants.getMultiplierBonusDisplayValue(scavengeCostReduction);
+				case FollowerConstants.abilityType.COST_SCOUT:
+					let scoutCostReduction = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.cost_scout);
+					return "scout cost -" + UIConstants.getMultiplierBonusDisplayValue(scoutCostReduction);
+				case FollowerConstants.abilityType.HAZARD_COLD: return "detects and protects against cold";
+				case FollowerConstants.abilityType.HAZARD_POLLUTION: return "detects and protects against pollution";
+				case FollowerConstants.abilityType.HAZARD_RADIATION: return "detects and protects against radiation";
+				case FollowerConstants.abilityType.FIND_COLLECTORS: return "finds spots for traps and buckets";
+				case FollowerConstants.abilityType.SCAVENGE_GENERAL: return "finds more everything when scavenging";
+				case FollowerConstants.abilityType.SCAVENGE_INGREDIENTS: return "finds more ingredients";
+				case FollowerConstants.abilityType.SCAVENGE_SUPPLIES: return "finds more supplies when scavenging";
+				case FollowerConstants.abilityType.BRING_METAL: return "carries back some metal to camp";
+				default:
+					log.w("no display name defined for abilityType: " + abilityType);
+					return abilityType;
+			}
 		},
 
 		getResourceLi: function (name, amount, isLost, simple) {
@@ -284,13 +316,16 @@ define(['ash',
 				case ItemConstants.itemBonusTypes.fight_shield: return "shield";
 				case ItemConstants.itemBonusTypes.fight_speed: return "attack speed";
 				case ItemConstants.itemBonusTypes.movement: return "movement cost";
+				case ItemConstants.itemBonusTypes.scavenge_cost: return "scavenge cost";
+				case ItemConstants.itemBonusTypes.scout_cost: return "scouting cost";
 				case ItemConstants.itemBonusTypes.bag: return "bag size";
 				case ItemConstants.itemBonusTypes.res_cold: return "warmth";
 				case ItemConstants.itemBonusTypes.res_radiation: return short ? "radiation prot" : "radiation protection";
 				case ItemConstants.itemBonusTypes.res_poison: return short ? "poison prot" : "poison protection";
 				case ItemConstants.itemBonusTypes.shade: return short ? "sun prot" : "sunblindness protection";
 				default:
-					return null;
+					log.w("no display name defined for item bonus type: " + bonusType);
+					return "";
 			}
 		},
 
@@ -307,9 +342,9 @@ define(['ash',
 			} else if (bonusValue >= 1) {
 				return " +" + bonusValue;
 			} else if (bonusValue > 0) {
-				return " -" + Math.round((1 - bonusValue) * 100) + "%";
+				return " -" + UIConstants.getMultiplierBonusDisplayValue(bonusValue);
 			} else if (bonusValue > -1) {
-				return " +" + Math.round((1 - bonusValue) * 100) + "%";
+				return " +" + UIConstants.getMultiplierBonusDisplayValue(bonusValue);
 			} else {
 				return " " + bonusValue;
 			}
@@ -329,9 +364,9 @@ define(['ash',
 			var value = 0;
 			if (PerkConstants.isPercentageEffect(perk.type)) {
 				if (perk.effect < 1) {
-					value = "-" + Math.round(100 - perk.effect * 100) + "%";
+					value = "-" + UIConstants.getMultiplierBonusDisplayValue(perk.effect);
 				} else {
-					value = "+" + Math.round((perk.effect - 1) * 100) + "%";
+					value = "+" + UIConstants.getMultiplierBonusDisplayValue(perk.effect);
 				}
 			} else {
 				value = "+" + perk.effect;
@@ -349,6 +384,10 @@ define(['ash',
 			}
 
 			return effect + " " + value;
+		},
+		
+		getMultiplierBonusDisplayValue: function (value) {
+			return Math.round((1 - value) * 100) + "%";
 		},
 
 		sortItemsByType: function (a, b) {
