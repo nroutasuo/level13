@@ -53,7 +53,7 @@ define([
 			
 			var sectorLocalesComponent = sector.get(SectorLocalesComponent);
 			var locales = sectorLocalesComponent.locales;
-			for (var i = 0; i < locales.length; i++) {
+			for (let i = 0; i < locales.length; i++) {
 				if (locales[i].type == localeTypes.grove) {
 					hasGrove = true;
 				}
@@ -83,7 +83,7 @@ define([
 		},
 		
 		getEffectiveHazards: function (sectorFeatures, sectorStatus) {
-			var result = sectorFeatures.hazards.clone();
+			let result = sectorFeatures.hazards.clone();
 			result.radiation = Math.max(0, result.radiation - sectorStatus.getHazardReduction("radiation"));
 			result.poison = Math.max(0, result.poison - sectorStatus.getHazardReduction("poison"));
 			result.cold = Math.max(0, result.cold - sectorStatus.getHazardReduction("cold"));
@@ -144,7 +144,7 @@ define([
 			var sectorFeatures = sector.get(SectorFeaturesComponent);
 			var missingResources = [];
 			
-			for (var i = 0; i < sectorStatus.discoveredResources.length; i++) {
+			for (let i = 0; i < sectorStatus.discoveredResources.length; i++) {
 				var res = sectorStatus.discoveredResources[i];
 				if (sectorFeatures.resourcesScavengable[res] > 0) {
 					resources.push(res);
@@ -154,7 +154,7 @@ define([
 				}
 			}
 			
-			for (var j = 0; j < missingResources.length; j++) {
+			for (let j = 0; j < missingResources.length; j++) {
 				sectorStatus.discoveredResources.splice(sectorStatus.discoveredResources.indexOf(missingResources[j]), 1);
 			}
 			

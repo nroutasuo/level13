@@ -113,7 +113,7 @@ define([
 			if (updateTables) this.elements.levelImprovementsTable.empty();
 			if (updateTables) this.elements.colonyImprovementsTable.empty();
 			
-			for (var i = 0; i < projects.length; i++) {
+			for (let i = 0; i < projects.length; i++) {
 				var project = projects[i];
 				var action = project.action;
 				var sectorEntity = GameGlobals.levelHelper.getSectorByPosition(project.level, project.position.sectorX, project.position.sectorY);
@@ -176,7 +176,7 @@ define([
 			GameGlobals.uiFunctions.toggle("#header-in-improvements-level-built", projects.length > 0);
 			
 			if (updateTables) $("#in-improvements-level-built table").empty();
-			for (var i = 0; i < projects.length; i++) {
+			for (let i = 0; i < projects.length; i++) {
 				var project = projects[i];
 				if (updateTables) {
 					var tr = this.getProjectTR(project, false);
@@ -215,7 +215,7 @@ define([
 			
 			var classes = this.isCurrentLevel(project) ? "current" : "";
 			var mapID = "project-map-";
-			var result = "<tr class='" + classes + "'>";
+			let result = "<tr class='" + classes + "'>";
 			result += "<td>" + name + "</td>";
 			result += "<td class='list-description'>" + info + "</td>";
 			if (isAvailable) {
@@ -239,7 +239,7 @@ define([
 		isCurrentLevel: function (project) {
 			var levels = this.getProjectLevels(project);
 			var currentLevel = this.playerLocationNodes.head.position.level;
-			for (var i = 0; i < levels.length; i++) {
+			for (let i = 0; i < levels.length; i++) {
 				if (levels[i] == currentLevel) return true;
 			}
 			return false;

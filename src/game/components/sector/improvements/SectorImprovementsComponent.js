@@ -19,7 +19,7 @@ define(['ash', 'game/GameGlobals', 'game/constants/ImprovementConstants', 'game/
 
 			if (!amount) amount = 1;
 			
-			for (var i = 0; i < amount; i++) {
+			for (let i = 0; i < amount; i++) {
 				vo.count++;
 			}
 		},
@@ -42,7 +42,7 @@ define(['ash', 'game/GameGlobals', 'game/constants/ImprovementConstants', 'game/
 		},
 		
 		getTotalCount: function () {
-			var result = 0;
+			let result = 0;
 			for (var key in this.improvements) {
 				var val = this.improvements[key];
 				if (val) result += val.count;
@@ -90,7 +90,7 @@ define(['ash', 'game/GameGlobals', 'game/constants/ImprovementConstants', 'game/
 		getTotal: function (improvementType) {
 			var allImprovements = this.getAll(improvementType);
 			var count = 0;
-			for (var i = 0; i < allImprovements.length; i++) {
+			for (let i = 0; i < allImprovements.length; i++) {
 				count += allImprovements[i].count;
 			}
 			return count;
@@ -130,7 +130,7 @@ define(['ash', 'game/GameGlobals', 'game/constants/ImprovementConstants', 'game/
 		},
 
 		getMaxSelectedCampBuildingSpot: function () {
-			var result = 0;
+			let result = 0;
 			for (var spotIndex = 0; spotIndex < this.buildingSpots.length; spotIndex++) {
 				if (this.buildingSpots[spotIndex]) result = spotIndex;
 			}

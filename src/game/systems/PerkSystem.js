@@ -58,7 +58,7 @@ define([
 			var restFactor = isResting ? PerkConstants.PERK_RECOVERY_FACTOR_REST : 1;
 			var perksToRemove = [];
 	
-			for (var i = 0; i < perks.length; i++) {
+			for (let i = 0; i < perks.length; i++) {
 				var perk = perks[i];
 				if (perk.effectTimer === PerkConstants.TIMER_DISABLED) {
 					// no timer
@@ -91,7 +91,7 @@ define([
 			var itemsComponent = this.playerNodes.head.items;
 			var hazardPerksForSector = this.getHazardPerksForSector(featuresComponent, statusComponent, itemsComponent);
 			var hazardPerksAll = [ PerkConstants.perkIds.hazardCold, PerkConstants.perkIds.hazardPoison, PerkConstants.perkIds.hazardRadiation];
-			for (var i = 0; i < hazardPerksAll.length; i++) {
+			for (let i = 0; i < hazardPerksAll.length; i++) {
 				var perkID = hazardPerksAll[i];
 				var isActive = hazardPerksForSector.indexOf(perkID) >= 0;
 				if (isActive) {
@@ -204,7 +204,7 @@ define([
 		
 		getHazardPerksForSector: function (featuresComponent, statusComponent, itemsComponent) {
 			var hazards = GameGlobals.sectorHelper.getEffectiveHazards(featuresComponent, statusComponent);
-			var result = [];
+			let result = [];
 			if (hazards.radiation > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_radiation))
 				result.push(PerkConstants.perkIds.hazardRadiation);
 			if (hazards.poison > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_poison))

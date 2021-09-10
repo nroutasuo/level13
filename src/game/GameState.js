@@ -79,7 +79,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 		passTime: function (seconds) {
 			this.extraUpdateTime = seconds;
 			var cooldownkeys = Object.keys(this.actionCooldownEndTimestamps);
-			for (var i = 0; i < cooldownkeys.length; i++) {
+			for (let i = 0; i < cooldownkeys.length; i++) {
 				this.actionCooldownEndTimestamps[cooldownkeys[i]] = this.actionCooldownEndTimestamps[cooldownkeys[i]] - seconds * 1000;
 			}
 		},
@@ -180,7 +180,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			var cooldownkeys = Object.keys(this.actionCooldownEndTimestamps);
 			if (cooldownkeys.length < 10) return;
 			var now = new Date().getTime();
-			for (var i = 0; i < cooldownkeys.length; i++) {
+			for (let i = 0; i < cooldownkeys.length; i++) {
 				var key = cooldownkeys[i];
 				var timestamp = this.actionCooldownEndTimestamps[key];
 				var diff = timestamp - now;

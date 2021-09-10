@@ -57,10 +57,10 @@ function (Ash, UpgradeConstants, UpgradeVO, BlueprintVO) {
 		},
 
 		getBlueprint: function (upgradeId) {
-			for (var i = 0; i < this.newBlueprints.length; i++) {
+			for (let i = 0; i < this.newBlueprints.length; i++) {
 				if (this.newBlueprints[i].upgradeId === upgradeId) return this.newBlueprints[i];
 			}
-			for (var j = 0; j < this.availableBlueprints.length; j++) {
+			for (let j = 0; j < this.availableBlueprints.length; j++) {
 				if (this.availableBlueprints[j].upgradeId === upgradeId) return this.availableBlueprints[j];
 			}
 			return null;
@@ -88,7 +88,7 @@ function (Ash, UpgradeConstants, UpgradeVO, BlueprintVO) {
 
 		getUnfinishedBlueprints: function () {
 			var unfinished = [];
-			for (var i = 0; i < this.newBlueprints.length; i++) {
+			for (let i = 0; i < this.newBlueprints.length; i++) {
 				if (!this.newBlueprints[i].completed) unfinished.push(this.newBlueprints[i]);
 			}
 			return unfinished;
@@ -99,13 +99,13 @@ function (Ash, UpgradeConstants, UpgradeVO, BlueprintVO) {
 		},
 
 		removeBlueprints: function (upgradeID) {
-			for (var i = 0; i < this.newBlueprints.length; i++) {
+			for (let i = 0; i < this.newBlueprints.length; i++) {
 				if (this.newBlueprints[i].upgradeId === upgradeID) {
 					this.newBlueprints.splice(i, 1);
 					break;
 				}
 			}
-			for (var j = 0; j < this.availableBlueprints.length; j++) {
+			for (let j = 0; j < this.availableBlueprints.length; j++) {
 				if (this.availableBlueprints[j].upgradeId === upgradeID) {
 					this.availableBlueprints.splice(j, 1);
 					break;

@@ -313,7 +313,7 @@ define([
 			}
 			
 			// locales / POIs description
-			for (var i = 0; i < localesComponent.locales.length; i++) {
+			for (let i = 0; i < localesComponent.locales.length; i++) {
 				var locale = localesComponent.locales[i];
 				if (sectorStatus.isLocaleScouted(i)) {
 					if (locale.type == localeTypes.tradingpartner) {
@@ -421,7 +421,7 @@ define([
 			}
 
 			// Blockers n/s/w/e
-			for (var i in PositionConstants.getLevelDirections()) {
+			for (let i in PositionConstants.getLevelDirections()) {
 				var direction = PositionConstants.getLevelDirections()[i];
 				var directionName = PositionConstants.getDirectionName(direction);
 				var blocker = passagesComponent.getBlocker(direction);
@@ -614,7 +614,7 @@ define([
 			var sectorFeaturesComponent = currentSector.get(SectorFeaturesComponent);
 			var sectorStatus = currentSector.get(SectorStatusComponent);
 			$("#table-out-actions-locales").empty();
-			for (var i = 0; i < sectorLocalesComponent.locales.length; i++) {
+			for (let i = 0; i < sectorLocalesComponent.locales.length; i++) {
 				var locale = sectorLocalesComponent.locales[i];
 				var button = "<button class='action multiline' action='scout_locale_" + locale.getCategory() + "_" + i + "'>" + TextConstants.getLocaleName(locale, sectorFeaturesComponent) + "</button>";
 				var info = "<span class='p-meta'>";
@@ -659,7 +659,7 @@ define([
 				}
 			}
 
-			for (var i in PositionConstants.getLevelDirections()) {
+			for (let i in PositionConstants.getLevelDirections()) {
 				var direction = PositionConstants.getLevelDirections()[i];
 				var directionBlocker = GameGlobals.movementHelper.getBlocker(currentSector, direction);
 				if (directionBlocker && directionBlocker.type != MovementConstants.BLOCKER_TYPE_DEBRIS) {

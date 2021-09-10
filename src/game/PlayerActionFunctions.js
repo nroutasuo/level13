@@ -427,7 +427,7 @@ define(['ash',
 		updateCarriedItems: function (selectedItems) {
 			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
 			var allItems = itemsComponent.getAll(true);
-			for (var i = 0; i < allItems.length; i++) {
+			for (let i = 0; i < allItems.length; i++) {
 				var item = allItems[i];
 				if (item.equipped) {
 					item.carried = true;
@@ -837,7 +837,7 @@ define(['ash',
 			// make a proper system for outgoing caravans instead of relying on action duration & action params
 			for (var node = this.campNodes.head; node; node = node.next) {
 				campOutgoingCaravansComponent = node.entity.get(OutgoingCaravansComponent);
-				for (var i in campOutgoingCaravansComponent.outgoingCaravans) {
+				for (let i in campOutgoingCaravansComponent.outgoingCaravans) {
 					var caravanVO = campOutgoingCaravansComponent.outgoingCaravans[i];
 					if (caravanVO.tradePartnerOrdinal == tradePartnerOrdinal) {
 						campSector = node.entity;
@@ -865,7 +865,7 @@ define(['ash',
 				return;
 			}
 			
-			var result = TradeConstants.makeResultVO(caravan);
+			let result = TradeConstants.makeResultVO(caravan);
 			var logMsg = GameGlobals.playerActionResultsHelper.getRewardsMessage(result, "A trade caravan returns from " + tradePartner.name + ". ");
 			var pendingPosition = campSector.get(PositionComponent).clone();
 			pendingPosition.inCamp = true;
@@ -889,8 +889,8 @@ define(['ash',
 			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
 			for (var itemID in caravan.traderSelectedItems) {
 				var amount = caravan.traderSelectedItems[itemID];
-				for (var i = 0; i < amount; i++) {
-					for (var j = 0; j < caravan.sellItems.length; j++) {
+				for (let i = 0; i < amount; i++) {
+					for (let j = 0; j < caravan.sellItems.length; j++) {
 						if (caravan.sellItems[j].id == itemID) {
 							caravan.sellItems.splice(j, 1);
 							break;
@@ -902,7 +902,7 @@ define(['ash',
 
 			for (var itemID in caravan.campSelectedItems) {
 				var amount = caravan.campSelectedItems[itemID];
-				for (var i = 0; i < amount; i++) {
+				for (let i = 0; i < amount; i++) {
 					caravan.sellItems.push(ItemConstants.getItemByID(itemID));
 					itemsComponent.discardItem(itemsComponent.getItem(itemID, null, true, false), false);
 				}
@@ -1573,7 +1573,7 @@ define(['ash',
 					var injuries = perksComponent.getPerksByType(PerkConstants.perkTypes.injury);
 					var minValue = reqs.perks.Injury[0];
 					var injuryToHeal = null;
-					for (var i = 0; i < injuries.length; i++) {
+					for (let i = 0; i < injuries.length; i++) {
 						if (injuries[i].effect > minValue) {
 							injuryToHeal = injuries[i];
 							break;

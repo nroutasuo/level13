@@ -229,7 +229,7 @@ define([
 				this.elements.valReputation.text(UIConstants.roundValue(reputationComponent.value, true, true) + " / " + UIConstants.roundValue(reputationComponent.targetValue, true, true));
 				this.updateChangeIndicator(this.elements.changeIndicatorReputation, reputationComponent.accumulation, true);
 				var reputationCalloutContent = "";
-				for (var i in reputationComponent.targetValueSources) {
+				for (let i in reputationComponent.targetValueSources) {
 					var source = reputationComponent.targetValueSources[i];
 					if (source.amount !== 0) {
 						var amount = Math.round(source.amount * 10000)/10000;
@@ -302,7 +302,7 @@ define([
 			var sources = "";
 			var source;
 			var total = 0;
-			for (var i in changeSources) {
+			for (let i in changeSources) {
 				source = changeSources[i];
 				if (source.amount != 0) {
 					var amount = Math.round(source.amount * 1000)/1000;
@@ -341,7 +341,7 @@ define([
 				$("ul#list-header-equipment").empty();
 				$("ul#list-header-items").empty();
 				$("ul#list-items-followers").empty();
-				for (var i = 0; i < items.length; i++) {
+				for (let i = 0; i < items.length; i++) {
 					var item = items[i];
 					var count = itemsComponent.getCount(item, inCamp);
 					switch (item.type) {
@@ -380,7 +380,7 @@ define([
 			var perks = perksComponent.getAll();
 			var now = new Date().getTime();
 			$("ul#list-items-perks").empty();
-			for (var i = 0; i < perks.length; i++) {
+			for (let i = 0; i < perks.length; i++) {
 				var perk = perks[i];
 				var desc = perk.name + " (" + UIConstants.getPerkDetailText(perk, isResting) + ")";
 				var url = perk.icon;
@@ -410,7 +410,7 @@ define([
 			var perks = perksComponent.getAll();
 			var isResting = this.isResting();
 
-			for (var i = 0; i < perks.length; i++) {
+			for (let i = 0; i < perks.length; i++) {
 				var perk = perks[i];
 				var desc = perk.name + " (" + UIConstants.getPerkDetailText(perk, isResting) + ")";
 				$("#perk-header-" + perk.id + " .info-callout-target").attr("description", desc);
@@ -672,7 +672,7 @@ define([
 			visionFactor = Math.min(100, visionFactor);
 			var visionStep = Math.round(visionFactor / 10);
 			UIState.refreshState(this, "vision-step", visionStep, function () {
-				for (var i = 0; i <= 10; i++) {
+				for (let i = 0; i <= 10; i++) {
 					 this.elements.body.toggleClass("vision-step-" + i, i == visionStep);
 				}
 			});
@@ -684,7 +684,7 @@ define([
 		},
 		
 		getLevelIcon: function (inCamp, sector) {
-			var result = { src: "", desc: "" };
+			let result = { src: "", desc: "" };
 			var position = sector.get(PositionComponent);
 			var featuresComponent = sector.get(SectorFeaturesComponent);
 			var levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(position.level);

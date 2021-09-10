@@ -105,7 +105,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		
 		getItemByID: function (id) {
 			for (var type in this.itemDefinitions ) {
-				for (var i in this.itemDefinitions[type]) {
+				for (let i in this.itemDefinitions[type]) {
 					var item = this.itemDefinitions[type][i];
 					if (item.id === id) {
 						return item.clone();
@@ -152,21 +152,21 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		},
 		
 		getIngredientsToCraftMany: function (items) {
-			var result = [];
+			let result = [];
 			var getResultEntry = function (id) {
-				for (var i = 0; i < result.length; i++) {
+				for (let i = 0; i < result.length; i++) {
 					if (result[i].id == id) return result[i];
 				}
 				var newEntry = { id: id, amount: 0 };
 				result.push(newEntry);
 				return newEntry;
 			};
-			for (var i = 0; i < items.length; i++) {
+			for (let i = 0; i < items.length; i++) {
 				var item = items[i];
 				if (!item.craftable) continue;
 				var itemIngredients = this.getIngredientsToCraft(item.id);
 				if (!itemIngredients || itemIngredients.length < 1) continue;
-				for (var j = 0; j < itemIngredients.length; j++) {
+				for (let j = 0; j < itemIngredients.length; j++) {
 					var itemEntry = itemIngredients[j];
 					var resultEntry = getResultEntry(itemEntry.id);
 					resultEntry.amount = resultEntry.amount + itemEntry.amount;
@@ -183,7 +183,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		getIngredientsToCraft: function (itemID) {
 			var craftAction = "craft_" + itemID;
 			var costs = PlayerActionConstants.costs[craftAction];
-			var result = [];
+			let result = [];
 			if (!costs) return result;
 			for (var key in costs) {
 				if (key.startsWith("item_res_")) {
@@ -195,7 +195,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		
 		getBag: function (campOrdinal) {
 			let result = null;
-			for (var i in this.itemDefinitions.bag) {
+			for (let i in this.itemDefinitions.bag) {
 				let bag = this.itemDefinitions.bag[i];
 				let requiredCampOrdinal = bag.requiredCampOrdinal;
 				if (requiredCampOrdinal <= campOrdinal) {
@@ -228,8 +228,8 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		getDefaultWeapon: function (campOrdinal, step) {
 			var step = step || 2;
 			var totalWeapons = this.itemDefinitions.weapon.length;
-			var result = null;
-			for (var i = 0; i < totalWeapons; i++) {
+			let result = null;
+			for (let i = 0; i < totalWeapons; i++) {
 				var weapon = this.itemDefinitions.weapon[i];
 				var weaponCampOrdinal = Math.max(1, weapon.requiredCampOrdinal);
 				if (step == 1 && weaponCampOrdinal >= campOrdinal) break;
@@ -241,13 +241,13 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		},
 		
 		getIngredient: function (i) {
-			var i = i || (this.itemDefinitions.ingredient.length) * Math.random();
-			i = i % this.itemDefinitions.ingredient.length;
-			return this.itemDefinitions.ingredient[parseInt(i)];
+			let index = i || (this.itemDefinitions.ingredient.length) * Math.random();
+			index = index % this.itemDefinitions.ingredient.length;
+			return this.itemDefinitions.ingredient[parseInt(index)];
 		},
 		
 		isQuicklyObsoletable: function (category) {
-			var t = ItemConstants.itemTypes[category] || category;
+			let t = ItemConstants.itemTypes[category] || category;
 			switch (t) {
 				case ItemConstants.itemTypes.weapon:
 				case ItemConstants.itemTypes.clothing_over:
@@ -262,7 +262,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		},
 		
 		isObsoletable: function (category) {
-			var t = ItemConstants.itemTypes[category] || category;
+			let t = ItemConstants.itemTypes[category] || category;
 			switch (t) {
 				case ItemConstants.itemTypes.weapon:
 				case ItemConstants.itemTypes.clothing_over:

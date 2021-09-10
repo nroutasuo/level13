@@ -47,7 +47,7 @@ define([
 		},
 		
 		generateZones: function (seed, levelVO) {
-			var result = [];
+			let result = [];
 			result.push(new ZoneVO(levelVO.campOrdinal, WorldConstants.ZONE_ENTRANCE));
 			if (levelVO.isCampable) {
 				if (levelVO.level != 13) {
@@ -65,7 +65,7 @@ define([
 		},
 		
 		getStageCenterPositions: function (worldVO, levelVO) {
-			var result = {};
+			let result = {};
 			var level = levelVO.level;
 			var stages = worldVO.getStages(level);
 			if (stages.length == 1) {
@@ -73,7 +73,7 @@ define([
 				result[WorldConstants.CAMP_STAGE_LATE] = [];
 				result[stages[0].stage].push(new PositionVO(level, 0, 0));
 			} else {
-				for (var i = 0; i < stages.length; i++) {
+				for (let i = 0; i < stages.length; i++) {
 					var stageVO = stages[i];
 					var positions = [];
 					switch (stageVO.stage) {
@@ -118,7 +118,7 @@ define([
 				if (levelVO.passageUpPosition) pois.push(levelVO.passageUpPosition);
 				if (levelVO.passageDownPosition) pois.push(levelVO.passageDownPosition);
 			}
-			var result = PositionConstants.getMiddlePoint(pois, true);
+			let result = PositionConstants.getMiddlePoint(pois, true);
 			return result;
 		},
 		
@@ -151,7 +151,7 @@ define([
 				min = 3;
 			}
 			var max = Math.max(min + 3, 3);
-			var result = WorldCreatorRandom.randomInt(s1, min, max);
+			let result = WorldCreatorRandom.randomInt(s1, min, max);
 			return result;
 		}
 		

@@ -365,7 +365,7 @@ define(['ash',
 
 			var sectorLocalesComponent = GameGlobals.playerActionFunctions.playerLocationNodes.head.entity.get(SectorLocalesComponent);
 			var sectorStatusComponent = GameGlobals.playerActionFunctions.playerLocationNodes.head.entity.get(SectorStatusComponent);
-			for (var i = 0; i < sectorLocalesComponent.locales.length; i++) {
+			for (let i = 0; i < sectorLocalesComponent.locales.length; i++) {
 				var locale = sectorLocalesComponent.locales[i];
 				if (!sectorStatusComponent.isLocaleScouted(i)) {
 					var action = "scout_locale_" + locale.getCategory() + "_" + i;
@@ -498,7 +498,7 @@ define(['ash',
 
 		buildPassages: function () {
 			var projects = GameGlobals.levelHelper.getAvailableProjectsForCamp(GameGlobals.playerActionFunctions.playerLocationNodes.head.entity);
-			for (var i = 0; i < projects.length; i++) {
+			for (let i = 0; i < projects.length; i++) {
 				var project = projects[i];
 				var action = project.action;
 				var sectorEntity = GameGlobals.levelHelper.getSectorByPosition(project.level, project.position.sectorX, project.position.sectorY);
@@ -665,7 +665,7 @@ define(['ash',
 			var itemDefinition;
 			for (var type in ItemConstants.itemDefinitions) {
 				itemList = ItemConstants.itemDefinitions[type];
-				for (var i in itemList) {
+				for (let i in itemList) {
 					itemDefinition = itemList[i];
 					if (itemDefinition.craftable) {
 						if (this.itemsNodes.head.items.getCountById(itemDefinition.id, true) < 1) {

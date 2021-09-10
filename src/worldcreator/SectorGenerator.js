@@ -142,7 +142,7 @@ define([
 			};
 			
 			var setPathZone = function (path, zone, area, forceArea) {
-				for (var i = 0; i < path.length; i++) {
+				for (let i = 0; i < path.length; i++) {
 					var pos = path[i];
 					var sector = levelVO.getSector(pos.sectorX, pos.sectorY);
 					setAreaZone(sector, zone, area, forceArea);
@@ -171,11 +171,11 @@ define([
 				}
 				// - rest ZONE_POI_1, ZONE_POI_2, ZONE_EXTRA_CAMPABLE depending on stage and vornoi points
 				var points = WorldCreatorHelper.getVornoiPoints(seed, worldVO, levelVO);
-				for (var i = 0; i < levelVO.sectors.length; i++) {
+				for (let i = 0; i < levelVO.sectors.length; i++) {
 					var sector = levelVO.sectors[i];
 					var closestPoint = null;
 					var closestPointDist = 0;
-					for (var j = 0; j < points.length; j++) {
+					for (let j = 0; j < points.length; j++) {
 						var point = points[j];
 						var dist = PositionConstants.getDistanceTo(sector.position, point.position);
 						if (closestPoint == null || dist < closestPointDist) {
@@ -199,7 +199,7 @@ define([
 					setPathZone(pathPassageToPassage, WorldConstants.ZONE_PASSAGE_TO_PASSAGE, 2, true);
 				}
 				// - rest is ZONE_EXTRA_UNCAMPABLE
-				for (var i = 0; i < levelVO.sectors.length; i++) {
+				for (let i = 0; i < levelVO.sectors.length; i++) {
 					var sector = levelVO.sectors[i];
 					setSectorZone(sector, WorldConstants.ZONE_EXTRA_UNCAMPABLE, true);
 				}
@@ -288,7 +288,7 @@ define([
 				var borderSectors = WorldCreatorHelper.getBorderSectorsForZone(levelVO, WorldConstants.ZONE_PASSAGE_TO_CAMP, true);
 				var startPos = levelVO.excursionStartPosition;
 				borderSectors.sort(function (a, b) { return PositionConstants.getDistanceTo(startPos, b.sector.position) - PositionConstants.getDistanceTo(startPos, a.sector.position) });
-				for (var i = 0; i < borderSectors.length; i++) {
+				for (let i = 0; i < borderSectors.length; i++) {
 					var pair = borderSectors[i];
 					var maxHazardValue = this.getMaxHazardValue(levelVO, pair.neighbour, false, pair.neighbour.zone);
 					if (maxHazardValue < 1) continue;
@@ -308,7 +308,7 @@ define([
 			} else {
 				// level completely covered in hazard
 				var isRadiation = isRadiatedLevel;
-				for (var i = 0; i < levelVO.sectors.length; i++) {
+				for (let i = 0; i < levelVO.sectors.length; i++) {
 					var sectorVO = levelVO.sectors[i];
 					if (sectorVO.zone == WorldConstants.ZONE_ENTRANCE) continue;
 					var maxHazardValue = generator.getMaxHazardValue(levelVO, sectorVO, isRadiation, sectorVO.zone);
@@ -355,7 +355,7 @@ define([
 			var addBlockersBetween = function (seed, levelVO, pointA, pointB, type, maxPaths, allowedCriticalPaths) {
 				var path;
 				var index;
-				for (var i = 0; i < maxPaths; i++) {
+				for (let i = 0; i < maxPaths; i++) {
 					path = WorldCreatorRandom.findPath(worldVO, pointA, pointB, true, true);
 					if (!path || path.length < 3) {
 						break;
@@ -389,8 +389,8 @@ define([
 			if (!levelVO.isCampable && campOrdinal == 7) numBetweenPassages = 3;
 			if (numBetweenPassages > 0) {
 				var allowedCriticalPaths = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE ];
-				for (var i = 0; i < levelVO.passagePositions.length; i++) {
-					for (var j = i + 1; j < levelVO.passagePositions.length; j++) {
+				for (let i = 0; i < levelVO.passagePositions.length; i++) {
+					for (let j = i + 1; j < levelVO.passagePositions.length; j++) {
 						var rand = Math.round(2222 + seed + (i+21) * 41 + (j + 2) * 33);
 						var type = l == 14 ? MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE : null;
 						addBlockersBetween(rand, levelVO, levelVO.passagePositions[i], levelVO.passagePositions[j], type, numBetweenPassages, allowedCriticalPaths);
@@ -404,7 +404,7 @@ define([
 				// - from ZONE_PASSAGE_TO_CAMP to other (to lead player towards camp)
 				var allowedCriticalPaths = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
 				var borderSectors1 = WorldCreatorHelper.getBorderSectorsForZone(levelVO, WorldConstants.ZONE_PASSAGE_TO_CAMP, true);
-				for (var i = 0; i < borderSectors1.length; i++) {
+				for (let i = 0; i < borderSectors1.length; i++) {
 					var pair = borderSectors1[i];
 					if (WorldCreatorHelper.canHaveBlocker(levelVO, pair.sector, pair.neighbour, allowedCriticalPaths)) {
 						var s = seed % 26 * 3331 + 100 + (i + 5) * 654;
@@ -420,7 +420,7 @@ define([
 			if (levelVO.isCampable && WorldCreatorRandom.randomBool(seed % 888 + l * 777, 0.75)) {
 				var localeSectors = levelVO.localeSectors;
 				var rand = seed % 333 + 1000 + l * 652;
-				var i = WorldCreatorRandom.randomInt(rand, 0, localeSectors.length);
+				let i = WorldCreatorRandom.randomInt(rand, 0, localeSectors.length);
 				var poiSector = localeSectors[i];
 				var campPos = levelVO.campPositions[0];
 				var allowedCriticalPaths = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
@@ -436,7 +436,7 @@ define([
 				var randomSeed = seed % 8 * 1751 + 1000 + (l + 5) * 291;
 				var options = { excludingFeature: "camp" };
 				var sectors = WorldCreatorRandom.randomSectors(randomSeed, worldVO, levelVO, numRandom, numRandom + 1, options);
-				for (var i = 0; i < sectors.length; i++) {
+				for (let i = 0; i < sectors.length; i++) {
 					var sector = sectors[i];
 					var addDiagonals = (l + i + 9) % 3 !== 0;
 					addBlocker(randomSeed - (i + 1) * 321, sector, null, null, addDiagonals);
@@ -445,7 +445,7 @@ define([
 		},
 		
 		generatePaths: function (seed, worldVO, levelVO) {
-			var result = [];
+			let result = [];
 			var unvisitedSectors = [];
 			var visitSector = function (pos, pathID) {
 				var posSector = levelVO.getSectorByPos(pos);
@@ -472,7 +472,7 @@ define([
 						throw new Error("couldn't find level path " + currentPos + " " + nextSector.position);
 					}
 					pathID = result.length;
-					for (var j = 0; j < path.length; j++) {
+					for (let j = 0; j < path.length; j++) {
 						var pathPos = path[j];
 						visitSector(pathPos, pathID);
 						traverse.push(pathPos);
@@ -506,7 +506,7 @@ define([
 				var isAmountRange = typeof(numItemsPerStash) !== "number";
 				var min = Math.round(isAmountRange ? numItemsPerStash[0] : numItemsPerStash);
 				var max = Math.round(isAmountRange ? numItemsPerStash[1] : numItemsPerStash);
-				for (var i = 0; i < stashSectors.length; i++) {
+				for (let i = 0; i < stashSectors.length; i++) {
 					var numItems = isAmountRange ? WorldCreatorRandom.randomInt(sectorSeed * 2, min, max) : numItemsPerStash;
 					var stash = new StashVO(stashType, numItems, itemID);
 					stashSectors[i].stashes.push(stash);
@@ -543,7 +543,7 @@ define([
 				stashIngredients = ItemConstants.getIngredientsToCraftMany(requiredEquipment);
 			}
 			let numStashIngredients = MathUtils.clamp(Math.floor(stashIngredients.length / 2), 1, 3);
-			for (var i = 0; i < numStashIngredients; i++) {
+			for (let i = 0; i < numStashIngredients; i++) {
 				var def = stashIngredients[i];
 				var amount = def.amount > 9 ? 10 : def.amount > 5 ? 6 : 3;
 				addStashes(seed % 13 + l * 7 + 5 + (i+1) * 10, "craftable ingredients", ItemConstants.STASH_TYPE_ITEM, def.id, 1, amount);
@@ -553,7 +553,7 @@ define([
 			// TODO don't do these per level but per equipment; place one instance of each non-craftable equipment somewhere
 			if (levelIndex == 0) {
 				var newEquipment = this.itemsHelper.getNewEquipment(levelVO.campOrdinal);
-				for (var i = 0; i < newEquipment.length; i++) {
+				for (let i = 0; i < newEquipment.length; i++) {
 					if (!newEquipment[i].craftable && newEquipment[i].scavengeRarity <= 5) {
 						addStashes(seed / 3 + (l+551)*8 + (i+103)*18, "non-craftable equipment", ItemConstants.STASH_TYPE_ITEM, newEquipment[i].id, 1, 1, lateZones);
 					}
@@ -562,7 +562,7 @@ define([
 			
 			// stashes: random ingredients (uncampable levels)
 			if (!levelVO.isCampable) {
-				var i = seed % (l+5) + 3;
+				let i = seed % (l+5) + 3;
 				var ingredient = ItemConstants.getIngredient(i);
 				addStashes(seed % 7 + 3000 + 101 * l, "random", ItemConstants.STASH_TYPE_ITEM, ingredient.id, 2, 3);
 			}
@@ -616,7 +616,7 @@ define([
 			// stashes: one-use exploration items (uncampable levels and late zones)
 			var consumableItems = [ "first_aid_kit_1", "first_aid_kit_2", "glowstick_1", "consumable_weapon_1", "flee_1" ];
 			var validItems = [];
-			for (var i = 0; i < consumableItems.length; i++) {
+			for (let i = 0; i < consumableItems.length; i++) {
 				var item = ItemConstants.getItemByID(consumableItems[i]);
 				if (!item) continue;
 				if (!this.itemsHelper.isAvailable(item, levelVO.campOrdinal, WorldConstants.CAMP_STEP_END, true, true, 9)) continue;
@@ -624,7 +624,7 @@ define([
 				validItems.push(item);
 			}
 			var numItems = Math.min(levelVO.isCampable ? 1 : 3, validItems.length);
-			for (var i = 0; i < numItems; i++) {
+			for (let i = 0; i < numItems; i++) {
 				var s3 = 2222 + (l + 8) * 281 + (i + 16) * 182 + i * i * 2;
 				var index = WorldCreatorRandom.randomInt(s3, 0, validItems.length);
 				var item = validItems[index];
@@ -661,7 +661,7 @@ define([
 					workshopSectors.push(sector);
 					break;
 				default:
-					for (var i = 0; i < levelVO.campPositions.length; i++) {
+					for (let i = 0; i < levelVO.campPositions.length; i++) {
 						var startPos = levelVO.campPositions[i];
 						var maxLength = WorldCreatorConstants.getMaxPathLength(levelVO.campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1);
 						pathConstraints.push(new PathConstraintVO(startPos, maxLength, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1));
@@ -672,13 +672,13 @@ define([
 			}
 			
 			// set sector flags and critical paths
-			for (var i = 0; i < workshopSectors.length; i++) {
+			for (let i = 0; i < workshopSectors.length; i++) {
 				WorldCreatorLogger.i("placed workshop " + workshopResource + " at " + workshopSectors[i].position);
 				workshopSectors[i].hasWorkshop = true;
 				workshopSectors[i].hasClearableWorkshop = workshopResource != "herbs";
 				workshopSectors[i].hasBuildableWorkshop = workshopResource == "herbs";
 				workshopSectors[i].workshopResource = resourceNames[workshopResource];
-				for (var j = 0; j < pathConstraints.length; j++) {
+				for (let j = 0; j < pathConstraints.length; j++) {
 					let criticalPathVO = new CriticalPathVO(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, workshopSectors[i].position, pathConstraints[j].startPosition);
 					WorldCreatorHelper.addCriticalPath(worldVO, criticalPathVO);
 				}
@@ -693,7 +693,7 @@ define([
 				let excludedZones = [ WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_CAMP_TO_PASSAGE, WorldConstants.ZONE_EXTRA_CAMPABLE ];
 				var options = { excludingFeature: "camp", excludedZones: excludedZones };
 				let sectors = WorldCreatorRandom.randomSectors(seed / 2 + 1111, worldVO, levelVO, 3, 4, options);
-				for (var i = 0; i < sectors.length; i++) {
+				for (let i = 0; i < sectors.length; i++) {
 					sectors[i].hasTradeConnectorSpot = true;
 					WorldCreatorLogger.i("tradeConnectorSpot: " + sectors[i].position);
 				}
@@ -742,7 +742,7 @@ define([
 				var r1 = WorldCreatorRandom.random(s1);
 				return r1 < probability;
 			};
-			for (var i = 0; i < path.length; i++) {
+			for (let i = 0; i < path.length; i++) {
 				var pos = path[i];
 				var sectorVO = levelVO.getSectorByPos(pos);
 				if (requireResource(i, path.length, sectorVO, stepsWater, maxStepsWater)) {
@@ -802,10 +802,10 @@ define([
 					default: return 0;
 				}
 			}
-			for (var i = 0; i < features.length; i++) {
+			for (let i = 0; i < features.length; i++) {
 				damage = Math.max(damage, getFeatureDamage(features[i]));
 			}
-			for (var i = 0; i < surroundingFeatures.length; i++) {
+			for (let i = 0; i < surroundingFeatures.length; i++) {
 				var d = surroundingFeatures[i].getDistanceTo(sectorVO.position);
 				damage = Math.max(damage, getFeatureDamage(surroundingFeatures[i]) - d * 2);
 			}
@@ -1078,7 +1078,7 @@ define([
 				var num = 0;
 				var path;
 				var index;
-				for (var i = 0; i < maxPaths; i++) {
+				for (let i = 0; i < maxPaths; i++) {
 					path = WorldCreatorRandom.findPath(worldVO, pointA, pointB, true, true);
 					if (!path || path.length < 3) break;
 					var min = Math.round(path.length / 4) + 1;
@@ -1099,7 +1099,7 @@ define([
 			
 			// sector-based: possible enemies, random encounters and locales
 			let center = levelVO.levelCenterPosition;
-			for (var i = 0; i < levelVO.sectors.length; i++) {
+			for (let i = 0; i < levelVO.sectors.length; i++) {
 				var sectorVO = levelVO.sectors[i];
 				let dist = PositionConstants.getDistanceTo(center, sectorVO.position);
 				var distanceToCamp = WorldCreatorHelper.getQuickDistanceToCamp(levelVO, sectorVO);
@@ -1128,7 +1128,7 @@ define([
 			// gangs: on zone borders
 			// - ZONE_PASSAGE_TO_CAMP: all except too close to camp
 			var borderSectors = WorldCreatorHelper.getBorderSectorsForZone(levelVO, WorldConstants.ZONE_PASSAGE_TO_CAMP, true);
-			for (var i = 0; i < borderSectors.length; i++) {
+			for (let i = 0; i < borderSectors.length; i++) {
 				var pair = borderSectors[i];
 				if (pair.sector.zone == WorldConstants.ZONE_ENTRANCE || pair.neighbour.zone == WorldConstants.ZONE_ENTRANCE) continue;
 				var direction = PositionConstants.getDirectionFrom(pair.sector.position, pair.neighbour.position);
@@ -1151,7 +1151,7 @@ define([
 			var passage2 = isGoingDown ? passageDown : passageUp;
 			if (passage2) {
 				borderSectors = WorldCreatorHelper.getBorderSectorsForZone(levelVO, WorldConstants.ZONE_PASSAGE_TO_PASSAGE, false);
-				for (var i = 0; i < borderSectors.length; i++) {
+				for (let i = 0; i < borderSectors.length; i++) {
 					// sector: z_extra, neighbour: z_p2p - if distance from sector is longer than from neighbour, add blocker
 					var pair = borderSectors[i];
 					var distance1 = WorldCreatorRandom.findPath(worldVO, pair.sector.position, passage2.position, false, true).length;
@@ -1166,7 +1166,7 @@ define([
 			var numLocales = 0;
 			for (var s = 0; s < levelVO.campPositions.length; s++) {
 				var campPos = levelVO.campPositions[s];
-				for (var i = 0; i < levelVO.sectors.length; i++) {
+				for (let i = 0; i < levelVO.sectors.length; i++) {
 					var sectorVO = levelVO.sectors[i];
 					if (sectorVO.hasClearableWorkshop) {
 						// camps to workshops (all paths)
@@ -1185,7 +1185,7 @@ define([
 
 			// gangs: some random gangs regardless of camps
 			var randomGangIndex = 0;
-			for (var i = 0; i < levelVO.sectors.length; i++) {
+			for (let i = 0; i < levelVO.sectors.length; i++) {
 				var sectorVO = levelVO.sectors[i];
 				if (!WorldCreatorHelper.canSectorHaveGang(levelVO, sectorVO)) continue;
 				if (randomGangIndex >= randomGangFreq) {
@@ -1218,7 +1218,7 @@ define([
 			};
 			
 			// 1) spawn trading partners
-			for (var i = 0; i < TradeConstants.TRADING_PARTNERS.length; i++) {
+			for (let i = 0; i < TradeConstants.TRADING_PARTNERS.length; i++) {
 				var partner = TradeConstants.TRADING_PARTNERS[i];
 				var levelOrdinal = WorldCreatorHelper.getLevelOrdinalForCampOrdinal(seed, partner.campOrdinal);
 				var level = WorldCreatorHelper.getLevelForOrdinal(seed, levelOrdinal);
@@ -1256,7 +1256,7 @@ define([
 			// 4) spawn other types (for blueprints)
 			var createLocales = function (worldVO, levelVO, campOrdinal, isEarly, count, countEasy) {
 				var pathConstraints = [];
-				for (var j = 0; j < levelVO.campPositions.length; j++) {
+				for (let j = 0; j < levelVO.campPositions.length; j++) {
 					var pathType = isEarly ? WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1 : WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2;
 					var pos = levelVO.campPositions[j];
 					var length = WorldCreatorConstants.getMaxPathLength(campOrdinal, pathType);
@@ -1274,7 +1274,7 @@ define([
 				var options = { requireCentral: false, excludingFeature: "camp", pathConstraints: pathConstraints, excludedZones: excludedZones, numDuplicates: 2 };
 				var l = levelVO.level;
 				var sseed = Math.abs(seed - (isEarly ? 5555 : 0) + (l + 50) * 2);
-				for (var i = 0; i < count; i++) {
+				for (let i = 0; i < count; i++) {
 					var localePos = WorldCreatorRandom.randomSectors(sseed + i + i * 72 * sseed + i * l + i, worldVO, levelVO, 1, 2, options);
 					var sectorVO = localePos[0];
 					var s1 = sseed + sectorVO.position.sectorX * 871 + sectorVO.position.sectorY * 659;
@@ -1284,7 +1284,7 @@ define([
 					var locale = new LocaleVO(localeType, isEasy, isEarly);
 					addLocale(sectorVO, locale);
 					// WorldCreatorLogger.i(sectorVO.position + " added locale: isEarly:" + isEarly + ", distance to camp: " + WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO) + ", zone: " + sectorVO.zone);
-					for (var j = 0; j < pathConstraints.length; j++) {
+					for (let j = 0; j < pathConstraints.length; j++) {
 						let criticalPathVO = new CriticalPathVO(pathConstraints[j].pathType, sectorVO.position, pathConstraints[j].startPosition);
 						WorldCreatorHelper.addCriticalPath(worldVO, criticalPathVO);
 					}
@@ -1369,11 +1369,11 @@ define([
 			}
 
 			var allowedForGangs = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
-			for (var i = 0; i < sectorVO.criticalPaths.length; i++) {
+			for (let i = 0; i < sectorVO.criticalPaths.length; i++) {
 				var pathType = sectorVO.criticalPaths[i].type;
 				if (options.allowedCriticalPaths && options.allowedCriticalPaths.indexOf(pathType) >= 0) continue;
 				if (blockerType === MovementConstants.BLOCKER_TYPE_GANG && allowedForGangs.indexOf(pathType) >= 0) continue;
-				for (var j = 0; j < neighbourVO.criticalPaths.length; j++) {
+				for (let j = 0; j < neighbourVO.criticalPaths.length; j++) {
 					if (pathType === neighbourVO.criticalPaths[j].type) {
 						if (!options.skipWarnings) WorldCreatorLogger.w("skipping movement blocker on critical path: " + pathType + " (type: " + blockerType + ")");
 						return false;
@@ -1391,11 +1391,11 @@ define([
 				diagonalsOptions.addDiagonals = false;
 				diagonalsOptions.skipWarnings = true;
 				var nextNeighbours = levelVO.getNextNeighbours(sectorVO, direction);
-				for (var j = 0; j < nextNeighbours.length; j++) {
+				for (let j = 0; j < nextNeighbours.length; j++) {
 					this.addMovementBlocker(worldVO, levelVO, sectorVO, nextNeighbours[j], blockerType, diagonalsOptions, sectorcb);
 				}
 				nextNeighbours = levelVO.getNextNeighbours(neighbourVO, neighbourDirection);
-				for (var j = 0; j < nextNeighbours.length; j++) {
+				for (let j = 0; j < nextNeighbours.length; j++) {
 					this.addMovementBlocker(worldVO, levelVO, neighbourVO, nextNeighbours[j], blockerType, diagonalsOptions, sectorcb);
 				}
 			}
@@ -1526,7 +1526,7 @@ define([
 			var l = sectorVO.position.level;
 			var isHole = function (pos) {
 				var features = worldVO.getFeaturesByPos(pos);
-				for (var i = 0; i < features.length; i++) {
+				for (let i = 0; i < features.length; i++) {
 					switch (features[i].type) {
 						case WorldCreatorConstants.FEATURE_HOLE_WELL:
 						case WorldCreatorConstants.FEATURE_HOLE_COLLAPSE:
@@ -1700,7 +1700,7 @@ define([
 			});
 			
 			var minDifficulty = levelVO.isHard ? candidateDifficulties[Math.floor(candidateDifficulties.length/2)] : candidateDifficulties[0];
-			for (var i = 0; i < candidates.length; i++) {
+			for (let i = 0; i < candidates.length; i++) {
 				enemy = candidates[i];
 				if (enemyCreator.getEnemyDifficultyLevel(enemy) < minDifficulty) continue;
 				var threshold = (enemy.rarity + 5) / 110;

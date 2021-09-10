@@ -205,7 +205,7 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 				return this.campOrdinalsByBlueprint[upgradeId];
 			}
 			for (var key in this.blueprintsByCampOrdinal) {
-				for (var i = 0; i < 3; i++) {
+				for (let i = 0; i < 3; i++) {
 					if (this.blueprintsByCampOrdinal[key][i].indexOf(upgradeId) >= 0) {
 						this.campOrdinalsByBlueprint[upgradeId] = key;
 						return key;
@@ -261,7 +261,7 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 		getPiecesByCampOrdinal: function (campOrdinal, blueprintType, levelIndex, maxLevelIndex) {
 			var pieceCount = 0;
 			var blueprints = this.getBlueprintsByCampOrdinal(campOrdinal, blueprintType, levelIndex, maxLevelIndex);
-			for (var i = 0; i < blueprints.length; i++) {
+			for (let i = 0; i < blueprints.length; i++) {
 				pieceCount += this.getMaxPiecesForBlueprint(blueprints[i]);
 			}
 			return pieceCount;
@@ -303,7 +303,7 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 			// required tech
 			var requiredTech = this.getRequiredTech(upgrade);
 			var requiredTechCampOrdinal = 0;
-			for (var i = 0; i < requiredTech.length; i++) {
+			for (let i = 0; i < requiredTech.length; i++) {
 				requiredTechCampOrdinal = Math.max(requiredTechCampOrdinal, this.getMinimumCampOrdinalForUpgrade(requiredTech[i], ignoreCosts));
 			}
 			
@@ -335,7 +335,7 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 		},
 	
 		getMinimumCampStepForUpgrade: function (upgrade) {
-			var result = 0;
+			let result = 0;
 			var blueprintType = this.getBlueprintBracket(upgrade);
 			if (blueprintType == this.BLUEPRINT_BRACKET_EARLY)
 				result = WorldConstants.CAMP_STEP_START;
@@ -343,7 +343,7 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 				result = WorldConstants.CAMP_STEP_POI_2;
 				
 			var requiredTech = this.getRequiredTech(upgrade);
-			for (var i = 0; i < requiredTech.length; i++) {
+			for (let i = 0; i < requiredTech.length; i++) {
 				result = Math.max(result, this.getMinimumCampStepForUpgrade(requiredTech[i]));
 			}
 			

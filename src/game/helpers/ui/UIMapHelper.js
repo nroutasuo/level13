@@ -165,7 +165,7 @@ function (Ash, CanvasUtils,
 			ctx.strokeStyle = ColorConstants.getColor(sunlit, "map_stroke_sector_lit");
 			ctx.lineWidth = centered ? 4 : 2;
 			let beaconSectors = GameGlobals.levelHelper.getAllSectorsWithImprovement(mapPosition.level, improvementNames.beacon);
-			for (var i = 0; i < beaconSectors.length; i++) {
+			for (let i = 0; i < beaconSectors.length; i++) {
 				sector = beaconSectors[i];
 				sectorStatus = SectorConstants.getSectorStatus(sector);
 				sectorPos = sector.get(PositionComponent);
@@ -376,7 +376,7 @@ function (Ash, CanvasUtils,
 				var bigResSize = 5;
 				var smallResSize = 3;
 				var padding = 1;
-				for (var i in mapResources) {
+				for (let i in mapResources) {
 					var name = mapResources[i];
 					var colAmount = resourcesCollectable.getResource(name);
 					if (colAmount > 0 || discoveredResources.indexOf(name) >= 0) {
@@ -393,7 +393,7 @@ function (Ash, CanvasUtils,
 					var y = isBigSectorSize ? sectorYpx + sectorSize - 5 : sectorYpx + sectorSize / 2 - 1;
 					var drawSize = 0;
 					var yOffset;
-					for (var i in mapResources) {
+					for (let i in mapResources) {
 						var name = mapResources[i];
 						if (directResources[name]) {
 							drawSize = bigResSize;
@@ -419,7 +419,7 @@ function (Ash, CanvasUtils,
 			var sectorPassages = sector.get(PassagesComponent);
 			var sectorMiddleX = sectorXpx + sectorSize * 0.5;
 			var sectorMiddleY = sectorYpx + sectorSize * 0.5;
-			for (var i in PositionConstants.getLevelDirections()) {
+			for (let i in PositionConstants.getLevelDirections()) {
 				var direction = PositionConstants.getLevelDirections()[i];
 				var neighbourPos = PositionConstants.getPositionOnPath(sectorPos, direction, 1);
 				var neighbour = GameGlobals.levelHelper.getSectorByPosition(mapPosition.level, neighbourPos.sectorX, neighbourPos.sectorY);

@@ -884,7 +884,7 @@ define(['ash',
 				if (($element).length > 1) {
 					var previousIsToggled = null;
 					var currentIsToggled = null;
-					for (var i = 0; i < ($element).length; i++) {
+					for (let i = 0; i < ($element).length; i++) {
 						previousIsToggled = currentIsToggled;
 						currentIsToggled = this.isElementToggled($(($element)[i]));
 						if (i > 0 && previousIsToggled !== currentIsToggled) return null;

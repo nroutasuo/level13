@@ -73,7 +73,7 @@ define(function () {
 			// Simple breadth-first search (implement A* if movement cost needs to be considered)
 
 			var cameFrom = this.mapPaths(startVO, goalVO, utilities, settings);
-			var result = this.findShortest(startVO, goalVO, settings, cameFrom);
+			let result = this.findShortest(startVO, goalVO, settings, cameFrom);
 
 			return result;
 		},
@@ -138,7 +138,7 @@ define(function () {
 		},
 
 		findShortest: function (startVO, goalVO, settings, cameFrom) {
-			var result = [];
+			let result = [];
 			var previous = null;
 			var current = goalVO;
 			while (current !== startVO) {
@@ -174,9 +174,9 @@ define(function () {
 			
 			var sys = this;
 			var getLeaves = function (key) {
-				var result = [];
+				let result = [];
 				var parent;
-				for (var k in cameFrom) {
+				for (let k in cameFrom) {
 					parent = cameFrom[k];
 					if (sys.getKey(parent) == key) {
 						result.push(k);
@@ -195,10 +195,10 @@ define(function () {
 				currentPaths = pathsByLastKey[current];
 				leaves = getLeaves(current);
 				if (leaves.length > 0) {
-					for (var i = 0; i < leaves.length; i++) {
+					for (let i = 0; i < leaves.length; i++) {
 						var leaf = leaves[i];
 						frontier.push(leaf);
-						for (var j = 0; j < currentPaths.length; j++) {
+						for (let j = 0; j < currentPaths.length; j++) {
 							var path = currentPaths[j].slice(0); // copy
 							path.push(leaf);
 							if (!pathsByLastKey[leaf]) pathsByLastKey[leaf] = [];
@@ -209,8 +209,8 @@ define(function () {
 				}
 			}
 			
-			for (var k in pathsByLastKey) {
-				for (var i = 0; i < pathsByLastKey[k].length; i++) {
+			for (let k in pathsByLastKey) {
+				for (let i = 0; i < pathsByLastKey[k].length; i++) {
 					log.i(pathsByLastKey[k][i].join("|"));
 				}
 			}

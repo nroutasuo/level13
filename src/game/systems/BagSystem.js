@@ -55,7 +55,7 @@ define([
 			var usedCapacity = 0;
 			var carriedItems = playerItems.getAll(false);
 			usedCapacity += BagConstants.getResourcesCapacity(playerResources.resources);
-			for (var i = 0; i < carriedItems.length; i++) {
+			for (let i = 0; i < carriedItems.length; i++) {
 				if (carriedItems[i].equipped) continue;
 				 usedCapacity += BagConstants.getItemCapacity(carriedItems[i]);
 			}

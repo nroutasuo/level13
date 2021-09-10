@@ -168,7 +168,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		},
 		
 		getHousingCap2: function (numHouses, numHouses2) {
-			var result = numHouses * CampConstants.POPULATION_PER_HOUSE;
+			let result = numHouses * CampConstants.POPULATION_PER_HOUSE;
 			result += numHouses2 * CampConstants.POPULATION_PER_HOUSE2;
 			return result;
 		},
@@ -200,7 +200,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		getRequiredReputation: function (pop) {
 			if (pop < 1) return 0;
 			pop = Math.ceil(pop);
-			var result = Math.max(1, Math.pow(pop, CampConstants.REPUTATION_TO_POPULATION_FACTOR) + CampConstants.REPUTATION_TO_POPULATION_OFFSET);
+			let result = Math.max(1, Math.pow(pop, CampConstants.REPUTATION_TO_POPULATION_FACTOR) + CampConstants.REPUTATION_TO_POPULATION_OFFSET);
 			return Math.floor(result * 100) / 100;
 		},
 		

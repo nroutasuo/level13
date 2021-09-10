@@ -27,7 +27,7 @@ function (Ash, GlobalSignals, PerkVO, PerkConstants) {
 
 		hasPerk: function (perkId) {
 			for (var key in this.perks) {
-				for( var i = 0; i < this.perks[key].length; i++) {
+				for( let i = 0; i < this.perks[key].length; i++) {
 					if (this.perks[key][i].id == perkId) return true;
 				}
 			}
@@ -36,7 +36,7 @@ function (Ash, GlobalSignals, PerkVO, PerkConstants) {
 
 		getPerk: function (perkID) {
 			for (var key in this.perks) {
-				for (var i = 0; i < this.perks[key].length; i++) {
+				for (let i = 0; i < this.perks[key].length; i++) {
 					if (this.perks[key][i].id == perkID)
 						return this.perks[key][i];
 				}
@@ -47,7 +47,7 @@ function (Ash, GlobalSignals, PerkVO, PerkConstants) {
 		getAll: function () {
 			var all = [];
 			for (var key in this.perks) {
-				for( var i = 0; i < this.perks[key].length; i++) {
+				for( let i = 0; i < this.perks[key].length; i++) {
 					all.push(this.perks[key][i]);
 				}
 			}
@@ -60,7 +60,7 @@ function (Ash, GlobalSignals, PerkVO, PerkConstants) {
 			if (multiply) effect = 1;
 			for (var key in this.perks) {
 				if (key === type) {
-					for( var i = 0; i < this.perks[key].length; i++) {
+					for( let i = 0; i < this.perks[key].length; i++) {
 						if (multiply) effect *= this.perks[key][i].effect;
 						else effect += this.perks[key][i].effect;
 					}
@@ -73,7 +73,7 @@ function (Ash, GlobalSignals, PerkVO, PerkConstants) {
 			var effect = 0;
 			for (var key in this.perks) {
 				if (key === type) {
-					for (var i = 0; i < this.perks[key].length; i++) {
+					for (let i = 0; i < this.perks[key].length; i++) {
 						effect = this.perks[key][i].effect;
 						if (effect >= min && effect <= max) return this.perks[key][i];
 					}
@@ -95,7 +95,7 @@ function (Ash, GlobalSignals, PerkVO, PerkConstants) {
 
 		removePerkById: function (perkId) {
 			for (var key in this.perks) {
-				for( var i = 0; i < this.perks[key].length; i++) {
+				for( let i = 0; i < this.perks[key].length; i++) {
 					if (this.perks[key][i].id === perkId) {
 						this.perks[key].splice(i, 1);
 						GlobalSignals.perksChangedSignal.dispatch();
@@ -118,7 +118,7 @@ function (Ash, GlobalSignals, PerkVO, PerkConstants) {
 
 		contains: function(name) {
 			for (var key in this.perks) {
-				for( var i = 0; i < this.perks[key].length; i++) {
+				for( let i = 0; i < this.perks[key].length; i++) {
 					if(this.perks[key][i].name == name) return true;
 				}
 			}
@@ -131,7 +131,7 @@ function (Ash, GlobalSignals, PerkVO, PerkConstants) {
 
 		customLoadFromSave: function(componentValues) {
 			for(var key in componentValues.perks) {
-				for (var i in componentValues.perks[key]) {
+				for (let i in componentValues.perks[key]) {
 					var perkID = componentValues.perks[key][i].id;
 					var perk = PerkConstants.getPerk(perkID);
 					if (!perk) continue;

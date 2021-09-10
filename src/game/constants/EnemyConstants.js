@@ -37,7 +37,7 @@ function (Ash, EnemyVO) {
 		
 		getEnemy: function (enemyID) {
 			for (var type in this.enemyDefinitions) {
-				for (var i in this.enemyDefinitions[type]) {
+				for (let i in this.enemyDefinitions[type]) {
 					var enemy = this.enemyDefinitions[type][i];
 					if (enemy.id == enemyID) {
 						return enemy;
@@ -51,7 +51,7 @@ function (Ash, EnemyVO) {
 		getAll: function () {
 			let result = [];
 			for (var type in this.enemyDefinitions ) {
-				for (var i in this.enemyDefinitions[type]) {
+				for (let i in this.enemyDefinitions[type]) {
 					var enemy = this.enemyDefinitions[type][i];
 					result.push(enemy);
 				}

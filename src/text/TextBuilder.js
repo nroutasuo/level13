@@ -15,12 +15,12 @@ define(function () {
 		language: null,
 		
 		build: function (template, params) {
-			var result = template;
+			let result = template;
 			var vars = template.match(/\[\S*\]/g);
 			if (vars) {
 				// 1dt pass: replace custom variables
 				var replacedVars = {};
-				for (var i = 0; i < vars.length; i++) {
+				for (let i = 0; i < vars.length; i++) {
 					var v = vars[i].substring(1, vars[i].length - 1);
 					if (this.isPredefinedVar(v)) continue;
 					if (!replacedVars[v]) replacedVars[v] = 0;
@@ -34,7 +34,7 @@ define(function () {
 					replacedVars[v]++;
 				}
 				// 2nd pass: replace standard vars (may depend on the result of the 1st pass)
-				for (var i = 0; i < vars.length; i++) {
+				for (let i = 0; i < vars.length; i++) {
 					var v = vars[i].substring(1, vars[i].length - 1);
 					if (!this.isPredefinedVar(v)) continue;
 					if (!replacedVars[v]) replacedVars[v] = 0;
@@ -64,8 +64,8 @@ define(function () {
 		
 		getNextParam: function (v, params, var_ordinal) {
 			var p = params[v];
-			var t = typeof p;
-			var result = "";
+			let t = typeof p;
+			let result = "";
 			if (t == "string") {
 				result = p;
 			} else if (t == "object") {
@@ -80,7 +80,7 @@ define(function () {
 			var word_alt = this.parametrify(word);
 			var words = sentence.split(" ");
 			var repeats = 0;
-			for (var i = 0; i < words.length; i++) {
+			for (let i = 0; i < words.length; i++) {
 				var w = words[i];
 				if (w == word || w == word_alt) {
 					if (word_repeat_ordinal <= repeats) {

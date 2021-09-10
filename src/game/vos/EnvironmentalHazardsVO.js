@@ -31,7 +31,7 @@ define(['ash'], function (Ash) {
 		},
 		
 		clone: function () {
-			var result = new EnvironmentalHazardsVO();
+			let result = new EnvironmentalHazardsVO();
 			result.radiation = this.radiation;
 			result.poison = this.poison;
 			result.cold = this.cold;

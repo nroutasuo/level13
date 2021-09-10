@@ -48,7 +48,7 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 		
 		updateCriticalPath: function () {
 			this.criticalPath = "-";
-			for (var i = 0; i < this.criticalPathTypes.length; i++) {
+			for (let i = 0; i < this.criticalPathTypes.length; i++) {
 				if (this.getCriticalPathPriority(this.criticalPathTypes[i] < this.getCriticalPathPriority(this.criticalPath))) {
 					var split = this.criticalPathTypes[i].split("_");
 					this.criticalPath = split[split.length - 1][0];
@@ -122,7 +122,7 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 		},
 		
 		getCriticalPathC: function () {
-			for (var i = 0; i < WorldCreatorConstants.CRITICAL_PATHS_BY_ORDER.length; i++) {
+			for (let i = 0; i < WorldCreatorConstants.CRITICAL_PATHS_BY_ORDER.length; i++) {
 				var path = WorldCreatorConstants.CRITICAL_PATHS_BY_ORDER[i];
 				if (this.isOnCriticalPath(path)) return i;
 			}

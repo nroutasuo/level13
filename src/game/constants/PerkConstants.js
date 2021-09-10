@@ -38,9 +38,9 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 	
 		getPerk: function (perkId, effectTimer) {
 			for (var key in this.perkDefinitions) {
-				for (var i = 0; i < this.perkDefinitions[key].length; i++) {
+				for (let i = 0; i < this.perkDefinitions[key].length; i++) {
 					if (this.perkDefinitions[key][i].id === perkId) {
-						var result = this.perkDefinitions[key][i].clone();
+						let result = this.perkDefinitions[key][i].clone();
 						result.effectTimer = effectTimer || PerkConstants.TIMER_DISABLED;
 						return result;
 					};
@@ -81,14 +81,14 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 	var medInjuryEffect = 0.7;
 	var seriousInjuryEffect = 0.5;
 	var bodyParts = ["Leg", "Arm", "Head", "Foot", "Chest", "Hand"];
-	for (var i = 0; i < bodyParts.length; i++) {
+	for (let i = 0; i < bodyParts.length; i++) {
 		var id = bodyParts[i].toLowerCase();
 		PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-big-" + id, bodyParts[i] + " wound (serious)", "Injury", seriousInjuryEffect, "img/items/injury-1.png"));
 		PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-med-" + id, bodyParts[i] + " wound (medium)", "Injury", medInjuryEffect, "img/items/injury-2.png"));
 		PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-small-" + id, bodyParts[i] + " wound (light)", "Injury", lightInjuryEffect, "img/items/injury-3.png"));
 	}
 	var injuryTypes = [ "Burn", "Strained ankle", "Broken rib"];
-	for (var j = 0; j < injuryTypes.length; j++) {
+	for (let j = 0; j < injuryTypes.length; j++) {
 		var id = injuryTypes[j].toLowerCase();
 		PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-big-" + id, injuryTypes[j] + " (serious)", "Injury", seriousInjuryEffect, "img/items/injury-1.png"));
 		PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-med-" + id, injuryTypes[j] + " (medium)", "Injury", medInjuryEffect, "img/items/injury-2.png"));

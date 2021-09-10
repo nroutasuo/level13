@@ -253,7 +253,7 @@ define(['ash',
 					continue;
 				var hasParams = this.cheatDefinitions[cmd].params.length > 0;
 				var params = "";
-				for (var i = 0; i < this.cheatDefinitions[cmd].params.length; i++) {
+				for (let i = 0; i < this.cheatDefinitions[cmd].params.length; i++) {
 					params += "[" + this.cheatDefinitions[cmd].params[i] + "] ";
 				}
 				log.i(cmd + " " + params + "- " + this.cheatDefinitions[cmd].desc);
@@ -269,7 +269,7 @@ define(['ash',
 					continue;
 				var hasParams = this.cheatDefinitions[cmd].params.length > 0;
 				var params = "";
-				for (var i = 0; i < this.cheatDefinitions[cmd].params.length; i++) {
+				for (let i = 0; i < this.cheatDefinitions[cmd].params.length; i++) {
 					params += "[" + this.cheatDefinitions[cmd].params[i] + "] ";
 				}
 				div += ("<b>" + cmd + "</b>" + " " + params + "- " + this.cheatDefinitions[cmd].desc) + "<br/>";
@@ -475,7 +475,7 @@ define(['ash',
 			var maxPieces = UpgradeConstants.getMaxPiecesForBlueprint(name);
 			amount = Math.max(1, amount);
 			amount = Math.min(amount, maxPieces);
-			for (var i = 0; i < amount; i++) {
+			for (let i = 0; i < amount; i++) {
 				this.tribeUpgradesNodes.head.upgrades.addNewBlueprintPiece(name);
 			}
 			GameGlobals.gameState.unlockedFeatures.blueprints = true;
@@ -484,7 +484,7 @@ define(['ash',
 		addBlueprintsForLevel: function (campOrdinal) {
 			var id;
 			var blueprints = UpgradeConstants.getBlueprintsByCampOrdinal(campOrdinal);
-			for (var i in blueprints) {
+			for (let i in blueprints) {
 				id = blueprints[i];
 				this.addBlueprints(id, UpgradeConstants.piecesByBlueprint[id]);
 			}
@@ -492,7 +492,7 @@ define(['ash',
 
 		addTradePartners: function (campOrdinal) {
 			var partner;
-			for (var i = 0; i < TradeConstants.TRADING_PARTNERS.length; i++) {
+			for (let i = 0; i < TradeConstants.TRADING_PARTNERS.length; i++) {
 				partner = TradeConstants.TRADING_PARTNERS[i];
 				if (partner.campOrdinal < campOrdinal) {
 					if (GameGlobals.gameState.foundTradingPartners.indexOf(partner.campOrdinal) >= 0)
@@ -505,7 +505,7 @@ define(['ash',
 		
 		addTradePartner: function () {
 			var partner;
-			for (var i = 0; i < TradeConstants.TRADING_PARTNERS.length; i++) {
+			for (let i = 0; i < TradeConstants.TRADING_PARTNERS.length; i++) {
 				partner = TradeConstants.TRADING_PARTNERS[i];
 				if (GameGlobals.gameState.foundTradingPartners.indexOf(partner.campOrdinal) >= 0)
 					continue;
@@ -519,7 +519,7 @@ define(['ash',
 			var workshopEntities = GameGlobals.levelHelper.getWorkshopsSectorsForLevel(level);
 			var featuresComponent;
 			var sectorControlComponent;
-			for (var i = 0; i < workshopEntities.length; i++) {
+			for (let i = 0; i < workshopEntities.length; i++) {
 				sectorControlComponent = workshopEntities[i].get(SectorControlComponent);
 				while (!sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP)) {
 					sectorControlComponent.addWin(LocaleConstants.LOCALE_ID_WORKSHOP);
@@ -585,7 +585,7 @@ define(['ash',
 			var level = originalPos.level;
 			var sectors = GameGlobals.levelHelper.getSectorsByLevel(level);
 			var sector;
-			var i = 0;
+			let i = 0;
 			var binding = null;
 			var updateFunction = function () {
 				if (i < sectors.length) {

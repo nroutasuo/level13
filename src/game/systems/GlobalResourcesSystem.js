@@ -74,7 +74,7 @@ define([
 			var updateSectorResAcc = function (node, name) {
 				var sources = node.resourceAccumulation.getSources(name);
 				if (sources) {
-					for (var i = 0; i < sources.length; i++) {
+					for (let i = 0; i < sources.length; i++) {
 						var source = sources[i];
 						globalResourceAccumulationComponent.addChange(name, source.amount, source.source);
 					}

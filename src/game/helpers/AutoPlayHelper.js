@@ -136,7 +136,7 @@ define(['ash',
 				// move to random sector
 				var playerSector = GameGlobals.playerActionFunctions.playerPositionNodes.head.entity;
 				var neighbours = GameGlobals.levelHelper.getSectorNeighboursList(playerSector);
-				var i = Math.floor(Math.random() * neighbours.length);
+				let i = Math.floor(Math.random() * neighbours.length);
 				var randomNeighbour = neighbours[i];
 				return { sector: randomNeighbour, type: "random" };
 			}
@@ -290,7 +290,7 @@ define(['ash',
 
 			while (bagComponent.selectedCapacity > bagComponent.totalCapacity) {
 				var discarded = false;
-				for (var i = 0; i < prioritizedResources.length; i++) {
+				for (let i = 0; i < prioritizedResources.length; i++) {
 					var resourceCheck = prioritizedResources[i];
 					var name = resourceCheck.name;
 					var totalAmount = resultVO.selectedResources.getResource(name) + playerResources.resources.getResource(name);
@@ -420,7 +420,7 @@ define(['ash',
 		},
 
 		getTotalImprovementsCount: function (name) {
-			var result = 0;
+			let result = 0;
 			for (var node = GameGlobals.campHelper.campNodes.head; node; node = node.next) {
 				var improvements = node.entity.get(SectorImprovementsComponent);
 				result += improvements.getCount(name);

@@ -155,7 +155,7 @@ define([
 		initializePlugins: function (plugins) {
 			if (!plugins) return;
 			var game = this;
-			for (var i = 0; i < plugins.length; i++) {
+			for (let i = 0; i < plugins.length; i++) {
 				log.i("Add plugin " + (i+1) + "/" + plugins.length + ": " + plugins[i]);
 				require([plugins[i]], function (plugin) {
 					game.engine.addSystem(new plugin(), SystemPriorities.update);

@@ -98,7 +98,7 @@ define([
 			this.alerts = {};
 			this.notifications = {};
 			this.campsWithAlert = 0;
-			for (var i = 0; i < this.sortedCampNodes.length; i++) {
+			for (let i = 0; i < this.sortedCampNodes.length; i++) {
 				this.updateNode(this.sortedCampNodes[i], isActive);
 			}
 		},
@@ -126,7 +126,7 @@ define([
 			var vosbyprio = [];
 			var highestprio = -1;
 			for (var lvl in this.notifications) {
-				for (var i = 0; i < this.notifications[lvl].length; i++) {
+				for (let i = 0; i < this.notifications[lvl].length; i++) {
 					var type = this.notifications[lvl][i];
 					var prio = this.getNotificationPriority(type);
 					if (!vosbyprio[prio]) vosbyprio[prio] = [];
@@ -297,7 +297,7 @@ define([
 			$("#camp-overview tr#" + rowID + " .camp-overview-level-container").text(level);
 
 			var alertDesc = "";
-			for (var i = 0; i < alerts.length; i++) {
+			for (let i = 0; i < alerts.length; i++) {
 				alertDesc += this.getAlertDescription(alerts[i]);
 				if (i !== alerts.length - 1) alertDesc += "<br/>";
 			}

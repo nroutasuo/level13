@@ -131,11 +131,11 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 			var mergeIDs;
 			var allMatch;
 			var messageID;
-			for (var i = 0; i < this.mergedMessages.length; i++) {
+			for (let i = 0; i < this.mergedMessages.length; i++) {
 				mergeIDs = this.mergedMessages[i];
 				if (mergeIDs.length > messageIDsToMatch.length) continue;
 				allMatch = true;
-				for (var j = 0; j < messageIDsToMatch.length; j++) {
+				for (let j = 0; j < messageIDsToMatch.length; j++) {
 					messageID = messageIDsToMatch[j];
 					if (mergeIDs.indexOf(messageID) < 0) allMatch = false;
 				}

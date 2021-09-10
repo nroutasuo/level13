@@ -310,7 +310,7 @@
 			$table.append(trs);
 			
 			// TODO save elements already in the previous loop
-			var result = [];
+			let result = [];
 			$.each($("#in-improvements tr"), function () {
 				if ($(this).hasClass("header-mini")) return;
 				var id = $(this).attr("id");
@@ -361,7 +361,7 @@
 			var availableBuildingCount = 0;
 			var visibleBuildingCount = 0;
 
-			for (var i = 0; i < this.elements.improvementRows.length; i++) {
+			for (let i = 0; i < this.elements.improvementRows.length; i++) {
 				var elem = this.elements.improvementRows[i];
 				var buildAction = elem.action;
 				var id = elem.id;
@@ -475,7 +475,7 @@
 				GameGlobals.uiFunctions.toggle("#in-occurrences-outgoing-caravans-container", numCaravans > 0);
 				UIState.refreshState(this, "outgoing-caravans-num", numCaravans, function () {
 					$("#in-occurrences-outgoing-caravans-container").empty();
-					for (var i = 0; i < numCaravans; i++) {
+					for (let i = 0; i < numCaravans; i++) {
 						var bar = '';
 						bar += '<div id="in-occurrences-outgoing-caravans-' + i + '" class="progress-wrap progress">';
 						bar += '<div class="progress-bar progress"></div>';
@@ -484,7 +484,7 @@
 						$("#in-occurrences-outgoing-caravans-container").append(bar)
 					}
 				});
-				for (var i = 0; i < numCaravans; i++) {
+				for (let i = 0; i < numCaravans; i++) {
 					var caravan = caravansComponent.outgoingCaravans[i];
 					// TODO fix to use game time (and check other usages)
 					var duration = caravan.returnDuration * 1000;

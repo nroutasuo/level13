@@ -130,7 +130,7 @@ define([
 			var numItemsShown = $("#fight-buttons-infightactions button").length;
 			if (numItemsShown !== itemsToShow.length) {
 				$("#fight-buttons-infightactions").empty();
-				for(var i = 0; i < itemsToShow.length; i++) {
+				for(let i = 0; i < itemsToShow.length; i++) {
 					var item = itemsToShow[i];
 					var action = "use_item_fight_" + item.id;
 					$("#fight-buttons-infightactions").append("<button class='action' action='" + action + "'>" + item.name + "</button>");
@@ -251,7 +251,7 @@ define([
 			$("ul#list-fight-items").empty();
 			this.numItems = 0;
 			var items = itemsComponent.getEquipped();
-			for (var i = 0; i < items.length; i++) {
+			for (let i = 0; i < items.length; i++) {
 				var item = items[i];
 				var bonusatt = item.getBonus(ItemConstants.itemBonusTypes.fight_att) > 0;
 				var bonusDef = item.getBonus(ItemConstants.itemBonusTypes.fight_def) > 0;
@@ -268,7 +268,7 @@ define([
 			// TODO FOLLOWERS
 			/*
 			var items = itemsComponent.getUnique(true);
-			for (var i = 0; i < items.length; i++) {
+			for (let i = 0; i < items.length; i++) {
 				var item = items[i];
 				if (item.type !== ItemConstants.itemTypes.follower) continue;
 				this.numFollowers++;

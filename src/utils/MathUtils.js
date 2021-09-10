@@ -27,8 +27,8 @@ define(function () {
 		// simple weighted random: first item twice as likely to be selected as the second and so on
 		getWeightedRandom: function (min, max) {
 			var bag = [];
-			for (var i = min; i < max; i++) {
-				for (var j = 0; j < (max - i); j++) {
+			for (let i = min; i < max; i++) {
+				for (let j = 0; j < (max - i); j++) {
 					bag.push(i);
 				}
 			}

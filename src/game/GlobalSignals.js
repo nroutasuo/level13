@@ -90,7 +90,7 @@ define(['ash',], function (Ash) {
 
 		removeAll: function (system) {
 			if (!system.signalBindings) return;
-			for (var i = 0; i < system.signalBindings.length; i++)
+			for (let i = 0; i < system.signalBindings.length; i++)
 				system.signalBindings[i].detach();
 			system.signalBindings = [];
 		}

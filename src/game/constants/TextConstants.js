@@ -71,7 +71,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			var options = {};
 			var addOptions = function (param, values) {
 				if (!options[param]) options[param] = [];
-				for (var i = 0; i < values.length; i++) {
+				for (let i = 0; i < values.length; i++) {
 					options[param].push(values[i]);
 				}
 			};
@@ -230,17 +230,17 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			}
 			
 			// 2) Build final result by selecting from options
-			var result = {};
+			let result = {};
 			var rand = (features.buildingDensity + features.wear + features.damage) / 30;
 			var pickRandom = function (options, excluded) {
 				if (!options || options.length <= 0) return "";
 				var validOptions = options.filter(option => !excluded.includes(option));
-				var i = Math.floor(rand * validOptions.length);
+				let i = Math.floor(rand * validOptions.length);
 				return validOptions[i];
 			};
 			var selectFromOptions = function (key, num) {
 				var selection = [];
-				for (var i = 0; i < num; i++) {
+				for (let i = 0; i < num; i++) {
 					var sel = pickRandom(options[key], selection);
 					if (sel) {
 						selection.push(sel);
@@ -378,7 +378,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			var replacements = [];
 			var values = [];
 			var loggedItems = {};
-			for (var i = 0; i < items.length; i++) {
+			for (let i = 0; i < items.length; i++) {
 				var item = items[i];
 				if (typeof loggedItems[item.id] === 'undefined') {
 					msg += "$" + replacements.length + ", ";
@@ -401,7 +401,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			var text = msg;
 			var value = 0;
 			var useValues = values.length > 0;
-			for (var i = 0; i < replacements.length; i++) {
+			for (let i = 0; i < replacements.length; i++) {
 				if (useValues) {
 					value = values[i];
 				}
@@ -597,7 +597,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		},
 		
 		getEnemyText: function (enemyList, sectorControlComponent) {
-			var result = "";
+			let result = "";
 			var enemyActiveV = this.getEnemyActiveVerb(enemyList);
 			var enemyNounSector = this.getEnemyNoun(enemyList, true);
 			result += enemyActiveV + " " + enemyNounSector;

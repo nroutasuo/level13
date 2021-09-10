@@ -168,7 +168,7 @@ define([
 				}
 			}
 			
-			for (var i = 0; i < enemyList.length; i++) {
+			for (let i = 0; i < enemyList.length; i++) {
 				enemy = enemyList[i];
 				enemyDifficulty = Math.max(EnemyConstants.enemyDifficulties[enemy.id], 1);
 				if (enemyDifficulty === difficulty)

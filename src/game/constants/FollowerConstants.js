@@ -187,7 +187,7 @@ define(['ash',
 		getRandomIcon: function (gender, abilityType) {
 			var validIcons = [];
 			let followerType = this.getFollowerTypeForAbilityType(abilityType);
-			for (var i = 0; i < this.icons.length; i++) {
+			for (let i = 0; i < this.icons.length; i++) {
 				let iconDef = this.icons[i];
 				if (this.isValidIcon(iconDef, gender, followerType)) validIcons.push(iconDef);
 			}

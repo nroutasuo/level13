@@ -114,7 +114,7 @@ define([
 		updateButtons: function () {
 			var sys = this;
 			var actions = [];
-			for (var i = 0; i < this.elementsVisibleButtons.length; i++) {
+			for (let i = 0; i < this.elementsVisibleButtons.length; i++) {
 				var $button = $(this.elementsVisibleButtons[i]);
 				var action = $button.attr("action");
 				if (!action) {
@@ -262,7 +262,7 @@ define([
 		},
 
 		updateProgressbars: function () {
-			for (var i = 0; i < this.elementsVisibleProgressbars.length; i++) {
+			for (let i = 0; i < this.elementsVisibleProgressbars.length; i++) {
 				var $progressbar = $(this.elementsVisibleProgressbars[i]);
 				var id = $progressbar.attr("id");
 				

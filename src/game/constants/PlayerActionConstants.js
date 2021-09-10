@@ -59,7 +59,7 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 				var baseProbability = this.injuryProbabilities[action][0];
 				var visionFactor = Math.pow(1 - (vision / 100), 2);
 				var visionProbability = this.injuryProbabilities[action][1] * visionFactor;
-				var result = baseProbability + visionProbability;
+				let result = baseProbability + visionProbability;
 				if (result < 0.001) result = 0;
 				return result;
 			}

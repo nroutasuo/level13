@@ -45,7 +45,7 @@ var UIOutPopupInnSystem = Ash.System.extend({
 
 			$("table#inn-popup-current-followers").empty();
 			$("table#inn-popup-current-followers").append("<tr></tr>");
-			for (var i = 0; i < currentFollowers.length; i++) {
+			for (let i = 0; i < currentFollowers.length; i++) {
 				var item = currentFollowers[i];
 				var td = "<td id='td-item-use_in_inn_select-" + currentFollowers[i].id + "'>";
 				td += UIConstants.getItemDiv(this.itemNodes.head.items, item, false, UIConstants.getItemCallout(item, true), true);
@@ -53,7 +53,7 @@ var UIOutPopupInnSystem = Ash.System.extend({
 				$("table#inn-popup-current-followers tr").append(td);
 			}
 			$("table#inn-popup-current-followers").append("<tr></tr>");
-			for (var j = 0; j < currentFollowers.length; j++) {
+			for (let j = 0; j < currentFollowers.length; j++) {
 				var td = "<td>";
 				td += "<button class='action btn-narrow' action='use_in_inn_disband_" + currentFollowers[j].id + "' followerID='" + currentFollowers[j].id + "'>Disband</button>";
 				td += "</td>";
@@ -75,14 +75,14 @@ var UIOutPopupInnSystem = Ash.System.extend({
 			var availableFollowers = GameGlobals.gameState.uiStatus.availableFollowers;
 			$("table#inn-popup-options-followers").empty();
 			$("table#inn-popup-options-followers").append("<tr></tr>");
-			for (var i = 0; i < availableFollowers.length; i++) {
+			for (let i = 0; i < availableFollowers.length; i++) {
 				var td = "<td id='td-item-use_in_inn_select-" + availableFollowers[i].id + "'>";
 				td += UIConstants.getItemDiv(null, availableFollowers[i], false, UIConstants.getItemCallout(availableFollowers[i]), true);
 				td += "</td>";
 				$("table#inn-popup-options-followers tr").append(td);
 			}
 			$("table#inn-popup-options-followers").append("<tr></tr>");
-			for (var j = 0; j < availableFollowers.length; j++) {
+			for (let j = 0; j < availableFollowers.length; j++) {
 				var td = "<td>";
 				td += "<button class='action btn-narrow' action='use_in_inn_select_" + availableFollowers[j].id + "' followerID='" + availableFollowers[j].id + "'>Recruit</button>";
 				td += "</td>";

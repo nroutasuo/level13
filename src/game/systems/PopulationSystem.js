@@ -152,7 +152,7 @@ define([
 				prioritizedWorkers.push({ name: key, min: 0});
 			}
 			while (node.camp.getAssignedPopulation() > node.camp.population) {
-				for (var i = 0; i < prioritizedWorkers.length; i++) {
+				for (let i = 0; i < prioritizedWorkers.length; i++) {
 					var workerCheck = prioritizedWorkers[i];
 					var count = node.camp.assignedWorkers[workerCheck.name];
 					if (count > workerCheck.min) {

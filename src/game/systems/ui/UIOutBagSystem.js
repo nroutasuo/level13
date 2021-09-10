@@ -75,7 +75,7 @@ define([
 				itemList = itemDefinitions[type];
 				if (itemList.length === 0) continue;
 				var tbl = "<table id='self-craft-" + type + "' class='fullwidth'>";
-				for (var i in itemList) {
+				for (let i in itemList) {
 					itemDefinition = itemList[i];
 					var trID = this.getItemCraftTRID(itemDefinition);
 					tbl += "<tr id='" + trID + "'><td class='list-main'> " + this.makeCraftingButton(itemDefinition) + " </td></tr>";
@@ -130,7 +130,7 @@ define([
 				itemList = itemDefinitions[type];
 				var containerID = this.getItemCraftContainerID(type);
 				var numVisible = 0;
-				for (var i in itemList) {
+				for (let i in itemList) {
 					itemDefinition = itemList[i];
 					var isUnlocked = this.isItemUnlocked(itemDefinition);
 					var isObsolete = this.isObsolete(itemDefinition);
@@ -187,7 +187,7 @@ define([
 				itemList = itemDefinitions[type];
 				var containerID = this.getItemCraftContainerID(type);
 				var numVisible = 0;
-				for (var i in itemList) {
+				for (let i in itemList) {
 					itemDefinition = itemList[i];
 					var actionName = "craft_" + itemDefinition.id;
 					var hasCosts = Object.keys(GameGlobals.playerActionsHelper.getCosts(actionName)).length > 0;
@@ -262,7 +262,7 @@ define([
 			var itemDefinition;
 			for (var type in ItemConstants.itemDefinitions) {
 				itemList = ItemConstants.itemDefinitions[type];
-				for (var i in itemList) {
+				for (let i in itemList) {
 					itemDefinition = itemList[i];
 					if (itemDefinition.useable) {
 						var actionName = "use_item_" + itemDefinition.id;
@@ -285,7 +285,7 @@ define([
 			itemDefinitionList = itemDefinitionList.sort(UIConstants.sortItemsByType);
 
 			var tr;
-			for (var j = 0; j < itemDefinitionList.length; j++) {
+			for (let j = 0; j < itemDefinitionList.length; j++) {
 				var itemDefinition = itemDefinitionList[j];
 				var actionName = "use_item_" + itemDefinition.id;
 				var actionVerb = itemDefinition.id.startsWith("cache_metal") ? "Disassemble" : "Use";
@@ -303,14 +303,14 @@ define([
 			var itemsComponent = this.itemNodes.head.items;
 			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
 			var items = itemsComponent.getUnique(inCamp);
-			for (var i = 0; i < items.length; i++) {
+			for (let i = 0; i < items.length; i++) {
 				this.updateItemCount(isActive, items[i]);
 			}
 		},
 
 		updateItemComparisonIndicators: function () {
 			var itemsComponent = this.itemNodes.head.items;
-			for (var i = 0; i < this.inventoryItemsBag.length; i++) {
+			for (let i = 0; i < this.inventoryItemsBag.length; i++) {
 				var item = this.inventoryItemsBag[i];
 				if (!item.equippable) continue;
 				var slot = $("#bag-items div[data-itemid='" + item.id + "']");
@@ -343,7 +343,7 @@ define([
 			this.inventoryItemsBag = [];
 
 			$("#bag-items").empty();
-			for (var i = 0; i < this.inventoryItemsAll.length; i++) {
+			for (let i = 0; i < this.inventoryItemsAll.length; i++) {
 				var item = this.inventoryItemsAll[i];
 				// TODO less hacky fix for the fact that getUnique doesn't prefer equipped items (could return unequipped instance even when an equipped one exists)
 				var equipped = itemsComponent.getEquipped(item.type);
@@ -520,7 +520,7 @@ define([
 			var itemsComponent = this.itemNodes.head.items;
 			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
 			var items = itemsComponent.getUnique(inCamp);
-			for (var i = 0; i < items.length; i++) {
+			for (let i = 0; i < items.length; i++) {
 				var item = items[i];
 				if (item.equipped) continue;
 				if (!item.equippable) continue;
@@ -550,7 +550,7 @@ define([
 			for (var type in ItemConstants.itemDefinitions) {
 				itemList = ItemConstants.itemDefinitions[type];
 				this.craftableItemDefinitions[type] = []
-				for (var i in itemList) {
+				for (let i in itemList) {
 					itemDefinition = itemList[i];
 					if (itemDefinition.craftable)
 						this.craftableItemDefinitions[type].push(itemDefinition);

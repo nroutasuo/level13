@@ -141,7 +141,7 @@ define([
 				}
 			}
 			
-			for (var i in PositionConstants.getLevelDirections()) {
+			for (let i in PositionConstants.getLevelDirections()) {
 				var direction = PositionConstants.getLevelDirections()[i];
 				checkNeighbour(direction);
 			}
@@ -161,7 +161,7 @@ define([
 			var isAffectedByHazard = GameGlobals.sectorHelper.isAffectedByHazard(featuresComponent, statusComponent, this.itemsNodes.head.items);
 			
 			// Allow n/s/w/e movement if neighbour exists and there is no active blocker AND no hazard
-			for (var i in PositionConstants.getLevelDirections()) {
+			for (let i in PositionConstants.getLevelDirections()) {
 				var direction = PositionConstants.getLevelDirections()[i];
 				var neighbour = this.getNeighbour(sectorKey, direction);
 				var isNeighbourAffectedByHazard = neighbour ? GameGlobals.sectorHelper.isAffectedByHazard(neighbour.get(SectorFeaturesComponent), neighbour.get(SectorStatusComponent), this.itemsNodes.head.items) : false;
@@ -197,7 +197,7 @@ define([
 			statusComponent.hazardReduction.poison += reductionSelf.poison;
 			
 			var directions = PositionConstants.getLevelDirections();
-			for (var i in directions) {
+			for (let i in directions) {
 				var direction = directions[i];
 				var neighbour = this.getNeighbour(sectorKey, direction);
 				if (!neighbour) continue;
@@ -209,10 +209,10 @@ define([
 		
 		getHazardReduction: function (entity, distance) {
 			var passagesComponent = entity.get(PassagesComponent);
-			var result = { radiation: 0, poison: 0 };
+			let result = { radiation: 0, poison: 0 };
 			var reduction = Math.pow(Math.max(0, 2-distance), 2) * 5;
 			var directions = PositionConstants.getLevelDirections();
-			for (var i in directions) {
+			for (let i in directions) {
 				var direction = directions[i];
 				var blocker = passagesComponent.getBlocker(direction);
 				if (!blocker) continue;

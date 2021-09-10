@@ -183,7 +183,7 @@ define([
 		getCurrentCompletableCount: function () {
 			if (!this.tribeNodes.head) return 0;
 			var count = 0;
-			for (var i = 0; i < this.tribeNodes.head.upgrades.newBlueprints.length; i++) {
+			for (let i = 0; i < this.tribeNodes.head.upgrades.newBlueprints.length; i++) {
 				var blueprintVO = this.tribeNodes.head.upgrades.newBlueprints[i];
 				if (blueprintVO.completed) continue;
 				if (this.tribeNodes.head.upgrades.hasUpgrade(blueprintVO.upgradeId)) continue;
@@ -258,7 +258,7 @@ define([
 				case UpgradeStatusEnum.BLUEPRINT_IN_PROGRESS:
 					var blueprintVO = this.tribeNodes.head.upgrades.getBlueprint(upgradeDefinition.id);
 					var piecesTD = "<td style='text-align:left'>";
-					for (var j = 0; j < blueprintVO.maxPieces; j++) {
+					for (let j = 0; j < blueprintVO.maxPieces; j++) {
 						var icon = j < blueprintVO.currentPieces ? UIConstants.getBlueprintPieceIcon(blueprintVO.upgradeId) : "";
 						var classes = "blueprint-piece-box" + (j < blueprintVO.currentPieces ? " blueprint-piece-box-found" : " blueprint-piece-box-missing");
 						piecesTD += "<div class='" + classes + "'>" + icon + "</div>";
@@ -284,7 +284,7 @@ define([
 				var unlockedBuildings = GameGlobals.upgradeEffectsHelper.getUnlockedBuildings(upgradeId);
 				if (unlockedBuildings.length > 0) {
 					effects += "buildings: ";
-					for (var i in unlockedBuildings) {
+					for (let i in unlockedBuildings) {
 						effects += this.getImprovementDisplayName(unlockedBuildings[i]).toLowerCase();
 						effects += ", ";
 					}
@@ -292,7 +292,7 @@ define([
 
 				var improvedBuildings = GameGlobals.upgradeEffectsHelper.getImprovedBuildings(upgradeId);
 				if (improvedBuildings.length > 0) {
-					for (var i in improvedBuildings) {
+					for (let i in improvedBuildings) {
 						effects += "improved " + this.getImprovementDisplayName(improvedBuildings[i]).toLowerCase();
 					}
 					effects += ", ";
@@ -301,14 +301,14 @@ define([
 				var unlockedWorkers = GameGlobals.upgradeEffectsHelper.getUnlockedWorkers(upgradeId);
 				if (unlockedWorkers.length > 0) {
 					effects += "workers: ";
-					for (var i in unlockedWorkers)
+					for (let i in unlockedWorkers)
 						effects += unlockedWorkers[i];
 					effects += ", ";
 				}
 
 				var improvedWorkers = GameGlobals.upgradeEffectsHelper.getImprovedWorkers(upgradeId);
 				if (improvedWorkers.length > 0) {
-					for (var i in improvedWorkers) {
+					for (let i in improvedWorkers) {
 						// TOOD make a global get worker display name function
 						var name = improvedWorkers[i] == "weaver" ? "rope-maker" : improvedWorkers[i];
 						effects += "improved " + name;
@@ -319,7 +319,7 @@ define([
 				var unlockedItems = GameGlobals.upgradeEffectsHelper.getUnlockedItems(upgradeId);
 				if (unlockedItems.length > 0) {
 					effects += "items: ";
-					for (var i in unlockedItems) {
+					for (let i in unlockedItems) {
 						effects += unlockedItems[i].name.toLowerCase();
 						effects += ", ";
 					}
@@ -328,7 +328,7 @@ define([
 				var unlockedOccurrences = GameGlobals.upgradeEffectsHelper.getUnlockedOccurrences(upgradeId);
 				if (unlockedOccurrences.length > 0) {
 					effects += "events: ";
-					for (var i in unlockedOccurrences) {
+					for (let i in unlockedOccurrences) {
 						effects += unlockedOccurrences[i];
 					}
 					effects += ", ";
@@ -336,7 +336,7 @@ define([
 
 				var improvedOccurrences = GameGlobals.upgradeEffectsHelper.getImprovedOccurrences(upgradeId);
 				if (improvedOccurrences.length > 0) {
-					for (var i in improvedOccurrences) {
+					for (let i in improvedOccurrences) {
 						effects += "improved " + improvedOccurrences[i];
 					}
 					effects += ", ";
@@ -344,7 +344,7 @@ define([
 
 				var unlockedActions = GameGlobals.upgradeEffectsHelper.getUnlockedGeneralActions(upgradeId);
 				if (unlockedActions.length > 0) {
-					for (var i in unlockedActions) {
+					for (let i in unlockedActions) {
 						let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(unlockedActions[i])
 						effects += "enable " + TextConstants.getActionName(baseActionID);
 					}

@@ -28,7 +28,7 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 		],
 		
 		getTradePartner: function (campOrdinal) {
-			for (var i = 0; i < this.TRADING_PARTNERS.length; i++) {
+			for (let i = 0; i < this.TRADING_PARTNERS.length; i++) {
 				if (this.TRADING_PARTNERS[i].campOrdinal === campOrdinal)
 					return this.TRADING_PARTNERS[i];
 			}
@@ -42,7 +42,7 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 		
 		getValidTradePartners: function (campOrdinal) {
 			let result = [];
-			for (var i = 0; i < this.TRADING_PARTNERS.length; i++) {
+			for (let i = 0; i < this.TRADING_PARTNERS.length; i++) {
 				let tradePartnerCampOrdinal = this.TRADING_PARTNERS[i].campOrdinal;
 				if (campOrdinal <= WorldConstants.CAMP_ORDINAL_GROUND && tradePartnerCampOrdinal > WorldConstants.CAMP_ORDINAL_GROUND)
 					continue;
@@ -59,7 +59,7 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 		},
 		
 		makeResultVO: function (outgoingCaravan) {
-			var result = new ResultVO("send_camp");
+			let result = new ResultVO("send_camp");
 			var amountTraded = TradeConstants.getAmountTraded(outgoingCaravan.buyGood, outgoingCaravan.sellGood, outgoingCaravan.sellAmount);
 			if (amountTraded > outgoingCaravan.capacity) {
 				amountTraded = outgoingCaravan.capacity;
@@ -71,12 +71,12 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 			} else if (outgoingCaravan.buyGood === TradeConstants.GOOD_TYPE_NAME_INGREDIENTS) {
 				var numIngredients = Math.min(amountTraded, Math.floor(Math.random() * 3) + 1);
 				var amountLeft = amountTraded;
-				for (var i = 0; i < numIngredients; i++) {
+				for (let i = 0; i < numIngredients; i++) {
 					var ingredient = ItemConstants.getIngredient();
 					var max = amountLeft;
 					var min = Math.min(amountLeft, 1);
 					var amount = Math.floor(Math.random() * max) + min;
-					for (var j = 0; j < amount; j++) {
+					for (let j = 0; j < amount; j++) {
 						result.gainedItems.push(ingredient.clone());
 					}
 					amountLeft -= amount;
@@ -207,7 +207,7 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 			var costs = PlayerActionConstants.costs[craftAction];
 			let result = costs ? 0.1 * Object.keys(costs).length : 0;
 			let ingredients = ItemConstants.getIngredientsToCraft(item.id);
-			for (var i = 0; i < ingredients.length; i++) {
+			for (let i = 0; i < ingredients.length; i++) {
 				let def = ingredients[i];
 				let ingredient = ItemConstants.getItemByID(def.id);
 				result += def.amount * this.getItemValue(ingredient);

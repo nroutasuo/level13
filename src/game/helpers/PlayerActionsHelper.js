@@ -116,7 +116,7 @@ define([
 					currentStorage.resources.addResource(costNameParts[1], -costAmount);
 				} else if (costNameParts[0] === "item") {
 					var itemId = costName.replace(costNameParts[0] + "_", "");
-					for (var i = 0; i < costAmount; i++) {
+					for (let i = 0; i < costAmount; i++) {
 						var item = itemsComponent.getItem(itemId, null, inCamp, false) || itemsComponent.getItem(itemId, null, inCamp, true);
 						itemsComponent.discardItem(item, false);
 					}
@@ -243,14 +243,14 @@ define([
 
 				if (requirements) {
 					if (requirements.vision) {
-						var result = this.checkRequirementsRange(requirements.vision, playerVision, "{min} vision needed", "{max} vision max");
+						let result = this.checkRequirementsRange(requirements.vision, playerVision, "{min} vision needed", "{max} vision max");
 						if (result) {
 							return result;
 						}
 					}
 
 					if (requirements.stamina) {
-						var result = this.checkRequirementsRange(requirements.stamina, playerStamina, "{min} stamina needed", "{max} stamina max");
+						let result = this.checkRequirementsRange(requirements.stamina, playerStamina, "{min} stamina needed", "{max} stamina max");
 						if (result) {
 							return result;
 						}
@@ -292,7 +292,7 @@ define([
 
 					if (requirements.population && !shouldSkipCheck(PlayerActionConstants.UNAVAILABLE_REASON_POPULATION)) {
 						var currentPopulation = campComponent ? Math.floor(campComponent.population) : 0;
-						var result = this.checkRequirementsRange(requirements.population, currentPopulation, "{min} population required", "Maximum {max} population", "workers required", "no workers allowed");
+						let result = this.checkRequirementsRange(requirements.population, currentPopulation, "{min} population required", "Maximum {max} population", "workers required", "no workers allowed");
 						if (result) {
 							return result;
 						}
@@ -340,7 +340,7 @@ define([
 							if (!actionImprovementName) actionImprovementName = "Improvement";
 							var displayName = actionImprovementName === requiredImprovementDisplayName ? "" : requiredImprovementDisplayName;
 							
-							var result = this.checkRequirementsRange(range, amount,
+							let result = this.checkRequirementsRange(range, amount,
 								"{min}x " + displayName + " required",
 								"max " + displayName + " built",
 								displayName + " required",
@@ -360,7 +360,7 @@ define([
 							
 							var range = requirements.improvementMajorLevel[improvementID];
 							
-							var result = this.checkRequirementsRange(range, amount,
+							let result = this.checkRequirementsRange(range, amount,
 								"building level too low",
 								"building level too high"
 							);
@@ -378,7 +378,7 @@ define([
 							var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
 							var displayName = actionImprovementName === requiredImprovementDisplayName ? "" : requiredImprovementDisplayName;
 							var range = improvementRequirements[improvementID];
-							var result = this.checkRequirementsRange(range, amount,
+							let result = this.checkRequirementsRange(range, amount,
 								"{min}x " + displayName + " on level required",
 								"max {max} " + displayName + " on level",
 								displayName + " required on level",
@@ -396,7 +396,7 @@ define([
 						for (let workerType in workerRequirements) {
 							var range = workerRequirements[workerType];
 							var amount = campComponent.assignedWorkers[workerType] || 0;
-							var result = this.checkRequirementsRange(range, amount, workerType + " required", "no " + workerType + " required");
+							let result = this.checkRequirementsRange(range, amount, workerType + " required", "no " + workerType + " required");
 							if (result) {
 								return result;
 							}
@@ -629,7 +629,7 @@ define([
 								}
 							}
 						}
-						for (var i in PositionConstants.getLevelDirections()) {
+						for (let i in PositionConstants.getLevelDirections()) {
 							var direction = PositionConstants.getLevelDirections()[i];
 							var directionName = PositionConstants.getDirectionName(direction);
 
@@ -733,7 +733,7 @@ define([
 							for (var hazard in requirements.sector.hazards) {
 								var range = requirements.sector.hazards[hazard];
 								var currentVal = featuresComponent.hazards[hazard] || 0;
-								var result = this.checkRequirementsRange(range, currentVal, "Min {min} " + hazard, "Max {max} " + hazard);
+								let result = this.checkRequirementsRange(range, currentVal, "Min {min} " + hazard, "Max {max} " + hazard);
 								if (result) {
 									return result;
 								}
@@ -741,7 +741,7 @@ define([
 						}
 						
 						if (requirements.sector.buildingDensity) {
-							var result = this.checkRequirementsRange(requirements.sector.buildingDensity, featuresComponent.buildingDensity, "Sector too sparsely built", "Sector too densely built");
+							let result = this.checkRequirementsRange(requirements.sector.buildingDensity, featuresComponent.buildingDensity, "Sector too sparsely built", "Sector too densely built");
 							if (result) {
 								return result;
 							}
@@ -822,7 +822,7 @@ define([
 			};
 
 			if (!this.cache.reqs[reqsID]) {
-				var result = checkRequirementsInternal.apply(this, [action, sector]);
+				let result = checkRequirementsInternal.apply(this, [action, sector]);
 				if (result.reason && doLog) log.w("" + result.reason);
 				this.cache.reqs[reqsID] = result;
 			}
@@ -950,7 +950,7 @@ define([
 			if (action.indexOf("build_in") >= 0) {
 				var improvementName = this.getImprovementNameForAction(action);
 				var improvementsComponent = sector.get(SectorImprovementsComponent);
-				var result = improvementsComponent.getCount(improvementName) + 1;
+				let result = improvementsComponent.getCount(improvementName) + 1;
 				if (action === "build_in_house" && result === 1) result = 0.5;
 				return result;
 			}
@@ -958,7 +958,7 @@ define([
 			if (action.indexOf("improve_in") >= 0) {
 				var improvementName = this.getImprovementNameForAction(action);
 				var improvementsComponent = sector.get(SectorImprovementsComponent);
-				var result = improvementsComponent.getLevel(improvementName);
+				let result = improvementsComponent.getLevel(improvementName);
 				return result;
 			}
 
@@ -1187,7 +1187,7 @@ define([
 		},
 		
 		getCostsByOrdinal: function (action, multiplier, ordinal, isOutpost, sector) {
-			var result = {};
+			let result = {};
 
 			var baseActionID = this.getBaseActionID(action);
 			var costs = PlayerActionConstants.costs[action];
@@ -1274,7 +1274,7 @@ define([
 				case "move_camp_level":
 					var path = this.getPathToNearestCamp(sector);
 					if (path) {
-						for (var i = 0; i < path.length; i++) {
+						for (let i = 0; i < path.length; i++) {
 							let costs = this.getCosts("move_sector_west", 1, path[i]);
 							this.addCosts(result, costs);
 						}
@@ -1451,7 +1451,7 @@ define([
 			};
 			if (this.cache.baseActionID[action])
 				return this.cache.baseActionID[action];
-			var result = getBaseActionIdInternal(action);
+			let result = getBaseActionIdInternal(action);
 			this.cache.baseActionID[action] = result;
 			return result;
 		},
@@ -1608,7 +1608,7 @@ define([
 				case "scout_locale_u":
 					// depending on locale
 					var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
-					var i = GameGlobals.playerActionsHelper.getActionIDParam(action);
+					let i = GameGlobals.playerActionsHelper.getActionIDParam(action);
 					var localeVO = sectorLocalesComponent.locales[i];
 					if (!localeVO) return 1;
 					switch (localeVO.type) {
@@ -1623,7 +1623,7 @@ define([
 		},
 
 		getMinimumCampAndStep: function (action) {
-			var result = { campOrdinal: 0, step: 0 };
+			let result = { campOrdinal: 0, step: 0 };
 			
 			var addRequirement = function (campOrdinal, step, source) {
 				if (campOrdinal > result.campOrdinal || (campOrdinal == result.campOrdinal && step > result.step)) {
@@ -1635,7 +1635,7 @@ define([
 			var reqs = this.getReqs(action);
 			if (reqs && reqs.upgrades) {
 				var requiredTech = Object.keys(reqs.upgrades);
-				for (var k = 0; k < requiredTech.length; k++) {
+				for (let k = 0; k < requiredTech.length; k++) {
 					var campOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(requiredTech[k], true);
 					var step = UpgradeConstants.getMinimumCampStepForUpgrade(requiredTech[k]);
 					addRequirement(campOrdinal, step, requiredTech[k]);

@@ -30,7 +30,7 @@ define([
 		
 		getTotalNumImprovementsBuilt: function (improvementName) {
 			if (!this.campNodes.head) return 0;
-			var result = 0;
+			let result = 0;
 			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
 				var improvements = campNode.entity.get(SectorImprovementsComponent);
 				result += improvements.getCount(improvementName);
@@ -176,11 +176,11 @@ define([
 			
 			// TODO unify logic with scavenge rewards - many similar checks
 			var addSellItemsFromCategories = function (categories, probability, maxAmount, includeCommon) {
-				for (var j in categories) {
+				for (let j in categories) {
 					var category = categories[j];
 					var isObsoletable = ItemConstants.isObsoletable(category);
 					var itemList = ItemConstants.itemDefinitions[category];
-					for (var i in itemList) {
+					for (let i in itemList) {
 						var itemDefinition = itemList[i];
 						// check hard requirements
 						var tradeRarity = itemDefinition.tradeRarity;
@@ -210,7 +210,7 @@ define([
 						}
 						// add item
 						var amount = Math.ceil(Math.random() * maxAmount);
-						for (var j = 0; j < amount; j++) {
+						for (let j = 0; j < amount; j++) {
 							sellItems.push(itemDefinition.clone());
 						}
 					}
@@ -329,10 +329,10 @@ define([
 				// 5) trading partner trader: buys and sells same stuff as partner, plus occational items, currency based on partner
 				var partner = TradeConstants.getRandomTradePartner(campOrdinal);
 				name = "trader from " + partner.name;
-				for (var i = 0; i < partner.sellsResources.length; i++) {
+				for (let i = 0; i < partner.sellsResources.length; i++) {
 					sellResources.addResource(partner.sellsResources[i], minResAmount + Math.random() * randResAmount);
 				}
-				for (var i = 0; i < partner.buysResources.length; i++) {
+				for (let i = 0; i < partner.buysResources.length; i++) {
 					buyResources.push(partner.buysResources[i]);
 				}
 				var prob = 0.01;
@@ -341,7 +341,7 @@ define([
 					addSellItemsFromCategories(partner.sellItemTypes, prob, 1, true);
 					prob += 0.01;
 				}
-				for (var i = 0; i < partner.buyItemTypes.length; i++) {
+				for (let i = 0; i < partner.buyItemTypes.length; i++) {
 					buyItemTypes.push(partner.buyItemTypes[i]);
 				}
 				if (!partner.usesCurrency || neededIngredient)

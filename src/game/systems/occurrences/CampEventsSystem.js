@@ -331,7 +331,7 @@ define([
 				}
 
 				// select amounts
-				for (var i in selectedResources) {
+				for (let i in selectedResources) {
 					var name = selectedResources[i];
 					var campAmount = campResources.getResource(name);
 					var lostAmount = Math.floor(campAmount * amountFactor * (0.25 + 0.25 * Math.random()));
@@ -379,7 +379,7 @@ define([
 			var upgradeLevel = 1;
 			var eventUpgrades = GameGlobals.upgradeEffectsHelper.getImprovingUpgradeIdsForOccurrence(event);
 			var eventUpgrade;
-			for (var i in eventUpgrades) {
+			for (let i in eventUpgrades) {
 				eventUpgrade = eventUpgrades[i];
 				if (this.tribeUpgradesNodes.head.upgrades.hasUpgrade(eventUpgrade)) upgradeLevel++;
 			}

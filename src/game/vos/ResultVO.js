@@ -83,7 +83,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		},
 		
 		clone: function () {
-			var result = new ResultVO(this.action);
+			let result = new ResultVO(this.action);
 			result.gainedResources = this.gainedResources.clone();
 			result.gainedCurrency = this.gainedCurrency;
 			result.lostResources = this.lostResources.clone();

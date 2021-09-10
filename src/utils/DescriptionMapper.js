@@ -24,12 +24,12 @@ define(function () {
 			
 			var matches = [];
 			var weightedMatches = [];
-			for (var i = 0; i < this.descriptions[type].length; i++) {
+			for (let i = 0; i < this.descriptions[type].length; i++) {
 				var desc = this.descriptions[type][i];
 				if (this.matches(props, desc)) {
 					var score = this.getMatchScore(desc);
 					matches.push(desc);
-					for (var j = 0; j < score; j++) {
+					for (let j = 0; j < score; j++) {
 						weightedMatches.push(desc);
 					}
 				}
@@ -72,9 +72,9 @@ define(function () {
 		},
 		
 		getPropsChecksum: function (props) {
-			var result = 0;
+			let result = 0;
 			for (var [key, value] of Object.entries(props)) {
-				var t = typeof value;
+				let t = typeof value;
 				if (t == "number") {
 					result += value;
 				} else {

@@ -356,14 +356,14 @@ define([
 			var itemsComponent = this.playerStatsNodes.head.items;
 			var followersComponent = this.playerStatsNodes.head.followers;
 			if (rewards.selectedItems) {
-				for (var i = 0; i < rewards.selectedItems.length; i++) {
+				for (let i = 0; i < rewards.selectedItems.length; i++) {
 					itemsComponent.addItem(rewards.selectedItems[i], !playerPos.inCamp && !campSector);
 				}
 			}
 
 			if (rewards.gainedFollowers) {
 				let maxFollowers = FollowerConstants.getMaxFollowersInParty();
-				for (var i = 0; i < rewards.gainedFollowers.length; i++) {
+				for (let i = 0; i < rewards.gainedFollowers.length; i++) {
 					let follower = rewards.gainedFollowers[i];
 					if (followersComponent.getParty().length < maxFollowers) {
 						followersComponent.addFollower(follower, true);
@@ -380,26 +380,26 @@ define([
 			}
 
 			if (rewards.lostItems) {
-				for (var i = 0; i < rewards.lostItems.length; i++) {
+				for (let i = 0; i < rewards.lostItems.length; i++) {
 					itemsComponent.discardItem(rewards.lostItems[i], false);
 				}
 			}
 
 			if (rewards.lostFollowers) {
-				for (var i = 0; i < rewards.lostFollowers.length; i++) {
+				for (let i = 0; i < rewards.lostFollowers.length; i++) {
 					followersComponent.removeFollower(rewards.lostFollowers[i]);
 				}
 			}
 
 			if (rewards.discardedItems) {
-				for (var i = 0; i < rewards.discardedItems.length; i++) {
+				for (let i = 0; i < rewards.discardedItems.length; i++) {
 					itemsComponent.discardItem(rewards.discardedItems[i], false);
 				}
 			}
 
 			if (rewards.gainedInjuries) {
 				var perksComponent = this.playerStatsNodes.head.perks;
-				for (var i = 0; i < rewards.gainedInjuries.length; i++) {
+				for (let i = 0; i < rewards.gainedInjuries.length; i++) {
 					perksComponent.addPerk(PerkConstants.getPerk(rewards.gainedInjuries[i].id));
 				}
 			}
@@ -450,7 +450,7 @@ define([
 				foundSomething = true;
 
 				var loggedItems = {};
-				for (var i = 0; i < rewards.selectedItems.length; i++) {
+				for (let i = 0; i < rewards.selectedItems.length; i++) {
 					var item = rewards.selectedItems[i];
 					if (typeof loggedItems[item.id] === 'undefined') {
 						msg += "$" + replacements.length + ", ";
@@ -466,7 +466,7 @@ define([
 			if (rewards.gainedFollowers && rewards.gainedFollowers.length > 0) {
 				msg += ", ";
 				foundSomething = true;
-				for (var i = 0; i < rewards.gainedFollowers.length; i++) {
+				for (let i = 0; i < rewards.gainedFollowers.length; i++) {
 					var follower = rewards.gainedFollowers[i];
 					msg += "$" + replacements.length + ", ";
 					replacements.push("#" + replacements.length + " " + follower.name.toLowerCase());
@@ -637,7 +637,7 @@ define([
 				}
 
 				if (rewards.selectedItems) {
-					for (var i = 0; i < rewards.selectedItems.length; i++) {
+					for (let i = 0; i < rewards.selectedItems.length; i++) {
 						var item = rewards.selectedItems[i];
 						if (itemsComponent.getCountById(item.id, true) === 1) {
 							if (item.equippable && !item.equipped) continue;
@@ -753,7 +753,7 @@ define([
 		// efficiency: 0-1 current scavenge efficiency of the player, affects chance to find something
 		// currentItems: ItemsComponent
 		getRewardItems: function (itemProbability, ingredientProbability, itemTypeLimits, efficiency, currentItems, campOrdinal, step, isHardLevel) {
-			var result = [];
+			let result = [];
 			var hasBag = currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
 			var hasCamp = GameGlobals.gameState.unlockedFeatures.camp;
 			var hasDecentEfficiency = efficiency > 0.1;
@@ -792,7 +792,7 @@ define([
 					if (numAvailableGangs <= 1 && Math.random() < neededIngredientProp) {
 						var amount = Math.floor(Math.random() * efficiency * max) + 1;
 						var amount = Math.floor(Math.random() * efficiency * max) + 1;
-						for (var i = 0; i <= amount; i++) {
+						for (let i = 0; i <= amount; i++) {
 							result.push(neededIngredient.clone());
 						}
 					}
@@ -804,7 +804,7 @@ define([
 				var max = Math.floor(Math.random() * 3);
 				var amount = Math.floor(Math.random() * efficiency * max) + 1;
 				var ingredient = GameGlobals.itemsHelper.getUsableIngredient();
-				for (var i = 0; i <= amount; i++) {
+				for (let i = 0; i <= amount; i++) {
 					result.push(ingredient.clone());
 				}
 			}
@@ -861,7 +861,7 @@ define([
 				if (!typeProb || typeProb < 0) continue;
 				var isObsoletable = ItemConstants.isObsoletable(type);
 				itemList = ItemConstants.itemDefinitions[type];
-				for (var i in itemList) {
+				for (let i in itemList) {
 					itemDefinition = itemList[i];
 					var isObsolete = GameGlobals.itemsHelper.isObsolete(itemDefinition, itemsComponent, false);
 					if (itemDefinition.scavengeRarity <= 0) continue;
@@ -944,7 +944,7 @@ define([
 			if (itemTypeLimits.clothing > 0 && !GameGlobals.gameState.isAutoPlaying) {
 				if (Math.random() < adjustedProbability * efficiency) {
 					var clothing = GameGlobals.itemsHelper.getScavengeNecessityClothing(campOrdinal, 1);
-					for (var i = 0; i < clothing.length; i++) {
+					for (let i = 0; i < clothing.length; i++) {
 						if (currentItems.getCountById(clothing[i].id, true) <= 0) {
 							if (Math.random() < 0.25) {
 								return clothing[i];
@@ -967,7 +967,7 @@ define([
 				case ItemConstants.STASH_TYPE_ITEM:
 					var item = ItemConstants.getItemByID(stashVO.itemID);
 					if (item) {
-						for (var i = 0; i < stashVO.amount; i++) {
+						for (let i = 0; i < stashVO.amount; i++) {
 							rewardsVO.gainedItems.push(item.clone());
 						}
 					}
@@ -1034,13 +1034,13 @@ define([
 			var itemList = [];
 			var numValidItems = 0;
 			var probabilitySum = 0;
-			for (var i = 0; i < playerItems.length; i++) {
+			for (let i = 0; i < playerItems.length; i++) {
 				var item = playerItems[i];
 				if (item.type == ItemConstants.itemTypes.ingredient) continue;
 				var loseProbability = this.getItemLoseProbability(action, item);
 				if (loseProbability <= 0) continue;
 				var count = Math.round(loseProbability * 10);
-				for (var j = 0; j < count; j++) {
+				for (let j = 0; j < count; j++) {
 					itemList.push(item);
 				}
 				probabilitySum += loseProbability;
@@ -1054,12 +1054,12 @@ define([
 				var numItems = loseSingleItem ? 1 : Math.ceil(Math.random() * numMaxLost);
 				numItems = Math.min(numValidItems, numItems);
 
-				for (var i = 0; i < numItems; i++) {
+				for (let i = 0; i < numItems; i++) {
 					var itemi = Math.floor(Math.random() * itemList.length);
 					var selectedItem = itemList[itemi];
 					lostItems.push(selectedItem);
 					var optionsToRemove = [];
-					for (var j = 0; j < itemList.length; j++) {
+					for (let j = 0; j < itemList.length; j++) {
 						if (itemList[j] == selectedItem) {
 							optionsToRemove.push(j);
 						}
@@ -1070,7 +1070,7 @@ define([
 			
 			// ingredients: lose all or nothing
 			if (!loseSingleItem) {
-				for (var i = 0; i < playerItems.length; i++) {
+				for (let i = 0; i < playerItems.length; i++) {
 					var item = playerItems[i];
 					if (item.type !== ItemConstants.itemTypes.ingredient) continue;
 					lostItems.push(item);
@@ -1137,7 +1137,7 @@ define([
 
 		getResultInjuries: function (injuryProbability) {
 			var perksComponent = this.playerStatsNodes.head.perks;
-			var result = [];
+			let result = [];
 
 			var currentEffect = perksComponent.getTotalEffect(PerkConstants.perkTypes.injury);
 			var injuries = perksComponent.getPerksByType(PerkConstants.perkTypes.injury);
@@ -1167,7 +1167,7 @@ define([
 			var upgradesComponent = this.tribeUpgradesNodes.head.upgrades;
 			var blueprintsToFind = [];
 			var blueprintPiecesToFind = 0;
-			for (var i = 0; i < levelBlueprints.length; i++) {
+			for (let i = 0; i < levelBlueprints.length; i++) {
 				var blueprintId = levelBlueprints[i];
 				if (!upgradesComponent.hasUpgrade(blueprintId) && !upgradesComponent.hasAvailableBlueprint(blueprintId)) {
 					var blueprintVO = upgradesComponent.getBlueprint(blueprintId);
@@ -1194,7 +1194,7 @@ define([
 
 			var isFirstEver = playerPos.level == 13 && numScoutedLocales == 0;
 			if (isFirstEver || Math.random() < findBlueprintProbability) {
-				var i = Math.floor(Math.random() * blueprintsToFind.length);
+				let i = Math.floor(Math.random() * blueprintsToFind.length);
 				return blueprintsToFind[i];
 			}
 
@@ -1208,7 +1208,7 @@ define([
 			var upgradesComponent = this.tribeUpgradesNodes.head.upgrades;
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
 			var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(playerPos.level);
-			for (var i = 1; i < levelOrdinal; i++) {
+			for (let i = 1; i < levelOrdinal; i++) {
 				var level = GameGlobals.gameState.getLevelForOrdinal(i);
 				var allLocales = GameGlobals.levelHelper.getLevelLocales(level, true, null, true).length;
 				var unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(level, false, null, true).length;
@@ -1217,7 +1217,7 @@ define([
 					var levelIndex = GameGlobals.gameState.getLevelIndex(level);
 					let maxLevelIndex = GameGlobals.gameState.getMaxLevelIndex(playerPos.level);
 					var levelBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(c, null, levelIndex, maxLevelIndex);
-					for (var j = 0; j < levelBlueprints.length; j++) {
+					for (let j = 0; j < levelBlueprints.length; j++) {
 						var blueprintId = levelBlueprints[j];
 						if (upgradesComponent.hasUpgrade(blueprintId)) continue;
 						if (upgradesComponent.hasAvailableBlueprint(blueprintId)) continue;

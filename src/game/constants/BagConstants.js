@@ -33,7 +33,7 @@ define(['ash', 'game/constants/ItemConstants'], function (Ash, ItemConstants) {
 		
 		getItemsCapacity: function (itemList) {
 			var capacity = 0;
-			for(var i = 0; i < itemList.length; i++) {
+			for(let i = 0; i < itemList.length; i++) {
 				if (itemList[i].equipped) continue;
 				capacity += this.getItemCapacity(itemList[i]);
 			}

@@ -25,14 +25,14 @@ define([
 		},
 		
 		generateHoles: function (seed) {
-			var result = [];
+			let result = [];
 			var topLevel = WorldCreatorHelper.getHighestLevel(seed);
 			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
 			var explosionSize = 9;
 			
 			// wells
 			var num = 4;
-			for (var i = 0; i < num; i++) {
+			for (let i = 0; i < num; i++) {
 				var pos = WorldCreatorRandom.randomSectorPosition(seed % 100 + i * 10, 0, WorldCreatorConstants.AREA_SIZE_CENTRAL + i*2);
 				var h = 2 + i + WorldCreatorRandom.randomInt(seed % 33 + 101 + i * 8, 0, 5);
 				var minS = Math.max(i + 2, h / 4);
@@ -51,7 +51,7 @@ define([
 			result.push(new WorldFeatureVO(-WorldCreatorConstants.AREA_SIZE_MEDIUM, 0, bayR*2, bayR*2, bottomLevel, topLevel, WorldCreatorConstants.FEATURE_HOLE_SEA));
 			// - mountains to the east
 			var num = 3;
-			for (var i = 0; i < num; i++) {
+			for (let i = 0; i < num; i++) {
 				var x = WorldCreatorConstants.AREA_SIZE_OUTSKIRTS - 10;
 				var y = -20 + i * 11;
 				var h = 3 + i + WorldCreatorRandom.randomInt(seed % 22 + 80 + i * 11, 0, 6);
@@ -108,7 +108,7 @@ define([
 		},
 		
 		generatePassagePositions: function (seed, features, campPositions) {
-			var result = [];
+			let result = [];
 			var topLevel = WorldCreatorHelper.getHighestLevel(seed);
 			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
 			for (var l = topLevel; l >= bottomLevel; l--) {
@@ -123,7 +123,7 @@ define([
 		},
 		
 		generateDistricts: function (seed, features) {
-			var result = [];
+			let result = [];
 			var topLevel = WorldCreatorHelper.getHighestLevel(seed);
 			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
 			
@@ -136,7 +136,7 @@ define([
 			}
 			
 			// districts around features
-			for (var i = 0; i < features.length; i++) {
+			for (let i = 0; i < features.length; i++) {
 				var feature = features[i];
 				switch (feature.type) {
 					case WorldCreatorConstants.FEATURE_HOLE_SEA:
@@ -210,7 +210,7 @@ define([
 		getNextCampPosUp: function (seed, campPositions, from, inclusive) {
 			var topLevel = WorldCreatorHelper.getHighestLevel(seed);
 			var start = inclusive ? from : from + 1;
-			for (var i = start; i <= topLevel; i++) {
+			for (let i = start; i <= topLevel; i++) {
 				if (campPositions[i] && campPositions[i].length > 0) {
 					return campPositions[i];
 				}
@@ -221,7 +221,7 @@ define([
 		getNextCampPosDown: function (seed, campPositions, from, inclusive) {
 			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
 			var start = inclusive ? from : from - 1;
-			for (var i = start; i >= bottomLevel; i--) {
+			for (let i = start; i >= bottomLevel; i--) {
 				if (campPositions[i] && campPositions[i].length > 0) {
 					return campPositions[i];
 				}
@@ -234,10 +234,10 @@ define([
 			if (WorldCreatorHelper.containsBlockingFeature(pos, features)) return { isValid: false, reason: "blocking feature" };
 			// blocked: positions too close to camp positions on previous few levels (so that on levels between them passages up/down don't end up too close)
 			var min = 5;
-			for (var i = 2; i <= 3; i++) {
+			for (let i = 2; i <= 3; i++) {
 				var prevPositions = positionsByLevel[pos.level + i];
 				if (!prevPositions) continue;
-				for (var j = 0; j < prevPositions.length; j++) {
+				for (let j = 0; j < prevPositions.length; j++) {
 					var prevPos = prevPositions[j];
 					var dist = PositionConstants.getDistanceTo(pos, prevPos);
 					if (dist < min) return { isValid: false, reason: "min distance between consecutive camps" };
@@ -246,10 +246,10 @@ define([
 			// blocked: positions too far away from camp positions on previous two levels
 			var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, pos.level);
 			var maxPathLengthC2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
-			for (var i = 1; i < 3; i++) {
+			for (let i = 1; i < 3; i++) {
 				var prevPositions = positionsByLevel[pos.level + i];
 				if (!prevPositions) continue;
-				for (var j = 0; j < prevPositions.length; j++) {
+				for (let j = 0; j < prevPositions.length; j++) {
 					var prevPos = prevPositions[j];
 					var dist = PositionConstants.getBlockDistanceTo(pos, prevPos);
 					var max = Math.min(maxPathLengthC2P * (1 + (i-1) * 0.25), 35);
@@ -273,7 +273,7 @@ define([
 			var allCamps = campPos1.concat(campPos2);
 			var minCampDist = 4;
 			var maxCampDist = Math.min(20, maxPathLengthC2P);
-			for (var i = 0; i < allCamps.length; i++) {
+			for (let i = 0; i < allCamps.length; i++) {
 				var campPos = allCamps[i];
 				if (campPos.level == pos.level || campPos.level == pos.level - 1) {
 					var dist = Math.round(PositionConstants.getDistanceTo(pos, campPos));
@@ -297,7 +297,7 @@ define([
 			if (passageUp) {
 				var posE = level <= 13 ? passageUp : pos;
 				var posL = level <= 13 ? pos : passageUp;
-				for (var i = 0; i < allCamps.length; i++) {
+				for (let i = 0; i < allCamps.length; i++) {
 					var campPos = allCamps[i];
 					if (campPos.level == pos.level) {
 						var dirE = PositionConstants.getDirectionFrom(campPos, posE);

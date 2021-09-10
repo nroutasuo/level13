@@ -66,7 +66,7 @@ define([
 			if(unlockedBuildings.length > 0) {
 				var occurrenceBuilding;
 				var unlockedBuilding;
-				for (var i = 0; i < unlockedBuildings.length; i++) {
+				for (let i = 0; i < unlockedBuildings.length; i++) {
 					unlockedBuilding = unlockedBuildings[i];
 					for (var occurrence in this.improvementsByOccurrence) {
 						occurrenceBuilding = this.improvementsByOccurrence[occurrence];
@@ -97,7 +97,7 @@ define([
 			var buildingUpgradeList;
 			for (var building in UpgradeConstants.improvingUpgradesByImprovement) {
 				buildingUpgradeList = UpgradeConstants.improvingUpgradesByImprovement[building];
-				for(var i = 0; i < buildingUpgradeList.length; i++) {
+				for(let i = 0; i < buildingUpgradeList.length; i++) {
 					buildingUpgrade = buildingUpgradeList[i];
 					if (buildingUpgrade === upgradeId) {
 						buildings.push(building);
@@ -113,7 +113,7 @@ define([
 			var workerUpgradeList;
 			for (var worker in UpgradeConstants.improvingUpgradesByWorker) {
 				workerUpgradeList = UpgradeConstants.improvingUpgradesByWorker[worker];
-				for(var i = 0; i < workerUpgradeList.length; i++) {
+				for(let i = 0; i < workerUpgradeList.length; i++) {
 					workerUpgrade = workerUpgradeList[i];
 					if (workerUpgrade === upgradeId) {
 						workers.push(worker);
@@ -129,7 +129,7 @@ define([
 			var eventUpgradeList;
 			for (var event in UpgradeConstants.improvingUpgradesByEvent) {
 				eventUpgradeList = UpgradeConstants.improvingUpgradesByEvent[event];
-				for(var i = 0; i < eventUpgradeList.length; i++) {
+				for(let i = 0; i < eventUpgradeList.length; i++) {
 					eventUpgrade = eventUpgradeList[i];
 					if (eventUpgrade === upgradeId) {
 						events.push(event);
@@ -154,7 +154,7 @@ define([
 		
 		getUnlockedActions: function (upgradeId, filter) {
 			// TODO performance
-			var result = [];
+			let result = [];
 			var reqsDefinition;
 			for (var action in PlayerActionConstants.requirements) {
 				reqsDefinition = PlayerActionConstants.requirements[action];
@@ -198,7 +198,7 @@ define([
 			var upgradeLevel = 1;
 			var buildingUpgrades = this.getUpgradeIdsForImprovement(building);
 			var buildingUpgrade;
-			for (var i in buildingUpgrades) {
+			for (let i in buildingUpgrades) {
 				buildingUpgrade = buildingUpgrades[i];
 				if (upgradesComponent.hasUpgrade(buildingUpgrade)) upgradeLevel++;
 			}
@@ -212,7 +212,7 @@ define([
 			var upgradeLevel = 1;
 			var buildingUpgrades = this.getUpgradeIdsForImprovement(building);
 			var buildingUpgrade;
-			for (var i in buildingUpgrades) {
+			for (let i in buildingUpgrades) {
 				buildingUpgrade = buildingUpgrades[i];
 				var requiredTechCampOrdinal = UpgradeConstants.getExpectedCampOrdinalForUpgrade(buildingUpgrade);
 				if (requiredTechCampOrdinal <= campOrdinal) upgradeLevel++;
@@ -221,7 +221,7 @@ define([
 		},
 		
 		getWorkerLevel: function (worker, upgradesComponent) {
-			var result = 0;
+			let result = 0;
 			var isUnlocked = true;
 			var unlockingUpgrade = UpgradeConstants.unlockingUpgradesByWorker[worker];
 			if (unlockingUpgrade) {
@@ -232,7 +232,7 @@ define([
 				result = 1;
 				var improvingUpgrades = UpgradeConstants.improvingUpgradesByWorker[worker];
 				if (improvingUpgrades) {
-					for (var i = 0; i < improvingUpgrades.length; i++) {
+					for (let i = 0; i < improvingUpgrades.length; i++) {
 						if (upgradesComponent.hasUpgrade(improvingUpgrades[i])) {
 							result += 1;
 						}

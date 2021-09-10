@@ -90,7 +90,7 @@ define([
 			var followersComponent = this.playerStatsNodes.head.followers;
 			var followers = followersComponent.getAll();
 			$("#list-followers").empty();
-			for (var i = 0; i < followers.length; i++) {
+			for (let i = 0; i < followers.length; i++) {
 				var follower = followers[i];
 				var li = "<li>" + UIConstants.getFollowerDiv(follower) + "</li>";
 				$("#list-followers").append(li);

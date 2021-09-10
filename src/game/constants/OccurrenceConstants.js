@@ -47,7 +47,7 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 			
 			var variationFactor = MathUtils.clamp(randomFactor * upgradeFactor * populationFactor, 0, 1);
 			var diff = maximumTime - minimumTime;
-			var result = Math.floor(minimumTime + diff * variationFactor);
+			let result = Math.floor(minimumTime + diff * variationFactor);
 			return result / GameConstants.gameSpeedCamp;
 		},
 		
@@ -111,7 +111,7 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 			soldiers = soldiers || 0;
 			var dangerPoints = this.getRaidDangerPoints(improvements);
 			var defencePoints = this.getRaidDefencePoints(improvements, soldiers, soldierLevel);
-			var result = (dangerPoints - defencePoints) / 25;
+			let result = (dangerPoints - defencePoints) / 25;
 			return Math.max(0, Math.min(1, result));
 		},
 		
@@ -129,7 +129,7 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 		},
 		
 		getRaidDefenceString: function (improvements, soldiers, soldierLevel) {
-			var result = "Base: " + CampConstants.CAMP_BASE_DEFENCE;
+			let result = "Base: " + CampConstants.CAMP_BASE_DEFENCE;
 			var fortificationsPoints = this.getFortificationsDefencePoints(improvements);
 			if (fortificationsPoints > 0) result += "<br/>Fortifications:" + fortificationsPoints;
 			var soldierPoints = this.getSoldierDefencePoints(soldiers, soldierLevel, improvements.getLevel(improvementNames.barracks));

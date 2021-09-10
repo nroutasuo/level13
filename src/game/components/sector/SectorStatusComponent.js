@@ -46,7 +46,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 
 		getNumLocalesScouted: function () {
 			var scouted = 0;
-			for (var i = 0; i < this.localesScouted.length; i++) {
+			for (let i = 0; i < this.localesScouted.length; i++) {
 				if (this.localesScouted[i]) scouted++;
 			}
 			return scouted;

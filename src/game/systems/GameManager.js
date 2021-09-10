@@ -242,7 +242,7 @@ define([
 				var seed = worldVO.seed;
 				var levelVO;
 				var sectorVO;
-				for (var i = worldVO.bottomLevel; i <= worldVO.topLevel; i++) {
+				for (let i = worldVO.bottomLevel; i <= worldVO.topLevel; i++) {
 					levelVO = worldVO.getLevel(i);
 					this.creator.createLevel(GameGlobals.saveHelper.saveKeys.level + i, i, levelVO);
 					for (var y = levelVO.minY; y <= levelVO.maxY; y++) {
@@ -270,7 +270,7 @@ define([
 						}
 					}
 					
-					for (var j = 0; j < levelVO.gangs.length; j++) {
+					for (let j = 0; j < levelVO.gangs.length; j++) {
 						var gang = levelVO.gangs[j];
 						var x = gang.pos.sectorX;
 						var y = gang.pos.sectorY;
@@ -364,7 +364,7 @@ define([
 			return new Promise(function(resolve, reject) {
 				var maxTries = GameConstants.isDebugVersion ? 1 : 25;
 				var s = seed;
-				for (var i = 0; i < maxTries; i++) {
+				for (let i = 0; i < maxTries; i++) {
 					log.i("START " + GameConstants.STARTTimeNow() + "\t generating world, try " + (i + 1) + "/" + maxTries);
 					var worldVO;
 					var validationResult;

@@ -32,7 +32,7 @@ define(['ash', 'game/GameGlobals', 'game/vos/PlayerActionVO'], function (Ash, Ga
 		getLastTimeStamp: function (requireBusy) {
 			var lastTimeStamp = -1;
 			if (requireBusy) {
-				for (var i = this.endTimeStampList.length - 1; i >= 0; i--) {
+				for (let i = this.endTimeStampList.length - 1; i >= 0; i--) {
 					var action = this.endTimeStampToActionDict[this.endTimeStampList[i]];
 					if (action.isBusy) {
 						lastTimeStamp = this.endTimeStampList[i];
@@ -49,7 +49,7 @@ define(['ash', 'game/GameGlobals', 'game/vos/PlayerActionVO'], function (Ash, Ga
 			var oldTimeStamp;
 			var newTimeStamp;
 			var action;
-			for (var i = 0; i < this.endTimeStampList.length; i++) {
+			for (let i = 0; i < this.endTimeStampList.length; i++) {
 				oldTimeStamp = this.endTimeStampList[i];
 				newTimeStamp = oldTimeStamp - extraTime * 1000;
 				action = this.endTimeStampToActionDict[oldTimeStamp];

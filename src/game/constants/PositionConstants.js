@@ -43,7 +43,7 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		},
 		
 		isOnPath: function (pos, pathStartPos, pathDirection, len) {
-			for (var i = 0; i < len; i++) {
+			for (let i = 0; i < len; i++) {
 				var posOnPath = this.getPositionOnPath(pathStartPos, pathDirection, i);
 				if (pos.equals(posOnPath)) {
 					return true;
@@ -66,7 +66,7 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		
 		getAllPositionsInArea: function (pos, areaSize) {
 			pos = pos || new PositionVO(0, 0, 0);
-			var result = [];
+			let result = [];
 			result.push(new PositionVO(pos.level, pos.sectorX, pos.sectorY));
 			for (var x = 1; x <= areaSize; x++) {
 				for (var y = 1; y <= areaSize; y++) {
@@ -107,7 +107,7 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		},
 		
 		getDirectionsFrom: function (sectorPosFrom, sectorPosTo, includeDiagonals) {
-			var result = [];
+			let result = [];
 			var dx = sectorPosFrom.sectorX - sectorPosTo.sectorX;
 			var dy = sectorPosFrom.sectorY - sectorPosTo.sectorY;
 
@@ -168,9 +168,9 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		},
 		
 		getMiddlePoint: function (positions, rounded) {
-			var result = new PositionVO(0, 0, 0);
+			let result = new PositionVO(0, 0, 0);
 			if (positions && positions.length > 0) {
-				for (var i = 0; i < positions.length; i++) {
+				for (let i = 0; i < positions.length; i++) {
 					if (positions[i]) {
 						result.level += positions[i].level;
 						result.sectorX += positions[i].sectorX;

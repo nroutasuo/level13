@@ -161,7 +161,7 @@ define(['ash'], function (Ash) {
 		},
 		
 		getNames: function () {
-			var result = [];
+			let result = [];
 			 for(var key in resourceNames) {
 				var name = resourceNames[key];
 				var amount = this.getResource(name);

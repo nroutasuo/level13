@@ -14,7 +14,7 @@ define(['ash'], function (Ash) {
 		addChange: function (source, amount) {
 			if (amount === 0) return;
 
-			for (var i = 0; i < this.accSources.length; i++) {
+			for (let i = 0; i < this.accSources.length; i++) {
 				var change = this.accSources[i];
 				if (change.source === source) {
 					change.amount += amount;
@@ -28,7 +28,7 @@ define(['ash'], function (Ash) {
 		addTargetValueSource: function (source, amount) {
 			if (amount === 0) return;
 
-			for (var i = 0; i < this.targetValueSources.length; i++) {
+			for (let i = 0; i < this.targetValueSources.length; i++) {
 				var change = this.targetValueSources[i];
 				if (change.source === source) {
 					change.amount += amount;
@@ -42,7 +42,7 @@ define(['ash'], function (Ash) {
 		getTotalChange: function () {
 			var total = 0;
 			var source;
-			for (var i in this.accSources) {
+			for (let i in this.accSources) {
 				source = this.accSources[i];
 				total += source.amount;
 			}

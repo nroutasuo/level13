@@ -34,7 +34,7 @@ define([
 		parseSaveJSON: function (json) {
 			if (!json) return null;
 
-			var result = null;
+			let result = null;
 			try {
 				result = JSON.parse(json);
 			} catch (ex) {
@@ -65,7 +65,7 @@ define([
 
 				// if the component has a shortened save key, compare to existing components to find the instance
 				if (!component) {
-					for (var i in existingComponents) {
+					for (let i in existingComponents) {
 						var existingComponent = existingComponents[i];
 						if (existingComponent.getSaveKey) {
 							if (existingComponent.getSaveKey() === componentKey) {
@@ -77,7 +77,7 @@ define([
 
 				// if still not found, it could be an optional component
 				if (!component) {
-					for (var i = 0; i < this.optionalComponents.length; i++) {
+					for (let i = 0; i < this.optionalComponents.length; i++) {
 						var optionalComponent = this.optionalComponents[i];
 						if (componentKey == optionalComponent) {
 							component = new optionalComponent();
@@ -89,7 +89,7 @@ define([
 
 				// or an optional component with a shortened save key
 				if (!component) {
-					for (var i = 0; i < this.optionalComponents.length; i++) {
+					for (let i = 0; i < this.optionalComponents.length; i++) {
 						var optionalComponent = this.optionalComponents[i];
 						if (optionalComponent.prototype.getSaveKey) {
 							if (optionalComponent.prototype.getSaveKey() === componentKey) {

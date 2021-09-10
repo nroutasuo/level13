@@ -146,7 +146,7 @@ define([
 		},
 		
 		getTargetReputation: function (improvementsComponent, resourcesVO, population, populationFactor, danger) {
-			var result = 0;
+			let result = 0;
 			var sources = {}; // text -> value
 			var penalties = {}; // id -> bool
 			
@@ -162,7 +162,7 @@ define([
 			
 			// base: building happiness values
 			var allImprovements = improvementsComponent.getAll(improvementTypes.camp);
-			for (var i in allImprovements) {
+			for (let i in allImprovements) {
 				var improvementVO = allImprovements[i];
 				var level = improvementVO.level || 1;
 				var defaultBonus = improvementVO.getReputationBonus();
@@ -665,8 +665,8 @@ define([
 			var assignment = {};
 			var remaining = population;
 			// - minimum
-			for (var i = 0; i < workersByPrio.length; i++) {
-				for (var j = 0; j < workersByPrio[i].length; j++) {
+			for (let i = 0; i < workersByPrio.length; i++) {
+				for (let j = 0; j < workersByPrio[i].length; j++) {
 					var def = workersByPrio[i][j];
 					var min = def.min;
 					var max = def.max < 0 ? remaining : def.max;
@@ -677,8 +677,8 @@ define([
 			}
 			// - preferred
 			if (remaining > 0) {
-				for (var i = 0; i < workersByPrio.length; i++) {
-					for (var j = 0; j < workersByPrio[i].length; j++) {
+				for (let i = 0; i < workersByPrio.length; i++) {
+					for (let j = 0; j < workersByPrio[i].length; j++) {
 						var def = workersByPrio[i][j];
 						var max = def.max < 0 ? remaining : def.max;
 						var preferred = def.preferred;
@@ -829,7 +829,7 @@ define([
 			var upgradeBonus = 1;
 			var workerUpgrades = GameGlobals.upgradeEffectsHelper.getImprovingUpgradeIdsForWorker(workerID);
 			var workerUpgrade;
-			for (var i in workerUpgrades) {
+			for (let i in workerUpgrades) {
 				workerUpgrade = workerUpgrades[i];
 				if (upgrades.hasUpgrade(workerUpgrade)) upgradeBonus += 0.15;
 			}

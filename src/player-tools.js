@@ -50,7 +50,7 @@ define([
 		let result = { ok: true, reason: "" };
 		
 		log.i("checking save..");
-		for (var i = 0; i < checks.length; i++) {
+		for (let i = 0; i < checks.length; i++) {
 			let checkResult = checks[i](save);
 			log.i("check " + i + " " + checkResult.ok + " " + checkResult.reason);
 			if (!checkResult.ok) {
@@ -75,7 +75,7 @@ define([
 	function fixSave(save, fixes) {
 		let result = JSON.parse(JSON.stringify(save));
 		log.i("applying fix..");
-		for (var i = 0; i < fixes.length; i++) {
+		for (let i = 0; i < fixes.length; i++) {
 			log.i("applying fix " + (i+1) + "/" + fixes.length);
 			fixes[i](result);
 		}

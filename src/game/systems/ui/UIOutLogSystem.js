@@ -51,7 +51,7 @@ define([
 			var validInCamp;
 			for (var node = this.logNodes.head; node; node = node.next) {
 				var pendingMessages = node.logMessages.messagesPendingMovement;
-				for (var i in pendingMessages) {
+				for (let i in pendingMessages) {
 					var msg = node.logMessages.messagesPendingMovement[i];
 					validLevel = !msg.pendingLevel || msg.pendingLevel == playerPosition.level;
 					validSector = !msg.pendingSector || msg.pendingSector == playerPosition.sectorId();

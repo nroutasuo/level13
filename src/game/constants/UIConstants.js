@@ -131,7 +131,7 @@ define(['ash',
 			var html = "";
 			var itemsCounted = {};
 			var itemsById = {};
-			for (var i = 0; i < items.length; i++) {
+			for (let i = 0; i < items.length; i++) {
 				if (typeof itemsCounted[items[i].id] === 'undefined') {
 					itemsCounted[items[i].id] = 1;
 					itemsById[items[i].id] = items[i];
@@ -160,7 +160,7 @@ define(['ash',
 		},
 		
 		getFollowerCallout: function (follower) {
-			var result = "<b>" + follower.name + "</b>";
+			let result = "<b>" + follower.name + "</b>";
 			result += "<br/>In party: " + (follower.inParty ? "yes" : "no");
 			result += "<br/>Type: " + FollowerConstants.getFollowerTypeDisplayName(follower.abilityType);
 			result += "<br/>Ability: " + FollowerConstants.getAbilityTypeDisplayName(follower.abilityType)
@@ -249,7 +249,7 @@ define(['ash',
 		},
 
 		getItemBonusDescription: function (item, showAllBonuses, useLineBreaks) {
-			var result = "";
+			let result = "";
 			var defaultType = ItemConstants.getItemDefaultBonus(item);
 			var value;
 			for (var bonusKey in ItemConstants.itemBonusTypes) {
@@ -447,7 +447,7 @@ define(['ash',
 		updateResourceIndicatorCallout: function (id, changeSources) {
 			var content = "";
 			var source;
-			for (var i in changeSources) {
+			for (let i in changeSources) {
 				source = changeSources[i];
 				if (source.amount != 0) {
 					content += source.source + ": " + Math.round(source.amount * 10000) / 10000 + "/s<br/>";

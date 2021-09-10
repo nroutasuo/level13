@@ -77,13 +77,13 @@ define([
 			var playerAllItems = resultNode.items.getAll(inCamp);
 
 			var findItemById = function (itemID, itemList, notInItemList, skipEquipped) {
-				for (var i = 0; i < itemList.length; i++) {
+				for (let i = 0; i < itemList.length; i++) {
 					var item = itemList[i];
 					if (skipEquipped && item.equipped) continue;
 					if (item.id === itemID) {
 						var foundInOtherList = false;
 						if (notInItemList !== null) {
-							for (var j = 0; j < notInItemList.length; j++) {
+							for (let j = 0; j < notInItemList.length; j++) {
 								if (item.itemID === notInItemList[j].itemID) {
 									foundInOtherList = true;
 									break;
@@ -215,12 +215,12 @@ define([
 			};
 
 			// lost items: one list
-			for (var j = 0; j < rewards.lostItems.length; j++) {
+			for (let j = 0; j < rewards.lostItems.length; j++) {
 				countLostItem(rewards.lostItems[j]);
 			}
 
 			// gained items: non-selected to found, selected to kept
-			for ( var i = 0; i < rewards.gainedItems.length; i++ ) {
+			for ( let i = 0; i < rewards.gainedItems.length; i++ ) {
 				item = rewards.gainedItems[i];
 				li = UIConstants.getItemSlot(itemsComponent, item, 1);
 				if (rewards.selectedItems.indexOf(item) < 0) {
@@ -231,7 +231,7 @@ define([
 			}
 
 			// bag items: non-discarded to kept, discarded to found
-			for (var k = 0; k < playerAllItems.length; k++ ) {
+			for (let k = 0; k < playerAllItems.length; k++ ) {
 				item = playerAllItems[k];
 				if (item.equipped) continue;
 				if (item.type === ItemConstants.itemTypes.bag) continue;

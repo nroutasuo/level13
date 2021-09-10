@@ -10,7 +10,7 @@ define( function () {
 		gameURL: "https://nroutasuo.github.io/level13",
 		
 		getFeedbackLinksHTML: function () {
-			var result = "";
+			let result = "";
 			var a = [ "level13game", "gmail.com" ];
 			result += "<a href='https://github.com/nroutasuo/level13' target='github'>github</a>";
 			result += " | ";

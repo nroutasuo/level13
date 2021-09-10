@@ -79,7 +79,7 @@ define([
 			var html = "";
 			var surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
 			var groundLevel = GameGlobals.gameState.getGroundLevel();
-			for (var i = surfaceLevel; i >= groundLevel; i--) {
+			for (let i = surfaceLevel; i >= groundLevel; i--) {
 				html += "<option value='" + i + "' id='map-level-selector-level-" + i + "'>Level " + i + "</option>"
 			}
 			$("#select-header-level").append(html);
@@ -89,7 +89,7 @@ define([
 			var surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
 			var groundLevel = GameGlobals.gameState.getGroundLevel();
 			var countVisible = 0;
-			for (var i = surfaceLevel; i >= groundLevel; i--) {
+			for (let i = surfaceLevel; i >= groundLevel; i--) {
 				var isVisible = GameGlobals.uiMapHelper.isMapRevealed || GameGlobals.levelHelper.getLevelEntityForPosition(i).has(VisitedComponent);
 				GameGlobals.uiFunctions.toggle($("#map-level-selector-level-" + i), isVisible);
 				if (isVisible) countVisible++;
@@ -195,7 +195,7 @@ define([
 			var improvements = sector.get(SectorImprovementsComponent);
 			var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
 			
-			var result = [];
+			let result = [];
 			if (sector.has(CampComponent)) result.push("camp");
 			if (sector.has(WorkshopComponent) && sector.get(WorkshopComponent).isClearable) result.push("workshop");
 			if (improvements.getCount(improvementNames.greenhouse)) result.push("greenhouse");
@@ -215,7 +215,7 @@ define([
 			if (unScoutedLocales > 0) result.push("unscouted locales");
 			if (sectorFeatures.hasSpring) result.push(TextConstants.getSpringName(sectorFeatures));
 			
-			for (var i = 0; i < localesComponent.locales.length; i++) {
+			for (let i = 0; i < localesComponent.locales.length; i++) {
 				var locale = localesComponent.locales[i];
 				if (statusComponent.isLocaleScouted(i)) {
 					if (locale.type == localeTypes.tradingpartner) {
@@ -236,7 +236,7 @@ define([
 		},
 		
 		getResScaText: function (sector) {
-			var result = GameGlobals.sectorHelper.getLocationDiscoveredResources(sector);
+			let result = GameGlobals.sectorHelper.getLocationDiscoveredResources(sector);
 			if (result.length < 1) return "-";
 			else return result.join(", ");
 		},
@@ -280,11 +280,11 @@ define([
 		
 		getBlockersText: function (sector, isScouted) {
 			if (!isScouted) return "?";
-			var result = [];
+			let result = [];
 			
 			var position = sector.get(PositionComponent);
 			var passagesComponent = sector.get(PassagesComponent);
-			for (var i in PositionConstants.getLevelDirections()) {
+			for (let i in PositionConstants.getLevelDirections()) {
 				var direction = PositionConstants.getLevelDirections()[i];
 				var directionName = PositionConstants.getDirectionName(direction);
 				var blocker = passagesComponent.getBlocker(direction);
@@ -305,7 +305,7 @@ define([
 		getEnvironmentText: function (sector, isScouted) {
 			var isVisited = sector.has(VisitedComponent);
 			if (!isVisited) return "?";
-			var result = [];
+			let result = [];
 			var featuresComponent = sector.get(SectorFeaturesComponent);
 			var statusComponent = sector.get(SectorStatusComponent);
 			var hazards = GameGlobals.sectorHelper.getEffectiveHazards(featuresComponent, statusComponent);
