@@ -183,8 +183,6 @@ define(['ash',
 			return result;
 		},
 		
-		
-		
 		getFollowerAbilityDescription: function (follower) {
 			switch (follower.abilityType) {
 				case FollowerConstants.abilityType.ATTACK:
@@ -201,9 +199,8 @@ define(['ash',
 				case FollowerConstants.abilityType.COST_SCOUT:
 					let scoutCostReduction = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.cost_scout);
 					return "scout cost -" + UIConstants.getMultiplierBonusDisplayValue(scoutCostReduction);
-				case FollowerConstants.abilityType.HAZARD_COLD: return "detects and protects against cold";
-				case FollowerConstants.abilityType.HAZARD_POLLUTION: return "detects and protects against pollution";
-				case FollowerConstants.abilityType.HAZARD_RADIATION: return "detects and protects against radiation";
+				case FollowerConstants.abilityType.HAZARD_PREDICTION:
+					return "foresee hazards in unvisited sectors";
 				case FollowerConstants.abilityType.FIND_COLLECTORS: return "finds spots for traps and buckets";
 				case FollowerConstants.abilityType.SCAVENGE_GENERAL: return "finds more everything when scavenging";
 				case FollowerConstants.abilityType.SCAVENGE_INGREDIENTS: return "finds more ingredients";

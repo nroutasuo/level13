@@ -13,6 +13,7 @@ define([
 	'game/helpers/ItemsHelper',
 	'game/helpers/LevelHelper',
 	'game/helpers/MovementHelper',
+	'game/helpers/PlayerHelper',
 	'game/helpers/PlayerActionsHelper',
 	'game/helpers/PlayerActionResultsHelper',
 	'game/helpers/ResourcesHelper',
@@ -38,6 +39,7 @@ define([
 	ItemsHelper,
 	LevelHelper,
 	MovementHelper,
+	PlayerHelper,
 	PlayerActionsHelper,
 	PlayerActionResultsHelper,
 	ResourcesHelper,
@@ -69,6 +71,7 @@ define([
 				GameGlobals.sectorHelper = new SectorHelper(engine);
 				GameGlobals.fightHelper = new FightHelper(engine);
 				GameGlobals.endingHelper = new EndingHelper(engine);
+				GameGlobals.playerHelper = new PlayerHelper(engine);
 				GameGlobals.playerActionResultsHelper = new PlayerActionResultsHelper(engine);
 				GameGlobals.autoPlayHelper = new AutoPlayHelper();
 				GameGlobals.saveHelper = new SaveHelper();

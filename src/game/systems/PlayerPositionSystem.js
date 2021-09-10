@@ -5,8 +5,10 @@ define([
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
+	'game/constants/ItemConstants',
 	'game/constants/LevelConstants',
 	'game/constants/LogConstants',
+	'game/constants/PositionConstants',
 	'game/nodes/PlayerPositionNode',
 	'game/nodes/level/LevelNode',
 	'game/nodes/PlayerLocationNode',
@@ -21,7 +23,7 @@ define([
 	'game/components/common/RevealedComponent',
 	'game/components/common/CampComponent',
 	'game/components/type/LevelComponent',
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, LevelConstants, LogConstants,
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, ItemConstants, LevelConstants, LogConstants, PositionConstants,
 	PlayerPositionNode, LevelNode, PlayerLocationNode, SectorNode, CampNode,
 	CurrentPlayerLocationComponent, CurrentNearestCampComponent, PassagesComponent,
 	LogMessagesComponent, PositionComponent,
@@ -85,8 +87,12 @@ define([
 
 		update: function (time) {
 			var playerPos = this.playerPositionNodes.head.position;
-			if (!this.lastValidPosition || !this.lastValidPosition.equals(playerPos)) {
-				this.updateEntities(!this.lastUpdatePosition);
+			let updateAll = !this.lastUpdatePosition;
+			
+			if (!this.lastValidPosition) {
+				this.updateEntities(updateAll);
+			} else if (!this.lastValidPosition.equals(playerPos)) {
+				this.updateEntities(updateAll);
 			} else {
 				this.revealVisitedSectorsNeighbours();
 			}
@@ -137,8 +143,8 @@ define([
 					this.updateSector(sectorNode.entity);
 				}
 			} else {
-				if (this.lastUpdatePosition) {
-					var previousPlayerSector = GameGlobals.levelHelper.getSectorByPosition(this.lastUpdatePosition.level, this.lastUpdatePosition.sectorX, this.lastUpdatePosition.sectorY);
+				if (this.lastValidPosition) {
+					var previousPlayerSector = GameGlobals.levelHelper.getSectorByPosition(this.lastValidPosition.level, this.lastValidPosition.sectorX, this.lastValidPosition.sectorY);
 					this.updateSector(previousPlayerSector);
 				}
 				this.updateSector(playerSector);
@@ -193,7 +199,10 @@ define([
 			var neighbours = GameGlobals.levelHelper.getSectorNeighboursMap(sectorEntity);
 			for (var direction in neighbours) {
 				var revealedNeighbour = neighbours[direction];
-				if (revealedNeighbour && !revealedNeighbour.has(RevealedComponent)) {
+				if (!revealedNeighbour)  continue;
+				if (revealedNeighbour.has(VisitedComponent)) continue;
+				
+				if (!revealedNeighbour.has(RevealedComponent)) {
 					revealedNeighbour.add(new RevealedComponent());
 					GlobalSignals.sectorRevealedSignal.dispatch();
 				}

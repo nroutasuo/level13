@@ -50,17 +50,24 @@ define(['ash',
 					} else {
 						return this.MAP_SECTOR_STATUS_VISITED_SCOUTED;
 					}
-				} else {
-					return this.MAP_SECTOR_STATUS_VISITED_UNSCOUTED;
 				}
+				return this.MAP_SECTOR_STATUS_VISITED_UNSCOUTED;
 			} else {
 				if (sector.has(RevealedComponent)) {
 					return this.MAP_SECTOR_STATUS_UNVISITED_VISIBLE;
-				} else {
-					return this.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE;
 				}
 			}
+			return this.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE;
 		},
+		
+		isVisited: function (sectorStatus) {
+			switch (sectorStatus) {
+				case SectorConstants.MAP_SECTOR_STATUS_VISITED_UNSCOUTED: return true;
+				case SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED: return true;
+				case SectorConstants.MAP_SECTOR_STATUS_VISITED_CLEARED: return true;
+				default: return false;
+			}
+		}
 		
 	};
 	return SectorConstants;

@@ -6,6 +6,7 @@ define(['ash',
 	'game/constants/UIConstants',
 	'game/constants/CanvasConstants',
 	'game/constants/ExplorationConstants',
+	'game/constants/ItemConstants',
 	'game/constants/MovementConstants',
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
@@ -22,7 +23,7 @@ define(['ash',
 	'game/components/type/SectorComponent',
 	'game/vos/PositionVO'],
 function (Ash, CanvasUtils,
-	GameGlobals, ColorConstants, UIConstants, CanvasConstants, ExplorationConstants, MovementConstants, PositionConstants, SectorConstants,
+	GameGlobals, ColorConstants, UIConstants, CanvasConstants, ExplorationConstants, ItemConstants, MovementConstants, PositionConstants, SectorConstants,
 	PlayerPositionNode,
 	LevelComponent, CampComponent, PositionComponent, SectorStatusComponent, SectorLocalesComponent, SectorFeaturesComponent, PassagesComponent, SectorImprovementsComponent, WorkshopComponent, SectorComponent,
 	PositionVO) {
@@ -188,7 +189,7 @@ function (Ash, CanvasUtils,
 						sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).y;
 						sectorPos = new PositionVO(mapPosition.level, x, y);
 						this.drawSectorOnCanvas(ctx, x, y, sector, levelEntity, sectorStatus, sectorXpx, sectorYpx, sectorSize);
-						if (sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE) {
+						if (SectorConstants.isVisited(sectorStatus)) {
 							this.drawMovementLinesOnCanvas(ctx, mapPosition, sector, sectorPos, sectorXpx, sectorYpx, sectorSize, sectorPadding);
 						}
 					}
@@ -297,7 +298,7 @@ function (Ash, CanvasUtils,
 			var isRevealed = isScouted || this.isMapRevealed;
 
 			// border for sectors with hazards or sunlight
-			var isVisited = sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE && sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE;
+			var isVisited = SectorConstants.isVisited(sectorStatus) || this.isSurveyed(sector);
 			if (isVisited || this.isMapRevealed) {
 				var isSectorSunlit = sectorFeatures.sunlit;
 				var hasSectorHazard = GameGlobals.sectorHelper.hasHazards(sectorFeatures, statusComponent);
@@ -467,6 +468,14 @@ function (Ash, CanvasUtils,
 
 		showSectorOnMap: function (centered, sector, sectorStatus) {
 			return this.isMapRevealed ? sector : sector && sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE;
+		},
+		
+		isSurveyed: function (sector) {
+			let surveyRange = GameGlobals.playerHelper.getCurrentBonus(ItemConstants.itemBonusTypes.hazard_prediction);
+			let sectorPos = sector.get(PositionComponent);
+			var playerPos = this.playerPosNodes.head.position;
+			let distance = PositionConstants.getDistanceTo(sectorPos, playerPos);
+			return distance < (surveyRange + 1);
 		},
 
 		getCanvasMinimumWidth: function (canvas) {

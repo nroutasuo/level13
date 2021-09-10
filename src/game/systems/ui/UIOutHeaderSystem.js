@@ -557,7 +557,8 @@ define([
 						value = Math.round(value * 10) / 10;
 						flipNegative = true;
 						break;
-
+						
+					case ItemConstants.itemBonusTypes.hazard_prediction:
 					case ItemConstants.itemBonusTypes.light:
 					case ItemConstants.itemBonusTypes.bag:
 						isVisible = false;

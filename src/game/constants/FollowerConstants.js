@@ -3,15 +3,13 @@ define(['ash',
 	'game/vos/FollowerVO',
 	'game/constants/CultureConstants',
 	'game/constants/ItemConstants',
-	'game/constants/WorldConstants',
-	'worldcreator/WorldCreatorConstants'
+	'game/constants/WorldConstants'
 ], function (Ash,
 	MathUtils,
 	FollowerVO,
 	CultureConstants,
 	ItemConstants,
-	WorldConstants,
-	WorldCreatorConstants
+	WorldConstants
 ) {
 	
 	var FollowerConstants = {
@@ -32,9 +30,7 @@ define(['ash',
 			COST_MOVEMENT: "cost_movement",
 			COST_SCAVENGE: "cost_scavenge",
 			COST_SCOUT: "cost_scout",
-			HAZARD_COLD: "hazard_cold",
-			HAZARD_POLLUTION: "hazard_pollution",
-			HAZARD_RADIATION: "hazard_radiation",
+			HAZARD_PREDICTION: "hazard_prediction",
 			FIND_COLLECTORS: "find_collectors",
 			// scavenger
 			SCAVENGE_GENERAL: "scavenge_general",
@@ -96,7 +92,7 @@ define(['ash',
 			let id = 100 + Math.floor(Math.random() * 100000);
 			
 			let availableAbilityTypes = this.getAvailableAbilityTypes(source, campOrdinal);
-			let abilityType = forcedAbilityType || availableAbilityTypes[Math.floor(Math.random() * availableAbilityTypes.length)];
+			let abilityType = FollowerConstants.abilityType.HAZARD_PREDICTION;// forcedAbilityType || availableAbilityTypes[Math.floor(Math.random() * availableAbilityTypes.length)];
 			
 			let minAbilityLevel = MathUtils.map(campOrdinal - 1, 0, WorldConstants.CAMPS_TOTAL + 1, 1, 100);
 			let maxAbilityLevel = MathUtils.map(campOrdinal + 1, 0, WorldConstants.CAMPS_TOTAL + 1, 1, 100);
@@ -152,21 +148,13 @@ define(['ash',
 			}
 			if (campOrdinal > firstFollowerCampOrdinal + 1) {
 				result.push(FollowerConstants.abilityType.COST_SCAVENGE);
-				result.push(FollowerConstants.abilityType.HAZARD_COLD);
+				result.push(FollowerConstants.abilityType.HAZARD_PREDICTION);
 			}
 			if (campOrdinal > firstFollowerCampOrdinal + 2) {
 				result.push(FollowerConstants.abilityType.FIND_COLLECTORS);
 			}
 			if (campOrdinal > firstFollowerCampOrdinal + 3) {
 				result.push(FollowerConstants.abilityType.BRING_METAL);
-			}
-			
-			// hazards
-			if (campOrdinal >= WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_POISON) {
-				result.push(FollowerConstants.abilityType.HAZARD_POLLUTION);
-			}
-			if (campOrdinal >= WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_RADIATION) {
-				result.push(FollowerConstants.abilityType.HAZARD_RADIATION);
 			}
 			
 			// midgame
@@ -208,9 +196,7 @@ define(['ash',
 				case this.abilityType.COST_MOVEMENT: return this.followerType.EXPLORER;
 				case this.abilityType.COST_SCAVENGE: return this.followerType.EXPLORER;
 				case this.abilityType.COST_SCOUT: return this.followerType.EXPLORER;
-				case this.abilityType.HAZARD_COLD: return this.followerType.EXPLORER;
-				case this.abilityType.HAZARD_POLLUTION: return this.followerType.EXPLORER;
-				case this.abilityType.HAZARD_RADIATION: return this.followerType.EXPLORER;
+				case this.abilityType.HAZARD_PREDICTION: return this.followerType.EXPLORER;
 				case this.abilityType.FIND_COLLECTORS: return this.followerType.EXPLORER;
 				case this.abilityType.SCAVENGE_GENERAL: return this.followerType.SCAVENGER;
 				case this.abilityType.SCAVENGE_INGREDIENTS: return this.followerType.SCAVENGER;
@@ -229,9 +215,7 @@ define(['ash',
 				case this.abilityType.COST_MOVEMENT: return "trekking";
 				case this.abilityType.COST_SCAVENGE: return "scouring";
 				case this.abilityType.COST_SCOUT: return "scouting";
-				case this.abilityType.HAZARD_COLD: return "cold";
-				case this.abilityType.HAZARD_POLLUTION: return "pollution";
-				case this.abilityType.HAZARD_RADIATION: return "radiation";
+				case this.abilityType.HAZARD_PREDICTION: return "surveying";
 				case this.abilityType.FIND_COLLECTORS: return "trapping";
 				case this.abilityType.SCAVENGE_GENERAL: return "perception";
 				case this.abilityType.SCAVENGE_INGREDIENTS: return "crafting";
@@ -296,6 +280,12 @@ define(['ash',
 					minBonus = 0.9;
 					maxBonus = 0.6;
 					roundingStep = 0.15;
+					break;
+				case ItemConstants.itemBonusTypes.hazard_prediction:
+					abilityLevel = FollowerConstants.getAbilityLevel(follower, FollowerConstants.abilityType.HAZARD_PREDICTION);
+					minBonus = 1;
+					maxBonus = 1;
+					roundingStep = 1;
 					break;
 			}
 			
