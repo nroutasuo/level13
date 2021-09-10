@@ -103,6 +103,7 @@ define([
 			GlobalSignals.tribeStatsChangedSignal.add(function () { sys.onTribeStatsChanged(); });
 			GlobalSignals.inventoryChangedSignal.add(function () { sys.onInventoryChanged(); });
 			GlobalSignals.equipmentChangedSignal.add(function () { sys.onEquipmentChanged(); });
+			GlobalSignals.followersChangedSignal.add(function () { sys.onFollowersChanged(); });
 			GlobalSignals.actionCompletedSignal.add(function () { sys.onPlayerActionCompleted(); });
 			GlobalSignals.slowUpdateSignal.add(function () { sys.slowUpdate(); });
 			GlobalSignals.changelogLoadedSignal.add(function () { sys.updateGameVersion(); });
@@ -512,6 +513,7 @@ define([
 		updateItemStats: function (inCamp) {
 			if (!this.currentLocationNodes.head) return;
 			var itemsComponent = this.playerStatsNodes.head.items;
+			var followersComponent = this.playerStatsNodes.head.followers;
 			var playerStamina = this.playerStatsNodes.head.stamina;
 			var visibleStats = 0;
 			for (var bonusKey in ItemConstants.itemBonusTypes) {
@@ -523,20 +525,20 @@ define([
 				var flipNegative = false;
 				switch (bonusType) {
 					case ItemConstants.itemBonusTypes.fight_att:
-						value = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
-						detail = FightConstants.getPlayerAttDesc(playerStamina, itemsComponent);
+						value = FightConstants.getPlayerAtt(playerStamina, itemsComponent, followersComponent);
+						detail = FightConstants.getPlayerAttDesc(playerStamina, itemsComponent, followersComponent);
 						isVisible = GameGlobals.gameState.unlockedFeatures.fight;
 						break;
 
 					case ItemConstants.itemBonusTypes.fight_def:
-						value = FightConstants.getPlayerDef(playerStamina, itemsComponent);
-						detail = FightConstants.getPlayerDefDesc(playerStamina, itemsComponent);
+						value = FightConstants.getPlayerDef(playerStamina, itemsComponent, followersComponent);
+						detail = FightConstants.getPlayerDefDesc(playerStamina, itemsComponent, followersComponent);
 						isVisible = GameGlobals.gameState.unlockedFeatures.fight;
 						break;
 
 					case ItemConstants.itemBonusTypes.fight_shield:
-						value = FightConstants.getPlayerShield(playerStamina, itemsComponent);
-						detail = FightConstants.getPlayerShieldDesc(playerStamina, itemsComponent);
+						value = FightConstants.getPlayerShield(playerStamina, itemsComponent, followersComponent);
+						detail = FightConstants.getPlayerShieldDesc(playerStamina, itemsComponent, followersComponent);
 						isVisible = GameGlobals.gameState.unlockedFeatures.fight;
 						break;
 						
@@ -773,6 +775,12 @@ define([
 		},
 		
 		onEquipmentChanged: function () {
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
+			this.updatePlayerStats();
+			this.updateItemStats();
+		},
+		
+		onFollowersChanged: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			this.updatePlayerStats();
 			this.updateItemStats();

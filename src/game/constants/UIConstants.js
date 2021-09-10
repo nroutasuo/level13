@@ -162,8 +162,9 @@ define(['ash',
 		getFollowerCallout: function (follower) {
 			var result = "<b>" + follower.name + "</b>";
 			result += "<br/>In party: " + (follower.inParty ? "yes" : "no");
-			result += "<br/>Ability: " + FollowerConstants.getAbilityTypeDisplayName(follower.abilityType) + " " + follower.abilityLevel;
-			result += "<br/>" + FollowerConstants.getAbilityTypeDescription(follower.abilityType);
+			result += "<br/>Type: " + FollowerConstants.getFollowerTypeDisplayName(follower.abilityType);
+			result += "<br/>Ability: " + FollowerConstants.getAbilityTypeDisplayName(follower.abilityType)
+				+ " (" + FollowerConstants.getAbilityDescription(follower) + ")";
 			
 			var makeButton = function (action, name) {
 				 return "<button class='action btn-narrow' action='" + action + "'>" + name + "</button>";

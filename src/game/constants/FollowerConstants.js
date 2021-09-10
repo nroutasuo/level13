@@ -1,7 +1,22 @@
-define(['ash', 'utils/MathUtils', 'game/vos/FollowerVO', 'game/constants/CultureConstants', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorConstants'],
-function (Ash, MathUtils, FollowerVO, CultureConstants, WorldConstants, WorldCreatorConstants) {
+define(['ash',
+	'utils/MathUtils',
+	'game/vos/FollowerVO',
+	'game/constants/CultureConstants',
+	'game/constants/ItemConstants',
+	'game/constants/WorldConstants',
+	'worldcreator/WorldCreatorConstants'
+], function (Ash,
+	MathUtils,
+	FollowerVO,
+	CultureConstants,
+	ItemConstants,
+	WorldConstants,
+	WorldCreatorConstants
+) {
 	
 	var FollowerConstants = {
+		
+		FIRST_FOLLOWER_CAMP_ORDINAL: 2,
 		
 		followerType: {
 			FIGHTER: "fighter",
@@ -75,13 +90,13 @@ function (Ash, MathUtils, FollowerVO, CultureConstants, WorldConstants, WorldCre
 			return 3;
 		},
 		
-		getNewFollower: function (source, campOrdinal, appearLevel) {
+		getNewRandomFollower: function (source, campOrdinal, appearLevel, forcedAbilityType) {
 			campOrdinal = campOrdinal || 1;
 			
 			let id = 100 + Math.floor(Math.random() * 100000);
 			
 			let availableAbilityTypes = this.getAvailableAbilityTypes(source, campOrdinal);
-			let abilityType = availableAbilityTypes[Math.floor(Math.random() * availableAbilityTypes.length)];
+			let abilityType = forcedAbilityType || availableAbilityTypes[Math.floor(Math.random() * availableAbilityTypes.length)];
 			
 			let minAbilityLevel = MathUtils.map(campOrdinal - 1, 0, WorldConstants.CAMPS_TOTAL + 1, 1, 100);
 			let maxAbilityLevel = MathUtils.map(campOrdinal + 1, 0, WorldConstants.CAMPS_TOTAL + 1, 1, 100);
@@ -97,7 +112,7 @@ function (Ash, MathUtils, FollowerVO, CultureConstants, WorldConstants, WorldCre
 			return new FollowerVO(id, name, abilityType, abilityLevel, icon);
 		},
 		
-		getPredefinedFollowerByID: function (followerID) {
+		getNewPredefinedFollower: function (followerID) {
 			let template = null;
 			for (let campOrdinal in this.predefinedFollowers) {
 				let t = this.predefinedFollowers[campOrdinal];
@@ -126,7 +141,7 @@ function (Ash, MathUtils, FollowerVO, CultureConstants, WorldConstants, WorldCre
 		
 		getAvailableAbilityTypes: function (source, campOrdinal) {
 			let result = [];
-			let firstFollowerCampOrdinal = 2;
+			let firstFollowerCampOrdinal = FollowerConstants.FIRST_FOLLOWER_CAMP_ORDINAL;
 			
 			result.push(FollowerConstants.abilityType.ATTACK);
 			result.push(FollowerConstants.abilityType.DEFENCE);
@@ -209,8 +224,8 @@ function (Ash, MathUtils, FollowerVO, CultureConstants, WorldConstants, WorldCre
 		
 		getAbilityTypeDisplayName: function (abilityType) {
 			switch (abilityType) {
-				case this.abilityType.ATTACK: return "fight";
-				case this.abilityType.DEFENCE: return "fight";
+				case this.abilityType.ATTACK: return "attacker";
+				case this.abilityType.DEFENCE: return "defender";
 				case this.abilityType.COST_MOVEMENT: return "explorer";
 				case this.abilityType.COST_SCAVENGE: return "scavenger";
 				case this.abilityType.COST_SCOUT: return "scout";
@@ -228,10 +243,13 @@ function (Ash, MathUtils, FollowerVO, CultureConstants, WorldConstants, WorldCre
 			}
 		},
 		
-		getAbilityTypeDescription: function (abilityType) {
-			switch (abilityType) {
-				case this.abilityType.ATTACK: return "helps in fights";
-				case this.abilityType.DEFENCE: return "helps in fights";
+		getAbilityDescription: function (follower) {
+			switch (follower.abilityType) {
+				case this.abilityType.ATTACK:
+				case this.abilityType.DEFENCE:
+					let att = this.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_att);
+					let def = this.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_def);
+					return "attack +" + att + ", defence +" + def;
 				case this.abilityType.COST_MOVEMENT: return "reduces stamina cost of movement";
 				case this.abilityType.COST_SCAVENGE: return "reduces stamina cost of scavenging";
 				case this.abilityType.COST_SCOUT: return "reduces stamina cost of scouting";
@@ -249,6 +267,57 @@ function (Ash, MathUtils, FollowerVO, CultureConstants, WorldConstants, WorldCre
 			}
 		},
 		
+		getFollowerTypeDisplayName: function (abilityType) {
+			let type = this.getFollowerTypeForAbilityType(abilityType);
+			switch (type) {
+				case this.followerType.FIGHTER: return "fighter";
+				case this.followerType.EXPLORER: return "explorer";
+				case this.followerType.SCAVENGER: return "scavenger";
+				default:
+					log.w("no display name defined for follower type: " + type);
+			}
+		},
+		
+		getFollowerItemBonus: function (follower, itemBonusType) {
+			let roundingStep = 1;
+			let abilityLevel = 1;
+			let minBonus = 0;
+			let maxBonus = 0;
+			
+			switch (itemBonusType) {
+				case ItemConstants.itemBonusTypes.fight_att:
+					abilityLevel = FollowerConstants.getAbilityLevel(follower, FollowerConstants.abilityType.ATTACK);
+					minBonus = 3;
+					maxBonus = 100;
+					roundingStep = 3;
+					break;
+				case ItemConstants.itemBonusTypes.fight_def:
+					abilityLevel = FollowerConstants.getAbilityLevel(follower, FollowerConstants.abilityType.DEFENCE);
+					minBonus = 3;
+					maxBonus = 100;
+					roundingStep = 3;
+					break;
+			}
+			
+			if (minBonus == 0 && maxBonus == 0) return;
+			
+			let rawValue = MathUtils.map(abilityLevel, 1, 100, minBonus, maxBonus);
+			
+			return MathUtils.roundToMultiple(rawValue, roundingStep);
+		},
+		
+		getAbilityLevel: function (follower, abilityType) {
+			if (follower.abilityType == abilityType) {
+				return follower.abilityLevel;
+			}
+			
+			if ((follower.abilityType == FollowerConstants.abilityType.ATTACK && abilityType == FollowerConstants.abilityType.DEFENCE) ||
+				(follower.abilityType == FollowerConstants.abilityType.DEFENCE && abilityType == FollowerConstants.abilityType.ATTACK)) {
+				return Math.round(follower.abilityLevel / 2);
+			}
+			
+			return 0;
+		}
 	};
 	
 	return FollowerConstants;

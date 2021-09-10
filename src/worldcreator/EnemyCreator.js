@@ -3,11 +3,13 @@ define([
 	'json!game/data/EnemyData.json',
 	'game/GameGlobals',
 	'game/constants/EnemyConstants',
+	'game/constants/FollowerConstants',
 	'game/constants/PerkConstants',
 	'game/constants/ItemConstants',
 	'game/constants/FightConstants',
 	'game/constants/WorldConstants',
 	'game/components/player/ItemsComponent',
+	'game/components/player/FollowersComponent',
 	'game/vos/EnemyVO',
 	'utils/MathUtils',
 ], function (
@@ -15,11 +17,13 @@ define([
 	EnemyData,
 	GameGlobals,
 	EnemyConstants,
+	FollowerConstants,
 	PerkConstants,
 	ItemConstants,
 	FightConstants,
 	WorldConstants,
 	ItemsComponent,
+	FollowersComponent,
 	EnemyVO,
 	MathUtils
 ) {
@@ -118,8 +122,9 @@ define([
 		getPlayerStrength: function (campOrdinal, step) {
 			let playerStamina = this.getTypicalStamina(campOrdinal, step);
 			let itemsComponent = this.getTypicalItems(campOrdinal, step);
-			let playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
-			let playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent);
+			let followersComponent = this.getTypicalFollowers(campOrdinal, step);
+			let playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent, followersComponent);
+			let playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent, followersComponent);
 			let playerSpeed = FightConstants.getPlayerSpeed(itemsComponent);
 			return FightConstants.getStrength(playerAtt, playerDef, playerSpeed);
 		},
@@ -217,6 +222,21 @@ define([
 			
 			typicalItems.autoEquipAll();
 			return typicalItems;
+		},
+		
+		getTypicalFollowers: function (campOrdinal, step) {
+			let typicalFollowers = new FollowersComponent();
+			if (!WorldConstants.isHigherOrEqualCampOrdinalAndStep(campOrdinal, step, FollowerConstants.FIRST_FOLLOWER_CAMP_ORDINAL, WorldConstants.CAMP_STEP_POI_2)) {
+				return typicalFollowers;
+			}
+			
+			// only considering fight related followers here
+			let source = FollowerConstants.followerSource.EVENT;
+			let abilityType = FollowerConstants.abilityType.ATTACK;
+			let follower = FollowerConstants.getNewRandomFollower(source, campOrdinal, campOrdinal, abilityType);
+			typicalFollowers.addFollower(follower, true);
+			
+			return typicalFollowers;
 		},
 		
 		getTypicalStamina: function (campOrdinal, step, isHardLevel) {

@@ -225,7 +225,7 @@ define([
 			
 			let followerID = localeVO.followerID;
 			if (followerID) {
-				rewards.gainedFollowers = [ FollowerConstants.getPredefinedFollowerByID(followerID) ];
+				rewards.gainedFollowers = [ FollowerConstants.getNewPredefinedFollower(followerID) ];
 			} else {
 				if (localeVO.type !== localeTypes.tradingpartner && localeVO.type != localeTypes.grove) {
 					// population and followers
@@ -821,7 +821,7 @@ define([
 				return followers;
 			
 			if (Math.random() < probability) {
-				var follower = FollowerConstants.getNewFollower(FollowerConstants.followerSource.SCOUT, GameGlobals.gameState.numCamps, playerPos.level);
+				var follower = FollowerConstants.getNewRandomFollower(FollowerConstants.followerSource.SCOUT, GameGlobals.gameState.numCamps, playerPos.level);
 				followers.push(follower);
 			}
 			

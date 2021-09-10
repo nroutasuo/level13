@@ -81,7 +81,8 @@ define([
 		},
 		
 		updateFightActive: function () {
-			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+			var itemsComponent = this.playerStatsNodes.head.items;
+			var followersComponent = this.playerStatsNodes.head.followers;
 			
 			// update progress bars
 			var enemy = this.fightNodes.head.fight.enemy;
@@ -113,8 +114,8 @@ define([
 			$("#fight-bar-self-shield").data("change-time", this.lastDamageToPlayerUpdated);
 			$("#fight-bar-self-shield").data("animation-length", this.progressBarAnimationLen);
 				
-			var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
-			var playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent);
+			var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent, followersComponent);
+			var playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent, followersComponent);
 			var playerHP = playerStamina.maxHP;
 			$("#fight-popup-self-name").text(this.numFollowers > 0 ? " Party " : " Wanderer ");
 			$("#fight-popup-self-stats").text(" att: " + playerAtt + " | def: " + playerDef + " | hp: " + playerHP + " ");
@@ -320,7 +321,7 @@ define([
 				var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 				
 				/*
-				FightConstants.getFightWinProbability(currentEnemy, playerStamina, itemsComponent).
+				FightConstants.getFightWinProbability(currentEnemy, playerStamina, itemsComponent, followersComponent).
 					then(chances => {
 						var chancesText = TextConstants.getFightChancesText(chances);
 						$(".fight-popup-chances").text(chancesText)

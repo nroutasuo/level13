@@ -97,7 +97,8 @@ define([
 			var fightTime = Math.min(time, 1);
 			this.totalFightTime += fightTime;
 			
-			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+			var itemsComponent = this.playerStatsNodes.head.items;
+			var followersComponent = this.playerStatsNodes.head.followers;
 			var enemy = this.fightNodes.head.fight.enemy;
 			var playerStamina = this.playerStatsNodes.head.stamina;
 			var itemEffects = this.fightNodes.head.fight.itemEffects;
@@ -112,7 +113,7 @@ define([
 			this.fightNodes.head.fight.nextTurnPlayer -= fightTime;
 			if (this.fightNodes.head.fight.nextTurnPlayer <= 0) {
 				isPlayerTurn = true;
-				let scenarios = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_FRIENDLY, enemy, playerStamina, itemsComponent, this.totalFightTime);
+				let scenarios = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_FRIENDLY, enemy, playerStamina, itemsComponent, followersComponent, this.totalFightTime);
 				let scenario = this.pickTurnScenario(scenarios);
 				damageToEnemy = scenario.damage;
 				this.log(scenario.logMessage);
@@ -128,7 +129,7 @@ define([
 					isEnemyTurn = true;
 					this.fightNodes.head.fight.nextTurnEnemy -= fightTime;
 					if (this.fightNodes.head.fight.nextTurnEnemy <= 0) {
-						let scenarios = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_ENEMY, enemy, playerStamina, itemsComponent, this.totalFightTime);
+						let scenarios = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_ENEMY, enemy, playerStamina, itemsComponent, followersComponent, this.totalFightTime);
 						let scenario = this.pickTurnScenario(scenarios);
 						damageToPlayer = scenario.damage;
 						this.log(scenario.logMessage);
