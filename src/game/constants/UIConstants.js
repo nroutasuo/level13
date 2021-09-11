@@ -201,7 +201,6 @@ define(['ash',
 					return "scout cost -" + UIConstants.getMultiplierBonusDisplayValue(scoutCostReduction);
 				case FollowerConstants.abilityType.HAZARD_PREDICTION:
 					return "foresee hazards in unvisited sectors";
-				case FollowerConstants.abilityType.FIND_COLLECTORS: return "finds spots for traps and buckets";
 				case FollowerConstants.abilityType.SCAVENGE_GENERAL: return "finds more everything when scavenging";
 				case FollowerConstants.abilityType.SCAVENGE_INGREDIENTS: return "finds more ingredients";
 				case FollowerConstants.abilityType.SCAVENGE_SUPPLIES: return "finds more supplies when scavenging";

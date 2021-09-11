@@ -31,7 +31,6 @@ define(['ash',
 			COST_SCAVENGE: "cost_scavenge",
 			COST_SCOUT: "cost_scout",
 			HAZARD_PREDICTION: "hazard_prediction",
-			FIND_COLLECTORS: "find_collectors",
 			// scavenger
 			SCAVENGE_GENERAL: "scavenge_general",
 			SCAVENGE_INGREDIENTS: "scavenge_ingredients",
@@ -148,10 +147,9 @@ define(['ash',
 			}
 			if (campOrdinal > firstFollowerCampOrdinal + 1) {
 				result.push(FollowerConstants.abilityType.COST_SCAVENGE);
-				result.push(FollowerConstants.abilityType.HAZARD_PREDICTION);
 			}
 			if (campOrdinal > firstFollowerCampOrdinal + 2) {
-				result.push(FollowerConstants.abilityType.FIND_COLLECTORS);
+				result.push(FollowerConstants.abilityType.HAZARD_PREDICTION);
 			}
 			if (campOrdinal > firstFollowerCampOrdinal + 3) {
 				result.push(FollowerConstants.abilityType.BRING_METAL);
@@ -197,7 +195,6 @@ define(['ash',
 				case this.abilityType.COST_SCAVENGE: return this.followerType.EXPLORER;
 				case this.abilityType.COST_SCOUT: return this.followerType.EXPLORER;
 				case this.abilityType.HAZARD_PREDICTION: return this.followerType.EXPLORER;
-				case this.abilityType.FIND_COLLECTORS: return this.followerType.EXPLORER;
 				case this.abilityType.SCAVENGE_GENERAL: return this.followerType.SCAVENGER;
 				case this.abilityType.SCAVENGE_INGREDIENTS: return this.followerType.SCAVENGER;
 				case this.abilityType.SCAVENGE_SUPPLIES: return this.followerType.SCAVENGER;
@@ -216,7 +213,6 @@ define(['ash',
 				case this.abilityType.COST_SCAVENGE: return "scouring";
 				case this.abilityType.COST_SCOUT: return "scouting";
 				case this.abilityType.HAZARD_PREDICTION: return "surveying";
-				case this.abilityType.FIND_COLLECTORS: return "trapping";
 				case this.abilityType.SCAVENGE_GENERAL: return "perception";
 				case this.abilityType.SCAVENGE_INGREDIENTS: return "crafting";
 				case this.abilityType.SCAVENGE_SUPPLIES: return "survival";
