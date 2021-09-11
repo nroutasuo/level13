@@ -213,9 +213,9 @@ define(['ash',
 				case this.abilityType.COST_SCAVENGE: return "scouring";
 				case this.abilityType.COST_SCOUT: return "scouting";
 				case this.abilityType.HAZARD_PREDICTION: return "surveying";
-				case this.abilityType.SCAVENGE_GENERAL: return "perception";
-				case this.abilityType.SCAVENGE_INGREDIENTS: return "crafting";
-				case this.abilityType.SCAVENGE_SUPPLIES: return "survival";
+				case this.abilityType.SCAVENGE_GENERAL: return "general scavenging";
+				case this.abilityType.SCAVENGE_INGREDIENTS: return "ingredient scavenging";
+				case this.abilityType.SCAVENGE_SUPPLIES: return "supplies scavenging";
 				case this.abilityType.BRING_METAL: return "builder";
 				default:
 					log.w("no display name defined for abilityType: " + abilityType);
@@ -282,6 +282,27 @@ define(['ash',
 					minBonus = 1;
 					maxBonus = 1;
 					roundingStep = 1;
+					break;
+				case ItemConstants.itemBonusTypes.scavenge_general:
+					abilityLevel = FollowerConstants.getAbilityLevel(follower, FollowerConstants.abilityType.SCAVENGE_GENERAL);
+					minBonus = 1.05;
+					maxBonus = 1.25;
+					roundingStep = 0.05;
+					break;
+				case ItemConstants.itemBonusTypes.scavenge_ingredients:
+					abilityLevel = FollowerConstants.getAbilityLevel(follower, FollowerConstants.abilityType.SCAVENGE_INGREDIENTS);
+					minBonus = 1.1;
+					maxBonus = 1.5;
+					roundingStep = 0.1;
+					break;
+				case ItemConstants.itemBonusTypes.scavenge_supplies:
+					abilityLevel = FollowerConstants.getAbilityLevel(follower, FollowerConstants.abilityType.SCAVENGE_SUPPLIES);
+					minBonus = 1.1;
+					maxBonus = 1.5;
+					roundingStep = 0.1;
+					break;
+				default:
+					log.w("no follower item bonus defined for item bonus type: " + itemBonusType);
 					break;
 			}
 			

@@ -201,10 +201,17 @@ define(['ash',
 					return "scout cost -" + UIConstants.getMultiplierBonusDisplayValue(scoutCostReduction);
 				case FollowerConstants.abilityType.HAZARD_PREDICTION:
 					return "foresee hazards in unvisited sectors";
-				case FollowerConstants.abilityType.SCAVENGE_GENERAL: return "finds more everything when scavenging";
-				case FollowerConstants.abilityType.SCAVENGE_INGREDIENTS: return "finds more ingredients";
-				case FollowerConstants.abilityType.SCAVENGE_SUPPLIES: return "finds more supplies when scavenging";
-				case FollowerConstants.abilityType.BRING_METAL: return "carries back some metal to camp";
+				case FollowerConstants.abilityType.SCAVENGE_GENERAL:
+					let scaBonus = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.scavenge_general);
+					return "+" + UIConstants.getMultiplierBonusDisplayValue(scaBonus) + " chance for extra loot when scavenging";
+				case FollowerConstants.abilityType.SCAVENGE_INGREDIENTS:
+					let ingredientBonus = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.scavenge_ingredients);
+					return "+" + UIConstants.getMultiplierBonusDisplayValue(ingredientBonus) + " chance to find ingredients when scavenging";
+				case FollowerConstants.abilityType.SCAVENGE_SUPPLIES:
+					let suppliesBonus = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.scavenge_supplies);
+					return "+" + UIConstants.getMultiplierBonusDisplayValue(suppliesBonus) + " chance to find more supplies when scavenging";
+				case FollowerConstants.abilityType.BRING_METAL:
+					return "carries back some metal to camp";
 				default:
 					log.w("no display name defined for abilityType: " + abilityType);
 					return abilityType;
@@ -313,6 +320,9 @@ define(['ash',
 				case ItemConstants.itemBonusTypes.fight_speed: return "attack speed";
 				case ItemConstants.itemBonusTypes.movement: return "movement cost";
 				case ItemConstants.itemBonusTypes.scavenge_cost: return "scavenge cost";
+				case ItemConstants.itemBonusTypes.scavenge_general: return "scavenge bonus";
+				case ItemConstants.itemBonusTypes.scavenge_supplies: return "scavenge bonus";
+				case ItemConstants.itemBonusTypes.scavenge_ingredients: return "scavenge bonus";
 				case ItemConstants.itemBonusTypes.scout_cost: return "scouting cost";
 				case ItemConstants.itemBonusTypes.bag: return "bag size";
 				case ItemConstants.itemBonusTypes.res_cold: return "warmth";
@@ -327,10 +337,11 @@ define(['ash',
 
 		getItemBonusText: function (item, bonusType) {
 			var bonusValue = item.getBonus(bonusType);
-			if (bonusValue === 0) {
-				return "+0";
-			} else if (item.type == ItemConstants.itemTypes.bag) {
+			
+			if (ItemConstants.isStaticValue(bonusType)) {
 				return " " + bonusValue;
+			} else if (bonusValue === 0) {
+				return "+0";
 			} else if (ItemConstants.isMultiplier(bonusType) && ItemConstants.isIncreasing(bonusType)) {
 				// increasing multiplier: fight speed
 				var val = Math.abs(Math.round((1 - bonusValue) * 100));
@@ -383,7 +394,7 @@ define(['ash',
 		},
 		
 		getMultiplierBonusDisplayValue: function (value) {
-			return Math.round((1 - value) * 100) + "%";
+			return Math.round(Math.abs(1 - value) * 100) + "%";
 		},
 
 		sortItemsByType: function (a, b) {

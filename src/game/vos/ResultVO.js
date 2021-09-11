@@ -26,6 +26,8 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		
 		// additional info for UI
 		foundStashVO: null,
+		gainedResourcesFromFollowers: null, // subset of gainedResources
+		gainedItemsFromFollowers: null, // subset of gainedItems
 		
 		// inventory management selection
 		// gained resources and items must be manually picked up; status saved here; this is the final change to the player bag

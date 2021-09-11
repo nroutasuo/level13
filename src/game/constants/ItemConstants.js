@@ -48,6 +48,9 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			fight_shield: "shield",
 			movement: "movement",
 			scavenge_cost: "scavenge_cost",
+			scavenge_general: "scavenge_general",
+			scavenge_ingredients: "scavenge_ingredients",
+			scavenge_supplies: "scavenge_supplies",
 			scout_cost: "scout_cost",
 			bag: "bag",
 			res_cold: "warmth",
@@ -94,7 +97,18 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 				case this.itemBonusTypes.fight_speed:
 				case this.itemBonusTypes.movement:
 				case this.itemBonusTypes.scavenge_cost:
+				case this.itemBonusTypes.scavenge_general:
+				case this.itemBonusTypes.scavenge_supplies:
+				case this.itemBonusTypes.scavenge_ingredients:
 				case this.itemBonusTypes.scout_cost:
+					return true;
+			}
+			return false;
+		},
+		
+		isStaticValue: function (itemBonusType) {
+			switch (itemBonusType) {
+				case ItemConstants.itemTypes.bag:
 					return true;
 			}
 			return false;

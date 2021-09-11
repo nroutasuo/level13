@@ -558,6 +558,9 @@ define([
 						flipNegative = true;
 						break;
 						
+					case ItemConstants.itemBonusTypes.scavenge_general:
+					case ItemConstants.itemBonusTypes.scavenge_supplies:
+					case ItemConstants.itemBonusTypes.scavenge_ingredients:
 					case ItemConstants.itemBonusTypes.hazard_prediction:
 					case ItemConstants.itemBonusTypes.light:
 					case ItemConstants.itemBonusTypes.bag:

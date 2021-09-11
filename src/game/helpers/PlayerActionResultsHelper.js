@@ -177,6 +177,8 @@ define([
 			
 			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound);
 			rewards.gainedBlueprintPiece = this.getFallbackBlueprint(0.05 + efficiency * 0.15);
+			
+			this.addFollowerBonuses(rewards, sectorResources, this.itemResultTypes.scavenge);
 
 			return rewards;
 		},
@@ -817,7 +819,7 @@ define([
 			
 			var playerPos = this.playerLocationNodes.head.position;
 			let campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
-			if (campOrdinal <= FollowerConstants.getFirstPredefinedFollowerCampOrdinal())
+			if (campOrdinal <= FollowerConstants.FIRST_FOLLOWER_CAMP_ORDINAL)
 				return followers;
 			
 			if (Math.random() < probability) {
@@ -975,6 +977,43 @@ define([
 				case ItemConstants.STASH_TYPE_SILVER:
 					rewardsVO.gainedCurrency += stashVO.amount;
 					break;
+			}
+		},
+		
+		addFollowerBonuses: function (rewards, sectorResources, itemTypeLimits) {
+			var efficiency = this.getScavengeEfficiency();
+			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+			
+			var playerPos = this.playerLocationNodes.head.position;
+			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
+			var step = GameGlobals.levelHelper.getCampStep(playerPos);
+			var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(playerPos.level).get(LevelComponent);
+			var isHardLevel = levelComponent.isHard;
+			
+			// follower bonuses (1.0 - 2.0)
+			let generalBonus = GameGlobals.playerHelper.getCurrentBonus(ItemConstants.itemBonusTypes.scavenge_general);
+			let suppliesBonus = GameGlobals.playerHelper.getCurrentBonus(ItemConstants.itemBonusTypes.scavenge_supplies);
+			let ingredientsBonus = GameGlobals.playerHelper.getCurrentBonus(ItemConstants.itemBonusTypes.scavenge_ingredients);
+			
+			let bonusResourceProb = generalBonus - 1;
+			let bonusResources = this.getRewardResources(bonusResourceProb, 1, efficiency, sectorResources);
+			rewards.gainedResourcesFromFollowers = bonusResources;
+			rewards.gainedResources.addAll(bonusResources);
+			
+			let bonusSuppliesProb = suppliesBonus - 1;
+			let sectorSupplies = new ResourcesVO();
+			sectorSupplies.setResource(resourceNames.food, sectorResources.getResource(resourceNames.food));
+			sectorSupplies.setResource(resourceNames.water, sectorResources.getResource(resourceNames.water));
+			let bonusSupplies = this.getRewardResources(bonusSuppliesProb, 1, efficiency, sectorSupplies);
+			rewards.gainedResourcesFromFollowers.addAll(bonusSupplies);
+			rewards.gainedResources.addAll(bonusSupplies);
+			
+			let bonusItemProb = generalBonus - 1;
+			let bonusIngredientProb = generalBonus - 1 + ingredientsBonus - 1;
+			let bonusItems = this.getRewardItems(bonusItemProb, bonusIngredientProb, itemTypeLimits, efficiency, itemsComponent, campOrdinal, step, isHardLevel);
+			rewards.gainedItemsFromFollowers = bonusItems;
+			for (let i = 0; i < bonusItems.length; i++) {
+				rewards.gainedItems.push(bonusItems[i]);
 			}
 		},
 		
