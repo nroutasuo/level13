@@ -299,7 +299,7 @@ define([
 				resultVO.lostCurrency = this.playerResourcesNodes.head.entity.get(CurrencyComponent).currency;
 				resultVO.lostItems = this.getLostItems("despair", false);
 			}
-			resultVO.lostFollowers = this.getLostFollowers(loseFollowerProbability, loseFollowerProbability);
+			resultVO.lostFollowers = this.getLostFollowers(loseFollowerProbability);
 			resultVO.gainedInjuries = this.getResultInjuries(injuryProbability);
 
 			return resultVO;
@@ -1150,27 +1150,23 @@ define([
 			return itemLoseProbability;
 		},
 		
-		getLostFollowers: function (loseAllProbability, loseOneProbability) {
+		getLostFollowers: function (loseProbability) {
 			var lostFollowers = [];
-			// TODO FOLLOWERS
-			/*
-			if (loseAllProbability <= 0 && loseOneProbability <= 0)
+			
+			if (loseProbability <= 0)
 				return lostFollowers;
 			
-			var playerFollowers = this.playerResourcesNodes.head.entity.get(ItemsComponent).getAllByType(ItemConstants.itemTypes.follower, true);
+			var playerFollowers = this.playerStatsNodes.head.followers.getParty();
 			if (playerFollowers.length < 1)
 				return lostFollowers;
 				
-			var loseAll = Math.random() < loseAllProbability;
-			var loseOne = Math.random() < loseOneProbability;
+			var loseOne = Math.random() < loseProbability;
 			
-			if (loseAll) {
-				lostFollowers = playerFollowers.concat();
-			} else if (loseOne) {
+			if (loseOne) {
 				var index = Math.floor(playerFollowers.length * Math.random());
-				lostFollowers =playerFollowers[index];
+				lostFollowers.push(playerFollowers[index]);
 			}
-			*/
+			
 			return lostFollowers;
 		},
 
