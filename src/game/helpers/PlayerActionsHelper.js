@@ -1171,6 +1171,9 @@ define([
 				case "clear_debris_l":
 				case "bridge_gap":
 				case "recruit_follower":
+				case "dismiss_follower":
+				case "select_follower":
+				case "deselect_follower":
 					return PlayerActionConstants.requirements[baseActionID];
 				default:
 					return PlayerActionConstants.requirements[action];

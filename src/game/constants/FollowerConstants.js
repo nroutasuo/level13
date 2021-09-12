@@ -144,7 +144,7 @@ define(['ash',
 				return null;
 			}
 			
-			let abilityLevel = this.getRandomAbilityLevelByCampOrdinal(tempalte.abilityType, templateCampOrdinal);
+			let abilityLevel = this.getRandomAbilityLevelByCampOrdinal(template.abilityType, templateCampOrdinal);
 			
 			return new FollowerVO(followerID, template.name, template.abilityType, abilityLevel, template.icon);
 		},

@@ -2358,6 +2358,12 @@
         "create_blueprint": {
             "inCamp": true
         },
+		"deselect_follower": {
+            "inCamp": true
+		},
+		"dismiss_follower": {
+            "inCamp": true
+		},
         "fight": {
             "busy": false
         },
@@ -2791,6 +2797,9 @@
                 -1
             ]
         },
+		"select_follower": {
+            "inCamp": true
+		},
         "send_caravan": {
             "improvements": {
                 "tradepost": [

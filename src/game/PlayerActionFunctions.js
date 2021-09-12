@@ -997,20 +997,19 @@ define(['ash',
 				return;
 			}
 			
-			let party = followersComponent.getParty();
-			let maxParty = FollowerConstants.getMaxFollowersInParty();
-			
-			if (party.length >= maxParty) {
-				log.w("can't select follower: party already at max");
-				return;
-			}
-			
 			if (!follower) {
 				log.w("no such follower: " + followerID);
 				return;
 			}
 			
+			let followerType = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
+			let previous = followersComponent.getFollowerInPartyByType(followerType);
+			if (previous) {
+				followersComponent.setFollowerInParty(previous, false);
+			}
+			
 			followersComponent.setFollowerInParty(follower, true);
+			
 			GlobalSignals.followersChangedSignal.dispatch();
 		},
 		

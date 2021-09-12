@@ -31,9 +31,20 @@ function (Ash, FollowerVO, FollowerConstants, ItemConstants) {
 			return null;
 		},
 		
-		addFollower: function (follower, addToParty) {
+		getFollowerInPartyByType: function (followerType) {
+			for (let i = 0; i < this.followers.length; i++) {
+				if (this.followers[i].inParty) {
+					let type = FollowerConstants.getFollowerTypeForAbilityType(this.followers[i].abilityType);
+					if (type == followerType) {
+						return this.followers[i];
+					}
+				}
+			}
+			return null;
+		},
+		
+		addFollower: function (follower) {
 			this.followers.push(follower);
-			follower.inParty = true;
 		},
 		
 		setFollowerInParty: function (follower, inParty) {

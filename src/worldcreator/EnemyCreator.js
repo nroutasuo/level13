@@ -234,7 +234,8 @@ define([
 			let source = FollowerConstants.followerSource.EVENT;
 			let abilityType = FollowerConstants.abilityType.ATTACK;
 			let follower = FollowerConstants.getNewRandomFollower(source, campOrdinal, campOrdinal, abilityType);
-			typicalFollowers.addFollower(follower, true);
+			typicalFollowers.addFollower(follower);
+			typicalFollowers.setFollowerInParty(follower, true);
 			
 			return typicalFollowers;
 		},

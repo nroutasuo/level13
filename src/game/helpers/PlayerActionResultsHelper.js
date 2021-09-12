@@ -364,11 +364,17 @@ define([
 			}
 
 			if (rewards.gainedFollowers) {
-				let maxFollowers = FollowerConstants.getMaxFollowersInParty();
+				let maxFollowers = GameGlobals.campHelper.getCurrentMaxFollowersRecruited();
 				for (let i = 0; i < rewards.gainedFollowers.length; i++) {
 					let follower = rewards.gainedFollowers[i];
-					if (followersComponent.getParty().length < maxFollowers) {
-						followersComponent.addFollower(follower, true);
+					let followerType = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
+					let existingInParty = followersComponent.getFollowerInPartyByType(followerType);
+					let existingRecruited = followersComponent.getAll();
+					debugger
+					if (!existingInParty && existingRecruited.length < maxFollowers) {
+						followersComponent.addFollower(follower);
+						followersComponent.setFollowerInParty(follower, true);
+						GlobalSignals.followersChangedSignal.dispatch();
 					} else if (nearestCampNode) {
 						nearestCampNode.camp.pendingRecruits.push(follower);
 					}
