@@ -1330,7 +1330,7 @@ define([
 					let followerID = parseInt(action.replace(baseActionID + "_", ""));
 					let recruitComponent = GameGlobals.campHelper.findRecruitComponentWithFollowerId(followerID);
 					if (recruitComponent != null) {
-						this.addCosts(result, FollowerConstants.getRecruitCost(recruitComponent.follower, recruitComponent. isFoundAsReward));
+						this.addCosts(result, FollowerConstants.getRecruitCost(recruitComponent.follower, recruitComponent.isFoundAsReward));
 					}
 					break;
 

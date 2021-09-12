@@ -160,11 +160,21 @@ define(['ash',
 		},
 		
 		getRecruitCost: function (follower, isFoundAsReward) {
-			// TODO FOLLOWERS define varying costs (food, water, medicine, silver)
 			if (isFoundAsReward) return {};
 			let result = {};
-			result.resource_food = 50;
-			result.resource_water = 50;
+			
+			let costFactor = MathUtils.map(follower.abilityLevel, 1, 100, 1.0, 3.0);
+			let followerType = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
+			
+			if (followerType != FollowerConstants.followerType.SCAVENGER && follower.id % 2 == 0) {
+				result.resource_food = MathUtils.roundToMultiple(50 * costFactor, 5);
+				result.resource_water = MathUtils.roundToMultiple(50 * costFactor, 5);
+			} else if (followerType != FollowerConstants.followerType.FIGHTER && follower.id % 4 == 1) {
+				result.resource_fuel = MathUtils.roundToMultiple(10 * costFactor, 5);
+			} else {
+				result.silver = Math.round(1 * costFactor);
+			}
+			
 			return result;
 		},
 		
