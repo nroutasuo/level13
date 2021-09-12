@@ -60,6 +60,7 @@ define([
 			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.upgrades;
 
 			this.updateBubble();
+			// TODO performance bottleneck (GC rrelated to update status check)
 			this.updateUpgradesLists(isActive);
 		},
 		

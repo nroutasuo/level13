@@ -298,8 +298,8 @@ function (Ash, CanvasUtils,
 			var isRevealed = isScouted || this.isMapRevealed;
 
 			// border for sectors with hazards or sunlight
-			var isVisited = SectorConstants.isVisited(sectorStatus) || this.isSurveyed(sector);
-			if (isVisited || this.isMapRevealed) {
+			var isVisited = SectorConstants.isVisited(sectorStatus);
+			if (isVisited || this.isMapRevealed || this.isSurveyed(sector)) {
 				var isSectorSunlit = sectorFeatures.sunlit;
 				var hasSectorHazard = GameGlobals.sectorHelper.hasHazards(sectorFeatures, statusComponent);
 				if (isSectorSunlit || hasSectorHazard) {

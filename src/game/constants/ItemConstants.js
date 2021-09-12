@@ -227,6 +227,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		},
 		
 		getBagBonus: function (campOrdinal) {
+			// takes only account bag and no follower bonuses
 			let bag = this.getBag(campOrdinal);
 			if (!bag) {
 				return ItemConstants.PLAYER_DEFAULT_STORAGE;

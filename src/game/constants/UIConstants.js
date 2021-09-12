@@ -210,8 +210,9 @@ define(['ash',
 				case FollowerConstants.abilityType.SCAVENGE_SUPPLIES:
 					let suppliesBonus = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.scavenge_supplies);
 					return "+" + UIConstants.getMultiplierBonusDisplayValue(suppliesBonus) + " chance to find more supplies when scavenging";
-				case FollowerConstants.abilityType.BRING_METAL:
-					return "carries back some metal to camp";
+				case FollowerConstants.abilityType.SCAVENGE_CAPACITY:
+					let capacityBonus = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.bag);
+					return "+" + capacityBonus + " carry capacity";
 				default:
 					log.w("no display name defined for abilityType: " + abilityType);
 					return abilityType;

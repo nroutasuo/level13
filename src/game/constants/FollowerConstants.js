@@ -35,7 +35,14 @@ define(['ash',
 			SCAVENGE_GENERAL: "scavenge_general",
 			SCAVENGE_INGREDIENTS: "scavenge_ingredients",
 			SCAVENGE_SUPPLIES: "scavenge_supplies",
-			BRING_METAL: "bring_metal",
+			SCAVENGE_CAPACITY: "scavenge_capacity",
+		},
+		
+		animalType: {
+			DOG: "dog",
+			MULE: "mule",
+			BAT: "bat",
+			OLM: "olm"
 		},
 		
 		followerSource: {
@@ -48,6 +55,7 @@ define(['ash',
 		// camp ordinal -> blueprint
 		predefinedFollowers: {
 			2: { id: 2, localeType: localeTypes.maintenance, abilityType: "attack", name: "Ilma", icon: "img/followers/follower_black_f.png" },
+			4: { id: 4, localeType: localeTypes.warehouse, abilityType: "scavenge_capacity", name: "Dog", icon: "img/followers/follower_animal_dog.png" },
 			8: { id: 8, localeType: localeTypes.hermit, abilityType: "scavenge_supplies", name: "Zory", icon: "img/followers/follower_blue_m.png" },
 			10: { id: 10, localeType: localeTypes.market, abilityType: "cost_scout", name: "Erdene", icon: "img/followers/follower_green_m.png" },
 			14: { id: 14, localeType: localeTypes.library, abilityType: "scavenge_ingredients", name: "Arushi", icon: "img/followers/follower_yellow_f.png" },
@@ -91,18 +99,29 @@ define(['ash',
 			let id = 100 + Math.floor(Math.random() * 100000);
 			
 			let availableAbilityTypes = this.getAvailableAbilityTypes(source, campOrdinal);
-			let abilityType = FollowerConstants.abilityType.HAZARD_PREDICTION;// forcedAbilityType || availableAbilityTypes[Math.floor(Math.random() * availableAbilityTypes.length)];
+			let abilityType = forcedAbilityType || availableAbilityTypes[Math.floor(Math.random() * availableAbilityTypes.length)];
 			
 			let minAbilityLevel = MathUtils.map(campOrdinal - 1, 0, WorldConstants.CAMPS_TOTAL + 1, 1, 100);
 			let maxAbilityLevel = MathUtils.map(campOrdinal + 1, 0, WorldConstants.CAMPS_TOTAL + 1, 1, 100);
 			let abilityLevel = MathUtils.randomIntBetween(minAbilityLevel, maxAbilityLevel);
 			
-			let gender = CultureConstants.getRandomGender();
-			let origin = CultureConstants.getRandomOrigin(appearLevel);
-			let culturalHeritage = CultureConstants.getRandomCultures(MathUtils.randomIntBetween(0, 3), origin);
-			let name = CultureConstants.getRandomShortName(gender, origin, culturalHeritage);
+			let name = "";
+			let icon = "";
 			
-			let icon = this.getRandomIcon(gender, abilityType);
+			let isAnimal = abilityType == FollowerConstants.abilityType.SCAVENGE_CAPACITY;
+			
+			if (isAnimal) {
+				let animalKeys = Object.keys(FollowerConstants.animalType);
+				let animalType = FollowerConstants.animalType[animalKeys[MathUtils.randomIntBetween(0, animalKeys.length)]];
+				name = this.getRandomAnimalName(animalType);
+				icon = this.getRandomAnimalIcon(animalType);
+			} else {
+				let gender = CultureConstants.getRandomGender();
+				let origin = CultureConstants.getRandomOrigin(appearLevel);
+				let culturalHeritage = CultureConstants.getRandomCultures(MathUtils.randomIntBetween(0, 3), origin);
+				name = CultureConstants.getRandomShortName(gender, origin, culturalHeritage);
+				icon = this.getRandomIcon(gender, abilityType);
+			}
 			
 			return new FollowerVO(id, name, abilityType, abilityLevel, icon);
 		},
@@ -151,9 +170,6 @@ define(['ash',
 			if (campOrdinal > firstFollowerCampOrdinal + 2) {
 				result.push(FollowerConstants.abilityType.HAZARD_PREDICTION);
 			}
-			if (campOrdinal > firstFollowerCampOrdinal + 3) {
-				result.push(FollowerConstants.abilityType.BRING_METAL);
-			}
 			
 			// midgame
 			if (campOrdinal > WorldConstants.CAMP_ORDINAL_GROUND) {
@@ -168,6 +184,30 @@ define(['ash',
 			}
 			
 			return result;
+		},
+		
+		getRandomAnimalName: function (animalType) {
+			switch (animalType) {
+				case FollowerConstants.animalType.DOG:
+					return "dog";
+				case FollowerConstants.animalType.MULE:
+					return "blind mule";
+				case FollowerConstants.animalType.BAT:
+					return "giant bat";
+				case FollowerConstants.animalType.OLM:
+					return "giant olm";
+				default:
+					return "monitor lizard";
+			}
+		},
+		
+		getRandomAnimalIcon: function (animalType) {
+			switch (animalType) {
+				case FollowerConstants.animalType.DOG:
+					return "img/followers/follower_animal_dog.png"
+				default:
+					return "img/followers/follower_animal_generic.png"
+			}
 		},
 		
 		getRandomIcon: function (gender, abilityType) {
@@ -198,7 +238,7 @@ define(['ash',
 				case this.abilityType.SCAVENGE_GENERAL: return this.followerType.SCAVENGER;
 				case this.abilityType.SCAVENGE_INGREDIENTS: return this.followerType.SCAVENGER;
 				case this.abilityType.SCAVENGE_SUPPLIES: return this.followerType.SCAVENGER;
-				case this.abilityType.BRING_METAL: return this.followerType.SCAVENGER;
+				case this.abilityType.SCAVENGE_CAPACITY: return this.followerType.SCAVENGER;
 				default:
 					log.w("no followerType defined for abilityType: " + abilityType);
 					return this.followerType.EXPLORER;
@@ -216,7 +256,7 @@ define(['ash',
 				case this.abilityType.SCAVENGE_GENERAL: return "general scavenging";
 				case this.abilityType.SCAVENGE_INGREDIENTS: return "ingredient scavenging";
 				case this.abilityType.SCAVENGE_SUPPLIES: return "supplies scavenging";
-				case this.abilityType.BRING_METAL: return "builder";
+				case this.abilityType.SCAVENGE_CAPACITY: return "pack animal";
 				default:
 					log.w("no display name defined for abilityType: " + abilityType);
 					return abilityType;
@@ -300,6 +340,12 @@ define(['ash',
 					minBonus = 1.1;
 					maxBonus = 1.5;
 					roundingStep = 0.1;
+					break;
+				case ItemConstants.itemBonusTypes.bag:
+					abilityLevel = FollowerConstants.getAbilityLevel(follower, FollowerConstants.abilityType.SCAVENGE_CAPACITY);
+					minBonus = 5;
+					maxBonus = 20;
+					roundingStep = 5;
 					break;
 				default:
 					log.w("no follower item bonus defined for item bonus type: " + itemBonusType);
