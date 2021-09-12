@@ -1,6 +1,7 @@
 // Checks hunger & thirst when exploring and determines when, and how, the player faints
 define([
 	'ash',
+	'utils/MathUtils',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
@@ -24,6 +25,7 @@ define([
 	'game/components/common/LogMessagesComponent',
 	'game/systems/PlayerPositionSystem'
 ], function (Ash,
+	MathUtils,
 	GameGlobals,
 	GlobalSignals,
 	GameConstants,
@@ -97,6 +99,7 @@ define([
 			// Player is hungry or thirsty or out of stamina and is out exploring
 			
 			var hasDeity = this.playerStatsNodes.head.entity.has(DeityComponent);
+			let hasFollowers = this.playerStatsNodes.head.followers.getParty().length > 0;
 			var hasLastVisitedCamp = this.lastVisitedCampNodes.head !== null;
 			var hasCampOnLevel = this.nearestCampNodes.head !== null;
 			
@@ -122,6 +125,15 @@ define([
 				return;
 			}
 			
+			if (hasFollowers && this.lastVisitedCampNodes.head && Math.random() < 0.1) {
+				let party = this.playerStatsNodes.head.followers.getParty();
+				let follower = party[MathUtils.randomIntBetween(0, party.length)];
+				msgMain = "Weak and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>You wake up back in camp. <span class='hl-functionality'>" + follower.name + "</span> brought you back.";
+				msgLog = "The world fades. You wake up back in camp.";
+				this.fadeOut(msgMain, msgLog, true, this.lastVisitedCampNodes.head.entity, 0, 0.5, 0);
+				return;
+			}
+			
 			// pass out and teleport to last visited camp: lose items, back to last visited camp, injury
 			if (hasLastVisitedCamp) {
 				this.fadeOutToLastVisitedCamp(true, msgAdjective);
@@ -134,6 +146,8 @@ define([
 				this.fadeOutToOutside(msgAdjective);
 				return;
 			}
+			
+			log.w("can't faint: no known safe sector or camp");
 		},
 		
 		isSectorSafe: function (sector) {
