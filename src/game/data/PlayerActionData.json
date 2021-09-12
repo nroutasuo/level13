@@ -2769,7 +2769,12 @@
                 "scouted": true
             }
         },
-        "scavenge": {
+        "recruit_follower": {
+			"followers": {
+				"maxRecruited": false
+			}
+		},
+		"scavenge": {
             "busy": false,
             "vision": [
                 10,

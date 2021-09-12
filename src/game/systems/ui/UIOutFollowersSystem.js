@@ -43,9 +43,8 @@ define([
 		refresh: function () {
 			$("#tab-header h2").text("Exploration party");
 			
-			let maxParty = FollowerConstants.getMaxFollowersInParty();
 			let maxRecruited = GameGlobals.campHelper.getCurrentMaxFollowersRecruited();
-			$("#followers-max").text("Maximum followers: " + maxRecruited + "(" + maxParty + ")");
+			$("#followers-max").text("Maximum followers: " + maxRecruited);
 			
 			this.updateFollowers();
 			this.refreshRecruits();

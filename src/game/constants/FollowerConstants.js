@@ -90,7 +90,7 @@ define(['ash',
 		},
 		
 		getMaxFollowersInParty: function () {
-			return 3;
+			return Object.keys(FollowerConstants.followerType).length;
 		},
 		
 		getNewRandomFollower: function (source, campOrdinal, appearLevel, forcedAbilityType) {
@@ -98,12 +98,13 @@ define(['ash',
 			
 			let id = 100 + Math.floor(Math.random() * 100000);
 			
-			let availableAbilityTypes = this.getAvailableAbilityTypes(source, campOrdinal);
-			let abilityType = forcedAbilityType || availableAbilityTypes[Math.floor(Math.random() * availableAbilityTypes.length)];
+			let abilityType = forcedAbilityType;
+			if (!abilityType) {
+				let availableAbilityTypes = this.getAvailableAbilityTypes(source, campOrdinal);
+				abilityType = availableAbilityTypes[Math.floor(Math.random() * availableAbilityTypes.length)];
+			}
 			
-			let minAbilityLevel = MathUtils.map(campOrdinal - 1, 0, WorldConstants.CAMPS_TOTAL + 1, 1, 100);
-			let maxAbilityLevel = MathUtils.map(campOrdinal + 1, 0, WorldConstants.CAMPS_TOTAL + 1, 1, 100);
-			let abilityLevel = MathUtils.randomIntBetween(minAbilityLevel, maxAbilityLevel);
+			let abilityLevel = this.getRandomAbilityLevelByCampOrdinal(abilityType, campOrdinal);
 			
 			let name = "";
 			let icon = "";
@@ -128,10 +129,12 @@ define(['ash',
 		
 		getNewPredefinedFollower: function (followerID) {
 			let template = null;
+			let templateCampOrdinal = 1;
 			for (let campOrdinal in this.predefinedFollowers) {
 				let t = this.predefinedFollowers[campOrdinal];
 				if (t.id == followerID) {
 					template = t;
+					templateCampOrdinal = campOrdinal;
 					break;
 				}
 			}
@@ -141,7 +144,19 @@ define(['ash',
 				return null;
 			}
 			
-			return new FollowerVO(followerID, template.name, template.abilityType, 1, template.icon);
+			let abilityLevel = this.getRandomAbilityLevelByCampOrdinal(tempalte.abilityType, templateCampOrdinal);
+			
+			return new FollowerVO(followerID, template.name, template.abilityType, abilityLevel, template.icon);
+		},
+		
+		getRandomAbilityLevelByCampOrdinal: function (abilityType, campOrdinal) {
+			let minCampOrdinal = Math.min(campOrdinal, this.getUnlockCampOrdinal(abilityType));
+			let maxCampOrdinal = WorldConstants.CAMPS_TOTAL;
+			
+			let minAbilityLevel = MathUtils.map(campOrdinal - 1, minCampOrdinal - 1, maxCampOrdinal + 1, 1, 100);
+			let maxAbilityLevel = MathUtils.map(campOrdinal + 1, minCampOrdinal - 1, maxCampOrdinal + 1, 1, 100);
+			let abilityLevel = MathUtils.randomIntBetween(minAbilityLevel, maxAbilityLevel);
+			return abilityLevel;
 		},
 		
 		getRecruitCost: function (follower, isFoundAsReward) {
@@ -155,35 +170,48 @@ define(['ash',
 		
 		getAvailableAbilityTypes: function (source, campOrdinal) {
 			let result = [];
-			let firstFollowerCampOrdinal = FollowerConstants.FIRST_FOLLOWER_CAMP_ORDINAL;
 			
-			result.push(FollowerConstants.abilityType.ATTACK);
-			result.push(FollowerConstants.abilityType.DEFENCE);
-			
-			// initial stepped unlocks after first follower
-			if (campOrdinal > firstFollowerCampOrdinal) {
-				result.push(FollowerConstants.abilityType.COST_SCOUT);
-			}
-			if (campOrdinal > firstFollowerCampOrdinal + 1) {
-				result.push(FollowerConstants.abilityType.COST_SCAVENGE);
-			}
-			if (campOrdinal > firstFollowerCampOrdinal + 2) {
-				result.push(FollowerConstants.abilityType.HAZARD_PREDICTION);
-			}
-			
-			// midgame
-			if (campOrdinal > WorldConstants.CAMP_ORDINAL_GROUND) {
-				result.push(FollowerConstants.abilityType.SCAVENGE_INGREDIENTS);
-				result.push(FollowerConstants.abilityType.SCAVENGE_SUPPLIES);
-			}
-			
-			// lategame
-			if (campOrdinal >= WorldConstants.CAMPS_TOTAL - 5) {
-				result.push(FollowerConstants.abilityType.COST_MOVEMENT);
-				result.push(FollowerConstants.abilityType.SCAVENGE_GENERAL);
+			for (let k in FollowerConstants.abilityType) {
+				let abilityType = FollowerConstants.abilityType[k];
+				let unlockCampOrdinal = this.getUnlockCampOrdinal(abilityType);
+				if (unlockCampOrdinal <= campOrdinal) {
+					result.push(abilityType);
+				}
 			}
 			
 			return result;
+		},
+		
+		getUnlockCampOrdinal: function (abilityType) {
+			let firstFollowerCampOrdinal = FollowerConstants.FIRST_FOLLOWER_CAMP_ORDINAL;
+			
+			switch (abilityType) {
+				// fighter
+				case FollowerConstants.abilityType.ATTACK:
+				case FollowerConstants.abilityType.DEFENCE:
+					return firstFollowerCampOrdinal;
+				// explorer
+				case FollowerConstants.abilityType.COST_SCOUT:
+					return firstFollowerCampOrdinal + 1;
+				case FollowerConstants.abilityType.COST_SCAVENGE:
+					return firstFollowerCampOrdinal + 2;
+				case FollowerConstants.abilityType.HAZARD_PREDICTION:
+					return firstFollowerCampOrdinal + 3;
+				case FollowerConstants.abilityType.COST_MOVEMENT:
+					return WorldConstants.CAMP_ORDINAL_GROUND + 4;
+				// scavenger
+				case FollowerConstants.abilityType.SCAVENGE_INGREDIENTS:
+					return firstFollowerCampOrdinal + 4;
+				case FollowerConstants.abilityType.SCAVENGE_SUPPLIES:
+					return WorldConstants.CAMP_ORDINAL_GROUND;
+				case FollowerConstants.abilityType.SCAVENGE_CAPACITY:
+					return WorldConstants.CAMP_ORDINAL_GROUND + 2;
+				case FollowerConstants.abilityType.SCAVENGE_GENERAL:
+					return WorldConstants.CAMP_ORDINAL_GROUND + 3;
+				default:
+				 	log.w("no unlock camp ordinal defined for Follower ability type: " + abilityType);
+					return 1;
+			}
 		},
 		
 		getRandomAnimalName: function (animalType) {

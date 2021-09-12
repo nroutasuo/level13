@@ -480,16 +480,15 @@ define([
 						}
 					}
 					
-					if (typeof requirements.max_followers_recruited_reached !== "undefined") {
-						var followersComponent = this.playerStatsNodes.head.followers;
-						var numCurrentFollowers = followersComponent.getAll().length;
-						var numMaxFollowers = GameGlobals.campHelper.getCurrentMaxFollowersRecruited();
-						var currentValue = numCurrentFollowers >= numMaxFollowers;
-						var requiredValue = requirements.max_followers_recruited_reached;
-						if (currentValue !== requiredValue) {
-							if (currentValue) reason = "Max followers reached.";
-							else reason = "Must have max followers to do this.";
-							return { value: 0, reason: reason };
+					if (requirements.followers) {
+						if (typeof requirements.followers.maxRecruited !== "undefined") {
+							var followersComponent = this.playerStatsNodes.head.followers;
+							var numCurrentFollowers = followersComponent.getAll().length;
+							var numMaxFollowers = GameGlobals.campHelper.getCurrentMaxFollowersRecruited();
+							var currentValue = numCurrentFollowers >= numMaxFollowers;
+							var requiredValue = requirements.followers.maxRecruited;
+							let result = this.checkRequirementsBoolean(requiredValue, currentValue, "Maximum followers recruited", "Maximum followers not recruited");
+							if (result) return result;
 						}
 					}
 
@@ -852,6 +851,14 @@ define([
 			}
 			return null;
 		},
+		
+		checkRequirementsBoolean: function (requiredValue, currentValue, rejectTrueReason, rejectFalseReason) {
+			if (requiredValue != currentValue) {
+				var reason = requiredValue ? rejectFalseReason : rejectTrueReason;
+				return { value: 0, reason: reason };
+			}
+			return null;
+		},
 
 		// Check the costs of an action; returns lowest fraction of the cost player can cover; >1 means the action is available
 		checkCosts: function(action, doLog, otherSector) {
@@ -1163,6 +1170,7 @@ define([
 				case "clear_debris_e":
 				case "clear_debris_l":
 				case "bridge_gap":
+				case "recruit_follower":
 					return PlayerActionConstants.requirements[baseActionID];
 				default:
 					return PlayerActionConstants.requirements[action];
