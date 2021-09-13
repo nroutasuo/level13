@@ -26,7 +26,6 @@ define([
 	'game/systems/ui/UIOutFightSystem',
 	'game/systems/ui/UIOutLogSystem',
 	'game/systems/ui/UIOutManageSaveSystem',
-	'game/systems/ui/UIOutPopupInnSystem',
 	'game/systems/ui/UIOutPopupTradeSystem',
 	'game/systems/ui/UIOutPopupInventorySystem',
 	'game/systems/ui/UIOutTabBarSystem',
@@ -86,7 +85,6 @@ define([
 	UIOutFightSystem,
 	UIOutLogSystem,
 	UIOutManageSaveSystem,
-	UIOutPopupInnSystem,
 	UIOutPopupTradeSystem,
 	UIOutPopupInventorySystem,
 	UIOutTabBarSystem,
@@ -213,7 +211,6 @@ define([
 			this.engine.addSystem(new UIOutManageSaveSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupInventorySystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupTradeSystem(), SystemPriorities.render);
-			this.engine.addSystem(new UIOutPopupInnSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutTabBarSystem(), SystemPriorities.render);
 
 			if (GameConstants.isCheatsEnabled) {

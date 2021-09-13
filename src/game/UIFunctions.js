@@ -229,9 +229,6 @@ define(['ash',
 					GameGlobals.fightHelper.endFight(false);
 					GameGlobals.playerActionFunctions.flee();
 				});
-				$(scope + "#inn-popup-btn-cancel").click(function (e) {
-					uiFunctions.popupManager.closePopup("inn-popup");
-				});
 				$(scope + "#incoming-caravan-popup-cancel").click(function (e) {
 					uiFunctions.popupManager.closePopup("incoming-caravan-popup");
 				});
@@ -1084,10 +1081,6 @@ define(['ash',
 			showFight: function () {
 				if (GameGlobals.gameState.uiStatus.isHidden) return;
 				this.showSpecialPopup("fight-popup");
-			},
-
-			showInnPopup: function (availableFollowers) {
-				this.showSpecialPopup("inn-popup");
 			},
 
 			showIncomingCaravanPopup: function () {
