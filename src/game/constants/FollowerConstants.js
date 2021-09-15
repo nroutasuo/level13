@@ -301,14 +301,14 @@ define(['ash',
 			}
 		},
 		
-		getFollowerTypeDisplayName: function (abilityType) {
-			let type = this.getFollowerTypeForAbilityType(abilityType);
-			switch (type) {
+		getFollowerTypeDisplayName: function (followerType) {
+			switch (followerType) {
 				case this.followerType.FIGHTER: return "fighter";
 				case this.followerType.EXPLORER: return "explorer";
 				case this.followerType.SCAVENGER: return "scavenger";
 				default:
 					log.w("no display name defined for follower type: " + type);
+					return "";
 			}
 		},
 		

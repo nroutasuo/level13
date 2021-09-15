@@ -16,8 +16,11 @@ define([
 		playerStatsNodes: null,
 		
 		bubbleNumber: -1,
+		
+		followerSlotElementsByType: {},
 
 		constructor: function () {
+			this.initElements();
 			return this;
 		},
 
@@ -34,6 +37,25 @@ define([
 			this.playerLocationNodes = null;
 			this.playerStatsNodes = null;
 			GlobalSignals.removeAll(this);
+		},
+		
+		initElements: function ()  {
+			var slotsContainer = $("#container-party-slots");
+			for (k in FollowerConstants.followerType) {
+				let followerType = FollowerConstants.followerType[k];
+				let slotID = "item-slot-" + followerType;
+				let slot = "<div id='" + slotID + "' class='follower-slot follower-slot-big lvl13-box-1'>";
+				slot += "<span class='follower-slot-type-empty'>" + FollowerConstants.getFollowerTypeDisplayName(followerType) + "</span>";
+				slot += "<span class='follower-slot-type-selected'>" + FollowerConstants.getFollowerTypeDisplayName(followerType) + "</span>";
+				slot += "<span class='follower-slot-follower'></span>";
+				slot += "</div> ";
+				slotsContainer.append(slot);
+				
+				let $slot =  $("#" + slotID);
+				this.followerSlotElementsByType[followerType] = {};
+				this.followerSlotElementsByType[followerType].slot = $slot;
+				this.followerSlotElementsByType[followerType].container = $slot.find(".follower-slot-follower");
+			}
 		},
 
 		update: function (time) {
@@ -88,20 +110,51 @@ define([
 			
 			var followersComponent = this.playerStatsNodes.head.followers;
 			var followers = followersComponent.getAll();
+			
+			// slots
+			let selectedFollowers = [];
+			for (k in FollowerConstants.followerType) {
+				let followerType = FollowerConstants.followerType[k];
+				let selectedFollower = followersComponent.getFollowerInPartyByType(followerType);
+				this.updateSelectedFollowerSlot(followerType, selectedFollower);
+				selectedFollowers.push(selectedFollower);
+			}
+			
+			// other followers
 			$("#list-followers").empty();
 			for (let i = 0; i < followers.length; i++) {
 				var follower = followers[i];
+				if (selectedFollowers.indexOf(follower) >= 0) continue;
 				var li = "<li>" + UIConstants.getFollowerDiv(follower) + "</li>";
 				$("#list-followers").append(li);
 			}
 			
 			var hasFollowers = followers.length > 0;
 			var showFollowers = hasFollowers || GameGlobals.gameState.unlockedFeatures.followers;
+			
 			GameGlobals.uiFunctions.toggle("#list-followers", hasFollowers);
 			GameGlobals.uiFunctions.toggle("#header-followers", showFollowers);
 			GameGlobals.uiFunctions.toggle("#followers-empty", showFollowers && !hasFollowers);
+			
 			GameGlobals.uiFunctions.generateCallouts("#list-followers");
+			GameGlobals.uiFunctions.generateCallouts("#container-party-slots");
 			GameGlobals.uiFunctions.registerActionButtonListeners("#list-followers");
+			GameGlobals.uiFunctions.registerActionButtonListeners("#container-party-slots");
+		},
+		
+		updateSelectedFollowerSlot: function (followerType, follower) {
+			let elements = this.followerSlotElementsByType[followerType];
+			let $slot = elements.slot;
+			let $container = elements.container;
+			
+			GameGlobals.uiFunctions.toggle($slot.find(".follower-slot-type-empty"), follower == null);
+			GameGlobals.uiFunctions.toggle($slot.find(".follower-slot-type-selected"), follower != null);
+			
+			$container.empty();
+			
+			if (follower) {
+				$container.append(UIConstants.getFollowerDiv(follower));
+			}
 		},
 		
 		getNumRecruits: function () {

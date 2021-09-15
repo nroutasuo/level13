@@ -688,13 +688,13 @@ table .bubble {
 	border: 1px solid @color-border-warning !important;
 }
 
-// ITEM SLOTS
+// ITEM AND FOLLOWER SLOTS
 
 @item-slot-big-width: 55px;
 @item-slot-big-height: 70px;
 @item-div-size: 18px;
 
-.item-slot {
+.item-slot, .follower-slot {
 	background: inherit !important;
 	margin: 0px 2px 2px 0px;
 	padding: 0;
@@ -704,17 +704,17 @@ table .bubble {
 	position: relative;
 }
 
-.item-slot.highlighted {
+.item-slot.highlighted, .follower-slot-highlighted {
 	border-color: lighten(@color-border-strong, 15%);
 	color: lighten(@color-text-default, 15%);
 }
 
-.item-slot-big {
+.item-slot-big, .follower-slot-big {
 	width: @item-slot-big-width;
 	height: @item-slot-big-height;
 }
 
-.item-slot-small {
+.item-slot-small, .follower-slot-small {
 	width: 37px;
 	height: 37px;
 }
@@ -727,7 +727,8 @@ table .bubble {
 	background: @color-bg-element-1;
 }
 
-.item-slot-type-empty {
+.item-slot-type-empty, .follower-slot-type-empty {
+	font-size: @font-size-small;
 	text-align: center;
 	width: @item-slot-big-width;
 	height: @item-slot-big-height;
@@ -737,7 +738,8 @@ table .bubble {
 	font-style: oblique;
 }
 
-.item-slot-type-equipped {
+.item-slot-type-equipped, .follower-slot-type-empty {
+	font-size: @font-size-small;
 	text-align: center;
 	width: @item-slot-big-width;
 	height: @item-slot-big-height;
@@ -754,7 +756,7 @@ table .bubble {
 	top: @item-slot-big-height / 2 - @item-div-size + 10px;
 }
 
-.item-slot-name, .item-slot-type-equipped {
+.item-slot-name, .item-slot-type-equipped, .follower-slot-type-selected {
 	background-color: @color-bg-element-1;
 	width: 100%;
 	text-align: center;
@@ -778,7 +780,7 @@ table .bubble {
 	opacity: 0;
 }
 
-.item-slot-type-equipped {
+.item-slot-type-equipped, .follower-slot-type-selected {
 	top: 0px;
 }
 
@@ -788,8 +790,13 @@ table .bubble {
 
 div.item-slot > div, div.item-slot > span {
 	position: absolute;
-	font-size: @font-size-small;
 	cursor: default;
+}
+
+.follower-slot-follower {
+	width: 100%;
+	display: block;
+	text-align: center;
 }
 
 // ITEM AND RESOURCE DIVS

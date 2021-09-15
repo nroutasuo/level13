@@ -160,9 +160,10 @@ define(['ash',
 		},
 		
 		getFollowerCallout: function (follower) {
+			let followerType = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
 			let result = "<b>" + follower.name + "</b>";
 			result += "<br/>In party: " + (follower.inParty ? "yes" : "no");
-			result += "<br/>Type: " + FollowerConstants.getFollowerTypeDisplayName(follower.abilityType);
+			result += "<br/>Type: " + FollowerConstants.getFollowerTypeDisplayName(followerType);
 			result += "<br/>Ability: " + FollowerConstants.getAbilityTypeDisplayName(follower.abilityType)
 				+ " (" + UIConstants.getFollowerAbilityDescription(follower) + ")";
 			
