@@ -238,7 +238,7 @@ define([
 			var iconTD = "<td style='padding: 0px 3px'>";
 			var hasBlueprint = this.tribeNodes.head.upgrades.getBlueprint(upgradeDefinition.id);
 			if (hasBlueprint)
-				iconTD += "<span class='" + classes + "'><div class='info-callout-target info-callout-target-small' description='blueprint'><img src='img/items/blueprint.png'/></div></span>";
+				iconTD += "<span class='" + classes + "'><div class='info-callout-target info-callout-target-small' description='blueprint'><img src='img/items/blueprint.png' alt='blueprint'/></div></span>";
 			iconTD += "</td>";
 
 			var effectDesc = "<span class='p-meta'>" + this.getEffectDescription(upgradeDefinition.id, status) + "</span>"

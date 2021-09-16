@@ -28,9 +28,10 @@ define([
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 			
-			GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
 			GlobalSignals.add(this, GlobalSignals.followersChangedSignal, this.onFollowersChanged);
+			GlobalSignals.add(this, GlobalSignals.campEventStartedSignal, this.onCampEventStarted);
+			GlobalSignals.add(this, GlobalSignals.campEventEndedSignal, this.onCampEventEnded);
 		},
 
 		removeFromEngine: function (engine) {
@@ -63,10 +64,14 @@ define([
 		},
 		
 		refresh: function () {
+			var followersComponent = this.playerStatsNodes.head.followers;
+			let totalRecruited = followersComponent.getAll().length;
+			let inCamp = GameGlobals.playerHelper.isInCamp();
+			
 			$("#tab-header h2").text("Exploration party");
 			
-			let maxRecruited = GameGlobals.campHelper.getCurrentMaxFollowersRecruited();
-			$("#followers-max").text("Maximum followers: " + maxRecruited);
+			GameGlobals.uiFunctions.toggle($("#tab-followers-section-recruits"), inCamp && GameGlobals.campHelper.getTotalNumImprovementsBuilt(improvementNames.inn) > 0);
+			GameGlobals.uiFunctions.toggle($("#tab-followers-section-unselected"), inCamp && totalRecruited > 0);
 			
 			this.updateFollowers();
 			this.refreshRecruits();
@@ -92,8 +97,11 @@ define([
 			GameGlobals.uiFunctions.toggle($("#recruits-empty-message"), recruitComponent == null);
 			if (recruitComponent && recruitComponent.follower) {
 				let follower = recruitComponent.follower;
+				let followerType = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
 				let tr = "<tr>";
-				tr += "<td class='item-name'>Follower</td>";
+				tr += "<td class='maxwidth'>" + FollowerConstants.getFollowerTypeDisplayName(followerType) + " " + follower.name + "</td>";
+				tr += "<td>" + UIConstants.getFollowerDiv(follower, false) + "</td>";
+				tr += "<td>" + (recruitComponent.isFoundAsReward ? this.getFoundRecruitIcon() : "") + "</td>";
 				tr += "<td><button class='action recruit-select' action='recruit_follower_" + follower.id + "'>Recruit</button></td>";
 				tr += "<td><button class='action recruit-dismiss btn-secondary' action='dismiss_recruit_" + follower.id + "'>Dismiss</button></td>";
 				tr += "</tr>";
@@ -110,6 +118,9 @@ define([
 			
 			var followersComponent = this.playerStatsNodes.head.followers;
 			var followers = followersComponent.getAll();
+			let maxRecruited = GameGlobals.campHelper.getCurrentMaxFollowersRecruited();
+			
+			$("#followers-max").text("Total followers: " + + followers.length + "/" + maxRecruited);
 			
 			// slots
 			let selectedFollowers = [];
@@ -125,7 +136,7 @@ define([
 			for (let i = 0; i < followers.length; i++) {
 				var follower = followers[i];
 				if (selectedFollowers.indexOf(follower) >= 0) continue;
-				var li = "<li>" + UIConstants.getFollowerDiv(follower) + "</li>";
+				var li = "<li>" + UIConstants.getFollowerDiv(follower, true) + "</li>";
 				$("#list-followers").append(li);
 			}
 			
@@ -153,8 +164,14 @@ define([
 			$container.empty();
 			
 			if (follower) {
-				$container.append(UIConstants.getFollowerDiv(follower));
+				$container.append(UIConstants.getFollowerDiv(follower, true));
 			}
+		},
+		
+		getFoundRecruitIcon: function () {
+			var sunlit = $("body").hasClass("sunlit");
+			var img = "<img src='img/eldorado/" + (sunlit ? "icon-star.png" : "icon-star-dark.png") + "' class='icon-ui-generic' alt='reward' />";
+			return "<span class='icon info-callout-target info-callout-target-small' description='met while exploring'>" + img + "<span>";
 		},
 		
 		getNumRecruits: function () {
@@ -163,7 +180,12 @@ define([
 			return 0;
 		},
 		
-		onGameStarted: function () {
+		onCampEventStarted: function () {
+			this.refreshRecruits();
+		},
+		
+		onCampEventEnded: function () {
+			this.refreshRecruits();
 		},
 		
 		onTabChanged: function () {

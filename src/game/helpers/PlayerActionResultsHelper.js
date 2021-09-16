@@ -370,7 +370,6 @@ define([
 					let followerType = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
 					let existingInParty = followersComponent.getFollowerInPartyByType(followerType);
 					let existingRecruited = followersComponent.getAll();
-					debugger
 					if (!existingInParty && existingRecruited.length < maxFollowers) {
 						followersComponent.addFollower(follower);
 						followersComponent.setFollowerInParty(follower, true);

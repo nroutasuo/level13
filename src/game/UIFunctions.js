@@ -438,6 +438,9 @@ define(['ash',
 						var value = costs[key];
 						enabledContent += "<span class='action-cost action-cost-" + key + "'>" + name + ": <span class='action-cost-value'>" + UIConstants.getDisplayValue(value) + "</span><br/></span>";
 					}
+				} else if (this.isActionFreeCostShown(action)) {
+					if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
+					enabledContent += "<span class='action-cost p-meta'>free</span><br />";
 				}
 
 				var duration = PlayerActionConstants.getDuration(baseActionId);
@@ -916,6 +919,14 @@ define(['ash',
 					$e = $e.parent();
 				}
 				return (($element).is(":visible"));
+			},
+			
+			isActionFreeCostShown: function (action) {
+				var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
+				switch (baseId) {
+					case "recruit_follower": return true;
+				}
+				return false;
 			},
 
 			stopButtonCooldown: function (button) {

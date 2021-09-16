@@ -148,10 +148,10 @@ define(['ash',
 			return html;
 		},
 		
-		getFollowerDiv: function (follower) {
+		getFollowerDiv: function (follower, isRecruited) {
 			let classes = "item";
 			let div = "<div class='" + classes + "'>";
-			let calloutContent = this.getFollowerCallout(follower);
+			let calloutContent = this.getFollowerCallout(follower, isRecruited);
 			div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
 			div += "<img src='" + follower.icon + "'/>";
 			div += "</div>";
@@ -159,27 +159,31 @@ define(['ash',
 			return div;
 		},
 		
-		getFollowerCallout: function (follower) {
+		getFollowerCallout: function (follower, isRecruited) {
 			let followerType = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
 			let result = "<b>" + follower.name + "</b>";
-			result += "<br/>In party: " + (follower.inParty ? "yes" : "no");
+			if (isRecruited) {
+				result += "<br/>In party: " + (follower.inParty ? "yes" : "no");
+			}
 			result += "<br/>Type: " + FollowerConstants.getFollowerTypeDisplayName(followerType);
 			result += "<br/>Ability: " + FollowerConstants.getAbilityTypeDisplayName(follower.abilityType)
 				+ " (" + UIConstants.getFollowerAbilityDescription(follower) + ")";
 			
-			var makeButton = function (action, name) {
-				 return "<button class='action btn-narrow' action='" + action + "'>" + name + "</button>";
-			};
+			if (isRecruited) {
+				var makeButton = function (action, name) {
+					 return "<button class='action btn-narrow' action='" + action + "'>" + name + "</button>";
+				};
 
-			var options = "<div class='item-bag-options'>";
-			options += makeButton("dismiss_follower_" + follower.id, "Dismiss");
-			if (!follower.inParty) {
-				options += makeButton("select_follower_" + follower.id, "Add to party");
-			} else {
-				options += makeButton("deselect_follower_" + follower.id, "Remove from party");
+				var options = "<div class='item-bag-options'>";
+				options += makeButton("dismiss_follower_" + follower.id, "Dismiss");
+				if (!follower.inParty) {
+					options += makeButton("select_follower_" + follower.id, "Add to party");
+				} else {
+					options += makeButton("deselect_follower_" + follower.id, "Remove from party");
+				}
+				options += "</div>";
+				result += options;
 			}
-			options += "</div>";
-			result += options;
 
 			return result;
 		},

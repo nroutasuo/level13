@@ -58,6 +58,8 @@ define(['ash',], function (Ash) {
 		
 		// other
 		fightUpdateSignal: new Ash.Signals.Signal(),
+		campEventStartedSignal: new Ash.Signals.Signal(),
+		campEventEndedSignal: new Ash.Signals.Signal(),
 
 		// game events
 		gameStateReadySignal: new Ash.Signals.Signal(),

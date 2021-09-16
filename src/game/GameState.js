@@ -23,6 +23,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 				vision: false,
 				camp: false,
 				fight: false,
+				followers: false,
 				investigate: false,
 				bag: false,
 				upgrades: false,

@@ -51,6 +51,7 @@ define(['ash',
 		},
 		
 		MAX_ABILITY_LEVEL: 100,
+		MAX_FOLLOWERS_BASE: 1,
 		
 		// camp ordinal -> blueprint
 		predefinedFollowers: {
@@ -82,7 +83,7 @@ define(['ash',
 		],
 		
 		getMaxFollowersRecruited: function (innMajorLevels) {
-			let result = 0;
+			let result = FollowerConstants.MAX_FOLLOWERS_BASE;
 			for (let i = 0; i < innMajorLevels.length; i++) {
 				result += Math.max(0, innMajorLevels[i]);
 			}

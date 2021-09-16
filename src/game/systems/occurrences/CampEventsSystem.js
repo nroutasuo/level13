@@ -81,7 +81,9 @@ define([
 		
 		updatePendingEvents: function (campNode, campTimers) {
 			if (campNode.camp.pendingRecruits.length > 0) {
-				campTimers.scheduleNext(OccurrenceConstants.campOccurrenceTypes.recruit, 0);
+				if (!this.isScheduled(campNode, OccurrenceConstants.campOccurrenceTypes.recruit)) {
+					campTimers.scheduleNext(OccurrenceConstants.campOccurrenceTypes.recruit, 0);
+				}
 			}
 		},
 			
@@ -128,14 +130,18 @@ define([
 
 		isCampValidForEvent: function (campNode, event) {
 			if (GameGlobals.gameState.isAutoPlaying) return false;
-			if (campNode.camp.population < 1) return false;
+			var population = campNode.camp.population;
 			var improvements = campNode.entity.get(SectorImprovementsComponent);
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.trader:
+					return improvements.getCount(GameGlobals.upgradeEffectsHelper.getImprovementForOccurrence(event)) > 0;
+					
 				case OccurrenceConstants.campOccurrenceTypes.recruit:
+					if (campNode.camp.pendingRecruits.length > 0) return true;
 					return improvements.getCount(GameGlobals.upgradeEffectsHelper.getImprovementForOccurrence(event)) > 0;
 
 				case OccurrenceConstants.campOccurrenceTypes.raid:
+					if (population < 1) return false;
 					var soldiers = campNode.camp.assignedWorkers.soldier;
 					var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
 					return OccurrenceConstants.getRaidDanger(improvements, soldiers, soldierLevel) > 0;
@@ -244,7 +250,8 @@ define([
 			} else if (!playerInCamp && awayLogMsg) {
 				this.addLogMessage(awayLogMsg, replacements, values, campNode);
 			}
-
+			
+			GlobalSignals.campEventEndedSignal.dispatch();
 			GlobalSignals.saveGameSignal.dispatch();
 		},
 
@@ -289,6 +296,8 @@ define([
 			if (this.isNew(event))
 				GameGlobals.gameState.unlockedFeatures.events.push(event);
 			log.i("Start " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ") (" + duration + "s)");
+			
+			GlobalSignals.campEventStartedSignal.dispatch();
 
 			if (this.isPlayerInCamp(campNode) && logMsg) {
 				this.addLogMessage(logMsg, null, null, campNode);
