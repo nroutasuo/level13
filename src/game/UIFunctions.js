@@ -324,12 +324,19 @@ define(['ash',
 				for (var bonusKey in ItemConstants.itemBonusTypes) {
 					var bonusType = ItemConstants.itemBonusTypes[bonusKey];
 					if (bonusType == ItemConstants.itemBonusTypes.fight_speed) continue;
-					var div = "<div id='stats-equipment-" + bonusKey + "' class='stats-indicator stats-indicator-secondary'>";
+					
+					var div = "";
+					div += "<div class='info-callout-target info-callout-target-small'>";
+					div += "<div id='stats-equipment-" + bonusKey + "' class='stats-indicator stats-indicator-secondary'>";
 					div += "<span class='label'>" + UIConstants.getItemBonusName(bonusType).replace(" ", "<br/>") + "</span>";
 					div += "<br/>";
-					div += "<span class='value'/></div>";
+					div += "<span class='value'/>";
+					div += "</div>";
+					div += "</div>";
+					
 					$("#container-equipment-stats").append(div);
 				}
+				GameGlobals.uiFunctions.generateCallouts("#container-equipment-stats");
 			},
 			
 			hideElements: function () {
