@@ -100,7 +100,7 @@ define([
 				let followerType = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
 				let tr = "<tr>";
 				tr += "<td class='maxwidth'>" + FollowerConstants.getFollowerTypeDisplayName(followerType) + " " + follower.name + "</td>";
-				tr += "<td>" + UIConstants.getFollowerDiv(follower, false) + "</td>";
+				tr += "<td>" + UIConstants.getFollowerDiv(follower, false, false) + "</td>";
 				tr += "<td>" + (recruitComponent.isFoundAsReward ? this.getFoundRecruitIcon() : "") + "</td>";
 				tr += "<td><button class='action recruit-select' action='recruit_follower_" + follower.id + "'>Recruit</button></td>";
 				tr += "<td><button class='action recruit-dismiss btn-secondary' action='dismiss_recruit_" + follower.id + "'>Dismiss</button></td>";
@@ -119,6 +119,7 @@ define([
 			var followersComponent = this.playerStatsNodes.head.followers;
 			var followers = followersComponent.getAll();
 			let maxRecruited = GameGlobals.campHelper.getCurrentMaxFollowersRecruited();
+			let inCamp = GameGlobals.playerHelper.isInCamp();
 			
 			$("#followers-max").text("Total followers: " + + followers.length + "/" + maxRecruited);
 			
@@ -127,7 +128,7 @@ define([
 			for (k in FollowerConstants.followerType) {
 				let followerType = FollowerConstants.followerType[k];
 				let selectedFollower = followersComponent.getFollowerInPartyByType(followerType);
-				this.updateSelectedFollowerSlot(followerType, selectedFollower);
+				this.updateSelectedFollowerSlot(followerType, selectedFollower, inCamp);
 				selectedFollowers.push(selectedFollower);
 			}
 			
@@ -136,7 +137,7 @@ define([
 			for (let i = 0; i < followers.length; i++) {
 				var follower = followers[i];
 				if (selectedFollowers.indexOf(follower) >= 0) continue;
-				var li = "<li>" + UIConstants.getFollowerDiv(follower, true) + "</li>";
+				var li = "<li>" + UIConstants.getFollowerDiv(follower, true, inCamp) + "</li>";
 				$("#list-followers").append(li);
 			}
 			
@@ -153,7 +154,7 @@ define([
 			GameGlobals.uiFunctions.registerActionButtonListeners("#container-party-slots");
 		},
 		
-		updateSelectedFollowerSlot: function (followerType, follower) {
+		updateSelectedFollowerSlot: function (followerType, follower, inCamp) {
 			let elements = this.followerSlotElementsByType[followerType];
 			let $slot = elements.slot;
 			let $container = elements.container;
@@ -164,7 +165,7 @@ define([
 			$container.empty();
 			
 			if (follower) {
-				$container.append(UIConstants.getFollowerDiv(follower, true));
+				$container.append(UIConstants.getFollowerDiv(follower, true, inCamp));
 			}
 		},
 		

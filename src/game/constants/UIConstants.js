@@ -148,10 +148,10 @@ define(['ash',
 			return html;
 		},
 		
-		getFollowerDiv: function (follower, isRecruited) {
+		getFollowerDiv: function (follower, isRecruited, isInCamp) {
 			let classes = "item";
 			let div = "<div class='" + classes + "'>";
-			let calloutContent = this.getFollowerCallout(follower, isRecruited);
+			let calloutContent = this.getFollowerCallout(follower, isRecruited, isInCamp);
 			div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
 			div += "<img src='" + follower.icon + "'/>";
 			div += "</div>";
@@ -159,7 +159,7 @@ define(['ash',
 			return div;
 		},
 		
-		getFollowerCallout: function (follower, isRecruited) {
+		getFollowerCallout: function (follower, isRecruited, isInCamp) {
 			let followerType = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
 			let result = "<b>" + follower.name + "</b>";
 			if (isRecruited) {
@@ -169,7 +169,7 @@ define(['ash',
 			result += "<br/>Ability: " + FollowerConstants.getAbilityTypeDisplayName(follower.abilityType)
 				+ " (" + UIConstants.getFollowerAbilityDescription(follower) + ")";
 			
-			if (isRecruited) {
+			if (isRecruited && isInCamp) {
 				var makeButton = function (action, name) {
 					 return "<button class='action btn-narrow' action='" + action + "'>" + name + "</button>";
 				};

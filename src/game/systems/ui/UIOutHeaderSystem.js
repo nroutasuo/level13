@@ -95,6 +95,7 @@ define([
 			var sys = this;
 			GlobalSignals.playerMovedSignal.add(function () { sys.onPlayerMoved(); });
 			GlobalSignals.playerEnteredCampSignal.add(function () { sys.onPlayerEnteredCamp(); });
+			GlobalSignals.playerLeftCampSignal.add(function () { sys.onPlayerLeftCamp(); });
 			GlobalSignals.actionStartingSignal.add(function () { sys.onActionStarting(); });
 			GlobalSignals.actionStartedSignal.add(function () { sys.onInventoryChanged(); });
 			GlobalSignals.visionChangedSignal.add(function () { sys.onVisionChanged(); });
@@ -116,6 +117,7 @@ define([
 		},
 
 		removeFromEngine: function (engine) {
+			GlobalSignals.removeAll(this);
 			this.engine = null;
 			this.playerStatsNodes = null;
 			this.deityNodes = null;
@@ -340,7 +342,6 @@ define([
 			if (forced || items.length !== this.lastItemsUpdateItemCount) {
 				$("ul#list-header-equipment").empty();
 				$("ul#list-header-items").empty();
-				$("ul#list-items-followers").empty();
 				for (let i = 0; i < items.length; i++) {
 					var item = items[i];
 					var count = itemsComponent.getCount(item, inCamp);
@@ -366,10 +367,25 @@ define([
 
 				GameGlobals.uiFunctions.generateCallouts("ul#list-header-items");
 				GameGlobals.uiFunctions.generateCallouts("ul#list-header-equipment");
-				GameGlobals.uiFunctions.generateCallouts("ul#list-items-followers");
 
 				this.lastItemsUpdateItemCount = items.length;
 			}
+		},
+		
+		updateFollowers: function () {
+			let inCamp = GameGlobals.playerHelper.isInCamp();
+			if (inCamp) return;
+			
+			let followersComponent = this.playerStatsNodes.head.followers;
+			let party = followersComponent.getParty();
+			
+			$("ul#list-header-followers").empty();
+			for (let i = 0; i < party.length; i++) {
+				let follower = party[i];
+				$("ul#list-header-followers").append("<li>" + UIConstants.getFollowerDiv(follower, true, false) + "</li>");
+			}
+			
+			GameGlobals.uiFunctions.generateCallouts("ul#list-header-followers");
 		},
 		
 		refreshPerks: function () {
@@ -769,6 +785,12 @@ define([
 		
 		onPlayerEnteredCamp: function () {
 			this.pendingResourceUpdateTime = 0.75;
+			this.updateFollowers();
+		},
+		
+		onPlayerLeftCamp: function () {
+			this.updateItems();
+			this.updateFollowers();
 		},
 
 		onHealthChanged: function () {
@@ -798,6 +820,7 @@ define([
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			this.updatePlayerStats();
 			this.updateItemStats();
+			this.updateFollowers();
 		},
 		
 		onPlayerActionCompleted: function () {
