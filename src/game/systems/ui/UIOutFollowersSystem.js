@@ -78,7 +78,8 @@ define([
 		},
 		
 		updateBubble: function () {
-			var newBubbleNumber = this.getNumRecruits();
+			let inCamp = GameGlobals.playerHelper.isInCamp();
+			var newBubbleNumber = inCamp ? this.getNumRecruits() : 0;
 			if (this.bubbleNumber === newBubbleNumber)
 				return;
 			this.bubbleNumber = newBubbleNumber;
