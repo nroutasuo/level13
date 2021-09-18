@@ -420,6 +420,35 @@ define([
 
 			GameGlobals.uiFunctions.generateCallouts("ul#list-items-perks");
 		},
+		
+		refreshStatuses: function () {
+			// status icons that look like perks but aren't actual perks internally (derived perks)
+			if (!this.playerStatsNodes.head) return;
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
+			
+			$("ul#list-items-statuses").empty();
+			
+			let statuses = [];
+			
+			if (GameGlobals.playerHelper.getCurrentBonus(ItemConstants.itemBonusTypes.hazard_prediction) > 0) {
+				statuses.push({ name: "Hazard foresight", icon: "img/status-hazard-prediction.png", isNegative: false });
+			}
+			
+			for (let i = 0; i < statuses.length; i++) {
+				var status = statuses[i];
+				var isNegative = status.isNegative;
+				var liClass = isNegative ? "li-item-negative" : "li-item-positive";
+				liClass += " item item-equipped";
+				var li =
+					"<li class='" + liClass + "'>" +
+					"<div class='info-callout-target info-callout-target-small' description='" + status.name + "'>" +
+					"<img src='" + status.icon + "' alt='" + status.name + "'/>" +
+					"</div></li>";
+				$("ul#list-items-statuses").append(li);
+			}
+
+			GameGlobals.uiFunctions.generateCallouts("ul#list-items-statuses");
+		},
 
 		updatePerks: function () {
 			var perksComponent = this.playerStatsNodes.head.perks;
@@ -821,6 +850,7 @@ define([
 			this.updatePlayerStats();
 			this.updateItemStats();
 			this.updateFollowers();
+			this.refreshStatuses();
 		},
 		
 		onPlayerActionCompleted: function () {
@@ -852,6 +882,7 @@ define([
 			this.updateVisionStatus();
 			this.updatePlayerStats();
 			this.refreshPerks();
+			this.refreshStatuses();
 			this.updateItemStats();
 		}
 	});
