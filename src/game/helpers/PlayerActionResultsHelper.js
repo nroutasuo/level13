@@ -356,21 +356,17 @@ define([
 				GameGlobals.gameState.unlockedFeatures.currency = true;
 
 			var itemsComponent = this.playerStatsNodes.head.items;
-			var followersComponent = this.playerStatsNodes.head.followers;
 			if (rewards.selectedItems) {
 				for (let i = 0; i < rewards.selectedItems.length; i++) {
 					itemsComponent.addItem(rewards.selectedItems[i], !playerPos.inCamp && !campSector);
 				}
 			}
-
+			
+			var followersComponent = this.playerStatsNodes.head.followers;
 			if (rewards.gainedFollowers) {
-				let maxFollowers = GameGlobals.campHelper.getCurrentMaxFollowersRecruited();
 				for (let i = 0; i < rewards.gainedFollowers.length; i++) {
 					let follower = rewards.gainedFollowers[i];
-					let followerType = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
-					let existingInParty = followersComponent.getFollowerInPartyByType(followerType);
-					let existingRecruited = followersComponent.getAll();
-					if (!existingInParty && existingRecruited.length < maxFollowers) {
+					if (this.willGainedFollowerJoinParty(follower)) {
 						followersComponent.addFollower(follower);
 						followersComponent.setFollowerInParty(follower, true);
 						GlobalSignals.followersChangedSignal.dispatch();
@@ -538,18 +534,32 @@ define([
 		},
 
 		getRewardDiv: function (resultVO, isFight) {
-			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+			var itemsComponent = this.playerStatsNodes.head.items;
+			var followersComponent = this.playerStatsNodes.head.followers;
 			var hasBag = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
 			var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
 			var isInitialSelectionValid = bagComponent.usedCapacity <= bagComponent.totalCapacity;
 
 			var div = "<div id='reward-div'>";
+			
+			if (resultVO.gainedFollowers && resultVO.gainedFollowers.length > 0) {
+				for (let i = 0; i < resultVO.gainedFollowers.length; i++) {
+					let follower = resultVO.gainedFollowers[i];
+					let followerType = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
+					let willJoin = this.willGainedFollowerJoinParty(follower);
+					div += "<div>"
+					div += "Met a <span class='hl-functionality'>" + FollowerConstants.getFollowerTypeDisplayName(followerType) + "</span> called " + follower.name + ". ";
+					if (willJoin) {
+						div += "They joined the party.";
+					} else if (this.nearestCampNodes.head) {
+						div += "They will meet you at " + this.nearestCampNodes.head.camp.getName() + " on level " + this.nearestCampNodes.head.position.level;
+					}
+					div += "</div>";
+				}
+			}
 
 			var gainedhtml = "";
 			gainedhtml += "<ul class='resultlist resultlist-positive'>";
-			if (resultVO.gainedFollowers && resultVO.gainedFollowers.length > 0) {
-				gainedhtml += "<li>" + resultVO.gainedFollowers.length + " follower" + (resultVO.gainedFollowers.length > 1 ? "s" : "");
-			}
 			if (resultVO.gainedEvidence) {
 				gainedhtml += "<li>" + resultVO.gainedEvidence + " evidence</li>";
 			}
@@ -602,7 +612,7 @@ define([
 				div += baghtml;
 			}
 
-			hasGainedStuff = hasGainedStuff || resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0;
+			hasGainedStuff = hasGainedStuff || resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0 || resultVO.gainedFollowers.length > 0;
 			var hasLostStuff = resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.lostFollowers.length > 0 || resultVO.gainedInjuries.length > 0 || resultVO.lostCurrency > 0;
 			
 			if (!hasGainedStuff && !hasLostStuff) {
@@ -614,7 +624,9 @@ define([
 			}
 			
 			if (resultVO.lostFollowers && resultVO.lostFollowers.length > 0) {
-				div += "<p class='warning'>" + resultVO.lostFollowers.length + " followers left.</p>";
+				for (let i = 0; i < resultVO.lostFollowers.length; i++) {
+					div += "<p class='warning'><span class='hl-functionality'>" + resultVO.lostFollowers[i].name + "</span> left.</p>";
+				}
 			}
 
 			if (resultVO.gainedInjuries.length > 0) {
@@ -1282,7 +1294,18 @@ define([
 				result.setResource(enemyVO.droppedResources[i], 10);
 			}
 			return result;
-		}
+		},
+
+		willGainedFollowerJoinParty: function (follower) {
+			var followersComponent = this.playerStatsNodes.head.followers;
+			let followerType = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
+			let existingInParty = followersComponent.getFollowerInPartyByType(followerType);
+			if (existingInParty) return false;
+			let existingRecruited = followersComponent.getAll();
+			let maxFollowers = GameGlobals.campHelper.getCurrentMaxFollowersRecruited();
+			if (existingRecruited.length >= maxFollowers) return false;
+			return true;
+		},
 
 	});
 
