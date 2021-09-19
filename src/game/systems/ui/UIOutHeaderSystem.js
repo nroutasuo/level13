@@ -6,6 +6,7 @@ define([
 	'game/constants/CampConstants',
 	'game/constants/LevelConstants',
 	'game/constants/UIConstants',
+	'game/constants/FollowerConstants',
 	'game/constants/ItemConstants',
 	'game/constants/FightConstants',
 	'game/constants/UpgradeConstants',
@@ -29,7 +30,7 @@ define([
 	'utils/UIState',
 	'utils/UIAnimations'
 ], function (Ash,
-	GameGlobals, GlobalSignals, GameConstants, CampConstants, LevelConstants, UIConstants, ItemConstants, FightConstants, UpgradeConstants, PlayerStatConstants,
+	GameGlobals, GlobalSignals, GameConstants, CampConstants, LevelConstants, UIConstants, FollowerConstants, ItemConstants, FightConstants, UpgradeConstants, PlayerStatConstants,
 	SaveSystem,
 	PlayerStatsNode, AutoPlayNode, PlayerLocationNode, TribeUpgradesNode, DeityNode,
 	BagComponent,
@@ -56,8 +57,16 @@ define([
 		previousShownCampResAmount: {},
 		previousStats: {},
 		previousStatsUpdates: {},
+		
+		SCAVENGE_BONUS_TYPES: [
+			{ itemBonusType: ItemConstants.itemBonusTypes.scavenge_general, displayName: "general", containerID: "scavenge-bonus-general" },
+			{ itemBonusType: ItemConstants.itemBonusTypes.scavenge_ingredients, displayName: "ingredients", containerID: "scavenge-bonus-ingredients" },
+			{ itemBonusType: ItemConstants.itemBonusTypes.scavenge_supplies, displayName: "supplies", containerID: "scavenge-bonus-supplies" },
+		],
 
 		constructor: function () {
+			this.initElements();
+			
 			this.elements = {};
 			this.elements.body = $("body");
 			this.elements.locationHeader = $("#grid-location-header h1");
@@ -123,6 +132,18 @@ define([
 			this.deityNodes = null;
 			this.currentLocationNodes = null;
 			this.autoPlayNodes = null;
+		},
+		
+		initElements: function () {
+			let $container = $("#stats-scavenge-bonus");
+			for (let i = 0; i < this.SCAVENGE_BONUS_TYPES.length; i++) {
+				let bonus = this.SCAVENGE_BONUS_TYPES[i];
+				let div = "<div id='" + bonus.containerID + "'>";
+				div += "<span class='label'>" + bonus.displayName + "</span>";
+				div += "<div class='stats-value-container'><span class='value'>0</span></div>";
+				div += "</div>";
+				$container.append(div)
+			}
 		},
 
 		generateStatsCallouts: function () {
@@ -258,17 +279,55 @@ define([
 			}
 
 			var itemsComponent = this.playerStatsNodes.head.items;
-
-			let showScavangeAbilityLastUpdate = this.showScavangeAbilityLastUpdate;
+			
 			let showScavangeAbility = GameGlobals.gameState.unlockedFeatures.scavenge && !isInCamp;
+			this.updateScavengeAbility(showScavangeAbility, isInCamp, maxVision, shownVision);
+			this.updateScavengeBonus(showScavangeAbility);
+		},
+		
+		updateScavengeAbility: function (showScavangeAbility, isInCamp, maxVision, shownVision, maxStamina) {
+			let showScavangeAbilityLastUpdate = this.showScavangeAbilityLastUpdate;
 			GameGlobals.uiFunctions.toggle("#stats-scavenge", showScavangeAbility);
 			if (showScavangeAbility) {
 				var scavengeEfficiency = Math.round(GameGlobals.playerActionResultsHelper.getScavengeEfficiency() * 100);
 				UIAnimations.animateOrSetNumber(this.elements.valScavenge, showScavangeAbilityLastUpdate, scavengeEfficiency, "%", false, Math.round);
-				UIConstants.updateCalloutContent("#stats-scavenge", "Increases scavenge loot<hr/>health: " + Math.round(maxStamina/10) + "<br/>vision: " + Math.round(playerVision));
+				UIConstants.updateCalloutContent("#stats-scavenge", "Increases scavenge loot<hr/>health: " + Math.round(maxStamina/10) + "<br/>vision: " + shownVision);
 				this.updateChangeIndicator(this.elements.changeIndicatorScavenge, maxVision - shownVision, shownVision < maxVision);
 			}
 			this.showScavangeAbilityLastUpdate = showScavangeAbility;
+		},
+		
+		updateScavengeBonus: function (showScavangeAbility) {
+			let scavengeBonusTotal = 0;
+			let scavengeBonusByType = {};
+			for (let i = 0; i < this.SCAVENGE_BONUS_TYPES.length; i++) {
+				let val = (GameGlobals.playerHelper.getCurrentBonus(this.SCAVENGE_BONUS_TYPES[i].itemBonusType) - 1) * 100;
+				scavengeBonusTotal += val;
+				scavengeBonusByType[this.SCAVENGE_BONUS_TYPES[i].itemBonusType] = val;
+			}
+			let showScavengeBonus = showScavangeAbility && scavengeBonusTotal > 0;
+			GameGlobals.uiFunctions.toggle("#stats-scavenge-bonus", showScavengeBonus);
+			if (showScavengeBonus > 0) {
+				let scavengeBonusCallout = "";
+				for (let i = 0; i < this.SCAVENGE_BONUS_TYPES.length; i++) {
+					let bonus = this.SCAVENGE_BONUS_TYPES[i];
+					let value = scavengeBonusByType[bonus.itemBonusType];
+					let $container = $("#" + bonus.containerID);
+					GameGlobals.uiFunctions.toggle($container, value > 0);
+					$container.find(".value").text(Math.round(value) + "%");
+					
+					let party = this.playerStatsNodes.head.followers.getParty();
+					for (let j = 0; j < party.length; j++) {
+						let follower = party[j];
+						let followerContribution = FollowerConstants.getFollowerItemBonus(follower, bonus.itemBonusType);
+						if (followerContribution > 0) {
+							scavengeBonusCallout += follower.name + ": +" + Math.round(followerContribution * 100 - 100) + "%";
+						}
+					}
+					scavengeBonusCallout += "";
+				}
+				UIConstants.updateCalloutContent("#stats-scavenge-bonus", scavengeBonusCallout);
+			}
 		},
 		
 		updatePlayerStat: function (stat, component, isVisible, currentValue, flipNegative, valueElement, changeIndicatorElement) {
