@@ -596,7 +596,7 @@ define([
 
 					var bagComponent = this.playerStatsNodes.head.entity.get(BagComponent);
 					$("#header-bag-storage .value").text(Math.floor(bagComponent.usedCapacity * 10) / 10);
-					$("#header-bag-storage .value-total").text(storageCap);
+					$("#header-bag-storage .value-total").text(UIConstants.getBagCapacityDisplayValue(bagComponent));
 				}
 			}
 			

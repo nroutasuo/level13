@@ -163,7 +163,7 @@ define([
 			
 			bagComponent.selectedCapacity = selectedCapacity;
 			$("#embark-bag .value").text(UIConstants.roundValue(bagComponent.selectedCapacity), true, true);
-			$("#embark-bag .value-total").text(bagComponent.totalCapacity);
+			$("#embark-bag .value-total").text(UIConstants.getBagCapacityDisplayValue(bagComponent));
 			
 			this.updateWarning(campResourcesAcc, campResources, selectedWater, selectedFood);
 		},

@@ -653,6 +653,14 @@ define(['ash',
 			return "";
 		},
 
+		getBagCapacityDisplayValue: function (bagComponent) {
+			if (bagComponent.bonusCapacity > 0) {
+				return bagComponent.baseCapacity + " +" + bagComponent.bonusCapacity;
+			} else {
+				return bagComponent.baseCapacity;
+			}
+		},
+
 		cleanupText: function (text) {
 			return text.replace(/'/g, "&#39;")
 		},

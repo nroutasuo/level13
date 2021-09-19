@@ -40,7 +40,9 @@ define([
 			let carryCapacity = Math.max(playerBagBonus, ItemConstants.PLAYER_DEFAULT_STORAGE) + followerBagBonus;
 			
 			playerResources.storageCapacity = carryCapacity;
+			playerBag.baseCapacity = playerBagBonus;
 			playerBag.totalCapacity = carryCapacity;
+			playerBag.bonusCapacity = followerBagBonus;
 			
 			this.updateUsedCapacity(playerBag, playerResources, playerItems);
 			
