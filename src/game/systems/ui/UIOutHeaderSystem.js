@@ -622,9 +622,9 @@ define([
 			var visibleStats = 0;
 			for (var bonusKey in ItemConstants.itemBonusTypes) {
 				var bonusType = ItemConstants.itemBonusTypes[bonusKey];
-				var bonus = itemsComponent.getCurrentBonus(bonusType);
+				var bonus = GameGlobals.playerHelper.getCurrentBonus(bonusType);
 				var value = bonus;
-				var detail = itemsComponent.getCurrentBonusDesc(bonusType);
+				var detail = GameGlobals.playerHelper.getCurrentBonusDesc(bonusType);
 				var isVisible = true;
 				var flipNegative = false;
 				switch (bonusType) {
@@ -656,7 +656,6 @@ define([
 					
 					case ItemConstants.itemBonusTypes.scavenge_cost:
 					case ItemConstants.itemBonusTypes.scout_cost:
-						value *= followersComponent.getCurrentBonus(bonusType);
 						isVisible = value != 1;
 						value = Math.round(value * 10) / 10;
 						flipNegative = true;

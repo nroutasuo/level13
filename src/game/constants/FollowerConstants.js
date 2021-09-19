@@ -386,6 +386,16 @@ define(['ash',
 					maxBonus = 20;
 					roundingStep = 5;
 					break;
+				
+				case ItemConstants.itemBonusTypes.fight_speed:
+				case ItemConstants.itemBonusTypes.light:
+				case ItemConstants.itemBonusTypes.shade:
+				case ItemConstants.itemBonusTypes.res_cold:
+				case ItemConstants.itemBonusTypes.res_radiation:
+				case ItemConstants.itemBonusTypes.res_poison:
+				case ItemConstants.itemBonusTypes.shield:
+					return 0;
+					
 				default:
 					log.w("no follower item bonus defined for item bonus type: " + itemBonusType);
 					break;

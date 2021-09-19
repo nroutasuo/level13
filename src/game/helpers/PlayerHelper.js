@@ -1,10 +1,12 @@
 define([
 	'ash',
+	'game/constants/FollowerConstants',
 	'game/constants/ItemConstants',
 	'game/nodes/PlayerPositionNode',
 	'game/nodes/player/PlayerStatsNode'
 ], function (
 	Ash,
+	FollowerConstants,
 	ItemConstants,
 	PlayerPositionNode,
 	PlayerStatsNode
@@ -38,7 +40,33 @@ define([
 			}
 			
 			return result;
-		}
+		},
+		
+		getCurrentBonusDesc: function (itemBonusType) {
+			let result = "";
+			
+			let items = this.playerStatsNodes.head.items.getEquipped();
+			for (let i = 0; i < items.length; i++) {
+				let item = items[i];
+				let itemBonus = item.getBonus(itemBonusType);
+				if (itemBonus > 0) {
+					if (result.length > 0) result += "<br/>";
+					result += item.name + ": " + itemBonus;
+				}
+			}
+			
+			let followers = this.playerStatsNodes.head.followers.getParty();
+			for (let i = 0; i < followers.length; i++) {
+				let follower = followers[i];
+				let followerBonus = FollowerConstants.getFollowerItemBonus(follower, itemBonusType);
+				if (followerBonus > 0) {
+					if (result.length > 0) result += "<br/>";
+					result += follower.name + ": " + Math.round(followerBonus*10)/10;
+				}
+			}
+			
+			return result;
+		},
 		
 	});
 
