@@ -5,6 +5,7 @@ define([
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/FightConstants',
+	'game/constants/FollowerConstants',
 	'game/constants/ItemConstants',
 	'game/constants/TextConstants',
 	'game/constants/UIConstants',
@@ -14,7 +15,7 @@ define([
 	'game/components/player/ItemsComponent',
 	'game/components/sector/FightEncounterComponent',
 	'game/components/sector/EnemiesComponent'
-], function (Ash, Text, UIState, GameGlobals, GlobalSignals, FightConstants, ItemConstants, TextConstants, UIConstants, PlayerLocationNode, PlayerStatsNode, FightNode, ItemsComponent, FightEncounterComponent, EnemiesComponent) {
+], function (Ash, Text, UIState, GameGlobals, GlobalSignals, FightConstants, FollowerConstants, ItemConstants, TextConstants, UIConstants, PlayerLocationNode, PlayerStatsNode, FightNode, ItemsComponent, FightEncounterComponent, EnemiesComponent) {
 	
 	var FightPopupStateEnum = {
 		CLOSED: 0,
@@ -265,17 +266,17 @@ define([
 			// followers
 			$("ul#list-fight-followers").empty();
 			this.numFollowers = 0;
-			// TODO FOLLOWERS
-			/*
-			var items = itemsComponent.getUnique(true);
-			for (let i = 0; i < items.length; i++) {
-				var item = items[i];
-				if (item.type !== ItemConstants.itemTypes.follower) continue;
-				this.numFollowers++;
-				$("ul#list-fight-followers").append("<li>" + UIConstants.getItemDiv(null, item, null, UIConstants.getItemCallout(item, true), true) + "</li>");
+			var followers = this.playerStatsNodes.head.followers.getParty();
+			for (let i = 0; i < followers.length; i++) {
+				var follower = followers[i];
+				var bonusatt = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_att) > 0;
+				var bonusDef = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_def) > 0;
+				if (bonusatt || bonusDef) {
+					this.numFollowers++;
+					$("ul#list-fight-followers").append("<li>" + UIConstants.getFollowerDiv(follower, true, false) + "</li>");
+				}
 			}
 			GameGlobals.uiFunctions.generateCallouts("ul#list-fight-followers");
-			*/
 			
 			GameGlobals.uiFunctions.toggle("#fight-popup-itemlist-separator", this.numFollowers > 0 && this.numItems > 0);
 			this.updateFightActive();
