@@ -219,8 +219,8 @@ define(['ash',
 					let capacityBonus = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.bag);
 					return "+" + capacityBonus + " carry capacity";
 				default:
-					log.w("no display name defined for abilityType: " + abilityType);
-					return abilityType;
+					log.w("no display name defined for abilityType: " + follower.abilityType);
+					return follower.abilityType;
 			}
 		},
 

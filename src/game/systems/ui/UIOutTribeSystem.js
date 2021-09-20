@@ -384,7 +384,7 @@ define([
 			switch (notificationType) {
 				case this.campNotificationTypes.EVENT_RAID_ONGOING: return "raid";
 				case this.campNotificationTypes.EVENT_TRADER: return "trader";
-				case this.campNotificationTypes.EVENT_RECRUIT: return "adventurer";
+				case this.campNotificationTypes.EVENT_RECRUIT: return "visitor";
 				case this.campNotificationTypes.POP_UNASSIGNED: return "unassigned workers";
 				case this.campNotificationTypes.POP_DECREASING: return "population decreasing";
 				case this.campNotificationTypes.EVENT_OUTGOING_CARAVAN: return "outgoing caravan";
@@ -405,7 +405,7 @@ define([
 					var timeS = "(" + UIConstants.getTimeSinceText(campComponent.lastRaid.timestamp) + " ago)";
 					return "There has been a raid on level " + level + " " + timeS + ". We need better defences.";
 				case this.campNotificationTypes.EVENT_TRADER: return "There is a trader currently on level " + level + ".";
-				case this.campNotificationTypes.EVENT_RECRUIT: return "There is a visiting adventurer currently on level " + level + ".";
+				case this.campNotificationTypes.EVENT_RECRUIT: return "There is a visitor currently on level " + level + ".";
 				case this.campNotificationTypes.POP_UNASSIGNED: return "Unassigned workers on level " + level + ".";
 				case this.campNotificationTypes.POP_DECREASING: return "Population is decreasing on level " + level + "!";
 				case this.campNotificationTypes.EVENT_OUTGOING_CARAVAN: return "Outgoing caravan on level " + level + ".";

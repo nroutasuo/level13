@@ -90,7 +90,6 @@ define([
 		refreshRecruits: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			
-			// TODO FOLLOWERS call also when recruit leaves / arrives
 			let $table = $("#recruits-container table");
 			$table.empty();
 			

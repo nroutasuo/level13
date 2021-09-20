@@ -1321,7 +1321,7 @@ define(['ash',
 		buildInn: function () {
 			this.buildImprovement("build_in_inn", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_inn"));
 			GameGlobals.gameState.unlockedFeatures.followers = true;
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_INN, "Built an inn. Maybe it will attract adventurers.");
+			this.addLogMessage(LogConstants.MSG_ID_BUILT_INN, "Built an inn. Maybe it will attract visitors.");
 		},
 
 		buildSquare: function () {

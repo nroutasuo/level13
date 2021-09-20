@@ -213,7 +213,7 @@ define([
 					let wasRecruited = recruitComponent.isRecruited;
 					campNode.entity.remove(RecruitComponent);
 					if (!wasRecruited) {
-						logMsg = "Adventurer leaves.";
+						logMsg = "Visitor leaves.";
 					}
 					break;
 
@@ -279,7 +279,7 @@ define([
 						campNode.camp.pendingRecruits.shift() :
 						FollowerConstants.getNewRandomFollower(FollowerConstants.followerSource.EVENT, GameGlobals.gameState.numCamps, campPos.level);
 					campNode.entity.add(new RecruitComponent(follower, hasPendingFollower));
-					logMsg = hasPendingFollower ? "Adventurer met when exploring is waiting at the inn." : "An adventurer arrives at the Inn. ";
+					logMsg = hasPendingFollower ? "Follower met when exploring is waiting at the inn." : "A visitor arrives at the Inn. ";
 					GameGlobals.gameState.unlockedFeatures.followers = true;
 					if (hasPendingFollower) {
 						duration = OccurrenceConstants.EVENT_DURATION_INFINITE;

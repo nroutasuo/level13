@@ -46,7 +46,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 				improvementLevelsPerMajorLevel: 5,
 			},
 			inn: {
-				description: "Increases rumours and enables recruiting adventurers.",
+				description: "Increases rumours and enables recruiting followers.",
 				improvementLevelsPerTechLevel: 5,
 				improvementLevelsPerMajorLevel: 5,
 			},
