@@ -1,6 +1,7 @@
 // Helper methods related to rewards from player actions such as scavenging and scouting
 define([
 	'ash',
+	'text/Text',
 	'utils/MathUtils',
 	'game/GameGlobals',
 	'game/GlobalSignals',
@@ -38,6 +39,7 @@ define([
 	'game/vos/ResourcesVO'
 ], function (
 	Ash,
+	Text,
 	MathUtils,
 	GameGlobals,
 	GlobalSignals,
@@ -542,6 +544,48 @@ define([
 
 			var div = "<div id='reward-div'>";
 			
+			if (resultVO.gainedResourcesFromFollowers.getTotal() > 0 || resultVO.gainedItemsFromFollowers.length > 0) {
+				// assuming only followers of certain type find items
+				let follower = followersComponent.getFollowerInPartyByType(FollowerConstants.followerType.SCAVENGER);
+				let displayName = follower ? "<span class='hl-functionality'>" + follower.name + "</span>" : "Followers";
+				
+				let displayFinds = "";
+				let totalResources = resultVO.gainedResourcesFromFollowers.getTotal();
+				let totalItems = resultVO.gainedItemsFromFollowers.length;
+				if (totalResources > 0 && totalItems == 0) {
+					if (resultVO.gainedResourcesFromFollowers.isOnlySupplies()) {
+						displayFinds = "some supplies";
+					} else if (resultVO.gainedResourcesFromFollowers.isOneResource()) {
+						displayFinds = "some " + resultVO.gainedResourcesFromFollowers.getNames()[0];
+					} else {
+						displayFinds = "some resources";
+					}
+				} else if (totalItems == 1 && totalResources == 0) {
+					displayFinds = Text.addArticle(resultVO.gainedItemsFromFollowers[0].name);
+				} else if (totalItems > 1 && totalResources == 0) {
+					let uniqueNames = [];
+					let uniqueTypes = [];
+					for (let i = 0; i < resultVO.gainedItemsFromFollowers.length; i++) {
+						let item = resultVO.gainedItemsFromFollowers[i];
+						if (uniqueNames.indexOf(item.name) < 0) uniqueNames.push(item.name);
+						if (uniqueTypes.indexOf(item.type) < 0) uniqueTypes.push(item.type);
+					}
+					if (uniqueNames.length == 1) {
+						displayFinds = totalItems + " " + Text.pluralify(uniqueNames[0]);
+					} else if (uniqueTypes.length == 1) {
+						displayFinds = "some " + ItemConstants.getItemTypeDisplayName(uniqueTypes[0]);
+					} else {
+						displayFinds = "some items";
+					}
+				} else {
+					displayFinds = "some things";
+				}
+				
+				div += "<div>";
+				div += displayName + " found " + displayFinds;
+				div += "</div>";
+			}
+			
 			if (resultVO.gainedFollowers && resultVO.gainedFollowers.length > 0) {
 				for (let i = 0; i < resultVO.gainedFollowers.length; i++) {
 					let follower = resultVO.gainedFollowers[i];
@@ -1016,6 +1060,10 @@ define([
 			let bonusResources = this.getRewardResources(bonusResourceProb, 1, efficiency, sectorResources);
 			rewards.gainedResourcesFromFollowers = bonusResources;
 			rewards.gainedResources.addAll(bonusResources);
+			
+			if (bonusResources.getTotal() > 0) {
+				generalBonus = 0;
+			}
 			
 			let bonusSuppliesProb = suppliesBonus - 1;
 			let sectorSupplies = new ResourcesVO();

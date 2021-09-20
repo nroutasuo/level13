@@ -171,6 +171,14 @@ define(['ash'], function (Ash) {
 			return result;
 		},
 		
+		isOnlySupplies: function () {
+			return this.getTotal() == this.getResource(resourceNames.food) + this.getResource(resourceNames.water);
+		},
+		
+		isOneResource: function () {
+			return this.getNames().length == 1;
+		},
+		
 		getCustomSaveObject: function () {
 			var copy = {};
 			if (this.water !== 0) copy.w = this.water;
