@@ -74,7 +74,6 @@ define(function () {
 			this.names.personalNames.push({name: "Eino", gender: this.genders.MALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Ole", gender: this.genders.MALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Jori", gender: this.genders.MALE, culture: this.cultures.HANSA });
-			this.names.personalNames.push({name: "Hamza", gender: this.genders.MALE, culture: this.cultures.INDUS });
 			this.names.personalNames.push({name: "Omar", gender: this.genders.MALE, culture: this.cultures.INDUS });
 			this.names.personalNames.push({name: "Mehdi", gender: this.genders.MALE, culture: this.cultures.INDUS });
 			this.names.personalNames.push({name: "Batu", gender: this.genders.MALE, culture: this.cultures.INDUS });
@@ -104,6 +103,7 @@ define(function () {
 			this.names.personalNames.push({name: "Giulia", gender: this.genders.FEMALE, culture:this.cultures.ETRURIAN });;
 			this.names.personalNames.push({name: "Sabine", gender: this.genders.FEMALE, culture:this.cultures.ETRURIAN });;
 			this.names.personalNames.push({name: "Gia", gender: this.genders.FEMALE, culture:this.cultures.ETRURIAN });;
+			this.names.personalNames.push({name: "Elda", gender: this.genders.FEMALE, culture:this.cultures.ETRURIAN, origin: this.origins.DARKLEVELS });;
 			this.names.personalNames.push({name: "Annike", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Elke", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Ilse", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
@@ -111,12 +111,12 @@ define(function () {
 			this.names.personalNames.push({name: "Astrid", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Ebba", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Rosalena", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
-			this.names.personalNames.push({name: "Noora", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
-			this.names.personalNames.push({name: "Salome", gender: this.genders.FEMALE, culture:this.cultures.INDUS });
-			this.names.personalNames.push({name: "Zahra", gender: this.genders.FEMALE, culture:this.cultures.INDUS });
-			this.names.personalNames.push({name: "Miriam", gender: this.genders.FEMALE, culture:this.cultures.INDUS });
-			this.names.personalNames.push({name: "Zofia", gender: this.genders.FEMALE, culture:this.cultures.KIEVAN })
-			this.names.personalNames.push({name: "Magda", gender: this.genders.FEMALE, culture:this.cultures.KIEVAN })
+			this.names.personalNames.push({name: "Salome", gender: this.genders.FEMALE, culture: this.cultures.INDUS });
+			this.names.personalNames.push({name: "Zahra", gender: this.genders.FEMALE, culture: this.cultures.INDUS });
+			this.names.personalNames.push({name: "Miriam", gender: this.genders.FEMALE, culture: this.cultures.INDUS });
+			this.names.personalNames.push({name: "Zofia", gender: this.genders.FEMALE, culture: this.cultures.KIEVAN })
+			this.names.personalNames.push({name: "Magda", gender: this.genders.FEMALE, culture: this.cultures.KIEVAN })
+			this.names.personalNames.push({name: "Nadia", gender: this.genders.FEMALE, culture: this.cultures.KIEVAN })
 			this.names.personalNames.push({name: "Maja Amelia", gender: this.genders.FEMALE, culture: this.cultures.KIEVAN, origin: this.origins.SURFACE })
 			this.names.personalNames.push({name: "Khaliun", gender: this.genders.FEMALE, culture: this.cultures.YUAN });
 			this.names.personalNames.push({name: "Yargui", gender: this.genders.FEMALE, culture: this.cultures.YUAN });
@@ -201,13 +201,13 @@ define(function () {
 		
 		getValidShortNames: function (gender, origin, culturalHeritage) {
 			let result = [];
-			for (var i in CultureConstants.names.personalNames) {
+			for (let i in CultureConstants.names.personalNames) {
 				let name = CultureConstants.names.personalNames[i];
 				if (CultureConstants.isValidName(name, gender, origin, culturalHeritage)) {
 					result.push(name.name);
 				}
 			}
-			for (var i in CultureConstants.names.nickNames) {
+			for (let i in CultureConstants.names.nickNames) {
 				let name = CultureConstants.names.nickNames[i];
 				if (CultureConstants.isValidName(name, gender, origin, culturalHeritage)) {
 					result.push(name.name);
