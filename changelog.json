@@ -20,6 +20,10 @@
 				{
 					"type": "GD",
 					"summary": "Add upgrades to traps and buckets"
+				},
+				{
+					"type": "GD",
+					"summary": "Improve followers and add different follower abilities"
 				}
 			]
 		},
