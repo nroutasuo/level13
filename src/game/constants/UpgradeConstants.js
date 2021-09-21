@@ -350,9 +350,23 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 			return result;
 		},
 		
+		getMinimumCampAndStepForUpgrade: function (upgradeID, ignoreCosts) {
+			return {
+				campOrdinal: this.getMinimumCampOrdinalForUpgrade(upgradeID, ignoreCosts),
+				step: this.getMinimumCampStepForUpgrade(upgradeID)
+			};
+		},
+		
 		getExpectedCampOrdinalForUpgrade: function (upgrade) {
 			return UpgradeConstants.upgradeDefinitions[upgrade].campOrdinal || 1;
-		}
+		},
+		
+		getExpectedCampAndStepForUpgrade: function (upgradeID) {
+			return {
+				campOrdinal: this.getExpectedCampOrdinalForUpgrade(upgradeID),
+				step: this.getMinimumCampStepForUpgrade(upgradeID)
+			};
+		},
 		
 	};
 	
