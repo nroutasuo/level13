@@ -233,7 +233,7 @@ define([
 			// only considering fight related followers here
 			let source = FollowerConstants.followerSource.EVENT;
 			let abilityType = FollowerConstants.abilityType.ATTACK;
-			let follower = FollowerConstants.getNewRandomFollower(source, campOrdinal, campOrdinal, abilityType);
+			let follower = FollowerConstants.getNewRandomFollower(source, campOrdinal, campOrdinal, abilityType, 0.5);
 			typicalFollowers.addFollower(follower);
 			typicalFollowers.setFollowerInParty(follower, true);
 			

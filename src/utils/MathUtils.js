@@ -19,9 +19,14 @@ define(function () {
 		},
 		
 		randomIntBetween: function (min, max) {
+			return this.intBetween(Math.random(), min, max);
+		},
+		
+		intBetween: function (min, max, pos) {
 			min = Math.ceil(min);
 			max = Math.floor(max);
-			return Math.floor(Math.random() * (max - min) + min);
+			pos = this.clamp(pos, 0, 1);
+			return Math.floor(pos * (max - min) + min);
 		},
 		
 		// simple weighted random: first item twice as likely to be selected as the second and so on

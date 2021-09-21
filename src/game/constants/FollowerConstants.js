@@ -94,7 +94,7 @@ define(['ash',
 			return Object.keys(FollowerConstants.followerType).length;
 		},
 		
-		getNewRandomFollower: function (source, campOrdinal, appearLevel, forcedAbilityType) {
+		getNewRandomFollower: function (source, campOrdinal, appearLevel, forcedAbilityType, forcedAbilityLevelRandomFactor) {
 			campOrdinal = campOrdinal || 1;
 			
 			let id = 100 + Math.floor(Math.random() * 100000);
@@ -105,7 +105,7 @@ define(['ash',
 				abilityType = availableAbilityTypes[Math.floor(Math.random() * availableAbilityTypes.length)];
 			}
 			
-			let abilityLevel = this.getRandomAbilityLevelByCampOrdinal(abilityType, campOrdinal);
+			let abilityLevel = this.getRandomAbilityLevelByCampOrdinal(abilityType, campOrdinal, forcedAbilityLevelRandomFactor);
 			
 			let name = "";
 			let icon = "";
@@ -150,13 +150,18 @@ define(['ash',
 			return new FollowerVO(followerID, template.name, template.abilityType, abilityLevel, template.icon);
 		},
 		
-		getRandomAbilityLevelByCampOrdinal: function (abilityType, campOrdinal) {
+		getRandomAbilityLevelByCampOrdinal: function (abilityType, campOrdinal, forcedAbilityLevelRandomFactor) {
 			let minCampOrdinal = Math.min(campOrdinal, this.getUnlockCampOrdinal(abilityType));
 			let maxCampOrdinal = WorldConstants.CAMPS_TOTAL;
 			
 			let minAbilityLevel = MathUtils.map(campOrdinal - 1, minCampOrdinal - 1, maxCampOrdinal + 1, 1, 100);
 			let maxAbilityLevel = MathUtils.map(campOrdinal + 1, minCampOrdinal - 1, maxCampOrdinal + 1, 1, 100);
 			let abilityLevel = MathUtils.randomIntBetween(minAbilityLevel, maxAbilityLevel);
+			
+			if (forcedAbilityLevelRandomFactor) {
+				abilityLevel = MathUtils.intBetween(forcedAbilityLevelRandomFactor, minAbilityLevel, maxAbilityLevel);
+			}
+			
 			return abilityLevel;
 		},
 		
