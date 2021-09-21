@@ -316,7 +316,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 							} else {
 								newActiveBranches.push(resultBranch);
 							}
-							minNextTurn = Math.min(minNextTurn, resultBranch.nextTurnPlayer, resultBranch.nextTurnEnemy);
+							minNextTurn = Math.min(minNextTurn, resultBranch.nextTurnPlayer || minNextTurn, resultBranch.nextTurnEnemy || minNextTurn);
 							minProb = minProb < 0 ? resultBranch.probability : Math.min(minProb, resultBranch.probability);
 							maxProb = maxProb < 0 ? resultBranch.probability : Math.max(maxProb, resultBranch.probability);
 							minPlayerHP = minPlayerHP < 0 ? resultBranch.playerHP : Math.min(minPlayerHP, resultBranch.playerHP);
@@ -345,7 +345,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			});
 		},
 		
-		applyFightStepToProbabilityBranch: function (branch, enemy, playerStamina, itemsComponent, stepTime, fightTime) {
+		applyFightStepToProbabilityBranch: function (branch, enemy, playerStamina, itemsComponent, followersComponent, stepTime, fightTime) {
 			let resultBranches = [];
 			
 			var playerAttackTime = FightConstants.getPlayerAttackTime(itemsComponent);
@@ -394,9 +394,9 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			return resultBranches;
 		},
 		
-		getFightExpectedDuration: function (enemy, playerStamina, itemsComponent) {
-			let playerAtt = this.getPlayerAtt(playerStamina, itemsComponent);
-			let playerDef = this.getPlayerDef(playerStamina, itemsComponent);
+		getFightExpectedDuration: function (enemy, playerStamina, itemsComponent, followersComponent) {
+			let playerAtt = this.getPlayerAtt(playerStamina, itemsComponent, followersComponent);
+			let playerDef = this.getPlayerDef(playerStamina, itemsComponent, followersComponent);
 			let playerSpeed = this.getPlayerSpeed(itemsComponent);
 			let playerHP = playerStamina.maxHP;
 			let playerShield = playerStamina.maxShield;
