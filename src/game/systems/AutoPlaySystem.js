@@ -629,7 +629,7 @@ define(['ash',
 
 			var unfinishedBlueprints = upgradesComponent.getUnfinishedBlueprints();
 			if (unfinishedBlueprints.length > 0) {
-				var id = unfinishedBlueprints[0].upgradeId;
+				var id = unfinishedBlueprints[0].upgradeID;
 				GameGlobals.playerActionFunctions.createBlueprint(id);
 				this.logStep("created blueprint " + id);
 				unlocked = true;
@@ -719,8 +719,8 @@ define(['ash',
 			log.i("autoplay (" + this.isExpress + ") (" + status + ") " + playerPosition.level + "-" + playerPosition.sectorId() + ": " + message);
 		},
 
-		hasUpgrade: function (upgradeId) {
-			return GameGlobals.playerActionFunctions.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeId);
+		hasUpgrade: function (upgradeID) {
+			return GameGlobals.playerActionFunctions.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeID);
 		},
 
 	});

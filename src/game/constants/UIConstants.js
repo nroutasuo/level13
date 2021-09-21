@@ -270,10 +270,10 @@ define(['ash',
 			GameGlobals.uiFunctions.toggle($li, showAmount > 0);
 		},
 
-		getBlueprintPieceLI: function (upgradeId) {
-			var upgradeDefinition = UpgradeConstants.upgradeDefinitions[upgradeId];
+		getBlueprintPieceLI: function (upgradeID) {
+			var upgradeDefinition = UpgradeConstants.upgradeDefinitions[upgradeID];
 			var name = upgradeDefinition.name;
-			return "<li><div class='info-callout-target' description='Blueprint (" + name + ")'>" + this.getBlueprintPieceIcon(upgradeId) + " blueprint</li>";
+			return "<li><div class='info-callout-target' description='Blueprint (" + name + ")'>" + this.getBlueprintPieceIcon(upgradeID) + " blueprint</li>";
 		},
 
 		getResourceList: function (resourceVO) {
@@ -520,8 +520,8 @@ define(['ash',
 				$(targetElementId).parents(".info-callout-target").siblings(".info-callout").children(".info-callout-content").html(content);
 		},
 
-		getBlueprintPieceIcon: function (upgradeId) {
-			let type = UpgradeConstants.getUpgradeType(upgradeId);
+		getBlueprintPieceIcon: function (upgradeID) {
+			let type = UpgradeConstants.getUpgradeType(upgradeID);
 			return "<img src='img/items/blueprints/blueprint-" + type + ".png' />";
 		},
 

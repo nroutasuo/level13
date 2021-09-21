@@ -657,8 +657,8 @@
 			this.refresh();
 		},
 
-		hasUpgrade: function (upgradeId) {
-			return this.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeId);
+		hasUpgrade: function (upgradeID) {
+			return this.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeID);
 		}
 
 	});

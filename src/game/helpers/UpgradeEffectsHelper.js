@@ -20,16 +20,16 @@ define([
 			this.improvementsByOccurrence[OccurrenceConstants.campOccurrenceTypes.recruit] = improvementNames.inn;
 		},
 		
-		getUnlockedBuildings: function (upgradeId) {
+		getUnlockedBuildings: function (upgradeID) {
 			// TODO separate in and out improvements
-			let actions = this.getUnlockedActions(upgradeId, function (action) {
+			let actions = this.getUnlockedActions(upgradeID, function (action) {
 				let improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(action, true);
 				return improvementName;
 			});
 			return actions.map(action => GameGlobals.playerActionsHelper.getImprovementNameForAction(action, true));
 		},
 		
-		getUnlockedItems: function (upgradeId) {
+		getUnlockedItems: function (upgradeID) {
 			// TODO performance
 			var items = [];
 			var reqsDefinition;
@@ -38,7 +38,7 @@ define([
 				reqsDefinition = PlayerActionConstants.requirements[action];
 				if (reqsDefinition.upgrades) {
 					for (var requiredUpgradeId in reqsDefinition.upgrades) {
-						if (requiredUpgradeId === upgradeId) {
+						if (requiredUpgradeId === upgradeID) {
 							item = GameGlobals.playerActionsHelper.getItemForCraftAction(action);
 							if (item) items.push(item);
 						}
@@ -48,20 +48,20 @@ define([
 			return items;
 		},
 		
-		getUnlockedWorkers: function (upgradeId) {
+		getUnlockedWorkers: function (upgradeID) {
 			var workers = [];
 			var workerUpgrade;
 			for (var worker in UpgradeConstants.unlockingUpgradesByWorker) {
 				workerUpgrade = UpgradeConstants.unlockingUpgradesByWorker[worker];
-				if (workerUpgrade === upgradeId) {
+				if (workerUpgrade === upgradeID) {
 					workers.push(worker);
 				}
 			}
 			return workers;
 		},
 		
-		getUnlockedOccurrences: function (upgradeId) {
-			var unlockedBuildings = this.getUnlockedBuildings(upgradeId);
+		getUnlockedOccurrences: function (upgradeID) {
+			var unlockedBuildings = this.getUnlockedBuildings(upgradeID);
 			var occurrences = [];
 			if(unlockedBuildings.length > 0) {
 				var occurrenceBuilding;
@@ -79,19 +79,19 @@ define([
 			return occurrences;
 		},
 		
-		getUnlockedUI: function (upgradeId) {
+		getUnlockedUI: function (upgradeID) {
 			var uiEffects = [];
 			var uiUpgrade;
 			for (var ui in UpgradeConstants.unlockingUpgradesByUIEffect) {
 				uiUpgrade = UpgradeConstants.unlockingUpgradesByUIEffect[ui];
-				if (uiUpgrade === upgradeId) {
+				if (uiUpgrade === upgradeID) {
 					uiEffects.push(ui);
 				}
 			}
 			return uiEffects;
 		},
 		
-		getImprovedBuildings: function (upgradeId) {
+		getImprovedBuildings: function (upgradeID) {
 			var buildings = [];
 			var buildingUpgrade;
 			var buildingUpgradeList;
@@ -99,7 +99,7 @@ define([
 				buildingUpgradeList = UpgradeConstants.improvingUpgradesByImprovement[building];
 				for(let i = 0; i < buildingUpgradeList.length; i++) {
 					buildingUpgrade = buildingUpgradeList[i];
-					if (buildingUpgrade === upgradeId) {
+					if (buildingUpgrade === upgradeID) {
 						buildings.push(building);
 					}
 				}
@@ -107,7 +107,7 @@ define([
 			return buildings;
 		},
 		
-		getImprovedWorkers: function (upgradeId) {
+		getImprovedWorkers: function (upgradeID) {
 			var workers = [];
 			var workerUpgrade;
 			var workerUpgradeList;
@@ -115,7 +115,7 @@ define([
 				workerUpgradeList = UpgradeConstants.improvingUpgradesByWorker[worker];
 				for(let i = 0; i < workerUpgradeList.length; i++) {
 					workerUpgrade = workerUpgradeList[i];
-					if (workerUpgrade === upgradeId) {
+					if (workerUpgrade === upgradeID) {
 						workers.push(worker);
 					}
 				}
@@ -123,7 +123,7 @@ define([
 			return workers;
 		},
 		
-		getImprovedOccurrences: function (upgradeId) {
+		getImprovedOccurrences: function (upgradeID) {
 			var events = [];
 			var eventUpgrade;
 			var eventUpgradeList;
@@ -131,7 +131,7 @@ define([
 				eventUpgradeList = UpgradeConstants.improvingUpgradesByEvent[event];
 				for(let i = 0; i < eventUpgradeList.length; i++) {
 					eventUpgrade = eventUpgradeList[i];
-					if (eventUpgrade === upgradeId) {
+					if (eventUpgrade === upgradeID) {
 						events.push(event);
 					}
 				}
@@ -139,8 +139,8 @@ define([
 			return events;
 		},
 		
-		getUnlockedGeneralActions: function (upgradeId) {
-			return this.getUnlockedActions(upgradeId, function (action) {
+		getUnlockedGeneralActions: function (upgradeID) {
+			return this.getUnlockedActions(upgradeID, function (action) {
 				let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
 				if (action == "build_out_greenhouse") return true;
 				if (action == "build_out_tradepost_connector") return true;
@@ -152,7 +152,7 @@ define([
 			});
 		},
 		
-		getUnlockedActions: function (upgradeId, filter) {
+		getUnlockedActions: function (upgradeID, filter) {
 			// TODO performance
 			let result = [];
 			var reqsDefinition;
@@ -160,7 +160,7 @@ define([
 				reqsDefinition = PlayerActionConstants.requirements[action];
 				if (reqsDefinition.upgrades && filter(action)) {
 					for (var requiredUpgradeId in reqsDefinition.upgrades) {
-						if (requiredUpgradeId === upgradeId) {
+						if (requiredUpgradeId === upgradeID) {
 							result.push(action);
 						}
 					}

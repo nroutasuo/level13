@@ -89,7 +89,7 @@ define([
 		boughtUpgrades.splice(index, 1);
 		
 		if (UpgradeConstants.piecesByBlueprint[upgradeID]) {
-			let blueprint = { upgradeId: upgradeID, maxPieces: UpgradeConstants.piecesByBlueprint[upgradeID], currentPieces: UpgradeConstants.piecesByBlueprint[upgradeID] };
+			let blueprint = { upgradeID: upgradeID, maxPieces: UpgradeConstants.piecesByBlueprint[upgradeID], currentPieces: UpgradeConstants.piecesByBlueprint[upgradeID] };
 			save.entitiesObject.tribe.Upgrades.availableBlueprints.push(blueprint);
 		}
 	}
@@ -110,7 +110,7 @@ define([
 		if (UpgradeConstants.piecesByBlueprint[upgradeID]) {
 			let currentIndex = -1;
 			for (let i = 0; i < save.entitiesObject.tribe.Upgrades.newBlueprints.length; i++) {
-				if (save.entitiesObject.tribe.Upgrades.newBlueprints[i].upgradeId == upgradeID) {
+				if (save.entitiesObject.tribe.Upgrades.newBlueprints[i].upgradeID == upgradeID) {
 					currentIndex = i;
 					break;
 				}
@@ -118,7 +118,7 @@ define([
 			if (currentIndex >= 0) {
 				save.entitiesObject.tribe.Upgrades.newBlueprints.splice(currentIndex, 1);
 			}
-			let blueprint = { upgradeId: upgradeID, maxPieces: UpgradeConstants.piecesByBlueprint[upgradeID], currentPieces: UpgradeConstants.piecesByBlueprint[upgradeID] };
+			let blueprint = { upgradeID: upgradeID, maxPieces: UpgradeConstants.piecesByBlueprint[upgradeID], currentPieces: UpgradeConstants.piecesByBlueprint[upgradeID] };
 			save.entitiesObject.tribe.Upgrades.newBlueprints.push(blueprint);
 		}
 	}

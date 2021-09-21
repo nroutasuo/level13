@@ -200,14 +200,14 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 			}
 		},
 		
-		getBlueprintCampOrdinal: function (upgradeId) {
-			if (this.campOrdinalsByBlueprint[upgradeId]) {
-				return this.campOrdinalsByBlueprint[upgradeId];
+		getBlueprintCampOrdinal: function (upgradeID) {
+			if (this.campOrdinalsByBlueprint[upgradeID]) {
+				return this.campOrdinalsByBlueprint[upgradeID];
 			}
 			for (var key in this.blueprintsByCampOrdinal) {
 				for (let i = 0; i < 3; i++) {
-					if (this.blueprintsByCampOrdinal[key][i].indexOf(upgradeId) >= 0) {
-						this.campOrdinalsByBlueprint[upgradeId] = key;
+					if (this.blueprintsByCampOrdinal[key][i].indexOf(upgradeID) >= 0) {
+						this.campOrdinalsByBlueprint[upgradeID] = key;
 						return key;
 					}
 				}
@@ -215,21 +215,21 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 			return 1;
 		},
 		
-		getMaxPiecesForBlueprint: function (upgradeId) {
-			if (this.piecesByBlueprint[upgradeId]) return this.piecesByBlueprint[upgradeId];
+		getMaxPiecesForBlueprint: function (upgradeID) {
+			if (this.piecesByBlueprint[upgradeID]) return this.piecesByBlueprint[upgradeID];
 			return 3;
 		},
 		
-		getBlueprintBracket: function (upgradeId) {
-			var ordinal = this.getBlueprintCampOrdinal(upgradeId);
-			if (this.blueprintsByCampOrdinal[ordinal][0].indexOf(upgradeId) >= 0) return this.BLUEPRINT_BRACKET_EARLY;
-			if (this.blueprintsByCampOrdinal[ordinal][1].indexOf(upgradeId) >= 0) return this.BLUEPRINT_BRACKET_LATE;
-			if (this.blueprintsByCampOrdinal[ordinal][2].indexOf(upgradeId) >= 0) return this.BLUEPRINT_BRACKET_LATE;
+		getBlueprintBracket: function (upgradeID) {
+			var ordinal = this.getBlueprintCampOrdinal(upgradeID);
+			if (this.blueprintsByCampOrdinal[ordinal][0].indexOf(upgradeID) >= 0) return this.BLUEPRINT_BRACKET_EARLY;
+			if (this.blueprintsByCampOrdinal[ordinal][1].indexOf(upgradeID) >= 0) return this.BLUEPRINT_BRACKET_LATE;
+			if (this.blueprintsByCampOrdinal[ordinal][2].indexOf(upgradeID) >= 0) return this.BLUEPRINT_BRACKET_LATE;
 			return null;
 		},
 		
-		getUpgradeType: function (upgradeId) {
-			let costs = PlayerActionConstants.costs[upgradeId];
+		getUpgradeType: function (upgradeID) {
+			let costs = PlayerActionConstants.costs[upgradeID];
 			let type = UpgradeConstants.UPGRADE_TYPE_RUMOURS;
 			if (costs.favour > 0) type = UpgradeConstants.UPGRADE_TYPE_FAVOUR;
 			else if (costs.evidence > 0) type = UpgradeConstants.UPGRADE_TYPE_EVIDENCE;

@@ -315,10 +315,10 @@ define([
 				var reqs = craftingRecipes[i].reqs;
 				var isUnlocked = true;
 				if (reqs && reqs.upgrades) {
-					for (var upgradeId in reqs.upgrades) {
-						var requirementBoolean = reqs.upgrades[upgradeId];
+					for (var upgradeID in reqs.upgrades) {
+						var requirementBoolean = reqs.upgrades[upgradeID];
 						if (requirementBoolean) {
-							isUnlocked = isUnlocked && UpgradeConstants.getMinimumCampOrdinalForUpgrade(upgradeId) <= campOrdinal;
+							isUnlocked = isUnlocked && UpgradeConstants.getMinimumCampOrdinalForUpgrade(upgradeID) <= campOrdinal;
 						}
 					}
 				}

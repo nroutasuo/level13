@@ -1652,25 +1652,25 @@ define(['ash',
 			log.i("used item added");
 		},
 
-		createBlueprint: function (upgradeId) {
-			this.tribeUpgradesNodes.head.upgrades.createBlueprint(upgradeId);
+		createBlueprint: function (upgradeID) {
+			this.tribeUpgradesNodes.head.upgrades.createBlueprint(upgradeID);
 			GlobalSignals.blueprintsChangedSignal.dispatch();
 		},
 
-		unlockUpgrade: function (upgradeId) {
-			this.tribeUpgradesNodes.head.upgrades.useBlueprint(upgradeId);
+		unlockUpgrade: function (upgradeID) {
+			this.tribeUpgradesNodes.head.upgrades.useBlueprint(upgradeID);
 			GlobalSignals.blueprintsChangedSignal.dispatch();
 		},
 
-		buyUpgrade: function (upgradeId, automatic) {
-			if (automatic || GameGlobals.playerActionsHelper.checkAvailability(upgradeId, true)) {
-				var upgradeDefinition = UpgradeConstants.upgradeDefinitions[upgradeId];
-				GameGlobals.playerActionsHelper.deductCosts(upgradeId);
+		buyUpgrade: function (upgradeID, automatic) {
+			if (automatic || GameGlobals.playerActionsHelper.checkAvailability(upgradeID, true)) {
+				var upgradeDefinition = UpgradeConstants.upgradeDefinitions[upgradeID];
+				GameGlobals.playerActionsHelper.deductCosts(upgradeID);
 				this.addLogMessage(LogConstants.MSG_ID_BOUGHT_UPGRADE, "Researched " + upgradeDefinition.name);
-				this.tribeUpgradesNodes.head.upgrades.addUpgrade(upgradeId);
-				GlobalSignals.upgradeUnlockedSignal.dispatch(upgradeId);
+				this.tribeUpgradesNodes.head.upgrades.addUpgrade(upgradeID);
+				GlobalSignals.upgradeUnlockedSignal.dispatch(upgradeID);
 				this.save();
-				gtag('event', 'upgrade_bought', { event_category: 'progression', event_label: upgradeId });
+				gtag('event', 'upgrade_bought', { event_category: 'progression', event_label: upgradeID });
 			}
 		},
 

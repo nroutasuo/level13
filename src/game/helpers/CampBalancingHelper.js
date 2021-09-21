@@ -348,9 +348,9 @@ define([
 				// check required upgrades
 				if (reqs && reqs.upgrades) {
 					var upgradeRequirements = reqs.upgrades;
-					for (let upgradeId in upgradeRequirements) {
-						var requirementBoolean = upgradeRequirements[upgradeId];
-						var requiredTechCampOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(upgradeId);
+					for (let upgradeID in upgradeRequirements) {
+						var requirementBoolean = upgradeRequirements[upgradeID];
+						var requiredTechCampOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(upgradeID);
 						var hasBoolean = requiredTechCampOrdinal <= maxCampOrdinal;
 						if (requirementBoolean != hasBoolean) {
 							return false;

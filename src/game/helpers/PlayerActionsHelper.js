@@ -423,12 +423,12 @@ define([
 
 					if (requirements.upgrades) {
 						var upgradeRequirements = requirements.upgrades;
-						for (var upgradeId in upgradeRequirements) {
-							var requirementBoolean = upgradeRequirements[upgradeId];
-							var hasBoolean = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeId);
+						for (var upgradeID in upgradeRequirements) {
+							var requirementBoolean = upgradeRequirements[upgradeID];
+							var hasBoolean = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeID);
 							if (requirementBoolean != hasBoolean) {
-								var def = UpgradeConstants.upgradeDefinitions[upgradeId];
-								var name = def ? def.name : upgradeId;
+								var def = UpgradeConstants.upgradeDefinitions[upgradeID];
+								var name = def ? def.name : upgradeID;
 								if (requirementBoolean) reason = "Upgrade required: " + name;
 								else reason = "Upgrade already researched (" + name + ")";
 								return { value: 0, reason: reason };
@@ -446,8 +446,8 @@ define([
 					}
 
 					if (typeof requirements.blueprintpieces !== "undefined") {
-						var upgradeId = requirements.blueprintpieces;
-						var blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(upgradeId);
+						var upgradeID = requirements.blueprintpieces;
+						var blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(upgradeID);
 						if (!blueprintVO || blueprintVO.completed) {
 							reason = "No such blueprint in progress.";
 							return { value: 0, reason: reason };
@@ -1138,9 +1138,9 @@ define([
 					
 				case "create_blueprint":
 					requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
-					let upgradeId = action.replace(baseActionID + "_", "");
-					let type = UpgradeConstants.getUpgradeType(upgradeId);
-					requirements.blueprintpieces = upgradeId;
+					let upgradeID = action.replace(baseActionID + "_", "");
+					let type = UpgradeConstants.getUpgradeType(upgradeID);
+					requirements.blueprintpieces = upgradeID;
 					if (type == UpgradeConstants.UPGRADE_TYPE_FAVOUR) {
 						requirements.workers = {};
 						requirements.workers.cleric = [1, -1];
