@@ -63,7 +63,7 @@ define([
 				this.fleeFight();
 			}
 			
-			if (enemy.hp <= 0 || playerStamina.hp <= 0) {
+			if ((enemy.hp <= 0 && enemy.shield <= 0) || (playerStamina.hp <= 0 && playerStamina.shield <= 0)) {
 				this.endFight();
 			}
 			

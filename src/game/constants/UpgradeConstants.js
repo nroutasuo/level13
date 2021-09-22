@@ -229,7 +229,7 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 		},
 		
 		getUpgradeType: function (upgradeID) {
-			let costs = PlayerActionConstants.costs[upgradeID];
+			let costs = PlayerActionConstants.costs[upgradeID] || {};
 			let type = UpgradeConstants.UPGRADE_TYPE_RUMOURS;
 			if (costs.favour > 0) type = UpgradeConstants.UPGRADE_TYPE_FAVOUR;
 			else if (costs.evidence > 0) type = UpgradeConstants.UPGRADE_TYPE_EVIDENCE;

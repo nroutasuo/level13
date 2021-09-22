@@ -462,6 +462,10 @@
             "item_res_silk": 10,
             "resource_rope": 30
         },
+		"clothing_upper_45": {
+			"item_res_silk": 5,
+			"resource_rope": 100
+		},
         "craft_clothing_upper_5": {
             "item_res_silk": 20,
             "resource_rope": 5
@@ -2293,11 +2297,6 @@
         "craft_shoe_l14": {
             "upgrades": {
                 "unlock_action_clear_waste_r": true
-            }
-        },
-        "craft_use_in_hospital2": {
-            "upgrades": {
-                "improve_building_hospital_3": true
             }
         },
         "craft_weapon12": {
