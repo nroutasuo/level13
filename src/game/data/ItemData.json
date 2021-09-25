@@ -585,6 +585,7 @@
             "res_poison": 5,
             "res_rad": 5,
             "shade": 10,
+            "shield": 10,
             "warmth": 5
         },
         "description": "Perfect apparel for the post-apocalyptic adventurer.",
@@ -627,6 +628,7 @@
             "res_poison": 15,
             "res_rad": 15,
             "shade": 10,
+            "shield": 10,
             "warmth": 10
         },
         "description": "A practical, protective hood that doesn't get in the way.",
@@ -648,7 +650,7 @@
             "res_poison": 10,
             "res_rad": 20,
             "shade": 50,
-            "shield": 10,
+            "shield": 20,
             "warmth": 15
         },
         "description": "Headgear designed specifically for scavenging in the City.",
@@ -688,6 +690,7 @@
     },
     "clothing_lower_1": {
         "bonuses": {
+            "def": 1,
             "warmth": 1
         },
         "description": "Barely counts for clothing, but for now it'll have to do.",
@@ -705,7 +708,7 @@
     },
     "clothing_lower_15": {
         "bonuses": {
-            "def": 1,
+            "def": 2,
             "warmth": 1
         },
         "description": "Nothing wrong with these pants",
@@ -899,6 +902,7 @@
             "def": 15,
             "res_poison": 5,
             "res_rad": 5,
+            "shield": 20,
             "warmth": 10
         },
         "description": "Something that's actually produced with the aim of keeping one safe.",
@@ -919,6 +923,7 @@
             "def": 15,
             "res_poison": 5,
             "res_rad": 5,
+            "shield": 20,
             "warmth": 15
         },
         "description": "Something that's actually produced with the aim of keeping one safe.",
@@ -939,6 +944,7 @@
             "def": 21,
             "res_poison": 5,
             "res_rad": 5,
+            "shield": 30,
             "warmth": 5
         },
         "description": "An ugly but surprisingly comfortable metal blanket",
@@ -959,7 +965,7 @@
             "def": 30,
             "res_poison": 5,
             "res_rad": 5,
-            "shield": 10
+            "shield": 50
         },
         "description": "Heavy, but worth it.",
         "icon": "img/items/clothing-2.png",
@@ -979,7 +985,7 @@
             "def": 32,
             "res_poison": 10,
             "res_rad": 10,
-            "shield": 20,
+            "shield": 60,
             "warmth": 20
         },
         "description": "Novel technology for maximal survival in the post-Fall City",
@@ -1000,7 +1006,7 @@
             "def": 38,
             "res_poison": 10,
             "res_rad": 10,
-            "shield": 30,
+            "shield": 80,
             "warmth": 10
         },
         "description": "Based on the old Surface Guard uniform with additional environmental proection.",
@@ -1021,7 +1027,7 @@
             "def": 60,
             "res_poison": 20,
             "res_rad": 30,
-            "shield": 80,
+            "shield": 130,
             "warmth": 10
         },
         "description": "Futuristic armour designed for those exploring the world outside the City's protective walls.",
@@ -1043,6 +1049,7 @@
             "movement": 1.1,
             "res_poison": 15,
             "res_rad": 15,
+            "shield": 20,
             "warmth": 5
         },
         "description": "Effective protection against radiation, but clumsy to move around in.",
@@ -1079,6 +1086,7 @@
     },
     "clothing_upper_1": {
         "bonuses": {
+            "def": 1,
             "warmth": 1
         },
         "description": "Barely counts for clothing, but for now it'll have to do.",
@@ -1096,7 +1104,7 @@
     },
     "clothing_upper_15": {
         "bonuses": {
-            "def": 1,
+            "def": 2,
             "res_poison": 1,
             "res_rad": 1,
             "warmth": 2
@@ -1553,7 +1561,7 @@
     },
     "weapon1": {
         "bonuses": {
-            "att": 6,
+            "att": 10,
             "spd": 1
         },
         "description": "Improvised sharp poking implement.",
@@ -1571,7 +1579,7 @@
     },
     "weapon12": {
         "bonuses": {
-            "att": 8,
+            "att": 12,
             "spd": 1
         },
         "description": "A bit sturdier than the shiv.",
@@ -1589,7 +1597,7 @@
     },
     "weapon122": {
         "bonuses": {
-            "att": 9,
+            "att": 14,
             "spd": 1
         },
         "description": "A good quality knife.",
@@ -1607,7 +1615,7 @@
     },
     "weapon2": {
         "bonuses": {
-            "att": 14,
+            "att": 18,
             "spd": 0.9
         },
         "description": "Old-fashioned but reliable weapon.",
@@ -1626,7 +1634,7 @@
     "weapon25": {
         "bonuses": {
             "att": 26,
-            "spd": 0.6
+            "spd": 0.75
         },
         "description": "Easy to use and reliable.",
         "icon": "img/items/weapon-shiv.png",
@@ -1679,8 +1687,8 @@
     },
     "weapon4": {
         "bonuses": {
-            "att": 35,
-            "spd": 1.1
+            "att": 32,
+            "spd": 1
         },
         "description": "A crude single-shot pistol, like a hand-held miniature cannon.",
         "icon": "img/items/weapon-shiv.png",
@@ -1697,8 +1705,8 @@
     },
     "weapon5": {
         "bonuses": {
-            "att": 37,
-            "spd": 1.1
+            "att": 36,
+            "spd": 1
         },
         "description": "A more sophisticated handgun that allows several shots before reloading.",
         "icon": "img/items/weapon-shiv.png",
@@ -1715,7 +1723,7 @@
     },
     "weapon52": {
         "bonuses": {
-            "att": 58,
+            "att": 50,
             "spd": 0.8
         },
         "description": "A formidable axe specifically designed for combat",
@@ -1733,7 +1741,7 @@
     },
     "weapon58": {
         "bonuses": {
-            "att": 73,
+            "att": 60,
             "spd": 0.8
         },
         "description": "Devastating short-range firearm.",
@@ -1751,8 +1759,8 @@
     },
     "weapon6": {
         "bonuses": {
-            "att": 70,
-            "spd": 1.2
+            "att": 55,
+            "spd": 1
         },
         "description": "It may be made from scrap metal but it is still a serious weapon.",
         "icon": "img/items/weapon-shiv.png",
@@ -1769,8 +1777,8 @@
     },
     "weapon7": {
         "bonuses": {
-            "att": 92,
-            "spd": 1
+            "att": 65,
+            "spd": 0.9
         },
         "description": "Powerful but heavy and somewhat unreliable construction of pipes, reclaimed weapon parts and improvised ammunition.",
         "icon": "img/items/weapon-shiv.png",
@@ -1787,8 +1795,8 @@
     },
     "weapon8": {
         "bonuses": {
-            "att": 100,
-            "spd": 1.2
+            "att": 70,
+            "spd": 1
         },
         "description": "Deadly weapon similar to those that were mass-produced just before the Fall.",
         "icon": "img/items/weapon-shiv.png",
