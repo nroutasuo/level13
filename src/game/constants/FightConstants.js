@@ -36,6 +36,13 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			return Math.max(1, dmg);
 		},
 		
+		getAttackForDPH: function (dph, def) {
+			// the messy function below is the damage formula solved for att:
+			// dph = att * att / (att + def)
+			// -> att = 1/2 (sqrt(dph) sqrt(4 def + dph) + dph)
+			return 0.5 * (Math.sqrt(dph) * Math.sqrt(4 * def + dph) + dph);
+		},
+		
 		// two fight participants with similar strength will do similar damage per sec to each other
 		// att matters more than def, and speed matters more in propotion to att than def
 		getStrength: function (att, def, spd) {

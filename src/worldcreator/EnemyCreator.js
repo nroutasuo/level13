@@ -71,23 +71,39 @@ define([
 				difficultyFactor = MathUtils.map(normalizedDifficulty, 8, 10, 0, 1);
 			}
 			
-			// campOrdinal, step, attRatio (0-1) -> att and def
-			let attackFactor = MathUtils.clamp(attRatio, 0.1, 0.9);
-			let strength = this.getStatBase(campOrdinal, step, difficultyFactor, this.getPlayerStrength);
-			let att = Math.max(1, this.getAttack(strength, attackFactor, speed));
-			let def = Math.max(1, this.getDefence(strength, attackFactor, speed));
+			// speed (just normalize)
+			speed = Math.max(speed, 0.1);
 			
-			// campOrdinal, step, shieldRatio (0-1), healthFactor (0-1), shieldFactor (0-1), size -> hp and shield
-			let hpshieldtotal = Math.max(10, this.getStatBase(campOrdinal, step, difficultyFactor, this.getPlayerHpShield));
+			// campOrdinal, step -> reference player stats (adjusted for difficulty factor)
+			let playerAtt = this.getStatBase(campOrdinal, step, difficultyFactor, this.getPlayerAtt);
+			let playerDef =  this.getStatBase(campOrdinal, step, difficultyFactor, this.getPlayerDef);
+			let playerHPShield = this.getStatBase(campOrdinal, step, difficultyFactor, this.getPlayerHpShield);
+			let playerSpeed = this.getPlayerSpeed(campOrdinal, step);
+			
+			// player def, hp, shield + enemy speed -> enemy att
+			// goal: about 5 seconds to kill player
+			let targetDPH = playerHPShield / 5 / speed;
+			let att = Math.max(1, this.getAttack(targetDPH, playerDef));
+			
+			// att + attRatio -> enemy def
+			// goal: att / (att + def) = attRatio
+			let attackFactor = MathUtils.clamp(attRatio, 0.1, 0.9);
+			let def = Math.max(1, this.getDefence(att, attackFactor));
+			
+			// player att, speed, enemy def -> enemy hp/shield total
+			// goal: about 5 seconds to kill player
+			let playerDPS = FightConstants.getDamagePerSec(playerAtt, def, playerSpeed);
+			let hpshieldtotal = playerDPS * 5;
+			
+			// hpshieldtotal, healthFactor (0-1), shieldFactor (0-1), size -> hp and shield
 			let sizeHPFactor = MathUtils.map(size, 0, 2, 0.5, 1.5);
 			let sizeShieldFactor = MathUtils.map(size, 0, 2, 0.75, 1.25);
 			let hp = Math.round(hpshieldtotal * (1 - shieldRatio) * healthFactor * sizeHPFactor);
 			let shield = Math.round(hpshieldtotal * shieldRatio * shieldFactor * sizeShieldFactor);
 			
-			// normalize rest
-			speed = Math.max(speed, 0.1);
+			// normalize the rest
 			rarity = MathUtils.clamp(rarity, 1, 100);
-			droppedResources = droppedResources || [ ];
+			droppedResources = droppedResources || [];
 			
 			EnemyConstants.enemyDifficulties[id] = this.getDifficulty(campOrdinal, step);
 			
@@ -98,6 +114,8 @@ define([
 		
 		getStatBase: function (campOrdinal, step, difficultyFactor, statfunc) {
 			let current = statfunc.call(this, campOrdinal, step);
+			
+			if (campOrdinal == 0) return current;
 			
 			let previousTotal = 0;
 			let previousNum = 0;
@@ -122,22 +140,37 @@ define([
 		},
 		
 		getPlayerStrength: function (campOrdinal, step) {
-			let playerStamina = this.getTypicalStamina(campOrdinal, step);
-			let itemsComponent = this.getTypicalItems(campOrdinal, step);
-			let followersComponent = this.getTypicalFollowers(campOrdinal, step);
-			let playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent, followersComponent);
-			let playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent, followersComponent);
-			let playerSpeed = FightConstants.getPlayerSpeed(itemsComponent);
+			let playerAtt = this.getPlayerAtt(campOrdinal, step);
+			let playerDef = this.getPlayerDef(campOrdinal, step);
+			let playerSpeed = this.getPlayerSpeed(campOrdinal, step);
 			return FightConstants.getStrength(playerAtt, playerDef, playerSpeed);
 		},
 		
-		
-		getAttack: function (strength, attackFactor, speed) {
-			return this.getAttDef(strength, speed) * attackFactor;
+		getPlayerAtt: function (campOrdinal, step) {
+			let playerStamina = this.getTypicalStamina(campOrdinal, step);
+			let itemsComponent = this.getTypicalItems(campOrdinal, step);
+			let followersComponent = this.getTypicalFollowers(campOrdinal, step);
+			return FightConstants.getPlayerAtt(playerStamina, itemsComponent, followersComponent);
 		},
 		
-		getDefence: function (strength, attackFactor, speed) {
-			return this.getAttDef(strength, speed) * (1 - attackFactor);
+		getPlayerDef: function (campOrdinal, step) {
+			let playerStamina = this.getTypicalStamina(campOrdinal, step);
+			let itemsComponent = this.getTypicalItems(campOrdinal, step);
+			let followersComponent = this.getTypicalFollowers(campOrdinal, step);
+			return FightConstants.getPlayerDef(playerStamina, itemsComponent, followersComponent);
+		},
+		
+		getPlayerSpeed: function (campOrdinal, step) {
+			let itemsComponent = this.getTypicalItems(campOrdinal, step);
+			return FightConstants.getPlayerSpeed(itemsComponent);
+		},
+		
+		getAttack: function (targetDPH, playerDef) {
+			return Math.round(FightConstants.getAttackForDPH(targetDPH, playerDef));
+		},
+		
+		getDefence: function (att, attFactor) {
+			return Math.round(att * (1/attFactor - 1));
 		},
 		
 		getAttDef: function (strength, speed) {
@@ -150,6 +183,23 @@ define([
 		getPlayerHpShield: function (campOrdinal, step) {
 			let playerStamina = this.getTypicalStamina(campOrdinal, step);
 			return playerStamina.maxHP + playerStamina.maxShield;
+		},
+		
+		getEnemyHpShield: function (campOrdinal, step) {
+			let playerHPShield = this.getPlayerHpShield(campOrdinal, step);
+			
+			let playerStamina = this.getTypicalStamina(campOrdinal, step);
+			let itemsComponent = this.getTypicalItems(campOrdinal, step);
+			let followersComponent = this.getTypicalFollowers(campOrdinal, step);
+			let playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent, followersComponent);
+			
+			// average of two factors:
+			// - player hp and shield (should be comparable)
+			// - player attack (nice fight duration since player attack is maximum damage player can do)
+			// att matters less as numbers (relative to typical hp) grow and it's balanced by def
+			let defaultHP = 100;
+			let attFactor = defaultHP / playerAtt / 50;
+			return attFactor * playerAtt + (1-attFactor) * playerHPShield;
 		},
 
 		// get enemies by type (string) and difficulty (campOrdinal and step)
