@@ -209,7 +209,7 @@ define([
 		
 		getTypicalItems: function (campOrdinal, step, isHardLevel) {
 			var typicalItems = new ItemsComponent();
-			var typicalWeapon = ItemConstants.getDefaultWeapon(campOrdinal, step);
+			var typicalWeapon = GameGlobals.itemsHelper.getDefaultWeapon(campOrdinal, step);
 			var typicalClothing = GameGlobals.itemsHelper.getDefaultClothing(campOrdinal, step, ItemConstants.itemBonusTypes.fight_def, isHardLevel);
 
 			if (typicalWeapon) {

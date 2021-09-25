@@ -58,11 +58,15 @@ define([
 				if (existing) {
 					result[slotType] = existing;
 				} else {
-					result[slotType] = this.getBestAvailableItem(campOrdinal, slotType, itemBonusType);
+					result[slotType] = this.getBestAvailableItem(campOrdinal, step, slotType, itemBonusType);
 				}
 			}
 			
 			return Object.values(result);
+		},
+		
+		getDefaultWeapon: function (campOrdinal, step) {
+			return this.getBestAvailableItem(campOrdinal, step, ItemConstants.itemTypes.weapon, ItemConstants.itemBonusTypes.fight_att);
 		},
 		
 		getDefaultClothing: function (campOrdinal, step, itemBonusType, isHardLevel) {
@@ -145,24 +149,27 @@ define([
 				if (notNew) continue;
 				result.push(necessityClothing[i]);
 			}
-			var prevWeapon = ItemConstants.getDefaultWeapon(campOrdinal - 1, WorldConstants.CAMP_STEP_END);
-			var weapon = ItemConstants.getDefaultWeapon(campOrdinal, WorldConstants.CAMP_STEP_END);
+			var prevWeapon = this.getDefaultWeapon(campOrdinal - 1, WorldConstants.CAMP_STEP_END);
+			var weapon = this.getDefaultWeapon(campOrdinal, WorldConstants.CAMP_STEP_END);
 			if (weapon && (!prevWeapon || weapon.id !== prevWeapon.id)) result.push(weapon);
 			return result;
 		},
 		
-		getBestAvailableItem: function (campOrdinal, itemType, itemBonusType) {
+		getBestAvailableItem: function (campOrdinal, step, itemType, itemBonusType) {
 			let bestItem = null;
 			let bestBonus = 0;
+			let bestTotal = 0;
 			for (let i = 0; i < ItemConstants.itemDefinitions[itemType].length; i++) {
 				let item = ItemConstants.itemDefinitions[itemType][i];
 				if (!this.isAvailable(item, campOrdinal, WorldConstants.CAMP_STAGE_EARLY, true, true)) {
 					continue;
 				}
-				let bonus = ItemConstants.getItemBonusComparisonValue(item, itemBonusType)
-				if (!bestItem || bonus > bestBonus) {
+				let bonus = ItemConstants.getItemBonusComparisonValue(item, itemBonusType);
+				let total = item.getTotalBonus();
+				if (!bestItem || bonus > bestBonus || (bonus == bestBonus && total > bestTotal)) {
 					bestItem = item;
 					bestBonus = bonus;
+					bestTotal = total;
 				}
 			}
 			return bestItem;
@@ -219,7 +226,7 @@ define([
 					addedIDs.push(id);
 				}
 			}
-			var weapon = ItemConstants.getDefaultWeapon(campOrdinal, step);
+			var weapon = this.getDefaultWeapon(campOrdinal, step);
 			result.push(weapon);
 			return result;
 		},

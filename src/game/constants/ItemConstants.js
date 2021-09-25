@@ -245,21 +245,6 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			return this.itemDefinitions.shoes[Math.floor(3 * Math.random())];
 		},
 		
-		getDefaultWeapon: function (campOrdinal, step) {
-			var step = step || 2;
-			var totalWeapons = this.itemDefinitions.weapon.length;
-			let result = null;
-			for (let i = 0; i < totalWeapons; i++) {
-				var weapon = this.itemDefinitions.weapon[i];
-				var weaponCampOrdinal = Math.max(1, weapon.requiredCampOrdinal);
-				if (step == 1 && weaponCampOrdinal >= campOrdinal) break;
-				if (step == 2 && weaponCampOrdinal >= campOrdinal) break;
-				if (step == 3 && weaponCampOrdinal > campOrdinal) break;
-				result = weapon;
-			}
-			return result;
-		},
-		
 		getIngredient: function (i) {
 			let index = i || (this.itemDefinitions.ingredient.length) * Math.random();
 			index = index % this.itemDefinitions.ingredient.length;

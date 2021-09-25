@@ -604,7 +604,7 @@ define([
 				];
 				for (let i = 0; i < searchDefs.length; i++) {
 					let searchDef = searchDefs[i];
-					let bestItem = this.itemsHelper.getBestAvailableItem(nextLevelVO.campOrdinal, searchDef.itemType, searchDef.itemBonusType);
+					let bestItem = this.itemsHelper.getBestAvailableItem(nextLevelVO.campOrdinal, WorldConstants.CAMP_STEP_END, searchDef.itemType, searchDef.itemBonusType);
 					let s1 = 6000 + seed % 8 + (l + 5) * 555 + i * 44;
 					let s2 = 5001 + seed % 5 * 301 + (l + 5) * 102 + i * 66;
 					if (bestItem && !bestItem.craftable && WorldCreatorRandom.random(s1) < searchDef.probability) {
