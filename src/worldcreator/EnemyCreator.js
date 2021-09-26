@@ -96,12 +96,11 @@ define([
 			let hpshieldtotal = playerDPS * 5;
 			
 			// hpshieldtotal, healthFactor (0-1), shieldFactor (0-1), size -> hp and shield
-			let sizeHPFactor = MathUtils.map(size, 0, 2, 0.5, 1.5);
-			let sizeShieldFactor = MathUtils.map(size, 0, 2, 0.75, 1.25);
-			let hp = Math.round(hpshieldtotal * (1 - shieldRatio) * healthFactor * sizeHPFactor);
-			let shield = Math.round(hpshieldtotal * shieldRatio * shieldFactor * sizeShieldFactor);
+			let hp = Math.round(hpshieldtotal * (1 - shieldRatio) * healthFactor);
+			let shield = Math.round(hpshieldtotal * shieldRatio * shieldFactor);
 			
 			// normalize the rest
+			size = MathUtils.clamp(size, 0.1, 2);
 			rarity = MathUtils.clamp(rarity, 1, 100);
 			droppedResources = droppedResources || [];
 			
@@ -109,7 +108,7 @@ define([
 			
 			// log.i("goal strength: " + strength + " | actual strength: " + FightConstants.getStrength(att, def, speed));
 
-			return new EnemyVO(id, name, type, nouns, groupN, activeV, defeatedV, att, def, hp, shield, speed, rarity, droppedResources);
+			return new EnemyVO(id, name, type, nouns, groupN, activeV, defeatedV, size, att, def, hp, shield, speed, rarity, droppedResources);
 		},
 		
 		getStatBase: function (campOrdinal, step, difficultyFactor, statfunc) {
