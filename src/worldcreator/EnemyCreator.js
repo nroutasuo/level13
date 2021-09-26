@@ -93,7 +93,7 @@ define([
 			// player att, speed, enemy def -> enemy hp/shield total
 			// goal: about 5 seconds to kill player
 			let playerDPS = FightConstants.getDamagePerSec(playerAtt, def, playerSpeed);
-			let hpshieldtotal = playerDPS * 5;
+			let hpshieldtotal = Math.max(20, playerDPS * 5);
 			
 			// hpshieldtotal, healthFactor (0-1), shieldFactor (0-1), size -> hp and shield
 			let hp = Math.round(hpshieldtotal * (1 - shieldRatio) * healthFactor);
