@@ -4,32 +4,120 @@ function (Ash, EnemyVO) {
 	var EnemyConstants = {
 		
 		enemyTypes: {
-			// nohazard, cold, toxic, radiation, sunlit, dark, dense, sparse, water (sectors that contain AND neighbours)
-			global: "global",     	// anywhere
-			nohazard: "nohazard",   // sectors with no hazards
-			cold: "cold",           // cold sectors
-			toxic: "toxic",         // toxic sectors
-			radiation: "radiation", // radiactive sectors
-			sunlit: "sunlit",       // sunlit sectors
-			dark: "dark",           // dark sectors
-			dense: "dense",         // densely built sectors
-			sparse: "sparse",       // sparsely built sectors
-			water: "water",         // sectors with water (or neighbours)
-			magic: "magic"          // sectors with magic (WIP)
+			global: "global",			// anywhere
+			nohazard: "nohazard",    	// sectors with no hazards
+			cold: "cold",            	// cold sectors
+			dark: "dark",            	// dark sectors
+			radiation: "radiation",  	// radiactive sectors
+			dense: "dense",          	// densely built sectors
+			sparse: "sparse",        	// sparsely built sectors
+			inhabited: "inhabited",  	// has fairly recent human habitation
+			uninhabited: "inhabited",	// no recent human habitation
+			sunlit: "sunlit",        	// sunlit sectors
+			toxic: "toxic",          	// polluted sectors
+			water: "water",          	// sectors with water (or neighbours)
 		},
 		
 		enemyDefinitions: {
 			global: [ ],
 			nohazard: [ ],
 			cold: [ ],
-			toxic: [ ],
-			radiation: [ ],
-			sunlit: [ ],
 			dark: [ ],
+			radiation: [ ],
 			dense: [ ],
 			sparse: [ ],
+			inhabited: [ ],
+			uninhabited: [ ],
+			sunlit: [ ],
+			toxic: [ ],
 			water: [ ],
-			magic: [ ],
+		},
+		
+		enemyTexts: {
+			bandit: {
+				nouns: [ "bandit", "thug" ],
+				groupNouns: [ "mob", "gang"],
+				verbsActive: [ "patrolled by", "controlled by", "guarded by", "occupied by"],
+				verbsDefeated: [ "driven away", "killed"],
+			},
+			big_animal: {
+				nouns: [ "aggressive animal", "wild animal", "animal" ],
+				groupNouns: ["pack", "mob", "gang"],
+				verbsActive: ["overrun with", "guarded by", "occupied by"],
+				verbsDefeated: ["cleared", "killed"],
+			},
+			bird: {
+				nouns: ["urban pest", "birds", "animals", "aggressive animals"],
+				groupNouns: ["flock", "swarm", "gang", "mob"],
+				verbsActive: ["overrun with", "infested with", "occupied by", "guarded by"],
+				verbsDefeated: ["killed", "cleared", "driven away"],
+			},
+			flora: {
+				nouns: ["urban pest", "vicious plants"],
+				groupNouns: ["cluster", "group"],
+				verbsActive: ["infested with", "covered in", "overrun with"],
+				verbsDefeated: ["cleared"],
+			},
+			fungi: {
+				nouns: ["urban pest", "dangerous fungi"],
+				groupNouns: ["cluster", "group"],
+				verbsActive: ["infested with", "covered in", "overrun with"],
+				verbsDefeated: ["cleared", "killed"],
+			},
+			humanoid: {
+				nouns: ["malevolent creatures"],
+				groupNouns: ["mob", "gang", "group"],
+				verbsActive: ["guarded by", "occupied by"],
+				verbsDefeated: ["driven away"],
+			},
+			robot: {
+				nouns: ["aggressive bots"],
+				groupNouns: ["mob", "gang", "group", "swarm", "cell"],
+				verbsActive: ["patrolled by", "controlled by", "guarded by", "occupied by"],
+				verbsDefeated: ["disabled", "cleared", "destroyed"],
+			},
+			small_animal: {
+				nouns: ["urban pest", "aggressive animal", "wild animal", "animal"],
+				groupNouns: ["swarm", "pack", "mob", "group", "horde"],
+				verbsActive: ["infested with", "overrun with" ],
+				verbsDefeated: ["killed", "cleared"],
+			},
+			structure: {
+				nouns: ["automated structures"],
+				groupNouns: ["group", "set"],
+				verbsActive: ["blocked by"],
+				verbsDefeated: ["disabled"],
+			},
+		},
+		
+		enemyLoot: {
+			bandit: {
+				droppedResources: [ "food", "water", "rope" ],
+			},
+			big_animal: {
+				droppedResources: [ "food" ],
+			},
+			bird: {
+				droppedResources: [ "food" ],
+			},
+			flora: {
+				droppedResources: [ "food" ],
+			},
+			fungi: {
+				droppedResources: [ "food" ],
+			},
+			humanoid: {
+				droppedResources: [ ],
+			},
+			robot: {
+				droppedResources: [ "metal", "fuel" ],
+			},
+			small_animal: {
+				droppedResources: [ "food" ],
+			},
+			structure: {
+				droppedResources: [ "metal" ],
+			},
 		},
 		
 		// saved for convenience & startup speed

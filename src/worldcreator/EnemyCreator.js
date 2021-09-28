@@ -36,13 +36,40 @@ define([
 		createEnemies: function () {
 			EnemyConstants.enemyDefinitions = {};
 			
+			let templateSuffix = "__template";
+			
 			// TODO check nouns and verbs for orphans (only one/few enemies using)
 			
+			let getTemplateID = function (enemyID) {
+				let parts = enemyID.split("__");
+				return parts[0] + templateSuffix;
+			};
+			
 			for (enemyID in EnemyData) {
-				let def = EnemyData[enemyID];
-				let type = def.type;
+				if (enemyID.indexOf(templateSuffix) > 0) continue;
+				let data = EnemyData[enemyID];
+				let templateID = getTemplateID(enemyID);
+				let template = EnemyData[templateID] || {};
+				
+				let def = {};
+				Object.assign(def, template);
+				Object.assign(def, data);
+				
+				let enemyType = def.enemyType;
+				let textDef = EnemyConstants.enemyTexts[enemyType] || {};
+				def.nouns = (def.nouns || []).concat(textDef.nouns);
+				def.groupNouns = (def.groupNouns || []).concat(textDef.groupNouns);
+				def.verbsActive = (def.verbsActive || []).concat(textDef.verbsActive);
+				def.verbsDefeated = (def.verbsDefeated || []).concat(textDef.verbsDefeated);
+				
+				let lootDef = EnemyConstants.enemyLoot[enemyType] || {};
+				def.droppedResources = (def.droppedResources || []).concat(lootDef.droppedResources);
+				
+				let type = def.environment || template.environment;
 				let enemyVO = this.createEnemy(
-					enemyID, def.name, type,
+					enemyID,
+					def.name,
+					type,
 					def.nouns, def.groupNouns, def.verbsActive, def.verbsDefeated,
 					def.campOrdinal || 0, def.difficulty || 5,
 					def.attackRatio || 0.5, def.shieldRatio || 0, def.healthFactor || 1, def.shieldFactor || 1, def.size || 1, def.speed || 1,
@@ -71,8 +98,11 @@ define([
 				difficultyFactor = MathUtils.map(normalizedDifficulty, 8, 10, 0, 1);
 			}
 			
-			// speed (just normalize)
+			// normalize input values
 			speed = Math.max(speed, 0.1);
+			shieldRatio = MathUtils.clamp(shieldRatio, 0, 1);
+			shieldFactor = MathUtils.clamp(shieldFactor, 0.1, 2);
+			healthFactor = MathUtils.clamp(healthFactor, 0.1, 2);
 			
 			// campOrdinal, step -> reference player stats (adjusted for difficulty factor)
 			let playerAtt = this.getStatBase(campOrdinal, step, difficultyFactor, this.getPlayerAtt);
@@ -82,13 +112,17 @@ define([
 			
 			// player def, hp, shield + enemy speed -> enemy att
 			// goal: about 5 seconds to kill player
+			// + compensate a bit for health/shieldFactor
 			let targetDPH = playerHPShield / 5 / speed;
 			let att = Math.max(1, this.getAttack(targetDPH, playerDef));
+			att = att * (1 / (healthFactor * shieldFactor));
+			att = Math.round(att);
 			
 			// att + attRatio -> enemy def
 			// goal: att / (att + def) = attRatio
 			let attackFactor = MathUtils.clamp(attRatio, 0.1, 0.9);
 			let def = Math.max(1, this.getDefence(att, attackFactor));
+			def = Math.round(def);
 			
 			// player att, speed, enemy def -> enemy hp/shield total
 			// goal: about 5 seconds to kill player
@@ -99,7 +133,7 @@ define([
 			let hp = Math.round(hpshieldtotal * (1 - shieldRatio) * healthFactor);
 			let shield = Math.round(hpshieldtotal * shieldRatio * shieldFactor);
 			
-			// normalize the rest
+			// normalize final values
 			size = MathUtils.clamp(size, 0.1, 2);
 			rarity = MathUtils.clamp(rarity, 1, 100);
 			droppedResources = droppedResources || [];

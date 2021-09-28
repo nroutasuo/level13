@@ -41,10 +41,10 @@ define(['ash'], function (Ash) {
 			this.shield = this.maxShield;
 			this.rarity = rarity ? Math.min(Math.max(Math.round(rarity), 0), 100) : 0;
 			
-			this.nouns = nouns;
-			this.groupN = groupN;
-			this.activeV = activeV;
-			this.defeatedV = defeatedV;
+			this.nouns = nouns || [];
+			this.groupN = groupN || [];
+			this.activeV = activeV || [];
+			this.defeatedV = defeatedV || [];
 			this.size = size;
 			
 			this.droppedResources = droppedResources || [];

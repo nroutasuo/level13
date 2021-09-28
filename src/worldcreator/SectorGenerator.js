@@ -1672,6 +1672,8 @@ define([
 			if (!sectorVO.sunlit) addEnemyCandidates(EnemyConstants.enemyTypes.dark);
 			if (!isPollutedLevel && !isRadiatedLevel && sectorVO.buildingDensity > 5) addEnemyCandidates(EnemyConstants.enemyTypes.dense);
 			if (!isPollutedLevel && !isRadiatedLevel && sectorVO.buildingDensity <= 5) addEnemyCandidates(EnemyConstants.enemyTypes.sparse);
+			if (levelVO.populationFactor > 0) addEnemyCandidates(EnemyConstants.enemyTypes.inhabited);
+			if (levelVO.populationFactor <= 0) addEnemyCandidates(EnemyConstants.enemyTypes.uninhabited);
 			
 			var hasWater = sectorVO.hasWater();
 			var directions = PositionConstants.getLevelDirections();
@@ -1703,7 +1705,7 @@ define([
 			for (let i = 0; i < candidates.length; i++) {
 				enemy = candidates[i];
 				if (enemyCreator.getEnemyDifficultyLevel(enemy) < minDifficulty) continue;
-				var threshold = (enemy.rarity + 5) / 110;
+				var threshold = MathUtils.map(enemy.rarity, 1, 100, 0.01, 0.99);
 				var r = WorldCreatorRandom.random(9999 + l * seed + x * l * 80 + y * 10 + i * x *22 - y * i * x * 15);
 				if (i == 0 || r > threshold) {
 					enemies.push(enemy);
