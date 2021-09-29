@@ -4,6 +4,7 @@ define([
 	'utils/UIState',
 	'game/GameGlobals',
 	'game/GlobalSignals',
+	'game/constants/GameConstants',
 	'game/constants/FightConstants',
 	'game/constants/FollowerConstants',
 	'game/constants/ItemConstants',
@@ -15,7 +16,7 @@ define([
 	'game/components/player/ItemsComponent',
 	'game/components/sector/FightEncounterComponent',
 	'game/components/sector/EnemiesComponent'
-], function (Ash, Text, UIState, GameGlobals, GlobalSignals, FightConstants, FollowerConstants, ItemConstants, TextConstants, UIConstants, PlayerLocationNode, PlayerStatsNode, FightNode, ItemsComponent, FightEncounterComponent, EnemiesComponent) {
+], function (Ash, Text, UIState, GameGlobals, GlobalSignals, GameConstants, FightConstants, FollowerConstants, ItemConstants, TextConstants, UIConstants, PlayerLocationNode, PlayerStatsNode, FightNode, ItemsComponent, FightEncounterComponent, EnemiesComponent) {
 	
 	var FightPopupStateEnum = {
 		CLOSED: 0,
@@ -191,6 +192,7 @@ define([
 			GameGlobals.uiFunctions.toggle("#fight-popup-results", this.state == FightPopupStateEnum.FIGHT_FINISHED);
 			GameGlobals.uiFunctions.toggle("#fight-desc", this.state != FightPopupStateEnum.FIGHT_ACTIVE);
 			GameGlobals.uiFunctions.toggle("#fight-popup-enemy-info", this.state != FightPopupStateEnum.FIGHT_FLED && !fightWon);
+			GameGlobals.uiFunctions.toggle("#fight-popup-enemy-difficulty", this.state == FightPopupStateEnum.FIGHT_PENDING);
 			GameGlobals.uiFunctions.toggle("#fight-damage-indictor-self", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
 			GameGlobals.uiFunctions.toggle("#fight-damage-indictor-enemy", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
 			GameGlobals.uiFunctions.toggle("#fight-popup-items", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
@@ -225,6 +227,7 @@ define([
 			$("#fight-results-win-res").empty();
 			$("#fight-results-win-items").empty();
 			$("#fight-desc").text(this.getDescriptionByContext(encounterComponent.context, encounterComponent.enemy));
+			this.refreshWinProbabilityText();
 		},
 		
 		refreshFightActive: function () {
@@ -234,9 +237,8 @@ define([
 				$(this).data("progress-percent", 100);
 			});
 			
-			var sector = this.playerLocationNodes.head.entity;
-			var encounterComponent = sector.get(FightEncounterComponent);
-			var currentEnemy = encounterComponent.enemy;
+			var currentEnemy = this.getCurrentEnemy();
+			
 			$("#fight-bar-enemy").css("width", Math.ceil(currentEnemy.maxHP / (currentEnemy.maxHP + currentEnemy.maxShield) * 100) + "%");
 			$("#fight-bar-enemy-shield").css("width", Math.floor(currentEnemy.maxShield / (currentEnemy.maxHP + currentEnemy.maxShield) * 100) + "%");
 			
@@ -317,27 +319,30 @@ define([
 			if (currentEnemy == null) return;
 			var statsText = " att: " + currentEnemy.getAtt() + " | def: " + currentEnemy.getDef() + " " + " | hp: " + currentEnemy.maxHP + " ";
 			
-			if (this.state == FightPopupStateEnum.FIGHT_PENDING) {
-				var playerStamina = this.playerStatsNodes.head.stamina;
-				var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-				
-				/*
-				FightConstants.getFightWinProbability(currentEnemy, playerStamina, itemsComponent, followersComponent).
-					then(chances => {
-						var chancesText = TextConstants.getFightChancesText(chances);
-						$(".fight-popup-chances").text(chancesText)
-						$(".fight-popup-chances").toggleClass("warning", chances < 0.4);
-							log.i("getFightWinProbability:" + chances + " (" + chancesText + ")");
-					})
-					.catch(ex => { log.e(ex) });
-				*/
-
-				statsText += "<br/>";
-				statsText += "<span class='fight-popup-chances'></span>";
-			}
-			
 			$("#fight-popup-enemy-name").html(" " + currentEnemy.name + " ");
 			$("#fight-popup-enemy-stats").html(statsText);
+		},
+		
+		refreshWinProbabilityText: function () {
+			$("#fight-popup-enemy-difficulty").text("-");
+			
+			var currentEnemy = this.getCurrentEnemy();
+			if (currentEnemy == null) return;
+			
+			var playerStamina = this.playerStatsNodes.head.stamina;
+			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+			var followersComponent = this.playerStatsNodes.head.followers;
+			
+			FightConstants.getFightWinProbability(currentEnemy, playerStamina, itemsComponent, followersComponent).
+				then(chances => {
+					var chancesText = TextConstants.getFightChancesText(chances);
+					if (GameConstants.isDebugVersion) {
+						chancesText += "[" + Math.round(chances * 100)/100  + "]";
+					}
+					$("#fight-popup-enemy-difficulty").text(chancesText)
+					$("#fight-popup-enemy-difficulty").toggleClass("warning", chances < 0.4);
+				})
+				.catch(ex => { log.e(ex) });
 		},
 		
 		animateDamageIndicator: function ($indicator) {
@@ -415,6 +420,12 @@ define([
 				default:
 					return "fight lost";
 			}
+		},
+		
+		getCurrentEnemy: function () {
+			var sector = this.playerLocationNodes.head.entity;
+			var encounterComponent = sector.get(FightEncounterComponent);
+			return encounterComponent.enemy;
 		},
 		
 		onPopupOpened: function (popupID) {
