@@ -249,6 +249,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 						let branch = branches[i];
 						let id = getBranchId(branch);
 						if (branchesById[id]) {
+							numResolvedBranches++;
 							branchesById[id].probability += branch.probability;
 						} else {
 							branchesById[id] = branch;
@@ -270,6 +271,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 				let minPlayerHP = -1;
 				let maxPlayerHP = -1;
 				let numDiscardedBranches = 0;
+				let numResolvedBranches = 0;
 				
 				let returnResult = function () {
 					if (endedBranches.length == 0) {
@@ -311,7 +313,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 					let newActiveBranches = [];
 					for (let i = 0; i < activeBranches.length; i++) {
 						let branch = activeBranches[i];
-						if (branch.probability < 0.0000001) {
+						if (branch.probability < 0.00001) {
 							numDiscardedBranches++;
 							continue;
 						}
@@ -319,6 +321,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 						for (let j = 0; j < resultBranches.length; j++) {
 							let resultBranch = resultBranches[j];
 							if (resultBranch.isEnded) {
+								numResolvedBranches++;
 								endedBranches.push(resultBranch);
 							} else {
 								newActiveBranches.push(resultBranch);
@@ -390,7 +393,8 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 					let resultBranch = {
 						nextTurnPlayer: branch.nextTurnPlayer, nextTurnEnemy: branch.nextTurnEnemy,
 						playerHP: playerHP, enemyHP: enemyHP,
-						playerTurns: branch.playerTurns.concat(playerScenario.type), enemyTurns: branch.enemyTurns.concat(enemyScenario.type),
+						// note: this is a performance killer but nice for debugging
+						//playerTurns: branch.playerTurns.concat(playerScenario.type), enemyTurns: branch.enemyTurns.concat(enemyScenario.type),
 						isEnded: isEnded,
 						probability: probability
 					};

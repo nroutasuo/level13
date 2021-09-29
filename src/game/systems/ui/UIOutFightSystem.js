@@ -326,7 +326,9 @@ define([
 		},
 		
 		refreshWinProbabilityText: function () {
-			$("#fight-popup-enemy-difficulty").text(" ");
+			$("#fight-popup-enemy-difficulty").toggleClass("warning", false);
+			$("#fight-popup-enemy-difficulty").toggleClass("p-meta", true);
+			$("#fight-popup-enemy-difficulty").text("-");
 			
 			var currentEnemy = this.getCurrentEnemy();
 			if (currentEnemy == null) return;
@@ -342,6 +344,7 @@ define([
 						chancesText += " [" + Math.round(chances * 100)  + "%]";
 					}
 					$("#fight-popup-enemy-difficulty").text(chancesText)
+					$("#fight-popup-enemy-difficulty").toggleClass("p-meta", false);
 					$("#fight-popup-enemy-difficulty").toggleClass("warning", chances < 0.4);
 				})
 				.catch(ex => { log.e(ex) });
