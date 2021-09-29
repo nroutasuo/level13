@@ -2,6 +2,7 @@ define(['ash'], function (Ash) {
 	
 	var EnemyVO = Ash.Class.extend({
 	
+		id: "",
 		name: "",
 		type: "",
 		att: 0,
@@ -22,7 +23,6 @@ define(['ash'], function (Ash) {
 		// stat IVs (0-100)
 		attIV: 0,
 		defIV: 0,
-		hpIV: 0,
 		speedIV: 0,
 		
 		hp: 100,
@@ -65,7 +65,7 @@ define(['ash'], function (Ash) {
 		},
 		
 		getIVAverage: function () {
-			return Math.round((this.attIV + this.defIV + this.hpIV + this.speedIV) / 4);
+			return Math.round((this.attIV + this.defIV + this.speedIV) / 4);
 		},
 		
 		getAtt: function () {
@@ -101,7 +101,6 @@ define(['ash'], function (Ash) {
 			let result = this.clone();
 			result.attIV = iv;
 			result.defIV = iv;
-			result.hpIV = iv;
 			result.speedIV = iv;
 			return result;
 		}

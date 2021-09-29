@@ -118,9 +118,11 @@ define([
 				
 			var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent, followersComponent);
 			var playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent, followersComponent);
+			var playerSpeed = FightConstants.getPlayerSpeed(itemsComponent);
 			var playerHP = playerStamina.maxHP;
+			var playerShield = playerStamina.maxShield;
 			$("#fight-popup-self-name").text(this.numFollowers > 0 ? " Party " : " Wanderer ");
-			$("#fight-popup-self-stats").text(" att: " + playerAtt + " | def: " + playerDef + " | hp: " + playerHP + " ");
+			$("#fight-popup-self-stats").text(this.getStatsText(playerAtt, playerDef, playerSpeed, playerHP, playerShield));
 			
 			// update action buttons
 			// TODO remove hard-coding of items usable in fight, instead have fight effect desc in ItemVO (damage, heal, defend, stun)
@@ -317,14 +319,14 @@ define([
 			var enemiesComponent = sector.get(EnemiesComponent);
 			var currentEnemy = encounterComponent.enemy;
 			if (currentEnemy == null) return;
-			var statsText = " att: " + currentEnemy.getAtt() + " | def: " + currentEnemy.getDef() + " " + " | hp: " + currentEnemy.maxHP + " ";
+			var statsText = this.getStatsText(currentEnemy.getAtt(), currentEnemy.getDef(), currentEnemy.getSpeed(), currentEnemy.maxHP, currentEnemy.maxShield);
 			
 			$("#fight-popup-enemy-name").html(" " + currentEnemy.name + " ");
 			$("#fight-popup-enemy-stats").html(statsText);
 		},
 		
 		refreshWinProbabilityText: function () {
-			$("#fight-popup-enemy-difficulty").text("-");
+			$("#fight-popup-enemy-difficulty").text(" ");
 			
 			var currentEnemy = this.getCurrentEnemy();
 			if (currentEnemy == null) return;
@@ -337,7 +339,7 @@ define([
 				then(chances => {
 					var chancesText = TextConstants.getFightChancesText(chances);
 					if (GameConstants.isDebugVersion) {
-						chancesText += "[" + Math.round(chances * 100)/100  + "]";
+						chancesText += " [" + Math.round(chances * 100)  + "%]";
 					}
 					$("#fight-popup-enemy-difficulty").text(chancesText)
 					$("#fight-popup-enemy-difficulty").toggleClass("warning", chances < 0.4);
@@ -388,6 +390,30 @@ define([
 				default:
 					return Text.addArticle(enemyNoun) + " approaches";
 			}
+		},
+		
+		getStatsText: function (att, def, speed, hp, shield) {
+			let result = "";
+			result += " ";
+			result += "att: " + att;
+			result += " | ";
+			result += "def: " + def;
+			result += " | ";
+			result += "spd: " + Math.round(speed * 20)/20;
+			result += " | ";
+			
+			if (hp > 0) {
+				result += "hp: " + hp;
+			}
+			if  (hp > 0 && shield > 0) {
+				result += " | ";
+			}
+			if (shield > 0) {
+				result += "shield: " + shield;
+			}
+			
+			result += " ";
+			return result;
 		},
 		
 		getWonDescriptionByContext: function (context) {
