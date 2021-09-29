@@ -1064,7 +1064,7 @@ define([
 						});
 						var pos1 = sectorVO.position;
 						var pos2 = neighbourVO.position;
-						var gang = new GangVO(pos1, pos2, possibleEnemies[0]);
+						var gang = new GangVO(pos1, pos2, possibleEnemies[0].id);
 						levelVO.addGang(gang);
 					});
 					return true;
