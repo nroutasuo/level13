@@ -35,7 +35,10 @@ define(function () {
 		},
 		
 		depluralify: function (s) {
-			return s.substr(0, s.length - 1);
+			if (s[s.length - 1] === "s") {
+				return s.substr(0, s.length - 1);
+			}
+			return s;
 		},
 		
 		addArticle: function (s) {

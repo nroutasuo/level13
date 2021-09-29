@@ -372,8 +372,7 @@ define([
 		},
 		
 		getDescriptionByContext: function (context, enemy) {
-			var enemiesNoun = TextConstants.getEnemyNoun([enemy]);
-			var enemyNoun = Text.depluralify(enemiesNoun);
+			var enemyNoun = TextConstants.getEnemyNoun([enemy]);
 			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(context);
 			switch (baseActionID) {
 				case "scavenge":
