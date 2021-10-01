@@ -174,7 +174,7 @@ define([
 
 			let finalEfficiency = efficiency * (1 - scavengedPercent/100);
 			rewards.gainedResources = this.getRewardResources(resourceProb, 1, efficiency, sectorResources);
-			rewards.gainedItems = this.getRewardItems(itemProb, ingredientProb, this.itemResultTypes.scavenge, efficiency, itemsComponent, campOrdinal, step, isHardLevel);
+			rewards.gainedItems = this.getRewardItems(itemProb, ingredientProb, this.itemResultTypes.scavenge, [], efficiency, itemsComponent, campOrdinal, step, isHardLevel);
 			rewards.gainedCurrency = this.getRewardCurrency(efficiency);
 			
 			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound);
@@ -243,9 +243,9 @@ define([
 					// items and resources
 					if (localeCategory === "u") {
 						rewards.gainedResources = this.getRewardResources(1, 5 * localeDifficulty, efficiency, availableResources);
-						rewards.gainedItems = this.getRewardItems(0.5, 0, this.itemResultTypes.scavenge, 1, itemsComponent, campOrdinal, step, isHardLevel);
+						rewards.gainedItems = this.getRewardItems(0.5, 0, this.itemResultTypes.scavenge, [], 1, itemsComponent, campOrdinal, step, isHardLevel);
 					} else {
-						rewards.gainedItems = this.getRewardItems(0.25, 0, this.itemResultTypes.meet, 1, itemsComponent, campOrdinal, step, isHardLevel);
+						rewards.gainedItems = this.getRewardItems(0.25, 0, this.itemResultTypes.meet, [], 1, itemsComponent, campOrdinal, step, isHardLevel);
 					}
 				}
 			}
@@ -275,7 +275,7 @@ define([
 		getFightRewards: function (won, enemyVO) {
 			var rewards = new ResultVO("fight");
 			if (won) {
-				// TODO make fight rewards dependent on enemy difficulty (amount) and type (no metal drops from rats)
+				// TODO make fight rewards dependent on enemy difficulty (amount)
 				var availableResources = this.getAvailableResourcesForEnemy(enemyVO);
 				var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 				var playerPos = this.playerLocationNodes.head.position;
@@ -286,7 +286,7 @@ define([
 				var isHardLevel = levelComponent.isHard;
 				
 				rewards.gainedResources = this.getRewardResources(0.5, 2, this.getScavengeEfficiency(), availableResources);
-				rewards.gainedItems = this.getRewardItems(0, 1, this.itemResultTypes.fight, 1, itemsComponent, campOrdinal, step, isHardLevel);
+				rewards.gainedItems = this.getRewardItems(0, 1, this.itemResultTypes.fight, enemyVO.droppedIngredients, 1, itemsComponent, campOrdinal, step, isHardLevel);
 				rewards.gainedReputation = 1;
 			} else {
 				rewards = this.getFadeOutResults(0.5, 1, 1);
@@ -813,9 +813,10 @@ define([
 		// itemProbability: 0-1 probability of finding one item
 		// ingredientProbability: 0-1 probability of finding some ingredients
 		// itemTypeLimits: list of item types and their probabilities ([ type: relative_probability ])
+		// availableIngredients: optional list of ingredients that can drop (if empty, any can drop)
 		// efficiency: 0-1 current scavenge efficiency of the player, affects chance to find something
 		// currentItems: ItemsComponent
-		getRewardItems: function (itemProbability, ingredientProbability, itemTypeLimits, efficiency, currentItems, campOrdinal, step, isHardLevel) {
+		getRewardItems: function (itemProbability, ingredientProbability, itemTypeLimits, availableIngredients, efficiency, currentItems, campOrdinal, step, isHardLevel) {
 			let result = [];
 			var hasBag = currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
 			var hasCamp = GameGlobals.gameState.unlockedFeatures.camp;
@@ -866,7 +867,7 @@ define([
 			if (hasBag && hasCamp && hasDecentEfficiency && Math.random() < ingredientProbability) {
 				var max = Math.floor(Math.random() * 3);
 				var amount = Math.floor(Math.random() * efficiency * max) + 1;
-				var ingredient = GameGlobals.itemsHelper.getUsableIngredient();
+				var ingredient = GameGlobals.itemsHelper.getUsableIngredient(availableIngredients);
 				for (let i = 0; i <= amount; i++) {
 					result.push(ingredient.clone());
 				}
@@ -1075,7 +1076,7 @@ define([
 			
 			let bonusItemProb = generalBonus - 1;
 			let bonusIngredientProb = generalBonus - 1 + ingredientsBonus - 1;
-			let bonusItems = this.getRewardItems(bonusItemProb, bonusIngredientProb, itemTypeLimits, efficiency, itemsComponent, campOrdinal, step, isHardLevel);
+			let bonusItems = this.getRewardItems(bonusItemProb, bonusIngredientProb, itemTypeLimits, [], efficiency, itemsComponent, campOrdinal, step, isHardLevel);
 			rewards.gainedItemsFromFollowers = bonusItems;
 			for (let i = 0; i < bonusItems.length; i++) {
 				rewards.gainedItems.push(bonusItems[i]);

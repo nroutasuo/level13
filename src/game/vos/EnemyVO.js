@@ -19,6 +19,7 @@ define(['ash'], function (Ash) {
 		size: 1,
 		
 		droppedResources: [],
+		droppedIngredients: [],
 		
 		// stat IVs (0-100)
 		attIV: 0,
@@ -28,7 +29,7 @@ define(['ash'], function (Ash) {
 		hp: 100,
 		shield: 0,
 	
-		constructor: function (id, name, type, nouns, groupN, activeV, defeatedV, size, att, def, hp, shield, speed, rarity, droppedResources) {
+		constructor: function (id, name, type, nouns, groupN, activeV, defeatedV, size, att, def, hp, shield, speed, rarity, droppedResources, droppedIngredients) {
 			this.id = id;
 			this.name = name;
 			this.type = type;
@@ -48,6 +49,7 @@ define(['ash'], function (Ash) {
 			this.size = size;
 			
 			this.droppedResources = droppedResources || [];
+			this.droppedIngredients = droppedIngredients || [];
 			
 			this.attIV = Math.round(Math.random() * 100);
 			this.defIV = Math.round(Math.random() * 100);
@@ -94,7 +96,7 @@ define(['ash'], function (Ash) {
 		},
 		
 		clone: function () {
-			return new EnemyVO(this.id, this.name, this.type, this.nouns, this.groupN, this.activeV, this.defeatedV, this.size, this.att, this.def, this.maxHP, this.maxShield, this.speed, this.rarity);
+			return new EnemyVO(this.id, this.name, this.type, this.nouns, this.groupN, this.activeV, this.defeatedV, this.size, this.att, this.def, this.maxHP, this.maxShield, this.speed, this.rarity, this.droppedResources, this.droppedIngredients);
 		},
 		
 		cloneWithIV: function (iv) {

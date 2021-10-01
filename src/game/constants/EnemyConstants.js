@@ -93,30 +93,39 @@ function (Ash, EnemyVO) {
 		enemyLoot: {
 			bandit: {
 				droppedResources: [ "food", "water", "rope" ],
+				droppedIngredients: [ "res_bands", "res_bottle", "res_hairpin", "res_leather", "res_silk", "res_tape" ],
 			},
 			big_animal: {
 				droppedResources: [ "food" ],
+				droppedIngredients: [ "res_bands", "res_leather" ],
 			},
 			bird: {
 				droppedResources: [ "food" ],
+				droppedIngredients: [ "res_bands", "res_bottle", "res_glowbug", "res_hairpin", "res_leather", "res_tape" ],
 			},
 			flora: {
 				droppedResources: [ "food" ],
+				droppedIngredients: [ "res_bottle", "res_glowbug", "res_silk" ],
 			},
 			fungi: {
 				droppedResources: [ "food" ],
+				droppedIngredients: [ "res_bottle", "res_glowbug", "res_silk" ],
 			},
 			humanoid: {
-				droppedResources: [ ],
+				droppedResources: [ "water" ],
+				droppedIngredients: [ "res_bands", "res_bottle", "res_hairpin", "res_leather", "res_silk", "res_tape" ],
 			},
 			robot: {
 				droppedResources: [ "metal", "fuel" ],
+				droppedIngredients: [ "res_bands", "res_bottle", "res_hairpin", "res_tape" ],
 			},
 			small_animal: {
 				droppedResources: [ "food" ],
+				droppedIngredients: [ "res_bands", "res_glowbug", "res_hairpin", "res_leather", "res_silk" ],
 			},
 			structure: {
 				droppedResources: [ "metal" ],
+				droppedIngredients: [ "res_bands", "res_bottle", "res_glowbug", "res_hairpin", "res_tape" ],
 			},
 		},
 		

@@ -64,6 +64,7 @@ define([
 				
 				let lootDef = EnemyConstants.enemyLoot[enemyType] || {};
 				def.droppedResources = (def.droppedResources || []).concat(lootDef.droppedResources);
+				def.droppedIngredients = (def.droppedIngredients || []).concat(lootDef.droppedIngredients);
 				
 				let type = def.environment || template.environment;
 				let enemyVO = this.createEnemy(
@@ -74,7 +75,7 @@ define([
 					def.campOrdinal || 0, def.difficulty || 5,
 					def.attackRatio || 0.5, def.shieldRatio || 0, def.healthFactor || 1, def.shieldFactor || 1, def.size || 1, def.speed || 1,
 					def.rarity || 1,
-					def.droppedResources
+					def.droppedResources, def.droppedIngredients
 				);
 				if (!EnemyConstants.enemyDefinitions[type]) EnemyConstants.enemyDefinitions[type] = [];
 			 	EnemyConstants.enemyDefinitions[type].push(enemyVO.cloneWithIV(50));
@@ -82,7 +83,7 @@ define([
 		},
 
 		// Enemy definitions (speed: around 1, rarity: 0-100)
-		createEnemy: function (id, name, type, nouns, groupN, activeV, defeatedV, campOrdinal, normalizedDifficulty, attRatio, shieldRatio, healthFactor, shieldFactor, size, speed, rarity, droppedResources) {
+		createEnemy: function (id, name, type, nouns, groupN, activeV, defeatedV, campOrdinal, normalizedDifficulty, attRatio, shieldRatio, healthFactor, shieldFactor, size, speed, rarity, droppedResources, droppedIngredients) {
 			// normalizedDifficulty (1-10) -> camp step and difficulty within camp step
 			normalizedDifficulty = MathUtils.clamp(normalizedDifficulty, 1, 10);
 			let step = 0;
@@ -130,19 +131,20 @@ define([
 			let hpshieldtotal = Math.max(20, playerDPS * 5);
 			
 			// hpshieldtotal, healthFactor (0-1), shieldFactor (0-1), size -> hp and shield
-			let hp = Math.round(hpshieldtotal * (1 - shieldRatio) * healthFactor);
-			let shield = Math.round(hpshieldtotal * shieldRatio * shieldFactor);
+			let hp = MathUtils.roundToMultiple(hpshieldtotal * (1 - shieldRatio) * healthFactor, 5);
+			let shield = MathUtils.roundToMultiple(hpshieldtotal * shieldRatio * shieldFactor, 5);
 			
 			// normalize final values
 			size = MathUtils.clamp(size, 0.1, 2);
 			rarity = MathUtils.clamp(rarity, 1, 100);
 			droppedResources = droppedResources || [];
+			droppedIngredients = droppedIngredients || [];
 			
 			EnemyConstants.enemyDifficulties[id] = this.getDifficulty(campOrdinal, step);
 			
 			// log.i("goal strength: " + strength + " | actual strength: " + FightConstants.getStrength(att, def, speed));
 
-			return new EnemyVO(id, name, type, nouns, groupN, activeV, defeatedV, size, att, def, hp, shield, speed, rarity, droppedResources);
+			return new EnemyVO(id, name, type, nouns, groupN, activeV, defeatedV, size, att, def, hp, shield, speed, rarity, droppedResources, droppedIngredients);
 		},
 		
 		getStatBase: function (campOrdinal, step, difficultyFactor, statfunc) {
