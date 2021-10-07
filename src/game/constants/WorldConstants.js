@@ -32,6 +32,14 @@ define(['ash'], function (Ash) {
 		ZONE_EXTRA_UNCAMPABLE: "z_extra_u",
 		ZONE_POI_TEMP: "z_poi_temp",
 		
+		scavengeDifficulty: {
+			VERY_EASY: 1,
+			EASY: 2,
+			MEDIUM: 3,
+			HARD: 4,
+			VERY_HARD: 5
+		},
+		
 		getCampStep: function (zone) {
 			switch (zone) {
 				// all levels

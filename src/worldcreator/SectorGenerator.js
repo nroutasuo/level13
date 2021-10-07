@@ -65,6 +65,7 @@ define([
 					sectorVO.passageUpType = this.getPassageUpType(seed, worldVO, levelVO, sectorVO);
 					sectorVO.passageDownType = this.getPassageDownType(seed, worldVO, levelVO, sectorVO);
 					this.generateTexture(seed, worldVO, levelVO, sectorVO);
+					this.generateDifficulty(seed, worldVO, levelVO, sectorVO);
 					this.generateResources(seed, worldVO, levelVO, sectorVO);
 				}
 				
@@ -91,6 +92,7 @@ define([
 			// WorldCreatorDebug.printWorld(worldVO, [ "criticalPaths.length" ], "red" );
 			// WorldCreatorDebug.printWorld(worldVO, [ "requiredResources.food" ], "red" );
 			// WorldCreatorDebug.printWorld(worldVO, [ "requiredResources.water" ], "blue" );
+			// WorldCreatorDebug.printWorld(worldVO, [ "scavengeDifficulty" ] );
 		},
 		
 		generateZones: function (seed, worldVO, levelVO) {
@@ -870,6 +872,67 @@ define([
 			sectorVO.buildingDensity = MathUtils.clamp(Math.round(density), minDensity, maxDensity);
 		},
 		
+		generateDifficulty: function (seed, worldVO, levelVO, sectorVO) {
+			// scavenge difficulty: how much stuff there is (left), how good shape it's in (rot, pollution) and how easy it's to find get to (locked doors, general debris, easy to navigate storages)l
+			let scavengeDifficultyScore = 0.5;
+			
+			// - most important factor: increase toward end-game
+			scavengeDifficultyScore *= MathUtils.map(levelVO.campOrdinal, 1, 15, 0.25, 2);
+			
+			// - random factor: some sectors are just randomly very hard or very easy
+			let randomSeed = WorldCreatorRandom.random(5000 + (sectorVO.position.sectorX % 3 * 3331) + (sectorVO.position.sectorY % 5) * 1113);
+			if (randomSeed < 0.1) scavengeDifficultyScore *= 0.25;
+			if (randomSeed > 0.9) scavengeDifficultyScore *= 4;
+			
+			// - variety from sector types
+			switch (sectorVO.sectorType) {
+				case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
+					scavengeDifficultyScore * 0.5;
+					break;
+				case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
+					scavengeDifficultyScore * 1.25;
+					break;
+				case SectorConstants.SECTOR_TYPE_MAINTENANCE:
+					scavengeDifficultyScore * 1.5;
+					break;
+				case SectorConstants.SECTOR_TYPE_COMMERCIAL:
+					scavengeDifficultyScore * 0.25;
+					break;
+				case SectorConstants.SECTOR_TYPE_PUBLIC:
+					scavengeDifficultyScore * 1;
+					break;
+				case SectorConstants.SECTOR_TYPE_SLUM:
+					scavengeDifficultyScore * 0.75;
+					break;
+			}
+			
+			// - population factor (easier scavenging around outposts)
+			scavengeDifficultyScore *= MathUtils.map(levelVO.populationFactor, 0, 1, 0.75, 1.25);
+			
+			// - hazards
+			if (sectorVO.hazards.poison > 0) scavengeDifficultyScore *= 1.5;
+			if (sectorVO.hazards.radiation > 0)  scavengeDifficultyScore *= 2;
+			
+			// - special levels
+			if (levelVO.level == worldVO.bottomLevel) scavengeDifficultyScore *= 1.25;
+			if (levelVO.level == 14) scavengeDifficultyScore *= 1.25;
+			if (levelVO.level == worldVO.topLevel) scavengeDifficultyScore *= 1.25;
+			
+			// - small adjustments from sector texture
+			if (sectorVO.wear >= 8) scavengeDifficultyScore *= 1.1;
+			if (sectorVO.damage >= 5) scavengeDifficultyScore *= 1.1;
+			if (sectorVO.damage >= 8) scavengeDifficultyScore *= 1.1;
+			if (sectorVO.buildingDensity <= 2) scavengeDifficultyScore *= 1.5;
+			if (sectorVO.sunlit) scavengeDifficultyScore *= 0.85;
+			
+			// - adjustments for required resources
+			if (sectorVO.requiredResources && sectorVO.requiredResources.getTotal() > 0) {
+				scavengeDifficultyScore *= 0.25;
+			}
+			
+			sectorVO.scavengeDifficulty = Math.round(MathUtils.map(scavengeDifficultyScore, 0, 1, WorldConstants.scavengeDifficulty.VERY_EASY, WorldConstants.scavengeDifficulty.VERY_HARD));
+		},
+		
 		generateResources: function (seed, worldVO, levelVO, sectorVO) {
 			var l = sectorVO.position.level;
 			var x = sectorVO.position.sectorX;
@@ -1228,6 +1291,7 @@ define([
 					var locale = new LocaleVO(localeTypes.tradingpartner, true, false);
 					// WorldCreatorLogger.i("trade partner at " + sectorVO.position)
 					addLocale(sectorVO, locale);
+					sectorVO.scavengeDifficulty = WorldConstants.scavengeDifficulty.VERY_HARD;
 				}
 			}
 			
