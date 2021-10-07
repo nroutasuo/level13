@@ -11,7 +11,7 @@
 				},
 				{
 					"type": "GB",
-					"summary": "Adjust balancing for buildings, crafting and upgrades"
+					"summary": "Adjust balancing for buildings, crafting, upgrades and fights"
 				},
 				{
 					"type": "GD",
@@ -24,7 +24,11 @@
 				{
 					"type": "GD",
 					"summary": "Improve followers and add different follower abilities"
-				}
+				},
+				{
+					"type": "GD",
+					"summary": "Add many more enemy types"
+				},
 			]
 		},
 		{
