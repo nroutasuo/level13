@@ -13,6 +13,7 @@ define([
 	'game/constants/LevelConstants',
 	'game/constants/MovementConstants',
 	'game/constants/TradeConstants',
+	'game/constants/WorldConstants',
 	'game/nodes/PlayerPositionNode',
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/NearestCampNode',
@@ -33,7 +34,7 @@ define([
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/EnemiesComponent'
 ], function (
-	Ash, Text,GameGlobals, GlobalSignals, PlayerActionConstants, PlayerStatConstants, TextConstants, LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, TradeConstants,
+	Ash, Text,GameGlobals, GlobalSignals, PlayerActionConstants, PlayerStatConstants, TextConstants, LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, TradeConstants, WorldConstants,
 	PlayerPositionNode, PlayerLocationNode, NearestCampNode,
 	VisionComponent, StaminaComponent, ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
 	MovementOptionsComponent, ExcursionComponent, PositionComponent, LogMessagesComponent, CampComponent,
@@ -388,8 +389,9 @@ define([
 		getResourcesDescription: function (isScouted, featuresComponent, statusComponent) {
 			if (!featuresComponent) return;
 			var description = "";
-			if (GameGlobals.gameState.unlockedFeatures.scavenge) {
-				description += "Scavenged: " + UIConstants.roundValue(statusComponent.getScavengedPercent()) + "% ";
+			if (isScouted && GameGlobals.gameState.unlockedFeatures.scavenge) {
+				description += "Scavenge difficulty: " + this.getScavengeDifficultyDisplayName(featuresComponent.scavengeDifficulty) + "<br/>";
+				description += "Scavenged: " + UIConstants.roundValue(statusComponent.getScavengedPercent()) + "%<br/>";
 			}
 			if (featuresComponent.resourcesScavengable.getTotal() > 0) {
 				var discoveredResources = GameGlobals.sectorHelper.getLocationDiscoveredResources();
@@ -760,6 +762,17 @@ define([
 			if (isScouted && resourceName == resourceNames.water && featuresComponent.hasSpring) {
 				return includeUnbuilt || improvements.getVO(this.getCollectorName(resourceName)).count > 0;
 			}
+		},
+		
+		getScavengeDifficultyDisplayName: function (scavengeDifficulty) {
+			switch (scavengeDifficulty) {
+				case WorldConstants.scavengeDifficulty.VERY_EASY: return "very easy";
+				case WorldConstants.scavengeDifficulty.EASY: return "easy";
+				case WorldConstants.scavengeDifficulty.MEDIUM: return "medium";
+				case WorldConstants.scavengeDifficulty.HARD: return "hard";
+				case WorldConstants.scavengeDifficulty.VERY_HARD: return "very hard";
+			}
+			return "??";
 		},
 		
 		getCollectorName: function (resourceName) {

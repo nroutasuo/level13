@@ -185,6 +185,7 @@ define([
 					sectorFeatures.hazards,
 					sectorFeatures.isCamp,
 					sectorFeatures.notCampableReason,
+					sectorFeatures.scavengeDifficulty,
 					sectorFeatures.resourcesScavengable,
 					sectorFeatures.resourcesCollectable,
 					sectorFeatures.hasSpring,
