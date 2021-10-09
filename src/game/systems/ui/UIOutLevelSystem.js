@@ -390,7 +390,7 @@ define([
 			if (!featuresComponent) return;
 			var description = "";
 			if (isScouted && GameGlobals.gameState.unlockedFeatures.scavenge) {
-				description += "Scavenge difficulty: " + this.getScavengeDifficultyDisplayName(featuresComponent.scavengeDifficulty) + "<br/>";
+				description += "Scavenge difficulty: " + TextConstants.getScavengeDifficultyDisplayName(featuresComponent.scavengeDifficulty) + "<br/>";
 				description += "Scavenged: " + UIConstants.roundValue(statusComponent.getScavengedPercent()) + "%<br/>";
 			}
 			if (featuresComponent.resourcesScavengable.getTotal() > 0) {
@@ -762,17 +762,6 @@ define([
 			if (isScouted && resourceName == resourceNames.water && featuresComponent.hasSpring) {
 				return includeUnbuilt || improvements.getVO(this.getCollectorName(resourceName)).count > 0;
 			}
-		},
-		
-		getScavengeDifficultyDisplayName: function (scavengeDifficulty) {
-			switch (scavengeDifficulty) {
-				case WorldConstants.scavengeDifficulty.VERY_EASY: return "very easy";
-				case WorldConstants.scavengeDifficulty.EASY: return "easy";
-				case WorldConstants.scavengeDifficulty.MEDIUM: return "medium";
-				case WorldConstants.scavengeDifficulty.HARD: return "hard";
-				case WorldConstants.scavengeDifficulty.VERY_HARD: return "very hard";
-			}
-			return "??";
 		},
 		
 		getCollectorName: function (resourceName) {
