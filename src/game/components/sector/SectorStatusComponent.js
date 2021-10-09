@@ -2,6 +2,8 @@
 define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConstants) {
 
 	var SectorStatusComponent = Ash.Class.extend({
+		
+		NUM_SCAVENGES_PER_SECTOR: 30,
 
 		discoveredResources: [],
 		scavenged: false,
@@ -53,7 +55,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 		},
 		
 		getScavengedPercent: function () {
-			return this.weightedNumScavenges / (10+this.weightedNumScavenges) * 100;
+			return Math.min(this.weightedNumScavenges/this.NUM_SCAVENGES_PER_SECTOR, 1) * 100;
 		},
 		
 		getHazardReduction: function (hazard) {

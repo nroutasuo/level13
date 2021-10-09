@@ -610,6 +610,14 @@ define([
 								return { value: 0, reason: reason };
 							}
 						}
+						if (typeof requirements.sector.scavengedPercent != "undefined") {
+							var range = requirements.sector.scavengedPercent;
+							var currentVal = statusComponent.getScavengedPercent() / 100;
+							let result = this.checkRequirementsRange(range, currentVal, "", "This area has beens scavenged clean.");
+							if (result) {
+								return result;
+							}
+						}
 						if (typeof requirements.sector.spring != "undefined") {
 							if (featuresComponent.hasSpring != requirements.sector.spring) {
 								if (featuresComponent.hasSpring)    reason = "There is a spring.";

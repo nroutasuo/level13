@@ -520,7 +520,7 @@ define(['ash',
 			var logMsgDefeat = logMsg + "Got into a fight and was defeated.";
 			var successCallback = function () {
 				sectorStatus.scavenged = true;
-				sectorStatus.weightedNumScavenges += efficiency;
+				sectorStatus.weightedNumScavenges += Math.min(1, efficiency);
 			};
 			this.handleOutActionResults("scavenge", LogConstants.MSG_ID_SCAVENGE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, null, successCallback);
 		},

@@ -2781,6 +2781,12 @@
 		},
 		"scavenge": {
             "busy": false,
+			"sector": {
+				"scavengedPercent": [
+					-1,
+					1
+				]
+			},
             "vision": [
                 10,
                 -1
