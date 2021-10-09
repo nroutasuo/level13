@@ -82,7 +82,7 @@ define([
 			}
 			
 			// debug
-			// WorldCreatorDebug.printWorld(worldVO, [ "hasRegularEnemies"], "red" );
+			// WorldCreatorDebug.(worldVO, [ "hasRegularEnemies"], "red" );
 			// WorldCreatorDebug.printWorld(worldVO, [ "possibleEnemies.length" ]);
 			// WorldCreatorDebug.printWorld(worldVO, [ "enemyDifficulty" ]);
 			// WorldCreatorDebug.printWorld(worldVO, [ "hazards.radiation" ], "red");
@@ -943,50 +943,64 @@ define([
 			var isStartPosition = l == 13 && sectorVO.isCamp;
 			
 			// scavengeable resources
-			var sRandom = (x * 22 + y * 3000);
-			var sectorAbundanceFactor = WorldCreatorRandom.random(seed * sRandom + (x + 99) * 7 * (y - 888));
-			var waterRandomPart = WorldCreatorRandom.random(seed * (l + 1000) * (x + y + 900) + 10134) * Math.abs(5 - sectorVO.wear) / 5;
-			var s1 = 5000 + seed / (l+10) + x + x * y * 63 + sectorVO.buildingDensity * 3 + x % 3 * 123 + y % 4 * 81;
-			var r1 = WorldCreatorRandom.random(s1);
+			var r1 = WorldCreatorRandom.random(5000 + seed / (l+10) + x + x * y * 63 + sectorVO.buildingDensity * 3 + x % 3 * 123 + y % 4 * 81);
+			var r2 = WorldCreatorRandom.random(seed + l * x / y * 44 + 6);
+			var r3 = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66);
+			var r4 = WorldCreatorRandom.random(seed / x * ll + x * y * 16);
 			var sca = new ResourcesVO();
+			var metalThresholds = { "ABUNDANT": 0.95, "COMMON": 0.85, "DEFAULT": 0.03 };
+			var foodThresholds = { "ABUNDANT": 0.98, "COMMON": 0.95, "DEFAULT": 0.75 };
+			var waterThresholds = { "ABUNDANT": 1, "COMMON": 0.95, "DEFAULT": 0.85 };
 			switch (sectorType) {
 				case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
-					sca.metal = 3;
-					sca.food = r1 < 0.3 ? Math.round(sectorAbundanceFactor * 5 + sectorVO.wear / 2) : 0;
-					sca.water = waterRandomPart > 0.8 ? 2 : 0;
-					sca.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.95 ? 1 : 0;
-					sca.medicine = campOrdinal > 3 && WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.99 ? 1 : 0;
+					metalThresholds.ABUNDANT = 1;
+					foodThresholds.DEFAULT = 0.65;
+					sca.rope = r1 > 0.98 ? WorldConstants.resourcePrevalence.DEFAULT : r1 > 0.94 ? WorldConstants.resourcePrevalence.RARE : 0;
+					sca.medicine = campOrdinal > 3 && r2 > 0.99 ? WorldConstants.resourcePrevalence.RARE : 0;
 					break;
 				case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
-					sca.water = waterRandomPart > 0.9 ? 1 : 0;
-					sca.metal = 8;
-					sca.tools = (l > 13) ? WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.95 ? 1 : 0 : 0;
-					sca.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.90 ? 1 : 0;
-					sca.fuel = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.90 ? 1 : 0;
-					if (l > 14) {
-						sca.rubber = WorldCreatorRandom.random(seed / x * ll + x * y * 16) > 0.90 ? 1 : 0;
-					}
+					metalThresholds.COMMON = 0.8;
+					foodThresholds.DEFAULT = 0.85;
+					sca.rope = r1 > 0.98 ? WorldConstants.resourcePrevalence.DEFAULT : r1 > 0.90 ? WorldConstants.resourcePrevalence.RARE : 0;
+					sca.tools = (l > 13) ? r2 > 0.95 ? WorldConstants.resourcePrevalence.RARE : 0 : 0;
+					sca.fuel = r3 > 0.90 ? WorldConstants.resourcePrevalence.RARE : 0;
 					break;
 				case SectorConstants.SECTOR_TYPE_MAINTENANCE:
-					sca.metal = 10;
-					sca.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.90 ? 1 : 0;
-					sca.fuel = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.90 ? 1 : 0;
-					sca.tools = (l > 13) ? WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.90 ? 1 : 0 : 0;
+					metalThresholds.COMMON = 0.8;
+					foodThresholds.DEFAULT = 0.85;
+					sca.rope = r1 > 0.98 ? WorldConstants.resourcePrevalence.DEFAULT : r1 > 0.90 ? WorldConstants.resourcePrevalence.RARE : 0;
+					sca.fuel = r3 > 0.98 ? WorldConstants.resourcePrevalence.DEFAULT : r1 > 0.90 ? WorldConstants.resourcePrevalence.RARE : 0;
+					sca.tools = (l > 13) ? r2 > 0.90 ? WorldConstants.resourcePrevalence.RARE : 0 : 0;
 					break;
 				case SectorConstants.SECTOR_TYPE_COMMERCIAL:
-					sca.water = waterRandomPart > 0.8 ? 2 : 0;
-					sca.metal = 2;
-					sca.food = r1 < 0.5 ? Math.round(sectorAbundanceFactor * 10) : 0;
-					sca.medicine = campOrdinal > 2 && WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.99 ? 1 : 0;
+					foodThresholds.DEFAULT = 0.65;
+					waterThresholds.DEFAULT = 0.8;
+					sca.medicine = campOrdinal > 2 && r3 > 0.99 ? WorldConstants.resourcePrevalence.RARE : 0;
+					break;
+				case SectorConstants.SECTOR_TYPE_PUBLIC:
 					break;
 				case SectorConstants.SECTOR_TYPE_SLUM:
-					sca.metal = 7;
-					sca.food = r1 < 0.2 ? Math.round(sectorAbundanceFactor * 5 + sectorVO.wear / 2) : 0;
-					sca.water = waterRandomPart > 0.8 ? 1 : 0;
-					sca.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.85 ? 1 : 0;
-					sca.fuel = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.95 ? 1 : 0;
+					foodThresholds.DEFAULT = 0.65;
+					waterThresholds.DEFAULT = 0.8;
+					sca.rope = r1 > 0.97 ? WorldConstants.resourcePrevalence.DEFAULT : r1 > 0.96 ? WorldConstants.resourcePrevalence.RARE : 0;
+					sca.fuel = r3 > 0.95 ? WorldConstants.resourcePrevalence.RARE : 0;
 					break;
 			}
+			var rm = WorldCreatorRandom.random(seed * (x * 22 + y * 3000) + (x + 99) * 7 * (y - 888));
+			var rf = WorldCreatorRandom.random(seed / (l + 5) * 99 + x * x * y + 66);
+			let rw = WorldCreatorRandom.random(seed * (l + 1000) * (x * 1.5 + y + 900) + 10134) * Math.abs(5 - sectorVO.wear) / 5;
+			sca.metal =
+					rm > metalThresholds.ABUNDANT ? WorldConstants.resourcePrevalence.ABUNDANT :
+					rm > metalThresholds.COMMON ? WorldConstants.resourcePrevalence.COMMON :
+					rm > metalThresholds.DEFAULT ? WorldConstants.resourcePrevalence.DEFAULT : 0;
+			sca.food =
+					rf > foodThresholds.ABUNDANT ? WorldConstants.resourcePrevalence.ABUNDANT :
+					rf > foodThresholds.COMMON ? WorldConstants.resourcePrevalence.COMMON :
+					rf > foodThresholds.DEFAULT ? WorldConstants.resourcePrevalence.DEFAULT : 0;
+			sca.water =
+					rw > waterThresholds.ABUNDANT ? WorldConstants.resourcePrevalence.ABUNDANT :
+					rw > waterThresholds.COMMON ? WorldConstants.resourcePrevalence.COMMON :
+					rw > waterThresholds.DEFAULT ? WorldConstants.resourcePrevalence.DEFAULT : 0;
 			
 			// collectable resources
 			var col = new ResourcesVO();
@@ -998,22 +1012,22 @@ define([
 			var sectorWaterFactor = (WorldCreatorRandom.random(seed / (x + 30) + (y + 102214)) * (sectorCentralness + 10)) / 25;
 			switch (sectorType) {
 				case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
-					col.food = sectorNatureFactor > 0.55 || r12 > 0.7 ? 3 + sectorNatureFactor * 7 : 0;
-					col.water = sectorWaterFactor > 0.75 ? Math.round(Math.min(10, sectorWaterFactor * 10)) : 0;
+					col.food = sectorNatureFactor > 0.55 || r12 > 0.7 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
+					col.water = sectorWaterFactor > 0.75 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
 					break;
 				case SectorConstants.SECTOR_TYPE_COMMERCIAL:
 				case SectorConstants.SECTOR_TYPE_PUBLIC:
-					col.food = sectorNatureFactor > 0.75 || r12 > 0.8 ? 2 + Math.round(sectorNatureFactor * 8) : 0;
-					col.water = sectorWaterFactor > 0.7 ? Math.round(Math.min(10, sectorWaterFactor * 10)) : 0;
+					col.food = sectorNatureFactor > 0.75 || r12 > 0.8 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
+					col.water = sectorWaterFactor > 0.7 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
 					break;
 				case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
 				case SectorConstants.SECTOR_TYPE_MAINTENANCE:
-					col.food = sectorNatureFactor > 0.85 || r12 > 0.9 ? 2 + Math.round(sectorNatureFactor * 8) : 0;
-					col.water = sectorWaterFactor > 0.95 ? Math.round(Math.min(10, sectorWaterFactor * 11)) : 0;
+					col.food = sectorNatureFactor > 0.85 || r12 > 0.9 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
+					col.water = sectorWaterFactor > 0.95 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
 					break;
 				case SectorConstants.SECTOR_TYPE_SLUM:
-					col.food = sectorNatureFactor > 0.5 || r12 > 0.6 ? 3 + Math.round(sectorNatureFactor * 7) : 0;
-					col.water = sectorWaterFactor > 0.9 ? Math.round(Math.min(10, sectorWaterFactor * 8)) : 0;
+					col.food = sectorNatureFactor > 0.5 || r12 > 0.6 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
+					col.water = sectorWaterFactor > 0.9 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
 					break;
 			}
 			
@@ -1033,20 +1047,15 @@ define([
 			if (l === worldVO.bottomLevel) {
 				col.food = col.food > 0 ? col.food + 2 : 0;
 				col.water = col.water > 0 ? col.water + 3 : 0;
-				sca.herbs = WorldCreatorRandom.random(seed * l / x + y * 423) * (10 - sectorVO.wear);
-			}
-			
-			if (l === worldVO.bottomLevel + 1) {
-				col.food = col.food > 0 ? col.food + 1 : 0;
-				col.water = col.water > 0 ? col.water + 1 : 0;
+				sca.herbs = WorldCreatorRandom.random(seed * l / x + y * 423) * sectorVO.wear > 6 ? WorldConstants.resourcePrevalence.RARE : 0;
 			}
 			
 			// adjustments for sector features
 			if (sectorVO.sunlit) {
-				sca.herbs = WorldCreatorRandom.random(seed * l / x + y * 423) > 0.75 ? 2 : 0;
+				sca.herbs = WorldCreatorRandom.random(seed * l / x + y * 423) > 0.8 ? WorldConstants.resourcePrevalence.RARE : 0;
 			}
 			if (sectorVO.workshopResource == "herbs") {
-				col.water = Math.max(col.water, 3);
+				col.water = Math.max(col.water, WorldConstants.resourcePrevalence.RARE);
 			}
 
 			if (sectorVO.hazards.poison > 0 || sectorVO.hazards.radiation > 0) {
@@ -1055,13 +1064,14 @@ define([
 			}
 			
 			if (sectorVO.isCamp) {
-				sca.food = Math.max(sca.food, 3);
-				sca.metal = MathUtils.clamp(sca.metal, 3, 7);
+				sca.food = Math.max(sca.food, WorldConstants.resourcePrevalence.COMMON);
+				sca.metal = MathUtils.clamp(sca.metal, WorldConstants.resourcePrevalence.DEFAULT, WorldConstants.resourcePrevalence.COMMON);
 				if (WorldCreatorRandom.randomBool(l * 100 + x * 377 + y * 598, 0.5)) {
 					col.water = Math.max(col.water, 3);
 				}
 				if (isStartPosition) {
-					sca.food = MathUtils.clamp(sca.food, 4, 6);
+					sca.metal = WorldConstants.resourcePrevalence.ABUNDANT;
+					sca.food = WorldConstants.resourcePrevalence.ABUNDANT;
 					col.food = Math.max(sca.food, 3);
 					col.water = Math.max(sca.water, 3);
 				}
@@ -1080,14 +1090,10 @@ define([
 					if (this.isRequiredResourceFoodTrap(sectorVO)) {
 						col.food = Math.max(col.food, 3);
 					} else {
-						sca.food = Math.max(sca.food, 3);
+						sca.food = Math.max(sca.food, WorldConstants.resourcePrevalence.COMMON);
 					}
 				}
 			}
-			
-			// adjustments for possible ranges
-			sca.food = sca.food > 2 ? sca.food : 0;
-			sca.herbs = sca.herbs > 2 ? Math.min(sca.herbs, 10) : 0;
 			
 			sectorVO.resourcesScavengable = sca;
 			sectorVO.resourcesCollectable = col;

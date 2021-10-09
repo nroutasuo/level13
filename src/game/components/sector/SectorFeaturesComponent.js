@@ -76,8 +76,10 @@ define(
 				var amount = this.resourcesScavengable.getResource(name);
 				if (amount > 0 && discoveredResources.indexOf(name) >= 0) {
 					var amountDesc = "scarce";
-					if (amount > 3) amountDesc = "common"
-					if (amount > 7) amountDesc = "abundant"
+					if (amount == WorldConstants.resourcePrevalence.RARE) amountDesc = "rare";
+					if (amount == WorldConstants.resourcePrevalence.DEFAULT) amountDesc = "scarce";
+					if (amount == WorldConstants.resourcePrevalence.COMMON) amountDesc = "common";
+					if (amount == WorldConstants.resourcePrevalence.ABUNDANT) amountDesc = "abundant";
 					if (GameConstants.isDebugVersion) amountDesc += " " + Math.round(amount);
 					s += key + " (" + amountDesc + "), ";
 				}

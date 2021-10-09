@@ -40,6 +40,13 @@ define(['ash'], function (Ash) {
 			VERY_HARD: 5
 		},
 		
+		resourcePrevalence: {
+			RARE: 1,		// only for rare resources
+			DEFAULT: 2, 	// default value, scavenging is worth it but not traveling a long way for it
+			COMMON: 3,		// good sectors
+			ABUNDANT: 4,	// exceptionally good sectors
+		},
+		
 		getCampStep: function (zone) {
 			switch (zone) {
 				// all levels
