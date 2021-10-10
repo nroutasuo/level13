@@ -288,7 +288,6 @@ define([
 			var campCount = GameGlobals.gameState.numCamps;
 			var campOrdinal = Math.max(1, campCount);
 			var itemList = ItemConstants.itemDefinitions.ingredient;
-				debugger
 			for (let i in itemList) {
 				var definition = itemList[i];
 				if (availableIngredients && availableIngredients.length > 0 && availableIngredients.indexOf(definition.id) < 0) {

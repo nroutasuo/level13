@@ -12,6 +12,7 @@ define([
 	'game/constants/LocaleConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/LogConstants',
+	'game/constants/SectorConstants',
 	'game/constants/TextConstants',
 	'game/constants/ItemConstants',
 	'game/constants/PerkConstants',
@@ -50,6 +51,7 @@ define([
 	LocaleConstants,
 	PlayerActionConstants,
 	LogConstants,
+	SectorConstants,
 	TextConstants,
 	ItemConstants,
 	PerkConstants,
@@ -162,19 +164,10 @@ define([
 			var step = GameGlobals.levelHelper.getCampStep(playerPos);
 			var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(playerPos.level).get(LevelComponent);
 			var isHardLevel = levelComponent.isHard;
-			var efficiency = this.getScavengeEfficiency();
-			var scavengedPercent = sectorStatus.getScavengedPercent();
+			var efficiency = this.getCurrentScavengeEfficiency();
 
-			 // starts from 1 and approaches 0.5 as campOrdinal increases
-			var ingredientCampOrdinalFactor = (campOrdinal + 1) / campOrdinal / 2;
-			
-			var resourceProb = 0.95 + efficiency * 0.05;
-			var itemProb = efficiency * 0.022;
-			var ingredientProb = 0.005 * ingredientCampOrdinalFactor + efficiency * 0.02;
-
-			let finalEfficiency = efficiency * (1 - scavengedPercent/100);
-			rewards.gainedResources = this.getRewardResources(resourceProb, 1, efficiency, sectorResources);
-			rewards.gainedItems = this.getRewardItems(itemProb, ingredientProb, this.itemResultTypes.scavenge, [], efficiency, itemsComponent, campOrdinal, step, isHardLevel);
+			rewards.gainedResources = this.getRewardResources(1, 1, efficiency, sectorResources);
+			rewards.gainedItems = this.getRewardItems(0.02, 0.03, this.itemResultTypes.scavenge, [], efficiency, itemsComponent, campOrdinal, step, isHardLevel);
 			rewards.gainedCurrency = this.getRewardCurrency(efficiency);
 			
 			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound);
@@ -188,7 +181,7 @@ define([
 		getScoutRewards: function () {
 			var rewards = new ResultVO("scout");
 
-			var efficiency = this.getScavengeEfficiency();
+			var efficiency = this.getCurrentScavengeEfficiency();
 			var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable;
 
 			rewards.gainedEvidence = 1;
@@ -209,7 +202,7 @@ define([
 			var availableResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable.clone();
 			availableResources.addAll(localeVO.getResourceBonus(GameGlobals.gameState.unlockedFeatures.resources, campOrdinal));
 			availableResources.limitAll(0, 10);
-			var efficiency = this.getScavengeEfficiency();
+			var efficiency = this.getCurrentScavengeEfficiency();
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			var step = GameGlobals.levelHelper.getCampStep(playerPos);
 			var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(playerPos.level).get(LevelComponent);
@@ -285,7 +278,7 @@ define([
 				var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(playerPos.level).get(LevelComponent);
 				var isHardLevel = levelComponent.isHard;
 				
-				rewards.gainedResources = this.getRewardResources(0.5, 2, this.getScavengeEfficiency(), availableResources);
+				rewards.gainedResources = this.getRewardResources(0.5, 2, this.getCurrentScavengeEfficiency(), availableResources);
 				rewards.gainedItems = this.getRewardItems(0, 1, this.itemResultTypes.fight, enemyVO.droppedIngredients, 1, itemsComponent, campOrdinal, step, isHardLevel);
 				rewards.gainedReputation = 1;
 			} else {
@@ -725,20 +718,51 @@ define([
 		},
 
 		// typically between 0-1 (can be boosted past 1)
-		getScavengeEfficiency: function () {
+		getCurrentScavengeEfficiency: function () {
+			var factors = this.getCurrentScavengeEfficiencyFactors();
+			var result = 1;
+			for (var key in factors) {
+				result = result * (factors[key] || 1);
+			}
+			return result;
+		},
+		
+		getCurrentScavengeEfficiencyFactors: function () {
+			var result = {};
+			
 			var playerVision = this.playerStatsNodes.head.vision.value || 0;
+			result.vision = MathUtils.map(playerVision, 0, 150, 0, 1.5);
+			
 			var playerHealth = this.playerStatsNodes.head.stamina.health || 0;
-			return (playerHealth / 100) * (playerVision / 100);
+			result.health = MathUtils.map(playerHealth, 0, 100, 0, 1);
+			
+			var sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			result.sectorDifficulty = MathUtils.map(sectorFeatures.scacengeDifficulty, WorldConstants.scavengeDifficulty.VERY_EASY, WorldConstants.scavengeDifficulty.VERY_HARD, 2, 0.25);
+
+			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			result.scavengedPercent = Math.round(MathUtils.map(sectorStatus.getScavengedPercent(), 0, 100, 1, 0.5) * 20) / 20;
+				
+			return result;
 		},
 
-		// probabilityFactor (action-specific): change to get any resources at all (0-1)
+		// probabilityFactor (action-specific): base chance to get any resources at all (0-1)
 		// amountFactor (action-specific): relative amount of resources found if found any, where regular scavenge is 1
 		// efficiency: 0-1 current scavenge efficiency of the player, affects chance to find something
-		// available resources: name -> relative amount where regular scavenge is 0-10 depending on sector, affects both chance and amount
-		// NOTE: Even if probabilityFactor and efficiency are 1 you can still get no results if availableResources are very scarce
+		// available resources: name -> relative amount depending on sector, affects both chance and amount (WorldConstants.resourcePrevalence)
+		// NOTE: Even if probabilityFactor and efficiency are 1 you can still get no results if availableResources are scarce
 		getRewardResources: function (probabilityFactor, amountFactor, efficiency, availableResources) {
+			probabilityFactor = probabilityFactor || 0;
+			amountFactor = amountFactor || 1;
+			efficiency = efficiency || 1;
+			
 			var results = new ResourcesVO();
-			if (Math.random() > probabilityFactor) {
+			
+			if (probabilityFactor == 0) return results;
+			
+			var efficiencyProbabilityFactor = MathUtils.map(efficiency, 0, 3, 0.5, 2);
+			var efficiencyAmountFactor = MathUtils.map(efficiency, 0, 1, 0.5, 1);
+			
+			if (Math.random() > probabilityFactor * efficiencyProbabilityFactor) {
 				return results;
 			}
 
@@ -746,42 +770,41 @@ define([
 				return results;
 			}
 
+			// select resources
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
-				var resQuantity = availableResources.getResource(name);
-				if (resQuantity <= 0)
+				var availableAmount = availableResources.getResource(name);
+				if (availableAmount <= 0)
 					continue;
-				var probability = resQuantity / 2.5;
-				if (efficiency * probability < Math.random())
+				var probability = this.getBaseResourceFindProbability(availableAmount);
+				if (efficiencyProbabilityFactor * probability < Math.random())
 					continue;
+				
 				var resMin = 1;
-				var resAmountFactor = 1;
+				var resMax = 10;
 				switch (name) {
-					case resourceNames.metal:
-						resAmountFactor = 2;
-						break;
 					case resourceNames.food:
-						resAmountFactor = 2;
 						resMin = 3;
 						break;
 				}
-				var resultAmount = resQuantity * amountFactor * resAmountFactor * efficiency * Math.random();
+				var resultAmountFactor = amountFactor * efficiencyAmountFactor * MathUtils.map(Math.random(), 0, 1, 0.75, 1.25);
+				var resultAmount = this.getBaseResourceFindAmount(name, availableAmount) * resultAmountFactor;
 				if (resultAmount === 0)
 					continue;
-				resultAmount = Math.floor(resultAmount);
-				resultAmount = MathUtils.clamp(resultAmount, resMin, 10);
+				resultAmount = Math.ceil(resultAmount);
+				resultAmount = MathUtils.clamp(resultAmount, resMin, resMax);
 				results.setResource(name, resultAmount);
 			}
-
+			
 			// consolation prize: if found nothing (useful) at this point, add 1 metal every few tries
-			if (!GameGlobals.gameState.isAutoPlaying &&!this.isSomethingUsefulResources(results)) {
+			if (!this.isSomethingUsefulResources(results) && !GameGlobals.gameState.isAutoPlaying) {
 				var excursionComponent = this.playerResourcesNodes.head.entity.get(ExcursionComponent);
 				var metalAmount = availableResources.getResource(resourceNames.metal);
-				if (metalAmount > 7 || (metalAmount > 3 && excursionComponent && excursionComponent.numConsecutiveScavengeUseless > 0)) {
+				if (metalAmount > WorldConstants.resourcePrevalence.RARE && excursionComponent && excursionComponent.numConsecutiveScavengeUseless > 0) {
 					results.setResource(resourceNames.metal, 1);
 				}
 			}
-
+			
 			// if result only consists of one resource and difference is not too big, for convenience limit to free space -> can always use "take all"
 			var names = results.getNames();
 			if (names.length === 1) {
@@ -797,79 +820,84 @@ define([
 		},
 
 		getRewardCurrency: function (efficiency) {
-			let playerPos = this.playerLocationNodes.head.position;
-			if (playerPos.level == 13)
+			var campCount = GameGlobals.gameState.numCamps;
+			
+			if (campCount < 2)
 				return 0;
 				
-			if (efficiency < 0.5)
+			if (efficiency < 0.25)
 				return 0;
+			
+			var findProbability = 0;
+			var sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			switch (sectorFeatures.sectorType) {
+				case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
+				case SectorConstants.SECTOR_TYPE_PUBLIC:
+					findProbability = 0.0025;
+					break;
+				case SectorConstants.SECTOR_TYPE_COMMERCIAL:
+					findProbability = 0.075;
+					break;
+			}
 
-			if (Math.random() > 0.001)
+			if (Math.random() > findProbability * efficiency)
 				return 0;
 
 			return Math.ceil(Math.random() * 3);
 		},
 
-		// itemProbability: 0-1 probability of finding one item
-		// ingredientProbability: 0-1 probability of finding some ingredients
+		// itemProbability: base probability of finding one item (0-1)
+		// ingredientProbability: base probability of finding some ingredients (0-1)
 		// itemTypeLimits: list of item types and their probabilities ([ type: relative_probability ])
 		// availableIngredients: optional list of ingredients that can drop (if empty, any can drop)
-		// efficiency: 0-1 current scavenge efficiency of the player, affects chance to find something
+		// efficiency: current scavenge efficiency of the player, affects chance to find something (0-1)
 		// currentItems: ItemsComponent
 		getRewardItems: function (itemProbability, ingredientProbability, itemTypeLimits, availableIngredients, efficiency, currentItems, campOrdinal, step, isHardLevel) {
 			let result = [];
-			var hasBag = currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
-			var hasCamp = GameGlobals.gameState.unlockedFeatures.camp;
-			var hasDecentEfficiency = efficiency > 0.1;
+			let hasBag = currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
+			let hasCamp = GameGlobals.gameState.unlockedFeatures.camp;
+			let hasDecentEfficiency = efficiency > 0.25;
 
-			// Neccessity items (map, bag) that the player should find quickly if missing
-			var necessityItem = this.getNecessityItem(itemProbability, itemTypeLimits, efficiency, currentItems, campOrdinal);
-			if (necessityItem) {
-				result.push(necessityItem);
-			}
+			// Regular items
+			if (itemProbability > 0) {
+				let itemProbabilityWithEfficiency = itemProbability * efficiency;
+				
+				// - Neccessity items (map, bag) that the player should find quickly if missing
+				var necessityItem = this.getNecessityItem(itemProbability, itemTypeLimits, efficiency, currentItems, campOrdinal);
+				if (necessityItem) result.push(necessityItem);
 
-			// Normal items
-			if (hasBag && !necessityItem && hasDecentEfficiency && Math.random() < itemProbability) {
-				var item = this.getRewardItem(itemTypeLimits, efficiency, campOrdinal, step);
-				if (item) result.push(item);
+				// - Normal items
+				if (hasBag && !necessityItem && hasDecentEfficiency && Math.random() < itemProbabilityWithEfficiency) {
+					var item = this.getRewardItem(itemTypeLimits, efficiency, campOrdinal, step);
+					if (item) result.push(item);
+				}
 			}
 			
-			// Necessity ingredient (stuff blocking the player from progressing)
-			// TODO replace with something that's not random & is better communicated in-game
-			if (hasCamp && hasDecentEfficiency) {
-				var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-				var playerStamina = this.playerStatsNodes.head.stamina;
-				let niCampOrdinal = campOrdinal;
-				let niStep = step + 1;
-				let niIsHardlevel = isHardLevel;
-				if (step > WorldConstants.CAMP_STEP_END) {
-					niCampOrdinal += 1;
-					niStep = WorldConstants.CAMP_STEP_START;
-					niIsHardlevel = false;
-				}
-				var neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(niCampOrdinal, step, niIsHardlevel, itemsComponent, true);
-				if (neededIngredient && !GameGlobals.gameState.isAutoPlaying) {
-					var neededIngredientProp = MathUtils.clamp(ingredientProbability * 10, 0.15, 0.35);
-					var numAvailableGangs = GameGlobals.levelHelper.getNumAvailableGangs(campOrdinal, playerStamina, itemsComponent);
-					if (!GameGlobals.gameState.uiStatus.isHidden)
-						log.i("neededIngredient: " + (neededIngredient ? neededIngredient.id : "null") + ", prob: " + neededIngredientProp + ", gangs: " + numAvailableGangs);
-					if (numAvailableGangs <= 1 && Math.random() < neededIngredientProp) {
-						var amount = Math.floor(Math.random() * efficiency * max) + 1;
-						var amount = Math.floor(Math.random() * efficiency * max) + 1;
-						for (let i = 0; i <= amount; i++) {
-							result.push(neededIngredient.clone());
-						}
-					}
-				}
-			}
-
 			// Ingredients
-			if (hasBag && hasCamp && hasDecentEfficiency && Math.random() < ingredientProbability) {
+			if (ingredientProbability > 0) {
+				var ingredientProbabilityWithEfficiency = ingredientProbability * efficiency;
 				var max = Math.floor(Math.random() * 3);
 				var amount = Math.floor(Math.random() * efficiency * max) + 1;
-				var ingredient = GameGlobals.itemsHelper.getUsableIngredient(availableIngredients);
-				for (let i = 0; i <= amount; i++) {
-					result.push(ingredient.clone());
+				var addedIngredient = false;
+				
+				// . Necessity ingredient (stuff blocking the player from progressing)
+				// TODO replace with something that's not random & is better communicated in-game
+				if (hasCamp && hasDecentEfficiency) {
+					var necessityIngredient = this.getNecessityIngredient();
+					if (necessityIngredient != null) {
+						for (let i = 0; i <= amount; i++) {
+							result.push(necessityIngredient.clone());
+						}
+						addedIngredient = true;
+					}
+				}
+
+				// - Normal ingredients
+				if (hasBag && hasCamp && hasDecentEfficiency && !addedIngredient && Math.random() < ingredientProbabilityWithEfficiency) {
+					var ingredient = GameGlobals.itemsHelper.getUsableIngredient(availableIngredients);
+					for (let i = 0; i <= amount; i++) {
+						result.push(ingredient.clone());
+					}
 				}
 			}
 			
@@ -1006,7 +1034,7 @@ define([
 
 			// non-craftable level clothing
 			if (itemTypeLimits.clothing > 0 && !GameGlobals.gameState.isAutoPlaying) {
-				if (Math.random() < adjustedProbability * efficiency) {
+				if (Math.random() < adjustedProbability) {
 					var clothing = GameGlobals.itemsHelper.getScavengeNecessityClothing(campOrdinal, 1);
 					for (let i = 0; i < clothing.length; i++) {
 						if (currentItems.getCountById(clothing[i].id, true) <= 0) {
@@ -1018,6 +1046,32 @@ define([
 				}
 			}
 
+			return null;
+		},
+		
+		getNecessityIngredient: function (ingredientProbability, currentItems, campOrdinal, step, isHardLevel) {
+			if (!GameGlobals.gameState.isAutoPlaying) return null;
+			
+			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+			var playerStamina = this.playerStatsNodes.head.stamina;
+			let niCampOrdinal = campOrdinal;
+			let niStep = step + 1;
+			let niIsHardlevel = isHardLevel;
+			if (step > WorldConstants.CAMP_STEP_END) {
+				niCampOrdinal += 1;
+				niStep = WorldConstants.CAMP_STEP_START;
+				niIsHardlevel = false;
+			}
+			var neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(niCampOrdinal, step, niIsHardlevel, itemsComponent, true);
+			if (neededIngredient) {
+				var neededIngredientProp = MathUtils.clamp(ingredientProbability * 10, 0.15, 0.35);
+				var numAvailableGangs = GameGlobals.levelHelper.getNumAvailableGangs(campOrdinal, playerStamina, itemsComponent);
+				if (!GameGlobals.gameState.uiStatus.isHidden)
+					log.i("neededIngredient: " + (neededIngredient ? neededIngredient.id : "null") + ", prob: " + neededIngredientProp + ", gangs: " + numAvailableGangs);
+				if (numAvailableGangs <= 1 && Math.random() < neededIngredientProp) {
+					return neededIngredient;
+				}
+			}
 			return null;
 		},
 
@@ -1043,7 +1097,7 @@ define([
 		},
 		
 		addFollowerBonuses: function (rewards, sectorResources, itemTypeLimits) {
-			var efficiency = this.getScavengeEfficiency();
+			var efficiency = this.getCurrentScavengeEfficiency();
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			
 			var playerPos = this.playerLocationNodes.head.position;
@@ -1097,8 +1151,7 @@ define([
 		},
 		
 		isSomethingUsefulResources: function (resources) {
-			if (resources.getTotal() === 0)
-			{
+			if (resources.getTotal() === 0) {
 				return false;
 			}
 			for (var key in resourceNames) {
@@ -1335,6 +1388,32 @@ define([
 				}
 			}
 			return null;
+		},
+
+		getBaseResourceFindProbability: function (prevalence) {
+			switch (prevalence) {
+				case WorldConstants.resourcePrevalence.RARE: return 0.25;
+				case WorldConstants.resourcePrevalence.DEFAULT: return 1;
+				case WorldConstants.resourcePrevalence.COMMON: return 1.25;
+				case WorldConstants.resourcePrevalence.ABUNDANT: return 1.5;
+			}
+			log.w("unknown resource prevalence: " + prevalence);
+			return 0;
+		},
+		
+		getBaseResourceFindAmount: function (name, prevalence) {
+			switch (prevalence) {
+				case WorldConstants.resourcePrevalence.RARE:
+					return 1;
+				case WorldConstants.resourcePrevalence.DEFAULT:
+					return 3;
+				case WorldConstants.resourcePrevalence.COMMON:
+					return 4;
+				case WorldConstants.resourcePrevalence.ABUNDANT:
+					return 5;
+			}
+			log.w("unknown resource prevalence: " + prevalence);
+			return 0;
 		},
 
 		getAvailableResourcesForEnemy: function (enemyVO) {

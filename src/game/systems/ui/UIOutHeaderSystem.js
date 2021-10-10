@@ -289,7 +289,7 @@ define([
 			let showScavangeAbilityLastUpdate = this.showScavangeAbilityLastUpdate;
 			GameGlobals.uiFunctions.toggle("#stats-scavenge", showScavangeAbility);
 			if (showScavangeAbility) {
-				var scavengeEfficiency = Math.round(GameGlobals.playerActionResultsHelper.getScavengeEfficiency() * 100);
+				var scavengeEfficiency = Math.round(GameGlobals.playerActionResultsHelper.getCurrentScavengeEfficiency() * 100);
 				UIAnimations.animateOrSetNumber(this.elements.valScavenge, showScavangeAbilityLastUpdate, scavengeEfficiency, "%", false, Math.round);
 				UIConstants.updateCalloutContent("#stats-scavenge", "Increases scavenge loot<hr/>health: " + Math.round(maxStamina/10) + "<br/>vision: " + shownVision);
 				this.updateChangeIndicator(this.elements.changeIndicatorScavenge, maxVision - shownVision, shownVision < maxVision);

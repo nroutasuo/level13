@@ -500,7 +500,7 @@ define(['ash',
 
 		scavenge: function () {
 			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-			var efficiency = GameGlobals.playerActionResultsHelper.getScavengeEfficiency();
+			var efficiency = GameGlobals.playerActionResultsHelper.getCurrentScavengeEfficiency();
 			GameGlobals.gameState.unlockedFeatures.scavenge = true;
 
 			var logMsg = "";
