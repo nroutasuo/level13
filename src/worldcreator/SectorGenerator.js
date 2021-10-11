@@ -929,6 +929,11 @@ define([
 			}
 			
 			sectorVO.scavengeDifficulty = Math.round(MathUtils.map(scavengeDifficultyScore, 0, 1, WorldConstants.scavengeDifficulty.VERY_EASY, WorldConstants.scavengeDifficulty.VERY_HARD));
+			
+			var isStartPosition = levelVO.level == 13 && sectorVO.isCamp;
+			if (isStartPosition) {
+				sectorVO.scavengeDifficulty = WorldConstants.scavengeDifficulty.VERY_EASY;
+			}
 		},
 		
 		generateResources: function (seed, worldVO, levelVO, sectorVO) {
@@ -1069,9 +1074,8 @@ define([
 				}
 				if (isStartPosition) {
 					sca.metal = WorldConstants.resourcePrevalence.ABUNDANT;
-					sca.food = WorldConstants.resourcePrevalence.ABUNDANT;
-					col.food = Math.max(sca.food, 3);
-					col.water = Math.max(sca.water, 3);
+					sca.food = WorldConstants.resourcePrevalence.COMMON;
+					col.water = WorldConstants.resourcePrevalence.RARE;
 				}
 			}
 			
