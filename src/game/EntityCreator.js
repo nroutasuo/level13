@@ -188,6 +188,7 @@ define([
 					sectorFeatures.scavengeDifficulty,
 					sectorFeatures.resourcesScavengable,
 					sectorFeatures.resourcesCollectable,
+					sectorFeatures.itemsScavengeable,
 					sectorFeatures.hasSpring,
 					sectorFeatures.hasTradeConnectorSpot,
 					sectorFeatures.stashes))

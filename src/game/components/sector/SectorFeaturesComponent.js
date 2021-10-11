@@ -30,9 +30,10 @@ define(
 		scacengeDifficulty: 3,
 		resourcesScavengable: null,
 		resourcesCollectable: null,
+		itemsScavengeable: [],
 		
 		constructor: function (level, criticalPaths, zone, buildingDensity, wear, damage, sectorType, sunlit, ground, hazards,
-							   campable, notCampableReason, scavengeDifficulty, resourcesScavengable, resourcesCollectable, hasSpring, hasTradeConnectorSpot, stashes) {
+							   campable, notCampableReason, scavengeDifficulty, resourcesScavengable, resourcesCollectable, itemsScavengeable, hasSpring, hasTradeConnectorSpot, stashes) {
 			this.level = level;
 			this.criticalPaths = criticalPaths;
 			this.zone = zone;
@@ -48,6 +49,7 @@ define(
 			this.scavengeDifficulty = scavengeDifficulty;
 			this.resourcesScavengable = resourcesScavengable || new ResourcesVO();
 			this.resourcesCollectable = resourcesCollectable || new ResourcesVO();
+			this.itemsScavengeable = itemsScavengeable || [];
 			this.hasSpring = hasSpring;
 			this.hasTradeConnectorSpot = hasTradeConnectorSpot;
 			this.stashes = stashes || [];
@@ -65,28 +67,6 @@ define(
 		
 		canHaveCamp: function () {
 			return this.campable;
-		},
-		
-		// Text functions
-		
-		getScaResourcesString: function (discoveredResources) {
-			var s = "";
-			 for(var key in resourceNames) {
-				var name = resourceNames[key];
-				var amount = this.resourcesScavengable.getResource(name);
-				if (amount > 0 && discoveredResources.indexOf(name) >= 0) {
-					var amountDesc = "scarce";
-					if (amount == WorldConstants.resourcePrevalence.RARE) amountDesc = "rare";
-					if (amount == WorldConstants.resourcePrevalence.DEFAULT) amountDesc = "scarce";
-					if (amount == WorldConstants.resourcePrevalence.COMMON) amountDesc = "common";
-					if (amount == WorldConstants.resourcePrevalence.ABUNDANT) amountDesc = "abundant";
-					if (GameConstants.isDebugVersion) amountDesc += " " + Math.round(amount);
-					s += key + " (" + amountDesc + "), ";
-				}
-			}
-			if (s.length > 0) return s.substring(0, s.length - 2);
-			else if (this.resourcesScavengable.getTotal() > 0) return "Unknown";
-			else return "None";
 		},
 		
 		getCondition: function () {

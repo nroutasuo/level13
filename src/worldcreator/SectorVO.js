@@ -29,6 +29,7 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			this.scavengeDifficulty = WorldConstants.scavengeDifficulty.MEDIUM;
 			this.resourcesScavengable = new ResourcesVO();
 			this.resourcesCollectable = new ResourcesVO();
+			this.itemsScavengeable = [];
 			this.numLocaleEnemies = {};
 			this.possibleEnemies = [];
 			this.stashes = [];

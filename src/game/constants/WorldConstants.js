@@ -94,6 +94,15 @@ define(['ash'], function (Ash) {
 			}
 		},
 		
+		getStepForStage: function (stage) {
+			switch (stage) {
+				case WorldConstants.CAMP_STAGE_EARLY: return WorldConstants.CAMP_STEP_START;
+				case WorldConstants.CAMP_STAGE_LATE: return WorldConstants.CAMP_STAGE_LATE;
+			}
+			log.w("unknown stage: " + stage);
+			return WorldConstants.CAMP_STEP_START;
+		},
+		
 		isAllowedZone: function (stage, zone) {
 			var zoneStage = WorldConstants.getStage(zone);
 			if (stage == zoneStage) return true;

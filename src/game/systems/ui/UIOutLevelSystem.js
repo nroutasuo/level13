@@ -396,7 +396,13 @@ define([
 			if (featuresComponent.resourcesScavengable.getTotal() > 0) {
 				var discoveredResources = GameGlobals.sectorHelper.getLocationDiscoveredResources();
 				if (discoveredResources.length > 0) {
-					description += "Resources found: " + featuresComponent.getScaResourcesString(discoveredResources);
+					description += "Resources found: " + TextConstants.getScaResourcesString(discoveredResources, featuresComponent.resourcesScavengable) + " ";
+				}
+			}
+			if (featuresComponent.itemsScavengeable.length > 0) {
+				var discoveredItems = GameGlobals.sectorHelper.getLocationDiscoveredItems();
+				if (discoveredItems.length > 0) {
+					description += "Items found: " + TextConstants.getScaItemString(discoveredItems, featuresComponent.itemsScavengeable) + " ";
 				}
 			}
 			return description;

@@ -73,6 +73,7 @@ define([
 				this.generateLocales(seed, worldVO, levelVO);
 				this.generateMovementBlockers(seed, worldVO, levelVO);
 				this.generateEnemies(seed, worldVO, levelVO, enemyCreator);
+				this.generateItems(seed, worldVO, levelVO);
 				
 				// sector features 2
 				for (var s = 0; s < levelVO.sectors.length; s++) {
@@ -536,14 +537,11 @@ define([
 			}
 			
 			// stashes: ingredients for craftable equipment (campable levels)
-			let stashIngredients;
 			let requiredEquipment = this.itemsHelper.getRequiredEquipment(levelVO.campOrdinal, WorldConstants.CAMP_STEP_END, levelVO.isHard);
-			if (levelVO.isCampable) {
-				stashIngredients = ItemConstants.getIngredientsToCraftMany(requiredEquipment);
-			} else {
+			if (!levelVO.isCampable) {
 				requiredEquipment = this.itemsHelper.getRequiredEquipment(nextLevelVO.campOrdinal, WorldConstants.CAMP_STEP_START, nextLevelVO.isHard);
-				stashIngredients = ItemConstants.getIngredientsToCraftMany(requiredEquipment);
 			}
+			let stashIngredients = ItemConstants.getIngredientsToCraftMany(requiredEquipment);
 			let numStashIngredients = MathUtils.clamp(Math.floor(stashIngredients.length / 2), 1, 3);
 			for (let i = 0; i < numStashIngredients; i++) {
 				var def = stashIngredients[i];
@@ -1099,6 +1097,55 @@ define([
 			sectorVO.resourcesCollectable = col;
 			sectorVO.resourcesAll = sca.clone();
 			sectorVO.resourcesAll.addAll(col);
+		},
+		
+		generateItems: function (seed, worldVO, levelVO) {
+			var stages = worldVO.getStages(levelVO.level);
+			
+			// TODO create a correlation between items appearing and sector type / texture
+			
+			let i = 0;
+			let excludedZones = {};
+			excludedZones[WorldConstants.CAMP_STAGE_EARLY] = [ WorldConstants.ZONE_POI_2, WorldConstants.ZONE_CAMP_TO_PASSAGE, WorldConstants.ZONE_EXTRA_CAMPABLE, WorldConstants.ZONE_EXTRA_UNCAMPABLE ];
+			excludedZones[WorldConstants.CAMP_STAGE_LATE] = [ WorldConstants.ZONE_ENTRANCE, WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_POI_1 ];
+			var addItemLocation = function (itemID, stage, reason) {
+				let s = 3223 + (itemID.length + 3) * 88 + levelVO.level * 208 + (i + 24) * 619;
+				let r = WorldCreatorRandom.random(s);
+				let options = { requireCentral: false, excludingFeature: "camp", excludedZones: excludedZones[stage] };
+				let sector = WorldCreatorRandom.randomSectors(s, worldVO, levelVO, 1, 2, options)[0];
+				sector.itemsScavengeable.push(itemID);
+				WorldCreatorLogger.i("addItemLocation level " + levelVO.level + " " + stage + " " + itemID + " " + reason + " | " + sector.position);
+				i++;
+			};
+			
+			for (let i = 0; i < stages.length; i++) {
+				var stageVO = stages[i];
+				let step = WorldConstants.getStepForStage(stageVO.stage);
+				
+				// ingredients for required equipment
+				let requiredEquipment = [];
+				if (stageVO.stage == WorldConstants.CAMP_STAGE_EARLY) {
+					requiredEquipment = this.itemsHelper.getRequiredEquipment(levelVO.campOrdinal, WorldConstants.CAMP_STEP_END, levelVO.isHard);
+				} else {
+					let nextLevel = WorldCreatorHelper.getLevelForOrdinal(seed, levelVO.levelOrdinal + 1);
+					let nextLevelVO = worldVO.getLevel(nextLevel) || levelVO;
+					requiredEquipment = this.itemsHelper.getRequiredEquipment(nextLevelVO.campOrdinal, WorldConstants.CAMP_STEP_START, nextLevelVO.isHard);
+				}
+				let requiredIngredients = ItemConstants.getIngredientsToCraftMany(requiredEquipment);
+				for (let i = 0; i < requiredIngredients.length; i++) {
+					var def = requiredIngredients[i];
+					addItemLocation(def.id, stageVO.stage, "required");
+				}
+				
+				// a couple of random ingredients
+				let numRandomIngredients = 2;
+				for (let i = 0; i < numRandomIngredients; i++) {
+					var s1 = 4200 + seed % 3000 + (levelVO.level + 5) * 217 + i * 991;
+					var r1 = WorldCreatorRandom.random(s1);
+					var ingredient = GameGlobals.itemsHelper.getUsableIngredient(null, r1);
+					addItemLocation(ingredient.id, stageVO.stage, "random");
+				}
+			}
 		},
 		
 		generateEnemies: function (seed, worldVO, levelVO, enemyCreator) {

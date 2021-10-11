@@ -240,10 +240,13 @@ define([
 			
 			let result = "";
 			let resources = GameGlobals.sectorHelper.getLocationDiscoveredResources(sector);
-			if (resources.length < 1)
+			let items = GameGlobals.sectorHelper.getLocationDiscoveredItems(sector);
+			if (resources.length < 1 && items.length < 1) {
 				result = "-";
-			else
-				result = resources.join(", ");
+			} else {
+				result += resources.join(", ");
+				result += items.join(", ");
+			}
 			
 			result += " (" + scavengedPercent + "% scavenged) ";
 			result += " (difficulty: " + scavengeDifficulty + ") ";

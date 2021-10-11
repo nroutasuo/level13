@@ -105,6 +105,7 @@ define([
 			sectorFeatures.scavengeDifficulty = sectorVO.scavengeDifficulty;
 			sectorFeatures.resourcesScavengable = sectorVO.resourcesScavengable;
 			sectorFeatures.resourcesCollectable = sectorVO.resourcesCollectable;
+			sectorFeatures.itemsScavengeable = sectorVO.itemsScavengeable;
 			sectorFeatures.workshopResource = sectorVO.workshopResource;
 			sectorFeatures.hasWorkshop = sectorVO.hasWorkshop;
 			sectorFeatures.hasClearableWorkshop = sectorVO.hasClearableWorkshop;

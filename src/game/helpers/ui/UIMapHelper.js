@@ -49,6 +49,7 @@ function (Ash, CanvasUtils,
 			this.initIcon("workshop", "map-workshop");
 			this.initIcon("water", "map-water");
 			this.initIcon("beacon", "map-beacon");
+			this.initIcon("ingredient", "map-ingredient");
 		},
 
 		initIcon: function(key, name) {
@@ -328,11 +329,14 @@ function (Ash, CanvasUtils,
 			var useSunlitImage = isLocationSunlit;
 			
 			var sectorFeatures = sector.get(SectorFeaturesComponent);
+			var statusComponent = sector.get(SectorStatusComponent);
 			var sectorPassages = sector.get(PassagesComponent);
 			var localesComponent = sector.get(SectorLocalesComponent);
 			var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
 			var sectorImprovements = sector.get(SectorImprovementsComponent);
 			var hasCampOnLevel = levelEntity.get(CampComponent) !== null;
+			
+			let sectorDiscoveredItems = GameGlobals.sectorHelper.getLocationDiscoveredItems(sector);
 
 			if (!isRevealed && !this.isMapRevealed) {
 				hasIcon = true;
@@ -361,6 +365,9 @@ function (Ash, CanvasUtils,
 			} else if (sectorImprovements.getCount(improvementNames.beacon) > 0) {
 				hasIcon = true;
 				ctx.drawImage(this.icons["beacon" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
+			} else if (sectorDiscoveredItems.length > 0) {
+				hasIcon = true;
+				ctx.drawImage(this.icons["ingredient" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
 			}
 	
 			// sector contents: resources

@@ -1,15 +1,18 @@
 // Level 13 specific text helpers
 
-define(
-['ash',
-	'utils/DescriptionMapper', 'text/Text', 'text/TextBuilder',
+define(['ash',
+	'utils/DescriptionMapper',
+	'text/Text',
+	'text/TextBuilder',
 	'game/constants/GameConstants',
 	'game/constants/EnemyConstants',
 	'game/constants/ItemConstants',
 	'game/constants/SectorConstants',
 	'game/constants/PositionConstants',
-	'game/constants/MovementConstants'],
-function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstants, ItemConstants, SectorConstants, PositionConstants, MovementConstants) {
+	'game/constants/MovementConstants',
+	'game/constants/WorldConstants',
+],
+function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstants, ItemConstants, SectorConstants, PositionConstants, MovementConstants, WorldConstants) {
 	
 	var TextConstants = {
 		
@@ -584,6 +587,17 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			return "water tower";
 		},
 		
+		getScavengeDifficultyDisplayName: function (scavengeDifficulty) {
+			switch (scavengeDifficulty) {
+				case WorldConstants.scavengeDifficulty.VERY_EASY: return "very easy";
+				case WorldConstants.scavengeDifficulty.EASY: return "easy";
+				case WorldConstants.scavengeDifficulty.MEDIUM: return "medium";
+				case WorldConstants.scavengeDifficulty.HARD: return "hard";
+				case WorldConstants.scavengeDifficulty.VERY_HARD: return "very hard";
+			}
+			return "??";
+		},
+		
 		getDirectionName: function (direction) {
 			switch (direction) {
 			case PositionConstants.DIRECTION_WEST: return "west";
@@ -624,6 +638,37 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		
 		getEnemeyDefeatedVerb: function (enemyList) {
 			return this.getCommonText(enemyList, "defeatedV", "", "defeated", false);
+		},
+		
+		getScaResourcesString: function (discoveredResources, resourcesScavengable) {
+			var s = "";
+			 for(var key in resourceNames) {
+				var name = resourceNames[key];
+				var amount = resourcesScavengable.getResource(name);
+				if (amount > 0 && discoveredResources.indexOf(name) >= 0) {
+					var amountDesc = "scarce";
+					if (amount == WorldConstants.resourcePrevalence.RARE) amountDesc = "rare";
+					if (amount == WorldConstants.resourcePrevalence.DEFAULT) amountDesc = "scarce";
+					if (amount == WorldConstants.resourcePrevalence.COMMON) amountDesc = "common";
+					if (amount == WorldConstants.resourcePrevalence.ABUNDANT) amountDesc = "abundant";
+					if (GameConstants.isDebugVersion) amountDesc += " " + Math.round(amount);
+					s += key + " (" + amountDesc + "), ";
+				}
+			}
+			if (s.length > 0) return s.substring(0, s.length - 2);
+			else if (resourcesScavengable.getTotal() > 0) return "Unknown";
+			else return "None";
+		},
+		
+		getScaItemString: function (discoveredItems, itemsScavengeable) {
+			var validItems = [];
+			for (let i = 0; i < discoveredItems.length; i++) {
+				var id = discoveredItems[i];
+				if (itemsScavengeable.indexOf(id) < 0) continue;
+				validItems.push(ItemConstants.getItemByID(id).name);
+			}
+			if (validItems.length == 0) return "None";
+			return validItems.join(", ");
 		},
 		
 		getMovementBlockerName: function (blockerVO, enemiesComponent, gangComponent) {

@@ -283,14 +283,16 @@ define([
 			return null;
 		},
 		
-		getUsableIngredient: function (availableIngredients) {
+		getUsableIngredient: function (availableIngredients, rand) {
+			rand = rand || Math.random();
+			
 			var usableIngredients = [];
 			var campCount = GameGlobals.gameState.numCamps;
 			var campOrdinal = Math.max(1, campCount);
 			var itemList = ItemConstants.itemDefinitions.ingredient;
 			for (let i in itemList) {
 				var definition = itemList[i];
-				if (availableIngredients && availableIngredients.length > 0 && availableIngredients.indexOf(definition.id) < 0) {
+				if (availableIngredients && availableIngredients.indexOf(definition.id) < 0) {
 					continue;
 				}
 				if (this.isUsableIngredient(definition, campOrdinal)) {
@@ -298,7 +300,7 @@ define([
 				}
 			}
 			if (usableIngredients.length == 0) return this.getUsableIngredient();
-			let i = usableIngredients.length * Math.random();
+			let i = usableIngredients.length * rand;
 			return usableIngredients[parseInt(i)];
 		},
 		

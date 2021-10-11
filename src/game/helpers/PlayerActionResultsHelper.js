@@ -157,6 +157,7 @@ define([
 			var sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			var sectorResources = sectorFeatures.resourcesScavengable;
+			var sectorIngredients = sectorFeatures.itemsScavengeable;
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			var playerPos = this.playerLocationNodes.head.position;
 			var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(playerPos.level);
@@ -167,13 +168,13 @@ define([
 			var efficiency = this.getCurrentScavengeEfficiency();
 
 			rewards.gainedResources = this.getRewardResources(1, 1, efficiency, sectorResources);
-			rewards.gainedItems = this.getRewardItems(0.02, 0.03, this.itemResultTypes.scavenge, [], efficiency, itemsComponent, campOrdinal, step, isHardLevel);
+			rewards.gainedItems = this.getRewardItems(0.02, 0.25, this.itemResultTypes.scavenge, sectorIngredients, efficiency, itemsComponent, campOrdinal, step, isHardLevel);
 			rewards.gainedCurrency = this.getRewardCurrency(efficiency);
 			
 			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound);
 			rewards.gainedBlueprintPiece = this.getFallbackBlueprint(0.05 + efficiency * 0.15);
 			
-			this.addFollowerBonuses(rewards, sectorResources, this.itemResultTypes.scavenge);
+			this.addFollowerBonuses(rewards, sectorResources, sectorIngredients, this.itemResultTypes.scavenge);
 
 			return rewards;
 		},
@@ -236,9 +237,9 @@ define([
 					// items and resources
 					if (localeCategory === "u") {
 						rewards.gainedResources = this.getRewardResources(1, 5 * localeDifficulty, efficiency, availableResources);
-						rewards.gainedItems = this.getRewardItems(0.5, 0, this.itemResultTypes.scavenge, [], 1, itemsComponent, campOrdinal, step, isHardLevel);
+						rewards.gainedItems = this.getRewardItems(0.5, 0, this.itemResultTypes.scavenge, null, 1, itemsComponent, campOrdinal, step, isHardLevel);
 					} else {
-						rewards.gainedItems = this.getRewardItems(0.25, 0, this.itemResultTypes.meet, [], 1, itemsComponent, campOrdinal, step, isHardLevel);
+						rewards.gainedItems = this.getRewardItems(0.25, 0, this.itemResultTypes.meet, null, 1, itemsComponent, campOrdinal, step, isHardLevel);
 					}
 				}
 			}
@@ -340,6 +341,12 @@ define([
 					var inSector = sectorResources.getResource(name) > 0;
 					if (amount > 0 && inSector) {
 						sectorStatus.addDiscoveredResource(name);
+					}
+				}
+				for (let i = 0; i < rewards.gainedItems.length; i++) {
+					let item = rewards.gainedItems[i];
+					if (item.type == ItemConstants.itemTypes.ingredient) {
+						sectorStatus.addDiscoveredItem(item.id);
 					}
 				}
 			}
@@ -849,7 +856,7 @@ define([
 		// itemProbability: base probability of finding one item (0-1)
 		// ingredientProbability: base probability of finding some ingredients (0-1)
 		// itemTypeLimits: list of item types and their probabilities ([ type: relative_probability ])
-		// availableIngredients: optional list of ingredients that can drop (if empty, any can drop)
+		// availableIngredients: optional list of ingredients that can drop (if null, any can drop, but if empty, none found)
 		// efficiency: current scavenge efficiency of the player, affects chance to find something (0-1)
 		// currentItems: ItemsComponent
 		getRewardItems: function (itemProbability, ingredientProbability, itemTypeLimits, availableIngredients, efficiency, currentItems, campOrdinal, step, isHardLevel) {
@@ -1096,7 +1103,7 @@ define([
 			}
 		},
 		
-		addFollowerBonuses: function (rewards, sectorResources, itemTypeLimits) {
+		addFollowerBonuses: function (rewards, sectorResources, sectorIngredients, itemTypeLimits) {
 			var efficiency = this.getCurrentScavengeEfficiency();
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			
@@ -1130,7 +1137,7 @@ define([
 			
 			let bonusItemProb = generalBonus - 1;
 			let bonusIngredientProb = generalBonus - 1 + ingredientsBonus - 1;
-			let bonusItems = this.getRewardItems(bonusItemProb, bonusIngredientProb, itemTypeLimits, [], efficiency, itemsComponent, campOrdinal, step, isHardLevel);
+			let bonusItems = this.getRewardItems(bonusItemProb, bonusIngredientProb, itemTypeLimits, sectorIngredients, efficiency, itemsComponent, campOrdinal, step, isHardLevel);
 			rewards.gainedItemsFromFollowers = bonusItems;
 			for (let i = 0; i < bonusItems.length; i++) {
 				rewards.gainedItems.push(bonusItems[i]);

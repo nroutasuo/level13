@@ -174,6 +174,30 @@ define([
 			return resources;
 		},
 		
+		getLocationDiscoveredItems: function (sector) {
+			var items = [];
+			sector = sector ? sector : this.playerLocationNodes.head.entity;
+			var sectorStatus = sector.get(SectorStatusComponent);
+			var sectorFeatures = sector.get(SectorFeaturesComponent);
+			var missingItems = [];
+			
+			for (let i = 0; i < sectorStatus.discoveredItems.length; i++) {
+				var itemID = sectorStatus.discoveredItems[i];
+				if (sectorFeatures.itemsScavengeable.indexOf(itemID) >= 0) {
+					items.push(itemID);
+				} else {
+					log.w("Item in discovered items not found on sector.");
+					missingItems.push(itemID);
+				}
+			}
+			
+			for (let j = 0; j < missingItems.length; j++) {
+				sectorStatus.discoveredItems.splice(sectorStatus.discoveredItems.indexOf(missingItems[j]), 1);
+			}
+			
+			return items;
+		},
+		
 		getDangerFactor: function (sectorEntity) {
 			if (!sectorEntity) return 1;
 			let levelEntity = GameGlobals.levelHelper.getLevelEntityForSector(sectorEntity);

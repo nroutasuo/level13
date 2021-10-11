@@ -6,6 +6,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 		NUM_SCAVENGES_PER_SECTOR: 50,
 
 		discoveredResources: [],
+		discoveredItems: [],
 		scavenged: false,
 		scouted: false,
 		localesScouted: [],
@@ -22,6 +23,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 
 		constructor: function () {
 			this.discoveredResources = [];
+			this.discoveredItems = [];
 			this.scavenged = false;
 			this.scouted = false;
 			this.localesScouted = [];
@@ -38,6 +40,12 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 		addDiscoveredResource: function (name) {
 			if (this.discoveredResources.indexOf(name) < 0) {
 				this.discoveredResources.push(name);
+			}
+		},
+		
+		addDiscoveredItem: function (id) {
+			if (this.discoveredItems.indexOf(id) < 0) {
+				this.discoveredItems.push(id);
 			}
 		},
 
@@ -101,6 +109,8 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			var copy = {};
 			if (this.discoveredResources.length > 0)
 				copy.dR = this.discoveredResources;
+			if (this.discoveredItems.length > 0)
+				copy.dI = this.discoveredItems;
 			if (this.scavenged)
 				copy.sc = this.scavenged ? 1 : 0;
 			if (this.scouted) {
@@ -124,6 +134,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 
 		customLoadFromSave: function (componentValues) {
 			this.discoveredResources = componentValues.dR ? componentValues.dR : [];
+			this.discoveredItems = componentValues.dI ? componentValues.dI : [];
 			this.scavenged = typeof componentValues.sc !== "undefined" ? componentValues.sc : false;
 			this.scouted = typeof componentValues.s !== "undefined" ? componentValues.s : false;
 			this.scoutedTimestamp = typeof componentValues.st !== "undefined" ? componentValues.st : this.scouted ? 1 : null;

@@ -1489,7 +1489,7 @@ define([
 			
 			// force late if nothing found
 			if (shortestDist < 0) {
-				return WorldConstants.STAGE_LATE;
+				return WorldConstants.CAMP_STAGE_LATE;
 			}
 			
 			// force EARLY if likely on early required path
