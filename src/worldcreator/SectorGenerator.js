@@ -928,11 +928,11 @@ define([
 				scavengeDifficultyScore *= 0.25;
 			}
 			
-			sectorVO.scavengeDifficulty = Math.round(MathUtils.map(scavengeDifficultyScore, 0, 1, WorldConstants.scavengeDifficulty.VERY_EASY, WorldConstants.scavengeDifficulty.VERY_HARD));
+			sectorVO.scavengeDifficulty = Math.round(MathUtils.map(scavengeDifficultyScore, 0, 1, 0, 10));
 			
 			var isStartPosition = levelVO.level == 13 && sectorVO.isCamp;
 			if (isStartPosition) {
-				sectorVO.scavengeDifficulty = WorldConstants.scavengeDifficulty.VERY_EASY;
+				sectorVO.scavengeDifficulty = 0;
 			}
 		},
 		
@@ -944,6 +944,7 @@ define([
 			var sectorType = sectorVO.sectorType;
 			var campOrdinal = levelVO.campOrdinal;
 			var isStartPosition = l == 13 && sectorVO.isCamp;
+			var scavengeDifficulty = sectorVO.scavengeDifficulty;
 			
 			// scavengeable resources
 			var r1 = WorldCreatorRandom.random(5000 + seed / (l+10) + x + x * y * 63 + sectorVO.buildingDensity * 3 + x % 3 * 123 + y % 4 * 81);
@@ -1348,7 +1349,7 @@ define([
 					var locale = new LocaleVO(localeTypes.tradingpartner, true, false);
 					// WorldCreatorLogger.i("trade partner at " + sectorVO.position)
 					addLocale(sectorVO, locale);
-					sectorVO.scavengeDifficulty = WorldConstants.scavengeDifficulty.VERY_HARD;
+					sectorVO.scavengeDifficulty = 10;
 				}
 			}
 			

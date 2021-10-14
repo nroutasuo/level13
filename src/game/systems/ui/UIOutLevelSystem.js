@@ -390,7 +390,6 @@ define([
 			if (!featuresComponent) return;
 			var description = "";
 			if (isScouted && GameGlobals.gameState.unlockedFeatures.scavenge) {
-				description += "Scavenge difficulty: " + TextConstants.getScavengeDifficultyDisplayName(featuresComponent.scavengeDifficulty) + "<br/>";
 				description += "Scavenged: " + UIConstants.roundValue(statusComponent.getScavengedPercent()) + "%<br/>";
 			}
 			if (featuresComponent.resourcesScavengable.getTotal() > 0) {

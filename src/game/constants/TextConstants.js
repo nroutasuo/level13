@@ -587,17 +587,6 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			return "water tower";
 		},
 		
-		getScavengeDifficultyDisplayName: function (scavengeDifficulty) {
-			switch (scavengeDifficulty) {
-				case WorldConstants.scavengeDifficulty.VERY_EASY: return "very easy";
-				case WorldConstants.scavengeDifficulty.EASY: return "easy";
-				case WorldConstants.scavengeDifficulty.MEDIUM: return "medium";
-				case WorldConstants.scavengeDifficulty.HARD: return "hard";
-				case WorldConstants.scavengeDifficulty.VERY_HARD: return "very hard";
-			}
-			return "??";
-		},
-		
 		getDirectionName: function (direction) {
 			switch (direction) {
 			case PositionConstants.DIRECTION_WEST: return "west";

@@ -724,39 +724,32 @@ define([
 			}
 		},
 
-		// typically between 0-1 (can be boosted past 1)
 		getCurrentScavengeEfficiency: function () {
-			var factors = this.getCurrentScavengeEfficiencyFactors();
-			var result = 1;
-			for (var key in factors) {
+			let factors = this.getCurrentScavengeEfficiencyFactors();
+			let result = 1;
+			for (let key in factors) {
 				result = result * (factors[key] || 1);
 			}
 			return result;
 		},
 		
 		getCurrentScavengeEfficiencyFactors: function () {
-			var result = {};
+			let result = {};
 			
-			var playerVision = this.playerStatsNodes.head.vision.value || 0;
+			let playerVision = this.playerStatsNodes.head.vision.value || 0;
 			result.vision = MathUtils.map(playerVision, 0, 150, 0, 1.5);
-			
-			var playerHealth = this.playerStatsNodes.head.stamina.health || 0;
-			result.health = MathUtils.map(playerHealth, 0, 100, 0, 1);
-			
-			var sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-			result.sectorDifficulty = MathUtils.map(sectorFeatures.scacengeDifficulty, WorldConstants.scavengeDifficulty.VERY_EASY, WorldConstants.scavengeDifficulty.VERY_HARD, 2, 0.25);
 
-			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-			result.scavengedPercent = Math.round(MathUtils.map(sectorStatus.getScavengedPercent(), 0, 100, 1, 0.5) * 20) / 20;
+			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			let scavengedPercent = sectorStatus.getScavengedPercent();
+			result.scavengedPercent = Math.round(MathUtils.map(scavengedPercent, 0, 95, 1, 0.05) * 20) / 20;
 				
 			return result;
 		},
 
 		// probabilityFactor (action-specific): base chance to get any resources at all (0-1)
 		// amountFactor (action-specific): relative amount of resources found if found any, where regular scavenge is 1
-		// efficiency: 0-1 current scavenge efficiency of the player, affects chance to find something
+		// efficiency: 0-1 current scavenge efficiency of the player, affects chance to find something and amount found
 		// available resources: name -> relative amount depending on sector, affects both chance and amount (WorldConstants.resourcePrevalence)
-		// NOTE: Even if probabilityFactor and efficiency are 1 you can still get no results if availableResources are scarce
 		getRewardResources: function (probabilityFactor, amountFactor, efficiency, availableResources) {
 			probabilityFactor = probabilityFactor || 0;
 			amountFactor = amountFactor || 1;
@@ -765,17 +758,11 @@ define([
 			var results = new ResourcesVO();
 			
 			if (probabilityFactor == 0) return results;
-			
-			var efficiencyProbabilityFactor = MathUtils.map(efficiency, 0, 3, 0.5, 2);
-			var efficiencyAmountFactor = MathUtils.map(efficiency, 0, 1, 0.5, 1);
-			
-			if (Math.random() > probabilityFactor * efficiencyProbabilityFactor) {
-				return results;
-			}
+			if (Math.random() > probabilityFactor) return results;
+			if (!availableResources || !availableResources.getTotal || availableResources.getTotal() <= 0) return results;
 
-			if (!availableResources || !availableResources.getTotal || availableResources.getTotal() <= 0) {
-				return results;
-			}
+			var minRandomAmoutFactor = 1/3*2;
+			var maxRandomAmountFactor  = 1/3*4;
 
 			// select resources
 			for (var key in resourceNames) {
@@ -783,22 +770,18 @@ define([
 				var availableAmount = availableResources.getResource(name);
 				if (availableAmount <= 0)
 					continue;
-				var probability = this.getBaseResourceFindProbability(availableAmount);
-				if (efficiencyProbabilityFactor * probability < Math.random())
+					
+				var baseProbability = this.getBaseResourceFindProbability(availableAmount);
+				var finalProbability = MathUtils.clamp(baseProbability * efficiency, 0, 1);
+				if (Math.random() > finalProbability)
 					continue;
 				
 				var resMin = 1;
 				var resMax = 10;
-				switch (name) {
-					case resourceNames.food:
-						resMin = 3;
-						break;
-				}
-				var resultAmountFactor = amountFactor * efficiencyAmountFactor * MathUtils.map(Math.random(), 0, 1, 0.75, 1.25);
-				var resultAmount = this.getBaseResourceFindAmount(name, availableAmount) * resultAmountFactor;
-				if (resultAmount === 0)
-					continue;
-				resultAmount = Math.ceil(resultAmount);
+				var baseAmount = this.getBaseResourceFindAmount(name, availableAmount);
+				var randomAmountFactor  = MathUtils.map(Math.random(), 0, 1, minRandomAmoutFactor, maxRandomAmountFactor);
+				var resultAmount = baseAmount * efficiency * randomAmountFactor;
+				resultAmount = Math.round(resultAmount);
 				resultAmount = MathUtils.clamp(resultAmount, resMin, resMax);
 				results.setResource(name, resultAmount);
 			}
@@ -809,17 +792,6 @@ define([
 				var metalAmount = availableResources.getResource(resourceNames.metal);
 				if (metalAmount > WorldConstants.resourcePrevalence.RARE && excursionComponent && excursionComponent.numConsecutiveScavengeUseless > 0) {
 					results.setResource(resourceNames.metal, 1);
-				}
-			}
-			
-			// if result only consists of one resource and difference is not too big, for convenience limit to free space -> can always use "take all"
-			var names = results.getNames();
-			if (names.length === 1) {
-				var amount = results.getResource(names[0]);
-				var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
-				var freeSpace = Math.floor(bagComponent.totalCapacity - bagComponent.usedCapacity);
-				if (freeSpace > 0 && freeSpace < amount / 2) {
-					results.setResource(names[0], Math.floor(Math.min(amount, freeSpace)));
 				}
 			}
 
@@ -1399,10 +1371,14 @@ define([
 
 		getBaseResourceFindProbability: function (prevalence) {
 			switch (prevalence) {
-				case WorldConstants.resourcePrevalence.RARE: return 0.25;
-				case WorldConstants.resourcePrevalence.DEFAULT: return 1;
-				case WorldConstants.resourcePrevalence.COMMON: return 1.25;
-				case WorldConstants.resourcePrevalence.ABUNDANT: return 1.5;
+				// rare no matter what
+				case WorldConstants.resourcePrevalence.RARE: return 0.1;
+				// just below scavenge efficiency so with 100% you can still have misses
+				case WorldConstants.resourcePrevalence.DEFAULT: return 0.85;
+				// equals scavenge efficiency
+				case WorldConstants.resourcePrevalence.COMMON: return 1;
+				// not quite 100% chance with 50% scavenge efficiency
+				case WorldConstants.resourcePrevalence.ABUNDANT: return 1.9;
 			}
 			log.w("unknown resource prevalence: " + prevalence);
 			return 0;
@@ -1417,7 +1393,7 @@ define([
 				case WorldConstants.resourcePrevalence.COMMON:
 					return 4;
 				case WorldConstants.resourcePrevalence.ABUNDANT:
-					return 5;
+					return 6;
 			}
 			log.w("unknown resource prevalence: " + prevalence);
 			return 0;

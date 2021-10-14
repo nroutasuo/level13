@@ -236,7 +236,6 @@ define([
 		
 		getResScaText: function (sector, isScouted, statusComponent, featuresComponent) {
 			let scavengedPercent = UIConstants.roundValue(statusComponent.getScavengedPercent());
-			let scavengeDifficulty = TextConstants.getScavengeDifficultyDisplayName(featuresComponent.scavengeDifficulty)
 			
 			let result = "";
 			let resources = GameGlobals.sectorHelper.getLocationDiscoveredResources(sector);
@@ -249,7 +248,6 @@ define([
 			}
 			
 			result += " (" + scavengedPercent + "% scavenged) ";
-			result += " (difficulty: " + scavengeDifficulty + ") ";
 			
 			return result;
 		},

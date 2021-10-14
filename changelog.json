@@ -11,11 +11,7 @@
 				},
 				{
 					"type": "GB",
-					"summary": "Adjust balancing for buildings, crafting, upgrades and fight"
-				},
-				{
-					"type": "GB",
-					"summary": "Add sector scavenge difficulty and adjust scavenge results based on it"
+					"summary": "Adjust balancing for buildings, crafting, upgrades, fights and scavenging results"
 				},
 				{
 					"type": "GB",
