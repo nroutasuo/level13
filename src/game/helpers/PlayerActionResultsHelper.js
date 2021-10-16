@@ -737,11 +737,11 @@ define([
 			let result = {};
 			
 			let playerVision = this.playerStatsNodes.head.vision.value || 0;
-			result.vision = MathUtils.map(playerVision, 0, 150, 0, 1.5);
+			result["vision"] = MathUtils.map(playerVision, 0, 150, 0, 1.5);
 
 			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			let scavengedPercent = sectorStatus.getScavengedPercent();
-			result.scavengedPercent = Math.round(MathUtils.map(scavengedPercent, 0, 95, 1, 0.05) * 20) / 20;
+			result["sector scavenged"] = Math.round(MathUtils.map(scavengedPercent, 0, 95, 1, 0.05) * 20) / 20;
 				
 			return result;
 		},

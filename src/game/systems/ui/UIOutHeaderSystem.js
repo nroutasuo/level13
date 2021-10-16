@@ -217,7 +217,7 @@ define([
 			var isHealing = busyComponent && busyComponent.getLastActionName() == "use_in_hospital";
 
 			this.elements.valVision.text(shownVision + " / " + maxVision);
-			this.updateStatsCallout("Makes exploration safer", "stats-vision", playerStatsNode.vision.accSources);
+			this.updateStatsCallout("Makes exploration safer and scavenging more effective", "stats-vision", playerStatsNode.vision.accSources);
 			this.updateChangeIndicator(this.elements.changeIndicatorVision, maxVision - shownVision, shownVision < maxVision);
 
 			this.elements.valHealth.text(playerStatsNode.stamina.health);
@@ -290,9 +290,19 @@ define([
 			GameGlobals.uiFunctions.toggle("#stats-scavenge", showScavangeAbility);
 			if (showScavangeAbility) {
 				var scavengeEfficiency = Math.round(GameGlobals.playerActionResultsHelper.getCurrentScavengeEfficiency() * 100);
-				UIAnimations.animateOrSetNumber(this.elements.valScavenge, showScavangeAbilityLastUpdate, scavengeEfficiency, "%", false, Math.round);
-				UIConstants.updateCalloutContent("#stats-scavenge", "Increases scavenge loot<hr/>health: " + Math.round(maxStamina/10) + "<br/>vision: " + shownVision);
-				this.updateChangeIndicator(this.elements.changeIndicatorScavenge, maxVision - shownVision, shownVision < maxVision);
+				if (scavengeEfficiency != this.scavangeAbilityLastUpdateValue) {
+					var factors = GameGlobals.playerActionResultsHelper. getCurrentScavengeEfficiencyFactors();
+					var scavengeEfficiencyExplanation = "<span class='info-callout-content-section-long'>Affects scavenging results</span>";
+					var factorsExplanation = "";
+					for (var key in factors) {
+						var name = key;
+						factorsExplanation += key + ": " + Math.round(factors[key] * 100) + "%<br/>";
+					}
+					UIAnimations.animateOrSetNumber(this.elements.valScavenge, showScavangeAbilityLastUpdate, scavengeEfficiency, "%", false, Math.round);
+					UIConstants.updateCalloutContent("#stats-scavenge", scavengeEfficiencyExplanation + "<hr/>" + factorsExplanation);
+					this.updateChangeIndicator(this.elements.changeIndicatorScavenge, maxVision - shownVision, shownVision < maxVision);
+				}
+				this.scavangeAbilityLastUpdateValue = scavengeEfficiency;
 			}
 			this.showScavangeAbilityLastUpdate = showScavangeAbility;
 		},
@@ -650,7 +660,7 @@ define([
 						let perksComponent = this.playerStatsNodes.head.perks;
 						value *= GameGlobals.sectorHelper.getBeaconMovementBonus(this.currentLocationNodes.head.entity, this.playerStatsNodes.head.perks);
 						value = Math.round(value * 10) / 10;
-						isVisible = GameGlobals.gameState.unlockedFeatures.camp;
+						isVisible = GameGlobals.gameState.unlockedFeatures.camp && value != 1;
 						flipNegative = true;
 						break;
 					
