@@ -46,8 +46,13 @@ define([
 			}
 			
 			// add extra update time
-			var extraUpdateTime = GameGlobals.gameState.extraUpdateTime || 0;
-			GameGlobals.gameState.extraUpdateTime = 0;
+			// if game is paused don't consume extra update time since some systems aren't updating
+			// TODO separate "game time" and "ui time" update?
+			var extraUpdateTime = 0;
+			if (!GameGlobals.gameState.isPaused) {
+			 	extraUpdateTime = GameGlobals.gameState.extraUpdateTime || 0;
+				GameGlobals.gameState.extraUpdateTime = 0;
+			}
 			GameGlobals.gameState.frameExtraUpdateTime = extraUpdateTime;
 			var gameTime = time + extraUpdateTime;
 			
