@@ -666,7 +666,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					let enemies = this.getAllEnemies(enemiesComponent, gangComponent);
 					var groupNoun = this.getEnemyGroupNoun(enemies);
 					var enemyNoun = this.getEnemyNoun(enemies);
-					return groupNoun + " of " + enemyNoun;
+					return groupNoun + " of " + Text.pluralify(enemyNoun);
 				default:
 					return blockerVO.name;
 			}

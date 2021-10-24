@@ -243,7 +243,7 @@ define([
 			if (resources.length < 1 && items.length < 1) {
 				result = "-";
 			} else {
-				result += resources.join(", ");
+				result += TextConstants.getScaResourcesString(resources, featuresComponent.resourcesScavengable);
 				result += items.join(", ");
 			}
 			
