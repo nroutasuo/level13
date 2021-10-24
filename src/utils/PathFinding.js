@@ -16,6 +16,7 @@ define(function () {
 		// - skipUnvisited (bool)
 		// - skipBlockers (bool)
 		// - omitWarnings (bool)
+		// - maxLength (int)
 		findPath: function (startVO, goalVO, utilities, settings) {
 			if (!startVO) {
 				log.w("No start sector defined.");
@@ -85,7 +86,8 @@ define(function () {
 			
 			var startKey = this.getKey(startVO);
 			var goalKey = this.getKey(goalVO);
-
+			
+			startVO.distance = 0;
 			visited.push(startKey);
 			frontier.push(startVO);
 			cameFrom[startKey] = null;
@@ -108,6 +110,7 @@ define(function () {
 			mainLoop: while (frontier.length > 0) {
 				pass++;
 				current = frontier.shift();
+				if (settings.maxLength && settings.maxLength <= current.distance) continue;
 				neighbours = utilities.getSectorNeighboursMap(current);
 				for (var direction in neighbours) {
 					var next = neighbours[direction];
@@ -118,6 +121,7 @@ define(function () {
 						continue;
 					if (!isValid(next, current, parseInt(direction)))
 						continue;
+					next.distance = current.distance + 1;
 					visited.push(neighbourKey);
 					frontier.push(next);
 					cameFrom[neighbourKey] = current;

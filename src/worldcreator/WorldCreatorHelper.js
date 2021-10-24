@@ -63,18 +63,20 @@ define([
 			return result;
 		},
 		
-		getDistanceToCamp: function (worldVO, levelVO, sector) {
+		getDistanceToCamp: function (worldVO, levelVO, sector, maxDistance) {
 			if (sector.distanceToCamp >= 0) return sector.distanceToCamp;
 			let result = 9999;
 			for (var s = 0; s < levelVO.campPositions.length; s++) {
 				var campPos = levelVO.campPositions[s];
-				var path = WorldCreatorRandom.findPath(worldVO, sector.position, campPos, false, true);
+				var path = WorldCreatorRandom.findPath(worldVO, sector.position, campPos, false, true, null, false, maxDistance);
 				if (path && path.length >= 0) {
 					var dist = path.length;
 					result = Math.min(result, dist);
 				}
 			}
-			sector.distanceToCamp = result;
+			if (!maxDistance) {
+				sector.distanceToCamp = result;
+			}
 			return result;
 		},
 		

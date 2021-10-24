@@ -254,7 +254,7 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 					return false;
 				}
 				// check path
-				var path = this.findPath(worldVO, pathConstraints[j].startPosition, sector.position, false, true);
+				var path = this.findPath(worldVO, pathConstraints[j].startPosition, sector.position, false, true, null, false, pathConstraints[j].maxLength);
 				if (!path) return false;
 				var pathLen = path.length;
 				if (pathLen > pathConstraints[j].maxLength) {
@@ -327,7 +327,7 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 		},
 		
 		// anyPath: if true, not necessarily SHORTEST path, just one known to exist
-		findPath: function (worldVO, startPos, endPos, blockByBlockers, omitWarnings, stage, anyPath) {
+		findPath: function (worldVO, startPos, endPos, blockByBlockers, omitWarnings, stage, anyPath, maxLength) {
 			if (!startPos) {
 				WorldCreatorLogger.w("No start pos defined.");
 			}
@@ -392,7 +392,7 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 					return false;
 				}
 			};
-			var settings = { includeUnbuiltPassages: true, skipUnvisited: false, skipBlockers: blockByBlockers, omitWarnings: omitWarnings };
+			var settings = { includeUnbuiltPassages: true, skipUnvisited: false, skipBlockers: blockByBlockers, omitWarnings: omitWarnings, maxLength: maxLength };
 			
 			let result = PathFinding.findPath(startVO, goalVO, utilities, settings);
 			
