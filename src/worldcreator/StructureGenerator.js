@@ -68,7 +68,7 @@ define([
 			var pois = [];
 			if (levelVO.passageUpPosition) pois.push(levelVO.passageUpPosition);
 			if (levelVO.passageDownPosition) pois.push(levelVO.passageDownPosition);
-			if (l == 13) pois.push(levelVO.campPositions[0]);
+			if (l == 13) pois.push(levelVO.campPosition);
 			
 			var validShapes = [];
 			if (l == 13) {
@@ -98,12 +98,12 @@ define([
 			var s2 = (seed % 11 + 1) * 12 + (l + 4) * 199;
 			var s3 = (seed % 15 + 1) * 8 + (l + 7) * 444;
 			
-			if (levelVO.campPositions.length > 0) {
+			if (levelVO.campPosition != null) {
 				var existingSectors = levelVO.sectors.concat();
-				var pos = PositionConstants.getMiddlePoint(levelVO.campPositions);
+				var pos = levelVO.campPosition;
 				var w = l == 13 ? WorldCreatorConstants.START_RECT_SIZE : null;
 				var h = l == 13 ? WorldCreatorConstants.START_RECT_SIZE : null;
-				let result = this.createSmallRectangle(s1, s2, s3, worldVO, levelVO, pos, levelVO.campPositions, w, h);
+				let result = this.createSmallRectangle(s1, s2, s3, worldVO, levelVO, pos, [ levelVO.campPosition ], w, h);
 				this.connectNewPath(worldVO, levelVO, existingSectors, result);
 			}
 			
@@ -688,8 +688,7 @@ define([
 			var getPointData = function (validSectors, point, otherPoint, allowDiagonals, maxNearestConnectedDist) {
 				var data = {};
 				data.pos = point;
-				if (validSectors.length > 0)
-				{
+				if (validSectors.length > 0) {
 					data.closestExisting = getClosestValid(validSectors, point, allowDiagonals);
 					data.connectionPathsToCE = getConnectionPaths(point, data.closestExisting.position, allowDiagonals).paths;
 					data.nearestConnected = getNearestConnected(validSectors, point, otherPoint, maxNearestConnectedDist);
@@ -943,7 +942,7 @@ define([
 		},
 		
 		connectLevelSectors: function (worldVO, levelVO, sectors, stage, errorOnFail) {
-			var center = levelVO.campPositions.length > 0 ? levelVO.campPositions[0] : levelVO.excursionStartPosition;
+			var center = levelVO.campPosition != null ? levelVO.campPosition : levelVO.excursionStartPosition;
 			var getConnectedSectors = function () {
 				let res = StructureGenerator.getConnectedSectors(worldVO, center, sectors, stage, 0);
 				return res;

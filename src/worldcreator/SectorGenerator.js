@@ -159,7 +159,7 @@ define([
 			
 			if (isCampableLevel) {
 				// camp:
-				var campSector = levelVO.getSectorByPos(levelVO.campPositions[0]);
+				var campSector = levelVO.getSectorByPos(levelVO.campPosition);
 				// - path to camp ZONE_PASSAGE_TO_CAMP
 				if (level != 13) {
 					setAreaZone(passage1, WorldConstants.ZONE_PASSAGE_TO_CAMP, 3, 1);
@@ -425,7 +425,7 @@ define([
 				var rand = seed % 333 + 1000 + l * 652;
 				let i = WorldCreatorRandom.randomInt(rand, 0, localeSectors.length);
 				var poiSector = localeSectors[i];
-				var campPos = levelVO.campPositions[0];
+				var campPos = levelVO.campPosition;
 				var allowedCriticalPaths = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
 				addBlockersBetween(rand, levelVO, campPos, poiSector.position, null, 3, allowedCriticalPaths);
 			}
@@ -661,8 +661,8 @@ define([
 					workshopSectors.push(sector);
 					break;
 				default:
-					for (let i = 0; i < levelVO.campPositions.length; i++) {
-						var startPos = levelVO.campPositions[i];
+					if (levelVO.campPosition) {
+						var startPos = levelVO.campPosition;
 						var maxLength = WorldCreatorConstants.getMaxPathLength(levelVO.campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1);
 						pathConstraints.push(new PathConstraintVO(startPos, maxLength, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1));
 					}
@@ -1285,17 +1285,17 @@ define([
 				
 			// gangs: critical paths
 			var numLocales = 0;
-			for (var s = 0; s < levelVO.campPositions.length; s++) {
-				var campPos = levelVO.campPositions[s];
+			var campPos = levelVO.campPosition;
+			if (campPos) {
 				for (let i = 0; i < levelVO.sectors.length; i++) {
 					var sectorVO = levelVO.sectors[i];
 					if (sectorVO.hasClearableWorkshop) {
 						// camps to workshops (all paths)
-						var rand = Math.round(1000 + seed + (l+21) * 11 + (s + 2) * 31 + (i + 1) * 51);
+						var rand = Math.round(1000 + seed + (l+21) * 11 + (i + 1) * 51);
 						addGangs(rand, "workshop", levelVO, campPos, sectorVO.position, 100);
 					} else if (sectorVO.locales.length > 0) {
 						// camps to locales (some paths)
-						var rand = Math.round(50 + seed + (l+11) * 11 + (s + 41) * 3 + (i + 1) * 42);
+						var rand = Math.round(50 + seed + (l+11) * 11 + (i + 1) * 42);
 						if (numLocales % 2 === 0) {
 							addGangs(rand, "locale", levelVO, campPos, sectorVO.position, 1);
 						}
@@ -1378,9 +1378,9 @@ define([
 			// 4) spawn other types (for blueprints)
 			var createLocales = function (worldVO, levelVO, campOrdinal, isEarly, count, countEasy) {
 				var pathConstraints = [];
-				for (let j = 0; j < levelVO.campPositions.length; j++) {
+				if (levelVO.campPosition) {
+					var pos = levelVO.campPosition;
 					var pathType = isEarly ? WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1 : WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2;
-					var pos = levelVO.campPositions[j];
 					var length = WorldCreatorConstants.getMaxPathLength(campOrdinal, pathType);
 					if (isEarly) {
 						length = Math.ceil(length * 0.75);

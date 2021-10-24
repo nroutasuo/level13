@@ -28,7 +28,7 @@ define([
 				var numSectors = WorldCreatorHelper.getNumSectorsForLevel(seed, l);
 				
 				var levelVO = new LevelVO(l, ordinal, campOrdinal, isCampableLevel, isHardLevel, notCampableReason, populationFactor, numSectors);
-				levelVO.campPositions = worldVO.campPositions[l];
+				levelVO.campPosition = worldVO.campPositions[l];
 				levelVO.passageUpPosition = worldVO.passagePositions[l].up;
 				levelVO.passageDownPosition = worldVO.passagePositions[l].down;
 				levelVO.passagePositions = [];
@@ -78,7 +78,7 @@ define([
 					var positions = [];
 					switch (stageVO.stage) {
 						case WorldConstants.CAMP_STAGE_EARLY:
-							positions = positions.concat(levelVO.campPositions);
+							positions.push(levelVO.campPosition);
 							if (level < 13 && levelVO.passageUpPosition) {
 								positions.push(levelVO.passageUpPosition);
 							}
@@ -86,8 +86,8 @@ define([
 								positions.push(levelVO.passageDownPosition);
 							}
 							if (level == 13) {
-								let pd2c = PositionConstants.subtract(levelVO.campPositions[0], levelVO.passageDownPosition);
-								let pu2c = PositionConstants.subtract(levelVO.campPositions[0], levelVO.passageUpPosition);
+								let pd2c = PositionConstants.subtract(levelVO.campPosition, levelVO.passageDownPosition);
+								let pu2c = PositionConstants.subtract(levelVO.campPosition, levelVO.passageUpPosition);
 								let total = PositionConstants.add(pd2c, pu2c);
 								let unit = PositionConstants.getUnitPosition(total);
 								let secondaryCenter = PositionConstants.multiply(unit, 5, true);
@@ -113,7 +113,7 @@ define([
 			var pois = [];
 			if (levelVO.isCampable) {
 				pois.push(new PositionVO(levelVO.level, 0, 0));
-				pois = pois.concat(levelVO.campPositions);
+				pois.push(levelVO.campPosition);
 			} else {
 				if (levelVO.passageUpPosition) pois.push(levelVO.passageUpPosition);
 				if (levelVO.passageDownPosition) pois.push(levelVO.passageDownPosition);
@@ -124,7 +124,7 @@ define([
 		
 		getExcursionStartPosition: function (worldVO, levelVO) {
 			if (levelVO.isCampable) {
-				return levelVO.campPositions[0];
+				return levelVO.campPosition;
 			}
 			if (levelVO.level < 13) {
 				return levelVO.passageUpPosition;

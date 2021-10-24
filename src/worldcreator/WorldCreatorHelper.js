@@ -66,8 +66,8 @@ define([
 		getDistanceToCamp: function (worldVO, levelVO, sector, maxDistance) {
 			if (sector.distanceToCamp >= 0) return sector.distanceToCamp;
 			let result = 9999;
-			for (var s = 0; s < levelVO.campPositions.length; s++) {
-				var campPos = levelVO.campPositions[s];
+			var campPos = levelVO.campPosition;
+			if (campPos) {
 				var path = WorldCreatorRandom.findPath(worldVO, sector.position, campPos, false, true, null, false, maxDistance);
 				if (path && path.length >= 0) {
 					var dist = path.length;
@@ -82,8 +82,8 @@ define([
 		
 		getQuickDistanceToCamp: function (levelVO, sector) {
 			let result = 9999;
-			for (var s = 0; s < levelVO.campPositions.length; s++) {
-				var campPos = levelVO.campPositions[s];
+			var campPos = levelVO.campPosition;
+			if (campPos) {
 				var dist = PositionConstants.getDistanceTo(sector.position, campPos);
 				result = Math.min(result, dist);
 			}
@@ -151,7 +151,7 @@ define([
 			};
 			
 			// camp
-			var campMiddle = PositionConstants.getMiddlePoint(levelVO.campPositions);
+			var campMiddle = PositionConstants.getMiddlePoint(levelVO.campPosition);
 			addPoint(campMiddle, WorldConstants.ZONE_POI_TEMP);
 			
 			// two sectors furthest away from the camp (but not next to each other)
@@ -537,7 +537,7 @@ define([
 		getRequiredPaths: function (worldVO, levelVO) {
 			var level = levelVO.level;
 			var campOrdinal = levelVO.campOrdinal;
-			var campPositions = levelVO.campPositions;
+			var campPosition = levelVO.campPosition;
 			var passageUpPosition = levelVO.passageUpPosition;
 			var passageDownPosition = levelVO.passageDownPosition;
 			
@@ -546,7 +546,7 @@ define([
 			
 			var requiredPaths = [];
 			
-			if (campPositions.length > 0) {
+			if (campPosition) {
 				// passages up -> camps -> passages down
 				var isGoingDown = level <= 13 && level >= worldVO.bottomLevel;
 				var passageUpPathType = isGoingDown ? WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP : WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
@@ -559,16 +559,11 @@ define([
 					passageDownPathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
 					passageDownStage = null;
 				}
-				for (let i = 1; i < campPositions.length; i++) {
-					requiredPaths.push({ start: campPositions[0], end: campPositions[i], maxlen: -1, type: "camp_pos_to_camp_pos", stage: WorldConstants.CAMP_STAGE_EARLY });
-				}
 				if (passageUpPosition) {
-					var closerCamp = WorldCreatorHelper.getClosestPosition(campPositions, passageUpPosition);
-					requiredPaths.push({ start: closerCamp, end: passageUpPosition, maxlen: maxPathLenC2P, type: passageUpPathType, stage: passageUpStage });
+					requiredPaths.push({ start: campPosition, end: passageUpPosition, maxlen: maxPathLenC2P, type: passageUpPathType, stage: passageUpStage });
 				}
 				if (passageDownPosition) {
-					var closerCamp = WorldCreatorHelper.getClosestPosition(campPositions, passageDownPosition);
-					requiredPaths.push({ start: closerCamp, end: passageDownPosition, maxlen: maxPathLenC2P, type: passageDownPathType, stage: passageDownStage });
+					requiredPaths.push({ start: campPosition, end: passageDownPosition, maxlen: maxPathLenC2P, type: passageDownPathType, stage: passageDownStage });
 				}
 			} else if (!passageUpPosition) {
 				// just passage down sector

@@ -15,7 +15,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			this.maxSectors = numSectors + WorldCreatorConstants.getMaxSectorOverflow(levelOrdinal);
 			this.numSectorsByStage = {};
 			
-			this.campPositions = [];
+			this.campPosition = null;
 			this.passageUpPosition = null;
 			this.passageDownPosition = null;
 			this.stageCenterPositions = {};
@@ -211,12 +211,8 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 		},
 		
 		isCampPosition: function (pos) {
-			for (let i = 0; i < this.campPositions.length; i++) {
-				if (this.campPositions[i].equals(pos)) {
-					return true;
-				}
-			}
-			return false;
+			if (!this.campPosition) return false;
+			return this.campPosition.equals(pos);
 		},
 		
 		isPassageUpPosition: function (pos) {

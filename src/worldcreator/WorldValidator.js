@@ -162,19 +162,17 @@ define([
 			
 			// camps
 			if (levelVO.isCampable) {
-				if (levelVO.campPositions.length <= 0) {
+				if (levelVO.campPosition == null) {
 					return { isValid: false, reason: "campable level " + levelVO.level + " missing camp positions" };
 				}
-				for (let i = 0; i < levelVO.campPositions.length; i++) {
-					var pos = levelVO.campPositions[i];
-					var sector = levelVO.getSector(pos.sectorX, pos.sectorY);
-					if (!sector) {
-						return { isValid: false, reason: "camp position " + pos + " has no sector" };
-					}
-					pois.push(pos);
+				var pos = levelVO.campPosition;
+				var sector = levelVO.getSector(pos.sectorX, pos.sectorY);
+				if (!sector) {
+					return { isValid: false, reason: "camp position " + pos + " has no sector" };
 				}
+				pois.push(pos);
 			} else {
-				if (levelVO.campPositions.length > 0) {
+				if (levelVO.campPosition) {
 					return { isValid: false, reason: "non-campable level " + levelVO.level + " has camp positions" };
 				}
 			}
