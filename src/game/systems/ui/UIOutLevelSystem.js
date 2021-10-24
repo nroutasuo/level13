@@ -58,6 +58,7 @@ define([
 			this.elements.description = $("#out-desc");
 			this.elements.btnClearWorkshop = $("#out-action-clear-workshop");
 			this.elements.btnNap = $("#out-action-nap");
+			this.elements.btnWait = $("#out-action-wait");
 			this.elements.outImprovementsTR = $("#out-improvements tr");
 
 			return this;
@@ -171,6 +172,7 @@ define([
 			var isScouted = sectorStatus.scouted;
 
 			this.updateNap(isScouted, hasCampHere);
+			this.updateWait(hasCampHere);
 			this.updateDespair(hasCampHere);
 		},
 
@@ -239,6 +241,24 @@ define([
 
 			let blockedByTutorial = !hasFirstCamp && staminaComponent.stamina > 15;
 			GameGlobals.uiFunctions.toggle(this.elements.btnNap, lowStamina && !blockedByTutorial);
+		},
+		
+		updateWait: function (hasCampHere) {
+			let showWait = false;
+			
+			if (!hasCampHere) {
+				let maxResourcesToShowWait = 3;
+				let resources = [ "food", "water" ];
+				for (let i = 0; i < resources.length; i++) {
+					let name = resources[i];
+					if (!GameGlobals.gameState.unlockedFeatures.resources[name]) continue;
+					if (!this.hasCollectibleResource(name, false)) continue;
+					let total = Math.floor(this.getResouceInInventory(name)) + Math.floor(this.getResourceCurrentlyAvailableToCollect(name));
+					if (total < maxResourcesToShowWait) showWait = true;
+				}
+			}
+			
+			GameGlobals.uiFunctions.toggle(this.elements.btnWait, showWait);
 		},
 
 		updateDespair: function (hasCampHere) {
@@ -725,7 +745,7 @@ define([
 		},
 		
 		hasAccessToResource: function (resourceName, includeScavenge, includeUnbuiltCollectible) {
-			if (GameGlobals.resourcesHelper.getCurrentStorage().resources.getResource(resourceName) >= 1) {
+			if (this.getResouceInInventory(resourceName) >= 1) {
 				return true;
 			}
 			
@@ -744,6 +764,10 @@ define([
 			}
 						 
 			return false;
+		},
+		
+		getResouceInInventory: function (resourceName) {
+			return GameGlobals.resourcesHelper.getCurrentStorage().resources.getResource(resourceName) || 0;
 		},
 		
 		hasScavengeableResource: function (resourceName) {
@@ -767,6 +791,14 @@ define([
 			if (isScouted && resourceName == resourceNames.water && featuresComponent.hasSpring) {
 				return includeUnbuilt || improvements.getVO(this.getCollectorName(resourceName)).count > 0;
 			}
+		},
+		
+		getResourceCurrentlyAvailableToCollect: function (resourceName) {
+			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+			var collectorName = this.getCollectorName(resourceName);
+			var collector = improvements.getVO(collectorName);
+			var availableResource = collector.storedResources[resourceName];
+			return availableResource || 0;
 		},
 		
 		getCollectorName: function (resourceName) {

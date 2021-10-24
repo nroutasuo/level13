@@ -932,6 +932,7 @@ define(['ash',
 				var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
 				switch (baseId) {
 					case "recruit_follower": return true;
+					case "wait": return true;
 				}
 				return false;
 			},

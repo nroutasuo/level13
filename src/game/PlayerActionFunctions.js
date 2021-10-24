@@ -261,6 +261,7 @@ define(['ash',
 				case "select_follower": this.selectFollower(param); break;
 				case "deselect_follower": this.deselectFollower(param); break;
 				case "nap": this.nap(param); break;
+				case "wait": this.wait(param); break;
 				case "despair": this.despair(param); break;
 				case "unlock_upgrade": this.unlockUpgrade(param); break;
 				case "create_blueprint": this.createBlueprint(param); break;
@@ -777,6 +778,32 @@ define(['ash',
 								function () {
 									sys.playerStatsNodes.head.stamina.stamina += PlayerStatConstants.STAMINA_GAINED_FROM_NAP;
 								},
+							);
+						}, 300);
+					});
+				}
+			);
+		},
+		
+		wait: function () {
+			var sys = this;
+			GameGlobals.uiFunctions.setGameElementsVisibility(false);
+			GameGlobals.uiFunctions.showInfoPopup(
+				"Wait",
+				"Passed some time just waiting.",
+				"Continue",
+				null,
+				() => {
+					GameGlobals.uiFunctions.hideGame(false);
+					this.passTime(60, function () {
+						setTimeout(function () {
+							GameGlobals.uiFunctions.showGame();
+							GameGlobals.uiFunctions.onPlayerMoved(); // reset cooldowns
+							var logMsgSuccess = "Waited some time.";
+							var logMsgFlee = "Settled down to pass some time but got attacked.";
+							var logMsgDefeat = logMsgFlee;
+							sys.handleOutActionResults("wait", LogConstants.MSG_ID_WAIT, logMsgSuccess, logMsgFlee, logMsgDefeat, false, false,
+								function () {},
 							);
 						}, 300);
 					});

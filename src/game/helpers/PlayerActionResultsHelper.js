@@ -133,6 +133,7 @@ define([
 					break;
 				case "clear_waste_r":
 				case "clear_waste_t":
+				case "wait":
 					resultVO = new ResultVO(baseActionID);
 					break;
 				default:
@@ -181,15 +182,7 @@ define([
 
 		getScoutRewards: function () {
 			var rewards = new ResultVO("scout");
-
-			var efficiency = this.getCurrentScavengeEfficiency();
-			var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable;
-
 			rewards.gainedEvidence = 1;
-			if (rewards.gainedInjuries.length === 0) {
-				rewards.gainedResources = this.getRewardResources(0.5, 3, efficiency, sectorResources);
-			}
-
 			return rewards;
 		},
 
@@ -741,7 +734,8 @@ define([
 
 			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			let scavengedPercent = sectorStatus.getScavengedPercent();
-			result["sector scavenged"] = Math.round(MathUtils.map(scavengedPercent, 0, 95, 1, 0.05) * 20) / 20;
+			let notScavengedPercent = MathUtils.map(scavengedPercent, 0, 100, 1, 0);
+			result["sector status"] = MathUtils.clamp(notScavengedPercent, 0.05, 1);
 				
 			return result;
 		},

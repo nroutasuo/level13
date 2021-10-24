@@ -1369,12 +1369,6 @@ define([
 						result[key] += caravansComponent.pendingCaravan.sellAmount;
 					}
 					break;
-				
-				case "nap":
-					if (GameGlobals.gameState.numCamps < 1) {
-						result.stamina = 0;
-					}
-					break;
 			}
 		},
 		
