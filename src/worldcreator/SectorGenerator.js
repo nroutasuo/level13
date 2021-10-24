@@ -43,6 +43,7 @@ define([
 				var levelVO = worldVO.levels[l];
 				
 				// level-wide features 1
+				this.generateAdditionalCampPositions(seed, worldVO, levelVO);
 				this.generateZones(seed, worldVO, levelVO);
 				this.generateStashes(seed, worldVO, levelVO);
 				this.generateWorkshops(seed, worldVO, levelVO);
@@ -83,17 +84,69 @@ define([
 			}
 			
 			// debug
-			// WorldCreatorDebug.(worldVO, [ "hasRegularEnemies"], "red" );
+			// WorldCreatorDebug.printWorld(worldVO, [ "isCampAdditional"], "red" );
+			// WorldCreatorDebug.printWorld(worldVO, [ "hasRegularEnemies"], "red" );
 			// WorldCreatorDebug.printWorld(worldVO, [ "possibleEnemies.length" ]);
 			// WorldCreatorDebug.printWorld(worldVO, [ "enemyDifficulty" ]);
 			// WorldCreatorDebug.printWorld(worldVO, [ "hazards.radiation" ], "red");
 			// WorldCreatorDebug.printWorld(worldVO, [ "resourcesAll.water"], "blue");
 			// WorldCreatorDebug.printWorld(worldVO, [ "resourcesScavengable.food" ], "#ee8822");
+			// WorldCreatorDebug.printWorld(worldVO, [ "resourcesScavengable.metal" ], "#000");
 			// WorldCreatorDebug.printWorld(worldVO, [ "workshopResource" ]);
 			// WorldCreatorDebug.printWorld(worldVO, [ "criticalPaths.length" ], "red" );
 			// WorldCreatorDebug.printWorld(worldVO, [ "requiredResources.food" ], "red" );
 			// WorldCreatorDebug.printWorld(worldVO, [ "requiredResources.water" ], "blue" );
 			// WorldCreatorDebug.printWorld(worldVO, [ "scavengeDifficulty" ] );
+		},
+		
+		generateAdditionalCampPositions: function (seed, worldVO, levelVO) {
+			if (levelVO.level == 13) return;
+			if (!levelVO.isCampable) return;
+			
+			levelVO.additionalCampPositions = [];
+			
+			let campOrdinal = levelVO.campOrdinal;
+			let minPathlenC2P = 3;
+			let maxPathLenC2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
+			
+			let numPositions = 3;
+			
+			let isValidAdditionalCampPosition = function (sectorVO) {
+				if (sectorVO.isCamp) return false;
+				if (sectorVO.isPassageUp || sectorVO.isPassageDown) return false;
+				if (sectorVO.stage != WorldConstants.CAMP_STAGE_EARLY) return false;
+				if (WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO, WorldCreatorConstants.MAX_CAMP_POS_DISTANCE) > WorldCreatorConstants.MAX_CAMP_POS_DISTANCE) return false;
+				
+				for (let i = 0; i < levelVO.passagePositions.length; i++) {
+					let passagePos = levelVO.passagePositions[i];
+					let stage = null; // WorldConstants.CAMP_STAGE_EARLY
+					let path = WorldCreatorRandom.findPath(worldVO, sectorVO.position, passagePos, false, true, stage);
+					if (!path) return false;
+					if (path.length > maxPathLenC2P) return false;
+					if (path.length < minPathlenC2P) return false;
+				}
+				return true;
+			};
+			
+			let validSectors = [];
+			for (var s = 0; s < levelVO.sectors.length; s++) {
+				var sectorVO = levelVO.sectors[s];
+				if (!isValidAdditionalCampPosition(sectorVO)) continue;
+				validSectors.push(sectorVO);
+				let distanceToCamp = WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO);
+				let numNeighbours = levelVO.getNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY, null, null, true);
+				let numNeighboursWithDiagonals = levelVO.getNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY);
+				sectorVO.campPosScore = numNeighbours * 10 + numNeighboursWithDiagonals * 2 - distanceToCamp;
+			}
+			
+			validSectors.sort(function (a, b) { return b.campPosScore - a.campPosScore });
+			
+			for (let i = 0; i < numPositions; i++) {
+				if (!validSectors[i]) break;
+				validSectors[i].isCampAdditional = true;
+				validSectors[i].isCamp = true;
+				levelVO.additionalCampPositions.push(validSectors[i].position)
+			}
 		},
 		
 		generateZones: function (seed, worldVO, levelVO) {
@@ -230,7 +283,7 @@ define([
 					var x = sectorVO.position.sectorX;
 					var y = sectorVO.position.sectorY;
 					if (Math.abs(y) <= centerRadius && Math.abs(x) <= centerRadius) continue;
-					var distanceToCamp = WorldCreatorHelper.getQuickDistanceToCamp(levelVO, sectorVO);
+					var distanceToCamp = WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO);
 					var distanceToCampThreshold = l == 13 ? 6 : 3;
 					if (distanceToCamp < distanceToCampThreshold) continue;
 						
@@ -296,8 +349,8 @@ define([
 					var maxHazardValue = this.getMaxHazardValue(levelVO, pair.neighbour, false, pair.neighbour.zone);
 					if (maxHazardValue < 1) continue;
 					var distanceToCamp = Math.min(
-						WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, pair.sector),
-						WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, pair.neighbour)
+						WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, pair.sector),
+						WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, pair.neighbour)
 					);
 					if (distanceToCamp < 3) continue;
 					var s = 2000 + seed % 26 * 3331 + 100 + (i + 5) * 6541 + distanceToCamp * 11;
@@ -1119,7 +1172,7 @@ define([
 				let options = { requireCentral: false, excludingFeature: "camp", excludedZones: excludedZones[stage] };
 				let sector = WorldCreatorRandom.randomSectors(s, worldVO, levelVO, 1, 2, options)[0];
 				sector.itemsScavengeable.push(itemID);
-				WorldCreatorLogger.i("addItemLocation level " + levelVO.level + " " + stage + " " + itemID + " " + reason + " | " + sector.position);
+				//WorldCreatorLogger.i("addItemLocation level " + levelVO.level + " " + stage + " " + itemID + " " + reason + " | " + sector.position);
 				i++;
 			};
 			
@@ -1223,7 +1276,7 @@ define([
 			for (let i = 0; i < levelVO.sectors.length; i++) {
 				var sectorVO = levelVO.sectors[i];
 				let dist = PositionConstants.getDistanceTo(center, sectorVO.position);
-				var distanceToCamp = WorldCreatorHelper.getQuickDistanceToCamp(levelVO, sectorVO);
+				var distanceToCamp = WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO);
 				sectorVO.possibleEnemies = [];
 				sectorVO.hasRegularEnemies = 0;
 
@@ -1255,8 +1308,8 @@ define([
 				var direction = PositionConstants.getDirectionFrom(pair.sector.position, pair.neighbour.position);
 				if (pair.sector.movementBlockers[direction]) continue;
 				var distanceToCamp = Math.min(
-					WorldCreatorHelper.getQuickDistanceToCamp(levelVO, pair.sector),
-					WorldCreatorHelper.getQuickDistanceToCamp(levelVO, pair.neighbour)
+					WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, pair.sector),
+					WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, pair.neighbour)
 				);
 				var distanceToCampThreshold = l == 13 ? 4 : 2;
 				if (distanceToCamp > distanceToCampThreshold) {
@@ -1914,7 +1967,7 @@ define([
 			var possibleTypes = [];
 			var l = levelVO.level;
 			var sectorType = sectorVO.sectorType;
-			var distanceToCamp = WorldCreatorHelper.getQuickDistanceToCamp(levelVO, sectorVO);
+			var distanceToCamp = WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO);
 
 			// level-based
 			if (l >= worldVO.topLevel - 1)

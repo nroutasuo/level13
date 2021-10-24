@@ -80,12 +80,24 @@ define([
 			return result;
 		},
 		
-		getQuickDistanceToCamp: function (levelVO, sector) {
+		getQuickMinDistanceToCamp: function (levelVO, sector) {
 			let result = 9999;
-			var campPos = levelVO.campPosition;
-			if (campPos) {
+			let campPositions = levelVO.getAllCampPositions();
+			for (let i = 0; i < campPositions.length; i++) {
+				var campPos = campPositions[i];
 				var dist = PositionConstants.getDistanceTo(sector.position, campPos);
 				result = Math.min(result, dist);
+			}
+			return result;
+		},
+		
+		getQuickMaxDistanceToCamp: function (levelVO, sector) {
+			let result = 0;
+			let campPositions = levelVO.getAllCampPositions();
+			for (let i = 0; i < campPositions.length; i++) {
+				var campPos = campPositions[i];
+				var dist = PositionConstants.getDistanceTo(sector.position, campPos);
+				result = Math.max(result, dist);
 			}
 			return result;
 		},
@@ -589,7 +601,7 @@ define([
 			if (direction && sectorVO.movementBlockers[direction]) return false;
 			
 			var minDist = levelVO.level == 13 ? 4 : 2;
-			if (this.getQuickDistanceToCamp(levelVO, sectorVO) < 3) return false;
+			if (this.getQuickMinDistanceToCamp(levelVO, sectorVO) < 3) return false;
 			return true;
 		},
 		
@@ -606,8 +618,8 @@ define([
 		
 		canHaveBlocker: function (levelVO, sectorVO1, sectorVO2, allowedCriticalPaths) {
 			var distanceToCamp = Math.min(
-				WorldCreatorHelper.getQuickDistanceToCamp(levelVO, sectorVO1),
-				WorldCreatorHelper.getQuickDistanceToCamp(levelVO, sectorVO2)
+				WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO1),
+				WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO2)
 			);
 			if (distanceToCamp <= 3) return false;
 			

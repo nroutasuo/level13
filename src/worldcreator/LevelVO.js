@@ -16,6 +16,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			this.numSectorsByStage = {};
 			
 			this.campPosition = null;
+			this.additionalCampPositions = [];
 			this.passageUpPosition = null;
 			this.passageDownPosition = null;
 			this.stageCenterPositions = {};
@@ -150,11 +151,11 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			return neighbours;
 		},
 		
-		getNeighbourCount: function (sectorX, sectorY, stage, excludeStage) {
+		getNeighbourCount: function (sectorX, sectorY, stage, excludeStage, excludeDiagonals) {
 			let result = 0;
 			var startingPos = new PositionVO(this.level, sectorX, sectorY);
 			for (let i in PositionConstants.getLevelDirections()) {
-				var direction = PositionConstants.getLevelDirections()[i];
+				var direction = PositionConstants.getLevelDirections(excludeDiagonals)[i];
 				var neighbourPos = PositionConstants.getNeighbourPosition(startingPos, direction);
 				if (this.hasSector(neighbourPos.sectorX, neighbourPos.sectorY, stage, excludeStage)) {
 					result++;
@@ -208,6 +209,13 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 					}
 				}
 			}
+		},
+		
+		getAllCampPositions: function () {
+			let result = [];
+			if (this.campPosition) result.push(this.campPosition);
+			if (this.additionalCampPositions && this.additionalCampPositions.length > 0) result = result.concat(this.additionalCampPositions);
+			return result;
 		},
 		
 		isCampPosition: function (pos) {
