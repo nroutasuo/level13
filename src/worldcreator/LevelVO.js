@@ -231,6 +231,16 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			return this.passageDownPosition && this.passageDownPosition.equals(pos);
 		},
 		
+		getEntrancePassagePosition: function () {
+			if (this.levelOrdinal == 1) return null;
+			var isGoingDown = this.level <= 13;
+			if (isGoingDown) {
+				return this.passageUpPosition;
+			} else {
+				return this.passageDownPosition;
+			}
+		},
+		
 		isInvalidPosition: function (pos) {
 			for (let i = 0; i < this.invalidPositions.length; i++) {
 				if (pos.sectorX == this.invalidPositions[i].sectorX && pos.sectorY == this.invalidPositions[i].sectorY) {

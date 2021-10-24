@@ -1215,6 +1215,32 @@ define([
 			return { isValid: true, isBlocked: false };
 		},
 		
+		isPreferredSectorPosition: function (levelVO, sectorPos) {
+			let sectorVO = levelVO.getSectorByPos(sectorPos);
+			
+			if (levelVO.campPosition) {
+				// non-preferred: sectors that are between entrance passage and camp position (keep path from entrance to camp simple)
+				let passage1Position = levelVO.getEntrancePassagePosition();
+				if (passage1Position) {
+					let distanceToCamp = PositionConstants.getDistanceTo(levelVO.campPosition, sectorPos);
+					let distanceToEntrance = PositionConstants.getDistanceTo(passage1Position, sectorPos);
+					let distanceEntranceToCamp = PositionConstants.getDistanceTo(passage1Position, levelVO.campPosition);
+					let distanceToEntranceThreshold = Math.max(distanceEntranceToCamp, 3);
+					let distanceToCampThreshold = Math.max(distanceEntranceToCamp * 1.25, 3);
+					if (distanceToEntrance < distanceToEntranceThreshold && distanceToCamp < distanceToCampThreshold) {
+						return false;
+					}
+				}
+				
+				// non-preferred: certain critical paths that shouldn't branch too much
+				if (sectorVO.isOnCriticalPath(WorldConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP)) {
+					return false;
+				}
+			}
+			
+			return true;
+		},
+		
 		getConnectedSectors: function (worldVO, point, sectors, stage, maxdist) {
 			let result = { connected: [], disconnected: [] };
 			if (!point || !worldVO.getLevel(point.level).hasSector(point.sectorX, point.sectorY)) return result;
@@ -1431,11 +1457,16 @@ define([
 		},
 		
 		getPathStartPositions: function (s1, s2, levelVO, options) {
+			let filterResult = function (arr) {
+				return StructureGenerator.filterIfSomethingLeft(arr, (point) => StructureGenerator.isPreferredSectorPosition(levelVO, point.position));
+			};
+			
 			// predefined connection points by stage (STAGE_LATE can include all stages)
 			var connectionPoints = levelVO.getPendingConnectionPoints(options.stage);
 			if (connectionPoints.length < 3 && options.canConnectToDifferentStage) {
 				connectionPoints = levelVO.getPendingConnectionPoints();
 			}
+			connectionPoints = filterResult(connectionPoints);
 			if (connectionPoints.length > 0) {
 				var maxi = WorldCreatorRandom.randomInt(s1, 0, Math.floor(connectionPoints.length / 2) + 1);
 				let i = WorldCreatorRandom.randomInt(s2, 0, maxi + 1);
@@ -1448,13 +1479,22 @@ define([
 			}
 			// all sectors
 			if (!options.stage)
-				return levelVO.sectors;
+				return filterResult(levelVO.sectors);
 			if (options.canConnectToDifferentStage)
-				return levelVO.sectors;
+				return filterResult(levelVO.sectors);
 			var stageSectors = levelVO.getSectorsByStage(options.stage);
 			if (stageSectors && stageSectors.length > 0)
-				return stageSectors;
-			return levelVO.sectors;
+				return filterResult(stageSectors);
+			return filterResult(levelVO.sectors);
+		},
+		
+		filterIfSomethingLeft: function (arr, filter) {
+			if (!arr || arr.length < 1) return arr;
+			
+			let filtered = arr.filter(filter);
+			if (filtered.length > 0) return filtered;
+			
+			return arr;
 		},
 		
 		getDefaultStage: function (levelVO, sectorPos) {
