@@ -621,7 +621,7 @@ define([
 				WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO1),
 				WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO2)
 			);
-			if (distanceToCamp <= 3) return false;
+			if (distanceToCamp <= 1) return false;
 			
 			for (let i = 0; i < sectorVO1.criticalPaths.length; i++) {
 				var pathType = sectorVO1.criticalPaths[i].type;
