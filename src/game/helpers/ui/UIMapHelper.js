@@ -1,6 +1,7 @@
 // Creates and updates maps (mini-map and main)
 define(['ash',
 	'utils/CanvasUtils',
+	'utils/MapUtils',
 	'game/GameGlobals',
 	'game/constants/ColorConstants',
 	'game/constants/UIConstants',
@@ -22,7 +23,7 @@ define(['ash',
 	'game/components/sector/improvements/WorkshopComponent',
 	'game/components/type/SectorComponent',
 	'game/vos/PositionVO'],
-function (Ash, CanvasUtils,
+function (Ash, CanvasUtils, MapUtils,
 	GameGlobals, ColorConstants, UIConstants, CanvasConstants, ExplorationConstants, ItemConstants, MovementConstants, PositionConstants, SectorConstants,
 	PlayerPositionNode,
 	LevelComponent, CampComponent, PositionComponent, SectorStatusComponent, SectorLocalesComponent, SectorFeaturesComponent, PassagesComponent, SectorImprovementsComponent, WorkshopComponent, SectorComponent,
@@ -156,7 +157,7 @@ function (Ash, CanvasUtils,
 						sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).x;
 						sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).y;
 						sectorPos = new PositionVO(mapPosition.level, x, y);
-						this.fillRoundedRect(ctx, sectorXpx - bgPadding, sectorYpx - bgPadding, sectorSize + bgPadding * 2, sectorSize + bgPadding * 2, radius);
+						CanvasUtils.fillRoundedRect(ctx, sectorXpx - bgPadding, sectorYpx - bgPadding, sectorSize + bgPadding * 2, sectorSize + bgPadding * 2, radius);
 					}
 				}
 			}
@@ -574,19 +575,19 @@ function (Ash, CanvasUtils,
 		},
 
 		getSectorSize: function (centered) {
-			return centered ? 16 : 11;
+			return MapUtils.getSectorSize(centered ? MapUtils.MAP_ZOOM_MINIMAP : MapUtils.MAP_ZOOM_DEFAULT);
 		},
 
 		getGridSize: function () {
-			return 10;
+			return MapUtils.getGridSize();
 		},
 
 		getSectorPadding: function (centered) {
-			return centered ? 0.75 : 0.85;
+			return MapUtils.getSectorPadding(centered ? MapUtils.MAP_ZOOM_MINIMAP : MapUtils.MAP_ZOOM_DEFAULT);
 		},
 		
 		getSectorMargin: function (centered) {
-			return centered ? 0 : 2;
+			return MapUtils.getSectorMargin(centered ? MapUtils.MAP_ZOOM_MINIMAP : MapUtils.MAP_ZOOM_DEFAULT);
 		},
 
 		getSectorFill: function (sectorStatus) {
@@ -634,13 +635,6 @@ function (Ash, CanvasUtils,
 				case resourceNames.rubber: return ColorConstants.getGlobalColor("res_rubber");
 			}
 		},
-		
-		fillRoundedRect: function (ctx, x, y, w, h, radius) {
-			ctx.lineJoin = "round";
-			ctx.lineWidth = radius;
-			ctx.strokeRect(x+(radius/2), y+(radius/2), w-radius, h-radius);
-			ctx.fillRect(x+(radius/2), y+(radius/2), w-radius, h-radius);
-		}
 
 	});
 

@@ -58,6 +58,13 @@ define(function () {
 			ctx.closePath();
 		},
 		
+		fillRoundedRect: function (ctx, x, y, w, h, radius) {
+			ctx.lineJoin = "round";
+			ctx.lineWidth = radius;
+			ctx.strokeRect(x+(radius/2), y+(radius/2), w-radius, h-radius);
+			ctx.fillRect(x+(radius/2), y+(radius/2), w-radius, h-radius);
+		},
+		
 		fillWithRectangles: function (ctx, color, xpx, ypx, w, h, xmargin, ymargin, xpadding, ypadding, numx, numy) {
 			ctx.fillStyle = color;
 			var xw = (w - xpadding*(numx-1)-xmargin*2) / numx;
