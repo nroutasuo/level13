@@ -197,10 +197,12 @@ define([
 				}
 			};
 			
-			var setPathZone = function (path, zone, area, forceArea) {
+			var setPathZone = function (path, zone, areaMin, areaMax, forceArea) {
 				for (let i = 0; i < path.length; i++) {
 					var pos = path[i];
 					var sector = levelVO.getSector(pos.sectorX, pos.sectorY);
+					var s = path.length * 987 + pos.sectorX * 76 + i * 276;
+					var area = WorldCreatorRandom.randomInt(s, areaMin, areaMax + 1);
 					setAreaZone(sector, zone, area, forceArea);
 				}
 			};
@@ -218,12 +220,12 @@ define([
 					setAreaZone(passage1, WorldConstants.ZONE_PASSAGE_TO_CAMP, 3, 1);
 					setAreaZone(campSector, WorldConstants.ZONE_PASSAGE_TO_CAMP, 3, 1);
 					var pathToCamp = WorldCreatorRandom.findPath(worldVO, passage1.position, campSector.position, false, true, WorldConstants.CAMP_STAGE_EARLY);
-					setPathZone(pathToCamp, WorldConstants.ZONE_PASSAGE_TO_CAMP, 2, 1);
+					setPathZone(pathToCamp, WorldConstants.ZONE_PASSAGE_TO_CAMP, 1, 3);
 				}
 				// - path to passage2 ZONE_CAMP_TO_PASSAGE
 				if (passage2) {
 					var pathToCamp = WorldCreatorRandom.findPath(worldVO, campSector.position, passage2.position, false, true);
-					setPathZone(pathToCamp, WorldConstants.ZONE_CAMP_TO_PASSAGE, 1, 1);
+					setPathZone(pathToCamp, WorldConstants.ZONE_CAMP_TO_PASSAGE, 1, 2);
 				}
 				// - rest ZONE_POI_1, ZONE_POI_2, ZONE_EXTRA_CAMPABLE depending on stage and vornoi points
 				var points = WorldCreatorHelper.getVornoiPoints(seed, worldVO, levelVO);
@@ -252,7 +254,7 @@ define([
 				setAreaZone(passage1, WorldConstants.ZONE_PASSAGE_TO_PASSAGE, 6, 2);
 				if (passage2) {
 					var pathPassageToPassage = WorldCreatorRandom.findPath(worldVO, passage1.position, passage2.position, false, true);
-					setPathZone(pathPassageToPassage, WorldConstants.ZONE_PASSAGE_TO_PASSAGE, 2, true);
+					setPathZone(pathPassageToPassage, WorldConstants.ZONE_PASSAGE_TO_PASSAGE, 1, 3, true);
 				}
 				// - rest is ZONE_EXTRA_UNCAMPABLE
 				for (let i = 0; i < levelVO.sectors.length; i++) {
@@ -423,8 +425,7 @@ define([
 					index = WorldCreatorRandom.randomInt(finalSeed, min, max);
 					
 					// try a few indices
-					for (let j = 0; j < (max-min); j++)
-					{
+					for (let j = 0; j < (max-min); j++) {
 						index += j;
 						if (index > max) index = min;
 						var sectorVO = levelVO.getSector(path[index].sectorX, path[index].sectorY);
@@ -456,7 +457,7 @@ define([
 			
 			// campable levels: zone borders
 			if (levelVO.isCampable) {
-				var freq = 0.25;
+				var freq = 0.75;
 				// - from ZONE_PASSAGE_TO_CAMP to other (to lead player towards camp)
 				var allowedCriticalPaths = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
 				var borderSectors1 = WorldCreatorHelper.getBorderSectorsForZone(levelVO, WorldConstants.ZONE_PASSAGE_TO_CAMP, true);
@@ -482,7 +483,7 @@ define([
 				var allowedCriticalPaths = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
 				addBlockersBetween(rand, levelVO, campPos, poiSector.position, null, 3, allowedCriticalPaths);
 			}
-
+			
 			// random ones
 			var numRandom = 1;
 			if (l === 14) numRandom = 2;
@@ -1311,12 +1312,12 @@ define([
 					WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, pair.sector),
 					WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, pair.neighbour)
 				);
-				var distanceToCampThreshold = l == 13 ? 4 : 2;
-				if (distanceToCamp > distanceToCampThreshold) {
+				var distanceToCampThreshold = l == 13 ? 5 : 2;
+				if (distanceToCamp >= distanceToCampThreshold) {
 					addGang(pair.sector, pair.neighbour, true);
 				}
 			}
-				
+			
 			// - ZONE_PASSAGE_TO_PASSAGE: most
 			var isGoingDown = l <= 13 && l >= worldVO.bottomLevel;
 			var passageUp = levelVO.passageUpSector;
