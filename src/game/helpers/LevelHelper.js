@@ -138,6 +138,20 @@ define([
 			return null;
 		},
 		
+		getSectorsAround: function (position, radius) {
+			var result = [];
+			
+			for (var x = position.sectorX - radius; x <= position.sectorX + radius; x++) {
+				for (var y = position.sectorY - radius; y <= position.sectorY + radius; y++) {
+					var sector = this.getSectorByPosition(position.level, x, y);
+					if (sector) {
+						result.push(sector);
+					}
+				}
+			}
+			return result;
+		},
+		
 		getSectorsByLevel: function (level) {
 			this.saveSectorsForLevel(level);
 			return this.sectorEntitiesByLevel[level];

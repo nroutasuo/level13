@@ -9,6 +9,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 		discoveredItems: [],
 		scavenged: false,
 		scouted: false,
+		revealedByMap: false,
 		localesScouted: [],
 		wasteClearedDirections: [],
 		debrisClearedDirections: [],
@@ -26,6 +27,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			this.discoveredItems = [];
 			this.scavenged = false;
 			this.scouted = false;
+			this.revealedByMap = false;
 			this.localesScouted = [];
 			this.wasteClearedDirections = [];
 			this.debrisClearedDirections = [];
@@ -117,6 +119,9 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 				copy.s = this.scouted ? 1 : 0;
 				copy.st = this.scoutedTimestamp ? this.scoutedTimestamp : 1;
 			}
+			if (this.revealedByMap && !this.scouted) {
+				copy.rm = this.revealedByMap;
+			}
 			if (this.localesScouted.length > 0)
 				copy.lS = this.localesScouted;
 			if (this.wasteClearedDirections && this.wasteClearedDirections.length > 0)
@@ -137,6 +142,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			this.discoveredItems = componentValues.dI ? componentValues.dI : [];
 			this.scavenged = typeof componentValues.sc !== "undefined" ? componentValues.sc : false;
 			this.scouted = typeof componentValues.s !== "undefined" ? componentValues.s : false;
+			this.revealedByMap = typeof componentValues.rm !== "undefined" ? componentValues.rm : false;
 			this.scoutedTimestamp = typeof componentValues.st !== "undefined" ? componentValues.st : this.scouted ? 1 : null;
 			if (componentValues.lS && componentValues.lS.length > 0)
 				this.localesScouted = componentValues.lS;

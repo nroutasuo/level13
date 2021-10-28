@@ -1242,6 +1242,30 @@
         "source": "equipment",
         "type": "clothing_upper"
     },
+    "consumable_map_1": {
+		"description": "A piece of cardboard with roughly drawn map of the area",
+        "icon": "img/items/exploration-map.png",
+		"id": "consumable_map_1",
+		"isCraftable": false,
+		"isEquippable": false,
+		"isUseable": true,
+		"name": "Map sketch",
+		"rarityScavenge": -1,
+        "rarityTrade": -1,
+        "type": "exploration"
+	},
+    "consumable_map_2": {
+		"description": "A piece of paper that seems to be part of a bigger map",
+        "icon": "img/items/exploration-map.png",
+		"id": "consumable_map_2",
+		"isCraftable": false,
+		"isEquippable": false,
+		"isUseable": true,
+		"name": "Map piece",
+		"rarityScavenge": -1,
+        "rarityTrade": -1,
+        "type": "exploration"
+	},
     "consumable_weapon_1": {
         "description": "One-use weapon.",
         "icon": "img/items/weapon-consumable-1.png",
@@ -1384,7 +1408,7 @@
         "source": "equipment",
         "type": "light"
     },
-    "res_bands": {
+	"res_bands": {
         "description": "Useful for crafting.",
         "icon": "img/items/res-bands.png",
         "id": "res_bands",

@@ -1641,6 +1641,33 @@ define(['ash',
 					currentStorage.resources.addResource(resourceNames.metal, value);
 					this.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, "Took apart the " + itemName + ". Gained " + value + " metal.");
 					break;
+					
+				case "consumable_map_1":
+				case "consumable_map_2":
+					// TODO score and prefer unvisited sectors
+					var radius = 3;
+					var playerPosition = this.playerPositionNodes.head.position;
+					var centerSectors = GameGlobals.levelHelper.getSectorsAround(playerPosition, 2);
+					var centerSector = centerSectors[Math.floor(Math.random() * centerSectors.length)];
+					var centerPosition = centerSector.get(PositionComponent);
+					var sectorsToReveal = GameGlobals.levelHelper.getSectorsAround(centerPosition, radius);
+					
+					var revealedSomething = false;
+					for (var i = 0; i < sectorsToReveal.length; i++) {
+						var statusComponent = sectorsToReveal[i].get(SectorStatusComponent);
+						if (statusComponent.scouted) continue;
+						statusComponent.revealedByMap = true;
+						revealedSomething = true;
+					}
+					
+					log.i("reveal map around " + centerPosition + " radius " + radius);
+					
+					if (revealedSomething) {
+						this.addLogMessage(LogConstants.MSG_ID_USE_MAP_PIECE, "Recorded any useful information from the map.");
+					} else {
+						this.addLogMessage(LogConstants.MSG_ID_USE_MAP_PIECE, "Checked the map, but there was nothing interesting there.");
+					}
+					break;
 
 				default:
 					log.w("Item not mapped for useItem: " + itemId);

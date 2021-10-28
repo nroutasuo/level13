@@ -191,7 +191,7 @@ function (Ash, CanvasUtils, MapUtils,
 						sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).y;
 						sectorPos = new PositionVO(mapPosition.level, x, y);
 						this.drawSectorOnCanvas(ctx, x, y, sector, levelEntity, sectorStatus, sectorXpx, sectorYpx, sectorSize);
-						if (SectorConstants.isVisited(sectorStatus)) {
+						if (SectorConstants.isLBasicInfoVisible(sectorStatus)) {
 							this.drawMovementLinesOnCanvas(ctx, mapPosition, sector, sectorPos, sectorXpx, sectorYpx, sectorSize, sectorPadding);
 						}
 					}
@@ -300,8 +300,7 @@ function (Ash, CanvasUtils, MapUtils,
 			var isRevealed = isScouted || this.isMapRevealed;
 
 			// border for sectors with hazards or sunlight
-			var isVisited = SectorConstants.isVisited(sectorStatus);
-			if (isVisited || this.isMapRevealed || this.isSurveyed(sector)) {
+			if (SectorConstants.isLBasicInfoVisible(sectorStatus) || this.isMapRevealed || this.isSurveyed(sector)) {
 				var isSectorSunlit = sectorFeatures.sunlit;
 				var hasSectorHazard = GameGlobals.sectorHelper.hasHazards(sectorFeatures, statusComponent);
 				if (isSectorSunlit || hasSectorHazard) {
@@ -598,6 +597,7 @@ function (Ash, CanvasUtils, MapUtils,
 					return ColorConstants.getColor(sunlit, "map_fill_sector_unvisited");
 
 				case SectorConstants.MAP_SECTOR_STATUS_VISITED_UNSCOUTED:
+				case SectorConstants.MAP_SECTOR_STATUS_REVEALED_BY_MAP:
 					return ColorConstants.getColor(sunlit, "map_fill_sector_unscouted");
 
 				case SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED:

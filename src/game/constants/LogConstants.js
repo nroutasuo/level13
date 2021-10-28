@@ -112,6 +112,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 		MSG_ID_USE_FIRST_AID_KIT: "MSG_ID_USE_FIRST_AID_KIT",
 		MSG_ID_USE_STAMINA_POTION: "MSG_ID_USE_STAMINA",
 		MSG_ID_USE_METAL_CACHE: "MSG_ID_USE_METAL_CACHE",
+		MSG_ID_USE_MAP_PIECE: "MSG_ID_USE_MAP_PIECE",
 
 		mergedMessages: [
 			["SCAVENGE", "SCOUT", "SCOUT"],
