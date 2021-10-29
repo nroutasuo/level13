@@ -83,10 +83,9 @@ define([
 
 		deductCosts: function (action) {
 			var costs = this.getCosts(action);
-
-			if (!costs) {
-				return;
-			}
+			var result = {};
+			
+			if (!costs) return result;
 
 			var currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
@@ -99,32 +98,44 @@ define([
 				costAmount = costs[costName] || 0;
 				if (costName === "stamina") {
 					this.playerStatsNodes.head.stamina.stamina -= costAmount;
+					result.stamina = costAmount;
 				} else if (costName === "rumours") {
 					this.playerStatsNodes.head.rumours.value -= costAmount;
+					result.rumours = costAmount;
 				} else if (costName === "favour") {
 					var deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
-					if (deityComponent)
+					if (deityComponent) {
 						deityComponent.favour -= costAmount;
-					else
+						result.favour = costAmount;
+					} else {
 						log.w("Trying to deduct favour cost but there's no deity component!");
+					}
 				} else if (costName === "evidence") {
 					this.playerStatsNodes.head.evidence.value -= costAmount;
+					result.evidence = costAmount;
 				} else if (costName === "silver") {
 					var currencyComponent = GameGlobals.resourcesHelper.getCurrentCurrency();
 					currencyComponent.currency -= costAmount;
+					result.currency = costAmount;
 				} else if (costNameParts[0] === "resource") {
 					currentStorage.resources.addResource(costNameParts[1], -costAmount);
+					result.resources = result.resources || {};
+					result.resources[costNameParts[1]] = costAmount;
 				} else if (costNameParts[0] === "item") {
 					var itemId = costName.replace(costNameParts[0] + "_", "");
+					result.items = result.items || [];
 					for (let i = 0; i < costAmount; i++) {
 						var item = itemsComponent.getItem(itemId, null, inCamp, false) || itemsComponent.getItem(itemId, null, inCamp, true);
 						itemsComponent.discardItem(item, false);
+						result.items.push(item);
 					}
 				} else if (costName == "blueprint") {
 				} else {
 					log.w("unknown cost: " + costName + ", action: " + action);
 				}
 			}
+			
+			return result;
 		},
 
 		// Check costs, requirements and cooldown - everything that is needed for the player action

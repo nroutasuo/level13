@@ -19,9 +19,11 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		craftable: false,
 		useable: false,
 
+		// instance data
 		itemID: -1,
 		equipped: false,
 		carried: false,
+		foudnPosition: null,
 
 		constructor: function (id, name, type, requiredCampOrdinal, equippable, craftable, useable, scavengeRarity, tradeRarity, bonuses, icon, description, isSpecialEquipment) {
 			this.id = id;
@@ -41,6 +43,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			this.equipped = false;
 			this.carried = false;
 			this.itemID = Math.floor(Math.random() * 100000);
+			this.foundPosition = null;
 		},
 
 		getTotalBonus: function () {
@@ -58,6 +61,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			clone.itemID = this.itemID;
 			clone.equipped = this.equipped ? 1 : 0;
 			clone.carried = this.carried ? 1 : 0;
+			clone.foundPosition = this.foundPosition;
 
 			// delete static data
 			delete clone.name;

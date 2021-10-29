@@ -11,10 +11,10 @@ define(['ash', 'game/GameGlobals', 'game/vos/PlayerActionVO'], function (Ash, Ga
 			this.endTimeStampList = [];
 		},
 
-		addAction: function (action, duration, param, isBusyAction) {
+		addAction: function (action, duration, param, deductedCosts, isBusyAction) {
 			if (!this.isBusy() && isBusyAction) this.busyStartTime = new Date().getTime();
 			var endTimeStamp = new Date().getTime() + duration * 1000;
-			this.endTimeStampToActionDict[endTimeStamp] = new PlayerActionVO(action, param, isBusyAction);
+			this.endTimeStampToActionDict[endTimeStamp] = new PlayerActionVO(action, param, deductedCosts, isBusyAction);
 			this.endTimeStampList.push(endTimeStamp);
 			this.sortTimeStamps();
 			return endTimeStamp;

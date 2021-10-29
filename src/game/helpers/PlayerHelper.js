@@ -68,6 +68,17 @@ define([
 			return result;
 		},
 		
+		addItem: function (itemDef, sourcePosition) {
+			var itemsComponent = this.playerStatsNodes.head.items;
+			var playerPosition = this.playerPosNodes.head.position.getPosition();
+			sourcePosition = sourcePosition || playerPosition;
+			
+			var item = itemDef.clone();
+			
+			itemsComponent.addItem(item, !playerPosition.inCamp && sourcePosition.equals(playerPosition));
+			item.foundPosition = sourcePosition.clone();
+		},
+		
 	});
 
 	return PlayerHelper;

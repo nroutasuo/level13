@@ -124,26 +124,26 @@ define(['ash',
 			}
 			
 			GlobalSignals.actionStartingSignal.dispatch(action, param);
-			GameGlobals.playerActionsHelper.deductCosts(action);
+			var deductedCosts = GameGlobals.playerActionsHelper.deductCosts(action);
 			this.forceResourceBarUpdate();
 
 			var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			var duration = PlayerActionConstants.getDuration(baseId);
 			if (duration > 0) {
-				this.startBusy(action, param);
+				this.startBusy(action, param, deductedCosts);
 			} else {
-				this.performAction(action, param);
+				this.performAction(action, param, deductedCosts);
 			}
 			GlobalSignals.actionStartedSignal.dispatch(action, param);
 			return true;
 		},
 
-		startBusy: function (action, param) {
+		startBusy: function (action, param, deductedCosts) {
 			var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			var duration = PlayerActionConstants.getDuration(baseId);
 			if (duration > 0) {
 				var isBusy = PlayerActionConstants.isBusyAction(baseId);
-				var endTimeStamp = this.playerStatsNodes.head.entity.get(PlayerActionComponent).addAction(action, duration, param, isBusy);
+				var endTimeStamp = this.playerStatsNodes.head.entity.get(PlayerActionComponent).addAction(action, duration, param, deductedCosts, isBusy);
 
 				switch (baseId) {
 					case "send_caravan":
@@ -174,7 +174,7 @@ define(['ash',
 			}
 		},
 
-		performAction: function (action, param) {
+		performAction: function (action, param, deductedCosts) {
 			var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			
 			switch (baseId) {
@@ -238,7 +238,7 @@ define(['ash',
 				case "equip": this.equipItem(param); break;
 				case "unequip": this.unequipItem(param); break;
 				case "discard": this.discardItem(param); break;
-				case "use_item": this.useItem(param); break;
+				case "use_item": this.useItem(param, deductedCosts); break;
 				case "use_item_fight": this.useItemFight(param); break;
 				// Non-improvement actions
 				case "enter_camp": this.enterCamp(param); break;
@@ -924,7 +924,7 @@ define(['ash',
 							break;
 						}
 					}
-					itemsComponent.addItem(ItemConstants.getItemByID(itemID).clone());
+					GameGlobals.playerHelper.addItem(ItemConstants.getItemByID(itemID));
 				}
 			}
 
@@ -1538,7 +1538,7 @@ define(['ash',
 			var actionName = "craft_" + itemId;
 			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
 			var item = GameGlobals.playerActionsHelper.getItemForCraftAction(actionName);
-			itemsComponent.addItem(item.clone(), !this.playerPositionNodes.head.position.inCamp);
+			GameGlobals.playerHelper.addItem(item);
 
 			if (item.type === ItemConstants.itemTypes.weapon)
 				if (!GameGlobals.gameState.unlockedFeatures.fight) {
@@ -1588,11 +1588,19 @@ define(['ash',
 			);
 		},
 
-		useItem: function (itemId) {
+		useItem: function (itemId, deductedCosts) {
 			var actionName = "use_item_" + itemId;
 			var sys = this;
+			
 			var reqs = GameGlobals.playerActionsHelper.getReqs(actionName);
+			var playerPos =  this.playerPositionNodes.head.position;
 			var perksComponent = this.playerStatsNodes.head.perks;
+			
+			var item = deductedCosts.items[0];
+			
+			if (!item) {
+				log.w("trying to use item but none found in deductedCosts");
+			}
 			
 			switch (itemId) {
 				case "first_aid_kit_1":
@@ -1646,8 +1654,8 @@ define(['ash',
 				case "consumable_map_2":
 					// TODO score and prefer unvisited sectors
 					var radius = 3;
-					var playerPosition = this.playerPositionNodes.head.position;
-					var centerSectors = GameGlobals.levelHelper.getSectorsAround(playerPosition, 2);
+					var foundPosition =  item.foundPosition || playerPos;
+					var centerSectors = GameGlobals.levelHelper.getSectorsAround(foundPosition, 2);
 					var centerSector = centerSectors[Math.floor(Math.random() * centerSectors.length)];
 					var centerPosition = centerSector.get(PositionComponent);
 					var sectorsToReveal = GameGlobals.levelHelper.getSectorsAround(centerPosition, radius);

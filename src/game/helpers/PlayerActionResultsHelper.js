@@ -353,7 +353,7 @@ define([
 			var itemsComponent = this.playerStatsNodes.head.items;
 			if (rewards.selectedItems) {
 				for (let i = 0; i < rewards.selectedItems.length; i++) {
-					itemsComponent.addItem(rewards.selectedItems[i], !playerPos.inCamp && !campSector);
+					GameGlobals.playerHelper.addItem(rewards.selectedItems[i], playerPos);
 				}
 			}
 			

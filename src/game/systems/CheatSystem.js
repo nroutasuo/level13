@@ -533,7 +533,7 @@ define(['ash',
 			var item = ItemConstants.getItemByID(itemID);
 			if (item) {
 				if (!onlyIfMissing || !itemsComponent.contains(item.name)) {
-					itemsComponent.addItem(item.clone(), !playerPos.inCamp);
+					GameGlobals.playerHelper.addItem(item);
 				}
 			} else {
 				log.w("No such item: " + itemID);
