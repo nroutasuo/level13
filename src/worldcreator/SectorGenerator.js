@@ -647,6 +647,21 @@ define([
 				}
 			}
 			
+			// TODO better solution for level 13
+			// stashes: map pieces (mostyl campable levels) (not on level 13 because it'd be silly to find these before the actual map)
+			if (levelVO.level != 13) {
+				var mapItems = [ "consumable_map_1", "consumable_map_2" ];
+				var maxPieces = levelVO.isCampable ? 2 : 1;
+				var mapPieceChance = levelVO.isCampable ? 0.75 : 0.25;
+				for (let i = 0; i < maxPieces; i++) {
+					var s = 3000 + seed % 7 * 188 + (levelVO.level % 3) * 105 + Math.abs(levelVO.minX + 50) * 77 + (i + i + 1) * 398;
+					if (WorldCreatorRandom.random(s) < mapPieceChance) {
+						var itemID = mapItems[i % mapItems.length];
+						addStashes(s, "map", ItemConstants.STASH_TYPE_ITEM, itemID, 1, 1, lateZones);
+					}
+				}
+			}
+			
 			// stashes: uncraftable misc items (uncampable levels)
 			if (!levelVO.isCampable) {
 				let searchDefs = [
