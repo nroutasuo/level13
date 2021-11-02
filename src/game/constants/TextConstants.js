@@ -119,7 +119,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					addOptions("a-street-past", [ "glamorous", "buzzling" ]);
 					addOptions("n-building", [ "shopping center", "department store", "office building", "cafe", "bar" ]);
 					addOptions("n-buildings", [ "shopping towers", "shopping malls", "shops", "stores", "offices", "office towers" ]);
-					addOptions("a-building", [ "empty", "deserted" ]);
+					addOptions("a-building", [ "empty", "deserted", "ransacked" ]);
 					addOptions("an-decos", [ "empty fountains", "abandoned stalls" ]);
 					addOptions("an-items", [ "broken glass" ]);
 					break;
@@ -358,6 +358,38 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				default:
 					log.w("Unknown stash type: " + stashVO.stashType);
 					return "Found a stash.";
+			}
+		},
+		
+		getWaymarkText: function (waymarkVO, sectorFeatures) {
+			let type = "waymark";
+			let features = Object.assign({}, sectorFeatures);
+			features.waymarkType = waymarkVO.type;
+			features.direction = PositionConstants.getDirectionFrom(waymarkVO.fromPosition, waymarkVO.toPosition);
+			
+			let template = DescriptionMapper.get(type, features);
+			let params = this.getWaymarkTextParams(waymarkVO, features);
+			let phrase = TextBuilder.build(template, params);
+			
+			result = phrase;
+			if (GameConstants.isDebugVersion) result += " [" + waymarkVO.toPosition + "]";
+			
+			return result;
+		},
+		
+		getWaymarkTextParams: function (waymarkVO, features) {
+			let result = {};
+			result["n-target"] = "<span class='hl-functionality'>" + this.getWaymarkTargetName(waymarkVO) + "</span>";
+			result["direction"] = PositionConstants.getDirectionName(features.direction);
+			return result;
+		},
+		
+		getWaymarkTargetName: function (waymarkVO) {
+			switch (waymarkVO.type) {
+				case "spring": return "water";
+				default:
+					log.w("unknown waymark type: " + waymarkVO.type);
+					return "safe";
 			}
 		},
 		
@@ -839,6 +871,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("sector-vision", { sectorType: t_C }, "A [n-street] between some commercial buildings, their [a-building] walls covered in a patchwork of dead screens");
 		DescriptionMapper.add("sector-vision", { sectorType: t_C, wear: b12 }, "A [n-street] [n-street] crowded with small shops, billboards and kiosks on multiple levels");
 		DescriptionMapper.add("sector-vision", { sectorType: t_C, buildingDensity: b12, isSurfaceLevel: false }, "A [n-street] where buildings are attached to the ceiling of the level like colossal stalactites");
+		DescriptionMapper.add("sector-vision", { sectorType: t_C, buildingDensity: b12, isSurfaceLevel: false }, "A square built around a massive statue with [a-building] shop fronts surrounding it on every side");
 		DescriptionMapper.add("sector-vision", { sectorType: t_C, buildingDensity: b13 }, "A plaza under an elevated building with what must have once been a waterfall in the middle");
 		DescriptionMapper.add("sector-vision", { sectorType: t_C, buildingDensity: b13 }, "[A] wide fenced terrace attached to a massive tower overlooking the [a-street] streets below");
 		DescriptionMapper.add("sector-vision", { sectorType: t_C, buildingDensity: b13 }, "A round courtyard enclosed by a [a-building] office building");
@@ -885,7 +918,32 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("sector-novision", { sunlit: true }, "A space inside the city, indistinct in the blinding light");
 	}
 	
+	function initWaymarkTexts() {
+		var wildcard = DescriptionMapper.WILDCARD;
+		
+		var t_R = SectorConstants.SECTOR_TYPE_RESIDENTIAL;
+		var t_I = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
+		var t_M = SectorConstants.SECTOR_TYPE_MAINTENANCE;
+		var t_C = SectorConstants.SECTOR_TYPE_COMMERCIAL;
+		var t_P = SectorConstants.SECTOR_TYPE_PUBLIC;
+		var t_S = SectorConstants.SECTOR_TYPE_SLUM;
+		
+		// brackets for values like building density, wear, damage
+		var b0 = [0, 0];
+		var bfull = [10, 10];
+		var b12 = [0, 5];
+		var b22 = [5, 10];
+		
+		var blt1 = [ 0, 0.999 ];
+		var bgt1 = [ 1, 100 ];
+		
+		DescriptionMapper.add("waymark", { sectorType: t_C }, "A store billboard has been painted over with the an arrow pointing [direction] and the word [n-target]");
+		DescriptionMapper.add("waymark", { populationFactor: blt1 }, "There is a graffiti saying [n-target] with an arrow pointing [direction]");
+		DescriptionMapper.add("waymark", { populationFactor: bgt1 }, "There is a graffiti saying [n-target] with an arrow pointing [direction]");
+	}
+	
 	initSectorTexts();
+	initWaymarkTexts();
 	
 	return TextConstants;
 	

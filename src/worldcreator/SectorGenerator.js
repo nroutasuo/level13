@@ -19,6 +19,7 @@ define([
 	'game/vos/PositionVO',
 	'game/vos/ResourcesVO',
 	'game/vos/StashVO',
+	'game/vos/WaymarkVO',
 	'worldcreator/WorldCreatorConstants',
 	'worldcreator/WorldCreatorHelper',
 	'worldcreator/WorldCreatorRandom',
@@ -28,7 +29,7 @@ define([
 ], function (
 	Ash, MathUtils, GameGlobals,
 	EnemyConstants, ItemConstants, LevelConstants, LocaleConstants, MovementConstants, PositionConstants, SectorConstants, TradeConstants, UpgradeConstants, WorldConstants,
-	GangVO, LocaleVO, PathConstraintVO, PositionVO, ResourcesVO, StashVO,
+	GangVO, LocaleVO, PathConstraintVO, PositionVO, ResourcesVO, StashVO, WaymarkVO,
 	WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug, WorldCreatorLogger, CriticalPathVO
 ) {
 	
@@ -81,6 +82,7 @@ define([
 					var sectorVO = levelVO.sectors[s];
 					this.generateAdditionalHazards(seed, worldVO, levelVO, sectorVO);
 				}
+				this.generateWaymarks(seed, worldVO, levelVO);
 			}
 			
 			// debug
@@ -134,9 +136,8 @@ define([
 				if (!isValidAdditionalCampPosition(sectorVO)) continue;
 				validSectors.push(sectorVO);
 				let distanceToCamp = WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO);
-				let numNeighbours = levelVO.getNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY, null, null, true);
-				let numNeighboursWithDiagonals = levelVO.getNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY);
-				sectorVO.campPosScore = numNeighbours * 10 + numNeighboursWithDiagonals * 2 - distanceToCamp;
+				let numNeighboursWeighted = levelVO.getNeighbourCountWeighted(sectorVO.position.sectorX, sectorVO.position.sectorY);
+				sectorVO.campPosScore = numNeighboursWeighted * 3 - distanceToCamp;
 			}
 			
 			validSectors.sort(function (a, b) { return b.campPosScore - a.campPosScore });
@@ -1516,6 +1517,121 @@ define([
 				if (blocker == MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE) {
 					this.addHazardCluster(seed, d, levelVO, sectorVO, WorldCreatorConstants.WASTE_HAZARD_RADIUS, 1, true, true);
 				}
+			}
+		},
+		
+		generateWaymarks: function (seed, worldVO, levelVO) {
+			// conditions (some levels don't have any waymarks)
+			if (levelVO.level == worldVO.bottomLevel) return;
+			if (levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION) return;
+			if (levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION) return;
+			
+			// find waymarkSectors (possible sectors where waymarks are)
+			let waymarkSectors = [];
+			for (var s = 0; s < levelVO.sectors.length; s++) {
+				var sectorVO = levelVO.sectors[s];
+				if (sectorVO.isCamp) continue;
+				if (sectorVO.isPassageUp) continue;
+				if (sectorVO.isPassageDown) continue;
+				if (sectorVO.zone == WorldConstants.ZONE_ENTRANCE) continue;
+				if (sectorVO.zone == WorldConstants.ZONE_EXTRA_CAMPABLE) continue;
+				if (sectorVO.hazards.radiation > 0) continue;
+				if (sectorVO.hazards.poison > 0) continue;
+				var distanceToCamp = WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO);
+				if (distanceToCamp < 2) continue;
+				var neighbours = levelVO.getNeighbourList(sectorVO.position.sectorX, sectorVO.position.sectorY);
+				if (neighbours.length < 3) continue;
+				waymarkSectors.push(sectorVO);
+			}
+			
+			// find pois (possible sectors where waymarks point to)
+			let pois = [];
+			for (var s = 0; s < levelVO.sectors.length; s++) {
+				var sectorVO = levelVO.sectors[s];
+				var distanceToCamp = WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO);
+				if (distanceToCamp < 2) continue;
+				if (sectorVO.hasSpring) {
+					let poi = { sector: sectorVO, type: "spring", isNegative: false };
+					pois.push(poi);
+				}
+			}
+			
+			// list valid pairs
+			let minDistance = 1;
+			let idealDistance = 3;
+			let maxDistance = 5;
+			let waymarkCandidates = [];
+			for (let i = 0; i < pois.length; i++) {
+				let poi = pois[i];
+				let poiSector = pois[i].sector;
+				for (let j = 0; j < waymarkSectors.length; j++) {
+					let waymarkSector = waymarkSectors[j];
+					if (WorldCreatorConstants.getZoneOrdinal(poiSector.zone) > WorldCreatorConstants.getZoneOrdinal(waymarkSector.zone)) continue;
+					let distance = PositionConstants.getDistanceTo(poiSector.position, waymarkSector.position);
+					if (distance > maxDistance) continue;
+					let path = WorldCreatorRandom.findPath(worldVO, waymarkSector.position, poiSector.position, true, true, null, false, maxDistance);
+					if (!path || path.length > maxDistance) continue;
+					
+					var poiSectorNeighbours = levelVO.getNeighbourCount(poiSector.position.sectorX, poiSector.position.sectorY);
+					var waymarkNeighboursWeighted = levelVO.getNeighbourCountWeighted(sectorVO.position.sectorX, sectorVO.position.sectorY);
+
+					let score = waymarkNeighboursWeighted;
+					score -= Math.abs(path.length - idealDistance);
+					if (poiSector.locales.length > 0) score++;
+					if (poiSectorNeighbours > 1) score++;
+					if (poiSectorNeighbours > 2) score++;
+					if (!poi.isNegative && waymarkSector.zone != poiSector.zone) score--;
+					if (!poi.isNegative && poiSector.hazards.hasHazards()) score--;
+
+					let candidate = {
+						poi: poiSector,
+						waymark: waymarkSector,
+						score: score,
+						type: poi.type,
+					};
+					waymarkCandidates.push(candidate);
+				}
+			}
+			
+			// sort pairs
+			let getFallbackOrderNumber = function (candidate) {
+				return Math.abs(candidate.poi.position.sectorX) + Math.abs(candidate.waymark.position.sectorX) + Math.abs(candidate.poi.position.sectorY) + Math.abs(candidate.waymark.position.sectorY);
+			};
+			waymarkCandidates = waymarkCandidates.sort(function (a,b) {
+				if (a.score != b.score)
+					return b.score - a.score;
+				else
+					return getFallbackOrderNumber(a) - getFallbackOrderNumber(b);
+			});
+			
+			// select pairs (avoid too many involveing the same /neighbouring sectors)
+			let numWaymarks = Math.min(waymarkCandidates.length, 3);
+			let maxWaymarksPerSector = 2;
+			let selectedWaymarks = [];
+			let isValidCandidate = function (candidate) {
+				let numSameWaymark = 0;
+				let numSamePoi = 0;
+				for (let j = 0; j < selectedWaymarks.length; j++) {
+					let distanceWaymarks = PositionConstants.getDistanceTo(candidate.waymark.position, selectedWaymarks[j].waymark.position);
+					if (distanceWaymarks == 0) numSameWaymark++;
+					if (distanceWaymarks < 2) return false;
+					let distancePois = PositionConstants.getDistanceTo(candidate.poi.position, selectedWaymarks[j].poi.position);
+					if (distancePois == 0) numSamePoi++;
+				}
+				return numSameWaymark < maxWaymarksPerSector && numSamePoi < maxWaymarksPerSector;
+			};
+			for (let i = 0; i < waymarkCandidates.length; i++) {
+				let candidate = waymarkCandidates[i];
+				if (!isValidCandidate(candidate)) continue;
+				selectedWaymarks.push(candidate);
+				if (selectedWaymarks.length == numWaymarks) break;
+			}
+			
+			// mark selected
+			for (let i = 0; i < selectedWaymarks.length; i++) {
+				let waymark = selectedWaymarks[i];
+				WorldCreatorLogger.i("selected waymark: " + waymark.waymark + " (" + waymark.waymark.zone + ") -> " + waymark.poi + "(" + waymark.poi.zone + ")");
+				waymark.waymark.waymarks.push(new WaymarkVO(waymark.waymark.position, waymark.poi.position, waymark.type))
 			}
 		},
 		

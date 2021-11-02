@@ -33,6 +33,7 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			this.numLocaleEnemies = {};
 			this.possibleEnemies = [];
 			this.stashes = [];
+			this.waymarks = [];
 			
 			this.distanceToCamp = -1;
 		},

@@ -190,7 +190,9 @@ define([
 					sectorFeatures.itemsScavengeable,
 					sectorFeatures.hasSpring,
 					sectorFeatures.hasTradeConnectorSpot,
-					sectorFeatures.stashes))
+					sectorFeatures.stashes,
+					sectorFeatures.waymarks
+				))
 				.add(new SectorLocalesComponent(locales))
 				.add(new SaveComponent(saveKey, [
 					ResourcesComponent,

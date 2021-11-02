@@ -112,6 +112,7 @@ define([
 			sectorFeatures.isCamp = sectorVO.isCamp;
 			sectorFeatures.notCampableReason = sectorVO.notCampableReason;
 			sectorFeatures.stashes = sectorVO.stashes || null;
+			sectorFeatures.waymarks = sectorVO.waymarks || [];
 			return sectorFeatures;
 		},
 

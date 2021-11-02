@@ -13,7 +13,6 @@ define([
 	'game/constants/LevelConstants',
 	'game/constants/MovementConstants',
 	'game/constants/TradeConstants',
-	'game/constants/WorldConstants',
 	'game/nodes/PlayerPositionNode',
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/NearestCampNode',
@@ -25,7 +24,6 @@ define([
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorLocalesComponent',
 	'game/components/sector/MovementOptionsComponent',
-	'game/components/player/ExcursionComponent',
 	'game/components/common/PositionComponent',
 	'game/components/common/LogMessagesComponent',
 	'game/components/common/CampComponent',
@@ -34,10 +32,10 @@ define([
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/EnemiesComponent'
 ], function (
-	Ash, Text,GameGlobals, GlobalSignals, PlayerActionConstants, PlayerStatConstants, TextConstants, LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, TradeConstants, WorldConstants,
+	Ash, Text,GameGlobals, GlobalSignals, PlayerActionConstants, PlayerStatConstants, TextConstants, LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, TradeConstants,
 	PlayerPositionNode, PlayerLocationNode, NearestCampNode,
 	VisionComponent, StaminaComponent, ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
-	MovementOptionsComponent, ExcursionComponent, PositionComponent, LogMessagesComponent, CampComponent,
+	MovementOptionsComponent, PositionComponent, LogMessagesComponent, CampComponent,
 	SectorImprovementsComponent, WorkshopComponent, SectorStatusComponent, EnemiesComponent
 ) {
 	var UIOutLevelSystem = Ash.System.extend({
@@ -430,7 +428,16 @@ define([
 		getMovementDescription: function (isScouted, passagesComponent, entity) {
 			var description = "";
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			var position = entity.get(PositionComponent);
+			
+			// Waymarks
+			if (isScouted) {
+				for (let i = 0; i < featuresComponent.waymarks.length; i++) {
+					let waymark = featuresComponent.waymarks[i];
+					description += this.getWaymarkText(waymark) + ". ";
+				}
+			}
 
 			// Passages up / down
 			var passageUpBuilt = improvements.getCount(improvementNames.passageUpStairs) +
@@ -799,6 +806,13 @@ define([
 			var collector = improvements.getVO(collectorName);
 			var availableResource = collector.storedResources[resourceName];
 			return availableResource || 0;
+		},
+		
+		getWaymarkText: function (waymarkVO) {
+			let pos = waymarkVO.fromPosition;
+			let sector = GameGlobals.levelHelper.getSectorByPosition(pos.level, pos.sectorX, pos.sectorY);
+			let sectorFeatures = GameGlobals.sectorHelper.getTextFeatures(sector);
+			return TextConstants.getWaymarkText(waymarkVO, sectorFeatures);
 		},
 		
 		getCollectorName: function (resourceName) {

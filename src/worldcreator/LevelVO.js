@@ -164,6 +164,12 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			return result;
 		},
 		
+		getNeighbourCountWeighted: function (sectorX, sectorY, stage, excludeStage) {
+			let numNeighboursWithoutDiagonals = this.getNeighbourCount(sectorX, sectorY, stage, excludeStage, true);
+			let numNeighboursWithDiagonals = this.getNeighbourCount(sectorX, sectorY, stage, excludeStage, false);
+			return numNeighboursWithoutDiagonals + numNeighboursWithDiagonals * 0.5;
+		},
+		
 		getNextNeighbours: function (sectorVO, direction) {
 			let result = [];
 			var neighbours = this.getNeighbours(sectorVO.position.sectorX, sectorVO.position.sectorY);

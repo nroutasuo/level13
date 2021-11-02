@@ -594,6 +594,13 @@ define(['ash',
 				else
 					logMsg += "<br/>There is a " + TextConstants.getLocaleName(locale, featuresComponent, true).toLowerCase() + " here that seems worth investigating.";
 			}
+			
+			if (featuresComponent.waymarks.length > 0) {
+				let sectorFeatures = GameGlobals.sectorHelper.getTextFeatures(sector);
+				for (let i = 0; i < featuresComponent.waymarks.length; i++) {
+					logMsg += "<br/>" + TextConstants.getWaymarkText(featuresComponent.waymarks[i], sectorFeatures);
+				}
+			}
 
 			var playerActionFunctions = this;
 			var successCallback = function () {
@@ -604,6 +611,7 @@ define(['ash',
 				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 				playerActionFunctions.save();
 			};
+			
 
 			var logMsgId = found ? LogConstants.MSG_ID_SCOUT_FOUND_SOMETHING : LogConstants.MSG_ID_SCOUT;
 			this.handleOutActionResults("scout", logMsgId, logMsg, logMsg, logMsg, true, found, successCallback);

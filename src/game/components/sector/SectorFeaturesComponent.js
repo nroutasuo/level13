@@ -25,6 +25,7 @@ define(
 		hazards: null,
 		campable: false,
 		stashes: [],
+		waymarks: [],
 		
 		// resources
 		scacengeDifficulty: 3,
@@ -33,7 +34,7 @@ define(
 		itemsScavengeable: [],
 		
 		constructor: function (level, criticalPaths, zone, buildingDensity, wear, damage, sectorType, sunlit, ground, hazards,
-							   campable, notCampableReason, resourcesScavengable, resourcesCollectable, itemsScavengeable, hasSpring, hasTradeConnectorSpot, stashes) {
+							   campable, notCampableReason, resourcesScavengable, resourcesCollectable, itemsScavengeable, hasSpring, hasTradeConnectorSpot, stashes, waymarks) {
 			this.level = level;
 			this.criticalPaths = criticalPaths;
 			this.zone = zone;
@@ -52,6 +53,7 @@ define(
 			this.hasSpring = hasSpring;
 			this.hasTradeConnectorSpot = hasTradeConnectorSpot;
 			this.stashes = stashes || [];
+			this.waymarks = waymarks || [];
 		},
 		
 		// Secondary attributes
