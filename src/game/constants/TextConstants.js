@@ -10,9 +10,10 @@ define(['ash',
 	'game/constants/SectorConstants',
 	'game/constants/PositionConstants',
 	'game/constants/MovementConstants',
+	'game/constants/TradeConstants',
 	'game/constants/WorldConstants',
 ],
-function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstants, ItemConstants, SectorConstants, PositionConstants, MovementConstants, WorldConstants) {
+function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstants, ItemConstants, SectorConstants, PositionConstants, MovementConstants, TradeConstants, WorldConstants) {
 	
 	var TextConstants = {
 		
@@ -379,14 +380,22 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		
 		getWaymarkTextParams: function (waymarkVO, features) {
 			let result = {};
+			
+			let tradePartner = TradeConstants.getTradePartner(features.campOrdinal);
+			
 			result["n-target"] = "<span class='hl-functionality'>" + this.getWaymarkTargetName(waymarkVO) + "</span>";
-			result["direction"] = PositionConstants.getDirectionName(features.direction);
+			result["direction"] = PositionConstants.getDirectionName(features.direction, false);
+			result["n-settlement-name"] = tradePartner ? tradePartner.name : null;
 			return result;
 		},
 		
 		getWaymarkTargetName: function (waymarkVO) {
 			switch (waymarkVO.type) {
-				case "spring": return "water";
+				case SectorConstants.WAYMARK_TYPE_SPRING: return "water";
+				case SectorConstants.WAYMARK_TYPE_CAMP: return "safety";
+				case SectorConstants.WAYMARK_TYPE_RADIATION: return "hazard";
+				case SectorConstants.WAYMARK_TYPE_POLLUTION: return "hazard";
+				case SectorConstants.WAYMARK_TYPE_SETTLEMENT: return "trade";
 				default:
 					log.w("unknown waymark type: " + waymarkVO.type);
 					return "safe";
@@ -617,18 +626,6 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				return "leaking water pipe";
 			}
 			return "water tower";
-		},
-		
-		getDirectionName: function (direction) {
-			switch (direction) {
-			case PositionConstants.DIRECTION_WEST: return "west";
-			case PositionConstants.DIRECTION_NORTH: return "north";
-			case PositionConstants.DIRECTION_SOUTH: return "south";
-			case PositionConstants.DIRECTION_EAST: return "east";
-			case PositionConstants.DIRECTION_UP: return "up";
-			case PositionConstants.DIRECTION_DOWN: return "down";
-			case PositionConstants.DIRECTION_CAMP: return "camp";
-			}
 		},
 		
 		getEnemyText: function (enemyList, sectorControlComponent) {
@@ -928,18 +925,33 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		var t_P = SectorConstants.SECTOR_TYPE_PUBLIC;
 		var t_S = SectorConstants.SECTOR_TYPE_SLUM;
 		
+		var wt_C = SectorConstants.WAYMARK_TYPE_CAMP;
+		var wt_W = SectorConstants.WAYMARK_TYPE_SPRING;
+		var wt_P = SectorConstants.WAYMARK_TYPE_POLLUTION;
+		var wt_R = SectorConstants.WAYMARK_TYPE_RADIATION;
+		var wt_S = SectorConstants.WAYMARK_TYPE_SETTLEMENT;
+		
 		// brackets for values like building density, wear, damage
 		var b0 = [0, 0];
-		var bfull = [10, 10];
 		var b12 = [0, 5];
 		var b22 = [5, 10];
 		
-		var blt1 = [ 0, 0.999 ];
-		var bgt1 = [ 1, 100 ];
+		var lt1 = [ 0, 0.999 ];
+		var gte1 = [ 1, 100 ];
 		
+		DescriptionMapper.add("waymark", { sectorType: wildcard }, "A wall by a corridor leading [direction] has been painted with a big [n-target] symbol");
+		DescriptionMapper.add("waymark", { sectorType: wildcard }, "There is a graffiti with the word [n-target] and an arrow pointing [direction]");
+		DescriptionMapper.add("waymark", { buildingDensity: b12 }, "Some bricks have been arranged in the shape of an arrow pointing [direction] and a crude symbol that seems to mean [n-target]");
+		DescriptionMapper.add("waymark", { waymarkType: wt_C }, "You spot a few graffiti with arrows pointing [direction] and words like 'safe' and 'shelter'.");
+		DescriptionMapper.add("waymark", { waymarkType: wt_R }, "There are multiple skull signs on walls when heading towards [direction]");
+		DescriptionMapper.add("waymark", { waymarkType: wt_P }, "There are multiple skull signs on walls when heading towards [direction]");
+		DescriptionMapper.add("waymark", { waymarkType: wt_S }, "There is a metal plaque on a wall by a passage leading [direction] with the name '[n-settlement-name]'");
+		DescriptionMapper.add("waymark", { waymarkType: wt_W }, "A blue arrow painted on the street is pointing [direction].");
 		DescriptionMapper.add("waymark", { sectorType: t_C }, "A store billboard has been painted over with the an arrow pointing [direction] and the word [n-target]");
-		DescriptionMapper.add("waymark", { populationFactor: blt1 }, "There is a graffiti saying [n-target] with an arrow pointing [direction]");
-		DescriptionMapper.add("waymark", { populationFactor: bgt1 }, "There is a graffiti saying [n-target] with an arrow pointing [direction]");
+		DescriptionMapper.add("waymark", { sectorType: t_I }, "A street sign with directions has been painted over. Towards [direction] it says [n-target]");
+		DescriptionMapper.add("waymark", { sectorType: t_M }, "Pipes near the ceiling have arrows painted on them. One pointing [direction] is next to a symbol for [n-target]");
+		DescriptionMapper.add("waymark", { sectorType: t_P }, "A statue is holding a crude sign saying there is [n-target] to the [direction]");
+		DescriptionMapper.add("waymark", { sectorType: t_S }, "There are a few worn posters saying there is [n-target] to the [direction]");
 	}
 	
 	initSectorTexts();

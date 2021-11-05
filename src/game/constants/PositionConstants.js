@@ -273,10 +273,10 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 				case this.DIRECTION_NORTH: return short ? "N" : "north";
 				case this.DIRECTION_SOUTH: return short ? "S" : "south";
 				case this.DIRECTION_EAST: return short ? "E" : "east";
-				case this.DIRECTION_NE: return "NE";
-				case this.DIRECTION_SE: return "SE";
-				case this.DIRECTION_SW: return "SW";
-				case this.DIRECTION_NW: return "NW";
+				case this.DIRECTION_NE: return short ? "NE" : "north-east";
+				case this.DIRECTION_SE: return short ? "SE" : "south-east";
+				case this.DIRECTION_SW: return short ? "SW" : "south-west";
+				case this.DIRECTION_NW: return short ? "NW" : "north-west";
 				case this.DIRECTION_UP: return short ? "U" : "up";
 				case this.DIRECTION_DOWN: short ? "D" : "down";
 				case this.DIRECTION_CAMP: short ? "C" : "camp";

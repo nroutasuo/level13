@@ -27,6 +27,10 @@
 				},
 				{
 					"type": "GD",
+					"summary": "Add map pieces and graffiti that help navigating new areas."
+				},
+				{
+					"type": "GD",
 					"summary": "Improve followers and add different follower abilities"
 				},
 				{

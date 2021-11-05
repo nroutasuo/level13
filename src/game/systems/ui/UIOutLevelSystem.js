@@ -395,6 +395,14 @@ define([
 			if (hasVision) {
 				description += this.getDangerDescription(isScouted, featuresComponent, passagesComponent, hasCampHere);
 			}
+			
+			// Waymarks
+			if (isScouted) {
+				for (let i = 0; i < featuresComponent.waymarks.length; i++) {
+					let waymark = featuresComponent.waymarks[i];
+					description += this.getWaymarkText(waymark) + ". ";
+				}
+			}
 
 			if (isScouted && hasVision && !hasCampHere && !hasCampOnLevel) {
 				if (featuresComponent.canHaveCamp() && !hasEnemies && !passagesComponent.passageUp && !passagesComponent.passageDown)
@@ -430,14 +438,6 @@ define([
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			var position = entity.get(PositionComponent);
-			
-			// Waymarks
-			if (isScouted) {
-				for (let i = 0; i < featuresComponent.waymarks.length; i++) {
-					let waymark = featuresComponent.waymarks[i];
-					description += this.getWaymarkText(waymark) + ". ";
-				}
-			}
 
 			// Passages up / down
 			var passageUpBuilt = improvements.getCount(improvementNames.passageUpStairs) +
@@ -546,7 +546,7 @@ define([
 							break;
 
 						case LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT:
-							notCampableDesc = "There are no more humans living this far down in the City.";
+							notCampableDesc = "There are no more humans living this far up in the City.";
 					}
 				}
 			}

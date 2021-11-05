@@ -46,6 +46,7 @@ define([
 			var position = sector.get(PositionComponent).getPosition();
 			var featuresComponent = sector.get(SectorFeaturesComponent);
 			var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(position.level);
+			var campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
 			var levelEntity = GameGlobals.levelHelper.getLevelEntityForSector(sector);
 			var levelComponent = levelEntity.get(LevelComponent);
 			var hasCamp = sector.has(CampComponent);
@@ -62,6 +63,7 @@ define([
 			var features = Object.assign({}, featuresComponent);
 			features.level = position.level;
 			features.levelOrdinal = levelOrdinal;
+			features.campOrdinal = campOrdinal;
 			features.condition = featuresComponent.getCondition();
 			features.populationFactor = levelComponent.populationFactor;
 			features.isSurfaceLevel = position.level == GameGlobals.gameState.getSurfaceLevel();
