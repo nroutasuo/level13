@@ -187,6 +187,9 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 				case ItemConstants.itemTypes.artefact:
 					value = 1;
 					break;
+				case ItemConstants.itemTypes.trade:
+					value = item.scavengeRarity;
+					break;
 				case ItemConstants.itemTypes.note:
 					value = 0;
 					break;

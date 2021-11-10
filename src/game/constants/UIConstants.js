@@ -407,6 +407,7 @@ define(['ash',
 			var getItemSortVal = function (itemVO) {
 				var typeVal = 0;
 				switch (itemVO.type) {
+				case ItemConstants.itemTypes.uniqueEquipment: typeVal = 0; break;
 					case ItemConstants.itemTypes.exploration: typeVal = 1; break;
 					case ItemConstants.itemTypes.bag: typeVal = 11; break;
 					case ItemConstants.itemTypes.light: typeVal = 12; break;
@@ -418,7 +419,7 @@ define(['ash',
 					case ItemConstants.itemTypes.clothing_head: typeVal = 18; break;
 					case ItemConstants.itemTypes.shoes: typeVal = 19; break;
 					case ItemConstants.itemTypes.ingredient: typeVal = 21; break;
-					case ItemConstants.itemTypes.uniqueEquipment: typeVal = 0; break;
+					case ItemConstants.itemTypes.trade: typeVal = 22; break;
 					case ItemConstants.itemTypes.artefact: typeVal = 31; break;
 					case ItemConstants.itemTypes.note: typeVal = 32; break;
 				}

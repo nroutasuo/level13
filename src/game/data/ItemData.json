@@ -130,16 +130,16 @@
         "type": "artefact"
     },
     "artefact_history_2": {
-        "description": "A beautiful orb said to have formed in the Sea, a massive body of water that is the origin of all life.",
+        "description": "Metal ornament depicting a volcano, a mountain that spits fire from the ever-moving heart of the planet.",
         "icon": "img/items/artefact-test.png",
         "id": "artefact_history_2",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": false,
-        "name": "Pearl",
-        "rarityScavenge": 8,
-        "rarityTrade": 3,
-        "requiredCampOrdinal": 7,
+        "name": "Amulet",
+        "rarityScavenge": 6,
+        "rarityTrade": 5,
+        "requiredCampOrdinal": 1,
         "type": "artefact"
     },
     "artefact_history_3": {
@@ -153,6 +153,19 @@
         "rarityScavenge": 6,
         "rarityTrade": 2,
         "requiredCampOrdinal": 1,
+        "type": "artefact"
+    },
+    "artefact_history_4": {
+        "description": "An old worn toy, surprisingly light, with a strange warm texture. Wood used to be expensive because of its rarity, but now it's just useless.",
+        "icon": "img/items/artefact-test.png",
+        "id": "artefact_history_4",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Wooden toy horse",
+        "rarityScavenge": 8,
+        "rarityTrade": -1,
+        "requiredCampOrdinal": 2,
         "type": "artefact"
     },
     "artefact_science": {
@@ -205,6 +218,19 @@
         "rarityScavenge": 7,
         "rarityTrade": 3,
         "requiredCampOrdinal": 15,
+        "type": "artefact"
+    },
+    "artefact_surface_4": {
+        "description": "Thin rectangular piece of white plastic which used to open doors. Some believe it still holds great power.",
+        "icon": "img/items/artefact-test.png",
+        "id": "artefact_surface_4",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Plastic key card",
+        "rarityScavenge": 7,
+        "rarityTrade": -1,
+        "requiredCampOrdinal": 13,
         "type": "artefact"
     },
     "bag_0": {
@@ -1582,6 +1608,19 @@
         "rarityTrade": 2,
         "requiredCampOrdinal": 1,
         "type": "exploration"
+    },
+    "trade_1": {
+        "description": "A beautiful orb said to have formed in the Sea, a massive body of water that is the origin of all life. Traders will be interested in it.",
+        "icon": "img/items/pearl.png",
+        "id": "trade_1",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Pearl",
+        "rarityScavenge": 3,
+        "rarityTrade": -1,
+        "requiredCampOrdinal": 2,
+        "type": "trade"
     },
     "weapon1": {
         "bonuses": {

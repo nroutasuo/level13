@@ -25,6 +25,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			uniqueEquipment: "uniqueEquipment",
 			// Just inventory - no effects:
 			artefact: "artefact",
+			trade: "trade",
 			note: "note",
 		},
 		
