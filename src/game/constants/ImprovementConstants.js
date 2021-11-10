@@ -202,7 +202,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 		getImprovementDisplayName: function (improvementID, level) {
 			level = level || 1;
 			let def = this.getDef(improvementID);
-			let result = improvementNames[improvementID];
+			let result = improvementNames[improvementID] || "[" + improvementID + "]";
 			if (!def) return result;
 			let names = def.displayNames;
 			if (!names || names.length == 0) return result;
