@@ -3246,6 +3246,12 @@
         "use_item_cache_metal_2": {
             "inCamp": true
         },
+        "use_item_cache_metal_3": {
+            "inCamp": true
+        },
+        "use_item_cache_metal_4": {
+            "inCamp": true
+        },
         "use_item_fight_consumable_weapon_1": {
             "uses_in_fight": {
                 "consumable_weapon_1": [

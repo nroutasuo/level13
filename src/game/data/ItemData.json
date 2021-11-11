@@ -337,7 +337,7 @@
     },
     "cache_metal_1": {
         "description": "Can probably be taken apart for some scrap metal",
-        "icon": "img/items/cahce-metal.png",
+        "icon": "img/items/cache-metal.png",
         "id": "cache_metal_1",
         "isCraftable": false,
         "isEquippable": false,
@@ -346,11 +346,14 @@
         "rarityScavenge": 5,
         "rarityTrade": -1,
         "requiredCampOrdinal": 1,
+		"configData": {
+			"metalValue": 10
+		},
         "type": "exploration"
     },
     "cache_metal_2": {
         "description": "Can probably be taken apart for some scrap metal",
-        "icon": "img/items/cahce-metal.png",
+        "icon": "img/items/cache-metal.png",
         "id": "cache_metal_2",
         "isCraftable": false,
         "isEquippable": false,
@@ -358,7 +361,42 @@
         "name": "Broken appliance",
         "rarityScavenge": 5,
         "rarityTrade": -1,
-        "requiredCampOrdinal": 1,
+        "requiredCampOrdinal": 2,
+		"configData": {
+			"metalValue": 20
+		},
+        "type": "exploration"
+    },
+    "cache_metal_3": {
+        "description": "Can probably be taken apart for some scrap metal",
+        "icon": "img/items/cache-metal-plus.png",
+        "id": "cache_metal_3",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "name": "Damaged machine",
+        "rarityScavenge": 5,
+        "rarityTrade": -1,
+        "requiredCampOrdinal": 9,
+		"configData": {
+			"metalValue": 30
+		},
+        "type": "exploration"
+    },
+    "cache_metal_4": {
+        "description": "Can probably be taken apart for some scrap metal",
+        "icon": "img/items/cache-metal-plus.png",
+        "id": "cache_metal_4",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "name": "Obsolete computer",
+        "rarityScavenge": 5,
+        "rarityTrade": -1,
+        "requiredCampOrdinal": 10,
+		"configData": {
+			"metalValue": 40
+		},
         "type": "exploration"
     },
     "clothing_hands_1": {

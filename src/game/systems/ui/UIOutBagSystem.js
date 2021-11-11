@@ -535,7 +535,8 @@ define([
 			var itemsComponent = this.itemNodes.head.items;
 			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
 			if (inCamp) {
-				return itemsComponent.getCountById("cache_metal_1", true) + itemsComponent.getCountById("cache_metal_2", true);
+				return itemsComponent.getCountById("cache_metal_1", true) + itemsComponent.getCountById("cache_metal_2", true)
+					+ itemsComponent.getCountById("cache_metal_3", true) + itemsComponent.getCountById("cache_metal_4", true);
 			} else {
 				return 0;
 			}

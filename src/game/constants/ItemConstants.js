@@ -69,9 +69,9 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 				let bonuses = item.bonuses;
 				let type = item.type;
 				if (!this.itemDefinitions[type]) this.itemDefinitions[type] = [];
-				this.itemDefinitions[type].push(
-					new ItemVO(item.id, item.name, item.type, item.requiredCampOrdinal, item.isEquippable, item.isCraftable, item.isUseable, item.rarityScavenge, item.rarityTrade, bonuses, item.icon, item.description, item.isSpecialEquipment)
-				);
+				var itemVO = new ItemVO(item.id, item.name, item.type, item.requiredCampOrdinal, item.isEquippable, item.isCraftable, item.isUseable, item.rarityScavenge, item.rarityTrade, bonuses, item.icon, item.description, item.isSpecialEquipment);
+				itemVO.configData = item.configData || {};
+				this.itemDefinitions[type].push(itemVO);
 			}
 		},
 		
@@ -124,11 +124,17 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		},
 		
 		getItemByID: function (id) {
+			let config = this.getItemConfigByID(id);
+			if (!config) return null;
+			return config.clone();
+		},
+		
+		getItemConfigByID: function (id) {
 			for (var type in this.itemDefinitions ) {
 				for (let i in this.itemDefinitions[type]) {
 					var item = this.itemDefinitions[type][i];
 					if (item.id === id) {
-						return item.clone();
+						return item;
 					}
 				}
 			}
@@ -244,6 +250,21 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 				return this.itemDefinitions.shoes[Math.floor(2 * Math.random())];
 			}
 			return this.itemDefinitions.shoes[Math.floor(3 * Math.random())];
+		},
+		
+		getAvailableMetalCaches: function (campOrdinal) {
+			let result = [];
+				for (var type in this.itemDefinitions ) {
+					for (let i in this.itemDefinitions[type]) {
+						var item = this.itemDefinitions[type][i];
+						if (item.id.indexOf("cache_metal") == 0) {
+							if (item.requiredCampOrdinal <= campOrdinal) {
+								result.push(item);
+							}
+						}
+					}
+				}
+			return result;
 		},
 		
 		getIngredient: function (i) {

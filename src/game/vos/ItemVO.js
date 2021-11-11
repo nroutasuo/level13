@@ -18,8 +18,11 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		equippable: false,
 		craftable: false,
 		useable: false,
+		
+		// item specific data (not saved on instances)
+		configData: {},
 
-		// instance data
+		// instance data (varies between instances)
 		itemID: -1,
 		equipped: false,
 		carried: false,
@@ -76,6 +79,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			delete clone.useable;
 			delete clone.type;
 			delete clone.equippable;
+			delete clone.balancingData;
 
 			return clone;
 		},

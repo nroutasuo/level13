@@ -1649,11 +1649,14 @@ define(['ash',
 					
 				case "cache_metal_1":
 				case "cache_metal_2":
-					var value = 10 + Math.round(Math.random(10));
-					var item = ItemConstants.getItemByID(itemId);
-					var itemNameParts = item.name.split(" ");
-					var itemName = itemNameParts[itemNameParts.length - 1];
-					var currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
+				case "cache_metal_3":
+				case "cache_metal_4":
+					let item = ItemConstants.getItemConfigByID(itemId);
+					let baseValue = item.configData.metalValue || 10;
+					let value = baseValue + Math.round(Math.random() * 10);
+					let itemNameParts = item.name.split(" ");
+					let itemName = itemNameParts[itemNameParts.length - 1];
+					let currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
 					currentStorage.resources.addResource(resourceNames.metal, value);
 					this.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, "Took apart the " + itemName + ". Gained " + value + " metal.");
 					break;

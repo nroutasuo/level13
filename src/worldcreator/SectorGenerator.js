@@ -624,13 +624,15 @@ define([
 			
 			// stashes: metal caches
 			if (l == 13) {
-				addStashes(seed / 3 * 338 + l * 402, "metal", ItemConstants.STASH_TYPE_ITEM, "cache_metal_1", 2, 1, lateZones);
-				addStashes(seed / 5 * 931 + l * 442, "metal", ItemConstants.STASH_TYPE_ITEM, "cache_metal_2", 2, 1, lateZones);
+				addStashes(seed / 3 * 338 + l * 402, "metal", ItemConstants.STASH_TYPE_ITEM, "cache_metal_1", 4, 1, lateZones);
 			}
+			var availableMetalCaches = ItemConstants.getAvailableMetalCaches(levelVO.campOrdinal);
+			var cacheEven = availableMetalCaches[availableMetalCaches.length - 1].id;
+			var cacheOdd = availableMetalCaches.length > 1 ? availableMetalCaches[availableMetalCaches.length - 2].id : cacheEven;
 			if (l % 2 == 0) {
-				addStashes(seed / 7 * 937 + l * 331, "metal", ItemConstants.STASH_TYPE_ITEM, "cache_metal_1", 3, 1);
+				addStashes(seed / 7 * 937 + l * 331, "metal", ItemConstants.STASH_TYPE_ITEM, cacheEven, 3, 1);
 			} else {
-				addStashes(seed / 7 * 937 + l * 331, "metal", ItemConstants.STASH_TYPE_ITEM, "cache_metal_2", 3, 1);
+				addStashes(seed / 7 * 937 + l * 331, "metal", ItemConstants.STASH_TYPE_ITEM, cacheOdd, 3, 1);
 			}
 			
 			// stashes: currency (uncampable levels and late zones)
