@@ -21,6 +21,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			bag: "bag",
 			// Special effects / one-use:
 			ingredient: "ingredient",
+			voucher: "voucher",
 			exploration: "exploration",
 			uniqueEquipment: "uniqueEquipment",
 			// Just inventory - no effects:
@@ -59,6 +60,12 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			res_poison: "res_poison",
 			shade: "shade",
 			hazard_prediction: "hazard_prediction",
+		},
+		
+		bookTypes: {
+			history: "history",
+			fiction: "fiction",
+			science: "science",
 		},
 		
 		itemDefinitions: { },

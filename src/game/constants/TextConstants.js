@@ -350,6 +350,156 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			}
 		},
 		
+		getReadBookMessage: function (itemVO, bookType, campOrdinal) {
+			let features = {};
+			features.bookType = bookType;
+			features.bookName = itemVO.name;
+			features.campOrdinal = campOrdinal;
+			features.randomSeed = itemVO.itemID;
+			let params = this.getBookTextParams(features);
+			
+			let template = DescriptionMapper.get("book-intro", features) + " " + DescriptionMapper.get("book-description", features);
+			let phrase = TextBuilder.build(template, params);
+			
+			return phrase;
+		},
+		
+		getBookTextParams: function (features) {
+			var result = {};
+			
+			var topics = [];
+			switch (features.bookType) {
+				case ItemConstants.bookTypes.science:
+					topics.push("an industrial process");
+					topics.push("a species of slug that thrives in radiactive environments");
+					topics.push("the making of robots");
+					topics.push("the infrastructure of the City");
+					topics.push("the ocean");
+					topics.push("ventilation in the City");
+					topics.push("weapons of old");
+					topics.push("medicine");
+					topics.push("food crop rotation");
+					topics.push("electronics");
+					topics.push("the many uses of baking soda");
+					topics.push("how to protect yourself from the harmful effects of sunlight");
+					topics.push("how raw rubber is processed into many useful forms");
+					topics.push("gunpowder");
+					topics.push("dark matter");
+					topics.push("cancer treatment");
+					topics.push("electromagnetism");
+					topics.push("dna");
+					topics.push("evolution");
+					topics.push("plate tetonics");
+					topics.push("transistors");
+					topics.push("batteries");
+					topics.push("the planet's atmosphere");
+					topics.push("fossils");
+					topics.push("steel production");
+					topics.push("fermentation");
+					topics.push("atomic weapons");
+					topics.push("other planets");
+					topics.push("viruses");
+					topics.push("nuclear reactors");
+					topics.push("the magnetic compass");
+					topics.push("solar calendar");
+					topics.push("radar");
+					topics.push("ecosystems");
+					topics.push("the printing press");
+					topics.push("optical lenses");
+					topics.push("fertilizers");
+					topics.push("radio");
+					break;
+				case ItemConstants.bookTypes.fiction:
+					topics.push("pre-Fall popular music");
+					break;
+				case ItemConstants.bookTypes.history:
+					topics.push("pre-Fall religions and how they contributed to wars");
+					topics.push("the effects of a major earthquake on the City");
+					topics.push("biological warfare");
+					break;
+			}
+			result["n-topic"] = DescriptionMapper.pickRandom(topics, features);
+			
+			var objects = [];
+			switch (features.bookType) {
+				case ItemConstants.bookTypes.science:
+					objects.push("a flying vehicle");
+					objects.push("great rockets");
+					objects.push("engines powering the old elevators");
+					objects.push("an irrigation system in a pre-Fall greenhouse");
+					objects.push("an information network spanning an entire level of the City");
+					objects.push("machines you don't really understand, but it seems they were used to stabilise the City");
+					objects.push("transistors");
+					objects.push("a level-wide solar screen called the Ceiling");
+					break;
+			}
+			result["n-object"] = DescriptionMapper.pickRandom(objects, features);
+			
+			var themes = [];
+			switch (features.bookType) {
+				case ItemConstants.bookTypes.fiction:
+					themes.push("a refugee from another continent");
+					themes.push("a mine worker who saw the sun for the first time");
+					themes.push("a terrifying storm that ripped open an edge of the City");
+					themes.push("a great flood");
+					themes.push("a shaman who could predict weather");
+					themes.push("a war between different factions within the City");
+					themes.push("the rise of a heroic leader");
+					themes.push("a Slum-dweller who fights many obstacles but eventually moves up in the City");
+					themes.push("the rise and fall of a criminal gang in the pre-Fall Slums");
+					themes.push("a man who abandons the inhabited parts of the City and tries to find the Ground on their own");
+					themes.push("a group of scientists trapped on a research station in the old parts of the City");
+					themes.push("a romance between two people who are forced to work far away from each other");
+					themes.push("a bureaucrat whose job is to assess the value of an individual's contribution to the City");
+					themes.push("the unification of the people in the City under one Government");
+					themes.push("someone missing a far-away homeland");
+					themes.push("ghosts that are said to wander the abandoned parts of the City");
+					break;
+			}
+			result["c-theme"] = DescriptionMapper.pickRandom(themes, features);
+			
+			var facts = [];
+			switch (features.bookType) {
+				case ItemConstants.bookTypes.science:
+					facts.push("the City's population was already on decline before the Fall");
+					facts.push("ancient civilizations often used wood as a building material, because it was plentiful on the Ground");
+					facts.push("there are were several Mining Towns deep in the City");
+					facts.push("the maintenance of the City below certain levels was mainly done by robots");
+					// TODO get general facts like these in features / otherwise
+					// facts.push("there are X levels in the City");
+					// facts.push("the lowest level of the City is in fact number X");
+					break;
+				case ItemConstants.bookTypes.history:
+					facts.push("a few powerful mining corporations held great power before the Fall");
+					facts.push("ancient civilizations based their calendars on four seasons");
+					facts.push("the City was originally built on swamp land");
+					facts.push("the City was inhabited by people from several old civilizations");
+					facts.push("there was something called the City Govermment");
+					facts.push("the City has experienced several famines during its history");
+					facts.push("the City was started to be built about 700 years ago");
+					facts.push("there was a time when all religions were banned in the City");
+					break;
+			}
+			result["c-fact"] = DescriptionMapper.pickRandom(facts, features);
+			
+			var events = [];
+			switch (features.bookType) {
+				case ItemConstants.bookTypes.history:
+					events.push("a war that the City waged against some far-away civilization hundreds of years ago");
+					events.push("wars in the City in the past 500 years");
+					events.push("the building of the first levels of the City");
+					events.push("the migration to the city from some far-away island");
+					events.push("something called the Great Famine which took place a few decades before the book was written");
+					events.push("the establishment of the city-wide Government");
+					events.push("a major gardener rebellion");
+					events.push("a great nuclear power plant accident where a lot of waste was released to the lower levels of the City");
+					break;
+			}
+			result["c-event"] = DescriptionMapper.pickRandom(events, features);
+			
+			return result;
+		},
+		
 		getFoundStashMessage: function (stashVO) {
 			switch (stashVO.stashType) {
 				case ItemConstants.STASH_TYPE_ITEM:
@@ -363,12 +513,11 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		},
 		
 		getWaymarkText: function (waymarkVO, sectorFeatures) {
-			let type = "waymark";
 			let features = Object.assign({}, sectorFeatures);
 			features.waymarkType = waymarkVO.type;
 			features.direction = PositionConstants.getDirectionFrom(waymarkVO.fromPosition, waymarkVO.toPosition);
 			
-			let template = DescriptionMapper.get(type, features);
+			let template = DescriptionMapper.get("waymark", features);
 			let params = this.getWaymarkTextParams(waymarkVO, features);
 			let phrase = TextBuilder.build(template, params);
 			
@@ -954,8 +1103,62 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("waymark", { sectorType: t_S }, "There are a few worn posters saying there is [n-target] to the [direction]");
 	}
 	
+	function initBookTexts() {
+		var wildcard = DescriptionMapper.WILDCARD;
+		
+		let t_S = ItemConstants.bookTypes.science;
+		let t_F = ItemConstants.bookTypes.fiction;
+		let t_H = ItemConstants.bookTypes.history;
+		
+		DescriptionMapper.add("book-intro", { bookType: wildcard }, "You read the book.");
+		DescriptionMapper.add("book-intro", { bookType: t_S }, "You leaf through the book.");
+		DescriptionMapper.add("book-intro", { bookType: t_F }, "You examine the book.");
+		DescriptionMapper.add("book-intro", { bookType: t_H }, "You study the book.");
+		
+		DescriptionMapper.add("book-description", { bookType: wildcard }, "A passage describing [n-topic] catches your eye.");
+		DescriptionMapper.add("book-description", { bookType: wildcard }, "A section describing [n-topic] seems interesting.");
+		
+		DescriptionMapper.add("book-description", { bookType: t_S }, "You find details about [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "There is a wealth of information about [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "You learn about [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "There are many interesting passages about [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "It describes [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "It is a rather dry text on [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "It contains a description of [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "It contains a dissertation on [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "There is an interesting diagram of [n-object].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "There are abandoned plans of [n-object].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "There is diagram explaining in detail how [n-object] worked.");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "It contains a detailed description of [n-object].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "There are technical drawings of [n-object]");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "You learn that [c-fact].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "A description of a refining process offers clues to the kind of materials used commonly before the Fall.");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "You are spell-bound by a description of abundant plant-life on the Ground.");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "It contains a catalog of known animal life in the \"Dark Levels\". You recognize several.");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "You notice old census data about people who are exposed daily to sunlight versus those who are not.");
+		
+		DescriptionMapper.add("book-description", { bookType: t_H }, "You find details about [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "It describes [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "It is a rather dry text on [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "You learn that [c-fact].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "It seems that [c-fact].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "You learn about [c-event].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "You find a timeline of [c-event].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "A chapter on [c-event] catches your eye.");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "There is a long section about [c-event].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "There are several references to [c-event].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "A reference to the \"currently uninhabited levels\" of the City offers a perspective on the pre-Fall City.");
+		
+		DescriptionMapper.add("book-description", { bookType: t_F }, "A story about [c-theme] stays with you.");
+		DescriptionMapper.add("book-description", { bookType: t_F }, "You are touched by a poem about [c-theme].");
+		DescriptionMapper.add("book-description", { bookType: t_F }, "There is a story about [c-theme].");
+		DescriptionMapper.add("book-description", { bookType: t_F }, "It is a tale about [c-theme].");
+		
+	}
+	
 	initSectorTexts();
 	initWaymarkTexts();
+	initBookTexts();
 	
 	return TextConstants;
 	

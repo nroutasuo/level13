@@ -233,6 +233,19 @@
         "requiredCampOrdinal": 13,
         "type": "artefact"
     },
+    "artefact_surface_5": {
+        "description": "A worn out but still colorful magazine filled with fantastic stories.",
+        "icon": "img/items/artefact-test.png",
+        "id": "artefact_surface_4",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Torn comic book",
+        "rarityScavenge": 8,
+        "rarityTrade": -1,
+        "requiredCampOrdinal": 9,
+        "type": "artefact"
+    },
     "bag_0": {
         "bonuses": {
             "bag": 30
@@ -349,7 +362,7 @@
 		"configData": {
 			"metalValue": 10
 		},
-        "type": "exploration"
+        "type": "voucher"
     },
     "cache_metal_2": {
         "description": "Can probably be taken apart for some scrap metal",
@@ -365,7 +378,7 @@
 		"configData": {
 			"metalValue": 20
 		},
-        "type": "exploration"
+        "type": "voucher"
     },
     "cache_metal_3": {
         "description": "Can probably be taken apart for some scrap metal",
@@ -381,7 +394,7 @@
 		"configData": {
 			"metalValue": 30
 		},
-        "type": "exploration"
+        "type": "voucher"
     },
     "cache_metal_4": {
         "description": "Can probably be taken apart for some scrap metal",
@@ -397,8 +410,56 @@
 		"configData": {
 			"metalValue": 40
 		},
-        "type": "exploration"
+        "type": "voucher"
     },
+	"cache_evidence_1": {
+        "description": "An scientific book that might provide clues to some old technologies.",
+        "icon": "img/items/book.png",
+        "id": "cache_evidence_1",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "name": "Science book",
+        "rarityScavenge": 5,
+        "rarityTrade": -1,
+        "requiredCampOrdinal": 3,
+		"configData": {
+			"bookType": "science"
+		},
+        "type": "voucher"
+	},
+	"cache_evidence_2": {
+        "description": "An old novel still in somewhat readable condition.",
+        "icon": "img/items/book.png",
+        "id": "cache_evidence_2",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "name": "Fiction book",
+        "rarityScavenge": 5,
+        "rarityTrade": -1,
+        "requiredCampOrdinal": 1,
+		"configData": {
+			"bookType": "fiction"
+		},
+        "type": "voucher"
+	},
+	"cache_evidence_3": {
+        "description": "An old history book that might contain clues about the past.",
+        "icon": "img/items/book.png",
+        "id": "cache_evidence_3",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "name": "History book",
+        "rarityScavenge": 5,
+        "rarityTrade": -1,
+        "requiredCampOrdinal": 2,
+		"configData": {
+			"bookType": "history"
+		},
+        "type": "voucher"
+	},
     "clothing_hands_1": {
         "bonuses": {
             "warmth": 5
@@ -1316,7 +1377,7 @@
 		"name": "Map sketch",
 		"rarityScavenge": -1,
         "rarityTrade": -1,
-        "type": "exploration"
+        "type": "voucher"
 	},
     "consumable_map_2": {
 		"description": "A piece of paper that seems to be part of a bigger map",
@@ -1328,7 +1389,7 @@
 		"name": "Map piece",
 		"rarityScavenge": -1,
         "rarityTrade": -1,
-        "type": "exploration"
+        "type": "voucher"
 	},
     "consumable_weapon_1": {
         "description": "One-use weapon.",

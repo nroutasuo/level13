@@ -555,6 +555,7 @@ define([
 			var lateZones = [ WorldConstants.ZONE_POI_2, WorldConstants.ZONE_EXTRA_CAMPABLE ];
 			var earlyZones = [ WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_PASSAGE_TO_PASSAGE, WorldConstants.ZONE_POI_1 ];
 			var earlyZonesEntrance = [ WorldConstants.ZONE_ENTRANCE ];
+			var earlyZonesOnCampableLevels = [ WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_POI_1 ];
 			
 			// TODO position (some) stashes more purposefully in hard-to-reach places (distance from camp? sectors marked as high-reward during pathfinding?)
 			
@@ -651,7 +652,7 @@ define([
 			}
 			
 			// TODO better solution for level 13
-			// stashes: map pieces (mostyl campable levels) (not on level 13 because it'd be silly to find these before the actual map)
+			// stashes: map pieces (mostly campable levels) (not on level 13 because it'd be silly to find these before the actual map)
 			if (levelVO.level != 13) {
 				var mapItems = [ "consumable_map_1", "consumable_map_2" ];
 				var maxPieces = levelVO.isCampable ? 2 : 1;
@@ -665,7 +666,7 @@ define([
 				}
 			}
 			
-			// stashes: uncraftable misc items (uncampable levels)
+			// stashes: uncraftable misc equipment (uncampable levels)
 			if (!levelVO.isCampable) {
 				let searchDefs = [
 					{ itemType: "shoes", itemBonusType: ItemConstants.itemBonusTypes.movement, probability: 0.5 },
@@ -685,14 +686,13 @@ define([
 				}
 			}
 			
-			// stashes: one-use exploration items (uncampable levels and late zones)
-			var consumableItems = [ "first_aid_kit_1", "first_aid_kit_2", "glowstick_1", "consumable_weapon_1", "flee_1" ];
+			// stashes: consumables and other bonus rewards (uncampable levels and late zones)
+			var consumableItems = [ "first_aid_kit_1", "first_aid_kit_2", "glowstick_1", "consumable_weapon_1", "flee_1", "cache_evidence_1", "cache_evidence_2", "cache_evidence_3" ];
 			var validItems = [];
 			for (let i = 0; i < consumableItems.length; i++) {
 				var item = ItemConstants.getItemByID(consumableItems[i]);
 				if (!item) continue;
 				if (!this.itemsHelper.isAvailable(item, levelVO.campOrdinal, WorldConstants.CAMP_STEP_END, true, true, 9)) continue;
-				var req = GameGlobals.itemsHelper.getRequiredCampAndStepToCraft(item);
 				validItems.push(item);
 			}
 			var numItems = Math.min(levelVO.isCampable ? 1 : 3, validItems.length);
@@ -701,7 +701,7 @@ define([
 				var index = WorldCreatorRandom.randomInt(s3, 0, validItems.length);
 				var item = validItems[index];
 				var itemAmount = levelVO.isCampable ? 1 : [ 1, 3 ];
-				addStashes(1000 + seed % 11 * 71 + (l + 15) * 15 + (i + 21) * 16, "consumables", ItemConstants.STASH_TYPE_ITEM, item.id, 1, itemAmount);
+				addStashes(1000 + seed % 11 * 71 + (l + 15) * 15 + (i + 21) * 16, "consumables", ItemConstants.STASH_TYPE_ITEM, item.id, 1, itemAmount, earlyZonesOnCampableLevels);
 			}
 		},
 		

@@ -19,6 +19,7 @@ define(['ash',
 	'game/constants/TextConstants',
 	'game/vos/PositionVO',
 	'game/vos/LocaleVO',
+	'game/vos/ResultVO',
 	'game/nodes/PlayerPositionNode',
 	'game/nodes/FightNode',
 	'game/nodes/player/PlayerStatsNode',
@@ -61,7 +62,7 @@ define(['ash',
 	'utils/StringUtils'
 ], function (Ash, GameGlobals, GlobalSignals,
 	GameConstants, CampConstants, FollowerConstants, LogConstants, ImprovementConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, UpgradeConstants, TextConstants,
-	PositionVO, LocaleVO,
+	PositionVO, LocaleVO, ResultVO,
 	PlayerPositionNode, FightNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent,
@@ -1605,10 +1606,13 @@ define(['ash',
 			var perksComponent = this.playerStatsNodes.head.perks;
 			
 			var item = deductedCosts.items[0];
-			
 			if (!item) {
 				log.w("trying to use item but none found in deductedCosts");
 			}
+			var foundPosition = item.foundPosition || playerPos;
+			var foundPositionCampOrdinal = GameGlobals.gameState.getCampOrdinal(foundPosition.level);
+			
+			let itemConfig = ItemConstants.getItemConfigByID(itemId);
 			
 			switch (itemId) {
 				case "first_aid_kit_1":
@@ -1651,8 +1655,7 @@ define(['ash',
 				case "cache_metal_2":
 				case "cache_metal_3":
 				case "cache_metal_4":
-					let item = ItemConstants.getItemConfigByID(itemId);
-					let baseValue = item.configData.metalValue || 10;
+					let baseValue = itemConfig.configData.metalValue || 10;
 					let value = baseValue + Math.round(Math.random() * 10);
 					let itemNameParts = item.name.split(" ");
 					let itemName = itemNameParts[itemNameParts.length - 1];
@@ -1661,11 +1664,27 @@ define(['ash',
 					this.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, "Took apart the " + itemName + ". Gained " + value + " metal.");
 					break;
 					
+				case "cache_evidence_1":
+				case "cache_evidence_2":
+				case "cache_evidence_3":
+					let evidence = itemConfig.configData.evidenceValue || 1;
+					let message = TextConstants.getReadBookMessage(item, itemConfig.configData.bookType || ItemConstants.bookTypes.science, foundPositionCampOrdinal);
+					let resultVO = new ResultVO("use_item");
+					resultVO.gainedEvidence = evidence;
+					GameGlobals.uiFunctions.showInfoPopup(
+						item.name,
+						message,
+						"Continue",
+						resultVO
+					);
+					this.playerStatsNodes.head.evidence.value += evidence;
+					this.addLogMessage(LogConstants.MSG_ID_USE_BOOK, "Read a book. Gained " + evidence + " evidence.");
+					break;
+					
 				case "consumable_map_1":
 				case "consumable_map_2":
 					// TODO score and prefer unvisited sectors
 					var radius = 3;
-					var foundPosition =  item.foundPosition || playerPos;
 					var centerSectors = GameGlobals.levelHelper.getSectorsAround(foundPosition, 2);
 					var centerSector = centerSectors[Math.floor(Math.random() * centerSectors.length)];
 					var centerPosition = centerSector.get(PositionComponent);
