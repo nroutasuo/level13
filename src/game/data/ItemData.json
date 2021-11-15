@@ -1392,7 +1392,7 @@
         "type": "voucher"
 	},
     "consumable_weapon_1": {
-        "description": "One-use weapon.",
+        "description": "One-use weapon that deals some damage to any enemy.",
         "icon": "img/items/weapon-consumable-1.png",
         "id": "consumable_weapon_1",
         "isCraftable": true,
@@ -1404,6 +1404,32 @@
         "requiredCampOrdinal": 2,
         "type": "exploration"
     },
+	"consumable_weapon_bio": {
+        "description": "One-use weapon that slows down an organic enemy.",
+        "icon": "img/items/bamboo.png",
+        "id": "consumable_weapon_bio",
+        "isCraftable": true,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Poison dart",
+        "rarityScavenge": 9,
+        "rarityTrade": 6,
+        "requiredCampOrdinal": 5,
+        "type": "exploration"
+	},
+	"consumable_weapon_mechanical": {
+        "description": "One-use weapon that stuns a mechanical enemy.",
+        "icon": "img/items/transmitter.png",
+        "id": "consumable_weapon_mechanical",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Stun switch",
+        "rarityScavenge": 8,
+        "rarityTrade": 4,
+        "requiredCampOrdinal": 10,
+        "type": "exploration"
+	},
     "equipment_map": {
         "description": "Helps navigating the City.",
         "icon": "img/items/exploration-map.png",

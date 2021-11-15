@@ -687,7 +687,7 @@ define([
 			}
 			
 			// stashes: consumables and other bonus rewards (uncampable levels and late zones)
-			var consumableItems = [ "first_aid_kit_1", "first_aid_kit_2", "glowstick_1", "consumable_weapon_1", "flee_1", "cache_evidence_1", "cache_evidence_2", "cache_evidence_3" ];
+			var consumableItems = [ "first_aid_kit_1", "first_aid_kit_2", "glowstick_1", "consumable_weapon_1", "consumable_weapon_bio", "consumable_weapon_mechanical", "flee_1", "cache_evidence_1", "cache_evidence_2", "cache_evidence_3" ];
 			var validItems = [];
 			for (let i = 0; i < consumableItems.length; i++) {
 				var item = ItemConstants.getItemByID(consumableItems[i]);

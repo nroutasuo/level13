@@ -474,6 +474,10 @@
             "item_res_bands": 1,
             "resource_metal": 10
         },
+		"craft_consumable_weapon_bio": {
+            "resource_herbs": 5,
+            "item_res_bottle": 1
+		},
         "craft_exploration_1": {
             "item_res_hairpin": 1,
             "resource_metal": 5
@@ -2269,6 +2273,11 @@
                 "improve_worker_scavenger_2": true
             }
         },
+        "craft_consumable_weapon_bio": {
+            "upgrades": {
+                "unlock_building_greenhouse": true
+            }
+        },
         "craft_first_aid_kit_1": {
             "upgrades": {
                 "unlock_item_firstaid": true
@@ -3264,6 +3273,22 @@
         "use_item_fight_consumable_weapon_1": {
             "uses_in_fight": {
                 "consumable_weapon_1": [
+                    -1,
+                    1
+                ]
+            }
+        },
+        "use_item_fight_consumable_weapon_bio": {
+            "uses_in_fight": {
+                "consumable_weapon_bio": [
+                    -1,
+                    1
+                ]
+            }
+        },
+        "use_item_fight_consumable_weapon_mechanical": {
+            "uses_in_fight": {
+                "consumable_weapon_mechanical": [
                     -1,
                     1
                 ]

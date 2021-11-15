@@ -130,6 +130,8 @@ define([
 			var itemsToShow = [];
 			if (itemsComponent.getCountById("glowstick_1") > 0) itemsToShow.push(itemsComponent.getItem("glowstick_1", null, false));
 			if (itemsComponent.getCountById("consumable_weapon_1") > 0) itemsToShow.push(itemsComponent.getItem("consumable_weapon_1", null, false));
+			if (itemsComponent.getCountById("consumable_weapon_mechanical") > 0) itemsToShow.push(itemsComponent.getItem("consumable_weapon_mechanical", null, false));
+			if (itemsComponent.getCountById("consumable_weapon_bio") > 0) itemsToShow.push(itemsComponent.getItem("consumable_weapon_bio", null, false));
 			if (itemsComponent.getCountById("flee_1") > 0) itemsToShow.push(itemsComponent.getItem("flee_1", null, false));
 			var numItemsShown = $("#fight-buttons-infightactions button").length;
 			if (numItemsShown !== itemsToShow.length) {

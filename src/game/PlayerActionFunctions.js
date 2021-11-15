@@ -1722,6 +1722,7 @@ define(['ash',
 				log.w("can't use item in fight, no fight in progress");
 				return;
 			}
+			var enemy = fightComponent.enemy;
 			switch (itemId) {
 				case "glowstick_1":
 					var stunTime = 2;
@@ -1732,6 +1733,20 @@ define(['ash',
 					var damage = 20;
 					log.i("add " + damage + " extra damage to enemy");
 					fightComponent.itemEffects.damage = damage;
+					break;
+				case "consumable_weapon_bio":
+					if (!fightComponent.enemy.isMechanical()) {
+						var stunTime = 3;
+						log.i("stun enemy for " + Math.round(stunTime * 100)/100 + "s")
+						fightComponent.itemEffects.enemyStunnedSeconds = stunTime;
+					}
+					break;
+				case "consumable_weapon_mechanical":
+					if (fightComponent.enemy.isMechanical()) {
+						var stunTime = 3;
+						log.i("stun enemy for " + Math.round(stunTime * 100)/100 + "s")
+						fightComponent.itemEffects.enemyStunnedSeconds = stunTime;
+					}
 					break;
 				case "flee_1":
 					fightComponent.itemEffects.fled = true;
