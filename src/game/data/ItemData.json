@@ -348,71 +348,10 @@
         "source": "equipment",
         "type": "bag"
     },
-    "cache_metal_1": {
-        "description": "Can probably be taken apart for some scrap metal",
-        "icon": "img/items/cache-metal.png",
-        "id": "cache_metal_1",
-        "isCraftable": false,
-        "isEquippable": false,
-        "isUseable": true,
-        "name": "Abandoned robot",
-        "rarityScavenge": 5,
-        "rarityTrade": -1,
-        "requiredCampOrdinal": 1,
-		"configData": {
-			"metalValue": 10
-		},
-        "type": "voucher"
-    },
-    "cache_metal_2": {
-        "description": "Can probably be taken apart for some scrap metal",
-        "icon": "img/items/cache-metal.png",
-        "id": "cache_metal_2",
-        "isCraftable": false,
-        "isEquippable": false,
-        "isUseable": true,
-        "name": "Broken appliance",
-        "rarityScavenge": 5,
-        "rarityTrade": -1,
-        "requiredCampOrdinal": 2,
-		"configData": {
-			"metalValue": 20
-		},
-        "type": "voucher"
-    },
-    "cache_metal_3": {
-        "description": "Can probably be taken apart for some scrap metal",
-        "icon": "img/items/cache-metal-plus.png",
-        "id": "cache_metal_3",
-        "isCraftable": false,
-        "isEquippable": false,
-        "isUseable": true,
-        "name": "Damaged machine",
-        "rarityScavenge": 5,
-        "rarityTrade": -1,
-        "requiredCampOrdinal": 9,
-		"configData": {
-			"metalValue": 30
-		},
-        "type": "voucher"
-    },
-    "cache_metal_4": {
-        "description": "Can probably be taken apart for some scrap metal",
-        "icon": "img/items/cache-metal-plus.png",
-        "id": "cache_metal_4",
-        "isCraftable": false,
-        "isEquippable": false,
-        "isUseable": true,
-        "name": "Obsolete computer",
-        "rarityScavenge": 5,
-        "rarityTrade": -1,
-        "requiredCampOrdinal": 10,
-		"configData": {
-			"metalValue": 40
-		},
-        "type": "voucher"
-    },
-	"cache_evidence_1": {
+    "cache_evidence_1": {
+        "configData": {
+            "bookType": "science"
+        },
         "description": "An scientific book that might provide clues to some old technologies.",
         "icon": "img/items/book.png",
         "id": "cache_evidence_1",
@@ -423,12 +362,12 @@
         "rarityScavenge": 5,
         "rarityTrade": -1,
         "requiredCampOrdinal": 3,
-		"configData": {
-			"bookType": "science"
-		},
         "type": "voucher"
-	},
-	"cache_evidence_2": {
+    },
+    "cache_evidence_2": {
+        "configData": {
+            "bookType": "fiction"
+        },
         "description": "An old novel still in somewhat readable condition.",
         "icon": "img/items/book.png",
         "id": "cache_evidence_2",
@@ -439,12 +378,12 @@
         "rarityScavenge": 5,
         "rarityTrade": -1,
         "requiredCampOrdinal": 1,
-		"configData": {
-			"bookType": "fiction"
-		},
         "type": "voucher"
-	},
-	"cache_evidence_3": {
+    },
+    "cache_evidence_3": {
+        "configData": {
+            "bookType": "history"
+        },
         "description": "An old history book that might contain clues about the past.",
         "icon": "img/items/book.png",
         "id": "cache_evidence_3",
@@ -455,11 +394,72 @@
         "rarityScavenge": 5,
         "rarityTrade": -1,
         "requiredCampOrdinal": 2,
-		"configData": {
-			"bookType": "history"
-		},
         "type": "voucher"
-	},
+    },
+    "cache_metal_1": {
+        "configData": {
+            "metalValue": 10
+        },
+        "description": "Can probably be taken apart for some scrap metal",
+        "icon": "img/items/cache-metal.png",
+        "id": "cache_metal_1",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "name": "Abandoned robot",
+        "rarityScavenge": 5,
+        "rarityTrade": -1,
+        "requiredCampOrdinal": 1,
+        "type": "voucher"
+    },
+    "cache_metal_2": {
+        "configData": {
+            "metalValue": 20
+        },
+        "description": "Can probably be taken apart for some scrap metal",
+        "icon": "img/items/cache-metal.png",
+        "id": "cache_metal_2",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "name": "Broken appliance",
+        "rarityScavenge": 5,
+        "rarityTrade": -1,
+        "requiredCampOrdinal": 2,
+        "type": "voucher"
+    },
+    "cache_metal_3": {
+        "configData": {
+            "metalValue": 30
+        },
+        "description": "Can probably be taken apart for some scrap metal",
+        "icon": "img/items/cache-metal-plus.png",
+        "id": "cache_metal_3",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "name": "Damaged machine",
+        "rarityScavenge": 5,
+        "rarityTrade": -1,
+        "requiredCampOrdinal": 9,
+        "type": "voucher"
+    },
+    "cache_metal_4": {
+        "configData": {
+            "metalValue": 40
+        },
+        "description": "Can probably be taken apart for some scrap metal",
+        "icon": "img/items/cache-metal-plus.png",
+        "id": "cache_metal_4",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "name": "Obsolete computer",
+        "rarityScavenge": 5,
+        "rarityTrade": -1,
+        "requiredCampOrdinal": 10,
+        "type": "voucher"
+    },
     "clothing_hands_1": {
         "bonuses": {
             "warmth": 5
@@ -1368,29 +1368,29 @@
         "type": "clothing_upper"
     },
     "consumable_map_1": {
-		"description": "A piece of cardboard with roughly drawn map of the area",
+        "description": "A piece of cardboard with roughly drawn map of the area",
         "icon": "img/items/exploration-map.png",
-		"id": "consumable_map_1",
-		"isCraftable": false,
-		"isEquippable": false,
-		"isUseable": true,
-		"name": "Map sketch",
-		"rarityScavenge": -1,
+        "id": "consumable_map_1",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "name": "Map sketch",
+        "rarityScavenge": -1,
         "rarityTrade": -1,
         "type": "voucher"
-	},
+    },
     "consumable_map_2": {
-		"description": "A piece of paper that seems to be part of a bigger map",
+        "description": "A piece of paper that seems to be part of a bigger map",
         "icon": "img/items/exploration-map.png",
-		"id": "consumable_map_2",
-		"isCraftable": false,
-		"isEquippable": false,
-		"isUseable": true,
-		"name": "Map piece",
-		"rarityScavenge": -1,
+        "id": "consumable_map_2",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "name": "Map piece",
+        "rarityScavenge": -1,
         "rarityTrade": -1,
         "type": "voucher"
-	},
+    },
     "consumable_weapon_1": {
         "description": "One-use weapon that deals some damage to any enemy.",
         "icon": "img/items/weapon-consumable-1.png",
@@ -1404,7 +1404,7 @@
         "requiredCampOrdinal": 2,
         "type": "exploration"
     },
-	"consumable_weapon_bio": {
+    "consumable_weapon_bio": {
         "description": "One-use weapon that slows down an organic enemy.",
         "icon": "img/items/bamboo.png",
         "id": "consumable_weapon_bio",
@@ -1416,8 +1416,8 @@
         "rarityTrade": 6,
         "requiredCampOrdinal": 5,
         "type": "exploration"
-	},
-	"consumable_weapon_mechanical": {
+    },
+    "consumable_weapon_mechanical": {
         "description": "One-use weapon that stuns a mechanical enemy.",
         "icon": "img/items/transmitter.png",
         "id": "consumable_weapon_mechanical",
@@ -1429,7 +1429,7 @@
         "rarityTrade": 4,
         "requiredCampOrdinal": 10,
         "type": "exploration"
-	},
+    },
     "equipment_map": {
         "description": "Helps navigating the City.",
         "icon": "img/items/exploration-map.png",
@@ -1559,7 +1559,7 @@
         "source": "equipment",
         "type": "light"
     },
-	"res_bands": {
+    "res_bands": {
         "description": "Useful for crafting.",
         "icon": "img/items/res-bands.png",
         "id": "res_bands",
@@ -1652,7 +1652,7 @@
     },
     "shoe_1": {
         "bonuses": {
-            "movement": 0.9
+            "movement": 0.85
         },
         "description": "Protects a scavenger's feet from sharp things that might be lying around.",
         "icon": "img/items/shoe-1.png",
@@ -1669,7 +1669,7 @@
     },
     "shoe_2": {
         "bonuses": {
-            "movement": 0.8
+            "movement": 0.75
         },
         "description": "Decent shoes for walking in most places.",
         "icon": "img/items/shoe-2.png",
@@ -1678,18 +1678,18 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Worn trainers",
-        "rarityScavenge": 5,
-        "rarityTrade": 3,
-        "requiredCampOrdinal": 5,
+        "rarityScavenge": 3,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 2,
         "source": "equipment",
         "type": "shoes"
     },
     "shoe_3": {
         "bonuses": {
-            "movement": 0.7
+            "movement": 0.65
         },
         "description": "Good shoes like these can make travelling much easier.",
-        "icon": "img/items/shoe-3.png",
+        "icon": "img/items/shoe-2.png",
         "id": "shoe_3",
         "isCraftable": false,
         "isEquippable": true,
@@ -1697,18 +1697,34 @@
         "name": "Hiking boots",
         "rarityScavenge": 8,
         "rarityTrade": 5,
-        "requiredCampOrdinal": 10,
+        "requiredCampOrdinal": 11,
+        "source": "equipment",
+        "type": "shoes"
+    },
+    "shoe_4": {
+        "bonuses": {
+            "movement": 0.6
+        },
+        "description": "The comfiest shoes you've ever had.",
+        "icon": "img/items/shoe-3.png",
+        "id": "shoe_4",
+        "isCraftable": false,
+        "isEquippable": true,
+        "name": "Explorer's boots",
+        "rarityScavenge": 5,
+        "rarityTrade": 4,
+        "requiredCampOrdinal": 14,
         "source": "equipment",
         "type": "shoes"
     },
     "shoe_l14": {
         "bonuses": {
-            "movement": 0.9,
+            "movement": 0.85,
             "res_poison": 5,
             "res_rad": 5
         },
         "description": "Protection from environmental hazards. And snakes.",
-        "icon": "img/items/shoe-2.png",
+        "icon": "img/items/shoe-l14.png",
         "id": "shoe_l14",
         "isCraftable": true,
         "isEquippable": true,
