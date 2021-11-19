@@ -4,6 +4,8 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 	var ItemConstants = {
 		
 		PLAYER_DEFAULT_STORAGE: 10,
+		
+		MAX_RANDOM_EQUIPMENT_STASH_RARITY: 5,
 			
 		STASH_TYPE_ITEM: "item",
 		STASH_TYPE_SILVER: "silver",
@@ -76,7 +78,10 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 				let bonuses = item.bonuses;
 				let type = item.type;
 				if (!this.itemDefinitions[type]) this.itemDefinitions[type] = [];
-				var itemVO = new ItemVO(item.id, item.name, item.type, item.requiredCampOrdinal, item.isEquippable, item.isCraftable, item.isUseable, item.rarityScavenge, item.rarityTrade, bonuses, item.icon, item.description, item.isSpecialEquipment);
+				var itemVO = new ItemVO(item.id, item.name, item.type, item.campOrdinalRequired, item.campOrdinalMaximum, item.isEquippable, item.isCraftable, item.isUseable, bonuses, item.icon, item.description, item.isSpecialEquipment);
+				itemVO.scavengeRarity = item.rarityScavenge;
+				itemVO.localeRarity = item.rarityLocale;
+				itemVO.tradeRarity = item.rarityTrade;
 				itemVO.configData = item.configData || {};
 				this.itemDefinitions[type].push(itemVO);
 			}

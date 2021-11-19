@@ -610,7 +610,7 @@ define([
 			if (levelIndex == 0) {
 				var newEquipment = this.itemsHelper.getNewEquipment(levelVO.campOrdinal);
 				for (let i = 0; i < newEquipment.length; i++) {
-					if (!newEquipment[i].craftable && newEquipment[i].scavengeRarity <= 5) {
+					if (!newEquipment[i].craftable && newEquipment[i].scavengeRarity <= ItemConstants.MAX_RANDOM_EQUIPMENT_STASH_RARITY) {
 						addStashes(seed / 3 + (l+551)*8 + (i+103)*18, "non-craftable equipment", ItemConstants.STASH_TYPE_ITEM, newEquipment[i].id, 1, 1, lateZones);
 					}
 				}

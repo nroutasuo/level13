@@ -256,7 +256,7 @@ define([
 		getNeededIngredient: function (campOrdinal, step, isHardLevel, itemsComponent, isStrict) {
 			var checkItem = function (item) {
 				if (!item.craftable) return null;
-				if (itemsComponent.getCountById(item.id, true) < (isStrict ? 1 : 1)) {
+				if (itemsComponent.getCountById(item.id, true) < 1) {
 					var ingredients = ItemConstants.getIngredientsToCraft(item.id);
 					for (let i = 0; i < ingredients.length; i++) {
 						var def = ingredients[i];
