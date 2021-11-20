@@ -244,6 +244,7 @@ define([
 				result = "-";
 			} else {
 				result += TextConstants.getScaResourcesString(resources, featuresComponent.resourcesScavengable);
+				if (result.length > 0 && items.length > 0) result += ", ";
 				result += items.join(", ");
 			}
 			
