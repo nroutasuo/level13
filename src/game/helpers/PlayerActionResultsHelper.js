@@ -156,12 +156,16 @@ define([
 			var efficiency = this.getCurrentScavengeEfficiency();
 			
 			var itemOptions = { rarityKey: "scavengeRarity" };
-
-			rewards.gainedResources = this.getRewardResources(1, 1, efficiency, sectorResources);
-			rewards.gainedItems = this.getRewardItems(0.02, 0.25, sectorIngredients, itemOptions);
-			rewards.gainedCurrency = this.getRewardCurrency(efficiency);
 			
 			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound);
+
+			rewards.gainedResources = this.getRewardResources(1, 1, efficiency, sectorResources);
+			rewards.gainedCurrency = this.getRewardCurrency(efficiency);
+			
+			if (rewards.gainedItems.length == 0) {
+				rewards.gainedItems = this.getRewardItems(0.02, 0.25, sectorIngredients, itemOptions);
+			}
+			
 			rewards.gainedBlueprintPiece = this.getFallbackBlueprint(0.05 + efficiency * 0.15);
 			
 			this.addFollowerBonuses(rewards, sectorResources, sectorIngredients, itemOptions);
@@ -1072,12 +1076,14 @@ define([
 			rewards.gainedResourcesFromFollowers.addAll(bonusSupplies);
 			rewards.gainedResources.addAll(bonusSupplies);
 			
-			let bonusItemProb = generalBonus - 1;
-			let bonusIngredientProb = generalBonus - 1 + ingredientsBonus - 1;
-			let bonusItems = this.getRewardItems(bonusItemProb, bonusIngredientProb, sectorIngredients, itemOptions);
-			rewards.gainedItemsFromFollowers = bonusItems;
-			for (let i = 0; i < bonusItems.length; i++) {
-				rewards.gainedItems.push(bonusItems[i]);
+			if (rewards.gainedItems.length == 0) {
+				let bonusItemProb = generalBonus - 1;
+				let bonusIngredientProb = generalBonus - 1 + ingredientsBonus - 1;
+				let bonusItems = this.getRewardItems(bonusItemProb, bonusIngredientProb, sectorIngredients, itemOptions);
+				rewards.gainedItemsFromFollowers = bonusItems;
+				for (let i = 0; i < bonusItems.length; i++) {
+					rewards.gainedItems.push(bonusItems[i]);
+				}
 			}
 		},
 		
