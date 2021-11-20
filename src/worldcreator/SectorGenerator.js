@@ -580,29 +580,9 @@ define([
 				addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, "lockpick", ItemConstants.STASH_TYPE_ITEM, "exploration_1", 1, 1);
 			}
 			
-			// stashes: hairpins (for lockpics)
-			var pinsPerStash = 3;
-			var numHairpinStashes = 1;
-			if (l == 13) numHairpinStashes = 3;
-			if (!levelVO.isCampable) numHairpinStashes = 3;
-			addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, "hairpin", ItemConstants.STASH_TYPE_ITEM, "res_hairpin", numHairpinStashes, pinsPerStash);
-			
 			// stashes: stamina potions
 			if (!levelVO.isCampable) {
 				addStashes(seed % 45 * (l + 11) * 9 + (l+100)*7 + 1111, "stamina potions", ItemConstants.STASH_TYPE_ITEM, "stamina_potion_1", 1, 1);
-			}
-			
-			// stashes: ingredients for craftable equipment (campable levels)
-			let requiredEquipment = this.itemsHelper.getRequiredEquipment(levelVO.campOrdinal, WorldConstants.CAMP_STEP_END, levelVO.isHard);
-			if (!levelVO.isCampable) {
-				requiredEquipment = this.itemsHelper.getRequiredEquipment(nextLevelVO.campOrdinal, WorldConstants.CAMP_STEP_START, nextLevelVO.isHard);
-			}
-			let stashIngredients = ItemConstants.getIngredientsToCraftMany(requiredEquipment);
-			let numStashIngredients = MathUtils.clamp(Math.floor(stashIngredients.length / 2), 1, 3);
-			for (let i = 0; i < numStashIngredients; i++) {
-				var def = stashIngredients[i];
-				var amount = def.amount > 9 ? 10 : def.amount > 5 ? 6 : 3;
-				addStashes(seed % 13 + l * 7 + 5 + (i+1) * 10, "craftable ingredients", ItemConstants.STASH_TYPE_ITEM, def.id, 1, amount);
 			}
 			
 			// stashes: non-craftable equipment
@@ -614,13 +594,6 @@ define([
 						addStashes(seed / 3 + (l+551)*8 + (i+103)*18, "non-craftable equipment", ItemConstants.STASH_TYPE_ITEM, newEquipment[i].id, 1, 1, lateZones);
 					}
 				}
-			}
-			
-			// stashes: random ingredients (uncampable levels)
-			if (!levelVO.isCampable) {
-				let i = seed % (l+5) + 3;
-				var ingredient = ItemConstants.getIngredient(i);
-				addStashes(seed % 7 + 3000 + 101 * l, "random", ItemConstants.STASH_TYPE_ITEM, ingredient.id, 2, 3);
 			}
 			
 			// stashes: metal caches
@@ -1208,10 +1181,18 @@ define([
 					let nextLevelVO = worldVO.getLevel(nextLevel) || levelVO;
 					requiredEquipment = this.itemsHelper.getRequiredEquipment(nextLevelVO.campOrdinal, WorldConstants.CAMP_STEP_START, nextLevelVO.isHard);
 				}
-				let requiredIngredients = ItemConstants.getIngredientsToCraftMany(requiredEquipment);
-				for (let i = 0; i < requiredIngredients.length; i++) {
-					var def = requiredIngredients[i];
-					addItemLocation(def.id, stageVO.stage, "required");
+				let requiredEquipmentIngredients = ItemConstants.getIngredientsToCraftMany(requiredEquipment);
+				for (let i = 0; i < requiredEquipmentIngredients.length; i++) {
+					let def = requiredEquipmentIngredients[i];
+					addItemLocation(def.id, stageVO.stage, "required-equipment");
+				}
+				
+				// ingredients for crafting other important items
+				let requiredItems = [ "exploration_1" ].map(itemID => ItemConstants.getItemConfigByID(itemID));
+				let requiredItemIngredients = ItemConstants.getIngredientsToCraftMany(requiredItems);
+				for (let i = 0; i < requiredItemIngredients.length; i++) {
+					let def = requiredItemIngredients[i];
+					addItemLocation(def.id, stageVO.stage, "required-items");
 				}
 				
 				// a couple of random ingredients
