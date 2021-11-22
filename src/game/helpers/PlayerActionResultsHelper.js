@@ -836,8 +836,7 @@ define([
 
 				// - Normal items
 				let itemProbabilityWithEfficiency = itemProbability * efficiency;
-				//if (Math.random() < itemProbabilityWithEfficiency && hasBag && hasDecentEfficiency && result.length == 0) {
-				if (true) {
+				if (Math.random() < itemProbabilityWithEfficiency && hasBag && hasDecentEfficiency && result.length == 0) {
 					var item = this.getRewardItem(efficiency, campOrdinal, step, options);
 					if (item) result.push(item);
 				}
