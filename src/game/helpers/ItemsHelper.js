@@ -25,18 +25,20 @@ define([
 			var adjustedCampOrdinal = adjustCampOrdinal ? campOrdinal - 1 : campOrdinal;
 			var adjustedStep = adjustCampOrdinal ? WorldConstants.CAMP_STEP_END : step - 1;
 			
-			let result = false;
+			let result = true;
 			
 			// craftable items: by craftable camp ordinal
 			if (item.craftable && includeCraftable) {
 				var req = GameGlobals.itemsHelper.getRequiredCampAndStepToCraft(item);
-				result = req.campOrdinal < adjustedCampOrdinal || (req.campOrdinal == adjustedCampOrdinal && req.step <= adjustedStep);
+				result = result && (req.campOrdinal < adjustedCampOrdinal || (req.campOrdinal == adjustedCampOrdinal && req.step <= adjustedStep));
 			}
 
 			// non-craftable items: by item defintiion camp ordinal
 			// TODO don't check for scavenge rarity, it's not a common way to find items, trade rarity instead? + take into account levels with no trade
 			if (!item.craftable && includeNonCraftable) {
-				result = item.requiredCampOrdinal <= adjustedCampOrdinal && item.scavengeRarity <= maxScavengeRarity;
+				result = result && item.requiredCampOrdinal <= adjustedCampOrdinal;
+				result = result && item.scavengeRarity <= maxScavengeRarity;
+				result = result && (item.maximumCampOrdinal <= 0 || item.maximumCampOrdinal >= adjustedCampOrdinal);
 			}
 			
 			return result;

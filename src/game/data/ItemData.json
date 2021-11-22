@@ -1477,6 +1477,7 @@
         "rarityScavenge": 6,
 		"rarityLocale": 3,
         "rarityTrade": 2,
+		"campOrdinalMaximum": 12,
         "campOrdinalRequired": 2,
         "type": "exploration"
     },

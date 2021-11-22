@@ -301,6 +301,19 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 			return result;
 		},
 		
+		getRandomItemFromArray: function (seed, array) {
+			let index = this.randomInt(seed, 0, array.length);
+			return array[index];
+		},
+		
+		getRandomIntFromRange: function (seed, range) {
+			let isRange = typeof(range) !== "number";
+			if (!isRange) return range;
+			let min = Math.round(range[0])
+			let max = Math.round(range[1]);
+			return WorldCreatorRandom.randomInt(seed, min, max);
+		},
+		
 		// Pseudo-random int between min (inclusive) and max (exclusive)
 		randomInt: function (seed, min, max) {
 			if (!isFinite(seed) || isNaN(seed)) {

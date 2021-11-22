@@ -5,7 +5,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		
 		PLAYER_DEFAULT_STORAGE: 10,
 		
-		MAX_RANDOM_EQUIPMENT_STASH_RARITY: 5,
+		MAX_RANDOM_EQUIPMENT_STASH_RARITY: 6,
 			
 		STASH_TYPE_ITEM: "item",
 		STASH_TYPE_SILVER: "silver",
@@ -135,13 +135,13 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			return true;
 		},
 		
-		getItemByID: function (id) {
-			let config = this.getItemConfigByID(id);
+		getItemByID: function (id, skipWarning) {
+			let config = this.getItemConfigByID(id, skipWarning);
 			if (!config) return null;
 			return config.clone();
 		},
 		
-		getItemConfigByID: function (id) {
+		getItemConfigByID: function (id, skipWarning) {
 			for (var type in this.itemDefinitions ) {
 				for (let i in this.itemDefinitions[type]) {
 					var item = this.itemDefinitions[type][i];
@@ -150,6 +150,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 					}
 				}
 			}
+			if (!skipWarning) log.w("no such item: config " + id);
 			return null;
 		},
 
@@ -271,7 +272,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 						var item = this.itemDefinitions[type][i];
 						if (item.id.indexOf("cache_metal") == 0) {
 							if (item.requiredCampOrdinal <= campOrdinal) {
-								result.push(item);
+								result.push(item.id);
 							}
 						}
 					}
