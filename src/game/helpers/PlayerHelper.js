@@ -71,7 +71,7 @@ define([
 		addItem: function (itemDef, sourcePosition) {
 			var itemsComponent = this.playerStatsNodes.head.items;
 			var playerPosition = this.playerPosNodes.head.position.getPosition();
-			sourcePosition = sourcePosition || playerPosition;
+			sourcePosition = sourcePosition || playerPosition.clone();
 			
 			var item = itemDef.clone();
 			
