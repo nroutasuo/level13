@@ -170,9 +170,9 @@ define([
 			if (playerPosition.level === campPosition.level && playerPosition.sectorId() === campPosition.sectorId()) {
 				var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
 				if (isIncrease) {
-					logComponent.addMessage(LogConstants.MSG_ID_POPULATION_NATURAL, "A stranger shows up.");
+					logComponent.addMessage(LogConstants.MSG_ID_POPULATION_NATURAL, "A stranger showed up.");
 				} else {
-					logComponent.addMessage(LogConstants.MSG_ID_POPULATION_NATURAL, "An inhabitant packs their belongings and leaves.");
+					logComponent.addMessage(LogConstants.MSG_ID_POPULATION_NATURAL, "An inhabitant packed his belongings and left.");
 				}
 			}
 		},
