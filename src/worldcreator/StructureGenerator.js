@@ -978,13 +978,10 @@ define([
 
 		createGapFills: function (worldVO, levelVO) {
 			var failedPairs = [];
-			var isFailed = function (sector) {
+			var isFailed = function (sector1, sector2) {
 				for (let i = 0; i < failedPairs.length; i++) {
-					for (let j = 0; j < failedPairs[i].sectors.length; j++) {
-						if (failedPairs[i].sectors[j].position.equals(sector.position)) {
-							return true;
-						}
-					}
+					if (failedPairs[i].sectors[0].position.equals(sector1.position) && failedPairs[i].sectors[1].position.equals(sector2.position)) return true;
+					if (failedPairs[i].sectors[0].position.equals(sector2.position) && failedPairs[i].sectors[1].position.equals(sector1.position)) return true;
 				}
 				return false;
 			}
@@ -993,11 +990,10 @@ define([
 				var furthestPair = [null, null];
 				for (let i = 0; i < levelVO.sectors.length; i++) {
 					var sector1 = levelVO.sectors[i];
-					if (isFailed(sector1)) continue;
 					for (let j = i; j < levelVO.sectors.length; j++) {
 						var sector2 = levelVO.sectors[j];
 						if (sector1.stage != sector2.stage) continue;
-						if (isFailed(sector1)) continue;
+						if (isFailed(sector1, sector2)) continue;
 						var dist = PositionConstants.getDistanceTo(sector1.position, sector2.position);
 						if (dist > 1 && dist < 3) {
 							var path = WorldCreatorRandom.findPath(worldVO, sector1.position, sector2.position, false, true);
