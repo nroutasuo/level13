@@ -500,13 +500,14 @@ define([
 
 		isItemUnlocked: function (itemDefinition) {
 			var actionName = "craft_" + itemDefinition.id;
+			var reqs = GameGlobals.playerActionsHelper.getReqs(actionName);
 			var reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(actionName, false);
 			if (reqsCheck.value >= 1)
 				return true;
 			if (reqsCheck.reason === PlayerActionConstants.UNAVAILABLE_REASON_BAG_FULL)
 				return true;
 			if (reqsCheck.reason === PlayerActionConstants.UNAVAILABLE_REASON_LOCKED_RESOURCES)
-				return true;
+				return reqs.upgrades && reqs.upgrades.length > 0;
 			return false;
 		},
 
