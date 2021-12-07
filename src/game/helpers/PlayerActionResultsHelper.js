@@ -862,10 +862,12 @@ define([
 				}
 
 				// - Normal ingredients
-				if (hasBag && hasCamp && hasDecentEfficiency && !addedIngredient && Math.random() < ingredientProbabilityWithEfficiency) {
-					var ingredient = GameGlobals.itemsHelper.getUsableIngredient(availableIngredients);
-					for (let i = 0; i <= amount; i++) {
-						result.push(ingredient.clone());
+				if (!availableIngredients || availableIngredients.length > 0) {
+					if (hasBag && hasCamp && hasDecentEfficiency && !addedIngredient && Math.random() < ingredientProbabilityWithEfficiency) {
+						var ingredient = GameGlobals.itemsHelper.getUsableIngredient(availableIngredients);
+						for (let i = 0; i <= amount; i++) {
+							result.push(ingredient.clone());
+						}
 					}
 				}
 			}
