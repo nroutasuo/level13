@@ -364,10 +364,12 @@ define(['ash',
 		},
 
 		getPerkDetailText: function (perk, isResting) {
-			if (perk.effectTimer >= 0) {
-				var factor = isResting ? PerkConstants.PERK_RECOVERY_FACTOR_REST : 1;
-				var timeleft = perk.effectTimer / factor;
+			if (perk.removeTimer >= 0) {
+				var factor = PerkConstants.getRemoveTimeFactor(perk, isResting);
+				var timeleft = perk.removeTimer / factor;
 				return this.getPerkBonusText(perk) + ", time left: " + this.getTimeToNum(timeleft);
+			} else if (perk.startTimer >= 0) {
+				return this.getPerkBonusText(perk) + ", time to add: " + this.getTimeToNum(perk.startTimer);
 			} else {
 				return this.getPerkBonusText(perk);
 			}
@@ -377,12 +379,12 @@ define(['ash',
 			var value = 0;
 			if (PerkConstants.isPercentageEffect(perk.type)) {
 				if (perk.effect < 1) {
-					value = "-" + UIConstants.getMultiplierBonusDisplayValue(perk.effect);
+					value = "-" + UIConstants.getMultiplierBonusDisplayValue(PerkConstants.getCurrentEffect(perk));
 				} else {
-					value = "+" + UIConstants.getMultiplierBonusDisplayValue(perk.effect);
+					value = "+" + UIConstants.getMultiplierBonusDisplayValue(PerkConstants.getCurrentEffect(perk));
 				}
 			} else {
-				value = "+" + perk.effect;
+				value = "+" + PerkConstants.getCurrentEffect(perk);
 			}
 
 			var effect = perk.type;

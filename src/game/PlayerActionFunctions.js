@@ -1442,7 +1442,7 @@ define(['ash',
 			
 			if (this.playerStatsNodes.head.stamina.isPendingPenalty) {
 				var perksComponent = this.playerStatsNodes.head.perks;
-				perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.staminaBonusPenalty, 300));
+				perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.staminaBonusPenalty, PerkConstants.TIMER_DISABLED, 300));
 				this.playerStatsNodes.head.stamina.isPendingPenalty = false;
 			}
 			

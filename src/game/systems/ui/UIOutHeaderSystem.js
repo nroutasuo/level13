@@ -9,6 +9,7 @@ define([
 	'game/constants/FollowerConstants',
 	'game/constants/ItemConstants',
 	'game/constants/FightConstants',
+	'game/constants/PerkConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/PlayerStatConstants',
 	'game/systems/SaveSystem',
@@ -30,7 +31,7 @@ define([
 	'utils/UIState',
 	'utils/UIAnimations'
 ], function (Ash,
-	GameGlobals, GlobalSignals, GameConstants, CampConstants, LevelConstants, UIConstants, FollowerConstants, ItemConstants, FightConstants, UpgradeConstants, PlayerStatConstants,
+	GameGlobals, GlobalSignals, GameConstants, CampConstants, LevelConstants, UIConstants, FollowerConstants, ItemConstants, FightConstants, PerkConstants, UpgradeConstants, PlayerStatConstants,
 	SaveSystem,
 	PlayerStatsNode, AutoPlayNode, PlayerLocationNode, TribeUpgradesNode, DeityNode,
 	BagComponent,
@@ -220,7 +221,7 @@ define([
 			this.updateStatsCallout("Makes exploration safer and scavenging more effective", "stats-vision", playerStatsNode.vision.accSources);
 			this.updateChangeIndicator(this.elements.changeIndicatorVision, maxVision - shownVision, shownVision < maxVision);
 
-			this.elements.valHealth.text(playerStatsNode.stamina.health);
+			this.elements.valHealth.text(Math.round(playerStatsNode.stamina.health));
 			this.updateStatsCallout("Determines maximum stamina", "stats-health", null);
 
 			GameGlobals.uiFunctions.toggle($("#stats-stamina"), GameGlobals.gameState.unlockedFeatures.scavenge);
@@ -469,7 +470,7 @@ define([
 				var perk = perks[i];
 				var desc = perk.name + " (" + UIConstants.getPerkDetailText(perk, isResting) + ")";
 				var url = perk.icon;
-				var isNegative = perksComponent.isNegative(perk);
+				var isNegative = PerkConstants.isNegative(perk);
 				var liClass = isNegative ? "li-item-negative" : "li-item-positive";
 				liClass += " item item-equipped";
 				var li =
@@ -479,7 +480,7 @@ define([
 					"</div></li>";
 				$li = $(li);
 				$("ul#list-items-perks").append($li);
-				var diff = now - perk.timestamp;
+				var diff = now - perk.addTimestamp;
 				var animate = diff < 100;
 				if (animate) {
 					$li.toggle(false);
@@ -528,7 +529,8 @@ define([
 				var perk = perks[i];
 				var desc = perk.name + " (" + UIConstants.getPerkDetailText(perk, isResting) + ")";
 				$("#perk-header-" + perk.id + " .info-callout-target").attr("description", desc);
-				$("#perk-header-" + perk.id + " .info-callout-target").toggleClass("event-ending", perk.effectTimer >= 0 && perk.effectTimer < 5);
+				$("#perk-header-" + perk.id + " .info-callout-target").toggleClass("event-starting", perk.startTimer >= 0);
+				$("#perk-header-" + perk.id + " .info-callout-target").toggleClass("event-ending", perk.removeTimer >= 0 && perk.removeTimer < 5);
 			}
 		},
 		

@@ -1,4 +1,5 @@
 define(['ash', 'game/GlobalSignals', 'game/vos/PerkVO', 'game/constants/PerkConstants'],
+
 function (Ash, GlobalSignals, PerkVO, PerkConstants) {
 	var PerksComponent = Ash.Class.extend({
 
@@ -16,7 +17,7 @@ function (Ash, GlobalSignals, PerkVO, PerkConstants) {
 		},
 
 		addPerk: function (perk) {
-			perk.timestamp = new Date().getTime();
+			perk.addTimestamp = new Date().getTime();
 			if (typeof this.perks[perk.type] == 'undefined') {
 				this.perks[perk.type] = [];
 			}
@@ -61,8 +62,9 @@ function (Ash, GlobalSignals, PerkVO, PerkConstants) {
 			for (var key in this.perks) {
 				if (key === type) {
 					for( let i = 0; i < this.perks[key].length; i++) {
-						if (multiply) effect *= this.perks[key][i].effect;
-						else effect += this.perks[key][i].effect;
+						var perkEffect = PerkConstants.getCurrentEffect(this.perks[key][i]);
+						if (multiply) effect *= perkEffect;
+						else effect += perkEffect;
 					}
 				}
 			}
@@ -74,7 +76,7 @@ function (Ash, GlobalSignals, PerkVO, PerkConstants) {
 			for (var key in this.perks) {
 				if (key === type) {
 					for (let i = 0; i < this.perks[key].length; i++) {
-						effect = this.perks[key][i].effect;
+						var effect = PerkConstants.getCurrentEffect(this.perks[key][i]);
 						if (effect >= min && effect <= max) return this.perks[key][i];
 					}
 				}
@@ -105,17 +107,6 @@ function (Ash, GlobalSignals, PerkVO, PerkConstants) {
 			}
 		},
 
-		isNegative: function (perk) {
-			switch (perk.type) {
-				case PerkConstants.perkTypes.injury:
-					return true;
-				case PerkConstants.perkTypes.movement:
-					return perk.effect > 1;
-				default:
-					return perk.effect < 1;
-			}
-		},
-
 		contains: function(name) {
 			for (var key in this.perks) {
 				for( let i = 0; i < this.perks[key].length; i++) {
@@ -136,7 +127,10 @@ function (Ash, GlobalSignals, PerkVO, PerkConstants) {
 					var perk = PerkConstants.getPerk(perkID);
 					if (!perk) continue;
 					perk = perk.clone();
-					perk.effectTimer = componentValues.perks[key][i].effectTimer;
+					perk.startTimer = componentValues.perks[key][i].startTimer;
+					perk.startTimerDuration = componentValues.perks[key][i].startTimerDuration;
+					perk.removeTimer = componentValues.perks[key][i].removeTimer;
+					perk.removeTimerDuration = componentValues.perks[key][i].removeTimerDuration;
 					if (perk) {
 						this.addPerk(perk);
 					}

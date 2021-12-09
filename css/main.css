@@ -2047,6 +2047,10 @@ body.dark .blueprint-piece-box img {
   width: 1.2em;
   height: 1.2em;
 }
+body.dark .event-starting {
+  animation: event-end 1.3s step-end infinite;
+  animation-timing-function: ease-in-out;
+}
 body.dark .event-ending {
   animation: event-end 1.3s step-end infinite;
   animation-timing-function: ease-in-out;
@@ -4092,6 +4096,10 @@ body.sunlit .blueprint-piece-box img {
   margin: 0.4em;
   width: 1.2em;
   height: 1.2em;
+}
+body.sunlit .event-starting {
+  animation: event-end 1.3s step-end infinite;
+  animation-timing-function: ease-in-out;
 }
 body.sunlit .event-ending {
   animation: event-end 1.3s step-end infinite;
