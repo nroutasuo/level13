@@ -42,7 +42,7 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 		PERK_RECOVERY_FACTOR_REST: 3,
 		TIMER_DISABLED: -1,
 		
-		ACTIVATION_TIME_HUNGERTHIRST: 30,
+		ACTIVATION_TIME_HEALTH_DEBUFF: 30,
 	
 		getPerk: function (perkId, startTimer, removeTimer) {
 			for (var key in this.perkDefinitions) {
@@ -85,10 +85,20 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 				case PerkConstants.perkStatus.ACTIVE: return perk.effect;
 				case PerkConstants.perkStatus.DEACTIVATING: return perk.effect;
 				case PerkConstants.perkStatus.ACTIVATING:
-					var duration = perk.startTimerDuration || perk.startTimer;
-					var activePercent = Math.min(1, 1 - perk.startTimer / duration);
+					var activePercent = this.getPerkActivePercent(perk);
 					return this.getPartialEffect(perk, activePercent);
 			}
+		},
+		
+		getPerkActivePercent: function (perk) {
+			if (perk.removeTimer != PerkConstants.TIMER_DISABLED)
+				return 1;
+			if (perk.startTimer == PerkConstants.TIMER_DISABLED)
+				return 1;
+			var duration = perk.startTimerDuration || perk.startTimer;
+			var activePercent = Math.min(1, 1 - perk.startTimer / duration);
+			activePercent = Math.round(activePercent * 10) / 10;
+			return activePercent;
 		},
 		
 		getPartialEffect: function (perk, percent) {

@@ -369,7 +369,8 @@ define(['ash',
 				var timeleft = perk.removeTimer / factor;
 				return this.getPerkBonusText(perk) + ", time left: " + this.getTimeToNum(timeleft);
 			} else if (perk.startTimer >= 0) {
-				return this.getPerkBonusText(perk) + ", time to add: " + this.getTimeToNum(perk.startTimer);
+				var percent = PerkConstants.getPerkActivePercent(perk);
+				return this.getPerkBonusText(perk) + ", time to full: " + this.getTimeToNum(perk.startTimer);
 			} else {
 				return this.getPerkBonusText(perk);
 			}

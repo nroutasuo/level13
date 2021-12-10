@@ -83,6 +83,7 @@ define([
 			this.elements.valScavenge = $("#stats-scavenge .value");
 			this.elements.valReputation = $("#header-camp-reputation .value");
 			this.elements.changeIndicatorVision = $("#vision-change-indicator");
+			this.elements.changeIndicatorHealth = $("#health-change-indicator");
 			this.elements.changeIndicatorScavenge = $("#scavenge-change-indicator");
 			this.elements.changeIndicatorStamina = $("#stamina-change-indicator");
 			this.elements.changeIndicatorReputation = $("#reputation-change-indicator");
@@ -214,6 +215,7 @@ define([
 			var maxVision = playerStatsNode.vision.maximum;
 			var shownVision = UIConstants.roundValue(playerVision, true, false);
 			var maxStamina = UIConstants.roundValue(playerStatsNode.stamina.maxStamina);
+			var showStamina = UIConstants.roundValue(Math.min(playerStamina, maxStamina), true, false);
 			var isResting = this.isResting();
 			var isHealing = busyComponent && busyComponent.getLastActionName() == "use_in_hospital";
 
@@ -222,10 +224,12 @@ define([
 			this.updateChangeIndicator(this.elements.changeIndicatorVision, maxVision - shownVision, shownVision < maxVision);
 
 			this.elements.valHealth.text(Math.round(playerStatsNode.stamina.health));
-			this.updateStatsCallout("Determines maximum stamina", "stats-health", null);
+			this.updateStatsCallout("Determines maximum stamina", "stats-health", playerStatsNode.stamina.healthAccSources, true);
+			var healthAccumulation = playerStatsNode.stamina.healthAccumulation;
+			this.updateChangeIndicator(this.elements.changeIndicatorHealth, healthAccumulation, healthAccumulation != 0, false);
 
 			GameGlobals.uiFunctions.toggle($("#stats-stamina"), GameGlobals.gameState.unlockedFeatures.scavenge);
-			this.elements.valStamina.text(UIConstants.roundValue(playerStamina, true, false) + " / " + maxStamina);
+			this.elements.valStamina.text(showStamina + " / " + maxStamina);
 			this.updateStatsCallout("Required for exploration", "stats-stamina", playerStatsNode.stamina.accSources);
 			this.updateChangeIndicator(this.elements.changeIndicatorStamina, playerStatsNode.stamina.accumulation, playerStamina < maxStamina, isResting || isHealing);
 
@@ -370,19 +374,23 @@ define([
 			}
 		},
 
-		updateStatsCallout: function (description, indicatorID, changeSources) {
+		updateStatsCallout: function (description, indicatorID, changeSources, hideNumbers) {
 			var sources = "";
 			var source;
 			var total = 0;
 			for (let i in changeSources) {
 				source = changeSources[i];
 				if (source.amount != 0) {
-					var amount = Math.round(source.amount * 1000)/1000;
-					if (amount == 0 && source.amount > 0) {
-						amount = "<&nbsp;" + (1/1000);
+					if (hideNumbers) {
+						sources += source.source + "<br/>";
+					} else {
+						var amount = Math.round(source.amount * 1000)/1000;
+						if (amount == 0 && source.amount > 0) {
+							amount = "<&nbsp;" + (1/1000);
+						}
+						sources += source.source + ": " + amount + "/s<br/>";
+						total+= source.amount;
 					}
-					sources += source.source + ": " + amount + "/s<br/>";
-					total+= source.amount;
 				}
 			}
 
@@ -390,8 +398,13 @@ define([
 				sources = "(no change)";
 			}
 			
-			var totals = "Total: " + Math.round(total * 10000)/10000 + "/s";
-			var content = description + (description && sources ? "<hr/>" : "") + sources + (total > 0 ? ("<hr/>" + totals) : "");
+			var content = description + (description && sources ? "<hr/>" : "") + sources;
+			
+			if (!hideNumbers) {
+				var totals = "Total: " + Math.round(total * 10000)/10000 + "/s";
+				var content =  + (total > 0 ? ("<hr/>" + totals) : "");
+			}
+			
 			UIConstants.updateCalloutContent("#" + indicatorID, content);
 		},
 
