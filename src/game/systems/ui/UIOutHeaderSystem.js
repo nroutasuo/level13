@@ -402,7 +402,7 @@ define([
 			
 			if (!hideNumbers) {
 				var totals = "Total: " + Math.round(total * 10000)/10000 + "/s";
-				var content =  + (total > 0 ? ("<hr/>" + totals) : "");
+				content += (total > 0 ? ("<hr/>" + totals) : "");
 			}
 			
 			UIConstants.updateCalloutContent("#" + indicatorID, content);
