@@ -83,7 +83,8 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 			var status = this.getStatus(perk);
 			switch (status) {
 				case PerkConstants.perkStatus.ACTIVE: return perk.effect;
-				case PerkConstants.perkStatus.DEACTIVATING: return perk.effect;
+				case PerkConstants.perkStatus.DEACTIVATING:
+					return this.getPartialEffect(perk, perk.effectFactor);
 				case PerkConstants.perkStatus.ACTIVATING:
 					var activePercent = this.getPerkActivePercent(perk);
 					return this.getPartialEffect(perk, activePercent);

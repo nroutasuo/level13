@@ -98,7 +98,7 @@ define([
 				var perkID = hazardPerksAll[i];
 				var isActive = hazardPerksForSector.indexOf(perkID) >= 0;
 				if (isActive) {
-					this.addOrUpdatePerk(perkID);
+					this.addOrUpdatePerk(perkID, PerkConstants.ACTIVATION_TIME_HEALTH_DEBUFF);
 				} else {
 					this.deactivatePerk(perkID, 10);
 				}
@@ -107,7 +107,6 @@ define([
 		
 		addOrUpdatePerk: function (perkID, startTimer) {
 			startTimer = startTimer || PerkConstants.TIMER_DISABLED;
-			removeTimer = startTimer || PerkConstants.TIMER_DISABLED;
 			let perksComponent = this.playerNodes.head.perks;
 			let playerPerk = perksComponent.getPerk(perkID);
 			if (playerPerk) {
@@ -125,6 +124,7 @@ define([
 			let perk = perksComponent.getPerk(perkID);
 			if (perk) {
 				if (perk.removeTimer == PerkConstants.TIMER_DISABLED || perk.removeTimer > timer) {
+					perk.effectFactor = PerkConstants.getPerkActivePercent(perk);
 					perk.removeTimer = timer;
 					this.addPerkDeactivatedMessage(perkID);
 				}
