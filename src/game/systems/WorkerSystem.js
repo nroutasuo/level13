@@ -199,8 +199,8 @@ define([
 			var playerFoodSourceAcc = GameGlobals.resourcesHelper.getCurrentStorageAccumulation(true);
 			
 			// Manage perks
-			var isThirsty = playerFoodSource.resources.water <= 0;
-			var isHungry = playerFoodSource.resources.food <= 0;
+			var isThirsty = playerFoodSource.resources.water < 1;
+			var isHungry = playerFoodSource.resources.food < 1;
 			var perksComponent = this.playerNodes.head.entity.get(PerksComponent);
 			
 			var hasThirstPerk = perksComponent.hasPerk(PerkConstants.perkIds.thirst);
@@ -271,8 +271,8 @@ define([
 			var timeStamp = new Date().getTime();
 			var log = timeStamp - this.lastMsgTimeStamp > this.msgFrequency;
 			if (log) {
-				var isThirsty = playerFoodSource.water <= 0;
-				var isHungry = playerFoodSource.food <= 0;
+				var isThirsty = playerFoodSource.water < 1;
+				var isHungry = playerFoodSource.food < 1;
 				var msg = null;
 				
 				if (inCamp && hasPopulation && isThirsty && Math.random() < 0.05) {
