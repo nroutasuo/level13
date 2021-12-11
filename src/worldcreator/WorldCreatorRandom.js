@@ -1,6 +1,7 @@
 // Random and seed related functions for the WorldCreator
 define([
 	'ash',
+	'utils/MathUtils',
 	'utils/PathFinding',
 	'worldcreator/WorldCreatorLogger',
 	'game/constants/PositionConstants',
@@ -9,7 +10,7 @@ define([
 	'game/constants/WorldConstants',
 	'game/vos/PositionVO',
 	'game/vos/PathConstraintVO'],
-function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants, MovementConstants, WorldConstants, PositionVO, PathConstraintVO) {
+function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants, MovementConstants, WorldConstants, PositionVO, PathConstraintVO) {
 
 	var WorldCreatorRandom = {
 		
@@ -264,6 +265,25 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 				if (pathLen <= 0) return false;
 			}
 			return true;
+		},
+		
+		getProbabilityFromFactors: function (factors) {
+			if (factors.length == 0) {
+				WorldCreatorLogger.w("no factors for getProbabilityFromFactors");
+				return 0.5;
+			}
+			let total = 0;
+			for (let i = 0; i < factors.length; i++) {
+				let factor = factors[i];
+				let value = factor.value;
+				if (typeof(value) == "boolean") {
+					total += value ? 1 : 0;
+				} else {
+					total += MathUtils.map(value, factor.min || 0, factor.max || 1, 0, 1);
+				}
+			}
+			
+			return total / factors.length;
 		},
 		
 		// get random result with a validity check function, try max 99 times with different seeds, keep track of fails

@@ -1083,6 +1083,10 @@ define([
 				col.food = 0;
 			}
 			
+			if (sectorVO.hazards.hasHazards()) {
+				sca.water = 0;
+			}
+			
 			if (sectorVO.isCamp) {
 				sca.food = Math.max(sca.food, WorldConstants.resourcePrevalence.COMMON);
 				sca.metal = MathUtils.clamp(sca.metal, WorldConstants.resourcePrevalence.DEFAULT, WorldConstants.resourcePrevalence.COMMON);
@@ -1258,10 +1262,13 @@ define([
 				if (distanceToCamp < 3) {
 					sectorVO.hasRegularEnemies = false;
 				} else {
-					let baseThreshold = levelVO.isCampable ? 0.15 : 0.65;
-					let distanceFactor = MathUtils.map(dist, 0, 25, 0, 1);
 					let r = WorldCreatorRandom.random(l * sectorVO.position.sectorX * seed + sectorVO.position.sectorY * seed + 4848);
-					sectorVO.hasRegularEnemies = r < baseThreshold + distanceFactor;
+					let probability = WorldCreatorRandom.getProbabilityFromFactors([
+						{ name: "uncampable", value: !levelVO.isCampable },
+						{ name: "distance", value: dist, min: 0, max: 25 },
+						{ name: "hazards", value: sectorVO.hazards.hasHazards() },
+					]);
+					sectorVO.hasRegularEnemies = r < probability;
 				}
 
 				// workshop and locale enemies (counts)
