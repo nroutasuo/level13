@@ -148,7 +148,7 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 	
 	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.encumbered, "Encumbered", "Movement", 1.5, "img/items/weight.png"));
 	
-	PerkConstants.perkDefinitions.stamina.push(new PerkVO(PerkConstants.perkIds.staminaBonus, "Energized", "Stamina", 1.5, "img/items/health-positive.png"));
+	PerkConstants.perkDefinitions.stamina.push(new PerkVO(PerkConstants.perkIds.staminaBonus, "Energized", "Stamina", 1, "img/items/health-positive.png"));
 	PerkConstants.perkDefinitions.stamina.push(new PerkVO(PerkConstants.perkIds.staminaBonusPenalty, "Headache", "Stamina", 0.9, "img/items/health-negative.png"));
 	
 	PerkConstants.perkDefinitions.stamina.push(new PerkVO(PerkConstants.perkIds.lightBeacon, "Beacon", "Light", 20, "img/items/perk-light-beacon.png"));

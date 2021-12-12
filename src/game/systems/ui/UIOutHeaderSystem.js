@@ -480,21 +480,21 @@ define([
 			var now = new Date().getTime();
 			$("ul#list-items-perks").empty();
 			for (let i = 0; i < perks.length; i++) {
-				var perk = perks[i];
-				var desc = perk.name + " (" + UIConstants.getPerkDetailText(perk, isResting) + ")";
-				var url = perk.icon;
-				var isNegative = PerkConstants.isNegative(perk);
-				var liClass = isNegative ? "li-item-negative" : "li-item-positive";
+				let perk = perks[i];
+				let desc = this.getPerkDescription(perk, isResting);
+				let url = perk.icon;
+				let isNegative = PerkConstants.isNegative(perk);
+				let liClass = isNegative ? "li-item-negative" : "li-item-positive";
 				liClass += " item item-equipped";
-				var li =
+				let li =
 					"<li class='" + liClass + "' id='perk-header-" + perk.id + "'>" +
 					"<div class='info-callout-target info-callout-target-small' description='" + desc + "'>" +
 					"<img src='" + url + "' alt='" + perk.name + "'/>" +
 					"</div></li>";
 				$li = $(li);
 				$("ul#list-items-perks").append($li);
-				var diff = now - perk.addTimestamp;
-				var animate = diff < 100;
+				let diff = now - perk.addTimestamp;
+				let animate = diff < 100;
 				if (animate) {
 					$li.toggle(false);
 					$li.fadeIn(500);
@@ -540,11 +540,18 @@ define([
 
 			for (let i = 0; i < perks.length; i++) {
 				var perk = perks[i];
-				var desc = perk.name + " (" + UIConstants.getPerkDetailText(perk, isResting) + ")";
+				var desc = this.getPerkDescription(perk, isResting);
 				$("#perk-header-" + perk.id + " .info-callout-target").attr("description", desc);
 				$("#perk-header-" + perk.id + " .info-callout-target").toggleClass("event-starting", perk.startTimer >= 0);
 				$("#perk-header-" + perk.id + " .info-callout-target").toggleClass("event-ending", perk.removeTimer >= 0 && perk.removeTimer < 5);
 			}
+		},
+		
+		getPerkDescription: function (perk, isResting) {
+			let desc = perk.name;
+			let detailText = UIConstants.getPerkDetailText(perk, isResting);
+			if (detailText.length > 0) desc += " (" + detailText + ")";
+			return desc;
 		},
 		
 		updateResourcesIfNotPending: function () {

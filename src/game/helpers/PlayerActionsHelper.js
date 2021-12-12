@@ -414,20 +414,38 @@ define([
 						}
 					}
 
-					if (requirements.perks) {
-						var perkRequirements = requirements.perks;
-						for(var perkName in perkRequirements) {
-							var requirementDef = perkRequirements[perkName];
-							var min = requirementDef[0];
-							var max = requirementDef[1];
-							var isOneValue = requirementDef[2];
+					if (requirements.perkEffects) {
+						let perkRequirements = requirements.perkEffects;
+						for(let perkType in perkRequirements) {
+							let requirementDef = perkRequirements[perkType];
+							let min = requirementDef[0];
+							let max = requirementDef[1];
+							let isOneValue = requirementDef[2];
 							if (max < 0) max = 9999999;
-							var totalEffect = playerPerks.getTotalEffect(perkName);
-							var validPerk = playerPerks.getPerkWithEffect(perkName, min, max);
+							
+							let totalEffect = playerPerks.getTotalEffect(perkType);
+							let validPerk = playerPerks.getPerkWithEffect(perkType, min, max);
+							
 							if ((!isOneValue && (min > totalEffect || max <= totalEffect)) || (isOneValue && validPerk == null)) {
-								if (min > totalEffect) reason = "Can't do this while: " + perkName;
-								if (max <= totalEffect) reason = "Status required: " + perkName;
+								if (min > totalEffect) reason = "Can't do this while: " + perkType;
+								if (max <= totalEffect) reason = "Status required: " + perkType;
 								return { value: 0, reason: reason };
+							}
+						}
+					}
+					
+					if (requirements.perks) {
+						let perkRequirements = requirements.perks;
+						for (let perkID in perkRequirements) {
+							let requiredValue = perkRequirements[perkID];
+							let actualValue = playerPerks.hasPerk(perkID);
+							if (requiredValue != actualValue) {
+								var perk = PerkConstants.getPerk(perkID);
+								if (requiredValue) {
+									return { value: 0, reason: "Status required: " + perk.name };
+								} else {
+									return { value: 0, reason: "Blocked by status: " + perk.name };
+								}
 							}
 						}
 					}
@@ -1174,8 +1192,8 @@ define([
 					requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
 					requirements.improvementMajorLevel = {};
 					requirements.improvementMajorLevel["hospital"] = [ minLevel, -1 ];
-					requirements.perks = {};
-					requirements.perks["Health"] = [ -1, maxHealth ];
+					requirements.perkEffects = {};
+					requirements.perkEffects["Health"] = [ -1, maxHealth ];
 					return requirements;
 					
 				case "build_out_passage_up_stairs":

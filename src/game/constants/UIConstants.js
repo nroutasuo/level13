@@ -364,27 +364,41 @@ define(['ash',
 		},
 
 		getPerkDetailText: function (perk, isResting) {
+			let bonusText = this.getPerkBonusText(perk);
+			let timerText = this.getPerkTimerText(perk, isResting);
+			let result = "";
+			if (bonusText) result += bonusText;
+			if (timerText) {
+				if (bonusText.length > 0) result += ", ";
+				result += timerText;
+			}
+			return result;
+		},
+		
+		getPerkTimerText: function (perk, isResting) {
 			if (perk.removeTimer >= 0) {
 				var factor = PerkConstants.getRemoveTimeFactor(perk, isResting);
 				var timeleft = perk.removeTimer / factor;
-				return this.getPerkBonusText(perk) + ", time left: " + this.getTimeToNum(timeleft);
+				return "time left: " + this.getTimeToNum(timeleft);
 			} else if (perk.startTimer >= 0) {
 				var percent = PerkConstants.getPerkActivePercent(perk);
-				return this.getPerkBonusText(perk) + ", time to full: " + this.getTimeToNum(perk.startTimer);
+				return "time to full: " + this.getTimeToNum(perk.startTimer);
 			} else {
-				return this.getPerkBonusText(perk);
+				return null;
 			}
 		},
 
 		getPerkBonusText: function (perk) {
 			var value = 0;
 			if (PerkConstants.isPercentageEffect(perk.type)) {
+				if (perk.effect == 1) return null;
 				if (perk.effect < 1) {
 					value = "-" + UIConstants.getMultiplierBonusDisplayValue(PerkConstants.getCurrentEffect(perk));
 				} else {
 					value = "+" + UIConstants.getMultiplierBonusDisplayValue(PerkConstants.getCurrentEffect(perk));
 				}
 			} else {
+				if (perk.effect == 0) return null;
 				value = "+" + PerkConstants.getCurrentEffect(perk);
 			}
 

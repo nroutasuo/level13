@@ -3227,7 +3227,7 @@
                     -1
                 ]
             },
-            "perks": {
+            "perkEffects": {
                 "Injury": [
                     0.1,
                     1
@@ -3312,7 +3312,7 @@
         },
         "use_item_first_aid_kit_1": {
             "busy": false,
-            "perks": {
+            "perkEffects": {
                 "Injury": [
                     0.6,
                     0.99,
@@ -3322,7 +3322,7 @@
         },
         "use_item_first_aid_kit_2": {
             "busy": false,
-            "perks": {
+            "perkEffects": {
                 "Injury": [
                     0.05,
                     0.99,
@@ -3337,7 +3337,10 @@
             ]
         },
         "use_item_stamina_potion_1": {
-            "inCamp": false
+            "inCamp": false,
+			"perks": {
+				"energized": false
+			}
         },
         "use_out_collector_food": {
             "bag": {

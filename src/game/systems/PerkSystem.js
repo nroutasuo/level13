@@ -197,7 +197,7 @@ define([
 					msg = "Feeling better again.";
 					break;
 				
-				case PerkConstants.perkIds.staminaBonusPenalty:
+					case PerkConstants.perkIds.staminaBonusPenalty:
 					msg = "Feeling better again.";
 					break;
 					

@@ -31,6 +31,14 @@
 				},
 				{
 					"type": "GD",
+					"summary": "Make some debuffs (hunger, thirst, cold, poison, radiation) less forgiving by adding them slowly instead of immediately."
+				},
+				{
+					"type": "GD",
+					"summary": "Polish the Rejuv Shot (block using twice; only restores stamina and doesn't affect max stamina)"
+				},
+				{
+					"type": "GD",
 					"summary": "Improve followers and add different follower abilities"
 				},
 				{
