@@ -2691,7 +2691,7 @@
             "busy": false,
             "inCamp": false,
             "sector": {
-                "blockerEAST": false
+                "blockerE": false
             },
             "vision": [
                 5,
@@ -2713,7 +2713,7 @@
             "busy": false,
             "inCamp": false,
             "sector": {
-                "blockerNORTH": false
+                "blockerN": false
             },
             "vision": [
                 5,
@@ -2745,7 +2745,7 @@
             "busy": false,
             "inCamp": false,
             "sector": {
-                "blockerSOUTH": false
+                "blockerS": false
             },
             "vision": [
                 5,
@@ -2767,7 +2767,7 @@
             "busy": false,
             "inCamp": false,
             "sector": {
-                "blockerWEST": false
+                "blockerW": false
             },
             "vision": [
                 5,

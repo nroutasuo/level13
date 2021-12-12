@@ -667,7 +667,7 @@ define([
 						}
 						for (let i in PositionConstants.getLevelDirections()) {
 							var direction = PositionConstants.getLevelDirections()[i];
-							var directionName = PositionConstants.getDirectionName(direction);
+							var directionName = PositionConstants.getDirectionName(direction, true);
 
 							var blockerKey = "blocker" + directionName.toUpperCase();
 							if (typeof requirements.sector[blockerKey] !== 'undefined') {
