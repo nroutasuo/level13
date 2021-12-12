@@ -3,6 +3,7 @@ define([
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
+	'game/constants/ItemConstants',
 	'game/constants/PositionConstants',
 	'game/constants/TextConstants',
 	'game/constants/TradeConstants',
@@ -21,7 +22,7 @@ define([
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/improvements/WorkshopComponent',
 	'game/systems/CheatSystem'
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, PositionConstants, TextConstants, TradeConstants, UIConstants,
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, ItemConstants, PositionConstants, TextConstants, TradeConstants, UIConstants,
 	PlayerLocationNode, PlayerPositionNode,
 	CampComponent, PositionComponent, VisitedComponent, EnemiesComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, SectorImprovementsComponent, WorkshopComponent,
 	CheatSystem) {
@@ -245,7 +246,7 @@ define([
 			} else {
 				result += TextConstants.getScaResourcesString(resources, featuresComponent.resourcesScavengable);
 				if (result.length > 0 && items.length > 0) result += ", ";
-				result += items.join(", ");
+				result += items.map(itemID => ItemConstants.getItemByID(itemID).name.toLowerCase()).join(", ");
 			}
 			
 			result += " (" + scavengedPercent + "% scavenged) ";
