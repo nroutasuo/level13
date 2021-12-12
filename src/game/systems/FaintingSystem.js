@@ -80,23 +80,18 @@ define([
 			this.sectorNodes = null;
 		},
 		
-		checkFainting: function () {
-			var playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
-			var movementOptionsComponent = this.playerLocationNodes.head.entity.get(MovementOptionsComponent);
-			if (playerPosition.inCamp) return;
-			
-			if (this.playerLocationNodes.head.entity.has(CampComponent)) return;
+		despair: function () {
+			if (this.isInCampOrCampSector()) return;
 			
 			var hasFood = this.playerResourcesNodes.head.resources.resources.getResource(resourceNames.food) >= 1;
 			var hasWater = this.playerResourcesNodes.head.resources.resources.getResource(resourceNames.water) >= 1;
 			var hasStamina = this.playerStatsNodes.head.stamina.stamina > PlayerActionConstants.costs.move_sector_east.stamina;
-			var canMove = movementOptionsComponent.canMove();
+			var canMove = this.playerLocationNodes.head.entity.get(MovementOptionsComponent).canMove();
+			
 			if (hasFood && hasWater && hasStamina && canMove) {
 				this.log("You rest a bit, eat and drink some. Then you decide to continue.");
 				return;
 			}
-			
-			// Player is hungry or thirsty or out of stamina and is out exploring
 			
 			var hasDeity = this.playerStatsNodes.head.entity.has(DeityComponent);
 			let hasFollowers = this.playerStatsNodes.head.followers.getParty().length > 0;
@@ -125,6 +120,7 @@ define([
 				return;
 			}
 			
+			// rescued by followers: back to nearest camp, keep items, maybe injured
 			if (hasFollowers && this.lastVisitedCampNodes.head && Math.random() < 0.1) {
 				let party = this.playerStatsNodes.head.followers.getParty();
 				let follower = party[MathUtils.randomIntBetween(0, party.length)];
@@ -148,20 +144,6 @@ define([
 			}
 			
 			log.w("can't faint: no known safe sector or camp");
-		},
-		
-		isSectorSafe: function (sector) {
-			var featuresComponent = sector.get(SectorFeaturesComponent);
-			var sectorResourcesSca = featuresComponent.resourcesScavengable;
-			var sectorResourcesCo = featuresComponent.resourcesCollectable;
-			return (sectorResourcesSca.getResource(resourceNames.food) > 0 || sectorResourcesCo.getResource(resourceNames.food) > 0) &&
-				(sectorResourcesSca.getResource(resourceNames.water) > 0 || sectorResourcesCo.getResource(resourceNames.water) > 0);
-		},
-		
-		isSectorKnownSafe: function (sector) {
-			var discoveredResources = sector.get(SectorStatusComponent).discoveredResources;
-			var knownSectorSafe = discoveredResources.indexOf(resourceNames.food) >= 0 && discoveredResources.indexOf(resourceNames.water) >= 0;
-			return knownSectorSafe;
 		},
 		
 		fadeOutToOutside: function (msgAdjective) {
@@ -214,6 +196,7 @@ define([
 		
 		fadeOut: function (msg, msgLog, handleResults, sector, loseInventoryProbability, injuryProbability, loseFollowerProbability) {
 			var sys = this;
+			
 			var finalStep = function () {
 				log.i("hide game", this)
 				GameGlobals.uiFunctions.hideGame(false, false);
@@ -228,6 +211,7 @@ define([
 					sys.save();
 				}, 250);
 			};
+			
 			if (handleResults) {
 				var resultVO = GameGlobals.playerActionResultsHelper.getFadeOutResults(loseInventoryProbability, injuryProbability, loseFollowerProbability);
 				this.playerResourcesNodes.head.entity.add(new PlayerActionResultComponent(resultVO));
@@ -272,7 +256,28 @@ define([
 		
 		save: function () {
 			GlobalSignals.saveGameSignal.dispatch();
-		}
+		},
+		
+		isSectorSafe: function (sector) {
+			var featuresComponent = sector.get(SectorFeaturesComponent);
+			var sectorResourcesSca = featuresComponent.resourcesScavengable;
+			var sectorResourcesCo = featuresComponent.resourcesCollectable;
+			return (sectorResourcesSca.getResource(resourceNames.food) > 0 || sectorResourcesCo.getResource(resourceNames.food) > 0) &&
+				(sectorResourcesSca.getResource(resourceNames.water) > 0 || sectorResourcesCo.getResource(resourceNames.water) > 0);
+		},
+		
+		isSectorKnownSafe: function (sector) {
+			var discoveredResources = sector.get(SectorStatusComponent).discoveredResources;
+			var knownSectorSafe = discoveredResources.indexOf(resourceNames.food) >= 0 && discoveredResources.indexOf(resourceNames.water) >= 0;
+			return knownSectorSafe;
+		},
+		
+		isInCampOrCampSector: function () {
+			var playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
+			if (playerPosition.inCamp) return true;
+			if (this.playerLocationNodes.head.entity.has(CampComponent)) return true;
+			return false;
+		},
 
 	});
 

@@ -1094,7 +1094,7 @@ define(['ash',
 		},
 
 		despair: function () {
-			this.engine.getSystem(FaintingSystem).checkFainting();
+			this.engine.getSystem(FaintingSystem).despair();
 			this.completeAction("despair");
 		},
 
