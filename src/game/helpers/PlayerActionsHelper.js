@@ -1433,6 +1433,9 @@ define([
 				return PlayerActionConstants.descriptions[action];
 			} else if (PlayerActionConstants.descriptions[baseAction]) {
 				return PlayerActionConstants.descriptions[baseAction];
+			} else if (UpgradeConstants.upgradeDescriptions[action]) {
+				// upgrade action descriptions are in the list outside of the button
+				return "";
 			} else {
 				switch(baseAction) {
 					case "craft":

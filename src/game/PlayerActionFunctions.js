@@ -269,6 +269,7 @@ define(['ash',
 				case "launch": this.launch(param); break;
 				// Mapped directly in UIFunctions
 				case "leave_camp": break;
+				case "fight": break;
 				// Movement
 				case "move_level_up": this.moveTo(PositionConstants.DIRECTION_UP); break;
 				case "move_level_down": this.moveTo(PositionConstants.DIRECTION_DOWN); break;
