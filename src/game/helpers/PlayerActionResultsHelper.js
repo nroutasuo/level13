@@ -1374,7 +1374,7 @@ define([
 		getAvailableResourcesForEnemy: function (enemyVO) {
 			let result = new ResourcesVO();
 			for (let i = 0; i < enemyVO.droppedResources.length; i++) {
-				result.setResource(enemyVO.droppedResources[i], 10);
+				result.setResource(enemyVO.droppedResources[i], WorldConstants.resourcePrevalence.COMMON);
 			}
 			return result;
 		},
