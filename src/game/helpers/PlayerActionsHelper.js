@@ -83,10 +83,9 @@ define([
 
 		deductCosts: function (action) {
 			var costs = this.getCosts(action);
-
-			if (!costs) {
-				return;
-			}
+			var result = {};
+			
+			if (!costs) return result;
 
 			var currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
@@ -99,32 +98,44 @@ define([
 				costAmount = costs[costName] || 0;
 				if (costName === "stamina") {
 					this.playerStatsNodes.head.stamina.stamina -= costAmount;
+					result.stamina = costAmount;
 				} else if (costName === "rumours") {
 					this.playerStatsNodes.head.rumours.value -= costAmount;
+					result.rumours = costAmount;
 				} else if (costName === "favour") {
 					var deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
-					if (deityComponent)
+					if (deityComponent) {
 						deityComponent.favour -= costAmount;
-					else
+						result.favour = costAmount;
+					} else {
 						log.w("Trying to deduct favour cost but there's no deity component!");
+					}
 				} else if (costName === "evidence") {
 					this.playerStatsNodes.head.evidence.value -= costAmount;
+					result.evidence = costAmount;
 				} else if (costName === "silver") {
 					var currencyComponent = GameGlobals.resourcesHelper.getCurrentCurrency();
 					currencyComponent.currency -= costAmount;
+					result.currency = costAmount;
 				} else if (costNameParts[0] === "resource") {
 					currentStorage.resources.addResource(costNameParts[1], -costAmount);
+					result.resources = result.resources || {};
+					result.resources[costNameParts[1]] = costAmount;
 				} else if (costNameParts[0] === "item") {
 					var itemId = costName.replace(costNameParts[0] + "_", "");
+					result.items = result.items || [];
 					for (let i = 0; i < costAmount; i++) {
 						var item = itemsComponent.getItem(itemId, null, inCamp, false) || itemsComponent.getItem(itemId, null, inCamp, true);
 						itemsComponent.discardItem(item, false);
+						result.items.push(item);
 					}
 				} else if (costName == "blueprint") {
 				} else {
 					log.w("unknown cost: " + costName + ", action: " + action);
 				}
 			}
+			
+			return result;
 		},
 
 		// Check costs, requirements and cooldown - everything that is needed for the player action
@@ -403,20 +414,38 @@ define([
 						}
 					}
 
-					if (requirements.perks) {
-						var perkRequirements = requirements.perks;
-						for(var perkName in perkRequirements) {
-							var requirementDef = perkRequirements[perkName];
-							var min = requirementDef[0];
-							var max = requirementDef[1];
-							var isOneValue = requirementDef[2];
+					if (requirements.perkEffects) {
+						let perkRequirements = requirements.perkEffects;
+						for(let perkType in perkRequirements) {
+							let requirementDef = perkRequirements[perkType];
+							let min = requirementDef[0];
+							let max = requirementDef[1];
+							let isOneValue = requirementDef[2];
 							if (max < 0) max = 9999999;
-							var totalEffect = playerPerks.getTotalEffect(perkName);
-							var validPerk = playerPerks.getPerkWithEffect(perkName, min, max);
+							
+							let totalEffect = playerPerks.getTotalEffect(perkType);
+							let validPerk = playerPerks.getPerkWithEffect(perkType, min, max);
+							
 							if ((!isOneValue && (min > totalEffect || max <= totalEffect)) || (isOneValue && validPerk == null)) {
-								if (min > totalEffect) reason = "Can't do this while: " + perkName;
-								if (max <= totalEffect) reason = "Status required: " + perkName;
+								if (min > totalEffect) reason = "Can't do this while: " + perkType;
+								if (max <= totalEffect) reason = "Status required: " + perkType;
 								return { value: 0, reason: reason };
+							}
+						}
+					}
+					
+					if (requirements.perks) {
+						let perkRequirements = requirements.perks;
+						for (let perkID in perkRequirements) {
+							let requiredValue = perkRequirements[perkID];
+							let actualValue = playerPerks.hasPerk(perkID);
+							if (requiredValue != actualValue) {
+								var perk = PerkConstants.getPerk(perkID);
+								if (requiredValue) {
+									return { value: 0, reason: "Status required: " + perk.name };
+								} else {
+									return { value: 0, reason: "Blocked by status: " + perk.name };
+								}
 							}
 						}
 					}
@@ -610,6 +639,14 @@ define([
 								return { value: 0, reason: reason };
 							}
 						}
+						if (typeof requirements.sector.scavengedPercent != "undefined") {
+							var range = requirements.sector.scavengedPercent;
+							var currentVal = statusComponent.getScavengedPercent() / 100;
+							let result = this.checkRequirementsRange(range, currentVal, "", "This area has beens scavenged clean.");
+							if (result) {
+								return result;
+							}
+						}
 						if (typeof requirements.sector.spring != "undefined") {
 							if (featuresComponent.hasSpring != requirements.sector.spring) {
 								if (featuresComponent.hasSpring)    reason = "There is a spring.";
@@ -630,7 +667,7 @@ define([
 						}
 						for (let i in PositionConstants.getLevelDirections()) {
 							var direction = PositionConstants.getLevelDirections()[i];
-							var directionName = PositionConstants.getDirectionName(direction);
+							var directionName = PositionConstants.getDirectionName(direction, true);
 
 							var blockerKey = "blocker" + directionName.toUpperCase();
 							if (typeof requirements.sector[blockerKey] !== 'undefined') {
@@ -1155,8 +1192,8 @@ define([
 					requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
 					requirements.improvementMajorLevel = {};
 					requirements.improvementMajorLevel["hospital"] = [ minLevel, -1 ];
-					requirements.perks = {};
-					requirements.perks["Health"] = [ -1, maxHealth ];
+					requirements.perkEffects = {};
+					requirements.perkEffects["Health"] = [ -1, maxHealth ];
 					return requirements;
 					
 				case "build_out_passage_up_stairs":
@@ -1361,12 +1398,6 @@ define([
 						result[key] += caravansComponent.pendingCaravan.sellAmount;
 					}
 					break;
-				
-				case "nap":
-					if (GameGlobals.gameState.numCamps < 1) {
-						result.stamina = 0;
-					}
-					break;
 			}
 		},
 		
@@ -1402,6 +1433,9 @@ define([
 				return PlayerActionConstants.descriptions[action];
 			} else if (PlayerActionConstants.descriptions[baseAction]) {
 				return PlayerActionConstants.descriptions[baseAction];
+			} else if (UpgradeConstants.upgradeDescriptions[action]) {
+				// upgrade action descriptions are in the list outside of the button
+				return "";
 			} else {
 				switch(baseAction) {
 					case "craft":

@@ -9,6 +9,7 @@ define([
 	'game/constants/FollowerConstants',
 	'game/constants/ItemConstants',
 	'game/constants/FightConstants',
+	'game/constants/PerkConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/PlayerStatConstants',
 	'game/systems/SaveSystem',
@@ -30,7 +31,7 @@ define([
 	'utils/UIState',
 	'utils/UIAnimations'
 ], function (Ash,
-	GameGlobals, GlobalSignals, GameConstants, CampConstants, LevelConstants, UIConstants, FollowerConstants, ItemConstants, FightConstants, UpgradeConstants, PlayerStatConstants,
+	GameGlobals, GlobalSignals, GameConstants, CampConstants, LevelConstants, UIConstants, FollowerConstants, ItemConstants, FightConstants, PerkConstants, UpgradeConstants, PlayerStatConstants,
 	SaveSystem,
 	PlayerStatsNode, AutoPlayNode, PlayerLocationNode, TribeUpgradesNode, DeityNode,
 	BagComponent,
@@ -82,6 +83,7 @@ define([
 			this.elements.valScavenge = $("#stats-scavenge .value");
 			this.elements.valReputation = $("#header-camp-reputation .value");
 			this.elements.changeIndicatorVision = $("#vision-change-indicator");
+			this.elements.changeIndicatorHealth = $("#health-change-indicator");
 			this.elements.changeIndicatorScavenge = $("#scavenge-change-indicator");
 			this.elements.changeIndicatorStamina = $("#stamina-change-indicator");
 			this.elements.changeIndicatorReputation = $("#reputation-change-indicator");
@@ -213,18 +215,21 @@ define([
 			var maxVision = playerStatsNode.vision.maximum;
 			var shownVision = UIConstants.roundValue(playerVision, true, false);
 			var maxStamina = UIConstants.roundValue(playerStatsNode.stamina.maxStamina);
+			var showStamina = UIConstants.roundValue(Math.min(playerStamina, maxStamina), true, false);
 			var isResting = this.isResting();
 			var isHealing = busyComponent && busyComponent.getLastActionName() == "use_in_hospital";
 
 			this.elements.valVision.text(shownVision + " / " + maxVision);
-			this.updateStatsCallout("Makes exploration safer", "stats-vision", playerStatsNode.vision.accSources);
+			this.updateStatsCallout("Makes exploration safer and scavenging more effective", "stats-vision", playerStatsNode.vision.accSources);
 			this.updateChangeIndicator(this.elements.changeIndicatorVision, maxVision - shownVision, shownVision < maxVision);
 
-			this.elements.valHealth.text(playerStatsNode.stamina.health);
-			this.updateStatsCallout("Determines maximum stamina", "stats-health", null);
+			this.elements.valHealth.text(Math.round(playerStatsNode.stamina.health));
+			this.updateStatsCallout("Determines maximum stamina", "stats-health", playerStatsNode.stamina.healthAccSources, true);
+			var healthAccumulation = playerStatsNode.stamina.healthAccumulation;
+			this.updateChangeIndicator(this.elements.changeIndicatorHealth, healthAccumulation, healthAccumulation != 0, false);
 
 			GameGlobals.uiFunctions.toggle($("#stats-stamina"), GameGlobals.gameState.unlockedFeatures.scavenge);
-			this.elements.valStamina.text(UIConstants.roundValue(playerStamina, true, false) + " / " + maxStamina);
+			this.elements.valStamina.text(showStamina + " / " + maxStamina);
 			this.updateStatsCallout("Required for exploration", "stats-stamina", playerStatsNode.stamina.accSources);
 			this.updateChangeIndicator(this.elements.changeIndicatorStamina, playerStatsNode.stamina.accumulation, playerStamina < maxStamina, isResting || isHealing);
 
@@ -289,10 +294,20 @@ define([
 			let showScavangeAbilityLastUpdate = this.showScavangeAbilityLastUpdate;
 			GameGlobals.uiFunctions.toggle("#stats-scavenge", showScavangeAbility);
 			if (showScavangeAbility) {
-				var scavengeEfficiency = Math.round(GameGlobals.playerActionResultsHelper.getScavengeEfficiency() * 100);
-				UIAnimations.animateOrSetNumber(this.elements.valScavenge, showScavangeAbilityLastUpdate, scavengeEfficiency, "%", false, Math.round);
-				UIConstants.updateCalloutContent("#stats-scavenge", "Increases scavenge loot<hr/>health: " + Math.round(maxStamina/10) + "<br/>vision: " + shownVision);
-				this.updateChangeIndicator(this.elements.changeIndicatorScavenge, maxVision - shownVision, shownVision < maxVision);
+				var scavengeEfficiency = Math.round(GameGlobals.playerActionResultsHelper.getCurrentScavengeEfficiency() * 100);
+				if (scavengeEfficiency != this.scavangeAbilityLastUpdateValue) {
+					var factors = GameGlobals.playerActionResultsHelper. getCurrentScavengeEfficiencyFactors();
+					var scavengeEfficiencyExplanation = "<span class='info-callout-content-section-long'>Affects scavenging results</span>";
+					var factorsExplanation = "";
+					for (var key in factors) {
+						var name = key;
+						factorsExplanation += key + ": " + Math.round(factors[key] * 100) + "%<br/>";
+					}
+					UIAnimations.animateOrSetNumber(this.elements.valScavenge, showScavangeAbilityLastUpdate, scavengeEfficiency, "%", false, Math.round);
+					UIConstants.updateCalloutContent("#stats-scavenge", scavengeEfficiencyExplanation + "<hr/>" + factorsExplanation);
+					this.updateChangeIndicator(this.elements.changeIndicatorScavenge, maxVision - shownVision, shownVision < maxVision);
+				}
+				this.scavangeAbilityLastUpdateValue = scavengeEfficiency;
 			}
 			this.showScavangeAbilityLastUpdate = showScavangeAbility;
 		},
@@ -339,7 +354,7 @@ define([
 			let previousUpdate = this.previousStatsUpdates[stat] || 0;
 		
 			let animate = UIAnimations.shouldAnimateChange(previousValue, currentValue, previousUpdate, now, component.accumulation);
-			UIAnimations.animateOrSetNumber(valueElement, animate, currentValue, "", flipNegative, (v) => { return UIConstants.roundValue(v, true, false); });
+			UIAnimations.animateOrSetNumber(valueElement, animate, currentValue, "", flipNegative, (v) => { return Math.floor(v); });
 			
 			this.updateStatsCallout("", "stats-" + stat, component.accSources);
 			this.updateChangeIndicator(changeIndicatorElement, component.accumulation, isVisible);
@@ -359,19 +374,23 @@ define([
 			}
 		},
 
-		updateStatsCallout: function (description, indicatorID, changeSources) {
+		updateStatsCallout: function (description, indicatorID, changeSources, hideNumbers) {
 			var sources = "";
 			var source;
 			var total = 0;
 			for (let i in changeSources) {
 				source = changeSources[i];
 				if (source.amount != 0) {
-					var amount = Math.round(source.amount * 1000)/1000;
-					if (amount == 0 && source.amount > 0) {
-						amount = "<&nbsp;" + (1/1000);
+					if (hideNumbers) {
+						sources += source.source + "<br/>";
+					} else {
+						var amount = Math.round(source.amount * 1000)/1000;
+						if (amount == 0 && source.amount > 0) {
+							amount = "<&nbsp;" + (1/1000);
+						}
+						sources += source.source + ": " + amount + "/s<br/>";
+						total+= source.amount;
 					}
-					sources += source.source + ": " + amount + "/s<br/>";
-					total+= source.amount;
 				}
 			}
 
@@ -379,8 +398,13 @@ define([
 				sources = "(no change)";
 			}
 			
-			var totals = "Total: " + Math.round(total * 10000)/10000 + "/s";
-			var content = description + (description && sources ? "<hr/>" : "") + sources + (total > 0 ? ("<hr/>" + totals) : "");
+			var content = description + (description && sources ? "<hr/>" : "") + sources;
+			
+			if (!hideNumbers) {
+				var totals = "Total: " + Math.round(total * 10000)/10000 + "/s";
+				content += (total > 0 ? ("<hr/>" + totals) : "");
+			}
+			
 			UIConstants.updateCalloutContent("#" + indicatorID, content);
 		},
 
@@ -456,21 +480,21 @@ define([
 			var now = new Date().getTime();
 			$("ul#list-items-perks").empty();
 			for (let i = 0; i < perks.length; i++) {
-				var perk = perks[i];
-				var desc = perk.name + " (" + UIConstants.getPerkDetailText(perk, isResting) + ")";
-				var url = perk.icon;
-				var isNegative = perksComponent.isNegative(perk);
-				var liClass = isNegative ? "li-item-negative" : "li-item-positive";
+				let perk = perks[i];
+				let desc = this.getPerkDescription(perk, isResting);
+				let url = perk.icon;
+				let isNegative = PerkConstants.isNegative(perk);
+				let liClass = isNegative ? "li-item-negative" : "li-item-positive";
 				liClass += " item item-equipped";
-				var li =
+				let li =
 					"<li class='" + liClass + "' id='perk-header-" + perk.id + "'>" +
 					"<div class='info-callout-target info-callout-target-small' description='" + desc + "'>" +
 					"<img src='" + url + "' alt='" + perk.name + "'/>" +
 					"</div></li>";
 				$li = $(li);
 				$("ul#list-items-perks").append($li);
-				var diff = now - perk.timestamp;
-				var animate = diff < 100;
+				let diff = now - perk.addTimestamp;
+				let animate = diff < 100;
 				if (animate) {
 					$li.toggle(false);
 					$li.fadeIn(500);
@@ -516,10 +540,18 @@ define([
 
 			for (let i = 0; i < perks.length; i++) {
 				var perk = perks[i];
-				var desc = perk.name + " (" + UIConstants.getPerkDetailText(perk, isResting) + ")";
+				var desc = this.getPerkDescription(perk, isResting);
 				$("#perk-header-" + perk.id + " .info-callout-target").attr("description", desc);
-				$("#perk-header-" + perk.id + " .info-callout-target").toggleClass("event-ending", perk.effectTimer >= 0 && perk.effectTimer < 5);
+				$("#perk-header-" + perk.id + " .info-callout-target").toggleClass("event-starting", perk.startTimer >= 0);
+				$("#perk-header-" + perk.id + " .info-callout-target").toggleClass("event-ending", perk.removeTimer >= 0 && perk.removeTimer < 5);
 			}
+		},
+		
+		getPerkDescription: function (perk, isResting) {
+			let desc = perk.name;
+			let detailText = UIConstants.getPerkDetailText(perk, isResting);
+			if (detailText.length > 0) desc += " (" + detailText + ")";
+			return desc;
 		},
 		
 		updateResourcesIfNotPending: function () {
@@ -650,7 +682,7 @@ define([
 						let perksComponent = this.playerStatsNodes.head.perks;
 						value *= GameGlobals.sectorHelper.getBeaconMovementBonus(this.currentLocationNodes.head.entity, this.playerStatsNodes.head.perks);
 						value = Math.round(value * 10) / 10;
-						isVisible = GameGlobals.gameState.unlockedFeatures.camp;
+						isVisible = GameGlobals.gameState.unlockedFeatures.camp && value != 1;
 						flipNegative = true;
 						break;
 					

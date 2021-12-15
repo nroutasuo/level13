@@ -300,6 +300,10 @@
         "clear_workshop": {
             "stamina": 10
         },
+        "clothing_upper_45": {
+            "item_res_silk": 5,
+            "resource_rope": 100
+        },
         "craft_bag_0": {
             "item_res_tape": 1,
             "resource_rope": 20
@@ -462,10 +466,6 @@
             "item_res_silk": 10,
             "resource_rope": 30
         },
-		"clothing_upper_45": {
-			"item_res_silk": 5,
-			"resource_rope": 100
-		},
         "craft_clothing_upper_5": {
             "item_res_silk": 20,
             "resource_rope": 5
@@ -473,6 +473,10 @@
         "craft_consumable_weapon_1": {
             "item_res_bands": 1,
             "resource_metal": 10
+        },
+        "craft_consumable_weapon_bio": {
+            "item_res_bottle": 1,
+            "resource_herbs": 5
         },
         "craft_exploration_1": {
             "item_res_hairpin": 1,
@@ -716,11 +720,11 @@
             },
             "resource_tools": 5
         },
-		"improve_in_darkfarm": {
+        "improve_in_darkfarm": {
             "cost_factor_expBase": 1.25,
-			"resource_metal": 30,
-			"resource_fuel": 3
-		},
+            "resource_fuel": 3,
+            "resource_metal": 30
+        },
         "improve_in_fortification": {
             "cost_factor_expBase": 1.25,
             "resource_concrete": {
@@ -913,42 +917,42 @@
         "move_sector_east": {
             "resource_food": 1,
             "resource_water": 1,
-            "stamina": 10
+            "stamina": 12
         },
         "move_sector_ne": {
             "resource_food": 1,
             "resource_water": 1,
-            "stamina": 10
+            "stamina": 12
         },
         "move_sector_north": {
             "resource_food": 1,
             "resource_water": 1,
-            "stamina": 10
+            "stamina": 12
         },
         "move_sector_nw": {
             "resource_food": 1,
             "resource_water": 1,
-            "stamina": 10
+            "stamina": 12
         },
         "move_sector_se": {
             "resource_food": 1,
             "resource_water": 1,
-            "stamina": 10
+            "stamina": 12
         },
         "move_sector_south": {
             "resource_food": 1,
             "resource_water": 1,
-            "stamina": 10
+            "stamina": 12
         },
         "move_sector_sw": {
             "resource_food": 1,
             "resource_water": 1,
-            "stamina": 10
+            "stamina": 12
         },
         "move_sector_west": {
             "resource_food": 1,
             "resource_water": 1,
-            "stamina": 10
+            "stamina": 12
         },
         "nap": {
             "resource_food": 1,
@@ -1268,7 +1272,8 @@
         "use_out_collector_food_one": "Collect 1 food.",
         "use_out_collector_water": "Collect accumulated water.",
         "use_out_collector_water_one": "Collect 1 water.",
-        "use_spring": "Get water."
+        "use_spring": "Get water.",
+        "wait": "Pass some time"
     },
     "durations": {
         "clear_waste_r": 10,
@@ -1356,6 +1361,10 @@
             0.1
         ],
         "use_spring": [
+            0.1,
+            0.1
+        ],
+        "wait": [
             0.1,
             0.1
         ]
@@ -2264,6 +2273,14 @@
                 "improve_worker_scavenger_2": true
             }
         },
+        "craft_consumable_weapon_bio": {
+            "upgrades": {}
+        },
+        "craft_consumable_weapon_organic": {
+            "upgrades": {
+                "unlock_building_greenhouse": true
+            }
+        },
         "craft_first_aid_kit_1": {
             "upgrades": {
                 "unlock_item_firstaid": true
@@ -2297,6 +2314,11 @@
         "craft_shoe_l14": {
             "upgrades": {
                 "unlock_action_clear_waste_r": true
+            }
+        },
+        "craft_use_in_hospital2": {
+            "upgrades": {
+                "improve_building_hospital_3": true
             }
         },
         "craft_weapon12": {
@@ -2357,12 +2379,12 @@
         "create_blueprint": {
             "inCamp": true
         },
-		"deselect_follower": {
+        "deselect_follower": {
             "inCamp": true
-		},
-		"dismiss_follower": {
+        },
+        "dismiss_follower": {
             "inCamp": true
-		},
+        },
         "fight": {
             "busy": false
         },
@@ -2669,7 +2691,7 @@
             "busy": false,
             "inCamp": false,
             "sector": {
-                "blockerEAST": false
+                "blockerE": false
             },
             "vision": [
                 5,
@@ -2691,7 +2713,7 @@
             "busy": false,
             "inCamp": false,
             "sector": {
-                "blockerNORTH": false
+                "blockerN": false
             },
             "vision": [
                 5,
@@ -2723,7 +2745,7 @@
             "busy": false,
             "inCamp": false,
             "sector": {
-                "blockerSOUTH": false
+                "blockerS": false
             },
             "vision": [
                 5,
@@ -2745,7 +2767,7 @@
             "busy": false,
             "inCamp": false,
             "sector": {
-                "blockerWEST": false
+                "blockerW": false
             },
             "vision": [
                 5,
@@ -2775,12 +2797,18 @@
             }
         },
         "recruit_follower": {
-			"followers": {
-				"maxRecruited": false
-			}
-		},
-		"scavenge": {
+            "followers": {
+                "maxRecruited": false
+            }
+        },
+        "scavenge": {
             "busy": false,
+            "sector": {
+                "scavengedPercent": [
+                    -1,
+                    1
+                ]
+            },
             "vision": [
                 10,
                 -1
@@ -2796,9 +2824,9 @@
                 -1
             ]
         },
-		"select_follower": {
+        "select_follower": {
             "inCamp": true
-		},
+        },
         "send_caravan": {
             "improvements": {
                 "tradepost": [
@@ -3199,7 +3227,7 @@
                     -1
                 ]
             },
-            "perks": {
+            "perkEffects": {
                 "Injury": [
                     0.1,
                     1
@@ -3229,15 +3257,46 @@
         "use_in_temple": {
             "busy": false
         },
+        "use_item_cache_evidence_1": {
+            "inCamp": true
+        },
+        "use_item_cache_evidence_2": {
+            "inCamp": true
+        },
+        "use_item_cache_evidence_3": {
+            "inCamp": true
+        },
         "use_item_cache_metal_1": {
             "inCamp": true
         },
         "use_item_cache_metal_2": {
             "inCamp": true
         },
+        "use_item_cache_metal_3": {
+            "inCamp": true
+        },
+        "use_item_cache_metal_4": {
+            "inCamp": true
+        },
         "use_item_fight_consumable_weapon_1": {
             "uses_in_fight": {
                 "consumable_weapon_1": [
+                    -1,
+                    1
+                ]
+            }
+        },
+        "use_item_fight_consumable_weapon_bio": {
+            "uses_in_fight": {
+                "consumable_weapon_bio": [
+                    -1,
+                    1
+                ]
+            }
+        },
+        "use_item_fight_consumable_weapon_mechanical": {
+            "uses_in_fight": {
+                "consumable_weapon_mechanical": [
                     -1,
                     1
                 ]
@@ -3253,7 +3312,7 @@
         },
         "use_item_first_aid_kit_1": {
             "busy": false,
-            "perks": {
+            "perkEffects": {
                 "Injury": [
                     0.6,
                     0.99,
@@ -3263,7 +3322,7 @@
         },
         "use_item_first_aid_kit_2": {
             "busy": false,
-            "perks": {
+            "perkEffects": {
                 "Injury": [
                     0.05,
                     0.99,
@@ -3278,7 +3337,10 @@
             ]
         },
         "use_item_stamina_potion_1": {
-            "inCamp": false
+            "inCamp": false,
+			"perks": {
+				"energized": false
+			}
         },
         "use_out_collector_food": {
             "bag": {

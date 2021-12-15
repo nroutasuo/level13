@@ -20,6 +20,7 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 		SECTOR_RECT_EDGE_LENGTH_MAX: 20,
 		START_RECT_SIZE: 5,
 		MAX_SECTOR_COUNT_OVERFLOW: 10,
+		MAX_CAMP_POS_DISTANCE: 3,
 		
 		// TODO move to WorldConstants
 		MIN_CAMP_ORDINAL_HAZARD_RADIATION: 5,

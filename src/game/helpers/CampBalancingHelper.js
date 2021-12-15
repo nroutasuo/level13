@@ -525,6 +525,9 @@ define([
 			if (campOrdinal == WorldConstants.CAMP_ORDINAL_FUEL) {
 				workshops.fuel = 1;
 			}
+			if (campOrdinal == WorldConstants.CAMP_ORDINAL_FUEL_2) {
+				workshops.fuel = 1;
+			}
 			if (campOrdinal == WorldConstants.CAMP_ORDINAL_GROUND && maxCampOrdinal >= campOrdinal) {
 				workshops.rubber = 1;
 			}

@@ -36,10 +36,8 @@ function (Ash, ConsoleLogger, WorldConstants, WorldCreatorHelper, WorldCreatorLo
 					var posDown = worldVO.passagePositions[l].down;
 					if (posUp) pieces[posUp.sectorX + r] = "U";
 					if (posDown) pieces[posDown.sectorX + r] = "D";
-					for (let i = 0; i < worldVO.campPositions[l].length; i++) {
-						var campPos = worldVO.campPositions[l][i];
-						pieces[campPos.sectorX + r] = "{C|red}";
-					}
+					var campPos = worldVO.campPositions[l];
+					if (campPos) pieces[campPos.sectorX + r] = "{C|red}";
 				}
 				
 				var ls = this.addPadding(l, 2);
@@ -59,7 +57,7 @@ function (Ash, ConsoleLogger, WorldConstants, WorldCreatorHelper, WorldCreatorLo
 				var stagess = stages.map(stage => stage.stage).join(",");
 				WorldCreatorLogger.i("Level " + levelVO.level + ", camp ordinal: " + levelVO.campOrdinal + ", stages: " + stagess + ", sectors: " + levelVO.numSectors + ", zones: " + levelVO.zones.length);
 				WorldCreatorLogger.i("- passage positions: up: " + levelVO.passageUpPosition + ", down: " + levelVO.passageDownPosition);
-				WorldCreatorLogger.i("- camp positions: " + levelVO.campPositions.join(","));
+				WorldCreatorLogger.i("- camp position: " + levelVO.campPosition);
 				WorldCreatorLogger.i("- excursion start position: " + levelVO.excursionStartPosition);
 				for (let i = 0; i < stages.length; i++) {
 					var stageVO = stages[i];

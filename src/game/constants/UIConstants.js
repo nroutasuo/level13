@@ -364,25 +364,42 @@ define(['ash',
 		},
 
 		getPerkDetailText: function (perk, isResting) {
-			if (perk.effectTimer >= 0) {
-				var factor = isResting ? PerkConstants.PERK_RECOVERY_FACTOR_REST : 1;
-				var timeleft = perk.effectTimer / factor;
-				return this.getPerkBonusText(perk) + ", time left: " + this.getTimeToNum(timeleft);
+			let bonusText = this.getPerkBonusText(perk);
+			let timerText = this.getPerkTimerText(perk, isResting);
+			let result = "";
+			if (bonusText) result += bonusText;
+			if (timerText) {
+				if (bonusText.length > 0) result += ", ";
+				result += timerText;
+			}
+			return result;
+		},
+		
+		getPerkTimerText: function (perk, isResting) {
+			if (perk.removeTimer >= 0) {
+				var factor = PerkConstants.getRemoveTimeFactor(perk, isResting);
+				var timeleft = perk.removeTimer / factor;
+				return "time left: " + this.getTimeToNum(timeleft);
+			} else if (perk.startTimer >= 0) {
+				var percent = PerkConstants.getPerkActivePercent(perk);
+				return "time to full: " + this.getTimeToNum(perk.startTimer);
 			} else {
-				return this.getPerkBonusText(perk);
+				return null;
 			}
 		},
 
 		getPerkBonusText: function (perk) {
 			var value = 0;
 			if (PerkConstants.isPercentageEffect(perk.type)) {
+				if (perk.effect == 1) return null;
 				if (perk.effect < 1) {
-					value = "-" + UIConstants.getMultiplierBonusDisplayValue(perk.effect);
+					value = "-" + UIConstants.getMultiplierBonusDisplayValue(PerkConstants.getCurrentEffect(perk));
 				} else {
-					value = "+" + UIConstants.getMultiplierBonusDisplayValue(perk.effect);
+					value = "+" + UIConstants.getMultiplierBonusDisplayValue(PerkConstants.getCurrentEffect(perk));
 				}
 			} else {
-				value = "+" + perk.effect;
+				if (perk.effect == 0) return null;
+				value = "+" + PerkConstants.getCurrentEffect(perk);
 			}
 
 			var effect = perk.type;
@@ -407,7 +424,9 @@ define(['ash',
 			var getItemSortVal = function (itemVO) {
 				var typeVal = 0;
 				switch (itemVO.type) {
+					case ItemConstants.itemTypes.uniqueEquipment: typeVal = 0; break;
 					case ItemConstants.itemTypes.exploration: typeVal = 1; break;
+					
 					case ItemConstants.itemTypes.bag: typeVal = 11; break;
 					case ItemConstants.itemTypes.light: typeVal = 12; break;
 					case ItemConstants.itemTypes.weapon: typeVal = 13; break;
@@ -417,8 +436,11 @@ define(['ash',
 					case ItemConstants.itemTypes.clothing_hands: typeVal = 17; break;
 					case ItemConstants.itemTypes.clothing_head: typeVal = 18; break;
 					case ItemConstants.itemTypes.shoes: typeVal = 19; break;
+					
 					case ItemConstants.itemTypes.ingredient: typeVal = 21; break;
-					case ItemConstants.itemTypes.uniqueEquipment: typeVal = 0; break;
+					case ItemConstants.itemTypes.voucher: typeVal = 22; break;
+					case ItemConstants.itemTypes.trade: typeVal = 23; break;
+					
 					case ItemConstants.itemTypes.artefact: typeVal = 31; break;
 					case ItemConstants.itemTypes.note: typeVal = 32; break;
 				}

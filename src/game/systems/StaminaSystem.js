@@ -19,8 +19,7 @@ define([
 		warningLimit: -1,
 		isWarning: true, // skip warning log on first update
 
-		constructor: function () {
-		},
+		constructor: function () { },
 
 		addToEngine: function (engine) {
 			this.engine = engine;
@@ -52,18 +51,39 @@ define([
 			var isResting = busyComponent && busyComponent.getLastActionName() == "use_in_home";
 			var isHealing = busyComponent && busyComponent.getLastActionName() == "use_in_hospital";
 			
-			// health
 			var injuryEffects = perksComponent.getTotalEffect(PerkConstants.perkTypes.injury);
 			var healthEffects = perksComponent.getTotalEffect(PerkConstants.perkTypes.health);
 			var staminaEffects = perksComponent.getTotalEffect(PerkConstants.perkTypes.stamina);
 			
+			// health
+			var healthPerks = perksComponent.getPerksByType(PerkConstants.perkTypes.health);
 			healthEffects = healthEffects === 0 ? 1 : healthEffects;
 			staminaEffects = staminaEffects === 0 ? 1 : staminaEffects;
 			
 			var newHealth = Math.max(PlayerStatConstants.HEALTH_MINIMUM, Math.round(200 * healthEffects * injuryEffects) / 2);
 			var oldHealth = staminaComponent.health;
+			staminaComponent.healthAccSources = [];
 			staminaComponent.health = newHealth;
 			staminaComponent.maxStamina = newHealth * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR * staminaEffects;
+			
+			var healthPerSec = 0;
+			var addHealthAccumulation = function (sourceName, value) {
+				var healthPerSecSource = Math.floor(value * GameConstants.gameSpeedCamp * 100) / 100;
+				healthPerSec += value;
+				staminaComponent.healthAccSources.push({ source: sourceName, amount: null });
+			};
+			for (var i = 0; i < healthPerks.length; i++) {
+				var perk = healthPerks[i];
+				if (PerkConstants.getStatus(perk) == PerkConstants.perkStatus.ACTIVATING) {
+					if (PerkConstants.isNegative(perk)) {
+						addHealthAccumulation(perk.name, -1);
+					} else {
+						addHealthAccumulation(perk.name, 1);
+					}
+				}
+			}
+			staminaComponent.healthAccumulation = healthPerSec;
+			
 			staminaComponent.maxHP = newHealth;
 			if (staminaComponent.hp > newHealth) staminaComponent.hp = newHealth;
 			

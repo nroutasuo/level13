@@ -18,6 +18,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 		MSG_ID_GANG_DEFEATED: "GANG_DEFEATED",
 		MSG_ID_USE_COLLECTOR_FAIL: "USE_COLLECTOR_FAIL",
 		MSG_ID_NAP: "MSG_ID_NAP",
+		MSG_ID_WAIT: "MAS_ID_WAIT",
 
 		// in actions
 		MSG_ID_ENTER_CAMP: "ENTER_CAMP",
@@ -111,6 +112,8 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 		MSG_ID_USE_FIRST_AID_KIT: "MSG_ID_USE_FIRST_AID_KIT",
 		MSG_ID_USE_STAMINA_POTION: "MSG_ID_USE_STAMINA",
 		MSG_ID_USE_METAL_CACHE: "MSG_ID_USE_METAL_CACHE",
+		MSG_ID_USE_BOOK: "MSG_ID_USE_BOOK",
+		MSG_ID_USE_MAP_PIECE: "MSG_ID_USE_MAP_PIECE",
 
 		mergedMessages: [
 			["SCAVENGE", "SCOUT", "SCOUT"],

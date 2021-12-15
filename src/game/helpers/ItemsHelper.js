@@ -30,13 +30,16 @@ define([
 			// craftable items: by craftable camp ordinal
 			if (item.craftable && includeCraftable) {
 				var req = GameGlobals.itemsHelper.getRequiredCampAndStepToCraft(item);
-				result = req.campOrdinal < adjustedCampOrdinal || (req.campOrdinal == adjustedCampOrdinal && req.step <= adjustedStep);
+				result = (req.campOrdinal < adjustedCampOrdinal || (req.campOrdinal == adjustedCampOrdinal && req.step <= adjustedStep));
 			}
 
 			// non-craftable items: by item defintiion camp ordinal
 			// TODO don't check for scavenge rarity, it's not a common way to find items, trade rarity instead? + take into account levels with no trade
 			if (!item.craftable && includeNonCraftable) {
-				result = item.requiredCampOrdinal <= adjustedCampOrdinal && item.scavengeRarity <= maxScavengeRarity;
+				result = true;
+				result = result && item.requiredCampOrdinal <= adjustedCampOrdinal;
+				result = result && item.scavengeRarity <= maxScavengeRarity;
+				result = result && (item.maximumCampOrdinal <= 0 || item.maximumCampOrdinal >= adjustedCampOrdinal);
 			}
 			
 			return result;
@@ -256,7 +259,7 @@ define([
 		getNeededIngredient: function (campOrdinal, step, isHardLevel, itemsComponent, isStrict) {
 			var checkItem = function (item) {
 				if (!item.craftable) return null;
-				if (itemsComponent.getCountById(item.id, true) < (isStrict ? 1 : 1)) {
+				if (itemsComponent.getCountById(item.id, true) < 1) {
 					var ingredients = ItemConstants.getIngredientsToCraft(item.id);
 					for (let i = 0; i < ingredients.length; i++) {
 						var def = ingredients[i];
@@ -283,15 +286,16 @@ define([
 			return null;
 		},
 		
-		getUsableIngredient: function (availableIngredients) {
+		getUsableIngredient: function (availableIngredients, rand) {
+			rand = rand || Math.random();
+			
 			var usableIngredients = [];
 			var campCount = GameGlobals.gameState.numCamps;
 			var campOrdinal = Math.max(1, campCount);
 			var itemList = ItemConstants.itemDefinitions.ingredient;
-				debugger
 			for (let i in itemList) {
 				var definition = itemList[i];
-				if (availableIngredients && availableIngredients.length > 0 && availableIngredients.indexOf(definition.id) < 0) {
+				if (availableIngredients && availableIngredients.indexOf(definition.id) < 0) {
 					continue;
 				}
 				if (this.isUsableIngredient(definition, campOrdinal)) {
@@ -299,7 +303,7 @@ define([
 				}
 			}
 			if (usableIngredients.length == 0) return this.getUsableIngredient();
-			let i = usableIngredients.length * Math.random();
+			let i = usableIngredients.length * rand;
 			return usableIngredients[parseInt(i)];
 		},
 		

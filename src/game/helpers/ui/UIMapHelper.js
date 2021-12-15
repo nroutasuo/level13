@@ -1,6 +1,7 @@
 // Creates and updates maps (mini-map and main)
 define(['ash',
 	'utils/CanvasUtils',
+	'utils/MapUtils',
 	'game/GameGlobals',
 	'game/constants/ColorConstants',
 	'game/constants/UIConstants',
@@ -22,7 +23,7 @@ define(['ash',
 	'game/components/sector/improvements/WorkshopComponent',
 	'game/components/type/SectorComponent',
 	'game/vos/PositionVO'],
-function (Ash, CanvasUtils,
+function (Ash, CanvasUtils, MapUtils,
 	GameGlobals, ColorConstants, UIConstants, CanvasConstants, ExplorationConstants, ItemConstants, MovementConstants, PositionConstants, SectorConstants,
 	PlayerPositionNode,
 	LevelComponent, CampComponent, PositionComponent, SectorStatusComponent, SectorLocalesComponent, SectorFeaturesComponent, PassagesComponent, SectorImprovementsComponent, WorkshopComponent, SectorComponent,
@@ -49,6 +50,7 @@ function (Ash, CanvasUtils,
 			this.initIcon("workshop", "map-workshop");
 			this.initIcon("water", "map-water");
 			this.initIcon("beacon", "map-beacon");
+			this.initIcon("ingredient", "map-ingredient");
 		},
 
 		initIcon: function(key, name) {
@@ -155,7 +157,7 @@ function (Ash, CanvasUtils,
 						sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).x;
 						sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).y;
 						sectorPos = new PositionVO(mapPosition.level, x, y);
-						this.fillRoundedRect(ctx, sectorXpx - bgPadding, sectorYpx - bgPadding, sectorSize + bgPadding * 2, sectorSize + bgPadding * 2, radius);
+						CanvasUtils.fillRoundedRect(ctx, sectorXpx - bgPadding, sectorYpx - bgPadding, sectorSize + bgPadding * 2, sectorSize + bgPadding * 2, radius);
 					}
 				}
 			}
@@ -189,7 +191,7 @@ function (Ash, CanvasUtils,
 						sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).y;
 						sectorPos = new PositionVO(mapPosition.level, x, y);
 						this.drawSectorOnCanvas(ctx, x, y, sector, levelEntity, sectorStatus, sectorXpx, sectorYpx, sectorSize);
-						if (SectorConstants.isVisited(sectorStatus)) {
+						if (SectorConstants.isLBasicInfoVisible(sectorStatus)) {
 							this.drawMovementLinesOnCanvas(ctx, mapPosition, sector, sectorPos, sectorXpx, sectorYpx, sectorSize, sectorPadding);
 						}
 					}
@@ -298,8 +300,7 @@ function (Ash, CanvasUtils,
 			var isRevealed = isScouted || this.isMapRevealed;
 
 			// border for sectors with hazards or sunlight
-			var isVisited = SectorConstants.isVisited(sectorStatus);
-			if (isVisited || this.isMapRevealed || this.isSurveyed(sector)) {
+			if (SectorConstants.isLBasicInfoVisible(sectorStatus) || this.isMapRevealed || this.isSurveyed(sector)) {
 				var isSectorSunlit = sectorFeatures.sunlit;
 				var hasSectorHazard = GameGlobals.sectorHelper.hasHazards(sectorFeatures, statusComponent);
 				if (isSectorSunlit || hasSectorHazard) {
@@ -328,11 +329,14 @@ function (Ash, CanvasUtils,
 			var useSunlitImage = isLocationSunlit;
 			
 			var sectorFeatures = sector.get(SectorFeaturesComponent);
+			var statusComponent = sector.get(SectorStatusComponent);
 			var sectorPassages = sector.get(PassagesComponent);
 			var localesComponent = sector.get(SectorLocalesComponent);
 			var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
 			var sectorImprovements = sector.get(SectorImprovementsComponent);
 			var hasCampOnLevel = levelEntity.get(CampComponent) !== null;
+			
+			let sectorDiscoveredItems = GameGlobals.sectorHelper.getLocationDiscoveredItems(sector);
 
 			if (!isRevealed && !this.isMapRevealed) {
 				hasIcon = true;
@@ -361,6 +365,9 @@ function (Ash, CanvasUtils,
 			} else if (sectorImprovements.getCount(improvementNames.beacon) > 0) {
 				hasIcon = true;
 				ctx.drawImage(this.icons["beacon" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
+			} else if (sectorDiscoveredItems.length > 0) {
+				hasIcon = true;
+				ctx.drawImage(this.icons["ingredient" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
 			}
 	
 			// sector contents: resources
@@ -567,19 +574,19 @@ function (Ash, CanvasUtils,
 		},
 
 		getSectorSize: function (centered) {
-			return centered ? 16 : 11;
+			return MapUtils.getSectorSize(centered ? MapUtils.MAP_ZOOM_MINIMAP : MapUtils.MAP_ZOOM_DEFAULT);
 		},
 
 		getGridSize: function () {
-			return 10;
+			return MapUtils.getGridSize();
 		},
 
 		getSectorPadding: function (centered) {
-			return centered ? 0.75 : 0.85;
+			return MapUtils.getSectorPadding(centered ? MapUtils.MAP_ZOOM_MINIMAP : MapUtils.MAP_ZOOM_DEFAULT);
 		},
 		
 		getSectorMargin: function (centered) {
-			return centered ? 0 : 2;
+			return MapUtils.getSectorMargin(centered ? MapUtils.MAP_ZOOM_MINIMAP : MapUtils.MAP_ZOOM_DEFAULT);
 		},
 
 		getSectorFill: function (sectorStatus) {
@@ -590,6 +597,7 @@ function (Ash, CanvasUtils,
 					return ColorConstants.getColor(sunlit, "map_fill_sector_unvisited");
 
 				case SectorConstants.MAP_SECTOR_STATUS_VISITED_UNSCOUTED:
+				case SectorConstants.MAP_SECTOR_STATUS_REVEALED_BY_MAP:
 					return ColorConstants.getColor(sunlit, "map_fill_sector_unscouted");
 
 				case SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED:
@@ -627,13 +635,6 @@ function (Ash, CanvasUtils,
 				case resourceNames.rubber: return ColorConstants.getGlobalColor("res_rubber");
 			}
 		},
-		
-		fillRoundedRect: function (ctx, x, y, w, h, radius) {
-			ctx.lineJoin = "round";
-			ctx.lineWidth = radius;
-			ctx.strokeRect(x+(radius/2), y+(radius/2), w-radius, h-radius);
-			ctx.fillRect(x+(radius/2), y+(radius/2), w-radius, h-radius);
-		}
 
 	});
 

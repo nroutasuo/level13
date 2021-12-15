@@ -203,6 +203,7 @@ define([
 				var item = uniqueItems[i];
 				if (item.type === ItemConstants.itemTypes.uniqueEquipment) continue;
 				if (item.type === ItemConstants.itemTypes.artefact) continue;
+				if (item.type === ItemConstants.itemTypes.trade) continue;
 				if (item.type === ItemConstants.itemTypes.note) continue;
 				if (item.type === ItemConstants.itemTypes.ingredient) continue;
 				

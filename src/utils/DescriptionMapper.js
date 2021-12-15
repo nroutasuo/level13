@@ -6,6 +6,7 @@
 // properties in descriptions may be simple (equals) or ranges (array of two values (inclusive))
 
 define(function () {
+	
 	var DescriptionMapper = {
 		
 		WILDCARD: "WILDCARD",
@@ -47,9 +48,7 @@ define(function () {
 			}
 			
 			// several matches, select one in a semi-random way (same object should return the same one if called again but should be different for different objects)
-			var checksum = this.getPropsChecksum(props);
-			var index = checksum % weightedMatches.length;
-			return weightedMatches[index].text;
+			return this.pickRandom(weightedMatches, props).text;
 		},
 		
 		matches: function (props, desc) {
@@ -69,6 +68,12 @@ define(function () {
 		
 		getMatchScore: function (desc) {
 			 return Object.keys(desc.props).length;
+		},
+		
+		pickRandom: function (candidates, props) {
+			var checksum = this.getPropsChecksum(props);
+			var index = checksum % candidates.length;
+			return candidates[index];
 		},
 		
 		getPropsChecksum: function (props) {

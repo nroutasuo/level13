@@ -90,6 +90,10 @@ define(['ash'], function (Ash) {
 			if (result == 0 && baseStat > 0) result = 1;
 			return result;
 		},
+		
+		isMechanical: function () {
+			return this.hp <= 0;
+		},
 	
 		toString: function () {
 			return this.name;

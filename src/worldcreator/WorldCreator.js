@@ -104,6 +104,7 @@ define([
 			sectorFeatures.hasTradeConnectorSpot = sectorVO.hasTradeConnectorSpot;
 			sectorFeatures.resourcesScavengable = sectorVO.resourcesScavengable;
 			sectorFeatures.resourcesCollectable = sectorVO.resourcesCollectable;
+			sectorFeatures.itemsScavengeable = sectorVO.itemsScavengeable;
 			sectorFeatures.workshopResource = sectorVO.workshopResource;
 			sectorFeatures.hasWorkshop = sectorVO.hasWorkshop;
 			sectorFeatures.hasClearableWorkshop = sectorVO.hasClearableWorkshop;
@@ -111,6 +112,7 @@ define([
 			sectorFeatures.isCamp = sectorVO.isCamp;
 			sectorFeatures.notCampableReason = sectorVO.notCampableReason;
 			sectorFeatures.stashes = sectorVO.stashes || null;
+			sectorFeatures.waymarks = sectorVO.waymarks || [];
 			return sectorFeatures;
 		},
 

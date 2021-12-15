@@ -24,7 +24,6 @@ define([
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorLocalesComponent',
 	'game/components/sector/MovementOptionsComponent',
-	'game/components/player/ExcursionComponent',
 	'game/components/common/PositionComponent',
 	'game/components/common/LogMessagesComponent',
 	'game/components/common/CampComponent',
@@ -36,7 +35,7 @@ define([
 	Ash, Text,GameGlobals, GlobalSignals, PlayerActionConstants, PlayerStatConstants, TextConstants, LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, TradeConstants,
 	PlayerPositionNode, PlayerLocationNode, NearestCampNode,
 	VisionComponent, StaminaComponent, ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
-	MovementOptionsComponent, ExcursionComponent, PositionComponent, LogMessagesComponent, CampComponent,
+	MovementOptionsComponent, PositionComponent, LogMessagesComponent, CampComponent,
 	SectorImprovementsComponent, WorkshopComponent, SectorStatusComponent, EnemiesComponent
 ) {
 	var UIOutLevelSystem = Ash.System.extend({
@@ -57,6 +56,7 @@ define([
 			this.elements.description = $("#out-desc");
 			this.elements.btnClearWorkshop = $("#out-action-clear-workshop");
 			this.elements.btnNap = $("#out-action-nap");
+			this.elements.btnWait = $("#out-action-wait");
 			this.elements.outImprovementsTR = $("#out-improvements tr");
 
 			return this;
@@ -170,6 +170,7 @@ define([
 			var isScouted = sectorStatus.scouted;
 
 			this.updateNap(isScouted, hasCampHere);
+			this.updateWait(hasCampHere);
 			this.updateDespair(hasCampHere);
 		},
 
@@ -238,6 +239,24 @@ define([
 
 			let blockedByTutorial = !hasFirstCamp && staminaComponent.stamina > 15;
 			GameGlobals.uiFunctions.toggle(this.elements.btnNap, lowStamina && !blockedByTutorial);
+		},
+		
+		updateWait: function (hasCampHere) {
+			let showWait = false;
+			
+			if (!hasCampHere) {
+				let maxResourcesToShowWait = 3;
+				let resources = [ "food", "water" ];
+				for (let i = 0; i < resources.length; i++) {
+					let name = resources[i];
+					if (!GameGlobals.gameState.unlockedFeatures.resources[name]) continue;
+					if (!this.hasCollectibleResource(name, false)) continue;
+					let total = Math.floor(this.getResouceInInventory(name)) + Math.floor(this.getResourceCurrentlyAvailableToCollect(name));
+					if (total < maxResourcesToShowWait) showWait = true;
+				}
+			}
+			
+			GameGlobals.uiFunctions.toggle(this.elements.btnWait, showWait);
 		},
 
 		updateDespair: function (hasCampHere) {
@@ -376,6 +395,14 @@ define([
 			if (hasVision) {
 				description += this.getDangerDescription(isScouted, featuresComponent, passagesComponent, hasCampHere);
 			}
+			
+			// Waymarks
+			if (isScouted) {
+				for (let i = 0; i < featuresComponent.waymarks.length; i++) {
+					let waymark = featuresComponent.waymarks[i];
+					description += this.getWaymarkText(waymark) + ". ";
+				}
+			}
 
 			if (isScouted && hasVision && !hasCampHere && !hasCampOnLevel) {
 				if (featuresComponent.canHaveCamp() && !hasEnemies && !passagesComponent.passageUp && !passagesComponent.passageDown)
@@ -388,13 +415,19 @@ define([
 		getResourcesDescription: function (isScouted, featuresComponent, statusComponent) {
 			if (!featuresComponent) return;
 			var description = "";
-			if (GameGlobals.gameState.unlockedFeatures.scavenge) {
-				description += "Scavenged: " + UIConstants.roundValue(statusComponent.getScavengedPercent()) + "% ";
+			if (isScouted && GameGlobals.gameState.unlockedFeatures.scavenge) {
+				description += "Scavenged: " + UIConstants.roundValue(statusComponent.getScavengedPercent()) + "%<br/>";
 			}
 			if (featuresComponent.resourcesScavengable.getTotal() > 0) {
 				var discoveredResources = GameGlobals.sectorHelper.getLocationDiscoveredResources();
 				if (discoveredResources.length > 0) {
-					description += "Resources found: " + featuresComponent.getScaResourcesString(discoveredResources);
+					description += "Resources found: " + TextConstants.getScaResourcesString(discoveredResources, featuresComponent.resourcesScavengable) + " ";
+				}
+			}
+			if (featuresComponent.itemsScavengeable.length > 0) {
+				var discoveredItems = GameGlobals.sectorHelper.getLocationDiscoveredItems();
+				if (discoveredItems.length > 0) {
+					description += "Items found: " + TextConstants.getScaItemString(discoveredItems, featuresComponent.itemsScavengeable) + " ";
 				}
 			}
 			return description;
@@ -403,6 +436,7 @@ define([
 		getMovementDescription: function (isScouted, passagesComponent, entity) {
 			var description = "";
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			var position = entity.get(PositionComponent);
 
 			// Passages up / down
@@ -512,7 +546,7 @@ define([
 							break;
 
 						case LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT:
-							notCampableDesc = "There are no more humans living this far down in the City.";
+							notCampableDesc = "There are no more humans living this far up in the City.";
 					}
 				}
 			}
@@ -718,7 +752,7 @@ define([
 		},
 		
 		hasAccessToResource: function (resourceName, includeScavenge, includeUnbuiltCollectible) {
-			if (GameGlobals.resourcesHelper.getCurrentStorage().resources.getResource(resourceName) >= 1) {
+			if (this.getResouceInInventory(resourceName) >= 1) {
 				return true;
 			}
 			
@@ -737,6 +771,10 @@ define([
 			}
 						 
 			return false;
+		},
+		
+		getResouceInInventory: function (resourceName) {
+			return GameGlobals.resourcesHelper.getCurrentStorage().resources.getResource(resourceName) || 0;
 		},
 		
 		hasScavengeableResource: function (resourceName) {
@@ -760,6 +798,21 @@ define([
 			if (isScouted && resourceName == resourceNames.water && featuresComponent.hasSpring) {
 				return includeUnbuilt || improvements.getVO(this.getCollectorName(resourceName)).count > 0;
 			}
+		},
+		
+		getResourceCurrentlyAvailableToCollect: function (resourceName) {
+			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+			var collectorName = this.getCollectorName(resourceName);
+			var collector = improvements.getVO(collectorName);
+			var availableResource = collector.storedResources[resourceName];
+			return availableResource || 0;
+		},
+		
+		getWaymarkText: function (waymarkVO) {
+			let pos = waymarkVO.fromPosition;
+			let sector = GameGlobals.levelHelper.getSectorByPosition(pos.level, pos.sectorX, pos.sectorY);
+			let sectorFeatures = GameGlobals.sectorHelper.getTextFeatures(sector);
+			return TextConstants.getWaymarkText(waymarkVO, sectorFeatures);
 		},
 		
 		getCollectorName: function (resourceName) {

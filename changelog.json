@@ -11,7 +11,11 @@
 				},
 				{
 					"type": "GB",
-					"summary": "Adjust balancing for buildings, crafting, upgrades and fights"
+					"summary": "Adjust balancing for buildings, crafting, upgrades, fights and scavenging results"
+				},
+				{
+					"type": "GB",
+					"summary": "Add locations with scavengeable crafting ingredients"
 				},
 				{
 					"type": "GD",
@@ -23,11 +27,23 @@
 				},
 				{
 					"type": "GD",
+					"summary": "Add map pieces and graffiti that help navigating new areas."
+				},
+				{
+					"type": "GD",
+					"summary": "Make some debuffs (hunger, thirst, cold, poison, radiation) less forgiving by adding them slowly instead of immediately."
+				},
+				{
+					"type": "GD",
+					"summary": "Polish the Rejuv Shot (block using twice; only restores stamina and doesn't affect max stamina)"
+				},
+				{
+					"type": "GD",
 					"summary": "Improve followers and add different follower abilities"
 				},
 				{
 					"type": "GD",
-					"summary": "Add many more enemy types"
+					"summary": "Add many more enemy types and many new items"
 				}
 			]
 		},

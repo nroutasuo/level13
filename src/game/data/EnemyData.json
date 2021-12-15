@@ -1,15 +1,4 @@
 {
-	"agitated_murder_of_crows": {
-		"name": "agitated murder of crows",
-		"environment": "global",
-		"enemyType": "bird",
-		"campOrdinal": 10,
-		"difficulty": 5,
-		"attackRatio": 0.6,
-		"speed": 1.5,
-		"size": 0.8,
-		"droppedResources": ["food"]
-	},
 	"albatross": {
 		"name": "albatross",
 		"environment": "sparse",
@@ -99,6 +88,7 @@
 	"bandit__template": {
 		"environment": "nohazard",
 		"enemyType": "bandit",
+		"healthFactor": 0.9,
 		"attackRatio": 0.56
 	},
 	"bandit__hungry": {
@@ -158,7 +148,7 @@
 		"enemyType": "flora",
 		"campOrdinal": 4,
 		"attackFactor": 0.75,
-		"droppedResources": [ "herbs" ]
+		"droppedResources": ["herbs"]
 	},
 	"camel_spider": {
 		"name": "camel spider",
@@ -190,7 +180,7 @@
 		"campOrdinal": 2,
 		"difficulty": 4,
 		"attackRatio": 0.55,
-		"healthFactor": 1.25,
+		"healthFactor": 1.2,
 		"speed": 1.1,
 		"size": 0.3,
 		"rarity": 20
@@ -349,8 +339,7 @@
 		"enemyType": "small_animal",
 		"speed": 1.1,
 		"size": 0.5,
-		"attackRatio": 0.6,
-		"droppedResources": ["food"]
+		"attackRatio": 0.6
 	},
 	"dog__wild": {
 		"name": "wild dog",
@@ -464,7 +453,8 @@
 		"campOrdinal": 14,
 		"difficulty": 7,
 		"attackRatio": 0.68,
-		"speed": 0.9,
+		"speed": 1.1,
+		"healthFactor": 0.8,
 		"size": 0.7,
 		"rarity": 85,
 		"droppedResources": ["food"]
@@ -476,6 +466,7 @@
 		"campOrdinal": 13,
 		"difficulty": 3,
 		"attackRatio": 0.55,
+		"healthFactor": 0.8,
 		"speed": 1,
 		"size": 0.7,
 		"rarity": 85,
@@ -487,7 +478,8 @@
 		"enemyType": "big_animal",
 		"campOrdinal": 14,
 		"difficulty": 7,
-		"attackRatio": 0.75,
+		"attackRatio": 0.7,
+		"healthFactor": 0.9,
 		"speed": 0.9,
 		"size": 0.7,
 		"rarity": 85,
@@ -565,8 +557,7 @@
 		"attackRatio": 0.7,
 		"speed": 1,
 		"size": 0.4,
-		"rarity": 70,
-		"droppedResources": ["food"]
+		"rarity": 70
 	},
 	"flying_fox__horned": {
 		"name": "horned flying fox",
@@ -577,8 +568,7 @@
 		"attackRatio": 0.7,
 		"speed": 1,
 		"size": 0.6,
-		"rarity": 70,
-		"droppedResources": ["food"]
+		"rarity": 70
 	},
 	"garbage_robot__template": {
 		"enemyType": "robot",
@@ -816,7 +806,7 @@
 		"enemyType": "robot",
 		"campOrdinal": 9,
 		"shieldFactor": 1,
-		"attackRatio":  0.4
+		"attackRatio": 0.4
 	},
 	"hawk": {
 		"name": "hawk",
@@ -918,7 +908,7 @@
 		"name": "leaking gas pipe",
 		"environment": "toxic",
 		"enemyType": "structure",
-		"verbsDefeated": [ "dismantled" ],
+		"verbsDefeated": ["dismantled"],
 		"campOrdinal": 5,
 		"difficulty": 4,
 		"attackRatio": 0.25,
@@ -1008,8 +998,7 @@
 		"attackRatio": 0.55,
 		"speed": 0.9,
 		"size": 1.5,
-		"rarity": 50,
-		"droppedResources": ["food"]
+		"rarity": 50
 	},
 	"mugger__template": {
 		"environment": "water",
@@ -1090,8 +1079,9 @@
 		"difficulty": 3,
 		"attackRatio": 0.6,
 		"size": 0.5,
+		"speed": 1.1,
 		"rarity": 1,
-		"droppedResources": [ "food", "rope" ]
+		"droppedResources": ["food", "rope"]
 	},
 	"raccoon__alarmed": {
 		"name": "alarmed raccoon",
@@ -1240,8 +1230,7 @@
 		"difficulty": 3,
 		"attackRatio": 0.6,
 		"speed": 0.7,
-		"size": 0.5,
-		"droppedResources": ["food"]
+		"size": 0.5
 	},
 	"scorpion__night": {
 		"name": "night scorpion",
@@ -1251,8 +1240,7 @@
 		"difficulty": 6,
 		"rarity": 1,
 		"size": 0.5,
-		"attackRatio": 0.7,
-		"droppedResources": ["food"]
+		"attackRatio": 0.7
 	},
 	"scorpion__fire": {
 		"name": "fire scorpion",
@@ -1263,14 +1251,14 @@
 		"healthFactor": 1.1,
 		"size": 0.4,
 		"rarity": 1,
-		"attackRatio": 0.7,
-		"droppedResources": ["food"]
+		"attackRatio": 0.7
 	},
 	"scout_bot__template": {
 		"environment": "uninhabited",
 		"enemyType": "robot",
 		"shieldRatio": 1,
 		"attackRatio": 0.55,
+		"speed": 1.15,
 		"size": 0.7
 	},
 	"scout_bot": {

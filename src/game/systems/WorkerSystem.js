@@ -199,8 +199,8 @@ define([
 			var playerFoodSourceAcc = GameGlobals.resourcesHelper.getCurrentStorageAccumulation(true);
 			
 			// Manage perks
-			var isThirsty = playerFoodSource.resources.water <= 0;
-			var isHungry = playerFoodSource.resources.food <= 0;
+			var isThirsty = playerFoodSource.resources.water < 1;
+			var isHungry = playerFoodSource.resources.food < 1;
 			var perksComponent = this.playerNodes.head.entity.get(PerksComponent);
 			
 			var hasThirstPerk = perksComponent.hasPerk(PerkConstants.perkIds.thirst);
@@ -213,7 +213,8 @@ define([
 				}
 			} else if (!hasThirstPerk) {
 				if (!inCamp && (GameGlobals.gameState.unlockedFeatures.resources.water)) this.log("Out of water!");
-				perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.thirst));
+				var thirstPerk = PerkConstants.getPerk(PerkConstants.perkIds.thirst, PerkConstants.ACTIVATION_TIME_HEALTH_DEBUFF);
+				perksComponent.addPerk(thirstPerk);
 			}
 			
 			if (!isHungry) {
@@ -223,7 +224,8 @@ define([
 				}
 			} else if (!hasHungerPerk) {
 				if (!inCamp && (GameGlobals.gameState.unlockedFeatures.resources.food)) this.log("Out of food!");
-				perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.hunger));
+				var hungerPerk = PerkConstants.getPerk(PerkConstants.perkIds.hunger, PerkConstants.ACTIVATION_TIME_HEALTH_DEBUFF);
+				perksComponent.addPerk(hungerPerk);
 			}
 		},
 		
@@ -269,8 +271,8 @@ define([
 			var timeStamp = new Date().getTime();
 			var log = timeStamp - this.lastMsgTimeStamp > this.msgFrequency;
 			if (log) {
-				var isThirsty = playerFoodSource.water <= 0;
-				var isHungry = playerFoodSource.food <= 0;
+				var isThirsty = playerFoodSource.water < 1;
+				var isHungry = playerFoodSource.food < 1;
 				var msg = null;
 				
 				if (inCamp && hasPopulation && isThirsty && Math.random() < 0.05) {

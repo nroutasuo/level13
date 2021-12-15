@@ -54,7 +54,7 @@ define([
 					newList.push(timeStamp);
 				} else {
 					if (action.action) {
-						this.playerActionFunctions.performAction(action.action, action.param);
+						this.playerActionFunctions.performAction(action.action, action.param, action.deductedCosts);
 					}
 				}
 			}

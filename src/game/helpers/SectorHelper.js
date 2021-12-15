@@ -46,6 +46,7 @@ define([
 			var position = sector.get(PositionComponent).getPosition();
 			var featuresComponent = sector.get(SectorFeaturesComponent);
 			var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(position.level);
+			var campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
 			var levelEntity = GameGlobals.levelHelper.getLevelEntityForSector(sector);
 			var levelComponent = levelEntity.get(LevelComponent);
 			var hasCamp = sector.has(CampComponent);
@@ -62,6 +63,7 @@ define([
 			var features = Object.assign({}, featuresComponent);
 			features.level = position.level;
 			features.levelOrdinal = levelOrdinal;
+			features.campOrdinal = campOrdinal;
 			features.condition = featuresComponent.getCondition();
 			features.populationFactor = levelComponent.populationFactor;
 			features.isSurfaceLevel = position.level == GameGlobals.gameState.getSurfaceLevel();
@@ -172,6 +174,30 @@ define([
 			});
 			
 			return resources;
+		},
+		
+		getLocationDiscoveredItems: function (sector) {
+			var items = [];
+			sector = sector ? sector : this.playerLocationNodes.head.entity;
+			var sectorStatus = sector.get(SectorStatusComponent);
+			var sectorFeatures = sector.get(SectorFeaturesComponent);
+			var missingItems = [];
+			
+			for (let i = 0; i < sectorStatus.discoveredItems.length; i++) {
+				var itemID = sectorStatus.discoveredItems[i];
+				if (sectorFeatures.itemsScavengeable.indexOf(itemID) >= 0) {
+					items.push(itemID);
+				} else {
+					log.w("Item in discovered items not found on sector.");
+					missingItems.push(itemID);
+				}
+			}
+			
+			for (let j = 0; j < missingItems.length; j++) {
+				sectorStatus.discoveredItems.splice(sectorStatus.discoveredItems.indexOf(missingItems[j]), 1);
+			}
+			
+			return items;
 		},
 		
 		getDangerFactor: function (sectorEntity) {

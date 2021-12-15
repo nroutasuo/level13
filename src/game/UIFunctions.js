@@ -440,7 +440,7 @@ define(['ash',
 					if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
 					for (var key in costs) {
 						var itemName = key.replace("item_", "");
-						var item = ItemConstants.getItemByID(itemName);
+						var item = ItemConstants.getItemByID(itemName, true);
 						var name = (this.names.resources[key] ? this.names.resources[key] : item !== null ? item.name : key).toLowerCase();
 						var value = costs[key];
 						enabledContent += "<span class='action-cost action-cost-" + key + "'>" + name + ": <span class='action-cost-value'>" + UIConstants.getDisplayValue(value) + "</span><br/></span>";
@@ -932,6 +932,7 @@ define(['ash',
 				var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
 				switch (baseId) {
 					case "recruit_follower": return true;
+					case "wait": return true;
 				}
 				return false;
 			},

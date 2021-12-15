@@ -19,6 +19,7 @@ define(['ash',
 	'game/constants/TextConstants',
 	'game/vos/PositionVO',
 	'game/vos/LocaleVO',
+	'game/vos/ResultVO',
 	'game/nodes/PlayerPositionNode',
 	'game/nodes/FightNode',
 	'game/nodes/player/PlayerStatsNode',
@@ -61,7 +62,7 @@ define(['ash',
 	'utils/StringUtils'
 ], function (Ash, GameGlobals, GlobalSignals,
 	GameConstants, CampConstants, FollowerConstants, LogConstants, ImprovementConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, UpgradeConstants, TextConstants,
-	PositionVO, LocaleVO,
+	PositionVO, LocaleVO, ResultVO,
 	PlayerPositionNode, FightNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent,
@@ -124,26 +125,26 @@ define(['ash',
 			}
 			
 			GlobalSignals.actionStartingSignal.dispatch(action, param);
-			GameGlobals.playerActionsHelper.deductCosts(action);
+			var deductedCosts = GameGlobals.playerActionsHelper.deductCosts(action);
 			this.forceResourceBarUpdate();
 
 			var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			var duration = PlayerActionConstants.getDuration(baseId);
 			if (duration > 0) {
-				this.startBusy(action, param);
+				this.startBusy(action, param, deductedCosts);
 			} else {
-				this.performAction(action, param);
+				this.performAction(action, param, deductedCosts);
 			}
 			GlobalSignals.actionStartedSignal.dispatch(action, param);
 			return true;
 		},
 
-		startBusy: function (action, param) {
+		startBusy: function (action, param, deductedCosts) {
 			var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			var duration = PlayerActionConstants.getDuration(baseId);
 			if (duration > 0) {
 				var isBusy = PlayerActionConstants.isBusyAction(baseId);
-				var endTimeStamp = this.playerStatsNodes.head.entity.get(PlayerActionComponent).addAction(action, duration, param, isBusy);
+				var endTimeStamp = this.playerStatsNodes.head.entity.get(PlayerActionComponent).addAction(action, duration, param, deductedCosts, isBusy);
 
 				switch (baseId) {
 					case "send_caravan":
@@ -174,7 +175,7 @@ define(['ash',
 			}
 		},
 
-		performAction: function (action, param) {
+		performAction: function (action, param, deductedCosts) {
 			var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			
 			switch (baseId) {
@@ -238,7 +239,7 @@ define(['ash',
 				case "equip": this.equipItem(param); break;
 				case "unequip": this.unequipItem(param); break;
 				case "discard": this.discardItem(param); break;
-				case "use_item": this.useItem(param); break;
+				case "use_item": this.useItem(param, deductedCosts); break;
 				case "use_item_fight": this.useItemFight(param); break;
 				// Non-improvement actions
 				case "enter_camp": this.enterCamp(param); break;
@@ -261,12 +262,14 @@ define(['ash',
 				case "select_follower": this.selectFollower(param); break;
 				case "deselect_follower": this.deselectFollower(param); break;
 				case "nap": this.nap(param); break;
+				case "wait": this.wait(param); break;
 				case "despair": this.despair(param); break;
 				case "unlock_upgrade": this.unlockUpgrade(param); break;
 				case "create_blueprint": this.createBlueprint(param); break;
 				case "launch": this.launch(param); break;
 				// Mapped directly in UIFunctions
 				case "leave_camp": break;
+				case "fight": break;
 				// Movement
 				case "move_level_up": this.moveTo(PositionConstants.DIRECTION_UP); break;
 				case "move_level_down": this.moveTo(PositionConstants.DIRECTION_DOWN); break;
@@ -500,7 +503,7 @@ define(['ash',
 
 		scavenge: function () {
 			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-			var efficiency = GameGlobals.playerActionResultsHelper.getScavengeEfficiency();
+			var efficiency = GameGlobals.playerActionResultsHelper.getCurrentScavengeEfficiency();
 			GameGlobals.gameState.unlockedFeatures.scavenge = true;
 
 			var logMsg = "";
@@ -520,7 +523,7 @@ define(['ash',
 			var logMsgDefeat = logMsg + "Got into a fight and was defeated.";
 			var successCallback = function () {
 				sectorStatus.scavenged = true;
-				sectorStatus.weightedNumScavenges += efficiency;
+				sectorStatus.weightedNumScavenges += Math.min(1, efficiency);
 			};
 			this.handleOutActionResults("scavenge", LogConstants.MSG_ID_SCAVENGE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, null, successCallback);
 		},
@@ -593,6 +596,13 @@ define(['ash',
 				else
 					logMsg += "<br/>There is a " + TextConstants.getLocaleName(locale, featuresComponent, true).toLowerCase() + " here that seems worth investigating.";
 			}
+			
+			if (featuresComponent.waymarks.length > 0) {
+				let sectorFeatures = GameGlobals.sectorHelper.getTextFeatures(sector);
+				for (let i = 0; i < featuresComponent.waymarks.length; i++) {
+					logMsg += "<br/>" + TextConstants.getWaymarkText(featuresComponent.waymarks[i], sectorFeatures);
+				}
+			}
 
 			var playerActionFunctions = this;
 			var successCallback = function () {
@@ -603,6 +613,7 @@ define(['ash',
 				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 				playerActionFunctions.save();
 			};
+			
 
 			var logMsgId = found ? LogConstants.MSG_ID_SCOUT_FOUND_SOMETHING : LogConstants.MSG_ID_SCOUT;
 			this.handleOutActionResults("scout", logMsgId, logMsg, logMsg, logMsg, true, found, successCallback);
@@ -783,6 +794,32 @@ define(['ash',
 				}
 			);
 		},
+		
+		wait: function () {
+			var sys = this;
+			GameGlobals.uiFunctions.setGameElementsVisibility(false);
+			GameGlobals.uiFunctions.showInfoPopup(
+				"Wait",
+				"Passed some time just waiting.",
+				"Continue",
+				null,
+				() => {
+					GameGlobals.uiFunctions.hideGame(false);
+					this.passTime(60, function () {
+						setTimeout(function () {
+							GameGlobals.uiFunctions.showGame();
+							GameGlobals.uiFunctions.onPlayerMoved(); // reset cooldowns
+							var logMsgSuccess = "Waited some time.";
+							var logMsgFlee = "Settled down to pass some time but got attacked.";
+							var logMsgDefeat = logMsgFlee;
+							sys.handleOutActionResults("wait", LogConstants.MSG_ID_WAIT, logMsgSuccess, logMsgFlee, logMsgDefeat, false, false,
+								function () {},
+							);
+						}, 300);
+					});
+				}
+			);
+		},
 
 		handleOutActionResults: function (action, logMsgId, logMsgSuccess, logMsgFlee, logMsgDefeat, showResultPopup, hasCustomReward, successCallback, failCallback) {
 			this.currentAction = action;
@@ -897,7 +934,7 @@ define(['ash',
 							break;
 						}
 					}
-					itemsComponent.addItem(ItemConstants.getItemByID(itemID).clone());
+					GameGlobals.playerHelper.addItem(ItemConstants.getItemByID(itemID));
 				}
 			}
 
@@ -1057,7 +1094,7 @@ define(['ash',
 		},
 
 		despair: function () {
-			this.engine.getSystem(FaintingSystem).checkFainting();
+			this.engine.getSystem(FaintingSystem).despair();
 			this.completeAction("despair");
 		},
 
@@ -1406,7 +1443,7 @@ define(['ash',
 			
 			if (this.playerStatsNodes.head.stamina.isPendingPenalty) {
 				var perksComponent = this.playerStatsNodes.head.perks;
-				perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.staminaBonusPenalty, 300));
+				perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.staminaBonusPenalty, PerkConstants.TIMER_DISABLED, 300));
 				this.playerStatsNodes.head.stamina.isPendingPenalty = false;
 			}
 			
@@ -1511,7 +1548,7 @@ define(['ash',
 			var actionName = "craft_" + itemId;
 			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
 			var item = GameGlobals.playerActionsHelper.getItemForCraftAction(actionName);
-			itemsComponent.addItem(item.clone(), !this.playerPositionNodes.head.position.inCamp);
+			GameGlobals.playerHelper.addItem(item);
 
 			if (item.type === ItemConstants.itemTypes.weapon)
 				if (!GameGlobals.gameState.unlockedFeatures.fight) {
@@ -1561,11 +1598,22 @@ define(['ash',
 			);
 		},
 
-		useItem: function (itemId) {
+		useItem: function (itemId, deductedCosts) {
 			var actionName = "use_item_" + itemId;
 			var sys = this;
+			
 			var reqs = GameGlobals.playerActionsHelper.getReqs(actionName);
+			var playerPos =  this.playerPositionNodes.head.position;
 			var perksComponent = this.playerStatsNodes.head.perks;
+			
+			var item = deductedCosts.items[0];
+			if (!item) {
+				log.w("trying to use item but none found in deductedCosts");
+			}
+			var foundPosition = item.foundPosition || playerPos;
+			var foundPositionCampOrdinal = GameGlobals.gameState.getCampOrdinal(foundPosition.level);
+			
+			let itemConfig = ItemConstants.getItemConfigByID(itemId);
 			
 			switch (itemId) {
 				case "first_aid_kit_1":
@@ -1606,13 +1654,58 @@ define(['ash',
 					
 				case "cache_metal_1":
 				case "cache_metal_2":
-					var value = 10 + Math.round(Math.random(10));
-					var item = ItemConstants.getItemByID(itemId);
-					var itemNameParts = item.name.split(" ");
-					var itemName = itemNameParts[itemNameParts.length - 1];
-					var currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
+				case "cache_metal_3":
+				case "cache_metal_4":
+					let baseValue = itemConfig.configData.metalValue || 10;
+					let value = baseValue + Math.round(Math.random() * 10);
+					let itemNameParts = item.name.split(" ");
+					let itemName = itemNameParts[itemNameParts.length - 1];
+					let currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
 					currentStorage.resources.addResource(resourceNames.metal, value);
 					this.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, "Took apart the " + itemName + ". Gained " + value + " metal.");
+					break;
+					
+				case "cache_evidence_1":
+				case "cache_evidence_2":
+				case "cache_evidence_3":
+					let evidence = itemConfig.configData.evidenceValue || 1;
+					let message = TextConstants.getReadBookMessage(item, itemConfig.configData.bookType || ItemConstants.bookTypes.science, foundPositionCampOrdinal);
+					let resultVO = new ResultVO("use_item");
+					resultVO.gainedEvidence = evidence;
+					GameGlobals.uiFunctions.showInfoPopup(
+						item.name,
+						message,
+						"Continue",
+						resultVO
+					);
+					this.playerStatsNodes.head.evidence.value += evidence;
+					this.addLogMessage(LogConstants.MSG_ID_USE_BOOK, "Read a book. Gained " + evidence + " evidence.");
+					break;
+					
+				case "consumable_map_1":
+				case "consumable_map_2":
+					// TODO score and prefer unvisited sectors
+					var radius = 3;
+					var centerSectors = GameGlobals.levelHelper.getSectorsAround(foundPosition, 2);
+					var centerSector = centerSectors[Math.floor(Math.random() * centerSectors.length)];
+					var centerPosition = centerSector.get(PositionComponent);
+					var sectorsToReveal = GameGlobals.levelHelper.getSectorsAround(centerPosition, radius);
+					
+					var revealedSomething = false;
+					for (var i = 0; i < sectorsToReveal.length; i++) {
+						var statusComponent = sectorsToReveal[i].get(SectorStatusComponent);
+						if (statusComponent.scouted) continue;
+						statusComponent.revealedByMap = true;
+						revealedSomething = true;
+					}
+					
+					log.i("reveal map around " + centerPosition + " radius " + radius);
+					
+					if (revealedSomething) {
+						this.addLogMessage(LogConstants.MSG_ID_USE_MAP_PIECE, "Recorded any useful information from the map.");
+					} else {
+						this.addLogMessage(LogConstants.MSG_ID_USE_MAP_PIECE, "Checked the map, but there was nothing interesting there.");
+					}
 					break;
 
 				default:
@@ -1630,6 +1723,7 @@ define(['ash',
 				log.w("can't use item in fight, no fight in progress");
 				return;
 			}
+			var enemy = fightComponent.enemy;
 			switch (itemId) {
 				case "glowstick_1":
 					var stunTime = 2;
@@ -1640,6 +1734,20 @@ define(['ash',
 					var damage = 20;
 					log.i("add " + damage + " extra damage to enemy");
 					fightComponent.itemEffects.damage = damage;
+					break;
+				case "consumable_weapon_bio":
+					if (!fightComponent.enemy.isMechanical()) {
+						var stunTime = 3;
+						log.i("stun enemy for " + Math.round(stunTime * 100)/100 + "s")
+						fightComponent.itemEffects.enemyStunnedSeconds = stunTime;
+					}
+					break;
+				case "consumable_weapon_mechanical":
+					if (fightComponent.enemy.isMechanical()) {
+						var stunTime = 3;
+						log.i("stun enemy for " + Math.round(stunTime * 100)/100 + "s")
+						fightComponent.itemEffects.enemyStunnedSeconds = stunTime;
+					}
 					break;
 				case "flee_1":
 					fightComponent.itemEffects.fled = true;

@@ -15,7 +15,8 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			this.maxSectors = numSectors + WorldCreatorConstants.getMaxSectorOverflow(levelOrdinal);
 			this.numSectorsByStage = {};
 			
-			this.campPositions = [];
+			this.campPosition = null;
+			this.additionalCampPositions = [];
 			this.passageUpPosition = null;
 			this.passageDownPosition = null;
 			this.stageCenterPositions = {};
@@ -150,17 +151,23 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			return neighbours;
 		},
 		
-		getNeighbourCount: function (sectorX, sectorY, stage, excludeStage) {
+		getNeighbourCount: function (sectorX, sectorY, stage, excludeStage, excludeDiagonals) {
 			let result = 0;
 			var startingPos = new PositionVO(this.level, sectorX, sectorY);
 			for (let i in PositionConstants.getLevelDirections()) {
-				var direction = PositionConstants.getLevelDirections()[i];
+				var direction = PositionConstants.getLevelDirections(excludeDiagonals)[i];
 				var neighbourPos = PositionConstants.getNeighbourPosition(startingPos, direction);
 				if (this.hasSector(neighbourPos.sectorX, neighbourPos.sectorY, stage, excludeStage)) {
 					result++;
 				}
 			}
 			return result;
+		},
+		
+		getNeighbourCountWeighted: function (sectorX, sectorY, stage, excludeStage) {
+			let numNeighboursWithoutDiagonals = this.getNeighbourCount(sectorX, sectorY, stage, excludeStage, false);
+			let numNeighboursWithDiagonals = this.getNeighbourCount(sectorX, sectorY, stage, excludeStage, true);
+			return numNeighboursWithoutDiagonals + numNeighboursWithDiagonals * 0.5;
 		},
 		
 		getNextNeighbours: function (sectorVO, direction) {
@@ -210,13 +217,16 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			}
 		},
 		
+		getAllCampPositions: function () {
+			let result = [];
+			if (this.campPosition) result.push(this.campPosition);
+			if (this.additionalCampPositions && this.additionalCampPositions.length > 0) result = result.concat(this.additionalCampPositions);
+			return result;
+		},
+		
 		isCampPosition: function (pos) {
-			for (let i = 0; i < this.campPositions.length; i++) {
-				if (this.campPositions[i].equals(pos)) {
-					return true;
-				}
-			}
-			return false;
+			if (!this.campPosition) return false;
+			return this.campPosition.equals(pos);
 		},
 		
 		isPassageUpPosition: function (pos) {
@@ -225,6 +235,16 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 		
 		isPassageDownPosition: function (pos) {
 			return this.passageDownPosition && this.passageDownPosition.equals(pos);
+		},
+		
+		getEntrancePassagePosition: function () {
+			if (this.levelOrdinal == 1) return null;
+			var isGoingDown = this.level <= 13;
+			if (isGoingDown) {
+				return this.passageUpPosition;
+			} else {
+				return this.passageDownPosition;
+			}
 		},
 		
 		isInvalidPosition: function (pos) {

@@ -6,13 +6,18 @@ define(['ash'], function (Ash) {
 		constructor: function (initialStamina) {
 			this.stamina = initialStamina;
 			this.maxStamina = 100;
-			this.health = 100;
-			this.maxHP = this.health;
-			this.hp = this.maxHP;
-			this.maxShield = 0;
-			this.shield = 0;
 			this.accumulation = 0;
 			this.accSources = [];
+			
+			this.health = 100;
+			this.healthAccumulation = 0;
+			this.healthAccSources = [];
+			
+			this.hp = this.health;
+			this.maxHP = this.health;
+			
+			this.shield = 0;
+			this.maxShield = 0;
 		},
 		
 		resetHP: function () {

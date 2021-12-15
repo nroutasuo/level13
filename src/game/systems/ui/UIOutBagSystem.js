@@ -315,11 +315,15 @@ define([
 				if (!item.equippable) continue;
 				var slot = $("#bag-items div[data-itemid='" + item.id + "']");
 				var indicator = $(slot[0]).find(".item-comparison-indicator");
-
-				var comparison = itemsComponent.getEquipmentComparison(item);
-				$(indicator).toggleClass("indicator-increase", comparison > 0);
-				$(indicator).toggleClass("indicator-even", comparison == 0);
-				$(indicator).toggleClass("indicator-decrease", comparison < 0);
+				
+				let equippedItems = itemsComponent.getEquipped(item.type);
+				let comparison = itemsComponent.getEquipmentComparison(item);
+				let isEquipped = equippedItems.length > 0 && equippedItems[0].id == item.id;
+				
+				$(indicator).toggleClass("indicator-equipped", isEquipped);
+				$(indicator).toggleClass("indicator-increase", !isEquipped && comparison > 0);
+				$(indicator).toggleClass("indicator-even", !isEquipped && comparison == 0);
+				$(indicator).toggleClass("indicator-decrease", !isEquipped && comparison < 0);
 			}
 		},
 
@@ -500,13 +504,14 @@ define([
 
 		isItemUnlocked: function (itemDefinition) {
 			var actionName = "craft_" + itemDefinition.id;
+			var reqs = GameGlobals.playerActionsHelper.getReqs(actionName);
 			var reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(actionName, false);
 			if (reqsCheck.value >= 1)
 				return true;
 			if (reqsCheck.reason === PlayerActionConstants.UNAVAILABLE_REASON_BAG_FULL)
 				return true;
 			if (reqsCheck.reason === PlayerActionConstants.UNAVAILABLE_REASON_LOCKED_RESOURCES)
-				return true;
+				return reqs.upgrades && reqs.upgrades.length > 0;
 			return false;
 		},
 
@@ -535,7 +540,8 @@ define([
 			var itemsComponent = this.itemNodes.head.items;
 			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
 			if (inCamp) {
-				return itemsComponent.getCountById("cache_metal_1", true) + itemsComponent.getCountById("cache_metal_2", true);
+				return itemsComponent.getCountById("cache_metal_1", true) + itemsComponent.getCountById("cache_metal_2", true)
+					+ itemsComponent.getCountById("cache_metal_3", true) + itemsComponent.getCountById("cache_metal_4", true);
 			} else {
 				return 0;
 			}

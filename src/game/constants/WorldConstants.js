@@ -6,13 +6,15 @@ define(['ash'], function (Ash) {
 		LEVEL_NUMBER_MAX: 27,
 		
 		CAMPS_TOTAL: 15,
+		CAMPS_BEFORE_GROUND: 8,
 		
-		CAMP_ORDINAL_LIMIT: 14,
 		CAMP_ORDINAL_FUEL: 3,
 		CAMP_ORDINAL_GREENHOUSE_1: 5,
 		CAMP_ORDINAL_GREENHOUSE_2: 7,
 		CAMP_ORDINAL_GROUND: 8,
-		CAMPS_BEFORE_GROUND: 8,
+		CAMP_ORDINAL_FUEL_2: 12,
+		CAMP_ORDINAL_RUBBER_2: 14,
+		CAMP_ORDINAL_LIMIT: 14,
 		
 		CAMP_STAGE_EARLY: "e",
 		CAMP_STAGE_LATE: "l",
@@ -31,6 +33,13 @@ define(['ash'], function (Ash) {
 		ZONE_EXTRA_CAMPABLE: "z_extra_c",
 		ZONE_EXTRA_UNCAMPABLE: "z_extra_u",
 		ZONE_POI_TEMP: "z_poi_temp",
+		
+		resourcePrevalence: {
+			RARE: 1,		// only for rare resources
+			DEFAULT: 2, 	// default value, scavenging is worth it but not traveling a long way for it
+			COMMON: 3,		// good sectors
+			ABUNDANT: 4,	// exceptionally good sectors
+		},
 		
 		getCampStep: function (zone) {
 			switch (zone) {
@@ -77,6 +86,15 @@ define(['ash'], function (Ash) {
 				case WorldConstants.CAMP_STEP_POI_2: return WorldConstants.CAMP_STAGE_LATE;
 				default: return WorldConstants.CAMP_STAGE_EARLY;
 			}
+		},
+		
+		getStepForStage: function (stage) {
+			switch (stage) {
+				case WorldConstants.CAMP_STAGE_EARLY: return WorldConstants.CAMP_STEP_START;
+				case WorldConstants.CAMP_STAGE_LATE: return WorldConstants.CAMP_STAGE_LATE;
+			}
+			log.w("unknown stage: " + stage);
+			return WorldConstants.CAMP_STEP_START;
 		},
 		
 		isAllowedZone: function (stage, zone) {

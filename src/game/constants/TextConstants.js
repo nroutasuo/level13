@@ -1,15 +1,19 @@
 // Level 13 specific text helpers
 
-define(
-['ash',
-	'utils/DescriptionMapper', 'text/Text', 'text/TextBuilder',
+define(['ash',
+	'utils/DescriptionMapper',
+	'text/Text',
+	'text/TextBuilder',
 	'game/constants/GameConstants',
 	'game/constants/EnemyConstants',
 	'game/constants/ItemConstants',
 	'game/constants/SectorConstants',
 	'game/constants/PositionConstants',
-	'game/constants/MovementConstants'],
-function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstants, ItemConstants, SectorConstants, PositionConstants, MovementConstants) {
+	'game/constants/MovementConstants',
+	'game/constants/TradeConstants',
+	'game/constants/WorldConstants',
+],
+function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstants, ItemConstants, SectorConstants, PositionConstants, MovementConstants, TradeConstants, WorldConstants) {
 	
 	var TextConstants = {
 		
@@ -116,7 +120,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					addOptions("a-street-past", [ "glamorous", "buzzling" ]);
 					addOptions("n-building", [ "shopping center", "department store", "office building", "cafe", "bar" ]);
 					addOptions("n-buildings", [ "shopping towers", "shopping malls", "shops", "stores", "offices", "office towers" ]);
-					addOptions("a-building", [ "empty", "deserted" ]);
+					addOptions("a-building", [ "empty", "deserted", "ransacked" ]);
 					addOptions("an-decos", [ "empty fountains", "abandoned stalls" ]);
 					addOptions("an-items", [ "broken glass" ]);
 					break;
@@ -346,6 +350,156 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			}
 		},
 		
+		getReadBookMessage: function (itemVO, bookType, campOrdinal) {
+			let features = {};
+			features.bookType = bookType;
+			features.bookName = itemVO.name;
+			features.campOrdinal = campOrdinal;
+			features.randomSeed = itemVO.itemID;
+			let params = this.getBookTextParams(features);
+			
+			let template = DescriptionMapper.get("book-intro", features) + " " + DescriptionMapper.get("book-description", features);
+			let phrase = TextBuilder.build(template, params);
+			
+			return phrase;
+		},
+		
+		getBookTextParams: function (features) {
+			var result = {};
+			
+			var topics = [];
+			switch (features.bookType) {
+				case ItemConstants.bookTypes.science:
+					topics.push("an industrial process");
+					topics.push("a species of slug that thrives in radiactive environments");
+					topics.push("the making of robots");
+					topics.push("the infrastructure of the City");
+					topics.push("the ocean");
+					topics.push("ventilation in the City");
+					topics.push("weapons of old");
+					topics.push("medicine");
+					topics.push("food crop rotation");
+					topics.push("electronics");
+					topics.push("the many uses of baking soda");
+					topics.push("how to protect yourself from the harmful effects of sunlight");
+					topics.push("how raw rubber is processed into many useful forms");
+					topics.push("gunpowder");
+					topics.push("dark matter");
+					topics.push("cancer treatment");
+					topics.push("electromagnetism");
+					topics.push("dna");
+					topics.push("evolution");
+					topics.push("plate tetonics");
+					topics.push("transistors");
+					topics.push("batteries");
+					topics.push("the planet's atmosphere");
+					topics.push("fossils");
+					topics.push("steel production");
+					topics.push("fermentation");
+					topics.push("atomic weapons");
+					topics.push("other planets");
+					topics.push("viruses");
+					topics.push("nuclear reactors");
+					topics.push("the magnetic compass");
+					topics.push("solar calendar");
+					topics.push("radar");
+					topics.push("ecosystems");
+					topics.push("the printing press");
+					topics.push("optical lenses");
+					topics.push("fertilizers");
+					topics.push("radio");
+					break;
+				case ItemConstants.bookTypes.fiction:
+					topics.push("pre-Fall popular music");
+					break;
+				case ItemConstants.bookTypes.history:
+					topics.push("pre-Fall religions and how they contributed to wars");
+					topics.push("the effects of a major earthquake on the City");
+					topics.push("biological warfare");
+					break;
+			}
+			result["n-topic"] = DescriptionMapper.pickRandom(topics, features);
+			
+			var objects = [];
+			switch (features.bookType) {
+				case ItemConstants.bookTypes.science:
+					objects.push("a flying vehicle");
+					objects.push("great rockets");
+					objects.push("engines powering the old elevators");
+					objects.push("an irrigation system in a pre-Fall greenhouse");
+					objects.push("an information network spanning an entire level of the City");
+					objects.push("machines you don't really understand, but it seems they were used to stabilise the City");
+					objects.push("transistors");
+					objects.push("a level-wide solar screen called the Ceiling");
+					break;
+			}
+			result["n-object"] = DescriptionMapper.pickRandom(objects, features);
+			
+			var themes = [];
+			switch (features.bookType) {
+				case ItemConstants.bookTypes.fiction:
+					themes.push("a refugee from another continent");
+					themes.push("a mine worker who saw the sun for the first time");
+					themes.push("a terrifying storm that ripped open an edge of the City");
+					themes.push("a great flood");
+					themes.push("a shaman who could predict weather");
+					themes.push("a war between different factions within the City");
+					themes.push("the rise of a heroic leader");
+					themes.push("a Slum-dweller who fights many obstacles but eventually moves up in the City");
+					themes.push("the rise and fall of a criminal gang in the pre-Fall Slums");
+					themes.push("a man who abandons the inhabited parts of the City and tries to find the Ground on their own");
+					themes.push("a group of scientists trapped on a research station in the old parts of the City");
+					themes.push("a romance between two people who are forced to work far away from each other");
+					themes.push("a bureaucrat whose job is to assess the value of an individual's contribution to the City");
+					themes.push("the unification of the people in the City under one Government");
+					themes.push("someone missing a far-away homeland");
+					themes.push("ghosts that are said to wander the abandoned parts of the City");
+					break;
+			}
+			result["c-theme"] = DescriptionMapper.pickRandom(themes, features);
+			
+			var facts = [];
+			switch (features.bookType) {
+				case ItemConstants.bookTypes.science:
+					facts.push("the City's population was already on decline before the Fall");
+					facts.push("ancient civilizations often used wood as a building material, because it was plentiful on the Ground");
+					facts.push("there are were several Mining Towns deep in the City");
+					facts.push("the maintenance of the City below certain levels was mainly done by robots");
+					// TODO get general facts like these in features / otherwise
+					// facts.push("there are X levels in the City");
+					// facts.push("the lowest level of the City is in fact number X");
+					break;
+				case ItemConstants.bookTypes.history:
+					facts.push("a few powerful mining corporations held great power before the Fall");
+					facts.push("ancient civilizations based their calendars on four seasons");
+					facts.push("the City was originally built on swamp land");
+					facts.push("the City was inhabited by people from several old civilizations");
+					facts.push("there was something called the City Govermment");
+					facts.push("the City has experienced several famines during its history");
+					facts.push("the City was started to be built about 700 years ago");
+					facts.push("there was a time when all religions were banned in the City");
+					break;
+			}
+			result["c-fact"] = DescriptionMapper.pickRandom(facts, features);
+			
+			var events = [];
+			switch (features.bookType) {
+				case ItemConstants.bookTypes.history:
+					events.push("a war that the City waged against some far-away civilization hundreds of years ago");
+					events.push("wars in the City in the past 500 years");
+					events.push("the building of the first levels of the City");
+					events.push("the migration to the city from some far-away island");
+					events.push("something called the Great Famine which took place a few decades before the book was written");
+					events.push("the establishment of the city-wide Government");
+					events.push("a major gardener rebellion");
+					events.push("a great nuclear power plant accident where a lot of waste was released to the lower levels of the City");
+					break;
+			}
+			result["c-event"] = DescriptionMapper.pickRandom(events, features);
+			
+			return result;
+		},
+		
 		getFoundStashMessage: function (stashVO) {
 			switch (stashVO.stashType) {
 				case ItemConstants.STASH_TYPE_ITEM:
@@ -355,6 +509,45 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				default:
 					log.w("Unknown stash type: " + stashVO.stashType);
 					return "Found a stash.";
+			}
+		},
+		
+		getWaymarkText: function (waymarkVO, sectorFeatures) {
+			let features = Object.assign({}, sectorFeatures);
+			features.waymarkType = waymarkVO.type;
+			features.direction = PositionConstants.getDirectionFrom(waymarkVO.fromPosition, waymarkVO.toPosition);
+			
+			let template = DescriptionMapper.get("waymark", features);
+			let params = this.getWaymarkTextParams(waymarkVO, features);
+			let phrase = TextBuilder.build(template, params);
+			
+			result = phrase;
+			if (GameConstants.isDebugVersion) result += " [" + waymarkVO.toPosition + "]";
+			
+			return result;
+		},
+		
+		getWaymarkTextParams: function (waymarkVO, features) {
+			let result = {};
+			
+			let tradePartner = TradeConstants.getTradePartner(features.campOrdinal);
+			
+			result["n-target"] = "<span class='hl-functionality'>" + this.getWaymarkTargetName(waymarkVO) + "</span>";
+			result["direction"] = PositionConstants.getDirectionName(features.direction, false);
+			result["n-settlement-name"] = tradePartner ? tradePartner.name : null;
+			return result;
+		},
+		
+		getWaymarkTargetName: function (waymarkVO) {
+			switch (waymarkVO.type) {
+				case SectorConstants.WAYMARK_TYPE_SPRING: return "water";
+				case SectorConstants.WAYMARK_TYPE_CAMP: return "safety";
+				case SectorConstants.WAYMARK_TYPE_RADIATION: return "hazard";
+				case SectorConstants.WAYMARK_TYPE_POLLUTION: return "hazard";
+				case SectorConstants.WAYMARK_TYPE_SETTLEMENT: return "trade";
+				default:
+					log.w("unknown waymark type: " + waymarkVO.type);
+					return "safe";
 			}
 		},
 		
@@ -584,18 +777,6 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			return "water tower";
 		},
 		
-		getDirectionName: function (direction) {
-			switch (direction) {
-			case PositionConstants.DIRECTION_WEST: return "west";
-			case PositionConstants.DIRECTION_NORTH: return "north";
-			case PositionConstants.DIRECTION_SOUTH: return "south";
-			case PositionConstants.DIRECTION_EAST: return "east";
-			case PositionConstants.DIRECTION_UP: return "up";
-			case PositionConstants.DIRECTION_DOWN: return "down";
-			case PositionConstants.DIRECTION_CAMP: return "camp";
-			}
-		},
-		
 		getEnemyText: function (enemyList, sectorControlComponent) {
 			let result = "";
 			var enemyActiveV = this.getEnemyActiveVerb(enemyList);
@@ -626,13 +807,44 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			return this.getCommonText(enemyList, "defeatedV", "", "defeated", false);
 		},
 		
+		getScaResourcesString: function (discoveredResources, resourcesScavengable) {
+			var s = "";
+			 for(var key in resourceNames) {
+				var name = resourceNames[key];
+				var amount = resourcesScavengable.getResource(name);
+				if (amount > 0 && discoveredResources.indexOf(name) >= 0) {
+					var amountDesc = "scarce";
+					if (amount == WorldConstants.resourcePrevalence.RARE) amountDesc = "rare";
+					if (amount == WorldConstants.resourcePrevalence.DEFAULT) amountDesc = "scarce";
+					if (amount == WorldConstants.resourcePrevalence.COMMON) amountDesc = "common";
+					if (amount == WorldConstants.resourcePrevalence.ABUNDANT) amountDesc = "abundant";
+					if (GameConstants.isDebugVersion) amountDesc += " " + Math.round(amount);
+					s += key + " (" + amountDesc + "), ";
+				}
+			}
+			if (s.length > 0) return s.substring(0, s.length - 2);
+			else if (resourcesScavengable.getTotal() > 0) return "Unknown";
+			else return "None";
+		},
+		
+		getScaItemString: function (discoveredItems, itemsScavengeable) {
+			var validItems = [];
+			for (let i = 0; i < discoveredItems.length; i++) {
+				var id = discoveredItems[i];
+				if (itemsScavengeable.indexOf(id) < 0) continue;
+				validItems.push(ItemConstants.getItemByID(id).name);
+			}
+			if (validItems.length == 0) return "None";
+			return validItems.join(", ");
+		},
+		
 		getMovementBlockerName: function (blockerVO, enemiesComponent, gangComponent) {
 			switch (blockerVO.type) {
 				case MovementConstants.BLOCKER_TYPE_GANG:
 					let enemies = this.getAllEnemies(enemiesComponent, gangComponent);
 					var groupNoun = this.getEnemyGroupNoun(enemies);
 					var enemyNoun = this.getEnemyNoun(enemies);
-					return groupNoun + " of " + enemyNoun;
+					return groupNoun + " of " + Text.pluralify(enemyNoun);
 				default:
 					return blockerVO.name;
 			}
@@ -805,6 +1017,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("sector-vision", { sectorType: t_C }, "A [n-street] between some commercial buildings, their [a-building] walls covered in a patchwork of dead screens");
 		DescriptionMapper.add("sector-vision", { sectorType: t_C, wear: b12 }, "A [n-street] [n-street] crowded with small shops, billboards and kiosks on multiple levels");
 		DescriptionMapper.add("sector-vision", { sectorType: t_C, buildingDensity: b12, isSurfaceLevel: false }, "A [n-street] where buildings are attached to the ceiling of the level like colossal stalactites");
+		DescriptionMapper.add("sector-vision", { sectorType: t_C, buildingDensity: b12, isSurfaceLevel: false }, "A square built around a massive statue with [a-building] shop fronts surrounding it on every side");
 		DescriptionMapper.add("sector-vision", { sectorType: t_C, buildingDensity: b13 }, "A plaza under an elevated building with what must have once been a waterfall in the middle");
 		DescriptionMapper.add("sector-vision", { sectorType: t_C, buildingDensity: b13 }, "[A] wide fenced terrace attached to a massive tower overlooking the [a-street] streets below");
 		DescriptionMapper.add("sector-vision", { sectorType: t_C, buildingDensity: b13 }, "A round courtyard enclosed by a [a-building] office building");
@@ -851,7 +1064,101 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("sector-novision", { sunlit: true }, "A space inside the city, indistinct in the blinding light");
 	}
 	
+	function initWaymarkTexts() {
+		var wildcard = DescriptionMapper.WILDCARD;
+		
+		var t_R = SectorConstants.SECTOR_TYPE_RESIDENTIAL;
+		var t_I = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
+		var t_M = SectorConstants.SECTOR_TYPE_MAINTENANCE;
+		var t_C = SectorConstants.SECTOR_TYPE_COMMERCIAL;
+		var t_P = SectorConstants.SECTOR_TYPE_PUBLIC;
+		var t_S = SectorConstants.SECTOR_TYPE_SLUM;
+		
+		var wt_C = SectorConstants.WAYMARK_TYPE_CAMP;
+		var wt_W = SectorConstants.WAYMARK_TYPE_SPRING;
+		var wt_P = SectorConstants.WAYMARK_TYPE_POLLUTION;
+		var wt_R = SectorConstants.WAYMARK_TYPE_RADIATION;
+		var wt_S = SectorConstants.WAYMARK_TYPE_SETTLEMENT;
+		
+		// brackets for values like building density, wear, damage
+		var b0 = [0, 0];
+		var b12 = [0, 5];
+		var b22 = [5, 10];
+		
+		var lt1 = [ 0, 0.999 ];
+		var gte1 = [ 1, 100 ];
+		
+		DescriptionMapper.add("waymark", { sectorType: wildcard }, "A wall by a corridor leading [direction] has been painted with a big [n-target] symbol");
+		DescriptionMapper.add("waymark", { sectorType: wildcard }, "There is a graffiti with the word [n-target] and an arrow pointing [direction]");
+		DescriptionMapper.add("waymark", { buildingDensity: b12 }, "Some bricks have been arranged in the shape of an arrow pointing [direction] and a crude symbol that seems to mean [n-target]");
+		DescriptionMapper.add("waymark", { waymarkType: wt_C }, "You spot a few graffiti with arrows pointing [direction] and words like 'safe' and 'shelter'.");
+		DescriptionMapper.add("waymark", { waymarkType: wt_R }, "There are multiple skull signs on walls when heading towards [direction]");
+		DescriptionMapper.add("waymark", { waymarkType: wt_P }, "There are multiple skull signs on walls when heading towards [direction]");
+		DescriptionMapper.add("waymark", { waymarkType: wt_S }, "There is a metal plaque on a wall by a passage leading [direction] with the name '[n-settlement-name]'");
+		DescriptionMapper.add("waymark", { waymarkType: wt_W }, "A blue arrow painted on the street is pointing [direction].");
+		DescriptionMapper.add("waymark", { sectorType: t_C }, "A store billboard has been painted over with the an arrow pointing [direction] and the word [n-target]");
+		DescriptionMapper.add("waymark", { sectorType: t_I }, "A street sign with directions has been painted over. Towards [direction] it says [n-target]");
+		DescriptionMapper.add("waymark", { sectorType: t_M }, "Pipes near the ceiling have arrows painted on them. One pointing [direction] is next to a symbol for [n-target]");
+		DescriptionMapper.add("waymark", { sectorType: t_P }, "A statue is holding a crude sign saying there is [n-target] to the [direction]");
+		DescriptionMapper.add("waymark", { sectorType: t_S }, "There are a few worn posters saying there is [n-target] to the [direction]");
+	}
+	
+	function initBookTexts() {
+		var wildcard = DescriptionMapper.WILDCARD;
+		
+		let t_S = ItemConstants.bookTypes.science;
+		let t_F = ItemConstants.bookTypes.fiction;
+		let t_H = ItemConstants.bookTypes.history;
+		
+		DescriptionMapper.add("book-intro", { bookType: wildcard }, "You read the book.");
+		DescriptionMapper.add("book-intro", { bookType: t_S }, "You leaf through the book.");
+		DescriptionMapper.add("book-intro", { bookType: t_F }, "You examine the book.");
+		DescriptionMapper.add("book-intro", { bookType: t_H }, "You study the book.");
+		
+		DescriptionMapper.add("book-description", { bookType: wildcard }, "A passage describing [n-topic] catches your eye.");
+		DescriptionMapper.add("book-description", { bookType: wildcard }, "A section describing [n-topic] seems interesting.");
+		
+		DescriptionMapper.add("book-description", { bookType: t_S }, "You find details about [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "There is a wealth of information about [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "You learn about [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "There are many interesting passages about [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "It describes [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "It is a rather dry text on [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "It contains a description of [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "It contains a dissertation on [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "There is an interesting diagram of [n-object].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "There are abandoned plans of [n-object].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "There is diagram explaining in detail how [n-object] worked.");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "It contains a detailed description of [n-object].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "There are technical drawings of [n-object]");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "You learn that [c-fact].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "A description of a refining process offers clues to the kind of materials used commonly before the Fall.");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "You are spell-bound by a description of abundant plant-life on the Ground.");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "It contains a catalog of known animal life in the \"Dark Levels\". You recognize several.");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "You notice old census data about people who are exposed daily to sunlight versus those who are not.");
+		
+		DescriptionMapper.add("book-description", { bookType: t_H }, "You find details about [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "It describes [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "It is a rather dry text on [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "You learn that [c-fact].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "It seems that [c-fact].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "You learn about [c-event].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "You find a timeline of [c-event].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "A chapter on [c-event] catches your eye.");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "There is a long section about [c-event].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "There are several references to [c-event].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "A reference to the \"currently uninhabited levels\" of the City offers a perspective on the pre-Fall City.");
+		
+		DescriptionMapper.add("book-description", { bookType: t_F }, "A story about [c-theme] stays with you.");
+		DescriptionMapper.add("book-description", { bookType: t_F }, "You are touched by a poem about [c-theme].");
+		DescriptionMapper.add("book-description", { bookType: t_F }, "There is a story about [c-theme].");
+		DescriptionMapper.add("book-description", { bookType: t_F }, "It is a tale about [c-theme].");
+		
+	}
+	
 	initSectorTexts();
+	initWaymarkTexts();
+	initBookTexts();
 	
 	return TextConstants;
 	

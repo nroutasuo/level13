@@ -1,6 +1,7 @@
 // Random and seed related functions for the WorldCreator
 define([
 	'ash',
+	'utils/MathUtils',
 	'utils/PathFinding',
 	'worldcreator/WorldCreatorLogger',
 	'game/constants/PositionConstants',
@@ -9,7 +10,7 @@ define([
 	'game/constants/WorldConstants',
 	'game/vos/PositionVO',
 	'game/vos/PathConstraintVO'],
-function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants, MovementConstants, WorldConstants, PositionVO, PathConstraintVO) {
+function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants, MovementConstants, WorldConstants, PositionVO, PathConstraintVO) {
 
 	var WorldCreatorRandom = {
 		
@@ -254,7 +255,7 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 					return false;
 				}
 				// check path
-				var path = this.findPath(worldVO, pathConstraints[j].startPosition, sector.position, false, true);
+				var path = this.findPath(worldVO, pathConstraints[j].startPosition, sector.position, false, true, null, false, pathConstraints[j].maxLength);
 				if (!path) return false;
 				var pathLen = path.length;
 				if (pathLen > pathConstraints[j].maxLength) {
@@ -264,6 +265,25 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 				if (pathLen <= 0) return false;
 			}
 			return true;
+		},
+		
+		getProbabilityFromFactors: function (factors) {
+			if (factors.length == 0) {
+				WorldCreatorLogger.w("no factors for getProbabilityFromFactors");
+				return 0.5;
+			}
+			let total = 0;
+			for (let i = 0; i < factors.length; i++) {
+				let factor = factors[i];
+				let value = factor.value;
+				if (typeof(value) == "boolean") {
+					total += value ? 1 : 0;
+				} else {
+					total += MathUtils.map(value, factor.min || 0, factor.max || 1, 0, 1);
+				}
+			}
+			
+			return total / factors.length;
 		},
 		
 		// get random result with a validity check function, try max 99 times with different seeds, keep track of fails
@@ -301,6 +321,19 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 			return result;
 		},
 		
+		getRandomItemFromArray: function (seed, array) {
+			let index = this.randomInt(seed, 0, array.length);
+			return array[index];
+		},
+		
+		getRandomIntFromRange: function (seed, range) {
+			let isRange = typeof(range) !== "number";
+			if (!isRange) return range;
+			let min = Math.round(range[0])
+			let max = Math.round(range[1]);
+			return WorldCreatorRandom.randomInt(seed, min, max);
+		},
+		
 		// Pseudo-random int between min (inclusive) and max (exclusive)
 		randomInt: function (seed, min, max) {
 			if (!isFinite(seed) || isNaN(seed)) {
@@ -327,7 +360,7 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 		},
 		
 		// anyPath: if true, not necessarily SHORTEST path, just one known to exist
-		findPath: function (worldVO, startPos, endPos, blockByBlockers, omitWarnings, stage, anyPath) {
+		findPath: function (worldVO, startPos, endPos, blockByBlockers, omitWarnings, stage, anyPath, maxLength) {
 			if (!startPos) {
 				WorldCreatorLogger.w("No start pos defined.");
 			}
@@ -392,7 +425,7 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 					return false;
 				}
 			};
-			var settings = { includeUnbuiltPassages: true, skipUnvisited: false, skipBlockers: blockByBlockers, omitWarnings: omitWarnings };
+			var settings = { includeUnbuiltPassages: true, skipUnvisited: false, skipBlockers: blockByBlockers, omitWarnings: omitWarnings, maxLength: maxLength };
 			
 			let result = PathFinding.findPath(startVO, goalVO, utilities, settings);
 			

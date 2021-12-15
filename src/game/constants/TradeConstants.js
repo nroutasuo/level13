@@ -181,11 +181,17 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 						value = this.getItemValueByCraftingIngredients(item);
 					}
 					break;
+				case ItemConstants.itemTypes.voucher:
+					value = isTrader ? 1 : 0;
+					break;
 				case ItemConstants.itemTypes.uniqueEquipment:
 					value = 1;
 					break;
 				case ItemConstants.itemTypes.artefact:
 					value = 1;
+					break;
+				case ItemConstants.itemTypes.trade:
+					value = item.scavengeRarity;
 					break;
 				case ItemConstants.itemTypes.note:
 					value = 0;

@@ -248,6 +248,7 @@ define([
 					addSellItemsFromCategories([ "ingredient"], 0.25, 5 + campOrdinal + 2, true);
 				}
 				buyItemTypes = categories;
+				buyItemTypes.push("trade");
 				usesCurrency = true;
 			} else if (rand <= 0.4) {
 				// 2) misc trader: sells ingredients, random items, buys all items, uses currency
@@ -287,6 +288,7 @@ define([
 				}
 				addSellItemsFromCategories([ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head", "shoes", "bag", "exploration" ], 0.05, 1, false);
 				buyItemTypes.push("ingredient");
+				buyItemTypes.push("trade");
 				usesCurrency = false;
 			} else if (rand <= 0.8) {
 				// 4) resource trader: sells and buys a specific resource
@@ -324,6 +326,7 @@ define([
 						buyResources.push(resourceNames.concrete);
 					}
 				}
+				buyItemTypes.push("trade");
 				usesCurrency = true;
 			} else {
 				// 5) trading partner trader: buys and sells same stuff as partner, plus occational items, currency based on partner
@@ -346,6 +349,7 @@ define([
 				}
 				if (!partner.usesCurrency || neededIngredient)
 					buyItemTypes.push("ingredient");
+				buyItemTypes.push("trade");
 				usesCurrency = partner.usesCurrency;
 			}
 			

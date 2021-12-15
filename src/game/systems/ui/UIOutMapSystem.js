@@ -3,6 +3,7 @@ define([
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
+	'game/constants/ItemConstants',
 	'game/constants/PositionConstants',
 	'game/constants/TextConstants',
 	'game/constants/TradeConstants',
@@ -21,7 +22,7 @@ define([
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/improvements/WorkshopComponent',
 	'game/systems/CheatSystem'
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, PositionConstants, TextConstants, TradeConstants, UIConstants,
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, ItemConstants, PositionConstants, TextConstants, TradeConstants, UIConstants,
 	PlayerLocationNode, PlayerPositionNode,
 	CampComponent, PositionComponent, VisitedComponent, EnemiesComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, SectorImprovementsComponent, WorkshopComponent,
 	CheatSystem) {
@@ -138,11 +139,10 @@ define([
 				var sectorFeatures = this.selectedSector.get(SectorFeaturesComponent);
 				var features = GameGlobals.sectorHelper.getTextFeatures(this.selectedSector);
 				var header = isVisited ? TextConstants.getSectorName(isScouted, features) : "Sector";
-				let scavengedPercent = UIConstants.roundValue(statusComponent.getScavengedPercent());
 				$("#mainmap-sector-details-name").text(header);
 				$("#mainmap-sector-details-pos").text(position.getInGameFormat(false));
 				$("#mainmap-sector-details-poi").text(this.getPOIText(this.selectedSector, isScouted));
-				$("#mainmap-sector-details-res-sca").text(this.getResScaText(this.selectedSector, isScouted) + " (" + scavengedPercent + "% scavenged)");
+				$("#mainmap-sector-details-res-sca").text(this.getResScaText(this.selectedSector, isScouted, statusComponent, sectorFeatures));
 				$("#mainmap-sector-details-res-col").text(this.getCollectorsText(this.selectedSector, isScouted));
 				$("#mainmap-sector-details-threats").text(this.getThreatsText(this.selectedSector, isScouted));
 				$("#mainmap-sector-details-blockers").text(this.getBlockersText(this.selectedSector, isScouted));
@@ -235,10 +235,23 @@ define([
 			else return result.join(", ");
 		},
 		
-		getResScaText: function (sector) {
-			let result = GameGlobals.sectorHelper.getLocationDiscoveredResources(sector);
-			if (result.length < 1) return "-";
-			else return result.join(", ");
+		getResScaText: function (sector, isScouted, statusComponent, featuresComponent) {
+			let scavengedPercent = UIConstants.roundValue(statusComponent.getScavengedPercent());
+			
+			let result = "";
+			let resources = GameGlobals.sectorHelper.getLocationDiscoveredResources(sector);
+			let items = GameGlobals.sectorHelper.getLocationDiscoveredItems(sector);
+			if (resources.length < 1 && items.length < 1) {
+				result = "-";
+			} else {
+				result += TextConstants.getScaResourcesString(resources, featuresComponent.resourcesScavengable);
+				if (result.length > 0 && items.length > 0) result += ", ";
+				result += items.map(itemID => ItemConstants.getItemByID(itemID).name.toLowerCase()).join(", ");
+			}
+			
+			result += " (" + scavengedPercent + "% scavenged) ";
+			
+			return result;
 		},
 		
 		getCollectorsText: function (sector, isScouted) {

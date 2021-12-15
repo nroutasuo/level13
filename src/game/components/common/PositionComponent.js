@@ -30,7 +30,13 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 
 		equals: function (position) {
 			if (!position) return false;
-			return this.level === position.level && this.sectorX === position.sectorX && this.sectorY === position.sectorY && this.inCamp === position.inCamp;
+			if (this.level !== position.level) return false;
+			if (this.sectorX !== position.sectorX) return false;
+			if (this.sectorY !== position.sectorY) return false;
+			if (typeof this.inCamp !== "undefined" && typeof position.inCamp !== 'undefined') {
+				if (this.inCamp !== position.inCamp) return false;
+			}
+			return true;
 		},
 
 		toString: function () {

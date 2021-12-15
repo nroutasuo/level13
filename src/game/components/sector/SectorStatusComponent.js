@@ -2,10 +2,14 @@
 define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConstants) {
 
 	var SectorStatusComponent = Ash.Class.extend({
+		
+		NUM_SCAVENGES_PER_SECTOR: 50,
 
 		discoveredResources: [],
+		discoveredItems: [],
 		scavenged: false,
 		scouted: false,
+		revealedByMap: false,
 		localesScouted: [],
 		wasteClearedDirections: [],
 		debrisClearedDirections: [],
@@ -20,8 +24,10 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 
 		constructor: function () {
 			this.discoveredResources = [];
+			this.discoveredItems = [];
 			this.scavenged = false;
 			this.scouted = false;
+			this.revealedByMap = false;
 			this.localesScouted = [];
 			this.wasteClearedDirections = [];
 			this.debrisClearedDirections = [];
@@ -36,6 +42,12 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 		addDiscoveredResource: function (name) {
 			if (this.discoveredResources.indexOf(name) < 0) {
 				this.discoveredResources.push(name);
+			}
+		},
+		
+		addDiscoveredItem: function (id) {
+			if (this.discoveredItems.indexOf(id) < 0) {
+				this.discoveredItems.push(id);
 			}
 		},
 
@@ -53,7 +65,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 		},
 		
 		getScavengedPercent: function () {
-			return this.weightedNumScavenges / (10+this.weightedNumScavenges) * 100;
+			return Math.min(this.weightedNumScavenges/this.NUM_SCAVENGES_PER_SECTOR, 1) * 100;
 		},
 		
 		getHazardReduction: function (hazard) {
@@ -99,11 +111,16 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			var copy = {};
 			if (this.discoveredResources.length > 0)
 				copy.dR = this.discoveredResources;
+			if (this.discoveredItems.length > 0)
+				copy.dI = this.discoveredItems;
 			if (this.scavenged)
 				copy.sc = this.scavenged ? 1 : 0;
 			if (this.scouted) {
 				copy.s = this.scouted ? 1 : 0;
 				copy.st = this.scoutedTimestamp ? this.scoutedTimestamp : 1;
+			}
+			if (this.revealedByMap && !this.scouted) {
+				copy.rm = this.revealedByMap;
 			}
 			if (this.localesScouted.length > 0)
 				copy.lS = this.localesScouted;
@@ -122,8 +139,10 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 
 		customLoadFromSave: function (componentValues) {
 			this.discoveredResources = componentValues.dR ? componentValues.dR : [];
+			this.discoveredItems = componentValues.dI ? componentValues.dI : [];
 			this.scavenged = typeof componentValues.sc !== "undefined" ? componentValues.sc : false;
 			this.scouted = typeof componentValues.s !== "undefined" ? componentValues.s : false;
+			this.revealedByMap = typeof componentValues.rm !== "undefined" ? componentValues.rm : false;
 			this.scoutedTimestamp = typeof componentValues.st !== "undefined" ? componentValues.st : this.scouted ? 1 : null;
 			if (componentValues.lS && componentValues.lS.length > 0)
 				this.localesScouted = componentValues.lS;

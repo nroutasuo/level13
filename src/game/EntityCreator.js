@@ -187,9 +187,12 @@ define([
 					sectorFeatures.notCampableReason,
 					sectorFeatures.resourcesScavengable,
 					sectorFeatures.resourcesCollectable,
+					sectorFeatures.itemsScavengeable,
 					sectorFeatures.hasSpring,
 					sectorFeatures.hasTradeConnectorSpot,
-					sectorFeatures.stashes))
+					sectorFeatures.stashes,
+					sectorFeatures.waymarks
+				))
 				.add(new SectorLocalesComponent(locales))
 				.add(new SaveComponent(saveKey, [
 					ResourcesComponent,
@@ -239,7 +242,8 @@ define([
 
 		initPlayer: function (entity) {
 			var defaultInjury = PerkConstants.perkDefinitions.injury[0].clone();
-			defaultInjury.effectTimer = PerkConstants.TIMER_DISABLED;
+			defaultInjury.startTimer = PerkConstants.TIMER_DISABLED;
+			defaultInjury.removeTimer = PerkConstants.TIMER_DISABLED;
 			var perksComponent = entity.get(PerksComponent);
 			perksComponent.addPerk(defaultInjury);
 			entity.add(new ExcursionComponent());
