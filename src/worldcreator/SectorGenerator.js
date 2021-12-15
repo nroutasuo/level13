@@ -652,17 +652,8 @@ define([
 		generateWorkshops: function (seed, worldVO, levelVO) {
 			var campOrdinal = levelVO.campOrdinal;
 			var l = levelVO.level;
-			let levelIndex = WorldCreatorHelper.getLevelIndexForCamp(seed, campOrdinal, levelVO.level);
-			let maxLevelIndex = WorldCreatorHelper.getMaxLevelIndexForCamp(seed, campOrdinal, levelVO.level);
 			
-			// pick resource
-			var workshopResource = null;
-			if (levelVO.isCampable && campOrdinal === WorldConstants.CAMP_ORDINAL_FUEL)
-				workshopResource = "fuel";
-			if (levelIndex == maxLevelIndex && (campOrdinal === WorldConstants.CAMP_ORDINAL_GREENHOUSE_1 || campOrdinal == WorldConstants.CAMP_ORDINAL_GREENHOUSE_2))
-				workshopResource = "herbs";
-			if (levelVO.level == worldVO.bottomLevel)
-				workshopResource = "rubber";
+			var workshopResource = this.getWorkshopResourceForLevel(seed, worldVO, levelVO);
 			if (!workshopResource) return;
 
 			// pick sectors
@@ -968,7 +959,7 @@ define([
 			var r3 = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66);
 			var r4 = WorldCreatorRandom.random(seed / x * ll + x * y * 16);
 			var sca = new ResourcesVO();
-			var metalThresholds = { "ABUNDANT": 0.95, "COMMON": 0.85, "DEFAULT": 0.03 };
+			var metalThresholds = { "ABUNDANT": 0.95, "COMMON": 0.8, "DEFAULT": 0.03 };
 			var foodThresholds = { "ABUNDANT": 0.98, "COMMON": 0.95, "DEFAULT": 0.75 };
 			var waterThresholds = { "ABUNDANT": 1, "COMMON": 0.95, "DEFAULT": 0.85 };
 			switch (sectorType) {
@@ -979,14 +970,14 @@ define([
 					sca.medicine = campOrdinal > 3 && r2 > 0.99 ? WorldConstants.resourcePrevalence.RARE : 0;
 					break;
 				case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
-					metalThresholds.COMMON = 0.8;
+					metalThresholds.COMMON = 0.75;
 					foodThresholds.DEFAULT = 0.85;
 					sca.rope = r1 > 0.98 ? WorldConstants.resourcePrevalence.DEFAULT : r1 > 0.90 ? WorldConstants.resourcePrevalence.RARE : 0;
 					sca.tools = (l > 13) ? r2 > 0.95 ? WorldConstants.resourcePrevalence.RARE : 0 : 0;
 					sca.fuel = r3 > 0.90 ? WorldConstants.resourcePrevalence.RARE : 0;
 					break;
 				case SectorConstants.SECTOR_TYPE_MAINTENANCE:
-					metalThresholds.COMMON = 0.8;
+					metalThresholds.COMMON = 0.75;
 					foodThresholds.DEFAULT = 0.85;
 					sca.rope = r1 > 0.98 ? WorldConstants.resourcePrevalence.DEFAULT : r1 > 0.90 ? WorldConstants.resourcePrevalence.RARE : 0;
 					sca.fuel = r3 > 0.98 ? WorldConstants.resourcePrevalence.DEFAULT : r1 > 0.90 ? WorldConstants.resourcePrevalence.RARE : 0;
@@ -1921,6 +1912,20 @@ define([
 			}
 			
 			return true;
+		},
+		
+		getWorkshopResourceForLevel: function (seed, worldVO, levelVO) {
+			var campOrdinal = levelVO.campOrdinal;
+			let levelIndex = WorldCreatorHelper.getLevelIndexForCamp(seed, campOrdinal, levelVO.level);
+			let maxLevelIndex = WorldCreatorHelper.getMaxLevelIndexForCamp(seed, campOrdinal, levelVO.level);
+			
+			if (levelVO.isCampable && (campOrdinal === WorldConstants.CAMP_ORDINAL_FUEL || campOrdinal == WorldConstants.CAMP_ORDINAL_FUEL_2))
+				return "fuel";
+			if (levelIndex == maxLevelIndex && (campOrdinal === WorldConstants.CAMP_ORDINAL_GREENHOUSE_1 || campOrdinal == WorldConstants.CAMP_ORDINAL_GREENHOUSE_2))
+				return "herbs";
+			if (levelVO.level == worldVO.bottomLevel || (levelVO.isCampable && campOrdinal == WorldConstants.CAMP_ORDINAL_RUBBER_2))
+				return "rubber";
+			return null;
 		},
 		
 		getPassageUpType: function (seed, worldVO, levelVO, sectorVO) {
