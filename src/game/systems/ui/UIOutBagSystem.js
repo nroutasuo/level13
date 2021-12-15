@@ -315,11 +315,15 @@ define([
 				if (!item.equippable) continue;
 				var slot = $("#bag-items div[data-itemid='" + item.id + "']");
 				var indicator = $(slot[0]).find(".item-comparison-indicator");
-
-				var comparison = itemsComponent.getEquipmentComparison(item);
-				$(indicator).toggleClass("indicator-increase", comparison > 0);
-				$(indicator).toggleClass("indicator-even", comparison == 0);
-				$(indicator).toggleClass("indicator-decrease", comparison < 0);
+				
+				let equippedItems = itemsComponent.getEquipped(item.type);
+				let comparison = itemsComponent.getEquipmentComparison(item);
+				let isEquipped = equippedItems.length > 0 && equippedItems[0].id == item.id;
+				
+				$(indicator).toggleClass("indicator-equipped", isEquipped);
+				$(indicator).toggleClass("indicator-increase", !isEquipped && comparison > 0);
+				$(indicator).toggleClass("indicator-even", !isEquipped && comparison == 0);
+				$(indicator).toggleClass("indicator-decrease", !isEquipped && comparison < 0);
 			}
 		},
 
