@@ -4,6 +4,7 @@ define([
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
+	'game/constants/CampConstants',
 	'game/constants/FollowerConstants',
 	'game/constants/LogConstants',
 	'game/constants/OccurrenceConstants',
@@ -26,7 +27,7 @@ define([
 	'game/vos/RaidVO',
 	'text/Text'
 ], function (
-	Ash, GameGlobals, GlobalSignals, GameConstants, FollowerConstants, LogConstants, OccurrenceConstants, TradeConstants, TextConstants, UIConstants, WorldConstants,
+	Ash, GameGlobals, GlobalSignals, GameConstants, CampConstants, FollowerConstants, LogConstants, OccurrenceConstants, TradeConstants, TextConstants, UIConstants, WorldConstants,
 	PlayerResourcesNode, CampNode, TribeUpgradesNode,
 	CampComponent, PositionComponent, LogMessagesComponent, ItemsComponent,
 	RecruitComponent, TraderComponent, RaidComponent, CampEventTimersComponent,
@@ -62,20 +63,22 @@ define([
 			
 			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
 				var campTimers = campNode.entity.get(CampEventTimersComponent);
-				this.updateEventTimers(time, campTimers);
+				this.updateEventTimers(time, campNode, campTimers);
 				this.updatePendingEvents(campNode, campTimers);
 				this.updateEvents(campNode, campTimers);
 			}
 		},
 		
-		updateEventTimers: function (time, campTimers) {
+		updateEventTimers: function (time, campNode, campTimers) {
 			var dt = time;
-			for (var key in OccurrenceConstants.campOccurrenceTypes) {
-				var event = OccurrenceConstants.campOccurrenceTypes[key];
+			for (let key in OccurrenceConstants.campOccurrenceTypes) {
+				let event = OccurrenceConstants.campOccurrenceTypes[key];
+				let eventEndDt = dt;
+				let eventStartDt = this.getTimeToNextDelta(campNode, event, dt);
 				if (campTimers.eventEndTimers[event] && campTimers.eventEndTimers[event] != OccurrenceConstants.EVENT_DURATION_INFINITE)
-					campTimers.eventEndTimers[event] -= dt;
+					campTimers.eventEndTimers[event] -= eventEndDt;
 				if (campTimers.eventStartTimers[event])
-					campTimers.eventStartTimers[event] -= dt;
+					campTimers.eventStartTimers[event] -= eventStartDt;
 			}
 		},
 		
@@ -89,7 +92,7 @@ define([
 			
 		updateEvents: function (campNode, campTimers) {
 			for (var key in OccurrenceConstants.campOccurrenceTypes) {
-				var event = OccurrenceConstants.campOccurrenceTypes[key];
+				let event = OccurrenceConstants.campOccurrenceTypes[key];
 				let isValid = this.isCampValidForEvent(campNode, event);
 				let hasEvent = this.hasCampEvent(campNode, event);
 				
@@ -102,7 +105,12 @@ define([
 						this.scheduleEvent(campNode, event);
 					} else {
 						if (campTimers.isTimeToStart(event)) {
-							this.startEvent(campNode, event);
+							var skipProbability = this.getEventSkipProbability(campNode, event);
+							if (Math.random() < skipProbability) {
+								this.skipEvent(campNode, event);
+							} else {
+								this.startEvent(campNode, event);
+							}
 						}
 					}
 				} else {
@@ -142,9 +150,7 @@ define([
 
 				case OccurrenceConstants.campOccurrenceTypes.raid:
 					if (population < 1) return false;
-					var soldiers = campNode.camp.assignedWorkers.soldier;
-					var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
-					return OccurrenceConstants.getRaidDanger(improvements, soldiers, soldierLevel) > 0;
+					return this.getRaidDanger(campNode) > 0;
 
 				default:
 					return true;
@@ -303,6 +309,14 @@ define([
 				this.addLogMessage(logMsg, null, null, campNode);
 			}
 		},
+		
+		skipEvent: function (campNode, event) {
+			var campTimers = campNode.entity.get(CampEventTimersComponent);
+			campTimers.onEventSkipped(event);
+			log.i("Skip " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ") (skip probability: " + this.getEventSkipProbability(campNode, event) + ")");
+			this.scheduleEvent(campNode, event);
+			GlobalSignals.saveGameSignal.dispatch();
+		},
 
 		endRaid: function (sectorEntity) {
 			// determine raid result
@@ -381,7 +395,19 @@ define([
 			let isNew = this.isNew(event);
 			let numCamps = GameGlobals.gameState.numCamps;
 			let upgradeLevel = this.getEventUpgradeLevel(event);
-			return OccurrenceConstants.getTimeToNext(event, isNew, upgradeLevel, campNode.camp.population, numCamps);
+			let reputationComponent = campNode.reputation;
+			return OccurrenceConstants.getTimeToNext(event, isNew, upgradeLevel, reputationComponent.value, numCamps);
+		},
+
+		getTimeToNextDelta: function (campNode, event, dt) {
+			switch (event) {
+				case OccurrenceConstants.campOccurrenceTypes.trader:
+				case OccurrenceConstants.campOccurrenceTypes.recruit:
+					let playerPosition = this.playerNodes.head.entity.get(PositionComponent);
+					let isCurrentCamp = playerPosition.inCamp && campNode.position.equals(playerPosition);
+					return isCurrentCamp ? dt * 2 : dt;
+			}
+			return dt;
 		},
 
 		getEventUpgradeLevel: function (event) {
@@ -393,6 +419,26 @@ define([
 				if (this.tribeUpgradesNodes.head.upgrades.hasUpgrade(eventUpgrade)) upgradeLevel++;
 			}
 			return upgradeLevel;
+		},
+		
+		getEventSkipProbability: function (campNode, event) {
+			let skipProbability = 0;
+			switch (event) {
+				case OccurrenceConstants.campOccurrenceTypes.raid:
+					var danger = this.getRaidDanger(campNode);
+					if (danger < CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD / 2) {
+						skipProbability = 1 - danger * 15;
+					}
+					break;
+			}
+			return skipProbability;
+		},
+		
+		getRaidDanger: function (campNode) {
+			var improvements = campNode.entity.get(SectorImprovementsComponent);
+			var soldiers = campNode.camp.assignedWorkers.soldier;
+			var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
+			return OccurrenceConstants.getRaidDanger(improvements, soldiers, soldierLevel);
 		},
 		
 		addLogMessage: function (msg, replacements, values, camp) {

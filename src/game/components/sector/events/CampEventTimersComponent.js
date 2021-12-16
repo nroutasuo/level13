@@ -26,6 +26,10 @@ define(['ash', 'game/constants/OccurrenceConstants'], function (Ash, OccurrenceC
 			this.eventEndTimers[event] = durationSec;
 			this.eventDurations[event] = durationSec;
 		},
+		
+		onEventSkipped: function (event) {
+			this.eventEndTimers[event] = null;
+		},
 
 		removeTimer: function(event) {
 			this.eventStartTimers[event] = null;
