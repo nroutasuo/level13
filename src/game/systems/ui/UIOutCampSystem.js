@@ -551,10 +551,14 @@
 			var showLevelStats = GameGlobals.gameState.numCamps > 1;
 			if (showLevelStats) {
 				var levelComponent = this.playerLevelNodes.head.level;
-				var hasAccessToTradeNetwork = GameGlobals.resourcesHelper.hasAccessToTradeNetwork(this.playerLocationNodes.head.entity);
+				var hasUnlockedTrade = this.hasUpgrade(GameGlobals.upgradeEffectsHelper.getUpgradeToUnlockBuilding(improvementNames.tradepost));
 				$("#in-demographics-level-population .value").text(levelComponent.populationFactor * 100 + "%");
-				$("#in-demographics-trade-network .value").text(hasAccessToTradeNetwork ? "yes" : "no");
-				$("#in-demographics-trade-network .value").toggleClass("warning", !hasAccessToTradeNetwork);
+				$("#in-demographics-trade-network").toggle(hasUnlockedTrade);
+				if (hasUnlockedTrade) {
+					var hasAccessToTradeNetwork = GameGlobals.resourcesHelper.hasAccessToTradeNetwork(this.playerLocationNodes.head.entity);
+					$("#in-demographics-trade-network .value").text(hasAccessToTradeNetwork ? "yes" : "no");
+					$("#in-demographics-trade-network .value").toggleClass("warning", !hasAccessToTradeNetwork);
+				}
 			}
 
 			GameGlobals.uiFunctions.toggle("#in-demographics-level", showLevelStats);
@@ -658,6 +662,7 @@
 		},
 
 		hasUpgrade: function (upgradeID) {
+			if (!upgradeID) return true;
 			return this.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeID);
 		}
 

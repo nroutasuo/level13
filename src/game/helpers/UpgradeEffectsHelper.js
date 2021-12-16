@@ -243,18 +243,32 @@ define([
 			return result;
 		},
 
-		getCampOrdinalToUnlockBuilding: function (building) {
+		getUpgradeToUnlockBuilding: function (improvementName) {
+			let action = GameGlobals.playerActionsHelper.getActionNameForImprovement(improvementName);
+			let reqsDefinition = PlayerActionConstants.requirements[action];
+			let result = null;
+			let resultCampOrdinal = 1;
+			
+			if (reqsDefinition && reqsDefinition.upgrades) {
+				for (var requiredUpgradeId in reqsDefinition.upgrades) {
+					var upgradeCampOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(requiredUpgradeId);
+					if (!result || upgradeCampOrdinal > resultCampOrdinal) {
+						result = requiredUpgradeId;
+						resultCampOrdinal = upgradeCampOrdinal;
+					}
+				}
+			}
+			
+			return result;
+		},
+
+		getCampOrdinalToUnlockBuilding: function (improvementName) {
 			// TODO extend with checking for required buildings' requirements
 			// TODO extend for checking required resources
 			let result = 1;
-			let action = GameGlobals.playerActionsHelper.getActionNameForImprovement(building);
-			let reqsDefinition = PlayerActionConstants.requirements[action];
-			if (reqsDefinition && reqsDefinition.upgrades) {
-				for (var requiredUpgradeId in reqsDefinition.upgrades) {
-					result = Math.max(result, UpgradeConstants.getMinimumCampOrdinalForUpgrade(requiredUpgradeId));
-				}
-			}
-			switch (building) {
+			let requiredUpgradeId = this.getUpgradeToUnlockBuilding(improvementName);
+			result = Math.max(result, UpgradeConstants.getMinimumCampOrdinalForUpgrade(requiredUpgradeId))
+			switch (improvementName) {
 				case improvementNames.temple: return 8;
 				case improvementNames.shrine: return 8;
 			}
