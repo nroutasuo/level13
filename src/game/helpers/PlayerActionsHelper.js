@@ -224,7 +224,7 @@ define([
 					let techLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementName, this.tribeUpgradesNodes.head.upgrades);
 					let maxLevel = ImprovementConstants.getMaxLevel(improvementID, techLevel);
 					if (ordinal >= maxLevel) {
-						return { value: 0, reason: "Max level" };
+						return { value: 0, reason: PlayerActionConstants.UNAVAILABLE_REASON_MAX_IMPROVEMENT_LEVEL };
 					}
 				}
 

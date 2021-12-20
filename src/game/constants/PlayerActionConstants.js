@@ -15,6 +15,7 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 		DISABLED_REASON_NOT_ENOUGH_LEVEL_POP: 'Not enough people on this level.',
 		DISABLED_REASON_NOT_REACHABLE_BY_TRADERS: "Camp not reachable by traders.",
 		UNAVAILABLE_REASON_BUSY: 'Busy',
+		UNAVAILABLE_REASON_MAX_IMPROVEMENT_LEVEL: 'Max level',
 		
 		loadData: function (data) {
 			Object.assign(this, data);

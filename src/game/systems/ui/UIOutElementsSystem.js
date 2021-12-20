@@ -149,7 +149,10 @@ define([
 			var sectorEntity = GameGlobals.buttonHelper.getButtonSectorEntity($button);
 			var disabledReason = GameGlobals.playerActionsHelper.checkRequirements(action, false, sectorEntity).reason;
 			var isDisabledOnlyForCooldown = (!(disabledReason) && GameGlobals.buttonHelper.hasButtonCooldown($button));
-			this.updateButtonCalloutDescription($button, action, buttonStatus, buttonElements);
+			let showDescription = disabledReason != PlayerActionConstants.UNAVAILABLE_REASON_MAX_IMPROVEMENT_LEVEL;
+			
+			this.updateButtonCalloutDescription($button, action, buttonStatus, buttonElements, showDescription);
+			
 			if (!isHardDisabled || isDisabledOnlyForCooldown) {
 				GameGlobals.uiFunctions.toggle($enabledContent, true, this.buttonCalloutSignalParams);
 				GameGlobals.uiFunctions.toggle($disabledContent, false, this.buttonCalloutSignalParams);
@@ -173,12 +176,14 @@ define([
 			this.updateButtonCooldownOverlays($button, action, buttonStatus, buttonElements, sectorEntity, isHardDisabled, costsStatus);
 		},
 		
-		updateButtonCalloutDescription: function ($button, action, buttonStatus, buttonElements) {
+		updateButtonCalloutDescription: function ($button, action, buttonStatus, buttonElements, showDescription) {
 			let baseActionId = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			if (!GameGlobals.playerActionsHelper.isImproveBuildingAction(baseActionId)) {
 				return;
 			}
 			
+			GameGlobals.uiFunctions.toggle(buttonElements.calloutDisabledDivider, showDescription);
+			GameGlobals.uiFunctions.toggle(buttonElements.descriptionSpan, showDescription);
 			buttonElements.descriptionSpan.text(GameGlobals.playerActionsHelper.getDescription(action));
 		},
 
@@ -351,6 +356,7 @@ define([
 					elements.calloutContentEnabled = $(elements.calloutContent.children(".btn-callout-content-enabled"));
 					elements.calloutContentDisabled = $(elements.calloutContent.children(".btn-callout-content-disabled"));
 					elements.calloutSpanDisabledReason = elements.calloutContentDisabled.children(".btn-disabled-reason");
+					elements.calloutDisabledDivider = elements.calloutContentDisabled.children(".btn-callout-content-disabled hr");
 					elements.calloutRiskInjury = elements.calloutContentEnabled.children(".action-risk-injury");
 					elements.calloutRiskInjuryValue = elements.calloutRiskInjury.children(".action-risk-value");
 					elements.calloutRiskInventory = elements.calloutContentEnabled.children(".action-risk-inventory");
