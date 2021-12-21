@@ -260,7 +260,7 @@ define([
 				rewards.gainedItems = this.getRewardItems(0, 1, enemyVO.droppedIngredients, {});
 				rewards.gainedReputation = 1;
 			} else {
-				rewards = this.getFadeOutResults(0.5, 1, 1);
+				rewards = this.getFadeOutResults(0.5, 1, 0.5);
 			}
 			return rewards;
 		},
@@ -1221,20 +1221,26 @@ define([
 		},
 		
 		getLostFollowers: function (loseProbability) {
-			var lostFollowers = [];
+			let lostFollowers = [];
 			
 			if (loseProbability <= 0)
 				return lostFollowers;
 			
-			var playerFollowers = this.playerStatsNodes.head.followers.getParty();
+			let playerFollowers = this.playerStatsNodes.head.followers.getParty();
 			if (playerFollowers.length < 1)
 				return lostFollowers;
 				
-			var loseOne = Math.random() < loseProbability;
+			let fightFollowers = this.playerStatsNodes.head.followers.getFollowersByType(FollowerConstants.followerType.FIGHTER);
+			let possibleToLoseFollowers = fightFollowers.length > 1 ? playerFollowers : playerFollowers.filter(follower => FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType) != FollowerConstants.followerType.FIGHTER);
+			
+			if (possibleToLoseFollowers.length < 1)
+				return lostFollowers;
+				
+			let loseOne = Math.random() < loseProbability;
 			
 			if (loseOne) {
-				var index = Math.floor(playerFollowers.length * Math.random());
-				lostFollowers.push(playerFollowers[index]);
+				var index = Math.floor(possibleToLoseFollowers.length * Math.random());
+				lostFollowers.push(possibleToLoseFollowers[index]);
 			}
 			
 			return lostFollowers;
