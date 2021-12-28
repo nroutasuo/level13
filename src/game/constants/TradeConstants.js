@@ -137,88 +137,147 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 			}
 			if (isTrader)
 				value = value + value * TradeConstants.VALUE_MARKUP_INCOMING_CARAVANS;
+				
+			value = Math.round(value * 1000) / 1000;
+				
 			return value;
 		},
 		
 		getItemValue: function (item, isTrader, isUsed) {
-			var value = 0;
-			switch (item.type) {
-				case ItemConstants.itemTypes.light:
-					var lightBonus = item.getTotalBonus(ItemConstants.itemBonusTypes.light);
-					if (lightBonus <= 25)
-						value = 0.1;
-					else
-						value = (lightBonus - 10) / 30;
-					break;
-				case ItemConstants.itemTypes.weapon:
-					var attackBonus = item.getTotalBonus(ItemConstants.itemBonusTypes.fight_att);
-					if (attackBonus <= 3)
-						value = 0.1;
-					else
-						value = attackBonus / 5;
-					break;
-				case ItemConstants.itemTypes.clothing_over:
-				case ItemConstants.itemTypes.clothing_upper:
-				case ItemConstants.itemTypes.clothing_lower:
-				case ItemConstants.itemTypes.clothing_hands:
-				case ItemConstants.itemTypes.clothing_head:
-					value = Math.max(0.1, (item.getTotalBonus() / 12));
-					break;
-				case ItemConstants.itemTypes.shoes:
-					var shoeBonus = 1 - item.getBonus(ItemConstants.itemBonusTypes.movement);
-					var otherBonus = item.getTotalBonus() - shoeBonus;
-					value = Math.pow(((shoeBonus)*5), 2) + otherBonus / 10;
-					break;
-				case ItemConstants.itemTypes.bag:
-					value = Math.pow(((item.getTotalBonus() - 25) / 15), 1.75);
-					break;
-				case ItemConstants.itemTypes.ingredient:
-					value = TradeConstants.VALUE_INGREDIENTS;
-					break;
-				case ItemConstants.itemTypes.exploration:
-					value = 1;
-					if (item.craftable) {
-						value = this.getItemValueByCraftingIngredients(item);
-					}
-					break;
-				case ItemConstants.itemTypes.voucher:
-					value = isTrader ? 1 : 0;
-					break;
-				case ItemConstants.itemTypes.uniqueEquipment:
-					value = 1;
-					break;
-				case ItemConstants.itemTypes.artefact:
-					value = 1;
-					break;
-				case ItemConstants.itemTypes.trade:
-					value = item.scavengeRarity;
-					break;
-				case ItemConstants.itemTypes.note:
-					value = 0;
-					break;
-			}
+			let value = this.getItemBaseValue(item, isTrader);
 			
 			if (isTrader)
 				value = value + value * TradeConstants.VALUE_MARKUP_INCOMING_CARAVANS;
 			else if (isUsed)
 				value = value - value * TradeConstants.VALUE_DISCOUNT_CAMP_ITEMS;
 			
-			value = Math.round(value * 100) / 100;
+			if (value > 0) {
+				value = Math.max(value, TradeConstants.VALUE_INGREDIENTS);
+			}
+			
+			value = Math.round(value * 20) / 20;
 				
 			return value;
 		},
 		
+		getItemBaseValue: function (item, isTrader) {
+			switch (item.type) {
+				case ItemConstants.itemTypes.light:
+				case ItemConstants.itemTypes.weapon:
+				case ItemConstants.itemTypes.clothing_over:
+				case ItemConstants.itemTypes.clothing_upper:
+				case ItemConstants.itemTypes.clothing_lower:
+				case ItemConstants.itemTypes.clothing_hands:
+				case ItemConstants.itemTypes.clothing_head:
+				case ItemConstants.itemTypes.shoes:
+				case ItemConstants.itemTypes.bag:
+				case ItemConstants.itemTypes.exploration:
+					let valueBonuses = this.getItemValueByBonuses(item);
+					let valueRarity = this.getItemValueByRarity(item);
+					if (item.craftable) {
+						let valueIngredients = this.getItemValueByCraftingIngredients(item);
+						if (isTrader) {
+							return this.getMaxValue(valueBonuses, valueRarity, valueIngredients);
+						} else {
+							return this.getMinValue(valueBonuses, valueRarity, valueIngredients);
+						}
+					} else {
+						if (isTrader) {
+							return this.getMaxValue(valueBonuses, valueRarity);
+						} else {
+							return this.getMinValue(valueBonuses, valueRarity);
+						}
+					}
+					
+				case ItemConstants.itemTypes.ingredient:
+					return TradeConstants.VALUE_INGREDIENTS;
+					
+				case ItemConstants.itemTypes.artefact:
+					return this.getItemValueByRarity(item) || 0;
+					
+				case ItemConstants.itemTypes.trade:
+					return this.getItemValueByRarity(item) || 0;
+					
+				case ItemConstants.itemTypes.voucher:
+				case ItemConstants.itemTypes.uniqueEquipment:
+				case ItemConstants.itemTypes.note:
+					return 0;
+			}
+			
+			return 0;
+		},
+		
+		getItemValueByBonuses: function (item) {
+			switch (item.type) {
+				case ItemConstants.itemTypes.light:
+					var lightBonus = item.getTotalBonus(ItemConstants.itemBonusTypes.light);
+					if (lightBonus <= 25)
+						return 0.1;
+					else
+						return (lightBonus - 10) / 30;
+					
+				case ItemConstants.itemTypes.weapon:
+					var attackBonus = item.getTotalBonus(ItemConstants.itemBonusTypes.fight_att);
+					if (attackBonus <= 3)
+						return 0.1;
+					else
+						return attackBonus / 5;
+					
+				case ItemConstants.itemTypes.clothing_over:
+				case ItemConstants.itemTypes.clothing_upper:
+				case ItemConstants.itemTypes.clothing_lower:
+				case ItemConstants.itemTypes.clothing_hands:
+				case ItemConstants.itemTypes.clothing_head:
+					return Math.max(0.1, (item.getTotalBonus() / 12));
+					
+				case ItemConstants.itemTypes.shoes:
+					var shoeBonus = 1 - item.getBonus(ItemConstants.itemBonusTypes.movement);
+					var otherBonus = item.getTotalBonus() - shoeBonus;
+					return Math.pow(((shoeBonus)*5), 2) + otherBonus / 10;
+					
+				case ItemConstants.itemTypes.bag:
+					return Math.pow(((item.getTotalBonus() - 25) / 15), 1.75);
+			}
+			
+			return null;
+		},
+		
 		getItemValueByCraftingIngredients: function (item) {
-			var craftAction = "craft_" + item.id;
-			var costs = PlayerActionConstants.costs[craftAction];
+			let craftAction = "craft_" + item.id;
+			let costs = PlayerActionConstants.costs[craftAction];
 			let result = costs ? 0.1 * Object.keys(costs).length : 0;
+			
 			let ingredients = ItemConstants.getIngredientsToCraft(item.id);
 			for (let i = 0; i < ingredients.length; i++) {
 				let def = ingredients[i];
 				let ingredient = ItemConstants.getItemByID(def.id);
 				result += def.amount * this.getItemValue(ingredient);
 			}
+			
+			let resources = ItemConstants.getResourcesToCraft(item.id);
+			for (let i = 0; i < resources.length; i++) {
+				let def = resources[i];
+				result += def.amount * this.getResourceValue(def.id);
+			}
+			
 			return result;
+		},
+		
+		getItemValueByRarity: function (item) {
+			let rarity = -1;
+			if (item.tradeRarity > 0) {
+				rarity = item.tradeRarity;
+			} else if (item.scavengeRarity > 0) {
+				rarity = item.scavengeRarity;
+			} else if (item.localeRarity > 0) {
+				rarity = item.localeRarity;
+			}
+			
+			if (rarity > 0) {
+				return rarity / 2;
+			} else {
+				return null;
+			}
 		},
 		
 		getBlueprintValue: function (upgradeID) {
@@ -227,7 +286,33 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 		
 		getCaravanCapacity: function (stableLevel) {
 			return 500 * stableLevel;
-		}
+		},
+		
+		getMaxValue: function (...args) {
+			let result = 0;
+			for (let i = 0; i < args.length; i++) {
+				let val = args[i];
+				if (val !== null && val !== -1) {
+					result = Math.max(result, val);
+				}
+			}
+			return result;
+		},
+		
+		getMinValue: function (...args) {
+			let result = -1;
+			for (let i = 0; i < args.length; i++) {
+				let val = args[i];
+				if (val !== null && val !== -1) {
+					if (result < 0) {
+						result = val;
+					} else {
+						result = Math.min(result, val);
+					}
+				}
+			}
+			return result;
+		},
 	
 	};
 	

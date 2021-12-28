@@ -232,6 +232,19 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			return result;
 		},
 		
+		getResourcesToCraft: function (itemID) {
+			var craftAction = "craft_" + itemID;
+			var costs = PlayerActionConstants.costs[craftAction];
+			let result = [];
+			if (!costs) return result;
+			for (var key in costs) {
+				if (key.startsWith("resource_")) {
+					result.push({ id: key.replace("resource_", ""), amount: costs[key] });
+				}
+			}
+			return result;
+		},
+		
 		getBag: function (campOrdinal) {
 			let result = null;
 			for (let i in this.itemDefinitions.bag) {
