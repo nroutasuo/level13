@@ -786,7 +786,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		},
 		
 		getEnemyNoun: function (enemyList, detailed) {
-			var baseNoun = this.getCommonText(enemyList, "nouns", detailed? "name" : "", "someone or something", true);
+			var baseNoun = this.getCommonText(enemyList, "nouns", detailed? "name" : "", "someone or something", true, true);
 			if (detailed) {
 				return baseNoun;
 			} else {
@@ -887,7 +887,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		// get common description word for a list of objects that contain possible words are in arrays named objectAttribute
 		// if nothing common is found, defaultWord is returned
 		// is allowSeveral, two common words can be returned if one doesn't cover all objects
-		getCommonText: function (objectList, objectAttribute, objectDetailAttribute, defaultWord, allowSeveral) {
+		getCommonText: function (objectList, objectAttribute, objectDetailAttribute, defaultWord, allowSeveral, pluralify) {
 			var allWords = [];
 			var allDetails = [];
 			var minimumWords = [];
@@ -932,11 +932,11 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			// log.i(objectList)
 			
 			if (validDetail.length > 0) {
-				return Text.pluralify(validDetail);
+				return pluralify ? Text.pluralify(validDetail) : validDetail;
 			} else if (validWords.length > 0) {
 				return validWords[0];
 			} else if (allowSeveral && minimumWords.length > 1) {
-				return minimumWords[0] + " and " + minimumWords[1];
+				return pluralify ? (Text.pluralify(minimumWords[0]) + " and " + Text.pluralify(minimumWords[1])) : (minimumWords[0] + " and " + minimumWords[1]);
 			} else {
 				return defaultWord;
 			}
@@ -1100,7 +1100,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("waymark", { sectorType: t_I }, "A street sign with directions has been painted over. Towards [direction] it says [n-target]");
 		DescriptionMapper.add("waymark", { sectorType: t_M }, "Pipes near the ceiling have arrows painted on them. One pointing [direction] is next to a symbol for [n-target]");
 		DescriptionMapper.add("waymark", { sectorType: t_P }, "A statue is holding a crude sign saying there is [n-target] to the [direction]");
-		DescriptionMapper.add("waymark", { sectorType: t_S }, "There are a few worn posters saying there is [n-target] to the [direction]");
+		DescriptionMapper.add("waymark", { sectorType: t_S }, "There are a few worn posters indicating there is [n-target] to the [direction]");
 	}
 	
 	function initBookTexts() {

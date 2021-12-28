@@ -179,7 +179,7 @@ define(['ash',
 				if (!follower.inParty) {
 					options += makeButton("select_follower_" + follower.id, "Add to party");
 				} else {
-					options += makeButton("deselect_follower_" + follower.id, "Remove from party");
+					options += makeButton("deselect_follower_" + follower.id, "Switch out");
 				}
 				options += "</div>";
 				result += options;
