@@ -44,18 +44,19 @@ define([
 		},
 
 		updateStamina: function (node, time) {
+			this.updateHealth(node, time);
+			this.updateStaminaValue(node, time);
+			this.updateStaminaWarning(node, time);
+			this.updateShield(node, time);
+		},
+		
+		updateHealth: function (node, time) {
 			var staminaComponent = node.stamina;
 			var perksComponent = node.perks;
-			var itemsComponent = node.items;
-			var busyComponent = node.entity.get(PlayerActionComponent);
-			var isResting = busyComponent && busyComponent.getLastActionName() == "use_in_home";
-			var isHealing = busyComponent && busyComponent.getLastActionName() == "use_in_hospital";
-			
 			var injuryEffects = perksComponent.getTotalEffect(PerkConstants.perkTypes.injury);
 			var healthEffects = perksComponent.getTotalEffect(PerkConstants.perkTypes.health);
 			var staminaEffects = perksComponent.getTotalEffect(PerkConstants.perkTypes.stamina);
 			
-			// health
 			var healthPerks = perksComponent.getPerksByType(PerkConstants.perkTypes.health);
 			healthEffects = healthEffects === 0 ? 1 : healthEffects;
 			staminaEffects = staminaEffects === 0 ? 1 : staminaEffects;
@@ -91,8 +92,14 @@ define([
 				staminaComponent.resetHP();
 				GlobalSignals.healthChangedSignal.dispatch();
 			}
+		},
+		
+		updateStaminaValue: function (node, time) {
+			var staminaComponent = node.stamina;
+			var busyComponent = node.entity.get(PlayerActionComponent);
+			var isResting = busyComponent && busyComponent.getLastActionName() == "use_in_home";
+			var isHealing = busyComponent && busyComponent.getLastActionName() == "use_in_hospital";
 			
-			// stamina
 			var maxVal = staminaComponent.maxStamina;
 			var staminaPerSec = 0;
 			staminaComponent.accSources = [];
@@ -122,8 +129,10 @@ define([
 			if (staminaComponent.stamina < 0) {
 				staminaComponent.stamina = 0;
 			}
-			
-			// stamina warning
+		},
+		
+		updateStaminaWarning: function (node, time) {
+			var staminaComponent = node.stamina;
 			var isWarning = staminaComponent.stamina <= this.warningLimit;
 			if (isWarning && !this.isWarning) {
 				var logComponent = node.entity.get(LogMessagesComponent);
@@ -136,8 +145,11 @@ define([
 				}
 			}
 			this.isWarning = isWarning;
-			
-			// shield
+		},
+		
+		updateShield: function (node, time) {
+			var staminaComponent = node.stamina;
+			var itemsComponent = node.items;
 			staminaComponent.maxShield = FightConstants.getPlayerShield(staminaComponent, itemsComponent);
 		},
 		
