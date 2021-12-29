@@ -81,7 +81,8 @@ define([
 					tbl += "<tr id='" + trID + "'><td class='list-main'> " + this.makeCraftingButton(itemDefinition) + " </td></tr>";
 				}
 				tbl += "</table>";
-				var header = "<p class='collapsible-header'>" + ItemConstants.itemTypes[type] + "<span class='header-count'>0</span></p>"
+				let itemTypeName = ItemConstants.getItemTypeDisplayName(ItemConstants.itemTypes[type], true);
+				var header = "<p class='collapsible-header'>" + itemTypeName + "<span class='header-count'>0</span></p>"
 				var content = "<div class='collapsible-content'>" + tbl + "</div>"
 				var containerID = this.getItemCraftContainerID(type);
 				var container = "<div class='collapsible-container' id='" + containerID + "'>" + header + content + "</div>";
