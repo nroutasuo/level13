@@ -1847,6 +1847,14 @@ define([
 			var campLevel = campSector.get(PositionComponent).level;
 			if (Math.abs(campLevel - sectorLevel) > 2) return null;
 			return GameGlobals.levelHelper.findPathTo(sector, campSector, { skipBlockers: true, skipUnvisited: true, omitWarnings: true });
+		},
+
+		getCooldownForCurrentLocation: function (action) {
+			var isLocationAction = PlayerActionConstants.isLocationAction(action);
+			var playerPos = this.playerStatsNodes.head.entity.get(PositionComponent);
+			var locationKey = GameGlobals.gameState.getActionLocationKey(isLocationAction, playerPos);
+			var cooldownTotal = PlayerActionConstants.getCooldown(action);
+			return GameGlobals.gameState.getActionCooldown(action, locationKey, cooldownTotal);
 		}
 
 	});
