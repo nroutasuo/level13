@@ -280,7 +280,6 @@ define([
 			}
 
 			GameGlobals.uiFunctions.toggle("#header-self-use-items", itemDefinitionList.length > 0);
-			if ($("#self-use-items table tr").length === itemDefinitionList.length) return;
 			$("#self-use-items table").empty();
 
 			itemDefinitionList = itemDefinitionList.sort(UIConstants.sortItemsByType);
