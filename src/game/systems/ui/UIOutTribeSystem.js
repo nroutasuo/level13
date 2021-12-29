@@ -196,7 +196,6 @@ define([
 
 			if (!isPlayerInCampLevel) {
 				if (hasRaid) {
-					this.alerts[level].push(this.campNotificationTypes.EVENT_RAID_ONGOING);
 					this.notifications[level].push(this.campNotificationTypes.EVENT_RAID_ONGOING);
 				}
 				if (hasRecentRaid) {
