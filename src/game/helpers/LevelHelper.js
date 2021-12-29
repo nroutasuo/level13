@@ -162,8 +162,9 @@ define([
 			
 			for (var node = this.gangNodes.head; node; node = node.next) {
 				let gangPosition = node.entity.get(PositionComponent);
-				let gangCampOrdinal = GameGlobals.gameState.getCampOrdinal(gangPosition.level);
+				
 				// wrong level
+				let gangCampOrdinal = GameGlobals.gameState.getCampOrdinal(gangPosition.level);
 				if (gangCampOrdinal != campOrdinal) {
 					continue;
 				}
@@ -244,6 +245,23 @@ define([
 				}
 			}
 			return result;
+		},
+		
+		hasUsableScavengingSpotsForItem: function (item) {
+			for (let node = this.sectorNodes.head; node; node = node.next) {
+				let visited = node.entity.has(VisitedComponent);
+				if (!visited) continue;
+				let statusComponent = node.entity.get(SectorStatusComponent);
+				if (!statusComponent.scavenged) continue;
+				if (statusComponent.getScavengedPercent() > 75) continue;
+				let discoveredItems = GameGlobals.sectorHelper.getLocationDiscoveredItems(node.entity);
+				for (let i = 0; i < discoveredItems.length; i++) {
+					if (discoveredItems[i] == item.id) {
+						return true;
+					}
+				}
+			}
+			return false;
 		},
 
 		// todo use neighboursmap so we benefit from the same cache

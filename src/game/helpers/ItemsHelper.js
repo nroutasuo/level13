@@ -256,34 +256,39 @@ define([
 			return cacheAndReturn(result);
 		},
 		
-		getNeededIngredient: function (campOrdinal, step, isHardLevel, itemsComponent, isStrict) {
-			var checkItem = function (item) {
-				if (!item.craftable) return null;
+		getNeededIngredients: function (campOrdinal, step, isHardLevel, itemsComponent, isStrict) {
+			let result = [];
+			let resultIds = [];
+			
+			let checkItem = function (item) {
+				if (!item.craftable) return;
 				if (itemsComponent.getCountById(item.id, true) < 1) {
-					var ingredients = ItemConstants.getIngredientsToCraft(item.id);
+					let ingredients = ItemConstants.getIngredientsToCraft(item.id);
 					for (let i = 0; i < ingredients.length; i++) {
-						var def = ingredients[i];
-						if (itemsComponent.getCountById(def.id, true) < (isStrict ? def.amount : Math.max(def.amount, 3))) {
-							return ItemConstants.getItemByID(def.id);
+						let def = ingredients[i];
+						if (resultIds.indexOf(def.id) < 0) {
+							if (itemsComponent.getCountById(def.id, true) < (isStrict ? def.amount : Math.max(def.amount, 3))) {
+								resultIds.push(def.id);
+								result.push(ItemConstants.getItemByID(def.id));
+							}
 						}
 					}
 				}
-				return null;
 			}
 			
-			var exploration = checkItem(ItemConstants.getItemByID("exploration_1"));
-			if (exploration) return exploration;
+			checkItem(ItemConstants.getItemByID("exploration_1"));
+			checkItem(this.getDefaultWeapon(campOrdinal, step));
 			
-			var bonusTypes = [ ItemConstants.itemBonusTypes.res_poison, ItemConstants.itemBonusTypes.res_cold, ItemConstants.itemBonusTypes.res_radiation ];
+			let bonusTypes = [ ItemConstants.itemBonusTypes.res_poison, ItemConstants.itemBonusTypes.res_cold, ItemConstants.itemBonusTypes.res_radiation ];
+			
 			for (let i = 0; i < bonusTypes.length; i++) {
 				var neededClothing = this.getDefaultClothing(campOrdinal, step, bonusTypes[i], isHardLevel);
 				for (let j = 0; j < neededClothing.length; j++) {
-					var item = checkItem(ItemConstants.getItemByID(neededClothing[j].id));
-					if (item) return item;
+					checkItem(ItemConstants.getItemByID(neededClothing[j].id));
 				}
 			}
 			
-			return null;
+			return result;
 		},
 		
 		getUsableIngredient: function (availableIngredients, rand) {

@@ -163,7 +163,7 @@ define([
 			rewards.gainedCurrency = this.getRewardCurrency(efficiency);
 			
 			if (rewards.gainedItems.length == 0) {
-				rewards.gainedItems = this.getRewardItems(0.02, 0.25, sectorIngredients, itemOptions);
+				rewards.gainedItems = this.getRewardItems(0.02, 0.35, sectorIngredients, itemOptions);
 			}
 			
 			rewards.gainedBlueprintPiece = this.getFallbackBlueprint(0.05 + efficiency * 0.15);
@@ -852,7 +852,7 @@ define([
 				// . Necessity ingredient (stuff blocking the player from progressing)
 				// TODO replace with something that's not random & is better communicated in-game
 				if (hasCamp && hasDecentEfficiency) {
-					var necessityIngredient = this.getNecessityIngredient();
+					var necessityIngredient = this.getNecessityIngredient(ingredientProbability);
 					if (necessityIngredient != null) {
 						for (let i = 0; i <= amount; i++) {
 							result.push(necessityIngredient.clone());
@@ -1004,11 +1004,17 @@ define([
 			return null;
 		},
 		
-		getNecessityIngredient: function (ingredientProbability, currentItems, campOrdinal, step, isHardLevel) {
+		getNecessityIngredient: function (ingredientProbability) {
 			if (GameGlobals.gameState.isAutoPlaying) return null;
 			
-			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-			var playerStamina = this.playerStatsNodes.head.stamina;
+			var playerPos = this.playerLocationNodes.head.position;
+			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
+			var step = GameGlobals.levelHelper.getCampStep(playerPos);
+			var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(playerPos.level).get(LevelComponent);
+			var isHardLevel = levelComponent.isHard;
+			
+			let itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+			let playerStamina = this.playerStatsNodes.head.stamina;
 			let niCampOrdinal = campOrdinal;
 			let niStep = step + 1;
 			let niIsHardlevel = isHardLevel;
@@ -1018,14 +1024,14 @@ define([
 				niIsHardlevel = false;
 			}
 			
-			let neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(niCampOrdinal, step, niIsHardlevel, itemsComponent, true);
-			if (neededIngredient) {
-				let neededIngredientProp = MathUtils.clamp(ingredientProbability * 10, 0.15, 0.35);
-				var numAvailableGangs = GameGlobals.levelHelper.getNumAvailableGangs(campOrdinal, playerStamina, itemsComponent);
-				if (!GameGlobals.gameState.uiStatus.isHidden)
-					log.i("neededIngredient: " + (neededIngredient ? neededIngredient.id : "null") + ", prob: " + neededIngredientProp + ", gangs: " + numAvailableGangs);
+			let neededIngredients = GameGlobals.itemsHelper.getNeededIngredients(niCampOrdinal, step, niIsHardlevel, itemsComponent, true);
+			let neededIngredientsWithoutScavengingSpots = neededIngredients.filter(ingredient => !GameGlobals.levelHelper.hasUsableScavengingSpotsForItem(ingredient));
+			if (neededIngredientsWithoutScavengingSpots.length > 0) {
+				let neededIngredientProp = MathUtils.clamp(ingredientProbability * 10, 0.25, 0.5);
+				let numAvailableGangs = GameGlobals.levelHelper.getNumAvailableGangs(campOrdinal, playerStamina, itemsComponent);
 				if (numAvailableGangs <= 1 && Math.random() < neededIngredientProp) {
-					return neededIngredient;
+					let ingredient = neededIngredientsWithoutScavengingSpots[0];
+					return ingredient;
 				}
 			}
 			
