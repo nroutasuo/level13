@@ -462,8 +462,8 @@ define([
 		},
 		
 		onCampBuilt: function () {
-			$("#camp-overview .camp-overview-camp").remove();
 			this.sortCampNodes();
+			this.refresh();
 		}
 
 	});
