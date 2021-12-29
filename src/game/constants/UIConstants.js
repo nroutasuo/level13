@@ -335,6 +335,7 @@ define(['ash',
 				case ItemConstants.itemBonusTypes.res_radiation: return short ? "radiation prot" : "radiation protection";
 				case ItemConstants.itemBonusTypes.res_poison: return short ? "poison prot" : "poison protection";
 				case ItemConstants.itemBonusTypes.shade: return short ? "sun prot" : "sunblindness protection";
+				case ItemConstants.itemBonusTypes.hazard_prediction: return short ? "surveying" : "hazard surveying";
 				default:
 					log.w("no display name defined for item bonus type: " + bonusType);
 					return "";

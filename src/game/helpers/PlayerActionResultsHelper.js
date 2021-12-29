@@ -188,7 +188,7 @@ define([
 
 			var availableResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable.clone();
 			availableResources.addAll(localeVO.getResourceBonus(GameGlobals.gameState.unlockedFeatures.resources, campOrdinal));
-			availableResources.limitAll(0, 10);
+			availableResources.limitAll(WorldConstants.resourcePrevalence.RARE, WorldConstants.resourcePrevalence.ABUNDANT);
 			var efficiency = this.getCurrentScavengeEfficiency();
 			var localeDifficulty = (localeVO.requirements.vision[0] + localeVO.costs.stamina / 10) / 100;
 
@@ -1005,7 +1005,7 @@ define([
 		},
 		
 		getNecessityIngredient: function (ingredientProbability, currentItems, campOrdinal, step, isHardLevel) {
-			if (!GameGlobals.gameState.isAutoPlaying) return null;
+			if (GameGlobals.gameState.isAutoPlaying) return null;
 			
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			var playerStamina = this.playerStatsNodes.head.stamina;
@@ -1018,9 +1018,9 @@ define([
 				niIsHardlevel = false;
 			}
 			
-			var neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(niCampOrdinal, step, niIsHardlevel, itemsComponent, true);
+			let neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(niCampOrdinal, step, niIsHardlevel, itemsComponent, true);
 			if (neededIngredient) {
-				var neededIngredientProp = MathUtils.clamp(ingredientProbability * 10, 0.15, 0.35);
+				let neededIngredientProp = MathUtils.clamp(ingredientProbability * 10, 0.15, 0.35);
 				var numAvailableGangs = GameGlobals.levelHelper.getNumAvailableGangs(campOrdinal, playerStamina, itemsComponent);
 				if (!GameGlobals.gameState.uiStatus.isHidden)
 					log.i("neededIngredient: " + (neededIngredient ? neededIngredient.id : "null") + ", prob: " + neededIngredientProp + ", gangs: " + numAvailableGangs);
@@ -1028,6 +1028,7 @@ define([
 					return neededIngredient;
 				}
 			}
+			
 			return null;
 		},
 

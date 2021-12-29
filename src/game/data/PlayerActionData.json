@@ -300,10 +300,6 @@
         "clear_workshop": {
             "stamina": 10
         },
-        "clothing_upper_45": {
-            "item_res_silk": 5,
-            "resource_rope": 100
-        },
         "craft_bag_0": {
             "item_res_tape": 1,
             "resource_rope": 20
@@ -465,6 +461,10 @@
         "craft_clothing_upper_4": {
             "item_res_silk": 10,
             "resource_rope": 30
+        },
+        "craft_clothing_upper_45": {
+            "item_res_silk": 5,
+            "resource_rope": 100
         },
         "craft_clothing_upper_5": {
             "item_res_silk": 20,
@@ -1253,6 +1253,8 @@
         "leave_camp": "Venture out into the corridors.",
         "move_camp_global": "Shortcut to the camp on this level.",
         "move_camp_level": "Shortcut back to the nearest camp.",
+		"move_level_up": "Use the passage to move one level up",
+		"move_level_down": "Use the passage to move one level down",
         "nap": "Sleep rough and regain a bit of stamina.",
         "scavenge": "Look for resources.",
         "scout": "Scout the area for evidence.",
@@ -1743,10 +1745,6 @@
                 ],
                 "storage": [
                     2,
-                    -1
-                ],
-                "tradepost": [
-                    1,
                     -1
                 ]
             },

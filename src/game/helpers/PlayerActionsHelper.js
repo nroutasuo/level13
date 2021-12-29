@@ -1436,6 +1436,9 @@ define([
 			} else if (UpgradeConstants.upgradeDescriptions[action]) {
 				// upgrade action descriptions are in the list outside of the button
 				return "";
+			} else if (action.indexOf("move_sector_") >= 0) {
+				// no need for description
+				return "";
 			} else {
 				switch(baseAction) {
 					case "craft":
