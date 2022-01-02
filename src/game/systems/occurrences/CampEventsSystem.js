@@ -333,7 +333,7 @@ define([
 			// raiders won, deduct resources
 			if (!raidComponent.victory) {
 				var campResources = GameGlobals.resourcesHelper.getCurrentCampStorage(sectorEntity).resources;
-				var amountFactor = 1 / GameGlobals.resourcesHelper.getNumCampsInTradeNetwork(sectorEntity);
+				var amountFactor = 1 / (GameGlobals.resourcesHelper.getNumCampsInTradeNetwork(sectorEntity) || 1);
 
 				// select resources (names)
 				// TODO choose resources lost smarter (not always the one you have the most)

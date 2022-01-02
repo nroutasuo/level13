@@ -110,6 +110,7 @@ define([
 			}
 			
 			this.tribeNodes.head.tribe.numCamps = numCamps;
+			this.tribeNodes.head.tribe.numCampsInTradeNetwork = numCampsInTradeNetwork;
 			
 			globalResourcesComponent.limitToStorage(true);
 		},
