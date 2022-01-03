@@ -1285,6 +1285,7 @@ define([
 			
 			var isCampBuildAction = action.indexOf("build_in_") >= 0;
 			var defaultOutpostExpBaseFactor = 1.1;
+			var defaultOutpostExpCostFactor = 1.1;
 			
 			isOutpost = isOutpost && isCampBuildAction;
 			
@@ -1310,6 +1311,9 @@ define([
 
 				if (typeof value === "number") {
 					expCost = value;
+					if (isOutpost) {
+						expCost *= defaultOutpostExpCostFactor;
+					}
 				} else if (typeof value === "object") {
 					if (value.constantCost) constantCost = value.constantCost;
 					if (value.linearCost) linearCost = value.linearCost;
