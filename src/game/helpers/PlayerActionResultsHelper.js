@@ -156,8 +156,6 @@ define([
 			var efficiency = this.getCurrentScavengeEfficiency();
 			
 			var itemOptions = { rarityKey: "scavengeRarity" };
-			
-			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound);
 
 			rewards.gainedResources = this.getRewardResources(1, 1, efficiency, sectorResources);
 			rewards.gainedCurrency = this.getRewardCurrency(efficiency);
@@ -169,6 +167,8 @@ define([
 			rewards.gainedBlueprintPiece = this.getFallbackBlueprint(0.05 + efficiency * 0.15);
 			
 			this.addFollowerBonuses(rewards, sectorResources, sectorIngredients, itemOptions);
+			
+			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound);
 
 			return rewards;
 		},
@@ -793,7 +793,7 @@ define([
 					findProbability = 0.0025;
 					break;
 				case SectorConstants.SECTOR_TYPE_COMMERCIAL:
-					findProbability = 0.075;
+					findProbability = 0.05;
 					break;
 			}
 
@@ -823,7 +823,7 @@ define([
 			let hasDecentEfficiency = efficiency > 0.25;
 			
 			let result = [];
-
+			
 			// Regular items
 			if (itemProbability > 0) {
 				
