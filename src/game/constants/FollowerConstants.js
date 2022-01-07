@@ -94,6 +94,12 @@ define(['ash',
 			return Object.keys(FollowerConstants.followerType).length;
 		},
 		
+		getTypicalFighter: function (campOrdinal, step) {
+			let source = FollowerConstants.followerSource.EVENT;
+			let abilityType = FollowerConstants.abilityType.ATTACK;
+			return FollowerConstants.getNewRandomFollower(source, campOrdinal, campOrdinal, abilityType, 0.5);
+		},
+		
 		getNewRandomFollower: function (source, campOrdinal, appearLevel, forcedAbilityType, forcedAbilityLevelRandomFactor) {
 			campOrdinal = campOrdinal || 1;
 			
@@ -125,7 +131,7 @@ define(['ash',
 				icon = this.getRandomIcon(gender, abilityType);
 			}
 			
-			return new FollowerVO(id, name, abilityType, abilityLevel, icon);
+			return new FollowerVO(id, name, abilityType, abilityLevel, icon, source);
 		},
 		
 		getNewPredefinedFollower: function (followerID) {
@@ -147,7 +153,7 @@ define(['ash',
 			
 			let abilityLevel = this.getRandomAbilityLevelByCampOrdinal(template.abilityType, templateCampOrdinal);
 			
-			return new FollowerVO(followerID, template.name, template.abilityType, abilityLevel, template.icon);
+			return new FollowerVO(followerID, template.name, template.abilityType, abilityLevel, template.icon, FollowerConstants.followerSource.SCOUT);
 		},
 		
 		getRandomAbilityLevelByCampOrdinal: function (abilityType, campOrdinal, forcedAbilityLevelRandomFactor) {

@@ -8,6 +8,7 @@ define([
 	'game/constants/ImprovementConstants',
 	'game/constants/ItemConstants',
 	'game/constants/TradeConstants',
+	'game/constants/WorldConstants',
 	'game/components/common/CampComponent',
 	'game/components/common/PositionComponent',
 	'game/components/sector/events/RecruitComponent',
@@ -16,7 +17,7 @@ define([
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/vos/ResourcesVO',
 	'game/vos/IncomingCaravanVO'
-], function (Ash, GameGlobals, GameConstants, CampConstants, FollowerConstants, ImprovementConstants, ItemConstants, TradeConstants,
+], function (Ash, GameGlobals, GameConstants, CampConstants, FollowerConstants, ImprovementConstants, ItemConstants, TradeConstants, WorldConstants,
 	CampComponent, PositionComponent, RecruitComponent, SectorImprovementsComponent, CampNode, TribeUpgradesNode, ResourcesVO, IncomingCaravanVO) {
 	
 	var CampHelper = Ash.Class.extend({
@@ -26,6 +27,22 @@ define([
 				this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
 				this.campNodes = engine.getNodeList(CampNode);
 			}
+		},
+		
+		getCurrentCampOrdinal: function () {
+			return Math.max(1, GameGlobals.gameState.numCamps);
+		},
+		
+		getCurrentCampStep: function () {
+			let campOrdinal = this.getCurrentCampOrdinal();
+			let level = GameGlobals.gameState.getLevelForCamp(campOrdinal);
+			let levelStats = GameGlobals.levelHelper.getLevelStats(level);
+			let scoutedPercent = levelStats.percentClearedSectors;
+			if (scoutedPercent < 0.25)
+				return WorldConstants.CAMP_STEP_START;
+			else if (scoutedPercent < 0.5)
+				return WorldConstants.CAMP_STEP_POI_2;
+			return WorldConstants.CAMP_STEP_END;
 		},
 		
 		getTotalNumImprovementsBuilt: function (improvementName) {

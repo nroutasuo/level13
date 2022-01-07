@@ -79,6 +79,21 @@ define([
 			item.foundPosition = sourcePosition.clone();
 		},
 		
+		getBestAvailableFollower: function (followerType) {
+			let followersComponent = this.playerStatsNodes.head.followers;
+			let followers = followersComponent.getFollowersByType(followerType, false);
+			let result = null;
+			let resultLevel = 0;
+			for (let i = 0; i < followers.length; i++) {
+				let follower = followers[i];
+				if (follower.abilityLevel > resultLevel) {
+					result = follower;
+					resultLevel = follower.abilityLevel;
+				}
+			}
+			return result;
+		},
+		
 	});
 
 	return PlayerHelper;

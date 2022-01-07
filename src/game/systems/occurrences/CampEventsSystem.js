@@ -6,6 +6,7 @@ define([
 	'game/constants/GameConstants',
 	'game/constants/CampConstants',
 	'game/constants/FollowerConstants',
+	'game/constants/ItemConstants',
 	'game/constants/LogConstants',
 	'game/constants/OccurrenceConstants',
 	'game/constants/TradeConstants',
@@ -27,7 +28,7 @@ define([
 	'game/vos/RaidVO',
 	'text/Text'
 ], function (
-	Ash, GameGlobals, GlobalSignals, GameConstants, CampConstants, FollowerConstants, LogConstants, OccurrenceConstants, TradeConstants, TextConstants, UIConstants, WorldConstants,
+	Ash, GameGlobals, GlobalSignals, GameConstants, CampConstants, FollowerConstants, ItemConstants, LogConstants, OccurrenceConstants, TradeConstants, TextConstants, UIConstants, WorldConstants,
 	PlayerResourcesNode, CampNode, TribeUpgradesNode,
 	CampComponent, PositionComponent, LogMessagesComponent, ItemsComponent,
 	RecruitComponent, TraderComponent, RaidComponent, CampEventTimersComponent,
@@ -48,6 +49,7 @@ define([
 			this.campNodes = engine.getNodeList(CampNode);
 			
 			GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
+			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
 		},
 
 		removeFromEngine: function (engine) {
@@ -66,6 +68,20 @@ define([
 				this.updateEventTimers(time, campNode, campTimers);
 				this.updatePendingEvents(campNode, campTimers);
 				this.updateEvents(campNode, campTimers);
+			}
+		},
+		
+		slowUpdate: function () {
+			if (GameGlobals.gameState.isPaused) return;
+			this.updateBlockingEvents();
+		},
+		
+		updateBlockingEvents: function () {
+			for (let key in OccurrenceConstants.campOccurrenceTypes) {
+				let event = OccurrenceConstants.campOccurrenceTypes[key];
+				if (this.isEventBlockingProgress(event)) {
+					this.fastTrackEvent(event);
+				}
 			}
 		},
 		
@@ -103,14 +119,12 @@ define([
 				} else if (isValid) {
 					if (!this.isScheduled(campNode, event)) {
 						this.scheduleEvent(campNode, event);
-					} else {
-						if (campTimers.isTimeToStart(event)) {
-							var skipProbability = this.getEventSkipProbability(campNode, event);
-							if (Math.random() < skipProbability) {
-								this.skipEvent(campNode, event);
-							} else {
-								this.startEvent(campNode, event);
-							}
+					} else if (campTimers.isTimeToStart(event)) {
+						var skipProbability = this.getEventSkipProbability(campNode, event);
+						if (Math.random() < skipProbability) {
+							this.skipEvent(campNode, event);
+						} else {
+							this.startEvent(campNode, event);
 						}
 					}
 				} else {
@@ -156,6 +170,26 @@ define([
 					return true;
 			}
 		},
+		
+		getCampScoreForEvent: function (campNode, event) {
+			if (!this.isCampValidForEvent(campNode, event))
+				return 0;
+			
+			let improvements = campNode.entity.get(SectorImprovementsComponent);
+			let improvementType = GameGlobals.upgradeEffectsHelper.getImprovementForOccurrence(event);
+			
+			switch (event) {
+				case OccurrenceConstants.campOccurrenceTypes.trader:
+				case OccurrenceConstants.campOccurrenceTypes.recruit:
+					return improvements.getCount(improvementType) + improvements.getLevel(improvementType);
+
+				case OccurrenceConstants.campOccurrenceTypes.raid:
+					return this.getRaidDanger(campNode);
+
+				default:
+					return true;
+			}
+		},
 
 		hasCampEvent: function (campNode, event) {
 			switch (event) {
@@ -189,9 +223,9 @@ define([
 			return campTimers.removeTimer(event);
 		},
 		
-		scheduleEvent: function (campNode, event) {
+		scheduleEvent: function (campNode, event, forcedTimeToNext) {
 			var campTimers = campNode.entity.get(CampEventTimersComponent);
-			var timeToNext = this.getTimeToNext(campNode, event);
+			var timeToNext = forcedTimeToNext || this.getTimeToNext(campNode, event);
 			campTimers.scheduleNext(event, timeToNext);
 			log.i("Scheduled " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ")" + " in " + timeToNext + "s.");
 		},
@@ -285,7 +319,8 @@ define([
 					let follower = hasPendingFollower ?
 						campNode.camp.pendingRecruits.shift() :
 						FollowerConstants.getNewRandomFollower(FollowerConstants.followerSource.EVENT, GameGlobals.gameState.numCamps, campPos.level);
-					campNode.entity.add(new RecruitComponent(follower, hasPendingFollower));
+					let isFoundAsReward = hasPendingFollower && follower.source != FollowerConstants.followerSource.EVENT;
+					campNode.entity.add(new RecruitComponent(follower, isFoundAsReward));
 					logMsg = hasPendingFollower ? "Follower met when exploring is waiting at the inn." : "A visitor arrives at the Inn. ";
 					GameGlobals.gameState.unlockedFeatures.followers = true;
 					if (hasPendingFollower) {
@@ -317,6 +352,33 @@ define([
 			log.i("Skip " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ") (skip probability: " + this.getEventSkipProbability(campNode, event) + ")");
 			this.scheduleEvent(campNode, event);
 			GlobalSignals.saveGameSignal.dispatch();
+		},
+
+		fastTrackEvent: function (event) {
+			let campNode = this.getBestCampForEvent(event);
+			if (!campNode) return;
+			
+			let campTimers = campNode.entity.get(CampEventTimersComponent);
+			let fastTrackTimeToNext = this.getFastTrackTimeToNext(campNode, event);
+			let currentTimeToNext = campTimers.getEventStartTimeLeft(event);
+			
+			if (currentTimeToNext && currentTimeToNext < fastTrackTimeToNext) {
+				return;
+			}
+			
+			log.i("Fast-tracking camp event " + event + " at " + campNode.camp.campName);
+			
+			switch (event) {
+				case OccurrenceConstants.campOccurrenceTypes.recruit:
+					let campOrdinal = GameGlobals.campHelper.getCurrentCampOrdinal();
+					let campStep = GameGlobals.campHelper.getCurrentCampStep();
+					let abilityType = FollowerConstants.abilityType.ATTACK;
+					let follower = FollowerConstants.getNewRandomFollower(FollowerConstants.followerSource.EVENT, GameGlobals.gameState.numCamps, campNode.position.level, abilityType);
+					campNode.camp.pendingRecruits.push(follower);
+					break;
+			}
+			
+			this.scheduleEvent(campNode, event, fastTrackTimeToNext);
 		},
 
 		endRaid: function (sectorEntity) {
@@ -392,12 +454,50 @@ define([
 			return playerPosition.level == campPosition.level && playerPosition.sectorId() == campPosition.sectorId() && playerPosition.inCamp;
 		},
 
+		isEventBlockingProgress: function (event) {
+			switch (event) {
+				case OccurrenceConstants.campOccurrenceTypes.recruit:
+					let campOrdinal = GameGlobals.campHelper.getCurrentCampOrdinal();
+					let campStep = GameGlobals.campHelper.getCurrentCampStep();
+					
+					let getFollowerFightTotal = function (follower) {
+						return FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_att)
+							+ FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_def);
+					}
+					
+					let currentBestFighter = GameGlobals.playerHelper.getBestAvailableFollower(FollowerConstants.followerType.FIGHTER);
+					let typicalFighter = FollowerConstants.getTypicalFighter(campOrdinal, campStep);
+					let currentBestTotal = getFollowerFightTotal(currentBestFighter);
+					let typicalTotal = getFollowerFightTotal(typicalFighter);
+					return currentBestTotal < 0.75 * typicalTotal;
+						
+				default: return false;
+			}
+		},
+
+		getBestCampForEvent: function (event) {
+			let result = null;
+			let resultScore = 0;
+			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
+				let score = this.getCampScoreForEvent(campNode, event);
+				if (score > resultScore) {
+					result = campNode;
+					resultScore = score;
+				}
+			}
+			return result;
+		},
+
 		getTimeToNext: function (campNode, event) {
 			let isNew = this.isNew(event);
 			let numCamps = GameGlobals.gameState.numCamps;
 			let upgradeLevel = this.getEventUpgradeLevel(event);
 			let reputationComponent = campNode.reputation;
 			return OccurrenceConstants.getTimeToNext(event, isNew, upgradeLevel, reputationComponent.value, numCamps);
+		},
+		
+		getFastTrackTimeToNext: function (campNode, event) {
+			return 300;
 		},
 
 		getTimeToNextDelta: function (campNode, event, dt) {
