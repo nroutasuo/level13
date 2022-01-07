@@ -202,7 +202,7 @@ define(['ash',
 					let scavengeCostReduction = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.scavenge_cost);
 					return "scavenge cost -" + UIConstants.getMultiplierBonusDisplayValue(scavengeCostReduction);
 				case FollowerConstants.abilityType.COST_SCOUT:
-					let scoutCostReduction = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.cost_scout);
+					let scoutCostReduction = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.scout_cost);
 					return "scout cost -" + UIConstants.getMultiplierBonusDisplayValue(scoutCostReduction);
 				case FollowerConstants.abilityType.HAZARD_PREDICTION:
 					return "foresee hazards in unvisited sectors";
