@@ -39,6 +39,7 @@ define([
 	'game/components/sector/SectorLocalesComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/events/TraderComponent',
+	'game/components/sector/events/RaidComponent',
 	'game/components/common/CampComponent',
 	'game/vos/ResourcesVO',
 	'game/vos/ImprovementVO'
@@ -47,7 +48,7 @@ define([
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	LevelComponent, CurrencyComponent, PositionComponent, PlayerActionComponent, BagComponent, ExcursionComponent, ItemsComponent, DeityComponent,
 	FightComponent, OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent,
-	SectorFeaturesComponent, SectorStatusComponent, SectorLocalesComponent, SectorImprovementsComponent, TraderComponent,
+	SectorFeaturesComponent, SectorStatusComponent, SectorLocalesComponent, SectorImprovementsComponent, TraderComponent, RaidComponent,
 	CampComponent,
 	ResourcesVO, ImprovementVO
 ) {
@@ -591,6 +592,13 @@ define([
 							let isCampReachableByTribeTraders = GameGlobals.levelHelper.isCampReachableByTribeTraders(sector);
 							if (!isCampReachableByTribeTraders) {
 								return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_NOT_REACHABLE_BY_TRADERS };
+							}
+						}
+						if (typeof requirements.camp.raid !== "underfined") {
+							let currentValue = this.playerLocationNodes.head.entity.has(RaidComponent);
+							let requireValue = requirements.camp.raid;
+							if (requiredValue != currentValue) {
+								return { value: 0, reason: (requiredValue ? "No raid currently" : "There is a raid" ) };
 							}
 						}
 					}

@@ -3207,6 +3207,9 @@
         "unlock_worker_rope": {},
         "use_in_campfire": {
             "busy": false,
+			"camp": {
+				"raid": false
+			},
             "population": [
                 1,
                 -1
@@ -3214,10 +3217,16 @@
             "rumourpoolchecked": false
         },
         "use_in_home": {
+			"camp": {
+				"raid": false
+			},
             "busy": false,
             "maxStamina": false
         },
         "use_in_hospital": {
+			"camp": {
+				"raid": false
+			},
             "improvements": {
                 "hospital": [
                     1,
@@ -3232,6 +3241,9 @@
             }
         },
         "use_in_hospital_2": {
+			"camp": {
+				"raid": false
+			},
             "improvements": {
                 "hospital": [
                     1,
@@ -3246,13 +3258,22 @@
                     1,
                     -1
                 ]
-            }
+            },
+			"camp": {
+				"raid": false
+			}
         },
         "use_in_shrine": {
+			"camp": {
+				"raid": false
+			},
             "busy": false
         },
         "use_in_temple": {
-            "busy": false
+            "busy": false,
+			"camp": {
+				"raid": false
+			}
         },
         "use_item_cache_evidence_1": {
             "inCamp": true
