@@ -1351,7 +1351,7 @@ define([
 			switch (baseActionID) {
 				case "move_camp_level":
 					var path = this.getPathToNearestCamp(sector);
-					if (path) {
+					if (path && path.length > 0) {
 						for (let i = 0; i < path.length; i++) {
 							let costs = this.getCosts("move_sector_west", 1, path[i]);
 							this.addCosts(result, costs);
