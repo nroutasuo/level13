@@ -64,8 +64,10 @@ define([
 		},
 		
 		refresh: function () {
-			var followersComponent = this.playerStatsNodes.head.followers;
+			let followersComponent = this.playerStatsNodes.head.followers;
 			let totalRecruited = followersComponent.getAll().length;
+			let totalSelected = followersComponent.getParty().length;
+			let totalUnselected = totalRecruited - totalSelected;
 			let inCamp = GameGlobals.playerHelper.isInCamp();
 			
 			$("#tab-header h2").text("Exploration party");
@@ -118,6 +120,7 @@ define([
 			
 			var followersComponent = this.playerStatsNodes.head.followers;
 			var followers = followersComponent.getAll();
+			let party = followersComponent.getParty();
 			let maxRecruited = GameGlobals.campHelper.getCurrentMaxFollowersRecruited();
 			let inCamp = GameGlobals.playerHelper.isInCamp();
 			
@@ -141,12 +144,13 @@ define([
 				$("#list-followers").append(li);
 			}
 			
-			var hasFollowers = followers.length > 0;
-			var showFollowers = hasFollowers || GameGlobals.gameState.unlockedFeatures.followers;
+			let hasFollowers = followers.length > 0;
+			let hasUnselectedFollowers = followers.length - party.length > 0;
+			let showFollowers = hasFollowers || GameGlobals.gameState.unlockedFeatures.followers;
 			
-			GameGlobals.uiFunctions.toggle("#list-followers", hasFollowers);
+			GameGlobals.uiFunctions.toggle("#list-followers", hasFollowers && hasUnselectedFollowers);
 			GameGlobals.uiFunctions.toggle("#header-followers", showFollowers);
-			GameGlobals.uiFunctions.toggle("#followers-empty", showFollowers && !hasFollowers);
+			GameGlobals.uiFunctions.toggle("#followers-empty", showFollowers && !hasUnselectedFollowers);
 			
 			GameGlobals.uiFunctions.generateCallouts("#list-followers");
 			GameGlobals.uiFunctions.generateCallouts("#container-party-slots");
