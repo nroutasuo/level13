@@ -74,6 +74,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 
 			// delete static data
 			delete clone.name;
+			delete clone.nameShort;
 			delete clone.bonus;
 			delete clone.icon;
 			delete clone.description;

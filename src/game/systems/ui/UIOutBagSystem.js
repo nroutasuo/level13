@@ -289,7 +289,7 @@ define([
 				var itemDefinition = itemDefinitionList[j];
 				var actionName = "use_item_" + itemDefinition.id;
 				var actionVerb = itemDefinition.id.startsWith("cache_metal") ? "Disassemble" : "Use";
-				tr = "<tr><td><button class='action multiline' action='" + actionName + "'>" + actionVerb + " " + itemDefinition.name + "</button></td></tr>";
+				tr = "<tr><td><button class='action multiline' action='" + actionName + "'>" + actionVerb + " " + ItemConstants.getItemDisplayName(itemDefinition, true) + "</button></td></tr>";
 				$("#self-use-items table").append(tr);
 			}
 

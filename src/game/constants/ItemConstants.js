@@ -83,6 +83,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 				itemVO.localeRarity = item.rarityLocale;
 				itemVO.tradeRarity = item.rarityTrade;
 				itemVO.configData = item.configData || {};
+				itemVO.nameShort = item.nameShort || null;
 				this.itemDefinitions[type].push(itemVO);
 			}
 		},
@@ -103,6 +104,13 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 					return short ? "ingredient" : "crafting ingredient";
 			}
 			return ItemConstants.itemTypes[type];
+		},
+		
+		getItemDisplayName: function (item, short) {
+			if (!short) return item.name;
+			if (item.nameShort) return item.nameShort;
+			let parts = item.name.split(" ");
+			return parts[parts.length - 1];
 		},
 		
 		isMultiplier: function (itemBonusType) {

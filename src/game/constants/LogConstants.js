@@ -169,10 +169,10 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 				default:
 					intros.push("Almost fell into a crack in the street");
 					intros.push("Fell through a rotten floor");
-					intros.push("Dropped bag while climbing a fence");
+					intros.push("Dropped an item while climbing a fence");
 					intros.push("Stumbled on some wrecked pipes");
 					intros.push("Left a bag pocket open and some items fell out");
-					intros.push("Got scared of the shadows and ran, leaving some items behind");
+					intros.push("Got spooked of the shadows and ran, leaving some items behind");
 					break;
 			}
 			var intro = intros[Math.floor(Math.random() * intros.length)];
@@ -203,7 +203,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 					itemDetails = " Light will make scavenging safer.";
 					break;
 			}
-			return "Made " + Text.addArticle(itemVO.name) + "." + itemDetails;
+			return "Made " + Text.addArticle(itemVO.name).toLowerCase() + "." + itemDetails;
 		},
 
 	}

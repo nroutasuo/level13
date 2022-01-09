@@ -9,7 +9,7 @@
         "name": "Volcanic rock",
         "rarityScavenge": 8,
 		"rarityLocale": 5,
-        "rarityTrade": 5,
+        "rarityTrade": 7,
         "campOrdinalRequired": 4,
         "type": "artefact"
     },
@@ -23,7 +23,7 @@
         "name": "Temple key",
         "rarityScavenge": 8,
 		"rarityLocale": 5,
-        "rarityTrade": 5,
+        "rarityTrade": 7,
         "campOrdinalRequired": 3,
         "type": "artefact"
     },
@@ -37,7 +37,7 @@
         "name": "Seashell",
         "rarityScavenge": 9,
 		"rarityLocale": 5,
-        "rarityTrade": 5,
+        "rarityTrade": 7,
         "campOrdinalRequired": 2,
         "type": "artefact"
     },
@@ -51,7 +51,7 @@
         "name": "Pamphlet",
 		"rarityLocale": 3,
         "rarityScavenge": 5,
-        "rarityTrade": 1,
+        "rarityTrade": 5,
         "campOrdinalRequired": 1,
         "type": "artefact"
     },
@@ -65,7 +65,7 @@
         "name": "Starchart",
         "rarityScavenge": 8,
 		"rarityLocale": 5,
-        "rarityTrade": 5,
+        "rarityTrade": 7,
         "campOrdinalRequired": 15,
         "type": "artefact"
     },
@@ -79,7 +79,7 @@
         "name": "Runestone",
         "rarityScavenge": 8,
 		"rarityLocale": 5,
-        "rarityTrade": 5,
+        "rarityTrade": 7,
 		"campOrdinalMaximum": 8,
         "campOrdinalRequired": 3,
         "type": "artefact"
@@ -94,7 +94,7 @@
         "name": "Charred seed",
         "rarityScavenge": 8,
 		"rarityLocale": 5,
-        "rarityTrade": 5,
+        "rarityTrade": 7,
 		"campOrdinalMaximum": 8,
         "campOrdinalRequired": 7,
         "type": "artefact"
@@ -109,7 +109,7 @@
         "name": "Round stone",
         "rarityScavenge": 8,
 		"rarityLocale": 5,
-        "rarityTrade": 5,
+        "rarityTrade": 7,
 		"campOrdinalMaximum": 8,
         "campOrdinalRequired": 3,
         "type": "artefact"
@@ -123,7 +123,8 @@
         "isUseable": false,
         "name": "Leather pouch",
         "rarityScavenge": 6,
-        "rarityTrade": 2,
+		"rarityLocale": 4,
+        "rarityTrade": 3,
 		"campOrdinalMaximum": 8,
         "campOrdinalRequired": 1,
         "type": "artefact"
@@ -157,7 +158,7 @@
         "type": "artefact"
     },
     "artefact_history_3": {
-        "description": "An old circular data storage with the word 'backup' written on it. Without an electric computing machine, it's impossible to stay if it is still readable.",
+        "description": "An old circular data storage with the word 'backup' written on it. Without an electric computing machine, it's impossible to say if it is still readable.",
         "icon": "img/items/artefact-test.png",
         "id": "artefact_history_3",
         "isCraftable": false,
@@ -1460,6 +1461,7 @@
         "isEquippable": false,
         "isUseable": true,
         "name": "Map piece",
+		"nameShort": "Map piece",
         "rarityScavenge": -1,
 		"rarityLocale": 5,
         "rarityTrade": -1,
@@ -1825,6 +1827,7 @@
         "isEquippable": false,
         "isUseable": true,
         "name": "Rejuv shot",
+		"nameShort": "Rejuv shot",
         "rarityScavenge": -1,
 		"rarityLocale": 3,
         "rarityTrade": 2,

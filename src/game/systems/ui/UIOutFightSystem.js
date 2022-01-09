@@ -388,7 +388,7 @@ define([
 					return "attacked while scouting";
 				case "clear_workshop":
 					 var enemyActiveV = TextConstants.getEnemyActiveVerb([ enemy ]);
-					return "workshop " + enemyActiveV + " " + enemiesNoun;
+					return "workshop " + enemyActiveV + " " + Text.pluralify(enemyNoun);
 				case "fight_gang":
 					return Text.addArticle(enemyNoun) + " is blocking passage";
 				default:

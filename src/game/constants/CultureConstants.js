@@ -74,10 +74,11 @@ define(function () {
 			this.names.personalNames.push({name: "Eino", gender: this.genders.MALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Ole", gender: this.genders.MALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Jori", gender: this.genders.MALE, culture: this.cultures.HANSA });
-			this.names.personalNames.push({name: "Omar", gender: this.genders.MALE, culture: this.cultures.INDUS });
-			this.names.personalNames.push({name: "Mehdi", gender: this.genders.MALE, culture: this.cultures.INDUS });
+			this.names.personalNames.push({name: "Armin", gender: this.genders.MALE, culture: this.cultures.INDUS });
 			this.names.personalNames.push({name: "Batu", gender: this.genders.MALE, culture: this.cultures.INDUS });
+			this.names.personalNames.push({name: "Mehdi", gender: this.genders.MALE, culture: this.cultures.INDUS });
 			this.names.personalNames.push({name: "Medad", gender: this.genders.MALE, culture: this.cultures.INDUS });
+			this.names.personalNames.push({name: "Omar", gender: this.genders.MALE, culture: this.cultures.INDUS });
 			this.names.personalNames.push({name: "Jurij", gender: this.genders.MALE, culture: this.cultures.KIEVAN });
 			this.names.personalNames.push({name: "Simon", gender: this.genders.MALE, culture: this.cultures.KIEVAN });
 			this.names.personalNames.push({name: "Pawel", gender: this.genders.MALE, culture: this.cultures.KIEVAN });
@@ -110,6 +111,7 @@ define(function () {
 			this.names.personalNames.push({name: "Johanna", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Astrid", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Ebba", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
+			this.names.personalNames.push({name: "Marjolein", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Rosalena", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Salome", gender: this.genders.FEMALE, culture: this.cultures.INDUS });
 			this.names.personalNames.push({name: "Zahra", gender: this.genders.FEMALE, culture: this.cultures.INDUS });
