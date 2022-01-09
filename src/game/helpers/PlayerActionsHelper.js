@@ -594,9 +594,9 @@ define([
 								return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_NOT_REACHABLE_BY_TRADERS };
 							}
 						}
-						if (typeof requirements.camp.raid !== "underfined") {
+						if (typeof requirements.camp.raid !== "undefined") {
 							let currentValue = this.playerLocationNodes.head.entity.has(RaidComponent);
-							let requireValue = requirements.camp.raid;
+							let requiredValue = requirements.camp.raid;
 							if (requiredValue != currentValue) {
 								return { value: 0, reason: (requiredValue ? "No raid currently" : "There is a raid" ) };
 							}
@@ -1319,7 +1319,7 @@ define([
 
 				if (typeof value === "number") {
 					expCost = value;
-					if (isOutpost) {
+					if (isOutpost && expBase == 1) {
 						expCost *= defaultOutpostExpCostFactor;
 					}
 				} else if (typeof value === "object") {

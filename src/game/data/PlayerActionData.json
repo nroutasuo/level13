@@ -2524,8 +2524,22 @@
                 -1
             ]
         },
-        "improve_out_collector_food": {},
-        "improve_out_collector_water": {},
+        "improve_out_collector_food": {
+            "improvements": {
+                "collector_food": [
+                    1,
+                    -1
+                ]
+            }
+		},
+        "improve_out_collector_water": {
+            "improvements": {
+                "collector_water": [
+                    1,
+                    -1
+                ]
+            }
+		},
         "improve_worker_apothecary_3": {
             "upgrades": {
                 "improve_building_apothecary": true
