@@ -635,8 +635,8 @@ define([
 			let bucketMaxLevel = GameGlobals.campHelper.getCurrentMaxImprovementLevel(improvementNames.collector_water);
 			let trapMaxLevel = GameGlobals.campHelper.getCurrentMaxImprovementLevel(improvementNames.collector_food);
 				
-			GameGlobals.uiFunctions.toggle("#out-action-improve-bucket", bucketMaxLevel > 1);
-			GameGlobals.uiFunctions.toggle("#out-action-improve-trap", trapMaxLevel > 1);
+			GameGlobals.uiFunctions.toggle("#out-action-improve-bucket", collectorWaterCapacity > 0 && bucketMaxLevel > 1);
+			GameGlobals.uiFunctions.toggle("#out-action-improve-trap", collectorFoodCapacity > 0 && trapMaxLevel > 1);
 		},
 
 		updateLocales: function () {
