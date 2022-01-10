@@ -90,6 +90,7 @@ define([
 			GlobalSignals.inventoryChangedSignal.add(function () {
 				sys.updateSectorDescription();
 				sys.updateOutImprovementsVisibility();
+				sys.updateDespair();
 			});
 			GlobalSignals.featureUnlockedSignal.add(function () {
 				sys.updateUnlockedFeatures();
@@ -171,7 +172,7 @@ define([
 
 			this.updateNap(isScouted, hasCampHere);
 			this.updateWait(hasCampHere);
-			this.updateDespair(hasCampHere);
+			this.updateDespair();
 		},
 
 		updateLevelPageActions: function (isScouted, hasCamp, hasCampHere) {
@@ -259,16 +260,19 @@ define([
 			GameGlobals.uiFunctions.toggle(this.elements.btnWait, showWait);
 		},
 
-		updateDespair: function (hasCampHere) {
+		updateDespair: function () {
+			let hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
+			
 			var logComponent = this.playerPosNodes.head.entity.get(LogMessagesComponent);
 			var posComponent = this.playerLocationNodes.head.position;
 			var movementOptionsComponent = this.playerLocationNodes.head.entity.get(MovementOptionsComponent);
-			var isValidDespairHunger = GameGlobals.gameState.unlockedFeatures.resources.food && !this.hasAccessToResource(resourceNames.food, true, false);
-			var isValidDespairThirst = GameGlobals.gameState.unlockedFeatures.resources.water && !this.hasAccessToResource(resourceNames.water, true, false);
+			var isValidDespairHunger = GameGlobals.gameState.unlockedFeatures.resources.food && !this.hasAccessToResource(resourceNames.food, false, false);
+			var isValidDespairThirst = GameGlobals.gameState.unlockedFeatures.resources.water && !this.hasAccessToResource(resourceNames.water, false, false);
 			var isValidDespairStamina = this.playerPosNodes.head.entity.get(StaminaComponent).stamina < PlayerActionConstants.costs.move_sector_east.stamina;
 			var isValidDespairMove = !movementOptionsComponent.canMove(); // can happen in hazard sectors if you lose equipment
 			var isFirstPosition = !GameGlobals.gameState.unlockedFeatures.sectors;
 			var showDespair = GameGlobals.gameState.unlockedFeatures.camp && !hasCampHere && !isFirstPosition && (isValidDespairHunger || isValidDespairThirst || isValidDespairStamina || isValidDespairMove);
+			
 			if (this.isDespairShown === showDespair) {
 				return;
 			}
