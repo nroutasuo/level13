@@ -84,6 +84,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 				itemVO.tradeRarity = item.rarityTrade;
 				itemVO.configData = item.configData || {};
 				itemVO.nameShort = item.nameShort || null;
+				itemVO.tradePrice = item.tradePrice;
 				this.itemDefinitions[type].push(itemVO);
 			}
 		},

@@ -145,22 +145,26 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 		
 		getItemValue: function (item, isTrader, isUsed) {
 			let value = this.getItemBaseValue(item, isTrader);
+		
+			if (value > 0) {
+				value = Math.max(value, TradeConstants.VALUE_INGREDIENTS);
+			}
 			
 			if (isTrader)
 				value = value + value * TradeConstants.VALUE_MARKUP_INCOMING_CARAVANS;
 			else if (isUsed)
 				value = value - value * TradeConstants.VALUE_DISCOUNT_CAMP_ITEMS;
 			
-			if (value > 0) {
-				value = Math.max(value, TradeConstants.VALUE_INGREDIENTS);
-			}
-			
-			value = Math.round(value * 20) / 20;
+			if (value > 1)
+				value = Math.round(value * 10) / 10;
+			else
+				value = Math.round(value * 100) / 100;
 				
 			return value;
 		},
 		
 		getItemBaseValue: function (item, isTrader) {
+			if (item.tradePrice) return item.tradePrice;			
 			switch (item.type) {
 				case ItemConstants.itemTypes.light:
 				case ItemConstants.itemTypes.weapon:
@@ -274,7 +278,7 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 			}
 			
 			if (rarity > 0) {
-				return rarity / 2;
+				return Math.ceil(rarity / 1.5);
 			} else {
 				return null;
 			}

@@ -799,8 +799,10 @@ define([
 
 			if (Math.random() > findProbability * efficiency)
 				return 0;
+			
+			let max = 1 + Math.round(campCount / 3);
 
-			return Math.ceil(Math.random() * 3);
+			return Math.ceil(Math.random() * max);
 		},
 
 		// itemProbability: base probability of finding one item (0-1)
