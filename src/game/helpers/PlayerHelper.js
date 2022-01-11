@@ -1,11 +1,13 @@
 define([
 	'ash',
+	'game/GameGlobals',
 	'game/constants/FollowerConstants',
 	'game/constants/ItemConstants',
 	'game/nodes/PlayerPositionNode',
 	'game/nodes/player/PlayerStatsNode'
 ], function (
 	Ash,
+	GameGlobals,
 	FollowerConstants,
 	ItemConstants,
 	PlayerPositionNode,
@@ -63,6 +65,19 @@ define([
 					if (result.length > 0) result += "<br/>";
 					result += follower.name + ": " + Math.round(followerBonus*10)/10;
 				}
+			}
+			
+			
+			switch (itemBonusType) {
+				case ItemConstants.itemBonusTypes.movement:
+					let playerPosition = this.playerPosNodes.head.position.getPosition();
+					let sector = GameGlobals.levelHelper.getSectorByPosition(playerPosition.level, playerPosition.sectorX, playerPosition.sectorY)
+					let beaconBonus = GameGlobals.sectorHelper.getBeaconMovementBonus(sector, this.playerStatsNodes.head.perks);
+					if (beaconBonus !== 1) {
+						if (result.length > 0) result += "<br/>";
+						result += "Beacon: " + beaconBonus;
+					}
+					break;
 			}
 			
 			return result;
