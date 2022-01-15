@@ -911,10 +911,11 @@ define(['ash',
 			campOutgoingCaravansComponent.outgoingCaravans.splice(caravanI, 1);
 
 			GameGlobals.playerActionResultsHelper.collectRewards(true, result, campSector);
+			this.moveCurrencyFromBagToCamp();
 			this.completeAction("send_caravan");
 
 			this.addLogMessage(LogConstants.MSG_ID_FINISH_SEND_CAMP, logMsg.msg, logMsg.replacements, logMsg.values, pendingPosition);
-			this.forceResourceBarUpdate();
+			GlobalSignals.inventoryChangedSignal.dispatch();
 		},
 
 		tradeWithCaravan: function () {
