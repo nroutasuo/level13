@@ -832,11 +832,19 @@ define(['ash',
 				var sector = playerActionFunctions.playerLocationNodes.head.entity;
 				var sectorStatus = sector.get(SectorStatusComponent);
 				if (!GameGlobals.gameState.isAutoPlaying) player.add(new PlayerActionResultComponent(rewards));
-				var popupMsg = logMsgSuccess;
+				
 				if (rewards && rewards.foundStashVO) {
 					sectorStatus.stashesFound++;
-					popupMsg += TextConstants.getFoundStashMessage(rewards.foundStashVO);
+					logMsgSuccess += TextConstants.getFoundStashMessage(rewards.foundStashVO);
 				}
+				
+				var discoveredGoods = GameGlobals.playerActionResultsHelper.saveDiscoveredGoods(rewards);
+				if (discoveredGoods.items && discoveredGoods.items.length > 0) {
+					logMsgSuccess += " Found a source of " + TextConstants.getListText(discoveredGoods.items.map(item => ItemConstants.getItemDisplayName(item).toLowerCase())) + ".";
+				}
+				
+				let popupMsg = logMsgSuccess;
+				
 				var resultPopupCallback = function (isTakeAll) {
 					GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, rewards);
 					if (!GameGlobals.gameState.isAutoPlaying && logMsgSuccess) playerActionFunctions.addLogMessage(logMsgId, logMsgSuccess);
@@ -849,6 +857,7 @@ define(['ash',
 					GlobalSignals.sectorScavengedSignal.dispatch();
 					playerActionFunctions.completeAction(action);
 				};
+				
 				if (showResultPopup) {
 					GameGlobals.uiFunctions.showResultPopup(TextConstants.getActionName(baseActionID), popupMsg, rewards, resultPopupCallback);
 				} else {

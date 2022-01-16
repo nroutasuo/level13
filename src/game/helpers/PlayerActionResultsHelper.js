@@ -161,7 +161,7 @@ define([
 			rewards.gainedCurrency = this.getRewardCurrency(efficiency);
 			
 			if (rewards.gainedItems.length == 0) {
-				rewards.gainedItems = this.getRewardItems(0.02, 0.35, sectorIngredients, itemOptions);
+				rewards.gainedItems = this.getRewardItems(0.02, 0.5, sectorIngredients, itemOptions);
 			}
 			
 			rewards.gainedBlueprintPiece = this.getFallbackBlueprint(0.05 + efficiency * 0.15);
@@ -277,6 +277,35 @@ define([
 
 			return resultVO;
 		},
+		
+		saveDiscoveredGoods: function (rewards) {
+			let result = {};
+			
+			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable;
+			for (var key in resourceNames) {
+				var name = resourceNames[key];
+				var amount = rewards.gainedResources.getResource(name);
+				var inSector = sectorResources.getResource(name) > 0;
+				if (amount > 0 && inSector) {
+					sectorStatus.addDiscoveredResource(name);
+					if (!result.resources) result.resources = [];
+					result.resources.push(name);
+				}
+			}
+			for (let i = 0; i < rewards.gainedItems.length; i++) {
+				let item = rewards.gainedItems[i];
+				if (item.type == ItemConstants.itemTypes.ingredient) {
+					if (!sectorStatus.hasDiscoveredItem(item.id)) {
+						sectorStatus.addDiscoveredItem(item.id);
+						if (!result.items) result.items = [];
+						result.items.push(item);
+					}
+				}
+			}
+			
+			return result;
+		},
 
 		collectRewards: function (isTakeAll, rewards, campSector) {
 			if (rewards == null || rewards.isEmpty()) {
@@ -308,25 +337,6 @@ define([
 			currentStorage.addResources(rewards.selectedResources);
 			currentStorage.substractResources(rewards.discardedResources);
 			currentStorage.substractResources(rewards.lostResources);
-
-			if (!campSector) {
-				var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-				var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable;
-				for (var key in resourceNames) {
-					var name = resourceNames[key];
-					var amount = rewards.gainedResources.getResource(name);
-					var inSector = sectorResources.getResource(name) > 0;
-					if (amount > 0 && inSector) {
-						sectorStatus.addDiscoveredResource(name);
-					}
-				}
-				for (let i = 0; i < rewards.gainedItems.length; i++) {
-					let item = rewards.gainedItems[i];
-					if (item.type == ItemConstants.itemTypes.ingredient) {
-						sectorStatus.addDiscoveredItem(item.id);
-					}
-				}
-			}
 
 			var currencyComponent = this.playerStatsNodes.head.entity.get(CurrencyComponent);
 			currencyComponent.currency += rewards.gainedCurrency;
