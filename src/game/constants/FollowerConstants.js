@@ -116,22 +116,22 @@ define(['ash',
 			let name = "";
 			let icon = "";
 			
-			let isAnimal = abilityType == FollowerConstants.abilityType.SCAVENGE_CAPACITY;
+			let isAnimal = this.isAnimal(abilityType);
 			
+			let gender = CultureConstants.getRandomGender();
 			if (isAnimal) {
 				let animalKeys = Object.keys(FollowerConstants.animalType);
 				let animalType = FollowerConstants.animalType[animalKeys[MathUtils.randomIntBetween(0, animalKeys.length)]];
 				name = this.getRandomAnimalName(animalType);
 				icon = this.getRandomAnimalIcon(animalType);
 			} else {
-				let gender = CultureConstants.getRandomGender();
 				let origin = CultureConstants.getRandomOrigin(appearLevel);
 				let culturalHeritage = CultureConstants.getRandomCultures(MathUtils.randomIntBetween(0, 3), origin);
 				name = CultureConstants.getRandomShortName(gender, origin, culturalHeritage);
 				icon = this.getRandomIcon(gender, abilityType);
 			}
 			
-			return new FollowerVO(id, name, abilityType, abilityLevel, icon, source);
+			return new FollowerVO(id, name, abilityType, abilityLevel, icon, gender, source);
 		},
 		
 		getNewPredefinedFollower: function (followerID) {
@@ -153,7 +153,7 @@ define(['ash',
 			
 			let abilityLevel = this.getRandomAbilityLevelByCampOrdinal(template.abilityType, templateCampOrdinal);
 			
-			return new FollowerVO(followerID, template.name, template.abilityType, abilityLevel, template.icon, FollowerConstants.followerSource.SCOUT);
+			return new FollowerVO(followerID, template.name, template.abilityType, abilityLevel, template.icon, template.gender, FollowerConstants.followerSource.SCOUT);
 		},
 		
 		getRandomAbilityLevelByCampOrdinal: function (abilityType, campOrdinal, forcedAbilityLevelRandomFactor) {
@@ -417,6 +417,17 @@ define(['ash',
 			let rawValue = MathUtils.map(abilityLevel, 1, 100, minBonus, maxBonus);
 			
 			return MathUtils.roundToMultiple(rawValue, roundingStep);
+		},
+		
+		isAnimal: function (abilityType) {
+			return abilityType == FollowerConstants.abilityType.SCAVENGE_CAPACITY;
+		},
+		
+		getPronoun: function (follower) {
+			if (this.isAnimal(follower.abilityType)) return "it";
+			if (follower.gender == CultureConstants.genders.FEMALE) return "she";
+			if (follower.gender == CultureConstants.genders.MALE) return "he";
+			return "they";
 		},
 		
 		getAbilityLevel: function (follower, abilityType) {

@@ -532,6 +532,7 @@ define(['ash',
 			var sector = this.playerLocationNodes.head.entity;
 			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			
 			if (sectorStatus.scouted) {
 				log.w("Sector already scouted.");
@@ -576,15 +577,21 @@ define(['ash',
 				}
 			}
 
-			var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
+			let passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
 			if (passagesComponent.passageUp) {
+				let passageUpBuilt = improvements.getCount(improvementNames.passageUpStairs) +
+					improvements.getCount(improvementNames.passageUpElevator) +
+					improvements.getCount(improvementNames.passageUpHole) > 0;
 				found = true;
-				logMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageUp, PositionConstants.DIRECTION_UP, sunlit) + " ";
+				logMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageUp, PositionConstants.DIRECTION_UP, sunlit, passageUpBuilt) + " ";
 			}
 
 			if (passagesComponent.passageDown) {
+				let passageDownBuilt = improvements.getCount(improvementNames.passageDownStairs) +
+					improvements.getCount(improvementNames.passageDownElevator) +
+					improvements.getCount(improvementNames.passageDownHole) > 0;
 				found = true;
-				logMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageDown, PositionConstants.DIRECTION_DOWN, sunlit) + " ";
+				logMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageDown, PositionConstants.DIRECTION_DOWN, sunlit, passageDownBuilt) + " ";
 			}
 
 			var sectorLocalesComponent = sector.get(SectorLocalesComponent);

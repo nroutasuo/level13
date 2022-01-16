@@ -578,12 +578,13 @@ define([
 					let follower = resultVO.gainedFollowers[i];
 					let followerType = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
 					let willJoin = this.willGainedFollowerJoinParty(follower);
+					let pronoun = FollowerConstants.getPronoun(follower);
 					div += "<div>"
 					div += "Met a <span class='hl-functionality'>" + FollowerConstants.getFollowerTypeDisplayName(followerType) + "</span> called " + follower.name + ". ";
 					if (willJoin) {
-						div += "They joined the party.";
+						div += Text.capitalize(pronoun) + " joined the party.";
 					} else if (this.nearestCampNodes.head) {
-						div += "They will meet you at " + this.nearestCampNodes.head.camp.getName() + " on level " + this.nearestCampNodes.head.position.level;
+						div += Text.capitalize(pronoun) +" will meet you at " + this.nearestCampNodes.head.camp.getName() + " on level " + this.nearestCampNodes.head.position.level;
 					}
 					div += "</div>";
 				}
@@ -1386,11 +1387,11 @@ define([
 				case WorldConstants.resourcePrevalence.RARE:
 					return 1;
 				case WorldConstants.resourcePrevalence.DEFAULT:
-					return 3;
+					return 2;
 				case WorldConstants.resourcePrevalence.COMMON:
-					return 4;
+					return 3;
 				case WorldConstants.resourcePrevalence.ABUNDANT:
-					return 6;
+					return 5;
 			}
 			log.w("unknown resource prevalence: " + prevalence);
 			return 0;

@@ -269,7 +269,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			return result;
 		},
 		
-		getPassageFoundMessage: function (passageVO, direction, sunlit) {
+		getPassageFoundMessage: function (passageVO, direction, sunlit, isBuilt) {
 			switch (passageVO.type) {
 				case MovementConstants.PASSAGE_TYPE_HOLE:
 					if (direction === PositionConstants.DIRECTION_UP) {
@@ -286,7 +286,11 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				case MovementConstants.PASSAGE_TYPE_BLOCKED:
 					return "There seems to have been a staircase here once but it has been destroyed beyond repair.";
 				default:
-					return "There used to be " + Text.addArticle(passageVO.name.toLowerCase()) + " here.";
+					if (isBuilt) {
+						return "There is a " + Text.addArticle(passageVO.name.toLowerCase()) + " here.";
+					} else {
+						return "There used to be " + Text.addArticle(passageVO.name.toLowerCase()) + " here.";
+					}
 			}
 		},
 		
@@ -857,14 +861,14 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				case MovementConstants.BLOCKER_TYPE_WASTE_TOXIC: return "Clear waste";
 				case MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE: return "Clear waste";
 				case MovementConstants.BLOCKER_TYPE_GANG:
-					let enemies = this.getAllEnemies(enemiesComponent, gangComponent);
+					let enemies = this.getAllEnemies(null, gangComponent);
 					return "Fight " + this.getEnemyNoun(enemies);
 			}
 		},
 		
 		getAllEnemies: function (enemiesComponent, gangComponent) {
 			let enemies = [];
-			if (enemiesComponent.possibleEnemies) {
+			if (enemiesComponent && enemiesComponent.possibleEnemies) {
 				enemies = enemiesComponent.possibleEnemies.concat();
 			}
 			if (gangComponent) {
@@ -939,6 +943,18 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				return pluralify ? (Text.pluralify(minimumWords[0]) + " and " + Text.pluralify(minimumWords[1])) : (minimumWords[0] + " and " + minimumWords[1]);
 			} else {
 				return defaultWord;
+			}
+		},
+		
+		getListText: function (list) {
+			if (!list || list.length == 0) {
+				return "none";
+			} else if (list.length == 1) {
+				return list[0];
+			} else if (list.length == 2) {
+				return list[0] + " and " + list[1];
+			} else {
+				return list.join(", ");
 			}
 		},
 		

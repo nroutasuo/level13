@@ -167,7 +167,8 @@ define([
 			var msg = "";
 			switch (perkID) {
 				case PerkConstants.perkIds.hazardCold:
-					msg = "Warmer here.";
+					// TODO different message depending on if perk was deactivated due to moving or by changing equipment
+					msg = "Warmer now.";
 					break;
 					
 				case PerkConstants.perkIds.lightBeacon:

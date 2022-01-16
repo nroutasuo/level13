@@ -86,6 +86,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			},
 			water: {
 				id: "water",
+				displayName: "water collector",
 				resourceProduced: resourceNames.water,
 			},
 			ropemaker: {
@@ -267,7 +268,16 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			shrineLevel = shrineLevel || 1;
 			majorLevel = majorLevel || 1;
 			return 0.5 + (majorLevel - 1) * 0.2;
-		}
+		},
+		
+		getWorkerDisplayName: function (workerType) {
+			let def = this.workerTypes[workerType];
+			if (!def) {
+				log.w("no such workerType:" + workerType);
+				return workerType;
+			}
+			return def.displayName || workerType;
+		},
 	
 	};
 	

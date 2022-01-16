@@ -50,6 +50,10 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 				this.discoveredItems.push(id);
 			}
 		},
+		
+		hasDiscoveredItem: function (id) {
+			return this.discoveredItems.indexOf(id) >= 0;
+		},
 
 		isLocaleScouted: function (i) {
 			if (!this.localesScouted[i]) return false;

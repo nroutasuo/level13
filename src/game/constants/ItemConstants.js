@@ -103,6 +103,8 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 					return short ? "head" : "clothing (head)";
 				case ItemConstants.itemTypes.ingredient:
 					return short ? "ingredient" : "crafting ingredient";
+				case ItemConstants.itemTypes.voucher:
+					return short ? "consumable" : "consumable";
 			}
 			return ItemConstants.itemTypes[type];
 		},
