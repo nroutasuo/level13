@@ -1615,7 +1615,7 @@
     },
     "light2": {
         "bonuses": {
-            "light": 75
+            "light": 50
         },
         "description": "Advanced light for serious travellers.",
         "icon": "img/items/light-electric.png",
@@ -1633,7 +1633,7 @@
     },
     "light3": {
         "bonuses": {
-            "light": 125
+            "light": 100
         },
         "description": "They say the ghost light can show you more the darker places you go.",
         "icon": "img/items/light-ghost.png",
