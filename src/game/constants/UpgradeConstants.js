@@ -62,7 +62,7 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 			improve_building_library2: "An organized approach to growing new knowledge",
 			unlock_building_apothecary: "Basic knowledge of making herbal medicines.",
 			improve_worker_trapper_2: "Salting, smoking and pickling food to make it last longer.",
-			unlock_building_barracks: "A dedicated and trained class of workers for protecting and fighting.",
+			unlock_building_barracks: "A dedicated and trained class of workers for protecting the camp.",
 			improve_building_campfire_1: "Turn the campfire into the pride of the settlement.",
 			improve_building_inn: "Another useful way to raise spirits and bond groups.",
 			improve_building_market2: "Further improve trade by using lighter currency that is easier to carry around.",

@@ -492,7 +492,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					events.push("a war that the City waged against some far-away civilization hundreds of years ago");
 					events.push("wars in the City in the past 500 years");
 					events.push("the building of the first levels of the City");
-					events.push("the migration to the city from some far-away island");
+					events.push("the migration to the City from some far-away island");
 					events.push("something called the Great Famine which took place a few decades before the book was written");
 					events.push("the establishment of the city-wide Government");
 					events.push("a major gardener rebellion");

@@ -392,18 +392,18 @@ define([
 		},
 
 		getNotificationMessage: function (notificationType, level) {
+			let campNode = GameGlobals.campHelper.getCampNodeForLevel(level);
 			switch (notificationType) {
 				case this.campNotificationTypes.EVENT_RAID_RECENT:
-					var campComponent = null;
-					// TODO global solution to level -> camp node
-					for (var node = this.campNodes.head; node; node = node.next) {
-						if (node.entity.get(PositionComponent).level == level) {
-							campComponent = node.camp;
-						}
-					}
-					var timeS = "(" + UIConstants.getTimeSinceText(campComponent.lastRaid.timestamp) + " ago)";
+					let campComponent = campNode.camp;
+					let timeS = "(" + UIConstants.getTimeSinceText(campComponent.lastRaid.timestamp) + " ago)";
 					return "There has been a raid on level " + level + " " + timeS + ". We need better defences.";
-				case this.campNotificationTypes.EVENT_TRADER: return "There is a trader currently on level " + level + ".";
+					
+				case this.campNotificationTypes.EVENT_TRADER:
+					let traderComponent = campNode.entity.get(TraderComponent);
+					if (!traderComponent || !traderComponent.caravan) return "";
+					return "There is a trader (" + traderComponent.caravan.name + ") currently on level " + level + ".";
+					
 				case this.campNotificationTypes.EVENT_RECRUIT: return "There is a visitor currently on level " + level + ".";
 				case this.campNotificationTypes.POP_UNASSIGNED: return "Unassigned workers on level " + level + ".";
 				case this.campNotificationTypes.POP_DECREASING: return "Population is decreasing on level " + level + "!";

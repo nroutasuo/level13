@@ -2,13 +2,14 @@ define([
 	'ash',
 	'game/GameGlobals',
 	'game/GlobalSignals',
+	'game/constants/CampConstants',
 	'game/constants/ImprovementConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/UIConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/TextConstants',
 	'game/nodes/tribe/TribeUpgradesNode',
-], function (Ash, GameGlobals, GlobalSignals, ImprovementConstants, PlayerActionConstants, UIConstants, UpgradeConstants, TextConstants, TribeUpgradesNode) {
+], function (Ash, GameGlobals, GlobalSignals, CampConstants, ImprovementConstants, PlayerActionConstants, UIConstants, UpgradeConstants, TextConstants, TribeUpgradesNode) {
 	
 	var UpgradeStatusEnum = {
 		HIDDEN: 0,
@@ -311,7 +312,7 @@ define([
 				if (improvedWorkers.length > 0) {
 					for (let i in improvedWorkers) {
 						// TOOD make a global get worker display name function
-						var name = improvedWorkers[i] == "weaver" ? "rope-maker" : improvedWorkers[i];
+						var name = CampConstants.getWorkerDisplayName(improvedWorkers[i]);
 						effects += "improved " + name;
 					}
 					effects += ", ";

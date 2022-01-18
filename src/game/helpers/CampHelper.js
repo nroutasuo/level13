@@ -45,6 +45,15 @@ define([
 			return WorldConstants.CAMP_STEP_END;
 		},
 		
+		getCampNodeForLevel: function (level) {
+			for (var node = this.campNodes.head; node; node = node.next) {
+				if (node.position.level == level) {
+					return node;
+				}
+			}
+			return null;
+		},
+		
 		getTotalNumImprovementsBuilt: function (improvementName) {
 			if (!this.campNodes.head) return 0;
 			let result = 0;
@@ -135,7 +144,7 @@ define([
 		getDarkFarmProductionPerSecond: function (improvementsComponent) {
 			let count = improvementsComponent.getCount(improvementNames.darkfarm);
 			let level = improvementsComponent.getLevel(improvementNames.darkfarm);
-			return count * (0.01 + level * 0.05);
+			return count * (0.01 + level * 0.01);
 		},
 		
 		getLibraryEvidenceGenerationPerSecond: function (improvementsComponent) {

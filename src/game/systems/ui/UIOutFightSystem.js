@@ -323,7 +323,7 @@ define([
 			if (currentEnemy == null) return;
 			var statsText = this.getStatsText(currentEnemy.getAtt(), currentEnemy.getDef(), currentEnemy.getSpeed(), currentEnemy.maxHP, currentEnemy.maxShield);
 			
-			$("#fight-popup-enemy-name").html(" " + currentEnemy.name + " ");
+			$("#fight-popup-enemy-name").html(" " + currentEnemy.name.toLowerCase() + " ");
 			$("#fight-popup-enemy-stats").html(statsText);
 		},
 		

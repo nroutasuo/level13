@@ -461,6 +461,7 @@ define([
 					let campStep = GameGlobals.campHelper.getCurrentCampStep();
 					
 					let getFollowerFightTotal = function (follower) {
+						if (!follower) return 0;
 						return FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_att)
 							+ FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_def);
 					}
