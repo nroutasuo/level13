@@ -584,13 +584,14 @@ define([
 			$("#header-camp-currency .value").text(currencyComponent ? currencyComponent.currency : "??");
 			$("#header-bag-currency .value").text(currencyComponent ? currencyComponent.currency : "??");
 
-			for (var key in resourceNames) {
+			for (let key in resourceNames) {
 				let name = resourceNames[key];
 				let currentAmount = showResources.getResource(name);
 				let currentAccumulation = showResourceAcc.resourceChange.getResource(name);
 				let resourceUnlocked = GameGlobals.gameState.unlockedFeatures.resources[name] === true || currentAmount > 0;
 				inventoryUnlocked = inventoryUnlocked || resourceUnlocked;
 				if (inCamp) {
+					let isVisible = resourceUnlocked && !(currentAmount <= 0 && currentAccumulation <= 0 && this.canHideResource(name));
 					let previousAmount = this.previousShownCampResAmount[name] || 0;
 					let animate = !changedInOut && UIAnimations.shouldAnimateChange(previousAmount, currentAmount, this.lastCampResourceUpdate, now, currentAccumulation);
 					UIConstants.updateResourceIndicator(
@@ -602,7 +603,7 @@ define([
 						true,
 						true,
 						name === resourceNames.food || name === resourceNames.water,
-						resourceUnlocked,
+						isVisible,
 						animate
 					);
 					if (showResourceAcc) {
@@ -636,6 +637,17 @@ define([
 				this.lastCampResourceUpdate = now;
 			}
 			this.lastResourceUpdateInCamp = inCamp;
+		},
+		
+		canHideResource: function (name) {
+			switch (name) {
+				case resourceNames.food:
+				case resourceNames.water:
+				case resourceNames.metal:
+				case resourceNames.rope:
+					return false;
+			}
+			return true;
 		},
 		
 		completeResourceAnimations: function () {
@@ -933,6 +945,7 @@ define([
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			this.updatePlayerStats();
 			this.updateItemStats();
+			this.refreshPerks();
 		},
 		
 		onFollowersChanged: function () {
