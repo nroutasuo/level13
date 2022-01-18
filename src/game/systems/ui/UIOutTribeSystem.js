@@ -239,7 +239,6 @@ define([
 			rowHTML += "<td class='camp-overview-population list-amount nowrap'><span class='value'></span><span class='change-indicator'></span></td>";
 			rowHTML += "<td class='camp-overview-reputation list-amount nowrap'><span class='value'></span><span class='change-indicator'></span></td>";
 			rowHTML += "<td class='camp-overview-raid list-amount'><span class='value'></span></span></td>";
-			rowHTML += "<td class='camp-overview-levelpop list-amount'></td>";
 			rowHTML += "<td class='camp-overview-storage list-amount'></td>";
 			rowHTML += "<td class='camp-overview-production'>";
 			for(var key in resourceNames) {
@@ -287,6 +286,7 @@ define([
 			var isPlayerInCampLevel = level === playerPosComponent.level;
 			var unAssignedPopulation = camp.getFreePopulation();
 			var improvements = node.entity.get(SectorImprovementsComponent);
+			var levelComponent = GameGlobals.levelHelper.getLevelEntityForSector(node.entity).get(LevelComponent);
 
 			$("#camp-overview tr#" + rowID).toggleClass("current", isPlayerInCampLevel);
 			GameGlobals.uiFunctions.toggle("#camp-overview tr#" + rowID + " .camp-overview-btn button", !isPlayerInCampLevel);
@@ -294,6 +294,9 @@ define([
 			GameGlobals.uiFunctions.toggle("#camp-overview tr#" + rowID + " .camp-overview-camp-bubble .bubble", isAlert);
 			
 			$("#camp-overview tr#" + rowID + " .camp-overview-level-container").text(level);
+			$("#camp-overview tr#" + rowID + " .camp-overview-level-container").toggleClass("lvl-container-camp-normal", levelComponent.populationFactor == 1);
+			$("#camp-overview tr#" + rowID + " .camp-overview-level-container").toggleClass("lvl-container-camp-outpost", levelComponent.populationFactor < 1);
+			$("#camp-overview tr#" + rowID + " .camp-overview-level-container").toggleClass("lvl-container-camp-capital", levelComponent.populationFactor > 1);
 
 			var alertDesc = "";
 			for (let i = 0; i < alerts.length; i++) {
@@ -308,7 +311,8 @@ define([
 			this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-population .change-indicator"), camp.populationChangePerSec);
 
 			var reputationComponent = node.reputation;
-			$("#camp-overview tr#" + rowID + " .camp-overview-reputation .value").text(UIConstants.roundValue(reputationComponent.value, true, true));
+			let reputationValue = UIConstants.roundValue(reputationComponent.value, true, true);
+			$("#camp-overview tr#" + rowID + " .camp-overview-reputation .value").text(reputationValue);
 			$("#camp-overview tr#" + rowID + " .camp-overview-reputation .value").toggleClass("warning", reputationComponent.targetValue < 1);
 			this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-reputation .change-indicator"), reputationComponent.accumulation);
 			
@@ -318,9 +322,6 @@ define([
 			var raidWarning = raidDanger > CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
 			$("#camp-overview tr#" + rowID + " .camp-overview-raid .value").text(UIConstants.roundValue(raidDanger * 100) + "%");
 			$("#camp-overview tr#" + rowID + " .camp-overview-raid .value").toggleClass("warning", raidWarning);
-
-			var levelComponent = GameGlobals.levelHelper.getLevelEntityForSector(node.entity).get(LevelComponent);
-			$("#camp-overview tr#" + rowID + " .camp-overview-levelpop").text(levelComponent.populationFactor * 100 + "%");
 			
 			var resources = node.entity.get(ResourcesComponent);
 			var hasTradePost = improvements.getCount(improvementNames.tradepost) > 0;
