@@ -170,6 +170,8 @@ define([
 		},
 
 		updateCrafting: function () {
+			this.isShowObsoleteChecked = $("#checkbox-crafting-show-obsolete").is(':checked');
+			
 			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.bag;
 			var showObsolete = this.showObsolete();
 
@@ -473,7 +475,6 @@ define([
 		},
 
 		onObsoleteToggled: function () {
-			this.isShowObsoleteChecked = $("#checkbox-crafting-show-obsolete").is(':checked');
 			this.updateCrafting();
 		},
 
