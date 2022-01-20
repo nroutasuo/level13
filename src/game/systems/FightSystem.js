@@ -86,6 +86,9 @@ define([
 			this.fightNodes.head.fight.nextTurnEnemy = nextTurnEnemy;
 			this.totalFightTime = 0;
 			
+			this.previousPlayerStatus = null;
+			this.previousEnemyStatus = null;
+			
 			var playerStamina = this.playerStatsNodes.head.stamina;
 			playerStamina.resetHP();
 			playerStamina.resetShield();
@@ -109,6 +112,7 @@ define([
 			
 			// player turn
 			var isPlayerTurn = false;
+			let playerMissed = false;
 			var damageToEnemy = 0;
 			this.fightNodes.head.fight.nextTurnPlayer -= fightTime;
 			if (this.fightNodes.head.fight.nextTurnPlayer <= 0) {
@@ -116,12 +120,14 @@ define([
 				let scenarios = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_FRIENDLY, enemy, playerStamina, itemsComponent, followersComponent, this.totalFightTime);
 				let scenario = this.pickTurnScenario(scenarios);
 				damageToEnemy = scenario.damage;
+				playerMissed = scenario.type == "MISS";
 				this.log(scenario.logMessage);
 				this.fightNodes.head.fight.nextTurnPlayer = FightConstants.getPlayerAttackTime(itemsComponent);
 			}
 			
 			// enemy turn
 			let isEnemyTurn = false;
+			let enemyMissed = false;
 			var damageByEnemy = 0;
 			var damageToPlayer = 0;
 			if (!isPlayerTurn) {
@@ -132,6 +138,7 @@ define([
 						let scenarios = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_ENEMY, enemy, playerStamina, itemsComponent, followersComponent, this.totalFightTime);
 						let scenario = this.pickTurnScenario(scenarios);
 						damageToPlayer = scenario.damage;
+						enemyMissed = scenario.type == "MISS";
 						this.log(scenario.logMessage);
 						this.fightNodes.head.fight.nextTurnEnemy = FightConstants.getEnemyAttackTime(enemy);
 					}
@@ -167,10 +174,19 @@ define([
 			playerStamina.hp -= damageToPlayerRemaining;
 			playerStamina.hp = Math.max(playerStamina.hp, 0);
 			
-			if (damageToPlayer !== 0 || damageToEnemy !== 0 || extraDamageToEnemy !== 0) {
+			// dispatch update
+			let playerStatus = null;
+			let enemyStatus = itemEffects.enemyStunnedSeconds > 0 ? FightConstants.STATUS_STUNNED : null;
+			let playerStatusChanged = playerStatus != this.previousPlayerStatus;
+			let enemyStatusChanged = enemyStatus != this.previousEnemyStatus;
+			
+			if (damageToPlayer !== 0 || damageToEnemy !== 0 || extraDamageToEnemy !== 0 || playerStatusChanged || enemyStatusChanged || playerMissed || enemyMissed) {
 				this.log("fight status: playerHP: " + playerStamina.hp + "+" + playerStamina.shield + ", enemyHP: " + enemy.hp + "+" + enemy.shield);
-				GlobalSignals.fightUpdateSignal.dispatch(damageToPlayer, damageToEnemy);
+				GlobalSignals.fightUpdateSignal.dispatch(damageToPlayer, damageToEnemy, playerMissed, enemyMissed, playerStatus, enemyStatus);
 			}
+			
+			this.previousPlayerStatus = playerStatus;
+			this.previousEnemyStatus = enemyStatus;
 		},
 		
 		pickTurnScenario: function (scenarios) {
@@ -192,7 +208,7 @@ define([
 			var playerStamina = this.playerStatsNodes.head.stamina;
 			var won = FightConstants.isWin(playerStamina.hp, enemy.hp);
 			
-			GlobalSignals.fightUpdateSignal.dispatch(0, 0);
+			GlobalSignals.fightUpdateSignal.dispatch(0, 0, null, null);
 			
 			this.fightNodes.head.fight.finishedPending = true;
 			setTimeout(function () {

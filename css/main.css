@@ -2091,14 +2091,38 @@ body.dark .event-ending {
 body.dark #fight-popup {
   min-width: 35%;
 }
-body.dark .fight-damage-indicator {
+body.dark .fight-damage-indicator,
+body.dark .fight-status-indicator {
   margin: 0;
   font-size: 85%;
   font-weight: bold;
-  color: #E13232;
   position: absolute;
   top: 0;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+body.dark .fight-damage-indicator {
+  color: #E13232;
   right: -3em;
+}
+body.dark .fight-status-indicator {
+  color: #bbb;
+  right: -5em;
+}
+body.dark .fight-status-stunned {
+  color: #999;
+}
+body.dark #fight-popup-enemy-stats {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+body.dark #fight-popup-enemy-difficulty {
   -webkit-transition: none;
   -moz-transition: none;
   -ms-transition: none;
@@ -4166,14 +4190,38 @@ body.sunlit .event-ending {
 body.sunlit #fight-popup {
   min-width: 35%;
 }
-body.sunlit .fight-damage-indicator {
+body.sunlit .fight-damage-indicator,
+body.sunlit .fight-status-indicator {
   margin: 0;
   font-size: 85%;
   font-weight: bold;
-  color: #ee1111;
   position: absolute;
   top: 0;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+body.sunlit .fight-damage-indicator {
+  color: #ee1111;
   right: -3em;
+}
+body.sunlit .fight-status-indicator {
+  color: #777;
+  right: -5em;
+}
+body.sunlit .fight-status-stunned {
+  color: #666;
+}
+body.sunlit #fight-popup-enemy-stats {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+body.sunlit #fight-popup-enemy-difficulty {
   -webkit-transition: none;
   -moz-transition: none;
   -ms-transition: none;

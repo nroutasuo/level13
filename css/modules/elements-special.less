@@ -521,14 +521,34 @@ div.grid-content {
 	min-width: 35%;
 }
 
-.fight-damage-indicator {
+.fight-damage-indicator, .fight-status-indicator {
 	margin: 0;
 	font-size: @font-size-small;
 	font-weight: bold;
-	color: @color-border-warning;
 	position: absolute;
 	top: 0;
+	.opacity-transition-reset();
+}
+
+.fight-damage-indicator {
+	color: @color-border-warning;
 	right: -3em;
+}
+
+.fight-status-indicator {
+	color: @color-text-secondary;
+	right: -5em;
+}
+
+.fight-status-stunned {
+	color: @color-text-disabled;
+}
+
+#fight-popup-enemy-stats {
+	.opacity-transition-reset();
+}
+
+#fight-popup-enemy-difficulty {
 	.opacity-transition-reset();
 }
 

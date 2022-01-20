@@ -163,9 +163,28 @@ define([
 			this.animateDamageIndicator($("#fight-damage-indictor-enemy"));
 		},
 		
+		updatePlayerDodge: function () {
+			$("#fight-status-indictor-self").text("dodge");
+			this.animateDamageIndicator($("#fight-status-indictor-self"));
+		},
+		
+		updateEnemyDodge: function () {
+			$("#fight-status-indictor-enemy").text("dodge");
+			this.animateDamageIndicator($("#fight-status-indictor-enemy"));
+		},
+		
+		updatePlayerStatus: function (status) {
+			$("#fight-popup-self-name").toggleClass("fight-status-stunned", status == FightConstants.STATUS_STUNNED);
+		},
+		
+		updateEnemyStatus: function (status) {
+			$("#fight-popup-enemy-name").toggleClass("fight-status-stunned", status == FightConstants.STATUS_STUNNED);
+		},
+		
 		refresh: function () {
 			this.lastDamageToPlayer = 0;
 			this.lastDamageToEnemy = 0;
+			$("#fight-popup-enemy-stats").css("opacity", 0);
 		},
 		
 		refreshState: function () {
@@ -199,6 +218,8 @@ define([
 			GameGlobals.uiFunctions.toggle("#fight-popup-enemy-difficulty", this.state == FightPopupStateEnum.FIGHT_PENDING);
 			GameGlobals.uiFunctions.toggle("#fight-damage-indictor-self", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
 			GameGlobals.uiFunctions.toggle("#fight-damage-indictor-enemy", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
+			GameGlobals.uiFunctions.toggle("#fight-status-indictor-self", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
+			GameGlobals.uiFunctions.toggle("#fight-status-indictor-enemy", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
 			GameGlobals.uiFunctions.toggle("#fight-popup-items", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
 			
 			// texts
@@ -228,9 +249,11 @@ define([
 		refreshFightPending: function () {
 			var sector = this.playerLocationNodes.head.entity;
 			var encounterComponent = sector.get(FightEncounterComponent);
+			
 			$("#fight-results-win-res").empty();
 			$("#fight-results-win-items").empty();
 			$("#fight-desc").text(this.getDescriptionByContext(encounterComponent.context, encounterComponent.enemy));
+			
 			this.refreshWinProbabilityText();
 		},
 		
@@ -252,6 +275,9 @@ define([
 			
 			$("#fight-damage-indictor-self").text("");
 			$("#fight-damage-indictor-enemy").text("");
+			
+			$("#fight-status-indictor-self").text("");
+			$("#fight-status-indictor-enemy").text("");
 			
 			// items
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
@@ -334,6 +360,14 @@ define([
 			
 			var currentEnemy = this.getCurrentEnemy();
 			if (currentEnemy == null) return;
+			
+			$("#fight-popup-enemy-stats").animate({
+				opacity: 1.0
+			}, 250);
+			
+			$("#fight-popup-enemy-difficulty").animate({
+				opacity: 1.0
+			}, 500);
 			
 			var playerStamina = this.playerStatsNodes.head.stamina;
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
@@ -481,7 +515,7 @@ define([
 			}
 		},
 		
-		onFightUpdate: function (damageToPlayer, damageToEnemy) {
+		onFightUpdate: function (damageToPlayer, damageToEnemy, playerMissed, enemyMissed, playerStatus, enemyStatus) {
 			if (this.state !== FightPopupStateEnum.FIGHT_ACTIVE) return;
 			if (damageToPlayer) {
 				this.updateDamageToPlayer(damageToPlayer);
@@ -489,6 +523,14 @@ define([
 			if (damageToEnemy) {
 				this.updateDamageToEnemy(damageToEnemy);
 			}
+			if (playerMissed) {
+				this.updateEnemyDodge();
+			}
+			if (enemyMissed) {
+				this.updatePlayerDodge();
+			}
+			this.updatePlayerStatus(playerStatus);
+			this.updateEnemyStatus(enemyStatus);
 			this.updateFightActive();
 		},
 

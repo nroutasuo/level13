@@ -21,6 +21,8 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 		
 		STRENGTH_ATT_FACTOR: 1,
 		
+		STATUS_STUNNED: "STUNNED",
+		
 		getDamagePerHit: function (att, def) {
 			// att scaled by att / def ratio:
 			// - if def = 0 -> dmg = att
@@ -296,6 +298,9 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 							mostProbableBranch = endedBranches[i];
 						}
 					}
+					
+					result = Math.max(0, result);
+					result = Math.min(result, 1);
 					
 					resolve(result);
 				};
