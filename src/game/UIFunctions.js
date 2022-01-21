@@ -639,6 +639,16 @@ define(['ash',
 				$("#unit-main").css("display", visible ? "block" : "none");
 			},
 
+			scrollToTabTop: function () {
+				let element = $(document.getElementById("grid-location-header"));
+				let elementTop = element.offset().top;
+			    let offset = elementTop - $(window).scrollTop();
+
+			    if (offset < 0) {
+			        $('html,body').animate({scrollTop: elementTop}, 250);
+			    }
+			},
+
 			restart: function () {
 				$("#log ul").empty();
 				this.onTabClicked(this.elementIDs.tabs.out, GameGlobals.gameState, this);
