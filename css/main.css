@@ -1939,6 +1939,13 @@ body.dark #out-container-compass-actions table {
 body.dark #table-out-actions-movement {
   margin-top: 10px;
 }
+body.dark #mainmap-container-container {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
+}
 body.dark #trade-caravans-outgoing-container tr {
   border-width: 3px;
   border-bottom-width: 0px;
@@ -4037,6 +4044,13 @@ body.sunlit #out-container-compass-actions table {
 }
 body.sunlit #table-out-actions-movement {
   margin-top: 10px;
+}
+body.sunlit #mainmap-container-container {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
 }
 body.sunlit #trade-caravans-outgoing-container tr {
   border-width: 3px;
