@@ -113,7 +113,6 @@ function (Ash, CanvasUtils, MapUtils,
 		
 		setSelectedSector: function (map, sector) {
 			var sectorPos = sector == null ? null : sector.get(PositionComponent).getPosition();
-			var matchingID =
 			$.each($(".map-overlay-cell"), function () {
 				var level = $(this).attr("data-level");
 				var x = $(this).attr("data-x");

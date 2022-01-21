@@ -123,13 +123,12 @@ define([
 			$("#mainmap-container-container").css("opacity", 0);
 			
 			setTimeout(function () {
-				this.map = GameGlobals.uiMapHelper.rebuildMap("mainmap", "mainmap-overlay", mapPosition, -1, false, function (level, x, y) {
+				sys.map = GameGlobals.uiMapHelper.rebuildMap("mainmap", "mainmap-overlay", mapPosition, -1, false, function (level, x, y) {
 					sys.onSectorSelected(level, x, y);
 				});
 				$("#mainmap-container-container").css("opacity", 1);
+				GameGlobals.uiMapHelper.setSelectedSector(sys.map, sys.selectedSector);
 			}, 10);
-			
-			GameGlobals.uiMapHelper.setSelectedSector(this.map, this.selectedSector);
 		},
 
 		updateSector: function () {
