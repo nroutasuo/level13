@@ -209,7 +209,7 @@
                 "linearCost": 10
             },
             "resource_metal": {
-                "expCost": 50,
+                "expCost": 45,
                 "linearCost": 100
             }
         },
@@ -220,14 +220,14 @@
                 "linearCost": 25
             },
             "resource_metal": {
-                "expCost": 50,
+                "expCost": 45,
                 "linearCost": 100
             }
         },
         "build_out_passage_down_stairs": {
             "cost_factor_expBase": 2,
             "resource_metal": {
-                "expCost": 50,
+                "expCost": 45,
                 "linearCost": 100
             },
             "resource_rope": 10
