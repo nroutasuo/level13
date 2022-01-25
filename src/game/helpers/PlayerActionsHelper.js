@@ -1435,7 +1435,7 @@ define([
 				var buildingKey = baseAction.replace("build_in_", "");
 				var baseDesc = "";
 				if (ImprovementConstants.improvements[buildingKey]) {
-					baseDesc = ImprovementConstants.improvements[buildingKey].description;
+					baseDesc = ImprovementConstants.improvements[buildingKey].description || "";
 				}
 				var reputationDesc = "";
 				var reputation = getImprovementReputationBonus(improvementName);

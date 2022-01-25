@@ -113,10 +113,6 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			lights: {
 				description: "Keep the darkness at bay for good.",
 			},
-			generator: {
-				description: "Increases reputation bonus from housing (" + CampConstants.REPUTATION_PER_HOUSE_FROM_GENERATOR + "% per house).",
-				improvementLevelsPerTechLevel: 10,
-			},
 			square: {
 				description: "A place to relax and socialize.",
 				improvementLevelsPerTechLevel: 1,
@@ -126,6 +122,8 @@ define(['game/constants/CampConstants'], function (CampConstants) {
  				improvementLevelsPerTechLevel: 1,
 			},
 			generator: {
+				description: "Increases reputation bonus from housing (" + CampConstants.REPUTATION_PER_HOUSE_FROM_GENERATOR + "% per house).",
+				improvementLevelsPerTechLevel: 10,
 				logMsgImproved: "Fixed up the generator",
 			},
 			collector_water: {
