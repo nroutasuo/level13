@@ -91,9 +91,15 @@ define([
 			var groundLevel = GameGlobals.gameState.getGroundLevel();
 			var countVisible = 0;
 			for (let i = surfaceLevel; i >= groundLevel; i--) {
-				var isVisible = GameGlobals.uiMapHelper.isMapRevealed || GameGlobals.levelHelper.getLevelEntityForPosition(i).has(VisitedComponent);
-				GameGlobals.uiFunctions.toggle($("#map-level-selector-level-" + i), isVisible);
-				if (isVisible) countVisible++;
+				let isVisible = GameGlobals.uiMapHelper.isMapRevealed || GameGlobals.levelHelper.getLevelEntityForPosition(i).has(VisitedComponent);
+				let $elem = $("#map-level-selector-level-" + i);
+				let levelStats = GameGlobals.levelHelper.getLevelStats(i);
+				let isCleared = levelStats.percentClearedSectors >= 1;
+				GameGlobals.uiFunctions.toggle($elem, isVisible);
+				if (isVisible) {
+					$elem.text("Level " + i + " " + (isCleared ? "(✓)" : "(-)"));
+					countVisible++;
+				}
 			}
 			GameGlobals.uiFunctions.toggle($("#select-header-level"), countVisible > 1);
 		},
