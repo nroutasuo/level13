@@ -4,6 +4,7 @@ define([
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
 	'game/constants/ItemConstants',
+	'game/constants/LevelConstants',
 	'game/constants/PositionConstants',
 	'game/constants/TextConstants',
 	'game/constants/TradeConstants',
@@ -21,10 +22,11 @@ define([
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/improvements/WorkshopComponent',
+	'game/components/type/LevelComponent',
 	'game/systems/CheatSystem'
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, ItemConstants, PositionConstants, TextConstants, TradeConstants, UIConstants,
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, ItemConstants, LevelConstants, PositionConstants, TextConstants, TradeConstants, UIConstants,
 	PlayerLocationNode, PlayerPositionNode,
-	CampComponent, PositionComponent, VisitedComponent, EnemiesComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, SectorImprovementsComponent, WorkshopComponent,
+	CampComponent, PositionComponent, VisitedComponent, EnemiesComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, SectorImprovementsComponent, WorkshopComponent, LevelComponent,
 	CheatSystem) {
 
 	var UIOutMapSystem = Ash.System.extend({
@@ -181,18 +183,46 @@ define([
 		},
 
 		updateMapCompletionHint: function () {
-			var mapStatus = GameGlobals.levelHelper.getLevelStats(this.selectedLevel);
-			var mapStatusText = "There are still many unvisited streets on this level.";
+			let level = this.selectedLevel;
+			
+			let levelTypeText = "";
+			let levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
+			let surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
+			let groundLevel = GameGlobals.gameState.getGroundLevel();
+			if (level == surfaceLevel) {
+				levelTypeText = "This level is on the surface of the City. "
+			} else if (level == groundLevel) {
+				levelTypeText = "This level is on the Ground. ";
+			} else if (!levelComponent.isCampable) {
+				switch (levelComponent.notCampableReason) {
+					case LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION:
+					case LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION:
+						levelTypeText = "This level is polluted. ";
+						break;
+					default:
+						levelTypeText = "This level is uninhabited. ";
+						break;
+				}
+			} else {
+				base = "ui-level-default";
+				desc = "outside | regular level";
+			}
+			
+			let levelPronoun = levelTypeText.length > 0 ? "It" : "This level";
+			let levelLocation = levelTypeText.length > 0 ? "" : " on this level";
+			
+			let mapStatus = GameGlobals.levelHelper.getLevelStats(level);
+			var mapStatusText = "There are still many unvisited streets" + levelLocation + ".";
 			if (mapStatus.percentClearedSectors >= 1)
-				mapStatusText = "This level has been thoroughly explored.";
+				mapStatusText = levelPronoun + " has been thoroughly explored.";
 			else if (mapStatus.percentScoutedSectors >= 1)
-				mapStatusText = "This level has been mapped, but there are unexplored locations left.";
+				mapStatusText =  levelPronoun + " has been mapped, but there are unexplored locations left.";
 			else if (mapStatus.percentRevealedSectors >= 1)
-				mapStatusText = "There are still unscouted streets on this level.";
+				mapStatusText = "There are still unscouted streets" + levelLocation + ".";
 			else if (mapStatus.percentRevealedSectors >= 0.5)
-				mapStatusText = "There are still some unvisited streets on this level.";
+				mapStatusText = "There are still some unvisited streets" + levelLocation + ".";
 
-			$("#map-completion-hint").text(mapStatusText);
+			$("#map-completion-hint").text(levelTypeText + "" + mapStatusText);
 		},
 		
 		getPOIText: function (sector, isScouted) {
