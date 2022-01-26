@@ -1234,7 +1234,7 @@
     "clothing_over_l14": {
         "bonuses": {
             "def": 15,
-            "movement": 1.1,
+            "movement": 0.9,
             "res_poison": 15,
             "res_rad": 15,
             "shield": 20,
