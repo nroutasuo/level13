@@ -93,8 +93,20 @@ define([
 		},
 		
 		hasHazards: function (sectorFeatures, sectorStatus) {
-			var hazards = this.getEffectiveHazards(sectorFeatures, sectorStatus);
+			let hazards = this.getEffectiveHazards(sectorFeatures, sectorStatus);
 			return hazards.hasHazards();
+		},
+		
+		hasSeriousHazards: function (level, sectorFeatures, sectorStatus) {
+			let hazards = this.getEffectiveHazards(sectorFeatures, sectorStatus);
+			let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+			let campOrdianl2 = campOrdinal - 1;
+			
+			if (hazards.radiation > 0 && hazards.radiation > GameGlobals.itemsHelper.getMaxHazardRadiationForLevel(campOrdianl2, 0, false)) return true;
+			if (hazards.poison > 0 && hazards.poison > GameGlobals.itemsHelper.getMaxHazardPoisonForLevel(campOrdianl2, 0, false)) return true;
+			if (hazards.cold > 0 && hazards.cold > GameGlobals.itemsHelper.getMaxHazardColdForLevel(campOrdianl2, 0, false)) return true;
+			
+			return false;
 		},
 			
 		isAffectedByHazard: function (featuresComponent, statusComponent, itemsComponent) {

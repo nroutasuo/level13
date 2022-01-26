@@ -293,25 +293,33 @@ function (Ash, CanvasUtils, MapUtils,
 			var isLocationSunlit = $("body").hasClass("sunlit");
 			var isBigSectorSize = sectorSize >= this.getSectorSize(true);
 
-			var statusComponent = sector.get(SectorStatusComponent);
-			var sectorFeatures = sector.get(SectorFeaturesComponent);
-			var isScouted = statusComponent.scouted;
-			var isRevealed = isScouted || this.isMapRevealed;
+			let statusComponent = sector.get(SectorStatusComponent);
+			let sectorFeatures = sector.get(SectorFeaturesComponent);
+			let isScouted = statusComponent.scouted;
+			let isRevealed = isScouted || this.isMapRevealed;
+			let level = sector.get(PositionComponent).level;
+			
+			var drawSectorBorder = function (color, width) {
+				ctx.strokeStyle = color;
+				ctx.lineWidth = width;
+				ctx.beginPath();
+				ctx.moveTo(sectorXpx - 1, sectorYpx - 1);
+				ctx.lineTo(sectorXpx + sectorSize + 1, sectorYpx - 1);
+				ctx.lineTo(sectorXpx + sectorSize + 1, sectorYpx + sectorSize + 1);
+				ctx.lineTo(sectorXpx - 1, sectorYpx + sectorSize + 1);
+				ctx.lineTo(sectorXpx - 1, sectorYpx - 1);
+				ctx.stroke();
+			};
 
-			// border for sectors with hazards or sunlight
+			// border(s) for sectors with hazards or sunlight
 			if (SectorConstants.isLBasicInfoVisible(sectorStatus) || this.isMapRevealed || this.isSurveyed(sector)) {
-				var isSectorSunlit = sectorFeatures.sunlit;
-				var hasSectorHazard = GameGlobals.sectorHelper.hasHazards(sectorFeatures, statusComponent);
+				let isSectorSunlit = sectorFeatures.sunlit;
+				let hasSectorHazard = GameGlobals.sectorHelper.hasHazards(sectorFeatures, statusComponent);
+				
 				if (isSectorSunlit || hasSectorHazard) {
-					ctx.strokeStyle = this.getSectorStroke(sectorFeatures, statusComponent);
-					ctx.lineWidth = Math.max(1, Math.round(sectorSize / 8));
-					ctx.beginPath();
-					ctx.moveTo(sectorXpx - 1, sectorYpx - 1);
-					ctx.lineTo(sectorXpx + sectorSize + 1, sectorYpx - 1);
-					ctx.lineTo(sectorXpx + sectorSize + 1, sectorYpx + sectorSize + 1);
-					ctx.lineTo(sectorXpx - 1, sectorYpx + sectorSize + 1);
-					ctx.lineTo(sectorXpx - 1, sectorYpx - 1);
-					ctx.stroke();
+					let borderColor = this.getSectorStroke(level, sectorFeatures, statusComponent);
+					let borderWidth = Math.max(1, Math.round(sectorSize / 9));
+					drawSectorBorder(borderColor, borderWidth);
 				}
 			}
 			
@@ -327,8 +335,6 @@ function (Ash, CanvasUtils, MapUtils,
 			var iconPosY = isBigSectorSize ? sectorYpx : iconPosYCentered;
 			var useSunlitImage = isLocationSunlit;
 			
-			var sectorFeatures = sector.get(SectorFeaturesComponent);
-			var statusComponent = sector.get(SectorStatusComponent);
 			var sectorPassages = sector.get(PassagesComponent);
 			var localesComponent = sector.get(SectorLocalesComponent);
 			var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
@@ -607,21 +613,25 @@ function (Ash, CanvasUtils, MapUtils,
 			}
 		},
 		
-		getSectorStroke: function (sectorFeatures, sectorStatus) {
-			var isSectorSunlit = sectorFeatures.sunlit;
-			var hasSectorHazard = GameGlobals.sectorHelper.hasHazards(sectorFeatures, sectorStatus);
-			var hazards = GameGlobals.sectorHelper.getEffectiveHazards(sectorFeatures, sectorStatus);
-			var mainHazard = hazards.getMainHazard();
+		getSectorStroke: function (level, sectorFeatures, sectorStatus) {
+			let isSectorSunlit = sectorFeatures.sunlit;
+			let hasSectorHazard = GameGlobals.sectorHelper.hasHazards(sectorFeatures, sectorStatus);
+
+			let hazards = GameGlobals.sectorHelper.getEffectiveHazards(sectorFeatures, sectorStatus);
+			let mainHazard = hazards.getMainHazard();
 			
-			if (hasSectorHazard) {
-				if (mainHazard == "cold")
-					return ColorConstants.getColor(isSectorSunlit, "map_stroke_sector_cold");
-				else
-					return ColorConstants.getColor(isSectorSunlit, "map_stroke_sector_hazard");
-			}
-			else if (isSectorSunlit) {
+			let isSeriousHazard = GameGlobals.sectorHelper.hasSeriousHazards(level, sectorFeatures, sectorStatus);
+			
+			if (isSectorSunlit && (!hasSectorHazard || !isSeriousHazard)) {
 				return ColorConstants.getColor(isSectorSunlit, "map_stroke_sector_sunlit");
+			} else if (hasSectorHazard) {
+				if (mainHazard == "cold") {
+					return ColorConstants.getColor(isSectorSunlit, "map_stroke_sector_cold");
+				} else {
+					return ColorConstants.getColor(isSectorSunlit, "map_stroke_sector_hazard");
+				}
 			}
+			
 			return ColorConstants.getColor(isSectorSunlit, "map_stroke_sector");
 		},
 
