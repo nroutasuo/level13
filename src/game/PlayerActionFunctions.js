@@ -663,6 +663,7 @@ define(['ash',
 				if (!this.playerStatsNodes.head.entity.has(DeityComponent)) {
 					this.playerStatsNodes.head.entity.add(new DeityComponent())
 				}
+				this.playerStatsNodes.head.stamina.stamina += PlayerStatConstants.STAMINA_GAINED_FROM_GROVE;
 				logMsgSuccess += "The trees seem alive. They whisper, but the words are unintelligible. You have found a source of <span class='hl-functionality'>ancient power</span>.";
 			}
 
