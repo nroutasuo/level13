@@ -143,17 +143,24 @@
 		},
 
 		updateBubble: function () {
-			var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
+			let campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
 			if (!campComponent) return;
-			var buildingNum = this.availableBuildingCount - this.lastShownAvailableBuildingCount + this.visibleBuildingCount - this.lastShownVisibleBuildingCount;
-			var eventNum = this.currentEvents - this.lastShownEvents;
+			let campCount = GameGlobals.gameState.numCamps;
+			
+			let buildingNum = this.visibleBuildingCount - this.lastShownVisibleBuildingCount;
+			if (campCount == 1) {
+				buildingNum = this.availableBuildingCount - this.lastShownAvailableBuildingCount;
+			}
+			
+			let eventNum = this.currentEvents - this.lastShownEvents;
 
 			let currentPopulation = Math.floor(campComponent.population);
-			var freePopulation = campComponent.getFreePopulation();
+			let freePopulation = campComponent.getFreePopulation();
 
-			var newBubbleNumber = buildingNum + eventNum + freePopulation;
+			let newBubbleNumber = buildingNum + eventNum + freePopulation;
 			if (this.bubbleNumber === newBubbleNumber)
 				return;
+				
 			this.bubbleNumber = newBubbleNumber;
 			$("#switch-in .bubble").text(this.bubbleNumber);
 			GameGlobals.uiFunctions.toggle("#switch-in .bubble", this.bubbleNumber > 0);
