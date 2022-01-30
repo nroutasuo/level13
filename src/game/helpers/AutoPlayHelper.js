@@ -336,6 +336,12 @@ define(['ash',
 			
 			return true;
 		},
+		
+		canScout: function () {
+			if (!GameGlobals.playerActionsHelper.checkAvailability("scout"))
+				return false;
+			return true;
+		},
 
 		getNextImprovementAction: function () {
 			var campStorage = GameGlobals.resourcesHelper.getCurrentCampStorage(GameGlobals.playerActionFunctions.nearestCampNodes.head.entity).resources;
