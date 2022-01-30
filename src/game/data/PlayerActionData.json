@@ -2558,6 +2558,9 @@
         },
         "improve_worker_cleric_2": {
             "deity": true,
+			"unlockedWorkers": {
+				"cleric": true
+			},
             "upgrades": {}
         },
         "improve_worker_cleric_3": {

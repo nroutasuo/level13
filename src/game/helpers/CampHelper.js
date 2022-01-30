@@ -395,6 +395,15 @@ define([
 			return GameGlobals.campBalancingHelper.getMaxWorkers(workerID, improvements, upgrades, workshops);
 		},
 		
+		hasUnlockedWorker: function (workerID) {
+			for (let campNode = this.campNodes.head; campNode; campNode = campNode.next) {
+				if (this.getMaxWorkers(campNode.entity, workerID) > 0) {
+					return true;
+				}
+			}
+			return false;
+		},
+		
 		getCurrentMaxImprovementLevel: function (improvementName) {
             let techLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementName, this.tribeUpgradesNodes.head.upgrades);
 			return GameGlobals.campBalancingHelper.getMaxImprovementLevel(improvementName, techLevel);

@@ -465,6 +465,20 @@ define([
 							}
 						}
 					}
+					
+					if (requirements.unlockedWorkers) {
+						for (let workerID in requirements.unlockedWorkers) {
+							let requiredValue = requirements.unlockedWorkers[workerID];
+							let actualValue = GameGlobals.campHelper.hasUnlockedWorker(workerID);
+							if (requiredValue != actualValue) {
+								if (requiredValue) {
+									return { value: 0, reason: "Worker required: " + workerID };
+								} else {
+									return { value: 0, reason: "Worker already unlocked: " + workerID };
+								}
+							}
+						}
+					}
 
 					if (requirements.blueprint) {
 						var blueprintName = action;
@@ -1187,8 +1201,10 @@ define([
 					let type = UpgradeConstants.getUpgradeType(upgradeID);
 					requirements.blueprintpieces = upgradeID;
 					if (type == UpgradeConstants.UPGRADE_TYPE_FAVOUR) {
-						requirements.workers = {};
-						requirements.workers.cleric = [1, -1];
+						if (upgradeID != "unlock_building_greenhouse") {
+							requirements.workers = {};
+							requirements.workers.cleric = [1, -1];
+						}
 					}
 					return requirements;
 					
