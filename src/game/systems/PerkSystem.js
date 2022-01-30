@@ -79,7 +79,8 @@ define([
 		
 		updateLocationPerks: function () {
 			if (!this.locationNodes.head) return;
-			let isActive = GameGlobals.sectorHelper.isBeaconActive(this.playerNodes.head.entity.get(PositionComponent));
+			let playerPos = this.playerNodes.head.entity.get(PositionComponent);
+			let isActive = GameGlobals.sectorHelper.isBeaconActive(playerPos);
 			if (isActive) {
 				this.addOrUpdatePerk(PerkConstants.perkIds.lightBeacon);
 			} else {
@@ -132,8 +133,10 @@ define([
 		},
 		
 		addPerkAddedLogMessage: function (perkID) {
-			var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
-			var msg = "";
+			let logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
+			let playerPos = this.playerNodes.head.entity.get(PositionComponent);
+			
+			let msg = "";
 			switch (perkID) {
 				case PerkConstants.perkIds.hazardCold:
 					msg = "It's unbearably cold.";
@@ -148,13 +151,16 @@ define([
 					break;
 					
 				case PerkConstants.perkIds.lightBeacon:
-					msg = "Nearby beacon lights the way";
+					msg = playerPos.inCamp ? "" : "Nearby beacon lights the way";
 					break;
 					
 				default:
 					log.w("unknown perk " + perkID);
 					return;
 			}
+			
+			if (!msg) return;
+			
 			logComponent.addMessage(LogConstants.MSG_ID_ADD_HAZARD_PERK, msg);
 		},
 		
@@ -163,8 +169,10 @@ define([
 		},
 		
 		addPerkDeactivatedMessage: function (perkID) {
-			var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
-			var msg = "";
+			let logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
+			let playerPos = this.playerNodes.head.entity.get(PositionComponent);
+			
+			let msg = "";
 			switch (perkID) {
 				case PerkConstants.perkIds.hazardCold:
 					// TODO different message depending on if perk was deactivated due to moving or by changing equipment
@@ -172,13 +180,16 @@ define([
 					break;
 					
 				case PerkConstants.perkIds.lightBeacon:
-					msg = "Outside the beacon's range.";
+					msg = playerPos.inCamp ? "" : "Outside the beacon's range.";
 					break;
 					
 				default:
 					msg = "Safer here.";
 					break;
 			}
+			
+			if (!msg) return;
+			
 			logComponent.addMessage(LogConstants.MSG_ID_TIME_HAZARD_PERK, msg);
 		},
 		
@@ -209,6 +220,9 @@ define([
 					log.w("unknown perk " + perkID);
 					return;
 			}
+			
+			if (!msg) return;
+			
 			logComponent.addMessage(LogConstants.MSG_ID_REMOVE_HAZARD_PERK, msg);
 		},
 		

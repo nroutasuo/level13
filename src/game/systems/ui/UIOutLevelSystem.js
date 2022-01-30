@@ -485,12 +485,12 @@ define([
 							description += "Debris to the " + directionName + " has been cleared away. ";
 						} else if (blocker.type == MovementConstants.BLOCKER_TYPE_GANG) {
 							if (gang) {
-								description += "A " + blockerName + " on the " + directionName + " has been " + TextConstants.getUnblockedVerb(blocker.type) + ". ";
+								description += "A " + blockerName + " to the " + directionName + " has been " + TextConstants.getUnblockedVerb(blocker.type) + ". ";
 							} else {
 								log.w("gang blocker but no gang component at " + position, this);
 							}
 						} else {
-							description += "A " + blockerName + " on the " + directionName + " has been " + TextConstants.getUnblockedVerb(blocker.type) + ". ";
+							description += "A " + blockerName + " to the " + directionName + " has been " + TextConstants.getUnblockedVerb(blocker.type) + ". ";
 						}
 					}
 				}
@@ -530,14 +530,14 @@ define([
 							else if (inhabited && featuresComponent.buildingDensity > 5)
 								notCampableDesc = "Walls are covered in graffiti warning about <span class='hl-functionality'>radiation</span>. ";
 							else
-								notCampableDesc = "There is an eerie air as if the place has been <span class='hl-functionality'>abandoned</span> in a hurry.";
+								notCampableDesc = "There is an eerie air as if the place has been <span class='hl-functionality'>abandoned</span> in a hurry. ";
 							break;
 
 						case LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION:
 							if (inhabited && featuresComponent.wear < 6)
 								notCampableDesc = "Many entrances have big red warning signs on them with a <span class='hl-functionality'>skull sign</span> and the text 'KEEP OUT'. ";
 							else if (inhabited && featuresComponent.buildingDensity > 5)
-								notCampableDesc = "Walls are covered in graffiti warning about some kind of <span class='hl-functionality'>pollution</span>.";
+								notCampableDesc = "Walls are covered in graffiti warning about some kind of <span class='hl-functionality'>pollution</span>. ";
 							else
 								notCampableDesc = "A <span class='hl-functionality'>noxious smell</span> hangs in the air.";
 							break;

@@ -63,7 +63,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			var type = hasVision ? "sector-vision" : "sector-novision";
 			var template = DescriptionMapper.get(type, features);
 			if (features.hasGrove) {
-				template = " [A] [a-street] park overrun by plantlife. In the middle there is a grove of mature trees. Though strange and wild, it also seems somehow peaceful";
+				template = " [A] [a-street] park overrun by plant-life. In the middle there is a grove of mature trees. Though strange and wild, it also seems somehow peaceful";
 			}
 			var params = this.getSectorTextParams(features);
 			var phrase = TextBuilder.build(template, params);
@@ -845,7 +845,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		getMovementBlockerName: function (blockerVO, enemiesComponent, gangComponent) {
 			switch (blockerVO.type) {
 				case MovementConstants.BLOCKER_TYPE_GANG:
-					let enemies = this.getAllEnemies(enemiesComponent, gangComponent);
+					let enemies = this.getAllEnemies(null, gangComponent);
 					var groupNoun = this.getEnemyGroupNoun(enemies);
 					var enemyNoun = this.getEnemyNoun(enemies);
 					return groupNoun + " of " + Text.pluralify(enemyNoun);
@@ -897,14 +897,14 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			var minimumWords = [];
 			for (var i1 in objectList) {
 				var o = objectList[i1];
-				if (o) {
-					for (var j1 in o[objectAttribute]) {
+				if (!o) continue;
+				for (var j1 in o[objectAttribute]) {
 					var word = o[objectAttribute][j1];
 					var detail = objectDetailAttribute ? o[objectDetailAttribute] : "";
+					if (!word) continue;
 					if ($.inArray(word, allWords) < 0) allWords.push(word);
 					if (objectDetailAttribute && $.inArray(detail, allDetails) < 0) allDetails.push(detail);
 					if (j1 == 0 && $.inArray(word, minimumWords) < 0) minimumWords.push(word);
-					}
 				}
 			}
 			
@@ -938,7 +938,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			if (validDetail.length > 0) {
 				return pluralify ? Text.pluralify(validDetail) : validDetail;
 			} else if (validWords.length > 0) {
-				return validWords[0];
+				return pluralify ? Text.pluralify(validWords[0]) : validWords[0];
 			} else if (allowSeveral && minimumWords.length > 1) {
 				return pluralify ? (Text.pluralify(minimumWords[0]) + " and " + Text.pluralify(minimumWords[1])) : (minimumWords[0] + " and " + minimumWords[1]);
 			} else {
@@ -1010,7 +1010,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("sector-vision", { wear: b23, damage: b0 }, "A former [n-sector] with [A] [a-street-past] atmosphere lingering from its past");
 		DescriptionMapper.add("sector-vision", { wear: b23, damage: b0 }, "Once [a-street-past] [n-sector] with a few [an-decos] and [A] [a-building] [n-building]");
 		DescriptionMapper.add("sector-vision", { wear: b33 }, "[A] [a-building] building whose original purpose is hard to determine, stripped down to bare concrete");
-		DescriptionMapper.add("sector-vision", { buildingDensity: b22, wear: b33 }, "[A] [a-street] corridor with remains of [an-items] from long-gone inhabitants");
+		DescriptionMapper.add("sector-vision", { buildingDensity: b22, wear: b33 }, "[A] [a-street] corridor with scattered trash from long-gone inhabitants");
 		DescriptionMapper.add("sector-vision", { wear: b33 }, "[A] [a-street] [a-sectortype] [n-street] with a few large unidentifiable ruins looming over it");
 		DescriptionMapper.add("sector-vision", { wear: b33 }, "A completely ruined [a-sectortype] [n-street]");
 		DescriptionMapper.add("sector-vision", { wear: b33 }, "A rubble-covered [n-street] surrounded by the crumbling remains of [a-sectortype] buildings");
