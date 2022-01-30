@@ -64,6 +64,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 
 			this.uiBagStatus = {
 				itemsOwnedSeen: [],
+				itemsUsableSeen: [],
 				itemsCraftableUnlockedSeen: [],
 				itemsCraftableAvailableSeen: []
 			},

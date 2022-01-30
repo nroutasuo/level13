@@ -14,14 +14,8 @@ define([
 
 		itemNodes: null,
 
-		craftableItemDefinitions: {},
-		inventoryItemsAll: [],
+		craftableItemDefinitions: null,
 		inventoryItemsBag: [],
-
-		craftableItems: -1,
-		lastShownCraftableItems: -1,
-		numCraftableUnlockedUnseen: -1,
-		numCraftableAvailableUnseen: -1,
 
 		constructor: function () {
 			this.elements = {};
@@ -47,7 +41,12 @@ define([
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.refresh);
 			GlobalSignals.add(this, GlobalSignals.clearBubblesSignal, this.clearBubble);
 		},
-
+		
+		removeFromEngine: function (engine) {
+			this.itemNodes = null;
+			GlobalSignals.removeAll(this);
+		},
+				
 		initItemSlots: function () {
 			var sys = this;
 			$.each($("#container-equipment-slots .item-slot"), function () {
@@ -67,11 +66,11 @@ define([
 		},
 
 		initCraftingButtons: function () {
-			var itemDefinitions = this.getCraftableItemDefinitions();
+			var itemDefinitions = this.getCraftableItemDefinitionsByType();
 			var itemList;
 			var itemDefinition;
 			var div = "<div class='collapsible-container-group'>";
-			for (var type in itemDefinitions) {
+            for (let type in itemDefinitions) {
 				itemList = itemDefinitions[type];
 				if (itemList.length === 0) continue;
 				var tbl = "<table id='self-craft-" + type + "' class='fullwidth'>";
@@ -92,20 +91,21 @@ define([
 			$("#self-craft").append(div);
 		},
 
-		removeFromEngine: function (engine) {
-			this.itemNodes = null;
-			GlobalSignals.removeAll(this);
+		makeCraftingButton: function(itemDefinition) {
+			var actionName = "craft_" + itemDefinition.id;
+			return "<button class='action tabbutton multiline' action='" + actionName + "' data-tab='switch-bag'>" + itemDefinition.name + "</button>";
 		},
 
 		update: function (time) {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.bag;
-
+			
+			this.updateSeenItems(isActive);
 			this.updateBubble();
 
 			if (!isActive) {
-				this.updateItemCounts(isActive);
-				this.craftableItemDefinitions = {};
+				this.craftableItemDefinitions = null;
+				this.craftableItemDefinitionsList = null;
 				return;
 			}
 
@@ -121,21 +121,19 @@ define([
 			this.elements.tabHeader.text("Bag");
 
 			var showObsolete = this.showObsolete();
-			var itemDefinitions = this.getCraftableItemDefinitions();
-			var itemList;
-			var itemDefinition;
+			var itemDefinitions = this.getCraftableItemDefinitionsByType();
 
 			// close all but first
 			var firstFound = false;
-			for (var type in itemDefinitions) {
-				itemList = itemDefinitions[type];
+			for (let type in itemDefinitions) {
+				let itemList = itemDefinitions[type];
 				var containerID = this.getItemCraftContainerID(type);
 				var numVisible = 0;
 				for (let i in itemList) {
-					itemDefinition = itemList[i];
+					let itemDefinition = itemList[i];
 					var isUnlocked = this.isItemUnlocked(itemDefinition);
 					var isObsolete = this.isObsolete(itemDefinition);
-					var isVisible = isUnlocked && (!isObsolete || showObsolete);
+					var isVisible = this.isCraftableItemVisible(itemDefinition);
 					if (isVisible) numVisible++;
 				}
 				GameGlobals.uiFunctions.toggleCollapsibleContainer("#" + containerID + " .collapsible-header", !firstFound && numVisible > 0);
@@ -148,9 +146,13 @@ define([
 		},
 
 		updateBubble: function () {
-			var isStatIncreaseAvailable = this.isStatIncreaseAvailable();
-			var numImmediatelyUsable = this.getNumImmediatelyUsable();
-			var bubbleNumber = Math.max(0, this.numCraftableUnlockedUnseen + this.numCraftableAvailableUnseen + numImmediatelyUsable);
+			let isStatIncreaseAvailable = this.isStatIncreaseAvailable();
+			
+			let numCraftableUnlockedUnseen = this.getMatchingUnseenItemCount(this.getCraftableItemDefinitionsList(), this.isCraftableUnlocked, GameGlobals.gameState.uiBagStatus.itemsCraftableUnlockedSeen);
+			let numCraftableAvailableUnseen = this.getMatchingUnseenItemCount(this.getCraftableItemDefinitionsList(), this.isCraftableAvailable, GameGlobals.gameState.uiBagStatus.itemsCraftableAvailableSeen);
+			let numImmedatelyUsableUnseen = this.getMatchingUnseenItemCount(this.getCarriedItems(), this.isCurrentlyUseable, GameGlobals.gameState.uiBagStatus.itemsUsableSeen);
+			
+			var bubbleNumber = Math.max(0, numCraftableUnlockedUnseen + numCraftableAvailableUnseen + numImmedatelyUsableUnseen);
 			var state = bubbleNumber + (isStatIncreaseAvailable ? 1000 : 0);
 			UIState.refreshState(this, "bubble-num", state, function () {
 				if (isStatIncreaseAvailable) {
@@ -177,16 +179,15 @@ define([
 
 			this.craftableItems = 0;
 			this.numCraftableUnlockedUnseen = 0;
-			this.numCraftableAvailableUnseen = 0;
 
 			var itemsComponent = this.itemNodes.head.items;
-			var itemDefinitions = this.getCraftableItemDefinitions();
+			var itemDefinitions = this.getCraftableItemDefinitionsByType();
 			var countObsolete = 0;
 
 			var tr;
 			var itemList;
 			var itemDefinition;
-			for (var type in itemDefinitions) {
+			for (let type in itemDefinitions) {
 				itemList = itemDefinitions[type];
 				var containerID = this.getItemCraftContainerID(type);
 				var numVisible = 0;
@@ -208,32 +209,6 @@ define([
 
 					if (isUnlocked && isObsolete) countObsolete++;
 
-					if (isUnlocked) {
-						if (!isObsolete) {
-							if (GameGlobals.gameState.uiBagStatus.itemsCraftableUnlockedSeen.indexOf(itemDefinition.id) < 0) {
-								if (isActive || this.bubbleCleared) {
-									GameGlobals.gameState.uiBagStatus.itemsCraftableUnlockedSeen.push(itemDefinition.id);
-								} else {
-									this.numCraftableUnlockedUnseen++;
-								}
-							}
-						}
-
-						if (isVisible) {
-							this.craftableItems++;
-
-							if (isAvailable && !itemsComponent.contains(itemDefinition.name) && !isObsolete) {
-								if (GameGlobals.gameState.uiBagStatus.itemsCraftableAvailableSeen.indexOf(itemDefinition.id) < 0) {
-									if (isActive || this.bubbleCleared) {
-										GameGlobals.gameState.uiBagStatus.itemsCraftableAvailableSeen.push(itemDefinition.id);
-									} else {
-										this.numCraftableAvailableUnseen++;
-									}
-								}
-							}
-						}
-					}
-
 					if (isActive) {
 						GameGlobals.uiFunctions.toggle(tr, isVisible);
 						if (isVisible) numVisible++;
@@ -253,45 +228,23 @@ define([
 			}
 		},
 
-		makeCraftingButton: function(itemDefinition) {
-			var actionName = "craft_" + itemDefinition.id;
-			return "<button class='action tabbutton multiline' action='" + actionName + "' data-tab='switch-bag'>" + itemDefinition.name + "</button>";
-		},
-
 		updateUseItems: function () {
-			var itemDefinitionList = [];
+			var items = this.getOwnedItems();
 
-			var itemList;
-			var itemDefinition;
-			for (var type in ItemConstants.itemDefinitions) {
-				itemList = ItemConstants.itemDefinitions[type];
-				for (let i in itemList) {
-					itemDefinition = itemList[i];
-					if (itemDefinition.useable) {
-						var actionName = "use_item_" + itemDefinition.id;
-						var reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(actionName, false);
-						var isAvailable = GameGlobals.playerActionsHelper.checkAvailability(actionName, false);
-						var costsCheck = GameGlobals.playerActionsHelper.checkCosts(actionName);
-						var isVisibleDisabledReason = reqsCheck.reason == PlayerActionConstants.UNAVAILABLE_REASON_NOT_IN_CAMP || reqsCheck.reason.indexOf(PlayerActionConstants.UNAVAILABLE_REASON_BUSY) >= 0;
-						var showItem = isAvailable || (costsCheck >= 1 && isVisibleDisabledReason);
-						if (showItem) {
-							itemDefinitionList.push(itemDefinition);
-						}
-					}
-				}
-			}
-
-			GameGlobals.uiFunctions.toggle("#header-self-use-items", itemDefinitionList.length > 0);
+			GameGlobals.uiFunctions.toggle("#header-self-use-items", items.length > 0);
 			$("#self-use-items table").empty();
 
-			itemDefinitionList = itemDefinitionList.sort(UIConstants.sortItemsByType);
+			items = items.sort(UIConstants.sortItemsByType);
 
 			var tr;
-			for (let j = 0; j < itemDefinitionList.length; j++) {
-				var itemDefinition = itemDefinitionList[j];
-				var actionName = "use_item_" + itemDefinition.id;
-				var actionVerb = itemDefinition.id.startsWith("cache_metal") ? "Disassemble" : "Use";
-				tr = "<tr><td><button class='action multiline' action='" + actionName + "'>" + actionVerb + " " + ItemConstants.getItemDisplayName(itemDefinition, true) + "</button></td></tr>";
+			for (let j = 0; j < items.length; j++) {
+				var item = items[j];
+				
+				if (!this.isUsable(item)) continue;
+					
+				var actionName = "use_item_" + item.id;
+				var actionVerb = item.id.startsWith("cache_metal") ? "Disassemble" : "Use";
+				tr = "<tr><td><button class='action multiline' action='" + actionName + "'>" + actionVerb + " " + ItemConstants.getItemDisplayName(item, true) + "</button></td></tr>";
 				$("#self-use-items table").append(tr);
 			}
 
@@ -301,13 +254,61 @@ define([
 			GlobalSignals.elementCreatedSignal.dispatch();
 		},
 
-		updateItemCounts: function (isActive) {
-			var itemsComponent = this.itemNodes.head.items;
-			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
-			var items = itemsComponent.getUnique(inCamp);
-			for (let i = 0; i < items.length; i++) {
-				this.updateItemCount(isActive, items[i]);
+		updateSeenItems: function (isActive) {
+			if (!(isActive || this.bubbleCleared)) return;
+			
+			let carriedItems = this.getCarriedItems();
+			for (let i = 0; i < carriedItems.length; i++) {
+				this.updateSeenItem(isActive, carriedItems[i]);
 			}
+			
+			let craftableItems = this.getCraftableItemDefinitionsList();
+			for (let i = 0; i < craftableItems.length; i++) {
+				this.updateSeenItemDefinition(isActive, craftableItems[i]);
+			}
+		},
+
+		updateSeenItem: function (isActive, item) {
+			if (!(isActive || this.bubbleCleared)) return;
+			
+			if (item.id !== "equipment_map") {
+				if (!GameGlobals.gameState.uiBagStatus.itemsOwnedSeen) GameGlobals.gameState.uiBagStatus.itemsOwnedSeen = [];
+				if (GameGlobals.gameState.uiBagStatus.itemsOwnedSeen.indexOf(item.id) < 0) {
+					GameGlobals.gameState.uiBagStatus.itemsOwnedSeen.push(item.id);
+				}
+			}
+			
+			if (this.isCurrentlyUseable(item)) {
+				if (!GameGlobals.gameState.uiBagStatus.itemsUsableSeen) GameGlobals.gameState.uiBagStatus.itemsUsableSeen = [];
+				if (GameGlobals.gameState.uiBagStatus.itemsUsableSeen.indexOf(item.id) < 0) {
+					GameGlobals.gameState.uiBagStatus.itemsUsableSeen.push(item.id);
+				}
+			}
+		},
+		
+		updateSeenItemDefinition: function (isActive, itemDefinition) {
+			if (this.isCraftableUnlocked(itemDefinition)) {
+				if (GameGlobals.gameState.uiBagStatus.itemsCraftableUnlockedSeen.indexOf(itemDefinition.id) < 0) {
+					GameGlobals.gameState.uiBagStatus.itemsCraftableUnlockedSeen.push(itemDefinition.id);
+				}
+			}
+			
+			if (this.isCraftableAvailable(itemDefinition)) {
+				if (GameGlobals.gameState.uiBagStatus.itemsCraftableAvailableSeen.indexOf(itemDefinition.id) < 0) {
+					GameGlobals.gameState.uiBagStatus.itemsCraftableAvailableSeen.push(itemDefinition.id);
+				}
+			}
+		},
+		
+		pruneSeenItems: function () {
+			let newList = [];
+			for (let i = 0; i < GameGlobals.gameState.uiBagStatus.itemsUsableSeen.length; i++) {
+				let id = GameGlobals.gameState.uiBagStatus.itemsUsableSeen[i];
+				if (this.isOwned(id)) {
+					newList.push(id);
+				}
+			}
+			GameGlobals.gameState.uiBagStatus.itemsUsableSeen = newList;
 		},
 
 		updateItemComparisonIndicators: function () {
@@ -345,16 +346,15 @@ define([
 			this.updateItemSlot(ItemConstants.itemTypes.shoes, null);
 			this.updateItemSlot(ItemConstants.itemTypes.bag, null);
 
-			this.inventoryItemsAll = items.sort(UIConstants.sortItemsByType);
+			items.sort(UIConstants.sortItemsByType);
 			this.inventoryItemsBag = [];
 
 			$("#bag-items").empty();
-			for (let i = 0; i < this.inventoryItemsAll.length; i++) {
-				var item = this.inventoryItemsAll[i];
+			for (let i = 0; i < items.length; i++) {
+				var item = items[i];
 				// TODO less hacky fix for the fact that getUnique doesn't prefer equipped items (could return unequipped instance even when an equipped one exists)
 				var equipped = itemsComponent.getEquipped(item.type);
 				var isEquipped = equipped && equipped.length > 0 && equipped[0].id == item.id;
-				this.updateItemCount(isActive, item);
 				var count = itemsComponent.getCount(item, inCamp);
 				switch (item.type) {
 					case ItemConstants.itemTypes.light:
@@ -409,16 +409,6 @@ define([
 			GameGlobals.uiFunctions.generateButtonOverlays("#container-tab-two-bag .three-quarters");
 			GameGlobals.uiFunctions.registerActionButtonListeners("#bag-items");
 			GameGlobals.uiFunctions.registerActionButtonListeners("#container-equipment-slots");
-		},
-
-		updateItemCount: function (isActive, item) {
-			if (GameGlobals.gameState.uiBagStatus.itemsOwnedSeen.indexOf(item.id) < 0) {
-				if (item.id !== "equipment_map") {
-					if (isActive || this.bubbleCleared) {
-						GameGlobals.gameState.uiBagStatus.itemsOwnedSeen.push(item.id);
-					}
-				}
-			}
 		},
 
 		updateItemSlot: function (itemType, itemVO) {
@@ -490,6 +480,7 @@ define([
 			this.updateItems();
 			this.updateUseItems();
 			this.updateCrafting();
+			this.pruneSeenItems();
 		},
 
 		onEquipmentChanged: function () {
@@ -522,6 +513,55 @@ define([
 			return GameGlobals.itemsHelper.isObsolete(itemVO, itemsComponent, inCamp);
 		},
 		
+		isCurrentlyUseable: function (item) {
+			if (!item.useable) return false;
+			
+			let actionName = "use_item_" + item.id;
+			let isAvailable = GameGlobals.playerActionsHelper.checkAvailability(actionName, false);
+			
+			return  isAvailable;
+		},
+		
+		isUsable: function (item) {
+			if (!item.useable) return false;
+			if (this.isCurrentlyUseable(item)) return true;
+			
+			let actionName = "use_item_" + item.id;
+			let reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(actionName, false);
+			let costsCheck = GameGlobals.playerActionsHelper.checkCosts(actionName);
+			let isVisibleDisabledReason = reqsCheck.reason == PlayerActionConstants.UNAVAILABLE_REASON_NOT_IN_CAMP || reqsCheck.reason.indexOf(PlayerActionConstants.UNAVAILABLE_REASON_BUSY) >= 0;
+			
+			return costsCheck >= 1 && isVisibleDisabledReason;
+		},
+		
+		isCraftableItemVisible : function (itemDefinition) {
+			let isHiddenByObsoleteToggle = this.isObsolete(itemDefinition) && !this.showObsolete();
+			return this.isItemUnlocked(itemDefinition) && !isHiddenByObsoleteToggle;
+		},
+		
+		isCraftableUnlocked: function (itemDefinition) {
+			if (!itemDefinition.craftable) return false;
+			if (!this.isItemUnlocked(itemDefinition)) return false;
+			if (!this.isCraftableItemVisible(itemDefinition)) return false;
+			return true;
+		},
+		
+		isCraftableAvailable: function (itemDefinition) {
+			if (!itemDefinition.craftable) return false;
+			if (!this.isItemUnlocked(itemDefinition)) return false;
+			if (!this.isCraftableItemVisible(itemDefinition)) return false;
+			if (this.isOwned(itemDefinition)) return false;
+			var actionName = "craft_" + itemDefinition.id;
+			if (!GameGlobals.playerActionsHelper.checkAvailability(actionName, false)) return false;
+			
+			return true;
+		},
+		
+		isOwned: function (itemDefinition) {
+			var itemsComponent = this.itemNodes.head.items;
+		    return itemsComponent.contains(itemDefinition.name);
+		},
+		
 		isStatIncreaseAvailable: function () {
 			var itemsComponent = this.itemNodes.head.items;
 			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
@@ -536,32 +576,62 @@ define([
 			return false;
 		},
 		
-		getNumImmediatelyUsable: function () {
-			// TODO remove hardcoded item ids
+		// this.getMatchingUnseenItemCount(this.getCraftableItemDefinitionsList, this.isCraftableUnlocked, GameGlobals.gameState.uiBagStatus.itemsCraftableUnlockedSeen);
+		getMatchingUnseenItemCount: function (itemList, filter, seenItemIds) {
+			let result = 0;
+			for (let i = 0; i < itemList.length; i++) {
+				let item = itemList[i];
+				if (!filter.apply(this, [item])) continue;
+				if (seenItemIds && seenItemIds.indexOf(item.id) >= 0) continue;
+				result++;
+			}
+			return result;
+		},
+		
+		getOwnedItems: function () {
+			var itemsComponent = this.itemNodes.head.items;
+			return itemsComponent.getUnique(true);
+		},
+		
+		getCarriedItems: function () {
 			var itemsComponent = this.itemNodes.head.items;
 			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
-			if (inCamp) {
-				return itemsComponent.getCountById("cache_metal_1", true) + itemsComponent.getCountById("cache_metal_2", true)
-					+ itemsComponent.getCountById("cache_metal_3", true) + itemsComponent.getCountById("cache_metal_4", true);
-			} else {
-				return 0;
-			}
+			return itemsComponent.getUnique(inCamp);
 		},
-
-		getCraftableItemDefinitions: function () {
-			if (this.craftableItemDefinitions && this.craftableItemDefinitions.length > 0) return this.craftableItemDefinitions;
-
-			this.craftableItemDefinitions = {};
-			var itemList;
-			var itemDefinition;
-			for (var type in ItemConstants.itemDefinitions) {
-				itemList = ItemConstants.itemDefinitions[type];
-				this.craftableItemDefinitions[type] = []
-				for (let i in itemList) {
-					itemDefinition = itemList[i];
-					if (itemDefinition.craftable)
-						this.craftableItemDefinitions[type].push(itemDefinition);
+		
+		getCraftableItemDefinitionsList: function () {
+			if (!this.craftableItemDefinitionsList || this.craftableItemDefinitionsList.length < 1) {
+				let itemDefinitions = this.getCraftableItemDefinitionsByType();
+				let result = [];
+				for (let type in itemDefinitions) {
+					let itemList = itemDefinitions[type];
+					for (let i in itemList) {
+						result.push(itemList[i]);
+					}
 				}
+				
+				this.craftableItemDefinitionsList = result;
+			}
+			
+			return this.craftableItemDefinitionsList;
+		},
+		
+		getCraftableItemDefinitionsByType: function () {
+			
+			if (!this.craftableItemDefinitions) {
+				let result = {};
+				for (let type in ItemConstants.itemDefinitions) {
+					let itemList = ItemConstants.itemDefinitions[type];
+					result[type] = []
+					for (let i in itemList) {
+						let itemDefinition = itemList[i];
+						if (itemDefinition.craftable) {
+							result[type].push(itemDefinition);
+						}
+					}
+				}
+				
+				this.craftableItemDefinitions = result;
 			}
 
 			return this.craftableItemDefinitions;
