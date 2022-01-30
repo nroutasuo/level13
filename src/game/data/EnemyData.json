@@ -665,6 +665,7 @@
 	},
 	"goliath_frog": {
 		"name": "Goliath frog",
+		"enemyType": "small_animal",
 		"environment": "nohazard",
 		"campOrdinal": 8,
 		"size": 0.4
