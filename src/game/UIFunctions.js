@@ -553,18 +553,26 @@ define(['ash',
 				$.each($(scope + " button.action"), function () {
 					let $btn = $(this);
 					let text = $btn.text();
-					$btn.text("");
-					$btn.append("<span class='btn-label'>" + text + "</span>");
+					if ($btn.find(".btn-label").length > 0) {
+						log.w("generating double button overlays: " + $(this) + " | " + scope);
+					} else {
+						$btn.text("");
+						$btn.append("<span class='btn-label'>" + text + "</span>");
+					}
 				});
 				$(scope + " button.action").append("<div class='cooldown-action' style='display:none' />");
 				$(scope + " button.action").append("<div class='cooldown-duration' style='display:none' />");
 				$(scope + " button.action").wrap("<div class='container-btn-action' />");
+				
+				
 				$.each($(scope + " div.container-btn-action"), function () {
 					let $container = $(this);
-					if ($container.find(".cooldown-reqs").length > 0) {
-						log.w("generating double button overlays: " + $(this) + " | " + scope);
-					} else {
-						$container.append("<div class='cooldown-reqs' />");
+					let $button = $container.find("button");
+					let action = $button.attr("action");
+					let costs = GameGlobals.playerActionsHelper.getCosts(action);
+					let hasCosts = action && costs && Object.keys(costs).length > 0;
+					if (hasCosts) {
+						$container.append("<div class='cooldown-reqs' data-action='" + action + "' />");
 					}
 				});
 			},

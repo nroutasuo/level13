@@ -148,7 +148,8 @@ define([
 			// callout content
 			var sectorEntity = GameGlobals.buttonHelper.getButtonSectorEntity($button);
 			var disabledReason = GameGlobals.playerActionsHelper.checkRequirements(action, false, sectorEntity).reason;
-			var isDisabledOnlyForCooldown = (!(disabledReason) && GameGlobals.buttonHelper.hasButtonCooldown($button));
+			let hasCooldown = GameGlobals.buttonHelper.hasButtonCooldown($button);
+			var isDisabledOnlyForCooldown = !disabledReason && hasCooldown;
 			let showDescription = disabledReason != PlayerActionConstants.UNAVAILABLE_REASON_MAX_IMPROVEMENT_LEVEL;
 			
 			this.updateButtonCalloutDescription($button, action, buttonStatus, buttonElements, showDescription);
