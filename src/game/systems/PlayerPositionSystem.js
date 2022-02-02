@@ -223,14 +223,17 @@ define([
 		handleEnterLevel: function (levelNode, levelPos, isInitLocation) {
 			if (isInitLocation) return;
 			
-			var levelEntity = levelNode.entity;
-			var levelComponent = levelEntity.get(LevelComponent);
-			var level = levelPos.level;
+			let levelEntity = levelNode.entity;
+			let levelComponent = levelEntity.get(LevelComponent);
+			let level = levelPos.level;
 			
-			var surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
-			var groundLevel = GameGlobals.gameState.getGroundLevel();
+			let surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
+			let groundLevel = GameGlobals.gameState.getGroundLevel();
+			let playerPos = this.playerPositionNodes.head.position;
 			
-			var msg = "Entered level " + levelPos + ". ";
+			if (playerPos.inCamp) return;
+			
+			let msg = "Entered level " + levelPos + ". ";
 			if (levelPos == surfaceLevel) {
 				msg += "There is no ceiling here, the whole level is open to the elements. Sun glares down from an impossibly wide blue sky all above.";
 			} else if (levelPos == groundLevel) {
