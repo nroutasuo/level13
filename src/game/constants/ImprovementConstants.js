@@ -10,6 +10,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 				description: "Foundation of a camp.",
 				useActionName: "Rest",
 				improvementLevelsPerTechLevel: 0,
+				sortScore: 10000,
 			},
 			campfire: {
 				displayNames: [ "Campfire", "Townfire", "Everfire" ],
@@ -23,13 +24,16 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 				displayNames: [ "Hut", "House" ],
 				description: "A place for " + CampConstants.POPULATION_PER_HOUSE + " people to stay.",
 				improvementLevelsPerTechLevel: 0,
+				sortScore: 9000,
 			},
 			house2: {
 				description: "Houses " + CampConstants.POPULATION_PER_HOUSE2 + " people.",
+				sortScore: 9000,
 			},
 			storage: {
 				description: "Increases resource storage.",
 				improvementLevelsPerTechLevel: 1,
+				sortScore: 8000,
 			},
 			hospital: {
 				displayNames: [ "Clinic", "Hospital", "Medical Center" ],
@@ -58,6 +62,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			darkfarm: {
 				description: "Produces food.",
 				improvementLevelsPerTechLevel: 5,
+				sortScore: 10,
 			},
 			aqueduct: {
 				description: "Water infrastructure to improve collecting efficiency.",
@@ -81,14 +86,17 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			apothecary: {
 				description: "Enables production of medicine.",
 				improvementLevelsPerTechLevel: 5,
+				sortScore: 50,
 			},
 			smithy: {
 				description: "Workspace for toolsmiths.",
 				improvementLevelsPerTechLevel: 5,
+				sortScore: 50,
 			},
 			cementmill: {
 				description: "Enables production of a new kind of construction material.",
 				improvementLevelsPerTechLevel: 5,
+				sortScore: 50,
 			},
 			stable: {
 				description: "Space to set up a trading caravan.",

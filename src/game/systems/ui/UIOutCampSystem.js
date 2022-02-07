@@ -278,9 +278,13 @@
 			var $table = $("#in-improvements table");
 			var trs = "";
 			this.elements.improvementRows = {};
-			for (var key in ImprovementConstants.improvements) {
-				var def = ImprovementConstants.improvements[key];
-				var name = improvementNames[key];
+			
+			let improvementIDs = Object.keys(ImprovementConstants.improvements).sort(this.sortImprovements);
+			
+			for (let i = 0; i < improvementIDs.length; i++) {
+				let key = improvementIDs[i];
+				let def = ImprovementConstants.improvements[key];
+				let name = improvementNames[key];
 				if (getImprovementType(name) !== improvementTypes.camp) continue;
 				var tds = "";
 				var buildAction = "build_in_" + key;
@@ -380,7 +384,6 @@
 				var showActionDisabledReason = false;
 				if (!buildActionEnabled) {
 					switch (requirementCheck.reason) {
-						case PlayerActionConstants.DISABLED_REASON_NOT_ENOUGH_LEVEL_POP:
 						case PlayerActionConstants.UNAVAILABLE_REASON_LOCKED_RESOURCES:
 						case PlayerActionConstants.DISABLED_REASON_NOT_REACHABLE_BY_TRADERS:
 							showActionDisabledReason = true;
@@ -414,7 +417,6 @@
 				// TODO check TR ids after improvements table remake
 				if (id === "in-improvements-shrine") specialVisibilityRule = hasDeity;
 				if (id === "in-improvements-tradepost") specialVisibilityRule = campCount > 1;
-				if (id === "in-improvements-research") specialVisibilityRule = campCount > 1;
 				if (id === "in-improvements-market") specialVisibilityRule = hasTradePost;
 				if (id === "in-improvements-inn") specialVisibilityRule = hasTradePost;
 				var isVisible = specialVisibilityRule && commonVisibilityRule;
@@ -629,6 +631,32 @@
 					break;
 			}
 			return productionS + generalConsumptionS + specialConsumptionS;
+		},
+
+		sortImprovements: function (a, b) {
+			
+			let getImprovementSortScore = function (improvementID) {
+				let def = ImprovementConstants.improvements[improvementID];
+				
+				if (def.sortScore) return def.sortScore;
+				
+				let useAction = "use_in_" + improvementID;
+				if (PlayerActionConstants.hasAction(useAction)) return 100;
+				
+				let improveAction = "improve_in_" + improvementID;
+				if (PlayerActionConstants.hasAction(improveAction)) return 10;
+				
+				var buildAction = "build_in_" + improvementID;
+				let max = GameGlobals.campBalancingHelper.getMaxImprovementCountPerSector(improvementID, buildAction);
+				if (max == 1) return 1;
+				
+				return 2;
+			};
+			
+			let scoreA = getImprovementSortScore(a);
+			let scoreB = getImprovementSortScore(b);
+			
+			return scoreB - scoreA;
 		},
 
 		onTabChanged: function () {
