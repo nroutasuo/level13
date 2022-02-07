@@ -3,6 +3,7 @@ define([
 	'game/GameGlobals',
 	'game/constants/FollowerConstants',
 	'game/constants/ItemConstants',
+	'game/constants/PlayerStatConstants',
 	'game/nodes/PlayerPositionNode',
 	'game/nodes/player/PlayerStatsNode'
 ], function (
@@ -10,6 +11,7 @@ define([
 	GameGlobals,
 	FollowerConstants,
 	ItemConstants,
+	PlayerStatConstants,
 	PlayerPositionNode,
 	PlayerStatsNode
 ) {
@@ -27,6 +29,14 @@ define([
 		isInCamp: function () {
 			if (!this.playerPosNodes.head) return false;
 			return this.playerPosNodes.head.position.inCamp;
+		},
+		
+		getCurrentStamina: function () {
+			return this.playerStatsNodes.head.stamina.stamina;
+		},
+		
+		getCurrentStaminaWarningLimit: function () {
+			return PlayerStatConstants.getStaminaWarningLimit(this.playerStatsNodes.head.stamina);
 		},
 		
 		getCurrentBonus: function (itemBonusType) {

@@ -519,7 +519,17 @@ define([
 			let actionName = "use_item_" + item.id;
 			let isAvailable = GameGlobals.playerActionsHelper.checkAvailability(actionName, false);
 			
-			return  isAvailable;
+			switch (item.id) {
+				case "stamina_potion_1":
+					let currentStamina = GameGlobals.playerHelper.getCurrentStamina();
+					let staminaWarningLimit = GameGlobals.playerHelper.getCurrentStaminaWarningLimit();
+					if (currentStamina > staminaWarningLimit) return false;
+					break;
+				case "glowstick_1":
+					return false;
+			}
+			
+			return isAvailable;
 		},
 		
 		isUsable: function (item) {
