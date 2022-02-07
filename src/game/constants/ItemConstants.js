@@ -193,7 +193,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			}
 			let result = item.getBonus(bonusType);
 			if (!ItemConstants.isIncreasing(bonusType)) {
-				result = 100-result;
+				result = 1-result;
 			}
 			if (bonusType == ItemConstants.itemBonusTypes.fight_att) {
 				result = result * item.getBonus(ItemConstants.itemBonusTypes.fight_speed);

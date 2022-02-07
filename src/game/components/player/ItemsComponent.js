@@ -111,7 +111,7 @@ function (Ash, ItemVO, ItemConstants) {
 		
 		getEquipmentComparisonWithItems: function (item, items) {
 			if (!item) return 0;
-			if (!items || items.length == 0) return 1;
+			if (!items || items.length == 0) return this.getEquipmentComparisonWithItem(item, null);
 			let result = 0;
 			for (let i = 0; i < items.length; i++) {
 				if (i == 0) {
@@ -125,7 +125,7 @@ function (Ash, ItemVO, ItemConstants) {
 		
 		// returns 1 if given item is better than the given items, 0 if the same or depends on bonus type, -1 if worse
 		getEquipmentComparisonWithItem: function (item, currentItem) {
-			if (item.id === currentItem.id) return 0;
+			if (currentItem && item.id === currentItem.id) return 0;
 			let result = 0;
 			for (var bonusKey in ItemConstants.itemBonusTypes) {
 				var bonusType = ItemConstants.itemBonusTypes[bonusKey];
