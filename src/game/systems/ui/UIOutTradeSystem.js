@@ -339,11 +339,13 @@ define([
 			}
 
 			// set get amount
-			var amountGet = Math.min(TradeConstants.getAmountTraded(selectedBuy, selectedSell, amountSell), this.getCaravanCapacity());
+			let amountGetRaw = TradeConstants.getAmountTraded(selectedBuy, selectedSell, amountSell);
+			var amountGet = Math.min(amountGetRaw, this.getCaravanCapacity());
 			if (hasEnoughSellRes) {
+				let showAmountGetWarning = (amountGet > ownedStorage.storageCapacity) || (amountGetRaw > amountGet);
 				$(trID + " .trade-caravans-outgoing-buy").toggle(true);
 				$(trID + " .trade-buy-value").text("x" + amountGet);
-				$(trID + " .trade-buy-value").toggleClass("warning", amountGet > ownedStorage.storageCapacity);
+				$(trID + " .trade-buy-value").toggleClass("warning", showAmountGetWarning);
 			} else {
 				$(trID + " .trade-caravans-outgoing-buy").toggle(false);
 				$(trID + " .trade-buy-value").text("");
