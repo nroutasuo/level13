@@ -494,6 +494,7 @@ define([
 				
 				// calculate current total
 				for (var campOrdinal = 1; campOrdinal <= maxCampOrdinal; campOrdinal++) {
+					if (!this.isConnectedToTradeNetwork(maxCampOrdinal, campOrdinal)) continue;
 					if (!storageCounts[campOrdinal]) storageCounts[campOrdinal] = 0;
 					let storageCount = storageCounts[campOrdinal];
 					let storageLevel = GameGlobals.campBalancingHelper.getMaxImprovementLevel(improvementNames.storage, storageUpgradeLevel)
@@ -518,6 +519,12 @@ define([
 			this.maxTotalStorageCache[maxCampOrdinal] = result;
 
 			return result;
+		},
+		
+		isConnectedToTradeNetwork: function (maxCampOrdinal, campOrdinal) {
+			// TODO remove hard-coded levels and check for when The Great Elevator is unlocked
+			if (campOrdinal == 9 && maxCampOrdinal == 9) return false;
+			return true;
 		},
 		
 		getDefaultWorkshops: function (campOrdinal, maxCampOrdinal) {
