@@ -89,32 +89,52 @@ define([
 			// update progress bars
 			var enemy = this.fightNodes.head.fight.enemy;
 			var playerStamina = this.playerStatsNodes.head.stamina;
-			var playerVal = Math.round(playerStamina.hp / playerStamina.maxHP * 100);
-			var playerShieldVal = playerStamina.maxShield > 0 ? Math.round(playerStamina.shield / playerStamina.maxShield * 100) : 0;
-			var playerChangeVal = Math.round(this.lastDamageToPlayer);
-			var enemyVal = Math.round(enemy.hp / enemy.maxHP * 100);
-			var enemyShieldVal = enemy.maxShield > 0 ? Math.round(enemy.shield / enemy.maxShield * 100) : 0;
-			var enemyChangeVal = Math.round(this.lastDamageToEnemy);
 			
-			$("#fight-bar-enemy").data("progress-percent", enemyVal);
-			$("#fight-bar-enemy").data("change-percent", enemyChangeVal);
-			$("#fight-bar-enemy").data("change-time", this.lastDamageToEnemyUpdated);
-			$("#fight-bar-enemy").data("animation-length", this.progressBarAnimationLen);
+			var playerHPVal = Math.round(playerStamina.hp / playerStamina.maxHP * 100);
+			var playerShieldVal = playerStamina.maxShield > 0 ? Math.round(playerStamina.shield / playerStamina.maxShield * 100) : 0;
+			
+			var playerTotalChange = Math.round(this.lastDamageToPlayer);
+			var playerMissingHealth = playerStamina.maxHP - playerStamina.hp;
+			var playerShieldBeforeDamage = playerShieldVal > 0 ? playerShieldVal + playerTotalChange : Math.max(0, playerTotalChange - playerMissingHealth);
+			var playerShieldChange = playerShieldBeforeDamage - playerShieldVal;
+			
+			var enemyHPVal = Math.round(enemy.hp / enemy.maxHP * 100);
+			var enemyShieldVal = enemy.maxShield > 0 ? Math.round(enemy.shield / enemy.maxShield * 100) : 0;
+			
+			var enemyTotalChange = Math.round(this.lastDamageToEnemy);
+			var enemyMissingHealth = enemy.maxHP - enemy.hp;
+			var enemyShieldBeforeDamage = enemyShieldVal > 0 ? enemyShieldVal + enemyTotalChange : Math.max(0, enemyTotalChange - enemyMissingHealth);
+			var enemyShieldChange = enemyShieldBeforeDamage - enemyShieldVal;
+			
+			$("#fight-bar-enemy").data("progress-percent", enemyHPVal);
+			if (enemy.maxHP > 0) {
+				let enemyHPChange = enemyTotalChange - enemyShieldChange;
+				$("#fight-bar-enemy").data("change-percent", Math.round(enemyHPChange / enemy.maxHP * 100));
+				$("#fight-bar-enemy").data("change-time", this.lastDamageToEnemyUpdated);
+				$("#fight-bar-enemy").data("animation-length", this.progressBarAnimationLen);
+			}
 			
 			$("#fight-bar-enemy-shield").data("progress-percent", enemyShieldVal);
-			$("#fight-bar-enemy-shield").data("change-percent", enemyChangeVal);
-			$("#fight-bar-enemy-shield").data("change-time", this.lastDamageToEnemyUpdated);
-			$("#fight-bar-enemy-shield").data("animation-length", this.progressBarAnimationLen);
+			if (enemy.maxShield > 0) {
+				$("#fight-bar-enemy-shield").data("change-percent", Math.round(enemyShieldChange / enemy.maxShield * 100));
+				$("#fight-bar-enemy-shield").data("change-time", this.lastDamageToEnemyUpdated);
+				$("#fight-bar-enemy-shield").data("animation-length", this.progressBarAnimationLen);
+			}
 			
-			$("#fight-bar-self").data("progress-percent", playerVal);
-			$("#fight-bar-self").data("change-percent", playerChangeVal);
-			$("#fight-bar-self").data("change-time", this.lastDamageToPlayerUpdated);
-			$("#fight-bar-self").data("animation-length", this.progressBarAnimationLen);
+			$("#fight-bar-self").data("progress-percent", playerHPVal);
+			if (playerStamina.maxHP > 0) {
+				let playerHPChange = playerTotalChange - playerShieldChange;
+				$("#fight-bar-self").data("change-percent", Math.round(playerHPChange / playerStamina.maxHP * 100));
+				$("#fight-bar-self").data("change-time", this.lastDamageToPlayerUpdated);
+				$("#fight-bar-self").data("animation-length", this.progressBarAnimationLen);
+			}
 			
 			$("#fight-bar-self-shield").data("progress-percent", playerShieldVal);
-			$("#fight-bar-self-shield").data("change-percent", playerChangeVal);
-			$("#fight-bar-self-shield").data("change-time", this.lastDamageToPlayerUpdated);
-			$("#fight-bar-self-shield").data("animation-length", this.progressBarAnimationLen);
+			if (playerStamina.maxShield > 0) {
+				$("#fight-bar-self-shield").data("change-percent", Math.round(playerShieldChange / playerStamina.maxShield * 100));
+				$("#fight-bar-self-shield").data("change-time", this.lastDamageToPlayerUpdated);
+				$("#fight-bar-self-shield").data("animation-length", this.progressBarAnimationLen);
+			}
 				
 			var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent, followersComponent);
 			var playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent, followersComponent);
