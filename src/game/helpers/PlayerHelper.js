@@ -1,5 +1,6 @@
 define([
 	'ash',
+	'utils/ValueCache',
 	'game/GameGlobals',
 	'game/constants/FollowerConstants',
 	'game/constants/ItemConstants',
@@ -8,6 +9,7 @@ define([
 	'game/nodes/player/PlayerStatsNode'
 ], function (
 	Ash,
+	ValueCache,
 	GameGlobals,
 	FollowerConstants,
 	ItemConstants,
@@ -36,7 +38,7 @@ define([
 		},
 		
 		getCurrentStaminaWarningLimit: function () {
-			return PlayerStatConstants.getStaminaWarningLimit(this.playerStatsNodes.head.stamina);
+			return ValueCache.getValue("StaminaWarningLimit", 5, this.playerPosNodes.head.position.positionId(), () => PlayerStatConstants.getStaminaWarningLimit(this.playerStatsNodes.head.stamina));
 		},
 		
 		getCurrentBonus: function (itemBonusType) {
