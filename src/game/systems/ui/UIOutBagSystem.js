@@ -575,7 +575,7 @@ define([
 		isStatIncreaseAvailable: function () {
 			var itemsComponent = this.itemNodes.head.items;
 			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
-			var items = itemsComponent.getUnique(inCamp);
+			var items = itemsComponent.getUnique(inCamp, true);
 			for (let i = 0; i < items.length; i++) {
 				var item = items[i];
 				if (item.equipped) continue;

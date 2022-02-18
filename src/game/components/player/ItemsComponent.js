@@ -289,7 +289,7 @@ function (Ash, ItemVO, ItemConstants) {
 			return all.sort(this.itemSortFunction);
 		},
 
-		getUnique: function (includeNotCarried) {
+		getUnique: function (includeNotCarried, skipSorting) {
 			var all = {};
 			var allList = [];
 
@@ -314,18 +314,22 @@ function (Ash, ItemVO, ItemConstants) {
 				this.uniqueItemsCarried = all;
 			}
 			
-			return allList.sort(this.itemSortFunction);
+			if (skipSorting) {
+				return allList;
+			} else {
+				return allList.sort(this.itemSortFunction);
+			}
 		},
 
 		getCount: function (item, includeNotCarried) {
 			if (!item) return 0;
-			if (Object.keys(includeNotCarried ? this.uniqueItemsAll : this.uniqueItemsCarried).length <= 0) this.getUnique();
+			if (Object.keys(includeNotCarried ? this.uniqueItemsAll : this.uniqueItemsCarried).length <= 0) this.getUnique(false, true);
 			var itemKey = item.id;
 			return this.getCountById(itemKey, includeNotCarried);
 		},
 
 		getCountById: function (id, includeNotCarried) {
-			if (Object.keys(includeNotCarried ? this.uniqueItemsAll : this.uniqueItemsCarried).length <= 0) this.getUnique(includeNotCarried);
+			if (Object.keys(includeNotCarried ? this.uniqueItemsAll : this.uniqueItemsCarried).length <= 0) this.getUnique(includeNotCarried, true);
 			if (includeNotCarried)
 				return typeof this.uniqueItemsAll[id] === 'undefined' ? 0 : this.uniqueItemsAll[id];
 			else
