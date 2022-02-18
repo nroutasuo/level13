@@ -579,8 +579,9 @@ define([
 					let followerType = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
 					let willJoin = this.willGainedFollowerJoinParty(follower);
 					let pronoun = FollowerConstants.getPronoun(follower);
+					let followerTypeName = FollowerConstants.getFollowerTypeDisplayName(followerType);
 					div += "<div>"
-					div += "Met a <span class='hl-functionality'>" + FollowerConstants.getFollowerTypeDisplayName(followerType) + "</span> called " + follower.name + ". ";
+					div += "Met <span class='hl-functionality'>" + Text.addArticle(followerTypeName) + "</span> called " + follower.name + ". ";
 					if (willJoin) {
 						div += Text.capitalize(pronoun) + " joined the party.";
 					} else if (this.nearestCampNodes.head) {

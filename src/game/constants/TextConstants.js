@@ -278,10 +278,14 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 						else
 							return "Far above in the ceiling there is a hole, a mouth leading into blackness.";
 					} else {
-						if (sunlit)
-							return "There is a massive sinkhole here. A street is visible far, far below.";
-						else
-							return "There is a massive sinkhole here. Only vast emptiness is visible below.";
+						if (isBuilt) {
+							return "There is a massive sinkhole here. An elevator has been built.";
+						} else {
+							if (sunlit)
+								return "There is a massive sinkhole here. A street is visible far, far below.";
+							else
+								return "There is a massive sinkhole here. Only vast emptiness is visible below.";
+						}
 					}
 				case MovementConstants.PASSAGE_TYPE_BLOCKED:
 					return "There seems to have been a staircase here once but it has been destroyed beyond repair.";
@@ -1020,7 +1024,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("sector-vision", { sectorType: t_R, buildingDensity: b23, isSurfaceLevel: false }, "A [a-street] [n-street] along an enormous wall stretching to the level ceiling above, dotted with [a-building] apartments");
 		DescriptionMapper.add("sector-vision", { sectorType: t_R, buildingDensity: b12, level: [6, 100] }, "A [n-street] flanked by several identical narrow residential towers");
 		DescriptionMapper.add("sector-vision", { sectorType: t_R, buildingDensity: b23 }, "A [n-street] outside a [a-building] residental building with a dizzying geometrical pattern of balconies");
-		DescriptionMapper.add("sector-vision", { sectorType: t_R, level: lmodern }, "A square surrounded by what looks like rather comfortable apartment towers");
+		DescriptionMapper.add("sector-vision", { sectorType: t_R, level: lmodern }, "A square surrounded by what must once have been rather comfortable apartment towers");
 		DescriptionMapper.add("sector-vision", { sectorType: t_I }, "A street outside a huge [a-building] industrial complex");
 		DescriptionMapper.add("sector-vision", { sectorType: t_I, buildingDensity: b13 }, "An empty square with some damaged containers and huge rusting mechanical arms");
 		DescriptionMapper.add("sector-vision", { sectorType: t_I, buildingDensity: b23 }, "[A] [n-street] between two blocks of what looks like [a-building] control rooms and offices");
