@@ -3,6 +3,7 @@ define([
 	'ash',
 	'game/components/common/CampComponent',
 	'game/components/common/CurrencyComponent',
+	'game/components/sector/improvements/BeaconComponent',
 	'game/components/sector/ReputationComponent',
 	'game/components/common/VisitedComponent',
 	'game/components/common/RevealedComponent',
@@ -14,7 +15,7 @@ define([
 	'game/components/sector/events/RaidComponent',
 	'game/components/sector/events/TraderComponent',
 	'game/components/sector/events/RecruitComponent',
-], function (Ash, CampComponent, CurrencyComponent, ReputationComponent, VisitedComponent, RevealedComponent, DeityComponent, ExcursionComponent, LastVisitedCampComponent, OutgoingCaravansComponent, CampEventTimersComponent, RaidComponent, TraderComponent, RecruitComponent) {
+], function (Ash, CampComponent, CurrencyComponent, BeaconComponent, ReputationComponent, VisitedComponent, RevealedComponent, DeityComponent, ExcursionComponent, LastVisitedCampComponent, OutgoingCaravansComponent, CampEventTimersComponent, RaidComponent, TraderComponent, RecruitComponent) {
 
 	var SaveHelper = Ash.Class.extend({
 
@@ -26,7 +27,20 @@ define([
 			gang: "gang-"
 		},
 
-		optionalComponents: [CampComponent, CurrencyComponent, DeityComponent, ReputationComponent, VisitedComponent, RevealedComponent, LastVisitedCampComponent, OutgoingCaravansComponent, TraderComponent, RecruitComponent, CampEventTimersComponent, RaidComponent, ExcursionComponent],
+		optionalComponents: [
+			// sector: all camps
+			CampComponent, CurrencyComponent, ReputationComponent, CampEventTimersComponent, OutgoingCaravansComponent,
+			// sector: camp events
+			TraderComponent, RecruitComponent, RaidComponent,
+			// sector: buildings
+			BeaconComponent,
+			// sector: status
+			VisitedComponent, RevealedComponent, LastVisitedCampComponent,
+			// tribe: overall progress
+			DeityComponent,
+			// player: status
+			ExcursionComponent
+		],
 
 		constructor: function () {},
 

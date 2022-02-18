@@ -12,6 +12,7 @@ define([
 	'game/constants/SectorConstants',
 	'game/constants/WorldConstants',
 	'game/nodes/level/LevelNode',
+	'game/nodes/sector/BeaconNode',
 	'game/nodes/sector/SectorNode',
 	'game/nodes/GangNode',
 	'game/components/common/PositionComponent',
@@ -25,6 +26,7 @@ define([
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorControlComponent',
 	'game/components/sector/PassagesComponent',
+	'game/components/sector/improvements/BeaconComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/improvements/WorkshopComponent',
 	'game/components/level/LevelPassagesComponent',
@@ -44,6 +46,7 @@ define([
 	SectorConstants,
 	WorldConstants,
 	LevelNode,
+	BeaconNode,
 	SectorNode,
 	GangNode,
 	PositionComponent,
@@ -57,6 +60,7 @@ define([
 	SectorFeaturesComponent,
 	SectorControlComponent,
 	PassagesComponent,
+	BeaconComponent,
 	SectorImprovementsComponent,
 	WorkshopComponent,
 	LevelPassagesComponent,
@@ -69,6 +73,7 @@ define([
 		engine: null,
 		levelNodes: null,
 		sectorNodes: null,
+		beaconNodes: null,
 		gangNodes: null,
 
 		// todo check using VOCache for these (compare performance)
@@ -79,6 +84,7 @@ define([
 			this.engine = engine;
 			this.levelNodes = engine.getNodeList(LevelNode);
 			this.sectorNodes = engine.getNodeList(SectorNode);
+			this.beaconNodes = engine.getNodeList(BeaconNode);
 			this.gangNodes = engine.getNodeList(GangNode);
 			VOCache.create("LevelHelper-SectorNeighboursMap", 300);
 		},
@@ -950,16 +956,19 @@ define([
 		},
 		
 		getNearestBeacon: function (pos) {
+			let sector = this.getSectorByPosition(pos.level, pos.sectorX, pos.sectorY);
+			if (sector && sector.has(BeaconComponent)) return sector;
+			
 			let result = null;
-			let checkSector = function (sector) {
-				let improvementsComponent = sector.get(SectorImprovementsComponent);
-				if (improvementsComponent.getCount(improvementNames.beacon) > 0) {
-					result = sector;
-					return true;
+			let resultDistance = -1;
+			for (var node = this.beaconNodes.head; node; node = node.next) {
+				if (node.position.level != pos.level) continue;
+				let distance = PositionConstants.getDistanceTo(pos, node.position);
+				if (result == null || distance < resultDistance) {
+					result = node.entity;
+					resultDistance = distance;
 				}
-				return false;
-			};
-			this.forEverySectorFromLocation(pos, checkSector, true);
+			}
 			return result;
 		},
 		

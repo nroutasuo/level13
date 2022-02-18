@@ -29,6 +29,7 @@ define([
 	'game/components/common/RevealedComponent',
 	'game/components/common/LogMessagesComponent',
 	'game/components/common/SaveComponent',
+	'game/components/sector/improvements/BeaconComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/improvements/SectorCollectorsComponent',
 	'game/components/sector/improvements/WorkshopComponent',
@@ -78,6 +79,7 @@ define([
 	RevealedComponent,
 	LogMessagesComponent,
 	SaveComponent,
+	BeaconComponent,
 	SectorImprovementsComponent,
 	SectorCollectorsComponent,
 	WorkshopComponent,
@@ -272,8 +274,14 @@ define([
 			if (entity.has(CampComponent) && !entity.has(OutgoingCaravansComponent)) {
 				entity.add(new OutgoingCaravansComponent());
 			}
-			if (entity.get(SectorImprovementsComponent).hasCollectors()) {
+			
+			let improvementsComponent = entity.get(SectorImprovementsComponent);
+			
+			if (improvementsComponent.hasCollectors() && !entity.has(SectorCollectorsComponent)) {
 				entity.add(new SectorCollectorsComponent());
+			}
+			if (improvementsComponent.getCount(improvementNames.beacon) > 0 && !entity.has(BeaconComponent)) {
+				entity.add(new BeaconComponent);
 			}
 		},
 	});

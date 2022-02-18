@@ -40,6 +40,7 @@ define(['ash',
 	'game/components/common/CampComponent',
 	'game/components/common/CurrencyComponent',
 	'game/components/type/LevelComponent',
+	'game/components/sector/improvements/BeaconComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/improvements/SectorCollectorsComponent',
 	'game/components/sector/improvements/WorkshopComponent',
@@ -67,7 +68,7 @@ define(['ash',
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent,
 	BagComponent, ExcursionComponent, ItemsComponent, DeityComponent, PlayerActionComponent, PlayerActionResultComponent,
-	CampComponent, CurrencyComponent, LevelComponent, SectorImprovementsComponent, SectorCollectorsComponent, WorkshopComponent,
+	CampComponent, CurrencyComponent, LevelComponent, BeaconComponent, SectorImprovementsComponent, SectorCollectorsComponent, WorkshopComponent,
 	ReputationComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
 	PassagesComponent, OutgoingCaravansComponent, CampEventTimersComponent, TraderComponent,
 	LogMessagesComponent,
@@ -1236,13 +1237,15 @@ define(['ash',
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_BUCKET, "Made a bucket. It will collect water.");
 			if (!this.playerLocationNodes.head.entity.has(SectorCollectorsComponent))
 				this.playerLocationNodes.head.entity.add(new SectorCollectorsComponent());
-			GlobalSignals.improvementBuiltSignal.dispatch();
 		},
 		
 		buildBeacon: function () {
 			this.buildImprovement("build_out_beacon", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_beacon"));
+			
+			let sector = otherSector ? otherSector : this.playerLocationNodes.head.entity;
+			sector.add(new BeaconComponent());
+			
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_BEACON, "Beacon is ready.");
-			GlobalSignals.improvementBuiltSignal.dispatch();
 		},
 
 		buildHouse: function (otherSector) {
