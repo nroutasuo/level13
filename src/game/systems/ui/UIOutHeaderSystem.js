@@ -555,8 +555,11 @@ define([
 		},
 		
 		updateResourcesIfNotPending: function () {
-			if (this.pendingResourceUpdateTime) return;
-			this.updateResources();
+			if (!this.pendingResourceUpdateTime) {
+				this.pendingResourceUpdateTime = 0.01;
+			} else {
+				this.pendingResourceUpdateTime = Math.max(this.pendingResourceUpdateTime, 0.01);
+			}
 		},
 
 		updateResources: function () {
