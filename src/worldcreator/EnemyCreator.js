@@ -62,6 +62,10 @@ define([
 				def.verbsActive = (def.verbsActive || []).concat(textDef.verbsActive);
 				def.verbsDefeated = (def.verbsDefeated || []).concat(textDef.verbsDefeated);
 				
+				if (!def.nouns || !def.nouns[0] || !def.groupNouns || !def.groupNouns[0] || !def.verbsActive || !def.verbsActive[0] || !def.verbsDefeated || !def.verbsDefeated[0]) {
+					log.w("enemy missing text: " + enemyID);
+				}
+				
 				let lootDef = EnemyConstants.enemyLoot[enemyType] || {};
 				def.droppedResources = (def.droppedResources || []).concat(lootDef.droppedResources);
 				def.droppedIngredients = (def.droppedIngredients || []).concat(lootDef.droppedIngredients);

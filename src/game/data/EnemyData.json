@@ -1582,27 +1582,27 @@
 		"name": "big turret",
 		"campOrdinal": 13
 	},
-	"vampire_bat": {
-		"name": "vampire bat",
+	"vampire_bat__template": {
 		"environment": "dark",
 		"enemyType": "small_animal",
+		"droppedResources": ["food"]
+	},
+	"vampire_bat__basic": {
+		"name": "vampire bat",
 		"campOrdinal": 4,
 		"difficulty": 5,
 		"attackRatio": 0.7,
 		"speed": 1,
 		"size": 0.7,
-		"rarity": 70,
-		"droppedResources": ["food"]
+		"rarity": 70
 	},
 	"vampire_bat__great": {
 		"name": "great vampire bat",
-		"environment": "dark",
 		"campOrdinal": 10,
 		"difficulty": 5,
 		"attackRatio": 0.7,
 		"speed": 1,
-		"rarity": 70,
-		"droppedResources": ["food"]
+		"rarity": 70
 	},
 	"wolf": {
 		"name": "Wolf",
