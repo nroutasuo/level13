@@ -447,6 +447,9 @@ define(['ash',
 					}
 				}
 			}
+			
+			itemsComponent.uniqueItems = null;
+			itemsComponent.uniqueItemsCarried = null;
 		},
 
 		enterCamp: function (logMessage) {

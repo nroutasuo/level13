@@ -361,7 +361,7 @@ define([
 			if (!itemVO.equippable) return false;
 
 			// if the player already has one, equipped or not -> obsolete
-			var owned = itemsComponent.getUnique(inCamp, true);
+			var owned = itemsComponent.getUnique(inCamp);
 			for (let j = 0; j < owned.length; j++) {
 				if (owned[j].id === itemVO.id) return true;
 			}

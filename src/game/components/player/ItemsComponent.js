@@ -3,10 +3,9 @@ function (Ash, ItemVO, ItemConstants) {
 	var ItemsComponent = Ash.Class.extend({
 
 		items: {},
-
-		uniqueItemsAll: {},
-		uniqueItemsCarried: {},
-		selectedItem: null,
+		
+		uniqueItems: [],
+		uniqueItemsCarried: [],
 
 		constructor: function () {
 			this.items = {};
@@ -29,8 +28,9 @@ function (Ash, ItemVO, ItemConstants) {
 
 			this.items[item.type].push(item);
 			item.carried = isCarried;
-			this.uniqueItemsCarried = {};
-			this.uniqueItemsAll = {};
+			
+			this.uniqueItems = null;
+			this.uniqueItemsCarried = null;
 		},
 
 		discardItem: function (item, autoEquip) {
@@ -63,8 +63,9 @@ function (Ash, ItemVO, ItemConstants) {
 					log.w("Item to discard not found.");
 				}
 			}
-			this.uniqueItemsCarried = {};
-			this.uniqueItemsAll = {};
+			
+			this.uniqueItems = null;
+			this.uniqueItemsCarried = null;
 		},
 
 		discardItems: function (item, autoEquip) {
@@ -171,9 +172,6 @@ function (Ash, ItemVO, ItemConstants) {
 
 			if (shouldEquip) this.equip(item);
 			else item.equipped = false;
-
-			this.uniqueItemsCarried = {};
-			this.uniqueItemsAll = {};
 		},
 
 		autoEquipAll: function () {
@@ -218,15 +216,11 @@ function (Ash, ItemVO, ItemConstants) {
 				}
 				item.equipped = true;
 			}
-			this.uniqueItemsCarried = {};
-			this.uniqueItemsAll = {};
 		},
 
 		unequip: function (item) {
 			if (this.isItemUnequippable(item)) {
 				item.equipped = false;
-				this.uniqueItemsCarried = {};
-				this.uniqueItemsAll = {};
 			}
 		},
 
@@ -289,51 +283,61 @@ function (Ash, ItemVO, ItemConstants) {
 			return all.sort(this.itemSortFunction);
 		},
 
-		getUnique: function (includeNotCarried, skipSorting) {
-			var all = {};
-			var allList = [];
+		getUnique: function (includeNotCarried) {
+			let result = [];
+			
+			if (includeNotCarried && this.uniqueItems) {
+				result = this.uniqueItems;
+			} else if (!includeNotCarried && this.uniqueItemsCarried) {
+				result = this.uniqueItemsCarried;
+			} else {
+				let resultMap = {};
 
-			for (var key in this.items) {
-				for( let i = 0; i < this.items[key].length; i++) {
-					var item = this.items[key][i];
-					if (includeNotCarried || item.carried) {
-						var itemKey = item.id;
-						if (all[itemKey]) {
-							all[itemKey] = all[itemKey] + 1;
-						} else {
-							all[itemKey] = 1;
-							allList.push(item);
+				for (let key in this.items) {
+					for( let i = 0; i < this.items[key].length; i++) {
+						let item = this.items[key][i];
+						if (includeNotCarried || item.carried) {
+							var itemKey = item.id;
+							if (resultMap[itemKey]) {
+								resultMap[itemKey] = resultMap[itemKey] + 1;
+							} else {
+								result.push(item);
+								resultMap[itemKey] = 1;
+							}
 						}
 					}
 				}
-			}
-
-			if (includeNotCarried) {
-				this.uniqueItemsAll = all;
-			} else {
-				this.uniqueItemsCarried = all;
+				
+				if (includeNotCarried) {
+					this.uniqueItems = result;
+				} else {
+					this.uniqueItemsCarried = result;
+				}
 			}
 			
-			if (skipSorting) {
-				return allList;
-			} else {
-				return allList.sort(this.itemSortFunction);
-			}
+			return result.sort(this.itemSortFunction);
 		},
 
 		getCount: function (item, includeNotCarried) {
 			if (!item) return 0;
-			if (Object.keys(includeNotCarried ? this.uniqueItemsAll : this.uniqueItemsCarried).length <= 0) this.getUnique(false, true);
 			var itemKey = item.id;
 			return this.getCountById(itemKey, includeNotCarried);
 		},
 
 		getCountById: function (id, includeNotCarried) {
-			if (Object.keys(includeNotCarried ? this.uniqueItemsAll : this.uniqueItemsCarried).length <= 0) this.getUnique(includeNotCarried, true);
-			if (includeNotCarried)
-				return typeof this.uniqueItemsAll[id] === 'undefined' ? 0 : this.uniqueItemsAll[id];
-			else
-				return typeof this.uniqueItemsCarried[id] === 'undefined' ? 0 : this.uniqueItemsCarried[id];
+			let result = 0;
+			
+			for (var key in this.items) {
+				for( let i = 0; i < this.items[key].length; i++) {
+					var item = this.items[key][i];
+					if (!includeNotCarried && item.carried) continue;
+					if (item.id == id) {
+						result++;
+					}
+				}
+			}
+								
+			return result;
 		},
 
 		getCountByType: function (type) {
@@ -463,6 +467,8 @@ function (Ash, ItemVO, ItemConstants) {
 					}
 				}
 			}
+			this.uniqueItems = null;
+			this.uniqueItemsCarried = null;
 		}
 	});
 
