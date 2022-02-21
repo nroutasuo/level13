@@ -2037,6 +2037,9 @@ body.dark #resultlist-loststuff-lost ul li {
   border-width: 0px;
   padding-bottom: 5px;
 }
+body.dark #resultlist-inventorymanagement .inventorybox {
+  max-width: 550px;
+}
 body.dark ul.resultlist li {
   margin: 0px 3px;
   background-color: transparent;
@@ -4142,6 +4145,9 @@ body.sunlit #resultlist-inventorymanagement-found ul li,
 body.sunlit #resultlist-loststuff-lost ul li {
   border-width: 0px;
   padding-bottom: 5px;
+}
+body.sunlit #resultlist-inventorymanagement .inventorybox {
+  max-width: 550px;
 }
 body.sunlit ul.resultlist li {
   margin: 0px 3px;
