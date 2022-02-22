@@ -375,21 +375,21 @@ define(['ash',
 					break;
 				case ItemConstants.itemBonusTypes.scavenge_general:
 					abilityLevel = FollowerConstants.getAbilityLevel(follower, FollowerConstants.abilityType.SCAVENGE_GENERAL);
-					minBonus = 1.05;
-					maxBonus = 1.25;
-					roundingStep = 0.05;
+					minBonus = 1.025;
+					maxBonus = 1.2;
+					roundingStep = 0.025;
 					break;
 				case ItemConstants.itemBonusTypes.scavenge_ingredients:
 					abilityLevel = FollowerConstants.getAbilityLevel(follower, FollowerConstants.abilityType.SCAVENGE_INGREDIENTS);
-					minBonus = 1.1;
-					maxBonus = 1.5;
-					roundingStep = 0.1;
+					minBonus = 1.05;
+					maxBonus = 1.35;
+					roundingStep = 0.05;
 					break;
 				case ItemConstants.itemBonusTypes.scavenge_supplies:
 					abilityLevel = FollowerConstants.getAbilityLevel(follower, FollowerConstants.abilityType.SCAVENGE_SUPPLIES);
-					minBonus = 1.1;
-					maxBonus = 1.5;
-					roundingStep = 0.1;
+					minBonus = 1.05;
+					maxBonus = 1.35;
+					roundingStep = 0.05;
 					break;
 				case ItemConstants.itemBonusTypes.bag:
 					abilityLevel = FollowerConstants.getAbilityLevel(follower, FollowerConstants.abilityType.SCAVENGE_CAPACITY);
