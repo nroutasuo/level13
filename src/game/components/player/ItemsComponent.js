@@ -330,7 +330,7 @@ function (Ash, ItemVO, ItemConstants) {
 			for (var key in this.items) {
 				for( let i = 0; i < this.items[key].length; i++) {
 					var item = this.items[key][i];
-					if (!includeNotCarried && item.carried) continue;
+					if (!includeNotCarried && !item.carried) continue;
 					if (item.id == id) {
 						result++;
 					}
