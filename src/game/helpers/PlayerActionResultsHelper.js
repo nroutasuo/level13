@@ -166,9 +166,11 @@ define([
 			
 			rewards.gainedBlueprintPiece = this.getFallbackBlueprint(0.05 + efficiency * 0.15);
 			
-			this.addFollowerBonuses(rewards, sectorResources, sectorIngredients, itemOptions);
-			
 			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound);
+			
+			if (rewards.foundStashVO == null && rewards.gainedCurrency == 0) {
+				this.addFollowerBonuses(rewards, sectorResources, sectorIngredients, itemOptions);
+			}
 
 			return rewards;
 		},
