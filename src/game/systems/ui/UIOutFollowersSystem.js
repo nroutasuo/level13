@@ -135,7 +135,8 @@ define([
 				selectedFollowers.push(selectedFollower);
 			}
 			
-			// other followers
+			// other (non-selected) followers
+			followers.sort(UIConstants.sortFollowersByType);
 			$("#list-followers").empty();
 			for (let i = 0; i < followers.length; i++) {
 				var follower = followers[i];

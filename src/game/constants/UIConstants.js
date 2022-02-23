@@ -451,6 +451,23 @@ define(['ash',
 			var bVal = getItemSortVal(b);
 			return aVal - bVal;
 		},
+		
+		sortFollowersByType: function (a, b) {
+			let getFollowerSortVal = function (followerVO) {
+				let abilityType = followerVO.abilityType;
+				let followerType = FollowerConstants.getFollowerTypeForAbilityType(abilityType);
+				let typeVal = 0;
+				switch (followerType) {
+					case FollowerConstants.followerType.FIGHTER: typeVal = 1; break;
+					case FollowerConstants.followerType.EXPLORER: typeVal = 2; break;
+					case FollowerConstants.followerType.SCAVENGER: typeVal = 3; break;
+				}
+				return typeVal * 1000 - followerVO.abilityLevel;
+			};
+			let aVal = getFollowerSortVal(a);
+			let bVal = getFollowerSortVal(b);
+			return aVal - bVal;
+		},
 
 		createResourceIndicator: function (name, showName, id, showAmount, showChange) {
 			var div = "<div class='stats-indicator' id='" + id + "'>";
