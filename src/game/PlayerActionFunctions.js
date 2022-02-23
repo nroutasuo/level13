@@ -1042,10 +1042,15 @@ define(['ash',
 				return;
 			}
 			
+			let sys = this;
+			GameGlobals.uiFunctions.showConfirmation(
+				"Are you sure you want to dismiss " + follower.name + "?",
+				function () {
 			followersComponent.removeFollower(follower);
-			
+					sys.addLogMessage(LogConstants.getUniqueID(), follower.name + " leaves.");
 			GlobalSignals.followersChangedSignal.dispatch();
-			this.addLogMessage(LogConstants.getUniqueID(), follower.name + " leaves.");
+				}
+			);
 		},
 		
 		selectFollower: function (followerID) {
