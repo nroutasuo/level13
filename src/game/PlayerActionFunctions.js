@@ -1250,7 +1250,7 @@ define(['ash',
 		buildBeacon: function () {
 			this.buildImprovement("build_out_beacon", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_beacon"));
 			
-			let sector = otherSector ? otherSector : this.playerLocationNodes.head.entity;
+			let sector = this.playerLocationNodes.head.entity;
 			sector.add(new BeaconComponent());
 			
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_BEACON, "Beacon is ready.");
