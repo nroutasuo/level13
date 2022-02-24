@@ -404,11 +404,21 @@ define([
 					let traderComponent = campNode.entity.get(TraderComponent);
 					if (!traderComponent || !traderComponent.caravan) return "";
 					return "There is a trader (" + traderComponent.caravan.name + ") currently on level " + level + ".";
+				
+				case this.campNotificationTypes.EVENT_OUTGOING_CARAVAN:
+					let caravansComponent = campNode.entity.get(OutgoingCaravansComponent);
+					if (!caravansComponent || caravansComponent.outgoingCaravans.length < 1) return null;
+					let caravan = caravansComponent.outgoingCaravans[0];
+					
+					let duration = caravan.returnDuration * 1000;
+					let timeLeft = (caravan.returnTimeStamp - new Date().getTime()) / 1000;
+					let caravanTimeS = timeLeft < 30 ? "very soon" : UIConstants.getTimeToNum(timeLeft);
+					
+				 	return "Outgoing caravan on level " + level + " (expected to return in " + caravanTimeS + ").";
 					
 				case this.campNotificationTypes.EVENT_RECRUIT: return "There is a visitor currently on level " + level + ".";
 				case this.campNotificationTypes.POP_UNASSIGNED: return "Unassigned workers on level " + level + ".";
 				case this.campNotificationTypes.POP_DECREASING: return "Population is decreasing on level " + level + "!";
-				case this.campNotificationTypes.EVENT_OUTGOING_CARAVAN: return "Outgoing caravan on level " + level + ".";
 				case this.campNotificationTypes.POP_INCREASING: return "Population is increasing on level " + level + ".";
 				case this.campNotificationTypes.STATUS_NON_REACHABLE_BY_TRADERS: return "Camp on level " + level + " can't trade resources with other camps.";
 				default: return null;
