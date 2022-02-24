@@ -150,7 +150,7 @@ define(['ash',
 		
 		getFollowerDiv: function (follower, isRecruited, isInCamp) {
 			let classes = "item";
-			let div = "<div class='" + classes + "'>";
+			let div = "<div class='" + classes + "' data-followerid='" + follower.id + "'>";
 			let calloutContent = this.getFollowerCallout(follower, isRecruited, isInCamp);
 			div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
 			div += "<img src='" + follower.icon + "'/>";

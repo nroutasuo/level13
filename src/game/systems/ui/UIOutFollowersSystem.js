@@ -41,21 +41,29 @@ define([
 		},
 		
 		initElements: function ()  {
+			let sys = this;
 			var slotsContainer = $("#container-party-slots");
 			for (k in FollowerConstants.followerType) {
 				let followerType = FollowerConstants.followerType[k];
-				let slotID = "item-slot-" + followerType;
-				let slot = "<div id='" + slotID + "' class='follower-slot follower-slot-big lvl13-box-1'>";
+				let slotID = "follower-slot-" + followerType;
+				let slot = "<div id='" + slotID + "' class='follower-slot follower-slot-big lvl13-box-1' data-followertype='" + followerType + "'>";
 				slot += "<span class='follower-slot-type-empty'>" + FollowerConstants.getFollowerTypeDisplayName(followerType) + "</span>";
 				slot += "<span class='follower-slot-type-selected'>" + FollowerConstants.getFollowerTypeDisplayName(followerType) + "</span>";
-				slot += "<span class='follower-slot-follower'></span>";
+				slot += "<div class='follower-slot-image'></div>";
 				slot += "</div> ";
 				slotsContainer.append(slot);
 				
 				let $slot =  $("#" + slotID);
+				
+				$slot.hover(function () {
+					sys.highlightFollowerType(followerType);
+				}, function () {
+					sys.highlightFollowerType(null);
+				});
+				
 				this.followerSlotElementsByType[followerType] = {};
 				this.followerSlotElementsByType[followerType].slot = $slot;
-				this.followerSlotElementsByType[followerType].container = $slot.find(".follower-slot-follower");
+				this.followerSlotElementsByType[followerType].container = $slot.find(".follower-slot-image");
 			}
 		},
 
@@ -145,6 +153,18 @@ define([
 				$("#list-followers").append(li);
 			}
 			
+			let sys = this;
+			$("#list-followers .item").each(function () {
+				let id = $(this).attr("data-followerid");
+				let follower = followersComponent.getFollowerByID(id);
+				let followerType = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
+				$(this).hover(function () {
+					sys.highlightFollowerType(followerType);
+				}, function () {
+					sys.highlightFollowerType(null);
+				});
+			});
+			
 			let hasFollowers = followers.length > 0;
 			let hasUnselectedFollowers = followers.length - party.length > 0;
 			let showFollowers = hasFollowers || GameGlobals.gameState.unlockedFeatures.followers;
@@ -186,6 +206,30 @@ define([
 			return 0;
 		},
 		
+		highlightFollowerType: function (followerType) {
+			log.i("highlight follower type: " + followerType);
+			
+			let followersComponent = this.playerStatsNodes.head.followers;
+			$("#list-followers .item").each(function () {
+				let id = $(this).attr("data-followerid");
+				let follower = followersComponent.getFollowerByID(id);
+				let type = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
+				if (followerType && follower && followerType == type) {
+					$(this).toggleClass("highlighted", true);
+				} else {
+					$(this).toggleClass("highlighted", false);
+				}
+			});
+			$.each($("#container-party-slots .follower-slot"), function () {
+				var rawType = $(this).attr("data-followertype");
+				if (followerType && followerType == rawType) {
+					$(this).toggleClass("highlighted", true);
+				} else {
+					$(this).toggleClass("highlighted", false);
+				}
+			});
+		},
+		
 		onCampEventStarted: function () {
 			this.refreshRecruits();
 		},
@@ -202,6 +246,7 @@ define([
 		
 		onFollowersChanged: function () {
 			this.updateFollowers();
+			this.highlightFollowerType(null);
 		},
 	
 	});
