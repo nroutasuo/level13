@@ -465,7 +465,7 @@ define([
 			$("ul#list-header-followers").empty();
 			for (let i = 0; i < party.length; i++) {
 				let follower = party[i];
-				$("ul#list-header-followers").append("<li>" + UIConstants.getFollowerDiv(follower, true, false) + "</li>");
+				$("ul#list-header-followers").append("<li>" + UIConstants.getFollowerDiv(follower, true, false, true) + "</li>");
 			}
 			
 			GameGlobals.uiFunctions.generateCallouts("ul#list-header-followers");

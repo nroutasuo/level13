@@ -141,6 +141,8 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		isIncreasing: function (itemBonusType) {
 			switch (itemBonusType) {
 				case this.itemBonusTypes.movement:
+				case this.itemBonusTypes.scavenge_cost:
+				case this.itemBonusTypes.scout_cost:
 					return false;
 			}
 			return true;

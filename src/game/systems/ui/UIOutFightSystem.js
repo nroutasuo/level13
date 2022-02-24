@@ -325,7 +325,7 @@ define([
 				var bonusDef = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_def) > 0;
 				if (bonusatt || bonusDef) {
 					this.numFollowers++;
-					$("ul#list-fight-followers").append("<li>" + UIConstants.getFollowerDiv(follower, true, false) + "</li>");
+					$("ul#list-fight-followers").append("<li>" + UIConstants.getFollowerDiv(follower, true, false, true) + "</li>");
 				}
 			}
 			GameGlobals.uiFunctions.generateCallouts("ul#list-fight-followers");

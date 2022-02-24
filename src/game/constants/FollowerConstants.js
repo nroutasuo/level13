@@ -324,6 +324,20 @@ define(['ash',
 			}
 		},
 		
+		getTotalItemBonus: function (follower) {
+			let total = 0;
+			for (let bonusKey in ItemConstants.itemBonusTypes) {
+				let bonusType = ItemConstants.itemBonusTypes[bonusKey];
+				let value = this.getFollowerItemBonus(follower, bonusType);
+				if (ItemConstants.isIncreasing(bonusType)) {
+					total += value;
+				} else {
+					total -= value;
+				}
+			}
+			return total;
+		},
+		
 		getFollowerItemBonus: function (follower, itemBonusType) {
 			let roundingStep = 1;
 			let abilityLevel = 0;

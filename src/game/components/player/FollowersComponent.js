@@ -84,6 +84,16 @@ function (Ash, FollowerVO, FollowerConstants, ItemConstants) {
 			}
 			return bonus;
 		},
+		
+		getFollowerComparison: function (follower) {
+			if (follower == null) return 0;
+			let type = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
+			let selectedFollower = this.getFollowerInPartyByType(type);
+			if (selectedFollower == null) return 1;
+			if (selectedFollower.abilityType != follower.abilityType) return 0;
+			
+			return FollowerConstants.getTotalItemBonus(follower) - FollowerConstants.getTotalItemBonus(selectedFollower);
+		},
 
 		getSaveKey: function () {
 			return "Followers";

@@ -110,7 +110,7 @@ define([
 				let followerType = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
 				let tr = "<tr>";
 				tr += "<td class='maxwidth'>" + FollowerConstants.getFollowerTypeDisplayName(followerType) + " " + follower.name + "</td>";
-				tr += "<td>" + UIConstants.getFollowerDiv(follower, false, false) + "</td>";
+				tr += "<td>" + UIConstants.getFollowerDiv(follower, false, false, false) + "</td>";
 				tr += "<td>" + (recruitComponent.isFoundAsReward ? this.getFoundRecruitIcon() : "") + "</td>";
 				tr += "<td><button class='action recruit-select' action='recruit_follower_" + follower.id + "'>Recruit</button></td>";
 				tr += "<td><button class='action recruit-dismiss btn-secondary' action='dismiss_recruit_" + follower.id + "'>Dismiss</button></td>";
@@ -149,7 +149,7 @@ define([
 			for (let i = 0; i < followers.length; i++) {
 				var follower = followers[i];
 				if (selectedFollowers.indexOf(follower) >= 0) continue;
-				var li = "<li>" + UIConstants.getFollowerDiv(follower, true, inCamp) + "</li>";
+				var li = "<li>" + UIConstants.getFollowerDiv(follower, true, inCamp, false) + "</li>";
 				$("#list-followers").append(li);
 			}
 			
@@ -175,6 +175,8 @@ define([
 			
 			GameGlobals.uiFunctions.generateCallouts("#list-followers");
 			GameGlobals.uiFunctions.generateCallouts("#container-party-slots");
+			GameGlobals.uiFunctions.generateButtonOverlays("#list-followers");
+			GameGlobals.uiFunctions.generateButtonOverlays("#container-party-slots");
 			GameGlobals.uiFunctions.registerActionButtonListeners("#list-followers");
 			GameGlobals.uiFunctions.registerActionButtonListeners("#container-party-slots");
 		},
@@ -190,8 +192,26 @@ define([
 			$container.empty();
 			
 			if (follower) {
-				$container.append(UIConstants.getFollowerDiv(follower, true, inCamp));
+				$container.append(UIConstants.getFollowerDiv(follower, true, inCamp, true));
 			}
+		},
+		
+		updateComparisonIndicators: function () {
+			let followersComponent = this.playerStatsNodes.head.followers;
+			
+			$("#list-followers .item").each(function () {
+				let id = $(this).attr("data-followerid");
+				let follower = followersComponent.getFollowerByID(id);
+				let comparison = followersComponent.getFollowerComparison(follower);
+				let isSelected = follower.inParty == true;
+				
+				let indicator = $(this).find(".item-comparison-indicator");
+				
+				$(indicator).toggleClass("indicator-equipped", isSelected);
+				$(indicator).toggleClass("indicator-increase", !isSelected && comparison > 0);
+				$(indicator).toggleClass("indicator-even", !isSelected && comparison == 0);
+				$(indicator).toggleClass("indicator-decrease", !isSelected && comparison < 0);
+			});
 		},
 		
 		getFoundRecruitIcon: function () {
@@ -206,9 +226,7 @@ define([
 			return 0;
 		},
 		
-		highlightFollowerType: function (followerType) {
-			log.i("highlight follower type: " + followerType);
-			
+		highlightFollowerType: function (followerType) {			
 			let followersComponent = this.playerStatsNodes.head.followers;
 			$("#list-followers .item").each(function () {
 				let id = $(this).attr("data-followerid");
@@ -241,11 +259,13 @@ define([
 		onTabChanged: function () {
 			if (GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.followers) {
 				this.refresh();
+				this.updateComparisonIndicators();
 			}
 		},
 		
 		onFollowersChanged: function () {
 			this.updateFollowers();
+			this.updateComparisonIndicators();
 			this.highlightFollowerType(null);
 		},
 	

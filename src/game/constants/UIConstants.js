@@ -148,14 +148,21 @@ define(['ash',
 			return html;
 		},
 		
-		getFollowerDiv: function (follower, isRecruited, isInCamp) {
+		getFollowerDiv: function (follower, isRecruited, isInCamp, hideComparisonIndicator) {
 			let classes = "item";
 			let div = "<div class='" + classes + "' data-followerid='" + follower.id + "'>";
 			let calloutContent = this.getFollowerCallout(follower, isRecruited, isInCamp);
+			
 			div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
 			div += "<img src='" + follower.icon + "'/>";
+			
+			if (!hideComparisonIndicator) {
+				div += "<div class='item-comparison-badge'><div class='item-comparison-indicator indicator-even'/></div>";
+			}
+			
 			div += "</div>";
 			div += "</div>"
+			
 			return div;
 		},
 		
