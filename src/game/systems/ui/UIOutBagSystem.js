@@ -527,6 +527,11 @@ define([
 					break;
 				case "glowstick_1":
 					return false;
+				case "first_aid_kit_1":
+				case "first_aid_kit_2":
+					let inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
+					if (inCamp) return false;
+					break;
 			}
 			
 			return isAvailable;
