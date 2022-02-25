@@ -738,8 +738,9 @@ define(['ash',
 			},
 			
 			onKeyUp: function (e) {
-				var playerPos = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
-				if (!e.shiftKey && !playerPos.inCamp) {
+				var isInCamp = GameGlobals.playerHelper.isInCamp();
+				if (!e.shiftKey) {
+					if (!isInCamp) {
 					if (e.keyCode == 65) {
 						GameGlobals.playerActionFunctions.startAction("move_sector_west");
 					}
@@ -763,6 +764,10 @@ define(['ash',
 					}
 					if (e.keyCode == 67) {
 						GameGlobals.playerActionFunctions.startAction("move_sector_se")
+					}
+				}
+					if (e.keyCode == 27) {
+						GameGlobals.uiFunctions.popupManager.dismissPopups();
 					}
 				}
 			},
