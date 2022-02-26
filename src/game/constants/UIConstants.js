@@ -47,7 +47,7 @@ define(['ash',
 				div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
 			}
 
-			if (item) div += "<img src='" + url + "'/>";
+			if (item) div += "<img src='" + url + "' alt='" + item.name + "'/>";
 
 			if (hasCount)
 				div += "<div class='item-count lvl13-box-1 vision-text'>" + count + "x </div>";
@@ -154,7 +154,7 @@ define(['ash',
 			let calloutContent = this.getFollowerCallout(follower, isRecruited, isInCamp);
 			
 			div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
-			div += "<img src='" + follower.icon + "'/>";
+			div += "<img src='" + follower.icon + "' alt='" + follower.name + "'/>";
 			
 			if (!hideComparisonIndicator) {
 				div += "<div class='item-comparison-badge'><div class='item-comparison-indicator indicator-even'/></div>";
@@ -569,7 +569,7 @@ define(['ash',
 
 		getBlueprintPieceIcon: function (upgradeID) {
 			let type = UpgradeConstants.getUpgradeType(upgradeID);
-			return "<img src='img/items/blueprints/blueprint-" + type + ".png' />";
+			return "<img src='img/items/blueprints/blueprint-" + type + ".png' alt='' />";
 		},
 
 		getTimeToNum: function (seconds) {
