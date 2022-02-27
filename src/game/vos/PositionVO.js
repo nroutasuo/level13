@@ -19,10 +19,11 @@ define(['ash'], function (Ash) {
 			this.sectorY = Math.round(this.sectorY);
 		},
 		
-		getInGameFormat: function (includeLevel) {
-			var sectorXS = this.sectorX < 0 ? -this.sectorX + "W" : this.sectorX + "E";
-			var sectorYS = this.sectorY < 0 ? -this.sectorY + "N" : this.sectorY + "S";
-			return sectorXS + " " + sectorYS + (includeLevel ? " " + "level " + this.level : "");
+		getInGameFormat: function (includeLevel, short) {
+			let sectorXS = this.sectorX < 0 ? -this.sectorX + "W" : this.sectorX + "E";
+			let sectorYS = this.sectorY < 0 ? -this.sectorY + "N" : this.sectorY + "S";
+			let levelS = short ? "L" + this.level : "level " + this.level;
+			return sectorXS + " " + sectorYS + (includeLevel ? " " + levelS : "");
 		},
 		
 		toInt: function () {

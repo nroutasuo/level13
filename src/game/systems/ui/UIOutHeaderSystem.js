@@ -784,9 +784,14 @@ define([
 			$("#level-icon").attr("alt", icon.desc);
 			$("#level-icon").attr("title", icon.desc);
 
-			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-			var hasMap = itemsComponent.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) > 0;
-			$("#out-position-indicator").text(hasMap ? this.currentLocationNodes.head.entity.get(PositionComponent).getPosition().getInGameFormat(false) : "??");
+			let itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+			let hasMap = itemsComponent.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) > 0;
+			let positionText = "??";
+			if (hasMap) {
+				let showLevel = GameGlobals.gameState.unlockedFeatures.levels;
+				positionText = this.currentLocationNodes.head.entity.get(PositionComponent).getPosition().getInGameFormat(showLevel, true);
+			}
+			$("#out-position-indicator").text("Position: " + positionText);
 		},
 
 		updateTabVisibility: function () {
