@@ -122,6 +122,62 @@ function (Ash, CanvasUtils, MapUtils,
 				$(this).toggleClass("selected", isMatch);
 			});
 		},
+		
+		getASCII: function (mapPosition) {
+			let result = "";
+			
+			let level = mapPosition.level;
+			let levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
+			
+			for (var y = levelComponent.minY - 1; y <= levelComponent.maxY + 1; y++) {
+				for (var x = levelComponent.minX - 1; x <= levelComponent.maxX + 1; x++) {
+					let sector = GameGlobals.levelHelper.getSectorByPosition(mapPosition.level, x, y);
+					
+					result += this.getSectorASCII(sector);
+				}
+				result += "\n";
+			}
+			
+			result += "\n\n";
+			
+			result += "Legend: " + this.getASCIILegend();
+			
+			return result;
+		},
+		
+		getSectorASCII: function (sector) {
+			if (sector == null) return " ";
+			
+			let sectorStatus = SectorConstants.getSectorStatus(sector);
+			
+			if (sectorStatus == null) return " ";
+			if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE) return " ";
+			if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE) return "?";
+			
+			if (sector.has(CampComponent)) return "C";
+			
+			if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_VISITED_UNSCOUTED) return "0";
+			if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_REVEALED_BY_MAP) return "0";
+			
+			var sectorPassages = sector.get(PassagesComponent);
+			if (sectorPassages.passageUp) return "U";
+			if (sectorPassages.passageDown) return "D";
+			
+			let statusComponent = sector.get(SectorStatusComponent);
+			let localesComponent = sector.get(SectorLocalesComponent);
+			let unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
+			
+			if (unScoutedLocales > 0) return "!";
+			
+			if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED) return "1";
+			if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_VISITED_CLEARED) return "2";
+					
+			return "?";
+		},
+		
+		getASCIILegend: function () {
+			return "? = unvisited, 0 = unscouted, 1 = scouted, 2 = cleared, C = camp, U = passage up, D = passage down, ! = point of interest";
+		},
 
 		rebuildMapWithCanvas: function (mapPosition, canvas, ctx, centered, visibleSectors, allSectors, dimensions) {
 			var sectorSize = this.getSectorSize(centered);

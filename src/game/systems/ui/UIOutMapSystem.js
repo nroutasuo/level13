@@ -225,6 +225,11 @@ define([
 			$("#map-completion-hint").text(levelTypeText + "" + mapStatusText);
 		},
 		
+		printMapToConsole: function() {
+			let text = this.getMapAsASCII();
+			console.log(text);
+		},
+		
 		getPOIText: function (sector, isScouted) {
 			if (!isScouted) return "?";
 			
@@ -378,6 +383,17 @@ define([
 			var len = path ? path.length : "?";
 			return len + " blocks";
 		},
+		
+		getMapAsASCII: function () {
+			let  mapPosition = this.playerPositionNodes.head.position.getPosition();
+			if (this.selectedLevel || this.selectedLevel == 0) {
+				mapPosition.level = this.selectedLevel;
+				mapPosition.sectorX = 0;
+				mapPosition.sectorY = 0;
+			}
+			
+			return GameGlobals.uiMapHelper.getASCII(mapPosition);
+		},
 
 		teleport: function () {
 			if (!GameConstants.isCheatsEnabled) return;
@@ -401,18 +417,18 @@ define([
 		},
 
 		onTabChanged: function (tabID, tabProps) {
-			if (tabID === GameGlobals.uiFunctions.elementIDs.tabs.map) {
-				$("#tab-header h2").text("Map");
-				var level = tabProps ? tabProps.level : this.playerPositionNodes.head.position.level;
-				this.updateLevelSelector();
-				this.selectLevel(level);
-				if (tabProps) {
-					this.selectSector(tabProps.level, tabProps.sectorX, tabProps.sectorY);
-				}
-				this.updateMap();
-				this.centerMap();
-				this.updateMapCompletionHint();
+			if (!tabID === GameGlobals.uiFunctions.elementIDs.tabs.map)  return;
+			$("#tab-header h2").text("Map");
+			var level = tabProps ? tabProps.level : this.playerPositionNodes.head.position.level;
+			this.updateLevelSelector();
+			this.selectLevel(level);
+			if (tabProps) {
+				this.selectSector(tabProps.level, tabProps.sectorX, tabProps.sectorY);
 			}
+			this.updateMap();
+			this.centerMap();
+			this.updateMapCompletionHint();
+			// this.printMapToConsole();
 		},
 
 		onLevelSelectorChanged: function () {
