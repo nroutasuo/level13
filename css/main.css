@@ -1971,6 +1971,15 @@ body.dark #mainmap-container-container {
   -o-transition: none;
   transition: none;
 }
+body.dark #mainmap-container-ascii {
+  display: block;
+  padding: 5px;
+  margin: 5px;
+  font-family: monospace;
+}
+body.dark #mainmap-container-ascii textarea {
+  width: 100%;
+}
 body.dark #trade-caravans-outgoing-container tr {
   border-width: 3px;
   border-bottom-width: 0px;
@@ -4104,6 +4113,15 @@ body.sunlit #mainmap-container-container {
   -ms-transition: none;
   -o-transition: none;
   transition: none;
+}
+body.sunlit #mainmap-container-ascii {
+  display: block;
+  padding: 5px;
+  margin: 5px;
+  font-family: monospace;
+}
+body.sunlit #mainmap-container-ascii textarea {
+  width: 100%;
 }
 body.sunlit #trade-caravans-outgoing-container tr {
   border-width: 3px;

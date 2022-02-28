@@ -129,18 +129,23 @@ function (Ash, CanvasUtils, MapUtils,
 			let level = mapPosition.level;
 			let levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
 			
+			result += "\n";
+			
 			for (var y = levelComponent.minY - 1; y <= levelComponent.maxY + 1; y++) {
+				let levelResult = "";
 				for (var x = levelComponent.minX - 1; x <= levelComponent.maxX + 1; x++) {
 					let sector = GameGlobals.levelHelper.getSectorByPosition(mapPosition.level, x, y);
 					
-					result += this.getSectorASCII(sector);
+					levelResult += this.getSectorASCII(sector);
 				}
-				result += "\n";
+				if (levelResult.trim().length > 0) {
+					levelResult += "\n";
+					result += levelResult;
+				}
 			}
 			
 			result += "\n\n";
-			
-			result += "Legend: " + this.getASCIILegend();
+			result += "Legend:\n" + this.getASCIILegend();
 			
 			return result;
 		},

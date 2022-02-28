@@ -35,6 +35,9 @@ define([
 		
 		playerPositionNodes: null,
 		playerLocationNodes: null,
+		
+		MAP_STYLE_CANVAS: "canvas",
+		MAP_STYLE_ASCII: "ascii",
 
 		constructor: function () {
 			var sys = this;
@@ -47,6 +50,7 @@ define([
 		addToEngine: function (engine) {
 			this.engine = engine;
 			$("#select-header-level").bind("change", $.proxy(this.onLevelSelectorChanged, this));
+			$("#select-header-mapstyle").bind("change", $.proxy(this.onMapStyleSelectorChanged, this));
 			GameGlobals.uiMapHelper.enableScrollingForMap("mainmap");
 			this.playerPositionNodes = engine.getNodeList(PlayerPositionNode);
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
@@ -60,6 +64,7 @@ define([
 			this.engine = null;
 			GlobalSignals.removeAll(this);
 			$("#select-header-level").unbind("change", $.proxy(this.onLevelSelectorChanged, this));
+			$("#select-header-mapstyle").unbind("change", $.proxy(this.onMapStyleSelectorChanged, this));
 			GameGlobals.uiMapHelper.disableScrollingForMap("mainmap");
 			this.playerPositionNodes = null;
 			this.playerLocationNodes = null;
@@ -87,6 +92,14 @@ define([
 			}
 			$("#select-header-level").append(html);
 		},
+		
+		initMapStyleSelector: function () {
+			$("#select-header-mapstyle").empty();
+			var html = "";
+			html += "<option value='" + this.MAP_STYLE_CANVAS + "' id='map-style-selector-" + this.MAP_STYLE_CANVAS + "'>Canvas</option>";
+			html += "<option value='" + this.MAP_STYLE_ASCII + "' id='map-style-selector-" + this.MAP_STYLE_CANVAS + "'>ASCII</option>";
+			$("#select-header-mapstyle").append(html);
+		},
 
 		updateLevelSelector: function () {
 			var surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
@@ -99,7 +112,7 @@ define([
 				let isCleared = levelStats.percentClearedSectors >= 1;
 				GameGlobals.uiFunctions.toggle($elem, isVisible);
 				if (isVisible) {
-					$elem.text("Level " + i + " " + (isCleared ? "(✓)" : "(-)"));
+					$elem.text("Level " + i + " " + (isCleared ? "(x)" : "(-)"));
 					countVisible++;
 				}
 			}
@@ -118,25 +131,44 @@ define([
 			this.selectedSector = GameGlobals.levelHelper.getSectorByPosition(level, x, y);
 			this.updateSector();
 		},
+		
+		selectMapStyle: function (mapStyle) {
+			$("#select-header-mapstyle").val(mapStyle);
+			
+			this.selectedMapStyle = mapStyle;
+			GameGlobals.gameState.settings.mapStyle = mapStyle;
+			$("#mainmap-container-container").toggle(mapStyle == this.MAP_STYLE_CANVAS);
+			$("#mainmap-container-ascii").toggle(mapStyle == this.MAP_STYLE_ASCII);
+			
+			this.updateMap();
+			this.centerMap();
+		},
 
 		updateMap: function () {
+			if (!this.playerPositionNodes || !this.playerPositionNodes.head) return;
+			
 			var mapPosition = this.playerPositionNodes.head.position.getPosition();
+			var sys = this;
 			if (this.selectedLevel || this.selectedLevel == 0) {
 				mapPosition.level = this.selectedLevel;
 				mapPosition.sectorX = 0;
 				mapPosition.sectorY = 0;
 			}
-			var sys = this;
-			
-			$("#mainmap-container-container").css("opacity", 0);
-			
-			setTimeout(function () {
-				sys.map = GameGlobals.uiMapHelper.rebuildMap("mainmap", "mainmap-overlay", mapPosition, -1, false, function (level, x, y) {
-					sys.onSectorSelected(level, x, y);
-				});
-				$("#mainmap-container-container").css("opacity", 1);
-				GameGlobals.uiMapHelper.setSelectedSector(sys.map, sys.selectedSector);
-			}, 10);
+				
+			if (this.selectedMapStyle == this.MAP_STYLE_CANVAS) {
+				$("#mainmap-container-container").css("opacity", 0);
+				
+				setTimeout(function () {
+					sys.map = GameGlobals.uiMapHelper.rebuildMap("mainmap", "mainmap-overlay", mapPosition, -1, false, function (level, x, y) {
+						sys.onSectorSelected(level, x, y);
+					});
+					$("#mainmap-container-container").css("opacity", 1);
+					GameGlobals.uiMapHelper.setSelectedSector(sys.map, sys.selectedSector);
+				}, 10);
+			} else {
+				var ascii = GameGlobals.uiMapHelper.getASCII(mapPosition);
+				$("#mainmap-container-ascii textarea").text(ascii);
+			}
 		},
 
 		updateSector: function () {
@@ -167,6 +199,9 @@ define([
 		},
 
 		centerMap: function () {
+			if (!this.playerPositionNodes || !this.playerPositionNodes.head) return;
+			if (this.selectedMapStyle != this.MAP_STYLE_CANVAS) return;
+			
 			var mapPosition = this.playerPositionNodes.head.position.getPosition();
 			if (this.selectedLevel || this.selectedLevel == 0) {
 				mapPosition.level = this.selectedLevel;
@@ -223,11 +258,6 @@ define([
 				mapStatusText = "There are still some unvisited streets" + levelLocation + ".";
 
 			$("#map-completion-hint").text(levelTypeText + "" + mapStatusText);
-		},
-		
-		printMapToConsole: function() {
-			let text = this.getMapAsASCII();
-			console.log(text);
 		},
 		
 		getPOIText: function (sector, isScouted) {
@@ -384,17 +414,6 @@ define([
 			return len + " blocks";
 		},
 		
-		getMapAsASCII: function () {
-			let  mapPosition = this.playerPositionNodes.head.position.getPosition();
-			if (this.selectedLevel || this.selectedLevel == 0) {
-				mapPosition.level = this.selectedLevel;
-				mapPosition.sectorX = 0;
-				mapPosition.sectorY = 0;
-			}
-			
-			return GameGlobals.uiMapHelper.getASCII(mapPosition);
-		},
-
 		teleport: function () {
 			if (!GameConstants.isCheatsEnabled) return;
 			if (!this.selectedSector) return;
@@ -409,6 +428,7 @@ define([
 
 		onGameStarted: function () {
 			this.initLevelSelector();
+			this.initMapStyleSelector();
 			this.updateLevelSelector();
 		},
 		
@@ -419,6 +439,9 @@ define([
 		onTabChanged: function (tabID, tabProps) {
 			if (!tabID === GameGlobals.uiFunctions.elementIDs.tabs.map)  return;
 			$("#tab-header h2").text("Map");
+			
+			this.selectMapStyle(GameGlobals.gameState.settings.mapStyle || this.MAP_STYLE_CANVAS);
+			
 			var level = tabProps ? tabProps.level : this.playerPositionNodes.head.position.level;
 			this.updateLevelSelector();
 			this.selectLevel(level);
@@ -428,14 +451,19 @@ define([
 			this.updateMap();
 			this.centerMap();
 			this.updateMapCompletionHint();
-			// this.printMapToConsole();
 		},
 
 		onLevelSelectorChanged: function () {
-			var level = parseInt($("#select-header-level").val());
+			let level = parseInt($("#select-header-level").val());
 			if (this.selectedLevel === level) return;
 			this.selectLevel(level);
 			this.updateMapCompletionHint();
+		},
+		
+		onMapStyleSelectorChanged: function () {
+			let mapStyle = $("#select-header-mapstyle").val();
+			if (this.selectedMapStyle === mapStyle) return;
+			this.selectMapStyle(mapStyle);
 		},
 
 		clearBubble: function () {

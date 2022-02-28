@@ -61,6 +61,10 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 				leaveCampRes: {},
 				leaveCampItems: {},
 			};
+			
+			this.settings = {
+				
+			};
 
 			this.uiBagStatus = {
 				itemsOwnedSeen: [],

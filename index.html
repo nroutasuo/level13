@@ -177,6 +177,7 @@
 						<div class="unit whole" id="tab-header">
 						<button id="btn-header-rename" class="context btn-meta tabelement tab-options" data-tab="switch-in" style="display:none">Rename</button>
 						<div class="tabelement" data-tab="switch-map" style="display:none;">
+							<select id="select-header-mapstyle" class="context tab-options"></select>
 							<select id="select-header-level" class="context tab-options"></select>
 						</div>
 						<h2>&nbsp;</h2>
@@ -453,6 +454,9 @@
 									<canvas id="mainmap" width="500" height="500" role="img" aria-label="level map"></canvas>
 									<div id="mainmap-overlay" class="canvas-overlay"></div>
 								</div>
+							</div>
+							<div id="mainmap-container-ascii">
+								<textarea rows="12"></textarea>
 							</div>
 							<div id="mainmap-sector-details" class="lvl13-box-1" style="margin: 5px; padding: 5px;">
 								<div id="mainmap-sector-details-content-empty">
