@@ -6,6 +6,7 @@ define([
 	'game/constants/ItemConstants',
 	'game/constants/LevelConstants',
 	'game/constants/PositionConstants',
+	'game/constants/SectorConstants',
 	'game/constants/TextConstants',
 	'game/constants/TradeConstants',
 	'game/constants/UIConstants',
@@ -24,7 +25,7 @@ define([
 	'game/components/sector/improvements/WorkshopComponent',
 	'game/components/type/LevelComponent',
 	'game/systems/CheatSystem'
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, ItemConstants, LevelConstants, PositionConstants, TextConstants, TradeConstants, UIConstants,
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, ItemConstants, LevelConstants, PositionConstants, SectorConstants, TextConstants, TradeConstants, UIConstants,
 	PlayerLocationNode, PlayerPositionNode,
 	CampComponent, PositionComponent, VisitedComponent, EnemiesComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, SectorImprovementsComponent, WorkshopComponent, LevelComponent,
 	CheatSystem) {
@@ -40,10 +41,7 @@ define([
 		MAP_STYLE_ASCII: "ascii",
 
 		constructor: function () {
-			var sys = this;
-			$("#btn-cheat-teleport").click(function () {
-				sys.teleport();
-			});
+			this.initElements();
 			this.updateHeight();
 		},
 
@@ -68,6 +66,16 @@ define([
 			GameGlobals.uiMapHelper.disableScrollingForMap("mainmap");
 			this.playerPositionNodes = null;
 			this.playerLocationNodes = null;
+		},
+		
+		initElements: function () {
+			var sys = this;
+			$("#btn-cheat-teleport").click(function () {
+				sys.teleport();
+			});
+			$("#btn-mainmap-sector-details-next").click($.proxy(this.selectNextSector, this));
+			$("#btn-mainmap-sector-details-previous").click($.proxy(this.selectPreviousSector, this));
+			$("#btn-mainmap-sector-details-camp").click($.proxy(this.selectCampSector, this));
 		},
 
 		update: function (time) {
@@ -129,6 +137,7 @@ define([
 
 		selectSector: function (level, x, y) {
 			this.selectedSector = GameGlobals.levelHelper.getSectorByPosition(level, x, y);
+			GameGlobals.uiMapHelper.setSelectedSector(this.map, this.selectedSector);
 			this.updateSector();
 		},
 		
@@ -154,6 +163,10 @@ define([
 				mapPosition.sectorX = 0;
 				mapPosition.sectorY = 0;
 			}
+			
+			var levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(mapPosition.level);
+			var hasCampOnLevel = levelEntity.get(CampComponent) !== null;
+			GameGlobals.uiFunctions.toggle($("#btn-mainmap-sector-details-camp"), hasCampOnLevel);
 				
 			if (this.selectedMapStyle == this.MAP_STYLE_CANVAS) {
 				$("#mainmap-container-container").css("opacity", 0);
@@ -215,6 +228,51 @@ define([
 				}
 			}
 			GameGlobals.uiMapHelper.centerMapToPlayer("mainmap", mapPosition, false);
+		},
+		
+		selectNextSector: function () {
+			let newSector = this.getNextSelectableSector(1);
+			if (!newSector) return null;
+			let pos = newSector.get(PositionComponent);
+			this.selectSector(pos.level, pos.sectorX, pos.sectorY);
+		},
+		
+		selectPreviousSector: function () {
+			let newSector = this.getNextSelectableSector(-1);
+			if (!newSector) return null;
+			let pos = newSector.get(PositionComponent);
+			this.selectSector(pos.level, pos.sectorX, pos.sectorY);
+		},
+		
+		selectCampSector: function () {
+			let level = this.selectedLevel || 13;
+			let campNode = GameGlobals.campHelper.getCampNodeForLevel(level);
+			if (!campNode) return;
+			let pos = campNode.position;
+			this.selectSector(pos.level, pos.sectorX, pos.sectorY);
+		},
+		
+		getNextSelectableSector: function (offset) {
+			let level = this.selectedLevel || 13;
+			let sectors = GameGlobals.levelHelper.getSectorsByLevel(level);
+			let currentIndex = sectors.indexOf(this.selectedSector);
+			let startIndex = currentIndex >= 0 ? currentIndex : 0;
+			let newIndex = startIndex;
+			
+			let checked = 0;
+			let i = startIndex;
+			while (checked < sectors.length) {
+				i += offset;
+				if (i < 0) i = sectors.length - 1;
+				if (i >= sectors.length) i = 0;
+				let sector = sectors[i];
+				let sectorStatus = SectorConstants.getSectorStatus(sector);
+				if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE) continue;
+				newIndex = i;
+				break;
+			}
+			
+			return newIndex == null ? null : sectors[newIndex];
 		},
 
 		updateMapCompletionHint: function () {
