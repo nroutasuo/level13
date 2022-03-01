@@ -147,7 +147,9 @@ define([
 			this.selectedMapStyle = mapStyle;
 			GameGlobals.gameState.settings.mapStyle = mapStyle;
 			$("#mainmap-container-container").toggle(mapStyle == this.MAP_STYLE_CANVAS);
+			$("#mainmap-sector-details-empty-text-canvas").toggle(mapStyle == this.MAP_STYLE_CANVAS);
 			$("#mainmap-container-ascii").toggle(mapStyle == this.MAP_STYLE_ASCII);
+			$("#mainmap-sector-details-empty-text-ascii").toggle(mapStyle == this.MAP_STYLE_ASCII);
 			
 			this.updateMap();
 			this.centerMap();
@@ -179,8 +181,13 @@ define([
 					GameGlobals.uiMapHelper.setSelectedSector(sys.map, sys.selectedSector);
 				}, 10);
 			} else {
-				var ascii = GameGlobals.uiMapHelper.getASCII(mapPosition);
+				let ascii = GameGlobals.uiMapHelper.getASCII(mapPosition, false);
+				let rows = ascii.split("\n").length;
+				rows = Math.min(rows, 25);
+				rows = Math.max(rows, 5);
 				$("#mainmap-container-ascii textarea").text(ascii);
+				$("#mainmap-container-ascii textarea").attr("rows", rows)
+				$("#mainmap-ascii-legend").text(GameGlobals.uiMapHelper.getASCIILegend());
 			}
 		},
 

@@ -144,9 +144,6 @@ function (Ash, CanvasUtils, MapUtils,
 				}
 			}
 			
-			result += "\n\n";
-			result += "Legend:\n" + this.getASCIILegend();
-			
 			return result;
 		},
 		
@@ -174,14 +171,14 @@ function (Ash, CanvasUtils, MapUtils,
 			
 			if (unScoutedLocales > 0) return "!";
 			
-			if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED) return "1";
-			if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_VISITED_CLEARED) return "2";
+			if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED) return "0";
+			if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_VISITED_CLEARED) return "X";
 					
 			return "?";
 		},
 		
 		getASCIILegend: function () {
-			return "? = unvisited, 0 = unscouted, 1 = scouted, 2 = cleared, C = camp, U = passage up, D = passage down, ! = point of interest";
+			return "? = unvisited, 0 = visited, X = cleared, C = camp, U = passage up, D = passage down, ! = point of interest";
 		},
 
 		rebuildMapWithCanvas: function (mapPosition, canvas, ctx, centered, visibleSectors, allSectors, dimensions) {
