@@ -782,7 +782,11 @@ body.dark .button-detail-label {
 body.dark div.container-btn-action:hover + div.btn-callout,
 body.dark div.btn-callout:hover,
 body.dark .info-callout-target:hover + div.info-callout,
-body.dark div.info-callout:hover {
+body.dark div.info-callout:hover,
+body.dark div.container-btn-action:focus + div.btn-callout,
+body.dark div.btn-callout:focus,
+body.dark .info-callout-target:focus + div.info-callout,
+body.dark div.info-callout:focus {
   display: block;
 }
 body.dark div.btn-callout,
@@ -2925,7 +2929,11 @@ body.sunlit .button-detail-label {
 body.sunlit div.container-btn-action:hover + div.btn-callout,
 body.sunlit div.btn-callout:hover,
 body.sunlit .info-callout-target:hover + div.info-callout,
-body.sunlit div.info-callout:hover {
+body.sunlit div.info-callout:hover,
+body.sunlit div.container-btn-action:focus + div.btn-callout,
+body.sunlit div.btn-callout:focus,
+body.sunlit .info-callout-target:focus + div.info-callout,
+body.sunlit div.info-callout:focus {
   display: block;
 }
 body.sunlit div.btn-callout,
