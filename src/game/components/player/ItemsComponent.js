@@ -460,6 +460,7 @@ function (Ash, ItemVO, ItemConstants) {
 					}
 					var item = definition.clone();
 					item.itemID = componentValues.items[key][i].itemID;
+					item.foundPosition = componentValues.items[key][i].foundPosition;
 					var carried = componentValues.items[key][i].carried;
 					this.addItem(item, carried);
 					if (componentValues.items[key][i].equipped) {

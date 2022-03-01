@@ -70,7 +70,6 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			clone.itemID = this.itemID;
 			clone.equipped = this.equipped ? 1 : 0;
 			clone.carried = this.carried ? 1 : 0;
-			clone.foundPosition = this.foundPosition;
 
 			// delete static data
 			delete clone.name;
@@ -88,6 +87,11 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			delete clone.type;
 			delete clone.equippable;
 			delete clone.balancingData;
+			delete clone.configData;
+			delete clone.maximumCampOrdinal;
+			
+			if (this.foundPosition == null)
+				delete clone.foundPosition;
 
 			return clone;
 		},

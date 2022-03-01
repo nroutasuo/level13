@@ -618,7 +618,7 @@ define(['ash',
 			var playerActionFunctions = this;
 			var successCallback = function () {
 				sectorStatus.scouted = true;
-				sectorStatus.scoutedTimestamp = new Date().getTime();
+				sectorStatus.scoutedTimestamp = new Date().getTime() / 1000;
 				GlobalSignals.sectorScoutedSignal.dispatch();
 				playerActionFunctions.completeAction("scout");
 				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
