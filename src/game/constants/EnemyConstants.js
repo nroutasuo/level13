@@ -41,25 +41,25 @@ function (Ash, EnemyVO) {
 				verbsDefeated: [ "driven away", "killed"],
 			},
 			big_animal: {
-				nouns: [ "aggressive animal", "wild animal", "animal" ],
+				nouns: [ "aggressive animal", "wild animal", "animal", "hostile wildlife" ],
 				groupNouns: ["pack", "mob", "gang"],
 				verbsActive: ["overrun with", "guarded by", "occupied by"],
 				verbsDefeated: ["cleared", "killed"],
 			},
 			bird: {
-				nouns: ["urban pest", "birds", "animals", "aggressive animals"],
+				nouns: ["urban pest", "birds", "animal", "aggressive animal", "hostile wildlife" ],
 				groupNouns: ["flock", "swarm", "gang", "mob"],
 				verbsActive: ["overrun with", "infested with", "occupied by", "guarded by"],
 				verbsDefeated: ["killed", "cleared", "driven away"],
 			},
 			flora: {
-				nouns: ["urban pest", "vicious plants"],
+				nouns: ["urban pest", "vicious plant", "hostile wildlife" ],
 				groupNouns: ["cluster", "group"],
 				verbsActive: ["infested with", "covered in", "overrun with"],
 				verbsDefeated: ["cleared"],
 			},
 			fungi: {
-				nouns: ["urban pest", "dangerous fungi"],
+				nouns: ["urban pest", "dangerous fungi", "hostile wildlife"],
 				groupNouns: ["cluster", "group"],
 				verbsActive: ["infested with", "covered in", "overrun with"],
 				verbsDefeated: ["cleared", "killed"],
@@ -77,7 +77,7 @@ function (Ash, EnemyVO) {
 				verbsDefeated: ["disabled", "cleared", "destroyed"],
 			},
 			small_animal: {
-				nouns: ["urban pest", "aggressive animal", "wild animal", "animal"],
+				nouns: ["urban pest", "aggressive animal", "wild animal", "animal", "hostile wildlife"],
 				groupNouns: ["swarm", "pack", "mob", "group", "horde"],
 				verbsActive: ["infested with", "overrun with" ],
 				verbsDefeated: ["killed", "cleared"],

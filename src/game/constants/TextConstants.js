@@ -728,6 +728,8 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					if (condition === SectorConstants.SECTOR_CONDITION_MAINTAINED) modifier = "train";
 					break;
 				case localeTypes.sewer:
+					if (condition === SectorConstants.SECTOR_CONDITION_RECENT) modifier = "quiet";
+					if (condition === SectorConstants.SECTOR_CONDITION_MAINTAINED) modifier = "quiet";
 					noun = "sewer";
 					break;
 				case localeTypes.warehouse:
