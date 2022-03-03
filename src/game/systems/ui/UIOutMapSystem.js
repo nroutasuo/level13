@@ -502,7 +502,8 @@ define([
 		},
 
 		onTabChanged: function (tabID, tabProps) {
-			if (!tabID === GameGlobals.uiFunctions.elementIDs.tabs.map)  return;
+			if (tabID !== GameGlobals.uiFunctions.elementIDs.tabs.map) return;
+			
 			$("#tab-header h2").text("Map");
 			
 			this.selectMapStyle(GameGlobals.gameState.settings.mapStyle || this.MAP_STYLE_CANVAS);
