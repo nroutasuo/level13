@@ -101,7 +101,6 @@ define([
 			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.bag;
 			
 			this.updateSeenItems(isActive);
-			this.updateBubble();
 
 			if (!isActive) {
 				this.craftableItemDefinitions = null;
@@ -115,6 +114,7 @@ define([
 		slowUpdate: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			this.updateCrafting();
+			this.updateBubble();
 		},
 
 		refresh: function () {
@@ -481,6 +481,7 @@ define([
 			this.updateUseItems();
 			this.updateCrafting();
 			this.pruneSeenItems();
+			this.updateBubble();
 		},
 
 		onEquipmentChanged: function () {
@@ -488,6 +489,7 @@ define([
 			this.updateItems();
 			this.updateUseItems();
 			this.highlightItemType(null);
+			this.updateBubble();
 		},
 
 		showObsolete: function () {
@@ -495,15 +497,16 @@ define([
 		},
 
 		isItemUnlocked: function (itemDefinition) {
-			var actionName = "craft_" + itemDefinition.id;
-			var reqs = GameGlobals.playerActionsHelper.getReqs(actionName);
-			var reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(actionName, false);
+			let actionName = "craft_" + itemDefinition.id;
+			let reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(actionName, false);
 			if (reqsCheck.value >= 1)
 				return true;
 			if (reqsCheck.reason === PlayerActionConstants.UNAVAILABLE_REASON_BAG_FULL)
 				return true;
-			if (reqsCheck.reason === PlayerActionConstants.UNAVAILABLE_REASON_LOCKED_RESOURCES)
+			if (reqsCheck.reason === PlayerActionConstants.UNAVAILABLE_REASON_LOCKED_RESOURCES) {
+				let reqs = GameGlobals.playerActionsHelper.getReqs(actionName);
 				return reqs.upgrades && reqs.upgrades.length > 0;
+			}
 			return false;
 		},
 
