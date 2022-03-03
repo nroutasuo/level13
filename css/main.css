@@ -1387,6 +1387,7 @@ body.dark .follower-slot-type-empty {
   text-align: center;
   display: inline-block;
   opacity: 0.25;
+  width: 100%;
   font-style: oblique;
 }
 body.dark .item-slot-type-equipped,
@@ -3534,6 +3535,7 @@ body.sunlit .follower-slot-type-empty {
   text-align: center;
   display: inline-block;
   opacity: 0.25;
+  width: 100%;
   font-style: oblique;
 }
 body.sunlit .item-slot-type-equipped,
