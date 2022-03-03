@@ -70,7 +70,8 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			science: "science",
 		},
 		
-		itemDefinitions: { },
+		itemDefinitions: {},
+		itemByID: {}, // cache
 
 		loadData: function (data) {
 			for (itemID in data) {
@@ -86,6 +87,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 				itemVO.nameShort = item.nameShort || null;
 				itemVO.tradePrice = item.tradePrice;
 				this.itemDefinitions[type].push(itemVO);
+				this.itemByID[itemID] = itemVO;
 			}
 		},
 		
@@ -155,13 +157,8 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		},
 		
 		getItemConfigByID: function (id, skipWarning) {
-			for (var type in this.itemDefinitions ) {
-				for (let i in this.itemDefinitions[type]) {
-					var item = this.itemDefinitions[type][i];
-					if (item.id === id) {
-						return item;
-					}
-				}
+			if (this.itemByID[id]) {
+				return this.itemByID[id];
 			}
 			if (!skipWarning) log.w("no such item: config " + id);
 			return null;
