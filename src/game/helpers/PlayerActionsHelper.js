@@ -1021,7 +1021,7 @@ define([
 				return result;
 			}
 			
-			if (action.indexOf("improve_in") >= 0) {
+			if (action.indexOf("improve_in") >= 0 || action.indexOf("improve_out") >= 0) {
 				var improvementName = this.getImprovementNameForAction(action);
 				var improvementsComponent = sector.get(SectorImprovementsComponent);
 				let result = improvementsComponent.getLevel(improvementName);
