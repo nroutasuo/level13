@@ -1359,13 +1359,15 @@ define([
 				levelVO.numLocales++;
 			};
 			
+			var excludedFeatures = [ "isCamp", "isPassageUp", "isPassageDown", "workshopResource" ];
+			
 			// 1) spawn trading partners
 			for (let i = 0; i < TradeConstants.TRADING_PARTNERS.length; i++) {
 				var partner = TradeConstants.TRADING_PARTNERS[i];
 				var levelOrdinal = WorldCreatorHelper.getLevelOrdinalForCampOrdinal(seed, partner.campOrdinal);
 				var level = WorldCreatorHelper.getLevelForOrdinal(seed, levelOrdinal);
 				if (level == levelVO.level) {
-					var options = { excludingFeature: "isCamp" };
+					var options = { excludingFeature: excludedFeatures };
 					var sectorVO = WorldCreatorRandom.randomSectors(seed - 9393 + i * i, worldVO, levelVO, 1, 2, options)[0];
 					var locale = new LocaleVO(localeTypes.tradingpartner, true, false);
 					// WorldCreatorLogger.i("trade partner at " + sectorVO.position)
@@ -1376,7 +1378,7 @@ define([
 			
 			// 2) spanw grove
 			if (levelVO.level == worldVO.bottomLevel) {
-				var options = { excludingFeature: "workshopResource" };
+				var options = { excludingFeature: excludedFeatures };
 				var groveSector = WorldCreatorRandom.randomSectors(seed, worldVO, levelVO, 1, 2, options)[0];
 				var groveLocale = new LocaleVO(localeTypes.grove, true, false);
 				groveSector.sunlit = 1;
@@ -1388,7 +1390,7 @@ define([
 			// 3) spawn locales with hard-coded followers
 			for (let i = 0; i < levelVO.predefinedFollowers.length; i++) {
 				let follower = levelVO.predefinedFollowers[i];
-				let options = { excludingFeature: "workshopResource" };
+				let options = { excludingFeature: excludedFeatures };
 				let sector = WorldCreatorRandom.randomSectors(seed * 2, worldVO, levelVO, 1, 2, options)[0];
 				let locale = new LocaleVO(follower.localeType, true, false);
 				locale.followerID = follower.id;
@@ -1414,7 +1416,7 @@ define([
 				var excludedZones = isEarly ?
 					[ WorldConstants.ZONE_POI_2, WorldConstants.ZONE_CAMP_TO_PASSAGE, WorldConstants.ZONE_EXTRA_CAMPABLE ] :
 					[ WorldConstants.ZONE_ENTRANCE, WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_POI_1, WorldConstants.ZONE_EXTRA_CAMPABLE ];
-				var options = { requireCentral: false, excludingFeature: "isCamp", pathConstraints: pathConstraints, excludedZones: excludedZones, numDuplicates: 2 };
+				var options = { requireCentral: false, excludingFeature: excludedFeatures, pathConstraints: pathConstraints, excludedZones: excludedZones, numDuplicates: 2 };
 				var l = levelVO.level;
 				var sseed = Math.abs(seed - (isEarly ? 5555 : 0) + (l + 50) * 2);
 				for (let i = 0; i < count; i++) {

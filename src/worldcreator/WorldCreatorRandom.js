@@ -62,7 +62,7 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Ga
 			
 			var checkExclusion = function (sectorVO) {
 				if (!sectorVO) return false;
-				if (options.excludingFeature && sectorVO[options.excludingFeature]) {
+				if (WorldCreatorRandom.sectorHasExcludedFeatures(options.excludingFeature, sectorVO)) {
 					addRejection(sectorVO, "excluding feature: " + options.excludingFeature);
 					return false;
 				}
@@ -113,7 +113,7 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Ga
 			// map possible sectors
 			var checkExclusion = function (sectorVO) {
 				if (!sectorVO) return false;
-				if (options.excludingFeature && sectorVO[options.excludingFeature]) {
+				if (WorldCreatorRandom.sectorHasExcludedFeatures(options.excludingFeature, sectorVO)) {
 					return false;
 				}
 				if (options.excludedZones) {
@@ -152,6 +152,27 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Ga
 				if (sectors.length === numSectors) break;
 			}
 			return sectors;
+		},
+		
+		sectorHasExcludedFeatures: function (excludingFeature, sectorVO) {
+			if (!sectorVO) return false;
+			if (!excludingFeature) return false;
+			
+			if (typeof excludingFeature === "string") {
+				return this.sectorHasExcludedFeature(excludingFeature, sectorVO);
+			} else {
+				for (let i = 0; i < excludingFeature.length; i++) {
+					if (this.sectorHasExcludedFeature(excludingFeature[i], sectorVO)) {
+						return true;
+					}
+				}
+			}
+			
+			return false;
+		},
+		
+		sectorHasExcludedFeature: function (excludingFeature, sectorVO) {
+			return sectorVO[excludingFeature];
 		},
 		
 		randomDirections: function (seed, num, includeDiagonals) {
