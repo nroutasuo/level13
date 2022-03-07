@@ -334,7 +334,7 @@ define([
 				// normal level
 				// - random clusters
 				var maxNumHazardClusters = Math.round(Math.min(4, levelVO.sectors.length / 100));
-				var options = { excludingFeature: "camp", excludedZones: [ WorldConstants.ZONE_PASSAGE_TO_CAMP ] };
+				var options = { excludingFeature: "isCamp", excludedZones: [ WorldConstants.ZONE_PASSAGE_TO_CAMP ] };
 				var hazardSectors = WorldCreatorRandom.randomSectors(seed / 3 * levelOrdinal + 73 * levelVO.maxX, worldVO, levelVO, 0, maxNumHazardClusters, options);
 				for (var h = 0; h < hazardSectors.length; h++) {
 					var centerSector = hazardSectors[h];
@@ -492,7 +492,7 @@ define([
 			if (l === worldVO.topLevel) numRandom = 8;
 			if (numRandom > 0) {
 				var randomSeed = seed % 8 * 1751 + 1000 + (l + 5) * 291;
-				var options = { excludingFeature: "camp" };
+				var options = { excludingFeature: "isCamp" };
 				var sectors = WorldCreatorRandom.randomSectors(randomSeed, worldVO, levelVO, numRandom, numRandom + 1, options);
 				for (let i = 0; i < sectors.length; i++) {
 					var sector = sectors[i];
@@ -562,7 +562,7 @@ define([
 			let addStashes = function (sectorSeed, reason, stashType, itemIDs, numStashes, numItemsPerStash, excludedZones) {
 				numStashes = WorldCreatorRandom.getRandomIntFromRange(sectorSeed / 2 + 222, numStashes);
 				
-				let options = { requireCentral: false, excludingFeature: "camp", excludedZones: excludedZones };
+				let options = { requireCentral: false, excludingFeature: "isCamp", excludedZones: excludedZones };
 				let stashSectors = WorldCreatorRandom.randomSectors(sectorSeed, worldVO, levelVO, numStashes, numStashes + 1, options);
 				
 				for (let i = 0; i < stashSectors.length; i++) {
@@ -583,7 +583,6 @@ define([
 			}
 			
 			// stashes: every campable level guaranteed items
-			
 			if (levelVO.isCampable && l != 13) {
 				addStashes(seed / 7 * 937 + l * 331, "guaranteed-campable", ItemConstants.STASH_TYPE_ITEM, ItemConstants.getAvailableMetalCaches(levelVO.campOrdinal), 3, 1);
 				addStashes(3000 + seed % 7 * 188 + (levelVO.level % 3) * 105 + Math.abs(levelVO.minX + 50) * 77, "guaranteed-campable", ItemConstants.STASH_TYPE_ITEM, [ "consumable_map_1", "consumable_map_2" ], [1, 3], 1, lateZones);
@@ -698,7 +697,7 @@ define([
 			
 			if (l == 14) {
 				let excludedZones = [ WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_CAMP_TO_PASSAGE, WorldConstants.ZONE_EXTRA_CAMPABLE ];
-				var options = { excludingFeature: "camp", excludedZones: excludedZones };
+				var options = { excludingFeature: "isCamp", excludedZones: excludedZones };
 				let sectors = WorldCreatorRandom.randomSectors(seed / 2 + 1111, worldVO, levelVO, 3, 4, options);
 				for (let i = 0; i < sectors.length; i++) {
 					sectors[i].hasTradeConnectorSpot = true;
@@ -716,7 +715,7 @@ define([
 				let passagePos = levelVO.passagePositions[i];
 				let pathConstraints = [];
 				pathConstraints.push(new PathConstraintVO(passagePos, 3, null));
-				let options = { requireCentral: false, excludingFeature: "camp", pathConstraints: pathConstraints, excludedZones: excludedZones };
+				let options = { requireCentral: false, excludingFeature: "isCamp", pathConstraints: pathConstraints, excludedZones: excludedZones };
 				let safeSectors = WorldCreatorRandom.randomSectors(seed % 10000 + levelVO.level * 192 + i * 991, worldVO, levelVO, 1, 2, options);
 				if (safeSectors.length == 1) {
 					safeSectors[0].requiredResources.water = true;
@@ -1127,7 +1126,7 @@ define([
 			var addItemLocation = function (itemID, stage, reason) {
 				let s = 3223 + (itemID.length + 3) * 88 + levelVO.level * 208 + (i + 24) * 619;
 				let r = WorldCreatorRandom.random(s);
-				let options = { requireCentral: false, excludingFeature: "camp", excludedZones: excludedZones[stage] };
+				let options = { requireCentral: false, excludingFeature: "isCamp", excludedZones: excludedZones[stage] };
 				let sector = WorldCreatorRandom.randomSectors(s, worldVO, levelVO, 1, 2, options)[0];
 				sector.itemsScavengeable.push(itemID);
 				// WorldCreatorLogger.i("addItemLocation level " + levelVO.level + " " + stage + " " + itemID + " " + reason + " | " + sector.position);
@@ -1366,7 +1365,7 @@ define([
 				var levelOrdinal = WorldCreatorHelper.getLevelOrdinalForCampOrdinal(seed, partner.campOrdinal);
 				var level = WorldCreatorHelper.getLevelForOrdinal(seed, levelOrdinal);
 				if (level == levelVO.level) {
-					var options = { excludingFeature: "camp" };
+					var options = { excludingFeature: "isCamp" };
 					var sectorVO = WorldCreatorRandom.randomSectors(seed - 9393 + i * i, worldVO, levelVO, 1, 2, options)[0];
 					var locale = new LocaleVO(localeTypes.tradingpartner, true, false);
 					// WorldCreatorLogger.i("trade partner at " + sectorVO.position)
@@ -1415,7 +1414,7 @@ define([
 				var excludedZones = isEarly ?
 					[ WorldConstants.ZONE_POI_2, WorldConstants.ZONE_CAMP_TO_PASSAGE, WorldConstants.ZONE_EXTRA_CAMPABLE ] :
 					[ WorldConstants.ZONE_ENTRANCE, WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_POI_1, WorldConstants.ZONE_EXTRA_CAMPABLE ];
-				var options = { requireCentral: false, excludingFeature: "camp", pathConstraints: pathConstraints, excludedZones: excludedZones, numDuplicates: 2 };
+				var options = { requireCentral: false, excludingFeature: "isCamp", pathConstraints: pathConstraints, excludedZones: excludedZones, numDuplicates: 2 };
 				var l = levelVO.level;
 				var sseed = Math.abs(seed - (isEarly ? 5555 : 0) + (l + 50) * 2);
 				for (let i = 0; i < count; i++) {

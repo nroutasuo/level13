@@ -16,7 +16,7 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Ga
 		
 		// Pseudo-random array of min (inclusive) to max (exclusive) existing sectors
 		// options:
-		// - excludingFeature (string): exclude sectors that have this featue (for example "camp")
+		// - excludingFeature (string): exclude sectors that have this featue (for example "isCamp")
 		// - excludedZones (array of strings): exclude sectors assigned to give zone
 		// - pathConstraints (array of PathConstraintVO): all paths must be satisfied if present
 		// - numDuplicates (int): how many of the returned sectors can be the same (default 1 -> no duplicates) (0 -> no limit)
