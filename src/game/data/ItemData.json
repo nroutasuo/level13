@@ -322,7 +322,7 @@
     },
     "bag_3": {
         "bonuses": {
-            "bag": 80
+            "bag": 60
         },
         "description": "With this bag, weight is starting to be more of a problem than space.",
         "icon": "img/items/bag-1.png",
@@ -340,7 +340,7 @@
     },
     "bag_4": {
         "bonuses": {
-            "bag": 100
+            "bag": 80
         },
         "description": "A really practical backpack with lots of pockets.",
         "icon": "img/items/bag-1.png",
@@ -816,7 +816,7 @@
     "clothing_head_5": {
         "bonuses": {
             "def": 15,
-            "res_poison": 10,
+            "res_poison": 15,
             "res_rad": 20,
             "shade": 50,
             "shield": 20,
