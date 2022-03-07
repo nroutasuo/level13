@@ -99,6 +99,7 @@ define([
 			var hasCampOnLevel = this.nearestCampNodes.head !== null;
 			
 			// TODO rework texts
+			// TODO check distance to camp / safety - if fainted 1-2 tiles away from camp, be saved by workers
 			
 			var msgAdjective = hasWater ? (hasFood ? "exhausted" : "hungry") : "thirsty";
 			var msgMain = "";

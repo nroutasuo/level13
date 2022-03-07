@@ -32,6 +32,7 @@ define(['ash',
 		SECTOR_CONDITION_DAMAGED: 4,    // not worn out but actually damaged by something
 		SECTOR_CONDITION_RUINED: 5,     // so damaged or worn it's hard to say which
 		
+		// TODO add locales?
 		WAYMARK_TYPE_SPRING: "spring",
 		WAYMARK_TYPE_CAMP: "camp",
 		WAYMARK_TYPE_RADIATION: "radiation",

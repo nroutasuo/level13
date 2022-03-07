@@ -81,11 +81,11 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 			case localeTypes.house:
 				res.addResource(resourceNames.food, abundant);
 				res.addResource(resourceNames.water, abundant);
-				if (campOrdinal > 2) res.addResource(resourceNames.medicine, defaultAmount);
+				if (campOrdinal > 3) res.addResource(resourceNames.medicine, defaultAmount);
 				break;
 			case localeTypes.lab:
 				res.addResource(resourceNames.water, defaultAmount);
-				if (campOrdinal > 1) res.addResource(resourceNames.medicine, abundant);
+				if (campOrdinal > 3) res.addResource(resourceNames.medicine, abundant);
 				break;
 			case localeTypes.grove:
 				res.addResource(resourceNames.water, defaultAmount);

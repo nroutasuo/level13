@@ -156,6 +156,7 @@ define(['ash',
 							return;
 						}
 						
+						// TODO fix the time so it responds to time cheat
 						caravansComponent.pendingCaravan.returnTimeStamp = endTimeStamp;
 						caravansComponent.pendingCaravan.returnDuration = duration;
 						caravansComponent.outgoingCaravans.push(caravansComponent.pendingCaravan);
