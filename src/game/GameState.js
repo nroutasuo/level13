@@ -82,6 +82,17 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.extraUpdateTime = 0;
 		},
 
+		syncData: function () {
+			// remove duplicates from foundTradingPartners
+			var partners = this.foundTradingPartners;
+			this.foundTradingPartners = [];
+			for (var campOrdinal = 1; campOrdinal < 15; campOrdinal++) {
+				if (partners.indexOf(campOrdinal) >= 0) {
+					this.foundTradingPartners.push(campOrdinal);
+				}
+			}
+		},
+
 		passTime: function (seconds) {
 			this.extraUpdateTime = seconds;
 			var cooldownkeys = Object.keys(this.actionCooldownEndTimestamps);

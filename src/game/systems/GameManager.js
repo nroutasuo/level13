@@ -425,6 +425,7 @@ define([
 		// Clean up a loaded game state, mostly used to ensure backwards compatibility
 		syncLoadedGameState: function () {
 			gtag('event', 'game_load_save', { event_category: 'game_data' });
+			GameGlobals.gameState.syncData();
 			this.creator.syncPlayer(this.engine.getNodeList(PlayerStatsNode).head.entity);
 			var sectorNodes = this.engine.getNodeList(SectorNode);
 			for (var node = sectorNodes.head; node; node = node.next) {
