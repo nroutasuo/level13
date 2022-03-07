@@ -11,7 +11,7 @@
         "use_in_home": 180,
         "use_in_market": 360,
         "use_in_shrine": 600,
-        "use_in_temple": 120,
+        "use_in_temple": 1200,
         "use_spring": 60
     },
     "costs": {
@@ -96,7 +96,7 @@
         },
         "build_in_house2": {
             "cost_factor_expBase": 1.5,
-            "resource_concrete": 80,
+            "resource_concrete": 100,
             "resource_metal": {
                 "expCost": 500,
                 "linearCost": 1500
@@ -129,13 +129,12 @@
         },
         "build_in_researchcenter": {
             "resource_metal": 1800,
-            "resource_rope": 500,
-            "resource_rubber": 100,
-            "resource_water": 500
+            "resource_rubber": 200,
+            "resource_tools": 300
         },
         "build_in_shrine": {
             "resource_food": 200,
-            "resource_metal": 100,
+            "resource_metal": 80,
             "resource_water": 100
         },
         "build_in_smithy": {
@@ -202,32 +201,35 @@
             "resource_tools": 100
         },
         "build_out_passage_down_elevator": {
-            "cost_factor_expBase": 2,
+            "cost_factor_expBase": 1.88,
             "resource_fuel": {
                 "constantCost": 10,
                 "expCost": 0,
                 "linearCost": 10
             },
             "resource_metal": {
-                "expCost": 45,
+                "constantCost": 10,
+                "expCost": 40,
                 "linearCost": 100
             }
         },
         "build_out_passage_down_hole": {
-            "cost_factor_expBase": 2,
+            "cost_factor_expBase": 1.88,
             "resource_concrete": {
                 "constantCost": 50,
                 "linearCost": 25
             },
             "resource_metal": {
-                "expCost": 45,
+                "constantCost": 10,
+                "expCost": 40,
                 "linearCost": 100
             }
         },
         "build_out_passage_down_stairs": {
-            "cost_factor_expBase": 2,
+            "cost_factor_expBase": 1.88,
             "resource_metal": {
-                "expCost": 45,
+                "constantCost": 10,
+                "expCost": 40,
                 "linearCost": 100
             },
             "resource_rope": 10
@@ -236,28 +238,28 @@
             "cost_factor_expBase": 1.25,
             "resource_fuel": 10,
             "resource_metal": {
-                "expBase": 1.5,
-                "expCost": 50,
-                "linearCost": 450
+                "expBase": 1.45,
+                "expCost": 30,
+                "linearCost": 400
             }
         },
         "build_out_passage_up_hole": {
             "cost_factor_expBase": 1.25,
             "resource_concrete": 50,
             "resource_metal": {
-                "expBase": 1.5,
-                "expCost": 50,
-                "linearCost": 450
+                "expBase": 1.45,
+                "expCost": 30,
+                "linearCost": 400
             }
         },
         "build_out_passage_up_stairs": {
             "cost_factor_expBase": 1.25,
             "resource_metal": {
-                "expBase": 1.5,
-                "expCost": 50,
-                "linearCost": 450
+                "expBase": 1.45,
+                "expCost": 30,
+                "linearCost": 400
             },
-            "resource_rope": 10
+            "resource_rope": 50
         },
         "build_out_spaceship1": {
             "resource_concrete": 10000,
@@ -691,7 +693,8 @@
         },
         "improve_in_barracks": {
             "cost_factor_expBase": 2,
-            "resource_metal": 100
+            "resource_metal": 100,
+			"resource_tools": 30
         },
         "improve_in_campfire": {
             "cost_factor_expBase": 1.25,
@@ -823,12 +826,12 @@
         "improve_in_temple": {
             "cost_factor_expBase": 1.25,
             "resource_herbs": {
-                "constantCost": 50,
-                "expCost": 5
+                "constantCost": 35,
+                "expCost": 15
             },
             "resource_metal": {
-                "constantCost": 50,
-                "expCost": 5
+                "constantCost": 25,
+                "expCost": 25
             }
         },
         "improve_out_collector_food": {
@@ -1010,7 +1013,7 @@
             "rumours": 512
         },
         "unlock_building_greenhouse": {
-            "favour": 85,
+            "favour": 21,
             "rumours": 256
         },
         "unlock_building_hospital": {
@@ -1204,7 +1207,7 @@
         },
         "use_in_hospital_2": {
             "cost_factor_expBase": 1.5,
-            "resource_medicine": 100,
+            "resource_medicine": 300,
             "resource_water": 100
         },
         "use_in_temple": {
@@ -1220,7 +1223,7 @@
         "build_out_camp": "A place to rest.",
         "build_out_collector_food": "Accumulates food.",
         "build_out_collector_water": "Accumulates water.",
-        "build_out_tradepost_connector": "Allows traders and workers to cross the dangerous level",
+        "build_out_tradepost_connector": "Allows traders and workers to cross the level safely.",
         "clear_debris": "Clear the debris blocking the way.",
         "clear_waste_r": "Clear the radiactive waste.",
         "clear_waste_t": "Clear the pollution.",
@@ -1265,7 +1268,7 @@
         "use_in_campfire": "Collect rumours from the population.",
         "use_in_home": "Recover stamina.",
         "use_in_hospital": "Heal injuries.",
-        "use_in_hospital_2": "Improve overall health",
+        "use_in_hospital_2": "Add implants that improve overall health",
         "use_in_market": "Go hear the latest gossip.",
         "use_in_shrine": "Reconnect with the spirits",
         "use_in_temple": "Donate silver for favour with the spirits",
@@ -1419,6 +1422,10 @@
                     2
                 ]
             },
+			"population": [
+				10,
+				-1
+			],
             "upgrades": {
                 "unlock_building_barracks": true
             }
@@ -1492,6 +1499,10 @@
                     1
                 ],
                 "house": [
+                    1,
+                    -1
+                ],
+                "storage": [
                     1,
                     -1
                 ]
@@ -1616,6 +1627,10 @@
                 "library": [
                     -1,
                     1
+                ],
+                "storage": [
+                    1,
+                    -1
                 ]
             },
             "upgrades": {
@@ -1685,7 +1700,7 @@
             },
             "level": {
                 "population": [
-                    1,
+                    10,
                     -1
                 ]
             },
@@ -1703,10 +1718,6 @@
                 "shrine": [
                     -1,
                     1
-                ],
-                "storage": [
-                    1,
-                    -1
                 ]
             }
         },
@@ -1788,6 +1799,12 @@
                     0,
                     1
                 ]
+            },
+            "level": {
+                "population": [
+                    1,
+                    -1
+                ]
             }
         },
         "build_in_tradepost": {
@@ -1839,6 +1856,7 @@
                 },
                 "scouted": true
             },
+			"sunlit": false,
             "upgrades": {
                 "unlock_building_beacon": true
             },
@@ -2668,7 +2686,11 @@
         },
         "move_camp_level": {
             "busy": false,
-            "path_to_camp": true
+            "path_to_camp": true,
+            "vision": [
+                25,
+                -1
+            ]
         },
         "move_level_down": {
             "busy": false,
@@ -3366,6 +3388,7 @@
             }
         },
         "use_item_glowstick_1": {
+			"sunlit": false,
             "vision": [
                 0,
                 30
