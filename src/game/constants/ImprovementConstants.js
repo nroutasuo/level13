@@ -108,6 +108,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 				improvementLevelsPerMajorLevel: 5,
 			},
 			researchcenter: {
+				description: "Generates evidence.",
 				improvementLevelsPerTechLevel: 5,
 			},
 			tradepost: {

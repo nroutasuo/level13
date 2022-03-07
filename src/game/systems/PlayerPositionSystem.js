@@ -301,14 +301,18 @@ define([
 			setTimeout(function () {
 				gtag('event', 'last_level_reached', { event_category: 'progression' })
 				var msg = "You've reached the last level of the current version of Level 13. ";
-				msg += "There will be some more things to discover here, but you will not be able to build the passage to the next level. Congrats on surviving to the end!";
+				msg += "There will be some more things to discover here, but you will not be able to build any more camps or passages. Congratulations on surviving to the end!";
 				msg += "<br/><br/>"
 				msg += "<span class='p-meta'>Thank you for playing this far. The developer would love to hear your feedback. You can use any of these channels:</span>";
 				msg += "<p>" + GameConstants.getFeedbackLinksHTML() + "</p>";
 				GameGlobals.uiFunctions.showInfoPopup(
 					"Last level",
 					msg,
-					"Continue"
+					"Continue",
+					null,
+					null,
+					true,
+					false
 				);
 			}, 300);
 		},

@@ -500,7 +500,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					events.push("something called the Great Famine which took place a few decades before the book was written");
 					events.push("the establishment of the city-wide Government");
 					events.push("a major gardener rebellion");
-					events.push("a great nuclear power plant accident where a lot of waste was released to the lower levels of the City");
+					events.push("a nuclear power plant accident where waste was released to the lower levels of the City");
 					break;
 			}
 			result["c-event"] = DescriptionMapper.pickRandom(events, features);
@@ -744,6 +744,8 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					break;
 				case localeTypes.hut:
 				case localeTypes.hermit:
+					if (condition === SectorConstants.SECTOR_CONDITION_RECENT) modifier = "recently builtt";
+					if (condition === SectorConstants.SECTOR_CONDITION_MAINTAINED) modifier = "well-kept";
 					noun = "hut";
 					break;
 				case localeTypes.library:
