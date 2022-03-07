@@ -296,8 +296,8 @@ define([
 				if (improvedBuildings.length > 0) {
 					for (let i in improvedBuildings) {
 						effects += "improved " + this.getImprovementDisplayName(improvedBuildings[i]).toLowerCase();
+						effects += ", ";
 					}
-					effects += ", ";
 				}
 
 				var unlockedWorkers = GameGlobals.upgradeEffectsHelper.getUnlockedWorkers(upgradeID);

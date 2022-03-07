@@ -135,7 +135,7 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 			improve_worker_trapper_3: "Processed foods last longer and enable using ingredients otherwise too unpleasant, ultimately improving efficiency of trappers",
 			improve_worker_water_3: "Get more out of all water that is collected",
 			unlock_project_tradingpost_connector: "A massive elevator, spanning a whole level, and allowing traders bypass entire hazardous environment.",
-			improve_building_hospital_3: "Make hospital visits less traumatic.",
+			improve_building_hospital_3: "Make hospital visits less traumatic and enable new implants..",
 			improve_worker_chemist_3: "Further refine fuel production",
 			improve_building_radiotower: "Improve the radio station and send messages over longer distances",
 			improve_worker_apothecary_3: "A new kind of medicine",
