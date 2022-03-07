@@ -14,14 +14,14 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
 			GlobalSignals.add(this, GlobalSignals.popupResizedSignal, this.onPopupResized);
 		},
 		
-		showPopup: function (title, msg, okButtonLabel, cancelButtonLabel, resultVO, okCallback, cancelCallback, isMeta) {
+		showPopup: function (title, msg, okButtonLabel, cancelButtonLabel, resultVO, okCallback, cancelCallback, isMeta, isDismissable) {
 			if (GameGlobals.gameState.uiStatus.isHidden && !isMeta) {
-				this.hiddenQueue.push({title: title, msg: msg, okButtonLabel: okButtonLabel, cancelButtonLabel: cancelButtonLabel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback });
+				this.hiddenQueue.push({title: title, msg: msg, okButtonLabel: okButtonLabel, cancelButtonLabel: cancelButtonLabel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback, isDismissable: isDismissable });
 				return;
 			}
 			
 			if (this.hasOpenPopup()) {
-				this.popupQueue.push({title: title, msg: msg, okButtonLabel: okButtonLabel, cancelButtonLabel: cancelButtonLabel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback, isMeta: isMeta });
+				this.popupQueue.push({title: title, msg: msg, okButtonLabel: okButtonLabel, cancelButtonLabel: cancelButtonLabel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback, isMeta: isMeta, isDismissable: isDismissable });
 				return;
 			}
 			
@@ -90,7 +90,9 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
 			GameGlobals.uiFunctions.generateButtonOverlays("#common-popup .buttonbox");
 			GameGlobals.uiFunctions.generateCallouts("#common-popup .buttonbox");
 			
-			let isDismissable = !hasNonEmptyResult && !cancelButtonLabel;
+			if (typeof isDismissable == 'undefined') {
+				isDismissable = !hasNonEmptyResult && !cancelButtonLabel;
+			}
 			popup.attr("data-dismissable", isDismissable);
 			popup.attr("data-dismissed", "false");
 			if (isDismissable) {
