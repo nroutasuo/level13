@@ -80,6 +80,7 @@ define([
 				// sector features 2
 				for (var s = 0; s < levelVO.sectors.length; s++) {
 					var sectorVO = levelVO.sectors[s];
+					sectorVO.sunlit = sectorVO.sunlit || this.isSunlitByNeighbours(worldVO, levelVO, sectorVO);
 					this.generateAdditionalHazards(seed, worldVO, levelVO, sectorVO);
 				}
 				this.generateWaymarks(seed, worldVO, levelVO);
@@ -1845,8 +1846,9 @@ define([
 		},
 		
 		isSunlit: function (seed, worldVO, levelVO, sectorVO) {
-			var l = sectorVO.position.level;
-			var isHole = function (pos) {
+			let l = sectorVO.position.level;
+			
+			let isHole = function (pos) {
 				var features = worldVO.getFeaturesByPos(pos);
 				for (let i = 0; i < features.length; i++) {
 					switch (features[i].type) {
@@ -1859,6 +1861,7 @@ define([
 				}
 				return 0;
 			};
+			
 			if (l === worldVO.topLevel) {
 				// surface: all lit
 				return 1;
@@ -1886,6 +1889,18 @@ define([
 				if (distance <= 1 + levelVO.seaPadding) return 1;
 				return 0;
 			}
+		},
+		
+		isSunlitByNeighbours: function (worldVO, levelVO, sectorVO) {
+			let numTotal = 0;
+			let numSunlit = 0;
+			let neighbours = levelVO.getNeighbourList(sectorVO.position.sectorX, sectorVO.position.sectorY);
+			for (let i = 0; i < neighbours.length; i++) {
+				numTotal++;
+				if (neighbours[i].sunlit) numSunlit++;
+			}
+			let isSunlit = numSunlit / numTotal > 0.8;
+			return isSunlit ? 0.5 : 0;
 		},
 		
 		isRequiredResourceWaterSpring: function (levelVO, sectorVO) {
