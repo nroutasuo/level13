@@ -1123,10 +1123,11 @@ define([
 			let excludedZones = {};
 			excludedZones[WorldConstants.CAMP_STAGE_EARLY] = [ WorldConstants.ZONE_POI_2, WorldConstants.ZONE_CAMP_TO_PASSAGE, WorldConstants.ZONE_EXTRA_CAMPABLE, WorldConstants.ZONE_EXTRA_UNCAMPABLE ];
 			excludedZones[WorldConstants.CAMP_STAGE_LATE] = [ WorldConstants.ZONE_ENTRANCE, WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_POI_1 ];
+			
 			var addItemLocation = function (itemID, stage, reason) {
 				let s = 3223 + (itemID.length + 3) * 88 + levelVO.level * 208 + (i + 24) * 619;
 				let r = WorldCreatorRandom.random(s);
-				let options = { requireCentral: false, excludingFeature: "isCamp", excludedZones: excludedZones[stage] };
+				let options = { requireCentral: false, excludingFeature: [ "isCamp", "workshopResource" ], excludedZones: excludedZones[stage], filter: sectorVO => sectorVO.itemsScavengeable.length == 0 };
 				let sector = WorldCreatorRandom.randomSectors(s, worldVO, levelVO, 1, 2, options)[0];
 				sector.itemsScavengeable.push(itemID);
 				// WorldCreatorLogger.i("addItemLocation level " + levelVO.level + " " + stage + " " + itemID + " " + reason + " | " + sector.position);
@@ -1136,6 +1137,7 @@ define([
 			for (let i = 0; i < stages.length; i++) {
 				var stageVO = stages[i];
 				let step = WorldConstants.getStepForStage(stageVO.stage);
+				let maxPerType = levelVO.levelOrdinal > 10 ? 1 : levelVO.levelOrdinal > 3 ? 3 : 10;
 				
 				// ingredients for required equipment
 				let requiredEquipment = [];
@@ -1147,21 +1149,25 @@ define([
 					requiredEquipment = this.itemsHelper.getRequiredEquipment(nextLevelVO.campOrdinal, WorldConstants.CAMP_STEP_START, nextLevelVO.isHard);
 				}
 				let requiredEquipmentIngredients = ItemConstants.getIngredientsToCraftMany(requiredEquipment);
-				for (let i = 0; i < requiredEquipmentIngredients.length; i++) {
+				let requiredEquipmentIngredientsMax = Math.min(maxPerType, requiredEquipmentIngredients.length);
+				for (let i = 0; i < requiredEquipmentIngredientsMax; i++) {
 					let def = requiredEquipmentIngredients[i];
 					addItemLocation(def.id, stageVO.stage, "required-equipment");
 				}
 				
 				// ingredients for crafting other important items
-				let requiredItems = [ "exploration_1" ].map(itemID => ItemConstants.getItemConfigByID(itemID));
-				let requiredItemIngredients = ItemConstants.getIngredientsToCraftMany(requiredItems);
-				for (let i = 0; i < requiredItemIngredients.length; i++) {
-					let def = requiredItemIngredients[i];
-					addItemLocation(def.id, stageVO.stage, "required-items");
+				if (stageVO.stage == WorldConstants.CAMP_STAGE_EARLY) {
+					let requiredItems = [ "exploration_1" ].map(itemID => ItemConstants.getItemConfigByID(itemID));
+					let requiredItemIngredients = ItemConstants.getIngredientsToCraftMany(requiredItems);
+					let requiredItemIngredientsMax = Math.min(maxPerType, requiredItemIngredients.length);
+					for (let i = 0; i < requiredItemIngredientsMax; i++) {
+						let def = requiredItemIngredients[i];
+						addItemLocation(def.id, stageVO.stage, "required-items");
+					}
 				}
 				
 				// a couple of random ingredients
-				let numRandomIngredients = 2;
+				let numRandomIngredients = 10;
 				for (let i = 0; i < numRandomIngredients; i++) {
 					var s1 = 4200 + seed % 3000 + (levelVO.level + 5) * 217 + i * 991;
 					var r1 = WorldCreatorRandom.random(s1);

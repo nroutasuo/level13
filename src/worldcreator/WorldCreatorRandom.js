@@ -16,10 +16,11 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Ga
 		
 		// Pseudo-random array of min (inclusive) to max (exclusive) existing sectors
 		// options:
-		// - excludingFeature (string): exclude sectors that have this featue (for example "isCamp")
+		// - excludingFeature (string/array): exclude sectors that have this featue (for example "isCamp")
 		// - excludedZones (array of strings): exclude sectors assigned to give zone
 		// - pathConstraints (array of PathConstraintVO): all paths must be satisfied if present
 		// - numDuplicates (int): how many of the returned sectors can be the same (default 1 -> no duplicates) (0 -> no limit)
+		// - filter (function) custom filter to reject any sector (sector => bool)
 		randomSectors: function (seed, worldVO, levelVO, min, max, options) {
 			var sectors = [];
 			var numSectors = this.randomInt(seed, min, max);
@@ -61,18 +62,10 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Ga
 			};
 			
 			var checkExclusion = function (sectorVO) {
-				if (!sectorVO) return false;
-				if (WorldCreatorRandom.sectorHasExcludedFeatures(options.excludingFeature, sectorVO)) {
-					addRejection(sectorVO, "excluding feature: " + options.excludingFeature);
+				let reason = WorldCreatorRandom.getSectorInvalidReason(worldVO, sectorVO, options);
+				if (reason) {
+					addRejection(sectorVO, reason);
 					return false;
-				}
-				if (options.excludedZones) {
-					for (let i = 0; i < options.excludedZones.length; i++) {
-						if (sectorVO.zone == options.excludedZones[i]) {
-							addRejection(sectorVO, "excluded zone: " + options.excludedZones[i]);
-							return false;
-						}
-					}
 				}
 				return true;
 			};
@@ -112,19 +105,7 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Ga
 
 			// map possible sectors
 			var checkExclusion = function (sectorVO) {
-				if (!sectorVO) return false;
-				if (WorldCreatorRandom.sectorHasExcludedFeatures(options.excludingFeature, sectorVO)) {
-					return false;
-				}
-				if (options.excludedZones) {
-					for (let i = 0; i < options.excludedZones.length; i++) {
-						if (sectorVO.zone == options.excludedZones[i]) return false;
-					}
-				}
-				if (!WorldCreatorRandom.checkPathRequirements(worldVO, sector, options.pathConstraints)) {
-					return false;
-				}
-				return true;
+				return WorldCreatorRandom.getSectorInvalidReason(worldVO, sectorVO, options) == null;
 			};
 			var possibleSectors = [];
 			for (let i = 0; i < availableSectors.length; i++) {
@@ -154,6 +135,34 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Ga
 			return sectors;
 		},
 		
+		getSectorInvalidReason: function (worldVO, sectorVO, options) {
+			if (!sectorVO) return "null sector";
+			
+			if (WorldCreatorRandom.sectorHasExcludedFeatures(options.excludingFeature, sectorVO)) {
+				return "excluding feature: " + options.excludingFeature;
+			}
+			
+			if (options.excludedZones) {
+				for (let i = 0; i < options.excludedZones.length; i++) {
+					if (sectorVO.zone == options.excludedZones[i]) {
+						return "excluded zone: " + options.excludedZones[i];
+					}
+				}
+			}
+			
+			if (options.filter) {
+				if (!options.filter(sectorVO)) {
+					return "filter";
+				}
+			}
+			
+			if (!WorldCreatorRandom.checkPathRequirements(worldVO, sectorVO, options.pathConstraints)) {
+				return "path requirements";
+			}
+				
+			return null;
+		},
+		
 		sectorHasExcludedFeatures: function (excludingFeature, sectorVO) {
 			if (!sectorVO) return false;
 			if (!excludingFeature) return false;
@@ -172,7 +181,8 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Ga
 		},
 		
 		sectorHasExcludedFeature: function (excludingFeature, sectorVO) {
-			return sectorVO[excludingFeature];
+			let result = sectorVO[excludingFeature];
+			return result;
 		},
 		
 		randomDirections: function (seed, num, includeDiagonals) {
