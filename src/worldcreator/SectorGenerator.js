@@ -292,17 +292,23 @@ define([
 						
 					// - determine value range
 					var step = WorldConstants.getCampStep(sectorVO.zone);
+					var distanceToEdge = Math.min(Math.abs(y - levelVO.minY), Math.abs(y - levelVO.maxY), Math.abs(x - levelVO.minX), Math.abs(x - levelVO.maxX));
+					
 					var maxHazardCold = Math.min(100, this.itemsHelper.getMaxHazardColdForLevel(campOrdinal, step, levelVO.isHard));
 					var minHazardCold = this.itemsHelper.getMinHazardColdForLevel(campOrdinal, step, levelVO.isHard);
+					if (levelVO.level != worldVO.topLevel && this.isSunlit(seed, worldVO, levelVO, sectorVO) && distanceToEdge > 1) {
+						debugger
+						maxHazardCold /= 2;
+						minHazardCold /= 2;
+					}
+					if (maxHazardCold < Math.max(5, minHazardCold)) continue;
 					minHazardCold = Math.min(minHazardCold, maxHazardCold - 1);
 					minHazardCold = Math.max(minHazardCold, 1);
-					if (maxHazardCold < 5) continue;
 						
 					// - determine eligibility
 					var isEarlyZone = sectorVO.zone == WorldConstants.ZONE_PASSAGE_TO_CAMP || sectorVO.zone == WorldConstants.ZONE_PASSAGE_TO_PASSAGE;
 					var isEarlyCriticalPath = sectorVO.isOnEarlyCriticalPath();
-					var distanceToEdge = Math.min(Math.abs(y - levelVO.minY), Math.abs(y - levelVO.maxY), Math.abs(x - levelVO.minX), Math.abs(x - levelVO.maxX));
-					var edgeThreshold = isEarlyCriticalPath || isEarlyZone ? 7 : 5;
+					var edgeThreshold = isEarlyCriticalPath || isEarlyZone ? 10 : 5;
 					var centerThreshold = isEarlyCriticalPath || isEarlyZone ? WorldCreatorConstants.TOWER_RADIUS + 2 : WorldCreatorConstants.TOWER_RADIUS;
 					var isFullLevel = l === worldVO.topLevel;
 					var coldEdgeDist = Math.max(edgeThreshold - distanceToEdge, Math.abs(y) - centerThreshold, Math.abs(x) - centerThreshold);
