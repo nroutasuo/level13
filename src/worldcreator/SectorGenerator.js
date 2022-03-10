@@ -350,6 +350,7 @@ define([
 				borderSectors.sort(function (a, b) { return PositionConstants.getDistanceTo(startPos, b.sector.position) - PositionConstants.getDistanceTo(startPos, a.sector.position) });
 				for (let i = 0; i < borderSectors.length; i++) {
 					var pair = borderSectors[i];
+					if (pair.neighbour.zone == WorldConstants.ZONE_ENTRANCE) continue;
 					var maxHazardValue = this.getMaxHazardValue(levelVO, pair.neighbour, false, pair.neighbour.zone);
 					if (maxHazardValue < 1) continue;
 					var distanceToCamp = Math.min(
@@ -358,10 +359,9 @@ define([
 					);
 					if (distanceToCamp < 3) continue;
 					var s = 2000 + seed % 26 * 3331 + 100 + (i + 5) * 6541 + distanceToCamp * 11;
-					var add = WorldCreatorRandom.randomBool(s);
-					if (add) {
+					if (WorldCreatorRandom.randomBool(s, 0.35)) {
 						var radius = WorldCreatorRandom.randomInt(s / 2, 2, 3);
-						this.addHazardCluster(seed, i, levelVO, pair.sector, radius);
+						this.addHazardCluster(seed, levelVO, pair.neighbour, radius);
 						break;
 					}
 				}
