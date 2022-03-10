@@ -297,7 +297,6 @@ define([
 					var maxHazardCold = Math.min(100, this.itemsHelper.getMaxHazardColdForLevel(campOrdinal, step, levelVO.isHard));
 					var minHazardCold = this.itemsHelper.getMinHazardColdForLevel(campOrdinal, step, levelVO.isHard);
 					if (levelVO.level != worldVO.topLevel && this.isSunlit(seed, worldVO, levelVO, sectorVO) && distanceToEdge > 1) {
-						debugger
 						maxHazardCold /= 2;
 						minHazardCold /= 2;
 					}
@@ -405,15 +404,28 @@ define([
 			if (blockerTypesLate.length < 1) return;
 			
 			var creator = this;
-			var getBlockerType = function (seed, stage) {
-				var blockerTypes = stage == WorldConstants.CAMP_STAGE_LATE ? blockerTypesLate : blockerTypesEarly;
-				var typeix = blockerTypes.length > 1 ? WorldCreatorRandom.randomInt(seed, 0, blockerTypes.length) : 0;
+			var getBlockerType = function (seed, sectorVO) {
+				let stage = sectorVO.stage;
+				let blockerTypes = stage == WorldConstants.CAMP_STAGE_LATE ? blockerTypesLate : blockerTypesEarly;
+				if (sectorVO.hazards.radiation > 0) {
+					if (blockerTypes.indexOf(MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE) >= 0 && WorldCreatorRandom.randomBool(seed, 0.8)) {
+						return MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE;
+					}
+					blockerTypes = blockerTypes.filter(type => type != MovementConstants.BLOCKER_TYPE_WASTE_TOXIC);
+				}
+				if (sectorVO.hazards.poison > 0) {
+					if (blockerTypes.indexOf(MovementConstants.BLOCKER_TYPE_WASTE_TOXIC) >= 0 && WorldCreatorRandom.randomBool(seed, 0.8)) {
+						return MovementConstants.BLOCKER_TYPE_WASTE_TOXIC;
+					}
+					blockerTypes = blockerTypes.filter(type => type != MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE);
+				}
+				let typeix = blockerTypes.length > 1 ? WorldCreatorRandom.randomInt(seed, 0, blockerTypes.length) : 0;
 				return blockerTypes[typeix];
 			};
 			
 			var addBlocker = function (seed, sectorVO, neighbourVO, type, addDiagonals, allowedCriticalPaths) {
 				neighbourVO = neighbourVO || WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, true);
-				var blockerType = type || getBlockerType(seed, sectorVO.stage);
+				var blockerType = type || getBlockerType(seed, sectorVO);
 				var options = { addDiagonals: addDiagonals, allowedCriticalPaths: allowedCriticalPaths };
 				var sectorcb = function (s) {
 					
@@ -2153,9 +2165,11 @@ define([
 			var unlockRadioactiveWasteOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_action_clear_waste_r");
 			let unlockRadioactiveWasteStep = UpgradeConstants.getMinimumCampStepForUpgrade("unlock_action_clear_waste_r");
 			let unlockRadioactiveWasteStage = WorldConstants.getStageForStep(unlockRadioactiveWasteStep);
-			if (WorldConstants.isHigherOrEqualCampOrdinalAndStage(campOrdinal, campStage, unlockRadioactiveWasteOrdinal, unlockRadioactiveWasteStage) && isRadiatedLevel) {
+			if (WorldConstants.isHigherOrEqualCampOrdinalAndStage(campOrdinal, campStage, unlockRadioactiveWasteOrdinal, unlockRadioactiveWasteStage)) {
 				blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE);
-				blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE);
+				if (isRadiatedLevel) {
+					blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE);
+				}
 			}
 			
 			return blockerTypes;
