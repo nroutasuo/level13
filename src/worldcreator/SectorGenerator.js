@@ -712,6 +712,7 @@ define([
 			let excludedZones = levelVO.isCampable ?
 				[ WorldConstants.ZONE_EXTRA_CAMPABLE ] :
 				[ WorldConstants.ZONE_EXTRA_UNCAMPABLE ];
+				
 			for (let i = 0; i < levelVO.passagePositions.length; i++) {
 				let passagePos = levelVO.passagePositions[i];
 				let pathConstraints = [];
@@ -723,6 +724,24 @@ define([
 					safeSectors[0].requiredResources.food = true;
 				} else {
 					WorldCreatorLogger.w("Couldn't find safe sector for passage on level " + levelVO.level);
+				}
+			}
+			// near camps
+			if (levelVO.campPosition) {
+				let pathConstraintsCamp = [];
+				pathConstraintsCamp.push(new PathConstraintVO(levelVO.campPosition, 3, null));
+				let safeSectorsCampOptions = { pathConstraints: pathConstraintsCamp };
+				let safeSectorsCamp = WorldCreatorRandom.randomSectors(1111 + levelVO.level * 881, worldVO, levelVO, 1, 3, safeSectorsCampOptions);
+				if (safeSectorsCamp.length == 1) {
+					WorldCreatorLogger.i("safe sector for camp on level " + levelVO.level + " at " + safeSectorsCamp[0].position);
+					safeSectorsCamp[0].requiredResources.water = true;
+					safeSectorsCamp[0].requiredResources.food = true;
+				} else if (safeSectorsCamp.length == 2) {
+					WorldCreatorLogger.i("safe sectors for camp on level " + levelVO.level + " at " + safeSectorsCamp[0].position + " and " + safeSectorsCamp[1].position);
+					safeSectorsCamp[0].requiredResources.water = true;
+					safeSectorsCamp[1].requiredResources.food = true;
+				} else {
+					WorldCreatorLogger.w("Couldn't find safe sector for camp on level " + levelVO.level);
 				}
 			}
 			// based on paths
