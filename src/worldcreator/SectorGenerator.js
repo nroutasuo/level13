@@ -579,13 +579,42 @@ define([
 			let earlyZonesEntrance = [ WorldConstants.ZONE_ENTRANCE ];
 			let earlyZonesOnCampableLevels = [ WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_POI_1 ];
 			
-			// TODO position (some) stashes more purposefully in hard-to-reach places (distance from camp? sectors marked as high-reward during pathfinding?)
+			let getStashSectorScore = function (sectorVO, stashType) {
+				let result = 0;
+				let isEasyToFind = stashType == "guaranteed-early";
+				
+				let distance = WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO);
+				let numNeighours = levelVO.getNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY);
+				
+				if (isEasyToFind) {
+					result += MathUtils.clamp(distance / 5, 3, 0);
+				} else {
+					result += MathUtils.clamp(distance / 5, 0, 3);
+					result += MathUtils.map(numNeighours, 1, 4, 3, 0);
+				}
+				
+				if (sectorVO.isCamp) result -= 2;
+				if (sectorVO.isPassageUp) result -= 1;
+				if (sectorVO.isPassageDown) result -= 1;
+				result -= sectorVO.stashes.length;
+				result -= sectorVO.locales.length;
+				
+				result += Math.abs(sectorVO.position.sectorX) / 1000;
+				result += Math.abs(sectorVO.position.sectorY) / 1000;
+				
+				return result;
+			};
 			
 			let addStashes = function (sectorSeed, reason, stashType, itemIDs, numStashes, numItemsPerStash, excludedZones) {
 				numStashes = WorldCreatorRandom.getRandomIntFromRange(sectorSeed / 2 + 222, numStashes);
 				
 				let options = { requireCentral: false, excludingFeature: "isCamp", excludedZones: excludedZones };
-				let stashSectors = WorldCreatorRandom.randomSectors(sectorSeed, worldVO, levelVO, numStashes, numStashes + 1, options);
+				let numCandidates = numStashes * 2;
+				let stashSectorCandidates = WorldCreatorRandom.randomSectors(sectorSeed, worldVO, levelVO, numCandidates, numCandidates + 1, options);
+				let num = Math.min(numStashes, stashSectorCandidates.length);
+				
+				stashSectorCandidates = stashSectorCandidates.sort((a, b) => getStashSectorScore(b, stashType) - getStashSectorScore(a, stashType));
+				let stashSectors = stashSectorCandidates.slice(0, num);
 				
 				for (let i = 0; i < stashSectors.length; i++) {
 					let stashSeed = sectorSeed * 2 + i * 3121;
