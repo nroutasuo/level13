@@ -1225,7 +1225,26 @@ define([
 				
 			var blockerType = MovementConstants.BLOCKER_TYPE_GANG;
 			
-			// TODO make gangs not consists of only one enemy
+			var selectEnemyIDsForGang = function (s1, s2) {
+				let possibleEnemies = s1.possibleEnemies.concat(s2.possibleEnemies);
+				possibleEnemies.sort(function (a, b) {
+					var diff1 = EnemyConstants.enemyDifficulties[a.id];
+					var diff2 = EnemyConstants.enemyDifficulties[b.id];
+					return diff2 - diff1;
+				});
+				let hardestEnemy = possibleEnemies[0];
+				let result = [ hardestEnemy.id ];
+				if (possibleEnemies.length > 1) {
+					let secondEnemyCandidates = possibleEnemies.slice(1);
+					secondEnemyCandidates.sort(function (a, b) {
+						var score1 = a.nouns.filter(v => hardestEnemy.nouns.indexOf(v) >= 0).length;
+						var score2 = b.nouns.filter(v => hardestEnemy.nouns.indexOf(v) >= 0).length;
+						return score2 - score1;
+					});
+					result.push(secondEnemyCandidates[0].id);
+				}
+				return result;
+			};
 			
 			var addGang = function (sectorVO, neighbourVO, addDiagonals) {
 				if (!neighbourVO) neighbourVO = WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, true);
@@ -1242,15 +1261,10 @@ define([
 					creator.addMovementBlocker(worldVO, levelVO, sectorVO, neighbourVO, blockerType, blockerSettings, function (s, direction) {
 						s.numLocaleEnemies[LocaleConstants.getPassageLocaleId(direction)] = 3;
 					}, function () {
-						var possibleEnemies = sectorVO.possibleEnemies.concat(neighbourVO.possibleEnemies);
-						possibleEnemies.sort(function (a, b) {
-							var diff1 = EnemyConstants.enemyDifficulties[a.id];
-							var diff2 = EnemyConstants.enemyDifficulties[b.id];
-							return diff2 - diff1;
-						});
+						let enemyIDs = selectEnemyIDsForGang(sectorVO, neighbourVO);
 						var pos1 = sectorVO.position;
 						var pos2 = neighbourVO.position;
-						var gang = new GangVO(pos1, pos2, possibleEnemies[0].id);
+						var gang = new GangVO(pos1, pos2, enemyIDs);
 						levelVO.addGang(gang);
 					});
 					return true;

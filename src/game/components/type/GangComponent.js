@@ -11,7 +11,7 @@ define(['ash'], function (Ash) {
 			this.numEnemies = gangVO.numEnemies;
 			this.numEnemiesDefeated = 0;
 			this.numAttempts = 0;
-			this.enemyID = gangVO.enemyID;
+			this.enemyIDs = gangVO.enemyIDs;
 		},
 		
 		getEnemyCount: function () {
@@ -28,6 +28,11 @@ define(['ash'], function (Ash) {
 		
 		isDefeated: function () {
 			return this.getEnemyCount() <= 0;
+		},
+		
+		getNextEnemyID: function () {
+			let index = this.numEnemiesDefeated % this.enemyIDs.length;
+			return this.enemyIDs[index];
 		},
 
 		getSaveKey: function () {

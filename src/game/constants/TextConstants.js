@@ -880,8 +880,10 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				enemies = enemiesComponent.possibleEnemies.concat();
 			}
 			if (gangComponent) {
-				var gangEnemy = EnemyConstants.getEnemy(gangComponent.enemyID);
-				enemies.push(gangEnemy);
+				for (let i = 0; i < gangComponent.enemyIDs.length; i++) {
+					var gangEnemy = EnemyConstants.getEnemy(gangComponent.enemyIDs[i]);
+					enemies.push(gangEnemy);
+				}
 			}
 			return enemies;
 		},
