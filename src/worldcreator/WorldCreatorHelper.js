@@ -599,6 +599,7 @@ define([
 			if (sectorVO.isCamp) return false;
 			if (sectorVO.zone == WorldConstants.ZONE_ENTRANCE) return false;
 			if (direction && sectorVO.movementBlockers[direction]) return false;
+			if (levelVO.getNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY) <= 1) return false;
 			
 			var minDist = levelVO.level == 13 ? 4 : 2;
 			if (this.getQuickMinDistanceToCamp(levelVO, sectorVO) < 3) return false;
