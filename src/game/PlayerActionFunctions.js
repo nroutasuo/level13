@@ -127,7 +127,6 @@ define(['ash',
 			
 			GlobalSignals.actionStartingSignal.dispatch(action, param);
 			var deductedCosts = GameGlobals.playerActionsHelper.deductCosts(action);
-			this.forceResourceBarUpdate();
 
 			var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			var duration = PlayerActionConstants.getDuration(baseId);
@@ -363,8 +362,6 @@ define(['ash',
 					log.w("unknown direction: " + direction);
 					break;
 			}
-
-			this.forceResourceBarUpdate();
 		},
 
 		moveToCamp: function (param) {
@@ -471,7 +468,6 @@ define(['ash',
 				}
 				GlobalSignals.playerMovedSignal.dispatch(playerPos);
 				GlobalSignals.playerEnteredCampSignal.dispatch();
-				this.forceResourceBarUpdate();
 				this.forceTabUpdate();
 				this.save();
 				this.updateLastVisitedCamp(campNode.entity);
@@ -498,7 +494,6 @@ define(['ash',
 				GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.out);
 				GlobalSignals.playerLeftCampSignal.dispatch();
 				GlobalSignals.playerMovedSignal.dispatch(playerPos);
-				this.forceResourceBarUpdate();
 				this.forceTabUpdate();
 				this.save();
 			} else {
@@ -872,7 +867,6 @@ define(['ash',
 					GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, rewards);
 					if (!GameGlobals.gameState.isAutoPlaying && logMsgSuccess) playerActionFunctions.addLogMessage(logMsgId, logMsgSuccess);
 					GameGlobals.playerActionResultsHelper.logResults(rewards);
-					playerActionFunctions.forceResourceBarUpdate();
 					playerActionFunctions.forceTabUpdate();
 					player.remove(PlayerActionResultComponent);
 					if (successCallback) successCallback();
@@ -1169,7 +1163,6 @@ define(['ash',
 			
 			GlobalSignals.improvementBuiltSignal.dispatch();
 			GlobalSignals.campBuiltSignal.dispatch();
-			this.forceResourceBarUpdate();
 			this.save();
 		},
 
@@ -1464,7 +1457,6 @@ define(['ash',
 			improvementsComponent.improve(improvementName);
 			let level = improvementsComponent.getLevel(improvementName);
 			GlobalSignals.improvementBuiltSignal.dispatch();
-			this.forceResourceBarUpdate();
 			this.save();
 			
 			this.addLogMessage("MSG_ID_IMPROVE_" + improvementName, ImprovementConstants.getImprovedLogMessage(improvementID, level));
@@ -1510,7 +1502,6 @@ define(['ash',
 				log.w("No camp sector found.");
 			}
 			this.completeAction("use_in_campfire");
-			this.forceResourceBarUpdate();
 			
 			GlobalSignals.tribeStatsChangedSignal.dispatch();
 		},
@@ -1528,7 +1519,6 @@ define(['ash',
 				log.w("No camp sector found.");
 			}
 			this.completeAction("use_in_market");
-			this.forceResourceBarUpdate();
 		},
 
 		useHospital: function () {
@@ -1539,7 +1529,6 @@ define(['ash',
 			this.addLogMessage(LogConstants.MSG_ID_USE_HOSPITAL, "Healed all injuries.");
 
 			this.completeAction("use_in_hospital");
-			this.forceResourceBarUpdate();
 			GameGlobals.gameState.unlockedFeatures.fight = true;
 		},
 
@@ -1553,7 +1542,6 @@ define(['ash',
 			}
 			this.addLogMessage(LogConstants.MSG_ID_USE_HOSPITAL2, "Improved health.");
 			this.completeAction("use_in_hospital_2");
-			this.forceResourceBarUpdate();
 		},
 
 		useTemple: function () {
@@ -1604,7 +1592,6 @@ define(['ash',
 			}
 
 			this.addLogMessage(LogConstants.MSG_ID_CRAFT_ITEM, LogConstants.getCraftItemMessage(item));
-			this.forceResourceBarUpdate();
 			GlobalSignals.inventoryChangedSignal.dispatch();
 			this.save();
 		},
@@ -1853,7 +1840,6 @@ define(['ash',
 
 			GlobalSignals.inventoryChangedSignal.dispatch();
 			GlobalSignals.collectorCollectedSignal.dispatch();
-			this.forceResourceBarUpdate();
 		},
 
 		buildImprovement: function (actionName, improvementName, otherSector) {
@@ -1861,7 +1847,6 @@ define(['ash',
 			var improvementsComponent = sector.get(SectorImprovementsComponent);
 			improvementsComponent.add(improvementName);
 			GlobalSignals.improvementBuiltSignal.dispatch();
-			this.forceResourceBarUpdate();
 			this.save();
 		},
 
@@ -1931,13 +1916,7 @@ define(['ash',
 			entity.add(new LastVisitedCampComponent());
 			log.i("updateLastVisitedCamp: " + entity.get(PositionComponent))
 		},
-
-		forceResourceBarUpdate: function () {
-			if (GameGlobals.gameState.uiStatus.isHidden) return;
-			var system = this.engine.getSystem(UIOutHeaderSystem);
-			system.lastUpdateTimeStamp = 0;
-		},
-
+		
 		forceStatsBarUpdate: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			var system = this.engine.getSystem(UIOutHeaderSystem);
