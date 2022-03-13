@@ -351,7 +351,7 @@ define(['ash',
 						FollowerConstants.getAbilityLevel(follower, FollowerConstants.abilityType.DEFENCE) * 0.7,
 					);
 					minBonus = 3;
-					maxBonus = 99;
+					maxBonus = 81;
 					roundingStep = 3;
 					break;
 				case ItemConstants.itemBonusTypes.fight_def:
@@ -360,7 +360,7 @@ define(['ash',
 						FollowerConstants.getAbilityLevel(follower, FollowerConstants.abilityType.ATTACK) * 0.7,
 					);
 					minBonus = 3;
-					maxBonus = 99;
+					maxBonus = 81;
 					roundingStep = 3;
 					break;
 				case ItemConstants.itemBonusTypes.movement:
