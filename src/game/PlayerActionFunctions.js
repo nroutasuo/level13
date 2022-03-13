@@ -703,15 +703,25 @@ define(['ash',
 		},
 
 		clearWorkshop: function () {
-			var workshopComponent = this.playerLocationNodes.head.entity.get(WorkshopComponent);
-			var name = TextConstants.getWorkshopName(workshopComponent.resource);
-			var action = "clear_workshop";
-			var logMsgSuccess = "Workshop cleared. Workers can now use it.";
-			var logMsgFlee = "Fled the " + name + ".";
-			var logMsgDefeat = "Got driven out of the " + name + ".";
+			let playerPosition = this.playerPositionNodes.head.position;
+			let workshopComponent = this.playerLocationNodes.head.entity.get(WorkshopComponent);
+			
+			let currentLevel = playerPosition.level;
+			let campOrdinal = GameGlobals.gameState.getCampOrdinal(currentLevel);
+			let campLevel = GameGlobals.gameState.getLevelForCamp(campOrdinal);
+			
+			let name = TextConstants.getWorkshopName(workshopComponent.resource);
+			let action = "clear_workshop";
+			let logMsgSuccess = "Workshop cleared. Workers can now use it.";
+			let logMsgFlee = "Fled the " + name + ".";
+			let logMsgDefeat = "Got driven out of the " + name + ".";
 
-			var playerActionFunctions = this;
-			var successCallback = function () {
+			if (campLevel != currentLevel) {
+				logMsgSuccess = "Workshop cleared. Workers on level " + campLevel + " can now use it.";
+			}
+
+			let playerActionFunctions = this;
+			let successCallback = function () {
 				GameGlobals.gameState.unlockedFeatures.resources[workshopComponent.resource] = true;
 				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 			};
@@ -1047,9 +1057,9 @@ define(['ash',
 			GameGlobals.uiFunctions.showConfirmation(
 				"Are you sure you want to dismiss " + follower.name + "?",
 				function () {
-			followersComponent.removeFollower(follower);
+					followersComponent.removeFollower(follower);
 					sys.addLogMessage(LogConstants.getUniqueID(), follower.name + " leaves.");
-			GlobalSignals.followersChangedSignal.dispatch();
+					GlobalSignals.followersChangedSignal.dispatch();
 				}
 			);
 		},
