@@ -109,7 +109,7 @@ define([
 			if (hasCampOnLevel && this.lastVisitedCampNodes.head && this.lastVisitedCampNodes.head.camp.population >= 1 && Math.random() < 0.2) {
 				msgMain = "Weak and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>You wake up back in camp. Some of the scavengers found you and brought you home.";
 				msgLog = "The world fades. You wake up back in camp.";
-				this.fadeOut(msgMain, msgLog, true, this.lastVisitedCampNodes.head.entity, 0, 1, 0);
+				this.fadeOut(msgMain, msgLog, true, this.lastVisitedCampNodes.head.entity, 0, 1, 0, 0);
 				return;
 			}
 			
@@ -117,7 +117,7 @@ define([
 			if (hasDeity && this.lastVisitedCampNodes.head && Math.random() < 0.1) {
 				msgMain = "Weak and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>You wake up back in camp. The spirits have guided you home.";
 				msgLog = "The world fades. You wake up back in camp.";
-				this.fadeOut(msgMain, msgLog, true, this.lastVisitedCampNodes.head.entity, 0, 0.5, 0);
+				this.fadeOut(msgMain, msgLog, true, this.lastVisitedCampNodes.head.entity, 0, 0.5, 0, 0);
 				return;
 			}
 			
@@ -127,7 +127,7 @@ define([
 				let follower = party[MathUtils.randomIntBetween(0, party.length)];
 				msgMain = "Weak and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>You wake up back in camp. <span class='hl-functionality'>" + follower.name + "</span> brought you back.";
 				msgLog = "The world fades. You wake up back in camp.";
-				this.fadeOut(msgMain, msgLog, true, this.lastVisitedCampNodes.head.entity, 0, 0.5, 0);
+				this.fadeOut(msgMain, msgLog, true, this.lastVisitedCampNodes.head.entity, 0, 0.5, 0, 0);
 				return;
 			}
 			
@@ -180,9 +180,9 @@ define([
 			var msgMain = "Weak and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>When you wake up, you find yourself back in a familiar area.";
 			var msgLog = "The world fades. You wake up with no memory how you got here.";
 			if (nearestKnownSafeSector) {
-				this.fadeOut(msgMain, msgLog, true, nearestKnownSafeSector, 1, 0, 0);
+				this.fadeOut(msgMain, msgLog, true, nearestKnownSafeSector, 1, 0, 0, 0);
 			} else if (nearestVisitedSafeSector) {
-				this.fadeOut(msgMain, msgLog, true, nearestVisitedSafeSector, 1, 0, 0);
+				this.fadeOut(msgMain, msgLog, true, nearestVisitedSafeSector, 1, 0, 0, 0);
 			} else {
 				if (GameGlobals.logWarnings) log.w("Nowhere to fade out to.");
 			}
@@ -192,10 +192,10 @@ define([
 			if (!this.lastVisitedCampNodes.head) return;
 			var msgMain = "Weak and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>When you wake up, you find yourself back in camp.";
 			var msgLog = "The world fades. You wake up with no memory how you found your way back.";
-			this.fadeOut(msgMain, msgLog, handleResults, this.lastVisitedCampNodes.head.entity, 1, 1, 0.25);
+			this.fadeOut(msgMain, msgLog, handleResults, this.lastVisitedCampNodes.head.entity, 1, 1, 0.5, 0.25);
 		},
 		
-		fadeOut: function (msg, msgLog, handleResults, sector, loseInventoryProbability, injuryProbability, loseFollowerProbability) {
+		fadeOut: function (msg, msgLog, handleResults, sector, loseInventoryProbability, injuryProbability, loseAugmentationProbability, loseFollowerProbability) {
 			var sys = this;
 			
 			var finalStep = function () {
@@ -214,7 +214,7 @@ define([
 			};
 			
 			if (handleResults) {
-				var resultVO = GameGlobals.playerActionResultsHelper.getFadeOutResults(loseInventoryProbability, injuryProbability, loseFollowerProbability);
+				var resultVO = GameGlobals.playerActionResultsHelper.getFadeOutResults(loseInventoryProbability, injuryProbability, loseAugmentationProbability, loseFollowerProbability);
 				this.playerResourcesNodes.head.entity.add(new PlayerActionResultComponent(resultVO));
 				var resultPopUpCallback = function (isTakeAll) {
 					GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, resultVO);

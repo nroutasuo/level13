@@ -186,6 +186,10 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 			return "Got injured.";
 		},
 
+		getLostPerksMessage: function (resultVO) {
+			return "Lost an augmentation.";
+		},
+
 		getDespairMessage: function (isValidDespairHunger, isValidDespairThirst, isValidDespairStamina, isValidDespairMove) {
 			if (isValidDespairThirst) {
 				return "Too thirsty to go on.";

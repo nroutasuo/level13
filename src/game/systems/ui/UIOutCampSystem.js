@@ -420,10 +420,11 @@
 				if (id === "in-improvements-market") specialVisibilityRule = hasTradePost;
 				if (id === "in-improvements-inn") specialVisibilityRule = hasTradePost;
 				var isVisible = specialVisibilityRule && commonVisibilityRule;
+				let showUseAction1 = useActionAvailable || !useAction2Available;
 				
 				GameGlobals.uiFunctions.toggle(elem.tr, isVisible);
-				GameGlobals.uiFunctions.toggle(elem.btnUse, existingImprovements > 0 && !useAction2Available);
-				GameGlobals.uiFunctions.toggle(elem.btnUse2, existingImprovements > 0 && !useActionAvailable && useAction2Available);
+				GameGlobals.uiFunctions.toggle(elem.btnUse, existingImprovements > 0 && showUseAction1);
+				GameGlobals.uiFunctions.toggle(elem.btnUse2, existingImprovements > 0 && !showUseAction1);
 				GameGlobals.uiFunctions.toggle(elem.btnImprove, existingImprovements > 0 && maxImprovementLevel > 1);
 				if (isVisible) visibleBuildingCount++;
 				if (actionAvailable) availableBuildingCount++;

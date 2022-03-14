@@ -1241,7 +1241,7 @@
         "improve_in_fortification": "Increase defence bonus",
         "improve_in_garden": "Increase reputation bonus",
         "improve_in_generator": "Increase reputation bonus",
-        "improve_in_hospital": "Improve the hospital",
+        "improve_in_hospital": "Reduce treatment costs and enable augmentations",
         "improve_in_library": "Increase evidence generation",
         "improve_in_radiotower": "Increase reputation bonus",
         "improve_in_researchcenter": "Increase evidence generation",

@@ -262,20 +262,25 @@ define([
 				rewards.gainedItems = this.getRewardItems(0, 1, enemyVO.droppedIngredients, {});
 				rewards.gainedReputation = 1;
 			} else {
-				rewards = this.getFadeOutResults(0.5, 1, 0.5);
+				rewards = this.getFadeOutResults(0.5, 1, 0.75, 0.5);
 			}
 			return rewards;
 		},
 
-		getFadeOutResults: function (loseInventoryProbability, injuryProbability, loseFollowerProbability) {
-			var resultVO = new ResultVO("despair");
+		getFadeOutResults: function (loseInventoryProbability, injuryProbability, loseAugmentationProbability, loseFollowerProbability) {
+			log.i("get fade out results: loseInventoryProbability:" + loseInventoryProbability + ", injuryProbability:" + injuryProbability + ", loseAugmentationProbability:" + loseAugmentationProbability + ", loseFollowerProbability:" + loseFollowerProbability);
+			let resultVO = new ResultVO("despair");
 			if (Math.random() < loseInventoryProbability) {
 				resultVO.lostResources = this.playerResourcesNodes.head.resources.resources.clone();
 				resultVO.lostCurrency = this.playerResourcesNodes.head.entity.get(CurrencyComponent).currency;
 				resultVO.lostItems = this.getLostItems("despair", false);
 			}
 			resultVO.lostFollowers = this.getLostFollowers(loseFollowerProbability);
-			resultVO.gainedInjuries = this.getResultInjuries(injuryProbability);
+			
+			resultVO.lostPerks = this.getLostPerks(loseAugmentationProbability);
+			
+			let finalInjuryProbability = resultVO.lostPerks.length > 0 ? injuryProbability / 2 : injuryProbability;
+			resultVO.gainedInjuries = this.getResultInjuries(finalInjuryProbability);
 
 			return resultVO;
 		},
@@ -395,6 +400,13 @@ define([
 				var perksComponent = this.playerStatsNodes.head.perks;
 				for (let i = 0; i < rewards.gainedInjuries.length; i++) {
 					perksComponent.addPerk(PerkConstants.getPerk(rewards.gainedInjuries[i].id));
+				}
+			}
+			
+			if (rewards.lostPerks) {
+				var perksComponent = this.playerStatsNodes.head.perks;
+				for (let i = 0; i < rewards.lostPerks.length; i++) {
+					perksComponent.removePerkById(rewards.lostPerks[i].id);
 				}
 			}
 
@@ -519,6 +531,10 @@ define([
 
 			if (rewards.gainedInjuries.length > 0) {
 				msg += " Got injured.";
+			}
+			
+			if (rewards.lostPerks.length > 0) {
+				msg += " Lost" + TextConstants.getListText(rewards.lostPerks.map(perkVO => perkVO.name));
 			}
 
 			return { msg: msg, replacements: replacements, values: values };
@@ -648,7 +664,7 @@ define([
 			}
 
 			hasGainedStuff = hasGainedStuff || resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0 || resultVO.gainedFollowers.length > 0;
-			var hasLostStuff = resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.lostFollowers.length > 0 || resultVO.gainedInjuries.length > 0 || resultVO.lostCurrency > 0;
+			var hasLostStuff = resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.lostFollowers.length > 0 || resultVO.gainedInjuries.length > 0 || resultVO.lostPerks.length > 0 || resultVO.lostCurrency > 0;
 			
 			if (!hasGainedStuff && !hasLostStuff) {
 				if (isFight) div += "<p class='p-meta'>Nothing left behind.</p>"
@@ -666,6 +682,10 @@ define([
 
 			if (resultVO.gainedInjuries.length > 0) {
 				div += "<p class='warning'>You got injured.</p>";
+			}
+
+			if (resultVO.lostPerks.length > 0) {
+				div += "<p class='warning'>You lost " + TextConstants.getListText(resultVO.lostPerks.map(perkVO => perkVO.name)) + ".</p>";
 			}
 
 			if (resultVO.lostCurrency > 0) {
@@ -711,6 +731,10 @@ define([
 
 				if (rewards.gainedInjuries.length > 0) {
 					logComponent.addMessage(LogConstants.MSG_ID_GOT_INJURED, LogConstants.getInjuredMessage(rewards));
+				}
+
+				if (rewards.lostPerks.length > 0) {
+					logComponent.addMessage(LogConstants.MSG_ID_GOT_INJURED, LogConstants.getLostPerksMessage(rewards));
 				}
 			}
 		},
@@ -1268,9 +1292,30 @@ define([
 			
 			return lostFollowers;
 		},
+		
+		getLostPerks: function (loseAugmentationProbability) {
+			let result = [];
+			
+			if (Math.random() > loseAugmentationProbability) {
+				return result;
+			}
+			
+			let perksComponent = this.playerStatsNodes.head.perks;
+			let perkIDs = [ PerkConstants.perkIds.healthBonus3, PerkConstants.perkIds.healthBonus2, PerkConstants.perkIds.healthBonus1 ];
+			
+			for (let i = 0; i < perkIDs.length; i++) {
+				let perk = perksComponent.getPerk(perkIDs[i]);
+				if (!perk) continue;
+				
+				result.push(perk);
+				return result;
+			}
+			
+			return result;
+		},
 
 		getResultInjuries: function (injuryProbability) {
-			var perksComponent = this.playerStatsNodes.head.perks;
+			let perksComponent = this.playerStatsNodes.head.perks;
 			let result = [];
 
 			var currentEffect = perksComponent.getTotalEffect(PerkConstants.perkTypes.injury);

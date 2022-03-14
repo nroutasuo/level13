@@ -1056,12 +1056,13 @@ define([
 			}
 		},
 
-		// Returns the cost factor of a given action, usually 1, but may depend on the current status (items, followers, perks etc) for some actions
+		// Returns the cost factor of a given action, usually 1, but may depend on the current status (items, followers, perks, improvement level etc) for some actions
 		getCostFactor: function (action, cost, otherSector) {
 			if (!this.playerLocationNodes || !this.playerLocationNodes.head) return 1;
 
 			var sector = otherSector || this.playerLocationNodes.head.entity;
 			var passageComponent = sector.get(PassagesComponent);
+			let improvements = sector.get(SectorImprovementsComponent);
 			var playerStatsNode = this.playerStatsNodes.head;
 			var playerEntity = this.playerStatsNodes.head.entity;
 
@@ -1088,6 +1089,11 @@ define([
 				let followersComponent = playerStatsNode.followers;
 				return followersComponent.getCurrentBonus(itemBonusType);
 			}
+			
+			var getImprovementLevelBonus = function (improvementName) {
+				let level = improvements.getMajorLevel(improvementName);
+				return 1 - (level - 1) * 0.1;
+			};
 
 			var factor = 1;
 			switch (action) {
@@ -1126,6 +1132,10 @@ define([
 					if (cost == "stamina") {
 						factor *= getFollowerBonus(ItemConstants.itemBonusTypes.scout_cost);
 					}
+					break;
+				
+				case "use_in_hospital":
+					factor *= getImprovementLevelBonus(improvementNames.hospital);
 					break;
 			}
 

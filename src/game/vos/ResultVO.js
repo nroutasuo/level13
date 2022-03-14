@@ -22,6 +22,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		lostCurrency: null,
 		lostItems: [],
 		lostFollowers: [],
+		lostPerks: [],
 		gainedInjuries: [],
 		
 		// additional info for UI
@@ -54,6 +55,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			this.lostCurrency = 0;
 			this.lostItems = [];
 			this.lostFollowers = [];
+			this.lostPerks = [];
 			this.gainedInjuries = [];
 			
 			this.selectedItems = [];
@@ -77,6 +79,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 				&& this.gainedFollowers.length == 0
 				&& this.lostItems.length == 0
 				&& this.lostFollowers.length == 0
+				&& this.lostPerks.length == 0
 				&& this.gainedInjuries.length == 0
 				&& this.gainedBlueprintPiece == null
 				&& this.gainedPopulation == 0
@@ -96,6 +99,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			result.gainedFollowers = this.gainedFollowers.concat();
 			result.lostItems = this.lostItems.concat();
 			result.lostFollowers = this.lostFollowers.concat();
+			result.lostPerks = this.lostPerks.concat();
 			result.gainedInjuries = this.gainedInjuries.concat();
 			result.gainedBlueprintPiece = this.gainedBlueprintPiece;
 			result.gainedPopulation = this.gainedPopulation;
