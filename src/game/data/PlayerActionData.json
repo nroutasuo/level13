@@ -16,7 +16,7 @@
     },
     "costs": {
         "bridge_gap": {
-            "resource_metal": 300,
+            "resource_metal": 400,
             "resource_rope": 500
         },
         "build_in_apothecary": {
@@ -30,9 +30,9 @@
         },
         "build_in_aqueduct": {
             "cost_factor_expBase": 1.15,
-            "resource_concrete": 180,
-            "resource_metal": 300,
-            "resource_rubber": 10
+            "resource_concrete": 250,
+            "resource_metal": 500,
+            "resource_rubber": 100
         },
         "build_in_barracks": {
             "cost_factor_expBase": 1.2,
@@ -77,14 +77,14 @@
             "resource_rope": 100
         },
         "build_in_garden": {
-            "resource_metal": 650,
+            "resource_concrete": 500,
             "resource_rope": 300,
             "resource_water": 800
         },
         "build_in_generator": {
             "resource_fuel": 200,
             "resource_metal": 100,
-            "resource_rope": 100
+            "resource_concrete": 100
         },
         "build_in_hospital": {
             "resource_metal": 120,
@@ -114,9 +114,9 @@
             "resource_rope": 150
         },
         "build_in_lights": {
-            "resource_fuel": 50,
+            "resource_fuel": 100,
             "resource_metal": 200,
-            "resource_rope": 100
+            "resource_rope": 300
         },
         "build_in_market": {
             "resource_metal": 200,
@@ -129,7 +129,7 @@
         },
         "build_in_researchcenter": {
             "resource_metal": 1800,
-            "resource_rubber": 200,
+            "resource_rubber": 300,
             "resource_tools": 300
         },
         "build_in_shrine": {
@@ -141,10 +141,7 @@
             "cost_factor_expBase": 1.4,
             "resource_metal": 500,
             "resource_rope": 100,
-            "resource_rubber": {
-                "expBase": 1.1,
-                "expCost": 30
-            }
+			"resource_concrete": 100
         },
         "build_in_square": {
             "resource_metal": 200,
@@ -152,7 +149,7 @@
         },
         "build_in_stable": {
             "cost_factor_expBase": 1.75,
-            "resource_fuel": 30,
+            "resource_fuel": 50,
             "resource_metal": 200,
             "resource_rope": 50
         },
@@ -284,14 +281,15 @@
         },
         "build_out_tradepost_connector": {
             "resource_concrete": 300,
-            "resource_fuel": 100,
-            "resource_rope": 1000
+            "resource_fuel": 300,
+            "resource_rope": 1000,
+			"resource_rubber": 300
         },
         "clear_debris_e": {
-            "resource_rope": 30
+            "resource_rope": 50
         },
         "clear_debris_l": {
-            "resource_rope": 50
+            "resource_rope": 100
         },
         "clear_waste_r": {
             "stamina": 50
@@ -689,12 +687,12 @@
                 "constantCost": 10,
                 "expCost": 5
             },
-            "resource_tools": 10
+            "resource_rubber": 30
         },
         "improve_in_barracks": {
             "cost_factor_expBase": 2,
             "resource_metal": 100,
-			"resource_tools": 30
+			"resource_tools": 50
         },
         "improve_in_campfire": {
             "cost_factor_expBase": 1.25,
@@ -721,20 +719,20 @@
                 "constantCost": 10,
                 "expCost": 5
             },
-            "resource_tools": 5
+            "resource_tools": 10
         },
         "improve_in_darkfarm": {
             "cost_factor_expBase": 1.25,
-            "resource_fuel": 3,
-            "resource_metal": 30
+            "resource_fuel": 10,
+            "resource_rope": 50
         },
         "improve_in_fortification": {
             "cost_factor_expBase": 1.25,
             "resource_concrete": {
-                "linearCost": 50,
+                "linearCost": 75,
                 "requiredOrdinal": 5
             },
-            "resource_metal": 100,
+            "resource_tools": 50,
             "resource_rope": 100
         },
         "improve_in_generator": {
@@ -748,16 +746,18 @@
         "improve_in_hospital": {
             "cost_factor_expBase": 2,
             "resource_fuel": 50,
-            "resource_water": 100
+            "resource_water": 100,
+			"resource_rubber": 30
         },
         "improve_in_inn": {
             "cost_factor_expBase": 1.25,
             "resource_metal": {
-                "constantCost": 55,
+                "constantCost": 60,
                 "expCost": 10,
                 "linearCost": 20
             },
-            "resource_rope": 50
+            "resource_rope": 50,
+			"resource_rubber": 10
         },
         "improve_in_library": {
             "cost_factor_expBase": 1.25,
@@ -779,7 +779,8 @@
                 "constantCost": 40,
                 "expCost": 10,
                 "linearCost": 50
-            }
+            },
+			"resource_rubber": 10
         },
         "improve_in_radiotower": {
             "resource_metal": 600
@@ -794,7 +795,7 @@
                 "constantCost": 100,
                 "expCost": 5
             },
-            "resource_rope": {
+            "resource_rubber": {
                 "constantCost": 50,
                 "expCost": 5
             },

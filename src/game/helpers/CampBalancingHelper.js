@@ -379,6 +379,8 @@ define([
 			}
 			
 			let shouldBuild = function (improvementName, actionName, ordinal) {
+				if (ordinal == 1) return true;
+				
 				// check danger
 				var soldiers = CampConstants.workerTypes.soldier.getLimitNum(result);
 				var soldierLevel = 1;
