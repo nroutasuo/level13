@@ -394,35 +394,52 @@ define([
 
 			// raiders won, deduct resources
 			if (!raidComponent.victory) {
-				var campResources = GameGlobals.resourcesHelper.getCurrentCampStorage(sectorEntity).resources;
-				var amountFactor = 1 / (GameGlobals.resourcesHelper.getNumCampsInTradeNetwork(sectorEntity) || 1);
+				let storageMax = GameGlobals.resourcesHelper.getCurrentCampStorage(sectorEntity).storageCapacity;
+				let storageResources = GameGlobals.resourcesHelper.getCurrentCampStorage(sectorEntity).resources;
+				let storageProduction = GameGlobals.resourcesHelper.getCurrentStorageAccumulation(false).resourceChange;
+				let campResources = GameGlobals.resourcesHelper.getCampStorage(sectorEntity).resources;
+				let campProduction = GameGlobals.resourcesHelper.getCampStorageAccumulation(sectorEntity).resourceChange;
 
 				// select resources (names)
-				// TODO choose resources lost smarter (not always the one you have the most)
-				var selectedResources = [];
-				var maxSelectedResources = 1 + Math.floor(Math.random() * 3);
-				var largestSelectedAmount = 0;
-				
+				let resourceCandidates = [];
 				for (var key in resourceNames) {
-					var name = resourceNames[key];
-					var campAmount = campResources.getResource(name);
-					if (selectedResources.length < maxSelectedResources) {
-						selectedResources.push(name);
-						largestSelectedAmount = Math.max(largestSelectedAmount, campAmount);
-					} else if (campAmount > largestSelectedAmount) {
-						selectedResources.pop();
-						selectedResources.push(name);
-						largestSelectedAmount = Math.max(largestSelectedAmount, campAmount);
+					let name = resourceNames[key];
+					let storageAmount = storageResources.getResource(name);
+					if (storageAmount > 0) {
+						let campProductionAmount = campProduction.getResource(name)
+						let campProductionFactor = campProductionAmount > 0 ? campProductionAmount / storageProduction.getResource(name) : 0;
+						let score = 0;
+						score += storageAmount / storageMax * 10;
+						score += campProductionFactor * 100;
+						if (name == resourceNames.metal) score -= 10;
+						if (name == resourceNames.rope) score -= 1;
+						if (name == resourceNames.concrete) score -= 1;
+						resourceCandidates.push({ name: name, score: score, campProductionFactor: campProductionFactor });
 					}
 				}
+				resourceCandidates = resourceCandidates.sort(function (a, b) { return b.score - a.score });
+				let maxSelectedResources = Math.min(resourceCandidates.length, 1 + Math.floor(Math.random() * 3));
+				if (maxSelectedResources <= 0) return;
+				let selectedResources = resourceCandidates.slice(0, maxSelectedResources);
 
 				// select amounts
+				let globalAmountFactor = 1 / (GameGlobals.resourcesHelper.getNumCampsInTradeNetwork(sectorEntity) || 1);
 				for (let i in selectedResources) {
-					var name = selectedResources[i];
-					var campAmount = campResources.getResource(name);
-					var lostAmount = Math.floor(campAmount * amountFactor * (0.25 + 0.25 * Math.random()));
+					let name = selectedResources[i].name;
+					let campProductionFactor = Math.min(0.5, selectedResources[i].campProductionFactor);
+					
+					let storageAmount = storageResources.getResource(name);
+					let maxLostAmount = Math.min(storageAmount, storageMax / 2, 3000);
+					
+					let randomFactor = 0.75 + Math.random() * 0.25;
+					let campShareFactor = Math.max(globalAmountFactor, campProductionFactor);
+					
+					let lostAmountRaw = maxLostAmount * campShareFactor * randomFactor;
+					let rounding = lostAmountRaw > 1000 ? 100 : lostAmountRaw > 100 ? 10 : 5;
+					let lostAmount = Math.floor(lostAmountRaw / rounding) * rounding;
+					
 					if (lostAmount >= 5) {
-						campResources.setResource(name, campAmount - lostAmount);
+						storageResources.setResource(name, storageAmount - lostAmount);
 						raidComponent.resourcesLost.addResource(name, lostAmount);
 					}
 				}

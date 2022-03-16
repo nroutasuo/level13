@@ -156,6 +156,14 @@ define([
 		getPlayerCurrency: function () {
 			return this.playerResourcesNodes.head ? this.playerResourcesNodes.head.currency : null;
 		},
+		
+		getCampStorage: function (campEntity) {
+			return campEntity.get(ResourcesComponent);
+		},
+		
+		getCampStorageAccumulation: function (campEntity) {
+			return campEntity.get(ResourceAccumulationComponent);
+		},
 
 		getGlobalStorage: function () {
 			return this.globalResourcesNodes.head ? this.globalResourcesNodes.head.resources : null;
