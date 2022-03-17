@@ -175,14 +175,20 @@ define(['ash',
 			if (isFoundAsReward) return {};
 			let result = {};
 			
-			let costFactor = MathUtils.map(follower.abilityLevel, 1, 100, 1.0, 3.0);
+			let costFactor = MathUtils.map(follower.abilityLevel, 1, 100, 1.0, 5.0);
 			let followerType = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
+			let isAnimal = this.isAnimal(follower.abilityType);
+			let isHungry = followerType != FollowerConstants.followerType.SCAVENGER && follower.id % 3 == 0;
+			let isStranded = followerType != FollowerConstants.followerType.FIGHTER && follower.id % 5 == 1;
+			let isInjured = follower.id % 7 == 1
 			
-			if (followerType != FollowerConstants.followerType.SCAVENGER && follower.id % 2 == 0) {
-				result.resource_food = MathUtils.roundToMultiple(50 * costFactor, 5);
+			if (isAnimal || isHungry) {
+				result.resource_food = MathUtils.roundToMultiple(100 * costFactor, 5);
 				result.resource_water = MathUtils.roundToMultiple(50 * costFactor, 5);
-			} else if (followerType != FollowerConstants.followerType.FIGHTER && follower.id % 4 == 1) {
-				result.resource_fuel = MathUtils.roundToMultiple(10 * costFactor, 5);
+			} else if (isInjured) {
+				result.resource_medicine = MathUtils.roundToMultiple(3 * costFactor, 1);
+			} else if (isStranded) {
+				result.resource_fuel = MathUtils.roundToMultiple(20 * costFactor, 5);
 			} else {
 				result.silver = Math.round(1 * costFactor);
 			}
