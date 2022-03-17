@@ -212,14 +212,18 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			}
 			// - level population
 			if (features.populationFactor == 0) {
-				addOptions("a-building", [ "long abandoned", "empty" ]);
-				addOptions("a-building", [ "polluted" ]);
+				addOptions("a-building", [ "long abandoned", "empty", "polluted"]);
 			} else if (features.populationFactor < 1) {
 				addOptions("a-street", [ "calm" ]);
 				addOptions("a-building", [ "empty" ]);
 			} else {
 				addOptions("a-building", [ "recently looted" ]);
 				addOptions("na-items", [ "signs of recent scavengers" ]);
+			}
+			// - level raid danger factor
+			if (features.raidDangerFactor > 1) {
+				addOptions("a-street", [ "looted" ]);
+				addOptions("a-building", [ "ransacked", "damaged", "plundered", "looted" ]);
 			}
 			// - level: architectural style / age
 			if (features.level < 6) {

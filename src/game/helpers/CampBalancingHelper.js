@@ -315,6 +315,7 @@ define([
 			if (this.getDefaultImprovementsCache[cacheKey]) return this.getDefaultImprovementsCache[cacheKey];
 			
 			let isOutpost = this.isOutpost(campOrdinal);
+			let levelRaidDangerFactor = WorldCreatorConstants.getRaidDangerFactor(campOrdinal);
 			
 			let canBuild = function (improvementName, actionName, ordinal) {
 				if (ordinal >= 100) return false;
@@ -384,7 +385,7 @@ define([
 				// check danger
 				var soldiers = CampConstants.workerTypes.soldier.getLimitNum(result);
 				var soldierLevel = 1;
-				var danger = OccurrenceConstants.getRaidDanger(result, soldiers, soldierLevel);
+				var danger = OccurrenceConstants.getRaidDanger(result, soldiers, soldierLevel, levelRaidDangerFactor);
 				var defenceLimit = CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
 				var noDefences = danger > defenceLimit;
 				if (noDefences) {

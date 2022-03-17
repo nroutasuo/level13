@@ -7,18 +7,20 @@ define([
 	'game/constants/FollowerConstants',
 	'game/constants/ImprovementConstants',
 	'game/constants/ItemConstants',
+	'game/constants/OccurrenceConstants',
 	'game/constants/TradeConstants',
 	'game/constants/WorldConstants',
 	'game/components/common/CampComponent',
 	'game/components/common/PositionComponent',
 	'game/components/sector/events/RecruitComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
+	'game/components/type/LevelComponent',
 	'game/nodes/sector/CampNode',
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/vos/ResourcesVO',
 	'game/vos/IncomingCaravanVO'
-], function (Ash, GameGlobals, GameConstants, CampConstants, FollowerConstants, ImprovementConstants, ItemConstants, TradeConstants, WorldConstants,
-	CampComponent, PositionComponent, RecruitComponent, SectorImprovementsComponent, CampNode, TribeUpgradesNode, ResourcesVO, IncomingCaravanVO) {
+], function (Ash, GameGlobals, GameConstants, CampConstants, FollowerConstants, ImprovementConstants, ItemConstants, OccurrenceConstants, TradeConstants, WorldConstants,
+	CampComponent, PositionComponent, RecruitComponent, SectorImprovementsComponent, LevelComponent, CampNode, TribeUpgradesNode, ResourcesVO, IncomingCaravanVO) {
 	
 	var CampHelper = Ash.Class.extend({
 		
@@ -186,6 +188,16 @@ define([
 		getCampMaxPopulation: function (sector) {
 			var improvements = sector.get(SectorImprovementsComponent);
 			return CampConstants.getHousingCap(improvements);
+		},
+		
+		getCampRaidDanger: function (sector) {
+			let improvements = sector.get(SectorImprovementsComponent);
+			let soldiers = sector.get(CampComponent).assignedWorkers.soldier;
+			let soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
+			var levelComponent = GameGlobals.levelHelper.getLevelEntityForSector(sector).get(LevelComponent);
+			let levelRaidDangerFactor = levelComponent.raidDangerFactor;
+				
+			return OccurrenceConstants.getRaidDanger(improvements, soldiers, soldierLevel, levelRaidDangerFactor);
 		},
 		
 		getRandomIncomingCaravan: function (campOrdinal, levelOrdinal, unlockedResources, neededIngredient) {

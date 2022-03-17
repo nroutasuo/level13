@@ -84,6 +84,7 @@ define([
 			// TODO define constants someplace neater
 			var settings = Object.assign({}, this.campSettings[campOrdinal] || {});
 			settings.populationFactor = levelComponent.populationFactor;
+			settings.raidDangerFactor = levelComponent.raidDangerFactor;
 			GameGlobals.campVisHelper.initCampSettings(campOrdinal, settings);
 		},
 		

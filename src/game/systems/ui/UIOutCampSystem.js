@@ -514,12 +514,14 @@
 		updateStats: function () {
 			var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
 			if (!campComponent) return;
+			
+			var levelComponent = this.playerLevelNodes.head.level;
 
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var soldiers = this.playerLocationNodes.head.entity.get(CampComponent).assignedWorkers.soldier;
 			var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
-			var raidDanger = OccurrenceConstants.getRaidDanger(improvements, soldiers, soldierLevel);
-			var raidAttack = OccurrenceConstants.getRaidDangerPoints(improvements);
+			var raidDanger = GameGlobals.campHelper.getCampRaidDanger(this.playerLocationNodes.head.entity);
+			var raidAttack = OccurrenceConstants.getRaidDangerPoints(improvements, levelComponent.raidDangerFactor);
 			var raidDefence = OccurrenceConstants.getRaidDefencePoints(improvements, soldiers, soldierLevel);
 
 			var inGameFoundingDate = UIConstants.getInGameDate(campComponent.foundedTimeStamp);
@@ -563,6 +565,7 @@
 				var levelComponent = this.playerLevelNodes.head.level;
 				var hasUnlockedTrade = this.hasUpgrade(GameGlobals.upgradeEffectsHelper.getUpgradeToUnlockBuilding(improvementNames.tradepost));
 				$("#in-demographics-level-population .value").text(levelComponent.populationFactor * 100 + "%");
+				$("#in-demographics-level-danger .value").text(levelComponent.raidDangerFactor * 100 + "%");
 				$("#in-demographics-trade-network").toggle(hasUnlockedTrade);
 				if (hasUnlockedTrade) {
 					var hasAccessToTradeNetwork = GameGlobals.resourcesHelper.hasAccessToTradeNetwork(this.playerLocationNodes.head.entity);

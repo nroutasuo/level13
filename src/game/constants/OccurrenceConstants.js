@@ -98,17 +98,19 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 			return 0;
 		},
 		
-		getRaidDanger: function (improvements, soldiers, soldierLevel) {
+		getRaidDanger: function (improvements, soldiers, soldierLevel, levelRaidDangerFactor) {
 			soldiers = soldiers || 0;
-			var dangerPoints = this.getRaidDangerPoints(improvements);
+			var dangerPoints = this.getRaidDangerPoints(improvements, levelRaidDangerFactor);
 			var defencePoints = this.getRaidDefencePoints(improvements, soldiers, soldierLevel);
 			let result = (dangerPoints - defencePoints) / 25;
 			return Math.max(0, Math.min(1, result));
 		},
 		
-		getRaidDangerPoints: function (improvements) {
+		getRaidDangerPoints: function (improvements, levelRaidDangerFactor) {
+			levelRaidDangerFactor = levelRaidDangerFactor || 1;
 			var dangerPoints = 0;
 			dangerPoints += improvements.getTotal(improvementTypes.camp);
+			dangerPoints *= levelRaidDangerFactor;
 			dangerPoints -= improvements.getCount(improvementNames.fortification);
 			return Math.round(dangerPoints * 0.9);
 		},

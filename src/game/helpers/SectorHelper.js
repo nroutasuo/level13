@@ -66,6 +66,7 @@ define([
 			features.campOrdinal = campOrdinal;
 			features.condition = featuresComponent.getCondition();
 			features.populationFactor = levelComponent.populationFactor;
+			features.raidDangerFactor = levelComponent.raidDangerFactor;
 			features.isSurfaceLevel = position.level == GameGlobals.gameState.getSurfaceLevel();
 			features.isGroundLevel = position.level == GameGlobals.gameState.getGroundLevel();
 			features.hasCamp = hasCamp;

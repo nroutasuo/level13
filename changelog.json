@@ -11,7 +11,7 @@
 				},
 				{
 					"type": "GB",
-					"summary": "Adjust balancing for buildings, crafting, upgrades, fights and scavenging results"
+					"summary": "Adjust balancing for buildings, crafting, upgrades, fights, raids and scavenging results"
 				},
 				{
 					"type": "GB",
@@ -44,6 +44,10 @@
 				{
 					"type": "GD",
 					"summary": "Add many more enemy types and many new items"
+				},
+				{
+					"type": "UI",
+					"summary": "UI improvements for screen reader users"
 				}
 			]
 		},

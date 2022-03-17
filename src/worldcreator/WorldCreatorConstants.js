@@ -145,6 +145,24 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 			}
 		},
 		
+		getRaidDangerFactor: function (campOrdinal) {
+			if (campOrdinal <= 0) return 0;
+			switch (campOrdinal) {
+				case 1:
+				case WorldConstants.CAMPS_BEFORE_GROUND:
+					return 0.5;
+				
+				case 10:
+				case 11:
+				case 12:
+				case 13:
+					return 1.5;
+				
+				default:
+					return this.getPopulationFactor(campOrdinal);
+			}
+		},
+		
 		getZoneOrdinal: function (zone) {
 			switch (zone) {
 				// all levels

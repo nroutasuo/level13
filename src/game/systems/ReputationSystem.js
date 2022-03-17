@@ -84,9 +84,7 @@ define([
 			var storage = GameGlobals.resourcesHelper.getCurrentCampStorage(campNode.entity);
 			var resources = storage ? storage.resources : null;
 			
-			var soldiers = campNode.camp.assignedWorkers.soldier;
-			var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradeNodes.head.upgrades);
-			var danger = OccurrenceConstants.getRaidDanger(sectorImprovements, soldiers, soldierLevel);
+			var danger = GameGlobals.campHelper.getCampRaidDanger(campNode.entity);
 			var levelComponent = GameGlobals.levelHelper.getLevelEntityForSector(campNode.entity).get(LevelComponent);
 			
 			var targetReputation = GameGlobals.campHelper.getTargetReputation(sectorImprovements, resources, campNode.camp.population, levelComponent.populationFactor, danger);

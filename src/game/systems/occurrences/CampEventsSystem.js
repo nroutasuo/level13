@@ -164,7 +164,7 @@ define([
 
 				case OccurrenceConstants.campOccurrenceTypes.raid:
 					if (population < 1) return false;
-					return this.getRaidDanger(campNode) > 0;
+					return this.getRaidDanger(campNode.entity) > 0;
 
 				default:
 					return true;
@@ -184,7 +184,7 @@ define([
 					return improvements.getCount(improvementType) + improvements.getLevel(improvementType);
 
 				case OccurrenceConstants.campOccurrenceTypes.raid:
-					return this.getRaidDanger(campNode);
+					return this.getRaidDanger(campNode.entity);
 
 				default:
 					return true;
@@ -383,11 +383,8 @@ define([
 
 		endRaid: function (sectorEntity) {
 			// determine raid result
-			var improvements = sectorEntity.get(SectorImprovementsComponent);
 			var raidComponent = sectorEntity.get(RaidComponent);
-			var soldiers = sectorEntity.get(CampComponent).assignedWorkers.soldier;
-			var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
-			var danger = OccurrenceConstants.getRaidDanger(improvements, soldiers, soldierLevel);
+			var danger = this.getRaidDanger(sectorEntity);
 			var raidRoll = Math.random();
 			raidComponent.victory = raidRoll > danger;
 			log.i("end raid: danger: " + danger + ", raidRoll: " + UIConstants.roundValue(raidRoll) + " -> victory: " + raidComponent.victory);
@@ -544,7 +541,7 @@ define([
 			let skipProbability = 0;
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.raid:
-					var danger = this.getRaidDanger(campNode);
+					var danger = this.getRaidDanger(campNode.entity);
 					if (danger < CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD / 2) {
 						skipProbability = 1 - danger * 15;
 					}
@@ -553,11 +550,8 @@ define([
 			return skipProbability;
 		},
 		
-		getRaidDanger: function (campNode) {
-			var improvements = campNode.entity.get(SectorImprovementsComponent);
-			var soldiers = campNode.camp.assignedWorkers.soldier;
-			var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
-			return OccurrenceConstants.getRaidDanger(improvements, soldiers, soldierLevel);
+		getRaidDanger: function (campSector) {
+			return GameGlobals.campHelper.getCampRaidDanger(campSector);
 		},
 		
 		addLogMessage: function (msg, replacements, values, camp) {
