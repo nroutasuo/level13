@@ -71,6 +71,9 @@ define([
 			features.isGroundLevel = position.level == GameGlobals.gameState.getGroundLevel();
 			features.hasCamp = hasCamp;
 			features.hasGrove = hasGrove;
+			features.radiation = featuresComponent.hazards.radiation;
+			features.poison = featuresComponent.hazards.poison;
+			features.debris = featuresComponent.hazards.debris;
 			return features;
 		},
 		
@@ -106,6 +109,7 @@ define([
 			if (hazards.radiation > 0 && hazards.radiation > GameGlobals.itemsHelper.getMaxHazardRadiationForLevel(campOrdianl2, 0, false)) return true;
 			if (hazards.poison > 0 && hazards.poison > GameGlobals.itemsHelper.getMaxHazardPoisonForLevel(campOrdianl2, 0, false)) return true;
 			if (hazards.cold > 0 && hazards.cold > GameGlobals.itemsHelper.getMaxHazardColdForLevel(campOrdianl2, 0, false)) return true;
+			if (hazards.debris > 0) return true;
 			
 			return false;
 		},
@@ -146,6 +150,11 @@ define([
 				perkBonus = 1 - perkBonus / 100;
 			}
 			return perkBonus;
+		},
+		
+		getDebrisMovementMalus: function (sector) {
+			let featuresComponent = sector.get(SectorFeaturesComponent);
+			return featuresComponent.hazards.debris > 0 ? 2 : 1;
 		},
 		
 		canHaveBeacon: function (sector) {

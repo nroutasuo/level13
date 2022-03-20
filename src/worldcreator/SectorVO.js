@@ -49,6 +49,13 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			return false;
 		},
 		
+		isOnPassageCriticalPath: function () {
+			if (this.criticalPathTypes.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP) >= 0) return true;
+			if (this.criticalPathTypes.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE) >= 0) return true;
+			if (this.criticalPathTypes.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE) >= 0) return true;
+			return false;
+		},
+		
 		updateCriticalPath: function () {
 			this.criticalPath = "-";
 			for (let i = 0; i < this.criticalPathTypes.length; i++) {

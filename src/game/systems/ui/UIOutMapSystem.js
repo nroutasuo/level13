@@ -468,6 +468,7 @@ define([
 			if (hazards.radiation > 0) result.push("radioactivity (" + hazards.radiation + ")");
 			if (hazards.poison > 0) result.push("pollution (" + hazards.poison + ")");
 			if (hazards.cold > 0) result.push("cold (" + hazards.cold + ")");
+			if (hazards.debris > 0) result.push("debris");
 			
 			if (result.length < 1) return "-";
 			else return result.join(", ");

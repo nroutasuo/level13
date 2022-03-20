@@ -1085,6 +1085,10 @@ define([
 				return GameGlobals.sectorHelper.getBeaconMovementBonus(sector, perksComponent);
 			}
 			
+			var getHazardMalus = function () {
+				return GameGlobals.sectorHelper.getDebrisMovementMalus(sector);
+			};
+			
 			var getFollowerBonus = function (itemBonusType) {
 				let followersComponent = playerStatsNode.followers;
 				return followersComponent.getCurrentBonus(itemBonusType);
@@ -1110,6 +1114,7 @@ define([
 						factor *= getFollowerBonus(ItemConstants.itemBonusTypes.movement);
 						factor *= getPerkBonus();
 						factor *= getBeaconBonus();
+						factor *= getHazardMalus();
 					}
 					break;
 				case "move_level_down":

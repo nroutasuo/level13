@@ -25,6 +25,7 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 		// TODO move to WorldConstants
 		MIN_CAMP_ORDINAL_HAZARD_RADIATION: 5,
 		MIN_CAMP_ORDINAL_HAZARD_POISON: 3,
+		MIN_CAMP_ORDINAL_HAZARD_DEBRIS: 7,
 		WASTE_HAZARD_RADIUS: 2,
 		
 		CONNECTION_POINTS_PATH_END: "p-end",

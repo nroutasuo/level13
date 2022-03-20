@@ -79,7 +79,6 @@ define([
 				}
 			}
 			
-			
 			switch (itemBonusType) {
 				case ItemConstants.itemBonusTypes.movement:
 					let playerPosition = this.playerPosNodes.head.position.getPosition();
@@ -88,6 +87,11 @@ define([
 					if (beaconBonus !== 1) {
 						if (result.length > 0) result += "<br/>";
 						result += "Beacon: " + beaconBonus;
+					}
+					let debrisMalus = GameGlobals.sectorHelper.getDebrisMovementMalus(sector);
+					if (debrisMalus !== 1) {
+						if (result.length > 0) result += "<br/>";
+						result += "Debirs: " + debrisMalus;
 					}
 					break;
 			}

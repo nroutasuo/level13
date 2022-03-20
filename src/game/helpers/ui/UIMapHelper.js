@@ -685,6 +685,8 @@ function (Ash, CanvasUtils, MapUtils,
 			} else if (hasSectorHazard) {
 				if (mainHazard == "cold") {
 					return ColorConstants.getColor(isSectorSunlit, "map_stroke_sector_cold");
+				} else if (mainHazard == "debris") {
+					return ColorConstants.getColor(isSectorSunlit, "map_stroke_sector_debris");
 				} else {
 					return ColorConstants.getColor(isSectorSunlit, "map_stroke_sector_hazard");
 				}

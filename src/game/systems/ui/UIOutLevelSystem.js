@@ -568,6 +568,9 @@ define([
 				if (hazards.cold > 0) {
 					hazardDesc += "It's very <span class='hl-functionality'>cold</span> here (" + hazards.cold + "). ";
 				}
+				if (hazards.debris > 0) {
+					hazardDesc += "It difficult to move around here due to the amount of <span class='hl-functionality'>debris</span>.";
+				}
 			}
 
 			return enemyDesc + (hasHazards ? hazardDesc : notCampableDesc);
