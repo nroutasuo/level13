@@ -357,7 +357,7 @@
     },
     "bag_5": {
         "bonuses": {
-            "bag": 120
+            "bag": 100
         },
         "campOrdinalRequired": 15,
         "description": "Mechanical chest that automatically follows its owner around. No more worrying about carrying all that stuff yourself.",

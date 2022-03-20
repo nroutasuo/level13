@@ -10,7 +10,7 @@
             "improvesWorker": "apothecary"
         },
         "id": "improve_building_apothecary",
-        "name": "Medicine"
+        "name": "Antibiotics"
     },
     "improve_building_barracks_3": {
         "campOrdinal": "14",
@@ -83,6 +83,10 @@
         "name": "Surgery"
     },
     "improve_building_hospital_3": {
+        "blueprintCampOrdinal": 14,
+        "blueprintIsCampless": true,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 3,
         "campOrdinal": "14",
         "effects": {
             "improvesBuildings": "hospital"
@@ -178,14 +182,6 @@
         "id": "improve_building_stable_2",
         "name": "Animal Feed"
     },
-    "improve_building_stable_3": {
-        "campOrdinal": "10",
-        "effects": {
-            "improvesBuildings": "stable"
-        },
-        "id": "improve_building_stable_3",
-        "name": "Transport Containers"
-    },
     "improve_building_storage1": {
         "blueprintCampOrdinal": 6,
         "blueprintIsCampless": false,
@@ -211,28 +207,12 @@
         "name": "Refrigeration"
     },
     "improve_building_temple2": {
-        "campOrdinal": "9",
+        "campOrdinal": "10",
         "effects": {
             "improvesBuildings": "temple"
         },
         "id": "improve_building_temple2",
         "name": "Offerings"
-    },
-    "improve_building_temple3": {
-        "campOrdinal": "12",
-        "effects": {
-            "improvesBuildings": "temple"
-        },
-        "id": "improve_building_temple3",
-        "name": "Worship"
-    },
-    "improve_worker_apothecary_3": {
-        "campOrdinal": "15",
-        "effects": {
-            "improvesWorker": "apothecary"
-        },
-        "id": "improve_worker_apothecary_3",
-        "name": "Antibiotics"
     },
     "improve_worker_chemist_2": {
         "campOrdinal": "6",
@@ -269,14 +249,6 @@
         },
         "id": "improve_worker_cleric_3",
         "name": "Scripture"
-    },
-    "improve_worker_concrete_3": {
-        "campOrdinal": "14",
-        "effects": {
-            "improvesWorker": "concrete"
-        },
-        "id": "improve_worker_concrete_3",
-        "name": "Internal Combustion Engine"
     },
     "improve_worker_gardener_2": {
         "campOrdinal": "12",
@@ -699,7 +671,7 @@
         "campOrdinal": "2",
         "effects": {},
         "id": "unlock_building_tradingpost",
-        "name": "Trading post"
+        "name": "Trading Post"
     },
     "unlock_clothing_basic": {
         "campOrdinal": "2",
@@ -724,11 +696,11 @@
         "name": "Leather-working"
     },
     "unlock_item_bag_2": {
-        "blueprintCampOrdinal": 6,
+        "blueprintCampOrdinal": 7,
         "blueprintIsCampless": false,
         "blueprintIsEarly": true,
         "blueprintPieces": 2,
-        "campOrdinal": "6",
+        "campOrdinal": "7",
         "effects": {},
         "id": "unlock_item_bag_2",
         "name": "Bag-making"
@@ -798,11 +770,11 @@
         "name": "Advanced Textiles"
     },
     "unlock_item_clothing4he": {
-        "blueprintCampOrdinal": 11,
+        "blueprintCampOrdinal": 6,
         "blueprintIsCampless": false,
         "blueprintIsEarly": true,
         "blueprintPieces": 2,
-        "campOrdinal": "11",
+        "campOrdinal": "6",
         "effects": {},
         "id": "unlock_item_clothing4he",
         "name": "Gas Masks"
