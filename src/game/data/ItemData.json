@@ -1,5 +1,6 @@
 {
     "artefact_doom_1": {
+        "campOrdinalRequired": 4,
         "description": "Unnerving piece of black rock. Something is etched on it in an unfamiliar language.",
         "icon": "img/items/artefact-test.png",
         "id": "artefact_doom_1",
@@ -7,13 +8,13 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Volcanic rock",
+        "rarityLocale": 5,
         "rarityScavenge": 8,
-		"rarityLocale": 5,
         "rarityTrade": 7,
-        "campOrdinalRequired": 4,
         "type": "artefact"
     },
     "artefact_doom_2": {
+        "campOrdinalRequired": 3,
         "description": "Heavy key with a demonic eel-like ornament so intricately carved it feels almost alive. Strangely cold to the touch.",
         "icon": "img/items/artefact-test.png",
         "id": "artefact_doom_2",
@@ -21,13 +22,13 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Temple key",
+        "rarityLocale": 5,
         "rarityScavenge": 8,
-		"rarityLocale": 5,
         "rarityTrade": 7,
-        "campOrdinalRequired": 3,
         "type": "artefact"
     },
     "artefact_doom_3": {
+        "campOrdinalRequired": 2,
         "description": "Fragile, yellow and light pink shell that must have been looted from a museum.",
         "icon": "img/items/artefact-test.png",
         "id": "artefact_doom_3",
@@ -35,13 +36,13 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Seashell",
+        "rarityLocale": 5,
         "rarityScavenge": 9,
-		"rarityLocale": 5,
         "rarityTrade": 7,
-        "campOrdinalRequired": 2,
         "type": "artefact"
     },
     "artefact_doom_4": {
+        "campOrdinalRequired": 1,
         "description": "Bold political leaflet printed on thick paper urging residents of the 'sewers' to rebel against segregation.",
         "icon": "img/items/artefact-test.png",
         "id": "artefact_doom_4",
@@ -49,13 +50,13 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Pamphlet",
-		"rarityLocale": 3,
+        "rarityLocale": 3,
         "rarityScavenge": 5,
         "rarityTrade": 5,
-        "campOrdinalRequired": 1,
         "type": "artefact"
     },
     "artefact_doom_5": {
+        "campOrdinalRequired": 15,
         "description": "Complicated astrological map with calculations indicating an event occurring on year 783.",
         "icon": "img/items/artefact-test.png",
         "id": "artefact_doom_5",
@@ -63,13 +64,14 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Starchart",
+        "rarityLocale": 5,
         "rarityScavenge": 8,
-		"rarityLocale": 5,
         "rarityTrade": 7,
-        "campOrdinalRequired": 15,
         "type": "artefact"
     },
     "artefact_ground_1": {
+        "campOrdinalMaximum": 8,
+        "campOrdinalRequired": 3,
         "description": "Puzzling piece of stone with an ancient rune on it.",
         "icon": "img/items/artefact-test.png",
         "id": "artefact_ground_1",
@@ -77,14 +79,14 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Runestone",
+        "rarityLocale": 5,
         "rarityScavenge": 8,
-		"rarityLocale": 5,
         "rarityTrade": 7,
-		"campOrdinalMaximum": 8,
-        "campOrdinalRequired": 3,
         "type": "artefact"
     },
     "artefact_ground_2": {
+        "campOrdinalMaximum": 8,
+        "campOrdinalRequired": 7,
         "description": "Seeds are said to contain life itself. They do not grow in the dark city.",
         "icon": "img/items/artefact-test.png",
         "id": "artefact_ground_2",
@@ -92,14 +94,14 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Charred seed",
+        "rarityLocale": 5,
         "rarityScavenge": 8,
-		"rarityLocale": 5,
         "rarityTrade": 7,
-		"campOrdinalMaximum": 8,
-        "campOrdinalRequired": 7,
         "type": "artefact"
     },
     "artefact_ground_3": {
+        "campOrdinalMaximum": 8,
+        "campOrdinalRequired": 3,
         "description": "Smooth stone that fits in the palm of a hand. There is something calming about it.",
         "icon": "img/items/artefact-test.png",
         "id": "artefact_ground_3",
@@ -107,14 +109,14 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Round stone",
+        "rarityLocale": 5,
         "rarityScavenge": 8,
-		"rarityLocale": 5,
         "rarityTrade": 7,
-		"campOrdinalMaximum": 8,
-        "campOrdinalRequired": 3,
         "type": "artefact"
     },
     "artefact_ground_4": {
+        "campOrdinalMaximum": 8,
+        "campOrdinalRequired": 1,
         "description": "Small leather pouch with a string that allows it to be worn around the neck. All it contains is some kind of a powder.",
         "icon": "img/items/artefact-test.png",
         "id": "artefact_ground_4",
@@ -122,14 +124,13 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Leather pouch",
+        "rarityLocale": 4,
         "rarityScavenge": 6,
-		"rarityLocale": 4,
         "rarityTrade": 3,
-		"campOrdinalMaximum": 8,
-        "campOrdinalRequired": 1,
         "type": "artefact"
     },
     "artefact_history_1": {
+        "campOrdinalRequired": 1,
         "description": "Long since dried and useless as a writing implement, but still popular among sages and philosophers as a symbol of knowledge.",
         "icon": "img/items/artefact-test.png",
         "id": "artefact_history_1",
@@ -137,13 +138,13 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Fountain pen",
+        "rarityLocale": 4,
         "rarityScavenge": 7,
-		"rarityLocale": 4,
         "rarityTrade": 4,
-        "campOrdinalRequired": 1,
         "type": "artefact"
     },
     "artefact_history_2": {
+        "campOrdinalRequired": 1,
         "description": "Metal ornament depicting a volcano, a mountain that spits fire from the ever-moving heart of the planet.",
         "icon": "img/items/artefact-test.png",
         "id": "artefact_history_2",
@@ -151,13 +152,13 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Amulet",
+        "rarityLocale": 5,
         "rarityScavenge": 8,
-		"rarityLocale": 5,
         "rarityTrade": 5,
-        "campOrdinalRequired": 1,
         "type": "artefact"
     },
     "artefact_history_3": {
+        "campOrdinalRequired": 1,
         "description": "An old circular data storage with the word 'backup' written on it. Without an electric computing machine, it's impossible to say if it is still readable.",
         "icon": "img/items/artefact-test.png",
         "id": "artefact_history_3",
@@ -165,13 +166,13 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "CD",
+        "rarityLocale": 5,
         "rarityScavenge": 8,
-		"rarityLocale": 5,
         "rarityTrade": 5,
-        "campOrdinalRequired": 1,
         "type": "artefact"
     },
     "artefact_history_4": {
+        "campOrdinalRequired": 2,
         "description": "An old worn toy, surprisingly light, with a strange warm texture. Wood used to be expensive because of its rarity, but now it's just useless.",
         "icon": "img/items/artefact-test.png",
         "id": "artefact_history_4",
@@ -179,12 +180,12 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Wooden toy horse",
+        "rarityLocale": 5,
         "rarityScavenge": 8,
-		"rarityLocale": 5,
-        "campOrdinalRequired": 2,
         "type": "artefact"
     },
     "artefact_science": {
+        "campOrdinalRequired": 10,
         "description": "Some kind of a data storage. Unfortunately, nothing that reads it seems to have survived.",
         "icon": "img/items/artefact-test.png",
         "id": "artefact_science",
@@ -192,13 +193,13 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Data stick",
+        "rarityLocale": 5,
         "rarityScavenge": 8,
-		"rarityLocale": 5,
         "rarityTrade": 8,
-        "campOrdinalRequired": 10,
         "type": "artefact"
     },
     "artefact_surface_1": {
+        "campOrdinalRequired": 15,
         "description": "Leftovers from a bygone time. They say there used to be fish tanks, somewhere near the surface.",
         "icon": "img/items/artefact-test.png",
         "id": "artefact_surface_1",
@@ -206,13 +207,13 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Canned tuna",
+        "rarityLocale": 5,
         "rarityScavenge": 8,
-		"rarityLocale": 5,
         "rarityTrade": 5,
-        "campOrdinalRequired": 15,
         "type": "artefact"
     },
     "artefact_surface_2": {
+        "campOrdinalRequired": 15,
         "description": "Chips like these used to be placed under people's skins, giving them certain powers. It probably doesn't work anymore.",
         "icon": "img/items/artefact-test.png",
         "id": "artefact_surface_2",
@@ -220,13 +221,13 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "ID Chip",
+        "rarityLocale": 5,
         "rarityScavenge": 8,
-		"rarityLocale": 5,
         "rarityTrade": 5,
-        "campOrdinalRequired": 15,
         "type": "artefact"
     },
     "artefact_surface_3": {
+        "campOrdinalRequired": 15,
         "description": "Worn but still mostly legible, this notebook seems to contain calculations related to fuel consumption of some kind of a large and complex vehicle over very long distances.",
         "icon": "img/items/artefact-test.png",
         "id": "artefact_surface_3",
@@ -234,13 +235,13 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Scientist's notebook",
+        "rarityLocale": 5,
         "rarityScavenge": 8,
-		"rarityLocale": 5,
         "rarityTrade": 5,
-        "campOrdinalRequired": 15,
         "type": "artefact"
     },
     "artefact_surface_4": {
+        "campOrdinalRequired": 13,
         "description": "Thin rectangular piece of white plastic which used to open doors. Some believe it still holds great power.",
         "icon": "img/items/artefact-test.png",
         "id": "artefact_surface_4",
@@ -248,12 +249,12 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Plastic key card",
+        "rarityLocale": 5,
         "rarityScavenge": 8,
-		"rarityLocale": 5,
-        "campOrdinalRequired": 13,
         "type": "artefact"
     },
     "artefact_surface_5": {
+        "campOrdinalRequired": 9,
         "description": "A worn out but still colorful magazine filled with fantastic stories.",
         "icon": "img/items/artefact-test.png",
         "id": "artefact_surface_4",
@@ -261,15 +262,15 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Torn comic book",
+        "rarityLocale": 5,
         "rarityScavenge": 8,
-		"rarityLocale": 5,
-        "campOrdinalRequired": 9,
         "type": "artefact"
     },
     "bag_0": {
         "bonuses": {
             "bag": 30
         },
+        "campOrdinalRequired": 1,
         "description": "It's not fancy, but allows one to carry around more stuff than their hands and pockets can hold.",
         "icon": "img/items/bag-0.png",
         "id": "bag_0",
@@ -277,10 +278,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Plastic bag",
+        "rarityLocale": 5,
         "rarityScavenge": 2,
-		"rarityLocale": 5,
         "rarityTrade": 5,
-        "campOrdinalRequired": 1,
         "source": "equipment",
         "type": "bag"
     },
@@ -288,6 +288,7 @@
         "bonuses": {
             "bag": 40
         },
+        "campOrdinalRequired": 2,
         "description": "A more spacious bag with lots of pockets.",
         "icon": "img/items/bag-1.png",
         "id": "bag_1",
@@ -295,10 +296,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Basic backpack",
+        "rarityLocale": 5,
         "rarityScavenge": 5,
-		"rarityLocale": 5,
         "rarityTrade": 1,
-        "campOrdinalRequired": 2,
         "source": "equipment",
         "type": "bag"
     },
@@ -306,6 +306,7 @@
         "bonuses": {
             "bag": 50
         },
+        "campOrdinalRequired": 5,
         "description": "A huge backpack with plenty of space.",
         "icon": "img/items/bag-1.png",
         "id": "bag_2",
@@ -313,10 +314,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Jumbo backpack",
+        "rarityLocale": 5,
         "rarityScavenge": 5,
-		"rarityLocale": 5,
         "rarityTrade": 1,
-        "campOrdinalRequired": 5,
         "source": "equipment",
         "type": "bag"
     },
@@ -324,6 +324,7 @@
         "bonuses": {
             "bag": 60
         },
+        "campOrdinalRequired": 10,
         "description": "With this bag, weight is starting to be more of a problem than space.",
         "icon": "img/items/bag-1.png",
         "id": "bag_3",
@@ -331,10 +332,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Hiker's rucksack",
+        "rarityLocale": 5,
         "rarityScavenge": 8,
-		"rarityLocale": 5,
         "rarityTrade": 3,
-        "campOrdinalRequired": 10,
         "source": "equipment",
         "type": "bag"
     },
@@ -342,6 +342,7 @@
         "bonuses": {
             "bag": 80
         },
+        "campOrdinalRequired": 13,
         "description": "A really practical backpack with lots of pockets.",
         "icon": "img/items/bag-1.png",
         "id": "bag_4",
@@ -351,7 +352,6 @@
         "name": "Scavenger bag",
         "rarityScavenge": 8,
         "rarityTrade": 3,
-        "campOrdinalRequired": 13,
         "source": "equipment",
         "type": "bag"
     },
@@ -359,6 +359,7 @@
         "bonuses": {
             "bag": 120
         },
+        "campOrdinalRequired": 15,
         "description": "Mechanical chest that automatically follows its owner around. No more worrying about carrying all that stuff yourself.",
         "icon": "img/items/bag-3.png",
         "id": "bag_5",
@@ -366,14 +367,14 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Automatic luggage",
+        "rarityLocale": 6,
         "rarityScavenge": 10,
-		"rarityLocale": 6,
         "rarityTrade": 8,
-        "campOrdinalRequired": 15,
         "source": "equipment",
         "type": "bag"
     },
     "cache_evidence_1": {
+        "campOrdinalRequired": 3,
         "configData": {
             "bookType": "science"
         },
@@ -384,12 +385,12 @@
         "isEquippable": false,
         "isUseable": true,
         "name": "Science book",
+        "rarityLocale": 3,
         "rarityScavenge": 6,
-		"rarityLocale": 3,
-        "campOrdinalRequired": 3,
         "type": "voucher"
     },
     "cache_evidence_2": {
+        "campOrdinalRequired": 1,
         "configData": {
             "bookType": "fiction"
         },
@@ -400,12 +401,12 @@
         "isEquippable": false,
         "isUseable": true,
         "name": "Fiction book",
+        "rarityLocale": 3,
         "rarityScavenge": 6,
-		"rarityLocale": 3,
-        "campOrdinalRequired": 1,
         "type": "voucher"
     },
     "cache_evidence_3": {
+        "campOrdinalRequired": 2,
         "configData": {
             "bookType": "history"
         },
@@ -416,12 +417,13 @@
         "isEquippable": false,
         "isUseable": true,
         "name": "History book",
+        "rarityLocale": 3,
         "rarityScavenge": 6,
-		"rarityLocale": 3,
-        "campOrdinalRequired": 2,
         "type": "voucher"
     },
     "cache_metal_1": {
+        "campOrdinalMaximum": 10,
+        "campOrdinalRequired": 1,
         "configData": {
             "metalValue": 10
         },
@@ -432,13 +434,13 @@
         "isEquippable": false,
         "isUseable": true,
         "name": "Abandoned robot",
+        "rarityLocale": 3,
         "rarityScavenge": 6,
-		"rarityLocale": 3,
-		"campOrdinalMaximum": 10,
-        "campOrdinalRequired": 1,
         "type": "voucher"
     },
     "cache_metal_2": {
+        "campOrdinalMaximum": 11,
+        "campOrdinalRequired": 2,
         "configData": {
             "metalValue": 20
         },
@@ -449,13 +451,12 @@
         "isEquippable": false,
         "isUseable": true,
         "name": "Broken appliance",
+        "rarityLocale": 3,
         "rarityScavenge": 6,
-		"rarityLocale": 3,
-        "campOrdinalRequired": 2,
-		"campOrdinalMaximum": 11,
         "type": "voucher"
     },
     "cache_metal_3": {
+        "campOrdinalRequired": 9,
         "configData": {
             "metalValue": 30
         },
@@ -466,12 +467,12 @@
         "isEquippable": false,
         "isUseable": true,
         "name": "Damaged machine",
+        "rarityLocale": 3,
         "rarityScavenge": 6,
-		"rarityLocale": 3,
-        "campOrdinalRequired": 9,
         "type": "voucher"
     },
     "cache_metal_4": {
+        "campOrdinalRequired": 10,
         "configData": {
             "metalValue": 40
         },
@@ -482,15 +483,15 @@
         "isEquippable": false,
         "isUseable": true,
         "name": "Obsolete computer",
+        "rarityLocale": 3,
         "rarityScavenge": 6,
-		"rarityLocale": 3,
-        "campOrdinalRequired": 10,
         "type": "voucher"
     },
     "clothing_hands_1": {
         "bonuses": {
             "warmth": 5
         },
+        "campOrdinalRequired": 2,
         "description": "Nothing keeps hands warm like fluffy mittens.",
         "icon": "img/items/clothing-hand-0.png",
         "id": "clothing_hands_1",
@@ -498,10 +499,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Mittens",
+        "rarityLocale": 5,
         "rarityScavenge": 5,
-		"rarityLocale": 5,
         "rarityTrade": 1,
-        "campOrdinalRequired": 2,
         "source": "equipment",
         "type": "clothing_hands"
     },
@@ -512,6 +512,7 @@
             "res_rad": 1,
             "warmth": 3
         },
+        "campOrdinalRequired": 3,
         "description": "Not only warm but also protective.",
         "icon": "img/items/clothing-hand-0.png",
         "id": "clothing_hands_12",
@@ -519,10 +520,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Leather gloves",
+        "rarityLocale": 3,
         "rarityScavenge": 5,
-		"rarityLocale": 3,
         "rarityTrade": 1,
-        "campOrdinalRequired": 3,
         "source": "equipment",
         "type": "clothing_hands"
     },
@@ -533,6 +533,7 @@
             "res_rad": 3,
             "warmth": 5
         },
+        "campOrdinalRequired": 5,
         "description": "Basic protection for hands.",
         "icon": "img/items/clothing-hand-0.png",
         "id": "clothing_hands_2",
@@ -540,10 +541,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Work gloves",
+        "rarityLocale": 3,
         "rarityScavenge": 1,
-		"rarityLocale": 3,
         "rarityTrade": 1,
-        "campOrdinalRequired": 5,
         "source": "equipment",
         "type": "clothing_hands"
     },
@@ -554,6 +554,7 @@
             "res_rad": 3,
             "warmth": 5
         },
+        "campOrdinalRequired": 7,
         "description": "Good gloves make scavenging much safer.",
         "icon": "img/items/clothing-hand-0.png",
         "id": "clothing_hands_25",
@@ -561,10 +562,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Good gloves",
+        "rarityLocale": 3,
         "rarityScavenge": 2,
-		"rarityLocale": 3,
         "rarityTrade": 1,
-        "campOrdinalRequired": 7,
         "source": "equipment",
         "type": "clothing_hands"
     },
@@ -575,6 +575,7 @@
             "res_rad": 5,
             "warmth": 7
         },
+        "campOrdinalRequired": 10,
         "description": "No scavenger ever regretted having good gloves.",
         "icon": "img/items/clothing-hand-0.png",
         "id": "clothing_hands_3",
@@ -582,10 +583,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Quality gloves",
+        "rarityLocale": 2,
         "rarityScavenge": 2,
-		"rarityLocale": 2,
         "rarityTrade": 1,
-        "campOrdinalRequired": 10,
         "source": "equipment",
         "type": "clothing_hands"
     },
@@ -596,6 +596,7 @@
             "res_rad": 15,
             "warmth": 15
         },
+        "campOrdinalRequired": 12,
         "description": "Gloves that protect from almost all environmental hazards.",
         "icon": "img/items/clothing-hand-0.png",
         "id": "clothing_hands_4",
@@ -603,10 +604,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Scavenger's gloves",
+        "rarityLocale": 2,
         "rarityScavenge": 2,
-		"rarityLocale": 2,
         "rarityTrade": 1,
-        "campOrdinalRequired": 12,
         "source": "equipment",
         "type": "clothing_hands"
     },
@@ -617,6 +617,7 @@
             "res_rad": 15,
             "warmth": 15
         },
+        "campOrdinalRequired": 14,
         "description": "Gloves made from recycled advanced textiles from before the Fall.",
         "icon": "img/items/clothing-hand-0.png",
         "id": "clothing_hands_5",
@@ -624,10 +625,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Synthetic gloves",
+        "rarityLocale": 2,
         "rarityScavenge": 2,
-		"rarityLocale": 2,
         "rarityTrade": 1,
-        "campOrdinalRequired": 14,
         "source": "equipment",
         "type": "clothing_hands"
     },
@@ -638,6 +638,7 @@
             "res_rad": 10,
             "warmth": 5
         },
+        "campOrdinalRequired": 8,
         "description": "Protection from environmental hazards.",
         "icon": "img/items/clothing-hand-0.png",
         "id": "clothing_hands_l14",
@@ -648,7 +649,6 @@
         "name": "Hazmat gloves",
         "rarityScavenge": -1,
         "rarityTrade": -1,
-        "campOrdinalRequired": 8,
         "source": "equipment",
         "type": "clothing_hands"
     },
@@ -656,6 +656,7 @@
         "bonuses": {
             "shade": 30
         },
+        "campOrdinalRequired": 2,
         "description": "If there was any sunlight, these would probably be handy.",
         "icon": "img/items/clothing-hat-1.png",
         "id": "clothing_head_0",
@@ -663,10 +664,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Sunglasses",
+        "rarityLocale": 2,
         "rarityScavenge": 5,
-		"rarityLocale": 2,
         "rarityTrade": 2,
-        "campOrdinalRequired": 2,
         "source": "equipment",
         "type": "clothing_head"
     },
@@ -675,6 +675,7 @@
             "def": 3,
             "warmth": 10
         },
+        "campOrdinalRequired": 2,
         "description": "Warm basic headwear.",
         "icon": "img/items/clothing-hat-1.png",
         "id": "clothing_head_1",
@@ -682,10 +683,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Wool hat",
+        "rarityLocale": 5,
         "rarityScavenge": 2,
-		"rarityLocale": 5,
         "rarityTrade": 1,
-        "campOrdinalRequired": 2,
         "source": "equipment",
         "type": "clothing_head"
     },
@@ -693,6 +693,7 @@
         "bonuses": {
             "res_poison": 15
         },
+        "campOrdinalRequired": 4,
         "description": "Meager protection against the effects of polluted air.",
         "icon": "img/items/clothing-hat-1.png",
         "id": "clothing_head_2",
@@ -700,10 +701,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Medical mask",
+        "rarityLocale": 2,
         "rarityScavenge": 5,
-		"rarityLocale": 2,
         "rarityTrade": 2,
-        "campOrdinalRequired": 4,
         "source": "equipment",
         "type": "clothing_head"
     },
@@ -711,6 +711,7 @@
         "bonuses": {
             "def": 5
         },
+        "campOrdinalRequired": 3,
         "description": "A bit clumsy, but quite useful in a fight.",
         "icon": "img/items/clothing-hat-2.png",
         "id": "clothing_head_25",
@@ -718,10 +719,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Bike helmet",
+        "rarityLocale": 2,
         "rarityScavenge": 5,
-		"rarityLocale": 2,
         "rarityTrade": 2,
-        "campOrdinalRequired": 3,
         "source": "equipment",
         "type": "clothing_head"
     },
@@ -732,16 +732,16 @@
             "res_rad": 1,
             "warmth": 5
         },
+        "campOrdinalRequired": 4,
         "description": "Protects the head from blows and the wind.",
         "icon": "img/items/clothing-hat-plus.png",
         "id": "clothing_head_27",
         "isCraftable": true,
         "isEquippable": true,
         "name": "Leather helmet",
+        "rarityLocale": 5,
         "rarityScavenge": 5,
-		"rarityLocale": 5,
         "rarityTrade": 2,
-        "campOrdinalRequired": 4,
         "source": "equipment",
         "type": "clothing_head"
     },
@@ -754,6 +754,7 @@
             "shield": 10,
             "warmth": 5
         },
+        "campOrdinalRequired": 7,
         "description": "Perfect apparel for the post-apocalyptic adventurer.",
         "icon": "img/items/clothing-hat-2.png",
         "id": "clothing_head_3",
@@ -761,10 +762,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Scrap metal helmet",
+        "rarityLocale": 8,
         "rarityScavenge": 5,
-		"rarityLocale": 8,
         "rarityTrade": 2,
-        "campOrdinalRequired": 7,
         "source": "equipment",
         "type": "clothing_head"
     },
@@ -776,6 +776,7 @@
             "shade": 10,
             "warmth": 3
         },
+        "campOrdinalRequired": 6,
         "description": "Gives a definite sense of security in dangerous environments.",
         "icon": "img/items/clothing-mask.png",
         "id": "clothing_head_4",
@@ -783,10 +784,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Gas mask",
+        "rarityLocale": 5,
         "rarityScavenge": 5,
-		"rarityLocale": 5,
         "rarityTrade": 2,
-        "campOrdinalRequired": 6,
         "source": "equipment",
         "type": "clothing_head"
     },
@@ -799,6 +799,7 @@
             "shield": 10,
             "warmth": 10
         },
+        "campOrdinalRequired": 12,
         "description": "A practical, protective hood that doesn't get in the way.",
         "icon": "img/items/clothing-hat-2.png",
         "id": "clothing_head_45",
@@ -806,10 +807,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Scavenger's hood",
+        "rarityLocale": 5,
         "rarityScavenge": 5,
-		"rarityLocale": 5,
         "rarityTrade": 2,
-        "campOrdinalRequired": 12,
         "source": "equipment",
         "type": "clothing_head"
     },
@@ -822,6 +822,7 @@
             "shield": 20,
             "warmth": 15
         },
+        "campOrdinalRequired": 13,
         "description": "Headgear designed specifically for scavenging in the City.",
         "icon": "img/items/clothing-hat-3.png",
         "id": "clothing_head_5",
@@ -831,7 +832,6 @@
         "name": "Explorer's helmet",
         "rarityScavenge": 5,
         "rarityTrade": 2,
-        "campOrdinalRequired": 13,
         "source": "equipment",
         "type": "clothing_head"
     },
@@ -843,6 +843,7 @@
             "shade": 10,
             "warmth": 3
         },
+        "campOrdinalRequired": 8,
         "description": "Offers reasonable protection from environmental hazards.",
         "icon": "img/items/clothing-mask.png",
         "id": "clothing_head_l14",
@@ -851,10 +852,9 @@
         "isSpecialEquipment": true,
         "isUseable": false,
         "name": "Respirator",
+        "rarityLocale": 5,
         "rarityScavenge": 8,
-		"rarityLocale": 5,
         "rarityTrade": 6,
-        "campOrdinalRequired": 8,
         "source": "equipment",
         "type": "clothing_head"
     },
@@ -863,6 +863,7 @@
             "def": 1,
             "warmth": 1
         },
+        "campOrdinalRequired": 1,
         "description": "Barely counts for clothing, but for now it'll have to do.",
         "icon": "img/items/clothing-rags.png",
         "id": "clothing_lower_1",
@@ -870,10 +871,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Ragged pants",
+        "rarityLocale": 2,
         "rarityScavenge": 1,
-		"rarityLocale": 2,
         "rarityTrade": -1,
-        "campOrdinalRequired": 1,
         "source": "equipment",
         "type": "clothing_lower"
     },
@@ -882,6 +882,7 @@
             "def": 2,
             "warmth": 1
         },
+        "campOrdinalRequired": 2,
         "description": "Nothing wrong with these pants",
         "icon": "img/items/clothing-rags.png",
         "id": "clothing_lower_15",
@@ -889,10 +890,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Basic pants",
+        "rarityLocale": 1,
         "rarityScavenge": 3,
-		"rarityLocale": 1,
         "rarityTrade": 1,
-        "campOrdinalRequired": 2,
         "source": "equipment",
         "type": "clothing_lower"
     },
@@ -901,6 +901,7 @@
             "def": 3,
             "warmth": 5
         },
+        "campOrdinalRequired": 5,
         "description": "Used to be the standard uniform in the dark levels of the City.",
         "icon": "img/items/clothing-2.png",
         "id": "clothing_lower_2",
@@ -908,10 +909,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Factory uniform pants",
+        "rarityLocale": 1,
         "rarityScavenge": 2,
-		"rarityLocale": 1,
         "rarityTrade": 1,
-        "campOrdinalRequired": 5,
         "source": "equipment",
         "type": "clothing_lower"
     },
@@ -920,6 +920,7 @@
             "def": 5,
             "warmth": 8
         },
+        "campOrdinalRequired": 8,
         "description": "Looks official, but not particularly protective.",
         "icon": "img/items/clothing-2.png",
         "id": "clothing_lower_3",
@@ -927,10 +928,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Guard uniform pants",
+        "rarityLocale": 1,
         "rarityScavenge": 2,
-		"rarityLocale": 1,
         "rarityTrade": 1,
-        "campOrdinalRequired": 8,
         "source": "equipment",
         "type": "clothing_lower"
     },
@@ -940,6 +940,7 @@
             "shield": 10,
             "warmth": 10
         },
+        "campOrdinalRequired": 11,
         "description": "Protects from bites and scratches.",
         "icon": "img/items/clothing-3.png",
         "id": "clothing_lower_4",
@@ -947,10 +948,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Padded pants",
+        "rarityLocale": 2,
         "rarityScavenge": 5,
-		"rarityLocale": 2,
         "rarityTrade": 2,
-        "campOrdinalRequired": 11,
         "source": "equipment",
         "type": "clothing_lower"
     },
@@ -962,6 +962,7 @@
             "shield": 10,
             "warmth": 10
         },
+        "campOrdinalRequired": 13,
         "description": "Protects from bites and scratches.",
         "icon": "img/items/clothing-3.png",
         "id": "clothing_lower_45",
@@ -969,10 +970,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Explorer's pants",
+        "rarityLocale": 3,
         "rarityScavenge": 5,
-		"rarityLocale": 3,
         "rarityTrade": 2,
-        "campOrdinalRequired": 13,
         "source": "equipment",
         "type": "clothing_lower"
     },
@@ -983,6 +983,7 @@
             "res_rad": 1,
             "warmth": 50
         },
+        "campOrdinalRequired": 15,
         "description": "Nothing keeps you warm like long underwear.",
         "icon": "img/items/clothing-3.png",
         "id": "clothing_lower_5",
@@ -990,10 +991,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Long underwear",
+        "rarityLocale": 2,
         "rarityScavenge": 5,
-		"rarityLocale": 2,
         "rarityTrade": 2,
-        "campOrdinalRequired": 15,
         "source": "equipment",
         "type": "clothing_lower"
     },
@@ -1002,6 +1002,7 @@
             "def": 3,
             "warmth": 15
         },
+        "campOrdinalRequired": 1,
         "description": "Something against the chill.",
         "icon": "img/items/clothing-warm.png",
         "id": "clothing_over_1",
@@ -1009,10 +1010,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Warm coat",
+        "rarityLocale": 2,
         "rarityScavenge": 6,
-		"rarityLocale": 2,
         "rarityTrade": 1,
-        "campOrdinalRequired": 1,
         "source": "equipment",
         "type": "clothing_over"
     },
@@ -1023,6 +1023,7 @@
             "res_rad": 3,
             "warmth": 5
         },
+        "campOrdinalRequired": 2,
         "description": "A solid jacket.",
         "icon": "img/items/clothing-2.png",
         "id": "clothing_over_15",
@@ -1030,10 +1031,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Leather jacket",
+        "rarityLocale": 2,
         "rarityScavenge": 5,
-		"rarityLocale": 2,
         "rarityTrade": 1,
-        "campOrdinalRequired": 2,
         "source": "equipment",
         "type": "clothing_over"
     },
@@ -1043,6 +1043,7 @@
             "res_poison": 10,
             "warmth": 2
         },
+        "campOrdinalRequired": 2,
         "description": "Might protect from environmental hazards.",
         "icon": "img/items/clothing-2.png",
         "id": "clothing_over_1x",
@@ -1050,10 +1051,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Lab coat",
+        "rarityLocale": 2,
         "rarityScavenge": 5,
-		"rarityLocale": 2,
         "rarityTrade": 2,
-        "campOrdinalRequired": 2,
         "source": "equipment",
         "type": "clothing_over"
     },
@@ -1064,6 +1064,7 @@
             "res_rad": 3,
             "warmth": 10
         },
+        "campOrdinalRequired": 3,
         "description": "Doesn't make one invincible, but feels like it.",
         "icon": "img/items/clothing-2.png",
         "id": "clothing_over_2",
@@ -1071,10 +1072,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Biker jacket",
+        "rarityLocale": 2,
         "rarityScavenge": 5,
-		"rarityLocale": 2,
         "rarityTrade": 1,
-        "campOrdinalRequired": 3,
         "source": "equipment",
         "type": "clothing_over"
     },
@@ -1086,6 +1086,7 @@
             "shield": 20,
             "warmth": 10
         },
+        "campOrdinalRequired": 5,
         "description": "Something that's actually produced with the aim of keeping one safe.",
         "icon": "img/items/clothing-2.png",
         "id": "clothing_over_25",
@@ -1093,10 +1094,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Army jacket",
+        "rarityLocale": 1,
         "rarityScavenge": 3,
-		"rarityLocale": 1,
         "rarityTrade": 1,
-        "campOrdinalRequired": 5,
         "source": "equipment",
         "type": "clothing_over"
     },
@@ -1108,6 +1108,7 @@
             "shield": 20,
             "warmth": 15
         },
+        "campOrdinalRequired": 5,
         "description": "Something that's actually produced with the aim of keeping one safe.",
         "icon": "img/items/clothing-2.png",
         "id": "clothing_over_25x",
@@ -1115,10 +1116,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Warm army jacket",
+        "rarityLocale": 2,
         "rarityScavenge": 5,
-		"rarityLocale": 2,
         "rarityTrade": 2,
-        "campOrdinalRequired": 5,
         "source": "equipment",
         "type": "clothing_over"
     },
@@ -1130,6 +1130,7 @@
             "shield": 30,
             "warmth": 5
         },
+        "campOrdinalRequired": 7,
         "description": "An ugly but surprisingly comfortable metal blanket",
         "icon": "img/items/clothing-2.png",
         "id": "clothing_over_3",
@@ -1137,10 +1138,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Scrap metal armor",
+        "rarityLocale": 3,
         "rarityScavenge": 5,
-		"rarityLocale": 3,
         "rarityTrade": 5,
-        "campOrdinalRequired": 7,
         "source": "equipment",
         "type": "clothing_over"
     },
@@ -1151,6 +1151,7 @@
             "res_rad": 5,
             "shield": 50
         },
+        "campOrdinalRequired": 10,
         "description": "Heavy, but worth it.",
         "icon": "img/items/clothing-2.png",
         "id": "clothing_over_4",
@@ -1158,10 +1159,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Kevlar vest",
+        "rarityLocale": 1,
         "rarityScavenge": 4,
-		"rarityLocale": 1,
         "rarityTrade": 1,
-        "campOrdinalRequired": 10,
         "source": "equipment",
         "type": "clothing_over"
     },
@@ -1173,6 +1173,7 @@
             "shield": 60,
             "warmth": 20
         },
+        "campOrdinalRequired": 12,
         "description": "Novel technology for maximal survival in the post-Fall City",
         "icon": "img/items/clothing-2.png",
         "id": "clothing_over_45",
@@ -1180,10 +1181,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Scavenger vest",
+        "rarityLocale": 1,
         "rarityScavenge": 4,
-		"rarityLocale": 1,
         "rarityTrade": 2,
-        "campOrdinalRequired": 12,
         "source": "equipment",
         "type": "clothing_over"
     },
@@ -1195,6 +1195,7 @@
             "shield": 80,
             "warmth": 10
         },
+        "campOrdinalRequired": 13,
         "description": "Based on the old Surface Guard uniform with additional environmental proection.",
         "icon": "img/items/clothing-3.png",
         "id": "clothing_over_5",
@@ -1202,10 +1203,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Riot police vest",
+        "rarityLocale": 2,
         "rarityScavenge": 5,
-		"rarityLocale": 2,
         "rarityTrade": 2,
-        "campOrdinalRequired": 13,
         "source": "equipment",
         "type": "clothing_over"
     },
@@ -1217,6 +1217,7 @@
             "shield": 130,
             "warmth": 10
         },
+        "campOrdinalRequired": 15,
         "description": "Futuristic armour designed for those exploring the world outside the City's protective walls.",
         "icon": "img/items/clothing-3.png",
         "id": "clothing_over_6",
@@ -1224,10 +1225,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Exoskeleton",
+        "rarityLocale": 3,
         "rarityScavenge": -1,
-		"rarityLocale": 3,
         "rarityTrade": 5,
-        "campOrdinalRequired": 15,
         "source": "equipment",
         "type": "clothing_over"
     },
@@ -1240,6 +1240,7 @@
             "shield": 20,
             "warmth": 5
         },
+        "campOrdinalRequired": 8,
         "description": "Effective protection against radiation, but clumsy to move around in.",
         "icon": "img/items/clothing-2.png",
         "id": "clothing_over_l14",
@@ -1250,7 +1251,6 @@
         "name": "Hazmat suit",
         "rarityScavenge": -1,
         "rarityTrade": -1,
-        "campOrdinalRequired": 8,
         "source": "equipment",
         "type": "clothing_over"
     },
@@ -1259,6 +1259,7 @@
             "def": 12,
             "warmth": 20
         },
+        "campOrdinalRequired": 5,
         "description": "Seasons are hardly a thing in the City but it does get cold.",
         "icon": "img/items/clothing-warm.png",
         "id": "clothing_over_w",
@@ -1266,10 +1267,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Winter parka",
+        "rarityLocale": 1,
         "rarityScavenge": 3,
-		"rarityLocale": 1,
         "rarityTrade": 2,
-        "campOrdinalRequired": 5,
         "source": "equipment",
         "type": "clothing_over"
     },
@@ -1278,6 +1278,7 @@
             "def": 1,
             "warmth": 1
         },
+        "campOrdinalRequired": 1,
         "description": "Barely counts for clothing, but for now it'll have to do.",
         "icon": "img/items/clothing-rags.png",
         "id": "clothing_upper_1",
@@ -1285,10 +1286,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Tattered shirt",
+        "rarityLocale": 2,
         "rarityScavenge": 2,
-		"rarityLocale": 2,
         "rarityTrade": -1,
-        "campOrdinalRequired": 1,
         "source": "equipment",
         "type": "clothing_upper"
     },
@@ -1299,6 +1299,7 @@
             "res_rad": 1,
             "warmth": 2
         },
+        "campOrdinalRequired": 2,
         "description": "Standard shirt.",
         "icon": "img/items/clothing-shirt.png",
         "id": "clothing_upper_15",
@@ -1306,10 +1307,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "T-shirt",
+        "rarityLocale": 1,
         "rarityScavenge": 2,
-		"rarityLocale": 1,
         "rarityTrade": 1,
-        "campOrdinalRequired": 2,
         "source": "equipment",
         "type": "clothing_upper"
     },
@@ -1320,6 +1320,7 @@
             "res_rad": 1,
             "warmth": 3
         },
+        "campOrdinalRequired": 5,
         "description": "Feels oddly comfortable in dark corridors and abandoned factories.",
         "icon": "img/items/clothing-shirt-2.png",
         "id": "clothing_upper_2",
@@ -1327,10 +1328,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Factory uniform shirt",
+        "rarityLocale": 1,
         "rarityScavenge": 2,
-		"rarityLocale": 1,
         "rarityTrade": 1,
-        "campOrdinalRequired": 5,
         "source": "equipment",
         "type": "clothing_upper"
     },
@@ -1341,6 +1341,7 @@
             "res_rad": 3,
             "warmth": 10
         },
+        "campOrdinalRequired": 8,
         "description": "Looks official, but not particularly protective.",
         "icon": "img/items/clothing-shirt-2.png",
         "id": "clothing_upper_3",
@@ -1348,10 +1349,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Guard uniform shirt",
+        "rarityLocale": 1,
         "rarityScavenge": 2,
-		"rarityLocale": 1,
         "rarityTrade": 1,
-        "campOrdinalRequired": 8,
         "source": "equipment",
         "type": "clothing_upper"
     },
@@ -1362,6 +1362,7 @@
             "res_rad": 5,
             "warmth": 12
         },
+        "campOrdinalRequired": 9,
         "description": "Shirt made from recycled advanced textiles used before the Fall.",
         "icon": "img/items/clothing-2.png",
         "id": "clothing_upper_35",
@@ -1369,10 +1370,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Synthetic shirt",
+        "rarityLocale": 1,
         "rarityScavenge": 2,
-		"rarityLocale": 1,
         "rarityTrade": 1,
-        "campOrdinalRequired": 9,
         "source": "equipment",
         "type": "clothing_upper"
     },
@@ -1383,6 +1383,7 @@
             "res_rad": 5,
             "warmth": 15
         },
+        "campOrdinalRequired": 12,
         "description": "Specifically made for keeping travellers warm and safe.",
         "icon": "img/items/clothing-3.png",
         "id": "clothing_upper_4",
@@ -1390,10 +1391,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Protective shirt",
+        "rarityLocale": 2,
         "rarityScavenge": 5,
-		"rarityLocale": 2,
         "rarityTrade": 2,
-        "campOrdinalRequired": 12,
         "source": "equipment",
         "type": "clothing_upper"
     },
@@ -1404,6 +1404,7 @@
             "res_rad": 5,
             "warmth": 15
         },
+        "campOrdinalRequired": 13,
         "description": "Comes with many pockets.",
         "icon": "img/items/clothing-3.png",
         "id": "clothing_upper_45",
@@ -1411,10 +1412,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Explorer's shirt",
+        "rarityLocale": 2,
         "rarityScavenge": 5,
-		"rarityLocale": 2,
         "rarityTrade": 2,
-        "campOrdinalRequired": 13,
         "source": "equipment",
         "type": "clothing_upper"
     },
@@ -1425,6 +1425,7 @@
             "res_rad": 40,
             "warmth": 25
         },
+        "campOrdinalRequired": 15,
         "description": "The best protection an explorer can hope for.",
         "icon": "img/items/clothing-3.png",
         "id": "clothing_upper_5",
@@ -1432,14 +1433,14 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Scavenger's shirt",
+        "rarityLocale": 2,
         "rarityScavenge": 5,
-		"rarityLocale": 2,
         "rarityTrade": 2,
-        "campOrdinalRequired": 15,
         "source": "equipment",
         "type": "clothing_upper"
     },
     "consumable_map_1": {
+        "campOrdinalRequired": 2,
         "description": "A piece of cardboard with roughly drawn map of the area",
         "icon": "img/items/exploration-map.png",
         "id": "consumable_map_1",
@@ -1447,13 +1448,13 @@
         "isEquippable": false,
         "isUseable": true,
         "name": "Map sketch",
+        "rarityLocale": 5,
         "rarityScavenge": -1,
-		"rarityLocale": 5,
         "rarityTrade": -1,
-        "campOrdinalRequired": 2,
         "type": "voucher"
     },
     "consumable_map_2": {
+        "campOrdinalRequired": 2,
         "description": "A piece of paper that seems to be part of a bigger map",
         "icon": "img/items/exploration-map.png",
         "id": "consumable_map_2",
@@ -1461,14 +1462,15 @@
         "isEquippable": false,
         "isUseable": true,
         "name": "Map piece",
-		"nameShort": "Map piece",
+        "nameShort": "Map piece",
+        "rarityLocale": 5,
         "rarityScavenge": -1,
-		"rarityLocale": 5,
         "rarityTrade": -1,
-        "campOrdinalRequired": 2,
         "type": "voucher"
     },
     "consumable_weapon_1": {
+        "campOrdinalMaximum": 12,
+        "campOrdinalRequired": 2,
         "description": "One-use weapon that deals some damage to any enemy.",
         "icon": "img/items/weapon-consumable-1.png",
         "id": "consumable_weapon_1",
@@ -1476,14 +1478,13 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Shuriken",
+        "rarityLocale": 3,
         "rarityScavenge": 6,
-		"rarityLocale": 3,
         "rarityTrade": 2,
-		"campOrdinalMaximum": 12,
-        "campOrdinalRequired": 2,
         "type": "exploration"
     },
     "consumable_weapon_bio": {
+        "campOrdinalRequired": 5,
         "description": "One-use weapon that slows down an organic enemy.",
         "icon": "img/items/bamboo.png",
         "id": "consumable_weapon_bio",
@@ -1491,13 +1492,13 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Poison dart",
+        "rarityLocale": 3,
         "rarityScavenge": 8,
-		"rarityLocale": 3,
         "rarityTrade": 3,
-        "campOrdinalRequired": 5,
         "type": "exploration"
     },
     "consumable_weapon_mechanical": {
+        "campOrdinalRequired": 10,
         "description": "One-use weapon that stuns a mechanical enemy.",
         "icon": "img/items/transmitter.png",
         "id": "consumable_weapon_mechanical",
@@ -1505,13 +1506,13 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Stun switch",
+        "rarityLocale": 2,
         "rarityScavenge": 8,
-		"rarityLocale": 2,
         "rarityTrade": 4,
-        "campOrdinalRequired": 10,
         "type": "exploration"
     },
     "equipment_map": {
+        "campOrdinalRequired": 0,
         "description": "Helps navigating the City.",
         "icon": "img/items/exploration-map.png",
         "id": "equipment_map",
@@ -1519,13 +1520,13 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Map",
+        "rarityLocale": -1,
         "rarityScavenge": -1,
-		"rarityLocale": -1,
         "rarityTrade": -1,
-        "campOrdinalRequired": 0,
         "type": "uniqueEquipment"
     },
     "exploration_1": {
+        "campOrdinalRequired": 1,
         "description": "Useful tool when exploring and scouting.",
         "icon": "img/items/exploration-1.png",
         "id": "exploration_1",
@@ -1533,13 +1534,13 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Lockpick",
+        "rarityLocale": 5,
         "rarityScavenge": 2,
-		"rarityLocale": 5,
         "rarityTrade": 1,
-        "campOrdinalRequired": 1,
         "type": "exploration"
     },
     "first_aid_kit_1": {
+        "campOrdinalRequired": 3,
         "description": "Heal light injuries on the go.",
         "icon": "img/items/firstaid-1.png",
         "id": "first_aid_kit_1",
@@ -1547,13 +1548,13 @@
         "isEquippable": false,
         "isUseable": true,
         "name": "Basic first aid kit",
+        "rarityLocale": 3,
         "rarityScavenge": 9,
-		"rarityLocale": 3,
         "rarityTrade": 1,
-        "campOrdinalRequired": 3,
         "type": "exploration"
     },
     "first_aid_kit_2": {
+        "campOrdinalRequired": 10,
         "description": "Heal all injuries on the go.",
         "icon": "img/items/firstaid-2.png",
         "id": "first_aid_kit_2",
@@ -1561,13 +1562,13 @@
         "isEquippable": false,
         "isUseable": true,
         "name": "Full first aid kit",
+        "rarityLocale": 4,
         "rarityScavenge": -1,
-		"rarityLocale": 4,
         "rarityTrade": 1,
-        "campOrdinalRequired": 10,
         "type": "exploration"
     },
     "flee_1": {
+        "campOrdinalRequired": 3,
         "description": "Can be used to escape a fight.",
         "icon": "img/items/weapon-bomb.png",
         "id": "flee_1",
@@ -1575,13 +1576,13 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Smoke Bomb",
+        "rarityLocale": 3,
         "rarityScavenge": 8,
-		"rarityLocale": 3,
         "rarityTrade": 1,
-        "campOrdinalRequired": 3,
         "type": "exploration"
     },
     "glowstick_1": {
+        "campOrdinalRequired": 1,
         "description": "Temporary light. Can be used as a distraction.",
         "icon": "img/items/glowstick-1.png",
         "id": "glowstick_1",
@@ -1589,16 +1590,16 @@
         "isEquippable": false,
         "isUseable": true,
         "name": "Glowstick",
+        "rarityLocale": 3,
         "rarityScavenge": 8,
-		"rarityLocale": 3,
         "rarityTrade": 1,
-        "campOrdinalRequired": 1,
         "type": "exploration"
     },
     "light1": {
         "bonuses": {
             "light": 25
         },
+        "campOrdinalRequired": 1,
         "description": "Feeble light for basic survival in the dark undercorridors.",
         "icon": "img/items/light-lantern.png",
         "id": "light1",
@@ -1606,10 +1607,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Lantern",
+        "rarityLocale": 5,
         "rarityScavenge": 5,
-		"rarityLocale": 5,
         "rarityTrade": 1,
-        "campOrdinalRequired": 1,
         "source": "equipment",
         "type": "light"
     },
@@ -1617,6 +1617,7 @@
         "bonuses": {
             "light": 50
         },
+        "campOrdinalRequired": 5,
         "description": "Advanced light for serious travellers.",
         "icon": "img/items/light-electric.png",
         "id": "light2",
@@ -1624,10 +1625,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Electric light",
+        "rarityLocale": 5,
         "rarityScavenge": 5,
-		"rarityLocale": 5,
         "rarityTrade": 1,
-        "campOrdinalRequired": 5,
         "source": "equipment",
         "type": "light"
     },
@@ -1635,6 +1635,7 @@
         "bonuses": {
             "light": 100
         },
+        "campOrdinalRequired": 15,
         "description": "They say the ghost light can show you more the darker places you go.",
         "icon": "img/items/light-ghost.png",
         "id": "light3",
@@ -1642,14 +1643,14 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Ghost light",
+        "rarityLocale": 8,
         "rarityScavenge": -1,
-		"rarityLocale": 8,
         "rarityTrade": 8,
-        "campOrdinalRequired": 15,
         "source": "equipment",
         "type": "light"
     },
     "res_bands": {
+        "campOrdinalRequired": 1,
         "description": "Useful for crafting.",
         "icon": "img/items/res-bands.png",
         "id": "res_bands",
@@ -1657,10 +1658,10 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Elastic bands",
-        "campOrdinalRequired": 1,
         "type": "ingredient"
     },
     "res_bottle": {
+        "campOrdinalRequired": 1,
         "description": "Useful for crafting.",
         "icon": "img/items/res-bottle.png",
         "id": "res_bottle",
@@ -1668,10 +1669,10 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Plastic bottle",
-        "campOrdinalRequired": 1,
         "type": "ingredient"
     },
     "res_glowbug": {
+        "campOrdinalRequired": 1,
         "description": "Useful for crafting.",
         "icon": "img/items/res-glowbug.png",
         "id": "res_glowbug",
@@ -1679,10 +1680,10 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Glowbug",
-        "campOrdinalRequired": 1,
         "type": "ingredient"
     },
     "res_hairpin": {
+        "campOrdinalRequired": 1,
         "description": "Useful for crafting.",
         "icon": "img/items/res-pin.png",
         "id": "res_hairpin",
@@ -1690,10 +1691,10 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Hairpin",
-        "campOrdinalRequired": 1,
         "type": "ingredient"
     },
     "res_leather": {
+        "campOrdinalRequired": 1,
         "description": "Useful for crafting.",
         "icon": "img/items/res-leather.png",
         "id": "res_leather",
@@ -1701,10 +1702,10 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Leather",
-        "campOrdinalRequired": 1,
         "type": "ingredient"
     },
     "res_silk": {
+        "campOrdinalRequired": 1,
         "description": "Useful for crafting.",
         "icon": "img/items/res-silk.png",
         "id": "res_silk",
@@ -1712,10 +1713,10 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Spider silk",
-        "campOrdinalRequired": 1,
         "type": "ingredient"
     },
     "res_tape": {
+        "campOrdinalRequired": 1,
         "description": "Useful for crafting.",
         "icon": "img/items/res-tape.png",
         "id": "res_tape",
@@ -1723,13 +1724,13 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Duct tape",
-        "campOrdinalRequired": 1,
         "type": "ingredient"
     },
     "shoe_1": {
         "bonuses": {
             "movement": 0.85
         },
+        "campOrdinalRequired": 1,
         "description": "Protects a scavenger's feet from sharp things that might be lying around.",
         "icon": "img/items/shoe-1.png",
         "id": "shoe_1",
@@ -1737,10 +1738,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Improvised flip-flops",
+        "rarityLocale": 5,
         "rarityScavenge": 3,
-		"rarityLocale": 5,
         "rarityTrade": 2,
-        "campOrdinalRequired": 1,
         "source": "equipment",
         "type": "shoes"
     },
@@ -1748,6 +1748,7 @@
         "bonuses": {
             "movement": 0.75
         },
+        "campOrdinalRequired": 2,
         "description": "Decent shoes for walking in most places.",
         "icon": "img/items/shoe-2.png",
         "id": "shoe_2",
@@ -1755,10 +1756,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Worn trainers",
+        "rarityLocale": 3,
         "rarityScavenge": -1,
-		"rarityLocale": 3,
         "rarityTrade": 3,
-        "campOrdinalRequired": 2,
         "source": "equipment",
         "type": "shoes"
     },
@@ -1766,6 +1766,7 @@
         "bonuses": {
             "movement": 0.65
         },
+        "campOrdinalRequired": 11,
         "description": "Good shoes like these can make travelling much easier.",
         "icon": "img/items/shoe-2.png",
         "id": "shoe_3",
@@ -1773,10 +1774,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Hiking boots",
+        "rarityLocale": 3,
         "rarityScavenge": -1,
-		"rarityLocale": 3,
         "rarityTrade": 3,
-        "campOrdinalRequired": 11,
         "source": "equipment",
         "type": "shoes"
     },
@@ -1784,16 +1784,16 @@
         "bonuses": {
             "movement": 0.6
         },
+        "campOrdinalRequired": 14,
         "description": "The comfiest shoes you've ever had.",
         "icon": "img/items/shoe-3.png",
         "id": "shoe_4",
         "isCraftable": false,
         "isEquippable": true,
         "name": "Explorer's boots",
+        "rarityLocale": 5,
         "rarityScavenge": -1,
-		"rarityLocale": 5,
         "rarityTrade": 5,
-        "campOrdinalRequired": 14,
         "source": "equipment",
         "type": "shoes"
     },
@@ -1803,6 +1803,8 @@
             "res_poison": 5,
             "res_rad": 5
         },
+        "campOrdinalMaximum": 12,
+        "campOrdinalRequired": 8,
         "description": "Protection from environmental hazards. And snakes.",
         "icon": "img/items/shoe-l14.png",
         "id": "shoe_l14",
@@ -1811,15 +1813,14 @@
         "isSpecialEquipment": true,
         "isUseable": false,
         "name": "Rubber boots",
+        "rarityLocale": 3,
         "rarityScavenge": -1,
-		"rarityLocale": 3,
         "rarityTrade": 3,
-        "campOrdinalRequired": 8,
-		"campOrdinalMaximum": 12,
         "source": "equipment",
         "type": "shoes"
     },
     "stamina_potion_1": {
+        "campOrdinalRequired": 1,
         "description": "Smells awful, but restores stamina.",
         "icon": "img/items/stamina-1.png",
         "id": "stamina_potion_1",
@@ -1827,15 +1828,15 @@
         "isEquippable": false,
         "isUseable": true,
         "name": "Rejuv shot",
-		"nameShort": "Rejuv shot",
+        "nameShort": "Rejuv shot",
+        "rarityLocale": 3,
         "rarityScavenge": -1,
-		"rarityLocale": 3,
         "rarityTrade": 2,
-		"tradePrice": 5,
-        "campOrdinalRequired": 1,
+        "tradePrice": 5,
         "type": "exploration"
     },
     "trade_1": {
+        "campOrdinalRequired": 2,
         "description": "A beautiful orb said to have formed in the Sea, a massive body of water that is the origin of all life. Traders will be interested in it.",
         "icon": "img/items/pearl.png",
         "id": "trade_1",
@@ -1843,10 +1844,9 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Pearl",
+        "rarityLocale": 5,
         "rarityScavenge": 8,
-		"rarityLocale": 5,
         "rarityTrade": -1,
-        "campOrdinalRequired": 2,
         "type": "trade"
     },
     "weapon1": {
@@ -1854,6 +1854,7 @@
             "att": 10,
             "spd": 1
         },
+        "campOrdinalRequired": 1,
         "description": "Improvised sharp poking implement.",
         "icon": "img/items/weapon-shiv.png",
         "id": "weapon1",
@@ -1861,10 +1862,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Shiv",
+        "rarityLocale": -1,
         "rarityScavenge": 5,
-		"rarityLocale": -1,
         "rarityTrade": 2,
-        "campOrdinalRequired": 1,
         "source": "equipment",
         "type": "weapon"
     },
@@ -1873,6 +1873,7 @@
             "att": 12,
             "spd": 1
         },
+        "campOrdinalRequired": 2,
         "description": "A bit sturdier than the shiv.",
         "icon": "img/items/weapon-shiv.png",
         "id": "weapon12",
@@ -1880,10 +1881,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Knife",
+        "rarityLocale": -1,
         "rarityScavenge": 5,
-		"rarityLocale": -1,
         "rarityTrade": 2,
-        "campOrdinalRequired": 2,
         "source": "equipment",
         "type": "weapon"
     },
@@ -1892,6 +1892,7 @@
             "att": 14,
             "spd": 1
         },
+        "campOrdinalRequired": 2,
         "description": "A good quality knife.",
         "icon": "img/items/weapon-shiv.png",
         "id": "weapon122",
@@ -1899,10 +1900,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Sharp knife",
+        "rarityLocale": 3,
         "rarityScavenge": 8,
-		"rarityLocale": 3,
         "rarityTrade": 3,
-        "campOrdinalRequired": 2,
         "source": "equipment",
         "type": "weapon"
     },
@@ -1911,6 +1911,7 @@
             "att": 18,
             "spd": 0.9
         },
+        "campOrdinalRequired": 4,
         "description": "Old-fashioned but reliable weapon.",
         "icon": "img/items/weapon-shiv.png",
         "id": "weapon2",
@@ -1918,10 +1919,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Spear",
+        "rarityLocale": 8,
         "rarityScavenge": 5,
-		"rarityLocale": 8,
         "rarityTrade": 1,
-        "campOrdinalRequired": 4,
         "source": "equipment",
         "type": "weapon"
     },
@@ -1930,6 +1930,7 @@
             "att": 26,
             "spd": 0.75
         },
+        "campOrdinalRequired": 5,
         "description": "Easy to use and reliable.",
         "icon": "img/items/weapon-shiv.png",
         "id": "weapon25",
@@ -1937,10 +1938,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Heavy axe",
+        "rarityLocale": 8,
         "rarityScavenge": 5,
-		"rarityLocale": 8,
         "rarityTrade": 1,
-        "campOrdinalRequired": 5,
         "source": "equipment",
         "type": "weapon"
     },
@@ -1949,6 +1949,7 @@
             "att": 28,
             "spd": 0.9
         },
+        "campOrdinalRequired": 6,
         "description": "A deadly ranged weapon.",
         "icon": "img/items/weapon-shiv.png",
         "id": "weapon3",
@@ -1956,10 +1957,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Crossbow",
+        "rarityLocale": 8,
         "rarityScavenge": 5,
-		"rarityLocale": 8,
         "rarityTrade": 1,
-        "campOrdinalRequired": 6,
         "source": "equipment",
         "type": "weapon"
     },
@@ -1968,6 +1968,7 @@
             "att": 30,
             "spd": 0.9
         },
+        "campOrdinalRequired": 6,
         "description": "An extra deadly ranged weapon.",
         "icon": "img/items/weapon-shiv.png",
         "id": "weapon35",
@@ -1975,10 +1976,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Improved crossbow",
+        "rarityLocale": 5,
         "rarityScavenge": 8,
-		"rarityLocale": 5,
         "rarityTrade": 1,
-        "campOrdinalRequired": 6,
         "source": "equipment",
         "type": "weapon"
     },
@@ -1987,6 +1987,7 @@
             "att": 32,
             "spd": 1
         },
+        "campOrdinalRequired": 8,
         "description": "A crude single-shot pistol, like a hand-held miniature cannon.",
         "icon": "img/items/weapon-shiv.png",
         "id": "weapon4",
@@ -1994,10 +1995,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Pistol",
+        "rarityLocale": 8,
         "rarityScavenge": 5,
-		"rarityLocale": 8,
         "rarityTrade": 1,
-        "campOrdinalRequired": 8,
         "source": "equipment",
         "type": "weapon"
     },
@@ -2006,6 +2006,7 @@
             "att": 36,
             "spd": 1
         },
+        "campOrdinalRequired": 10,
         "description": "A more sophisticated handgun that allows several shots before reloading.",
         "icon": "img/items/weapon-shiv.png",
         "id": "weapon5",
@@ -2013,10 +2014,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Revolver",
+        "rarityLocale": 8,
         "rarityScavenge": 5,
-		"rarityLocale": 8,
         "rarityTrade": 1,
-        "campOrdinalRequired": 10,
         "source": "equipment",
         "type": "weapon"
     },
@@ -2025,6 +2025,7 @@
             "att": 50,
             "spd": 0.8
         },
+        "campOrdinalRequired": 11,
         "description": "A formidable axe specifically designed for combat",
         "icon": "img/items/weapon-shiv.png",
         "id": "weapon52",
@@ -2032,10 +2033,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Scrap metal waraxe",
+        "rarityLocale": 8,
         "rarityScavenge": 5,
-		"rarityLocale": 8,
         "rarityTrade": 1,
-        "campOrdinalRequired": 11,
         "source": "equipment",
         "type": "weapon"
     },
@@ -2044,6 +2044,7 @@
             "att": 60,
             "spd": 0.8
         },
+        "campOrdinalRequired": 12,
         "description": "Devastating short-range firearm.",
         "icon": "img/items/weapon-shiv.png",
         "id": "weapon58",
@@ -2051,10 +2052,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Crude shotgun",
+        "rarityLocale": 8,
         "rarityScavenge": 5,
-		"rarityLocale": 8,
         "rarityTrade": 1,
-        "campOrdinalRequired": 12,
         "source": "equipment",
         "type": "weapon"
     },
@@ -2063,6 +2063,7 @@
             "att": 55,
             "spd": 1
         },
+        "campOrdinalRequired": 13,
         "description": "It may be made from scrap metal but it is still a serious weapon.",
         "icon": "img/items/weapon-shiv.png",
         "id": "weapon6",
@@ -2070,10 +2071,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Custom smg",
+        "rarityLocale": -1,
         "rarityScavenge": 5,
-		"rarityLocale": -1,
         "rarityTrade": 1,
-        "campOrdinalRequired": 13,
         "source": "equipment",
         "type": "weapon"
     },
@@ -2082,6 +2082,7 @@
             "att": 65,
             "spd": 0.9
         },
+        "campOrdinalRequired": 14,
         "description": "Powerful but heavy and somewhat unreliable construction of pipes, reclaimed weapon parts and improvised ammunition.",
         "icon": "img/items/weapon-shiv.png",
         "id": "weapon7",
@@ -2089,10 +2090,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Improvised bazooka",
+        "rarityLocale": 8,
         "rarityScavenge": 5,
-		"rarityLocale": 8,
         "rarityTrade": 1,
-        "campOrdinalRequired": 14,
         "source": "equipment",
         "type": "weapon"
     },
@@ -2101,6 +2101,7 @@
             "att": 70,
             "spd": 1
         },
+        "campOrdinalRequired": 15,
         "description": "Deadly weapon similar to those that were mass-produced just before the Fall.",
         "icon": "img/items/weapon-shiv.png",
         "id": "weapon8",
@@ -2108,10 +2109,9 @@
         "isEquippable": true,
         "isUseable": false,
         "name": "Rifle",
+        "rarityLocale": 8,
         "rarityScavenge": 5,
-		"rarityLocale": 8,
         "rarityTrade": 1,
-        "campOrdinalRequired": 15,
         "source": "equipment",
         "type": "weapon"
     }

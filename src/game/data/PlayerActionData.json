@@ -82,9 +82,9 @@
             "resource_water": 800
         },
         "build_in_generator": {
+            "resource_concrete": 100,
             "resource_fuel": 200,
-            "resource_metal": 100,
-            "resource_concrete": 100
+            "resource_metal": 100
         },
         "build_in_hospital": {
             "resource_metal": 120,
@@ -139,9 +139,9 @@
         },
         "build_in_smithy": {
             "cost_factor_expBase": 1.4,
+            "resource_concrete": 100,
             "resource_metal": 500,
-            "resource_rope": 100,
-			"resource_concrete": 100
+            "resource_rope": 100
         },
         "build_in_square": {
             "resource_metal": 200,
@@ -283,7 +283,7 @@
             "resource_concrete": 300,
             "resource_fuel": 300,
             "resource_rope": 1000,
-			"resource_rubber": 300
+            "resource_rubber": 300
         },
         "clear_debris_e": {
             "resource_rope": 50
@@ -692,7 +692,7 @@
         "improve_in_barracks": {
             "cost_factor_expBase": 2,
             "resource_metal": 100,
-			"resource_tools": 50
+            "resource_tools": 50
         },
         "improve_in_campfire": {
             "cost_factor_expBase": 1.25,
@@ -732,8 +732,8 @@
                 "linearCost": 75,
                 "requiredOrdinal": 5
             },
-            "resource_tools": 50,
-            "resource_rope": 100
+            "resource_rope": 100,
+            "resource_tools": 50
         },
         "improve_in_generator": {
             "cost_factor_expBase": 1.5,
@@ -746,8 +746,8 @@
         "improve_in_hospital": {
             "cost_factor_expBase": 2,
             "resource_fuel": 50,
-            "resource_water": 100,
-			"resource_rubber": 30
+            "resource_rubber": 30,
+            "resource_water": 100
         },
         "improve_in_inn": {
             "cost_factor_expBase": 1.25,
@@ -757,7 +757,7 @@
                 "linearCost": 20
             },
             "resource_rope": 50,
-			"resource_rubber": 10
+            "resource_rubber": 10
         },
         "improve_in_library": {
             "cost_factor_expBase": 1.25,
@@ -780,7 +780,7 @@
                 "expCost": 10,
                 "linearCost": 50
             },
-			"resource_rubber": 10
+            "resource_rubber": 10
         },
         "improve_in_radiotower": {
             "resource_metal": 600
@@ -1257,8 +1257,8 @@
         "leave_camp": "Venture out into the corridors.",
         "move_camp_global": "Shortcut to the camp on this level.",
         "move_camp_level": "Shortcut back to the nearest camp.",
-		"move_level_up": "Use the passage to move one level up",
-		"move_level_down": "Use the passage to move one level down",
+        "move_level_down": "Use the passage to move one level down",
+        "move_level_up": "Use the passage to move one level up",
         "nap": "Sleep rough and regain a bit of stamina.",
         "scavenge": "Look for resources.",
         "scout": "Scout the area for evidence.",
@@ -1423,10 +1423,10 @@
                     2
                 ]
             },
-			"population": [
-				10,
-				-1
-			],
+            "population": [
+                10,
+                -1
+            ],
             "upgrades": {
                 "unlock_building_barracks": true
             }
@@ -1857,7 +1857,7 @@
                 },
                 "scouted": true
             },
-			"sunlit": false,
+            "sunlit": false,
             "upgrades": {
                 "unlock_building_beacon": true
             },
@@ -2291,7 +2291,9 @@
             }
         },
         "craft_consumable_weapon_bio": {
-            "upgrades": {}
+            "upgrades": {
+                "unlock_action_clear_waste_t": true
+            }
         },
         "craft_consumable_weapon_organic": {
             "upgrades": {
@@ -2331,11 +2333,6 @@
         "craft_shoe_l14": {
             "upgrades": {
                 "unlock_action_clear_waste_r": true
-            }
-        },
-        "craft_use_in_hospital2": {
-            "upgrades": {
-                "improve_building_hospital_3": true
             }
         },
         "craft_weapon12": {
@@ -2550,7 +2547,7 @@
                     -1
                 ]
             }
-		},
+        },
         "improve_out_collector_water": {
             "improvements": {
                 "collector_water": [
@@ -2558,7 +2555,7 @@
                     -1
                 ]
             }
-		},
+        },
         "improve_worker_apothecary_3": {
             "upgrades": {
                 "improve_building_apothecary": true
@@ -2577,9 +2574,9 @@
         },
         "improve_worker_cleric_2": {
             "deity": true,
-			"unlockedWorkers": {
-				"cleric": true
-			},
+            "unlockedWorkers": {
+                "cleric": true
+            },
             "upgrades": {}
         },
         "improve_worker_cleric_3": {
@@ -3247,9 +3244,9 @@
         "unlock_worker_rope": {},
         "use_in_campfire": {
             "busy": false,
-			"camp": {
-				"raid": false
-			},
+            "camp": {
+                "raid": false
+            },
             "population": [
                 1,
                 -1
@@ -3257,16 +3254,16 @@
             "rumourpoolchecked": false
         },
         "use_in_home": {
-			"camp": {
-				"raid": false
-			},
             "busy": false,
+            "camp": {
+                "raid": false
+            },
             "maxStamina": false
         },
         "use_in_hospital": {
-			"camp": {
-				"raid": false
-			},
+            "camp": {
+                "raid": false
+            },
             "improvements": {
                 "hospital": [
                     1,
@@ -3280,10 +3277,15 @@
                 ]
             }
         },
+        "use_in_hospital2": {
+            "upgrades": {
+                "improve_building_hospital_3": true
+            }
+        },
         "use_in_hospital_2": {
-			"camp": {
-				"raid": false
-			},
+            "camp": {
+                "raid": false
+            },
             "improvements": {
                 "hospital": [
                     1,
@@ -3293,27 +3295,27 @@
         },
         "use_in_market": {
             "busy": false,
+            "camp": {
+                "raid": false
+            },
             "improvements": {
                 "market": [
                     1,
                     -1
                 ]
-            },
-			"camp": {
-				"raid": false
-			}
+            }
         },
         "use_in_shrine": {
-			"camp": {
-				"raid": false
-			},
-            "busy": false
+            "busy": false,
+            "camp": {
+                "raid": false
+            }
         },
         "use_in_temple": {
             "busy": false,
-			"camp": {
-				"raid": false
-			}
+            "camp": {
+                "raid": false
+            }
         },
         "use_item_cache_evidence_1": {
             "inCamp": true
@@ -3389,7 +3391,7 @@
             }
         },
         "use_item_glowstick_1": {
-			"sunlit": false,
+            "sunlit": false,
             "vision": [
                 0,
                 30
@@ -3397,9 +3399,9 @@
         },
         "use_item_stamina_potion_1": {
             "inCamp": false,
-			"perks": {
-				"energized": false
-			}
+            "perks": {
+                "energized": false
+            }
         },
         "use_out_collector_food": {
             "bag": {
