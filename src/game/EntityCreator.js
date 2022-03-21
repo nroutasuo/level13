@@ -248,6 +248,8 @@ define([
 			defaultInjury.removeTimer = PerkConstants.TIMER_DISABLED;
 			var perksComponent = entity.get(PerksComponent);
 			perksComponent.addPerk(defaultInjury);
+			perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.hunger));
+			perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.thirst));
 			entity.add(new ExcursionComponent());
 
 			var logComponent = entity.get(LogMessagesComponent);
