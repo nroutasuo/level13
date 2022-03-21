@@ -359,7 +359,7 @@ define([
 			}
 			
 			var followersComponent = this.playerStatsNodes.head.followers;
-			if (rewards.gainedFollowers) {
+			if (rewards.gainedFollowers && rewards.gainedFollowers.length > 0) {
 				for (let i = 0; i < rewards.gainedFollowers.length; i++) {
 					let follower = rewards.gainedFollowers[i];
 					if (this.willGainedFollowerJoinParty(follower)) {
