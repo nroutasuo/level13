@@ -77,12 +77,12 @@ define(function () {
 		
 		getWordOrdinal: function (word, word_repeat_ordinal, sentence) {
 			word_repeat_ordinal = word_repeat_ordinal || 0;
-			var word_alt = this.parametrify(word);
+			var word_alt = this.parametrify(word).toLowerCase();
 			var words = sentence.split(" ");
 			var repeats = 0;
 			for (let i = 0; i < words.length; i++) {
 				var w = words[i];
-				if (w == word || w == word_alt) {
+				if (w.toLowerCase() == word.toLowerCase() || w.toLowerCase() == word_alt) {
 					if (word_repeat_ordinal <= repeats) {
 						return i;
 					}
