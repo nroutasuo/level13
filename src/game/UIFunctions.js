@@ -120,7 +120,7 @@ define(['ash',
 					gtag('event', 'screen_view', {
 						'screen_name': "popup-game-info"
 					});
-					uiFunctions.showInfoPopup("Level 13", uiFunctions.getGameInfoDiv());
+					uiFunctions.showInfoPopup("Level 13", uiFunctions.getGameInfoDiv(), null, null, null, true, false);
 				});
 
 				$("#in-assign-workers input.amount").change(function (e) {
