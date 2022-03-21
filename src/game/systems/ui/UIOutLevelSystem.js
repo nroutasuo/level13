@@ -243,9 +243,10 @@ define([
 		},
 		
 		updateWait: function (hasCampHere) {
+			let hasFirstCamp = GameGlobals.gameState.numCamps > 0;
 			let showWait = false;
 			
-			if (!hasCampHere) {
+			if (!hasCampHere && hasFirstCamp) {
 				let maxResourcesToShowWait = 3;
 				let resources = [ "food", "water" ];
 				for (let i = 0; i < resources.length; i++) {
