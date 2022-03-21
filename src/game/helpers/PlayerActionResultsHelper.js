@@ -872,7 +872,8 @@ define([
 			if (itemProbability > 0) {
 				
 				// - Neccessity items (map, bag) that the player should find quickly if missing
-				var necessityItemProbability = MathUtils.clamp(itemProbability * 5, 0.15, 0.35);
+				let minNecessityItemProbability = hasCamp ? 0.15 : 0.35;
+				let necessityItemProbability = MathUtils.clamp(itemProbability * 5, minNecessityItemProbability, 0.35);
 				if (Math.random() < necessityItemProbability) {
 					var necessityItem = this.getNecessityItem(currentItems, campOrdinal);
 					if (necessityItem) result.push(necessityItem);
