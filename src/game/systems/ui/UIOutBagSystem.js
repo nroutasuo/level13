@@ -638,7 +638,8 @@ define([
 			
 			if (!this.craftableItemDefinitions) {
 				let result = {};
-				for (let type in ItemConstants.itemDefinitions) {
+				let types = ItemConstants.itemTypes;
+				for (let type in types) {
 					let itemList = ItemConstants.itemDefinitions[type];
 					result[type] = []
 					for (let i in itemList) {
