@@ -289,7 +289,8 @@ define([
 			let result = {};
 			
 			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-			var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable;
+			var sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			var sectorResources = sectorFeatures.resourcesScavengable;
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
 				var amount = rewards.gainedResources.getResource(name);
@@ -300,13 +301,16 @@ define([
 					result.resources.push(name);
 				}
 			}
+			let sectorItems = sectorFeatures.itemsScavengeable;
 			for (let i = 0; i < rewards.gainedItems.length; i++) {
 				let item = rewards.gainedItems[i];
 				if (item.type == ItemConstants.itemTypes.ingredient) {
-					if (!sectorStatus.hasDiscoveredItem(item.id)) {
-						sectorStatus.addDiscoveredItem(item.id);
-						if (!result.items) result.items = [];
-						result.items.push(item);
+					if (sectorItems.indexOf(item.id) >= 0) {
+						if (!sectorStatus.hasDiscoveredItem(item.id)) {
+							sectorStatus.addDiscoveredItem(item.id);
+							if (!result.items) result.items = [];
+							result.items.push(item);
+						}
 					}
 				}
 			}
