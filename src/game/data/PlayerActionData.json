@@ -2949,11 +2949,6 @@
                 "unlock_action_clear_waste_t": true
             }
         },
-        "unlock_building_hospital": {
-            "upgrades": {
-                "unlock_worker_rope": true
-            }
-        },
         "unlock_building_house2": {
             "blueprint": 7,
             "upgrades": {
