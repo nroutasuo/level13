@@ -624,7 +624,7 @@ define([
 					let numItems = WorldCreatorRandom.getRandomIntFromRange(stashSeed, numItemsPerStash);
 					let stash = new StashVO(stashType, numItems, itemID);
 					stashSectors[i].stashes.push(stash);
-					WorldCreatorLogger.i("add stash level " + l + " [" + reason + "]: " + itemID + " x" + numItems + " " + stashSectors[i].position + " " + stashSectors[i].zone + " | " + (excludedZones ? excludedZones.join(",") : "-"))
+					// WorldCreatorLogger.i("add stash level " + l + " [" + reason + "]: " + itemID + " x" + numItems + " " + stashSectors[i].position + " " + stashSectors[i].zone + " | " + (excludedZones ? excludedZones.join(",") : "-"))
 				}
 			};
 			
@@ -1239,7 +1239,7 @@ define([
 				}
 				
 				// a couple of random ingredients
-				let numRandomIngredients = 10;
+				let numRandomIngredients = 2;
 				for (let i = 0; i < numRandomIngredients; i++) {
 					var s1 = 4200 + seed % 3000 + (levelVO.level + 5) * 217 + i * 991;
 					var r1 = WorldCreatorRandom.random(s1);
