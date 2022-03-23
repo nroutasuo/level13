@@ -134,6 +134,7 @@ define(['ash'], function (Ash) {
 		
 		limit: function (name, min, max) {
 			var amount = this.getResource(name);
+			if (amount == 0) return;
 			if (amount < min)
 				this.setResource(name, min);
 			if (amount > max)
