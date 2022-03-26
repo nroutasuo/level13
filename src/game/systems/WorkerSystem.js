@@ -50,6 +50,7 @@ define([
 			
 			this.isPendingProductionRateUpdate = true;
 			
+			GlobalSignals.add(this, GlobalSignals.gameStateReadySignal, this.queueProductionRateUpdate);
 			GlobalSignals.add(this, GlobalSignals.campBuiltSignal, this.queueProductionRateUpdate);
 			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.queueProductionRateUpdate);
 			GlobalSignals.add(this, GlobalSignals.upgradeUnlockedSignal, this.queueProductionRateUpdate);
@@ -90,49 +91,49 @@ define([
 			var resourceAccComponent = node.entity.get(ResourceAccumulationComponent);
 			
 			// Basic: Scavengers
-			var metal = time * node.camp.metalProductionPerSecond;
+			var metal = time * (node.camp.metalProductionPerSecond || 0);
 			campResources.addResource(resourceNames.metal, metal);
 			resourceAccComponent.addChange(resourceNames.metal, metal / time, "Scavengers");
 			if (metal > 0) GameGlobals.gameState.unlockedFeatures.resources.metal = true;
 			
 			// Basic: Trappers
-			var food = time * node.camp.foodProductionPerSecond;
+			var food = time * (node.camp.foodProductionPerSecond || 0);
 			campResources.addResource(resourceNames.food, food);
 			resourceAccComponent.addChange(resourceNames.food, food / time, "Trappers");
 			if (food > 0) GameGlobals.gameState.unlockedFeatures.resources.food = true;
 			
 			// Basic: Water collectors
-			var water = time * node.camp.waterProductionPerSecond;
+			var water = time * (node.camp.waterProductionPerSecond || 0);
 			campResources.addResource(resourceNames.water, water);
 			resourceAccComponent.addChange(resourceNames.water, water / time, "Collectors");
 			if (water > 0) GameGlobals.gameState.unlockedFeatures.resources.water = true;
 			
 			// Basic: Rope-makers
-			var rope = time * node.camp.ropeProductionPerSecond;
+			var rope = time * (node.camp.ropeProductionPerSecond || 0);
 			campResources.addResource(resourceNames.rope, rope);
 			resourceAccComponent.addChange(resourceNames.rope, rope / time, "Rope-makers");
 			if (rope > 0) GameGlobals.gameState.unlockedFeatures.resources.rope = true;
 			
 			// Workshop: Chemists
-			var fuel = time * node.camp.fuelProductionPerSecond;
+			var fuel = time * (node.camp.fuelProductionPerSecond || 0);
 			campResources.addResource(resourceNames.fuel, fuel);
 			resourceAccComponent.addChange(resourceNames.fuel, fuel / time, "Chemists");
 			if (fuel > 0) GameGlobals.gameState.unlockedFeatures.resources.fuel = true;
 			
 			// Workshop: Rubbermakers
-			var rubber = time * node.camp.rubberProductionPerSecond;
+			var rubber = time * (node.camp.rubberProductionPerSecond || 0);
 			campResources.addResource(resourceNames.rubber, rubber);
 			resourceAccComponent.addChange(resourceNames.rubber, rubber / time, "Plantation workers");
 			if (rubber > 0) GameGlobals.gameState.unlockedFeatures.resources.rubber = true;
 			
 			// Greenhouses
-			var herbs = time * node.camp.herbsProductionPerSecond;
+			var herbs = time * (node.camp.herbsProductionPerSecond || 0);
 			campResources.addResource(resourceNames.herbs, herbs);
 			resourceAccComponent.addChange(resourceNames.herbs, herbs / time, "Gardeners");
 			if (herbs > 0) GameGlobals.gameState.unlockedFeatures.resources.herbs = true;
 			
 			// Advanced: Apothecaries
-			var herbsRequired = time * node.camp.herbConsumptionPerSecond;
+			var herbsRequired = time * (node.camp.herbConsumptionPerSecond || 0);
 			if (herbsRequired > 0) {
 				var herbsUsed = Math.min(availableResources.getResource(resourceNames.herbs), herbsRequired);
 				var medicine = time * (herbsUsed / herbsRequired) * node.camp.medicineProductionPerSecond;
@@ -144,7 +145,7 @@ define([
 			}
 			
 			// Advanced: Toolsmiths
-			var metalRequiredTools = time * node.camp.metalConsumptionPerSecondSmith;
+			var metalRequiredTools = time * (node.camp.metalConsumptionPerSecondSmith || 0);
 			if (metalRequiredTools > 0) {
 				var metalUsedTools = Math.min(availableResources.getResource(resourceNames.metal), metalRequiredTools);
 				var tools = time * (metalUsedTools / metalRequiredTools) * node.camp.toolsProductionPerSecond;
@@ -156,7 +157,7 @@ define([
 			}
 			
 			// Advanced: Concrete mixers
-			var metalRequiredConcrete = time * node.camp.metalConsumptionPerSecondConcrete;
+			var metalRequiredConcrete = time * (node.camp.metalConsumptionPerSecondConcrete || 0);
 			if (metalRequiredConcrete > 0) {
 				var metalUsedConcrete = Math.min(availableResources.getResource(resourceNames.metal), metalRequiredConcrete);
 				var concrete = time * (metalUsedConcrete / metalRequiredConcrete) * node.camp.concreteProductionPerSecond;
