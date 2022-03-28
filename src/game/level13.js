@@ -262,7 +262,7 @@ define([
 
 		cheat: function (input) {
 			if (!GameConstants.isCheatsEnabled) return;
-			this.engine.getSystem(CheatSystem).applyCheat(input);
+			this.engine.getSystem(CheatSystem).applyCheatInput(input);
 		}
 
 	});

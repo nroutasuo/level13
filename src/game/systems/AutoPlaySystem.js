@@ -84,13 +84,13 @@ define(['ash',
 			var inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
 			node.autoPlay.isExploring = !inCamp;
 			node.autoPlay.isManagingCamps = inCamp;
-			this.cheatSystem.applyCheat("speed " + this.speed);
+			this.cheatSystem.applyCheatInput("speed " + this.speed);
 			GameGlobals.gameState.isAutoPlaying = true;
 		},
 
 		onAutoPlayNodeRemoved: function (node) {
 			GameGlobals.gameState.isAutoPlaying = false;
-			this.cheatSystem.applyCheat("speed 1");
+			this.cheatSystem.applyCheatInput("speed 1");
 		},
 
 		update: function () {
@@ -132,7 +132,7 @@ define(['ash',
 
 			if (this.idleCounter > 5) {
 				this.logStep("skip 1 minute");
-				this.cheatSystem.applyCheat("time 1");
+				this.cheatSystem.applyCheatInput("time 1");
 			}
 
 			this.lastStepTimeStamp = timeStamp;
@@ -185,7 +185,7 @@ define(['ash',
 			}
 			if (!isFight) GameGlobals.uiFunctions.popupManager.closeAllPopups();
 			if (this.isExpress) {
-				this.cheatSystem.applyCheat("stamina");
+				this.cheatSystem.applyCheatInput("stamina");
 			}
 		},
 
@@ -483,7 +483,7 @@ define(['ash',
 			// cheat population
 			var maxPopulation = CampConstants.getHousingCap(improvementsComponent);
 			if (this.isExpress && campComponent.population < maxPopulation)
-				this.cheatSystem.applyCheat("pop");
+				this.cheatSystem.applyCheatInput("pop");
 
 			// assign workers
 			if (campComponent.getFreePopulation() > 0 || this.refreshWorkers) {
@@ -687,7 +687,8 @@ define(['ash',
 		},
 
 		equipBest: function () {
-			this.cheatSystem.equipBest();
+			var cheatSystem = this.cheatSystem;
+			cheatSystem.applyCheat(() => { cheatSystem.equipBest(); });
 		},
 
 		handleInventory: function () {

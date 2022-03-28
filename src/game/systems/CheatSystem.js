@@ -168,7 +168,6 @@ define(['ash',
 			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_ITEM, "Add the given item to inventory.", ["item id"], function (params) {
 				this.addItem(params[0]);
-				GlobalSignals.inventoryChangedSignal.dispatch();
 			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_EQUIP_BEST, "Auto-equip best items available.", [], function (params) {
 				this.equipBest();
@@ -216,7 +215,7 @@ define(['ash',
 			return cmd === CheatConstants.CHEAT_NAME_AUTOPLAY;
 		},
 
-		applyCheat: function (input) {
+		applyCheatInput: function (input) {
 			if (!GameConstants.isCheatsEnabled) return;
 
 			var inputParts = input.split(" ");
@@ -227,24 +226,26 @@ define(['ash',
 				var numParams = this.cheatDefinitions[name].params.length;
 				var numOptional = ((this.cheatDefinitions[name].params.join().match(/optional/g)) || []).length;
 				if (Math.abs(inputParts.length - 1 - numParams) <= numOptional) {
-					func.call(this, inputParts.slice(1));
+					this.applyCheat(() => {
+						func.call(this, inputParts.slice(1));
+					});
 				} else {
-					log.i("Wrong number of parameters. Expected " + numParams + " (" + numOptional + ") got " + (inputParts.length -1));
+					log.w("Wrong number of parameters. Expected " + numParams + " (" + numOptional + ") got " + (inputParts.length -1));
 				}
 				return;
 			} else {
-				log.i("cheat not found: " + name);
+				log.w("cheat not found: " + name);
 			}
-
-			// TODO re-implement these cheats
-			/*
-			var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
-			switch (name) {
-				case "printSector":
-					log.i(currentSector.get(SectorFeaturesComponent));
-					break;
+		},
+		
+		applyCheat: function (fn) {
+			if (!fn) return
+			if (!GameConstants.isCheatsEnabled) return;
+			if (!GameGlobals.gameState.hasCheated) {
+				GameGlobals.gameState.hasCheated = true;
+				gtag('set', { 'has_cheated': true });
 			}
-			*/
+			fn();
 		},
 
 		printCheats: function () {
@@ -310,7 +311,7 @@ define(['ash',
 					endConditionUpdateFunction = function () {
 						if (GameGlobals.gameState.numCamps >= numCampsTarget) {
 							this.engine.updateComplete.remove(endConditionUpdateFunction, this);
-							this.applyCheat("autoplay off");
+							this.applyCheatInput("autoplay off");
 						}
 					};
 					break;
@@ -324,7 +325,7 @@ define(['ash',
 							return;
 						if (!autoplayComponent || !autoplayComponent.isExploring) {
 							this.engine.updateComplete.remove(endConditionUpdateFunction, this);
-							this.applyCheat("autoplay off");
+							this.applyCheatInput("autoplay off");
 						}
 					};
 					break;
