@@ -1013,11 +1013,14 @@ define([
 			var sector = otherSector || this.playerLocationNodes.head.entity;
 			var baseActionID = this.getBaseActionID(action);
 
+			var levelComponent = sector ? GameGlobals.levelHelper.getLevelEntityForSector(sector).get(LevelComponent) : null;
+			var isOutpost = levelComponent ? levelComponent.populationFactor < 1 : false;
+
 			if (action.indexOf("build_in") >= 0) {
 				var improvementName = this.getImprovementNameForAction(action);
 				var improvementsComponent = sector.get(SectorImprovementsComponent);
 				let result = improvementsComponent.getCount(improvementName) + 1;
-				if (action === "build_in_house" && result === 1) result = 0.5;
+				if (action === "build_in_house" && result === 1) result = isOutpost ? 0.85 : 0.5;
 				return result;
 			}
 			
