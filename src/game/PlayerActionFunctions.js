@@ -521,9 +521,16 @@ define(['ash',
 			var logMsgSuccess = logMsg;
 			var logMsgFlee = logMsg + "Fled empty-handed.";
 			var logMsgDefeat = logMsg + "Got into a fight and was defeated.";
+			let sys = this;
 			var successCallback = function () {
+				let scavengedPercentBefore = sectorStatus.getScavengedPercent();
 				sectorStatus.scavenged = true;
 				sectorStatus.weightedNumScavenges += Math.min(1, efficiency);
+				let scavengedPercentAfter = sectorStatus.getScavengedPercent();
+				let warningThreshold = 75;
+				if (scavengedPercentBefore < warningThreshold && scavengedPercentAfter >= warningThreshold) {
+					sys.addLogMessage(LogConstants.getUniqueID(), "There isn't much left to scavenge here.");
+				}
 			};
 			this.handleOutActionResults("scavenge", LogConstants.MSG_ID_SCAVENGE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, null, successCallback);
 		},
@@ -751,12 +758,12 @@ define(['ash',
 		},
 
 		bridgeGap: function (sectorPos) {
-			this.clearBlocker("bridge_gap", MovementConstants.BLOCKER_TYPE_GAP, sectorPos)
+			this.clearBlocker("bridge_gap", MovementConstants.BLOCKER_TYPE_GAP, sectorPos);
 			this.addLogMessage(LogConstants.MSG_ID_BRIDGED_GAP, "Built a bridge.");
 		},
 		
 		clearDebris: function (sectorPos) {
-			this.clearBlocker("clear_debris", MovementConstants.BLOCKER_TYPE_DEBRIS, sectorPos)
+			this.clearBlocker("clear_debris", MovementConstants.BLOCKER_TYPE_DEBRIS, sectorPos);
 			this.addLogMessage(LogConstants.MSG_ID_CLEAR_DEBRIS, "Sent out a team to clear debris.");
 		},
 		
