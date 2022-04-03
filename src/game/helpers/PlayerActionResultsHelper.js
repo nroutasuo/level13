@@ -889,7 +889,7 @@ define([
 			
 			// Ingredients
 			if (ingredientProbability > 0) {
-				var ingredientProbabilityWithEfficiency = ingredientProbability * efficiency;
+				var ingredientProbabilityWithEfficiency = ingredientProbability / 2 + ingredientProbability / 2 * efficiency;
 				var max = Math.floor(Math.random() * 3);
 				var amount = Math.floor(Math.random() * efficiency * max) + 1;
 				var addedIngredient = false;
