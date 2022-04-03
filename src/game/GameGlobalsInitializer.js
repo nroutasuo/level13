@@ -19,6 +19,7 @@ define([
 	'game/helpers/ResourcesHelper',
 	'game/helpers/SaveHelper',
 	'game/helpers/SectorHelper',
+	'game/helpers/TribeHelper',
 	'game/helpers/UpgradeEffectsHelper',
 	'game/helpers/ButtonHelper',
 	'game/helpers/ui/ChangeLogHelper',
@@ -45,6 +46,7 @@ define([
 	ResourcesHelper,
 	SaveHelper,
 	SectorHelper,
+	TribeHelper,
 	UpgradeEffectsHelper,
 	ButtonHelper,
 	ChangeLogHelper,
@@ -72,6 +74,7 @@ define([
 				GameGlobals.fightHelper = new FightHelper(engine);
 				GameGlobals.endingHelper = new EndingHelper(engine);
 				GameGlobals.playerHelper = new PlayerHelper(engine);
+				GameGlobals.tribeHelper = new TribeHelper(engine);
 				GameGlobals.playerActionResultsHelper = new PlayerActionResultsHelper(engine);
 				GameGlobals.autoPlayHelper = new AutoPlayHelper();
 				GameGlobals.saveHelper = new SaveHelper();

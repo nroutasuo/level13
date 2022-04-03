@@ -637,10 +637,11 @@ define([
 			}
 
 			if (levelPassagesComponent.passagesDown[sectorPosition.sectorId()] && !levelPassagesComponent.passagesDownBuilt[sectorPosition.sectorId()]) {
-				switch (levelPassagesComponent.passagesDown[sectorPosition.sectorId()].type) {
+				let passageType = levelPassagesComponent.passagesDown[sectorPosition.sectorId()].type;
+				switch (passageType) {
 					case MovementConstants.PASSAGE_TYPE_HOLE:
 						improvementName = improvementNames.passageDownHole;
-						actionName = "build_out_passage_down_hole";
+						actionName = GameGlobals.movementHelper.getBuildActionForPassageType(passageType);
 						actionLabel = "repair";
 						break;
 					case MovementConstants.PASSAGE_TYPE_ELEVATOR:

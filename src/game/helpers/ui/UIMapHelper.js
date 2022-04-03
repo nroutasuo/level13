@@ -44,7 +44,9 @@ function (Ash, CanvasUtils, MapUtils,
 			this.initIcon("camp", "map-camp");
 			this.initIcon("campable", "map-campable");
 			this.initIcon("passage-up", "map-passage-up");
+			this.initIcon("passage-up-disabled", "map-passage-up-disabled");
 			this.initIcon("passage-down", "map-passage-down");
+			this.initIcon("passage-down-disabled", "map-passage-down-disabled");
 			this.initIcon("interest", "map-interest");
 			this.initIcon("unknown", "map-unvisited");
 			this.initIcon("workshop", "map-workshop");
@@ -418,10 +420,18 @@ function (Ash, CanvasUtils, MapUtils,
 				ctx.drawImage(this.icons["campable" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
 			} else if (sectorPassages.passageUp) {
 				hasIcon = true;
-				ctx.drawImage(this.icons["passage-up" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
+				if (GameGlobals.movementHelper.isPassageTypeAvailable(sector, PositionConstants.DIRECTION_UP)) {
+					ctx.drawImage(this.icons["passage-up" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
+				} else {
+					ctx.drawImage(this.icons["passage-up-disabled" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
+				}
 			} else if (sectorPassages.passageDown) {
 				hasIcon = true;
-				ctx.drawImage(this.icons["passage-down" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
+				if (GameGlobals.movementHelper.isPassageTypeAvailable(sector, PositionConstants.DIRECTION_DOWN)) {
+					ctx.drawImage(this.icons["passage-down" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
+				} else {
+					ctx.drawImage(this.icons["passage-down-disabled" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
+				}
 			} else if (unScoutedLocales > 0) {
 				hasIcon = true;
 				ctx.drawImage(this.icons["interest" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
