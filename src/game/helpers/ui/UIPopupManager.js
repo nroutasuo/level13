@@ -54,6 +54,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
 			$("#info-ok").toggleClass("inventory-selection-ok", hasResult);
 			$("#info-ok").toggleClass("action", hasResult);
 			$("#info-ok").click(ExceptionHandler.wrapClick(function (e) {
+				e.stopPropagation();
 				popUpManager.handleOkButton(false, okCallback);
 			}));
 			$defaultButton = $("#info-ok");
