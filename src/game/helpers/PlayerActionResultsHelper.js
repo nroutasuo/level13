@@ -761,7 +761,7 @@ define([
 			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			let scavengedPercent = sectorStatus.getScavengedPercent();
 			let notScavengedPercent = MathUtils.map(scavengedPercent, 0, 100, 1, 0);
-			result["sector status"] = MathUtils.clamp(notScavengedPercent, 0.05, 1);
+			result["sector"] = MathUtils.clamp(notScavengedPercent, 0.05, 1);
 				
 			return result;
 		},

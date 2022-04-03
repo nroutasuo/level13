@@ -297,7 +297,7 @@ define([
 				var scavengeEfficiency = Math.round(GameGlobals.playerActionResultsHelper.getCurrentScavengeEfficiency() * 100);
 				if (scavengeEfficiency != this.scavangeAbilityLastUpdateValue) {
 					var factors = GameGlobals.playerActionResultsHelper. getCurrentScavengeEfficiencyFactors();
-					var scavengeEfficiencyExplanation = "<span class='info-callout-content-section-long'>Affects scavenging results</span>";
+					var scavengeEfficiencyExplanation = "<span class='info-callout-content-section-long'>Rate of finding loot in current sector.</span>";
 					var factorsExplanation = "";
 					for (var key in factors) {
 						var name = key;
