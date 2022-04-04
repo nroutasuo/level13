@@ -1,4 +1,4 @@
-define(['ash', 'game/GameGlobals', 'game/constants/PlayerActionConstants'], function (Ash, GameGlobals, PlayerActionConstants ) {
+define(['ash', 'game/GameGlobals', 'game/GlobalSignals', 'game/constants/PlayerActionConstants'], function (Ash, GameGlobals, GlobalSignals, PlayerActionConstants ) {
 	
 	var ButtonHelper = Ash.Class.extend({
 
@@ -69,13 +69,15 @@ define(['ash', 'game/GameGlobals', 'game/constants/PlayerActionConstants'], func
 		},
 		
 		updateButtonDisabledState: function ($button, $buttonContainer, playerVision, forceDisable) {
-			var disabledBase = this.isButtonActionDisabled($button);
-			var disabledVision = !forceDisable && this.isButtonActionDisabledVision($button, playerVision);
-			var disabledResources = !disabledVision && !disabledBasic && this.isButtonActionDisabledResources($button);
-			var disabledCooldown = !disabledVision && !disabledBasic && !disabledResources && this.hasButtonCooldown($button);
-			var disabledDuration = !disabledVision && !disabledBasic && !disabledResources && !disabledCooldown && this.hasButtonDuration($button);
-			var disabledBasic = !disabledVision && disabledBase;
-			var isDisabled = disabledBasic || disabledVision || disabledResources || disabledCooldown || disabledDuration;
+			let wasDisabled = $button.hasClass("btn-disabled");
+			
+			let disabledBase = this.isButtonActionDisabled($button);
+			let disabledVision = !forceDisable && this.isButtonActionDisabledVision($button, playerVision);
+			let disabledBasic = !disabledVision && disabledBase;
+			let disabledResources = !disabledVision && !disabledBasic && this.isButtonActionDisabledResources($button);
+			let disabledCooldown = !disabledVision && !disabledBasic && !disabledResources && this.hasButtonCooldown($button);
+			let disabledDuration = !disabledVision && !disabledBasic && !disabledResources && !disabledCooldown && this.hasButtonDuration($button);
+			let isDisabled = disabledBasic || disabledVision || disabledResources || disabledCooldown || disabledDuration;
 			
 			$button.toggleClass("btn-disabled", isDisabled);
 			$button.toggleClass("btn-disabled-basic", disabledBasic);
@@ -84,6 +86,13 @@ define(['ash', 'game/GameGlobals', 'game/constants/PlayerActionConstants'], func
 			$button.toggleClass("btn-disabled-resources", !disabledVision && !disabledBasic && disabledResources);
 			$button.toggleClass("btn-disabled-cooldown", disabledCooldown || disabledDuration);
 			$button.attr("disabled", isDisabled || forceDisable);
+			
+			if (wasDisabled != isDisabled) {
+				let action = $button.attr("action");
+				if (action) {
+					GlobalSignals.buttonStateChangedSignal.dispatch(action, !isDisabled);
+				}
+			}
 			
 			return disabledBase || disabledVision;
 		}

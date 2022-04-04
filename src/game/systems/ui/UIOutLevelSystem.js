@@ -115,6 +115,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.movementBlockerClearedSignal, this.updateAll);
 			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
 			GlobalSignals.add(this, GlobalSignals.sectorRevealedSignal, this.onSectorRevealed);
+			GlobalSignals.add(this, GlobalSignals.buttonStateChangedSignal, this.onButtonStateChanged);
 			this.rebuildVis();
 			this.updateUnlockedFeatures();
 		},
@@ -835,7 +836,18 @@ define([
 		
 		onSectorRevealed: function () {
 			this.pendingUpdateMap = true;
-		}
+		},
+		
+		onButtonStateChanged: function (action, isEnabled) {
+			switch (action) {
+				case "use_out_collector_water":
+				case "use_out_collector_water_one":
+				case "use_out_collector_food":
+				case "use_out_collector_food_one":
+					this.updateOutImprovementsStatus();
+					break;
+			}
+		},
 	});
 
 	return UIOutLevelSystem;
