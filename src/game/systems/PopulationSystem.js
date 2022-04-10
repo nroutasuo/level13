@@ -75,7 +75,7 @@ define([
 			changePerSec = change / time / GameConstants.gameSpeedCamp;
 			camp.populationChangePerSec = changePerSec;
 			
-			if (camp.pendingPopulation) {
+			if (camp.pendingPopulation > 0) {
 				change += camp.pendingPopulation;
 				camp.pendingPopulation = 0;
 			}
@@ -126,6 +126,7 @@ define([
 		handlePopulationChanged: function (node, isIncrease) {
 			var campPosition = node.entity.get(PositionComponent);
 			if (isIncrease) {
+				node.camp.population = Math.floor(node.camp.population);
 				node.camp.rumourpoolchecked = false;
 			} else {
 				this.reassignWorkers(node);
