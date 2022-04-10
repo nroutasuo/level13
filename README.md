@@ -2,9 +2,11 @@
 
 Level 13 is an text-based incremental science fiction browser adventure where the player must survive in a dark, decayed City, (re-)discover old and new technologies, and rebuild a civilization that has collapsed.
 
-The game is in early development. You can play latest (semi-) stable version [here](https://nroutasuo.github.io/level13/).
+The game is in development. You can play latest (semi-) stable version [here](https://nroutasuo.github.io/level13/).
 
-Level 13 is a personal side project but has received some fixes from the community along the way. If you are interested in contributing, check the [contributing guidelines](docs/CONTRIBUTING.md) first.
+Level 13 is a personal side project but has also received some fixes from the community along the way. If you are interested in contributing, read the [contributing guidelines](docs/CONTRIBUTING.md) first. 
+
+If you need help or want to chat about the game, check out the [discussions page](https://github.com/nroutasuo/level13/discussions), the [subreddit](https://www.reddit.com/r/level13/), or the [discord server](https://discord.gg/BzMbATyKph) instead.
 
 ## Features
 
@@ -26,11 +28,11 @@ All game data is stored in various [Components](https://github.com/nroutasuo/lev
 
 ### Systems
 
-Various independent [Systems](https://github.com/nroutasuo/level13/tree/master/src/game/systems) use and change data on Components and make stuff happen in the game. They generate resources, update movement options, resolve fights and so on. Each area of the UI is taken care of its own [UI system](https://github.com/nroutasuo/level13/tree/master/src/game/systems/ui).
+Various independent [Systems](https://github.com/nroutasuo/level13/tree/master/src/game/systems) use and change data on Components and make stuff happen in the game. They generate resources, update movement options, resolve fights and so on. Each area of the UI is taken care of by its own [UI system](https://github.com/nroutasuo/level13/tree/master/src/game/systems/ui).
 
 ### Player Actions
 
-Everything that the player can do in the game - mainly button clicks - are "player actions". Each action has a name, costs, requirements and so on defined in the [PlayerActionConstants](https://github.com/nroutasuo/level13/blob/master/src/game/constants/PlayerActionConstants.js). The [PlayerActionFunctions](https://github.com/nroutasuo/level13/blob/master/src/game/PlayerActionFunctions.js) class contains a function for each action and handles their results. Various helper classes take care of checking those requirements, deducting costs, unifying random encounters etc.
+Everything that the player can do in the game - mainly button clicks - are called "player actions". Each action has a name, costs, requirements and so on. The [PlayerActionFunctions](https://github.com/nroutasuo/level13/blob/master/src/game/PlayerActionFunctions.js) class contains a function for each action and handles their results. Various helper classes take care of checking requirements, deducting costs, unifying random encounters and so on.
 
 ### World Creator
 
@@ -59,6 +61,6 @@ Level 13 is heavily inspired by [A Dark Room]( http://adarkroom.doublespeakgames
 * [Kittens Game](http://bloodrizer.ru/games/kittens/)
 * [Shark Game](http://cirri.al/sharks/)
 * [Crank](https://faedine.com/games/crank/b39/)
-* [Junction Gate](http://www.junctiongate.com/)
 * [CivClicker](http://civclicker.sourceforge.net/civclicker/civclicker.html)
 * [Properity](http://playprosperity.ca/)
+
