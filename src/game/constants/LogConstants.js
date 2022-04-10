@@ -197,6 +197,9 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 			if (isValidDespairHunger) {
 				return "Too hungry to go on.";
 			}
+			if (isValidDespairMove) {
+				return "There is nowhere to go.";
+			}
 			return "Too tired to go on.";
 		},
 
