@@ -386,9 +386,9 @@ define([
 			if (resources.length < 1 && items.length < 1) {
 				result = "-";
 			} else {
-				result += TextConstants.getScaResourcesString(resources, featuresComponent.resourcesScavengable);
-				if (result.length > 0 && items.length > 0) result += ", ";
-				result += items.map(itemID => ItemConstants.getItemByID(itemID).name.toLowerCase()).join(", ");
+				if (resources.length > 0) result += TextConstants.getScaResourcesString(resources, featuresComponent.resourcesScavengable);
+				if (resources.length > 0 && items.length > 0) result += ", ";
+				if (items.length > 0) result += items.map(itemID => ItemConstants.getItemByID(itemID).name.toLowerCase()).join(", ");
 			}
 			
 			result += " (" + scavengedPercent + "% scavenged) ";

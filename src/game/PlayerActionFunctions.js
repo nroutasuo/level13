@@ -806,7 +806,7 @@ define(['ash',
 							GameGlobals.uiFunctions.onPlayerMoved(); // reset cooldowns
 							if (excursionComponent) excursionComponent.numNaps++;
 							sys.playerStatsNodes.head.vision.value = Math.min(sys.playerStatsNodes.head.vision.value, PlayerStatConstants.VISION_BASE);
-							var logMsgSuccess = "Found a park bench to sleep on. Barely feel rested.";
+							var logMsgSuccess = "Found a bench to sleep on. Barely feel rested.";
 							var logMsgFlee = "Tried to rest but got attacked.";
 							var logMsgDefeat = logMsgFlee;
 							sys.handleOutActionResults("nap", LogConstants.MSG_ID_NAP, logMsgSuccess, logMsgFlee, logMsgDefeat, false, false,

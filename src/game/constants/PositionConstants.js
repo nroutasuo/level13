@@ -293,6 +293,14 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 				return [this.DIRECTION_NORTH, this.DIRECTION_EAST, this.DIRECTION_SOUTH, this.DIRECTION_WEST];
 		},
 		
+		getMovementDirections: function () {
+			return [
+				this.DIRECTION_NORTH, this.DIRECTION_EAST, this.DIRECTION_SOUTH, this.DIRECTION_WEST,
+				this.DIRECTION_NE, this.DIRECTION_SE, this.DIRECTION_SW, this.DIRECTION_NW,
+				this.DIRECTION_UP, this.DIRECTION_DOWN
+			];
+		},
+		
 		isLevelDirection: function (direction) {
 			return this.getLevelDirections().indexOf(direction) >= 0;
 		},

@@ -641,7 +641,7 @@ define([
 			if (resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.lostCurrency > 0) {
 				var lostMsg = resultVO.lostItems.length > 1 ? "Lost some items." : resultVO.lostItems.length > 0 ? "Lost an item." : ""
 				var losthtml = "<div id='resultlist-loststuff' class='infobox'>";
-				var losthtml = "<span class='warning'>" + lostMsg + "</span>";
+				var losthtml = "<div class='warning'>" + lostMsg + "</span>";
 				losthtml += "<div id='resultlist-loststuff-lost' class='infobox inventorybox inventorybox-negative'>";
 				losthtml += "<ul></ul>";
 				losthtml += "</div>"

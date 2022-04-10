@@ -568,7 +568,11 @@ define([
 					hazardDesc += "This place is dangerously <span class='hl-functionality'>polluted</span> (" + hazards.poison + "). ";
 				}
 				if (hazards.cold > 0) {
-					hazardDesc += "It's very <span class='hl-functionality'>cold</span> here (" + hazards.cold + "). ";
+					if (hazards.cold >= 30) {
+						hazardDesc += "It's very <span class='hl-functionality'>cold</span> here (" + hazards.cold + "). ";
+					} else {
+						hazardDesc += "It's <span class='hl-functionality'>cold</span> here (" + hazards.cold + "). ";
+					}
 				}
 				if (hazards.debris > 0) {
 					hazardDesc += "It difficult to move around here due to the amount of <span class='hl-functionality'>debris</span>.";
