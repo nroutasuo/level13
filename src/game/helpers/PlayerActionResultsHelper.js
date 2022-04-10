@@ -141,7 +141,7 @@ define([
 			}
 			resultVO.gainedInjuries = this.getResultInjuries(PlayerActionConstants.getInjuryProbability(action, playerVision));
 			resultVO.hasCustomReward = hasCustomReward;
-
+			
 			return resultVO;
 		},
 
@@ -607,7 +607,7 @@ define([
 					if (willJoin) {
 						div += Text.capitalize(pronoun) + " joined the party.";
 					} else if (this.nearestCampNodes.head) {
-						div += Text.capitalize(pronoun) +" will meet you at " + this.nearestCampNodes.head.camp.getName() + " on level " + this.nearestCampNodes.head.position.level;
+						div += Text.capitalize(pronoun) +" will meet you at " + this.nearestCampNodes.head.camp.getName() + " on level " + this.nearestCampNodes.head.position.level + ".";
 					}
 					div += "</div>";
 				}
@@ -722,6 +722,10 @@ define([
 							logComponent.addMessage(LogConstants.MSG_ID_FOUND_ITEM_FIRST, "Found a " + item.name + ".");
 						}
 					}
+				}
+					
+				if (rewards.gainedFollowers && rewards.gainedFollowers.length > 0) {
+					logComponent.addMessage(LogConstants.getUniqueID(), "Met a new follower.");
 				}
 
 				if (rewards.lostItems && rewards.lostItems.length > 0) {
