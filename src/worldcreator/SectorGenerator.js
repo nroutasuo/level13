@@ -335,6 +335,8 @@ define([
 				return;
 			}
 			
+			var hazardType = isRadiatedLevel ? SectorConstants.HAZARD_TYPE_RADIATION : SectorConstants.HAZARD_TYPE_POLLUTION;
+			
 			if (!isHazardLevel) {
 				// normal level
 				// - random clusters
@@ -360,7 +362,7 @@ define([
 				for (let i = 0; i < borderSectors.length; i++) {
 					var pair = borderSectors[i];
 					if (pair.neighbour.zone == WorldConstants.ZONE_ENTRANCE) continue;
-					var maxHazardValue = this.getMaxHazardValue(levelVO, pair.neighbour, false, pair.neighbour.zone);
+					var maxHazardValue = this.getMaxHazardValue(levelVO, pair.neighbour, hazardType, pair.neighbour.zone);
 					if (maxHazardValue < 1) continue;
 					var distanceToCamp = Math.min(
 						WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, pair.sector),
@@ -376,11 +378,10 @@ define([
 				}
 			} else {
 				// level completely covered in hazard
-				var isRadiation = isRadiatedLevel;
 				for (let i = 0; i < levelVO.sectors.length; i++) {
 					var sectorVO = levelVO.sectors[i];
 					if (sectorVO.zone == WorldConstants.ZONE_ENTRANCE) continue;
-					var maxHazardValue = this.getMaxHazardValue(levelVO, sectorVO, isRadiation, sectorVO.zone);
+					var maxHazardValue = this.getMaxHazardValue(levelVO, sectorVO, hazardType, sectorVO.zone);
 					var minHazardValue = Math.floor(maxHazardValue / 2);
 					if (levelVO.isHard) minHazardValue = maxHazardValue;
 					var hazardValueRand = WorldCreatorRandom.random(levelOrdinal * (i + 11) / seed * 55 + seed / (i + 99) - i * i);
@@ -1839,7 +1840,7 @@ define([
 						neighbour.hazards.cold = 0;
 					}
 				}
-				if (hazardType == "radiation") {
+				if (hazardType == SectorConstants.HAZARD_TYPE_RADIATION) {
 					sectorVO.hazards.poison = 0;
 				} else if (hazardType == "poison") {
 					sectorVO.hazards.radiation = 0;
@@ -2016,33 +2017,33 @@ define([
 			let result = [];
 			let campOrdinal = levelVO.campOrdinal;
 			if (campOrdinal >= WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_POISON) {
-				result.push("poison");
-				result.push("poison");
+				result.push(SectorConstants.HAZARD_TYPE_POLLUTION);
+				result.push(SectorConstants.HAZARD_TYPE_POLLUTION);
 			}
 			if (campOrdinal > WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_POISON) {
-				result.push("poison");
-				result.push("poison");
+				result.push(SectorConstants.HAZARD_TYPE_POLLUTION);
+				result.push(SectorConstants.HAZARD_TYPE_POLLUTION);
 			}
 			if (campOrdinal >= WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_RADIATION) {
-				result.push("radiation");
-				result.push("radiation");
+				result.push(SectorConstants.HAZARD_TYPE_RADIATION);
+				result.push(SectorConstants.HAZARD_TYPE_RADIATION);
 			}
 			if (campOrdinal > WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_RADIATION) {
-				result.push("radiation");
-				result.push("radiation");
+				result.push(SectorConstants.HAZARD_TYPE_RADIATION);
+				result.push(SectorConstants.HAZARD_TYPE_RADIATION);
 			}
 			if (!sectorVO.isOnPassageCriticalPath()) {
 				if (campOrdinal >= WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_DEBRIS) {
-					result.push("debris");
+					result.push(SectorConstants.HAZARD_TYPE_DEBRIS);
 				}
 				if (campOrdinal > WorldConstants.CAMPS_BEFORE_GROUND) {
-					result.push("debris");
+					result.push(SectorConstants.HAZARD_TYPE_DEBRIS);
 				}
 				if (campOrdinal > WorldConstants.CAMPS_BEFORE_GROUND + 1) {
-					result.push("debris");
-					result.push("debris");
-					result.push("debris");
-					result.push("debris");
+					result.push(SectorConstants.HAZARD_TYPE_DEBRIS);
+					result.push(SectorConstants.HAZARD_TYPE_DEBRIS);
+					result.push(SectorConstants.HAZARD_TYPE_DEBRIS);
+					result.push(SectorConstants.HAZARD_TYPE_DEBRIS);
 				}
 			}
 			return result;
@@ -2215,11 +2216,11 @@ define([
 		
 		getMaxHazardValueForLevel: function (hazardType, campOrdinal, zone, isHardLevel) {
 			let step = WorldConstants.getCampStep(zone);
-			if (hazardType == "radiation") {
+			if (hazardType == SectorConstants.HAZARD_TYPE_RADIATION) {
 				return Math.min(100, this.itemsHelper.getMaxHazardRadiationForLevel(campOrdinal, step, isHardLevel));
-			} else if (hazardType == "poison") {
+			} else if (hazardType == SectorConstants.HAZARD_TYPE_POLLUTION) {
 				return Math.min(100, this.itemsHelper.getMaxHazardPoisonForLevel(campOrdinal, step, isHardLevel));
-			} else if (hazardType == "debris") {
+			} else if (hazardType == SectorConstants.HAZARD_TYPE_DEBRIS) {
 				return campOrdinal >= WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_DEBRIS ? 9 : 0;
 			} else {
 				return 0;

@@ -39,6 +39,10 @@ define(['ash',
 		WAYMARK_TYPE_POLLUTION: "pollution",
 		WAYMARK_TYPE_SETTLEMENT: "settlement",
 		
+		HAZARD_TYPE_RADIATION: "radiation",
+		HAZARD_TYPE_POLLUTION: "poison",
+		HAZARD_TYPE_DEBRIS: "debris",
+		
 		getSectorStatus: function (sector) {
 			if (!sector) return null;
 			
