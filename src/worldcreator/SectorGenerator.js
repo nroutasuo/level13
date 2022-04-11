@@ -583,7 +583,7 @@ define([
 			
 			let getStashSectorScore = function (sectorVO, stashType) {
 				let result = 0;
-				let isEasyToFind = stashType == "guaranteed-early";
+				let isEasyToFind = stashType == "guaranteed-early" || stashType == "guaranteed-campable-early";
 				
 				let distance = WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO);
 				let numNeighours = levelVO.getNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY);
@@ -637,7 +637,8 @@ define([
 			
 			// stashes: every campable level guaranteed items
 			if (levelVO.isCampable && l != 13) {
-				addStashes(seed / 7 * 937 + l * 331, "guaranteed-campable", ItemConstants.STASH_TYPE_ITEM, ItemConstants.getAvailableMetalCaches(levelVO.campOrdinal), 3, 1);
+				var numCaches = levelVO.populationFactor >= 1 ? 3 : 5;
+				addStashes(seed / 7 * 937 + l * 331, "guaranteed-campable-early", ItemConstants.STASH_TYPE_ITEM, ItemConstants.getAvailableMetalCaches(levelVO.campOrdinal), numCaches, 1, lateZones);
 				addStashes(3000 + seed % 7 * 188 + (levelVO.level % 3) * 105 + Math.abs(levelVO.minX + 50) * 77, "guaranteed-campable", ItemConstants.STASH_TYPE_ITEM, [ "consumable_map_1", "consumable_map_2" ], [1, 3], 1, lateZones);
 			}
 			
