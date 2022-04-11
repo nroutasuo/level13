@@ -603,6 +603,8 @@ define([
 					let pronoun = FollowerConstants.getPronoun(follower);
 					let followerTypeName = FollowerConstants.getFollowerTypeDisplayName(followerType);
 					div += "<div>"
+					div += UIConstants.getFollowerDiv(follower, false, false, true);
+					div += "<br/>";
 					div += "Met <span class='hl-functionality'>" + Text.addArticle(followerTypeName) + "</span> called " + follower.name + ". ";
 					if (willJoin) {
 						div += Text.capitalize(pronoun) + " joined the party.";
