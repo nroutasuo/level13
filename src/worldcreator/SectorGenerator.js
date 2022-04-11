@@ -1638,6 +1638,7 @@ define([
 						let waymarkSector = waymarkSectors[j];
 						if (WorldCreatorConstants.getZoneOrdinal(poiSector.zone) > WorldCreatorConstants.getZoneOrdinal(waymarkSector.zone)) continue;
 						let distance = PositionConstants.getDistanceTo(poiSector.position, waymarkSector.position);
+						if (distance <= 0) continue;
 						if (distance > maxDistance) continue;
 						let path = WorldCreatorRandom.findPath(worldVO, waymarkSector.position, poiSector.position, true, true, null, false, maxDistance);
 						if (!path || path.length > maxDistance) continue;
