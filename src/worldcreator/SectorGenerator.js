@@ -269,7 +269,7 @@ define([
 			var l = levelVO.level == 0 ? 1342 : levelVO.level;
 			var campOrdinal = levelVO.campOrdinal;
 			var levelOrdinal = levelVO.levelOrdinal;
-				
+			
 			let isPollutedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
 			let isRadiatedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
 			let isHazardLevel = isPollutedLevel || isRadiatedLevel;
@@ -1151,16 +1151,33 @@ define([
 				sca.water = 0;
 			}
 			
+			// adjustments for camp positions
 			if (sectorVO.isCamp) {
-				sca.food = Math.max(sca.food, WorldConstants.resourcePrevalence.COMMON);
-				sca.metal = MathUtils.clamp(sca.metal, WorldConstants.resourcePrevalence.DEFAULT, WorldConstants.resourcePrevalence.COMMON);
-				if (WorldCreatorRandom.randomBool(l * 100 + x * 377 + y * 598, 0.5)) {
-					col.water = Math.max(col.water, 3);
-				}
+				let isMainCamp = sectorVO.position.equals(levelVO.campPosition);
+				let isOutpost = levelVO.populationFactor < 1;
+				
 				if (isStartPosition) {
 					sca.metal = WorldConstants.resourcePrevalence.ABUNDANT;
 					sca.food = WorldConstants.resourcePrevalence.COMMON;
 					col.water = WorldConstants.resourcePrevalence.RARE;
+				} else {
+					if (isOutpost) {
+						sca.metal = MathUtils.clamp(sca.metal, WorldConstants.resourcePrevalence.COMMON, WorldConstants.resourcePrevalence.ABUNDANT);
+					} else {
+						sca.metal = MathUtils.clamp(sca.metal, WorldConstants.resourcePrevalence.DEFAULT, WorldConstants.resourcePrevalence.COMMON);
+					}
+					
+					if (isMainCamp || WorldCreatorRandom.randomBool(l * 100 + x * 377 + y * 598, 0.45)) {
+						col.water = Math.max(col.water, 3);
+					} else if (WorldCreatorRandom.randomBool(1521 + x * 871 + y * 351, 0.35)) {
+						sca.water = WorldConstants.resourcePrevalence.RARE;
+					}
+					
+					if (WorldCreatorRandom.randomBool(seed / 4 * 100 + l * 1111 + x * 99 + y * 5)) {
+						col.food =  Math.max(col.food, 3);
+					} else {
+						sca.food = Math.max(sca.food, WorldConstants.resourcePrevalence.COMMON);
+					}
 				}
 			}
 			
