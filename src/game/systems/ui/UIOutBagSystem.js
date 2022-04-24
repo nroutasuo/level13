@@ -231,22 +231,25 @@ define([
 		updateUseItems: function () {
 			var items = this.getOwnedItems();
 
-			GameGlobals.uiFunctions.toggle("#header-self-use-items", items.length > 0);
 			$("#self-use-items table").empty();
 
 			items = items.sort(UIConstants.sortItemsByType);
 
-			var tr;
+			let numUsableItems = 0;
 			for (let j = 0; j < items.length; j++) {
 				var item = items[j];
 				
 				if (!this.isUsable(item)) continue;
 					
-				var actionName = "use_item_" + item.id;
-				var actionVerb = item.id.startsWith("cache_metal") ? "Disassemble" : "Use";
-				tr = "<tr><td><button class='action multiline' action='" + actionName + "'>" + actionVerb + " " + ItemConstants.getItemDisplayName(item, true) + "</button></td></tr>";
+				let actionName = "use_item_" + item.id;
+				let actionVerb = item.id.startsWith("cache_metal") ? "Disassemble" : "Use";
+				let tr = "<tr><td><button class='action multiline' action='" + actionName + "'>" + actionVerb + " " + ItemConstants.getItemDisplayName(item, true) + "</button></td></tr>";
 				$("#self-use-items table").append(tr);
+				
+				numUsableItems++;
 			}
+			
+			GameGlobals.uiFunctions.toggle("#header-self-use-items", numUsableItems > 0);
 
 			GameGlobals.uiFunctions.registerActionButtonListeners("#self-use-items");
 			GameGlobals.uiFunctions.generateButtonOverlays("#self-use-items");
