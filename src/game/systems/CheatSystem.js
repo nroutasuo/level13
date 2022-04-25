@@ -535,6 +535,7 @@ define(['ash',
 			if (item) {
 				if (!onlyIfMissing || !itemsComponent.contains(item.name)) {
 					GameGlobals.playerHelper.addItem(item);
+					GlobalSignals.inventoryChangedSignal.dispatch();
 				}
 			} else {
 				log.w("No such item: " + itemID);
