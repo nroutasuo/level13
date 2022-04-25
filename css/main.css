@@ -1105,6 +1105,7 @@ body.dark .collapsible-header.collapsible-collapsed {
 }
 body.dark .collapsible-content {
   margin: 5px 10px;
+  display: none;
 }
 body.dark .progress {
   width: 100%;
@@ -1714,6 +1715,7 @@ body.dark .sub-page-container {
 }
 body.dark .faq-category h3 {
   text-transform: none;
+  font-size: inherit;
 }
 body.dark #log {
   background: none;
@@ -3275,6 +3277,7 @@ body.sunlit .collapsible-header.collapsible-collapsed {
 }
 body.sunlit .collapsible-content {
   margin: 5px 10px;
+  display: none;
 }
 body.sunlit .progress {
   width: 100%;
@@ -3884,6 +3887,7 @@ body.sunlit .sub-page-container {
 }
 body.sunlit .faq-category h3 {
   text-transform: none;
+  font-size: inherit;
 }
 body.sunlit #log {
   background: none;
