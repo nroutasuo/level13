@@ -160,13 +160,13 @@ define([
 			rewards.gainedResources = this.getRewardResources(1, 1, efficiency, sectorResources);
 			rewards.gainedCurrency = this.getRewardCurrency(efficiency);
 			
+			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound);
+			
 			if (rewards.gainedItems.length == 0) {
 				rewards.gainedItems = this.getRewardItems(0.02, 0.5, sectorIngredients, itemOptions);
 			}
 			
 			rewards.gainedBlueprintPiece = this.getFallbackBlueprint(0.05 + efficiency * 0.15);
-			
-			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound);
 			
 			if (rewards.foundStashVO == null && rewards.gainedCurrency == 0) {
 				this.addFollowerBonuses(rewards, sectorResources, sectorIngredients, itemOptions);
