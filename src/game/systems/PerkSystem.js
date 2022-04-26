@@ -172,11 +172,20 @@ define([
 			let logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
 			let playerPos = this.playerNodes.head.entity.get(PositionComponent);
 			
+			// TODO different message depending on if perk was deactivated due to moving or by changing equipment
+			
 			let msg = "";
 			switch (perkID) {
 				case PerkConstants.perkIds.hazardCold:
-					// TODO different message depending on if perk was deactivated due to moving or by changing equipment
 					msg = "Warmer now.";
+					break;
+					
+				case PerkConstants.perkIds.hazardRadiation:
+					msg = "Safe from radiation now.";
+					break;
+				
+				case PerkConstants.perkIds.hazardPoison:
+					msg = "Safe from pollution now.";
 					break;
 					
 				case PerkConstants.perkIds.lightBeacon:

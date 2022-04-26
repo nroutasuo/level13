@@ -1220,6 +1220,7 @@
         "build_out_camp": "A place to rest.",
         "build_out_collector_food": "Accumulates food.",
         "build_out_collector_water": "Accumulates water.",
+		"build_out_greenhouse": "A place to grow herbs.",
         "build_out_tradepost_connector": "Allows traders and workers to cross the level safely.",
         "clear_debris": "Clear the debris blocking the way.",
         "clear_waste_r": "Clear the radiactive waste.",
