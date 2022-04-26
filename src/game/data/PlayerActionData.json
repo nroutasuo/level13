@@ -104,8 +104,8 @@
             "resource_rope": 320
         },
         "build_in_inn": {
-            "resource_fuel": 20,
-            "resource_metal": 50,
+            "resource_fuel": 50,
+            "resource_metal": 100,
             "resource_rope": 50
         },
         "build_in_library": {
@@ -732,7 +732,10 @@
                 "requiredOrdinal": 5
             },
             "resource_rope": 100,
-            "resource_tools": 50
+            "resource_tools": {
+				"linearCost": 50,
+				"requiredOrdinal": 5
+			}
         },
         "improve_in_generator": {
             "cost_factor_expBase": 1.5,
@@ -756,7 +759,10 @@
                 "linearCost": 20
             },
             "resource_rope": 50,
-            "resource_rubber": 10
+            "resource_rubber": {
+				"expCost": 10,
+				"requiredOrdinal": 5
+			}
         },
         "improve_in_library": {
             "cost_factor_expBase": 1.25,
@@ -779,7 +785,10 @@
                 "expCost": 10,
                 "linearCost": 50
             },
-            "resource_rubber": 10
+            "resource_rubber": {
+				"linearCost": 10,
+                "requiredOrdinal": 2
+			}
         },
         "improve_in_radiotower": {
             "resource_metal": 600
@@ -1035,7 +1044,7 @@
             "rumours": 127
         },
         "unlock_building_passage_elevator": {
-            "evidence": 104,
+            "evidence": 92,
             "rumours": 165
         },
         "unlock_building_passage_hole": {
