@@ -14,14 +14,14 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
 			GlobalSignals.add(this, GlobalSignals.popupResizedSignal, this.onPopupResized);
 		},
 		
-		showPopup: function (title, msg, okButtonLabel, cancelButtonLabel, resultVO, okCallback, cancelCallback, isMeta) {
+		showPopup: function (title, msg, okButtonLabel, cancelButtonLabel, resultVO, okCallback, cancelCallback, isMeta, isDismissable) {
 			if (GameGlobals.gameState.uiStatus.isHidden && !isMeta) {
-				this.hiddenQueue.push({title: title, msg: msg, okButtonLabel: okButtonLabel, cancelButtonLabel: cancelButtonLabel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback });
+				this.hiddenQueue.push({title: title, msg: msg, okButtonLabel: okButtonLabel, cancelButtonLabel: cancelButtonLabel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback, isDismissable: isDismissable });
 				return;
 			}
 			
 			if (this.hasOpenPopup()) {
-				this.popupQueue.push({title: title, msg: msg, okButtonLabel: okButtonLabel, cancelButtonLabel: cancelButtonLabel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback, isMeta: isMeta });
+				this.popupQueue.push({title: title, msg: msg, okButtonLabel: okButtonLabel, cancelButtonLabel: cancelButtonLabel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback, isMeta: isMeta, isDismissable: isDismissable });
 				return;
 			}
 			
@@ -37,6 +37,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
 			
 			// results and rewards
 			var hasResult = resultVO && typeof resultVO !== 'undefined';
+			var hasNonEmptyResult = hasResult && !resultVO.isEmpty();
 			GameGlobals.uiFunctions.toggle("#info-results", hasResult);
 			$("#info-results").empty();
 			if (hasResult) {
@@ -53,6 +54,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
 			$("#info-ok").toggleClass("inventory-selection-ok", hasResult);
 			$("#info-ok").toggleClass("action", hasResult);
 			$("#info-ok").click(ExceptionHandler.wrapClick(function (e) {
+				e.stopPropagation();
 				popUpManager.handleOkButton(false, okCallback);
 			}));
 			$defaultButton = $("#info-ok");
@@ -89,6 +91,17 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
 			GameGlobals.uiFunctions.generateButtonOverlays("#common-popup .buttonbox");
 			GameGlobals.uiFunctions.generateCallouts("#common-popup .buttonbox");
 			
+			if (typeof isDismissable == 'undefined') {
+				isDismissable = !hasNonEmptyResult && !cancelButtonLabel;
+			}
+			popup.attr("data-dismissable", isDismissable);
+			popup.attr("data-dismissed", "false");
+			if (isDismissable) {
+				$(".popup-overlay").click(ExceptionHandler.wrapClick(function (e) {
+					GameGlobals.uiFunctions.popupManager.dismissPopups();
+				}));
+			}
+		
 			if ($defaultButton) {
 				$defaultButton.focus()
 			}
@@ -154,6 +167,20 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
 			var popupManager = this;
 			$.each($(".popup:visible"), function () {
 				popupManager.closePopup($(this).attr("id"));
+			});
+		},
+		
+		dismissPopups: function () {
+			var popupManager = this;
+			$.each($(".popup:visible"), function () {
+				let dataDismissable = $(this).attr("data-dismissable");
+				let isDismissable = dataDismissable == true || dataDismissable == "true";
+				if (isDismissable) {
+					let dataDismissed = $(this).attr("data-dismissed");
+					if (dataDismissed == true || dataDismissed == "true") return;
+					$(this).attr("data-dismissed", "true");
+					$(this).find("#info-ok").trigger("click");
+				}
 			});
 		},
 		

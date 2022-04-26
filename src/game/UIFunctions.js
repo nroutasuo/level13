@@ -120,7 +120,7 @@ define(['ash',
 					gtag('event', 'screen_view', {
 						'screen_name': "popup-game-info"
 					});
-					uiFunctions.showInfoPopup("Level 13", uiFunctions.getGameInfoDiv());
+					uiFunctions.showInfoPopup("Level 13", uiFunctions.getGameInfoDiv(), null, null, null, true, false);
 				});
 
 				$("#in-assign-workers input.amount").change(function (e) {
@@ -229,9 +229,6 @@ define(['ash',
 					GameGlobals.fightHelper.endFight(false);
 					GameGlobals.playerActionFunctions.flee();
 				});
-				$(scope + "#inn-popup-btn-cancel").click(function (e) {
-					uiFunctions.popupManager.closePopup("inn-popup");
-				});
 				$(scope + "#incoming-caravan-popup-cancel").click(function (e) {
 					uiFunctions.popupManager.closePopup("incoming-caravan-popup");
 				});
@@ -327,12 +324,19 @@ define(['ash',
 				for (var bonusKey in ItemConstants.itemBonusTypes) {
 					var bonusType = ItemConstants.itemBonusTypes[bonusKey];
 					if (bonusType == ItemConstants.itemBonusTypes.fight_speed) continue;
-					var div = "<div id='stats-equipment-" + bonusKey + "' class='stats-indicator stats-indicator-secondary'>";
+					
+					var div = "";
+					div += "<div class='info-callout-target info-callout-target-small'>";
+					div += "<div id='stats-equipment-" + bonusKey + "' class='stats-indicator stats-indicator-secondary'>";
 					div += "<span class='label'>" + UIConstants.getItemBonusName(bonusType).replace(" ", "<br/>") + "</span>";
 					div += "<br/>";
-					div += "<span class='value'/></div>";
+					div += "<span class='value'/>";
+					div += "</div>";
+					div += "</div>";
+					
 					$("#container-equipment-stats").append(div);
 				}
+				GameGlobals.uiFunctions.generateCallouts("#container-equipment-stats");
 			},
 			
 			hideElements: function () {
@@ -395,7 +399,7 @@ define(['ash',
 							log.i($(button))
 							return "";
 						}
-						if (action === "take_all" || action === "accept_inventory" || action === "use_in_inn_cancel" || action === "fight")
+						if (action === "take_all" || action === "accept_inventory" || action === "fight")
 							return "";
 						return uiFunctions.generateActionButtonCallout(action);
 					});
@@ -426,7 +430,7 @@ define(['ash',
 				// always visible: description
 				var description = GameGlobals.playerActionsHelper.getDescription(action);
 				if (description) {
-					content += "<span>" + description + "</span>";
+					content += "<span class='action-description'>" + description + "</span>";
 				}
 
 				// visible if button is enabled: costs, special requirements, & risks
@@ -436,11 +440,14 @@ define(['ash',
 					if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
 					for (var key in costs) {
 						var itemName = key.replace("item_", "");
-						var item = ItemConstants.getItemByID(itemName);
+						var item = ItemConstants.getItemByID(itemName, true);
 						var name = (this.names.resources[key] ? this.names.resources[key] : item !== null ? item.name : key).toLowerCase();
 						var value = costs[key];
 						enabledContent += "<span class='action-cost action-cost-" + key + "'>" + name + ": <span class='action-cost-value'>" + UIConstants.getDisplayValue(value) + "</span><br/></span>";
 					}
+				} else if (this.isActionFreeCostShown(action)) {
+					if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
+					enabledContent += "<span class='action-cost p-meta'>free</span><br />";
 				}
 
 				var duration = PlayerActionConstants.getDuration(baseActionId);
@@ -529,7 +536,7 @@ define(['ash',
 
 			generateSteppers: function (scope) {
 				$(scope + " .stepper").append("<button type='button' class='btn-glyph' data-type='minus' data-field=''>-</button>");
-				$(scope + " .stepper").append("<input class='amount' type='text' min='0' max='100' autocomplete='false' value='0' name='' tabindex='1'></input>");
+				$(scope + " .stepper").append("<input class='amount' type='text' min='0' max='100' autocomplete='off' value='0' name='' tabindex='1'></input>");
 				$(scope + " .stepper").append("<button type='button' class='btn-glyph' data-type='plus' data-field=''>+</button>");
 				$(scope + " .stepper button").attr("data-field", function (i, val) {
 					return $(this).parent().attr("id") + "-input";
@@ -544,15 +551,30 @@ define(['ash',
 
 			generateButtonOverlays: function (scope) {
 				$.each($(scope + " button.action"), function () {
-					$btn = $(this);
-					var text = $btn.text();
-					$btn.text("");
-					$btn.append("<span class='btn-label'>" + text + "</span>");
+					let $btn = $(this);
+					let text = $btn.text();
+					if ($btn.find(".btn-label").length > 0) {
+						log.w("generating double button overlays: " + $(this) + " | " + scope);
+					} else {
+						$btn.text("");
+						$btn.append("<span class='btn-label'>" + text + "</span>");
+					}
 				});
 				$(scope + " button.action").append("<div class='cooldown-action' style='display:none' />");
 				$(scope + " button.action").append("<div class='cooldown-duration' style='display:none' />");
 				$(scope + " button.action").wrap("<div class='container-btn-action' />");
-				$(scope + " div.container-btn-action").append("<div class='cooldown-reqs' />");
+				
+				
+				$.each($(scope + " div.container-btn-action"), function () {
+					let $container = $(this);
+					let $button = $container.find("button");
+					let action = $button.attr("action");
+					let costs = GameGlobals.playerActionsHelper.getCosts(action);
+					let hasCosts = action && costs && Object.keys(costs).length > 0;
+					if (hasCosts) {
+						$container.append("<div class='cooldown-reqs' data-action='" + action + "' />");
+					}
+				});
 			},
 
 			startGame: function () {
@@ -623,6 +645,16 @@ define(['ash',
 				$(".sticky-footer").css("display", visible ? "block" : "none");
 				$("#grid-main").css("display", visible ? "block" : "none");
 				$("#unit-main").css("display", visible ? "block" : "none");
+			},
+
+			scrollToTabTop: function () {
+				let element = $(document.getElementById("grid-location-header"));
+				let elementTop = element.offset().top;
+			    let offset = elementTop - $(window).scrollTop();
+
+			    if (offset < 0) {
+			        $('html,body').animate({scrollTop: elementTop}, 250);
+			    }
 			},
 
 			restart: function () {
@@ -706,8 +738,9 @@ define(['ash',
 			},
 			
 			onKeyUp: function (e) {
-				var playerPos = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
-				if (!e.shiftKey && !playerPos.inCamp) {
+				var isInCamp = GameGlobals.playerHelper.isInCamp();
+				if (!e.shiftKey) {
+					if (!isInCamp) {
 					if (e.keyCode == 65) {
 						GameGlobals.playerActionFunctions.startAction("move_sector_west");
 					}
@@ -731,6 +764,10 @@ define(['ash',
 					}
 					if (e.keyCode == 67) {
 						GameGlobals.playerActionFunctions.startAction("move_sector_se")
+					}
+				}
+					if (e.keyCode == 27) {
+						GameGlobals.uiFunctions.popupManager.dismissPopups();
 					}
 				}
 			},
@@ -877,7 +914,7 @@ define(['ash',
 				if (($element).length > 1) {
 					var previousIsToggled = null;
 					var currentIsToggled = null;
-					for (var i = 0; i < ($element).length; i++) {
+					for (let i = 0; i < ($element).length; i++) {
 						previousIsToggled = currentIsToggled;
 						currentIsToggled = this.isElementToggled($(($element)[i]));
 						if (i > 0 && previousIsToggled !== currentIsToggled) return null;
@@ -912,6 +949,15 @@ define(['ash',
 					$e = $e.parent();
 				}
 				return (($element).is(":visible"));
+			},
+			
+			isActionFreeCostShown: function (action) {
+				var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
+				switch (baseId) {
+					case "recruit_follower": return true;
+					case "wait": return true;
+				}
+				return false;
 			},
 
 			stopButtonCooldown: function (button) {
@@ -1079,10 +1125,6 @@ define(['ash',
 				this.showSpecialPopup("fight-popup");
 			},
 
-			showInnPopup: function (availableFollowers) {
-				this.showSpecialPopup("inn-popup");
-			},
-
 			showIncomingCaravanPopup: function () {
 				this.showSpecialPopup("incoming-caravan-popup");
 			},
@@ -1108,9 +1150,9 @@ define(['ash',
 				this.generateCallouts("#" + popupID);
 			},
 
-			showInfoPopup: function (title, msg, buttonLabel, resultVO, callback, isMeta) {
+			showInfoPopup: function (title, msg, buttonLabel, resultVO, callback, isMeta, isDismissable) {
 				if (!buttonLabel) buttonLabel = "Continue";
-				this.popupManager.showPopup(title, msg, buttonLabel, false, resultVO, callback, null, isMeta);
+				this.popupManager.showPopup(title, msg, buttonLabel, false, resultVO, callback, null, isMeta, isDismissable);
 			},
 
 			showResultPopup: function (title, msg, resultVO, callback) {

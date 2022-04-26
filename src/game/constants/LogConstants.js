@@ -18,6 +18,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 		MSG_ID_GANG_DEFEATED: "GANG_DEFEATED",
 		MSG_ID_USE_COLLECTOR_FAIL: "USE_COLLECTOR_FAIL",
 		MSG_ID_NAP: "MSG_ID_NAP",
+		MSG_ID_WAIT: "MAS_ID_WAIT",
 
 		// in actions
 		MSG_ID_ENTER_CAMP: "ENTER_CAMP",
@@ -33,6 +34,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 		MSG_ID_START_SEND_CAMP: "MSG_ID_START_SEND_CAMP",
 		MSG_ID_FINISH_SEND_CAMP: "MSG_ID_FINISH_SEND_CAMP",
 		MSG_ID_TRADE_WITH_CARAVAN: "MSG_ID_TRADE_WITH_CARAVAN",
+		MSG_ID_RECRUIT: "MSG_ID_RECRUIT",
 
 		// out atmospheric and results
 		MSG_ID_ADD_HAZARD_PERK: "MSG_ID_ADD_HAZARD_PERK",
@@ -110,10 +112,16 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 		MSG_ID_USE_FIRST_AID_KIT: "MSG_ID_USE_FIRST_AID_KIT",
 		MSG_ID_USE_STAMINA_POTION: "MSG_ID_USE_STAMINA",
 		MSG_ID_USE_METAL_CACHE: "MSG_ID_USE_METAL_CACHE",
+		MSG_ID_USE_BOOK: "MSG_ID_USE_BOOK",
+		MSG_ID_USE_MAP_PIECE: "MSG_ID_USE_MAP_PIECE",
 
 		mergedMessages: [
 			["SCAVENGE", "SCOUT", "SCOUT"],
 		],
+		
+		getUniqueID: function () {
+			return "unique-" + Math.floor(Math.random() * 100000);
+		},
 
 		getMergedMsgID: function (messages) {
 			var messageIDsToMatch = [];
@@ -126,11 +134,11 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 			var mergeIDs;
 			var allMatch;
 			var messageID;
-			for (var i = 0; i < this.mergedMessages.length; i++) {
+			for (let i = 0; i < this.mergedMessages.length; i++) {
 				mergeIDs = this.mergedMessages[i];
 				if (mergeIDs.length > messageIDsToMatch.length) continue;
 				allMatch = true;
-				for (var j = 0; j < messageIDsToMatch.length; j++) {
+				for (let j = 0; j < messageIDsToMatch.length; j++) {
 					messageID = messageIDsToMatch[j];
 					if (mergeIDs.indexOf(messageID) < 0) allMatch = false;
 				}
@@ -161,10 +169,10 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 				default:
 					intros.push("Almost fell into a crack in the street");
 					intros.push("Fell through a rotten floor");
-					intros.push("Dropped bag while climbing a fence");
+					intros.push("Dropped an item while climbing a fence");
 					intros.push("Stumbled on some wrecked pipes");
 					intros.push("Left a bag pocket open and some items fell out");
-					intros.push("Got scared of the shadows and ran, leaving some items behind");
+					intros.push("Got spooked of the shadows and ran, leaving some items behind");
 					break;
 			}
 			var intro = intros[Math.floor(Math.random() * intros.length)];
@@ -178,12 +186,19 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 			return "Got injured.";
 		},
 
+		getLostPerksMessage: function (resultVO) {
+			return "Lost an augmentation.";
+		},
+
 		getDespairMessage: function (isValidDespairHunger, isValidDespairThirst, isValidDespairStamina, isValidDespairMove) {
 			if (isValidDespairThirst) {
 				return "Too thirsty to go on.";
 			}
 			if (isValidDespairHunger) {
 				return "Too hungry to go on.";
+			}
+			if (isValidDespairMove) {
+				return "There is nowhere to go.";
 			}
 			return "Too tired to go on.";
 		},
@@ -195,7 +210,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 					itemDetails = " Light will make scavenging safer.";
 					break;
 			}
-			return "Made " + Text.addArticle(itemVO.name) + "." + itemDetails;
+			return "Made " + Text.addArticle(itemVO.name).toLowerCase() + "." + itemDetails;
 		},
 
 	}

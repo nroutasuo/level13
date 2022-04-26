@@ -17,6 +17,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		spaceship2: "Colony Shield",
 		spaceship3: "Colony Life Support",
 		greenhouse: "Greenhouse",
+		tradepost_connector: "Great Elevator",
 		
 		home: "Tent",
 		house: "Hut",
@@ -38,7 +39,6 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		radiotower: "Radio tower",
 		barracks: "Barracks",
 		fortification: "Fortification",
-		fortification2: "Concrete Fortification",
 		stable: "Caravan Stable",
 		aqueduct: "Aqueduct",
 		researchcenter: "Research center",
@@ -109,7 +109,6 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 				case improvementNames.lights:
 					return 4;
 				case improvementNames.fortification:
-				case improvementNames.fortification2:
 					return 2;
 				default:
 					return 1;
@@ -135,6 +134,8 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			case improvementNames.passageDownStairs:
 			case improvementNames.passageDownElevator:
 			case improvementNames.passageDownHole:
+			case improvementNames.beacon:
+			case improvementNames.tradepost_connector:
 				return improvementTypes.level;
 
 			default:
@@ -152,7 +153,6 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			case improvementNames.cementmill:
 			case improvementNames.barracks:
 			case improvementNames.fortification:
-			case improvementNames.fortification2:
 			case improvementNames.storage:
 			case improvementNames.stable:
 				return 0;
@@ -176,6 +176,11 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			case improvementNames.square:
 			case improvementNames.garden:
 				return 1.9 + level * 0.1;
+			case improvementNames.radio:
+				let fullUpgradeEffect = 2;
+				let upgradeFactor = (level - 1) / 9;
+				let upgradePart = fullUpgradeEffect * upgradeFactor;
+				return 2 + Math.round(upgradeFactor * 10) / 10;
 			default:
 				return 1;
 		}

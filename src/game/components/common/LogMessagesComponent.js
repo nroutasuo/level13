@@ -91,7 +91,7 @@ function (Ash, GameGlobals, LogConstants, LogMessageVO) {
 		mergeReplacements: function (baseMsg, toAddMsg) {
 			var oldVal;
 			var newVal;
-			for (var i = 0; i < baseMsg.values.length; i++) {
+			for (let i = 0; i < baseMsg.values.length; i++) {
 				oldVal = baseMsg.values[i];
 				newVal = toAddMsg.values[i];
 				if (typeof oldVal === 'number' && typeof newVal === 'number') {
@@ -127,6 +127,14 @@ function (Ash, GameGlobals, LogConstants, LogMessageVO) {
 
 		getSaveKey: function () {
 			return "Log";
+		},
+
+		getCustomSaveObject: function () {
+			var copy = {};
+			copy.messages = this.messages.slice(0, 10);
+			copy.messagesPendingMovement = this.messagesPendingMovement;
+			copy.hasNewMessages = this.hasNewMessages;
+			return copy;
 		},
 
 	});

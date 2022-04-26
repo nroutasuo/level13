@@ -1,5 +1,5 @@
 // Holds timers and cooldowns for events in a camp
-define(['ash'], function (Ash) {
+define(['ash', 'game/constants/OccurrenceConstants'], function (Ash, OccurrenceConstants) {
 
 	var CampEventTimersComponent = Ash.Class.extend({
 
@@ -26,6 +26,10 @@ define(['ash'], function (Ash) {
 			this.eventEndTimers[event] = durationSec;
 			this.eventDurations[event] = durationSec;
 		},
+		
+		onEventSkipped: function (event) {
+			this.eventEndTimers[event] = null;
+		},
 
 		removeTimer: function(event) {
 			this.eventStartTimers[event] = null;
@@ -34,7 +38,7 @@ define(['ash'], function (Ash) {
 		},
 
 		isEventScheduled: function (event) {
-			return this.eventStartTimers[event];
+			return this.eventStartTimers[event] || this.eventStartTimers[event] === 0;
 		},
 
 		isTimeToStart: function(event) {
@@ -42,10 +46,13 @@ define(['ash'], function (Ash) {
 		},
 
 		hasTimeEnded: function(event) {
-			return this.getEventTimeLeft(event) <= 0;
+			let timeLeft = this.getEventTimeLeft(event);
+			if (timeLeft == OccurrenceConstants.EVENT_DURATION_INFINITE) return false;
+			return timeLeft <= 0;
 		},
 
 		getEventTimeLeft: function(event) {
+			if (this.eventEndTimers[event] == OccurrenceConstants.EVENT_DURATION_INFINITE) return OccurrenceConstants.EVENT_DURATION_INFINITE;
 			return this.eventEndTimers[event] || 0;
 		},
 
@@ -55,6 +62,7 @@ define(['ash'], function (Ash) {
 
 		getEventTimePercentage: function (event, log) {
 			var duration = this.eventDurations[event] || 0;
+			if (duration < 0) return 0;
 			var timeLeft = this.eventEndTimers[event] || 0;
 			if (!duration || !timeLeft)
 				return 0;

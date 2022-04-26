@@ -2,13 +2,13 @@ define(['ash'], function (Ash) {
 	
 	var BlueprintVO = Ash.Class.extend({
 	
-		upgradeId: "",
+		upgradeID: "",
 		maxPieces: 0,
 		currentPieces: 0,
 		completed: false,
 	
-		constructor: function (upgradeId, maxPieces) {
-			this.upgradeId = upgradeId;
+		constructor: function (upgradeID, maxPieces) {
+			this.upgradeID = upgradeID;
 			this.maxPieces = maxPieces;
 			this.currentPieces = 0;
 			this.completed = false;

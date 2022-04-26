@@ -22,6 +22,7 @@
 	'game/components/sector/ReputationComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/events/CampEventTimersComponent',
+	'game/components/sector/events/RecruitComponent',
 	'game/components/sector/events/TraderComponent',
 	'game/components/sector/events/RaidComponent',
 ], function (
@@ -30,7 +31,7 @@
 	PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, DeityNode, TribeUpgradesNode,
 	PerksComponent,
 	CampComponent, OutgoingCaravansComponent, ReputationComponent, SectorImprovementsComponent, CampEventTimersComponent,
-	TraderComponent, RaidComponent
+	RecruitComponent, TraderComponent, RaidComponent
 ) {
 	var UIOutCampSystem = Ash.System.extend({
 
@@ -113,6 +114,7 @@
 		},
 
 		slowUpdate: function () {
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (!this.playerLocationNodes.head) return;
 			this.updateImprovements();
 			this.updateBubble();
@@ -141,17 +143,24 @@
 		},
 
 		updateBubble: function () {
-			var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
+			let campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
 			if (!campComponent) return;
-			var buildingNum = this.availableBuildingCount - this.lastShownAvailableBuildingCount + this.visibleBuildingCount - this.lastShownVisibleBuildingCount;
-			var eventNum = this.currentEvents - this.lastShownEvents;
+			let campCount = GameGlobals.gameState.numCamps;
+			
+			let buildingNum = this.visibleBuildingCount - this.lastShownVisibleBuildingCount;
+			if (campCount == 1) {
+				buildingNum = this.availableBuildingCount - this.lastShownAvailableBuildingCount;
+			}
+			
+			let eventNum = this.currentEvents - this.lastShownEvents;
 
 			let currentPopulation = Math.floor(campComponent.population);
-			var freePopulation = campComponent.getFreePopulation();
+			let freePopulation = campComponent.getFreePopulation();
 
-			var newBubbleNumber = buildingNum + eventNum + freePopulation;
+			let newBubbleNumber = buildingNum + eventNum + freePopulation;
 			if (this.bubbleNumber === newBubbleNumber)
 				return;
+				
 			this.bubbleNumber = newBubbleNumber;
 			$("#switch-in .bubble").text(this.bubbleNumber);
 			GameGlobals.uiFunctions.toggle("#switch-in .bubble", this.bubbleNumber > 0);
@@ -253,12 +262,13 @@
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var posComponent = this.playerPosNodes.head.position;
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(posComponent.level);
+			var workshops = GameGlobals.levelHelper.getWorkshopsByResourceForCamp(campOrdinal);
 			
 			for (var key in CampConstants.workerTypes) {
 				var def = CampConstants.workerTypes[key];
 				var maxWorkers = GameGlobals.campHelper.getMaxWorkers(this.playerLocationNodes.head.entity, key);
 				if (maxWorkers <= 0) continue;
-				var num = def.getLimitNum(campOrdinal, improvements);
+				var num = def.getLimitNum(improvements, workshops);
 				var text = def.getLimitText(num);
 				UIConstants.updateCalloutContent("#in-assign-" + def.id + " .in-assign-worker-limit .info-callout-target", text, true);
 			}
@@ -268,32 +278,42 @@
 			var $table = $("#in-improvements table");
 			var trs = "";
 			this.elements.improvementRows = {};
-			for (var key in ImprovementConstants.campImprovements) {
-				var def = ImprovementConstants.campImprovements[key];
+			
+			let improvementIDs = Object.keys(ImprovementConstants.improvements).sort(this.sortImprovements);
+			
+			for (let i = 0; i < improvementIDs.length; i++) {
+				let key = improvementIDs[i];
+				let def = ImprovementConstants.improvements[key];
+				let name = improvementNames[key];
+				if (getImprovementType(name) !== improvementTypes.camp) continue;
 				var tds = "";
 				var buildAction = "build_in_" + key;
 				var improveAction = "improve_in_" + key;
 				var hasImproveAction = PlayerActionConstants.hasAction(improveAction);
 				var useAction = "use_in_" + key;
 				var hasUseAction = PlayerActionConstants.hasAction(useAction);
+				var useActionExtra = "use_in_" + key + "_2";
+				var hasUseActionExtra = PlayerActionConstants.hasAction(useActionExtra);
 				
-				var name = improvementNames[key];
-				var buildButton = "<button class='action action-build action-location' action='" + buildAction +"'>" + name + "</button>";
+				var buildButton = "<button class='action action-build action-location' action='" + buildAction +"'>" + "" + "</button>";
 				var useButton = "";
 				if (hasUseAction) {
 					useButton = "<button class='action action-use action-location btn-narrow' action='" + useAction + "'>" + def.useActionName + "</button>";
 				}
+				var useButton2 = "";
+				if (hasUseActionExtra) {
+					useButton2 = "<button class='action action-use2 action-location btn-narrow' action='" + useActionExtra + "'>" + def.useActionName2 + "</button>";
+				}
 				var improveButton = "";
 				if (hasImproveAction) {
-					improveButton = "<button class='action action-improve btn-compact' action='" + improveAction + "'>↑</button>";
+					improveButton = "<button class='action action-improve btn-glyph-big' action='" + improveAction + "'></button>";
 				}
 				tds += "<td>" + buildButton + "</td>";
 				tds += "<td><span class='improvement-badge improvement-count'>0</span></td>";
 				tds += "<td style='position:relative'><span class='improvement-badge improvement-level'>0</span>";
-				tds += "<span class='improvement-badge improvement-upgrade-level'>0</span>";
 				tds += "</td>";
 				tds += "<td>" + improveButton + "</td>";
-				tds += "<td>" + useButton + "</td>";
+				tds += "<td>" + useButton + "" + useButton2 + "</td>";
 				trs += "<tr id='in-improvements-" + key + "'>" + tds + "</tr>";
 			}
 			let ths = "<tr class='header-mini'><th></th><th>count</th><th>lvl</th><th></th><th></th></tr>"
@@ -301,23 +321,26 @@
 			$table.append(trs);
 			
 			// TODO save elements already in the previous loop
-			var result = [];
+			let result = [];
 			$.each($("#in-improvements tr"), function () {
+				if ($(this).hasClass("header-mini")) return;
 				var id = $(this).attr("id");
 				var buildAction = $(this).find("button.action-build").attr("action");
 				if (!buildAction) {
 					log.w("In improvement tr without action name: #" + id);
+					log.i($(this))
 					return;
 				}
 				var improveAction = $(this).find("button.action-improve").attr("action");
 				var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(buildAction);
 				if (!improvementName) return;
+				var btnBuild = $(this).find(".action-build");
 				var btnUse = $(this).find(".action-use");
+				var btnUse2 = $(this).find(".action-use2");
 				var btnImprove = $(this).find(".action-improve");
 				var count = $(this).find(".improvement-count")
 				var level = $(this).find(".improvement-level")
-				var upgradeLevel = $(this).find(".improvement-upgrade-level")
-				result.push({ tr: $(this), btnUse: btnUse, btnImprove: btnImprove, count: count, level: level, upgradeLevel: upgradeLevel, id: id, action: buildAction, improveAction: improveAction, improvementName: improvementName });
+				result.push({ tr: $(this), btnBuild: btnBuild, btnUse: btnUse, btnUse2: btnUse2, btnImprove: btnImprove, count: count, level: level, id: id, action: buildAction, improveAction: improveAction, improvementName: improvementName });
 			});
 			this.elements.improvementRows = result;
 		},
@@ -337,6 +360,7 @@
 		},
 
 		updateImprovements: function () {
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (!this.playerLocationNodes.head) return;
 			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.in;
 			var campCount = GameGlobals.gameState.numCamps;
@@ -348,33 +372,44 @@
 			var availableBuildingCount = 0;
 			var visibleBuildingCount = 0;
 
-			for (var i = 0; i < this.elements.improvementRows.length; i++) {
+			for (let i = 0; i < this.elements.improvementRows.length; i++) {
 				var elem = this.elements.improvementRows[i];
 				var buildAction = elem.action;
 				var id = elem.id;
 				var improveAction = elem.improveAction;
 				var improvementName = elem.improvementName;
+				var improvementID = ImprovementConstants.getImprovementID(improvementName);
 				var requirementCheck = GameGlobals.playerActionsHelper.checkRequirements(buildAction, false, null);
 				var buildActionEnabled = requirementCheck.value >= 1;
 				var showActionDisabledReason = false;
 				if (!buildActionEnabled) {
 					switch (requirementCheck.reason) {
-						case PlayerActionConstants.DISABLED_REASON_NOT_ENOUGH_LEVEL_POP:
 						case PlayerActionConstants.UNAVAILABLE_REASON_LOCKED_RESOURCES:
+						case PlayerActionConstants.DISABLED_REASON_NOT_REACHABLE_BY_TRADERS:
 							showActionDisabledReason = true;
 					}
 				}
 				var actionAvailable = GameGlobals.playerActionsHelper.checkAvailability(buildAction, false);
 				var existingImprovements = improvements.getCount(improvementName);
+				
+				var useAction = "use_in_" + improvementID;
+				var useActionExtra = "use_in_" + improvementID + "_2";
+				var hasUseActionExtra = PlayerActionConstants.hasAction(useActionExtra);
+				var useActionAvailable = GameGlobals.playerActionsHelper.isRequirementsMet(useAction);
+				var useAction2Available = hasUseActionExtra && GameGlobals.playerActionsHelper.isRequirementsMet(useActionExtra);
+				
 				var improvementLevel = improvements.getLevel(improvementName);
-				var upgradeLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementName, this.tribeUpgradesNodes.head.upgrades);
+				var maxImprovementLevel = GameGlobals.campHelper.getCurrentMaxImprovementLevel(improvementName);
+				var majorImprovementLevel = GameGlobals.campHelper.getCurrentMajorImprovementLevel(improvements, improvementName);
+				var isNextLevelMajor = GameGlobals.campHelper.getNextMajorImprovementLevel(improvements, improvementName) > majorImprovementLevel;
+				
 				elem.count.text(existingImprovements);
 				elem.count.toggleClass("badge-disabled", existingImprovements < 1);
 				elem.level.text(improvementLevel);
-				elem.level.toggleClass("badge-disabled", existingImprovements < 1 || !improveAction);
-				elem.upgradeLevel.text("+");
-				elem.upgradeLevel.toggleClass("badge-disabled", existingImprovements < 1);
-				GameGlobals.uiFunctions.toggle(elem.upgradeLevel, existingImprovements > 0 && upgradeLevel > 1);
+				elem.level.toggleClass("badge-disabled", existingImprovements < 1 || !improveAction || maxImprovementLevel <= 1);
+				
+				elem.btnBuild.find(".btn-label").text(ImprovementConstants.getImprovementDisplayName(improvementID, improvementLevel));
+				elem.btnImprove.find(".btn-label").text(isNextLevelMajor ? "▲" : "△")
 
 				var commonVisibilityRule = (buildActionEnabled || existingImprovements > 0 || showActionDisabledReason);
 				var specialVisibilityRule = true;
@@ -382,13 +417,15 @@
 				// TODO check TR ids after improvements table remake
 				if (id === "in-improvements-shrine") specialVisibilityRule = hasDeity;
 				if (id === "in-improvements-tradepost") specialVisibilityRule = campCount > 1;
-				if (id === "in-improvements-research") specialVisibilityRule = campCount > 1;
 				if (id === "in-improvements-market") specialVisibilityRule = hasTradePost;
 				if (id === "in-improvements-inn") specialVisibilityRule = hasTradePost;
 				var isVisible = specialVisibilityRule && commonVisibilityRule;
+				let showUseAction1 = useActionAvailable || !useAction2Available;
+				
 				GameGlobals.uiFunctions.toggle(elem.tr, isVisible);
-				GameGlobals.uiFunctions.toggle(elem.btnUse, existingImprovements > 0);
-				GameGlobals.uiFunctions.toggle(elem.btnImprove, existingImprovements > 0);
+				GameGlobals.uiFunctions.toggle(elem.btnUse, existingImprovements > 0 && showUseAction1);
+				GameGlobals.uiFunctions.toggle(elem.btnUse2, existingImprovements > 0 && !showUseAction1);
+				GameGlobals.uiFunctions.toggle(elem.btnImprove, existingImprovements > 0 && maxImprovementLevel > 1);
 				if (isVisible) visibleBuildingCount++;
 				if (actionAvailable) availableBuildingCount++;
 			}
@@ -421,6 +458,16 @@
 				$("#in-occurrences-trader .progress-label").toggleClass("event-ending", isTraderLeaving);
 				$("#in-occurrences-trader").data("progress-percent", eventTimers.getEventTimePercentage(OccurrenceConstants.campOccurrenceTypes.trader));
 			}
+			
+			// Recruits
+			var hasRecruit = this.playerLocationNodes.head.entity.has(RecruitComponent);
+			hasEvents = hasEvents || hasRecruit;
+			if (isActive && showEvents) {
+				var isRecruitLeaving = hasRecruit && eventTimers.getEventTimeLeft(OccurrenceConstants.campOccurrenceTypes.recruit) < 5;
+				GameGlobals.uiFunctions.toggle("#in-occurrences-recruit", hasRecruit);
+				$("#in-occurrences-recruit .progress-label").toggleClass("event-ending", isTraderLeaving);
+				$("#in-occurrences-recruit").data("progress-percent", eventTimers.getEventTimePercentage(OccurrenceConstants.campOccurrenceTypes.recruit));
+			}
 
 			// Raiders
 			var hasRaid = this.playerLocationNodes.head.entity.has(RaidComponent);
@@ -438,7 +485,7 @@
 				GameGlobals.uiFunctions.toggle("#in-occurrences-outgoing-caravans-container", numCaravans > 0);
 				UIState.refreshState(this, "outgoing-caravans-num", numCaravans, function () {
 					$("#in-occurrences-outgoing-caravans-container").empty();
-					for (var i = 0; i < numCaravans; i++) {
+					for (let i = 0; i < numCaravans; i++) {
 						var bar = '';
 						bar += '<div id="in-occurrences-outgoing-caravans-' + i + '" class="progress-wrap progress">';
 						bar += '<div class="progress-bar progress"></div>';
@@ -447,7 +494,7 @@
 						$("#in-occurrences-outgoing-caravans-container").append(bar)
 					}
 				});
-				for (var i = 0; i < numCaravans; i++) {
+				for (let i = 0; i < numCaravans; i++) {
 					var caravan = caravansComponent.outgoingCaravans[i];
 					// TODO fix to use game time (and check other usages)
 					var duration = caravan.returnDuration * 1000;
@@ -467,12 +514,14 @@
 		updateStats: function () {
 			var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
 			if (!campComponent) return;
+			
+			var levelComponent = this.playerLevelNodes.head.level;
 
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var soldiers = this.playerLocationNodes.head.entity.get(CampComponent).assignedWorkers.soldier;
 			var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
-			var raidDanger = OccurrenceConstants.getRaidDanger(improvements, soldiers, soldierLevel);
-			var raidAttack = OccurrenceConstants.getRaidDangerPoints(improvements);
+			var raidDanger = GameGlobals.campHelper.getCampRaidDanger(this.playerLocationNodes.head.entity);
+			var raidAttack = OccurrenceConstants.getRaidDangerPoints(improvements, levelComponent.raidDangerFactor);
 			var raidDefence = OccurrenceConstants.getRaidDefencePoints(improvements, soldiers, soldierLevel);
 
 			var inGameFoundingDate = UIConstants.getInGameDate(campComponent.foundedTimeStamp);
@@ -514,10 +563,18 @@
 			var showLevelStats = GameGlobals.gameState.numCamps > 1;
 			if (showLevelStats) {
 				var levelComponent = this.playerLevelNodes.head.level;
+				var hasUnlockedTrade = this.hasUpgrade(GameGlobals.upgradeEffectsHelper.getUpgradeToUnlockBuilding(improvementNames.tradepost));
 				$("#in-demographics-level-population .value").text(levelComponent.populationFactor * 100 + "%");
+				$("#in-demographics-level-danger .value").text(levelComponent.raidDangerFactor * 100 + "%");
+				$("#in-demographics-trade-network").toggle(hasUnlockedTrade);
+				if (hasUnlockedTrade) {
+					var hasAccessToTradeNetwork = GameGlobals.resourcesHelper.hasAccessToTradeNetwork(this.playerLocationNodes.head.entity);
+					$("#in-demographics-trade-network .value").text(hasAccessToTradeNetwork ? "yes" : "no");
+					$("#in-demographics-trade-network .value").toggleClass("warning", !hasAccessToTradeNetwork);
+				}
 			}
 
-			GameGlobals.uiFunctions.toggle("#id-demographics-level", showLevelStats);
+			GameGlobals.uiFunctions.toggle("#in-demographics-level", showLevelStats);
 			GameGlobals.uiFunctions.toggle("#in-demographics", showCalendar || showRaid || showLevelStats);
 		},
 
@@ -570,13 +627,40 @@
 					break;
 				case CampConstants.workerTypes.soldier.id:
 					var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
-					productionS = "camp defence +" + CampConstants.getSoldierDefence(soldierLevel);
+					let barracksLevel = improvements.getLevel(improvementNames.barracks);
+					productionS = "camp defence +" + CampConstants.getSoldierDefence(soldierLevel, barracksLevel);
 					break;
 				default:
 					log.w("no description defined for worker type: " + def.id);
 					break;
 			}
 			return productionS + generalConsumptionS + specialConsumptionS;
+		},
+
+		sortImprovements: function (a, b) {
+			
+			let getImprovementSortScore = function (improvementID) {
+				let def = ImprovementConstants.improvements[improvementID];
+				
+				if (def.sortScore) return def.sortScore;
+				
+				let useAction = "use_in_" + improvementID;
+				if (PlayerActionConstants.hasAction(useAction)) return 100;
+				
+				let improveAction = "improve_in_" + improvementID;
+				if (PlayerActionConstants.hasAction(improveAction)) return 10;
+				
+				var buildAction = "build_in_" + improvementID;
+				let max = GameGlobals.campBalancingHelper.getMaxImprovementCountPerSector(improvementID, buildAction);
+				if (max == 1) return 1;
+				
+				return 2;
+			};
+			
+			let scoreA = getImprovementSortScore(a);
+			let scoreB = getImprovementSortScore(b);
+			
+			return scoreB - scoreA;
 		},
 
 		onTabChanged: function () {
@@ -616,8 +700,9 @@
 			this.refresh();
 		},
 
-		hasUpgrade: function (upgradeId) {
-			return this.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeId);
+		hasUpgrade: function (upgradeID) {
+			if (!upgradeID) return true;
+			return this.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeID);
 		}
 
 	});

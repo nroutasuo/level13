@@ -54,13 +54,15 @@ body.sunlit {
 .vision-steps-themed(@counter) when (@counter >= 0) {
 	.vision-steps-themed(@counter - 1);
 	&.vision-step-@{counter} {
-		@overlay-cover: min(75% + @counter * 3, 99%);
-		@overlay-opacity: max(75% - @counter * 0.05, 0);
+		@overlay-cover: min(70% + @counter * 3, 99%);
+		@overlay-opacity: max(80% - @counter * 0.5, 0);
 		
 		#vision-overlay {
-			background: -moz-radial-gradient(circle, rgba(255,255,255,0) 50%, fade(@color-bg-page, @overlay-opacity) @overlay-cover, @color-bg-page 100%);
-			background: -webkit-radial-gradient(circle, rgba(255,255,255,0) 50%, fade(@color-bg-page, @overlay-opacity) @overlay-cover, @color-bg-page 100%);
-			background: radial-gradient(circle, rgba(255,255,255,0) 50%, fade(@color-bg-page, @overlay-opacity) @overlay-cover, @color-bg-page 100%);
+		    background: -moz-radial-gradient(circle at 50% 50%, fade(@color-bg-page, 0%) 0%, fade(@color-bg-page, 0%) 50%, fade(@color-bg-page, @overlay-opacity) @overlay-cover, @color-bg-page 100%);
+		    background: -webkit-radial-gradient(circle at 50% 50%, fade(@color-bg-page, 0%) 0%, fade(@color-bg-page, 0%) 50%, fade(@color-bg-page, @overlay-opacity) @overlay-cover, @color-bg-page 100%);
+		    background: -o-radial-gradient(circle at 50% 50%, fade(@color-bg-page, 0%) 0%, fade(@color-bg-page, 0%) 50%, fade(@color-bg-page, @overlay-opacity) @overlay-cover, @color-bg-page 100%);
+		    background: -ms-radial-gradient(circle at 50% 50%, fade(@color-bg-page, 0%) 0%, fade(@color-bg-page, 0%) 50%, fade(@color-bg-page, @overlay-opacity) @overlay-cover, @color-bg-page 100%);
+		    background: radial-gradient(circle at 50% 50%, fade(@color-bg-page, 0%) 0%, fade(@color-bg-page, 0%) 50%, fade(@color-bg-page, @overlay-opacity) @overlay-cover, @color-bg-page 100%);
 		}
 	}
 }

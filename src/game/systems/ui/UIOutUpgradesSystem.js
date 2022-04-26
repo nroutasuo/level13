@@ -2,12 +2,14 @@ define([
 	'ash',
 	'game/GameGlobals',
 	'game/GlobalSignals',
+	'game/constants/CampConstants',
+	'game/constants/ImprovementConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/UIConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/TextConstants',
 	'game/nodes/tribe/TribeUpgradesNode',
-], function (Ash, GameGlobals, GlobalSignals, PlayerActionConstants, UIConstants, UpgradeConstants, TextConstants, TribeUpgradesNode) {
+], function (Ash, GameGlobals, GlobalSignals, CampConstants, ImprovementConstants, PlayerActionConstants, UIConstants, UpgradeConstants, TextConstants, TribeUpgradesNode) {
 	
 	var UpgradeStatusEnum = {
 		HIDDEN: 0,
@@ -59,6 +61,7 @@ define([
 			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.upgrades;
 
 			this.updateBubble();
+			// TODO performance bottleneck (GC rrelated to update status check)
 			this.updateUpgradesLists(isActive);
 		},
 		
@@ -182,11 +185,11 @@ define([
 		getCurrentCompletableCount: function () {
 			if (!this.tribeNodes.head) return 0;
 			var count = 0;
-			for (var i = 0; i < this.tribeNodes.head.upgrades.newBlueprints.length; i++) {
+			for (let i = 0; i < this.tribeNodes.head.upgrades.newBlueprints.length; i++) {
 				var blueprintVO = this.tribeNodes.head.upgrades.newBlueprints[i];
 				if (blueprintVO.completed) continue;
-				if (this.tribeNodes.head.upgrades.hasUpgrade(blueprintVO.upgradeId)) continue;
-				var actionName = "create_blueprint_" + blueprintVO.upgradeId;
+				if (this.tribeNodes.head.upgrades.hasUpgrade(blueprintVO.upgradeID)) continue;
+				var actionName = "create_blueprint_" + blueprintVO.upgradeID;
 				var reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(actionName, false);
 				if (reqsCheck.value < 1) continue;
 				if (blueprintVO.currentPieces === blueprintVO.maxPieces) count++;
@@ -236,7 +239,7 @@ define([
 			var iconTD = "<td style='padding: 0px 3px'>";
 			var hasBlueprint = this.tribeNodes.head.upgrades.getBlueprint(upgradeDefinition.id);
 			if (hasBlueprint)
-				iconTD += "<span class='" + classes + "'><div class='info-callout-target info-callout-target-small' description='blueprint'><img src='img/items/blueprint.png'/></div></span>";
+				iconTD += "<span class='" + classes + "'><div class='info-callout-target info-callout-target-small' description='blueprint'><img src='img/items/blueprint.png' alt='blueprint'/></div></span>";
 			iconTD += "</td>";
 
 			var effectDesc = "<span class='p-meta'>" + this.getEffectDescription(upgradeDefinition.id, status) + "</span>"
@@ -257,8 +260,8 @@ define([
 				case UpgradeStatusEnum.BLUEPRINT_IN_PROGRESS:
 					var blueprintVO = this.tribeNodes.head.upgrades.getBlueprint(upgradeDefinition.id);
 					var piecesTD = "<td style='text-align:left'>";
-					for (var j = 0; j < blueprintVO.maxPieces; j++) {
-						var icon = j < blueprintVO.currentPieces ? UIConstants.getBlueprintPieceIcon(blueprintVO.upgradeId) : "";
+					for (let j = 0; j < blueprintVO.maxPieces; j++) {
+						var icon = j < blueprintVO.currentPieces ? UIConstants.getBlueprintPieceIcon(blueprintVO.upgradeID) : "";
 						var classes = "blueprint-piece-box" + (j < blueprintVO.currentPieces ? " blueprint-piece-box-found" : " blueprint-piece-box-missing");
 						piecesTD += "<div class='" + classes + "'>" + icon + "</div>";
 					}
@@ -274,76 +277,76 @@ define([
 			return "<tr data-upgrade-id='" + upgradeDefinition.id + "' data-status='" + status + "'>" + nameTD + "" + descriptionTD + "" + iconTD + "" + buttonTD + "</tr>";
 		},
 
-		getEffectDescription: function (upgradeId, status) {
+		getEffectDescription: function (upgradeID, status) {
 			var effects = "";
 
 			if (status == UpgradeStatusEnum.BLUEPRINT_USABLE || status == UpgradeStatusEnum.BLUEPRINT_IN_PROGRESS) {
 				effects = "";
 			} else {
-				var unlockedBuildings = GameGlobals.upgradeEffectsHelper.getUnlockedBuildings(upgradeId);
+				var unlockedBuildings = GameGlobals.upgradeEffectsHelper.getUnlockedBuildings(upgradeID);
 				if (unlockedBuildings.length > 0) {
 					effects += "buildings: ";
-					for (var i in unlockedBuildings) {
+					for (let i in unlockedBuildings) {
 						effects += this.getImprovementDisplayName(unlockedBuildings[i]).toLowerCase();
 						effects += ", ";
 					}
 				}
 
-				var improvedBuildings = GameGlobals.upgradeEffectsHelper.getImprovedBuildings(upgradeId);
+				var improvedBuildings = GameGlobals.upgradeEffectsHelper.getImprovedBuildings(upgradeID);
 				if (improvedBuildings.length > 0) {
-					for (var i in improvedBuildings) {
-						effects += "improved " + improvedBuildings[i].toLowerCase();
+					for (let i in improvedBuildings) {
+						effects += "improved " + this.getImprovementDisplayName(improvedBuildings[i]).toLowerCase();
+						effects += ", ";
 					}
-					effects += ", ";
 				}
 
-				var unlockedWorkers = GameGlobals.upgradeEffectsHelper.getUnlockedWorkers(upgradeId);
+				var unlockedWorkers = GameGlobals.upgradeEffectsHelper.getUnlockedWorkers(upgradeID);
 				if (unlockedWorkers.length > 0) {
 					effects += "workers: ";
-					for (var i in unlockedWorkers)
+					for (let i in unlockedWorkers)
 						effects += unlockedWorkers[i];
 					effects += ", ";
 				}
 
-				var improvedWorkers = GameGlobals.upgradeEffectsHelper.getImprovedWorkers(upgradeId);
+				var improvedWorkers = GameGlobals.upgradeEffectsHelper.getImprovedWorkers(upgradeID);
 				if (improvedWorkers.length > 0) {
-					for (var i in improvedWorkers) {
+					for (let i in improvedWorkers) {
 						// TOOD make a global get worker display name function
-						var name = improvedWorkers[i] == "weaver" ? "rope-maker" : improvedWorkers[i];
+						var name = CampConstants.getWorkerDisplayName(improvedWorkers[i]);
 						effects += "improved " + name;
 					}
 					effects += ", ";
 				}
 
-				var unlockedItems = GameGlobals.upgradeEffectsHelper.getUnlockedItems(upgradeId);
+				var unlockedItems = GameGlobals.upgradeEffectsHelper.getUnlockedItems(upgradeID);
 				if (unlockedItems.length > 0) {
 					effects += "items: ";
-					for (var i in unlockedItems) {
+					for (let i in unlockedItems) {
 						effects += unlockedItems[i].name.toLowerCase();
 						effects += ", ";
 					}
 				}
 
-				var unlockedOccurrences = GameGlobals.upgradeEffectsHelper.getUnlockedOccurrences(upgradeId);
+				var unlockedOccurrences = GameGlobals.upgradeEffectsHelper.getUnlockedOccurrences(upgradeID);
 				if (unlockedOccurrences.length > 0) {
 					effects += "events: ";
-					for (var i in unlockedOccurrences) {
+					for (let i in unlockedOccurrences) {
 						effects += unlockedOccurrences[i];
 					}
 					effects += ", ";
 				}
 
-				var improvedOccurrences = GameGlobals.upgradeEffectsHelper.getImprovedOccurrences(upgradeId);
+				var improvedOccurrences = GameGlobals.upgradeEffectsHelper.getImprovedOccurrences(upgradeID);
 				if (improvedOccurrences.length > 0) {
-					for (var i in improvedOccurrences) {
+					for (let i in improvedOccurrences) {
 						effects += "improved " + improvedOccurrences[i];
 					}
 					effects += ", ";
 				}
 
-				var unlockedActions = GameGlobals.upgradeEffectsHelper.getUnlockedGeneralActions(upgradeId);
+				var unlockedActions = GameGlobals.upgradeEffectsHelper.getUnlockedGeneralActions(upgradeID);
 				if (unlockedActions.length > 0) {
-					for (var i in unlockedActions) {
+					for (let i in unlockedActions) {
 						let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(unlockedActions[i])
 						effects += "enable " + TextConstants.getActionName(baseActionID);
 					}
@@ -357,7 +360,8 @@ define([
 		},
 		
 		getImprovementDisplayName: function (improvementName) {
-			return improvementName;
+			// TODO determine what improvement level to use (average? current camp?)
+			return ImprovementConstants.getImprovementDisplayName(improvementName);
 		},
 		
 	});

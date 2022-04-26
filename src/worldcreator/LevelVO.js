@@ -3,7 +3,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 
 	var LevelVO = Ash.Class.extend({
 	
-		constructor: function (level, levelOrdinal, campOrdinal, isCampable, isHard, notCampableReason, populationFactor, numSectors) {
+		constructor: function (level, levelOrdinal, campOrdinal, isCampable, isHard, notCampableReason, populationFactor, raidDangerFactor, numSectors) {
 			this.level = level;
 			this.levelOrdinal = levelOrdinal;
 			this.campOrdinal = campOrdinal;
@@ -11,11 +11,13 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			this.isHard = isHard;
 			this.notCampableReason = notCampableReason;
 			this.populationFactor = populationFactor;
+			this.raidDangerFactor = raidDangerFactor;
 			this.numSectors = numSectors;
 			this.maxSectors = numSectors + WorldCreatorConstants.getMaxSectorOverflow(levelOrdinal);
 			this.numSectorsByStage = {};
 			
-			this.campPositions = [];
+			this.campPosition = null;
+			this.additionalCampPositions = [];
 			this.passageUpPosition = null;
 			this.passageDownPosition = null;
 			this.stageCenterPositions = {};
@@ -125,7 +127,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			var neighbours = {};
 			var startingPos = new PositionVO(this.level, sectorX, sectorY);
 			var levelDirections = PositionConstants.getLevelDirections();
-			for (var i in levelDirections) {
+			for (let i in levelDirections) {
 				var direction = levelDirections[i];
 				var neighbourPos = PositionConstants.getNeighbourPosition(startingPos, direction);
 				var neighbour = this.getSector(neighbourPos.sectorX, neighbourPos.sectorY);
@@ -140,7 +142,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 		getNeighbourList: function (sectorX, sectorY, stage) {
 			var neighbours = [];
 			var startingPos = new PositionVO(this.level, sectorX, sectorY);
-			for (var i in PositionConstants.getLevelDirections()) {
+			for (let i in PositionConstants.getLevelDirections()) {
 				var direction = PositionConstants.getLevelDirections()[i];
 				var neighbourPos = PositionConstants.getNeighbourPosition(startingPos, direction);
 				if (this.hasSector(neighbourPos.sectorX, neighbourPos.sectorY, stage)) {
@@ -150,11 +152,11 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			return neighbours;
 		},
 		
-		getNeighbourCount: function (sectorX, sectorY, stage, excludeStage) {
-			var result = 0;
+		getNeighbourCount: function (sectorX, sectorY, stage, excludeStage, excludeDiagonals) {
+			let result = 0;
 			var startingPos = new PositionVO(this.level, sectorX, sectorY);
-			for (var i in PositionConstants.getLevelDirections()) {
-				var direction = PositionConstants.getLevelDirections()[i];
+			for (let i in PositionConstants.getLevelDirections()) {
+				var direction = PositionConstants.getLevelDirections(excludeDiagonals)[i];
 				var neighbourPos = PositionConstants.getNeighbourPosition(startingPos, direction);
 				if (this.hasSector(neighbourPos.sectorX, neighbourPos.sectorY, stage, excludeStage)) {
 					result++;
@@ -163,11 +165,17 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			return result;
 		},
 		
+		getNeighbourCountWeighted: function (sectorX, sectorY, stage, excludeStage) {
+			let numNeighboursWithoutDiagonals = this.getNeighbourCount(sectorX, sectorY, stage, excludeStage, false);
+			let numNeighboursWithDiagonals = this.getNeighbourCount(sectorX, sectorY, stage, excludeStage, true);
+			return numNeighboursWithoutDiagonals + numNeighboursWithDiagonals * 0.5;
+		},
+		
 		getNextNeighbours: function (sectorVO, direction) {
-			var result = [];
+			let result = [];
 			var neighbours = this.getNeighbours(sectorVO.position.sectorX, sectorVO.position.sectorY);
 			var nextDirections = [ PositionConstants.getNextCounterClockWise(direction, true), PositionConstants.getNextClockWise(direction, true)];
-			for (var j = 0; j < nextDirections.length; j++) {
+			for (let j = 0; j < nextDirections.length; j++) {
 				var bonusNeighbour = neighbours[nextDirections[j]];
 				if (bonusNeighbour) {
 					result.push(bonusNeighbour);
@@ -187,7 +195,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 		
 		getPendingConnectionPoints: function (stage) {
 			if (!stage) {
-				var result = [];
+				let result = [];
 				for (var key in this.pendingConnectionPointsByStage) {
 					result = result.concat(this.getPendingConnectionPoints(key));
 				}
@@ -200,7 +208,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 		removePendingConnectionPoint: function (point) {
 			for (var key in this.pendingConnectionPointsByStage) {
 				var points = this.pendingConnectionPointsByStage[key];
-				for (var i = 0; i < points.length; i++) {
+				for (let i = 0; i < points.length; i++) {
 					var p = points[i];
 					if (p.position.sectorX == point.position.sectorX && p.position.sectorY == point.position.sectorY) {
 						points.splice(i, 1);
@@ -210,13 +218,16 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			}
 		},
 		
+		getAllCampPositions: function () {
+			let result = [];
+			if (this.campPosition) result.push(this.campPosition);
+			if (this.additionalCampPositions && this.additionalCampPositions.length > 0) result = result.concat(this.additionalCampPositions);
+			return result;
+		},
+		
 		isCampPosition: function (pos) {
-			for (var i = 0; i < this.campPositions.length; i++) {
-				if (this.campPositions[i].equals(pos)) {
-					return true;
-				}
-			}
-			return false;
+			if (!this.campPosition) return false;
+			return this.campPosition.equals(pos);
 		},
 		
 		isPassageUpPosition: function (pos) {
@@ -227,8 +238,18 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			return this.passageDownPosition && this.passageDownPosition.equals(pos);
 		},
 		
+		getEntrancePassagePosition: function () {
+			if (this.levelOrdinal == 1) return null;
+			var isGoingDown = this.level <= 13;
+			if (isGoingDown) {
+				return this.passageUpPosition;
+			} else {
+				return this.passageDownPosition;
+			}
+		},
+		
 		isInvalidPosition: function (pos) {
-			for (var i = 0; i < this.invalidPositions.length; i++) {
+			for (let i = 0; i < this.invalidPositions.length; i++) {
 				if (pos.sectorX == this.invalidPositions[i].sectorX && pos.sectorY == this.invalidPositions[i].sectorY) {
 					return true;
 				}

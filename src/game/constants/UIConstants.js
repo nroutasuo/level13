@@ -4,6 +4,7 @@ define(['ash',
 	'game/constants/StoryConstants',
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
+	'game/constants/FollowerConstants',
 	'game/constants/ItemConstants',
 	'game/constants/BagConstants',
 	'game/constants/PerkConstants',
@@ -17,7 +18,7 @@ define(['ash',
 	'game/components/common/VisitedComponent',
 	'utils/UIAnimations'
 ], function (Ash, GameGlobals,
-	StoryConstants, PositionConstants, SectorConstants, ItemConstants, BagConstants, PerkConstants, UpgradeConstants, PlayerActionConstants,
+	StoryConstants, PositionConstants, SectorConstants, FollowerConstants, ItemConstants, BagConstants, PerkConstants, UpgradeConstants, PlayerActionConstants,
 	PositionComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent,
 	PassagesComponent, VisitedComponent, UIAnimations) {
 
@@ -46,7 +47,7 @@ define(['ash',
 				div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
 			}
 
-			if (item) div += "<img src='" + url + "'/>";
+			if (item) div += "<img src='" + url + "' alt='" + item.name + "'/>";
 
 			if (hasCount)
 				div += "<div class='item-count lvl13-box-1 vision-text'>" + count + "x </div>";
@@ -93,9 +94,8 @@ define(['ash',
 			var detail = " (" + this.getItemBonusDescription(item, true, false) + ")";
 			if (detail.length < 5) detail = "";
 			var weight = BagConstants.getItemCapacity(item);
-			var itemCalloutContent = "<b>" + item.name + "</b><br/>Type: " + item.type + " " + detail;
-			if (item.type !== ItemConstants.itemTypes.follower)
-				itemCalloutContent += "</br>Weight: " + weight;
+			var itemCalloutContent = "<b>" + item.name + "</b><br/>Type: " + ItemConstants.getItemTypeDisplayName(item.type, false) + " " + detail;
+			itemCalloutContent += "</br>Weight: " + weight;
 			itemCalloutContent += "</br>" + item.description;
 			if (smallCallout) itemCalloutContent = item.name + (detail.length > 0 ? " " + detail : "");
 			
@@ -131,7 +131,7 @@ define(['ash',
 			var html = "";
 			var itemsCounted = {};
 			var itemsById = {};
-			for (var i = 0; i < items.length; i++) {
+			for (let i = 0; i < items.length; i++) {
 				if (typeof itemsCounted[items[i].id] === 'undefined') {
 					itemsCounted[items[i].id] = 1;
 					itemsById[items[i].id] = items[i];
@@ -146,6 +146,89 @@ define(['ash',
 				html += "<li>" + this.getItemDiv(itemsComponent, item, amount, this.getItemCallout(item, true)) + "</li>";
 			}
 			return html;
+		},
+		
+		getFollowerDiv: function (follower, isRecruited, isInCamp, hideComparisonIndicator) {
+			let classes = "item";
+			let div = "<div class='" + classes + "' data-followerid='" + follower.id + "'>";
+			let calloutContent = this.getFollowerCallout(follower, isRecruited, isInCamp);
+			
+			div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
+			div += "<img src='" + follower.icon + "' alt='" + follower.name + "'/>";
+			
+			if (!hideComparisonIndicator) {
+				div += "<div class='item-comparison-badge'><div class='item-comparison-indicator indicator-even'/></div>";
+			}
+			
+			div += "</div>";
+			div += "</div>"
+			
+			return div;
+		},
+		
+		getFollowerCallout: function (follower, isRecruited, isInCamp) {
+			let followerType = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
+			let result = "<b>" + follower.name + "</b>";
+			if (isRecruited) {
+				result += "<br/>In party: " + (follower.inParty ? "yes" : "no");
+			}
+			result += "<br/>Type: " + FollowerConstants.getFollowerTypeDisplayName(followerType);
+			result += "<br/>Ability: " + FollowerConstants.getAbilityTypeDisplayName(follower.abilityType)
+				+ " (" + UIConstants.getFollowerAbilityDescription(follower) + ")";
+			
+			if (isRecruited && isInCamp) {
+				var makeButton = function (action, name) {
+					 return "<button class='action btn-narrow' action='" + action + "'>" + name + "</button>";
+				};
+
+				var options = "<div class='item-bag-options'>";
+				options += makeButton("dismiss_follower_" + follower.id, "Dismiss");
+				if (!follower.inParty) {
+					options += makeButton("select_follower_" + follower.id, "Add to party");
+				} else {
+					options += makeButton("deselect_follower_" + follower.id, "Switch out");
+				}
+				options += "</div>";
+				result += options;
+			}
+
+			return result;
+		},
+		
+		getFollowerAbilityDescription: function (follower) {
+			switch (follower.abilityType) {
+				case FollowerConstants.abilityType.ATTACK:
+				case FollowerConstants.abilityType.DEFENCE:
+					let att = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_att);
+					let def = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_def);
+					return "attack +" + att + ", defence +" + def;
+				case FollowerConstants.abilityType.COST_MOVEMENT:
+					let movementCostReduction = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.movement);
+					return "movement cost -" + UIConstants.getMultiplierBonusDisplayValue(movementCostReduction);
+				case FollowerConstants.abilityType.COST_SCAVENGE:
+					let scavengeCostReduction = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.scavenge_cost);
+					return "scavenge cost -" + UIConstants.getMultiplierBonusDisplayValue(scavengeCostReduction);
+				case FollowerConstants.abilityType.COST_SCOUT:
+					let scoutCostReduction = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.scout_cost);
+					return "scout cost -" + UIConstants.getMultiplierBonusDisplayValue(scoutCostReduction);
+				case FollowerConstants.abilityType.HAZARD_PREDICTION:
+					return "foresee hazards in unvisited sectors";
+				case FollowerConstants.abilityType.SCAVENGE_GENERAL:
+					let scaBonus = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.scavenge_general);
+					return "+" + UIConstants.getMultiplierBonusDisplayValue(scaBonus) + " chance for extra loot when scavenging";
+				case FollowerConstants.abilityType.SCAVENGE_INGREDIENTS:
+					let ingredientBonus = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.scavenge_ingredients);
+					return "+" + UIConstants.getMultiplierBonusDisplayValue(ingredientBonus) + " chance to find ingredients when scavenging";
+				case FollowerConstants.abilityType.SCAVENGE_SUPPLIES:
+					let suppliesBonus = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.scavenge_supplies);
+					return "+" + UIConstants.getMultiplierBonusDisplayValue(suppliesBonus) + " chance to find more supplies when scavenging";
+				case FollowerConstants.abilityType.SCAVENGE_CAPACITY:
+					let capacityBonus = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.bag);
+					return "+" + capacityBonus + " carry capacity";
+				default:
+					log.w("no display name defined for abilityType: " + follower.abilityType);
+					return follower.abilityType;
+			}
 		},
 
 		getResourceLi: function (name, amount, isLost, simple) {
@@ -194,10 +277,10 @@ define(['ash',
 			GameGlobals.uiFunctions.toggle($li, showAmount > 0);
 		},
 
-		getBlueprintPieceLI: function (upgradeId) {
-			var upgradeDefinition = UpgradeConstants.upgradeDefinitions[upgradeId];
+		getBlueprintPieceLI: function (upgradeID) {
+			var upgradeDefinition = UpgradeConstants.upgradeDefinitions[upgradeID];
 			var name = upgradeDefinition.name;
-			return "<li><div class='info-callout-target' description='Blueprint (" + name + ")'>" + this.getBlueprintPieceIcon(upgradeId) + " blueprint</li>";
+			return "<li><div class='info-callout-target' description='Blueprint (" + name + ")'>" + this.getBlueprintPieceIcon(upgradeID) + " blueprint</li>";
 		},
 
 		getResourceList: function (resourceVO) {
@@ -214,7 +297,7 @@ define(['ash',
 		},
 
 		getItemBonusDescription: function (item, showAllBonuses, useLineBreaks) {
-			var result = "";
+			let result = "";
 			var defaultType = ItemConstants.getItemDefaultBonus(item);
 			var value;
 			for (var bonusKey in ItemConstants.itemBonusTypes) {
@@ -246,25 +329,33 @@ define(['ash',
 				case ItemConstants.itemBonusTypes.light: return "max vision";
 				case ItemConstants.itemBonusTypes.fight_att: return "attack";
 				case ItemConstants.itemBonusTypes.fight_def: return "defence";
+				case ItemConstants.itemBonusTypes.fight_shield: return "shield";
 				case ItemConstants.itemBonusTypes.fight_speed: return "attack speed";
 				case ItemConstants.itemBonusTypes.movement: return "movement cost";
+				case ItemConstants.itemBonusTypes.scavenge_cost: return "scavenge cost";
+				case ItemConstants.itemBonusTypes.scavenge_general: return "scavenge bonus";
+				case ItemConstants.itemBonusTypes.scavenge_supplies: return "scavenge bonus";
+				case ItemConstants.itemBonusTypes.scavenge_ingredients: return "scavenge bonus";
+				case ItemConstants.itemBonusTypes.scout_cost: return "scouting cost";
 				case ItemConstants.itemBonusTypes.bag: return "bag size";
-				case ItemConstants.itemBonusTypes.fight_def: return "defence";
 				case ItemConstants.itemBonusTypes.res_cold: return "warmth";
 				case ItemConstants.itemBonusTypes.res_radiation: return short ? "radiation prot" : "radiation protection";
 				case ItemConstants.itemBonusTypes.res_poison: return short ? "poison prot" : "poison protection";
 				case ItemConstants.itemBonusTypes.shade: return short ? "sun prot" : "sunblindness protection";
+				case ItemConstants.itemBonusTypes.hazard_prediction: return short ? "surveying" : "hazard surveying";
 				default:
-					return null;
+					log.w("no display name defined for item bonus type: " + bonusType);
+					return "";
 			}
 		},
 
 		getItemBonusText: function (item, bonusType) {
 			var bonusValue = item.getBonus(bonusType);
-			if (bonusValue === 0) {
-				return "+0";
-			} else if (item.type == ItemConstants.itemTypes.bag) {
+			
+			if (ItemConstants.isStaticValue(bonusType)) {
 				return " " + bonusValue;
+			} else if (bonusValue === 0) {
+				return "+0";
 			} else if (ItemConstants.isMultiplier(bonusType) && ItemConstants.isIncreasing(bonusType)) {
 				// increasing multiplier: fight speed
 				var val = Math.abs(Math.round((1 - bonusValue) * 100));
@@ -272,34 +363,51 @@ define(['ash',
 			} else if (bonusValue >= 1) {
 				return " +" + bonusValue;
 			} else if (bonusValue > 0) {
-				return " -" + Math.round((1 - bonusValue) * 100) + "%";
+				return " -" + UIConstants.getMultiplierBonusDisplayValue(bonusValue);
 			} else if (bonusValue > -1) {
-				return " +" + Math.round((1 - bonusValue) * 100) + "%";
+				return " +" + UIConstants.getMultiplierBonusDisplayValue(bonusValue);
 			} else {
 				return " " + bonusValue;
 			}
 		},
 
 		getPerkDetailText: function (perk, isResting) {
-			if (perk.effectTimer >= 0) {
-				var factor = isResting ? PerkConstants.PERK_RECOVERY_FACTOR_REST : 1;
-				var timeleft = perk.effectTimer / factor;
-				return this.getPerkBonusText(perk) + ", time left: " + this.getTimeToNum(timeleft);
+			let bonusText = this.getPerkBonusText(perk);
+			let timerText = this.getPerkTimerText(perk, isResting);
+			let result = "";
+			if (bonusText) result += bonusText;
+			if (timerText) {
+				if (bonusText.length > 0) result += ", ";
+				result += timerText;
+			}
+			return result;
+		},
+		
+		getPerkTimerText: function (perk, isResting) {
+			if (perk.removeTimer >= 0) {
+				var factor = PerkConstants.getRemoveTimeFactor(perk, isResting);
+				var timeleft = perk.removeTimer / factor;
+				return "time left: " + this.getTimeToNum(timeleft);
+			} else if (perk.startTimer >= 0) {
+				var percent = PerkConstants.getPerkActivePercent(perk);
+				return "time to full: " + this.getTimeToNum(perk.startTimer);
 			} else {
-				return this.getPerkBonusText(perk);
+				return null;
 			}
 		},
 
 		getPerkBonusText: function (perk) {
 			var value = 0;
 			if (PerkConstants.isPercentageEffect(perk.type)) {
+				if (perk.effect == 1) return null;
 				if (perk.effect < 1) {
-					value = "-" + Math.round(100 - perk.effect * 100) + "%";
+					value = "-" + UIConstants.getMultiplierBonusDisplayValue(PerkConstants.getCurrentEffect(perk));
 				} else {
-					value = "+" + Math.round((perk.effect - 1) * 100) + "%";
+					value = "+" + UIConstants.getMultiplierBonusDisplayValue(PerkConstants.getCurrentEffect(perk));
 				}
 			} else {
-				value = "+" + perk.effect;
+				if (perk.effect == 0) return null;
+				value = "+" + PerkConstants.getCurrentEffect(perk);
 			}
 
 			var effect = perk.type;
@@ -315,12 +423,18 @@ define(['ash',
 
 			return effect + " " + value;
 		},
+		
+		getMultiplierBonusDisplayValue: function (value) {
+			return Math.round(Math.abs(1 - value) * 100) + "%";
+		},
 
 		sortItemsByType: function (a, b) {
 			var getItemSortVal = function (itemVO) {
 				var typeVal = 0;
 				switch (itemVO.type) {
+					case ItemConstants.itemTypes.uniqueEquipment: typeVal = 0; break;
 					case ItemConstants.itemTypes.exploration: typeVal = 1; break;
+					
 					case ItemConstants.itemTypes.bag: typeVal = 11; break;
 					case ItemConstants.itemTypes.light: typeVal = 12; break;
 					case ItemConstants.itemTypes.weapon: typeVal = 13; break;
@@ -330,16 +444,35 @@ define(['ash',
 					case ItemConstants.itemTypes.clothing_hands: typeVal = 17; break;
 					case ItemConstants.itemTypes.clothing_head: typeVal = 18; break;
 					case ItemConstants.itemTypes.shoes: typeVal = 19; break;
+					
 					case ItemConstants.itemTypes.ingredient: typeVal = 21; break;
-					case ItemConstants.itemTypes.uniqueEquipment: typeVal = 0; break;
+					case ItemConstants.itemTypes.voucher: typeVal = 22; break;
+					case ItemConstants.itemTypes.trade: typeVal = 23; break;
+					
 					case ItemConstants.itemTypes.artefact: typeVal = 31; break;
 					case ItemConstants.itemTypes.note: typeVal = 32; break;
-					case ItemConstants.itemTypes.follower: typeVal = 0; break;
 				}
 				return typeVal * 1000 - itemVO.getTotalBonus();
 			};
 			var aVal = getItemSortVal(a);
 			var bVal = getItemSortVal(b);
+			return aVal - bVal;
+		},
+		
+		sortFollowersByType: function (a, b) {
+			let getFollowerSortVal = function (followerVO) {
+				let abilityType = followerVO.abilityType;
+				let followerType = FollowerConstants.getFollowerTypeForAbilityType(abilityType);
+				let typeVal = 0;
+				switch (followerType) {
+					case FollowerConstants.followerType.FIGHTER: typeVal = 1; break;
+					case FollowerConstants.followerType.EXPLORER: typeVal = 2; break;
+					case FollowerConstants.followerType.SCAVENGER: typeVal = 3; break;
+				}
+				return typeVal * 1000 - followerVO.abilityLevel;
+			};
+			let aVal = getFollowerSortVal(a);
+			let bVal = getFollowerSortVal(b);
 			return aVal - bVal;
 		},
 
@@ -413,7 +546,7 @@ define(['ash',
 		updateResourceIndicatorCallout: function (id, changeSources) {
 			var content = "";
 			var source;
-			for (var i in changeSources) {
+			for (let i in changeSources) {
 				source = changeSources[i];
 				if (source.amount != 0) {
 					content += source.source + ": " + Math.round(source.amount * 10000) / 10000 + "/s<br/>";
@@ -434,9 +567,9 @@ define(['ash',
 				$(targetElementId).parents(".info-callout-target").siblings(".info-callout").children(".info-callout-content").html(content);
 		},
 
-		getBlueprintPieceIcon: function (upgradeId) {
-			let type = UpgradeConstants.getUpgradeType(upgradeId);
-			return "<img src='img/items/blueprints/blueprint-" + type + ".png' />";
+		getBlueprintPieceIcon: function (upgradeID) {
+			let type = UpgradeConstants.getUpgradeType(upgradeID);
+			return "<img src='img/items/blueprints/blueprint-" + type + ".png' alt='' />";
 		},
 
 		getTimeToNum: function (seconds) {
@@ -565,6 +698,14 @@ define(['ash',
 			}
 			
 			return "";
+		},
+
+		getBagCapacityDisplayValue: function (bagComponent) {
+			if (bagComponent.bonusCapacity > 0) {
+				return bagComponent.baseCapacity + " +" + bagComponent.bonusCapacity;
+			} else {
+				return bagComponent.baseCapacity;
+			}
 		},
 
 		cleanupText: function (text) {

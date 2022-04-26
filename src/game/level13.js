@@ -26,7 +26,6 @@ define([
 	'game/systems/ui/UIOutFightSystem',
 	'game/systems/ui/UIOutLogSystem',
 	'game/systems/ui/UIOutManageSaveSystem',
-	'game/systems/ui/UIOutPopupInnSystem',
 	'game/systems/ui/UIOutPopupTradeSystem',
 	'game/systems/ui/UIOutPopupInventorySystem',
 	'game/systems/ui/UIOutTabBarSystem',
@@ -86,7 +85,6 @@ define([
 	UIOutFightSystem,
 	UIOutLogSystem,
 	UIOutManageSaveSystem,
-	UIOutPopupInnSystem,
 	UIOutPopupTradeSystem,
 	UIOutPopupInventorySystem,
 	UIOutTabBarSystem,
@@ -155,7 +153,7 @@ define([
 		initializePlugins: function (plugins) {
 			if (!plugins) return;
 			var game = this;
-			for (var i = 0; i < plugins.length; i++) {
+			for (let i = 0; i < plugins.length; i++) {
 				log.i("Add plugin " + (i+1) + "/" + plugins.length + ": " + plugins[i]);
 				require([plugins[i]], function (plugin) {
 					game.engine.addSystem(new plugin(), SystemPriorities.update);
@@ -175,7 +173,7 @@ define([
 			this.engine.addSystem(new StaminaSystem(), SystemPriorities.update);
 			this.engine.addSystem(new BagSystem(), SystemPriorities.update);
 			this.engine.addSystem(new CollectorSystem(), SystemPriorities.update);
-			this.engine.addSystem(new FightSystem(), SystemPriorities.update);
+			this.engine.addSystem(new FightSystem(true), SystemPriorities.update);
 			this.engine.addSystem(new FollowerSystem(), SystemPriorities.update);
 			this.engine.addSystem(new PopulationSystem(), SystemPriorities.update);
 			this.engine.addSystem(new PerkSystem(), SystemPriorities.update);
@@ -213,7 +211,6 @@ define([
 			this.engine.addSystem(new UIOutManageSaveSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupInventorySystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupTradeSystem(), SystemPriorities.render);
-			this.engine.addSystem(new UIOutPopupInnSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutTabBarSystem(), SystemPriorities.render);
 
 			if (GameConstants.isCheatsEnabled) {
@@ -257,7 +254,8 @@ define([
 				"ok",
 				null,
 				null,
-				true
+				true,
+				false
 			);
 			
 			throw ex;
@@ -265,7 +263,7 @@ define([
 
 		cheat: function (input) {
 			if (!GameConstants.isCheatsEnabled) return;
-			this.engine.getSystem(CheatSystem).applyCheat(input);
+			this.engine.getSystem(CheatSystem).applyCheatInput(input);
 		}
 
 	});

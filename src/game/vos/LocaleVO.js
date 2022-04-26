@@ -1,6 +1,6 @@
 // Locale / point of interest: an additional scoutable location in a sector
-define(['ash', 'game/vos/ResourcesVO', 'game/constants/LocaleConstants', 'game/constants/PlayerStatConstants'],
-function (Ash, ResourcesVO, LocaleConstants, PlayerStatConstants) {
+define(['ash', 'game/constants/WorldConstants', 'game/vos/ResourcesVO', 'game/constants/LocaleConstants', 'game/constants/PlayerStatConstants'],
+function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants) {
 
 	localeTypes = {
 		factory: 0,
@@ -69,41 +69,43 @@ function (Ash, ResourcesVO, LocaleConstants, PlayerStatConstants) {
 		},
 		
 		getResourceBonus: function (unlockedResources, campOrdinal) {
-			var res = new ResourcesVO();
+			let res = new ResourcesVO();
+			let abundant = WorldConstants.resourcePrevalence.ABUNDANT;
+			let defaultAmount = WorldConstants.resourcePrevalence.DEFAULT;
 			switch (this.type) {
 			case localeTypes.factory:
-				res.addResource(resourceNames.metal, 10);
-				if (unlockedResources.concrete) res.addResource(resourceNames.concrete, 10);
-				if (unlockedResources.tools) res.addResource(resourceNames.tools, 5);
+				res.addResource(resourceNames.metal, abundant);
+				if (unlockedResources.concrete) res.addResource(resourceNames.concrete, abundant);
+				if (unlockedResources.tools) res.addResource(resourceNames.tools, defaultAmount);
 				break;
 			case localeTypes.house:
-				res.addResource(resourceNames.food, 10);
-				res.addResource(resourceNames.water, 10);
-				if (campOrdinal > 2) res.addResource(resourceNames.medicine, 5);
+				res.addResource(resourceNames.food, abundant);
+				res.addResource(resourceNames.water, abundant);
+				if (campOrdinal > 3) res.addResource(resourceNames.medicine, defaultAmount);
 				break;
 			case localeTypes.lab:
-				res.addResource(resourceNames.water, 5);
-				if (campOrdinal > 1) res.addResource(resourceNames.medicine, 10);
+				res.addResource(resourceNames.water, defaultAmount);
+				if (campOrdinal > 3) res.addResource(resourceNames.medicine, abundant);
 				break;
 			case localeTypes.grove:
-				res.addResource(resourceNames.water, 5);
-				res.addResource(resourceNames.herbs, 10);
+				res.addResource(resourceNames.water, defaultAmount);
+				res.addResource(resourceNames.herbs, abundant);
 				break;
 			case localeTypes.market:
-				res.addResource(resourceNames.food, 10);
-				res.addResource(resourceNames.water, 5);
-				if (unlockedResources.tools) res.addResource(resourceNames.tools, 5);
+				res.addResource(resourceNames.food, abundant);
+				res.addResource(resourceNames.water, defaultAmount);
+				if (unlockedResources.tools) res.addResource(resourceNames.tools, defaultAmount);
 				break;
 			case localeTypes.maintenance:
 			case localeTypes.transport:
-				res.addResource(resourceNames.water, 5);
-				if (unlockedResources.tools) res.addResource(resourceNames.tools, 5);
+				res.addResource(resourceNames.water, defaultAmount);
+				if (unlockedResources.tools) res.addResource(resourceNames.tools, defaultAmount);
 				break;
 			case localeTypes.sewer:
 			case localeTypes.warehouse:
-				res.addResource(resourceNames.metal, 10);
-				res.addResource(resourceNames.food, 10);
-				if (unlockedResources.concrete) res.addResource(resourceNames.concrete, 10);
+				res.addResource(resourceNames.metal, abundant);
+				res.addResource(resourceNames.food, abundant);
+				if (unlockedResources.concrete) res.addResource(resourceNames.concrete, abundant);
 				break;
 			}
 			

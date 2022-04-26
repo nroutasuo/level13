@@ -25,11 +25,15 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			this.sunlit = false;
 			this.hazards = new EnvironmentalHazardsVO();
 			this.hasSpring = false;
+			this.hasTradeConnectorSpot = false;
+			this.scavengeDifficulty = 5;
 			this.resourcesScavengable = new ResourcesVO();
 			this.resourcesCollectable = new ResourcesVO();
+			this.itemsScavengeable = [];
 			this.numLocaleEnemies = {};
 			this.possibleEnemies = [];
 			this.stashes = [];
+			this.waymarks = [];
 			
 			this.distanceToCamp = -1;
 		},
@@ -45,9 +49,16 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			return false;
 		},
 		
+		isOnPassageCriticalPath: function () {
+			if (this.criticalPathTypes.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP) >= 0) return true;
+			if (this.criticalPathTypes.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE) >= 0) return true;
+			if (this.criticalPathTypes.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE) >= 0) return true;
+			return false;
+		},
+		
 		updateCriticalPath: function () {
 			this.criticalPath = "-";
-			for (var i = 0; i < this.criticalPathTypes.length; i++) {
+			for (let i = 0; i < this.criticalPathTypes.length; i++) {
 				if (this.getCriticalPathPriority(this.criticalPathTypes[i] < this.getCriticalPathPriority(this.criticalPath))) {
 					var split = this.criticalPathTypes[i].split("_");
 					this.criticalPath = split[split.length - 1][0];
@@ -121,7 +132,7 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 		},
 		
 		getCriticalPathC: function () {
-			for (var i = 0; i < WorldCreatorConstants.CRITICAL_PATHS_BY_ORDER.length; i++) {
+			for (let i = 0; i < WorldCreatorConstants.CRITICAL_PATHS_BY_ORDER.length; i++) {
 				var path = WorldCreatorConstants.CRITICAL_PATHS_BY_ORDER[i];
 				if (this.isOnCriticalPath(path)) return i;
 			}

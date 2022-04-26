@@ -11,14 +11,20 @@ define([
 		addToEngine: function (engine) {
 			this.engine = engine;
 			this.collectorNodes = engine.getNodeList(SectorCollectorsNode);
+			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.onImprovementBuilt);
 		},
 
 		removeFromEngine: function (engine) {
+			GlobalSignals.removeAll(this);
 			this.collectorNodes = null;
 		},
 
 		update: function (time) {
 			if (GameGlobals.gameState.isPaused) return;
+			this.updateNodes(time);
+		},
+		
+		updateNodes: function (time) {
 			for (var node = this.collectorNodes.head; node; node = node.next) {
 				this.updateNode(time, node);
 			}
@@ -37,18 +43,29 @@ define([
 		},
 		
 		updateCollector: function (time, collector, resource) {
-			var oldValue = collector.storedResources.getResource(resource);
+			let level = collector.level;
+			let storageCapacity = level * 10;
+			collector.storageCapacity[resource] = storageCapacity;
+			
+			let oldValue = collector.storedResources.getResource(resource);
+			let totalStorage = storageCapacity * collector.count;
+			
+			if (oldValue == totalStorage) return;
+			
 			collector.storedResources.addResource(resource, time * 0.05 * GameConstants.gameSpeedExploration);
 			
-			var storage = collector.storageCapacity.getResource(resource) * collector.count;
-			if (collector.storedResources.getResource(resource) > storage) {
-				collector.storedResources.setResource(resource, storage);
+			if (collector.storedResources.getResource(resource) > totalStorage) {
+				collector.storedResources.setResource(resource, totalStorage);
 			}
 			
 			var newValue = collector.storedResources.getResource(resource);
 			if (oldValue < 1 && newValue >= 1) {
 				GlobalSignals.updateButtonsSignal.dispatch();
 			}
+		},
+		
+		onImprovementBuilt: function () {
+			this.updateNodes(0);
 		},
 		
 	});

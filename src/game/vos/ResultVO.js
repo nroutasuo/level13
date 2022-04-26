@@ -22,10 +22,13 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		lostCurrency: null,
 		lostItems: [],
 		lostFollowers: [],
+		lostPerks: [],
 		gainedInjuries: [],
 		
 		// additional info for UI
 		foundStashVO: null,
+		gainedResourcesFromFollowers: null, // subset of gainedResources
+		gainedItemsFromFollowers: [], // subset of gainedItems
 		
 		// inventory management selection
 		// gained resources and items must be manually picked up; status saved here; this is the final change to the player bag
@@ -52,20 +55,42 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			this.lostCurrency = 0;
 			this.lostItems = [];
 			this.lostFollowers = [];
+			this.lostPerks = [];
 			this.gainedInjuries = [];
 			
 			this.selectedItems = [];
 			this.selectedResources = new ResourcesVO();
 			this.discardedItems = [];
 			this.discardedResources = new ResourcesVO();
+			
+			this.gainedResourcesFromFollowers = new ResourcesVO();
 		},
 		
 		hasSelectable: function () {
 			return this.gainedResources.getTotal() > 0 || this.gainedItems.length > 0;
 		},
 		
+		isEmpty: function () {
+			return this.gainedResources.getTotal() == 0
+				&& this.gainedCurrency == 0
+				&& this.lostResources.getTotal() == 0
+				&& this.lostCurrency == 0
+				&& this.gainedItems.length == 0
+				&& this.gainedFollowers.length == 0
+				&& this.lostItems.length == 0
+				&& this.lostFollowers.length == 0
+				&& this.lostPerks.length == 0
+				&& this.gainedInjuries.length == 0
+				&& this.gainedBlueprintPiece == null
+				&& this.gainedPopulation == 0
+				&& this.gainedEvidence == 0
+				&& this.gainedRumours == 0
+				&& this.gainedFavour == 0
+				&& this.gainedReputation == 0;
+		},
+		
 		clone: function () {
-			var result = new ResultVO(this.action);
+			let result = new ResultVO(this.action);
 			result.gainedResources = this.gainedResources.clone();
 			result.gainedCurrency = this.gainedCurrency;
 			result.lostResources = this.lostResources.clone();
@@ -74,6 +99,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			result.gainedFollowers = this.gainedFollowers.concat();
 			result.lostItems = this.lostItems.concat();
 			result.lostFollowers = this.lostFollowers.concat();
+			result.lostPerks = this.lostPerks.concat();
 			result.gainedInjuries = this.gainedInjuries.concat();
 			result.gainedBlueprintPiece = this.gainedBlueprintPiece;
 			result.gainedPopulation = this.gainedPopulation;

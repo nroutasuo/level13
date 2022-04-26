@@ -44,7 +44,7 @@ define([
 			
 			var timeStamp;
 			var action;
-			for (var i = 0; i < node.playerActions.endTimeStampList.length; i++) {
+			for (let i = 0; i < node.playerActions.endTimeStampList.length; i++) {
 				timeStamp = node.playerActions.endTimeStampList[i];
 				action = node.playerActions.endTimeStampToActionDict[timeStamp];
 				if (!action)
@@ -54,7 +54,7 @@ define([
 					newList.push(timeStamp);
 				} else {
 					if (action.action) {
-						this.playerActionFunctions.performAction(action.action, action.param);
+						this.playerActionFunctions.performAction(action.action, action.param, action.deductedCosts);
 					}
 				}
 			}

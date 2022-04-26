@@ -14,6 +14,7 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 		lastRaid: null,
 		
 		pendingPopulation: 0,
+		pendingRecruits: [],
 		
 		constructor: function (id) {
 			this.id = id;
@@ -29,6 +30,7 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 			this.lastRaid = new RaidVO(null);
 			
 			this.pendingPopulation = 0;
+			this.pendingRecruits = [];
 		},
 		
 		getFreePopulation: function () {
@@ -65,6 +67,26 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 			} else {
 				return this.getType();
 			}
+		},
+
+		getCustomSaveObject: function () {
+			var copy = {};
+			copy.id = this.id;
+			copy.campName = this.campName;
+			copy.population = this.population || 0;
+			copy.maxPopulation = this.maxPopulation || 0;
+			copy.foundedTimeStamp = this.foundedTimeStamp;
+			copy.lastRaid = this.lastRaid;
+			copy.assignedWorkers = this.assignedWorkers;
+			copy.rumourpool = this.rumourpool;
+			copy.rumourpoolchecked = this.rumourpoolchecked;
+			
+			copy.pendingPopulation = this.pendingPopulation;
+			if (this.pendingRecruits.length > 0) {
+				copy.pendingRecruits = this.pendingRecruits;
+			}
+			
+			return copy;
 		},
 	});
 

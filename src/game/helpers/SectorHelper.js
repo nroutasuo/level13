@@ -46,6 +46,7 @@ define([
 			var position = sector.get(PositionComponent).getPosition();
 			var featuresComponent = sector.get(SectorFeaturesComponent);
 			var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(position.level);
+			var campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
 			var levelEntity = GameGlobals.levelHelper.getLevelEntityForSector(sector);
 			var levelComponent = levelEntity.get(LevelComponent);
 			var hasCamp = sector.has(CampComponent);
@@ -53,7 +54,7 @@ define([
 			
 			var sectorLocalesComponent = sector.get(SectorLocalesComponent);
 			var locales = sectorLocalesComponent.locales;
-			for (var i = 0; i < locales.length; i++) {
+			for (let i = 0; i < locales.length; i++) {
 				if (locales[i].type == localeTypes.grove) {
 					hasGrove = true;
 				}
@@ -62,12 +63,17 @@ define([
 			var features = Object.assign({}, featuresComponent);
 			features.level = position.level;
 			features.levelOrdinal = levelOrdinal;
+			features.campOrdinal = campOrdinal;
 			features.condition = featuresComponent.getCondition();
 			features.populationFactor = levelComponent.populationFactor;
+			features.raidDangerFactor = levelComponent.raidDangerFactor;
 			features.isSurfaceLevel = position.level == GameGlobals.gameState.getSurfaceLevel();
 			features.isGroundLevel = position.level == GameGlobals.gameState.getGroundLevel();
 			features.hasCamp = hasCamp;
 			features.hasGrove = hasGrove;
+			features.radiation = featuresComponent.hazards.radiation;
+			features.poison = featuresComponent.hazards.poison;
+			features.debris = featuresComponent.hazards.debris;
 			return features;
 		},
 		
@@ -83,7 +89,7 @@ define([
 		},
 		
 		getEffectiveHazards: function (sectorFeatures, sectorStatus) {
-			var result = sectorFeatures.hazards.clone();
+			let result = sectorFeatures.hazards.clone();
 			result.radiation = Math.max(0, result.radiation - sectorStatus.getHazardReduction("radiation"));
 			result.poison = Math.max(0, result.poison - sectorStatus.getHazardReduction("poison"));
 			result.cold = Math.max(0, result.cold - sectorStatus.getHazardReduction("cold"));
@@ -91,8 +97,21 @@ define([
 		},
 		
 		hasHazards: function (sectorFeatures, sectorStatus) {
-			var hazards = this.getEffectiveHazards(sectorFeatures, sectorStatus);
+			let hazards = this.getEffectiveHazards(sectorFeatures, sectorStatus);
 			return hazards.hasHazards();
+		},
+		
+		hasSeriousHazards: function (level, sectorFeatures, sectorStatus) {
+			let hazards = this.getEffectiveHazards(sectorFeatures, sectorStatus);
+			let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+			let campOrdianl2 = campOrdinal - 1;
+			
+			if (hazards.radiation > 0 && hazards.radiation > GameGlobals.itemsHelper.getMaxHazardRadiationForLevel(campOrdianl2, 0, false)) return true;
+			if (hazards.poison > 0 && hazards.poison > GameGlobals.itemsHelper.getMaxHazardPoisonForLevel(campOrdianl2, 0, false)) return true;
+			if (hazards.cold > 0 && hazards.cold > GameGlobals.itemsHelper.getMaxHazardColdForLevel(campOrdianl2, 0, false)) return true;
+			if (hazards.debris > 0) return true;
+			
+			return false;
 		},
 			
 		isAffectedByHazard: function (featuresComponent, statusComponent, itemsComponent) {
@@ -133,6 +152,11 @@ define([
 			return perkBonus;
 		},
 		
+		getDebrisMovementMalus: function (sector) {
+			let featuresComponent = sector.get(SectorFeaturesComponent);
+			return featuresComponent.hazards.debris > 0 ? 2 : 1;
+		},
+		
 		canHaveBeacon: function (sector) {
 			return GameGlobals.playerActionsHelper.isRequirementsMet("build_out_beacon", sector);
 		},
@@ -144,7 +168,7 @@ define([
 			var sectorFeatures = sector.get(SectorFeaturesComponent);
 			var missingResources = [];
 			
-			for (var i = 0; i < sectorStatus.discoveredResources.length; i++) {
+			for (let i = 0; i < sectorStatus.discoveredResources.length; i++) {
 				var res = sectorStatus.discoveredResources[i];
 				if (sectorFeatures.resourcesScavengable[res] > 0) {
 					resources.push(res);
@@ -154,7 +178,7 @@ define([
 				}
 			}
 			
-			for (var j = 0; j < missingResources.length; j++) {
+			for (let j = 0; j < missingResources.length; j++) {
 				sectorStatus.discoveredResources.splice(sectorStatus.discoveredResources.indexOf(missingResources[j]), 1);
 			}
 			
@@ -172,6 +196,30 @@ define([
 			});
 			
 			return resources;
+		},
+		
+		getLocationDiscoveredItems: function (sector) {
+			var items = [];
+			sector = sector ? sector : this.playerLocationNodes.head.entity;
+			var sectorStatus = sector.get(SectorStatusComponent);
+			var sectorFeatures = sector.get(SectorFeaturesComponent);
+			var missingItems = [];
+			
+			for (let i = 0; i < sectorStatus.discoveredItems.length; i++) {
+				var itemID = sectorStatus.discoveredItems[i];
+				if (sectorFeatures.itemsScavengeable.indexOf(itemID) >= 0) {
+					items.push(itemID);
+				} else {
+					log.w("Item in discovered items not found on sector.");
+					missingItems.push(itemID);
+				}
+			}
+			
+			for (let j = 0; j < missingItems.length; j++) {
+				sectorStatus.discoveredItems.splice(sectorStatus.discoveredItems.indexOf(missingItems[j]), 1);
+			}
+			
+			return items;
 		},
 		
 		getDangerFactor: function (sectorEntity) {

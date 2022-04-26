@@ -1,8 +1,8 @@
 define([
 	'ash',
-	'game/constants/PlayerActionConstants', 'game/constants/ItemConstants', 'game/constants/UpgradeConstants', 'game/constants/BagConstants',
+	'game/constants/PlayerActionConstants', 'game/constants/ItemConstants', 'game/constants/UpgradeConstants', 'game/constants/BagConstants', 'game/constants/WorldConstants',
 	'game/vos/TradingPartnerVO', 'game/vos/IncomingCaravanVO', 'game/vos/ResourcesVO', 'game/vos/ResultVO'],
-function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, IncomingCaravanVO, ResourcesVO, ResultVO) {
+function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConstants, WorldConstants, TradingPartnerVO, IncomingCaravanVO, ResourcesVO, ResultVO) {
 	
 	var TradeConstants = {
 		
@@ -17,209 +17,17 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 		VALUE_DISCOUNT_CAMP_ITEMS: 0.25,
 		
 		TRADING_PARTNERS: [
-			new TradingPartnerVO(3, "Bone Crossing", [resourceNames.rope], [resourceNames.metal], false, false, [ "weapon" ], [ "weapon", "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head", "exploration" ]),
-			new TradingPartnerVO(4, "Slugger Town", [resourceNames.metal], [resourceNames.food], false, true, [], ["exploration", "shoes" ]),
+			new TradingPartnerVO(3, "Bone Crossing", [resourceNames.rope], [resourceNames.metal], false, true, [ "weapon" ], [ "weapon", "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head", "exploration" ]),
+			new TradingPartnerVO(4, "Slugger Town", [resourceNames.food], [resourceNames.metal], false, true, [], ["exploration", "shoes" ]),
 			new TradingPartnerVO(6, "Old Waterworks", [resourceNames.fuel], [], true, false, [], [ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
 			new TradingPartnerVO(7, "Mill Road Academy", [resourceNames.food, resourceNames.water], [resourceNames.metal], true, false, [], [ "weapon", "artefact" ]),
-			new TradingPartnerVO(9, "Bleaksey", [resourceNames.herbs], [resourceNames.medicine], false, true, [], [ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
-			new TradingPartnerVO(10, "Pinewood", [resourceNames.medicine, resourceNames.rubber], [], true, false, [], [ "artefact", "exploration" ]),
+			new TradingPartnerVO(10, "Pinewood", [resourceNames.medicine, resourceNames.herbs, resourceNames.rubber], [], true, false, [], [ "artefact", "exploration" ]),
 			new TradingPartnerVO(12, "Highgate", [resourceNames.tools], [resourceNames.metal], true, false, [], [ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
 			new TradingPartnerVO(14, "Factory 32", [resourceNames.concrete], [resourceNames.metal], true, false, [], [ "exploration" ]),
 		],
 		
-		getRandomIncomingCaravan: function (campOrdinal, levelOrdinal, unlockedResources, neededIngredient) {
-			var name = "";
-			var sellItems = [];
-			var sellResources = new ResourcesVO();
-			var buyItemTypes = [];
-			var buyResources = [];
-			var usesCurrency = false;
-			
-			// TODO adjust resource amounts based on resource rarity / value (plenty of metal, less herbs)
-			var minResAmount = 40 + campOrdinal * 10;
-			var randResAmount = 450 + campOrdinal * 50;
-			
-			// TODO unify logic with scavenge rewards - many similar checks
-			var addSellItemsFromCategories = function (categories, probability, maxAmount, includeCommon) {
-				for (var j in categories) {
-					var category = categories[j];
-					var isObsoletable = ItemConstants.isObsoletable(category);
-					var itemList = ItemConstants.itemDefinitions[category];
-					for (var i in itemList) {
-						var itemDefinition = itemList[i];
-						// check hard requirements
-						var tradeRarity = itemDefinition.tradeRarity;
-						if (tradeRarity <= 0)
-							continue;
-						if (itemDefinition.requiredCampOrdinal > campOrdinal + 1)
-							continue;
-						if (campOrdinal <= 8 && itemDefinition.requiredCampOrdinal >= 9)
-							continue;
-						if (ItemConstants.isQuicklyObsoletable(category)) {
-							if (itemDefinition.requiredCampOrdinal > 0 && itemDefinition.requiredCampOrdinal <= campOrdinal - 5)
-								continue;
-						}
-						if (!includeCommon && isObsoletable && itemDefinition.craftable && itemDefinition.requiredCampOrdinal < campOrdinal)
-							continue;
-						var craftingReq = ItemConstants.getRequiredCampAndStepToCraft(itemDefinition);
-						if (craftingReq.campOrdinal > campOrdinal + 1)
-							continue;
-						// check probability
-						var isNeededIngredient = neededIngredient && itemDefinition.id == neededIngredient;
-						var itemProbability = probability * (1/tradeRarity);
-						if (craftingReq.campOrdinal > campOrdinal || itemDefinition.requiredCampOrdinal > campOrdinal) {
-							itemProbability *= 0.5;
-						}
-						if (Math.random() > itemProbability && !isNeededIngredient) {
-							continue;
-						}
-						// add item
-						var amount = Math.ceil(Math.random() * maxAmount);
-						for (var j = 0; j < amount; j++) {
-							sellItems.push(itemDefinition.clone());
-						}
-					}
-				}
-			}
-			
-			var rand = Math.random();
-			var rand2 = Math.random();
-			if (rand <= 0.2) {
-				// 1) equipment trader: sells (equipment caterogy), buys equipment, uses currency
-				var categories = [];
-				if (rand2 <= 0.33) {
-					name = "weapons trader";
-					categories.push("weapon");
-				} else if (rand2 <= 0.66) {
-					name = "clothing trader";
-					categories.push("clothing_over");
-					categories.push("clothing_upper");
-					categories.push("clothing_lower");
-					categories.push("clothing_hands");
-					categories.push("clothing_head");
-					categories.push("shoes");
-				} else {
-					name = "equipment trader";
-					categories.push("light");
-					categories.push("bag");
-					categories.push("exploration");
-				}
-				var prob = 0.75;
-				while (sellItems.length < 4 && prob <= 1) {
-					addSellItemsFromCategories(categories, prob, 1, true);
-					prob += 0.05;
-				}
-				if (neededIngredient) {
-					addSellItemsFromCategories([ "ingredient"], 0.25, 5 + campOrdinal + 2, true);
-				}
-				buyItemTypes = categories;
-				usesCurrency = true;
-			} else if (rand <= 0.4) {
-				// 2) misc trader: sells ingredients, random items, buys all items, uses currency
-				name = "general trader";
-				var categories = [];
-				while (categories.length < 3) {
-					if (Math.random() <= 0.2) categories.push("light");
-					if (Math.random() <= 0.5) categories.push("weapon");
-					if (Math.random() <= 0.3) categories.push("clothing_over");
-					if (Math.random() <= 0.3) categories.push("clothing_upper");
-					if (Math.random() <= 0.3) categories.push("clothing_lower");
-					if (Math.random() <= 0.3) categories.push("clothing_hands");
-					if (Math.random() <= 0.3) categories.push("clothing_head");
-					if (Math.random() <= 0.3) categories.push("shoes");
-					if (Math.random() <= 0.2) categories.push("bag");
-					if (Math.random() <= 0.7) categories.push("exploration");
-					if (Math.random() <= 0.1) categories.push("artefact");
-				}
-				var prob = 0.05;
-				while (sellItems.length < 5 && prob < 1) {
-					addSellItemsFromCategories(categories, prob, 1, true);
-					prob += 0.05;
-				}
-				if (Math.random() < 0.5 || neededIngredient) {
-					addSellItemsFromCategories([ "ingredient"], 0.7, 5 + campOrdinal + 2, true);
-				}
-				buyItemTypes = Object.keys(ItemConstants.itemTypes);
-				usesCurrency = true;
-			} else if (rand <= 0.6 || neededIngredient) {
-				// 3) ingredient trader: sells ingredients, buys ingredients, occational items, no currency
-				name = "crafting trader";
-				var prob = 0.25;
-				var num = 5 + campOrdinal * 3;
-				while (sellItems.length < num && prob < 1) {
-					addSellItemsFromCategories([ "ingredient"], prob, num / 3, true);
-					prob += 0.05;
-				}
-				addSellItemsFromCategories([ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head", "shoes", "bag", "exploration" ], 0.05, 1, false);
-				buyItemTypes.push("ingredient");
-				usesCurrency = false;
-			} else if (rand <= 0.8) {
-				// 4) resource trader: sells and buys a specific resource
-				if (rand2 <= 0.2 && unlockedResources.herbs) {
-					name = "herbs trader";
-					sellResources.addResource(resourceNames.herbs, minResAmount + Math.random() * randResAmount);
-					buyResources.push(resourceNames.herbs);
-					if (unlockedResources.medicine && Math.random() < 0.75) {
-						name = "medicine trader";
-						sellResources.addResource(resourceNames.medicine, minResAmount + Math.random() * randResAmount);
-						buyResources.push(resourceNames.medicine);
-					}
-				} else if (rand2 <= 0.3 && unlockedResources.tools) {
-					name = "tools trader";
-					sellResources.addResource(resourceNames.tools, minResAmount + Math.random() * randResAmount);
-					buyResources.push(resourceNames.tools);
-				} else if (rand2 <= 0.4 && unlockedResources.fuel) {
-					name = "fuel trader";
-					sellResources.addResource(resourceNames.fuel, minResAmount + Math.random() * randResAmount);
-					buyResources.push(resourceNames.fuel);
-				} else if (rand2 < 0.7) {
-					name = "supplies trader";
-					sellResources.addResource(resourceNames.water, minResAmount + Math.random() * randResAmount);
-					sellResources.addResource(resourceNames.food, minResAmount + Math.random() * randResAmount);
-					buyResources.push(resourceNames.water);
-					buyResources.push(resourceNames.food);
-				} else {
-					name = "materials trader";
-					sellResources.addResource(resourceNames.metal, minResAmount + Math.random() * randResAmount);
-						buyResources.push(resourceNames.metal);
-					sellResources.addResource(resourceNames.rope, minResAmount + Math.random() * randResAmount);
-						buyResources.push(resourceNames.rope);
-					if (unlockedResources.concrete) {
-						sellResources.addResource(resourceNames.concrete, minResAmount + Math.random() * randResAmount);
-						buyResources.push(resourceNames.concrete);
-					}
-				}
-				usesCurrency = true;
-			} else {
-				// 5) trading partner trader: buys and sells same stuff as partner, plus occational items, currency based on partner
-				var partner = this.getRandomTradePartner(campOrdinal);
-				name = "trader from " + partner.name;
-				for (var i = 0; i < partner.sellsResources.length; i++) {
-					sellResources.addResource(partner.sellsResources[i], minResAmount + Math.random() * randResAmount);
-				}
-				for (var i = 0; i < partner.buysResources.length; i++) {
-					buyResources.push(partner.buysResources[i]);
-				}
-				var prob = 0.01;
-				var numItems = Math.floor(Math.random() * 2);
-				while (sellItems.length < numItems && prob < 1) {
-					addSellItemsFromCategories(partner.sellItemTypes, prob, 1, true);
-					prob += 0.01;
-				}
-				for (var i = 0; i < partner.buyItemTypes.length; i++) {
-					buyItemTypes.push(partner.buyItemTypes[i]);
-				}
-				if (!partner.usesCurrency || neededIngredient)
-					buyItemTypes.push("ingredient");
-				usesCurrency = partner.usesCurrency;
-			}
-			
-			var currency = usesCurrency ? 2 + Math.floor(Math.random() * levelOrdinal) : 0;
-			return new IncomingCaravanVO(name, sellItems, sellResources, buyItemTypes, buyResources, usesCurrency, currency);
-		},
-		
 		getTradePartner: function (campOrdinal) {
-			for (var i = 0; i < this.TRADING_PARTNERS.length; i++) {
+			for (let i = 0; i < this.TRADING_PARTNERS.length; i++) {
 				if (this.TRADING_PARTNERS[i].campOrdinal === campOrdinal)
 					return this.TRADING_PARTNERS[i];
 			}
@@ -227,17 +35,30 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 		},
 		
 		getRandomTradePartner: function (campOrdinal) {
-			var options = [];
-			for (var i = 0; i < this.TRADING_PARTNERS.length; i++) {
-				if (this.TRADING_PARTNERS[i].campOrdinal <= campOrdinal + 2 && this.TRADING_PARTNERS[i].campOrdinal >= campOrdinal - 5) {
-					options.push(this.TRADING_PARTNERS[i]);
-				}
-			}
+			var options = this.getValidTradePartners(campOrdinal);
 			return options[Math.floor(Math.random() * options.length)];
 		},
 		
+		getValidTradePartners: function (campOrdinal) {
+			let result = [];
+			for (let i = 0; i < this.TRADING_PARTNERS.length; i++) {
+				let tradePartnerCampOrdinal = this.TRADING_PARTNERS[i].campOrdinal;
+				if (campOrdinal <= WorldConstants.CAMP_ORDINAL_GROUND && tradePartnerCampOrdinal > WorldConstants.CAMP_ORDINAL_GROUND)
+					continue;
+				if (campOrdinal > WorldConstants.CAMP_ORDINAL_GROUND && tradePartnerCampOrdinal <= WorldConstants.CAMP_ORDINAL_GROUND)
+					continue;
+				if (tradePartnerCampOrdinal > campOrdinal + 1)
+					continue;
+				if (tradePartnerCampOrdinal < campOrdinal - 5)
+					continue;
+				
+				result.push(this.TRADING_PARTNERS[i]);
+			}
+			return result;
+		},
+		
 		makeResultVO: function (outgoingCaravan) {
-			var result = new ResultVO("send_camp");
+			let result = new ResultVO("send_camp");
 			var amountTraded = TradeConstants.getAmountTraded(outgoingCaravan.buyGood, outgoingCaravan.sellGood, outgoingCaravan.sellAmount);
 			if (amountTraded > outgoingCaravan.capacity) {
 				amountTraded = outgoingCaravan.capacity;
@@ -249,12 +70,12 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 			} else if (outgoingCaravan.buyGood === TradeConstants.GOOD_TYPE_NAME_INGREDIENTS) {
 				var numIngredients = Math.min(amountTraded, Math.floor(Math.random() * 3) + 1);
 				var amountLeft = amountTraded;
-				for (var i = 0; i < numIngredients; i++) {
+				for (let i = 0; i < numIngredients; i++) {
 					var ingredient = ItemConstants.getIngredient();
 					var max = amountLeft;
 					var min = Math.min(amountLeft, 1);
 					var amount = Math.floor(Math.random() * max) + min;
-					for (var j = 0; j < amount; j++) {
+					for (let j = 0; j < amount; j++) {
 						result.gainedItems.push(ingredient.clone());
 					}
 					amountLeft -= amount;
@@ -315,62 +136,17 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 			}
 			if (isTrader)
 				value = value + value * TradeConstants.VALUE_MARKUP_INCOMING_CARAVANS;
+				
+			value = Math.round(value * 1000) / 1000;
+				
 			return value;
 		},
 		
 		getItemValue: function (item, isTrader, isUsed) {
-			var value = 0;
-			switch (item.type) {
-				case ItemConstants.itemTypes.light:
-					var lightBonus = item.getTotalBonus(ItemConstants.itemBonusTypes.light);
-					if (lightBonus <= 25)
-						value = 0.1;
-					else
-						value = (lightBonus - 10) / 30;
-					break;
-				case ItemConstants.itemTypes.weapon:
-					var attackBonus = item.getTotalBonus(ItemConstants.itemBonusTypes.fight_att);
-					if (attackBonus <= 3)
-						value = 0.1;
-					else
-						value = attackBonus / 5;
-					break;
-				case ItemConstants.itemTypes.clothing_over:
-				case ItemConstants.itemTypes.clothing_upper:
-				case ItemConstants.itemTypes.clothing_lower:
-				case ItemConstants.itemTypes.clothing_hands:
-				case ItemConstants.itemTypes.clothing_head:
-					value = Math.max(0.1, (item.getTotalBonus() / 12));
-					break;
-				case ItemConstants.itemTypes.shoes:
-					var shoeBonus = 1 - item.getBonus(ItemConstants.itemBonusTypes.movement);
-					var otherBonus = item.getTotalBonus() - shoeBonus;
-					value = Math.pow(((shoeBonus)*5), 2) + otherBonus / 10;
-					break;
-				case ItemConstants.itemTypes.bag:
-					value = Math.pow(((item.getTotalBonus() - 25) / 15), 1.75);
-					break;
-				case ItemConstants.itemTypes.follower:
-					value = 0;
-					break;
-				case ItemConstants.itemTypes.ingredient:
-					value = TradeConstants.VALUE_INGREDIENTS;
-					break;
-				case ItemConstants.itemTypes.exploration:
-					value = 1;
-					if (item.craftable) {
-						value = this.getItemValueByCraftingIngredients(item);
-					}
-					break;
-				case ItemConstants.itemTypes.uniqueEquipment:
-					value = 1;
-					break;
-				case ItemConstants.itemTypes.artefact:
-					value = 1;
-					break;
-				case ItemConstants.itemTypes.note:
-					value = 0;
-					break;
+			let value = this.getItemBaseValue(item, isTrader);
+		
+			if (value > 0) {
+				value = Math.max(value, TradeConstants.VALUE_INGREDIENTS);
 			}
 			
 			if (isTrader)
@@ -378,22 +154,133 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 			else if (isUsed)
 				value = value - value * TradeConstants.VALUE_DISCOUNT_CAMP_ITEMS;
 			
-			value = Math.round(value * 100) / 100;
+			if (value > 1)
+				value = Math.round(value * 10) / 10;
+			else
+				value = Math.round(value * 100) / 100;
 				
 			return value;
 		},
 		
+		getItemBaseValue: function (item, isTrader) {
+			if (item.tradePrice) return item.tradePrice;
+			switch (item.type) {
+				case ItemConstants.itemTypes.light:
+				case ItemConstants.itemTypes.weapon:
+				case ItemConstants.itemTypes.clothing_over:
+				case ItemConstants.itemTypes.clothing_upper:
+				case ItemConstants.itemTypes.clothing_lower:
+				case ItemConstants.itemTypes.clothing_hands:
+				case ItemConstants.itemTypes.clothing_head:
+				case ItemConstants.itemTypes.shoes:
+				case ItemConstants.itemTypes.bag:
+				case ItemConstants.itemTypes.exploration:
+					let valueBonuses = this.getItemValueByBonuses(item);
+					let valueRarity = this.getItemValueByRarity(item);
+					if (item.craftable) {
+						let valueIngredients = this.getItemValueByCraftingIngredients(item);
+						if (isTrader) {
+							return this.getMaxValue(valueBonuses, valueRarity, valueIngredients);
+						} else {
+							return this.getMinValue(valueBonuses, valueRarity, valueIngredients);
+						}
+					} else {
+						if (isTrader) {
+							return this.getMaxValue(valueBonuses, valueRarity);
+						} else {
+							return this.getMinValue(valueBonuses, valueRarity);
+						}
+					}
+					
+				case ItemConstants.itemTypes.ingredient:
+					return TradeConstants.VALUE_INGREDIENTS;
+					
+				case ItemConstants.itemTypes.artefact:
+					return this.getItemValueByRarity(item) || 0;
+					
+				case ItemConstants.itemTypes.trade:
+					return this.getItemValueByRarity(item) || 0;
+					
+				case ItemConstants.itemTypes.voucher:
+				case ItemConstants.itemTypes.uniqueEquipment:
+				case ItemConstants.itemTypes.note:
+					return 0;
+			}
+			
+			return 0;
+		},
+		
+		getItemValueByBonuses: function (item) {
+			switch (item.type) {
+				case ItemConstants.itemTypes.light:
+					var lightBonus = item.getTotalBonus(ItemConstants.itemBonusTypes.light);
+					if (lightBonus <= 25)
+						return 0.1;
+					else
+						return (lightBonus - 10) / 30;
+					
+				case ItemConstants.itemTypes.weapon:
+					var attackBonus = item.getTotalBonus(ItemConstants.itemBonusTypes.fight_att);
+					if (attackBonus <= 3)
+						return 0.1;
+					else
+						return attackBonus / 5;
+					
+				case ItemConstants.itemTypes.clothing_over:
+				case ItemConstants.itemTypes.clothing_upper:
+				case ItemConstants.itemTypes.clothing_lower:
+				case ItemConstants.itemTypes.clothing_hands:
+				case ItemConstants.itemTypes.clothing_head:
+					return Math.max(0.1, (item.getTotalBonus() / 12));
+					
+				case ItemConstants.itemTypes.shoes:
+					var shoeBonus = 1 - item.getBonus(ItemConstants.itemBonusTypes.movement);
+					var otherBonus = item.getTotalBonus() - shoeBonus;
+					return Math.pow(((shoeBonus)*5), 2) + otherBonus / 10;
+					
+				case ItemConstants.itemTypes.bag:
+					return Math.pow(((item.getTotalBonus() - 25) / 15), 1.75);
+			}
+			
+			return null;
+		},
+		
 		getItemValueByCraftingIngredients: function (item) {
-			var craftAction = "craft_" + item.id;
-			var costs = PlayerActionConstants.costs[craftAction];
+			let craftAction = "craft_" + item.id;
+			let costs = PlayerActionConstants.costs[craftAction];
 			let result = costs ? 0.1 * Object.keys(costs).length : 0;
+			
 			let ingredients = ItemConstants.getIngredientsToCraft(item.id);
-			for (var i = 0; i < ingredients.length; i++) {
+			for (let i = 0; i < ingredients.length; i++) {
 				let def = ingredients[i];
 				let ingredient = ItemConstants.getItemByID(def.id);
 				result += def.amount * this.getItemValue(ingredient);
 			}
+			
+			let resources = ItemConstants.getResourcesToCraft(item.id);
+			for (let i = 0; i < resources.length; i++) {
+				let def = resources[i];
+				result += def.amount * this.getResourceValue(def.id);
+			}
+			
 			return result;
+		},
+		
+		getItemValueByRarity: function (item) {
+			let rarity = -1;
+			if (item.tradeRarity > 0) {
+				rarity = item.tradeRarity;
+			} else if (item.scavengeRarity > 0) {
+				rarity = item.scavengeRarity;
+			} else if (item.localeRarity > 0) {
+				rarity = item.localeRarity;
+			}
+			
+			if (rarity > 0) {
+				return Math.ceil(rarity / 1.5);
+			} else {
+				return null;
+			}
 		},
 		
 		getBlueprintValue: function (upgradeID) {
@@ -401,8 +288,34 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 		},
 		
 		getCaravanCapacity: function (stableLevel) {
-			return stableLevel * 750;
-		}
+			return 500 * stableLevel;
+		},
+		
+		getMaxValue: function (...args) {
+			let result = 0;
+			for (let i = 0; i < args.length; i++) {
+				let val = args[i];
+				if (val !== null && val !== -1) {
+					result = Math.max(result, val);
+				}
+			}
+			return result;
+		},
+		
+		getMinValue: function (...args) {
+			let result = -1;
+			for (let i = 0; i < args.length; i++) {
+				let val = args[i];
+				if (val !== null && val !== -1) {
+					if (result < 0) {
+						result = val;
+					} else {
+						result = Math.min(result, val);
+					}
+				}
+			}
+			return result;
+		},
 	
 	};
 	

@@ -6,6 +6,7 @@
 // properties in descriptions may be simple (equals) or ranges (array of two values (inclusive))
 
 define(function () {
+	
 	var DescriptionMapper = {
 		
 		WILDCARD: "WILDCARD",
@@ -24,12 +25,12 @@ define(function () {
 			
 			var matches = [];
 			var weightedMatches = [];
-			for (var i = 0; i < this.descriptions[type].length; i++) {
+			for (let i = 0; i < this.descriptions[type].length; i++) {
 				var desc = this.descriptions[type][i];
 				if (this.matches(props, desc)) {
 					var score = this.getMatchScore(desc);
 					matches.push(desc);
-					for (var j = 0; j < score; j++) {
+					for (let j = 0; j < score; j++) {
 						weightedMatches.push(desc);
 					}
 				}
@@ -47,9 +48,7 @@ define(function () {
 			}
 			
 			// several matches, select one in a semi-random way (same object should return the same one if called again but should be different for different objects)
-			var checksum = this.getPropsChecksum(props);
-			var index = checksum % weightedMatches.length;
-			return weightedMatches[index].text;
+			return this.pickRandom(weightedMatches, props).text;
 		},
 		
 		matches: function (props, desc) {
@@ -71,10 +70,16 @@ define(function () {
 			 return Object.keys(desc.props).length;
 		},
 		
+		pickRandom: function (candidates, props) {
+			var checksum = this.getPropsChecksum(props);
+			var index = checksum % candidates.length;
+			return candidates[index];
+		},
+		
 		getPropsChecksum: function (props) {
-			var result = 0;
+			let result = 0;
 			for (var [key, value] of Object.entries(props)) {
-				var t = typeof value;
+				let t = typeof value;
 				if (t == "number") {
 					result += value;
 				} else {

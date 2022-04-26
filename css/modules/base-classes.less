@@ -44,6 +44,11 @@ span.icon {
 	padding: 2px;
 }
 
+img.icon-ui-generic {
+	height: 1.5em;
+	width: 1.5em;
+}
+
 .shadowed-basic {
 	-webkit-box-shadow: 1px 2px @shadow-blur-radius @shadow-spread-radius @color-shadow;
 	-moz-box-shadow:    1px 2px @shadow-blur-radius @shadow-spread-radius @color-shadow;
@@ -68,6 +73,10 @@ span.hl-functionality {
 
 .p-meta {
 	color: @color-text-meta;
+}
+
+.dimmed {
+	color: @color-text-dimmed;
 }
 
 .columns-container {
@@ -102,6 +111,14 @@ table.fullwidth {
 	width: 100%;
 }
 
+td, th {
+	transition: all 0.15s;
+}
+
+.balancing-tab table {
+	font-size: 80%;
+}
+
 table.spacious {
 	margin: 5px 0px;
 }
@@ -118,8 +135,70 @@ table.spacious td:first-child {
 	padding-left: 0px;
 }
 
+table.updating td {
+	background: @color-bg-warning;
+}
+
 table.borders td {
 	border: 1px solid @color-border-box-2;
+}
+
+table.borders th {
+	background: @color-bg-element-1;
+}
+
+table.borders th.alt-1 {
+	background: @color-bg-science;
+}
+
+table.borders th.alt-2 {
+	background: @color-bg-nature;
+}
+
+table.borders th.alt-3 {
+	background: @color-bg-community;
+}
+
+table.borders td.alt-1 {
+	background: fade(@color-bg-science, 20%)
+}
+
+table.borders td.alt-2 {
+	background: fade(@color-bg-nature, 20%);
+}
+
+table.borders td.alt-3 {
+	background: fade(@color-bg-community, 20%);
+}
+
+table th.sortable {
+	background: @color-bg-element-2;
+	cursor: pointer;
+}
+
+table.highlight-row tr:hover {
+	background: rgba(255, 255, 255, 0.1);
+}
+
+table th.foldable-table-header {
+	background: @color-bg-element-2;
+	cursor: pointer;
+}
+
+table th.foldable-table-header.folded-table-header {
+	background: @color-bg-element-2;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+td.folded-table-cell, th.folded-table-cell {
+    min-width: 1px !important;
+    overflow: hidden;
+    text-overflow: clip;
+    max-width: 1px;
+    padding: 0;
+    color: transparent;
+	.unselectable();
 }
 
 // TABLE CELL UTILITY CLASSES
@@ -134,6 +213,11 @@ td.maxwidth {
 
 td.list-amount, td.list-storage {
 	min-width: 30pt;
+	text-align: center;
+}
+
+td.list-ordinal {
+	min-width: 10pt;
 	text-align: center;
 }
 
@@ -152,6 +236,14 @@ td.list-main {
 
 td.item-name {
 	min-width: 8em;
+}
+
+td.text-overflow {
+	font-size: @font-size-tiny;
+	width: 6em;
+	max-width: 6em;
+	overflow: hidden;
+    white-space: nowrap;
 }
 
 th.th-number {

@@ -42,12 +42,11 @@ define([
 			
 			deityComponent.accSources = [];
 			deityComponent.accumulation = 0;
-			var templeUpgradeLevel = this.getTempleUpgradeLevel();
 			
 			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
 				var improvementsComponent = campNode.entity.get(SectorImprovementsComponent);
 				
-				var accTemple = GameGlobals.campHelper.getTempleFavourGenerationPerSecond(improvementsComponent, templeUpgradeLevel);
+				var accTemple = GameGlobals.campHelper.getTempleFavourGenerationPerSecond(improvementsComponent) * GameConstants.gameSpeedCamp;
 				var numClerics = campNode.camp.assignedWorkers.cleric || 0;
 				var accClerics = GameGlobals.campHelper.getFavourProductionPerSecond(numClerics, improvementsComponent);
 				var accCamp = accTemple + accClerics;
@@ -63,10 +62,6 @@ define([
 		setDeityName: function (name) {
 			let deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
 			deityComponent.name = name;
-		},
-		
-		getTempleUpgradeLevel: function () {
-			return GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.temple, this.tribeUpgradesNodes.head.upgrades);
 		},
 		
 		isValidDeityName: function (name) {

@@ -5,8 +5,10 @@ define([
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
+	'game/constants/ItemConstants',
 	'game/constants/LevelConstants',
 	'game/constants/LogConstants',
+	'game/constants/PositionConstants',
 	'game/nodes/PlayerPositionNode',
 	'game/nodes/level/LevelNode',
 	'game/nodes/PlayerLocationNode',
@@ -21,7 +23,7 @@ define([
 	'game/components/common/RevealedComponent',
 	'game/components/common/CampComponent',
 	'game/components/type/LevelComponent',
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, LevelConstants, LogConstants,
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, ItemConstants, LevelConstants, LogConstants, PositionConstants,
 	PlayerPositionNode, LevelNode, PlayerLocationNode, SectorNode, CampNode,
 	CurrentPlayerLocationComponent, CurrentNearestCampComponent, PassagesComponent,
 	LogMessagesComponent, PositionComponent,
@@ -36,6 +38,7 @@ define([
 		campNodes: null,
 
 		lastUpdatePosition: null,
+		visitedSectorsPendingRevealNeighbours: [],
 
 		constructor: function () { },
 
@@ -61,7 +64,6 @@ define([
 			GlobalSignals.add(this, GlobalSignals.gameResetSignal, this.onGameStarted);
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.ontabChanged);
 			GlobalSignals.add(this, GlobalSignals.campBuiltSignal, this.updateCamps);
-			GlobalSignals.add(this, GlobalSignals.sectorScoutedSignal, this.onSectorScouted);
 		},
 
 		removeFromEngine: function (engine) {
@@ -82,15 +84,17 @@ define([
 			this.lastUpdatePosition = null;
 			this.lastValidPosition = null;
 		},
-		
-		onSectorScouted: function () {
-			this.triggerEndMessage();
-		},
 
 		update: function (time) {
 			var playerPos = this.playerPositionNodes.head.position;
-			if (!this.lastValidPosition || !this.lastValidPosition.equals(playerPos)) {
-				this.updateEntities(!this.lastUpdatePosition);
+			let updateAll = !this.lastUpdatePosition;
+			
+			if (!this.lastValidPosition) {
+				this.updateEntities(updateAll);
+			} else if (!this.lastValidPosition.equals(playerPos)) {
+				this.updateEntities(updateAll);
+			} else {
+				this.revealVisitedSectorsNeighbours();
 			}
 		},
 
@@ -120,6 +124,7 @@ define([
 					levelNode.entity.add(new CurrentPlayerLocationComponent());
 					if (!levelNode.entity.has(VisitedComponent)) {
 						this.handleNewLevel(levelNode, levelpos, isInitLocation);
+						this.triggerEndMessage();
 					}
 					this.handleEnterLevel(levelNode, levelpos, isInitLocation);
 				} else if (levelpos != playerPos.level && levelNode.entity.has(CurrentPlayerLocationComponent)) {
@@ -138,8 +143,8 @@ define([
 					this.updateSector(sectorNode.entity);
 				}
 			} else {
-				if (this.lastUpdatePosition) {
-					var previousPlayerSector = GameGlobals.levelHelper.getSectorByPosition(this.lastUpdatePosition.level, this.lastUpdatePosition.sectorX, this.lastUpdatePosition.sectorY);
+				if (this.lastValidPosition) {
+					var previousPlayerSector = GameGlobals.levelHelper.getSectorByPosition(this.lastValidPosition.level, this.lastValidPosition.sectorX, this.lastValidPosition.sectorY);
 					this.updateSector(previousPlayerSector);
 				}
 				this.updateSector(playerSector);
@@ -183,9 +188,29 @@ define([
 			}
 		},
 
+		revealVisitedSectorsNeighbours: function () {
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
+			let visitedSector = this.visitedSectorsPendingRevealNeighbours.shift();
+			if (!visitedSector) return;
+			this.revealSectorNeighbours(visitedSector);
+		},
+		
+		revealSectorNeighbours: function (sectorEntity) {
+			var neighbours = GameGlobals.levelHelper.getSectorNeighboursMap(sectorEntity);
+			for (var direction in neighbours) {
+				var revealedNeighbour = neighbours[direction];
+				if (!revealedNeighbour)  continue;
+				if (revealedNeighbour.has(VisitedComponent)) continue;
+				
+				if (!revealedNeighbour.has(RevealedComponent)) {
+					revealedNeighbour.add(new RevealedComponent());
+					GlobalSignals.sectorRevealedSignal.dispatch();
+				}
+			}
+		},
+
 		handleNewLevel: function (levelNode, levelPos) {
 			levelNode.entity.add(new VisitedComponent());
-			levelNode.entity.add(new RevealedComponent());
 			var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(levelPos);
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(levelPos);
 			GameGlobals.gameState.level = Math.max(GameGlobals.gameState.level, levelOrdinal);
@@ -198,18 +223,21 @@ define([
 		handleEnterLevel: function (levelNode, levelPos, isInitLocation) {
 			if (isInitLocation) return;
 			
-			var levelEntity = levelNode.entity;
-			var levelComponent = levelEntity.get(LevelComponent);
-			var level = levelPos.level;
+			let levelEntity = levelNode.entity;
+			let levelComponent = levelEntity.get(LevelComponent);
+			let level = levelPos.level;
 			
-			var surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
-			var groundLevel = GameGlobals.gameState.getGroundLevel();
+			let surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
+			let groundLevel = GameGlobals.gameState.getGroundLevel();
+			let playerPos = this.playerPositionNodes.head.position;
 			
-			var msg = "Entered level " + levelPos + ". ";
+			if (playerPos.inCamp) return;
+			
+			let msg = "Entered level " + levelPos + ". ";
 			if (levelPos == surfaceLevel) {
 				msg += "There is no ceiling here, the whole level is open to the elements. Sun glares down from an impossibly wide blue sky all above.";
 			} else if (levelPos == groundLevel) {
-				msg += "The floor here is different - uneven, organic, continuous. There seems to be no way further down. There are more plants, mud, stone and signs of animal life.";
+				msg += "The floor here is different - uneven, organic, continuous. There seems to be no way further down. There are plants, mud, stone and signs of animal life.";
 			} else if (!levelComponent.isCampable) {
 				switch (levelComponent.notCampableReason) {
 					case LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION:
@@ -227,18 +255,12 @@ define([
 		},
 
 		handleNewSector: function (sectorEntity, isNew) {
+			sectorEntity.remove(RevealedComponent);
 			sectorEntity.add(new VisitedComponent());
-			sectorEntity.add(new RevealedComponent());
 
 			var sectorPos = sectorEntity.get(PositionComponent);
 
-			var neighbours = GameGlobals.levelHelper.getSectorNeighboursMap(sectorEntity);
-			for (var direction in neighbours) {
-				var revealedNeighbour = neighbours[direction];
-				if (revealedNeighbour && !revealedNeighbour.has(RevealedComponent)) {
-					revealedNeighbour.add(new RevealedComponent());
-				}
-			}
+			this.visitedSectorsPendingRevealNeighbours.push(sectorEntity);
 
 			if (isNew) {
 				GameGlobals.gameState.numVisitedSectors++;
@@ -270,25 +292,27 @@ define([
 		triggerEndMessage: function () {
 			var playerPos = this.playerPositionNodes.head.position;
 			var isLastAvailableLevel = this.isLastAvailableLevel(playerPos.level);
-			var sector = this.playerLocationNodes.head.entity;
-			var passages = sector.get(PassagesComponent);
-			if (isLastAvailableLevel && passages.passageUp) {
+			if (isLastAvailableLevel) {
 				this.showEndMessage();
 			}
 		},
 		
 		showEndMessage: function () {
 			setTimeout(function () {
-				gtag('event', 'level_14_passage_up_reached', { event_category: 'progression' })
-				var msg = "You've reached the end of the current version of Level 13. ";
-				msg += "You can continue exploring this level, but it will not be possible to repair the passage up yet. Congrats on surviving to the end!";
+				gtag('event', 'last_level_reached', { event_category: 'progression' })
+				var msg = "You've reached the last level of the current version of Level 13. ";
+				msg += "There will be some more things to discover here, but you will not be able to build any more camps or passages. Congratulations on surviving to the end!";
 				msg += "<br/><br/>"
 				msg += "<span class='p-meta'>Thank you for playing this far. The developer would love to hear your feedback. You can use any of these channels:</span>";
 				msg += "<p>" + GameConstants.getFeedbackLinksHTML() + "</p>";
 				GameGlobals.uiFunctions.showInfoPopup(
-					"The end",
+					"Last level",
 					msg,
-					"Continue"
+					"Continue",
+					null,
+					null,
+					true,
+					false
 				);
 			}, 300);
 		},

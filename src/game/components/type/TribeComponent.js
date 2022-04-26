@@ -3,7 +3,6 @@ define(['ash'], function (Ash) {
 	var TribeComponent = Ash.Class.extend({
 		
 		numCamps: 0,
-		numCampsInTradeNetwork: 0,
 		
 		constructor: function () {
 		}

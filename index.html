@@ -41,10 +41,28 @@
 						</div>
 					</div>
 					<ul class="itemlist" id="list-items-perks"></ul>
-					<div id="stats-vision" class="stats-indicator"><span class="label">Vision</span><div class="stats-value-container"><span class="value">0</span><span id="vision-change-indicator" class="change-indicator"></span></div></div>
-					<div id="stats-health" class="stats-indicator"><span class="label">Health</span><div class="stats-value-container"><span class="value">0</span></div></div>
-					<div id="stats-stamina" class="stats-indicator"><span class="label">Stamina</span><div class="stats-value-container"><span class="value">0</span><span id="stamina-change-indicator" class="change-indicator"></span></div></div>
-					<div id="stats-scavenge" class="stats-indicator"><span class="label">Scavenge<br/>ability</span><div class="stats-value-container"><span class="value">0</span><span id="scavenge-change-indicator" class="change-indicator"></span></div></div>
+					<ul class="itemlist" id="list-items-statuses"></ul>
+					
+					<div id="stats-vision" class="stats-indicator">
+						<span class="label">Vision</span>
+						<div class="stats-value-container"><span class="value">0</span><span id="vision-change-indicator" class="change-indicator"></span></div>
+					</div>
+					<div id="stats-health" class="stats-indicator">
+						<span class="label">Health</span>
+						<div class="stats-value-container"><span class="value">0</span><span id="health-change-indicator" class="change-indicator"></span></div>
+					</div>
+					<div id="stats-stamina" class="stats-indicator">
+						<span class="label">Stamina</span>
+						<div class="stats-value-container"><span class="value">0</span><span id="stamina-change-indicator" class="change-indicator"></span></div>
+					</div>
+					<div id="stats-scavenge" class="stats-indicator">
+						<span class="label">Scavenge<br/>efficiency</span>
+						<div class="stats-value-container"><span class="value">0</span><span id="scavenge-change-indicator" class="change-indicator"></span></div>
+					</div>
+					<div id="stats-scavenge-bonus" class="stats-indicator">
+						<span class="label">Scavenge<br/>bonus</span>
+					</div>
+					
 					<hr/>
 					<div id="container-equipment-stats"></div>
 				</div>
@@ -94,7 +112,7 @@
 					</div>
 					
 					<div class="header-section" id="main-header-items">
-						<ul class="itemlist" id="list-items-followers"></ul>
+						<ul class="itemlist" id="list-header-followers"></ul>
 						<ul class="itemlist" id="list-header-items"></ul>
 					</div>
 						
@@ -159,6 +177,7 @@
 						<div class="unit whole" id="tab-header">
 						<button id="btn-header-rename" class="context btn-meta tabelement tab-options" data-tab="switch-in" style="display:none">Rename</button>
 						<div class="tabelement" data-tab="switch-map" style="display:none;">
+							<select id="select-header-mapstyle" class="context tab-options"></select>
 							<select id="select-header-level" class="context tab-options"></select>
 						</div>
 						<h2>&nbsp;</h2>
@@ -169,7 +188,7 @@
 					<div class="grid tabelement" id="container-tab-vis-in" data-tab="switch-in">
 						<div class="unit whole" id="tab-vis-in">
 							<div id="tab-vis-in-container" class="vis-container canvas-container">
-								<canvas id="campvis" width="800" height="10"></canvas>
+								<canvas id="campvis" width="800" height="10" role="img" aria-label="camp view"></canvas>
 								<div id="vis-camp-layer-buildings" class="vis-camp-layer"></div>
 								<div id="vis-camp-info-overlay"><span>Info here</span></div>
 							</div>
@@ -204,6 +223,10 @@
 									<div class="progress-bar progress"></div>
 									<span class="progress progress-label">Trader</span>
 								</div>
+								<div id="in-occurrences-recruit" class="progress-wrap progress">
+									<div class="progress-bar progress"></div>
+									<span class="progress progress-label">Visitor</span>
+								</div>
 								<div id="in-occurrences-raid" class="progress-wrap progress warning" data-animation-length="50">
 									<div class="progress-bar progress"></div>
 									<span class="progress progress-label">Raid!</span>
@@ -213,7 +236,7 @@
 								<p class="p-meta" id="in-occurrences-empty">All is quiet in the camp.</p>
 							</div>
 							<div id="in-demographics" class="infobox p-dense">
-								<h3>Stats</h3>
+								<h3>Details</h3>
 								<div id="in-demographics-general">
 									<p id="in-demographics-general-age">Founded: <span class="value">-</span></p>
 								</div>
@@ -226,8 +249,10 @@
 									</div>
 									<p id="in-demographics-raid-last">Last raid: <span class="value"></span></p>
 								</div>
-								<div id="id-demographics-level">
+								<div id="in-demographics-level">
+									<p id="in-demographics-trade-network">Trade with other camps: <span class="value"></span></p>
 									<p id="in-demographics-level-population">Level population density: <span class="value"></span></p>
+									<p id="in-demographics-level-danger">Level raid ranger: <span class="value"></span></p>
 								</div>
 							</div>
 						</div>
@@ -268,7 +293,7 @@
 					<div class="grid tabelement" id="container-tab-two-out" data-tab="switch-out">
 						<div class="unit unit-compass" id="out-container-compass">
 							<div id="minimap-container" class="canvas-container" style="width: 208px; height: 208px">
-								<canvas id="minimap" width="208" height="208">
+								<canvas id="minimap" width="208" height="208" role="img" aria-label="area map">
 								</canvas>
 							</div>
 							<span id="out-position-indicator" class="vision-text"></span>
@@ -305,8 +330,6 @@
 							<button class="action btn-icon" data-tab="switch-out" id="out-action-move-down" action="move_level_down"><span>Move down</span></button>
 							<button class="action btn-icon" data-tab="switch-out" id="out-action-move-camp" action="move_camp_level"><span>Back to camp</span></button>
 							<p id="out-action-move-camp-details" class="p-meta button-detail-label">(2 blocks)</p>
-							<button class="action btn-icon" id="out-action-nap" action="nap"><span>Rest</span></button>
-							<button class="action action-location" id="out-action-despair" action="despair">Despair</button>
 							</div>
 						</div>
 						
@@ -320,6 +343,9 @@
 							<button class="action action-location" id="out-action-investigate" action="investigate">Investigate</button>
 							<button class="action action-location" id="out-action-clear-workshop" action="clear_workshop">Scout workshop</button>
 							<button class="action action-location" id="out-action-use-spring" action="use_spring">Refill water</button>
+							<button class="action action-location btn-icon" id="out-action-nap" action="nap"><span>Rest</span></button>
+							<button class="action action-location" id="out-action-wait" action="wait"><span>Wait</span></button>
+							<button class="action action-location" id="out-action-despair" action="despair">Despair</button>
 							<span id="container-out-actions-movement-related">
 							</span>
 							</div>
@@ -331,11 +357,13 @@
 								<table>
 								<tr id="out-improvements-collector-water">
 									<td><button class="action action-build action-location" action="build_out_collector_water" id="out-action-build-bucket">Bucket</button></td>
+									<td><button class='action action-improve btn-glyph-big' id="out-action-improve-bucket" action="improve_out_collector_water">▲</button></td>
 									<td><button class="action action-use action-location btn-narrow" action="use_out_collector_water" id="out-action-use-bucket">Collect all</button></td>
 									<td><button class="action action-use action-location btn-compact" action="use_out_collector_water_one" id="out-action-use-bucket_one">1</button></td>
 									<td class="list-storage vision-text"></td>
 								</tr><tr id="out-improvements-collector-food">
 									<td><button class="action action-build action-location" action="build_out_collector_food" id="out-action-build-trap">Trap</button></td>
+									<td><button class='action action-improve btn-glyph-big' id="out-action-improve-trap" action="improve_out_collector_food">▲</button></td>
 									<td><button class="action action-use action-location btn-narrow" action="use_out_collector_food" id="out-action-use-trap">Collect all</button></td>
 									<td><button class="action action-use action-location btn-compact" action="use_out_collector_food_one" id="out-action-use-trap_one">1</button></td>
 									<td class="list-storage vision-text"></td>
@@ -389,15 +417,32 @@
 							<div id="self-craft" class="actionbox">
 							</div>
 						</div>
-						</div>
+					</div>
 					
 					<div class="grid tabelement" id="container-tab-two-followers" data-tab="switch-followers" style="display:none;">
 						<div class="unit whole">
-							<div class="subheader" id="header-followers"><h3>Followers</h3></div>
-							<div class="infobox">
-								<ul id="list-followers" class="itemlist"></ul>
-								<p id="followers-empty" class="p-meta">You don't have any followers</p>
-								<p id="followers-max" class="p-meta">Maximum followers</p>
+							<p id="followers-max" class="p-meta">Maximum followers</p>
+							
+							<div id="tab-followers-section-selected" class="unit-section">
+								<div class="subheader" id="header-party"><h3>Exploration party</h3></div>
+								<div class="infobox" id="container-party-slots">
+								</div>
+							</div>
+							
+							<div id="tab-followers-section-unselected" class="unit-section">
+								<div class="subheader" id="header-followers"><h3>Other followers</h3></div>
+								<div class="infobox">
+									<ul id="list-followers" class="itemlist"></ul>
+									<p id="followers-empty" class="p-meta">Nothing here.</p>
+								</div>
+							</div>
+							
+							<div id="tab-followers-section-recruits" class="unit-section">
+								<div class="subheader" id="header-recruits"><h3>Visitors</h3></div>
+								<p id="recruits-empty-message">No visitors here at the moment.</p>
+								<div id="recruits-container" class="actionbox">
+									<table></table>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -405,14 +450,24 @@
 					<div class="grid tabelement" id="container-tab-two-map" data-tab="switch-map" style="display:none">
 						<div class="unit whole">
 							<p id="map-completion-hint">There are still places to explore on this level.</p>
-							<div id="mainmap-container" class="canvas-container lvl13-box-1">
-								<canvas id="mainmap" width="500" height="500"></canvas>
-								<div id="mainmap-overlay" class="canvas-overlay"></div>
+							<div id="mainmap-container-container">
+								<div id="mainmap-container" class="canvas-container lvl13-box-1">
+									<canvas id="mainmap" width="500" height="500" role="img" aria-label="level map"></canvas>
+									<div id="mainmap-overlay" class="canvas-overlay"></div>
+								</div>
+							</div>
+							<div id="mainmap-container-ascii">
+								<textarea rows="12" readonly></textarea>
+								<div id="mainmap-ascii-legend" class="lvl13-box-1"></div>
 							</div>
 							<div id="mainmap-sector-details" class="lvl13-box-1" style="margin: 5px; padding: 5px;">
+								<button id="btn-mainmap-sector-details-next" class="context btn-meta">Next</button>
+								<button id="btn-mainmap-sector-details-previous" class="context btn-meta">Previous</button>
+								<button id="btn-mainmap-sector-details-camp" class="context btn-meta">Camp</button>
 								<div id="mainmap-sector-details-content-empty">
 									<h3>Sector details</h3>
-									<p class="meta">Click on a sector to see details.</p>
+									<p class="meta" id="mainmap-sector-details-empty-text-canvas">Click on a sector to see details.</p>
+									<p class="meta" id="mainmap-sector-details-empty-text-ascii">Select a sector to see details.</p>
 								</div>
 								<div id="mainmap-sector-details-content">
 									<h3><span id="mainmap-sector-details-name">Sector</span> <span id="mainmap-sector-details-pos"/></h3>
@@ -464,7 +519,7 @@
 								<div id="in-improvements-level" class="actionbox">
 									<table class="fullwidth"></table>
 								</div>
-								<p id="in-improvements-level-empty-message">There are no building projects available.</p>
+								<p id="in-improvements-level-empty-message">There are no building projects available. Explore the map to find some.</p>
 							</div>
 							<div id="container-in-improvements-level-hidden">
 								<button id="in-improvements-reset-hidden" class='btn-meta btn-meta-float'>reset</button>
@@ -501,7 +556,7 @@
 								<p id="world-upgrades-count">Completed upgrades: 0</p>
 								<div class ="infobox">
 								<div id="researched-upgrades-vis-container" class="canvas-container lvl13-box-1">
-									<canvas id="researched-upgrades-vis" width="100" height="100"></canvas>
+									<canvas id="researched-upgrades-vis" width="100" height="100" role="img" aria-label="technology tree"></canvas>
 									<div id="upgrades-vis-overlay" class="canvas-overlay"></div>
 								</div>
 								<div id="upgrade-details" class="lvl13-box-1" style="margin: 5px; padding: 5px;">
@@ -529,13 +584,12 @@
 								<div class="subheader"><h3>Messages</h3></div>
 								<p id="world-message">No news from other camps at the moment.</p>
 								<div class="subheader"><h3>Camp overview</h3></div>
-								<table id="camp-overview" class="full-width">
+								<table id="camp-overview" class="full-width dense">
 									<tr id="camp-overview-header" class="lvl13-box-1 header-mini">
 										<th class="th-text" colspan="2"></th>
 										<th class="th-number">pop</th>
 										<th class="th-number">rep</th>
 										<th class="th-number">raid</th>
-										<th class="th-number">lvl pop</th>
 										<th class="th-number">storage</th>
 										<th class="th-text">production</th>
 										<th class="th-text">stats</th>
@@ -586,23 +640,38 @@
 			<div class="container-relative">
 				<p id="fight-popup-enemy-name" class="nomargin">Enemy name & strength</p>
 				<div id="fight-damage-indictor-enemy" class="fight-damage-indicator">-5</div>
+				<div id="fight-status-indictor-enemy" class="fight-status-indicator">dodge</div>
 			</div>
 			<p id="fight-popup-enemy-stats" class="nomargin">Enemy strength</p>
+			<p id="fight-popup-enemy-difficulty" class="nomargin">Enemy difficulty</p>
 		</div>
 		<div id="fight-popup-bars">
-			<div id="fight-bar-enemy" class="progress-wrap progress centered">
-				<div class="progress-bar progress"></div>
-				<div class="progress-bar-change progress"></div>
+			<div class="progress-multibar-container progress centered">
+				<div id="fight-bar-enemy" class="progress-wrap progress">
+					<div class="progress-bar progress"></div>
+					<div class="progress-bar-change progress"></div>
+				</div>
+				<div id="fight-bar-enemy-shield" class="progress-wrap progress-wrap-science progress">
+					<div class="progress-bar progress"></div>
+					<div class="progress-bar-change progress"></div>
+				</div>
 			</div>
-			<div id="fight-bar-self" class="progress-wrap progress centered">
-				<div class="progress-bar progress"></div>
-				<div class="progress-bar-change progress"></div>
+			<div class="progress-multibar-container progress centered">
+				<div id="fight-bar-self" class="progress-wrap progress">
+					<div class="progress-bar progress"></div>
+					<div class="progress-bar-change progress"></div>
+				</div>
+				<div id="fight-bar-self-shield" class="progress-wrap progress-wrap-science progress">
+					<div class="progress-bar progress"></div>
+					<div class="progress-bar-change progress"></div>
+				</div>
 			</div>
 		</div>
 		<div class="infobox" id="fight-popup-self-info">
 			<div class="container-relative">
 				<p id="fight-popup-self-name" class="nomargin">Player name</p>
 				<div id="fight-damage-indictor-self" class="fight-damage-indicator">-5</div>
+				<div id="fight-status-indictor-self" class="fight-status-indicator">dodge</div>
 			</div>
 			<p id="fight-popup-self-stats" class="nomargin">Player strength</p>
 			<span id="fight-popup-self-equipment"></span>
@@ -621,24 +690,6 @@
 			<button id="out-action-fight-continue">Continue</button>
 			<button id="out-action-fight-takeselected" class="action inventory-selection-ok" action="accept_inventory">Continue</button>
 			<button id="out-action-fight-takeall" class='action inventory-selection-takeall' action='take_all'>Take all</button>
-		</div>
-	</div>
-	
-	<div id="inn-popup" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display:none">
-		<h3>Inn</h3>
-		<div id="inn-popup-state-recruit">
-			<p id="inn-popup-desc">Some travellers staying at the inn are willing to join your party.</p>
-		</div>
-		<div class="infobox">
-			<span id="inn-popup-current-desc">Current followers:</span><br/>
-			<table id="inn-popup-current-followers" class="centered"></table>
-		</div>
-		<div class="infobox">
-			<span id="inn-popup-options-desc">Available followers:</span><br/>
-			<table id="inn-popup-options-followers" class="centered"></table>
-		</div>
-		<div class="buttonbox" id="inn-buttons-main">
-			<button id="inn-popup-btn-cancel" class="action" action="use_in_inn_cancel">Cancel</button>
 		</div>
 	</div>
 	

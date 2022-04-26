@@ -20,9 +20,12 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 		SECTOR_RECT_EDGE_LENGTH_MAX: 20,
 		START_RECT_SIZE: 5,
 		MAX_SECTOR_COUNT_OVERFLOW: 10,
+		MAX_CAMP_POS_DISTANCE: 3,
 		
-		MIN_LEVEL_ORDINAL_HAZARD_RADIATION: 5,
-		MIN_LEVEL_ORDINAL_HAZARD_POISON: 3,
+		// TODO move to WorldConstants
+		MIN_CAMP_ORDINAL_HAZARD_RADIATION: 5,
+		MIN_CAMP_ORDINAL_HAZARD_POISON: 3,
+		MIN_CAMP_ORDINAL_HAZARD_DEBRIS: 7,
 		WASTE_HAZARD_RADIUS: 2,
 		
 		CONNECTION_POINTS_PATH_END: "p-end",
@@ -45,20 +48,20 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 		FEATURE_HOLE_MOUNTAIN: "mountain",
 		
 		getNumSectors: function (campOrdinal) {
-			let defaultBigLevel = 170;
-			let defaultSmallLevel = 85;
+			let defaultBigLevel = 150;
+			let defaultSmallLevel = 80;
 			
-			if (campOrdinal < 2)
-				return Math.round(defaultBigLevel * 0.65);
+			if (campOrdinal == 1)
+				return Math.round(defaultBigLevel * 0.7);
 			if (campOrdinal == 2)
-				return Math.round(defaultBigLevel + defaultSmallLevel * 0.65);
+				return Math.round(defaultBigLevel + defaultSmallLevel * 0.7);
 			if (campOrdinal < WorldConstants.CAMPS_BEFORE_GROUND)
-				return Math.round(defaultBigLevel + defaultSmallLevel * 0.65 + campOrdinal * 5);
+				return Math.round(defaultBigLevel + defaultSmallLevel * 0.7 + campOrdinal * 5);
 			if (campOrdinal == WorldConstants.CAMPS_BEFORE_GROUND)
-				return Math.round(defaultBigLevel * 2 + defaultSmallLevel * 0.65 + campOrdinal * 5); // ground and level 14 included
+				return Math.round(defaultBigLevel * 2 + defaultSmallLevel * 0.7 + campOrdinal * 5); // ground and level 14 included
 			if (campOrdinal < WorldConstants.CAMPS_TOTAL)
-				return Math.round(defaultBigLevel + defaultSmallLevel * 0.65 + campOrdinal * 5);
-			return Math.round(defaultBigLevel * 1.5);
+				return Math.round(defaultBigLevel + defaultSmallLevel * 0.7 + campOrdinal * 5);
+			return Math.round(defaultBigLevel * 1.25);
 		},
 		
 		getMaxSectorOverflow: function (levelOrdinal) {
@@ -140,6 +143,24 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 				// regular camps
 				default:
 					return 1;
+			}
+		},
+		
+		getRaidDangerFactor: function (campOrdinal) {
+			if (campOrdinal <= 0) return 0;
+			switch (campOrdinal) {
+				case 1:
+				case WorldConstants.CAMPS_BEFORE_GROUND:
+					return 0.5;
+				
+				case 10:
+				case 11:
+				case 12:
+				case 13:
+					return 1.5;
+				
+				default:
+					return this.getPopulationFactor(campOrdinal);
 			}
 		},
 		

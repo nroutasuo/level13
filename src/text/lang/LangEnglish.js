@@ -9,7 +9,7 @@ define(function () {
 			
 			// Specific start of words that should be preceeded by 'an'
 			var alt_cases = ["honest", "hour", "hono"];
-			for (var i in alt_cases) {
+			for (let i in alt_cases) {
 				if (l_word.indexOf(alt_cases[i]) == 0)
 					return "an";
 			}
@@ -29,7 +29,7 @@ define(function () {
 			
 			// Special cases where a word that begins with a vowel should be preceeded by 'a'
 			regexes = [/^e[uw]/, /^onc?e\b/, /^uni([^nmd]|mo)/, /^u[bcfhjkqrst][aeiou]/]
-			for (var i in regexes) {
+			for (let i in regexes) {
 				if (l_word.match(regexes[i]))
 					return "a"
 			}

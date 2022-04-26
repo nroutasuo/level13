@@ -8,7 +8,7 @@ define(function () {
 			msg = msg || "Click handler exception";
 			return function (e) {
 				try {
-					return func.apply($(this), e);
+					return func.apply($(this), [ e ]);
 				} catch (ex) {
 					ExceptionHandler.handleException(ex, msg);
 				}

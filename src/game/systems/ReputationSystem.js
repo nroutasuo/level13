@@ -1,6 +1,7 @@
 define([
 	'ash',
 	'game/GameGlobals',
+	'game/GlobalSignals',
 	'game/constants/GameConstants',
 	'game/constants/CampConstants',
 	'game/constants/LogConstants',
@@ -11,7 +12,7 @@ define([
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/common/LogMessagesComponent',
 	'game/components/type/LevelComponent',
-], function (Ash, GameGlobals, GameConstants, CampConstants, LogConstants, OccurrenceConstants, CampNode, PlayerPositionNode, TribeUpgradesNode,
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, CampConstants, LogConstants, OccurrenceConstants, CampNode, PlayerPositionNode, TribeUpgradesNode,
 	SectorImprovementsComponent, LogMessagesComponent, LevelComponent) {
 	var ReputationSystem = Ash.System.extend({
 	
@@ -29,9 +30,13 @@ define([
 			this.playerNodes = engine.getNodeList(PlayerPositionNode);
 			this.campNodes = engine.getNodeList(CampNode);
 			this.tribeUpgradeNodes = engine.getNodeList(TribeUpgradesNode);
+			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
+			GlobalSignals.add(this, GlobalSignals.campBuiltSignal, this.onCampBuilt);
+			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.onImprovementBuilt);
 		},
 
 		removeFromEngine: function (engine) {
+			GlobalSignals.removeAll(this);
 			this.playerNodes = null;
 			this.campNodes = null;
 			this.tribeUpgradeNodes = null;
@@ -40,23 +45,36 @@ define([
 
 		update: function (time) {
 			if (GameGlobals.gameState.isPaused) return;
-			
-			if (this.campNodes.head) {
-				for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
-					var reputationComponent = campNode.reputation;
-					var sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
-					
-					reputationComponent.accSources = [];
-					reputationComponent.targetValueSources = [];
-					reputationComponent.accumulation = 0;
-					
-					reputationComponent.targetValue = this.getTargetReputation(campNode);
-					
-					this.applyReputationAccumulation(campNode, time);
-					
-					reputationComponent.value = Math.max(0, reputationComponent.value);
-					reputationComponent.isAccumulating = campNode.camp.population > 0 || sectorImprovements.getTotal(improvementTypes.camp) > 0;
-				}
+			this.updateCurrentReputations(time);
+		},
+		
+		slowUpdate: function () {
+			if (GameGlobals.gameState.isPaused) return;
+			this.updateTargetReputations();
+		},
+		
+		updateCurrentReputations: function (time) {
+			if (!this.campNodes.head) return;
+			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
+				var reputationComponent = campNode.reputation;
+				var sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
+				
+				reputationComponent.accSources = [];
+				reputationComponent.targetValueSources = [];
+				reputationComponent.accumulation = 0;
+				
+				this.applyReputationAccumulation(campNode, time);
+				
+				reputationComponent.value = Math.max(0, reputationComponent.value);
+				reputationComponent.isAccumulating = campNode.camp.population > 0 || sectorImprovements.getTotal(improvementTypes.camp) > 0;
+			}
+		},
+		
+		updateTargetReputations: function () {
+			if (!this.campNodes.head) return;
+			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
+				var reputationComponent = campNode.reputation;
+				reputationComponent.targetValue = this.getTargetReputation(campNode);
 			}
 		},
 		
@@ -66,9 +84,7 @@ define([
 			var storage = GameGlobals.resourcesHelper.getCurrentCampStorage(campNode.entity);
 			var resources = storage ? storage.resources : null;
 			
-			var soldiers = campNode.camp.assignedWorkers.soldier;
-			var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradeNodes.head.upgrades);
-			var danger = OccurrenceConstants.getRaidDanger(sectorImprovements, soldiers, soldierLevel);
+			var danger = GameGlobals.campHelper.getCampRaidDanger(campNode.entity);
 			var levelComponent = GameGlobals.levelHelper.getLevelEntityForSector(campNode.entity).get(LevelComponent);
 			
 			var targetReputation = GameGlobals.campHelper.getTargetReputation(sectorImprovements, resources, campNode.camp.population, levelComponent.populationFactor, danger);
@@ -135,6 +151,14 @@ define([
 			else if (reputationComponent.value < reputationComponent.targetValue && accTargetDiff < 0) {
 				reputationComponent.value = reputationComponent.targetValue;
 			}
+		},
+		
+		onImprovementBuilt: function () {
+			this.updateTargetReputations();
+		},
+		
+		onCampBuilt: function () {
+			this.updateTargetReputations();
 		},
 		
 		logReputationPenalty: function (campNode, penaltyType, hasPenalty) {

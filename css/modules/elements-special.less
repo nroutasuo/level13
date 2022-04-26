@@ -320,6 +320,23 @@ span.improvement-badge.improvement-upgrade-level {
 	margin-top: 10px;
 }
 
+// MAIN MAP
+
+#mainmap-container-container {
+	.opacity-transition-reset();
+}
+
+#mainmap-container-ascii {
+    display: block;
+    padding: 5px;
+    margin: 5px;
+    font-family: monospace;
+}
+
+#mainmap-container-ascii textarea {
+	width: 100%;
+}
+
 // OUTGOING CARAVANS TABLE
 
 #trade-caravans-outgoing-container tr {
@@ -373,20 +390,62 @@ span.improvement-badge.improvement-upgrade-level {
 	text-align: center;
 }
 
+td.camp-overview-level {
+	padding: 0 2px;
+	width: 1em;
+}
+
 .camp-overview-level-container {
+	background: inherit;
+	border-color: @color-border-box-1;
 	border-radius: 1.75em;
 	text-align: center;
-	font-size: 80%;
-	width: 1.75em;
-	margin: 2px;
+	font-size: @font-size-small;
+	width: 2em;
+	height: 2em;
+	line-height: 2em;
+	margin: 2px auto;
 	vertical-align: middle;
-	background: inherit;
 	font-weight: bold;
 }
 
-#camp-overview tr {
+.lvl-container-camp-normal {
+	border-width: 3px;
+	width: 2em;
+	height: 2em;
+	line-height: 2em;
+}
+
+.lvl-container-camp-outpost {
+    border-width: 2px;
+	width: 1.5em;
+	height: 1.5em;
+	line-height: 1.5em;
+}
+
+.lvl-container-camp-capital {
+	border-width: 3px;
+	width: 2em;
+	height: 2em;
+	line-height: 2em;
+}
+
+tr.camp-overview-camp {
 	border-style: solid;
 	border-width: 1px;
+}
+
+tr.camp-overview-special-row {
+}
+
+.camp-overview-lvl14 {
+	text-align: center;
+	height: 1em;
+}
+
+#camp-overview hr {
+	margin: 0;
+	border: 1px solid @color-bg-element-2;
 }
 
 // RESULT LIST
@@ -394,6 +453,10 @@ span.improvement-badge.improvement-upgrade-level {
 #resultlist-inventorymanagement-found ul li, #resultlist-loststuff-lost ul li {
 	border-width: 0px;
 	padding-bottom: 5px;
+}
+
+#resultlist-inventorymanagement .inventorybox {
+	max-width: 550px;
 }
 
 ul.resultlist li {
@@ -456,7 +519,12 @@ div.grid-content {
 	height: 1.2em;
 }
 
-// CAMP EVENTS
+// CAMP EVENTS (AND PERKS)
+
+.event-starting {
+	animation: event-end 1.3s step-end infinite;
+	animation-timing-function: ease-in-out;
+}
 
 .event-ending {
 	animation: event-end 1.3s step-end infinite;
@@ -474,14 +542,34 @@ div.grid-content {
 	min-width: 35%;
 }
 
-.fight-damage-indicator {
+.fight-damage-indicator, .fight-status-indicator {
 	margin: 0;
 	font-size: @font-size-small;
 	font-weight: bold;
-	color: @color-border-warning;
 	position: absolute;
 	top: 0;
+	.opacity-transition-reset();
+}
+
+.fight-damage-indicator {
+	color: @color-border-warning;
 	right: -3em;
+}
+
+.fight-status-indicator {
+	color: @color-text-secondary;
+	right: -5em;
+}
+
+.fight-status-stunned {
+	color: @color-text-disabled;
+}
+
+#fight-popup-enemy-stats {
+	.opacity-transition-reset();
+}
+
+#fight-popup-enemy-difficulty {
 	.opacity-transition-reset();
 }
 

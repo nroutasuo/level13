@@ -86,7 +86,7 @@ define([
 			save.timeStamp = new Date();
 			save.version = version;
 
-			var result = JSON.stringify(save);
+			let result = JSON.stringify(save);
 			// log.i("Total save size: " + result.length + ", " + nodes + " nodes");
 			return result;
 		},
@@ -98,7 +98,7 @@ define([
 			var biggestComponentSize = 0;
 			var totalSize = 0;
 
-			for (var i = 0; i < node.save.components.length; i++) {
+			for (let i = 0; i < node.save.components.length; i++) {
 				var componentType = node.save.components[i];
 				var component = node.entity.get(componentType);
 				if (component) {

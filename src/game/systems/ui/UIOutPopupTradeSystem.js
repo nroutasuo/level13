@@ -90,7 +90,7 @@ define([
 			}
 
 			// trader items: count
-			for (var i = 0; i < caravan.sellItems.length; i++) {
+			for (let i = 0; i < caravan.sellItems.length; i++) {
 				if (!this.traderTotalItems[caravan.sellItems[i].id])
 					this.traderTotalItems[caravan.sellItems[i].id] = 0;
 				this.traderTotalItems[caravan.sellItems[i].id]++;
@@ -104,11 +104,11 @@ define([
 			}
 
 			// camp items: count
-			for (var j in caravan.buyItemTypes) {
+			for (let j in caravan.buyItemTypes) {
 				var category = caravan.buyItemTypes[j];
 				if (category == "uniqueEquipment" || category == "follower") continue;
 				var itemList = itemsComponent.getAllByType(ItemConstants.itemTypes[category], true);
-				for (var k in itemList) {
+				for (let k in itemList) {
 					if (itemList[k].equipped) continue;
 					if (!this.campTotalItems[itemList[k].id])
 						this.campTotalItems[itemList[k].id] = 0;

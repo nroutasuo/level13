@@ -6,15 +6,14 @@ define([
 	'game/constants/PositionConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/PlayerStatConstants',
+	'game/constants/FollowerConstants',
 	'game/constants/ImprovementConstants',
 	'game/constants/ItemConstants',
 	'game/constants/BagConstants',
 	'game/constants/MovementConstants',
 	'game/constants/UpgradeConstants',
-	'game/constants/FightConstants',
 	'game/constants/PerkConstants',
 	'game/constants/UIConstants',
-	'game/constants/TextConstants',
 	'game/constants/WorldConstants',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/player/PlayerResourcesNode',
@@ -38,18 +37,18 @@ define([
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/SectorLocalesComponent',
-	'game/components/sector/SectorControlComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/events/TraderComponent',
+	'game/components/sector/events/RaidComponent',
 	'game/components/common/CampComponent',
 	'game/vos/ResourcesVO',
 	'game/vos/ImprovementVO'
 ], function (
-	Ash, GameGlobals, GlobalSignals, PositionConstants, PlayerActionConstants, PlayerStatConstants, ImprovementConstants, ItemConstants, BagConstants, MovementConstants, UpgradeConstants, FightConstants, PerkConstants, UIConstants, TextConstants, WorldConstants,
+	Ash, GameGlobals, GlobalSignals, PositionConstants, PlayerActionConstants, PlayerStatConstants, FollowerConstants, ImprovementConstants, ItemConstants, BagConstants, MovementConstants, UpgradeConstants, PerkConstants, UIConstants, WorldConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	LevelComponent, CurrencyComponent, PositionComponent, PlayerActionComponent, BagComponent, ExcursionComponent, ItemsComponent, DeityComponent,
 	FightComponent, OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent,
-	SectorFeaturesComponent, SectorStatusComponent, SectorLocalesComponent, SectorControlComponent, SectorImprovementsComponent, TraderComponent,
+	SectorFeaturesComponent, SectorStatusComponent, SectorLocalesComponent, SectorImprovementsComponent, TraderComponent, RaidComponent,
 	CampComponent,
 	ResourcesVO, ImprovementVO
 ) {
@@ -61,7 +60,7 @@ define([
 		tribeUpgradesNodes: null,
 		nearestCampNodes: null,
 
-		cache: { reqs: {}, baseActionID: {}, ActionNameForImprovement: {} },
+		cache: { reqs: {}, baseActionID: {} },
 
 		constructor: function (engine) {
 			this.engine = engine;
@@ -85,10 +84,9 @@ define([
 
 		deductCosts: function (action) {
 			var costs = this.getCosts(action);
-
-			if (!costs) {
-				return;
-			}
+			var result = {};
+			
+			if (!costs) return result;
 
 			var currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
@@ -101,32 +99,44 @@ define([
 				costAmount = costs[costName] || 0;
 				if (costName === "stamina") {
 					this.playerStatsNodes.head.stamina.stamina -= costAmount;
+					result.stamina = costAmount;
 				} else if (costName === "rumours") {
 					this.playerStatsNodes.head.rumours.value -= costAmount;
+					result.rumours = costAmount;
 				} else if (costName === "favour") {
 					var deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
-					if (deityComponent)
+					if (deityComponent) {
 						deityComponent.favour -= costAmount;
-					else
+						result.favour = costAmount;
+					} else {
 						log.w("Trying to deduct favour cost but there's no deity component!");
+					}
 				} else if (costName === "evidence") {
 					this.playerStatsNodes.head.evidence.value -= costAmount;
+					result.evidence = costAmount;
 				} else if (costName === "silver") {
 					var currencyComponent = GameGlobals.resourcesHelper.getCurrentCurrency();
 					currencyComponent.currency -= costAmount;
+					result.currency = costAmount;
 				} else if (costNameParts[0] === "resource") {
 					currentStorage.resources.addResource(costNameParts[1], -costAmount);
+					result.resources = result.resources || {};
+					result.resources[costNameParts[1]] = costAmount;
 				} else if (costNameParts[0] === "item") {
 					var itemId = costName.replace(costNameParts[0] + "_", "");
-					for (var i = 0; i < costAmount; i++) {
+					result.items = result.items || [];
+					for (let i = 0; i < costAmount; i++) {
 						var item = itemsComponent.getItem(itemId, null, inCamp, false) || itemsComponent.getItem(itemId, null, inCamp, true);
 						itemsComponent.discardItem(item, false);
+						result.items.push(item);
 					}
 				} else if (costName == "blueprint") {
 				} else {
 					log.w("unknown cost: " + costName + ", action: " + action);
 				}
 			}
+			
+			return result;
 		},
 
 		// Check costs, requirements and cooldown - everything that is needed for the player action
@@ -163,7 +173,7 @@ define([
 		// returns an object containing:
 		// value: fraction the player has of requirements or 0 depending on req type (if 0, action is not available)
 		// reason: string to describe the non-passed requirement (for button explanations)
-		checkRequirements: function (action, doLog, otherSector) {
+		checkRequirements: function (action, doLog, otherSector, checksToSkip) {
 			if (!action) return { value: 0, reason: "No action" };
 			var sector = otherSector;
 			if (!sector) sector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
@@ -172,6 +182,11 @@ define([
 			var sectorID = sector.get(PositionComponent).positionId();
 			var reqsID = action + "-" + sectorID;
 			var ordinal = this.getActionOrdinal(action, sector);
+			
+			var shouldSkipCheck = function (reason) {
+				if (!checksToSkip) return false;
+				return checksToSkip.indexOf(reason) >= 0;
+			};
 
 			var checkRequirementsInternal = function (action, sector) {
 				var playerVision = this.playerStatsNodes.head.vision.value;
@@ -204,9 +219,13 @@ define([
 				if (action === "move_level_down" && !movementOptionsComponent.canMoveTo[PositionConstants.DIRECTION_DOWN])
 					return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveToReason[PositionConstants.DIRECTION_DOWN] };
 
-				if (action.indexOf("improve_in_") == 0) {
-					if (ordinal >= ImprovementConstants.maxLevel) {
-						return { value: 0, reason: "Max level" };
+				if (this.isImproveBuildingAction(baseActionID)) {
+					let improvementName = this.getImprovementNameForAction(action);
+					let improvementID = this.getImprovementIDForAction(action);
+					let techLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementName, this.tribeUpgradesNodes.head.upgrades);
+					let maxLevel = ImprovementConstants.getMaxLevel(improvementID, techLevel);
+					if (ordinal >= maxLevel) {
+						return { value: 0, reason: PlayerActionConstants.UNAVAILABLE_REASON_MAX_IMPROVEMENT_LEVEL };
 					}
 				}
 
@@ -236,14 +255,14 @@ define([
 
 				if (requirements) {
 					if (requirements.vision) {
-						var result = this.checkRequirementsRange(requirements.vision, playerVision, "{min} vision needed", "{max} vision max");
+						let result = this.checkRequirementsRange(requirements.vision, playerVision, "{min} vision needed", "{max} vision max");
 						if (result) {
 							return result;
 						}
 					}
 
 					if (requirements.stamina) {
-						var result = this.checkRequirementsRange(requirements.stamina, playerStamina, "{min} stamina needed", "{max} stamina max");
+						let result = this.checkRequirementsRange(requirements.stamina, playerStamina, "{min} stamina needed", "{max} stamina max");
 						if (result) {
 							return result;
 						}
@@ -283,9 +302,9 @@ define([
 						}
 					}
 
-					if (requirements.population) {
+					if (requirements.population && !shouldSkipCheck(PlayerActionConstants.UNAVAILABLE_REASON_POPULATION)) {
 						var currentPopulation = campComponent ? Math.floor(campComponent.population) : 0;
-						var result = this.checkRequirementsRange(requirements.population, currentPopulation, "{min} population required", "Maximum {max} population", "workers required", "no workers allowed");
+						let result = this.checkRequirementsRange(requirements.population, currentPopulation, "{min} population required", "Maximum {max} population", "workers required", "no workers allowed");
 						if (result) {
 							return result;
 						}
@@ -333,11 +352,29 @@ define([
 							if (!actionImprovementName) actionImprovementName = "Improvement";
 							var displayName = actionImprovementName === requiredImprovementDisplayName ? "" : requiredImprovementDisplayName;
 							
-							var result = this.checkRequirementsRange(range, amount,
+							let result = this.checkRequirementsRange(range, amount,
 								"{min}x " + displayName + " required",
 								"max " + displayName + " built",
 								displayName + " required",
 								displayName + " already built"
+							);
+							if (result) {
+								result.reason.trim();
+								return result;
+							}
+						}
+					}
+					
+					if (requirements.improvementMajorLevel) {
+						for (var improvementID in requirements.improvementMajorLevel) {
+							var amount = this.getCurrentImprovementMajorLevel(improvementComponent, campComponent, improvementID);
+							var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
+							
+							var range = requirements.improvementMajorLevel[improvementID];
+							
+							let result = this.checkRequirementsRange(range, amount,
+								"building level too low",
+								"building level too high"
 							);
 							if (result) {
 								result.reason.trim();
@@ -353,7 +390,7 @@ define([
 							var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
 							var displayName = actionImprovementName === requiredImprovementDisplayName ? "" : requiredImprovementDisplayName;
 							var range = improvementRequirements[improvementID];
-							var result = this.checkRequirementsRange(range, amount,
+							let result = this.checkRequirementsRange(range, amount,
 								"{min}x " + displayName + " on level required",
 								"max {max} " + displayName + " on level",
 								displayName + " required on level",
@@ -371,42 +408,74 @@ define([
 						for (let workerType in workerRequirements) {
 							var range = workerRequirements[workerType];
 							var amount = campComponent.assignedWorkers[workerType] || 0;
-							var result = this.checkRequirementsRange(range, amount, workerType + " required", "no " + workerType + " required");
+							let result = this.checkRequirementsRange(range, amount, workerType + " required", "no " + workerType + " required");
 							if (result) {
 								return result;
 							}
 						}
 					}
 
-					if (requirements.perks) {
-						var perkRequirements = requirements.perks;
-						for(var perkName in perkRequirements) {
-							var requirementDef = perkRequirements[perkName];
-							var min = requirementDef[0];
-							var max = requirementDef[1];
-							var isOneValue = requirementDef[2];
+					if (requirements.perkEffects) {
+						let perkRequirements = requirements.perkEffects;
+						for(let perkType in perkRequirements) {
+							let requirementDef = perkRequirements[perkType];
+							let min = requirementDef[0];
+							let max = requirementDef[1];
+							let isOneValue = requirementDef[2];
 							if (max < 0) max = 9999999;
-							var totalEffect = playerPerks.getTotalEffect(perkName);
-							var validPerk = playerPerks.getPerkWithEffect(perkName, min, max);
+							
+							let totalEffect = playerPerks.getTotalEffect(perkType);
+							let validPerk = playerPerks.getPerkWithEffect(perkType, min, max);
+							
 							if ((!isOneValue && (min > totalEffect || max <= totalEffect)) || (isOneValue && validPerk == null)) {
-								if (min > totalEffect) reason = "Can't do this while: " + perkName;
-								if (max <= totalEffect) reason = "Status required: " + perkName;
+								if (min > totalEffect) reason = "Can't do this while: " + perkType;
+								if (max <= totalEffect) reason = "Status required: " + perkType;
 								return { value: 0, reason: reason };
+							}
+						}
+					}
+					
+					if (requirements.perks) {
+						let perkRequirements = requirements.perks;
+						for (let perkID in perkRequirements) {
+							let requiredValue = perkRequirements[perkID];
+							let actualValue = playerPerks.hasPerk(perkID);
+							if (requiredValue != actualValue) {
+								var perk = PerkConstants.getPerk(perkID);
+								if (requiredValue) {
+									return { value: 0, reason: "Status required: " + perk.name };
+								} else {
+									return { value: 0, reason: "Blocked by status: " + perk.name };
+								}
 							}
 						}
 					}
 
 					if (requirements.upgrades) {
 						var upgradeRequirements = requirements.upgrades;
-						for (var upgradeId in upgradeRequirements) {
-							var requirementBoolean = upgradeRequirements[upgradeId];
-							var hasBoolean = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeId);
+						for (var upgradeID in upgradeRequirements) {
+							var requirementBoolean = upgradeRequirements[upgradeID];
+							var hasBoolean = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeID);
 							if (requirementBoolean != hasBoolean) {
-								var def = UpgradeConstants.upgradeDefinitions[upgradeId];
-								var name = def ? def.name : upgradeId;
+								var def = UpgradeConstants.upgradeDefinitions[upgradeID];
+								var name = def ? def.name : upgradeID;
 								if (requirementBoolean) reason = "Upgrade required: " + name;
 								else reason = "Upgrade already researched (" + name + ")";
 								return { value: 0, reason: reason };
+							}
+						}
+					}
+					
+					if (requirements.unlockedWorkers) {
+						for (let workerID in requirements.unlockedWorkers) {
+							let requiredValue = requirements.unlockedWorkers[workerID];
+							let actualValue = GameGlobals.campHelper.hasUnlockedWorker(workerID);
+							if (requiredValue != actualValue) {
+								if (requiredValue) {
+									return { value: 0, reason: "Worker required: " + workerID };
+								} else {
+									return { value: 0, reason: "Worker already unlocked: " + workerID };
+								}
 							}
 						}
 					}
@@ -421,8 +490,8 @@ define([
 					}
 
 					if (typeof requirements.blueprintpieces !== "undefined") {
-						var upgradeId = requirements.blueprintpieces;
-						var blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(upgradeId);
+						var upgradeID = requirements.blueprintpieces;
+						var blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(upgradeID);
 						if (!blueprintVO || blueprintVO.completed) {
 							reason = "No such blueprint in progress.";
 							return { value: 0, reason: reason };
@@ -455,15 +524,15 @@ define([
 						}
 					}
 					
-					if (typeof requirements.max_followers_reached !== "undefined") {
-						var numCurrentFollowers = itemsComponent.getAllByType(ItemConstants.itemTypes.follower, true).length;
-						var numMaxFollowers = FightConstants.getMaxFollowers(GameGlobals.gameState.numCamps);
-						var currentValue = numCurrentFollowers >= numMaxFollowers;
-						var requiredValue = requirements.max_followers_reached;
-						if (currentValue !== requiredValue) {
-							if (currentValue) reason = "Max followers reached.";
-							else reason = "Must have max followers to do this.";
-							return { value: 0, reason: reason };
+					if (requirements.followers) {
+						if (typeof requirements.followers.maxRecruited !== "undefined") {
+							var followersComponent = this.playerStatsNodes.head.followers;
+							var numCurrentFollowers = followersComponent.getAll().length;
+							var numMaxFollowers = GameGlobals.campHelper.getCurrentMaxFollowersRecruited();
+							var currentValue = numCurrentFollowers >= numMaxFollowers;
+							var requiredValue = requirements.followers.maxRecruited;
+							let result = this.checkRequirementsBoolean(requiredValue, currentValue, "Maximum followers recruited", "Maximum followers not recruited");
+							if (result) return result;
 						}
 					}
 
@@ -496,7 +565,7 @@ define([
 							var requiredValue = requirements.outgoingcaravan.available ? 1 : 0;
 							var totalCaravans = improvementComponent.getCount(improvementNames.stable);
 							var busyCaravans = caravansComponent.outgoingCaravans.length;
-							var currentValue =totalCaravans - busyCaravans;
+							var currentValue = totalCaravans - busyCaravans;
 							if (requiredValue > currentValue) {
 								return {value: 0, reason: "No available caravans."};
 							}
@@ -528,6 +597,22 @@ define([
 								}
 							} else {
 								return {value: 0, reason: "No caravan."};
+							}
+						}
+					}
+
+					if (requirements.camp) {
+						if (requirements.camp.isReachableByTribeTraders) {
+							let isCampReachableByTribeTraders = GameGlobals.levelHelper.isCampReachableByTribeTraders(sector);
+							if (!isCampReachableByTribeTraders) {
+								return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_NOT_REACHABLE_BY_TRADERS };
+							}
+						}
+						if (typeof requirements.camp.raid !== "undefined") {
+							let currentValue = this.playerLocationNodes.head.entity.has(RaidComponent);
+							let requiredValue = requirements.camp.raid;
+							if (requiredValue != currentValue) {
+								return { value: 0, reason: (requiredValue ? "No raid currently" : "There is a raid" ) };
 							}
 						}
 					}
@@ -576,6 +661,14 @@ define([
 								return { value: 0, reason: reason };
 							}
 						}
+						if (typeof requirements.sector.scavengedPercent != "undefined") {
+							var range = requirements.sector.scavengedPercent;
+							var currentVal = statusComponent.getScavengedPercent() / 100;
+							let result = this.checkRequirementsRange(range, currentVal, "", "This area has beens scavenged clean.");
+							if (result) {
+								return result;
+							}
+						}
 						if (typeof requirements.sector.spring != "undefined") {
 							if (featuresComponent.hasSpring != requirements.sector.spring) {
 								if (featuresComponent.hasSpring)    reason = "There is a spring.";
@@ -594,9 +687,9 @@ define([
 								}
 							}
 						}
-						for (var i in PositionConstants.getLevelDirections()) {
+						for (let i in PositionConstants.getLevelDirections()) {
 							var direction = PositionConstants.getLevelDirections()[i];
-							var directionName = PositionConstants.getDirectionName(direction);
+							var directionName = PositionConstants.getDirectionName(direction, true);
 
 							var blockerKey = "blocker" + directionName.toUpperCase();
 							if (typeof requirements.sector[blockerKey] !== 'undefined') {
@@ -698,7 +791,7 @@ define([
 							for (var hazard in requirements.sector.hazards) {
 								var range = requirements.sector.hazards[hazard];
 								var currentVal = featuresComponent.hazards[hazard] || 0;
-								var result = this.checkRequirementsRange(range, currentVal, "Min {min} " + hazard, "Max {max} " + hazard);
+								let result = this.checkRequirementsRange(range, currentVal, "Min {min} " + hazard, "Max {max} " + hazard);
 								if (result) {
 									return result;
 								}
@@ -706,7 +799,7 @@ define([
 						}
 						
 						if (requirements.sector.buildingDensity) {
-							var result = this.checkRequirementsRange(requirements.sector.buildingDensity, featuresComponent.buildingDensity, "Sector too sparsely built", "Sector too densely built");
+							let result = this.checkRequirementsRange(requirements.sector.buildingDensity, featuresComponent.buildingDensity, "Sector too sparsely built", "Sector too densely built");
 							if (result) {
 								return result;
 							}
@@ -787,7 +880,7 @@ define([
 			};
 
 			if (!this.cache.reqs[reqsID]) {
-				var result = checkRequirementsInternal.apply(this, [action, sector]);
+				let result = checkRequirementsInternal.apply(this, [action, sector]);
 				if (result.reason && doLog) log.w("" + result.reason);
 				this.cache.reqs[reqsID] = result;
 			}
@@ -814,6 +907,14 @@ define([
 				} else {
 					return { value: 0, reason: maxreason.replace("{max}", max) };
 				}
+			}
+			return null;
+		},
+		
+		checkRequirementsBoolean: function (requiredValue, currentValue, rejectTrueReason, rejectFalseReason) {
+			if (requiredValue != currentValue) {
+				var reason = requiredValue ? rejectFalseReason : rejectTrueReason;
+				return { value: 0, reason: reason };
 			}
 			return null;
 		},
@@ -912,25 +1013,31 @@ define([
 			var sector = otherSector || this.playerLocationNodes.head.entity;
 			var baseActionID = this.getBaseActionID(action);
 
+			var levelComponent = sector ? GameGlobals.levelHelper.getLevelEntityForSector(sector).get(LevelComponent) : null;
+			var isOutpost = levelComponent ? levelComponent.populationFactor < 1 : false;
+
 			if (action.indexOf("build_in") >= 0) {
 				var improvementName = this.getImprovementNameForAction(action);
 				var improvementsComponent = sector.get(SectorImprovementsComponent);
-				var result = improvementsComponent.getCount(improvementName) + 1;
-				if (action === "build_in_house" && result === 1) result = 0.5;
+				let result = improvementsComponent.getCount(improvementName) + 1;
+				if (action === "build_in_house" && result === 1) result = isOutpost ? 0.85 : 0.5;
 				return result;
 			}
 			
-			if (action.indexOf("improve_in") >= 0) {
+			if (action.indexOf("improve_in") >= 0 || action.indexOf("improve_out") >= 0) {
 				var improvementName = this.getImprovementNameForAction(action);
 				var improvementsComponent = sector.get(SectorImprovementsComponent);
-				var result = improvementsComponent.getLevel(improvementName);
+				let result = improvementsComponent.getLevel(improvementName);
 				return result;
 			}
 
 			switch (baseActionID) {
-				case "use_in_inn":
-					var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-					return itemsComponent.getEquipped(ItemConstants.itemTypes.follower).length;
+				case "use_in_hospital_2":
+					let perksComponent = this.playerStatsNodes.head.perks;
+					let ordinal = 1;
+					if (perksComponent.hasPerk(PerkConstants.perkIds.healthBonus2))
+						ordinal = 2;
+					return ordinal;
 
 				case "build_out_passage_down_stairs":
 				case "build_out_passage_down_elevator":
@@ -952,36 +1059,18 @@ define([
 			}
 		},
 
-		getActionSecondaryOrdinal: function (action, otherSector) {
-			var baseActionID = this.getBaseActionID(action);
-			var ordinal = this.getActionOrdinal(action, otherSector);
-			switch (baseActionID) {
-				case "build_out_passage_down_stairs":
-				case "build_out_passage_down_elevator":
-				case "build_out_passage_down_hole":
-				case "build_out_passage_up_stairs":
-				case "build_out_passage_up_elevator":
-				case "build_out_passage_up_hole":
-					var levelOrdinal = ordinal;
-					var level = GameGlobals.gameState.getLevelForOrdinal(levelOrdinal);
-					var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
-					var result = GameGlobals.upgradeEffectsHelper.getExpectedBuildingUpgradeLevel(improvementNames.storage, campOrdinal);
-					return result;
-				default: return 1;
-			}
-		},
-
-		// Returns the cost factor of a given action, usually 1, but may depend on the current status for some actions
+		// Returns the cost factor of a given action, usually 1, but may depend on the current status (items, followers, perks, improvement level etc) for some actions
 		getCostFactor: function (action, cost, otherSector) {
 			if (!this.playerLocationNodes || !this.playerLocationNodes.head) return 1;
 
 			var sector = otherSector || this.playerLocationNodes.head.entity;
 			var passageComponent = sector.get(PassagesComponent);
+			let improvements = sector.get(SectorImprovementsComponent);
 			var playerStatsNode = this.playerStatsNodes.head;
 			var playerEntity = this.playerStatsNodes.head.entity;
 
 			var getShoeBonus = function () {
-				var itemsComponent = playerEntity.get(ItemsComponent);
+				var itemsComponent = playerStatsNode.items;
 				var shoeBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.movement);
 				if (shoeBonus === 0) shoeBonus = 1;
 				return shoeBonus;
@@ -998,6 +1087,20 @@ define([
 				let perksComponent = playerStatsNode.perks;
 				return GameGlobals.sectorHelper.getBeaconMovementBonus(sector, perksComponent);
 			}
+			
+			var getHazardMalus = function () {
+				return GameGlobals.sectorHelper.getDebrisMovementMalus(sector);
+			};
+			
+			var getFollowerBonus = function (itemBonusType) {
+				let followersComponent = playerStatsNode.followers;
+				return followersComponent.getCurrentBonus(itemBonusType);
+			}
+			
+			var getImprovementLevelBonus = function (improvementName) {
+				let level = improvements.getMajorLevel(improvementName);
+				return 1 - (level - 1) * 0.1;
+			};
 
 			var factor = 1;
 			switch (action) {
@@ -1011,8 +1114,10 @@ define([
 				case "move_sector_nw":
 					if (cost == "stamina") {
 						factor *= getShoeBonus();
+						factor *= getFollowerBonus(ItemConstants.itemBonusTypes.movement);
 						factor *= getPerkBonus();
 						factor *= getBeaconBonus();
+						factor *= getHazardMalus();
 					}
 					break;
 				case "move_level_down":
@@ -1020,19 +1125,61 @@ define([
 				case "move_camp_global":
 					if (cost == "stamina") {
 						factor *= getShoeBonus();
+						factor *= getFollowerBonus(ItemConstants.itemBonusTypes.movement);
 						factor *= getPerkBonus();
 					}
 					break;
-					
+				
+				case "scavenge":
+					if (cost == "stamina") {
+						factor *= getFollowerBonus(ItemConstants.itemBonusTypes.scavenge_cost);
+					}
+					break;
+				
+				case "scout":
+					if (cost == "stamina") {
+						factor *= getFollowerBonus(ItemConstants.itemBonusTypes.scout_cost);
+					}
+					break;
+				
+				case "use_in_hospital":
+					factor *= getImprovementLevelBonus(improvementNames.hospital);
+					break;
 			}
 
 			return factor;
 		},
+		
+		getImproveBuildingActionReqs: function (improvementID) {
+			let result = {};
+			let improvementName = improvementNames[improvementID];
+			result.improvements = {};
+			result.improvements.camp = [ 1, -1 ];
+			result.improvements[improvementID] = [ 1, - 1];
+			
+			// if 1 improvement per tech level, improvement is locked until first tech that unlocks improvements
+			let improvementsPerTechLevel = ImprovementConstants.improvements[improvementID].improvementLevelsPerTechLevel || 0;
+			if (improvementsPerTechLevel == 1) {
+				let techs = GameGlobals.upgradeEffectsHelper.getUpgradeIdsForImprovement(improvementName);
+				result.upgrades = {};
+				result.upgrades[techs[0]] = true;
+			}
+			
+			return result;
+		},
 
 		getReqs: function (action, sector) {
-			var sector = sector || (this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null);
+			var sector = sector || (this.playerLocationNodes && this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null);
 			var baseActionID = this.getBaseActionID(action);
 			var requirements = {};
+			
+			if (this.isImproveBuildingAction(baseActionID)) {
+				requirements = PlayerActionConstants.requirements[baseActionID] || {};
+				let improvementID = this.getImprovementIDForAction(action);
+				let dynamicReqs = this.getImproveBuildingActionReqs(improvementID);
+				Object.assign(requirements, dynamicReqs);
+			}
+			
 			switch (baseActionID) {
 				case "scout_locale_i":
 				case "scout_locale_u":
@@ -1048,6 +1195,7 @@ define([
 					requirements.sector.scoutedLocales = {};
 					requirements.sector.scoutedLocales[localei] = false;
 					return requirements;
+					
 				case "fight_gang":
 					requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
 					var direction = parseInt(action.split("_")[2]);
@@ -1056,6 +1204,7 @@ define([
 					var blockerKey = "blocker" + directionName.toUpperCase();
 					requirements.sector[blockerKey] = true;
 					return requirements;
+					
 				case "clear_waste_t":
 				case "clear_waste_r":
 					requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
@@ -1063,16 +1212,32 @@ define([
 					requirements.sector = $.extend({}, PlayerActionConstants.requirements[baseActionID].sector);
 					requirements.sector["isWasteCleared_" + direction] = false;
 					return requirements;
+					
 				case "create_blueprint":
 					requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
-					let upgradeId = action.replace(baseActionID + "_", "");
-					let type = UpgradeConstants.getUpgradeType(upgradeId);
-					requirements.blueprintpieces = upgradeId;
+					let upgradeID = action.replace(baseActionID + "_", "");
+					let type = UpgradeConstants.getUpgradeType(upgradeID);
+					requirements.blueprintpieces = upgradeID;
 					if (type == UpgradeConstants.UPGRADE_TYPE_FAVOUR) {
-						requirements.workers = {};
-						requirements.workers.cleric = [1, -1];
+						if (upgradeID != "unlock_building_greenhouse") {
+							requirements.workers = {};
+							requirements.workers.cleric = [1, -1];
+						}
 					}
 					return requirements;
+					
+				case "use_in_hospital_2":
+					let ordinal = this.getActionOrdinal(action);
+					let perkID = ordinal == 1 ? PerkConstants.perkIds.healthBonus2 : PerkConstants.perkIds.healthBonus3;
+					let minLevel = ordinal + 1;
+					let maxHealth = PerkConstants.getPerk(perkID).effect;
+					requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
+					requirements.improvementMajorLevel = {};
+					requirements.improvementMajorLevel["hospital"] = [ minLevel, -1 ];
+					requirements.perkEffects = {};
+					requirements.perkEffects["Health"] = [ -1, maxHealth ];
+					return requirements;
+					
 				case "build_out_passage_up_stairs":
 				case "build_out_passage_up_elevator":
 				case "build_out_passage_up_hole":
@@ -1080,11 +1245,14 @@ define([
 				case "build_out_passage_down_elevator":
 				case "build_out_passage_down_hole":
 				case "move_camp_global":
-				case "use_in_inn_select":
 				case "send_caravan":
 				case "clear_debris_e":
 				case "clear_debris_l":
 				case "bridge_gap":
+				case "recruit_follower":
+				case "dismiss_follower":
+				case "select_follower":
+				case "deselect_follower":
 					return PlayerActionConstants.requirements[baseActionID];
 				default:
 					return PlayerActionConstants.requirements[action];
@@ -1103,12 +1271,11 @@ define([
 			return result;
 		},
 		
-		// NOTE: if you change this mess, keep GDD up to date
-		getCost: function (baseCost, linearScale, e1Scale, e1Base, e2Scale, e2Exp, ordinal1, ordinal2, statusFactor) {
-			var linearIncrease = linearScale * ordinal1;
-			var expIncrease1 = e1Scale * Math.pow(e1Base, ordinal1-1);
-			var expIncrease2 = e2Scale * Math.pow(ordinal2 - 1, e2Exp);
-			return (baseCost + linearIncrease + expIncrease1 + expIncrease2) * statusFactor;
+		getCost: function (constantCost, linearCost, expCost, expBase, ordinal, statusFactor) {
+			var constantPart = constantCost;
+			var linearPart = linearCost * ordinal;
+			var expPart = expCost * Math.pow(expBase, ordinal-1);
+			return (constantPart + linearPart + expPart) * statusFactor;
 		},
 
 		// NOTE: this should always return all possible costs as keys (even if value currently is 0)
@@ -1121,18 +1288,14 @@ define([
 			var sector = otherSector ? otherSector : (this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null);
 			var levelComponent = sector ? GameGlobals.levelHelper.getLevelEntityForSector(sector).get(LevelComponent) : null;
 
-			var ordinal1 = this.getActionOrdinal(action, sector);
-			var ordinal2 = this.getActionSecondaryOrdinal(action, sector);
-			
+			var ordinal = this.getActionOrdinal(action, sector);
 			var isOutpost = levelComponent ? levelComponent.populationFactor < 1 : false;
 			
-			return this.getCostsByOrdinal(action, multiplier, ordinal1, ordinal2, isOutpost, sector);
+			return this.getCostsByOrdinal(action, multiplier, ordinal, isOutpost, sector);
 		},
 		
-		getCostsByOrdinal: function (action, multiplier, ordinal1, ordinal2, isOutpost, sector) {
-			var result = {};
-			var skipRounding = false;
-			var isCampBuildAction = action.indexOf("build_in_") >= 0;
+		getCostsByOrdinal: function (action, multiplier, ordinal, isOutpost, sector) {
+			let result = {};
 
 			var baseActionID = this.getBaseActionID(action);
 			var costs = PlayerActionConstants.costs[action];
@@ -1141,61 +1304,89 @@ define([
 			}
 
 			if (costs) {
-				var e1Base = costs.cost_factor_e1_base || 1;
-				var e1BaseOutpost = costs.cost_factor_e1_base_outpost || e1Base;
-				var e2Exp = costs.cost_factor_e2_exp || 0;
-				var e2ExpOutpost = costs.cost_factor_e2_exp_outpost || e2Exp;
-
-				var hasE1 = e1Base !== 1;
-				var hasE2 = e2Exp !== 0;
-
-				for (var key in costs) {
-					if (key.indexOf("cost_factor") >= 0) continue;
-					var statusFactor = this.getCostFactor(action, key, sector);
-
-					var value = costs[key];
-					var baseCost = 0;
-
-					var linearScale = 0;
-					var e1Scale = hasE1 ? 1 : 0;
-					var e2Scale = hasE2 ? 1 : 0;
-					var requiredOrdinal = 0;
-
-					if (typeof value === "number") {
-						baseCost = hasE1 || hasE2 ? 0 : value;
-						e1Scale = hasE1 ? value : 0;
-						e2Scale = hasE2 ? value : 0;
-					} else if (typeof value === "object") {
-						baseCost = value[0];
-						if (value.length > 1) linearScale = value[1];
-						if (value.length > 2) e1Scale = value[2];
-						if (value.length > 3) e2Scale = value[3];
-						if (value.length > 4) requiredOrdinal = value[4];
-					}
-
-					if (ordinal1 < requiredOrdinal) {
-						result[key] = 0;
-					} else {
-						var cost = this.getCost(baseCost, linearScale, e1Scale, e1Base, e2Scale, e2Exp, ordinal1, ordinal2, statusFactor * multiplier);
-						if (!isOutpost || !isCampBuildAction) {
-							result[key] = cost;
-						} else {
-							var costOutpost = this.getCost(baseCost, linearScale, e1Scale, e1BaseOutpost, e2Scale, e2ExpOutpost, ordinal1, ordinal2, statusFactor * multiplier);
-							if (cost === costOutpost && e1Base === e1BaseOutpost && e2Exp === e2ExpOutpost) {
-								// default: unless outpost cost otherwise defined, just scale
-								costOutpost *= 1.25;
-							}
-							result[key] = costOutpost;
-						}
-					}
-				}
+				result = this.getCostsFromData(action, multiplier, ordinal, isOutpost, sector, costs);
 			}
 			
+			this.addDynamicCosts(action, multiplier, ordinal, isOutpost, sector, result);
+
+			// round all costs, big ones to 5 and the rest to int
+			var skipRounding = this.isExactCostAction(baseActionID);
+			for(var key in result) {
+				if (!skipRounding && result[key] > 1000) {
+					result[key] = Math.round(result[key] / 5) * 5;
+				} else {
+					result[key] = Math.round(result[key]);
+				}
+			}
+
+			return result;
+		},
+		
+		getCostsFromData: function (action, multiplier, ordinal, isOutpost, sector, costs) {
+			let result = {};
+			
+			var isCampBuildAction = action.indexOf("build_in_") >= 0;
+			var defaultOutpostExpBaseFactor = 1.1;
+			var defaultOutpostExpCostFactor = 1.1;
+			
+			isOutpost = isOutpost && isCampBuildAction;
+			
+			var defaultConstantCost = 0;
+			var defaultLinearCost = 0;
+			var defaultExpCost = 0;
+			var defaultExpBase = costs.cost_factor_expBase || 1;
+			if (isOutpost) {
+				defaultExpBase = costs.cost_factor_expBaseOutpost || defaultExpBase * defaultOutpostExpBaseFactor;
+			}
+			var defaultRequiredOrdinal = 0;
+
+			for (var key in costs) {
+				if (key.indexOf("cost_factor") >= 0) continue;
+
+				var value = costs[key];
+
+				var constantCost = defaultConstantCost;
+				var linearCost = defaultLinearCost;
+				var expCost = defaultExpCost;
+				var expBase = defaultExpBase;
+				var requiredOrdinal = defaultRequiredOrdinal;
+
+				if (typeof value === "number") {
+					expCost = value;
+					if (isOutpost && expBase == 1) {
+						expCost *= defaultOutpostExpCostFactor;
+					}
+				} else if (typeof value === "object") {
+					if (value.constantCost) constantCost = value.constantCost;
+					if (value.linearCost) linearCost = value.linearCost;
+					if (value.expCost) expCost = value.expCost;
+					if (value.expBase) {
+						expBase = value.expBase;
+						if (isOutpost) expBase = value.expBase * defaultOutpostExpBaseFactor;
+					}
+					if (isOutpost && value.expBaseOutpost) {
+						expBase = value.expBaseOutpost;
+					}
+					if (value.requiredOrdinal) requiredOrdinal = value.requiredOrdinal;
+				}
+
+				if (ordinal < requiredOrdinal) {
+					result[key] = 0;
+				} else {
+					var statusFactor = this.getCostFactor(action, key, sector);
+					result[key] = this.getCost(constantCost, linearCost, expCost, expBase, ordinal, statusFactor) * multiplier;
+				}
+			}
+			return result;
+		},
+		
+		addDynamicCosts: function (action, multiplier, ordinal, isOutpost, sector, result) {
+			var baseActionID = this.getBaseActionID(action);
 			switch (baseActionID) {
 				case "move_camp_level":
 					var path = this.getPathToNearestCamp(sector);
-					if (path) {
-						for (var i = 0; i < path.length; i++) {
+					if (path && path.length > 0) {
+						for (let i = 0; i < path.length; i++) {
 							let costs = this.getCosts("move_sector_west", 1, path[i]);
 							this.addCosts(result, costs);
 						}
@@ -1215,19 +1406,25 @@ define([
 					var localei = parseInt(action.split("_")[3]);
 					var sectorLocalesComponent = sector.get(SectorLocalesComponent);
 					var localeVO = sectorLocalesComponent.locales[localei];
-					if (localeVO) result = localeVO.costs;
+					if (localeVO) this.addCosts(result, localeVO.costs);
+					break;
+				
+				case "recruit_follower":
+					let followerID = parseInt(action.replace(baseActionID + "_", ""));
+					let recruitComponent = GameGlobals.campHelper.findRecruitComponentWithFollowerId(followerID);
+					if (recruitComponent != null) {
+						this.addCosts(result, FollowerConstants.getRecruitCost(recruitComponent.follower, recruitComponent.isFoundAsReward));
+					}
 					break;
 
 				case "use_item":
 				case "use_item_fight":
 					var itemName = action.replace(baseActionID + "_", "item_");
-					var itemCost = {};
-					itemCost[itemName] = 1;
-					result = itemCost;
+					result[itemName] = 1;
 					break;
 
 				case "unlock_upgrade":
-					result = { blueprint: 1 };
+					result.blueprint = 1;
 					break;
 
 				case "send_caravan":
@@ -1246,28 +1443,8 @@ define([
 						if (!result[key]) result[key] = 0;
 						result[key] += caravansComponent.pendingCaravan.sellAmount;
 					}
-					skipRounding = true;
-					break;
-					
-				case "nap":
-					if (GameGlobals.gameState.numCamps < 1) {
-						result = {};
-					}
 					break;
 			}
-
-			// round all costs, big ones to 5 and the rest to int
-			for(var key in result) {
-				if (result[key] > 1000) {
-					if (!skipRounding) {
-						result[key] = Math.round(result[key] / 5) * 5;
-					}
-				} else {
-					result[key] = Math.round(result[key]);
-				}
-			}
-
-			return result;
 		},
 		
 		addCosts: function (result, costs) {
@@ -1283,45 +1460,78 @@ define([
 		},
 
 		getDescription: function (action) {
-			if (action) {
-				var baseAction = this.getBaseActionID(action);
-				var improvementName = this.getImprovementNameForAction(action, true);
-				if (baseAction.indexOf("build_in_") == 0) {
-					var buildingKey = baseAction.replace("build_in_", "");
-					var baseDesc = "";
-					if (ImprovementConstants.campImprovements[buildingKey]) {
-						baseDesc = ImprovementConstants.campImprovements[buildingKey].description;
-					}
-					var reputationDesc = "";
-					var reputation = getImprovementReputationBonus(improvementName);
-					if (reputation > 0) reputationDesc = "Reputation: " + reputation;
-					return baseDesc + (baseDesc && reputationDesc ? "<hr>" : "") + reputationDesc;
-				} else if (improvementName) {
-					return PlayerActionConstants.descriptions[action] || "";
-				} else if (PlayerActionConstants.descriptions[action]) {
-					return PlayerActionConstants.descriptions[action];
-				} else if (PlayerActionConstants.descriptions[baseAction]) {
-					return PlayerActionConstants.descriptions[baseAction];
-				} else {
-					switch(baseAction) {
-						case "craft":
-							var item = this.getItemForCraftAction(action);
-							return item.description + (item.getTotalBonus() === 0 ? "" : "<hr/>" + UIConstants.getItemBonusDescription(item, true, true));
-						case "use_item":
-						case "use_item_fight":
-							var item = this.getItemForCraftAction(action);
-							return item.description;
-						
-					}
+			if (!action) return "";
+			
+			let baseAction = this.getBaseActionID(action);
+			let improvementName = this.getImprovementNameForAction(action, true);
+			
+			if (baseAction.indexOf("build_in_") == 0) {
+				var buildingKey = baseAction.replace("build_in_", "");
+				var baseDesc = "";
+				if (ImprovementConstants.improvements[buildingKey]) {
+					baseDesc = ImprovementConstants.improvements[buildingKey].description || "";
+				}
+				var reputationDesc = "";
+				var reputation = getImprovementReputationBonus(improvementName);
+				if (reputation > 0) reputationDesc = "Reputation: " + reputation;
+				return baseDesc + (baseDesc && reputationDesc ? "<hr>" : "") + reputationDesc;
+			} else if (PlayerActionConstants.descriptions[action]) {
+				return PlayerActionConstants.descriptions[action];
+			} else if (PlayerActionConstants.descriptions[baseAction]) {
+				return PlayerActionConstants.descriptions[baseAction];
+			} else if (UpgradeConstants.upgradeDescriptions[action]) {
+				// upgrade action descriptions are in the list outside of the button
+				return "";
+			} else if (action.indexOf("move_sector_") >= 0) {
+				// no need for description
+				return "";
+			} else {
+				switch(baseAction) {
+					case "craft":
+						var item = this.getItemForCraftAction(action);
+						return item.description + (item.getTotalBonus() === 0 ? "" : "<hr/>" + UIConstants.getItemBonusDescription(item, true, true));
+					case "use_item":
+					case "use_item_fight":
+						var item = this.getItemForCraftAction(action);
+						return item.description;
+					case "improve_in":
+						return this.getImproveActionDescription(action);
 				}
 			}
+			
+			log.w("no description defined for action: " + action)
 			return "";
+		},
+		
+		getImproveActionDescription: function (action) {
+			let ordinal = this.getActionOrdinal(action);
+			let currentLevel = ordinal;
+			
+			let improvementName = this.getImprovementNameForAction(action);
+			let id = ImprovementConstants.getImprovementID(improvementName);
+			let majorLevelCurrent = ImprovementConstants.getMajorLevel(id, currentLevel);
+			let majorLevelNext = ImprovementConstants.getMajorLevel(id, currentLevel + 1);
+			var isNextLevelMajor = majorLevelNext > majorLevelCurrent;
+			
+			switch (action) {
+				case "improve_in_campfire":
+				case "improve_in_market":
+					return isNextLevelMajor ? "Increase rumour generation and rumours per visit" : "Increase rumour generation";
+				case "improve_in_shrine":
+					return isNextLevelMajor ? "Increase reputation bonus and meditation success chance" : "Increase reputation bonus";
+				case "improve_in_inn":
+					return isNextLevelMajor ? "Increase rumour generation and maximum followers" : "Increase rumour generation";
+			}
+			
+			return "Improve " + improvementName;
 		},
 
 		getBaseActionID: function (action) {
 			if (!action) return action;
 			var getBaseActionIdInternal = function (a) {
 				if (a.indexOf("build_in_") >= 0) return a;
+				if (a.indexOf("improve_in_") >= 0) return "improve_in";
+				if (a.indexOf("improve_out") >= 0) return "improve_out";
 				if (a.indexOf("scout_locale_i") >= 0) return "scout_locale_i";
 				if (a.indexOf("scout_locale_u") >= 0) return "scout_locale_u";
 				if (a.indexOf("craft_") >= 0) return "craft";
@@ -1337,7 +1547,11 @@ define([
 				if (a.indexOf("clear_debris_") == 0) return "clear_debris";
 				if (a.indexOf("fight_gang_") >= 0) return "fight_gang";
 				if (a.indexOf("send_caravan_") >= 0) return "send_caravan";
-				if (a.indexOf("use_in_inn_select_") >= 0) return "use_in_inn_select";
+				if (a.indexOf("recruit_follower_") >= 0) return "recruit_follower";
+				if (a.indexOf("dismiss_follower") >= 0) return "dismiss_follower";
+				if (a.indexOf("deselect_follower") >= 0) return "deselect_follower";
+				if (a.indexOf("select_follower") >= 0) return "select_follower";
+				if (a.indexOf("dismiss_recruit_") >= 0) return "dismiss_recruit";
 				if (a.indexOf("move_camp_global_") >= 0) return "move_camp_global";
 				if (a.indexOf("build_out_passage") >= 0) {
 					var parts = a.split("_");
@@ -1349,7 +1563,7 @@ define([
 			};
 			if (this.cache.baseActionID[action])
 				return this.cache.baseActionID[action];
-			var result = getBaseActionIdInternal(action);
+			let result = getBaseActionIdInternal(action);
 			this.cache.baseActionID[action] = result;
 			return result;
 		},
@@ -1360,112 +1574,132 @@ define([
 			return "";
 		},
 
-		getImprovementNameForAction: function(action, disableWarnings) {
-			var baseId = this.getBaseActionID(action);
-			switch (baseId) {
-				case "build_out_collector_food": return improvementNames.collector_food;
-				case "build_out_collector_water": return improvementNames.collector_water;
-				case "build_out_beacon": return improvementNames.beacon;
-				case "build_in_home": return improvementNames.home;
-				case "build_in_house": return improvementNames.house;
-				case "build_in_storage": return improvementNames.storage;
-				case "build_in_hospital": return improvementNames.hospital;
-				case "build_in_tradepost": return improvementNames.tradepost;
-				case "build_in_inn": return improvementNames.inn;
-				case "build_out_spaceship1": return improvementNames.spaceship1;
-				case "build_out_spaceship2": return improvementNames.spaceship2;
-				case "build_out_spaceship3": return improvementNames.spaceship3;
-				case "build_in_campfire": return improvementNames.campfire;
-				case "build_in_darkfarm": return improvementNames.darkfarm;
-				case "build_in_garden": return improvementNames.garden;
-				case "build_in_square": return improvementNames.square;
-				case "build_in_house2": return improvementNames.house2;
-				case "build_in_generator": return improvementNames.generator;
-				case "build_in_lights": return improvementNames.lights;
-				case "build_in_ceiling": return improvementNames.ceiling;
-				case "build_in_apothecary": return improvementNames.apothecary;
-				case "build_in_smithy": return improvementNames.smithy;
-				case "build_in_cementmill": return improvementNames.cementmill;
-				case "build_in_library": return improvementNames.library;
-				case "build_in_shrine": return improvementNames.shrine;
-				case "build_in_temple": return improvementNames.temple;
-				case "build_in_barracks": return improvementNames.barracks;
-				case "build_in_fortification": return improvementNames.fortification;
-				case "build_in_fortification2": return improvementNames.fortification2;
-				case "build_in_aqueduct": return improvementNames.aqueduct;
-				case "build_in_stable": return improvementNames.stable;
-				case "build_in_market": return improvementNames.market;
-				case "improve_in_market": return improvementNames.market;
-				case "build_in_radiotower": return improvementNames.radiotower;
-				case "build_in_researchcenter": return improvementNames.researchcenter;
-				case "improve_in_campfire": return improvementNames.campfire;
-				case "improve_in_library": return improvementNames.library;
-				case "improve_in_square": return improvementNames.square;
-				case "improve_in_generator": return improvementNames.generator;
-				case "improve_in_apothecary": return improvementNames.apothecary;
-				case "improve_in_smithy": return improvementNames.smithy;
-				case "improve_in_cementmill": return improvementNames.cementmill;
-				case "improve_in_temple": return improvementNames.temple;
-				case "build_out_passage_up_stairs": return improvementNames.passageUpStairs;
-				case "build_out_passage_up_elevator": return improvementNames.passageUpElevator;
-				case "build_out_passage_up_hole": return improvementNames.passageUpHole;
-				case "build_out_passage_down_stairs": return improvementNames.passageDownStairs;
-				case "build_out_passage_down_elevator": return improvementNames.passageDownElevator;
-				case "build_out_passage_down_hole": return improvementNames.passageDownHole;
-				case "send_caravan": return improvementNames.tradepost;
-				case "build_out_camp": return "";
-
-				default:
-					if(!disableWarnings)
-						log.w("No improvement name found for action " + action);
-					return "";
-			}
-		},
-
-		getActionNameForImprovement: function (improvementName) {
-			// TODO make this nicer - list action names somewhere outside of html?
-			// TODO list action <-> improvement name mapping only once (now here and in getImprovementNameForAction)
-			
-			if (this.cache.ActionNameForImprovement[improvementName]) {
-				return this.cache.ActionNameForImprovement[improvementName];
-			}
-			
-			var helper = this;
-			var result = null;
+		getActionNameForImprovement: function (improvementName, disableWarnings) {
 			switch (improvementName) {
+				case improvementNames.collector_food: return "build_out_collector_food";
+				case improvementNames.collector_water: return "build_out_collector_water";
+				case improvementNames.beacon: return "build_out_beacon";
+				case improvementNames.home: return "build_in_home";
+				case improvementNames.house: return "build_in_house";
+				case improvementNames.storage: return "build_in_storage";
+				case improvementNames.hospital: return "build_in_hospital";
+				case improvementNames.tradepost: return "build_in_tradepost";
+				case improvementNames.inn: return "build_in_inn";
+				case improvementNames.spaceship1: return "build_out_spaceship1";
+				case improvementNames.spaceship2: return "build_out_spaceship2";
+				case improvementNames.spaceship3: return "build_out_spaceship3";
+				case improvementNames.campfire: return "build_in_campfire";
+				case improvementNames.darkfarm: return "build_in_darkfarm";
+				case improvementNames.garden: return "build_in_garden";
+				case improvementNames.square: return "build_in_square";
+				case improvementNames.house2: return "build_in_house2";
+				case improvementNames.generator: return "build_in_generator";
+				case improvementNames.lights: return "build_in_lights";
+				case improvementNames.ceiling: return "build_in_ceiling";
+				case improvementNames.apothecary: return "build_in_apothecary";
+				case improvementNames.smithy: return "build_in_smithy";
+				case improvementNames.cementmill: return "build_in_cementmill";
+				case improvementNames.library: return "build_in_library";
+				case improvementNames.shrine: return "build_in_shrine";
+				case improvementNames.temple: return "build_in_temple";
+				case improvementNames.barracks: return "build_in_barracks";
+				case improvementNames.fortification: return "build_in_fortification";
+				case improvementNames.aqueduct: return "build_in_aqueduct";
+				case improvementNames.stable: return "build_in_stable";
+				case improvementNames.market: return "build_in_market";
+				case improvementNames.radiotower: return "build_in_radiotower";
+				case improvementNames.researchcenter: return "build_in_researchcenter";
 				case improvementNames.passageUpStairs: return "build_out_passage_up_stairs";
 				case improvementNames.passageUpElevator: return "build_out_passage_up_elevator";
 				case improvementNames.passageUpHole: return "build_out_passage_up_hole";
 				case improvementNames.passageDownStairs: return "build_out_passage_down_stairs";
 				case improvementNames.passageDownElevator: return "build_out_passage_down_elevator";
 				case improvementNames.passageDownHole: return "build_out_passage_down_hole";
-				case improvementNames.spaceship1: return "build_out_spaceship1";
-				case improvementNames.spaceship2: return "build_out_spaceship2";
-				case improvementNames.spaceship3: return "build_out_spaceship3";
+				case improvementNames.greenhouse: return "build_out_greenhouse";
+				case improvementNames.tradepost_connector: return "build_out_tradepost_connector";
+				case improvementNames.camp: return "";
+				default:
+					if (!disableWarnings) {
+						log.w("No improvement action name found for improvement " + improvementName);
+					}
+					return "";
 			}
-			$.each($("#in-improvements tr"), function () {
-				var actionName = $(this).find("button.action-build").attr("action");
-				var improvement = helper.getImprovementNameForAction(actionName);
-				if ((improvement == improvementName)) {
-					result = actionName;
-					return false; // breaks each
-				}
-			});
-			$.each($("#out-improvements tr"), function () {
-				var actionName = $(this).find("button.action-build").attr("action");
-				var improvement = helper.getImprovementNameForAction(actionName);
-				if ((improvement == improvementName)) {
-					result = actionName;
-					return false;
-				}
-			});
-
-			if (result == null)
-				log.w("No action name found for improvement: " + improvementName);
-			this.cache.ActionNameForImprovement[improvementName] = result;
-			return result;
 		},
 
+		getImprovementNameForAction: function (action, disableWarnings) {
+			var baseId = this.getBaseActionID(action);
+			
+			if (this.isImproveBuildingAction(baseId)) {
+				let improvementID = this.getImprovementIDForAction(action);
+				return improvementNames[improvementID];
+			}
+			
+        	switch (baseId) {
+				case "build_out_collector_food": return improvementNames.collector_food;
+                case "build_out_collector_water": return improvementNames.collector_water;
+                case "build_out_beacon": return improvementNames.beacon;
+                case "build_in_home": return improvementNames.home;
+                case "build_in_house": return improvementNames.house;
+                case "build_in_storage": return improvementNames.storage;
+                case "build_in_hospital": return improvementNames.hospital;
+                case "build_in_tradepost": return improvementNames.tradepost;
+                case "build_in_inn": return improvementNames.inn;
+                case "build_out_spaceship1": return improvementNames.spaceship1;
+                case "build_out_spaceship2": return improvementNames.spaceship2;
+                case "build_out_spaceship3": return improvementNames.spaceship3;
+                case "build_in_campfire": return improvementNames.campfire;
+                case "build_in_darkfarm": return improvementNames.darkfarm;
+                case "build_in_garden": return improvementNames.garden;
+                case "build_in_square": return improvementNames.square;
+                case "build_in_house2": return improvementNames.house2;
+                case "build_in_generator": return improvementNames.generator;
+                case "build_in_lights": return improvementNames.lights;
+                case "build_in_ceiling": return improvementNames.ceiling;
+                case "build_in_apothecary": return improvementNames.apothecary;
+                case "build_in_smithy": return improvementNames.smithy;
+                case "build_in_cementmill": return improvementNames.cementmill;
+                case "build_in_library": return improvementNames.library;
+                case "build_in_shrine": return improvementNames.shrine;
+                case "build_in_temple": return improvementNames.temple;
+                case "build_in_barracks": return improvementNames.barracks;
+                case "build_in_fortification": return improvementNames.fortification;
+                case "build_in_aqueduct": return improvementNames.aqueduct;
+                case "build_in_stable": return improvementNames.stable;
+                case "build_in_market": return improvementNames.market;
+                case "improve_in_market": return improvementNames.market;
+                case "build_in_radiotower": return improvementNames.radiotower;
+                case "build_in_researchcenter": return improvementNames.researchcenter;
+                case "build_out_passage_up_stairs": return improvementNames.passageUpStairs;
+                case "build_out_passage_up_elevator": return improvementNames.passageUpElevator;
+                case "build_out_passage_up_hole": return improvementNames.passageUpHole;
+                case "build_out_passage_down_stairs": return improvementNames.passageDownStairs;
+                case "build_out_passage_down_elevator": return improvementNames.passageDownElevator;
+                case "build_out_passage_down_hole": return improvementNames.passageDownHole;
+                case "send_caravan": return improvementNames.tradepost;
+                case "build_out_camp": return "";
+			}
+			for (var key in improvementNames) {
+				var improvementName = improvementNames[key];
+				var improvementActionName = this.getActionNameForImprovement(improvementName, disableWarnings);
+				if (improvementActionName == baseId) {
+					return improvementName;
+				}
+			}
+			if (!disableWarnings) {
+				log.w("No improvement name found for action " + action);
+			}
+			return "";
+		},
+		
+		getImprovementIDForAction: function (actionName) {
+			var baseId = this.getBaseActionID(actionName);
+			if (this.isImproveBuildingAction(baseId)) {
+				return actionName.replace("improve_in_", "").replace("improve_out_", "");
+			}
+			let improvementName = this.getImprovementNameForAction(actionName);
+			return ImprovementConstants.getImprovementID(improvementName);
+		},
+		
 		getItemForCraftAction: function (actionName) {
 			var baseActionName = this.getBaseActionID(actionName);
 			switch (baseActionName) {
@@ -1486,7 +1720,7 @@ define([
 				case "scout_locale_u":
 					// depending on locale
 					var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
-					var i = GameGlobals.playerActionsHelper.getActionIDParam(action);
+					let i = GameGlobals.playerActionsHelper.getActionIDParam(action);
 					var localeVO = sectorLocalesComponent.locales[i];
 					if (!localeVO) return 1;
 					switch (localeVO.type) {
@@ -1500,6 +1734,60 @@ define([
 			}
 		},
 
+		getMinimumCampAndStep: function (action) {
+			let result = { campOrdinal: 0, step: 0 };
+			
+			var addRequirement = function (campOrdinal, step, source) {
+				if (campOrdinal > result.campOrdinal || (campOrdinal == result.campOrdinal && step > result.step)) {
+					result = { campOrdinal: campOrdinal, step: step };
+				}
+			};
+			
+			// upgrades
+			var reqs = this.getReqs(action);
+			if (reqs && reqs.upgrades) {
+				var requiredTech = Object.keys(reqs.upgrades);
+				for (let k = 0; k < requiredTech.length; k++) {
+					var campOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(requiredTech[k], true);
+					var step = UpgradeConstants.getMinimumCampStepForUpgrade(requiredTech[k]);
+					addRequirement(campOrdinal, step, requiredTech[k]);
+				}
+			}
+			
+			// resources
+			var costs = this.getCostsByOrdinal(action, 1, 1, false);
+			if (costs) {
+				if (costs && costs.resource_fuel && costs.resource_fuel > 0) {
+					addRequirement(WorldConstants.CAMP_ORDINAL_FUEL, WorldConstants.CAMP_STEP_POI_2, "fuel");
+				}
+				if (costs && costs.resource_rubber && costs.resource_rubber > 0) {
+					addRequirement(WorldConstants.CAMP_ORDINAL_GROUND, WorldConstants.CAMP_STEP_POI_2, "rubber");
+				}
+				if (costs && costs.resource_herbs && costs.resource_herbs > 0) {
+					addRequirement(WorldConstants.CAMP_ORDINAL_GROUND, WorldConstants.CAMP_STEP_POI_2, "herbs");
+				}
+			}
+			
+			// improvements
+			if (reqs && reqs.improvements) {
+				for (var improvementID in reqs.improvements) {
+					var range = reqs.improvements[improvementID];
+					var min = range[0];
+					if (min < 1) continue;
+					var buildAction = "build_in_" + improvementID;
+					var buildCampStep = this.getMinimumCampAndStep(buildAction);
+					addRequirement(buildCampStep.campOrdinal, buildCampStep.step, "required building");
+				}
+			}
+			
+			// deity
+			if (reqs && reqs.deity) {
+				addRequirement(WorldConstants.CAMP_ORDINAL_GROUND, WorldConstants.CAMP_STEP_POI_2, "deity");
+			}
+			
+			return result;
+		},
+		
 		isActionIndependentOfHazards: function (action) {
 			var improvement = this.getImprovementNameForAction(action, true);
 			if (improvement) {
@@ -1518,6 +1806,7 @@ define([
 				case "accept_inventory": return true;
 
 				case "build_out_greenhouse": return true;
+				case "build_out_tradepost_connector": return true;
 				case "clear_debris": return true;
 				case "bridge_gap": return true;
 
@@ -1538,13 +1827,27 @@ define([
 			}
 		},
 		
+		isExactCostAction: function (baseActionID) {
+			switch (baseActionID) {
+				case "send_caravan": return true;
+			}
+			return false;
+		},
+		
+		isImproveBuildingAction: function (baseActionID) {
+			return baseActionID == "improve_in" || baseActionID == "improve_out";
+		},
+		
 		getImprovementDisplayName: function (improvementID) {
 			switch (improvementID) {
 				case "passageUp":
 				case "passageDown":
 					return "passage";
+				case "camp":
+					return "camp";
 				default:
-					return improvementNames[improvementID];
+					// TODO determine improvement level to use
+					return ImprovementConstants.getImprovementDisplayName(improvementID);
 			}
 		},
 		
@@ -1563,6 +1866,10 @@ define([
 				default:
 					return improvementComponent.getCount(improvementNames[improvementID]);
 			}
+		},
+		
+		getCurrentImprovementMajorLevel : function (improvementComponent, campComponent, improvementID) {
+			return improvementComponent.getMajorLevel(improvementNames[improvementID]);
 		},
 		
 		getCurrentImprovementCountOnLevel: function (level, improvementID) {
@@ -1586,6 +1893,14 @@ define([
 			var campLevel = campSector.get(PositionComponent).level;
 			if (Math.abs(campLevel - sectorLevel) > 2) return null;
 			return GameGlobals.levelHelper.findPathTo(sector, campSector, { skipBlockers: true, skipUnvisited: true, omitWarnings: true });
+		},
+
+		getCooldownForCurrentLocation: function (action) {
+			var isLocationAction = PlayerActionConstants.isLocationAction(action);
+			var playerPos = this.playerStatsNodes.head.entity.get(PositionComponent);
+			var locationKey = GameGlobals.gameState.getActionLocationKey(isLocationAction, playerPos);
+			var cooldownTotal = PlayerActionConstants.getCooldown(action);
+			return GameGlobals.gameState.getActionCooldown(action, locationKey, cooldownTotal);
 		}
 
 	});

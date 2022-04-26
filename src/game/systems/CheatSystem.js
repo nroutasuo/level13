@@ -10,6 +10,7 @@ define(['ash',
 	'game/constants/FightConstants',
 	'game/constants/TradeConstants',
 	'game/constants/UpgradeConstants',
+	'game/constants/WorldConstants',
 	'game/components/common/CampComponent',
 	'game/components/common/PositionComponent',
 	'game/components/player/AutoPlayComponent',
@@ -38,6 +39,7 @@ define(['ash',
 	FightConstants,
 	TradeConstants,
 	UpgradeConstants,
+	WorldConstants,
 	CampComponent,
 	PositionComponent,
 	AutoPlayComponent,
@@ -166,16 +168,12 @@ define(['ash',
 			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_ITEM, "Add the given item to inventory.", ["item id"], function (params) {
 				this.addItem(params[0]);
-				GlobalSignals.inventoryChangedSignal.dispatch();
 			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_EQUIP_BEST, "Auto-equip best items available.", [], function (params) {
 				this.equipBest();
 			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_PERK, "Add the given perk to the player.", ["perk id"], function (params) {
 				this.addPerk(params[0]);
-			});
-			this.registerCheat(CheatConstants.CHEAT_NAME_FOLLOWER, "Add random follower.", [], function (params) {
-				this.addFollower();
 			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_REVEAL_MAP, "Reveal the map (show important locations without scouting).", ["true/false"], function (params) {
 				this.revealMap(params[0]);
@@ -188,6 +186,9 @@ define(['ash',
 			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_TRADER, "Trigger an incoming trader immediately.", [], function (params) {
 				this.triggerTrader();
+			});
+			this.registerCheat(CheatConstants.CHEAT_NAME_RECRUIT, "Trigger an incoming recruit immediately.", [], function (params) {
+				this.triggerRecruit();
 			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_RAID, "Trigger a raid immediately.", [], function (params) {
 				this.triggerRaid();
@@ -214,7 +215,7 @@ define(['ash',
 			return cmd === CheatConstants.CHEAT_NAME_AUTOPLAY;
 		},
 
-		applyCheat: function (input) {
+		applyCheatInput: function (input) {
 			if (!GameConstants.isCheatsEnabled) return;
 
 			var inputParts = input.split(" ");
@@ -225,24 +226,26 @@ define(['ash',
 				var numParams = this.cheatDefinitions[name].params.length;
 				var numOptional = ((this.cheatDefinitions[name].params.join().match(/optional/g)) || []).length;
 				if (Math.abs(inputParts.length - 1 - numParams) <= numOptional) {
-					func.call(this, inputParts.slice(1));
+					this.applyCheat(() => {
+						func.call(this, inputParts.slice(1));
+					});
 				} else {
-					log.i("Wrong number of parameters. Expected " + numParams + " (" + numOptional + ") got " + (inputParts.length -1));
+					log.w("Wrong number of parameters. Expected " + numParams + " (" + numOptional + ") got " + (inputParts.length -1));
 				}
 				return;
 			} else {
-				log.i("cheat not found: " + name);
+				log.w("cheat not found: " + name);
 			}
-
-			// TODO re-implement these cheats
-			/*
-			var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
-			switch (name) {
-				case "printSector":
-					log.i(currentSector.get(SectorFeaturesComponent));
-					break;
+		},
+		
+		applyCheat: function (fn) {
+			if (!fn) return
+			if (!GameConstants.isCheatsEnabled) return;
+			if (!GameGlobals.gameState.hasCheated) {
+				GameGlobals.gameState.hasCheated = true;
+				gtag('set', { 'has_cheated': true });
 			}
-			*/
+			fn();
 		},
 
 		printCheats: function () {
@@ -251,7 +254,7 @@ define(['ash',
 					continue;
 				var hasParams = this.cheatDefinitions[cmd].params.length > 0;
 				var params = "";
-				for (var i = 0; i < this.cheatDefinitions[cmd].params.length; i++) {
+				for (let i = 0; i < this.cheatDefinitions[cmd].params.length; i++) {
 					params += "[" + this.cheatDefinitions[cmd].params[i] + "] ";
 				}
 				log.i(cmd + " " + params + "- " + this.cheatDefinitions[cmd].desc);
@@ -267,7 +270,7 @@ define(['ash',
 					continue;
 				var hasParams = this.cheatDefinitions[cmd].params.length > 0;
 				var params = "";
-				for (var i = 0; i < this.cheatDefinitions[cmd].params.length; i++) {
+				for (let i = 0; i < this.cheatDefinitions[cmd].params.length; i++) {
 					params += "[" + this.cheatDefinitions[cmd].params[i] + "] ";
 				}
 				div += ("<b>" + cmd + "</b>" + " " + params + "- " + this.cheatDefinitions[cmd].desc) + "<br/>";
@@ -308,7 +311,7 @@ define(['ash',
 					endConditionUpdateFunction = function () {
 						if (GameGlobals.gameState.numCamps >= numCampsTarget) {
 							this.engine.updateComplete.remove(endConditionUpdateFunction, this);
-							this.applyCheat("autoplay off");
+							this.applyCheatInput("autoplay off");
 						}
 					};
 					break;
@@ -322,7 +325,7 @@ define(['ash',
 							return;
 						if (!autoplayComponent || !autoplayComponent.isExploring) {
 							this.engine.updateComplete.remove(endConditionUpdateFunction, this);
-							this.applyCheat("autoplay off");
+							this.applyCheatInput("autoplay off");
 						}
 					};
 					break;
@@ -455,11 +458,15 @@ define(['ash',
 				}
 		},
 
-		addTechs: function (campOrdinal) {
+		addTechs: function (campOrdinal, step) {
+			step = step || WorldConstants.CAMP_STEP_END;
 			var minOrdinal;
+			var minStep;
 			for (var id in UpgradeConstants.upgradeDefinitions) {
+				if (this.tribeUpgradesNodes.head.upgrades.hasUpgrade(id)) continue;
 				minOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(id);
-				if (minOrdinal <= campOrdinal) {
+				minStep = UpgradeConstants.getMinimumCampStepForUpgrade(id);
+				if (WorldConstants.isHigherOrEqualCampOrdinalAndStep(campOrdinal, step, minOrdinal, minStep)) {
 					this.addTech(id);
 				}
 			}
@@ -469,7 +476,7 @@ define(['ash',
 			var maxPieces = UpgradeConstants.getMaxPiecesForBlueprint(name);
 			amount = Math.max(1, amount);
 			amount = Math.min(amount, maxPieces);
-			for (var i = 0; i < amount; i++) {
+			for (let i = 0; i < amount; i++) {
 				this.tribeUpgradesNodes.head.upgrades.addNewBlueprintPiece(name);
 			}
 			GameGlobals.gameState.unlockedFeatures.blueprints = true;
@@ -478,7 +485,7 @@ define(['ash',
 		addBlueprintsForLevel: function (campOrdinal) {
 			var id;
 			var blueprints = UpgradeConstants.getBlueprintsByCampOrdinal(campOrdinal);
-			for (var i in blueprints) {
+			for (let i in blueprints) {
 				id = blueprints[i];
 				this.addBlueprints(id, UpgradeConstants.piecesByBlueprint[id]);
 			}
@@ -486,7 +493,7 @@ define(['ash',
 
 		addTradePartners: function (campOrdinal) {
 			var partner;
-			for (var i = 0; i < TradeConstants.TRADING_PARTNERS.length; i++) {
+			for (let i = 0; i < TradeConstants.TRADING_PARTNERS.length; i++) {
 				partner = TradeConstants.TRADING_PARTNERS[i];
 				if (partner.campOrdinal < campOrdinal) {
 					if (GameGlobals.gameState.foundTradingPartners.indexOf(partner.campOrdinal) >= 0)
@@ -499,7 +506,7 @@ define(['ash',
 		
 		addTradePartner: function () {
 			var partner;
-			for (var i = 0; i < TradeConstants.TRADING_PARTNERS.length; i++) {
+			for (let i = 0; i < TradeConstants.TRADING_PARTNERS.length; i++) {
 				partner = TradeConstants.TRADING_PARTNERS[i];
 				if (GameGlobals.gameState.foundTradingPartners.indexOf(partner.campOrdinal) >= 0)
 					continue;
@@ -513,7 +520,7 @@ define(['ash',
 			var workshopEntities = GameGlobals.levelHelper.getWorkshopsSectorsForLevel(level);
 			var featuresComponent;
 			var sectorControlComponent;
-			for (var i = 0; i < workshopEntities.length; i++) {
+			for (let i = 0; i < workshopEntities.length; i++) {
 				sectorControlComponent = workshopEntities[i].get(SectorControlComponent);
 				while (!sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP)) {
 					sectorControlComponent.addWin(LocaleConstants.LOCALE_ID_WORKSHOP);
@@ -527,7 +534,8 @@ define(['ash',
 			var item = ItemConstants.getItemByID(itemID);
 			if (item) {
 				if (!onlyIfMissing || !itemsComponent.contains(item.name)) {
-					itemsComponent.addItem(item.clone(), !playerPos.inCamp);
+					GameGlobals.playerHelper.addItem(item);
+					GlobalSignals.inventoryChangedSignal.dispatch();
 				}
 			} else {
 				log.w("No such item: " + itemID);
@@ -537,12 +545,6 @@ define(['ash',
 		equipBest: function () {
 			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
 			itemsComponent.autoEquipAll();
-		},
-
-		addFollower: function() {
-			var campCount = GameGlobals.gameState.numCamps;
-			var follower = ItemConstants.getFollower(this.playerPositionNodes.head.position.level, campCount);
-			GameGlobals.playerActionFunctions.addFollower(follower);
 		},
 
 		addPerk: function () {
@@ -585,7 +587,7 @@ define(['ash',
 			var level = originalPos.level;
 			var sectors = GameGlobals.levelHelper.getSectorsByLevel(level);
 			var sector;
-			var i = 0;
+			let i = 0;
 			var binding = null;
 			var updateFunction = function () {
 				if (i < sectors.length) {
@@ -620,6 +622,14 @@ define(['ash',
 			var campTimers = currentSector ? currentSector.get(CampEventTimersComponent) : null;
 			if (campTimers) {
 				campTimers.eventStartTimers["trader"] = 1;
+			}
+		},
+
+		triggerRecruit: function () {
+			var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
+			var campTimers = currentSector ? currentSector.get(CampEventTimersComponent) : null;
+			if (campTimers) {
+				campTimers.eventStartTimers["recruit"] = 1;
 			}
 		},
 

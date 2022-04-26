@@ -1,5 +1,5 @@
 // Lists miscellaneous improvements that the given entity (should be a Sector) contains
-define(['ash', 'game/GameGlobals', 'game/vos/ImprovementVO'], function (Ash, GameGlobals, ImprovementVO) {
+define(['ash', 'game/GameGlobals', 'game/constants/ImprovementConstants', 'game/vos/ImprovementVO'], function (Ash, GameGlobals, ImprovementConstants, ImprovementVO) {
 	var SectorImprovementsComponent = Ash.Class.extend({
 
 		improvements: {},
@@ -19,7 +19,7 @@ define(['ash', 'game/GameGlobals', 'game/vos/ImprovementVO'], function (Ash, Gam
 
 			if (!amount) amount = 1;
 			
-			for (var i = 0; i < amount; i++) {
+			for (let i = 0; i < amount; i++) {
 				vo.count++;
 			}
 		},
@@ -42,7 +42,7 @@ define(['ash', 'game/GameGlobals', 'game/vos/ImprovementVO'], function (Ash, Gam
 		},
 		
 		getTotalCount: function () {
-			var result = 0;
+			let result = 0;
 			for (var key in this.improvements) {
 				var val = this.improvements[key];
 				if (val) result += val.count;
@@ -57,6 +57,12 @@ define(['ash', 'game/GameGlobals', 'game/vos/ImprovementVO'], function (Ash, Gam
 			} else {
 				return 0;
 			}
+		},
+		
+		getMajorLevel: function (type) {
+			var level = this.getLevel(type);
+			var id = ImprovementConstants.getImprovementID(type);
+			return ImprovementConstants.getMajorLevel(id, level);
 		},
 
 		getVO: function(type) {
@@ -84,7 +90,7 @@ define(['ash', 'game/GameGlobals', 'game/vos/ImprovementVO'], function (Ash, Gam
 		getTotal: function (improvementType) {
 			var allImprovements = this.getAll(improvementType);
 			var count = 0;
-			for (var i = 0; i < allImprovements.length; i++) {
+			for (let i = 0; i < allImprovements.length; i++) {
 				count += allImprovements[i].count;
 			}
 			return count;
@@ -124,7 +130,7 @@ define(['ash', 'game/GameGlobals', 'game/vos/ImprovementVO'], function (Ash, Gam
 		},
 
 		getMaxSelectedCampBuildingSpot: function () {
-			var result = 0;
+			let result = 0;
 			for (var spotIndex = 0; spotIndex < this.buildingSpots.length; spotIndex++) {
 				if (this.buildingSpots[spotIndex]) result = spotIndex;
 			}

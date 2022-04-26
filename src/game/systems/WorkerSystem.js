@@ -1,6 +1,7 @@
 define([
 	'ash',
 	'game/GameGlobals',
+	'game/GlobalSignals',
 	'game/constants/GameConstants',
 	'game/constants/LogConstants',
 	'game/constants/PlayerActionConstants',
@@ -17,7 +18,7 @@ define([
 	'game/components/common/CampComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/common/LogMessagesComponent',
-], function (Ash, GameGlobals, GameConstants, LogConstants, PlayerActionConstants, PerkConstants, CampConstants,
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, PlayerActionConstants, PerkConstants, CampConstants,
 	CampNode, PlayerPositionNode, PlayerLocationNode, NearestCampNode,
 	ResourcesComponent,
 	PositionComponent,
@@ -34,6 +35,7 @@ define([
 		playerLocationNodes: null,
 		nearestCampNodes: null,
 	
+		isPendingProductionRateUpdate: false,
 		lastMsgTimeStamp: 0,
 		msgFrequency: 1000 * 120,
 
@@ -45,9 +47,18 @@ define([
 			this.playerNodes = engine.getNodeList(PlayerPositionNode);
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			this.nearestCampNodes = engine.getNodeList(NearestCampNode);
+			
+			this.isPendingProductionRateUpdate = true;
+			
+			GlobalSignals.add(this, GlobalSignals.gameStateReadySignal, this.queueProductionRateUpdate);
+			GlobalSignals.add(this, GlobalSignals.campBuiltSignal, this.queueProductionRateUpdate);
+			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.queueProductionRateUpdate);
+			GlobalSignals.add(this, GlobalSignals.upgradeUnlockedSignal, this.queueProductionRateUpdate);
+			GlobalSignals.add(this, GlobalSignals.workersAssignedSignal, this.queueProductionRateUpdate);
 		},
 
 		removeFromEngine: function (engine) {
+			GlobalSignals.removeAll(this);
 			this.campNodes = null;
 			this.playerNodes = null;
 			this.playerLocationNodes = null;
@@ -59,73 +70,73 @@ define([
 			if (GameGlobals.gameState.isPaused) return;
 			
 			for (var node = this.campNodes.head; node; node = node.next) {
-				this.updateNode(node, time);
+				if (this.isPendingProductionRateUpdate) {
+					this.updateWorkerProductionRate(node);
+				}
+				this.updateWorkerHunger(node, time);
+				this.updateWorkerProduction(node, time);
+				this.updateImprovementProduction(node, time);
 			}
+			
+			this.isPendingProductionRateUpdate = false;
 		
 			this.updatePlayer(time);
 			this.logAmbient();
 		},
-	
-		updateNode: function (node, time) {
-			this.updateWorkerHunger(node, time);
-			this.updateWorkers(node, time);
-			this.updateResourceImprovements(node, time);
-		},
 		
-		updateWorkers: function (node, time) {
+		updateWorkerProduction: function (node, time) {
 			var camp = node.camp;
 			var campResources = node.entity.get(ResourcesComponent).resources;
 			var availableResources = GameGlobals.resourcesHelper.getCurrentCampStorage(node.entity).resources;
 			var resourceAccComponent = node.entity.get(ResourceAccumulationComponent);
-			var improvementsComponent = node.entity.get(SectorImprovementsComponent);
 			
 			// Basic: Scavengers
-			var metal = time * GameGlobals.campHelper.getMetalProductionPerSecond(camp.assignedWorkers.scavenger, improvementsComponent);
+			var metal = time * (node.camp.metalProductionPerSecond || 0);
 			campResources.addResource(resourceNames.metal, metal);
 			resourceAccComponent.addChange(resourceNames.metal, metal / time, "Scavengers");
 			if (metal > 0) GameGlobals.gameState.unlockedFeatures.resources.metal = true;
 			
 			// Basic: Trappers
-			var food = time * GameGlobals.campHelper.getFoodProductionPerSecond(camp.assignedWorkers.trapper, improvementsComponent);
+			var food = time * (node.camp.foodProductionPerSecond || 0);
 			campResources.addResource(resourceNames.food, food);
 			resourceAccComponent.addChange(resourceNames.food, food / time, "Trappers");
 			if (food > 0) GameGlobals.gameState.unlockedFeatures.resources.food = true;
 			
 			// Basic: Water collectors
-			var water = time * GameGlobals.campHelper.getWaterProductionPerSecond(camp.assignedWorkers.water, improvementsComponent);
+			var water = time * (node.camp.waterProductionPerSecond || 0);
 			campResources.addResource(resourceNames.water, water);
 			resourceAccComponent.addChange(resourceNames.water, water / time, "Collectors");
 			if (water > 0) GameGlobals.gameState.unlockedFeatures.resources.water = true;
 			
 			// Basic: Rope-makers
-			var rope = time * GameGlobals.campHelper.getRopeProductionPerSecond(camp.assignedWorkers.ropemaker, improvementsComponent);
+			var rope = time * (node.camp.ropeProductionPerSecond || 0);
 			campResources.addResource(resourceNames.rope, rope);
 			resourceAccComponent.addChange(resourceNames.rope, rope / time, "Rope-makers");
 			if (rope > 0) GameGlobals.gameState.unlockedFeatures.resources.rope = true;
 			
 			// Workshop: Chemists
-			var fuel = time * GameGlobals.campHelper.getFuelProductionPerSecond(camp.assignedWorkers.chemist, improvementsComponent);
+			var fuel = time * (node.camp.fuelProductionPerSecond || 0);
 			campResources.addResource(resourceNames.fuel, fuel);
 			resourceAccComponent.addChange(resourceNames.fuel, fuel / time, "Chemists");
 			if (fuel > 0) GameGlobals.gameState.unlockedFeatures.resources.fuel = true;
 			
 			// Workshop: Rubbermakers
-			var rubber = time * GameGlobals.campHelper.getRubberProductionPerSecond(camp.assignedWorkers.rubbermaker, improvementsComponent);
+			var rubber = time * (node.camp.rubberProductionPerSecond || 0);
 			campResources.addResource(resourceNames.rubber, rubber);
 			resourceAccComponent.addChange(resourceNames.rubber, rubber / time, "Plantation workers");
 			if (rubber > 0) GameGlobals.gameState.unlockedFeatures.resources.rubber = true;
 			
 			// Greenhouses
-			var herbs = time * GameGlobals.campHelper.getHerbsProductionPerSecond(camp.assignedWorkers.gardener, improvementsComponent);
+			var herbs = time * (node.camp.herbsProductionPerSecond || 0);
 			campResources.addResource(resourceNames.herbs, herbs);
 			resourceAccComponent.addChange(resourceNames.herbs, herbs / time, "Gardeners");
 			if (herbs > 0) GameGlobals.gameState.unlockedFeatures.resources.herbs = true;
 			
 			// Advanced: Apothecaries
-			var herbsRequired = time * GameGlobals.campHelper.getHerbsConsumptionPerSecond(camp.assignedWorkers.apothecary);
+			var herbsRequired = time * (node.camp.herbConsumptionPerSecond || 0);
 			if (herbsRequired > 0) {
 				var herbsUsed = Math.min(availableResources.getResource(resourceNames.herbs), herbsRequired);
-				var medicine = time * (herbsUsed / herbsRequired) * GameGlobals.campHelper.getMedicineProductionPerSecond(camp.assignedWorkers.apothecary, improvementsComponent);
+				var medicine = time * (herbsUsed / herbsRequired) * node.camp.medicineProductionPerSecond;
 				campResources.addResource(resourceNames.medicine, medicine);
 				campResources.addResource(resourceNames.herbs, -herbsUsed);
 				resourceAccComponent.addChange(resourceNames.medicine, medicine / time, "Apothecaries");
@@ -134,10 +145,10 @@ define([
 			}
 			
 			// Advanced: Toolsmiths
-			var metalRequiredTools = time * GameGlobals.campHelper.getMetalConsumptionPerSecondSmith(camp.assignedWorkers.toolsmith);
+			var metalRequiredTools = time * (node.camp.metalConsumptionPerSecondSmith || 0);
 			if (metalRequiredTools > 0) {
 				var metalUsedTools = Math.min(availableResources.getResource(resourceNames.metal), metalRequiredTools);
-				var tools = time * (metalUsedTools / metalRequiredTools) * GameGlobals.campHelper.getToolsProductionPerSecond(camp.assignedWorkers.toolsmith, improvementsComponent);
+				var tools = time * (metalUsedTools / metalRequiredTools) * node.camp.toolsProductionPerSecond;
 				campResources.addResource(resourceNames.tools, tools);
 				campResources.addResource(resourceNames.metal, -metalUsedTools);
 				resourceAccComponent.addChange(resourceNames.tools, tools / time, "Toolsmiths");
@@ -146,16 +157,34 @@ define([
 			}
 			
 			// Advanced: Concrete mixers
-			var metalRequiredConcrete = time * GameGlobals.campHelper.getMetalConsumptionPerSecondConcrete(camp.assignedWorkers.concrete);
+			var metalRequiredConcrete = time * (node.camp.metalConsumptionPerSecondConcrete || 0);
 			if (metalRequiredConcrete > 0) {
 				var metalUsedConcrete = Math.min(availableResources.getResource(resourceNames.metal), metalRequiredConcrete);
-				var concrete = time * (metalUsedConcrete / metalRequiredConcrete) * GameGlobals.campHelper.getConcreteProductionPerSecond(camp.assignedWorkers.concrete, improvementsComponent);
+				var concrete = time * (metalUsedConcrete / metalRequiredConcrete) * node.camp.concreteProductionPerSecond;
 				campResources.addResource(resourceNames.concrete, concrete);
 				campResources.addResource(resourceNames.metal, -metalUsedConcrete);
 				resourceAccComponent.addChange(resourceNames.concrete, concrete / time, "Concrete mixers");
 				resourceAccComponent.addChange(resourceNames.metal, -metalUsedConcrete / time, "Concrete mixers");
 				if (concrete > 0) GameGlobals.gameState.unlockedFeatures.resources.concrete = true;
 			}
+		},
+		
+		updateWorkerProductionRate: function (node) {
+			var camp = node.camp;
+			var improvementsComponent = node.entity.get(SectorImprovementsComponent);
+			camp.metalProductionPerSecond = GameGlobals.campHelper.getMetalProductionPerSecond(camp.assignedWorkers.scavenger, improvementsComponent);
+			camp.foodProductionPerSecond = GameGlobals.campHelper.getFoodProductionPerSecond(camp.assignedWorkers.trapper, improvementsComponent);
+			camp.waterProductionPerSecond = GameGlobals.campHelper.getWaterProductionPerSecond(camp.assignedWorkers.water, improvementsComponent);
+			camp.ropeProductionPerSecond = GameGlobals.campHelper.getRopeProductionPerSecond(camp.assignedWorkers.ropemaker, improvementsComponent);
+			camp.fuelProductionPerSecond = GameGlobals.campHelper.getFuelProductionPerSecond(camp.assignedWorkers.chemist, improvementsComponent);
+			camp.rubberProductionPerSecond = GameGlobals.campHelper.getRubberProductionPerSecond(camp.assignedWorkers.rubbermaker, improvementsComponent);
+			camp.herbsProductionPerSecond = GameGlobals.campHelper.getHerbsProductionPerSecond(camp.assignedWorkers.gardener, improvementsComponent);
+			camp.herbConsumptionPerSecond = GameGlobals.campHelper.getHerbsConsumptionPerSecond(camp.assignedWorkers.apothecary);
+			camp.medicineProductionPerSecond = GameGlobals.campHelper.getMedicineProductionPerSecond(camp.assignedWorkers.apothecary, improvementsComponent);
+			camp.metalConsumptionPerSecondSmith = GameGlobals.campHelper.getMetalConsumptionPerSecondSmith(camp.assignedWorkers.toolsmith);
+			camp.toolsProductionPerSecond = GameGlobals.campHelper.getToolsProductionPerSecond(camp.assignedWorkers.toolsmith, improvementsComponent);
+			camp.metalConsumptionPerSecondConcrete = GameGlobals.campHelper.getMetalConsumptionPerSecondConcrete(camp.assignedWorkers.concrete);
+			camp.concreteProductionPerSecond = GameGlobals.campHelper.getConcreteProductionPerSecond(camp.assignedWorkers.concrete, improvementsComponent);
 		},
 		
 		updateWorkerHunger: function (node, time) {
@@ -171,8 +200,8 @@ define([
 			var playerFoodSourceAcc = GameGlobals.resourcesHelper.getCurrentStorageAccumulation(true);
 			
 			// Manage perks
-			var isThirsty = playerFoodSource.resources.water <= 0;
-			var isHungry = playerFoodSource.resources.food <= 0;
+			var isThirsty = playerFoodSource.resources.water < 1;
+			var isHungry = playerFoodSource.resources.food < 1;
 			var perksComponent = this.playerNodes.head.entity.get(PerksComponent);
 			
 			var hasThirstPerk = perksComponent.hasPerk(PerkConstants.perkIds.thirst);
@@ -185,7 +214,8 @@ define([
 				}
 			} else if (!hasThirstPerk) {
 				if (!inCamp && (GameGlobals.gameState.unlockedFeatures.resources.water)) this.log("Out of water!");
-				perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.thirst));
+				var thirstPerk = PerkConstants.getPerk(PerkConstants.perkIds.thirst, PerkConstants.ACTIVATION_TIME_HEALTH_DEBUFF);
+				perksComponent.addPerk(thirstPerk);
 			}
 			
 			if (!isHungry) {
@@ -195,17 +225,18 @@ define([
 				}
 			} else if (!hasHungerPerk) {
 				if (!inCamp && (GameGlobals.gameState.unlockedFeatures.resources.food)) this.log("Out of food!");
-				perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.hunger));
+				var hungerPerk = PerkConstants.getPerk(PerkConstants.perkIds.hunger, PerkConstants.ACTIVATION_TIME_HEALTH_DEBUFF);
+				perksComponent.addPerk(hungerPerk);
 			}
 		},
 		
-		updateResourceImprovements: function (node, time) {
+		updateImprovementProduction: function (node, time) {
 			var resources = node.entity.get(ResourcesComponent).resources;
 			var resourceAcc = node.entity.get(ResourceAccumulationComponent);
 			var improvementsComponent = node.entity.get(SectorImprovementsComponent);
 			
 			// Darkfarms
-			var farmFood = improvementsComponent.getCount(improvementNames.darkfarm) * 0.015 * time * GameConstants.gameSpeedCamp;
+			var farmFood = GameGlobals.campHelper.getDarkFarmProductionPerSecond(improvementsComponent) * time * GameConstants.gameSpeedCamp;
 			resources.addResource(resourceNames.food, farmFood);
 			resourceAcc.addChange(resourceNames.food, farmFood / time, "Snail farms");
 		},
@@ -223,7 +254,12 @@ define([
 			}
 		},
 		
+		queueProductionRateUpdate: function () {
+			this.isPendingProductionRateUpdate = true;
+		},
+		
 		logAmbient: function () {
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (!this.playerLocationNodes.head || !this.playerLocationNodes.head.position) return;
 			
 			var playerFoodSource = GameGlobals.resourcesHelper.getCurrentStorage().resources;
@@ -236,8 +272,8 @@ define([
 			var timeStamp = new Date().getTime();
 			var log = timeStamp - this.lastMsgTimeStamp > this.msgFrequency;
 			if (log) {
-				var isThirsty = playerFoodSource.water <= 0;
-				var isHungry = playerFoodSource.food <= 0;
+				var isThirsty = playerFoodSource.water < 1;
+				var isHungry = playerFoodSource.food < 1;
 				var msg = null;
 				
 				if (inCamp && hasPopulation && isThirsty && Math.random() < 0.05) {

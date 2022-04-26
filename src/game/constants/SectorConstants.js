@@ -14,6 +14,7 @@ define(['ash',
 		MAP_SECTOR_STATUS_UNVISITED_INVISIBLE: "unvisited-invisible",
 		MAP_SECTOR_STATUS_UNVISITED_VISIBLE: "unvisited-seen",
 		MAP_SECTOR_STATUS_VISITED_UNSCOUTED: "visited",
+		MAP_SECTOR_STATUS_REVEALED_BY_MAP: "revealed-by-map",
 		MAP_SECTOR_STATUS_VISITED_SCOUTED: "scouted",
 		MAP_SECTOR_STATUS_VISITED_CLEARED: "cleared",
 		
@@ -31,34 +32,68 @@ define(['ash',
 		SECTOR_CONDITION_DAMAGED: 4,    // not worn out but actually damaged by something
 		SECTOR_CONDITION_RUINED: 5,     // so damaged or worn it's hard to say which
 		
+		// TODO add locales?
+		WAYMARK_TYPE_SPRING: "spring",
+		WAYMARK_TYPE_CAMP: "camp",
+		WAYMARK_TYPE_RADIATION: "radiation",
+		WAYMARK_TYPE_POLLUTION: "pollution",
+		WAYMARK_TYPE_SETTLEMENT: "settlement",
+		
+		HAZARD_TYPE_RADIATION: "radiation",
+		HAZARD_TYPE_POLLUTION: "poison",
+		HAZARD_TYPE_DEBRIS: "debris",
+		
 		getSectorStatus: function (sector) {
 			if (!sector) return null;
 			
+			var statusComponent = sector.get(SectorStatusComponent);
+			
+			if (statusComponent.scouted) {
+				var localesComponent = sector.get(SectorLocalesComponent);
+				var workshopComponent = sector.get(WorkshopComponent);
+				var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
+				var sectorControlComponent = sector.get(SectorControlComponent);
+				var hasUnclearedWorkshop = workshopComponent != null && workshopComponent.isClearable && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP);
+				var isCleared = unScoutedLocales <= 0 && !hasUnclearedWorkshop;
+				if (isCleared) {
+					return this.MAP_SECTOR_STATUS_VISITED_CLEARED;
+				} else {
+					return this.MAP_SECTOR_STATUS_VISITED_SCOUTED;
+				}
+			}
+			
+			if (statusComponent.revealedByMap) {
+				return this.MAP_SECTOR_STATUS_REVEALED_BY_MAP;
+			}
+			
 			var isVisited = sector.has(VisitedComponent);
 			if (isVisited) {
-				var statusComponent = sector.get(SectorStatusComponent);
-				var isScouted = statusComponent.scouted;
-				if (isScouted) {
-					var localesComponent = sector.get(SectorLocalesComponent);
-					var workshopComponent = sector.get(WorkshopComponent);
-					var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
-					var sectorControlComponent = sector.get(SectorControlComponent);
-					var hasUnclearedWorkshop = workshopComponent != null && workshopComponent.isClearable && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP);
-					var isCleared = unScoutedLocales <= 0 && !hasUnclearedWorkshop;
-					if (isCleared) {
-						return this.MAP_SECTOR_STATUS_VISITED_CLEARED;
-					} else {
-						return this.MAP_SECTOR_STATUS_VISITED_SCOUTED;
-					}
-				} else {
-					return this.MAP_SECTOR_STATUS_VISITED_UNSCOUTED;
-				}
+				return this.MAP_SECTOR_STATUS_VISITED_UNSCOUTED;
 			} else {
 				if (sector.has(RevealedComponent)) {
 					return this.MAP_SECTOR_STATUS_UNVISITED_VISIBLE;
-				} else {
-					return this.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE;
 				}
+			}
+			
+			return this.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE;
+		},
+		
+		isVisited: function (sectorStatus) {
+			switch (sectorStatus) {
+				case SectorConstants.MAP_SECTOR_STATUS_VISITED_UNSCOUTED: return true;
+				case SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED: return true;
+				case SectorConstants.MAP_SECTOR_STATUS_VISITED_CLEARED: return true;
+				default: return false;
+			}
+		},
+		
+		isLBasicInfoVisible: function (sectorStatus) {
+			switch (sectorStatus) {
+				case SectorConstants.MAP_SECTOR_STATUS_VISITED_UNSCOUTED: return true;
+				case SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED: return true;
+				case SectorConstants.MAP_SECTOR_STATUS_VISITED_CLEARED: return true;
+				case SectorConstants.MAP_SECTOR_STATUS_REVEALED_BY_MAP: return true;
+				default: return false;
 			}
 		},
 		

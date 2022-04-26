@@ -1,159 +1,244 @@
 define([
 	'ash',
+	'json!game/data/EnemyData.json',
 	'game/GameGlobals',
 	'game/constants/EnemyConstants',
+	'game/constants/FollowerConstants',
 	'game/constants/PerkConstants',
 	'game/constants/ItemConstants',
 	'game/constants/FightConstants',
+	'game/constants/UpgradeConstants',
 	'game/constants/WorldConstants',
 	'game/components/player/ItemsComponent',
-	'game/vos/EnemyVO'
+	'game/components/player/FollowersComponent',
+	'game/vos/EnemyVO',
+	'utils/MathUtils',
 ], function (
 	Ash,
+	EnemyData,
 	GameGlobals,
 	EnemyConstants,
+	FollowerConstants,
 	PerkConstants,
 	ItemConstants,
 	FightConstants,
+	UpgradeConstants,
 	WorldConstants,
 	ItemsComponent,
-	EnemyVO
+	FollowersComponent,
+	EnemyVO,
+	MathUtils
 ) {
 	var EnemyCreator = Ash.Class.extend({
 		
 		constructor: function () {},
 		
 		createEnemies: function () {
-			var c = EnemyConstants;
-			var definitions = EnemyConstants.enemyDefinitions;
-			// global
-			definitions.global.push(this.createEnemy("giant centipede", "giant centipede", "global", [c.nPest, c.nAnimal], [c.gSwarm],[c.aInfest], [c.dCleared], 1, 0, 0.4, 0.9, 30, [ resourceNames.food ]));
-			definitions.global.push(this.createEnemy("huge rat", "huge rat", "global", [c.nPest, c.nAnimal], [c.gPack, c.gMob, c.gHorde], [c.aInfest], [c.dCleared], 1, 5, 0.9, 0.75, [ resourceNames.food ]));
-			definitions.global.push(this.createEnemy("security bot", "security bot", "global", [c.nBot], [c.gMob], [c.aPatrol, c.aGuard], [c.dDisabled], 3, 5, 0.2, 0.3, [ resourceNames.metal, resourceNames.fuel ]));
-			definitions.global.push(this.createEnemy("giant scorpion", "giant scorpion", "global", [c.nPest, c.nAnimal], [c.gSwarm, c.gMob], [c.aInfest], [], 4, 5, 0.6, 0.7, [ resourceNames.food ]));
-			definitions.global.push(this.createEnemy("camel spider", "camel spider", "global", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aOverrun], [c.dCleared, c.dDrive], 5, 5, 0.3, 1, 35, [ resourceNames.food ]));
-			definitions.global.push(this.createEnemy("ancient guard bot", "ancient guard bot", "global", [c.nPest, c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aPatrol, c.aGuard, c.aInfest], [c.dDisabled], 6, 5, 0.3, 0.75, 65, [ resourceNames.metal ]));
-			definitions.global.push(this.createEnemy("carpet viper", "carpet viper", "global", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aOverrun], [c.dCleared, c.dDrive], 7, 5, 0.3, 1, 35, [ resourceNames.food ]));
-			definitions.global.push(this.createEnemy("alligator", "alligator", "global", [c.nPest, c.nAnimal], [c.gPack, c.gMob], [c.aOverrun, c.aGuard, c.aInfest], [c.dCleared, c.dKilled], 7, 5, 0.3, 0.9, 75, [ resourceNames.food ]));
-			definitions.global.push(this.createEnemy("rusted guard bot", "rusted guard bot", "global", [c.nPest, c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aPatrol, c.aGuard, c.aInfest], [c.dDisabled], 9, 5, 0.5, 0.8, 65, [ resourceNames.metal, resourceNames.fuel ]));
-			definitions.global.push(this.createEnemy("robot from a forgotten war", "robot from a forgotten war", "global", [c.nPest, c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aGuard, c.aInfest], [c.dDisabled], 9, 5, 0.5, 0.9, 60, [ resourceNames.metal, resourceNames.fuel ]));
-			definitions.global.push(this.createEnemy("aggressive alligator", "aggressive alligator", "global", [c.nPest, c.nAnimal], [c.gPack, c.gMob], [c.aOverrun, c.aGuard, c.aInfest], [c.dCleared, c.dKilled], 10, 5, 0.3, 0.8, 75, [ resourceNames.food ]));
-			definitions.global.push(this.createEnemy("drone from a forgotten war", "drone from a forgotten war", "global", [c.nPest, c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aGuard, c.aInfest], [c.dDisabled], 11, 4, 0.5, 1.25, 60, [ resourceNames.metal ]));
-			definitions.global.push(this.createEnemy("malfunctioning fire door", "malfunctioning fire door", "global", [c.nBot], [], [c.aGuard], [c.dDisabled], 11, 4, 0.1, 0.5, 65, [ resourceNames.metal ]));
-			definitions.global.push(this.createEnemy("antagonistic fire door", "antagonistic fire door", "global", [c.nBot], [], [c.aGuard], [c.dDisabled], 12, 7, 0.2, 0.5, 50, [ resourceNames.metal ]));
-			// nohazard
+			EnemyConstants.enemyDefinitions = {};
 			
-			definitions.nohazard.push(this.createEnemy("rabid dog", "rabid dog", "nohazard", [c.nPest, c.nAnimal], [c.gPack], [c.aInfest], [c.dKilled], 2, 8, 1.25, 0.6, [ resourceNames.food ]));
-			definitions.nohazard.push(this.createEnemy("gigantic spider", "gigantic spider", "nohazard", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aGuard], [c.dKilled], 4, 5, 0.7, 1, 20, [ resourceNames.food ]));
-			definitions.nohazard.push(this.createEnemy("fire salamander", "fire salamander", "nohazard", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gMob, c.gHorde], [c.aInfest], [c.dKilled], 6, 5, 0.6, 1, 50, [ resourceNames.food ]));
-			definitions.nohazard.push(this.createEnemy("tiger snake", "tiger snake", "nohazard", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aOverrun], [c.dCleared, c.dDrive], 7, 5, 0.3, 1, 35, [ resourceNames.food ]));
-			definitions.nohazard.push(this.createEnemy("haywire guard bot 1", "haywire guard bot 1", "nohazard", [c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aPatrol, c.aGuard, c.aInfest], [c.dDisabled], 12, 5, 0.2, 0.8, 50, [ resourceNames.metal, resourceNames.fuel ]));
-			definitions.nohazard.push(this.createEnemy("haywire guard bot 2", "haywire guard bot 2", "nohazard", [c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aPatrol, c.aGuard, c.aInfest], [c.dDisabled], 13, 5, 0.7, 0.8, 50, [ resourceNames.metal, resourceNames.fuel ]));
-			definitions.nohazard.push(this.createEnemy("doomsayer", "doomsayer", "nohazard", [], [c.gMob], [c.aPatrol], [c.dDrive], 13, 3, 0.6, 0.9, 45, [ resourceNames.herbs ]));
-			definitions.nohazard.push(this.createEnemy("armed gangster", "armed gangster", "nohazard", [c.nGangster], [c.gMob, c.gGang], [c.aPatrol, c.aGuard, c.aInfest], [], 14, 6, 0.8, 1, 75, [ resourceNames.food, resourceNames.water ]));
-			definitions.nohazard.push(this.createEnemy("escaped zoo panther", "escaped zoo panther", "nohazard", [c.nAnimal, c.aGuard], [c.gPack, c.gMob], [], [], 14, 8, 0.8, 1.1, 90, [ resourceNames.food ]));
-			definitions.nohazard.push(this.createEnemy("injured zoo panther", "injured zoo panther", "nohazard", [c.nAnimal], [c.gPack, c.gMob], [], [], 15, 8, 0.6, 1.1, 95, [ resourceNames.food ]));
-			definitions.nohazard.push(this.createEnemy("haywire guard bot 3", "haywire guard bot 3", "nohazard", [c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aPatrol, c.aGuard, c.aInfest], [c.dDisabled], 15, 5, 0.6, 1.1, 50, [ resourceNames.metal, resourceNames.fuel ]));
-			// cold
-			definitions.cold.push(this.createEnemy("goshawk", "goshawk", "cold", [c.nAnimal, c.nPest], [c.gFlock], [c.aInfest, c.aGuard], [c.dCleared], 2, 4, 0.4, 1.1, 50, [ resourceNames.food ]));
-			definitions.cold.push(this.createEnemy("grey adder", "grey adder", "cold", [c.nAnimal, c.nPest], [c.gFlock], [c.aInfest, c.aGuard], [c.dCleared], 3, 2, 0.4, 1, 50, [ resourceNames.food ]));
-			definitions.cold.push(this.createEnemy("albatross", "albatross", "cold", [c.nAnimal, c.nPest], [c.gFlock], [c.aInfest, c.aGuard], [c.dCleared], 4, 4, 0.4, 0.9, 50, [ resourceNames.food ]));
-			definitions.cold.push(this.createEnemy("night scorpion", "night scorpion", "cold", [c.nPest, c.nAnimal], [c.gSwarm, c.gMob], [c.aInfest], [], 5, 5, 1, 0.7, [ resourceNames.food ]));
-			definitions.cold.push(this.createEnemy("condor", "condor", "cold", [c.nAnimal, c.nPest], [c.gFlock], [c.aInfest, c.aGuard], [c.dCleared], 6, 4, 0.4, 1, 50, [ resourceNames.food ]));
-			definitions.cold.push(this.createEnemy("duskboar", "duskboar", "cold", [c.nAnimal], [c.gPack], [c.aInfest, c.aGuard], [c.dCleared], 7, 4, 0.4, 1, 50, [ resourceNames.food ]));
-			definitions.cold.push(this.createEnemy("grizzly bear", "grizzly bear", "cold", [c.nAnimal], [c.gPack], [c.aInfest, c.aGuard], [c.dCleared], 8, 6, 0.4, 0.8, 50, [ resourceNames.food ]));
-			definitions.cold.push(this.createEnemy("wolly monkey", "wolly monkey", "cold", [c.nAnimal], [c.gPack], [c.aInfest, c.aGuard], [c.dCleared], 9, 7, 0.4, 1, 50, [ resourceNames.food ]));
-			definitions.cold.push(this.createEnemy("a group of seagulls", "a group of seagulls", "cold", [c.nPest, c.nAnimal], [c.gFlock], [c.aInfest], [], 10, 3, 0.8, 1, 20, [ resourceNames.food ]));
-			definitions.cold.push(this.createEnemy("giant snow owl", "giant snow owl", "cold", [c.nAnimal], [c.gFlock], [c.aInfest, c.aGuard], [c.dCleared], 10, 7, 0.4, 1, 50, [ resourceNames.food ]));
-			definitions.cold.push(this.createEnemy("dire boar", "dire boar", "cold", [c.nAnimal], [c.gPack], [c.aInfest, c.aGuard], [c.dCleared], 11, 4, 0.4, 1, 75, [ resourceNames.food ]));
-			// toxic
-			definitions.toxic.push(this.createEnemy("poisonous centipede", "poisonous centipede", "toxic", [c.nPest, c.nAnimal], [c.gSwarm, c.gMob], [c.aInfest], [c.dCleared], 1, 5, 0.4, 0.8, 50, [ ]));
-			definitions.toxic.push(this.createEnemy("poisonous spider", "poisonous spider", "toxic", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aGuard], [c.dKilled], 4, 5, 0.8, 1, 20, []));
-			definitions.toxic.push(this.createEnemy("leaking gas pipe", "leaking gas pipe", "toxic", [], [], [], [c.dCleared], 5, 4, 0.2, 0.5, 75, [ resourceNames.metal ]));
-			definitions.toxic.push(this.createEnemy("toxic spider", "toxic spider", "toxic", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aGuard], [c.dKilled], 6, 5, 0.8, 1, 20, []));
-			// radiation
-			definitions.radiation.push(this.createEnemy("radioactive centipede", "radioactive centipede", "radiation", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aCover, c.aOverrun], [c.dCleared], 2, 3, 0.8, 0.1, []));
-			definitions.radiation.push(this.createEnemy("radioactive cockroach", "radioactive cockroach", "radiation", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aCover, c.aOverrun], [c.dCleared], 3, 2, 0.9, 0.1, []));
-			definitions.radiation.push(this.createEnemy("mutant spider", "mutant spider", "radiation", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aGuard], [c.dKilled, c.dCleared], 5, 5, 0.3, 1, 20, [ ]));
-			definitions.radiation.push(this.createEnemy("mutant raccoon", "mutant raccoon", "radiation", [c.nPest, c.nAnimal], [c.gPack], [c.aInfest], [c.dKilled, c.dDrive], 7, 4, 1, 0.6, []));
-			definitions.radiation.push(this.createEnemy("radiotrophic fungi", "radiotrophic fungi", "radiation", [c.nPest], [c.gCluster], [c.aInfest], [c.dDrive], 8, 6, 0.8, 0.6, [ resourceNames.food ]));
-			definitions.radiation.push(this.createEnemy("mutant dog", "mutant dog", "radiation", [c.nPest, c.nAnimal], [c.gPack], [c.aInfest], [c.dKilled, c.dDrive], 8, 5, 1.1, 1.1, []));
-			definitions.radiation.push(this.createEnemy("towering mutant dog", "towering mutant dog", "radiation", [c.nPest, c.nAnimal], [c.gPack], [c.aInfest], [c.dKilled, c.dDrive], 10, 5, 1.1, 0.7, 20, []));
-			definitions.radiation.push(this.createEnemy("mutant alligator", "mutant alligator", "radiation", [c.nPest, c.nAnimal], [c.gPack], [c.aInfest], [c.dKilled, c.dDrive], 12, 5, 1.1, 0.7, 30, []));
-			// sunlit
-			definitions.sunlit.push(this.createEnemy("wasp", "wasp", "sunlit", [c.nAnimal], [c.gSwarm], [c.aInfest], [c.dDrive], 0, 1, 0.75, 1.5, 10, []));
-			definitions.sunlit.push(this.createEnemy("bee", "bee", "sunlit", [c.nAnimal], [c.gSwarm], [c.aInfest], [c.dDrive], 1, 4, 0.25, 1.5, 70, []));
-			definitions.sunlit.push(this.createEnemy("thorny bush", "thorny bush", "sunlit", [c.nPest], [c.gCluster], [c.aInfest, c.aCover], [], 2, 2, 0.8, 0.5, [ resourceNames.herbs ]));
-			definitions.sunlit.push(this.createEnemy("overgrown nettle", "overgrown nettle", "sunlit", [c.nPest], [c.gCluster], [c.aInfest, c.aCover], [], 3, 5, 0.8, 0.25, [ resourceNames.food, resourceNames.herbs ]));
-			definitions.sunlit.push(this.createEnemy("hawk", "hawk", "sunlit", [c.nPest, c.nAnimal], [c.gFlock, c.gPack], [c.aInfest], [], 3, 9, 0.3, 1.1, 50, [ resourceNames.food ]));
-			definitions.sunlit.push(this.createEnemy("skunk", "skunk", "sunlit", [c.nPest, c.nAnimal], [c.gGang, c.gPack], [c.aOverrun], [c.dDrive, c.dCleared], 4, 9, 0.3, 1, 50, [ resourceNames.food ]));
-			definitions.sunlit.push(this.createEnemy("fire scorpion", "fire scorpion", "sunlit", [c.nPest, c.nAnimal], [c.gSwarm, c.gMob], [c.aInfest], [], 6, 5, 1, 0.7, [ resourceNames.food ]));
-			definitions.sunlit.push(this.createEnemy("bear", "bear", "sunlit", [c.nAnimal], [], [], [c.dDrive], 8, 6, 0.8, 0.6, [ resourceNames.food ]));
-			definitions.sunlit.push(this.createEnemy("drove of boars", "drove of boars", "sunlit", [c.nAnimal], [], [], [c.dDrive], 8, 5, 1, 0.8, [ resourceNames.food ]));
-			definitions.sunlit.push(this.createEnemy("swarm of pidgeons", "swarm of pidgeons", "sunlit", [c.nPest, c.nAnimal], [c.gFlock, c.gSwarm], [c.aInfest], [c.dDrive], 9, 5, 0.75, 1.1, 10, [ resourceNames.food ]));
-			definitions.sunlit.push(this.createEnemy("great black pelican", "great black pelican", "sunlit", [c.nPest, c.nAnimal], [], [c.aInfest, c.aGuard], [c.dKilled, c.dDrive], 15, 5, 0.5, 0.9, 35, [ resourceNames.food ]));
-			// dark
-			definitions.dark.push(this.createEnemy("cockroach", "cockroach", "dark", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aCover, c.aOverrun], [c.dCleared], 0, 1, 0.4, 2, 10, [ resourceNames.food ]));
-			definitions.dark.push(this.createEnemy("cave bat", "cave bat", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 2, 4, 0.4, 1.1, 20, [ resourceNames.food ]));
-			definitions.dark.push(this.createEnemy("ghost bat", "ghost bat", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 3, 6, 0.8, 1, 50, [ resourceNames.food ]));
-			definitions.dark.push(this.createEnemy("vampire bat", "vampire bat", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 3, 5, 0.7, 1, 70, [ resourceNames.food ]));
-			definitions.dark.push(this.createEnemy("albino salamander", "albino salamander", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gMob, c.gHorde], [c.aInfest], [c.dKilled], 6, 5, 0.6, 1, 50, [ resourceNames.food ]));
-			definitions.dark.push(this.createEnemy("flying fox", "flying fox", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 7, 4, 0.7, 1, 70, [ resourceNames.food ]));
-			definitions.dark.push(this.createEnemy("giant albino salamander", "giant albino salamander", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gMob, c.gHorde], [c.aInfest], [c.dKilled], 9, 5, 0.6, 1, 50, [ resourceNames.food ]));
-			definitions.dark.push(this.createEnemy("great vampire bat", "great vampire bat", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 10, 5, 0.7, 1, 70, [ resourceNames.food ]));
-			// dense
-			definitions.dense.push(this.createEnemy("ratsnake", "ratsnake", "dense", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gCluster], [c.aInfest, c.aOverrun], [c.dKilled, c.dCleared], 5, 5, 0.6, 1, 50, [ resourceNames.food ]));
-			definitions.dense.push(this.createEnemy("fierce snake", "fierce snake", "dense", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gCluster], [c.aInfest, c.aOverrun], [c.dKilled, c.dCleared], 8, 5, 0.6, 1, 50, [ resourceNames.food ]));
-			definitions.dense.push(this.createEnemy("death adder", "death adder", "dense", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gCluster], [c.aInfest, c.aOverrun], [c.dKilled, c.dCleared], 10, 5, 0.6, 1, 50, [ resourceNames.food ]));
-			definitions.dense.push(this.createEnemy("escaped pet boa", "escaped pet boa", "dense", [c.nAnimal], [], [c.aInfest], [], 12, 7, 0.5, 0.9, 85, [ resourceNames.food ]));
-			definitions.dense.push(this.createEnemy("territorial sewer varanid", "territorial sewer varanid", "dense", [c.nAnimal], [c.gPack, c.gGang], [c.aGuard], [c.dKilled, c.dDrive], 13, 8, 0.7, 0.8, 85, [ resourceNames.food ]));
-			definitions.dense.push(this.createEnemy("predatory sewer varanid", "predatory sewer varanid", "dense", [c.nAnimal], [c.gPack, c.gGang], [c.aGuard], [c.dKilled, c.dDrive], 14, 5, 0.8, 0.8, 85, [ resourceNames.food ]));
-			// sparse
-			definitions.sparse.push(this.createEnemy("aggressive magpie", "aggressive magpie", "sparse", [c.nPest, c.nAnimal], [], [c.aInfest], [], 4, 4, 0.7, 1.2, 50, [ resourceNames.food ]));
-			definitions.sparse.push(this.createEnemy("territorial magpie", "territorial magpie", "sparse", [c.nPest, c.nAnimal], [], [c.aInfest], [], 5, 4, 0.7, 1.2, 35, [ resourceNames.food ]));
-			definitions.global.push(this.createEnemy("agitated murder of crows", "agitated murder of crows", "global", [c.nPest, c.nAnimal], [c.gFlock, c.gSwarm], [c.aInfest], [c.dDrive], 10, 5, 1.25, 1.3, [ resourceNames.food ]));
-			definitions.global.push(this.createEnemy("military bot", "military bot", "global", [c.nBot], [c.gMob], [c.aPatrol, c.aGuard], [c.dDisabled], 13, 5, 0.8, 1.2, 85, [ resourceNames.metal, resourceNames.fuel ]));
-			definitions.global.push(this.createEnemy("advanced military bot", "advanced military bot", "global", [c.nBot], [c.gMob], [c.aPatrol, c.aGuard], [c.dDisabled], 14, 6, 0.8, 1.2, 85, [ resourceNames.metal, resourceNames.fuel ]));
-			// water
-			definitions.water.push(this.createEnemy("mugger", "mugger", "water", [c.nGangster], [c.gGang], [c.aInfest], [c.dDrive], 10, 5, 0.5, 0.9, 15, [ resourceNames.food, resourceNames.water ]));
-			definitions.water.push(this.createEnemy("threathening mugger", "threathening mugger", "water", [c.nGangster], [c.gGang], [c.aInfest], [c.dDrive], 11, 5, 0.5, 0.9, 15, [ resourceNames.food, resourceNames.water ]));
-			definitions.water.push(this.createEnemy("aggressive raccoon", "aggressive raccoon", "water", [c.nPest, c.nAnimal], [], [], [], 11, 5, 0.6, 1, 40, [ resourceNames.food ]));
-			definitions.water.push(this.createEnemy("robber", "robber", "water", [c.nGangster], [c.gGang, c.gMob], [c.aPatrol, c.aGuard], [c.dKilled], 12, 5, 0.5, 1, 50, [ resourceNames.food, resourceNames.water ]));
-			definitions.water.push(this.createEnemy("mean robber", "mean robber", "water", [c.nGangster], [c.gGang, c.gMob], [c.aPatrol, c.aGuard], [c.dKilled], 13, 5, 0.5, 1, 50, [ resourceNames.food, resourceNames.water ]));
-			// magic
-			definitions.magic.push(this.createEnemy("spirit of earth", "spirit of earth", "magic", [], [], [c.aGuard], [c.dDrive], 5, 5, 0.2, 1.1, 25, [ resourceNames.water ]));
-			definitions.magic.push(this.createEnemy("spirit of wind", "spirit of wind", "magic", [], [], [c.aGuard], [c.dDrive], 5, 8, 0.8, 1.1, 35, [ resourceNames.water ]));
-			definitions.magic.push(this.createEnemy("spirit of fire", "spirit of fire", "magic", [], [], [c.aGuard], [c.dDrive], 5, 6, 0.6, 1.1, 45, [ resourceNames.water ]));
-			definitions.magic.push(this.createEnemy("spirit of sun", "spirit of sun", "magic", [], [], [c.aGuard], [c.dDrive], 5, 6, 0.2, 1.1, 55, [ resourceNames.water ]));
-			definitions.magic.push(this.createEnemy("vengeful dryad", "vengeful dryad", "magic", [], [c.gMob], [c.aGuard], [c.dDrive], 6, 8, 0.5, 1.1, 90, [ resourceNames.herbs ]));
+			let templateSuffix = "__template";
+			
+			// TODO check nouns and verbs for orphans (only one/few enemies using)
+			
+			let getTemplateID = function (enemyID) {
+				let parts = enemyID.split("__");
+				return parts[0] + templateSuffix;
+			};
+			
+			for (enemyID in EnemyData) {
+				if (enemyID.indexOf(templateSuffix) > 0) continue;
+				let data = EnemyData[enemyID];
+				let templateID = getTemplateID(enemyID);
+				let template = EnemyData[templateID] || {};
+				
+				let def = {};
+				Object.assign(def, template);
+				Object.assign(def, data);
+				
+				let enemyType = def.enemyType;
+				let textDef = EnemyConstants.enemyTexts[enemyType] || {};
+				def.nouns = (def.nouns || []).concat(textDef.nouns);
+				def.groupNouns = (def.groupNouns || []).concat(textDef.groupNouns);
+				def.verbsActive = (def.verbsActive || []).concat(textDef.verbsActive);
+				def.verbsDefeated = (def.verbsDefeated || []).concat(textDef.verbsDefeated);
+				
+				if (!def.nouns || !def.nouns[0] || !def.groupNouns || !def.groupNouns[0] || !def.verbsActive || !def.verbsActive[0] || !def.verbsDefeated || !def.verbsDefeated[0]) {
+					log.w("enemy missing text: " + enemyID);
+				}
+				
+				let lootDef = EnemyConstants.enemyLoot[enemyType] || {};
+				def.droppedResources = (def.droppedResources || []).concat(lootDef.droppedResources);
+				def.droppedIngredients = (def.droppedIngredients || []).concat(lootDef.droppedIngredients);
+				
+				let type = def.environment || template.environment;
+				let enemyVO = this.createEnemy(
+					enemyID,
+					def.name,
+					type,
+					def.nouns, def.groupNouns, def.verbsActive, def.verbsDefeated,
+					def.campOrdinal || 0, def.difficulty || 5,
+					def.attackRatio || 0.5, def.shieldRatio || 0, def.healthFactor || 1, def.shieldFactor || 1, def.size || 1, def.speed || 1,
+					def.rarity || 1,
+					def.droppedResources, def.droppedIngredients
+				);
+				if (!EnemyConstants.enemyDefinitions[type]) EnemyConstants.enemyDefinitions[type] = [];
+			 	EnemyConstants.enemyDefinitions[type].push(enemyVO.cloneWithIV(50));
+			}
 		},
 
-		// Enemy definitions (level: level ordinal, difficulty: 1-10, attRatio: 0-1, speed 0.5-1.5, rarity: 0-100)
-		createEnemy: function (id, name, type, nouns, groupN, activeV, defeatedV, campOrdinal, normalizedDifficulty, attRatio, speed, rarity, droppedResources) {
-			var reqStr = this.getRequiredStrength(campOrdinal, 2);
-			var reqStrPrev = this.getRequiredStrength(campOrdinal, 1);
-			var reqStrNext = this.getRequiredStrength(campOrdinal, 3);
-			var strengthMin = Math.max(0, reqStr - (reqStr - reqStrPrev) * 0.5);
-			var strengthMax = Math.max(2, reqStr + (reqStrNext - reqStr) * 0.5);
-			if (reqStr === reqStrNext) {
-				strengthMax = Math.max(2, reqStr + (reqStr - reqStrPrev) * 0.5);
+		// Enemy definitions (speed: around 1, rarity: 0-100)
+		createEnemy: function (id, name, type, nouns, groupN, activeV, defeatedV, campOrdinal, normalizedDifficulty, attRatio, shieldRatio, healthFactor, shieldFactor, size, speed, rarity, droppedResources, droppedIngredients) {
+			// normalizedDifficulty (1-10) -> camp step and difficulty within camp step
+			normalizedDifficulty = MathUtils.clamp(normalizedDifficulty, 1, 10);
+			let step = 0;
+			let difficultyFactor = 0;
+			if (normalizedDifficulty <= 3) {
+				step = WorldConstants.CAMP_STEP_START;
+				difficultyFactor = MathUtils.map(normalizedDifficulty, 1, 3, 0, 1);
+			} else if (normalizedDifficulty <= 7) {
+				step = WorldConstants.CAMP_STEP_POI_2;
+				difficultyFactor = MathUtils.map(normalizedDifficulty, 4, 7, 0, 1);
+			} else  {
+				step = WorldConstants.CAMP_STEP_END;
+				difficultyFactor = MathUtils.map(normalizedDifficulty, 8, 10, 0, 1);
 			}
 			
-			attRatio = Math.max(0.3, attRatio);
-			attRatio = Math.min(0.7, attRatio);
+			// normalize input values
+			speed = Math.max(speed, 0.1);
+			shieldRatio = MathUtils.clamp(shieldRatio, 0, 1);
+			shieldFactor = MathUtils.clamp(shieldFactor, 0.1, 2);
+			healthFactor = MathUtils.clamp(healthFactor, 0.1, 2);
 			
-			// log.i("createEnemy " + name + " campOrdinal:" + campOrdinal + ", normalizedDifficulty: " + normalizedDifficulty + " strengthMin: " + strengthMin + ", strengthMax: " + strengthMax)
+			// campOrdinal, step -> reference player stats (adjusted for difficulty factor)
+			let playerAtt = this.getStatBase(campOrdinal, step, difficultyFactor, this.getPlayerAtt);
+			let playerDef =  this.getStatBase(campOrdinal, step, difficultyFactor, this.getPlayerDef);
+			let playerHPShield = this.getStatBase(campOrdinal, step, difficultyFactor, this.getPlayerHpShield);
+			let playerSpeed = this.getPlayerSpeed(campOrdinal, step);
 			
-			var strength = strengthMin + (strengthMax - strengthMin) / 10 * normalizedDifficulty;
-			var hp = Math.round(100 + ((1-attRatio) - 0.5) * 50 + (normalizedDifficulty - 5)/10 * 50 + (campOrdinal - 5) * 5);
-			var stats = strength * 100 / hp;
-			var def = Math.max(campOrdinal, Math.round(stats * (1 - attRatio)));
-			var att = Math.max(campOrdinal, Math.round(stats * attRatio));
+			// player def, hp, shield + enemy speed -> enemy att
+			// goal: about 5 seconds to kill player
+			// + compensate a bit for health/shieldFactor
+			let targetDPH = playerHPShield / 5 / speed;
+			let att = Math.max(1, this.getAttack(targetDPH, playerDef));
+			att = att * (1 / (healthFactor * shieldFactor));
+			att = Math.round(att);
 			
-			droppedResources = droppedResources || [ ];
+			// att + attRatio -> enemy def
+			// goal: att / (att + def) = attRatio
+			let attackFactor = MathUtils.clamp(attRatio, 0.1, 0.9);
+			let def = Math.max(1, this.getDefence(att, attackFactor));
+			def = Math.round(def);
 			
-			// log.i("createEnemy " + name + " " + strength + " -> " + FightConstants.getStrength(att, def, hp) + " | " + hp + " " + att + " " + def);
-			return new EnemyVO(id, name, type, nouns, groupN, activeV, defeatedV, att, def, hp, speed, rarity, droppedResources);
+			// player att, speed, enemy def -> enemy hp/shield total
+			// goal: about 5 seconds to kill player
+			let playerDPS = FightConstants.getDamagePerSec(playerAtt, def, playerSpeed);
+			let hpshieldtotal = Math.max(20, playerDPS * 5);
+			
+			// hpshieldtotal, healthFactor (0-1), shieldFactor (0-1), size -> hp and shield
+			let hp = MathUtils.roundToMultiple(hpshieldtotal * (1 - shieldRatio) * healthFactor, 5);
+			let shield = MathUtils.roundToMultiple(hpshieldtotal * shieldRatio * shieldFactor, 5);
+			
+			// normalize final values
+			size = MathUtils.clamp(size, 0.1, 2);
+			rarity = MathUtils.clamp(rarity, 1, 100);
+			droppedResources = droppedResources || [];
+			droppedIngredients = droppedIngredients || [];
+			
+			EnemyConstants.enemyDifficulties[id] = this.getDifficulty(campOrdinal, step);
+			
+			// log.i("goal strength: " + strength + " | actual strength: " + FightConstants.getStrength(att, def, speed));
+
+			return new EnemyVO(id, name, type, nouns, groupN, activeV, defeatedV, size, att, def, hp, shield, speed, rarity, droppedResources, droppedIngredients);
+		},
+		
+		getStatBase: function (campOrdinal, step, difficultyFactor, statfunc) {
+			let current = statfunc.call(this, campOrdinal, step);
+			
+			if (campOrdinal == 0) return current;
+			
+			let previousTotal = 0;
+			let previousNum = 0;
+			let prevCamp = campOrdinal;
+			let prevStep = step;
+			while (previousNum < 6 && prevCamp > 0) {
+				prevStep--;
+				if (prevStep < WorldConstants.CAMP_STEP_START) {
+					prevCamp--;
+					prevStep = WorldConstants.CAMP_STEP_END;
+				}
+				let previous = statfunc.call(this, prevCamp, prevStep);
+				previousTotal += previous;
+				previousNum++;
+				if (previousNum > 1 && previous < current) break;
+			}
+			
+			let min = previousNum > 0 ? previousTotal / previousNum : 0;
+			let max = current;
+			
+			return MathUtils.map(difficultyFactor, 0, 1, min, max);
+		},
+		
+		getPlayerStrength: function (campOrdinal, step) {
+			let playerAtt = this.getPlayerAtt(campOrdinal, step);
+			let playerDef = this.getPlayerDef(campOrdinal, step);
+			let playerSpeed = this.getPlayerSpeed(campOrdinal, step);
+			return FightConstants.getStrength(playerAtt, playerDef, playerSpeed);
+		},
+		
+		getPlayerAtt: function (campOrdinal, step) {
+			let playerStamina = this.getTypicalStamina(campOrdinal, step);
+			let itemsComponent = this.getTypicalItems(campOrdinal, step);
+			let followersComponent = this.getTypicalFollowers(campOrdinal, step);
+			return FightConstants.getPlayerAtt(playerStamina, itemsComponent, followersComponent);
+		},
+		
+		getPlayerDef: function (campOrdinal, step) {
+			let playerStamina = this.getTypicalStamina(campOrdinal, step);
+			let itemsComponent = this.getTypicalItems(campOrdinal, step);
+			let followersComponent = this.getTypicalFollowers(campOrdinal, step);
+			return FightConstants.getPlayerDef(playerStamina, itemsComponent, followersComponent);
+		},
+		
+		getPlayerSpeed: function (campOrdinal, step) {
+			let itemsComponent = this.getTypicalItems(campOrdinal, step);
+			return FightConstants.getPlayerSpeed(itemsComponent);
+		},
+		
+		getAttack: function (targetDPH, playerDef) {
+			return Math.round(FightConstants.getAttackForDPH(targetDPH, playerDef));
+		},
+		
+		getDefence: function (att, attFactor) {
+			return Math.round(att * (1/attFactor - 1));
+		},
+		
+		getAttDef: function (strength, speed) {
+			// str = att * (F + spd * F) + def;
+			// assuming att == def == ad
+			let ad = strength / (speed * FightConstants.STRENGTH_ATT_FACTOR + FightConstants.STRENGTH_ATT_FACTOR + 1);
+			return ad * 2;
+		},
+		
+		getPlayerHpShield: function (campOrdinal, step) {
+			let playerStamina = this.getTypicalStamina(campOrdinal, step);
+			return playerStamina.maxHP + playerStamina.maxShield;
+		},
+		
+		getEnemyHpShield: function (campOrdinal, step) {
+			let playerHPShield = this.getPlayerHpShield(campOrdinal, step);
+			
+			let playerStamina = this.getTypicalStamina(campOrdinal, step);
+			let itemsComponent = this.getTypicalItems(campOrdinal, step);
+			let followersComponent = this.getTypicalFollowers(campOrdinal, step);
+			let playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent, followersComponent);
+			
+			// average of two factors:
+			// - player hp and shield (should be comparable)
+			// - player attack (nice fight duration since player attack is maximum damage player can do)
+			// att matters less as numbers (relative to typical hp) grow and it's balanced by def
+			let defaultHP = 100;
+			let attFactor = defaultHP / playerAtt / 50;
+			return attFactor * playerAtt + (1-attFactor) * playerHPShield;
 		},
 
 		// get enemies by type (string) and difficulty (campOrdinal and step)
@@ -162,8 +247,6 @@ define([
 		getEnemies: function (type, difficulty, restrictDifficulty) {
 			var enemies = [];
 			if (difficulty <= 0) return enemies;
-
-			if (!EnemyConstants.enemyDifficulties) this.saveEnemyDifficulties();
 
 			var enemy;
 			var enemyDifficulty;
@@ -176,7 +259,7 @@ define([
 				}
 			}
 			
-			for (var i = 0; i < enemyList.length; i++) {
+			for (let i = 0; i < enemyList.length; i++) {
 				enemy = enemyList[i];
 				enemyDifficulty = Math.max(EnemyConstants.enemyDifficulties[enemy.id], 1);
 				if (enemyDifficulty === difficulty)
@@ -191,33 +274,14 @@ define([
 
 			return enemies;
 		},
-		
-		saveEnemyDifficulties: function () {
-			EnemyConstants.enemyDifficulties = {};
-			var enemy;
-			var enemyDifficulty;
-			for (var type in EnemyConstants.enemyTypes) {
-				for (var i = 0; i < EnemyConstants.enemyDefinitions[type].length; i++) {
-					enemy = EnemyConstants.enemyDefinitions[type][i];
-					enemyDifficulty = this.getEnemyDifficultyLevel(enemy);
-					EnemyConstants.enemyDifficulties[enemy.id] = enemyDifficulty;
-				}
-			}
-		},
 
 		// get the difficulty level (1-3*15, corresponding to camp ordinal and step) of a given enemy
 		getEnemyDifficultyLevel: function (enemy) {
-			if (EnemyConstants.enemyDifficulties[enemy.id]) return EnemyConstants.enemyDifficulties[enemy.id];
-			var enemyStats = FightConstants.getStrength(enemy.att, enemy.def, enemy.maxHP);
-			var requiredStats;
-			var max = this.getDifficulty(WorldConstants.CAMPS_TOTAL, WorldConstants.CAMP_STEP_END);
-			for (var i = 1; i <= max; i++) {
-				var campOrdinal = this.getCampOrdinalFromDifficulty(i);
-				var step = this.getStepFromDifficulty(i);
-				requiredStats = this.getRequiredStrength(campOrdinal, step, false);
-				if (requiredStats >= enemyStats) return i;
+			if (!EnemyConstants.enemyDifficulties && EnemyConstants.enemyDifficulties[enemy.id])  {
+				log.w("enemy difficulty not defined: " + enemy.id);
+				return 0;
 			}
-			return max;
+			return EnemyConstants.enemyDifficulties[enemy.id];
 		},
 		
 		getCampOrdinalFromDifficulty: function (difficulty) {
@@ -229,61 +293,69 @@ define([
 		},
 		
 		getDifficulty: function (campOrdinal, step) {
-			return (campOrdinal - 1)*3+step;
+			return (campOrdinal - 1)*3 + step;
 		},
 		
-		getRequiredStrength: function (campOrdinal, step, isHardLevel) {
-			var prevOrdinal = campOrdinal;
-			var prevStep = step - 1;
-			if (prevStep < WorldConstants.CAMP_STEP_START) {
-				prevOrdinal = campOrdinal - 1;
-				prevStep = WorldConstants.CAMP_STEP_END;
-			}
-			var typicalStrength = this.getTypicalStrength(campOrdinal, step, isHardLevel);
-			var typicalStrengthPrevious = this.getTypicalStrength(prevOrdinal, prevStep, isHardLevel);
-			var result = Math.ceil((typicalStrength + typicalStrengthPrevious) / 2);
-			return result;
-		},
-
-		getTypicalStrength: function (campOrdinal, step, isHardLevel) {
-			if (campOrdinal < 0) campOrdinal = 0;
-			
-			// health
-			var typicalHealth = 100;
-			var healthyPerkFactor = PerkConstants.getPerk(PerkConstants.perkIds.healthBonus).effect;
-			if (campOrdinal >= WorldConstants.CAMPS_BEFORE_GROUND)
-				typicalHealth = typicalHealth * healthyPerkFactor;
-			if (campOrdinal < 1)
-				typicalHealth = 75;
-
-			// items
+		getTypicalItems: function (campOrdinal, step, isHardLevel) {
 			var typicalItems = new ItemsComponent();
-			var typicalWeapon = ItemConstants.getDefaultWeapon(campOrdinal, step);
+			var typicalWeapon = GameGlobals.itemsHelper.getDefaultWeapon(campOrdinal, step);
 			var typicalClothing = GameGlobals.itemsHelper.getDefaultClothing(campOrdinal, step, ItemConstants.itemBonusTypes.fight_def, isHardLevel);
 
-			if (typicalWeapon)
+			if (typicalWeapon) {
 				typicalItems.addItem(typicalWeapon, false);
+			}
 
 			if (typicalClothing.length > 0) {
-				for ( var i = 0; i < typicalClothing.length; i++ ) {
+				for (let i = 0; i < typicalClothing.length; i++) {
 					typicalItems.addItem(typicalClothing[i], false);
 				}
 			}
-
-			// followers
-			var numFollowers = FightConstants.getTypicalFollowers(campOrdinal);
-			for (var f = 0; f < numFollowers; f++)
-				typicalItems.addItem(ItemConstants.getFollower(13, campOrdinal));
 			
 			typicalItems.autoEquipAll();
+			return typicalItems;
+		},
+		
+		getTypicalFollowers: function (campOrdinal, step) {
+			let typicalFollowers = new FollowersComponent();
+			if (!WorldConstants.isHigherOrEqualCampOrdinalAndStep(campOrdinal, step, FollowerConstants.FIRST_FOLLOWER_CAMP_ORDINAL, WorldConstants.CAMP_STEP_POI_2)) {
+				return typicalFollowers;
+			}
+			
+			// only considering fight related followers here
+			let follower = FollowerConstants.getTypicalFighter(campOrdinal, step);
+			typicalFollowers.addFollower(follower);
+			typicalFollowers.setFollowerInParty(follower, true);
+			
+			return typicalFollowers;
+		},
+		
+		getTypicalStamina: function (campOrdinal, step, isHardLevel) {
+			var healthyPerkFactor = 1;
+			
+			let campAndStepPerk1 = UpgradeConstants.getExpectedCampAndStepForUpgrade("improve_building_hospital",);
+			let campAndStepPerk2 = UpgradeConstants.getExpectedCampAndStepForUpgrade("improve_building_hospital_3");
 
+			if (WorldConstants.isHigherOrEqualCampOrdinalAndStep(campOrdinal, step, campAndStepPerk2.campOrdinal, campAndStepPerk2.step)) {
+				healthyPerkFactor = PerkConstants.getPerk(PerkConstants.perkIds.healthBonus3).effect;
+			} else if (WorldConstants.isHigherOrEqualCampOrdinalAndStep(campOrdinal, step, campAndStepPerk1.campOrdinal, campAndStepPerk1.step)) {
+				healthyPerkFactor = PerkConstants.getPerk(PerkConstants.perkIds.healthBonus2).effect;
+			}
+			
+			var injuryFactor = 1;
+			if (campOrdinal <= 1 && step <= WorldConstants.CAMP_STEP_START)
+			 	injuryFactor = 0.5;
+			
+			let typicalHealth = Math.round(100 * healthyPerkFactor * injuryFactor);
+				
+			let typicalItems = this.getTypicalItems(campOrdinal, step, isHardLevel);
+				
 			var typicalStamina = {};
 			typicalStamina.health = typicalHealth;
 			typicalStamina.maxHP = typicalHealth;
-			var result = FightConstants.getPlayerStrength(typicalStamina, typicalItems);
-			// log.i("typical strength: campOrdinal: " + campOrdinal + ", step: " + step + " -> " + result + " | " + numFollowers + " " + typicalHealth);
-			return result;
-		},
+			typicalStamina.maxShield = typicalItems.getCurrentBonus(ItemConstants.itemBonusTypes.fight_shield);
+			
+			return typicalStamina;
+		}
 		
 	});
 

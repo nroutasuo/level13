@@ -12,6 +12,7 @@ define([
 	'game/components/player/RumoursComponent',
 	'game/components/player/EvidenceComponent',
 	'game/components/player/DeityComponent',
+	'game/components/player/FollowersComponent',
 	'game/components/player/ItemsComponent',
 	'game/components/player/PerksComponent',
 	'game/components/type/GangComponent',
@@ -28,9 +29,11 @@ define([
 	'game/components/common/RevealedComponent',
 	'game/components/common/LogMessagesComponent',
 	'game/components/common/SaveComponent',
+	'game/components/sector/improvements/BeaconComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/improvements/SectorCollectorsComponent',
 	'game/components/sector/improvements/WorkshopComponent',
+	'game/components/sector/events/RecruitComponent',
 	'game/components/sector/events/TraderComponent',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/SectorControlComponent',
@@ -59,6 +62,7 @@ define([
 	RumoursComponent,
 	EvidenceComponent,
 	DeityComponent,
+	FollowersComponent,
 	ItemsComponent,
 	PerksComponent,
 	GangComponent,
@@ -75,9 +79,11 @@ define([
 	RevealedComponent,
 	LogMessagesComponent,
 	SaveComponent,
+	BeaconComponent,
 	SectorImprovementsComponent,
 	SectorCollectorsComponent,
 	WorkshopComponent,
+	RecruitComponent,
 	TraderComponent,
 	SectorStatusComponent,
 	SectorControlComponent,
@@ -111,6 +117,7 @@ define([
 				.add(new BagComponent(0))
 				.add(new VisionComponent(0))
 				.add(new ItemsComponent())
+				.add(new FollowersComponent())
 				.add(new PerksComponent())
 				.add(new StaminaComponent(1000))
 				.add(new ResourcesComponent(ItemConstants.PLAYER_DEFAULT_STORAGE))
@@ -126,6 +133,7 @@ define([
 					CurrencyComponent,
 					VisionComponent,
 					ItemsComponent,
+					FollowersComponent,
 					PerksComponent,
 					StaminaComponent,
 					PositionComponent,
@@ -143,7 +151,7 @@ define([
 
 		createLevel: function (saveKey, pos, levelVO) {
 			var level = new Ash.Entity()
-				.add(new LevelComponent(pos, levelVO.isCampable, levelVO.isHard, levelVO.notCampableReason, levelVO.populationFactor, levelVO.minX, levelVO.maxX, levelVO.minY, levelVO.maxY))
+				.add(new LevelComponent(pos, levelVO.isCampable, levelVO.isHard, levelVO.notCampableReason, levelVO.populationFactor, levelVO.raidDangerFactor, levelVO.minX, levelVO.maxX, levelVO.minY, levelVO.maxY))
 				.add(new PositionComponent(pos))
 				.add(new LevelPassagesComponent())
 				.add(new SaveComponent(saveKey, [CampComponent, VisitedComponent]));
@@ -181,8 +189,12 @@ define([
 					sectorFeatures.notCampableReason,
 					sectorFeatures.resourcesScavengable,
 					sectorFeatures.resourcesCollectable,
+					sectorFeatures.itemsScavengeable,
 					sectorFeatures.hasSpring,
-					sectorFeatures.stashes))
+					sectorFeatures.hasTradeConnectorSpot,
+					sectorFeatures.stashes,
+					sectorFeatures.waymarks
+				))
 				.add(new SectorLocalesComponent(locales))
 				.add(new SaveComponent(saveKey, [
 					ResourcesComponent,
@@ -194,6 +206,7 @@ define([
 					SectorImprovementsComponent,
 					SectorStatusComponent,
 					SectorControlComponent,
+					RecruitComponent,
 					TraderComponent,
 					VisitedComponent,
 					RevealedComponent,
@@ -231,9 +244,12 @@ define([
 
 		initPlayer: function (entity) {
 			var defaultInjury = PerkConstants.perkDefinitions.injury[0].clone();
-			defaultInjury.effectTimer = PerkConstants.TIMER_DISABLED;
+			defaultInjury.startTimer = PerkConstants.TIMER_DISABLED;
+			defaultInjury.removeTimer = PerkConstants.TIMER_DISABLED;
 			var perksComponent = entity.get(PerksComponent);
 			perksComponent.addPerk(defaultInjury);
+			perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.hunger));
+			perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.thirst));
 			entity.add(new ExcursionComponent());
 
 			var logComponent = entity.get(LogMessagesComponent);
@@ -260,8 +276,14 @@ define([
 			if (entity.has(CampComponent) && !entity.has(OutgoingCaravansComponent)) {
 				entity.add(new OutgoingCaravansComponent());
 			}
-			if (entity.get(SectorImprovementsComponent).hasCollectors()) {
+			
+			let improvementsComponent = entity.get(SectorImprovementsComponent);
+			
+			if (improvementsComponent.hasCollectors() && !entity.has(SectorCollectorsComponent)) {
 				entity.add(new SectorCollectorsComponent());
+			}
+			if (improvementsComponent.getCount(improvementNames.beacon) > 0 && !entity.has(BeaconComponent)) {
+				entity.add(new BeaconComponent);
 			}
 		},
 	});

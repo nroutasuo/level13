@@ -46,8 +46,13 @@ define([
 			}
 			
 			// add extra update time
-			var extraUpdateTime = GameGlobals.gameState.extraUpdateTime || 0;
-			GameGlobals.gameState.extraUpdateTime = 0;
+			// if game is paused don't consume extra update time since some systems aren't updating
+			// TODO separate "game time" and "ui time" update?
+			var extraUpdateTime = 0;
+			if (!GameGlobals.gameState.isPaused) {
+			 	extraUpdateTime = GameGlobals.gameState.extraUpdateTime || 0;
+				GameGlobals.gameState.extraUpdateTime = 0;
+			}
 			GameGlobals.gameState.frameExtraUpdateTime = extraUpdateTime;
 			var gameTime = time + extraUpdateTime;
 			
@@ -242,7 +247,7 @@ define([
 				var seed = worldVO.seed;
 				var levelVO;
 				var sectorVO;
-				for (var i = worldVO.bottomLevel; i <= worldVO.topLevel; i++) {
+				for (let i = worldVO.bottomLevel; i <= worldVO.topLevel; i++) {
 					levelVO = worldVO.getLevel(i);
 					this.creator.createLevel(GameGlobals.saveHelper.saveKeys.level + i, i, levelVO);
 					for (var y = levelVO.minY; y <= levelVO.maxY; y++) {
@@ -270,7 +275,7 @@ define([
 						}
 					}
 					
-					for (var j = 0; j < levelVO.gangs.length; j++) {
+					for (let j = 0; j < levelVO.gangs.length; j++) {
 						var gang = levelVO.gangs[j];
 						var x = gang.pos.sectorX;
 						var y = gang.pos.sectorY;
@@ -364,7 +369,7 @@ define([
 			return new Promise(function(resolve, reject) {
 				var maxTries = GameConstants.isDebugVersion ? 1 : 25;
 				var s = seed;
-				for (var i = 0; i < maxTries; i++) {
+				for (let i = 0; i < maxTries; i++) {
 					log.i("START " + GameConstants.STARTTimeNow() + "\t generating world, try " + (i + 1) + "/" + maxTries);
 					var worldVO;
 					var validationResult;
@@ -420,6 +425,7 @@ define([
 		// Clean up a loaded game state, mostly used to ensure backwards compatibility
 		syncLoadedGameState: function () {
 			gtag('event', 'game_load_save', { event_category: 'game_data' });
+			GameGlobals.gameState.syncData();
 			this.creator.syncPlayer(this.engine.getNodeList(PlayerStatsNode).head.entity);
 			var sectorNodes = this.engine.getNodeList(SectorNode);
 			for (var node = sectorNodes.head; node; node = node.next) {

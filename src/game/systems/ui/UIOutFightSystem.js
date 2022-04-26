@@ -4,7 +4,9 @@ define([
 	'utils/UIState',
 	'game/GameGlobals',
 	'game/GlobalSignals',
+	'game/constants/GameConstants',
 	'game/constants/FightConstants',
+	'game/constants/FollowerConstants',
 	'game/constants/ItemConstants',
 	'game/constants/TextConstants',
 	'game/constants/UIConstants',
@@ -14,7 +16,7 @@ define([
 	'game/components/player/ItemsComponent',
 	'game/components/sector/FightEncounterComponent',
 	'game/components/sector/EnemiesComponent'
-], function (Ash, Text, UIState, GameGlobals, GlobalSignals, FightConstants, ItemConstants, TextConstants, UIConstants, PlayerLocationNode, PlayerStatsNode, FightNode, ItemsComponent, FightEncounterComponent, EnemiesComponent) {
+], function (Ash, Text, UIState, GameGlobals, GlobalSignals, GameConstants, FightConstants, FollowerConstants, ItemConstants, TextConstants, UIConstants, PlayerLocationNode, PlayerStatsNode, FightNode, ItemsComponent, FightEncounterComponent, EnemiesComponent) {
 	
 	var FightPopupStateEnum = {
 		CLOSED: 0,
@@ -81,29 +83,66 @@ define([
 		},
 		
 		updateFightActive: function () {
-			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+			var itemsComponent = this.playerStatsNodes.head.items;
+			var followersComponent = this.playerStatsNodes.head.followers;
 			
 			// update progress bars
 			var enemy = this.fightNodes.head.fight.enemy;
 			var playerStamina = this.playerStatsNodes.head.stamina;
-			var playerVal = Math.round(playerStamina.hp / playerStamina.maxHP * 100);
-			var playerChangeVal = Math.round(this.lastPlayerDamage);
-			var enemyVal = Math.round(enemy.hp / enemy.maxHP * 100);
-			var enemyChangeVal = Math.round(this.lastEnemyDamage);
-			$("#fight-bar-enemy").data("progress-percent", enemyVal);
-			$("#fight-bar-enemy").data("change-percent", enemyChangeVal);
-			$("#fight-bar-enemy").data("change-time", this.lastEnemyDamageUpdated);
-			$("#fight-bar-enemy").data("animation-length", this.progressBarAnimationLen);
-			$("#fight-bar-self").data("progress-percent", playerVal);
-			$("#fight-bar-self").data("change-percent", playerChangeVal);
-			$("#fight-bar-self").data("change-time", this.lastPlayerDamageUpdated);
-			$("#fight-bar-self").data("animation-length", this.progressBarAnimationLen);
+			
+			var playerHPVal = Math.round(playerStamina.hp / playerStamina.maxHP * 100);
+			var playerShieldVal = playerStamina.maxShield > 0 ? Math.round(playerStamina.shield / playerStamina.maxShield * 100) : 0;
+			
+			var playerTotalChange = Math.round(this.lastDamageToPlayer);
+			var playerMissingHealth = playerStamina.maxHP - playerStamina.hp;
+			var playerShieldBeforeDamage = playerShieldVal > 0 ? playerShieldVal + playerTotalChange : Math.max(0, playerTotalChange - playerMissingHealth);
+			var playerShieldChange = playerShieldBeforeDamage - playerShieldVal;
+			
+			var enemyHPVal = Math.round(enemy.hp / enemy.maxHP * 100);
+			var enemyShieldVal = enemy.maxShield > 0 ? Math.round(enemy.shield / enemy.maxShield * 100) : 0;
+			
+			var enemyTotalChange = Math.round(this.lastDamageToEnemy);
+			var enemyMissingHealth = enemy.maxHP - enemy.hp;
+			var enemyShieldBeforeDamage = enemyShieldVal > 0 ? enemyShieldVal + enemyTotalChange : Math.max(0, enemyTotalChange - enemyMissingHealth);
+			var enemyShieldChange = enemyShieldBeforeDamage - enemyShieldVal;
+			
+			$("#fight-bar-enemy").data("progress-percent", enemyHPVal);
+			if (enemy.maxHP > 0) {
+				let enemyHPChange = enemyTotalChange - enemyShieldChange;
+				$("#fight-bar-enemy").data("change-percent", Math.round(enemyHPChange / enemy.maxHP * 100));
+				$("#fight-bar-enemy").data("change-time", this.lastDamageToEnemyUpdated);
+				$("#fight-bar-enemy").data("animation-length", this.progressBarAnimationLen);
+			}
+			
+			$("#fight-bar-enemy-shield").data("progress-percent", enemyShieldVal);
+			if (enemy.maxShield > 0) {
+				$("#fight-bar-enemy-shield").data("change-percent", Math.round(enemyShieldChange / enemy.maxShield * 100));
+				$("#fight-bar-enemy-shield").data("change-time", this.lastDamageToEnemyUpdated);
+				$("#fight-bar-enemy-shield").data("animation-length", this.progressBarAnimationLen);
+			}
+			
+			$("#fight-bar-self").data("progress-percent", playerHPVal);
+			if (playerStamina.maxHP > 0) {
+				let playerHPChange = playerTotalChange - playerShieldChange;
+				$("#fight-bar-self").data("change-percent", Math.round(playerHPChange / playerStamina.maxHP * 100));
+				$("#fight-bar-self").data("change-time", this.lastDamageToPlayerUpdated);
+				$("#fight-bar-self").data("animation-length", this.progressBarAnimationLen);
+			}
+			
+			$("#fight-bar-self-shield").data("progress-percent", playerShieldVal);
+			if (playerStamina.maxShield > 0) {
+				$("#fight-bar-self-shield").data("change-percent", Math.round(playerShieldChange / playerStamina.maxShield * 100));
+				$("#fight-bar-self-shield").data("change-time", this.lastDamageToPlayerUpdated);
+				$("#fight-bar-self-shield").data("animation-length", this.progressBarAnimationLen);
+			}
 				
-			var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
-			var playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent);
+			var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent, followersComponent);
+			var playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent, followersComponent);
+			var playerSpeed = FightConstants.getPlayerSpeed(itemsComponent);
 			var playerHP = playerStamina.maxHP;
+			var playerShield = playerStamina.maxShield;
 			$("#fight-popup-self-name").text(this.numFollowers > 0 ? " Party " : " Wanderer ");
-			$("#fight-popup-self-stats").text(" att: " + playerAtt + " | def: " + playerDef + " | hp: " + playerHP + " ");
+			$("#fight-popup-self-stats").text(this.getStatsText(playerAtt, playerDef, playerSpeed, playerHP, playerShield));
 			
 			// update action buttons
 			// TODO remove hard-coding of items usable in fight, instead have fight effect desc in ItemVO (damage, heal, defend, stun)
@@ -111,11 +150,13 @@ define([
 			var itemsToShow = [];
 			if (itemsComponent.getCountById("glowstick_1") > 0) itemsToShow.push(itemsComponent.getItem("glowstick_1", null, false));
 			if (itemsComponent.getCountById("consumable_weapon_1") > 0) itemsToShow.push(itemsComponent.getItem("consumable_weapon_1", null, false));
+			if (itemsComponent.getCountById("consumable_weapon_mechanical") > 0) itemsToShow.push(itemsComponent.getItem("consumable_weapon_mechanical", null, false));
+			if (itemsComponent.getCountById("consumable_weapon_bio") > 0) itemsToShow.push(itemsComponent.getItem("consumable_weapon_bio", null, false));
 			if (itemsComponent.getCountById("flee_1") > 0) itemsToShow.push(itemsComponent.getItem("flee_1", null, false));
 			var numItemsShown = $("#fight-buttons-infightactions button").length;
 			if (numItemsShown !== itemsToShow.length) {
 				$("#fight-buttons-infightactions").empty();
-				for(var i = 0; i < itemsToShow.length; i++) {
+				for(let i = 0; i < itemsToShow.length; i++) {
 					var item = itemsToShow[i];
 					var action = "use_item_fight_" + item.id;
 					$("#fight-buttons-infightactions").append("<button class='action' action='" + action + "'>" + item.name + "</button>");
@@ -128,23 +169,42 @@ define([
 			}
 		},
 		
-		updatePlayerDamage: function (damage) {
-			this.lastPlayerDamage = UIConstants.roundValue(damage, true);
-			this.lastPlayerDamageUpdated = new Date().getTime();
-			$("#fight-damage-indictor-self").text(-this.lastPlayerDamage);
+		updateDamageToPlayer: function (damage) {
+			this.lastDamageToPlayer = UIConstants.roundValue(damage, true);
+			this.lastDamageToPlayerUpdated = new Date().getTime();
+			$("#fight-damage-indictor-self").text(-this.lastDamageToPlayer);
 			this.animateDamageIndicator($("#fight-damage-indictor-self"));
 		},
 		
-		updateEnemyDamage: function (damage) {
-			this.lastEnemyDamage = UIConstants.roundValue(damage, true);
-			this.lastEnemyDamageUpdated = new Date().getTime();
-			$("#fight-damage-indictor-enemy").text(-this.lastEnemyDamage);
+		updateDamageToEnemy: function (damage) {
+			this.lastDamageToEnemy = UIConstants.roundValue(damage, true);
+			this.lastDamageToEnemyUpdated = new Date().getTime();
+			$("#fight-damage-indictor-enemy").text(-this.lastDamageToEnemy);
 			this.animateDamageIndicator($("#fight-damage-indictor-enemy"));
 		},
 		
+		updatePlayerDodge: function () {
+			$("#fight-status-indictor-self").text("dodge");
+			this.animateDamageIndicator($("#fight-status-indictor-self"));
+		},
+		
+		updateEnemyDodge: function () {
+			$("#fight-status-indictor-enemy").text("dodge");
+			this.animateDamageIndicator($("#fight-status-indictor-enemy"));
+		},
+		
+		updatePlayerStatus: function (status) {
+			$("#fight-popup-self-name").toggleClass("fight-status-stunned", status == FightConstants.STATUS_STUNNED);
+		},
+		
+		updateEnemyStatus: function (status) {
+			$("#fight-popup-enemy-name").toggleClass("fight-status-stunned", status == FightConstants.STATUS_STUNNED);
+		},
+		
 		refresh: function () {
-			this.lastPlayerDamage = 0;
-			this.lastEnemyDamage = 0;
+			this.lastDamageToPlayer = 0;
+			this.lastDamageToEnemy = 0;
+			$("#fight-popup-enemy-stats").css("opacity", 0);
 		},
 		
 		refreshState: function () {
@@ -175,8 +235,11 @@ define([
 			GameGlobals.uiFunctions.toggle("#fight-popup-results", this.state == FightPopupStateEnum.FIGHT_FINISHED);
 			GameGlobals.uiFunctions.toggle("#fight-desc", this.state != FightPopupStateEnum.FIGHT_ACTIVE);
 			GameGlobals.uiFunctions.toggle("#fight-popup-enemy-info", this.state != FightPopupStateEnum.FIGHT_FLED && !fightWon);
+			GameGlobals.uiFunctions.toggle("#fight-popup-enemy-difficulty", this.state == FightPopupStateEnum.FIGHT_PENDING);
 			GameGlobals.uiFunctions.toggle("#fight-damage-indictor-self", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
 			GameGlobals.uiFunctions.toggle("#fight-damage-indictor-enemy", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
+			GameGlobals.uiFunctions.toggle("#fight-status-indictor-self", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
+			GameGlobals.uiFunctions.toggle("#fight-status-indictor-enemy", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
 			GameGlobals.uiFunctions.toggle("#fight-popup-items", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
 			
 			// texts
@@ -206,30 +269,46 @@ define([
 		refreshFightPending: function () {
 			var sector = this.playerLocationNodes.head.entity;
 			var encounterComponent = sector.get(FightEncounterComponent);
+			
 			$("#fight-results-win-res").empty();
 			$("#fight-results-win-items").empty();
 			$("#fight-desc").text(this.getDescriptionByContext(encounterComponent.context, encounterComponent.enemy));
+			
+			this.refreshWinProbabilityText();
 		},
 		
 		refreshFightActive: function () {
 			// progress bars
-			$("#fight-bar-enemy").data("last-change-value", 0);
-			$("#fight-bar-enemy").data("progress-percent", 100);
-			$("#fight-bar-self").data("last-change-value", 0);
-			$("#fight-bar-self").data("progress-percent", 100);
+			$.each($("#fight-popup-bars .progress-wrap"), function () {
+				$(this).data("last-change-value", 0);
+				$(this).data("progress-percent", 100);
+			});
+			
+			var currentEnemy = this.getCurrentEnemy();
+			
+			$("#fight-bar-enemy").css("width", Math.ceil(currentEnemy.maxHP / (currentEnemy.maxHP + currentEnemy.maxShield) * 100) + "%");
+			$("#fight-bar-enemy-shield").css("width", Math.floor(currentEnemy.maxShield / (currentEnemy.maxHP + currentEnemy.maxShield) * 100) + "%");
+			
+			var playerStamina = this.playerStatsNodes.head.stamina;
+			$("#fight-bar-self").css("width", Math.ceil(playerStamina.maxHP / (playerStamina.maxHP + playerStamina.maxShield) * 100) + "%");
+			$("#fight-bar-self-shield").css("width", Math.floor(playerStamina.maxShield / (playerStamina.maxHP + playerStamina.maxShield) * 100) + "%");
+			
 			$("#fight-damage-indictor-self").text("");
 			$("#fight-damage-indictor-enemy").text("");
+			
+			$("#fight-status-indictor-self").text("");
+			$("#fight-status-indictor-enemy").text("");
 			
 			// items
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			$("ul#list-fight-items").empty();
 			this.numItems = 0;
 			var items = itemsComponent.getEquipped();
-			for (var i = 0; i < items.length; i++) {
+			for (let i = 0; i < items.length; i++) {
 				var item = items[i];
-				var bonusAtk = item.getBonus(ItemConstants.itemBonusTypes.fight_att) > 0;
+				var bonusatt = item.getBonus(ItemConstants.itemBonusTypes.fight_att) > 0;
 				var bonusDef = item.getBonus(ItemConstants.itemBonusTypes.fight_def) > 0;
-				if (bonusAtk || bonusDef) {
+				if (bonusatt || bonusDef) {
 					this.numItems++;
 					$("ul#list-fight-items").append("<li>" + UIConstants.getItemDiv(null, item, null, UIConstants.getItemCallout(item, true), true) + "</li>");
 				}
@@ -239,12 +318,15 @@ define([
 			// followers
 			$("ul#list-fight-followers").empty();
 			this.numFollowers = 0;
-			var items = itemsComponent.getUnique(true);
-			for (var i = 0; i < items.length; i++) {
-				var item = items[i];
-				if (item.type !== ItemConstants.itemTypes.follower) continue;
-				this.numFollowers++;
-				$("ul#list-fight-followers").append("<li>" + UIConstants.getItemDiv(null, item, null, UIConstants.getItemCallout(item, true), true) + "</li>");
+			var followers = this.playerStatsNodes.head.followers.getParty();
+			for (let i = 0; i < followers.length; i++) {
+				var follower = followers[i];
+				var bonusatt = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_att) > 0;
+				var bonusDef = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_def) > 0;
+				if (bonusatt || bonusDef) {
+					this.numFollowers++;
+					$("ul#list-fight-followers").append("<li>" + UIConstants.getFollowerDiv(follower, true, false, true) + "</li>");
+				}
 			}
 			GameGlobals.uiFunctions.generateCallouts("ul#list-fight-followers");
 			
@@ -285,21 +367,43 @@ define([
 			var enemiesComponent = sector.get(EnemiesComponent);
 			var currentEnemy = encounterComponent.enemy;
 			if (currentEnemy == null) return;
-			var statsText = " att: " + currentEnemy.att + " | def: " + currentEnemy.def + " " + " | hp: " + currentEnemy.maxHP + " ";
+			var statsText = this.getStatsText(currentEnemy.getAtt(), currentEnemy.getDef(), currentEnemy.getSpeed(), currentEnemy.maxHP, currentEnemy.maxShield);
 			
-			if (this.state == FightPopupStateEnum.FIGHT_PENDING) {
-				var playerStamina = this.playerStatsNodes.head.stamina;
-				var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-				var chances = FightConstants.getFightWinProbability(currentEnemy, playerStamina, itemsComponent);
-				log.i("getFightWinProbability:" + chances);
-				var chancesText = this.getFightChancesText(chances);
-				var spanClass = chances < 0.4 ? "warning": "";
-				statsText += "<br/>";
-				statsText += "<span class='" + spanClass + "'>" + chancesText + "</span>";
-			}
-			
-			$("#fight-popup-enemy-name").html(" " + currentEnemy.name + " ");
+			$("#fight-popup-enemy-name").html(" " + currentEnemy.name.toLowerCase() + " ");
 			$("#fight-popup-enemy-stats").html(statsText);
+		},
+		
+		refreshWinProbabilityText: function () {
+			$("#fight-popup-enemy-difficulty").toggleClass("warning", false);
+			$("#fight-popup-enemy-difficulty").toggleClass("p-meta", true);
+			$("#fight-popup-enemy-difficulty").text("-");
+			
+			var currentEnemy = this.getCurrentEnemy();
+			if (currentEnemy == null) return;
+			
+			$("#fight-popup-enemy-stats").animate({
+				opacity: 1.0
+			}, 250);
+			
+			$("#fight-popup-enemy-difficulty").animate({
+				opacity: 1.0
+			}, 500);
+			
+			var playerStamina = this.playerStatsNodes.head.stamina;
+			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+			var followersComponent = this.playerStatsNodes.head.followers;
+			
+			FightConstants.getFightWinProbability(currentEnemy, playerStamina, itemsComponent, followersComponent).
+				then(chances => {
+					var chancesText = TextConstants.getFightChancesText(chances);
+					if (GameConstants.isDebugVersion) {
+						chancesText += " [" + Math.round(chances * 100)  + "%]";
+					}
+					$("#fight-popup-enemy-difficulty").text(chancesText)
+					$("#fight-popup-enemy-difficulty").toggleClass("p-meta", false);
+					$("#fight-popup-enemy-difficulty").toggleClass("warning", chances < 0.4);
+				})
+				.catch(ex => { log.e(ex) });
 		},
 		
 		animateDamageIndicator: function ($indicator) {
@@ -318,28 +422,6 @@ define([
 			this.refreshState();
 		},
 		
-		getFightChancesText: function (probability) {
-			if (probability >= 0.9) {
-				return "fairly harmless";
-			}
-			if (probability > 0.8) {
-				return "slightly unnerving";
-			}
-			if (probability > 0.6) {
-				return "intimidating";
-			}
-			if (probability >= 0.5) {
-				return "risky";
-			}
-			if (probability >= 0.4) {
-				return "dangerous";
-			}
-			if (probability >= 0.2) {
-				return "very dangerous";
-			}
-			return "deadly";
-		},
-		
 		getTitleByContext: function (encounterComponent) {
 			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(encounterComponent.context);
 			if (baseActionID === "fight_gang") {
@@ -349,8 +431,7 @@ define([
 		},
 		
 		getDescriptionByContext: function (context, enemy) {
-			var enemiesNoun = TextConstants.getEnemyNoun([enemy]);
-			var enemyNoun = Text.depluralify(enemiesNoun);
+			var enemyNoun = TextConstants.getEnemyNoun([enemy]);
 			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(context);
 			switch (baseActionID) {
 				case "scavenge":
@@ -361,12 +442,36 @@ define([
 					return "attacked while scouting";
 				case "clear_workshop":
 					 var enemyActiveV = TextConstants.getEnemyActiveVerb([ enemy ]);
-					return "workshop " + enemyActiveV + " " + enemiesNoun;
+					return "workshop " + enemyActiveV + " " + Text.pluralify(enemyNoun);
 				case "fight_gang":
 					return Text.addArticle(enemyNoun) + " is blocking passage";
 				default:
 					return Text.addArticle(enemyNoun) + " approaches";
 			}
+		},
+		
+		getStatsText: function (att, def, speed, hp, shield) {
+			let result = "";
+			result += " ";
+			result += "att: " + att;
+			result += " | ";
+			result += "def: " + def;
+			result += " | ";
+			result += "spd: " + Math.round(speed * 20)/20;
+			result += " | ";
+			
+			if (hp > 0) {
+				result += "hp: " + hp;
+			}
+			if  (hp > 0 && shield > 0) {
+				result += " | ";
+			}
+			if (shield > 0) {
+				result += "shield: " + shield;
+			}
+			
+			result += " ";
+			return result;
 		},
 		
 		getWonDescriptionByContext: function (context) {
@@ -401,6 +506,12 @@ define([
 			}
 		},
 		
+		getCurrentEnemy: function () {
+			var sector = this.playerLocationNodes.head.entity;
+			var encounterComponent = sector.get(FightEncounterComponent);
+			return encounterComponent.enemy;
+		},
+		
 		onPopupOpened: function (popupID) {
 			if (popupID === "fight-popup") {
 				this.refresh();
@@ -424,14 +535,22 @@ define([
 			}
 		},
 		
-		onFightUpdate: function (playerDamage, enemyDamage) {
+		onFightUpdate: function (damageToPlayer, damageToEnemy, playerMissed, enemyMissed, playerStatus, enemyStatus) {
 			if (this.state !== FightPopupStateEnum.FIGHT_ACTIVE) return;
-			if (playerDamage) {
-				this.updatePlayerDamage(playerDamage);
+			if (damageToPlayer) {
+				this.updateDamageToPlayer(damageToPlayer);
 			}
-			if (enemyDamage) {
-				this.updateEnemyDamage(enemyDamage);
+			if (damageToEnemy) {
+				this.updateDamageToEnemy(damageToEnemy);
 			}
+			if (playerMissed) {
+				this.updateEnemyDodge();
+			}
+			if (enemyMissed) {
+				this.updatePlayerDodge();
+			}
+			this.updatePlayerStatus(playerStatus);
+			this.updateEnemyStatus(enemyStatus);
 			this.updateFightActive();
 		},
 

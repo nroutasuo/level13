@@ -99,7 +99,7 @@ define([
 			var availableCaravans = this.getNumOutgoingCaravansAvailable();
 
 			$("#trade-caravans-outgoing-container table").empty();
-			for (var i = 0; i < GameGlobals.gameState.foundTradingPartners.length; i++) {
+			for (let i = 0; i < GameGlobals.gameState.foundTradingPartners.length; i++) {
 				var partner = TradeConstants.getTradePartner(GameGlobals.gameState.foundTradingPartners[i]);
 				var tdName = "<td class='item-name'>" + partner.name + "</td>";
 				var buysS = partner.buysResources.join(", ");
@@ -119,7 +119,7 @@ define([
 				sendTR += "<td colspan='2'>";
 				sendTR += "<div class='row-detail-indicator'>></div>";
 				sendTR += "Sell: <select class='trade-caravans-outgoing-select-sell'>";
-				for (var j = 0; j < partner.buysResources.length; j++) {
+				for (let j = 0; j < partner.buysResources.length; j++) {
 					sendTR += "<option value='" + partner.buysResources[j] + "'>" + partner.buysResources[j] + "</option>";
 				}
 				sendTR += "</select>";
@@ -130,7 +130,7 @@ define([
 				sendTR += "<span class='trade-caravans-outgoing-buy'>";
 				sendTR += "&nbsp;&nbsp;|&nbsp;&nbsp;"
 				sendTR += "Get: <select class='trade-caravans-outgoing-select-buy'>";
-				for (var k = 0; k < partner.sellsResources.length; k++) {
+				for (let k = 0; k < partner.sellsResources.length; k++) {
 					sendTR += "<option value='" + partner.sellsResources[k] + "'>" + partner.sellsResources[k] + "</option>";
 				}
 				if (partner.usesCurrency) {
@@ -243,7 +243,7 @@ define([
 				var skippedLis = 0;
 
 				var itemCounts = {};
-				for (var i = 0; i < caravan.sellItems.length; i++) {
+				for (let i = 0; i < caravan.sellItems.length; i++) {
 					if (!itemCounts[caravan.sellItems[i].id])
 						itemCounts[caravan.sellItems[i].id] = 0;
 					itemCounts[caravan.sellItems[i].id]++;
@@ -339,11 +339,13 @@ define([
 			}
 
 			// set get amount
-			var amountGet = Math.min(TradeConstants.getAmountTraded(selectedBuy, selectedSell, amountSell), this.getCaravanCapacity());
+			let amountGetRaw = TradeConstants.getAmountTraded(selectedBuy, selectedSell, amountSell);
+			var amountGet = Math.min(amountGetRaw, this.getCaravanCapacity());
 			if (hasEnoughSellRes) {
+				let showAmountGetWarning = (amountGet > ownedStorage.storageCapacity) || (amountGetRaw > amountGet);
 				$(trID + " .trade-caravans-outgoing-buy").toggle(true);
 				$(trID + " .trade-buy-value").text("x" + amountGet);
-				$(trID + " .trade-buy-value").toggleClass("warning", amountGet > ownedStorage.storageCapacity);
+				$(trID + " .trade-buy-value").toggleClass("warning", showAmountGetWarning);
 			} else {
 				$(trID + " .trade-caravans-outgoing-buy").toggle(false);
 				$(trID + " .trade-buy-value").text("");
@@ -397,7 +399,8 @@ define([
 		},
 		
 		getCaravanCapacity: function () {
-			var stableLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.stable, this.tribeUpgradesNodes.head.upgrades);
+			var improvementsComponent = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+			var stableLevel = improvementsComponent.getLevel(improvementNames.stable);
 			return TradeConstants.getCaravanCapacity(stableLevel);
 		}
 

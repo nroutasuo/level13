@@ -18,7 +18,7 @@ define([
 			worldVO.resetPaths();
 		
 			var worldChecks = [ this.checkSeed ];
-			for (var i = 0; i < worldChecks.length; i++) {
+			for (let i = 0; i < worldChecks.length; i++) {
 				var checkResult = worldChecks[i](worldVO);
 				if (!checkResult.isValid) {
 					return { isValid: false, reason: checkResult.reason };
@@ -28,7 +28,7 @@ define([
 			var levelChecks = [ this.checkCriticalPaths, this.checkContinuousEarlyStage, this.checkCampsAndPassages, this.checkNumberOfSectors ];
 			for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
 				var levelVO = worldVO.levels[l];
-				for (var i = 0; i < levelChecks.length; i++) {
+				for (let i = 0; i < levelChecks.length; i++) {
 					var checkResult = levelChecks[i](worldVO, levelVO);
 					if (!checkResult.isValid) {
 						return { isValid: false, reason: checkResult.reason };
@@ -37,10 +37,10 @@ define([
 			}
 			
 			var campChecks = [ this.checkNumberOfLocales ];
-			for (var i = 0; i < WorldConstants.CAMPS_TOTAL; i++) {
+			for (let i = 0; i < WorldConstants.CAMPS_TOTAL; i++) {
 				var levels = WorldCreatorHelper.getLevelsForCamp(worldVO.seed, i);
 				var levelVOs = levels.map(level => worldVO.getLevel(level));
-				for (var j = 0; j < campChecks.length; j++) {
+				for (let j = 0; j < campChecks.length; j++) {
 					var checkResult = campChecks[j](worldVO, i, levelVOs);
 					if (!checkResult.isValid) {
 						return { isValid: false, reason: checkResult.reason };
@@ -57,7 +57,7 @@ define([
 		
 		checkCriticalPaths: function (worldVO, levelVO) {
 			var requiredPaths = WorldCreatorHelper.getRequiredPaths(worldVO, levelVO);
-			for (var i = 0; i < requiredPaths.length; i++) {
+			for (let i = 0; i < requiredPaths.length; i++) {
 				var path = requiredPaths[i];
 				var startPos = path.start.clone();
 				var endPos = path.end.clone();
@@ -82,7 +82,7 @@ define([
 				return { isValid: false, reason: "too many sectors on level " + levelVO.level };
 			}
 			var stages = [ WorldConstants.CAMP_STAGE_EARLY, WorldConstants.CAMP_STAGE_LATE ];
-			for (var i = 0; i < stages.length; i++) {
+			for (let i = 0; i < stages.length; i++) {
 				var stage = stages[i];
 				var numSectorsCreated = levelVO.getNumSectorsByStage(stage);
 				var numSectorsPlanned = levelVO.numSectorsByStage[stage];
@@ -101,7 +101,7 @@ define([
 				return { isValid: true };
 			}
 			
-			for (var i = 0; i < levelVOs.length; i++) {
+			for (let i = 0; i < levelVOs.length; i++) {
 				var levelVO = levelVOs[i];
 				var numEarlyLocales = 0;
 				var numLateLocales = 0;
@@ -135,7 +135,7 @@ define([
 		checkContinuousEarlyStage: function (worldVO, levelVO) {
 			var earlySectors = levelVO.sectorsByStage[WorldConstants.CAMP_STAGE_EARLY];
 			if (earlySectors && earlySectors.length > 1) {
-				for (var j = 1; j < earlySectors.length; j++) {
+				for (let j = 1; j < earlySectors.length; j++) {
 					var sectorPath = WorldCreatorRandom.findPath(worldVO, earlySectors[0].position, earlySectors[j].position, false, true, WorldConstants.CAMP_STAGE_EARLY, true);
 					if (!sectorPath || sectorPath.length < 1) {
 						return { isValid: false, reason: "early stage is not continuous on level " + levelVO.level };
@@ -162,19 +162,17 @@ define([
 			
 			// camps
 			if (levelVO.isCampable) {
-				if (levelVO.campPositions.length <= 0) {
+				if (levelVO.campPosition == null) {
 					return { isValid: false, reason: "campable level " + levelVO.level + " missing camp positions" };
 				}
-				for (var i = 0; i < levelVO.campPositions.length; i++) {
-					var pos = levelVO.campPositions[i];
-					var sector = levelVO.getSector(pos.sectorX, pos.sectorY);
-					if (!sector) {
-						return { isValid: false, reason: "camp position " + pos + " has no sector" };
-					}
-					pois.push(pos);
+				var pos = levelVO.campPosition;
+				var sector = levelVO.getSector(pos.sectorX, pos.sectorY);
+				if (!sector) {
+					return { isValid: false, reason: "camp position " + pos + " has no sector" };
 				}
+				pois.push(pos);
 			} else {
-				if (levelVO.campPositions.length > 0) {
+				if (levelVO.campPosition) {
 					return { isValid: false, reason: "non-campable level " + levelVO.level + " has camp positions" };
 				}
 			}
@@ -193,7 +191,7 @@ define([
 			
 			// connections
 			if (pois.length > 1) {
-				for (var i = 0; i < pois.length - 1; i++) {
+				for (let i = 0; i < pois.length - 1; i++) {
 					if (pois[i].equals(pois[i + 1])) continue;
 					var sectorPath = WorldCreatorRandom.findPath(worldVO, pois[i], pois[i + 1], false, true, null);
 					if (!sectorPath || sectorPath.length < 1) {

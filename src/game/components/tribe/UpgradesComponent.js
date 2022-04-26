@@ -13,82 +13,82 @@ function (Ash, UpgradeConstants, UpgradeVO, BlueprintVO) {
 			this.availableBlueprints = [];
 		},
 
-		addUpgrade: function (upgradeId) {
-			if (!this.hasUpgrade(upgradeId)) {
-				this.boughtUpgrades.push(upgradeId);
-				this.removeBlueprints(upgradeId);
+		addUpgrade: function (upgrade) {
+			if (!this.hasUpgrade(upgrade)) {
+				this.boughtUpgrades.push(upgrade);
+				this.removeBlueprints(upgrade);
 			}
 		},
 
-		hasUpgrade: function (upgradeId) {
-			return this.boughtUpgrades.indexOf(upgradeId) >= 0;
+		hasUpgrade: function (upgrade) {
+			return this.boughtUpgrades.indexOf(upgrade) >= 0;
 		},
 
-		createBlueprint: function (upgradeId) {
-			var blueprintVO = this.getBlueprint(upgradeId);
+		createBlueprint: function (upgradeID) {
+			var blueprintVO = this.getBlueprint(upgradeID);
 			if (blueprintVO) {
 				blueprintVO.completed = true;
 			}
 		},
 
-		useBlueprint: function (upgradeId) {
-			var blueprintVO = this.getBlueprint(upgradeId);
+		useBlueprint: function (upgradeID) {
+			var blueprintVO = this.getBlueprint(upgradeID);
 			if (blueprintVO) {
 				this.newBlueprints.splice(this.newBlueprints.indexOf(blueprintVO), 1);
 				this.availableBlueprints.push(blueprintVO);
 			} else {
-				log.w("No such blueprint found: " + upgradeId);
+				log.w("No such blueprint found: " + upgradeID);
 			}
 		},
 
-		addNewBlueprintPiece: function (upgradeId) {
-			if (this.hasUpgrade(upgradeId)) return;
-			var blueprintVO = this.getBlueprint(upgradeId);
+		addNewBlueprintPiece: function (upgradeID) {
+			if (this.hasUpgrade(upgradeID)) return;
+			var blueprintVO = this.getBlueprint(upgradeID);
 			if (!blueprintVO) {
-				var maxPieces = UpgradeConstants.getMaxPiecesForBlueprint(upgradeId);
-				blueprintVO = new BlueprintVO(upgradeId, maxPieces);
+				var maxPieces = UpgradeConstants.getMaxPiecesForBlueprint(upgradeID);
+				blueprintVO = new BlueprintVO(upgradeID, maxPieces);
 				this.newBlueprints.push(blueprintVO);
 			}
 			blueprintVO.currentPieces++;
 		},
 
-		hasBlueprint: function (upgradeId) {
-			return this.getBlueprint(upgradeId) !== null;
+		hasBlueprint: function (upgradeID) {
+			return this.getBlueprint(upgradeID) !== null;
 		},
 
-		getBlueprint: function (upgradeId) {
-			for (var i = 0; i < this.newBlueprints.length; i++) {
-				if (this.newBlueprints[i].upgradeId === upgradeId) return this.newBlueprints[i];
+		getBlueprint: function (upgradeID) {
+			for (let i = 0; i < this.newBlueprints.length; i++) {
+				if (this.newBlueprints[i].upgradeID === upgradeID) return this.newBlueprints[i];
 			}
-			for (var j = 0; j < this.availableBlueprints.length; j++) {
-				if (this.availableBlueprints[j].upgradeId === upgradeId) return this.availableBlueprints[j];
+			for (let j = 0; j < this.availableBlueprints.length; j++) {
+				if (this.availableBlueprints[j].upgradeID === upgradeID) return this.availableBlueprints[j];
 			}
 			return null;
 		},
 
-		hasAvailableBlueprint: function (upgradeId) {
-			return this.availableBlueprints.indexOf(this.getBlueprint(upgradeId)) >= 0;
+		hasAvailableBlueprint: function (upgradeID) {
+			return this.availableBlueprints.indexOf(this.getBlueprint(upgradeID)) >= 0;
 		},
 		
-		hasAllPieces: function (upgradeId) {
-			var blueprintVO = this.getBlueprint(upgradeId);
+		hasAllPieces: function (upgradeID) {
+			var blueprintVO = this.getBlueprint(upgradeID);
 			if (!blueprintVO) return false;
 			return blueprintVO.currentPieces >= blueprintVO.maxPieces;
 		},
 
-		hasNewBlueprint: function (upgradeId) {
-			var blueprintVO = this.getBlueprint(upgradeId);
+		hasNewBlueprint: function (upgradeID) {
+			var blueprintVO = this.getBlueprint(upgradeID);
 			return blueprintVO && blueprintVO.completed && this.newBlueprints.indexOf(blueprintVO) >= 0;
 		},
 		
-		hasUnfinishedBlueprint: function (upgradeId) {
-			var blueprintVO = this.getBlueprint(upgradeId);
+		hasUnfinishedBlueprint: function (upgradeID) {
+			var blueprintVO = this.getBlueprint(upgradeID);
 			return blueprintVO;// && !blueprintVO.completed && this.newBlueprints.indexOf(blueprintVO) >= 0;
 		},
 
 		getUnfinishedBlueprints: function () {
 			var unfinished = [];
-			for (var i = 0; i < this.newBlueprints.length; i++) {
+			for (let i = 0; i < this.newBlueprints.length; i++) {
 				if (!this.newBlueprints[i].completed) unfinished.push(this.newBlueprints[i]);
 			}
 			return unfinished;
@@ -99,14 +99,14 @@ function (Ash, UpgradeConstants, UpgradeVO, BlueprintVO) {
 		},
 
 		removeBlueprints: function (upgradeID) {
-			for (var i = 0; i < this.newBlueprints.length; i++) {
-				if (this.newBlueprints[i].upgradeId === upgradeID) {
+			for (let i = 0; i < this.newBlueprints.length; i++) {
+				if (this.newBlueprints[i].upgradeID === upgradeID) {
 					this.newBlueprints.splice(i, 1);
 					break;
 				}
 			}
-			for (var j = 0; j < this.availableBlueprints.length; j++) {
-				if (this.availableBlueprints[j].upgradeId === upgradeID) {
+			for (let j = 0; j < this.availableBlueprints.length; j++) {
+				if (this.availableBlueprints[j].upgradeID === upgradeID) {
 					this.availableBlueprints.splice(j, 1);
 					break;
 				}

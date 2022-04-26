@@ -1,6 +1,58 @@
 {
 	"versions": [
 		{
+			"version": "0.4.1",
+			"released": "2022-04-26",
+			"phase": "alpha",
+			"final": true,
+			"changes": [
+				{
+					"type": "GB",
+					"summary": "Unlock more levels"
+				},
+				{
+					"type": "GD",
+					"summary": "Add many more enemy types and many new items"
+				},
+				{
+					"type": "GD",
+					"summary": "Improve followers and add different follower abilities"
+				},
+				{
+					"type": "GB",
+					"summary": "Add locations with scavengeable crafting ingredients"
+				},
+				{
+					"type": "GD",
+					"summary": "Make building effects clearer (upgrades unlock building levels, no automatic effects)"
+				},
+				{
+					"type": "GD",
+					"summary": "Add upgrades to traps and buckets"
+				},
+				{
+					"type": "GD",
+					"summary": "Add map pieces and graffiti that help navigating new areas"
+				},
+				{
+					"type": "GD",
+					"summary": "Make some debuffs (hunger, thirst, cold, poison, radiation) less forgiving by adding them slowly instead of immediately"
+				},
+				{
+					"type": "GD",
+					"summary": "Polish the Rejuv Shot (block using twice; only restores stamina and doesn't affect max stamina)"
+				},
+				{
+					"type": "GB",
+					"summary": "Adjust balancing for buildings, crafting, upgrades, fights, raids and scavenging results"
+				},
+				{
+					"type": "UI",
+					"summary": "Improve UI for screen reader users"
+				}
+			]
+		},
+		{
 			"version": "0.3.3",
 			"requiredVersion": "0.3.1",
 			"released": "2021-03-23",

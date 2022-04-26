@@ -33,8 +33,8 @@ define(['ash'], function (Ash) {
 		},
 		
 		getStages: function (level) {
-			var result = [];
-			for (var i = 0; i < this.stages.length; i++) {
+			let result = [];
+			for (let i = 0; i < this.stages.length; i++) {
 				var stage = this.stages[i];
 				if (stage.spansLevel(level)) {
 					result.push(stage);
@@ -44,8 +44,8 @@ define(['ash'], function (Ash) {
 		},
 		
 		getFeaturesByPos: function (pos) {
-			var result = [];
-			for (var i = 0; i < this.features.length; i++) {
+			let result = [];
+			for (let i = 0; i < this.features.length; i++) {
 				if (this.features[i].containsPosition(pos)) {
 					result.push(this.features[i]);
 				}
@@ -54,8 +54,8 @@ define(['ash'], function (Ash) {
 		},
 		
 		getFeaturesByType: function (type) {
-			var result = [];
-			for (var i = 0; i < this.features.length; i++) {
+			let result = [];
+			for (let i = 0; i < this.features.length; i++) {
 				if (this.features[i].type == type) {
 					result.push(this.features[i]);
 				}

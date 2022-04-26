@@ -62,6 +62,7 @@ define(['ash'], function (Ash) {
 		},
 		
 		addResource: function (res, amount) {
+			if (amount == 0) return;
 			this.cleanUp();
 			switch(res) {
 				case resourceNames.water: this.water += amount; break;
@@ -133,6 +134,7 @@ define(['ash'], function (Ash) {
 		
 		limit: function (name, min, max) {
 			var amount = this.getResource(name);
+			if (amount == 0) return;
 			if (amount < min)
 				this.setResource(name, min);
 			if (amount > max)
@@ -160,7 +162,7 @@ define(['ash'], function (Ash) {
 		},
 		
 		getNames: function () {
-			var result = [];
+			let result = [];
 			 for(var key in resourceNames) {
 				var name = resourceNames[key];
 				var amount = this.getResource(name);
@@ -168,6 +170,14 @@ define(['ash'], function (Ash) {
 					result.push(name);
 			}
 			return result;
+		},
+		
+		isOnlySupplies: function () {
+			return this.getTotal() == this.getResource(resourceNames.food) + this.getResource(resourceNames.water);
+		},
+		
+		isOneResource: function () {
+			return this.getNames().length == 1;
 		},
 		
 		getCustomSaveObject: function () {

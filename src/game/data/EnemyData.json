@@ -1,0 +1,1652 @@
+{
+	"albatross": {
+		"name": "albatross",
+		"environment": "sparse",
+		"enemyType": "bird",
+		"campOrdinal": 4,
+		"difficulty": 4,
+		"attackRatio": 0.4,
+		"speed": 0.9,
+		"size": 0.8,
+		"rarity": 50
+	},
+	"albino_salamander__template": {
+		"environment": "dark",
+		"enemyType": "small_animal",
+		"difficulty": 5,
+		"attackRatio": 0.6,
+		"speed": 1,
+		"size": 0.3,
+		"rarity": 50
+	},
+	"albino_salamander__lesser": {
+		"name": "lesser albino salamander",
+		"campOrdinal": 2
+	},
+	"albino_salamander__basic": {
+		"name": "albino salamander",
+		"campOrdinal": 4
+	},
+	"albino_salamander__ferocious": {
+		"name": "ferocious albino salamander",
+		"campOrdinal": 6
+	},
+	"albino_salamander__giant": {
+		"name": "giant albino salamander",
+		"campOrdinal": 8
+	},
+	"albino_salamander__deformed": {
+		"name": "deformed albino salamander",
+		"environment": "radiation",
+		"campOrdinal": 6
+	},
+	"alligator__template": {
+		"enemyType": "big_animal",
+		"attackRatio": 0.55
+	},
+	"alligator": {
+		"name": "alligator",
+		"environment": "global",
+		"campOrdinal": 7,
+		"difficulty": 5,
+		"speed": 0.9,
+		"size": 1.8,
+		"rarity": 75
+	},
+	"alligator__aggressive": {
+		"name": "aggressive alligator",
+		"environment": "global",
+		"campOrdinal": 10,
+		"difficulty": 5,
+		"speed": 0.8,
+		"size": 1.75,
+		"rarity": 75
+	},
+	"alligator__mutant": {
+		"name": "mutant alligator",
+		"environment": "radiation",
+		"campOrdinal": 12,
+		"difficulty": 5,
+		"attackRatio": 0.6,
+		"healthFactor": 1.1,
+		"speed": 0.8,
+		"rarity": 30,
+		"size": 1.65
+	},
+	"armed_gangster": {
+		"name": "armed gangster",
+		"environment": "nohazard",
+		"enemyType": "bandit",
+		"campOrdinal": 14,
+		"difficulty": 6,
+		"attackRatio": 0.55,
+		"healthFactor": 0.9,
+		"shieldRatio": 0.15,
+		"speed": 0.95,
+		"rarity": 30
+	},
+	"bandit__template": {
+		"environment": "nohazard",
+		"enemyType": "bandit",
+		"healthFactor": 0.9,
+		"attackRatio": 0.56
+	},
+	"bandit__hungry": {
+		"name": "hungry bandit",
+		"campOrdinal": 9
+	},
+	"bandit__homeless": {
+		"name": "homeless bandit",
+		"campOrdinal": 11
+	},
+	"bandit__bold": {
+		"name": "bold bandit",
+		"campOrdinal": 13
+	},
+	"bandit__seasoned": {
+		"name": "seasoned bandit",
+		"campOrdinal": 15
+	},
+	"bandit__masked": {
+		"name": "masked bandit",
+		"environment": "toxic",
+		"campOrdinal": 12
+	},
+	"bandit__tanned": {
+		"name": "tanned bandit",
+		"environment": "sunlit",
+		"campOrdinal": 12
+	},
+	"bandit__fur_clad": {
+		"name": "Fur-clad Bandit",
+		"environment": "cold",
+		"campOrdinal": 13
+	},
+	"black_bear": {
+		"name": "black bear",
+		"environment": "sunlit",
+		"enemyType": "big_animal",
+		"campOrdinal": 8,
+		"difficulty": 6,
+		"attackRatio": 0.7,
+		"speed": 0.9,
+		"size": 1.4
+	},
+	"black_bear__small": {
+		"name": "small black bear",
+		"environment": "sunlit",
+		"enemyType": "big_animal",
+		"campOrdinal": 6,
+		"difficulty": 6,
+		"attackRatio": 0.8,
+		"speed": 0.9,
+		"size": 1.4
+	},
+	"bloodwort": {
+		"name": "Bloodwort",
+		"environment": "sunlit",
+		"enemyType": "flora",
+		"campOrdinal": 4,
+		"attackFactor": 0.75,
+		"droppedResources": ["herbs"]
+	},
+	"camel_spider": {
+		"name": "camel spider",
+		"environment": "global",
+		"enemyType": "small_animal",
+		"campOrdinal": 5,
+		"difficulty": 5,
+		"attackRatio": 0.35,
+		"speed": 1,
+		"size": 0.5,
+		"rarity": 35
+	},
+	"carpet_viper": {
+		"name": "carpet viper",
+		"environment": "global",
+		"enemyType": "small_animal",
+		"campOrdinal": 7,
+		"difficulty": 5,
+		"attackRatio": 0.6,
+		"healthFactor": 0.9,
+		"speed": 1,
+		"size": 0.8,
+		"rarity": 35
+	},
+	"cave_bat__template": {
+		"name": "cave bat",
+		"environment": "dark",
+		"enemyType": "small_animal",
+		"campOrdinal": 2,
+		"difficulty": 4,
+		"attackRatio": 0.55,
+		"healthFactor": 1.2,
+		"speed": 1.1,
+		"size": 0.3,
+		"rarity": 20
+	},
+	"cave_bat__small": {
+		"name": "small cave bat",
+		"campOrdinal": 1
+	},
+	"cave_bat__agitated": {
+		"name": "agitated cave bat",
+		"campOrdinal": 4
+	},
+	"cave_bat__big": {
+		"name": "big cave bat",
+		"campOrdinal": 6
+	},
+	"cave_bat__huge": {
+		"name": "huge cave bat",
+		"campOrdinal": 9
+	},
+	"cave_bat__deformed": {
+		"name": "deformed cave bat",
+		"environment": "radiation",
+		"campOrdinal": 6
+	},
+	"centipede__template": {
+		"enemyType": "small_animal"
+	},
+	"centipede__giant": {
+		"name": "giant centipede",
+		"environment": "global",
+		"enemyType": "small_animal",
+		"campOrdinal": 1,
+		"difficulty": 2,
+		"attackRatio": 0.4,
+		"speed": 1,
+		"size": 0.4,
+		"rarity": 30
+	},
+	"centipede__poisonous": {
+		"name": "poisonous centipede",
+		"environment": "toxic",
+		"campOrdinal": 2,
+		"difficulty": 5,
+		"attackRatio": 0.5,
+		"speed": 0.8,
+		"size": 0.2,
+		"rarity": 50
+	},
+	"centipede__radioactive": {
+		"name": "radioactive centipede",
+		"environment": "radiation",
+		"enemyType": "small_animal",
+		"campOrdinal": 3,
+		"difficulty": 3,
+		"attackRatio": 0.4,
+		"speed": 0.5,
+		"size": 0.3
+	},
+	"cockroach__template": {
+		"enemyType": "small_animal",
+		"size": 0.3
+	},
+	"cockroach": {
+		"name": "cockroach",
+		"environment": "dark",
+		"campOrdinal": 1,
+		"difficulty": 1,
+		"attackRatio": 0.4,
+		"healthFactor": 1.1,
+		"speed": 1,
+		"rarity": 10
+	},
+	"cockroach__radioactive": {
+		"name": "radioactive cockroach",
+		"environment": "radiation",
+		"campOrdinal": 3,
+		"difficulty": 2,
+		"attackRatio": 0.55,
+		"speed": 0.6
+	},
+	"condor": {
+		"name": "condor",
+		"environment": "sparse",
+		"enemyType": "bird",
+		"campOrdinal": 6,
+		"difficulty": 4,
+		"attackRatio": 0.4,
+		"speed": 1,
+		"size": 0.9,
+		"rarity": 50
+	},
+	"death_adder": {
+		"name": "death adder",
+		"environment": "dense",
+		"enemyType": "small_animal",
+		"campOrdinal": 10,
+		"difficulty": 5,
+		"attackRatio": 0.6,
+		"speed": 1,
+		"size": 0.5,
+		"rarity": 50
+	},
+	"deathfly": {
+		"name": "Deathfly",
+		"environment": "global",
+		"enemyType": "small_animal",
+		"campOrdinal": 3
+	},
+	"delivery_bot__template": {
+		"environment": "inhabited",
+		"enemyType": "robot",
+		"size": 0.5,
+		"shieldRatio": 1,
+		"attackRatio": 0.45,
+		"speed": 1.15,
+		"difficulty": 3
+	},
+	"delivery_bot__stray": {
+		"name": "stray delivery bot",
+		"campOrdinal": 9
+	},
+	"delivery_bot__hacked": {
+		"name": "hacked delivery bot",
+		"campOrdinal": 11
+	},
+	"delivery_bot__rugged": {
+		"name": "rugged delivery bot",
+		"campOrdinal": 13
+	},
+	"delivery_bot__gleaming": {
+		"name": "gleaming delivery bot",
+		"campOrdinal": 15
+	},
+	"devils_fingers": {
+		"name": "Devil's Fingers",
+		"environment": "global",
+		"enemyType": "fungi",
+		"attackRatio": 0.6,
+		"campOrdinal": 4
+	},
+	"dire_boar": {
+		"name": "dire boar",
+		"environment": "cold",
+		"enemyType": "big_animal",
+		"campOrdinal": 11,
+		"difficulty": 4,
+		"attackRatio": 0.4,
+		"speed": 1.05,
+		"size": 0.85,
+		"rarity": 75,
+		"droppedResources": ["food"]
+	},
+	"dog__template": {
+		"environment": "nohazard",
+		"enemyType": "small_animal",
+		"speed": 1.1,
+		"size": 0.5,
+		"attackRatio": 0.6
+	},
+	"dog__wild": {
+		"name": "wild dog",
+		"campOrdinal": 1,
+		"difficulty": 8
+	},
+	"dog__rabid": {
+		"name": "rabid dog",
+		"campOrdinal": 2,
+		"difficulty": 8
+	},
+	"dog__mutant": {
+		"name": "mutant dog",
+		"environment": "radiation",
+		"enemyType": "small_animal",
+		"campOrdinal": 8,
+		"difficulty": 5,
+		"healthFactor": 0.9
+	},
+	"dog__towering_mutant": {
+		"name": "towering mutant dog",
+		"environment": "radiation",
+		"enemyType": "small_animal",
+		"campOrdinal": 10,
+		"difficulty": 5,
+		"rarity": 20,
+		"size": 0.8
+	},
+	"doomsayer": {
+		"name": "doomsayer",
+		"environment": "nohazard",
+		"enemyType": "humanoid",
+		"campOrdinal": 13,
+		"difficulty": 3,
+		"attackRatio": 0.55,
+		"healthFactor": 1.1,
+		"speed": 0.9,
+		"rarity": 45,
+		"droppedResources": ["herbs"]
+	},
+	"drone_from_a_forgotten_war": {
+		"name": "drone from a forgotten war",
+		"environment": "uninhabited",
+		"enemyType": "robot",
+		"campOrdinal": 11,
+		"difficulty": 4,
+		"attackRatio": 0.5,
+		"speed": 1.25,
+		"shieldRatio": 1,
+		"rarity": 60,
+		"droppedResources": ["metal"]
+	},
+	"drove_of_boars": {
+		"name": "drove of boars",
+		"environment": "sunlit",
+		"enemyType": "big_animal",
+		"campOrdinal": 8,
+		"difficulty": 5,
+		"rarity": 1,
+		"attackRatio": 0.67,
+		"droppedResources": ["food"]
+	},
+	"dryad__vengeful": {
+		"name": "vengeful dryad",
+		"environment": "sunlit",
+		"enemyType": "humanoid",
+		"campOrdinal": 7,
+		"difficulty": 8,
+		"attackRatio": 0.55,
+		"speed": 1.1,
+		"rarity": 90,
+		"droppedResources": ["herbs"]
+	},
+	"dryad__mad": {
+		"name": "mad dryad",
+		"environment": "global",
+		"enemyType": "humanoid",
+		"campOrdinal": 6,
+		"difficulty": 8,
+		"attackRatio": 0.55,
+		"speed": 1.1,
+		"rarity": 90,
+		"droppedResources": ["herbs"]
+	},
+	"duskboar": {
+		"name": "duskboar",
+		"environment": "cold",
+		"enemyType": "big_animal",
+		"campOrdinal": 7,
+		"difficulty": 5,
+		"attackRatio": 0.4,
+		"speed": 1,
+		"rarity": 50,
+		"droppedResources": ["food"]
+	},
+	"duskboar__dwarf": {
+		"name": "dwarf duskboar",
+		"environment": "cold",
+		"enemyType": "big_animal",
+		"campOrdinal": 5,
+		"difficulty": 4,
+		"attackRatio": 0.4,
+		"speed": 1,
+		"rarity": 50,
+		"droppedResources": ["food"]
+	},
+	"escaped_lab_chimpanzee": {
+		"name": "escaped lab chimpanzee",
+		"environment": "inhabited",
+		"enemyType": "big_animal",
+		"campOrdinal": 14,
+		"difficulty": 7,
+		"attackRatio": 0.68,
+		"speed": 1.1,
+		"healthFactor": 0.8,
+		"size": 0.7,
+		"rarity": 85,
+		"droppedResources": ["food"]
+	},
+	"escaped_lab_monkey": {
+		"name": "escaped lab monkey",
+		"environment": "inhabited",
+		"enemyType": "small_animal",
+		"campOrdinal": 13,
+		"difficulty": 3,
+		"attackRatio": 0.55,
+		"healthFactor": 0.8,
+		"speed": 1,
+		"size": 0.7,
+		"rarity": 85,
+		"droppedResources": ["food"]
+	},
+	"escaped_pet_boa": {
+		"name": "escaped pet boa",
+		"environment": "dense",
+		"enemyType": "big_animal",
+		"campOrdinal": 14,
+		"difficulty": 7,
+		"attackRatio": 0.7,
+		"healthFactor": 0.9,
+		"speed": 0.9,
+		"size": 0.7,
+		"rarity": 85,
+		"droppedResources": ["food"]
+	},
+	"fiend": {
+		"name": "Fiend",
+		"environment": "global",
+		"enemyType": "humanoid",
+		"campOrdinal": 7,
+		"attackRatio": 0.58
+	},
+	"fierce_snake": {
+		"name": "fierce snake",
+		"environment": "dense",
+		"enemyType": "small_animal",
+		"campOrdinal": 8,
+		"difficulty": 2,
+		"attackRatio": 0.75,
+		"speed": 1,
+		"size": 0.35,
+		"rarity": 50,
+		"droppedResources": ["food"]
+	},
+	"fire_door__antagornistic": {
+		"name": "antagonistic fire door",
+		"environment": "global",
+		"enemyType": "structure",
+		"campOrdinal": 12,
+		"difficulty": 7,
+		"attackRatio": 0.25,
+		"speed": 0.5,
+		"shieldRatio": 1,
+		"shieldFactor": 1.5,
+		"rarity": 50,
+		"droppedResources": ["metal"]
+	},
+	"fire_door__malfunctioning": {
+		"name": "malfunctioning fire door",
+		"environment": "global",
+		"enemyType": "structure",
+		"campOrdinal": 10,
+		"difficulty": 4,
+		"attackRatio": 0.25,
+		"speed": 0.5,
+		"shieldRatio": 1,
+		"rarity": 65,
+		"droppedResources": ["metal"]
+	},
+	"fire_salamander__template": {
+		"environment": "nohazard",
+		"enemyType": "small_animal",
+		"attackRatio": 0.6,
+		"speed": 1,
+		"size": 0.3,
+		"rarity": 50,
+		"droppedResources": ["food"]
+	},
+	"fire_salamander": {
+		"name": "fire salamander",
+		"campOrdinal": 6,
+		"difficulty": 5
+	},
+	"fire_salamander__lesser": {
+		"name": "lesser fire salamander",
+		"campOrdinal": 4,
+		"difficulty": 5
+	},
+	"flying_fox": {
+		"name": "flying fox",
+		"environment": "dark",
+		"enemyType": "small_animal",
+		"campOrdinal": 7,
+		"difficulty": 4,
+		"attackRatio": 0.7,
+		"speed": 1,
+		"size": 0.4,
+		"rarity": 70
+	},
+	"flying_fox__horned": {
+		"name": "horned flying fox",
+		"environment": "radiation",
+		"enemyType": "small_animal",
+		"campOrdinal": 8,
+		"difficulty": 6,
+		"attackRatio": 0.7,
+		"speed": 1,
+		"size": 0.6,
+		"rarity": 70
+	},
+	"garbage_robot__template": {
+		"enemyType": "robot",
+		"attackRatio": 0.55,
+		"shieldRatio": 1,
+		"size": 0.6
+	},
+	"garbage_robot__old": {
+		"name": "Old garbage robot",
+		"environment": "global",
+		"campOrdinal": 4
+	},
+	"garbage_robot__tattered": {
+		"name": "Tattered garbage robot",
+		"environment": "global",
+		"campOrdinal": 10
+	},
+	"garbage_robot__stramlined": {
+		"name": "streamlined garbage robot",
+		"environment": "global",
+		"campOrdinal": 15
+	},
+	"ghost__template": {
+		"rarity": 75,
+		"environment": "dark",
+		"enemyType": "humanoid",
+		"difficulty": 8,
+		"healthFactor": 0.9,
+		"attackRatio": 0.55
+	},
+	"ghost__half_remembered": {
+		"name": "half-remembered ghost",
+		"campOrdinal": 3
+	},
+	"ghost__sorrowful": {
+		"name": "Sorrowful ghost",
+		"campOrdinal": 5
+	},
+	"ghost__vengeful": {
+		"name": "Vengeful ghost",
+		"campOrdinal": 7
+	},
+	"ghost_bat": {
+		"name": "ghost bat",
+		"environment": "dark",
+		"enemyType": "small_animal",
+		"campOrdinal": 3,
+		"difficulty": 6,
+		"attackRatio": 0.45,
+		"speed": 1,
+		"size": 0.6,
+		"rarity": 50,
+		"droppedResources": ["food"]
+	},
+	"ghoul": {
+		"name": "Ghoul",
+		"environment": "dark",
+		"enemyType": "humanoid",
+		"campOrdinal": 9
+	},
+	"giant_snow_owl": {
+		"name": "giant snow owl",
+		"environment": "cold",
+		"enemyType": "bird",
+		"campOrdinal": 10,
+		"difficulty": 7,
+		"attackRatio": 0.4,
+		"speed": 1,
+		"size": 0.9,
+		"rarity": 50,
+		"droppedResources": ["food"]
+	},
+	"giant_stagshorn__template": {
+		"enemyType": "fungi",
+		"attackRatio": 0.4,
+		"size": 0.45
+	},
+	"giant_stagshorn__yellow": {
+		"name": "Yellow giant stagshorn",
+		"environment": "global",
+		"campOrdinal": 4
+	},
+	"giant_stagshorn__red": {
+		"name": "Red giant stagshorn",
+		"environment": "toxic",
+		"campOrdinal": 5
+	},
+	"glowing_mushroom": {
+		"name": "Glowing mushroom",
+		"environment": "dark",
+		"enemyType": "fungi",
+		"campOrdinal": 4,
+		"difficulty": 2
+	},
+	"goliath_frog": {
+		"name": "Goliath frog",
+		"enemyType": "small_animal",
+		"environment": "nohazard",
+		"campOrdinal": 8,
+		"size": 0.4
+	},
+	"goshawk": {
+		"name": "goshawk",
+		"environment": "cold",
+		"enemyType": "bird",
+		"campOrdinal": 2,
+		"difficulty": 4,
+		"attackRatio": 0.6,
+		"healthFactor": 1.15,
+		"speed": 1.1,
+		"size": 0.5,
+		"rarity": 50,
+		"droppedResources": ["food"]
+	},
+	"great_black_pelican": {
+		"name": "great black pelican",
+		"environment": "sparse",
+		"enemyType": "bird",
+		"campOrdinal": 15,
+		"difficulty": 4,
+		"attackRatio": 0.55,
+		"speed": 0.9,
+		"rarity": 35,
+		"droppedResources": ["food"]
+	},
+	"grey_adder": {
+		"name": "grey adder",
+		"environment": "cold",
+		"enemyType": "small_animal",
+		"campOrdinal": 2,
+		"difficulty": 2,
+		"attackRatio": 0.6,
+		"speed": 1,
+		"size": 0.5,
+		"rarity": 50,
+		"droppedResources": ["food"]
+	},
+	"grizzly_bear": {
+		"name": "grizzly bear",
+		"environment": "cold",
+		"enemyType": "big_animal",
+		"campOrdinal": 8,
+		"difficulty": 9,
+		"attackRatio": 0.55,
+		"speed": 0.9,
+		"size": 1.5,
+		"rarity": 50,
+		"droppedResources": ["food"]
+	},
+	"group_of_seagulls": {
+		"name": "a group of seagulls",
+		"environment": "sparse",
+		"enemyType": "bird",
+		"campOrdinal": 10,
+		"difficulty": 3,
+		"attackRatio": 0.7,
+		"speed": 1.1,
+		"rarity": 20,
+		"droppedResources": ["food"]
+	},
+	"guard_bot__template": {
+		"name": "ancient guard bot",
+		"environment": "global",
+		"enemyType": "robot",
+		"difficulty": 8,
+		"shieldFactor": 0.9,
+		"attackRatio": 0.42,
+		"speed": 0.8,
+		"shieldRatio": 1,
+		"size": 0.85,
+		"rarity": 65,
+		"droppedResources": ["metal"]
+	},
+	"guard_bot__rusted": {
+		"name": "rusted guard bot",
+		"campOrdinal": 2
+	},
+	"guard_bot__ancient": {
+		"name": "ancient guard bot",
+		"campOrdinal": 4
+	},
+	"guard_bot__aggressive": {
+		"name": "aggressive guard bot",
+		"campOrdinal": 6
+	},
+	"guard_bot__erratic": {
+		"name": "erratic guard bot",
+		"campOrdinal": 8
+	},
+	"guard_bot__factory": {
+		"name": "factory guard bot",
+		"campOrdinal": 10
+	},
+	"guard_bot__modified": {
+		"name": "modified guard bot",
+		"campOrdinal": 13
+	},
+	"guard_bot__advanced": {
+		"name": "advanced guard bot",
+		"campOrdinal": 15
+	},
+	"guard_bot__slow": {
+		"name": "slow guard bot",
+		"campOrdinal": 9
+	},
+	"guard_bot__radiation": {
+		"name": "radiation-resistant guard bot",
+		"environment": "radiation",
+		"campOrdinal": 7
+	},
+	"guard_bot__radiation_2": {
+		"name": "reinforced guard bot",
+		"environment": "radiation",
+		"campOrdinal": 13,
+		"attackRatio": 0.35
+	},
+	"guard_bot__enormous": {
+		"name": "enormous guard bot",
+		"environment": "sparse",
+		"campOrdinal": 13,
+		"shieldFactor": 1.1
+	},
+	"guard_bot__toxic_1": {
+		"name": "corroded guard bot",
+		"environment": "sparse",
+		"campOrdinal": 5
+	},
+	"guard_bot__toxic_2": {
+		"name": "pollution-resistant guard bot",
+		"environment": "sparse",
+		"campOrdinal": 11
+	},
+	"harvester_bot": {
+		"name": "Harvester bot",
+		"environment": "uninhabited",
+		"enemyType": "robot",
+		"campOrdinal": 9,
+		"shieldFactor": 1,
+		"attackRatio": 0.4
+	},
+	"hawk": {
+		"name": "hawk",
+		"environment": "sparse",
+		"enemyType": "bird",
+		"campOrdinal": 3,
+		"difficulty": 9,
+		"attackRatio": 0.65,
+		"speed": 1.1,
+		"size": 0.5,
+		"rarity": 50,
+		"droppedResources": ["food"]
+	},
+	"rat__template": {
+		"name": "huge rat",
+		"environment": "global",
+		"enemyType": "small_animal",
+		"difficulty": 5,
+		"attackRatio": 0.66,
+		"speed": 1.1,
+		"size": 0.5,
+		"droppedResources": ["food"]
+	},
+	"rat__huge": {
+		"name": "huge rat",
+		"campOrdinal": 1
+	},
+	"rat__giant": {
+		"name": "giant rat",
+		"campOrdinal": 3
+	},
+	"rat__mutant": {
+		"name": "mutant rat",
+		"environment": "radiation",
+		"attackRatio": 0.75,
+		"campOrdinal": 3
+	},
+	"hyena__spotted": {
+		"name": "spotted hyena",
+		"environment": "global",
+		"enemyType": "big_animal",
+		"campOrdinal": 5,
+		"difficulty": 5,
+		"attackRatio": 0.75,
+		"speed": 1.1,
+		"size": 0.5,
+		"droppedResources": ["food"]
+	},
+	"industrial_robot__template": {
+		"name": "Industrial robot",
+		"environment": "toxic",
+		"enemyType": "robot",
+		"difficulty": 8,
+		"shieldRatio": 1
+	},
+	"industrial_robot__stranded": {
+		"name": "stranded industrial robot",
+		"campOrdinal": 3
+	},
+	"industrial_robot__neglected": {
+		"name": "neglected industrial robot",
+		"campOrdinal": 5
+	},
+	"industrial_robot__hardy": {
+		"name": "hardy industrial robot",
+		"campOrdinal": 7
+	},
+	"industrial_robot__tangled": {
+		"name": "tangled industrial robot",
+		"campOrdinal": 9
+	},
+	"industrial_robot__dogged": {
+		"name": "dogged industrial robot",
+		"campOrdinal": 11
+	},
+	"hyena__black": {
+		"name": "black hyena",
+		"environment": "dark",
+		"enemyType": "big_animal",
+		"campOrdinal": 7,
+		"difficulty": 5,
+		"attackRatio": 0.75,
+		"speed": 1.1,
+		"size": 0.6,
+		"droppedResources": ["food"]
+	},
+	"hyena__mutant": {
+		"name": "mutant hyena",
+		"environment": "radiation",
+		"enemyType": "big_animal",
+		"campOrdinal": 7,
+		"difficulty": 5,
+		"attackRatio": 0.75,
+		"speed": 1.1,
+		"size": 0.7,
+		"droppedResources": ["food"]
+	},
+	"leaking_gas_pipe": {
+		"name": "leaking gas pipe",
+		"environment": "toxic",
+		"enemyType": "structure",
+		"verbsDefeated": ["dismantled"],
+		"campOrdinal": 5,
+		"difficulty": 4,
+		"attackRatio": 0.25,
+		"speed": 0.5,
+		"shieldRatio": 1,
+		"shieldFactor": 1.25,
+		"rarity": 75,
+		"droppedResources": ["metal"]
+	},
+	"lunatic": {
+		"name": "Lunatic",
+		"environment": "uninhabited",
+		"enemyType": "humanoid",
+		"campOrdinal": 6
+	},
+	"magpie__territorial": {
+		"name": "territorial magpie",
+		"environment": "sparse",
+		"enemyType": "bird",
+		"campOrdinal": 2,
+		"difficulty": 2,
+		"attackRatio": 0.7,
+		"healthFactor": 1.1,
+		"speed": 1.2,
+		"size": 0.5,
+		"rarity": 35,
+		"droppedResources": ["food"]
+	},
+	"magpie__aggressive": {
+		"name": "aggressive magpie",
+		"environment": "sparse",
+		"enemyType": "bird",
+		"campOrdinal": 4,
+		"difficulty": 4,
+		"attackRatio": 0.7,
+		"speed": 1.2,
+		"size": 0.5,
+		"rarity": 50,
+		"droppedResources": ["food"]
+	},
+	"maintenance_bot__template": {
+		"enemyType": "robot",
+		"attackFactor": 0.4,
+		"shieldRatio": 1,
+		"size": 0.75
+	},
+	"maintenance_bot__disoriented": {
+		"name": "Disoriented maintenance bot",
+		"environment": "uninhabited",
+		"campOrdinal": 9
+	},
+	"maintenance_bot__overzealous": {
+		"name": "Overzealous maintenance bot",
+		"environment": "uninhabited",
+		"campOrdinal": 11
+	},
+	"military_bot__template": {
+		"enemyType": "robot",
+		"rarity": 50,
+		"size": 0.8,
+		"shieldRatio": 1
+	},
+	"military_bot": {
+		"name": "military bot",
+		"environment": "uninhabited",
+		"campOrdinal": 13,
+		"difficulty": 4,
+		"attackRatio": 0.7,
+		"speed": 1.15,
+		"shieldFactor": 1
+	},
+	"military_bot__advanced": {
+		"name": "advanced military bot",
+		"environment": "global",
+		"campOrdinal": 15,
+		"difficulty": 9,
+		"attackRatio": 0.55,
+		"speed": 1.2,
+		"shieldFactor": 1.1
+	},
+	"mountain_lion": {
+		"name": "mountain lion",
+		"environment": "global",
+		"enemyType": "big_animal",
+		"campOrdinal": 10,
+		"difficulty": 8,
+		"attackRatio": 0.55,
+		"speed": 0.9,
+		"size": 1.5,
+		"rarity": 50
+	},
+	"mugger__template": {
+		"environment": "water",
+		"enemyType": "bandit",
+		"droppedResources": ["food", "water"]
+	},
+	"mugger": {
+		"name": "mugger",
+		"campOrdinal": 10,
+		"difficulty": 5,
+		"attackRatio": 0.5,
+		"speed": 0.9,
+		"rarity": 15
+	},
+	"mugger__threatening": {
+		"name": "threatening mugger",
+		"campOrdinal": 11,
+		"difficulty": 5,
+		"attackRatio": 0.5,
+		"speed": 0.9,
+		"rarity": 15,
+		"droppedResources": ["food", "water"]
+	},
+	"outlaw__template": {
+		"name": "outlaw",
+		"environment": "water",
+		"enemyType": "bandit",
+		"campOrdinal": 6,
+		"difficulty": 8,
+		"attackRatio": 0.55,
+		"speed": 0.9,
+		"rarity": 50,
+		"droppedResources": ["food", "water"]
+	},
+	"outlaw__delirious": {
+		"name": "delirious outlaw",
+		"campOrdinal": 2
+	},
+	"outlaw__malnourished": {
+		"name": "malnourished outlaw",
+		"campOrdinal": 4
+	},
+	"outlaw__enigmatic": {
+		"name": "enigmatic outlaw",
+		"campOrdinal": 6
+	},
+	"outlaw__wild": {
+		"name": "wild outlaw",
+		"campOrdinal": 8
+	},
+	"outlaw__solitary": {
+		"name": "solitary outlaw",
+		"campOrdinal": 10
+	},
+	"overgrown_nettle": {
+		"name": "overgrown nettle",
+		"environment": "sunlit",
+		"enemyType": "flora",
+		"campOrdinal": 3,
+		"difficulty": 5,
+		"attackRatio": 0.61,
+		"healthFactor": 1.1,
+		"speed": 0.25,
+		"size": 0.75,
+		"droppedResources": ["herbs"]
+	},
+	"porcupine": {
+		"name": "Porcupine",
+		"environment": "nohazard",
+		"enemyType": "small_animal",
+		"campOrdinal": 8,
+		"attackRatio": 0.45,
+		"difficulty": 4
+	},
+	"raccoon__template": {
+		"environment": "water",
+		"enemyType": "small_animal",
+		"difficulty": 3,
+		"attackRatio": 0.6,
+		"size": 0.5,
+		"speed": 1.1,
+		"rarity": 1,
+		"droppedResources": ["food", "rope"]
+	},
+	"raccoon__alarmed": {
+		"name": "alarmed raccoon",
+		"campOrdinal": 3
+	},
+	"raccoon__aggressive": {
+		"name": "aggressive raccoon",
+		"campOrdinal": 5,
+		"difficulty": 2
+	},
+	"raccoon__mutant": {
+		"name": "mutant raccoon",
+		"environment": "radiation",
+		"campOrdinal": 7
+	},
+	"radiotrophic_fungi__template": {
+		"environment": "radiation",
+		"enemyType": "fungi",
+		"difficulty": 6,
+		"attackRatio": 0.55,
+		"speed": 0.65,
+		"healthFactor": 1.25,
+		"size": 0.5,
+		"rarity": 10,
+		"droppedResources": ["food"]
+	},
+	"radiotrophic_fungi__brown": {
+		"name": "brown radiothropic fungi",
+		"campOrdinal": 5
+	},
+	"radiotrophic_fungi__black": {
+		"name": "black radiothropic fungi",
+		"campOrdinal": 8
+	},
+	"radiotrophic_fungi__spiky": {
+		"name": "spiky radiothropic fungi",
+		"campOrdinal": 10
+	},
+	"radiotrophic_fungi__yellow": {
+		"name": "yellow radiothropic fungi",
+		"campOrdinal": 12
+	},
+	"radiotrophic_fungi__purple": {
+		"name": "purple radiothropic fungi",
+		"campOrdinal": 14
+	},
+	"ratsnake__template": {
+		"environment": "dense",
+		"enemyType": "small_animal",
+		"speed": 1.05,
+		"attackRatio": 0.58,
+		"difficulty": 2,
+		"size": 0.35,
+		"droppedResources": ["food"]
+	},
+	"ratsnake": {
+		"name": "ratsnake",
+		"campOrdinal": 5,
+		"rarity": 50
+	},
+	"ratsnake__yellow": {
+		"name": "yellow ratsnake",
+		"campOrdinal": 7,
+		"rarity": 50
+	},
+	"ratsnake__white": {
+		"name": "white ratsnake",
+		"environment": "cold",
+		"campOrdinal": 6,
+		"rarity": 50
+	},
+	"robber__template": {
+		"enemyType": "small_animal"
+	},
+	"robber": {
+		"name": "robber",
+		"environment": "water",
+		"enemyType": "bandit",
+		"campOrdinal": 12,
+		"difficulty": 6,
+		"attackRatio": 0.55,
+		"speed": 0.9,
+		"rarity": 50,
+		"droppedResources": ["food", "water"]
+	},
+	"robber__mean": {
+		"name": "mean robber",
+		"environment": "water",
+		"campOrdinal": 13,
+		"difficulty": 5,
+		"healthFactor": 0.95,
+		"attackRatio": 0.55,
+		"speed": 1,
+		"rarity": 50,
+		"droppedResources": ["food", "water"]
+	},
+	"robber__nervous": {
+		"name": "nervous robber",
+		"environment": "water",
+		"campOrdinal": 10,
+		"difficulty": 3,
+		"healthFactor": 0.95,
+		"attackRatio": 0.55,
+		"speed": 1,
+		"rarity": 50,
+		"droppedResources": ["food", "water"]
+	},
+	"robot_from_a_forgotten_war": {
+		"name": "robot from a forgotten war",
+		"environment": "uninhabited",
+		"enemyType": "robot",
+		"campOrdinal": 9,
+		"difficulty": 5,
+		"attackRatio": 0.5,
+		"speed": 0.9,
+		"shieldRatio": 1,
+		"shieldFactor": 0.75,
+		"rarity": 60
+	},
+	"robotic_dog__template": {
+		"enemyType": "robot",
+		"shieldRatio": 1,
+		"attackRatio": 0.65,
+		"size": 0.5
+	},
+	"robotic_dog__small": {
+		"name": "Small robotic dog",
+		"environment": "global",
+		"campOrdinal": 5
+	},
+	"robotic_dog__big": {
+		"name": "big robotic dog",
+		"environment": "global",
+		"campOrdinal": 7
+	},
+	"robotic_dog__aggressive": {
+		"name": "aggressive robotic dog",
+		"environment": "global",
+		"campOrdinal": 10
+	},
+	"scorpion__giant": {
+		"name": "giant scorpion",
+		"environment": "global",
+		"enemyType": "small_animal",
+		"campOrdinal": 4,
+		"difficulty": 3,
+		"attackRatio": 0.6,
+		"speed": 0.7,
+		"size": 0.5
+	},
+	"scorpion__night": {
+		"name": "night scorpion",
+		"environment": "cold",
+		"enemyType": "small_animal",
+		"campOrdinal": 4,
+		"difficulty": 6,
+		"rarity": 1,
+		"size": 0.5,
+		"attackRatio": 0.7
+	},
+	"scorpion__fire": {
+		"name": "fire scorpion",
+		"environment": "sunlit",
+		"enemyType": "small_animal",
+		"campOrdinal": 6,
+		"difficulty": 5,
+		"healthFactor": 1.1,
+		"size": 0.4,
+		"rarity": 1,
+		"attackRatio": 0.7
+	},
+	"scout_bot__template": {
+		"environment": "uninhabited",
+		"enemyType": "robot",
+		"shieldRatio": 1,
+		"attackRatio": 0.55,
+		"speed": 1.15,
+		"size": 0.7
+	},
+	"scout_bot": {
+		"name": "scout bot",
+		"campOrdinal": 6,
+		"difficulty": 3
+	},
+	"scout_bot__primitive": {
+		"name": "primitive scout bot",
+		"campOrdinal": 4,
+		"difficulty": 5
+	},
+	"scout_bot__advanced": {
+		"name": "advanced scout bot",
+		"campOrdinal": 8,
+		"difficulty": 5
+	},
+	"security_bot__template": {
+		"enemyType": "robot",
+		"size": 0.7,
+		"attackRatio": 0.55,
+		"speed": 0.65,
+		"shieldRatio": 1
+	},
+	"security_bot__basic": {
+		"name": "security bot",
+		"environment": "global",
+		"campOrdinal": 3,
+		"difficulty": 7
+	},
+	"security_bot__advanced": {
+		"name": "advanced security bot",
+		"environment": "global",
+		"campOrdinal": 9,
+		"difficulty": 7
+	},
+	"sewer_varanid__template": {
+		"environment": "dense",
+		"enemyType": "big_animal",
+		"difficulty": 8,
+		"attackRatio": 0.6,
+		"speed": 0.8,
+		"size": 1.2,
+		"rarity": 50,
+		"droppedResources": ["food"]
+	},
+	"sewer_varanid__juvenile": {
+		"name": "territorial sewer varanid",
+		"environment": "dense",
+		"campOrdinal": 9
+	},
+	"sewer_varanid__basic": {
+		"name": "sewer varanid",
+		"environment": "dense",
+		"campOrdinal": 11
+	},
+	"sewer_varanid__territorial": {
+		"name": "territorial sewer varanid",
+		"environment": "dense",
+		"campOrdinal": 13
+	},
+	"sewer_varanid__predatory": {
+		"name": "predatory sewer varanid",
+		"environment": "dense",
+		"campOrdinal": 14
+	},
+	"sewer_varanid__hulking": {
+		"name": "hulking sewer varanid",
+		"environment": "dense",
+		"campOrdinal": 15
+	},
+	"sewer_varanid__deformed": {
+		"name": "deformed sewer varanid",
+		"environment": "radiation",
+		"campOrdinal": 13
+	},
+	"skunk": {
+		"name": "skunk",
+		"environment": "sunlit",
+		"enemyType": "small_animal",
+		"campOrdinal": 4,
+		"difficulty": 9,
+		"attackRatio": 0.3,
+		"speed": 1,
+		"size": 0.7,
+		"rarity": 50,
+		"droppedResources": ["food"]
+	},
+	"slug__template": {
+		"enemyType": "small_animal",
+		"attackRatio": 0.42,
+		"difficulty": 1,
+		"speed": 0.95,
+		"size": 0.2
+	},
+	"slug__grey": {
+		"name": "Grey slug",
+		"environment": "global",
+		"campOrdinal": 1,
+		"difficulty": 8
+	},
+	"slug__black": {
+		"name": "Black slug",
+		"environment": "dark",
+		"campOrdinal": 3
+	},
+	"slug__purple": {
+		"name": "Purple slug",
+		"environment": "global",
+		"campOrdinal": 5
+	},
+	"slug__giant": {
+		"name": "Giant slug",
+		"environment": "nohazard",
+		"campOrdinal": 6
+	},
+	"slug__green": {
+		"name": "Green slug",
+		"environment": "radiation",
+		"campOrdinal": 6
+	},
+	"slug__red": {
+		"name": "Red slug",
+		"environment": "toxic",
+		"campOrdinal": 7
+	},
+	"spider__template": {
+		"enemyType": "small_animal"
+	},
+	"spider__gigantic": {
+		"name": "gigantic spider",
+		"environment": "nohazard",
+		"campOrdinal": 4,
+		"difficulty": 2,
+		"attackRatio": 0.7,
+		"speed": 0.95,
+		"size": 0.8,
+		"rarity": 20,
+		"droppedResources": ["food"]
+	},
+	"spider__poisonous": {
+		"name": "poisonous spider",
+		"environment": "toxic",
+		"campOrdinal": 4,
+		"difficulty": 5,
+		"attackRatio": 0.45,
+		"speed": 1,
+		"size": 0.3,
+		"rarity": 20,
+		"droppedResources": []
+	},
+	"spider__toxic": {
+		"name": "toxic spider",
+		"environment": "toxic",
+		"campOrdinal": 6,
+		"difficulty": 5,
+		"attackRatio": 0.7,
+		"speed": 1,
+		"size": 0.25,
+		"rarity": 20,
+		"droppedResources": []
+	},
+	"spider__mutant": {
+		"name": "mutant spider",
+		"environment": "radiation",
+		"campOrdinal": 5,
+		"difficulty": 5,
+		"attackRatio": 0.3,
+		"speed": 1,
+		"size": 0.4,
+		"rarity": 20,
+		"droppedResources": []
+	},
+	"stinkhorn__template": {
+		"enemyType": "fungi",
+		"difficulty": 1
+	},
+	"stinkhorn": {
+		"name": "Stinkhorn",
+		"environment": "global",
+		"campOrdinal": 11
+	},
+	"stinkhorn__glowing": {
+		"name": "Glowing stinkhorn",
+		"environment": "radiation",
+		"campOrdinal": 12
+	},
+	"swarm_of_pidgeons": {
+		"name": "swarm of pidgeons",
+		"environment": "sunlit",
+		"enemyType": "bird",
+		"campOrdinal": 9,
+		"difficulty": 2,
+		"attackRatio": 0.75,
+		"speed": 1.1,
+		"rarity": 10,
+		"droppedResources": ["food"]
+	},
+	"tarantula": {
+		"name": "tarantula",
+		"environment": "nohazard",
+		"enemyType": "small_animal",
+		"campOrdinal": 6,
+		"difficulty": 4,
+		"attackRatio": 0.7,
+		"speed": 0.95,
+		"size": 0.8,
+		"rarity": 20,
+		"droppedResources": ["food"]
+	},
+	"tarantula__white": {
+		"name": "white tarantula",
+		"environment": "cold",
+		"enemyType": "small_animal",
+		"campOrdinal": 5,
+		"difficulty": 5,
+		"attackRatio": 0.7,
+		"speed": 0.95,
+		"size": 0.8,
+		"rarity": 20,
+		"droppedResources": ["food"]
+	},
+	"tentacle_sundew__template": {
+		"name": "Tentacle sundew",
+		"environment": "nohazard",
+		"enemyType": "flora",
+		"attackFactor": 0.6,
+		"difficulty": 6,
+		"size": 1.5
+	},
+	"tentacle_sundew__basic": {
+		"name": "Tentacle sundew",
+		"campOrdinal": 2
+	},
+	"tentacle_sundew__feral": {
+		"name": "feral sundew",
+		"campOrdinal": 5
+	},
+	"tentacle_sundew__rose": {
+		"name": "Rose sundew",
+		"campOrdinal": 8
+	},
+	"tentacle_sundew__slum": {
+		"name": "Slum sundew",
+		"campOrdinal": 12
+	},
+	"tentacle_sundew__queen": {
+		"name": "Queen sundew",
+		"campOrdinal": 14
+	},
+	"thorny_bush": {
+		"name": "thorny bush",
+		"environment": "sunlit",
+		"enemyType": "flora",
+		"campOrdinal": 2,
+		"difficulty": 2,
+		"attackRatio": 0.65,
+		"speed": 0.5,
+		"size": 0.8,
+		"droppedResources": ["herbs"]
+	},
+	"thug__template": {
+		"enemyType": "bandit",
+		"difficulty": 6,
+		"size": 1
+	},
+	"thug__basic": {
+		"name": "thug",
+		"environment": "water",
+		"campOrdinal": 12,
+		"attackRatio": 0.5,
+		"speed": 0.9,
+		"rarity": 15,
+		"droppedResources": ["food", "water"]
+	},
+	"thug__shivering": {
+		"name": "shivering thug",
+		"environment": "cold",
+		"campOrdinal": 12,
+		"attackRatio": 0.5,
+		"speed": 0.9,
+		"rarity": 15,
+		"droppedResources": ["food", "water"]
+	},
+	"tiger_snake": {
+		"name": "tiger snake",
+		"environment": "nohazard",
+		"enemyType": "small_animal",
+		"campOrdinal": 7,
+		"difficulty": 5,
+		"attackRatio": 0.65,
+		"healthFactor": 0.9,
+		"speed": 1,
+		"size": 0.5,
+		"rarity": 35,
+		"droppedResources": ["food"]
+	},
+	"turret__template": {
+		"environment": "global",
+		"enemyType": "robot",
+		"attackRatio": 0.65,
+		"shieldRatio": 1,
+		"difficulty": 8,
+		"speed": 1.25,
+		"rarity": 10
+	},
+	"turret__old": {
+		"name": "turret guarding a forgotten border",
+		"campOrdinal": 6
+	},
+	"turret__gang": {
+		"name": "turret from a lost gang",
+		"campOrdinal": 10
+	},
+	"turret__snall": {
+		"name": "small turret",
+		"campOrdinal": 12
+	},
+	"turret__big": {
+		"name": "big turret",
+		"campOrdinal": 13
+	},
+	"vampire_bat__template": {
+		"environment": "dark",
+		"enemyType": "small_animal",
+		"droppedResources": ["food"]
+	},
+	"vampire_bat__basic": {
+		"name": "vampire bat",
+		"campOrdinal": 4,
+		"difficulty": 5,
+		"attackRatio": 0.7,
+		"speed": 1,
+		"size": 0.7,
+		"rarity": 70
+	},
+	"vampire_bat__great": {
+		"name": "great vampire bat",
+		"campOrdinal": 10,
+		"difficulty": 5,
+		"attackRatio": 0.7,
+		"speed": 1,
+		"rarity": 70
+	},
+	"wolf": {
+		"name": "Wolf",
+		"environment": "global",
+		"enemyType": "big_animal",
+		"campOrdinal": 8,
+		"rarity": 20,
+		"attackRatio": 0.68
+	},
+	"wolly_monkey": {
+		"name": "wolly monkey",
+		"environment": "cold",
+		"enemyType": "small_animal",
+		"campOrdinal": 9,
+		"difficulty": 6,
+		"attackRatio": 0.45,
+		"speed": 1.1,
+		"size": 0.9,
+		"rarity": 50,
+		"droppedResources": ["food"]
+	},
+	"zoo_panther__escaped": {
+		"name": "escaped zoo panther",
+		"environment": "nohazard",
+		"enemyType": "big_animal",
+		"campOrdinal": 14,
+		"difficulty": 8,
+		"attackRatio": 0.65,
+		"speed": 1.1,
+		"size": 1.2,
+		"rarity": 90,
+		"droppedResources": ["food"]
+	},
+	"zoo_panther__injured": {
+		"name": "injured zoo panther",
+		"environment": "nohazard",
+		"enemyType": "big_animal",
+		"campOrdinal": 15,
+		"difficulty": 7,
+		"attackRatio": 0.65,
+		"healthFactor": 0.75,
+		"speed": 0.95,
+		"size": 1.3,
+		"rarity": 95,
+		"droppedResources": ["food"]
+	}
+}

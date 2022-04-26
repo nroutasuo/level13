@@ -163,7 +163,7 @@ define([
 			
 			bagComponent.selectedCapacity = selectedCapacity;
 			$("#embark-bag .value").text(UIConstants.roundValue(bagComponent.selectedCapacity), true, true);
-			$("#embark-bag .value-total").text(bagComponent.totalCapacity);
+			$("#embark-bag .value-total").text(UIConstants.getBagCapacityDisplayValue(bagComponent));
 			
 			this.updateWarning(campResourcesAcc, campResources, selectedWater, selectedFood);
 		},
@@ -199,11 +199,11 @@ define([
 			var itemsComponent = this.playerPosNodes.head.entity.get(ItemsComponent);
 			var uniqueItems = itemsComponent.getUnique(true);
 			uniqueItems = uniqueItems.sort(UIConstants.sortItemsByType);
-			for (var i = 0; i < uniqueItems.length; i++) {
+			for (let i = 0; i < uniqueItems.length; i++) {
 				var item = uniqueItems[i];
 				if (item.type === ItemConstants.itemTypes.uniqueEquipment) continue;
-				if (item.type === ItemConstants.itemTypes.follower) continue;
 				if (item.type === ItemConstants.itemTypes.artefact) continue;
+				if (item.type === ItemConstants.itemTypes.trade) continue;
 				if (item.type === ItemConstants.itemTypes.note) continue;
 				if (item.type === ItemConstants.itemTypes.ingredient) continue;
 				

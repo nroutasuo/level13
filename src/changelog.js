@@ -9,7 +9,7 @@ $.getJSON('changelog.json', function (json) {
 	
 	var html = "";
 	var v;
-	for (var i in versions) {
+	for (let i in versions) {
 		v = versions[i];
 		if (v.changes.length === 0) continue;
 		html += "<div class='changelog-version'>";
@@ -18,7 +18,7 @@ $.getJSON('changelog.json', function (json) {
 		else html += " (work in progress)";
 		html += "</b>";
 		html += "<ul>";
-		for (var j in v.changes) {
+		for (let j in v.changes) {
 			var change = v.changes[j];
 			var summary = change.summary.trim().replace(/\.$/, "");
 			html += "<li class='changelog-" + change.type + "'>";

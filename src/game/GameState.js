@@ -12,8 +12,8 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.gameTime = 0; // total tick time passed
 			this.playTime = 0; // total active play time - gameTime minus fast-forwarded time
 			this.isPaused = false;
+			this.hasCheated = false;
 			this.numCamps = 0;
-			this.numTradePostCamps = 0;
 			this.numVisitedSectors = 0;
 			this.isFinished = false;
 			this.playedVersions = [];
@@ -24,6 +24,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 				vision: false,
 				camp: false,
 				fight: false,
+				followers: false,
 				investigate: false,
 				bag: false,
 				upgrades: false,
@@ -61,9 +62,14 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 				leaveCampRes: {},
 				leaveCampItems: {},
 			};
+			
+			this.settings = {
+				
+			};
 
 			this.uiBagStatus = {
 				itemsOwnedSeen: [],
+				itemsUsableSeen: [],
 				itemsCraftableUnlockedSeen: [],
 				itemsCraftableAvailableSeen: []
 			},
@@ -77,10 +83,21 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.extraUpdateTime = 0;
 		},
 
+		syncData: function () {
+			// remove duplicates from foundTradingPartners
+			var partners = this.foundTradingPartners;
+			this.foundTradingPartners = [];
+			for (var campOrdinal = 1; campOrdinal < 15; campOrdinal++) {
+				if (partners.indexOf(campOrdinal) >= 0) {
+					this.foundTradingPartners.push(campOrdinal);
+				}
+			}
+		},
+
 		passTime: function (seconds) {
 			this.extraUpdateTime = seconds;
 			var cooldownkeys = Object.keys(this.actionCooldownEndTimestamps);
-			for (var i = 0; i < cooldownkeys.length; i++) {
+			for (let i = 0; i < cooldownkeys.length; i++) {
 				this.actionCooldownEndTimestamps[cooldownkeys[i]] = this.actionCooldownEndTimestamps[cooldownkeys[i]] - seconds * 1000;
 			}
 		},
@@ -178,9 +195,10 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 		},
 
 		pruneActionCooldowns: function () {
-			var now = new Date().getTime();
 			var cooldownkeys = Object.keys(this.actionCooldownEndTimestamps);
-			for (var i = 0; i < cooldownkeys.length; i++) {
+			if (cooldownkeys.length < 10) return;
+			var now = new Date().getTime();
+			for (let i = 0; i < cooldownkeys.length; i++) {
 				var key = cooldownkeys[i];
 				var timestamp = this.actionCooldownEndTimestamps[key];
 				var diff = timestamp - now;

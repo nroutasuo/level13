@@ -4,7 +4,8 @@
 
 @callout-arrow-size: 7px;
 
-div.container-btn-action:hover + div.btn-callout, div.btn-callout:hover, .info-callout-target:hover + div.info-callout, div.info-callout:hover {
+div.container-btn-action:hover + div.btn-callout, div.btn-callout:hover, .info-callout-target:hover + div.info-callout, div.info-callout:hover,
+div.container-btn-action:focus + div.btn-callout, div.btn-callout:focus, .info-callout-target:focus + div.info-callout, div.info-callout:focus {
 	display: block;
 }
 
@@ -39,11 +40,6 @@ div.info-callout {
 	margin: 0px;
 	cursor: help;
 	display: inline-block;
-}
-
-div.info-callout-content {
-	width: 100%;
-	vertical-align: middle;
 }
 
 div.btn-callout-content, div.info-callout-content {
@@ -84,6 +80,10 @@ div.btn-callout-content, div.info-callout-content {
 
 div.btn-callout-content, div.info-callout-content {
 	.shadowed-basic();
+}
+
+.info-callout-content-section-long {
+	white-space: normal;
 }
 
 // CALLOUT ARROWS
@@ -391,6 +391,7 @@ div.popup-overlay-meta {
 
 .collapsible-content {
 	margin: 5px 10px;
+	display: none;
 }
 
 // PROGRESS BAR
@@ -409,6 +410,20 @@ div.popup-overlay-meta {
 	border: 0px;
 	overflow: hidden;
 	position: relative;
+}
+
+.progress-wrap-science {
+	background-color: @color-bg-science !important;
+}
+
+.progress-multibar-container {
+	display: flex;
+	margin: 2px 0;
+}
+
+.progress-multibar-container .progress-wrap {
+	display: inline-block !important;
+	margin: 0px;
 }
 
 .progress-bar {
@@ -523,7 +538,7 @@ table .bubble {
 	background-image: @img-indicator-fastincrease-contrast;
 }
 
-// CONTAINERS
+// LAYOUT CONTAINERS
 
 .container-relative {
 	position: relative;
@@ -578,6 +593,12 @@ table .bubble {
 .textbox {
 	padding: 10px 0px;
 	max-width: 70em;
+}
+
+// DIVBOXES
+
+.divbox {
+	margin: 10px 0 10px 0;
 }
 
 // INVENTORYBOX
@@ -668,13 +689,15 @@ table .bubble {
 	border: 1px solid @color-border-warning !important;
 }
 
-// ITEM SLOTS
+// ITEM AND FOLLOWER SLOTS
 
 @item-slot-big-width: 55px;
 @item-slot-big-height: 70px;
+@follower-slot-big-width: 65px;
+@follower-slot-big-height: 75px;
 @item-div-size: 18px;
 
-.item-slot {
+.item-slot, .follower-slot {
 	background: inherit !important;
 	margin: 0px 2px 2px 0px;
 	padding: 0;
@@ -684,7 +707,7 @@ table .bubble {
 	position: relative;
 }
 
-.item-slot.highlighted {
+.item-slot.highlighted, .follower-slot.highlighted {
 	border-color: lighten(@color-border-strong, 15%);
 	color: lighten(@color-text-default, 15%);
 }
@@ -694,30 +717,35 @@ table .bubble {
 	height: @item-slot-big-height;
 }
 
-.item-slot-small {
+.follower-slot-big {
+	width: @follower-slot-big-width;
+	height: @follower-slot-big-height;
+}
+
+.item-slot-small, .follower-slot-small {
 	width: 37px;
 	height: 37px;
 }
 
-.item-slot-equipped {
+.item-slot-equipped, .follower-slot-selected {
 	border-color: @color-border-strong;
 }
 
-.item-equipped {
+.item-equipped, .follower-selected {
 	background: @color-bg-element-1;
 }
 
-.item-slot-type-empty {
+.item-slot-type-empty, .follower-slot-type-empty {
+	font-size: @font-size-small;
 	text-align: center;
-	width: @item-slot-big-width;
-	height: @item-slot-big-height;
-	line-height: @item-slot-big-height;
 	display: inline-block;
 	opacity: 0.25;
+	width: 100%;
 	font-style: oblique;
 }
 
-.item-slot-type-equipped {
+.item-slot-type-equipped, .follower-slot-type-selected {
+	font-size: @font-size-small;
 	text-align: center;
 	width: @item-slot-big-width;
 	height: @item-slot-big-height;
@@ -725,7 +753,25 @@ table .bubble {
 	display: inline-block;
 }
 
-.item-slot-image {
+.item-slot-type-equipped,{
+	font-size: @font-size-small;
+	text-align: center;
+	display: inline-block;
+}
+
+.item-slot-type-equipped {
+	width: @item-slot-big-width;
+	height: @item-slot-big-height;
+	line-height: @item-slot-big-height;
+}
+
+.follower-slot-type-equipped {
+	width: @follower-slot-big-width;
+	height: @follower-slot-big-height;
+	line-height: @follower-slot-big-height;
+}
+
+.item-slot-image, .follower-slot-image {
 	position: absolute;
 }
 
@@ -734,7 +780,12 @@ table .bubble {
 	top: @item-slot-big-height / 2 - @item-div-size + 10px;
 }
 
-.item-slot-name, .item-slot-type-equipped {
+.follower-slot-big .follower-slot-image {
+	left: @follower-slot-big-width / 2 - @item-div-size;
+	top: @follower-slot-big-height / 2 - @item-div-size + 10px;
+}
+
+.item-slot-name, .item-slot-type-equipped, .follower-slot-type-selected {
 	background-color: @color-bg-element-1;
 	width: 100%;
 	text-align: center;
@@ -745,7 +796,7 @@ table .bubble {
 	padding: 0.35em 0;
 }
 
-.item-slot.highlighted .item-slot-type-equipped {
+.item-slot.highlighted .item-slot-type-equipped, .follower-slot.highlighted .follower-slot-type-selected {
 	background: lighten( @color-bg-element-1, 8%);
 }
 
@@ -758,7 +809,7 @@ table .bubble {
 	opacity: 0;
 }
 
-.item-slot-type-equipped {
+.item-slot-type-equipped, .follower-slot-type-selected {
 	top: 0px;
 }
 
@@ -766,10 +817,15 @@ table .bubble {
 	border-width: 0px !important;
 }
 
-div.item-slot > div, div.item-slot > span {
+div.item-slot > div, div.item-slot > span, .follower-slot > div, .follower-slot > span {
 	position: absolute;
-	font-size: @font-size-small;
 	cursor: default;
+}
+
+.follower-slot-follower {
+	width: 100%;
+	display: block;
+	text-align: center;
 }
 
 // ITEM AND RESOURCE DIVS
@@ -851,6 +907,10 @@ li.item-with-count {
 
 .warning, .warning span, li.li-item-negative, .item-slot-lost .item-count {
 	color: @color-global-warning !important;
+}
+
+hr.warning {
+	border-color: @color-global-warning !important;
 }
 
 .warning.progress-wrap {

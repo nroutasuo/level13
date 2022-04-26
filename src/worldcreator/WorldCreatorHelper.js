@@ -7,8 +7,9 @@ define([
 	'game/constants/LevelConstants',
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
+	'game/constants/UpgradeConstants',
 	'game/constants/WorldConstants',
-], function (Ash, ResourcesVO, WorldCreatorRandom, WorldCreatorConstants, LevelConstants, PositionConstants, SectorConstants, WorldConstants) {
+], function (Ash, ResourcesVO, WorldCreatorRandom, WorldCreatorConstants, LevelConstants, PositionConstants, SectorConstants, UpgradeConstants, WorldConstants) {
 
 	var WorldCreatorHelper = {
 		
@@ -17,7 +18,7 @@ define([
 		
 		addCriticalPath: function (worldVO, criticalPathVO) {
 			var path = WorldCreatorRandom.findPath(worldVO, criticalPathVO.startPos, criticalPathVO.endPos);
-			for (var j = 0; j < path.length; j++) {
+			for (let j = 0; j < path.length; j++) {
 				var levelVO = worldVO.getLevel(path[j].level);
 				levelVO.getSector(path[j].sectorX, path[j].sectorY).addToCriticalPath(criticalPathVO);
 			}
@@ -25,11 +26,11 @@ define([
 		
 		getClosestPair: function (sectors1, sectors2, skip) {
 			skip = skip || 0;
-			var result = [null, null];
+			let result = [null, null];
 			var resultDist = 9999;
 			var pairs = [];
-			for (var i = 0; i < sectors1.length; i++) {
-				for (var j = 0; j < sectors2.length; j++) {
+			for (let i = 0; i < sectors1.length; i++) {
+				for (let j = 0; j < sectors2.length; j++) {
 					pairs.push([sectors1[i], sectors2[j]]);
 				}
 			}
@@ -50,9 +51,9 @@ define([
 		},
 		
 		getClosestPosition: function (positions, pos) {
-			var result = null;
+			let result = null;
 			var resultDist = 0;
-			for (var i = 0; i < positions.length; i++) {
+			for (let i = 0; i < positions.length; i++) {
 				var dist = PositionConstants.getDistanceTo(positions[i], pos);
 				if (!result || dist < resultDist) {
 					result = positions[i];
@@ -62,27 +63,41 @@ define([
 			return result;
 		},
 		
-		getDistanceToCamp: function (worldVO, levelVO, sector) {
+		getDistanceToCamp: function (worldVO, levelVO, sector, maxDistance) {
 			if (sector.distanceToCamp >= 0) return sector.distanceToCamp;
-			var result = 9999;
-			for (var s = 0; s < levelVO.campPositions.length; s++) {
-				var campPos = levelVO.campPositions[s];
-				var path = WorldCreatorRandom.findPath(worldVO, sector.position, campPos, false, true);
+			let result = 9999;
+			var campPos = levelVO.campPosition;
+			if (campPos) {
+				var path = WorldCreatorRandom.findPath(worldVO, sector.position, campPos, false, true, null, false, maxDistance);
 				if (path && path.length >= 0) {
 					var dist = path.length;
 					result = Math.min(result, dist);
 				}
 			}
-			sector.distanceToCamp = result;
+			if (!maxDistance) {
+				sector.distanceToCamp = result;
+			}
 			return result;
 		},
 		
-		getQuickDistanceToCamp: function (levelVO, sector) {
-			var result = 9999;
-			for (var s = 0; s < levelVO.campPositions.length; s++) {
-				var campPos = levelVO.campPositions[s];
+		getQuickMinDistanceToCamp: function (levelVO, sector) {
+			let result = 9999;
+			let campPositions = levelVO.getAllCampPositions();
+			for (let i = 0; i < campPositions.length; i++) {
+				var campPos = campPositions[i];
 				var dist = PositionConstants.getDistanceTo(sector.position, campPos);
 				result = Math.min(result, dist);
+			}
+			return result;
+		},
+		
+		getQuickMaxDistanceToCamp: function (levelVO, sector) {
+			let result = 0;
+			let campPositions = levelVO.getAllCampPositions();
+			for (let i = 0; i < campPositions.length; i++) {
+				var campPos = campPositions[i];
+				var dist = PositionConstants.getDistanceTo(sector.position, campPos);
+				result = Math.max(result, dist);
 			}
 			return result;
 		},
@@ -104,9 +119,9 @@ define([
 		},
 		
 		getNeighbours: function (levelVO, pos, pendingSectors) {
-			var result = levelVO.getNeighbours(pos.sectorX, pos.sectorY);
+			let result = levelVO.getNeighbours(pos.sectorX, pos.sectorY);
 			if (pendingSectors) {
-				for (var i = 0; i < pendingSectors.length; i++) {
+				for (let i = 0; i < pendingSectors.length; i++) {
 					var pendingPos = pendingSectors[i];
 					if (levelVO.hasSector(pendingPos.sectorX, pendingPos.sectorY)) continue;
 					var distance = PositionConstants.getDistanceTo(pos, pendingPos);
@@ -120,9 +135,9 @@ define([
 		},
 		
 		getNeighbourCount: function (levelVO, pos, pendingSectors) {
-			var result = levelVO.getNeighbourCount(pos.sectorX, pos.sectorY);
+			let result = levelVO.getNeighbourCount(pos.sectorX, pos.sectorY);
 			if (pendingSectors) {
-				for (var i = 0; i < pendingSectors.length; i++) {
+				for (let i = 0; i < pendingSectors.length; i++) {
 					var pendingPos = pendingSectors[i];
 					if (levelVO.hasSector(pendingPos.sectorX, pendingPos.sectorY)) continue;
 					var distance = PositionConstants.getDistanceTo(pos, pendingPos);
@@ -139,7 +154,7 @@ define([
 			var points = [];
 			var addPoint = function (position, zone, minDistance) {
 				if (minDistance) {
-					for (var i = 0; i < points.length; i++) {
+					for (let i = 0; i < points.length; i++) {
 						if (PositionConstants.getDistanceTo(points[i].position, position) <= minDistance) return false;
 					}
 				}
@@ -148,13 +163,13 @@ define([
 			};
 			
 			// camp
-			var campMiddle = PositionConstants.getMiddlePoint(levelVO.campPositions);
+			var campMiddle = PositionConstants.getMiddlePoint(levelVO.campPosition);
 			addPoint(campMiddle, WorldConstants.ZONE_POI_TEMP);
 			
 			// two sectors furthest away from the camp (but not next to each other)
 			var sectorsByDistance = levelVO.sectors.slice(0).sort(WorldCreatorHelper.sortSectorsByDistanceTo(campMiddle));
 			addPoint(sectorsByDistance[sectorsByDistance.length - 1].position, WorldConstants.ZONE_EXTRA_CAMPABLE);
-			var i = 1;
+			let i = 1;
 			while (i < sectorsByDistance.length) {
 				i++;
 				var added = addPoint(sectorsByDistance[sectorsByDistance.length - i].position, WorldConstants.ZONE_POI_TEMP, 8);
@@ -163,7 +178,7 @@ define([
 			
 			// randomish positions in 8 cardinal directions from camp
 			var directions = PositionConstants.getLevelDirections();
-			for (var i in directions) {
+			for (let i in directions) {
 				var direction = directions[i];
 				var pointDist = 7 + WorldCreatorRandom.randomInt(10101 + seed % 11 * 182 + i*549 + level * 28, 0, 7);
 				var pointPos = PositionConstants.getPositionOnPath(campMiddle, direction, pointDist);
@@ -176,9 +191,9 @@ define([
 		},
 		
 		getBorderSectorsForZone: function (levelVO, zone, includeAllPairs) {
-			var result = [];
+			let result = [];
 			var directions = PositionConstants.getLevelDirections();
-			for (var i = 0; i < levelVO.sectors.length; i++) {
+			for (let i = 0; i < levelVO.sectors.length; i++) {
 				var sector = levelVO.sectors[i];
 				if (sector.zone != zone) continue;
 				var neighbours = levelVO.getNeighbours(sector.position.sectorX, sector.position.sectorY);
@@ -195,12 +210,12 @@ define([
 		},
 		
 		getFeaturesSurrounding: function (worldVO, levelVO, pos) {
-			var result = [];
+			let result = [];
 			var candidates = PositionConstants.getAllPositionsInArea(pos, 5);
-			for (var i = 0; i < candidates.length; i++) {
+			for (let i = 0; i < candidates.length; i++) {
 				var position = candidates[i];
 				var features = worldVO.getFeaturesByPos(position);
-				for (var j = 0; j < features.length; j++) {
+				for (let j = 0; j < features.length; j++) {
 					var feature = features[j];
 					if (result.indexOf(feature) >= 0) {
 						continue;
@@ -254,20 +269,20 @@ define([
 			var camplessLevelOrdinals = this.getCamplessLevelOrdinals(seed);
 			var levelOrdinal = this.getLevelOrdinal(seed, level);
 			var ordinal = 0;
-			for (var i = 1; i <= levelOrdinal; i++) {
+			for (let i = 1; i <= levelOrdinal; i++) {
 				if (camplessLevelOrdinals.indexOf(i) < 0) ordinal++;
 			}
 			return ordinal;
 		},
 		
 		getLevelsForCamp: function (seed, campOrdinal) {
-			var result = [];
+			let result = [];
 			var mainLevelOrdinal = this.getLevelOrdinalForCampOrdinal(seed, campOrdinal);
 			var mainLevel = this.getLevelForOrdinal(seed, mainLevelOrdinal);
 			result.push(mainLevel);
 			
 			var camplessLevelOrdinals = this.getCamplessLevelOrdinals(seed);
-			for (var i = 0; i < camplessLevelOrdinals.length; i++) {
+			for (let i = 0; i < camplessLevelOrdinals.length; i++) {
 				var l = this.getLevelForOrdinal(seed, camplessLevelOrdinals[i]);
 				var co = this.getCampOrdinal(seed, l);
 				if (co == campOrdinal) {
@@ -347,7 +362,7 @@ define([
 			// this assumes camplessLevelOrdinals are sorted from smallest to biggest
 			var levelOrdinal = campOrdinal;
 			var camplessLevelOrdinals = this.getCamplessLevelOrdinals(seed);
-			for (var i = 0; i < camplessLevelOrdinals.length; i++) {
+			for (let i = 0; i < camplessLevelOrdinals.length; i++) {
 				if (camplessLevelOrdinals[i] <= levelOrdinal) {
 					levelOrdinal++;
 				}
@@ -375,6 +390,17 @@ define([
 			return !isCampableLevel && level !== bottomLevel && level < topLevel - 1;
 		},
 		
+		getNextUncampableLevelOrdinalForCampOrdinal: function (seed, campOrdinal) {
+			var campLevelOrdinal = this.getLevelOrdinalForCampOrdinal(seed, campOrdinal);
+			var camplessLevelOrdinals = this.getCamplessLevelOrdinals(seed);
+			for (let i = 0; i < camplessLevelOrdinals.length; i++) {
+				if (camplessLevelOrdinals[i] > campLevelOrdinal) {
+					return camplessLevelOrdinals[i];
+				}
+			}
+			return null;
+		},
+		
 		getNotCampableReason: function (seed, level) {
 			if (this.isCampableLevel(seed, level)) return null;
 			var bottomLevel = this.getBottomLevel(seed);
@@ -386,13 +412,28 @@ define([
 			if (campOrdinal > WorldConstants.CAMP_ORDINAL_LIMIT)
 				return LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT;
 			
+			let options = [];
 			var levelOrdinal = this.getLevelOrdinal(seed, level);
-			var rand = WorldCreatorRandom.random(seed % 4 + level + level * 8 + 88);
-			if (rand < 0.33 && levelOrdinal >= WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_RADIATION)
-				return LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
-			if (rand < 0.66 && levelOrdinal >= WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_POISON)
+			
+			var unlockToxicWasteCampOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_action_clear_waste_t");
+			if (levelOrdinal == this.getNextUncampableLevelOrdinalForCampOrdinal(seed, unlockToxicWasteCampOrdinal)) {
 				return LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
-			return LevelConstants.UNCAMPABLE_LEVEL_TYPE_SUPERSTITION;
+			}
+				
+			var unlockRadioactiveWasteCampOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_action_clear_waste_r");
+			if (levelOrdinal == this.getNextUncampableLevelOrdinalForCampOrdinal(seed, unlockRadioactiveWasteCampOrdinal)) {
+				return LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
+			}
+			
+			if (campOrdinal >= WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_RADIATION)
+				options.push(LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION);
+			if (campOrdinal >= WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_POISON)
+				options.push(LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION);
+				
+			if (options.length == 0)
+				return LevelConstants.UNCAMPABLE_LEVEL_TYPE_SUPERSTITION;
+				
+			return options[WorldCreatorRandom.randomInt(seed % 4 + level + level * 8 + 88, 0, options.length)];
 		},
 		
 		getCamplessLevelOrdinals: function (seed) {
@@ -508,7 +549,7 @@ define([
 		getRequiredPaths: function (worldVO, levelVO) {
 			var level = levelVO.level;
 			var campOrdinal = levelVO.campOrdinal;
-			var campPositions = levelVO.campPositions;
+			var campPosition = levelVO.campPosition;
 			var passageUpPosition = levelVO.passageUpPosition;
 			var passageDownPosition = levelVO.passageDownPosition;
 			
@@ -517,7 +558,7 @@ define([
 			
 			var requiredPaths = [];
 			
-			if (campPositions.length > 0) {
+			if (campPosition) {
 				// passages up -> camps -> passages down
 				var isGoingDown = level <= 13 && level >= worldVO.bottomLevel;
 				var passageUpPathType = isGoingDown ? WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP : WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
@@ -530,16 +571,11 @@ define([
 					passageDownPathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
 					passageDownStage = null;
 				}
-				for (var i = 1; i < campPositions.length; i++) {
-					requiredPaths.push({ start: campPositions[0], end: campPositions[i], maxlen: -1, type: "camp_pos_to_camp_pos", stage: WorldConstants.CAMP_STAGE_EARLY });
-				}
 				if (passageUpPosition) {
-					var closerCamp = WorldCreatorHelper.getClosestPosition(campPositions, passageUpPosition);
-					requiredPaths.push({ start: closerCamp, end: passageUpPosition, maxlen: maxPathLenC2P, type: passageUpPathType, stage: passageUpStage });
+					requiredPaths.push({ start: campPosition, end: passageUpPosition, maxlen: maxPathLenC2P, type: passageUpPathType, stage: passageUpStage });
 				}
 				if (passageDownPosition) {
-					var closerCamp = WorldCreatorHelper.getClosestPosition(campPositions, passageDownPosition);
-					requiredPaths.push({ start: closerCamp, end: passageDownPosition, maxlen: maxPathLenC2P, type: passageDownPathType, stage: passageDownStage });
+					requiredPaths.push({ start: campPosition, end: passageDownPosition, maxlen: maxPathLenC2P, type: passageDownPathType, stage: passageDownStage });
 				}
 			} else if (!passageUpPosition) {
 				// just passage down sector
@@ -563,9 +599,10 @@ define([
 			if (sectorVO.isCamp) return false;
 			if (sectorVO.zone == WorldConstants.ZONE_ENTRANCE) return false;
 			if (direction && sectorVO.movementBlockers[direction]) return false;
+			if (levelVO.getNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY) <= 1) return false;
 			
 			var minDist = levelVO.level == 13 ? 4 : 2;
-			if (this.getQuickDistanceToCamp(levelVO, sectorVO) < 3) return false;
+			if (this.getQuickMinDistanceToCamp(levelVO, sectorVO) < 3) return false;
 			return true;
 		},
 		
@@ -582,15 +619,15 @@ define([
 		
 		canHaveBlocker: function (levelVO, sectorVO1, sectorVO2, allowedCriticalPaths) {
 			var distanceToCamp = Math.min(
-				WorldCreatorHelper.getQuickDistanceToCamp(levelVO, sectorVO1),
-				WorldCreatorHelper.getQuickDistanceToCamp(levelVO, sectorVO2)
+				WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO1),
+				WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO2)
 			);
-			if (distanceToCamp <= 3) return false;
+			if (distanceToCamp <= 1) return false;
 			
-			for (var i = 0; i < sectorVO1.criticalPaths.length; i++) {
+			for (let i = 0; i < sectorVO1.criticalPaths.length; i++) {
 				var pathType = sectorVO1.criticalPaths[i].type;
 				if (allowedCriticalPaths && allowedCriticalPaths.indexOf(pathType) >= 0) continue;
-				for (var j = 0; j < sectorVO2.criticalPaths.length; j++) {
+				for (let j = 0; j < sectorVO2.criticalPaths.length; j++) {
 					if (pathType === sectorVO2.criticalPaths[j].type) {
 						return false;
 					}
@@ -615,7 +652,7 @@ define([
 		},
 		
 		containsBlockingFeature: function (pos, features, allowNonBuilt) {
-			for (var i = 0; i < features.length; i++) {
+			for (let i = 0; i < features.length; i++) {
 				var feature = features[i];
 				if (allowNonBuilt && !feature.isBuilt()) continue;
 				if (feature.containsPosition(pos)) {

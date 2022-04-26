@@ -25,13 +25,16 @@ define(
 		hazards: null,
 		campable: false,
 		stashes: [],
+		waymarks: [],
 		
 		// resources
+		scacengeDifficulty: 3,
 		resourcesScavengable: null,
 		resourcesCollectable: null,
+		itemsScavengeable: [],
 		
 		constructor: function (level, criticalPaths, zone, buildingDensity, wear, damage, sectorType, sunlit, ground, hazards,
-							   campable, notCampableReason, resourcesScavengable, resourcesCollectable, hasSpring, stashes) {
+							   campable, notCampableReason, resourcesScavengable, resourcesCollectable, itemsScavengeable, hasSpring, hasTradeConnectorSpot, stashes, waymarks) {
 			this.level = level;
 			this.criticalPaths = criticalPaths;
 			this.zone = zone;
@@ -46,8 +49,11 @@ define(
 			this.notCampableReason = notCampableReason;
 			this.resourcesScavengable = resourcesScavengable || new ResourcesVO();
 			this.resourcesCollectable = resourcesCollectable || new ResourcesVO();
+			this.itemsScavengeable = itemsScavengeable || [];
 			this.hasSpring = hasSpring;
+			this.hasTradeConnectorSpot = hasTradeConnectorSpot;
 			this.stashes = stashes || [];
+			this.waymarks = waymarks || [];
 		},
 		
 		// Secondary attributes
@@ -62,26 +68,6 @@ define(
 		
 		canHaveCamp: function () {
 			return this.campable;
-		},
-		
-		// Text functions
-		
-		getScaResourcesString: function (discoveredResources) {
-			var s = "";
-			 for(var key in resourceNames) {
-				var name = resourceNames[key];
-				var amount = this.resourcesScavengable.getResource(name);
-				if (amount > 0 && discoveredResources.indexOf(name) >= 0) {
-					var amountDesc = "scarce";
-					if (amount > 3) amountDesc = "common"
-					if (amount > 7) amountDesc = "abundant"
-					if (GameConstants.isDebugVersion) amountDesc += " " + Math.round(amount);
-					s += key + " (" + amountDesc + "), ";
-				}
-			}
-			if (s.length > 0) return s.substring(0, s.length - 2);
-			else if (this.resourcesScavengable.getTotal() > 0) return "Unknown";
-			else return "None";
 		},
 		
 		getCondition: function () {

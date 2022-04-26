@@ -11,6 +11,7 @@ require.config({
 		ash: "../lib/ash/ash.min",
 		jquery: "../lib/jquery/",
 		lzstring: "../lib/lzstring",
+        json: "../lib/requirejs/json",
 		utils: "utils",
 		game: "game"
 	},
@@ -22,6 +23,8 @@ require.config({
 			'isDebugOutputEnabled': false,
 			'isAutosaveEnabled': true,
 		}
-	}
+	},
+	
+	urlArgs: "v=0.4.1",
 
 });

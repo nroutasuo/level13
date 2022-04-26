@@ -84,6 +84,7 @@ define([
 			// TODO define constants someplace neater
 			var settings = Object.assign({}, this.campSettings[campOrdinal] || {});
 			settings.populationFactor = levelComponent.populationFactor;
+			settings.raidDangerFactor = levelComponent.raidDangerFactor;
 			GameGlobals.campVisHelper.initCampSettings(campOrdinal, settings);
 		},
 		
@@ -117,7 +118,7 @@ define([
 				if (this.elements.buildings) {
 					for (var name in this.elements.buildings) {
 						for (var n = 0; n < this.elements.buildings[name].length; n++) {
-							for (var j = 0; j < this.elements.buildings[name][n].length; j++) {
+							for (let j = 0; j < this.elements.buildings[name][n].length; j++) {
 								if (this.elements.buildings[name][n][j]) {
 									this.elements.buildings[name][n][j].remove();
 								}
@@ -134,7 +135,7 @@ define([
 			
 			var building;
 			var buildingsToDraw = [[],[],[],[],[]];
-			for (var i = 0; i < all.length; i++) {
+			for (let i = 0; i < all.length; i++) {
 				building = all[i];
 				var size = this.getBuildingSize(building);
 				var count = building.count;
@@ -142,7 +143,7 @@ define([
 				if (!this.elements.buildings[building.name]) this.elements.buildings[building.name] = [];
 				for (var n = 0; n < count; n++) {
 					if (!this.elements.buildings[building.name][n]) this.elements.buildings[building.name][n] = [];
-					for (var j = 0; j < visualCount; j++) {
+					for (let j = 0; j < visualCount; j++) {
 						// get coords
 						var coords = this.getBuildingCoords(campOrdinal, improvements, building, n, j);
 						if (!coords) {
@@ -176,7 +177,7 @@ define([
 			if (this.ctx) {
 				this.ctx.clearRect(0, 0, this.containerWidth, this.containerHeight);
 				for (var z = buildingsToDraw.length - 1; z >= 0; z--) {
-					for (var i = 0; i < buildingsToDraw[z].length; i++) {
+					for (let i = 0; i < buildingsToDraw[z].length; i++) {
 						var vo = buildingsToDraw[z][i];
 						this.drawBuildingOnCanvas(vo.building, vo.coords, vo.n);
 					}
@@ -253,7 +254,6 @@ define([
 					CanvasUtils.drawLine(this.ctx, xpx + xw*2, ypx + 2, xpx + xw*2, ybottom);
 					break;
 				case improvementNames.fortification:
-				case improvementNames.fortification2:
 					var logw = 3;
 					var logh = n == 0 ? size.y : n >= 4 ? size.y * 2 : size.y * 1.5;
 					var logd = 18;
@@ -449,10 +449,10 @@ define([
 		},
 		
 		checkOverlaps: function (buildingCoords) {
-			for (var i = 0; i < buildingCoords.length; i++) {
+			for (let i = 0; i < buildingCoords.length; i++) {
 				var coords1 = buildingCoords[i].coords;
 				var buildingType1 = buildingCoords[i].building.name;
-				for (var j = i + 1; j < buildingCoords.length; j++) {
+				for (let j = i + 1; j < buildingCoords.length; j++) {
 					var coords2 = buildingCoords[j].coords;
 					var buildingType2 = buildingCoords[j].building.name;
 					if (GameGlobals.campVisHelper.isConflict(coords1, coords2, buildingType1, buildingType2)) {

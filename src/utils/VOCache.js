@@ -78,7 +78,7 @@ define(function () {
 				thresholdSecs = thresholdSecs * 0.5;
 			}
 
-			for (var i = 0; i < toDelete.length; i++) {
+			for (let i = 0; i < toDelete.length; i++) {
 				var key = toDelete[i];
 				delete cache.items[key];
 			}
@@ -88,7 +88,7 @@ define(function () {
 		
 		getDefaultKey: function (...args) {
 			var res = "";
-			for (var i = 0; i < args.length; i++) {
+			for (let i = 0; i < args.length; i++) {
 				if (typeof(args[i]) == undefined || args[i] == null) {
 					continue;
 				}

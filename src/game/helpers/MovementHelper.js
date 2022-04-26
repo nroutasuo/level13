@@ -96,6 +96,28 @@ define([
 			return this.hasDefeatableBlocker(sectorEntity, direction) && gangComponent.isDefeated();
 		},
 		
+		isPassageTypeAvailable: function (sector, direction) {
+			let passagesComponent = sector.get(PassagesComponent);
+			let passage = direction == PositionConstants.DIRECTION_UP ? passagesComponent.passageUp : passagesComponent.passageDown;
+			if (passage == null) return false;
+			
+			let passageType = passage.type;
+			let action = this.getBuildActionForPassageType(passageType);
+			if (action == null) return false;
+			
+			let reqs = GameGlobals.playerActionsHelper.getReqs(action, sector);
+			let upgrades = reqs.upgrades;
+			if (!upgrades) return true;
+			
+			for (var upgradeID in upgrades) {
+				if (!GameGlobals.tribeHelper.hasUpgrade(upgradeID)) {
+					return false;
+				}
+			}
+			
+			return true;
+		},
+		
 		isCleaned: function (sectorEntity, direction) {
 			var statusComponent = sectorEntity.get(SectorStatusComponent);
 			var isCleared =
@@ -128,6 +150,18 @@ define([
 			var passagesComponent = sectorEntity.get(PassagesComponent);
 			return passagesComponent.isClearable(direction);
 		},
+		
+		getBuildActionForPassageType: function (passageType) {
+			switch (passageType) {
+				case MovementConstants.PASSAGE_TYPE_HOLE:
+					return "build_out_passage_down_hole";
+				case MovementConstants.PASSAGE_TYPE_ELEVATOR:
+					return "build_out_passage_down_elevator";
+				case MovementConstants.PASSAGE_TYPE_STAIRWELL:
+					return "build_out_passage_down_stairs";
+			}
+			return null;
+		}
 	});
 	
 	return MovementHelper;

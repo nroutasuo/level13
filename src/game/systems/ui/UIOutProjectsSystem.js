@@ -40,6 +40,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.refresh);
 			GlobalSignals.add(this, GlobalSignals.movementBlockerClearedSignal, this.refresh);
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.refresh);
+			GlobalSignals.add(this, GlobalSignals.projectHiddenSignal, this.refresh);
 			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
 		},
 
@@ -93,6 +94,7 @@ define([
 		},
 		
 		updateAvailableProjects: function (updateTables) {
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (!this.playerLocationNodes.head) return;
 			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.projects;
 			var availableRegular = 0;
@@ -112,7 +114,7 @@ define([
 			if (updateTables) this.elements.levelImprovementsTable.empty();
 			if (updateTables) this.elements.colonyImprovementsTable.empty();
 			
-			for (var i = 0; i < projects.length; i++) {
+			for (let i = 0; i < projects.length; i++) {
 				var project = projects[i];
 				var action = project.action;
 				var sectorEntity = GameGlobals.levelHelper.getSectorByPosition(project.level, project.position.sectorX, project.position.sectorY);
@@ -146,22 +148,17 @@ define([
 				GameGlobals.uiFunctions.toggle("#container-in-improvements-level-hidden", hiddenRegular > 0);
 				this.elements.hiddenImprovementsMsg.text(hiddenRegular + " projects hidden");
 			
+				GameGlobals.uiFunctions.registerCustomButtonListeners("#in-improvements-level", "navigation", this.onMapLinkButtonClicked);
+				GameGlobals.uiFunctions.registerCustomButtonListeners("#in-improvements-level", "hide-project", this.onHideProjectButtonClicked);
+				
 				GameGlobals.uiFunctions.registerActionButtonListeners("#in-improvements-level");
-				GameGlobals.uiFunctions.registerCustomButtonListeners("#in-improvements-level", "navigation", function () {
-					var sector = $(this).attr("data-sector");
-					var position = StringUtils.getPosition(sector);
-					GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.map, position);
-				});
-				GameGlobals.uiFunctions.registerCustomButtonListeners("#in-improvements-level", "hide-project", function () {
-					var projectID = $(this).attr("data-project");
-					GameGlobals.gameState.uiStatus.hiddenProjects.push(projectID);
-					sys.refresh();
-				});
 				GameGlobals.uiFunctions.generateButtonOverlays("#in-improvements-level");
 				GameGlobals.uiFunctions.generateCallouts("#in-improvements-level");
+				
 				GameGlobals.uiFunctions.registerActionButtonListeners("#in-improvements-colony");
 				GameGlobals.uiFunctions.generateButtonOverlays("#in-improvements-colony");
 				GameGlobals.uiFunctions.generateCallouts("#in-improvements-colony");
+				
 				GlobalSignals.elementCreatedSignal.dispatch();
 			}
 			
@@ -170,18 +167,22 @@ define([
 		
 		updateBuiltProjects: function (updateTables) {
 			if (!this.playerLocationNodes.head) return;
-			var projects = GameGlobals.levelHelper.getBuiltProjectsForCamp(this.playerLocationNodes.head.entity);
+			let projects = GameGlobals.levelHelper.getBuiltProjectsForCamp(this.playerLocationNodes.head.entity);
+			
+			projects.sort((a, b) => { return b.level - a.level; });
 			
 			GameGlobals.uiFunctions.toggle("#header-in-improvements-level-built", projects.length > 0);
 			
 			if (updateTables) $("#in-improvements-level-built table").empty();
-			for (var i = 0; i < projects.length; i++) {
+			for (let i = 0; i < projects.length; i++) {
 				var project = projects[i];
 				if (updateTables) {
 					var tr = this.getProjectTR(project, false);
 					$("#in-improvements-level-built table").append(tr);
 				}
 			}
+			
+			GameGlobals.uiFunctions.registerCustomButtonListeners("#in-improvements-level-built", "navigation", this.onMapLinkButtonClicked);
 		},
 		
 		resetHidden: function () {
@@ -214,31 +215,38 @@ define([
 			
 			var classes = this.isCurrentLevel(project) ? "current" : "";
 			var mapID = "project-map-";
-			var result = "<tr class='" + classes + "'>";
+			let result = "<tr class='" + classes + "'>";
 			result += "<td>" + name + "</td>";
 			result += "<td class='list-description'>" + info + "</td>";
+			
 			if (isAvailable) {
 				result += "<td class='minwidth'>";
 				if (project.action == "clear_debris_e" || project.action == "clear_debris_l" || project.action == "bridge_gap") {
 					result += "<button class='btn-mini btn-meta hide-project' data-project='" + projectID + "'>hide</button>";
 				}
 				result += "</td>";
-				result += "<td class='minwidth'><button class='btn-mini navigation' data-sector='" + sector + "'>map</button></td>";
+				result += "<td class='minwidth'>" + this.getMapLinkButton(sector) + "</td>";
 				var classes = "action action-build action-level-project multiline";
 				var actionLabel = project.actionLabel;
 				var action = project.action;
 				result += "<td style='width:138px;text-align:right;' class='bg-reset'><button class='" + classes + "' action='" + action + "' sector='" + sector + "' id='btn-" + action + "-" + sector + "'>" + actionLabel + "</button></td>";
 			} else {
+				result += "<td class='minwidth'>" + this.getMapLinkButton(sector) + "</td>";
 				result += "<td style='width:138px'></td>";
+				
 			}
 			result += "</tr>";
 			return result;
 		},
 		
+		getMapLinkButton: function (sector) {
+			return "<button class='btn-mini navigation' data-sector='" + sector + "'>map</button>";
+		},
+		
 		isCurrentLevel: function (project) {
 			var levels = this.getProjectLevels(project);
 			var currentLevel = this.playerLocationNodes.head.position.level;
-			for (var i = 0; i < levels.length; i++) {
+			for (let i = 0; i < levels.length; i++) {
 				if (levels[i] == currentLevel) return true;
 			}
 			return false;
@@ -257,6 +265,19 @@ define([
 			} else {
 				return [ level ];
 			}
+		},
+		
+		onHideProjectButtonClicked: function () {
+			var projectID = $(this).attr("data-project");
+			GameGlobals.gameState.uiStatus.hiddenProjects.push(projectID);
+			GlobalSignals.projectHiddenSignal.dispatch();
+		},
+		
+		onMapLinkButtonClicked: function () {
+			var sector = $(this).attr("data-sector");
+			var position = StringUtils.getPosition(sector);
+			GameGlobals.uiFunctions.scrollToTabTop();
+			GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.map, position);
 		},
 		
 	});

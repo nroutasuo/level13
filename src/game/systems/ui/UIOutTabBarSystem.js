@@ -50,6 +50,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.upgradeUnlockedSignal, this.updateTabVisibility);
 			GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.updateTabVisibility);
 			GlobalSignals.add(this, GlobalSignals.popupClosedSignal, this.updateTabVisibility);
+			GlobalSignals.add(this, GlobalSignals.populationChangedSignal, this.updateTabNames);
 			
 			this.updateTabVisibility();
 		},
@@ -63,17 +64,14 @@ define([
 			this.currentLocationNodes = null;
 		},
 		
-		update: function () {
-			if (GameGlobals.gameState.uiStatus.isHidden) return;
-			this.updateTabs();
-		},
-		
 		onCampNodeAdded: function (node) {
 			this.updateTabVisibility();
+			this.updateTabNames();
 		},
 
 		onCampNodeRemoved: function (node) {
 			this.updateTabVisibility();
+			this.updateTabNames();
 		},
 		
 		updateTabVisibility: function () {
@@ -99,7 +97,8 @@ define([
 			GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-embark", null, isInCamp, 0);
 		},
 		
-		updateTabs: function () {
+		updateTabNames: function () {
+			if (!GameGlobals.gameState.uiStatus.isHidden) return;
 			var posHasCamp = this.currentLocationNodes.head && this.currentLocationNodes.head.entity.has(CampComponent);
 			var levelCamp = this.nearestCampNodes.head;
 			var currentCamp = levelCamp ? levelCamp.entity : null;

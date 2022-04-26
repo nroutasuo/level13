@@ -18,10 +18,12 @@ define(['ash',], function (Ash) {
 		popupClosedSignal: new Ash.Signals.Signal(),
 		elementToggledSignal: new Ash.Signals.Signal(),
 		elementCreatedSignal: new Ash.Signals.Signal(),
+		buttonStateChangedSignal: new Ash.Signals.Signal(),
 		windowResizedSignal: new Ash.Signals.Signal(),
 		popupResizedSignal: new Ash.Signals.Signal(),
 		updateButtonsSignal: new Ash.Signals.Signal(),
 		clearBubblesSignal: new Ash.Signals.Signal(),
+		projectHiddenSignal: new Ash.Signals.Signal(),
 
 		// player actions
 		actionStartingSignal: new Ash.Signals.Signal(),
@@ -29,8 +31,10 @@ define(['ash',], function (Ash) {
 		actionCompletedSignal: new Ash.Signals.Signal(),
 		playerMovedSignal: new Ash.Signals.Signal(),
 		playerEnteredCampSignal: new Ash.Signals.Signal(),
+		playerLeftCampSignal: new Ash.Signals.Signal(),
 		sectorScavengedSignal: new Ash.Signals.Signal(),
 		sectorScoutedSignal: new Ash.Signals.Signal(),
+		sectorRevealedSignal: new Ash.Signals.Signal(),
 		collectorCollectedSignal: new Ash.Signals.Signal(),
 		improvementBuiltSignal: new Ash.Signals.Signal(),
 		itemUsedSignal: new Ash.Signals.Signal(),
@@ -40,6 +44,7 @@ define(['ash',], function (Ash) {
 		upgradeUnlockedSignal: new Ash.Signals.Signal(),
 		inventoryChangedSignal: new Ash.Signals.Signal(),
 		equipmentChangedSignal: new Ash.Signals.Signal(),
+		followersChangedSignal: new Ash.Signals.Signal(),
 		fightEndedSignal: new Ash.Signals.Signal(),
 		workersAssignedSignal: new Ash.Signals.Signal(),
 		featureUnlockedSignal: new Ash.Signals.Signal(),
@@ -56,6 +61,8 @@ define(['ash',], function (Ash) {
 		
 		// other
 		fightUpdateSignal: new Ash.Signals.Signal(),
+		campEventStartedSignal: new Ash.Signals.Signal(),
+		campEventEndedSignal: new Ash.Signals.Signal(),
 
 		// game events
 		gameStateReadySignal: new Ash.Signals.Signal(),
@@ -88,7 +95,7 @@ define(['ash',], function (Ash) {
 
 		removeAll: function (system) {
 			if (!system.signalBindings) return;
-			for (var i = 0; i < system.signalBindings.length; i++)
+			for (let i = 0; i < system.signalBindings.length; i++)
 				system.signalBindings[i].detach();
 			system.signalBindings = [];
 		}

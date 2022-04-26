@@ -43,7 +43,7 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		},
 		
 		isOnPath: function (pos, pathStartPos, pathDirection, len) {
-			for (var i = 0; i < len; i++) {
+			for (let i = 0; i < len; i++) {
 				var posOnPath = this.getPositionOnPath(pathStartPos, pathDirection, i);
 				if (pos.equals(posOnPath)) {
 					return true;
@@ -66,7 +66,7 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		
 		getAllPositionsInArea: function (pos, areaSize) {
 			pos = pos || new PositionVO(0, 0, 0);
-			var result = [];
+			let result = [];
 			result.push(new PositionVO(pos.level, pos.sectorX, pos.sectorY));
 			for (var x = 1; x <= areaSize; x++) {
 				for (var y = 1; y <= areaSize; y++) {
@@ -107,7 +107,7 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		},
 		
 		getDirectionsFrom: function (sectorPosFrom, sectorPosTo, includeDiagonals) {
-			var result = [];
+			let result = [];
 			var dx = sectorPosFrom.sectorX - sectorPosTo.sectorX;
 			var dy = sectorPosFrom.sectorY - sectorPosTo.sectorY;
 
@@ -128,6 +128,14 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 			var xs = sectorPosFrom.sectorX - sectorPosTo.sectorX;
 			xs = xs * xs;
 			var ys = sectorPosFrom.sectorY - sectorPosTo.sectorY;
+			ys = ys * ys;
+			return Math.sqrt(xs + ys);
+		},
+		
+		getMagnitude: function (pos) {
+			var xs = pos.sectorX;
+			xs = xs * xs;
+			var ys = pos.sectorY;
 			ys = ys * ys;
 			return Math.sqrt(xs + ys);
 		},
@@ -160,9 +168,9 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		},
 		
 		getMiddlePoint: function (positions, rounded) {
-			var result = new PositionVO(0, 0, 0);
+			let result = new PositionVO(0, 0, 0);
 			if (positions && positions.length > 0) {
-				for (var i = 0; i < positions.length; i++) {
+				for (let i = 0; i < positions.length; i++) {
 					if (positions[i]) {
 						result.level += positions[i].level;
 						result.sectorX += positions[i].sectorX;
@@ -265,10 +273,10 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 				case this.DIRECTION_NORTH: return short ? "N" : "north";
 				case this.DIRECTION_SOUTH: return short ? "S" : "south";
 				case this.DIRECTION_EAST: return short ? "E" : "east";
-				case this.DIRECTION_NE: return "NE";
-				case this.DIRECTION_SE: return "SE";
-				case this.DIRECTION_SW: return "SW";
-				case this.DIRECTION_NW: return "NW";
+				case this.DIRECTION_NE: return short ? "NE" : "north-east";
+				case this.DIRECTION_SE: return short ? "SE" : "south-east";
+				case this.DIRECTION_SW: return short ? "SW" : "south-west";
+				case this.DIRECTION_NW: return short ? "NW" : "north-west";
 				case this.DIRECTION_UP: return short ? "U" : "up";
 				case this.DIRECTION_DOWN: short ? "D" : "down";
 				case this.DIRECTION_CAMP: short ? "C" : "camp";
@@ -285,8 +293,35 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 				return [this.DIRECTION_NORTH, this.DIRECTION_EAST, this.DIRECTION_SOUTH, this.DIRECTION_WEST];
 		},
 		
+		getMovementDirections: function () {
+			return [
+				this.DIRECTION_NORTH, this.DIRECTION_EAST, this.DIRECTION_SOUTH, this.DIRECTION_WEST,
+				this.DIRECTION_NE, this.DIRECTION_SE, this.DIRECTION_SW, this.DIRECTION_NW,
+				this.DIRECTION_UP, this.DIRECTION_DOWN
+			];
+		},
+		
 		isLevelDirection: function (direction) {
 			return this.getLevelDirections().indexOf(direction) >= 0;
+		},
+		
+		subtract: function (pos1, pos2) {
+			return new PositionVO(pos1.level - pos2.level, pos1.sectorX - pos2.sectorX, pos1.sectorY - pos2.sectorY);
+		},
+		
+		add: function (pos1, pos2) {
+			return new PositionVO(pos1.level + pos2.level, pos1.sectorX + pos2.sectorX, pos1.sectorY + pos2.sectorY);
+		},
+		
+		multiply: function (pos, scalar, round) {
+			let result = new PositionVO(pos.level, pos.sectorX * scalar, pos.sectorY * scalar);
+			if (round) result.normalize();
+			return result;
+		},
+		
+		getUnitPosition: function (pos) {
+			let mag = this.getMagnitude(pos);
+			return new PositionVO(pos.level, pos.sectorX / mag, pos.sectorY / mag);
 		},
 		
 		isHorizontalDirection: function (direction) {

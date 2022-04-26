@@ -3,6 +3,7 @@ define([
 	'ash',
 	'game/components/common/CampComponent',
 	'game/components/common/CurrencyComponent',
+	'game/components/sector/improvements/BeaconComponent',
 	'game/components/sector/ReputationComponent',
 	'game/components/common/VisitedComponent',
 	'game/components/common/RevealedComponent',
@@ -13,7 +14,8 @@ define([
 	'game/components/sector/events/CampEventTimersComponent',
 	'game/components/sector/events/RaidComponent',
 	'game/components/sector/events/TraderComponent',
-], function (Ash, CampComponent, CurrencyComponent, ReputationComponent, VisitedComponent, RevealedComponent, DeityComponent, ExcursionComponent, LastVisitedCampComponent, OutgoingCaravansComponent, CampEventTimersComponent, RaidComponent, TraderComponent) {
+	'game/components/sector/events/RecruitComponent',
+], function (Ash, CampComponent, CurrencyComponent, BeaconComponent, ReputationComponent, VisitedComponent, RevealedComponent, DeityComponent, ExcursionComponent, LastVisitedCampComponent, OutgoingCaravansComponent, CampEventTimersComponent, RaidComponent, TraderComponent, RecruitComponent) {
 
 	var SaveHelper = Ash.Class.extend({
 
@@ -25,7 +27,20 @@ define([
 			gang: "gang-"
 		},
 
-		optionalComponents: [CampComponent, CurrencyComponent, DeityComponent, ReputationComponent, VisitedComponent, RevealedComponent, LastVisitedCampComponent, OutgoingCaravansComponent, TraderComponent, CampEventTimersComponent, RaidComponent, ExcursionComponent],
+		optionalComponents: [
+			// sector: all camps
+			CampComponent, CurrencyComponent, ReputationComponent, CampEventTimersComponent, OutgoingCaravansComponent,
+			// sector: camp events
+			TraderComponent, RecruitComponent, RaidComponent,
+			// sector: buildings
+			BeaconComponent,
+			// sector: status
+			VisitedComponent, RevealedComponent, LastVisitedCampComponent,
+			// tribe: overall progress
+			DeityComponent,
+			// player: status
+			ExcursionComponent
+		],
 
 		constructor: function () {},
 
@@ -33,7 +48,7 @@ define([
 		parseSaveJSON: function (json) {
 			if (!json) return null;
 
-			var result = null;
+			let result = null;
 			try {
 				result = JSON.parse(json);
 			} catch (ex) {
@@ -64,7 +79,7 @@ define([
 
 				// if the component has a shortened save key, compare to existing components to find the instance
 				if (!component) {
-					for (var i in existingComponents) {
+					for (let i in existingComponents) {
 						var existingComponent = existingComponents[i];
 						if (existingComponent.getSaveKey) {
 							if (existingComponent.getSaveKey() === componentKey) {
@@ -76,7 +91,7 @@ define([
 
 				// if still not found, it could be an optional component
 				if (!component) {
-					for (var i = 0; i < this.optionalComponents.length; i++) {
+					for (let i = 0; i < this.optionalComponents.length; i++) {
 						var optionalComponent = this.optionalComponents[i];
 						if (componentKey == optionalComponent) {
 							component = new optionalComponent();
@@ -88,7 +103,7 @@ define([
 
 				// or an optional component with a shortened save key
 				if (!component) {
-					for (var i = 0; i < this.optionalComponents.length; i++) {
+					for (let i = 0; i < this.optionalComponents.length; i++) {
 						var optionalComponent = this.optionalComponents[i];
 						if (optionalComponent.prototype.getSaveKey) {
 							if (optionalComponent.prototype.getSaveKey() === componentKey) {
@@ -125,16 +140,16 @@ define([
 				if (typeof componentValues[valueKey] != 'object') {
 					component[valueKey] = componentValues[valueKey];
 				} else {
-					if (typeof component[valueKey] == "undefined") continue;
+					if (typeof component[valueKey] == "undefined") {
+						component[valueKey] = {};
+					}
 					for (var valueKey2 in componentValues[valueKey]) {
 						var value2 = componentValues[valueKey][valueKey2];
 						// log.i(valueKey2 + ": " + value2)
 						if (value2 === null) {
 							continue;
 						} else if (typeof value2 != 'object') {
-							if (valueKey2 != "id") {
-								component[valueKey][valueKey2] = value2;
-							}
+							component[valueKey][valueKey2] = value2;
 						} else if (parseInt(valueKey2) >= 0 && component[valueKey] instanceof Array) {
 							var valueKey2Int = parseInt(valueKey2);
 							if (!component[valueKey][valueKey2Int]) {

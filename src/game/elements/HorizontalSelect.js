@@ -21,7 +21,7 @@ function () {
 			obj.$list.empty();
 			obj.options = options;
 			obj.lis = [];
-			for (var i = 0; i < options.length; i++) {
+			for (let i = 0; i < options.length; i++) {
 				var index = i;
 				var option = options[i];
 				var $li = $("<li class='horizontal-select-option' data-ix='" + i + "'>" + option.label + "</li>");
@@ -42,7 +42,7 @@ function () {
 		
 		selectOption: function (obj, ix) {
 			obj.selectedIx = ix;
-			for (var i = 0; i < obj.lis.length; i++) {
+			for (let i = 0; i < obj.lis.length; i++) {
 				obj.lis[i].toggleClass("selected", i == ix);
 			}
 		}

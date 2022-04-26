@@ -28,13 +28,13 @@ function (Ash) {
 			var x = Math.ceil(d/2);
 			if (d % 2 > 0) x = -x;
 			
-			var result = { x: x, z: z };
+			let result = { x: x, z: z };
 			this.coordinates[i] = result;
 			// log.i("assigned coordinate: " + i + " { x: " + x + ", z: " + z +" }");
 		},
 		
 		initCoordinates: function (count) {
-			for (var i = 0; i <= count; i++) {
+			for (let i = 0; i <= count; i++) {
 				if (!this.coordinates[i]) {
 					this.initCoordinate(i);
 				}
@@ -49,7 +49,7 @@ function (Ash) {
 		},
 		
 		getSpot: function (x, z) {
-			for (var i = 0; i < this.maxSpot; i++) {
+			for (let i = 0; i < this.maxSpot; i++) {
 				var coords2 = this.getCoords(i);
 				if (coords2.x == x && coords2.z == z)
 					return i;
@@ -63,7 +63,7 @@ function (Ash) {
 		},
 		
 		getSpotIndex: function (x, z) {
-			var i = 0;
+			let i = 0;
 			while (this.coordinates[i]) {
 				if (this.coordinates[i].x == x && this.coordinates[i].z == z) {
 					return i;
@@ -79,7 +79,6 @@ function (Ash) {
 				case improvementNames.darkfarm:
 					return { x: s * 1.5, y: s * 1.25 };
 				case improvementNames.fortification:
-				case improvementNames.fortification2:
 					return { x: 1000, y: s * 1 };
 				case improvementNames.generator:
 					return { x: s * 0.9, y: s * 0.65 };
@@ -113,9 +112,7 @@ function (Ash) {
 		
 		isConflict: function (coords1, coords2, buildingType1, buildingType2) {
 			if (buildingType1 == improvementNames.fortification) return false;
-			if (buildingType1 == improvementNames.fortification2) return false;
 			if (buildingType2 == improvementNames.fortification) return false;
-			if (buildingType2 == improvementNames.fortification2) return false;
 			var width1 = this.getBuildingSize(buildingType1).x;
 			var width2 = this.getBuildingSize(buildingType2).x;
 			var x1 = coords1.x * this.gridX;
@@ -167,7 +164,6 @@ function (Ash) {
 			// z-coordinate: some buildings prefer foreground/bacgrkound
 			switch (buildingType) {
 				case improvementNames.fortification:
-				case improvementNames.fortification2:
 					if (coords.z < 2) return false;
 					break;
 				case improvementNames.campfire:
@@ -209,7 +205,7 @@ function (Ash) {
 			}
 			
 			if (this.hasPredefinedPosition(building, settings, sectorImprovements, true)) {
-				var i = this.getPredefinedPosition(building, settings, sectorImprovements, true);
+				let i = this.getPredefinedPosition(building, settings, sectorImprovements, true);
 				log.i("assigned predefined building spot for: " + buildingType1 + ": " + i);
 				return i;
 			}
@@ -222,7 +218,7 @@ function (Ash) {
 			var maxstarti = this.getMaxBuildingSpotAssignStartIndex(buildingType1, sectorImprovements.getTotalCount());
 			var starti = minstarti + Math.floor(Math.random() * (maxstarti - minstarti));
 			for (var n = 0; n < 5; n++) {
-				var i = this.getRandomValidBuildingSpot(settings, sectorImprovements, buildingType1, starti);
+				let i = this.getRandomValidBuildingSpot(settings, sectorImprovements, buildingType1, starti);
 				if (i < minstarti) break;
 				var score = this.getSpotScore(settings, sectorImprovements, buildingType1, i);
 				if (score > bestScore) {
@@ -247,7 +243,7 @@ function (Ash) {
 		getRandomValidBuildingSpot: function (settings, sectorImprovements, buildingType1, starti) {
 			var buildingCount = sectorImprovements.getTotalCount();
 			var step = 1 + Math.floor(Math.random() * 11);
-			for (var i = starti; i < this.maxSpot; i += step) {
+			for (let i = starti; i < this.maxSpot; i += step) {
 				var coords1 = this.getCoords(i);
 				// is blocked area?
 				if (this.isBlockedArea(i, settings)) continue;
@@ -259,7 +255,7 @@ function (Ash) {
 				if (!this.isValidCoordinates(coords1, buildingType1, buildingCount)) continue;
 				// conflicts with some existing?
 				var foundConflict = false;
-				for (var j = 0; j < sectorImprovements.buildingSpots.length; j++) {
+				for (let j = 0; j < sectorImprovements.buildingSpots.length; j++) {
 					var contents2 = sectorImprovements.buildingSpots[j];
 					if (contents2) {
 						var coords2 = this.getCoords(j);
@@ -289,7 +285,7 @@ function (Ash) {
 		},
 		
 		getSpotScore: function (settings, improvements, buildingType1, i) {
-			var result = 0;
+			let result = 0;
 			var coords = this.getCoords(i);
 			var dx = 5;
 			// neighbours

@@ -1,6 +1,7 @@
 // Random and seed related functions for the WorldCreator
 define([
 	'ash',
+	'utils/MathUtils',
 	'utils/PathFinding',
 	'worldcreator/WorldCreatorLogger',
 	'game/constants/PositionConstants',
@@ -9,16 +10,17 @@ define([
 	'game/constants/WorldConstants',
 	'game/vos/PositionVO',
 	'game/vos/PathConstraintVO'],
-function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants, MovementConstants, WorldConstants, PositionVO, PathConstraintVO) {
+function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants, MovementConstants, WorldConstants, PositionVO, PathConstraintVO) {
 
 	var WorldCreatorRandom = {
 		
 		// Pseudo-random array of min (inclusive) to max (exclusive) existing sectors
 		// options:
-		// - excludingFeature (string): exclude sectors that have this featue (for example "camp")
+		// - excludingFeature (string/array): exclude sectors that have this featue (for example "isCamp")
 		// - excludedZones (array of strings): exclude sectors assigned to give zone
 		// - pathConstraints (array of PathConstraintVO): all paths must be satisfied if present
 		// - numDuplicates (int): how many of the returned sectors can be the same (default 1 -> no duplicates) (0 -> no limit)
+		// - filter (function) custom filter to reject any sector (sector => bool)
 		randomSectors: function (seed, worldVO, levelVO, min, max, options) {
 			var sectors = [];
 			var numSectors = this.randomInt(seed, min, max);
@@ -36,9 +38,10 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 		
 		getRandomSectorsSmall: function (seed, worldVO, levelVO, numSectors, options) {
 			var maxDuplicates = options.numDuplicates || 1;
-			var sectors = [];
+			let result = [];
+			var selectedSectors = {}; // id -> times selected
+			var checkedSectors = {}; // id -> times checked
 			
-			var counts = {};
 			var rejectedByReason = {};
 			
 			var addRejection = function (sectorVO, reason) {
@@ -51,7 +54,7 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 			var checkDuplicates = function (sectorVO) {
 				if (maxDuplicates === 0) return true;
 				if (!sectorVO) return false;
-				if (counts[sectorVO.id] && counts[sectorVO.id] >= maxDuplicates) {
+				if (selectedSectors[sectorVO.id] && selectedSectors[sectorVO.id] >= maxDuplicates) {
 					addRejection(sectorVO, "duplicate");
 					return false;
 				}
@@ -59,43 +62,40 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 			};
 			
 			var checkExclusion = function (sectorVO) {
-				if (!sectorVO) return false;
-				if (options.excludingFeature && sectorVO[options.excludingFeature]) {
-					addRejection(sectorVO, "excluding feature: " + options.excludingFeature);
+				let reason = WorldCreatorRandom.getSectorInvalidReason(worldVO, sectorVO, options);
+				if (reason) {
+					addRejection(sectorVO, reason);
 					return false;
-				}
-				if (options.excludedZones) {
-					for (var i = 0; i < options.excludedZones.length; i++) {
-						if (sectorVO.zone == options.excludedZones[i]) {
-							addRejection(sectorVO, "excluded zone: " + options.excludedZones[i]);
-							return false;
-						}
-					}
 				}
 				return true;
 			};
 			
-			for (var i = 0; i < numSectors; i++) {
+			for (let i = 0; i < numSectors; i++) {
 				var sector;
 				var additionalRandom = 0;
 				do {
 					var s1 = seed + (i + 1) * 369 + additionalRandom * 55;
 					sector = this.randomSector(s1, worldVO, levelVO, options.requireCentral, options.pathConstraints);
+					
+					if (!checkedSectors[sector.id]) checkedSectors[sector.id] = 0;
+					checkedSectors[sector.id]++;
+					
 					additionalRandom++;
-					if (additionalRandom > 100) {
-						WorldCreatorLogger.w("getRandomSectorsSmall: Couldn't find random sector " + (i+1) + "/" + numSectors + " (level: " + levelVO.level + ") | " + s1);
+					if (additionalRandom > 500) {
+						WorldCreatorLogger.w("getRandomSectorsSmall: Couldn't find random sector " + (i+1) + "/" + numSectors + " (level: " + levelVO.level + ") | " + s1 + " " + seed);
 						WorldCreatorLogger.i(options);
-						WorldCreatorLogger.i(counts);
+						WorldCreatorLogger.i(selectedSectors);
+						WorldCreatorLogger.i(checkedSectors);
 						WorldCreatorLogger.i(rejectedByReason);
-						return sectors;
+						return result;
 					}
 				} while (!checkDuplicates(sector) || !checkExclusion(sector));
 				
-				sectors.push(sector);
-				if (!counts[sector.id]) counts[sector.id] = 0;
-				counts[sector.id]++;
+				result.push(sector);
+				if (!selectedSectors[sector.id]) selectedSectors[sector.id] = 0;
+				selectedSectors[sector.id]++;
 			}
-			return sectors;
+			return result;
 		},
 		
 		getRandomSectorsBig:function (seed, worldVO, levelVO, numSectors, options) {
@@ -105,24 +105,12 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 
 			// map possible sectors
 			var checkExclusion = function (sectorVO) {
-				if (!sectorVO) return false;
-				if (options.excludingFeature && sectorVO[options.excludingFeature]) {
-					return false;
-				}
-				if (options.excludedZones) {
-					for (var i = 0; i < options.excludedZones.length; i++) {
-						if (sectorVO.zone == options.excludedZones[i]) return false;
-					}
-				}
-				if (!WorldCreatorRandom.checkPathRequirements(worldVO, sector, options.pathConstraints)) {
-					return false;
-				}
-				return true;
+				return WorldCreatorRandom.getSectorInvalidReason(worldVO, sectorVO, options) == null;
 			};
 			var possibleSectors = [];
-			for (var i = 0; i < availableSectors.length; i++) {
+			for (let i = 0; i < availableSectors.length; i++) {
 				if (checkExclusion(availableSectors[i])) {
-					for (var j = 0; j < maxDuplicates; j++) {
+					for (let j = 0; j < maxDuplicates; j++) {
 						possibleSectors.push(availableSectors[i]);
 					}
 				}
@@ -134,7 +122,7 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 			}
 			
 			// pick some from possible sectors
-			for (var i = 0; i < possibleSectors.length; i++) {
+			for (let i = 0; i < possibleSectors.length; i++) {
 				var sector = possibleSectors[i];
 				var numLeft = possibleSectors.length - i;
 				var numLeftToPick = numSectors - sectors.length;
@@ -147,12 +135,62 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 			return sectors;
 		},
 		
+		getSectorInvalidReason: function (worldVO, sectorVO, options) {
+			if (!sectorVO) return "null sector";
+			
+			if (WorldCreatorRandom.sectorHasExcludedFeatures(options.excludingFeature, sectorVO)) {
+				return "excluding feature: " + options.excludingFeature;
+			}
+			
+			if (options.excludedZones) {
+				for (let i = 0; i < options.excludedZones.length; i++) {
+					if (sectorVO.zone == options.excludedZones[i]) {
+						return "excluded zone: " + options.excludedZones[i];
+					}
+				}
+			}
+			
+			if (options.filter) {
+				if (!options.filter(sectorVO)) {
+					return "filter";
+				}
+			}
+			
+			if (!WorldCreatorRandom.checkPathRequirements(worldVO, sectorVO, options.pathConstraints)) {
+				return "path requirements";
+			}
+				
+			return null;
+		},
+		
+		sectorHasExcludedFeatures: function (excludingFeature, sectorVO) {
+			if (!sectorVO) return false;
+			if (!excludingFeature) return false;
+			
+			if (typeof excludingFeature === "string") {
+				return this.sectorHasExcludedFeature(excludingFeature, sectorVO);
+			} else {
+				for (let i = 0; i < excludingFeature.length; i++) {
+					if (this.sectorHasExcludedFeature(excludingFeature[i], sectorVO)) {
+						return true;
+					}
+				}
+			}
+			
+			return false;
+		},
+		
+		sectorHasExcludedFeature: function (excludingFeature, sectorVO) {
+			let result = sectorVO[excludingFeature];
+			return result;
+		},
+		
 		randomDirections: function (seed, num, includeDiagonals) {
 			var directions = [];
 			if (!num || num === 0) return directions;
 			var options = PositionConstants.getLevelDirections(!includeDiagonals);
 			
-			for (var i = 0; i < num; i++) {
+			for (let i = 0; i < num; i++) {
 				var index = this.randomInt(seed*i^37+seed*i+i+seed*num+seed, 0, options.length);
 				directions.push(options[index]);
 				options.splice(index, 1);
@@ -165,7 +203,7 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 			// TODO add a preference for non-camp sectors
 			var neighbour = null;
 			var directionOrder = this.randomDirections(seed * 3, 8, includeDiagonals);
-			for (var i = 0; i < directionOrder.length; i++) {
+			for (let i = 0; i < directionOrder.length; i++) {
 				var direction = directionOrder[i];
 				var directionNeighbourPos = PositionConstants.getPositionOnPath(sectorVO.position, direction, 1);
 				var directionNeighbour = levelVO.getSector(directionNeighbourPos.sectorX, directionNeighbourPos.sectorY);
@@ -193,7 +231,7 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 			var sectorY = this.randomInt(seed * 7812 + level, -areaSize, areaSize + 1);
 			if (sectorY > 0 && sectorY < minDist) sectorY = minDist;
 			if (sectorY < 0 && sectorY > minDist) sectorY =- minDist;
-			var result = new PositionVO(level, Math.round(centerPos.sectorX + sectorX), Math.round(centerPos.sectorY + sectorY));
+			let result = new PositionVO(level, Math.round(centerPos.sectorX + sectorX), Math.round(centerPos.sectorY + sectorY));
 			return result;
 		},
 		
@@ -209,7 +247,7 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 			
 			var index = startIndex;
 			var sector;
-			for (var i = 0; i < sectors.length; i++) {
+			for (let i = 0; i < sectors.length; i++) {
 				sector = sectors[index];
 				if (this.checkPathRequirements(worldVO, sector, pathConstraints)) {
 					return sector;
@@ -221,9 +259,9 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 			// print some debug info about the failed sector and paths
 			WorldCreatorLogger.w("Failed to find random sector that fulfills requirements: central: " + isCentral + ", " + (pathConstraints ? pathConstraints.length : 0) + " paths, " + sectors.length + " sectors (level: " + levelVO.level + ")");
 			var fails = [];
-			for (var j = 0; j < pathConstraints.length; j++) {
+			for (let j = 0; j < pathConstraints.length; j++) {
 				fails[j] = 0;
-				for (var i = 0; i < sectors.length; i++) {
+				for (let i = 0; i < sectors.length; i++) {
 					var sector = sectors[i];
 					if (!this.checkPathRequirements(worldVO, sector, [ pathConstraints[j] ], true)) {
 						fails[j]++;
@@ -236,7 +274,7 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 		
 		checkPathRequirements: function (worldVO, sector, pathConstraints, logFails) {
 			if (!pathConstraints || pathConstraints.length === 0) return true;
-			for (var j = 0; j < pathConstraints.length; j++) {
+			for (let j = 0; j < pathConstraints.length; j++) {
 				if (pathConstraints[j].maxLength <= 0) {
 					WorldCreatorLogger.w("Max path length is <= 0, skipping check.");
 					continue;
@@ -248,7 +286,7 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 					return false;
 				}
 				// check path
-				var path = this.findPath(worldVO, pathConstraints[j].startPosition, sector.position, false, true);
+				var path = this.findPath(worldVO, pathConstraints[j].startPosition, sector.position, false, true, null, false, pathConstraints[j].maxLength);
 				if (!path) return false;
 				var pathLen = path.length;
 				if (pathLen > pathConstraints[j].maxLength) {
@@ -258,6 +296,25 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 				if (pathLen <= 0) return false;
 			}
 			return true;
+		},
+		
+		getProbabilityFromFactors: function (factors) {
+			if (factors.length == 0) {
+				WorldCreatorLogger.w("no factors for getProbabilityFromFactors");
+				return 0.5;
+			}
+			let total = 0;
+			for (let i = 0; i < factors.length; i++) {
+				let factor = factors[i];
+				let value = factor.value;
+				if (typeof(value) == "boolean") {
+					total += value ? 1 : 0;
+				} else {
+					total += MathUtils.map(value, factor.min || 0, factor.max || 1, 0, 1);
+				}
+			}
+			
+			return total / factors.length;
 		},
 		
 		// get random result with a validity check function, try max 99 times with different seeds, keep track of fails
@@ -279,8 +336,8 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 			};
 			// try to find a valid result
 			var maxtries = 99;
-			var result = null;
-			for (var i = 0; i < maxtries; i++) {
+			let result = null;
+			for (let i = 0; i < maxtries; i++) {
 				result = resultFunc(i);
 				if (checkResult(result)) {
 					return result;
@@ -293,6 +350,19 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 			//WorldCreatorLogger.i(failResults)
 			
 			return result;
+		},
+		
+		getRandomItemFromArray: function (seed, array) {
+			let index = this.randomInt(seed, 0, array.length);
+			return array[index];
+		},
+		
+		getRandomIntFromRange: function (seed, range) {
+			let isRange = typeof(range) !== "number";
+			if (!isRange) return range;
+			let min = Math.round(range[0])
+			let max = Math.round(range[1]);
+			return WorldCreatorRandom.randomInt(seed, min, max);
 		},
 		
 		// Pseudo-random int between min (inclusive) and max (exclusive)
@@ -312,7 +382,7 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 		random: function (seed) {
 			var mod1 = 7247;
 			var mod2 = 7823;
-			var result = (seed*seed) % (mod1*mod2);
+			let result = (seed*seed) % (mod1*mod2);
 			return result/(mod1*mod2);
 		},
 		
@@ -321,7 +391,7 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 		},
 		
 		// anyPath: if true, not necessarily SHORTEST path, just one known to exist
-		findPath: function (worldVO, startPos, endPos, blockByBlockers, omitWarnings, stage, anyPath) {
+		findPath: function (worldVO, startPos, endPos, blockByBlockers, omitWarnings, stage, anyPath, maxLength) {
 			if (!startPos) {
 				WorldCreatorLogger.w("No start pos defined.");
 			}
@@ -357,12 +427,12 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 			var utilities = {
 				findPassageDown: function (level) {
 					var levelVO = worldVO.getLevel(level);
-					var result = levelVO.findPassageDown();
+					let result = levelVO.findPassageDown();
 					return result ? makePathSectorVO(result.position) : null;
 				},
 				findPassageUp: function (level) {
 					var levelVO = worldVO.getLevel(level);
-					var result = levelVO.findPassageUp();
+					let result = levelVO.findPassageUp();
 					return result ? makePathSectorVO(result.position) : null;
 				},
 				getSectorByPosition: function (level, sectorX, sectorY) {
@@ -386,9 +456,9 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 					return false;
 				}
 			};
-			var settings = { includeUnbuiltPassages: true, skipUnvisited: false, skipBlockers: blockByBlockers, omitWarnings: omitWarnings };
+			var settings = { includeUnbuiltPassages: true, skipUnvisited: false, skipBlockers: blockByBlockers, omitWarnings: omitWarnings, maxLength: maxLength };
 			
-			var result = PathFinding.findPath(startVO, goalVO, utilities, settings);
+			let result = PathFinding.findPath(startVO, goalVO, utilities, settings);
 			
 			this.addCachedPath(worldVO, startPos, endPos, blockByBlockers, stage, result);
 			

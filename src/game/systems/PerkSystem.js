@@ -52,23 +52,26 @@ define([
 			var itemsComponent = this.playerNodes.head.items;
 			var perksComponent = this.playerNodes.head.perks;
 			
-			
 			var perks = perksComponent.getAll();
 			var isResting = this.isResting();
-			var restFactor = isResting ? PerkConstants.PERK_RECOVERY_FACTOR_REST : 1;
 			var perksToRemove = [];
 	
-			for (var i = 0; i < perks.length; i++) {
+			for (let i = 0; i < perks.length; i++) {
 				var perk = perks[i];
-				if (perk.effectTimer === PerkConstants.TIMER_DISABLED) {
-					// no timer
-				} else {
-					// adjust perk timer
-					perk.effectTimer -= time * restFactor * GameConstants.gameSpeedExploration;
-					if (perk.effectTimer < 0) {
-						// remove perk
+				
+				if (perk.removeTimer !== PerkConstants.TIMER_DISABLED) {
+					// is deactivating
+					perk.removeTimer -= time * PerkConstants.getRemoveTimeFactor(perk, isResting) * GameConstants.gameSpeedExploration;
+					if (perk.removeTimer < 0) {
 						perksComponent.removePerkById(perk.id);
 						this.addPerkRemovedLogMessage(perk.id);
+					}
+				} else if (perk.startTimer !== PerkConstants.TIMER_DISABLED) {
+					// is activating
+					perk.startTimer -= time * PerkConstants.getStartTimeFactor(perk, isResting) * GameConstants.gameSpeedExploration;
+					if (perk.startTimer < 0) {
+						perk.startTimer = PerkConstants.TIMER_DISABLED;
+						this.addPerkStartedLogMessage(perk.id);
 					}
 				}
 			}
@@ -76,9 +79,10 @@ define([
 		
 		updateLocationPerks: function () {
 			if (!this.locationNodes.head) return;
-			let isActive = GameGlobals.sectorHelper.isBeaconActive(this.playerNodes.head.entity.get(PositionComponent));
+			let playerPos = this.playerNodes.head.entity.get(PositionComponent);
+			let isActive = GameGlobals.sectorHelper.isBeaconActive(playerPos);
 			if (isActive) {
-				this.addOrUpdatePerk(PerkConstants.perkIds.lightBeacon, PerkConstants.TIMER_DISABLED);
+				this.addOrUpdatePerk(PerkConstants.perkIds.lightBeacon);
 			} else {
 				this.deactivatePerk(PerkConstants.perkIds.lightBeacon, 0)
 			}
@@ -91,26 +95,27 @@ define([
 			var itemsComponent = this.playerNodes.head.items;
 			var hazardPerksForSector = this.getHazardPerksForSector(featuresComponent, statusComponent, itemsComponent);
 			var hazardPerksAll = [ PerkConstants.perkIds.hazardCold, PerkConstants.perkIds.hazardPoison, PerkConstants.perkIds.hazardRadiation];
-			for (var i = 0; i < hazardPerksAll.length; i++) {
+			for (let i = 0; i < hazardPerksAll.length; i++) {
 				var perkID = hazardPerksAll[i];
 				var isActive = hazardPerksForSector.indexOf(perkID) >= 0;
 				if (isActive) {
-					this.addOrUpdatePerk(perkID, PerkConstants.TIMER_DISABLED);
+					this.addOrUpdatePerk(perkID, PerkConstants.ACTIVATION_TIME_HEALTH_DEBUFF);
 				} else {
 					this.deactivatePerk(perkID, 10);
 				}
 			}
 		},
 		
-		addOrUpdatePerk: function (perkID, timer) {
+		addOrUpdatePerk: function (perkID, startTimer) {
+			startTimer = startTimer || PerkConstants.TIMER_DISABLED;
 			let perksComponent = this.playerNodes.head.perks;
 			let playerPerk = perksComponent.getPerk(perkID);
 			if (playerPerk) {
-				playerPerk.effectTimer = timer;
+				playerPerk.setStartTimer(startTimer);
 			} else {
 				let perk = PerkConstants.getPerk(perkID);
 				perksComponent.addPerk(perk);
-				perk.effectTimer = timer;
+				perk.setStartTimer(startTimer);
 				this.addPerkAddedLogMessage(perkID);
 			}
 		},
@@ -119,16 +124,19 @@ define([
 			let perksComponent = this.playerNodes.head.perks;
 			let perk = perksComponent.getPerk(perkID);
 			if (perk) {
-				if (perk.effectTimer == PerkConstants.TIMER_DISABLED || perk.effectTimer > timer) {
-					perk.effectTimer = timer;
+				if (perk.removeTimer == PerkConstants.TIMER_DISABLED || perk.removeTimer > timer) {
+					perk.effectFactor = PerkConstants.getPerkActivePercent(perk);
+					perk.removeTimer = timer;
 					this.addPerkDeactivatedMessage(perkID);
 				}
 			}
 		},
 		
 		addPerkAddedLogMessage: function (perkID) {
-			var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
-			var msg = "";
+			let logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
+			let playerPos = this.playerNodes.head.entity.get(PositionComponent);
+			
+			let msg = "";
 			switch (perkID) {
 				case PerkConstants.perkIds.hazardCold:
 					msg = "It's unbearably cold.";
@@ -143,32 +151,54 @@ define([
 					break;
 					
 				case PerkConstants.perkIds.lightBeacon:
-					msg = "Nearby beacon lights the way";
+					msg = playerPos.inCamp ? "" : "Nearby beacon lights the way";
 					break;
 					
 				default:
 					log.w("unknown perk " + perkID);
 					return;
 			}
+			
+			if (!msg) return;
+			
 			logComponent.addMessage(LogConstants.MSG_ID_ADD_HAZARD_PERK, msg);
 		},
 		
+		addPerkStartedLogMessage: function (perkID) {
+			
+		},
+		
 		addPerkDeactivatedMessage: function (perkID) {
-			var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
-			var msg = "";
+			let logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
+			let playerPos = this.playerNodes.head.entity.get(PositionComponent);
+			
+			// TODO different message depending on if perk was deactivated due to moving or by changing equipment
+			
+			let msg = "";
 			switch (perkID) {
 				case PerkConstants.perkIds.hazardCold:
-					msg = "Warmer here.";
+					msg = "Warmer now.";
+					break;
+					
+				case PerkConstants.perkIds.hazardRadiation:
+					msg = "Safe from radiation now.";
+					break;
+				
+				case PerkConstants.perkIds.hazardPoison:
+					msg = "Safe from pollution now.";
 					break;
 					
 				case PerkConstants.perkIds.lightBeacon:
-					msg = "Outside the beacon's range.";
+					msg = playerPos.inCamp ? "" : "Outside the beacon's range.";
 					break;
 					
 				default:
 					msg = "Safer here.";
 					break;
 			}
+			
+			if (!msg) return;
+			
 			logComponent.addMessage(LogConstants.MSG_ID_TIME_HAZARD_PERK, msg);
 		},
 		
@@ -188,7 +218,7 @@ define([
 					msg = "Feeling better again.";
 					break;
 				
-				case PerkConstants.perkIds.staminaBonusPenalty:
+					case PerkConstants.perkIds.staminaBonusPenalty:
 					msg = "Feeling better again.";
 					break;
 					
@@ -199,12 +229,15 @@ define([
 					log.w("unknown perk " + perkID);
 					return;
 			}
+			
+			if (!msg) return;
+			
 			logComponent.addMessage(LogConstants.MSG_ID_REMOVE_HAZARD_PERK, msg);
 		},
 		
 		getHazardPerksForSector: function (featuresComponent, statusComponent, itemsComponent) {
 			var hazards = GameGlobals.sectorHelper.getEffectiveHazards(featuresComponent, statusComponent);
-			var result = [];
+			let result = [];
 			if (hazards.radiation > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_radiation))
 				result.push(PerkConstants.perkIds.hazardRadiation);
 			if (hazards.poison > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_poison))

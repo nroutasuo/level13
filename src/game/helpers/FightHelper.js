@@ -42,7 +42,7 @@ define([
 		handleRandomEncounter: function (action, winCallback, fleeCallback, loseCallback) {
 			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			var hasEnemies = this.hasEnemiesCurrentLocation(action);
-			if (hasEnemies && GameGlobals.gameState.unlockedFeatures.camp) {
+			if (hasEnemies && GameGlobals.gameState.unlockedFeatures.camp && !GameGlobals.gameState.isAutoPlaying) {
 				var vision = this.playerStatsNodes.head.vision.value;
 				var encounterFactor = GameGlobals.playerActionsHelper.getEncounterFactor(action);
 				var sectorFactor = GameGlobals.sectorHelper.getDangerFactor(this.playerLocationNodes.head.entity);
@@ -88,7 +88,7 @@ define([
 				var position = this.playerLocationNodes.head.position;
 				var gangEntity = GameGlobals.levelHelper.getGang(position, direction);
 				gangComponent = gangEntity.get(GangComponent);
-				log.i("gang enemy: " + gangComponent.enemyID + ", previous attempts: " + gangComponent.numAttempts);
+				log.i("gang enemy: " + gangComponent.enemyIDs.join(",") + ", previous attempts: " + gangComponent.numAttempts);
 			}
 			var enemy = this.getEnemy(enemiesComponent, gangComponent);
 			sector.add(new FightEncounterComponent(enemy, action, this.pendingEnemies, this.totalEnemies, gangComponent));
@@ -163,11 +163,9 @@ define([
 		
 		getEnemy: function (enemiesComponent, gangComponent) {
 			if (gangComponent) {
-				if (gangComponent.numEnemiesDefeated == gangComponent.numEnemies - 1) {
-					var gangEnemy = EnemyConstants.getEnemy(gangComponent.enemyID);
-					if (gangEnemy) {
-						return gangEnemy;
-					}
+				var gangEnemy = EnemyConstants.getEnemy(gangComponent.getNextEnemyID());
+				if (gangEnemy) {
+					return gangEnemy;
 				}
 			}
 			return enemiesComponent.getNextEnemy()

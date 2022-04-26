@@ -34,7 +34,7 @@ define([
 		
 		animateNumber: function ($elem, targetValue, suffix, flipNegative, roundingFunc) {
 			let animType = "number-anim";
-			let roundedTargetValue = roundingFunc(targetValue);
+			let roundedTargetValue = UIAnimations.parseRawNumber(roundingFunc(targetValue));
 			let currentTargetValue = parseFloat(UIAnimations.getCurrentTarget($elem, animType));
 			if (currentTargetValue === roundedTargetValue) {
 				return;
@@ -109,7 +109,7 @@ define([
 		
 		setNumber: function ($elem, value, roundingFunc, suffix) {
 			suffix = suffix || "";
-			$elem.text(roundingFunc(value) + suffix);
+			$elem.text(roundingFunc(value) + "" + suffix);
 			$elem.attr("data-value-set", true);
 		},
 		
@@ -165,6 +165,14 @@ define([
 		isAnimating: function ($elem) {
 			return $elem.attr("data-ui-animation");
 		},
+		
+		parseRawNumber: function (numberString) {
+			let s = numberString;
+			if (typeof numberString == "string") {
+				s = numberString.replaceAll(/\D/g,'');
+			}
+			return parseFloat(s)
+		}
 		
 	};
 

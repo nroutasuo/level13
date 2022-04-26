@@ -48,7 +48,7 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
 		},
 		
 		addRootNode: function (node) {
-			var i = 0;
+			let i = 0;
 			for (i; i <= this.roots.length; i++) {
 				if (i === this.roots.length)
 					break;
@@ -64,7 +64,7 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
 			var requiredNode;
 			for (var id in this.nodesById) {
 				node = this.nodesById[id];
-				for (var i = 0; i < node.requiresIDs.length; i++) {
+				for (let i = 0; i < node.requiresIDs.length; i++) {
 					requiredId = node.requiresIDs[i];
 					requiredNode = this.nodesById[requiredId];
 					if (requiredNode) {
@@ -99,7 +99,7 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
 				var reqs = GameGlobals.playerActionsHelper.getReqs(node.definition.id);
 				var isMissingBlueprint = reqs && reqs.blueprint && !tribeNodes.head.upgrades.hasAvailableBlueprint(node.definition.id);
 				if (!isMissingBlueprint) {
-					for (var i = 0; i < node.requires.length; i++) {
+					for (let i = 0; i < node.requires.length; i++) {
 						isVisible = isVisible || GameGlobals.playerActionsHelper.checkRequirements(node.requires[i].definition.id, false).value > 0;
 					}
 				} else {
@@ -118,7 +118,7 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
 				this.roots.splice(this.roots.indexOf(node), 1);
 			
 			var requiredNode;
-			for (var i = 0; i < node.requires.length; i++) {
+			for (let i = 0; i < node.requires.length; i++) {
 				requiredNode = node.requires[i];
 				requiredNode.requiredBy.splice(requiredNode.requiredBy.indexOf(node), 1);
 				requiredNode.requiredByByLevel[node.level].splice(requiredNode.requiredByByLevel[node.level].indexOf(node), 1);
@@ -129,7 +129,7 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
 			var maxD = 0;
 			var d = 0;
 			var searchNodes = fromNode ? fromNode.requiredBy : this.roots;
-			for (var i = 0; i < searchNodes.length; i++) {
+			for (let i = 0; i < searchNodes.length; i++) {
 				var searchNodeValue = fromNode ? 1 : searchNodes[i].level;
 				 d = searchNodeValue + this.getDepth(searchNodes[i]);
 				 if (d > maxD) maxD = d;
@@ -174,7 +174,7 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
 		drawTechTree: function (vis) {
 			var tree = this.makeTechTree();
 			var y = 0;
-			for (var i = 0; i < tree.roots.length; i++) {
+			for (let i = 0; i < tree.roots.length; i++) {
 				y = y + this.positionRoot(tree, tree.roots[i], y);
 			}
 			vis.tree = tree;
@@ -202,7 +202,7 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
 			this.ctx.fillStyle = ColorConstants.getColor(vis.sunlit, "bg_page");
 			this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-			for (var i = 0; i < vis.tree.roots.length; i++) {
+			for (let i = 0; i < vis.tree.roots.length; i++) {
 				this.drawRoot(vis, vis.tree.roots[i], vis.sunlit);
 			}
 		},
@@ -213,7 +213,7 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
 			$overlay.css("width", vis.dimensions.canvasWidth + "px");
 			$overlay.css("height", vis.dimensions.canvasHeight + "px");
 			
-			for (var i = 0; i < vis.tree.roots.length; i++) {
+			for (let i = 0; i < vis.tree.roots.length; i++) {
 				var root = vis.tree.roots[i];
 				this.addOverlayNodes(vis, $overlay, root);
 			}
@@ -222,7 +222,7 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
 		addOverlayNodes: function (vis, $overlay, root) {
 			this.addOverlayNode(vis, $overlay, root);
 			for (var level in root.requiredByByLevel) {
-				for (var j = 0; j < root.requiredByByLevel[level].length; j++) {
+				for (let j = 0; j < root.requiredByByLevel[level].length; j++) {
 					this.addOverlayNodes(vis, $overlay, root.requiredByByLevel[level][j]);
 				}
 			}
@@ -294,7 +294,7 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
 			if (numChildren == 2) maxYoffset = childYHeight / 2;
 			if (numChildren > 2) maxYoffset = childYHeight;
 			
-			for (var i = 0; i < parent.requiredBy.length; i++) {
+			for (let i = 0; i < parent.requiredBy.length; i++) {
 				child = parent.requiredBy[i];
 				var ydiff = i * childYHeight;
 				var childX = Math.max(x + 1, child.level);
@@ -310,7 +310,7 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
 					}
 				}
 				
-				var j = 0;
+				let j = 0;
 				while (this.isOccupiedArea(tree, childX, childY, 0.25, childYHeight/2)) {
 					if (childY < 0) { log.i("break push due to 0"); break; }
 					if (j > 100) { log.i("break push due to j"); break; }
@@ -335,7 +335,7 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
 		drawRoot: function (vis, root, sunlit) {
 			this.drawNode(vis, root, sunlit);
 			for (var level in root.requiredByByLevel) {
-				for (var i = 0; i < root.requiredByByLevel[level].length; i++) {
+				for (let i = 0; i < root.requiredByByLevel[level].length; i++) {
 					this.drawRoot(vis, root.requiredByByLevel[level][i], sunlit);
 				}
 			}
@@ -346,7 +346,7 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
 			var pixelY = this.getPixelPosY(node.y);
 			
 			// arrows
-			for (var i = 0; i < node.requiredBy.length; i++) {
+			for (let i = 0; i < node.requiredBy.length; i++) {
 				var targetGridX = node.requiredBy[i].x;
 				var targetGridY = node.requiredBy[i].y;
 				var arrowstartxOffset = -Math.abs(node.y - targetGridY) * this.cellW / 16;
@@ -427,7 +427,7 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
 				var levelb = UpgradeConstants.getMinimumCampOrdinalForUpgrade(b);
 				return levela - levelb;
 			});
-			for (var i = 0; i < ids.length; i++) {
+			for (let i = 0; i < ids.length; i++) {
 				definition = UpgradeConstants.upgradeDefinitions[ids[i]];
 				var reqs = PlayerActionConstants.requirements[definition.id];
 				node = new UITechTreeNode();
@@ -460,7 +460,7 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
 		isAncestorOf: function (tree, id1, id2) {
 			if (id1 == id2) return true;
 			var node1 = tree.nodesById[id1];
-			for (var i = 0; i < node1.requiredBy.length; i++) {
+			for (let i = 0; i < node1.requiredBy.length; i++) {
 				var node3 = node1.requiredBy[i];
 				if (this.isAncestorOf(tree, node3.definition.id, id2)) return true;
 			}
@@ -470,7 +470,7 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
 		isDescendantOf: function (tree, id1, id2) {
 			if (id1 == id2) return true;
 			var node1 = tree.nodesById[id1];
-			for (var i = 0; i < node1.requires.length; i++) {
+			for (let i = 0; i < node1.requires.length; i++) {
 				var node3 = node1.requires[i];
 				if (this.isDescendantOf(tree, node3.definition.id, id2)) return true;
 			}
@@ -479,7 +479,7 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
 		
 		getCurveControlX: function (fromx, fromy, tox, toy) {
 			// steeper curve (x control closer to fromx) when target is further away
-			var result = fromx + this.cellW / 4 * 3 - (tox - fromx);
+			let result = fromx + this.cellW / 4 * 3 - (tox - fromx);
 			result = Math.max(result, fromx );
 			result = Math.min(result, (fromx + tox) / 2);
 			return result;

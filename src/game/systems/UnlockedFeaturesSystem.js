@@ -35,19 +35,10 @@ define([
 
 		update: function (time) {
 			var numCamps = 0;
-			var numTradePostCamps = 0;
 			
 			// Global improvements
 			for (var node = this.campNodes.head; node; node = node.next) {
 				var improvementsComponent = node.entity.get(SectorImprovementsComponent);
-				if (improvementsComponent.getCount(improvementNames.tradepost) > 0) {
-					numTradePostCamps++;
-				}
-				if (improvementsComponent.getCount(improvementNames.inn) > 0) {
-					if (!GameGlobals.gameState.unlockedFeatures.followers)
-						GlobalSignals.featureUnlockedSignal.dispatch();
-					GameGlobals.gameState.unlockedFeatures.followers = true;
-				}
 				if (improvementsComponent.getCount(improvementNames.campfire) > 0) {
 					if (!GameGlobals.gameState.unlockedFeatures.upgrades)
 						GlobalSignals.featureUnlockedSignal.dispatch();
@@ -59,20 +50,14 @@ define([
 				numCamps++;
 			}
 			
-			if (!GameGlobals.gameState.unlockedFeatures.followers) {
-				var itemsComponent = this.itemNodes.head.items;
-				var numFollowers = itemsComponent.getAllByType(ItemConstants.itemTypes.follower, true).length;
-				GameGlobals.gameState.unlockedFeatures.followers = GameGlobals.gameState.unlockedFeatures.followers || numFollowers > 0;
-			}
-			
 			if (GameGlobals.gameState.numCamps !== numCamps) {
 				GameGlobals.gameState.numCamps = numCamps;
 				gtag('set', { 'max_camp': GameGlobals.gameState.numCamps });
 			}
-			GameGlobals.gameState.numTradePostCamps = numTradePostCamps;
 			
 			if (!GameGlobals.gameState.unlockedFeatures.projects) {
-				GameGlobals.gameState.unlockedFeatures.projects = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(UpgradeConstants.upgradeIds.unlock_building_passage_staircase);
+				// TODO check with upgrade effects (has unlocked any upgrade that unlocks projects)
+				GameGlobals.gameState.unlockedFeatures.projects = this.tribeUpgradesNodes.head.upgrades.hasUpgrade("unlock_building_passage_staircase");
 				if (GameGlobals.gameState.unlockedFeatures.projects)
 					GlobalSignals.featureUnlockedSignal.dispatch();
 			}

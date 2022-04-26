@@ -12,7 +12,7 @@ define(function () {
 		},
 		
 		capitalize: function (string) {
-			for (var i = 0; i < string.length; i++) {
+			for (let i = 0; i < string.length; i++) {
 				var c = string.charAt(i);
 				if (c == "[" || c == "]" || c == "(" || c == ")") continue;
 				return string.substr(0, i) + c.toUpperCase() + string.substr(i + 1);
@@ -35,7 +35,10 @@ define(function () {
 		},
 		
 		depluralify: function (s) {
-			return s.substr(0, s.length - 1);
+			if (s[s.length - 1] === "s") {
+				return s.substr(0, s.length - 1);
+			}
+			return s;
 		},
 		
 		addArticle: function (s) {

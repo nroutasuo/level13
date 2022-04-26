@@ -11,10 +11,10 @@ define(['ash', 'game/GameGlobals', 'game/vos/PlayerActionVO'], function (Ash, Ga
 			this.endTimeStampList = [];
 		},
 
-		addAction: function (action, duration, param, isBusyAction) {
+		addAction: function (action, duration, param, deductedCosts, isBusyAction) {
 			if (!this.isBusy() && isBusyAction) this.busyStartTime = new Date().getTime();
 			var endTimeStamp = new Date().getTime() + duration * 1000;
-			this.endTimeStampToActionDict[endTimeStamp] = new PlayerActionVO(action, param, isBusyAction);
+			this.endTimeStampToActionDict[endTimeStamp] = new PlayerActionVO(action, param, deductedCosts, isBusyAction);
 			this.endTimeStampList.push(endTimeStamp);
 			this.sortTimeStamps();
 			return endTimeStamp;
@@ -32,7 +32,7 @@ define(['ash', 'game/GameGlobals', 'game/vos/PlayerActionVO'], function (Ash, Ga
 		getLastTimeStamp: function (requireBusy) {
 			var lastTimeStamp = -1;
 			if (requireBusy) {
-				for (var i = this.endTimeStampList.length - 1; i >= 0; i--) {
+				for (let i = this.endTimeStampList.length - 1; i >= 0; i--) {
 					var action = this.endTimeStampToActionDict[this.endTimeStampList[i]];
 					if (action.isBusy) {
 						lastTimeStamp = this.endTimeStampList[i];
@@ -49,7 +49,7 @@ define(['ash', 'game/GameGlobals', 'game/vos/PlayerActionVO'], function (Ash, Ga
 			var oldTimeStamp;
 			var newTimeStamp;
 			var action;
-			for (var i = 0; i < this.endTimeStampList.length; i++) {
+			for (let i = 0; i < this.endTimeStampList.length; i++) {
 				oldTimeStamp = this.endTimeStampList[i];
 				newTimeStamp = oldTimeStamp - extraTime * 1000;
 				action = this.endTimeStampToActionDict[oldTimeStamp];
@@ -80,6 +80,7 @@ define(['ash', 'game/GameGlobals', 'game/vos/PlayerActionVO'], function (Ash, Ga
 				case "use_in_home": return "resting";
 				case "use_in_campfire": return "discussing";
 				case "use_in_hospital": return "recovering";
+				case "use_in_hospital_2": return "augmenting";
 				case "use_in_market": return "visiting";
 				case "use_in_temple": return "donating";
 				case "use_in_shrine": return "meditating";
