@@ -392,7 +392,7 @@ define([
 					}
 					
 					// failed attempt (validation or exception)
-					if (hasSave) {
+					if (hasSave && worldVO != null) {
 						log.i("using broken world because old save exists");
 						resolve(worldVO);
 						return;

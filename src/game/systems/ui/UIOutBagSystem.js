@@ -305,10 +305,12 @@ define([
 		
 		pruneSeenItems: function () {
 			let newList = [];
-			for (let i = 0; i < GameGlobals.gameState.uiBagStatus.itemsUsableSeen.length; i++) {
-				let id = GameGlobals.gameState.uiBagStatus.itemsUsableSeen[i];
-				if (this.isOwned(id)) {
-					newList.push(id);
+			if (GameGlobals.gameState.uiBagStatus.itemsUsableSeen) {
+				for (let i = 0; i < GameGlobals.gameState.uiBagStatus.itemsUsableSeen.length; i++) {
+					let id = GameGlobals.gameState.uiBagStatus.itemsUsableSeen[i];
+					if (this.isOwned(id)) {
+						newList.push(id);
+					}
 				}
 			}
 			GameGlobals.gameState.uiBagStatus.itemsUsableSeen = newList;
