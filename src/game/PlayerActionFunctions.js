@@ -407,10 +407,11 @@ define(['ash',
 			this.moveResourcesFromVOToVO(playerResources, playerResources, campResourcesSource);
 		},
 
-		moveCurrencyFromBagToCamp: function () {
+		moveCurrencyFromBagToCamp: function (campSector) {
 			var playerLevelCamp = this.nearestCampNodes.head !== null ? this.nearestCampNodes.head.entity : null;
+			campSector = campSector || this.nearestCampNodes.head.entity;
 			var playerCurrency = this.playerResourcesNodes.head.entity.get(CurrencyComponent);
-			var campCurrency = playerLevelCamp.get(CurrencyComponent);
+			var campCurrency = campSector.get(CurrencyComponent);
 			campCurrency.currency += playerCurrency.currency;
 			playerCurrency.currency = 0;
 		},
@@ -944,7 +945,7 @@ define(['ash',
 			campOutgoingCaravansComponent.outgoingCaravans.splice(caravanI, 1);
 
 			GameGlobals.playerActionResultsHelper.collectRewards(true, result, campSector);
-			this.moveCurrencyFromBagToCamp();
+			this.moveCurrencyFromBagToCamp(campSector);
 			this.completeAction("send_caravan");
 
 			this.addLogMessage(LogConstants.MSG_ID_FINISH_SEND_CAMP, logMsg.msg, logMsg.replacements, logMsg.values, pendingPosition);
