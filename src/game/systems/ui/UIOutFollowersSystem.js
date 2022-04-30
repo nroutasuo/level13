@@ -77,11 +77,14 @@ define([
 			let totalSelected = followersComponent.getParty().length;
 			let totalUnselected = totalRecruited - totalSelected;
 			let inCamp = GameGlobals.playerHelper.isInCamp();
+			let recruitComponent = this.playerLocationNodes.head.entity.get(RecruitComponent);
+			let hasRecruit = recruitComponent && recruitComponent.follower != null;
+			let showVisitors = GameGlobals.campHelper.getTotalNumImprovementsBuilt(improvementNames.inn) > 0 || hasRecruit;
 			
 			$("#tab-header h2").text("Exploration party");
 			
-			GameGlobals.uiFunctions.toggle($("#tab-followers-section-recruits"), inCamp && GameGlobals.campHelper.getTotalNumImprovementsBuilt(improvementNames.inn) > 0);
-			GameGlobals.uiFunctions.toggle($("#tab-followers-section-unselected"), inCamp && totalRecruited > 0);
+			GameGlobals.uiFunctions.toggle($("#tab-followers-section-recruits"), inCamp && showVisitors);
+			GameGlobals.uiFunctions.toggle($("#tab-followers-section-unselected"), inCamp);
 			
 			this.updateFollowers();
 			this.refreshRecruits();
@@ -226,7 +229,7 @@ define([
 			return 0;
 		},
 		
-		highlightFollowerType: function (followerType) {			
+		highlightFollowerType: function (followerType) {
 			let followersComponent = this.playerStatsNodes.head.followers;
 			$("#list-followers .item").each(function () {
 				let id = $(this).attr("data-followerid");
