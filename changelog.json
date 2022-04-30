@@ -6,7 +6,14 @@
 			"phase": "alpha",
 			"final": false,
 			"changes": [
-				
+				{
+					"type": "WG",
+					"summary": "Fixed an issue where it was possible to get stuck due to toxic waste appearing too early"
+				},
+				{
+					"type": "Dev",
+					"summary": "Other small bugfixes"
+				}
 			]
 		},
 		{
