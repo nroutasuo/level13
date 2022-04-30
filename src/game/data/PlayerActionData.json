@@ -2777,7 +2777,8 @@
                 "blockerSE": false
             },
             "vision": [
-                4
+                5,
+				-1
             ]
         },
         "move_sector_south": {
