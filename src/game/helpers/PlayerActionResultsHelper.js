@@ -166,7 +166,8 @@ define([
 				rewards.gainedItems = this.getRewardItems(0.02, 0.5, sectorIngredients, itemOptions);
 			}
 			
-			rewards.gainedBlueprintPiece = this.getFallbackBlueprint(0.05 + efficiency * 0.15);
+			let fallbackBlueprintProbability = (100 - sectorStatus.getScavengedPercent()) * 0.1;
+			rewards.gainedBlueprintPiece = this.getFallbackBlueprint(fallbackBlueprintProbability);
 			
 			if (rewards.foundStashVO == null && rewards.gainedCurrency == 0) {
 				this.addFollowerBonuses(rewards, sectorResources, sectorIngredients, itemOptions);
