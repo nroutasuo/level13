@@ -226,8 +226,9 @@ define([
 		},
 
 		handleException: function (ex) {
-			var desc = StringUtils.getExceptionDescription(ex);
-			var gadesc = desc.title + " | " + desc.shortstack;
+			let sys = this;
+			let desc = StringUtils.getExceptionDescription(ex);
+			let gadesc = desc.title + " | " + desc.shortstack;
 			log.i("logging exception to gtag");
 			gtag('event', 'exception', {
 				'description': gadesc,
@@ -238,25 +239,29 @@ define([
 			GameGlobals.uiFunctions.hideGame(false);
 			
 			// show popup
-			var pos = GameGlobals.playerActionFunctions.playerPositionNodes.head ? GameGlobals.playerActionFunctions.playerPositionNodes.head.position : "(unknown)";
-			var bugTitle = StringUtils.encodeURI("[JS Error] " + desc.title);
-			var bugBody = StringUtils.encodeURI(
+			let pos = GameGlobals.playerActionFunctions.playerPositionNodes.head ? GameGlobals.playerActionFunctions.playerPositionNodes.head.position : "(unknown)";
+			let bugTitle = StringUtils.encodeURI("[JS Error] " + desc.title);
+			let bugBody = StringUtils.encodeURI(
 			   "Details:\n[Fill in any details here that you think will help tracking down this bug, such as what you did in the game just before it happened.]" +
 			   "\n\nSeed: " + GameGlobals.gameState.worldSeed + "\nPosition: " + pos + "\nStacktrace:\n" + desc.stack);
-			var url = "https://github.com/nroutasuo/level13/issues/new?title=" + bugTitle + "&body=" + bugBody + "&labels=exception";
+			let url = "https://github.com/nroutasuo/level13/issues/new?title=" + bugTitle + "&body=" + bugBody + "&labels=exception";
+			
 			GameGlobals.uiFunctions.popupManager.closeAllPopups();
-			GameGlobals.uiFunctions.showInfoPopup(
+			GameGlobals.uiFunctions.showQuestionPopup(
 				"Error",
-				"You've found a bug! Please reload the page to continue playing.<br\><br\>" +
+				"You've found a bug! Please reload the page to continue playing. " +
+				"If reloading doesn't help, you can clear your data and restart the game, but you will lose all your progress.<br\><br\>" +
 				"You can also help the developer by <a href='" +
 				url +
 				"' target='_blank'>reporting</a> the problem on Github.",
-				"ok",
-				null,
-				null,
-				true,
-				false
+				"reload",
+				"clear data",
+				() => { location.reload(); },
+				() => { GameGlobals.uiFunctions.onRestartButton(); },
+				true
 			);
+			
+			GameGlobals.gameState.numExceptions++;
 			
 			throw ex;
 		},

@@ -98,11 +98,7 @@ define(['ash',
 					GlobalSignals.saveGameSignal.dispatch(true);
 				});
 				$("#btn-restart").click(function (e) {
-					uiFunctions.showConfirmation(
-						"Do you want to restart the game? Your progress will be lost.",
-						function () {
-							uiFunctions.restart();
-						});
+					uiFunctions.onRestartButton();
 				});
 				$("#btn-more").click(function (e) {
 					var wasVisible = $("#game-options-extended").is(":visible");
@@ -812,6 +808,17 @@ define(['ash',
 				if (updates)
 					GlobalSignals.updateButtonsSignal.dispatch();
 			},
+			
+			onRestartButton: function () {
+				var sys = this;
+				this.showConfirmation(
+					"Do you want to restart the game? Your progress will be lost.",
+					function () {
+						sys.restart();
+					},
+					true
+				);
+			},
 
 			slideToggleIf: function (element, replacement, show, durationIn, durationOut, cb) {
 				var visible = this.isElementToggled(element);
@@ -1159,7 +1166,7 @@ define(['ash',
 				this.popupManager.showPopup(title, msg, "Continue", false, resultVO, callback);
 			},
 
-			showConfirmation: function (msg, callback) {
+			showConfirmation: function (msg, callback, isMeta) {
 				var uiFunctions = this;
 				var okCallback = function (e) {
 					uiFunctions.popupManager.closePopup("common-popup");
@@ -1168,7 +1175,7 @@ define(['ash',
 				var cancelCallback = function () {
 					uiFunctions.popupManager.closePopup("common-popup");
 				};
-				this.popupManager.showPopup("Confirmation", msg, "Confirm", "Cancel", null, okCallback, cancelCallback);
+				this.popupManager.showPopup("Confirmation", msg, "Confirm", "Cancel", null, okCallback, cancelCallback, isMeta);
 			},
 
 			showQuestionPopup: function (title, msg, buttonLabel, cancelButtonLabel, callbackOK, callbackNo, isMeta) {

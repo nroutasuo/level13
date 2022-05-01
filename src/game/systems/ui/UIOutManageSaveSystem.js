@@ -107,7 +107,9 @@ var UIOutManageSaveSystem = Ash.System.extend({
 					"Save world seed: " + isOk.gameState.worldSeed,
 					function () {
 						sys.loadState(importJSON);
-					});
+					},
+					true
+				);
 			} else {
 				GameGlobals.uiFunctions.toggle(this.spanWarning, true);
 				this.spanWarning.text("Failed to import save.");
