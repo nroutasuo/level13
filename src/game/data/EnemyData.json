@@ -248,7 +248,7 @@
 		"name": "cockroach",
 		"environment": "dark",
 		"campOrdinal": 1,
-		"difficulty": 1,
+		"difficulty": 2,
 		"attackRatio": 0.4,
 		"healthFactor": 1.1,
 		"speed": 1,

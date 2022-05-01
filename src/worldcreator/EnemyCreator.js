@@ -115,10 +115,16 @@ define([
 			let playerHPShield = this.getStatBase(campOrdinal, step, difficultyFactor, this.getPlayerHpShield);
 			let playerSpeed = this.getPlayerSpeed(campOrdinal, step);
 			
+			// target duration
+			// around 5 sec by default but tweaks for edge cases
+			// if time for player to kill itself is far from target duration (early game with 100 hp and low stats) then enemy stats get weird (too low hp for enemy)
+			let playerVsPlayerDuration = playerHPShield / FightConstants.getDamagePerSec(playerAtt, playerDef, playerSpeed);
+			let targetDuration = Math.max(5, Math.round(playerVsPlayerDuration / 3));
+			
 			// player def, hp, shield + enemy speed -> enemy att
-			// goal: about 5 seconds to kill player
+			// goal: targetDuration seconds to kill player
 			// + compensate a bit for health/shieldFactor
-			let targetDPH = playerHPShield / 5 / speed;
+			let targetDPH = playerHPShield / targetDuration / speed;
 			let att = Math.max(1, this.getAttack(targetDPH, playerDef));
 			att = att * (1 / (healthFactor * shieldFactor));
 			att = Math.round(att);
@@ -132,7 +138,7 @@ define([
 			// player att, speed, enemy def -> enemy hp/shield total
 			// goal: about 5 seconds to kill player
 			let playerDPS = FightConstants.getDamagePerSec(playerAtt, def, playerSpeed);
-			let hpshieldtotal = Math.max(20, playerDPS * 5);
+			let hpshieldtotal = Math.max(20, playerDPS * targetDuration);
 			
 			// hpshieldtotal, healthFactor (0-1), shieldFactor (0-1), size -> hp and shield
 			let hp = MathUtils.roundToMultiple(hpshieldtotal * (1 - shieldRatio) * healthFactor, 5);
