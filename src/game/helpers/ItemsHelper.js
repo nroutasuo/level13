@@ -33,7 +33,7 @@ define([
 				result = (req.campOrdinal < adjustedCampOrdinal || (req.campOrdinal == adjustedCampOrdinal && req.step <= adjustedStep));
 			}
 
-			// non-craftable items: by item defintiion camp ordinal
+			// non-craftable items: by item definition camp ordinal
 			// TODO don't check for scavenge rarity, it's not a common way to find items, trade rarity instead? + take into account levels with no trade
 			if (!item.craftable && includeNonCraftable) {
 				result = true;
@@ -69,7 +69,7 @@ define([
 		},
 		
 		getDefaultWeapon: function (campOrdinal, step) {
-			return this.getBestAvailableItem(campOrdinal, step, ItemConstants.itemTypes.weapon, ItemConstants.itemBonusTypes.fight_att);
+			return this.getBestAvailableItem(campOrdinal, step, ItemConstants.itemTypes.weapon, ItemConstants.itemBonusTypes.fight_att, false);
 		},
 		
 		getDefaultClothing: function (campOrdinal, step, itemBonusType, isHardLevel) {
@@ -158,15 +158,14 @@ define([
 			return result;
 		},
 		
-		getBestAvailableItem: function (campOrdinal, step, itemType, itemBonusType) {
+		getBestAvailableItem: function (campOrdinal, step, itemType, itemBonusType, includeNonCraftable) {
 			let bestItem = null;
 			let bestBonus = 0;
 			let bestTotal = 0;
 			for (let i = 0; i < ItemConstants.itemDefinitions[itemType].length; i++) {
 				let item = ItemConstants.itemDefinitions[itemType][i];
-				if (!this.isAvailable(item, campOrdinal, WorldConstants.CAMP_STAGE_EARLY, true, true)) {
-					continue;
-				}
+				let isAvailable = this.isAvailable(item, campOrdinal, WorldConstants.CAMP_STAGE_EARLY, true, includeNonCraftable);
+				if (!isAvailable) continue;
 				let bonus = ItemConstants.getItemBonusComparisonValue(item, itemBonusType);
 				let total = item.getTotalBonus();
 				if (!bestItem || bonus > bestBonus || (bonus == bestBonus && total > bestTotal)) {
