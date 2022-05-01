@@ -176,8 +176,8 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 				case WorldConstants.ZONE_EXTRA_CAMPABLE: return 5;
 				case WorldConstants.ZONE_POI_TEMP: return 6;
 				// uncampable levels
-				case WorldConstants.ZONE_PASSAGE_TO_PASSAGE: return 1;
-				case WorldConstants.ZONE_EXTRA_UNCAMPABLE: return 2;
+				case WorldConstants.ZONE_PASSAGE_TO_PASSAGE: return 11;
+				case WorldConstants.ZONE_EXTRA_UNCAMPABLE: return 12;
 				default:
 					WorldCreatorLogger.w("no ordinal defined for zone: " + zone);
 					return 5;

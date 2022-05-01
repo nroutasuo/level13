@@ -257,6 +257,11 @@ define([
 					var pathPassageToPassage = WorldCreatorRandom.findPath(worldVO, passage1.position, passage2.position, false, true);
 					setPathZone(pathPassageToPassage, WorldConstants.ZONE_PASSAGE_TO_PASSAGE, 1, 3, true);
 				}
+				// - ground level: all ZONE_POI_2
+				if (level == bottomLevel) {
+					// TODO should be just the path from passage1 to grove instead but currently we don't know the grove position at this point
+					setAreaZone(passage1, WorldConstants.ZONE_POI_2, 50, true);
+				}
 				// - rest is ZONE_EXTRA_UNCAMPABLE
 				for (let i = 0; i < levelVO.sectors.length; i++) {
 					var sector = levelVO.sectors[i];
@@ -1496,6 +1501,7 @@ define([
 				groveSector.hazards.radiation = 0;
 				groveSector.hazards.pollution = 0;
 				addLocale(groveSector, groveLocale);
+				WorldCreatorLogger.i("add grove at: " + groveSector);
 			}
 			
 			// 3) spawn locales with hard-coded followers
