@@ -2212,15 +2212,22 @@ define([
 			
 			let isDebris = hazardType == "debris";
 			
+			let hasBlockingExistingHazard = function (sectorVO) {
+				if (sectorVO.hazards.cold > 0) return true;
+				if (hazardType != SectorConstants.HAZARD_TYPE_POLLUTION && sectorVO.hazards.poison > 0) return true;
+				if (hazardType != SectorConstants.HAZARD_TYPE_RADIATION && sectorVO.hazards.radiation > 0) return true;
+				return false;
+			};
+			
 			let campOrdinal = levelVO.campOrdinal;
 			if (!override && !isDebris) {
-				if (sectorVO.hazards.cold) return 0;
+				if (hasBlockingExistingHazard(sectorVO)) return 0;
 				var directions = PositionConstants.getLevelDirections();
 				var neighbours = levelVO.getNeighbours(sectorVO.position.sectorX, sectorVO.position.sectorY);
 				for (var d in directions) {
 					var direction = directions[d];
 					var neighbour = neighbours[direction];
-					if (neighbour && neighbour.hazards.cold) return 0;
+					if (neighbour && hasBlockingExistingHazard(neighbour)) return 0;
 				}
 			}
 			
