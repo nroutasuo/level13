@@ -176,7 +176,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			case improvementNames.square:
 			case improvementNames.garden:
 				return 1.9 + level * 0.1;
-			case improvementNames.radio:
+			case improvementNames.radiotower:
 				let fullUpgradeEffect = 2;
 				let upgradeFactor = (level - 1) / 9;
 				let upgradePart = fullUpgradeEffect * upgradeFactor;

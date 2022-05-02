@@ -173,9 +173,9 @@ define([
 						generatorBonus = Math.round(generatorBonus * 100) / 100;
 						addValue(generatorBonus, "Generator");
 						break;
-					case improvementNames.radio:
+					case improvementNames.radiotower:
 						addValue(improvementVO.count * defaultBonus, "Radio");
-						break;;
+						break;
 					case improvementNames.shrine:
 						let levelBonus = (level - 1) * 0.25;
 						addValue(improvementVO.count * defaultBonus * levelBonus, "Shrine");
