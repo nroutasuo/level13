@@ -89,7 +89,7 @@ define([
 		},
 		
 		getAvailableClothingList: function (campOrdinal, step, includeCraftable, includeNonCraftable, includeMultiplePerType, preferredItemBonus, maxScavengeRarity, includeSpecialEquipment) {
-			step = step || WorldConstants.CAMP_STEP_POI_2;
+			step = step === 0 ? 0 : step || WorldConstants.CAMP_STEP_POI_2;
 			let result = [];
 			var clothingLists = [
 				ItemConstants.itemDefinitions.clothing_over,
