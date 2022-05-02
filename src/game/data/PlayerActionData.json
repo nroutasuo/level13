@@ -510,7 +510,7 @@
             "resource_fuel": 10
         },
         "craft_light1": {
-            "resource_metal": 7
+            "resource_metal": 6
         },
         "craft_light2": {
             "item_res_bottle": 1,

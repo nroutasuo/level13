@@ -1077,6 +1077,8 @@ define([
 				case SectorConstants.SECTOR_TYPE_PUBLIC:
 					break;
 				case SectorConstants.SECTOR_TYPE_SLUM:
+					metalThresholds.ABUNDANT = 0.9;
+					metalThresholds.COMMON = 0.7;
 					foodThresholds.DEFAULT = 0.65;
 					waterThresholds.DEFAULT = 0.8;
 					sca.rope = r1 > 0.97 ? WorldConstants.resourcePrevalence.DEFAULT : r1 > 0.96 ? WorldConstants.resourcePrevalence.RARE : 0;
