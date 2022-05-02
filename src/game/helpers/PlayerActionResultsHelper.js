@@ -1171,7 +1171,8 @@ define([
 					switch (name) {
 						case resourceNames.water:
 						case resourceNames.food:
-							return GameGlobals.gameState.unlockedFeatures.camp && this.playerResourcesNodes.head.resources.resources.getResource(name) < 10;
+							if (GameGlobals.gameState.unlockedFeatures.camp) return true;
+							break;
 						default:
 							return true;
 					}
