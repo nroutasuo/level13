@@ -767,7 +767,7 @@ define([
 			workers = workers || 0;
 			let acqueductCount = improvementsComponent.getCount(improvementNames.aqueduct);
 			let acqueductLevel = improvementsComponent.getLevel(improvementNames.aqueduct);
-			var waterUpgradeBonus = this.getWorkerUpgradeBonus("collector", upgrades);
+			var waterUpgradeBonus = this.getWorkerUpgradeBonus("water", upgrades);
 			var waterImprovementBonus = 1 + (acqueductCount / 4) + (acqueductLevel / 10);
 			return CampConstants.PRODUCTION_WATER_PER_WORKER_PER_S * workers * waterUpgradeBonus * waterImprovementBonus;
 		},
