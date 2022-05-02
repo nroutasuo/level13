@@ -1345,7 +1345,7 @@ define(['ash',
 		},
 
 		buildRadioTower: function () {
-			this.buildImprovement("build_in_radiotower", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_radio"));
+			this.buildImprovement("build_in_radiotower", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_radiotower"));
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_RADIO, "Built a radio tower.");
 		},
 
