@@ -611,6 +611,12 @@ define([
 				
 				return result;
 			};
+
+			let addStash = function (sectorVO, reason, stashType, numItems, itemID) {
+				let stash = new StashVO(stashType, numItems, itemID);
+				sectorVO.stashes.push(stash);
+				// WorldCreatorLogger.i("add stash level " + l + " [" + reason + "]: " + itemID + " x" + numItems + " " + sectorVO.position + " " + sectorVO.zone);
+			};
 			
 			let addStashes = function (sectorSeed, reason, stashType, itemIDs, numStashes, numItemsPerStash, excludedZones) {
 				numStashes = WorldCreatorRandom.getRandomIntFromRange(sectorSeed / 2 + 222, numStashes);
@@ -628,16 +634,18 @@ define([
 					let item = WorldCreatorRandom.getRandomItemFromArray(stashSeed, itemIDs);
 					let itemID = item.id ? item.id : item;
 					let numItems = WorldCreatorRandom.getRandomIntFromRange(stashSeed, numItemsPerStash);
-					let stash = new StashVO(stashType, numItems, itemID);
-					stashSectors[i].stashes.push(stash);
-					// WorldCreatorLogger.i("add stash level " + l + " [" + reason + "]: " + itemID + " x" + numItems + " " + stashSectors[i].position + " " + stashSectors[i].zone + " | " + (excludedZones ? excludedZones.join(",") : "-"))
+					addStash(stashSectors[i], reason, stashType, numItems, itemID);
 				}
 			};
 			
 			// stashes: early guaranteed items
 			if (l == 13) {
-				addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, "guaranteed-early", ItemConstants.STASH_TYPE_ITEM, [ "exploration_1" ], 1, 1, lateZones);
+				let campPosition = levelVO.campPosition;
+				let campNeighbours = levelVO.getNeighbourList(campPosition.sectorX, campPosition.sectorY);
+				let firstCacheSector = WorldCreatorRandom.getRandomItemFromArray(seed, campNeighbours);
+				addStash(firstCacheSector, "first-cache", ItemConstants.STASH_TYPE_ITEM, 1, "cache_metal_1");
 				addStashes(seed / 3 * 338 + l * 402, "guaranteed-early", ItemConstants.STASH_TYPE_ITEM, ["cache_metal_1"], 4, 1, lateZones);
+				addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, "guaranteed-early", ItemConstants.STASH_TYPE_ITEM, [ "exploration_1" ], 1, 1, lateZones);
 			}
 			
 			// stashes: every campable level guaranteed items
