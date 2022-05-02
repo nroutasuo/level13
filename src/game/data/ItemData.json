@@ -328,7 +328,7 @@
         "description": "With this bag, weight is starting to be more of a problem than space.",
         "icon": "img/items/bag-1.png",
         "id": "bag_3",
-        "isCraftable": false,
+        "isCraftable": true,
         "isEquippable": true,
         "isUseable": false,
         "name": "Hiker's rucksack",

@@ -313,6 +313,11 @@
             "item_res_leather": 10,
             "resource_rope": 100
         },
+		"craft_bag_3": {
+            "item_res_tape": 10,
+            "item_res_leather": 20,
+            "resource_rope": 100
+		},
         "craft_clothing_hands_1": {
             "item_res_silk": 1,
             "resource_rope": 10
