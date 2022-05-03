@@ -3,16 +3,21 @@
 		{
 			"version": "0.4.2",
 			"requiredVersion": "0.4.1",
+			"released": "2022-05-03",
 			"phase": "alpha",
-			"final": false,
+			"final": true,
 			"changes": [
 				{
 					"type": "WG",
-					"summary": "Fixed an issue where it was possible to get stuck due to toxic waste appearing too early"
+					"summary": "Fix several issues with world generation and fight balancing that could cause soft locks"
+				},
+				{
+					"type": "GB",
+					"summary": "Adjust costs and checks to make the start a little bit easier"
 				},
 				{
 					"type": "Dev",
-					"summary": "Other small bugfixes"
+					"summary": "Other bugfixes"
 				}
 			]
 		},
