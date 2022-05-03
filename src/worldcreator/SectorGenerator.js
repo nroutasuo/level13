@@ -1519,8 +1519,8 @@ define([
 			for (let i = 0; i < levelVO.predefinedFollowers.length; i++) {
 				let follower = levelVO.predefinedFollowers[i];
 				let options = { excludingFeature: excludedFeatures, excludedZones: lateZones };
-				let sector = WorldCreatorRandom.randomSectors(seed * 2, worldVO, levelVO, 1, 2, options)[0];
-				let locale = new LocaleVO(follower.localeType, true, false);
+				let sector = WorldCreatorRandom.randomSectors(1000 + seed * 2, worldVO, levelVO, 1, 2, options)[0];
+				let locale = new LocaleVO(follower.localeType, true, true);
 				locale.followerID = follower.id;
 				addLocale(sector, locale);
 				// WorldCreatorLogger.i("add follower locale at " + sector)
