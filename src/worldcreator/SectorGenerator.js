@@ -1485,7 +1485,8 @@ define([
 				levelVO.numLocales++;
 			};
 			
-			var excludedFeatures = [ "isCamp", "isPassageUp", "isPassageDown", "workshopResource" ];
+			let excludedFeatures = [ "isCamp", "isPassageUp", "isPassageDown", "workshopResource" ];
+			let lateZones = [ WorldConstants.ZONE_POI_2, WorldConstants.ZONE_EXTRA_CAMPABLE ];
 			
 			// 1) spawn trading partners
 			for (let i = 0; i < TradeConstants.TRADING_PARTNERS.length; i++) {
@@ -1517,12 +1518,12 @@ define([
 			// 3) spawn locales with hard-coded followers
 			for (let i = 0; i < levelVO.predefinedFollowers.length; i++) {
 				let follower = levelVO.predefinedFollowers[i];
-				let options = { excludingFeature: excludedFeatures };
+				let options = { excludingFeature: excludedFeatures, excludedZones: lateZones };
 				let sector = WorldCreatorRandom.randomSectors(seed * 2, worldVO, levelVO, 1, 2, options)[0];
 				let locale = new LocaleVO(follower.localeType, true, false);
 				locale.followerID = follower.id;
 				addLocale(sector, locale);
-				WorldCreatorLogger.i("add follower locale at " + sector)
+				// WorldCreatorLogger.i("add follower locale at " + sector)
 			}
 
 			// 4) spawn other types (for blueprints)
