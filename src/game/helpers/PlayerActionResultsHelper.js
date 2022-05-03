@@ -169,6 +169,8 @@ define([
 			if (rewards.foundStashVO == null && rewards.gainedCurrency == 0) {
 				this.addFollowerBonuses(rewards, sectorResources, sectorIngredients, itemOptions);
 			}
+			
+			rewards.gainedFollowers = this.getFallbackFollowers(0.1);
 
 			return rewards;
 		},
@@ -1388,6 +1390,37 @@ define([
 			}
 
 			return null;
+		},
+		
+		getFallbackFollowers: function (probability) {
+			let result = [];
+			if (GameGlobals.gameState.isAutoPlaying) return result;
+			
+			let playerPos = this.playerLocationNodes.head.position;
+			let campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
+			if (campOrdinal < FollowerConstants.FIRST_FOLLOWER_CAMP_ORDINAL) return result;
+			
+			let upgradeID = GameGlobals.upgradeEffectsHelper.getUpgradeToUnlockBuilding(improvementNames.inn);
+			if (GameGlobals.tribeHelper.hasUpgrade(upgradeID)) return result;
+			
+			let fightFollowers = this.playerStatsNodes.head.followers.getFollowersByType(FollowerConstants.followerType.FIGHTER);
+			if (fightFollowers.length > 0) return result;
+				
+			let nearestCampNode = this.nearestCampNodes.head;
+			if (nearestCampNode == null) return result;
+			if (nearestCampNode.camp.pendingRecruits.length > 0) return result;
+				
+			let level = GameGlobals.gameState.getLevelForCamp(FollowerConstants.FIRST_FOLLOWER_CAMP_ORDINAL);
+			let unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(level, false, LocaleConstants.LOCALE_BRACKET_EARLY, null, false).length;
+			if (unscoutedLocales > 0) return result;
+			
+			if (Math.random() < probability) {
+				let followerTemplate = FollowerConstants.predefinedFollowers[FollowerConstants.FIRST_FOLLOWER_CAMP_ORDINAL];
+				let follower = FollowerConstants.getNewPredefinedFollower(followerTemplate.id);
+				result.push(follower);
+			}
+			
+			return result;
 		},
 		
 		getFallbackBlueprint: function (probability) {
