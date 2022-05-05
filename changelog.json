@@ -1,6 +1,14 @@
 {
 	"versions": [
 		{
+			"version": "0.4.3",
+			"requiredVersion": "0.4.1",
+			"phase": "alpha",
+			"final": false,
+			"changes": [
+			]
+		},
+		{
 			"version": "0.4.2",
 			"requiredVersion": "0.4.1",
 			"released": "2022-05-03",
