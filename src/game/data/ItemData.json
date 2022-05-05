@@ -378,7 +378,7 @@
         "configData": {
             "bookType": "science"
         },
-        "description": "An scientific book that might provide clues to some old technologies.",
+        "description": "A scientific book that might provide clues to some old technologies.",
         "icon": "img/items/book.png",
         "id": "cache_evidence_1",
         "isCraftable": false,
