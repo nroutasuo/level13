@@ -319,11 +319,7 @@ define([
 		},
 
 		collectRewards: function (isTakeAll, rewards, campSector) {
-			if (rewards == null || rewards.isEmpty()) {
-				return;
-			}
-			
-			if (rewards.action == "scavenge") {
+			if (rewards && rewards.action == "scavenge") {
 				var excursionComponent = this.playerResourcesNodes.head.entity.get(ExcursionComponent);
 				if (excursionComponent) {
 					if (this.isSomethingUsefulResult(rewards)) {
@@ -332,6 +328,10 @@ define([
 						excursionComponent.numConsecutiveScavengeUseless++;
 					}
 				}
+			}
+			
+			if (rewards == null || rewards.isEmpty()) {
+				return;
 			}
 			
 			var nearestCampNode = this.nearestCampNodes.head;
