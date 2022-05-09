@@ -1654,7 +1654,7 @@ define(['ash',
 				case "first_aid_kit_1":
 				case "first_aid_kit_2":
 					var injuries = perksComponent.getPerksByType(PerkConstants.perkTypes.injury);
-					var minValue = reqs.perks.Injury[0];
+					var minValue = reqs.perkEffects.Injury[0];
 					var injuryToHeal = null;
 					for (let i = 0; i < injuries.length; i++) {
 						if (injuries[i].effect > minValue) {
