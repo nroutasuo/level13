@@ -327,6 +327,11 @@ define([
 				return typicalFollowers;
 			}
 			
+			if (campOrdinal <= GameGlobals.upgradeEffectsHelper.getCampOrdinalToUnlockBuilding(improvementNames.inn)) {
+				campOrdinal = FollowerConstants.FIRST_FOLLOWER_CAMP_ORDINAL;
+				step = WorldConstants.CAMP_STEP_POI_2;
+			}
+			
 			// only considering fight related followers here
 			let follower = FollowerConstants.getTypicalFighter(campOrdinal, step);
 			typicalFollowers.addFollower(follower);
