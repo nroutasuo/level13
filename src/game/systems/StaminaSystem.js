@@ -53,19 +53,13 @@ define([
 		updateHealth: function (node, time) {
 			var staminaComponent = node.stamina;
 			var perksComponent = node.perks;
-			var injuryEffects = perksComponent.getTotalEffect(PerkConstants.perkTypes.injury);
-			var healthEffects = perksComponent.getTotalEffect(PerkConstants.perkTypes.health);
-			var staminaEffects = perksComponent.getTotalEffect(PerkConstants.perkTypes.stamina);
-			
 			var healthPerks = perksComponent.getPerksByType(PerkConstants.perkTypes.health);
-			healthEffects = healthEffects === 0 ? 1 : healthEffects;
-			staminaEffects = staminaEffects === 0 ? 1 : staminaEffects;
 			
-			var newHealth = Math.max(PlayerStatConstants.HEALTH_MINIMUM, Math.round(200 * healthEffects * injuryEffects) / 2);
+			var newHealth = PlayerStatConstants.getMaxHealth(perksComponent);
 			var oldHealth = staminaComponent.health;
 			staminaComponent.healthAccSources = [];
 			staminaComponent.health = newHealth;
-			staminaComponent.maxStamina = newHealth * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR * staminaEffects;
+			staminaComponent.maxStamina = PlayerStatConstants.getMaxStamina(perksComponent);
 			
 			var healthPerSec = 0;
 			var addHealthAccumulation = function (sourceName, value) {

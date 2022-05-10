@@ -1533,7 +1533,8 @@ define(['ash',
 			var perksComponent = this.playerStatsNodes.head.perks;
 			perksComponent.removePerksByType(PerkConstants.perkTypes.injury);
 
-			this.playerStatsNodes.head.stamina.stamina = 1000;
+			let maxStamina = PlayerStatConstants.getMaxStamina(perksComponent);
+			this.playerStatsNodes.head.stamina.stamina = maxStamina;
 			this.addLogMessage(LogConstants.MSG_ID_USE_HOSPITAL, "Healed all injuries.");
 
 			this.completeAction("use_in_hospital");

@@ -1,4 +1,4 @@
-define(['ash', 'game/GameGlobals'], function (Ash, GameGlobals) {
+define(['ash', 'game/GameGlobals', 'game/constants/PerkConstants'], function (Ash, GameGlobals, PerkConstants) {
 
 	var PlayerStatConstants = {
 
@@ -17,6 +17,20 @@ define(['ash', 'game/GameGlobals'], function (Ash, GameGlobals) {
 			var staminaCostToMoveOneSector = GameGlobals.playerActionsHelper.getCosts("move_sector_west").stamina;
 			var staminaCostToCamp = GameGlobals.playerActionsHelper.getCosts("move_camp_level").stamina;
 			return Math.min(maxStamina * 0.25, Math.max(staminaCostToCamp + staminaCostToMoveOneSector * 5, staminaCostToMoveOneSector * 10, 50));
+		},
+		
+		getMaxHealth: function (perksComponent) {
+			let injuryEffects = perksComponent.getTotalEffect(PerkConstants.perkTypes.injury);
+			let healthEffects = perksComponent.getTotalEffect(PerkConstants.perkTypes.health);
+			healthEffects = healthEffects === 0 ? 1 : healthEffects;
+			return Math.max(PlayerStatConstants.HEALTH_MINIMUM, Math.round(200 * healthEffects * injuryEffects) / 2);
+		},
+		
+		getMaxStamina: function (perksComponent) {
+			let staminaEffects = perksComponent.getTotalEffect(PerkConstants.perkTypes.stamina);
+			staminaEffects = staminaEffects === 0 ? 1 : staminaEffects;
+			let maxHealth = this.getMaxHealth(perksComponent);
+			return maxHealth * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR * staminaEffects;
 		},
 
 	};
