@@ -343,7 +343,9 @@ define([
 				if (sectorStatus.isLocaleScouted(i)) {
 					if (locale.type == localeTypes.tradingpartner) {
 						var partner = TradeConstants.getTradePartner(campOrdinal);
-						desc += "<span class='hl-functionality'>" + partner.name + "</span> is located here. ";
+						if (partner) {
+							desc += "<span class='hl-functionality'>" + partner.name + "</span> is located here. ";
+						}
 					}
 				}
 			}
@@ -669,7 +671,11 @@ define([
 					if (locale.type == localeTypes.tradingpartner) {
 						var campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
 						var partner = TradeConstants.getTradePartner(campOrdinal);
-						info += "Already scouted (" + partner.name + ")";
+						if (partner) {
+							info += "Already scouted (" + partner.name + ")";
+						} else {
+							info += "Already scouted";
+						}
 					} else {
 						info += "Already scouted";
 					}

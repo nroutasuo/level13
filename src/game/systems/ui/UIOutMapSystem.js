@@ -363,7 +363,9 @@ define([
 					if (locale.type == localeTypes.tradingpartner) {
 						var campOrdinal = GameGlobals.gameState.getCampOrdinal(sector.get(PositionComponent).level);
 						var partner = TradeConstants.getTradePartner(campOrdinal);
-						result.push(partner.name + " (trade partner)");
+						if (partner) {
+							result.push(partner.name + " (trade partner)");
+						}
 					}
 				}
 			}

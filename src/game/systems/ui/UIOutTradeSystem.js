@@ -101,6 +101,7 @@ define([
 			$("#trade-caravans-outgoing-container table").empty();
 			for (let i = 0; i < GameGlobals.gameState.foundTradingPartners.length; i++) {
 				var partner = TradeConstants.getTradePartner(GameGlobals.gameState.foundTradingPartners[i]);
+				if (!partner) continue;
 				var tdName = "<td class='item-name'>" + partner.name + "</td>";
 				var buysS = partner.buysResources.join(", ");
 				var sellsS = partner.sellsResources.join(", ");

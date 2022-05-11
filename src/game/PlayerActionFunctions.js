@@ -660,9 +660,12 @@ define(['ash',
 				var level = playerPos.level;
 				var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
 				if (GameGlobals.gameState.foundTradingPartners.indexOf(campOrdinal) < 0) {
-					var partnerName = TradeConstants.getTradePartner(campOrdinal).name;
-					logMsgSuccess += "<br/>Found a new <span class='hl-functionality'>trading partner</span>. They call this place " + partnerName + ".";
-					tradingPartner = campOrdinal;
+					var partner = TradeConstants.getTradePartner(campOrdinal);
+					if (partner) {
+						var partnerName = partner.name;
+						logMsgSuccess += "<br/>Found a new <span class='hl-functionality'>trading partner</span>. They call this place " + partnerName + ".";
+						tradingPartner = campOrdinal;
+					}
 				}
 			}
 			if (localeVO.type == localeTypes.grove) {
