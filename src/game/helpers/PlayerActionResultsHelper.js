@@ -25,6 +25,7 @@ define([
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/nodes/sector/CampNode',
 	'game/nodes/NearestCampNode',
+	'game/components/common/PositionComponent',
 	'game/components/common/ResourcesComponent',
 	'game/components/common/CurrencyComponent',
 	'game/components/common/LogMessagesComponent',
@@ -64,6 +65,7 @@ define([
 	TribeUpgradesNode,
 	CampNode,
 	NearestCampNode,
+	PositionComponent,
 	ResourcesComponent,
 	CurrencyComponent,
 	LogMessagesComponent,
@@ -337,6 +339,7 @@ define([
 			var nearestCampNode = this.nearestCampNodes.head;
 			var currentStorage = campSector ? GameGlobals.resourcesHelper.getCurrentCampStorage(campSector) : GameGlobals.resourcesHelper.getCurrentStorage();
 			var playerPos = this.playerLocationNodes.head.position;
+			let sourcePos = campSector ? campSector.get(PositionComponent) : playerPos;
 
 			if (isTakeAll) {
 				rewards.selectedItems = rewards.gainedItems;
@@ -358,7 +361,7 @@ define([
 			var itemsComponent = this.playerStatsNodes.head.items;
 			if (rewards.selectedItems) {
 				for (let i = 0; i < rewards.selectedItems.length; i++) {
-					GameGlobals.playerHelper.addItem(rewards.selectedItems[i], playerPos);
+					GameGlobals.playerHelper.addItem(rewards.selectedItems[i], sourcePos);
 				}
 			}
 			
