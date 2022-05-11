@@ -1839,6 +1839,7 @@
             }
         },
         "build_out_beacon": {
+            "busy": false,
             "improvements": {
                 "beacon": [
                     -1,
@@ -1878,6 +1879,7 @@
             ]
         },
         "build_out_camp": {
+            "busy": false,
             "improvements": {
                 "camp": [
                     0,
@@ -1893,6 +1895,7 @@
             ]
         },
         "build_out_collector_food": {
+            "busy": false,
             "improvements": {
                 "collector_food": [
                     -1,
@@ -1915,6 +1918,7 @@
             ]
         },
         "build_out_collector_water": {
+            "busy": false,
             "improvements": {
                 "collector_water": [
                     -1,
@@ -2554,6 +2558,7 @@
             ]
         },
         "improve_out_collector_food": {
+            "busy": false,
             "improvements": {
                 "collector_food": [
                     1,
@@ -2562,6 +2567,7 @@
             }
         },
         "improve_out_collector_water": {
+            "busy": false,
             "improvements": {
                 "collector_water": [
                     1,
