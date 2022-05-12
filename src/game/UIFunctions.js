@@ -726,8 +726,13 @@ define(['ash',
 				var name = $(input).attr('name');
 
 				if (isNaN(valueCurrent)) {
-					$(this).val($(this).data('oldValue'));
-					return;
+					let valueOld = $(this).data('oldValue');
+					if (!isNaN(valueOld)) {
+						$(this).val(valueOld);
+						return;
+					} else {
+						$(this).val(0);
+					}
 				}
 
 				this.updateStepperButtons("#" + $(input).parent().attr("id"));
@@ -1061,11 +1066,13 @@ define(['ash',
 					decEnabled = true;
 				} else {
 					$input.val(minValue);
+					return;
 				}
 				if (valueCurrent < maxValue) {
 					incEnabled = true;
 				} else {
 					$input.val(maxValue);
+					return;
 				}
 
 				var decBtn = $(".btn-glyph[data-type='minus'][data-field='" + name + "']");
