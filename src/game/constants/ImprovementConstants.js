@@ -80,7 +80,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 				improvementLevelsPerMajorLevel: 5,
 			},
 			barracks: {
-				description: "Allows 10 soldiers.",
+				description: "Houses soldiers that improve camp defences.",
 				improvementLevelsPerTechLevel: 1,
 			},
 			apothecary: {
