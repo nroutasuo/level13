@@ -2,10 +2,27 @@
 	"versions": [
 		{
 			"version": "0.4.3",
+			"released": "2022-05-12",
 			"requiredVersion": "0.4.1",
 			"phase": "alpha",
-			"final": false,
+			"final": true,
 			"changes": [
+				{
+					"type": "WG",
+					"summary": "Fix a few issues related to fight and hazard balancing"
+				},
+				{
+					"type": "GB",
+					"summary": "Allow building a barracks regardless of camp population"
+				},
+				{
+					"type": "Dev",
+					"summary": "Fix error when using a First Aid Kit"
+				},
+				{
+					"type": "Dev",
+					"summary": "Other bugfixes"
+				}
 			]
 		},
 		{
