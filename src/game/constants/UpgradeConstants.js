@@ -314,8 +314,8 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 			
 			// costs
 			var costCampOrdinal = 1;
+			var costs = PlayerActionConstants.costs[upgrade];
 			if (!ignoreCosts) {
-				var costs = PlayerActionConstants.costs[upgrade];
 				if (!costs) {
 					log.w("upgrade has no costs: " + upgrade);
 				} else {
@@ -323,6 +323,9 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 						costCampOrdinal = Math.max(costCampOrdinal, WorldConstants.CAMPS_BEFORE_GROUND);
 					}
 				}
+			}
+			if (costs.favour) {
+				costCampOrdinal = WorldConstants.CAMP_ORDINAL_GROUND;
 			}
 			
 			result = Math.max(1, blueprintCampOrdinal, requiredTechCampOrdinal, costCampOrdinal);
@@ -341,6 +344,11 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 			var requiredTech = this.getRequiredTech(upgrade);
 			for (let i = 0; i < requiredTech.length; i++) {
 				result = Math.max(result, this.getMinimumCampStepForUpgrade(requiredTech[i]));
+			}
+			
+			let costs = PlayerActionConstants.costs[upgrade];
+			if (costs.favour) {
+				result = WorldConstants.CAMP_STEP_POI_2;
 			}
 			
 			return result;
