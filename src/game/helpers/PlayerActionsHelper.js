@@ -538,7 +538,9 @@ define([
 
 					if (typeof requirements.bag !== "undefined") {
 						if (requirements.bag.validSelection) {
-							if (bagComponent.selectionStartCapacity <= bagComponent.totalCapacity && bagComponent.selectedCapacity > bagComponent.totalCapacity) {
+							let validStart = bagComponent.selectionStartCapacity === undefined || bagComponent.selectionStartCapacity <= bagComponent.totalCapacity;
+							let validNow = bagComponent.selectedCapacity <= bagComponent.totalCapacity;
+							if (validStart && !validNow) {
 								return { value: 0, reason: "Can't carry that much stuff." };
 							}
 						}

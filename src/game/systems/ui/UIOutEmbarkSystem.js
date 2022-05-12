@@ -160,6 +160,7 @@ define([
 			});
 			
 			GameGlobals.uiFunctions.toggle("#embark-items-container", visibleItemTRs > 0);
+			GlobalSignals.updateButtonsSignal.dispatch();
 			
 			bagComponent.selectedCapacity = selectedCapacity;
 			$("#embark-bag .value").text(UIConstants.roundValue(bagComponent.selectedCapacity), true, true);
