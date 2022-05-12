@@ -735,33 +735,34 @@ define(['ash',
 			
 			onKeyUp: function (e) {
 				var isInCamp = GameGlobals.playerHelper.isInCamp();
+				let hasPopups = GameGlobals.uiFunctions.popupManager.hasOpenPopup();
 				if (!e.shiftKey) {
-					if (!isInCamp) {
-					if (e.keyCode == 65) {
-						GameGlobals.playerActionFunctions.startAction("move_sector_west");
+					if (!isInCamp && !hasPopups) {
+						if (e.keyCode == 65) {
+							GameGlobals.playerActionFunctions.startAction("move_sector_west");
+						}
+						if (e.keyCode == 87) {
+							GameGlobals.playerActionFunctions.startAction("move_sector_north");
+						}
+						if (e.keyCode == 83) {
+							GameGlobals.playerActionFunctions.startAction("move_sector_south")
+						}
+						if (e.keyCode == 68) {
+							GameGlobals.playerActionFunctions.startAction("move_sector_east")
+						}
+						if (e.keyCode == 81) {
+							GameGlobals.playerActionFunctions.startAction("move_sector_nw")
+						}
+						if (e.keyCode == 69) {
+							GameGlobals.playerActionFunctions.startAction("move_sector_ne")
+						}
+						if (e.keyCode == 90) {
+							GameGlobals.playerActionFunctions.startAction("move_sector_sw")
+						}
+						if (e.keyCode == 67) {
+							GameGlobals.playerActionFunctions.startAction("move_sector_se")
+						}
 					}
-					if (e.keyCode == 87) {
-						GameGlobals.playerActionFunctions.startAction("move_sector_north");
-					}
-					if (e.keyCode == 83) {
-						GameGlobals.playerActionFunctions.startAction("move_sector_south")
-					}
-					if (e.keyCode == 68) {
-						GameGlobals.playerActionFunctions.startAction("move_sector_east")
-					}
-					if (e.keyCode == 81) {
-						GameGlobals.playerActionFunctions.startAction("move_sector_nw")
-					}
-					if (e.keyCode == 69) {
-						GameGlobals.playerActionFunctions.startAction("move_sector_ne")
-					}
-					if (e.keyCode == 90) {
-						GameGlobals.playerActionFunctions.startAction("move_sector_sw")
-					}
-					if (e.keyCode == 67) {
-						GameGlobals.playerActionFunctions.startAction("move_sector_se")
-					}
-				}
 					if (e.keyCode == 27) {
 						GameGlobals.uiFunctions.popupManager.dismissPopups();
 					}
