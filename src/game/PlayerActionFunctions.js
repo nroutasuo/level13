@@ -227,6 +227,7 @@ define(['ash',
 				case "build_in_garden": this.buildGarden(param); break;
 				case "build_in_shrine": this.buildShrine(param); break;
 				case "build_in_temple": this.buildTemple(param); break;
+				case "build_in_researchcenter": this.buildResearchCenter(param); break;
 				case "use_in_home": this.useHome(param); break;
 				case "use_in_campfire": this.useCampfire(param); break;
 				case "use_in_market": this.useMarket(param); break;
@@ -1423,6 +1424,11 @@ define(['ash',
 		buildTemple: function () {
 			this.buildImprovement("build_in_temple", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_temple"));
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_TEMPLE, "Built a temple.");
+		},
+		
+		buildResearchCenter: function () {
+			this.buildImprovement("build_in_researchcenter", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_researchcenter"));
+			this.addLogMessage(LogConstants.getUniqueID(), "Built a research center.");
 		},
 
 		buildSpaceShip1: function (sectorPos) {
