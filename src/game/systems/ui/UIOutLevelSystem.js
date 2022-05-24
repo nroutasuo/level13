@@ -1,6 +1,7 @@
 define([
 	'ash',
 	'text/Text',
+	'utils/UIList',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/PlayerActionConstants',
@@ -32,7 +33,7 @@ define([
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/EnemiesComponent'
 ], function (
-	Ash, Text,GameGlobals, GlobalSignals, PlayerActionConstants, PlayerStatConstants, TextConstants, LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, TradeConstants,
+	Ash, Text, UIList, GameGlobals, GlobalSignals, PlayerActionConstants, PlayerStatConstants, TextConstants, LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, TradeConstants,
 	PlayerPositionNode, PlayerLocationNode, NearestCampNode,
 	VisionComponent, StaminaComponent, ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
 	MovementOptionsComponent, PositionComponent, LogMessagesComponent, CampComponent,
@@ -58,6 +59,8 @@ define([
 			this.elements.btnNap = $("#out-action-nap");
 			this.elements.btnWait = $("#out-action-wait");
 			this.elements.outImprovementsTR = $("#out-improvements tr");
+			
+			this.initElements();
 
 			return this;
 		},
@@ -76,6 +79,10 @@ define([
 			this.playerPosNodes = null;
 			this.playerLocationNodes = null;
 			this.engine = null;
+		},
+		
+		initElements: function () {
+			this.localeList = UIList.create($("#table-out-actions-locales"), this.createLocaleListItem, this.updateLocaleListItem, this.isLocaleListItemDataEqual);
 		},
 
 		initListeners: function () {
@@ -115,6 +122,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.movementBlockerClearedSignal, this.updateAll);
 			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
 			GlobalSignals.add(this, GlobalSignals.sectorRevealedSignal, this.onSectorRevealed);
+			GlobalSignals.add(this, GlobalSignals.popupClosedSignal, this.updateLocales);
 			GlobalSignals.add(this, GlobalSignals.buttonStateChangedSignal, this.onButtonStateChanged);
 			this.rebuildVis();
 			this.updateUnlockedFeatures();
@@ -657,37 +665,72 @@ define([
 		updateLocales: function () {
 			if (!this.playerLocationNodes.head) return;
 
-			var currentSector = this.playerLocationNodes.head.entity;
-			var position = currentSector.get(PositionComponent);
-			var sectorLocalesComponent = currentSector.get(SectorLocalesComponent);
-			var sectorFeaturesComponent = currentSector.get(SectorFeaturesComponent);
-			var sectorStatus = currentSector.get(SectorStatusComponent);
-			$("#table-out-actions-locales").empty();
-			for (let i = 0; i < sectorLocalesComponent.locales.length; i++) {
-				var locale = sectorLocalesComponent.locales[i];
-				var button = "<button class='action multiline' action='scout_locale_" + locale.getCategory() + "_" + i + "'>" + TextConstants.getLocaleName(locale, sectorFeaturesComponent) + "</button>";
-				var info = "<span class='p-meta'>";
-				if (sectorStatus.isLocaleScouted(i)) {
-					if (locale.type == localeTypes.tradingpartner) {
-						var campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
-						var partner = TradeConstants.getTradePartner(campOrdinal);
-						if (partner) {
-							info += "Already scouted (" + partner.name + ")";
-						} else {
-							info += "Already scouted";
-						}
+			let currentSector = this.playerLocationNodes.head.entity;
+			let positionComponent = currentSector.get(PositionComponent);
+			let position = positionComponent.getPosition();
+			let campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
+			
+			let sectorLocalesComponent = currentSector.get(SectorLocalesComponent);
+			let sectorFeaturesComponent = currentSector.get(SectorFeaturesComponent);
+			let sectorStatusComponent = currentSector.get(SectorStatusComponent);
+			
+			let data = sectorLocalesComponent.locales.map((locale, index) => {
+				let isScouted = sectorStatusComponent.isLocaleScouted(index);
+				let result = {};
+				result.campOrdinal = campOrdinal;
+				result.position = position;
+				result.index = index;
+				result.locale = locale;
+				result.isScouted = isScouted;
+				result.sectorFeaturesComponent = sectorFeaturesComponent;
+				return result;
+			});
+			
+			let numNewItems = UIList.update(this.localeList, data);
+			
+			if (numNewItems > 0) {
+				GameGlobals.buttonHelper.updateButtonDisabledStates("#table-out-actions-locales", true);
+				GameGlobals.uiFunctions.registerActionButtonListeners("#table-out-actions-locales");
+				GameGlobals.uiFunctions.generateButtonOverlays("#table-out-actions-locales");
+				GameGlobals.uiFunctions.generateCallouts("#table-out-actions-locales");
+				GlobalSignals.elementCreatedSignal.dispatch();
+			}
+		},
+		
+		createLocaleListItem: function () {
+			let li = {};
+			var button = "<button class='action multiline'></button>";
+			var info = "<span class='p-meta'></span";
+			li.$root = $("<tr><td>" + button + "</td><td>" + info + "</td></tr>");
+			li.$button = li.$root.find("button");
+			li.$info = li.$root.find("span");
+			return li;
+		},
+		
+		isLocaleListItemDataEqual: function (d1, d2) {
+			return d1.index == d2.index && d1.position.equals(d2.position) && d1.isScouted == d2.isScouted;
+		},
+		
+		updateLocaleListItem: function (li, data) {
+			let locale = data.locale;
+			
+			li.$button.attr("action", "scout_locale_" + locale.getCategory() + "_" + data.index);
+			li.$button.html(TextConstants.getLocaleName(locale, data.sectorFeaturesComponent));
+			
+			let info = "";
+			if (data.isScouted) {
+				if (locale.type == localeTypes.tradingpartner) {
+					var partner = TradeConstants.getTradePartner(data.campOrdinal);
+					if (partner) {
+						info += "Already scouted (" + partner.name + ")";
 					} else {
 						info += "Already scouted";
 					}
+				} else {
+					info += "Already scouted";
 				}
-				info += "</span>";
-				$("#table-out-actions-locales").append("<tr><td>" + button + "</td><td>" + info + "</td></tr>");
 			}
-			GameGlobals.buttonHelper.updateButtonDisabledStates("#table-out-actions-locales", true);
-			GameGlobals.uiFunctions.registerActionButtonListeners("#table-out-actions-locales");
-			GameGlobals.uiFunctions.generateButtonOverlays("#table-out-actions-locales");
-			GameGlobals.uiFunctions.generateCallouts("#table-out-actions-locales");
-			GlobalSignals.elementCreatedSignal.dispatch();
+			li.$info.html(info);
 		},
 
 		updateMovementRelatedActions: function () {

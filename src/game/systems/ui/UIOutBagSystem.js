@@ -1,6 +1,7 @@
 define([
 	'ash',
 	'utils/UIState',
+	'utils/UIList',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/UIConstants',
@@ -8,7 +9,7 @@ define([
 	'game/constants/PlayerActionConstants',
 	'game/nodes/player/ItemsNode',
 	'game/components/common/PositionComponent',
-], function (Ash, UIState, GameGlobals, GlobalSignals, UIConstants, ItemConstants, PlayerActionConstants, ItemsNode, PositionComponent) {
+], function (Ash, UIState, UIList, GameGlobals, GlobalSignals, UIConstants, ItemConstants, PlayerActionConstants, ItemsNode, PositionComponent) {
 
 	var UIOutBagSystem = Ash.System.extend({
 
@@ -26,8 +27,7 @@ define([
 				sys.onObsoleteToggled();
 			});
 			
-			this.initItemSlots();
-			this.initCraftingButtons();
+			this.initElements();
 
 			return this;
 		},
@@ -45,6 +45,12 @@ define([
 		removeFromEngine: function (engine) {
 			this.itemNodes = null;
 			GlobalSignals.removeAll(this);
+		},
+		
+		initElements: function () {
+			this.initItemSlots();
+			this.initCraftingButtons();
+			this.initUseItemButtons();
 		},
 				
 		initItemSlots: function () {
@@ -94,6 +100,26 @@ define([
 		makeCraftingButton: function(itemDefinition) {
 			var actionName = "craft_" + itemDefinition.id;
 			return "<button class='action tabbutton multiline' action='" + actionName + "' data-tab='switch-bag'>" + itemDefinition.name + "</button>";
+		},
+		
+		initUseItemButtons: function () {
+			let container = $("#self-use-items table");
+			let fnCreateItem = function () {
+				var li = {};
+				li.$root = $("<tr><td><button class='action multiline' action=''></button></td></tr>");
+				return li;
+			};
+			let fnUpdateItem = function (li, data) {
+				let actionName = "use_item_" + data.id;
+				let actionVerb = data.id.startsWith("cache_metal") ? "Disassemble" : "Use";
+				let buttonLabel = actionVerb + " " + ItemConstants.getItemDisplayName(data, true);
+				li.$root.find("button.action").attr("action", actionName);
+				li.$root.find("button.action").html(buttonLabel);
+			};
+			let fnIsDataEqual = function (a, b) {
+				return a.id == b.id;
+			};
+			this.useItemButtonList = UIList.create(container, fnCreateItem, fnUpdateItem, fnIsDataEqual);
 		},
 
 		update: function (time) {
@@ -231,30 +257,19 @@ define([
 		updateUseItems: function () {
 			var items = this.getOwnedItems();
 
-			$("#self-use-items table").empty();
-
 			items = items.sort(UIConstants.sortItemsByType);
+			items = items.filter(item => this.isUsable(item));
 
-			let numUsableItems = 0;
-			for (let j = 0; j < items.length; j++) {
-				var item = items[j];
-				
-				if (!this.isUsable(item)) continue;
-					
-				let actionName = "use_item_" + item.id;
-				let actionVerb = item.id.startsWith("cache_metal") ? "Disassemble" : "Use";
-				let tr = "<tr><td><button class='action multiline' action='" + actionName + "'>" + actionVerb + " " + ItemConstants.getItemDisplayName(item, true) + "</button></td></tr>";
-				$("#self-use-items table").append(tr);
-				
-				numUsableItems++;
-			}
+			let numNewItems = UIList.update(this.useItemButtonList, items);
 			
-			GameGlobals.uiFunctions.toggle("#header-self-use-items", numUsableItems > 0);
+			GameGlobals.uiFunctions.toggle("#header-self-use-items", items.length > 0);
 
-			GameGlobals.uiFunctions.registerActionButtonListeners("#self-use-items");
-			GameGlobals.uiFunctions.generateButtonOverlays("#self-use-items");
-			GameGlobals.uiFunctions.generateCallouts("#self-use-items");
-			GlobalSignals.elementCreatedSignal.dispatch();
+			if (numNewItems > 0) {
+				GameGlobals.uiFunctions.registerActionButtonListeners("#self-use-items");
+				GameGlobals.uiFunctions.generateButtonOverlays("#self-use-items");
+				GameGlobals.uiFunctions.generateCallouts("#self-use-items");
+				GlobalSignals.elementCreatedSignal.dispatch();
+			}
 		},
 
 		updateSeenItems: function (isActive) {
