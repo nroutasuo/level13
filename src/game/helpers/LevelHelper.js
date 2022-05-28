@@ -115,7 +115,6 @@ define([
 		},
 
 		getSectorByPosition: function (level, sectorX, sectorY) {
-			var sectorPosition;
 			level = parseInt(level);
 			sectorX = parseInt(sectorX);
 			sectorY = parseInt(sectorY);
@@ -131,7 +130,8 @@ define([
 			if (this.sectorEntitiesByPosition[level][sectorX][sectorY] === null) {
 				return null;
 			}
-
+			
+			var sectorPosition;
 			for (var node = this.sectorNodes.head; node; node = node.next) {
 				sectorPosition = node.entity.get(PositionComponent);
 				if (sectorPosition.level === level && sectorPosition.sectorX === sectorX && sectorPosition.sectorY === sectorY) {
@@ -139,6 +139,7 @@ define([
 					return node.entity;
 				}
 			}
+			
 			this.sectorEntitiesByPosition[level][sectorX][sectorY] = null;
 
 			return null;

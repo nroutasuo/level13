@@ -3,7 +3,6 @@ define([
 	'ash',
 	'game/GameGlobals',
 	'game/GlobalSignals',
-	'game/nodes/level/LevelNode',
 	'game/nodes/sector/SectorNode',
 	'game/components/common/PositionComponent',
 	'game/components/level/LevelPassagesComponent',
@@ -12,7 +11,6 @@ define([
 ], function (Ash,
 		GameGlobals,
 		GlobalSignals,
-		LevelNode,
 		SectorNode,
 		PositionComponent,
 		LevelPassagesComponent,
@@ -20,16 +18,12 @@ define([
 		SectorImprovementsComponent) {
 	var LevelPassagesSystem = Ash.System.extend({
 
-		levelNodes: null,
 		sectorNodes: null,
 
 		constructor: function () { },
 
-		// TODO also check when sector node improved, or passage appears (due to occurrence?)
-
 		addToEngine: function (engine) {
 			var sys = this;
-			this.levelNodes = engine.getNodeList(LevelNode);
 			this.sectorNodes = engine.getNodeList(SectorNode);
 			GlobalSignals.gameStateReadySignal.add(function () {
 				sys.updateAllSectors();
@@ -40,7 +34,6 @@ define([
 		},
 
 		removeFromEngine: function (engine) {
-			this.levelNodes = null;
 			this.sectorNodes = null;
 		},
 

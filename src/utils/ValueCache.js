@@ -1,3 +1,6 @@
+// cache simple values until either another value changes or it's been too long
+// usage: return ValueCache.getValue("ID", 5, this.otherValueThatTriggersRefresh, () => getFreshValue());
+
 define(function () {
 
 	var ValueCache = {
