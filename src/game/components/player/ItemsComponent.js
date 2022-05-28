@@ -125,7 +125,7 @@ function (Ash, ItemVO, ItemConstants) {
 		},
 		
 		getEquipmentComparisonWithItem: function (item, currentItem) {
-			return ItemConstants.getEquipmentComparison(item, currentItem);
+			return ItemConstants.getEquipmentComparison(currentItem, item);
 		},
 
 		// Equips the given item if it's better than the previous equipment (based on total bonus)
