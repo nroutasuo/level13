@@ -22,6 +22,7 @@ require.config({
 			'isCheatsEnabled': false,
 			'isDebugOutputEnabled': false,
 			'isAutosaveEnabled': true,
+			'isAnalyticsEnabled' true,
 		}
 	},
 	

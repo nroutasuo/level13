@@ -71,7 +71,10 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		},
 		
 		itemDefinitions: {},
-		itemByID: {}, // cache
+		
+		// caches
+		itemByID: {},
+		equipmentComparisonCache: {},
 
 		loadData: function (data) {
 			for (itemID in data) {
@@ -185,7 +188,48 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			}
 		},
 		
+		// returns 1 if given new item is better than the old item, 0 if the same or depends on bonus type, -1 if worse
+		getEquipmentComparison: function (itemOld, itemNew) {
+			if (!itemNew && !itemOld) return 0;
+			if (!itemNew) return -1;
+			if (!itemOld) return 1;
+			if (itemNew.id === itemOld.id) return 0;
+			
+			let cacheId = itemOld.id + "--" + itemNew.id;
+			
+			if (this.equipmentComparisonCache[cacheId]) {
+				return this.equipmentComparisonCache[cacheId];
+			}
+			
+			let result = 0;
+			for (var bonusKey in ItemConstants.itemBonusTypes) {
+				var bonusType = ItemConstants.itemBonusTypes[bonusKey];
+				var currentBonus = ItemConstants.getItemBonusComparisonValue(itemOld, bonusType);
+				var newBonus = ItemConstants.getItemBonusComparisonValue(itemNew, bonusType);
+				
+				// TODO take speed inco account, but only together with damage
+				if (bonusType == ItemConstants.itemBonusTypes.fight_speed) {
+					continue;
+				}
+				if (currentBonus == newBonus) {
+					continue;
+				}
+				if (newBonus < currentBonus) {
+					if (result > 0) return 0;
+					result = -1;
+				} else if (newBonus > currentBonus) {
+					if (result < 0) return 0;
+					result = 1;
+				}
+			}
+			
+			this.equipmentComparisonCache[cacheId] = result;
+			
+			return result;
+		},
+		
 		getItemBonusComparisonValue: function (item, bonusType) {
+			
 			if (!item) return 0;
 			if (!bonusType) {
 				return item.getTotalBonus();

@@ -473,6 +473,7 @@ define([
 		},
 		
 		onCampBuilt: function () {
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			this.sortCampNodes();
 			this.refresh();
 		}

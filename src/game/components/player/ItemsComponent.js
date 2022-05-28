@@ -124,31 +124,8 @@ function (Ash, ItemVO, ItemConstants) {
 			return result;
 		},
 		
-		// returns 1 if given item is better than the given items, 0 if the same or depends on bonus type, -1 if worse
 		getEquipmentComparisonWithItem: function (item, currentItem) {
-			if (currentItem && item.id === currentItem.id) return 0;
-			let result = 0;
-			for (var bonusKey in ItemConstants.itemBonusTypes) {
-				var bonusType = ItemConstants.itemBonusTypes[bonusKey];
-				var currentBonus = ItemConstants.getItemBonusComparisonValue(currentItem, bonusType);
-				var newBonus = ItemConstants.getItemBonusComparisonValue(item, bonusType);
-				
-				// TODO take speed inco account, but only together with damage
-				if (bonusType == ItemConstants.itemBonusTypes.fight_speed) {
-					continue;
-				}
-				if (currentBonus == newBonus) {
-					continue;
-				}
-				if (newBonus < currentBonus) {
-					if (result > 0) return 0;
-					result = -1;
-				} else if (newBonus > currentBonus) {
-					if (result < 0) return 0;
-					result = 1;
-				}
-			}
-			return result;
+			return ItemConstants.getEquipmentComparison(item, currentItem);
 		},
 
 		// Equips the given item if it's better than the previous equipment (based on total bonus)

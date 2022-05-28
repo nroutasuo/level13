@@ -271,6 +271,8 @@ define([
 		},
 
 		updateDespair: function () {
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
+			
 			let hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
 			
 			var logComponent = this.playerPosNodes.head.entity.get(LogMessagesComponent);
