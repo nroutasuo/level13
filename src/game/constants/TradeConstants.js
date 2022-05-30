@@ -20,7 +20,7 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 			new TradingPartnerVO(3, "Bone Crossing", [resourceNames.rope], [resourceNames.metal], false, true, [ "weapon" ], [ "weapon", "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head", "exploration" ]),
 			new TradingPartnerVO(4, "Slugger Town", [resourceNames.food], [resourceNames.metal], false, true, [], ["exploration", "shoes" ]),
 			new TradingPartnerVO(6, "Old Waterworks", [resourceNames.fuel], [], true, false, [], [ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
-			new TradingPartnerVO(7, "Mill Road Academy", [resourceNames.food, resourceNames.water], [resourceNames.metal], true, false, [], [ "weapon", "artefact" ]),
+			new TradingPartnerVO(7, "Mill Road Academy", [resourceNames.water, resourceNames.food], [resourceNames.metal], true, false, [], [ "weapon", "artefact" ]),
 			new TradingPartnerVO(10, "Pinewood", [resourceNames.medicine, resourceNames.herbs, resourceNames.rubber], [], true, false, [], [ "artefact", "exploration" ]),
 			new TradingPartnerVO(12, "Highgate", [resourceNames.tools], [resourceNames.metal], true, false, [], [ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
 			new TradingPartnerVO(14, "Factory 32", [resourceNames.concrete], [resourceNames.metal], true, false, [], [ "exploration" ]),

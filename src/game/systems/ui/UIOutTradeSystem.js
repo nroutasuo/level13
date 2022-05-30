@@ -125,7 +125,15 @@ define([
 				}
 				sendTR += "</select>";
 				var maxSelection = this.getCaravanCapacity();
-				sendTR += "<input type='range' class='trade-caravans-outgoing-range-sell' min='" + TradeConstants.MIN_OUTGOING_CARAVAN_RES + "' max='" + maxSelection + "' step='10' />";
+				if(partner.sellsResources.length && partner.buysResources.length) {
+					var maxValueReturned = TradeConstants.getResourceValue(partner.sellsResources[0]) * maxSelection;
+					var maxUsefulTrade = maxValueReturned / TradeConstants.getResourceValue(partner.buysResources[0]);
+					maxUsefulTrade = Math.floor(maxUsefulTrade+0.001);
+					var defaultSelection = Math.min(maxUsefulTrade, maxSelection);
+				} else {
+					var defaultSelection = maxSelection;
+				}
+				sendTR += "<input type='range' class='trade-caravans-outgoing-range-sell' min='" + TradeConstants.MIN_OUTGOING_CARAVAN_RES + "' max='" + maxSelection + "' value='" + defaultSelection + "' step='10' />";
 				sendTR += " <span class='trade-sell-value-invalid'></span>";
 				sendTR += " <span class='trade-sell-value'>0</span>";
 				sendTR += "<span class='trade-caravans-outgoing-buy'>";
