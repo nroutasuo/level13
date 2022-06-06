@@ -660,8 +660,11 @@ function (Ash, CanvasUtils, MapUtils,
 		
 		getVisibleAreaBackgroundColor: function (level, sunlit) {
 			let isLevelSunlit = level == GameGlobals.gameState.getSurfaceLevel();
+			let isGround = level == GameGlobals.gameState.getGroundLevel();
 			if (isLevelSunlit) {
 				return ColorConstants.getColor(sunlit, "map_background_2_surface");
+			} else if (isGround) {
+				return ColorConstants.getColor(sunlit, "map_background_2_ground");
 			} else {
 				return ColorConstants.getColor(sunlit, "map_background_2_default");
 			}
