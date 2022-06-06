@@ -1754,7 +1754,7 @@ define([
 			// mark selected
 			for (let i = 0; i < selectedWaymarks.length; i++) {
 				let waymark = selectedWaymarks[i];
-				WorldCreatorLogger.i("selected waymark: " + waymark.type + " " + waymark.waymark + " (" + waymark.waymark.zone + ") -> " + waymark.poi + "(" + waymark.poi.zone + ")");
+				//WorldCreatorLogger.i("selected waymark: " + waymark.type + " " + waymark.waymark + " (" + waymark.waymark.zone + ") -> " + waymark.poi + "(" + waymark.poi.zone + ")");
 				waymark.waymark.waymarks.push(new WaymarkVO(waymark.waymark.position, waymark.poi.position, waymark.type))
 			}
 		},

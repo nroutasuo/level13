@@ -1571,15 +1571,17 @@ define(['ash',
 		},
 
 		useShrine: function () {
-			var campSector = this.nearestCampNodes.head.entity;
-			var improvementsComponent = campSector.get(SectorImprovementsComponent);
+			let deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
+			if (!deityComponent) return;
+			let campSector = this.nearestCampNodes.head.entity;
+			let improvementsComponent = campSector.get(SectorImprovementsComponent);
 			
 			if (campSector) {
 				let shrineLevel = improvementsComponent.getLevel(improvementNames.shrine);
 				let successChance = GameGlobals.campBalancingHelper.getMeditationSuccessRate(shrineLevel);
 				log.i("meditation success chance: " + successChance)
 				if (Math.random() < successChance) {
-					this.playerStatsNodes.head.entity.get(DeityComponent).favour += 1;
+					deityComponent.favour += 1;
 					this.addLogMessage(LogConstants.MSG_ID_USE_SHRINE, "Spent some time listening to the spirits.");
 				} else {
 					this.addLogMessage(LogConstants.MSG_ID_USE_SHRINE, "Tried to meditate, but found no peace.");
@@ -1834,12 +1836,15 @@ define(['ash',
 			var sector = this.playerLocationNodes.head.entity;
 			var improvementsComponent = sector.get(SectorImprovementsComponent);
 			var improvementVO = improvementsComponent.getVO(improvementNames[improvementName]);
+			if (improvementVO == null) return;
+			
 			var resourcesVO = improvementVO.storedResources;
 
 			var maxToCollect = Math.max(0, bagComponent.totalCapacity - bagComponent.usedCapacity);
 			if (amount) {
 				maxToCollect = Math.min(maxToCollect, amount);
 			}
+			
 			var totalCollected = 0;
 			for (var key in resourceNames) {
 				var name = resourceNames[key];

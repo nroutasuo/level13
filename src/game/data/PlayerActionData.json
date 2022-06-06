@@ -3318,13 +3318,15 @@
             "busy": false,
             "camp": {
                 "raid": false
-            }
+            },
+            "deity": true
         },
         "use_in_temple": {
             "busy": false,
             "camp": {
                 "raid": false
-            }
+            },
+            "deity": true
         },
         "use_item_cache_evidence_1": {
             "inCamp": true

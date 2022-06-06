@@ -140,15 +140,18 @@ define([
 		},
 
 		// Check costs, requirements and cooldown - everything that is needed for the player action
-		checkAvailability: function (action, logUnavailable, otherSector) {
+		checkAvailability: function (action, logUnavailable, otherSector, skipCooldown) {
 			var isLocationAction = PlayerActionConstants.isLocationAction(action);
 			var playerPos = this.playerStatsNodes.head.entity.get(PositionComponent);
 			var locationKey = GameGlobals.gameState.getActionLocationKey(isLocationAction, playerPos);
-			var cooldownTotal = PlayerActionConstants.getCooldown(action);
-			var cooldownLeft = GameGlobals.gameState.getActionCooldown(action, locationKey, cooldownTotal) / 1000;
-			if (cooldownLeft) {
-				if (logUnavailable) log.w("Action blocked by cooldown [" + action + "] " + cooldownLeft);
-				return false;
+			
+			if (!skipCooldown) {
+				var cooldownTotal = PlayerActionConstants.getCooldown(action);
+				var cooldownLeft = GameGlobals.gameState.getActionCooldown(action, locationKey, cooldownTotal) / 1000;
+				if (cooldownLeft) {
+					if (logUnavailable) log.w("Action blocked by cooldown [" + action + "] " + cooldownLeft);
+					return false;
+				}
 			}
 
 			var reqsResult = this.checkRequirements(action, logUnavailable, otherSector);
@@ -156,6 +159,7 @@ define([
 				if (logUnavailable) log.i("blocked by requirements: " + reqsResult.reason);
 				return false;
 			}
+			
 			var costsResult = this.checkCosts(action, logUnavailable, otherSector);
 			if (costsResult < 1) {
 				if (logUnavailable) log.i("blocked by costs");
