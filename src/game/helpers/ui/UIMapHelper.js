@@ -682,6 +682,7 @@ function (Ash, CanvasUtils, MapUtils,
 		},
 		
 		getSectorStroke: function (level, sectorFeatures, sectorStatus) {
+			let isLevelSunlit = level == GameGlobals.gameState.getSurfaceLevel();
 			let isSectorSunlit = sectorFeatures.sunlit;
 			let hasSectorHazard = GameGlobals.sectorHelper.hasHazards(sectorFeatures, sectorStatus);
 
@@ -689,8 +690,9 @@ function (Ash, CanvasUtils, MapUtils,
 			let mainHazard = hazards.getMainHazard();
 			
 			let isSeriousHazard = GameGlobals.sectorHelper.hasSeriousHazards(level, sectorFeatures, sectorStatus);
+			let shouldSunlitOverrideHazard = isSeriousHazard && !isLevelSunlit;
 			
-			if (isSectorSunlit && (!hasSectorHazard || !isSeriousHazard)) {
+			if (isSectorSunlit && (!hasSectorHazard || shouldSunlitOverrideHazard)) {
 				return ColorConstants.getColor(isSectorSunlit, "map_stroke_sector_sunlit");
 			} else if (hasSectorHazard) {
 				if (mainHazard == "cold") {
