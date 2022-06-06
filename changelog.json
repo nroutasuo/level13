@@ -90,7 +90,7 @@
 				},
 				{
 					"type": "GD",
-					"summary": "Make some debuffs (hunger, thirst, cold, poison, radiation) less forgiving by adding them slowly instead of immediately"
+					"summary": "Make some debuffs (hunger, thirst, cold, poison, radiation) more forgiving by adding them slowly instead of immediately"
 				},
 				{
 					"type": "GD",
