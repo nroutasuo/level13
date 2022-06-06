@@ -98,6 +98,7 @@ define([
 			sectorFeatures.damage = sectorVO.damage;
 			sectorFeatures.sunlit = sectorVO.sunlit > 0;
 			sectorFeatures.ground = level == this.world.bottomLevel;
+			sectorFeatures.surface = level == this.world.topLevel;
 			sectorFeatures.hazards = sectorVO.hazards;
 			sectorFeatures.sectorType = sectorVO.sectorType;
 			sectorFeatures.hasSpring = sectorVO.hasSpring;

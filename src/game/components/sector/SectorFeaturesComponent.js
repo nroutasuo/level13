@@ -33,7 +33,7 @@ define(
 		resourcesCollectable: null,
 		itemsScavengeable: [],
 		
-		constructor: function (level, criticalPaths, zone, buildingDensity, wear, damage, sectorType, sunlit, ground, hazards,
+		constructor: function (level, criticalPaths, zone, buildingDensity, wear, damage, sectorType, sunlit, ground, surface, hazards,
 							   campable, notCampableReason, resourcesScavengable, resourcesCollectable, itemsScavengeable, hasSpring, hasTradeConnectorSpot, stashes, waymarks) {
 			this.level = level;
 			this.criticalPaths = criticalPaths;
@@ -44,6 +44,7 @@ define(
 			this.sectorType = sectorType;
 			this.sunlit = sunlit;
 			this.ground = ground;
+			this.surface = surface;
 			this.hazards = hazards;
 			this.campable = campable;
 			this.notCampableReason = notCampableReason;

@@ -122,6 +122,11 @@
 		"environment": "cold",
 		"campOrdinal": 13
 	},
+	"bandit__surface": {
+		"name": "burned bandit",
+		"environment": "sunlit",
+		"campOrdinal": 15
+	},
 	"black_bear": {
 		"name": "black bear",
 		"environment": "sunlit",
@@ -610,6 +615,10 @@
 	"ghost__vengeful": {
 		"name": "Vengeful ghost",
 		"campOrdinal": 7
+	},
+	"ghost__surface": {
+		"name": "Remorseful ghost",
+		"campOrdinal": 15
 	},
 	"ghost_bat": {
 		"name": "ghost bat",

@@ -124,7 +124,6 @@ define([
 					levelNode.entity.add(new CurrentPlayerLocationComponent());
 					if (!levelNode.entity.has(VisitedComponent)) {
 						this.handleNewLevel(levelNode, levelpos, isInitLocation);
-						this.triggerEndMessage();
 					}
 					this.handleEnterLevel(levelNode, levelpos, isInitLocation);
 				} else if (levelpos != playerPos.level && levelNode.entity.has(CurrentPlayerLocationComponent)) {
@@ -218,6 +217,10 @@ define([
 			gtag('event', 'reach_new_level', { event_category: 'progression', value: levelOrdinal});
 			gtag('event', 'reach_new_level_time', { event_category: 'game_time', event_label: levelOrdinal, value: GameGlobals.gameState.playTime });
 			if (levelPos !== 13) GameGlobals.gameState.unlockedFeatures.levels = true;
+			
+			if (this.isGroundLevel(levelPos)) this.showLevelMessage("Ground", this.getGroundMessage());
+			if (this.isSurfaceLevel(levelPos)) this.showLevelMessage("Surface", this.getSurfaceMessage());
+			if (this.isLastAvailableLevel(levelPos)) this.showLevelMessage("Last level", this.getEndMessage());
 		},
 
 		handleEnterLevel: function (levelNode, levelPos, isInitLocation) {
@@ -235,9 +238,9 @@ define([
 			
 			let msg = "Entered level " + levelPos + ". ";
 			if (levelPos == surfaceLevel) {
-				msg += "There is no ceiling here, the whole level is open to the elements. Sun glares down from an impossibly wide blue sky all above.";
+				msg += this.getSurfaceLevelDescription();
 			} else if (levelPos == groundLevel) {
-				msg += "The floor here is different - uneven, organic, continuous. There seems to be no way further down. There are plants, mud, stone and signs of animal life.";
+				msg += this.getGroundLevelDescription();
 			} else if (!levelComponent.isCampable) {
 				switch (levelComponent.notCampableReason) {
 					case LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION:
@@ -289,32 +292,18 @@ define([
 			this.lastUpdatePosition = null;
 		},
 		
-		triggerEndMessage: function () {
-			var playerPos = this.playerPositionNodes.head.position;
-			var isLastAvailableLevel = this.isLastAvailableLevel(playerPos.level);
-			if (isLastAvailableLevel) {
-				this.showEndMessage();
-			}
-		},
-		
-		showEndMessage: function () {
+		showLevelMessage: function (title, msg) {
 			setTimeout(function () {
-				gtag('event', 'last_level_reached', { event_category: 'progression' })
-				var msg = "You've reached the last level of the current version of Level 13. ";
-				msg += "There will be some more things to discover here, but you will not be able to build any more camps or passages. Congratulations on surviving to the end!";
-				msg += "<br/><br/>"
-				msg += "<span class='p-meta'>Thank you for playing this far. The developer would love to hear your feedback. You can use any of these channels:</span>";
-				msg += "<p>" + GameConstants.getFeedbackLinksHTML() + "</p>";
-				GameGlobals.uiFunctions.showInfoPopup(
-					"Last level",
-					msg,
-					"Continue",
-					null,
-					null,
-					true,
-					false
-				);
+				GameGlobals.uiFunctions.showInfoPopup(title, msg, "Continue", null, null, true, false);
 			}, 300);
+		},
+
+		isGroundLevel: function (level) {
+			return level == GameGlobals.gameState.getGroundLevel();
+		},
+
+		isSurfaceLevel: function (level) {
+			return level == GameGlobals.gameState.getSurfaceLevel();
 		},
 
 		isLastAvailableLevel: function (level) {
@@ -327,6 +316,31 @@ define([
 			var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
 			var nextLevelComponent = nextLevelEntity.get(LevelComponent);
 			return levelComponent.notCampableReason != LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT && nextLevelComponent.notCampableReason == LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT;
+		},
+
+		getGroundMessage: function () {
+			return this.getGroundLevelDescription();
+		},
+
+		getSurfaceMessage: function () {
+			return this.getSurfaceLevelDescription();
+		},
+
+		getEndMessage: function () {
+			var msg = "You've reached the last level of the current version of Level 13. ";
+			msg += "There will be some more things to discover here, but you will not be able to build any more camps or passages. Congratulations on surviving to the end!";
+			msg += "<br/><br/>"
+			msg += "<span class='p-meta'>Thank you for playing this far. The developer would love to hear your feedback. You can use any of these channels:</span>";
+			msg += "<p>" + GameConstants.getFeedbackLinksHTML() + "</p>";
+			return msg;
+		},
+		
+		getGroundLevelDescription: function () {
+			return "The floor here is different - uneven, organic, continuous. There seems to be no way further down. There are plants, mud, stone and signs of animal life.";
+		},
+		
+		getSurfaceLevelDescription: function () {
+			return "There is no ceiling here, the whole level is open to the elements. Sun glares down from an impossibly wide blue sky all above.";
 		},
 
 		addLogMessage: function (msgID, msg, replacements, values) {
