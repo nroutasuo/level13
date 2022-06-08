@@ -307,15 +307,7 @@ define([
 		},
 
 		isLastAvailableLevel: function (level) {
-			var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(level);
-			var nextLevel = GameGlobals.gameState.getLevelForOrdinal(levelOrdinal + 1);
-			var nextLevelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(nextLevel);
-			if (!nextLevelEntity)
-				return false;
-			
-			var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
-			var nextLevelComponent = nextLevelEntity.get(LevelComponent);
-			return levelComponent.notCampableReason != LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT && nextLevelComponent.notCampableReason == LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT;
+			return this.isSurfaceLevel();
 		},
 
 		getGroundMessage: function () {

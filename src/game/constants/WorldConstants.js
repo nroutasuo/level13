@@ -14,7 +14,6 @@ define(['ash'], function (Ash) {
 		CAMP_ORDINAL_GROUND: 8,
 		CAMP_ORDINAL_FUEL_2: 12,
 		CAMP_ORDINAL_RUBBER_2: 14,
-		CAMP_ORDINAL_LIMIT: 14,
 		
 		CAMP_STAGE_EARLY: "e",
 		CAMP_STAGE_LATE: "l",

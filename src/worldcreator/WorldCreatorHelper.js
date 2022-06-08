@@ -374,7 +374,7 @@ define([
 			var camplessLevelOrdinals = this.getCamplessLevelOrdinals(seed);
 			var levelOrdinal = this.getLevelOrdinal(seed, level);
 			var campOrdinal = this.getCampOrdinal(seed, level);
-			return camplessLevelOrdinals.indexOf(levelOrdinal) < 0 && campOrdinal <= WorldConstants.CAMP_ORDINAL_LIMIT;
+			return camplessLevelOrdinals.indexOf(levelOrdinal) < 0;
 		},
 		
 		isHardLevel: function (seed, level) {
@@ -409,8 +409,6 @@ define([
 			if (level == bottomLevel) return LevelConstants.UNCAMPABLE_LEVEL_TYPE_SUPERSTITION;
 			
 			var campOrdinal = this.getCampOrdinal(seed, level);
-			if (campOrdinal > WorldConstants.CAMP_ORDINAL_LIMIT)
-				return LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT;
 			
 			let options = [];
 			var levelOrdinal = this.getLevelOrdinal(seed, level);

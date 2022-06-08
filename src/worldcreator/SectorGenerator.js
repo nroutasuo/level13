@@ -2114,8 +2114,6 @@ define([
 			var unlockHoleOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_building_passage_hole");
 			if (l === 13) {
 				return MovementConstants.PASSAGE_TYPE_STAIRWELL;
-			} else if (campOrdinal > WorldConstants.CAMP_ORDINAL_LIMIT) {
-				return MovementConstants.PASSAGE_TYPE_BLOCKED;
 			} else if (l === 14) {
 				return MovementConstants.PASSAGE_TYPE_HOLE;
 			} else if (levelVO.isCampable && campOrdinal == unlockElevatorOrdinal) {
