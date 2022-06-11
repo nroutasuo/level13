@@ -1623,6 +1623,7 @@ define([
 				case improvementNames.passageDownHole: return "build_out_passage_down_hole";
 				case improvementNames.greenhouse: return "build_out_greenhouse";
 				case improvementNames.tradepost_connector: return "build_out_tradepost_connector";
+				case improvementNames.sundome: return "build_out_sundome";
 				case improvementNames.camp: return "";
 				default:
 					if (!disableWarnings) {
@@ -1789,6 +1790,16 @@ define([
 			// deity
 			if (reqs && reqs.deity) {
 				addRequirement(WorldConstants.CAMP_ORDINAL_GROUND, WorldConstants.CAMP_STEP_POI_2, "deity");
+			}
+			
+			// exceptions
+			switch (action) {
+				case "build_out_sundome":
+				case "build_out_spaceship1":
+				case "build_out_spaceship2":
+				case "build_out_spaceship3":
+					addRequirement(WorldConstants.CAMPS_TOTAL - 1, WorldConstants.CAMP_STEP_END, "surface");
+					break;
 			}
 			
 			return result;

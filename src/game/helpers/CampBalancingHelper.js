@@ -141,11 +141,12 @@ define([
 			let totalStorage = GameGlobals.campBalancingHelper.getMaxTotalStorage(maxCampOrdinal);
 			let improvementsComponent = GameGlobals.campBalancingHelper.getMaxImprovements(maxCampOrdinal, campOrdinal, totalStorage);
 			let populationFactor = GameGlobals.campBalancingHelper.getPopulationFactor(campOrdinal);
+			let isSunlit = campOrdinal == 15;
 			let danger = 0;
-			return GameGlobals.campBalancingHelper.getTargetReputation(improvementsComponent, null, 0, populationFactor, danger).value;
+			return GameGlobals.campBalancingHelper.getTargetReputation(improvementsComponent, null, 0, populationFactor, danger, isSunlit).value;
 		},
 		
-		getTargetReputation: function (improvementsComponent, resourcesVO, population, populationFactor, danger) {
+		getTargetReputation: function (improvementsComponent, resourcesVO, population, populationFactor, danger, isSunlit) {
 			let result = 0;
 			var sources = {}; // text -> value
 			var penalties = {}; // id -> bool
@@ -180,6 +181,8 @@ define([
 						let levelBonus = (level - 1) * 0.25;
 						addValue(improvementVO.count * defaultBonus * levelBonus, "Shrine");
 						break;
+					case improvementNames.sundome:
+						addValue(improvementVO.count * defaultBonus, "Sun Dome");
 					default:
 						addValue(improvementVO.count * defaultBonus, "Buildings");
 						break;
@@ -237,6 +240,12 @@ define([
 				addValue(-levelPopPenalty, "Level population");
 			}
 			addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_LEVEL_POP, populationFactor < 1);
+			
+			// penalties: sunlight
+			if (isSunlit && improvementsComponent.getCount(improvementNames.sundome) < 1) {
+				addValue(-3, "Sunlight");
+			}
+			addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_SUNLIT, isSunlit);
 			
 			return { value: Math.max(0, result), sources: sources, penalties: penalties };
 		},

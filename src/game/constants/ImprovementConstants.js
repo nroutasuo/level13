@@ -150,6 +150,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			spaceship1: {},
 			spaceship2: {},
 			spaceship3: {},
+			sundome: {},
 		},
 		
 		getDef: function (improvementID) {

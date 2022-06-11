@@ -76,7 +76,7 @@ define(function () {
 				techtree_node_available: "#ccc",
 				techtree_node_default: "#ccc",
 				techtree_node_dimmed: "#eee",
-				campvis_building_lit_bg: "#fff",
+				campvis_building_lit_bg: "#fcee4e",
 				campvis_building_z0_bg: "#666",
 				campvis_building_z1_bg: "#888",
 				campvis_building_z2_bg: "#aaa",

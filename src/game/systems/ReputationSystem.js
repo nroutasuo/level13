@@ -10,10 +10,11 @@ define([
 	'game/nodes/PlayerPositionNode',
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/components/sector/improvements/SectorImprovementsComponent',
+	'game/components/sector/SectorFeaturesComponent',
 	'game/components/common/LogMessagesComponent',
 	'game/components/type/LevelComponent',
 ], function (Ash, GameGlobals, GlobalSignals, GameConstants, CampConstants, LogConstants, OccurrenceConstants, CampNode, PlayerPositionNode, TribeUpgradesNode,
-	SectorImprovementsComponent, LogMessagesComponent, LevelComponent) {
+	SectorImprovementsComponent, SectorFeaturesComponent, LogMessagesComponent, LevelComponent) {
 	var ReputationSystem = Ash.System.extend({
 	
 		playerNodes: null,
@@ -80,6 +81,7 @@ define([
 		
 		getTargetReputation: function (campNode) {
 			var sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
+			var sectorFeatures = campNode.entity.get(SectorFeaturesComponent);
 			
 			var storage = GameGlobals.resourcesHelper.getCurrentCampStorage(campNode.entity);
 			var resources = storage ? storage.resources : null;
@@ -87,7 +89,9 @@ define([
 			var danger = GameGlobals.campHelper.getCampRaidDanger(campNode.entity);
 			var levelComponent = GameGlobals.levelHelper.getLevelEntityForSector(campNode.entity).get(LevelComponent);
 			
-			var targetReputation = GameGlobals.campHelper.getTargetReputation(sectorImprovements, resources, campNode.camp.population, levelComponent.populationFactor, danger);
+			let isSunlit = sectorFeatures.sunlit;
+			
+			var targetReputation = GameGlobals.campHelper.getTargetReputation(sectorImprovements, resources, campNode.camp.population, levelComponent.populationFactor, danger, isSunlit);
 			var sources = targetReputation.sources;
 			var penalties = targetReputation.penalties;
 			

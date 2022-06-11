@@ -59,7 +59,11 @@ function (Ash) {
 		},
 		
 		getFortificationCoords: function (n) {
-			return { x: 0, z: 4};
+			return { x: 0, z: 4 };
+		},
+		
+		getSundomeCoords: function () {
+			return { x: 0, z: 0 };
 		},
 		
 		getSpotIndex: function (x, z) {

@@ -510,11 +510,13 @@ define([
 						break;
 					}
 					// neighbouring movement blockers
-					var dist = PositionConstants.getDistanceTo(existingProject.position, project.position);
-					if (dist < 2) {
-						if (PositionConstants.getOppositeDirection(project.direction) == existingProject.direction) {
-							projectExists = true;
-							break;
+					if (project.direction !== undefined) {
+						var dist = PositionConstants.getDistanceTo(existingProject.position, project.position);
+						if (dist < 2) {
+							if (PositionConstants.getOppositeDirection(project.direction) == existingProject.direction) {
+								projectExists = true;
+								break;
+							}
 						}
 					}
 				}
@@ -691,11 +693,11 @@ define([
 				}
 			}
 
-			// space ship
+			// space ship and sundome
 			if (levelOrdinal === GameGlobals.gameState.getSurfaceLevelOrdinal()) {
 				var camp = sectorEntity.get(CampComponent);
 				if (camp) {
-					var actions = [ "build_out_spaceship1", "build_out_spaceship2", "build_out_spaceship3"];
+					var actions = [ "build_out_spaceship1", "build_out_spaceship2", "build_out_spaceship3", "build_out_sundome"];
 					for (let i = 0; i < actions.length; i++) {
 						if (GameGlobals.playerActionsHelper.checkRequirements(actions[i])) {
 							var improvement = GameGlobals.playerActionsHelper.getImprovementNameForAction(actions[i]);

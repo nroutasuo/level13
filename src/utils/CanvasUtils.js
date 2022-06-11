@@ -39,11 +39,26 @@ define(function () {
 			ctx.fill();
 		},
 		
-		drawArc: function (ctx, color, x, y, r, from, to) {
+		drawArc: function (ctx, color, x, y, r, from, to, stroke) {
 			ctx.fillStyle = color;
 			ctx.beginPath();
 			ctx.arc(x, y, r, from, to);
-			ctx.fill();
+			if (stroke) {
+				ctx.stroke();
+			} else {
+				ctx.fill();
+			}
+		},
+		
+		drawEllipse: function (ctx, color, x, y, rX, rY, from, to, stroke) {
+			ctx.fillStyle = color;
+			ctx.beginPath();
+			ctx.ellipse(x, y, rX, rY, 0, from, to);
+			if (stroke) {
+				ctx.stroke();
+			} else {
+				ctx.fill();
+			}
 		},
 		
 		drawHexagon: function (ctx, color, size, x, y) {

@@ -197,6 +197,7 @@ define(['ash',
 				case "build_out_passage_up_hole": this.buildPassageUpHole(param); break;
 				case "build_out_greenhouse": this.buildGreenhouse(param); break;
 				case "build_out_tradepost_connector": this.buildTradeConnector(param); break;
+				case "build_out_sundome": this.buildSundome(param); break;
 				case "build_out_spaceship1": this.buildSpaceShip1(param); break;
 				case "build_out_spaceship2": this.buildSpaceShip2(param); break;
 				case "build_out_spaceship3": this.buildSpaceShip3(param); break;
@@ -1239,6 +1240,13 @@ define(['ash',
 			var position = this.getPositionVO(sectorPos);
 			var sector = this.getActionSector(action, sectorPos);
 			this.buildImprovement(action, improvementNames.tradepost_connector, sector);
+		},
+		
+		buildSundome: function (sectorPos) {
+			var action = "build_out_sundome";
+			var position = this.getPositionVO(sectorPos);
+			var sector = this.getActionSector(action, sectorPos);
+			this.buildImprovement(action, improvementNames.sundome, sector);
 		},
 		
 		improveOutImprovement: function (param) {

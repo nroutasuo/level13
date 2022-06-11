@@ -279,6 +279,12 @@
             "resource_rope": 5000,
             "resource_tools": 1000
         },
+		"build_out_sundome": {
+            "resource_concrete": 800,
+            "resource_metal": 10000,
+            "resource_rope": 1000,
+            "resource_tools": 1000
+		},
         "build_out_tradepost_connector": {
             "resource_concrete": 300,
             "resource_fuel": 300,
@@ -1236,6 +1242,7 @@
         "build_out_collector_water": "Accumulates water.",
 		"build_out_greenhouse": "A place to grow herbs.",
         "build_out_tradepost_connector": "Allows traders and workers to cross the level safely.",
+		"build_out_sundome": "Protects the inhabitants from sunlight.",
         "clear_debris": "Clear the debris blocking the way.",
         "clear_waste_r": "Clear the radiactive waste.",
         "clear_waste_t": "Clear the pollution.",
@@ -2066,6 +2073,14 @@
                 "unlock_building_spaceship3": true
             }
         },
+		"build_out_sundome": {
+			"improvements": {
+				"sundome": [
+					0,
+					1
+				]
+			}
+		},
         "build_out_tradepost_connector": {
             "upgrades": {
                 "unlock_project_tradingpost_connector": true
