@@ -346,12 +346,11 @@ define([
 					}
 
 					if (requirements.improvements) {
-						var improvementRequirements = requirements.improvements;
-						for (var improvementID in improvementRequirements) {
+						for (var improvementID in requirements.improvements) {
 							var amount = this.getCurrentImprovementCount(improvementComponent, campComponent, improvementID);
 							var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
 							
-							var range = improvementRequirements[improvementID];
+							var range = requirements.improvements[improvementID];
 							var actionImprovementName = this.getImprovementNameForAction(action, true);
 							if (!actionImprovementName) actionImprovementName = "Improvement";
 							var displayName = actionImprovementName === requiredImprovementDisplayName ? "" : requiredImprovementDisplayName;
@@ -388,12 +387,11 @@ define([
 					}
 					
 					if (requirements.improvementsOnLevel) {
-						var improvementRequirements = requirements.improvementsOnLevel;
-						for (var improvementID in improvementRequirements) {
+						for (var improvementID in requirements.improvementsOnLevel) {
 							var amount = this.getCurrentImprovementCountOnLevel(positionComponent.level, improvementID);
 							var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
 							var displayName = actionImprovementName === requiredImprovementDisplayName ? "" : requiredImprovementDisplayName;
-							var range = improvementRequirements[improvementID];
+							var range = requirements.improvementsOnLevel[improvementID];
 							let result = this.checkRequirementsRange(range, amount,
 								"{min}x " + displayName + " on level required",
 								"max {max} " + displayName + " on level",
@@ -826,6 +824,39 @@ define([
 							if (result) {
 								return result;
 							}
+						}
+					}
+					
+					if (requirements.tribe) {
+						if (requirements.tribe.improvements) {
+							for (var improvementID in requirements.tribe.improvements) {
+								var amount = this.getCurrentImprovementCountTotal(improvementID);
+								var requiredAmount = requirements.tribe.improvements[improvementID];
+								
+								if (amount < requiredAmount) {
+									var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
+									var displayName = requiredImprovementDisplayName;
+									return { value: amount / requiredAmount, reason: requiredAmount + "x " + displayName + " required" };
+								}
+							}
+						}
+						
+						if (requirements.tribe.projects) {
+							for (var improvementID in requirements.tribe.projects) {
+								var amount = this.getCurrentImprovementCountTotal(improvementID);
+								var requiredAmount = requirements.tribe.projects[improvementID];
+								
+								if (amount < requiredAmount) {
+									var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
+									var displayName = requiredImprovementDisplayName;
+									return { value: amount / requiredAmount, reason: requiredAmount + "x " + displayName + " required" };
+								}
+							}
+						}
+						
+						if (requirements.tribe.population) {
+							let currentPopulation = GameGlobals.tribeHelper.getTotalPopulation();
+							let requiredPopulation = requirements.tribe.population;
 						}
 					}
 					
@@ -1900,6 +1931,22 @@ define([
 				result += this.getCurrentImprovementCount(improvements, campComponent, improvementID);
 			}
 			return result;
+		},
+		
+		getCurrentImprovementCountTotal: function (improvementID) {
+			let improvementName = improvementNames[improvementID];
+			let improvementType = getImprovementType(improvementName);
+			if (improvementType == improvementTypes.camp) {
+				return GameGlobals.campHelper.getTotalNumImprovementsBuilt(improvementName);
+			} else {
+				let result = 0;
+				let minLevel =  GameGlobals.gameState.getGroundLevel();
+				let maxLevel = GameGlobals.gameState.getSurfaceLevel();
+				for (let i = minLevel; i <= maxLevel; i++) {
+					result += this.getCurrentImprovementCountOnLevel(i, improvementID);
+				}
+				return result;
+			}
 		},
 		
 		getPathToNearestCamp: function (sector) {

@@ -1,5 +1,5 @@
-define(['ash', 'json!game/data/UpgradeData.json', 'game/constants/PlayerActionConstants', 'game/constants/TribeConstants', 'game/constants/WorldConstants', 'game/vos/UpgradeVO'],
-function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO) {
+define(['ash', 'json!game/data/UpgradeData.json', 'game/constants/PlayerActionConstants', 'game/constants/WorldConstants', 'game/vos/UpgradeVO'],
+function (Ash, UpgradeData, PlayerActionConstants, WorldConstants, UpgradeVO) {
 	
 	var UpgradeConstants = {
 		

@@ -279,12 +279,12 @@
             "resource_rope": 5000,
             "resource_tools": 1000
         },
-		"build_out_sundome": {
+        "build_out_sundome": {
             "resource_concrete": 800,
             "resource_metal": 10000,
             "resource_rope": 1000,
             "resource_tools": 1000
-		},
+        },
         "build_out_tradepost_connector": {
             "resource_concrete": 300,
             "resource_fuel": 300,
@@ -319,11 +319,11 @@
             "item_res_leather": 10,
             "resource_rope": 100
         },
-		"craft_bag_3": {
-            "item_res_tape": 10,
+        "craft_bag_3": {
             "item_res_leather": 20,
+            "item_res_tape": 10,
             "resource_rope": 100
-		},
+        },
         "craft_clothing_hands_1": {
             "item_res_silk": 1,
             "resource_rope": 10
@@ -685,8 +685,7 @@
             "favour": 77,
             "rumours": 1043
         },
-        "improve_building_temple3": {
-        },
+        "improve_building_temple3": {},
         "improve_in_apothecary": {
             "cost_factor_expBase": 1.25,
             "resource_metal": {
@@ -744,9 +743,9 @@
             },
             "resource_rope": 100,
             "resource_tools": {
-				"linearCost": 50,
-				"requiredOrdinal": 5
-			}
+                "linearCost": 50,
+                "requiredOrdinal": 5
+            }
         },
         "improve_in_generator": {
             "cost_factor_expBase": 1.5,
@@ -771,9 +770,9 @@
             },
             "resource_rope": 50,
             "resource_rubber": {
-				"expCost": 10,
-				"requiredOrdinal": 5
-			}
+                "expCost": 10,
+                "requiredOrdinal": 5
+            }
         },
         "improve_in_library": {
             "cost_factor_expBase": 1.25,
@@ -797,9 +796,9 @@
                 "linearCost": 50
             },
             "resource_rubber": {
-				"linearCost": 10,
+                "linearCost": 10,
                 "requiredOrdinal": 2
-			}
+            }
         },
         "improve_in_radiotower": {
             "resource_metal": 600
@@ -862,8 +861,7 @@
             "cost_factor_expBase": 1.25,
             "resource_metal": 8
         },
-        "improve_worker_apothecary_3": {
-        },
+        "improve_worker_apothecary_3": {},
         "improve_worker_chemist_2": {
             "evidence": 148
         },
@@ -1240,9 +1238,9 @@
         "build_out_camp": "A place to rest.",
         "build_out_collector_food": "Accumulates food.",
         "build_out_collector_water": "Accumulates water.",
-		"build_out_greenhouse": "A place to grow herbs.",
+        "build_out_greenhouse": "A place to grow herbs.",
         "build_out_tradepost_connector": "Allows traders and workers to cross the level safely.",
-		"build_out_sundome": "Protects the inhabitants from sunlight.",
+        "build_out_sundome": "Protects the inhabitants from sunlight.",
         "clear_debris": "Clear the debris blocking the way.",
         "clear_waste_r": "Clear the radiactive waste.",
         "clear_waste_t": "Clear the pollution.",
@@ -2073,17 +2071,73 @@
                 "unlock_building_spaceship3": true
             }
         },
-		"build_out_sundome": {
-			"improvements": {
-				"sundome": [
-					0,
-					1
-				]
-			}
-		},
+        "build_out_sundome": {
+            "improvements": {
+                "sundome": [
+                    0,
+                    1
+                ]
+            }
+        },
         "build_out_tradepost_connector": {
             "upgrades": {
                 "unlock_project_tradingpost_connector": true
+            }
+        },
+        "claim_milestone_1": {
+            "tribe": {
+                "improvements": {
+                    "hospital": 1
+                },
+                "population": 10
+            }
+        },
+        "claim_milestone_2": {
+            "tribe": {
+                "improvements": {
+                    "tradepost": 2
+                },
+                "population": 100
+            }
+        },
+        "claim_milestone_3": {
+            "tribe": {
+                "population": 200
+            }
+        },
+        "claim_milestone_4": {
+            "tribe": {
+                "improvements": {
+                    "smithy": 2
+                },
+                "population": 300,
+                "projects": {
+                    "greenhouse": 1
+                }
+            }
+        },
+        "claim_milestone_5": {
+            "tribe": {
+                "population": 400,
+                "projects": {
+                    "tradepost_connector": 1
+                }
+            }
+        },
+        "claim_milestone_6": {
+            "tribe": {
+                "improvements": {
+                    "researchcenter": 1
+                },
+                "population": 500
+            }
+        },
+        "claim_milestone_7": {
+            "tribe": {
+                "population": 600,
+                "projects": {
+                    "sundome": 1
+                }
             }
         },
         "clear_debris": {
@@ -2456,6 +2510,7 @@
             }
         },
         "improve_building_campfire_1": {
+            "milestone": 2,
             "upgrades": {
                 "unlock_building_square": true
             }
@@ -2503,6 +2558,7 @@
             }
         },
         "improve_building_library2": {
+            "milestone": 5,
             "upgrades": {
                 "improve_building_library": true
             }
@@ -2651,6 +2707,7 @@
             }
         },
         "improve_worker_scientist": {
+            "milestone": 6,
             "upgrades": {
                 "improve_building_apothecary": true
             }
@@ -2804,7 +2861,7 @@
             },
             "vision": [
                 5,
-				-1
+                -1
             ]
         },
         "move_sector_south": {
@@ -2939,7 +2996,8 @@
             }
         },
         "unlock_building_beacon": {
-            "blueprint": 4
+            "blueprint": 4,
+            "milestone": 3
         },
         "unlock_building_bridge": {
             "blueprint": 4,
@@ -2986,6 +3044,7 @@
                 "unlock_action_clear_waste_t": true
             }
         },
+        "unlock_building_hospital": {},
         "unlock_building_house2": {
             "blueprint": 7,
             "upgrades": {
@@ -3045,17 +3104,21 @@
         },
         "unlock_building_spaceship1": {
             "blueprint": 15,
+            "milestone": 7,
             "upgrades": {}
         },
         "unlock_building_spaceship2": {
             "blueprint": 15,
+            "milestone": 7,
             "upgrades": {}
         },
         "unlock_building_spaceship3": {
             "blueprint": 15,
+            "milestone": 7,
             "upgrades": {}
         },
         "unlock_building_square": {
+            "milestone": 1,
             "upgrades": {
                 "unlock_building_passage_staircase": true
             }
