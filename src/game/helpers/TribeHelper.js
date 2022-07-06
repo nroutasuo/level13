@@ -1,9 +1,13 @@
 define([
 	'ash',
+	'game/GameGlobals',
+	'game/constants/TribeConstants',
 	'game/nodes/sector/CampNode',
 	'game/nodes/tribe/TribeUpgradesNode'
 ], function (
 	Ash,
+	GameGlobals,
+	TribeConstants,
 	CampNode,
 	TribeUpgradesNode
 ) {
@@ -29,6 +33,16 @@ define([
 				result += Math.floor(campNode.camp.population);
 			}
 			return result;
+		},
+		
+		getCurrentMilestone: function () {
+			let currentIndex = GameGlobals.gameState.numUnlockedMilestones;
+			return TribeConstants.getMilestone(currentIndex);
+		},
+		
+		getNextMilestone: function () {
+			let nextIndex = GameGlobals.gameState.numUnlockedMilestones + 1;
+			return TribeConstants.getMilestone(nextIndex);
 		},
 		
 	});

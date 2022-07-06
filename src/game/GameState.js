@@ -16,6 +16,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.numExceptions = 0;
 			this.numCamps = 0;
 			this.numVisitedSectors = 0;
+			this.numUnlockedMilestones = 0;
 			this.isFinished = false;
 			this.playedVersions = [];
 

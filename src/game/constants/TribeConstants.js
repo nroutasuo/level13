@@ -29,6 +29,12 @@ define(['ash'], function (Ash) {
 			},
 		],
 		
+		getMilestone: function (i) {
+			let milestone = this.milestones[i] || {};
+			milestone.index = i;
+			return milestone;
+		}
+		
 	};
 	
 	return TribeConstants;

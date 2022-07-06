@@ -384,25 +384,18 @@ body.dark .dimmed {
 }
 body.dark .columns-container {
   display: flex;
+  gap: 5px;
 }
 body.dark .columns-container-vcenter {
   align-items: center;
 }
 body.dark .columns-child {
   flex: 1;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-body.dark .columns-child:first-child {
-  padding-left: 0px;
-}
-body.dark .columns-child:last-child {
-  padding-right: 0px;
 }
 body.dark .columns-child-small {
   flex: 0;
 }
-body.dark table.fullwidth {
+body.dark .fullwidth {
   width: 100%;
 }
 body.dark td,
@@ -2180,6 +2173,19 @@ body.dark #fight-popup-enemy-difficulty {
   -o-transition: none;
   transition: none;
 }
+body.dark .reqs-list-entry {
+  display: block;
+}
+body.dark .reqs-checkmark {
+  background-image: url('../img/eldorado/icon-checkmark-dark.png');
+  background-repeat: no-repeat;
+  background-image: url(../img/eldorado/icon-checkmark-dark.png);
+  background-size: 1em 1em;
+  background-position: center;
+  display: inline-block;
+  height: 1em;
+  width: 1em;
+}
 body.dark #manage-save-textarea {
   font-size: 85%;
 }
@@ -2556,25 +2562,18 @@ body.sunlit .dimmed {
 }
 body.sunlit .columns-container {
   display: flex;
+  gap: 5px;
 }
 body.sunlit .columns-container-vcenter {
   align-items: center;
 }
 body.sunlit .columns-child {
   flex: 1;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-body.sunlit .columns-child:first-child {
-  padding-left: 0px;
-}
-body.sunlit .columns-child:last-child {
-  padding-right: 0px;
 }
 body.sunlit .columns-child-small {
   flex: 0;
 }
-body.sunlit table.fullwidth {
+body.sunlit .fullwidth {
   width: 100%;
 }
 body.sunlit td,
@@ -4351,6 +4350,19 @@ body.sunlit #fight-popup-enemy-difficulty {
   -ms-transition: none;
   -o-transition: none;
   transition: none;
+}
+body.sunlit .reqs-list-entry {
+  display: block;
+}
+body.sunlit .reqs-checkmark {
+  background-image: url('../img/eldorado/icon-checkmark.png');
+  background-repeat: no-repeat;
+  background-image: url(../img/eldorado/icon-checkmark-dark.png);
+  background-size: 1em 1em;
+  background-position: center;
+  display: inline-block;
+  height: 1em;
+  width: 1em;
 }
 body.sunlit #manage-save-textarea {
   font-size: 85%;

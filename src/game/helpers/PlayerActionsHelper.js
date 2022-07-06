@@ -857,6 +857,9 @@ define([
 						if (requirements.tribe.population) {
 							let currentPopulation = GameGlobals.tribeHelper.getTotalPopulation();
 							let requiredPopulation = requirements.tribe.population;
+							if (currentPopulation < requiredPopulation) {
+								return { value: currentPopulation / requiredPopulation, reason: "Required: " + requiredPopulation + " total population" };
+							}
 						}
 					}
 					
@@ -1567,6 +1570,7 @@ define([
 			if (!action) return action;
 			var getBaseActionIdInternal = function (a) {
 				if (a.indexOf("build_in_") >= 0) return a;
+				if (a.indexOf("claim_milestone_") >= 0) return "claim_milestone";
 				if (a.indexOf("improve_in_") >= 0) return "improve_in";
 				if (a.indexOf("improve_out") >= 0) return "improve_out";
 				if (a.indexOf("scout_locale_i") >= 0) return "scout_locale_i";
