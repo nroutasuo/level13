@@ -244,7 +244,7 @@ define(['ash',
 				case "discard": this.discardItem(param); break;
 				case "use_item": this.useItem(param, deductedCosts); break;
 				case "use_item_fight": this.useItemFight(param); break;
-				// Non-improvement actions
+				// Other actions
 				case "enter_camp": this.enterCamp(param); break;
 				case "scavenge": this.scavenge(param); break;
 				case "scout": this.scout(param); break;
@@ -269,6 +269,7 @@ define(['ash',
 				case "despair": this.despair(param); break;
 				case "unlock_upgrade": this.unlockUpgrade(param); break;
 				case "create_blueprint": this.createBlueprint(param); break;
+				case "claim_milestone": this.claimMilestone(param); break;
 				case "launch": this.launch(param); break;
 				// Mapped directly in UIFunctions
 				case "leave_camp": break;
@@ -1835,6 +1836,19 @@ define(['ash',
 				this.save();
 				gtag('event', 'upgrade_bought', { event_category: 'progression', event_label: upgradeID });
 			}
+		},
+
+		claimMilestone: function (index) {
+			index = parseInt(index);
+			let currentIndex = GameGlobals.gameState.numUnlockedMilestones;
+			let nextIndex = currentIndex + 1;
+			if (index != nextIndex) {
+				log.w("trying to claim wrong milestone index (" + index + "), currently claimed: " + currentIndex);
+				return;
+			}
+			
+			GameGlobals.gameState.numUnlockedMilestones = index;
+			GlobalSignals.milestoneUnlockedSignal.dispatch();
 		},
 
 		collectCollector: function (actionName, improvementName, amount) {

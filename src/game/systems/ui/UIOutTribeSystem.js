@@ -60,6 +60,7 @@ define([
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 			this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
 			GlobalSignals.add(this, GlobalSignals.campBuiltSignal, this.onCampBuilt);
+			GlobalSignals.add(this, GlobalSignals.milestoneUnlockedSignal, this.onMilestoneClaimed);
 			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
 			
@@ -156,15 +157,19 @@ define([
 			
 			let reqs = GameGlobals.playerActionsHelper.getReqs(action);
 			let requirementsDiv = "<div style='flex-grow: 2'>";
-			requirementsDiv += this.getMilestoneReqsListEntry("Population", reqs.tribe.population, GameGlobals.tribeHelper.getTotalPopulation());
-			if (reqs.tribe.improvements) {
-				for (let improvementID in reqs.tribe.improvements) {
-					requirementsDiv += this.getMilestoneReqsListEntry(improvementID, reqs.tribe.improvements[improvementID], GameGlobals.playerActionsHelper.getCurrentImprovementCountTotal(improvementID));
+			if (reqs) {
+				if (reqs.tribe && reqs.tribe.population) {
+					requirementsDiv += this.getMilestoneReqsListEntry("Population", reqs.tribe.population, GameGlobals.tribeHelper.getTotalPopulation());
 				}
-			}
-			if (reqs.tribe.projects) {
-				for (let improvementID in reqs.tribe.projects) {
-					requirementsDiv += this.getMilestoneReqsListEntry(improvementID, reqs.tribe.projects[improvementID], GameGlobals.playerActionsHelper.getCurrentImprovementCountTotal(improvementID));
+				if (reqs.tribe && reqs.tribe.improvements) {
+					for (let improvementID in reqs.tribe.improvements) {
+						requirementsDiv += this.getMilestoneReqsListEntry(improvementID, reqs.tribe.improvements[improvementID], GameGlobals.playerActionsHelper.getCurrentImprovementCountTotal(improvementID));
+					}
+				}
+				if (reqs.tribe && reqs.tribe.projects) {
+					for (let improvementID in reqs.tribe.projects) {
+						requirementsDiv += this.getMilestoneReqsListEntry(improvementID, reqs.tribe.projects[improvementID], GameGlobals.playerActionsHelper.getCurrentImprovementCountTotal(improvementID));
+					}
 				}
 			}
 			requirementsDiv += "</div>";
@@ -518,6 +523,13 @@ define([
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			this.sortCampNodes();
 			this.refresh();
+		},
+		
+		onMilestoneClaimed: function () {
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
+			if (GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.world) {
+				this.updateMilestones();
+			}
 		}
 
 	});
