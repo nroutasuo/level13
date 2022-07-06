@@ -229,7 +229,7 @@ define([
 					break;
 				case improvementNames.temple:
 					var arcr = Math.min(size.x / 2, size.y / 2);
-					CanvasUtils.drawArc(this.ctx, color, middlex, middley, arcr, Math.PI - anglePadding, anglePadding);
+					CanvasUtils.drawArc(this.ctx, color, middlex, middley, arcr, Math.PI - defaultAnglePadding, defaultAnglePadding);
 					break;
 				case improvementNames.sundome:
 					let rX = this.containerWidth / 2 - size.x * 3;
