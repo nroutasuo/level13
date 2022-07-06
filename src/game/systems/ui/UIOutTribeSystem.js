@@ -119,6 +119,8 @@ define([
 				return;
 			this.updateMessages();
 			this.bubbleNumber = this.campsWithAlert;
+			if (this.canClaimMilestone()) this.bubbleNumber++;
+			
 			$("#switch-world .bubble").text(this.bubbleNumber)
 			GameGlobals.uiFunctions.toggle("#switch-world .bubble", this.bubbleNumber > 0);
 		},
@@ -182,6 +184,12 @@ define([
 			GameGlobals.uiFunctions.generateButtonOverlays("#milestone-container");
 			GameGlobals.uiFunctions.generateCallouts("#milestone-container");
 			GameGlobals.uiFunctions.registerActionButtonListeners("#milestone-container");
+		},
+		
+		canClaimMilestone: function () {
+			let nextMilestone = GameGlobals.tribeHelper.getNextMilestone();
+			let action = "claim_milestone_" + nextMilestone.index;
+			return GameGlobals.playerActionsHelper.checkAvailability(action);
 		},
 		
 		getMilestoneReqsListEntry: function (name, reqAmount, currentAmount) {
