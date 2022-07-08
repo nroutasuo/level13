@@ -60,7 +60,6 @@ define([
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 			this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
 			GlobalSignals.add(this, GlobalSignals.campBuiltSignal, this.onCampBuilt);
-			GlobalSignals.add(this, GlobalSignals.milestoneUnlockedSignal, this.onMilestoneClaimed);
 			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
 			
@@ -99,7 +98,6 @@ define([
 			$("#tab-header h2").text("Tribe");
 			this.updateNodes(true);
 			this.updateMessages();
-			this.updateMilestones();
 			
 			GameGlobals.uiFunctions.toggle(".camp-overview-lvl14", GameGlobals.gameState.numCamps > 8);
 			$(".camp-overview-lvl14 hr").toggleClass("warning", GameGlobals.levelHelper.getLevelBuiltOutImprovementsCount(14, improvementNames.tradepost_connector) <= 0);
@@ -119,7 +117,6 @@ define([
 				return;
 			this.updateMessages();
 			this.bubbleNumber = this.campsWithAlert;
-			if (this.canClaimMilestone()) this.bubbleNumber++;
 			
 			$("#switch-world .bubble").text(this.bubbleNumber)
 			GameGlobals.uiFunctions.toggle("#switch-world .bubble", this.bubbleNumber > 0);
@@ -147,57 +144,6 @@ define([
 				msg = this.getNotificationMessage(vo.type, vo.lvl) || msg;
 			}
 			$("#world-message").text(msg);
-		},
-
-		updateMilestones: function () {
-			let currentMilestone = GameGlobals.tribeHelper.getCurrentMilestone();
-			let nextMilestone = GameGlobals.tribeHelper.getNextMilestone();
-			
-			$("#milestone-current").text("Current tribe level: " + currentMilestone.name + " (" + currentMilestone.index + ")");
-			
-			let action = "claim_milestone_" + nextMilestone.index;
-			
-			let reqs = GameGlobals.playerActionsHelper.getReqs(action);
-			let requirementsDiv = "<div style='flex-grow: 2'>";
-			if (reqs) {
-				if (reqs.tribe && reqs.tribe.population) {
-					requirementsDiv += this.getMilestoneReqsListEntry("Population", reqs.tribe.population, GameGlobals.tribeHelper.getTotalPopulation());
-				}
-				if (reqs.tribe && reqs.tribe.improvements) {
-					for (let improvementID in reqs.tribe.improvements) {
-						requirementsDiv += this.getMilestoneReqsListEntry(improvementID, reqs.tribe.improvements[improvementID], GameGlobals.playerActionsHelper.getCurrentImprovementCountTotal(improvementID));
-					}
-				}
-				if (reqs.tribe && reqs.tribe.projects) {
-					for (let improvementID in reqs.tribe.projects) {
-						requirementsDiv += this.getMilestoneReqsListEntry(improvementID, reqs.tribe.projects[improvementID], GameGlobals.playerActionsHelper.getCurrentImprovementCountTotal(improvementID));
-					}
-				}
-			}
-			requirementsDiv += "</div>";
-			
-			$("#milestone-container").empty();
-			$("#milestone-container").append("<div>" + nextMilestone.name + " (" + nextMilestone.index + ")" + "</div>");
-			$("#milestone-container").append(requirementsDiv);
-			$("#milestone-container").append("<div><button class='action' action='" + action + "'>Unlock</button></div>");
-			
-			GameGlobals.uiFunctions.generateButtonOverlays("#milestone-container");
-			GameGlobals.uiFunctions.generateCallouts("#milestone-container");
-			GameGlobals.uiFunctions.registerActionButtonListeners("#milestone-container");
-		},
-		
-		canClaimMilestone: function () {
-			let nextMilestone = GameGlobals.tribeHelper.getNextMilestone();
-			let action = "claim_milestone_" + nextMilestone.index;
-			return GameGlobals.playerActionsHelper.checkAvailability(action);
-		},
-		
-		getMilestoneReqsListEntry: function (name, reqAmount, currentAmount) {
-			let isReady = currentAmount >= reqAmount;
-			let spanName = "<span>" + name + "</span>";
-			let spanAmount = "<span class='" + (isReady ? "" : "action-cost-blocker") + "'>" + currentAmount + "/" + reqAmount + "</span>";
-			let spanIcon = isReady ? "<span class='reqs-checkmark' title='checkmark' />" : "";
-			return "<span class='reqs-list-entry'>" + spanName + ": " + spanAmount + spanIcon + "</span>";
 		},
 
 		updateNode: function (node, isActive) {
@@ -532,13 +478,6 @@ define([
 			this.sortCampNodes();
 			this.refresh();
 		},
-		
-		onMilestoneClaimed: function () {
-			if (GameGlobals.gameState.uiStatus.isHidden) return;
-			if (GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.world) {
-				this.updateMilestones();
-			}
-		}
 
 	});
 

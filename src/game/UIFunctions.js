@@ -34,6 +34,7 @@ define(['ash',
 					upgrades: "switch-upgrades",
 					blueprints: "switch-blueprints",
 					world: "switch-world",
+					milestones: "switch-milestones",
 					embark: "switch-embark"
 				},
 			},
