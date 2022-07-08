@@ -12,6 +12,7 @@ define([
 	'game/helpers/FightHelper',
 	'game/helpers/ItemsHelper',
 	'game/helpers/LevelHelper',
+	'game/helpers/MilestoneEffectsHelper',
 	'game/helpers/MovementHelper',
 	'game/helpers/PlayerHelper',
 	'game/helpers/PlayerActionsHelper',
@@ -39,6 +40,7 @@ define([
 	FightHelper,
 	ItemsHelper,
 	LevelHelper,
+	MilestoneEffectsHelper,
 	MovementHelper,
 	PlayerHelper,
 	PlayerActionsHelper,
@@ -63,6 +65,7 @@ define([
 			}
 			
 			GameGlobals.upgradeEffectsHelper = new UpgradeEffectsHelper();
+			GameGlobals.milestoneEffectsHelper = new MilestoneEffectsHelper();
 			GameGlobals.itemsHelper = new ItemsHelper();
 			GameGlobals.campHelper = new CampHelper(engine);
 			GameGlobals.campBalancingHelper = new CampBalancingHelper();

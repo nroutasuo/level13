@@ -10,6 +10,7 @@ define([
 	'game/constants/LogConstants',
 	'game/constants/OccurrenceConstants',
 	'game/constants/TradeConstants',
+	'game/constants/TribeConstants',
 	'game/constants/TextConstants',
 	'game/constants/UIConstants',
 	'game/constants/WorldConstants',
@@ -28,7 +29,7 @@ define([
 	'game/vos/RaidVO',
 	'text/Text'
 ], function (
-	Ash, GameGlobals, GlobalSignals, GameConstants, CampConstants, FollowerConstants, ItemConstants, LogConstants, OccurrenceConstants, TradeConstants, TextConstants, UIConstants, WorldConstants,
+	Ash, GameGlobals, GlobalSignals, GameConstants, CampConstants, FollowerConstants, ItemConstants, LogConstants, OccurrenceConstants, TradeConstants, TribeConstants, TextConstants, UIConstants, WorldConstants,
 	PlayerResourcesNode, CampNode, TribeUpgradesNode,
 	CampComponent, PositionComponent, LogMessagesComponent, ItemsComponent,
 	RecruitComponent, TraderComponent, RaidComponent, CampEventTimersComponent,
@@ -152,6 +153,10 @@ define([
 
 		isCampValidForEvent: function (campNode, event) {
 			if (GameGlobals.gameState.isAutoPlaying) return false;
+			
+			let milestoneIndex = GameGlobals.milestoneEffectsHelper.getMilestoneIndexForOccurrence(event);
+			if (GameGlobals.gameState.numUnlockedMilestones < milestoneIndex) return;
+			
 			var population = campNode.camp.population;
 			var improvements = campNode.entity.get(SectorImprovementsComponent);
 			switch (event) {

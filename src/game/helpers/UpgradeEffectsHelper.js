@@ -11,8 +11,6 @@ define([
 	
 	var UpgradeEffectsHelper = Ash.Class.extend({
 		
-		constructor: function () {},
-		
 		improvementsByOccurrence: {},
 		
 		constructor: function () {

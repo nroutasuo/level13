@@ -614,7 +614,7 @@
         },
         "improve_building_apothecary": {
             "evidence": 376,
-            "favour": 228
+            "favour": 184
         },
         "improve_building_barracks_3": {
             "rumours": 4130
@@ -641,7 +641,7 @@
             "rumours": 2754
         },
         "improve_building_inn": {
-            "favour": 117,
+            "favour": 90,
             "rumours": 1697
         },
         "improve_building_library": {
@@ -656,24 +656,23 @@
         },
         "improve_building_market2": {
             "evidence": 211,
-            "favour": 187
+            "favour": 143
         },
         "improve_building_market3": {
-            "favour": 368,
+            "favour": 297,
             "rumours": 3442
         },
         "improve_building_radiotower": {
-            "evidence": 646
+            "evidence": 653
         },
         "improve_building_shrine": {
-            "favour": 337,
+            "favour": 272,
             "rumours": 2267
         },
         "improve_building_stable_2": {
             "rumours": 321
         },
-        "improve_building_stable_3": {
-        },
+        "improve_building_stable_3": {},
         "improve_building_storage1": {
             "evidence": 296
         },
@@ -872,24 +871,23 @@
             "rumours": 1697
         },
         "improve_worker_cleric_3": {
-            "favour": 228,
+            "favour": 184,
             "rumours": 3073
         },
-        "improve_worker_concrete_3": {
-        },
+        "improve_worker_concrete_3": {},
         "improve_worker_gardener_2": {
             "evidence": 433,
-            "favour": 421
+            "favour": 340
         },
         "improve_worker_gardener_3": {
             "evidence": 262,
             "favour": 115
         },
         "improve_worker_rubber_2": {
-            "evidence": 551
+            "evidence": 547
         },
         "improve_worker_rubber_3": {
-            "favour": 265
+            "favour": 214
         },
         "improve_worker_scavenger_2": {
             "evidence": 98,
@@ -909,7 +907,7 @@
         },
         "improve_worker_trapper_2": {
             "evidence": 281,
-            "favour": 156
+            "favour": 119
         },
         "improve_worker_trapper_3": {
             "favour": 151
@@ -998,7 +996,7 @@
             "rumours": 1001
         },
         "unlock_building_barracks": {
-            "evidence": 183,
+            "evidence": 186,
             "rumours": 428
         },
         "unlock_building_beacon": {
@@ -1009,7 +1007,7 @@
         },
         "unlock_building_ceiling": {
             "evidence": 357,
-            "favour": 430
+            "favour": 347
         },
         "unlock_building_cementmill": {
             "evidence": 247
@@ -1036,7 +1034,7 @@
             "evidence": 17
         },
         "unlock_building_house2": {
-            "evidence": 367,
+            "evidence": 372,
             "rumours": 342
         },
         "unlock_building_inn": {
@@ -1057,7 +1055,7 @@
             "rumours": 165
         },
         "unlock_building_passage_hole": {
-            "evidence": 183
+            "evidence": 186
         },
         "unlock_building_passage_staircase": {
             "evidence": 47
@@ -1067,10 +1065,10 @@
             "rumours": 3533
         },
         "unlock_building_researchcenter": {
-            "evidence": 485
+            "evidence": 490
         },
         "unlock_building_smithy": {
-            "evidence": 153
+            "evidence": 155
         },
         "unlock_building_spaceship1": {
             "evidence": 594,
@@ -1103,13 +1101,13 @@
             "rumours": 114
         },
         "unlock_item_bag_2": {
-            "evidence": 122
+            "evidence": 124
         },
         "unlock_item_bag_3": {
             "rumours": 626
         },
         "unlock_item_bag_4": {
-            "favour": 294
+            "favour": 237
         },
         "unlock_item_clothing2": {
             "rumours": 13
@@ -1139,11 +1137,11 @@
             "rumours": 1176
         },
         "unlock_item_clothing_body_13": {
-            "favour": 228,
+            "favour": 184,
             "rumours": 3073
         },
         "unlock_item_clothing_body_15": {
-            "favour": 688,
+            "favour": 554,
             "rumours": 4128
         },
         "unlock_item_clothing_hands_25": {
@@ -1153,7 +1151,7 @@
             "rumours": 234
         },
         "unlock_item_clothing_head_5": {
-            "favour": 171
+            "favour": 138
         },
         "unlock_item_clothing_over_15": {
             "rumours": 4300
@@ -1177,7 +1175,7 @@
             "rumours": 835
         },
         "unlock_item_weapon_11": {
-            "evidence": 551,
+            "evidence": 547,
             "favour": 168
         },
         "unlock_item_weapon_12": {
@@ -1187,12 +1185,12 @@
             "evidence": 319
         },
         "unlock_item_weapon_14": {
-            "evidence": 970,
+            "evidence": 980,
             "rumours": 4130
         },
         "unlock_item_weapon_15": {
             "evidence": 547,
-            "favour": 573
+            "favour": 462
         },
         "unlock_item_weapon_2": {
             "evidence": 66
@@ -1239,8 +1237,9 @@
         "build_out_collector_food": "Accumulates food.",
         "build_out_collector_water": "Accumulates water.",
         "build_out_greenhouse": "A place to grow herbs.",
-        "build_out_tradepost_connector": "Allows traders and workers to cross the level safely.",
         "build_out_sundome": "Protects the inhabitants from sunlight.",
+        "build_out_tradepost_connector": "Allows traders and workers to cross the level safely.",
+        "claim_milestone": "Claim a new level and unlock new things.",
         "clear_debris": "Clear the debris blocking the way.",
         "clear_waste_r": "Clear the radiactive waste.",
         "clear_waste_t": "Clear the pollution.",
@@ -1433,16 +1432,16 @@
             }
         },
         "build_in_barracks": {
+            "house": [
+                2,
+                -1
+            ],
             "improvements": {
                 "barracks": [
                     -1,
                     2
                 ]
             },
-			"house": [
-				2,
-				-1
-			],
             "upgrades": {
                 "unlock_building_barracks": true
             }

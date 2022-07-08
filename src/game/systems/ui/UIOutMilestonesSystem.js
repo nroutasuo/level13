@@ -85,7 +85,8 @@ define([
 			let currentMilestone = GameGlobals.tribeHelper.getCurrentMilestone();
 			let nextMilestone = GameGlobals.tribeHelper.getNextMilestone();
 			
-			$("#milestone-current").text("Current tribe level: " + currentMilestone.name + " (" + currentMilestone.index + ")");
+			$("#milestone-current-name").text("Current tribe level: " + currentMilestone.name + " (" + currentMilestone.index + ")");
+			$("#milestone-next-name").text("Next tribe level: " + nextMilestone.name + " (" + nextMilestone.index + ")");
 			
 			let action = "claim_milestone_" + nextMilestone.index;
 			
@@ -109,7 +110,6 @@ define([
 			requirementsDiv += "</div>";
 			
 			$("#milestone-container").empty();
-			$("#milestone-container").append("<div>" + nextMilestone.name + " (" + nextMilestone.index + ")" + "</div>");
 			$("#milestone-container").append(requirementsDiv);
 			$("#milestone-container").append("<div><button class='action' action='" + action + "'>Unlock</button></div>");
 			

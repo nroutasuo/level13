@@ -1,4 +1,4 @@
-define(['ash'], function (Ash) {
+define(['ash', 'game/constants/OccurrenceConstants'], function (Ash, OccurrenceConstants) {
 	
 	var TribeConstants = {
 		
@@ -8,6 +8,7 @@ define(['ash'], function (Ash) {
 			},
 			{
 				"name": "milestone 1",
+				"unlockedEvents": [ OccurrenceConstants.campOccurrenceTypes.raid ],
 			},
 			{
 				"name": "milestone 2",
