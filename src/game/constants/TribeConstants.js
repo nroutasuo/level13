@@ -34,6 +34,11 @@ define(['ash', 'game/constants/OccurrenceConstants'], function (Ash, OccurrenceC
 			let milestone = this.milestones[i] || {};
 			milestone.index = i;
 			return milestone;
+		},
+		
+		getPreviousMilestone: function (milestone) {
+			if (milestone.index <= 0) return null;
+			return this.milestones[milestone.index - 1];
 		}
 		
 	};

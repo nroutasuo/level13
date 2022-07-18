@@ -106,6 +106,14 @@ define([
 
 			return this.getMaxWorkers(workerID, improvements, upgrades, workshops);
 		},
+		
+		getMinCampOrdinalForPopulation: function (totalPopulation) {
+			for (let i = 0; i < WorldConstants.CAMPS_TOTAL; i++) {
+				let pop = this.getMaxTotalPopulation(i);
+				if (pop >= totalPopulation) return i;
+			}
+			return WorldConstants.CAMPS_TOTAL
+		},
 
 		getMaxTotalPopulation: function (maxCampOrdinal) {
 			let result = 0;

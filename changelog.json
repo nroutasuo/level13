@@ -5,7 +5,10 @@
 			"phase": "alpha",
 			"final": false,
 			"changes": [
-				
+				{
+					"type": "GD",
+					"summary": "Add milestones"
+				}
 			]
 		},
 		{

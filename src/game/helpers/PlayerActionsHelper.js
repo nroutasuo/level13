@@ -827,6 +827,14 @@ define([
 						}
 					}
 					
+					if (requirements.milestone) {
+						let currentMilestone = GameGlobals.gameState.numUnlockedMilestones;
+						let requiredMilestone = requirements.milestone;
+						if (currentMilestone < requiredMilestone) {
+							return { value: 0, reason: "Requires milestone " + requiredMilestone };
+						}
+					}
+					
 					if (requirements.tribe) {
 						if (requirements.tribe.improvements) {
 							for (var improvementID in requirements.tribe.improvements) {
