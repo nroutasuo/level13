@@ -2088,7 +2088,7 @@
                 "improvements": {
                     "hospital": 1
                 },
-                "population": 10
+                "population": 8
             }
         },
         "claim_milestone_2": {
@@ -2096,12 +2096,12 @@
                 "improvements": {
                     "tradepost": 2
                 },
-                "population": 100
+                "population": 24
             }
         },
         "claim_milestone_3": {
             "tribe": {
-                "population": 200
+                "population": 80
             }
         },
         "claim_milestone_4": {
@@ -2109,7 +2109,7 @@
                 "improvements": {
                     "smithy": 2
                 },
-                "population": 300,
+                "population": 280,
                 "projects": {
                     "greenhouse": 1
                 }
@@ -2128,12 +2128,12 @@
                 "improvements": {
                     "researchcenter": 1
                 },
-                "population": 500
+                "population": 700
             }
         },
         "claim_milestone_7": {
             "tribe": {
-                "population": 600,
+                "population": 1000,
                 "projects": {
                     "sundome": 1
                 }
