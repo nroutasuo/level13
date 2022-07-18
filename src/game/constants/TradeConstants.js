@@ -274,6 +274,8 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 				rarity = item.scavengeRarity;
 			} else if (item.localeRarity > 0) {
 				rarity = item.localeRarity;
+			} else if (item.investigateRarity > 0) {
+				rarity = item.investigateRarity;
 			}
 			
 			if (rarity > 0) {

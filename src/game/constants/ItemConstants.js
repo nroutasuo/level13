@@ -84,6 +84,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 				if (!this.itemDefinitions[type]) this.itemDefinitions[type] = [];
 				var itemVO = new ItemVO(item.id, item.name, item.type, item.campOrdinalRequired, item.campOrdinalMaximum, item.isEquippable, item.isCraftable, item.isUseable, bonuses, item.icon, item.description, item.isSpecialEquipment);
 				itemVO.scavengeRarity = item.rarityScavenge;
+				itemVO.investigateRarity = item.rarityInvestigate;
 				itemVO.localeRarity = item.rarityLocale;
 				itemVO.tradeRarity = item.rarityTrade;
 				itemVO.configData = item.configData || {};

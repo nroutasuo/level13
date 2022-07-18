@@ -15,6 +15,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		scavengeRarity: -1,
 		localeRarity: -1,
 		tradeRarity: -1,
+		investigateRarity: -1,
 
 		equippable: false,
 		craftable: false,
@@ -46,6 +47,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			this.scavengeRarity = -1;
 			this.localeRarity = -1;
 			this.tradeRarity = -1;
+			this.investigateRarity = -1;
 			
 			this.configData = {};
 			
@@ -82,6 +84,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			delete clone.scavengeRarity;
 			delete clone.localeRarity;
 			delete clone.tradeRarity;
+			delete clone.investigateRarity;
 			delete clone.craftable;
 			delete clone.useable;
 			delete clone.type;
@@ -101,6 +104,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			clone.scavengeRarity = this.scavengeRarity;
 			clone.localeRarity = this.localeRarity;
 			clone.tradeRarity = this.tradeRarity;
+			clone.investigateRarity = this.investigateRarity;
 			clone.tradePrice = this.tradePrice;
 			return clone;
 		}

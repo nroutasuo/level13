@@ -182,6 +182,21 @@ define([
 
 		getInvestigateRewards: function () {
 			var rewards = new ResultVO("investigate");
+
+			var sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			
+			var itemOptions = { rarityKey: "investigateRarity" };
+			
+			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound);
+			rewards.gainedItems = this.getRewardItems(0.25, 0, [], itemOptions);
+			rewards.gainedEvidence = 1;
+			
+			/*
+			if (rewards.foundStashVO == null) {
+				this.addFollowerBonuses(rewards, sectorResources, [], itemOptions);
+			}
+			*/
 			
 			return rewards;
 		},
@@ -955,7 +970,7 @@ define([
 		},
 
 		// options
-		// - rarityKey: context-specific key used to determine item rarity (scavengeRarity/localeRarity/tradeRarity)
+		// - rarityKey: context-specific key used to determine item rarity (scavengeRarity/localeRarity/tradeRarity/investigateRarity)
 		// - allowNextCampOrdinal: include items that require next camp ordinal in the valid items (for high value rewards)
 		getRewardItem: function (efficiency, campOrdinal, step, options) {
 			let rarityKey = options.rarityKey || "scavengeRarity";
@@ -985,7 +1000,7 @@ define([
 				for (let i in itemList) {
 					let itemDefinition = itemList[i];
 					let isObsolete = GameGlobals.itemsHelper.isObsolete(itemDefinition, itemsComponent, false);
-					let rarity = itemDefinition[rarityKey];
+					let rarity = itemDefinition[rarityKey] || -1;
 					
 					if (rarity <= 0) continue;
 					if (rarity > maxRarity) continue;
@@ -1125,11 +1140,11 @@ define([
 		addFollowerBonuses: function (rewards, sectorResources, sectorIngredients, itemOptions) {
 			var efficiency = this.getCurrentScavengeEfficiency();
 			
-			// follower bonuses (1.0 - 2.0)
 			let generalBonus = GameGlobals.playerHelper.getCurrentBonus(ItemConstants.itemBonusTypes.scavenge_general);
 			let suppliesBonus = GameGlobals.playerHelper.getCurrentBonus(ItemConstants.itemBonusTypes.scavenge_supplies);
 			let ingredientsBonus = GameGlobals.playerHelper.getCurrentBonus(ItemConstants.itemBonusTypes.scavenge_ingredients);
 			
+			// general (resources)
 			let bonusResourceProb = generalBonus - 1;
 			let bonusResources = this.getRewardResources(bonusResourceProb, 1, efficiency, sectorResources);
 			rewards.gainedResourcesFromFollowers = bonusResources;
@@ -1139,6 +1154,7 @@ define([
 				generalBonus = 0;
 			}
 			
+			// supplies
 			let bonusSuppliesProb = suppliesBonus - 1;
 			let sectorSupplies = new ResourcesVO();
 			sectorSupplies.setResource(resourceNames.food, sectorResources.getResource(resourceNames.food));
@@ -1147,6 +1163,7 @@ define([
 			rewards.gainedResourcesFromFollowers.addAll(bonusSupplies);
 			rewards.gainedResources.addAll(bonusSupplies);
 			
+			// ingredients
 			if (rewards.gainedItems.length == 0) {
 				let bonusItemProb = generalBonus - 1;
 				let bonusIngredientProb = generalBonus - 1 + ingredientsBonus - 1;
