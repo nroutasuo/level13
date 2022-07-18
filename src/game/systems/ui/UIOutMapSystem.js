@@ -381,6 +381,7 @@ define([
 		
 		getResScaText: function (sector, isScouted, statusComponent, featuresComponent) {
 			let scavengedPercent = UIConstants.roundValue(statusComponent.getScavengedPercent());
+			let investigatedPercent = UIConstants.roundValue(statusComponent.getInvestigatedPercent());
 			
 			let result = "";
 			let resources = GameGlobals.sectorHelper.getLocationDiscoveredResources(sector);
@@ -394,6 +395,10 @@ define([
 			}
 			
 			result += " (" + scavengedPercent + "% scavenged) ";
+			
+			if (investigatedPercent > 0) {
+				result += " (" + investigatedPercent + "% investigated) ";
+			}
 			
 			return result;
 		},

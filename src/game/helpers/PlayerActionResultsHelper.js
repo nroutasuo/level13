@@ -117,6 +117,9 @@ define([
 					var localeVO = sectorLocalesComponent.locales[localei];
 					resultVO = this.getScoutLocaleRewards(localeVO);
 					break;
+				case "investigate":
+					resultVO = this.getInvestigateRewards();
+					break;
 				case "use_spring":
 					resultVO = this.getUseSpringRewards();
 					break;
@@ -174,6 +177,12 @@ define([
 			
 			rewards.gainedFollowers = this.getFallbackFollowers(0.1);
 
+			return rewards;
+		},
+
+		getInvestigateRewards: function () {
+			var rewards = new ResultVO("investigate");
+			
 			return rewards;
 		},
 

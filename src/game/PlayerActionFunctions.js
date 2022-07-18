@@ -247,6 +247,7 @@ define(['ash',
 				// Other actions
 				case "enter_camp": this.enterCamp(param); break;
 				case "scavenge": this.scavenge(param); break;
+				case "investigate": this.investigate(param); break;
 				case "scout": this.scout(param); break;
 				case "scout_locale_i": this.scoutLocale(param); break;
 				case "scout_locale_u": this.scoutLocale(param); break;
@@ -537,6 +538,31 @@ define(['ash',
 				}
 			};
 			this.handleOutActionResults("scavenge", LogConstants.MSG_ID_SCAVENGE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, null, successCallback);
+		},
+
+		investigate: function () {
+			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			var efficiency = GameGlobals.playerActionResultsHelper.getCurrentScavengeEfficiency();
+			
+			GameGlobals.gameState.unlockedFeatures.investigate = true;
+
+			var logMsg = "Investigated the area. ";
+
+			var logMsgSuccess = logMsg;
+			var logMsgFlee = logMsg + "Fled empty-handed.";
+			var logMsgDefeat = logMsg + "Got into a fight and was defeated.";
+			let sys = this;
+			var successCallback = function () {
+				let investigatedPercentBefore = sectorStatus.getInvestigatedPercent();
+				sectorStatus.investigated = true;
+				sectorStatus.weightedNumInvestigates += Math.min(1, efficiency);
+				let investigatedPercentAfter = sectorStatus.getInvestigatedPercent();
+				let warningThreshold = 90;
+				if (investigatedPercentBefore < warningThreshold && investigatedPercentAfter >= warningThreshold) {
+					sys.addLogMessage(LogConstants.getUniqueID(), "There isn't much left to see here.");
+				}
+			};
+			this.handleOutActionResults("investigate", LogConstants.MSG_ID_INVESTIGATE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, null, successCallback);
 		},
 
 		scout: function () {

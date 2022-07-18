@@ -673,6 +673,14 @@ define([
 								return result;
 							}
 						}
+						if (typeof requirements.sector.investigatedPercent != "undefined") {
+							var range = requirements.sector.investigatedPercent;
+							var currentVal = statusComponent.getInvestigatedPercent() / 100;
+							let result = this.checkRequirementsRange(range, currentVal, "", "This area has beens investigated thoroughly.");
+							if (result) {
+								return result;
+							}
+						}
 						if (typeof requirements.sector.spring != "undefined") {
 							if (featuresComponent.hasSpring != requirements.sector.spring) {
 								if (featuresComponent.hasSpring)    reason = "There is a spring.";

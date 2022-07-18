@@ -81,6 +81,7 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 		isExplorationAction: function (action) {
 			switch (action) {
 				case 'scavenge':
+				case 'investigate':
 				case 'use_spring':
 				case 'scout_locale_i':
 				case 'scout_locale_u':

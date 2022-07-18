@@ -3,6 +3,7 @@
         "clear_workshop": 60,
         "despair": 10,
         "fight_gang": 60,
+        "investigate": 10,
         "scavenge": 10,
         "scout_locale_i": 60,
         "scout_locale_u": 60,
@@ -918,6 +919,9 @@
         "improve_worker_water_3": {
             "rumours": 3380
         },
+        "investigate": {
+            "stamina": 10
+        },
         "launch": {
             "resource_fuel": 10000
         },
@@ -1249,6 +1253,7 @@
         "enter_camp": "Rest and manage camp.",
         "fight_gang": "Clear the enemies blocking passage.",
         "flee": "Abandon what you were doing and run.",
+		"investigate": "Seek to understand this place",
         "improve_in_apothecary": "Increase efficiency",
         "improve_in_barracks": "Improve soldiers",
         "improve_in_cementmill": "Increase efficiency",
@@ -1313,6 +1318,10 @@
             0.75,
             0
         ],
+		"investigate": [
+            0.0005,
+            0.005
+		],
         "scavenge": [
             0.0005,
             0.005
@@ -1339,6 +1348,10 @@
             0.75,
             0
         ],
+        "investigate": [
+            0,
+            0.03
+        ],
         "scavenge": [
             0,
             0.03
@@ -1364,6 +1377,10 @@
         "fight_gang": [
             1,
             0
+        ],
+        "investigate": [
+            0.02,
+            0.02
         ],
         "nap": [
             0.1,
@@ -2742,6 +2759,20 @@
                 "unlock_building_aqueduct": true
             }
         },
+        "investigate": {
+            "busy": false,
+            "sector": {
+                "investigatedPercent": [
+                    -1,
+                    1
+                ],
+                "scouted": true
+            },
+            "vision": [
+                30,
+                -1
+            ]
+        },
         "launch": {
             "busy": false,
             "improvements": {
@@ -3117,10 +3148,7 @@
             "upgrades": {}
         },
         "unlock_building_square": {
-            "milestone": 1,
-            "upgrades": {
-                "unlock_building_passage_staircase": true
-            }
+            "milestone": 1
         },
         "unlock_building_stable": {
             "upgrades": {

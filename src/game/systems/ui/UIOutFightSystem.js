@@ -436,6 +436,8 @@ define([
 			switch (baseActionID) {
 				case "scavenge":
 					return "surprised by " + Text.addArticle(enemyNoun) + " while scavenging";
+				case "investigate":
+					return "surprised by " + Text.addArticle(enemyNoun) + " while investigating";
 				case "scout_locale_u":
 					return "surprised by " + Text.addArticle(enemyNoun) + " while scouting";
 				case "scout_locale_i":
@@ -478,6 +480,7 @@ define([
 			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(context);
 			switch (baseActionID) {
 				case "scavenge":
+				case "investigate":
 				case "scout":
 				case "use_spring":
 					return "Intruder defeated.";
