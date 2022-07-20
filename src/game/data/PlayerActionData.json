@@ -2761,6 +2761,7 @@
         },
         "investigate": {
             "busy": false,
+            "milestone": 6,
             "sector": {
                 "investigatedPercent": [
                     -1,

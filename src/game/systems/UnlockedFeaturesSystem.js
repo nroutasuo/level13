@@ -61,6 +61,9 @@ define([
 				if (GameGlobals.gameState.unlockedFeatures.projects)
 					GlobalSignals.featureUnlockedSignal.dispatch();
 			}
+			
+			let milestoneIndexForInvestigate = GameGlobals.milestoneEffectsHelper.getMilestoneIndexForAction("investigate");
+			GameGlobals.gameState.unlockedFeatures.investigate = GameGlobals.gameState.numUnlockedMilestones >= milestoneIndexForInvestigate;
 		}
 		
 	});

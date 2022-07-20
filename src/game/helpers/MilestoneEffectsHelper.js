@@ -3,15 +3,37 @@ define([
 	'ash',
 	'game/GameGlobals',
 	'game/constants/ImprovementConstants',
+	'game/constants/PlayerActionConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/TribeConstants',
 	'game/constants/OccurrenceConstants',
 	'game/vos/ImprovementVO',
-], function (Ash, GameGlobals, ImprovementConstants, UpgradeConstants, TribeConstants, OccurrenceConstants, ImprovementVO) {
+], function (Ash, GameGlobals, ImprovementConstants, PlayerActionConstants, UpgradeConstants, TribeConstants, OccurrenceConstants, ImprovementVO) {
 	
 	var MilestoneEffectsHelper = Ash.Class.extend({
 		
 		constructor: function () {},
+		
+		getUnlockedActions: function (milestoneIndex) {
+			let result = [];
+			for (let action in PlayerActionConstants.requirements) {
+				let reqs = PlayerActionConstants.requirements[action];
+				if (reqs.milestone) {
+					if (reqs.milestone == milestone.index) {
+						result.push(action);
+					}
+				}
+			}
+			return result;
+		},
+		
+		getMilestoneIndexForAction: function (action) {
+			let reqs = PlayerActionConstants.requirements[action];
+			if (reqs && reqs.milestone) {
+				return reqs.milestone;
+			}
+			return 0;
+		},
 		
 		getMilestoneIndexForOccurrence: function (occurrence) {
 			for (let i = 0; i < TribeConstants.milestones.length; i++) {
@@ -54,7 +76,7 @@ define([
 			}
 			
 			return result;
-		}
+		},
 		
 	});
 	

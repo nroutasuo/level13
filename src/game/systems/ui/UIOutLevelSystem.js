@@ -213,7 +213,7 @@ define([
 			GameGlobals.uiFunctions.toggle("#out-action-enter", hasCampHere);
 			GameGlobals.uiFunctions.toggle("#out-action-scout", GameGlobals.gameState.unlockedFeatures.vision);
 			GameGlobals.uiFunctions.toggle("#out-action-use-spring", isScouted && featuresComponent.hasSpring);
-			GameGlobals.uiFunctions.toggle("#out-action-investigate", true);//GameGlobals.gameState.unlockedFeatures.investigate);
+			GameGlobals.uiFunctions.toggle("#out-action-investigate", GameGlobals.gameState.unlockedFeatures.investigate);
 
 			var showWorkshop = isScouted && workshopComponent != null && workshopComponent.isClearable && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP)
 			GameGlobals.uiFunctions.toggle("#out-action-clear-workshop", showWorkshop);
