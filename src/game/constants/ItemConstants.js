@@ -68,6 +68,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			history: "history",
 			fiction: "fiction",
 			science: "science",
+			engineering: "engineering",
 		},
 		
 		itemDefinitions: {},
@@ -82,7 +83,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 				let bonuses = item.bonuses;
 				let type = item.type;
 				if (!this.itemDefinitions[type]) this.itemDefinitions[type] = [];
-				var itemVO = new ItemVO(item.id, item.name, item.type, item.campOrdinalRequired, item.campOrdinalMaximum, item.isEquippable, item.isCraftable, item.isUseable, bonuses, item.icon, item.description, item.isSpecialEquipment);
+				var itemVO = new ItemVO(item.id, item.name, item.type, item.level || 1, item.campOrdinalRequired, item.campOrdinalMaximum, item.isEquippable, item.isCraftable, item.isUseable, bonuses, item.icon, item.description, item.isSpecialEquipment);
 				itemVO.scavengeRarity = item.rarityScavenge;
 				itemVO.investigateRarity = item.rarityInvestigate;
 				itemVO.localeRarity = item.rarityLocale;
@@ -120,6 +121,17 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			if (item.nameShort) return item.nameShort;
 			let parts = item.name.split(" ");
 			return parts[parts.length - 1];
+		},
+		
+		getBaseItemId: function (itemId) {
+			let parts = itemId.split("_");
+			if (parts.length > 1) {
+				let postfix = parts[parts.length - 1];
+				if (/^\d+$/.test(postfix)) {
+					return parts.slice(0, -1).join("_");
+				}
+			}
+			return itemId;
 		},
 		
 		isMultiplier: function (itemBonusType) {

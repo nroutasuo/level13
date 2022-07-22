@@ -5,6 +5,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		id: "",
 		name: "",
 		type: "",
+		level: 1,
 		bonus: null,
 		icon: "",
 		description: "",
@@ -30,10 +31,11 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		carried: false,
 		foundPosition: null,
 
-		constructor: function (id, name, type, requiredCampOrdinal, maximumCampOrdinal, equippable, craftable, useable, bonuses, icon, description, isSpecialEquipment) {
+		constructor: function (id, name, type, level, requiredCampOrdinal, maximumCampOrdinal, equippable, craftable, useable, bonuses, icon, description, isSpecialEquipment) {
 			this.id = id;
 			this.name = name;
 			this.type = type;
+			this.level = level;
 			this.bonus = new ItemBonusVO(bonuses);
 			this.equippable = equippable;
 			this.craftable = craftable;
@@ -88,6 +90,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			delete clone.craftable;
 			delete clone.useable;
 			delete clone.type;
+			delete clone.level;
 			delete clone.equippable;
 			delete clone.balancingData;
 			delete clone.configData;
@@ -100,7 +103,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		},
 
 		clone: function () {
-			var clone = new ItemVO(this.id, this.name, this.type, this.requiredCampOrdinal, this.maximumCampOrdinal, this.equippable, this.craftable, this.useable, this.bonus.bonuses, this.icon, this.description, this.isSpecialEquipment);
+			var clone = new ItemVO(this.id, this.name, this.type, this.level, this.requiredCampOrdinal, this.maximumCampOrdinal, this.equippable, this.craftable, this.useable, this.bonus.bonuses, this.icon, this.description, this.isSpecialEquipment);
 			clone.scavengeRarity = this.scavengeRarity;
 			clone.localeRarity = this.localeRarity;
 			clone.tradeRarity = this.tradeRarity;

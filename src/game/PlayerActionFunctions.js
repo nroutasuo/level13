@@ -1696,10 +1696,12 @@ define(['ash',
 			var foundPositionCampOrdinal = GameGlobals.gameState.getCampOrdinal(foundPosition.level);
 			
 			let itemConfig = ItemConstants.getItemConfigByID(itemId);
+			let baseItemId = ItemConstants.getBaseItemId(itemId);
 			
-			switch (itemId) {
-				case "first_aid_kit_1":
-				case "first_aid_kit_2":
+			debugger
+			
+			switch (baseItemId) {
+				case "first_aid_kit":
 					var injuries = perksComponent.getPerksByType(PerkConstants.perkTypes.injury);
 					var minValue = reqs.perkEffects.Injury[0];
 					var injuryToHeal = null;
@@ -1718,7 +1720,7 @@ define(['ash',
 					this.forceStatsBarUpdate();
 					break;
 				
-				case "stamina_potion_1":
+				case "stamina_potion":
 					perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.staminaBonus));
 					this.engine.updateComplete.addOnce(function () {
 						sys.addLogMessage(LogConstants.MSG_ID_USE_STAMINA_POTION, "Feeling stronger and more awake.");
@@ -1729,15 +1731,12 @@ define(['ash',
 					});
 					break;
 
-				case "glowstick_1":
+				case "glowstick":
 					var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 					sectorStatus.glowStickSeconds = 120;
 					break;
 					
-				case "cache_metal_1":
-				case "cache_metal_2":
-				case "cache_metal_3":
-				case "cache_metal_4":
+				case "cache_metal":
 					let baseValue = itemConfig.configData.metalValue || 10;
 					let value = baseValue + Math.round(Math.random() * 10);
 					let itemNameParts = item.name.split(" ");
@@ -1747,10 +1746,8 @@ define(['ash',
 					this.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, "Took apart the " + itemName + ". Gained " + value + " metal.");
 					break;
 					
-				case "cache_evidence_1":
-				case "cache_evidence_2":
-				case "cache_evidence_3":
-					let evidence = itemConfig.configData.evidenceValue || 1;
+				case "cache_evidence":
+					let evidence = itemConfig.configData.evidenceValue || Math.pow(itemConfig.level, 2);
 					let message = TextConstants.getReadBookMessage(item, itemConfig.configData.bookType || ItemConstants.bookTypes.science, foundPositionCampOrdinal);
 					let resultVO = new ResultVO("use_item");
 					resultVO.gainedEvidence = evidence;
@@ -1764,8 +1761,7 @@ define(['ash',
 					this.addLogMessage(LogConstants.MSG_ID_USE_BOOK, "Read a book. Gained " + evidence + " evidence.");
 					break;
 					
-				case "consumable_map_1":
-				case "consumable_map_2":
+				case "consumable_map":
 					// TODO score and prefer unvisited sectors
 					var radius = 3;
 					var centerSectors = GameGlobals.levelHelper.getSectorsAround(foundPosition, 2);

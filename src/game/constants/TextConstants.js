@@ -1164,6 +1164,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		let t_S = ItemConstants.bookTypes.science;
 		let t_F = ItemConstants.bookTypes.fiction;
 		let t_H = ItemConstants.bookTypes.history;
+		let t_E = ItemConstants.bookTypes.engineering;
 		
 		DescriptionMapper.add("book-intro", { bookType: wildcard }, "You read the book.");
 		DescriptionMapper.add("book-intro", { bookType: t_S }, "You leaf through the book.");

@@ -392,57 +392,222 @@
         "source": "equipment",
         "type": "bag"
     },
-    "cache_evidence_1": {
+    "cache_evidence_11": {
         "campOrdinalRequired": 3,
         "configData": {
             "bookType": "science"
         },
         "description": "A scientific book that might provide clues to some old technologies.",
         "icon": "img/items/book.png",
-        "id": "cache_evidence_1",
+        "id": "cache_evidence_11",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
-        "name": "Science book",
-		"rarityInvestigate": 1,
-        "rarityLocale": 3,
-        "rarityScavenge": 6,
-        "type": "voucher"
-    },
-    "cache_evidence_2": {
-        "campOrdinalRequired": 1,
-        "configData": {
-            "bookType": "fiction"
-        },
-        "description": "An old novel still in somewhat readable condition.",
-        "icon": "img/items/book.png",
-        "id": "cache_evidence_2",
-        "isCraftable": false,
-        "isEquippable": false,
-        "isUseable": true,
-        "name": "Fiction book",
+		"level": 1,
+        "name": "Beginner Science book",
 		"rarityInvestigate": 2,
         "rarityLocale": 3,
         "rarityScavenge": 6,
         "type": "voucher"
     },
-    "cache_evidence_3": {
+    "cache_evidence_12": {
+        "campOrdinalRequired": 8,
+        "configData": {
+            "bookType": "science"
+        },
+        "description": "A scientific book that might provide clues to some forgotten technologies.",
+        "icon": "img/items/book.png",
+        "id": "cache_evidence_12",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+		"level": 2,
+        "name": "Intermediate Science book",
+		"rarityInvestigate": 2,
+        "rarityLocale": 3,
+        "rarityScavenge": 6,
+        "type": "voucher"
+    },
+    "cache_evidence_13": {
+        "campOrdinalRequired": 13,
+        "configData": {
+            "bookType": "science"
+        },
+        "description": "A scientific book that might provide clues to some lost technologies.",
+        "icon": "img/items/book.png",
+        "id": "cache_evidence_13",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+		"level": 3,
+        "name": "Advanced Science book",
+		"rarityInvestigate": 2,
+        "rarityLocale": 3,
+        "rarityScavenge": 6,
+        "type": "voucher"
+    },
+    "cache_evidence_21": {
+        "campOrdinalRequired": 1,
+        "configData": {
+            "bookType": "fiction"
+        },
+        "description": "An old story still in somewhat readable condition.",
+        "icon": "img/items/book.png",
+        "id": "cache_evidence_21",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+		"level": 1,
+        "name": "Children's book",
+		"rarityInvestigate": 4,
+        "rarityLocale": 3,
+        "rarityScavenge": 6,
+        "type": "voucher"
+    },
+    "cache_evidence_22": {
+        "campOrdinalRequired": 6,
+        "configData": {
+            "bookType": "fiction"
+        },
+        "description": "An old novel still in somewhat readable condition.",
+        "icon": "img/items/book.png",
+        "id": "cache_evidence_22",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "name": "Fiction book",
+		"level": 2,
+		"rarityInvestigate": 4,
+        "rarityLocale": 3,
+        "rarityScavenge": 6,
+        "type": "voucher"
+    },
+    "cache_evidence_23": {
+        "campOrdinalRequired": 11,
+        "configData": {
+            "bookType": "fiction"
+        },
+        "description": "An old novel still in somewhat readable condition.",
+        "icon": "img/items/book.png",
+        "id": "cache_evidence_23",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+		"level": 3,
+        "name": "Fiction book",
+		"rarityInvestigate": 4,
+        "rarityLocale": 3,
+        "rarityScavenge": 6,
+        "type": "voucher"
+    },
+    "cache_evidence_31": {
         "campOrdinalRequired": 2,
         "configData": {
             "bookType": "history"
         },
         "description": "An old history book that might contain clues about the past.",
         "icon": "img/items/book.png",
-        "id": "cache_evidence_3",
+        "id": "cache_evidence_31",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
-        "name": "History book",
-		"rarityInvestigate": 1,
+		"level": 1,
+        "name": "Basic history book",
+		"rarityInvestigate": 3,
         "rarityLocale": 3,
         "rarityScavenge": 6,
         "type": "voucher"
     },
+    "cache_evidence_32": {
+        "campOrdinalRequired": 7,
+        "configData": {
+            "bookType": "history"
+        },
+        "description": "An old history book that might contain clues about the past.",
+        "icon": "img/items/book.png",
+        "id": "cache_evidence_32",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+		"level": 2,
+        "name": "History book",
+		"rarityInvestigate": 3,
+        "rarityLocale": 3,
+        "rarityScavenge": 6,
+        "type": "voucher"
+    },
+    "cache_evidence_33": {
+        "campOrdinalRequired": 12,
+        "configData": {
+            "bookType": "history"
+        },
+        "description": "An old history book that might contain clues about the recent past.",
+        "icon": "img/items/book.png",
+        "id": "cache_evidence_33",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+		"level": 3,
+        "name": "Recent History book",
+		"rarityInvestigate": 3,
+        "rarityLocale": 3,
+        "rarityScavenge": 6,
+        "type": "voucher"
+    },
+	"cache_evidence_41": {
+        "campOrdinalRequired": 5,
+        "configData": {
+            "bookType": "engineering"
+        },
+        "description": "A technical book describing how things work - or used to work.",
+        "icon": "img/items/book.png",
+        "id": "cache_evidence_41",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+		"level": 1,
+        "name": "Student's Engineering book",
+		"rarityInvestigate": 1,
+        "rarityLocale": 5,
+        "rarityScavenge": 8,
+        "type": "voucher"
+	},
+	"cache_evidence_42": {
+        "campOrdinalRequired": 10,
+        "configData": {
+            "bookType": "engineering"
+        },
+        "description": "A technical book describing how things work - or used to work.",
+        "icon": "img/items/book.png",
+        "id": "cache_evidence_42",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+		"level": 2,
+        "name": "Engineering book",
+		"rarityInvestigate": 1,
+        "rarityLocale": 5,
+        "rarityScavenge": 8,
+        "type": "voucher"
+	},
+	"cache_evidence_43": {
+        "campOrdinalRequired": 15,
+        "configData": {
+            "bookType": "engineering"
+        },
+        "description": "A technical book describing what used to be cutting edge technology.",
+        "icon": "img/items/book.png",
+        "id": "cache_evidence_43",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+		"level": 3,
+        "name": "Advanced Engineering book",
+		"rarityInvestigate": 1,
+        "rarityLocale": 5,
+        "rarityScavenge": 8,
+        "type": "voucher"
+	},
     "cache_metal_1": {
         "campOrdinalMaximum": 10,
         "campOrdinalRequired": 1,
