@@ -380,6 +380,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			let features = {};
 			features.bookType = bookType;
 			features.bookName = itemVO.name;
+			features.bookLevel = itemVO.level || 1;
 			features.campOrdinal = campOrdinal;
 			features.randomSeed = itemVO.itemID;
 			let params = this.getBookTextParams(features);
@@ -393,70 +394,180 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		getBookTextParams: function (features) {
 			var result = {};
 			
+			let levels = [];
+			switch (features.bookLevel) {
+				case 1:
+					levels.push("simple");
+					levels.push("dated");
+					break;
+				case 2:
+					levels.push("basic");
+					levels.push("regular");
+					break;
+				case 3:
+					levels.push("advanced");
+					levels.push("detailed");
+					levels.push("insightful");
+					levels.push("heavy");
+					break;
+			}
+			result["a-level"] = DescriptionMapper.pickRandom(levels, features);
+			
+			let styles = [];
+			switch (features.bookType) {
+				case ItemConstants.bookTypes.science:
+				case ItemConstants.bookTypes.engineering:
+				case ItemConstants.bookTypes.history:
+					styles.push("informative");
+					styles.push("detailed");
+					styles.push("dry");
+					styles.push("insightful");
+					styles.push("meandering");
+					styles.push("illustrated");
+					break;
+				case ItemConstants.bookTypes.fiction:
+					styles.push("inspiring");
+					styles.push("realistic");
+					styles.push("action-packed");
+					styles.push("comedic");
+					styles.push("tragic");
+					styles.push("romantic");
+					styles.push("dramatic");
+					styles.push("whimsical");
+					styles.push("boring");
+					styles.push("dark");
+					styles.push("exciting");
+					styles.push("haunting");
+					styles.push("glamorous");
+					styles.push("heartfelt");
+					break;
+			}
+			result["a-style"] = DescriptionMapper.pickRandom(styles, features);
+			
 			var topics = [];
 			switch (features.bookType) {
 				case ItemConstants.bookTypes.science:
-					topics.push("an industrial process");
 					topics.push("a species of slug that thrives in radiactive environments");
-					topics.push("the making of robots");
 					topics.push("the infrastructure of the City");
 					topics.push("the ocean");
+					topics.push("forests");
 					topics.push("ventilation in the City");
-					topics.push("weapons of old");
 					topics.push("medicine");
-					topics.push("food crop rotation");
 					topics.push("electronics");
-					topics.push("the many uses of baking soda");
 					topics.push("how to protect yourself from the harmful effects of sunlight");
 					topics.push("how raw rubber is processed into many useful forms");
-					topics.push("gunpowder");
 					topics.push("dark matter");
 					topics.push("cancer treatment");
-					topics.push("electromagnetism");
 					topics.push("dna");
+					topics.push("an ancient material called wood");
 					topics.push("evolution");
 					topics.push("plate tetonics");
-					topics.push("transistors");
 					topics.push("batteries");
 					topics.push("the planet's atmosphere");
 					topics.push("fossils");
-					topics.push("steel production");
 					topics.push("fermentation");
 					topics.push("atomic weapons");
-					topics.push("other planets");
 					topics.push("viruses");
-					topics.push("nuclear reactors");
 					topics.push("the magnetic compass");
-					topics.push("solar calendar");
+					topics.push("the solar calendar");
 					topics.push("radar");
+					topics.push("mathematics");
 					topics.push("ecosystems");
 					topics.push("the printing press");
 					topics.push("optical lenses");
 					topics.push("fertilizers");
-					topics.push("radio");
+					if (features.bookLevel == 1) {
+						topics.push("weapons of old");
+						topics.push("the many uses of baking soda");
+					}
+					if (features.bookLevel == 2) {
+						topics.push("food crop rotation");
+						topics.push("gunpowder");
+						topics.push("electricity");
+						topics.push("radio technology");
+					}
+					if (features.bookLevel == 3) {
+						topics.push("electromagnetism");
+						topics.push("other planets");
+					}
 					break;
 				case ItemConstants.bookTypes.fiction:
 					topics.push("pre-Fall popular music");
+					topics.push("life in the Dark Levels");
+					topics.push("the early immigrants to the City");
+					topics.push("an island far away");
+					topics.push("travel between different planets");
+					topics.push("a famous actress");
+					topics.push("life in the Slums");
+					topics.push("life of a crime detecive on the Surface");
 					break;
 				case ItemConstants.bookTypes.history:
-					topics.push("pre-Fall religions and how they contributed to wars");
-					topics.push("the effects of a major earthquake on the City");
 					topics.push("biological warfare");
+					topics.push("pre-City civilizations");
+					topics.push("the development of agriculture");
+					topics.push("the history of painting");
+					topics.push("the industrial revolution");
+					topics.push("the digital revolution");
+					topics.push("a specific ethnic group");
+					topics.push("a famine soon after the founding of the City");
+					topics.push("a pre-City global legal organization");
+					topics.push("the history of mathematics");
+					topics.push("a great scientific project");
+					topics.push("shipwrecks");
+					topics.push("slavery");
+					topics.push("a historical dictatorship");
+					if (features.bookLevel == 1) {
+						topics.push("the early City");
+						topics.push("architectural styles in different parts of the City");
+						topics.push("the effects of a major earthquake on the City");
+						topics.push("pre-Fall religions and how they contributed to wars");
+					}
+					if (features.bookLevel == 2) {
+						topics.push("the history of a powerful crime syndicate");
+						topics.push("a great war between two factions within the City");
+					}
+					if (features.bookLevel == 3) {
+						topics.push("the history of a powerful crime syndicate");
+					}
+					break;
+				case ItemConstants.bookTypes.engineering:
+					topics.push("an industrial process");
+					topics.push("transistors");
+					topics.push("nuclear reactors");
+					topics.push("radio");
+					topics.push("steel production");
+					topics.push("architecture");
+					topics.push("elevators");
+					topics.push("bridges");
+					if (features.bookLevel == 2) {
+						topics.push("artificial intelligence");
+					}
+					if (features.bookLevel == 3) {
+						topics.push("programming");
+						topics.push("the making of robots");
+					}
 					break;
 			}
 			result["n-topic"] = DescriptionMapper.pickRandom(topics, features);
 			
 			var objects = [];
 			switch (features.bookType) {
-				case ItemConstants.bookTypes.science:
-					objects.push("a flying vehicle");
-					objects.push("great rockets");
-					objects.push("engines powering the old elevators");
-					objects.push("an irrigation system in a pre-Fall greenhouse");
-					objects.push("an information network spanning an entire level of the City");
-					objects.push("machines you don't really understand, but it seems they were used to stabilise the City");
+				case ItemConstants.bookTypes.engineering:
 					objects.push("transistors");
+					objects.push("machines you don't really understand, but it seems they were used to stabilise the City");
 					objects.push("a level-wide solar screen called the Ceiling");
+					objects.push("an irrigation system in a pre-Fall greenhouse");
+					if (features.bookLevel == 1) {
+						objects.push("engines powering the old elevators");
+					}
+					if (features.bookLevel == 2) {
+						objects.push("an information network spanning an entire level of the City");
+						objects.push("a flying vehicle");
+					}
+					if (features.bookLevel == 3) {
+						objects.push("different types of robots");
+						objects.push("a great rocket");
+					}
 					break;
 			}
 			result["n-object"] = DescriptionMapper.pickRandom(objects, features);
@@ -491,9 +602,6 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					facts.push("ancient civilizations often used wood as a building material, because it was plentiful on the Ground");
 					facts.push("there are were several Mining Towns deep in the City");
 					facts.push("the maintenance of the City below certain levels was mainly done by robots");
-					// TODO get general facts like these in features / otherwise
-					// facts.push("there are X levels in the City");
-					// facts.push("the lowest level of the City is in fact number X");
 					break;
 				case ItemConstants.bookTypes.history:
 					facts.push("a few powerful mining corporations held great power before the Fall");
@@ -504,6 +612,18 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					facts.push("the City has experienced several famines during its history");
 					facts.push("the City was started to be built about 700 years ago");
 					facts.push("there was a time when all religions were banned in the City");
+					break;
+				case ItemConstants.bookTypes.engineering:
+					facts.push("the lower levels of the City have different heights");
+					facts.push("most of the City used to be lit by electrical lights");
+					facts.push("the Surface of the City used to be protected by one massive Dome");
+					facts.push("sunlight used to be reflected deeper into the City with complex mirror systems");
+					facts.push("parts of the City are built into the mountain");
+					facts.push("the Ocean is deeply polluted");
+					// TODO get general facts like these in features / otherwise
+					// TODO add more and splt by level so these don't get repetitive
+					// facts.push("there are X levels in the City");
+					// facts.push("the lowest level of the City is in fact number X");
 					break;
 			}
 			result["c-fact"] = DescriptionMapper.pickRandom(facts, features);
@@ -1166,49 +1286,85 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		let t_H = ItemConstants.bookTypes.history;
 		let t_E = ItemConstants.bookTypes.engineering;
 		
+		let l_1 = 1;
+		let l_2 = 2;
+		let l_3 = 3;
+		
 		DescriptionMapper.add("book-intro", { bookType: wildcard }, "You read the book.");
-		DescriptionMapper.add("book-intro", { bookType: t_S }, "You leaf through the book.");
+		DescriptionMapper.add("book-intro", { bookLevel: l_1 }, "You leaf through the book.");
+		DescriptionMapper.add("book-intro", { bookLevel: l_2 }, "You study the book.");
+		DescriptionMapper.add("book-intro", { bookLevel: l_3 }, "You spend some time studying the book.");
+		DescriptionMapper.add("book-intro", { bookType: t_S }, "You study the book.");
 		DescriptionMapper.add("book-intro", { bookType: t_F }, "You examine the book.");
 		DescriptionMapper.add("book-intro", { bookType: t_H }, "You study the book.");
+		DescriptionMapper.add("book-intro", { bookType: t_H }, "You skim through the book.");
+		DescriptionMapper.add("book-intro", { bookType: t_E }, "You study the book.");
 		
 		DescriptionMapper.add("book-description", { bookType: wildcard }, "A passage describing [n-topic] catches your eye.");
 		DescriptionMapper.add("book-description", { bookType: wildcard }, "A section describing [n-topic] seems interesting.");
+		DescriptionMapper.add("book-description", { bookType: wildcard }, "You learn something about [n-topic].");
 		
-		DescriptionMapper.add("book-description", { bookType: t_S }, "You find details about [n-topic].");
-		DescriptionMapper.add("book-description", { bookType: t_S }, "There is a wealth of information about [n-topic].");
-		DescriptionMapper.add("book-description", { bookType: t_S }, "You learn about [n-topic].");
-		DescriptionMapper.add("book-description", { bookType: t_S }, "There are many interesting passages about [n-topic].");
+		DescriptionMapper.add("book-description", { bookLevel: l_1 }, "It gives you some insights into [n-topic].");
+		DescriptionMapper.add("book-description", { bookLevel: l_2 }, "It seems like a good source on [n-topic].");
+		DescriptionMapper.add("book-description", { bookLevel: l_3 }, "It is not easy to follow, but teaches you a lot about [n-topic].");
+		
+		DescriptionMapper.add("book-description", { bookType: t_S }, "It is [a] [a-level] textbook on [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "It is [a] [a-style] textbook on [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_S }, "It describes [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "There are many interesting passages about [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_S }, "It is a rather dry text on [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_S }, "It contains a description of [n-topic].");
-		DescriptionMapper.add("book-description", { bookType: t_S }, "It contains a dissertation on [n-topic].");
-		DescriptionMapper.add("book-description", { bookType: t_S }, "There is an interesting diagram of [n-object].");
-		DescriptionMapper.add("book-description", { bookType: t_S }, "There are abandoned plans of [n-object].");
-		DescriptionMapper.add("book-description", { bookType: t_S }, "There is diagram explaining in detail how [n-object] worked.");
-		DescriptionMapper.add("book-description", { bookType: t_S }, "It contains a detailed description of [n-object].");
-		DescriptionMapper.add("book-description", { bookType: t_S }, "There are technical drawings of [n-object]");
 		DescriptionMapper.add("book-description", { bookType: t_S }, "You learn that [c-fact].");
-		DescriptionMapper.add("book-description", { bookType: t_S }, "A description of a refining process offers clues to the kind of materials used commonly before the Fall.");
-		DescriptionMapper.add("book-description", { bookType: t_S }, "You are spell-bound by a description of abundant plant-life on the Ground.");
-		DescriptionMapper.add("book-description", { bookType: t_S }, "It contains a catalog of known animal life in the \"Dark Levels\". You recognize several.");
-		DescriptionMapper.add("book-description", { bookType: t_S }, "You notice old census data about people who are exposed daily to sunlight versus those who are not.");
+		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_1 }, "It is an introductory text on [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_1 }, "A description of a refining process offers clues to the kind of materials used commonly before the Fall.");
+		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_1 }, "It contains a catalog of known animal life in the \"Dark Levels\". You recognize several.");
+		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_2 }, "You notice old census data about people who are exposed daily to sunlight versus those who are not.");
+		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_2 }, "You find details about [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_3 }, "You are spell-bound by a description of abundant plant-life on the Ground.");
+		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_3 }, "There is a wealth of information about [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_3 }, "It contains a dissertation on [n-topic].");
+		
+		DescriptionMapper.add("book-description", { bookType: t_E }, "It is [a] [a-level] textbook on [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_E }, "It is [a] [a-style] textbook on [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_E }, "There are abandoned plans of [n-object].");
+		DescriptionMapper.add("book-description", { bookType: t_E }, "It contains a detailed description of [n-object].");
+		DescriptionMapper.add("book-description", { bookType: t_E }, "There is diagram explaining in detail how [n-object] worked.");
+		DescriptionMapper.add("book-description", { bookType: t_E }, "It is an operation manual for [n-object].");
+		DescriptionMapper.add("book-description", { bookType: t_E }, "You learn that [c-fact].");
+		DescriptionMapper.add("book-description", { bookType: t_E, bookLevel: l_1 }, "There is an interesting diagram of [n-object].");
+		DescriptionMapper.add("book-description", { bookType: t_E, bookLevel: l_2 }, "It contains many useful bits of information on [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_E, bookLevel: l_3 }, "There are technical drawings of [n-object]");
 		
 		DescriptionMapper.add("book-description", { bookType: t_H }, "You find details about [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "It describes [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "It is a rather dry text on [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "It is [a] [a-style] overview of [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "It is very [a-level] introduction [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "You learn that [c-fact].");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "It seems that [c-fact].");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "You learn about [c-event].");
-		DescriptionMapper.add("book-description", { bookType: t_H }, "You find a timeline of [c-event].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "There is a [a] [a-style] chapter on [c-event].");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "A chapter on [c-event] catches your eye.");
-		DescriptionMapper.add("book-description", { bookType: t_H }, "There is a long section about [c-event].");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "There are several references to [c-event].");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "A reference to the \"currently uninhabited levels\" of the City offers a perspective on the pre-Fall City.");
+		DescriptionMapper.add("book-description", { bookType: t_H, bookLevel: l_1 }, "It is an introductory text on [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_H, bookLevel: l_2 }, "There is a long section about [c-event].");
+		DescriptionMapper.add("book-description", { bookType: t_H, bookLevel: l_3 }, "You find a detailed timeline of [c-event].");
 		
-		DescriptionMapper.add("book-description", { bookType: t_F }, "A story about [c-theme] stays with you.");
-		DescriptionMapper.add("book-description", { bookType: t_F }, "You are touched by a poem about [c-theme].");
 		DescriptionMapper.add("book-description", { bookType: t_F }, "There is a story about [c-theme].");
 		DescriptionMapper.add("book-description", { bookType: t_F }, "It is a tale about [c-theme].");
+		DescriptionMapper.add("book-description", { bookType: t_F }, "It is about [c-theme].");
+		DescriptionMapper.add("book-description", { bookType: t_F }, "A story about [c-theme] stays with you.");
+		DescriptionMapper.add("book-description", { bookType: t_F }, "You are touched by a poem about [c-theme].");
+		DescriptionMapper.add("book-description", { bookType: t_F }, "It contains a vivid description of [c-theme].");
+		DescriptionMapper.add("book-description", { bookType: t_F }, "It is [a] [a-style] novel dealing with [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_F }, "It is [a] [a-style] tale about [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_F }, "It is a very [a-style] portrayal of [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_F }, "It is [a] [a-style] story about [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_F }, "It a collection of [a-style] short stories about [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_F, bookLevel: l_1 }, "It is a children's book featuring [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_F, bookLevel: l_2 }, "It is a classic novel about [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_F, bookLevel: l_3 }, "It is quite a heavy book on [n-topic].");
 		
 	}
 	
