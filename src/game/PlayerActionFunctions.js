@@ -1698,8 +1698,6 @@ define(['ash',
 			let itemConfig = ItemConstants.getItemConfigByID(itemId);
 			let baseItemId = ItemConstants.getBaseItemId(itemId);
 			
-			debugger
-			
 			switch (baseItemId) {
 				case "first_aid_kit":
 					var injuries = perksComponent.getPerksByType(PerkConstants.perkTypes.injury);
