@@ -86,6 +86,8 @@ define([
 					return def.getLimitNum(improvements, workshops) * CampConstants.getWorkersPerMill(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.cementmill, upgrades));
 				case CampConstants.workerTypes.toolsmith.id:
 					return def.getLimitNum(improvements, workshops) * CampConstants.getSmithsPerSmithy(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.smithy, upgrades));
+				case CampConstants.workerTypes.robotmaker.id:
+					return def.getLimitNum(improvements, workshops) * CampConstants.getRobotMakersPerFactory(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.robotFactory, upgrades));
 				case CampConstants.workerTypes.scientist.id:
 					var hasUnlockedScientists = GameGlobals.upgradeEffectsHelper.getWorkerLevel(def.id, upgrades) > 0;
 					return hasUnlockedScientists ? def.getLimitNum(improvements, workshops) * CampConstants.getScientistsPerLibrary(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.library, upgrades)) : 0;
@@ -746,6 +748,8 @@ define([
 					return [ { name: resourceNames.herbs, consumption: CampConstants.CONSUMPTION_HERBS_PER_WORKER_PER_S } ];
 				case "toolsmith":
 					return [ { name: resourceNames.metal, consumption: CampConstants.CONSUMPTION_METAL_PER_TOOLSMITH_PER_S } ];
+				case "robotmaker":
+					return [ { name: resourceNames.tools, consumption: CampConstants.CONSUMPTION_TOOLS_PER_ROBOT_MAKER_PER_S } ];
 				case "concrete":
 					return [ { name: resourceNames.metal, consumption: CampConstants.CONSUMPTION_METAL_PER_CONCRETE_PER_S } ];
 			}
@@ -763,6 +767,7 @@ define([
 				case CampConstants.workerTypes.gardener.id: return this.getHerbsProductionPerSecond(1, improvements, upgrades);
 				case "apothecary": return this.getMedicineProductionPerSecond(1, improvements, upgrades);
 				case "toolsmith": return this.getToolsProductionPerSecond(1, improvements, upgrades);
+				case "robotmaker": return this.getRobotsProductionPerSecond(1, improvements, upgrades);
 				case "concrete": return this.getConcreteProductionPerSecond(1, improvements, upgrades);
 			}
 			return 0;
@@ -832,6 +837,13 @@ define([
 			var concreteUpgradeBonus = this.getWorkerUpgradeBonus("concrete", upgrades);
 			var levelBonus = 1 + improvementsComponent.getLevel(improvementNames.cementmill) / 10;
 			return workers * CampConstants.PRODUCTION_CONCRETE_PER_WORKER_PER_S * concreteUpgradeBonus * levelBonus;
+		},
+		
+		getRobotsProductionPerSecond: function (workers, improvementsComponent, upgrades) {
+			workers = workers || 0;
+			var robotsUpgradeConus = this.getWorkerUpgradeBonus("robotmaker", upgrades);
+			var levelBonus = 1 + improvementsComponent.getLevel(improvementNames.robotFactory) / 10;
+			return workers * CampConstants.PRODUCTION_ROBOTS_PER_WORKER_PER_S * robotsUpgradeConus * levelBonus;
 		},
 		
 		getMeditationSuccessRate: function (shrineLevel) {

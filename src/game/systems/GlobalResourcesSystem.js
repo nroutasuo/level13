@@ -145,6 +145,7 @@ define([
 			GameGlobals.gameState.unlockedFeatures.resources.rubber = checkUnlockedResource("rubber");
 			GameGlobals.gameState.unlockedFeatures.resources.medicine = checkUnlockedResource("medicine");
 			GameGlobals.gameState.unlockedFeatures.resources.concrete = checkUnlockedResource("concrete");
+			GameGlobals.gameState.unlockedFeatures.resources.robots = checkUnlockedResource("robots");
 			GameGlobals.gameState.unlockedFeatures.resources.tools = checkUnlockedResource("tools");
 		},
 		

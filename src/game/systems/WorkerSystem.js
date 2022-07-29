@@ -167,6 +167,18 @@ define([
 				resourceAccComponent.addChange(resourceNames.metal, -metalUsedConcrete / time, "Concrete mixers");
 				if (concrete > 0) GameGlobals.gameState.unlockedFeatures.resources.concrete = true;
 			}
+			
+			// Advanced: Robot makers
+			var toolsRequiredRobots = time * (node.camp.toolsConsumptionPerSecondRobots || 0);
+			if (toolsRequiredRobots > 0) {
+				var toolsUsedRobots = Math.min(availableResources.getResource(resourceNames.tools), toolsRequiredRobots);
+				var robots = time * (toolsUsedRobots / toolsRequiredRobots) * node.camp.robotsProductionPerSecond;
+				campResources.addResource(resourceNames.robots, concrete);
+				campResources.addResource(resourceNames.tools, -toolsUsedRobots);
+				resourceAccComponent.addChange(resourceNames.robots, robots / time, "Robot makers");
+				resourceAccComponent.addChange(resourceNames.tools, -toolsUsedRobots / time, "Robot makers");
+				if (robots > 0) GameGlobals.gameState.unlockedFeatures.resources.robots = true;
+			}
 		},
 		
 		updateWorkerProductionRate: function (node) {
@@ -185,6 +197,8 @@ define([
 			camp.toolsProductionPerSecond = GameGlobals.campHelper.getToolsProductionPerSecond(camp.assignedWorkers.toolsmith, improvementsComponent);
 			camp.metalConsumptionPerSecondConcrete = GameGlobals.campHelper.getMetalConsumptionPerSecondConcrete(camp.assignedWorkers.concrete);
 			camp.concreteProductionPerSecond = GameGlobals.campHelper.getConcreteProductionPerSecond(camp.assignedWorkers.concrete, improvementsComponent);
+			camp.toolsConsumptionPerSecondRobots = GameGlobals.campHelper.getToolsConsumptionPerSecondRobots(camp.assignedWorkers.robotmaker, improvementsComponent);
+			camp.robotsProductionPerSecond = GameGlobals.campHelper.getRobotsProductionPerSecond(camp.assignedWorkers.robotmaker, improvementsComponent);
 		},
 		
 		updateWorkerHunger: function (node, time) {

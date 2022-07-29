@@ -185,6 +185,7 @@ function (Ash) {
 				case improvementNames.darkfarm:
 				case improvementNames.storage:
 				case improvementNames.cementmill:
+				case improvementNames.robotFactory:
 				case improvementNames.generator:
 					if (xdist < 6) return false;
 					break;

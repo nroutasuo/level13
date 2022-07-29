@@ -133,6 +133,8 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 				
 				case resourceNames.rubber: value = 0.05; break;
 				case resourceNames.herbs: value = 0.05; break;
+				
+				case resourceNames.robots: value = 0.1; break;
 			}
 			if (isTrader)
 				value = value + value * TradeConstants.VALUE_MARKUP_INCOMING_CARAVANS;

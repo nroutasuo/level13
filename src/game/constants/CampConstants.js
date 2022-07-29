@@ -38,6 +38,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		CONSUMPTION_HERBS_PER_WORKER_PER_S: 0.05,
 		CONSUMPTION_METAL_PER_TOOLSMITH_PER_S: 0.03,
 		CONSUMPTION_METAL_PER_CONCRETE_PER_S: 0.02,
+		CONSUMPTION_TOOLS_PER_ROBOT_MAKER_PER_S: 0.01,
 		
 		// Production
 		PRODUCTION_METAL_PER_WORKER_PER_S: 0.02,
@@ -50,6 +51,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		PRODUCTION_MEDICINE_PER_WORKER_PER_S: 0.01,
 		PRODUCTION_TOOLS_PER_WORKER_PER_S: 0.02,
 		PRODUCTION_CONCRETE_PER_WORKER_PER_S: 0.02,
+		PRODUCTION_ROBOTS_PER_WORKER_PER_S: 0.001,
 		PRODUCTION_EVIDENCE_PER_WORKER_PER_S: 0.00075,
 		PRODUCTION_FAVOUR_PER_WORKER_PER_S: 0.00075,
 		
@@ -130,6 +132,12 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 				getLimitNum: function (improvements, workshops) { return improvements.getCount(improvementNames.cementmill); },
 				getLimitText: function (num) { return num + " cement mills built"; },
 			},
+			robotmaker: {
+				id: "robotmaker",
+				resourceProduced: resourceNames.robots,
+				getLimitNum: function (improvements, workshops) { return improvements.getCount(improvementNames.robotFactory); },
+				getLimitText: function (num) { return num + " robot factories built"; },
+			},
 			scientist: {
 				id: "scientist",
 				getLimitNum: function (improvements, workshops) { return improvements.getCount(improvementNames.library); },
@@ -178,6 +186,10 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		
 		getSmithsPerSmithy: function (upgradeLevel) {
 			return 2 + (upgradeLevel - 1) * 2;
+		},
+		
+		getRobotMakersPerFactory: function (upgradeLevel) {
+			return upgradeLevel;
 		},
 		
 		getApothecariesPerShop: function (upgradeLevel) {
@@ -235,7 +247,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		
 		getResearchCenterEvidenceGenerationPerSecond: function (centerCount, centerLevel) {
 			var levelFactor = (1 + centerLevel * CampConstants.EVIDENCE_BONUS_PER_RESEARCH_CENTER_LEVEL);
-			return 0.0015 * centerCount * levelFactor;
+			return 0.002 * centerCount * levelFactor;
 		},
 		
 		getTempleFavourGenerationPerSecond: function (templeCount, templeLevel) {

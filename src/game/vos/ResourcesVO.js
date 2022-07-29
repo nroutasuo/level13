@@ -14,7 +14,8 @@ define(['ash'], function (Ash) {
 		
 		medicine: "medicine",
 		tools: "tools",
-		concrete: "concrete"
+		concrete: "concrete",
+		robots: "robots",
 	};
 	
 	isResource = function (name) {
@@ -59,6 +60,7 @@ define(['ash'], function (Ash) {
 			this.tools = 0;
 			this.medicine = 0;
 			this.concrete = 0;
+			this.robots = 0;
 		},
 		
 		addResource: function (res, amount) {
@@ -75,6 +77,7 @@ define(['ash'], function (Ash) {
 				case resourceNames.tools: this.tools += amount; break;
 				case resourceNames.medicine: this.medicine += amount; break;
 				case resourceNames.concrete: this.concrete += amount; break;
+				case resourceNames.robots: this.robots += amount; break;
 				default:
 					log.w("Unknown resource name: " + res);
 			}
@@ -92,6 +95,7 @@ define(['ash'], function (Ash) {
 				case resourceNames.tools: this.tools = amount; break;
 				case resourceNames.medicine: this.medicine = amount; break;
 				case resourceNames.concrete: this.concrete = amount; break;
+				case resourceNames.robots: this.robots = amount; break;
 				default:
 					log.w("Unknown resource name: " + res);
 			}
@@ -111,6 +115,7 @@ define(['ash'], function (Ash) {
 				case resourceNames.medicine: return this.medicine;
 				case resourceNames.tools: return this.tools;
 				case resourceNames.concrete: return this.concrete;
+				case resourceNames.robots: return this.robots;
 				
 				default:
 					log.w("Unknown resource name: " + res);

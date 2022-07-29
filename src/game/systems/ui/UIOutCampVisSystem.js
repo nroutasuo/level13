@@ -425,6 +425,7 @@ define([
 				case improvementNames.smithy:
 				case improvementNames.apothecary:
 				case improvementNames.cementmill:
+				case improvementNames.robotFactory:
 					// this.ctx.fillRect(xpx + 2, ypx + 4, size.x - 4, size.y / 3);
 					break;
 				case improvementNames.stable:

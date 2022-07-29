@@ -1656,6 +1656,7 @@ define([
 				case improvementNames.apothecary: return "build_in_apothecary";
 				case improvementNames.smithy: return "build_in_smithy";
 				case improvementNames.cementmill: return "build_in_cementmill";
+				case improvementNames.robotFactory: return "build_in_robotFactory";
 				case improvementNames.library: return "build_in_library";
 				case improvementNames.shrine: return "build_in_shrine";
 				case improvementNames.temple: return "build_in_temple";
@@ -1716,6 +1717,7 @@ define([
                 case "build_in_apothecary": return improvementNames.apothecary;
                 case "build_in_smithy": return improvementNames.smithy;
                 case "build_in_cementmill": return improvementNames.cementmill;
+                case "build_in_robotFactory": return improvementNames.robotFactory;
                 case "build_in_library": return improvementNames.library;
                 case "build_in_shrine": return improvementNames.shrine;
                 case "build_in_temple": return improvementNames.temple;

@@ -33,6 +33,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		apothecary: "Apothecary",
 		smithy: "Smithy",
 		cementmill: "Cement mill",
+		robotFactory: "Robot factory",
 		library: "Library",
 		shrine: "Shrine",
 		temple: "Temple",

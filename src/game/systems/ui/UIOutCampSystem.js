@@ -619,6 +619,10 @@
 					productionS = "tools +" + UIConstants.roundValue(GameGlobals.campHelper.getToolsProductionPerSecond(1, improvements), true, true) + "/s";
 					specialConsumptionS = "<br/><span class='warning'>metal -" + GameGlobals.campHelper.getMetalConsumptionPerSecondSmith(1) + "/s</span>";
 					break;
+				case CampConstants.workerTypes.robotmaker.id:
+					productionS = "robots +" + UIConstants.roundValue(GameGlobals.campHelper.getRobotsProductionPerSecond(1, improvements), true, true) + "/s";
+					specialConsumptionS = "<br/><span class='warning'>metal -" + GameGlobals.campHelper.getMetalConsumptionPerSecondSmith(1) + "/s</span>";
+					break;
 				case CampConstants.workerTypes.scientist.id:
 					productionS = "evidence +" + UIConstants.roundValue(GameGlobals.campHelper.getEvidenceProductionPerSecond(1, improvements), true, true) + "/s";
 					break;

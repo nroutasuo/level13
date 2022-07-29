@@ -133,6 +133,11 @@
             "resource_rubber": 300,
             "resource_tools": 300
         },
+        "build_in_robotFactory": {
+			"resource_fuel": 1000,
+            "resource_metal": 600,
+            "resource_rope": 100
+        },
         "build_in_shrine": {
             "resource_food": 200,
             "resource_metal": 80,
@@ -1253,7 +1258,6 @@
         "enter_camp": "Rest and manage camp.",
         "fight_gang": "Clear the enemies blocking passage.",
         "flee": "Abandon what you were doing and run.",
-		"investigate": "Seek to understand this place",
         "improve_in_apothecary": "Increase efficiency",
         "improve_in_barracks": "Improve soldiers",
         "improve_in_cementmill": "Increase efficiency",
@@ -1272,7 +1276,7 @@
         "improve_in_temple": "Increase favour generation",
         "improve_out_collector_food": "Increase trap capacity",
         "improve_out_collector_water": "Increase bucket capacity",
-        "investigate": "Look for resources.",
+		"investigate": "Seek to understand this place",
         "launch": "Leave this planet and launch for the great unknown.",
         "leave_camp": "Venture out into the corridors.",
         "move_camp_global": "Shortcut to the camp on this level.",
@@ -1741,6 +1745,22 @@
                 "unlock_building_researchcenter": true
             }
         },
+        "build_in_robotFactory": {
+            "improvements": {
+                "robotFactory": [
+                    -1,
+                    1
+                ],
+                "house": [
+                    2,
+                    -1
+                ]
+            },
+            "population": [
+                5,
+                -1
+            ]
+		},
         "build_in_shrine": {
             "deity": true,
             "improvements": {
@@ -3434,13 +3454,7 @@
             },
             "deity": true
         },
-        "use_item_cache_evidence_1": {
-            "inCamp": true
-        },
-        "use_item_cache_evidence_2": {
-            "inCamp": true
-        },
-        "use_item_cache_evidence_3": {
+        "use_item_cache_evidence": {
             "inCamp": true
         },
         "use_item_cache_metal_1": {

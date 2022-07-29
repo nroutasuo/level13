@@ -222,6 +222,7 @@ define(['ash',
 				case "build_in_apothecary": this.buildApothecary(param); break;
 				case "build_in_smithy": this.buildSmithy(param); break;
 				case "build_in_cementmill": this.buildCementMill(param); break;
+				case "build_in_robotFactory": this.buildRobotFactory(param); break;
 				case "build_in_radiotower": this.buildRadioTower(param); break;
 				case "build_in_lights": this.buildLights(param); break;
 				case "build_in_square": this.buildSquare(param); break;
@@ -1381,6 +1382,11 @@ define(['ash',
 		buildCementMill: function () {
 			this.buildImprovement("build_in_cementmill", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_cementmill"));
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_CEMENT_MILL, "Built a cement mill for making concrete.");
+		},
+
+		buildRobotFactory: function () {
+			this.buildImprovement("build_in_robotFactory", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_robotFactory"));
+			this.addLogMessage(LogConstants.getUniqueID(), "Built a factory for robots.");
 		},
 
 		buildRadioTower: function () {

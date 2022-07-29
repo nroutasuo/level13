@@ -106,6 +106,10 @@ define([
 			return GameGlobals.campBalancingHelper.getConcreteProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades) * GameConstants.gameSpeedCamp;
 		},
 		
+		getRobotsProductionPerSecond: function (workers, improvementsComponent) {
+			return GameGlobals.campBalancingHelper.getRobotsProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades) * GameConstants.gameSpeedCamp;
+		},
+		
 		getEvidenceProductionPerSecond: function (workers, improvementComponent) {
 			workers = workers || 0;
 			var evidenceUpgradeBonus = this.getUpgradeBonus("scientist");
@@ -141,6 +145,11 @@ define([
 		getMetalConsumptionPerSecondConcrete: function (workers) {
 			workers = workers || 0;
 			return workers * CampConstants.CONSUMPTION_METAL_PER_CONCRETE_PER_S * GameConstants.gameSpeedCamp;
+		},
+		
+		getToolsConsumptionPerSecondRobots: function (workers) {
+			workers = workers || 0;
+			return workers * CampConstants.CONSUMPTION_TOOLS_PER_ROBOT_MAKER_PER_S * GameConstants.gameSpeedCamp;
 		},
 		
 		getDarkFarmProductionPerSecond: function (improvementsComponent) {

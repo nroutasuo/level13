@@ -119,6 +119,10 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 				description: "Increases reputation.",
 				improvementLevelsPerTechLevel: 5,
 			},
+			robotFactory: {
+				description: "Manufacturing place for worker robots",
+				improvementLevelsPerTechLevel: 5
+			},
 			lights: {
 				description: "Keep the darkness at bay for good.",
 			},
