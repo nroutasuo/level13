@@ -155,6 +155,10 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			},
 		},
 		
+		isLocalResource: function (resourceName) {
+			return resourceName == resourceNames.robots;
+		},
+		
 		getWorkerIDByProducedResource: function (resourceName) {
 			for (var key in CampConstants.workerTypes) {
 				var def = CampConstants.workerTypes[key];

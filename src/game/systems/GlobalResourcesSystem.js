@@ -98,8 +98,10 @@ define([
 				if (hasTradePost) {
 					for (var key in resourceNames) {
 						var name = resourceNames[key];
-						updateSectorResource(node, name);
-						updateSectorResAcc(node, name);
+						if (!CampConstants.isLocalResource(name)) {
+							updateSectorResource(node, name);
+							updateSectorResAcc(node, name);
+						}
 					}
 					updateSectorCurrency(node);
 					globalResourcesComponent.storageCapacity += node.resources.storageCapacity;
