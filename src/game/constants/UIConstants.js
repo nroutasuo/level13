@@ -650,12 +650,15 @@ define(['ash',
 			if (showDecimalsWhenSmall && value <= 10) divisor = decimalDivisor;
 			if (showDecimalsAlways) divisor = decimalDivisor;
 
-			if (value % 1 === 0 || divisor <= 0) return Math.round(value);
+			let result = value;
+			if (value % 1 === 0 || divisor <= 0) {
+				result = Math.round(value);
+			} else {
+				result = Math.round(value * divisor) / divisor;
+			}
 			
-			let result = Math.round(value * divisor) / divisor;
-			
-			if (result == 0) {
-				return "< " + (0.5 / divisor);
+			if (value > 0 && result == 0) {
+				return "< 1";
 			}
 			
 			return result;

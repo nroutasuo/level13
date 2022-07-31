@@ -1919,6 +1919,9 @@ body.dark span.improvement-badge.improvement-upgrade-level {
   font-size: 75%;
   width: 1em;
 }
+body.dark #in-population-details > div {
+  width: 100%;
+}
 body.dark .changelog-type {
   padding: 2px 5px;
   border-width: 1px;
@@ -4096,6 +4099,9 @@ body.sunlit span.improvement-badge.improvement-upgrade-level {
   padding: 0 1px !important;
   font-size: 75%;
   width: 1em;
+}
+body.sunlit #in-population-details > div {
+  width: 100%;
 }
 body.sunlit .changelog-type {
   padding: 2px 5px;
