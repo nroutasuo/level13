@@ -173,7 +173,7 @@ define([
 			if (toolsRequiredRobots > 0) {
 				var toolsUsedRobots = Math.min(availableResources.getResource(resourceNames.tools), toolsRequiredRobots);
 				var robots = time * (toolsUsedRobots / toolsRequiredRobots) * node.camp.robotsProductionPerSecond;
-				campResources.addResource(resourceNames.robots, concrete);
+				campResources.addResource(resourceNames.robots, robots);
 				campResources.addResource(resourceNames.tools, -toolsUsedRobots);
 				resourceAccComponent.addChange(resourceNames.robots, robots / time, "Robot makers");
 				resourceAccComponent.addChange(resourceNames.tools, -toolsUsedRobots / time, "Robot makers");
