@@ -66,48 +66,48 @@ define([
 			return result;
 		},
 		
-		getMetalProductionPerSecond: function (workers, improvementsComponent) {
-			return GameGlobals.campBalancingHelper.getMetalProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades) * GameConstants.gameSpeedCamp;
+		getMetalProductionPerSecond: function (workers, improvementsComponent, robots) {
+			return GameGlobals.campBalancingHelper.getMetalProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * GameConstants.gameSpeedCamp;
 		},
 		
-		getFoodProductionPerSecond: function (workers, improvementsComponent) {
-			return GameGlobals.campBalancingHelper.getFoodProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades) * GameConstants.gameSpeedCamp;
+		getFoodProductionPerSecond: function (workers, improvementsComponent, robots) {
+			return GameGlobals.campBalancingHelper.getFoodProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * GameConstants.gameSpeedCamp;
 		},
 		
-		getWaterProductionPerSecond: function (workers, improvementsComponent) {
-			return GameGlobals.campBalancingHelper.getWaterProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades) * GameConstants.gameSpeedCamp;
+		getWaterProductionPerSecond: function (workers, improvementsComponent, robots) {
+			return GameGlobals.campBalancingHelper.getWaterProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * GameConstants.gameSpeedCamp;
 		},
 		
-		getRopeProductionPerSecond: function (workers, improvementsComponent) {
-			return GameGlobals.campBalancingHelper.getRopeProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades) * GameConstants.gameSpeedCamp;
+		getRopeProductionPerSecond: function (workers, improvementsComponent, robots) {
+			return GameGlobals.campBalancingHelper.getRopeProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * GameConstants.gameSpeedCamp;
 		},
 		
-		getFuelProductionPerSecond: function (workers, improvementsComponent) {
-			return GameGlobals.campBalancingHelper.getFuelProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades) * GameConstants.gameSpeedCamp;
+		getFuelProductionPerSecond: function (workers, improvementsComponent, robots) {
+			return GameGlobals.campBalancingHelper.getFuelProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * GameConstants.gameSpeedCamp;
 		},
 		
-		getRubberProductionPerSecond: function (workers, improvementsComponent) {
-			return GameGlobals.campBalancingHelper.getRubberProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades) * GameConstants.gameSpeedCamp;
+		getRubberProductionPerSecond: function (workers, improvementsComponent, robots) {
+			return GameGlobals.campBalancingHelper.getRubberProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * GameConstants.gameSpeedCamp;
 		},
 		
-		getHerbsProductionPerSecond: function (workers, improvementsComponent) {
-			return GameGlobals.campBalancingHelper.getHerbsProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades) * GameConstants.gameSpeedCamp;
+		getHerbsProductionPerSecond: function (workers, improvementsComponent, robots) {
+			return GameGlobals.campBalancingHelper.getHerbsProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * GameConstants.gameSpeedCamp;
 		},
 		
-		getMedicineProductionPerSecond: function (workers, improvementsComponent) {
-			return GameGlobals.campBalancingHelper.getMedicineProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades) * GameConstants.gameSpeedCamp;
+		getMedicineProductionPerSecond: function (workers, improvementsComponent, robots) {
+			return GameGlobals.campBalancingHelper.getMedicineProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * GameConstants.gameSpeedCamp;
 		},
 		
-		getToolsProductionPerSecond: function (workers, improvementsComponent) {
-			return GameGlobals.campBalancingHelper.getToolsProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades) * GameConstants.gameSpeedCamp;
+		getToolsProductionPerSecond: function (workers, improvementsComponent, robots) {
+			return GameGlobals.campBalancingHelper.getToolsProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * GameConstants.gameSpeedCamp;
 		},
 		
-		getConcreteProductionPerSecond: function (workers, improvementsComponent) {
-			return GameGlobals.campBalancingHelper.getConcreteProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades) * GameConstants.gameSpeedCamp;
+		getConcreteProductionPerSecond: function (workers, improvementsComponent, robots) {
+			return GameGlobals.campBalancingHelper.getConcreteProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * GameConstants.gameSpeedCamp;
 		},
 		
-		getRobotsProductionPerSecond: function (workers, improvementsComponent) {
-			return GameGlobals.campBalancingHelper.getRobotsProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades) * GameConstants.gameSpeedCamp;
+		getRobotsProductionPerSecond: function (workers, improvementsComponent, robots) {
+			return GameGlobals.campBalancingHelper.getRobotsProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * GameConstants.gameSpeedCamp;
 		},
 		
 		getEvidenceProductionPerSecond: function (workers, improvementComponent) {
