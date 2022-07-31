@@ -1759,7 +1759,10 @@
             "population": [
                 5,
                 -1
-            ]
+            ],
+            "upgrades": {
+                "unlock_building_researchcenter": true
+            }
 		},
         "build_in_shrine": {
             "deity": true,
