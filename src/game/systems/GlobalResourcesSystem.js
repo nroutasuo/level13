@@ -56,6 +56,8 @@ define([
 				let hasTradePost = campImprovements.getCount(improvementNames.tradepost) > 0;
 				node.resources.storageCapacity = CampConstants.getStorageCapacity(storageCount, storageLevel);
 				node.resources.limitToStorage(!hasTradePost);
+				
+				this.updateCampSpecialStorage(node);
 			}
 		},
 		
@@ -149,6 +151,13 @@ define([
 			GameGlobals.gameState.unlockedFeatures.resources.concrete = checkUnlockedResource("concrete");
 			GameGlobals.gameState.unlockedFeatures.resources.robots = checkUnlockedResource("robots");
 			GameGlobals.gameState.unlockedFeatures.resources.tools = checkUnlockedResource("tools");
+		},
+		
+		updateCampSpecialStorage: function (node) {
+			let factoryCount = node.improvements.getCount(improvementNames.robotFactory);
+			let factoryLevel = node.improvements.getLevel(improvementNames.robotFactory);
+			let maxRobots = CampConstants.getRobotStorageCapacity(factoryCount, factoryLevel);
+			node.resources.resources.limit(resourceNames.robots, 0, maxRobots);
 		},
 		
 		onInventoryChanged: function () {

@@ -174,13 +174,18 @@
 
 			let currentPopulation = Math.floor(campComponent.population);
 			let resources = this.playerLocationNodes.head.entity.get(ResourcesComponent);
+			let improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 
 			if (!isActive) return;
 			
+			let factoryCount = improvements.getCount(improvementNames.robotFactory);
+			let factoryLevel = improvements.getLevel(improvementNames.robotFactory);
 			let maxPopulation = this.getCampMaxPopulation();
 			let reputation = this.playerLocationNodes.head.entity.get(ReputationComponent).value;
 			let robots = resources.resources.robots || 0;
-			this.updatePopulationDisplay(campComponent, maxPopulation, reputation, robots);
+			let maxRobots = CampConstants.getRobotStorageCapacity(factoryCount, factoryLevel);
+			
+			this.updatePopulationDisplay(campComponent, maxPopulation, reputation, robots, maxRobots);
 		},
 
 		getCampMaxPopulation: function () {
@@ -199,7 +204,7 @@
 			$(id).parent().siblings(".in-assign-worker-limit").children(".callout-container").children(".info-callout-target").html(showMax ? "<span>/ " + maxWorkers + "</span>" : "");
 		},
 
-		updatePopulationDisplay: function (campComponent, maxPopulation, reputation, robots) {
+		updatePopulationDisplay: function (campComponent, maxPopulation, reputation, robots, maxRobots) {
 			var freePopulation = campComponent.getFreePopulation();
 			var isPopulationMaxed = campComponent.population >= maxPopulation;
 			var populationChangePerSec = campComponent.populationChangePerSec;
@@ -213,7 +218,7 @@
 			$("#in-population-reputation").text("Reputation required: " + reqRepCur + " (current) " + reqRepNext + " (next)");
 			$("#in-population h3").text("Population: " + Math.floor(campComponent.population) + " / " + (maxPopulation));
 			$("#in-population #in-population-status").text("Unassigned workers: " + freePopulation);
-			$("#in-population #in-population-robots").text("Robots: " + UIConstants.roundValue(robots, false, false, 1));
+			$("#in-population #in-population-robots").text("Robots: " + UIConstants.roundValue(robots, false, false, 1) + " / " + maxRobots);
 
 			if (!isPopulationStill) {
 				var secondsToChange = 0;
@@ -246,7 +251,8 @@
 			GameGlobals.uiFunctions.slideToggleIf("#in-assign-workers", null, campComponent.population >= 1, 200, 200);
 			
 			let robotBonus = GameGlobals.campBalancingHelper.getWorkerRobotBonus(robots);
-			let robotCalloutContent = "worker resource production: +" + UIConstants.roundValue((robotBonus - 1) * 100, true, false) + "%";
+			let robotCalloutContent = "worker resource production: +" + UIConstants.roundValue(robotBonus * 100, true, false) + "%";
+			robotCalloutContent = robotCalloutContent + "<br/>" + CampConstants.SPECIAL_STORAGE_PER_FACTORY + " robots per factory";
 			UIConstants.updateCalloutContent("#in-population #in-population-robots", robotCalloutContent);
 			
 		},

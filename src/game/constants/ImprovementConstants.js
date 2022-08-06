@@ -120,7 +120,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 				improvementLevelsPerTechLevel: 5,
 			},
 			robotFactory: {
-				description: "Manufacturing place for worker robots",
+				description: "Enables production and storage of worker robots.",
 				improvementLevelsPerTechLevel: 5
 			},
 			lights: {

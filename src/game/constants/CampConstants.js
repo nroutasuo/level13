@@ -13,6 +13,9 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		STORAGE_PER_IMPROVEMENT_LEVEL_2: 75,
 		STORAGE_PER_IMPROVEMENT_LEVEL_3: 125,
 		
+		// special resource storage (robots)
+		SPECIAL_STORAGE_PER_FACTORY: 50,
+		
 		// Rumours
 		RUMOURS_PER_POP_PER_SEC_BASE: 0.0003,
 		RUMOUR_BONUS_PER_CAMPFIRE_BASE: 1.2,
@@ -38,7 +41,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		CONSUMPTION_HERBS_PER_WORKER_PER_S: 0.05,
 		CONSUMPTION_METAL_PER_TOOLSMITH_PER_S: 0.03,
 		CONSUMPTION_METAL_PER_CONCRETE_PER_S: 0.02,
-		CONSUMPTION_TOOLS_PER_ROBOT_MAKER_PER_S: 0.01,
+		CONSUMPTION_TOOLS_PER_ROBOT_MAKER_PER_S: 0.03,
 		
 		// Production
 		PRODUCTION_METAL_PER_WORKER_PER_S: 0.02,
@@ -51,9 +54,11 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		PRODUCTION_MEDICINE_PER_WORKER_PER_S: 0.01,
 		PRODUCTION_TOOLS_PER_WORKER_PER_S: 0.02,
 		PRODUCTION_CONCRETE_PER_WORKER_PER_S: 0.02,
-		PRODUCTION_ROBOTS_PER_WORKER_PER_S: 0.001,
+		PRODUCTION_ROBOTS_PER_WORKER_PER_S: 0.0001,
 		PRODUCTION_EVIDENCE_PER_WORKER_PER_S: 0.00075,
 		PRODUCTION_FAVOUR_PER_WORKER_PER_S: 0.00075,
+		
+		PRODUCTION_BONUS_PER_ROBOT_PER_SEC: 0.013,
 		
 		// reputation
 		REPUTATION_TO_POPULATION_FACTOR: 0.85,
@@ -173,6 +178,13 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			if (storageLevel > 1) storagePerImprovement = CampConstants.STORAGE_PER_IMPROVEMENT_LEVEL_2;
 			if (storageLevel > 2) storagePerImprovement = CampConstants.STORAGE_PER_IMPROVEMENT_LEVEL_3;
 			return CampConstants.BASE_STORAGE + storageCount * storagePerImprovement;
+		},
+		
+		getRobotStorageCapacity: function (factoryCount, factoryLevel) {
+			factoryCount = factoryCount || 0;
+			factoryLevel = factoryLevel || 1;
+			var storagePerFactory = CampConstants.SPECIAL_STORAGE_PER_FACTORY;
+			return factoryCount * storagePerFactory;
 		},
 		
 		// population cap of one camp
