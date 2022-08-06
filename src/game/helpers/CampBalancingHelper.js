@@ -786,16 +786,16 @@ define([
 			workers = workers || 0;
 			robots = robots || 0;
 			var metalUpgradeBonus = this.getWorkerUpgradeBonus("scavenger", upgrades);
-			var robotBonus = this.getWorkerRobotBonus(robots);
-			return workers * CampConstants.PRODUCTION_METAL_PER_WORKER_PER_S * metalUpgradeBonus * robotBonus;
+			var robotFactor = this.getWorkerRobotFactor(robots);
+			return workers * CampConstants.PRODUCTION_METAL_PER_WORKER_PER_S * metalUpgradeBonus * robotFactor;
 		},
 		
 		getFoodProductionPerSecond: function (workers, improvementsComponent, upgrades, robots) {
 			workers = workers || 0;
 			robots = robots || 0;
 			var foodUpgradeBonus = this.getWorkerUpgradeBonus("trapper", upgrades);
-			var robotBonus = this.getWorkerRobotBonus(robots);
-			return workers * CampConstants.PRODUCTION_FOOD_PER_WORKER_PER_S * foodUpgradeBonus * robotBonus;
+			var robotFactor = this.getWorkerRobotFactor(robots);
+			return workers * CampConstants.PRODUCTION_FOOD_PER_WORKER_PER_S * foodUpgradeBonus * robotFactor;
 		},
 		
 		getWaterProductionPerSecond: function (workers, improvementsComponent, upgrades, robots) {
@@ -805,40 +805,40 @@ define([
 			let acqueductLevel = improvementsComponent.getLevel(improvementNames.aqueduct);
 			var waterUpgradeBonus = this.getWorkerUpgradeBonus("water", upgrades);
 			var waterImprovementBonus = 1 + (acqueductCount / 4) + (acqueductLevel / 10);
-			var robotBonus = this.getWorkerRobotBonus(robots);
-			return CampConstants.PRODUCTION_WATER_PER_WORKER_PER_S * workers * waterUpgradeBonus * waterImprovementBonus * robotBonus;
+			var robotFactor = this.getWorkerRobotFactor(robots);
+			return CampConstants.PRODUCTION_WATER_PER_WORKER_PER_S * workers * waterUpgradeBonus * waterImprovementBonus * robotFactor;
 		},
 		
 		getRopeProductionPerSecond: function (workers, improvementsComponent, upgrades, robots) {
 			workers = workers || 0;
 			robots = robots || 0;
 			var ropeUpgradeBonus = this.getWorkerUpgradeBonus("weaver", upgrades);
-			var robotBonus = this.getWorkerRobotBonus(robots);
-			return workers * CampConstants.PRODUCTION_ROPE_PER_WORKER_PER_S * ropeUpgradeBonus * robotBonus;
+			var robotFactor = this.getWorkerRobotFactor(robots);
+			return workers * CampConstants.PRODUCTION_ROPE_PER_WORKER_PER_S * ropeUpgradeBonus * robotFactor;
 		},
 		
 		getFuelProductionPerSecond: function (workers, improvementsComponent, upgrades, robots) {
 			workers = workers || 0;
 			robots = robots || 0;
 			var fuelUpgradeBonus = this.getWorkerUpgradeBonus("chemist", upgrades);
-			var robotBonus = this.getWorkerRobotBonus(robots);
-			return workers * CampConstants.PRODUCTION_FUEL_PER_WORKER_PER_S * fuelUpgradeBonus * robotBonus;
+			var robotFactor = this.getWorkerRobotFactor(robots);
+			return workers * CampConstants.PRODUCTION_FUEL_PER_WORKER_PER_S * fuelUpgradeBonus * robotFactor;
 		},
 		
 		getRubberProductionPerSecond: function (workers, improvementsComponent, upgrades, robots) {
 			workers = workers || 0;
 			robots = robots || 0;
 			var upgradeBonus = this.getWorkerUpgradeBonus("rubbermaker", upgrades);
-			var robotBonus = this.getWorkerRobotBonus(robots);
-			return workers * CampConstants.PRODUCTION_RUBBER_PER_WORKER_PER_S * upgradeBonus * robotBonus;
+			var robotFactor = this.getWorkerRobotFactor(robots);
+			return workers * CampConstants.PRODUCTION_RUBBER_PER_WORKER_PER_S * upgradeBonus * robotFactor;
 		},
 		
 		getHerbsProductionPerSecond: function (workers, improvementsComponent, upgrades, robots) {
 			workers = workers || 0;
 			robots = robots || 0;
 			var upgradeBonus = this.getWorkerUpgradeBonus(CampConstants.workerTypes.gardener.id, upgrades) || 1;
-			var robotBonus = this.getWorkerRobotBonus(robots);
-			return workers * CampConstants.PRODUCTION_HERBS_PER_WORKER_PER_S * upgradeBonus * robotBonus;
+			var robotFactor = this.getWorkerRobotFactor(robots);
+			return workers * CampConstants.PRODUCTION_HERBS_PER_WORKER_PER_S * upgradeBonus * robotFactor;
 		},
 		
 		getMedicineProductionPerSecond: function (workers, improvementsComponent, upgrades, robots) {
@@ -846,8 +846,8 @@ define([
 			robots = robots || 0;
 			var medicineUpgradeBonus = this.getWorkerUpgradeBonus("apothecary", upgrades);
 			var levelBonus = 1 + improvementsComponent.getLevel(improvementNames.apothecary) / 10;
-			var robotBonus = this.getWorkerRobotBonus(robots);
-			return workers * CampConstants.PRODUCTION_MEDICINE_PER_WORKER_PER_S * medicineUpgradeBonus * levelBonus * robotBonus;
+			var robotFactor = this.getWorkerRobotFactor(robots);
+			return workers * CampConstants.PRODUCTION_MEDICINE_PER_WORKER_PER_S * medicineUpgradeBonus * levelBonus * robotFactor;
 		},
 		
 		getToolsProductionPerSecond: function (workers, improvementsComponent, upgrades, robots) {
@@ -855,8 +855,8 @@ define([
 			robots = robots || 0;
 			var toolsUpgradeBonus = this.getWorkerUpgradeBonus("smith", upgrades);
 			var levelBonus = 1 + improvementsComponent.getLevel(improvementNames.smithy) / 10;
-			var robotBonus = this.getWorkerRobotBonus(robots);
-			return workers * CampConstants.PRODUCTION_TOOLS_PER_WORKER_PER_S * toolsUpgradeBonus * levelBonus * robotBonus;
+			var robotFactor = this.getWorkerRobotFactor(robots);
+			return workers * CampConstants.PRODUCTION_TOOLS_PER_WORKER_PER_S * toolsUpgradeBonus * levelBonus * robotFactor;
 		},
 		
 		getConcreteProductionPerSecond: function (workers, improvementsComponent, upgrades, robots) {
@@ -864,8 +864,8 @@ define([
 			robots = robots || 0;
 			var concreteUpgradeBonus = this.getWorkerUpgradeBonus("concrete", upgrades);
 			var levelBonus = 1 + improvementsComponent.getLevel(improvementNames.cementmill) / 10;
-			var robotBonus = this.getWorkerRobotBonus(robots);
-			return workers * CampConstants.PRODUCTION_CONCRETE_PER_WORKER_PER_S * concreteUpgradeBonus * levelBonus * robotBonus;
+			var robotFactor = this.getWorkerRobotFactor(robots);
+			return workers * CampConstants.PRODUCTION_CONCRETE_PER_WORKER_PER_S * concreteUpgradeBonus * levelBonus * robotFactor;
 		},
 		
 		getRobotsProductionPerSecond: function (workers, improvementsComponent, upgrades, robots) {
@@ -873,8 +873,8 @@ define([
 			robots = robots || 0;
 			var robotsUpgradeConus = this.getWorkerUpgradeBonus("robotmaker", upgrades);
 			var levelBonus = 1 + improvementsComponent.getLevel(improvementNames.robotFactory) / 10;
-			var robotBonus = this.getWorkerRobotBonus(robots);
-			return workers * CampConstants.PRODUCTION_ROBOTS_PER_WORKER_PER_S * robotsUpgradeConus * levelBonus * robotBonus;
+			var robotFactor = this.getWorkerRobotFactor(robots);
+			return workers * CampConstants.PRODUCTION_ROBOTS_PER_WORKER_PER_S * robotsUpgradeConus * levelBonus * robotFactor;
 		},
 		
 		getMeditationSuccessRate: function (shrineLevel) {
@@ -910,9 +910,11 @@ define([
 		},
 		
 		getWorkerRobotBonus: function (robots) {
-			let maxStorage = this.getMaxCampStorage(WorldConstants.CAMPS_TOTAL);
-			let bonusPerRobot = 2 / maxStorage;
-			return 1 + bonusPerRobot * robots;
+			return robots * CampConstants.PRODUCTION_BONUS_PER_ROBOT_PER_SEC;
+		},
+		
+		getWorkerRobotFactor: function (robots) {
+			return 1 + this.getWorkerRobotBonus(robots);
 		},
 		
 		isOutpost: function (campOrdinal) {
