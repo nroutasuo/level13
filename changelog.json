@@ -8,6 +8,14 @@
 				{
 					"type": "GD",
 					"summary": "Add milestones"
+				},
+				{
+					"type": "GD",
+					"summary": "Add investigate action"
+				},
+				{
+					"type": "GD",
+					"summary": "Add robots"
 				}
 			]
 		},
