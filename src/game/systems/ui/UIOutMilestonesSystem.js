@@ -77,7 +77,7 @@ define([
 			
 			this.bubbleNumber = bubbleNumber;
 			
-			$("#switch-world .bubble").text(this.bubbleNumber)
+			$("#switch-milestones .bubble").text(this.bubbleNumber)
 			GameGlobals.uiFunctions.toggle("#switch-milestones .bubble", this.bubbleNumber > 0);
 		},
 		
