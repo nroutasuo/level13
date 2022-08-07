@@ -90,7 +90,7 @@ function (Ash, FollowerVO, FollowerConstants, ItemConstants) {
 			let type = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
 			let selectedFollower = this.getFollowerInPartyByType(type);
 			if (selectedFollower == null) return 1;
-			if (selectedFollower.abilityType != follower.abilityType) return 0;
+			if (!FollowerConstants.isComparableAbilityTypes(selectedFollower.abilityType, follower.abilityType)) return 0;
 			
 			return FollowerConstants.getTotalItemBonus(follower) - FollowerConstants.getTotalItemBonus(selectedFollower);
 		},

@@ -443,6 +443,16 @@ define(['ash',
 			return abilityType == FollowerConstants.abilityType.SCAVENGE_CAPACITY;
 		},
 		
+		isComparableAbilityTypes: function (a, b) {
+			if (a == b) return true;
+			
+			let isFighter = function (t) { return t == FollowerConstants.abilityType.ATTACK || t == FollowerConstants.abilityType.DEFENCE; }
+			
+			if (isFighter(a) && isFighter(b)) return true;
+			
+			return false;
+		},
+		
 		getPronoun: function (follower) {
 			if (this.isAnimal(follower.abilityType)) return "it";
 			if (follower.gender == CultureConstants.genders.FEMALE) return "she";
