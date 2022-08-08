@@ -110,11 +110,6 @@ define([
 						maxValue = Math.max(maxValue, 100);
 						addAccumulation("Lights", 100 / maxValueBase);
 					}
-				} else {
-					if (improvements.getCount(improvementNames.ceiling) > 0) {
-						maxValue = Math.max(maxValue, 100);
-						addAccumulation("Ceiling", 100 / maxValueBase);
-					}
 				}
 			}
 			

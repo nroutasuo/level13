@@ -45,7 +45,6 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		aqueduct: "Aqueduct",
 		researchcenter: "Research center",
 		lights: "Lights",
-		ceiling: "Ceiling",
 		square: "Square",
 		garden: "Moss garden",
 	};

@@ -29,7 +29,6 @@ function (Ash, UpgradeData, PlayerActionConstants, WorldConstants, UpgradeVO) {
 			unlock_item_clothing_body_15: "Augmented clothing made to withstand the harshest of environments.",
 			unlock_item_clothing_over_15: "Modern armour that takes inspiration from military automatons.",
 			unlock_item_weapon_15: "Knowledge to make the deadliest weapons.",
-			unlock_building_ceiling: "Protection from sunlight.",
 			unlock_building_spaceship1: "Part of constructing a space colony.",
 			unlock_building_spaceship2: "Part of constructing a space colony.",
 			unlock_building_spaceship3: "Part of constructing a space colony.",

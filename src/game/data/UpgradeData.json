@@ -425,16 +425,6 @@
         "id": "unlock_building_bridge",
         "name": "Bridge-building"
     },
-    "unlock_building_ceiling": {
-        "blueprintCampOrdinal": 15,
-        "blueprintIsCampless": false,
-        "blueprintIsEarly": true,
-        "blueprintPieces": 3,
-        "campOrdinal": "15",
-        "effects": {},
-        "id": "unlock_building_ceiling",
-        "name": "UV Protection"
-    },
     "unlock_building_cementmill": {
         "blueprintCampOrdinal": 6,
         "blueprintIsCampless": false,

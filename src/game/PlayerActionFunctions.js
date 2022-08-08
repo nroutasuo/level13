@@ -210,7 +210,6 @@ define(['ash',
 				case "build_in_generator": this.buildGenerator(param); break;
 				case "build_in_darkfarm": this.buildDarkFarm(param); break;
 				case "build_in_hospital": this.buildHospital(param); break;
-				case "build_in_ceiling": this.buildCeiling(param); break;
 				case "build_in_inn": this.buildInn(param); break;
 				case "build_in_tradepost": this.buildTradingPost(param); break;
 				case "build_in_library": this.buildLibrary(param); break;
@@ -1336,12 +1335,6 @@ define(['ash',
 			this.buildImprovement("build_in_lights", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_lights"));
 			var msg = "Installed lights to the camp.";
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_LIGHTS, msg);
-		},
-
-		buildCeiling: function () {
-			this.buildImprovement("build_in_ceiling", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_ceiling"));
-			var msg = "Build a big tent to protect the camp from the sun.";
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_CEILING, msg);
 		},
 
 		buildStorage: function (sector) {

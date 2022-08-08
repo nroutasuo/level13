@@ -46,10 +46,6 @@
             "resource_food": 10,
             "resource_metal": 5
         },
-        "build_in_ceiling": {
-            "resource_concrete": 300,
-            "resource_rope": 1000
-        },
         "build_in_cementmill": {
             "cost_factor_expBase": 1.4,
             "resource_fuel": {
@@ -1014,10 +1010,6 @@
         "unlock_building_bridge": {
             "evidence": 123
         },
-        "unlock_building_ceiling": {
-            "evidence": 357,
-            "favour": 347
-        },
         "unlock_building_cementmill": {
             "evidence": 247
         },
@@ -1477,18 +1469,6 @@
                     -1,
                     1
                 ]
-            }
-        },
-        "build_in_ceiling": {
-            "improvements": {
-                "ceiling": [
-                    -1,
-                    1
-                ]
-            },
-            "sunlit": true,
-            "upgrades": {
-                "unlock_building_ceiling": true
             }
         },
         "build_in_cementmill": {
@@ -3057,12 +3037,6 @@
             "blueprint": 4,
             "upgrades": {
                 "unlock_building_fortifications": true
-            }
-        },
-        "unlock_building_ceiling": {
-            "blueprint": 15,
-            "upgrades": {
-                "unlock_building_researchcenter": true
             }
         },
         "unlock_building_cementmill": {

@@ -1652,7 +1652,6 @@ define([
 				case improvementNames.house2: return "build_in_house2";
 				case improvementNames.generator: return "build_in_generator";
 				case improvementNames.lights: return "build_in_lights";
-				case improvementNames.ceiling: return "build_in_ceiling";
 				case improvementNames.apothecary: return "build_in_apothecary";
 				case improvementNames.smithy: return "build_in_smithy";
 				case improvementNames.cementmill: return "build_in_cementmill";
@@ -1713,7 +1712,6 @@ define([
                 case "build_in_house2": return improvementNames.house2;
                 case "build_in_generator": return improvementNames.generator;
                 case "build_in_lights": return improvementNames.lights;
-                case "build_in_ceiling": return improvementNames.ceiling;
                 case "build_in_apothecary": return improvementNames.apothecary;
                 case "build_in_smithy": return improvementNames.smithy;
                 case "build_in_cementmill": return improvementNames.cementmill;

@@ -114,7 +114,6 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			tradepost: {
 				description: "Connect camps to a trade network.",
 			},
-			ceiling: {},
 			radiotower: {
 				description: "Increases reputation.",
 				improvementLevelsPerTechLevel: 5,
