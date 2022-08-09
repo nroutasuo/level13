@@ -214,8 +214,9 @@ define(['ash',
 			var nearestCampLevel = GameGlobals.playerActionFunctions.nearestCampNodes.head ? GameGlobals.playerActionFunctions.nearestCampNodes.head.entity.get(PositionComponent).level : -100;
 			if (wasExploring && nearestCampLevel > -100) {
 				// this.logStep("enter camp " + nearestCampLevel);
+				let nearestCampOrdinal = GameGlobals.gameState.getCampOrdinal(nearestCampLevel);
 				autoPlayComponent.setExploreObjective(null, null, null);
-				GameGlobals.playerActionFunctions.moveToCamp(nearestCampLevel);
+				GameGlobals.playerActionFunctions.moveToCamp(nearestCampOrdinal);
 				GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.in);
 			} else {
 				// this.logStep("leave camp");
@@ -429,7 +430,8 @@ define(['ash',
 			}
 
 			if (nextCamp) {
-				GameGlobals.playerActionFunctions.moveToCamp(nextCamp.position.level);
+				let campLevel = nextCamp.position.level;
+				GameGlobals.playerActionFunctions.moveToCamp(GameGlobals.gameState.getCampOrdinal(campLevel));
 				return true;
 			}
 

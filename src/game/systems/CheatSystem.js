@@ -341,7 +341,7 @@ define(['ash',
 					if (isExpedition) {
 						component.isPendingExploring = true;
 						component.isExpedition = true;
-						component.autoExploratioVO.limitToCurrentLevel = true;
+						component.explorationVO.limitToCurrentLevel = true;
 					}
 					this.playerStatsNodes.head.entity.add(component);
 				}
