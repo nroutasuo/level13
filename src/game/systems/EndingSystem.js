@@ -1,13 +1,15 @@
 define([
 	'ash',
 	'game/GameGlobals',
-], function (Ash, GameGlobals) {
+	'game/GlobalSignals',
+], function (Ash, GameGlobals, GlobalSignals) {
 	
 	var EndingSystem = Ash.System.extend({
 		
 		isPopupShown: false,
 
-		constructor: function () {},
+		constructor: function () {
+		},
 
 		addToEngine: function (engine) {
 			this.engine = engine;
@@ -29,7 +31,7 @@ define([
 		
 		showPopup: function () {
 			gtag('event', 'game_complete', { event_category: 'progression' })
-			this.gameManager.pauseGame();
+			GlobalSignals.gameEndedSignal.dispatch();
 			GameGlobals.uiFunctions.showQuestionPopup(
 				"The End",
 				"Congratulations! You've completed Level 13. Thank you for playing!<br/></br>Do you want to restart?",

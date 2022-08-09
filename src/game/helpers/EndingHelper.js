@@ -7,10 +7,6 @@ function (Ash, GameGlobals, UpgradeConstants, WorldConstants, TribeUpgradesNode)
 
 		constructor: function (engine) {},
 		
-		hasUnlockedEndProject: function () {
-			return false;
-		},
-		
 		isReadyForLaunch: function () {
 			if (GameGlobals.gameState.numCamps < WorldConstants.CAMPS_TOTAL) return false;
 			return GameGlobals.playerActionsHelper.checkAvailability("launch");

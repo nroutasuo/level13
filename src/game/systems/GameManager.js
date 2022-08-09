@@ -35,6 +35,7 @@ define([
 			this.engine = engine;
 			this.creator = new EntityCreator(this.engine);
 			GlobalSignals.add(this, GlobalSignals.restartGameSignal, this.onRestart);
+			GlobalSignals.add(this, GlobalSignals.gameEndedSignal, this.onGameEnd);
 		},
 		
 		update: function (time) {
@@ -494,7 +495,11 @@ define([
 		onRestart: function (resetSave) {
 			console.clear();
 			this.restartGame();
-		}
+		},
+		
+		onGameEnd: function () {
+			this.pauseGame();
+		},
 	});
 
 	return GameManager;

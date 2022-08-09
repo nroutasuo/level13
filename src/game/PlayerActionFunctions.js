@@ -381,7 +381,7 @@ define(['ash',
 			}
 			
 			if (!campSector) {
-				log.w("No camp found for level " + level);
+				log.w("No camp found for campOrdinal " + campOrdinal);
 				return;
 			}
 
@@ -1483,7 +1483,7 @@ define(['ash',
 			var playerPos = this.playerPositionNodes.head.position;
 
 			if (sector) {
-				var msg = "Colony construction project ready at " + sectorPosVO.getInGameFormat(playerPos.level === l);
+				var msg = "Colony construction project ready at " + sectorPosVO.getInGameFormat(playerPos.level === sectorPosVO.level);
 				this.buildImprovement(action, GameGlobals.playerActionsHelper.getImprovementNameForAction(action), sector);
 				this.addLogMessage(LogConstants.MSG_ID_BUILT_SPACESHIP, msg);
 			} else {

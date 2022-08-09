@@ -61,8 +61,6 @@ define([
 				return;
 			}
 			
-			GameGlobals.uiFunctions.toggle("#container-in-improvements-colony", GameGlobals.endingHelper.hasUnlockedEndProject());
-			
 			GameGlobals.uiFunctions.toggle("#in-improvements-level-empty-message", this.tabCounts.lastShown.visible.regular <= 0);
 			this.elements.tabHeader.text("Building projects");
 		},
@@ -142,6 +140,8 @@ define([
 					if (!isHidden && actionAvailable) availableRegular++;
 				}
 			}
+			
+			GameGlobals.uiFunctions.toggle("#container-in-improvements-colony", visibleColony > 0 || GameGlobals.endingHelper.isReadyForLaunch());
 			
 			var sys = this;
 			if (updateTables) {
