@@ -171,18 +171,36 @@ define([
 			
 			projects.sort((a, b) => { return b.level - a.level; });
 			
-			GameGlobals.uiFunctions.toggle("#header-in-improvements-level-built", projects.length > 0);
+			let numProjectsColony = 0;
+			let numProjectsOther = 0;
 			
-			if (updateTables) $("#in-improvements-level-built table").empty();
-			for (let i = 0; i < projects.length; i++) {
-				var project = projects[i];
-				if (updateTables) {
-					var tr = this.getProjectTR(project, false);
-					$("#in-improvements-level-built table").append(tr);
-				}
+			if (updateTables) {
+				$("#in-improvements-level-built table").empty();
 			}
 			
-			GameGlobals.uiFunctions.registerCustomButtonListeners("#in-improvements-level-built", "navigation", this.onMapLinkButtonClicked);
+			for (let i = 0; i < projects.length; i++) {
+				let project = projects[i];
+				let isColonyProject = project.isColonyProject();
+				
+				if (isColonyProject) numProjectsColony++;
+				if (!isColonyProject) numProjectsOther++;
+				
+				if (updateTables) {
+					var tr = this.getProjectTR(project, false);
+					if (isColonyProject) {
+						$("#in-improvements-colony-built table").append(tr);
+					} else {
+						$("#in-improvements-level-built table").append(tr);
+					}
+				}
+			}
+				
+			if (updateTables) {
+				GameGlobals.uiFunctions.registerCustomButtonListeners("#in-improvements-level-built", "navigation", this.onMapLinkButtonClicked);
+			}
+			
+			GameGlobals.uiFunctions.toggle("#header-in-improvements-colony-built", numProjectsColony > 0);
+			GameGlobals.uiFunctions.toggle("#header-in-improvements-level-built", numProjectsOther > 0);
 		},
 		
 		resetHidden: function () {
@@ -230,6 +248,8 @@ define([
 				var actionLabel = project.actionLabel;
 				var action = project.action;
 				result += "<td style='width:138px;text-align:right;' class='bg-reset'><button class='" + classes + "' action='" + action + "' sector='" + sector + "' id='btn-" + action + "-" + sector + "'>" + actionLabel + "</button></td>";
+			} else if (project.isColonyProject()) {
+				
 			} else {
 				result += "<td class='minwidth'>" + this.getMapLinkButton(sector) + "</td>";
 				result += "<td style='width:138px'></td>";

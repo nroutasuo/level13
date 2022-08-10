@@ -1486,6 +1486,9 @@ define(['ash',
 				var msg = "Colony construction project ready at " + sectorPosVO.getInGameFormat(playerPos.level === sectorPosVO.level);
 				this.buildImprovement(action, GameGlobals.playerActionsHelper.getImprovementNameForAction(action), sector);
 				this.addLogMessage(LogConstants.MSG_ID_BUILT_SPACESHIP, msg);
+				if (GameGlobals.endingHelper.isReadyForLaunch()) {
+					this.addLogMessage(LogConstants.getUniqueID(), "The colony ship is ready to launch.");
+				}
 			} else {
 				log.w("Couldn't find sectors for building space ship.");
 				log.i(sector);

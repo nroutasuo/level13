@@ -25,7 +25,7 @@ define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
 		},
 		
 		isColonyProject: function () {
-			return this.action.indexOf("space") >= 0;
+			return this.action.indexOf("space") >= 0 || (this.improvement && this.improvement.name.indexOf("Colony") >= 0);
 		}
 	
 	});
