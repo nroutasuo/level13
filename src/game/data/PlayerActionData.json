@@ -261,25 +261,24 @@
             "resource_rope": 50
         },
         "build_out_spaceship1": {
-            "resource_concrete": 10000,
-            "resource_metal": 20000,
+            "resource_concrete": 3000,
+            "resource_metal": 10000,
             "resource_rope": 3000,
-            "resource_rubber": 1000,
             "resource_tools": 1000
         },
         "build_out_spaceship2": {
             "resource_concrete": 1000,
             "resource_metal": 10000,
-            "resource_rope": 5000,
-            "resource_tools": 2000
+            "resource_tools": 2000,
+            "resource_rubber": 1000
         },
         "build_out_spaceship3": {
-            "resource_concrete": 1000,
             "resource_fuel": 800,
-            "resource_medicine": 3000,
+            "resource_water": 10000,
             "resource_metal": 10000,
             "resource_rope": 5000,
-            "resource_tools": 1000
+            "resource_tools": 1000,
+            "resource_medicine": 500
         },
         "build_out_sundome": {
             "resource_concrete": 800,
