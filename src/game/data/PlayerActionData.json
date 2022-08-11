@@ -1820,6 +1820,14 @@
                 "unlock_building_stable": true
             }
         },
+        "build_in_storage": {
+            "improvements": {
+                "storage": [
+                    -1,
+                    10
+                ]
+            }
+        },
         "build_in_temple": {
             "deity": true,
             "improvements": {
