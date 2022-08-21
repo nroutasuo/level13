@@ -151,6 +151,9 @@ define([
 		startGame: function () {
 			log.i("START " + GameConstants.STARTTimeNow() + "\t starting game");
 
+			this.tickProvider.start();
+			this.tickProvider.add(this.update, this);
+
 			// for restart:
 			this.engine.getSystem(UIOutLevelSystem).pendingUpdateDescription = true;
 			this.engine.getSystem(UIOutLevelSystem).pendingUpdateMap = true;

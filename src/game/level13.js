@@ -224,8 +224,6 @@ define([
 		start: function () {
 			log.i("START " + GameConstants.STARTTimeNow() + "\t start tick");
 			this.gameManager.startGame();
-			this.tickProvider.add(this.gameManager.update, this.gameManager);
-			this.tickProvider.start();
 		},
 
 		handleException: function (ex) {
