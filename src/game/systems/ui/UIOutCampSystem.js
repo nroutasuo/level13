@@ -159,12 +159,9 @@
 			let freePopulation = campComponent.getFreePopulation();
 
 			let newBubbleNumber = buildingNum + eventNum + freePopulation;
-			if (this.bubbleNumber === newBubbleNumber)
-				return;
-				
+			
+			GameGlobals.uiFunctions.updateBubble("#switch-in .bubble", this.bubbleNumber, newBubbleNumber);
 			this.bubbleNumber = newBubbleNumber;
-			$("#switch-in .bubble").text(this.bubbleNumber);
-			GameGlobals.uiFunctions.toggle("#switch-in .bubble", this.bubbleNumber > 0);
 		},
 
 		updateWorkers: function (isActive) {

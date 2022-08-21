@@ -52,6 +52,7 @@ define([
 
 		update: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
+			
 			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.projects;
 			if (!this.playerLocationNodes.head) return;
 			
@@ -61,11 +62,13 @@ define([
 				return;
 			}
 			
+			if (GameGlobals.gameState.isLaunchStarted) return;
 			GameGlobals.uiFunctions.toggle("#in-improvements-level-empty-message", this.tabCounts.lastShown.visible.regular <= 0);
 			this.elements.tabHeader.text("Building projects");
 		},
 		
 		slowUpdate: function () {
+			if (GameGlobals.gameState.isLaunchStarted) return;
 			this.updateAvailableProjects(false);
 		},
 		
@@ -86,9 +89,9 @@ define([
 				newBubbleNumber = 1;
 			if (this.bubbleNumber === newBubbleNumber)
 				return;
+			
+			GameGlobals.uiFunctions.updateBubble("#switch-projects .bubble", this.bubbleNumber, newBubbleNumber);
 			this.bubbleNumber = newBubbleNumber;
-			this.elements.bubble.text(this.bubbleNumber);
-			GameGlobals.uiFunctions.toggle("#switch-projects .bubble", this.bubbleNumber > 0);
 		},
 		
 		updateAvailableProjects: function (updateTables) {
@@ -141,7 +144,7 @@ define([
 				}
 			}
 			
-			GameGlobals.uiFunctions.toggle("#container-in-improvements-colony", visibleColony > 0 || GameGlobals.endingHelper.isReadyForLaunch());
+			GameGlobals.uiFunctions.toggle("#container-in-improvements-colony", visibleColony > 0 || GameGlobals.endingHelper.isReadyForLaunch() || GameGlobals.gameState.isLaunched);
 			
 			var sys = this;
 			if (updateTables) {
@@ -176,6 +179,7 @@ define([
 			
 			if (updateTables) {
 				$("#in-improvements-level-built table").empty();
+				$("#in-improvements-colony-built table").empty();
 			}
 			
 			for (let i = 0; i < projects.length; i++) {

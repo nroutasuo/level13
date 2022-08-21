@@ -125,6 +125,10 @@ define(['ash',
 				return false;
 			}
 			
+			if (action == "launch") {
+				GameGlobals.gameState.isLaunchStarted = true;
+			}
+			
 			GlobalSignals.actionStartingSignal.dispatch(action, param);
 			var deductedCosts = GameGlobals.playerActionsHelper.deductCosts(action);
 
@@ -1934,7 +1938,9 @@ define(['ash',
 		},
 
 		launch: function () {
-			GameGlobals.gameState.isFinished = true;
+			this.addLogMessage(LogConstants.getUniqueID(), "The colony ship launches.");
+			
+			GameGlobals.gameState.isLaunched = true;
 			GlobalSignals.launcedSignal.dispatch();
 		},
 

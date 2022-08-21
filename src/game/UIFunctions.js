@@ -675,6 +675,9 @@ define(['ash',
 			},
 
 			onTabClicked: function (tabID, gameState, uiFunctions, tabProps) {
+				if (GameGlobals.gameState.isLaunchStarted) return;
+				if (GameGlobals.gameState.isLaunched) return;
+				
 				$("#switch-tabs li").removeClass("selected");
 				$("#switch-tabs li#" + tabID).addClass("selected");
 				$("#tab-header h2").text(tabID);
@@ -1086,6 +1089,18 @@ define(['ash',
 				incBtn.toggleClass("btn-disabled-basic", !incEnabled);
 				incBtn.attr("disabled", !incEnabled);
 			},
+			
+			updateBubble: function (element, oldBubbleNumber, bubbleNumber) {
+				bubbleNumber = bubbleNumber || 0;
+				if (GameGlobals.gameState.isLaunchStarted) bubbleNumber = 0;
+				
+				if (bubbleNumber == oldBubbleNumber) return;
+				
+				var $element = typeof (element) === "string" ? $(element) : element;
+				
+				$element.text(bubbleNumber);
+				GameGlobals.uiFunctions.toggle($element, bubbleNumber > 0);
+			},
 
 			registerLongTap: function (element, callback) {
 				var $element = typeof (element) === "string" ? $(element) : element;
@@ -1134,6 +1149,7 @@ define(['ash',
 			},
 
 			showTab: function (tabID, tabProps) {
+				if (GameGlobals.gameState.isLaunched) return;
 				this.onTabClicked(tabID, GameGlobals.gameState, this, tabProps);
 			},
 

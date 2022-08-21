@@ -826,11 +826,12 @@ define([
 		},
 
 		updateVisionStatus: function () {
-			if (!this.currentLocationNodes.head) return;
-			
 			// update sunlit/dark
-			var featuresComponent = this.currentLocationNodes.head.entity.get(SectorFeaturesComponent);
-			var sunlit = featuresComponent.sunlit;
+			let sunlit = false;
+			if (this.currentLocationNodes.head) {
+				let featuresComponent = this.currentLocationNodes.head.entity.get(SectorFeaturesComponent);
+				sunlit = featuresComponent.sunlit;
+			}
 			if (GameGlobals.gameState.uiStatus.forceSunlit) sunlit = true;
 			if (GameGlobals.gameState.uiStatus.forceDark) sunlit = false;
 			this.elements.body.toggleClass("sunlit", sunlit);

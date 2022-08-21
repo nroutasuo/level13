@@ -82,9 +82,9 @@ define([
 			var newBubbleNumber = completedBlueprintsNum + newBlueprintsNum + upgradesNum;
 			if (this.bubbleNumber === newBubbleNumber)
 				return;
+			
+			GameGlobals.uiFunctions.updateBubble("#switch-upgrades .bubble", this.bubbleNumber, newBubbleNumber);
 			this.bubbleNumber = newBubbleNumber;
-			$("#switch-upgrades .bubble").text(this.bubbleNumber);
-			GameGlobals.uiFunctions.toggle("#switch-upgrades .bubble", this.bubbleNumber > 0);
 		},
 
 		updateUpgradesLists: function (isActive) {

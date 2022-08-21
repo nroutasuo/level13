@@ -48,6 +48,13 @@ body {
   height: auto !important;
   margin: 0 auto -50px;
 }
+.game-opacity-controller {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
+}
 div.grid-content {
   margin: 0px 0px 15px 0px !important;
   padding: 15px;

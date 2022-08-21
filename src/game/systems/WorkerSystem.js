@@ -90,6 +90,8 @@ define([
 			var availableResources = GameGlobals.resourcesHelper.getCurrentCampStorage(node.entity).resources;
 			var resourceAccComponent = node.entity.get(ResourceAccumulationComponent);
 			
+			if (GameGlobals.gameState.isLaunched) return;
+			
 			// Basic: Scavengers
 			var metal = time * (node.camp.metalProductionPerSecond || 0);
 			campResources.addResource(resourceNames.metal, metal);
@@ -206,7 +208,9 @@ define([
 			camp.toolsConsumptionPerSecondRobots = GameGlobals.campHelper.getToolsConsumptionPerSecondRobots(camp.assignedWorkers.robotmaker);
 		},
 		
-		updateWorkerHunger: function (node, time) {
+		updateWorkerHunger: function (node, time) {		
+			if (GameGlobals.gameState.isLaunched) return;
+			
 			var campResources = node.entity.get(ResourcesComponent);
 			var campResourceAcc = node.entity.get(ResourceAccumulationComponent);
 			this.deductHunger(time, campResources.resources, node.camp.getAssignedPopulation(), false, false);

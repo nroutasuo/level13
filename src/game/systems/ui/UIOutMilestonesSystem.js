@@ -75,10 +75,9 @@ define([
 			let bubbleNumber = 0;
 			if (this.canClaimMilestone()) bubbleNumber++;
 			
-			this.bubbleNumber = bubbleNumber;
+			GameGlobals.uiFunctions.updateBubble("#switch-milestones .bubble", this.bubbleNumber, bubbleNumber);
 			
-			$("#switch-milestones .bubble").text(this.bubbleNumber)
-			GameGlobals.uiFunctions.toggle("#switch-milestones .bubble", this.bubbleNumber > 0);
+			this.bubbleNumber = bubbleNumber;
 		},
 		
 		updateMilestones: function () {

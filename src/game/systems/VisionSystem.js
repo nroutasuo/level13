@@ -141,6 +141,12 @@ define([
 				}
 			}
 			
+			if (GameGlobals.gameState.isLaunchStarted) {
+				visionPerSec = 0;
+				vision.accSources = [];
+				visionPerSec = -maxValue/5;
+			}
+			
 			// Set final values
 			vision.value += time * visionPerSec;
 			vision.accumulation = visionPerSec;

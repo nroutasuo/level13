@@ -87,9 +87,9 @@ define([
 			newBubbleNumber += this.currentIncomingTraders;
 			if (this.bubbleNumber === newBubbleNumber)
 				return;
+			
+			GameGlobals.uiFunctions.updateBubble("#switch-trade .bubble", this.bubbleNumber, newBubbleNumber);
 			this.bubbleNumber = newBubbleNumber;
-			$("#switch-trade .bubble").text(this.bubbleNumber);
-			GameGlobals.uiFunctions.toggle("#switch-trade .bubble", this.bubbleNumber > 0);
 		},
 
 		updateOutgoingCaravansList: function (isActive) {

@@ -193,6 +193,8 @@ define([
 			};
 
 			var checkRequirementsInternal = function (action, sector) {
+				if (GameGlobals.gameState.isLaunchStarted) return { value: 0, reason: "Leaving the planet behind" };
+				
 				var playerVision = this.playerStatsNodes.head.vision.value;
 				var playerPerks = this.playerStatsNodes.head.perks;
 				var playerStamina = this.playerStatsNodes.head.stamina.stamina;

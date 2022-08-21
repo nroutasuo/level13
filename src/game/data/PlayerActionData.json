@@ -4,6 +4,7 @@
         "despair": 10,
         "fight_gang": 60,
         "investigate": 10,
+		"launch": 600,
         "scavenge": 10,
         "scout_locale_i": 60,
         "scout_locale_u": 60,
@@ -1299,6 +1300,7 @@
     "durations": {
         "clear_waste_r": 10,
         "clear_waste_t": 5,
+		"launch": 5,
         "send_caravan": 600,
         "use_in_campfire": 5,
         "use_in_home": 60,

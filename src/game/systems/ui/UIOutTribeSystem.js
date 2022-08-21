@@ -113,13 +113,8 @@ define([
 		},
 
 		updateBubble: function () {
-			if (this.campsWithAlert === this.bubbleNumber)
-				return;
-			this.updateMessages();
+			GameGlobals.uiFunctions.updateBubble("#switch-world .bubble", this.bubbleNumber, this.campsWithAlert);
 			this.bubbleNumber = this.campsWithAlert;
-			
-			$("#switch-world .bubble").text(this.bubbleNumber)
-			GameGlobals.uiFunctions.toggle("#switch-world .bubble", this.bubbleNumber > 0);
 		},
 
 		updateMessages: function () {

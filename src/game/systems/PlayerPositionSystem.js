@@ -218,9 +218,10 @@ define([
 			gtag('event', 'reach_new_level_time', { event_category: 'game_time', event_label: levelOrdinal, value: GameGlobals.gameState.playTime });
 			if (levelPos !== 13) GameGlobals.gameState.unlockedFeatures.levels = true;
 			
-			if (this.isGroundLevel(levelPos)) this.showLevelMessage("Ground", this.getGroundMessage());
-			if (this.isSurfaceLevel(levelPos)) this.showLevelMessage("Surface", this.getSurfaceMessage());
-			if (this.isLastAvailableLevel(levelPos)) this.showLevelMessage("Last level", this.getEndMessage());
+			if (!GameGlobals.gameState.isAutoPlaying) {
+				if (this.isGroundLevel(levelPos)) this.showLevelMessage("Ground", this.getGroundMessage());
+				if (this.isSurfaceLevel(levelPos)) this.showLevelMessage("Surface", this.getSurfaceMessage());
+			}
 		},
 
 		handleEnterLevel: function (levelNode, levelPos, isInitLocation) {
@@ -306,25 +307,12 @@ define([
 			return level == GameGlobals.gameState.getSurfaceLevel();
 		},
 
-		isLastAvailableLevel: function (level) {
-			return this.isSurfaceLevel();
-		},
-
 		getGroundMessage: function () {
 			return this.getGroundLevelDescription();
 		},
 
 		getSurfaceMessage: function () {
 			return this.getSurfaceLevelDescription();
-		},
-
-		getEndMessage: function () {
-			var msg = "You've reached the last level of the current version of Level 13. ";
-			msg += "There will be some more things to discover here, but you will not be able to build any more camps or passages. Congratulations on surviving to the end!";
-			msg += "<br/><br/>"
-			msg += "<span class='p-meta'>Thank you for playing this far. The developer would love to hear your feedback. You can use any of these channels:</span>";
-			msg += "<p>" + GameConstants.getFeedbackLinksHTML() + "</p>";
-			return msg;
 		},
 		
 		getGroundLevelDescription: function () {

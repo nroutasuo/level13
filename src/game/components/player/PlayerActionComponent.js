@@ -86,7 +86,8 @@ define(['ash', 'game/GameGlobals', 'game/vos/PlayerActionVO'], function (Ash, Ga
 				case "use_in_shrine": return "meditating";
 				case "clear_waste_t": return "clearing waste";
 				case "clear_waste_r": return "clearing waste";
-				default: return this.action;
+				case "launch": return "launch";
+				default: baseActionID;
 			}
 		},
 
