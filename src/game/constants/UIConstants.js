@@ -377,7 +377,7 @@ define(['ash',
 			let result = "";
 			if (bonusText) result += bonusText;
 			if (timerText) {
-				if (bonusText.length > 0) result += ", ";
+				if (bonusText && bonusText.length > 0) result += ", ";
 				result += timerText;
 			}
 			return result;

@@ -31,6 +31,8 @@ define([
 			GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.onPlayerMoved);
 			GlobalSignals.add(this, GlobalSignals.equipmentChangedSignal, this.onEquipmentChanged);
 			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.onImprovementBuilt);
+			GlobalSignals.add(this, GlobalSignals.actionStartedSignal, this.onActionStarted);
+			GlobalSignals.add(this, GlobalSignals.actionCompletedSignal, this.onActionCompleted);
 		},
 		
 		removeFromEngine: function (engine) {
@@ -42,6 +44,7 @@ define([
 		
 		update: function (time) {
 			if (!this.locationNodes.head) return;
+			
 			this.updatePerkTimers(time);
 		},
 		
@@ -74,6 +77,17 @@ define([
 						this.addPerkStartedLogMessage(perk.id);
 					}
 				}
+			}
+		},
+		
+		updateStatusPerks: function () {
+			if (!this.locationNodes.head) return;
+			let isTired = this.playerNodes.head.stamina.stamina < 100;
+			let isResting = this.isResting();
+			if (isTired && !isResting) {
+				this.addOrUpdatePerk(PerkConstants.perkIds.tired);
+			} else {
+				this.deactivatePerk(PerkConstants.perkIds.tired, 0);
 			}
 		},
 		
@@ -121,6 +135,7 @@ define([
 		},
 		
 		deactivatePerk: function (perkID, timer) {
+			timer = timer || 0;
 			let perksComponent = this.playerNodes.head.perks;
 			let perk = perksComponent.getPerk(perkID);
 			if (perk) {
@@ -192,6 +207,9 @@ define([
 					msg = playerPos.inCamp ? "" : "Outside the beacon's range.";
 					break;
 					
+				case PerkConstants.perkIds.tired:
+					return;
+					
 				default:
 					msg = "Safer here.";
 					break;
@@ -218,8 +236,12 @@ define([
 					msg = "Feeling better again.";
 					break;
 				
-					case PerkConstants.perkIds.staminaBonusPenalty:
+				case PerkConstants.perkIds.staminaBonusPenalty:
 					msg = "Feeling better again.";
+					break;
+					
+				case PerkConstants.perkIds.tired:
+					msg = "Getting tired.";
 					break;
 					
 				case PerkConstants.perkIds.lightBeacon:
@@ -258,6 +280,7 @@ define([
 			this.engine.updateComplete.addOnce(function () {
 				sys.updateLocationPerks();
 				sys.updateHazardPerks();
+				sys.updateStatusPerks();
 			});
 		},
 		
@@ -273,6 +296,14 @@ define([
 		onImprovementBuilt: function () {
 			this.updateHazardPerks();
 			this.updateLocationPerks();
+		},
+		
+		onActionStarted: function () {
+			this.updateStatusPerks();
+		},
+		
+		onActionCompleted: function () {
+			this.updateStatusPerks();
 		},
 		
 		

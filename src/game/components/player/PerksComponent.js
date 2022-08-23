@@ -129,7 +129,7 @@ function (Ash, GlobalSignals, PerkVO, PerkConstants) {
 					perk = perk.clone();
 					perk.startTimer = componentValues.perks[key][i].startTimer;
 					perk.startTimerDuration = componentValues.perks[key][i].startTimerDuration;
-					perk.removeTimer = componentValues.perks[key][i].removeTimer;
+					perk.removeTimer = componentValues.perks[key][i].removeTimer || 0;
 					perk.removeTimerDuration = componentValues.perks[key][i].removeTimerDuration;
 					if (perk) {
 						this.addPerk(perk);
