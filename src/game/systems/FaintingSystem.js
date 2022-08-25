@@ -214,7 +214,7 @@ define([
 			};
 			
 			if (handleResults) {
-				var resultVO = GameGlobals.playerActionResultsHelper.getFadeOutResults(loseInventoryProbability, injuryProbability, loseAugmentationProbability, loseFollowerProbability);
+				var resultVO = GameGlobals.playerActionResultsHelper.getFadeOutResults("despair", loseInventoryProbability, injuryProbability, loseAugmentationProbability, loseFollowerProbability);
 				this.playerResourcesNodes.head.entity.add(new PlayerActionResultComponent(resultVO));
 				var resultPopUpCallback = function (isTakeAll) {
 					GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, resultVO);

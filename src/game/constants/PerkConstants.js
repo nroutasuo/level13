@@ -44,10 +44,49 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 			DEACTIVATING: 3,
 		},
 		
+		injuryType: {
+			BLUNT: "BLUNT",
+			SHARP: "SHARP",
+			FIRE: "FIRE",
+			CHEMICAL: "CHEMICAL",
+		},
+		
+		injuryLevel: {
+			LIGHT: "LIGHT",
+			MEDIUM: "MEDIUM",
+			SERIOUS: "SERIOUS"
+		},
+		
 		PERK_RECOVERY_FACTOR_REST: 3,
 		TIMER_DISABLED: -1,
 		
 		ACTIVATION_TIME_HEALTH_DEBUFF: 30,
+		
+		addInjuryDefinition: function (injuryLevel, injuryType, idBase, name) {
+			let id = "injury-" + injuryLevel.toLowerCase() + "-" + idBase;
+			let effect = 1;
+			
+			switch (injuryLevel) {
+				case PerkConstants.injuryLevel.LIGHT:
+					effect = 0.9;
+					levelAsNumber = 3;
+					break;
+				case PerkConstants.injuryLevel.MEDIUM:
+					effect = 0.7;
+					levelAsNumber = 2;
+					break;
+				case PerkConstants.injuryLevel.SERIOUS:
+					effect = 0.5;
+					levelAsNumber = 1;
+					break;
+			}
+			
+			let icon = "img/items/injury-" + levelAsNumber + ".png";
+			let perkVO = new PerkVO(id, name, "Injury", effect, icon, 0);
+			perkVO.injuryType = injuryType;
+			
+			PerkConstants.perkDefinitions.injury.push(perkVO);
+		},
 	
 		getPerk: function (perkId, startTimer, removeTimer) {
 			for (var key in this.perkDefinitions) {
@@ -61,6 +100,19 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 				}
 			}
 			return null;
+		},
+		
+		getRandomInjury: function (allowedTypes) {
+			let options = [];
+			
+			for (let i = 0; i < PerkConstants.perkDefinitions.injury.length; i++) {
+				let perk = PerkConstants.perkDefinitions.injury[i];
+				if (!allowedTypes || allowedTypes.length == 0 || allowedTypes.indexOf(perk.injuryType) >= 0) {
+					options.push(perk);
+				}
+			}
+			
+			return options[Math.floor(Math.random() * options.length)];
 		},
 		
 		isPercentageEffect: function (perkType) {
@@ -161,24 +213,53 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 	
 	PerkConstants.perkDefinitions.visualNegative.push(new PerkVO(PerkConstants.perkIds.tired, "Tired", "VisualN", 0, "img/items/perk-tired.png"));
 	
-	var lightInjuryEffect = 0.9;
-	var medInjuryEffect = 0.7;
-	var seriousInjuryEffect = 0.5;
-	var bodyParts = ["Leg", "Arm", "Head", "Foot", "Chest", "Hand"];
-	for (let i = 0; i < bodyParts.length; i++) {
-		var id = bodyParts[i].toLowerCase();
-		PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-big-" + id, bodyParts[i] + " wound (serious)", "Injury", seriousInjuryEffect, "img/items/injury-1.png"));
-		PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-med-" + id, bodyParts[i] + " wound (medium)", "Injury", medInjuryEffect, "img/items/injury-2.png"));
-		PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-small-" + id, bodyParts[i] + " wound (light)", "Injury", lightInjuryEffect, "img/items/injury-3.png"));
-	}
-	var injuryTypes = [ "Burn", "Strained ankle", "Broken rib"];
-	for (let j = 0; j < injuryTypes.length; j++) {
-		var id = injuryTypes[j].toLowerCase();
-		PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-big-" + id, injuryTypes[j] + " (serious)", "Injury", seriousInjuryEffect, "img/items/injury-1.png"));
-		PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-med-" + id, injuryTypes[j] + " (medium)", "Injury", medInjuryEffect, "img/items/injury-2.png"));
-		PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-small-" + id, injuryTypes[j] + " (light)", "Injury", lightInjuryEffect, "img/items/injury-3.png"));
+	let woundBodyParts = ["Leg", "Arm", "Head", "Foot", "Chest", "Hand"];
+	for (let i = 0; i < woundBodyParts.length; i++) {
+		let bodyPart = woundBodyParts[i];
+		let id = "wounded-" + bodyPart.toLowerCase();
+		
+		if (bodyPart != "Head") {
+			PerkConstants.addInjuryDefinition(PerkConstants.injuryLevel.LIGHT, PerkConstants.injuryType.SHARP, id, bodyPart + " wound (light)");
+		}
+		if (bodyPart != "Hand") {
+			PerkConstants.addInjuryDefinition(PerkConstants.injuryLevel.MEDIUM, PerkConstants.injuryType.SHARP, id, bodyPart + " wound (medium)");
+		}
+		if (bodyPart != "Foot" && bodyPart != "Hand") {
+			PerkConstants.addInjuryDefinition(PerkConstants.injuryLevel.SERIOUS, PerkConstants.injuryType.SHARP, id, bodyPart + " wound (serious)");
+		}
 	}
 	
+	let bruiseBodyParts = ["Leg", "Arm", "Shoulder", "Knee" ];
+	for (let i = 0; i < woundBodyParts.length; i++) {
+		let bodyPart = woundBodyParts[i];
+		let id = "bruised-" + bodyPart.toLowerCase();
+		
+		PerkConstants.addInjuryDefinition(PerkConstants.injuryLevel.LIGHT, PerkConstants.injuryType.BLUNT, id, "Bruised " + bodyPart + " (light)");
+		PerkConstants.addInjuryDefinition(PerkConstants.injuryLevel.MEDIUM, PerkConstants.injuryType.BLUNT, id, "Bruised " + bodyPart + " (medium)");
+	}
+	
+	PerkConstants.addInjuryDefinition(PerkConstants.injuryLevel.LIGHT, PerkConstants.injuryType.FIRE, "burn-fire", "Burn (light)");
+	PerkConstants.addInjuryDefinition(PerkConstants.injuryLevel.MEDIUM, PerkConstants.injuryType.FIRE, "burn-fire", "Burn (medium)");
+	PerkConstants.addInjuryDefinition(PerkConstants.injuryLevel.SERIOUS, PerkConstants.injuryType.FIRE, "burn-fire", "Burn (serious)");
+	
+	PerkConstants.addInjuryDefinition(PerkConstants.injuryLevel.LIGHT, PerkConstants.injuryType.CHEMICAL, "burn-chemical", "Chemical burn (light)");
+	PerkConstants.addInjuryDefinition(PerkConstants.injuryLevel.MEDIUM, PerkConstants.injuryType.CHEMICAL, "burn-chemical", "Chemical burn (medium)");
+	PerkConstants.addInjuryDefinition(PerkConstants.injuryLevel.SERIOUS, PerkConstants.injuryType.CHEMICAL, "burn-chemical", "Chemical burn (serious)");
+	
+	PerkConstants.addInjuryDefinition(PerkConstants.injuryLevel.MEDIUM, PerkConstants.injuryType.BLUNT, "sprained-ankle", "Sprained ankle (medium)");
+	PerkConstants.addInjuryDefinition(PerkConstants.injuryLevel.SERIOUS, PerkConstants.injuryType.BLUNT, "sprained-ankle", "Sprained ankle (serious)");
+	
+	PerkConstants.addInjuryDefinition(PerkConstants.injuryLevel.MEDIUM, PerkConstants.injuryType.BLUNT, "broken-wrist", "Broken wrist (medium)");
+	PerkConstants.addInjuryDefinition(PerkConstants.injuryLevel.SERIOUS, PerkConstants.injuryType.BLUNT, "broken-wrist", "Broken wrist (serious)");
+	
+	PerkConstants.addInjuryDefinition(PerkConstants.injuryLevel.MEDIUM, PerkConstants.injuryType.BLUNT, "broken-thumb", "Broken thumb (medium)");
+	PerkConstants.addInjuryDefinition(PerkConstants.injuryLevel.MEDIUM, PerkConstants.injuryType.BLUNT, "broken-finger", "Broken finger (medium)");
+	PerkConstants.addInjuryDefinition(PerkConstants.injuryLevel.MEDIUM, PerkConstants.injuryType.BLUNT, "broken-toe", "Broken toe (medium)");
+	
+	PerkConstants.addInjuryDefinition(PerkConstants.injuryLevel.MEDIUM, PerkConstants.injuryType.BLUNT, "dislocated-shoulder", "Dislocated shoulder");
+	
+	PerkConstants.addInjuryDefinition(PerkConstants.injuryLevel.SERIOUS, PerkConstants.injuryType.BLUNT, "broken-rib", "Broken rib");
+		
 	return PerkConstants;
 	
 });

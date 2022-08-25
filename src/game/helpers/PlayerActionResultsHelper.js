@@ -144,7 +144,7 @@ define([
 			if (loseInventoryProbability > Math.random()) {
 				resultVO.lostItems = this.getLostItems(action, true);
 			}
-			resultVO.gainedInjuries = this.getResultInjuries(PlayerActionConstants.getInjuryProbability(action, playerVision));
+			resultVO.gainedInjuries = this.getResultInjuries(PlayerActionConstants.getInjuryProbability(action, playerVision), action);
 			resultVO.hasCustomReward = hasCustomReward;
 			
 			return resultVO;
@@ -288,12 +288,12 @@ define([
 				rewards.gainedItems = this.getRewardItems(0, 1, enemyVO.droppedIngredients, {});
 				rewards.gainedReputation = 1;
 			} else {
-				rewards = this.getFadeOutResults(0.5, 1, 0.75, 0.5);
+				rewards = this.getFadeOutResults("fight", 0.5, 1, 0.75, 0.5, enemyVO);
 			}
 			return rewards;
 		},
 
-		getFadeOutResults: function (loseInventoryProbability, injuryProbability, loseAugmentationProbability, loseFollowerProbability) {
+		getFadeOutResults: function (sourceAction, loseInventoryProbability, injuryProbability, loseAugmentationProbability, loseFollowerProbability, enemyVO) {
 			log.i("get fade out results: loseInventoryProbability:" + loseInventoryProbability + ", injuryProbability:" + injuryProbability + ", loseAugmentationProbability:" + loseAugmentationProbability + ", loseFollowerProbability:" + loseFollowerProbability);
 			let resultVO = new ResultVO("despair");
 			if (Math.random() < loseInventoryProbability) {
@@ -306,7 +306,7 @@ define([
 			resultVO.lostPerks = this.getLostPerks(loseAugmentationProbability);
 			
 			let finalInjuryProbability = resultVO.lostPerks.length > 0 ? injuryProbability / 2 : injuryProbability;
-			resultVO.gainedInjuries = this.getResultInjuries(finalInjuryProbability);
+			resultVO.gainedInjuries = this.getResultInjuries(finalInjuryProbability, sourceAction, enemyVO);
 
 			return resultVO;
 		},
@@ -1355,22 +1355,46 @@ define([
 			return result;
 		},
 
-		getResultInjuries: function (injuryProbability) {
+		getResultInjuries: function (injuryProbability, action, enemyVO) {
 			let perksComponent = this.playerStatsNodes.head.perks;
 			let result = [];
 
-			var currentEffect = perksComponent.getTotalEffect(PerkConstants.perkTypes.injury);
-			var injuries = perksComponent.getPerksByType(PerkConstants.perkTypes.injury);
+			let currentEffect = perksComponent.getTotalEffect(PerkConstants.perkTypes.injury);
+			let injuries = perksComponent.getPerksByType(PerkConstants.perkTypes.injury);
 
 			// limit possible injuries
 			if (currentEffect < 0.35 || injuries.length >= 5)
 				return result;
 
 			if (injuryProbability * currentEffect > Math.random()) {
-				var injuryi = parseInt(Math.random() * PerkConstants.perkDefinitions.injury.length);
-				var injury = PerkConstants.perkDefinitions.injury[injuryi];
+				let sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+				let allowedTypes = this.getAllowedInjuryTypes(action, enemyVO, sectorFeatures);
+				
+				let injury = PerkConstants.getRandomInjury(allowedTypes);
 				result.push(injury.clone());
 			}
+			
+			return result;
+		},
+		
+		getAllowedInjuryTypes: function (action, enemyVO, sectorFeatures) {
+			let result = [];
+			
+			if (!enemyVO || !enemyVO.causedInjuryTypes || enemyVO.causedInjuryTypes.length == 0) {
+				result.push(PerkConstants.injuryType.BLUNT);
+				result.push(PerkConstants.injuryType.SHARP);
+				
+				if (Math.random() < 0.5) {
+					result.push(PerkConstants.injuryType.FIRE);
+				}
+				
+				if (sectorFeatures.hazards.poison > 0 || sectorFeatures.hazards.radiation > 0 || sectorFeatures.sectorType == SectorConstants.SECTOR_TYPE_INDUSTRIAL) {
+					result.push(PerkConstants.injuryType.CHEMICAL);
+				}
+			} else {
+				result = enemyVO.causedInjuryTypes;
+			}
+			
 			return result;
 		},
 
