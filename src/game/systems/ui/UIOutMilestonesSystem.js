@@ -4,6 +4,7 @@ define([
 	'game/GlobalSignals',
 	'game/constants/UIConstants',
 	'game/constants/CampConstants',
+	'game/constants/ImprovementConstants',
 	'game/constants/OccurrenceConstants',
 	'game/constants/WorldConstants',
 	'game/nodes/sector/CampNode',
@@ -21,7 +22,7 @@ define([
 	'game/components/sector/events/RaidComponent',
 	'game/components/sector/OutgoingCaravansComponent'
 ], function (
-	Ash, GameGlobals, GlobalSignals, UIConstants, CampConstants, OccurrenceConstants, WorldConstants,
+	Ash, GameGlobals, GlobalSignals, UIConstants, CampConstants, ImprovementConstants, OccurrenceConstants, WorldConstants,
 	CampNode, PlayerPositionNode, PlayerStatsNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent, ResourceAccumulationComponent, DeityComponent, LevelComponent, SectorImprovementsComponent, RecruitComponent, TraderComponent, RaidComponent, OutgoingCaravansComponent
 ) {
@@ -97,7 +98,9 @@ define([
 				}
 				if (reqs.tribe && reqs.tribe.improvements) {
 					for (let improvementID in reqs.tribe.improvements) {
-						requirementsDiv += this.getMilestoneReqsListEntry(improvementID, reqs.tribe.improvements[improvementID], GameGlobals.playerActionsHelper.getCurrentImprovementCountTotal(improvementID));
+						let improvementLevel = GameGlobals.campHelper.getCurrentMaxBuiltImprovementLevel(improvementID);
+						let getImprovementDisplayName = ImprovementConstants.getImprovementDisplayName(improvementID, improvementLevel);
+						requirementsDiv += this.getMilestoneReqsListEntry(getImprovementDisplayName, reqs.tribe.improvements[improvementID], GameGlobals.playerActionsHelper.getCurrentImprovementCountTotal(improvementID));
 					}
 				}
 				if (reqs.tribe && reqs.tribe.projects) {

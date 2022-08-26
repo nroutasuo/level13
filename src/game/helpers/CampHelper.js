@@ -436,6 +436,16 @@ define([
 			return ImprovementConstants.getMajorLevel(id, level);
 		},
 		
+		getCurrentMaxBuiltImprovementLevel: function (improvementID) {
+			let result = 1;
+			let improvementName = improvementNames[improvementID];
+			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
+				let improvements = campNode.entity.get(SectorImprovementsComponent);
+				result = Math.max(result, improvements.getLevel(improvementName))
+			}
+			return result;
+		},
+		
 		getCurrentMaxFollowersRecruited: function () {
 			let innMajorLevels = [];
 			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
