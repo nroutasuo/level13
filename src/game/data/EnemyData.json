@@ -535,6 +535,7 @@
 		"droppedResources": ["metal"]
 	},
 	"fire_salamander__template": {
+		"causedInjuryTypes": [ "FIRE" ],
 		"environment": "nohazard",
 		"enemyType": "small_animal",
 		"attackRatio": 0.6,
@@ -866,6 +867,7 @@
 		"droppedResources": ["food"]
 	},
 	"industrial_robot__template": {
+		"causedInjuryTypes": [ "CHEMICAL" ],
 		"name": "Industrial robot",
 		"environment": "toxic",
 		"enemyType": "robot",
@@ -915,6 +917,7 @@
 		"droppedResources": ["food"]
 	},
 	"leaking_gas_pipe": {
+		"causedInjuryTypes": [ "CHEMICAL" ],
 		"name": "leaking gas pipe",
 		"environment": "toxic",
 		"enemyType": "structure",
@@ -1358,6 +1361,7 @@
 		"droppedResources": ["food"]
 	},
 	"slug__template": {
+		"causedInjuryTypes": [ "CHEMICAL" ],
 		"enemyType": "small_animal",
 		"attackRatio": 0.42,
 		"difficulty": 1,
@@ -1567,6 +1571,7 @@
 		"droppedResources": ["food"]
 	},
 	"turret__template": {
+		"causedInjuryTypes": [ "FIRE" ],
 		"environment": "global",
 		"enemyType": "robot",
 		"attackRatio": 0.65,

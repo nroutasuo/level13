@@ -70,6 +70,9 @@ define([
 				def.droppedResources = (def.droppedResources || []).concat(lootDef.droppedResources);
 				def.droppedIngredients = (def.droppedIngredients || []).concat(lootDef.droppedIngredients);
 				
+				let causedInjuryTypes = EnemyConstants.enemyInjuries[enemyType];
+				def.causedInjuryTypes = (def.causedInjuryTypes || []).concat(causedInjuryTypes);
+				
 				let type = def.environment || template.environment;
 				let enemyVO = this.createEnemy(
 					enemyID,
@@ -79,7 +82,7 @@ define([
 					def.campOrdinal || 0, def.difficulty || 5,
 					def.attackRatio || 0.5, def.shieldRatio || 0, def.healthFactor || 1, def.shieldFactor || 1, def.size || 1, def.speed || 1,
 					def.rarity || 1,
-					def.droppedResources, def.droppedIngredients
+					def.droppedResources, def.droppedIngredients, def.causedInjuryTypes
 				);
 				if (!EnemyConstants.enemyDefinitions[type]) EnemyConstants.enemyDefinitions[type] = [];
 			 	EnemyConstants.enemyDefinitions[type].push(enemyVO.cloneWithIV(50));
@@ -87,7 +90,7 @@ define([
 		},
 
 		// Enemy definitions (speed: around 1, rarity: 0-100)
-		createEnemy: function (id, name, type, nouns, groupN, activeV, defeatedV, campOrdinal, normalizedDifficulty, attRatio, shieldRatio, healthFactor, shieldFactor, size, speed, rarity, droppedResources, droppedIngredients) {
+		createEnemy: function (id, name, type, nouns, groupN, activeV, defeatedV, campOrdinal, normalizedDifficulty, attRatio, shieldRatio, healthFactor, shieldFactor, size, speed, rarity, droppedResources, droppedIngredients, causedInjuryTypes) {
 			// normalizedDifficulty (1-10) -> camp step and difficulty within camp step
 			normalizedDifficulty = MathUtils.clamp(normalizedDifficulty, 1, 10);
 			let step = 0;
@@ -154,7 +157,7 @@ define([
 			
 			// log.i("goal strength: " + strength + " | actual strength: " + FightConstants.getStrength(att, def, speed));
 
-			return new EnemyVO(id, name, type, nouns, groupN, activeV, defeatedV, size, att, def, hp, shield, speed, rarity, droppedResources, droppedIngredients);
+			return new EnemyVO(id, name, type, nouns, groupN, activeV, defeatedV, size, att, def, hp, shield, speed, rarity, droppedResources, droppedIngredients, causedInjuryTypes);
 		},
 		
 		getStatBase: function (campOrdinal, step, difficultyFactor, statfunc) {
