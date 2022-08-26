@@ -6,6 +6,7 @@ define([
 	'game/constants/UIConstants',
 	'game/constants/PlayerStatConstants',
 	'game/constants/PlayerActionConstants',
+	'game/constants/PerkConstants',
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/player/AutoPlayNode',
@@ -16,6 +17,7 @@ define([
 	UIConstants,
 	PlayerStatConstants,
 	PlayerActionConstants,
+	PerkConstants,
 	PlayerLocationNode,
 	PlayerStatsNode,
 	AutoPlayNode,
@@ -222,15 +224,17 @@ define([
 		updateButtonCalloutRisks: function ($button, action, buttonElements) {
 			var sectorEntity = GameGlobals.buttonHelper.getButtonSectorEntity($button) || this.playerLocationNodes.head.entity;
 			var playerVision = this.playerStatsNodes.head.vision.value;
+			let perksComponent = this.playerStatsNodes.head.perks;
+			let playerLuck = perksComponent.getTotalEffect(PerkConstants.perkTypes.luck);
 			var hasEnemies = GameGlobals.fightHelper.hasEnemiesCurrentLocation(action);
 			var baseActionId = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			var encounterFactor = GameGlobals.playerActionsHelper.getEncounterFactor(action);
 			var sectorDangerFactor = GameGlobals.sectorHelper.getDangerFactor(sectorEntity);
 
-			var injuryRisk = PlayerActionConstants.getInjuryProbability(action, playerVision);
+			var injuryRisk = PlayerActionConstants.getInjuryProbability(action, playerVision, playerLuck);
 			var injuryRiskBase = injuryRisk > 0 ? PlayerActionConstants.getInjuryProbability(action) : 0;
 			var injuryRiskVision = injuryRisk - injuryRiskBase;
-			var inventoryRisk = PlayerActionConstants.getLoseInventoryProbability(action, playerVision);
+			var inventoryRisk = PlayerActionConstants.getLoseInventoryProbability(action, playerVision, playerLuck);
 			var inventoryRiskBase = inventoryRisk > 0 ? PlayerActionConstants.getLoseInventoryProbability(action) : 0;
 			var inventoryRiskVision = inventoryRisk - inventoryRiskBase;
 			var fightRisk = hasEnemies ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision, sectorDangerFactor, encounterFactor) : 0;

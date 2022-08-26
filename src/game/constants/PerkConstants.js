@@ -8,6 +8,7 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 			health: "Health",
 			stamina: "Stamina",
 			light: "Light",
+			luck: "Luck",
 			visualNegative: "VisualN",
 			visualPositive: "VisualP",
 		},
@@ -16,6 +17,7 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 			hunger: "hunger",
 			thirst: "thirst",
 			tired: "tired",
+			blessed: "blessed",
 			healthPenalty: "health--",
 			healthBonus1: "health-1",
 			healthBonus2: "health-2",
@@ -34,6 +36,7 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 			health: [],
 			stamina: [],
 			movement: [],
+			luck: [],
 			visualNegative: [],
 			visualPositive: [],
 		},
@@ -210,6 +213,8 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 	PerkConstants.perkDefinitions.stamina.push(new PerkVO(PerkConstants.perkIds.staminaBonusPenalty, "Headache", "Stamina", 0.9, "img/items/health-negative.png"));
 	
 	PerkConstants.perkDefinitions.stamina.push(new PerkVO(PerkConstants.perkIds.lightBeacon, "Beacon", "Light", 20, "img/items/perk-light-beacon.png"));
+	
+	PerkConstants.perkDefinitions.luck.push(new PerkVO(PerkConstants.perkIds.blessed, "Blessed", "Luck", 20, "img/items/perk-blessed.png"));
 	
 	PerkConstants.perkDefinitions.visualNegative.push(new PerkVO(PerkConstants.perkIds.tired, "Tired", "VisualN", 0, "img/items/perk-tired.png"));
 	

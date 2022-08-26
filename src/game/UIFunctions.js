@@ -464,8 +464,8 @@ define(['ash',
 				}
 
 				var encounterFactor = GameGlobals.playerActionsHelper.getEncounterFactor(action);
-				var injuryRiskMax = PlayerActionConstants.getInjuryProbability(action, 0);
-				var inventoryRiskMax = PlayerActionConstants.getLoseInventoryProbability(action, 0);
+				var injuryRiskMax = PlayerActionConstants.getInjuryProbability(action, 0, 0);
+				var inventoryRiskMax = PlayerActionConstants.getLoseInventoryProbability(action, 0, 0);
 				var fightRiskMax = PlayerActionConstants.getRandomEncounterProbability(baseActionId, 0, 1, encounterFactor);
 				var fightRiskMin = PlayerActionConstants.getRandomEncounterProbability(baseActionId, 100, 1, encounterFactor);
 				if (injuryRiskMax > 0 || inventoryRiskMax > 0 || fightRiskMax > 0) {

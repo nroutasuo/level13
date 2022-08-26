@@ -54,28 +54,39 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 			return 0;
 		},
 
-		getInjuryProbability: function (action, vision) {
+		getInjuryProbability: function (action, vision, luck) {
 			if (vision === undefined) vision = 100;
 			if (this.injuryProbabilities[action]) {
-				var baseProbability = this.injuryProbabilities[action][0];
-				var visionFactor = Math.pow(1 - (vision / 100), 2);
-				var visionProbability = this.injuryProbabilities[action][1] * visionFactor;
-				let result = baseProbability + visionProbability;
+				let baseProbability = this.injuryProbabilities[action][0];
+				let visionFactor = Math.pow(1 - (vision / 100), 2);
+				let luckFactor = this.getNegativeProbabiltityLuckFactor(luck);
+				let visionProbability = this.injuryProbabilities[action][1] * visionFactor;
+				let result = (baseProbability + visionProbability) * luckFactor;
 				if (result < 0.001) result = 0;
 				return result;
 			}
 			return 0;
 		},
 
-		getLoseInventoryProbability: function (action, vision) {
+		getLoseInventoryProbability: function (action, vision, luck) {
 			if (vision === undefined) vision = 100;
 			if (this.loseInventoryProbabilities[action]) {
-				var baseProbability = this.loseInventoryProbabilities[action][0];
-				var visionFactor = Math.pow(1 - (vision / 100), 4);
-				var visionProbability = this.loseInventoryProbabilities[action][1] * visionFactor;
-				return baseProbability + visionProbability;
+				let baseProbability = this.loseInventoryProbabilities[action][0];
+				let visionFactor = Math.pow(1 - (vision / 100), 4);
+				let luckFactor = this.getNegativeProbabiltityLuckFactor(luck);
+				let visionProbability = this.loseInventoryProbabilities[action][1] * visionFactor;
+				let result = (baseProbability + visionProbability) * luckFactor;
+				if (result < 0.001) result = 0;
+				return result;
 			}
 			return 0;
+		},
+		
+		getNegativeProbabiltityLuckFactor: function (luck) {
+			if (luck === undefined) luck = 0;
+			if (luck < 0) luck = 0;
+			if (luck > 100) luck = 100;
+			return 100/(100 + luck);
 		},
 
 		isExplorationAction: function (action) {

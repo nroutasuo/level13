@@ -139,12 +139,14 @@ define([
 					return null;
 			}
 
-			var playerVision = this.playerStatsNodes.head.vision.value;
-			var loseInventoryProbability = PlayerActionConstants.getLoseInventoryProbability(action, playerVision);
+			let playerVision = this.playerStatsNodes.head.vision.value;
+			let perksComponent = this.playerStatsNodes.head.perks;
+			let playerLuck = perksComponent.getTotalEffect(PerkConstants.perkTypes.luck);
+			let loseInventoryProbability = PlayerActionConstants.getLoseInventoryProbability(action, playerVision, playerLuck);
 			if (loseInventoryProbability > Math.random()) {
 				resultVO.lostItems = this.getLostItems(action, true);
 			}
-			resultVO.gainedInjuries = this.getResultInjuries(PlayerActionConstants.getInjuryProbability(action, playerVision), action);
+			resultVO.gainedInjuries = this.getResultInjuries(PlayerActionConstants.getInjuryProbability(action, playerVision, playerLuck), action);
 			resultVO.hasCustomReward = hasCustomReward;
 			
 			return resultVO;
