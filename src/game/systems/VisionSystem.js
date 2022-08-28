@@ -163,7 +163,7 @@ define([
 						if (isTotalReset) {
 							logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "Blinded by sunlight.");
 						} else {
-							logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "Engulfed sunlight.");
+							logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "Engulfed by sunlight.");
 						}
 					} else {
 						if (isTotalReset) {
