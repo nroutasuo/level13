@@ -1769,6 +1769,15 @@ define(['ash',
 					this.playerStatsNodes.head.evidence.value += evidence;
 					this.addLogMessage(LogConstants.MSG_ID_USE_BOOK, "Read a book. Gained " + evidence + " evidence.");
 					break;
+				
+				case "consumable_graffiti":
+					var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+					GameGlobals.uiFunctions.showInput("Graffiti", "Choose message to leave to this sector.", "", false,
+						function (input) {
+							sectorStatus.graffiti = input;
+							sys.addLogMessage(LogConstants.getUniqueID(), "Left a message on a wall.");
+						});
+					break;
 					
 				case "consumable_map":
 					// TODO score and prefer unvisited sectors

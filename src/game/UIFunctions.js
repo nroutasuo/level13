@@ -831,6 +831,10 @@ define(['ash',
 				);
 			},
 
+			cleanUpInput: function (str) {
+				return str.replace(/[&\/\\#,+()$~%.'":*?<>{}]$/g, '');
+			},
+
 			slideToggleIf: function (element, replacement, show, durationIn, durationOut, cb) {
 				var visible = this.isElementToggled(element);
 				var toggling = ($(element).attr("data-toggling") == "true");
@@ -1222,7 +1226,8 @@ define(['ash',
 				
 				var okCallback = function () {
 					let input = $("#common-popup input").val();
-					let ok = inputCallback ? inputCallback(input) : true;
+					input = GameGlobals.uiFunctions.cleanUpInput(input);
+					let ok = input && input.length > 0 && (inputCallback ? inputCallback(input) : true);
 					if (ok) {
 						confirmCallback(input);
 						return true;
@@ -1232,7 +1237,7 @@ define(['ash',
 					}
 				};
 				let cancelButtonLabel = allowCancel ? "Cancel" : null;
-				this.popupManager.showPopup(title, msg, "Confirm", cancelButtonLabel, null, okCallback);
+				this.popupManager.showPopup(title, msg, "Confirm", cancelButtonLabel, null, okCallback, null, false, false);
 
 				var uiFunctions = this;
 				var maxChar = 40;

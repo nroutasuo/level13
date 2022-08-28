@@ -19,6 +19,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 		weightedNumScavenges: 0,
 		weightedNumInvestigates: 0,
 		stashesFound: 0,
+		graffiti: null,
 		
 		scoutedTimestamp: 0,
 		
@@ -39,6 +40,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			this.weightedNumScavenges = 0;
 			this.weightedNumInvestigates = 0;
 			this.stashesFound = 0;
+			this.graffiti = null;
 			
 			this.hazardReduction = {};
 			this.glowStickSeconds = -100;
@@ -151,6 +153,8 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 				copy.iw = Math.round(this.weightedNumInvestigates * 1000)/1000;
 			if (this.stashesFound)
 				copy.sf = this.stashesFound;
+			if (this.graffiti)
+				copy.g = this.graffiti;
 			return Object.keys(copy).length > 0 ? copy : null;
 		},
 
@@ -172,6 +176,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			this.weightedNumScavenges = componentValues.sw ? componentValues.sw : 0;
 			this.weightedNumInvestigates = componentValues.iw ? componentValues.iw : 0;
 			this.stashesFound = componentValues.sf ? componentValues.sf : 0;
+			this.graffiti = componentValues.g ? componentValues.g : null;
 		}
 
 	});

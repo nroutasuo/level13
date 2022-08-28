@@ -701,6 +701,7 @@ define([
 				"consumable_weapon_1",
 				"consumable_weapon_bio",
 				"consumable_weapon_mechanical",
+				"consumable_graffiti_01",
 				"flee_1",
 				"cache_evidence_11",
 				"cache_evidence_12",

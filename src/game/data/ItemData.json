@@ -1700,6 +1700,20 @@
         "rarityTrade": 4,
         "type": "exploration"
     },
+	"consumable_graffiti_01": {
+        "campOrdinalRequired": 3,
+		"description": "Bottle containing paint. Can be used to make graffiti.",
+        "icon": "img/items/consumable-paint.png",
+		"id": "consumable_graffiti_01",
+		"isCraftable": false,
+		"isEquippable": false,
+		"isUseable": true,
+		"name": "Spray paint can",
+		"rarityLocale": 2,
+        "rarityScavenge": 7,
+        "rarityTrade": 4,
+        "type": "exploration"
+	},
     "equipment_map": {
         "campOrdinalRequired": 0,
         "description": "Helps navigating the City.",

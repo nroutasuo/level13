@@ -3455,6 +3455,10 @@
         "use_item_cache_metal_4": {
             "inCamp": true
         },
+		"use_item_consumable_graffiti_01": {
+			"inCamp": false,
+			"scouted": true
+		},
         "use_item_fight_consumable_weapon_1": {
             "uses_in_fight": {
                 "consumable_weapon_1": [

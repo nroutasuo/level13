@@ -112,6 +112,9 @@ define([
 			GlobalSignals.sectorScavengedSignal.add(function () {
 				sys.updateSectorDescription();
 			});
+			GlobalSignals.actionCompletedSignal.add(function () {
+				sys.updateSectorDescription();
+			});
 			GlobalSignals.visionChangedSignal.add(function () {
 				sys.updateAll();
 			});
@@ -319,6 +322,14 @@ define([
 			description += this.getStatusDescription(hasVision, isScouted, hasEnemies, featuresComponent, passagesComponent, hasCampHere, hasCampOnLevel);
 			description += this.getMovementDescription(isScouted, passagesComponent, entity);
 			description += "</p><p>";
+			
+			if (isScouted) {
+				if (sectorStatus.graffiti) {
+					description += "There is a graffiti here: " + sectorStatus.graffiti;
+					description += "</p><p>";
+				}
+			}
+			
 			description += this.getResourcesDescription(isScouted, featuresComponent, sectorStatus);
 			description += "</p>";
 			return description;
@@ -422,6 +433,7 @@ define([
 				}
 			}
 
+			// Camp
 			if (isScouted && hasVision && !hasCampHere && !hasCampOnLevel) {
 				if (featuresComponent.canHaveCamp() && !hasEnemies && !passagesComponent.passageUp && !passagesComponent.passageDown)
 					description += "This would be a good place for a <span class='hl-functionality'>camp</span>. ";
