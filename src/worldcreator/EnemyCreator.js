@@ -55,8 +55,8 @@ define([
 				Object.assign(def, template);
 				Object.assign(def, data);
 				
-				let enemyType = def.enemyType;
-				let textDef = EnemyConstants.enemyTexts[enemyType] || {};
+				let enemyClass = def.enemyType;
+				let textDef = EnemyConstants.enemyTexts[enemyClass] || {};
 				def.nouns = (def.nouns || []).concat(textDef.nouns);
 				def.groupNouns = (def.groupNouns || []).concat(textDef.groupNouns);
 				def.verbsActive = (def.verbsActive || []).concat(textDef.verbsActive);
@@ -66,11 +66,11 @@ define([
 					log.w("enemy missing text: " + enemyID);
 				}
 				
-				let lootDef = EnemyConstants.enemyLoot[enemyType] || {};
+				let lootDef = EnemyConstants.enemyLoot[enemyClass] || {};
 				def.droppedResources = (def.droppedResources || []).concat(lootDef.droppedResources);
 				def.droppedIngredients = (def.droppedIngredients || []).concat(lootDef.droppedIngredients);
 				
-				let causedInjuryTypes = EnemyConstants.enemyInjuries[enemyType];
+				let causedInjuryTypes = EnemyConstants.enemyInjuries[enemyClass];
 				def.causedInjuryTypes = (def.causedInjuryTypes || []).concat(causedInjuryTypes);
 				
 				let type = def.environment || template.environment;
@@ -84,6 +84,9 @@ define([
 					def.rarity || 1,
 					def.droppedResources, def.droppedIngredients, def.causedInjuryTypes
 				);
+				
+				enemyVO.enemyClass = enemyClass;
+				
 				if (!EnemyConstants.enemyDefinitions[type]) EnemyConstants.enemyDefinitions[type] = [];
 			 	EnemyConstants.enemyDefinitions[type].push(enemyVO.cloneWithIV(50));
 			}

@@ -2135,26 +2135,26 @@ define([
 		},
 		
 		getPossibleEnemies: function (seed, worldVO, levelVO, sectorVO, enemyCreator) {
-			var l = sectorVO.position.level;
-			var x = sectorVO.position.sectorX;
-			var y = sectorVO.position.sectorY;
-			var campOrdinal = levelVO.campOrdinal;
-			var step = WorldConstants.getCampStep(sectorVO.zone);
-			var isPollutedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
-			var isRadiatedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
+			let l = sectorVO.position.level;
+			let x = sectorVO.position.sectorX;
+			let y = sectorVO.position.sectorY;
+			let campOrdinal = levelVO.campOrdinal;
+			let step = WorldConstants.getCampStep(sectorVO.zone);
+			let isPollutedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
+			let isRadiatedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
 			
-			var enemyDifficulty = enemyCreator.getDifficulty(campOrdinal, step);
+			let enemyDifficulty = enemyCreator.getDifficulty(campOrdinal, step);
 			if (sectorVO.isOnEarlyCriticalPath()) enemyDifficulty -= 2;
 			enemyDifficulty = Math.max(enemyDifficulty, 1);
 			sectorVO.enemyDifficulty = enemyDifficulty;
 
-			var enemies = [];
+			let enemies = [];
 			
 			// collect all valid enemies for this sector (candidates)
-			var candidates = [];
-			var enemy;
-			var candidateDifficulties = [];
-			var addEnemyCandidates = function (enemyType) {
+			let candidates = [];
+			let enemy;
+			let candidateDifficulties = [];
+			let addEnemyCandidates = function (enemyType) {
 				var typeEnemies = enemyCreator.getEnemies(enemyType, enemyDifficulty, false);
 				for (var e in typeEnemies) {
 					enemy = typeEnemies[e];
@@ -2175,12 +2175,12 @@ define([
 			if (levelVO.populationFactor > 0) addEnemyCandidates(EnemyConstants.enemyTypes.inhabited);
 			if (levelVO.populationFactor <= 0) addEnemyCandidates(EnemyConstants.enemyTypes.uninhabited);
 			
-			var hasWater = sectorVO.hasWater();
-			var directions = PositionConstants.getLevelDirections();
-			var neighbours = levelVO.getNeighbours(x, y);
+			let hasWater = sectorVO.hasWater();
+			let directions = PositionConstants.getLevelDirections();
+			let neighbours = levelVO.getNeighbours(x, y);
 			for (var d in directions) {
-				var direction = directions[d];
-				var neighbour = neighbours[direction];
+				let direction = directions[d];
+				let neighbour = neighbours[direction];
 				if (neighbour) {
 					hasWater = hasWater || neighbour.hasWater();
 				}
@@ -2193,20 +2193,29 @@ define([
 				return enemies;
 			}
 			
-			// select enemies from candidates by rarity and difficulty
+			// select enemies from candidates by (sector adjusted) rarity and difficulty
+			let getAdjustedRarity = function (enemyVO) {
+				let result = enemyVO.rarity;
+				if (!levelVO.isCampable && enemyVO.enemyClass == "bandit") {
+					result += 50;
+				}
+				result = MathUtils.clamp(result, 1, 100);
+				return result;
+			};
 			candidates = candidates.sort(function (a,b) {
-				return a.rarity - b.rarity;
+				return getAdjustedRarity(a) - getAdjustedRarity(b);
 			});
 			candidateDifficulties = candidateDifficulties.sort(function (a,b) {
 				return a - b;
 			});
 			
-			var minDifficulty = levelVO.isHard ? candidateDifficulties[Math.floor(candidateDifficulties.length/2)] : candidateDifficulties[0];
+			let minDifficulty = levelVO.isHard ? candidateDifficulties[Math.floor(candidateDifficulties.length/2)] : candidateDifficulties[0];
 			for (let i = 0; i < candidates.length; i++) {
-				enemy = candidates[i];
+				let enemy = candidates[i];
+				let rarity = getAdjustedRarity(enemy);
 				if (enemyCreator.getEnemyDifficultyLevel(enemy) < minDifficulty) continue;
-				var threshold = MathUtils.map(enemy.rarity, 1, 100, 0.01, 0.99);
-				var r = WorldCreatorRandom.random(9999 + l * seed + x * l * 80 + y * 10 + i * x *22 - y * i * x * 15);
+				let threshold = MathUtils.map(rarity, 1, 100, 0.01, 0.99);
+				let r = WorldCreatorRandom.random(9999 + l * seed + x * l * 80 + y * 10 + i * x *22 - y * i * x * 15);
 				if (i == 0 || r > threshold) {
 					enemies.push(enemy);
 				}
