@@ -16,6 +16,14 @@
 				{
 					"type": "GD",
 					"summary": "Add robots"
+				},
+				{
+					"type": "GD",
+					"summary": "Add more permanent and temporary effects (tired, blessed, varied injuries)"
+				},
+				{
+					"type": "UI",
+					"summary": "Add simple ending"
 				}
 			]
 		},
