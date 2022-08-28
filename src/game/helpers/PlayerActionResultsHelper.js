@@ -855,15 +855,19 @@ define([
 
 		getRewardCurrency: function (efficiency) {
 			var campCount = GameGlobals.gameState.numCamps;
+			var sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			
 			if (campCount < 2)
 				return 0;
 				
 			if (efficiency < 0.25)
 				return 0;
+				
+			if (sectorFeatures.campable) {
+				return 0;
+			}
 			
 			var findProbability = 0;
-			var sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			switch (sectorFeatures.sectorType) {
 				case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
 				case SectorConstants.SECTOR_TYPE_PUBLIC:
