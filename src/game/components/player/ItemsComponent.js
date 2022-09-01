@@ -136,7 +136,7 @@ function (Ash, ItemVO, ItemConstants) {
 					var existingItem = this.items[item.type][i];
 					if (existingItem.itemID === item.itemID) continue;
 					if (existingItem.equipped && !(this.isItemMultiEquippable(existingItem) && this.isItemMultiEquippable(item))) {
-						var isExistingBonusBetter = existingItem.getTotalBonus() >= item.getTotalBonus();
+						var isExistingBonusBetter = existingItem.getCurrentTotalBonus() >= item.getCurrentTotalBonus();
 						if (!isExistingBonusBetter) {
 							this.unequip(existingItem);
 						}
@@ -162,7 +162,7 @@ function (Ash, ItemVO, ItemConstants) {
 			for (let i = 0; i < this.items[itemType].length; i++) {
 				var item = this.items[itemType][i];
 				if (!item.equippable) continue;
-				if (best === null || best.getTotalBonus() < item.getTotalBonus()) {
+				if (best === null || best.getCurrentTotalBonus() < item.getCurrentTotalBonus()) {
 					 best = item;
 				}
 			}
@@ -222,7 +222,7 @@ function (Ash, ItemVO, ItemConstants) {
 					for (let i = 0; i < this.items[key].length; i++) {
 						var item = this.items[key][i];
 						if (item.equipped) {
-							let itemBonus = item.getBonus(bonusType);
+							let itemBonus = item.getCurrentBonus(bonusType);
 							if (isMultiplier) {
 								if (itemBonus != 0) {
 									bonus *= itemBonus;
@@ -325,7 +325,7 @@ function (Ash, ItemVO, ItemConstants) {
 			var weakest = null;
 			for (let i = 0; i < this.items[type].length; i++) {
 				var item = this.items[type][i];
-				if (!weakest || item.getTotalBonus() < weakest.getTotalBonus()) weakest = item;
+				if (!weakest || item.getCurrentTotalBonus() < weakest.getCurrentTotalBonus()) weakest = item;
 			}
 			return weakest;
 		},
@@ -334,7 +334,7 @@ function (Ash, ItemVO, ItemConstants) {
 			var strongest = null;
 			for (let i = 0; i < this.items[type].length; i++) {
 				var item = this.items[type][i];
-				if (!strongest || item.getTotalBonus() > strongest.getTotalBonus()) strongest = item;
+				if (!strongest || item.getCurrentTotalBonus() > strongest.getCurrentTotalBonus()) strongest = item;
 			}
 			return strongest;
 		},
@@ -406,7 +406,7 @@ function (Ash, ItemVO, ItemConstants) {
 			};
 			if (getSortTypeValue(a.type) > getSortTypeValue(b.type)) return 1;
 			if (getSortTypeValue(a.type) < getSortTypeValue(b.type)) return -1;
-			return b.getTotalBonus() - a.getTotalBonus();
+			return b.getCurrentTotalBonus() - a.getCurrentTotalBonus();
 		},
 
 		getSaveKey: function () {

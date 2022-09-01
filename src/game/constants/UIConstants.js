@@ -40,6 +40,7 @@ define(['ash',
 
 			var classes = "item";
 			if (item && item.equipped) classes += " item-equipped";
+			if (item && item.broken) classes += " item-broken";
 			if (hasCount) classes += " item-with-count";
 			var div = "<div class='" + classes + (item ? "' data-itemid='" + item.id + "' data-iteminstanceid='" + item.itemID + "'>" : ">");
 
@@ -91,11 +92,12 @@ define(['ash',
 		},
 
 		getItemCallout: function (item, smallCallout, showBagOptions, bagOptions, tab) {
-			var detail = " (" + this.getItemBonusDescription(item, true, false) + ")";
+			var detail = " (" + this.getItemBonusDescription(item, false) + ")";
 			if (detail.length < 5) detail = "";
 			var weight = BagConstants.getItemCapacity(item);
 			var itemCalloutContent = "<b>" + item.name + "</b><br/>Type: " + ItemConstants.getItemTypeDisplayName(item.type, false) + " " + detail;
 			itemCalloutContent += "</br>Weight: " + weight;
+			if (item.broken) itemCalloutContent += "<br><span class='warning'>Broken</span>";
 			itemCalloutContent += "</br>" + item.description;
 			if (smallCallout) itemCalloutContent = item.name + (detail.length > 0 ? " " + detail : "");
 			
@@ -296,30 +298,30 @@ define(['ash',
 			return html;
 		},
 
-		getItemBonusDescription: function (item, showAllBonuses, useLineBreaks) {
+		getItemBonusDescription: function (item, useLineBreaks) {
 			let result = "";
-			var defaultType = ItemConstants.getItemDefaultBonus(item);
-			var value;
+			let defaultType = ItemConstants.getItemDefaultBonus(item);
 			for (var bonusKey in ItemConstants.itemBonusTypes) {
 				var bonusType = ItemConstants.itemBonusTypes[bonusKey];
-				if (bonusType === defaultType || showAllBonuses) {
-					value = item.getBonus(bonusType);
-					if (value <= 0 && showAllBonuses) {
-						continue;
-					}
-					if (value <= 0 && !showAllBonuses) {}
-					result += this.getItemBonusName(bonusType, true);
-					result += useLineBreaks && !showAllBonuses ? "<br/>" : " ";
-					result += this.getItemBonusText(item, bonusType);
+				let baseValue = item.getBaseBonus(bonusType);
+				if (baseValue <= 0) continue;
+				let currentValue = item.getCurrentBonus(bonusType);
+				
+				result += this.getItemBonusName(bonusType, true);
+				if (currentValue == baseValue) {
+					result += this.getItemBonusText(item, bonusType, baseValue);
+				} else {
+					result += "<span class='strike-through'>";
+					result += this.getItemBonusText(item, bonusType, baseValue);
+					result += "</span>";
+					result += "<span class='warning'>";
+					result += this.getItemBonusText(item, bonusType, currentValue);
+					result += "</span>";
 				}
-				if (showAllBonuses) {
-					result += useLineBreaks ? "<br/>" : ", ";
-				}
+				result += useLineBreaks ? "<br/>" : ", ";
 			}
 
-			if (showAllBonuses) {
-				result = result.substring(0, result.length - (useLineBreaks ? 5 : 2));
-			}
+			result = result.substring(0, result.length - (useLineBreaks ? 5 : 2));
 
 			return result;
 		},
@@ -349,10 +351,10 @@ define(['ash',
 			}
 		},
 
-		getItemBonusText: function (item, bonusType) {
-			var bonusValue = item.getBonus(bonusType);
+		getItemBonusText: function (item, bonusType, bonusValue) {
+			var baseValue = item.getBaseBonus(bonusType);
 			
-			if (ItemConstants.isStaticValue(bonusType)) {
+			if (ItemConstants.isStaticValue(baseValue)) {
 				return " " + bonusValue;
 			} else if (bonusValue === 0) {
 				return "+0";
@@ -360,11 +362,11 @@ define(['ash',
 				// increasing multiplier: fight speed
 				var val = Math.abs(Math.round((1 - bonusValue) * 100));
 				return bonusValue == 1 ? "+0%" : (bonusValue < 1 ? "-" + val + "%" : "+" + val + "%");
-			} else if (bonusValue >= 1) {
+			} else if (baseValue >= 1) {
 				return " +" + bonusValue;
-			} else if (bonusValue > 0) {
+			} else if (baseValue > 0) {
 				return " -" + UIConstants.getMultiplierBonusDisplayValue(bonusValue);
-			} else if (bonusValue > -1) {
+			} else if (baseValue > -1) {
 				return " +" + UIConstants.getMultiplierBonusDisplayValue(bonusValue);
 			} else {
 				return " " + bonusValue;
@@ -454,7 +456,7 @@ define(['ash',
 					case ItemConstants.itemTypes.artefact: typeVal = 31; break;
 					case ItemConstants.itemTypes.note: typeVal = 32; break;
 				}
-				return typeVal * 1000 - itemVO.getTotalBonus();
+				return typeVal * 1000 - itemVO.getBaseTotalBonus();
 			};
 			var aVal = getItemSortVal(a);
 			var bVal = getItemSortVal(b);

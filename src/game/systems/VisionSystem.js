@@ -122,9 +122,9 @@ define([
 			} else {
 				// equipment
 				var lightItem = itemsComponent.getEquipped(ItemConstants.itemTypes.light)[0];
-				if (lightItem && lightItem.getBonus(ItemConstants.itemBonusTypes.light) + maxValueBase > maxValue) {
-					maxValue = lightItem.getBonus(ItemConstants.itemBonusTypes.light) + maxValueBase;
-					addAccumulation(lightItem.name, lightItem.getBonus(ItemConstants.itemBonusTypes.light) / maxValueBase);
+				if (lightItem && lightItem.getCurrentBonus(ItemConstants.itemBonusTypes.light) + maxValueBase > maxValue) {
+					maxValue = lightItem.getCurrentBonus(ItemConstants.itemBonusTypes.light) + maxValueBase;
+					addAccumulation(lightItem.name, lightItem.getCurrentBonus(ItemConstants.itemBonusTypes.light) / maxValueBase);
 				}
 				// consumable items
 				if (statusComponent.glowStickSeconds > 0) {

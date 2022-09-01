@@ -306,8 +306,8 @@ define([
 			var items = itemsComponent.getEquipped();
 			for (let i = 0; i < items.length; i++) {
 				var item = items[i];
-				var bonusatt = item.getBonus(ItemConstants.itemBonusTypes.fight_att) > 0;
-				var bonusDef = item.getBonus(ItemConstants.itemBonusTypes.fight_def) > 0;
+				var bonusatt = item.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att) > 0;
+				var bonusDef = item.getCurrentBonus(ItemConstants.itemBonusTypes.fight_def) > 0;
 				if (bonusatt || bonusDef) {
 					this.numItems++;
 					$("ul#list-fight-items").append("<li>" + UIConstants.getItemDiv(null, item, null, UIConstants.getItemCallout(item, true), true) + "</li>");

@@ -20,6 +20,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 
 		equippable: false,
 		craftable: false,
+		repairable: false,
 		useable: false,
 		
 		// item specific data (not saved on instances)
@@ -29,6 +30,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		itemID: -1,
 		equipped: false,
 		carried: false,
+		broken: false,
 		foundPosition: null,
 
 		constructor: function (id, name, type, level, requiredCampOrdinal, maximumCampOrdinal, equippable, craftable, useable, bonuses, icon, description, isSpecialEquipment) {
@@ -39,6 +41,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			this.bonus = new ItemBonusVO(bonuses);
 			this.equippable = equippable;
 			this.craftable = craftable;
+			this.repairable = equippable;
 			this.useable = useable;
 			this.icon = icon;
 			this.description = description;
@@ -56,15 +59,28 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			this.itemID = Math.floor(Math.random() * 100000);
 			this.equipped = false;
 			this.carried = false;
+			this.broken = false;
 			this.foundPosition = null;
 		},
-
-		getTotalBonus: function () {
+		
+		getBaseTotalBonus: function () {
 			return this.bonus.getTotal();
 		},
 
-		getBonus: function (bonusType) {
+		getCurrentTotalBonus: function () {
+			let result = this.getBaseTotalBonus();
+			if (this.broken) result = Math.floor(result / 2);
+			return result;
+		},
+		
+		getBaseBonus: function (bonusType) {
 			return this.bonus ? this.bonus.getBonus(bonusType) : 0;
+		},
+
+		getCurrentBonus: function (bonusType) {
+			let result = this.getBaseBonus(bonusType);
+			if (this.broken) result = Math.floor(result / 2);
+			return result;
 		},
 
 		getCustomSaveObject: function () {
@@ -74,6 +90,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			clone.itemID = this.itemID;
 			clone.equipped = this.equipped ? 1 : 0;
 			clone.carried = this.carried ? 1 : 0;
+			clone.broken = this.broken ? 1 : 0;
 
 			// delete static data
 			delete clone.name;
@@ -88,6 +105,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			delete clone.tradeRarity;
 			delete clone.investigateRarity;
 			delete clone.craftable;
+			delete clone.repairable;
 			delete clone.useable;
 			delete clone.type;
 			delete clone.level;

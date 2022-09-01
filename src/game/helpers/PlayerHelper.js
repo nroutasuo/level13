@@ -62,7 +62,7 @@ define([
 			let items = this.playerStatsNodes.head.items.getEquipped();
 			for (let i = 0; i < items.length; i++) {
 				let item = items[i];
-				let itemBonus = item.getBonus(itemBonusType);
+				let itemBonus = item.getCurrentBonus(itemBonusType);
 				if (itemBonus > 0) {
 					if (result.length > 0) result += "<br/>";
 					result += item.name + ": " + itemBonus;

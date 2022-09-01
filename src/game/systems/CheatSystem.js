@@ -172,6 +172,9 @@ define(['ash',
 			this.registerCheat(CheatConstants.CHEAT_NAME_EQUIP_BEST, "Auto-equip best items available.", [], function (params) {
 				this.equipBest();
 			});
+			this.registerCheat(CheatConstants.CHEAT_NAME_BREAK_ITEM, "Break a random item.", [], function () {
+				this.breakItem();
+			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_PERK, "Add the given perk to the player.", ["perk id"], function (params) {
 				this.addPerk(params[0]);
 			});
@@ -543,8 +546,21 @@ define(['ash',
 		},
 
 		equipBest: function () {
-			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
+			let itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
 			itemsComponent.autoEquipAll();
+		},
+		
+		breakItem: function () {
+			let itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
+			let playerPos = this.playerPositionNodes.head.position;
+			let breakable = itemsComponent.getAll(playerPos.inCamp).filter(item => !item.broken && item.repairable);
+			if (breakable.length == 0) {
+				log.w("no breakable items");
+				return;
+			}
+			let item = breakable[Math.floor(Math.random() * breakable.length)];
+			item.broken = true;
+			GlobalSignals.inventoryChangedSignal.dispatch();
 		},
 
 		addPerk: function () {

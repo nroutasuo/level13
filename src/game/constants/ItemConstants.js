@@ -242,17 +242,16 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		},
 		
 		getItemBonusComparisonValue: function (item, bonusType) {
-			
 			if (!item) return 0;
 			if (!bonusType) {
-				return item.getTotalBonus();
+				return item.getCurrentTotalBonus();
 			}
-			let result = item.getBonus(bonusType);
+			let result = item.getCurrentBonus(bonusType);
 			if (!ItemConstants.isIncreasing(bonusType)) {
 				result = 1-result;
 			}
 			if (bonusType == ItemConstants.itemBonusTypes.fight_att) {
-				result = result * item.getBonus(ItemConstants.itemBonusTypes.fight_speed);
+				result = result * item.getCurrentBonus(ItemConstants.itemBonusTypes.fight_speed);
 			}
 			return result;
 		},
@@ -396,7 +395,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 				default:
 					return false;
 			}
-		}
+		},
 	};
 	
 	ItemConstants.loadData(ItemData);

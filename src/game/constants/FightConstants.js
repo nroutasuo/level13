@@ -137,7 +137,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 		getPlayerSpeed: function (itemsComponent) {
 			let weapons = itemsComponent.getEquipped(ItemConstants.itemTypes.weapon);
 			let weapon = weapons.length > 0 ? weapons[0] : null;
-			let weaponSpeedBonus = weapon ? weapon.getBonus(ItemConstants.itemBonusTypes.fight_speed) || 1 : 1;
+			let weaponSpeedBonus = weapon ? weapon.getCurrentBonus(ItemConstants.itemBonusTypes.fight_speed) || 1 : 1;
 			return weaponSpeedBonus;
 		},
 		

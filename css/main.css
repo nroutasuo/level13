@@ -1382,6 +1382,10 @@ body.dark .item-equipped,
 body.dark .follower-selected {
   background: #2f322f;
 }
+body.dark .item-broken {
+  border: red;
+  background: linear-gradient(90deg, #282a28 0%, #282a28 50%, rgba(230, 70, 70, 0.35) 50%, rgba(230, 70, 70, 0.35) 100%) !important;
+}
 body.dark .item-slot-type-empty,
 body.dark .follower-slot-type-empty {
   font-size: 85%;
@@ -3562,6 +3566,10 @@ body.sunlit .follower-slot-selected {
 body.sunlit .item-equipped,
 body.sunlit .follower-selected {
   background: #e6e6e6;
+}
+body.sunlit .item-broken {
+  border: red;
+  background: linear-gradient(90deg, #fff 0%, #fff 50%, rgba(250, 0, 0, 0.35) 50%, rgba(250, 0, 0, 0.35) 100%) !important;
 }
 body.sunlit .item-slot-type-empty,
 body.sunlit .follower-slot-type-empty {

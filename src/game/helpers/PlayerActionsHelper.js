@@ -1547,7 +1547,7 @@ define([
 				switch(baseAction) {
 					case "craft":
 						var item = this.getItemForCraftAction(action);
-						return item.description + (item.getTotalBonus() === 0 ? "" : "<hr/>" + UIConstants.getItemBonusDescription(item, true, true));
+						return item.description + (item.getBaseTotalBonus() === 0 ? "" : "<hr/>" + UIConstants.getItemBonusDescription(item, true));
 					case "use_item":
 					case "use_item_fight":
 						var item = this.getItemForCraftAction(action);

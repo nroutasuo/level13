@@ -145,6 +145,7 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 		},
 		
 		getItemValue: function (item, isTrader, isUsed) {
+			if (item.broken) return 0;
 			let value = this.getItemBaseValue(item, isTrader);
 		
 			if (value > 0) {
@@ -215,14 +216,14 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 		getItemValueByBonuses: function (item) {
 			switch (item.type) {
 				case ItemConstants.itemTypes.light:
-					var lightBonus = item.getTotalBonus(ItemConstants.itemBonusTypes.light);
+					var lightBonus = item.getBaseTotalBonus(ItemConstants.itemBonusTypes.light);
 					if (lightBonus <= 25)
 						return 0.1;
 					else
 						return (lightBonus - 10) / 30;
 					
 				case ItemConstants.itemTypes.weapon:
-					var attackBonus = item.getTotalBonus(ItemConstants.itemBonusTypes.fight_att);
+					var attackBonus = item.getBaseTotalBonus(ItemConstants.itemBonusTypes.fight_att);
 					if (attackBonus <= 3)
 						return 0.1;
 					else
@@ -233,15 +234,15 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 				case ItemConstants.itemTypes.clothing_lower:
 				case ItemConstants.itemTypes.clothing_hands:
 				case ItemConstants.itemTypes.clothing_head:
-					return Math.max(0.1, (item.getTotalBonus() / 12));
+					return Math.max(0.1, (item.getBaseTotalBonus() / 12));
 					
 				case ItemConstants.itemTypes.shoes:
-					var shoeBonus = 1 - item.getBonus(ItemConstants.itemBonusTypes.movement);
-					var otherBonus = item.getTotalBonus() - shoeBonus;
+					var shoeBonus = 1 - item.getBaseBonus(ItemConstants.itemBonusTypes.movement);
+					var otherBonus = item.getBaseTotalBonus() - shoeBonus;
 					return Math.pow(((shoeBonus)*5), 2) + otherBonus / 10;
 					
 				case ItemConstants.itemTypes.bag:
-					return Math.pow(((item.getTotalBonus() - 25) / 15), 1.75);
+					return Math.pow(((item.getBaseTotalBonus() - 25) / 15), 1.75);
 			}
 			
 			return null;

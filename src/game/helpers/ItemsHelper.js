@@ -115,7 +115,7 @@ define([
 					if (clothingItem.isSpecialEquipment && !includeSpecialEquipment) continue;
 					
 					isAvailable = this.isAvailable(clothingItem, campOrdinal, step, includeCraftable, includeNonCraftable, maxScavengeRarity);
-					var bonus = preferredItemBonus ? clothingItem.getBonus(preferredItemBonus) : clothingItem.getTotalBonus();
+					var bonus = preferredItemBonus ? clothingItem.getBaseBonus(preferredItemBonus) : clothingItem.getBaseTotalBonus();
 					
 					if (isAvailable && bonus > 0 && (!bestAvailableItem || bestAvailableItemBonus < bonus)) {
 						bestAvailableItem = clothingItem;
@@ -167,7 +167,7 @@ define([
 				let isAvailable = this.isAvailable(item, campOrdinal, WorldConstants.CAMP_STAGE_EARLY, true, includeNonCraftable);
 				if (!isAvailable) continue;
 				let bonus = ItemConstants.getItemBonusComparisonValue(item, itemBonusType);
-				let total = item.getTotalBonus();
+				let total = item.getBaseTotalBonus();
 				if (!bestItem || bonus > bestBonus || (bonus == bestBonus && total > bestTotal)) {
 					bestItem = item;
 					bestBonus = bonus;
@@ -181,7 +181,7 @@ define([
 			var defaultClothing = this.getDefaultClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_radiation, isHardLevel);
 			var radiationProtection = 0;
 			for (let i = 0; i < defaultClothing.length; i++) {
-				radiationProtection += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_radiation);
+				radiationProtection += defaultClothing[i].getBaseBonus(ItemConstants.itemBonusTypes.res_radiation);
 			}
 			return radiationProtection;
 		},
@@ -190,7 +190,7 @@ define([
 			var defaultClothing = this.getDefaultClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_poison, isHardLevel);
 			var poisonProtection = 0;
 			for (let i = 0; i < defaultClothing.length; i++) {
-				poisonProtection += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_poison);
+				poisonProtection += defaultClothing[i].getBaseBonus(ItemConstants.itemBonusTypes.res_poison);
 			}
 			return poisonProtection;
 		},
@@ -199,7 +199,7 @@ define([
 			var defaultClothing = this.getDefaultClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_cold, isHardLevel);
 			var coldProtection = 0;
 			for (let i = 0; i < defaultClothing.length; i++) {
-				coldProtection += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_cold);
+				coldProtection += defaultClothing[i].getBaseBonus(ItemConstants.itemBonusTypes.res_cold);
 			}
 			return coldProtection;
 		},
@@ -209,7 +209,7 @@ define([
 			var minByItems = 0;
 			var defaultClothing = this.getDefaultClothing(campOrdinal, step, null, isHardLevel);
 			for (let i = 0; i < defaultClothing.length; i++) {
-				minByItems += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_cold);
+				minByItems += defaultClothing[i].getBaseBonus(ItemConstants.itemBonusTypes.res_cold);
 			}
 			return Math.min(minByItems, minByLevel);
 		},

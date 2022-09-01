@@ -30,6 +30,7 @@ define(function () {
 		CHEAT_NAME_WORKSHOPS: "workshops",
 		CHEAT_NAME_ITEM: "item",
 		CHEAT_NAME_EQUIP_BEST: "equipBest",
+		CHEAT_NAME_BREAK_ITEM: "breakItem",
 		CHEAT_NAME_PERK: "perk",
 		CHEAT_NAME_REVEAL_MAP: "map",
 		CHEAT_NAME_DEBUG_MAP: "debugMap",
