@@ -83,7 +83,11 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 				let bonuses = item.bonuses;
 				let type = item.type;
 				if (!this.itemDefinitions[type]) this.itemDefinitions[type] = [];
-				var itemVO = new ItemVO(item.id, item.name, item.type, item.level || 1, item.campOrdinalRequired, item.campOrdinalMaximum, item.isEquippable, item.isCraftable, item.isUseable, bonuses, item.icon, item.description, item.isSpecialEquipment);
+				let isRepairable = item.isRepairable;
+				if (isRepairable === undefined) {
+					isRepairable = item.isCraftable && item.isEquippable;
+				}
+				var itemVO = new ItemVO(item.id, item.name, item.type, item.level || 1, item.campOrdinalRequired, item.campOrdinalMaximum, item.isEquippable, item.isCraftable, isRepairable, item.isUseable, bonuses, item.icon, item.description, item.isSpecialEquipment);
 				itemVO.scavengeRarity = item.rarityScavenge;
 				itemVO.investigateRarity = item.rarityInvestigate;
 				itemVO.localeRarity = item.rarityLocale;

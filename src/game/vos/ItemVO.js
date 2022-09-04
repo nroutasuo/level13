@@ -33,7 +33,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		broken: false,
 		foundPosition: null,
 
-		constructor: function (id, name, type, level, requiredCampOrdinal, maximumCampOrdinal, equippable, craftable, useable, bonuses, icon, description, isSpecialEquipment) {
+		constructor: function (id, name, type, level, requiredCampOrdinal, maximumCampOrdinal, equippable, craftable, repairable, useable, bonuses, icon, description, isSpecialEquipment) {
 			this.id = id;
 			this.name = name;
 			this.type = type;
@@ -41,7 +41,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			this.bonus = new ItemBonusVO(bonuses);
 			this.equippable = equippable;
 			this.craftable = craftable;
-			this.repairable = equippable;
+			this.repairable = repairable;
 			this.useable = useable;
 			this.icon = icon;
 			this.description = description;
@@ -121,7 +121,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		},
 
 		clone: function () {
-			var clone = new ItemVO(this.id, this.name, this.type, this.level, this.requiredCampOrdinal, this.maximumCampOrdinal, this.equippable, this.craftable, this.useable, this.bonus.bonuses, this.icon, this.description, this.isSpecialEquipment);
+			var clone = new ItemVO(this.id, this.name, this.type, this.level, this.requiredCampOrdinal, this.maximumCampOrdinal, this.equippable, this.craftable, this.repairable, this.useable, this.bonus.bonuses, this.icon, this.description, this.isSpecialEquipment);
 			clone.scavengeRarity = this.scavengeRarity;
 			clone.localeRarity = this.localeRarity;
 			clone.tradeRarity = this.tradeRarity;
