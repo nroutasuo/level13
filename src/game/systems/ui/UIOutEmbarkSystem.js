@@ -85,7 +85,7 @@ define([
 				for (var key in GameGlobals.gameState.uiStatus.leaveCampItems) {
 					var itemID = key;
 					var oldVal = GameGlobals.gameState.uiStatus.leaveCampItems[itemID];
-					var ownedCount = itemsComponent.getCountById(itemID, true);
+					var ownedCount = itemsComponent.getCountByIdAndStatus(itemID, false, true);
 					if (oldVal && oldVal > 0) {
 						var value = Math.floor(Math.min(oldVal, ownedCount));
 						$("#stepper-embark-" + itemID + " input").val(value);
@@ -200,6 +200,7 @@ define([
 			var itemsComponent = this.playerPosNodes.head.entity.get(ItemsComponent);
 			var uniqueItems = itemsComponent.getUnique(true);
 			uniqueItems = uniqueItems.sort(UIConstants.sortItemsByType);
+			uniqueItems = uniqueItems.filter(item => !item.broken);
 			for (let i = 0; i < uniqueItems.length; i++) {
 				var item = uniqueItems[i];
 				if (item.type === ItemConstants.itemTypes.uniqueEquipment) continue;
@@ -208,7 +209,7 @@ define([
 				if (item.type === ItemConstants.itemTypes.note) continue;
 				if (item.type === ItemConstants.itemTypes.ingredient) continue;
 				
-				var count = itemsComponent.getCountById(item.id, true);
+				var count = itemsComponent.getCount(item, true);
 				var showCount = item.equipped ? count - 1 : count;
 				if (item.equipped && count === 1) continue;
 				

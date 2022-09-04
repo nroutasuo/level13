@@ -248,6 +248,7 @@ define(['ash',
 				case "discard": this.discardItem(param); break;
 				case "use_item": this.useItem(param, deductedCosts); break;
 				case "use_item_fight": this.useItemFight(param); break;
+				case "repair_item": this.repairItem(param); break;
 				// Other actions
 				case "enter_camp": this.enterCamp(param); break;
 				case "scavenge": this.scavenge(param); break;
@@ -1662,10 +1663,10 @@ define(['ash',
 			this.save();
 		},
 
-		equipItem: function (itemID) {
+		equipItem: function (itemInstanceId) {
 			var playerPos = this.playerPositionNodes.head.position;
 			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-			var item = itemsComponent.getItem(itemID, null, playerPos.inCamp, false);
+			var item = itemsComponent.getItem(null, itemInstanceId, playerPos.inCamp, false);
 			itemsComponent.equip(item);
 			GlobalSignals.equipmentChangedSignal.dispatch();
 		},
@@ -1689,6 +1690,15 @@ define(['ash',
 					GlobalSignals.equipmentChangedSignal.dispatch();
 				}
 			);
+		},
+		
+		repairItem: function (itemInstanceId) {
+			let itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
+			let itemVO = itemsComponent.getItem(null, itemInstanceId, true, true);
+			if (!itemVO) return;
+			itemVO.broken = false;
+			GlobalSignals.equipmentChangedSignal.dispatch();
+			GlobalSignals.inventoryChangedSignal.dispatch();
 		},
 
 		useItem: function (itemId, deductedCosts) {

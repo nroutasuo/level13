@@ -210,9 +210,10 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			if (!itemNew && !itemOld) return 0;
 			if (!itemNew) return -1;
 			if (!itemOld) return 1;
-			if (itemNew.id === itemOld.id) return 0;
+			if (itemNew.id === itemOld.id && itemNew.broken && itemOld.broken) return 0;
 			
-			let cacheId = itemOld.id + "--" + itemNew.id;
+			let getItemCacheId = function (itemVO) { return itemVO.id + (itemVO.broken ? "b" : ""); }
+			let cacheId = getItemCacheId(itemOld) + "--" + getItemCacheId(itemNew);
 			
 			if (this.equipmentComparisonCache[cacheId]) {
 				return this.equipmentComparisonCache[cacheId];

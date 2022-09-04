@@ -51,6 +51,7 @@ define([
 			this.initItemSlots();
 			this.initCraftingButtons();
 			this.initUseItemButtons();
+			this.initRepairItemButtons();
 		},
 				
 		initItemSlots: function () {
@@ -121,6 +122,26 @@ define([
 			};
 			this.useItemButtonList = UIList.create(container, fnCreateItem, fnUpdateItem, fnIsDataEqual);
 		},
+		
+		initRepairItemButtons: function () {
+			let container = $("#self-repair-items table");
+			let fnCreateItem = function () {
+				var li = {};
+				li.$root = $("<tr><td><button class='action multiline' action=''></button></td></tr>");
+				return li;
+			};
+			let fnUpdateItem = function (li, data) {
+				let actionName = "repair_item_" + data.itemID;
+				let actionVerb = "Repair";
+				let buttonLabel = actionVerb + " " + ItemConstants.getItemDisplayName(data, true);
+				li.$root.find("button.action").attr("action", actionName);
+				li.$root.find("button.action").html(buttonLabel);
+			};
+			let fnIsDataEqual = function (a, b) {
+				return a.itemID == b.itemID;
+			};
+			this.repairItemButtonList = UIList.create(container, fnCreateItem, fnUpdateItem, fnIsDataEqual);
+		},
 
 		update: function (time) {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
@@ -168,6 +189,7 @@ define([
 
 			this.updateItems();
 			this.updateUseItems();
+			this.updateRepairItems();
 			this.updateCrafting();
 		},
 
@@ -272,6 +294,24 @@ define([
 			}
 		},
 
+		updateRepairItems: function () {
+			var items = this.getOwnedItems();
+
+			items = items.sort(UIConstants.sortItemsByType);
+			items = items.filter(item => this.isRepairable(item));
+
+			let numNewItems = UIList.update(this.repairItemButtonList, items);
+			
+			GameGlobals.uiFunctions.toggle("#header-self-repair-items", items.length > 0);
+
+			if (numNewItems > 0) {
+				GameGlobals.uiFunctions.registerActionButtonListeners("#self-repair-items");
+				GameGlobals.uiFunctions.generateButtonOverlays("#self-repair-items");
+				GameGlobals.uiFunctions.generateCallouts("#self-repair-items");
+				GlobalSignals.elementCreatedSignal.dispatch();
+			}
+		},
+
 		updateSeenItems: function (isActive) {
 			if (!(isActive || this.bubbleCleared)) return;
 			
@@ -341,7 +381,7 @@ define([
 				
 				let equippedItems = itemsComponent.getEquipped(item.type);
 				let comparison = itemsComponent.getEquipmentComparison(item);
-				let isEquipped = equippedItems.length > 0 && equippedItems[0].id == item.id;
+				let isEquipped = equippedItems.length > 0 && equippedItems[0].id == item.id && equippedItems[0].broken == item.broken;
 				
 				$(indicator).toggleClass("indicator-equipped", isEquipped);
 				$(indicator).toggleClass("indicator-increase", !isEquipped && comparison > 0);
@@ -371,11 +411,11 @@ define([
 
 			$("#bag-items").empty();
 			for (let i = 0; i < items.length; i++) {
-				var item = items[i];
+				let item = items[i];
 				// TODO less hacky fix for the fact that getUnique doesn't prefer equipped items (could return unequipped instance even when an equipped one exists)
-				var equipped = itemsComponent.getEquipped(item.type);
-				var isEquipped = equipped && equipped.length > 0 && equipped[0].id == item.id;
-				var count = itemsComponent.getCount(item, inCamp);
+				let equipped = itemsComponent.getEquipped(item.type);
+				let isEquipped = equipped && equipped.length > 0 && equipped[0].id == item.id && equipped[0].broken == item.broken;
+				let count = itemsComponent.getCount(item, inCamp);
 				switch (item.type) {
 					case ItemConstants.itemTypes.light:
 					case ItemConstants.itemTypes.weapon:
@@ -499,6 +539,7 @@ define([
 			if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.bag) return;
 			this.updateItems();
 			this.updateUseItems();
+			this.updateRepairItems();
 			this.updateCrafting();
 			this.pruneSeenItems();
 			this.updateBubble();
@@ -508,6 +549,7 @@ define([
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			this.updateItems();
 			this.updateUseItems();
+			this.updateRepairItems();
 			this.highlightItemType(null);
 			this.updateBubble();
 		},
@@ -608,10 +650,17 @@ define([
 				var item = items[i];
 				if (item.equipped) continue;
 				if (!item.equippable) continue;
-				var comparison = itemsComponent.getEquipmentComparison(item);
+				let comparison = itemsComponent.getEquipmentComparison(item);
 				if (comparison > 0) return true;
 			}
 			return false;
+		},
+		
+		isRepairable: function (itemVO) {
+			if (!itemVO) return false;
+			if (!itemVO.repairable) return false;
+			if (!itemVO.broken) return false;
+			return true;
 		},
 		
 		// this.getMatchingUnseenItemCount(this.getCraftableItemDefinitionsList, this.isCraftableUnlocked, GameGlobals.gameState.uiBagStatus.itemsCraftableUnlockedSeen);

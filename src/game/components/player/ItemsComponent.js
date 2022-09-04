@@ -28,9 +28,6 @@ function (Ash, ItemVO, ItemConstants) {
 
 			this.items[item.type].push(item);
 			item.carried = isCarried;
-			
-			this.uniqueItems = null;
-			this.uniqueItemsCarried = null;
 		},
 
 		discardItem: function (item, autoEquip) {
@@ -63,19 +60,6 @@ function (Ash, ItemVO, ItemConstants) {
 					log.w("Item to discard not found.");
 				}
 			}
-			
-			this.uniqueItems = null;
-			this.uniqueItemsCarried = null;
-		},
-
-		discardItems: function (item, autoEquip) {
-			var count;
-			var keepOne = !this.isItemsDiscardable(item);
-			var target = keepOne ? 1 : 0;
-			do {
-				this.discardItem(item, autoEquip);
-				count = this.getCount(item, true);
-			} while (count > target);
 		},
 
 		isItemDiscardable: function (item) {
@@ -262,33 +246,20 @@ function (Ash, ItemVO, ItemConstants) {
 
 		getUnique: function (includeNotCarried) {
 			let result = [];
-			
-			if (includeNotCarried && this.uniqueItems) {
-				result = this.uniqueItems;
-			} else if (!includeNotCarried && this.uniqueItemsCarried) {
-				result = this.uniqueItemsCarried;
-			} else {
-				let resultMap = {};
+			let resultMap = {};
 
-				for (let key in this.items) {
-					for( let i = 0; i < this.items[key].length; i++) {
-						let item = this.items[key][i];
-						if (includeNotCarried || item.carried) {
-							var itemKey = item.id;
-							if (resultMap[itemKey]) {
-								resultMap[itemKey] = resultMap[itemKey] + 1;
-							} else {
-								result.push(item);
-								resultMap[itemKey] = 1;
-							}
+			for (let key in this.items) {
+				for( let i = 0; i < this.items[key].length; i++) {
+					let item = this.items[key][i];
+					if (includeNotCarried || item.carried) {
+						var itemKey = item.id + (item.broken ? "_b" : "");
+						if (resultMap[itemKey]) {
+							resultMap[itemKey] = resultMap[itemKey] + 1;
+						} else {
+							result.push(item);
+							resultMap[itemKey] = 1;
 						}
 					}
-				}
-				
-				if (includeNotCarried) {
-					this.uniqueItems = result;
-				} else {
-					this.uniqueItemsCarried = result;
 				}
 			}
 			
@@ -297,18 +268,33 @@ function (Ash, ItemVO, ItemConstants) {
 
 		getCount: function (item, includeNotCarried) {
 			if (!item) return 0;
-			var itemKey = item.id;
-			return this.getCountById(itemKey, includeNotCarried);
+			return this.getCountByIdAndStatus(item.id, item.broken, includeNotCarried);
 		},
 
 		getCountById: function (id, includeNotCarried) {
 			let result = 0;
 			
-			for (var key in this.items) {
-				for( let i = 0; i < this.items[key].length; i++) {
+			for (let key in this.items) {
+				for (let i = 0; i < this.items[key].length; i++) {
 					var item = this.items[key][i];
 					if (!includeNotCarried && !item.carried) continue;
 					if (item.id == id) {
+						result++;
+					}
+				}
+			}
+								
+			return result;
+		},
+		
+		getCountByIdAndStatus: function (id, isBroken, includeNotCarried) {
+			let result = 0;
+			
+			for (let key in this.items) {
+				for (let i = 0; i < this.items[key].length; i++) {
+					let item = this.items[key][i];
+					if (!includeNotCarried && !item.carried) continue;
+					if (item.id == id && item.broken == isBroken) {
 						result++;
 					}
 				}
@@ -343,7 +329,7 @@ function (Ash, ItemVO, ItemConstants) {
 			for (var key in this.items) {
 				for( let i = 0; i < this.items[key].length; i++) {
 					var item = this.items[key][i];
-					if (id != item.id) continue;
+					if (id && id != item.id) continue;
 					if (instanceId && instanceId != item.itemID) continue;
 					if (!includeNotCarried && !item.carried) continue;
 					if (!includeEquipped && item.equipped) continue;
@@ -446,8 +432,6 @@ function (Ash, ItemVO, ItemConstants) {
 					}
 				}
 			}
-			this.uniqueItems = null;
-			this.uniqueItemsCarried = null;
 		}
 	});
 

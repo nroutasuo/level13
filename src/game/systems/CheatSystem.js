@@ -560,6 +560,7 @@ define(['ash',
 			}
 			let item = breakable[Math.floor(Math.random() * breakable.length)];
 			item.broken = true;
+			log.i("broke item: " + item.id + " " + item.itemID);
 			GlobalSignals.inventoryChangedSignal.dispatch();
 		},
 

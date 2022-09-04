@@ -112,7 +112,7 @@ define(['ash',
 			if (showBagOptions) {
 				var options = "<div class='item-bag-options'>";
 				if (bagOptions.canEquip) {
-					var action = "equip_" + item.id;
+					var action = "equip_" + item.itemID;
 					options += makeButton(action, "Equip");
 				} else if (bagOptions.canUnequip) {
 					var action = "unequip_" + item.id;
