@@ -2966,6 +2966,11 @@
                 "maxRecruited": false
             }
         },
+		"repair_item": {
+			"upgrades": {
+                "unlock_item_shoe1": true
+			}
+		},
         "scavenge": {
             "busy": false,
             "sector": {

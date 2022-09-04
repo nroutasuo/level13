@@ -1311,6 +1311,7 @@ define([
 				case "dismiss_follower":
 				case "select_follower":
 				case "deselect_follower":
+				case "repair_item":
 					return PlayerActionConstants.requirements[baseActionID];
 				default:
 					return PlayerActionConstants.requirements[action];
@@ -1480,6 +1481,13 @@ define([
 					var itemName = action.replace(baseActionID + "_", "item_");
 					result[itemName] = 1;
 					break;
+				
+				case "repair_item":
+					let itemID = this.getActionIDParam(action);
+					let itemsComponent = this.playerStatsNodes.head.items;
+					let item = itemsComponent.getItem(null, itemID, true, true);
+					Object.assign(result, this.getCraftItemCosts(item));
+					break;
 
 				case "unlock_upgrade":
 					result.blueprint = 1;
@@ -1503,6 +1511,35 @@ define([
 					}
 					break;
 			}
+		},
+		
+		getCraftItemCosts: function (itemVO) {
+			let result = {};
+			if (!itemVO) return result;
+			
+			let craftAction = "craft_" + itemID;
+			let costsResources = ItemConstants.getResourcesToCraft(itemVO.id);
+			let costsIngredients = ItemConstants.getIngredientsToCraft(itemVO.id);
+			
+			costsResources.sort(cost => cost.amount);
+			costsIngredients.sort(cost => cost.amount);
+			
+			let addCost = function (prefix, cost) {
+				if (Object.keys(result).length >= 2) return;
+				result[prefix + cost.id] = Math.ceil(cost.amount / 2);
+			};
+				
+			if (costsResources.length > 0 || costsIngredients.length > 0) {
+				if (costsResources.length > 0) addCost("resource_", costsResources[0]);
+				if (costsIngredients.length > 0) addCost("item_", costsIngredients[0]);
+				if (costsIngredients.length > 1) addCost("item_", costsIngredients[1]);
+				if (costsResources.length > 1) addCost("resource_", costsResources[1]);
+			} else {
+				log.w("no crafting costs defined for repairable item: " + itemVO.id);
+				result["resource_metal"] = 5;
+			}
+			
+			return result;
 		},
 		
 		addCosts: function (result, costs) {
@@ -1599,6 +1636,7 @@ define([
 				if (a.indexOf("equip_") >= 0) return "equip";
 				if (a.indexOf("use_item_fight") >= 0) return "use_item_fight";
 				if (a.indexOf("use_item") >= 0) return "use_item";
+				if (a.indexOf("repair_item") >= 0) return "repair_item";
 				if (a.indexOf("unlock_upgrade_") >= 0) return "unlock_upgrade";
 				if (a.indexOf("create_blueprint_") >= 0) return "create_blueprint";
 				if (a.indexOf("clear_waste_t") == 0) return "clear_waste_t";
