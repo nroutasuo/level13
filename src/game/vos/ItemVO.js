@@ -127,6 +127,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			clone.tradeRarity = this.tradeRarity;
 			clone.investigateRarity = this.investigateRarity;
 			clone.tradePrice = this.tradePrice;
+			clone.broken = this.broken;
 			return clone;
 		}
 	});
