@@ -133,9 +133,10 @@ define([
 			let fnUpdateItem = function (li, data) {
 				let actionName = "repair_item_" + data.itemID;
 				let actionVerb = "Repair";
-				let buttonLabel = actionVerb + " " + ItemConstants.getItemDisplayName(data, true);
-				li.$root.find("button.action").attr("action", actionName);
-				li.$root.find("button.action").html(buttonLabel);
+				let buttonLabel = actionVerb + " " + ItemConstants.getItemDisplayName(data, false);
+				let $btn = li.$root.find("button.action");
+				$btn.attr("action", actionName);
+				$btn.html(buttonLabel);
 			};
 			let fnIsDataEqual = function (a, b) {
 				return a.itemID == b.itemID;

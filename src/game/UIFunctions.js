@@ -378,20 +378,18 @@ define(['ash',
 				// TODO performance bottleneck - detach elements to edit
 				var uiFunctions = this;
 				$.each($(scope + " div.container-btn-action"), function () {
-					var $container = $(this);
-					var generated = $container.data("callout-generated");
+					let $container = $(this);
+					let button = $(this).children("button")[0];
+					let action = $(button).attr("action");
+					let generated = $container.data("callout-generated");
 					if (generated) {
-						{
-							log.w("Button callout already generated!");
-							log.i($container);
-						}
+						log.w("Button callout already generated!");
+						log.i($container);
 						return;
 					}
 					$container.data("callout-generated", true);
 					$container.wrap('<div class="callout-container"></div>');
 					$container.after(function () {
-						var button = $(this).children("button")[0];
-						var action = $(button).attr("action");
 						if (!action) {
 							log.w("Action button with no action ");
 							log.i($(button))
@@ -412,7 +410,7 @@ define(['ash',
 					$(this).find(".info-callout-content").html(description);
 				});
 			},
-
+			
 			generateActionButtonCallout: function (action) {
 				var baseActionId = GameGlobals.playerActionsHelper.getBaseActionID(action);
 
@@ -550,21 +548,23 @@ define(['ash',
 			generateButtonOverlays: function (scope) {
 				$.each($(scope + " button.action"), function () {
 					let $btn = $(this);
-					let text = $btn.text();
 					if ($btn.find(".btn-label").length > 0) {
 						log.w("generating double button overlays: " + $(this) + " | " + scope);
-					} else {
-						$btn.text("");
-						$btn.append("<span class='btn-label'>" + text + "</span>");
+						return;
 					}
+					let action = $btn.attr("action");
+					let text = $btn.text();
+					$btn.text("");
+					$btn.append("<span class='btn-label'>" + text + "</span>");
+					$btn.append("<div class='cooldown-action' style='display:none' />");
+					$btn.append("<div class='cooldown-duration' style='display:none' />");
+					$btn.wrap("<div class='container-btn-action' />");
 				});
-				$(scope + " button.action").append("<div class='cooldown-action' style='display:none' />");
-				$(scope + " button.action").append("<div class='cooldown-duration' style='display:none' />");
-				$(scope + " button.action").wrap("<div class='container-btn-action' />");
 				
 				
 				$.each($(scope + " div.container-btn-action"), function () {
 					let $container = $(this);
+					if ($container.find(".cooldown-reqs").length > 0) return;
 					let $button = $container.find("button");
 					let action = $button.attr("action");
 					let costs = GameGlobals.playerActionsHelper.getCosts(action);
