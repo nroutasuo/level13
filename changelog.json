@@ -15,6 +15,10 @@
 				},
 				{
 					"type": "GD",
+					"summary": "Add breaking and repairing items"
+				},
+				{
+					"type": "GD",
 					"summary": "Add robots"
 				},
 				{
