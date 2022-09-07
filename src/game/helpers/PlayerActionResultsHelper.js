@@ -143,9 +143,7 @@ define([
 			let perksComponent = this.playerStatsNodes.head.perks;
 			let playerLuck = perksComponent.getTotalEffect(PerkConstants.perkTypes.luck);
 			let loseInventoryProbability = PlayerActionConstants.getLoseInventoryProbability(action, playerVision, playerLuck);
-			if (loseInventoryProbability > Math.random()) {
-				resultVO.lostItems = this.getLostItems(action, true);
-			}
+			this.addLostAndBrokenItems(resultVO, action, loseInventoryProbability, true);
 			resultVO.gainedInjuries = this.getResultInjuries(PlayerActionConstants.getInjuryProbability(action, playerVision, playerLuck), action);
 			resultVO.hasCustomReward = hasCustomReward;
 			
@@ -301,7 +299,7 @@ define([
 			if (Math.random() < loseInventoryProbability) {
 				resultVO.lostResources = this.playerResourcesNodes.head.resources.resources.clone();
 				resultVO.lostCurrency = this.playerResourcesNodes.head.entity.get(CurrencyComponent).currency;
-				resultVO.lostItems = this.getLostItems("despair", false);
+				this.addLostAndBrokenItems(resultVO, "despair", 1, false)
 			}
 			resultVO.lostFollowers = this.getLostFollowers(loseFollowerProbability);
 			
@@ -344,6 +342,14 @@ define([
 			}
 			
 			return result;
+		},
+		
+		preCollectRewards: function (rewards) {
+			if (rewards.brokenItems) {
+				for (let i = 0; i < rewards.brokenItems.length; i++) {
+					rewards.brokenItems[i].broken = true;
+				}
+			}
 		},
 
 		collectRewards: function (isTakeAll, rewards, campSector) {
@@ -414,6 +420,12 @@ define([
 			if (rewards.lostItems) {
 				for (let i = 0; i < rewards.lostItems.length; i++) {
 					itemsComponent.discardItem(rewards.lostItems[i], false);
+				}
+			}
+			
+			if (rewards.brokenItems) {
+				for (let i = 0; i < rewards.brokenItems.length; i++) {
+					rewards.brokenItems[i].broken = true;
 				}
 			}
 
@@ -679,6 +691,14 @@ define([
 				losthtml += "</div>";
 				div += losthtml;
 			}
+			
+			if (resultVO.brokenItems.length > 0) {
+				if (resultVO.brokenItems.length == 1) {
+					div += "<p class='warning'>Broke an item (" + ItemConstants.getItemDisplayName(resultVO.brokenItems[0]) + ").</p>";
+				} else {
+					div += "<p class='warning'>Broke some items.</p>";
+				}
+			}
 
 			if (resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0 || !isInitialSelectionValid) {
 				var baghtml = "<div id='resultlist-inventorymanagement' class='unselectable'>";
@@ -699,7 +719,7 @@ define([
 			}
 
 			hasGainedStuff = hasGainedStuff || resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0 || resultVO.gainedFollowers.length > 0;
-			var hasLostStuff = resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.lostFollowers.length > 0 || resultVO.gainedInjuries.length > 0 || resultVO.lostPerks.length > 0 || resultVO.lostCurrency > 0;
+			var hasLostStuff = resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.brokenItems > 0 || resultVO.lostFollowers.length > 0 || resultVO.gainedInjuries.length > 0 || resultVO.lostPerks.length > 0 || resultVO.lostCurrency > 0;
 			
 			if (!hasGainedStuff && !hasLostStuff) {
 				if (isFight) div += "<p class='p-meta'>Nothing left behind.</p>"
@@ -762,6 +782,11 @@ define([
 				if (rewards.lostItems && rewards.lostItems.length > 0) {
 					var messageTemplate = LogConstants.getLostItemMessage(rewards);
 					logComponent.addMessage(LogConstants.MSG_ID_LOST_ITEM, messageTemplate.msg, messageTemplate.replacements, messageTemplate.values);
+				}
+
+				if (rewards.brokenItems && rewards.brokenItems.length > 0) {
+					var messageTemplate = LogConstants.getBrokeItemMessage(rewards);
+					logComponent.addMessage(LogConstants.MSG_ID_BROKE_ITEM, messageTemplate.msg, messageTemplate.replacements, messageTemplate.values);
 				}
 				
 				if (rewards.lostFollowers && rewards.lostFollowers.length > 0) {
@@ -1222,46 +1247,54 @@ define([
 			return false;
 		},
 
-		getLostItems: function (action, loseSingleItem) {
-			var lostItems = [];
-			var playerItems = this.playerResourcesNodes.head.entity.get(ItemsComponent).getAll(false);
+		addLostAndBrokenItems: function (resultVO, action, probability, onlySingleItem) {
+			if (Math.random() > probability) return;
+			if (!GameGlobals.gameState.unlockedFeatures.camp) return;
+			
+			let lostItems = [];
+			let brokenItems = [];
+			
+			let itemsComponent = this.playerStatsNodes.head.items;
+			let playerItems = itemsComponent.getAll(false);
 
-			if (playerItems.length <= 0)
-				return lostItems;
-				
-			if (!GameGlobals.gameState.unlockedFeatures.camp)
-				return false;
+			if (playerItems.length <= 0) return;
 
 			// make list with duplicates based on probabilities
 			// ignore ingredients here, they're handled below
-			var itemList = [];
-			var numValidItems = 0;
-			var probabilitySum = 0;
+			let itemList = [];
+			let numValidItems = 0;
+			let weightSum = 0;
 			for (let i = 0; i < playerItems.length; i++) {
-				var item = playerItems[i];
+				let item = playerItems[i];
 				if (item.type == ItemConstants.itemTypes.ingredient) continue;
-				var loseProbability = this.getItemLoseProbability(action, item);
-				if (loseProbability <= 0) continue;
-				var count = Math.round(loseProbability * 10);
+				let weight = this.getItemLoseOrBreakChanceWeight(action, item);
+				if (weight <= 0) continue;
+				let count = Math.round(weight * 2);
 				for (let j = 0; j < count; j++) {
 					itemList.push(item);
 				}
-				probabilitySum += loseProbability;
+				weightSum += weight;
 				numValidItems++;
 			}
 			
 			// pick n items from the list
 			if (numValidItems > 0) {
-				var probabilityAvg = probabilitySum / numValidItems;
-				var numMaxLost = probabilityAvg * 5;
-				var numItems = loseSingleItem ? 1 : Math.ceil(Math.random() * numMaxLost);
+				let weightAvg = weightSum / numValidItems;
+				let numMaxLost = weightAvg * 2;
+				let numItems = onlySingleItem ? 1 : Math.ceil(Math.random() * numMaxLost);
 				numItems = Math.min(numValidItems, numItems);
 
 				for (let i = 0; i < numItems; i++) {
-					var itemi = Math.floor(Math.random() * itemList.length);
-					var selectedItem = itemList[itemi];
-					lostItems.push(selectedItem);
-					var optionsToRemove = [];
+					let itemi = Math.floor(Math.random() * itemList.length);
+					let selectedItem = itemList[itemi];
+					
+					if (selectedItem.repairable && !selectedItem.broken && Math.random() < 0.9) {
+						brokenItems.push(selectedItem);
+					} else {
+						lostItems.push(selectedItem);
+					}
+					
+					let optionsToRemove = [];
 					for (let j = 0; j < itemList.length; j++) {
 						if (itemList[j] == selectedItem) {
 							optionsToRemove.push(j);
@@ -1272,7 +1305,7 @@ define([
 			}
 			
 			// ingredients: lose all or nothing
-			if (!loseSingleItem) {
+			if (!onlySingleItem) {
 				for (let i = 0; i < playerItems.length; i++) {
 					var item = playerItems[i];
 					if (item.type !== ItemConstants.itemTypes.ingredient) continue;
@@ -1280,16 +1313,21 @@ define([
 				}
 			}
 			
-			return lostItems;
+			resultVO.lostItems = lostItems;
+			resultVO.brokenItems = brokenItems;
 		},
 
-		getItemLoseProbability: function (action, item) {
-			var campCount = GameGlobals.gameState.numCamps;
-			var itemLoseProbability = 1;
+		getItemLoseOrBreakChanceWeight: function (action, item) {
+			let campCount = GameGlobals.gameState.numCamps;
+			let result = 1;
 			switch (item.type) {
-				case ItemConstants.itemTypes.bag:
 				case ItemConstants.itemTypes.uniqueEquipment:
-					itemLoseProbability = 0;
+				case ItemConstants.itemTypes.ingredient:
+					result = 0;
+					break;
+				case ItemConstants.itemTypes.bag:
+				case ItemConstants.itemTypes.light:
+					result = campCount > 0 ? 2 : 0;
 					break;
 				case ItemConstants.itemTypes.clothing_over:
 				case ItemConstants.itemTypes.clothing_upper:
@@ -1297,21 +1335,20 @@ define([
 				case ItemConstants.itemTypes.clothing_head:
 				case ItemConstants.itemTypes.clothing_hands:
 				case ItemConstants.itemTypes.shoes:
-					itemLoseProbability = 0.55;
+					result = 3;
 					break;
-				case ItemConstants.itemTypes.light:
-					itemLoseProbability = campCount > 0 ? 0.55 : 0;
-					break;
-				case ItemConstants.itemTypes.ingredient:
-					itemLoseProbability = 0;
+				case ItemConstants.itemTypes.weapon:
+					result = 4;
 					break;
 				default:
-					itemLoseProbability = 0.95;
+					result = 5;
 					break;
 			}
-			if (item.equipped)
-				itemLoseProbability = itemLoseProbability / 2;
-			return itemLoseProbability;
+			
+			if (item.equipped) result = result / 2;
+			if (item.broken) result = result / 2;
+				
+			return result;
 		},
 		
 		getLostFollowers: function (loseProbability) {

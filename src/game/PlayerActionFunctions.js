@@ -925,6 +925,7 @@ define(['ash',
 					playerActionFunctions.completeAction(action);
 				};
 				
+				GameGlobals.playerActionResultsHelper.preCollectRewards(rewards);
 				if (showResultPopup) {
 					GameGlobals.uiFunctions.showResultPopup(TextConstants.getActionName(baseActionID), popupMsg, rewards, resultPopupCallback);
 				} else {

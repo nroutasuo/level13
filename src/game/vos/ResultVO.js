@@ -21,6 +21,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		lostResources: null,
 		lostCurrency: null,
 		lostItems: [],
+		brokenItems: [],
 		lostFollowers: [],
 		lostPerks: [],
 		gainedInjuries: [],
@@ -54,6 +55,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			this.lostResources = new ResourcesVO();
 			this.lostCurrency = 0;
 			this.lostItems = [];
+			this.brokenItems = [];
 			this.lostFollowers = [];
 			this.lostPerks = [];
 			this.gainedInjuries = [];
@@ -78,6 +80,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 				&& this.gainedItems.length == 0
 				&& this.gainedFollowers.length == 0
 				&& this.lostItems.length == 0
+				&& this.brokenItems.length == 0
 				&& this.lostFollowers.length == 0
 				&& this.lostPerks.length == 0
 				&& this.gainedInjuries.length == 0
@@ -98,6 +101,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			result.gainedItems = this.gainedItems.concat();
 			result.gainedFollowers = this.gainedFollowers.concat();
 			result.lostItems = this.lostItems.concat();
+			result.brokenItems = this.brokenItems.concat();
 			result.lostFollowers = this.lostFollowers.concat();
 			result.lostPerks = this.lostPerks.concat();
 			result.gainedInjuries = this.gainedInjuries.concat();

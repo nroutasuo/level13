@@ -45,6 +45,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 		MSG_ID_FOUND_BLUEPRINT_FIRST: "MSG_ID_FOUND_BLUEPRINT_FIRST",
 		MSG_ID_FOUND_ITEM_FIRST: "MSG_ID_FOUND_ITEM_FIRST",
 		MSG_ID_LOST_ITEM: "MSG_ID_LOST_ITEM",
+		MSG_ID_BROKE_ITEM: "MSG_ID_BROKE_ITEM",
 		MSG_ID_LOST_FOLLOWER: "MSG_ID_LOST_FOLLOWER",
 		MSG_ID_GOT_INJURED: "MSG_ID_GOT_INJURED",
 		MSG_ID_FAINTED: "MSG_ID_FAINTED",
@@ -173,6 +174,27 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 					intros.push("Stumbled on some wrecked pipes");
 					intros.push("Left a bag pocket open and some items fell out");
 					intros.push("Got spooked of the shadows and ran, leaving some items behind");
+					break;
+			}
+			var intro = intros[Math.floor(Math.random() * intros.length)];
+			intro = intro + ". ";
+			template.msg = intro + template.msg;
+
+			return { msg: template.msg, replacements: template.replacements, values: template.values };
+		},
+
+		getBrokeItemMessage: function (resultVO) {
+			var template = TextConstants.getLogItemsText(resultVO.brokenItems);
+			template.msg = "Broke " + template.msg + ". ";
+
+			var intros = [];
+			switch (resultVO.action) {
+				default:
+					intros.push("Almost fell into a crack in the street");
+					intros.push("Fell through a rotten floor");
+					intros.push("Dropped an item while climbing a fence");
+					intros.push("Stumbled on some wrecked pipes");
+					intros.push("Fell while climbings");
 					break;
 			}
 			var intro = intros[Math.floor(Math.random() * intros.length)];

@@ -468,7 +468,7 @@ define(['ash',
 				var fightRiskMin = PlayerActionConstants.getRandomEncounterProbability(baseActionId, 100, 1, encounterFactor);
 				if (injuryRiskMax > 0 || inventoryRiskMax > 0 || fightRiskMax > 0) {
 					if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
-					var inventoryRiskLabel = action === "despair" ? "lose items" : "lose item";
+					var inventoryRiskLabel = action === "despair" ? "drop items" : "drop item";
 					if (injuryRiskMax > 0)
 						enabledContent += "<span class='action-risk action-risk-injury warning'>injury: <span class='action-risk-value'></span>%</span>";
 					if (inventoryRiskMax > 0)

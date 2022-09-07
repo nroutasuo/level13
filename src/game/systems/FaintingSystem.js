@@ -220,6 +220,7 @@ define([
 					GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, resultVO);
 					finalStep();
 				};
+				GameGlobals.playerActionResultsHelper.preCollectRewards(resultVO);
 				GameGlobals.uiFunctions.showResultPopup("Exhaustion", msg, resultVO, resultPopUpCallback);
 			} else {
 				finalStep();
