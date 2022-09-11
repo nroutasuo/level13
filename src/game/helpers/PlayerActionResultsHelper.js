@@ -358,8 +358,10 @@ define([
 				if (excursionComponent) {
 					if (this.isSomethingUsefulResult(rewards)) {
 						excursionComponent.numConsecutiveScavengeUseless = 0;
+						excursionComponent.numConsecutiveScavengeUselessSameLocation = 0;
 					} else {
 						excursionComponent.numConsecutiveScavengeUseless++;
+						excursionComponent.numConsecutiveScavengeUselessSameLocation++;
 					}
 				}
 			}
@@ -866,12 +868,18 @@ define([
 				results.setResource(name, resultAmount);
 			}
 			
-			// consolation prize: if found nothing (useful) at this point, add 1 metal every few tries
+			// consolation prize: if found nothing (useful) at this point, add 1 resource every few tries
 			if (!this.isSomethingUsefulResources(results) && !GameGlobals.gameState.isAutoPlaying) {
-				var excursionComponent = this.playerResourcesNodes.head.entity.get(ExcursionComponent);
-				var metalAmount = availableResources.getResource(resourceNames.metal);
-				if (metalAmount > WorldConstants.resourcePrevalence.RARE && excursionComponent && excursionComponent.numConsecutiveScavengeUseless > 0) {
-					results.setResource(resourceNames.metal, 1);
+				let excursionComponent = this.playerResourcesNodes.head.entity.get(ExcursionComponent);
+				if (excursionComponent && excursionComponent.numConsecutiveScavengeUselessSameLocation > 0) {
+					let highestResources = availableResources.getResourcesWithHighestAmount();
+					if (highestResources.length > 0) {
+						let resourceName = highestResources[Math.floor(Math.random() * highestResources.length)];
+						let resourceAmount = availableResources.getResource(resourceName);
+						if (resourceAmount > WorldConstants.resourcePrevalence.RARE) {
+							results.setResource(resourceName, 1);
+						}
+					}
 				}
 			}
 

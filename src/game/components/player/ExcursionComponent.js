@@ -4,10 +4,12 @@ define(['ash'], function (Ash) {
 		
 		numNaps: 0,
 		numConsecutiveScavengeUseless: 0,
+		numConsecutiveScavengeUselessSameLocation: 0,
 
 		constructor: function () {
 			this.numNaps = 0;
 			this.numConsecutiveScavengeUseless = 0;
+			this.numConsecutiveScavengeUselessSameLocation = 0;
 		},
 
 		getSaveKey: function () {

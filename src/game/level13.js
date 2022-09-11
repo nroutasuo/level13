@@ -49,6 +49,7 @@ define([
 	'game/systems/RumourSystem',
 	'game/systems/EvidenceSystem',
 	'game/systems/EndingSystem',
+	'game/systems/ExcursionSystem',
 	'game/systems/FavourSystem',
 	'game/systems/GlobalResourcesSystem',
 	'game/systems/GlobalResourcesResetSystem',
@@ -109,6 +110,7 @@ define([
 	RumourSystem,
 	EvidenceSystem,
 	EndingSystem,
+	ExcursionSystem,
 	FavourSystem,
 	GlobalResourcesSystem,
 	GlobalResourcesResetSystem,
@@ -190,6 +192,7 @@ define([
 			this.engine.addSystem(new UnlockedFeaturesSystem(), SystemPriorities.update);
 			this.engine.addSystem(new GlobalResourcesSystem(), SystemPriorities.update);
 			this.engine.addSystem(new CampEventsSystem(), SystemPriorities.update);
+			this.engine.addSystem(new ExcursionSystem(), SystemPriorities.update);
 			this.engine.addSystem(new EndingSystem(), SystemPriorities.update);
 
 			this.engine.addSystem(new AutoPlaySystem(), SystemPriorities.postUpdate);

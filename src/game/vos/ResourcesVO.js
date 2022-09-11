@@ -123,15 +123,35 @@ define(['ash'], function (Ash) {
 			return 0;
 		},
 		
+		getResourcesWithHighestAmount: function () {
+			let result = [];
+			let max = 0;
+			for (let key in resourceNames) {
+				let name = resourceNames[key];
+				let amount = this.getResource(name);
+				if (amount == max) {
+					result.push(name);
+					continue;
+				}
+				if (amount > max) {
+					result = [];
+					result.push(name);
+					max = amount;
+					continue;
+				}
+			}
+			return result;
+		},
+		
 		addAll: function (resourceVO) {
-			for(var key in resourceNames) {
+			for (let key in resourceNames) {
 				var name = resourceNames[key];
 				this.addResource(name, resourceVO.getResource(name));
 			}
 		},
 		
 		limitAll: function (min, max) {
-			for(var key in resourceNames) {
+			for (let key in resourceNames) {
 				var name = resourceNames[key];
 				this.limit(name, min, max);
 			}
@@ -147,7 +167,7 @@ define(['ash'], function (Ash) {
 		},
 	
 		cleanUp: function() {
-			for(var key in resourceNames) {
+			for (let key in resourceNames) {
 				var name = resourceNames[key];
 				var amount = this.getResource(name);
 				if (isNaN(amount)) {
@@ -158,7 +178,7 @@ define(['ash'], function (Ash) {
 		
 		getTotal: function() {
 			var total = 0;
-			 for(var key in resourceNames) {
+			 for (let key in resourceNames) {
 				var name = resourceNames[key];
 				var amount = this.getResource(name);
 				total += amount;
@@ -168,7 +188,7 @@ define(['ash'], function (Ash) {
 		
 		getNames: function () {
 			let result = [];
-			 for(var key in resourceNames) {
+			 for (let key in resourceNames) {
 				var name = resourceNames[key];
 				var amount = this.getResource(name);
 				if (amount > 0)
@@ -216,7 +236,7 @@ define(['ash'], function (Ash) {
 		
 		clone: function() {
 			var c = new ResourcesVO();
-			for(var key in resourceNames) {
+			for (let key in resourceNames) {
 				var name = resourceNames[key];
 				c.setResource(name, this.getResource(name));
 			}
