@@ -213,8 +213,12 @@ define(['ash',
 				case FollowerConstants.abilityType.COST_SCOUT:
 					let scoutCostReduction = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.scout_cost);
 					return "scout cost -" + UIConstants.getMultiplierBonusDisplayValue(scoutCostReduction);
-				case FollowerConstants.abilityType.HAZARD_PREDICTION:
+				case FollowerConstants.abilityType.DETECT_HAZARDS:
 					return "foresee hazards in unvisited sectors";
+				case FollowerConstants.abilityType.DETECT_SUPPLIES:
+					return "foresee supplies in found in current and neighbouring sectors";
+				case FollowerConstants.abilityType.DETECT_INGREDIENTS:
+					return "foresee crafting ingredients found in current and neighbouring sectors";
 				case FollowerConstants.abilityType.SCAVENGE_GENERAL:
 					let scaBonus = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.scavenge_general);
 					return "+" + UIConstants.getMultiplierBonusDisplayValue(scaBonus) + " chance for extra loot when scavenging";
@@ -344,7 +348,9 @@ define(['ash',
 				case ItemConstants.itemBonusTypes.res_radiation: return short ? "radiation prot" : "radiation protection";
 				case ItemConstants.itemBonusTypes.res_poison: return short ? "poison prot" : "poison protection";
 				case ItemConstants.itemBonusTypes.shade: return short ? "sun prot" : "sunblindness protection";
-				case ItemConstants.itemBonusTypes.hazard_prediction: return short ? "surveying" : "hazard surveying";
+				case ItemConstants.itemBonusTypes.detect_hazards: return short ? "hazards" : "surveying (hazards)";
+				case ItemConstants.itemBonusTypes.detect_supplies: return short ? "supplies" : "surveying (supplies)";
+				case ItemConstants.itemBonusTypes.detect_ingredients: return short ? "ingredients" : "surveying (ingredients)";
 				default:
 					log.w("no display name defined for item bonus type: " + bonusType);
 					return "";

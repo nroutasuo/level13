@@ -513,8 +513,16 @@ define([
 			
 			let statuses = [];
 			
-			if (GameGlobals.playerHelper.getCurrentBonus(ItemConstants.itemBonusTypes.hazard_prediction) > 0) {
+			if (GameGlobals.playerHelper.getCurrentBonus(ItemConstants.itemBonusTypes.detect_hazards) > 0) {
 				statuses.push({ name: "Hazard foresight", icon: "img/status-hazard-prediction.png", isNegative: false });
+			}
+			
+			if (GameGlobals.playerHelper.getCurrentBonus(ItemConstants.itemBonusTypes.detect_supplies) > 0) {
+				statuses.push({ name: "Supplies detection", icon: "img/status-supplies-prediction.png", isNegative: false });
+			}
+			
+			if (GameGlobals.playerHelper.getCurrentBonus(ItemConstants.itemBonusTypes.detect_ingredients) > 0) {
+				statuses.push({ name: "Ingredients detection", icon: "img/status-ingredients-prediction.png", isNegative: false });
 			}
 			
 			for (let i = 0; i < statuses.length; i++) {
@@ -712,7 +720,9 @@ define([
 					case ItemConstants.itemBonusTypes.scavenge_general:
 					case ItemConstants.itemBonusTypes.scavenge_supplies:
 					case ItemConstants.itemBonusTypes.scavenge_ingredients:
-					case ItemConstants.itemBonusTypes.hazard_prediction:
+					case ItemConstants.itemBonusTypes.detect_hazards:
+					case ItemConstants.itemBonusTypes.detect_supplies:
+					case ItemConstants.itemBonusTypes.detect_ingredients:
 					case ItemConstants.itemBonusTypes.light:
 					case ItemConstants.itemBonusTypes.bag:
 						isVisible = false;

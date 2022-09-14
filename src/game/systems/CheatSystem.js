@@ -8,6 +8,7 @@ define(['ash',
 	'game/constants/LocaleConstants',
 	'game/constants/PerkConstants',
 	'game/constants/FightConstants',
+	'game/constants/FollowerConstants',
 	'game/constants/TradeConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/WorldConstants',
@@ -37,6 +38,7 @@ define(['ash',
 	LocaleConstants,
 	PerkConstants,
 	FightConstants,
+	FollowerConstants,
 	TradeConstants,
 	UpgradeConstants,
 	WorldConstants,
@@ -168,6 +170,9 @@ define(['ash',
 			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_ITEM, "Add the given item to inventory.", ["item id"], function (params) {
 				this.addItem(params[0]);
+			});
+			this.registerCheat(CheatConstants.CHEAT_NAME_FOLLOWER, "Add a random follower.", [], function (params) {
+				this.addFollower();
 			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_EQUIP_BEST, "Auto-equip best items available.", [], function (params) {
 				this.equipBest();
@@ -543,6 +548,13 @@ define(['ash',
 			} else {
 				log.w("No such item: " + itemID);
 			}
+		},
+		
+		addFollower: function () {
+			let followersComponent = this.playerStatsNodes.head.followers;
+			let playerPos = this.playerPositionNodes.head.position;
+			let follower = FollowerConstants.getNewRandomFollower(FollowerConstants.followerSource.SCOUT, GameGlobals.gameState.numCamps, playerPos.level);
+			followersComponent.addFollower(follower);
 		},
 
 		equipBest: function () {

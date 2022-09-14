@@ -61,7 +61,9 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			res_radiation: "res_rad",
 			res_poison: "res_poison",
 			shade: "shade",
-			hazard_prediction: "hazard_prediction",
+			detect_hazards: "detect_hazards",
+			detect_supplies: "detect_supplies",
+			detect_ingredients: "detect_ingredients",
 		},
 		
 		bookTypes: {

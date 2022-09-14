@@ -26,6 +26,10 @@
 					"summary": "Add more permanent and temporary effects (tired, blessed, varied injuries)"
 				},
 				{
+					"type": "GD",
+					"summary": "Add more follower types"
+				},
+				{
 					"type": "UI",
 					"summary": "Add simple ending"
 				}

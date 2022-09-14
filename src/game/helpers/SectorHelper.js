@@ -182,20 +182,32 @@ define([
 				sectorStatus.discoveredResources.splice(sectorStatus.discoveredResources.indexOf(missingResources[j]), 1);
 			}
 			
-			resources.sort(function (a, b) {
-				if (a === b) return 0;
-				if (a === resourceNames.metal) return -1;
-				if (b === resourceNames.metal) return 1;
-				if (a === resourceNames.water) return -1;
-				if (b === resourceNames.water) return 1;
-				if (a === resourceNames.food) return -1;
-				if (b === resourceNames.food) return 1;
-				if (a === resourceNames.fuel) return -1;
-				if (b === resourceNames.fuel) return 1;
-				return 0;
-			});
+			resources.sort(this.resourceSortFunc);
 			
 			return resources;
+		},
+		
+		getLocationKnownResources: function (sector) {
+			sector = sector ? sector : this.playerLocationNodes.head.entity;
+			if (this.isInDetectionRange(sector, ItemConstants.itemBonusTypes.detect_supplies)) {
+				let sectorFeatures = sector.get(SectorFeaturesComponent);
+				return sectorFeatures.resourcesScavengable.getNames();
+			} else {
+				return this.getLocationDiscoveredResources(sector);
+			}
+		},
+		
+		resourceSortFunc: function (a, b) {
+			if (a === b) return 0;
+			if (a === resourceNames.metal) return -1;
+			if (b === resourceNames.metal) return 1;
+			if (a === resourceNames.water) return -1;
+			if (b === resourceNames.water) return 1;
+			if (a === resourceNames.food) return -1;
+			if (b === resourceNames.food) return 1;
+			if (a === resourceNames.fuel) return -1;
+			if (b === resourceNames.fuel) return 1;
+			return 0;
 		},
 		
 		getLocationDiscoveredItems: function (sector) {
@@ -220,6 +232,25 @@ define([
 			}
 			
 			return items;
+		},
+		
+		getLocationKnownItems: function (sector) {
+			sector = sector ? sector : this.playerLocationNodes.head.entity;
+			if (this.isInDetectionRange(sector, ItemConstants.itemBonusTypes.detect_ingredients)) {
+				let sectorFeatures = sector.get(SectorFeaturesComponent);
+				return sectorFeatures.itemsScavengeable;
+			} else {
+				return this.getLocationDiscoveredItems(sector);
+			}
+		},
+		
+		isInDetectionRange: function (sector, itemBonusType) {
+			let detectionRange = GameGlobals.playerHelper.getCurrentBonus(itemBonusType);
+			if (detectionRange <= 0) return false;
+			let sectorPos = sector.get(PositionComponent);
+			let playerPos = this.playerLocationNodes.head.position;
+			let distance = PositionConstants.getDistanceTo(sectorPos, playerPos);
+			return distance < (detectionRange + 1);
 		},
 		
 		getDangerFactor: function (sectorEntity) {

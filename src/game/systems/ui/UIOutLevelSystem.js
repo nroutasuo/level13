@@ -452,15 +452,17 @@ define([
 				description += "Investigated: " + UIConstants.roundValue(statusComponent.getInvestigatedPercent()) + "%<br/>";
 			}
 			if (featuresComponent.resourcesScavengable.getTotal() > 0) {
-				var discoveredResources = GameGlobals.sectorHelper.getLocationDiscoveredResources();
-				if (discoveredResources.length > 0) {
-					description += "Resources found: " + TextConstants.getScaResourcesString(discoveredResources, featuresComponent.resourcesScavengable) + " ";
+				let discoveredResources = GameGlobals.sectorHelper.getLocationDiscoveredResources();
+				let knownResources = GameGlobals.sectorHelper.getLocationKnownResources();
+				if (knownResources.length > 0) {
+					description += "Resources found: " + TextConstants.getScaResourcesString(discoveredResources, knownResources, featuresComponent.resourcesScavengable) + " ";
 				}
 			}
 			if (featuresComponent.itemsScavengeable.length > 0) {
-				var discoveredItems = GameGlobals.sectorHelper.getLocationDiscoveredItems();
-				if (discoveredItems.length > 0) {
-					description += "Items found: " + TextConstants.getScaItemString(discoveredItems, featuresComponent.itemsScavengeable) + " ";
+				let discoveredItems = GameGlobals.sectorHelper.getLocationDiscoveredItems();
+				let knownItems = GameGlobals.sectorHelper.getLocationKnownItems();
+				if (knownItems.length > 0) {
+					description += "Items found: " + TextConstants.getScaItemString(discoveredItems, knownItems, featuresComponent.itemsScavengeable) + " ";
 				}
 			}
 			return description;
@@ -854,7 +856,7 @@ define([
 		},
 		
 		hasScavengeableResource: function (resourceName) {
-			var discoveredResources = GameGlobals.sectorHelper.getLocationDiscoveredResources();
+			var discoveredResources = GameGlobals.sectorHelper.getLocationKnownResources();
 			if (discoveredResources.indexOf(resourceName) > 0) {
 				return true;
 			}

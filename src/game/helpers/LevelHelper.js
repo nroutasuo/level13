@@ -261,7 +261,7 @@ define([
 				let statusComponent = node.entity.get(SectorStatusComponent);
 				if (!statusComponent.scavenged) continue;
 				if (statusComponent.getScavengedPercent() > 75) continue;
-				let discoveredItems = GameGlobals.sectorHelper.getLocationDiscoveredItems(node.entity);
+				let discoveredItems = GameGlobals.sectorHelper.getLocationKnownItems(node.entity);
 				for (let i = 0; i < discoveredItems.length; i++) {
 					if (discoveredItems[i] == item.id) {
 						return true;

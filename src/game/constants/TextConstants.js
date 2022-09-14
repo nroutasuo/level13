@@ -957,7 +957,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			return this.getCommonText(enemyList, "defeatedV", "", "defeated", false);
 		},
 		
-		getScaResourcesString: function (discoveredResources, resourcesScavengable) {
+		getScaResourcesString: function (discoveredResources, knownResources, resourcesScavengable) {
 			var s = "";
 			 for(var key in resourceNames) {
 				var name = resourceNames[key];
@@ -970,6 +970,8 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					if (amount == WorldConstants.resourcePrevalence.ABUNDANT) amountDesc = "abundant";
 					if (GameConstants.isDebugVersion) amountDesc += " " + Math.round(amount);
 					s += key + " (" + amountDesc + "), ";
+				} else if (amount > 0 && knownResources.indexOf(name) >= 0) {
+					s += key + " (??), ";
 				}
 			}
 			if (s.length > 0) return s.substring(0, s.length - 2);
@@ -977,11 +979,11 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			else return "None";
 		},
 		
-		getScaItemString: function (discoveredItems, itemsScavengeable) {
-			var validItems = [];
-			for (let i = 0; i < discoveredItems.length; i++) {
-				var id = discoveredItems[i];
-				if (itemsScavengeable.indexOf(id) < 0) continue;
+		getScaItemString: function (discoveredItems, knownItems, itemsScavengeable) {
+			let validItems = [];
+			for (let i = 0; i < itemsScavengeable.length; i++) {
+				let id = itemsScavengeable[i];
+				if (knownItems.indexOf(id) < 0) continue;
 				validItems.push(ItemConstants.getItemByID(id).name);
 			}
 			if (validItems.length == 0) return "None";
