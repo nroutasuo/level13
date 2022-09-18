@@ -205,6 +205,9 @@ span#out-position-indicator {
 
 #footer {
 	padding: 1px 5px;
+	display: flex;
+    align-items: flex-end;
+    height: 100%;
  }
 
 ul#game-options, ul#game-options-extended {
@@ -223,9 +226,12 @@ ul#game-options li, ul#game-options-extended li {
 }
 
 #game-version, #game-msg {
+	display: inline-block;
 	text-transform: lowercase;
-	position: relative;
-	left: -55px;
+}
+
+#game-msg {
+    flex-grow: 1;
 }
 
 .sticky-footer .one-quarter {

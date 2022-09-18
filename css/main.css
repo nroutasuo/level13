@@ -35,18 +35,18 @@ body {
   /* for the self-bar */
 }
 .sticky-footer {
-  height: 50px;
+  height: 65px;
   padding: 10px 0;
   display: none;
 }
 .sticky-footer-push {
   margin: 0;
-  height: 50px;
+  height: 65px;
 }
 .sticky-footer-wrapper {
   min-height: 100%;
   height: auto !important;
-  margin: 0 auto -50px;
+  margin: 0 auto -65px;
 }
 .game-opacity-controller {
   -webkit-transition: none;
@@ -845,7 +845,6 @@ body.dark div.btn-callout-content,
 body.dark div.info-callout-content {
   font-size: 85%;
   overflow-wrap: break-word;
-  line-height: 1.45em;
 }
 body.dark div.btn-callout-content,
 body.dark div.info-callout-content {
@@ -1878,6 +1877,9 @@ body.dark span#out-position-indicator {
 }
 body.dark #footer {
   padding: 1px 5px;
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
 }
 body.dark ul#game-options,
 body.dark ul#game-options-extended {
@@ -1896,9 +1898,11 @@ body.dark ul#game-options-extended li {
 }
 body.dark #game-version,
 body.dark #game-msg {
+  display: inline-block;
   text-transform: lowercase;
-  position: relative;
-  left: -55px;
+}
+body.dark #game-msg {
+  flex-grow: 1;
 }
 body.dark .sticky-footer .one-quarter {
   height: 2px;
@@ -3030,7 +3034,6 @@ body.sunlit div.btn-callout-content,
 body.sunlit div.info-callout-content {
   font-size: 85%;
   overflow-wrap: break-word;
-  line-height: 1.45em;
 }
 body.sunlit div.btn-callout-content,
 body.sunlit div.info-callout-content {
@@ -4063,6 +4066,9 @@ body.sunlit span#out-position-indicator {
 }
 body.sunlit #footer {
   padding: 1px 5px;
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
 }
 body.sunlit ul#game-options,
 body.sunlit ul#game-options-extended {
@@ -4081,9 +4087,11 @@ body.sunlit ul#game-options-extended li {
 }
 body.sunlit #game-version,
 body.sunlit #game-msg {
+  display: inline-block;
   text-transform: lowercase;
-  position: relative;
-  left: -55px;
+}
+body.sunlit #game-msg {
+  flex-grow: 1;
 }
 body.sunlit .sticky-footer .one-quarter {
   height: 2px;
