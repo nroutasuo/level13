@@ -68,8 +68,14 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		},
 
 		getCurrentTotalBonus: function () {
-			let result = this.getBaseTotalBonus();
-			if (this.broken) result = Math.floor(result / 2);
+			let result = 0;
+			if (this.bonus) {
+				for (let key in this.bonus.bonuses) {
+					let value = this.bonus.getBonus(key);
+					if (this.broken && this.isBonusAffectedByBrokenStatus(key)) value = Math.floor(value / 2);
+					result += value;
+				}
+			}
 			return result;
 		},
 		
@@ -79,8 +85,14 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 
 		getCurrentBonus: function (bonusType) {
 			let result = this.getBaseBonus(bonusType);
-			if (this.broken) result = Math.floor(result / 2);
+			if (this.broken && this.isBonusAffectedByBrokenStatus(bonusType)) result = Math.floor(result / 2);
 			return result;
+		},
+		
+		isBonusAffectedByBrokenStatus: function (bonusType) {
+			// TODO refer to ItemConstants here / move whole function
+			if (bonusType == "spd") return false;
+			return true;
 		},
 
 		getCustomSaveObject: function () {

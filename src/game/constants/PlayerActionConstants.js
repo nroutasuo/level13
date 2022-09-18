@@ -124,6 +124,7 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 			if (action.indexOf('use_out_') === 0) return true;
 			if (action.indexOf('fight_') === 0) return true;
 			if (action.indexOf('scout_') === 0) return true;
+			if (action == 'wait') return true;
 			return false;
 		},
 

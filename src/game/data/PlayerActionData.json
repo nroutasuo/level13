@@ -14,7 +14,8 @@
         "use_in_market": 360,
         "use_in_shrine": 600,
         "use_in_temple": 1200,
-        "use_spring": 60
+        "use_spring": 60,
+		"wait": 60
     },
     "costs": {
         "bridge_gap": {
@@ -1887,7 +1888,7 @@
             },
             "sector": {
                 "buildingDensity": [
-                    2,
+                    1,
                     8
                 ],
                 "hazards": {
