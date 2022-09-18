@@ -169,6 +169,34 @@ define([
 			return true;
 		},
 		
+		// Should the action be shown to the user
+		// Based on requirements - some reqs always hide the action, some never do, and some depend on options (visibleReasons)
+		isVisible: function (action, sector, visibleReasons) {
+			let reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(action, false, sector);
+			
+			if (reqsCheck.value >= 1) return true;
+			
+			// reasons that never block visibility
+			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_BUSY) return true;
+			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_LAUNCHED) return true;
+			
+			// options
+			if (visibleReasons && visibleReasons.indexOf(reqsCheck.baseReason) >= 0) return true;
+			
+			// reasons that usually allow visibility
+			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENT_LEVEL) return true;
+			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENTS) return true;
+			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_SECTOR_FEATURES) return true;
+			
+			// reasons that usually block visibility
+			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_SCOUTED) return false;
+			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_SUNLIT) return false;
+			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_UPGRADE) return false;
+			
+			// default to false
+			return true;
+		},
+		
 		isRequirementsMet: function (action, sector) {
 			return GameGlobals.playerActionsHelper.checkRequirements(action, false, sector).value >= 1;
 		},
@@ -178,10 +206,10 @@ define([
 		// value: fraction the player has of requirements or 0 depending on req type (if 0, action is not available)
 		// reason: string to describe the non-passed requirement (for button explanations)
 		checkRequirements: function (action, doLog, otherSector, checksToSkip) {
-			if (!action) return { value: 0, reason: "No action" };
+			if (!action) return { value: 0, reason: "No action", baseReason: PlayerActionConstants.DISABLED_REASON_INVALID_PARAMS };
 			var sector = otherSector;
 			if (!sector) sector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
-			if (!sector) return { value: 0, reason: "No selected sector" };
+			if (!sector) return { value: 0, reason: "No selected sector", baseReason: PlayerActionConstants.DISABLED_REASON_INVALID_PARAMS };
 
 			var sectorID = sector.get(PositionComponent).positionId();
 			var reqsID = action + "-" + sectorID;
@@ -192,9 +220,7 @@ define([
 				return checksToSkip.indexOf(reason) >= 0;
 			};
 
-			var checkRequirementsInternal = function (action, sector) {
-				if (GameGlobals.gameState.isLaunchStarted) return { value: 0, reason: "Leaving the planet behind" };
-				
+			let checkRequirementsInternal = function (action, sector) {
 				var playerVision = this.playerStatsNodes.head.vision.value;
 				var playerPerks = this.playerStatsNodes.head.perks;
 				var playerStamina = this.playerStatsNodes.head.stamina.stamina;
@@ -231,7 +257,7 @@ define([
 					let techLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementName, this.tribeUpgradesNodes.head.upgrades);
 					let maxLevel = ImprovementConstants.getMaxLevel(improvementID, techLevel);
 					if (ordinal >= maxLevel) {
-						return { value: 0, reason: PlayerActionConstants.UNAVAILABLE_REASON_MAX_IMPROVEMENT_LEVEL };
+						return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENT_LEVEL };
 					}
 				}
 
@@ -249,7 +275,7 @@ define([
 						(costs.resource_herbs > 0 && !GameGlobals.gameState.unlockedFeatures.resources.herbs) ||
 						(costs.resource_tools > 0 && !GameGlobals.gameState.unlockedFeatures.resources.tools) ||
 						(costs.resource_concrete > 0 && !GameGlobals.gameState.unlockedFeatures.resources.concrete)) {
-						reason = PlayerActionConstants.UNAVAILABLE_REASON_LOCKED_RESOURCES;
+						reason = PlayerActionConstants.DISABLED_REASON_LOCKED_RESOURCES;
 						lowestFraction = 0;
 					}
 				}
@@ -298,7 +324,7 @@ define([
 						if (currentValue !== requiredValue) {
 							if (currentValue) reason = "Sunlight not allowed.";
 							else reason = "Sunlight required.";
-							return { value: 0, reason: reason };
+							return { value: 0, reason: reason, baseReason: PlayerActionConstants.DISABLED_REASON_SUNLIT };
 						}
 					}
 
@@ -308,7 +334,7 @@ define([
 						}
 					}
 
-					if (requirements.population && !shouldSkipCheck(PlayerActionConstants.UNAVAILABLE_REASON_POPULATION)) {
+					if (requirements.population && !shouldSkipCheck(PlayerActionConstants.DISABLED_REASON_POPULATION)) {
 						var currentPopulation = campComponent ? Math.floor(campComponent.population) : 0;
 						let result = this.checkRequirementsRange(requirements.population, currentPopulation, "{min} population required", "Maximum {max} population", "workers required", "no workers allowed");
 						if (result) {
@@ -340,7 +366,7 @@ define([
 						var current = inCamp;
 						if (required !== current) {
 							if (required) {
-								return { value: 0, reason: PlayerActionConstants.UNAVAILABLE_REASON_NOT_IN_CAMP };
+								return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_NOT_IN_CAMP };
 							} else {
 								return { value: 0, reason: "Must be outside to do this." };
 							}
@@ -357,12 +383,17 @@ define([
 							if (!actionImprovementName) actionImprovementName = "Improvement";
 							var displayName = actionImprovementName === requiredImprovementDisplayName ? "" : requiredImprovementDisplayName;
 							
-							let result = this.checkRequirementsRange(range, amount,
+							let result = this.checkRequirementsRange(
+								range,
+								amount,
 								"{min}x " + displayName + " required",
 								"max " + displayName + " built",
 								displayName + " required",
-								displayName + " already built"
+								displayName + " already built",
+								PlayerActionConstants.DISABLED_REASON_MIN_IMPROVEMENTS,
+								PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENTS
 							);
+							
 							if (result) {
 								result.reason.trim();
 								return result;
@@ -398,7 +429,9 @@ define([
 								"{min}x " + displayName + " on level required",
 								"max {max} " + displayName + " on level",
 								displayName + " required on level",
-								displayName + " already built on level"
+								displayName + " already built on level",
+								PlayerActionConstants.DISABLED_REASON_MIN_IMPROVEMENTS,
+								PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENTS
 							);
 							if (result) {
 								return result;
@@ -465,7 +498,7 @@ define([
 								var name = def ? def.name : upgradeID;
 								if (requirementBoolean) reason = "Upgrade required: " + name;
 								else reason = "Upgrade already researched (" + name + ")";
-								return { value: 0, reason: reason };
+								return { value: 0, reason: reason, baseReason: PlayerActionConstants.DISABLED_REASON_UPGRADE };
 							}
 						}
 					}
@@ -511,9 +544,9 @@ define([
 						var requiredValue = requirements.busy;
 						if (currentValue !== requiredValue) {
 							var timeLeft = Math.ceil(playerActionComponent.getBusyTimeLeft());
-							if (currentValue) reason = PlayerActionConstants.UNAVAILABLE_REASON_BUSY + " " + playerActionComponent.getBusyDescription() + " (" + timeLeft + "s)";
+							if (currentValue) reason = "Busy " + playerActionComponent.getBusyDescription() + " (" + timeLeft + "s)";
 							else reason = "Need to be busy to do this.";
-							return { value: 0, reason: reason };
+							return { value: 0, reason: reason, baseReason: PlayerActionConstants.DISABLED_REASON_BUSY };
 						}
 					}
 					
@@ -662,9 +695,11 @@ define([
 						}
 						if (typeof requirements.sector.scouted != "undefined") {
 							if (statusComponent.scouted != requirements.sector.scouted) {
-								if (statusComponent.scouted)    reason = "Area already scouted.";
-								else                            reason = "Area not scouted yet.";
-								return { value: 0, reason: reason };
+								if (statusComponent.scouted) {
+									return { value: 0, reason: "Area already scouted.", baseReason: PlayerActionConstants.DISABLED_REASON_SCOUTED };
+								} else {
+									return { value: 0, reason: "Area not scouted yet.", baseReason: PlayerActionConstants.DISABLED_REASON_SCOUTED };
+								}
 							}
 						}
 						if (typeof requirements.sector.scavengedPercent != "undefined") {
@@ -805,7 +840,14 @@ define([
 							for (var hazard in requirements.sector.hazards) {
 								var range = requirements.sector.hazards[hazard];
 								var currentVal = featuresComponent.hazards[hazard] || 0;
-								let result = this.checkRequirementsRange(range, currentVal, "Min {min} " + hazard, "Max {max} " + hazard);
+								let result = this.checkRequirementsRange(
+									range,
+									currentVal,
+									"Min {min} " + hazard,
+									"Max {max} " + hazard,
+									"Requires " + hazard,
+									"No " + hazard + " allowed",
+								);
 								if (result) {
 									return result;
 								}
@@ -929,16 +971,19 @@ define([
 						var spaceRequired = BagConstants.getItemCapacity(item);
 						var spaceFreed = BagConstants.getResourcesCapacity(this.getCostResourcesVO(action));
 						if (spaceNow - spaceRequired + spaceFreed < 0) {
-							return { value: 0, reason: PlayerActionConstants.UNAVAILABLE_REASON_BAG_FULL };
+							return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_BAG_FULL };
 						}
 					}
 				}
+				
+				if (GameGlobals.gameState.isLaunchStarted) return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_LAUNCHED };
 				
 				return { value: lowestFraction, reason: reason };
 			};
 
 			if (!this.cache.reqs[reqsID]) {
 				let result = checkRequirementsInternal.apply(this, [action, sector]);
+				if (result.reason && !result.baseReason) result.baseReason = result.reason;
 				if (result.reason && doLog) log.w("" + result.reason);
 				this.cache.reqs[reqsID] = result;
 			}
@@ -946,24 +991,24 @@ define([
 			return this.cache.reqs[reqsID];
 		},
 		
-		checkRequirementsRange: function (range, value, minreason, maxreason, minreason1, maxreason1) {
+		checkRequirementsRange: function (range, value, minreason, maxreason, minreason1, maxreason1, minReasonBase, maxReasonBase) {
 			minreason = minreason || "";
 			maxreason = maxreason || "";
-			var min = range[0];
-			var max = range[1];
+			let min = range[0];
+			let max = range[1];
 			if (max < 0) max = 9999999;
 			if (value < min) {
 				if (min == 1 && minreason1) {
-					return { value: 0, reason: minreason1 };
+					return { value: 0, reason: minreason1, baseReason: minReasonBase };
 				} else {
-					return { value: value / min, reason: minreason.replace("{min}", min) };
+					return { value: value / min, reason: minreason.replace("{min}", min), baseReason: minReasonBase };
 				}
 			}
 			if (value >= max) {
 				if (max == 1 && maxreason1) {
-					return { value: 0, reason: maxreason1 };
+					return { value: 0, reason: maxreason1, baseReason: maxReasonBase };
 				} else {
-					return { value: 0, reason: maxreason.replace("{max}", max) };
+					return { value: 0, reason: maxreason.replace("{max}", max), baseReason: maxReasonBase };
 				}
 			}
 			return null;

@@ -624,12 +624,12 @@ define([
 				if (actionName) {
 					var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(actionName);
 					if (improvementName) {
-						var actionEnabled = GameGlobals.playerActionsHelper.checkRequirements(actionName, false).value >= 1;
-						var existingImprovements = improvements.getCount(improvementName);
+						let actionVisible = GameGlobals.playerActionsHelper.isVisible(actionName);
+						let existingImprovements = improvements.getCount(improvementName);
 						$(this).find(".list-amount").text(existingImprovements);
 						GameGlobals.uiFunctions.toggle($(this).find(".action-use"), existingImprovements > 0);
 
-						var isVisible = actionEnabled || existingImprovements > 0;
+						var isVisible = actionVisible || existingImprovements > 0;
 						GameGlobals.uiFunctions.toggle($(this), isVisible);
 						if (isVisible) numVisible++;
 					}

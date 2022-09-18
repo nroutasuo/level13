@@ -398,7 +398,7 @@
 				var showActionDisabledReason = false;
 				if (!buildActionEnabled) {
 					switch (requirementCheck.reason) {
-						case PlayerActionConstants.UNAVAILABLE_REASON_LOCKED_RESOURCES:
+						case PlayerActionConstants.DISABLED_REASON_LOCKED_RESOURCES:
 						case PlayerActionConstants.DISABLED_REASON_NOT_REACHABLE_BY_TRADERS:
 							showActionDisabledReason = true;
 					}

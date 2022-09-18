@@ -564,9 +564,9 @@ define([
 			let reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(actionName, false);
 			if (reqsCheck.value >= 1)
 				return true;
-			if (reqsCheck.reason === PlayerActionConstants.UNAVAILABLE_REASON_BAG_FULL)
+			if (reqsCheck.reason === PlayerActionConstants.DISABLED_REASON_BAG_FULL)
 				return true;
-			if (reqsCheck.reason === PlayerActionConstants.UNAVAILABLE_REASON_LOCKED_RESOURCES) {
+			if (reqsCheck.reason === PlayerActionConstants.DISABLED_REASON_LOCKED_RESOURCES) {
 				let reqs = GameGlobals.playerActionsHelper.getReqs(actionName);
 				return reqs.upgrades && reqs.upgrades.length > 0;
 			}
@@ -610,7 +610,8 @@ define([
 			let actionName = "use_item_" + item.id;
 			let reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(actionName, false);
 			let costsCheck = GameGlobals.playerActionsHelper.checkCosts(actionName);
-			let isVisibleDisabledReason = reqsCheck.reason == PlayerActionConstants.UNAVAILABLE_REASON_NOT_IN_CAMP || reqsCheck.reason.indexOf(PlayerActionConstants.UNAVAILABLE_REASON_BUSY) >= 0;
+			// TODO use PlayerActionsHelper.isVisible
+			let isVisibleDisabledReason = reqsCheck.reason == PlayerActionConstants.DISABLED_REASON_NOT_IN_CAMP || reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_BUSY;
 			
 			return costsCheck >= 1 && isVisibleDisabledReason;
 		},

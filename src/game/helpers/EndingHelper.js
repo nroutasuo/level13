@@ -13,7 +13,7 @@ function (Ash, GameGlobals, UpgradeConstants, WorldConstants, PlayerActionConsta
 			
 			let reqsCheck = GameGlobals.playerActionsHelper.checkRequirements("launch", false);
 			
-			return reqsCheck.value >= 1 || reqsCheck.reason.indexOf(PlayerActionConstants.UNAVAILABLE_REASON_BUSY) >= 0;
+			return reqsCheck.value >= 1 || reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_BUSY;
 		},
 		
 		isFinished: function () {

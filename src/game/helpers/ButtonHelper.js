@@ -37,7 +37,7 @@ define(['ash', 'game/GameGlobals', 'game/GlobalSignals', 'game/constants/PlayerA
 			
 			var sectorEntity = GameGlobals.buttonHelper.getButtonSectorEntity($button);
 			var reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(action, false, sectorEntity);
-			return reqsCheck.value < 1 && reqsCheck.reason !== PlayerActionConstants.UNAVAILABLE_REASON_LOCKED_RESOURCES;
+			return reqsCheck.value < 1 && reqsCheck.reason !== PlayerActionConstants.DISABLED_REASON_LOCKED_RESOURCES;
 		},
 
 		isButtonActionDisabledVision: function ($button, playerVision) {
