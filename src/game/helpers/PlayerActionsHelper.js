@@ -1023,14 +1023,13 @@ define([
 		},
 
 		// Check the costs of an action; returns lowest fraction of the cost player can cover; >1 means the action is available
-		checkCosts: function(action, doLog, otherSector) {
+		checkCosts: function (action, doLog, otherSector) {
 			var costs = this.getCosts(action);
 
 			if (costs) {
-				var currentFraction = 1;
-				var lowestFraction = currentFraction;
-				for (var key in costs) {
-					currentFraction = this.checkCost(action, key, otherSector);
+				let lowestFraction = 1;
+				for (let key in costs) {
+					let currentFraction = this.checkCost(action, key, otherSector);
 					if (currentFraction < lowestFraction) {
 						if(doLog) log.w("Not enough " + key + " to perform action [" + action + "]");
 						lowestFraction = currentFraction;
@@ -1044,28 +1043,27 @@ define([
 
 		// Check if player can afford a cost; returns fraction of the cost the player can cover; >1 means ok
 		checkCost: function (action, name, otherSector) {
-			var playerStamina = this.playerStatsNodes.head.stamina.stamina;
-			var playerResources = GameGlobals.resourcesHelper.getCurrentStorage();
-			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-			var inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
+			let sector = otherSector || (this.playerLocationNodes.head && this.playerLocationNodes.head.entity);
+			if (!sector) return 0;
+			
+			let playerResources = GameGlobals.resourcesHelper.getCurrentStorage();
+			let itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+			let inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
 
-			var sector = otherSector || (this.playerLocationNodes.head && this.playerLocationNodes.head.entity);
-			if (!sector) return false;
+			let costs = this.getCosts(action);
 
-			var costs = this.getCosts(action);
-
-			var costNameParts = name.split("_");
-			var costAmount = costs[name];
+			let costNameParts = name.split("_");
+			let costAmount = costs[name];
 
 			if (costNameParts[0] === "resource") {
 				return (playerResources.resources.getResource(costNameParts[1]) / costAmount);
 			} else if (costNameParts[0] === "item") {
-				var itemId = name.replace(costNameParts[0] + "_", "");
+				let itemId = name.replace(costNameParts[0] + "_", "");
 				return itemsComponent.getCountById(itemId, inCamp) / costAmount;
 			} else {
 				switch (name) {
 					case "stamina":
-						return (playerStamina / costs.stamina);
+						return this.playerStatsNodes.head.stamina.stamina / costs.stamina;
 
 					case "rumours":
 						return (this.playerStatsNodes.head.rumours.value / costs.rumours);
@@ -1090,7 +1088,64 @@ define([
 				}
 			}
 		},
+		
+		checkCostsVersusStorage: function (action, otherSector) {
+			let costs = this.getCosts(action);
 
+			if (costs) {
+				let lowestFraction = 1;
+				for (let key in costs) {
+					let currentFraction = this.checkCostVersusStorage(action, key, otherSector);
+					if (currentFraction < lowestFraction) {
+						lowestFraction = currentFraction;
+					}
+				}
+				return lowestFraction;
+			}
+
+			return 1;
+		},
+		
+		checkCostVersusStorage: function (action, name, otherSector) {
+			let sector = otherSector || (this.playerLocationNodes.head && this.playerLocationNodes.head.entity);
+			if (!sector) return 0;
+			
+			let playerResources = GameGlobals.resourcesHelper.getCurrentStorage();
+
+			let costs = this.getCosts(action);
+
+			let costNameParts = name.split("_");
+			let costAmount = costs[name];
+
+			if (costNameParts[0] === "resource") {
+				return playerResources.storageCapacity / costAmount;
+			} else if (costNameParts[0] === "item") {
+				return 1;
+			} else {
+				switch (name) {
+					case "stamina":
+						return this.playerStatsNodes.head.stamina.maxStamina / costs.stamina;
+
+					case "rumours":
+					case "favour":
+					case "evidence":
+						// TODO update if there is a cap for rumorus/favour/evidence
+						return 1;
+
+					case "blueprint":
+						return 1;
+					
+					case "silver":
+						return 1;
+
+					default:
+						log.w("Unknown cost: " + name);
+						return 1;
+				}
+			}
+			
+		},
+		
 		getCostResourcesVO: function (action) {
 			var costs = this.getCosts(action);
 			var resourcesVO = new ResourcesVO();

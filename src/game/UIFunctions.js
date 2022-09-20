@@ -1075,13 +1075,12 @@ define(['ash',
 					decEnabled = true;
 				} else {
 					$input.val(minValue);
-					return;
+					
 				}
 				if (valueCurrent < maxValue) {
 					incEnabled = true;
 				} else {
 					$input.val(maxValue);
-					return;
 				}
 
 				var decBtn = $(".btn-glyph[data-type='minus'][data-field='" + name + "']");

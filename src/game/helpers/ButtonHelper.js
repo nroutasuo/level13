@@ -16,28 +16,36 @@ define(['ash', 'game/GameGlobals', 'game/GlobalSignals', 'game/constants/PlayerA
 			}
 			return sectorEntity;
 		},
+		
+		isButtonHardDisabled: function ($button) {
+			if (!this.isButtonActionDisabled($button)) return false;
+			
+			let action = $button.attr("action");
+			let sectorEntity = GameGlobals.buttonHelper.getButtonSectorEntity($button);
+			let reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(action, false, sectorEntity);
+			return reqsCheck.value < 1 && reqsCheck.reason !== PlayerActionConstants.DISABLED_REASON_LOCKED_RESOURCES;
+		},
 
 		isButtonActionDisabled: function ($button) {
 			if ($button.hasClass("btn-meta")) return false;
 
 			if ($button.attr("data-type") === "minus") {
-				var input = $button.siblings("input");
+				let input = $button.siblings("input");
 				return parseInt(input.val()) <= parseInt(input.attr("min"));
 			}
 
 			if ($button.attr("data-type") === "plus") {
-				var input = $button.siblings("input");
+				let input = $button.siblings("input");
 				return parseInt(input.val()) >= parseInt(input.attr("max"));
 			}
 
 			if (!($button.hasClass("action"))) return false;
 
-			var action = $button.attr("action");
+			let action = $button.attr("action");
 			if (!action) return false;
 			
-			var sectorEntity = GameGlobals.buttonHelper.getButtonSectorEntity($button);
-			var reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(action, false, sectorEntity);
-			return reqsCheck.value < 1 && reqsCheck.reason !== PlayerActionConstants.DISABLED_REASON_LOCKED_RESOURCES;
+			let sectorEntity = GameGlobals.buttonHelper.getButtonSectorEntity($button);
+			return !GameGlobals.playerActionsHelper.checkAvailability(action, false, sectorEntity, true);
 		},
 
 		isButtonActionDisabledVision: function ($button, playerVision) {
@@ -48,10 +56,12 @@ define(['ash', 'game/GameGlobals', 'game/GlobalSignals', 'game/constants/PlayerA
 			}
 			return false;
 		},
-
-		isButtonActionDisabledResources: function (button) {
-			var action = $(button).attr("action");
-			return GameGlobals.playerActionsHelper.checkCosts(action, false) < 1;
+		
+		isButtonActionDisabledResources: function ($button) {
+			let action = $button.attr("action");
+			let isActionDisabledByCosts = GameGlobals.playerActionsHelper.checkCosts(action, false) >= 1;
+			let isActionDisabledByStorage = GameGlobals.playerActionsHelper.checkCostsVersusStorage(action) >= 1;
+			return !isActionDisabledByStorage && isActionDisabledByCosts;
 		},
 
 		hasButtonCooldown: function ($button) {
@@ -69,32 +79,40 @@ define(['ash', 'game/GameGlobals', 'game/GlobalSignals', 'game/constants/PlayerA
 		},
 		
 		updateButtonDisabledState: function ($button, $buttonContainer, playerVision, forceDisable) {
-			let wasDisabled = $button.hasClass("btn-disabled");
+			forceDisable = forceDisable || false;
 			
-			let disabledBase = this.isButtonActionDisabled($button);
+			let wasDisabled = $button.hasClass("btn-disabled");
+			let action = $button.attr("action");
+			
+			let isHardDisabled = this.isButtonHardDisabled($button);
+			let isActionDisabled = this.isButtonActionDisabled($button);
+			
 			let disabledVision = !forceDisable && this.isButtonActionDisabledVision($button, playerVision);
-			let disabledBasic = !disabledVision && disabledBase;
-			let disabledResources = !disabledVision && !disabledBasic && this.isButtonActionDisabledResources($button);
-			let disabledCooldown = !disabledVision && !disabledBasic && !disabledResources && this.hasButtonCooldown($button);
-			let disabledDuration = !disabledVision && !disabledBasic && !disabledResources && !disabledCooldown && this.hasButtonDuration($button);
+			let disabledResources = !forceDisable && !disabledVision && this.isButtonActionDisabledResources($button);
+			let disabledBasic = !disabledVision && !disabledResources && isActionDisabled;
+			let disabledCooldown = !disabledVision && !disabledResources && !disabledBasic && this.hasButtonCooldown($button);
+			let disabledDuration = !disabledVision && !disabledResources && !disabledBasic && !disabledCooldown && this.hasButtonDuration($button);
 			let isDisabled = disabledBasic || disabledVision || disabledResources || disabledCooldown || disabledDuration;
 			
-			$button.toggleClass("btn-disabled", isDisabled);
+			let showDisabled = isDisabled || forceDisable;
+			
+			$button.toggleClass("btn-disabled", showDisabled);
+			
 			$button.toggleClass("btn-disabled-basic", disabledBasic);
 			$button.toggleClass("btn-disabled-vision", disabledVision);
 			if ($buttonContainer) $buttonContainer.toggleClass("btn-disabled-vision", disabledVision);
 			$button.toggleClass("btn-disabled-resources", !disabledVision && !disabledBasic && disabledResources);
 			$button.toggleClass("btn-disabled-cooldown", disabledCooldown || disabledDuration);
-			$button.attr("disabled", isDisabled || forceDisable);
+			
+			$button.attr("disabled", showDisabled);
 			
 			if (wasDisabled != isDisabled) {
-				let action = $button.attr("action");
 				if (action) {
 					GlobalSignals.buttonStateChangedSignal.dispatch(action, !isDisabled);
 				}
 			}
 			
-			return disabledBase || disabledVision;
+			return isHardDisabled;
 		}
 		
 		
