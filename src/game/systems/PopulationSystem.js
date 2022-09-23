@@ -61,18 +61,24 @@ define([
 			var camp = node.camp;
 			camp.population = camp.population || 0;
 			
-			var improvements = node.entity.get(SectorImprovementsComponent);
-			var maxPopulation = CampConstants.getHousingCap(improvements);
+			let improvements = node.entity.get(SectorImprovementsComponent);
+			let maxPopulation = CampConstants.getHousingCap(improvements);
 			
-			var changePerSec = camp.populationChangePerSecRaw || 0;
-			var change = time * changePerSec * GameConstants.gameSpeedCamp;
-			var oldPopulation = camp.population;
-			var newPopulation = oldPopulation + change;
+			let oldPopulation = camp.population;
+			let change = 0;
+			let changePerSec = camp.populationChangePerSecRaw || 0;
 			
-			newPopulation = Math.max(newPopulation, 0);
-			newPopulation = Math.min(newPopulation, maxPopulation);
-			change = newPopulation - oldPopulation;
-			changePerSec = change / time / GameConstants.gameSpeedCamp;
+			if (time > 0) {
+				change = time * changePerSec * GameConstants.gameSpeedCamp;
+				let newPopulation = oldPopulation + change;
+				
+				newPopulation = Math.max(newPopulation, 0);
+				newPopulation = Math.min(newPopulation, maxPopulation);
+				change = newPopulation - oldPopulation;
+				
+				changePerSec = change / time / GameConstants.gameSpeedCamp;
+			}
+			
 			camp.populationChangePerSec = changePerSec;
 			
 			if (camp.pendingPopulation > 0) {

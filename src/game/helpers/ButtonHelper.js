@@ -59,9 +59,10 @@ define(['ash', 'game/GameGlobals', 'game/GlobalSignals', 'game/constants/PlayerA
 		
 		isButtonActionDisabledResources: function ($button) {
 			let action = $button.attr("action");
-			let isActionDisabledByCosts = GameGlobals.playerActionsHelper.checkCosts(action, false) >= 1;
-			let isActionDisabledByStorage = GameGlobals.playerActionsHelper.checkCostsVersusStorage(action) >= 1;
-			return !isActionDisabledByStorage && isActionDisabledByCosts;
+			let isHardDisabled = this.isButtonHardDisabled($button);
+			let isActionDisabledByCosts = GameGlobals.playerActionsHelper.checkCosts(action, false) < 1;
+			let isActionDisabledByStorage = GameGlobals.playerActionsHelper.checkCostsVersusStorage(action) < 1;
+			return !isHardDisabled && !isActionDisabledByStorage && isActionDisabledByCosts;
 		},
 
 		hasButtonCooldown: function ($button) {
