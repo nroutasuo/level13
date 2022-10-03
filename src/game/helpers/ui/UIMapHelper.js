@@ -365,9 +365,10 @@ function (Ash, CanvasUtils, MapUtils,
 				let showBorderForSunlit = !isLevelSunlit || !isLocationSunlit;
 				let hasSectorHazard = GameGlobals.sectorHelper.hasHazards(sectorFeatures, statusComponent);
 				
+				let borderWidth = Math.max(2, Math.round(sectorSize / 8));
+				
 				if ((isSectorSunlit && showBorderForSunlit) || hasSectorHazard) {
 					let borderColor = this.getSectorStroke(isLocationSunlit, level, sectorFeatures, statusComponent);
-					let borderWidth = Math.max(1, Math.round(sectorSize / 9));
 					drawSectorBorder(borderColor, borderWidth);
 				}
 			}
