@@ -203,24 +203,13 @@ function (Ash, CanvasUtils, MapUtils,
 			var sectorPadding = this.getSectorPadding(centered);
 			
 			// background
-			var bgPadding;
-			var radius;
 			ctx.fillStyle = this.getVisibleAreaBackgroundColor(level, sunlit);
 			ctx.strokeStyle = this.getVisibleAreaBackgroundColor(level, sunlit);
-			for (var y = dimensions.minVisibleY; y <= dimensions.maxVisibleY; y++) {
-				for (var x = dimensions.minVisibleX; x <= dimensions.maxVisibleX; x++) {
-					sector = visibleSectors[x + "." + y];
-					sectorStatus = SectorConstants.getSectorStatus(sector);
-					if (this.showSectorOnMap(centered, sector, sectorStatus)) {
-						bgPadding = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * 0.35 : sectorSize * 2.25;
-						radius = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * 0.75 : sectorSize * 2.25;
-						sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).x;
-						sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).y;
-						sectorPos = new PositionVO(mapPosition.level, x, y);
-						CanvasUtils.fillRoundedRect(ctx, sectorXpx - bgPadding, sectorYpx - bgPadding, sectorSize + bgPadding * 2, sectorSize + bgPadding * 2, radius);
-					}
-				}
-			}
+			this.foreachVisibleSector(mapPosition.level, centered, dimensions, visibleSectors, (sector, sectorPos, sectorStatus, sectorXpx, sectorYpx) => {
+				let bgPadding = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * 0.35 : sectorSize * 2.25;
+				let radius = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * 0.75 : sectorSize * 2.25;
+				CanvasUtils.fillRoundedRect(ctx, sectorXpx - bgPadding, sectorYpx - bgPadding, sectorSize + bgPadding * 2, sectorSize + bgPadding * 2, radius);
+			});
 			
 			this.drawGridOnCanvas(ctx, sectorSize, dimensions, centered);
 			
@@ -241,22 +230,17 @@ function (Ash, CanvasUtils, MapUtils,
 				}
 			}
 
-			// sectors and paths
-			for (var y = dimensions.minVisibleY; y <= dimensions.maxVisibleY; y++) {
-				for (var x = dimensions.minVisibleX; x <= dimensions.maxVisibleX; x++) {
-					sector = visibleSectors[x + "." + y];
-					sectorStatus = SectorConstants.getSectorStatus(sector);
-					if (this.showSectorOnMap(centered, sector, sectorStatus)) {
-						sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).x;
-						sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).y;
-						sectorPos = new PositionVO(mapPosition.level, x, y);
-						this.drawSectorOnCanvas(ctx, x, y, sector, levelEntity, sectorStatus, sectorXpx, sectorYpx, sectorSize);
-						if (SectorConstants.isLBasicInfoVisible(sectorStatus)) {
-							this.drawMovementLinesOnCanvas(ctx, mapPosition, sector, sectorPos, sectorXpx, sectorYpx, sectorSize, sectorPadding);
-						}
-					}
+			// sectors connecting paths
+			this.foreachVisibleSector(mapPosition.level, centered, dimensions, visibleSectors, (sector, sectorPos, sectorStatus, sectorXpx, sectorYpx) => {
+				if (SectorConstants.isLBasicInfoVisible(sectorStatus)) {
+					this.drawMovementLinesOnCanvas(ctx, mapPosition, sector, sectorPos, sectorXpx, sectorYpx, sectorSize, sectorPadding);
 				}
-			}
+			});
+
+			// sectors
+			this.foreachVisibleSector(mapPosition.level, centered, dimensions, visibleSectors, (sector, sectorPos, sectorStatus, sectorXpx, sectorYpx) => {
+				this.drawSectorOnCanvas(ctx, sectorPos.x, sectorPos.y, sector, levelEntity, sectorStatus, sectorXpx, sectorYpx, sectorSize);
+			});
 
 			// border on current
 			var playerPosVO = this.playerPosNodes.head.position.getPosition();
@@ -365,13 +349,13 @@ function (Ash, CanvasUtils, MapUtils,
 			var drawSectorBorder = function (color, width) {
 				ctx.strokeStyle = color;
 				ctx.lineWidth = width;
-				ctx.beginPath();
-				ctx.moveTo(sectorXpx - 1, sectorYpx - 1);
-				ctx.lineTo(sectorXpx + sectorSize + 1, sectorYpx - 1);
-				ctx.lineTo(sectorXpx + sectorSize + 1, sectorYpx + sectorSize + 1);
-				ctx.lineTo(sectorXpx - 1, sectorYpx + sectorSize + 1);
-				ctx.lineTo(sectorXpx - 1, sectorYpx - 1);
-				ctx.stroke();
+					ctx.beginPath();
+					ctx.moveTo(sectorXpx - 1, sectorYpx - 1);
+					ctx.lineTo(sectorXpx + sectorSize + 1, sectorYpx - 1);
+					ctx.lineTo(sectorXpx + sectorSize + 1, sectorYpx + sectorSize + 1);
+					ctx.lineTo(sectorXpx - 1, sectorYpx + sectorSize + 1);
+					ctx.lineTo(sectorXpx - 1, sectorYpx - 1);
+					ctx.stroke();
 			};
 
 			// border(s) for sectors with hazards or sunlight
@@ -387,7 +371,7 @@ function (Ash, CanvasUtils, MapUtils,
 					drawSectorBorder(borderColor, borderWidth);
 				}
 			}
-			
+					
 			// background color
 			ctx.fillStyle = this.getSectorFill(sectorStatus);
 			ctx.fillRect(sectorXpx, sectorYpx, sectorSize, sectorSize);
@@ -563,6 +547,22 @@ function (Ash, CanvasUtils, MapUtils,
 							ctx.lineTo(blockerX - crossSize, blockerY + crossSize);
 							ctx.stroke();
 						}
+					}
+				}
+			}
+		},
+		
+		foreachVisibleSector: function (level, centered, dimensions, visibleSectors, cb) {
+			let sectorSize = this.getSectorSize(centered);
+			for (let y = dimensions.minVisibleY; y <= dimensions.maxVisibleY; y++) {
+				for (let x = dimensions.minVisibleX; x <= dimensions.maxVisibleX; x++) {
+					let sector = visibleSectors[x + "." + y];
+					let sectorStatus = SectorConstants.getSectorStatus(sector);
+					if (this.showSectorOnMap(centered, sector, sectorStatus)) {
+						let sectorPos = new PositionVO(level, x, y);
+						let sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).x;
+						let sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).y;
+						cb.apply(this, [ sector, sectorPos, sectorStatus, sectorXpx, sectorYpx ]);
 					}
 				}
 			}
