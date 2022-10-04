@@ -342,12 +342,36 @@ function (Ash, CanvasUtils, MapUtils,
 
 			let statusComponent = sector.get(SectorStatusComponent);
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
+			let sectorPassages = sector.get(PassagesComponent);
+			
 			let itemsComponent = this.playerPosNodes.head.entity.get(ItemsComponent);
+			
 			let isScouted = statusComponent.scouted;
 			let isRevealed = isScouted || this.isMapRevealed;
 			let isSuppliesRevealed = this.isInSuppliesDetectionRange(sector);
 			let isIngredientsRevealed = this.isInIngredientsDetectionRange(sector);
 			let level = sector.get(PositionComponent).level;
+			
+			let hasCampOnLevel = levelEntity.has(CampComponent);
+			let hasCampOnSector = sector.has(CampComponent);
+			
+			let drawSectorShape = function (color, size) {
+				ctx.fillStyle = color;
+				
+				let centerX = sectorXpx + sectorSize / 2;
+				let centerY = sectorYpx + sectorSize / 2;
+					
+				if (hasCampOnSector || sectorPassages.passageUp || sectorPassages.passageDown) {
+					let r = size / 2 + 1;
+					ctx.beginPath();
+					ctx.arc(centerX, centerY, r, 0, 2 * Math.PI);
+					ctx.fill();
+				} else {
+					let sizeOffset = size - sectorSize;
+					let p = sizeOffset / 2;
+					ctx.fillRect(sectorXpx - p, sectorYpx - p, size, size);
+				}
+			};
 			
 			let drawSectorBorder = function (color, isAffected, partial) {
 				ctx.fillStyle = color;
@@ -357,7 +381,7 @@ function (Ash, CanvasUtils, MapUtils,
 					ctx.fillRect(sectorXpx  + sectorSize / 2, sectorYpx - p, sectorSize / 2 + p, sectorSize / 2 + p);
 					ctx.fillRect(sectorXpx - p, sectorYpx + sectorSize / 2, sectorSize / 2 + p, sectorSize / 2 + p);
 				} else {
-					ctx.fillRect(sectorXpx - p, sectorYpx - p, sectorSize + p*2, sectorSize + p*2);
+					drawSectorShape(color, sectorSize + p * 2);
 				}
 			};
 
@@ -384,8 +408,8 @@ function (Ash, CanvasUtils, MapUtils,
 			}
 					
 			// background color
-			ctx.fillStyle = this.getSectorFill(sectorStatus);
-			ctx.fillRect(sectorXpx, sectorYpx, sectorSize, sectorSize);
+			let fillColor = this.getSectorFill(sectorStatus);
+			drawSectorShape(fillColor, sectorSize);
 
 			// sector contents: points of interest
 			var hasIcon = false;
@@ -395,11 +419,9 @@ function (Ash, CanvasUtils, MapUtils,
 			var iconPosY = isBigSectorSize ? sectorYpx : iconPosYCentered;
 			var useSunlitImage = isLocationSunlit;
 			
-			var sectorPassages = sector.get(PassagesComponent);
 			var localesComponent = sector.get(SectorLocalesComponent);
 			var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
 			var sectorImprovements = sector.get(SectorImprovementsComponent);
-			var hasCampOnLevel = levelEntity.get(CampComponent) !== null;
 			
 			let knownItems = GameGlobals.sectorHelper.getLocationKnownItems(sector);
 			let knownResources = GameGlobals.sectorHelper.getLocationKnownResources(sector);
@@ -421,12 +443,15 @@ function (Ash, CanvasUtils, MapUtils,
 			} else if (sectorImprovements.getCount(improvementNames.greenhouse) > 0) {
 				hasIcon = true;
 				ctx.drawImage(this.icons["workshop" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
-			} else if (sector.has(CampComponent)) {
+			} else if (hasCampOnSector) {
 				hasIcon = true;
 				ctx.drawImage(this.icons["camp" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
 			} else if (!hasCampOnLevel && sectorFeatures.canHaveCamp()) {
 				hasIcon = true;
 				ctx.drawImage(this.icons["campable" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
+			} else if (unScoutedLocales > 0) {
+				hasIcon = true;
+				ctx.drawImage(this.icons["interest" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
 			} else if (sectorPassages.passageUp) {
 				hasIcon = true;
 				if (GameGlobals.movementHelper.isPassageTypeAvailable(sector, PositionConstants.DIRECTION_UP)) {
@@ -441,9 +466,6 @@ function (Ash, CanvasUtils, MapUtils,
 				} else {
 					ctx.drawImage(this.icons["passage-down-disabled" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
 				}
-			} else if (unScoutedLocales > 0) {
-				hasIcon = true;
-				ctx.drawImage(this.icons["interest" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
 			} else if (sectorImprovements.getCount(improvementNames.beacon) > 0) {
 				hasIcon = true;
 				ctx.drawImage(this.icons["beacon" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
