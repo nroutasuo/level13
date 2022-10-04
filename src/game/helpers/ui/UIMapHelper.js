@@ -15,6 +15,7 @@ define(['ash',
 	'game/components/type/LevelComponent',
 	'game/components/common/CampComponent',
 	'game/components/common/PositionComponent',
+	'game/components/player/ItemsComponent',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/SectorLocalesComponent',
 	'game/components/sector/SectorFeaturesComponent',
@@ -26,7 +27,8 @@ define(['ash',
 function (Ash, CanvasUtils, MapUtils,
 	GameGlobals, ColorConstants, UIConstants, CanvasConstants, ExplorationConstants, ItemConstants, MovementConstants, PositionConstants, SectorConstants,
 	PlayerPositionNode,
-	LevelComponent, CampComponent, PositionComponent, SectorStatusComponent, SectorLocalesComponent, SectorFeaturesComponent, PassagesComponent, SectorImprovementsComponent, WorkshopComponent, SectorComponent,
+	LevelComponent, CampComponent, PositionComponent, ItemsComponent,
+	SectorStatusComponent, SectorLocalesComponent, SectorFeaturesComponent, PassagesComponent, SectorImprovementsComponent, WorkshopComponent, SectorComponent,
 	PositionVO) {
 
 	var UIMapHelper = Ash.Class.extend({
@@ -340,22 +342,23 @@ function (Ash, CanvasUtils, MapUtils,
 
 			let statusComponent = sector.get(SectorStatusComponent);
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
+			let itemsComponent = this.playerPosNodes.head.entity.get(ItemsComponent);
 			let isScouted = statusComponent.scouted;
 			let isRevealed = isScouted || this.isMapRevealed;
 			let isSuppliesRevealed = this.isInSuppliesDetectionRange(sector);
 			let isIngredientsRevealed = this.isInIngredientsDetectionRange(sector);
 			let level = sector.get(PositionComponent).level;
 			
-			var drawSectorBorder = function (color, width) {
-				ctx.strokeStyle = color;
-				ctx.lineWidth = width;
-					ctx.beginPath();
-					ctx.moveTo(sectorXpx - 1, sectorYpx - 1);
-					ctx.lineTo(sectorXpx + sectorSize + 1, sectorYpx - 1);
-					ctx.lineTo(sectorXpx + sectorSize + 1, sectorYpx + sectorSize + 1);
-					ctx.lineTo(sectorXpx - 1, sectorYpx + sectorSize + 1);
-					ctx.lineTo(sectorXpx - 1, sectorYpx - 1);
-					ctx.stroke();
+			let drawSectorBorder = function (color, isAffected, partial) {
+				ctx.fillStyle = color;
+				let p = isAffected ? 2 : 1;
+				if (isBigSectorSize) p *= 2;
+				if (partial) {
+					ctx.fillRect(sectorXpx  + sectorSize / 2, sectorYpx - p, sectorSize / 2 + p, sectorSize / 2 + p);
+					ctx.fillRect(sectorXpx - p, sectorYpx + sectorSize / 2, sectorSize / 2 + p, sectorSize / 2 + p);
+				} else {
+					ctx.fillRect(sectorXpx - p, sectorYpx - p, sectorSize + p*2, sectorSize + p*2);
+				}
 			};
 
 			// border(s) for sectors with hazards or sunlight
@@ -365,11 +368,18 @@ function (Ash, CanvasUtils, MapUtils,
 				let showBorderForSunlit = !isLevelSunlit || !isLocationSunlit;
 				let hasSectorHazard = GameGlobals.sectorHelper.hasHazards(sectorFeatures, statusComponent);
 				
-				let borderWidth = Math.max(2, Math.round(sectorSize / 8));
+				let hasSunlitBorder = isSectorSunlit && showBorderForSunlit;
+				let hasHazardBorder = hasSectorHazard;
 				
-				if ((isSectorSunlit && showBorderForSunlit) || hasSectorHazard) {
-					let borderColor = this.getSectorStroke(isLocationSunlit, level, sectorFeatures, statusComponent);
-					drawSectorBorder(borderColor, borderWidth);
+				if (hasHazardBorder) {
+					let borderColor = this.getSectorHazardBorderColor(isLocationSunlit, level, sectorFeatures, statusComponent);
+					let isAffected = GameGlobals.sectorHelper.isAffectedByHazard(sectorFeatures, statusComponent, itemsComponent);
+					drawSectorBorder(borderColor, isAffected, false);
+				}
+				
+				if (hasSunlitBorder) {
+					let extraBorderColor = ColorConstants.getColor(isLocationSunlit, "map_stroke_sector_sunlit");
+					drawSectorBorder(extraBorderColor, true, hasHazardBorder);
 				}
 			}
 					
@@ -729,22 +739,12 @@ function (Ash, CanvasUtils, MapUtils,
 			}
 		},
 		
-		getSectorStroke: function (sunlit, level, sectorFeatures, sectorStatus) {
-			let isLevelSunlit = level == GameGlobals.gameState.getSurfaceLevel();
-			let isSectorSunlit = sectorFeatures.sunlit;
+		getSectorHazardBorderColor: function (sunlit, level, sectorFeatures, sectorStatus) {
 			let hasSectorHazard = GameGlobals.sectorHelper.hasHazards(sectorFeatures, sectorStatus);
 			
-			let showBorderForSunlit = !isLevelSunlit || !sunlit;
-
-			let hazards = GameGlobals.sectorHelper.getEffectiveHazards(sectorFeatures, sectorStatus);
-			let mainHazard = hazards.getMainHazard();
-			
-			let isSeriousHazard = GameGlobals.sectorHelper.hasSeriousHazards(level, sectorFeatures, sectorStatus);
-			let shouldSunlitOverrideHazard = isSeriousHazard && !isLevelSunlit;
-			
-			if (isSectorSunlit && showBorderForSunlit && (!hasSectorHazard || shouldSunlitOverrideHazard)) {
-				return ColorConstants.getColor(sunlit, "map_stroke_sector_sunlit");
-			} else if (hasSectorHazard) {
+			if (hasSectorHazard) {
+				let hazards = GameGlobals.sectorHelper.getEffectiveHazards(sectorFeatures, sectorStatus);
+				let mainHazard = hazards.getMainHazard();
 				if (mainHazard == "cold") {
 					return ColorConstants.getColor(sunlit, "map_stroke_sector_cold");
 				} else if (mainHazard == "debris") {
