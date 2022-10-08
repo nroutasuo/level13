@@ -190,30 +190,24 @@ function (Ash, CanvasUtils, MapUtils,
 			let sunlit = $("body").hasClass("sunlit");
 			let level = mapPosition.level;
 			let levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(level);
-
+			
+			// background color
+			let colorBgMap = this.getBackgroundColor(level, sunlit);
 			ctx.canvas.width = dimensions.canvasWidth;
 			ctx.canvas.height = dimensions.canvasHeight;
 			ctx.clearRect(0, 0, canvas.scrollWidth, canvas.scrollWidth);
-			ctx.fillStyle = this.getBackgroundColor(level, sunlit);
+			ctx.fillStyle = colorBgMap;
 			ctx.fillRect(0, 0, canvas.scrollWidth, canvas.scrollHeight);
 
 			var sector;
-			var sectorStatus;
 			var sectorXpx;
 			var sectorYpx;
 			var sectorPos;
 			var sectorPadding = this.getSectorPadding(centered);
 			
-			// background
-			ctx.fillStyle = this.getVisibleAreaBackgroundColor(level, sunlit);
-			ctx.strokeStyle = this.getVisibleAreaBackgroundColor(level, sunlit);
-			this.foreachVisibleSector(mapPosition.level, centered, dimensions, visibleSectors, (sector, sectorPos, sectorStatus, sectorXpx, sectorYpx) => {
-				let bgPadding = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * 0.35 : sectorSize * 2.25;
-				let radius = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * 0.75 : sectorSize * 2.25;
-				CanvasUtils.fillRoundedRect(ctx, sectorXpx - bgPadding, sectorYpx - bgPadding, sectorSize + bgPadding * 2, sectorSize + bgPadding * 2, radius);
-			});
-			
 			this.drawGridOnCanvas(ctx, sectorSize, dimensions, centered);
+			// this.drawVisibleAreaOnCanvas(ctx, mapPosition, centered, dimensions, visibleSectors, sunlit, true);
+			this.drawDistrictsOnCanvas(ctx, mapPosition, centered, dimensions, visibleSectors, allSectors, sunlit);
 			
 			// borders on beacons
 			ctx.strokeStyle = ColorConstants.getColor(sunlit, "map_stroke_sector_lit");
@@ -221,7 +215,7 @@ function (Ash, CanvasUtils, MapUtils,
 			let beaconSectors = GameGlobals.levelHelper.getAllSectorsWithImprovement(mapPosition.level, improvementNames.beacon);
 			for (let i = 0; i < beaconSectors.length; i++) {
 				sector = beaconSectors[i];
-				sectorStatus = SectorConstants.getSectorStatus(sector);
+				let sectorStatus = SectorConstants.getSectorStatus(sector);
 				sectorPos = sector.get(PositionComponent);
 				if (this.showSectorOnMap(centered, sector, sectorStatus)) {
 					sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, sectorPos.sectorX, sectorPos.sectorY).x;
@@ -312,12 +306,54 @@ function (Ash, CanvasUtils, MapUtils,
 				y: Math.round((sectorSize * margin + sectorSize * padding + (y - dimensions.minVisibleY) * sectorSize * (1 + padding)) * 10)/10
 			};
 		},
+		
+		getSectorPixelPosCenter: function (dimensions, centered, sectorSize, x, y) {
+			let cornerPos = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y);
+			return {
+				x: cornerPos.x + sectorSize / 2,
+				y: cornerPos.y + sectorSize / 2
+			};
+		},
+
+		drawVisibleAreaOnCanvas: function (ctx, mapPosition, centered, dimensions, visibleSectors, sunlit, stroke) {
+			let sectorSize = this.getSectorSize(centered);
+			let level = mapPosition.level;
+			let colorBgMap = this.getBackgroundColor(level, sunlit);
+			
+			let colorBorderVisibleArea = this.getVisibleAreaBackgroundColor(level, sunlit);
+			let radiusDefault = 2;
+			let radiusSmall = 0.75;
+			let paddingDefault = 2.3;
+			let paddingSmall = 0.4;
+			
+			ctx.lineWidth = 2;
+			
+			this.foreachVisibleSector(level, centered, dimensions, visibleSectors, (sector, sectorPos, sectorStatus, sectorXpx, sectorYpx) => {
+				let bgPadding = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * paddingSmall : sectorSize * paddingDefault;
+				let radius = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * radiusSmall : sectorSize * radiusDefault;
+				ctx.fillStyle = colorBorderVisibleArea;
+				ctx.strokeStyle = colorBorderVisibleArea;
+				CanvasUtils.fillRoundedRect(ctx, sectorXpx - bgPadding, sectorYpx - bgPadding, sectorSize + bgPadding * 2, sectorSize + bgPadding * 2, radius);
+			});
+			
+			if (stroke) {
+				let borderSize = 3;
+				this.foreachVisibleSector(level, centered, dimensions, visibleSectors, (sector, sectorPos, sectorStatus, sectorXpx, sectorYpx) => {
+					let bgPadding = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * paddingSmall : sectorSize * paddingDefault;
+					let radius = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * radiusSmall : sectorSize * radiusDefault;
+					let sectorFeatures = sector.get(SectorFeaturesComponent);
+					ctx.fillStyle = sectorFeatures.isEarlyZone() ? colorBgMap : "#252525";
+					ctx.strokeStyle = sectorFeatures.isEarlyZone() ? colorBgMap : "#252525";
+					CanvasUtils.fillRoundedRect(ctx, sectorXpx - bgPadding + borderSize, sectorYpx - bgPadding + borderSize, sectorSize + bgPadding * 2 - borderSize * 2, sectorSize + bgPadding * 2 - borderSize * 2, radius);
+				});
+			}
+		},
 
 		drawGridOnCanvas: function (ctx, sectorSize, dimensions, centered) {
 			var gridSize = this.getGridSize();
 			var sunlit = $("body").hasClass("sunlit");
 			ctx.strokeStyle = ColorConstants.getColor(sunlit, "map_stroke_grid");
-			ctx.lineWidth = 1;
+			ctx.lineWidth = 2;
 			var sectorPadding = this.getSectorPadding(centered);
 			var startGridX = (Math.floor(dimensions.mapMinX / gridSize) - 1) * gridSize;
 			var endGridX = (Math.ceil(dimensions.mapMaxX / gridSize) + 2) * gridSize;
@@ -334,6 +370,60 @@ function (Ash, CanvasUtils, MapUtils,
 						(sectorSize + sectorSize * sectorPadding) * gridSize);
 				}
 			}
+		},
+
+		drawDistrictsOnCanvas: function (ctx, mapPosition, centered, dimensions, visibleSectors, allSectors, sunlit) {
+			let sectorSize = this.getSectorSize(centered);
+			let level = mapPosition.level;
+			
+			let radiusDefault = 3.15;
+			let radiusSmall = 0.75;
+			
+			let paddingDefault = 2.25;
+			let paddingSmall = 0.53;
+			let paddingSmallDiagonal = 0.65;
+			let paddingBig = 4.25;
+			
+			ctx.fillStyle = this.getVisibleAreaBackgroundColor(level, sunlit);
+			ctx.strokeStyle = this.getVisibleAreaBackgroundColor(level, sunlit);
+			this.foreachVisibleSector(mapPosition.level, centered, dimensions, visibleSectors, (sector, sectorPos, sectorStatus, sectorXpx, sectorYpx) => {
+				let sectorFeatures = sector.get(SectorFeaturesComponent);
+				if (!sectorFeatures.isEarlyZone()) return;
+				
+				let neighbours = GameGlobals.levelHelper.getSectorNeighboursMap(sector);
+
+				let isVisibleEdge = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE;
+				let hasDifferentZoneNeighbour = false;
+				let hasNonDiagonalNeighbour = false;
+				
+				for (let direction in neighbours) {
+					let neighbour = neighbours[direction];
+					if (!neighbour) continue;
+					
+					let neighbourFeatures = neighbour.get(SectorFeaturesComponent);
+					if (neighbourFeatures.isEarlyZone() != sectorFeatures.isEarlyZone()) {
+						hasDifferentZoneNeighbour = true;
+					}
+					if (!PositionConstants.isDiagonal(direction)) {
+						hasNonDiagonalNeighbour = true;
+					}
+				}
+				
+				let isSingle = isVisibleEdge || hasDifferentZoneNeighbour;
+				
+				let bgPadding = sectorSize * (isSingle ? (hasNonDiagonalNeighbour ? paddingSmall : paddingSmallDiagonal) : paddingDefault);
+				let radius = sectorSize * (isSingle ? radiusSmall : radiusDefault);
+				
+				ctx.save();
+				ctx.translate(sectorXpx + sectorSize / 2, sectorYpx + sectorSize / 2);
+				if (!hasNonDiagonalNeighbour && !isSingle) {
+					ctx.rotate(Math.PI / 4);
+				}
+				
+				CanvasUtils.fillRoundedRect(ctx, - sectorSize / 2 - bgPadding, -sectorSize / 2 - bgPadding, sectorSize + bgPadding * 2, sectorSize + bgPadding * 2, radius);
+				
+				ctx.restore();
+			});
 		},
 
 		drawSectorOnCanvas: function (ctx, x, y, sector, levelEntity, sectorStatus, sectorXpx, sectorYpx, sectorSize) {

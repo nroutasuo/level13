@@ -252,6 +252,7 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		},
 		
 		isDiagonal: function (direction) {
+			direction = parseInt(direction);
 			switch (direction) {
 				case this.DIRECTION_WEST:
 				case this.DIRECTION_NORTH:
