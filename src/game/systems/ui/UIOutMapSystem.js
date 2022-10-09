@@ -1,5 +1,6 @@
 define([
 	'ash',
+	'utils/MapUtils',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
@@ -24,8 +25,8 @@ define([
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/improvements/WorkshopComponent',
 	'game/components/type/LevelComponent',
-	'game/systems/CheatSystem'
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, ItemConstants, LevelConstants, PositionConstants, SectorConstants, TextConstants, TradeConstants, UIConstants,
+	'game/systems/CheatSystem',
+], function (Ash, MapUtils, GameGlobals, GlobalSignals, GameConstants, ItemConstants, LevelConstants, PositionConstants, SectorConstants, TextConstants, TradeConstants, UIConstants,
 	PlayerLocationNode, PlayerPositionNode,
 	CampComponent, PositionComponent, VisitedComponent, EnemiesComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, SectorImprovementsComponent, WorkshopComponent, LevelComponent,
 	CheatSystem) {
@@ -48,6 +49,7 @@ define([
 		addToEngine: function (engine) {
 			this.engine = engine;
 			$("#select-header-level").bind("change", $.proxy(this.onLevelSelectorChanged, this));
+			$("#select-header-mapmode").bind("change", $.proxy(this.onMapModeSelectorChanged, this));
 			$("#select-header-mapstyle").bind("change", $.proxy(this.onMapStyleSelectorChanged, this));
 			GameGlobals.uiMapHelper.enableScrollingForMap("mainmap");
 			this.playerPositionNodes = engine.getNodeList(PlayerPositionNode);
@@ -62,6 +64,7 @@ define([
 			this.engine = null;
 			GlobalSignals.removeAll(this);
 			$("#select-header-level").unbind("change", $.proxy(this.onLevelSelectorChanged, this));
+			$("#select-header-mapmode").unbind("change", $.proxy(this.onMapModeSelectorChanged, this));
 			$("#select-header-mapstyle").unbind("change", $.proxy(this.onMapStyleSelectorChanged, this));
 			GameGlobals.uiMapHelper.disableScrollingForMap("mainmap");
 			this.playerPositionNodes = null;
@@ -99,6 +102,16 @@ define([
 				html += "<option value='" + i + "' id='map-level-selector-level-" + i + "'>Level " + i + "</option>"
 			}
 			$("#select-header-level").append(html);
+		},
+		
+		initMapModeSelector: function () {
+			$("#select-header-mapmode").empty();
+			var html = "";
+			html += "<option value='" + MapUtils.MAP_MODE_BASIC + "' id='map-style-selector-" + this.MAP_MODE_BASIC + "'>Default</option>";
+			html += "<option value='" + MapUtils.MAP_MODE_HAZARDS + "' id='map-style-selector-" + this.MAP_MODE_HAZARDS + "'>Hazards</option>";
+			html += "<option value='" + MapUtils.MAP_MODE_SCAVENGING + "' id='map-style-selector-" + this.MAP_MODE_SCAVENGING + "'>Scavenging</option>";
+			html += "<option value='" + MapUtils.MAP_MODE_STATUS + "' id='map-style-selector-" + this.MAP_MODE_STATUS + "'>Status</option>";
+			$("#select-header-mapmode").append(html);
 		},
 		
 		initMapStyleSelector: function () {
@@ -141,6 +154,17 @@ define([
 			this.updateSector();
 		},
 		
+		selectMapMode: function (mapMode) {
+			$("#select-header-mapmode").val(mapMode);
+			
+			this.selectedMapMode = mapMode;
+			// GameGlobals.gameState.settings.mapMode = mapMode;
+			
+			this.updateHeader();
+			this.updateMap();
+			this.centerMap();
+		},
+		
 		selectMapStyle: function (mapStyle) {
 			$("#select-header-mapstyle").val(mapStyle);
 			
@@ -174,7 +198,7 @@ define([
 				$("#mainmap-container-container").css("opacity", 0);
 				
 				setTimeout(function () {
-					sys.map = GameGlobals.uiMapHelper.rebuildMap("mainmap", "mainmap-overlay", mapPosition, -1, false, function (level, x, y) {
+					sys.map = GameGlobals.uiMapHelper.rebuildMap("mainmap", "mainmap-overlay", mapPosition, -1, false, sys.selectedMapMode, function (level, x, y) {
 						sys.onSectorSelected(level, x, y);
 					});
 					$("#mainmap-container-container").css("opacity", 1);
@@ -506,6 +530,7 @@ define([
 
 		onGameStarted: function () {
 			this.initLevelSelector();
+			this.initMapModeSelector();
 			this.initMapStyleSelector();
 			this.updateLevelSelector();
 		},
@@ -517,9 +542,10 @@ define([
 		onTabChanged: function (tabID, tabProps) {
 			if (tabID !== GameGlobals.uiFunctions.elementIDs.tabs.map) return;
 			
-			$("#tab-header h2").text("Map");
+			this.updateHeader();
 			
 			this.selectMapStyle(GameGlobals.gameState.settings.mapStyle || this.MAP_STYLE_CANVAS);
+			this.selectMapMode(GameGlobals.gameState.settings.mapMode || MapUtils.MAP_MODE_BASIC);
 			
 			var level = tabProps ? tabProps.level : this.playerPositionNodes.head.position.level;
 			this.updateLevelSelector();
@@ -531,12 +557,22 @@ define([
 			this.centerMap();
 			this.updateMapCompletionHint();
 		},
+		
+		updateHeader: function () {
+			$("#tab-header h2").text("Map (" + this.selectedMapMode + ")");
+		},
 
 		onLevelSelectorChanged: function () {
 			let level = parseInt($("#select-header-level").val());
 			if (this.selectedLevel === level) return;
 			this.selectLevel(level);
 			this.updateMapCompletionHint();
+		},
+		
+		onMapModeSelectorChanged: function () {
+			let mapMode = $("#select-header-mapmode").val();
+			if (this.selectedMapMode === mapMode) return;
+			this.selectMapMode(mapMode);
 		},
 		
 		onMapStyleSelectorChanged: function () {

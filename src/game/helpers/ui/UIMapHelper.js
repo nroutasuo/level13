@@ -92,17 +92,19 @@ function (Ash, CanvasUtils, MapUtils,
 			CanvasConstants.updateScrollIndicators(canvasId);
 		},
 
-		rebuildMap: function (canvasId, overlayId, mapPosition, mapSize, centered, sectorSelectedCallback) {
-			var map = {};
+		rebuildMap: function (canvasId, overlayId, mapPosition, mapSize, centered, mapMode, sectorSelectedCallback) {
+			let map = {};
 			map.canvasID = canvasId;
 			
-			var canvases = $("#" + canvasId);
-			var canvas = canvases[0];
-			var ctx = CanvasUtils.getCTX(canvases);
+			log.i("rebuild map with mode: " + mapMode);
+			
+			let canvases = $("#" + canvasId);
+			let canvas = canvases[0];
+			let ctx = CanvasUtils.getCTX(canvases);
 
-			var visibleSectors = {};
-			var allSectors = {};
-			var mapDimensions = this.getMapSectorDimensions(canvasId, mapSize, centered, mapPosition, visibleSectors, allSectors);
+			let visibleSectors = {};
+			let allSectors = {};
+			let mapDimensions = this.getMapSectorDimensions(canvasId, mapSize, centered, mapPosition, visibleSectors, allSectors);
 				
 			if (ctx) {
 				this.rebuildMapWithCanvas(mapPosition, canvas, ctx, centered, visibleSectors, allSectors, mapDimensions);

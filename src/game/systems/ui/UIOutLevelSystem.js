@@ -1,6 +1,7 @@
 define([
 	'ash',
 	'text/Text',
+	'utils/MapUtils',
 	'utils/UIList',
 	'game/GameGlobals',
 	'game/GlobalSignals',
@@ -33,7 +34,7 @@ define([
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/EnemiesComponent'
 ], function (
-	Ash, Text, UIList, GameGlobals, GlobalSignals, PlayerActionConstants, PlayerStatConstants, TextConstants, LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, TradeConstants,
+	Ash, Text, MapUtils, UIList, GameGlobals, GlobalSignals, PlayerActionConstants, PlayerStatConstants, TextConstants, LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, TradeConstants,
 	PlayerPositionNode, PlayerLocationNode, NearestCampNode,
 	VisionComponent, StaminaComponent, ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
 	MovementOptionsComponent, PositionComponent, LogMessagesComponent, CampComponent,
@@ -826,7 +827,7 @@ define([
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (!this.playerLocationNodes.head) return;
 			this.pendingUpdateMap = false;
-			GameGlobals.uiMapHelper.rebuildMap("minimap", null, this.playerLocationNodes.head.position.getPosition(), UIConstants.MAP_MINIMAP_SIZE, true);
+			GameGlobals.uiMapHelper.rebuildMap("minimap", null, this.playerLocationNodes.head.position.getPosition(), UIConstants.MAP_MINIMAP_SIZE, true, MapUtils.MAP_MODE_BASIC);
 		},
 		
 		hasAccessToResource: function (resourceName, includeScavenge, includeUnbuiltCollectible) {

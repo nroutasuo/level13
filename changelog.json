@@ -31,6 +31,10 @@
 				},
 				{
 					"type": "UI",
+					"summary": "Improve the map"
+				},
+				{
+					"type": "UI",
 					"summary": "Add simple ending"
 				}
 			]

@@ -4,6 +4,11 @@ define(function () {
 		
 		MAP_ZOOM_DEFAULT: "default",
 		MAP_ZOOM_MINIMAP: "mini",
+		
+		MAP_MODE_BASIC: "basic",
+		MAP_MODE_HAZARDS: "hazards",
+		MAP_MODE_SCAVENGING: "scavenging",
+		MAP_MODE_STATUS: "status",
 
 		getSectorSize: function (zoomLevel) {
 			zoomLevel = zoomLevel || this.MAP_ZOOM_DEFAULT;
