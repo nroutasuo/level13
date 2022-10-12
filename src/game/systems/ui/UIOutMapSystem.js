@@ -107,7 +107,7 @@ define([
 		initMapModeSelector: function () {
 			$("#select-header-mapmode").empty();
 			var html = "";
-			html += "<option value='" + MapUtils.MAP_MODE_BASIC + "' id='map-style-selector-" + this.MAP_MODE_BASIC + "'>Default</option>";
+			html += "<option value='" + MapUtils.MAP_MODE_DEFAULT + "' id='map-style-selector-" + this.MAP_MODE_DEFAULT + "'>Default</option>";
 			html += "<option value='" + MapUtils.MAP_MODE_HAZARDS + "' id='map-style-selector-" + this.MAP_MODE_HAZARDS + "'>Hazards</option>";
 			html += "<option value='" + MapUtils.MAP_MODE_SCAVENGING + "' id='map-style-selector-" + this.MAP_MODE_SCAVENGING + "'>Scavenging</option>";
 			html += "<option value='" + MapUtils.MAP_MODE_STATUS + "' id='map-style-selector-" + this.MAP_MODE_STATUS + "'>Status</option>";
@@ -545,7 +545,7 @@ define([
 			this.updateHeader();
 			
 			this.selectMapStyle(GameGlobals.gameState.settings.mapStyle || this.MAP_STYLE_CANVAS);
-			this.selectMapMode(GameGlobals.gameState.settings.mapMode || MapUtils.MAP_MODE_BASIC);
+			this.selectMapMode(GameGlobals.gameState.settings.mapMode || MapUtils.MAP_MODE_DEFAULT);
 			
 			var level = tabProps ? tabProps.level : this.playerPositionNodes.head.position.level;
 			this.updateLevelSelector();

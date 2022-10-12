@@ -5,7 +5,7 @@ define(function () {
 		MAP_ZOOM_DEFAULT: "default",
 		MAP_ZOOM_MINIMAP: "mini",
 		
-		MAP_MODE_BASIC: "basic",
+		MAP_MODE_DEFAULT: "basic",
 		MAP_MODE_HAZARDS: "hazards",
 		MAP_MODE_SCAVENGING: "scavenging",
 		MAP_MODE_STATUS: "status",
@@ -30,6 +30,30 @@ define(function () {
 
 		getGridSize: function () {
 			return 10;
+		},
+		
+		showResourcesInMapMode: function (mapMode) {
+			switch (mapMode) {
+				case MapUtils.MAP_MODE_HAZARDS: return false;
+				case MapUtils.MAP_MODE_STATUS: return false;
+				default: return true;
+			}
+		},
+		
+		showPOIsInMapMode: function (mapMode) {
+			switch (mapMode) {
+				case MapUtils.MAP_MODE_HAZARDS: return false;
+				case MapUtils.MAP_MODE_SCAVENGING: return false;
+				default: return true;
+			}
+		},
+		
+		showClearedBlockersInMapMode: function (mapMode) {
+			switch (mapMode) {
+				case MapUtils.MAP_MODE_HAZARDS: return false;
+				case MapUtils.MAP_MODE_SCAVENGING: return false;
+				default: return true;
+			}
 		},
 		
 	};

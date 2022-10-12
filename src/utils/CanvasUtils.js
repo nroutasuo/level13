@@ -73,6 +73,18 @@ define(function () {
 			ctx.closePath();
 		},
 		
+		drawXShape: function (ctx, color, size, lineWidth, x, y) {
+			ctx.strokeStyle = color;
+			ctx.lineWidth = lineWidth;
+			ctx.beginPath();
+			ctx.moveTo(x - size / 2, y - size / 2);
+			ctx.lineTo(x + size / 2, y + size / 2);
+			ctx.moveTo(x - size / 2, y + size / 2);
+			ctx.lineTo(x + size / 2, y - size / 2);
+			ctx.closePath();
+			ctx.stroke();
+		},
+		
 		fillRoundedRect: function (ctx, x, y, w, h, radius) {
 			ctx.lineJoin = "round";
 			ctx.lineWidth = radius;
