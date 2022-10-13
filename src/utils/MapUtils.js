@@ -56,6 +56,28 @@ define(function () {
 			}
 		},
 		
+		showSectorStatusInMapMode: function (mapMode) {
+			switch (mapMode) {
+				case MapUtils.MAP_MODE_HAZARDS: return false;
+				case MapUtils.MAP_MODE_SCAVENGING: return false;
+				default: return true;
+			}
+		},
+		
+		showSunlightInMapMode: function (mapMode) {
+			switch (mapMode) {
+				case MapUtils.MAP_MODE_SCAVENGING: return false;
+				default: return true;
+			}
+		},
+		
+		showHazardsInMapMode: function (mapMode) {
+			switch (mapMode) {
+				case MapUtils.MAP_MODE_SCAVENGING: return false;
+				default: return true;
+			}
+		},
+		
 	};
 
 	return MapUtils;

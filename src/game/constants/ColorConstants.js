@@ -106,6 +106,7 @@ define(function () {
 				res_food: "#ff6622",
 				res_fuel: "#dd66cc",
 				res_rubber: "#dddddd",
+				res_rope: "#c8974b",
 				transparent: "#00000000",
 			}
 		},
