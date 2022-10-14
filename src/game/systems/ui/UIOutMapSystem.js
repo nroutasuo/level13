@@ -204,13 +204,13 @@ define([
 					GameGlobals.uiMapHelper.setSelectedSector(sys.map, sys.selectedSector);
 				}, 10);
 			} else {
-				let ascii = GameGlobals.uiMapHelper.getASCII(mapPosition, false);
+				let ascii = GameGlobals.uiMapHelper.getASCII(this.selectedMapMode, mapPosition, false);
 				let rows = ascii.split("\n").length;
 				rows = Math.min(rows, 25);
 				rows = Math.max(rows, 5);
 				$("#mainmap-container-ascii textarea").text(ascii);
 				$("#mainmap-container-ascii textarea").attr("rows", rows)
-				$("#mainmap-ascii-legend").text(GameGlobals.uiMapHelper.getASCIILegend());
+				$("#mainmap-ascii-legend").text(GameGlobals.uiMapHelper.getASCIILegend(this.selectedMapMode));
 			}
 		},
 

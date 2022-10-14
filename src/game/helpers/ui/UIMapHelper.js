@@ -135,7 +135,7 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 			});
 		},
 		
-		getASCII: function (mapPosition) {
+		getASCII: function (mapMode, mapPosition) {
 			let result = "";
 			
 			let level = mapPosition.level;
@@ -148,7 +148,7 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 				for (var x = levelComponent.minX - 1; x <= levelComponent.maxX + 1; x++) {
 					let sector = GameGlobals.levelHelper.getSectorByPosition(mapPosition.level, x, y);
 					
-					levelResult += this.getSectorASCII(sector);
+					levelResult += this.getSectorASCII(mapMode, sector);
 				}
 				if (levelResult.trim().length > 0) {
 					levelResult += "\n";
@@ -159,7 +159,7 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 			return result;
 		},
 		
-		getSectorASCII: function (sector) {
+		getSectorASCII: function (mapMode, sector) {
 			if (sector == null) return " ";
 			
 			let sectorStatus = SectorConstants.getSectorStatus(sector);
@@ -167,6 +167,33 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 			if (sectorStatus == null) return " ";
 			if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE) return " ";
 			if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE) return "?";
+			
+			if (mapMode == MapUtils.MAP_MODE_HAZARDS) {
+				if (this.hasHazard(sector)) {
+					if (this.isAffectedByHazard(sector)) {
+						return "H";
+					} else {
+						return "h";
+					}
+				}
+				return "x";
+			}
+			
+			if (mapMode == MapUtils.MAP_MODE_SCAVENGING) {
+				if (this.hasSectorVisibleResource(sector, resourceNames.water)) {
+					return "W";
+				}
+				if (this.hasSectorVisibleResource(sector, resourceNames.food)) {
+					return "F";
+				}
+				if (this.hasSectorVisibleResource(sector, resourceNames.metal, WorldConstants.resourcePrevalence.COMMON)) {
+					return "M";
+				}
+				if (this.hasSectorVisibleIngredients(sector)) {
+					return "I";
+				}
+				return "x";
+			}
 			
 			if (sector.has(CampComponent)) return "C";
 			
@@ -189,8 +216,18 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 			return "?";
 		},
 		
-		getASCIILegend: function () {
-			return "? = unvisited, 0 = visited, X = cleared, C = camp, U = passage up, D = passage down, ! = point of interest";
+		getASCIILegend: function (mapMode) {
+			switch (mapMode) {
+				case MapUtils.MAP_MODE_DEFAULT:
+					return "? = unvisited, 0 = visited, X = cleared, C = camp, U = passage up, D = passage down, ! = point of interest";
+				case MapUtils.MAP_MODE_HAZARDS:
+					return "? = unvisited, x = default, H = hazard (high), h = hazard (low)";
+				case MapUtils.MAP_MODE_SCAVENGING:
+					return "? = unvisited, x = default, I = crafting ingredients, W = water, F = food, M = metal";
+				default:
+					log.w("no ASCII map legend defined for map mode: " + mapMode);
+					return "";
+			}
 		},
 
 		rebuildMapWithCanvas: function (canvas, ctx, options, visibleSectors, allSectors, dimensions) {
@@ -706,7 +743,7 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 					let isBlocked = blocker != null && GameGlobals.movementHelper.isBlocked(sector, direction);
 					
 					let isVisited = SectorConstants.isVisited(sectorStatus) && SectorConstants.isVisited(neighbourStatus);
-					let lineColor = isVisited || isBlocked ? ColorConstants.getColor(sunlit, "map_stroke_movementlines") : "#999";
+					let lineColor = ColorConstants.getColor(sunlit, "map_stroke_movementlines");
 					ctx.strokeStyle = lineColor;
 					ctx.lineWidth = Math.ceil(sectorSize / 6);
 					
@@ -1001,11 +1038,24 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 			
 			return ColorConstants.colors.global.transparent;
 		},
+
+		getResourceFill: function (resourceName) {
+			switch (resourceName) {
+				case resourceNames.metal: return ColorConstants.getGlobalColor("res_metal");
+				case resourceNames.water: return ColorConstants.getGlobalColor("res_water");
+				case resourceNames.food: return ColorConstants.getGlobalColor("res_food");
+				case resourceNames.fuel: return ColorConstants.getGlobalColor("res_fuel");
+				case resourceNames.rubber: return ColorConstants.getGlobalColor("res_rubber");
+				case resourceNames.rope: return ColorConstants.getGlobalColor("res_rope");
+			}
+			log.w("no fill color defined for resource: " + resourceName);
+			return ColorConstants.getGlobalColor("res_metal");
+		},
 		
 		hasHazard: function (sector) {
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
 			let statusComponent = sector.get(SectorStatusComponent);
-			let hasSectorHazard = GameGlobals.sectorHelper.hasHazards(sectorFeatures, statusComponent);
+			return GameGlobals.sectorHelper.hasHazards(sectorFeatures, statusComponent);
 		},
 		
 		isAffectedByHazard: function (sector) {
@@ -1019,18 +1069,27 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 			let sectorStatus = SectorConstants.getSectorStatus(sector);
 			return SectorConstants.isLBasicInfoVisible(sectorStatus) || this.isMapRevealed || this.isInHazardDetectionRange(sector);
 		},
-
-		getResourceFill: function (resourceName) {
-			switch (resourceName) {
-				case resourceNames.metal: return ColorConstants.getGlobalColor("res_metal");
-				case resourceNames.water: return ColorConstants.getGlobalColor("res_water");
-				case resourceNames.food: return ColorConstants.getGlobalColor("res_food");
-				case resourceNames.fuel: return ColorConstants.getGlobalColor("res_fuel");
-				case resourceNames.rubber: return ColorConstants.getGlobalColor("res_rubber");
-				case resourceNames.rope: return ColorConstants.getGlobalColor("res_rope");
+		
+		hasSectorVisibleResource: function (sector, resourceName, min) {
+			min = min || 1;
+			
+			let sectorFeatures = sector.get(SectorFeaturesComponent);
+			if (sectorFeatures.resourcesCollectable.getResource(resourceName) >= min) {
+				return true;
 			}
-			log.w("no fill color defined for resource: " + resourceName);
-			return ColorConstants.getGlobalColor("res_metal");
+			
+			let knownResources = GameGlobals.sectorHelper.getLocationKnownResources(sector);
+			if (knownResources.indexOf(resourceName) >= 0) {
+				if (sectorFeatures.resourcesScavengable.getResource(resourceName >= min)) {
+					return true;
+				}
+			}
+			
+			return false;
+		},
+		
+		hasSectorVisibleIngredients: function (sector) {
+		 	return GameGlobals.sectorHelper.getLocationKnownItems(sector).length > 0;
 		},
 
 	});
