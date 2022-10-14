@@ -110,7 +110,6 @@ define([
 			html += "<option value='" + MapUtils.MAP_MODE_DEFAULT + "' id='map-style-selector-" + this.MAP_MODE_DEFAULT + "'>Default</option>";
 			html += "<option value='" + MapUtils.MAP_MODE_HAZARDS + "' id='map-style-selector-" + this.MAP_MODE_HAZARDS + "'>Hazards</option>";
 			html += "<option value='" + MapUtils.MAP_MODE_SCAVENGING + "' id='map-style-selector-" + this.MAP_MODE_SCAVENGING + "'>Scavenging</option>";
-			html += "<option value='" + MapUtils.MAP_MODE_STATUS + "' id='map-style-selector-" + this.MAP_MODE_STATUS + "'>Status</option>";
 			$("#select-header-mapmode").append(html);
 		},
 		

@@ -8,7 +8,6 @@ define(function () {
 		MAP_MODE_DEFAULT: "basic",
 		MAP_MODE_HAZARDS: "hazards",
 		MAP_MODE_SCAVENGING: "scavenging",
-		MAP_MODE_STATUS: "status",
 
 		getSectorSize: function (zoomLevel) {
 			zoomLevel = zoomLevel || this.MAP_ZOOM_DEFAULT;
@@ -35,7 +34,6 @@ define(function () {
 		showResourcesInMapMode: function (mapMode) {
 			switch (mapMode) {
 				case MapUtils.MAP_MODE_HAZARDS: return false;
-				case MapUtils.MAP_MODE_STATUS: return false;
 				default: return true;
 			}
 		},

@@ -490,7 +490,7 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 			let showBorderForHazard = MapUtils.showHazardsInMapMode(options.mapMode);
 			let hasSectorHazard = GameGlobals.sectorHelper.hasHazards(sectorFeatures, statusComponent);
 			
-			if (SectorConstants.isLBasicInfoVisible(sectorStatus) || this.isMapRevealed || this.isInHazardDetectionRange(sector)) {
+			if (this.showSectorHazards(sector)) {
 				let hasHazardBorder = hasSectorHazard && showBorderForHazard;
 				if (hasHazardBorder) {
 					let borderColor = this.getSectorHazardBorderColor(options.mapMode, sector);
@@ -563,14 +563,16 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 			let iconSize = 10;
 			
 			if (options.mapMode == MapUtils.MAP_MODE_HAZARDS) {
-				let hazards = GameGlobals.sectorHelper.getEffectiveHazards(sectorFeatures, statusComponent, itemsComponent);
-				let hazardType = hazards.getMainHazard();
-				let hazardValue = hazards[hazardType] || 0;
-				if (hazardValue > 0) {
-					if (this.isAffectedByHazard(sector)) {
-						iconSize = 8;
-						let iconColor = this.getBackgroundColor(level, isLocationSunlit);
-						CanvasUtils.drawXShape(ctx, iconColor, iconSize, 3, sectorXpx + sectorSize / 2, sectorYpx + sectorSize / 2);
+				if (this.showSectorHazards(sector)) {
+					let hazards = GameGlobals.sectorHelper.getEffectiveHazards(sectorFeatures, statusComponent, itemsComponent);
+					let hazardType = hazards.getMainHazard();
+					let hazardValue = hazards[hazardType] || 0;
+					if (hazardValue > 0) {
+						if (this.isAffectedByHazard(sector)) {
+							iconSize = 8;
+							let iconColor = this.getBackgroundColor(level, isLocationSunlit);
+							CanvasUtils.drawXShape(ctx, iconColor, iconSize, 3, sectorXpx + sectorSize / 2, sectorYpx + sectorSize / 2);
+						}
 					}
 				}
 				return;
@@ -580,7 +582,7 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 			let iconPosYCentered = sectorYpx + sectorSize / 2 - iconSize / 2;
 			let iconPosY = isBigSectorSize ? sectorYpx : iconPosYCentered;
 			
-			if (!isRevealed && !this.isMapRevealed && !hideUnknownIcon) {
+			if (!isRevealed && !hideUnknownIcon) {
 				ctx.drawImage(this.icons["unknown" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosYCentered);
 				return true;
 			} else if (mapModeHasPois && sector.has(WorkshopComponent) && sector.get(WorkshopComponent).isClearable) {
@@ -688,29 +690,37 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 		},
 
 		drawMovementLinesOnCanvas: function (ctx, options, sector, sectorPos, sectorXpx, sectorYpx, sectorSize, sectorPadding) {
-			var sunlit = $("body").hasClass("sunlit");
-			var sectorPassages = sector.get(PassagesComponent);
-			var sectorMiddleX = sectorXpx + sectorSize * 0.5;
-			var sectorMiddleY = sectorYpx + sectorSize * 0.5;
+			let sunlit = $("body").hasClass("sunlit");
+			let sectorPassages = sector.get(PassagesComponent);
+			let sectorMiddleX = sectorXpx + sectorSize * 0.5;
+			let sectorMiddleY = sectorYpx + sectorSize * 0.5;
+			let sectorStatus = SectorConstants.getSectorStatus(sector);
+			
 			for (let i in PositionConstants.getLevelDirections()) {
 				var direction = PositionConstants.getLevelDirections()[i];
 				var neighbourPos = PositionConstants.getPositionOnPath(sectorPos, direction, 1);
 				var neighbour = GameGlobals.levelHelper.getSectorByPosition(options.mapPosition.level, neighbourPos.sectorX, neighbourPos.sectorY);
 				if (neighbour) {
-					var distX = neighbourPos.sectorX - sectorPos.sectorX;
-					var distY = neighbourPos.sectorY - sectorPos.sectorY;
-					ctx.strokeStyle = ColorConstants.getColor(sunlit, "map_stroke_movementlines");
+					let neighbourStatus = SectorConstants.getSectorStatus(neighbour);
+					let blocker = sectorPassages.getBlocker(direction);
+					let isBlocked = blocker != null && GameGlobals.movementHelper.isBlocked(sector, direction);
+					
+					let isVisited = SectorConstants.isVisited(sectorStatus) && SectorConstants.isVisited(neighbourStatus);
+					let lineColor = isVisited || isBlocked ? ColorConstants.getColor(sunlit, "map_stroke_movementlines") : "#999";
+					ctx.strokeStyle = lineColor;
 					ctx.lineWidth = Math.ceil(sectorSize / 6);
+					
+					let distX = neighbourPos.sectorX - sectorPos.sectorX;
+					let distY = neighbourPos.sectorY - sectorPos.sectorY;
+					
 					ctx.beginPath();
 					ctx.moveTo(sectorMiddleX + 0.5 * sectorSize * distX, sectorMiddleY + 0.5 * sectorSize * distY);
 					ctx.lineTo(sectorMiddleX + (0.5 + sectorPadding) * sectorSize * distX, sectorMiddleY + (0.5 + sectorPadding) * sectorSize * distY);
 
 					ctx.stroke();
 
-					let blocker = sectorPassages.getBlocker(direction);
 					if (blocker) {
 						var blockerType = blocker.type;
-						var isBlocked = GameGlobals.movementHelper.isBlocked(sector, direction);
 						var isGang = blockerType === MovementConstants.BLOCKER_TYPE_GANG;
 						var blockerX = sectorMiddleX + sectorSize * (1 + sectorPadding)/2 * distX;
 						var blockerY = sectorMiddleY + sectorSize * (1 + sectorPadding)/2 * distY;
@@ -1003,6 +1013,11 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
 			let statusComponent = sector.get(SectorStatusComponent);
 			return GameGlobals.sectorHelper.isAffectedByHazard(sectorFeatures, statusComponent, itemsComponent);
+		},
+		
+		showSectorHazards: function (sector) {
+			let sectorStatus = SectorConstants.getSectorStatus(sector);
+			return SectorConstants.isLBasicInfoVisible(sectorStatus) || this.isMapRevealed || this.isInHazardDetectionRange(sector);
 		},
 
 		getResourceFill: function (resourceName) {
