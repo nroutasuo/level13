@@ -58,8 +58,8 @@ define([
 				improvementsComponent.getCount(improvementNames.passageUpElevator) > 0;
 			var passageDownBuilt =
 				improvementsComponent.getCount(improvementNames.passageDownStairs) > 0 ||
-				improvementsComponent.getCount(improvementNames.passageUpHole) > 0 ||
-				improvementsComponent.getCount(improvementNames.passageUpElevator) > 0;
+				improvementsComponent.getCount(improvementNames.passageDownHole) > 0 ||
+				improvementsComponent.getCount(improvementNames.passageDownElevator) > 0;
 			var levelEntity = GameGlobals.levelHelper.getLevelEntityForSector(entity);
 			this.updateLevelPassagesComponent(levelEntity, s, passageUp, passageUpBuilt, passageDown, passageDownBuilt);
 		},
