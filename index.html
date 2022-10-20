@@ -298,9 +298,11 @@
 					<!-- level: minimap and header -->
 					<div class="grid tabelement" id="container-tab-two-out" data-tab="switch-out">
 						<div class="unit unit-compass" id="out-container-compass">
-							<div id="minimap-container" class="canvas-container" style="width: 208px; height: 208px">
-								<canvas id="minimap" width="208" height="208" role="img" aria-label="area map">
-								</canvas>
+							<div id="minimap-background-container" class="canvas-container">
+								<canvas id="minimap-background" width="224" height="224"></canvas>
+								<div id="minimap-container" class="canvas-container" style="width: 198px; height: 198px">
+									<canvas id="minimap" width="198" height="198" role="img" aria-label="area map"></canvas>
+								</div>
 							</div>
 							<span id="out-position-indicator" class="vision-text"></span>
 						</div>

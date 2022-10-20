@@ -133,6 +133,32 @@ define([
 			return null;
 		},
 		
+		hasSectorVisibleIngredients: function (sector) {
+		 	return GameGlobals.sectorHelper.getLocationKnownItems(sector).length > 0;
+		},
+		
+		hasSectorVisibleResource: function (sector, resourceName, min) {
+			min = min || 1;
+			
+			let sectorFeatures = sector.get(SectorFeaturesComponent);
+			if (sectorFeatures.resourcesCollectable.getResource(resourceName) >= min) {
+				return true;
+			}
+			
+			let knownResources = GameGlobals.sectorHelper.getLocationKnownResources(sector);
+			if (knownResources.indexOf(resourceName) >= 0) {
+				if (sectorFeatures.resourcesScavengable.getResource(resourceName >= min)) {
+					return true;
+				}
+			}
+			
+			if (resourceName == resourceNames.water == sectorFeatures.hasSpring) {
+				return true;
+			}
+			
+			return false;
+		},
+		
 		isBeaconActive: function (position) {
 			let beacon = GameGlobals.levelHelper.getNearestBeacon(position);
 			let beaconPos = beacon ? beacon.get(PositionComponent) : null;

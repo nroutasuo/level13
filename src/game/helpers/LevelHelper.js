@@ -412,6 +412,11 @@ define([
 			}
 			return null;
 		},
+		
+		getCampSectorOnLevel: function (level) {
+			let campNode = GameGlobals.campHelper.getCampNodeForLevel(level);
+			return campNode ? campNode.entity : null;
+		},
 
 		forEverySectorFromLocation: function (pos, func, limitToCurrentLevel) {
 			// TODO go by path distance, not distance in coordinates / make that an option
@@ -975,6 +980,30 @@ define([
 					resultDistance = distance;
 				}
 			}
+			return result;
+		},
+		
+		findNearestWaterSector: function (pos) {
+			let result = null;
+			this.forEverySectorFromLocation(pos, (sector) => {
+				if (GameGlobals.sectorHelper.hasSectorVisibleResource(sector, resourceNames.water, true)) {
+					result = sector;
+					return true;
+				}
+				return false;
+			});
+			return result;
+		},
+		
+		findNearestFoodSector: function (pos) {
+			let result = null;
+			this.forEverySectorFromLocation(pos, (sector) => {
+				if (GameGlobals.sectorHelper.hasSectorVisibleResource(sector, resourceNames.food, true)) {
+					result = sector;
+					return true;
+				}
+				return false;
+			});
 			return result;
 		},
 		

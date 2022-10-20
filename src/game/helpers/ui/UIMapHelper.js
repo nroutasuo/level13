@@ -180,16 +180,16 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 			}
 			
 			if (mapMode == MapUtils.MAP_MODE_SCAVENGING) {
-				if (this.hasSectorVisibleResource(sector, resourceNames.water)) {
+				if (GameGlobals.sectorHelper.hasSectorVisibleResource(sector, resourceNames.water)) {
 					return "W";
 				}
-				if (this.hasSectorVisibleResource(sector, resourceNames.food)) {
+				if (GameGlobals.sectorHelper.hasSectorVisibleResource(sector, resourceNames.food)) {
 					return "F";
 				}
-				if (this.hasSectorVisibleResource(sector, resourceNames.metal, WorldConstants.resourcePrevalence.COMMON)) {
+				if (GameGlobals.sectorHelper.hasSectorVisibleResource(sector, resourceNames.metal, WorldConstants.resourcePrevalence.COMMON)) {
 					return "M";
 				}
-				if (this.hasSectorVisibleIngredients(sector)) {
+				if (GameGlobals.sectorHelper.hasSectorVisibleIngredients(sector)) {
 					return "I";
 				}
 				return "x";
@@ -338,13 +338,146 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 			}
 		},
 
+		rebuildMapHints: function (canvasId, mapCanvasId, mapPosition) {
+			let canvases = $("#" + canvasId);
+			let canvas = canvases[0];
+			let ctx = CanvasUtils.getCTX(canvases);
+			
+			let mapSize = UIConstants.MAP_MINIMAP_SIZE;
+			let visibleSectors = {};
+			let allSectors = {};
+			
+			let dimensions = this.getMapSectorDimensions(mapCanvasId, mapSize, true, mapPosition, visibleSectors, allSectors);
+			
+			let mapHints = this.getMaphints(mapPosition);
+			
+			ctx.clearRect(0, 0, canvas.scrollWidth, canvas.scrollWidth);
+			
+			for (let i = 0; i < mapHints.length; i++) {
+				this.drawMapHint(ctx, mapPosition, mapHints[i], dimensions);
+			}
+		},
+		
+		getMaphints: function (mapPosition) {
+			let result = [];
+			
+			let isLocationSunlit = $("body").hasClass("sunlit");
+			let useSunlitIcon = isLocationSunlit;
+			
+			let levelCamp = GameGlobals.levelHelper.getCampSectorOnLevel(mapPosition.level);
+			if (levelCamp != null) {
+				let campIcon = this.icons["camp" + (useSunlitIcon ? "-sunlit" : "")];
+				result.push({ id: "camp", icon: campIcon, position: levelCamp.get(PositionComponent) });
+			}
+			
+			let passageUp = GameGlobals.levelHelper.findPassageUp(mapPosition.level);
+			if (passageUp != null) {
+				let passageUpIcon = this.icons["passage-up" + (useSunlitIcon ? "-sunlit" : "")];
+				result.push({ id: "passage-up", icon: passageUpIcon, position: passageUp.get(PositionComponent) });
+			}
+			
+			let passageDown = GameGlobals.levelHelper.findPassageDown(mapPosition.level);
+			if (passageDown != null) {
+				let passageDownIcon = this.icons["passage-down" + (useSunlitIcon ? "-sunlit" : "")];
+				result.push({ id: "passage-up", icon: passageDownIcon, position: passageDown.get(PositionComponent) });
+			}
+			
+			let nearestWaterSector = GameGlobals.levelHelper.findNearestWaterSector(mapPosition);
+			if (nearestWaterSector != null) {
+				result.push({ id: "water", color: this.getResourceFill(resourceNames.water), position: nearestWaterSector.get(PositionComponent) });
+			}
+			
+			let nearestFoodSector = GameGlobals.levelHelper.findNearestFoodSector(mapPosition);
+			if (nearestFoodSector != null) {
+				result.push({ id: "food", color: this.getResourceFill(resourceNames.food), position: nearestFoodSector.get(PositionComponent) });
+			}
+			
+			console.log(result);
+			
+			return result;
+		},
+		
+		drawMapHint: function (ctx, mapPosition, mapHint, dimensions) {
+			let sunlit = $("body").hasClass("sunlit");
+			let sectorSize = this.getSectorSize(true);
+			
+			let xDist = Math.abs(mapHint.position.sectorX - mapPosition.sectorX);
+			let yDist = Math.abs(mapHint.position.sectorY - mapPosition.sectorY);
+			
+			if (xDist <= 3 && yDist <= 3) return;
+			
+			// TODO hard-coded numbers
+			let frameSize = 12;
+			
+			// choose egde the hint should appear on
+			let edge = this.getMapHintEdge(mapPosition, mapHint, frameSize);
+			
+			if (!edge) {
+				log.w("could not determine map hint edge " + mapHint.id + " " + mapHint.position);
+				return;
+			}
+			
+			// pixel pos on the real map
+			let center = this.getSectorPixelPosCenter(dimensions, true, sectorSize, mapPosition.sectorX, mapPosition.sectorY);
+			let pixelPos = this.getSectorPixelPosCenter(dimensions, true, sectorSize, mapHint.position.sectorX, mapHint.position.sectorY);
+			
+			// offset due to the two canvases being positioned differently
+			pixelPos.x = pixelPos.x + frameSize;
+			pixelPos.y = pixelPos.y + frameSize;
+			
+			// find position on edge - intersection of edge and line connecting map center to target
+			let blibPos = MathUtils.lineIntersection(center.x, center.y, pixelPos.x, pixelPos.y, edge.p1.x, edge.p1.y, edge.p2.x, edge.p2.y);
+			let iconSize = 10;
+			let icon = mapHint.icon;
+			
+			if (icon) {
+				let p = 1;
+				let blibSize = iconSize + p * 2;
+				let blibColor = ColorConstants.getColor(sunlit, "map_fill_sector_scouted");
+				CanvasUtils.drawCircle(ctx, blibColor, blibPos.x, blibPos.y, blibSize / 2);
+				ctx.drawImage(icon, blibPos.x - iconSize / 2, blibPos.y - iconSize / 2);
+			} else {
+				CanvasUtils.drawCircle(ctx, mapHint.color, blibPos.x, blibPos.y, (iconSize - 2) / 2);
+			}
+		},
+		
+		getMapHintEdge: function (mapPosition, mapHint, frameSize) {
+			let xDist = Math.abs(mapHint.position.sectorX - mapPosition.sectorX);
+			let yDist = Math.abs(mapHint.position.sectorY - mapPosition.sectorY);
+			
+			let min = frameSize / 2;
+			let max = 224 - frameSize / 2;
+			
+			if (mapHint.position.sectorX < mapPosition.sectorX && xDist >= yDist)
+				// - left side
+				return { p1: { x: min, y: min }, p2: { x: min, y: max } };
+			if (mapHint.position.sectorX > mapPosition.sectorX && xDist >= yDist) {
+				// - right side
+				return { p1: { x: max, y: min }, p2: { x: max, y: max } };
+			} else if (mapHint.position.sectorY < mapPosition.sectorY && yDist > xDist) {
+				// - top
+				return { p1: { x: min, y: min }, p2: { x: max, y: min } };
+			} else if (mapHint.position.sectorY > mapPosition.sectorY && yDist > xDist) {
+				// bottom
+				return { p1: { x: min, y: 233 }, p2: { x: max, y: max } };
+			}
+			
+			return null;
+		},
+
 		getSectorPixelPos: function (dimensions, centered, sectorSize, x, y) {
-			var smallMapOffsetX = Math.max(0, (dimensions.canvasWidth - dimensions.mapWidth) / 2);
-			var padding = this.getSectorPadding(centered);
-			var margin = this.getSectorMargin(centered);
+			let smallMapOffsetX = Math.max(0, (dimensions.canvasWidth - dimensions.mapWidth) / 2);
+			let paddingFactor = this.getSectorPadding(centered);
+			let marginFactor = this.getSectorMargin(centered);
+			let padding = sectorSize * paddingFactor;
+			let margin = sectorSize * marginFactor;
+			
+			let rawX = margin + padding/2 + (x - dimensions.minVisibleX) * sectorSize * (1 + paddingFactor) + smallMapOffsetX;
+			let rawY = margin + padding/2 + (y - dimensions.minVisibleY) * sectorSize * (1 + paddingFactor);
+			
 			return {
-				x: Math.round((sectorSize * margin + sectorSize * padding + (x - dimensions.minVisibleX) * sectorSize * (1 + padding) + smallMapOffsetX) * 10)/10,
-				y: Math.round((sectorSize * margin + sectorSize * padding + (y - dimensions.minVisibleY) * sectorSize * (1 + padding)) * 10)/10
+				x: Math.round(rawX * 10)/10,
+				y: Math.round(rawY * 10)/10
 			};
 		},
 		
@@ -569,7 +702,6 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 			// sector contents: resources
 			let fitsResourceIcons = isBigSectorSize || !hasIcon;
 			if (showResourceIcons && fitsResourceIcons) {
-				
 				this.drawResourcesOnSector(ctx, options, sector, knownResources, sectorXpx, sectorYpx, sectorSize);
 			}
 		},
@@ -669,6 +801,7 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 
 			let sectorImprovements = sector.get(SectorImprovementsComponent);
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
+			let sectorPosition = sector.get(PositionComponent);
 			
 			let resourcesCollectable = sectorFeatures.resourcesCollectable;
 				
@@ -687,7 +820,9 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 			for (let i in mapResources) {
 				let name = mapResources[i];
 				let colAmount = resourcesCollectable.getResource(name);
-				if (colAmount > 0 || knownResources.indexOf(name) >= 0) {
+				if (colAmount > 0) {
+					potentialResources[name] = true;
+				} else if (knownResources.indexOf(name) >= 0) {
 					let minAmountToShow = name == resourceNames.metal ? WorldConstants.resourcePrevalence.COMMON : 1;
 					if (sectorFeatures.resourcesScavengable.getResource(name) >= minAmountToShow) {
 						potentialResources[name] = true;
@@ -822,7 +957,7 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 		getCanvasMinimumWidth: function (canvas) {
 			switch ($(canvas).attr("id")) {
 				case "mainmap": return $(canvas).parent().width();
-				case "minimap": return 208;
+				case "minimap": return 198;
 				default: return 0;
 			}
 		},
@@ -830,7 +965,7 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 		getCanvasMinimumHeight: function (canvas) {
 			switch ($(canvas).attr("id")) {
 				case "mainmap": return 10;
-				case "minimap": return 208;
+				case "minimap": return 198;
 				default: return 0;
 			}
 		},
@@ -897,9 +1032,14 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 			dimensions.minVisibleY = Math.max(dimensions.minVisibleY, dimensions.canvasMinY);
 			dimensions.maxVisibleY = Math.min(dimensions.maxVisibleY, dimensions.canvasMaxY);
 
-			var canvas = $("#" + canvasId);
-			dimensions.mapWidth = (dimensions.maxVisibleX - dimensions.minVisibleX + (centered ? 1.5 : 1.5)) * sectorSize * (1 + this.getSectorPadding(centered)) + sectorSize * this.getSectorMargin(centered) * 2;
-			dimensions.mapHeight = (dimensions.maxVisibleY - dimensions.minVisibleY + (centered ? 1.5 : 1.5)) * sectorSize * (1 + this.getSectorPadding(centered)) + sectorSize * this.getSectorMargin(centered) * 2;
+			let canvas = $("#" + canvasId);
+			let visibleXDiff = dimensions.maxVisibleX - dimensions.minVisibleX;
+			let visibleYDiff = dimensions.maxVisibleY - dimensions.minVisibleY;
+			let paddingFactor = this.getSectorPadding(centered);
+			let padding = sectorSize * paddingFactor;
+			let margin = sectorSize * this.getSectorMargin(centered);
+			dimensions.mapWidth = (visibleXDiff + 1.5) * sectorSize * (1 + paddingFactor) + margin * 2 - padding;
+			dimensions.mapHeight = (visibleYDiff + 1.5) * sectorSize * (1 + paddingFactor) + margin * 2 - padding;
 			dimensions.canvasWidth = Math.max(dimensions.mapWidth, this.getCanvasMinimumWidth(canvas));
 			dimensions.canvasHeight = Math.max(dimensions.mapHeight, this.getCanvasMinimumHeight(canvas));
 			dimensions.sectorSize = sectorSize;
@@ -1068,28 +1208,6 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 		showSectorHazards: function (sector) {
 			let sectorStatus = SectorConstants.getSectorStatus(sector);
 			return SectorConstants.isLBasicInfoVisible(sectorStatus) || this.isMapRevealed || this.isInHazardDetectionRange(sector);
-		},
-		
-		hasSectorVisibleResource: function (sector, resourceName, min) {
-			min = min || 1;
-			
-			let sectorFeatures = sector.get(SectorFeaturesComponent);
-			if (sectorFeatures.resourcesCollectable.getResource(resourceName) >= min) {
-				return true;
-			}
-			
-			let knownResources = GameGlobals.sectorHelper.getLocationKnownResources(sector);
-			if (knownResources.indexOf(resourceName) >= 0) {
-				if (sectorFeatures.resourcesScavengable.getResource(resourceName >= min)) {
-					return true;
-				}
-			}
-			
-			return false;
-		},
-		
-		hasSectorVisibleIngredients: function (sector) {
-		 	return GameGlobals.sectorHelper.getLocationKnownItems(sector).length > 0;
 		},
 
 	});

@@ -89,7 +89,7 @@ define([
 		},
 		
 		updateHeight: function () {
-			var maxHeight = Math.max(208, $(window).height() - 380);
+			var maxHeight = Math.max(198, $(window).height() - 380);
 			$("#mainmap-container").css("maxHeight", maxHeight + "px");
 		},
 

@@ -1969,10 +1969,20 @@ body.dark #changelog li:before {
   display: inline-block;
   overflow: hidden;
 }
+body.dark #minimap-background-container {
+  position: relative;
+  height: 224px;
+  width: 224px;
+}
+body.dark #minimap-container {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+}
 body.dark #out-container-compass,
 body.dark #out-container-compass-actions {
   text-align: center;
-  width: 208px;
+  width: 224px;
 }
 body.dark #out-container-compass canvas,
 body.dark #out-container-compass-actions table {
@@ -4158,10 +4168,20 @@ body.sunlit #changelog li:before {
   display: inline-block;
   overflow: hidden;
 }
+body.sunlit #minimap-background-container {
+  position: relative;
+  height: 224px;
+  width: 224px;
+}
+body.sunlit #minimap-container {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+}
 body.sunlit #out-container-compass,
 body.sunlit #out-container-compass-actions {
   text-align: center;
-  width: 208px;
+  width: 224px;
 }
 body.sunlit #out-container-compass canvas,
 body.sunlit #out-container-compass-actions table {

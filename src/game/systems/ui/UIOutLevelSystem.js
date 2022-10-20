@@ -170,9 +170,10 @@ define([
 		},
 
 		updateUnlockedFeatures: function () {
-			GameGlobals.uiFunctions.toggle("#minimap", GameGlobals.gameState.unlockedFeatures.scout);
 			GameGlobals.uiFunctions.toggle("#out-container-compass", GameGlobals.gameState.unlockedFeatures.scout);
 			GameGlobals.uiFunctions.toggle("#out-container-compass-actions", GameGlobals.gameState.unlockedFeatures.scout);
+			GameGlobals.uiFunctions.toggle("#minimap-background-container", GameGlobals.gameState.unlockedFeatures.scout);
+			GameGlobals.uiFunctions.toggle("#minimap", GameGlobals.gameState.unlockedFeatures.scout);
 		},
 
 		updateLevelPageActionsSlow: function () {
@@ -827,7 +828,10 @@ define([
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (!this.playerLocationNodes.head) return;
 			this.pendingUpdateMap = false;
-			GameGlobals.uiMapHelper.rebuildMap("minimap", null, this.playerLocationNodes.head.position.getPosition(), UIConstants.MAP_MINIMAP_SIZE, true, MapUtils.MAP_MODE_DEFAULT);
+			
+			let mapPosition = this.playerLocationNodes.head.position.getPosition();
+			GameGlobals.uiMapHelper.rebuildMapHints("minimap-background", "minimap", mapPosition);
+			GameGlobals.uiMapHelper.rebuildMap("minimap", null, mapPosition, UIConstants.MAP_MINIMAP_SIZE, true, MapUtils.MAP_MODE_DEFAULT);
 		},
 		
 		hasAccessToResource: function (resourceName, includeScavenge, includeUnbuiltCollectible) {
