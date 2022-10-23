@@ -1,4 +1,4 @@
-define(function () {
+define(['game/constants/ColorConstants', 'game/constants/SectorConstants'], function (ColorConstants, SectorConstants) {
 	
 	var MapUtils = {
 		
@@ -26,9 +26,30 @@ define(function () {
 			if (zoomLevel == this.MAP_ZOOM_MINIMAP) return 0;
 			return 2;
 		},
+		
+		getMovementLineWidth: function (zoomLevel) {
+			let sectorSize = this.getSectorSize(zoomLevel);
+			return Math.ceil(sectorSize / 5);
+		},
 
 		getGridSize: function () {
 			return 10;
+		},
+		
+		getDefaultSectorFill: function (sectorStatus, sunlit) {
+			switch (sectorStatus) {
+				case SectorConstants.MAP_SECTOR_STATUS_VISITED_UNSCOUTED:
+				case SectorConstants.MAP_SECTOR_STATUS_REVEALED_BY_MAP:
+					return ColorConstants.getColor(sunlit, "map_fill_sector_unscouted");
+
+				case SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED:
+					return ColorConstants.getColor(sunlit, "map_fill_sector_scouted");
+
+				case SectorConstants.MAP_SECTOR_STATUS_VISITED_CLEARED:
+					return ColorConstants.getColor(sunlit, "map_fill_sector_cleared");
+			}
+			
+			return ColorConstants.getColor(sunlit, "map_fill_sector_unvisited");
 		},
 		
 		showResourcesInMapMode: function (mapMode) {

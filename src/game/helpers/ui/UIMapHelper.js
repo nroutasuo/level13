@@ -1,6 +1,7 @@
 // Creates and updates maps (mini-map and main)
 define(['ash',
 	'utils/CanvasUtils',
+	'utils/MapElements',
 	'utils/MapUtils',
 	'utils/MathUtils',
 	'game/GameGlobals',
@@ -26,7 +27,7 @@ define(['ash',
 	'game/components/sector/improvements/WorkshopComponent',
 	'game/components/type/SectorComponent',
 	'game/vos/PositionVO'],
-function (Ash, CanvasUtils, MapUtils, MathUtils,
+function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 	GameGlobals, ColorConstants, UIConstants, CanvasConstants, ExplorationConstants, ItemConstants, MovementConstants, PositionConstants, SectorConstants, WorldConstants,
 	PlayerPositionNode,
 	LevelComponent, CampComponent, PositionComponent, ItemsComponent,
@@ -44,26 +45,7 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 		constructor: function (engine) {
 			this.playerPosNodes = engine.getNodeList(PlayerPositionNode);
 			this.isMapRevealed = false;
-
-			this.initIcon("camp", "map-camp");
-			this.initIcon("campable", "map-campable");
-			this.initIcon("passage-up", "map-passage-up");
-			this.initIcon("passage-up-disabled", "map-passage-up-disabled");
-			this.initIcon("passage-down", "map-passage-down");
-			this.initIcon("passage-down-disabled", "map-passage-down-disabled");
-			this.initIcon("interest", "map-interest");
-			this.initIcon("unknown", "map-unvisited");
-			this.initIcon("workshop", "map-workshop");
-			this.initIcon("water", "map-water");
-			this.initIcon("beacon", "map-beacon");
-			this.initIcon("ingredient", "map-ingredient");
-		},
-
-		initIcon: function(key, name) {
-			this.icons[key] = new Image();
-			this.icons[key].src = "img/" + name + ".png";
-			this.icons[key + "-sunlit"] = new Image();
-			this.icons[key + "-sunlit"].src = "img/" + name + "-sunlit.png";
+			this.icons = MapElements.icons;
 		},
 
 		enableScrollingForMap: function (canvasId) {
@@ -102,6 +84,7 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 			options.mapSize = mapSize;
 			options.mapPosition = mapPosition;
 			options.centered = centered;
+			options.zoomLevel = centered ? MapUtils.MAP_ZOOM_MINIMAP : MapUtils.MAP_ZOOM_DEFAULT;
 			options.mapMode = mapMode;
 			
 			let canvases = $("#" + canvasId);
@@ -262,7 +245,7 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 				sector = beaconSectors[i];
 				let sectorStatus = SectorConstants.getSectorStatus(sector);
 				sectorPos = sector.get(PositionComponent);
-				if (this.showSectorOnMap(centered, sector, sectorStatus)) {
+				if (this.showSectorOnMap(options.centered, sector, sectorStatus)) {
 					sectorXpx = this.getSectorPixelPos(dimensions, options.centered, sectorSize, sectorPos.sectorX, sectorPos.sectorY).x;
 					sectorYpx = this.getSectorPixelPos(dimensions, options.centered, sectorSize, sectorPos.sectorX, sectorPos.sectorY).y;
 					ctx.beginPath();
@@ -880,7 +863,7 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 					let isVisited = SectorConstants.isVisited(sectorStatus) && SectorConstants.isVisited(neighbourStatus);
 					let lineColor = ColorConstants.getColor(sunlit, "map_stroke_movementlines");
 					ctx.strokeStyle = lineColor;
-					ctx.lineWidth = Math.ceil(sectorSize / 6);
+					ctx.lineWidth = MapUtils.getMovementLineWidth(options.zoomLevel);
 					
 					let distX = neighbourPos.sectorX - sectorPos.sectorX;
 					let distY = neighbourPos.sectorY - sectorPos.sectorY;
@@ -897,26 +880,9 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 						var blockerX = sectorMiddleX + sectorSize * (1 + sectorPadding)/2 * distX;
 						var blockerY = sectorMiddleY + sectorSize * (1 + sectorPadding)/2 * distY;
 						
-						if (isBlocked || MapUtils.showClearedBlockersInMapMode(options.mapMode))
-						if (isGang) {
-							if (isBlocked) {
-								ctx.strokeStyle = ColorConstants.getColor(sunlit, "map_stroke_gang");
-								ctx.lineWidth = Math.ceil(sectorSize / 9);
-								ctx.beginPath();
-								ctx.arc(blockerX, blockerY, sectorSize * 0.2, 0, 2 * Math.PI);
-								ctx.stroke();
-							}
-						} else {
-							var crossSize = Math.max(sectorSize / 5, 3);
-							ctx.strokeStyle = isBlocked ? ColorConstants.getColor(sunlit, "map_stroke_blocker") : ColorConstants.getColor(sunlit, "map_fill_sector_scouted");
-							ctx.lineWidth = Math.ceil(sectorSize / 9);
-							ctx.beginPath();
-							ctx.moveTo(blockerX - crossSize, blockerY - crossSize);
-							ctx.lineTo(blockerX + crossSize, blockerY + crossSize);
-							ctx.moveTo(blockerX + crossSize, blockerY - crossSize);
-							ctx.lineTo(blockerX - crossSize, blockerY + crossSize);
-							ctx.stroke();
-						}
+						if (!isBlocked && !MapUtils.showClearedBlockersInMapMode(options.mapMode)) continue;
+						
+						MapElements.drawMovementBlocker(ctx, sunlit, sectorSize, blockerX, blockerY, isGang, isBlocked);
 					}
 				}
 			}
@@ -1103,19 +1069,7 @@ function (Ash, CanvasUtils, MapUtils, MathUtils,
 				return ColorConstants.getColor(sunlit, "map_fill_sector_cleared");
 			}
 
-			switch (sectorStatus) {
-				case SectorConstants.MAP_SECTOR_STATUS_VISITED_UNSCOUTED:
-				case SectorConstants.MAP_SECTOR_STATUS_REVEALED_BY_MAP:
-					return ColorConstants.getColor(sunlit, "map_fill_sector_unscouted");
-
-				case SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED:
-					return ColorConstants.getColor(sunlit, "map_fill_sector_scouted");
-
-				case SectorConstants.MAP_SECTOR_STATUS_VISITED_CLEARED:
-					return ColorConstants.getColor(sunlit, "map_fill_sector_cleared");
-			}
-			
-			return ColorConstants.getColor(sunlit, "map_fill_sector_unvisited");
+			return MapUtils.getDefaultSectorFill(sectorStatus, sunlit);
 		},
 		
 		getSectorHazardBorderColor: function (mapMode, sector) {
