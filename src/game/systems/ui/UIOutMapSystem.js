@@ -6,6 +6,7 @@ define([
 	'game/constants/GameConstants',
 	'game/constants/ItemConstants',
 	'game/constants/LevelConstants',
+	'game/constants/MovementConstants',
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
 	'game/constants/TextConstants',
@@ -24,11 +25,12 @@ define([
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/improvements/WorkshopComponent',
+	'game/components/player/ItemsComponent',
 	'game/components/type/LevelComponent',
 	'game/systems/CheatSystem',
-], function (Ash, MapUtils, GameGlobals, GlobalSignals, GameConstants, ItemConstants, LevelConstants, PositionConstants, SectorConstants, TextConstants, TradeConstants, UIConstants,
+], function (Ash, MapUtils, GameGlobals, GlobalSignals, GameConstants, ItemConstants, LevelConstants, MovementConstants, PositionConstants, SectorConstants, TextConstants, TradeConstants, UIConstants,
 	PlayerLocationNode, PlayerPositionNode,
-	CampComponent, PositionComponent, VisitedComponent, EnemiesComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, SectorImprovementsComponent, WorkshopComponent, LevelComponent,
+	CampComponent, PositionComponent, VisitedComponent, EnemiesComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, SectorImprovementsComponent, WorkshopComponent, ItemsComponent, LevelComponent,
 	CheatSystem) {
 
 	var UIOutMapSystem = Ash.System.extend({
@@ -230,13 +232,14 @@ define([
 				var header = isVisited ? TextConstants.getSectorName(isScouted, features) : "Sector";
 				$("#mainmap-sector-details-name").text(header);
 				$("#mainmap-sector-details-pos").text(position.getInGameFormat(false));
+				$("#mainmap-sector-details-district").text(this.getDistrictText(this.selectedSector));
+				$("#mainmap-sector-details-distance").text(this.getDistanceText(this.selectedSector));
 				$("#mainmap-sector-details-poi").text(this.getPOIText(this.selectedSector, isScouted));
 				$("#mainmap-sector-details-res-sca").text(this.getResScaText(this.selectedSector, isScouted, statusComponent, sectorFeatures));
 				$("#mainmap-sector-details-res-col").text(this.getCollectorsText(this.selectedSector, isScouted));
 				$("#mainmap-sector-details-threats").text(this.getThreatsText(this.selectedSector, isScouted));
-				$("#mainmap-sector-details-blockers").text(this.getBlockersText(this.selectedSector, isScouted));
-				$("#mainmap-sector-details-env").text(this.getEnvironmentText(this.selectedSector, isScouted));
-				$("#mainmap-sector-details-distance").text(this.getDistanceText(this.selectedSector));
+				$("#mainmap-sector-details-blockers").text(this.getBlockersHTML(this.selectedSector, isScouted));
+				$("#mainmap-sector-details-env").html(this.getEnvironmentHTML(this.selectedSector, isScouted));
 				$("#mainmap-sector-debug-text").text("Zone: " + sectorFeatures.zone);
 			}
 		},
@@ -346,6 +349,11 @@ define([
 				mapStatusText = "There are still some unvisited streets" + levelLocation + ".";
 
 			$("#map-completion-hint").text(levelTypeText + "" + mapStatusText);
+		},
+		
+		getDistrictText: function (sector) {
+			let sectorFeatures = sector.get(SectorFeaturesComponent);
+			return sectorFeatures.isEarlyZone() ? "central" : "unfrequented";
 		},
 		
 		getPOIText: function (sector, isScouted) {
@@ -465,21 +473,23 @@ define([
 			}
 		},
 		
-		getBlockersText: function (sector, isScouted) {
+		getBlockersHTML: function (sector, isScouted) {
 			if (!isScouted) return "?";
 			let result = [];
 			
-			var position = sector.get(PositionComponent);
-			var passagesComponent = sector.get(PassagesComponent);
+			let position = sector.get(PositionComponent);
+			let passagesComponent = sector.get(PassagesComponent);
 			for (let i in PositionConstants.getLevelDirections()) {
-				var direction = PositionConstants.getLevelDirections()[i];
-				var directionName = PositionConstants.getDirectionName(direction);
-				var blocker = passagesComponent.getBlocker(direction);
+				let direction = PositionConstants.getLevelDirections()[i];
+				let directionName = PositionConstants.getDirectionName(direction);
+				let blocker = passagesComponent.getBlocker(direction);
 				if (blocker) {
-					var gangComponent = GameGlobals.levelHelper.getGangComponent(position, direction);
+					let gangComponent = GameGlobals.levelHelper.getGangComponent(position, direction);
 					let enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
 					let blockerName = TextConstants.getMovementBlockerName(blocker, enemiesComponent, gangComponent).toLowerCase();
 					if (GameGlobals.movementHelper.isBlocked(sector, direction)) {
+						let blockerType = blocker.type;
+						let isGang = blockerType === MovementConstants.BLOCKER_TYPE_GANG;
 						result.push(blockerName + " (" + directionName + ")");
 					}
 				}
@@ -489,18 +499,30 @@ define([
 			else return result.join(", ");
 		},
 		
-		getEnvironmentText: function (sector, isScouted) {
-			var isVisited = sector.has(VisitedComponent);
+		getEnvironmentHTML: function (sector, isScouted) {
+			let isVisited = sector.has(VisitedComponent);
 			if (!isVisited) return "?";
 			let result = [];
-			var featuresComponent = sector.get(SectorFeaturesComponent);
-			var statusComponent = sector.get(SectorStatusComponent);
-			var hazards = GameGlobals.sectorHelper.getEffectiveHazards(featuresComponent, statusComponent);
+			let featuresComponent = sector.get(SectorFeaturesComponent);
+			let statusComponent = sector.get(SectorStatusComponent);
+			let itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
+			let hazards = GameGlobals.sectorHelper.getEffectiveHazards(featuresComponent, statusComponent);
+			
+			let getHazardSpan = function (label, value, isWarning) {
+				if (!value) return label;
+				if (!isWarning) return label + " (" + value + ")";
+				return label + " (<span class='warning'>" + value + "</span>)";
+			};
+			
 			if (featuresComponent.sunlit) result.push("sunlit");
-			if (hazards.radiation > 0) result.push("radioactivity (" + hazards.radiation + ")");
-			if (hazards.poison > 0) result.push("pollution (" + hazards.poison + ")");
-			if (hazards.cold > 0) result.push("cold (" + hazards.cold + ")");
 			if (hazards.debris > 0) result.push("debris");
+			
+			if (hazards.radiation > 0)
+				result.push(getHazardSpan("radioactivity", hazards.radiation, hazards.radiation > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_radiation)));
+			if (hazards.poison > 0)
+				result.push(getHazardSpan("pollution", hazards.poison, hazards.poison > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_poison)));
+			if (hazards.cold > 0)
+				result.push(getHazardSpan("cold", hazards.cold, hazards.cold > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_cold)));
 			
 			if (result.length < 1) return "-";
 			else return result.join(", ");
