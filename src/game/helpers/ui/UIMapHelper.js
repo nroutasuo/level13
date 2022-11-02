@@ -375,8 +375,6 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 				result.push({ id: "food", color: this.getResourceFill(resourceNames.food), position: nearestFoodSector.get(PositionComponent) });
 			}
 			
-			console.log(result);
-			
 			return result;
 		},
 		

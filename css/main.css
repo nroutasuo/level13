@@ -490,6 +490,10 @@ body.dark td.minwidth {
 body.dark td.maxwidth {
   width: 95%;
 }
+body.dark td.textwidth {
+  width: 5%;
+  white-space: nowrap;
+}
 body.dark td.list-amount,
 body.dark td.list-storage {
   min-width: 30pt;
@@ -2688,6 +2692,10 @@ body.sunlit td.minwidth {
 }
 body.sunlit td.maxwidth {
   width: 95%;
+}
+body.sunlit td.textwidth {
+  width: 5%;
+  white-space: nowrap;
 }
 body.sunlit td.list-amount,
 body.sunlit td.list-storage {

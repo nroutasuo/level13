@@ -538,6 +538,8 @@ define([
 			levelStats.countClearedSectors = 0;
 			levelStats.countScoutedSectors = 0;
 			levelStats.countRevealedSectors = 0;
+			levelStats.countVisitedSectors = 0;
+			levelStats.countKnownIngredientSectors = 0;
 
 			var sectorPosition;
 			var statusComponent;
@@ -551,12 +553,15 @@ define([
 				statusComponent = node.entity.get(SectorStatusComponent);
 				if (sectorStatus === SectorConstants.MAP_SECTOR_STATUS_VISITED_CLEARED) levelStats.countClearedSectors++;
 				if (statusComponent.scouted) levelStats.countScoutedSectors++;
+				if (node.entity.has(VisitedComponent)) levelStats.countVisitedSectors++;
 				if (node.entity.has(RevealedComponent) || node.entity.has(VisitedComponent)) levelStats.countRevealedSectors++;
+				if (GameGlobals.sectorHelper.hasSectorVisibleIngredients(node.entity)) levelStats.countKnownIngredientSectors++;
 			}
 
 			levelStats.percentClearedSectors = levelStats.countClearedSectors == levelStats.totalSectors ? 1 : levelStats.countClearedSectors / levelStats.totalSectors;
 			levelStats.percentScoutedSectors = levelStats.countScoutedSectors == levelStats.totalSectors ? 1 : levelStats.countScoutedSectors / levelStats.totalSectors;
 			levelStats.percentRevealedSectors = levelStats.countRevealedSectors == levelStats.totalSectors ? 1 : levelStats.countRevealedSectors / levelStats.totalSectors;
+			levelStats.percentVisitedSectors = levelStats.countVisitedSectors == levelStats.totalSectors ? 1 : levelStats.countVisitedSectors / levelStats.totalSectors;
 
 			return levelStats;
 		},
