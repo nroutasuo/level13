@@ -84,6 +84,8 @@ define([
 			$("#btn-mainmap-sector-details-unvisited").click($.proxy(this.selectUnvisitedSector, this));
 			$("#btn-mainmap-sector-details-unscouted").click($.proxy(this.selectUnscoutedSector, this));
 			$("#btn-mainmap-sector-details-ingredients").click($.proxy(this.selectIngredientSector, this));
+			
+			$("#btn-mainmap-sector-path").click($.proxy(this.showSectorPath, this));
 		},
 
 		update: function (time) {
@@ -233,14 +235,21 @@ define([
 		},
 
 		updateSector: function () {
-			var hasSector = this.selectedSector !== null;
+			let hasSector = this.selectedSector !== null;
+			let path = this.findPathTo(this.selectedSector);
+			let hasPath = hasSector && path && path.length > 0;
+			
+			let position = hasSector ? this.selectedSector.get(PositionComponent).getPosition() : null;
+			let playerPosition = this.playerLocationNodes.head.position.getPosition();
+			let levelDiff = hasSector ? Math.abs(position.level - playerPosition.level) : 0;
+			
 			GameGlobals.uiFunctions.toggle($("#mainmap-sector-details-content-empty"), !hasSector);
 			GameGlobals.uiFunctions.toggle($("#mainmap-sector-details-content"), hasSector);
 			GameGlobals.uiFunctions.toggle($("#mainmap-sector-details-content-debug"), hasSector && GameConstants.isCheatsEnabled);
+			GameGlobals.uiFunctions.toggle($("#btn-mainmap-sector-path"), hasSector && hasPath && levelDiff <= 1);
 
 			if (hasSector) {
 				let statusComponent = this.selectedSector.get(SectorStatusComponent);
-				var position = this.selectedSector.get(PositionComponent).getPosition();
 				var isScouted = statusComponent.scouted;
 				var isVisited = this.selectedSector.has(VisitedComponent);
 				var sectorFeatures = this.selectedSector.get(SectorFeaturesComponent);
@@ -354,6 +363,74 @@ define([
 			}
 			
 			return newIndex == null ? null : sectors[newIndex];
+		},
+		
+		showSectorPath: function () {
+			if (!this.selectedSector) return;
+			let path = this.findPathTo(this.selectedSector);
+			if (!path || path.length == 0) return;
+			
+			let position = this.selectedSector.get(PositionComponent).getPosition();
+			let startPosition = this.playerLocationNodes.head.position.getPosition();
+			let includeLevel = position.level != startPosition.level;
+			let title = "Directions from " + startPosition.getInGameFormat(includeLevel) + " to " + position.getInGameFormat(includeLevel);
+			
+			let stretches = [];
+			let previousPos = startPosition;
+			for (let i = 0; i < path.length; i++) {
+				let sector = path[i];
+				let pos = sector.get(PositionComponent).getPosition();
+				let direction = PositionConstants.getDirectionFrom(previousPos, pos);
+				
+				if (stretches.length == 0) {
+					stretches.push({ startPos: previousPos, endPos: pos, direction: direction, steps: 1 });
+				} else {
+					let previousStretch = stretches[stretches.length - 1];
+					if (direction == previousStretch.direction) {
+						previousStretch.endPos = pos;
+						previousStretch.steps = previousStretch.steps + 1;
+						
+					} else {
+						stretches.push({ startPos: previousPos, endPos: pos, direction: direction, steps: 1 });
+					}
+				}
+				
+				previousPos = pos;
+			}
+			
+			let instructions = [];
+			for (let i = 0; i < stretches.length; i++) {
+				let stretch = stretches[i];
+				let isLast = i == stretches.length - 1;
+				let isLevelChange = stretch.startPos.level != stretch.endPos.level;
+				
+				let instructionPreface = "";
+				if (stretches.length > 1) {
+					if (isLast && stretches.length > 3) instructionPreface = "finally, ";
+					else if (isLevelChange) instructionPreface = "then, ";
+				}
+				
+				let isPerpendicular = i > 0 && PositionConstants.isPerpendicular(stretch.direction, stretches[i-1].direction);
+				
+				let goVerb = isPerpendicular ? "turn" : "move";
+				let stepNoun = stretch.steps > 1 ? "steps" : "step";
+				let stepsPhrase = isLevelChange ? "" : "<span class='hl-functionality'>" + stretch.steps + "</span> " + stepNoun + " ";
+				let endPosition = isLevelChange ? "level " + stretch.endPos.level : stretch.endPos.getInGameFormat();
+				
+				let instructionBase =
+					goVerb + " " +
+					stepsPhrase +
+					"<span class='hl-functionality'>" + PositionConstants.getDirectionName(stretch.direction) + "</span>" +
+					" to " + endPosition;
+				
+				let instruction = instructionPreface + " " + instructionBase;
+				
+				instructions.push(instruction);
+			}
+			
+			let body = instructions.join("<br/>");
+			
+			GameGlobals.uiFunctions.showInfoPopup(title, body, null, null, null, true, false);
 		},
 
 		updateMapCompletionHint: function () {
@@ -577,9 +654,14 @@ define([
 		},
 		
 		getDistanceText: function (sector) {
-			var path = GameGlobals.levelHelper.findPathTo(this.playerLocationNodes.head.entity, sector, { skipBlockers: true, skipUnvisited: false });
+			var path = this.findPathTo(sector);
 			var len = path ? path.length : "?";
 			return len + " blocks";
+		},
+		
+		findPathTo: function (sector) {
+			if (!sector) return null;
+			return GameGlobals.levelHelper.findPathTo(this.playerLocationNodes.head.entity, sector, { skipBlockers: true, skipUnvisited: false });
 		},
 		
 		teleport: function () {

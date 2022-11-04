@@ -92,8 +92,9 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		},
 		
 		getDirectionFrom: function (sectorPosFrom, sectorPosTo) {
-			var dx = sectorPosFrom.sectorX - sectorPosTo.sectorX;
-			var dy = sectorPosFrom.sectorY - sectorPosTo.sectorY;
+			let dx = sectorPosFrom.sectorX - sectorPosTo.sectorX;
+			let dy = sectorPosFrom.sectorY - sectorPosTo.sectorY;
+			let dl = sectorPosFrom.level - sectorPosTo.level;
 			
 			if (dy === 0 && dx < 0) return this.DIRECTION_EAST;
 			if (dy === 0 && dx > 0) return this.DIRECTION_WEST;
@@ -103,6 +104,10 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 			if (dx < 0 && dy > 0) return this.DIRECTION_NE;
 			if (dx > 0 && dy < 0) return this.DIRECTION_SW;
 			if (dx < 0 && dy < 0) return this.DIRECTION_SE;
+			
+			if (dl > 0) return this.DIRECTION_UP;
+			if (dl < 0) return this.DIRECTION_DOWN;
+			
 			return this.DIRECTION_NONE;
 		},
 		
@@ -264,6 +269,12 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 			}
 		},
 		
+		isPerpendicular: function (direction1, direction2) {
+			return
+				this.getNextClockWise(this.getNextClockWise(direction1, true), true) == direction2 ||
+				this.getNextClockWise(this.getNextCounterClockWise(direction1, true), true) == direction2;
+		},
+		
 		isNeighbouringDirection: function (direction1, direction2, includeDiagonals) {
 			return this.getNextClockWise(direction1, includeDiagonals) == direction2 || this.getNextCounterClockWise(direction1, includeDiagonals) == direction2;
 		},
@@ -279,9 +290,9 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 				case this.DIRECTION_SW: return short ? "SW" : "south-west";
 				case this.DIRECTION_NW: return short ? "NW" : "north-west";
 				case this.DIRECTION_UP: return short ? "U" : "up";
-				case this.DIRECTION_DOWN: short ? "D" : "down";
-				case this.DIRECTION_CAMP: short ? "C" : "camp";
-				case this.DIRECTION_NONE: "none";
+				case this.DIRECTION_DOWN: return short ? "D" : "down";
+				case this.DIRECTION_CAMP: return short ? "C" : "camp";
+				case this.DIRECTION_NONE: return "none";
 			}
 			return "unknown";
 		},
