@@ -474,12 +474,24 @@
 								<div id="mainmap-ascii-legend" class="lvl13-box-1"></div>
 							</div>
 							<div id="mainmap-sector-details" class="lvl13-box-1" style="margin: 5px; padding: 5px;">
-								<button id="btn-mainmap-sector-details-next" class="context btn-meta">Next</button>
-								<button id="btn-mainmap-sector-details-previous" class="context btn-meta">Previous</button>
-								<button id="btn-mainmap-sector-details-camp" class="context btn-meta">Camp</button>
-								<button id="btn-mainmap-sector-details-unvisited" class="context btn-meta">Unvisited</button>
-								<button id="btn-mainmap-sector-details-unscouted" class="context btn-meta">Unscouted</button>
-								<button id="btn-mainmap-sector-details-ingredients" class="context btn-meta">Ingredients</button>
+								<button id="btn-mainmap-sector-details-next" aria-label="Next sector" class="context btn-glyph">
+									<img src="img/eldorado/icon-next-dark.png" class="img-themed" data-src-sunlit="img/eldorado/icon-next.png" />
+								</button>
+								<button id="btn-mainmap-sector-details-previous" aria-label="Previous sector" class="context btn-glyph">
+									<img src="img/eldorado/icon-previous-dark.png" class="img-themed" data-src-sunlit="img/eldorado/icon-previous.png" />
+								</button>
+								<button id="btn-mainmap-sector-details-camp" aria-label="Camp sector" class="context btn-glyph">
+									<img src="img/map-camp-sunlit.png" class="img-themed" data-src-sunlit="img/map-camp.png" />
+								</button>
+								<button id="btn-mainmap-sector-details-unvisited" aria-label="Unvisited sectors" class="context btn-glyph">
+									<img src="img/map-unvisited-sunlit.png" class="img-themed" data-src-sunlit="img/map-unvisited.png" />
+								</button>
+								<button id="btn-mainmap-sector-details-unscouted" aria-label="Unscouted sectors" class="context btn-glyph">
+									<img src="img/map-interest-sunlit.png" class="img-themed" data-src-sunlit="img/map-interest.png" />
+								</button>
+								<button id="btn-mainmap-sector-details-ingredients" aria-label"Sectors with ingredients" class="context btn-glyph">
+									<img src="img/map-ingredient-sunlit.png" class="img-themed" data-src-sunlit="img/map-ingredient.png" />
+								</button>
 								<div id="mainmap-sector-details-content-empty">
 									<h3>Sector details</h3>
 									<p class="meta" id="mainmap-sector-details-empty-text-canvas">Click on a sector to see details.</p>
@@ -489,7 +501,7 @@
 									<h3><span id="mainmap-sector-details-name">Sector</span> <span id="mainmap-sector-details-pos"/></h3>
 									<table class="spacious full-width">
 										<tr><td class="textwidth">District:</td><td><span id="mainmap-sector-details-district"></span></td></tr>
-										<tr><td class="textwidth">Distance:</td><td><span id="mainmap-sector-details-distance"></span></td></tr>
+										<tr><td class="textwidth">Distance:</td><td><span id="mainmap-sector-details-distance"></span> <button id="btn-mainmap-sector-path" class="btn-meta">(get path)</button></td></tr>
 										<tr><td class="textwidth">Points of interest:</td><td><span id="mainmap-sector-details-poi"></span></td></tr>
 										<tr><td class="textwidth">Scavenging:</td><td><span id="mainmap-sector-details-res-sca"></span></td></tr>
 										<tr><td class="textwidth">Collectors:</td><td><span id="mainmap-sector-details-res-col"></span></td></tr>

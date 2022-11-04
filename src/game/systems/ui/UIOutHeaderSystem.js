@@ -146,6 +146,15 @@ define([
 				div += "</div>";
 				$container.append(div)
 			}
+			let themedIcons = [];
+			$.each($("img.img-themed"), function () {
+				themedIcons.push({
+					$elem: $(this),
+					pathSunlit: $(this).attr("data-src-sunlit"),
+					pathDark: $(this).attr("src"),
+				});
+			});
+			this.themedIcons = themedIcons;
 		},
 
 		generateStatsCallouts: function () {
@@ -857,6 +866,14 @@ define([
 					 this.elements.body.toggleClass("vision-step-" + i, i == visionStep);
 				}
 			});
+			
+			// update elements affected by sunligt
+			// TODO move to some place more generic
+			for (let i = 0; i < this.themedIcons.length; i++) {
+				var icon = this.themedIcons[i];
+				var path = sunlit ? icon.pathSunlit : icon.pathDark;
+				icon.$elem.attr("src", path);
+			}
 		},
 		
 		isResting: function () {
