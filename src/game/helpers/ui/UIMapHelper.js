@@ -434,7 +434,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 				let blibSize = iconSize + p * 2;
 				let blibColor = ColorConstants.getColor(sunlit, "map_fill_sector_scouted");
 				CanvasUtils.drawCircle(ctx, blibColor, blibPos.x, blibPos.y, blibSize / 2);
-				ctx.drawImage(icon, blibPos.x - iconSize / 2, blibPos.y - iconSize / 2);
+				ctx.drawImage(icon, Math.round(blibPos.x - iconSize / 2), Math.round(blibPos.y - iconSize / 2));
 			} else {
 				CanvasUtils.drawCircle(ctx, mapHint.color, blibPos.x, blibPos.y, (iconSize - 2) / 2);
 			}
@@ -475,8 +475,8 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			let rawY = margin + padding/2 + (y - dimensions.minVisibleY) * sectorSize * (1 + paddingFactor);
 			
 			return {
-				x: Math.round(rawX * 10)/10,
-				y: Math.round(rawY * 10)/10
+				x: Math.round(Math.round(rawX) * 2)/2,
+				y: Math.round(Math.round(rawY) * 2)/2,
 			};
 		},
 		
@@ -506,7 +506,10 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 				let radius = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * radiusSmall : sectorSize * radiusDefault;
 				ctx.fillStyle = colorBorderVisibleArea;
 				ctx.strokeStyle = colorBorderVisibleArea;
-				CanvasUtils.fillRoundedRect(ctx, sectorXpx - bgPadding, sectorYpx - bgPadding, sectorSize + bgPadding * 2, sectorSize + bgPadding * 2, radius);
+				let fillX = Mathr.sectorXpx - bgPadding;
+				let fillY = sectorYpx - bgPadding;
+				let fillSize = sectorSize + bgPadding * 2;
+				CanvasUtils.fillRoundedRect(ctx, fillX, fillY, fillSize, fillSize, radius);
 			});
 			
 			if (stroke) {
@@ -517,7 +520,10 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 					let sectorFeatures = sector.get(SectorFeaturesComponent);
 					ctx.fillStyle = sectorFeatures.isEarlyZone() ? colorBgMap : "#252525";
 					ctx.strokeStyle = sectorFeatures.isEarlyZone() ? colorBgMap : "#252525";
-					CanvasUtils.fillRoundedRect(ctx, sectorXpx - bgPadding + borderSize, sectorYpx - bgPadding + borderSize, sectorSize + bgPadding * 2 - borderSize * 2, sectorSize + bgPadding * 2 - borderSize * 2, radius);
+					let strokeX = sectorXpx - bgPadding + borderSize;
+					let strokeY = sectorYpx - bgPadding + borderSize;
+					let strokeSize = sectorSize + bgPadding * 2 - borderSize * 2;
+					CanvasUtils.fillRoundedRect(ctx, strokeX, strokeY, strokeSize, strokeSize, radius);
 				});
 			}
 		},
@@ -635,6 +641,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 				} else {
 					let sizeOffset = size - sectorSize;
 					let p = sizeOffset / 2;
+					
 					ctx.fillRect(sectorXpx - p, sectorYpx - p, size, size);
 				}
 			};
@@ -746,9 +753,9 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 				return;
 			}
 			
-			let iconPosX = sectorXpx + (sectorSize - iconSize) / 2;
-			let iconPosYCentered = sectorYpx + sectorSize / 2 - iconSize / 2;
-			let iconPosY = isBigSectorSize ? sectorYpx : iconPosYCentered;
+			let iconPosX = Math.round(sectorXpx + (sectorSize - iconSize) / 2);
+			let iconPosYCentered = Math.round(sectorYpx + sectorSize / 2 - iconSize / 2);
+			let iconPosY = Math.round(isBigSectorSize ? sectorYpx : iconPosYCentered);
 			
 			if (!isRevealed && !hideUnknownIcon) {
 				ctx.drawImage(this.icons["unknown" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosYCentered);
@@ -853,7 +860,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 					
 					if (drawSize > 0) {
 						ctx.fillStyle = this.getResourceFill(name);
-						ctx.fillRect(x, y + yOffset, drawSize, drawSize);
+						ctx.fillRect(Math.round(x), Math.round(y + yOffset), drawSize, drawSize);
 						x = x + drawSize + padding;
 					}
 				}
