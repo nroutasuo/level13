@@ -81,10 +81,22 @@ define(['ash', 'game/constants/UIConstants'
 		},
 		
 		snapScrollPositionToGrid: function (canvasId) {
-			var scrollContainer = $("#" + canvasId).parent();
+			let scrollContainer = $("#" + canvasId).parent();
+			let currentPosition = {
+				x: scrollContainer.scrollLeft(),
+				y: scrollContainer.scrollTop(),
+			};
+			let snapPosition = this.getScrollSnapPosition(currentPosition);
+			scrollContainer.scrollLeft(snapPosition.x);
+			scrollContainer.scrollTop(snapPosition.y);
+		},
+		
+		getScrollSnapPosition: function (currentPosition) {
 			// TODO set grid size per canvas
-			scrollContainer.scrollLeft(Math.round(scrollContainer.scrollLeft() / 20) * 20);
-			scrollContainer.scrollTop(Math.round(scrollContainer.scrollTop() / 20) * 20);
+			return {
+				x: Math.round(currentPosition.x / 20) * 20,
+				y: Math.round(currentPosition.y / 20) * 20,
+			}
 		}
 	};
 	

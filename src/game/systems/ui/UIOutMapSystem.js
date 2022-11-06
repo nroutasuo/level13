@@ -152,6 +152,7 @@ define([
 			this.selectedSector = null;
 			this.updateMap();
 			this.updateSector();
+			this.centerMap();
 		},
 
 		selectSector: function (level, x, y) {
@@ -172,7 +173,6 @@ define([
 			
 			this.updateHeader();
 			this.updateMap();
-			this.centerMap();
 		},
 		
 		selectMapStyle: function (mapStyle) {
@@ -269,23 +269,33 @@ define([
 			}
 		},
 
-		centerMap: function () {
-			if (!this.playerPositionNodes || !this.playerPositionNodes.head) return;
+		centerMap: function (pos, animate) {
 			if (this.selectedMapStyle != this.MAP_STYLE_CANVAS) return;
-			
-			var mapPosition = this.playerPositionNodes.head.position.getPosition();
-			if (this.selectedLevel || this.selectedLevel == 0) {
-				mapPosition.level = this.selectedLevel;
-				if (this.selectedSector) {
-					var pos = this.selectedSector.get(PositionComponent);
-					mapPosition.sectorX = pos.sectorX;
-					mapPosition.sectorY = pos.sectorY;
-				} else {
-					mapPosition.sectorX = 0;
-					mapPosition.sectorY = 0;
+			if (!this.playerPositionNodes || !this.playerPositionNodes.head) return;
+			setTimeout(() => {
+				let hasSelectedLevel = this.selectedLevel || this.selectedLevel == 0;
+				
+				let mapPosition = pos || {};
+				if (!pos) {
+					let playerPos = this.playerPositionNodes.head.position.getPosition();
+					if (this.selectedSector) {
+						mapPosition = selectedSector.get(PositionComponent).getPosition();
+					} else if (hasSelectedLevel && this.selectedLevel != playerPos.level) {
+						let campSector = GameGlobals.levelHelper.getCampSectorOnLevel(this.selectedLevel);
+						if (campSector) {
+							mapPosition = campSector.get(PositionComponent).getPosition();
+						} else {
+							mapPosition.level = this.selectedLevel;
+		   					mapPosition.sectorX = 0;
+		   					mapPosition.sectorY = 0;
+		   				}
+					} else {
+						mapPosition = playerPos;
+					}
 				}
-			}
-			GameGlobals.uiMapHelper.centerMapToPlayer("mainmap", mapPosition, false);
+				
+				GameGlobals.uiMapHelper.centerMapToPosition("mainmap", mapPosition, false, animate);
+			}, 1);
 		},
 		
 		selectNextSector: function () {
@@ -293,6 +303,7 @@ define([
 			if (!newSector) return null;
 			let pos = newSector.get(PositionComponent);
 			this.selectSector(pos.level, pos.sectorX, pos.sectorY);
+			this.centerMap(pos, true);
 		},
 		
 		selectPreviousSector: function () {
@@ -300,6 +311,7 @@ define([
 			if (!newSector) return null;
 			let pos = newSector.get(PositionComponent);
 			this.selectSector(pos.level, pos.sectorX, pos.sectorY);
+			this.centerMap(pos, true);
 		},
 		
 		selectCampSector: function () {
@@ -308,6 +320,7 @@ define([
 			if (!campNode) return;
 			let pos = campNode.position;
 			this.selectSector(pos.level, pos.sectorX, pos.sectorY);
+			this.centerMap(pos, true);
 		},
 		
 		selectUnvisitedSector: function () {
@@ -318,6 +331,7 @@ define([
 			if (!newSector) return null;
 			let pos = newSector.get(PositionComponent);
 			this.selectSector(pos.level, pos.sectorX, pos.sectorY);
+			this.centerMap(pos, true);
 		},
 		
 		selectUnscoutedSector: function () {
@@ -328,6 +342,7 @@ define([
 			if (!newSector) return null;
 			let pos = newSector.get(PositionComponent);
 			this.selectSector(pos.level, pos.sectorX, pos.sectorY);
+			this.centerMap(pos, true);
 		},
 		
 		selectIngredientSector: function () {
@@ -338,6 +353,7 @@ define([
 			if (!newSector) return null;
 			let pos = newSector.get(PositionComponent);
 			this.selectSector(pos.level, pos.sectorX, pos.sectorY);
+			this.centerMap(pos, true);
 		},
 		
 		getNextSelectableSector: function (offset, filter) {

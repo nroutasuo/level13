@@ -63,17 +63,35 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			$("#" + canvasId).parent().unwrap();
 		},
 
-		centerMapToPlayer: function (canvasId, mapPosition, centered) {
-			var sectorSize = this.getSectorSize(false);
-			var mapDimensions = this.getMapSectorDimensions(canvasId, -1, false, mapPosition);
-			var minVisibleX = mapDimensions.minVisibleX;
-			var minVisibleY = mapDimensions.minVisibleY;
-			var playerPosX = sectorSize + (mapPosition.sectorX - minVisibleX) * sectorSize * (1 + this.getSectorPadding(centered));
-			var playerPosY = sectorSize + (mapPosition.sectorY - minVisibleY) * sectorSize * (1 + this.getSectorPadding(centered));
-			$("#" + canvasId).parent().scrollLeft(playerPosX - $("#" + canvasId).parent().width() * 0.5);
-			$("#" + canvasId).parent().scrollTop(playerPosY - $("#" + canvasId).parent().height() * 0.5);
-			CanvasConstants.snapScrollPositionToGrid(canvasId);
-			CanvasConstants.updateScrollIndicators(canvasId);
+		centerMapToPosition: function (canvasId, mapPosition, centered, animate) {
+			let sectorSize = this.getSectorSize(false);
+			let dimensions = this.getMapSectorDimensions(canvasId, -1, false, mapPosition);
+			
+			let positionPixels = this.getSectorPixelPosCenter(dimensions, centered, sectorSize, mapPosition.sectorX, mapPosition.sectorY);
+			let playerPosX = positionPixels.x;
+			let playerPosY = positionPixels.y;
+			
+			let $scrollContainer = $("#" + canvasId).parent();
+			let scrollPosition = {
+				x: playerPosX - $scrollContainer.width() * 0.5,
+				y: playerPosY - $scrollContainer.height() * 0.5,
+			};
+			let finalPosition = CanvasConstants.getScrollSnapPosition(scrollPosition);
+			
+			if (animate) {
+				let duration = 300;
+				$scrollContainer.animate({
+					scrollLeft: finalPosition.x,
+					scrollTop: finalPosition.y,
+				}, duration, () => {
+					CanvasConstants.updateScrollIndicators(canvasId);
+				});
+			} else {
+				$scrollContainer.scrollLeft(finalPosition.x);
+				$scrollContainer.scrollTop(finalPosition.y);
+				CanvasConstants.snapScrollPositionToGrid(canvasId);
+				CanvasConstants.updateScrollIndicators(canvasId);
+			}
 		},
 
 		rebuildMap: function (canvasId, overlayId, mapPosition, mapSize, centered, mapMode, sectorSelectedCallback) {
