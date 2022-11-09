@@ -12,11 +12,13 @@ define(['ash', 'game/constants/UIConstants'
 			$("#" + canvasId).addClass("scrollable");
 			
 			$("#" + canvasId).parent().wrap("<div class='scroll-position-container lvl13-box-2'></div>");
-			$("#" + canvasId).parent().before("<div class='scroll-position-indicator scroll-position-indicator-vertical'/>");
-			$("#" + canvasId).parent().before("<div class='scroll-position-indicator scroll-position-indicator-horizontal'/>");
+			$("#" + canvasId).parent().before("<div class='scroll-position-indicator scroll-position-indicator-vertical' data-canvasid='" + canvasId + "' />");
+			$("#" + canvasId).parent().before("<div class='scroll-position-indicator scroll-position-indicator-horizontal' data-canvasid='" + canvasId + "' />");
 		},
 		
 		onScrollableMapMouseDown: function (e) {
+			e.data.helper.clearPageSelection();
+			e.preventDefault();
 			$(this).attr("scrolling", "true");
 			$(this).attr("scrollStartX", Math.floor(e.pageX));
 			$(this).attr("scrollStartY", Math.floor(e.pageY));
@@ -30,6 +32,9 @@ define(['ash', 'game/constants/UIConstants'
 		},
 		
 		onScrollableMapMouseLeave: function (e) {
+			if (e.data.helper.isInBounds($(this), e)) {
+				return;
+			}
 			e.data.helper.snapScrollPositionToGrid($(this).attr("id"));
 			$(this).attr("scrolling", "false");
 		},
@@ -37,14 +42,36 @@ define(['ash', 'game/constants/UIConstants'
 		onScrollableMapMouseMove: function (e) {
 			var isScrolling = $(this).attr("scrolling") === "true";
 			if (isScrolling) {
-				var currentX = Math.floor(e.pageX);
-				var currentY = Math.floor(e.pageY);
-				var posX = currentX - parseInt($(this).attr("scrollStartX")) - parseInt($(this).attr("scrollStartXScrollLeft"));
-				var posY = currentY - parseInt($(this).attr("scrollStartY")) - parseInt($(this).attr("scrollStartXScrollTop"));
+				let currentX = Math.floor(e.pageX);
+				let currentY = Math.floor(e.pageY);
+				let posX = currentX - parseInt($(this).attr("scrollStartX")) - parseInt($(this).attr("scrollStartXScrollLeft"));
+				let posY = currentY - parseInt($(this).attr("scrollStartY")) - parseInt($(this).attr("scrollStartXScrollTop"));
 				$(this).parent().scrollLeft(-posX);
 				$(this).parent().scrollTop(-posY);
 				e.data.helper.updateScrollIndicators($(this).attr("id"));
 			}
+		},
+		
+		isInBounds: function ($elem, e) {
+			let $container = $elem.parent();
+			let offset = $container.offset();
+			if (e.pageX < offset.left) return false;
+			if (e.pageX > offset.left + $container.width()) return false;
+			if (e.pageY < offset.top) return false;
+			if (e.pageY > offset.top + $container.height()) return false;
+			return true;
+		},
+		
+		clearPageSelection: function () {
+			if (window.getSelection) {
+				if (window.getSelection().empty) {
+			   		window.getSelection().empty();
+			 	} else if (window.getSelection().removeAllRanges) {
+			   		window.getSelection().removeAllRanges();
+		 		}
+		   	} else if (document.selection) {
+			 	document.selection.empty();
+		   	}
 		},
 		
 		updateScrollEnable: function (canvasId) {
