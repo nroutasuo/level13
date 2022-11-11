@@ -28,6 +28,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				case "build_out_tradepost_connector": "build elevator";
 				case "build_out_sundome": "build sun dome";
 				case "bridge_gap": return "bridge gap";
+				case "repair_item": return "repair item";
 				default:
 					return baseActionID;
 			}
@@ -84,7 +85,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			addOptions("a-street", [ "quiet" ]);
 			addOptions("n-building", [ "building" ]);
 			addOptions("n-buildings", [ "buildings" ]);
-			addOptions("a-building", [ "towering", "tall", "gloomy", "abandoned", "nondescript", "small", "typical", "unusual", "symmetrical", "monolithic", "blocky", "massive", "functional", "colossal", "immense" ]);
+			addOptions("a-building", [ "towering", "tall", "gloomy", "abandoned", "nondescript", "small", "typical", "symmetrical", "monolithic", "blocky", "massive", "functional", "colossal", "immense" ]);
 			addOptions("an-decos", [ "stranded benches", "broken elevators" ]);
 			addOptions("an-items", [ "debris" ]);
 			// - sector type: determines n-sector and affects many others
@@ -104,7 +105,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					addOptions("a-street-past", [ "high-security" ]);
 					addOptions("n-building", [ "power plant", "factory", "storehouse", "workshop" ]);
 					addOptions("n-buildings", [ "factories", "workshops", "storehouses", "warehouses", "workshops", "refineries" ]);
-					addOptions("a-building", [ "decommissioned", "regular", "enormous" ]);
+					addOptions("a-building", [ "decommissioned", "regular", "enormous", "odd" ]);
 					addOptions("an-items", [ "broken machinery" ]);
 					break;
 				case SectorConstants.SECTOR_TYPE_MAINTENANCE:
@@ -122,7 +123,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					addOptions("a-street-past", [ "glamorous", "buzzling" ]);
 					addOptions("n-building", [ "shopping center", "department store", "office building", "cafe", "bar" ]);
 					addOptions("n-buildings", [ "shopping towers", "shopping malls", "shops", "stores", "offices", "office towers" ]);
-					addOptions("a-building", [ "empty", "deserted", "ransacked", "ensormous" ]);
+					addOptions("a-building", [ "empty", "deserted", "ransacked", "ensormous", "bizarre" ]);
 					addOptions("an-decos", [ "empty fountains", "abandoned stalls" ]);
 					addOptions("an-items", [ "broken glass" ]);
 					break;
@@ -132,7 +133,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					addOptions("a-street-past", [ "leisurely", "orderly", "cheerful" ]);
 					addOptions("n-building", [ "library", "prison", "school", "university", "park", "public square", "sports field", "metro station", "research laboratory", "government building" ]);
 					addOptions("n-buildings", [ "public buildings", "government buildings" ]);
-					addOptions("a-building", [ "empty", "inaccessible", "enormous" ]);
+					addOptions("a-building", [ "empty", "inaccessible", "enormous", "uncanny" ]);
 					addOptions("an-decos", [ "withered trees" ]);
 					addOptions("an-items", [ "research samples", "trash" ]);
 					break;

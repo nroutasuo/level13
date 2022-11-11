@@ -7,6 +7,10 @@ define(function () {
 		isDebugMode: false,
 		language: null,
 		
+		irregularPlurals: {
+			wildlife: "wildlife"
+		},
+		
 		getText: function (key) {
 			return isDebugMode ? key + "|" : key;
 		},
@@ -25,6 +29,9 @@ define(function () {
 		},
 		
 		pluralify: function (s) {
+			let irregular = this.getIrregularPlural(s);
+			if (irregular) return irregular;
+			
 			if (s.endsWith("roach")) {
 				return s + "es";
 			} else if (s[s.length - 1] !== "s") {
@@ -38,12 +45,23 @@ define(function () {
 			if (s[s.length - 1] === "s") {
 				return s.substr(0, s.length - 1);
 			}
+			
 			return s;
 		},
 		
 		addArticle: function (s) {
 			return this.getArticle(s) + " " + s;
 		},
+		
+		getIrregularPlural: function (s) {
+			let parts = s.split(" ");
+			let w = parts[parts.length - 1];
+			if (Object.keys(this.irregularPlurals).indexOf(w) >= 0) {
+				parts[parts.length - 1] = this.irregularPlurals[w];
+				return parts.join(" ");
+			}
+			return null;
+		}
 		
 	};
 	return Text;
