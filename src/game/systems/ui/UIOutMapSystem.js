@@ -206,7 +206,7 @@ define([
 			
 			let mapStatus = GameGlobals.levelHelper.getLevelStats(this.selectedLevel);
 			let hasUnvisitedSectors = mapStatus.percentVisitedSectors < 1;
-			let hasUnscoutedSectors = mapStatus.percentClearedSectors < 1;
+			let hasUnscoutedSectors = mapStatus.countClearedSectors != mapStatus.countScoutedSectors;
 			let hasIngredientSectors = mapStatus.countKnownIngredientSectors > 0;
 			
 			GameGlobals.uiFunctions.toggle($("#btn-mainmap-sector-details-unvisited"), hasUnvisitedSectors);
