@@ -372,13 +372,13 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			}
 			
 			let passageUp = GameGlobals.levelHelper.findPassageUp(mapPosition.level);
-			if (passageUp != null) {
+			if (passageUp != null && passageUp.get(SectorStatusComponent).scouted) {
 				let passageUpIcon = this.icons["passage-up" + (useSunlitIcon ? "-sunlit" : "")];
 				result.push({ id: "passage-up", icon: passageUpIcon, position: passageUp.get(PositionComponent) });
 			}
 			
 			let passageDown = GameGlobals.levelHelper.findPassageDown(mapPosition.level);
-			if (passageDown != null) {
+			if (passageDown != null && passageDown.get(SectorStatusComponent).scouted) {
 				let passageDownIcon = this.icons["passage-down" + (useSunlitIcon ? "-sunlit" : "")];
 				result.push({ id: "passage-up", icon: passageDownIcon, position: passageDown.get(PositionComponent) });
 			}
