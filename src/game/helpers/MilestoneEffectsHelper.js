@@ -19,7 +19,7 @@ define([
 			for (let action in PlayerActionConstants.requirements) {
 				let reqs = PlayerActionConstants.requirements[action];
 				if (reqs.milestone) {
-					if (reqs.milestone == milestone.index) {
+					if (reqs.milestone == milestoneIndex) {
 						result.push(action);
 					}
 				}
@@ -77,6 +77,18 @@ define([
 			
 			return result;
 		},
+		
+		getMilestoneAtCampOrdinal: function (campOrdinal) {
+			let result = null;
+			for (let i = 0; i < TribeConstants.milestones.length; i++) {
+				let milestone = TribeConstants.getMilestone(i);
+				if (this.getMinimumCampOrdinalForMilestone(milestone) > campOrdinal) {
+					return result;
+				}
+				result = milestone;
+			}
+			return result;
+		}
 		
 	});
 	

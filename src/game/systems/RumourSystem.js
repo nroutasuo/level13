@@ -34,15 +34,27 @@ define([
 		update: function (time) {
 			if (GameGlobals.gameState.isPaused) return;
 			
-			var rumoursComponent = this.playerStatsNodes.head.rumours;
+			this.updateLimit();
+			this.updateValue(time);
+		},
+		
+		updateLimit: function () {
+			let rumoursComponent = this.playerStatsNodes.head.rumours;
+			rumoursComponent.maxValue = GameGlobals.tribeHelper.getCurrentRumoursLimit();
+		},
+		
+		updateValue: function (time) {
+			let rumoursComponent = this.playerStatsNodes.head.rumours;
 			
 			rumoursComponent.accSources = [];
 			rumoursComponent.accumulation = 0;
 			
+			let oldValue = rumoursComponent.value;
+			
 			if (this.campNodes.head) {
-				var accSpeed = 0;
-				var improvementsComponent;
-				for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
+				let accSpeed = 0;
+				let improvementsComponent;
+				for (let campNode = this.campNodes.head; campNode; campNode = campNode.next) {
 					improvementsComponent = campNode.entity.get(SectorImprovementsComponent);
 					
 					var accSpeedPopulation = CampConstants.RUMOURS_PER_POP_PER_SEC_BASE * Math.floor(campNode.camp.population || 0) * GameConstants.gameSpeedCamp;
@@ -63,12 +75,17 @@ define([
 				}
 				
 				rumoursComponent.value += time * accSpeed;
-				rumoursComponent.isAccumulating = true;
 			}
 			
 			if (rumoursComponent.value < 0) {
 				rumoursComponent.value = 0;
 			}
+			
+			if (rumoursComponent.maxValue > 0 && rumoursComponent.value > rumoursComponent.maxValue) {
+				rumoursComponent.value = rumoursComponent.maxValue;
+			}
+			
+			rumoursComponent.isAccumulating = rumoursComponent.value > oldValue;
 		},
 		
 		getImprovementUpgradeLevel: function (improvementName) {

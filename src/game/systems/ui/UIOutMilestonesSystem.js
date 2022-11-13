@@ -84,6 +84,7 @@ define([
 		updateMilestones: function () {
 			let currentMilestone = GameGlobals.tribeHelper.getCurrentMilestone();
 			let nextMilestone = GameGlobals.tribeHelper.getNextMilestone();
+			let hasDeity = this.playerStatsNodes.head.entity.has(DeityComponent);
 			
 			$("#milestone-current-name").text("Current tribe level: " + currentMilestone.name + " (" + currentMilestone.index + ")");
 			$("#milestone-next-name").text("Next tribe level: " + nextMilestone.name + " (" + nextMilestone.index + ")");
@@ -111,8 +112,17 @@ define([
 			}
 			requirementsDiv += "</div>";
 			
+			let unlocksDiv = "<div style='flex-grow: 2'>";
+			unlocksDiv += "Max evidence: " + nextMilestone.maxEvidence;
+			unlocksDiv += "Max rumours: " + nextMilestone.maxRumours;
+			if (nextMilestone.maxFavour && hasDeity) {
+				unlocksDiv += "Max favour: " + nextMilestone.maxFavour;
+			}
+			unlocksDiv += "</div>";
+			
 			$("#milestone-container").empty();
 			$("#milestone-container").append(requirementsDiv);
+			$("#milestone-container").append(unlocksDiv);
 			$("#milestone-container").append("<div><button class='action' action='" + action + "'>Unlock</button></div>");
 			
 			GameGlobals.uiFunctions.generateButtonOverlays("#milestone-container");

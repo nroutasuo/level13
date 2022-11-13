@@ -4,7 +4,7 @@ define(['ash'], function (Ash) {
 
 		constructor: function () {
 			this.value = 0;
-			this.cap = 100;
+			this.maxValue = 0;
 			this.isAccumulating = false;
 			this.accumulation = 0;
 			this.accumulationPerCamp = {};

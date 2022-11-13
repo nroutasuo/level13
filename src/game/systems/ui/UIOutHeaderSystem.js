@@ -246,15 +246,19 @@ define([
 			this.elements.valStamina.toggleClass("warning", playerStamina <= this.staminaWarningLimit);
 			this.elements.valHealth.toggleClass("warning", playerStatsNode.stamina.health <= 25);
 			
-			var hasDeity = this.deityNodes.head != null;
-			this.updatePlayerStat("rumours", playerStatsNode.rumours, playerStatsNode.rumours.isAccumulating, playerStatsNode.rumours.value, false, this.elements.valRumours, this.elements.changeIndicatorRumours);
-			this.updatePlayerStat("evidence", playerStatsNode.evidence, GameGlobals.gameState.unlockedFeatures.evidence, playerStatsNode.evidence.value, false, this.elements.valEvidence, this.elements.changeIndicatorEvidence);
-			if (hasDeity)
-				this.updatePlayerStat("favour", this.deityNodes.head.deity, hasDeity, this.deityNodes.head.deity.favour, false, this.elements.valFavour, this.elements.changeIndicatorFavour);
-			else
-				this.updatePlayerStat("favour", null, hasDeity, 0, this.elements.valFavour, false, this.elements.changeIndicatorFavour);
+			let showEvidence = GameGlobals.gameState.unlockedFeatures.evidence;
+			let showRumours = playerStatsNode.rumours.value > 0 || playerStatsNode.rumours.isAccumulating;
+			let hasDeity = this.deityNodes.head != null;
+			
+			this.updatePlayerStat("rumours", playerStatsNode.rumours, showRumours, playerStatsNode.rumours.value, playerStatsNode.rumours.maxValue, false, this.elements.valRumours, this.elements.changeIndicatorRumours);
+			this.updatePlayerStat("evidence", playerStatsNode.evidence, showEvidence, playerStatsNode.evidence.value, playerStatsNode.evidence.maxValue, false, this.elements.valEvidence, this.elements.changeIndicatorEvidence);
+			if (hasDeity) {
+				this.updatePlayerStat("favour", this.deityNodes.head.deity, hasDeity, this.deityNodes.head.deity.favour, this.deityNodes.head.deity.maxFavour, false, this.elements.valFavour, this.elements.changeIndicatorFavour);
+			} else {
+				this.updatePlayerStat("favour", null, hasDeity, 0, this.elements.valFavour, 0, false, this.elements.changeIndicatorFavour);
+			}
 
-			GameGlobals.uiFunctions.toggle($("#header-tribe-container"), GameGlobals.gameState.unlockedFeatures.evidence || playerStatsNode.rumours.isAccumulating);
+			GameGlobals.uiFunctions.toggle($("#header-tribe-container"), showEvidence || showRumours || hasDeity);
 
 			var improvements = this.currentLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var maxPopulation = CampConstants.getHousingCap(improvements);
@@ -354,19 +358,21 @@ define([
 			}
 		},
 		
-		updatePlayerStat: function (stat, component, isVisible, currentValue, flipNegative, valueElement, changeIndicatorElement) {
+		updatePlayerStat: function (stat, component, isVisible, currentValue, currentLimit, flipNegative, valueElement, changeIndicatorElement) {
 			GameGlobals.uiFunctions.toggle("#stats-" + stat, isVisible);
 			if (!isVisible) return;
+			
+			let isAtLimit = currentLimit > 0 && currentValue >= currentLimit;
 			
 			let now = GameGlobals.gameState.gameTime;
 			let previousValue = this.previousStats[stat] || 0;
 			let previousUpdate = this.previousStatsUpdates[stat] || 0;
 		
 			let animate = UIAnimations.shouldAnimateChange(previousValue, currentValue, previousUpdate, now, component.accumulation);
-			UIAnimations.animateOrSetNumber(valueElement, animate, currentValue, "", flipNegative, (v) => { return Math.floor(v); });
+			UIAnimations.animateOrSetNumber(valueElement, animate, currentValue, "", flipNegative, (v) => { return Math.floor(v) + "/" + currentLimit; });
 			
 			this.updateStatsCallout("", "stats-" + stat, component.accSources);
-			this.updateChangeIndicator(changeIndicatorElement, component.accumulation, isVisible);
+			this.updateChangeIndicator(changeIndicatorElement, component.accumulation, isVisible && !isAtLimit);
 			this.previousStats[stat] = currentValue;
 			this.previousStatsUpdates[stat] = now;
 		},

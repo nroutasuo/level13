@@ -5,6 +5,7 @@ define(['ash'], function (Ash) {
 		constructor: function (name) {
 			this.name = name;
 			this.favour = 0;
+			this.maxFavour = 0;
 			this.accumulation = 0;
 			this.accSources = [];
 			this.accumulationPerCamp = {};

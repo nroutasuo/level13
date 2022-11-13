@@ -37,11 +37,23 @@ define([
 		update: function (time) {
 			if (GameGlobals.gameState.isPaused) return;
 			
-			var evidenceComponent = this.playerStatsNodes.head.evidence;
+			this.updateLimit();
+			this.updateValue(time);
+		},
+		
+		updateLimit: function () {
+			let evidenceComponent = this.playerStatsNodes.head.evidence;
+			evidenceComponent.maxValue = GameGlobals.tribeHelper.getCurrentEvidenceLimit();
+		},
+		
+		updateValue: function (time) {
+			let evidenceComponent = this.playerStatsNodes.head.evidence;
 			
 			evidenceComponent.accSources = [];
 			evidenceComponent.accumulation = 0;
-			var libraryUpgradeLevel = this.getLibraryUpgradeLevel();
+			let libraryUpgradeLevel = this.getLibraryUpgradeLevel();
+			
+			let oldValue = evidenceComponent.value;
 			
 			if (this.campNodes.head) {
 				var accSpeed = 0;
@@ -65,11 +77,17 @@ define([
 				}
 				
 				evidenceComponent.value += time * accSpeed;
-				evidenceComponent.isAccumulating = true;
 			}
 			
-			if (evidenceComponent.value < 0)
+			if (evidenceComponent.value < 0) {
 				evidenceComponent.value = 0;
+			}
+			
+			if (evidenceComponent.maxValue > 0 && evidenceComponent.value > evidenceComponent.maxValue) {
+				evidenceComponent.value = evidenceComponent.maxValue;
+			}
+			
+			evidenceComponent.isAccumulating = evidenceComponent.value > oldValue;
 		},
 		
 		getLibraryUpgradeLevel: function () {

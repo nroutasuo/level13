@@ -37,8 +37,20 @@ define([
 			if (GameGlobals.gameState.isPaused) return;
 			if (!this.campNodes.head) return;
 			
-			var deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
+			let deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
 			if (!deityComponent) return;
+			
+			this.updateFavourLimit();
+			this.updateFavourValue(time);
+		},
+		
+		updateFavourLimit: function () {
+			let deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
+			deityComponent.maxFavour = GameGlobals.tribeHelper.getCurrentFavourLimit();
+		},
+		
+		updateFavourValue: function (time) {
+			let deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
 			
 			deityComponent.accSources = [];
 			deityComponent.accumulation = 0;
@@ -56,6 +68,14 @@ define([
 				deityComponent.favour += time * accCamp;
 				deityComponent.accumulation += accCamp;
 				deityComponent.accumulationPerCamp[campNode.position.level] = accCamp;
+			}
+			
+			if (deityComponent.favour < 0) {
+				deityComponent.favour = 0;
+			}
+			
+			if (deityComponent.maxFavour > 0 && deityComponent.favour > deityComponent.maxFavour) {
+				deityComponent.favour = deityComponent.maxFavour;
 			}
 		},
 		

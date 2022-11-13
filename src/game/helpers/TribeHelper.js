@@ -45,6 +45,21 @@ define([
 			return TribeConstants.getMilestone(nextIndex);
 		},
 		
+		getCurrentEvidenceLimit: function () {
+			let currentMilestone = this.getCurrentMilestone();
+			return currentMilestone.maxEvidence || -1;
+		},
+		
+		getCurrentRumoursLimit: function () {
+			let currentMilestone = this.getCurrentMilestone();
+			return currentMilestone.maxRumours || -1;
+		},
+		
+		getCurrentFavourLimit: function () {
+			let currentMilestone = this.getCurrentMilestone();
+			return currentMilestone.maxFavour || -1;
+		},
+		
 	});
 
 	return TribeHelper;
