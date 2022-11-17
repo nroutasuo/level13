@@ -283,6 +283,11 @@ define([
 							logMsg += " There was nothing left to steal.";
 							awayLogMsg += " There was nothing left to steal.";
 						}
+						
+						if (raidComponent.defendersLost > 0) {
+							logMsg += "" + raidComponent.defendersLost + " defenders were killed.";
+							awayLogMsg += "" + raidComponent.defendersLost + " defenders were killed.";
+						}
 					}
 					campNode.entity.remove(RaidComponent);
 					campNode.camp.lastRaid = raidVO;
@@ -394,7 +399,7 @@ define([
 			raidComponent.victory = raidRoll > danger;
 			log.i("end raid: danger: " + danger + ", raidRoll: " + UIConstants.roundValue(raidRoll) + " -> victory: " + raidComponent.victory);
 
-			// raiders won, deduct resources
+			// raiders won, deduct resources etc
 			if (!raidComponent.victory) {
 				let storageMax = GameGlobals.resourcesHelper.getCurrentCampStorage(sectorEntity).storageCapacity;
 				let storageResources = GameGlobals.resourcesHelper.getCurrentCampStorage(sectorEntity).resources;
@@ -444,6 +449,18 @@ define([
 						storageResources.setResource(name, storageAmount - lostAmount);
 						raidComponent.resourcesLost.addResource(name, lostAmount);
 					}
+				}
+				
+				// kill defenders
+				let campComponent = sectorEntity.get(CampComponent);
+				let numSoldiers = campComponent.assignedWorkers.soldier;
+				if (numSoldiers > 0 && Math.random() < 0.5) {
+					let maxKilled = Math.ceil(numSoldiers / 3);
+					let numKilled = Math.ceil(Math.random() * maxKilled);
+					campComponent.assignedWorkers.soldier -= numKilled;
+					campComponent.population -= numKilled;
+					GlobalSignals.workersAssignedSignal.dispatch(sectorEntity);
+					raidComponent.defendersLost = numKilled;
 				}
 			}
 		},

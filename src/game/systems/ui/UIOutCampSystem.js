@@ -554,17 +554,22 @@
 				UIConstants.updateCalloutContent("#in-demographics-raid-defence", defenceS);
 				var hasLastRaid = campComponent.lastRaid && campComponent.lastRaid.isValid();
 				if (hasLastRaid) {
-					var lastRaidS = "(none)";
+					let lastRaidS = "(none)";
 					if (campComponent.lastRaid.wasVictory) {
 						lastRaidS = "Camp was defended";
 					} else {
-						var resourcesLost = campComponent.lastRaid.resourcesLost;
+						let resourcesLost = campComponent.lastRaid.resourcesLost;
+						let defendersLost = campComponent.lastRaid.defendersLost;
 						if (resourcesLost && resourcesLost.getTotal() > 0) {
 							var resLog = TextConstants.getLogResourceText(resourcesLost);
 							var resS = TextConstants.createTextFromLogMessage(resLog.msg, resLog.replacements, resLog.values);
 							lastRaidS = "Camp attacked, lost: " + resS;
 						} else {
 							lastRaidS = "Camp attacked, nothing left to steal";
+						}
+						
+						if (defendersLost > 0) {
+							lastRaidS += ". " + defendersLost + " defenders were killed.";
 						}
 					}
 					lastRaidS += " (" + UIConstants.getTimeSinceText(campComponent.lastRaid.timestamp) + " ago)";
