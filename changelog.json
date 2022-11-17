@@ -7,7 +7,7 @@
 			"changes": [
 				{
 					"type": "GD",
-					"summary": "Add milestones"
+					"summary": "Add milestones and limits to evidence / rumour / favour accumulation based on milestones"
 				},
 				{
 					"type": "GD",
@@ -28,6 +28,10 @@
 				{
 					"type": "GD",
 					"summary": "Add more follower types"
+				},
+				{
+					"type": "GD",
+					"summary": "Add chance that defenders (soldiers) get killed if a raid is lost"
 				},
 				{
 					"type": "UI",
