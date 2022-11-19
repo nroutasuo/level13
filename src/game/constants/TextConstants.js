@@ -987,7 +987,15 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				if (knownItems.indexOf(id) < 0) continue;
 				validItems.push(ItemConstants.getItemByID(id).name);
 			}
-			if (validItems.length == 0) return "None";
+			
+			if (validItems.length == 0) {
+				if (itemsScavengeable.length > 0) {
+					return "Unknown";
+				} else {
+					return "None";
+				}
+			}
+			
 			return validItems.join(", ");
 		},
 		

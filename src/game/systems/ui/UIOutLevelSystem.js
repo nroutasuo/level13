@@ -463,7 +463,8 @@ define([
 			if (featuresComponent.itemsScavengeable.length > 0) {
 				let discoveredItems = GameGlobals.sectorHelper.getLocationDiscoveredItems();
 				let knownItems = GameGlobals.sectorHelper.getLocationKnownItems();
-				if (knownItems.length > 0) {
+				let showIngredients = GameGlobals.sectorHelper.hasSectorVisibleIngredients();
+				if (showIngredients) {
 					description += "Items found: " + TextConstants.getScaItemString(discoveredItems, knownItems, featuresComponent.itemsScavengeable) + " ";
 				}
 			}

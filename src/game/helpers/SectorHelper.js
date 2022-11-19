@@ -132,33 +132,7 @@ define([
 				return "area too cold";
 			return null;
 		},
-		
-		hasSectorVisibleIngredients: function (sector) {
-		 	return GameGlobals.sectorHelper.getLocationKnownItems(sector).length > 0;
-		},
-		
-		hasSectorVisibleResource: function (sector, resourceName, min) {
-			min = min || 1;
-			
-			let sectorFeatures = sector.get(SectorFeaturesComponent);
-			if (sectorFeatures.resourcesCollectable.getResource(resourceName) >= min) {
-				return true;
-			}
-			
-			let knownResources = GameGlobals.sectorHelper.getLocationKnownResources(sector);
-			if (knownResources.indexOf(resourceName) >= 0) {
-				if (sectorFeatures.resourcesScavengable.getResource(resourceName >= min)) {
-					return true;
-				}
-			}
-			
-			if (resourceName == resourceNames.water == sectorFeatures.hasSpring) {
-				return true;
-			}
-			
-			return false;
-		},
-		
+				
 		isBeaconActive: function (position) {
 			let beacon = GameGlobals.levelHelper.getNearestBeacon(position);
 			let beaconPos = beacon ? beacon.get(PositionComponent) : null;
@@ -185,6 +159,28 @@ define([
 		
 		canHaveBeacon: function (sector) {
 			return GameGlobals.playerActionsHelper.isRequirementsMet("build_out_beacon", sector);
+		},
+				
+		hasSectorKnownResource: function (sector, resourceName, min) {
+			min = min || 1;
+			
+			let sectorFeatures = sector.get(SectorFeaturesComponent);
+			if (sectorFeatures.resourcesCollectable.getResource(resourceName) >= min) {
+				return true;
+			}
+			
+			let knownResources = GameGlobals.sectorHelper.getLocationKnownResources(sector);
+			if (knownResources.indexOf(resourceName) >= 0) {
+				if (sectorFeatures.resourcesScavengable.getResource(resourceName >= min)) {
+					return true;
+				}
+			}
+			
+			if (resourceName == resourceNames.water == sectorFeatures.hasSpring) {
+				return true;
+			}
+			
+			return false;
 		},
 		
 		getLocationDiscoveredResources: function (sector) {
@@ -216,11 +212,16 @@ define([
 		getLocationKnownResources: function (sector) {
 			sector = sector ? sector : this.playerLocationNodes.head.entity;
 			if (this.isInDetectionRange(sector, ItemConstants.itemBonusTypes.detect_supplies)) {
-				let sectorFeatures = sector.get(SectorFeaturesComponent);
-				return sectorFeatures.resourcesScavengable.getNames();
+				return this.getLocationScavengeableResources(sector);
 			} else {
 				return this.getLocationDiscoveredResources(sector);
 			}
+		},
+		
+		getLocationScavengeableResources: function (sector) {
+			sector = sector ? sector : this.playerLocationNodes.head.entity;
+			let sectorFeatures = sector.get(SectorFeaturesComponent);
+			return sectorFeatures.resourcesScavengable.getNames();
 		},
 		
 		resourceSortFunc: function (a, b) {
@@ -234,6 +235,18 @@ define([
 			if (a === resourceNames.fuel) return -1;
 			if (b === resourceNames.fuel) return 1;
 			return 0;
+		},
+		
+		hasSectorVisibleIngredients: function (sector) {
+			sector = sector ? sector : this.playerLocationNodes.head.entity;
+		 	if (this.getLocationKnownItems(sector).length > 0) {
+				return true;
+			}
+			let sectorStatus = sector.get(SectorStatusComponent);
+			if (sectorStatus.scouted && this.getLocationScavengeableItems(sector).length > 0) {
+				return true;
+			}
+			return false;
 		},
 		
 		getLocationDiscoveredItems: function (sector) {
@@ -263,11 +276,16 @@ define([
 		getLocationKnownItems: function (sector) {
 			sector = sector ? sector : this.playerLocationNodes.head.entity;
 			if (this.isInDetectionRange(sector, ItemConstants.itemBonusTypes.detect_ingredients)) {
-				let sectorFeatures = sector.get(SectorFeaturesComponent);
-				return sectorFeatures.itemsScavengeable;
+				return this.getLocationScavengeableItems(sector);
 			} else {
 				return this.getLocationDiscoveredItems(sector);
 			}
+		},
+		
+		getLocationScavengeableItems: function (sector) {
+			sector = sector ? sector : this.playerLocationNodes.head.entity;
+			let sectorFeatures = sector.get(SectorFeaturesComponent);
+			return sectorFeatures.itemsScavengeable;
 		},
 		
 		isInDetectionRange: function (sector, itemBonusType) {

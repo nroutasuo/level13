@@ -181,13 +181,13 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			}
 			
 			if (mapMode == MapUtils.MAP_MODE_SCAVENGING) {
-				if (GameGlobals.sectorHelper.hasSectorVisibleResource(sector, resourceNames.water)) {
+				if (GameGlobals.sectorHelper.hasSectorKnownResource(sector, resourceNames.water)) {
 					return "W";
 				}
-				if (GameGlobals.sectorHelper.hasSectorVisibleResource(sector, resourceNames.food)) {
+				if (GameGlobals.sectorHelper.hasSectorKnownResource(sector, resourceNames.food)) {
 					return "F";
 				}
-				if (GameGlobals.sectorHelper.hasSectorVisibleResource(sector, resourceNames.metal, WorldConstants.resourcePrevalence.COMMON)) {
+				if (GameGlobals.sectorHelper.hasSectorKnownResource(sector, resourceNames.metal, WorldConstants.resourcePrevalence.COMMON)) {
 					return "M";
 				}
 				if (GameGlobals.sectorHelper.hasSectorVisibleIngredients(sector)) {
@@ -624,8 +624,9 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			let isIngredientsRevealed = this.isInIngredientsDetectionRange(sector);
 			let level = sector.get(PositionComponent).level;
 			
-			let knownItems = GameGlobals.sectorHelper.getLocationKnownItems(sector);
 			let knownResources = GameGlobals.sectorHelper.getLocationKnownResources(sector);
+			let knownItems = GameGlobals.sectorHelper.getLocationKnownItems(sector);
+			let allItems = GameGlobals.sectorHelper.getLocationScavengeableItems(sector);
 			
 			let drawSectorShape = function (color, size) {
 				ctx.fillStyle = color;
@@ -682,7 +683,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			}
 			
 			if (options.mapMode == MapUtils.MAP_MODE_SCAVENGING) {
-				if (knownItems.length > 0) {
+				if (allItems.length > 0) {
 					let ingredientBorderColor = this.getSectorFill(options.mapMode, sector);
 					drawSectorBorder(ingredientBorderColor, true, false);
 				}
@@ -699,11 +700,11 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			let showResources = showResourceIcons && hasResourcesToShow;
 			
 			let showIngredientIcons = mapModeHasResources && (isRevealed || isIngredientsRevealed);
-			let hasIngredientsToShow = knownItems.length > 0;
+			let hasIngredientsToShow = allItems.length > 0;
 			let showIngredients = showIngredientIcons && hasIngredientsToShow;
 
 			let hideUnknownIcon = (showResources || showIngredients);
-			let hasIcon = this.drawIconsOnSector(ctx, options, sector, levelEntity, sectorXpx, sectorYpx, sectorSize, knownItems, hideUnknownIcon, showIngredientIcons);
+			let hasIcon = this.drawIconsOnSector(ctx, options, sector, levelEntity, sectorXpx, sectorYpx, sectorSize, knownItems, allItems, hideUnknownIcon, showIngredientIcons);
 	
 			// sector contents: resources
 			let fitsResourceIcons = isBigSectorSize || !hasIcon;
@@ -712,7 +713,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			}
 		},
 		
-		drawIconsOnSector: function (ctx, options, sector, levelEntity, sectorXpx, sectorYpx, sectorSize, knownItems, hideUnknownIcon, showIngredientIcons) {
+		drawIconsOnSector: function (ctx, options, sector, levelEntity, sectorXpx, sectorYpx, sectorSize, knownItems, allItems, hideUnknownIcon, showIngredientIcons) {
 			let statusComponent = sector.get(SectorStatusComponent);
 			let sectorPassages = sector.get(PassagesComponent);
 			let sectorImprovements = sector.get(SectorImprovementsComponent);
@@ -756,6 +757,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			let iconPosX = Math.round(sectorXpx + (sectorSize - iconSize) / 2);
 			let iconPosYCentered = Math.round(sectorYpx + sectorSize / 2 - iconSize / 2);
 			let iconPosY = Math.round(isBigSectorSize ? sectorYpx : iconPosYCentered);
+			let disabledAlpha = 0.4;
 			
 			if (!isRevealed && !hideUnknownIcon) {
 				ctx.drawImage(this.icons["unknown" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosYCentered);
@@ -783,17 +785,21 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 				}
 				return true;
 			} else if (mapModeHasPois && sectorPassages.passageDown) {
-				if (GameGlobals.movementHelper.isPassageTypeAvailable(sector, PositionConstants.DIRECTION_DOWN)) {
-					ctx.drawImage(this.icons["passage-down" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
-				} else {
-					ctx.drawImage(this.icons["passage-down-disabled" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
+				if (!GameGlobals.movementHelper.isPassageTypeAvailable(sector, PositionConstants.DIRECTION_DOWN)) {
+					ctx.globalAlpha = disabledAlpha;
 				}
+				ctx.drawImage(this.icons["passage-down" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
+				ctx.globalAlpha = 1;
 				return true;
 			} else if (mapModeHasPois && sectorImprovements.getCount(improvementNames.beacon) > 0) {
 				ctx.drawImage(this.icons["beacon" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
 				return true;
-			} else if (showIngredientIcons && knownItems.length > 0) {
+			} else if (showIngredientIcons && allItems.length > 0) {
+				if (knownItems.length == 0) {
+					ctx.globalAlpha = disabledAlpha;
+				}
 				ctx.drawImage(this.icons["ingredient" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
+				ctx.globalAlpha = 1;
 				return true;
 			}
 			

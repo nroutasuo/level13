@@ -991,7 +991,7 @@ define([
 		findNearestWaterSector: function (pos) {
 			let result = null;
 			this.forEverySectorFromLocation(pos, (sector) => {
-				if (GameGlobals.sectorHelper.hasSectorVisibleResource(sector, resourceNames.water, true)) {
+				if (GameGlobals.sectorHelper.hasSectorKnownResource(sector, resourceNames.water, true)) {
 					result = sector;
 					return true;
 				}
@@ -1003,7 +1003,7 @@ define([
 		findNearestFoodSector: function (pos) {
 			let result = null;
 			this.forEverySectorFromLocation(pos, (sector) => {
-				if (GameGlobals.sectorHelper.hasSectorVisibleResource(sector, resourceNames.food, true)) {
+				if (GameGlobals.sectorHelper.hasSectorKnownResource(sector, resourceNames.food, true)) {
 					result = sector;
 					return true;
 				}

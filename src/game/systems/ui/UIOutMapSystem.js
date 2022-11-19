@@ -560,12 +560,14 @@ define([
 			let knownResources = GameGlobals.sectorHelper.getLocationKnownResources(sector);
 			let items = GameGlobals.sectorHelper.getLocationDiscoveredItems(sector);
 			let knownItems = GameGlobals.sectorHelper.getLocationKnownItems(sector);
-			if (resources.length < 1 && items.length < 1) {
+			let allItems = GameGlobals.sectorHelper.getLocationScavengeableItems(sector);
+			let showIngredients = GameGlobals.sectorHelper.hasSectorVisibleIngredients(sector);
+			if (resources.length < 1 && !showIngredients) {
 				result = "-";
 			} else {
 				if (knownResources.length > 0) result += TextConstants.getScaResourcesString(resources, knownResources, featuresComponent.resourcesScavengable);
-				if (knownResources.length > 0 && knownItems.length > 0) result += ", ";
-				if (knownItems.length > 0) result += TextConstants.getScaItemString(items, knownItems, featuresComponent.itemsScavengeable);
+				if (knownResources.length > 0 && showIngredients) result += ", ";
+				if (showIngredients) result += TextConstants.getScaItemString(items, knownItems, featuresComponent.itemsScavengeable);
 			}
 			
 			result += " (" + scavengedPercent + "% scavenged) ";

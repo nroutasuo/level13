@@ -39,6 +39,10 @@
 				},
 				{
 					"type": "UI",
+					"summary": "Show potential crafting ingredient scavenging spots as soon as the sector is scouted"
+				},
+				{
+					"type": "UI",
 					"summary": "Add simple ending"
 				}
 			]
