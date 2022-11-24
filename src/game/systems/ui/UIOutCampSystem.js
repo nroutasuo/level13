@@ -300,37 +300,45 @@
 				let def = ImprovementConstants.improvements[key];
 				let name = improvementNames[key];
 				if (getImprovementType(name) !== improvementTypes.camp) continue;
-				var tds = "";
-				var buildAction = "build_in_" + key;
-				var improveAction = "improve_in_" + key;
-				var hasImproveAction = PlayerActionConstants.hasAction(improveAction);
-				var useAction = "use_in_" + key;
-				var hasUseAction = PlayerActionConstants.hasAction(useAction);
-				var useActionExtra = "use_in_" + key + "_2";
-				var hasUseActionExtra = PlayerActionConstants.hasAction(useActionExtra);
+				let tds = "";
+				let buildAction = "build_in_" + key;
+				let improveAction = "improve_in_" + key;
+				let hasImproveAction = PlayerActionConstants.hasAction(improveAction);
+				let useAction = "use_in_" + key;
+				let hasUseAction = PlayerActionConstants.hasAction(useAction);
+				let useActionExtra = "use_in_" + key + "_2";
+				let hasUseActionExtra = PlayerActionConstants.hasAction(useActionExtra);
+				let dismantleAction = "dismantle_in_" + key;
+				let canBeDismantled = def.canBeDismantled || false;
 				
-				var buildButton = "<button class='action action-build action-location' action='" + buildAction +"'>" + "" + "</button>";
+				let buildButton = "<button class='action action-build action-location' action='" + buildAction +"'>" + "" + "</button>";
 				var useButton = "";
 				if (hasUseAction) {
 					useButton = "<button class='action action-use action-location btn-narrow' action='" + useAction + "'>" + def.useActionName + "</button>";
 				}
-				var useButton2 = "";
+				let useButton2 = "";
 				if (hasUseActionExtra) {
 					useButton2 = "<button class='action action-use2 action-location btn-narrow' action='" + useActionExtra + "'>" + def.useActionName2 + "</button>";
 				}
-				var improveButton = "";
+				let improveButton = "";
 				if (hasImproveAction) {
 					improveButton = "<button class='action action-improve btn-glyph-big' action='" + improveAction + "'></button>";
 				}
+				let dismantleButton = "";
+				if (canBeDismantled) {
+					dismantleButton = "<button class='action action-dismantle btn-glyph-big' action='" + dismantleAction + "'>×</button>";
+				}
+				
 				tds += "<td>" + buildButton + "</td>";
 				tds += "<td><span class='improvement-badge improvement-count'>0</span></td>";
 				tds += "<td style='position:relative'><span class='improvement-badge improvement-level'>0</span>";
 				tds += "</td>";
 				tds += "<td>" + improveButton + "</td>";
+				tds += "<td>" + dismantleButton + "</td>";
 				tds += "<td>" + useButton + "" + useButton2 + "</td>";
 				trs += "<tr id='in-improvements-" + key + "'>" + tds + "</tr>";
 			}
-			let ths = "<tr class='header-mini'><th></th><th>count</th><th>lvl</th><th></th><th></th></tr>"
+			let ths = "<tr class='header-mini'><th></th><th>count</th><th>lvl</th><th></th><th></th><th></th></tr>"
 			$table.append(ths);
 			$table.append(trs);
 			
@@ -345,16 +353,17 @@
 					log.i($(this))
 					return;
 				}
-				var improveAction = $(this).find("button.action-improve").attr("action");
-				var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(buildAction);
+				let improveAction = $(this).find("button.action-improve").attr("action");
+				let improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(buildAction);
 				if (!improvementName) return;
-				var btnBuild = $(this).find(".action-build");
-				var btnUse = $(this).find(".action-use");
-				var btnUse2 = $(this).find(".action-use2");
-				var btnImprove = $(this).find(".action-improve");
-				var count = $(this).find(".improvement-count")
-				var level = $(this).find(".improvement-level")
-				result.push({ tr: $(this), btnBuild: btnBuild, btnUse: btnUse, btnUse2: btnUse2, btnImprove: btnImprove, count: count, level: level, id: id, action: buildAction, improveAction: improveAction, improvementName: improvementName });
+				let btnBuild = $(this).find(".action-build");
+				let btnUse = $(this).find(".action-use");
+				let btnUse2 = $(this).find(".action-use2");
+				let btnImprove = $(this).find(".action-improve");
+				let btnDismantle = $(this).find(".action-dismantle");
+				let count = $(this).find(".improvement-count")
+				let level = $(this).find(".improvement-level")
+				result.push({ tr: $(this), btnBuild: btnBuild, btnUse: btnUse, btnUse2: btnUse2, btnImprove: btnImprove, btnDismantle: btnDismantle, count: count, level: level, id: id, action: buildAction, improveAction: improveAction, improvementName: improvementName });
 			});
 			this.elements.improvementRows = result;
 		},
@@ -440,6 +449,7 @@
 				GameGlobals.uiFunctions.toggle(elem.btnUse, existingImprovements > 0 && showUseAction1);
 				GameGlobals.uiFunctions.toggle(elem.btnUse2, existingImprovements > 0 && !showUseAction1);
 				GameGlobals.uiFunctions.toggle(elem.btnImprove, existingImprovements > 0 && maxImprovementLevel > 1);
+				GameGlobals.uiFunctions.toggle(elem.btnDismantle, existingImprovements > 0);
 				if (isVisible) visibleBuildingCount++;
 				if (actionAvailable) availableBuildingCount++;
 			}

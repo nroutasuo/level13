@@ -1691,6 +1691,7 @@ define([
 						return item.description;
 					case "improve_in":
 						return this.getImproveActionDescription(action);
+					case "dismantle_in": return "Dismantle building";
 				}
 			}
 			
@@ -1727,6 +1728,7 @@ define([
 				if (a.indexOf("build_in_") >= 0) return a;
 				if (a.indexOf("claim_milestone_") >= 0) return "claim_milestone";
 				if (a.indexOf("improve_in_") >= 0) return "improve_in";
+				if (a.indexOf("dismantle_in_") >= 0) return "dismantle_in";
 				if (a.indexOf("improve_out") >= 0) return "improve_out";
 				if (a.indexOf("scout_locale_i") >= 0) return "scout_locale_i";
 				if (a.indexOf("scout_locale_u") >= 0) return "scout_locale_u";

@@ -11,7 +11,7 @@ define(['ash', 'game/GameGlobals', 'game/constants/ImprovementConstants', 'game/
 		},
 
 		add: function (type, amount) {
-			var vo = this.improvements[type];
+			let vo = this.improvements[type];
 			if (!vo) {
 				this.improvements[type] = new ImprovementVO(type);
 				vo = this.improvements[type];
@@ -22,6 +22,13 @@ define(['ash', 'game/GameGlobals', 'game/constants/ImprovementConstants', 'game/
 			for (let i = 0; i < amount; i++) {
 				vo.count++;
 			}
+		},
+		
+		remove: function (type) {
+			let vo = this.improvements[type];
+			if (!vo) return;
+			vo.count--;
+			if (vo.count == 0) delete this.improvements[type];
 		},
 		
 		improve: function (type) {

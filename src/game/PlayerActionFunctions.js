@@ -241,6 +241,7 @@ define(['ash',
 				case "use_in_temple": this.useTemple(param); break;
 				case "use_in_shrine": this.useShrine(param); break;
 				case "improve_in": this.improveBuilding(param); break;
+				case "dismantle_in": this.dismantleBuilding(param); break;
 				// Item actions
 				case "craft": this.craftItem(param); break;
 				case "equip": this.equipItem(param); break;
@@ -1525,6 +1526,39 @@ define(['ash',
 			this.save();
 			
 			this.addLogMessage("MSG_ID_IMPROVE_" + improvementName, ImprovementConstants.getImprovedLogMessage(improvementID, level));
+		},
+
+		dismantleBuilding: function (param) {
+			let sector = this.playerLocationNodes.head.entity;
+			let improvementsComponent = sector.get(SectorImprovementsComponent);
+			let improvementID = param;
+			let improvementName = improvementNames[improvementID];
+			let level = improvementsComponent.getLevel(improvementName);
+			let displayName = ImprovementConstants.getImprovementDisplayName(improvementID, level);
+			let def = ImprovementConstants.improvements[improvementID];
+			
+			if (!def.canBeDismantled) return;
+			
+			let buildAction = "build_in_" + improvementID;
+			let buildingCosts = GameGlobals.playerActionsHelper.getCosts(buildAction);
+			
+			let msg = "Are you sure you want to dismantle this building? Only some of its building materials can be salvaged";
+			let sys = this;
+			
+			GameGlobals.uiFunctions.showConfirmation(msg, function () {
+				improvementsComponent.remove(improvementName);
+				
+				let campStorage = GameGlobals.resourcesHelper.getCurrentStorage();
+				for (let key in buildingCosts) {
+					let resource = key.split("_")[1]
+					campStorage.resources.addResource(resource, buildingCosts[key]);
+				}
+				
+				GlobalSignals.improvementBuiltSignal.dispatch();
+				sys.save();
+				
+				sys.addLogMessage("MSG_ID_DISMANTLE_" + improvementName, "Dismantled " + Text.addArticle(displayName));
+			});
 		},
 		
 		collectFood: function (param, amount) {
