@@ -6,9 +6,9 @@ define(['game/constants/ColorConstants', 'game/constants/SectorConstants'], func
 		
 		initIcon: function(key, name) {
 			this.icons[key] = new Image();
-			this.icons[key].src = "img/" + name + ".png";
+			this.icons[key].src = "img/map/" + name + ".png";
 			this.icons[key + "-sunlit"] = new Image();
-			this.icons[key + "-sunlit"].src = "img/" + name + "-sunlit.png";
+			this.icons[key + "-sunlit"].src = "img/map/" + name + "-sunlit.png";
 		},
 
 		drawMovementBlocker: function (ctx, sunlit, sectorSize, x, y, isGang, isBlocked) {
