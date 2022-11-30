@@ -439,6 +439,27 @@ define([
 						}
 					}
 					
+					if (requirements.improvementsDamaged) {
+						for (var improvementID in requirements.improvementsDamaged) {
+							let improvementName = improvementNames[improvementID];
+							let amount = improvementComponent.getNumDamaged(improvementName);
+							let range = requirements.improvements[improvementID];
+							
+							let result = this.checkRequirementsRange(
+								range,
+								amount,
+								"no damaged buildings to repair",
+								"too many damaged buildings"
+							);
+							
+							if (result) {
+								result.reason.trim();
+								return result;
+							}
+							
+						}
+					}
+					
 					if (requirements.workers) {
 						var workerRequirements = requirements.workers;
 						
@@ -1325,6 +1346,18 @@ define([
 			
 			return result;
 		},
+		
+		getRepairBuildingActionReqs: function (improvementID) {
+			let result = {};
+			let improvementName = improvementNames[improvementID];
+			result.improvements = {};
+			result.improvements.camp = [ 1, -1 ];
+			result.improvements[improvementID] = [ 1, - 1];
+			result.improvementsDamaged = {};
+			result.improvementsDamaged[improvementID] = [ 1, - 1];
+			
+			return result;
+		},
 
 		getReqs: function (action, sector) {
 			var sector = sector || (this.playerLocationNodes && this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null);
@@ -1336,6 +1369,15 @@ define([
 				let improvementID = this.getImprovementIDForAction(action);
 				let dynamicReqs = this.getImproveBuildingActionReqs(improvementID);
 				Object.assign(requirements, dynamicReqs);
+				return requirements;
+			}
+			
+			if (this.isRepairBuildingAction(baseActionID)) {
+				requirements = PlayerActionConstants.requirements[baseActionID] || {};
+				let improvementID = this.getImprovementIDForAction(action);
+				let dynamicReqs = this.getRepairBuildingActionReqs(improvementID);
+				Object.assign(requirements, dynamicReqs);
+				return requirements;
 			}
 			
 			switch (baseActionID) {
@@ -1610,6 +1652,14 @@ define([
 						result[key] += caravansComponent.pendingCaravan.sellAmount;
 					}
 					break;
+				
+				case "repair_in":
+					let improvementID = this.getImprovementIDForAction(action);
+					let buildingCosts = this.getCosts("build_in_" + improvementID);
+					for (let key in buildingCosts) {
+						result[key] = Math.ceil(buildingCosts[key] / 3);
+					}
+					break;
 			}
 		},
 		
@@ -1739,6 +1789,7 @@ define([
 				if (a.indexOf("use_item_fight") >= 0) return "use_item_fight";
 				if (a.indexOf("use_item") >= 0) return "use_item";
 				if (a.indexOf("repair_item") >= 0) return "repair_item";
+				if (a.indexOf("repair_in") >= 0) return "repair_in";
 				if (a.indexOf("unlock_upgrade_") >= 0) return "unlock_upgrade";
 				if (a.indexOf("create_blueprint_") >= 0) return "create_blueprint";
 				if (a.indexOf("clear_waste_t") == 0) return "clear_waste_t";
@@ -1896,6 +1947,9 @@ define([
 			if (this.isImproveBuildingAction(baseId)) {
 				return actionName.replace("improve_in_", "").replace("improve_out_", "");
 			}
+			if (this.isRepairBuildingAction(baseId)) {
+				return actionName.replace("repair_in_", "").replace("repar_out_", "");
+			}
 			let improvementName = this.getImprovementNameForAction(actionName);
 			return ImprovementConstants.getImprovementID(improvementName);
 		},
@@ -2046,6 +2100,10 @@ define([
 		
 		isImproveBuildingAction: function (baseActionID) {
 			return baseActionID == "improve_in" || baseActionID == "improve_out";
+		},
+		
+		isRepairBuildingAction: function (baseActionID) {
+			return baseActionID == "repair_in" || baseActionID == "repair_out";
 		},
 		
 		getImprovementDisplayName: function (improvementID) {

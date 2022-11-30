@@ -31,7 +31,7 @@
 				},
 				{
 					"type": "GD",
-					"summary": "Add chance that defenders (soldiers) get killed if a raid is lost"
+					"summary": "Add chance that defenders (soldiers) get killed or buildings damaged during raids"
 				},
 				{
 					"type": "UI",

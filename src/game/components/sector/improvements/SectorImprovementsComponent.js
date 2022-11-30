@@ -42,7 +42,20 @@ define(['ash', 'game/GameGlobals', 'game/constants/ImprovementConstants', 'game/
 		getCount: function (type) {
 			var vo = this.improvements[type];
 			if (vo) {
-				return vo.count || 0;
+                return vo.count || 0;
+			} else {
+				return 0;
+			}
+		},
+		
+		getCountWithModifierForDamaged: function (type, modifier) {
+			damagedModifier = isNaN(modifier) ? 1 : modifier;
+			var vo = this.improvements[type];
+			if (vo) {
+				let countRaw = vo.count || 0;
+				let numDamaged = this.getNumDamaged(type);
+				let numUndamaged = countRaw - numDamaged;
+				return numUndamaged + modifier * numDamaged;
 			} else {
 				return 0;
 			}
@@ -70,6 +83,32 @@ define(['ash', 'game/GameGlobals', 'game/constants/ImprovementConstants', 'game/
 			var level = this.getLevel(type);
 			var id = ImprovementConstants.getImprovementID(type);
 			return ImprovementConstants.getMajorLevel(id, level);
+		},
+		
+		isDamaged: function (type) {
+			var vo = this.improvements[type];
+			if (vo) {
+				return vo.numDamaged > 0;
+			} else {
+				return false;
+			}
+		},
+		
+		getNumDamaged: function (type) {
+			var vo = this.improvements[type];
+			if (vo) {
+				return vo.numDamaged;
+			} else {
+				return false;
+			}
+		},
+		
+		hasDamagedBuildings: function () {
+			for (var key in this.improvements) {
+				var val = this.improvements[key];
+				if (val && val.numDamaged > 0) return true;
+			}
+			return false;
 		},
 
 		getVO: function(type) {
@@ -172,8 +211,9 @@ define(['ash', 'game/GameGlobals', 'game/constants/ImprovementConstants', 'game/
 			for (var key in componentValues.i) {
 				if (key == "undefined") continue;
 				this.improvements[key] = new ImprovementVO(key);
-				this.improvements[key].count = componentValues.i[key].count;
-				this.improvements[key].level = componentValues.i[key].level;
+				this.improvements[key].count = componentValues.i[key].count || 1;
+				this.improvements[key].level = componentValues.i[key].level || 1;
+				this.improvements[key].numDamaged = componentValues.i[key].numDamaged || 0;
 				if (componentValues.i[key].storedResources) {
 					for (var res in componentValues.i[key].storedResources) {
 						this.improvements[key].storedResources[res] = componentValues.i[key].storedResources[res];

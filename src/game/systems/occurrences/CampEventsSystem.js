@@ -275,8 +275,8 @@ define([
 						logMsg = "Raid over.";
 						if (lostResources.getTotal() > 0) {
 							var lostResTxt = TextConstants.getLogResourceText(lostResources);
-							logMsg += " We lost " + lostResTxt.msg;
-							awayLogMsg += " We lost " + lostResTxt.msg;
+							logMsg += " We lost " + lostResTxt.msg + ".";
+							awayLogMsg += " We lost " + lostResTxt.msg + ".";
 							replacements = replacements.concat(lostResTxt.replacements);
 							values = values.concat(lostResTxt.values);
 						} else {
@@ -285,10 +285,16 @@ define([
 						}
 						
 						if (raidComponent.defendersLost > 0) {
-							logMsg += "" + raidComponent.defendersLost + " defenders were killed.";
-							awayLogMsg += "" + raidComponent.defendersLost + " defenders were killed.";
+							logMsg += " " + raidComponent.defendersLost + " defenders were killed.";
+							awayLogMsg += " " + raidComponent.defendersLost + " defenders were killed.";
 						}
 					}
+					
+					if (raidComponent.damagedBuilding != null) {
+						logMsg += " A building was damaged.";
+						awayLogMsg += "A building was damaged.";
+					}
+					
 					campNode.entity.remove(RaidComponent);
 					campNode.camp.lastRaid = raidVO;
 					break;
@@ -400,69 +406,109 @@ define([
 			log.i("end raid: danger: " + danger + ", raidRoll: " + UIConstants.roundValue(raidRoll) + " -> victory: " + raidComponent.victory);
 
 			// raiders won, deduct resources etc
-			if (!raidComponent.victory) {
-				let storageMax = GameGlobals.resourcesHelper.getCurrentCampStorage(sectorEntity).storageCapacity;
-				let storageResources = GameGlobals.resourcesHelper.getCurrentCampStorage(sectorEntity).resources;
-				let storageProduction = GameGlobals.resourcesHelper.getCurrentStorageAccumulation(false).resourceChange;
-				let campResources = GameGlobals.resourcesHelper.getCampStorage(sectorEntity).resources;
-				let campProduction = GameGlobals.resourcesHelper.getCampStorageAccumulation(sectorEntity).resourceChange;
+			if (raidComponent.victory) {
+				this.addRaidDamagedBuildings(sectorEntity, 0.25, [ improvementNames.fortification ]);
+			} else {
+				this.addRaidResourcesLost(sectorEntity);
+				this.addRaidKilledDefenders(sectorEntity, 0.5);
+				this.addRaidDamagedBuildings(sectorEntity, 0.5, null);
+			}
+		},
+		
+		addRaidResourcesLost: function (sectorEntity) {
+			let raidComponent = sectorEntity.get(RaidComponent);
+			let storageMax = GameGlobals.resourcesHelper.getCurrentCampStorage(sectorEntity).storageCapacity;
+			let storageResources = GameGlobals.resourcesHelper.getCurrentCampStorage(sectorEntity).resources;
+			let storageProduction = GameGlobals.resourcesHelper.getCurrentStorageAccumulation(false).resourceChange;
+			let campResources = GameGlobals.resourcesHelper.getCampStorage(sectorEntity).resources;
+			let campProduction = GameGlobals.resourcesHelper.getCampStorageAccumulation(sectorEntity).resourceChange;
 
-				// select resources (names)
-				let resourceCandidates = [];
-				for (var key in resourceNames) {
-					let name = resourceNames[key];
-					let storageAmount = storageResources.getResource(name);
-					if (storageAmount > 0) {
-						let campProductionAmount = campProduction.getResource(name)
-						let campProductionFactor = campProductionAmount > 0 ? campProductionAmount / storageProduction.getResource(name) : 0;
-						let score = 0;
-						score += storageAmount / storageMax * 10;
-						score += campProductionFactor * 100;
-						if (name == resourceNames.metal) score -= 10;
-						if (name == resourceNames.rope) score -= 1;
-						if (name == resourceNames.concrete) score -= 1;
-						resourceCandidates.push({ name: name, score: score, campProductionFactor: campProductionFactor });
-					}
-				}
-				resourceCandidates = resourceCandidates.sort(function (a, b) { return b.score - a.score });
-				let maxSelectedResources = Math.min(resourceCandidates.length, 1 + Math.floor(Math.random() * 3));
-				if (maxSelectedResources <= 0) return;
-				let selectedResources = resourceCandidates.slice(0, maxSelectedResources);
-
-				// select amounts
-				let globalAmountFactor = 1 / (GameGlobals.resourcesHelper.getNumCampsInTradeNetwork(sectorEntity) || 1);
-				for (let i in selectedResources) {
-					let name = selectedResources[i].name;
-					let campProductionFactor = Math.min(0.5, selectedResources[i].campProductionFactor);
-					
-					let storageAmount = storageResources.getResource(name);
-					let maxLostAmount = Math.min(storageAmount, storageMax / 2, 3000);
-					
-					let randomFactor = 0.75 + Math.random() * 0.25;
-					let campShareFactor = Math.max(globalAmountFactor, campProductionFactor);
-					
-					let lostAmountRaw = maxLostAmount * campShareFactor * randomFactor;
-					let rounding = lostAmountRaw > 1000 ? 100 : lostAmountRaw > 100 ? 10 : 5;
-					let lostAmount = Math.floor(lostAmountRaw / rounding) * rounding;
-					
-					if (lostAmount >= 5) {
-						storageResources.setResource(name, storageAmount - lostAmount);
-						raidComponent.resourcesLost.addResource(name, lostAmount);
-					}
-				}
-				
-				// kill defenders
-				let campComponent = sectorEntity.get(CampComponent);
-				let numSoldiers = campComponent.assignedWorkers.soldier;
-				if (numSoldiers > 0 && Math.random() < 0.5) {
-					let maxKilled = Math.ceil(numSoldiers / 3);
-					let numKilled = Math.ceil(Math.random() * maxKilled);
-					campComponent.assignedWorkers.soldier -= numKilled;
-					campComponent.population -= numKilled;
-					GlobalSignals.workersAssignedSignal.dispatch(sectorEntity);
-					raidComponent.defendersLost = numKilled;
+			// select resources (names)
+			let resourceCandidates = [];
+			for (var key in resourceNames) {
+				let name = resourceNames[key];
+				let storageAmount = storageResources.getResource(name);
+				if (storageAmount > 0) {
+					let campProductionAmount = campProduction.getResource(name)
+					let campProductionFactor = campProductionAmount > 0 ? campProductionAmount / storageProduction.getResource(name) : 0;
+					let score = 0;
+					score += storageAmount / storageMax * 10;
+					score += campProductionFactor * 100;
+					if (name == resourceNames.metal) score -= 10;
+					if (name == resourceNames.rope) score -= 1;
+					if (name == resourceNames.concrete) score -= 1;
+					resourceCandidates.push({ name: name, score: score, campProductionFactor: campProductionFactor });
 				}
 			}
+			resourceCandidates = resourceCandidates.sort(function (a, b) { return b.score - a.score });
+			let maxSelectedResources = Math.min(resourceCandidates.length, 1 + Math.floor(Math.random() * 3));
+			if (maxSelectedResources <= 0) return;
+			let selectedResources = resourceCandidates.slice(0, maxSelectedResources);
+
+			// select amounts
+			let globalAmountFactor = 1 / (GameGlobals.resourcesHelper.getNumCampsInTradeNetwork(sectorEntity) || 1);
+			for (let i in selectedResources) {
+				let name = selectedResources[i].name;
+				let campProductionFactor = Math.min(0.5, selectedResources[i].campProductionFactor);
+				
+				let storageAmount = storageResources.getResource(name);
+				let maxLostAmount = Math.min(storageAmount, storageMax / 2, 3000);
+				
+				let randomFactor = 0.75 + Math.random() * 0.25;
+				let campShareFactor = Math.max(globalAmountFactor, campProductionFactor);
+				
+				let lostAmountRaw = maxLostAmount * campShareFactor * randomFactor;
+				let rounding = lostAmountRaw > 1000 ? 100 : lostAmountRaw > 100 ? 10 : 5;
+				let lostAmount = Math.floor(lostAmountRaw / rounding) * rounding;
+				
+				if (lostAmount >= 5) {
+					storageResources.setResource(name, storageAmount - lostAmount);
+					raidComponent.resourcesLost.addResource(name, lostAmount);
+				}
+			}
+		},
+		
+		addRaidKilledDefenders: function (sectorEntity, probability) {
+			let raidComponent = sectorEntity.get(RaidComponent);
+			let campComponent = sectorEntity.get(CampComponent);
+			let numSoldiers = campComponent.assignedWorkers.soldier;
+			if (numSoldiers > 0 && Math.random() < probability) {
+				let maxKilled = Math.ceil(numSoldiers / 3);
+				let numKilled = Math.ceil(Math.random() * maxKilled);
+				campComponent.assignedWorkers.soldier -= numKilled;
+				campComponent.population -= numKilled;
+				GlobalSignals.workersAssignedSignal.dispatch(sectorEntity);
+				raidComponent.defendersLost = numKilled;
+			}
+		},
+		
+		addRaidDamagedBuildings: function (sectorEntity, probability, allowedTypes) {
+			if (Math.random() > probability) return;
+			
+			// TODO add more building types here (and implement their effects)
+			let allAllowedTypes = [
+				improvementNames.fortification,
+				improvementNames.darkfarm,
+				improvementNames.apothecary,
+				improvementNames.smithy,
+				improvementNames.cementmill,
+				improvementNames.robotFactory,
+			];
+			allowedTypes = allowedTypes || allAllowedTypes;
+			
+			let typeIndex = Math.floor(Math.random() * allowedTypes.length);
+			let selectedType = allowedTypes[typeIndex];
+			
+			let improvements = sectorEntity.get(SectorImprovementsComponent);
+			let vo = improvements.getVO(selectedType);
+			
+			vo.numDamaged = vo.numDamaged || 0;
+			if (vo.numDamaged >= vo.count) return;
+			
+			vo.numDamaged++;
+			
+			let raidComponent = sectorEntity.get(RaidComponent);
+			raidComponent.damagedBuilding = selectedType;
 		},
 		
 		onGameStarted: function () {

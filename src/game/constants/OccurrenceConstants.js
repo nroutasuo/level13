@@ -123,15 +123,24 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 		
 		getRaidDefenceString: function (improvements, soldiers, soldierLevel) {
 			let result = "Base: " + CampConstants.CAMP_BASE_DEFENCE;
-			var fortificationsPoints = this.getFortificationsDefencePoints(improvements);
-			if (fortificationsPoints > 0) result += "<br/>Fortifications:" + fortificationsPoints;
-			var soldierPoints = this.getSoldierDefencePoints(soldiers, soldierLevel, improvements.getLevel(improvementNames.barracks));
+			
+			let fortificationsPoints = this.getFortificationsDefencePoints(improvements);
+			let fortificationsPointsWithoutDamaged = this.getFortificationsDefencePoints(improvements, true);
+			let fortificationsPointsDiff = fortificationsPoints - fortificationsPointsWithoutDamaged;
+			if (fortificationsPointsWithoutDamaged > 0) {
+				result += "<br/>Fortifications: " + fortificationsPointsWithoutDamaged;
+				if (fortificationsPoints != fortificationsPointsWithoutDamaged) {
+					result += "<br/>Damage: -" + fortificationsPointsDiff;
+				}
+			}
+			let soldierPoints = this.getSoldierDefencePoints(soldiers, soldierLevel, improvements.getLevel(improvementNames.barracks));
 			if (soldierPoints > 0) result += "<br/>Soldiers:" + soldierPoints;
+			
 			return result;
 		},
 		
-		getFortificationsDefencePoints: function (improvements) {
-			let count = improvements.getCount(improvementNames.fortification) || 0;
+		getFortificationsDefencePoints: function (improvements, ignoreDamaged) {
+			let count = improvements.getCountWithModifierForDamaged(improvementNames.fortification, ignoreDamaged ? 1 : 0.5) || 0;
 			let level = improvements.getLevel(improvementNames.fortification) || 1;
 			let levelFactor = 1 + (level - 1) * 0.5;
 			return count * CampConstants.FORTIFICATION_1_DEFENCE * levelFactor;

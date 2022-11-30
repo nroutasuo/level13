@@ -153,7 +153,7 @@ define([
 		},
 		
 		getDarkFarmProductionPerSecond: function (improvementsComponent) {
-			let count = improvementsComponent.getCount(improvementNames.darkfarm);
+			let count = improvementsComponent.getCountWithModifierForDamaged(improvementNames.darkfarm, 0.5);
 			let level = improvementsComponent.getLevel(improvementNames.darkfarm);
 			return count * (0.01 + level * 0.01);
 		},

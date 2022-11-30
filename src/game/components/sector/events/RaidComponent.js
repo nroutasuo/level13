@@ -8,6 +8,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		constructor: function () {
 			this.resourcesLost = new ResourcesVO();
 			this.defendersLost = 0;
+			this.damagedBuilding = null;
 		},
 	});
 

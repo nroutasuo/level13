@@ -367,6 +367,10 @@ body.dark img.icon-ui-generic {
   height: 1.5em;
   width: 1.5em;
 }
+body.dark img.icon-centered {
+  display: block;
+  margin: auto;
+}
 body.dark .shadowed-basic {
   -webkit-box-shadow: 1px 2px 7px 3px rgba(0, 0, 0, 0.25);
   -moz-box-shadow: 1px 2px 7px 3px rgba(0, 0, 0, 0.25);
@@ -2575,6 +2579,10 @@ body.sunlit span.icon {
 body.sunlit img.icon-ui-generic {
   height: 1.5em;
   width: 1.5em;
+}
+body.sunlit img.icon-centered {
+  display: block;
+  margin: auto;
 }
 body.sunlit .shadowed-basic {
   -webkit-box-shadow: 1px 2px 5px 2px rgba(96, 96, 96, 0.25);

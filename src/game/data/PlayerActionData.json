@@ -1277,6 +1277,7 @@
         "move_level_down": "Use the passage to move one level down",
         "move_level_up": "Use the passage to move one level up",
         "nap": "Sleep rough and regain a bit of stamina.",
+		"repair_in": "Repair damaged building",
         "scavenge": "Look for resources.",
         "scout": "Scout the area for evidence.",
         "scout_locale_i": "Find out if there is anyone living here.",

@@ -44,6 +44,7 @@ define([
 			POP_UNASSIGNED: "population-unassigned",
 			POP_DECREASING: "population-decreasing",
 			POP_INCREASING: "population-increasing",
+			BUILDING_DAMAGED: "building-damaged",
 			EVENT_OUTGOING_CARAVAN: "outoing-caravan",
 			STATUS_NON_REACHABLE_BY_TRADERS: "not-reachable-by-traders",
 		},
@@ -188,6 +189,9 @@ define([
 			var hasRecentRaid = camp.lastRaid && !camp.lastRaid.wasVictory && camp.lastRaid.isValid() && secondsSinceLastRaid < 60 * 60;
 			var unAssignedPopulation = camp.getFreePopulation();
 			
+			var improvements = node.entity.get(SectorImprovementsComponent);
+			let hasDamagedBuildings = improvements.hasDamagedBuildings();
+			
 			var numCaravans = caravansComponent.outgoingCaravans.length;
 
 			if (!isPlayerInCampLevel) {
@@ -208,6 +212,10 @@ define([
 				if (unAssignedPopulation > 0) {
 					this.alerts[level].push(this.campNotificationTypes.POP_UNASSIGNED);
 					this.notifications[level].push(this.campNotificationTypes.POP_UNASSIGNED);
+				}
+				if (hasDamagedBuildings) {
+					this.alerts[level].push(this.campNotificationTypes.BUILDING_DAMAGED);
+					this.notifications[level].push(this.campNotificationTypes.BUILDING_DAMAGED);
 				}
 				if (camp.populationChangePerSec < 0) {
 					this.alerts[level].push(this.campNotificationTypes.POP_DECREASING);
@@ -383,6 +391,7 @@ define([
 				case this.campNotificationTypes.EVENT_RECRUIT: return "visitor";
 				case this.campNotificationTypes.POP_UNASSIGNED: return "unassigned workers";
 				case this.campNotificationTypes.POP_DECREASING: return "population decreasing";
+				case this.campNotificationTypes.BUILDING_DAMAGED: return "damaged building";
 				case this.campNotificationTypes.EVENT_OUTGOING_CARAVAN: return "outgoing caravan";
 				default: return "";
 			}
@@ -416,6 +425,7 @@ define([
 				case this.campNotificationTypes.POP_UNASSIGNED: return "Unassigned workers on level " + level + ".";
 				case this.campNotificationTypes.POP_DECREASING: return "Population is decreasing on level " + level + "!";
 				case this.campNotificationTypes.POP_INCREASING: return "Population is increasing on level " + level + ".";
+				case this.campNotificationTypes.BUILDING_DAMAGED: return "Damaged building(s) on level " + level + ".";
 				case this.campNotificationTypes.STATUS_NON_REACHABLE_BY_TRADERS: return "Camp on level " + level + " can't trade resources with other camps.";
 				default: return null;
 			}
@@ -424,16 +434,17 @@ define([
 		// smaller number -> higher prio
 		getNotificationPriority: function (notificationType) {
 			switch (notificationType) {
+				case this.campNotificationTypes.POP_DECREASING: return 1;
 				case this.campNotificationTypes.EVENT_RAID_ONGOING: return 2;
 				case this.campNotificationTypes.EVENT_RAID_RECENT: return 2;
 				case this.campNotificationTypes.EVENT_TRADER: return 3;
 				case this.campNotificationTypes.EVENT_RECRUIT: return 3;
-				case this.campNotificationTypes.POP_UNASSIGNED: return 2;
-				case this.campNotificationTypes.POP_DECREASING: return 1;
-				case this.campNotificationTypes.POP_INCREASING: return 6;
-				case this.campNotificationTypes.EVENT_OUTGOING_CARAVAN: return 4;
-				case this.campNotificationTypes.STATUS_NON_REACHABLE_BY_TRADERS: return 5;
-				default: return 5;
+				case this.campNotificationTypes.BUILDING_DAMAGED: return 4;
+				case this.campNotificationTypes.POP_UNASSIGNED: return 5;
+				case this.campNotificationTypes.EVENT_OUTGOING_CARAVAN: return 6;
+				case this.campNotificationTypes.STATUS_NON_REACHABLE_BY_TRADERS: return 7;
+				case this.campNotificationTypes.POP_INCREASING: return 8;
+				default: return 9;
 			}
 		},
 

@@ -33,6 +33,7 @@ define([
 		},
 		
 		animateNumber: function ($elem, targetValue, suffix, flipNegative, roundingFunc) {
+			roundingFunc = roundingFunc || ((num) => num);
 			let animType = "number-anim";
 			let roundedTargetValue = UIAnimations.parseRawNumber(roundingFunc(targetValue));
 			let currentTargetValue = parseFloat(UIAnimations.getCurrentTarget($elem, animType));

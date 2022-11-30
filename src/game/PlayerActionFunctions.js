@@ -241,6 +241,7 @@ define(['ash',
 				case "use_in_temple": this.useTemple(param); break;
 				case "use_in_shrine": this.useShrine(param); break;
 				case "improve_in": this.improveBuilding(param); break;
+				case "repair_in": this.repairBuilding(param); break;
 				case "dismantle_in": this.dismantleBuilding(param); break;
 				// Item actions
 				case "craft": this.craftItem(param); break;
@@ -1526,6 +1527,22 @@ define(['ash',
 			this.save();
 			
 			this.addLogMessage("MSG_ID_IMPROVE_" + improvementName, ImprovementConstants.getImprovedLogMessage(improvementID, level));
+		},
+		
+		repairBuilding: function (param) {
+			let improvementID = param;
+			let improvementName = improvementNames[improvementID];
+			let sector = this.playerLocationNodes.head.entity;
+			let improvementsComponent = sector.get(SectorImprovementsComponent);
+			
+			let vo = improvementsComponent.getVO(improvementName);
+			vo.numDamaged--;
+			
+			let displayName = ImprovementConstants.getImprovementDisplayName(improvementID, vo.level);
+			
+			GlobalSignals.improvementBuiltSignal.dispatch();
+			this.save();
+			this.addLogMessage("MSG_ID_REPAIR_" + improvementName, "Repaired " + Text.addArticle(displayName));
 		},
 
 		dismantleBuilding: function (param) {

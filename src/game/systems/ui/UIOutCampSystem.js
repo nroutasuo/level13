@@ -1,6 +1,7 @@
  define([
 	'ash',
 	'utils/UIState',
+	'utils/UIAnimations',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/ImprovementConstants',
@@ -26,13 +27,14 @@
 	'game/components/sector/events/RecruitComponent',
 	'game/components/sector/events/TraderComponent',
 	'game/components/sector/events/RaidComponent',
+	'text/Text'
 ], function (
-	Ash, UIState, GameGlobals, GlobalSignals,
+	Ash, UIState, UIAnimations, GameGlobals, GlobalSignals,
 	ImprovementConstants, PlayerActionConstants, UIConstants, UpgradeConstants, OccurrenceConstants, CampConstants, PerkConstants, TextConstants,
 	PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, DeityNode, TribeUpgradesNode,
 	PerksComponent,
 	CampComponent, ResourcesComponent, OutgoingCaravansComponent, ReputationComponent, SectorImprovementsComponent, CampEventTimersComponent,
-	RecruitComponent, TraderComponent, RaidComponent
+	RecruitComponent, TraderComponent, RaidComponent, Text
 ) {
 	var UIOutCampSystem = Ash.System.extend({
 
@@ -328,14 +330,16 @@
 				if (canBeDismantled) {
 					dismantleButton = "<button class='action action-dismantle btn-glyph-big' action='" + dismantleAction + "'>×</button>";
 				}
+				let repairButton = "<button class='action action-repair btn-narrow' action='repair_in_" + key + "'>Repair</button>";
+				let damagedIcon = "<img src='img/eldorado/icon-gear-warning.png' class='icon-damaged icon-ui-generic icon-centered' alt='Building damaged' title='Building damaged' />"
 				
 				tds += "<td>" + buildButton + "</td>";
 				tds += "<td><span class='improvement-badge improvement-count'>0</span></td>";
 				tds += "<td style='position:relative'><span class='improvement-badge improvement-level'>0</span>";
 				tds += "</td>";
-				tds += "<td>" + improveButton + "</td>";
+				tds += "<td>" + improveButton + "" + damagedIcon + "</td>";
 				tds += "<td>" + dismantleButton + "</td>";
-				tds += "<td>" + useButton + "" + useButton2 + "</td>";
+				tds += "<td>" + useButton + "" + useButton2 + "" + repairButton + "</td>";
 				trs += "<tr id='in-improvements-" + key + "'>" + tds + "</tr>";
 			}
 			let ths = "<tr class='header-mini'><th></th><th>count</th><th>lvl</th><th></th><th></th><th></th></tr>"
@@ -361,9 +365,11 @@
 				let btnUse2 = $(this).find(".action-use2");
 				let btnImprove = $(this).find(".action-improve");
 				let btnDismantle = $(this).find(".action-dismantle");
+				let btnRepair = $(this).find(".action-repair");
+				let iconDamaged = $(this).find(".icon-damaged");
 				let count = $(this).find(".improvement-count")
 				let level = $(this).find(".improvement-level")
-				result.push({ tr: $(this), btnBuild: btnBuild, btnUse: btnUse, btnUse2: btnUse2, btnImprove: btnImprove, btnDismantle: btnDismantle, count: count, level: level, id: id, action: buildAction, improveAction: improveAction, improvementName: improvementName });
+				result.push({ tr: $(this), btnBuild: btnBuild, btnUse: btnUse, btnUse2: btnUse2, btnImprove: btnImprove, btnDismantle: btnDismantle, btnRepair: btnRepair, iconDamaged: iconDamaged, count: count, level: level, id: id, action: buildAction, improveAction: improveAction, improvementName: improvementName });
 			});
 			this.elements.improvementRows = result;
 		},
@@ -442,14 +448,32 @@
 				if (id === "in-improvements-tradepost") specialVisibilityRule = campCount > 1;
 				if (id === "in-improvements-market") specialVisibilityRule = hasTradePost;
 				if (id === "in-improvements-inn") specialVisibilityRule = hasTradePost;
-				var isVisible = specialVisibilityRule && commonVisibilityRule;
+				let isVisible = specialVisibilityRule && commonVisibilityRule;
 				let showUseAction1 = useActionAvailable || !useAction2Available;
+				let isDamaged = improvements.isDamaged(improvementName);
 				
 				GameGlobals.uiFunctions.toggle(elem.tr, isVisible);
-				GameGlobals.uiFunctions.toggle(elem.btnUse, existingImprovements > 0 && showUseAction1);
-				GameGlobals.uiFunctions.toggle(elem.btnUse2, existingImprovements > 0 && !showUseAction1);
-				GameGlobals.uiFunctions.toggle(elem.btnImprove, existingImprovements > 0 && maxImprovementLevel > 1);
+				GameGlobals.uiFunctions.toggle(elem.btnUse, existingImprovements > 0 && showUseAction1 && !isDamaged);
+				GameGlobals.uiFunctions.toggle(elem.btnUse2, existingImprovements > 0 && !showUseAction1 && !isDamaged);
+				GameGlobals.uiFunctions.toggle(elem.btnImprove, existingImprovements > 0 && maxImprovementLevel > 1 && !isDamaged);
 				GameGlobals.uiFunctions.toggle(elem.btnDismantle, existingImprovements > 0);
+				GameGlobals.uiFunctions.toggle(elem.btnRepair, isDamaged);
+				GameGlobals.uiFunctions.toggle(elem.iconDamaged, isDamaged);
+				
+				if (isDamaged) {
+					// TODO turn it into a normal callout
+					// TODO explain effect (reduced defences / production)
+					let numBuilt = improvements.getCount(improvementName);
+					let numDamaged = improvements.getNumDamaged(improvementName);
+					let damageDescription = "Building damaged";
+					if (numBuilt > 1) {
+						damageDescription += " (" + numDamaged + "/" + numBuilt + ")";
+					}
+					elem.iconDamaged.attr("alt", damageDescription);
+					elem.iconDamaged.attr("title", damageDescription);
+					
+				}
+				
 				if (isVisible) visibleBuildingCount++;
 				if (actionAvailable) availableBuildingCount++;
 			}
@@ -540,11 +564,12 @@
 			if (!campComponent) return;
 			
 			var levelComponent = this.playerLevelNodes.head.level;
+			let sector = this.playerLocationNodes.head.entity;
 
-			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
-			var soldiers = this.playerLocationNodes.head.entity.get(CampComponent).assignedWorkers.soldier;
+			var improvements = sector.get(SectorImprovementsComponent);
+			var soldiers = sector.get(CampComponent).assignedWorkers.soldier;
 			var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
-			var raidDanger = GameGlobals.campHelper.getCampRaidDanger(this.playerLocationNodes.head.entity);
+			var raidDanger = GameGlobals.campHelper.getCampRaidDanger(sector);
 			var raidAttack = OccurrenceConstants.getRaidDangerPoints(improvements, levelComponent.raidDangerFactor);
 			var raidDefence = OccurrenceConstants.getRaidDefencePoints(improvements, soldiers, soldierLevel);
 
@@ -559,31 +584,12 @@
 				var defenceS = OccurrenceConstants.getRaidDefenceString(improvements, soldiers, soldierLevel);
 				$("#in-demographics-raid-danger .value").text(Math.round(raidDanger * 100) + "%");
 				$("#in-demographics-raid-danger .value").toggleClass("warning", raidWarning);
-				$("#in-demographics-raid-defence .value").text(raidDefence);
+				UIAnimations.animateOrSetNumber($("#in-demographics-raid-defence .value"), true, raidDefence);
 				UIConstants.updateCalloutContent("#in-demographics-raid-danger", "Increases with camp size and decreases with camp defences.");
 				UIConstants.updateCalloutContent("#in-demographics-raid-defence", defenceS);
 				var hasLastRaid = campComponent.lastRaid && campComponent.lastRaid.isValid();
 				if (hasLastRaid) {
-					let lastRaidS = "(none)";
-					if (campComponent.lastRaid.wasVictory) {
-						lastRaidS = "Camp was defended";
-					} else {
-						let resourcesLost = campComponent.lastRaid.resourcesLost;
-						let defendersLost = campComponent.lastRaid.defendersLost;
-						if (resourcesLost && resourcesLost.getTotal() > 0) {
-							var resLog = TextConstants.getLogResourceText(resourcesLost);
-							var resS = TextConstants.createTextFromLogMessage(resLog.msg, resLog.replacements, resLog.values);
-							lastRaidS = "Camp attacked, lost: " + resS;
-						} else {
-							lastRaidS = "Camp attacked, nothing left to steal";
-						}
-						
-						if (defendersLost > 0) {
-							lastRaidS += ". " + defendersLost + " defenders were killed.";
-						}
-					}
-					lastRaidS += " (" + UIConstants.getTimeSinceText(campComponent.lastRaid.timestamp) + " ago)";
-					$("#in-demographics-raid-last .value").text(lastRaidS);
+					$("#in-demographics-raid-last .value").text(this.getLastRaidDescription(sector, campComponent, campComponent.lastRaid));
 				}
 				GameGlobals.uiFunctions.toggle("#in-demographics-raid-last", hasLastRaid);
 			}
@@ -605,6 +611,44 @@
 
 			GameGlobals.uiFunctions.toggle("#in-demographics-level", showLevelStats);
 			GameGlobals.uiFunctions.toggle("#in-demographics", showCalendar || showRaid || showLevelStats);
+		},
+		
+		getLastRaidDescription: function (sector, campComponent, raidVO) {
+			let result = "(none)";
+			if (campComponent.lastRaid.wasVictory) {
+				result = "Camp was defended.";
+			} else {
+				let resourcesLost = campComponent.lastRaid.resourcesLost;
+				let defendersLost = campComponent.lastRaid.defendersLost;
+				if (resourcesLost && resourcesLost.getTotal() > 0) {
+					var resLog = TextConstants.getLogResourceText(resourcesLost);
+					var resS = TextConstants.createTextFromLogMessage(resLog.msg, resLog.replacements, resLog.values);
+					result = "Camp attacked, lost: " + resS + ".";
+				} else {
+					result = "Camp attacked, nothing left to steal.";
+				}
+				
+				if (defendersLost > 0) {
+					result += ". " + defendersLost + " defenders were killed.";
+				}
+			}
+			
+			if (raidVO.damagedBuilding != null) {
+				let improvements = sector.get(SectorImprovementsComponent);
+				let improvementID = ImprovementConstants.getImprovementID(raidVO.damagedBuilding);
+				let displayName = ImprovementConstants.getImprovementDisplayName(improvementID, improvements.getLevel(raidVO.damagedBuilding));
+				if (raidVO.damagedBuilding == improvementNames.fortification) {
+					result += " Fortifications were damaged.";
+				} else if (improvements.getCount(raidVO.damagedBuilding) == 1) {
+					result += " The " + displayName + " was damaged.";
+				} else {
+					result += " " + Text.addArticle(displayName) + " was damaged.";
+				}
+			}
+			
+			result += " (" + UIConstants.getTimeSinceText(campComponent.lastRaid.timestamp) + " ago)";
+			
+			return result;
 		},
 
 		getWorkerDescription: function (def) {
