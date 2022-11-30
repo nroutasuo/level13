@@ -428,7 +428,7 @@ define(['ash',
 					effect = "health";
 					break;
 				case PerkConstants.perkTypes.luck:
-					return "Reduces probability of negative random events";
+					return "Reduces probability of negative random events when out exploring";
 			}
 
 			return effect + " " + value;

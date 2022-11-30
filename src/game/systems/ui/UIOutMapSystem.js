@@ -494,7 +494,7 @@ define([
 		
 		getDistrictText: function (sector) {
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
-			return sectorFeatures.isEarlyZone() ? "central" : "unfrequented";
+			return sectorFeatures.isEarlyZone() ? "central" : "outer";
 		},
 		
 		getPOIText: function (sector, isScouted) {

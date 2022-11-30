@@ -990,7 +990,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			
 			if (validItems.length == 0) {
 				if (itemsScavengeable.length > 0) {
-					return "Unknown";
+					return "Unknown ingredient";
 				} else {
 					return "None";
 				}
