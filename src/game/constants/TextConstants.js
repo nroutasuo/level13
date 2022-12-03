@@ -1105,13 +1105,17 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			}
 		},
 		
-		getListText: function (list) {
+		getListText: function (list, max) {
 			if (!list || list.length == 0) {
 				return "none";
 			} else if (list.length == 1) {
 				return list[0];
 			} else if (list.length == 2) {
 				return list[0] + " and " + list[1];
+			} else if (max && list.length > max) {
+				let displayedList = list.slice(0, max);
+				let numHiddenItems = list.length - displayedList.length;
+				return displayedList.join(", ") + ", +" + numHiddenItems;
 			} else {
 				return list.join(", ");
 			}

@@ -77,6 +77,7 @@ function (Ash, GameGlobals, LogConstants, LogMessageVO) {
 			if (!prevMsg) return false;
 			if (prevMsg.loadedFromSave) return false;
 			if (newMsg.message !== prevMsg.message) return false;
+			if (newMsg.logMsgID !== prevMsg.logMsgID) return false;
 			if (newMsg.campLevel !== prevMsg.campLevel) return false;
 			return true;
 		},

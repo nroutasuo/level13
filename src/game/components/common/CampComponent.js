@@ -9,7 +9,8 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 		populationChangePerSec: 0,
 		rumourpool: 0,
 		rumourpoolchecked: false,
-		assignedWorkers: {},
+		assignedWorkers: {}, // id => number
+		autoAssignedWorkers: {}, // id => bool
 		campName: "",
 		lastRaid: null,
 		
@@ -23,8 +24,10 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 			this.rumourpool = 0;
 			this.rumourpoolchecked = false;
 			this.assignedWorkers = {};
+			this.autoAssignedWorkers = {};
 			for(var worker in CampConstants.workerTypes) {
 				this.assignedWorkers[worker.id] = 0;
+				this.autoAssignedWorkers[worker.id] = false;
 			}
 			this.campName = "";
 			this.lastRaid = new RaidVO(null);
@@ -43,6 +46,16 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 				assigned += this.assignedWorkers[key];
 			}
 			return assigned;
+		},
+		
+		getAutoAssignedWorkers: function () {
+			let result = [];
+			for(var key in this.autoAssignedWorkers) {
+				if (this.autoAssignedWorkers[key]) {
+					result.push(key);
+				}
+			}
+			return result;
 		},
 		
 		addPopulation: function (value) {
@@ -78,6 +91,7 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 			copy.foundedTimeStamp = this.foundedTimeStamp;
 			copy.lastRaid = this.lastRaid;
 			copy.assignedWorkers = this.assignedWorkers;
+			copy.autoAssignedWorkers = this.autoAssignedWorkers;
 			copy.rumourpool = this.rumourpool;
 			copy.rumourpoolchecked = this.rumourpoolchecked;
 			

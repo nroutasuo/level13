@@ -70,6 +70,7 @@ define([
 			if (GameGlobals.gameState.isPaused) return;
 			
 			for (var node = this.campNodes.head; node; node = node.next) {
+				this.updateWorkerAssignment(node);
 				if (this.isPendingProductionRateUpdate) {
 					this.updateWorkerProductionRate(node);
 				}
@@ -82,6 +83,44 @@ define([
 		
 			this.updatePlayer(time);
 			this.logAmbient();
+		},
+		
+		updateWorkerAssignment: function (node) {
+			let freePopulation = node.camp.getFreePopulation();
+			if (freePopulation <= 0) return;
+			
+			let playerPos = this.playerNodes.head.position;
+			if (playerPos.inCamp && playerPos.getPosition().equals(node.position.getPosition())) return;
+			
+			let autoAssignedWorkers = node.camp.getAutoAssignedWorkers();
+			if (autoAssignedWorkers.length == 0) return;
+			
+			let getAssignType = function () {
+				let result = null;
+				let resultCurrentAssigned = 0;
+				for (let i = 0; i < autoAssignedWorkers.length; i++) {
+					let workerType = autoAssignedWorkers[i];
+					let max = GameGlobals.campHelper.getMaxWorkers(node.entity, workerType);
+					let current = node.camp.assignedWorkers[workerType];
+					if (max > 0 && current >= max) continue;
+					if (result == null || resultCurrentAssigned > current) {
+						result = workerType;
+						resultCurrentAssigned = current;
+					}
+				}
+				return result;
+			};
+			
+			let numToAssign = freePopulation;
+			while (numToAssign > 0) {
+				let assignType = getAssignType();
+				if (assignType == null) break;
+				node.camp.assignedWorkers[assignType] = node.camp.assignedWorkers[assignType] + 1;
+				numToAssign--;
+				this.log("A previously unassigned worker has started working as " + CampConstants.getWorkerDisplayName(assignType), false, node);
+			}
+			
+			GlobalSignals.workersAssignedSignal.dispatch(node.entity);
 		},
 		
 		updateWorkerProduction: function (node, time) {
@@ -208,7 +247,7 @@ define([
 			camp.toolsConsumptionPerSecondRobots = GameGlobals.campHelper.getToolsConsumptionPerSecondRobots(camp.assignedWorkers.robotmaker);
 		},
 		
-		updateWorkerHunger: function (node, time) {		
+		updateWorkerHunger: function (node, time) {
 			if (GameGlobals.gameState.isLaunched) return;
 			
 			var campResources = node.entity.get(ResourcesComponent);
@@ -232,22 +271,22 @@ define([
 			
 			if (!isThirsty) {
 				if (hasThirstPerk) {
-					if (!inCamp) this.log("No longer thirsty.");
+					if (!inCamp) this.log("No longer thirsty.", true);
 					perksComponent.removePerkById(PerkConstants.perkIds.thirst);
 				}
 			} else if (!hasThirstPerk) {
-				if (!inCamp && (GameGlobals.gameState.unlockedFeatures.resources.water)) this.log("Out of water!");
+				if (!inCamp && (GameGlobals.gameState.unlockedFeatures.resources.water)) this.log("Out of water!", true);
 				var thirstPerk = PerkConstants.getPerk(PerkConstants.perkIds.thirst, PerkConstants.ACTIVATION_TIME_HEALTH_DEBUFF);
 				perksComponent.addPerk(thirstPerk);
 			}
 			
 			if (!isHungry) {
 				if (hasHungerPerk) {
-					if (!inCamp) this.log("No longer hungry.");
+					if (!inCamp) this.log("No longer hungry.", true);
 					perksComponent.removePerkById(PerkConstants.perkIds.hunger);
 				}
 			} else if (!hasHungerPerk) {
-				if (!inCamp && (GameGlobals.gameState.unlockedFeatures.resources.food)) this.log("Out of food!");
+				if (!inCamp && (GameGlobals.gameState.unlockedFeatures.resources.food)) this.log("Out of food!", true);
 				var hungerPerk = PerkConstants.getPerk(PerkConstants.perkIds.hunger, PerkConstants.ACTIVATION_TIME_HEALTH_DEBUFF);
 				perksComponent.addPerk(hungerPerk);
 			}
@@ -316,15 +355,21 @@ define([
 				}
 				
 				if (msg != null) {
-					this.log(msg);
+					this.log(msg, true);
 				}
 			}
 		},
 		
-		log: function (msg) {
-			var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
-			logComponent.addMessage(LogConstants.MSG_ID_WORKER_STATUS, msg);
-			this.lastMsgTimeStamp = new Date().getTime();
+		log: function (msg, isAmbient, campNode) {
+			let logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
+			if (campNode) {
+				logComponent.addMessage(LogConstants.getUniqueID(), msg, null, null, null, null, true, campNode.position.level);
+			} else {
+				logComponent.addMessage(LogConstants.MSG_ID_WORKER_STATUS, msg);
+			}
+			if (isAmbient) {
+				this.lastMsgTimeStamp = new Date().getTime();
+			}
 		}
 
 	});

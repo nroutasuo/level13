@@ -71,6 +71,7 @@
 			this.playerLevelNodes = engine.getNodeList(PlayerLevelNode);
 			this.deityNodes = engine.getNodeList(DeityNode);
 			this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
+			
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
 			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.onImprovementBuilt);
 			GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.onPlayerMoved);
@@ -192,31 +193,39 @@
 			return GameGlobals.campHelper.getCampMaxPopulation(this.playerLocationNodes.head.entity);
 		},
 
-		updateWorkerStepper: function (campComponent, id, workerType, maxWorkers, showMax) {
+		updateWorkerStepper: function (campComponent, id, workerType, maxWorkers, showMax, isAutoAssigned) {
 			GameGlobals.uiFunctions.toggle($(id).closest("tr"), maxWorkers > 0);
 
 			var freePopulation = campComponent.getFreePopulation();
 			var assignedWorkers = Math.max(0, campComponent.assignedWorkers[workerType]) || 0;
 			var maxAssigned = Math.min(assignedWorkers + freePopulation, maxWorkers);
 			GameGlobals.uiFunctions.updateStepper(id, assignedWorkers, 0, maxAssigned);
+			
+			let $checkbox = $("#in-assing-worker-auto-" + workerType);
+			$checkbox.prop("checked", isAutoAssigned);
 
 			$(id).parent().siblings(".in-assign-worker-limit").children(".callout-container").children(".info-callout-target").html(showMax ? "<span>/ " + maxWorkers + "</span>" : "");
 		},
 
 		updatePopulationDisplay: function (campComponent, maxPopulation, reputation, robots, maxRobots) {
-			var freePopulation = campComponent.getFreePopulation();
-			var isPopulationMaxed = campComponent.population >= maxPopulation;
-			var populationChangePerSec = campComponent.populationChangePerSec || 0;
-			var isPopulationStill = isPopulationMaxed || populationChangePerSec === 0;
+			let freePopulation = campComponent.getFreePopulation();
+			let isPopulationMaxed = campComponent.population >= maxPopulation;
+			let populationChangePerSec = campComponent.populationChangePerSec || 0;
+			let isPopulationStill = isPopulationMaxed || populationChangePerSec === 0;
+			
+			let autoAssignedWorkers = campComponent.getAutoAssignedWorkers();
+			let autoAssignedWorkersNames = autoAssignedWorkers.map(workerType => CampConstants.getWorkerDisplayName(workerType));
+			let autoAssignedWorkersText = TextConstants.getListText(autoAssignedWorkersNames, 3);
 
-			var reqRepCur = CampConstants.getRequiredReputation(Math.floor(campComponent.population));
-			var reqRepNext = CampConstants.getRequiredReputation(Math.floor(campComponent.population) + 1);
-			var isReputationBlocking = reqRepNext < reputation;
+			let reqRepCur = CampConstants.getRequiredReputation(Math.floor(campComponent.population));
+			let reqRepNext = CampConstants.getRequiredReputation(Math.floor(campComponent.population) + 1);
+			let isReputationBlocking = reqRepNext < reputation;
 
 			$("#in-population-next").text(campComponent.populationChangePerSec >= 0 ? "Next worker:" : "Worker leaving:");
 			$("#in-population-reputation").text("Reputation required: " + reqRepCur + " (current) " + reqRepNext + " (next)");
 			$("#in-population h3").text("Population: " + Math.floor(campComponent.population) + " / " + (maxPopulation));
 			$("#in-population #in-population-status").text("Unassigned workers: " + freePopulation);
+			$("#in-population #in-population-autoassigned").text("Auto-assigned workers: " + autoAssignedWorkersText);
 			$("#in-population #in-population-robots").text("Robots: " + UIConstants.roundValue(robots, false, false, 1) + " / " + maxRobots);
 
 			if (!isPopulationStill) {
@@ -260,17 +269,18 @@
 			var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
 			if (!campComponent) return;
 				
-			for (var key in CampConstants.workerTypes) {
+			for (let key in CampConstants.workerTypes) {
 				var def = CampConstants.workerTypes[key];
 				UIConstants.updateCalloutContent("#in-assign-" + key + " .in-assign-worker-desc .info-callout-target", this.getWorkerDescription(def), true);
 			}
 			
-			for (var key in CampConstants.workerTypes) {
-				var def = CampConstants.workerTypes[key];
-				var maxWorkers = GameGlobals.campHelper.getMaxWorkers(this.playerLocationNodes.head.entity, key);
-				var showMax = maxWorkers >= 0;
+			for (let key in CampConstants.workerTypes) {
+				let def = CampConstants.workerTypes[key];
+				let maxWorkers = GameGlobals.campHelper.getMaxWorkers(this.playerLocationNodes.head.entity, key);
+				let showMax = maxWorkers >= 0;
+				let isAutoAssigned = campComponent.autoAssignedWorkers[key] || false;
 				if (maxWorkers < 0) maxWorkers = GameGlobals.campHelper.getCampMaxPopulation(this.playerLocationNodes.head.entity);
-				this.updateWorkerStepper(campComponent, "#stepper-" + def.id, def.id, maxWorkers, showMax);
+				this.updateWorkerStepper(campComponent, "#stepper-" + def.id, def.id, maxWorkers, showMax, isAutoAssigned);
 			}
 		},
 
@@ -375,17 +385,23 @@
 		},
 		
 		initWorkers: function () {
-			var $table = $("#in-assign-workers");
-			var trs = "";
-			for (var key in CampConstants.workerTypes) {
-				var def = CampConstants.workerTypes[key];
-				var tds = "";
+			let $table = $("#in-assign-workers");
+			let trs = "";
+			
+			for (let key in CampConstants.workerTypes) {
+				let def = CampConstants.workerTypes[key];
+				let tds = "";
 				tds += "<td class='in-assign-worker-desc'><div class='info-callout-target info-callout-target-small'>" + (def.displayName || def.id) + "</div></td>";
 				tds += "<td><div class='stepper' id='stepper-" + def.id + "'></div></td>";
 				tds += "<td class='in-assign-worker-limit'><div class='info-callout-target info-callout-target-small'></div></td>"
+				tds += "<td class='in-assign-worker-auto'><input type='checkbox' id='in-assing-worker-auto-" + def.id + "' class='in-assign-workers-auto-toggle' title='Auto-assign worker' /></td>"
+				
 				trs += "<tr id='in-assign-" + key + "'>" + tds + "</tr>";
 			}
+			
 			$table.append(trs);
+			
+			$("#in-assign-workers .in-assign-workers-auto-toggle").change({ sys: this }, this.onAutoAssignWorkerToggled);
 		},
 
 		updateImprovements: function () {
@@ -613,6 +629,15 @@
 			GameGlobals.uiFunctions.toggle("#in-demographics", showCalendar || showRaid || showLevelStats);
 		},
 		
+		saveAutoAssignSettings: function () {
+			if (this.playerLocationNodes.head == null) return;
+			let campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
+			for (let workerType in CampConstants.workerTypes) {
+				let $checkbox = $("#in-assing-worker-auto-" + workerType);
+				campComponent.autoAssignedWorkers[workerType] = $checkbox.is(':checked');
+			}
+		},
+		
 		getLastRaidDescription: function (sector, campComponent, raidVO) {
 			let result = "(none)";
 			if (campComponent.lastRaid.wasVictory) {
@@ -772,6 +797,11 @@
 			if (this.playerLocationNodes.head.entity === entity) {
 				this.refresh();
 			}
+		},
+		
+		onAutoAssignWorkerToggled: function (e) {
+			e.data.sys.saveAutoAssignSettings();
+			e.data.sys.refresh();
 		},
 
 		onGameShown: function () {
