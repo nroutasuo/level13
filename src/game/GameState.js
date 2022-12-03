@@ -53,6 +53,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 				favour: false,
 				evidence: false,
 				currency: false,
+				workerAutoAssignment: false,
 			};
 
 			this.uiStatus = {

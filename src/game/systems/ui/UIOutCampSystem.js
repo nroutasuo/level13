@@ -255,14 +255,15 @@
 			GameGlobals.uiFunctions.slideToggleIf("#in-population-next", null, campComponent.population > 0 && !isPopulationStill, 200, 200);
 			GameGlobals.uiFunctions.slideToggleIf("#in-population-details", null, campComponent.population >= 1, 200, 200);
 			GameGlobals.uiFunctions.slideToggleIf("#in-population-status", null, campComponent.population >= 1, 200, 200);
+			GameGlobals.uiFunctions.slideToggleIf("#in-population #in-population-autoassigned", null, GameGlobals.gameState.unlockedFeatures.workerAutoAssignment, 200, 200);
+			GameGlobals.uiFunctions.slideToggleIf(".in-assign-workers-auto-toggle", null, GameGlobals.gameState.unlockedFeatures.workerAutoAssignment, 200, 200);
 			GameGlobals.uiFunctions.slideToggleIf("#in-population-robots", null, robots > 0, 200, 200);
 			GameGlobals.uiFunctions.slideToggleIf("#in-assign-workers", null, campComponent.population >= 1, 200, 200);
 			
 			let robotBonus = GameGlobals.campBalancingHelper.getWorkerRobotBonus(robots);
 			let robotCalloutContent = "worker resource production: +" + UIConstants.roundValue(robotBonus * 100, true, false) + "%";
 			robotCalloutContent = robotCalloutContent + "<br/>" + CampConstants.SPECIAL_STORAGE_PER_FACTORY + " robots per factory";
-			UIConstants.updateCalloutContent("#in-population #in-population-robots", robotCalloutContent);
-			
+			UIConstants.updateCalloutContent("#in-population #in-population-robots", robotCalloutContent);			
 		},
 
 		updateAssignedWorkers: function (campComponent) {
@@ -630,6 +631,7 @@
 		},
 		
 		saveAutoAssignSettings: function () {
+			if (!GameGlobals.gameState.unlockedFeatures.workerAutoAssignment) return;
 			if (this.playerLocationNodes.head == null) return;
 			let campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
 			for (let workerType in CampConstants.workerTypes) {
@@ -800,6 +802,7 @@
 		},
 		
 		onAutoAssignWorkerToggled: function (e) {
+			if (!GameGlobals.gameState.unlockedFeatures.workerAutoAssignment) return;
 			e.data.sys.saveAutoAssignSettings();
 			e.data.sys.refresh();
 		},

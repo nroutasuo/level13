@@ -323,6 +323,9 @@ define([
 				targets = $(this).children(".info-callout-target");
 				if (targets.length > 0) {
 					var visible = true;
+					$.each(targets, function() {
+						visible = visible && $(this).css("display") !== "none";
+					});
 					$.each(targets.children(), function () {
 						visible = visible && $(this).css("display") !== "none";
 					});

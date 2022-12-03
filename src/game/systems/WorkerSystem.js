@@ -86,6 +86,8 @@ define([
 		},
 		
 		updateWorkerAssignment: function (node) {
+			if (!GameGlobals.gameState.unlockedFeatures.workerAutoAssignment) return;
+			
 			let freePopulation = node.camp.getFreePopulation();
 			if (freePopulation <= 0) return;
 			
