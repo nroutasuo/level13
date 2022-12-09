@@ -808,8 +808,9 @@ define(['ash',
 		},
 		
 		clearDebris: function (sectorPos) {
+			let position = this.getPositionVO(sectorPos);
 			this.clearBlocker("clear_debris", MovementConstants.BLOCKER_TYPE_DEBRIS, sectorPos);
-			this.addLogMessage(LogConstants.MSG_ID_CLEAR_DEBRIS, "Sent out a team to clear debris.");
+			this.addLogMessage(LogConstants.MSG_ID_CLEAR_DEBRIS, "Debris cleared at " + position.getInGameFormat(false));
 		},
 		
 		clearBlocker: function (action, blockerType, sectorPos) {

@@ -334,6 +334,8 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 			
 			switch (baseActionID) {
 				case "send_caravan":
+				case "clear_debris":
+				case "bridge_gap":
 					return false;
 				default:
 					return true;

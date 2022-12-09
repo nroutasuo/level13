@@ -1300,6 +1300,8 @@
         "wait": "Pass some time"
     },
     "durations": {
+		"bridge_gap": 60,
+		"clear_debris":  30,
         "clear_waste_r": 10,
         "clear_waste_t": 5,
 		"launch": 5,
