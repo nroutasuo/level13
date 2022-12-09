@@ -40,7 +40,6 @@ define(['game/constants/ColorConstants', 'game/constants/SectorConstants'], func
 	MapElements.initIcon("passage-up", "map-passage-up");
 	MapElements.initIcon("passage-up-disabled", "map-passage-up-disabled");
 	MapElements.initIcon("passage-down", "map-passage-down");
-	MapElements.initIcon("passage-down-disabled", "map-passage-down-disabled");
 	MapElements.initIcon("interest", "map-interest");
 	MapElements.initIcon("unknown", "map-unvisited");
 	MapElements.initIcon("workshop", "map-workshop");
