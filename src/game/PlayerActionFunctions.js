@@ -144,8 +144,8 @@ define(['ash',
 		},
 
 		startBusy: function (action, param, deductedCosts) {
-			var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
-			var duration = PlayerActionConstants.getDuration(baseId);
+			let baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
+			let duration = PlayerActionConstants.getDuration(baseId);
 			if (duration > 0) {
 				var isBusy = PlayerActionConstants.isBusyAction(baseId);
 				var endTimeStamp = this.playerStatsNodes.head.entity.get(PlayerActionComponent).addAction(action, duration, param, deductedCosts, isBusy);
@@ -1273,6 +1273,7 @@ define(['ash',
 			var sector = this.getActionSector(action, sectorPos);
 			this.buildImprovement(action, improvementNames.greenhouse, sector);
 			GameGlobals.gameState.unlockedFeatures.resources.herbs = true;
+			this.addLogMessage(LogConstants.getUniqueID(), "Greenhouse is ready.");
 		},
 		
 		buildTradeConnector: function (sectorPos) {
@@ -1280,6 +1281,7 @@ define(['ash',
 			var position = this.getPositionVO(sectorPos);
 			var sector = this.getActionSector(action, sectorPos);
 			this.buildImprovement(action, improvementNames.tradepost_connector, sector);
+			this.addLogMessage(LogConstants.getUniqueID(), "Great Elevator is ready.");
 		},
 		
 		buildSundome: function (sectorPos) {
@@ -1287,6 +1289,7 @@ define(['ash',
 			var position = this.getPositionVO(sectorPos);
 			var sector = this.getActionSector(action, sectorPos);
 			this.buildImprovement(action, improvementNames.sundome, sector);
+			this.addLogMessage(LogConstants.getUniqueID(), "Sundome is completed.");
 		},
 		
 		improveOutImprovement: function (param) {

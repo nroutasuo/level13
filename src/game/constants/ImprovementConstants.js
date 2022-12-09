@@ -164,16 +164,42 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			collector_food: {
 				improvementLevelsPerTechLevel: 1,
 			},
-			passageUpStairs: {},
-			passageUpElevator: {},
-			passageUpHole: {},
-			passageDownStairs: {},
-			passageDownElevator: {},
-			passageDownHole: {},
-			spaceship1: {},
-			spaceship2: {},
-			spaceship3: {},
-			sundome: {},
+			passageUpStairs: {
+				isPassage: true,
+				isProject: true,
+			},
+			passageUpElevator: {
+				isPassage: true,
+				isProject: true,
+			},
+			passageUpHole: {
+				isPassage: true,
+				isProject: true,
+			},
+			passageDownStairs: {
+				isPassage: true,
+				isProject: true,
+			},
+			passageDownElevator: {
+				isPassage: true,
+				isProject: true,
+			},
+			passageDownHole: {
+				isPassage: true,
+				isProject: true,
+			},
+			spaceship1: {
+				isProject: true,
+			},
+			spaceship2: {
+				isProject: true,
+			},
+			spaceship3: {
+				isProject: true,
+			},
+			sundome: {
+				isProject: true,
+			},
 		},
 		
 		getDef: function (improvementID) {
@@ -184,6 +210,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			}
 			if (!def) {
 				log.w("no improvement def found: " + improvementID);
+				return {};
 			}
 			return def;
 		},

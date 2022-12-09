@@ -1,4 +1,4 @@
-define(['ash', 'game/GameGlobals', 'game/vos/PlayerActionVO'], function (Ash, GameGlobals, PlayerActionVO) {
+define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/PlayerActionVO'], function (Ash, PlayerActionConstants, PlayerActionVO) {
 
 	var PlayerActionComponent = Ash.Class.extend({
 
@@ -9,11 +9,14 @@ define(['ash', 'game/GameGlobals', 'game/vos/PlayerActionVO'], function (Ash, Ga
 		constructor: function () {
 			this.endTimeStampToActionDict = {};
 			this.endTimeStampList = [];
+			this.busyStartTime = -1;
 		},
 
 		addAction: function (action, duration, param, deductedCosts, isBusyAction) {
-			if (!this.isBusy() && isBusyAction) this.busyStartTime = new Date().getTime();
-			var endTimeStamp = new Date().getTime() + duration * 1000;
+			if (!this.isBusy() && isBusyAction) {
+				this.busyStartTime = new Date().getTime();
+			}
+			let endTimeStamp = new Date().getTime() + duration * 1000;
 			this.endTimeStampToActionDict[endTimeStamp] = new PlayerActionVO(action, param, deductedCosts, isBusyAction);
 			this.endTimeStampList.push(endTimeStamp);
 			this.sortTimeStamps();
@@ -74,8 +77,10 @@ define(['ash', 'game/GameGlobals', 'game/vos/PlayerActionVO'], function (Ash, Ga
 		},
 
 		getBusyDescription: function () {
-			var action = this.getLastAction(true).action;
-			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+			let action = this.getLastAction(true).action;
+			if (action.indexOf("build_") >= 0) return "building";
+			
+			let baseActionID = PlayerActionConstants.getBaseActionID(action);
 			switch (baseActionID) {
 				case "use_in_home": return "resting";
 				case "use_in_campfire": return "discussing";
@@ -87,7 +92,7 @@ define(['ash', 'game/GameGlobals', 'game/vos/PlayerActionVO'], function (Ash, Ga
 				case "clear_waste_t": return "clearing waste";
 				case "clear_waste_r": return "clearing waste";
 				case "launch": return "launch";
-				default: baseActionID;
+				default: return baseActionID;
 			}
 		},
 

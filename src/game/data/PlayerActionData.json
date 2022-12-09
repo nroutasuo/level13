@@ -1310,7 +1310,9 @@
         "use_in_hospital_2": 120,
         "use_in_market": 10,
         "use_in_shrine": 10,
-        "use_in_temple": 5
+        "use_in_temple": 5,
+		"build_out_collector_food": 3,
+		"build_out_collector_water": 3
     },
     "injuryProbabilities": {
         "despair": [
@@ -2518,6 +2520,9 @@
         "dismiss_follower": {
             "inCamp": true
         },
+		"enter_camp": {
+            "busy": false
+		},
         "fight": {
             "busy": false
         },
