@@ -588,13 +588,13 @@ define(['ash',
 			 * @param {type} action action
 			 */
 			completeAction: function (action) {
-				var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
-				var cooldown = PlayerActionConstants.getCooldown(baseId);
+				let baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
+				let cooldown = PlayerActionConstants.getCooldown(baseId);
 				if (cooldown > 0) {
-					var locationKey = this.getLocationKey(action);
+					let locationKey = this.getLocationKey(action);
 					GameGlobals.gameState.setActionCooldown(action, locationKey, cooldown);
 					if (!GameGlobals.gameState.isAutoPlaying) {
-						var button = $("button[action='" + action + "']");
+						let button = $("button[action='" + action + "']");
 						this.startButtonCooldown($(button), cooldown);
 					}
 				}
@@ -1004,7 +1004,7 @@ define(['ash',
 
 			startButtonCooldown: function (button, cooldown, cooldownLeft) {
 				if (GameGlobals.gameState.uiStatus.isHidden) return;
-				var action = $(button).attr("action");
+				let action = $(button).attr("action");
 				if (!GameGlobals.playerActionsHelper.isRequirementsMet(action)) return;
 				if (!cooldownLeft) cooldownLeft = cooldown;
 				var uiFunctions = this;

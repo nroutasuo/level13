@@ -34,16 +34,17 @@ define([
 
 		updateNode: function (node, extraUpdateTime) {
 			extraUpdateTime = extraUpdateTime || 0;
-			var now = new Date().getTime();
-			var newDict = {};
-			var newList = [];
+			let now = new Date().getTime();
+			let newDict = {};
+			let newList = [];
+			let actionsToPerform = [];
 			
 			if (extraUpdateTime != 0) {
 				node.playerActions.applyExtraTime(extraUpdateTime);
 			}
 			
-			var timeStamp;
-			var action;
+			let timeStamp;
+			let action;
 			for (let i = 0; i < node.playerActions.endTimeStampList.length; i++) {
 				timeStamp = node.playerActions.endTimeStampList[i];
 				action = node.playerActions.endTimeStampToActionDict[timeStamp];
@@ -53,14 +54,19 @@ define([
 					newDict[timeStamp] = action;
 					newList.push(timeStamp);
 				} else {
-					if (action.action) {
-						this.playerActionFunctions.performAction(action.action, action.param, action.deductedCosts);
-					}
+					actionsToPerform.push(action);
 				}
 			}
 			
 			node.playerActions.endTimeStampToActionDict = newDict;
 			node.playerActions.endTimeStampList = newList;
+			
+			for (let i = 0; i < actionsToPerform.length; i++) {
+				let action = actionsToPerform[i];
+				if (action.action) {
+					this.playerActionFunctions.performAction(action.action, action.param, action.deductedCosts);
+				}
+			}
 		},
 	});
 

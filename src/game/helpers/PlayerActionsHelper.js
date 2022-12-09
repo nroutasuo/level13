@@ -197,6 +197,17 @@ define([
 			return true;
 		},
 		
+		isInProgress: function (action) {
+			let playerActionComponent = this.playerResourcesNodes.head.entity.get(PlayerActionComponent);
+			let actions = playerActionComponent.getAllActions();
+			for (let i = 0; i < actions.length; i++) {
+				if (actions[i].action == action) {
+					return true;
+				}
+			}
+			return false;
+		},
+		
 		isRequirementsMet: function (action, sector) {
 			return GameGlobals.playerActionsHelper.checkRequirements(action, false, sector).value >= 1;
 		},
@@ -207,7 +218,8 @@ define([
 		// reason: string to describe the non-passed requirement (for button explanations)
 		checkRequirements: function (action, doLog, otherSector, checksToSkip) {
 			if (!action) return { value: 0, reason: "No action", baseReason: PlayerActionConstants.DISABLED_REASON_INVALID_PARAMS };
-			var sector = otherSector;
+			if (this.isInProgress(action)) return { value: 0, reason: "Already in progress", baseReason: PlayerActionConstants.DISABLED_REASON_IN_PROGRESS };
+			let sector = otherSector;
 			if (!sector) sector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
 			if (!sector) return { value: 0, reason: "No selected sector", baseReason: PlayerActionConstants.DISABLED_REASON_INVALID_PARAMS };
 

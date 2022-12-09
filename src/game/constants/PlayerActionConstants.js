@@ -9,6 +9,7 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 	var PlayerActionConstants = {
 		
 		DISABLED_REASON_INVALID_PARAMS: "DISABLED_REASON_INVALID_PARAMS",
+		DISABLED_REASON_IN_PROGRESS: "DISABLED_REASON_IN_PROGRESS",
 		DISABLED_REASON_LOCKED_RESOURCES: 'Requires undiscovered resources.',
 		DISABLED_REASON_BAG_FULL: 'Bag full.',
 		DISABLED_REASON_NOT_IN_CAMP: 'Must be in camp to do this.',

@@ -27,8 +27,19 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/PlayerActionVO'
 			return this.endTimeStampToActionDict[this.getLastTimeStamp(requireBusy)];
 		},
 		
+		getAllActions: function (requireBusy) {
+			let result = [];
+			for (let i = this.endTimeStampList.length - 1; i >= 0; i--) {
+				let action = this.endTimeStampToActionDict[this.endTimeStampList[i]];
+				if (!requireBusy || action.isBusy) {
+					result.push(action);
+				}
+			}
+			return result;
+		},
+		
 		getLastActionName: function (requireBusy) {
-			var lastAction = this.getLastAction(requireBusy);
+			let lastAction = this.getLastAction(requireBusy);
 			return lastAction ? lastAction.action : null;
 		},
 
@@ -36,7 +47,7 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/PlayerActionVO'
 			var lastTimeStamp = -1;
 			if (requireBusy) {
 				for (let i = this.endTimeStampList.length - 1; i >= 0; i--) {
-					var action = this.endTimeStampToActionDict[this.endTimeStampList[i]];
+					let action = this.endTimeStampToActionDict[this.endTimeStampList[i]];
 					if (action.isBusy) {
 						lastTimeStamp = this.endTimeStampList[i];
 						break;
