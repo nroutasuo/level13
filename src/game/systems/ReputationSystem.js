@@ -73,13 +73,14 @@ define([
 		
 		updateTargetReputations: function () {
 			if (!this.campNodes.head) return;
-			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
-				var reputationComponent = campNode.reputation;
-				reputationComponent.targetValue = this.getTargetReputation(campNode);
+			let baseValue = GameGlobals.tribeHelper.getCurrentReputationBaseValue();
+			for (let campNode = this.campNodes.head; campNode; campNode = campNode.next) {
+				let reputationComponent = campNode.reputation;
+				reputationComponent.targetValue = this.getTargetReputation(campNode, baseValue);
 			}
 		},
 		
-		getTargetReputation: function (campNode) {
+		getTargetReputation: function (campNode, baseValue) {
 			var sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
 			var sectorFeatures = campNode.entity.get(SectorFeaturesComponent);
 			
@@ -91,7 +92,8 @@ define([
 			
 			let isSunlit = sectorFeatures.sunlit;
 			
-			var targetReputation = GameGlobals.campHelper.getTargetReputation(sectorImprovements, resources, campNode.camp.population, levelComponent.populationFactor, danger, isSunlit);
+			let targetReputation = GameGlobals.campHelper.getTargetReputation(baseValue, sectorImprovements, resources, campNode.camp.population, levelComponent.populationFactor, danger, isSunlit);
+			
 			var sources = targetReputation.sources;
 			var penalties = targetReputation.penalties;
 			

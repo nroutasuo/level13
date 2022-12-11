@@ -60,7 +60,7 @@ define([
 				if (reqs.tribe && reqs.tribe.improvements) {
 					for (let improvementID in reqs.tribe.improvements) {
 						let improvementName = improvementNames[improvementID];
-						let buildAction = GameGlobals.playerActionsHelper.getActionNameForImprovement(improvementName);
+						let buildAction = PlayerActionConstants.getActionNameForImprovement(improvementName);
 						let buildCampStep = GameGlobals.playerActionsHelper.getMinimumCampAndStep(buildAction);
 						result = Math.max(result, buildCampStep.campOrdinal);
 					}
@@ -68,7 +68,7 @@ define([
 				if (reqs.tribe && reqs.tribe.projects) {
 					for (let improvementID in reqs.tribe.projects) {
 						let improvementName = improvementNames[improvementID];
-						let buildAction = GameGlobals.playerActionsHelper.getActionNameForImprovement(improvementName);
+						let buildAction = PlayerActionConstants.getActionNameForImprovement(improvementName);
 						let buildCampStep = GameGlobals.playerActionsHelper.getMinimumCampAndStep(buildAction);
 						result = Math.max(result, buildCampStep.campOrdinal);
 					}

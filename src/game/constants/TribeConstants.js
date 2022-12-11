@@ -1,6 +1,6 @@
 define(['ash', 'game/constants/OccurrenceConstants'], function (Ash, OccurrenceConstants) {
 	
-	var TribeConstants = {
+	let TribeConstants = {
 		
 		milestones: [
 			{
@@ -8,12 +8,14 @@ define(['ash', 'game/constants/OccurrenceConstants'], function (Ash, OccurrenceC
 				maxRumours: 500,
 				maxEvidence: 300,
 				maxFavour: 0,
+				baseReputation: 0,
 			},
 			{
 				name: "milestone 1",
 				maxRumours: 1000,
 				maxEvidence: 500,
 				maxFavour: 0,
+				baseReputation: 1,
 				unlockedEvents: [ OccurrenceConstants.campOccurrenceTypes.raid ],
 			},
 			{
@@ -21,36 +23,42 @@ define(['ash', 'game/constants/OccurrenceConstants'], function (Ash, OccurrenceC
 				maxRumours: 4000,
 				maxEvidence: 1000,
 				maxFavour: 0,
+				baseReputation: 2,
 			},
 			{
 				name: "milestone 3",
 				maxRumours: 8000,
 				maxEvidence: 2000,
 				maxFavour: 600,
+				baseReputation: 3,
 			},
 			{
 				name: "milestone 4",
 				maxRumours: 10000,
 				maxEvidence: 3000,
 				maxFavour: 800,
+				baseReputation: 4,
 			},
 			{
 				name: "milestone 5",
 				maxRumours: 25000,
 				maxEvidence: 5000,
 				maxFavour: 1000,
+				baseReputation: 6,
 			},
 			{
 				name: "milestone 6",
 				maxRumours: 50000,
 				maxEvidence: 8000,
 				maxFavour: 2000,
+				baseReputation: 8,
 			},
 			{
 				name: "milestone 7",
 				maxRumours: 100000,
 				maxEvidence: 10000,
 				maxFavour: 3000,
+				baseReputation: 10,
 			},
 		],
 		
@@ -76,7 +84,7 @@ define(['ash', 'game/constants/OccurrenceConstants'], function (Ash, OccurrenceC
 			let nextIndex = milestone.index + 1;
 			if (nextIndex >= this.milestones.length) return null;
 			return this.milestones[nextIndex];
-		}
+		},
 		
 	};
 	

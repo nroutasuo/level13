@@ -20,6 +20,7 @@ define([
 	'game/helpers/ResourcesHelper',
 	'game/helpers/SaveHelper',
 	'game/helpers/SectorHelper',
+	'game/helpers/TribeBalancingHelper',
 	'game/helpers/TribeHelper',
 	'game/helpers/UpgradeEffectsHelper',
 	'game/helpers/ButtonHelper',
@@ -48,6 +49,7 @@ define([
 	ResourcesHelper,
 	SaveHelper,
 	SectorHelper,
+	TribeBalancingHelper,
 	TribeHelper,
 	UpgradeEffectsHelper,
 	ButtonHelper,
@@ -69,6 +71,8 @@ define([
 			GameGlobals.itemsHelper = new ItemsHelper();
 			GameGlobals.campHelper = new CampHelper(engine);
 			GameGlobals.campBalancingHelper = new CampBalancingHelper();
+			GameGlobals.tribeBalancingHelper = new TribeBalancingHelper();
+			
 			if (engine) {
 				GameGlobals.resourcesHelper = new ResourcesHelper(engine);
 				GameGlobals.levelHelper = new LevelHelper(engine);

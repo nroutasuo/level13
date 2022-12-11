@@ -148,15 +148,16 @@ define([
 		},
 		
 		getMaxReputation: function (campOrdinal, maxCampOrdinal) {
+			let baseValue = GameGlobals.tribeBalancingHelper.getMaxReputationBaseValue(maxCampOrdinal);
 			let totalStorage = GameGlobals.campBalancingHelper.getMaxTotalStorage(maxCampOrdinal);
 			let improvementsComponent = GameGlobals.campBalancingHelper.getMaxImprovements(maxCampOrdinal, campOrdinal, totalStorage);
 			let populationFactor = GameGlobals.campBalancingHelper.getPopulationFactor(campOrdinal);
 			let isSunlit = campOrdinal == 15;
 			let danger = 0;
-			return GameGlobals.campBalancingHelper.getTargetReputation(improvementsComponent, null, 0, populationFactor, danger, isSunlit).value;
+			return GameGlobals.campBalancingHelper.getTargetReputation(baseValue, improvementsComponent, null, 0, populationFactor, danger, isSunlit).value;
 		},
 		
-		getTargetReputation: function (improvementsComponent, resourcesVO, population, populationFactor, danger, isSunlit) {
+		getTargetReputation: function (baseValue, improvementsComponent, resourcesVO, population, populationFactor, danger, isSunlit) {
 			let result = 0;
 			var sources = {}; // text -> value
 			var penalties = {}; // id -> bool
@@ -170,6 +171,10 @@ define([
 			var addPenalty = function (id, active) {
 				penalties[id] = active;
 			};
+			
+			if (baseValue > 0) {
+				addValue(baseValue, "Tribe milestones");
+			}
 			
 			// base: building happiness values
 			var allImprovements = improvementsComponent.getAll(improvementTypes.camp);

@@ -477,8 +477,8 @@ define([
 			return ImprovementConstants.getMajorLevel(id, level + 1);
 		},
 		
-		getTargetReputation: function (improvementsComponent, resourcesVO, population, populationFactor, danger, isSunlit) {
-			return GameGlobals.campBalancingHelper.getTargetReputation(improvementsComponent, resourcesVO, population, populationFactor, danger, isSunlit);
+		getTargetReputation: function (baseValue, improvementsComponent, resourcesVO, population, populationFactor, danger, isSunlit) {
+			return GameGlobals.campBalancingHelper.getTargetReputation(baseValue, improvementsComponent, resourcesVO, population, populationFactor, danger, isSunlit);
 		},
 		
 		getUpgradeBonus: function (worker) {

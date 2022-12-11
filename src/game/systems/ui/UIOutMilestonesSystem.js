@@ -118,6 +118,9 @@ define([
 			if (nextMilestone.maxFavour && hasDeity) {
 				unlocksDiv += "Max favour: " + nextMilestone.maxFavour;
 			}
+			if (nextMilestone.baseReputation && nextMilestone.baseReputation > currentMilestone.baseReputation) {
+				unlocksDiv += "Base reputation: " + nextMilestone.baseReputation;				
+			}
 			unlocksDiv += "</div>";
 			
 			$("#milestone-container").empty();
