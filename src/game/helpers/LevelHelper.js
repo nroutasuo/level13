@@ -936,7 +936,7 @@ define([
 				if (locale === excludeLocaleVO) continue;
 				if (localeBracket && localeBracket !== locale.getBracket()) continue;
 				if (!includeScouted && sectorStatus.isLocaleScouted(i)) continue;
-				if (requireBlueprints && !locale.hasBlueprints()) continue;
+				if (requireBlueprints && !locale.hasBlueprints) continue;
 				locales.push(locale);
 			}
 			return locales;

@@ -13,6 +13,7 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 		sewer: 7,
 		warehouse: 8,
 		library: 9,
+		farm: 10,
 		
 		camp: 50,
 		hut: 51,
@@ -28,11 +29,16 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 		isEarly: true,
 		requirements: {},
 		costs: {},
+		
+		hasBlueprints: false,
+		followerID: null,
+		luxuryResource: null,
 	
 		constructor: function (type, isEasy, isEarly) {
 			this.type = type;
 			this.isEasy = isEasy;
 			this.isEarly = isEarly;
+			
 			this.requirements.vision = [this.getVisionRequirement(), -1];
 			this.costs = {};
 			this.costs.stamina = this.getStaminaRequirement();
@@ -129,17 +135,6 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 		
 		getBracket: function () {
 			return this.isEarly ? LocaleConstants.LOCALE_BRACKET_EARLY : LocaleConstants.LOCALE_BRACKET_LATE;
-		},
-		
-		hasBlueprints: function () {
-			switch (this.type) {
-				case localeTypes.grove:
-				case localeTypes.tradingpartner:
-					return false;
-				
-				default:
-					return true;
-			}
 		},
 		
 		getDebugName: function () {

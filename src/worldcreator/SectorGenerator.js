@@ -11,6 +11,7 @@ define([
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
 	'game/constants/TradeConstants',
+	'game/constants/TribeConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/WorldConstants',
 	'game/vos/GangVO',
@@ -28,7 +29,7 @@ define([
 	'worldcreator/CriticalPathVO',
 ], function (
 	Ash, MathUtils, GameGlobals,
-	EnemyConstants, ItemConstants, LevelConstants, LocaleConstants, MovementConstants, PositionConstants, SectorConstants, TradeConstants, UpgradeConstants, WorldConstants,
+	EnemyConstants, ItemConstants, LevelConstants, LocaleConstants, MovementConstants, PositionConstants, SectorConstants, TradeConstants, TribeConstants, UpgradeConstants, WorldConstants,
 	GangVO, LocaleVO, PathConstraintVO, PositionVO, ResourcesVO, StashVO, WaymarkVO,
 	WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug, WorldCreatorLogger, CriticalPathVO
 ) {
@@ -36,6 +37,10 @@ define([
 	var SectorGenerator = {
 		
 		itemsHelper: null,
+		
+		LUXURY_RESOURCE_LOCATION_TYPE_FARMABLE: "LUXURY_RESOURCE_LOCATION_TYPE_FARMABLE",
+		LUXURY_RESOURCE_LOCATION_TYPE_BIO: "LUXURY_RESOURCE_LOCATION_TYPE_BIO",
+		LUXURY_RESOURCE_LOCATION_TYPE_MINERAL: "LUXURY_RESOURCE_LOCATION_TYPE_MINERAL",
 		
 		prepareSectors: function (seed, worldVO, itemsHelper, enemyCreator) {
 			this.itemsHelper = itemsHelper;
@@ -1528,8 +1533,22 @@ define([
 				addLocale(sector, locale);
 				// WorldCreatorLogger.i("add follower locale at " + sector)
 			}
+			
+			// 4) spawn locales for luxury resources
+			for (let i = 0; i < levelVO.luxuryResources.length; i++) {
+				let resource = levelVO.luxuryResources[i];
+				let locationType = this.getLuxuryResourceLocationType(resource);
+				let filter = sectorVO => this.filterSectorForLuxuryLocationType(sectorVO, locationType);
+				let options = { excludingFeature: excludedFeatures, excludedZones: lateZones, excludedZones: [ WorldConstants.ZONE_PASSAGE_TO_CAMP ], filter: filter };
+				let sector = WorldCreatorRandom.randomSectors(seed  + 773 + levelVO.level * 24 + i * 992, worldVO, levelVO, 1, 2, options)[0];
+				let localeType = this.getLocaleTypeForLuxuryResourceOnSector(seed, locationType, sector);
+				let locale = new LocaleVO(localeType, false, false);
+				locale.luxuryResource = resource;
+				addLocale(sector, locale);
+				WorldCreatorLogger.i("add luxury resource locale at " + sector);
+			}
 
-			// 4) spawn other types (for blueprints)
+			// 5) spawn other types (for blueprints)
 			var createLocales = function (worldVO, levelVO, campOrdinal, isEarly, count, countEasy) {
 				var pathConstraints = [];
 				if (levelVO.campPosition) {
@@ -1558,6 +1577,7 @@ define([
 					var localeType = generator.getLocaleType(worldVO, levelVO, sectorVO, s1, isEarly);
 					var isEasy = i <= countEasy;
 					var locale = new LocaleVO(localeType, isEasy, isEarly);
+					locale.hasBlueprints = true;
 					addLocale(sectorVO, locale);
 					// WorldCreatorLogger.i(sectorVO.position + " added locale: isEarly:" + isEarly + ", distance to camp: " + WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO) + ", zone: " + sectorVO.zone);
 					for (let j = 0; j < pathConstraints.length; j++) {
@@ -1959,6 +1979,74 @@ define([
 			}
 			
 			return sectorType;
+		},
+
+		filterSectorForLuxuryLocationType: function (sectorVO, luxuryLocationType) {
+			if (sectorVO.sectorType == SectorConstants.SECTOR_TYPE_SLUM) return false;
+			if (sectorVO.sectorType == SectorConstants.SECTOR_TYPE_PUBLIC) return false;
+			
+			switch (luxuryLocationType) {
+				case this.LUXURY_RESOURCE_LOCATION_TYPE_FARMABLE:
+					return !sectorVO.hazards.hasHazards();
+				case this.LUXURY_RESOURCE_LOCATION_TYPE_BIO:
+					return !sectorVO.hazards.radiation;
+				case this.LUXURY_RESOURCE_LOCATION_TYPE_MINERAL:
+					return sectorVO.sectorType != SectorConstants.SECTOR_TYPE_RESIDENTIAL;
+			}
+			
+			return true;
+		},
+		
+		getLocaleTypeForLuxuryResourceOnSector: function (seed, luxuryLocationType, sector) {
+			let options = [ ];
+			
+			if (sector.sectorType == SectorConstants.SECTOR_TYPE_COMMERCIAL || sector.sectorType == SectorConstants.SECTOR_TYPE_RESIDENTIAL) {
+				options.push(localeTypes.market);
+			} else {
+				options.push(localeTypes.warehouse);
+			}
+			
+			switch (luxuryLocationType) {
+				case this.LUXURY_RESOURCE_LOCATION_TYPE_FARMABLE:
+					options.push(localeTypes.farm);
+					break;
+				case this.LUXURY_RESOURCE_LOCATION_TYPE_BIO:
+					options.push(localeTypes.lab);
+					break;
+			}
+			
+			return WorldCreatorRandom.getRandomItemFromArray(seed, options);
+		},
+		
+		getLuxuryResourceLocationType: function (luxuryType) {
+			switch (luxuryType) {
+				case TribeConstants.luxuryType.HONEY:
+				case TribeConstants.luxuryType.OLIVES:
+				case TribeConstants.luxuryType.TRUFFLES:
+				case TribeConstants.luxuryType.CHOCOLATE:
+				case TribeConstants.luxuryType.COFFEE:
+				case TribeConstants.luxuryType.SPICES:
+				case TribeConstants.luxuryType.TOBACCO:
+				case TribeConstants.luxuryType.TEA:
+					return this.LUXURY_RESOURCE_LOCATION_TYPE_FARMABLE;
+					
+				case TribeConstants.luxuryType.AMBER:
+				case TribeConstants.luxuryType.PEARLS:
+				case TribeConstants.luxuryType.IVORY:
+				case TribeConstants.luxuryType.SALT:
+					return this.LUXURY_RESOURCE_LOCATION_TYPE_BIO;
+				
+				case TribeConstants.luxuryType.DIAMONDS:
+				case TribeConstants.luxuryType.EMERALDS:
+				case TribeConstants.luxuryType.GOLD:
+				case TribeConstants.luxuryType.JADE:
+				case TribeConstants.luxuryType.SILVER:
+					return this.LUXURY_RESOURCE_LOCATION_TYPE_MINERAL;
+					
+				default:
+					log.w("unknown luxury resource type: " + luxuryType);
+					return this.LUXURY_RESOURCE_LOCATION_TYPE_MINERAL;
+			}
 		},
 		
 		isSunlit: function (seed, worldVO, levelVO, sectorVO) {

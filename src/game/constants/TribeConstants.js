@@ -62,6 +62,37 @@ define(['ash', 'game/constants/OccurrenceConstants'], function (Ash, OccurrenceC
 			},
 		],
 		
+		luxuryType: {
+			// consumable
+			CHOCOLATE: "CHOCOLATE",
+			COFFEE: "COFFEE",
+			HONEY: "HONEY",
+			OLIVES: "OLIVES",
+			SALT: "SALT",
+			SPICES: "SPICES",
+			TEA: "TEA",
+			TOBACCO: "TOBACCO",
+			TRUFFLES: "TRUFFLES",
+			// materials
+			AMBER: "AMBER",
+			DIAMONDS: "DIAMONDS",
+			EMERALDS: "EMERALDS",
+			GOLD: "GOLD",
+			IVORY: "IVORY",
+			JADE: "JADE",
+			PEARLS: "PEARLS",
+			SILVER: "SILVER",
+		},
+		
+		possibleLuxuriesByCampOrdinal: [
+			{ campOrdinal: 3, possibleLuxuries: [ "CHOCOLATE", "COFFEE", "TEA", "DIAMONDS", "JADE" ] },
+			{ campOrdinal: 6, possibleLuxuries: [ "COFFEE", "SALT", "TEA", "AMBER", "GOLD", "JADE", "SILVER", "EMERALDS" ] },
+			{ campOrdinal: 8, possibleLuxuries: [ "COFFEE", "HONEY", "TRUFFLES", "OLIVES", "SALT", "AMBER", "PEARLS" ] },
+			{ campOrdinal: 10, possibleLuxuries: [ "CHOCOLATE", "COFFEE", "SPICES", "TOBACCO", "DIAMONDS", "EMERALDS", "GOLD", "SILVER" ] },
+			{ campOrdinal: 13, possibleLuxuries: [ "CHOCOLATE", "COFFEE", "IVORY", "TOBACCO" ] },
+			{ campOrdinal: 15, possibleLuxuries: [ "CHOCOLATE", "COFFEE", "HONEY", "OLIVES", "IVORY", "PEARLS", "SPICES" ] },
+		],
+		
 		init: function () {
 			for (let i = 0; i < this.milestones.length; i++) {
 				this.milestones[i].index = i;
@@ -84,6 +115,42 @@ define(['ash', 'game/constants/OccurrenceConstants'], function (Ash, OccurrenceC
 			let nextIndex = milestone.index + 1;
 			if (nextIndex >= this.milestones.length) return null;
 			return this.milestones[nextIndex];
+		},
+		
+		getPossibleLuxuriesByCampOrdinal: function (campOrdinal) {
+			for (let i = 0; i < this.possibleLuxuriesByCampOrdinal.length; i++) {
+				let entry = this.possibleLuxuriesByCampOrdinal[i];
+				if (entry.campOrdinal == campOrdinal) {
+					return entry.possibleLuxuries;
+				}
+			}
+			return [];
+		},
+		
+		getLuxuryDisplayName: function (luxuryType) {
+			switch (luxuryType) {
+				case TribeConstants.luxuryType.HONEY: return "honey";
+				case TribeConstants.luxuryType.OLIVES: return "olives";
+				case TribeConstants.luxuryType.TRUFFLES: return "truffles";
+				case TribeConstants.luxuryType.CHOCOLATE: return "chocolate";
+				case TribeConstants.luxuryType.COFFEE: return "coffee";
+				case TribeConstants.luxuryType.SPICES: return "spices";
+				case TribeConstants.luxuryType.TOBACCO: return "tobacco";
+				case TribeConstants.luxuryType.TEA: return "tea";
+				case TribeConstants.luxuryType.AMBER: return "amber";
+				case TribeConstants.luxuryType.PEARLS: return "pearls";
+				case TribeConstants.luxuryType.IVORY: return "ivory";
+				case TribeConstants.luxuryType.SALT: return "salt";
+				case TribeConstants.luxuryType.DIAMONDS: return "diamonds";
+				case TribeConstants.luxuryType.EMERALDS: return "emeralds";
+				case TribeConstants.luxuryType.GOLD: return "gold";
+				case TribeConstants.luxuryType.JADE: return "jade";
+				case TribeConstants.luxuryType.SILVER: return "silver";
+				
+				default:
+					log.w("unknown luxury resource type: " + luxuryType);
+					return luxuryType;
+			}
 		},
 		
 	};

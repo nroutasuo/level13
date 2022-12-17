@@ -15,6 +15,7 @@ define(['ash',
 	'game/constants/PerkConstants',
 	'game/constants/FightConstants',
 	'game/constants/TradeConstants',
+	'game/constants/TribeConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/TextConstants',
 	'game/vos/PositionVO',
@@ -62,7 +63,7 @@ define(['ash',
 	'text/Text',
 	'utils/StringUtils'
 ], function (Ash, GameGlobals, GlobalSignals,
-	GameConstants, CampConstants, FollowerConstants, LogConstants, ImprovementConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, UpgradeConstants, TextConstants,
+	GameConstants, CampConstants, FollowerConstants, LogConstants, ImprovementConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, TribeConstants, UpgradeConstants, TextConstants,
 	PositionVO, LocaleVO, ResultVO,
 	PlayerPositionNode, FightNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
@@ -544,7 +545,7 @@ define(['ash',
 					sys.addLogMessage(LogConstants.getUniqueID(), "There isn't much left to scavenge here.");
 				}
 			};
-			this.handleOutActionResults("scavenge", LogConstants.MSG_ID_SCAVENGE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, null, successCallback);
+			this.handleOutActionResults("scavenge", LogConstants.MSG_ID_SCAVENGE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, false, successCallback);
 		},
 
 		investigate: function () {
@@ -569,7 +570,7 @@ define(['ash',
 					sys.addLogMessage(LogConstants.getUniqueID(), "There isn't much left to see here.");
 				}
 			};
-			this.handleOutActionResults("investigate", LogConstants.MSG_ID_INVESTIGATE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, null, successCallback);
+			this.handleOutActionResults("investigate", LogConstants.MSG_ID_INVESTIGATE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, false, successCallback);
 		},
 
 		scout: function () {
@@ -672,29 +673,33 @@ define(['ash',
 
 		scoutLocale: function (i) {
 			if (!this.playerLocationNodes.head) return;
-			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-			var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
-			var sectorFeaturesComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-			var localeVO = sectorLocalesComponent.locales[i];
+			
+			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			let sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
+			let sectorFeaturesComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			let localeVO = sectorLocalesComponent.locales[i];
 			if (!localeVO) {
 				log.w("no such locale " + i + "/" + sectorLocalesComponent.locales.length);
 				return;
 			}
-			var action = "scout_locale_" + localeVO.getCategory() + "_" + i;
+			
+			let action = "scout_locale_" + localeVO.getCategory() + "_" + i;
 
 			// TODO add more interesting log messages - especially for trade partners
-			var localeName = TextConstants.getLocaleName(localeVO, sectorFeaturesComponent);
+			let localeName = TextConstants.getLocaleName(localeVO, sectorFeaturesComponent);
 			localeName = localeName.split(" ")[localeName.split(" ").length - 1];
-			var baseMsg = "Scouted the " + localeName + ". ";
-			var logMsgSuccess = baseMsg;
-			var logMsgFlee = baseMsg + " Got surprised and fled.";
-			var logMsgDefeat = baseMsg + " Got surprised and beaten.";
+			let baseMsg = "Scouted the " + localeName + ". ";
+			let logMsgSuccess = baseMsg;
+			let logMsgFlee = baseMsg + " Got surprised and fled.";
+			let logMsgDefeat = baseMsg + " Got surprised and beaten.";
 			
-			var tradingPartner = null;
+			debugger
+			
+			let tradingPartner = null;
 			if (localeVO.type === localeTypes.tradingpartner) {
-				var playerPos = this.playerPositionNodes.head.position;
-				var level = playerPos.level;
-				var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+				let playerPos = this.playerPositionNodes.head.position;
+				let level = playerPos.level;
+				let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
 				if (GameGlobals.gameState.foundTradingPartners.indexOf(campOrdinal) < 0) {
 					var partner = TradeConstants.getTradePartner(campOrdinal);
 					if (partner) {
@@ -704,6 +709,7 @@ define(['ash',
 					}
 				}
 			}
+			
 			if (localeVO.type == localeTypes.grove) {
 				GameGlobals.gameState.unlockedFeatures.favour = true;
 				GlobalSignals.featureUnlockedSignal.dispatch();
@@ -718,10 +724,17 @@ define(['ash',
 				this.playerStatsNodes.head.stamina.stamina += PlayerStatConstants.STAMINA_GAINED_FROM_GROVE;
 				logMsgSuccess += "The trees seem alive. They whisper, but the words are unintelligible. You have found a source of <span class='hl-functionality'>ancient power</span>.";
 			}
+			
+			let luxuryResource = localeVO.luxuryResource;
+			if (luxuryResource) {
+				logMsgSuccess += "<br/>Found a source of <span class='hl-functionality'>" + TribeConstants.getLuxuryDisplayName(luxuryResource) + "</span>. ";
+				logMsgSuccess += "The people in will be happy.";
+			}
 
-			var playerActionFunctions = this;
-			var successCallback = function () {
+			let playerActionFunctions = this;
+			let successCallback = function () {
 				sectorStatus.localesScouted[i] = true;
+				
 				if (tradingPartner) {
 					GameGlobals.gameState.foundTradingPartners.push(tradingPartner);
 					if (!GameGlobals.gameState.unlockedFeatures.trade) {
@@ -729,11 +742,19 @@ define(['ash',
 						GlobalSignals.featureUnlockedSignal.dispatch();
 					}
 				}
+				
+				if (luxuryResource) {
+					if (GameGlobals.gameState.foundLuxuryResources.indexOf(luxuryResource) < 0) {
+						GameGlobals.gameState.foundLuxuryResources.push(luxuryResource);
+					}
+				}
+				
 				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 				playerActionFunctions.save();
 			};
 
-			this.handleOutActionResults(action, LogConstants.MSG_ID_SCOUT_LOCALE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, tradingPartner != null, successCallback);
+			let hasCustomReward = tradingPartner != null || luxuryResource != null;
+			this.handleOutActionResults(action, LogConstants.MSG_ID_SCOUT_LOCALE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, hasCustomReward, successCallback);
 		},
 
 		useSpring: function () {

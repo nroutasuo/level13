@@ -80,6 +80,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			},
 
 			this.foundTradingPartners = []; // camp ordinals
+			this.foundLuxuryResources = [];
 
 			this.actionCooldownEndTimestamps = {};
 			this.actionDurationEndTimestamps = {};
@@ -89,10 +90,11 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 		},
 
 		syncData: function () {
-			// remove duplicates from foundTradingPartners
-			var partners = this.foundTradingPartners;
+			// remove duplicates / old values
+						
+			let partners = this.foundTradingPartners;
 			this.foundTradingPartners = [];
-			for (var campOrdinal = 1; campOrdinal < 15; campOrdinal++) {
+			for (let campOrdinal = 1; campOrdinal < 15; campOrdinal++) {
 				if (partners.indexOf(campOrdinal) >= 0) {
 					this.foundTradingPartners.push(campOrdinal);
 				}

@@ -892,6 +892,10 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					if (sectorFeatures.level < 10) modifier = "ancient";
 					noun = "library";
 					break;
+				case localeTypes.farm:
+					modifier = "overgrown";
+					if (sectorFeatures.level < 10) modifier = "ancient";
+					noun = "farm";
 				default:
 					log.w("unknown locale type: " + locale.type);
 					noun = "building";

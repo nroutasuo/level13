@@ -1450,7 +1450,7 @@ define([
 		},
 
 		getResultBlueprint: function (localeVO) {
-			if (!localeVO.hasBlueprints()) return null;
+			if (!localeVO.hasBlueprints) return null;
 			
 			var playerPos = this.playerLocationNodes.head.position;
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);

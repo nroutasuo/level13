@@ -3,32 +3,34 @@ define([
 	'ash',
 	'game/constants/FollowerConstants',
 	'game/constants/PositionConstants',
+	'game/constants/TribeConstants',
 	'game/constants/WorldConstants',
 	'game/vos/PositionVO',
 	'worldcreator/WorldCreatorConstants',
 	'worldcreator/WorldCreatorHelper',
+	'worldcreator/WorldCreatorLogger',
 	'worldcreator/WorldCreatorRandom',
 	'worldcreator/LevelVO',
 	'worldcreator/ZoneVO',
-], function (Ash, FollowerConstants, PositionConstants, WorldConstants, PositionVO, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, LevelVO, ZoneVO) {
+], function (Ash, FollowerConstants, PositionConstants, TribeConstants, WorldConstants, PositionVO, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorLogger, WorldCreatorRandom, LevelVO, ZoneVO) {
 	
 	var LevelGenerator = {
 		
 		prepareLevels: function (seed, worldVO) {
-			var topLevel = WorldCreatorHelper.getHighestLevel(seed);
-			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
+			let topLevel = WorldCreatorHelper.getHighestLevel(seed);
+			let bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
 			
-			for (var l = topLevel; l >= bottomLevel; l--) {
-				var isCampableLevel = WorldCreatorHelper.isCampableLevel(seed, l);
-				var isHardLevel = WorldCreatorHelper.isHardLevel(seed, l);
-				var notCampableReason = isCampableLevel ? null : WorldCreatorHelper.getNotCampableReason(seed, l);
-				var ordinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
-				var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
-				var populationFactor = isCampableLevel ? WorldCreatorConstants.getPopulationFactor(campOrdinal) : 0;
-				var raidDangerFactor = isCampableLevel ? WorldCreatorConstants.getRaidDangerFactor(campOrdinal) : 0;
-				var numSectors = WorldCreatorHelper.getNumSectorsForLevel(seed, l);
+			for (let l = topLevel; l >= bottomLevel; l--) {
+				let isCampableLevel = WorldCreatorHelper.isCampableLevel(seed, l);
+				let isHardLevel = WorldCreatorHelper.isHardLevel(seed, l);
+				let notCampableReason = isCampableLevel ? null : WorldCreatorHelper.getNotCampableReason(seed, l);
+				let ordinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
+				let campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
+				let populationFactor = isCampableLevel ? WorldCreatorConstants.getPopulationFactor(campOrdinal) : 0;
+				let raidDangerFactor = isCampableLevel ? WorldCreatorConstants.getRaidDangerFactor(campOrdinal) : 0;
+				let numSectors = WorldCreatorHelper.getNumSectorsForLevel(seed, l);
 				
-				var levelVO = new LevelVO(l, ordinal, campOrdinal, isCampableLevel, isHardLevel, notCampableReason, populationFactor, raidDangerFactor, numSectors);
+				let levelVO = new LevelVO(l, ordinal, campOrdinal, isCampableLevel, isHardLevel, notCampableReason, populationFactor, raidDangerFactor, numSectors);
 				levelVO.campPosition = worldVO.campPositions[l];
 				levelVO.passageUpPosition = worldVO.passagePositions[l].up;
 				levelVO.passageDownPosition = worldVO.passagePositions[l].down;
@@ -43,6 +45,7 @@ define([
 				levelVO.zones = this.generateZones(seed, levelVO);
 				levelVO.seaPadding = this.getSeaPadding(seed, levelVO);
 				levelVO.predefinedFollowers = this.getPredefinedFollowers(seed, l);
+				levelVO.luxuryResources = this.getLuxuryResources(seed, l, campOrdinal, worldVO.levels);
 				worldVO.addLevel(levelVO);
 			}
 		},
@@ -143,15 +146,48 @@ define([
 			return [ follower ];
 		},
 		
+		getLuxuryResources: function (seed, level, campOrdinal, previousLevels) {
+			let possibleLuxuries = TribeConstants.getPossibleLuxuriesByCampOrdinal(campOrdinal);
+			if (possibleLuxuries.length == 0) return [];
+			
+			let levelIndex = WorldCreatorHelper.getLevelIndexForCamp(seed, campOrdinal, level);
+			let maxLevelIndex = WorldCreatorHelper.getMaxLevelIndexForCamp(seed, campOrdinal, level);
+			
+			let luxuryResourceLevelIndex = WorldCreatorRandom.randomInt(1000 + seed + campOrdinal * 752, 0, maxLevelIndex + 1);
+			let isLuxuryResourceFoundOnThisLevel = levelIndex == luxuryResourceLevelIndex;
+			
+			if (!isLuxuryResourceFoundOnThisLevel) return [];
+			
+			let validLuxuries = possibleLuxuries.concat();
+			for (let level in previousLevels) {
+				for (let j = 0; j < previousLevels[level].luxuryResources.length; j++) {
+					let previousLuxury = previousLevels[level].luxuryResources[j];
+					let index = validLuxuries.indexOf(previousLuxury);
+					if (index >= 0) {
+						validLuxuries.splice(index, 1);
+					}
+				}
+			}
+			
+			if (validLuxuries.length == 0) {
+				WorldCreatorLogger.w("no valid luxury resources for level " + level + " camp ordinal " + campOrdinal + " - picking from all");
+				validLuxuries = Object.values(TribeConstants.luxuryType);
+			}
+			
+			let selectedLuxury = WorldCreatorRandom.getRandomItemFromArray(seed / 2 + 100 + campOrdinal * 77, validLuxuries);
+			
+			return [ selectedLuxury ];
+		},
+		
 		getSeaPadding: function (seed, levelVO) {
-			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
-			var isBottomLevel = bottomLevel == levelVO.level;
-			var s1 = 5000 + seed % 1000 + (levelVO.level + 5) * 471;
-			var min = Math.floor(levelVO.level / 7);
+			let bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
+			let isBottomLevel = bottomLevel == levelVO.level;
+			let s1 = 5000 + seed % 1000 + (levelVO.level + 5) * 471;
+			let min = Math.floor(levelVO.level / 7);
 			if (isBottomLevel) {
 				min = 3;
 			}
-			var max = Math.max(min + 3, 3);
+			let max = Math.max(min + 3, 3);
 			let result = WorldCreatorRandom.randomInt(s1, min, max);
 			return result;
 		}
