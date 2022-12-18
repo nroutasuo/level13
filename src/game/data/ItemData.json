@@ -2042,7 +2042,7 @@
     },
     "trade_1": {
         "campOrdinalRequired": 2,
-        "description": "A beautiful orb said to have formed in the Sea, a massive body of water that is the origin of all life. Traders will be interested in it.",
+        "description": "A beautiful orb said to have formed in the Sea, a massive body of water that is the origin of all life. Traders would be interested in it.",
         "icon": "img/items/pearl.png",
         "id": "trade_1",
         "isCraftable": false,
@@ -2054,6 +2054,48 @@
         "rarityTrade": -1,
         "type": "trade"
     },
+	"trade_2": {
+		"campOrdinalRequired": 1,
+		"description": "Delicious sweet food previously produced in large quantities. Now too precious to consume. Traders would be interested in it.",
+        "icon": "img/items/trade-chocolate.png",
+        "id": "trade_2",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Chocolate bar",
+        "rarityLocale": 7,
+        "rarityScavenge": 9,
+        "rarityTrade": -1,
+        "type": "trade"
+	},
+	"trade_3": {
+		"campOrdinalRequired": 1,
+		"description": "A jar of honey produced by bees in artifical greenhouses, too rare to consume these days. Traders would be interested in it.",
+        "icon": "img/items/trade-jar.png",
+        "id": "trade_3",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Jar of honey",
+        "rarityLocale": 6,
+        "rarityScavenge": 9,
+        "rarityTrade": -1,
+        "type": "trade"
+	},
+	"trade_4": {
+		"campOrdinalRequired": 1,
+		"description": "A precious gem. Traders would be interested in it.",
+        "icon": "img/items/trade-diamond.png",
+        "id": "trade_4",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Diamond",
+        "rarityLocale": 5,
+        "rarityScavenge": 8,
+        "rarityTrade": -1,
+        "type": "trade"
+	},
     "weapon1": {
         "bonuses": {
             "att": 10,
