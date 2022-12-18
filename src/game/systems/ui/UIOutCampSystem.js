@@ -12,6 +12,7 @@
 	'game/constants/CampConstants',
 	'game/constants/PerkConstants',
 	'game/constants/TextConstants',
+	'game/constants/TribeConstants',
 	'game/nodes/level/PlayerLevelNode',
 	'game/nodes/PlayerPositionNode',
 	'game/nodes/PlayerLocationNode',
@@ -30,7 +31,7 @@
 	'text/Text'
 ], function (
 	Ash, UIState, UIAnimations, GameGlobals, GlobalSignals,
-	ImprovementConstants, PlayerActionConstants, UIConstants, UpgradeConstants, OccurrenceConstants, CampConstants, PerkConstants, TextConstants,
+	ImprovementConstants, PlayerActionConstants, UIConstants, UpgradeConstants, OccurrenceConstants, CampConstants, PerkConstants, TextConstants, TribeConstants,
 	PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, DeityNode, TribeUpgradesNode,
 	PerksComponent,
 	CampComponent, ResourcesComponent, OutgoingCaravansComponent, ReputationComponent, SectorImprovementsComponent, CampEventTimersComponent,
@@ -263,7 +264,7 @@
 			let robotBonus = GameGlobals.campBalancingHelper.getWorkerRobotBonus(robots);
 			let robotCalloutContent = "worker resource production: +" + UIConstants.roundValue(robotBonus * 100, true, false) + "%";
 			robotCalloutContent = robotCalloutContent + "<br/>" + CampConstants.SPECIAL_STORAGE_PER_FACTORY + " robots per factory";
-			UIConstants.updateCalloutContent("#in-population #in-population-robots", robotCalloutContent);			
+			UIConstants.updateCalloutContent("#in-population #in-population-robots", robotCalloutContent);
 		},
 
 		updateAssignedWorkers: function (campComponent) {
@@ -590,10 +591,14 @@
 			var raidAttack = OccurrenceConstants.getRaidDangerPoints(improvements, levelComponent.raidDangerFactor);
 			var raidDefence = OccurrenceConstants.getRaidDefencePoints(improvements, soldiers, soldierLevel);
 
-			var inGameFoundingDate = UIConstants.getInGameDate(campComponent.foundedTimeStamp);
-			var showCalendar = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(GameGlobals.upgradeEffectsHelper.getUpgradeIdForUIEffect(UpgradeConstants.upgradeUIEffects.calendar));
+			let inGameFoundingDate = UIConstants.getInGameDate(campComponent.foundedTimeStamp);
+			let showCalendar = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(GameGlobals.upgradeEffectsHelper.getUpgradeIdForUIEffect(UpgradeConstants.upgradeUIEffects.calendar));
 			$("#in-demographics-general-age .value").text(inGameFoundingDate);
 			GameGlobals.uiFunctions.toggle("#in-demographics-general-age", showCalendar);
+			
+			let availableLuxuryResources = GameGlobals.campHelper.getAvailableLuxuryResources();
+			$("#in-demographics-general-luxuries .value").text(availableLuxuryResources.map(res => TribeConstants.getLuxuryDisplayName(res)).join(","));
+			GameGlobals.uiFunctions.toggle("#in-demographics-general-luxuries", availableLuxuryResources.length > 0);
 
 			var showRaid = raidDanger > 0 || raidDefence > CampConstants.CAMP_BASE_DEFENCE || campComponent.population > 1;
 			if (showRaid) {

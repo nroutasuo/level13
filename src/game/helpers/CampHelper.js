@@ -59,9 +59,23 @@ define([
 		getTotalNumImprovementsBuilt: function (improvementName) {
 			if (!this.campNodes.head) return 0;
 			let result = 0;
-			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
-				var improvements = campNode.entity.get(SectorImprovementsComponent);
+			for (let campNode = this.campNodes.head; campNode; campNode = campNode.next) {
+				let improvements = campNode.entity.get(SectorImprovementsComponent);
 				result += improvements.getCount(improvementName);
+			}
+			return result;
+		},
+		
+		getAvailableLuxuryResources: function () {
+			let result = [];
+			let builtProjects = GameGlobals.levelHelper.getBuiltProjects();
+			for (let i = 0; i < builtProjects.length; i++) {
+				let project = builtProjects[i];
+				if (project.improvement.name != improvementNames.luxuryOutpost) continue;
+				
+				let level = project.position.level;
+				let resource = GameGlobals.levelHelper.getLuxuryResourceOnLevel(level);
+				result.push(resource);
 			}
 			return result;
 		},
@@ -478,7 +492,8 @@ define([
 		},
 		
 		getTargetReputation: function (baseValue, improvementsComponent, resourcesVO, population, populationFactor, danger, isSunlit) {
-			return GameGlobals.campBalancingHelper.getTargetReputation(baseValue, improvementsComponent, resourcesVO, population, populationFactor, danger, isSunlit);
+			let availableLuxuryResources = this.getAvailableLuxuryResources();
+			return GameGlobals.campBalancingHelper.getTargetReputation(baseValue, improvementsComponent, availableLuxuryResources, resourcesVO, population, populationFactor, danger, isSunlit);
 		},
 		
 		getUpgradeBonus: function (worker) {

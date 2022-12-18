@@ -290,6 +290,7 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 				case improvementNames.greenhouse: return "build_out_greenhouse";
 				case improvementNames.tradepost_connector: return "build_out_tradepost_connector";
 				case improvementNames.sundome: return "build_out_sundome";
+				case improvementNames.luxuryOutpost: return "build_out_luxury_outpost";
 				case improvementNames.camp: return "";
 				default:
 					if (!disableWarnings) {

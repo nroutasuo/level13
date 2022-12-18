@@ -13,8 +13,10 @@ define([
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/common/LogMessagesComponent',
 	'game/components/type/LevelComponent',
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, CampConstants, LogConstants, OccurrenceConstants, CampNode, PlayerPositionNode, TribeUpgradesNode,
-	SectorImprovementsComponent, SectorFeaturesComponent, LogMessagesComponent, LevelComponent) {
+], function (
+	Ash, GameGlobals, GlobalSignals, GameConstants, CampConstants, LogConstants, OccurrenceConstants, CampNode,
+	PlayerPositionNode, TribeUpgradesNode, SectorImprovementsComponent, SectorFeaturesComponent, LogMessagesComponent,
+	LevelComponent) {
 	var ReputationSystem = Ash.System.extend({
 	
 		playerNodes: null,
@@ -81,27 +83,27 @@ define([
 		},
 		
 		getTargetReputation: function (campNode, baseValue) {
-			var sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
-			var sectorFeatures = campNode.entity.get(SectorFeaturesComponent);
+			let sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
+			let sectorFeatures = campNode.entity.get(SectorFeaturesComponent);
 			
-			var storage = GameGlobals.resourcesHelper.getCurrentCampStorage(campNode.entity);
-			var resources = storage ? storage.resources : null;
+			let storage = GameGlobals.resourcesHelper.getCurrentCampStorage(campNode.entity);
+			let resources = storage ? storage.resources : null;
 			
-			var danger = GameGlobals.campHelper.getCampRaidDanger(campNode.entity);
-			var levelComponent = GameGlobals.levelHelper.getLevelEntityForSector(campNode.entity).get(LevelComponent);
+			let danger = GameGlobals.campHelper.getCampRaidDanger(campNode.entity);
+			let levelComponent = GameGlobals.levelHelper.getLevelEntityForSector(campNode.entity).get(LevelComponent);
 			
 			let isSunlit = sectorFeatures.sunlit;
 			
 			let targetReputation = GameGlobals.campHelper.getTargetReputation(baseValue, sectorImprovements, resources, campNode.camp.population, levelComponent.populationFactor, danger, isSunlit);
 			
-			var sources = targetReputation.sources;
-			var penalties = targetReputation.penalties;
+			let sources = targetReputation.sources;
+			let penalties = targetReputation.penalties;
 			
-			for (var key in sources) {
+			for (let key in sources) {
 				campNode.reputation.addTargetValueSource(key, sources[key]);
 			}
 			
-			for (var key in penalties) {
+			for (let key in penalties) {
 				this.logReputationPenalty(campNode, key, penalties[key]);
 			}
 			

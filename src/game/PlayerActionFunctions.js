@@ -201,6 +201,7 @@ define(['ash',
 				case "build_out_passage_up_elevator": this.buildPassageUpElevator(param); break;
 				case "build_out_passage_up_hole": this.buildPassageUpHole(param); break;
 				case "build_out_greenhouse": this.buildGreenhouse(param); break;
+				case "build_out_luxury_outpost": this.buildLuxuryResourceOutpost(param); break;
 				case "build_out_tradepost_connector": this.buildTradeConnector(param); break;
 				case "build_out_sundome": this.buildSundome(param); break;
 				case "build_out_spaceship1": this.buildSpaceShip1(param); break;
@@ -728,7 +729,7 @@ define(['ash',
 			let luxuryResource = localeVO.luxuryResource;
 			if (luxuryResource) {
 				logMsgSuccess += "<br/>Found a source of <span class='hl-functionality'>" + TribeConstants.getLuxuryDisplayName(luxuryResource) + "</span>. ";
-				logMsgSuccess += "The people in will be happy.";
+				logMsgSuccess += "There will be a now project available in camp.";
 			}
 
 			let playerActionFunctions = this;
@@ -1290,12 +1291,26 @@ define(['ash',
 		},
 		
 		buildGreenhouse: function (sectorPos) {
-			var action = "build_out_greenhouse";
-			var position = this.getPositionVO(sectorPos);
-			var sector = this.getActionSector(action, sectorPos);
+			let action = "build_out_greenhouse";
+			let position = this.getPositionVO(sectorPos);
+			let sector = this.getActionSector(action, sectorPos);
 			this.buildImprovement(action, improvementNames.greenhouse, sector);
 			GameGlobals.gameState.unlockedFeatures.resources.herbs = true;
 			this.addLogMessage(LogConstants.getUniqueID(), "Greenhouse is ready.");
+		},
+		
+		buildLuxuryResourceOutpost: function (sectorPos) {
+			let action = "build_out_luxury_outpost";
+			let position = this.getPositionVO(sectorPos);
+			let sector = this.getActionSector(action, sectorPos);
+			let resource = GameGlobals.levelHelper.getLuxuryResourceOnLevel(position.level);
+			if (!resource) {
+				log.w("trying to build a luxury resource outpost but there is no resource");
+				return;
+			}
+			let resourceName = TribeConstants.getLuxuryDisplayName(resource);
+			this.buildImprovement(action, improvementNames.luxuryOutpost, sector);
+			this.addLogMessage(LogConstants.getUniqueID(), "Resource outpost is ready. " + Text.capitalize(resourceName) + " is now available in all camps.");
 		},
 		
 		buildTradeConnector: function (sectorPos) {

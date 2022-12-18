@@ -6,9 +6,11 @@ define([
 	'utils/VOCache',
 	'game/constants/EnemyConstants',
 	'game/constants/FightConstants',
+	'game/constants/ImprovementConstants',
 	'game/constants/LocaleConstants',
 	'game/constants/PositionConstants',
 	'game/constants/MovementConstants',
+	'game/constants/TribeConstants',
 	'game/constants/SectorConstants',
 	'game/constants/WorldConstants',
 	'game/nodes/level/LevelNode',
@@ -40,9 +42,11 @@ define([
 	VOCache,
 	EnemyConstants,
 	FightConstants,
+	ImprovementConstants,
 	LocaleConstants,
 	PositionConstants,
 	MovementConstants,
+	TribeConstants,
 	SectorConstants,
 	WorldConstants,
 	LevelNode,
@@ -472,6 +476,10 @@ define([
 			return result;
 		},
 
+		getBuiltProjects: function () {
+			return this.getBuiltProjectsForCamp(null);
+		},
+
 		getBuiltProjectsForCamp: function (sectorEntity) {
 			var projects = [];
 
@@ -613,12 +621,13 @@ define([
 			var featuresComponent = sectorEntity.get(SectorFeaturesComponent);
 			var improvementsComponent = sectorEntity.get(SectorImprovementsComponent);
 			let level = sectorPosition.level;
-			var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(level);
+			let levelOrdinal = GameGlobals.gameState.getLevelOrdinal(level);
 
 			var scouted = statusComponent && statusComponent.scouted;
 			if (!scouted) return projects;
 
 			levelPassagesComponent = levelPassagesComponent || this.getLevelEntityForPosition(sectorPosition.level).get(LevelPassagesComponent);
+			let camp = sectorEntity.get(CampComponent);
 
 			var improvementName = "";
 			var actionName = "";
@@ -705,7 +714,6 @@ define([
 
 			// space ship and sundome
 			if (levelOrdinal === GameGlobals.gameState.getSurfaceLevelOrdinal()) {
-				var camp = sectorEntity.get(CampComponent);
 				if (camp) {
 					var actions = [ "build_out_spaceship1", "build_out_spaceship2", "build_out_spaceship3", "build_out_sundome"];
 					for (let i = 0; i < actions.length; i++) {
@@ -716,6 +724,15 @@ define([
 							}
 						}
 					}
+				}
+			}
+			
+			// lxuury resources
+			if (camp && improvementsComponent.getCount(improvementNames.luxuryOutpost) == 0) {
+				let luxuryResource = this.getFoundLuxuryResourceOnLevel(level);
+				if (luxuryResource) {
+					let name = this.getProjectName(improvementNames.luxuryOutpost, level);
+					projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.luxuryOutpost), "build_out_luxury_outpost", sectorPosition, null, name));
 				}
 			}
 			
@@ -740,23 +757,36 @@ define([
 		},
 
 		getBuiltProjectsForSector: function (sectorEntity) {
-			var projects = [];
-			var statusComponent = sectorEntity.get(SectorStatusComponent);
-			var scouted = statusComponent && statusComponent.scouted;
+			let projects = [];
+			let statusComponent = sectorEntity.get(SectorStatusComponent);
+			let scouted = statusComponent && statusComponent.scouted;
 			if (!scouted) return projects;
 
-			var sectorPosition = sectorEntity.get(PositionComponent);
-			var sectorImprovements = sectorEntity.get(SectorImprovementsComponent);
-			var improvementList = sectorImprovements.getAll(improvementTypes.level);
+			let sectorPosition = sectorEntity.get(PositionComponent);
+			let level = sectorPosition.level;
+			let sectorImprovements = sectorEntity.get(SectorImprovementsComponent);
+			let improvementList = sectorImprovements.getAll(improvementTypes.level);
 			for (let i = 0; i < improvementList.length; i++) {
-				var improvement = improvementList[i];
+				let improvement = improvementList[i];
 				if (improvement.name === improvementNames.collector_food) continue;
 				if (improvement.name === improvementNames.collector_water) continue;
 				if (improvement.name === improvementNames.beacon) continue;
-				projects.push(new LevelProjectVO(improvement, "", sectorPosition));
+				let name = this.getProjectName(improvement.name, level);
+				projects.push(new LevelProjectVO(improvement, "", sectorPosition, name));
 			}
 
 			return projects;
+		},
+		
+		getProjectName: function (improvementName, level) {
+			switch (improvementName) {
+				case improvementNames.luxuryOutpost:
+					let luxuryResource = this.getFoundLuxuryResourceOnLevel(level);
+					let resourceName = TribeConstants.getLuxuryDisplayName(luxuryResource);
+					return "Resource outpost (" + resourceName + ")";
+			}
+			
+			return ImprovementConstants.getImprovementDisplayName(improvementName);
 		},
 		
 		getTotalClearedWorkshopCount: function (resourceName) {
@@ -838,6 +868,29 @@ define([
 				count += improvementsComponent.getCount(improvement);
 			}
 			return count;
+		},
+
+		getFoundLuxuryResourceOnLevel: function (level) {
+			let resource = this.getLuxuryResourceOnLevel(level);
+			
+			if (resource == null) return null;
+			
+			if (GameGlobals.gameState.foundLuxuryResources.indexOf(resource) < 0) return null;
+			
+			return resource;
+		},
+		
+		getLuxuryResourceOnLevel: function (level) {
+			let locales = this.getLevelLocales(level, true);
+			let resource = null;
+			for (let i = 0; i < locales.length; i++) {
+				let locale = locales[i];
+				if (locale.luxuryResource) {
+					return locale.luxuryResource;
+				}
+			}
+			
+			return null;
 		},
 
 		isLevelUnlocked: function (level) {

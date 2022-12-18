@@ -164,6 +164,9 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			collector_food: {
 				improvementLevelsPerTechLevel: 1,
 			},
+			luxuryOutpost: {
+				isProject: true,
+			},
 			passageUpStairs: {
 				isPassage: true,
 				isProject: true,

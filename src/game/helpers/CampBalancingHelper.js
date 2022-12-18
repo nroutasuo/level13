@@ -154,21 +154,21 @@ define([
 			let populationFactor = GameGlobals.campBalancingHelper.getPopulationFactor(campOrdinal);
 			let isSunlit = campOrdinal == 15;
 			let danger = 0;
-			return GameGlobals.campBalancingHelper.getTargetReputation(baseValue, improvementsComponent, null, 0, populationFactor, danger, isSunlit).value;
+			return GameGlobals.campBalancingHelper.getTargetReputation(baseValue, improvementsComponent, 0, null, 0, populationFactor, danger, isSunlit).value;
 		},
 		
-		getTargetReputation: function (baseValue, improvementsComponent, resourcesVO, population, populationFactor, danger, isSunlit) {
+		getTargetReputation: function (baseValue, improvementsComponent, availableLuxuryResources, resourcesVO, population, populationFactor, danger, isSunlit) {
 			let result = 0;
-			var sources = {}; // text -> value
-			var penalties = {}; // id -> bool
+			let sources = {}; // text -> value
+			let penalties = {}; // id -> bool
 			
-			var addValue = function (value, name) {
+			let addValue = function (value, name) {
 				result += value;
 				if (!sources[name]) sources[name] = 0;
 				sources[name] += value;
 			};
 			
-			var addPenalty = function (id, active) {
+			let addPenalty = function (id, active) {
 				penalties[id] = active;
 			};
 			
@@ -176,8 +176,13 @@ define([
 				addValue(baseValue, "Tribe milestones");
 			}
 			
-			// base: building happiness values
-			var allImprovements = improvementsComponent.getAll(improvementTypes.camp);
+			// luxury resources
+			if (availableLuxuryResources.length > 0) {
+				addValue(availableLuxuryResources.length, "Luxury resources");
+			}
+			
+			// building happiness values
+			let allImprovements = improvementsComponent.getAll(improvementTypes.camp);
 			for (let i in allImprovements) {
 				var improvementVO = allImprovements[i];
 				var level = improvementVO.level || 1;
@@ -204,7 +209,7 @@ define([
 				}
 			}
 			
-			var resultWithoutPenalties = result;
+			let resultWithoutPenalties = result;
 			
 			// penalties: food and water
 			if (population >= 1) {
@@ -222,8 +227,8 @@ define([
 			}
 			
 			// penalties: defences
-			var defenceLimit = CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
-			var noDefences = danger > defenceLimit;
+			let defenceLimit = CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
+			let noDefences = danger > defenceLimit;
 			if (noDefences) {
 				var steppedDanger = Math.ceil((danger - defenceLimit) * 100 / 5) * 5;
 				var penaltyRatio = steppedDanger / (100 - defenceLimit);
@@ -239,11 +244,11 @@ define([
 			addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_DEFENCES, noDefences);
 			
 			// penalties: over-crowding
-			var housingCap = CampConstants.getHousingCap(improvementsComponent);
-			var population = Math.floor(population);
-			var noHousing = population > housingCap;
+			let housingCap = CampConstants.getHousingCap(improvementsComponent);
+			let populationFullPeople = Math.floor(population);
+			let noHousing = populationFullPeople > housingCap;
 			if (noHousing) {
-				var housingPenaltyRatio = Math.ceil((population - housingCap) / population * 20) / 20;
+				var housingPenaltyRatio = Math.ceil((populationFullPeople - housingCap) / populationFullPeople * 20) / 20;
 				var housingPenalty = Math.ceil(resultWithoutPenalties * housingPenaltyRatio);
 				addValue(-housingPenalty, "Overcrowding");
 			}

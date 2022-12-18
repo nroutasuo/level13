@@ -15,6 +15,7 @@ define([
 	'game/constants/LevelConstants',
 	'game/constants/MovementConstants',
 	'game/constants/TradeConstants',
+	'game/constants/TribeConstants',
 	'game/nodes/PlayerPositionNode',
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/NearestCampNode',
@@ -34,11 +35,13 @@ define([
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/EnemiesComponent'
 ], function (
-	Ash, Text, MapUtils, UIList, GameGlobals, GlobalSignals, PlayerActionConstants, PlayerStatConstants, TextConstants, LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, TradeConstants,
-	PlayerPositionNode, PlayerLocationNode, NearestCampNode,
-	VisionComponent, StaminaComponent, ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
-	MovementOptionsComponent, PositionComponent, LogMessagesComponent, CampComponent,
-	SectorImprovementsComponent, WorkshopComponent, SectorStatusComponent, EnemiesComponent
+	Ash,
+	Text, MapUtils,  UIList, GameGlobals, GlobalSignals, PlayerActionConstants, PlayerStatConstants, TextConstants,
+	LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, TradeConstants,
+	TribeConstants, PlayerPositionNode, PlayerLocationNode, NearestCampNode, VisionComponent, StaminaComponent,
+	ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
+	MovementOptionsComponent, PositionComponent, LogMessagesComponent, CampComponent, SectorImprovementsComponent,
+	WorkshopComponent, SectorStatusComponent, EnemiesComponent
 ) {
 	var UIOutLevelSystem = Ash.System.extend({
 
@@ -415,6 +418,11 @@ define([
 			if (isScouted && improvements.getCount(improvementNames.greenhouse) > 0) {
 				description += "There is a <span class='hl-functionality'>greenhouse</span> here. ";
 			}
+			
+			let luxuryResource = GameGlobals.sectorHelper.getLuxuryResourceOnSector(this.playerLocationNodes.head.entity, true);
+			if (isScouted && luxuryResource) {
+				description += "There is a source of <span class='hl-functionality'>" + TribeConstants.getLuxuryDisplayName(luxuryResource) + "</span> here. ";
+			}
 
 			return description;
 		},
@@ -739,12 +747,14 @@ define([
 			let info = "";
 			if (data.isScouted) {
 				if (locale.type == localeTypes.tradingpartner) {
-					var partner = TradeConstants.getTradePartner(data.campOrdinal);
+					let partner = TradeConstants.getTradePartner(data.campOrdinal);
 					if (partner) {
 						info += "Already scouted (" + partner.name + ")";
 					} else {
 						info += "Already scouted";
 					}
+				} else if (locale.luxuryResource != null) {
+					info += "Already scouted (" + TribeConstants.getLuxuryDisplayName(locale.luxuryResource) + ")";
 				} else {
 					info += "Already scouted";
 				}

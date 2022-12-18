@@ -132,7 +132,20 @@ define([
 				return "area too cold";
 			return null;
 		},
-				
+		
+		getLuxuryResourceOnSector: function (sector, onlyFound) {
+			let sectorLocalesComponent = sector.get(SectorLocalesComponent);
+			let sectorStatusComponent = sector.get(SectorStatusComponent);
+			for (let i = 0; i < sectorLocalesComponent.locales.length; i++) {
+				let locale = sectorLocalesComponent.locales[i];
+				let isScouted = sectorStatusComponent.isLocaleScouted(i);
+				if (locale.luxuryResource && (isScouted || !onlyFound)) {
+					return locale.luxuryResource;
+				}
+			}
+			return null;
+		},
+		
 		isBeaconActive: function (position) {
 			let beacon = GameGlobals.levelHelper.getNearestBeacon(position);
 			let beaconPos = beacon ? beacon.get(PositionComponent) : null;
@@ -171,7 +184,7 @@ define([
 			
 			let knownResources = GameGlobals.sectorHelper.getLocationKnownResources(sector);
 			if (knownResources.indexOf(resourceName) >= 0) {
-				if (sectorFeatures.resourcesScavengable.getResource(resourceName >= min)) {
+				if (sectorFeatures.resourcesScavengable.getResource(resourceName) >= min) {
 					return true;
 				}
 			}

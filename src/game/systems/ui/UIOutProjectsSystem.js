@@ -213,11 +213,11 @@ define([
 		},
 		
 		getProjectTR: function (project, isAvailable) {
-			var sector = project.level + "." + project.sector + "." + project.direction;
-			var location = project.position.getPosition().getInGameFormat();
-			var projectID = project.getID();
+			let sector = project.level + "." + project.sector + "." + project.direction;
+			let location = project.position.getPosition().getInGameFormat();
+			let projectID = project.getID();
 			
-			var name = project.name;
+			let name = project.name;
 			// TODO define building projects directions/links better and don't rely on improvement names
 			name = name.replace(" Up", "");
 			name = name.replace(" Down", "");

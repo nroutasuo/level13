@@ -25,6 +25,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				case "clear_waste_r": return "clear radioactive waste";
 				case "clear_waste_t": return "clear toxic waste";
 				case "build_out_greenhouse": return "build greenhouse";
+				case "build_out_luxury_outpost": return "build resource outpost";
 				case "build_out_tradepost_connector": "build elevator";
 				case "build_out_sundome": "build sun dome";
 				case "bridge_gap": return "bridge gap";

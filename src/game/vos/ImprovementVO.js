@@ -19,6 +19,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		greenhouse: "Greenhouse",
 		tradepost_connector: "Great Elevator",
 		sundome: "Sun Dome",
+		luxuryOutpost: "Resource outpost",
 		
 		home: "Tent",
 		house: "Hut",
@@ -119,7 +120,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		}
 	});
 	
-	// TODO make ImprovementConstants
+	// TODO move to ImprovementConstants
 	
 	getImprovementType = function (name) {
 		if (!name) return null;
@@ -139,6 +140,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			case improvementNames.beacon:
 			case improvementNames.tradepost_connector:
 			case improvementNames.sundome:
+			case improvementNames.luxuryOutpost:
 				return improvementTypes.level;
 
 			default:

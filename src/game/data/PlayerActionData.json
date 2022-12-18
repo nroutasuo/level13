@@ -201,6 +201,10 @@
             "resource_metal": 300,
             "resource_tools": 100
         },
+		"build_out_luxury_outpost": {
+			"cost_factor_expBase": 1.05,
+			"resource_metal": 100
+		},
         "build_out_passage_down_elevator": {
             "cost_factor_expBase": 1.88,
             "resource_fuel": {
@@ -1239,6 +1243,7 @@
         "build_out_collector_food": "Accumulates food.",
         "build_out_collector_water": "Accumulates water.",
         "build_out_greenhouse": "A place to grow herbs.",
+		"build_out_luxury_outpost": "Gives access to the luxury resource found in this level, making workers happier.",
         "build_out_sundome": "Protects the inhabitants from sunlight.",
         "build_out_tradepost_connector": "Allows traders and workers to cross the level safely.",
         "claim_milestone": "Claim a new level and unlock new things.",
@@ -1984,6 +1989,14 @@
                 "unlock_building_greenhouse": true
             }
         },
+		"build_out_luxury_outpost": {
+			"improvements": {
+				"luxuryOutpost": [ 0, 1 ]
+			},
+			"level": {
+				"luxuryResource": [ 1, -1 ]
+			}
+		},
         "build_out_passage_down_elevator": {
             "improvements": {
                 "passageDownElevator": [
@@ -3614,6 +3627,7 @@
             "bag": {
                 "full": false
             },
+			"busy": false,
             "sector": {
                 "scouted": true,
                 "spring": true
