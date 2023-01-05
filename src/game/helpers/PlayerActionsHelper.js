@@ -1510,8 +1510,8 @@ define([
 		getCostsByOrdinal: function (action, multiplier, ordinal, isOutpost, sector) {
 			let result = {};
 
-			var baseActionID = this.getBaseActionID(action);
-			var costs = PlayerActionConstants.costs[action];
+			let baseActionID = this.getBaseActionID(action);
+			let costs = PlayerActionConstants.costs[action];
 			if (!costs) {
 				costs = PlayerActionConstants.costs[baseActionID];
 			}

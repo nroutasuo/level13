@@ -22,13 +22,13 @@ define([
 		constructor: function () {},
 		
 		getImprovementCost: function (improvementName, actionOrdinal, isOutpost, costKey) {
-			let actionName = GameGlobals.playerActionsHelper.getActionNameForImprovement(improvementName);
+			let actionName = PlayerActionConstants.getActionNameForImprovement(improvementName);
 			let costs = GameGlobals.playerActionsHelper.getCostsByOrdinal(actionName, 1, actionOrdinal, isOutpost);
 			return cost = costs[costKey] || 0;
 		},
 		
 		getMaxCostKeyForImprovement: function (improvementName, actionOrdinal, isOutpost) {
-			let actionName = GameGlobals.playerActionsHelper.getActionNameForImprovement(improvementName);
+			let actionName = PlayerActionConstants.getActionNameForImprovement(improvementName);
 			let costs = GameGlobals.playerActionsHelper.getCostsByOrdinal(actionName, 1, actionOrdinal, isOutpost);
 			let maxCost = 0;
 			let maxCostKey = null;
@@ -45,7 +45,7 @@ define([
 		},
 		
 		getSlowestCostKeyForImprovement: function (improvementName, actionOrdinal, isOutpost, maxCampOrdinal) {
-			let actionName = GameGlobals.playerActionsHelper.getActionNameForImprovement(improvementName);
+			let actionName = PlayerActionConstants.getActionNameForImprovement(improvementName);
 			let costs = GameGlobals.playerActionsHelper.getCostsByOrdinal(actionName, 1, actionOrdinal, isOutpost);
 			
 			let longestDuration = 0;
@@ -109,26 +109,26 @@ define([
 			return this.getMaxWorkers(workerID, improvements, upgrades, workshops);
 		},
 		
-		getMinCampOrdinalForPopulation: function (totalPopulation) {
+		getMinCampOrdinalForPopulation: function (totalPopulation, milestone) {
 			for (let i = 0; i < WorldConstants.CAMPS_TOTAL; i++) {
-				let pop = this.getMaxTotalPopulation(i);
+				let pop = this.getMaxTotalPopulation(i, milestone);
 				if (pop >= totalPopulation) return i;
 			}
 			return WorldConstants.CAMPS_TOTAL
 		},
 
-		getMaxTotalPopulation: function (maxCampOrdinal) {
+		getMaxTotalPopulation: function (maxCampOrdinal, milestone) {
 			let result = 0;
 			for (let campOrdinal = 1; campOrdinal <= maxCampOrdinal; campOrdinal++) {
-				let pop = GameGlobals.campBalancingHelper.getMaxPopulation(campOrdinal, maxCampOrdinal);
+				let pop = GameGlobals.campBalancingHelper.getMaxPopulation(campOrdinal, maxCampOrdinal, milestone);
 				result += pop;
 			}
 			return result;
 		},
 		
-		getMaxPopulation: function (campOrdinal, maxCampOrdinal) {
+		getMaxPopulation: function (campOrdinal, maxCampOrdinal, milestone) {
 			let housingCap = GameGlobals.campBalancingHelper.getMaxHousing(campOrdinal, maxCampOrdinal);
-			let reputation = GameGlobals.campBalancingHelper.getMaxReputation(campOrdinal, maxCampOrdinal);
+			let reputation = GameGlobals.campBalancingHelper.getMaxReputation(campOrdinal, maxCampOrdinal, milestone);
 			let reputationCap = CampConstants.getMaxPopulation(reputation);
 			
 			return Math.min(housingCap, reputationCap);
@@ -147,8 +147,8 @@ define([
 			return Math.round((this.getMaxPopulation(campOrdinal, maxCampOrdinal - 1) + this.getMaxPopulation(campOrdinal, maxCampOrdinal)) / 2);
 		},
 		
-		getMaxReputation: function (campOrdinal, maxCampOrdinal) {
-			let baseValue = GameGlobals.tribeBalancingHelper.getMaxReputationBaseValue(maxCampOrdinal);
+		getMaxReputation: function (campOrdinal, maxCampOrdinal, milestone) {
+			let baseValue = GameGlobals.tribeBalancingHelper.getMaxReputationBaseValue(maxCampOrdinal, milestone);
 			let totalStorage = GameGlobals.campBalancingHelper.getMaxTotalStorage(maxCampOrdinal);
 			let improvementsComponent = GameGlobals.campBalancingHelper.getMaxImprovements(maxCampOrdinal, campOrdinal, totalStorage);
 			let populationFactor = GameGlobals.campBalancingHelper.getPopulationFactor(campOrdinal);
@@ -429,7 +429,7 @@ define([
 			};
 			
 			let checkBuild = function (improvementName) {
-				let actionName = GameGlobals.playerActionsHelper.getActionNameForImprovement(improvementName);
+				let actionName = PlayerActionConstants.getActionNameForImprovement(improvementName);
 				let ordinal = result.getCount(improvementName) + 1;
 				
 				if (!canBuild(improvementName, actionName, ordinal)) {
@@ -497,7 +497,7 @@ define([
 		
 		getMaxImprovementsPerCamp: function (improvementName, totalStorage, isOutpost) {
 			let result = 0;
-			let actionName = GameGlobals.playerActionsHelper.getActionNameForImprovement(improvementName);
+			let actionName = PlayerActionConstants.getActionNameForImprovement(improvementName);
 			let getNextCost = function () {
 				let ordinal = result + 1;
 				return GameGlobals.playerActionsHelper.getCostsByOrdinal(actionName, 1, ordinal, isOutpost).resource_metal;

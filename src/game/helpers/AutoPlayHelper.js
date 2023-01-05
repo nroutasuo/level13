@@ -3,6 +3,7 @@ define(['ash',
 	'game/constants/AutoPlayConstants',
 	'game/constants/BagConstants',
 	'game/constants/ItemConstants',
+	'game/constants/PlayerActionConstants',
 	'game/constants/PerkConstants',
 	'game/constants/PositionConstants',
 	'game/components/common/PositionComponent',
@@ -19,6 +20,7 @@ define(['ash',
 	AutoPlayConstants,
 	BagConstants,
 	ItemConstants,
+	PlayerActionConstants,
 	PerkConstants,
 	PositionConstants,
 	PositionComponent,
@@ -350,7 +352,7 @@ define(['ash',
 			var improvements = [];
 			for (var key in improvementNames) {
 				var improvementName = improvementNames[key];
-				var actionName = GameGlobals.playerActionsHelper.getActionNameForImprovement(improvementName);
+				var actionName = PlayerActionConstants.getActionNameForImprovement(improvementName);
 				if (!actionName)
 					continue;
 

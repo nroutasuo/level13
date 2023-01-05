@@ -10,8 +10,8 @@ define([
 		
 		constructor: function () { },
 
-		getMaxReputationBaseValue: function (campordinal) {
-			let milestone = GameGlobals.milestoneEffectsHelper.getMilestoneAtCampOrdinal(campOrdinal);
+		getMaxReputationBaseValue: function (campOrdinal, milestone) {
+			milestone = milestone || GameGlobals.milestoneEffectsHelper.getMilestoneAtCampOrdinal(campOrdinal);
 			return this.getReputationBaseValue(milestone.index);
 		},
 		

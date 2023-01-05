@@ -694,8 +694,6 @@ define(['ash',
 			let logMsgFlee = baseMsg + " Got surprised and fled.";
 			let logMsgDefeat = baseMsg + " Got surprised and beaten.";
 			
-			debugger
-			
 			let tradingPartner = null;
 			if (localeVO.type === localeTypes.tradingpartner) {
 				let playerPos = this.playerPositionNodes.head.position;

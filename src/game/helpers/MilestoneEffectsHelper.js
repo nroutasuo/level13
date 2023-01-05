@@ -52,11 +52,9 @@ define([
 			let action = "claim_milestone_" + milestone.index;
 			
 			let reqs = GameGlobals.playerActionsHelper.getReqs(action);
+			let previousMilestone = TribeConstants.getPreviousMilestone(milestone);
 			
 			if (reqs) {
-				if (reqs.tribe && reqs.tribe.population) {
-					result = Math.max(result, GameGlobals.campBalancingHelper.getMinCampOrdinalForPopulation(reqs.tribe.population));
-				}
 				if (reqs.tribe && reqs.tribe.improvements) {
 					for (let improvementID in reqs.tribe.improvements) {
 						let improvementName = improvementNames[improvementID];
@@ -72,6 +70,9 @@ define([
 						let buildCampStep = GameGlobals.playerActionsHelper.getMinimumCampAndStep(buildAction);
 						result = Math.max(result, buildCampStep.campOrdinal);
 					}
+				}
+				if (reqs.tribe && reqs.tribe.population) {
+					result = Math.max(result, GameGlobals.campBalancingHelper.getMinCampOrdinalForPopulation(reqs.tribe.population, previousMilestone));
 				}
 			}
 			

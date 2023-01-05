@@ -242,7 +242,7 @@ define([
 		},
 
 		getUpgradeToUnlockBuilding: function (improvementName) {
-			let action = GameGlobals.playerActionsHelper.getActionNameForImprovement(improvementName);
+			let action = PlayerActionConstants.getActionNameForImprovement(improvementName);
 			let reqsDefinition = PlayerActionConstants.requirements[action];
 			let result = null;
 			let resultCampOrdinal = 1;
