@@ -8,14 +8,18 @@ define([
 	'game/constants/OccurrenceConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/UpgradeConstants',
+	'game/constants/TribeConstants',
 	'game/constants/WorldConstants',
 	'game/components/common/CampComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/tribe/UpgradesComponent',
 	'game/vos/ResourcesVO',
 	'worldcreator/WorldCreatorConstants',
-], function (Ash, GameGlobals, GameConstants, CampConstants, ImprovementConstants, OccurrenceConstants, PlayerActionConstants, UpgradeConstants, WorldConstants,
-	CampComponent, SectorImprovementsComponent, UpgradesComponent, ResourcesVO, WorldCreatorConstants) {
+], function (
+	Ash, GameGlobals, GameConstants, CampConstants, ImprovementConstants, OccurrenceConstants, PlayerActionConstants,
+	UpgradeConstants, TribeConstants, WorldConstants, CampComponent, SectorImprovementsComponent, UpgradesComponent,
+	ResourcesVO, WorldCreatorConstants
+) {
 	
 	var CampBalancingHelper = Ash.Class.extend({
 		
@@ -128,7 +132,7 @@ define([
 		
 		getMaxPopulation: function (campOrdinal, maxCampOrdinal, milestone) {
 			let housingCap = GameGlobals.campBalancingHelper.getMaxHousing(campOrdinal, maxCampOrdinal);
-			let reputation = GameGlobals.campBalancingHelper.getMaxReputation(campOrdinal, maxCampOrdinal, milestone);
+			let reputation = GameGlobals.campBalancingHelper.getMaxReputation(campOrdinal, maxCampOrdinal, milestone).value;
 			let reputationCap = CampConstants.getMaxPopulation(reputation);
 			
 			return Math.min(housingCap, reputationCap);
@@ -151,13 +155,14 @@ define([
 			let baseValue = GameGlobals.tribeBalancingHelper.getMaxReputationBaseValue(maxCampOrdinal, milestone);
 			let totalStorage = GameGlobals.campBalancingHelper.getMaxTotalStorage(maxCampOrdinal);
 			let improvementsComponent = GameGlobals.campBalancingHelper.getMaxImprovements(maxCampOrdinal, campOrdinal, totalStorage);
+			let numAvailableLuxuryResources = GameGlobals.campBalancingHelper.getMaxNumAvailableLuxuryResources(maxCampOrdinal);
 			let populationFactor = GameGlobals.campBalancingHelper.getPopulationFactor(campOrdinal);
 			let isSunlit = campOrdinal == 15;
 			let danger = 0;
-			return GameGlobals.campBalancingHelper.getTargetReputation(baseValue, improvementsComponent, 0, null, 0, populationFactor, danger, isSunlit).value;
+			return GameGlobals.campBalancingHelper.getTargetReputation(baseValue, improvementsComponent, numAvailableLuxuryResources, null, 0, populationFactor, danger, isSunlit);
 		},
 		
-		getTargetReputation: function (baseValue, improvementsComponent, availableLuxuryResources, resourcesVO, population, populationFactor, danger, isSunlit) {
+		getTargetReputation: function (baseValue, improvementsComponent, numAvailableLuxuryResources, resourcesVO, population, populationFactor, danger, isSunlit) {
 			let result = 0;
 			let sources = {}; // text -> value
 			let penalties = {}; // id -> bool
@@ -177,8 +182,8 @@ define([
 			}
 			
 			// luxury resources
-			if (availableLuxuryResources.length > 0) {
-				addValue(availableLuxuryResources.length, "Luxury resources");
+			if (numAvailableLuxuryResources > 0) {
+				addValue(numAvailableLuxuryResources, "Luxury resources");
 			}
 			
 			// building happiness values
@@ -560,6 +565,10 @@ define([
 			let storageUpgradeLevel = GameGlobals.upgradeEffectsHelper.getExpectedBuildingUpgradeLevel(improvementNames.storage, maxCampOrdinal);
 			let storageLevel = GameGlobals.campBalancingHelper.getMaxImprovementLevel(improvementNames.storage, storageUpgradeLevel)
 			return CampConstants.getStorageCapacity(storageCount, storageLevel);
+		},
+		
+		getMaxNumAvailableLuxuryResources: function (maxCampOrdinal) {
+			return TribeConstants.getMaxNumAvailableLuxuryResources(maxCampOrdinal);
 		},
 		
 		isConnectedToTradeNetwork: function (maxCampOrdinal, campOrdinal) {

@@ -493,7 +493,7 @@ define([
 		
 		getTargetReputation: function (baseValue, improvementsComponent, resourcesVO, population, populationFactor, danger, isSunlit) {
 			let availableLuxuryResources = this.getAvailableLuxuryResources();
-			return GameGlobals.campBalancingHelper.getTargetReputation(baseValue, improvementsComponent, availableLuxuryResources, resourcesVO, population, populationFactor, danger, isSunlit);
+			return GameGlobals.campBalancingHelper.getTargetReputation(baseValue, improvementsComponent, availableLuxuryResources.length, resourcesVO, population, populationFactor, danger, isSunlit);
 		},
 		
 		getUpgradeBonus: function (worker) {

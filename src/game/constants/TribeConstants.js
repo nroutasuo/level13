@@ -127,6 +127,17 @@ define(['ash', 'game/constants/OccurrenceConstants'], function (Ash, OccurrenceC
 			return [];
 		},
 		
+		getMaxNumAvailableLuxuryResources: function (campOrdinal) {
+			let result = 0;
+			for (let i = 0; i < this.possibleLuxuriesByCampOrdinal.length; i++) {
+				let entry = this.possibleLuxuriesByCampOrdinal[i];
+				if (entry.campOrdinal <= campOrdinal) {
+					result++;
+				}
+			}
+			return result;
+		},
+		
 		getLuxuryDisplayName: function (luxuryType) {
 			switch (luxuryType) {
 				case TribeConstants.luxuryType.HONEY: return "honey";

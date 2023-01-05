@@ -346,7 +346,7 @@ function (Ash, UpgradeData, PlayerActionConstants, WorldConstants, UpgradeVO) {
 			}
 			
 			let costs = PlayerActionConstants.costs[upgrade];
-			if (costs.favour) {
+			if (costs && costs.favour) {
 				result = WorldConstants.CAMP_STEP_POI_2;
 			}
 			
