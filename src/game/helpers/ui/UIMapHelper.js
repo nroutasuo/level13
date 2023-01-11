@@ -634,7 +634,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 				let centerX = sectorXpx + sectorSize / 2;
 				let centerY = sectorYpx + sectorSize / 2;
 					
-				if (hasCampOnSector || sectorPassages.passageUp || sectorPassages.passageDown) {
+				if (isScouted && (hasCampOnSector || sectorPassages.passageUp || sectorPassages.passageDown)) {
 					let r = size / 2 + 1;
 					ctx.beginPath();
 					ctx.arc(centerX, centerY, r, 0, 2 * Math.PI);
