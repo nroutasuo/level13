@@ -369,7 +369,7 @@ define([
 			let previousUpdate = this.previousStatsUpdates[stat] || 0;
 		
 			let animate = UIAnimations.shouldAnimateChange(previousValue, currentValue, previousUpdate, now, component.accumulation);
-			UIAnimations.animateOrSetNumber(valueElement, animate, currentValue, "", flipNegative, (v) => { return Math.floor(v) + "/" + currentLimit; });
+			UIAnimations.animateOrSetNumber(valueElement, animate, currentValue, "/" + currentLimit, flipNegative, (v) => { return Math.floor(v); });
 			
 			this.updateStatsCallout("", "stats-" + stat, component.accSources);
 			this.updateChangeIndicator(changeIndicatorElement, component.accumulation, isVisible && !isAtLimit);
