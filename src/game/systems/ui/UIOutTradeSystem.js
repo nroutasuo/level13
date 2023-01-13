@@ -93,70 +93,101 @@ define([
 		},
 
 		updateOutgoingCaravansList: function (isActive) {
-			var level = this.playerLocationNodes.head.entity.get(PositionComponent).level;
-			var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
-			var totalCaravans = this.getNumOutgoingCaravansTotal();
-			var availableCaravans = this.getNumOutgoingCaravansAvailable();
+			let level = this.playerLocationNodes.head.entity.get(PositionComponent).level;
+			let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+			let totalCaravans = this.getNumOutgoingCaravansTotal();
+			let availableCaravans = this.getNumOutgoingCaravansAvailable();
+			
+			let getOptionElement = function (value, label, savedValue) {
+				let result = "<option ";
+				result += "value='" + value + "'";
+				if (value == savedValue) result += " selected"
+				result += ">";
+				result += label;
+				result += "</option>";
+				return result;
+			};
 
 			$("#trade-caravans-outgoing-container table").empty();
 			for (let i = 0; i < GameGlobals.gameState.foundTradingPartners.length; i++) {
-				var partner = TradeConstants.getTradePartner(GameGlobals.gameState.foundTradingPartners[i]);
+				let partner = TradeConstants.getTradePartner(GameGlobals.gameState.foundTradingPartners[i]);
 				if (!partner) continue;
-				var tdName = "<td class='item-name'>" + partner.name + "</td>";
-				var buysS = partner.buysResources.join(", ");
-				var sellsS = partner.sellsResources.join(", ");
+				let traderId = partner.campOrdinal;
+				
+				let savedSellOption = GameGlobals.gameState.uiStatus.lastSelection["outoing-caravan-sell-" + traderId];
+				let savedBuyOption = GameGlobals.gameState.uiStatus.lastSelection["outoing-caravan-buy-" + traderId];
+				
+				let tdName = "<td class='item-name'>" + partner.name + "</td>";
+				let buysS = partner.buysResources.join(", ");
+				let sellsS = partner.sellsResources.join(", ");
 				if (sellsS.length <= 0) sellsS = "-";
-				var tdTrades = "<td>Buys: " + buysS + "<br/>Sells: " + sellsS + "</td>";
-				var toggleBtnID = "btn_send_caravan_" + partner.campOrdinal + "_toggle";
-				var btn = "<button id='" + toggleBtnID + "' class='btn-trade-caravans-outgoing-toggle'>Send caravan</button>";
+				let tdTrades = "<td>Buys: " + buysS + "<br/>Sells: " + sellsS + "</td>";
+				let toggleBtnID = "btn_send_caravan_" + partner.campOrdinal + "_toggle";
+				let btn = "<button id='" + toggleBtnID + "' class='btn-trade-caravans-outgoing-toggle'>Send caravan</button>";
 				if (totalCaravans < 1) {
 					btn = "";
 				}
-				var tdButton = "<td class='minwidth'>" + btn + "</td>";
-				var tr = "<tr class='trade-caravans-outgoing' id='trade-caravans-outgoing-" + partner.campOrdinal + "'>" + tdName + tdTrades + tdButton + "</tr>";
+				let tdButton = "<td class='minwidth'>" + btn + "</td>";
+				let tr = "<tr class='trade-caravans-outgoing' id='trade-caravans-outgoing-" + partner.campOrdinal + "'>" + tdName + tdTrades + tdButton + "</tr>";
 				$("#trade-caravans-outgoing-container table").append(tr);
 
-				var sendTR = "<tr style='display:none;' class='trade-caravans-outgoing-plan highlightbox' id='trade-caravans-outgoing-plan-" + partner.campOrdinal + "'>";
+				let sendTR = "<tr style='display:none;' class='trade-caravans-outgoing-plan highlightbox' id='trade-caravans-outgoing-plan-" + partner.campOrdinal + "'>";
 				sendTR += "<td colspan='2'>";
 				sendTR += "<div class='row-detail-indicator'>></div>";
-				sendTR += "Sell: <select class='trade-caravans-outgoing-select-sell'>";
+				sendTR += "Sell: <select class='trade-caravans-outgoing-select-sell' data-trader-id='" + traderId +"'>";
 				for (let j = 0; j < partner.buysResources.length; j++) {
-					sendTR += "<option value='" + partner.buysResources[j] + "'>" + partner.buysResources[j] + "</option>";
+					sendTR += getOptionElement(partner.buysResources[j], partner.buysResources[j], savedSellOption);
 				}
 				sendTR += "</select>";
-				var maxSelection = this.getCaravanCapacity();
-				if(partner.sellsResources.length && partner.buysResources.length) {
-					var maxValueReturned = TradeConstants.getResourceValue(partner.sellsResources[0]) * maxSelection;
-					var maxUsefulTrade = maxValueReturned / TradeConstants.getResourceValue(partner.buysResources[0]);
+				
+				let maxSelection = this.getCaravanCapacity();
+				let defaultSelection = maxSelection;
+				if (partner.sellsResources.length && partner.buysResources.length) {
+					let maxValueReturned = TradeConstants.getResourceValue(partner.sellsResources[0]) * maxSelection;
+					let maxUsefulTrade = maxValueReturned / TradeConstants.getResourceValue(partner.buysResources[0]);
 					maxUsefulTrade = Math.floor(maxUsefulTrade+0.001);
-					var defaultSelection = Math.min(maxUsefulTrade, maxSelection);
-				} else {
-					var defaultSelection = maxSelection;
+					defaultSelection = Math.min(maxUsefulTrade, maxSelection);
 				}
+				
 				sendTR += "<input type='range' class='trade-caravans-outgoing-range-sell' min='" + TradeConstants.MIN_OUTGOING_CARAVAN_RES + "' max='" + maxSelection + "' value='" + defaultSelection + "' step='10' />";
 				sendTR += " <span class='trade-sell-value-invalid'></span>";
 				sendTR += " <span class='trade-sell-value'>0</span>";
 				sendTR += "<span class='trade-caravans-outgoing-buy'>";
 				sendTR += "&nbsp;&nbsp;|&nbsp;&nbsp;"
-				sendTR += "Get: <select class='trade-caravans-outgoing-select-buy'>";
+				
+				sendTR += "Get: <select class='trade-caravans-outgoing-select-buy' data-trader-id='" + traderId + "'>";
 				for (let k = 0; k < partner.sellsResources.length; k++) {
-					sendTR += "<option value='" + partner.sellsResources[k] + "'>" + partner.sellsResources[k] + "</option>";
+					let sellRes = partner.sellsResources[k];
+					sendTR += getOptionElement(sellRes, sellRes, savedBuyOption);
 				}
 				if (partner.usesCurrency) {
-					sendTR += "<option value='" + TradeConstants.GOOD_TYPE_NAME_CURRENCY + "'>silver</option>";
+					sendTR += getOptionElement(TradeConstants.GOOD_TYPE_NAME_CURRENCY, "silver", savedBuyOption);
 				}
 				if (partner.sellsIngredients) {
-					sendTR += "<option value='" + TradeConstants.GOOD_TYPE_NAME_INGREDIENTS + "'>ingredients</option>";
+					sendTR += getOptionElement(TradeConstants.GOOD_TYPE_NAME_INGREDIENTS, "ingredients", savedBuyOption);
 				}
 				sendTR += "</select>";
+				
 				sendTR += " <span class='trade-buy-value'>0</span>";
 				sendTR += "</span>";
 				sendTR += "</td>";
 				sendTR += "<td class='minwidth'><button class='action btn-trade-caravans-outgoing-send' action='send_caravan_" + partner.campOrdinal + "'>Send</button></td></tr>";
 				$("#trade-caravans-outgoing-container table").append(sendTR);
 			}
+			
 			$("#trade-caravans-outgoing-container table input").on("change", function () {
 				GlobalSignals.updateButtonsSignal.dispatch();
+			});
+			
+			$("#trade-caravans-outgoing-container table select").on("change", function (e) {
+				let $elem = $(e.target);
+				let value = $elem.val();
+				let traderId = $elem.data("trader-id");
+				if ($elem.hasClass("trade-caravans-outgoing-select-buy")) {
+					GameGlobals.gameState.uiStatus.lastSelection["outoing-caravan-buy-" + traderId] = value;
+				} else if ($elem.hasClass("trade-caravans-outgoing-select-sell")) {
+					GameGlobals.gameState.uiStatus.lastSelection["outoing-caravan-sell-" + traderId] = value;
+				}
 			});
 			GlobalSignals.elementCreatedSignal.dispatch();
 

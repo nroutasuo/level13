@@ -66,6 +66,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 				hiddenProjects: [],
 				leaveCampRes: {},
 				leaveCampItems: {},
+				lastSelection: {},
 			};
 			
 			this.settings = {
@@ -99,6 +100,8 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 					this.foundTradingPartners.push(campOrdinal);
 				}
 			}
+			
+			if (!this.uiStatus.lastSelection) this.uiStatus.lastSelection = {};
 		},
 
 		passTime: function (seconds) {
