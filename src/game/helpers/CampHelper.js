@@ -172,6 +172,12 @@ define([
 			return count * (0.01 + level * 0.01);
 		},
 		
+		getAqueductProductionPerSecond: function (improvementsComponent) {
+			let count = improvementsComponent.getCountWithModifierForDamaged(improvementNames.aqueduct, 0.5);
+			let level = improvementsComponent.getLevel(improvementNames.aqueduct);
+			return count * (0.01 + level * 0.01);
+		},
+		
 		getLibraryEvidenceGenerationPerSecond: function (improvementsComponent) {
 			var libraryCount = improvementsComponent.getCount(improvementNames.library);
 			var libraryLevel = improvementsComponent.getLevel(improvementNames.library);

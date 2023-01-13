@@ -295,14 +295,19 @@ define([
 		},
 		
 		updateImprovementProduction: function (node, time) {
-			var resources = node.entity.get(ResourcesComponent).resources;
-			var resourceAcc = node.entity.get(ResourceAccumulationComponent);
-			var improvementsComponent = node.entity.get(SectorImprovementsComponent);
+			let resources = node.entity.get(ResourcesComponent).resources;
+			let resourceAcc = node.entity.get(ResourceAccumulationComponent);
+			let improvementsComponent = node.entity.get(SectorImprovementsComponent);
 			
 			// Darkfarms
-			var farmFood = GameGlobals.campHelper.getDarkFarmProductionPerSecond(improvementsComponent) * time * GameConstants.gameSpeedCamp;
+			let farmFood = GameGlobals.campHelper.getDarkFarmProductionPerSecond(improvementsComponent) * time * GameConstants.gameSpeedCamp;
 			resources.addResource(resourceNames.food, farmFood);
 			resourceAcc.addChange(resourceNames.food, farmFood / time, "Snail farms");
+			
+			// Aqueduct
+			let aqueductWater = GameGlobals.campHelper.getAqueductProductionPerSecond(improvementsComponent) * time * GameConstants.gameSpeedCamp;
+			resources.addResource(resourceNames.water, aqueductWater);
+			resourceAcc.addChange(resourceNames.water, aqueductWater / time, "Aqueducts");
 		},
 		
 		deductHunger: function (time, resourceVO, population, isExplorationMode, accumulation, accComponent, sourceName) {
