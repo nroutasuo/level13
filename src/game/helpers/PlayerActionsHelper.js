@@ -1651,6 +1651,7 @@ define([
 				case "send_caravan":
 					var caravansComponent = sector.get(OutgoingCaravansComponent);
 					result["resource_food"] = 50;
+					result["resource_water"] = 0;
 					result["resource_metal"] = 0;
 					result["resource_rope"] = 0;
 					result["resource_fuel"] = 0;
