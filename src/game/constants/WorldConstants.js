@@ -33,6 +33,8 @@ define(['ash'], function (Ash) {
 		ZONE_EXTRA_UNCAMPABLE: "z_extra_u",
 		ZONE_POI_TEMP: "z_poi_temp",
 		
+		LEVEL_NUMBER_STASH_ADVANCED_MAP: 11,
+		
 		resourcePrevalence: {
 			RARE: 1,		// only for rare resources
 			DEFAULT: 2, 	// default value, scavenging is worth it but not traveling a long way for it

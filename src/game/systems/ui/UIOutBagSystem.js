@@ -330,7 +330,7 @@ define([
 		updateSeenItem: function (isActive, item) {
 			if (!(isActive || this.bubbleCleared)) return;
 			
-			if (item.id !== "equipment_map") {
+			if (this.isHiddenItem(item)) {
 				if (!GameGlobals.gameState.uiBagStatus.itemsOwnedSeen) GameGlobals.gameState.uiBagStatus.itemsOwnedSeen = [];
 				if (GameGlobals.gameState.uiBagStatus.itemsOwnedSeen.indexOf(item.id) < 0) {
 					GameGlobals.gameState.uiBagStatus.itemsOwnedSeen.push(item.id);
@@ -343,6 +343,10 @@ define([
 					GameGlobals.gameState.uiBagStatus.itemsUsableSeen.push(item.id);
 				}
 			}
+		},
+		
+		isHiddenItem: function (item) {
+			return item.type = ItemConstants.itemTypes.uniqueEquipment;
 		},
 		
 		updateSeenItemDefinition: function (isActive, itemDefinition) {

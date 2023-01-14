@@ -810,8 +810,7 @@ define([
 			$("#level-icon").attr("alt", icon.desc);
 			$("#level-icon").attr("title", icon.desc);
 
-			let itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-			let hasMap = itemsComponent.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) > 0;
+			let hasMap = GameGlobals.playerHelper.hasItem("equipment_map");
 			let positionText = "??";
 			if (hasMap) {
 				let showLevel = GameGlobals.gameState.unlockedFeatures.levels;

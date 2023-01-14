@@ -80,7 +80,7 @@ define([
 			let levelCamp = this.nearestCampNodes.head;
 			let currentCamp = levelCamp ? levelCamp.entity : null;
 			let isInCamp = this.playerStatsNodes.head && this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
-			let hasMap = this.playerStatsNodes.head.entity.get(ItemsComponent).getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) > 0;
+			let hasMap = GameGlobals.playerHelper.hasItem("equipment_map");
 			let hasProjects = GameGlobals.gameState.unlockedFeatures.projects;
 			let hasTradingPost = currentCamp && currentCamp.get(SectorImprovementsComponent).getCount(improvementNames.tradepost) > 0;
 			let hasHomes = currentCamp && currentCamp.get(SectorImprovementsComponent).getCount(improvementNames.house) > 0;

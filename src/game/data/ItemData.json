@@ -1730,6 +1730,20 @@
         "rarityTrade": -1,
         "type": "uniqueEquipment"
     },
+	"equipment_map_2": {
+        "campOrdinalRequired": 2,
+        "description": "Helps navigating the City.",
+        "icon": "img/items/exploration-map.png",
+        "id": "equipment_map_2",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Better map",
+        "rarityLocale": -1,
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "type": "uniqueEquipment"
+	},
     "exploration_1": {
         "campOrdinalRequired": 1,
         "description": "Useful tool when exploring and scouting.",

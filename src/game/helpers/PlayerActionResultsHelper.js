@@ -1101,10 +1101,15 @@ define([
 
 			// map
 			if (!GameGlobals.gameState.isAutoPlaying) {
-				var visitedSectors = GameGlobals.gameState.numVisitedSectors;
-				var numSectorsRequiredForMap = 5;
-				if (visitedSectors > numSectorsRequiredForMap && currentItems.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) <= 0) {
-					return ItemConstants.itemDefinitions.uniqueEquipment[0].clone();
+				let visitedSectors = GameGlobals.gameState.numVisitedSectors;
+				let numSectorsRequiredForMap = 5;
+				if (visitedSectors > numSectorsRequiredForMap && currentItems.getCountById("equipment_map", true) <= 0) {
+					return ItemConstants.getItemByID("equipment_map");
+				}
+				
+				let playerPos = this.playerLocationNodes.head.position;
+				if (playerPos.level < WorldConstants.LEVEL_NUMBER_STASH_ADVANCED_MAP && currentItems.getCountById("equipment_map_2", true) <= 0) {
+					return ItemConstants.getItemByID("equipment_map_2");
 				}
 			}
 

@@ -653,6 +653,10 @@ define([
 				addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, "guaranteed-early", ItemConstants.STASH_TYPE_ITEM, [ "exploration_1" ], 1, 1, lateZones);
 			}
 			
+			if (l == WorldConstants.LEVEL_NUMBER_STASH_ADVANCED_MAP) {
+				addStashes(seed / 2 + 5312, "guaranteed-early", ItemConstants.STASH_TYPE_ITEM, [ "equipment_map_2" ], 1, 1, earlyZonesEntrance);
+			}
+			
 			// stashes: every campable level guaranteed items
 			if (levelVO.isCampable && l != 13) {
 				var numCaches = levelVO.populationFactor >= 1 ? 3 : 5;

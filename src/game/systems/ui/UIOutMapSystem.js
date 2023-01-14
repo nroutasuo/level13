@@ -713,6 +713,8 @@ define([
 			
 			this.updateHeader();
 			
+			$("#select-header-mapmode").toggle(GameGlobals.playerHelper.hasItem("equipment_map_2"));
+			
 			this.selectMapStyle(GameGlobals.gameState.settings.mapStyle || this.MAP_STYLE_CANVAS);
 			this.selectMapMode(GameGlobals.gameState.settings.mapMode || MapUtils.MAP_MODE_DEFAULT);
 			

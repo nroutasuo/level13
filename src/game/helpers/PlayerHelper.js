@@ -41,6 +41,11 @@ define([
 			return ValueCache.getValue("StaminaWarningLimit", 5, this.playerPosNodes.head.position.positionId(), () => PlayerStatConstants.getStaminaWarningLimit(this.playerStatsNodes.head.stamina));
 		},
 		
+		hasItem: function (id) {
+			let itemsComponent = this.playerStatsNodes.head.items;
+			return itemsComponent.getCountById(id, true) > 0;
+		},
+		
 		getCurrentBonus: function (itemBonusType) {
 			var isMultiplier = ItemConstants.isMultiplier(itemBonusType);
 			var result = isMultiplier ? 1 : 0;
