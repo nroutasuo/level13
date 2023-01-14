@@ -1041,7 +1041,7 @@ define([
 			return result;
 		},
 		
-		findNearestWaterSector: function (pos) {
+		findNearestKnownWaterSector: function (pos) {
 			let result = null;
 			this.forEverySectorFromLocation(pos, (sector) => {
 				if (GameGlobals.sectorHelper.hasSectorKnownResource(sector, resourceNames.water, true)) {
@@ -1053,7 +1053,7 @@ define([
 			return result;
 		},
 		
-		findNearestFoodSector: function (pos) {
+		findNearestKnownFoodSector: function (pos) {
 			let result = null;
 			this.forEverySectorFromLocation(pos, (sector) => {
 				if (GameGlobals.sectorHelper.hasSectorKnownResource(sector, resourceNames.food, true)) {
