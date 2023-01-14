@@ -1,4 +1,4 @@
-define(['ash', 'game/constants/OccurrenceConstants'], function (Ash, OccurrenceConstants) {
+define(['ash', 'game/constants/OccurrenceConstants', 'game/constants/UIConstants'], function (Ash, OccurrenceConstants, UIConstants) {
 	
 	let TribeConstants = {
 		
@@ -31,6 +31,7 @@ define(['ash', 'game/constants/OccurrenceConstants'], function (Ash, OccurrenceC
 				maxEvidence: 2000,
 				maxFavour: 600,
 				baseReputation: 3,
+				unlockedFeatures: [ UIConstants.UNLOCKABLE_FEATURE_WORKER_AUTO_ASSIGNMENT ],
 			},
 			{
 				name: "milestone 4",

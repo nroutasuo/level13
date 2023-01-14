@@ -119,7 +119,12 @@ define([
 				unlocksDiv += "Max favour: " + nextMilestone.maxFavour;
 			}
 			if (nextMilestone.baseReputation && nextMilestone.baseReputation > currentMilestone.baseReputation) {
-				unlocksDiv += "Base reputation: " + nextMilestone.baseReputation;				
+				unlocksDiv += "Base reputation: " + nextMilestone.baseReputation;
+			}
+			if (nextMilestone.unlockedFeatures) {
+				for (let i = 0; i < nextMilestone.unlockedFeatures.length; i++) {
+					unlocksDiv += UIConstants.getUnlockedFeatureDisplayName(nextMilestone.unlockedFeatures[i]);
+				}
 			}
 			unlocksDiv += "</div>";
 			

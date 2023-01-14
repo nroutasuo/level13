@@ -16,6 +16,7 @@ define(['ash',
 	'game/constants/FightConstants',
 	'game/constants/TradeConstants',
 	'game/constants/TribeConstants',
+	'game/constants/UIConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/TextConstants',
 	'game/vos/PositionVO',
@@ -63,7 +64,7 @@ define(['ash',
 	'text/Text',
 	'utils/StringUtils'
 ], function (Ash, GameGlobals, GlobalSignals,
-	GameConstants, CampConstants, FollowerConstants, LogConstants, ImprovementConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, TribeConstants, UpgradeConstants, TextConstants,
+	GameConstants, CampConstants, FollowerConstants, LogConstants, ImprovementConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, TribeConstants, UIConstants, UpgradeConstants, TextConstants,
 	PositionVO, LocaleVO, ResultVO,
 	PlayerPositionNode, FightNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
@@ -1987,6 +1988,9 @@ define(['ash',
 				return;
 			}
 			
+			let milestone = TribeConstants.getMilestone(nextIndex);
+			this.unlockFeatures(milestone.unlockedFeatures);
+			
 			GameGlobals.gameState.numUnlockedMilestones = index;
 			GlobalSignals.milestoneUnlockedSignal.dispatch();
 		},
@@ -2102,6 +2106,23 @@ define(['ash',
 			if (this.lastVisitedCamps.head) this.lastVisitedCamps.head.entity.remove(LastVisitedCampComponent);
 			entity.add(new LastVisitedCampComponent());
 			log.i("updateLastVisitedCamp: " + entity.get(PositionComponent))
+		},
+		
+		unlockFeatures: function (featureIDs) {
+			if (!featureIDs) return;
+			for (let i = 0; i < featureIDs.length; i++) {
+				this.unlockFeature(featureIDs[i]);
+			}
+		},
+		
+		unlockFeature: function (featureID) {
+			switch (featureID) {
+				case UIConstants.UNLOCKABLE_FEATURE_MAP_MODES:
+					return;
+				case UIConstants.UNLOCKABLE_FEATURE_WORKER_AUTO_ASSIGNMENT:
+					GameGlobals.gameState.unlockedFeatures.workerAutoAssignment = true;
+					return;
+			}
 		},
 		
 		forceStatsBarUpdate: function () {

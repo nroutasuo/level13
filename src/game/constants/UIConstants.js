@@ -29,6 +29,9 @@ define(['ash',
 
 		MAP_MINIMAP_SIZE: 7,
 		SCROLL_INDICATOR_SIZE: 5,
+		
+		UNLOCKABLE_FEATURE_WORKER_AUTO_ASSIGNMENT: "UNLOCKABLE_FEATURE_WORKER_AUTO_ASSIGNMENT",
+		UNLOCKABLE_FEATURE_MAP_MODES: "UNLOCKABLE_FEATURE_MAP_MODES",
 
 		resourceImages: {
 			metal: "img/res-metal.png",
@@ -652,6 +655,14 @@ define(['ash',
 			week = Math.floor(week);
 
 			return "Y" + year + "-N" + week;
+		},
+
+		getUnlockedFeatureDisplayName: function (ui) {
+			switch (ui) {
+				case this.UNLOCKABLE_FEATURE_MAP_MODES: return "map modes";
+				case this.UNLOCKABLE_FEATURE_WORKER_AUTO_ASSIGNMENT: return "worker auto-assignment";
+			}
+			return ui;
 		},
 
 		roundValue: function (value, showDecimalsWhenSmall, showDecimalsAlways, decimalDivisor) {
