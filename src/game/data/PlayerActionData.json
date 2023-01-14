@@ -3470,19 +3470,10 @@
         "use_item_cache_evidence": {
             "inCamp": true
         },
-        "use_item_cache_metal_1": {
+        "use_item_cache_metal": {
             "inCamp": true
         },
-        "use_item_cache_metal_2": {
-            "inCamp": true
-        },
-        "use_item_cache_metal_3": {
-            "inCamp": true
-        },
-        "use_item_cache_metal_4": {
-            "inCamp": true
-        },
-		"use_item_consumable_graffiti_01": {
+		"use_item_consumable_graffiti": {
 			"inCamp": false,
 			"scouted": true
 		},
