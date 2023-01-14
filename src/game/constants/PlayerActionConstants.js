@@ -24,6 +24,7 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 		DISABLED_REASON_SCOUTED: 'DISABLED_REASON_SCOUTED',
 		DISABLED_REASON_SUNLIT: 'DISABLED_REASON_SUNLIT',
 		DISABLED_REASON_UPGRADE: 'DISABLED_REASON_UPGRADE',
+		DISABLED_REASON_INVALID_SECTOR: 'DISABLED_REASON_INVALID_SECTOR',
 		
 		loadData: function (data) {
 			Object.assign(this, data);

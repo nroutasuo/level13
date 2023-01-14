@@ -192,6 +192,7 @@ define([
 			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_SCOUTED) return false;
 			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_SUNLIT) return false;
 			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_UPGRADE) return false;
+			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_INVALID_SECTOR) return false;
 			
 			// default to false
 			return true;
@@ -290,11 +291,6 @@ define([
 						reason = PlayerActionConstants.DISABLED_REASON_LOCKED_RESOURCES;
 						lowestFraction = 0;
 					}
-				}
-
-				var isAffectedByHazard = GameGlobals.sectorHelper.isAffectedByHazard(featuresComponent, statusComponent, itemsComponent)
-				if (isAffectedByHazard && !this.isActionIndependentOfHazards(action)) {
-					return { value: 0, reason: GameGlobals.sectorHelper.getHazardDisabledReason(featuresComponent, statusComponent, itemsComponent) };
 				}
 
 				if (requirements) {
@@ -691,15 +687,15 @@ define([
 
 					if (requirements.sector) {
 						if (requirements.sector.collectable_water) {
-							var hasWater = featuresComponent.resourcesCollectable.water > 0;
+							let hasWater = featuresComponent.resourcesCollectable.water > 0;
 							if (!hasWater) {
-								return { value: 0, reason: "No collectable water." };
+								return { value: 0, reason: "No collectable water.", baseReason: PlayerActionConstants.DISABLED_REASON_INVALID_SECTOR };
 							}
 						}
 						if (requirements.sector.collectable_food) {
-							var hasFood = featuresComponent.resourcesCollectable.food > 0;
+							let hasFood = featuresComponent.resourcesCollectable.food > 0;
 							if (!hasFood) {
-								return { value: 0, reason: "No collectable food." };
+								return { value: 0, reason: "No collectable food.", baseReason: PlayerActionConstants.DISABLED_REASON_INVALID_SECTOR };
 							}
 						}
 						
@@ -714,7 +710,7 @@ define([
 
 						if (requirements.sector.canHaveCamp) {
 							if (!featuresComponent.canHaveCamp()) {
-								return { value: 0, reason: "Location not suitable for camp" };
+								return { value: 0, reason: "Location not suitable for camp", baseReason: PlayerActionConstants.DISABLED_REASON_INVALID_SECTOR };
 							}
 						}
 						if (typeof requirements.sector.enemies != "undefined") {
@@ -996,7 +992,12 @@ define([
 						}
 					}
 				}
-
+				
+				let isAffectedByHazard = GameGlobals.sectorHelper.isAffectedByHazard(featuresComponent, statusComponent, itemsComponent)
+				if (isAffectedByHazard && !this.isActionIndependentOfHazards(action)) {
+					return { value: 0, reason: GameGlobals.sectorHelper.getHazardDisabledReason(featuresComponent, statusComponent, itemsComponent) };
+				}
+				
 				var item = this.getItemForCraftAction(action);
 				if (item && baseActionID == "craft") {
 					if (!inCamp) {
@@ -1449,7 +1450,7 @@ define([
 					requirements.perkEffects = {};
 					requirements.perkEffects["Health"] = [ -1, maxHealth ];
 					return requirements;
-					
+				
 				case "build_out_passage_up_stairs":
 				case "build_out_passage_up_elevator":
 				case "build_out_passage_up_hole":
