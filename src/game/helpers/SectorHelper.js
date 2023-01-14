@@ -177,6 +177,11 @@ define([
 		hasSectorKnownResource: function (sector, resourceName, min) {
 			min = min || 1;
 			
+			let sectorStatus = sector.get(SectorStatusComponent);
+			if (!sectorStatus.scouted && !this.isInDetectionRange(sector, ItemConstants.itemBonusTypes.detect_supplies)) {
+				return false;
+			}
+			
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
 			if (sectorFeatures.resourcesCollectable.getResource(resourceName) >= min) {
 				return true;
