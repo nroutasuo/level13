@@ -1451,6 +1451,12 @@ define([
 					requirements.perkEffects["Health"] = [ -1, maxHealth ];
 					return requirements;
 				
+				case "use_item":
+					let itemID = action.replace(baseActionID + "_", "");
+					let baseItemID = ItemConstants.getBaseItemId(itemID);
+					let actionID = baseActionID + "_" + baseItemID;
+					return PlayerActionConstants.requirements[actionID];
+					
 				case "build_out_passage_up_stairs":
 				case "build_out_passage_up_elevator":
 				case "build_out_passage_up_hole":
