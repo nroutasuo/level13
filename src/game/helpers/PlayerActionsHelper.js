@@ -15,6 +15,7 @@ define([
 	'game/constants/PerkConstants',
 	'game/constants/UIConstants',
 	'game/constants/WorldConstants',
+	'game/nodes/player/PlayerActionResultNode',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/player/PlayerResourcesNode',
 	'game/nodes/PlayerLocationNode',
@@ -45,7 +46,7 @@ define([
 	'game/vos/ImprovementVO'
 ], function (
 	Ash, GameGlobals, GlobalSignals, PositionConstants, PlayerActionConstants, PlayerStatConstants, FollowerConstants, ImprovementConstants, ItemConstants, BagConstants, MovementConstants, UpgradeConstants, PerkConstants, UIConstants, WorldConstants,
-	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
+	PlayerActionResultNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	LevelComponent, CurrencyComponent, PositionComponent, PlayerActionComponent, BagComponent, ExcursionComponent, ItemsComponent, DeityComponent,
 	FightComponent, OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent,
 	SectorFeaturesComponent, SectorStatusComponent, SectorLocalesComponent, SectorImprovementsComponent, TraderComponent, RaidComponent,
@@ -71,6 +72,7 @@ define([
 				this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 				this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
 				this.nearestCampNodes = engine.getNodeList(NearestCampNode);
+				this.playerActionResultNodes = engine.getNodeList(PlayerActionResultNode);
 
 				var sys = this;
 				this.engine.updateComplete.add(function () {
@@ -608,6 +610,18 @@ define([
 							let validNow = bagComponent.selectedCapacity <= bagComponent.totalCapacity;
 							if (validStart && !validNow) {
 								return { value: 0, reason: "Can't carry that much stuff." };
+							}
+							
+							let resultNode = this.playerActionResultNodes.head;
+							if (resultNode) {
+								let resultVO = resultNode.result.pendingResultVO;
+								let unselectedItems = resultVO.getUnselectedAndDiscardedItems();
+								for (let i = 0; i < unselectedItems.length; i++) {
+									let unselectedItem = unselectedItems[i];
+									if (unselectedItem.type == ItemConstants.itemTypes.uniqueEquipment) {
+										return { value: 0, reason: "Can't leave " + ItemConstants.getItemDisplayName(unselectedItem) + " behind" };
+									}
+								}
 							}
 						}
 						if (requirements.bag.validSelectionAll) {

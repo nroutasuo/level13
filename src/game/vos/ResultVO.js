@@ -72,6 +72,20 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			return this.gainedResources.getTotal() > 0 || this.gainedItems.length > 0;
 		},
 		
+		getUnselectedAndDiscardedItems: function () {
+			let result = [];
+			for (let i = 0; i < this.discardedItems.length; i++) {
+				result.push(this.discardedItems[i]);
+			}
+			for (let i = 0; i < this.gainedItems.length; i++) {
+				let item = this.gainedItems[i];
+				if (this.selectedItems.indexOf(item) < 0) {
+					result.push(item);
+				}
+			}
+			return result;
+		},
+		
 		isEmpty: function () {
 			return this.gainedResources.getTotal() == 0
 				&& this.gainedCurrency == 0
