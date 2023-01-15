@@ -239,7 +239,7 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 				case ItemConstants.itemTypes.shoes:
 					var shoeBonus = 1 - item.getBaseBonus(ItemConstants.itemBonusTypes.movement);
 					var otherBonus = item.getBaseTotalBonus() - shoeBonus;
-					return Math.pow(((shoeBonus)*5), 2) + otherBonus / 10;
+					return Math.pow(((shoeBonus) * 5), 2) + otherBonus / 10;
 					
 				case ItemConstants.itemTypes.bag:
 					return Math.pow(((item.getBaseTotalBonus() - 25) / 15), 1.75);
@@ -251,7 +251,7 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 		getItemValueByCraftingIngredients: function (item) {
 			let craftAction = "craft_" + item.id;
 			let costs = PlayerActionConstants.costs[craftAction];
-			let result = costs ? 0.1 * Object.keys(costs).length : 0;
+			let result = costs ? 0.025 * Object.keys(costs).length : 0;
 			
 			let ingredients = ItemConstants.getIngredientsToCraft(item.id);
 			for (let i = 0; i < ingredients.length; i++) {
