@@ -13,6 +13,7 @@ define([
 	'game/constants/MovementConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/PerkConstants',
+	'game/constants/TradeConstants',
 	'game/constants/UIConstants',
 	'game/constants/WorldConstants',
 	'game/nodes/player/PlayerActionResultNode',
@@ -45,7 +46,7 @@ define([
 	'game/vos/ResourcesVO',
 	'game/vos/ImprovementVO'
 ], function (
-	Ash, GameGlobals, GlobalSignals, PositionConstants, PlayerActionConstants, PlayerStatConstants, FollowerConstants, ImprovementConstants, ItemConstants, BagConstants, MovementConstants, UpgradeConstants, PerkConstants, UIConstants, WorldConstants,
+	Ash, GameGlobals, GlobalSignals, PositionConstants, PlayerActionConstants, PlayerStatConstants, FollowerConstants, ImprovementConstants, ItemConstants, BagConstants, MovementConstants, UpgradeConstants, PerkConstants, TradeConstants, UIConstants, WorldConstants,
 	PlayerActionResultNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	LevelComponent, CurrencyComponent, PositionComponent, PlayerActionComponent, BagComponent, ExcursionComponent, ItemsComponent, DeityComponent,
 	FightComponent, OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent,
@@ -666,16 +667,25 @@ define([
 
 					if (requirements.incomingcaravan) {
 						if (typeof requirements.incomingcaravan.validSelection !== "undefined") {
-							var requiredValue = requirements.incomingcaravan.validSelection;
-							var traderComponent = sector.get(TraderComponent);
+							let requiredValue = requirements.incomingcaravan.validSelection;
+							let traderComponent = sector.get(TraderComponent);
 							if (traderComponent) {
-								var caravan = traderComponent.caravan;
-								var currentValue = caravan.traderOfferValue > 0 && caravan.traderOfferValue <= caravan.campOfferValue;
+								let caravan = traderComponent.caravan;
+								let currentValue = caravan.traderOfferValue > 0 && caravan.traderOfferValue <= caravan.campOfferValue;
 								if (requiredValue != currentValue) {
-									if (requiredValue)
+									if (requiredValue) {
 										return {value: 0, reason: "Invalid selection."};
-									else
+									} else {
 										return {value: 0, reason: "Valid selection."};
+									}
+								}
+								
+								for (let itemID in caravan.campSelectedItems) {
+									let amount = caravan.campSelectedItems[itemID];
+									let item = ItemConstants.getItemByID(itemID);
+									if (amount > TradeConstants.MAX_ITEMS_TO_TRADE_PER_CARAVAN && item.type != ItemConstants.itemTypes.ingredient) {
+										return {value: 0, reason: "The trader doesn't want that many " + ItemConstants.getItemDisplayName(item)  + "."};
+									}
 								}
 							} else {
 								return {value: 0, reason: "No caravan."};

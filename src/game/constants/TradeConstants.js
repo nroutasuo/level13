@@ -16,6 +16,8 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 		VALUE_MARKUP_OUTGOING_CARAVANS_INGREDIENTS: 0.5,
 		VALUE_DISCOUNT_CAMP_ITEMS: 0.25,
 		
+		MAX_ITEMS_TO_TRADE_PER_CARAVAN: 10,
+		
 		TRADING_PARTNERS: [
 			new TradingPartnerVO(3, "Bone Crossing", [resourceNames.rope], [resourceNames.metal], false, true, [ "weapon" ], [ "weapon", "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head", "exploration" ]),
 			new TradingPartnerVO(4, "Slugger Town", [resourceNames.food], [resourceNames.metal], false, true, [], ["exploration", "shoes" ]),
