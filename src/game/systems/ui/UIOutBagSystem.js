@@ -346,7 +346,7 @@ define([
 		},
 		
 		isHiddenItem: function (item) {
-			return item.type = ItemConstants.itemTypes.uniqueEquipment;
+			return item.type == ItemConstants.itemTypes.uniqueEquipment;
 		},
 		
 		updateSeenItemDefinition: function (isActive, itemDefinition) {
