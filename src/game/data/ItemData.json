@@ -8,7 +8,7 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Volcanic rock",
-		"rarityInvestigate": 4,
+        "rarityInvestigate": 4,
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 7,
@@ -23,7 +23,7 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Temple key",
-		"rarityInvestigate": 6,
+        "rarityInvestigate": 6,
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 7,
@@ -38,7 +38,7 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Seashell",
-		"rarityInvestigate": 7,
+        "rarityInvestigate": 7,
         "rarityLocale": 5,
         "rarityScavenge": 9,
         "rarityTrade": 7,
@@ -53,7 +53,7 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Pamphlet",
-		"rarityInvestigate": 4,
+        "rarityInvestigate": 4,
         "rarityLocale": 3,
         "rarityScavenge": 5,
         "rarityTrade": 5,
@@ -68,7 +68,7 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Starchart",
-		"rarityInvestigate": 4,
+        "rarityInvestigate": 4,
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 7,
@@ -84,7 +84,7 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Runestone",
-		"rarityInvestigate": 3,
+        "rarityInvestigate": 3,
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 7,
@@ -100,7 +100,7 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Charred seed",
-		"rarityInvestigate": 3,
+        "rarityInvestigate": 3,
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 7,
@@ -116,7 +116,7 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Round stone",
-		"rarityInvestigate": 4,
+        "rarityInvestigate": 4,
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 7,
@@ -132,7 +132,7 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Leather pouch",
-		"rarityInvestigate": 3,
+        "rarityInvestigate": 3,
         "rarityLocale": 4,
         "rarityScavenge": 6,
         "rarityTrade": 3,
@@ -147,7 +147,7 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Fountain pen",
-		"rarityInvestigate": 4,
+        "rarityInvestigate": 4,
         "rarityLocale": 4,
         "rarityScavenge": 7,
         "rarityTrade": 4,
@@ -162,7 +162,7 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Amulet",
-		"rarityInvestigate": 3,
+        "rarityInvestigate": 3,
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 5,
@@ -177,7 +177,7 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "CD",
-		"rarityInvestigate": 3,
+        "rarityInvestigate": 3,
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 5,
@@ -192,7 +192,7 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Wooden toy horse",
-		"rarityInvestigate": 5,
+        "rarityInvestigate": 5,
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "type": "artefact"
@@ -206,7 +206,7 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Data stick",
-		"rarityInvestigate": 3,
+        "rarityInvestigate": 3,
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 8,
@@ -221,8 +221,8 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Canned tuna",
+        "rarityInvestigate": 5,
         "rarityLocale": 5,
-		"rarityInvestigate": 5,
         "rarityScavenge": 8,
         "rarityTrade": 5,
         "type": "artefact"
@@ -236,7 +236,7 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "ID Chip",
-		"rarityInvestigate": 3,
+        "rarityInvestigate": 3,
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 5,
@@ -251,7 +251,7 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Scientist's notebook",
-		"rarityInvestigate": 3,
+        "rarityInvestigate": 3,
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 5,
@@ -266,7 +266,7 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Plastic key card",
-		"rarityInvestigate": 3,
+        "rarityInvestigate": 3,
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "type": "artefact"
@@ -280,7 +280,7 @@
         "isEquippable": false,
         "isUseable": false,
         "name": "Torn comic book",
-		"rarityInvestigate": 5,
+        "rarityInvestigate": 5,
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "type": "artefact"
@@ -403,9 +403,9 @@
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
-		"level": 1,
+        "level": 1,
         "name": "Beginner Science book",
-		"rarityInvestigate": 2,
+        "rarityInvestigate": 2,
         "rarityLocale": 3,
         "rarityScavenge": 6,
         "type": "voucher"
@@ -421,9 +421,9 @@
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
-		"level": 2,
+        "level": 2,
         "name": "Intermediate Science book",
-		"rarityInvestigate": 2,
+        "rarityInvestigate": 2,
         "rarityLocale": 3,
         "rarityScavenge": 6,
         "type": "voucher"
@@ -439,9 +439,9 @@
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
-		"level": 3,
+        "level": 3,
         "name": "Advanced Science book",
-		"rarityInvestigate": 2,
+        "rarityInvestigate": 2,
         "rarityLocale": 3,
         "rarityScavenge": 6,
         "type": "voucher"
@@ -457,9 +457,9 @@
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
-		"level": 1,
+        "level": 1,
         "name": "Children's book",
-		"rarityInvestigate": 4,
+        "rarityInvestigate": 4,
         "rarityLocale": 3,
         "rarityScavenge": 6,
         "type": "voucher"
@@ -475,9 +475,9 @@
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
+        "level": 2,
         "name": "Fiction book",
-		"level": 2,
-		"rarityInvestigate": 4,
+        "rarityInvestigate": 4,
         "rarityLocale": 3,
         "rarityScavenge": 6,
         "type": "voucher"
@@ -493,9 +493,9 @@
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
-		"level": 3,
+        "level": 3,
         "name": "Fiction book",
-		"rarityInvestigate": 4,
+        "rarityInvestigate": 4,
         "rarityLocale": 3,
         "rarityScavenge": 6,
         "type": "voucher"
@@ -511,9 +511,9 @@
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
-		"level": 1,
+        "level": 1,
         "name": "Basic history book",
-		"rarityInvestigate": 3,
+        "rarityInvestigate": 3,
         "rarityLocale": 3,
         "rarityScavenge": 6,
         "type": "voucher"
@@ -529,9 +529,9 @@
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
-		"level": 2,
+        "level": 2,
         "name": "History book",
-		"rarityInvestigate": 3,
+        "rarityInvestigate": 3,
         "rarityLocale": 3,
         "rarityScavenge": 6,
         "type": "voucher"
@@ -547,14 +547,14 @@
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
-		"level": 3,
+        "level": 3,
         "name": "Recent History book",
-		"rarityInvestigate": 3,
+        "rarityInvestigate": 3,
         "rarityLocale": 3,
         "rarityScavenge": 6,
         "type": "voucher"
     },
-	"cache_evidence_41": {
+    "cache_evidence_41": {
         "campOrdinalRequired": 5,
         "configData": {
             "bookType": "engineering"
@@ -565,14 +565,14 @@
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
-		"level": 1,
+        "level": 1,
         "name": "Student's Engineering book",
-		"rarityInvestigate": 1,
+        "rarityInvestigate": 1,
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "type": "voucher"
-	},
-	"cache_evidence_42": {
+    },
+    "cache_evidence_42": {
         "campOrdinalRequired": 10,
         "configData": {
             "bookType": "engineering"
@@ -583,14 +583,14 @@
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
-		"level": 2,
+        "level": 2,
         "name": "Engineering book",
-		"rarityInvestigate": 1,
+        "rarityInvestigate": 1,
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "type": "voucher"
-	},
-	"cache_evidence_43": {
+    },
+    "cache_evidence_43": {
         "campOrdinalRequired": 15,
         "configData": {
             "bookType": "engineering"
@@ -601,13 +601,13 @@
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
-		"level": 3,
+        "level": 3,
         "name": "Advanced Engineering book",
-		"rarityInvestigate": 1,
+        "rarityInvestigate": 1,
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "type": "voucher"
-	},
+    },
     "cache_metal_1": {
         "campOrdinalMaximum": 10,
         "campOrdinalRequired": 1,
@@ -1056,7 +1056,7 @@
         "id": "clothing_lower_1",
         "isCraftable": false,
         "isEquippable": true,
-		"isRepairable": false,
+        "isRepairable": false,
         "isUseable": false,
         "name": "Ragged pants",
         "rarityLocale": 2,
@@ -1472,7 +1472,7 @@
         "id": "clothing_upper_1",
         "isCraftable": false,
         "isEquippable": true,
-		"isRepairable": false,
+        "isRepairable": false,
         "isUseable": false,
         "name": "Tattered shirt",
         "rarityLocale": 2,
@@ -1628,6 +1628,20 @@
         "source": "equipment",
         "type": "clothing_upper"
     },
+    "consumable_graffiti_01": {
+        "campOrdinalRequired": 3,
+        "description": "Bottle containing paint. Can be used to make graffiti.",
+        "icon": "img/items/consumable-paint.png",
+        "id": "consumable_graffiti_01",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "name": "Spray paint can",
+        "rarityLocale": 2,
+        "rarityScavenge": 7,
+        "rarityTrade": 4,
+        "type": "exploration"
+    },
     "consumable_map_1": {
         "campOrdinalRequired": 2,
         "description": "A piece of cardboard with roughly drawn map of the area",
@@ -1637,7 +1651,7 @@
         "isEquippable": false,
         "isUseable": true,
         "name": "Map sketch",
-		"rarityInvestigate": 5,
+        "rarityInvestigate": 5,
         "rarityLocale": 5,
         "rarityScavenge": -1,
         "rarityTrade": -1,
@@ -1653,7 +1667,7 @@
         "isUseable": true,
         "name": "Map piece",
         "nameShort": "Map piece",
-		"rarityInvestigate": 5,
+        "rarityInvestigate": 5,
         "rarityLocale": 5,
         "rarityScavenge": -1,
         "rarityTrade": -1,
@@ -1702,20 +1716,6 @@
         "rarityTrade": 4,
         "type": "exploration"
     },
-	"consumable_graffiti_01": {
-        "campOrdinalRequired": 3,
-		"description": "Bottle containing paint. Can be used to make graffiti.",
-        "icon": "img/items/consumable-paint.png",
-		"id": "consumable_graffiti_01",
-		"isCraftable": false,
-		"isEquippable": false,
-		"isUseable": true,
-		"name": "Spray paint can",
-		"rarityLocale": 2,
-        "rarityScavenge": 7,
-        "rarityTrade": 4,
-        "type": "exploration"
-	},
     "equipment_map": {
         "campOrdinalRequired": 0,
         "description": "Helps navigating the City.",
@@ -1730,7 +1730,7 @@
         "rarityTrade": -1,
         "type": "uniqueEquipment"
     },
-	"equipment_map_2": {
+    "equipment_map_2": {
         "campOrdinalRequired": 2,
         "description": "Helps navigating the City.",
         "icon": "img/items/exploration-map.png",
@@ -1743,7 +1743,7 @@
         "rarityScavenge": -1,
         "rarityTrade": -1,
         "type": "uniqueEquipment"
-	},
+    },
     "exploration_1": {
         "campOrdinalRequired": 1,
         "description": "Useful tool when exploring and scouting.",
@@ -2068,9 +2068,9 @@
         "rarityTrade": -1,
         "type": "trade"
     },
-	"trade_2": {
-		"campOrdinalRequired": 1,
-		"description": "Delicious sweet food previously produced in large quantities. Now too precious to consume. Traders would be interested in it.",
+    "trade_2": {
+        "campOrdinalRequired": 1,
+        "description": "Delicious sweet food previously produced in large quantities. Now too precious to consume. Traders would be interested in it.",
         "icon": "img/items/trade-chocolate.png",
         "id": "trade_2",
         "isCraftable": false,
@@ -2081,10 +2081,10 @@
         "rarityScavenge": 9,
         "rarityTrade": -1,
         "type": "trade"
-	},
-	"trade_3": {
-		"campOrdinalRequired": 1,
-		"description": "A jar of honey produced by bees in artifical greenhouses, too rare to consume these days. Traders would be interested in it.",
+    },
+    "trade_3": {
+        "campOrdinalRequired": 1,
+        "description": "A jar of honey produced by bees in artifical greenhouses, too rare to consume these days. Traders would be interested in it.",
         "icon": "img/items/trade-jar.png",
         "id": "trade_3",
         "isCraftable": false,
@@ -2095,10 +2095,10 @@
         "rarityScavenge": 9,
         "rarityTrade": -1,
         "type": "trade"
-	},
-	"trade_4": {
-		"campOrdinalRequired": 1,
-		"description": "A precious gem. Traders would be interested in it.",
+    },
+    "trade_4": {
+        "campOrdinalRequired": 1,
+        "description": "A precious gem. Traders would be interested in it.",
         "icon": "img/items/trade-diamond.png",
         "id": "trade_4",
         "isCraftable": false,
@@ -2109,7 +2109,7 @@
         "rarityScavenge": 8,
         "rarityTrade": -1,
         "type": "trade"
-	},
+    },
     "weapon1": {
         "bonuses": {
             "att": 10,

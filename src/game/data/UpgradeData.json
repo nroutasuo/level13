@@ -13,7 +13,7 @@
         "name": "Antibiotics"
     },
     "improve_building_barracks_3": {
-        "campOrdinal": "14",
+        "campOrdinal": "13",
         "effects": {
             "improvesBuildings": "barracks",
             "improvesWorker": "soldier"
@@ -72,7 +72,7 @@
     },
     "improve_building_hospital": {
         "blueprintCampOrdinal": 11,
-        "blueprintIsCampless": false,
+        "blueprintIsCampless": true,
         "blueprintIsEarly": false,
         "blueprintPieces": 3,
         "campOrdinal": "11",
@@ -83,11 +83,11 @@
         "name": "Surgery"
     },
     "improve_building_hospital_3": {
-        "blueprintCampOrdinal": 14,
+        "blueprintCampOrdinal": 13,
         "blueprintIsCampless": true,
         "blueprintIsEarly": false,
         "blueprintPieces": 3,
-        "campOrdinal": "14",
+        "campOrdinal": "13",
         "effects": {
             "improvesBuildings": "hospital"
         },
@@ -166,6 +166,19 @@
         "id": "improve_building_radiotower",
         "name": "Shortwave Radio"
     },
+    "improve_building_robots": {
+        "blueprintCampOrdinal": 15,
+        "blueprintIsCampless": true,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 2,
+        "campOrdinal": "15",
+        "effects": {
+            "improvesBuildings": "robotFactory",
+            "improvesWorker": "robotmaker"
+        },
+        "id": "improve_building_robots",
+        "name": "Improved Worker Robots"
+    },
     "improve_building_shrine": {
         "campOrdinal": "12",
         "effects": {
@@ -213,6 +226,14 @@
         },
         "id": "improve_building_temple2",
         "name": "Offerings"
+    },
+    "improve_building_temple3": {
+        "campOrdinal": "14",
+        "effects": {
+            "improvesBuildings": "temple"
+        },
+        "id": "improve_building_temple3",
+        "name": "Temple Gardens"
     },
     "improve_worker_chemist_2": {
         "campOrdinal": "6",
@@ -302,6 +323,14 @@
         "id": "improve_worker_scavenger_3",
         "name": "Metal Purification"
     },
+    "improve_worker_scavenger_4": {
+        "campOrdinal": "14",
+        "effects": {
+            "improvesWorker": "scavenger"
+        },
+        "id": "improve_worker_scavenger_4",
+        "name": "Exotic Metals"
+    },
     "improve_worker_scientist": {
         "campOrdinal": "15",
         "effects": {
@@ -356,7 +385,7 @@
         "name": "Water purification"
     },
     "improve_worker_water_3": {
-        "campOrdinal": "13",
+        "campOrdinal": "12",
         "effects": {
             "improvesWorker": "water"
         },
@@ -481,7 +510,7 @@
     },
     "unlock_building_greenhouse": {
         "blueprintCampOrdinal": 8,
-        "blueprintIsCampless": false,
+        "blueprintIsCampless": true,
         "blueprintIsEarly": false,
         "blueprintPieces": 3,
         "campOrdinal": "8",
@@ -598,6 +627,16 @@
         "effects": {},
         "id": "unlock_building_researchcenter",
         "name": "Research Center"
+    },
+    "unlock_building_robots": {
+        "blueprintCampOrdinal": 14,
+        "blueprintIsCampless": true,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 5,
+        "campOrdinal": "14",
+        "effects": {},
+        "id": "unlock_building_robots",
+        "name": "Worker Robots"
     },
     "unlock_building_smithy": {
         "blueprintCampOrdinal": 7,

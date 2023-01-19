@@ -4,7 +4,7 @@
         "despair": 10,
         "fight_gang": 60,
         "investigate": 10,
-		"launch": 600,
+        "launch": 600,
         "scavenge": 10,
         "scout_locale_i": 60,
         "scout_locale_u": 60,
@@ -15,7 +15,7 @@
         "use_in_shrine": 600,
         "use_in_temple": 1200,
         "use_spring": 60,
-		"wait": 60
+        "wait": 60
     },
     "costs": {
         "bridge_gap": {
@@ -132,7 +132,7 @@
             "resource_tools": 300
         },
         "build_in_robotFactory": {
-			"resource_fuel": 1000,
+            "resource_fuel": 1000,
             "resource_metal": 600,
             "resource_rope": 100
         },
@@ -201,10 +201,10 @@
             "resource_metal": 300,
             "resource_tools": 100
         },
-		"build_out_luxury_outpost": {
-			"cost_factor_expBase": 1.05,
-			"resource_metal": 100
-		},
+        "build_out_luxury_outpost": {
+            "cost_factor_expBase": 1.05,
+            "resource_metal": 100
+        },
         "build_out_passage_down_elevator": {
             "cost_factor_expBase": 1.88,
             "resource_fuel": {
@@ -275,16 +275,16 @@
         "build_out_spaceship2": {
             "resource_concrete": 1000,
             "resource_metal": 10000,
-            "resource_tools": 2000,
-            "resource_rubber": 1000
+            "resource_rubber": 1000,
+            "resource_tools": 2000
         },
         "build_out_spaceship3": {
             "resource_fuel": 800,
-            "resource_water": 10000,
+            "resource_medicine": 500,
             "resource_metal": 10000,
             "resource_rope": 5000,
             "resource_tools": 1000,
-            "resource_medicine": 500
+            "resource_water": 10000
         },
         "build_out_sundome": {
             "resource_concrete": 800,
@@ -620,17 +620,17 @@
             "stamina": 20
         },
         "improve_building_apothecary": {
-            "evidence": 376,
+            "evidence": 381,
             "favour": 184
         },
         "improve_building_barracks_3": {
-            "rumours": 4130
+            "rumours": 3926
         },
         "improve_building_campfire_1": {
-            "rumours": 45
+            "rumours": 52
         },
         "improve_building_campfire_2": {
-            "rumours": 1697
+            "rumours": 1579
         },
         "improve_building_cementmill": {
             "evidence": 281
@@ -639,59 +639,63 @@
             "evidence": 109
         },
         "improve_building_collector_water_2": {
-            "rumours": 428
+            "rumours": 407
         },
         "improve_building_hospital": {
-            "rumours": 1111
+            "rumours": 1151
         },
         "improve_building_hospital_3": {
-            "rumours": 2754
+            "rumours": 2617
         },
         "improve_building_inn": {
             "favour": 90,
-            "rumours": 1697
+            "rumours": 1755
         },
         "improve_building_library": {
-            "rumours": 198
+            "rumours": 203
         },
         "improve_building_library2": {
             "evidence": 230,
-            "rumours": 918
+            "rumours": 945
         },
         "improve_building_market": {
-            "rumours": 140
+            "rumours": 144
         },
         "improve_building_market2": {
             "evidence": 211,
             "favour": 143
         },
         "improve_building_market3": {
-            "favour": 297,
-            "rumours": 3442
+            "favour": 276,
+            "rumours": 3755
         },
         "improve_building_radiotower": {
-            "evidence": 653
+            "evidence": 423
+        },
+        "improve_building_robots": {
+            "evidence": 617
         },
         "improve_building_shrine": {
-            "favour": 272,
-            "rumours": 2267
+            "favour": 181,
+            "rumours": 2466
         },
         "improve_building_stable_2": {
-            "rumours": 321
+            "rumours": 339
         },
-        "improve_building_stable_3": {},
         "improve_building_storage1": {
-            "evidence": 296
+            "evidence": 286
         },
         "improve_building_storage2": {
-            "evidence": 347,
-            "rumours": 4251
+            "evidence": 329,
+            "rumours": 3170
         },
         "improve_building_temple2": {
-            "favour": 77,
-            "rumours": 1043
+            "favour": 92,
+            "rumours": 1074
         },
-        "improve_building_temple3": {},
+        "improve_building_temple3": {
+            "favour": 276
+        },
         "improve_in_apothecary": {
             "cost_factor_expBase": 1.25,
             "resource_metal": {
@@ -867,63 +871,66 @@
             "cost_factor_expBase": 1.25,
             "resource_metal": 8
         },
-        "improve_worker_apothecary_3": {},
         "improve_worker_chemist_2": {
             "evidence": 148
         },
         "improve_worker_chemist_3": {
-            "evidence": 347
+            "evidence": 364,
+            "favour": 249
         },
         "improve_worker_cleric_2": {
-            "rumours": 1697
+            "rumours": 1755
         },
         "improve_worker_cleric_3": {
-            "favour": 184,
-            "rumours": 3073
+            "favour": 174,
+            "rumours": 2617
         },
-        "improve_worker_concrete_3": {},
         "improve_worker_gardener_2": {
             "evidence": 433,
-            "favour": 340
+            "favour": 227
         },
         "improve_worker_gardener_3": {
             "evidence": 262,
             "favour": 115
         },
         "improve_worker_rubber_2": {
-            "evidence": 547
+            "evidence": 328
         },
         "improve_worker_rubber_3": {
-            "favour": 214
+            "favour": 209
         },
         "improve_worker_scavenger_2": {
             "evidence": 98,
-            "rumours": 292
+            "rumours": 310
         },
         "improve_worker_scavenger_3": {
-            "rumours": 2834
+            "rumours": 2348
+        },
+        "improve_worker_scavenger_4": {
+            "evidence": 529,
+            "rumours": 3004
         },
         "improve_worker_scientist": {
-            "evidence": 404
+            "evidence": 437
         },
         "improve_worker_smith_2": {
             "evidence": 207
         },
         "improve_worker_smith_3": {
-            "evidence": 376
+            "evidence": 381
         },
         "improve_worker_trapper_2": {
-            "evidence": 281,
+            "evidence": 267,
             "favour": 119
         },
         "improve_worker_trapper_3": {
             "favour": 151
         },
         "improve_worker_water_2": {
-            "rumours": 545
+            "rumours": 562
         },
         "improve_worker_water_3": {
-            "rumours": 3380
+            "rumours": 2583
         },
         "investigate": {
             "stamina": 10
@@ -999,66 +1006,67 @@
             "evidence": 65
         },
         "unlock_building_apothecary": {
-            "rumours": 960
+            "rumours": 988
         },
         "unlock_building_aqueduct": {
             "favour": 184,
-            "rumours": 1001
+            "rumours": 988
         },
         "unlock_building_barracks": {
-            "evidence": 186,
-            "rumours": 428
+            "evidence": 143,
+            "rumours": 453
         },
         "unlock_building_beacon": {
-            "evidence": 147
+            "evidence": 132
         },
         "unlock_building_bridge": {
             "evidence": 123
         },
         "unlock_building_cementmill": {
-            "evidence": 247
+            "evidence": 237
         },
         "unlock_building_darkfarm": {
             "evidence": 91,
-            "rumours": 70
+            "rumours": 81
         },
         "unlock_building_fortifications": {
-            "evidence": 122,
+            "evidence": 118,
             "rumours": 95
         },
         "unlock_building_fortifications2": {
-            "rumours": 1438
+            "evidence": 401,
+            "rumours": 1490
         },
         "unlock_building_generator": {
-            "rumours": 436
+            "rumours": 427
         },
         "unlock_building_greenhouse": {
             "favour": 21,
-            "rumours": 471
+            "rumours": 488
         },
         "unlock_building_hospital": {
             "evidence": 17
         },
         "unlock_building_house2": {
-            "evidence": 372,
-            "rumours": 342
+            "evidence": 310,
+            "rumours": 362
         },
         "unlock_building_inn": {
             "evidence": 82,
-            "rumours": 152
+            "rumours": 145
         },
         "unlock_building_library": {
             "evidence": 65
         },
         "unlock_building_lights": {
-            "evidence": 173
+            "evidence": 167
         },
         "unlock_building_market": {
             "rumours": 127
         },
         "unlock_building_passage_elevator": {
             "evidence": 92,
-            "rumours": 165
+            "rumours": 169
         },
         "unlock_building_passage_hole": {
             "evidence": 186
@@ -1067,41 +1075,45 @@
             "evidence": 47
         },
         "unlock_building_radio": {
-            "evidence": 376,
-            "rumours": 3533
+            "evidence": 381,
+            "rumours": 3010
         },
         "unlock_building_researchcenter": {
-            "evidence": 490
+            "evidence": 317
+        },
+        "unlock_building_robots": {
+            "evidence": 529,
+            "rumours": 3305
         },
         "unlock_building_smithy": {
             "evidence": 155
         },
         "unlock_building_spaceship1": {
-            "evidence": 594,
-            "rumours": 4300
+            "evidence": 643,
+            "rumours": 5812
         },
         "unlock_building_spaceship2": {
-            "evidence": 713,
-            "rumours": 5159
+            "favour": 430,
+            "rumours": 6975
         },
         "unlock_building_spaceship3": {
-            "evidence": 713,
-            "rumours": 5159
+            "evidence": 848,
+            "favour": 430
         },
         "unlock_building_square": {
-            "rumours": 50
+            "rumours": 58
         },
         "unlock_building_stable": {
-            "rumours": 257
+            "rumours": 273
         },
         "unlock_building_tradingpost": {
             "evidence": 73
         },
         "unlock_clothing_basic": {
-            "rumours": 45
+            "rumours": 52
         },
         "unlock_clothing_warm": {
-            "rumours": 56
+            "rumours": 65
         },
         "unlock_item_bag_1": {
             "rumours": 114
@@ -1110,106 +1122,106 @@
             "evidence": 124
         },
         "unlock_item_bag_3": {
-            "rumours": 626
+            "rumours": 687
         },
         "unlock_item_bag_4": {
-            "favour": 237
+            "favour": 265
         },
         "unlock_item_clothing2": {
-            "rumours": 13
+            "rumours": 12
         },
         "unlock_item_clothing3": {
-            "rumours": 502
+            "rumours": 521
         },
         "unlock_item_clothing3h": {
             "favour": 151,
-            "rumours": 1176
+            "rumours": 1219
         },
         "unlock_item_clothing4": {
             "evidence": 188
         },
         "unlock_item_clothing4h": {
             "evidence": 86,
-            "rumours": 123
+            "rumours": 127
         },
         "unlock_item_clothing4he": {
-            "rumours": 327
+            "rumours": 337
         },
         "unlock_item_clothing5": {
             "evidence": 207,
-            "rumours": 534
+            "rumours": 553
         },
         "unlock_item_clothing6": {
-            "rumours": 1176
+            "rumours": 1219
         },
         "unlock_item_clothing_body_13": {
             "favour": 184,
-            "rumours": 3073
+            "rumours": 2617
         },
         "unlock_item_clothing_body_15": {
-            "favour": 554,
-            "rumours": 4128
+            "favour": 344,
+            "rumours": 5580
         },
         "unlock_item_clothing_hands_25": {
-            "rumours": 299
+            "rumours": 317
         },
         "unlock_item_clothing_head_27": {
-            "rumours": 234
+            "rumours": 248
         },
         "unlock_item_clothing_head_5": {
             "favour": 138
         },
         "unlock_item_clothing_over_15": {
-            "rumours": 4300
+            "rumours": 5812
         },
         "unlock_item_clothingl14": {
             "favour": 60,
-            "rumours": 628
+            "rumours": 651
         },
         "unlock_item_firstaid": {
-            "rumours": 392
+            "rumours": 405
         },
         "unlock_item_scavenger_gear": {
-            "rumours": 2834
+            "rumours": 2348
         },
         "unlock_item_shoe1": {
             "evidence": 26,
-            "rumours": 13
+            "rumours": 12
         },
         "unlock_item_weapon_10": {
             "evidence": 262,
-            "rumours": 835
+            "rumours": 859
         },
         "unlock_item_weapon_11": {
-            "evidence": 547,
-            "favour": 168
+            "evidence": 364,
+            "favour": 160
         },
         "unlock_item_weapon_12": {
             "evidence": 347
         },
         "unlock_item_weapon_13": {
-            "evidence": 319
+            "evidence": 323
         },
         "unlock_item_weapon_14": {
-            "evidence": 980,
-            "rumours": 4130
+            "evidence": 635,
+            "rumours": 4506
         },
         "unlock_item_weapon_15": {
-            "evidence": 547,
-            "favour": 462
+            "evidence": 591,
+            "favour": 287
         },
         "unlock_item_weapon_2": {
             "evidence": 66
         },
         "unlock_item_weapon_4": {
             "evidence": 78,
-            "rumours": 187
+            "rumours": 198
         },
         "unlock_item_weapon_5": {
-            "rumours": 165
+            "rumours": 169
         },
         "unlock_item_weapon_6": {
-            "rumours": 436
+            "rumours": 450
         },
         "unlock_item_weapon_8": {
             "evidence": 414
@@ -1218,7 +1230,7 @@
             "evidence": 241
         },
         "unlock_worker_rope": {
-            "rumours": 11
+            "rumours": 9
         },
         "use_in_hospital": {
             "resource_food": 50,
@@ -1243,7 +1255,7 @@
         "build_out_collector_food": "Accumulates food.",
         "build_out_collector_water": "Accumulates water.",
         "build_out_greenhouse": "A place to grow herbs.",
-		"build_out_luxury_outpost": "Gives access to the luxury resource found in this level, making workers happier.",
+        "build_out_luxury_outpost": "Gives access to the luxury resource found in this level, making workers happier.",
         "build_out_sundome": "Protects the inhabitants from sunlight.",
         "build_out_tradepost_connector": "Allows traders and workers to cross the level safely.",
         "claim_milestone": "Claim a new level and unlock new things.",
@@ -1274,7 +1286,7 @@
         "improve_in_temple": "Increase favour generation",
         "improve_out_collector_food": "Increase trap capacity",
         "improve_out_collector_water": "Increase bucket capacity",
-		"investigate": "Seek to understand this place",
+        "investigate": "Seek to understand this place",
         "launch": "Leave this planet and launch for the great unknown.",
         "leave_camp": "Venture out into the corridors.",
         "move_camp_global": "Shortcut to the camp on this level.",
@@ -1282,7 +1294,7 @@
         "move_level_down": "Use the passage to move one level down",
         "move_level_up": "Use the passage to move one level up",
         "nap": "Sleep rough and regain a bit of stamina.",
-		"repair_in": "Repair damaged building",
+        "repair_in": "Repair damaged building",
         "scavenge": "Look for resources.",
         "scout": "Scout the area for evidence.",
         "scout_locale_i": "Find out if there is anyone living here.",
@@ -1305,11 +1317,13 @@
         "wait": "Pass some time"
     },
     "durations": {
-		"bridge_gap": 60,
-		"clear_debris":  30,
+        "bridge_gap": 60,
+        "build_out_collector_food": 3,
+        "build_out_collector_water": 3,
+        "clear_debris": 30,
         "clear_waste_r": 10,
         "clear_waste_t": 5,
-		"launch": 5,
+        "launch": 5,
         "send_caravan": 600,
         "use_in_campfire": 5,
         "use_in_home": 60,
@@ -1317,19 +1331,17 @@
         "use_in_hospital_2": 120,
         "use_in_market": 10,
         "use_in_shrine": 10,
-        "use_in_temple": 5,
-		"build_out_collector_food": 3,
-		"build_out_collector_water": 3
+        "use_in_temple": 5
     },
     "injuryProbabilities": {
         "despair": [
             0.75,
             0
         ],
-		"investigate": [
+        "investigate": [
             0.0005,
             0.005
-		],
+        ],
         "scavenge": [
             0.0005,
             0.005
@@ -1739,13 +1751,13 @@
         },
         "build_in_robotFactory": {
             "improvements": {
-                "robotFactory": [
-                    -1,
-                    1
-                ],
                 "house": [
                     2,
                     -1
+                ],
+                "robotFactory": [
+                    -1,
+                    1
                 ]
             },
             "population": [
@@ -1753,9 +1765,9 @@
                 -1
             ],
             "upgrades": {
-                "unlock_building_researchcenter": true
+                "unlock_building_robots": true
             }
-		},
+        },
         "build_in_shrine": {
             "deity": true,
             "improvements": {
@@ -1989,14 +2001,20 @@
                 "unlock_building_greenhouse": true
             }
         },
-		"build_out_luxury_outpost": {
-			"improvements": {
-				"luxuryOutpost": [ 0, 1 ]
-			},
-			"level": {
-				"luxuryResource": [ 1, -1 ]
-			}
-		},
+        "build_out_luxury_outpost": {
+            "improvements": {
+                "luxuryOutpost": [
+                    0,
+                    1
+                ]
+            },
+            "level": {
+                "luxuryResource": [
+                    1,
+                    -1
+                ]
+            }
+        },
         "build_out_passage_down_elevator": {
             "improvements": {
                 "passageDownElevator": [
@@ -2466,11 +2484,6 @@
                 "unlock_action_clear_waste_r": true
             }
         },
-        "craft_use_in_hospital2": {
-            "upgrades": {
-                "improve_building_hospital_3": true
-            }
-        },
         "craft_weapon12": {
             "upgrades": {
                 "unlock_item_weapon_2": true
@@ -2532,16 +2545,16 @@
         "deselect_follower": {
             "inCamp": true
         },
-		"despair": {
+        "despair": {
             "busy": false,
-			"inCamp": false
-		},
+            "inCamp": false
+        },
         "dismiss_follower": {
             "inCamp": true
         },
-		"enter_camp": {
+        "enter_camp": {
             "busy": false
-		},
+        },
         "fight": {
             "busy": false
         },
@@ -2559,15 +2572,13 @@
             }
         },
         "improve_building_barracks_3": {
+            "milestone": 5,
             "upgrades": {
                 "unlock_building_barracks": true
             }
         },
         "improve_building_campfire_1": {
-            "milestone": 2,
-            "upgrades": {
-                "unlock_building_square": true
-            }
+            "milestone": 2
         },
         "improve_building_campfire_2": {
             "blueprint": 9,
@@ -2595,7 +2606,7 @@
             "blueprint": 11
         },
         "improve_building_hospital_3": {
-            "blueprint": 14,
+            "blueprint": 13,
             "upgrades": {
                 "improve_worker_chemist_2": true
             }
@@ -2618,6 +2629,7 @@
             }
         },
         "improve_building_market": {
+            "milestone": 3,
             "upgrades": {
                 "unlock_building_inn": true
             }
@@ -2639,9 +2651,16 @@
                 "unlock_building_radio": true
             }
         },
-        "improve_building_shrine": {
+        "improve_building_robots": {
+            "blueprint": 15,
             "upgrades": {
-                "improve_worker_cleric_2": true
+                "unlock_building_robots": true
+            }
+        },
+        "improve_building_shrine": {
+            "milestone": 5,
+            "upgrades": {
+                "improve_building_campfire_2": true
             }
         },
         "improve_building_stable": {
@@ -2649,14 +2668,12 @@
         },
         "improve_building_stable_2": {
             "upgrades": {
-                "unlock_building_stable": true
+                "improve_building_storage1": true
             }
-        },
-        "improve_building_stable_3": {
-            "upgrades": {}
         },
         "improve_building_storage1": {
             "blueprint": 6,
+            "milestone": 3,
             "upgrades": {
                 "unlock_building_darkfarm": true
             }
@@ -2674,7 +2691,10 @@
         },
         "improve_building_temple3": {
             "deity": true,
-            "upgrades": {}
+            "milestone": 6,
+            "upgrades": {
+                "improve_building_temple2": true
+            }
         },
         "improve_in_campfire": {
             "population": [
@@ -2700,9 +2720,6 @@
                 ]
             }
         },
-        "improve_worker_apothecary_3": {
-            "upgrades": {}
-        },
         "improve_worker_chemist_2": {
             "upgrades": {
                 "unlock_building_generator": true
@@ -2716,18 +2733,15 @@
         },
         "improve_worker_cleric_2": {
             "deity": true,
+            "milestone": 4,
             "unlockedWorkers": {
                 "cleric": true
-            },
-            "upgrades": {}
+            }
         },
         "improve_worker_cleric_3": {
             "upgrades": {
                 "improve_building_shrine": true
             }
-        },
-        "improve_worker_concrete_3": {
-            "upgrades": {}
         },
         "improve_worker_gardener_2": {
             "upgrades": {
@@ -2746,7 +2760,7 @@
         },
         "improve_worker_rubber_3": {
             "upgrades": {
-                "improve_worker_rubber_2": true
+                "improve_worker_chemist_3": true
             }
         },
         "improve_worker_scavenger_2": {
@@ -2757,7 +2771,12 @@
         },
         "improve_worker_scavenger_3": {
             "upgrades": {
-                "improve_worker_chemist_2": true
+                "improve_worker_smith_2": true
+            }
+        },
+        "improve_worker_scavenger_4": {
+            "upgrades": {
+                "improve_worker_scavenger_3": true
             }
         },
         "improve_worker_scientist": {
@@ -2806,6 +2825,9 @@
                     1
                 ],
                 "scouted": true
+            },
+            "upgrades": {
+                "unlock_building_researchcenter": true
             },
             "vision": [
                 30,
@@ -2992,11 +3014,11 @@
                 "maxRecruited": false
             }
         },
-		"repair_item": {
-			"upgrades": {
+        "repair_item": {
+            "upgrades": {
                 "unlock_item_shoe1": true
-			}
-		},
+            }
+        },
         "scavenge": {
             "busy": false,
             "sector": {
@@ -3065,8 +3087,9 @@
             }
         },
         "unlock_building_barracks": {
+            "milestone": 3,
             "upgrades": {
-                "improve_building_market": true
+                "unlock_item_weapon_6": true
             }
         },
         "unlock_building_beacon": {
@@ -3121,6 +3144,7 @@
         },
         "unlock_building_inn": {
             "blueprint": 3,
+            "milestone": 2,
             "upgrades": {
                 "unlock_building_market": true
             }
@@ -3133,6 +3157,7 @@
         },
         "unlock_building_market": {
             "blueprint": 3,
+            "milestone": 2,
             "upgrades": {
                 "unlock_building_tradingpost": true
             }
@@ -3151,17 +3176,25 @@
         },
         "unlock_building_passage_staircase": {
             "blueprint": 1,
+            "milestone": 1,
             "upgrades": {
                 "unlock_item_shoe1": true
             }
         },
         "unlock_building_radio": {
-            "blueprint": 13
+            "blueprint": 13,
+            "milestone": 5
         },
         "unlock_building_researchcenter": {
             "blueprint": 14,
             "upgrades": {
                 "improve_building_shrine": true
+            }
+        },
+        "unlock_building_robots": {
+            "blueprint": 14,
+            "upgrades": {
+                "improve_worker_smith_3": true
             }
         },
         "unlock_building_smithy": {
@@ -3172,18 +3205,15 @@
         },
         "unlock_building_spaceship1": {
             "blueprint": 15,
-            "milestone": 7,
-            "upgrades": {}
+            "milestone": 7
         },
         "unlock_building_spaceship2": {
             "blueprint": 15,
-            "milestone": 7,
-            "upgrades": {}
+            "milestone": 7
         },
         "unlock_building_spaceship3": {
             "blueprint": 15,
-            "milestone": 7,
-            "upgrades": {}
+            "milestone": 7
         },
         "unlock_building_square": {
             "milestone": 1
@@ -3391,6 +3421,7 @@
         },
         "unlock_project_tradingpost_connector": {
             "blueprint": 10,
+            "milestone": 4,
             "upgrades": {
                 "unlock_building_passage_elevator": true
             }
@@ -3430,9 +3461,6 @@
                     1
                 ]
             }
-        },
-        "use_in_hospital2": {
-            "upgrades": {}
         },
         "use_in_hospital_2": {
             "camp": {
@@ -3477,10 +3505,10 @@
         "use_item_cache_metal": {
             "inCamp": true
         },
-		"use_item_consumable_graffiti": {
-			"inCamp": false,
-			"scouted": true
-		},
+        "use_item_consumable_graffiti": {
+            "inCamp": false,
+            "scouted": true
+        },
         "use_item_fight_consumable_weapon_1": {
             "uses_in_fight": {
                 "consumable_weapon_1": [
@@ -3622,7 +3650,7 @@
             "bag": {
                 "full": false
             },
-			"busy": false,
+            "busy": false,
             "sector": {
                 "scouted": true,
                 "spring": true
