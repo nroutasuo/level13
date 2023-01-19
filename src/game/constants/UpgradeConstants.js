@@ -146,6 +146,7 @@ function (Ash, UpgradeData, PlayerActionConstants, WorldConstants, UpgradeVO) {
 		// caches for faster world generation / page load
 		campOrdinalsByBlueprint: {},
 		minCampOrdinalsByUpgrade: {},
+		minimumCampOrdinalForUpgrade: {},
 		
 		loadData: function (data) {
 			for (upgradeID in data) {
@@ -285,94 +286,6 @@ function (Ash, UpgradeData, PlayerActionConstants, WorldConstants, UpgradeVO) {
 				}
 			}
 			return result;
-		},
-		
-		getMinimumCampOrdinalForUpgrade: function (upgrade, ignoreCosts) {
-			if (!upgrade) return 1;
-			
-			// TODO also cache ignoreCosts version for each upgrade
-			if (!ignoreCosts && this.getMinimumCampOrdinalForUpgrade[upgrade]) return this.getMinimumCampOrdinalForUpgrade[upgrade];
-			
-			if (!this.upgradeDefinitions[upgrade]) {
-				log.w("no such upgrade: " + upgrade);
-				this.getMinimumCampOrdinalForUpgrade[upgrade] = 99;
-				return 99;
-			}
-			
-			// required tech
-			var requiredTech = this.getRequiredTech(upgrade);
-			var requiredTechCampOrdinal = 0;
-			for (let i = 0; i < requiredTech.length; i++) {
-				requiredTechCampOrdinal = Math.max(requiredTechCampOrdinal, this.getMinimumCampOrdinalForUpgrade(requiredTech[i], ignoreCosts));
-			}
-			
-			// blueprint
-			var blueprintCampOrdinal = this.getBlueprintCampOrdinal(upgrade);
-			
-			// misc reqs
-			var reqs = PlayerActionConstants.requirements[upgrade];
-			if (reqs && reqs.deity) {
-				requiredTechCampOrdinal = Math.max(requiredTechCampOrdinal, WorldConstants.CAMP_ORDINAL_GROUND);
-			}
-			
-			// costs
-			var costCampOrdinal = 1;
-			var costs = PlayerActionConstants.costs[upgrade];
-			if (!ignoreCosts) {
-				if (!costs) {
-					log.w("upgrade has no costs: " + upgrade);
-				} else {
-					if (costs.favour) {
-						costCampOrdinal = Math.max(costCampOrdinal, WorldConstants.CAMPS_BEFORE_GROUND);
-					}
-				}
-			}
-			if (costs.favour) {
-				costCampOrdinal = WorldConstants.CAMP_ORDINAL_GROUND;
-			}
-			
-			result = Math.max(1, blueprintCampOrdinal, requiredTechCampOrdinal, costCampOrdinal);
-			if (!ignoreCosts) this.getMinimumCampOrdinalForUpgrade[upgrade] = result;
-			return result;
-		},
-	
-		getMinimumCampStepForUpgrade: function (upgrade) {
-			let result = 0;
-			var blueprintType = this.getBlueprintBracket(upgrade);
-			if (blueprintType == this.BLUEPRINT_BRACKET_EARLY)
-				result = WorldConstants.CAMP_STEP_START;
-			if (blueprintType == this.BLUEPRINT_BRACKET_LATE)
-				result = WorldConstants.CAMP_STEP_POI_2;
-				
-			var requiredTech = this.getRequiredTech(upgrade);
-			for (let i = 0; i < requiredTech.length; i++) {
-				result = Math.max(result, this.getMinimumCampStepForUpgrade(requiredTech[i]));
-			}
-			
-			let costs = PlayerActionConstants.costs[upgrade];
-			if (costs && costs.favour) {
-				result = WorldConstants.CAMP_STEP_POI_2;
-			}
-			
-			return result;
-		},
-		
-		getMinimumCampAndStepForUpgrade: function (upgradeID, ignoreCosts) {
-			return {
-				campOrdinal: this.getMinimumCampOrdinalForUpgrade(upgradeID, ignoreCosts),
-				step: this.getMinimumCampStepForUpgrade(upgradeID)
-			};
-		},
-		
-		getExpectedCampOrdinalForUpgrade: function (upgrade) {
-			return UpgradeConstants.upgradeDefinitions[upgrade].campOrdinal || 1;
-		},
-		
-		getExpectedCampAndStepForUpgrade: function (upgradeID) {
-			return {
-				campOrdinal: this.getExpectedCampOrdinalForUpgrade(upgradeID),
-				step: this.getMinimumCampStepForUpgrade(upgradeID)
-			};
 		},
 		
 	};

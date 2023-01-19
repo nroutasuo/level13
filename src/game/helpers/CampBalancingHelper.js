@@ -152,9 +152,13 @@ define([
 		},
 		
 		getMaxReputation: function (campOrdinal, maxCampOrdinal, milestone) {
-			let baseValue = GameGlobals.tribeBalancingHelper.getMaxReputationBaseValue(maxCampOrdinal, milestone);
 			let totalStorage = GameGlobals.campBalancingHelper.getMaxTotalStorage(maxCampOrdinal);
-			let improvementsComponent = GameGlobals.campBalancingHelper.getMaxImprovements(maxCampOrdinal, campOrdinal, totalStorage);
+			let improvementsComponent = GameGlobals.campBalancingHelper.getMaxImprovements(maxCampOrdinal, campOrdinal, totalStorage, milestone);
+			return GameGlobals.campBalancingHelper.getMaxReputationWithParams(campOrdinal, maxCampOrdinal, milestone, improvementsComponent);
+		},
+		
+		getMaxReputationWithParams: function (campOrdinal, maxCampOrdinal, milestone, improvementsComponent) {
+			let baseValue = GameGlobals.tribeBalancingHelper.getMaxReputationBaseValue(maxCampOrdinal, milestone);
 			let numAvailableLuxuryResources = GameGlobals.campBalancingHelper.getMaxNumAvailableLuxuryResources(maxCampOrdinal);
 			let populationFactor = GameGlobals.campBalancingHelper.getPopulationFactor(campOrdinal);
 			let isSunlit = campOrdinal == 15;
@@ -338,14 +342,14 @@ define([
 			return CampConstants.getHousingCap2(numHouses, numHouses2);
 		},
 		
-		getMaxImprovements: function (maxCampOrdinal, campOrdinal, storage) {
-			return this.getDefaultImprovements(maxCampOrdinal, campOrdinal, storage, true);
+		getMaxImprovements: function (maxCampOrdinal, campOrdinal, storage, milestone) {
+			return this.getDefaultImprovements(maxCampOrdinal, campOrdinal, storage, true, milestone);
 		},
 		
 		getDefaultImprovementsCache: {},
 		
-		getDefaultImprovements: function (maxCampOrdinal, campOrdinal, storage, maximize) {
-			let cacheKey = maxCampOrdinal + "-" + campOrdinal + "-" + storage + "-" + (maximize || false);
+		getDefaultImprovements: function (maxCampOrdinal, campOrdinal, storage, maximize, milestone) {
+			let cacheKey = maxCampOrdinal + "-" + campOrdinal + "-" + storage + "-" + (maximize || false) + "-" + milestone;
 			if (this.getDefaultImprovementsCache[cacheKey]) return this.getDefaultImprovementsCache[cacheKey];
 			
 			let isOutpost = this.isOutpost(campOrdinal);
@@ -384,9 +388,9 @@ define([
 				if (reqs && reqs.upgrades) {
 					var upgradeRequirements = reqs.upgrades;
 					for (let upgradeID in upgradeRequirements) {
-						var requirementBoolean = upgradeRequirements[upgradeID];
-						var requiredTechCampOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(upgradeID);
-						var hasBoolean = requiredTechCampOrdinal <= maxCampOrdinal;
+						let requirementBoolean = upgradeRequirements[upgradeID];
+						let requiredTechCampOrdinal = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade(upgradeID, false, milestone);
+						let hasBoolean = requiredTechCampOrdinal <= maxCampOrdinal;
 						if (requirementBoolean != hasBoolean) {
 							return false;
 						}
@@ -603,8 +607,8 @@ define([
 			var minOrdinal;
 			var minStep;
 			for (let id in UpgradeConstants.upgradeDefinitions) {
-				minOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(id);
-				minStep = UpgradeConstants.getMinimumCampStepForUpgrade(id);
+				minOrdinal = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade(id);
+				minStep = GameGlobals.upgradeEffectsHelper.getMinimumCampStepForUpgrade(id);
 				if (WorldConstants.isHigherOrEqualCampOrdinalAndStep(campOrdinal, step, minOrdinal, minStep)) {
 					result.addUpgrade(id);
 				}

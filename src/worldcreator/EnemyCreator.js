@@ -349,8 +349,8 @@ define([
 		getTypicalStamina: function (campOrdinal, step, isHardLevel) {
 			var healthyPerkFactor = 1;
 			
-			let campAndStepPerk1 = UpgradeConstants.getExpectedCampAndStepForUpgrade("improve_building_hospital",);
-			let campAndStepPerk2 = UpgradeConstants.getExpectedCampAndStepForUpgrade("improve_building_hospital_3");
+			let campAndStepPerk1 = GameGlobals.upgradeEffectsHelper.getExpectedCampAndStepForUpgrade("improve_building_hospital",);
+			let campAndStepPerk2 = GameGlobals.upgradeEffectsHelper.getExpectedCampAndStepForUpgrade("improve_building_hospital_3");
 
 			if (WorldConstants.isHigherOrEqualCampOrdinalAndStep(campOrdinal, step, campAndStepPerk2.campOrdinal, campAndStepPerk2.step)) {
 				healthyPerkFactor = PerkConstants.getPerk(PerkConstants.perkIds.healthBonus3).effect;

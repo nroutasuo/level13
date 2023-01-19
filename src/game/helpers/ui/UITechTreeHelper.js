@@ -423,8 +423,8 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
 			var node;
 			var ids = Object.keys(UpgradeConstants.upgradeDefinitions)
 			ids.sort(function (a, b) {
-				var levela = UpgradeConstants.getMinimumCampOrdinalForUpgrade(a);
-				var levelb = UpgradeConstants.getMinimumCampOrdinalForUpgrade(b);
+				var levela = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade(a);
+				var levelb = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade(b);
 				return levela - levelb;
 			});
 			for (let i = 0; i < ids.length; i++) {
@@ -432,7 +432,7 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
 				var reqs = PlayerActionConstants.requirements[definition.id];
 				node = new UITechTreeNode();
 				node.definition = definition;
-				node.campOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(definition.id);
+				node.campOrdinal = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade(definition.id);
 				node.level = Math.floor(node.campOrdinal / 3);
 				node.requiresIDs = reqs && reqs.upgrades ? [ Object.keys(reqs.upgrades)[0] ] : []; // only visualize first requirement
 				tree.addNode(node);

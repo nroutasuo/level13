@@ -48,6 +48,8 @@ define([
 		},
 		
 		getMinimumCampOrdinalForMilestone: function (milestone) {
+			if (!milestone.index) milestone = TribeConstants.getMilestone(milestone);
+			
 			let result = 0;
 			let action = "claim_milestone_" + milestone.index;
 			

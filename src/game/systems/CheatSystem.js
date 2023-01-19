@@ -472,8 +472,8 @@ define(['ash',
 			var minStep;
 			for (var id in UpgradeConstants.upgradeDefinitions) {
 				if (this.tribeUpgradesNodes.head.upgrades.hasUpgrade(id)) continue;
-				minOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(id);
-				minStep = UpgradeConstants.getMinimumCampStepForUpgrade(id);
+				minOrdinal = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade(id);
+				minStep = GameGlobals.upgradeEffectsHelper.getMinimumCampStepForUpgrade(id);
 				if (WorldConstants.isHigherOrEqualCampOrdinalAndStep(campOrdinal, step, minOrdinal, minStep)) {
 					this.addTech(id);
 				}

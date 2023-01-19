@@ -1892,8 +1892,8 @@ define([
 			if (reqs && reqs.upgrades) {
 				var requiredTech = Object.keys(reqs.upgrades);
 				for (let k = 0; k < requiredTech.length; k++) {
-					var campOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(requiredTech[k], true);
-					var step = UpgradeConstants.getMinimumCampStepForUpgrade(requiredTech[k]);
+					var campOrdinal = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade(requiredTech[k], true);
+					var step = GameGlobals.upgradeEffectsHelper.getMinimumCampStepForUpgrade(requiredTech[k]);
 					addRequirement(campOrdinal, step, requiredTech[k]);
 				}
 			}

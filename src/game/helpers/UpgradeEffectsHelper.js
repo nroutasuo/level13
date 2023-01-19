@@ -5,9 +5,10 @@ define([
 	'game/constants/ImprovementConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/PlayerActionConstants',
+	'game/constants/WorldConstants',
 	'game/constants/OccurrenceConstants',
 	'game/vos/ImprovementVO',
-], function (Ash, GameGlobals, ImprovementConstants, UpgradeConstants, PlayerActionConstants, OccurrenceConstants, ImprovementVO) {
+], function (Ash, GameGlobals, ImprovementConstants, UpgradeConstants, PlayerActionConstants, WorldConstants, OccurrenceConstants, ImprovementVO) {
 	
 	var UpgradeEffectsHelper = Ash.Class.extend({
 		
@@ -212,7 +213,7 @@ define([
 			var buildingUpgrade;
 			for (let i in buildingUpgrades) {
 				buildingUpgrade = buildingUpgrades[i];
-				var requiredTechCampOrdinal = UpgradeConstants.getExpectedCampOrdinalForUpgrade(buildingUpgrade);
+				var requiredTechCampOrdinal = this.getExpectedCampOrdinalForUpgrade(buildingUpgrade);
 				if (requiredTechCampOrdinal <= campOrdinal) upgradeLevel++;
 			}
 			return upgradeLevel;
@@ -249,7 +250,7 @@ define([
 			
 			if (reqsDefinition && reqsDefinition.upgrades) {
 				for (var requiredUpgradeId in reqsDefinition.upgrades) {
-					var upgradeCampOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(requiredUpgradeId);
+					var upgradeCampOrdinal = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade(requiredUpgradeId);
 					if (!result || upgradeCampOrdinal > resultCampOrdinal) {
 						result = requiredUpgradeId;
 						resultCampOrdinal = upgradeCampOrdinal;
@@ -260,12 +261,115 @@ define([
 			return result;
 		},
 
+		getMinimumCampOrdinalForUpgrade: function (upgrade, ignoreCosts, milestone) {
+			if (!upgrade) return 1;
+			
+			let cacheKey = upgrade + "__" + (ignoreCosts ? "i" : "c") + "__" + (milestone ? milestone.index : "A");
+			
+			// TODO also cache ignoreCosts version for each upgrade
+			if (UpgradeConstants.minimumCampOrdinalForUpgrade[cacheKey]) return UpgradeConstants.minimumCampOrdinalForUpgrade[cacheKey];
+			
+			if (!UpgradeConstants.upgradeDefinitions[upgrade]) {
+				log.w("no such upgrade: " + upgrade);
+				UpgradeConstants.minimumCampOrdinalForUpgrade[cacheKey] = 99;
+				return 99;
+			}
+			
+			// required tech
+			var requiredTech = UpgradeConstants.getRequiredTech(upgrade);
+			var requiredTechCampOrdinal = 0;
+			for (let i = 0; i < requiredTech.length; i++) {
+				requiredTechCampOrdinal = Math.max(requiredTechCampOrdinal, this.getMinimumCampOrdinalForUpgrade(requiredTech[i], ignoreCosts, milestone));
+			}
+			
+			// blueprint
+			let blueprintCampOrdinal = UpgradeConstants.getBlueprintCampOrdinal(upgrade);
+			
+			// misc reqs
+			var reqs = PlayerActionConstants.requirements[upgrade];
+			if (reqs && reqs.deity) {
+				requiredTechCampOrdinal = Math.max(requiredTechCampOrdinal, WorldConstants.CAMP_ORDINAL_GROUND);
+			}
+			if (reqs && reqs.milestone) {
+				if (milestone) {
+					// break infinite recursion if milestone is given
+					if (milestone.index < reqs.milestone) {
+						requiredTechCampOrdinal = 99;
+					}
+				} else {
+					let milestoneCampOrdinal = GameGlobals.milestoneEffectsHelper.getMinimumCampOrdinalForMilestone(reqs.milestone);
+					requiredTechCampOrdinal = Math.max(requiredTechCampOrdinal, milestoneCampOrdinal);
+				}
+			}
+			
+			// costs
+			var costCampOrdinal = 1;
+			var costs = PlayerActionConstants.costs[upgrade];
+			if (!ignoreCosts) {
+				if (!costs) {
+					log.w("upgrade has no costs: " + upgrade);
+				} else {
+					if (costs.favour) {
+						costCampOrdinal = Math.max(costCampOrdinal, WorldConstants.CAMPS_BEFORE_GROUND);
+					}
+				}
+			}
+			if (costs.favour) {
+				costCampOrdinal = WorldConstants.CAMP_ORDINAL_GROUND;
+			}
+			
+			result = Math.max(1, blueprintCampOrdinal, requiredTechCampOrdinal, costCampOrdinal);
+			
+			UpgradeConstants.minimumCampOrdinalForUpgrade[cacheKey] = result;
+			
+			return result;
+		},
+	
+		getMinimumCampStepForUpgrade: function (upgrade) {
+			let result = 0;
+			var blueprintType = UpgradeConstants.getBlueprintBracket(upgrade);
+			if (blueprintType == UpgradeConstants.BLUEPRINT_BRACKET_EARLY)
+				result = WorldConstants.CAMP_STEP_START;
+			if (blueprintType == UpgradeConstants.BLUEPRINT_BRACKET_LATE)
+				result = WorldConstants.CAMP_STEP_POI_2;
+				
+			var requiredTech = UpgradeConstants.getRequiredTech(upgrade);
+			for (let i = 0; i < requiredTech.length; i++) {
+				result = Math.max(result, this.getMinimumCampStepForUpgrade(requiredTech[i]));
+			}
+			
+			let costs = PlayerActionConstants.costs[upgrade];
+			if (costs && costs.favour) {
+				result = WorldConstants.CAMP_STEP_POI_2;
+			}
+			
+			return result;
+		},
+		
+		getMinimumCampAndStepForUpgrade: function (upgradeID, ignoreCosts) {
+			return {
+				campOrdinal: this.getMinimumCampOrdinalForUpgrade(upgradeID, ignoreCosts),
+				step: this.getMinimumCampStepForUpgrade(upgradeID)
+			};
+		},
+		
+		getExpectedCampOrdinalForUpgrade: function (upgrade) {
+			return UpgradeConstants.upgradeDefinitions[upgrade].campOrdinal || 1;
+		},
+		
+		getExpectedCampAndStepForUpgrade: function (upgradeID) {
+			return {
+				campOrdinal: this.getExpectedCampOrdinalForUpgrade(upgradeID),
+				step: this.getMinimumCampStepForUpgrade(upgradeID)
+			};
+		},
+
 		getCampOrdinalToUnlockBuilding: function (improvementName) {
 			// TODO extend with checking for required buildings' requirements
 			// TODO extend for checking required resources
 			let result = 1;
 			let requiredUpgradeId = this.getUpgradeToUnlockBuilding(improvementName);
-			result = Math.max(result, UpgradeConstants.getMinimumCampOrdinalForUpgrade(requiredUpgradeId))
+			result = Math.max(result, GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade(requiredUpgradeId))
 			switch (improvementName) {
 				case improvementNames.temple: return 8;
 				case improvementNames.shrine: return 8;

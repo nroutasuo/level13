@@ -338,7 +338,7 @@ define([
 					for (var upgradeID in reqs.upgrades) {
 						var requirementBoolean = reqs.upgrades[upgradeID];
 						if (requirementBoolean) {
-							isUnlocked = isUnlocked && UpgradeConstants.getMinimumCampOrdinalForUpgrade(upgradeID) <= campOrdinal;
+							isUnlocked = isUnlocked && GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade(upgradeID) <= campOrdinal;
 						}
 					}
 				}
