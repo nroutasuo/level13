@@ -639,7 +639,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					events.push("the migration to the City from some far-away island");
 					events.push("something called the Great Famine which took place a few decades before the book was written");
 					events.push("the establishment of the city-wide Government");
-					events.push("a major gardener rebellion");
+					events.push("a major gardener uprising");
 					events.push("a nuclear power plant accident where waste was released to the lower levels of the City");
 					break;
 			}
@@ -651,7 +651,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		getFoundStashMessage: function (stashVO) {
 			switch (stashVO.stashType) {
 				case ItemConstants.STASH_TYPE_ITEM:
-					return "Found an item stash.";
+					return "Found an item.";
 				case ItemConstants.STASH_TYPE_SILVER:
 					return "Found some coins.";
 				default:

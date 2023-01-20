@@ -52,6 +52,7 @@
             "cost_factor_expBase": 1.4,
             "resource_fuel": {
                 "expCost": 5,
+				"constantCost": 5,
                 "linearCost": 5
             },
             "resource_metal": 600,
@@ -60,13 +61,13 @@
         "build_in_darkfarm": {
             "cost_factor_expBase": 2,
             "resource_fuel": {
-                "expBase": 1.5,
+                "expBase": 1.65,
                 "expCost": 2,
                 "linearCost": 8
             },
             "resource_metal": {
-                "expCost": 15,
-                "linearCost": 75
+                "expCost": 25,
+                "linearCost": 80
             },
             "resource_water": 30
         },
@@ -76,7 +77,7 @@
             "resource_rope": 100
         },
         "build_in_garden": {
-            "resource_concrete": 500,
+            "resource_concrete": 400,
             "resource_rope": 300,
             "resource_water": 800
         },
@@ -94,7 +95,7 @@
             "resource_metal": 27
         },
         "build_in_house2": {
-            "cost_factor_expBase": 1.5,
+            "cost_factor_expBase": 1.3,
             "resource_concrete": 100,
             "resource_metal": {
                 "expCost": 500,
@@ -127,23 +128,23 @@
             "resource_rope": 1200
         },
         "build_in_researchcenter": {
-            "resource_metal": 1800,
+            "resource_metal": 3000,
             "resource_rubber": 300,
             "resource_tools": 300
         },
         "build_in_robotFactory": {
-            "resource_fuel": 1000,
-            "resource_metal": 600,
+            "resource_fuel": 800,
+            "resource_metal": 800,
             "resource_rope": 100
         },
         "build_in_shrine": {
             "resource_food": 200,
-            "resource_metal": 80,
+            "resource_metal": 85,
             "resource_water": 100
         },
         "build_in_smithy": {
-            "cost_factor_expBase": 1.4,
-            "resource_concrete": 100,
+            "cost_factor_expBase": 1.3,
+            "resource_concrete": 50,
             "resource_metal": 500,
             "resource_rope": 100
         },
@@ -746,20 +747,21 @@
             "resource_rope": 50
         },
         "improve_in_fortification": {
-            "cost_factor_expBase": 1.25,
+            "cost_factor_expBase": 1.15,
             "resource_concrete": {
-                "linearCost": 75,
+				"constantCost": 30,
+                "linearCost": 30,
                 "requiredOrdinal": 5
             },
             "resource_rope": 100,
             "resource_tools": {
-                "linearCost": 50,
+                "linearCost": 30,
                 "requiredOrdinal": 5
             }
         },
         "improve_in_generator": {
-            "cost_factor_expBase": 1.5,
-            "resource_concrete": 50,
+            "cost_factor_expBase": 1.4,
+            "resource_concrete": 30,
             "resource_fuel": 50,
             "resource_metal": {
                 "expCost": 20
@@ -807,7 +809,7 @@
             },
             "resource_rubber": {
                 "linearCost": 10,
-                "requiredOrdinal": 2
+                "requiredOrdinal": 10
             }
         },
         "improve_in_radiotower": {
@@ -818,7 +820,7 @@
             "resource_herbs": 10
         },
         "improve_in_smithy": {
-            "cost_factor_expBase": 1.5,
+            "cost_factor_expBase": 1.4,
             "resource_metal": {
                 "constantCost": 100,
                 "expCost": 5
@@ -827,7 +829,7 @@
                 "constantCost": 50,
                 "expCost": 5
             },
-            "resource_tools": 20
+            "resource_tools": 10
         },
         "improve_in_square": {
             "cost_factor_expBase": 1.25,
@@ -3214,9 +3216,6 @@
         "unlock_building_spaceship3": {
             "blueprint": 15,
             "milestone": 7
-        },
-        "unlock_building_square": {
-            "milestone": 1
         },
         "unlock_building_stable": {
             "upgrades": {
