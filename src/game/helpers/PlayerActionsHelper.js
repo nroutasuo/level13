@@ -182,6 +182,7 @@ define([
 			// reasons that never block visibility
 			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_BUSY) return true;
 			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_LAUNCHED) return true;
+			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_IN_PROGRESS) return true;
 			
 			// options
 			if (visibleReasons && visibleReasons.indexOf(reqsCheck.baseReason) >= 0) return true;
