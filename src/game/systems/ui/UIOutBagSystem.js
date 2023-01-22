@@ -572,7 +572,7 @@ define([
 				return true;
 			if (reqsCheck.reason === PlayerActionConstants.DISABLED_REASON_LOCKED_RESOURCES) {
 				let reqs = GameGlobals.playerActionsHelper.getReqs(actionName);
-				return reqs.upgrades && reqs.upgrades.length > 0;
+				return reqs.upgrades && Object.keys(reqs.upgrades).length > 0;
 			}
 			return false;
 		},
