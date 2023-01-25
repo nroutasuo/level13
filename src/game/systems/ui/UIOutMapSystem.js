@@ -610,7 +610,7 @@ define([
 			var sectorControlComponent = sector.get(SectorControlComponent);
 			var enemiesComponent = sector.get(EnemiesComponent);
 			if (enemiesComponent.hasEnemies) {
-				return TextConstants.getEnemyNoun(enemiesComponent.possibleEnemies, true);
+				return TextConstants.getEnemyNoun(enemiesComponent.possibleEnemies, true, true);
 			} else {
 				return "-"
 			}

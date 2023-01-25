@@ -71,7 +71,7 @@ function (Ash, EnemyVO, PerkConstants) {
 				verbsDefeated: ["driven away"],
 			},
 			robot: {
-				nouns: ["aggressive bots"],
+				nouns: ["aggressive bot"],
 				groupNouns: ["mob", "gang", "group", "swarm", "cell"],
 				verbsActive: ["patrolled by", "controlled by", "guarded by", "occupied by"],
 				verbsDefeated: ["disabled", "cleared", "destroyed"],

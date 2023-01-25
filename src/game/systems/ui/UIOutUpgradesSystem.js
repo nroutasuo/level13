@@ -4,12 +4,13 @@ define([
 	'game/GlobalSignals',
 	'game/constants/CampConstants',
 	'game/constants/ImprovementConstants',
+	'game/constants/ItemConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/UIConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/TextConstants',
 	'game/nodes/tribe/TribeUpgradesNode',
-], function (Ash, GameGlobals, GlobalSignals, CampConstants, ImprovementConstants, PlayerActionConstants, UIConstants, UpgradeConstants, TextConstants, TribeUpgradesNode) {
+], function (Ash, GameGlobals, GlobalSignals, CampConstants, ImprovementConstants, ItemConstants, PlayerActionConstants, UIConstants, UpgradeConstants, TextConstants, TribeUpgradesNode) {
 	
 	var UpgradeStatusEnum = {
 		HIDDEN: 0,
@@ -278,56 +279,57 @@ define([
 		},
 
 		getEffectDescription: function (upgradeID, status) {
-			var effects = "";
+			let effects = "";
 
 			if (status == UpgradeStatusEnum.BLUEPRINT_USABLE || status == UpgradeStatusEnum.BLUEPRINT_IN_PROGRESS) {
 				effects = "";
 			} else {
-				var unlockedBuildings = GameGlobals.upgradeEffectsHelper.getUnlockedBuildings(upgradeID);
+				let unlockedBuildings = GameGlobals.upgradeEffectsHelper.getUnlockedBuildings(upgradeID);
 				if (unlockedBuildings.length > 0) {
-					effects += "buildings: ";
+					effects += "unlocked buildings: ";
 					for (let i in unlockedBuildings) {
 						effects += this.getImprovementDisplayName(unlockedBuildings[i]).toLowerCase();
 						effects += ", ";
 					}
 				}
 
-				var improvedBuildings = GameGlobals.upgradeEffectsHelper.getImprovedBuildings(upgradeID);
+				let improvedBuildings = GameGlobals.upgradeEffectsHelper.getImprovedBuildings(upgradeID);
 				if (improvedBuildings.length > 0) {
+					effects += "improved buildings: ";
 					for (let i in improvedBuildings) {
-						effects += "improved " + this.getImprovementDisplayName(improvedBuildings[i]).toLowerCase();
+						effects += this.getImprovementDisplayName(improvedBuildings[i]).toLowerCase();
 						effects += ", ";
 					}
 				}
 
-				var unlockedWorkers = GameGlobals.upgradeEffectsHelper.getUnlockedWorkers(upgradeID);
+				let unlockedWorkers = GameGlobals.upgradeEffectsHelper.getUnlockedWorkers(upgradeID);
 				if (unlockedWorkers.length > 0) {
-					effects += "workers: ";
-					for (let i in unlockedWorkers)
-						effects += unlockedWorkers[i];
-					effects += ", ";
-				}
-
-				var improvedWorkers = GameGlobals.upgradeEffectsHelper.getImprovedWorkers(upgradeID);
-				if (improvedWorkers.length > 0) {
-					for (let i in improvedWorkers) {
-						// TOOD make a global get worker display name function
-						var name = CampConstants.getWorkerDisplayName(improvedWorkers[i]);
-						effects += "improved " + name;
+					effects += "unlocked workers: ";
+					for (let i in unlockedWorkers) {
+						effects += CampConstants.getWorkerDisplayName(unlockedWorkers[i]);
 					}
 					effects += ", ";
 				}
 
-				var unlockedItems = GameGlobals.upgradeEffectsHelper.getUnlockedItems(upgradeID);
+				let improvedWorkers = GameGlobals.upgradeEffectsHelper.getImprovedWorkers(upgradeID);
+				if (improvedWorkers.length > 0) {
+					effects += "improved workers: ";
+					for (let i in improvedWorkers) {
+						effects +=  CampConstants.getWorkerDisplayName(improvedWorkers[i]);
+					}
+					effects += ", ";
+				}
+
+				let unlockedItems = GameGlobals.upgradeEffectsHelper.getUnlockedItems(upgradeID);
 				if (unlockedItems.length > 0) {
-					effects += "items: ";
+					effects += "unlocked items: ";
 					for (let i in unlockedItems) {
-						effects += unlockedItems[i].name.toLowerCase();
+						effects += ItemConstants.getItemDisplayName(unlockedItems[i]);
 						effects += ", ";
 					}
 				}
 
-				var unlockedOccurrences = GameGlobals.upgradeEffectsHelper.getUnlockedOccurrences(upgradeID);
+				let unlockedOccurrences = GameGlobals.upgradeEffectsHelper.getUnlockedOccurrences(upgradeID);
 				if (unlockedOccurrences.length > 0) {
 					effects += "events: ";
 					for (let i in unlockedOccurrences) {
@@ -336,7 +338,7 @@ define([
 					effects += ", ";
 				}
 
-				var improvedOccurrences = GameGlobals.upgradeEffectsHelper.getImprovedOccurrences(upgradeID);
+				let improvedOccurrences = GameGlobals.upgradeEffectsHelper.getImprovedOccurrences(upgradeID);
 				if (improvedOccurrences.length > 0) {
 					for (let i in improvedOccurrences) {
 						effects += "improved " + improvedOccurrences[i];
@@ -344,17 +346,20 @@ define([
 					effects += ", ";
 				}
 
-				var unlockedActions = GameGlobals.upgradeEffectsHelper.getUnlockedGeneralActions(upgradeID);
+				let unlockedActions = GameGlobals.upgradeEffectsHelper.getUnlockedGeneralActions(upgradeID);
 				if (unlockedActions.length > 0) {
+					effects += "new actions: "
 					for (let i in unlockedActions) {
 						let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(unlockedActions[i])
-						effects += "enable " + TextConstants.getActionName(baseActionID);
+						effects += TextConstants.getActionName(baseActionID);
 					}
 					effects += ", ";
 				}
 
 				if (effects.length > 0) effects = effects.slice(0, -2);
 			}
+			
+			effects = effects.toLowerCase();
 
 			return effects;
 		},

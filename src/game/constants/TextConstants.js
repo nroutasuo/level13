@@ -1494,7 +1494,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("book-description", { bookType: t_H }, "There is a [a] [a-style] chapter on [c-event].");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "A section on [c-event] catches your eye.");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "There are several references to [c-event].");
-		DescriptionMapper.add("book-description", { bookType: t_H }, "It is [a] [a-good] explanation [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "It is [a] very [a-good] explanation of [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "It is otherwise dull, but there is [a] [a-good] chapter on [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "A reference to the \"currently uninhabited levels\" of the City offers a perspective on the pre-Fall City.");
 		DescriptionMapper.add("book-description", { bookType: t_H, bookLevel: l_1 }, "It is an introductory text on [n-topic].");
