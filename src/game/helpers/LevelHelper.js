@@ -517,11 +517,15 @@ define([
 				projectExists = false;
 				for (let j = 0; j < result.length; j++) {
 					existingProject = result[j];
+					
 					// corresponding up and down passages
-					if (existingProject.sector === project.sector && (existingProject.level - 1 === project.level || existingProject.level + 1 === project.level)) {
-						projectExists = true;
-						break;
+					if (existingProject.improvement && existingProject.improvement.isPassage()) {
+						if (existingProject.sector === project.sector && (existingProject.level - 1 === project.level || existingProject.level + 1 === project.level)) {
+							projectExists = true;
+							break;
+						}
 					}
+					
 					// neighbouring movement blockers
 					if (project.direction !== undefined) {
 						var dist = PositionConstants.getDistanceTo(existingProject.position, project.position);
