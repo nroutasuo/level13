@@ -47,7 +47,7 @@ define([
 				var stageVO = stages[i];
 				this.generateLevelStage(seed, worldVO, levelVO, stageVO, 999);
 			}
-				
+			
 			// fill in annoying gaps (connect sectors that are close by direct distance but far by path length)
 			this.createGapFills(worldVO, levelVO);
 			
@@ -432,9 +432,11 @@ define([
 		},
 		
 		generateLevelStage: function (seed, worldVO, levelVO, stageVO, maxAttempts) {
-			var stage = stageVO.stage;
-			var numGoal = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO.seed, levelVO.campOrdinal, levelVO.level, stageVO.stage);
-			var numPadding = Math.floor(WorldCreatorConstants.MAX_SECTOR_COUNT_OVERFLOW / 4);
+			let stages = worldVO.getStages(levelVO.level);
+			let stage = stageVO.stage;
+			let numGoal = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO.seed, levelVO.campOrdinal, levelVO.level, stageVO.stage);
+			let numPadding = Math.floor(WorldCreatorConstants.MAX_SECTOR_COUNT_OVERFLOW / 4);
+			let isOuterStage = stage != stages[0].stage;
 			
 			// geneate random rectangles and paths
 			var attempts = 0;
@@ -442,13 +444,14 @@ define([
 			var numCurrent = levelVO.getNumSectorsByStage(stage);
 			while (numCurrent < numGoal && attempts < maxAttempts) {
 				attempts++;
-				var canConnectToDifferentStage = attempts > 5 && attempts % 5 == 0 && stage != WorldConstants.CAMP_STAGE_EARLY;
-				var options = this.getDefaultOptions({ stage: stage, canConnectToDifferentStage: canConnectToDifferentStage });
-				var numBefore = numCurrent;
-				var numRemaining = numGoal - numCurrent;
-				var makeRect = attempts % 2 == 0 && numRemaining > 12;
+				let canConnectToDifferentStage = attempts > 5 && attempts % 5 == 0 && stage != WorldConstants.CAMP_STAGE_EARLY;
+				let options = this.getDefaultOptions({ stage: stage, canConnectToDifferentStage: canConnectToDifferentStage, isOuterStage: isOuterStage });
+				let numBefore = numCurrent;
+				let numRemaining = numGoal - numCurrent;
+				let maxRectSize = numRemaining + numPadding;
+				let makeRect = attempts % 2 == 0 && numRemaining > 12;
 				if (makeRect) {
-					this.createRectangles(seed, attempts, levelVO, options, numRemaining + numPadding);
+					this.createRectangles(seed, attempts, levelVO, options, maxRectSize);
 				} else {
 					this.createPaths(seed, attempts, levelVO, options, numRemaining + numPadding);
 				}
@@ -505,23 +508,29 @@ define([
 			var s1 = seed * levelVO.levelOrdinal + 28381 + pathRandomSeed;
 			var s2 = seed + (l * 44) * pathRandomSeed + pathSeed;
 			
-			var startPosArray = this.getPathStartPositions(s1, s2, levelVO, options);
-			var pathStartI = Math.floor(WorldCreatorRandom.random(seed * 938 * (l + 60) / pathRandomSeed + 2342 * l) * startPosArray.length);
-			var pathStartPoint = startPosArray[pathStartI];
-			var pathStartPos = pathStartPoint.position.clone();
+			let startPosArray = this.getPathStartPositions(s1, s2, levelVO, options);
+			let pathStartI = Math.floor(WorldCreatorRandom.random(seed * 938 * (l + 60) / pathRandomSeed + 2342 * l) * startPosArray.length);
+			let pathStartPoint = startPosArray[pathStartI];
+			let pathStartPos = pathStartPoint.position.clone();
 
-			var startDirection = this.getPathDirection(s1, s2, pathStartPoint);
-									
-			var maxRectangleSize = Math.min(Math.floor(WorldCreatorConstants.SECTOR_PATH_LENGTH_MAX * 0.75), Math.ceil(levelVO.numSectors)/11, maxlen/4);
-			var w = WorldCreatorRandom.randomInt(seed + pathRandomSeed / pathSeed + pathSeed * l, 4, maxRectangleSize, maxlen/4);
-			var h = WorldCreatorRandom.randomInt(seed + pathRandomSeed * l + pathSeed - pathSeed * l, 4, maxRectangleSize);
+			let startDirection = this.getPathDirection(s1, s2, pathStartPoint);
 
-			var stage = levelVO.getSector(pathStartPos.sectorX, pathStartPos.sectorY).stage;
+			let stage = levelVO.getSector(pathStartPos.sectorX, pathStartPos.sectorY).stage;
 			if (!options.stage) options.stage = pathStartPos.stage;
-			var connectionPointsType = WorldCreatorConstants.CONNECTION_POINTS_RECT_ALL;
+									
+			let maxRectangleSizeFromSideLen = Math.floor(WorldCreatorConstants.SECTOR_PATH_LENGTH_MAX * 0.75);
+			let maxRectangleSizeFromLevelPropotions = Math.ceil(levelVO.numSectors) / 11;
+			let maxRectangleSizeFromMaxLen = maxlen/4;
+			let maxRectangleSize = Math.min(maxRectangleSizeFromSideLen, maxRectangleSizeFromLevelPropotions, maxRectangleSizeFromMaxLen);
+			
+			let w = WorldCreatorRandom.randomInt(seed + pathRandomSeed / pathSeed + pathSeed * l, 4, maxRectangleSize, maxlen/4);
+			let h = WorldCreatorRandom.randomInt(seed + pathRandomSeed * l + pathSeed - pathSeed * l, 4, maxRectangleSize);
+			
+			let connectionPointsType = WorldCreatorConstants.CONNECTION_POINTS_RECT_ALL;
 			if (w < 6 || h < 6) {
 				connectionPointsType = WorldCreatorConstants.CONNECTION_POINTS_RECT_CORNERS;
 			}
+			
 			this.createRectangle(levelVO, 0, pathStartPos, w, h, startDirection, options, false, connectionPointsType);
 		},
 
