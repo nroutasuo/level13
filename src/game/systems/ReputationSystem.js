@@ -97,10 +97,11 @@ define([
 			let targetReputation = GameGlobals.campHelper.getTargetReputation(baseValue, sectorImprovements, resources, campNode.camp.population, levelComponent.populationFactor, danger, isSunlit);
 			
 			let sources = targetReputation.sources;
+			let percentages = targetReputation.percentages;
 			let penalties = targetReputation.penalties;
 			
 			for (let key in sources) {
-				campNode.reputation.addTargetValueSource(key, sources[key]);
+				campNode.reputation.addTargetValueSource(key, sources[key], percentages[key] != 0, percentages[key]);
 			}
 			
 			for (let key in penalties) {

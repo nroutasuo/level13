@@ -269,15 +269,11 @@ define([
 
 				this.elements.valReputation.text(UIConstants.roundValue(reputationComponent.value, true, true) + " / " + UIConstants.roundValue(reputationComponent.targetValue, true, true));
 				this.updateChangeIndicator(this.elements.changeIndicatorReputation, reputationComponent.accumulation, true);
-				var reputationCalloutContent = "";
+				let reputationCalloutContent = "";
 				for (let i in reputationComponent.targetValueSources) {
-					var source = reputationComponent.targetValueSources[i];
+					let source = reputationComponent.targetValueSources[i];
 					if (source.amount !== 0) {
-						var amount = Math.round(source.amount * 10000)/10000;
-						if (amount === 0 && source.amount > 0) {
-							amount = "< 0.0001";
-						}
-						reputationCalloutContent += source.source + ": " + amount + "<br/>";
+						reputationCalloutContent += this.getTargetValueSourceText(source);
 					}
 				}
 				this.elements.valReputation.toggleClass("warning", reputationComponent.value < reqReputationCurrent);
@@ -301,6 +297,18 @@ define([
 			let showScavangeAbility = GameGlobals.gameState.unlockedFeatures.scavenge && !isInCamp;
 			this.updateScavengeAbility(showScavangeAbility, isInCamp, maxVision, shownVision);
 			this.updateScavengeBonus(showScavangeAbility);
+		},
+		
+		getTargetValueSourceText: function (source) {
+			let amount = Math.round(source.amount * 10000)/10000;
+			if (amount === 0 && source.amount > 0) {
+				amount = "< 0.0001";
+			}
+			let displayValue = amount;
+			if (source.isPercentage && source.percentageValue) {
+				displayValue = (source.amount > 0 ? "+" : "-") + Math.round(source.percentageValue) + "%";
+			}
+			return source.source + ": " + displayValue + "<br/>";
 		},
 		
 		updateScavengeAbility: function (showScavangeAbility, isInCamp, maxVision, shownVision, maxStamina) {
