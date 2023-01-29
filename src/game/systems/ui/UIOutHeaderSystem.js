@@ -124,6 +124,7 @@ define([
 
 			this.generateStatsCallouts();
 			this.updateGameVersion();
+			this.updateVisionStatus();
 			this.refreshPerks();
 		},
 
@@ -870,10 +871,14 @@ define([
 			this.elements.body.toggleClass("dark", !sunlit);
 			
 			// update elements affected by vision
-			var visionFactor = this.playerStatsNodes.head.vision.value;
+			let visionValue = 0;
+			if (this.playerStatsNodes.head) {
+				visionValue = this.playerStatsNodes.head.vision.value;
+			}
+			let visionFactor = visionValue;
 			visionFactor = Math.max(0, visionFactor);
 			visionFactor = Math.min(100, visionFactor);
-			var visionStep = Math.round(visionFactor / 10);
+			let visionStep = Math.round(visionFactor / 10);
 			UIState.refreshState(this, "vision-step", visionStep, function () {
 				for (let i = 0; i <= 10; i++) {
 					 this.elements.body.toggleClass("vision-step-" + i, i == visionStep);
