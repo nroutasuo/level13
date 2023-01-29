@@ -19,15 +19,6 @@ img, p, span, h1, h2, h3, div, span, canvas {
 	.opacity-transition();
 }
 
-#vision-overlay {
-	position: fixed;
-	width: 100%;
-	height: 100%;
-	top: 0;
-	pointer-events: none;
-	z-index: 10;
-}
-
 .vision_steps(@counter) when (@counter >= 0) {
 	.vision_steps(@counter - 1);
 	.vision-step-@{counter} {
