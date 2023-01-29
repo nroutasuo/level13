@@ -101,6 +101,7 @@ define(['ash',
 			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_VISION, "Set vision.", ["value"], function (params) {
 				this.playerStatsNodes.head.vision.value = Math.min(200, Math.max(0, parseInt(params[0])));
+				GlobalSignals.visionChangedSignal.dispatch();
 			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_EVIDENCE, "Set evidence.", ["value"], function (params) {
 				this.setEvidence(parseInt(params[0]));

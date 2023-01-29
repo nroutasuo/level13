@@ -22,12 +22,28 @@ img, p, span, h1, h2, h3, div, span, canvas {
 .vision_steps(@counter) when (@counter >= 0) {
 	.vision_steps(@counter - 1);
 	.vision-step-@{counter} {
+		@is-low-vision: @counter < 3;
+		@is-high-vision: @counter > 9;
+		
 		#grid-main {
-			opacity: min(1, 0.5 + @counter * 0.1);
+			
+			// all game elements
+			opacity: min(1, 0.5 + @counter * 0.09);
+			
+			// images
+			img {
+				filter: grayscale(max(0, round(1 - (@counter - 3) * 0.25, 1)));
+			}
 			
 			img, .canvas-container canvas, .vision-image, .vis-container {
 				opacity: min(1, 0.15 + @counter * 0.17);
 			}
+			
+			.vision-container {
+				opacity: min(1, 0.15 + @counter * 0.15);
+			}
+			
+			// test
 			p, h1, h2, h3, .vision-text, .stats-indicator, .list-amount, .item-name, #mainmap-sector-details-content td, #log span {
 				opacity: min(1, 0.5 + @counter * 0.10);
 			}
