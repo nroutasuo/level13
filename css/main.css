@@ -345,6 +345,9 @@ body.dark .unselectable {
   user-select: none;
   /* Standard */
 }
+body.dark .noninteractive {
+  pointer-events: none;
+}
 body.dark .centered {
   margin-left: auto !important;
   margin-right: auto !important;
@@ -2561,6 +2564,9 @@ body.sunlit .unselectable {
   /* IE10+/Edge */
   user-select: none;
   /* Standard */
+}
+body.sunlit .noninteractive {
+  pointer-events: none;
 }
 body.sunlit .centered {
   margin-left: auto !important;
