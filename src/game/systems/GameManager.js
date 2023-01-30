@@ -107,18 +107,19 @@ define([
 		},
 
 		// Called on page load
-		setupGame: function (worldVO) {
+		setupGame: function () {
 			log.i("START " + GameConstants.STARTTimeNow() + "\t loading and setting up game");
 			GameConstants.gameSpeedCamp = 1;
 			GameConstants.gameSpeedExploration = 1;
 			this.createStaticEntities();
 			
-			var save;
-			var worldVO;
+			let save;
+			let worldVO;
 			this.loadGameState()
 				.then(s => {
 					save = s;
-					log.i("START " + GameConstants.STARTTimeNow() + "\t game state loaded");
+					log.i("START " + GameConstants.STARTTimeNow() + "\t game state loaded " + (save == null ? "(empty)" : "") + "");
+					GlobalSignals.gameStateLoadedSignal.dispatch(s != null);
 					return s;
 				})
 				.then(s => this.loadWorld(save))
@@ -160,10 +161,13 @@ define([
 
 			GameGlobals.uiFunctions.startGame();
 
-			var sys = this;
+			let sys = this;
 			setTimeout(function () {
 				GlobalSignals.gameStartedSignal.dispatch();
-				GameGlobals.uiFunctions.showGame();
+				setTimeout(function () {
+					GameGlobals.gameState.uiStatus.isInitialized = true;
+					GameGlobals.uiFunctions.showGame();
+				}, 1);
 			}, 250);
 		},
 

@@ -66,12 +66,13 @@ define(['ash',], function (Ash) {
 		campEventEndedSignal: new Ash.Signals.Signal(),
 
 		// game events
+		gameStateLoadedSignal: new Ash.Signals.Signal(),
 		gameStateReadySignal: new Ash.Signals.Signal(),
 		gameStartedSignal: new Ash.Signals.Signal(),
 		saveGameSignal: new Ash.Signals.Signal(),
 		restartGameSignal: new Ash.Signals.Signal(),
 		gameResetSignal: new Ash.Signals.Signal(),
-		gameEndedSignal: new Ash.Signals.Signal(), 
+		gameEndedSignal: new Ash.Signals.Signal(),
 
 		// system events
 		slowUpdateSignal: new Ash.Signals.Signal(),

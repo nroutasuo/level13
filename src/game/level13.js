@@ -56,6 +56,7 @@ define([
 	'game/systems/BagSystem',
 	'game/systems/UnlockedFeaturesSystem',
 	'game/systems/occurrences/CampEventsSystem',
+	'game/systems/occurrences/PlayerEventsSystem',
 	'game/UIFunctions',
 	'utils/StringUtils',
 	'brejep/tickprovider',
@@ -117,6 +118,7 @@ define([
 	BagSystem,
 	UnlockedFeaturesSystem,
 	CampEventsSystem,
+	PlayerEventsSystem,
 	UIFunctions,
 	StringUtils,
 	TickProvider
@@ -192,6 +194,7 @@ define([
 			this.engine.addSystem(new UnlockedFeaturesSystem(), SystemPriorities.update);
 			this.engine.addSystem(new GlobalResourcesSystem(), SystemPriorities.update);
 			this.engine.addSystem(new CampEventsSystem(), SystemPriorities.update);
+			this.engine.addSystem(new PlayerEventsSystem(), SystemPriorities.update);
 			this.engine.addSystem(new ExcursionSystem(), SystemPriorities.update);
 			this.engine.addSystem(new EndingSystem(), SystemPriorities.update);
 
