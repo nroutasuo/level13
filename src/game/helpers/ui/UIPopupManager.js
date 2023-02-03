@@ -83,7 +83,12 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
 			$("#common-popup").wrap("<div class='popup-overlay " + overlayClass + "' style='display:none'></div>");
 			GameGlobals.uiFunctions.toggle(".popup-overlay", true);
 			popUpManager.repositionPopups();
-			GameGlobals.uiFunctions.slideToggleIf($("#common-popup"), null, true, 150, 150, popUpManager.repositionPopups);
+			
+			let slideTime = GameGlobals.gameState.uiStatus.isInitialized ? 150 : 0;
+			GameGlobals.uiFunctions.slideToggleIf($("#common-popup"), null, true, slideTime, slideTime, () => {
+				log.i("showed popup", "ui");
+				popUpManager.repositionPopups();
+			});
 			GlobalSignals.popupOpenedSignal.dispatch("common-popup");
 			
 			gtag('event', 'screen_view', { 'screen_name': "popup-common" });

@@ -109,6 +109,7 @@ define([
 		// Called on page load
 		setupGame: function () {
 			log.i("START " + GameConstants.STARTTimeNow() + "\t loading and setting up game");
+			GameGlobals.gameState.uiStatus.isInitialized = false;
 			GameConstants.gameSpeedCamp = 1;
 			GameConstants.gameSpeedExploration = 1;
 			this.createStaticEntities();
