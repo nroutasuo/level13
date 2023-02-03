@@ -28,46 +28,74 @@ define([
 		world: null,
 
 		prepareWorld: function (seed, itemsHelper) {
-			var enemyCreator = new EnemyCreator();
-			enemyCreator.createEnemies();
+			return new Promise(function(resolve, reject) {
 			
-			WorldCreatorLogger.start(seed);
+				let tasks = [
+					() => {
+						WorldCreatorLogger.i("Step 1/4: World template", this.context);
+						WorldGenerator.prepareWorld(seed, this.world);
+						WorldCreatorDebug.printWorldTemplate(this.world);
+					},
+					() => {
+						WorldCreatorLogger.i("Step 2/4: Level templates", this.context);
+						LevelGenerator.prepareLevels(seed, this.world);
+						WorldCreatorDebug.printLevelTemplates(this.world);
+					},
+					() => {
+						WorldCreatorLogger.i("Step 3/4: Level structure", this.context);
+						StructureGenerator.prepareStructure(seed, this.world);
+						WorldCreatorDebug.printLevelStructure(this.world);
+					},
+					() => {
+						WorldCreatorLogger.i("Step 4/4: Sector templates", this.context);
+						SectorGenerator.prepareSectors(seed, this.world, itemsHelper, enemyCreator);
+						//WorldCreatorDebug.printSectorTemplates(this.world);
+					},
+					() => {
+						WorldCreatorLogger.i("Done");
+					}
+				];
+				
+				let enemyCreator = new EnemyCreator();
+				enemyCreator.createEnemies();
+				
+				WorldCreatorLogger.start(seed);
 
-			try {
-				var topLevel = WorldCreatorHelper.getHighestLevel(seed);
-				var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
+				let topLevel = WorldCreatorHelper.getHighestLevel(seed);
+				let bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
 				this.world = new WorldVO(seed, topLevel, bottomLevel);
+					
+				this.executeTasksInSteps(tasks, () => {
+					WorldCreatorLogger.end();
+					resolve(this.world);
+				}, (ex) => {
+					WorldCreatorLogger.end();
+					reject(ex);
+				});
 				
-				try {
-					WorldCreatorLogger.i("Step 1/4: World template", this.context);
-					WorldGenerator.prepareWorld(seed, this.world);
-				} finally {
-					WorldCreatorDebug.printWorldTemplate(this.world);
-				}
-				
-				try {
-					WorldCreatorLogger.i("Step 2/4: Level templates", this.context);
-					LevelGenerator.prepareLevels(seed, this.world);
-				} finally {
-					WorldCreatorDebug.printLevelTemplates(this.world);
-				}
-				
-				try {
-					WorldCreatorLogger.i("Step 3/4: Level structure", this.context);
-					StructureGenerator.prepareStructure(seed, this.world);
-				} finally {
-					WorldCreatorDebug.printLevelStructure(this.world);
-				}
-				
-				WorldCreatorLogger.i("Step 4/4: Sector templates", this.context);
-				SectorGenerator.prepareSectors(seed, this.world, itemsHelper, enemyCreator);
-				//WorldCreatorDebug.printSectorTemplates(this.world);
-				WorldCreatorLogger.i("Done");
-			} finally {
-				WorldCreatorLogger.end();
+			}.bind(this));
+		},
+		
+		// TODO put this (executeTasksInSteps + executeTaskInSteps) to some utils
+		
+		executeTasksInSteps: function (tasks, cb, errorcb) {
+			this.executeTaskInSteps(tasks, 0, cb, errorcb);
+		},
+		
+		executeTaskInSteps: function (tasks, i, cb, errorcb) {
+			if (tasks.length == 0 || i >= tasks.length) {
+				cb();
+				return;
 			}
-				
-			return this.world;
+			
+			setTimeout(() => {
+				try {
+					tasks[i]();
+					this.executeTaskInSteps(tasks, i + 1, cb, errorcb);
+				} catch (ex) {
+					errorcb(ex);
+				}
+			}, 1);
 		},
 
 		discardWorld: function () {

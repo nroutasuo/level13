@@ -373,46 +373,57 @@ define([
 			})
 		},
 		
-		getWorldVO: function (seed, hasSave) {
+		getWorldVO: function (seed, hasSave, tryNumber) {
 			return new Promise(function(resolve, reject) {
-				var maxTries = GameConstants.isDebugVersion ? 1 : 25;
-				var s = seed;
-				for (let i = 0; i < maxTries; i++) {
-					log.i("START " + GameConstants.STARTTimeNow() + "\t generating world, try " + (i + 1) + "/" + maxTries);
-					var worldVO;
-					var validationResult;
-					try {
-						worldVO = WorldCreator.prepareWorld(s, GameGlobals.itemsHelper);
-						log.i("START " + GameConstants.STARTTimeNow() + "\t validating world");
-						validationResult = WorldValidator.validateWorld(worldVO);
-						if (validationResult.isValid) {
-							resolve(worldVO);
+				let maxTries = GameConstants.isDebugVersion ? 1 : 10;
+				tryNumber = tryNumber || 1;
+				
+				setTimeout(() => {
+					this.tryGenerateWorldVO(seed, tryNumber, maxTries).then(result => {
+						if (!result.validationResult.isValid) {
+							this.logFailedWorldSeed(seed, result.validationResult.reason);
+						}
+						
+						if (result.validationResult.isValid) {
+							resolve(result.worldVO);
 							return;
-						} else {
-							this.logFailedWorldSeed(seed, validationResult.reason);
 						}
-					} catch (ex) {
-						validationResult = { isValid: false, reason: "exception: " + StringUtils.getExceptionDescription(ex).title };
-						this.logFailedWorldSeed(seed, validationResult.reason);
-						if (GameConstants.isDebugVersion) {
-							throw ex;
+						
+						if (hasSave && result.worldVO != null) {
+							log.i("using broken world because old save exists");
+							resolve(result.worldVO);
+							return;
 						}
+						
+						if (tryNumber >= maxTries) {
+							log.e("ran out of tries to generate world");
+							reject(new Error("ran out of tries to generate world"));
+							return;
+						}
+						
+						log.i("trying another seed");
+						resolve(this.getWorldVO(seed, hasSave, tryNumber + 1));
+					});
+				}, 1);
+			}.bind(this));
+		},
+		
+		tryGenerateWorldVO: function (seed, tryNumber, maxTries) {
+			return new Promise(function(resolve, reject) {
+				log.i("START " + GameConstants.STARTTimeNow() + "\t generating world, try " + tryNumber + "/" + maxTries);
+				let s = seed + (tryNumber - 1) * 111;
+				
+				WorldCreator.prepareWorld(s, GameGlobals.itemsHelper).then(worldVO => {
+					log.i("START " + GameConstants.STARTTimeNow() + "\t validating world");
+					let validationResult = WorldValidator.validateWorld(worldVO);
+					resolve({ worldVO: worldVO, validationResult: validationResult });
+				}).catch(ex => {
+					if (GameConstants.isDebugVersion) {
+						throw ex;
 					}
-					
-					// failed attempt (validation or exception)
-					if (hasSave && worldVO != null) {
-						log.i("using broken world because old save exists");
-						resolve(worldVO);
-						return;
-					} else {
-						if (i + 1 < maxTries) {
-							log.i("trying another seed");
-						}
-						s = s + 111;
-					}
-				}
-				log.e("ran out of tries to generate world");
-				reject(new Error("ran out of tries to generate world"));
+					let exceptionDescription = "exception: " + StringUtils.getExceptionDescription(ex).title;
+					resolve({ worldVO: null, validationResult: exceptionDescription });
+				});
 			}.bind(this));
 		},
 
