@@ -87,6 +87,19 @@ define([
 		playerLocationNodes: null,
 		tribeUpgradesNodes: null,
 
+		fixedRewards: {
+			"scavenge": [
+				{ resources: { metal: 1 } },
+				{ resources: { metal: 1 } },
+				{ resources: { food: 1, metal: 1 } },
+				{ },
+				{ resources: { metal: 1 }, items: { "bag_0": 1 } },
+				{ resources: { food: 1, metal: 1 } },
+				{ resources: { metal: 1 } },
+				{ resources: { metal: 1 } },
+			]
+		},
+
 		constructor: function (engine) {
 			this.engine = engine;
 
@@ -151,31 +164,43 @@ define([
 		},
 
 		getScavengeRewards: function () {
-			var rewards = new ResultVO("scavenge");
-
-			var sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-			var sectorResources = sectorFeatures.resourcesScavengable;
-			var sectorIngredients = sectorFeatures.itemsScavengeable || [];
-			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-			var efficiency = this.getCurrentScavengeEfficiency();
+			let rewards = new ResultVO("scavenge");
 			
-			var itemOptions = { rarityKey: "scavengeRarity" };
-
-			rewards.gainedResources = this.getRewardResources(1, 1, efficiency, sectorResources);
-			rewards.gainedCurrency = this.getRewardCurrency(efficiency);
+			let sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			let sectorResources = sectorFeatures.resourcesScavengable;
+			let sectorIngredients = sectorFeatures.itemsScavengeable || [];
+			let itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+			let efficiency = this.getCurrentScavengeEfficiency();
+			
+			let itemOptions = { rarityKey: "scavengeRarity" };
+			
+			let fixedRewards = this.getFixedRewards("scavenge");
+			let isUsingFixedRewards = false;
+			
+			if (fixedRewards != null) {
+				isUsingFixedRewards = true;
+				this.addFixedRewards(rewards, fixedRewards, sectorResources);
+			}
+			
+			if (!isUsingFixedRewards) {
+				rewards.gainedResources = this.getRewardResources(1, 1, efficiency, sectorResources);
+				rewards.gainedCurrency = this.getRewardCurrency(efficiency);
+			}
 			
 			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound);
 			
-			if (rewards.gainedItems.length == 0) {
-				rewards.gainedItems = this.getRewardItems(0.02, 0.5, sectorIngredients, itemOptions);
-			}
+			if (!isUsingFixedRewards) {
+				if (rewards.gainedItems.length == 0) {
+					rewards.gainedItems = this.getRewardItems(0.02, 0.5, sectorIngredients, itemOptions);
+				}
 			
-			if (rewards.foundStashVO == null && rewards.gainedCurrency == 0) {
-				this.addFollowerBonuses(rewards, sectorResources, sectorIngredients, itemOptions);
+				if (rewards.foundStashVO == null && rewards.gainedCurrency == 0) {
+					this.addFollowerBonuses(rewards, sectorResources, sectorIngredients, itemOptions);
+				}
+	
+				rewards.gainedFollowers = this.getFallbackFollowers(0.1);
 			}
-			
-			rewards.gainedFollowers = this.getFallbackFollowers(0.1);
 
 			return rewards;
 		},
@@ -843,28 +868,19 @@ define([
 			if (Math.random() > probabilityFactor) return results;
 			if (!availableResources || !availableResources.getTotal || availableResources.getTotal() <= 0) return results;
 
-			var minRandomAmoutFactor = 1/3*2;
-			var maxRandomAmountFactor  = 1/3*4;
-
 			// select resources
-			for (var key in resourceNames) {
-				var name = resourceNames[key];
-				var availableAmount = availableResources.getResource(name);
-				if (availableAmount <= 0)
-					continue;
+			for (let key in resourceNames) {
+				let name = resourceNames[key];
+				let availableAmount = availableResources.getResource(name);
+				if (availableAmount <= 0) continue;
 					
-				var baseProbability = this.getBaseResourceFindProbability(availableAmount);
-				var finalProbability = MathUtils.clamp(baseProbability * efficiency, 0, 1);
-				if (Math.random() > finalProbability)
-					continue;
+				let baseProbability = this.getBaseResourceFindProbability(availableAmount);
+				let finalProbability = MathUtils.clamp(baseProbability * efficiency, 0, 1);
+				if (Math.random() > finalProbability) continue;
 				
-				var resMin = 1;
-				var resMax = 10;
-				var baseAmount = this.getBaseResourceFindAmount(name, availableAmount);
-				var randomAmountFactor  = MathUtils.map(Math.random(), 0, 1, minRandomAmoutFactor, maxRandomAmountFactor);
-				var resultAmount = baseAmount * efficiency * randomAmountFactor;
-				resultAmount = Math.round(resultAmount);
-				resultAmount = MathUtils.clamp(resultAmount, resMin, resMax);
+				let baseAmount = this.getBaseResourceFindAmount(name, availableAmount);
+				let resultAmount = this.getFinalResourceFindAmount(name, baseAmount, efficiency, Math.random());
+				
 				results.setResource(name, resultAmount);
 			}
 			
@@ -1158,6 +1174,65 @@ define([
 			}
 			
 			return null;
+		},
+
+		getFixedRewards: function (action) {
+			if (action == "scavenge") {
+				let numTimesScavenged = GameGlobals.gameState.stats.numTimesScavenged || 0;
+				let fixedRewardsDef = this.fixedRewards[action][numTimesScavenged];
+				return fixedRewardsDef || null;
+			}
+			return  null;
+		},
+		
+		addFixedRewards: function (rewardsVO, fixedRewards, availableResources) {
+			let efficiency = this.getCurrentScavengeEfficiency();
+			
+			log.i("applying fixed rewards");
+			console.log(fixedRewards);
+			
+			this.addFixedRewardsResources(rewardsVO, fixedRewards, efficiency, availableResources);
+			this.addFixedRewardsItems(rewardsVO, fixedRewards);
+		},
+		
+		addFixedRewardsResources: function (rewardsVO, fixedRewards, efficiency, availableResources) {
+			let results = new ResourcesVO();
+			for (let key in fixedRewards.resources) {
+				let name = resourceNames[key];
+				let availableAmount = availableResources.getResource(name);
+				if (availableAmount <= 0) continue;
+				
+				let randomVal = fixedRewards.resources[key];
+				let baseAmount = this.getBaseResourceFindAmount(name, availableAmount);
+				let resultAmount = this.getFinalResourceFindAmount(name, baseAmount, efficiency, randomVal);
+				
+				results.setResource(name, resultAmount);
+			}
+			
+			rewardsVO.gainedResources = results;
+		},
+		
+		addFixedRewardsItems: function (rewardsVO, fixedRewards) {
+			let efficiency = this.getCurrentScavengeEfficiency();
+			
+			var playerPos = this.playerLocationNodes.head.position;
+			var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(playerPos.level);
+			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
+			var step = GameGlobals.levelHelper.getCampStep(playerPos);
+			
+			let result = [];
+			
+			for (let key in fixedRewards.items) {
+				let num = fixedRewards.items[key] || 1;
+				let itemVO = ItemConstants.getItemByID(key);
+				if (itemVO) {
+					for (let i = 0; i < num; i++) {
+						result.push(itemVO.clone());
+					}
+				}
+			}
+			
+			rewardsVO.gainedItems = result;
 		},
 
 		addStashes: function (rewardsVO, stashes, stashesFound) {
@@ -1595,6 +1670,19 @@ define([
 			}
 			log.w("unknown resource prevalence: " + prevalence);
 			return 0;
+		},
+		
+		getFinalResourceFindAmount: function (name, baseAmount, efficiency, random) {
+			let resMin = 1;
+			let resMax = 10;
+			let minRandomAmoutFactor = 1/3*2;
+			let maxRandomAmountFactor  = 1/3*4;
+			
+			let randomAmountFactor  = MathUtils.map(Math.random(), 0, 1, minRandomAmoutFactor, maxRandomAmountFactor);
+			let resultAmount = baseAmount * efficiency * randomAmountFactor;
+			resultAmount = Math.round(resultAmount);
+			resultAmount = MathUtils.clamp(resultAmount, resMin, resMax);
+			return resultAmount;
 		},
 
 		getAvailableResourcesForEnemy: function (enemyVO) {

@@ -73,6 +73,12 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.settings = {
 				
 			};
+			
+			this.stats = {
+				numTimesScavenged: 0,
+				numTimesScouted: 0,
+				numTimesDespaired: 0,
+			};
 
 			this.uiBagStatus = {
 				itemsOwnedSeen: [],

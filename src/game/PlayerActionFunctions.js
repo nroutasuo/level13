@@ -538,6 +538,7 @@ define(['ash',
 			var logMsgDefeat = logMsg + "Got into a fight and was defeated.";
 			let sys = this;
 			var successCallback = function () {
+				GameGlobals.gameState.stats.numTimesScavenged++;
 				let scavengedPercentBefore = sectorStatus.getScavengedPercent();
 				sectorStatus.scavenged = true;
 				sectorStatus.weightedNumScavenges += Math.min(1, efficiency);
@@ -660,6 +661,7 @@ define(['ash',
 
 			var playerActionFunctions = this;
 			var successCallback = function () {
+				GameGlobals.gameState.stats.numTimesScouted++;
 				sectorStatus.scouted = true;
 				sectorStatus.scoutedTimestamp = new Date().getTime() / 1000;
 				GlobalSignals.sectorScoutedSignal.dispatch();
@@ -1201,6 +1203,7 @@ define(['ash',
 		},
 
 		despair: function () {
+			GameGlobals.gameState.stats.numTimesDespaired++;
 			this.engine.getSystem(FaintingSystem).despair();
 			this.completeAction("despair");
 		},
