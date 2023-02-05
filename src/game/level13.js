@@ -137,7 +137,6 @@ define([
 
 			GameGlobalsInitializer.init(this.engine);
 			this.addSystems();
-			this.initializePlugins(plugins);
 
 			GameGlobals.uiFunctions.init();
 			GameGlobals.uiFunctions.hideGame();
@@ -147,6 +146,7 @@ define([
 			GlobalSignals.exceptionCallback = function (ex) { game.handleException(ex) };
 			GlobalSignals.gameStateReadySignal.addOnce(function () {
 				game.start();
+				game.initializePlugins(plugins);
 			});
 			
 			GlobalSignals.changelogLoadedSignal.addOnce(function () {
