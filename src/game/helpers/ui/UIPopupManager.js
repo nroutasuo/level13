@@ -16,18 +16,22 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
 		
 		showPopup: function (title, msg, okButtonLabel, cancelButtonLabel, resultVO, okCallback, cancelCallback, isMeta, isDismissable) {
 			if (GameGlobals.gameState.uiStatus.isHidden && !isMeta) {
+				log.i("queue popup (" + title + ")", "ui");
 				this.hiddenQueue.push({title: title, msg: msg, okButtonLabel: okButtonLabel, cancelButtonLabel: cancelButtonLabel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback, isDismissable: isDismissable });
 				return;
 			}
 			
 			if (this.hasOpenPopup()) {
+				log.i("queue popup (" + title + ")", "ui");
 				this.popupQueue.push({title: title, msg: msg, okButtonLabel: okButtonLabel, cancelButtonLabel: cancelButtonLabel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback, isMeta: isMeta, isDismissable: isDismissable });
 				return;
 			}
 			
+			log.i("show popup (" + title + ")", "ui");
+			
 			// use the same popup container for all popups
-			var popUpManager = this;
-			var popup = $("#common-popup");
+			let popUpManager = this;
+			let popup = $("#common-popup");
 			if ($(popup).parent().hasClass("popup-overlay")) $(popup).unwrap();
 			
 			// text

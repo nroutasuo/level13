@@ -604,6 +604,7 @@ define(['ash',
 				this.hideGameCounter = this.hideGameCounter || 1;
 				this.hideGameCounter--;
 				if (this.hideGameCounter > 0) return;
+				log.i("[ui] show game ");
 				this.setGameOverlay(false, false);
 				this.setGameElementsVisibility(true);
 				this.setUIStatus(false, false);
@@ -613,6 +614,7 @@ define(['ash',
 			hideGame: function (showLoading, showThinking) {
 				this.hideGameCounter = this.hideGameCounter || 0;
 				this.hideGameCounter++;
+				log.i("[ui] hide game (showLoading: " + showLoading + ", showThinking: " + showThinking + ")");
 				showThinking = showThinking && !showLoading;
 				this.setGameOverlay(showLoading, showThinking);
 				this.setGameElementsVisibility(showThinking);
@@ -843,14 +845,14 @@ define(['ash',
 				if (show && (visible == false || visible == null) && !toggling) {
 					if (replacement) sys.toggle(replacement, false);
 					$(element).attr("data-toggling", "true");
-					$(element).slideToggle(durationIn, function () {
+					$(element).stop().slideToggle(durationIn, function () {
 						sys.toggle(element, true);
 						$(element).attr("data-toggling", "false");
 						if (cb) cb();
 					});
 				} else if (!show && (visible == true || visible == null) && !toggling) {
 					$(element).attr("data-toggling", "true");
-					$(element).slideToggle(durationOut, function () {
+					$(element).stop().slideToggle(durationOut, function () {
 						if (replacement) sys.toggle(replacement, true);
 						sys.toggle(element, false);
 						$(element).attr("data-toggling", "false");
