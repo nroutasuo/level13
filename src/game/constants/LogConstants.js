@@ -22,8 +22,6 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 		MSG_ID_WAIT: "MAS_ID_WAIT",
 
 		// in actions
-		MSG_ID_ENTER_CAMP: "ENTER_CAMP",
-		MSG_ID_LEAVE_CAMP: "LEAVE_CAMP",
 		MSG_ID_USE_CAMPFIRE_SUCC: "USE_CAMPFIRE_SUCC",
 		MSG_ID_USE_CAMPFIRE_FAIL: "USE_CAMPFIRE_FAIL",
 		MSG_ID_USE_MARKET: "USE_MARKET",

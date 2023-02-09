@@ -465,9 +465,10 @@ define(['ash',
 			itemsComponent.uniqueItemsCarried = null;
 		},
 
-		enterCamp: function (logMessage) {
-			var playerPos = this.playerPositionNodes.head.position;
-			var campNode = this.nearestCampNodes.head;
+		enterCamp: function (isPlayerAction) {
+			let playerPos = this.playerPositionNodes.head.position;
+			let campNode = this.nearestCampNodes.head;
+			
 			if (campNode && campNode.position.level === playerPos.level && campNode.position.sectorId() === playerPos.sectorId()) {
 				if (!playerPos.inCamp) {
 					playerPos.inCamp = true;
@@ -477,10 +478,9 @@ define(['ash',
 					this.moveCurrencyFromBagToCamp();
 					
 					this.playerPositionNodes.head.entity.remove(ExcursionComponent);
-
-					if (logMessage) this.addLogMessage(LogConstants.MSG_ID_ENTER_CAMP, "Entered camp.");
 					GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.in);
 				}
+				
 				GlobalSignals.playerMovedSignal.dispatch(playerPos);
 				GlobalSignals.playerEnteredCampSignal.dispatch();
 				this.forceTabUpdate();
@@ -498,14 +498,11 @@ define(['ash',
 		},
 
 		leaveCamp: function () {
-			var playerPos = this.playerPositionNodes.head.position;
-			var campNode = this.nearestCampNodes.head;
+			let playerPos = this.playerPositionNodes.head.position;
+			let campNode = this.nearestCampNodes.head;
 			if (campNode && campNode.position.level === playerPos.level && campNode.position.sectorId() === playerPos.sectorId()) {
-				var sunlit = campNode.entity.get(SectorFeaturesComponent).sunlit;
 				playerPos.inCamp = false;
 				this.playerPositionNodes.head.entity.add(new ExcursionComponent());
-				var msg = "Left camp. " + (sunlit ? "Sunlight is sharp and merciless." : "The darkness of the city envelops you.");
-				this.addLogMessage(LogConstants.MSG_ID_LEAVE_CAMP, msg);
 				GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.out);
 				GlobalSignals.playerLeftCampSignal.dispatch();
 				GlobalSignals.playerMovedSignal.dispatch(playerPos);
@@ -554,7 +551,7 @@ define(['ash',
 				msgSuccess: logMsgSuccess,
 				msgFlee: logMsgFlee,
 				msgDefeat: logMsgDefeat,
-				addToLog: true,
+				addToLog: false,
 			};
 			
 			this.handleOutActionResults("scavenge", messages, true, false, successCallback);
@@ -693,7 +690,7 @@ define(['ash',
 				msgSuccess: logMsg,
 				msgFlee: logMsg,
 				msgDefeat: logMsg,
-				addToLog: true,
+				addToLog: false,
 			};
 			
 			this.handleOutActionResults("scout", messages, true, found, successCallback);
