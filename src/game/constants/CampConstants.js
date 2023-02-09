@@ -263,7 +263,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		
 		getResearchCenterEvidenceGenerationPerSecond: function (centerCount, centerLevel) {
 			var levelFactor = (1 + centerLevel * CampConstants.EVIDENCE_BONUS_PER_RESEARCH_CENTER_LEVEL);
-			return 0.002 * centerCount * levelFactor;
+			return 0.0025 * centerCount * levelFactor;
 		},
 		
 		getTempleFavourGenerationPerSecond: function (templeCount, templeLevel) {

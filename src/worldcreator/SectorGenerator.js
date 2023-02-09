@@ -649,7 +649,7 @@ define([
 				let campNeighbours = levelVO.getNeighbourList(campPosition.sectorX, campPosition.sectorY);
 				let firstCacheSector = WorldCreatorRandom.getRandomItemFromArray(seed, campNeighbours);
 				addStash(firstCacheSector, "first-cache", ItemConstants.STASH_TYPE_ITEM, 1, "cache_metal_1");
-				addStashes(seed / 3 * 338 + l * 402, "guaranteed-early", ItemConstants.STASH_TYPE_ITEM, ["cache_metal_1"], 4, 1, lateZones);
+				addStashes(seed / 3 * 338 + l * 402, "guaranteed-early", ItemConstants.STASH_TYPE_ITEM, ["cache_metal_1"], 5, 1, lateZones);
 				addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, "guaranteed-early", ItemConstants.STASH_TYPE_ITEM, [ "exploration_1" ], 1, 1, lateZones);
 			}
 			
@@ -659,7 +659,7 @@ define([
 			
 			// stashes: every campable level guaranteed items
 			if (levelVO.isCampable && l != 13) {
-				var numCaches = levelVO.populationFactor >= 1 ? 3 : 5;
+				let numCaches = levelVO.populationFactor >= 1 ? 3 : 5;
 				addStashes(seed / 7 * 937 + l * 331, "guaranteed-campable-early", ItemConstants.STASH_TYPE_ITEM, ItemConstants.getAvailableMetalCaches(levelVO.campOrdinal), numCaches, 1, lateZones);
 				addStashes(3000 + seed % 7 * 188 + (levelVO.level % 3) * 105 + Math.abs(levelVO.minX + 50) * 77, "guaranteed-campable", ItemConstants.STASH_TYPE_ITEM, [ "consumable_map_1", "consumable_map_2" ], [1, 3], 1, lateZones);
 			}
