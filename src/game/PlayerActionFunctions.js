@@ -517,14 +517,14 @@ define(['ash',
 		},
 
 		scavenge: function () {
-			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-			var efficiency = GameGlobals.playerActionResultsHelper.getCurrentScavengeEfficiency();
+			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			let efficiency = GameGlobals.playerActionResultsHelper.getCurrentScavengeEfficiency();
 			GameGlobals.gameState.unlockedFeatures.scavenge = true;
 
-			var logMsg = "";
-			var playerMaxVision = this.playerStatsNodes.head.vision.maximum;
-			var sector = this.playerLocationNodes.head.entity;
-			var sunlit = sector.get(SectorFeaturesComponent).sunlit;
+			let logMsg = "";
+			let playerMaxVision = this.playerStatsNodes.head.vision.maximum;
+			let sector = this.playerLocationNodes.head.entity;
+			let sunlit = sector.get(SectorFeaturesComponent).sunlit;
 			
 			if (playerMaxVision <= PlayerStatConstants.VISION_BASE) {
 				if (sunlit) logMsg = "Rummaged blindly for loot. ";
@@ -548,7 +548,16 @@ define(['ash',
 					sys.addLogMessage(LogConstants.getUniqueID(), "There isn't much left to scavenge here.");
 				}
 			};
-			this.handleOutActionResults("scavenge", LogConstants.MSG_ID_SCAVENGE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, false, successCallback);
+			
+			let messages = {
+				id: LogConstants.MSG_ID_SCAVENGE,
+				msgSuccess: logMsgSuccess,
+				msgFlee: logMsgFlee,
+				msgDefeat: logMsgDefeat,
+				addToLog: true,
+			};
+			
+			this.handleOutActionResults("scavenge", messages, true, false, successCallback);
 		},
 
 		investigate: function () {
@@ -573,7 +582,16 @@ define(['ash',
 					sys.addLogMessage(LogConstants.getUniqueID(), "There isn't much left to see here.");
 				}
 			};
-			this.handleOutActionResults("investigate", LogConstants.MSG_ID_INVESTIGATE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, false, successCallback);
+			
+			let messages = {
+				id: LogConstants.MSG_ID_INVESTIGATE,
+				msgSuccess: logMsgSuccess,
+				msgFlee: logMsgFlee,
+				msgDefeat: logMsgDefeat,
+				addToLog: true,
+			};
+			
+			this.handleOutActionResults("investigate", messages, true, false, successCallback);
 		},
 
 		scout: function () {
@@ -670,9 +688,15 @@ define(['ash',
 				playerActionFunctions.save();
 			};
 			
-
-			var logMsgId = found ? LogConstants.MSG_ID_SCOUT_FOUND_SOMETHING : LogConstants.MSG_ID_SCOUT;
-			this.handleOutActionResults("scout", logMsgId, logMsg, logMsg, logMsg, true, found, successCallback);
+			let messages = {
+				id: found ? LogConstants.MSG_ID_SCOUT_FOUND_SOMETHING : LogConstants.MSG_ID_SCOUT,
+				msgSuccess: logMsg,
+				msgFlee: logMsg,
+				msgDefeat: logMsg,
+				addToLog: true,
+			};
+			
+			this.handleOutActionResults("scout", messages, true, found, successCallback);
 		},
 
 		scoutLocale: function (i) {
@@ -756,20 +780,34 @@ define(['ash',
 			};
 
 			let hasCustomReward = tradingPartner != null || luxuryResource != null;
-			this.handleOutActionResults(action, LogConstants.MSG_ID_SCOUT_LOCALE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, hasCustomReward, successCallback);
+			
+			let messages = {
+				id: LogConstants.MSG_ID_SCOUT_LOCALE,
+				msgSuccess: logMsgSuccess,
+				msgFlee: logMsgFlee,
+				msgDefeat: logMsgDefeat,
+				addToLog: true,
+			};
+			
+			this.handleOutActionResults(action, messages, true, hasCustomReward, successCallback);
 		},
 
 		useSpring: function () {
-			var sector = this.playerLocationNodes.head.entity;
-			var sectorFeatures = sector.get(SectorFeaturesComponent);
-			var springName = TextConstants.getSpringName(sectorFeatures);
+			let sector = this.playerLocationNodes.head.entity;
+			let sectorFeatures = sector.get(SectorFeaturesComponent);
+			let springName = TextConstants.getSpringName(sectorFeatures);
 
-			var logMsgSuccess = "Refilled water at the " + springName + ".";
-			var logMsgFailBase = "Approached the " + springName + ", but got attacked. ";
-			var logMsgFlee = logMsgFailBase + "Fled empty-handed.";
-			var logMsgDefeat = logMsgFailBase + "Lost the fight.";
+			let logMsgFailBase = "Approached the " + springName + ", but got attacked. ";
+			
+			let messages = {
+				id: LogConstants.MSG_ID_USE_SPRING,
+				msgSuccess: "Refilled water at the " + springName + ".",
+				msgFlee: logMsgFailBase + "Fled empty-handed.",
+				msgDefeat: logMsgFailBase + "Lost the fight.",
+				addToLog: true,
+			};
 
-			this.handleOutActionResults("use_spring", LogConstants.MSG_ID_USE_SPRING, logMsgSuccess, logMsgFlee, logMsgDefeat, true, false);
+			this.handleOutActionResults("use_spring", messages, true, false);
 		},
 
 		clearWorkshop: function () {
@@ -782,9 +820,6 @@ define(['ash',
 			
 			let name = TextConstants.getWorkshopName(workshopComponent.resource);
 			let action = "clear_workshop";
-			let logMsgSuccess = "Workshop cleared. Workers can now use it.";
-			let logMsgFlee = "Fled the " + name + ".";
-			let logMsgDefeat = "Got driven out of the " + name + ".";
 
 			if (campLevel != currentLevel) {
 				logMsgSuccess = "Workshop cleared. Workers on level " + campLevel + " can now use it.";
@@ -795,34 +830,45 @@ define(['ash',
 				GameGlobals.gameState.unlockedFeatures.resources[workshopComponent.resource] = true;
 				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 			};
+			
+			let messages = {
+				id: LogConstants.MSG_ID_WORKSHOP_CLEARED,
+				msgSuccess: "Workshop cleared. Workers can now use it.",
+				msgFlee: "Fled the " + name + ".",
+				msgDefeat: "Got driven out of the " + name + ".",
+				addToLog: true,
+			};
 
-			this.handleOutActionResults(action, LogConstants.MSG_ID_WORKSHOP_CLEARED, logMsgSuccess, logMsgFlee, logMsgDefeat, true, true, successCallback);
+			this.handleOutActionResults(action, messages, true, true, successCallback);
 		},
 
 		clearWaste: function (action, direction) {
 			log.i("clear waste " + direction);
-			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-			var positionComponent = this.playerLocationNodes.head.entity.get(PositionComponent);
-			var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
-			var blocker = passagesComponent.getBlocker(direction);
+			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			let positionComponent = this.playerLocationNodes.head.entity.get(PositionComponent);
+			let passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
+			let blocker = passagesComponent.getBlocker(direction);
 			
 			if (!blocker) {
 				log.w("can't clear waste - no blocker here");
 				return;
 			}
 
-			var logMsgSuccess = "Cleared the waste. The area is now safe to pass through.";
-			var logMsgFailBase = "Attempted to clear the waste but got attacked. ";
-			var logMsgFlee = logMsgFailBase + "Feld before completing the operation.";
-			var logMsgDefeat = logMsgFailBase + "Lost the fight.";
-
-			var sys = this;
-			var successCallback = function () {
+			let sys = this;
+			let successCallback = function () {
 				var sectorPos = positionComponent.level + "." + positionComponent.sectorId() + "." + direction;
 				sys.clearBlocker(action, blocker.type, sectorPos);
 			};
+			
+			let messages = {
+				id: LogConstants.MSG_ID_CLEAR_WASTE,
+				msgSuccess: "Cleared the waste. The area is now safe to pass through.",
+				msgFlee: logMsgFailBase + "Feld before completing the operation.",
+				msgDefeat: logMsgFailBase + "Lost the fight.",
+				addToLog: true,
+			};
 
-			this.handleOutActionResults(action, LogConstants.MSG_ID_CLEAR_WASTE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, false, successCallback);
+			this.handleOutActionResults(action, messages, true, false, successCallback);
 		},
 
 		bridgeGap: function (sectorPos) {
@@ -875,10 +921,15 @@ define(['ash',
 							GameGlobals.uiFunctions.onPlayerMoved(); // reset cooldowns
 							if (excursionComponent) excursionComponent.numNaps++;
 							sys.playerStatsNodes.head.vision.value = Math.min(sys.playerStatsNodes.head.vision.value, PlayerStatConstants.VISION_BASE);
-							var logMsgSuccess = "Found a bench to sleep on. Barely feel rested.";
-							var logMsgFlee = "Tried to rest but got attacked.";
-							var logMsgDefeat = logMsgFlee;
-							sys.handleOutActionResults("nap", LogConstants.MSG_ID_NAP, logMsgSuccess, logMsgFlee, logMsgDefeat, false, false,
+							let logMsgFail = "Tried to rest but got attacked.";
+							let messages = {
+								id: LogConstants.MSG_ID_NAP,
+								msgSuccess: "Found a bench to sleep on. Barely feel rested.",
+								msgFlee: logMsgFail,
+								msgDefeat: logMsgFail,
+								addToLog: true,
+							};
+							sys.handleOutActionResults("nap", messages, false, false,
 								function () {
 									sys.playerStatsNodes.head.stamina.stamina += PlayerStatConstants.STAMINA_GAINED_FROM_NAP;
 								},
@@ -903,23 +954,34 @@ define(['ash',
 						setTimeout(function () {
 							GameGlobals.uiFunctions.showGame();
 							GameGlobals.uiFunctions.onPlayerMoved(); // reset cooldowns
-							var logMsgSuccess = "Waited some time.";
-							var logMsgFlee = "Settled down to pass some time but got attacked.";
-							var logMsgDefeat = logMsgFlee;
-							sys.handleOutActionResults("wait", LogConstants.MSG_ID_WAIT, logMsgSuccess, logMsgFlee, logMsgDefeat, false, false,
-								function () {},
-							);
+							let msgFail = "Settled down to pass some time but got attacked.";
+							let messages = {
+								id: LogConstants.MSG_ID_WAIT,
+								msgSuccess:  "Waited some time.",
+								msgFlee: msgFail,
+								msgDefeat: msgFail,
+								addToLog: true,
+							};
+							sys.handleOutActionResults("wait", messages, false, false);
 						}, 300);
 					});
 				}
 			);
 		},
 
-		handleOutActionResults: function (action, logMsgId, logMsgSuccess, logMsgFlee, logMsgDefeat, showResultPopup, hasCustomReward, successCallback, failCallback) {
+		
+		// messages: { id, msgSuccess, msgFlee, msgDefeat, addToLog }
+		handleOutActionResults: function (action, messages, showResultPopup, hasCustomReward, successCallback, failCallback) {
 			this.currentAction = action;
-			var playerActionFunctions = this;
-			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+			
+			let playerActionFunctions = this;
+			let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+			
+			let logMsgId = messages.logMsgId || LogConstants.getUniqueID();
+			let logMsgSuccess = messages.msgSuccess || "";
+			
 			showResultPopup = showResultPopup && !GameGlobals.gameState.uiStatus.isHidden;
+			
 			GameGlobals.fightHelper.handleRandomEncounter(action, function () {
 				var rewards = GameGlobals.playerActionResultsHelper.getResultVOByAction(action, hasCustomReward);
 				var player = playerActionFunctions.playerStatsNodes.head.entity;
@@ -959,11 +1021,11 @@ define(['ash',
 				}
 			}, function () {
 				playerActionFunctions.completeAction(action);
-				if (logMsgFlee) playerActionFunctions.addLogMessage(logMsgId, logMsgFlee);
+				if (messages.addToLog && messages.msgFlee) playerActionFunctions.addLogMessage(logMsgId, messages.msgFlee);
 				if (failCallback) failCallback();
 			}, function () {
 				playerActionFunctions.completeAction(action);
-				if (logMsgDefeat) playerActionFunctions.addLogMessage(logMsgId, logMsgDefeat);
+				if (messages.addToLog && messages.msgDefeat) playerActionFunctions.addLogMessage(logMsgId, msgDefeat);
 				if (failCallback) failCallback();
 			});
 		},
