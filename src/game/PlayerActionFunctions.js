@@ -516,6 +516,8 @@ define(['ash',
 		scavenge: function () {
 			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			let efficiency = GameGlobals.playerActionResultsHelper.getCurrentScavengeEfficiency();
+			let isFirst = !GameGlobals.gameState.unlockedFeatures.scavenge;
+			
 			GameGlobals.gameState.unlockedFeatures.scavenge = true;
 
 			let logMsg = "";
@@ -542,7 +544,7 @@ define(['ash',
 				let scavengedPercentAfter = sectorStatus.getScavengedPercent();
 				let warningThreshold = 75;
 				if (scavengedPercentBefore < warningThreshold && scavengedPercentAfter >= warningThreshold) {
-					sys.addLogMessage(LogConstants.getUniqueID(), "There isn't much left to scavenge here.");
+					sys.addLogMessage(LogConstants.getUniqueID(), logMsg + " There isn't much left to scavenge here.");
 				}
 			};
 			
@@ -551,7 +553,7 @@ define(['ash',
 				msgSuccess: logMsgSuccess,
 				msgFlee: logMsgFlee,
 				msgDefeat: logMsgDefeat,
-				addToLog: false,
+				addToLog: isFirst,
 			};
 			
 			this.handleOutActionResults("scavenge", messages, true, false, successCallback);
@@ -592,15 +594,17 @@ define(['ash',
 		},
 
 		scout: function () {
-			var sector = this.playerLocationNodes.head.entity;
-			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+			let sector = this.playerLocationNodes.head.entity;
+			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			let featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			let improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			
 			if (sectorStatus.scouted) {
 				log.w("Sector already scouted.");
 				return;
 			}
+			
+			let isFirst = false;
 			
 			if (!GameGlobals.gameState.unlockedFeatures.evidence) {
 				GameGlobals.gameState.unlockedFeatures.evidence = true;
@@ -610,6 +614,7 @@ define(['ash',
 			if (!GameGlobals.gameState.unlockedFeatures.scout) {
 				GameGlobals.gameState.unlockedFeatures.scout = true;
 				GlobalSignals.featureUnlockedSignal.dispatch();
+				isFirst = true;
 			}
 			
 			var level = sector.get(PositionComponent).level;
@@ -690,7 +695,7 @@ define(['ash',
 				msgSuccess: logMsg,
 				msgFlee: logMsg,
 				msgDefeat: logMsg,
-				addToLog: false,
+				addToLog: isFirst,
 			};
 			
 			this.handleOutActionResults("scout", messages, true, found, successCallback);
@@ -974,35 +979,45 @@ define(['ash',
 			let playerActionFunctions = this;
 			let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			
-			let logMsgId = messages.logMsgId || LogConstants.getUniqueID();
+			let logMsgId = messages.id || LogConstants.getUniqueID();
 			let logMsgSuccess = messages.msgSuccess || "";
 			
 			showResultPopup = showResultPopup && !GameGlobals.gameState.uiStatus.isHidden;
 			
 			GameGlobals.fightHelper.handleRandomEncounter(action, function () {
-				var rewards = GameGlobals.playerActionResultsHelper.getResultVOByAction(action, hasCustomReward);
-				var player = playerActionFunctions.playerStatsNodes.head.entity;
-				var sector = playerActionFunctions.playerLocationNodes.head.entity;
-				var sectorStatus = sector.get(SectorStatusComponent);
+				let rewards = GameGlobals.playerActionResultsHelper.getResultVOByAction(action, hasCustomReward);
+				let player = playerActionFunctions.playerStatsNodes.head.entity;
+				let sector = playerActionFunctions.playerLocationNodes.head.entity;
 				if (!GameGlobals.gameState.isAutoPlaying) player.add(new PlayerActionResultComponent(rewards));
 				
-				if (rewards && rewards.foundStashVO) {
-					sectorStatus.stashesFound++;
-					logMsgSuccess += TextConstants.getFoundStashMessage(rewards.foundStashVO);
-				}
+				let messages1 = GameGlobals.playerActionResultsHelper.getResultMessagesBeforeSelection(rewards);
 				
-				var discoveredGoods = GameGlobals.playerActionResultsHelper.saveDiscoveredGoods(rewards);
+				let discoveredGoods = GameGlobals.playerActionResultsHelper.saveDiscoveredGoods(rewards);
 				if (discoveredGoods.items && discoveredGoods.items.length > 0) {
-					logMsgSuccess += " Found a source of " + TextConstants.getListText(discoveredGoods.items.map(item => ItemConstants.getItemDisplayName(item).toLowerCase())) + ".";
+					let discoveredGoodsText = "Found a source of " + TextConstants.getListText(discoveredGoods.items.map(item => ItemConstants.getItemDisplayName(item).toLowerCase()));
+					messages1.push({ id: LogConstants.getUniqueID(), text: discoveredGoodsText, addToPopup: true, addToLog: true });
 				}
 				
 				let popupMsg = logMsgSuccess;
 				
-				var resultPopupCallback = function (isTakeAll) {
+				for (let i = 0; i < messages1.length; i++) {
+					if (messages1[i].addToPopup) {
+						popupMsg += TextConstants.sentencify(messages1[i].text);
+					}
+				}
+				
+				let resultPopupCallback = function (isTakeAll) {
+					let messages2 = GameGlobals.playerActionResultsHelper.getResultMessagesAfterSelection(rewards);
+					
 					GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, rewards);
-					if (!GameGlobals.gameState.isAutoPlaying && logMsgSuccess) playerActionFunctions.addLogMessage(logMsgId, logMsgSuccess);
-					GameGlobals.playerActionResultsHelper.logResults(rewards);
-					playerActionFunctions.forceTabUpdate();
+					
+					if (!GameGlobals.gameState.isAutoPlaying) {
+						if (messages.addToLog && logMsgSuccess) playerActionFunctions.addLogMessage(logMsgId, logMsgSuccess);
+						playerActionFunctions.logResultMessages(messages1);
+						playerActionFunctions.logResultMessages(messages2);
+						playerActionFunctions.forceTabUpdate();
+					}
+					
 					player.remove(PlayerActionResultComponent);
 					if (successCallback) successCallback();
 					GlobalSignals.inventoryChangedSignal.dispatch();
@@ -1011,6 +1026,7 @@ define(['ash',
 				};
 				
 				GameGlobals.playerActionResultsHelper.preCollectRewards(rewards);
+				
 				if (showResultPopup) {
 					GameGlobals.uiFunctions.showResultPopup(TextConstants.getActionName(baseActionID), popupMsg, rewards, resultPopupCallback);
 				} else {
@@ -1025,6 +1041,15 @@ define(['ash',
 				if (messages.addToLog && messages.msgDefeat) playerActionFunctions.addLogMessage(logMsgId, msgDefeat);
 				if (failCallback) failCallback();
 			});
+		},
+		
+		logResultMessages: function (messages) {
+			for (let i = 0; i < messages.length; i++) {
+				let message = messages[i];
+				if (message.addToLog) {
+					this.addLogMessage(message.id, message.text);
+				}
+			}
 		},
 
 		sendCaravan: function (tradePartnerOrdinal) {

@@ -17,6 +17,15 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 	
 	var TextConstants = {
 		
+		sentencify: function (s) {
+			s = s.trim();
+			if (s.length > 0) {
+				if (s[s.length - 1] != ".") s = s + ".";
+				if (s[s.length - 1] != " ") s = s + " ";
+			}
+			return s;
+		},
+		
 		getActionName: function (baseActionID) {
 			switch (baseActionID) {
 				case "scout_locale_i":
@@ -762,7 +771,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		getFoundStashMessage: function (stashVO) {
 			switch (stashVO.stashType) {
 				case ItemConstants.STASH_TYPE_ITEM:
-					return "Found an item.";
+					return "Found an item stash.";
 				case ItemConstants.STASH_TYPE_SILVER:
 					return "Found some coins.";
 				default:

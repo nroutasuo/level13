@@ -395,6 +395,13 @@ define([
 				return;
 			}
 			
+			let sourceSector = this.playerLocationNodes.head.entity;
+			
+			if (rewards.foundStashVO) {
+				let sectorStatus = sourceSector.get(SectorStatusComponent);
+				sectorStatus.stashesFound++;
+			}
+			
 			var nearestCampNode = this.nearestCampNodes.head;
 			var currentStorage = campSector ? GameGlobals.resourcesHelper.getCurrentCampStorage(campSector) : GameGlobals.resourcesHelper.getCurrentStorage();
 			var playerPos = this.playerLocationNodes.head.position;
@@ -411,20 +418,20 @@ define([
 			currentStorage.substractResources(rewards.discardedResources);
 			currentStorage.substractResources(rewards.lostResources);
 
-			var currencyComponent = this.playerStatsNodes.head.entity.get(CurrencyComponent);
+			let currencyComponent = this.playerStatsNodes.head.entity.get(CurrencyComponent);
 			currencyComponent.currency += rewards.gainedCurrency;
 			currencyComponent.currency -= rewards.lostCurrency;
 			if (rewards.gainedCurrency > 0)
 				GameGlobals.gameState.unlockedFeatures.currency = true;
 
-			var itemsComponent = this.playerStatsNodes.head.items;
+			let itemsComponent = this.playerStatsNodes.head.items;
 			if (rewards.selectedItems) {
 				for (let i = 0; i < rewards.selectedItems.length; i++) {
 					GameGlobals.playerHelper.addItem(rewards.selectedItems[i], sourcePos);
 				}
 			}
 			
-			var followersComponent = this.playerStatsNodes.head.followers;
+			let followersComponent = this.playerStatsNodes.head.followers;
 			if (rewards.gainedFollowers && rewards.gainedFollowers.length > 0) {
 				for (let i = 0; i < rewards.gainedFollowers.length; i++) {
 					let follower = rewards.gainedFollowers[i];
@@ -778,56 +785,73 @@ define([
 			return div;
 		},
 
-		logResults: function (rewards) {
-			var logComponent = this.playerStatsNodes.head.entity.get(LogMessagesComponent);
-			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-
-			if (rewards) {
-				if (rewards.gainedBlueprintPiece) {
-					if (!this.tribeUpgradesNodes.head.upgrades.hasUpgrade(rewards.gainedBlueprintPiece)) {
-						var blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(rewards.gainedBlueprintPiece);
-						if (blueprintVO.currentPieces === 1) {
-							logComponent.addMessage(LogConstants.MSG_ID_FOUND_BLUEPRINT_FIRST, "Found a piece of forgotten technology.");
-						}
-					}
-				}
-
-				if (rewards.selectedItems) {
-					for (let i = 0; i < rewards.selectedItems.length; i++) {
-						var item = rewards.selectedItems[i];
-						if (itemsComponent.getCountById(item.id, true) === 1) {
-							if (item.equippable && !item.equipped) continue;
-							logComponent.addMessage(LogConstants.MSG_ID_FOUND_ITEM_FIRST, "Found a " + item.name + ".");
-						}
-					}
-				}
-					
-				if (rewards.gainedFollowers && rewards.gainedFollowers.length > 0) {
-					logComponent.addMessage(LogConstants.getUniqueID(), "Met a new follower.");
-				}
-
-				if (rewards.lostItems && rewards.lostItems.length > 0) {
-					var messageTemplate = LogConstants.getLostItemMessage(rewards);
-					logComponent.addMessage(LogConstants.MSG_ID_LOST_ITEM, messageTemplate.msg, messageTemplate.replacements, messageTemplate.values);
-				}
-
-				if (rewards.brokenItems && rewards.brokenItems.length > 0) {
-					var messageTemplate = LogConstants.getBrokeItemMessage(rewards);
-					logComponent.addMessage(LogConstants.MSG_ID_BROKE_ITEM, messageTemplate.msg, messageTemplate.replacements, messageTemplate.values);
-				}
+		getResultMessagesBeforeSelection: function (resultVO) {
+			let messages = [];
+			
+			if (!resultVO) return messages;
+			
+			if (resultVO && resultVO.foundStashVO) {
+				messages.push({ id: LogConstants.getUniqueID(), text: TextConstants.getFoundStashMessage(resultVO.foundStashVO), addToPopup: true, addToLog: false });
+			}
+			
+			return messages;
+		},
+		
+		getResultMessagesAfterSelection: function (resultVO) {
+			let messages = [];
+			let itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+			
+			if (!resultVO) return messages;
 				
-				if (rewards.lostFollowers && rewards.lostFollowers.length > 0) {
-					logComponent.addMessage(LogConstants.MSG_ID_LOST_FOLLOWER, "Lost " + rewards.lostFollowers.length + " followers.");
-				}
-
-				if (rewards.gainedInjuries.length > 0) {
-					logComponent.addMessage(LogConstants.MSG_ID_GOT_INJURED, LogConstants.getInjuredMessage(rewards));
-				}
-
-				if (rewards.lostPerks.length > 0) {
-					logComponent.addMessage(LogConstants.MSG_ID_GOT_INJURED, LogConstants.getLostPerksMessage(rewards));
+			if (resultVO.gainedBlueprintPiece) {
+				if (!this.tribeUpgradesNodes.head.upgrades.hasUpgrade(resultVO.gainedBlueprintPiece)) {
+					let blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(resultVO.gainedBlueprintPiece);
+					if (blueprintVO.currentPieces === 1) {
+						messages.push({ id: LogConstants.MSG_ID_FOUND_BLUEPRINT_FIRST, text: "Found a piece of forgotten technology.", addToPopup: true, addToLog: true });
+					}
 				}
 			}
+	
+			if (resultVO.selectedItems) {
+				for (let i = 0; i < resultVO.selectedItems.length; i++) {
+					var item = resultVO.selectedItems[i];
+					if (itemsComponent.getCountById(item.id, true) === 1) {
+						if (item.equippable && !item.equipped) continue;
+						messages.push({ id: LogConstants.MSG_ID_FOUND_ITEM_FIRST, text: "Found a " + item.name + ".", addToPopup: true, addToLog: true });
+					}
+				}
+			}
+				
+			if (resultVO.gainedFollowers && resultVO.gainedFollowers.length > 0) {
+				messages.push({ id: LogConstants.getUniqueID(), text: "Met a new follower.", addToPopup: true, addToLog: true });
+			}
+	
+			if (resultVO.lostItems && resultVO.lostItems.length > 0) {
+				let messageTemplate = LogConstants.getLostItemMessage(resultVO);
+				let text = TextConstants.createTextFromLogMessage(messageTemplate.msg, messageTemplate.replacements, messageTemplate.values);
+				messages.push({ id: LogConstants.MSG_ID_LOST_ITEM, text: text, addToPopup: true, addToLog: true });
+			}
+	
+			if (resultVO.brokenItems && resultVO.brokenItems.length > 0) {
+				let messageTemplate = LogConstants.getBrokeItemMessage(resultVO);
+				let text = TextConstants.createTextFromLogMessage(messageTemplate.msg, messageTemplate.replacements, messageTemplate.values);
+				messages.push({ id: LogConstants.MSG_ID_BROKE_ITEM, text: text, addToPopup: true, addToLog: true });
+			}
+				
+			if (resultVO.lostFollowers && resultVO.lostFollowers.length > 0) {
+				messages.push({ id: LogConstants.MSG_ID_LOST_FOLLOWER, text: "Lost " + resultVO.lostFollowers.length + " followers.", addToPopup: true, addToLog: true });
+			}
+
+			if (resultVO.gainedInjuries.length > 0) {
+				logComponent.addMessage(LogConstants.MSG_ID_GOT_INJURED, LogConstants.getInjuredMessage(resultVO));
+					messages.push({ id: LogConstants.MSG_ID_GOT_INJURED, text: "Lost " + resultVO.lostFollowers.length + " followers.", addToPopup: true, addToLog: true });
+			}
+
+			if (resultVO.lostPerks.length > 0) {
+				messages.push({ id: LogConstants.MSG_ID_GOT_INJURED, text: LogConstants.getLostPerksMessage(resultVO), addToPopup: true, addToLog: true });
+			}
+
+			return messages;
 		},
 
 		getCurrentScavengeEfficiency: function () {
