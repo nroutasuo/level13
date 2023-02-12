@@ -1021,6 +1021,7 @@ define(['ash',
 					player.remove(PlayerActionResultComponent);
 					if (successCallback) successCallback();
 					GlobalSignals.inventoryChangedSignal.dispatch();
+					GlobalSignals.actionRewardsCollectedSignal.dispatch();
 					GlobalSignals.sectorScavengedSignal.dispatch();
 					playerActionFunctions.completeAction(action);
 				};

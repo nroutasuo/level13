@@ -45,6 +45,7 @@ define([
 		registerListeners: function () {
 			GlobalSignals.add(this, GlobalSignals.sectorScavengedSignal, function () { this.onTutorialTrigger("action_scavenge"); });
 			GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, function () { this.onTutorialTrigger("change_inventory"); });
+			GlobalSignals.add(this, GlobalSignals.actionRewardsCollectedSignal, function () { this.onTutorialTrigger("action_collect_rewards"); });
 		},
 		
 		onTutorialTrigger: function (tutorialTriggerID) {

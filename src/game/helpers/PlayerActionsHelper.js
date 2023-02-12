@@ -341,6 +341,15 @@ define([
 			var reason = "";
 
 			if (requirements) {
+				if (requirements.actionsAvailable) {
+					let requiredActions = requirements.actionsAvailable;
+					for (let i = 0; i < requiredActions.length; i++) {
+						if (!this.checkAvailability(requiredActions[i], false, sector, true)) {
+							return { value: 0, reason: "Must be able to start action " + requiredActions[i] };
+						}
+					}
+				}
+				
 				if (requirements.vision) {
 					let result = this.checkRequirementsRange(requirements.vision, playerVision, "{min} vision needed", "{max} vision max");
 					if (result) {
@@ -682,6 +691,17 @@ define([
 								return {value: 0, reason: "Bag must be full."};
 							else
 								return {value: 0, reason: "Bag is full."};
+						}
+					}
+				}
+				
+				if (requirements.playerInventory) {
+					for (let key in requirements.playerInventory) {
+						let range = requirements.playerInventory[key];
+						let currentVal = this.getCostAmountOwned(key);
+						let result = this.checkRequirementsRange(range, currentVal, "Not enough " + key, "Too  much " + key);
+						if (result) {
+							return result;
 						}
 					}
 				}
@@ -1120,46 +1140,52 @@ define([
 		checkCost: function (action, name, otherSector) {
 			let sector = otherSector || (this.playerLocationNodes.head && this.playerLocationNodes.head.entity);
 			if (!sector) return 0;
-			
-			let playerResources = GameGlobals.resourcesHelper.getCurrentStorage();
-			let itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-			let inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
 
 			let costs = this.getCosts(action);
 
-			let costNameParts = name.split("_");
 			let costAmount = costs[name];
-
+			let costAmountOwned = this.getCostAmountOwned(name);
+			
+			return costAmountOwned / costAmount;
+		},
+		
+		getCostAmountOwned: function (name) {
+			let itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+			let inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
+			let playerResources = GameGlobals.resourcesHelper.getCurrentStorage();
+			
+			let costNameParts = name.split("_");
+			
 			if (costNameParts[0] === "resource") {
-				return (playerResources.resources.getResource(costNameParts[1]) / costAmount);
+				return playerResources.resources.getResource(costNameParts[1]);
 			} else if (costNameParts[0] === "item") {
 				let itemId = name.replace(costNameParts[0] + "_", "");
-				return itemsComponent.getCountById(itemId, inCamp) / costAmount;
+				return itemsComponent.getCountById(itemId, inCamp);
 			} else {
 				switch (name) {
 					case "stamina":
-						return this.playerStatsNodes.head.stamina.stamina / costs.stamina;
+						return this.playerStatsNodes.head.stamina.stamina;
 
 					case "rumours":
-						return (this.playerStatsNodes.head.rumours.value / costs.rumours);
+						return this.playerStatsNodes.head.rumours.value;
 
 					case "favour":
 						var favour = this.playerStatsNodes.head.entity.has(DeityComponent) ? this.playerStatsNodes.head.entity.get(DeityComponent).favour : 0;
-						return (favour / costs.favour);
+						return favour;
 
 					case "evidence":
-						return (this.playerStatsNodes.head.evidence.value / costs.evidence);
+						return this.playerStatsNodes.head.evidence.value;
 
 					case "blueprint":
 						return 1;
 					
 					case "silver":
 						var currencyComponent = GameGlobals.resourcesHelper.getCurrentCurrency();
-						return currencyComponent.currency / costs.silver;
+						return currencyComponent.currency;
 
 					default:
 						log.w("Unknown cost: " + name);
-						return 1;
+						return 0;
 				}
 			}
 		},

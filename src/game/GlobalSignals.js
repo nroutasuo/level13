@@ -43,6 +43,7 @@ define(['ash',], function (Ash) {
 		blueprintsChangedSignal: new Ash.Signals.Signal(),
 		upgradeUnlockedSignal: new Ash.Signals.Signal(),
 		milestoneUnlockedSignal: new Ash.Signals.Signal(),
+		actionRewardsCollectedSignal: new Ash.Signals.Signal(),
 		inventoryChangedSignal: new Ash.Signals.Signal(),
 		equipmentChangedSignal: new Ash.Signals.Signal(),
 		followersChangedSignal: new Ash.Signals.Signal(),
