@@ -228,826 +228,842 @@ define([
 			if (!sector) sector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
 			if (!sector) return { value: 0, reason: "No selected sector", baseReason: PlayerActionConstants.DISABLED_REASON_INVALID_PARAMS };
 
-			var sectorID = sector.get(PositionComponent).positionId();
-			var reqsID = action + "-" + sectorID;
-			var ordinal = this.getActionOrdinal(action, sector);
-			
-			var shouldSkipCheck = function (reason) {
-				if (!checksToSkip) return false;
-				return checksToSkip.indexOf(reason) >= 0;
-			};
-
-			let checkRequirementsInternal = function (action, sector) {
-				var playerVision = this.playerStatsNodes.head.vision.value;
-				var playerPerks = this.playerStatsNodes.head.perks;
-				var playerStamina = this.playerStatsNodes.head.stamina.stamina;
-				var deityComponent = this.playerResourcesNodes.head.entity.get(DeityComponent);
-				
-				var requirements = this.getReqs(action, sector);
-				var costs = this.getCosts(action);
-				var positionComponent = sector.get(PositionComponent);
-				var improvementComponent = sector.get(SectorImprovementsComponent);
-				var movementOptionsComponent = sector.get(MovementOptionsComponent);
-				var passagesComponent = sector.get(PassagesComponent);
-				var campComponent = sector.get(CampComponent);
-				var featuresComponent = sector.get(SectorFeaturesComponent);
-				var statusComponent = sector.get(SectorStatusComponent);
-				var playerActionComponent = this.playerResourcesNodes.head.entity.get(PlayerActionComponent);
-				var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
-				var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-				var inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
-
-				var baseActionID = this.getBaseActionID(action);
-				var actionIDParam = this.getActionIDParam(action);
-
-				var lowestFraction = 1;
-				var reason = "";
-
-				if (action === "move_level_up" && !movementOptionsComponent.canMoveTo[PositionConstants.DIRECTION_UP])
-					return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveToReason[PositionConstants.DIRECTION_UP] };
-				if (action === "move_level_down" && !movementOptionsComponent.canMoveTo[PositionConstants.DIRECTION_DOWN])
-					return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveToReason[PositionConstants.DIRECTION_DOWN] };
-
-				if (this.isImproveBuildingAction(baseActionID)) {
-					let improvementName = this.getImprovementNameForAction(action);
-					let improvementID = this.getImprovementIDForAction(action);
-					let techLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementName, this.tribeUpgradesNodes.head.upgrades);
-					let maxLevel = ImprovementConstants.getMaxLevel(improvementID, techLevel);
-					if (ordinal >= maxLevel) {
-						return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENT_LEVEL };
-					}
-				}
-
-				if (costs) {
-					if (costs.stamina > 0) {
-						if (!requirements) requirements = {};
-						requirements.health = Math.ceil(costs.stamina / PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR);
-					}
-					if (costs.favour && !GameGlobals.gameState.unlockedFeatures.favour) {
-						reason = "Locked stats.";
-						return { value: 0, reason: reason };
-					}
-					if ((costs.resource_fuel > 0 && !GameGlobals.gameState.unlockedFeatures.resources.fuel) ||
-						(costs.resource_rubber > 0 && !GameGlobals.gameState.unlockedFeatures.resources.rubber) ||
-						(costs.resource_herbs > 0 && !GameGlobals.gameState.unlockedFeatures.resources.herbs) ||
-						(costs.resource_tools > 0 && !GameGlobals.gameState.unlockedFeatures.resources.tools) ||
-						(costs.resource_concrete > 0 && !GameGlobals.gameState.unlockedFeatures.resources.concrete)) {
-						reason = PlayerActionConstants.DISABLED_REASON_LOCKED_RESOURCES;
-						lowestFraction = 0;
-					}
-				}
-
-				if (requirements) {
-					if (requirements.vision) {
-						let result = this.checkRequirementsRange(requirements.vision, playerVision, "{min} vision needed", "{max} vision max");
-						if (result) {
-							return result;
-						}
-					}
-
-					if (requirements.stamina) {
-						let result = this.checkRequirementsRange(requirements.stamina, playerStamina, "{min} stamina needed", "{max} stamina max");
-						if (result) {
-							return result;
-						}
-					}
-
-					if (typeof requirements.maxStamina !== "undefined") {
-						var currentValue = playerStamina === this.playerStatsNodes.head.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
-						var requiredValue = requirements.maxStamina;
-						if (currentValue !== requiredValue) {
-							if (currentValue) reason = "Already fully rested.";
-							else reason = "Must be fully rested.";
-							return {value: 0, reason: reason};
-						}
-					}
-
-					if (requirements.health) {
-						var playerHealth = this.playerStatsNodes.head.stamina.health;
-						if (playerHealth < requirements.health) {
-							reason = requirements.health + " health required.";
-							lowestFraction = Math.min(lowestFraction, playerHealth / requirements.health);
-						}
-					}
-
-					if (typeof requirements.sunlit !== "undefined") {
-						var currentValue = featuresComponent.sunlit;
-						var requiredValue = requirements.sunlit;
-						if (currentValue !== requiredValue) {
-							if (currentValue) reason = "Sunlight not allowed.";
-							else reason = "Sunlight required.";
-							return { value: 0, reason: reason, baseReason: PlayerActionConstants.DISABLED_REASON_SUNLIT };
-						}
-					}
-
-					if (requirements.deity) {
-						if (!deityComponent) {
-							return { value: 0, reason: "Deity required." };
-						}
-					}
-
-					if (requirements.population && !shouldSkipCheck(PlayerActionConstants.DISABLED_REASON_POPULATION)) {
-						var currentPopulation = campComponent ? Math.floor(campComponent.population) : 0;
-						let result = this.checkRequirementsRange(requirements.population, currentPopulation, "{min} population required", "Maximum {max} population", "workers required", "no workers allowed");
-						if (result) {
-							return result;
-						}
-					}
-
-					if (typeof requirements.rumourpoolchecked != "undefined") {
-						if (campComponent) {
-							var campValue = campComponent.rumourpoolchecked;
-							if (requirements.rumourpoolchecked != campValue) {
-								if (!requirements.rumourpoolchecked) reason = "No new rumours at the moment.";
-								if (requirements.rumourpoolchecked) reason = "There are new rumours.";
-								return { value: 0, reason: reason };
-							}
-						}
-					}
-
-					if (requirements.numCamps) {
-						var currentCamps = GameGlobals.gameState.numCamps;
-						if (requirements.numCamps > currentCamps) {
-							reason = requirements.numCamps + " camps required.";
-							return { value: currentCamps / requirements.numCamps, reason: reason };
-						}
-					}
-
-					if (typeof requirements.inCamp !== "undefined") {
-						var required = requirements.inCamp;
-						var current = inCamp;
-						if (required !== current) {
-							if (required) {
-								return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_NOT_IN_CAMP };
-							} else {
-								return { value: 0, reason: "Must be outside to do this." };
-							}
-						}
-					}
-
-					if (requirements.improvements) {
-						for (var improvementID in requirements.improvements) {
-							var amount = this.getCurrentImprovementCount(improvementComponent, campComponent, improvementID);
-							var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
-							
-							var range = requirements.improvements[improvementID];
-							var actionImprovementName = this.getImprovementNameForAction(action, true);
-							if (!actionImprovementName) actionImprovementName = "Improvement";
-							var displayName = actionImprovementName === requiredImprovementDisplayName ? "" : requiredImprovementDisplayName;
-							
-							let result = this.checkRequirementsRange(
-								range,
-								amount,
-								"{min}x " + displayName + " required",
-								"max " + displayName + " built",
-								displayName + " required",
-								displayName + " already built",
-								PlayerActionConstants.DISABLED_REASON_MIN_IMPROVEMENTS,
-								PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENTS
-							);
-							
-							if (result) {
-								result.reason.trim();
-								return result;
-							}
-						}
-					}
-					
-					if (requirements.improvementMajorLevel) {
-						for (var improvementID in requirements.improvementMajorLevel) {
-							var amount = this.getCurrentImprovementMajorLevel(improvementComponent, campComponent, improvementID);
-							var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
-							
-							var range = requirements.improvementMajorLevel[improvementID];
-							
-							let result = this.checkRequirementsRange(range, amount,
-								"building level too low",
-								"building level too high"
-							);
-							if (result) {
-								result.reason.trim();
-								return result;
-							}
-						}
-					}
-					
-					if (requirements.improvementsOnLevel) {
-						for (var improvementID in requirements.improvementsOnLevel) {
-							var amount = this.getCurrentImprovementCountOnLevel(positionComponent.level, improvementID);
-							var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
-							var displayName = actionImprovementName === requiredImprovementDisplayName ? "" : requiredImprovementDisplayName;
-							var range = requirements.improvementsOnLevel[improvementID];
-							let result = this.checkRequirementsRange(range, amount,
-								"{min}x " + displayName + " on level required",
-								"max {max} " + displayName + " on level",
-								displayName + " required on level",
-								displayName + " already built on level",
-								PlayerActionConstants.DISABLED_REASON_MIN_IMPROVEMENTS,
-								PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENTS
-							);
-							if (result) {
-								return result;
-							}
-						}
-					}
-					
-					if (requirements.improvementsDamaged) {
-						for (var improvementID in requirements.improvementsDamaged) {
-							let improvementName = improvementNames[improvementID];
-							let amount = improvementComponent.getNumDamaged(improvementName);
-							let range = requirements.improvements[improvementID];
-							
-							let result = this.checkRequirementsRange(
-								range,
-								amount,
-								"no damaged buildings to repair",
-								"too many damaged buildings"
-							);
-							
-							if (result) {
-								result.reason.trim();
-								return result;
-							}
-							
-						}
-					}
-					
-					if (requirements.workers) {
-						var workerRequirements = requirements.workers;
-						
-						for (let workerType in workerRequirements) {
-							var range = workerRequirements[workerType];
-							var amount = campComponent.assignedWorkers[workerType] || 0;
-							let result = this.checkRequirementsRange(range, amount, workerType + " required", "no " + workerType + " required");
-							if (result) {
-								return result;
-							}
-						}
-					}
-
-					if (requirements.perkEffects) {
-						let perkRequirements = requirements.perkEffects;
-						for(let perkType in perkRequirements) {
-							let requirementDef = perkRequirements[perkType];
-							let min = requirementDef[0];
-							let max = requirementDef[1];
-							let isOneValue = requirementDef[2];
-							if (max < 0) max = 9999999;
-							
-							let totalEffect = playerPerks.getTotalEffect(perkType);
-							let validPerk = playerPerks.getPerkWithEffect(perkType, min, max);
-							
-							if ((!isOneValue && (min > totalEffect || max <= totalEffect)) || (isOneValue && validPerk == null)) {
-								if (min > totalEffect) reason = "Can't do this while: " + perkType;
-								if (max <= totalEffect) reason = "Status required: " + perkType;
-								return { value: 0, reason: reason };
-							}
-						}
-					}
-					
-					if (requirements.perks) {
-						let perkRequirements = requirements.perks;
-						for (let perkID in perkRequirements) {
-							let requiredValue = perkRequirements[perkID];
-							let actualValue = playerPerks.hasPerk(perkID);
-							if (requiredValue != actualValue) {
-								var perk = PerkConstants.getPerk(perkID);
-								if (requiredValue) {
-									return { value: 0, reason: "Status required: " + perk.name };
-								} else {
-									return { value: 0, reason: "Blocked by status: " + perk.name };
-								}
-							}
-						}
-					}
-
-					if (requirements.upgrades) {
-						var upgradeRequirements = requirements.upgrades;
-						for (var upgradeID in upgradeRequirements) {
-							var requirementBoolean = upgradeRequirements[upgradeID];
-							var hasBoolean = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeID);
-							if (requirementBoolean != hasBoolean) {
-								var def = UpgradeConstants.upgradeDefinitions[upgradeID];
-								var name = def ? def.name : upgradeID;
-								if (requirementBoolean) reason = "Upgrade required: " + name;
-								else reason = "Upgrade already researched (" + name + ")";
-								return { value: 0, reason: reason, baseReason: PlayerActionConstants.DISABLED_REASON_UPGRADE };
-							}
-						}
-					}
-					
-					if (requirements.unlockedWorkers) {
-						for (let workerID in requirements.unlockedWorkers) {
-							let requiredValue = requirements.unlockedWorkers[workerID];
-							let actualValue = GameGlobals.campHelper.hasUnlockedWorker(workerID);
-							if (requiredValue != actualValue) {
-								if (requiredValue) {
-									return { value: 0, reason: "Worker required: " + workerID };
-								} else {
-									return { value: 0, reason: "Worker already unlocked: " + workerID };
-								}
-							}
-						}
-					}
-
-					if (requirements.blueprint) {
-						var blueprintName = action;
-						var hasBlueprint = this.tribeUpgradesNodes.head.upgrades.hasAvailableBlueprint(blueprintName);
-						if (!hasBlueprint) {
-							reason = "Blueprint required.";
-							return { value: 0, reason: reason };
-						}
-					}
-
-					if (typeof requirements.blueprintpieces !== "undefined") {
-						var upgradeID = requirements.blueprintpieces;
-						var blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(upgradeID);
-						if (!blueprintVO || blueprintVO.completed) {
-							reason = "No such blueprint in progress.";
-							return { value: 0, reason: reason };
-						}
-						if (blueprintVO.maxPieces - blueprintVO.currentPieces > 0) {
-							reason = "Missing pieces.";
-							return { value: 0, reason: reason };
-						}
-					}
-
-					if (typeof requirements.busy !== "undefined") {
-						var currentValue = playerActionComponent.isBusy();
-						var requiredValue = requirements.busy;
-						if (currentValue !== requiredValue) {
-							var timeLeft = Math.ceil(playerActionComponent.getBusyTimeLeft());
-							if (currentValue) reason = "Busy " + playerActionComponent.getBusyDescription() + " (" + timeLeft + "s)";
-							else reason = "Need to be busy to do this.";
-							return { value: 0, reason: reason, baseReason: PlayerActionConstants.DISABLED_REASON_BUSY };
-						}
-					}
-					
-					if (typeof requirements.path_to_camp !== "undefined") {
-						var path = this.getPathToNearestCamp(sector);
-						var currentValue = path !== null;
-						var requiredValue = requirements.path_to_camp;
-						if (currentValue !== requiredValue) {
-							if (currentValue) reason = "Path to camp exists";
-							else reason = "No path to camp.";
-							return { value: 0, reason: reason };
-						}
-					}
-					
-					if (requirements.followers) {
-						if (typeof requirements.followers.maxRecruited !== "undefined") {
-							var followersComponent = this.playerStatsNodes.head.followers;
-							var numCurrentFollowers = followersComponent.getAll().length;
-							var numMaxFollowers = GameGlobals.campHelper.getCurrentMaxFollowersRecruited();
-							var currentValue = numCurrentFollowers >= numMaxFollowers;
-							var requiredValue = requirements.followers.maxRecruited;
-							let result = this.checkRequirementsBoolean(requiredValue, currentValue, "Maximum followers recruited", "Maximum followers not recruited");
-							if (result) return result;
-						}
-					}
-
-					if (typeof requirements.bag !== "undefined") {
-						if (requirements.bag.validSelection) {
-							let validStart = bagComponent.selectionStartCapacity === undefined || bagComponent.selectionStartCapacity <= bagComponent.totalCapacity;
-							let validNow = bagComponent.selectedCapacity <= bagComponent.totalCapacity;
-							if (validStart && !validNow) {
-								return { value: 0, reason: "Can't carry that much stuff." };
-							}
-							
-							let resultNode = this.playerActionResultNodes.head;
-							if (resultNode) {
-								let resultVO = resultNode.result.pendingResultVO;
-								let unselectedItems = resultVO.getUnselectedAndDiscardedItems();
-								for (let i = 0; i < unselectedItems.length; i++) {
-									let unselectedItem = unselectedItems[i];
-									if (unselectedItem.type == ItemConstants.itemTypes.uniqueEquipment) {
-										return { value: 0, reason: "Can't leave " + ItemConstants.getItemDisplayName(unselectedItem) + " behind" };
-									}
-								}
-							}
-						}
-						if (requirements.bag.validSelectionAll) {
-							if (bagComponent.selectableCapacity > bagComponent.totalCapacity) {
-								return {value: 0, reason: "Can't carry that much stuff."};
-							}
-						}
-						if (typeof requirements.bag.full !== "undefined") {
-							var requiredValue = requirements.bag.full;
-							var currentValue = bagComponent.usedCapacity >= bagComponent.totalCapacity;
-							if (requiredValue !== currentValue) {
-								if (requiredValue)
-									return {value: 0, reason: "Bag must be full."};
-								else
-									return {value: 0, reason: "Bag is full."};
-							}
-						}
-					}
-
-					if (requirements.outgoingcaravan) {
-						if (typeof requirements.outgoingcaravan.available !== "undefined") {
-							var caravansComponent = sector.get(OutgoingCaravansComponent);
-							var requiredValue = requirements.outgoingcaravan.available ? 1 : 0;
-							var totalCaravans = improvementComponent.getCount(improvementNames.stable);
-							var busyCaravans = caravansComponent.outgoingCaravans.length;
-							var currentValue = totalCaravans - busyCaravans;
-							if (requiredValue > currentValue) {
-								return {value: 0, reason: "No available caravans."};
-							}
-						}
-						if (typeof requirements.outgoingcaravan.validSelection !== "undefined") {
-							var requiredValue = requirements.outgoingcaravan.validSelection;
-							var currentValue = $("button[action='" + action + "']").attr("data-isselectionvalid") == "true";
-							if (requiredValue != currentValue) {
-								if (requiredValue)
-									return {value: 0, reason: "Invalid selection."};
-								else
-									return {value: 0, reason: "Valid selection."};
-							}
-						}
-					}
-
-					if (requirements.incomingcaravan) {
-						if (typeof requirements.incomingcaravan.validSelection !== "undefined") {
-							let requiredValue = requirements.incomingcaravan.validSelection;
-							let traderComponent = sector.get(TraderComponent);
-							if (traderComponent) {
-								let caravan = traderComponent.caravan;
-								let currentValue = caravan.traderOfferValue > 0 && caravan.traderOfferValue <= caravan.campOfferValue;
-								if (requiredValue != currentValue) {
-									if (requiredValue) {
-										return {value: 0, reason: "Invalid selection."};
-									} else {
-										return {value: 0, reason: "Valid selection."};
-									}
-								}
-								
-								for (let itemID in caravan.campSelectedItems) {
-									let amount = caravan.campSelectedItems[itemID];
-									let item = ItemConstants.getItemByID(itemID);
-									if (amount > TradeConstants.MAX_ITEMS_TO_TRADE_PER_CARAVAN && item.type != ItemConstants.itemTypes.ingredient) {
-										return {value: 0, reason: "The trader doesn't want that many " + ItemConstants.getItemDisplayName(item)  + "."};
-									}
-								}
-							} else {
-								return {value: 0, reason: "No caravan."};
-							}
-						}
-					}
-
-					if (requirements.camp) {
-						if (requirements.camp.isReachableByTribeTraders) {
-							let isCampReachableByTribeTraders = GameGlobals.levelHelper.isCampReachableByTribeTraders(sector);
-							if (!isCampReachableByTribeTraders) {
-								return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_NOT_REACHABLE_BY_TRADERS };
-							}
-						}
-						if (typeof requirements.camp.raid !== "undefined") {
-							let currentValue = this.playerLocationNodes.head.entity.has(RaidComponent);
-							let requiredValue = requirements.camp.raid;
-							if (requiredValue != currentValue) {
-								return { value: 0, reason: (requiredValue ? "No raid currently" : "There is a raid" ) };
-							}
-						}
-					}
-
-					if (requirements.sector) {
-						if (requirements.sector.collectable_water) {
-							let hasWater = featuresComponent.resourcesCollectable.water > 0;
-							if (!hasWater) {
-								return { value: 0, reason: "No collectable water.", baseReason: PlayerActionConstants.DISABLED_REASON_INVALID_SECTOR };
-							}
-						}
-						if (requirements.sector.collectable_food) {
-							let hasFood = featuresComponent.resourcesCollectable.food > 0;
-							if (!hasFood) {
-								return { value: 0, reason: "No collectable food.", baseReason: PlayerActionConstants.DISABLED_REASON_INVALID_SECTOR };
-							}
-						}
-						
-						if (typeof requirements.sector.hasCamp !== "undefined") {
-							var value = sector.has(CampComponent);
-							var requiredValue = requirements.sector.hasCamp;
-							if (value !== requiredValue) {
-								var reason = requiredValue ? "No camp here." : "There is a camp here";
-								return { value: 0, reason: reason };
-							}
-						}
-
-						if (requirements.sector.canHaveCamp) {
-							if (!featuresComponent.canHaveCamp()) {
-								return { value: 0, reason: "Location not suitable for camp", baseReason: PlayerActionConstants.DISABLED_REASON_INVALID_SECTOR };
-							}
-						}
-						if (typeof requirements.sector.enemies != "undefined") {
-							var enemiesComponent = sector.get(EnemiesComponent);
-							if (enemiesComponent.hasEnemies != requirements.sector.enemies) {
-								if (requirements.sector.enemies)
-									return { value: 0, reason: "Sector enemies required" };
-								else
-									return { value: 0, reason: "Too dangerous here" };
-							}
-						}
-						if (typeof requirements.sector.scouted != "undefined") {
-							if (statusComponent.scouted != requirements.sector.scouted) {
-								if (statusComponent.scouted) {
-									return { value: 0, reason: "Area already scouted.", baseReason: PlayerActionConstants.DISABLED_REASON_SCOUTED };
-								} else {
-									return { value: 0, reason: "Area not scouted yet.", baseReason: PlayerActionConstants.DISABLED_REASON_SCOUTED };
-								}
-							}
-						}
-						if (typeof requirements.sector.scavengedPercent != "undefined") {
-							var range = requirements.sector.scavengedPercent;
-							var currentVal = statusComponent.getScavengedPercent() / 100;
-							let result = this.checkRequirementsRange(range, currentVal, "", "This area has beens scavenged clean.");
-							if (result) {
-								return result;
-							}
-						}
-						if (typeof requirements.sector.investigatedPercent != "undefined") {
-							var range = requirements.sector.investigatedPercent;
-							var currentVal = statusComponent.getInvestigatedPercent() / 100;
-							let result = this.checkRequirementsRange(range, currentVal, "", "This area has beens investigated thoroughly.");
-							if (result) {
-								return result;
-							}
-						}
-						if (typeof requirements.sector.spring != "undefined") {
-							if (featuresComponent.hasSpring != requirements.sector.spring) {
-								if (featuresComponent.hasSpring)    reason = "There is a spring.";
-								else                                reason = "There is no spring.";
-								return { value: 0, reason: reason };
-							}
-						}
-						if (typeof requirements.sector.scoutedLocales !== "undefined") {
-							for(var localei in requirements.sector.scoutedLocales) {
-								var requiredStatus = requirements.sector.scoutedLocales[localei];
-								var currentStatus = statusComponent.isLocaleScouted(localei);
-								if (requiredStatus !== currentStatus) {
-									if (requiredStatus) reason = "Locale must be scouted.";
-									if (!requiredStatus) reason = "Locale already scouted.";
-									return { value: 0, reason: reason };
-								}
-							}
-						}
-						for (let i in PositionConstants.getLevelDirections()) {
-							var direction = PositionConstants.getLevelDirections()[i];
-							var directionName = PositionConstants.getDirectionName(direction, true);
-
-							var blockerKey = "blocker" + directionName.toUpperCase();
-							if (typeof requirements.sector[blockerKey] !== 'undefined') {
-								var requiredValue = requirements.sector[blockerKey];
-								var currentValue = !movementOptionsComponent.canMoveTo[direction];
-
-								if (requiredValue !== currentValue) {
-									if (currentValue) {
-										return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveToReason[direction] };
-									} else {
-										return { value: 0, reason: "Nothing blocking movement to " + directionName + "." };
-									}
-								}
-							}
-							var clearedKey = "isWasteCleared_" + direction;
-							if (typeof requirements.sector[clearedKey] !== 'undefined') {
-								var requiredValue = requirements.sector[clearedKey];
-								var currentValue =
-									statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_WASTE_TOXIC) ||
-									statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE);
-
-								if (requiredValue !== currentValue) {
-									if (currentValue) {
-										return { value: 0, reason: "Waste cleared. " };
-									} else {
-										return { value: 0, reason: "Waste not cleared " + directionName + "." };
-									}
-								}
-							}
-						}
-
-						if (typeof requirements.sector.passageUp != 'undefined') {
-							if (!passagesComponent.passageUp) {
-								reason = "No passage up.";
-								return { value: 0, reason: "Blocked. " + reason };
-							} else {
-								var requiredType = parseInt(requirements.sector.passageUp);
-								if (requiredType > 0) {
-									var existingType = passagesComponent.passageUp.type;
-									if (existingType !== requiredType) {
-										reason = "Wrong passage type.";
-										return { value: 0, reason: "Blocked. " + reason };
-									}
-								}
-							}
-						}
-						if (typeof requirements.sector.passageDown != 'undefined') {
-							if (!passagesComponent.passageDown) {
-								reason = "No passage down.";
-								return { value: 0, reason: "Blocked. " + reason };
-							} else {
-								var requiredType = parseInt(requirements.sector.passageDown);
-								if (requiredType > 0) {
-									var existingType = passagesComponent.passageDown.type;
-									if (existingType != requiredType) {
-										reason = "Wrong passage type.";
-										return { value: 0, reason: "Blocked. " + reason };
-									}
-								}
-							}
-						}
-
-						if (typeof requirements.sector.collected_food != "undefined") {
-							var collector = improvementComponent.getVO(improvementNames.collector_food);
-							var requiredStorage = requirements.sector.collected_food;
-							var currentStorage = collector.storedResources.getResource(resourceNames.food);
-							if (currentStorage < requiredStorage) {
-								if (lowestFraction > currentStorage / requiredStorage) {
-									lowestFraction = currentStorage / requiredStorage;
-									reason = "Nothing to collect";
-								}
-							}
-						}
-
-						if (typeof requirements.sector.collected_water != "undefined") {
-							var collector = improvementComponent.getVO(improvementNames.collector_water);
-							var requiredStorage = requirements.sector.collected_water;
-							var currentStorage = collector.storedResources.getResource(resourceNames.water);
-							if (currentStorage < requiredStorage) {
-								if (lowestFraction > currentStorage / requiredStorage) {
-									lowestFraction = currentStorage / requiredStorage;
-									reason = "Nothing to collect";
-								}
-							}
-						}
-						
-						if (typeof requirements.sector.acessible_to_workers != "undefined") {
-							var campOrdinal = GameGlobals.gameState.getCampOrdinal(positionComponent.level);
-							var campCount = GameGlobals.gameState.numCamps;
-							var requiredValue = requirements.sector.acessible_to_workers;
-							var currentValue = campCount >= campOrdinal;
-							if (currentValue != requiredValue) {
-								var reason = requiredValue ? "Not accessible to workers" : "Accessible to workers";
-								return { value: 0, reason: reason };
-							}
-						}
-						
-						if (requirements.sector.hazards) {
-							for (var hazard in requirements.sector.hazards) {
-								var range = requirements.sector.hazards[hazard];
-								var currentVal = featuresComponent.hazards[hazard] || 0;
-								let result = this.checkRequirementsRange(
-									range,
-									currentVal,
-									"Min {min} " + hazard,
-									"Max {max} " + hazard,
-									"Requires " + hazard,
-									"No " + hazard + " allowed",
-								);
-								if (result) {
-									return result;
-								}
-							}
-						}
-						
-						if (requirements.sector.buildingDensity) {
-							let result = this.checkRequirementsRange(requirements.sector.buildingDensity, featuresComponent.buildingDensity, "Sector too sparsely built", "Sector too densely built");
-							if (result) {
-								return result;
-							}
-						}
-					}
-
-					if (requirements.level) {
-						var level = sector.get(PositionComponent).level;
-						var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
-
-						if (requirements.level.population) {
-							var range = requirements.level.population;
-							var value = levelComponent.populationFactor;
-							let result = this.checkRequirementsRange(range, value,
-								PlayerActionConstants.DISABLED_REASON_NOT_ENOUGH_LEVEL_POP,
-								"Too many people on this level",
-							);
-							if (result) {
-								return result;
-							}
-						}
-					}
-					
-					if (requirements.milestone) {
-						let currentMilestone = GameGlobals.gameState.numUnlockedMilestones;
-						let requiredMilestone = requirements.milestone;
-						if (currentMilestone < requiredMilestone) {
-							return { value: 0, reason: "Requires milestone " + requiredMilestone };
-						}
-					}
-					
-					if (requirements.tribe) {
-						if (requirements.tribe.improvements) {
-							for (var improvementID in requirements.tribe.improvements) {
-								var amount = this.getCurrentImprovementCountTotal(improvementID);
-								var requiredAmount = requirements.tribe.improvements[improvementID];
-								
-								if (amount < requiredAmount) {
-									var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
-									var displayName = requiredImprovementDisplayName;
-									return { value: amount / requiredAmount, reason: requiredAmount + "x " + displayName + " required" };
-								}
-							}
-						}
-						
-						if (requirements.tribe.projects) {
-							for (var improvementID in requirements.tribe.projects) {
-								var amount = this.getCurrentImprovementCountTotal(improvementID);
-								var requiredAmount = requirements.tribe.projects[improvementID];
-								
-								if (amount < requiredAmount) {
-									var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
-									var displayName = requiredImprovementDisplayName;
-									return { value: amount / requiredAmount, reason: requiredAmount + "x " + displayName + " required" };
-								}
-							}
-						}
-						
-						if (requirements.tribe.population) {
-							let currentPopulation = GameGlobals.tribeHelper.getTotalPopulation();
-							let requiredPopulation = requirements.tribe.population;
-							if (currentPopulation < requiredPopulation) {
-								return { value: currentPopulation / requiredPopulation, reason: "Required: " + requiredPopulation + " total population" };
-							}
-						}
-					}
-					
-					if (requirements.excursion) {
-						if (requirements.excursion.numNaps) {
-							var excursionComponent = this.playerStatsNodes.head.entity.get(ExcursionComponent);
-							var currentValue = excursionComponent != null ? excursionComponent.numNaps : 0;
-							var min = requirements.excursion.numNaps[0];
-							var max = requirements.excursion.numNaps[1];
-							if (currentValue < min) {
-								reason = "Min " + min + " naps needed.";
-								lowestFraction = Math.min(lowestFraction, currentValue / min);
-							} else if (max > 0 && currentValue >= max) {
-								if (GameGlobals.gameState.unlockedFeatures.camp) {
-									reason = "Already rested outside recently.";
-									lowestFraction = 0;
-								}
-							}
-						}
-					}
-					
-					if (requirements.uses_in_fight) {
-						var fightComponent = sector.get(FightComponent);
-						var usesReqs = requirements.uses_in_fight;
-						var actionItemID = GameGlobals.playerActionsHelper.getActionIDParam(action);
-						for (var itemID in usesReqs) {
-							var def = usesReqs[itemID];
-							var min = def[0];
-							var max = def[1];
-							var current = fightComponent ? fightComponent.itemsUsed[itemID] || 0 : 0;
-							var itemName = ItemConstants.getItemByID(itemID).name;
-							if (min > current) {
-								return { value: 0, reason: "Must use " + itemName + " first" };
-							} else if (max <= current) {
-								if (itemID == actionItemID && max == 1) {
-									return { value: 0, reason: "Already used" };
-								} else {
-									return { value: 0, reason: "Already used " + itemName };
-								}
-							}
-						}
-					}
-				}
-				
-				let isAffectedByHazard = GameGlobals.sectorHelper.isAffectedByHazard(featuresComponent, statusComponent, itemsComponent)
-				if (isAffectedByHazard && !this.isActionIndependentOfHazards(action)) {
-					return { value: 0, reason: GameGlobals.sectorHelper.getHazardDisabledReason(featuresComponent, statusComponent, itemsComponent) };
-				}
-				
-				var item = this.getItemForCraftAction(action);
-				if (item && baseActionID == "craft") {
-					if (!inCamp) {
-						var spaceNow = bagComponent.totalCapacity - bagComponent.usedCapacity;
-						var spaceRequired = BagConstants.getItemCapacity(item);
-						var spaceFreed = BagConstants.getResourcesCapacity(this.getCostResourcesVO(action));
-						if (spaceNow - spaceRequired + spaceFreed < 0) {
-							return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_BAG_FULL };
-						}
-					}
-				}
-				
-				if (GameGlobals.gameState.isLaunchStarted) return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_LAUNCHED };
-				
-				return { value: lowestFraction, reason: reason };
-			};
+			let sectorID = sector.get(PositionComponent).positionId();
+			let reqsID = action + "-" + sectorID;
+			let ordinal = this.getActionOrdinal(action, sector);
 
 			if (!this.cache.reqs[reqsID]) {
-				let result = checkRequirementsInternal.apply(this, [action, sector]);
+				let result = this.checkActionRequirementsInternal.apply(this, [action, sector, checksToSkip]);
 				if (result.reason && !result.baseReason) result.baseReason = result.reason;
 				if (result.reason && doLog) log.w("" + result.reason);
 				this.cache.reqs[reqsID] = result;
 			}
 
 			return this.cache.reqs[reqsID];
+		},
+		
+		checkActionRequirementsInternal: function (action, sector, checksToSkip) {
+			let requirements = this.getReqs(action, sector);
+			let costs = this.getCosts(action);
+
+			let baseActionID = this.getBaseActionID(action);
+			let actionIDParam = this.getActionIDParam(action);
+			
+			let inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
+			
+			let movementOptionsComponent = sector.get(MovementOptionsComponent);
+			if (action === "move_level_up" && !movementOptionsComponent.canMoveTo[PositionConstants.DIRECTION_UP])
+				return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveToReason[PositionConstants.DIRECTION_UP] };
+			if (action === "move_level_down" && !movementOptionsComponent.canMoveTo[PositionConstants.DIRECTION_DOWN])
+				return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveToReason[PositionConstants.DIRECTION_DOWN] };
+	
+			if (this.isImproveBuildingAction(baseActionID)) {
+				let improvementName = this.getImprovementNameForAction(action);
+				let improvementID = this.getImprovementIDForAction(action);
+				let techLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementName, this.tribeUpgradesNodes.head.upgrades);
+				let maxLevel = ImprovementConstants.getMaxLevel(improvementID, techLevel);
+				if (ordinal >= maxLevel) {
+					return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENT_LEVEL };
+				}
+			}
+
+			if (costs) {
+				if (costs.stamina > 0) {
+					if (!requirements) requirements = {};
+					requirements.health = Math.ceil(costs.stamina / PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR);
+				}
+				if (costs.favour && !GameGlobals.gameState.unlockedFeatures.favour) {
+					reason = "Locked stats.";
+					return { value: 0, reason: reason };
+				}
+				if ((costs.resource_fuel > 0 && !GameGlobals.gameState.unlockedFeatures.resources.fuel) ||
+					(costs.resource_rubber > 0 && !GameGlobals.gameState.unlockedFeatures.resources.rubber) ||
+					(costs.resource_herbs > 0 && !GameGlobals.gameState.unlockedFeatures.resources.herbs) ||
+					(costs.resource_tools > 0 && !GameGlobals.gameState.unlockedFeatures.resources.tools) ||
+					(costs.resource_concrete > 0 && !GameGlobals.gameState.unlockedFeatures.resources.concrete)) {
+					reason = PlayerActionConstants.DISABLED_REASON_LOCKED_RESOURCES;
+					lowestFraction = 0;
+				}
+			}
+			
+			let result = this.checkGeneralRequirementaInternal(requirements, action, sector, checksToSkip);
+			
+			let featuresComponent = sector.get(SectorFeaturesComponent);
+			let statusComponent = sector.get(SectorStatusComponent);
+			let itemsComponent = this.playerStatsNodes.head.items;
+			let isAffectedByHazard = GameGlobals.sectorHelper.isAffectedByHazard(featuresComponent, statusComponent, itemsComponent)
+			if (isAffectedByHazard && !this.isActionIndependentOfHazards(action)) {
+				return { value: 0, reason: GameGlobals.sectorHelper.getHazardDisabledReason(featuresComponent, statusComponent, itemsComponent) };
+			}
+			
+			let item = this.getItemForCraftAction(action);
+			if (item && baseActionID == "craft") {
+				if (!inCamp) {
+					let bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
+					let spaceNow = bagComponent.totalCapacity - bagComponent.usedCapacity;
+					let spaceRequired = BagConstants.getItemCapacity(item);
+					let spaceFreed = BagConstants.getResourcesCapacity(this.getCostResourcesVO(action));
+					if (spaceNow - spaceRequired + spaceFreed < 0) {
+						return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_BAG_FULL };
+					}
+				}
+			}
+			
+			return result;
+		},
+		
+		checkGeneralRequirementaInternal: function (requirements, action, sector, checksToSkip) {
+			sector = sector || (this.playerLocationNodes && this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null);
+			
+			var playerVision = this.playerStatsNodes.head.vision.value;
+			var playerPerks = this.playerStatsNodes.head.perks;
+			var playerStamina = this.playerStatsNodes.head.stamina.stamina;
+			var deityComponent = this.playerResourcesNodes.head.entity.get(DeityComponent);
+			
+			var positionComponent = sector.get(PositionComponent);
+			var improvementComponent = sector.get(SectorImprovementsComponent);
+			var movementOptionsComponent = sector.get(MovementOptionsComponent);
+			var passagesComponent = sector.get(PassagesComponent);
+			var campComponent = sector.get(CampComponent);
+			var featuresComponent = sector.get(SectorFeaturesComponent);
+			var statusComponent = sector.get(SectorStatusComponent);
+			var playerActionComponent = this.playerResourcesNodes.head.entity.get(PlayerActionComponent);
+			var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
+			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+			var inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
+			
+			var shouldSkipCheck = function (reason) {
+				if (!checksToSkip) return false;
+				return checksToSkip.indexOf(reason) >= 0;
+			};
+
+			var lowestFraction = 1;
+			var reason = "";
+
+			if (requirements) {
+				if (requirements.vision) {
+					let result = this.checkRequirementsRange(requirements.vision, playerVision, "{min} vision needed", "{max} vision max");
+					if (result) {
+						return result;
+					}
+				}
+
+				if (requirements.stamina) {
+					let result = this.checkRequirementsRange(requirements.stamina, playerStamina, "{min} stamina needed", "{max} stamina max");
+					if (result) {
+						return result;
+					}
+				}
+
+				if (typeof requirements.maxStamina !== "undefined") {
+					var currentValue = playerStamina === this.playerStatsNodes.head.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
+					var requiredValue = requirements.maxStamina;
+					if (currentValue !== requiredValue) {
+						if (currentValue) reason = "Already fully rested.";
+						else reason = "Must be fully rested.";
+						return { value: 0, reason: reason};
+					}
+				}
+
+				if (requirements.health) {
+					var playerHealth = this.playerStatsNodes.head.stamina.health;
+					if (playerHealth < requirements.health) {
+						reason = requirements.health + " health required.";
+						lowestFraction = Math.min(lowestFraction, playerHealth / requirements.health);
+					}
+				}
+
+				if (typeof requirements.sunlit !== "undefined") {
+					var currentValue = featuresComponent.sunlit;
+					var requiredValue = requirements.sunlit;
+					if (currentValue !== requiredValue) {
+						if (currentValue) reason = "Sunlight not allowed.";
+						else reason = "Sunlight required.";
+						return { value: 0, reason: reason, baseReason: PlayerActionConstants.DISABLED_REASON_SUNLIT };
+					}
+				}
+
+				if (requirements.deity) {
+					if (!deityComponent) {
+						return { value: 0, reason: "Deity required." };
+					}
+				}
+
+				if (requirements.population && !shouldSkipCheck(PlayerActionConstants.DISABLED_REASON_POPULATION)) {
+					var currentPopulation = campComponent ? Math.floor(campComponent.population) : 0;
+					let result = this.checkRequirementsRange(requirements.population, currentPopulation, "{min} population required", "Maximum {max} population", "workers required", "no workers allowed");
+					if (result) {
+						return result;
+					}
+				}
+
+				if (typeof requirements.rumourpoolchecked != "undefined") {
+					if (campComponent) {
+						var campValue = campComponent.rumourpoolchecked;
+						if (requirements.rumourpoolchecked != campValue) {
+							if (!requirements.rumourpoolchecked) reason = "No new rumours at the moment.";
+							if (requirements.rumourpoolchecked) reason = "There are new rumours.";
+							return { value: 0, reason: reason };
+						}
+					}
+				}
+
+				if (requirements.numCamps) {
+					var currentCamps = GameGlobals.gameState.numCamps;
+					if (requirements.numCamps > currentCamps) {
+						reason = requirements.numCamps + " camps required.";
+						return { value: currentCamps / requirements.numCamps, reason: reason };
+					}
+				}
+
+				if (typeof requirements.inCamp !== "undefined") {
+					var required = requirements.inCamp;
+					var current = inCamp;
+					if (required !== current) {
+						if (required) {
+							return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_NOT_IN_CAMP };
+						} else {
+							return { value: 0, reason: "Must be outside to do this." };
+						}
+					}
+				}
+
+				if (requirements.improvements) {
+					for (var improvementID in requirements.improvements) {
+						var amount = this.getCurrentImprovementCount(improvementComponent, campComponent, improvementID);
+						var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
+						
+						var range = requirements.improvements[improvementID];
+						var actionImprovementName = this.getImprovementNameForAction(action, true);
+						if (!actionImprovementName) actionImprovementName = "Improvement";
+						var displayName = actionImprovementName === requiredImprovementDisplayName ? "" : requiredImprovementDisplayName;
+						
+						let result = this.checkRequirementsRange(
+							range,
+							amount,
+							"{min}x " + displayName + " required",
+							"max " + displayName + " built",
+							displayName + " required",
+							displayName + " already built",
+							PlayerActionConstants.DISABLED_REASON_MIN_IMPROVEMENTS,
+							PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENTS
+						);
+						
+						if (result) {
+							result.reason.trim();
+							return result;
+						}
+					}
+				}
+				
+				if (requirements.improvementMajorLevel) {
+					for (var improvementID in requirements.improvementMajorLevel) {
+						var amount = this.getCurrentImprovementMajorLevel(improvementComponent, campComponent, improvementID);
+						var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
+						
+						var range = requirements.improvementMajorLevel[improvementID];
+						
+						let result = this.checkRequirementsRange(range, amount,
+							"building level too low",
+							"building level too high"
+						);
+						if (result) {
+							result.reason.trim();
+							return result;
+						}
+					}
+				}
+				
+				if (requirements.improvementsOnLevel) {
+					for (var improvementID in requirements.improvementsOnLevel) {
+						var amount = this.getCurrentImprovementCountOnLevel(positionComponent.level, improvementID);
+						var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
+						var displayName = actionImprovementName === requiredImprovementDisplayName ? "" : requiredImprovementDisplayName;
+						var range = requirements.improvementsOnLevel[improvementID];
+						let result = this.checkRequirementsRange(range, amount,
+							"{min}x " + displayName + " on level required",
+							"max {max} " + displayName + " on level",
+							displayName + " required on level",
+							displayName + " already built on level",
+							PlayerActionConstants.DISABLED_REASON_MIN_IMPROVEMENTS,
+							PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENTS
+						);
+						if (result) {
+							return result;
+						}
+					}
+				}
+				
+				if (requirements.improvementsDamaged) {
+					for (var improvementID in requirements.improvementsDamaged) {
+						let improvementName = improvementNames[improvementID];
+						let amount = improvementComponent.getNumDamaged(improvementName);
+						let range = requirements.improvements[improvementID];
+						
+						let result = this.checkRequirementsRange(
+							range,
+							amount,
+							"no damaged buildings to repair",
+							"too many damaged buildings"
+						);
+						
+						if (result) {
+							result.reason.trim();
+							return result;
+						}
+						
+					}
+				}
+				
+				if (requirements.workers) {
+					var workerRequirements = requirements.workers;
+					
+					for (let workerType in workerRequirements) {
+						var range = workerRequirements[workerType];
+						var amount = campComponent.assignedWorkers[workerType] || 0;
+						let result = this.checkRequirementsRange(range, amount, workerType + " required", "no " + workerType + " required");
+						if (result) {
+							return result;
+						}
+					}
+				}
+
+				if (requirements.perkEffects) {
+					let perkRequirements = requirements.perkEffects;
+					for(let perkType in perkRequirements) {
+						let requirementDef = perkRequirements[perkType];
+						let min = requirementDef[0];
+						let max = requirementDef[1];
+						let isOneValue = requirementDef[2];
+						if (max < 0) max = 9999999;
+						
+						let totalEffect = playerPerks.getTotalEffect(perkType);
+						let validPerk = playerPerks.getPerkWithEffect(perkType, min, max);
+						
+						if ((!isOneValue && (min > totalEffect || max <= totalEffect)) || (isOneValue && validPerk == null)) {
+							if (min > totalEffect) reason = "Can't do this while: " + perkType;
+							if (max <= totalEffect) reason = "Status required: " + perkType;
+							return { value: 0, reason: reason };
+						}
+					}
+				}
+				
+				if (requirements.perks) {
+					let perkRequirements = requirements.perks;
+					for (let perkID in perkRequirements) {
+						let requiredValue = perkRequirements[perkID];
+						let actualValue = playerPerks.hasPerk(perkID);
+						if (requiredValue != actualValue) {
+							var perk = PerkConstants.getPerk(perkID);
+							if (requiredValue) {
+								return { value: 0, reason: "Status required: " + perk.name };
+							} else {
+								return { value: 0, reason: "Blocked by status: " + perk.name };
+							}
+						}
+					}
+				}
+
+				if (requirements.upgrades) {
+					var upgradeRequirements = requirements.upgrades;
+					for (var upgradeID in upgradeRequirements) {
+						var requirementBoolean = upgradeRequirements[upgradeID];
+						var hasBoolean = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeID);
+						if (requirementBoolean != hasBoolean) {
+							var def = UpgradeConstants.upgradeDefinitions[upgradeID];
+							var name = def ? def.name : upgradeID;
+							if (requirementBoolean) reason = "Upgrade required: " + name;
+							else reason = "Upgrade already researched (" + name + ")";
+							return { value: 0, reason: reason, baseReason: PlayerActionConstants.DISABLED_REASON_UPGRADE };
+						}
+					}
+				}
+				
+				if (requirements.unlockedWorkers) {
+					for (let workerID in requirements.unlockedWorkers) {
+						let requiredValue = requirements.unlockedWorkers[workerID];
+						let actualValue = GameGlobals.campHelper.hasUnlockedWorker(workerID);
+						if (requiredValue != actualValue) {
+							if (requiredValue) {
+								return { value: 0, reason: "Worker required: " + workerID };
+							} else {
+								return { value: 0, reason: "Worker already unlocked: " + workerID };
+							}
+						}
+					}
+				}
+
+				if (requirements.blueprint) {
+					var blueprintName = action;
+					var hasBlueprint = this.tribeUpgradesNodes.head.upgrades.hasAvailableBlueprint(blueprintName);
+					if (!hasBlueprint) {
+						reason = "Blueprint required.";
+						return { value: 0, reason: reason };
+					}
+				}
+
+				if (typeof requirements.blueprintpieces !== "undefined") {
+					var upgradeID = requirements.blueprintpieces;
+					var blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(upgradeID);
+					if (!blueprintVO || blueprintVO.completed) {
+						reason = "No such blueprint in progress.";
+						return { value: 0, reason: reason };
+					}
+					if (blueprintVO.maxPieces - blueprintVO.currentPieces > 0) {
+						reason = "Missing pieces.";
+						return { value: 0, reason: reason };
+					}
+				}
+
+				if (typeof requirements.busy !== "undefined") {
+					var currentValue = playerActionComponent.isBusy();
+					var requiredValue = requirements.busy;
+					if (currentValue !== requiredValue) {
+						var timeLeft = Math.ceil(playerActionComponent.getBusyTimeLeft());
+						if (currentValue) reason = "Busy " + playerActionComponent.getBusyDescription() + " (" + timeLeft + "s)";
+						else reason = "Need to be busy to do this.";
+						return { value: 0, reason: reason, baseReason: PlayerActionConstants.DISABLED_REASON_BUSY };
+					}
+				}
+				
+				if (typeof requirements.path_to_camp !== "undefined") {
+					var path = this.getPathToNearestCamp(sector);
+					var currentValue = path !== null;
+					var requiredValue = requirements.path_to_camp;
+					if (currentValue !== requiredValue) {
+						if (currentValue) reason = "Path to camp exists";
+						else reason = "No path to camp.";
+						return { value: 0, reason: reason };
+					}
+				}
+				
+				if (requirements.followers) {
+					if (typeof requirements.followers.maxRecruited !== "undefined") {
+						var followersComponent = this.playerStatsNodes.head.followers;
+						var numCurrentFollowers = followersComponent.getAll().length;
+						var numMaxFollowers = GameGlobals.campHelper.getCurrentMaxFollowersRecruited();
+						var currentValue = numCurrentFollowers >= numMaxFollowers;
+						var requiredValue = requirements.followers.maxRecruited;
+						let result = this.checkRequirementsBoolean(requiredValue, currentValue, "Maximum followers recruited", "Maximum followers not recruited");
+						if (result) return result;
+					}
+				}
+
+				if (typeof requirements.bag !== "undefined") {
+					if (requirements.bag.validSelection) {
+						let validStart = bagComponent.selectionStartCapacity === undefined || bagComponent.selectionStartCapacity <= bagComponent.totalCapacity;
+						let validNow = bagComponent.selectedCapacity <= bagComponent.totalCapacity;
+						if (validStart && !validNow) {
+							return { value: 0, reason: "Can't carry that much stuff." };
+						}
+						
+						let resultNode = this.playerActionResultNodes.head;
+						if (resultNode) {
+							let resultVO = resultNode.result.pendingResultVO;
+							let unselectedItems = resultVO.getUnselectedAndDiscardedItems();
+							for (let i = 0; i < unselectedItems.length; i++) {
+								let unselectedItem = unselectedItems[i];
+								if (unselectedItem.type == ItemConstants.itemTypes.uniqueEquipment) {
+									return { value: 0, reason: "Can't leave " + ItemConstants.getItemDisplayName(unselectedItem) + " behind" };
+								}
+							}
+						}
+					}
+					if (requirements.bag.validSelectionAll) {
+						if (bagComponent.selectableCapacity > bagComponent.totalCapacity) {
+							return {value: 0, reason: "Can't carry that much stuff."};
+						}
+					}
+					if (typeof requirements.bag.full !== "undefined") {
+						var requiredValue = requirements.bag.full;
+						var currentValue = bagComponent.usedCapacity >= bagComponent.totalCapacity;
+						if (requiredValue !== currentValue) {
+							if (requiredValue)
+								return {value: 0, reason: "Bag must be full."};
+							else
+								return {value: 0, reason: "Bag is full."};
+						}
+					}
+				}
+
+				if (requirements.outgoingcaravan) {
+					if (typeof requirements.outgoingcaravan.available !== "undefined") {
+						var caravansComponent = sector.get(OutgoingCaravansComponent);
+						var requiredValue = requirements.outgoingcaravan.available ? 1 : 0;
+						var totalCaravans = improvementComponent.getCount(improvementNames.stable);
+						var busyCaravans = caravansComponent.outgoingCaravans.length;
+						var currentValue = totalCaravans - busyCaravans;
+						if (requiredValue > currentValue) {
+							return {value: 0, reason: "No available caravans."};
+						}
+					}
+					if (typeof requirements.outgoingcaravan.validSelection !== "undefined") {
+						var requiredValue = requirements.outgoingcaravan.validSelection;
+						var currentValue = $("button[action='" + action + "']").attr("data-isselectionvalid") == "true";
+						if (requiredValue != currentValue) {
+							if (requiredValue)
+								return {value: 0, reason: "Invalid selection."};
+							else
+								return {value: 0, reason: "Valid selection."};
+						}
+					}
+				}
+
+				if (requirements.incomingcaravan) {
+					if (typeof requirements.incomingcaravan.validSelection !== "undefined") {
+						let requiredValue = requirements.incomingcaravan.validSelection;
+						let traderComponent = sector.get(TraderComponent);
+						if (traderComponent) {
+							let caravan = traderComponent.caravan;
+							let currentValue = caravan.traderOfferValue > 0 && caravan.traderOfferValue <= caravan.campOfferValue;
+							if (requiredValue != currentValue) {
+								if (requiredValue) {
+									return {value: 0, reason: "Invalid selection."};
+								} else {
+									return {value: 0, reason: "Valid selection."};
+								}
+							}
+							
+							for (let itemID in caravan.campSelectedItems) {
+								let amount = caravan.campSelectedItems[itemID];
+								let item = ItemConstants.getItemByID(itemID);
+								if (amount > TradeConstants.MAX_ITEMS_TO_TRADE_PER_CARAVAN && item.type != ItemConstants.itemTypes.ingredient) {
+									return {value: 0, reason: "The trader doesn't want that many " + ItemConstants.getItemDisplayName(item)  + "."};
+								}
+							}
+						} else {
+							return {value: 0, reason: "No caravan."};
+						}
+					}
+				}
+
+				if (requirements.camp) {
+					if (requirements.camp.isReachableByTribeTraders) {
+						let isCampReachableByTribeTraders = GameGlobals.levelHelper.isCampReachableByTribeTraders(sector);
+						if (!isCampReachableByTribeTraders) {
+							return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_NOT_REACHABLE_BY_TRADERS };
+						}
+					}
+					if (typeof requirements.camp.raid !== "undefined") {
+						let currentValue = this.playerLocationNodes.head.entity.has(RaidComponent);
+						let requiredValue = requirements.camp.raid;
+						if (requiredValue != currentValue) {
+							return { value: 0, reason: (requiredValue ? "No raid currently" : "There is a raid" ) };
+						}
+					}
+				}
+
+				if (requirements.sector) {
+					if (requirements.sector.collectable_water) {
+						let hasWater = featuresComponent.resourcesCollectable.water > 0;
+						if (!hasWater) {
+							return { value: 0, reason: "No collectable water.", baseReason: PlayerActionConstants.DISABLED_REASON_INVALID_SECTOR };
+						}
+					}
+					if (requirements.sector.collectable_food) {
+						let hasFood = featuresComponent.resourcesCollectable.food > 0;
+						if (!hasFood) {
+							return { value: 0, reason: "No collectable food.", baseReason: PlayerActionConstants.DISABLED_REASON_INVALID_SECTOR };
+						}
+					}
+					
+					if (typeof requirements.sector.hasCamp !== "undefined") {
+						var value = sector.has(CampComponent);
+						var requiredValue = requirements.sector.hasCamp;
+						if (value !== requiredValue) {
+							var reason = requiredValue ? "No camp here." : "There is a camp here";
+							return { value: 0, reason: reason };
+						}
+					}
+
+					if (requirements.sector.canHaveCamp) {
+						if (!featuresComponent.canHaveCamp()) {
+							return { value: 0, reason: "Location not suitable for camp", baseReason: PlayerActionConstants.DISABLED_REASON_INVALID_SECTOR };
+						}
+					}
+					if (typeof requirements.sector.enemies != "undefined") {
+						var enemiesComponent = sector.get(EnemiesComponent);
+						if (enemiesComponent.hasEnemies != requirements.sector.enemies) {
+							if (requirements.sector.enemies)
+								return { value: 0, reason: "Sector enemies required" };
+							else
+								return { value: 0, reason: "Too dangerous here" };
+						}
+					}
+					if (typeof requirements.sector.scouted != "undefined") {
+						if (statusComponent.scouted != requirements.sector.scouted) {
+							if (statusComponent.scouted) {
+								return { value: 0, reason: "Area already scouted.", baseReason: PlayerActionConstants.DISABLED_REASON_SCOUTED };
+							} else {
+								return { value: 0, reason: "Area not scouted yet.", baseReason: PlayerActionConstants.DISABLED_REASON_SCOUTED };
+							}
+						}
+					}
+					if (typeof requirements.sector.scavengedPercent != "undefined") {
+						var range = requirements.sector.scavengedPercent;
+						var currentVal = statusComponent.getScavengedPercent() / 100;
+						let result = this.checkRequirementsRange(range, currentVal, "", "This area has beens scavenged clean.");
+						if (result) {
+							return result;
+						}
+					}
+					if (typeof requirements.sector.investigatedPercent != "undefined") {
+						var range = requirements.sector.investigatedPercent;
+						var currentVal = statusComponent.getInvestigatedPercent() / 100;
+						let result = this.checkRequirementsRange(range, currentVal, "", "This area has beens investigated thoroughly.");
+						if (result) {
+							return result;
+						}
+					}
+					if (typeof requirements.sector.spring != "undefined") {
+						if (featuresComponent.hasSpring != requirements.sector.spring) {
+							if (featuresComponent.hasSpring)    reason = "There is a spring.";
+							else                                reason = "There is no spring.";
+							return { value: 0, reason: reason };
+						}
+					}
+					if (typeof requirements.sector.scoutedLocales !== "undefined") {
+						for(var localei in requirements.sector.scoutedLocales) {
+							var requiredStatus = requirements.sector.scoutedLocales[localei];
+							var currentStatus = statusComponent.isLocaleScouted(localei);
+							if (requiredStatus !== currentStatus) {
+								if (requiredStatus) reason = "Locale must be scouted.";
+								if (!requiredStatus) reason = "Locale already scouted.";
+								return { value: 0, reason: reason };
+							}
+						}
+					}
+					for (let i in PositionConstants.getLevelDirections()) {
+						var direction = PositionConstants.getLevelDirections()[i];
+						var directionName = PositionConstants.getDirectionName(direction, true);
+
+						var blockerKey = "blocker" + directionName.toUpperCase();
+						if (typeof requirements.sector[blockerKey] !== 'undefined') {
+							var requiredValue = requirements.sector[blockerKey];
+							var currentValue = !movementOptionsComponent.canMoveTo[direction];
+
+							if (requiredValue !== currentValue) {
+								if (currentValue) {
+									return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveToReason[direction] };
+								} else {
+									return { value: 0, reason: "Nothing blocking movement to " + directionName + "." };
+								}
+							}
+						}
+						var clearedKey = "isWasteCleared_" + direction;
+						if (typeof requirements.sector[clearedKey] !== 'undefined') {
+							var requiredValue = requirements.sector[clearedKey];
+							var currentValue =
+								statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_WASTE_TOXIC) ||
+								statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE);
+
+							if (requiredValue !== currentValue) {
+								if (currentValue) {
+									return { value: 0, reason: "Waste cleared. " };
+								} else {
+									return { value: 0, reason: "Waste not cleared " + directionName + "." };
+								}
+							}
+						}
+					}
+
+					if (typeof requirements.sector.passageUp != 'undefined') {
+						if (!passagesComponent.passageUp) {
+							reason = "No passage up.";
+							return { value: 0, reason: "Blocked. " + reason };
+						} else {
+							var requiredType = parseInt(requirements.sector.passageUp);
+							if (requiredType > 0) {
+								var existingType = passagesComponent.passageUp.type;
+								if (existingType !== requiredType) {
+									reason = "Wrong passage type.";
+									return { value: 0, reason: "Blocked. " + reason };
+								}
+							}
+						}
+					}
+					if (typeof requirements.sector.passageDown != 'undefined') {
+						if (!passagesComponent.passageDown) {
+							reason = "No passage down.";
+							return { value: 0, reason: "Blocked. " + reason };
+						} else {
+							var requiredType = parseInt(requirements.sector.passageDown);
+							if (requiredType > 0) {
+								var existingType = passagesComponent.passageDown.type;
+								if (existingType != requiredType) {
+									reason = "Wrong passage type.";
+									return { value: 0, reason: "Blocked. " + reason };
+								}
+							}
+						}
+					}
+
+					if (typeof requirements.sector.collected_food != "undefined") {
+						var collector = improvementComponent.getVO(improvementNames.collector_food);
+						var requiredStorage = requirements.sector.collected_food;
+						var currentStorage = collector.storedResources.getResource(resourceNames.food);
+						if (currentStorage < requiredStorage) {
+							if (lowestFraction > currentStorage / requiredStorage) {
+								lowestFraction = currentStorage / requiredStorage;
+								reason = "Nothing to collect";
+							}
+						}
+					}
+
+					if (typeof requirements.sector.collected_water != "undefined") {
+						var collector = improvementComponent.getVO(improvementNames.collector_water);
+						var requiredStorage = requirements.sector.collected_water;
+						var currentStorage = collector.storedResources.getResource(resourceNames.water);
+						if (currentStorage < requiredStorage) {
+							if (lowestFraction > currentStorage / requiredStorage) {
+								lowestFraction = currentStorage / requiredStorage;
+								reason = "Nothing to collect";
+							}
+						}
+					}
+					
+					if (typeof requirements.sector.acessible_to_workers != "undefined") {
+						var campOrdinal = GameGlobals.gameState.getCampOrdinal(positionComponent.level);
+						var campCount = GameGlobals.gameState.numCamps;
+						var requiredValue = requirements.sector.acessible_to_workers;
+						var currentValue = campCount >= campOrdinal;
+						if (currentValue != requiredValue) {
+							var reason = requiredValue ? "Not accessible to workers" : "Accessible to workers";
+							return { value: 0, reason: reason };
+						}
+					}
+					
+					if (requirements.sector.hazards) {
+						for (var hazard in requirements.sector.hazards) {
+							var range = requirements.sector.hazards[hazard];
+							var currentVal = featuresComponent.hazards[hazard] || 0;
+							let result = this.checkRequirementsRange(
+								range,
+								currentVal,
+								"Min {min} " + hazard,
+								"Max {max} " + hazard,
+								"Requires " + hazard,
+								"No " + hazard + " allowed",
+							);
+							if (result) {
+								return result;
+							}
+						}
+					}
+					
+					if (requirements.sector.buildingDensity) {
+						let result = this.checkRequirementsRange(requirements.sector.buildingDensity, featuresComponent.buildingDensity, "Sector too sparsely built", "Sector too densely built");
+						if (result) {
+							return result;
+						}
+					}
+				}
+
+				if (requirements.level) {
+					var level = sector.get(PositionComponent).level;
+					var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
+
+					if (requirements.level.population) {
+						var range = requirements.level.population;
+						var value = levelComponent.populationFactor;
+						let result = this.checkRequirementsRange(range, value,
+							PlayerActionConstants.DISABLED_REASON_NOT_ENOUGH_LEVEL_POP,
+							"Too many people on this level",
+						);
+						if (result) {
+							return result;
+						}
+					}
+				}
+				
+				if (requirements.milestone) {
+					let currentMilestone = GameGlobals.gameState.numUnlockedMilestones;
+					let requiredMilestone = requirements.milestone;
+					if (currentMilestone < requiredMilestone) {
+						return { value: 0, reason: "Requires milestone " + requiredMilestone };
+					}
+				}
+				
+				if (requirements.tribe) {
+					if (requirements.tribe.improvements) {
+						for (var improvementID in requirements.tribe.improvements) {
+							var amount = this.getCurrentImprovementCountTotal(improvementID);
+							var requiredAmount = requirements.tribe.improvements[improvementID];
+							
+							if (amount < requiredAmount) {
+								var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
+								var displayName = requiredImprovementDisplayName;
+								return { value: amount / requiredAmount, reason: requiredAmount + "x " + displayName + " required" };
+							}
+						}
+					}
+					
+					if (requirements.tribe.projects) {
+						for (var improvementID in requirements.tribe.projects) {
+							var amount = this.getCurrentImprovementCountTotal(improvementID);
+							var requiredAmount = requirements.tribe.projects[improvementID];
+							
+							if (amount < requiredAmount) {
+								var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
+								var displayName = requiredImprovementDisplayName;
+								return { value: amount / requiredAmount, reason: requiredAmount + "x " + displayName + " required" };
+							}
+						}
+					}
+					
+					if (requirements.tribe.population) {
+						let currentPopulation = GameGlobals.tribeHelper.getTotalPopulation();
+						let requiredPopulation = requirements.tribe.population;
+						if (currentPopulation < requiredPopulation) {
+							return { value: currentPopulation / requiredPopulation, reason: "Required: " + requiredPopulation + " total population" };
+						}
+					}
+				}
+				
+				if (requirements.excursion) {
+					if (requirements.excursion.numNaps) {
+						var excursionComponent = this.playerStatsNodes.head.entity.get(ExcursionComponent);
+						var currentValue = excursionComponent != null ? excursionComponent.numNaps : 0;
+						var min = requirements.excursion.numNaps[0];
+						var max = requirements.excursion.numNaps[1];
+						if (currentValue < min) {
+							reason = "Min " + min + " naps needed.";
+							lowestFraction = Math.min(lowestFraction, currentValue / min);
+						} else if (max > 0 && currentValue >= max) {
+							if (GameGlobals.gameState.unlockedFeatures.camp) {
+								reason = "Already rested outside recently.";
+								lowestFraction = 0;
+							}
+						}
+					}
+				}
+				
+				if (requirements.uses_in_fight) {
+					var fightComponent = sector.get(FightComponent);
+					var usesReqs = requirements.uses_in_fight;
+					var actionItemID = GameGlobals.playerActionsHelper.getActionIDParam(action);
+					for (var itemID in usesReqs) {
+						var def = usesReqs[itemID];
+						var min = def[0];
+						var max = def[1];
+						var current = fightComponent ? fightComponent.itemsUsed[itemID] || 0 : 0;
+						var itemName = ItemConstants.getItemByID(itemID).name;
+						if (min > current) {
+							return { value: 0, reason: "Must use " + itemName + " first" };
+						} else if (max <= current) {
+							if (itemID == actionItemID && max == 1) {
+								return { value: 0, reason: "Already used" };
+							} else {
+								return { value: 0, reason: "Already used " + itemName };
+							}
+						}
+					}
+				}
+			}
+			
+			if (GameGlobals.gameState.isLaunchStarted) return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_LAUNCHED };
+			
+			return { value: lowestFraction, reason: reason };
 		},
 		
 		checkRequirementsRange: function (range, value, minreason, maxreason, minreason1, maxreason1, minReasonBase, maxReasonBase) {

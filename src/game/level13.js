@@ -37,6 +37,7 @@ define([
 	'game/systems/PlayerPositionSystem',
 	'game/systems/PlayerActionSystem',
 	'game/systems/SectorStatusSystem',
+	'game/systems/TutorialSystem',
 	'game/systems/LevelPassagesSystem',
 	'game/systems/CollectorSystem',
 	'game/systems/FightSystem',
@@ -99,6 +100,7 @@ define([
 	PlayerPositionSystem,
 	PlayerActionSystem,
 	SectorStatusSystem,
+	TutorialSystem,
 	LevelPassagesSystem,
 	CollectorSystem,
 	FightSystem,
@@ -196,6 +198,7 @@ define([
 			this.engine.addSystem(new CampEventsSystem(), SystemPriorities.update);
 			this.engine.addSystem(new PlayerEventsSystem(), SystemPriorities.update);
 			this.engine.addSystem(new ExcursionSystem(), SystemPriorities.update);
+			this.engine.addSystem(new TutorialSystem(), SystemPriorities.update);
 			this.engine.addSystem(new EndingSystem(), SystemPriorities.update);
 
 			this.engine.addSystem(new AutoPlaySystem(), SystemPriorities.postUpdate);

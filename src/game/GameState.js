@@ -80,6 +80,8 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 				numTimesDespaired: 0,
 			};
 
+			this.completedtutorials = {};
+
 			this.uiBagStatus = {
 				itemsOwnedSeen: [],
 				itemsUsableSeen: [],
