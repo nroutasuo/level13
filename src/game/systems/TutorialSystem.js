@@ -44,8 +44,10 @@ define([
 		
 		registerListeners: function () {
 			GlobalSignals.add(this, GlobalSignals.sectorScavengedSignal, function () { this.onTutorialTrigger("action_scavenge"); });
-			GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, function () { this.onTutorialTrigger("change_inventory"); });
+			GlobalSignals.add(this, GlobalSignals.sectorScoutedSignal, function () { this.onTutorialTrigger("action_scout"); });
 			GlobalSignals.add(this, GlobalSignals.actionRewardsCollectedSignal, function () { this.onTutorialTrigger("action_collect_rewards"); });
+			GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, function () { this.onTutorialTrigger("change_inventory"); });
+			GlobalSignals.add(this, GlobalSignals.playerMovedSignal, function () { this.onTutorialTrigger("change_position"); });
 		},
 		
 		onTutorialTrigger: function (tutorialTriggerID) {
@@ -85,12 +87,16 @@ define([
 			log.i("show tutorial: " + tutorialID, this);
 			
 			this.showTutorialLogMessage(tutorialID, tutorial.logMessage);
-			this.completeTutorial(tutorialID);
+			this.completeTutorial(tutorialID, tutorial.group);
 		},
 		
-		completeTutorial: function (tutorialID) {
+		completeTutorial: function (tutorialID, tutorialGroupID) {
 			log.i("complete tutorial: " + tutorialID, this);
-			GameGlobals.gameState.completedtutorials[tutorialID] = new Date().getTime();
+			let timestamp = new Date().getTime();
+			GameGlobals.gameState.completedTutorials[tutorialID] = timestamp;
+			if (tutorialGroupID) {
+				GameGlobals.gameState.completedTutorialGroups[tutorialGroupID] = timestamp;
+			}
 		},
 		
 		isTutorialAvailable: function (tutorialID) {
@@ -99,7 +105,19 @@ define([
 				return false;
 			}
 			
-			return !this.isTutorialCompletedForNow(tutorialID) && this.isTutorialConditionsMet(tutorial.conditions);
+			if (this.isTutorialCompletedForNow(tutorialID)) {
+				return false;
+			}
+			
+			if (this.isTutorialGroupCompletedForNow(tutorialID)) {
+				return false;
+			}
+			
+			if (!this.isTutorialConditionsMet(tutorial.conditions)) {
+				return false;
+			}
+			
+			return true;
 		},
 		
 		isTutorialCompletedForNow: function (tutorialID) {
@@ -109,8 +127,25 @@ define([
 			}
 			
 			let completionTimestamp = this.getTutorialCompletionTimestamp(tutorialID);
+			return this.isCompletedForNow(tutorial.repeats, completionTimestamp);
+		},
+		
+		isTutorialGroupCompletedForNow: function (tutorialID) {
+			let tutorial = TutorialConstants.tutorials[tutorialID];
+			if (!tutorial) {
+				return true;
+			}
 			
-			switch (tutorial.repeats) {
+			if (!tutorial.group) {
+				return false;
+			}
+			
+			let completionTimestamp = this.getTutorialGroupCompletionTimestamp(tutorial.group);
+			return this.isCompletedForNow(tutorial.repeats, completionTimestamp);
+		},
+		
+		isCompletedForNow: function (repeatRule, completionTimestamp) {
+			switch (repeatRule) {
 				case TutorialConstants.TUTORIAL_REPEATS_TYPE_NEVER:
 					return completionTimestamp != null;
 				case TutorialConstants.TUTORIAL_REPEATS_TYPE_ALWAYS:
@@ -119,7 +154,7 @@ define([
 					let now = new Date().getTime();
 					return completionTimestamp != null && now - completionTimestamp < TutorialConstants.TUTORIAL_COOLDOWN_DURATION;
 				default:
-					log.w("unknown tutorial repeats rule for tutorial ID [" + tutorialID + "]: [" + tutorial.repeats + "]");
+					log.w("unknown tutorial repeat rule: [" + repeatRule + "]");
 					return true;
 			}
 		},
@@ -134,7 +169,11 @@ define([
 		},
 		
 		getTutorialCompletionTimestamp: function (tutorialID) {
-			return GameGlobals.gameState.completedtutorials[tutorialID] || null;
+			return GameGlobals.gameState.completedTutorials[tutorialID] || null;
+		},
+		
+		getTutorialGroupCompletionTimestamp: function (tutorialID) {
+			return GameGlobals.gameState.completedTutorialGroups[tutorialID] || null;
 		},
 		
 		showTutorialLogMessage: function (tutorialID, msg) {

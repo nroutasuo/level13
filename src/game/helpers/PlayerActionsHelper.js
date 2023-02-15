@@ -13,6 +13,7 @@ define([
 	'game/constants/MovementConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/PerkConstants',
+	'game/constants/TextConstants',
 	'game/constants/TradeConstants',
 	'game/constants/UIConstants',
 	'game/constants/WorldConstants',
@@ -46,13 +47,14 @@ define([
 	'game/vos/ResourcesVO',
 	'game/vos/ImprovementVO'
 ], function (
-	Ash, GameGlobals, GlobalSignals, PositionConstants, PlayerActionConstants, PlayerStatConstants, FollowerConstants, ImprovementConstants, ItemConstants, BagConstants, MovementConstants, UpgradeConstants, PerkConstants, TradeConstants, UIConstants, WorldConstants,
-	PlayerActionResultNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
-	LevelComponent, CurrencyComponent, PositionComponent, PlayerActionComponent, BagComponent, ExcursionComponent, ItemsComponent, DeityComponent,
-	FightComponent, OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent,
-	SectorFeaturesComponent, SectorStatusComponent, SectorLocalesComponent, SectorImprovementsComponent, TraderComponent, RaidComponent,
-	CampComponent,
-	ResourcesVO, ImprovementVO
+	Ash, GameGlobals, GlobalSignals, PositionConstants, PlayerActionConstants, PlayerStatConstants, FollowerConstants,
+	ImprovementConstants, ItemConstants, BagConstants, MovementConstants, UpgradeConstants, PerkConstants, TextConstants,
+	TradeConstants, UIConstants, WorldConstants, PlayerActionResultNode, PlayerStatsNode, PlayerResourcesNode,
+	PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode, LevelComponent, CurrencyComponent, PositionComponent,
+	PlayerActionComponent, BagComponent, ExcursionComponent, ItemsComponent, DeityComponent, FightComponent,
+	OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent, SectorFeaturesComponent,
+	SectorStatusComponent, SectorLocalesComponent, SectorImprovementsComponent, TraderComponent, RaidComponent,
+	CampComponent, ResourcesVO, ImprovementVO
 ) {
 	var PlayerActionsHelper = Ash.Class.extend({
 
@@ -706,6 +708,36 @@ define([
 					}
 				}
 
+				if (requirements.player) {
+					if (typeof requirements.affectedByHazard !== "undefined") {
+						let requiredValue = requirements.player.affectedByHazard;
+						
+						let featuresComponent = sector.get(SectorFeaturesComponent);
+						let statusComponent = sector.get(SectorStatusComponent);
+						let itemsComponent = this.playerStatsNodes.head.items;
+						let currentValue = GameGlobals.sectorHelper.isAffectedByHazard(featuresComponent, statusComponent, itemsComponent)
+						
+						if (requiredValue != currentValue) {
+							if (requiredValue) {
+								return { value: 0, reason: "Requires active hazard" };
+							} else {
+								return { value: 0, reason: "Requires no active hazard" };
+							}
+						}
+					}
+					
+					if (requirements.player.position) {
+						if (typeof requirements.player.position.level !== "undefined") {
+							let requiredValue = requirements.player.position.level;
+							let currentValue = positionComponent.level;
+							
+							if (requiredValue != currentValue) {
+								return { value: 0, reason: "Wrong level" };
+							}
+						}
+					}
+				}
+
 				if (requirements.outgoingcaravan) {
 					if (typeof requirements.outgoingcaravan.available !== "undefined") {
 						var caravansComponent = sector.get(OutgoingCaravansComponent);
@@ -853,6 +885,7 @@ define([
 							}
 						}
 					}
+
 					for (let i in PositionConstants.getLevelDirections()) {
 						var direction = PositionConstants.getLevelDirections()[i];
 						var directionName = PositionConstants.getDirectionName(direction, true);
@@ -870,6 +903,7 @@ define([
 								}
 							}
 						}
+						
 						var clearedKey = "isWasteCleared_" + direction;
 						if (typeof requirements.sector[clearedKey] !== 'undefined') {
 							var requiredValue = requirements.sector[clearedKey];
@@ -882,6 +916,22 @@ define([
 									return { value: 0, reason: "Waste cleared. " };
 								} else {
 									return { value: 0, reason: "Waste not cleared " + directionName + "." };
+								}
+							}
+						}
+					}
+					
+					if (requirements.sector.blockers) {
+						for (let blockerType in requirements.sector.blockers) {
+							let requiredValue = requirements.sector.blockers[blockerType];
+							let currentValue = passagesComponent.hasBlocker(parseInt(blockerType));
+
+							if (requiredValue !== currentValue) {
+								let blockerName = blockerType;
+								if (currentValue) {
+									return { value: 0, reason: "Can't have blocker of type " + blockerName };
+								} else {
+									return { value: 0, reason: blockerName + " required" };
 								}
 							}
 						}
@@ -975,6 +1025,17 @@ define([
 						let result = this.checkRequirementsRange(requirements.sector.buildingDensity, featuresComponent.buildingDensity, "Sector too sparsely built", "Sector too densely built");
 						if (result) {
 							return result;
+						}
+					}
+					
+					if (requirements.sector.scavengeableItems) {
+						if (requirements.sector.scavengeableItems.count) {
+							let requiredValue = requirements.sector.scavengeableItems.count;
+							let currentValue = featuresComponent.itemsScavengeable.length;
+							let result = this.checkRequirementsRange(requiredValue, currentValue, "Requires crafting ingredients scavenging spot", "Sector is a crafting ingredients scavenging spot");
+							if (result) {
+								return result;
+							}
 						}
 					}
 				}

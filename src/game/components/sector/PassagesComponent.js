@@ -23,8 +23,24 @@ function (Ash, MovementConstants, PositionConstants, PassageVO, MovementBlockerV
 			return this.passageUp || this.passageDown;
 		},
 		
+		hasBlocker: function (type) {
+			return this.getBlockerType(PositionConstants.DIRECTION_NORTH) === type ||
+				this.getBlockerType(PositionConstants.DIRECTION_SOUTH) === type ||
+				this.getBlockerType(PositionConstants.DIRECTION_WEST) === type ||
+				this.getBlockerType(PositionConstants.DIRECTION_EAST) === type ||
+				this.getBlockerType(PositionConstants.DIRECTION_NE) === type ||
+				this.getBlockerType(PositionConstants.DIRECTION_SE) === type ||
+				this.getBlockerType(PositionConstants.DIRECTION_SW) === type ||
+				this.getBlockerType(PositionConstants.DIRECTION_NW) === type;
+		},
+		
 		getBlocker: function (direction) {
 			return typeof this.blockers[direction] === 'undefined' ? null : this.blockers[direction];
+		},
+		
+		getBlockerType: function (direction) {
+			let blocker = this.getBlocker(direction);
+			return blocker ? blocker.type : null;
 		},
 		
 		isBridgeable: function (direction) {
