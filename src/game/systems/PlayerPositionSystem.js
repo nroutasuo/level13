@@ -216,7 +216,7 @@ define([
 			gtag('set', { 'max_level': levelOrdinal });
 			gtag('event', 'reach_new_level', { event_category: 'progression', value: levelOrdinal});
 			gtag('event', 'reach_new_level_time', { event_category: 'game_time', event_label: levelOrdinal, value: GameGlobals.gameState.playTime });
-			if (levelPos !== 13) GameGlobals.gameState.unlockedFeatures.levels = true;
+			if (levelPos !== 13) GameGlobals.playerActionFunctions.unlockFeature("levels");
 			
 			if (!GameGlobals.gameState.isAutoPlaying) {
 				if (this.isGroundLevel(levelPos)) this.showLevelMessage("Ground", this.getGroundMessage());
@@ -268,7 +268,7 @@ define([
 
 			if (isNew) {
 				GameGlobals.gameState.numVisitedSectors++;
-				GameGlobals.gameState.unlockedFeatures.sectors = true;
+				GameGlobals.playerActionFunctions.unlockFeature("sectors");
 			}
 		},
 

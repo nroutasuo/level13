@@ -377,7 +377,7 @@ define(['ash',
 
 		setFavour: function (value) {
 			if (value > 0) {
-				GameGlobals.gameState.unlockedFeatures.favour = true;
+				GameGlobals.playerActionFunctions.unlockFeature("favour");
 			}
 			if (!this.playerStatsNodes.head.entity.has(DeityComponent)) {
 				this.playerStatsNodes.head.entity.add(new DeityComponent("Hoodwinker"))
@@ -488,7 +488,7 @@ define(['ash',
 			for (let i = 0; i < amount; i++) {
 				this.tribeUpgradesNodes.head.upgrades.addNewBlueprintPiece(name);
 			}
-			GameGlobals.gameState.unlockedFeatures.blueprints = true;
+			GameGlobals.playerActionFunctions.unlockFeature("blueprints");
 		},
 
 		addBlueprintsForLevel: function (campOrdinal) {

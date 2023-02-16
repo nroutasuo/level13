@@ -55,7 +55,9 @@ define([
 				perksComponent.removePerkById(PerkConstants.perkIds.encumbered);
 			}
 			
-			GameGlobals.gameState.unlockedFeatures.bag = GameGlobals.gameState.unlockedFeatures.bag || playerItems.getAll().length > 0;
+			if (playerItems.getAll().length > 0) {
+				GameGlobals.playerActionFunctions.unlockFeature("bag");
+			}
 		},
 		
 		updateUsedCapacity: function (playerBag, playerResources, playerItems) {

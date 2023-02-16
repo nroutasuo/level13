@@ -30,8 +30,8 @@ define(['ash',
 		MAP_MINIMAP_SIZE: 7,
 		SCROLL_INDICATOR_SIZE: 5,
 		
-		UNLOCKABLE_FEATURE_WORKER_AUTO_ASSIGNMENT: "UNLOCKABLE_FEATURE_WORKER_AUTO_ASSIGNMENT",
-		UNLOCKABLE_FEATURE_MAP_MODES: "UNLOCKABLE_FEATURE_MAP_MODES",
+		UNLOCKABLE_FEATURE_WORKER_AUTO_ASSIGNMENT: "workerAutoAssignment",
+		UNLOCKABLE_FEATURE_MAP_MODES: "mapModes",
 
 		resourceImages: {
 			metal: "img/res-metal.png",
@@ -657,8 +657,8 @@ define(['ash',
 			return "Y" + year + "-N" + week;
 		},
 
-		getUnlockedFeatureDisplayName: function (ui) {
-			switch (ui) {
+		getUnlockedFeatureDisplayName: function (featureID) {
+			switch (featureID) {
 				case this.UNLOCKABLE_FEATURE_MAP_MODES: return "map modes";
 				case this.UNLOCKABLE_FEATURE_WORKER_AUTO_ASSIGNMENT: return "worker auto-assignment";
 			}

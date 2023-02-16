@@ -421,8 +421,7 @@ define([
 			let currencyComponent = this.playerStatsNodes.head.entity.get(CurrencyComponent);
 			currencyComponent.currency += rewards.gainedCurrency;
 			currencyComponent.currency -= rewards.lostCurrency;
-			if (rewards.gainedCurrency > 0)
-				GameGlobals.gameState.unlockedFeatures.currency = true;
+			if (rewards.gainedCurrency > 0) GameGlobals.playerActionFunctions.unlockFeature("currency");
 
 			let itemsComponent = this.playerStatsNodes.head.items;
 			if (rewards.selectedItems) {
@@ -443,12 +442,12 @@ define([
 						nearestCampNode.camp.pendingRecruits.push(follower);
 					}
 				}
-				GameGlobals.gameState.unlockedFeatures.followers = true;
+				GameGlobals.playerActionFunctions.unlockFeature("followers");
 			}
 
 			if (rewards.gainedBlueprintPiece) {
 				this.tribeUpgradesNodes.head.upgrades.addNewBlueprintPiece(rewards.gainedBlueprintPiece);
-				GameGlobals.gameState.unlockedFeatures.blueprints = true;
+				GameGlobals.playerActionFunctions.unlockFeature("blueprints");
 			}
 
 			if (rewards.lostItems) {

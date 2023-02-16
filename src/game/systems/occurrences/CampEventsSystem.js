@@ -338,7 +338,7 @@ define([
 					let isFoundAsReward = hasPendingFollower && follower.source != FollowerConstants.followerSource.EVENT;
 					campNode.entity.add(new RecruitComponent(follower, isFoundAsReward));
 					logMsg = hasPendingFollower ? "Follower met when exploring is waiting at the inn." : "A visitor arrives at the Inn. ";
-					GameGlobals.gameState.unlockedFeatures.followers = true;
+					GameGlobals.playerActionFunctions.unlockFeature("followers");
 					if (hasPendingFollower) {
 						duration = OccurrenceConstants.EVENT_DURATION_INFINITE;
 					}

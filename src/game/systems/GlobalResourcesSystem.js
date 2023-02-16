@@ -131,26 +131,34 @@ define([
 			var gameState = GameGlobals.gameState;
 			var campNodes = this.campNodes;
 			var checkUnlockedResource = function (name) {
-				if (gameState.unlockedFeatures.resources[name]) return true;
-				if (playerResources[name] > 0) return true;
+				if (gameState.unlockedFeatures["resource_" + name]) return;
+				
+				let shouldUnlock = false;
+				if (playerResources[name] > 0) shouldUnlock = true;
 				for (var node = campNodes.head; node; node = node.next) {
-					if (node.resources.resources[name] > 0) return true;
+					if (node.resources.resources[name] > 0) {
+						shouldUnlock = true;
+						break;
+					}
 				}
-				if (globalResources[name] > 0) return true;
-				return false;
+				if (globalResources[name] > 0) shouldUnlock = true;
+				
+				if (shouldUnlock) {
+					GameGlobals.playerActionFunctions.unlockFeature("reasource_" + name);
+				}
 			};
 			
-			GameGlobals.gameState.unlockedFeatures.resources.food = checkUnlockedResource("food");
-			GameGlobals.gameState.unlockedFeatures.resources.water = checkUnlockedResource("water");
-			GameGlobals.gameState.unlockedFeatures.resources.metal = checkUnlockedResource("metal");
-			GameGlobals.gameState.unlockedFeatures.resources.rope = checkUnlockedResource("rope");
-			GameGlobals.gameState.unlockedFeatures.resources.herbs = checkUnlockedResource("herbs");
-			GameGlobals.gameState.unlockedFeatures.resources.fuel = checkUnlockedResource("fuel");
-			GameGlobals.gameState.unlockedFeatures.resources.rubber = checkUnlockedResource("rubber");
-			GameGlobals.gameState.unlockedFeatures.resources.medicine = checkUnlockedResource("medicine");
-			GameGlobals.gameState.unlockedFeatures.resources.concrete = checkUnlockedResource("concrete");
-			GameGlobals.gameState.unlockedFeatures.resources.robots = checkUnlockedResource("robots");
-			GameGlobals.gameState.unlockedFeatures.resources.tools = checkUnlockedResource("tools");
+			checkUnlockedResource("food");
+			checkUnlockedResource("water");
+			checkUnlockedResource("metal");
+			checkUnlockedResource("rope");
+			checkUnlockedResource("herbs");
+			checkUnlockedResource("fuel");
+			checkUnlockedResource("rubber");
+			checkUnlockedResource("medicine");
+			checkUnlockedResource("concrete");
+			checkUnlockedResource("robots");
+			checkUnlockedResource("tools");
 		},
 		
 		updateCampSpecialStorage: function (node) {

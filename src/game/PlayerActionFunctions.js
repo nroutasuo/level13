@@ -518,7 +518,7 @@ define(['ash',
 			let efficiency = GameGlobals.playerActionResultsHelper.getCurrentScavengeEfficiency();
 			let isFirst = !GameGlobals.gameState.unlockedFeatures.scavenge;
 			
-			GameGlobals.gameState.unlockedFeatures.scavenge = true;
+			GameGlobals.playerActionFunctions.unlockFeature("scavenge");
 
 			let logMsg = "";
 			let playerMaxVision = this.playerStatsNodes.head.vision.maximum;
@@ -563,7 +563,7 @@ define(['ash',
 			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			var efficiency = GameGlobals.playerActionResultsHelper.getCurrentScavengeEfficiency();
 			
-			GameGlobals.gameState.unlockedFeatures.investigate = true;
+			GameGlobals.playerActionFunctions.unlockFeature("investigate");
 
 			var logMsg = "Investigated the area. ";
 
@@ -606,14 +606,10 @@ define(['ash',
 			
 			let isFirst = false;
 			
-			if (!GameGlobals.gameState.unlockedFeatures.evidence) {
-				GameGlobals.gameState.unlockedFeatures.evidence = true;
-				GlobalSignals.featureUnlockedSignal.dispatch();
-			}
+			GameGlobals.playerActionFunctions.unlockFeature("evidence");
 
 			if (!GameGlobals.gameState.unlockedFeatures.scout) {
-				GameGlobals.gameState.unlockedFeatures.scout = true;
-				GlobalSignals.featureUnlockedSignal.dispatch();
+				GameGlobals.playerActionFunctions.unlockFeature("scout");
 				isFirst = true;
 			}
 			
@@ -739,8 +735,7 @@ define(['ash',
 			}
 			
 			if (localeVO.type == localeTypes.grove) {
-				GameGlobals.gameState.unlockedFeatures.favour = true;
-				GlobalSignals.featureUnlockedSignal.dispatch();
+				GameGlobals.playerActionFunctions.unlockFeature("favour");
 				if (!this.playerStatsNodes.head.entity.has(DeityComponent)) {
 					this.playerStatsNodes.head.entity.add(new DeityComponent())
 				}
@@ -765,10 +760,7 @@ define(['ash',
 				
 				if (tradingPartner) {
 					GameGlobals.gameState.foundTradingPartners.push(tradingPartner);
-					if (!GameGlobals.gameState.unlockedFeatures.trade) {
-						GameGlobals.gameState.unlockedFeatures.trade = true;
-						GlobalSignals.featureUnlockedSignal.dispatch();
-					}
+					GameGlobals.playerActionFunctions.unlockFeature("trade");
 				}
 				
 				if (luxuryResource) {
@@ -829,7 +821,7 @@ define(['ash',
 
 			let playerActionFunctions = this;
 			let successCallback = function () {
-				GameGlobals.gameState.unlockedFeatures.resources[workshopComponent.resource] = true;
+				GameGlobals.playerActionFunctions.unlockFeature("resource_" + workshopComponent.resource);
 				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 			};
 			
@@ -1156,7 +1148,7 @@ define(['ash',
 			if (caravan.traderSelectedCurrency > 0) {
 				caravan.currency -= caravan.traderSelectedCurrency;
 				currencyComponent.currency += caravan.traderSelectedCurrency;
-				GameGlobals.gameState.unlockedFeatures.currency = true;
+				GameGlobals.playerActionFunctions.unlockFeature("currency");
 			}
 
 			if (caravan.campSelectedCurrency) {
@@ -1182,7 +1174,7 @@ define(['ash',
 			this.playerStatsNodes.head.followers.addFollower(recruitComponent.follower);
 			recruitComponent.isRecruited = true;
 			
-			GameGlobals.gameState.unlockedFeatures.followers = true;
+			GameGlobals.playerActionFunctions.unlockFeature("followers");
 			GlobalSignals.followersChangedSignal.dispatch();
 			
 			this.addLogMessage(LogConstants.MSG_ID_RECRUIT, "Recruited a new follower.");
@@ -1312,7 +1304,8 @@ define(['ash',
 			var improvementsComponent = sector.get(SectorImprovementsComponent);
 			improvementsComponent.add(improvementNames.home);
 
-			GameGlobals.gameState.unlockedFeatures.camp = true;
+			GameGlobals.playerActionFunctions.unlockFeature("camp");
+			
 			gtag('event', 'build_camp', { event_category: 'progression', event_label: campOrdinal });
 			gtag('event', 'build_camp_time', { event_category: 'game_time', event_label: campOrdinal, value: GameGlobals.gameState.playTime });
 
@@ -1382,7 +1375,7 @@ define(['ash',
 			let position = this.getPositionVO(sectorPos);
 			let sector = this.getActionSector(action, sectorPos);
 			this.buildImprovement(action, improvementNames.greenhouse, sector);
-			GameGlobals.gameState.unlockedFeatures.resources.herbs = true;
+			GameGlobals.playerActionFunctions.unlockFeature("herbs");
 			this.addLogMessage(LogConstants.getUniqueID(), "Greenhouse is ready.");
 		},
 		
@@ -1557,10 +1550,7 @@ define(['ash',
 		buildMarket: function () {
 			this.buildImprovement("build_in_market", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_market"));
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_MARKET, "Built a market.");
-			if (!GameGlobals.gameState.unlockedFeatures.trade) {
-				GameGlobals.gameState.unlockedFeatures.trade = true;
-				GlobalSignals.featureUnlockedSignal.dispatch();
-			}
+			GameGlobals.playerActionFunctions.unlockFeature("trade");
 		},
 
 		buildTradingPost: function () {
@@ -1576,7 +1566,7 @@ define(['ash',
 
 		buildInn: function () {
 			this.buildImprovement("build_in_inn", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_inn"));
-			GameGlobals.gameState.unlockedFeatures.followers = true;
+			GameGlobals.playerActionFunctions.unlockFeature("followers");
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_INN, "Built an inn. Maybe it will attract visitors.");
 		},
 
@@ -1773,7 +1763,7 @@ define(['ash',
 			this.addLogMessage(LogConstants.MSG_ID_USE_HOSPITAL, "Healed all injuries.");
 
 			this.completeAction("use_in_hospital");
-			GameGlobals.gameState.unlockedFeatures.fight = true;
+			GameGlobals.playerActionFunctions.unlockFeature("fight");
 		},
 
 		useHospital2: function () {
@@ -1825,16 +1815,10 @@ define(['ash',
 			GameGlobals.playerHelper.addItem(item);
 
 			if (item.type === ItemConstants.itemTypes.weapon)
-				if (!GameGlobals.gameState.unlockedFeatures.fight) {
-					GameGlobals.gameState.unlockedFeatures.fight = true;
-					GlobalSignals.featureUnlockedSignal.dispatch();
-				}
+				GameGlobals.playerActionFunctions.unlockFeature("fight");
 
 			if (item.type == ItemConstants.itemTypes.light) {
-				if (!GameGlobals.gameState.unlockedFeatures.vision) {
-					GameGlobals.gameState.unlockedFeatures.vision = true;
-					GlobalSignals.featureUnlockedSignal.dispatch();
-				}
+				GameGlobals.playerActionFunctions.unlockFeature("vision");
 			}
 
 			this.addLogMessage(LogConstants.MSG_ID_CRAFT_ITEM, LogConstants.getCraftItemMessage(item));
@@ -2204,13 +2188,15 @@ define(['ash',
 		},
 		
 		unlockFeature: function (featureID) {
-			switch (featureID) {
-				case UIConstants.UNLOCKABLE_FEATURE_MAP_MODES:
-					return;
-				case UIConstants.UNLOCKABLE_FEATURE_WORKER_AUTO_ASSIGNMENT:
-					GameGlobals.gameState.unlockedFeatures.workerAutoAssignment = true;
-					return;
-			}
+			let featureSaveKey = featureID;
+						
+			if (GameGlobals.gameState.unlockedFeatures[featureSaveKey]) return;
+			
+			log.i("unlocked feature: " + featureID);
+			gtag('event', 'unlock_feature', { event_category: 'progression', event_label: featureID });
+			
+			GameGlobals.gameState.unlockedFeatures[featureSaveKey] = true;
+			GlobalSignals.featureUnlockedSignal.dispatch(featureID);
 		},
 		
 		forceStatsBarUpdate: function () {

@@ -194,10 +194,7 @@ define([
 			
 			// check unlocked features
 			if (vision.value > maxValueBase) {
-				if (!GameGlobals.gameState.unlockedFeatures.vision) {
-					GameGlobals.gameState.unlockedFeatures.vision = true;
-					GlobalSignals.featureUnlockedSignal.dispatch();
-				}
+				GameGlobals.playerActionFunctions.unlockFeature("vision");
 			}
 			
 			// dispatch update

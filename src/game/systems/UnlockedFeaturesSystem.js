@@ -40,9 +40,7 @@ define([
 			for (var node = this.campNodes.head; node; node = node.next) {
 				var improvementsComponent = node.entity.get(SectorImprovementsComponent);
 				if (improvementsComponent.getCount(improvementNames.campfire) > 0) {
-					if (!GameGlobals.gameState.unlockedFeatures.upgrades)
-						GlobalSignals.featureUnlockedSignal.dispatch();
-					GameGlobals.gameState.unlockedFeatures.upgrades = true;
+					GameGlobals.playerActionFunctions.unlockFeature("upgrades");
 				}
 				if (improvementsComponent.getCount(improvementNames.home) < 1) {
 					improvementsComponent.add(improvementNames.home);
@@ -57,13 +55,16 @@ define([
 			
 			if (!GameGlobals.gameState.unlockedFeatures.projects) {
 				// TODO check with upgrade effects (has unlocked any upgrade that unlocks projects)
-				GameGlobals.gameState.unlockedFeatures.projects = this.tribeUpgradesNodes.head.upgrades.hasUpgrade("unlock_building_passage_staircase");
-				if (GameGlobals.gameState.unlockedFeatures.projects)
-					GlobalSignals.featureUnlockedSignal.dispatch();
+				if (this.tribeUpgradesNodes.head.upgrades.hasUpgrade("unlock_building_passage_staircase")) {
+					GameGlobals.playerActionFunctions.unlockFeature("projects");
+				}
 			}
 			
+			// TODO mark as unlocked feature on milestone?
 			let milestoneIndexForInvestigate = GameGlobals.milestoneEffectsHelper.getMilestoneIndexForAction("investigate");
-			GameGlobals.gameState.unlockedFeatures.investigate = GameGlobals.gameState.numUnlockedMilestones >= milestoneIndexForInvestigate;
+			if (GameGlobals.gameState.numUnlockedMilestones >= milestoneIndexForInvestigate) {
+				GameGlobals.playerActionFunctions.unlockFeature("investigate");
+			}
 		}
 		
 	});
