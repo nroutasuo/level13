@@ -250,6 +250,7 @@ define([
 
 			let baseActionID = this.getBaseActionID(action);
 			let actionIDParam = this.getActionIDParam(action);
+			let ordinal = this.getActionOrdinal(action, sector);
 			
 			let inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
 			
