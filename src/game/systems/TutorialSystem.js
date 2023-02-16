@@ -34,20 +34,25 @@ define([
 			for (let tutorialID in TutorialConstants.tutorials) {
 				let tutorial = TutorialConstants.tutorials[tutorialID];
 				tutorial.id = tutorialID;
-				let trigger = tutorial.trigger;
-				if (!this.tutorialsByTrigger[trigger]) {
-					this.tutorialsByTrigger[trigger] = [];
+				let triggers = tutorial.triggers;
+				for (let i = 0; i < triggers.length; i++) {
+					let trigger = triggers[i];
+					if (!this.tutorialsByTrigger[trigger]) {
+						this.tutorialsByTrigger[trigger] = [];
+					}
+					this.tutorialsByTrigger[trigger].push(tutorialID);
 				}
-				this.tutorialsByTrigger[trigger].push(tutorialID);
 			}
 		},
 		
 		registerListeners: function () {
 			GlobalSignals.add(this, GlobalSignals.sectorScavengedSignal, function () { this.onTutorialTrigger("action_scavenge"); });
 			GlobalSignals.add(this, GlobalSignals.sectorScoutedSignal, function () { this.onTutorialTrigger("action_scout"); });
+			GlobalSignals.add(this, GlobalSignals.playerEnteredCampSignal, function () { this.onTutorialTrigger("action_enter_camp"); });
 			GlobalSignals.add(this, GlobalSignals.actionRewardsCollectedSignal, function () { this.onTutorialTrigger("action_collect_rewards"); });
 			GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, function () { this.onTutorialTrigger("change_inventory"); });
 			GlobalSignals.add(this, GlobalSignals.playerMovedSignal, function () { this.onTutorialTrigger("change_position"); });
+			GlobalSignals.add(this, GlobalSignals.featureUnlockedSignal, function () { this.onTutorialTrigger("feature_unlocked"); });
 		},
 		
 		onTutorialTrigger: function (tutorialTriggerID) {
@@ -85,9 +90,12 @@ define([
 			}
 			
 			log.i("show tutorial: " + tutorialID, this);
+			let startDelay = 1500;
 			
-			this.showTutorialLogMessage(tutorialID, tutorial.logMessage);
-			this.completeTutorial(tutorialID, tutorial.group);
+			setTimeout(() => {
+				this.showTutorialLogMessage(tutorialID, tutorial.logMessage);
+				this.completeTutorial(tutorialID, tutorial.group);
+			}, startDelay);
 		},
 		
 		completeTutorial: function (tutorialID, tutorialGroupID) {

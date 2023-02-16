@@ -501,6 +501,9 @@ define(['ash',
 			let playerPos = this.playerPositionNodes.head.position;
 			let campNode = this.nearestCampNodes.head;
 			if (campNode && campNode.position.level === playerPos.level && campNode.position.sectorId() === playerPos.sectorId()) {
+				if (GameGlobals.playerHelper.isReadyForExploration()) {
+					this.unlockFeature("move");
+				}
 				playerPos.inCamp = false;
 				this.playerPositionNodes.head.entity.add(new ExcursionComponent());
 				GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.out);

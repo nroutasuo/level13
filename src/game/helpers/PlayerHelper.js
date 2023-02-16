@@ -6,7 +6,8 @@ define([
 	'game/constants/ItemConstants',
 	'game/constants/PlayerStatConstants',
 	'game/nodes/PlayerPositionNode',
-	'game/nodes/player/PlayerStatsNode'
+	'game/nodes/player/PlayerStatsNode',
+	'game/nodes/player/PlayerResourcesNode'
 ], function (
 	Ash,
 	ValueCache,
@@ -15,22 +16,33 @@ define([
 	ItemConstants,
 	PlayerStatConstants,
 	PlayerPositionNode,
-	PlayerStatsNode
+	PlayerStatsNode,
+	PlayerResourcesNode
 ) {
 	
 	var PlayerHelper = Ash.Class.extend({
 		
 		playerPosNodes: null,
 		playerStatsNodes: null,
+		playerResourcesNodes: null,
 
 		constructor: function (engine) {
 			this.playerPosNodes = engine.getNodeList(PlayerPositionNode);
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
+			this.playerResourcesNodes = engine.getNodeList(PlayerResourcesNode);
 		},
 		
 		isInCamp: function () {
 			if (!this.playerPosNodes.head) return false;
 			return this.playerPosNodes.head.position.inCamp;
+		},
+		
+		isReadyForExploration: function () {
+			if (this.getCurrentStamina() <= this.getCurrentStaminaWarningLimit()) {
+				return false;
+			}
+			
+			return true;
 		},
 		
 		getCurrentStamina: function () {

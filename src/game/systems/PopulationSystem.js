@@ -89,6 +89,9 @@ define([
 
 			if (Math.floor(camp.population) !== Math.floor(oldPopulation)) {
 				this.handlePopulationChanged(node, camp.population > oldPopulation);
+				if (camp.population >= 1) {
+					GameGlobals.playerActionFunctions.unlockFeature("milestones");
+				}
 			}
 		},
 		

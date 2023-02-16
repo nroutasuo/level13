@@ -353,6 +353,16 @@ define([
 					}
 				}
 				
+				if (requirements.featureUnlocked) {
+					for (let featureID in requirements.featureUnlocked) {
+						let requiredValue = requirements.featureUnlocked[featureID];
+						let currentValue = GameGlobals.gameState.isFeatureUnlocked(featureID);
+						if (requiredValue != currentValue) {
+							return { value: 0, reason: (requiredValue ? ("Locked feature: " + featureID) : "Feature already unlocked") };
+						}
+					}
+				}
+				
 				if (requirements.vision) {
 					let result = this.checkRequirementsRange(requirements.vision, playerVision, "{min} vision needed", "{max} vision max");
 					if (result) {
