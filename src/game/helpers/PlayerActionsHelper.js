@@ -279,11 +279,11 @@ define([
 					reason = "Locked stats.";
 					return { value: 0, reason: reason };
 				}
-				if ((costs.resource_fuel > 0 && !GameGlobals.gameState.unlockedFeatures.resources.fuel) ||
-					(costs.resource_rubber > 0 && !GameGlobals.gameState.unlockedFeatures.resources.rubber) ||
-					(costs.resource_herbs > 0 && !GameGlobals.gameState.unlockedFeatures.resources.herbs) ||
-					(costs.resource_tools > 0 && !GameGlobals.gameState.unlockedFeatures.resources.tools) ||
-					(costs.resource_concrete > 0 && !GameGlobals.gameState.unlockedFeatures.resources.concrete)) {
+				if ((costs.resource_fuel > 0 && !GameGlobals.gameState.unlockedFeatures["resource_fuel"]) ||
+					(costs.resource_rubber > 0 && !GameGlobals.gameState.unlockedFeatures["resource_rubber"]) ||
+					(costs.resource_herbs > 0 && !GameGlobals.gameState.unlockedFeatures["resource_herbs"]) ||
+					(costs.resource_tools > 0 && !GameGlobals.gameState.unlockedFeatures["resource_tools"]) ||
+					(costs.resource_concrete > 0 && !GameGlobals.gameState.unlockedFeatures["resource_concrete"])) {
 					reason = PlayerActionConstants.DISABLED_REASON_LOCKED_RESOURCES;
 					lowestFraction = 0;
 				}

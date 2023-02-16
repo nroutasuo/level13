@@ -623,7 +623,7 @@ define([
 				let name = resourceNames[key];
 				let currentAmount = showResources.getResource(name);
 				let currentAccumulation = showResourceAcc.resourceChange.getResource(name);
-				let resourceUnlocked = GameGlobals.gameState.unlockedFeatures.resources[name] === true || currentAmount > 0;
+				let resourceUnlocked = GameGlobals.gameState.unlockedFeatures["resource_" + name] === true || currentAmount > 0;
 				inventoryUnlocked = inventoryUnlocked || resourceUnlocked;
 				if (inCamp) {
 					let isVisible = resourceUnlocked && !(currentAmount <= 0 && currentAccumulation <= 0 && this.canHideResource(name));

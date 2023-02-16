@@ -238,7 +238,7 @@ define(['ash',
 			var leastRes = null;
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
-				if (!GameGlobals.gameState.unlockedFeatures.resources[name])
+				if (!GameGlobals.gameState.unlockedFeatures["resource_" + name])
 					continue;
 				if (!goalSectorsByRes[name])
 					continue;

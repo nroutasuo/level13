@@ -277,7 +277,7 @@ define([
 					perksComponent.removePerkById(PerkConstants.perkIds.thirst);
 				}
 			} else if (!hasThirstPerk) {
-				if (!inCamp && (GameGlobals.gameState.unlockedFeatures.resources.water)) this.log("Out of water!", true);
+				if (!inCamp && (GameGlobals.gameState.unlockedFeatures["resource_water"])) this.log("Out of water!", true);
 				var thirstPerk = PerkConstants.getPerk(PerkConstants.perkIds.thirst, PerkConstants.ACTIVATION_TIME_HEALTH_DEBUFF);
 				perksComponent.addPerk(thirstPerk);
 			}
@@ -288,7 +288,7 @@ define([
 					perksComponent.removePerkById(PerkConstants.perkIds.hunger);
 				}
 			} else if (!hasHungerPerk) {
-				if (!inCamp && (GameGlobals.gameState.unlockedFeatures.resources.food)) this.log("Out of food!", true);
+				if (!inCamp && (GameGlobals.gameState.unlockedFeatures["resource_food"])) this.log("Out of food!", true);
 				var hungerPerk = PerkConstants.getPerk(PerkConstants.perkIds.hunger, PerkConstants.ACTIVATION_TIME_HEALTH_DEBUFF);
 				perksComponent.addPerk(hungerPerk);
 			}

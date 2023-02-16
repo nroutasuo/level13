@@ -268,7 +268,7 @@ define([
 				let resources = [ "food", "water" ];
 				for (let i = 0; i < resources.length; i++) {
 					let name = resources[i];
-					if (!GameGlobals.gameState.unlockedFeatures.resources[name]) continue;
+					if (!GameGlobals.gameState.unlockedFeatures["resource_" + name]) continue;
 					if (!this.hasCollectibleResource(name, false)) continue;
 					let total = Math.floor(this.getResouceInInventory(name)) + Math.floor(this.getResourceCurrentlyAvailableToCollect(name));
 					if (total < maxResourcesToShowWait) showWait = true;
@@ -286,8 +286,8 @@ define([
 			var logComponent = this.playerPosNodes.head.entity.get(LogMessagesComponent);
 			var posComponent = this.playerLocationNodes.head.position;
 			var movementOptionsComponent = this.playerLocationNodes.head.entity.get(MovementOptionsComponent);
-			var isValidDespairHunger = GameGlobals.gameState.unlockedFeatures.resources.food && !this.hasAccessToResource(resourceNames.food, false, false);
-			var isValidDespairThirst = GameGlobals.gameState.unlockedFeatures.resources.water && !this.hasAccessToResource(resourceNames.water, false, false);
+			var isValidDespairHunger = GameGlobals.gameState.unlockedFeatures["resource_food"] && !this.hasAccessToResource(resourceNames.food, false, false);
+			var isValidDespairThirst = GameGlobals.gameState.unlockedFeatures["resource_food"] && !this.hasAccessToResource(resourceNames.water, false, false);
 			var isValidDespairStamina = this.playerPosNodes.head.entity.get(StaminaComponent).stamina < PlayerActionConstants.costs.move_sector_east.stamina;
 			var isValidDespairMove = !movementOptionsComponent.canMove(); // can happen in hazard sectors if you lose equipment
 			var isFirstPosition = !GameGlobals.gameState.unlockedFeatures.sectors;

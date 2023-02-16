@@ -22,39 +22,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.isFinished = false;
 			this.playedVersions = [];
 
-			this.unlockedFeatures = {
-				scavenge: false,
-				scout: false,
-				vision: false,
-				camp: false,
-				fight: false,
-				followers: false,
-				investigate: false,
-				bag: false,
-				upgrades: false,
-				projects: false,
-				blueprints: false,
-				resources: {
-					food: false,
-					water: false,
-					metal: false,
-					rope: false,
-					herbs: false,
-					fuel: false,
-					rubber: false,
-					medicine: false,
-					tools: false,
-					concrete: false,
-				},
-				sectors: false,
-				levels: false,
-				trade: false,
-				followers: false,
-				favour: false,
-				evidence: false,
-				currency: false,
-				workerAutoAssignment: false,
-			};
+			this.unlockedFeatures = {};
 
 			this.uiStatus = {
 				mouseDown: false,
@@ -112,6 +80,10 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			}
 			
 			if (!this.uiStatus.lastSelection) this.uiStatus.lastSelection = {};
+		},
+		
+		isFeatureUnlocked: function (featureID) {
+			return this.unlockedFeatures[featureID] || false;
 		},
 
 		passTime: function (seconds) {
