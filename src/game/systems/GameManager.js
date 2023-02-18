@@ -152,7 +152,8 @@ define([
 		// Called after all other systems are ready
 		startGame: function () {
 			log.i("START " + GameConstants.STARTTimeNow() + "\t starting game");
-
+			
+			log.i("start tick")
 			this.tickProvider.start();
 			this.tickProvider.add(this.update, this);
 
@@ -175,6 +176,7 @@ define([
 		restartGame: function () {
 			log.i("Restarting game..");
 			gtag('event', 'game_restart', { event_category: 'game_data' });
+			this.pauseGame();
 			GameGlobals.uiFunctions.hideGame(true);
 			var sys = this;
 			setTimeout(function () {
@@ -190,6 +192,7 @@ define([
 		},
 
 		pauseGame: function () {
+			log.i("pause tick")
 			this.tickProvider.stop();
 		},
 
