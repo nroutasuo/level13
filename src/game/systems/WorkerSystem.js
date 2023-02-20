@@ -81,7 +81,7 @@ define([
 			
 			this.isPendingProductionRateUpdate = false;
 		
-			this.updatePlayer(time);
+			this.updatePlayerPerks();
 			this.logAmbient();
 		},
 		
@@ -258,40 +258,48 @@ define([
 			this.deductHunger(time, campResourceAcc.resourceChange, node.camp.getAssignedPopulation(), false, true, campResourceAcc, "Workers");
 		},
 		
-		updatePlayer: function (time) {
-			var inCamp = this.playerNodes.head.position.inCamp;
-			var playerFoodSource = GameGlobals.resourcesHelper.getCurrentStorage();
-			var playerFoodSourceAcc = GameGlobals.resourcesHelper.getCurrentStorageAccumulation(true);
+		updatePlayerPerks: function () {
+			let inCamp = this.playerNodes.head.position.inCamp;
+			var hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
 			
-			// Manage perks
-			var isThirsty = playerFoodSource.resources.water < 1;
-			var isHungry = playerFoodSource.resources.food < 1;
-			var perksComponent = this.playerNodes.head.entity.get(PerksComponent);
+			let isThirsty = this.isPlayerThirsty();
+			let isHungry = this.isPlayerHungry();
+			let perksComponent = this.playerNodes.head.entity.get(PerksComponent);
 			
-			var hasThirstPerk = perksComponent.hasPerk(PerkConstants.perkIds.thirst);
-			var hasHungerPerk = perksComponent.hasPerk(PerkConstants.perkIds.hunger);
+			let hasThirstPerk = perksComponent.hasPerk(PerkConstants.perkIds.thirst);
+			let hasHungerPerk = perksComponent.hasPerk(PerkConstants.perkIds.hunger);
 			
 			if (!isThirsty) {
 				if (hasThirstPerk) {
-					if (!inCamp) this.log("No longer thirsty.", true);
+					if (!inCamp) this.logWithDelay("No longer thirsty.", 500, () => !this.isPlayerThirsty());
 					perksComponent.removePerkById(PerkConstants.perkIds.thirst);
 				}
 			} else if (!hasThirstPerk) {
-				if (!inCamp && (GameGlobals.gameState.unlockedFeatures["resource_water"])) this.log("Out of water!", true);
+				if (!inCamp && !hasCampHere && (GameGlobals.gameState.unlockedFeatures["resource_water"])) this.log("Out of water!", true);
 				var thirstPerk = PerkConstants.getPerk(PerkConstants.perkIds.thirst, PerkConstants.ACTIVATION_TIME_HEALTH_DEBUFF);
 				perksComponent.addPerk(thirstPerk);
 			}
 			
 			if (!isHungry) {
 				if (hasHungerPerk) {
-					if (!inCamp) this.log("No longer hungry.", true);
+					if (!inCamp) this.logWithDelay("No longer hungry.", 500, () => !this.isPlayerHungry());
 					perksComponent.removePerkById(PerkConstants.perkIds.hunger);
 				}
 			} else if (!hasHungerPerk) {
-				if (!inCamp && (GameGlobals.gameState.unlockedFeatures["resource_food"])) this.log("Out of food!", true);
+				if (!inCamp && !hasCampHere && (GameGlobals.gameState.unlockedFeatures["resource_food"])) this.log("Out of food!", true);
 				var hungerPerk = PerkConstants.getPerk(PerkConstants.perkIds.hunger, PerkConstants.ACTIVATION_TIME_HEALTH_DEBUFF);
 				perksComponent.addPerk(hungerPerk);
 			}
+		},
+		
+		isPlayerThirsty: function () {
+			let playerFoodSource = GameGlobals.resourcesHelper.getCurrentStorage();
+			return playerFoodSource.resources.water < 1;
+		},
+		
+		isPlayerHungry: function () {
+			let playerFoodSource = GameGlobals.resourcesHelper.getCurrentStorage();
+			return playerFoodSource.resources.food < 1;
 		},
 		
 		updateImprovementProduction: function (node, time) {
@@ -365,6 +373,14 @@ define([
 					this.log(msg, true);
 				}
 			}
+		},
+		
+		logWithDelay: function (msg, delay, condition) {
+			setTimeout(() => {
+				if (condition()) {
+					this.log(msg, true);
+				}
+			}, delay)
 		},
 		
 		log: function (msg, isAmbient, campNode) {

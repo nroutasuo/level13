@@ -202,10 +202,6 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 			return { msg: template.msg, replacements: template.replacements, values: template.values };
 		},
 
-		getInjuredMessage: function (resultVO) {
-			return "Got injured.";
-		},
-
 		getLostPerksMessage: function (resultVO) {
 			return "Lost an augmentation.";
 		},

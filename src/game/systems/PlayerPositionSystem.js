@@ -86,7 +86,7 @@ define([
 		},
 
 		update: function (time) {
-			var playerPos = this.playerPositionNodes.head.position;
+			let playerPos = this.playerPositionNodes.head.position;
 			let updateAll = !this.lastUpdatePosition;
 			
 			if (!this.lastValidPosition) {
@@ -114,18 +114,16 @@ define([
 		},
 
 		updateLevelEntities: function (updateAll) {
-			var isInitLocation = this.playerLocationNodes.head == null;
-			var playerPos = this.playerPositionNodes.head.position;
-			var startPos = playerPos.getPosition();
-			var levelpos;
-			for (var levelNode = this.levelNodes.head; levelNode; levelNode = levelNode.next) {
+			let playerPos = this.playerPositionNodes.head.position;
+			let startPos = playerPos.getPosition();
+			let levelpos;
+			for (let levelNode = this.levelNodes.head; levelNode; levelNode = levelNode.next) {
 				levelpos = levelNode.level.position;
 				if (levelpos == playerPos.level && !levelNode.entity.has(CurrentPlayerLocationComponent)) {
 					levelNode.entity.add(new CurrentPlayerLocationComponent());
 					if (!levelNode.entity.has(VisitedComponent)) {
-						this.handleNewLevel(levelNode, levelpos, isInitLocation);
+						this.handleNewLevel(levelNode, levelpos);
 					}
-					this.handleEnterLevel(levelNode, levelpos, isInitLocation);
 				} else if (levelpos != playerPos.level && levelNode.entity.has(CurrentPlayerLocationComponent)) {
 					levelNode.entity.remove(CurrentPlayerLocationComponent);
 				}
@@ -210,34 +208,39 @@ define([
 
 		handleNewLevel: function (levelNode, levelPos) {
 			levelNode.entity.add(new VisitedComponent());
-			var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(levelPos);
-			var campOrdinal = GameGlobals.gameState.getCampOrdinal(levelPos);
+			let levelOrdinal = GameGlobals.gameState.getLevelOrdinal(levelPos);
+			let campOrdinal = GameGlobals.gameState.getCampOrdinal(levelPos);
 			GameGlobals.gameState.level = Math.max(GameGlobals.gameState.level, levelOrdinal);
 			gtag('set', { 'max_level': levelOrdinal });
 			gtag('event', 'reach_new_level', { event_category: 'progression', value: levelOrdinal});
 			gtag('event', 'reach_new_level_time', { event_category: 'game_time', event_label: levelOrdinal, value: GameGlobals.gameState.playTime });
 			if (levelPos !== 13) GameGlobals.playerActionFunctions.unlockFeature("levels");
 			
-			if (!GameGlobals.gameState.isAutoPlaying) {
-				if (this.isGroundLevel(levelPos)) this.showLevelMessage("Ground", this.getGroundMessage());
-				if (this.isSurfaceLevel(levelPos)) this.showLevelMessage("Surface", this.getSurfaceMessage());
+			if (this.isGroundLevel(levelPos)) {
+				this.showLevelPopup("Ground", this.getGroundMessage());
+			}
+			
+			if (this.isSurfaceLevel(levelPos)) {
+				this.showLevelPopup("Surface", this.getSurfaceMessage());
+			}
+			
+			if (levelPos != 13) {
+				this.addLogMessage(LogConstants.MSG_ID_ENTER_LEVEL, this.getRegularLevelMessage(levelNode, levelPos));
 			}
 		},
 
-		handleEnterLevel: function (levelNode, levelPos, isInitLocation) {
-			if (isInitLocation) return;
-			
+		getRegularLevelMessage: function (levelNode, levelPos) {
 			let levelEntity = levelNode.entity;
 			let levelComponent = levelEntity.get(LevelComponent);
 			let level = levelPos.level;
 			
 			let surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
 			let groundLevel = GameGlobals.gameState.getGroundLevel();
-			let playerPos = this.playerPositionNodes.head.position;
 			
+			let playerPos = this.playerPositionNodes.head.position;
 			if (playerPos.inCamp) return;
 			
-			let msg = "Entered level " + levelPos + ". ";
+			let msg = "Entered Level " + levelPos + ". ";
 			if (levelPos == surfaceLevel) {
 				msg += this.getSurfaceLevelDescription();
 			} else if (levelPos == groundLevel) {
@@ -254,8 +257,15 @@ define([
 						msg += "This area seems eerily devoid of any signs of recent human activity.";
 						break;
 				}
+			} else {
+				if (levelComponent.populationFactor < 1) {
+					msg += " It's hard to say if there is anyone living here.";
+				} else if (levelComponent.populationFactor > 1) {
+					msg += "There are some signs of recent scavenging.";
+				} else {
+					msg += "The streets are indifferent to your presence.";
+				}
 			}
-			this.addLogMessage(LogConstants.MSG_ID_ENTER_LEVEL, msg);
 		},
 
 		handleNewSector: function (sectorEntity, isNew) {
@@ -293,7 +303,8 @@ define([
 			this.lastUpdatePosition = null;
 		},
 		
-		showLevelMessage: function (title, msg) {
+		showLevelPopup: function (title, msg) {
+			if (GameGlobals.gameState.isAutoPlaying) return;
 			setTimeout(function () {
 				GameGlobals.uiFunctions.showInfoPopup(title, msg, "Continue", null, null, true, false);
 			}, 300);

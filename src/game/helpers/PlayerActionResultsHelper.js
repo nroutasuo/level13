@@ -25,6 +25,7 @@ define([
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/nodes/sector/CampNode',
 	'game/nodes/NearestCampNode',
+	'game/components/common/CampComponent',
 	'game/components/common/PositionComponent',
 	'game/components/common/ResourcesComponent',
 	'game/components/common/CurrencyComponent',
@@ -65,6 +66,7 @@ define([
 	TribeUpgradesNode,
 	CampNode,
 	NearestCampNode,
+	CampComponent,
 	PositionComponent,
 	ResourcesComponent,
 	CurrencyComponent,
@@ -99,6 +101,8 @@ define([
 				{ resources: { metal: 1 } },
 			]
 		},
+		
+		context: "results",
 
 		constructor: function (engine) {
 			this.engine = engine;
@@ -842,8 +846,7 @@ define([
 			}
 
 			if (resultVO.gainedInjuries.length > 0) {
-				logComponent.addMessage(LogConstants.MSG_ID_GOT_INJURED, LogConstants.getInjuredMessage(resultVO));
-					messages.push({ id: LogConstants.MSG_ID_GOT_INJURED, text: "Lost " + resultVO.lostFollowers.length + " followers.", addToPopup: true, addToLog: true });
+				messages.push({ id: LogConstants.MSG_ID_GOT_INJURED, text: "Got injured.", addToPopup: true, addToLog: true });
 			}
 
 			if (resultVO.lostPerks.length > 0) {
@@ -966,6 +969,7 @@ define([
 			let currentItems = this.playerStatsNodes.head.items;
 			let hasBag = currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
 			let hasCamp = GameGlobals.gameState.unlockedFeatures.camp;
+			let hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
 			let efficiency = this.getCurrentScavengeEfficiency();
 			
 			var playerPos = this.playerLocationNodes.head.position;
@@ -1007,7 +1011,7 @@ define([
 				
 				// . Necessity ingredient (stuff blocking the player from progressing)
 				// TODO replace with something that's not random & is better communicated in-game
-				if (hasCamp && hasDecentEfficiency) {
+				if (hasCamp && !hasCampHere && hasDecentEfficiency) {
 					var necessityIngredient = this.getNecessityIngredient(ingredientProbability);
 					if (necessityIngredient != null) {
 						for (let i = 0; i <= amount; i++) {
@@ -1211,7 +1215,7 @@ define([
 		addFixedRewards: function (rewardsVO, fixedRewards, availableResources) {
 			let efficiency = this.getCurrentScavengeEfficiency();
 			
-			log.i("applying fixed rewards");
+			log.i("applying fixed rewards", this);
 			console.log(fixedRewards);
 			
 			this.addFixedRewardsResources(rewardsVO, fixedRewards, efficiency, availableResources);

@@ -501,14 +501,14 @@ define(['ash',
 			let playerPos = this.playerPositionNodes.head.position;
 			let campNode = this.nearestCampNodes.head;
 			if (campNode && campNode.position.level === playerPos.level && campNode.position.sectorId() === playerPos.sectorId()) {
-				if (GameGlobals.playerHelper.isReadyForExploration()) {
-					this.unlockFeature("move");
-				}
 				playerPos.inCamp = false;
 				this.playerPositionNodes.head.entity.add(new ExcursionComponent());
 				GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.out);
 				GlobalSignals.playerLeftCampSignal.dispatch();
 				GlobalSignals.playerMovedSignal.dispatch(playerPos);
+				if (GameGlobals.playerHelper.isReadyForExploration()) {
+					this.unlockFeature("move");
+				}
 				this.forceTabUpdate();
 				this.save();
 			} else {
@@ -717,7 +717,7 @@ define(['ash',
 			// TODO add more interesting log messages - especially for trade partners
 			let localeName = TextConstants.getLocaleName(localeVO, sectorFeaturesComponent);
 			localeName = localeName.split(" ")[localeName.split(" ").length - 1];
-			let baseMsg = "Scouted the " + localeName + ". ";
+			let baseMsg = "Scouted a " + localeName + ". ";
 			let logMsgSuccess = baseMsg;
 			let logMsgFlee = baseMsg + " Got surprised and fled.";
 			let logMsgDefeat = baseMsg + " Got surprised and beaten.";
@@ -1002,9 +1002,9 @@ define(['ash',
 				}
 				
 				let resultPopupCallback = function (isTakeAll) {
-					let messages2 = GameGlobals.playerActionResultsHelper.getResultMessagesAfterSelection(rewards);
-					
 					GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, rewards);
+					
+					let messages2 = GameGlobals.playerActionResultsHelper.getResultMessagesAfterSelection(rewards);
 					
 					if (!GameGlobals.gameState.isAutoPlaying) {
 						if (messages.addToLog && logMsgSuccess) playerActionFunctions.addLogMessage(logMsgId, logMsgSuccess);
@@ -1421,7 +1421,6 @@ define(['ash',
 
 		buildTrap: function () {
 			this.buildImprovement("build_out_collector_food", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_collector_food"));
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_TRAP, "Built a trap. It will catch food.");
 			if (!this.playerLocationNodes.head.entity.has(SectorCollectorsComponent))
 				this.playerLocationNodes.head.entity.add(new SectorCollectorsComponent());
 			GlobalSignals.improvementBuiltSignal.dispatch();
@@ -1429,7 +1428,6 @@ define(['ash',
 
 		buildBucket: function () {
 			this.buildImprovement("build_out_collector_water", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_collector_water"));
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_BUCKET, "Made a bucket. It will collect water.");
 			if (!this.playerLocationNodes.head.entity.has(SectorCollectorsComponent))
 				this.playerLocationNodes.head.entity.add(new SectorCollectorsComponent());
 		},
@@ -1439,43 +1437,28 @@ define(['ash',
 			
 			let sector = this.playerLocationNodes.head.entity;
 			sector.add(new BeaconComponent());
-			
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_BEACON, "Beacon is ready.");
 		},
 
 		buildHouse: function (otherSector) {
 			this.buildImprovement("build_in_house", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_house"), otherSector);
-			var msg = "Built a hut.";
-			var totalHouses = 0;
-			for (var node = this.engine.getNodeList(CampNode).head; node; node = node.next) {
-				var improvementsComponent = node.entity.get(SectorImprovementsComponent);
-				totalHouses += improvementsComponent.getCount(improvementNames.house);
-			}
-			if (totalHouses < 5) msg += " People will come if they hear about the camp.";
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_HOUSE, msg);
 		},
 
 		buildHouse2: function (otherSector) {
 			this.buildImprovement("build_in_house2", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_house2"), otherSector);
-			var msg = "Built a tower block.";
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_HOUSE, msg);
 		},
 
 		buildGenerator: function () {
 			this.buildImprovement("build_in_generator", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_generator"));
-			var msg = "Set up a generator.";
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_GENERATOR, msg);
 		},
 
 		buildLights: function () {
 			this.buildImprovement("build_in_lights", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_lights"));
-			var msg = "Installed lights to the camp.";
+			var msg = "Installed lights in the camp.";
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_LIGHTS, msg);
 		},
 
 		buildStorage: function (sector) {
 			this.buildImprovement("build_in_storage", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_storage"), sector);
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_STORAGE, "Built a storage.");
 		},
 
 		buildFortification: function () {
@@ -1485,117 +1468,85 @@ define(['ash',
 
 		buildAqueduct: function () {
 			this.buildImprovement("build_in_aqueduct", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_aqueduct"));
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_AQUEDUCT, "Built an aqueduct.");
 		},
 
 		buildStable: function () {
 			this.buildImprovement("build_in_stable", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_stable"));
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_STABLE, "Built a caravan stable.");
 		},
 
 		buildBarracks: function () {
 			this.buildImprovement("build_in_barracks", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_barracks"));
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_BARRACKS, "Built a barracks.");
 		},
 
 		buildSmithy: function () {
 			this.buildImprovement("build_in_smithy", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_smithy"));
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_SMITHY, "Built a smithy.");
 		},
 
 		buildApothecary: function () {
 			this.buildImprovement("build_in_apothecary", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_apothecary"));
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_APOTHECARY, "Built an apothecary.");
 		},
 
 		buildCementMill: function () {
 			this.buildImprovement("build_in_cementmill", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_cementmill"));
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_CEMENT_MILL, "Built a cement mill for making concrete.");
 		},
 
 		buildRobotFactory: function () {
 			this.buildImprovement("build_in_robotFactory", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_robotFactory"));
-			this.addLogMessage(LogConstants.getUniqueID(), "Built a factory for robots.");
 		},
 
 		buildRadioTower: function () {
 			this.buildImprovement("build_in_radiotower", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_radiotower"));
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_RADIO, "Built a radio tower.");
 		},
 
 		buildCampfire: function () {
-			var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_campfire");
-			var improvementsComponent = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
-			var count = improvementsComponent.getCount(improvementName);
-
-			this.buildImprovement("build_in_campfire", improvementName);
-			if (count === 0)
-				this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMPFIRE, "Built a campfire. Here, ideas are shared and discussed.");
-			else
-				this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMPFIRE, "Improved campfire. It will attract more rumours.");
+			this.buildImprovement("build_in_campfire", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_campfire"));
 		},
 
 		buildDarkFarm: function () {
 			this.buildImprovement("build_in_darkfarm", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_darkfarm"));
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_DARKFARM, "Built a snail farm.");
 		},
 
 		buildHospital: function () {
 			this.buildImprovement("build_in_hospital", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_hospital"));
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_HOSPITAL, "Built a clinic.");
 		},
 
 		buildLibrary: function () {
 			this.buildImprovement("build_in_library", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_library"));
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_LIBRARY, "Built a library.");
 		},
 
 		buildMarket: function () {
 			this.buildImprovement("build_in_market", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_market"));
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_MARKET, "Built a market.");
 			GameGlobals.playerActionFunctions.unlockFeature("trade");
 		},
 
 		buildTradingPost: function () {
 			var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_tradepost");
-			var isFirst = GameGlobals.campHelper.getTotalNumImprovementsBuilt(improvementName) == 0;
 			this.buildImprovement("build_in_tradepost", improvementName);
-			if (isFirst) {
-				 this.addLogMessage(LogConstants.MSG_ID_BUILT_TRADING_POST, "Built a trading post. Build another one to connect the camps.");
-			} else {
-				 this.addLogMessage(LogConstants.MSG_ID_BUILT_TRADING_POST, "Built a trading post.");
-			}
 		},
 
 		buildInn: function () {
 			this.buildImprovement("build_in_inn", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_inn"));
 			GameGlobals.playerActionFunctions.unlockFeature("followers");
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_INN, "Built an inn. Maybe it will attract visitors.");
 		},
 
 		buildSquare: function () {
 			this.buildImprovement("build_in_square", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_square"));
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_SQUARE, "Built a square. The camp feels more like a town within the City already.");
 		},
 
 		buildGarden: function () {
 			this.buildImprovement("build_in_garden", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_garden"));
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_GARDEN, "Built a garden.");
 		},
 		
 		buildShrine: function () {
 			this.buildImprovement("build_in_shrine", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_shrine"));
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_SHRINE, "Built a shrine.");
 		},
 		
 		buildTemple: function () {
 			this.buildImprovement("build_in_temple", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_temple"));
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_TEMPLE, "Built a temple.");
 		},
 		
 		buildResearchCenter: function () {
 			this.buildImprovement("build_in_researchcenter", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_researchcenter"));
-			this.addLogMessage(LogConstants.getUniqueID(), "Built a research center.");
 		},
 
 		buildSpaceShip1: function (sectorPos) {
@@ -1824,7 +1775,7 @@ define(['ash',
 				GameGlobals.playerActionFunctions.unlockFeature("vision");
 			}
 
-			this.addLogMessage(LogConstants.MSG_ID_CRAFT_ITEM, LogConstants.getCraftItemMessage(item));
+			//this.addLogMessage(LogConstants.MSG_ID_CRAFT_ITEM, LogConstants.getCraftItemMessage(item));
 			GlobalSignals.inventoryChangedSignal.dispatch();
 			this.save();
 		},
@@ -2045,12 +1996,12 @@ define(['ash',
 		buyUpgrade: function (upgradeID, automatic) {
 			if (automatic || GameGlobals.playerActionsHelper.checkAvailability(upgradeID, true)) {
 				var upgradeDefinition = UpgradeConstants.upgradeDefinitions[upgradeID];
-				GameGlobals.playerActionsHelper.deductCosts(upgradeID);
+			GameGlobals.playerActionsHelper.deductCosts(upgradeID);
 				this.addLogMessage(LogConstants.MSG_ID_BOUGHT_UPGRADE, "Researched " + upgradeDefinition.name);
-				this.tribeUpgradesNodes.head.upgrades.addUpgrade(upgradeID);
-				GlobalSignals.upgradeUnlockedSignal.dispatch(upgradeID);
-				this.save();
-				gtag('event', 'upgrade_bought', { event_category: 'progression', event_label: upgradeID });
+			this.tribeUpgradesNodes.head.upgrades.addUpgrade(upgradeID);
+			GlobalSignals.upgradeUnlockedSignal.dispatch(upgradeID);
+			this.save();
+			gtag('event', 'upgrade_bought', { event_category: 'progression', event_label: upgradeID });
 			}
 		},
 

@@ -48,6 +48,7 @@ define([
 		registerListeners: function () {
 			GlobalSignals.add(this, GlobalSignals.sectorScavengedSignal, function () { this.onTutorialTrigger("action_scavenge"); });
 			GlobalSignals.add(this, GlobalSignals.sectorScoutedSignal, function () { this.onTutorialTrigger("action_scout"); });
+			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, function () { this.onTutorialTrigger("action_build"); });
 			GlobalSignals.add(this, GlobalSignals.playerEnteredCampSignal, function () { this.onTutorialTrigger("action_enter_camp"); });
 			GlobalSignals.add(this, GlobalSignals.actionRewardsCollectedSignal, function () { this.onTutorialTrigger("action_collect_rewards"); });
 			GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, function () { this.onTutorialTrigger("change_inventory"); });
@@ -90,12 +91,13 @@ define([
 			}
 			
 			log.i("show tutorial: " + tutorialID, this);
-			let startDelay = 1500;
+			let startDelay = isNaN(tutorial.delay) ? 0 : tutorial.delay;
 			
 			setTimeout(() => {
 				this.showTutorialLogMessage(tutorialID, tutorial.logMessage);
-				this.completeTutorial(tutorialID, tutorial.group);
 			}, startDelay);
+			
+			this.completeTutorial(tutorialID, tutorial.group);
 		},
 		
 		completeTutorial: function (tutorialID, tutorialGroupID) {
