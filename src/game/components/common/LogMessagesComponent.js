@@ -132,7 +132,7 @@ function (Ash, GameGlobals, LogConstants, LogMessageVO) {
 
 		getCustomSaveObject: function () {
 			var copy = {};
-			copy.messages = this.messages.slice(0, 10);
+			copy.messages = this.messages.slice(-30);
 			copy.messagesPendingMovement = this.messagesPendingMovement;
 			copy.hasNewMessages = this.hasNewMessages;
 			return copy;
