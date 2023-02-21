@@ -85,6 +85,15 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 		isFeatureUnlocked: function (featureID) {
 			return this.unlockedFeatures[featureID] || false;
 		},
+		
+		getUnlockedResources: function () {
+			let result = {};
+			for (let key in resourceNames) {
+				let name = resourceNames[key];
+				result[name] = this.unlockedFeatures["resource_" + name] || false;
+			}
+			return result;
+		},
 
 		passTime: function (seconds) {
 			this.extraUpdateTime = seconds;

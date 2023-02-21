@@ -241,7 +241,6 @@ define([
 					break;
 					
 				case PerkConstants.perkIds.tired:
-					msg = "Getting tired.";
 					break;
 					
 				case PerkConstants.perkIds.lightBeacon:

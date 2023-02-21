@@ -325,7 +325,7 @@ define([
 					var isHardLevel = false;
 					var neededIngredients = GameGlobals.itemsHelper.getNeededIngredients(numCamps, WorldConstants.CAMP_STEP_END, isHardLevel, itemsComponent, false);
 					var neededIngredient = neededIngredients.length > 0 ? neededIngredients[0] : null;
-					var caravan = GameGlobals.campHelper.getRandomIncomingCaravan(numCamps, GameGlobals.gameState.level, GameGlobals.gameState.unlockedFeatures.resources, neededIngredient);
+					var caravan = GameGlobals.campHelper.getRandomIncomingCaravan(numCamps, GameGlobals.gameState.level, GameGlobals.gameState.getUnlockedResources(), neededIngredient);
 					campNode.entity.add(new TraderComponent(caravan));
 					logMsg = Text.capitalize(Text.addArticle(caravan.name)) + " arrives. ";
 					break;

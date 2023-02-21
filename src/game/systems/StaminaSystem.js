@@ -89,10 +89,12 @@ define([
 		},
 		
 		updateStaminaValue: function (node, time) {
-			var staminaComponent = node.stamina;
-			var busyComponent = node.entity.get(PlayerActionComponent);
-			var isResting = busyComponent && busyComponent.getLastActionName() == "use_in_home";
-			var isHealing = busyComponent && busyComponent.getLastActionName() == "use_in_hospital";
+			let staminaComponent = node.stamina;
+			let busyComponent = node.entity.get(PlayerActionComponent);
+			let isResting = busyComponent && busyComponent.getLastActionName() == "use_in_home";
+			let isHealing = busyComponent && busyComponent.getLastActionName() == "use_in_hospital";
+			
+			if (!staminaComponent.stamina) staminaComponent.stamina = 0;
 			
 			var maxVal = staminaComponent.maxStamina;
 			var staminaPerSec = 0;
