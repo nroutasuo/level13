@@ -316,6 +316,7 @@ define(['ash',
 				this.generateSteppers("body");
 				this.generateButtonOverlays("body");
 				this.generateCallouts("body");
+				this.setInitialButtonState("body");
 
 				// equipment stats labels
 				for (var bonusKey in ItemConstants.itemBonusTypes) {
@@ -573,6 +574,10 @@ define(['ash',
 					}
 				});
 			},
+			
+			setInitialButtonState: function (scope) {
+				GameGlobals.buttonHelper.updateButtonDisabledStates(scope, true);
+			},
 
 			startGame: function () {
 				log.i("Starting game..");
@@ -697,6 +702,8 @@ define(['ash',
 				$.each($(".tabbutton"), function () {
 					uiFunctions.slideToggleIf($(this), null, $(this).attr("data-tab") === tabID, transitionTime, 200);
 				});
+				
+				log.i("tabChanged: " + tabID, "ui");
 
 				GlobalSignals.tabChangedSignal.dispatch(tabID, tabProps);
 			},

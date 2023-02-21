@@ -135,6 +135,7 @@ define([
 			
 			GameGlobals.uiFunctions.generateButtonOverlays("#milestone-container");
 			GameGlobals.uiFunctions.generateCallouts("#milestone-container");
+			GameGlobals.uiFunctions.setInitialButtonState("#milestone-container");
 			GameGlobals.uiFunctions.registerActionButtonListeners("#milestone-container");
 		},
 		

@@ -146,9 +146,11 @@ define([
 
 		// Check costs, requirements and cooldown - everything that is needed for the player action
 		checkAvailability: function (action, logUnavailable, otherSector, skipCooldown) {
-			var isLocationAction = PlayerActionConstants.isLocationAction(action);
-			var playerPos = this.playerStatsNodes.head.entity.get(PositionComponent);
-			var locationKey = GameGlobals.gameState.getActionLocationKey(isLocationAction, playerPos);
+			if (this.playerStatsNodes.head == null) return false;
+			
+			let isLocationAction = PlayerActionConstants.isLocationAction(action);
+			let playerPos = this.playerStatsNodes.head.entity.get(PositionComponent);
+			let locationKey = GameGlobals.gameState.getActionLocationKey(isLocationAction, playerPos);
 			
 			if (!skipCooldown) {
 				var cooldownTotal = PlayerActionConstants.getCooldown(action);
@@ -159,13 +161,13 @@ define([
 				}
 			}
 
-			var reqsResult = this.checkRequirements(action, logUnavailable, otherSector);
+			let reqsResult = this.checkRequirements(action, logUnavailable, otherSector);
 			if (reqsResult.value < 1) {
 				if (logUnavailable) log.i("blocked by requirements: " + reqsResult.reason);
 				return false;
 			}
 			
-			var costsResult = this.checkCosts(action, logUnavailable, otherSector);
+			let costsResult = this.checkCosts(action, logUnavailable, otherSector);
 			if (costsResult < 1) {
 				if (logUnavailable) log.i("blocked by costs");
 				return false;
@@ -205,6 +207,7 @@ define([
 		},
 		
 		isInProgress: function (action) {
+			if (this.playerResourcesNodes.head == null) return false;
 			let playerActionComponent = this.playerResourcesNodes.head.entity.get(PlayerActionComponent);
 			let actions = playerActionComponent.getAllActions();
 			for (let i = 0; i < actions.length; i++) {

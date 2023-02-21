@@ -154,10 +154,15 @@ define([
 
 			GameGlobals.uiFunctions.generateButtonOverlays("#upgrades-list");
 			GameGlobals.uiFunctions.generateCallouts("#upgrades-list");
+			GameGlobals.uiFunctions.setInitialButtonState("#upgrades-list");
+			
 			GameGlobals.uiFunctions.generateButtonOverlays("#blueprints-list");
 			GameGlobals.uiFunctions.generateCallouts("#blueprints-list");
+			GameGlobals.uiFunctions.setInitialButtonState("#blueprints-list");
 			GameGlobals.uiFunctions.registerActionButtonListeners("#blueprints-list");
+			
 			GlobalSignals.elementCreatedSignal.dispatch();
+			
 			this.lastUpdateUpgradeCount = this.tribeNodes.head.upgrades.boughtUpgrades.length;
 		},
 
