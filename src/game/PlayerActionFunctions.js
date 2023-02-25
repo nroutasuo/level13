@@ -1994,15 +1994,20 @@ define(['ash',
 		},
 
 		buyUpgrade: function (upgradeID, automatic) {
-			if (automatic || GameGlobals.playerActionsHelper.checkAvailability(upgradeID, true)) {
-				var upgradeDefinition = UpgradeConstants.upgradeDefinitions[upgradeID];
+			if (!automatic && !GameGlobals.playerActionsHelper.checkAvailability(upgradeID, true)) return;
+			
+			let upgradeDefinition = UpgradeConstants.upgradeDefinitions[upgradeID];
 			GameGlobals.playerActionsHelper.deductCosts(upgradeID);
-				this.addLogMessage(LogConstants.MSG_ID_BOUGHT_UPGRADE, "Researched " + upgradeDefinition.name);
+			this.addLogMessage(LogConstants.getUniqueID(), "Researched " + upgradeDefinition.name);
 			this.tribeUpgradesNodes.head.upgrades.addUpgrade(upgradeID);
 			GlobalSignals.upgradeUnlockedSignal.dispatch(upgradeID);
 			this.save();
 			gtag('event', 'upgrade_bought', { event_category: 'progression', event_label: upgradeID });
-			}
+			
+			let title = "Researched: " + upgradeDefinition.name;
+			let message = "<p>You've unlocked " + upgradeDefinition.name + ".</p><p class='p-meta'>" + GameGlobals.upgradeEffectsHelper.getEffectDescription(upgradeID, true) + "</p>";
+			
+			GameGlobals.uiFunctions.showInfoPopup(title, message, "Continue", null, null, true, false);
 		},
 
 		claimMilestone: function (index) {
@@ -2014,10 +2019,20 @@ define(['ash',
 				return;
 			}
 			
-			let milestone = TribeConstants.getMilestone(nextIndex);
-			this.unlockFeatures(milestone.unlockedFeatures);
+			let oldMilestone = TribeConstants.getMilestone(currentIndex);
+			let newMilestone = TribeConstants.getMilestone(nextIndex);
+			this.unlockFeatures(newMilestone.unlockedFeatures);
 			
 			GameGlobals.gameState.numUnlockedMilestones = index;
+			
+			let hasDeity = this.playerStatsNodes.head.entity.has(DeityComponent);
+			let baseMsg = "We know call this a " + newMilestone.name + ".";
+			let popupMsg = "<p>" + baseMsg + "</p>";
+			popupMsg += "<p>" + UIConstants.getMilestoneUnlocksDescriptionHTML(newMilestone, oldMilestone, true, hasDeity) + "<p>";
+			GameGlobals.uiFunctions.showInfoPopup("Milestone", popupMsg, "Continue");
+			
+			this.addLogMessage(LogConstants.getUniqueID(), baseMsg);
+			
 			GlobalSignals.milestoneUnlockedSignal.dispatch();
 		},
 
