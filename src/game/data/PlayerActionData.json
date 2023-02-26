@@ -51,8 +51,8 @@
         "build_in_cementmill": {
             "cost_factor_expBase": 1.4,
             "resource_fuel": {
+                "constantCost": 5,
                 "expCost": 5,
-				"constantCost": 5,
                 "linearCost": 5
             },
             "resource_metal": 600,
@@ -749,7 +749,7 @@
         "improve_in_fortification": {
             "cost_factor_expBase": 1.15,
             "resource_concrete": {
-				"constantCost": 30,
+                "constantCost": 30,
                 "linearCost": 30,
                 "requiredOrdinal": 5
             },
@@ -2675,7 +2675,7 @@
         },
         "improve_building_storage1": {
             "blueprint": 6,
-            "milestone": 3,
+            "milestone": {},
             "upgrades": {
                 "unlock_building_darkfarm": true
             }
@@ -2820,7 +2820,7 @@
         },
         "investigate": {
             "busy": false,
-            "milestone": 6,
+            "milestone": {},
             "sector": {
                 "investigatedPercent": [
                     -1,
@@ -3096,7 +3096,7 @@
         },
         "unlock_building_beacon": {
             "blueprint": 4,
-            "milestone": 3
+            "milestone": {}
         },
         "unlock_building_bridge": {
             "blueprint": 4,
@@ -3146,7 +3146,7 @@
         },
         "unlock_building_inn": {
             "blueprint": 3,
-            "milestone": 2,
+            "milestone": {},
             "upgrades": {
                 "unlock_building_market": true
             }
@@ -3159,7 +3159,7 @@
         },
         "unlock_building_market": {
             "blueprint": 3,
-            "milestone": 2,
+            "milestone": {},
             "upgrades": {
                 "unlock_building_tradingpost": true
             }
@@ -3178,14 +3178,14 @@
         },
         "unlock_building_passage_staircase": {
             "blueprint": 1,
-            "milestone": 1,
+            "milestone": {},
             "upgrades": {
                 "unlock_item_shoe1": true
             }
         },
         "unlock_building_radio": {
             "blueprint": 13,
-            "milestone": 5
+            "milestone": {}
         },
         "unlock_building_researchcenter": {
             "blueprint": 14,
@@ -3206,17 +3206,18 @@
             }
         },
         "unlock_building_spaceship1": {
-            "blueprint": 15,
+            "blueprint": {},
             "milestone": 7
         },
         "unlock_building_spaceship2": {
-            "blueprint": 15,
+            "blueprint": {},
             "milestone": 7
         },
         "unlock_building_spaceship3": {
-            "blueprint": 15,
+            "blueprint": {},
             "milestone": 7
         },
+        "unlock_building_square": {},
         "unlock_building_stable": {
             "upgrades": {
                 "unlock_building_market": true
@@ -3420,7 +3421,7 @@
         },
         "unlock_project_tradingpost_connector": {
             "blueprint": 10,
-            "milestone": 4,
+            "milestone": {},
             "upgrades": {
                 "unlock_building_passage_elevator": true
             }
@@ -3470,6 +3471,9 @@
                     1,
                     -1
                 ]
+            },
+            "upgrades": {
+                "improve_building_hospital_3": true
             }
         },
         "use_in_market": {

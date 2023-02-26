@@ -2008,6 +2008,9 @@ define(['ash',
 			let message = "<p>You've unlocked " + upgradeDefinition.name + ".</p><p class='p-meta'>" + GameGlobals.upgradeEffectsHelper.getEffectDescription(upgradeID, true) + "</p>";
 			
 			GameGlobals.uiFunctions.showInfoPopup(title, message, "Continue", null, null, true, false);
+			
+			let unlockedGeneralActions = GameGlobals.upgradeEffectsHelper.getUnlockedGeneralActions(upgradeID);
+			this.unlockFeatures(unlockedGeneralActions);
 		},
 
 		claimMilestone: function (index) {

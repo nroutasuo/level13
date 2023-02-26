@@ -651,30 +651,18 @@
         "name": "Metal Working"
     },
     "unlock_building_spaceship1": {
-        "blueprintCampOrdinal": 15,
-        "blueprintIsCampless": true,
-        "blueprintIsEarly": false,
-        "blueprintPieces": 3,
         "campOrdinal": "15",
         "effects": {},
         "id": "unlock_building_spaceship1",
         "name": "Space Colony Hull"
     },
     "unlock_building_spaceship2": {
-        "blueprintCampOrdinal": 15,
-        "blueprintIsCampless": true,
-        "blueprintIsEarly": false,
-        "blueprintPieces": 2,
         "campOrdinal": "15",
         "effects": {},
         "id": "unlock_building_spaceship2",
         "name": "Space Colony Shield"
     },
     "unlock_building_spaceship3": {
-        "blueprintCampOrdinal": 15,
-        "blueprintIsCampless": true,
-        "blueprintIsEarly": false,
-        "blueprintPieces": 5,
         "campOrdinal": "15",
         "effects": {},
         "id": "unlock_building_spaceship3",

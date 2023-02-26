@@ -59,12 +59,6 @@ define([
 					GameGlobals.playerActionFunctions.unlockFeature("projects");
 				}
 			}
-			
-			// TODO mark as unlocked feature on milestone?
-			let milestoneIndexForInvestigate = GameGlobals.milestoneEffectsHelper.getMilestoneIndexForAction("investigate");
-			if (GameGlobals.gameState.numUnlockedMilestones >= milestoneIndexForInvestigate) {
-				GameGlobals.playerActionFunctions.unlockFeature("investigate");
-			}
 		}
 		
 	});
