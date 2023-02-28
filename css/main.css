@@ -499,6 +499,7 @@ body.dark .dimmed {
 body.dark .columns-container {
   display: flex;
   gap: 5px;
+  margin: 0.5em 0;
 }
 body.dark .columns-container-vcenter {
   align-items: center;
@@ -644,7 +645,8 @@ body.dark th.th-text {
 body.dark td.bg-reset {
   background: #282a28;
 }
-body.dark tr.current {
+body.dark tr.current,
+body.dark div.current {
   background: #2f322f;
   border-color: #2f322f;
 }
@@ -1234,6 +1236,12 @@ body.dark .progress {
   height: 1em;
   border-width: 0px !important;
   line-height: 1.3;
+}
+body.dark .progress.full-width,
+body.dark .progress.full-width .progress {
+  max-width: 100%;
+  height: 1.5em;
+  line-height: 1.5em;
 }
 body.dark .progress-wrap {
   background-color: #666;
@@ -2324,8 +2332,15 @@ body.dark #fight-popup-enemy-difficulty {
   -o-transition: none;
   transition: none;
 }
-body.dark .reqs-list-entry {
+body.dark #milestone-next-unlocks {
+  margin: 1em 0;
+}
+body.dark .unlocks-list-entry {
   display: block;
+}
+body.dark .reqs-list-entry {
+  display: inline-block;
+  margin: 0 5px 0 0;
 }
 body.dark .reqs-checkmark {
   background-image: url('../img/eldorado/icon-checkmark-dark.png');
@@ -2642,6 +2657,7 @@ body.sunlit .dimmed {
 body.sunlit .columns-container {
   display: flex;
   gap: 5px;
+  margin: 0.5em 0;
 }
 body.sunlit .columns-container-vcenter {
   align-items: center;
@@ -2787,7 +2803,8 @@ body.sunlit th.th-text {
 body.sunlit td.bg-reset {
   background: #fff;
 }
-body.sunlit tr.current {
+body.sunlit tr.current,
+body.sunlit div.current {
   background: #e6e6e6;
   border-color: #e6e6e6;
 }
@@ -3377,6 +3394,12 @@ body.sunlit .progress {
   height: 1em;
   border-width: 0px !important;
   line-height: 1.3;
+}
+body.sunlit .progress.full-width,
+body.sunlit .progress.full-width .progress {
+  max-width: 100%;
+  height: 1.5em;
+  line-height: 1.5em;
 }
 body.sunlit .progress-wrap {
   background-color: #999;
@@ -4467,8 +4490,15 @@ body.sunlit #fight-popup-enemy-difficulty {
   -o-transition: none;
   transition: none;
 }
-body.sunlit .reqs-list-entry {
+body.sunlit #milestone-next-unlocks {
+  margin: 1em 0;
+}
+body.sunlit .unlocks-list-entry {
   display: block;
+}
+body.sunlit .reqs-list-entry {
+  display: inline-block;
+  margin: 0 5px 0 0;
 }
 body.sunlit .reqs-checkmark {
   background-image: url('../img/eldorado/icon-checkmark.png');

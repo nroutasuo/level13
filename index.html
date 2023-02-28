@@ -167,6 +167,7 @@
 							<li id="switch-projects"><span class="name vision-text">Projects</span></li>
 							<li id="switch-upgrades"><span class="name vision-text">Upgrades</span></li>
 							<li id="switch-world"><span class="name vision-text">Tribe</span></li>
+							<li id="switch-milestones"><span class="name vision-text">Milestones</span></li>
 						</ul>
 					</div>
 				</div><!-- grid for the switch -->
@@ -632,13 +633,22 @@
 					
 					<div class="grid tabelement" id="container-tab-two-milestones" data-tab="switch-milestones" style="display:none">
 						<div class="unit whole">
-							<div class="subheader"><h3>Current level</h3></div>
-							<p id="milestone-current-name">Current tribe level:</p>
-							<p id="milestone-current-description">This is the beginning of something.</p>
-							<div class="subheader"><h3>Next level</h3></div>
-							<p id="milestone-next-name">Next tribe level:</p>
-							<p id="milestone-next-description">With a few more people, we could call this a tribe.</p>
-							<div id="milestone-container" class="columns-container columns-container-vcenter"></div>
+							<div class="milestone-container">
+								<h3>Current: <span id='milestone-current-name' class="hl-functionality"></span></h3>
+							</div>
+							<div class="milestone-container">
+								<h3>Next: <span id='milestone-next-name' class="hl-functionality"></span></h3>
+								<div id="milestone-next-unlocks"></div>
+								<div id="milestone-population-bar" class="progress-wrap progress full-width">
+									<div class="progress-bar progress"></div>
+									<span class="progress progress-label"></span>
+								</div>
+								<div class="columns-container">
+									<div id="milestone-next-reqs" class="columns-child infobox">
+									</div>
+									<div id="milestone-next-button-container" class="columns-child columns-child-small"></div>
+								</div>
+							</div>
 						</div>
 					</div>
 					

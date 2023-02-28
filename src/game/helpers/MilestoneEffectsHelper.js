@@ -14,19 +14,6 @@ define([
 		
 		constructor: function () {},
 		
-		getUnlockedActions: function (milestoneIndex) {
-			let result = [];
-			for (let action in PlayerActionConstants.requirements) {
-				let reqs = PlayerActionConstants.requirements[action];
-				if (reqs.milestone) {
-					if (reqs.milestone == milestoneIndex) {
-						result.push(action);
-					}
-				}
-			}
-			return result;
-		},
-		
 		getMilestoneIndexForAction: function (action) {
 			let reqs = PlayerActionConstants.requirements[action];
 			if (reqs && reqs.milestone) {
@@ -91,7 +78,38 @@ define([
 				result = milestone;
 			}
 			return result;
-		}
+		},
+		
+		getUnlockedGeneralActions: function (milestoneIndex) {
+			return this.getUnlockedActions(milestoneIndex, function (action) {
+				let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+				if (UpgradeConstants.upgradeDefinitions[action]) return false;
+				return true;
+			});
+		},
+		
+		getUnlockedUpgrades: function (milestoneIndex) {
+			return this.getUnlockedActions(milestoneIndex, function (action) {
+				return GameGlobals.playerActionsHelper.isUnlockUpgradeAction(action);
+			});
+		},
+		
+		getUnlockedActions: function (milestoneIndex, filter) {
+			let result = [];
+			for (let action in PlayerActionConstants.requirements) {
+				let reqs = PlayerActionConstants.requirements[action];
+				if (reqs.milestone) {
+					if (reqs.milestone == milestoneIndex && (!filter || filter(action))) {
+						result.push(action);
+					}
+				}
+			}
+			return result;
+		},
+		
+		getUnlockedGeneralActions: function (milestoneIndex) {
+			
+		},
 		
 	});
 	

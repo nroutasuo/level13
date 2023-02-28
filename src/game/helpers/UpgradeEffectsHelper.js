@@ -2,13 +2,16 @@
 define([
 	'ash',
 	'game/GameGlobals',
+	'game/constants/CampConstants',
 	'game/constants/ImprovementConstants',
+	'game/constants/ItemConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/WorldConstants',
 	'game/constants/OccurrenceConstants',
+	'game/constants/TextConstants',
 	'game/vos/ImprovementVO',
-], function (Ash, GameGlobals, ImprovementConstants, UpgradeConstants, PlayerActionConstants, WorldConstants, OccurrenceConstants, ImprovementVO) {
+], function (Ash, GameGlobals, CampConstants, ImprovementConstants, ItemConstants, UpgradeConstants, PlayerActionConstants, WorldConstants, OccurrenceConstants, TextConstants, ImprovementVO) {
 	
 	var UpgradeEffectsHelper = Ash.Class.extend({
 		
@@ -17,6 +20,61 @@ define([
 		constructor: function () {
 			this.improvementsByOccurrence[OccurrenceConstants.campOccurrenceTypes.trader] = improvementNames.market;
 			this.improvementsByOccurrence[OccurrenceConstants.campOccurrenceTypes.recruit] = improvementNames.inn;
+		},
+		
+		getEffectDescription: function (upgradeID, showMultiline) {
+			let effects = "";
+			
+			let addGroup = function (title, items, getItemDisplayName) {
+				if (items.length == 0) return
+				if  (title && title.length > 0) effects += title + ": ";
+				if (showMultiline) effects += "<br/>";
+				for (let i = 0; i < items.length; i++) {
+					if (i > 0) effects += ", ";
+					effects += getItemDisplayName(items[i]).toLowerCase();
+				}
+				if (showMultiline) effects += "<br/>";
+				else effects += ", ";
+			}
+			
+			let unlockedBuildings = GameGlobals.upgradeEffectsHelper.getUnlockedBuildings(upgradeID);
+			addGroup("unlocked buildings", unlockedBuildings, this.getImprovementDisplayName);
+
+			let improvedBuildings = GameGlobals.upgradeEffectsHelper.getImprovedBuildings(upgradeID);
+			addGroup("improved buildings", improvedBuildings, this.getImprovementDisplayName);
+
+			let unlockedWorkers = GameGlobals.upgradeEffectsHelper.getUnlockedWorkers(upgradeID);
+			addGroup("unlocked workers", unlockedWorkers, CampConstants.getWorkerDisplayName);
+
+			let improvedWorkers = GameGlobals.upgradeEffectsHelper.getImprovedWorkers(upgradeID);
+			addGroup("improved workers", improvedWorkers, CampConstants.getWorkerDisplayName);
+
+			let unlockedItems = GameGlobals.upgradeEffectsHelper.getUnlockedItems(upgradeID);
+			addGroup("unlocked items", unlockedItems, ItemConstants.getItemDisplayName);
+			
+			let unlockedOccurrences = GameGlobals.upgradeEffectsHelper.getUnlockedOccurrences(upgradeID);
+			addGroup("new events", unlockedOccurrences, (e) => e);
+
+			let improvedOccurrences = GameGlobals.upgradeEffectsHelper.getImprovedOccurrences(upgradeID);
+			addGroup("", improvedOccurrences, (e) => "improved " + e);
+
+			let unlockedActions = GameGlobals.upgradeEffectsHelper.getUnlockedGeneralActions(upgradeID);
+			addGroup("new actions", unlockedActions, (action) => {
+				let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action)
+				return TextConstants.getActionName(baseActionID);
+			});
+
+			if (effects.length > 0 && effects.endsWith(", ")) effects = effects.slice(0, -2);
+			if (effects.length > 0 && effects.endsWith("<br/>")) effects = effects.slice(0, -5);
+			
+			effects = effects.toLowerCase();
+			
+			return effects;
+		},
+		
+		getImprovementDisplayName: function (improvementName) {
+			// TODO determine what improvement level to use (average? current camp?)
+			return ImprovementConstants.getImprovementDisplayName(improvementName);
 		},
 		
 		getUnlockedBuildings: function (upgradeID) {
@@ -143,7 +201,7 @@ define([
 				let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
 				if (action == "build_out_greenhouse") return true;
 				if (action == "build_out_tradepost_connector") return true;
-				if (UpgradeConstants.upgradeDefinitions[action]) return false;
+				if (GameGlobals.playerActionsHelper.isUnlockUpgradeAction(action)) return false;
 				if (baseActionID.indexOf("build_") >= 0) return false;
 				if (baseActionID.indexOf("craft") >= 0) return false;
 				if (baseActionID.indexOf("use_in_") >= 0) return false;

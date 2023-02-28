@@ -47,6 +47,7 @@ define([
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 			this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
 			GlobalSignals.add(this, GlobalSignals.milestoneUnlockedSignal, this.onMilestoneClaimed);
+			GlobalSignals.add(this, GlobalSignals.populationChangedSignal, this.onPopulationChanged);
 			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
 		},
@@ -84,19 +85,27 @@ define([
 		updateMilestones: function () {
 			let currentMilestone = GameGlobals.tribeHelper.getCurrentMilestone();
 			let nextMilestone = GameGlobals.tribeHelper.getNextMilestone();
+			let action = this.getUnlockMilestoneAction(nextMilestone);
 			let hasDeity = this.playerStatsNodes.head.entity.has(DeityComponent);
 			
-			$("#milestone-current-name").text("Current tribe level: " + currentMilestone.name + " (" + currentMilestone.index + ")");
-			$("#milestone-next-name").text("Next tribe level: " + nextMilestone.name + " (" + nextMilestone.index + ")");
+			// texts
+			$("#milestone-current-name").text(currentMilestone.name + " (" + currentMilestone.index + ")");
+			$("#milestone-next-name").text(nextMilestone.name + " (" + nextMilestone.index + ")");
 			
-			let action = "claim_milestone_" + nextMilestone.index;
+			// unlocks
+			$("#milestone-next-unlocks").empty();
+			let unlocksDiv = "<div class='p-meta'>";
+			unlocksDiv += UIConstants.getMilestoneUnlocksDescriptionHTML(nextMilestone, currentMilestone, false, false, hasDeity);
+			unlocksDiv += "</div>";
+			$("#milestone-next-unlocks").append(unlocksDiv);
 			
+			// requirements
+			$("#milestone-next-reqs").empty();
 			let reqs = GameGlobals.playerActionsHelper.getReqs(action);
-			let requirementsDiv = "<div style='flex-grow: 2'>";
 			if (reqs) {
-				if (reqs.tribe && reqs.tribe.population) {
-					requirementsDiv += this.getMilestoneReqsListEntry("Population", reqs.tribe.population, GameGlobals.tribeHelper.getTotalPopulation());
-				}
+				this.updatePopulation();
+				
+				let requirementsDiv = "<div style='flex-grow: 2'>";
 				if (reqs.tribe && reqs.tribe.improvements) {
 					for (let improvementID in reqs.tribe.improvements) {
 						let improvementLevel = GameGlobals.campHelper.getCurrentMaxBuiltImprovementLevel(improvementID);
@@ -109,34 +118,45 @@ define([
 						requirementsDiv += this.getMilestoneReqsListEntry(improvementID, reqs.tribe.projects[improvementID], GameGlobals.playerActionsHelper.getCurrentImprovementCountTotal(improvementID));
 					}
 				}
+				
+				requirementsDiv += "</div>";
+				$("#milestone-next-reqs").append(requirementsDiv);
 			}
-			requirementsDiv += "</div>";
 			
-			let unlocksDiv = "<div style='flex-grow: 2'>";
-			unlocksDiv += "Max evidence: " + nextMilestone.maxEvidence;
-			unlocksDiv += "Max rumours: " + nextMilestone.maxRumours;
-			if (nextMilestone.maxFavour && hasDeity) {
-				unlocksDiv += "Max favour: " + nextMilestone.maxFavour;
-			}
-			if (nextMilestone.baseReputation && nextMilestone.baseReputation > currentMilestone.baseReputation) {
-				unlocksDiv += "Base reputation: " + nextMilestone.baseReputation;
-			}
-			if (nextMilestone.unlockedFeatures) {
-				for (let i = 0; i < nextMilestone.unlockedFeatures.length; i++) {
-					unlocksDiv += UIConstants.getUnlockedFeatureDisplayName(nextMilestone.unlockedFeatures[i]);
-				}
-			}
-			unlocksDiv += "</div>";
+			// unlock button
+			$("#milestone-next-button-container").empty();
+			$("#milestone-next-button-container").append("<div><button class='action' action='" + action + "'>Unlock</button></div>");
 			
-			$("#milestone-container").empty();
-			$("#milestone-container").append(requirementsDiv);
-			$("#milestone-container").append(unlocksDiv);
-			$("#milestone-container").append("<div><button class='action' action='" + action + "'>Unlock</button></div>");
+			GameGlobals.uiFunctions.generateButtonOverlays("#milestone-next-button-container");
+			GameGlobals.uiFunctions.generateCallouts("#milestone-next-button-container");
+			GameGlobals.uiFunctions.setInitialButtonState("#milestone-next-button-container");
+			GameGlobals.uiFunctions.registerActionButtonListeners("#milestone-next-button-container");
+		},
+		
+		updatePopulation: function () {
+			let currentMilestone = GameGlobals.tribeHelper.getCurrentMilestone();
+			let nextMilestone = GameGlobals.tribeHelper.getNextMilestone();
+			let action = this.getUnlockMilestoneAction(nextMilestone);
+			let reqs = GameGlobals.playerActionsHelper.getReqs(action);
 			
-			GameGlobals.uiFunctions.generateButtonOverlays("#milestone-container");
-			GameGlobals.uiFunctions.generateCallouts("#milestone-container");
-			GameGlobals.uiFunctions.setInitialButtonState("#milestone-container");
-			GameGlobals.uiFunctions.registerActionButtonListeners("#milestone-container");
+			let showPopulation = reqs && reqs.tribe && reqs.tribe.population && reqs.tribe.population > 0;
+			
+			GameGlobals.uiFunctions.toggle($("#milestone-population-bar"), showPopulation);
+			
+			if (showPopulation) {
+				let requiredPopulation = reqs.tribe.population || 1;
+				let currentPopulation = GameGlobals.tribeHelper.getTotalPopulation()
+				
+				// - requirements: population
+				let populationProgress = Math.min(currentPopulation / requiredPopulation, 1);
+				let populationProgressLabel = "population: " + currentPopulation + " / " + requiredPopulation;
+				$("#milestone-population-bar").data("progress-percent", populationProgress * 100);
+				$("#milestone-population-bar .progress-label").text(populationProgressLabel);
+			}
+		},
+		
+		getUnlockMilestoneAction: function (milestone) {
+			return "claim_milestone_" + milestone.index;
 		},
 		
 		canClaimMilestone: function () {
@@ -164,7 +184,11 @@ define([
 			if (GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.milestones) {
 				this.updateMilestones();
 			}
-		}
+		},
+		
+		onPopulationChanged: function () {
+			this.updatePopulation();
+		},
 
 	});
 

@@ -300,7 +300,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		},
 		
 		getWorkerDisplayName: function (workerType) {
-			let def = this.workerTypes[workerType];
+			let def = CampConstants.workerTypes[workerType];
 			if (!def) {
 				log.w("no such workerType:" + workerType);
 				return workerType;

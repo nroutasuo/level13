@@ -584,6 +584,56 @@ define(['ash',
 			let type = UpgradeConstants.getUpgradeType(upgradeID);
 			return "<img src='img/items/blueprints/blueprint-" + type + ".png' alt='' />";
 		},
+		
+		getMilestoneUnlocksDescriptionHTML: function (milestone, previousMilestone, showComparison, showMultiline, hasDeity) {
+			let html = "";
+			let baseReputation = Math.max(milestone.baseReputation || 0 , previousMilestone.baseReputation || 0);
+			
+			let addValue = function (label, value) {
+				html += "<span class='unlocks-list-entry'>";
+				html += label;
+				if (value || value === 0) {
+					html += ": ";
+					html += value;
+				}
+				html += "</span>";
+			};
+			
+			let addGroup = function (title, items, getItemDisplayName) {
+				if (!items || items.length == 0) return
+				if  (title && title.length > 0) html += title + ": ";
+				if (showMultiline) html += "<br/>";
+				for (let i = 0; i < items.length; i++) {
+					if (i > 0) html += ", ";
+					html += getItemDisplayName ? getItemDisplayName(items[i]).toLowerCase() : items[i];
+				}
+				html += "<br/>";
+			};
+			
+			addValue("Base reputation", milestone.baseReputation);
+			
+			addValue("Max evidence", milestone.maxEvidence);
+			addValue("Max rumours", milestone.maxRumours);
+			if (milestone.maxFavour && hasDeity) {
+				addValue("Max favour", milestone.maxFavour);
+			}
+			
+			addGroup("", milestone.unlockedFeatures, UIConstants.getUnlockedFeatureDisplayName);
+			addGroup("New events", milestone.unlockedEvents);
+			
+			let unlockedUpgrades = GameGlobals.milestoneEffectsHelper.getUnlockedUpgrades(milestone.index);
+			addGroup("Available upgrades", unlockedUpgrades, (upgradeID) => {
+				let upgrade = UpgradeConstants.upgradeDefinitions[upgradeID];
+				let isOtherRequirementsMet = GameGlobals.playerActionsHelper.isRequirementsMet(upgradeID, null, [ PlayerActionConstants.DISABLED_REASON_MILESTONE ]);
+				let c = isOtherRequirementsMet ? "" : "strike-through";
+				return "<span class='" + c + "'>" + upgrade.name + "</span>";
+			});
+			
+			let unlockedActions = GameGlobals.milestoneEffectsHelper.getUnlockedGeneralActions(milestone.index);
+			addGroup("Other", unlockedActions);
+			
+			return html;
+		},
 
 		getTimeToNum: function (seconds) {
 			seconds = Math.ceil(Math.abs(seconds));

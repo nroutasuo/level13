@@ -218,8 +218,8 @@ define([
 			return false;
 		},
 		
-		isRequirementsMet: function (action, sector) {
-			return GameGlobals.playerActionsHelper.checkRequirements(action, false, sector).value >= 1;
+		isRequirementsMet: function (action, sector, checksToSkip) {
+			return GameGlobals.playerActionsHelper.checkRequirements(action, false, sector, checksToSkip).value >= 1;
 		},
 
 		// Check requirements (not costs) of an action
@@ -1071,11 +1071,11 @@ define([
 					}
 				}
 				
-				if (requirements.milestone) {
+				if (requirements.milestone && !shouldSkipCheck(PlayerActionConstants.DISABLED_REASON_POPULATION)) {
 					let currentMilestone = GameGlobals.gameState.numUnlockedMilestones;
 					let requiredMilestone = requirements.milestone;
 					if (currentMilestone < requiredMilestone) {
-						return { value: 0, reason: "Requires milestone " + requiredMilestone };
+						return { value: 0, reason: "Requires milestone " + requiredMilestone, baseReason: PlayerActionConstants.DISABLED_REASON_MILESTONE };
 					}
 				}
 				
@@ -2112,6 +2112,11 @@ define([
 		
 		isRepairBuildingAction: function (baseActionID) {
 			return PlayerActionConstants.isRepairBuildingAction(baseActionID);
+		},
+		
+		isUnlockUpgradeAction: function (action) {
+			if (UpgradeConstants.upgradeDefinitions[action]) return true;
+			return false;
 		},
 		
 		getImprovementDisplayName: function (improvementID) {
