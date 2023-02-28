@@ -49,6 +49,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.sectorScavengedSignal, function () { this.onTutorialTrigger("action_scavenge"); });
 			GlobalSignals.add(this, GlobalSignals.sectorScoutedSignal, function () { this.onTutorialTrigger("action_scout"); });
 			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, function () { this.onTutorialTrigger("action_build"); });
+			GlobalSignals.add(this, GlobalSignals.actionCompletedSignal, function () { this.onTutorialTrigger("action_any"); });
 			GlobalSignals.add(this, GlobalSignals.playerEnteredCampSignal, function () { this.onTutorialTrigger("action_enter_camp"); });
 			GlobalSignals.add(this, GlobalSignals.actionRewardsCollectedSignal, function () { this.onTutorialTrigger("action_collect_rewards"); });
 			GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, function () { this.onTutorialTrigger("change_inventory"); });

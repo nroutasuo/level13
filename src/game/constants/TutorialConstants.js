@@ -177,6 +177,13 @@ define(['ash'], function (Ash) {
 				logMessage: "Built a trading post. The two camps now share resources and storage.",
 				conditions: { improvements: { tradepost: [ 1, 2 ] }, tribe: { improvements: { tradepost: [ 2, 3 ] } } }
 			},
+			TUTORIAL_USED_HOSPITAL: {
+				triggers: [ "action_any" ],
+				repeats: "NEVER",
+				delay: 1000,
+				logMessage: "Healed all injuries.",
+				conditions: { perkEffects: { "Injury": [ -1, 0 ] } }
+			},
 			TUTORIAL_CAN_MAKE_LIGHT: {
 				triggers: [ "change_inventory" ],
 				repeats: "COOLDOWN",
@@ -270,14 +277,14 @@ define(['ash'], function (Ash) {
 				triggers: [ "action_scout" ],
 				repeats: "NEVER",
 				delay: 1500,
-				logMessage: "There are some hostile creatures here. Better to keep quiet when scavenging.",
+				logMessage: "There are some hostile creatures here. Scavenging is more risky.",
 				conditions: { sector: { enemies: true } },
 			},
 			TUTORIAL_FEATURE_UNLOCKED_MOVE: {
 				triggers: [ "feature_unlocked", "change_inventory" ],
 				repeats: "NEVER",
 				delay: 1500,
-				logMessage: "Might be worth it to explore the neighbourhood a bit.",
+				logMessage: "Might be worthwhile to explore the neighbourhood a bit.",
 				conditions: { featureUnlocked: { move: true }, playerInventory: { resource_food: [2, -1], resource_water: [2, -1 ], inCamp: false } }
 			},
 			TUTORIAL_FEATURE_UNLOCKED_UPGRADES: {

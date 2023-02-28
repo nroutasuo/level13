@@ -1259,11 +1259,10 @@ define(['ash',
 		},
 
 		fightGang: function (direction) {
-			var action = "fight_gang_" + direction;
+			let action = "fight_gang_" + direction;
 			this.currentAction = action;
 			var playerActionFunctions = this;
 			GameGlobals.fightHelper.handleRandomEncounter(action, function () {
-				playerActionFunctions.addLogMessage(LogConstants.MSG_ID_GANG_DEFEATED, "The street is clear.");
 				playerActionFunctions.completeAction(action);
 				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 			}, function () {
@@ -1714,7 +1713,6 @@ define(['ash',
 
 			let maxStamina = PlayerStatConstants.getMaxStamina(perksComponent);
 			this.playerStatsNodes.head.stamina.stamina = maxStamina;
-			this.addLogMessage(LogConstants.MSG_ID_USE_HOSPITAL, "Healed all injuries.");
 
 			this.completeAction("use_in_hospital");
 			GameGlobals.playerActionFunctions.unlockFeature("fight");
@@ -1879,7 +1877,7 @@ define(['ash',
 					let itemName = itemNameParts[itemNameParts.length - 1];
 					let currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
 					currentStorage.resources.addResource(resourceNames.metal, value);
-					this.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, "Took apart the " + itemName + ". Gained " + value + " metal.");
+					this.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, "Took apart " + Text.addArticle(itemName) + ". Gained " + value + " metal.");
 					break;
 					
 				case "cache_evidence":
@@ -2004,8 +2002,8 @@ define(['ash',
 			this.save();
 			gtag('event', 'upgrade_bought', { event_category: 'progression', event_label: upgradeID });
 			
-			let title = "Researched: " + upgradeDefinition.name;
-			let message = "<p>You've unlocked " + upgradeDefinition.name + ".</p><p class='p-meta'>" + GameGlobals.upgradeEffectsHelper.getEffectDescription(upgradeID, true) + "</p>";
+			let title = "Researched complete ";
+			let message = "<p>You've researched <span class='hl-functionality'>" + upgradeDefinition.name + "</span>.</p><p class='p-meta'>" + GameGlobals.upgradeEffectsHelper.getEffectDescription(upgradeID, true) + "</p>";
 			
 			GameGlobals.uiFunctions.showInfoPopup(title, message, "Continue", null, null, true, false);
 			
@@ -2029,10 +2027,10 @@ define(['ash',
 			GameGlobals.gameState.numUnlockedMilestones = index;
 			
 			let hasDeity = this.playerStatsNodes.head.entity.has(DeityComponent);
-			let baseMsg = "We know call this a " + newMilestone.name + ".";
+			let baseMsg = "We now call this a " + newMilestone.name + ".";
 			let popupMsg = "<p>" + baseMsg + "</p>";
-			popupMsg += "<p>" + UIConstants.getMilestoneUnlocksDescriptionHTML(newMilestone, oldMilestone, true, hasDeity) + "<p>";
-			GameGlobals.uiFunctions.showInfoPopup("Milestone", popupMsg, "Continue");
+			popupMsg += "<p>" + UIConstants.getMilestoneUnlocksDescriptionHTML(newMilestone, oldMilestone, true, true, hasDeity) + "<p>";
+			GameGlobals.uiFunctions.showInfoPopup("Milestone", popupMsg, "Continue", null, null, false, false);
 			
 			this.addLogMessage(LogConstants.getUniqueID(), baseMsg);
 			

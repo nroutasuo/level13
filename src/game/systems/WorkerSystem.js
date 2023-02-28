@@ -339,12 +339,13 @@ define([
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (!this.playerLocationNodes.head || !this.playerLocationNodes.head.position) return;
 			
-			var playerFoodSource = GameGlobals.resourcesHelper.getCurrentStorage().resources;
+			let playerPos = this.playerNodes.head.position;
+			let playerFoodSource = GameGlobals.resourcesHelper.getCurrentStorage().resources;
 			
-			var playerLevelCamp = this.nearestCampNodes.head !== null ? this.nearestCampNodes.head.entity : null;
-			var inCamp = playerLevelCamp !== null;
-			var hasPopulation = this.nearestCampNodes.head !== null ? this.nearestCampNodes.head.camp.population >= 1 : false;
-			inCamp = inCamp && playerLevelCamp.get(PositionComponent).sector === this.playerLocationNodes.head.position.sector;
+			let playerLevelCamp = this.nearestCampNodes.head !== null ? this.nearestCampNodes.head.entity : null;
+			let inCamp = playerPos.inCamp;
+			let inCampSector = playerLevelCamp !== null && playerLevelCamp.get(PositionComponent).sector === this.playerLocationNodes.head.position.sector;
+			let hasPopulation = this.nearestCampNodes.head !== null ? this.nearestCampNodes.head.camp.population >= 1 : false;
 			
 			var timeStamp = new Date().getTime();
 			var log = timeStamp - this.lastMsgTimeStamp > this.msgFrequency;
@@ -361,11 +362,11 @@ define([
 					msg = "There is no more food.";
 				}
 				
-				if (!inCamp && isThirsty && Math.random() < 0.05) {
+				if (!inCamp && !inCampSector && isThirsty && Math.random() < 0.05) {
 					msg = "Your throat is dry.";
 				}
 				
-				if (!inCamp && msg === null && isHungry && Math.random() < 0.05) {
+				if (!inCamp&& !inCampSector && msg === null && isHungry && Math.random() < 0.05) {
 					msg = "Your stomach is grumbling.";
 				}
 				

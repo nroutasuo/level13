@@ -95,7 +95,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			addOptions("a-street", [ "quiet" ]);
 			addOptions("n-building", [ "building" ]);
 			addOptions("n-buildings", [ "buildings" ]);
-			addOptions("a-building", [ "towering", "tall", "gloomy", "abandoned", "nondescript", "small", "typical", "symmetrical", "monolithic", "blocky", "massive", "functional", "colossal", "immense" ]);
+			addOptions("a-building", [ "towering", "tall", "gloomy", "abandoned", "nondescript", "small", "typical", "monolithic", "blocky", "massive", "functional", "colossal", "immense" ]);
 			addOptions("an-decos", [ "stranded benches", "broken elevators" ]);
 			addOptions("an-items", [ "debris" ]);
 			// - sector type: determines n-sector and affects many others
@@ -106,7 +106,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					addOptions("n-building", [ "residential tower", "apartment house", "residential building with countless of rows of identical balconies" ]);
 					addOptions("n-buildings", [ "residential towers", "apartments", "tower blocks", "identical residential towers" ]);
 					addOptions("an-decos", [ "tram tracks" ]);
-					addOptions("a-building", [ "silent", "regular", "enourmous" ]);
+					addOptions("a-building", [ "silent", "regular", "enourmous", "symmetrical" ]);
 					addOptions("an-items", [ "garbage" ]);
 					break;
 				case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
@@ -133,7 +133,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					addOptions("a-street-past", [ "glamorous", "buzzling" ]);
 					addOptions("n-building", [ "shopping center", "department store", "office building", "cafe", "bar" ]);
 					addOptions("n-buildings", [ "shopping towers", "shopping malls", "shops", "stores", "offices", "office towers" ]);
-					addOptions("a-building", [ "empty", "deserted", "ransacked", "ensormous", "bizarre" ]);
+					addOptions("a-building", [ "empty", "deserted", "ransacked", "ensormous", "bizarre", "symmetrical" ]);
 					addOptions("an-decos", [ "empty fountains", "abandoned stalls" ]);
 					addOptions("an-items", [ "broken glass" ]);
 					break;
@@ -143,7 +143,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					addOptions("a-street-past", [ "leisurely", "orderly", "cheerful" ]);
 					addOptions("n-building", [ "library", "prison", "school", "university", "park", "public square", "sports field", "metro station", "research laboratory", "government building" ]);
 					addOptions("n-buildings", [ "public buildings", "government buildings" ]);
-					addOptions("a-building", [ "empty", "inaccessible", "enormous", "uncanny" ]);
+					addOptions("a-building", [ "empty", "inaccessible", "enormous", "uncanny", "symmetrical" ]);
 					addOptions("an-decos", [ "withered trees" ]);
 					addOptions("an-items", [ "research samples", "trash" ]);
 					break;
@@ -152,7 +152,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					addOptions("a-street", [ "shabby", "chaotic" ]);
 					addOptions("a-street-past", [ "gloomy", "crowded", "lively" ]);
 					addOptions("n-building", [ "apartment building" ]);
-					addOptions("a-building", [ "abandoned", "sketchy" ]);
+					addOptions("a-building", [ "abandoned", "sketchy", "depressing" ]);
 					addOptions("n-buildings", [ "shacks", "huts", "slum residences", "residential towers that don't seem to have ever been connected to the grid" ]);
 					addOptions("an-decos", [ "collapsed shacks", "garbage piles" ]);
 					addOptions("an-items", [ "rusted pipes" ]);
@@ -190,7 +190,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					addOptions("an-decos", [ "collapsed tunnels" ]);
 					break;
 				case SectorConstants.SECTOR_CONDITION_ABANDONED:
-					addOptions("a-street", [ "desolate" ]);
+					addOptions("a-street", [ "desolate", "bleak" ]);
 					addOptions("a-building", [ "decaying", "desolate", "slowly decomposing", "long since abandoned", "crumbling" ]);
 					break;
 				case SectorConstants.SECTOR_CONDITION_WORN:

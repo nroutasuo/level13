@@ -811,6 +811,8 @@ define([
 					let blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(resultVO.gainedBlueprintPiece);
 					if (blueprintVO.currentPieces === 1) {
 						messages.push({ id: LogConstants.MSG_ID_FOUND_BLUEPRINT_FIRST, text: "Found a piece of forgotten technology.", addToPopup: true, addToLog: true });
+					} else {
+						messages.push({ id: LogConstants.MSG_ID_FOUND_BLUEPRINT_CONSECUTIVE, text: "Found another piece of a blueprint.", addToPopup: true, addToLog: true });
 					}
 				}
 			}
@@ -820,7 +822,7 @@ define([
 					var item = resultVO.selectedItems[i];
 					if (itemsComponent.getCountById(item.id, true) === 1) {
 						if (item.equippable && !item.equipped) continue;
-						messages.push({ id: LogConstants.MSG_ID_FOUND_ITEM_FIRST, text: "Found a " + item.name + ".", addToPopup: true, addToLog: true });
+						messages.push({ id: LogConstants.MSG_ID_FOUND_ITEM_FIRST, text: "Found " + Text.addArticle(item.name) + ".", addToPopup: true, addToLog: true });
 					}
 				}
 			}
@@ -1135,10 +1137,13 @@ define([
 
 		getNecessityItem: function (currentItems, campOrdinal) {
 			// first bag
-			if (currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) <= 0) {
-				var res = this.playerResourcesNodes.head.resources;
-				if (res.resources.getTotal() > 2 && GameGlobals.gameState.numCamps < 2) {
-					return ItemConstants.getBag(1).clone();
+			if (GameGlobals.gameState.numCamps < 2) {
+				let firstBag = ItemConstants.getBag(1);
+				if (currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) < firstBag.getBaseBonus(ItemConstants.itemBonusTypes.bag)) {
+					let res = this.playerResourcesNodes.head.resources;
+					if (res.resources.getTotal() > 2) {
+						return firstBag.clone();
+					}
 				}
 			}
 

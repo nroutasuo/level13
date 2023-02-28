@@ -41,6 +41,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 		MSG_ID_REMOVE_HAZARD_PERK: "MSG_ID_REMOVE_HAZARD_PERK",
 		MSG_ID_REMOVE_STAMINA_PERK: "MSG_ID_REMOVE_STAMINA_PERK",
 		MSG_ID_FOUND_BLUEPRINT_FIRST: "MSG_ID_FOUND_BLUEPRINT_FIRST",
+		MSG_ID_FOUND_BLUEPRINT_CONSECUTIVE: "MSG_ID_FOUND_BLUEPRINT_CONSECUTIVE",
 		MSG_ID_FOUND_ITEM_FIRST: "MSG_ID_FOUND_ITEM_FIRST",
 		MSG_ID_LOST_ITEM: "MSG_ID_LOST_ITEM",
 		MSG_ID_BROKE_ITEM: "MSG_ID_BROKE_ITEM",
@@ -166,7 +167,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 			var intros = [];
 			switch (resultVO.action) {
 				default:
-					intros.push("Almost fell into a crack in the street");
+					intros.push("Nearly fell into an unexpected crack in the street");
 					intros.push("Fell through a rotten floor");
 					intros.push("Dropped an item while climbing a fence");
 					intros.push("Stumbled on some wrecked pipes");
@@ -188,7 +189,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 			var intros = [];
 			switch (resultVO.action) {
 				default:
-					intros.push("Almost fell into a crack in the street");
+					intros.push("Nearly fell into an unexpected crack in the street");
 					intros.push("Fell through a rotten floor");
 					intros.push("Dropped an item while climbing a fence");
 					intros.push("Stumbled on some wrecked pipes");
