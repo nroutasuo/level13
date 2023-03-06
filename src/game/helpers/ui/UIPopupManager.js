@@ -14,16 +14,30 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
 			GlobalSignals.add(this, GlobalSignals.popupResizedSignal, this.onPopupResized);
 		},
 		
-		showPopup: function (title, msg, okButtonLabel, cancelButtonLabel, resultVO, okCallback, cancelCallback, isMeta, isDismissable) {
+		// options:
+		// - isMeta (bool) - default false
+		// - isDismissable (bool) - default derived from other params
+		// - forceShowInventoryManagement (bool) - default false
+		showPopup: function (title, msg, okButtonLabel, cancelButtonLabel, resultVO, okCallback, cancelCallback, options) {
+			options = options || {};
+			let isMeta = options.isMeta || false;
+			let forceShowInventoryManagement = options.forceShowInventoryManagement;
+			
+			let hasResult = resultVO && typeof resultVO !== 'undefined';
+			let hasNonEmptyResult = hasResult && !resultVO.isEmpty();
+			let showInventoryManagement = hasResult || forceShowInventoryManagement;
+			
+			let isDismissable = options.isDismissable || (typeof options.isDismissable == 'undefined' && !showInventoryManagement && !cancelButtonLabel);
+			
 			if (GameGlobals.gameState.uiStatus.isHidden && !isMeta) {
 				log.i("queue popup (" + title + ")", "ui");
-				this.hiddenQueue.push({title: title, msg: msg, okButtonLabel: okButtonLabel, cancelButtonLabel: cancelButtonLabel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback, isDismissable: isDismissable });
+				this.hiddenQueue.push({ title: title, msg: msg, okButtonLabel: okButtonLabel, cancelButtonLabel: cancelButtonLabel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback, options: options });
 				return;
 			}
 			
 			if (this.hasOpenPopup()) {
 				log.i("queue popup (" + title + ")", "ui");
-				this.popupQueue.push({title: title, msg: msg, okButtonLabel: okButtonLabel, cancelButtonLabel: cancelButtonLabel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback, isMeta: isMeta, isDismissable: isDismissable });
+				this.popupQueue.push({ title: title, msg: msg, okButtonLabel: okButtonLabel, cancelButtonLabel: cancelButtonLabel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback, options: options });
 				return;
 			}
 			
@@ -40,12 +54,10 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
 			$("#common-popup p#common-popup-desc").html(msg);
 			
 			// results and rewards
-			var hasResult = resultVO && typeof resultVO !== 'undefined';
-			var hasNonEmptyResult = hasResult && !resultVO.isEmpty();
-			GameGlobals.uiFunctions.toggle("#info-results", hasResult);
+			GameGlobals.uiFunctions.toggle("#info-results", showInventoryManagement);
 			$("#info-results").empty();
-			if (hasResult) {
-				var rewardDiv = GameGlobals.playerActionResultsHelper.getRewardDiv(resultVO, false);
+			if (showInventoryManagement) {
+				let rewardDiv = GameGlobals.playerActionResultsHelper.getRewardDiv(resultVO, false, forceShowInventoryManagement);
 				$("#info-results").append(rewardDiv);
 				GameGlobals.uiFunctions.generateCallouts("#reward-div");
 			}
@@ -54,16 +66,16 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
 			var $defaultButton = null;
 			$("#common-popup .buttonbox").empty();
 			$("#common-popup .buttonbox").append("<button id='info-ok' class='action'>" + okButtonLabel + "</button>");
-			$("#info-ok").attr("action", hasResult ? "accept_inventory" : null);
-			$("#info-ok").toggleClass("inventory-selection-ok", hasResult);
-			$("#info-ok").toggleClass("action", hasResult);
+			$("#info-ok").attr("action", showInventoryManagement ? "accept_inventory" : null);
+			$("#info-ok").toggleClass("inventory-selection-ok", showInventoryManagement);
+			$("#info-ok").toggleClass("action", showInventoryManagement);
 			$("#info-ok").click(ExceptionHandler.wrapClick(function (e) {
 				e.stopPropagation();
 				popUpManager.handleOkButton(false, okCallback);
 			}));
 			$defaultButton = $("#info-ok");
 			
-			var showTakeAll = hasResult && resultVO.hasSelectable();
+			let showTakeAll = hasResult && resultVO.hasSelectable();
 			if (showTakeAll) {
 				$("#common-popup .buttonbox").append("<button id='confirmation-takeall' class='action' action='take_all'>Take all</button>");
 				$("#confirmation-takeall").click(ExceptionHandler.wrapClick(function (e) {
@@ -100,9 +112,6 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
 			GameGlobals.uiFunctions.generateButtonOverlays("#common-popup .buttonbox");
 			GameGlobals.uiFunctions.generateCallouts("#common-popup .buttonbox");
 			
-			if (typeof isDismissable == 'undefined') {
-				isDismissable = !hasNonEmptyResult && !cancelButtonLabel;
-			}
 			popup.attr("data-dismissable", isDismissable);
 			popup.attr("data-dismissed", "false");
 			if (isDismissable) {
@@ -162,7 +171,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
 		
 		closeHidden: function (ok) {
 			if (this.hiddenQueue.length > 0) {
-				var hidden = this.hiddenQueue.pop();
+				let hidden = this.hiddenQueue.pop();
 				if (ok) {
 					if (hidden.okCallback) hidden.okCallback();
 				} else {
@@ -195,8 +204,8 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
 		
 		showQueuedPopup: function () {
 			if (this.popupQueue.length > 0) {
-				var queued = this.popupQueue.pop();
-				this.showPopup(queued.title, queued.msg, queued.okButtonLabel, queued.cancelButtonLabel, queued.resultVO, queued.okCallback, queued.cancelCallback, queued.isMeta);
+				let queued = this.popupQueue.pop();
+				this.showPopup(queued.title, queued.msg, queued.okButtonLabel, queued.cancelButtonLabel, queued.resultVO, queued.okCallback, queued.cancelCallback, queued.options);
 			}
 		},
 		

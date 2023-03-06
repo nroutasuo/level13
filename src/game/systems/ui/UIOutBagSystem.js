@@ -49,6 +49,7 @@ define([
 		
 		initElements: function () {
 			this.initItemSlots();
+			this.initBagActions();
 			this.initCraftingButtons();
 			this.initUseItemButtons();
 			this.initRepairItemButtons();
@@ -70,6 +71,10 @@ define([
 					sys.highlightItemType(null);
 				});
 			});
+		},
+		
+		initBagActions: function() {
+			$("#btn-self-manage-inventory").click($.proxy(this.showInventoryManageemntPopup, this));
 		},
 
 		initCraftingButtons: function () {
@@ -189,6 +194,7 @@ define([
 			}
 
 			this.updateItems();
+			this.updateBagActions();
 			this.updateUseItems();
 			this.updateRepairItems();
 			this.updateCrafting();
@@ -213,6 +219,13 @@ define([
 				}
 				GameGlobals.uiFunctions.toggle("#switch-bag .bubble", bubbleNumber > 0 || isStatIncreaseAvailable);
 			});
+		},
+		
+		updateBagActions: function () {
+			let inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
+			
+			GameGlobals.uiFunctions.toggle("#header-self-bag-actions", !inCamp);
+			GameGlobals.uiFunctions.toggle("#self-bag-actions", !inCamp);
 		},
 
 		updateItems: function () {
@@ -527,6 +540,10 @@ define([
 					$(this).toggleClass("highlighted", false);
 				}
 			});
+		},
+
+		showInventoryManageemntPopup: function () {
+			GameGlobals.playerActionFunctions.startInventoryManagement();
 		},
 
 		onObsoleteToggled: function () {

@@ -6,6 +6,10 @@
 			"final": false,
 			"changes": [
 				{
+					"type": "UI",
+					"summary": "Remove many repetitive log messages and add some new ones.",
+				},
+				{
 					"type": "GD",
 					"summary": "Add milestones and limits to evidence / rumour / favour accumulation based on milestones"
 				},
@@ -16,6 +20,10 @@
 				{
 					"type": "GD",
 					"summary": "Add breaking and repairing items"
+				},
+				{
+					"type": "GD",
+					"summary": "Add luxury resources"
 				},
 				{
 					"type": "GD",
@@ -39,7 +47,7 @@
 				},
 				{
 					"type": "UI",
-					"summary": "Show potential crafting ingredient scavenging spots as soon as the sector is scouted"
+					"summary": "Many smaller UI improvements"
 				},
 				{
 					"type": "UI",

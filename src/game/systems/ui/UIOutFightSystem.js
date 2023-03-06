@@ -354,7 +354,7 @@ define([
 			GameGlobals.uiFunctions.toggle("#fight-results-lose-items", !isWon && false);
 			
 			GameGlobals.playerActionResultsHelper.preCollectRewards(resultVO);
-			$("#fight-popup-results").html(GameGlobals.playerActionResultsHelper.getRewardDiv(resultVO, true));
+			$("#fight-popup-results").html(GameGlobals.playerActionResultsHelper.getRewardDiv(resultVO, true, false));
 			GameGlobals.uiFunctions.generateCallouts("#fight-popup-results");
 		},
 		

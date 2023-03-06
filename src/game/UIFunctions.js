@@ -1196,42 +1196,55 @@ define(['ash',
 
 			showInfoPopup: function (title, msg, buttonLabel, resultVO, callback, isMeta, isDismissable) {
 				if (!buttonLabel) buttonLabel = "Continue";
-				this.popupManager.showPopup(title, msg, buttonLabel, false, resultVO, callback, null, isMeta, isDismissable);
+				let options = {
+					isMeta: isMeta,
+					isDismissable: isDismissable,
+				};
+				this.popupManager.showPopup(title, msg, buttonLabel, false, resultVO, callback, null, options);
 			},
 
-			showResultPopup: function (title, msg, resultVO, callback) {
-				this.popupManager.showPopup(title, msg, "Continue", false, resultVO, callback);
+			showResultPopup: function (title, msg, resultVO, callback, options) {
+				this.popupManager.showPopup(title, msg, "Continue", false, resultVO, callback, null, options);
 			},
 
 			showConfirmation: function (msg, callback, isMeta) {
-				var uiFunctions = this;
-				var okCallback = function (e) {
+				let uiFunctions = this;
+				
+				let okCallback = function (e) {
 					uiFunctions.popupManager.closePopup("common-popup");
 					callback();
 				};
-				var cancelCallback = function () {
+				let cancelCallback = function () {
 					uiFunctions.popupManager.closePopup("common-popup");
 				};
-				this.popupManager.showPopup("Confirmation", msg, "Confirm", "Cancel", null, okCallback, cancelCallback, isMeta);
+				let options = {
+					isMeta: isMeta,
+					isDismissable: false,
+				};
+				
+				this.popupManager.showPopup("Confirmation", msg, "Confirm", "Cancel", null, okCallback, cancelCallback, options);
 			},
 
 			showQuestionPopup: function (title, msg, buttonLabel, cancelButtonLabel, callbackOK, callbackNo, isMeta) {
-				var uiFunctions = this;
-				var okCallback = function (e) {
+				let uiFunctions = this;
+				let okCallback = function (e) {
 					uiFunctions.popupManager.closePopup("common-popup");
 					callbackOK();
 				};
-				var cancelCallback = function () {
+				let cancelCallback = function () {
 					uiFunctions.popupManager.closePopup("common-popup");
 					if (callbackNo) callbackNo();
 				};
-				this.popupManager.showPopup(title, msg, buttonLabel, cancelButtonLabel, null, okCallback, cancelCallback, isMeta);
+				let options = {
+					isMeta: isMeta,
+					isDismissable: false,
+				};
+				this.popupManager.showPopup(title, msg, buttonLabel, cancelButtonLabel, null, okCallback, cancelCallback, options);
 			},
 
 			showInput: function (title, msg, defaultValue, allowCancel, confirmCallback, inputCallback) {
 				// TODO improve input validation (check and show feedback on input, not just on confirm)
-				
-				var okCallback = function () {
+				let okCallback = function () {
 					let input = $("#common-popup input").val();
 					input = GameGlobals.uiFunctions.cleanUpInput(input);
 					let ok = input && input.length > 0 && (inputCallback ? inputCallback(input) : true);
@@ -1244,7 +1257,12 @@ define(['ash',
 					}
 				};
 				let cancelButtonLabel = allowCancel ? "Cancel" : null;
-				this.popupManager.showPopup(title, msg, "Confirm", cancelButtonLabel, null, okCallback, null, false, false);
+				let options = {
+					isMeta: false,
+					isDismissable: false,
+				};
+				
+				this.popupManager.showPopup(title, msg, "Confirm", cancelButtonLabel, null, okCallback, null, options);
 
 				var uiFunctions = this;
 				var maxChar = 40;

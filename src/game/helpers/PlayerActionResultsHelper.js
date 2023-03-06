@@ -622,14 +622,16 @@ define([
 			return { msg: msg, replacements: replacements, values: values };
 		},
 
-		getRewardDiv: function (resultVO, isFight) {
-			var itemsComponent = this.playerStatsNodes.head.items;
-			var followersComponent = this.playerStatsNodes.head.followers;
-			var hasBag = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
-			var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
-			var isInitialSelectionValid = bagComponent.usedCapacity <= bagComponent.totalCapacity;
+		getRewardDiv: function (resultVO, isFight, forceShowInventoryManagement) {
+			forceShowInventoryManagement = forceShowInventoryManagement || false;
+			
+			let itemsComponent = this.playerStatsNodes.head.items;
+			let followersComponent = this.playerStatsNodes.head.followers;
+			let hasBag = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
+			let bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
+			let isInitialSelectionValid = bagComponent.usedCapacity <= bagComponent.totalCapacity;
 
-			var div = "<div id='reward-div'>";
+			let div = "<div id='reward-div'>";
 			
 			if (resultVO.gainedResourcesFromFollowers.getTotal() > 0 || resultVO.gainedItemsFromFollowers.length > 0) {
 				// assuming only followers of certain type find items
@@ -693,7 +695,7 @@ define([
 				}
 			}
 
-			var gainedhtml = "";
+			let gainedhtml = "";
 			gainedhtml += "<ul class='resultlist resultlist-positive'>";
 			if (resultVO.gainedEvidence) {
 				gainedhtml += "<li>" + resultVO.gainedEvidence + " evidence</li>";
@@ -715,10 +717,13 @@ define([
 			}
 
 			gainedhtml += "</ul>";
-			var hasGainedStuff = gainedhtml.indexOf("<li") > 0;
-			if (hasGainedStuff) div += gainedhtml;
+			let hasGainedStuff = gainedhtml.indexOf("<li") > 0;
+			if (hasGainedStuff || forceShowInventoryManagement) div += gainedhtml;
 
-			if (resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.lostCurrency > 0) {
+			let hasLostInventoryStuff = resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.lostCurrency > 0;
+			let hasLostSomething = resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.lostCurrency > 0 || resultVO.brokenItems > 0 || resultVO.lostFollowers.length > 0 || resultVO.gainedInjuries.length > 0 || resultVO.lostPerks.length > 0;
+
+			if (hasLostInventoryStuff) {
 				var lostMsg = resultVO.lostItems.length > 1 ? "Lost some items." : resultVO.lostItems.length > 0 ? "Lost an item." : ""
 				var losthtml = "<div id='resultlist-loststuff' class='infobox'>";
 				var losthtml = "<div class='warning'>" + lostMsg + "</span>";
@@ -737,7 +742,7 @@ define([
 				}
 			}
 
-			if (resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0 || !isInitialSelectionValid) {
+			if (resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0 || !isInitialSelectionValid || forceShowInventoryManagement) {
 				var baghtml = "<div id='resultlist-inventorymanagement' class='unselectable'>";
 
 				baghtml += "<div id='resultlist-inventorymanagement-found' class='infobox inventorybox'>";
@@ -756,9 +761,8 @@ define([
 			}
 
 			hasGainedStuff = hasGainedStuff || resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0 || resultVO.gainedFollowers.length > 0;
-			var hasLostStuff = resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.brokenItems > 0 || resultVO.lostFollowers.length > 0 || resultVO.gainedInjuries.length > 0 || resultVO.lostPerks.length > 0 || resultVO.lostCurrency > 0;
 			
-			if (!hasGainedStuff && !hasLostStuff) {
+			if (!hasGainedStuff && !hasLostSomething && !forceShowInventoryManagement) {
 				if (isFight) div += "<p class='p-meta'>Nothing left behind.</p>"
 				else if (resultVO.action === "despair") div += "";
 				else if (resultVO.action === "clear_workshop") div += "";

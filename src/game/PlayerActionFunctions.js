@@ -1039,6 +1039,25 @@ define(['ash',
 			});
 		},
 		
+		startInventoryManagement: function () {
+			let player = this.playerStatsNodes.head.entity;
+			let resultVO = new ResultVO("manage_inventory");
+			
+			player.add(new PlayerActionResultComponent(resultVO));
+			
+			let cb = function (isTakeAll) {
+				player.remove(PlayerActionResultComponent);
+				GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, resultVO);
+				GlobalSignals.inventoryChangedSignal.dispatch();
+			};
+			
+			let options = {
+				forceShowInventoryManagement: true,
+			};
+			
+			GameGlobals.uiFunctions.showResultPopup("Manage inventory", "", resultVO, cb, options);
+		},
+		
 		logResultMessages: function (messages) {
 			for (let i = 0; i < messages.length; i++) {
 				let message = messages[i];

@@ -103,7 +103,9 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 				&& this.gainedEvidence == 0
 				&& this.gainedRumours == 0
 				&& this.gainedFavour == 0
-				&& this.gainedReputation == 0;
+				&& this.gainedReputation == 0
+				&& this.discardedItems.length == 0
+				&& this.discardedResources.getTotal() == 0;
 		},
 		
 		clone: function () {
