@@ -309,7 +309,7 @@ define([
 		},
 
 		updateRepairItems: function () {
-			var items = this.getOwnedItems();
+			let items = this.getCarriedItems();
 
 			items = items.sort(UIConstants.sortItemsByType);
 			items = items.filter(item => this.isRepairable(item));
