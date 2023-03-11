@@ -317,24 +317,6 @@ define(['ash',
 				this.generateButtonOverlays("body");
 				this.generateCallouts("body");
 				this.setInitialButtonState("body");
-
-				// equipment stats labels
-				for (var bonusKey in ItemConstants.itemBonusTypes) {
-					var bonusType = ItemConstants.itemBonusTypes[bonusKey];
-					if (bonusType == ItemConstants.itemBonusTypes.fight_speed) continue;
-					
-					var div = "";
-					div += "<div class='info-callout-target info-callout-target-small'>";
-					div += "<div id='stats-equipment-" + bonusKey + "' class='stats-indicator stats-indicator-secondary'>";
-					div += "<span class='label'>" + UIConstants.getItemBonusName(bonusType).replace(" ", "<br/>") + "</span>";
-					div += "<br/>";
-					div += "<span class='value'/>";
-					div += "</div>";
-					div += "</div>";
-					
-					$("#container-equipment-stats").append(div);
-				}
-				GameGlobals.uiFunctions.generateCallouts("#container-equipment-stats");
 			},
 			
 			hideElements: function () {
@@ -357,13 +339,14 @@ define(['ash',
 			generateCallouts: function (scope) {
 				// Info callouts
 				$.each($(scope + " .info-callout-target"), function () {
-					var $target = $(this);
-					var generated = $target.data("callout-generated");
+					let $target = $(this);
+					let generated = $target.data("callout-generated") || $target.parent().hasClass("callout-container");
 					if (generated) {
 						log.w("Info callout already generated! id: " + $target.attr("id") + ", scope: " + scope);
 						log.i($target);
 						return;
 					}
+					
 					$target.wrap('<div class="callout-container"></div>');
 					$target.after(function () {
 						var description = $(this).attr("description");
@@ -498,7 +481,7 @@ define(['ash',
 					return "";
 				}
 			},
-			
+
 			getSpecialReqsText: function (action) {
 				var position = GameGlobals.playerActionFunctions.playerPositionNodes.head ? GameGlobals.playerActionFunctions.playerPositionNodes.head.position : {};
 				let s = "";

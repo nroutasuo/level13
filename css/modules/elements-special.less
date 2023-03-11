@@ -102,14 +102,21 @@ span.msg-count, span.time, span.msg-camp-level {
 	position: relative;
 }
 
-#statsbar-resources .callout-container {
-	width: 33%;
-	border: 0px;
+#statsbar-resources {
+	width: 100%;
+	display: flex;
+    flex-wrap: wrap;
+    justify-content: end;
+    gap: 5px;
 }
 
 // "HEADER" SELF-BAR
 
 @header-self-bar-width: 60px;
+
+#statsbar-self .stats-indicator {
+	display: inline-block;
+}
 
 #header-self-bar {
 	position: fixed;
@@ -157,6 +164,24 @@ span.msg-count, span.time, span.msg-camp-level {
 
 #header-self-bar div.callout-arrow-up {
 	margin: 0 0 0 (@header-self-bar-width/2 - @callout-arrow-size);
+}
+
+.stats-indicator-secondary {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.stats-indicator-secondary img {
+	width: 1.75em;
+	height: 1.75em;
+}
+
+.stats-indicator-secondary .value {
+	min-width: 2em;
+	font-size: 100%;
+	margin: 0;
 }
 
 // LOCATION HEADER

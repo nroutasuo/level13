@@ -138,6 +138,23 @@ define([
 		},
 		
 			initElements: function () {
+			// equipment stats
+			for (var bonusKey in ItemConstants.itemBonusTypes) {
+				let bonusType = ItemConstants.itemBonusTypes[bonusKey];
+				if (!this.showItemBonusTypeInEquipmentStats(bonusType)) continue;
+				
+				let bonusName = UIConstants.getItemBonusName(bonusType);
+				let icons = UIConstants.getIconOrFallback(ItemConstants.getItemBonusIcons(bonusType));
+				let div = "";
+				div += "<div id='stats-equipment-" + bonusKey + "' class='stats-indicator stats-indicator-secondary'>";
+				div += "<img class='stat-icon img-themed' src='" + icons.dark + "' data-src-sunlit='" + icons.sunlit + "' alt='" + bonusName + "'/>";
+				div += "<span class='value'/>";
+				div += "</div>";
+				
+				$("#container-equipment-stats").append(div);
+			}
+		
+			// scavenge stats
 			let $container = $("#stats-scavenge-bonus");
 			for (let i = 0; i < this.SCAVENGE_BONUS_TYPES.length; i++) {
 				let bonus = this.SCAVENGE_BONUS_TYPES[i];
@@ -147,6 +164,8 @@ define([
 				div += "</div>";
 				$container.append(div)
 			}
+			
+			// themed icons (dark/light)
 			let themedIcons = [];
 			$.each($("img.img-themed"), function () {
 				themedIcons.push({
@@ -700,17 +719,23 @@ define([
 
 		updateItemStats: function (inCamp) {
 			if (!this.currentLocationNodes.head) return;
-			var itemsComponent = this.playerStatsNodes.head.items;
-			var followersComponent = this.playerStatsNodes.head.followers;
-			var playerStamina = this.playerStatsNodes.head.stamina;
-			var visibleStats = 0;
+			
+			let itemsComponent = this.playerStatsNodes.head.items;
+			let followersComponent = this.playerStatsNodes.head.followers;
+			let playerStamina = this.playerStatsNodes.head.stamina;
+			let visibleStats = 0;
+			
 			for (var bonusKey in ItemConstants.itemBonusTypes) {
-				var bonusType = ItemConstants.itemBonusTypes[bonusKey];
-				var bonus = GameGlobals.playerHelper.getCurrentBonus(bonusType);
-				var value = bonus;
-				var detail = GameGlobals.playerHelper.getCurrentBonusDesc(bonusType);
-				var isVisible = true;
-				var flipNegative = false;
+				let bonusType = ItemConstants.itemBonusTypes[bonusKey];
+				if (!this.showItemBonusTypeInEquipmentStats(bonusType)) continue;
+				let bonusName = UIConstants.getItemBonusName(bonusType);
+				let bonus = GameGlobals.playerHelper.getCurrentBonus(bonusType);
+				let value = bonus;
+				
+				let detail = GameGlobals.playerHelper.getCurrentBonusDesc(bonusType);
+				let isVisible = true;
+				let flipNegative = false;
+				
 				switch (bonusType) {
 					case ItemConstants.itemBonusTypes.fight_att:
 						value = FightConstants.getPlayerAtt(playerStamina, itemsComponent, followersComponent);
@@ -746,29 +771,21 @@ define([
 						flipNegative = true;
 						break;
 
-					case ItemConstants.itemBonusTypes.scavenge_general:
-					case ItemConstants.itemBonusTypes.scavenge_supplies:
-					case ItemConstants.itemBonusTypes.scavenge_ingredients:
-					case ItemConstants.itemBonusTypes.detect_hazards:
-					case ItemConstants.itemBonusTypes.detect_supplies:
-					case ItemConstants.itemBonusTypes.detect_ingredients:
-					case ItemConstants.itemBonusTypes.light:
-					case ItemConstants.itemBonusTypes.bag:
-						isVisible = false;
-						break;
-
 					default:
 						isVisible = true;
 						break;
 				}
 				
 				// TODO don't hide if animating to a hidden value (for example scavange cost when deselecting follower that gives a bonus)
-				UIAnimations.animateNumber($("#stats-equipment-" + bonusKey + " .value"), value, "", flipNegative, (v) => { return UIConstants.roundValue(v, true, true); });
+				let indicatorID = "stats-equipment-" + bonusKey;
+				let animating = UIAnimations.animateNumber($("#" + indicatorID + " .value"), value, "", flipNegative, (v) => { return UIConstants.roundValue(v, true, true); });
+				if (animating) {
+					UIAnimations.animateIcon($("#" + indicatorID + " img"));
+				}
 				GameGlobals.uiFunctions.toggle("#stats-equipment-" + bonusKey, isVisible && value > 0);
-				UIConstants.updateCalloutContent("#stats-equipment-" + bonusKey, detail);
+				UIConstants.updateCalloutContent("#stats-equipment-" + bonusKey, bonusName + "<hr/>" + detail);
 
-				if (isVisible && value > 0)
-					visibleStats++;
+				if (isVisible && value > 0) visibleStats++;
 			}
 
 			GameGlobals.uiFunctions.toggle("#header-self-bar > hr", visibleStats > 1)
@@ -958,6 +975,18 @@ define([
 
 		getShowResourceAcc: function () {
 			return GameGlobals.resourcesHelper.getCurrentStorageAccumulation(false);
+		},
+		
+		showItemBonusTypeInEquipmentStats: function (bonusType) {
+			if (bonusType == ItemConstants.itemBonusTypes.bag) return false;
+			if (bonusType == ItemConstants.itemBonusTypes.fight_speed) return false;
+			if (bonusType == ItemConstants.itemBonusTypes.detect_ingredients) return false;
+			if (bonusType == ItemConstants.itemBonusTypes.detect_supplies) return false;
+			if (bonusType == ItemConstants.itemBonusTypes.detect_hazards) return false;
+			if (bonusType == ItemConstants.itemBonusTypes.scavenge_general) return false;
+			if (bonusType == ItemConstants.itemBonusTypes.scavenge_ingredients) return false;
+			if (bonusType == ItemConstants.itemBonusTypes.scavenge_supplies) return false;
+			return true;
 		},
 		
 		onActionStarting: function (action) {

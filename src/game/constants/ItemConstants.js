@@ -73,11 +73,32 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			engineering: "engineering",
 		},
 		
+		itemBonusTypeIcons: {},
+		
 		itemDefinitions: {},
 		
 		// caches
 		itemByID: {},
 		equipmentComparisonCache: {},
+		
+		init: function () {
+			let defineItemBonusIcon = function (bonusType, icon) {
+				ItemConstants.itemBonusTypeIcons[bonusType] = { sunlit: "img/eldorado/" + icon + ".png", dark: "img/eldorado/" + icon + "-dark.png" };
+			};
+			
+			defineItemBonusIcon(ItemConstants.itemBonusTypes.light, "icon_stat_light");
+			defineItemBonusIcon(ItemConstants.itemBonusTypes.fight_att, "icon_stat_fight_attack");
+			defineItemBonusIcon(ItemConstants.itemBonusTypes.fight_def, "icon_stat_fight_defence");
+			defineItemBonusIcon(ItemConstants.itemBonusTypes.fight_speed, "icon_stat_fight_speed");
+			defineItemBonusIcon(ItemConstants.itemBonusTypes.fight_shield, "icon_stat_fight_shield");
+			defineItemBonusIcon(ItemConstants.itemBonusTypes.movement, "icon_stat_cost_movement");
+			defineItemBonusIcon(ItemConstants.itemBonusTypes.scavenge_cost, "icon_stat_cost_scavenge");
+			defineItemBonusIcon(ItemConstants.itemBonusTypes.scout_cost, "icon_stat_cost_scout");
+			defineItemBonusIcon(ItemConstants.itemBonusTypes.res_cold, "icon_stat_resistance_cold");
+			defineItemBonusIcon(ItemConstants.itemBonusTypes.res_radiation, "icon_stat_resistance_radiation");
+			defineItemBonusIcon(ItemConstants.itemBonusTypes.res_poison, "icon_stat_resistance_poison");
+			defineItemBonusIcon(ItemConstants.itemBonusTypes.shade, "icon_stat_shade");
+		},
 
 		loadData: function (data) {
 			for (itemID in data) {
@@ -127,6 +148,10 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			if (item.nameShort) return item.nameShort;
 			let parts = item.name.split(" ");
 			return parts[parts.length - 1];
+		},
+		
+		getItemBonusIcons: function (itemBonusType) {
+			return this.itemBonusTypeIcons[itemBonusType] || null;
 		},
 		
 		getBaseItemId: function (itemId) {
@@ -405,6 +430,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		},
 	};
 	
+	ItemConstants.init();
 	ItemConstants.loadData(ItemData);
 	
 	return ItemConstants;

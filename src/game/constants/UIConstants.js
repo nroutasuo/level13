@@ -33,9 +33,12 @@ define(['ash',
 		
 		UNLOCKABLE_FEATURE_WORKER_AUTO_ASSIGNMENT: "workerAutoAssignment",
 		UNLOCKABLE_FEATURE_MAP_MODES: "mapModes",
-
-		resourceImages: {
-			metal: "img/res-metal.png",
+		
+		ICON_FALLBACK: "img/eldorado/icon_placeholder.png",
+		
+		getIconOrFallback: function (icon) {
+			if (icon) return icon;
+			return this.ICON_FALLBACK;
 		},
 
 		getItemDiv: function (itemsComponent, item, count, calloutContent, hideComparisonIndicator) {
@@ -490,8 +493,11 @@ define(['ash',
 			return aVal - bVal;
 		},
 
-		createResourceIndicator: function (name, showName, id, showAmount, showChange) {
-			var div = "<div class='stats-indicator' id='" + id + "'>";
+		createResourceIndicator: function (name, showName, id, showAmount, showChange, showFill) {
+			let classes = [ "stats-indicator" ];
+			if (showFill) classes.push("stats-indicator-with-fill");
+			
+			let div = "<div class='" + classes.join(" ") + "' id='" + id + "'>";
 
 			if (!showName) div = "<div class='info-callout-target info-callout-target-small' description='" + name + "'>" + div;
 			else if (showChange) div = "<div class='info-callout-target' description=''>" + div;
@@ -520,40 +526,49 @@ define(['ash',
 		},
 
 		updateResourceIndicator: function (id, value, change, storage, showChangeIcon, showChange, showDetails, showWarning, visible, animate) {
-			GameGlobals.uiFunctions.toggle(id, visible);
-			GameGlobals.uiFunctions.toggle($(id).parent(), visible);
+			let $indicator = $(id);
+			GameGlobals.uiFunctions.toggle($indicator, visible);
+			GameGlobals.uiFunctions.toggle($indicator.parent(), visible);
 			if (visible) {
-				let $valueElement = $(id).children(".value");
+				let $valueElement = $indicator.children(".value");
 				animate = animate || UIAnimations.isAnimating($valueElement);
 				UIAnimations.animateOrSetNumber($valueElement, animate, value, "", false, (v) => { return UIConstants.roundValue(v, true, false); });
-				$(id).children(".value").toggleClass("warning", showWarning && value < 5);
-				$(id).children(".change").toggleClass("warning", change < 0);
-				GameGlobals.uiFunctions.toggle($(id).children(".change"), showChange);
-				GameGlobals.uiFunctions.toggle($(id).children(".forecast"), showDetails);
-				$(id).children(".forecast").toggleClass("warning", change < 0);
+				$indicator.children(".value").toggleClass("warning", showWarning && value < 5);
+				$indicator.children(".change").toggleClass("warning", change < 0);
+				GameGlobals.uiFunctions.toggle($indicator.children(".change"), showChange);
+				GameGlobals.uiFunctions.toggle($indicator.children(".forecast"), showDetails);
+				$indicator.children(".forecast").toggleClass("warning", change < 0);
 
 				var isCappedByStorage = change > 0 && value >= storage;
 
 				if (showChange) {
-					$(id).children(".change").text(Math.round(change * 10000) / 10000 + "/s");
+					$indicator.children(".change").text(Math.round(change * 10000) / 10000 + "/s");
 				}
+				
 				if (showDetails) {
 					if (change > 0 && (storage - value > 0)) {
-						$(id).children(".forecast").text("(" + this.getTimeToNum((storage - value) / change) + " to cap)");
+						$indicator.children(".forecast").text("(" + this.getTimeToNum((storage - value) / change) + " to cap)");
 					} else if (change < 0 && value > 0) {
-						$(id).children(".forecast").text("(" + this.getTimeToNum(value / change) + " to 0)");
+						$indicator.children(".forecast").text("(" + this.getTimeToNum(value / change) + " to 0)");
 					} else if (value >= storage) {
-						$(id).children(".forecast").text("(full)");
+						$indicator.children(".forecast").text("(full)");
 					} else {
-						$(id).children(".forecast").text("");
+						$indicator.children(".forecast").text("");
 					}
+				}
+				
+				if ($indicator.hasClass("stats-indicator-with-fill")) {
+					let sunlit = $("body").hasClass("sunlit");
+					let fillColor = ColorConstants.getColor(sunlit, "bg_element_1");
+					let fillPercent = Math.round(value / storage * 100);
+					$(id).css("background", "linear-gradient(to right, " + fillColor + " " + fillPercent + "%, transparent " + fillPercent + "%)");
 				}
 
 				change = Math.round(change * 10000) / 10000;
-				$(id).children(".change-indicator").toggleClass("indicator-increase", change > 0 && !isCappedByStorage);
-				$(id).children(".change-indicator").toggleClass("indicator-decrease", change < 0);
-				$(id).children(".change-indicator").toggleClass("indicator-even", change === 0 || isCappedByStorage);
-				GameGlobals.uiFunctions.toggle($(id).children(".change-indicator"), showChangeIcon);
+				$indicator.children(".change-indicator").toggleClass("indicator-increase", change > 0 && !isCappedByStorage);
+				$indicator.children(".change-indicator").toggleClass("indicator-decrease", change < 0);
+				$indicator.children(".change-indicator").toggleClass("indicator-even", change === 0 || isCappedByStorage);
+				GameGlobals.uiFunctions.toggle($indicator.children(".change-indicator"), showChangeIcon);
 			}
 		},
 
