@@ -892,8 +892,8 @@ define(['ash',
 				}
 			},
 
-			toggle: function (element, show, signalParams) {
-				var $element = typeof (element) === "string" ? $(element) : element;
+			toggle: function (element, show, signalParams, delay) {
+				let $element = typeof (element) === "string" ? $(element) : element;
 				if (($element).length === 0)
 					return;
 				if (typeof (show) === "undefined")
@@ -904,12 +904,32 @@ define(['ash',
 					show = false;
 				if (this.isElementToggled($element) === show)
 					return;
+					
+				this.cancelDelayedToggle($element);
+				
+				if (!delay || delay <= 0) {
+					this.toggleInternal($element, show, signalParams);
+				} else {
+					let id = setTimeout(function () { GameGlobals.uiFunctions.toggleInternal($element, show, signalParams); }, delay);
+					$element.attr("data-toggle-timeout", id);
+				}
+			},
+			
+			toggleInternal: function ($element, show, signalParams) {
 				$element.attr("data-visible", show);
 				$element.toggle(show);
 				// NOTE: For some reason the element isn't immediately :visible for checks in UIOutElementsSystem without the timeout
 				setTimeout(function () {
-					GlobalSignals.elementToggledSignal.dispatch(element, show, signalParams);
+					GlobalSignals.elementToggledSignal.dispatch($element, show, signalParams);
 				}, 1);
+			},
+			
+			cancelDelayedToggle: function ($element) {
+				// TOGO generalize for cancelling any timeout with id like "toggle-timeout"
+				let id = $element.attr("data-toggle-timeout");
+				if (!id) return;
+				clearTimeout(id);
+				$element.attr("data-toggle-timeout", 0);
 			},
 			
 			toggleContainer: function (element, show, signalParams) {
@@ -920,7 +940,7 @@ define(['ash',
 
 			isElementToggled: function (element) {
 				var $element = typeof (element) === "string" ? $(element) : element;
-				if (($element).length === 0)
+				if (!$element || ($element).length === 0)
 					return false;
 
 				// if several elements, return their value if all agree, otherwise null

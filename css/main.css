@@ -670,6 +670,9 @@ body.dark td > div.container-btn-action {
 body.dark button {
   cursor: pointer;
 }
+body.dark img {
+  transition: all 0.15s;
+}
 body.dark ::-moz-selection {
   background: #ccc;
 }
@@ -2860,6 +2863,9 @@ body.sunlit td > div.container-btn-action {
 }
 body.sunlit button {
   cursor: pointer;
+}
+body.sunlit img {
+  transition: all 0.15s;
 }
 body.sunlit ::-moz-selection {
   background: #ccc;

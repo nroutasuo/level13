@@ -776,14 +776,16 @@ define([
 						break;
 				}
 				
-				// TODO don't hide if animating to a hidden value (for example scavange cost when deselecting follower that gives a bonus)
 				let indicatorID = "stats-equipment-" + bonusKey;
+				let isElementVisible = isVisible && value;
+				let wasElementVisible = GameGlobals.uiFunctions.isElementToggled("#" + indicatorID);
 				let animating = UIAnimations.animateNumber($("#" + indicatorID + " .value"), value, "", flipNegative, (v) => { return UIConstants.roundValue(v, true, true); });
 				if (animating) {
 					UIAnimations.animateIcon($("#" + indicatorID + " img"));
 				}
-				GameGlobals.uiFunctions.toggle("#stats-equipment-" + bonusKey, isVisible && value > 0);
-				UIConstants.updateCalloutContent("#stats-equipment-" + bonusKey, bonusName + "<hr/>" + detail);
+				let toggleDelay = wasElementVisible && animating ? UIAnimations.DEFAULT_ANIM_DURATION + 300 : 0;
+				GameGlobals.uiFunctions.toggle("#" + indicatorID, isElementVisible > 0, null, toggleDelay);
+				UIConstants.updateCalloutContent("#" + indicatorID, bonusName + "<hr/>" + detail);
 
 				if (isVisible && value > 0) visibleStats++;
 			}
