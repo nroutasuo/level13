@@ -266,13 +266,15 @@ define([
 					msg += "The streets are indifferent to your presence.";
 				}
 			}
+			
+			return msg;
 		},
 
 		handleNewSector: function (sectorEntity, isNew) {
 			sectorEntity.remove(RevealedComponent);
 			sectorEntity.add(new VisitedComponent());
 
-			var sectorPos = sectorEntity.get(PositionComponent);
+			let sectorPos = sectorEntity.get(PositionComponent);
 
 			this.visitedSectorsPendingRevealNeighbours.push(sectorEntity);
 
@@ -335,7 +337,7 @@ define([
 		},
 
 		addLogMessage: function (msgID, msg, replacements, values) {
-			var logComponent = this.playerPositionNodes.head.entity.get(LogMessagesComponent);
+			let logComponent = this.playerPositionNodes.head.entity.get(LogMessagesComponent);
 			logComponent.addMessage(msgID, msg, replacements, values);
 		},
 
