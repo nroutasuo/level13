@@ -349,8 +349,8 @@ define(['ash',
 				for (var key in resourceNames) {
 					var name = resourceNames[key];
 					var isSupplies = name === resourceNames.food || name === resourceNames.water;
-					$("#statsbar-resources").append(UIConstants.createResourceIndicator(name, false, "resources-" + name, true, true));
-					$("#bag-resources").append(UIConstants.createResourceIndicator(name, false, "resources-bag-" + name, true, true));
+					$("#statsbar-resources").append(UIConstants.createResourceIndicator(name, false, "resources-" + name, true, true, true));
+					$("#bag-resources").append(UIConstants.createResourceIndicator(name, false, "resources-bag-" + name, true, true, false));
 				}
 			},
 

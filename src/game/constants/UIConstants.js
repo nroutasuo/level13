@@ -1,6 +1,7 @@
 // Singleton with helper methods for UI elements used throughout the game
 define(['ash',
 	'game/GameGlobals',
+	'game/constants/ColorConstants',
 	'game/constants/StoryConstants',
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
@@ -18,7 +19,7 @@ define(['ash',
 	'game/components/common/VisitedComponent',
 	'utils/UIAnimations'
 ], function (Ash, GameGlobals,
-	StoryConstants, PositionConstants, SectorConstants, FollowerConstants, ItemConstants, BagConstants, PerkConstants, UpgradeConstants, PlayerActionConstants,
+	ColorConstants, StoryConstants, PositionConstants, SectorConstants, FollowerConstants, ItemConstants, BagConstants, PerkConstants, UpgradeConstants, PlayerActionConstants,
 	PositionComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent,
 	PassagesComponent, VisitedComponent, UIAnimations) {
 

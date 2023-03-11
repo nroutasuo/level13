@@ -137,7 +137,7 @@ define([
 			this.autoPlayNodes = null;
 		},
 		
-		initElements: function () {
+			initElements: function () {
 			let $container = $("#stats-scavenge-bonus");
 			for (let i = 0; i < this.SCAVENGE_BONUS_TYPES.length; i++) {
 				let bonus = this.SCAVENGE_BONUS_TYPES[i];
@@ -164,6 +164,9 @@ define([
 			});
 			$.each($("#header-self-bar .stats-indicator"), function () {
 				$(this).wrap("<div class='info-callout-target info-callout-target-small'></div>");
+			});
+			$.each($("#header-camp-storage"), function () {
+				$(this).wrap("<div class='info-callout-target'></div>");
 			});
 			$.each($("#header-camp-reputation"), function () {
 				$(this).wrap("<div class='info-callout-target'></div>");
@@ -618,6 +621,10 @@ define([
 
 			$("#header-camp-currency .value").text(currencyComponent ? currencyComponent.currency : "??");
 			$("#header-bag-currency .value").text(currencyComponent ? currencyComponent.currency : "??");
+			
+			UIConstants.updateCalloutContent("#header-camp-storage", "Amount of each resource that can be stored");
+			$("#header-camp-storage .label").text(showStorageName);
+			$("#header-camp-storage .value").text(storageCap);
 
 			for (let key in resourceNames) {
 				let name = resourceNames[key];
@@ -644,8 +651,6 @@ define([
 					if (showResourceAcc) {
 						UIConstants.updateResourceIndicatorCallout("#resources-" + name, showResourceAcc.getSources(name));
 					}
-					$("#header-camp-storage .label").text(showStorageName);
-					$("#header-camp-storage .value").text(storageCap);
 					this.previousShownCampResAmount[name] = currentAmount;
 				} else {
 					var isSupplies = name === resourceNames.food || name === resourceNames.water;
@@ -740,7 +745,7 @@ define([
 						value = Math.round(value * 10) / 10;
 						flipNegative = true;
 						break;
-						
+
 					case ItemConstants.itemBonusTypes.scavenge_general:
 					case ItemConstants.itemBonusTypes.scavenge_supplies:
 					case ItemConstants.itemBonusTypes.scavenge_ingredients:

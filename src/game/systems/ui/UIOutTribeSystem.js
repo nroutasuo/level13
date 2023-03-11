@@ -247,7 +247,7 @@ define([
 			rowHTML += "<td class='camp-overview-production'>";
 			for(var key in resourceNames) {
 				var name = resourceNames[key];
-				rowHTML += UIConstants.createResourceIndicator(name, false, rowID + "-" + name, false, true) + " ";
+				rowHTML += UIConstants.createResourceIndicator(name, false, rowID + "-" + name, false, true, false) + " ";
 			}
 			rowHTML += "</td>";
 			

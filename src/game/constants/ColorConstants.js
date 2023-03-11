@@ -8,6 +8,7 @@ define(function () {
 			dark: {
 				bg_page: "#202220",
 				bg_box_1: "#282a28",
+				bg_element_1: "#2f322f",
 				border_highlight: "#888",
 				map_background_default: "#202220",
 				map_background_surface: "#202220",
@@ -56,6 +57,7 @@ define(function () {
 				// f4f2ea
 				bg_page: "#fdfdfd",
 				bg_box_1: "#efefef",
+				bg_element_1: "#e6e6e6",
 				border_highlight: "#888",
 				map_background_default: "#fdfdfd",
 				map_background_surface: "#fffff7",
