@@ -713,7 +713,7 @@ define([
 			
 			this.updateHeader();
 			
-			$("#select-header-mapmode").toggle(GameGlobals.playerHelper.hasItem("equipment_map_2"));
+			$("#select-header-mapmode").toggle(this.isMapModesVisible());
 			
 			this.selectMapStyle(GameGlobals.gameState.settings.mapStyle || this.MAP_STYLE_CANVAS);
 			this.selectMapMode(GameGlobals.gameState.settings.mapMode || MapUtils.MAP_MODE_DEFAULT);
@@ -730,7 +730,13 @@ define([
 		},
 		
 		updateHeader: function () {
-			$("#tab-header h2").text("Map (" + this.selectedMapMode + ")");
+			let header = "Map";
+			if (this.isMapModesVisible()) header += " (" + this.selectedMapMode + ")";
+			$("#tab-header h2").text(header);
+		},
+		
+		isMapModesVisible: function () {
+			GameGlobals.playerHelper.hasItem("equipment_map_2");
 		},
 
 		onLevelSelectorChanged: function () {
