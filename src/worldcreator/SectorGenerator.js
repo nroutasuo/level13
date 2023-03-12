@@ -649,7 +649,7 @@ define([
 				let campNeighbours = levelVO.getNeighbourList(campPosition.sectorX, campPosition.sectorY);
 				let firstCacheSector = WorldCreatorRandom.getRandomItemFromArray(seed, campNeighbours);
 				addStash(firstCacheSector, "first-cache", ItemConstants.STASH_TYPE_ITEM, 1, "cache_metal_1");
-				addStashes(seed / 3 * 338 + l * 402, "guaranteed-early", ItemConstants.STASH_TYPE_ITEM, ["cache_metal_1"], 5, 1, lateZones);
+				addStashes(seed / 3 * 338 + l * 402, "guaranteed-early", ItemConstants.STASH_TYPE_ITEM, ["cache_metal_1"], 7, 1, lateZones);
 				addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, "guaranteed-early", ItemConstants.STASH_TYPE_ITEM, [ "exploration_1" ], 1, 1, lateZones);
 			}
 			
