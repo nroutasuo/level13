@@ -2156,7 +2156,7 @@
                 "improvements": {
                     "hospital": 1
                 },
-                "population": 8
+                "population": 6
             }
         },
         "claim_milestone_2": {
@@ -2675,7 +2675,6 @@
         },
         "improve_building_storage1": {
             "blueprint": 6,
-            "milestone": {},
             "upgrades": {
                 "unlock_building_darkfarm": true
             }
@@ -2820,7 +2819,6 @@
         },
         "investigate": {
             "busy": false,
-            "milestone": {},
             "sector": {
                 "investigatedPercent": [
                     -1,
@@ -3095,8 +3093,7 @@
             }
         },
         "unlock_building_beacon": {
-            "blueprint": 4,
-            "milestone": {}
+            "blueprint": 4
         },
         "unlock_building_bridge": {
             "blueprint": 4,
@@ -3146,7 +3143,6 @@
         },
         "unlock_building_inn": {
             "blueprint": 3,
-            "milestone": {},
             "upgrades": {
                 "unlock_building_market": true
             }
@@ -3159,7 +3155,6 @@
         },
         "unlock_building_market": {
             "blueprint": 3,
-            "milestone": {},
             "upgrades": {
                 "unlock_building_tradingpost": true
             }
@@ -3178,14 +3173,12 @@
         },
         "unlock_building_passage_staircase": {
             "blueprint": 1,
-            "milestone": {},
             "upgrades": {
                 "unlock_item_shoe1": true
             }
         },
         "unlock_building_radio": {
-            "blueprint": 13,
-            "milestone": {}
+            "blueprint": 13
         },
         "unlock_building_researchcenter": {
             "blueprint": 14,
@@ -3206,15 +3199,13 @@
             }
         },
         "unlock_building_spaceship1": {
-            "blueprint": {},
+			"blueprint": 15,
             "milestone": 7
         },
         "unlock_building_spaceship2": {
-            "blueprint": {},
             "milestone": 7
         },
         "unlock_building_spaceship3": {
-            "blueprint": {},
             "milestone": 7
         },
         "unlock_building_square": {},
@@ -3421,7 +3412,6 @@
         },
         "unlock_project_tradingpost_connector": {
             "blueprint": 10,
-            "milestone": {},
             "upgrades": {
                 "unlock_building_passage_elevator": true
             }
