@@ -5,7 +5,9 @@ define([
 	'game/constants/FollowerConstants',
 	'game/constants/ItemConstants',
 	'game/constants/PlayerStatConstants',
+	'game/nodes/NearestCampNode',
 	'game/nodes/PlayerPositionNode',
+	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/player/PlayerResourcesNode'
 ], function (
@@ -15,7 +17,9 @@ define([
 	FollowerConstants,
 	ItemConstants,
 	PlayerStatConstants,
+	NearestCampNode,
 	PlayerPositionNode,
+	PlayerLocationNode,
 	PlayerStatsNode,
 	PlayerResourcesNode
 ) {
@@ -25,11 +29,15 @@ define([
 		playerPosNodes: null,
 		playerStatsNodes: null,
 		playerResourcesNodes: null,
+		nearestCampNodes: null,
+		playerLocationNodes: null,
 
 		constructor: function (engine) {
 			this.playerPosNodes = engine.getNodeList(PlayerPositionNode);
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 			this.playerResourcesNodes = engine.getNodeList(PlayerResourcesNode);
+			this.nearestCampNodes = engine.getNodeList(NearestCampNode);
+			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 		},
 		
 		isInCamp: function () {
@@ -51,6 +59,39 @@ define([
 		
 		getCurrentStaminaWarningLimit: function () {
 			return ValueCache.getValue("StaminaWarningLimit", 5, this.playerPosNodes.head.position.positionId(), () => PlayerStatConstants.getStaminaWarningLimit(this.playerStatsNodes.head.stamina));
+		},
+		
+		getPathToCamp: function () {
+			if (!this.nearestCampNodes.head) return null;
+			let campSector = this.nearestCampNodes.head.entity;
+			let path = GameGlobals.levelHelper.findPathTo(this.playerLocationNodes.head.entity, campSector, { skipBlockers: true, skipUnvisited: true });
+			return path;
+		},
+		
+		getPathToPassage: function () {
+			if (!this.playerLocationNodes.head) return null;
+			let currentLevel = this.playerLocationNodes.head.position.level;
+			
+			let passageUp = GameGlobals.levelHelper.findPassageUp(currentLevel, false);
+			let passageDown = GameGlobals.levelHelper.findPassageDown(currentLevel, false);
+			
+			let result = null;
+			
+			if (passageUp) {
+				let pathUp = GameGlobals.levelHelper.findPathTo(this.playerLocationNodes.head.entity, passageUp, { skipBlockers: true, skipUnvisited: true });
+				if (result == null || result.length > pathUp.length) {
+					result = pathUp;
+				}
+			}
+			
+			if (passageDown) {
+				let pathDown = GameGlobals.levelHelper.findPathTo(this.playerLocationNodes.head.entity, passageUp, { skipBlockers: true, skipUnvisited: true });
+				if (result == null || result.length > pathDown.length) {
+					result = pathDown;
+				}
+			}
+			
+			return path;
 		},
 		
 		hasItem: function (id) {

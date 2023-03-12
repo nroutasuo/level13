@@ -307,7 +307,10 @@
 									<canvas id="minimap" width="198" height="198" role="img" aria-label="area map"></canvas>
 								</div>
 							</div>
-							<span id="out-position-indicator" class="vision-text"></span>
+							<div class="infobox">
+								<span id="out-position-indicator" class="info-detail vision-text"></span>
+								<span id="out-distance-indicator" class="info-detail vision-text"></span>
+							</div>
 						</div>
 						<div class="unit unit-rest">
 							<h2 id="header-sector">Sector header</h2>
@@ -639,9 +642,11 @@
 						<div class="unit whole">
 							<div class="milestone-container">
 								<h3>Current: <span id='milestone-current-name' class="hl-functionality"></span></h3>
+								<p id="milestone-current-description"></p>
 							</div>
 							<div class="milestone-container">
 								<h3>Next: <span id='milestone-next-name' class="hl-functionality"></span></h3>
+								<p id="milestone-next-description"></p>
 								<div id="milestone-next-unlocks"></div>
 								<div id="milestone-population-bar" class="progress-wrap progress full-width">
 									<div class="progress-bar progress"></div>

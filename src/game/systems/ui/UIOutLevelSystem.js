@@ -163,7 +163,7 @@ define([
 			this.updateLocales();
 			this.updateOutImprovementsVisibility();
 			this.updateMovementRelatedActions();
-			this.updateStaticSectorElements();
+			this.updateLocationDetails();
 			this.updateSectorDescription();
 			this.updateLevelPageActions();
 			this.updateLevelPageActionsSlow();
@@ -298,7 +298,10 @@ define([
 			
 			if (showDespair) {
 				this.showDespairTimeoutID = window.setTimeout(function () {
-					logComponent.addMessage(LogConstants.MSG_ID_DESPAIR_AVAILABLE, LogConstants.getDespairMessage(isValidDespairHunger, isValidDespairThirst, isValidDespairStamina, isValidDespairMove));
+					let msg = LogConstants.getDespairMessage(isValidDespairHunger, isValidDespairThirst, isValidDespairStamina, isValidDespairMove);
+					if (msg && msg.length > 0) {
+						logComponent.addMessage(LogConstants.MSG_ID_DESPAIR_AVAILABLE, msg);
+					}
 					GameGlobals.uiFunctions.toggle("#out-action-despair", true);
 				}, 1250);
 				// TODO do this somewhere other than UI system - maybe a global detection if despair is available
@@ -807,7 +810,7 @@ define([
 			var sector = this.playerLocationNodes.head.entity;
 			var vision = this.playerPosNodes.head.entity.get(VisionComponent).value;
 			var hasVision = vision > PlayerStatConstants.VISION_BASE;
-			var hasCamp = GameGlobals.levelHelper.getLevelEntityForSector(this.playerLocationNodes.head.entity).has(CampComponent);
+			var hasCampOnLevel = GameGlobals.levelHelper.getLevelEntityForSector(this.playerLocationNodes.head.entity).has(CampComponent);
 			var hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
 			var isScouted = sectorStatus.scouted;
 
@@ -819,18 +822,30 @@ define([
 			this.elements.description.html(this.getDescription(
 				sector,
 				hasCampHere,
-				hasCamp,
+				hasCampOnLevel,
 				hasVision,
 				isScouted
 			));
 		},
 
-		updateStaticSectorElements: function () {
-			if (this.nearestCampNodes.head) {
-				var campSector = this.nearestCampNodes.head.entity;
-				var path = GameGlobals.levelHelper.findPathTo(this.playerLocationNodes.head.entity, campSector, { skipBlockers: true, skipUnvisited: true });
-				var len = path ? path.length : "?";
-				$("#out-action-move-camp-details").text("(" + len + " blocks)");
+		updateLocationDetails: function () {
+			let hasFirstCamp = GameGlobals.gameState.numCamps > 0;
+			let hasCampOnLevel = GameGlobals.levelHelper.getLevelEntityForSector(this.playerLocationNodes.head.entity).has(CampComponent);
+			let pathToCamp = GameGlobals.playerHelper.getPathToCamp();
+			let pathToCampLen = pathToCamp ? pathToCamp.length : "?";
+			
+			$("#out-action-move-camp-details").text("(" + pathToCampLen + " blocks)");
+			
+			let showDistanceIndicator = hasFirstCamp;
+			GameGlobals.uiFunctions.toggle($("#out-distance-indicator"), showDistanceIndicator);
+			if (showDistanceIndicator) {
+				if (hasCampOnLevel) {
+					$("#out-distance-indicator").text("Distance to camp: " + pathToCampLen);
+				} else {
+					let pathToPassage = GameGlobals.playerHelper.getPathToPassage();
+					let pathToPassageLen = pathToPassage ? pathToPassageLen.length : "?";
+					$("#out-distance-indicator").text("Distance to passage: " + pathToPassageLen);
+				}
 			}
 		},
 

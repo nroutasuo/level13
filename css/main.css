@@ -807,7 +807,7 @@ body.dark button.btn-glyph-big {
 }
 body.dark button.btn-meta {
   width: auto;
-  padding: 2px 7px;
+  padding: 0px 7px;
   border-radius: 0px !important;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
@@ -1479,6 +1479,11 @@ body.dark .inventorybox-footer {
   background: #2f322f;
   border-color: #2f322f;
 }
+body.dark .info-detail {
+  font-size: 80%;
+  line-height: 1.15em;
+  display: block;
+}
 body.dark .li-item-negative {
   background: rgba(230, 70, 70, 0.15) !important;
   border: 1px solid #E13232 !important;
@@ -2038,10 +2043,6 @@ body.dark #notification-player .progress {
   max-width: 100%;
   margin: 0;
 }
-body.dark span#out-position-indicator {
-  font-size: 80%;
-  line-height: 1.1em;
-}
 body.dark #footer {
   padding: 1px 5px;
   display: flex;
@@ -2140,6 +2141,10 @@ body.dark #minimap-background-container {
   position: relative;
   height: 224px;
   width: 224px;
+  border-width: 2px;
+}
+body.dark #minimap-background {
+  opacity: 0.75;
 }
 body.dark #minimap-container {
   position: absolute;
@@ -3001,7 +3006,7 @@ body.sunlit button.btn-glyph-big {
 }
 body.sunlit button.btn-meta {
   width: auto;
-  padding: 2px 7px;
+  padding: 0px 7px;
   border-radius: 0px !important;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
@@ -3673,6 +3678,11 @@ body.sunlit .inventorybox-footer {
   background: #e6e6e6;
   border-color: #e6e6e6;
 }
+body.sunlit .info-detail {
+  font-size: 80%;
+  line-height: 1.15em;
+  display: block;
+}
 body.sunlit .li-item-negative {
   background: rgba(250, 0, 0, 0.15) !important;
   border: 1px solid #ee1111 !important;
@@ -4232,10 +4242,6 @@ body.sunlit #notification-player .progress {
   max-width: 100%;
   margin: 0;
 }
-body.sunlit span#out-position-indicator {
-  font-size: 80%;
-  line-height: 1.1em;
-}
 body.sunlit #footer {
   padding: 1px 5px;
   display: flex;
@@ -4334,6 +4340,10 @@ body.sunlit #minimap-background-container {
   position: relative;
   height: 224px;
   width: 224px;
+  border-width: 2px;
+}
+body.sunlit #minimap-background {
+  opacity: 0.75;
 }
 body.sunlit #minimap-container {
   position: absolute;
