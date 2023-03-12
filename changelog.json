@@ -7,7 +7,7 @@
 			"changes": [
 				{
 					"type": "UI",
-					"summary": "Remove many repetitive log messages and add some new ones.",
+					"summary": "Remove many repetitive log messages and add some new ones."
 				},
 				{
 					"type": "GD",
