@@ -3569,7 +3569,7 @@
         },
         "use_out_collector_food": {
             "bag": {
-                "full": false
+                "space": [ 1, -1 ]
             },
             "improvements": {
                 "collector_food": [
@@ -3587,7 +3587,7 @@
         },
         "use_out_collector_food_one": {
             "bag": {
-                "full": false
+                "space": [ 1, -1 ]
             },
             "improvements": {
                 "collector_food": [
@@ -3605,7 +3605,7 @@
         },
         "use_out_collector_water": {
             "bag": {
-                "full": false
+                "space": [ 1, -1 ]
             },
             "improvements": {
                 "collector_water": [
@@ -3623,7 +3623,7 @@
         },
         "use_out_collector_water_one": {
             "bag": {
-                "full": false
+                "space": [ 1, -1 ]
             },
             "improvements": {
                 "collector_water": [
@@ -3641,7 +3641,7 @@
         },
         "use_spring": {
             "bag": {
-                "full": false
+                "space": [ 1, -1 ]
             },
             "busy": false,
             "sector": {

@@ -699,14 +699,13 @@ define([
 							return {value: 0, reason: "Can't carry that much stuff."};
 						}
 					}
-					if (typeof requirements.bag.full !== "undefined") {
-						var requiredValue = requirements.bag.full;
-						var currentValue = bagComponent.usedCapacity >= bagComponent.totalCapacity;
-						if (requiredValue !== currentValue) {
-							if (requiredValue)
-								return {value: 0, reason: "Bag must be full."};
-							else
-								return {value: 0, reason: "Bag is full."};
+					if (typeof requirements.bag.space !== "undefined") {
+						let range = requirements.bag.space;
+						let currentVal = bagComponent.totalCapacity - bagComponent.usedCapacity;
+						// checkRequirementsRange: function (range, value, minreason, maxreason, minreason1, maxreason1, minReasonBase, maxReasonBase) {
+						let result = this.checkRequirementsRange(range, currentVal, "Bag is too full", "Bag has enough space");
+						if (result) {
+							return result;
 						}
 					}
 				}
