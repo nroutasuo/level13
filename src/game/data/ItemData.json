@@ -1950,7 +1950,7 @@
             "movement": 0.85
         },
         "campOrdinalRequired": 1,
-        "description": "Protects a scavenger's feet from sharp things that might be lying around.",
+        "description": "Protects feet from sharp things that might be lying around.",
         "icon": "img/items/shoe-1.png",
         "id": "shoe_1",
         "isCraftable": true,

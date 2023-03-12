@@ -271,7 +271,7 @@ define([
 			
 			if (!isThirsty) {
 				if (hasThirstPerk) {
-					if (!inCamp) this.logWithDelay("No longer thirsty.", 500, () => !this.isPlayerThirsty());
+					if (!inCamp && !hasCampHere) this.logWithDelay("No longer thirsty.", 500, () => !this.isPlayerThirsty());
 					perksComponent.removePerkById(PerkConstants.perkIds.thirst);
 				}
 			} else if (!hasThirstPerk) {
@@ -282,7 +282,7 @@ define([
 			
 			if (!isHungry) {
 				if (hasHungerPerk) {
-					if (!inCamp) this.logWithDelay("No longer hungry.", 500, () => !this.isPlayerHungry());
+					if (!inCamp && !hasCampHere) this.logWithDelay("No longer hungry.", 500, () => !this.isPlayerHungry());
 					perksComponent.removePerkById(PerkConstants.perkIds.hunger);
 				}
 			} else if (!hasHungerPerk) {

@@ -209,10 +209,12 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 
 		getDespairMessage: function (isValidDespairHunger, isValidDespairThirst, isValidDespairStamina, isValidDespairMove) {
 			if (isValidDespairThirst) {
-				return "Too thirsty to go on.";
+				// NOTE: thirst perk will trigger message
+				return null;
 			}
 			if (isValidDespairHunger) {
-				return "Too hungry to go on.";
+				// NOTE: hunger perk will trigger message
+				return null;
 			}
 			if (isValidDespairMove) {
 				return "There is nowhere to go.";

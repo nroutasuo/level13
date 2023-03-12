@@ -638,7 +638,7 @@ define(['ash',
 			addGroup("New events", milestone.unlockedEvents);
 			
 			let unlockedUpgrades = GameGlobals.milestoneEffectsHelper.getUnlockedUpgrades(milestone.index);
-			addGroup("Available upgrades", unlockedUpgrades, (upgradeID) => {
+			addGroup("Unlocked upgrades", unlockedUpgrades, (upgradeID) => {
 				let upgrade = UpgradeConstants.upgradeDefinitions[upgradeID];
 				let isOtherRequirementsMet = GameGlobals.playerActionsHelper.isRequirementsMet(upgradeID, null, [ PlayerActionConstants.DISABLED_REASON_MILESTONE ]);
 				let c = isOtherRequirementsMet ? "" : "strike-through";

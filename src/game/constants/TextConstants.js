@@ -93,7 +93,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			};
 			// - general: options always available
 			addOptions("a-street", [ "quiet" ]);
-			addOptions("n-building", [ "building" ]);
+			addOptions("n-building", [ "building", "structure" ]);
 			addOptions("n-buildings", [ "buildings" ]);
 			addOptions("a-building", [ "towering", "tall", "gloomy", "abandoned", "nondescript", "small", "typical", "monolithic", "blocky", "massive", "functional", "colossal", "immense" ]);
 			addOptions("an-decos", [ "stranded benches", "broken elevators" ]);
@@ -103,7 +103,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
 					addOptions("n-sector", [ "apartment complex" ]);
 					addOptions("a-street-past", [ "beautiful", "calm", "orderly", "relaxed" ]);
-					addOptions("n-building", [ "residential tower", "apartment house", "residential building with countless of rows of identical balconies" ]);
+					addOptions("n-building", [ "residential tower", "apartment house", "residential building with countless of rows of identical balconies", "housing block" ]);
 					addOptions("n-buildings", [ "residential towers", "apartments", "tower blocks", "identical residential towers" ]);
 					addOptions("an-decos", [ "tram tracks" ]);
 					addOptions("a-building", [ "silent", "regular", "enourmous", "symmetrical" ]);
@@ -152,7 +152,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					addOptions("a-street", [ "shabby", "chaotic" ]);
 					addOptions("a-street-past", [ "gloomy", "crowded", "lively" ]);
 					addOptions("n-building", [ "apartment building" ]);
-					addOptions("a-building", [ "abandoned", "sketchy", "depressing" ]);
+					addOptions("a-building", [ "abandoned", "sketchy", "depressing", "dishevelled" ]);
 					addOptions("n-buildings", [ "shacks", "huts", "slum residences", "residential towers that don't seem to have ever been connected to the grid" ]);
 					addOptions("an-decos", [ "collapsed shacks", "garbage piles" ]);
 					addOptions("an-items", [ "rusted pipes" ]);
@@ -165,9 +165,11 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					addOptions("n-street", [ "plaza", "courtyard" ]);
 				addOptions("a-street", [ "wide", "spacious", "enormous" ]);
 			} else if (features.buildingDensity < 6) {
-				addOptions("n-street", [ "throughfare", "square", "area", "hall" ]);
+				addOptions("n-street", [ "square", "area", "hall" ]);
 				if (features.sectorType == SectorConstants.SECTOR_TYPE_RESIDENTIAL || features.sectorType == SectorConstants.SECTOR_TYPE_COMMERCIAL)
 					addOptions("n-street", [ "boulevard", "avenue" ]);
+				if (features.sectorType != SectorConstants.SECTOR_TYPE_SLUM)
+					addOptions("n-street", [ "throughfare" ]);
 				addOptions("a-street", [ "wide", "spacious" ]);
 			} else if (features.buildingDensity < 9) {
 				addOptions("n-street", [ "street", "street", "alley", "complex", "sector" ]);
@@ -237,7 +239,8 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			}
 			// - level population
 			if (features.populationFactor == 0) {
-				addOptions("a-building", [ "long abandoned", "empty", "polluted"]);
+				addOptions("a-street", [ "empty", "uninhabited", "desolate", "deserted" ] )
+				addOptions("a-building", [ "long abandoned", "empty", "polluted" ]);
 			} else if (features.populationFactor < 1) {
 				addOptions("a-street", [ "calm" ]);
 				addOptions("a-building", [ "empty" ]);
@@ -327,18 +330,19 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			}
 		},
 		
-		getPassageRepairedMessage: function (passageType, direction, sectorPosVO) {
-			var directionName = (direction === PositionConstants.DIRECTION_UP ? " up" : " down");
+		getPassageRepairedMessage: function (passageType, direction, sectorPosVO, numCampsBuilt) {
+			let directionName = (direction === PositionConstants.DIRECTION_UP ? " up" : " down");
+			let includeLevelInPosition = numCampsBuilt > 1;
 			switch (passageType) {
 				case MovementConstants.PASSAGE_TYPE_HOLE:
-					return "Elevator " + directionName + " built at " + sectorPosVO.getInGameFormat(true);
+					return "Elevator " + directionName + " built at " + sectorPosVO.getInGameFormat(includeLevelInPosition);
 				case MovementConstants.PASSAGE_TYPE_ELEVATOR:
-					return "Elevator " + directionName + " repaired at " + sectorPosVO.getInGameFormat(true);
+					return "Elevator " + directionName + " repaired at " + sectorPosVO.getInGameFormat(includeLevelInPosition);
 				case MovementConstants.PASSAGE_TYPE_STAIRWELL:
-					return "Stairwell " + directionName + " repaired at " + sectorPosVO.getInGameFormat(true);
+					return "Stairwell " + directionName + " repaired at " + sectorPosVO.getInGameFormat(includeLevelInPosition);
 				default:
 					log.w("Unknown passage type: [" + passageType + "]")
-					return "Passage " + directionName + " ready at " + sectorPosVO.getInGameFormat(true);
+					return "Passage " + directionName + " ready at " + sectorPosVO.getInGameFormat(includeLevelInPosition);
 			}
 		},
 				
@@ -1115,7 +1119,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			
 			if (validItems.length == 0) {
 				if (itemsScavengeable.length > 0) {
-					return "Unknown ingredient";
+					return "Some ingredient";
 				} else {
 					return "None";
 				}
@@ -1288,7 +1292,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("sector-vision", { buildingDensity: b22 }, "Some kind of [A] [a-sectortype] complex with several narrow passages this way and that");
 		DescriptionMapper.add("sector-vision", { buildingDensity: b13 }, "A wide square with [A] [a-building] [n-building] on one side and what looks like the remains of [A] [a-building] [n-building] on the other");
 		DescriptionMapper.add("sector-vision", { buildingDensity: b23, isSurfaceLevel: false }, "[A] [a-street] [n-street] beneath a vast [n-building]");
-		DescriptionMapper.add("sector-vision", { buildingDensity: b23, isSurfaceLevel: false }, "A street with multiple levels of passages crawling along the walls of the surrounding [a-sectortype] buildings");
+		DescriptionMapper.add("sector-vision", { buildingDensity: b23, isSurfaceLevel: false }, "[A] [n-street] with multiple levels of passages crawling along the walls of the surrounding [a-sectortype] buildings");
 		DescriptionMapper.add("sector-vision", { buildingDensity: b33 }, "Some sort of [A] [a-sectortype] corridor between two vast [n-buildings] with barely enough space to walk");
 		DescriptionMapper.add("sector-vision", { buildingDensity: b33 }, "[A] [a-street] [n-street] packed so full with [a-building] [n-buildings] and [an-decos] that there is barely enough space to pass through");
 		DescriptionMapper.add("sector-vision", { buildingDensity: b33 }, "[A] [a-street] alley between two [a-building] [n-buildings]");

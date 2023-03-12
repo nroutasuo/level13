@@ -616,31 +616,35 @@ define(['ash',
 				isFirst = true;
 			}
 			
-			var level = sector.get(PositionComponent).level;
+			let level = sector.get(PositionComponent).level;
 
-			var logMsg = "Scouted the area.";
-			var found = false;
-			var sunlit = featuresComponent.sunlit;
+			let popupMsg = "Scouted the area.";
+			let logMsg = "";
+			let found = false;
+			let sunlit = featuresComponent.sunlit;
+			
 			if (featuresComponent.hasSpring) {
 				found = true;
-				logMsg += "<br/>Found " + Text.addArticle(TextConstants.getSpringName(featuresComponent)) + ".";
+				popupMsg += "<br/>Found " + Text.addArticle(TextConstants.getSpringName(featuresComponent)) + ".";
 			}
 			
 			if (featuresComponent.hasTradeConnectorSpot && !GameGlobals.levelHelper.getFirstScoutedSectorWithFeatureOnLevel(level, "hasTradeConnectorSpot")) {
 				found = true;
-				logMsg += "<br/>Found a good place for a bigger building project.";
+				popupMsg += "<br/>Found a good place for a bigger building project.";
+				logMsg += "Found a good place for a bigger building project.";
 			}
 			
-			var workshopComponent = sector.get(WorkshopComponent);
+			let workshopComponent = sector.get(WorkshopComponent);
 			if (workshopComponent && workshopComponent.isClearable) {
 				found = true;
-				logMsg += "<br/>Found " + Text.addArticle(TextConstants.getWorkshopName(workshopComponent.resource));
+				popupMsg += "<br/>Found " + Text.addArticle(TextConstants.getWorkshopName(workshopComponent.resource));
+				logMsg += "Found " + Text.addArticle(TextConstants.getWorkshopName(workshopComponent.resource));
 			}
 			
 			if (featuresComponent.campable) {
 				if (!this.nearestCampNodes.head || this.nearestCampNodes.head.position.level != this.playerLocationNodes.head.position.level) {
 					found = true;
-					logMsg += "<br/>This seems like a good place for a camp.";
+					popupMsg += "<br/>This seems like a good place for a camp.";
 				}
 			}
 
@@ -650,7 +654,8 @@ define(['ash',
 					improvements.getCount(improvementNames.passageUpElevator) +
 					improvements.getCount(improvementNames.passageUpHole) > 0;
 				found = true;
-				logMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageUp, PositionConstants.DIRECTION_UP, sunlit, passageUpBuilt) + " ";
+				popupMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageUp, PositionConstants.DIRECTION_UP, sunlit, passageUpBuilt) + " ";
+				if (!passageUpBuilt) logMsg += "Found a passage to the level above.";
 			}
 
 			if (passagesComponent.passageDown) {
@@ -658,42 +663,47 @@ define(['ash',
 					improvements.getCount(improvementNames.passageDownElevator) +
 					improvements.getCount(improvementNames.passageDownHole) > 0;
 				found = true;
-				logMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageDown, PositionConstants.DIRECTION_DOWN, sunlit, passageDownBuilt) + " ";
+				popupMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageDown, PositionConstants.DIRECTION_DOWN, sunlit, passageDownBuilt) + " ";
+				if (!passageDownBuilt) logMsg += "Found a passage to the level below.";
 			}
 
-			var sectorLocalesComponent = sector.get(SectorLocalesComponent);
+			let sectorLocalesComponent = sector.get(SectorLocalesComponent);
 			if (sectorLocalesComponent.locales.length > 0) {
 				found = true;
-				var locale = sectorLocalesComponent.locales[0];
+				let locale = sectorLocalesComponent.locales[0];
 				if (sectorLocalesComponent.locales.length > 1)
-					logMsg += "<br/>There are some interesting buildings here.";
+					popupMsg += "<br/>There are some interesting buildings here.";
 				else
-					logMsg += "<br/>There is a " + TextConstants.getLocaleName(locale, featuresComponent, true).toLowerCase() + " here that seems worth investigating.";
+					popupMsg += "<br/>There is a " + TextConstants.getLocaleName(locale, featuresComponent, true).toLowerCase() + " here that seems worth investigating.";
 			}
 			
 			if (featuresComponent.waymarks.length > 0) {
 				let sectorFeatures = GameGlobals.sectorHelper.getTextFeatures(sector);
 				for (let i = 0; i < featuresComponent.waymarks.length; i++) {
-					logMsg += "<br/>" + TextConstants.getWaymarkText(featuresComponent.waymarks[i], sectorFeatures);
+					popupMsg += "<br/>" + TextConstants.getWaymarkText(featuresComponent.waymarks[i], sectorFeatures);
 				}
 			}
-
-			var playerActionFunctions = this;
-			var successCallback = function () {
+			
+			let successCallback = function () {
 				GameGlobals.gameState.stats.numTimesScouted++;
 				sectorStatus.scouted = true;
 				sectorStatus.scoutedTimestamp = new Date().getTime() / 1000;
+				
+				if (logMsg) {
+					GameGlobals.playerActionFunctions.addLogMessage(LogConstants.getUniqueID(), logMsg);
+				}
+				
 				GlobalSignals.sectorScoutedSignal.dispatch();
-				playerActionFunctions.completeAction("scout");
-				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
-				playerActionFunctions.save();
+				GameGlobals.playerActionFunctions.completeAction("scout");
+				GameGlobals.playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
+				GameGlobals.playerActionFunctions.save();
 			};
 			
 			let messages = {
 				id: found ? LogConstants.MSG_ID_SCOUT_FOUND_SOMETHING : LogConstants.MSG_ID_SCOUT,
-				msgSuccess: logMsg,
-				msgFlee: logMsg,
-				msgDefeat: logMsg,
+				msgSuccess: popupMsg,
+				msgFlee: popupMsg,
+				msgDefeat: popupMsg,
 				addToLog: isFirst,
 			};
 			
@@ -957,7 +967,7 @@ define(['ash',
 								msgSuccess:  "Waited some time.",
 								msgFlee: msgFail,
 								msgDefeat: msgFail,
-								addToLog: true,
+								addToLog: false,
 							};
 							sys.handleOutActionResults("wait", messages, false, false);
 						}, 300);
@@ -1379,7 +1389,7 @@ define(['ash',
 
 			if (sector && neighbour) {
 				var direction = up ? PositionConstants.DIRECTION_UP : PositionConstants.DIRECTION_DOWN;
-				var msg = TextConstants.getPassageRepairedMessage(passageType, direction, sectorPosVO);
+				var msg = TextConstants.getPassageRepairedMessage(passageType, direction, sectorPosVO, GameGlobals.gameState.numCamps);
 				this.buildImprovement(action, GameGlobals.playerActionsHelper.getImprovementNameForAction(action), sector);
 				this.buildImprovement(neighbourAction, GameGlobals.playerActionsHelper.getImprovementNameForAction(neighbourAction), neighbour, true);
 				this.addLogMessage(LogConstants.MSG_ID_BUILT_PASSAGE, msg);

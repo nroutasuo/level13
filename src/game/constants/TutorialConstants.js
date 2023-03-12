@@ -242,7 +242,7 @@ define(['ash'], function (Ash) {
 				triggers: [ "change_position" ],
 				repeats: "NEVER",
 				delay: 1500,
-				logMessage: "Encountered BLOCKER_TYPE_WASTE_TOXIC for the first time. Missing the tech to deal with it",
+				logMessage: "There is too much toxic waste to continue. Need to figure out how to clean it up.",
 				conditions: { sector: { blockers: { 6: true } }, upgrades: { "unlock_action_clear_waste_t": false } },
 			},
 			TUTORIAL_ENCOUNTER_BLOCKER_TYPE_WASTE_TOXIC_HAS_TECH: {
@@ -250,7 +250,7 @@ define(['ash'], function (Ash) {
 				triggers: [ "change_position" ],
 				repeats: "NEVER",
 				delay: 1500,
-				logMessage: "Encountered BLOCKER_TYPE_WASTE_TOXIC for the first time. Have the tech to deal with it",
+				logMessage: "There is too much toxic waste to continue without cleaning it up first.",
 				conditions: { sector: { blockers: { 6: true } }, upgrades: { "unlock_action_clear_waste_t": true } },
 			},
 			TUTORIAL_ENCOUNTER_LEVEL_14_RADIATION: {
@@ -307,13 +307,6 @@ define(['ash'], function (Ash) {
 				delay: 1500,
 				logMessage: "A bag allows carrying more stuff.",
 				conditions: { featureUnlocked: { bag: true } }
-			},
-			TUTORIAL_FEATURE_UNLOCKED_FOLLOWERS: {
-				triggers: [ "feature_unlocked" ],
-				repeats: "NEVER",
-				delay: 1500,
-				logMessage: "It is good to have some company for the excursions to the City.",
-				conditions: { featureUnlocked: { followers: true } }
 			},
 			TUTORIAL_FOUND_METAL: {
 				triggers: [ "action_collect_rewards" ],

@@ -38,7 +38,14 @@ define([
 			}
 			
 			let unlockedBuildings = GameGlobals.upgradeEffectsHelper.getUnlockedBuildings(upgradeID);
-			addGroup("unlocked buildings", unlockedBuildings, this.getImprovementDisplayName);
+			addGroup("unlocked camp buildings", unlockedBuildings, this.getImprovementDisplayName);
+			
+			let unlockedProjects = GameGlobals.upgradeEffectsHelper.getUnlockedProjects(upgradeID);
+			addGroup("unlocked building projects", unlockedProjects, this.getImprovementDisplayName);
+			
+			let unlockedOtherImprovements = GameGlobals.upgradeEffectsHelper.getUnlockedImprovements(upgradeID);
+			unlockedOtherImprovements = unlockedOtherImprovements.filter(improvementName => unlockedBuildings.indexOf(improvementName) < 0 && unlockedProjects.indexOf(improvementName) < 0);
+			addGroup("unlocked other buildings", unlockedOtherImprovements, this.getImprovementDisplayName);
 
 			let improvedBuildings = GameGlobals.upgradeEffectsHelper.getImprovedBuildings(upgradeID);
 			addGroup("improved buildings", improvedBuildings, this.getImprovementDisplayName);
@@ -78,10 +85,19 @@ define([
 		},
 		
 		getUnlockedBuildings: function (upgradeID) {
-			// TODO separate in and out improvements
+			return this.getUnlockedImprovements(upgradeID, improvementTypes.camp);
+		},
+		
+		getUnlockedProjects: function (upgradeID) {
+			return this.getUnlockedImprovements(upgradeID).filter(improvementName => ImprovementConstants.isProject(improvementName));
+		},
+		
+		getUnlockedImprovements: function (upgradeID, improvementType) {
 			let actions = this.getUnlockedActions(upgradeID, function (action) {
 				let improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(action, true);
-				return improvementName;
+				if (!improvementName) return false;
+				let type = getImprovementType(improvementName);
+				return !improvementType || improvementType == type;
 			});
 			return actions.map(action => GameGlobals.playerActionsHelper.getImprovementNameForAction(action, true));
 		},
@@ -118,13 +134,13 @@ define([
 		},
 		
 		getUnlockedOccurrences: function (upgradeID) {
-			var unlockedBuildings = this.getUnlockedBuildings(upgradeID);
+			var unlockedImprovements = this.getUnlockedImprovements(upgradeID);
 			var occurrences = [];
-			if(unlockedBuildings.length > 0) {
+			if (unlockedImprovements.length > 0) {
 				var occurrenceBuilding;
 				var unlockedBuilding;
-				for (let i = 0; i < unlockedBuildings.length; i++) {
-					unlockedBuilding = unlockedBuildings[i];
+				for (let i = 0; i < unlockedImprovements.length; i++) {
+					unlockedBuilding = unlockedImprovements[i];
 					for (var occurrence in this.improvementsByOccurrence) {
 						occurrenceBuilding = this.improvementsByOccurrence[occurrence];
 						if (occurrenceBuilding === unlockedBuilding) {
@@ -249,6 +265,14 @@ define([
 		
 		getImprovingUpgradeIdsForOccurrence: function (occurrence) {
 			return UpgradeConstants.improvingUpgradesByEvent[occurrence];
+		},
+		
+		getUpgradeIdForAction: function (action) {
+			var reqs = PlayerActionConstants.requirements[action];
+			if (reqs && reqs.upgrades) {
+				return Object.keys(reqs.upgrades)[0];
+			}
+			return null;
 		},
 		
 		getBuildingUpgradeLevel: function (building, upgradesComponent) {
