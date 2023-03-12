@@ -2188,6 +2188,16 @@ define(['ash',
 			GlobalSignals.featureUnlockedSignal.dispatch(featureID);
 		},
 		
+		lockFeature: function (featureID) {
+			let featureSaveKey = featureID;
+						
+			if (!GameGlobals.gameState.unlockedFeatures[featureSaveKey]) return;
+			
+			log.i("locked feature: " + featureID);
+			
+			GameGlobals.gameState.unlockedFeatures[featureSaveKey] = false;
+		},
+		
 		forceStatsBarUpdate: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			var system = this.engine.getSystem(UIOutHeaderSystem);
