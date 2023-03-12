@@ -7,8 +7,23 @@ body {
   border-width: 0px !important;
   overflow-x: hidden;
 }
+.div-horizontal-space-filler {
+  visibility: hidden;
+  padding: 1px;
+  height: 1px;
+}
 #grid-main {
   height: 100%;
+}
+#unit-main,
+#footer {
+  padding-left: 90px;
+}
+#header-self-bar {
+  position: fixed;
+  width: 60px;
+  z-index: 5;
+  margin-left: -90px;
 }
 #log {
   max-width: 244px;
@@ -29,10 +44,6 @@ body {
 }
 #tab-header h2 {
   margin: 2px 0px;
-}
-#unit-main {
-  padding-left: 28px;
-  /* for the self-bar */
 }
 .sticky-footer {
   height: 65px;
@@ -1021,19 +1032,19 @@ body.dark .action-separator {
 }
 body.dark ul.tabs {
   margin: 0;
-  padding: 0;
+  padding: 0 10px;
   list-style-type: none;
 }
 body.dark ul.tabs li {
   display: inline-block;
-  margin: 0px 1px;
+  margin: 0px;
   padding: 5px 10px 5px 10px;
-  border-width: 1px;
+  border-width: 2px;
   border-style: solid;
   position: relative;
   z-index: 0;
   white-space: nowrap;
-  top: 2px;
+  top: 3px;
   height: 32px;
   cursor: pointer;
   text-transform: lowercase;
@@ -1958,13 +1969,11 @@ body.dark #statsbar-self .stats-indicator {
   display: inline-block;
 }
 body.dark #header-self-bar {
-  position: fixed;
-  width: 60px;
-  z-index: 5;
   text-align: center;
   padding: 5px 3px;
-  margin-left: -80px;
   font-size: 80%;
+  border-width: 2px;
+  background: #282a28;
 }
 body.dark #header-self-bar ul {
   margin-top: 10px;
@@ -2044,7 +2053,7 @@ body.dark #notification-player .progress {
   margin: 0;
 }
 body.dark #footer {
-  padding: 1px 5px;
+  padding: 1px 5px 1px 90px;
   display: flex;
   align-items: flex-end;
   height: 100%;
@@ -3220,19 +3229,19 @@ body.sunlit .action-separator {
 }
 body.sunlit ul.tabs {
   margin: 0;
-  padding: 0;
+  padding: 0 10px;
   list-style-type: none;
 }
 body.sunlit ul.tabs li {
   display: inline-block;
-  margin: 0px 1px;
+  margin: 0px;
   padding: 5px 10px 5px 10px;
-  border-width: 1px;
+  border-width: 2px;
   border-style: solid;
   position: relative;
   z-index: 0;
   white-space: nowrap;
-  top: 2px;
+  top: 3px;
   height: 32px;
   cursor: pointer;
   text-transform: lowercase;
@@ -4157,13 +4166,11 @@ body.sunlit #statsbar-self .stats-indicator {
   display: inline-block;
 }
 body.sunlit #header-self-bar {
-  position: fixed;
-  width: 60px;
-  z-index: 5;
   text-align: center;
   padding: 5px 3px;
-  margin-left: -80px;
   font-size: 80%;
+  border-width: 2px;
+  background: #fff;
 }
 body.sunlit #header-self-bar ul {
   margin-top: 10px;
@@ -4243,7 +4250,7 @@ body.sunlit #notification-player .progress {
   margin: 0;
 }
 body.sunlit #footer {
-  padding: 1px 5px;
+  padding: 1px 5px 1px 90px;
   display: flex;
   align-items: flex-end;
   height: 100%;

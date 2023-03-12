@@ -1,5 +1,7 @@
 // Base page layout including log, sticky footer etc
 
+@header-self-bar-width: 60px;
+@header-self-bar-space: @header-self-bar-width + 30px;
 @footer-height: 65px;
 
 html {
@@ -13,8 +15,25 @@ body {
 	overflow-x: hidden;
 }
 
+.div-horizontal-space-filler {
+	visibility:hidden;
+	padding:1px;
+	height:1px
+}
+
 #grid-main {
 	height: 100%;
+}
+
+#unit-main, #footer {
+	padding-left: @header-self-bar-space;
+}
+
+#header-self-bar {
+	position: fixed;
+	width: @header-self-bar-width;
+	z-index: 5;
+	margin-left: -@header-self-bar-space;
 }
 
 #log {
@@ -39,10 +58,6 @@ body {
 
 #tab-header h2 {
 	 margin: 2px 0px;
- }
-	
- #unit-main {
-	 padding-left: 28px; /* for the self-bar */
  }
 
 .sticky-footer {

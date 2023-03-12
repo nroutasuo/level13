@@ -30,8 +30,7 @@
 	
 	<div class="sticky-footer-wrapper game-opacity-controller">
 		<div class="grid" id="grid-main">
-			<div class="unit one-quarter" style="visibility:hidden; padding:1px; height:1px"></div><!-- filler for log -->
-			<div class="unit three-quarters" id="unit-main" style="display: none">
+			<div class="unit four-fifths" id="unit-main" style="display: none">
 
 				<div id="header-self-bar" class="lvl13-box-2">
 					<div id="notification-player" class="unit whole notification">
@@ -663,11 +662,13 @@
 					
 			</div><!-- main switch content grid -->
 			
-			</div><!-- main unit: the whole 3/4 right of the log -->
+			</div><!-- excluding lig -->
 			
-			<div id="log" class="unit one-quarter limit-height">
-				<div id="log-overlay" class="lvl13-fade-down"></div>
-				<ul></ul>
+			<div class="unit one-fifth" class="div-horizontal-space-filler">
+				<div id="log" class="limit-height">
+					<div id="log-overlay" class="lvl13-fade-down"></div>
+					<ul></ul>
+				</div>
 			</div>
 			
 		</div><!-- main grid -->
@@ -677,8 +678,7 @@
 	</div><!-- sticky footer wrap -->
 	
 	<div class="grid sticky-footer">
-		<div class="unit one-quarter" style="visibility:hidden"></div>
-		<div class="unit three-quarters" id="footer">
+		<div class="unit unit four-fifths" id="footer">
 			<span id="game-version" class="p-meta"></span>
 			<span id="game-msg" class="p-meta"></span>
 			<ul id="game-options-extended" style="display:none">
@@ -692,8 +692,11 @@
 				<li><button class="btn-meta" id="btn-save">Save</button></li>
 			</ul>
 		</div>
+		<div class="unit one-fifth" class="div-horizontal-space-filler">
 	</div><!-- sticky footer -->
-						
+	
+	<!-- popups -->
+	
 	<div id="fight-popup" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display:none">
 		<h3 id="fight-title"></h3>
 		<p id="fight-desc"></p>
@@ -815,6 +818,8 @@
 		<div id="info-results"></div>
 		<div class="buttonbox"></div>
 	</div>
+	
+	<!-- whole page overlays -->
 	
 	<div class="thinking-content">
 		<div class="loading-spinner">

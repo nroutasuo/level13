@@ -112,20 +112,16 @@ span.msg-count, span.time, span.msg-camp-level {
 
 // "HEADER" SELF-BAR
 
-@header-self-bar-width: 60px;
-
 #statsbar-self .stats-indicator {
 	display: inline-block;
 }
 
 #header-self-bar {
-	position: fixed;
-	width: @header-self-bar-width;
-	z-index: 5;
 	text-align: center;
 	padding: 5px 3px;
-	margin-left: -80px;
 	font-size: 80%;
+	border-width: 2px;
+	background: @color-bg-box-1;
 }
 
 #header-self-bar ul {
@@ -231,7 +227,7 @@ span.msg-count, span.time, span.msg-camp-level {
 // FOOTER
 
 #footer {
-	padding: 1px 5px;
+	padding: 1px 5px 1px  @header-self-bar-space;
 	display: flex;
     align-items: flex-end;
     height: 100%;
