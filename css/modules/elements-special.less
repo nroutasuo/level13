@@ -136,6 +136,7 @@ span.msg-count, span.time, span.msg-camp-level {
 #header-self-bar .stats-indicator {
 	margin: 1px 0px;
 	width: 100%;
+	max-width: @header-side-width - 5;
 	line-height: 1em;
 }
 
@@ -159,7 +160,7 @@ span.msg-count, span.time, span.msg-camp-level {
 }
 
 #header-self-bar div.callout-arrow-up {
-	margin: 0 0 0 (@header-self-bar-width/2 - @callout-arrow-size);
+	margin: 0 0 0 (@header-side-width/2 - @callout-arrow-size);
 }
 
 .stats-indicator-secondary {
@@ -211,23 +212,25 @@ span.msg-count, span.time, span.msg-camp-level {
 
 #notification-player {
 	padding: 0px;
-	border-width: 1px;
+	border-width: 2px;
 	border-style: solid;
-	margin-top: 5px;
-	margin-bottom: 5px;
 	border-color: @color-border-strong;
+    font-size: 85%;
+    display: none;
+    margin-top: 5px;
 }
 
 #notification-player .progress {
 	width: 100%;
 	max-width: 100%;
 	margin: 0;
+	height: 1.25em;
 }
 
 // FOOTER
 
 #footer {
-	padding: 1px 5px 1px  @header-self-bar-space;
+	padding: 1px 5px 1px  @header-side-space;
 	display: flex;
     align-items: flex-end;
     height: 100%;

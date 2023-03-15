@@ -815,16 +815,13 @@ define([
 		},
 
 		updateNotifications: function (inCamp) {
-			var isBusy = false;
-			if (inCamp) {
-				var busyComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
-				isBusy = this.playerStatsNodes.head.entity.has(PlayerActionComponent) && busyComponent.isBusy();
+			let busyComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
+			let isBusy = this.playerStatsNodes.head.entity.has(PlayerActionComponent) && busyComponent.isBusy();
 				if (isBusy) {
 					$("#notification-player-bar").data("progress-percent", busyComponent.getBusyPercentage());
 					$("#notification-player-bar .progress-label").text(busyComponent.getBusyDescription());
 				}
-			}
-			GameGlobals.uiFunctions.toggle("#notification-player", inCamp && isBusy);
+			GameGlobals.uiFunctions.toggle("#notification-player", isBusy);
 		},
 
 		updateLocation: function () {

@@ -1,7 +1,7 @@
 // Base page layout including log, sticky footer etc
 
-@header-self-bar-width: 60px;
-@header-self-bar-space: @header-self-bar-width + 30px;
+@header-side-width: 60px;
+@header-side-space: @header-side-width + 30px;
 @footer-height: 65px;
 
 html {
@@ -26,14 +26,14 @@ body {
 }
 
 #unit-main, #footer {
-	padding-left: @header-self-bar-space;
+	padding-left: @header-side-space;
 }
 
-#header-self-bar {
+#header-side {
 	position: fixed;
-	width: @header-self-bar-width;
+	width: @header-side-width;
 	z-index: 5;
-	margin-left: -@header-self-bar-space;
+	margin-left: -@header-side-space;
 }
 
 #log {

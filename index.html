@@ -32,38 +32,41 @@
 		<div class="grid" id="grid-main">
 			<div class="unit four-fifths" id="unit-main" style="display: none">
 
-				<div id="header-self-bar" class="lvl13-box-2">
+				<div id="header-side">
+					<div id="header-self-bar" class="lvl13-box-2">
+						<ul class="itemlist" id="list-items-perks"></ul>
+						<ul class="itemlist" id="list-items-statuses"></ul>
+						
+						<div id="stats-vision" class="stats-indicator">
+							<span class="label">Vision</span>
+							<div class="stats-value-container"><span class="value">0</span><span id="vision-change-indicator" class="change-indicator"></span></div>
+						</div>
+						<div id="stats-health" class="stats-indicator">
+							<span class="label">Health</span>
+							<div class="stats-value-container"><span class="value">0</span><span id="health-change-indicator" class="change-indicator"></span></div>
+						</div>
+						<div id="stats-stamina" class="stats-indicator">
+							<span class="label">Stamina</span>
+							<div class="stats-value-container"><span class="value">0</span><span id="stamina-change-indicator" class="change-indicator"></span></div>
+						</div>
+						<div id="stats-scavenge" class="stats-indicator">
+							<span class="label">Scavenge<br/>efficiency</span>
+							<div class="stats-value-container"><span class="value">0</span><span id="scavenge-change-indicator" class="change-indicator"></span></div>
+						</div>
+						<div id="stats-scavenge-bonus" class="stats-indicator">
+							<span class="label">Scavenge<br/>bonus</span>
+						</div>
+						
+						<hr/>
+						<div id="container-equipment-stats"></div>
+					</div>
+					
 					<div id="notification-player" class="unit whole notification">
 						<div id="notification-player-bar" class="progress-wrap progress">
 							<div class="progress-bar progress"></div>
 							<span class="progress-label progress"></span>
 						</div>
 					</div>
-					<ul class="itemlist" id="list-items-perks"></ul>
-					<ul class="itemlist" id="list-items-statuses"></ul>
-					
-					<div id="stats-vision" class="stats-indicator">
-						<span class="label">Vision</span>
-						<div class="stats-value-container"><span class="value">0</span><span id="vision-change-indicator" class="change-indicator"></span></div>
-					</div>
-					<div id="stats-health" class="stats-indicator">
-						<span class="label">Health</span>
-						<div class="stats-value-container"><span class="value">0</span><span id="health-change-indicator" class="change-indicator"></span></div>
-					</div>
-					<div id="stats-stamina" class="stats-indicator">
-						<span class="label">Stamina</span>
-						<div class="stats-value-container"><span class="value">0</span><span id="stamina-change-indicator" class="change-indicator"></span></div>
-					</div>
-					<div id="stats-scavenge" class="stats-indicator">
-						<span class="label">Scavenge<br/>efficiency</span>
-						<div class="stats-value-container"><span class="value">0</span><span id="scavenge-change-indicator" class="change-indicator"></span></div>
-					</div>
-					<div id="stats-scavenge-bonus" class="stats-indicator">
-						<span class="label">Scavenge<br/>bonus</span>
-					</div>
-					
-					<hr/>
-					<div id="container-equipment-stats"></div>
 				</div>
 				
 				<div class="grid" id="grid-main-header" class="vision-container">
