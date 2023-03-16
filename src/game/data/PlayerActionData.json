@@ -1944,6 +1944,12 @@
                     1
                 ]
             },
+            "improvementsOnLevel": {
+                "camp": [
+                    0,
+                    1
+                ]
+            },
             "sector": {
                 "canHaveCamp": true
             },
