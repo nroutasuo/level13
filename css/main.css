@@ -17,13 +17,13 @@ body {
 }
 #unit-main,
 #footer {
-  padding-left: 90px;
+  padding-left: 85px;
 }
 #header-side {
   position: fixed;
-  width: 60px;
+  width: 65px;
   z-index: 5;
-  margin-left: -90px;
+  margin-left: -85px;
 }
 #log {
   max-width: 244px;
@@ -1917,12 +1917,19 @@ body.dark .lvl13-fade-down {
   background: -o-linear-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 75%, #202220 100%);
   background: -moz-linear-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 75%, #202220 100%);
 }
+body.dark #header-camp-container {
+  display: flex;
+}
+body.dark .header-row {
+  padding: 3px 5px;
+}
 body.dark .header-section {
-  display: inline-block;
-  vertical-align: top;
   margin: 0px 5px 0px 0px;
-  float: left;
   padding: 0px 2px;
+}
+body.dark #header-bag-storage,
+body.dark #bag-resources {
+  display: inline-block;
 }
 body.dark #main-header-camp {
   width: 100%;
@@ -1934,28 +1941,12 @@ body.dark #main-header-camp-overview {
 body.dark #main-header-camp-resources {
   flex-grow: 1;
 }
-body.dark #main-header-bag {
-  min-width: 20%;
-  max-width: 25%;
-}
-body.dark #main-header-equipment {
-  max-height: 122px;
-  text-align: center;
-  padding: 2px;
-}
-body.dark #main-header-items {
-  min-width: 35px;
-  max-width: 35%;
-}
 body.dark #header-tribe-container {
   margin-bottom: 5px;
+  padding-left: 5px;
 }
 body.dark #grid-switch-content {
   z-index: 1;
-  position: relative;
-}
-body.dark #grid-main-header .unit {
-  padding: 2px;
   position: relative;
 }
 body.dark #statsbar-resources {
@@ -1977,7 +1968,6 @@ body.dark #header-self-bar {
 }
 body.dark #header-self-bar ul {
   margin-top: 10px;
-  margin-bottom: 10px;
 }
 body.dark #header-self-bar > span {
   display: block;
@@ -1985,6 +1975,7 @@ body.dark #header-self-bar > span {
 body.dark #header-self-bar .stats-indicator {
   margin: 1px 0px;
   width: 100%;
+  max-width: 60px;
   line-height: 1em;
 }
 body.dark #header-self-bar .callout-container {
@@ -2003,7 +1994,7 @@ body.dark #header-self-bar .change-indicator {
   margin: 0.2em 0 0 0.25em;
 }
 body.dark #header-self-bar div.callout-arrow-up {
-  margin: 0 0 0 23px;
+  margin: 0 0 0 25.5px;
 }
 body.dark .stats-indicator-secondary {
   display: flex;
@@ -2055,7 +2046,7 @@ body.dark #notification-player .progress {
   height: 1.25em;
 }
 body.dark #footer {
-  padding: 1px 5px 1px 90px;
+  padding: 1px 5px 1px 85px;
   display: flex;
   align-items: flex-end;
   height: 100%;
@@ -4116,12 +4107,19 @@ body.sunlit .lvl13-fade-down {
   background: -o-linear-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 75%, #fbfbfb 100%);
   background: -moz-linear-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 75%, #fbfbfb 100%);
 }
+body.sunlit #header-camp-container {
+  display: flex;
+}
+body.sunlit .header-row {
+  padding: 3px 5px;
+}
 body.sunlit .header-section {
-  display: inline-block;
-  vertical-align: top;
   margin: 0px 5px 0px 0px;
-  float: left;
   padding: 0px 2px;
+}
+body.sunlit #header-bag-storage,
+body.sunlit #bag-resources {
+  display: inline-block;
 }
 body.sunlit #main-header-camp {
   width: 100%;
@@ -4133,28 +4131,12 @@ body.sunlit #main-header-camp-overview {
 body.sunlit #main-header-camp-resources {
   flex-grow: 1;
 }
-body.sunlit #main-header-bag {
-  min-width: 20%;
-  max-width: 25%;
-}
-body.sunlit #main-header-equipment {
-  max-height: 122px;
-  text-align: center;
-  padding: 2px;
-}
-body.sunlit #main-header-items {
-  min-width: 35px;
-  max-width: 35%;
-}
 body.sunlit #header-tribe-container {
   margin-bottom: 5px;
+  padding-left: 5px;
 }
 body.sunlit #grid-switch-content {
   z-index: 1;
-  position: relative;
-}
-body.sunlit #grid-main-header .unit {
-  padding: 2px;
   position: relative;
 }
 body.sunlit #statsbar-resources {
@@ -4176,7 +4158,6 @@ body.sunlit #header-self-bar {
 }
 body.sunlit #header-self-bar ul {
   margin-top: 10px;
-  margin-bottom: 10px;
 }
 body.sunlit #header-self-bar > span {
   display: block;
@@ -4184,6 +4165,7 @@ body.sunlit #header-self-bar > span {
 body.sunlit #header-self-bar .stats-indicator {
   margin: 1px 0px;
   width: 100%;
+  max-width: 60px;
   line-height: 1em;
 }
 body.sunlit #header-self-bar .callout-container {
@@ -4202,7 +4184,7 @@ body.sunlit #header-self-bar .change-indicator {
   margin: 0.2em 0 0 0.25em;
 }
 body.sunlit #header-self-bar div.callout-arrow-up {
-  margin: 0 0 0 23px;
+  margin: 0 0 0 25.5px;
 }
 body.sunlit .stats-indicator-secondary {
   display: flex;
@@ -4254,7 +4236,7 @@ body.sunlit #notification-player .progress {
   height: 1.25em;
 }
 body.sunlit #footer {
-  padding: 1px 5px 1px 90px;
+  padding: 1px 5px 1px 85px;
   display: flex;
   align-items: flex-end;
   height: 100%;

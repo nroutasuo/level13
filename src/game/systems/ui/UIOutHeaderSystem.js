@@ -292,7 +292,7 @@ define([
 
 				this.elements.valReputation.text(UIConstants.roundValue(reputationComponent.value, true, true) + " / " + UIConstants.roundValue(reputationComponent.targetValue, true, true));
 				this.updateChangeIndicator(this.elements.changeIndicatorReputation, reputationComponent.accumulation, true);
-				let reputationCalloutContent = "";
+				let reputationCalloutContent = "Attracts more people to the camp.<br/";
 				for (let i in reputationComponent.targetValueSources) {
 					let source = reputationComponent.targetValueSources[i];
 					if (source.amount !== 0) {
@@ -308,7 +308,7 @@ define([
 				populationCalloutContent += "current: " + reqReputationCurrent + "<br/>";
 				populationCalloutContent += "next: " + reqReputationNext;
 				UIConstants.updateCalloutContent("#header-camp-population", populationCalloutContent);
-				GameGlobals.uiFunctions.toggle("#header-camp-population", true);
+				GameGlobals.uiFunctions.toggle("#header-camp-population", false); // TODO if this is ok then remove the whole element
 				GameGlobals.uiFunctions.toggle("#header-camp-reputation", true);
 			} else {
 				GameGlobals.uiFunctions.toggle("#header-camp-population", false);
@@ -317,7 +317,8 @@ define([
 
 			var itemsComponent = this.playerStatsNodes.head.items;
 			
-			let showScavangeAbility = GameGlobals.gameState.unlockedFeatures.scavenge && !isInCamp;
+			let isOnLevelPage = GameGlobals.gameState.uiStatus.currentTab == GameGlobals.uiFunctions.elementIDs.tabs.out;
+			let showScavangeAbility = GameGlobals.gameState.unlockedFeatures.scavenge && !isInCamp && isOnLevelPage;
 			this.updateScavengeAbility(showScavangeAbility, isInCamp, maxVision, shownVision);
 			this.updateScavengeBonus(showScavangeAbility);
 		},
@@ -465,11 +466,10 @@ define([
 		updateItems: function (forced, inCamp) {
 			if (inCamp) return;
 
-			var itemsComponent = this.playerStatsNodes.head.items;
-
-			var items = itemsComponent.getUnique(inCamp);
+			let itemsComponent = this.playerStatsNodes.head.items;
+			let items = itemsComponent.getUnique(inCamp);
+			
 			if (forced || items.length !== this.lastItemsUpdateItemCount) {
-				$("ul#list-header-equipment").empty();
 				$("ul#list-header-items").empty();
 				for (let i = 0; i < items.length; i++) {
 					var item = items[i];
@@ -484,8 +484,6 @@ define([
 						case ItemConstants.itemTypes.shoes:
 						case ItemConstants.itemTypes.light:
 						case ItemConstants.itemTypes.weapon:
-							if (item.equipped)
-								$("ul#list-header-equipment").append("<li>" + UIConstants.getItemDiv(itemsComponent, item, null, UIConstants.getItemCallout(item, true), true) + "</li>");
 							break;
 
 						case ItemConstants.itemTypes.exploration:
@@ -495,7 +493,6 @@ define([
 				}
 
 				GameGlobals.uiFunctions.generateCallouts("ul#list-header-items");
-				GameGlobals.uiFunctions.generateCallouts("ul#list-header-equipment");
 
 				this.lastItemsUpdateItemCount = items.length;
 			}
@@ -817,10 +814,10 @@ define([
 		updateNotifications: function (inCamp) {
 			let busyComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
 			let isBusy = this.playerStatsNodes.head.entity.has(PlayerActionComponent) && busyComponent.isBusy();
-				if (isBusy) {
-					$("#notification-player-bar").data("progress-percent", busyComponent.getBusyPercentage());
-					$("#notification-player-bar .progress-label").text(busyComponent.getBusyDescription());
-				}
+			if (isBusy) {
+				$("#notification-player-bar").data("progress-percent", busyComponent.getBusyPercentage());
+				$("#notification-player-bar .progress-label").text(busyComponent.getBusyDescription());
+			}
 			GameGlobals.uiFunctions.toggle("#notification-player", isBusy);
 		},
 
@@ -854,7 +851,6 @@ define([
 			var isInCamp = playerPosition.inCamp;
 			GameGlobals.uiFunctions.slideToggleIf("#main-header-camp", null, isInCamp, 250, 50);
 			GameGlobals.uiFunctions.slideToggleIf("#main-header-bag", null, !isInCamp, 250, 50);
-			GameGlobals.uiFunctions.slideToggleIf("#main-header-equipment", null, !isInCamp, 250, 50);
 			GameGlobals.uiFunctions.slideToggleIf("#main-header-items", null, !isInCamp, 250, 50);
 			GameGlobals.gameState.uiStatus.isInCamp = isInCamp;
 		},
@@ -909,9 +905,13 @@ define([
 			// update elements affected by sunligt
 			// TODO move to some place more generic
 			for (let i = 0; i < this.themedIcons.length; i++) {
-				var icon = this.themedIcons[i];
-				var path = sunlit ? icon.pathSunlit : icon.pathDark;
-				icon.$elem.attr("src", path);
+				let icon = this.themedIcons[i];
+				let path = sunlit ? icon.pathSunlit : icon.pathDark;
+				if (path) {
+					icon.$elem.attr("src", path);
+				} else {
+					log.w("no path defined for themed icon " + icon.$elem.attr("id"));
+				}
 			}
 		},
 		
@@ -1058,6 +1058,7 @@ define([
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			this.updateVisionStatus();
 			this.updateHeaderTexts();
+			this.updatePlayerStats();
 		},
 		
 		onPerksChanged: function () {
