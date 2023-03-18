@@ -285,6 +285,12 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			}
 		},
 		
+		isProject: function (improvementName) {
+			let improvementID = ImprovementConstants.getImprovementID(improvementName);
+			let improvementDef = ImprovementConstants.getDef(improvementID);
+			return improvementDef && improvementDef.isProject;
+		},
+		
 		getImprovementActionOrdinalForImprovementLevel: function (improvementLevel) {
 			return improvementLevel - 1;
 		},

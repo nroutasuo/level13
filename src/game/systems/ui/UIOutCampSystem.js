@@ -1,6 +1,7 @@
  define([
 	'ash',
 	'utils/UIState',
+	'utils/UIList',
 	'utils/UIAnimations',
 	'game/GameGlobals',
 	'game/GlobalSignals',
@@ -19,6 +20,7 @@
 	'game/nodes/player/DeityNode',
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/components/player/PerksComponent',
+	'game/components/player/PlayerActionComponent',
 	'game/components/common/CampComponent',
 	'game/components/common/ResourcesComponent',
 	'game/components/sector/OutgoingCaravansComponent',
@@ -30,10 +32,10 @@
 	'game/components/sector/events/RaidComponent',
 	'text/Text'
 ], function (
-	Ash, UIState, UIAnimations, GameGlobals, GlobalSignals,
+	Ash, UIState, UIList, UIAnimations, GameGlobals, GlobalSignals,
 	ImprovementConstants, PlayerActionConstants, UIConstants, UpgradeConstants, OccurrenceConstants, CampConstants, PerkConstants, TextConstants, TribeConstants,
 	PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, DeityNode, TribeUpgradesNode,
-	PerksComponent,
+	PerksComponent, PlayerActionComponent,
 	CampComponent, ResourcesComponent, OutgoingCaravansComponent, ReputationComponent, SectorImprovementsComponent, CampEventTimersComponent,
 	RecruitComponent, TraderComponent, RaidComponent, Text
 ) {
@@ -63,6 +65,11 @@
 		constructor: function () {
 			this.initImprovements();
 			this.initWorkers();
+			this.initElements();
+		},
+		
+		initElements: function () {
+			this.campActionList = UIList.create($("#in-occurrences-building-container"), this.createCampActionListItem, this.updateCampActionListItem, this.isCampActionListItemDataEqual);
 		},
 
 		addToEngine: function (engine) {
@@ -505,16 +512,21 @@
 
 		updateEvents: function (isActive) {
 			isActive = isActive && !GameGlobals.gameState.uiStatus.isBlocked;
-			var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
+			let campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
 			if (!campComponent) return;
-			var eventTimers = this.playerLocationNodes.head.entity.get(CampEventTimersComponent);
-			var caravansComponent = this.playerLocationNodes.head.entity.get(OutgoingCaravansComponent);
+			let eventTimers = this.playerLocationNodes.head.entity.get(CampEventTimersComponent);
+			let caravansComponent = this.playerLocationNodes.head.entity.get(OutgoingCaravansComponent);
 
-			var hasEvents = false;
-			var hasOther = false;
+			let hasEvents = false;
+			let hasOther = false;
 
-			var showEvents = campComponent.population >= 1 || GameGlobals.gameState.numCamps > 1;
+			let showEvents = campComponent.population >= 1 || GameGlobals.gameState.numCamps > 1;
 			GameGlobals.uiFunctions.toggle("#in-occurrences", showEvents);
+			
+			// Camp actions (buildings, projects)
+			let campActions = this.getCampActionData();
+			let numNewEvents = UIList.update(this.campActionList, campActions);
+			if (campActions.length > 0) hasEvents = true;
 
 			// Traders
 			var hasTrader = this.playerLocationNodes.head.entity.has(TraderComponent);
@@ -576,6 +588,26 @@
 			if (hasTrader) this.currentEvents++;
 			if (hasRaid) this.currentEvents++;
 			if (isActive) this.lastShownEvents = this.currentEvents;
+		},
+		
+		getCampActionData: function () {
+			let playerPos = this.playerPosNodes.head.position;
+			let playerActionComponent = this.playerPosNodes.head.entity.get(PlayerActionComponent);
+			let actions = playerActionComponent.getAllActions();
+			let result = [];
+			for (let i = 0; i < actions.length; i++) {
+				let actionVO = actions[i];
+				let action = actionVO.action;
+				if (!actionVO.isBusy && actionVO.level == playerPos.level) {
+					let improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(action);
+					let isImprovement = ImprovementConstants.isProject(improvementName);
+					let percent = playerActionComponent.getActionCompletionPercentage(action);
+					if (percent < 100) {
+						result.push({ action: action, improvementName: improvementName, percent: percent });
+					}
+				}
+			}
+			return result;
 		},
 
 		updateStats: function () {
@@ -774,6 +806,27 @@
 			
 			return scoreB - scoreA;
 		},
+		
+		createCampActionListItem: function () {
+			let li = {};
+			let div = "<div class='progress-wrap progress'><div class='progress-bar progress'></div><span class='progress progress-label'></span></div>";
+			li.$root = $(div);
+			li.$label = li.$root.find("span.progress-label");
+			return li;
+		},
+		
+		isCampActionListItemDataEqual: function (d1, d2) {
+			return d1.action == d2.action;
+		},
+		
+		updateCampActionListItem: function (li, data) {
+			let action = data.action;
+			let displayName = data.improvementName ? "Build " + ImprovementConstants.getImprovementDisplayName(data.improvementName) : action;
+			
+			li.$root.data("progress-percent", data.percent);
+			li.$label.html(displayName);
+		},
+		
 
 		onTabChanged: function () {
 			if (GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.in) {
@@ -821,7 +874,7 @@
 		hasUpgrade: function (upgradeID) {
 			if (!upgradeID) return true;
 			return this.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeID);
-		}
+		},
 
 	});
 

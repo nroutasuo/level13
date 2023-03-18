@@ -12,12 +12,13 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/PlayerActionVO'
 			this.busyStartTime = -1;
 		},
 
-		addAction: function (action, duration, param, deductedCosts, isBusyAction) {
+		addAction: function (action, duration, level, param, deductedCosts, isBusyAction) {
+			let startTime = new Date().getTime();
 			if (!this.isBusy() && isBusyAction) {
-				this.busyStartTime = new Date().getTime();
+				this.busyStartTime = startTime;
 			}
 			let endTimeStamp = new Date().getTime() + duration * 1000;
-			this.endTimeStampToActionDict[endTimeStamp] = new PlayerActionVO(action, param, deductedCosts, isBusyAction);
+			this.endTimeStampToActionDict[endTimeStamp] = new PlayerActionVO(action, level, param, deductedCosts, startTime, isBusyAction);
 			this.endTimeStampList.push(endTimeStamp);
 			this.sortTimeStamps();
 			return endTimeStamp;
@@ -57,6 +58,29 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/PlayerActionVO'
 				lastTimeStamp = this.endTimeStampList[this.endTimeStampList.length - 1];
 			}
 			return lastTimeStamp;
+		},
+		
+		getActionTimestamp: function (action) {
+			let result = -1;
+			for (let i = this.endTimeStampList.length - 1; i >= 0; i--) {
+				let timestampAction = this.endTimeStampToActionDict[this.endTimeStampList[i]];
+				if (timestampAction.action == action) {
+					result = this.endTimeStampList[i];
+					break;
+				}
+			}
+			return result;
+		},
+		
+		getAction: function (action) {
+			let result = null;
+			for (let i = this.endTimeStampList.length - 1; i >= 0; i--) {
+				let timestampAction = this.endTimeStampToActionDict[this.endTimeStampList[i]];
+				if (timestampAction.action == action) {
+					return timestampAction;
+				}
+			}
+			return result;
 		},
 
 		applyExtraTime: function (extraTime) {
@@ -119,6 +143,17 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/PlayerActionVO'
 			if (!this.isBusy()) return 0;
 			var lastTimeStamp = this.getLastTimeStamp(true);
 			return (lastTimeStamp - new Date().getTime()) / 1000;
+		},
+		
+		getActionCompletionPercentage: function (action) {
+			let actionVO = this.getAction(action);
+			if (!actionVO) return 1;
+			let timestamp = this.getActionTimestamp(action);
+			if (!timestamp) return 1;
+			
+			let totalTime = timestamp - actionVO.startTime;
+			let timePassed = new Date().getTime() - actionVO.startTime;
+			return timePassed / totalTime * 100;
 		},
 
 		getSaveKey: function () {

@@ -149,8 +149,9 @@ define(['ash',
 			let baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			let duration = PlayerActionConstants.getDuration(baseId);
 			if (duration > 0) {
+				let playerPos = this.playerPositionNodes.head.position;
 				let isBusy = PlayerActionConstants.isBusyAction(baseId);
-				let endTimeStamp = this.playerStatsNodes.head.entity.get(PlayerActionComponent).addAction(action, duration, param, deductedCosts, isBusy);
+				let endTimeStamp = this.playerStatsNodes.head.entity.get(PlayerActionComponent).addAction(action, duration, playerPos.level, param, deductedCosts, isBusy);
 
 				switch (baseId) {
 					case "send_caravan":
