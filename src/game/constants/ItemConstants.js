@@ -91,13 +91,13 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			defineItemBonusIcon(ItemConstants.itemBonusTypes.fight_def, "icon_stat_fight_defence");
 			defineItemBonusIcon(ItemConstants.itemBonusTypes.fight_speed, "icon_stat_fight_speed");
 			defineItemBonusIcon(ItemConstants.itemBonusTypes.fight_shield, "icon_stat_fight_shield");
-			defineItemBonusIcon(ItemConstants.itemBonusTypes.movement, "icon_stat_cost_movement");
 			defineItemBonusIcon(ItemConstants.itemBonusTypes.scavenge_cost, "icon_stat_cost_scavenge");
 			defineItemBonusIcon(ItemConstants.itemBonusTypes.scout_cost, "icon_stat_cost_scout");
 			defineItemBonusIcon(ItemConstants.itemBonusTypes.res_cold, "icon_stat_resistance_cold");
 			defineItemBonusIcon(ItemConstants.itemBonusTypes.res_radiation, "icon_stat_resistance_radiation");
 			defineItemBonusIcon(ItemConstants.itemBonusTypes.res_poison, "icon_stat_resistance_poison");
 			defineItemBonusIcon(ItemConstants.itemBonusTypes.shade, "icon_stat_shade");
+			defineItemBonusIcon(ItemConstants.itemBonusTypes.movement, "icon_stat_movement_cost");
 		},
 
 		loadData: function (data) {
