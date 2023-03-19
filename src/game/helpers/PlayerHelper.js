@@ -4,27 +4,31 @@ define([
 	'game/GameGlobals',
 	'game/constants/FollowerConstants',
 	'game/constants/ItemConstants',
+	'game/constants/LogConstants',
 	'game/constants/PlayerStatConstants',
 	'game/nodes/NearestCampNode',
 	'game/nodes/PlayerPositionNode',
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/PlayerStatsNode',
-	'game/nodes/player/PlayerResourcesNode'
+	'game/nodes/player/PlayerResourcesNode',
+	'game/components/common/LogMessagesComponent'
 ], function (
 	Ash,
 	ValueCache,
 	GameGlobals,
 	FollowerConstants,
 	ItemConstants,
+	LogConstants,
 	PlayerStatConstants,
 	NearestCampNode,
 	PlayerPositionNode,
 	PlayerLocationNode,
 	PlayerStatsNode,
-	PlayerResourcesNode
+	PlayerResourcesNode,
+	LogMessagesComponent
 ) {
 	
-	var PlayerHelper = Ash.Class.extend({
+	let PlayerHelper = Ash.Class.extend({
 		
 		playerPosNodes: null,
 		playerStatsNodes: null,
@@ -43,6 +47,13 @@ define([
 		isInCamp: function () {
 			if (!this.playerPosNodes.head) return false;
 			return this.playerPosNodes.head.position.inCamp;
+		},
+
+		addLogMessage: function (msg) {
+			if (!msg || msg.length == 0) return;
+			let playerPosition = this.playerPosNodes.head.position;
+			let logComponent = this.playerPosNodes.head.entity.get(LogMessagesComponent);
+			logComponent.addMessage(LogConstants.getUniqueID(), msg);
 		},
 		
 		isReadyForExploration: function () {

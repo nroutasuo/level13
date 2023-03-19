@@ -6,6 +6,7 @@ define([
 	var UIAnimations = {
 		
 		DEFAULT_ANIM_DURATION: 600,
+		LONG_ANIM_DURATION: 1500,
 		
 		debugAnimations: false,
 		animData: {},
@@ -118,9 +119,9 @@ define([
 			$elem.attr("data-value-set", true);
 		},
 		
-		animateIcon: function ($elem) {
+		animateIcon: function ($elem, duration) {
 			let animType = "icon-anim";
-			let duration = this.DEFAULT_ANIM_DURATION;
+			duration = duration || this.DEFAULT_ANIM_DURATION;
 			
 			this.setupAnimationData($elem, animType, false);
 			

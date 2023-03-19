@@ -47,7 +47,8 @@ define([
 	'game/components/sector/LastVisitedCampComponent',
 	'game/components/common/CampComponent',
 	'game/components/tribe/UpgradesComponent',
-	'game/components/level/LevelPassagesComponent'
+	'game/components/level/LevelPassagesComponent',
+	'game/components/level/LevelStatusComponent'
 ], function (
 	Ash,
 	LogConstants,
@@ -97,7 +98,8 @@ define([
 	LastVisitedCampComponent,
 	CampComponent,
 	UpgradesComponent,
-	LevelPassagesComponent
+	LevelPassagesComponent,
+	LevelStatusComponent
 ) {
 	var EntityCreator = Ash.Class.extend({
 
@@ -154,7 +156,8 @@ define([
 				.add(new LevelComponent(pos, levelVO.isCampable, levelVO.isHard, levelVO.notCampableReason, levelVO.populationFactor, levelVO.raidDangerFactor, levelVO.minX, levelVO.maxX, levelVO.minY, levelVO.maxY))
 				.add(new PositionComponent(pos))
 				.add(new LevelPassagesComponent())
-				.add(new SaveComponent(saveKey, [CampComponent, VisitedComponent]));
+				.add(new LevelStatusComponent())
+				.add(new SaveComponent(saveKey, [CampComponent, VisitedComponent,LevelStatusComponent]));
 			this.engine.addEntity(level);
 			return level;
 		},

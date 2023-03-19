@@ -32,6 +32,7 @@ define([
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/improvements/WorkshopComponent',
 	'game/components/level/LevelPassagesComponent',
+	'game/components/level/LevelStatusComponent',
 	'game/vos/LevelProjectVO',
 	'game/vos/ImprovementVO',
 	'game/vos/PositionVO'
@@ -68,6 +69,7 @@ define([
 	SectorImprovementsComponent,
 	WorkshopComponent,
 	LevelPassagesComponent,
+	LevelStatusComponent,
 	LevelProjectVO,
 	ImprovementVO,
 	PositionVO
@@ -116,6 +118,25 @@ define([
 				if (levelPosition.level === level) return node.entity;
 			}
 			return null;
+		},
+		
+		isLevelTypeRevealed: function (level) {
+			let entity = this.getLevelEntityForPosition(level);
+			let levelStatus = entity.get(LevelStatusComponent);
+			return levelStatus.isLevelTypeRevealed || false;
+		},
+		
+		getLevelMaxHazard: function (level, hazardType) {
+			let result = 0;
+			
+			this.saveSectorsForLevel(level);
+			
+			for (let i = 0; i < this.sectorEntitiesByLevel[level].length; i++) {
+				let sectorEntity = this.sectorEntitiesByLevel[level][i];
+				let featuresComponent = sectorEntity.get(SectorFeaturesComponent);
+				result = Math.max(result, featuresComponent.hazards[hazardType] || 0);
+			}
+			return result;
 		},
 
 		getSectorByPosition: function (level, sectorX, sectorY) {
@@ -552,22 +573,21 @@ define([
 			levelStats.countRevealedSectors = 0;
 			levelStats.countVisitedSectors = 0;
 			levelStats.countKnownIngredientSectors = 0;
-
-			var sectorPosition;
-			var statusComponent;
-			var sectorStatus;
+			levelStats.hasCamp = false;
+			
 			for (var node = this.sectorNodes.head; node; node = node.next) {
-				sectorPosition = node.entity.get(PositionComponent);
-				sectorStatus = SectorConstants.getSectorStatus(node.entity);
+				let sectorPosition = node.entity.get(PositionComponent);
+				let sectorStatus = SectorConstants.getSectorStatus(node.entity);
 				if (sectorPosition.level !== level) continue;
 				levelStats.totalSectors++;
 
-				statusComponent = node.entity.get(SectorStatusComponent);
+				let statusComponent = node.entity.get(SectorStatusComponent);
 				if (sectorStatus === SectorConstants.MAP_SECTOR_STATUS_VISITED_CLEARED) levelStats.countClearedSectors++;
 				if (statusComponent.scouted) levelStats.countScoutedSectors++;
 				if (node.entity.has(VisitedComponent)) levelStats.countVisitedSectors++;
 				if (node.entity.has(RevealedComponent) || node.entity.has(VisitedComponent)) levelStats.countRevealedSectors++;
 				if (GameGlobals.sectorHelper.hasSectorVisibleIngredients(node.entity)) levelStats.countKnownIngredientSectors++;
+				if (node.entity.has(CampComponent)) levelStats.hasCamp = true;
 			}
 
 			levelStats.percentClearedSectors = levelStats.countClearedSectors == levelStats.totalSectors ? 1 : levelStats.countClearedSectors / levelStats.totalSectors;

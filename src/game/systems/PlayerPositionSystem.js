@@ -245,26 +245,8 @@ define([
 				msg += this.getSurfaceLevelDescription();
 			} else if (levelPos == groundLevel) {
 				msg += this.getGroundLevelDescription();
-			} else if (!levelComponent.isCampable) {
-				switch (levelComponent.notCampableReason) {
-					case LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION:
-						msg += "You notice several graffiti warning about radiation.";
-						break;
-					case LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION:
-						msg += "There are signs of significant pollution.";
-						break;
-					default:
-						msg += "This area seems eerily devoid of any signs of recent human activity.";
-						break;
-				}
 			} else {
-				if (levelComponent.populationFactor < 1) {
-					msg += " It's hard to say if there is anyone living here.";
-				} else if (levelComponent.populationFactor > 1) {
-					msg += "There are some signs of recent scavenging.";
-				} else {
-					msg += "The streets are indifferent to your presence.";
-				}
+				msg += "The streets are indifferent to your presence.";
 			}
 			
 			return msg;

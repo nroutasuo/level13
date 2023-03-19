@@ -121,6 +121,7 @@ define([
 			GlobalSignals.changelogLoadedSignal.add(function () { sys.updateGameVersion(); });
 			GlobalSignals.add(this, GlobalSignals.perksChangedSignal, this.onPerksChanged);
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onGameShown);
+			GlobalSignals.add(this, GlobalSignals.levelTypeRevealedSignal, this.onLevelTypeRevealed);
 
 			this.generateStatsCallouts();
 			this.updateGameVersion();
@@ -823,19 +824,14 @@ define([
 
 		updateLocation: function () {
 			if (!this.currentLocationNodes.head) return;
-			var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
-			var inCamp = playerPosition.inCamp;
+			let playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
+			let inCamp = playerPosition.inCamp;
 
 			this.elements.body.toggleClass("location-inside", inCamp);
 			this.elements.body.toggleClass("location-outside", !inCamp);
 
-			var featuresComponent = this.currentLocationNodes.head.entity.get(SectorFeaturesComponent);
-			var sunlit = featuresComponent.sunlit;
-			var icon = this.getLevelIcon(inCamp, this.currentLocationNodes.head.entity);
-			if ($("#level-icon").attr("src") !== icon.src)
-				$("#level-icon").attr("src", icon.src);
-			$("#level-icon").attr("alt", icon.desc);
-			$("#level-icon").attr("title", icon.desc);
+			let featuresComponent = this.currentLocationNodes.head.entity.get(SectorFeaturesComponent);
+			let sunlit = featuresComponent.sunlit;
 
 			let hasMap = GameGlobals.playerHelper.hasItem("equipment_map");
 			let positionText = "??";
@@ -844,6 +840,23 @@ define([
 				positionText = this.currentLocationNodes.head.entity.get(PositionComponent).getPosition().getInGameFormat(showLevel, true);
 			}
 			$("#out-position-indicator").text("Position: " + positionText);
+			
+			this.updateLevelIcon();
+		},
+		
+		updateLevelIcon: function (animate) {
+			let playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
+			let inCamp = playerPosition.inCamp;
+			
+			let icon = this.getLevelIcon(inCamp, this.currentLocationNodes.head.entity);
+			if ($("#level-icon").attr("src") !== icon.src)
+				$("#level-icon").attr("src", icon.src);
+			$("#level-icon").attr("alt", icon.desc);
+			$("#level-icon").attr("title", icon.desc);
+			
+			if (animate) {
+				UIAnimations.animateIcon($("#level-icon"), UIAnimations.LONG_ANIM_DURATION);
+			}
 		},
 
 		updateTabVisibility: function () {
@@ -922,17 +935,21 @@ define([
 		
 		getLevelIcon: function (inCamp, sector) {
 			let result = { src: "", desc: "" };
-			var position = sector.get(PositionComponent);
-			var featuresComponent = sector.get(SectorFeaturesComponent);
-			var levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(position.level);
-			var levelComponent = levelEntity.get(LevelComponent);
-			var sunlit = featuresComponent.sunlit;
-			var path = "img/";
-			var base = "";
-			var desc = "";
+			let position = sector.get(PositionComponent);
+			
+			let levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(position.level);
+			let levelComponent = levelEntity.get(LevelComponent);
+			
+			let path = "img/";
+			let base = "";
+			let desc = "";
+			
 			if (inCamp) {
 				base = levelComponent.populationFactor < 1 ? "ui-camp-outpost" : "ui-camp-default";
 				desc = levelComponent.populationFactor < 1 ? "in camp | outpost" : "in camp | regular";
+			} else if (!GameGlobals.levelHelper.isLevelTypeRevealed(position.level)) {
+				base = "ui-level-unknown";
+				desc = "outside | unknown level";
 			} else {
 				var surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
 				var groundLevel = GameGlobals.gameState.getGroundLevel();
@@ -962,7 +979,10 @@ define([
 					desc = "outside | regular level";
 				}
 			}
-			var suffix = (sunlit ? "" : "-dark");
+			
+			let featuresComponent = sector.get(SectorFeaturesComponent);
+			let sunlit = featuresComponent.sunlit;
+			let suffix = (sunlit ? "" : "-dark");
 			result.src = path + base + suffix + ".png";
 			result.desc = desc;
 			return result;
@@ -1063,6 +1083,13 @@ define([
 		
 		onPerksChanged: function () {
 			this.refreshPerks();
+		},
+		
+		onLevelTypeRevealed: function (level) {
+			let playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
+			if (playerPosition.level == level) {
+				this.updateLevelIcon(true);
+			}
 		},
 		
 		onGameShown: function () {

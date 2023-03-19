@@ -38,7 +38,7 @@ define([
 	'game/systems/PlayerActionSystem',
 	'game/systems/SectorStatusSystem',
 	'game/systems/TutorialSystem',
-	'game/systems/LevelPassagesSystem',
+	'game/systems/LevelStatusSystem',
 	'game/systems/CollectorSystem',
 	'game/systems/FightSystem',
 	'game/systems/FollowerSystem',
@@ -101,7 +101,7 @@ define([
 	PlayerActionSystem,
 	SectorStatusSystem,
 	TutorialSystem,
-	LevelPassagesSystem,
+	LevelStatusSystem,
 	CollectorSystem,
 	FightSystem,
 	FollowerSystem,
@@ -173,7 +173,7 @@ define([
 			log.i("START " + GameConstants.STARTTimeNow() + "\t initializing systems");
 
 			this.engine.addSystem(new SaveSystem(), SystemPriorities.preUpdate);
-			this.engine.addSystem(new LevelPassagesSystem(), SystemPriorities.preupdate);
+			this.engine.addSystem(new LevelStatusSystem(), SystemPriorities.preupdate);
 			this.engine.addSystem(new PlayerPositionSystem(), SystemPriorities.preupdate);
 
 			this.engine.addSystem(new GlobalResourcesResetSystem(), SystemPriorities.update);
