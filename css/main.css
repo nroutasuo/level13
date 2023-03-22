@@ -2414,6 +2414,7 @@ body.dark .loading-spinner {
   position: relative;
   top: 50%;
   left: 0;
+  user-select: none;
 }
 body.dark .loading-spinner .loading-dot {
   background: #ccc;
@@ -2424,6 +2425,7 @@ body.dark .loading-spinner .loading-dot {
   display: inline-block;
   -webkit-animation: sk-bouncedelay 1.3s infinite ease-in-out both;
   animation: sk-bouncedelay 1.3s infinite ease-in-out both;
+  user-select: none;
 }
 body.dark .loading-spinner .loading-dot1 {
   -webkit-animation-delay: -0.32s;
@@ -4604,6 +4606,7 @@ body.sunlit .loading-spinner {
   position: relative;
   top: 50%;
   left: 0;
+  user-select: none;
 }
 body.sunlit .loading-spinner .loading-dot {
   background: #ccc;
@@ -4614,6 +4617,7 @@ body.sunlit .loading-spinner .loading-dot {
   display: inline-block;
   -webkit-animation: sk-bouncedelay 1.3s infinite ease-in-out both;
   animation: sk-bouncedelay 1.3s infinite ease-in-out both;
+  user-select: none;
 }
 body.sunlit .loading-spinner .loading-dot1 {
   -webkit-animation-delay: -0.32s;
