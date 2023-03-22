@@ -843,7 +843,7 @@ define([
 					$("#out-distance-indicator").text("Distance to camp: " + pathToCampLen);
 				} else {
 					let pathToPassage = GameGlobals.playerHelper.getPathToPassage();
-					let pathToPassageLen = pathToPassage ? pathToPassageLen.length : "?";
+					let pathToPassageLen = pathToPassage ? pathToPassage.length : "?";
 					$("#out-distance-indicator").text("Distance to passage: " + pathToPassageLen);
 				}
 			}
