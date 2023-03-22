@@ -150,6 +150,12 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			return parts[parts.length - 1];
 		},
 		
+		getItemDescription: function (item) {
+			let result = item.description;
+			if (item.id.indexOf("consumable_weapon") >= 0) result += " (Only one per fight.)";
+			return result;
+		},
+		
 		getItemBonusIcons: function (itemBonusType) {
 			return this.itemBonusTypeIcons[itemBonusType] || null;
 		},

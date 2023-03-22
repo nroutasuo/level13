@@ -105,7 +105,7 @@ define(['ash',
 			var itemCalloutContent = "<b>" + item.name + "</b><br/>Type: " + ItemConstants.getItemTypeDisplayName(item.type, false) + " " + detail;
 			itemCalloutContent += "</br>Weight: " + weight;
 			if (item.broken) itemCalloutContent += "<br><span class='warning'>Broken</span>";
-			itemCalloutContent += "</br>" + item.description;
+			itemCalloutContent += "</br>" + ItemConstants.getItemDescription(item);
 			if (smallCallout) itemCalloutContent = item.name + (detail.length > 0 ? " " + detail : "");
 			
 			var makeButton = function (action, name) {
