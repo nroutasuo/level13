@@ -792,9 +792,9 @@ define(['ash',
 
 		getBagCapacityDisplayValue: function (bagComponent) {
 			if (bagComponent.bonusCapacity > 0) {
-				return bagComponent.baseCapacity + " +" + bagComponent.bonusCapacity;
+				return bagComponent.totalCapacity + " +" + bagComponent.bonusCapacity;
 			} else {
-				return bagComponent.baseCapacity;
+				return bagComponent.totalCapacity;
 			}
 		},
 
