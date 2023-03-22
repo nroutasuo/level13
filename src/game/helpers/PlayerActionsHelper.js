@@ -88,18 +88,18 @@ define([
 		},
 
 		deductCosts: function (action) {
-			var costs = this.getCosts(action);
-			var result = {};
+			let costs = this.getCosts(action);
+			let result = {};
 			
 			if (!costs) return result;
 
-			var currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
-			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-			var inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
+			let currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
+			let itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+			let inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
 
-			var costNameParts;
-			var costAmount;
-			for (var costName in costs) {
+			let costNameParts;
+			let costAmount;
+			for (let costName in costs) {
 				costNameParts = costName.split("_");
 				costAmount = costs[costName] || 0;
 				if (costName === "stamina") {
@@ -140,6 +140,8 @@ define([
 					log.w("unknown cost: " + costName + ", action: " + action);
 				}
 			}
+			
+			GlobalSignals.inventoryChangedSignal.dispatch();
 			
 			return result;
 		},
