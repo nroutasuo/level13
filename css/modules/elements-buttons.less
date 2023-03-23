@@ -18,6 +18,11 @@ button {
 button:hover {
 	color: @color-text-highlight !important;
 	border-color: @color-border-button-highlight;
+	background-color: @color-bg-clickable-button;
+}
+
+button.btn-disabled:hover {
+	background-color: @color-bg-button !important;
 }
 
 button:active {

@@ -157,12 +157,13 @@ ul.tabs li.selected {
 	width: auto;
 }
 
-ul.tabs li.selected {
+ul.tabs li.selected, ul.tabs li.selected:hover {
 	background: @color-bg-box-1;
 }
 
 ul.tabs li:hover {
 	text-decoration: underline;
+	background: @color-bg-clickable-button;
 }
 
 ul.tabs li.selected {
@@ -379,13 +380,17 @@ div.popup-overlay-meta {
 }
 
 .collapsible-header {
-	background: @color-bg-element-1;
+	background-color: @color-bg-element-1;
 	cursor: pointer;
 	margin: 0px;
 	padding: 5px 30px 5px 10px;
 	background-image: @img-arrow-circle-up;
 	background-repeat: no-repeat;
 	background-position: right 8px center;
+}
+
+.collapsible-header:hover {
+	background-color: @color-bg-clickable-element;
 }
 
 .collapsible-header.collapsible-collapsed {

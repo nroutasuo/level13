@@ -748,6 +748,10 @@ body.dark button {
 body.dark button:hover {
   color: #fff !important;
   border-color: #777;
+  background-color: #2f322f;
+}
+body.dark button.btn-disabled:hover {
+  background-color: #202220 !important;
 }
 body.dark button:active {
   position: relative;
@@ -1057,11 +1061,13 @@ body.dark ul.tabs li.selected {
   z-index: 2;
   width: auto;
 }
-body.dark ul.tabs li.selected {
+body.dark ul.tabs li.selected,
+body.dark ul.tabs li.selected:hover {
   background: #282a28;
 }
 body.dark ul.tabs li:hover {
   text-decoration: underline;
+  background: #2f322f;
 }
 body.dark ul.tabs li.selected {
   border-color: #3a3a3a;
@@ -1232,13 +1238,16 @@ body.dark .collapsible-container {
   border: 1px solid #3a3a3a;
 }
 body.dark .collapsible-header {
-  background: #2f322f;
+  background-color: #2f322f;
   cursor: pointer;
   margin: 0px;
   padding: 5px 30px 5px 10px;
   background-image: url('../img/open-iconic/arrow-circle-top-2x-dark.png');
   background-repeat: no-repeat;
   background-position: right 8px center;
+}
+body.dark .collapsible-header:hover {
+  background-color: #444;
 }
 body.dark .collapsible-header.collapsible-collapsed {
   background-image: url('../img/open-iconic/arrow-circle-bottom-2x-dark.png');
@@ -1761,6 +1770,9 @@ body.dark textarea {
   color: #fdfdfd;
   border: 1px solid #3a3a3a;
 }
+body.dark select:hover {
+  border-color: #888;
+}
 body.dark input[type=range] {
   background: inherit;
   border: none;
@@ -1860,6 +1872,15 @@ body.dark .checkbox-label {
 body.dark select {
   margin: 0px 5px;
   padding: 1px 3px;
+  min-width: 5em;
+}
+body.dark .select-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+body.dark .select-container .label {
+  flex-flow: 1;
 }
 body.dark input.amount {
   width: 30pt;
@@ -2940,6 +2961,10 @@ body.sunlit button {
 body.sunlit button:hover {
   color: #000 !important;
   border-color: #4a4a4a;
+  background-color: #e6e6e6;
+}
+body.sunlit button.btn-disabled:hover {
+  background-color: #fbfbfb !important;
 }
 body.sunlit button:active {
   position: relative;
@@ -3249,11 +3274,13 @@ body.sunlit ul.tabs li.selected {
   z-index: 2;
   width: auto;
 }
-body.sunlit ul.tabs li.selected {
+body.sunlit ul.tabs li.selected,
+body.sunlit ul.tabs li.selected:hover {
   background: #fff;
 }
 body.sunlit ul.tabs li:hover {
   text-decoration: underline;
+  background: #e6e6e6;
 }
 body.sunlit ul.tabs li.selected {
   border-color: #aaa;
@@ -3424,13 +3451,16 @@ body.sunlit .collapsible-container {
   border: 1px solid #aaa;
 }
 body.sunlit .collapsible-header {
-  background: #e6e6e6;
+  background-color: #e6e6e6;
   cursor: pointer;
   margin: 0px;
   padding: 5px 30px 5px 10px;
   background-image: url('../img/open-iconic/arrow-circle-top-2x.png');
   background-repeat: no-repeat;
   background-position: right 8px center;
+}
+body.sunlit .collapsible-header:hover {
+  background-color: #ddd;
 }
 body.sunlit .collapsible-header.collapsible-collapsed {
   background-image: url('../img/open-iconic/arrow-circle-bottom-2x.png');
@@ -3953,6 +3983,9 @@ body.sunlit textarea {
   color: #202220;
   border: 1px solid #aaa;
 }
+body.sunlit select:hover {
+  border-color: #888;
+}
 body.sunlit input[type=range] {
   background: inherit;
   border: none;
@@ -4052,6 +4085,15 @@ body.sunlit .checkbox-label {
 body.sunlit select {
   margin: 0px 5px;
   padding: 1px 3px;
+  min-width: 5em;
+}
+body.sunlit .select-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+body.sunlit .select-container .label {
+  flex-flow: 1;
 }
 body.sunlit input.amount {
   width: 30pt;

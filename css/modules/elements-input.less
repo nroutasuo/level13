@@ -8,6 +8,10 @@ input, select, textarea {
 	border: 1px solid @color-border-box-1;
 }
 
+select:hover {
+	border-color: @color-border-highlight;
+}
+
 // RANGE
 
 @size-input-range-thumb: 15px;
@@ -129,6 +133,17 @@ input[type=range]:focus::-ms-fill-upper {
 select {
 	margin: 0px 5px;
 	padding: 1px 3px;
+	min-width: 5em;
+}
+
+.select-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.select-container .label {
+	flex-flow: 1;
 }
 
 // AMOUNT
