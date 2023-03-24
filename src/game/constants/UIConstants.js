@@ -725,10 +725,10 @@ define(['ash',
 
 		getUnlockedFeatureDisplayName: function (featureID) {
 			switch (featureID) {
-				case this.UNLOCKABLE_FEATURE_MAP_MODES: return "map modes";
-				case this.UNLOCKABLE_FEATURE_WORKER_AUTO_ASSIGNMENT: return "worker auto-assignment";
+				case UIConstants.UNLOCKABLE_FEATURE_MAP_MODES: return "map modes";
+				case UIConstants.UNLOCKABLE_FEATURE_WORKER_AUTO_ASSIGNMENT: return "worker auto-assignment";
 			}
-			return ui;
+			return featureID;
 		},
 
 		roundValue: function (value, showDecimalsWhenSmall, showDecimalsAlways, decimalDivisor) {

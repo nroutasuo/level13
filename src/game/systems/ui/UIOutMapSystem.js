@@ -456,11 +456,13 @@ define([
 			let levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
 			let surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
 			let groundLevel = GameGlobals.gameState.getGroundLevel();
+			let isTypeRevealed = GameGlobals.levelHelper.isLevelTypeRevealed(level);
+			
 			if (level == surfaceLevel) {
 				levelTypeText = "This level is on the surface of the City. "
 			} else if (level == groundLevel) {
 				levelTypeText = "This level is on the Ground. ";
-			} else if (!levelComponent.isCampable) {
+			} else if (isTypeRevealed && !levelComponent.isCampable) {
 				switch (levelComponent.notCampableReason) {
 					case LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION:
 					case LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION:
@@ -471,8 +473,6 @@ define([
 						break;
 				}
 			} else {
-				base = "ui-level-default";
-				desc = "outside | regular level";
 			}
 			
 			let levelPronoun = levelTypeText.length > 0 ? "It" : "This level";
