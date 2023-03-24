@@ -5,6 +5,7 @@ define(['ash', 'game/constants/OccurrenceConstants', 'game/constants/UIConstants
 		milestones: [
 			{
 				name: "lone camp",
+				description: "A shelter for a few rugged outcasts with few belongings",
 				maxRumours: 100,
 				maxEvidence: 300,
 				maxFavour: 0,
@@ -12,6 +13,7 @@ define(['ash', 'game/constants/OccurrenceConstants', 'game/constants/UIConstants
 			},
 			{
 				name: "small settlement",
+				description: "A safe place that several people call home and is starting to accumualate some resources",
 				maxRumours: 500,
 				maxEvidence: 400,
 				maxFavour: 0,
@@ -20,6 +22,7 @@ define(['ash', 'game/constants/OccurrenceConstants', 'game/constants/UIConstants
 			},
 			{
 				name: "multi-level collective",
+				description: "The start of something that spans multiple levels",
 				maxRumours: 1000,
 				maxEvidence: 500,
 				maxFavour: 0,
@@ -27,6 +30,7 @@ define(['ash', 'game/constants/OccurrenceConstants', 'game/constants/UIConstants
 			},
 			{
 				name: "sanguine tribe",
+				description: "Enough people to call a it tribe",
 				maxRumours: 3000,
 				maxEvidence: 600,
 				maxFavour: 100,
@@ -35,6 +39,7 @@ define(['ash', 'game/constants/OccurrenceConstants', 'game/constants/UIConstants
 			},
 			{
 				name: "city within the City",
+				description: "An organized society with specialized labour and reliable means of food production",
 				maxRumours: 5000,
 				maxEvidence: 800,
 				maxFavour: 400,
@@ -42,6 +47,7 @@ define(['ash', 'game/constants/OccurrenceConstants', 'game/constants/UIConstants
 			},
 			{
 				name: "complex society",
+				description: "A tribe that spans multiple levels",
 				maxRumours: 10000,
 				maxEvidence: 1000,
 				maxFavour: 500,
@@ -49,6 +55,7 @@ define(['ash', 'game/constants/OccurrenceConstants', 'game/constants/UIConstants
 			},
 			{
 				name: "dominant state",
+				description: "A society that has shown it can not only survive, but progress",
 				maxRumours: 15000,
 				maxEvidence: 3000,
 				maxFavour: 1000,
@@ -56,6 +63,7 @@ define(['ash', 'game/constants/OccurrenceConstants', 'game/constants/UIConstants
 			},
 			{
 				name: "civilization rebuilt",
+				description: "A new civilization born from the ruins of the old one",
 				maxRumours: 20000,
 				maxEvidence: 5000,
 				maxFavour: 2000,

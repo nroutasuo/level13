@@ -6,6 +6,7 @@ define([
 	'game/constants/CampConstants',
 	'game/constants/ImprovementConstants',
 	'game/constants/OccurrenceConstants',
+	'game/constants/TextConstants',
 	'game/constants/WorldConstants',
 	'game/nodes/sector/CampNode',
 	'game/nodes/PlayerPositionNode',
@@ -22,7 +23,7 @@ define([
 	'game/components/sector/events/RaidComponent',
 	'game/components/sector/OutgoingCaravansComponent'
 ], function (
-	Ash, GameGlobals, GlobalSignals, UIConstants, CampConstants, ImprovementConstants, OccurrenceConstants, WorldConstants,
+	Ash, GameGlobals, GlobalSignals, UIConstants, CampConstants, ImprovementConstants, OccurrenceConstants, TextConstants, WorldConstants,
 	CampNode, PlayerPositionNode, PlayerStatsNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent, ResourceAccumulationComponent, DeityComponent, LevelComponent, SectorImprovementsComponent, RecruitComponent, TraderComponent, RaidComponent, OutgoingCaravansComponent
 ) {
@@ -90,7 +91,9 @@ define([
 			
 			// texts
 			$("#milestone-current-name").text(currentMilestone.name + " (" + currentMilestone.index + ")");
+			$("#milestone-current-description").text(TextConstants.sentencify(currentMilestone.description));
 			$("#milestone-next-name").text(nextMilestone.name + " (" + nextMilestone.index + ")");
+			GameGlobals.uiFunctions.toggle($("#milestone-next-description"), false);
 			
 			// unlocks
 			$("#milestone-next-unlocks").empty();
