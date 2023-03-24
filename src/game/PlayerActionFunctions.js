@@ -283,9 +283,10 @@ define(['ash',
 				case "create_blueprint": this.createBlueprint(param); break;
 				case "claim_milestone": this.claimMilestone(param); break;
 				case "launch": this.launch(param); break;
-				// Mapped directly in UIFunctions
+				// Mapped directly in UIFunctions or elsewheere
 				case "leave_camp": break;
 				case "fight": break;
+				case "auto_equip": break;
 				// Movement
 				case "move_level_up": this.moveTo(PositionConstants.DIRECTION_UP); break;
 				case "move_level_down": this.moveTo(PositionConstants.DIRECTION_DOWN); break;

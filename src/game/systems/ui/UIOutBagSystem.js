@@ -49,10 +49,12 @@ define([
 		
 		initElements: function () {
 			this.initItemSlots();
-			this.initBagActions();
 			this.initCraftingButtons();
 			this.initUseItemButtons();
 			this.initRepairItemButtons();
+			
+			$("#btn-self-manage-inventory").click($.proxy(this.showInventoryManageemntPopup, this));
+			$("#btn-bag-autoequip").click($.proxy(this.autoEquip, this));
 		},
 				
 		initItemSlots: function () {
@@ -71,10 +73,6 @@ define([
 					sys.highlightItemType(null);
 				});
 			});
-		},
-		
-		initBagActions: function() {
-			$("#btn-self-manage-inventory").click($.proxy(this.showInventoryManageemntPopup, this));
 		},
 
 		initCraftingButtons: function () {
@@ -192,7 +190,8 @@ define([
 				GameGlobals.uiFunctions.toggleCollapsibleContainer("#" + containerID + " .collapsible-header", !firstFound && numVisible > 0);
 				if (numVisible > 0) firstFound = true;
 			}
-
+			
+			this.updateAutoEquip();
 			this.updateItems();
 			this.updateBagActions();
 			this.updateUseItems();
@@ -483,8 +482,10 @@ define([
 
 			GameGlobals.uiFunctions.toggle($("#bag-items-empty"), this.inventoryItemsBag.length === 0);
 
-			GameGlobals.uiFunctions.generateCallouts("#container-tab-two-bag .three-quarters");
-			GameGlobals.uiFunctions.generateButtonOverlays("#container-tab-two-bag .three-quarters");
+			GameGlobals.uiFunctions.generateCallouts("#bag-items");
+			GameGlobals.uiFunctions.generateCallouts("#container-equipment-slots");
+			GameGlobals.uiFunctions.generateButtonOverlays("#bag-items");
+			GameGlobals.uiFunctions.generateButtonOverlays("#container-equipment-slots");
 			GameGlobals.uiFunctions.registerActionButtonListeners("#bag-items");
 			GameGlobals.uiFunctions.registerActionButtonListeners("#container-equipment-slots");
 		},
@@ -521,6 +522,63 @@ define([
 			$(slot).toggleClass("item-slot-equipped", itemVO !== null);
 		},
 		
+		updateAutoEquip: function () {
+			$("#select-bag-autoequip-type").empty();
+			
+			let bonusTypes = [
+				ItemConstants.itemBonusTypes.res_cold,
+				ItemConstants.itemBonusTypes.res_radiation,
+				ItemConstants.itemBonusTypes.res_poison,
+				ItemConstants.itemBonusTypes.fight_def,
+			];
+			
+			let items = this.getCarriedItems();
+			
+			// cache available options
+			let itemsBySlot = {}; // itemType => []
+			for (let i = 0; i < items.length; i++) {
+				let item = items[i];
+				if (!item.equippable) continue;
+				if (!itemsBySlot[item.type]) itemsBySlot[item.type] = [];
+				itemsBySlot[item.type].push(item);
+			}
+			
+			let hasBonus = function (itemBonusType) {
+				for (let i = 0; i < items.length; i++) {
+					if (!items[i].equippable) continue;
+					if (items[i].getCurrentBonus(itemBonusType) > 0) return true;
+				}
+				return false;
+			}
+			
+			let hasAlternativesForBonus = function (itemBonusType) {
+				for (let itemType in itemsBySlot) {
+					if (itemsBySlot[itemType].length < 2) continue;
+					for (let i = 0; i < itemsBySlot[itemType].length; i++) {
+						if (itemsBySlot[itemType][i].getCurrentBonus(itemBonusType)) {
+							// has at least 2 items for slot and at least one of them has matching bonus
+							return true;
+						}
+					}
+				}
+				return false;
+			}
+			
+			let numShown = 0;
+			
+			for (let i = 0; i < bonusTypes.length; i++) {
+				let bonusType = bonusTypes[i];
+				if (!hasBonus(bonusType)) continue;
+				if (!hasAlternativesForBonus(bonusType)) continue;
+				
+				let displayName = UIConstants.getItemBonusName(bonusType);
+				$("#select-bag-autoequip-type").append("<option value='" + bonusType +  "'>" + displayName + "</option>");
+				numShown++;
+			}
+			
+			GameGlobals.uiFunctions.toggle($("#bag-autoequip-container"), numShown > 0);
+		},
+		
 		highlightItemType: function (itemType) {
 			$("#bag-items .item").each(function () {
 				var id = $(this).attr("data-itemid");
@@ -545,6 +603,16 @@ define([
 		showInventoryManageemntPopup: function () {
 			GameGlobals.playerActionFunctions.startInventoryManagement();
 		},
+		
+		autoEquip: function () {
+			let itemBonusType = $("#select-bag-autoequip-type").val();
+			if (!itemBonusType) return;
+			log.i("auto equip best " + itemBonusType);
+			let inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
+			this.itemNodes.head.items.autoEquipByBonusType(itemBonusType, inCamp);
+			
+			GlobalSignals.equipmentChangedSignal.dispatch();
+		},
 
 		onObsoleteToggled: function () {
 			this.updateCrafting();
@@ -559,6 +627,7 @@ define([
 		onInventoryChanged: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.bag) return;
+			this.updateAutoEquip();
 			this.updateItems();
 			this.updateUseItems();
 			this.updateRepairItems();
@@ -569,6 +638,7 @@ define([
 
 		onEquipmentChanged: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
+			this.updateAutoEquip();
 			this.updateItems();
 			this.updateUseItems();
 			this.updateRepairItems();
@@ -585,9 +655,11 @@ define([
 			let reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(actionName, false);
 			if (reqsCheck.value >= 1)
 				return true;
-			if (reqsCheck.reason === PlayerActionConstants.DISABLED_REASON_BAG_FULL)
+			if (reqsCheck.baseReason === PlayerActionConstants.DISABLED_REASON_IN_PROGRESS)
 				return true;
-			if (reqsCheck.reason === PlayerActionConstants.DISABLED_REASON_LOCKED_RESOURCES) {
+			if (reqsCheck.baseReason === PlayerActionConstants.DISABLED_REASON_BAG_FULL)
+				return true;
+			if (reqsCheck.baseReason === PlayerActionConstants.DISABLED_REASON_LOCKED_RESOURCES) {
 				let reqs = GameGlobals.playerActionsHelper.getReqs(actionName);
 				return reqs.upgrades && Object.keys(reqs.upgrades).length > 0;
 			}

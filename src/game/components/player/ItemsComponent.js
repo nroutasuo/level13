@@ -114,13 +114,13 @@ function (Ash, ItemVO, ItemConstants) {
 
 		// Equips the given item if it's better than the previous equipment (based on total bonus)
 		autoEquip: function (item) {
-			var shouldEquip = item.equippable;
+			let shouldEquip = item.equippable;
 			if (shouldEquip) {
 				for (let i = 0; i < this.items[item.type].length; i++) {
 					var existingItem = this.items[item.type][i];
 					if (existingItem.itemID === item.itemID) continue;
 					if (existingItem.equipped && !(this.isItemMultiEquippable(existingItem) && this.isItemMultiEquippable(item))) {
-						var isExistingBonusBetter = existingItem.getCurrentTotalBonus() >= item.getCurrentTotalBonus();
+						let isExistingBonusBetter = existingItem.getCurrentTotalBonus() >= item.getCurrentTotalBonus();
 						if (!isExistingBonusBetter) {
 							this.unequip(existingItem);
 						}
@@ -142,7 +142,7 @@ function (Ash, ItemVO, ItemConstants) {
 		},
 
 		autoEquipByType: function (itemType) {
-			var best = null;
+			let best = null;
 			for (let i = 0; i < this.items[itemType].length; i++) {
 				var item = this.items[itemType][i];
 				if (!item.equippable) continue;
@@ -152,6 +152,30 @@ function (Ash, ItemVO, ItemConstants) {
 			}
 
 			if (best!== null) this.autoEquip(best);
+		},
+		
+		autoEquipByBonusType: function (itemBonusType, includeNotCarried) {
+			for (let key in this.items) {
+				let bestItem = null;
+				let bestItemBonus = 0;
+				let bestItemTotalBonus = 0;
+				for (let i = 0; i < this.items[key].length; i++) {
+					let item = this.items[key][i];
+					if (!item.equippable) continue;
+					if (!includeNotCarried && !item.carried) continue;
+					let itemBonus = item.getCurrentBonus(itemBonusType);
+					let totalBonus = item.getCurrentTotalBonus();
+					if (itemBonus > bestItemBonus || (itemBonus == bestItemBonus && totalBonus > bestItemTotalBonus)) {
+						bestItem = item;
+						bestItemBonus = itemBonus;
+						bestItemTotalBonus = totalBonus;
+					}
+				}
+				
+				if (bestItem != null) {
+					this.equip(bestItem);
+				}
+			}
 		},
 
 		isItemMultiEquippable: function (item) {
@@ -165,6 +189,7 @@ function (Ash, ItemVO, ItemConstants) {
 		// Equips the given item regardless of whether it's better than the previous equipment
 		equip: function (item) {
 			if (!item) return;
+			if (item.equipped) return;
 			if (item.equippable) {
 				var previousItems = this.getEquipped(item.type);
 				for (let i = 0; i < previousItems.length; i++) {
