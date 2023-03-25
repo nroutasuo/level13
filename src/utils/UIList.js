@@ -7,7 +7,7 @@
 
 define(function () {
 
-	var UIList = {
+	let UIList = {
 		
 		// container: element inside which list items will be added
 		// fnCreateItem: function () - should return new item that has a member called $root which will be added to container

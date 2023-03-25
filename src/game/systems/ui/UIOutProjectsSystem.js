@@ -7,8 +7,10 @@ define([
 	'game/nodes/PlayerLocationNode',
 	'game/vos/TabCountsVO',
 	'utils/StringUtils',
-], function (Ash, GameGlobals, GlobalSignals, UIConstants, PositionConstants, PlayerLocationNode, TabCountsVO, StringUtils) {
-	var UIOutProjectsSystem = Ash.System.extend({
+	'utils/UIList',
+], function (Ash, GameGlobals, GlobalSignals, UIConstants, PositionConstants, PlayerLocationNode, TabCountsVO, StringUtils, UIList) {
+	
+	let UIOutProjectsSystem = Ash.System.extend({
 		
 		playerLocationNodes: null,
 
@@ -16,18 +18,26 @@ define([
 		tabCounts: null,
 		
 		constructor: function () {
+			this.initElements();
+			return this;
+		},
+		
+		initElements: function () {
 			this.tabCounts = new TabCountsVO();
 			this.elements = {};
 			this.elements.tabHeader = $("#tab-header h2");
 			this.elements.bubble = $("#switch-projects .bubble");
 			this.elements.hiddenImprovementsMsg = $("#in-improvements-hidden-message");
 			
-			var sys = this;
+			this.availableLevelProjectList = UIList.create("#in-improvements-level table", this.createProjectListItem, (li, project) => { this.updateProjectListItem(li, project, true) }, this.isProjectListItemDataEqual);
+			this.availableColonyProjectList = UIList.create("#in-improvements-colony table", this.createProjectListItem, (li, project) => { this.updateProjectListItem(li, project, true) }, this.isProjectListItemDataEqual);
+			this.builtLevelProjectList = UIList.create("#in-improvements-level-built table", this.createProjectListItem, (li, project) => { this.updateProjectListItem(li, project, false) }, this.isProjectListItemDataEqual);
+			this.builtColonyProjectList = UIList.create("#in-improvements-colony-built table", this.createProjectListItem, (li, project) => { this.updateProjectListItem(li, project, false) }, this.isProjectListItemDataEqual);
+			
+			let sys = this;
 			$("#in-improvements-reset-hidden").click(function () {
 				sys.resetHidden();
 			});
-			
-			return this;
 		},
 
 		addToEngine: function (engine) {
@@ -53,18 +63,15 @@ define([
 		update: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			
-			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.projects;
+			let isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.projects;
 			if (!this.playerLocationNodes.head) return;
 			
 			this.updateBubble();
 			
-			if (!isActive) {
-				return;
-			}
-			
+			if (!isActive) return;
 			if (GameGlobals.gameState.isLaunchStarted) return;
+			
 			GameGlobals.uiFunctions.toggle("#in-improvements-level-empty-message", this.tabCounts.lastShown.visible.regular <= 0);
-			this.elements.tabHeader.text("Building projects");
 		},
 		
 		slowUpdate: function () {
@@ -74,9 +81,15 @@ define([
 		
 		refresh: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
-			var updateTables = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.projects;
-			this.updateAvailableProjects(updateTables);
-			this.updateBuiltProjects(updateTables);
+			let isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.projects;
+			
+			if (isActive) {
+				this.elements.tabHeader.text("Building projects");
+			}
+			
+			this.updateAvailableProjects(true);
+			this.updateBuiltProjects(true);
+			this.updateHiddenMsg();
 		},
 		
 		updateBubble: function () {
@@ -97,41 +110,50 @@ define([
 		updateAvailableProjects: function (updateTables) {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (!this.playerLocationNodes.head) return;
-			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.projects;
-			var availableRegular = 0;
-			var visibleRegular = 0;
-			var hiddenRegular = 0;
-			var availableColony = 0;
-			var visibleColony = 0;
-			var hiddenColony = 0;
 			
-			if (!GameGlobals.gameState.uiStatus.hiddenProjects)
-				GameGlobals.gameState.uiStatus.hiddenProjects = [];
+			let isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.projects;
+			let availableRegular = 0;
+			let visibleRegular = 0;
+			let hiddenRegular = 0;
+			let availableColony = 0;
+			let visibleColony = 0;
+			let hiddenColony = 0;
 			
-			this.elements.levelImprovementsTable = $("#in-improvements-level table");
-			this.elements.colonyImprovementsTable = $("#in-improvements-colony table");
+			if (!GameGlobals.gameState.uiStatus.hiddenProjects) GameGlobals.gameState.uiStatus.hiddenProjects = [];
 			
-			var projects = GameGlobals.levelHelper.getAvailableProjectsForCamp(this.playerLocationNodes.head.entity);
-			if (updateTables) this.elements.levelImprovementsTable.empty();
-			if (updateTables) this.elements.colonyImprovementsTable.empty();
+			let projects = GameGlobals.levelHelper.getAvailableProjectsForCamp(this.playerLocationNodes.head.entity);
+			
+			let isHidden = function (project) {
+				let projectID = project.getID();
+				return GameGlobals.gameState.uiStatus.hiddenProjects.indexOf(projectID) >= 0;
+			}
+			
+			if (updateTables) {
+				let numCreated1 = UIList.update(this.availableLevelProjectList, projects.filter(project => !project.isColonyProject() && !isHidden(project)));
+				let numCreated2 = UIList.update(this.availableColonyProjectList, projects.filter(project => project.isColonyProject()));
+				
+				if (numCreated1 > 0 || numCreated2 > 0) {
+					GameGlobals.uiFunctions.registerCustomButtonListeners("#in-improvements-level", "navigation", this.onMapLinkButtonClicked);
+					GameGlobals.uiFunctions.registerCustomButtonListeners("#in-improvements-level", "hide-project", this.onHideProjectButtonClicked);
+					
+					GameGlobals.uiFunctions.registerActionButtonListeners("#in-improvements-level");
+					GameGlobals.uiFunctions.generateButtonOverlays("#in-improvements-level");
+					GameGlobals.uiFunctions.generateCallouts("#in-improvements-level");
+					
+					GameGlobals.uiFunctions.registerActionButtonListeners("#in-improvements-colony");
+					GameGlobals.uiFunctions.generateButtonOverlays("#in-improvements-colony");
+					GameGlobals.uiFunctions.generateCallouts("#in-improvements-colony");
+				}
+			}
 			
 			for (let i = 0; i < projects.length; i++) {
-				var project = projects[i];
-				var action = project.action;
-				var sectorEntity = GameGlobals.levelHelper.getSectorByPosition(project.level, project.position.sectorX, project.position.sectorY);
-				var actionAvailable = GameGlobals.playerActionsHelper.checkAvailability(action, false, sectorEntity);
-				var isColonyProject = project.isColonyProject();
-				var projectID = project.getID();
-				var isHidden = GameGlobals.gameState.uiStatus.hiddenProjects.indexOf(projectID) >= 0;
-				
-				if (updateTables && !isHidden) {
-					var tr = this.getProjectTR(project, true);
-					if (isColonyProject) {
-						this.elements.colonyImprovementsTable.append(tr);
-					} else {
-						this.elements.levelImprovementsTable.append(tr);
-					}
-				}
+				let project = projects[i];
+				let action = project.action;
+				let sectorEntity = GameGlobals.levelHelper.getSectorByPosition(project.level, project.position.sectorX, project.position.sectorY);
+				let actionAvailable = GameGlobals.playerActionsHelper.checkAvailability(action, false, sectorEntity);
+				let isColonyProject = project.isColonyProject();
+				let projectID = project.getID();
+				let isHidden = GameGlobals.gameState.uiStatus.hiddenProjects.indexOf(projectID) >= 0;
 				
 				if (isColonyProject) {
 					if (isHidden) hiddenColony++;
@@ -145,25 +167,7 @@ define([
 			}
 			
 			GameGlobals.uiFunctions.toggle("#container-in-improvements-colony", visibleColony > 0 || GameGlobals.endingHelper.isReadyForLaunch() || GameGlobals.gameState.isLaunched);
-			
-			var sys = this;
-			if (updateTables) {
-				GameGlobals.uiFunctions.toggle("#container-in-improvements-level-hidden", hiddenRegular > 0);
-				this.elements.hiddenImprovementsMsg.text(hiddenRegular + " projects hidden");
-			
-				GameGlobals.uiFunctions.registerCustomButtonListeners("#in-improvements-level", "navigation", this.onMapLinkButtonClicked);
-				GameGlobals.uiFunctions.registerCustomButtonListeners("#in-improvements-level", "hide-project", this.onHideProjectButtonClicked);
-				
-				GameGlobals.uiFunctions.registerActionButtonListeners("#in-improvements-level");
-				GameGlobals.uiFunctions.generateButtonOverlays("#in-improvements-level");
-				GameGlobals.uiFunctions.generateCallouts("#in-improvements-level");
-				
-				GameGlobals.uiFunctions.registerActionButtonListeners("#in-improvements-colony");
-				GameGlobals.uiFunctions.generateButtonOverlays("#in-improvements-colony");
-				GameGlobals.uiFunctions.generateCallouts("#in-improvements-colony");
-				
-				GlobalSignals.elementCreatedSignal.dispatch();
-			}
+			GameGlobals.uiFunctions.toggle("#container-in-improvements-level-hidden", hiddenRegular > 0);
 			
 			this.tabCounts.updateCounts({ regular: visibleRegular, colony: visibleColony }, { regular: availableRegular, colony: availableColony }, isActive);
 		},
@@ -174,13 +178,17 @@ define([
 			
 			projects.sort((a, b) => { return b.level - a.level; });
 			
+			if (updateTables) {
+				let numCreated1 = UIList.update(this.builtLevelProjectList, projects.filter(project => !project.isColonyProject()));
+				let numCreated2 = UIList.update(this.builtColonyProjectList, projects.filter(project => project.isColonyProject()));
+				
+				if (numCreated1) {
+					GameGlobals.uiFunctions.registerCustomButtonListeners("#in-improvements-level-built", "navigation", this.onMapLinkButtonClicked);
+				}
+			}
+			
 			let numProjectsColony = 0;
 			let numProjectsOther = 0;
-			
-			if (updateTables) {
-				$("#in-improvements-level-built table").empty();
-				$("#in-improvements-colony-built table").empty();
-			}
 			
 			for (let i = 0; i < projects.length; i++) {
 				let project = projects[i];
@@ -188,23 +196,15 @@ define([
 				
 				if (isColonyProject) numProjectsColony++;
 				if (!isColonyProject) numProjectsOther++;
-				
-				if (updateTables) {
-					var tr = this.getProjectTR(project, false);
-					if (isColonyProject) {
-						$("#in-improvements-colony-built table").append(tr);
-					} else {
-						$("#in-improvements-level-built table").append(tr);
-					}
-				}
-			}
-				
-			if (updateTables) {
-				GameGlobals.uiFunctions.registerCustomButtonListeners("#in-improvements-level-built", "navigation", this.onMapLinkButtonClicked);
 			}
 			
 			GameGlobals.uiFunctions.toggle("#header-in-improvements-colony-built", numProjectsColony > 0);
 			GameGlobals.uiFunctions.toggle("#header-in-improvements-level-built", numProjectsOther > 0);
+		},
+		
+		updateHiddenMsg: function () {
+			let numHidden = GameGlobals.gameState.uiStatus.hiddenProjects.length;
+			this.elements.hiddenImprovementsMsg.text(numHidden + " projects hidden");
 		},
 		
 		resetHidden: function () {
@@ -212,59 +212,80 @@ define([
 			this.refresh();
 		},
 		
-		getProjectTR: function (project, isAvailable) {
-			let sector = project.level + "." + project.sector + "." + project.direction;
-			let location = project.position.getPosition().getInGameFormat();
-			let projectID = project.getID();
+		createProjectListItem: function () {
+			let tr = "<tr>";
 			
+			tr += "<td class='label'></td>";
+			tr += "<td class='list-description'></td>";
+			tr += "<td class='minwidth'><button class='btn-mini btn-meta hide-project'>hide</button></td>";
+			tr += "<td class='minwidth'><button class='btn-mini navigation'>map</button></td>";
+			
+			let btnAction = "<button class='action action-build action-level-project multiline'></button>";
+			tr += "<td style='width:138px;text-align:right;' class='bg-reset'>" + btnAction + "</td>";
+						
+			tr += "</tr>";
+			
+			let li = {};
+			li.$root = $(tr);
+			li.$tdName = li.$root.children("td.label");
+			li.$tdDescription = li.$root.children("td.list-description");
+			li.$btnHide = li.$root.find("button.hide-project");
+			li.$btnMap = li.$root.find("button.navigation");
+			li.$btnAction = li.$root.find("button.action");
+			return li;
+		},
+		
+		updateProjectListItem: function (li, project, isAvailable) {
+			let projectID = project.getID();
+			let sector = project.level + "." + project.sector + "." + project.direction;
 			let name = project.name;
+			let actionLabel = project.actionLabel;
+			let action = project.action;
+				
 			// TODO define building projects directions/links better and don't rely on improvement names
 			name = name.replace(" Up", "");
 			name = name.replace(" Down", "");
 			
-			var showLevel = GameGlobals.gameState.unlockedFeatures.levels;
-			var info = "at " + location + " on level " + project.level;
-			var isPassage = project.improvement && project.improvement.isPassage();
+			let info = this.getProjectInfoText(project);
+			
+			li.$root.toggleClass("current", this.isCurrentLevel(project));
+			li.$tdName.html(name);
+			li.$tdDescription.html(info);
+			li.$btnHide.data("project", projectID);
+			li.$btnMap.data("sector", sector);
+			li.$btnAction.attr("action", action);
+			li.$btnAction.attr("sector", sector);
+			li.$btnAction.attr("id", "btn-" + action + "-" + sector);
+			li.$btnAction.find(".btn-label").html(actionLabel);
+			
+			GameGlobals.uiFunctions.toggle(li.$btnHide, isAvailable && !project.isColonyProject());
+			GameGlobals.uiFunctions.toggle(li.$btnMap, isAvailable && !project.isColonyProject());
+			GameGlobals.uiFunctions.toggle(li.$btnAction, isAvailable);
+		},
+		
+		isProjectListItemDataEqual: function (project1, project2) {
+			return project1.getID() == project2.getID();
+		},
+		
+		getProjectInfoText: function (project) {
+			let location = project.position.getPosition().getInGameFormat();
+			let showLevel = GameGlobals.gameState.unlockedFeatures.levels;
+			
+			let info = "at " + location + " on level " + project.level;
+			
+			let isPassage = project.improvement && project.improvement.isPassage();
 			if (isPassage) {
 				var levels = this.getProjectLevels(project);
 				info = "connecting levels <span class='hl-functionality'>" + levels[0] + "</span> and <span class='hl-functionality'>" + levels[1] + "</span> at " + location;
 			}
+			
 			if (project.action == "clear_debris_e" || project.action == "clear_debris_l" || project.action == "bridge_gap") {
-				var neighbourPosition = PositionConstants.getPositionOnPath(project.position.getPosition(), project.direction, 1);
-				var neighbourLocation = neighbourPosition.getInGameFormat();
+				let neighbourPosition = PositionConstants.getPositionOnPath(project.position.getPosition(), project.direction, 1);
+				let neighbourLocation = neighbourPosition.getInGameFormat();
 				info = "between " + location + " and " + neighbourLocation + " on level " + project.level;
 			}
 			
-			var classes = this.isCurrentLevel(project) ? "current" : "";
-			var mapID = "project-map-";
-			let result = "<tr class='" + classes + "'>";
-			result += "<td>" + name + "</td>";
-			result += "<td class='list-description'>" + info + "</td>";
-			
-			if (isAvailable) {
-				result += "<td class='minwidth'>";
-				if (project.action == "clear_debris_e" || project.action == "clear_debris_l" || project.action == "bridge_gap") {
-					result += "<button class='btn-mini btn-meta hide-project' data-project='" + projectID + "'>hide</button>";
-				}
-				result += "</td>";
-				result += "<td class='minwidth'>" + this.getMapLinkButton(sector) + "</td>";
-				var classes = "action action-build action-level-project multiline";
-				var actionLabel = project.actionLabel;
-				var action = project.action;
-				result += "<td style='width:138px;text-align:right;' class='bg-reset'><button class='" + classes + "' action='" + action + "' sector='" + sector + "' id='btn-" + action + "-" + sector + "'>" + actionLabel + "</button></td>";
-			} else if (project.isColonyProject()) {
-				
-			} else {
-				result += "<td class='minwidth'>" + this.getMapLinkButton(sector) + "</td>";
-				result += "<td style='width:138px'></td>";
-				
-			}
-			result += "</tr>";
-			return result;
-		},
-		
-		getMapLinkButton: function (sector) {
-			return "<button class='btn-mini navigation' data-sector='" + sector + "'>map</button>";
+			return info;
 		},
 		
 		isCurrentLevel: function (project) {
@@ -292,14 +313,16 @@ define([
 		},
 		
 		onHideProjectButtonClicked: function () {
-			var projectID = $(this).attr("data-project");
+			let projectID = $(this).data("project");
+			if (!projectID) return;
 			GameGlobals.gameState.uiStatus.hiddenProjects.push(projectID);
 			GlobalSignals.projectHiddenSignal.dispatch();
 		},
 		
 		onMapLinkButtonClicked: function () {
-			var sector = $(this).attr("data-sector");
-			var position = StringUtils.getPosition(sector);
+			let sector = $(this).data("sector");
+			if (!sector) return;
+			let position = StringUtils.getPosition(sector);
 			GameGlobals.uiFunctions.scrollToTabTop();
 			GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.map, position);
 		},
