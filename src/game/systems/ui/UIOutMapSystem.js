@@ -279,7 +279,7 @@ define([
 				if (!pos) {
 					let playerPos = this.playerPositionNodes.head.position.getPosition();
 					if (this.selectedSector) {
-						mapPosition = selectedSector.get(PositionComponent).getPosition();
+						mapPosition = this.selectedSector.get(PositionComponent).getPosition();
 					} else if (hasSelectedLevel && this.selectedLevel != playerPos.level) {
 						let campSector = GameGlobals.levelHelper.getCampSectorOnLevel(this.selectedLevel);
 						if (campSector) {
