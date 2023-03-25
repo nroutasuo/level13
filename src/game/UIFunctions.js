@@ -531,7 +531,7 @@ define(['ash',
 			generateButtonOverlays: function (scope) {
 				$.each($(scope + " button.action"), function () {
 					let $btn = $(this);
-					if ($btn.find(".btn-label").length > 0) {
+					if ($btn.parent().hasClass("container-btn-action")) {
 						log.w("generating double button overlays: " + $(this) + " | " + scope);
 						return;
 					}
