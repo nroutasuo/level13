@@ -736,7 +736,7 @@ define([
 		},
 		
 		isMapModesVisible: function () {
-			GameGlobals.playerHelper.hasItem("equipment_map_2");
+			return GameGlobals.playerHelper.hasItem("equipment_map_2");
 		},
 
 		onLevelSelectorChanged: function () {
