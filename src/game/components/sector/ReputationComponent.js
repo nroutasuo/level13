@@ -56,11 +56,14 @@ define(['ash'], function (Ash) {
 		getCustomSaveObject: function () {
 			var copy = {};
 			copy.v = this.value;
+			copy.tv = this.targetValue;
 			return copy;
 		},
 
 		customLoadFromSave: function (componentValues) {
+			debugger
 			this.value = componentValues.v || 0;
+			this.targetValue = componentValues.tv || 0;
 		}
 
 	});
