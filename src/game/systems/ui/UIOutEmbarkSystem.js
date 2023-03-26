@@ -197,20 +197,23 @@ define([
 		
 		regenrateEmbarkItems: function () {
 			$("#embark-items").empty();
-			var itemsComponent = this.playerPosNodes.head.entity.get(ItemsComponent);
-			var uniqueItems = itemsComponent.getUnique(true);
+			let itemsComponent = this.playerPosNodes.head.entity.get(ItemsComponent);
+			let uniqueItems = itemsComponent.getUnique(true);
 			uniqueItems = uniqueItems.sort(UIConstants.sortItemsByType);
 			uniqueItems = uniqueItems.filter(item => !item.broken);
 			for (let i = 0; i < uniqueItems.length; i++) {
-				var item = uniqueItems[i];
+				let item = uniqueItems[i];
+				let baseItemId = ItemConstants.getBaseItemId(item.id);
 				if (item.type === ItemConstants.itemTypes.uniqueEquipment) continue;
 				if (item.type === ItemConstants.itemTypes.artefact) continue;
 				if (item.type === ItemConstants.itemTypes.trade) continue;
 				if (item.type === ItemConstants.itemTypes.note) continue;
 				if (item.type === ItemConstants.itemTypes.ingredient) continue;
+				if (item.type === ItemConstants.itemTypes.voucher) continue;
+				if (baseItemId == "cache_evidence") continue;
 				
-				var count = itemsComponent.getCount(item, true);
-				var showCount = item.equipped ? count - 1 : count;
+				let count = itemsComponent.getCount(item, true);
+				let showCount = item.equipped ? count - 1 : count;
 				if (item.equipped && count === 1) continue;
 				
 				$("#embark-items").append(
