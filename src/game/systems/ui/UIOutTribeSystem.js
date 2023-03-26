@@ -108,6 +108,9 @@ define([
 			this.alerts = {};
 			this.notifications = {};
 			this.campsWithAlert = 0;
+			
+			GameGlobals.uiFunctions.toggle($("#camp-overview tr"), false);
+			
 			for (let i = 0; i < this.sortedCampNodes.length; i++) {
 				this.updateNode(this.sortedCampNodes[i], isActive);
 			}
@@ -273,7 +276,6 @@ define([
 			});
 			
 			var row = $("#camp-overview tr#" + rowID);
-			GameGlobals.uiFunctions.toggle(row, false);
 		},
 		
 		createLevel14Row: function () {
