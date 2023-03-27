@@ -143,20 +143,20 @@ define([
 
 			var costs = GameGlobals.playerActionsHelper.getCosts(action);
 
-			var costsStatus = {};
+			let costsStatus = {};
 			costsStatus.hasCostBlockers = false;
 			costsStatus.bottleneckCostFraction = 1;
 
 			// callout content
-			var sectorEntity = GameGlobals.buttonHelper.getButtonSectorEntity($button);
-			var disabledReason = GameGlobals.playerActionsHelper.checkRequirements(action, false, sectorEntity).reason;
+			let sectorEntity = GameGlobals.buttonHelper.getButtonSectorEntity($button);
+			let disabledReason = GameGlobals.playerActionsHelper.checkRequirements(action, false, sectorEntity).reason;
 			let hasCooldown = GameGlobals.buttonHelper.hasButtonCooldown($button);
-			var isDisabledOnlyForCooldown = !disabledReason && hasCooldown;
+			let isDisabledOnlyForCooldown = !disabledReason && hasCooldown;
 			let showDescription = disabledReason != PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENT_LEVEL;
 			
 			this.updateButtonCalloutDescription($button, action, buttonStatus, buttonElements, showDescription);
 			
-			if (!isHardDisabled || isDisabledOnlyForCooldown) {
+			if (!isHardDisabled && !isDisabledOnlyForCooldown) {
 				GameGlobals.uiFunctions.toggle($enabledContent, true, this.buttonCalloutSignalParams);
 				GameGlobals.uiFunctions.toggle($disabledContent, false, this.buttonCalloutSignalParams);
 				var hasCosts = action && costs && Object.keys(costs).length > 0;
@@ -166,12 +166,16 @@ define([
 				this.updateButtonCalloutRisks($button, action, buttonElements);
 				this.updateButtonSpecialReqs($button, action, buttonElements);
 			} else {
-				var lastReason = buttonStatus.disabledReason;
-				if (lastReason !== disabledReason) {
+				let lastReason = buttonStatus.disabledReason;
+				let displayReason = disabledReason;
+				if (isDisabledOnlyForCooldown) {
+					displayReason = "Cooldown " + PlayerActionConstants.getCooldown(action) + "s";
+				}
+				if (lastReason !== displayReason) {
 					GameGlobals.uiFunctions.toggle($enabledContent, false, this.buttonCalloutSignalParams);
 					GameGlobals.uiFunctions.toggle($disabledContent, true, this.buttonCalloutSignalParams);
-					buttonElements.calloutSpanDisabledReason.html(disabledReason);
-					buttonStatus.disabledReason = disabledReason;
+					buttonElements.calloutSpanDisabledReason.html(displayReason);
+					buttonStatus.disabledReason = displayReason;
 				}
 			}
 
@@ -191,34 +195,8 @@ define([
 		},
 
 		updateButtonCalloutCosts: function ($button, action, buttonStatus, buttonElements, costs, costsStatus) {
-			var playerHealth = this.playerStatsNodes.head.stamina.health;
-			var showStorage = GameGlobals.resourcesHelper.getCurrentStorageCap();
-			if (!buttonStatus.displayedCosts) buttonStatus.displayedCosts = {};
-			
-			for (var key in costs) {
-				var $costSpan = buttonElements.costSpans[key];
-				if (!$costSpan || $costSpan.length == 0) {
-					log.w("cost span missing: " + key + " " + action);
-					continue;
-				}
-				var value = costs[key];
-				var costFraction = GameGlobals.playerActionsHelper.checkCost(action, key);
-				var isFullCostBlocker = (isResource(key.split("_")[1]) && value > showStorage) || (key == "stamina" && value > playerHealth * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR);
-				if (isFullCostBlocker) {
-					costsStatus.hasCostBlockers = true;
-				} else if (costFraction < costsStatus.bottleneckCostFraction) {
-					costsStatus.bottleneckCostFraction = costFraction;
-				}
-				$costSpan.toggleClass("action-cost-blocker", costFraction < 1);
-				$costSpan.toggleClass("action-cost-blocker-storage", isFullCostBlocker);
-
-				if (value !== buttonStatus.displayedCosts[key]) {
-					var $costSpanValue = buttonElements.costSpanValues[key];
-					$costSpanValue.html(UIConstants.getDisplayValue(value));
-					GameGlobals.uiFunctions.toggle($costSpan, value > 0, this.buttonCalloutSignalParams);
-					buttonStatus.displayedCosts[key] = value;
-				}
-			}
+			if (!buttonStatus.displayedCosts) buttonStatus.displayedCosts = {};			
+			GameGlobals.uiFunctions.updateCostsSpans(action, costs, buttonElements, costsStatus, buttonStatus.displayedCosts, this.buttonCalloutSignalParams);
 		},
 
 		updateButtonCalloutRisks: function ($button, action, buttonElements) {
@@ -376,14 +354,10 @@ define([
 					elements.cooldownReqs = $button.siblings(".cooldown-reqs");
 					elements.cooldownDuration = $button.children(".cooldown-duration");
 					elements.cooldownAction = $button.children(".cooldown-action");
-
-					var costs = GameGlobals.playerActionsHelper.getCosts(action);
-					elements.costSpans = {};
-					elements.costSpanValues = {};
-					for (var key in costs) {
-						elements.costSpans[key] = elements.calloutContentEnabled.children(".action-cost-" + key);
-						elements.costSpanValues[key] = elements.costSpans[key].children(".action-cost-value");
-					}
+					
+					let costs = GameGlobals.playerActionsHelper.getCosts(action);
+					UIConstants.getCostsSpansElements(action, costs, elements, elements.calloutContentEnabled);
+					
 					sys.buttonElements.push(elements);
 					buttonActions.push(action);
 				}

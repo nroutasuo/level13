@@ -35,6 +35,26 @@ define(['ash',
 		UNLOCKABLE_FEATURE_MAP_MODES: "mapModes",
 		
 		ICON_FALLBACK: "img/eldorado/icon_placeholder.png",
+
+		names: {
+			resources: {
+				stamina: "stamina",
+				resource_metal: "metal",
+				resource_fuel: "fuel",
+				resource_rubber: "rubber",
+				resource_rope: "rope",
+				resource_food: "food",
+				resource_water: "water",
+				resource_concrete: "concrete",
+				resource_herbs: "herbs",
+				resource_medicine: "medicine",
+				resource_tools: "tools",
+				resource_robots: "robots",
+				item_exploration_1: "lock pick",
+				rumours: "rumours",
+				evidence: "evidence",
+			}
+		},
 		
 		getIconOrFallback: function (icon) {
 			if (icon) return icon;
@@ -439,6 +459,41 @@ define(['ash',
 			}
 
 			return effect + " " + value;
+		},
+
+		getCostsSpans: function (action, costs) {
+			let result = "";
+			let hasCosts = action && costs && Object.keys(costs).length > 0;
+			if (hasCosts) {
+				for (let key in costs) {
+					let itemName = key.replace("item_", "");
+					let item = ItemConstants.getItemByID(itemName, true);
+					let name = (this.names.resources[key] ? this.names.resources[key] : item !== null ? item.name : key).toLowerCase();
+					let value = costs[key];
+					result += "<span class='action-cost action-cost-" + key + "'>" + name + ": <span class='action-cost-value'>" + UIConstants.getDisplayValue(value) + "</span><br/></span>";
+				}
+			} else if (this.isActionFreeCostShown(action)) {
+				result += "<span class='action-cost p-meta'>free</span><br />";
+			}
+			return result;
+		},
+		
+		getCostsSpansElements: function (action, costs, elements, $container) {
+			elements.costSpans = {};
+			elements.costSpanValues = {};
+			for (let key in costs) {
+				elements.costSpans[key] = $container.children(".action-cost-" + key);
+				elements.costSpanValues[key] = elements.costSpans[key].children(".action-cost-value");
+			}
+		},
+		
+		isActionFreeCostShown: function (action) {
+			let baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
+			switch (baseId) {
+				case "recruit_follower": return true;
+				case "wait": return true;
+			}
+			return false;
 		},
 		
 		getMultiplierBonusDisplayValue: function (value) {

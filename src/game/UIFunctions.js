@@ -8,12 +8,13 @@ define(['ash',
 		'game/constants/UIConstants',
 		'game/constants/ItemConstants',
 		'game/constants/PlayerActionConstants',
+		'game/constants/PlayerStatConstants',
 		'game/constants/PositionConstants',
 		'game/helpers/ui/UIPopupManager',
 		'game/vos/ResourcesVO',
 		'utils/MathUtils',
 	],
-	function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, GameConstants, CampConstants, UIConstants, ItemConstants, PlayerActionConstants, PositionConstants, UIPopupManager, ResourcesVO, MathUtils) {
+	function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, GameConstants, CampConstants, UIConstants, ItemConstants, PlayerActionConstants, PlayerStatConstants, PositionConstants, UIPopupManager, ResourcesVO, MathUtils) {
 
 		// TODO separate generic utils and tabs handling to a different file
 
@@ -36,26 +37,6 @@ define(['ash',
 					milestones: "switch-milestones",
 					embark: "switch-embark"
 				},
-			},
-
-			names: {
-				resources: {
-					stamina: "stamina",
-					resource_metal: "metal",
-					resource_fuel: "fuel",
-					resource_rubber: "rubber",
-					resource_rope: "rope",
-					resource_food: "food",
-					resource_water: "water",
-					resource_concrete: "concrete",
-					resource_herbs: "herbs",
-					resource_medicine: "medicine",
-					resource_tools: "tools",
-					resource_robots: "robots",
-					item_exploration_1: "lock pick",
-					rumours: "rumours",
-					evidence: "evidence",
-				}
 			},
 
 			constructor: function () {
@@ -413,20 +394,11 @@ define(['ash',
 				}
 
 				// visible if button is enabled: costs, special requirements, & risks
-				var costs = GameGlobals.playerActionsHelper.getCosts(action);
-				var hasCosts = action && costs && Object.keys(costs).length > 0;
-				if (hasCosts) {
+				let costs = GameGlobals.playerActionsHelper.getCosts(action);
+				let costsSpans = UIConstants.getCostsSpans(action, costs);
+				if (costsSpans.length > 0) {
 					if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
-					for (var key in costs) {
-						var itemName = key.replace("item_", "");
-						var item = ItemConstants.getItemByID(itemName, true);
-						var name = (this.names.resources[key] ? this.names.resources[key] : item !== null ? item.name : key).toLowerCase();
-						var value = costs[key];
-						enabledContent += "<span class='action-cost action-cost-" + key + "'>" + name + ": <span class='action-cost-value'>" + UIConstants.getDisplayValue(value) + "</span><br/></span>";
-					}
-				} else if (this.isActionFreeCostShown(action)) {
-					if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
-					enabledContent += "<span class='action-cost p-meta'>free</span><br />";
+					enabledContent += costsSpans;
 				}
 
 				var duration = PlayerActionConstants.getDuration(baseActionId);
@@ -983,15 +955,6 @@ define(['ash',
 				}
 				return (($element).is(":visible"));
 			},
-			
-			isActionFreeCostShown: function (action) {
-				var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
-				switch (baseId) {
-					case "recruit_follower": return true;
-					case "wait": return true;
-				}
-				return false;
-			},
 
 			stopButtonCooldown: function (button) {
 				$(button).children(".cooldown-action").stop(true, true);
@@ -1059,6 +1022,38 @@ define(['ash',
 				var isLocationAction = PlayerActionConstants.isLocationAction(action);
 				var playerPos = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
 				return GameGlobals.gameState.getActionLocationKey(isLocationAction, playerPos);
+			},
+			
+			updateCostsSpans: function (action, costs, elements, costsStatus, displayedCosts, signalParams) {
+				let playerHealth = GameGlobals.playerActionFunctions.playerStatsNodes.head.stamina.health;
+				let showStorage = GameGlobals.resourcesHelper.getCurrentStorageCap();
+				
+				for (let key in costs) {
+					let $costSpan = elements.costSpans[key];
+					if (!$costSpan || $costSpan.length == 0) {
+						log.w("cost span missing: " + key + " " + action);
+						continue;
+					}
+					let value = costs[key];
+					let costFraction = GameGlobals.playerActionsHelper.checkCost(action, key);
+					let isFullCostBlocker = (isResource(key.split("_")[1]) && value > showStorage) || (key == "stamina" && value > playerHealth * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR);
+					if (costsStatus) {
+						if (isFullCostBlocker) {
+							costsStatus.hasCostBlockers = true;
+						} else if (costFraction < costsStatus.bottleneckCostFraction) {
+							costsStatus.bottleneckCostFraction = costFraction;
+						}
+					}
+					$costSpan.toggleClass("action-cost-blocker", costFraction < 1);
+					$costSpan.toggleClass("action-cost-blocker-storage", isFullCostBlocker);
+	
+					if (value !== displayedCosts[key]) {
+						let $costSpanValue = elements.costSpanValues[key];
+						$costSpanValue.html(UIConstants.getDisplayValue(value));
+						GameGlobals.uiFunctions.toggle($costSpan, value > 0, signalParams);
+						displayedCosts[key] = value;
+					}
+				}
 			},
 
 			updateStepper: function (id, val, min, max) {

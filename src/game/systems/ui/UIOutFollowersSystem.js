@@ -106,16 +106,20 @@ define([
 			let $table = $("#recruits-container table");
 			$table.empty();
 			
-			var recruitComponent = this.playerLocationNodes.head.entity.get(RecruitComponent);
+			let recruitComponent = this.playerLocationNodes.head.entity.get(RecruitComponent);
 			GameGlobals.uiFunctions.toggle($("#recruits-empty-message"), recruitComponent == null);
 			if (recruitComponent && recruitComponent.follower) {
 				let follower = recruitComponent.follower;
 				let followerType = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
+				let recruitAction = "recruit_follower_" + follower.id;
+				let costs = GameGlobals.playerActionsHelper.getCosts(recruitAction);
+				
 				let tr = "<tr>";
 				tr += "<td class='maxwidth'>" + FollowerConstants.getFollowerTypeDisplayName(followerType) + " " + follower.name + "</td>";
+				tr += "<td class='list-ordinal'>" + UIConstants.getCostsSpans(recruitAction, costs) + "</td>";
 				tr += "<td>" + UIConstants.getFollowerDiv(follower, false, false, false) + "</td>";
-				tr += "<td>" + (recruitComponent.isFoundAsReward ? this.getFoundRecruitIcon() : "") + "</td>";
-				tr += "<td><button class='action recruit-select' action='recruit_follower_" + follower.id + "'>Recruit</button></td>";
+				tr += "<td class='list-ordinal'>" + (recruitComponent.isFoundAsReward ? this.getFoundRecruitIcon() : "") + "</td>";
+				tr += "<td><button class='action recruit-select' action='" + recruitAction + "'>Recruit</button></td>";
 				tr += "<td><button class='action recruit-dismiss btn-secondary' action='dismiss_recruit_" + follower.id + "'>Dismiss</button></td>";
 				tr += "</tr>";
 				$table.append(tr);
