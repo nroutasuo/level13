@@ -1854,6 +1854,7 @@ define(['ash',
 			var reqs = GameGlobals.playerActionsHelper.getReqs(actionName);
 			var playerPos =  this.playerPositionNodes.head.position;
 			var perksComponent = this.playerStatsNodes.head.perks;
+			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			
 			var item = deductedCosts.items[0];
 			if (!item) {
@@ -1897,7 +1898,6 @@ define(['ash',
 					break;
 
 				case "glowstick":
-					var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 					sectorStatus.glowStickSeconds = 120;
 					break;
 					
@@ -1927,11 +1927,11 @@ define(['ash',
 					break;
 				
 				case "consumable_graffiti":
-					var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 					GameGlobals.uiFunctions.showInput("Graffiti", "Choose message to leave to this sector.", "", false,
 						function (input) {
 							sectorStatus.graffiti = input;
 							sys.addLogMessage(LogConstants.getUniqueID(), "Left a message on a wall.");
+							GlobalSignals.actionCompletedSignal.dispatch();
 						});
 					break;
 					
