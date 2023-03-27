@@ -6,6 +6,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		POPULATION_PER_HOUSE: 4,
 		POPULATION_PER_HOUSE2: 6,
 		POOL_RUMOURS_PER_POPULATION: 3,
+		POPULATION_DECREASE_COOLDOWN: 60,
 		
 		// Storage
 		BASE_STORAGE: 50,

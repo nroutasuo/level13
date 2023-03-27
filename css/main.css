@@ -1275,6 +1275,7 @@ body.dark .progress-wrap {
   background-color: #666;
   margin: 2px 0;
   border: 0px;
+  outline: 1px solid #666;
   overflow: hidden;
   position: relative;
 }
@@ -1717,6 +1718,7 @@ body.dark hr.warning {
 }
 body.dark .warning.progress-wrap {
   background: #e64646 !important;
+  outline-color: #e64646 !important;
 }
 body.dark .warning .progress-label {
   color: #fdfdfd !important;
@@ -3488,6 +3490,7 @@ body.sunlit .progress-wrap {
   background-color: #999;
   margin: 2px 0;
   border: 0px;
+  outline: 1px solid #999;
   overflow: hidden;
   position: relative;
 }
@@ -3930,6 +3933,7 @@ body.sunlit hr.warning {
 }
 body.sunlit .warning.progress-wrap {
   background: #e64646 !important;
+  outline-color: #e64646 !important;
 }
 body.sunlit .warning .progress-label {
   color: #202220 !important;

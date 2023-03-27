@@ -7,6 +7,8 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 		population: 0,
 		maxPopulation: 0, // maximum population ever reached in this camp
 		populationChangePerSec: 0,
+		populationChangePerSecWithoutCooldown: 0,
+		populationDecreaseCooldown: 0,
 		rumourpool: 0,
 		rumourpoolchecked: false,
 		assignedWorkers: {}, // id => number
@@ -83,7 +85,7 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 		},
 
 		getCustomSaveObject: function () {
-			var copy = {};
+			let copy = {};
 			copy.id = this.id;
 			copy.campName = this.campName;
 			copy.population = this.population || 0;
@@ -94,6 +96,8 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 			copy.autoAssignedWorkers = this.autoAssignedWorkers;
 			copy.rumourpool = this.rumourpool;
 			copy.rumourpoolchecked = this.rumourpoolchecked;
+			
+			copy.populationDecreaseCooldown = this.populationDecreaseCooldown;
 			
 			copy.pendingPopulation = this.pendingPopulation;
 			if (this.pendingRecruits.length > 0) {

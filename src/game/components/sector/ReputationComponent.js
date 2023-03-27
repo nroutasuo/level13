@@ -61,7 +61,6 @@ define(['ash'], function (Ash) {
 		},
 
 		customLoadFromSave: function (componentValues) {
-			debugger
 			this.value = componentValues.v || 0;
 			this.targetValue = componentValues.tv || 0;
 		}

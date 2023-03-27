@@ -220,11 +220,11 @@ define([
 					this.alerts[level].push(this.campNotificationTypes.BUILDING_DAMAGED);
 					this.notifications[level].push(this.campNotificationTypes.BUILDING_DAMAGED);
 				}
-				if (camp.populationChangePerSec < 0) {
+				if (camp.populationChangePerSecWithoutCooldown < 0) {
 					this.alerts[level].push(this.campNotificationTypes.POP_DECREASING);
 					this.notifications[level].push(this.campNotificationTypes.POP_DECREASING);
 				}
-				if (camp.populationChangePerSec > 0) {
+				if (camp.populationChangePerSecWithoutCooldown > 0) {
 					this.notifications[level].push(this.campNotificationTypes.POP_INCREASING);
 				}
 				if (numCaravans > 0) {
@@ -313,8 +313,8 @@ define([
 			
 			var maxPopulation = CampConstants.getHousingCap(improvements);
 			$("#camp-overview tr#" + rowID + " .camp-overview-population .value").text(Math.floor(camp.population) + "/" + maxPopulation + (unAssignedPopulation > 0 ? " (" + unAssignedPopulation + ")" : ""));
-			$("#camp-overview tr#" + rowID + " .camp-overview-population .value").toggleClass("warning", camp.populationChangePerSec < 0);
-			this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-population .change-indicator"), camp.populationChangePerSec);
+			$("#camp-overview tr#" + rowID + " .camp-overview-population .value").toggleClass("warning", camp.populationChangePerSecWithoutCooldown < 0);
+			this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-population .change-indicator"), camp.populationChangePerSecWithoutCooldown);
 
 			var reputationComponent = node.reputation;
 			let reputationValue = UIConstants.roundValue(reputationComponent.value, true, true);

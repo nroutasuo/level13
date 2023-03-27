@@ -219,7 +219,7 @@
 			let freePopulation = campComponent.getFreePopulation();
 			let isPopulationMaxed = campComponent.population >= maxPopulation;
 			let populationChangePerSec = campComponent.populationChangePerSec || 0;
-			let isPopulationStill = isPopulationMaxed || populationChangePerSec === 0;
+			let populationChangePerSecWithoutCooldown = campComponent.populationChangePerSecWithoutCooldown || 0;
 			
 			let autoAssignedWorkers = campComponent.getAutoAssignedWorkers();
 			let autoAssignedWorkersNames = autoAssignedWorkers.map(workerType => CampConstants.getWorkerDisplayName(workerType));
@@ -229,36 +229,39 @@
 			let reqRepNext = CampConstants.getRequiredReputation(Math.floor(campComponent.population) + 1);
 			let isReputationBlocking = reqRepNext < reputation;
 
-			$("#in-population-next").text(campComponent.populationChangePerSec >= 0 ? "Next worker:" : "Worker leaving:");
+			$("#in-population-next").text(populationChangePerSecWithoutCooldown >= 0 ? "Next worker:" : "Worker leaving:");
 			$("#in-population-reputation").text("Reputation required: " + reqRepCur + " (current) " + reqRepNext + " (next)");
 			$("#in-population h3").text("Population: " + Math.floor(campComponent.population) + " / " + (maxPopulation));
 			$("#in-population #in-population-status").text("Unassigned workers: " + freePopulation);
 			$("#in-population #in-population-autoassigned").text("Auto-assigned workers: " + autoAssignedWorkersText);
 			$("#in-population #in-population-robots").text("Robots: " + UIConstants.roundValue(robots, false, false, 1) + " / " + maxRobots);
+			
+			let isOnPopulationDecreaseCooldown = campComponent.populationDecreaseCooldown > 0 && campComponent.populationDecreaseCooldown < CampConstants.POPULATION_DECREASE_COOLDOWN;
+			let isPopulationStill = (isPopulationMaxed || populationChangePerSecWithoutCooldown === 0) && !isOnPopulationDecreaseCooldown;
 
 			if (!isPopulationStill) {
-				var secondsToChange = 0;
-				var progress = 0;
-				if (populationChangePerSec > 0) {
-					progress = (campComponent.population - Math.floor(campComponent.population));
-					secondsToChange = (1 - progress) / populationChangePerSec;
-				} else if(populationChangePerSec < 0) {
-					progress = (campComponent.population - Math.floor(campComponent.population));
-					secondsToChange = progress / populationChangePerSec;
-				} else {
-					progress = 0;
+				let secondsToChange = 0;
+				let progress = 0;
+				let populationOverflow = (campComponent.population - Math.floor(campComponent.population));
+				if (populationChangePerSecWithoutCooldown > 0) {
+					progress = populationOverflow;
+					secondsToChange = (1 - populationOverflow) / populationChangePerSec;
+				} else if(populationChangePerSecWithoutCooldown < 0) {
+					let secondsToLoseOnePop = 1 / -populationChangePerSecWithoutCooldown + CampConstants.POPULATION_DECREASE_COOLDOWN;
+					secondsToChange = (campComponent.populationDecreaseCooldown || 0) + (populationOverflow / -populationChangePerSecWithoutCooldown);
+					progress = secondsToChange / secondsToLoseOnePop;
 				}
 
-				var progressLabel = populationChangePerSec !== 0 ? UIConstants.getTimeToNum(secondsToChange) : "no change";
+				let progressLabel = populationChangePerSecWithoutCooldown !== 0 ? UIConstants.getTimeToNum(secondsToChange) : "no change";
 
-				$("#in-population-bar-next").toggleClass("warning", populationChangePerSec < 0);
+				$("#in-population-bar-next").toggleClass("warning", populationChangePerSecWithoutCooldown < 0);
 				$("#in-population-bar-next").data("progress-percent", progress * 100);
 				$("#in-population-bar-next .progress-label").text(progressLabel);
 				$("#in-population-bar-next").data("animation-length", 500);
 			}
 
 			GameGlobals.uiFunctions.slideToggleIf("#in-population h3", null, maxPopulation > 0 || campComponent.population > 0, 200, 200);
-			GameGlobals.uiFunctions.slideToggleIf("#in-population-reputation", null, maxPopulation > 0 && !isPopulationMaxed, 200, 200);
+			GameGlobals.uiFunctions.slideToggleIf("#in-population-reputation", null, (maxPopulation > 0 && !isPopulationMaxed) || populationChangePerSecWithoutCooldown < 0, 200, 200);
 			GameGlobals.uiFunctions.slideToggleIf("#in-population-bar-next", null, campComponent.population > 0 && !isPopulationStill, 200, 200);
 			GameGlobals.uiFunctions.slideToggleIf("#in-population-next", null, campComponent.population > 0 && !isPopulationStill, 200, 200);
 			GameGlobals.uiFunctions.slideToggleIf("#in-population-details", null, campComponent.population >= 1, 200, 200);
