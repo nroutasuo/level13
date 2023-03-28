@@ -1947,7 +1947,9 @@ define(['ash',
 					for (var i = 0; i < sectorsToReveal.length; i++) {
 						var statusComponent = sectorsToReveal[i].get(SectorStatusComponent);
 						if (statusComponent.scouted) continue;
-						statusComponent.revealedByMap = true;
+						if (statusComponent.revealedByMap) continue;
+						if (statusComponent.pendingRevealByMap) continue;
+						statusComponent.pendingRevealByMap = true;
 						revealedSomething = true;
 					}
 					
@@ -1958,6 +1960,9 @@ define(['ash',
 					} else {
 						this.addLogMessage(LogConstants.MSG_ID_USE_MAP_PIECE, "Checked the map, but there was nothing interesting there.");
 					}
+					
+					GlobalSignals.mapPieceUsedSignal.dispatch();
+					
 					break;
 
 				default:

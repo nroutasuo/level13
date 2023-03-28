@@ -16,6 +16,7 @@ define([
 	'game/nodes/sector/CampNode',
 	'game/components/common/CurrentPlayerLocationComponent',
 	'game/components/sector/CurrentNearestCampComponent',
+	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/PassagesComponent',
 	'game/components/common/LogMessagesComponent',
 	'game/components/common/PositionComponent',
@@ -25,7 +26,7 @@ define([
 	'game/components/type/LevelComponent',
 ], function (Ash, GameGlobals, GlobalSignals, GameConstants, ItemConstants, LevelConstants, LogConstants, PositionConstants,
 	PlayerPositionNode, LevelNode, PlayerLocationNode, SectorNode, CampNode,
-	CurrentPlayerLocationComponent, CurrentNearestCampComponent, PassagesComponent,
+	CurrentPlayerLocationComponent, CurrentNearestCampComponent, SectorStatusComponent, PassagesComponent,
 	LogMessagesComponent, PositionComponent,
 	VisitedComponent, RevealedComponent, CampComponent, LevelComponent) {
 
@@ -39,6 +40,7 @@ define([
 
 		lastUpdatePosition: null,
 		visitedSectorsPendingRevealNeighbours: [],
+		mapRevealedSectorsPendingRevealNeighbours: [],
 
 		constructor: function () { },
 
@@ -49,7 +51,7 @@ define([
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			this.campNodes = engine.getNodeList(CampNode);
 
-			var sys = this;
+			let sys = this;
 			this.playerPositionNodes.nodeAdded.addOnce(function(node) {
 				sys.lastUpdatePosition = null;
 			});
@@ -64,6 +66,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.gameResetSignal, this.onGameStarted);
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.ontabChanged);
 			GlobalSignals.add(this, GlobalSignals.campBuiltSignal, this.updateCamps);
+			GlobalSignals.add(this, GlobalSignals.mapPieceUsedSignal, this.onMapPieceUsed);
 		},
 
 		removeFromEngine: function (engine) {
@@ -83,6 +86,17 @@ define([
 		ontabChanged: function () {
 			this.lastUpdatePosition = null;
 			this.lastValidPosition = null;
+		},
+		
+		onMapPieceUsed: function () {
+			for (let sectorNode = this.sectorNodes.head; sectorNode; sectorNode = sectorNode.next) {
+				let statusComponent = sectorNode.entity.get(SectorStatusComponent);
+				if (statusComponent.pendingRevealByMap) {
+					statusComponent.revealedByMap = true;
+					statusComponent.pendingRevealByMap = false;
+					this.mapRevealedSectorsPendingRevealNeighbours.push(sectorNode.entity);
+				}
+			}
 		},
 
 		update: function (time) {
@@ -187,16 +201,16 @@ define([
 
 		revealVisitedSectorsNeighbours: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
-			let visitedSector = this.visitedSectorsPendingRevealNeighbours.shift();
+			let visitedSector = this.visitedSectorsPendingRevealNeighbours.shift() || this.mapRevealedSectorsPendingRevealNeighbours.shift();
 			if (!visitedSector) return;
 			this.revealSectorNeighbours(visitedSector);
 		},
 		
 		revealSectorNeighbours: function (sectorEntity) {
-			var neighbours = GameGlobals.levelHelper.getSectorNeighboursMap(sectorEntity);
-			for (var direction in neighbours) {
-				var revealedNeighbour = neighbours[direction];
-				if (!revealedNeighbour)  continue;
+			let neighbours = GameGlobals.levelHelper.getSectorNeighboursMap(sectorEntity);
+			for (let direction in neighbours) {
+				let revealedNeighbour = neighbours[direction];
+				if (!revealedNeighbour) continue;
 				if (revealedNeighbour.has(VisitedComponent)) continue;
 				
 				if (!revealedNeighbour.has(RevealedComponent)) {
