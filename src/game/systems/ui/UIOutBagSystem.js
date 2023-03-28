@@ -679,11 +679,6 @@ define([
 			let isAvailable = GameGlobals.playerActionsHelper.checkAvailability(actionName, false);
 			
 			switch (item.id) {
-				case "stamina_potion_1":
-					let currentStamina = GameGlobals.playerHelper.getCurrentStamina();
-					let staminaWarningLimit = GameGlobals.playerHelper.getCurrentStaminaWarningLimit();
-					if (currentStamina > staminaWarningLimit) return false;
-					break;
 				case "glowstick_1":
 					return false;
 				case "first_aid_kit_1":
