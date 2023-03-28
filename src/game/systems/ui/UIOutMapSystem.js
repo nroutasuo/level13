@@ -81,8 +81,8 @@ define([
 			$("#btn-mainmap-sector-details-next").click($.proxy(this.selectNextSector, this));
 			$("#btn-mainmap-sector-details-previous").click($.proxy(this.selectPreviousSector, this));
 			$("#btn-mainmap-sector-details-camp").click($.proxy(this.selectCampSector, this));
-			$("#btn-mainmap-sector-details-unvisited").click($.proxy(this.selectUnvisitedSector, this));
-			$("#btn-mainmap-sector-details-unscouted").click($.proxy(this.selectUnscoutedSector, this));
+			$("#btn-mainmap-sector-details-unknown").click($.proxy(this.selectUnknownSector, this));
+			$("#btn-mainmap-sector-details-unscouted").click($.proxy(this.selectUnscoutedLocaleSector, this));
 			$("#btn-mainmap-sector-details-ingredients").click($.proxy(this.selectIngredientSector, this));
 			
 			$("#btn-mainmap-sector-path").click($.proxy(this.showSectorPath, this));
@@ -205,12 +205,12 @@ define([
 			GameGlobals.uiFunctions.toggle($("#btn-mainmap-sector-details-camp"), hasCampOnLevel);
 			
 			let mapStatus = GameGlobals.levelHelper.getLevelStats(this.selectedLevel);
-			let hasUnvisitedSectors = mapStatus.percentVisitedSectors < 1;
-			let hasUnscoutedSectors = mapStatus.countClearedSectors != mapStatus.countScoutedSectors;
+			let hasUnknownSectors = mapStatus.percentVisitedSectors < 1 || mapStatus.countVisitedSectors > mapStatus.countScoutedSectors;
+			let hasUnscoutedLocaleSectors = mapStatus.countClearedSectors != mapStatus.countScoutedSectors;
 			let hasIngredientSectors = mapStatus.countKnownIngredientSectors > 0;
 			
-			GameGlobals.uiFunctions.toggle($("#btn-mainmap-sector-details-unvisited"), hasUnvisitedSectors);
-			GameGlobals.uiFunctions.toggle($("#btn-mainmap-sector-details-unscouted"), hasUnscoutedSectors);
+			GameGlobals.uiFunctions.toggle($("#btn-mainmap-sector-details-unknown"), hasUnknownSectors);
+			GameGlobals.uiFunctions.toggle($("#btn-mainmap-sector-details-unscouted"), hasUnscoutedLocaleSectors);
 			GameGlobals.uiFunctions.toggle($("#btn-mainmap-sector-details-ingredients"), hasIngredientSectors);
 				
 			if (this.selectedMapStyle == this.MAP_STYLE_CANVAS) {
@@ -323,10 +323,10 @@ define([
 			this.centerMap(pos, true);
 		},
 		
-		selectUnvisitedSector: function () {
+		selectUnknownSector: function () {
 			let newSector = this.getNextSelectableSector(1, (sector) => {
 				let sectorStatus = SectorConstants.getSectorStatus(sector);
-				return sectorStatus == SectorConstants.MAP_SECTOR_STATUS_REVEALED_BY_MAP || sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE;
+				return sectorStatus == SectorConstants.MAP_SECTOR_STATUS_REVEALED_BY_MAP || sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE || sectorStatus == SectorConstants.MAP_SECTOR_STATUS_VISITED_UNSCOUTED;
 			});
 			if (!newSector) return null;
 			let pos = newSector.get(PositionComponent);
@@ -334,10 +334,10 @@ define([
 			this.centerMap(pos, true);
 		},
 		
-		selectUnscoutedSector: function () {
+		selectUnscoutedLocaleSector: function () {
 			let newSector = this.getNextSelectableSector(1, (sector) => {
 				let sectorStatus = SectorConstants.getSectorStatus(sector);
-				return sectorStatus == SectorConstants.MAP_SECTOR_STATUS_VISITED_UNSCOUTED || sectorStatus == SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED;
+				return sectorStatus == SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED;
 			});
 			if (!newSector) return null;
 			let pos = newSector.get(PositionComponent);
