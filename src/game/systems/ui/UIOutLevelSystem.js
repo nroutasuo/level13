@@ -100,7 +100,7 @@ define([
 			});
 			GlobalSignals.inventoryChangedSignal.add(function () {
 				sys.updateSectorDescription();
-				sys.updateOutImprovementsVisibility();
+				sys.updateOutImprovementsList();
 				sys.updateDespair();
 			});
 			GlobalSignals.featureUnlockedSignal.add(function () {
@@ -161,7 +161,7 @@ define([
 
 			this.rebuildVis();
 			this.updateLocales();
-			this.updateOutImprovementsVisibility();
+			this.updateOutImprovementsList();
 			this.updateMovementRelatedActions();
 			this.updateLocationDetails();
 			this.updateSectorDescription();
@@ -635,39 +635,20 @@ define([
 				}
 
 				if (actionName) {
-					var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(actionName);
+					let improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(actionName);
 					if (improvementName) {
 						let actionVisible = GameGlobals.playerActionsHelper.isVisible(actionName);
 						let existingImprovements = improvements.getCount(improvementName);
 						$(this).find(".list-amount").text(existingImprovements);
 						GameGlobals.uiFunctions.toggle($(this).find(".action-use"), existingImprovements > 0);
 
-						var isVisible = actionVisible || existingImprovements > 0;
+						let isVisible = actionVisible || existingImprovements > 0;
 						GameGlobals.uiFunctions.toggle($(this), isVisible);
 						if (isVisible) numVisible++;
 					}
 				}
 			});
 			GameGlobals.uiFunctions.toggle("#header-out-improvements", numVisible > 0);
-		},
-
-		updateOutImprovementsVisibility: function () {
-			if (!this.playerLocationNodes.head) return;
-			if (GameGlobals.gameState.uiStatus.isHidden) return;
-			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
-			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-
-			var isScouted = sectorStatus.scouted;
-			var hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
-
-			var collectorFood = improvements.getVO(improvementNames.collector_food);
-			var collectorWater = improvements.getVO(improvementNames.collector_water);
-			var hasFood = isScouted && featuresComponent.resourcesCollectable.food > 0;
-			var hasWater = isScouted && featuresComponent.resourcesCollectable.water > 0;
-			GameGlobals.uiFunctions.toggle("#out-improvements-collector-food", collectorFood.count > 0 || hasFood);
-			GameGlobals.uiFunctions.toggle("#out-improvements-collector-water", collectorWater.count > 0 || hasWater);
-			GameGlobals.uiFunctions.toggle("#out-improvements-camp", sectorStatus.canBuildCamp || hasCampHere);
 		},
 
 		updateOutImprovementsStatus: function () {

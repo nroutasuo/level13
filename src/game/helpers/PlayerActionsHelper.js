@@ -205,7 +205,7 @@ define([
 			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_INVALID_SECTOR) return false;
 			
 			// default to false
-			return true;
+			return false;
 		},
 		
 		isInProgress: function (action) {
@@ -315,6 +315,10 @@ define([
 						return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_BAG_FULL };
 					}
 				}
+			}
+			
+			if (action == "build_out_camp" && !statusComponent.canBuildCamp) {
+				return { value: 0, reason: "Can't build camp here"};
 			}
 			
 			return result;
