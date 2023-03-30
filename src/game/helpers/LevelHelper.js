@@ -753,10 +753,17 @@ define([
 			
 			// lxuury resources
 			if (camp && improvementsComponent.getCount(improvementNames.luxuryOutpost) == 0) {
-				let luxuryResource = this.getFoundLuxuryResourceOnLevel(level);
-				if (luxuryResource) {
-					let name = this.getProjectName(improvementNames.luxuryOutpost, level);
-					projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.luxuryOutpost), "build_out_luxury_outpost", sectorPosition, null, name));
+				let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+				let getLevelsForCamp = GameGlobals.gameState.getLevelsForCamp(campOrdinal);
+				let result = 0;
+				for (let i = 0; i < getLevelsForCamp.length; i++) {
+					let campLevel = getLevelsForCamp[i];
+					let luxuryResource = this.getFoundLuxuryResourceOnLevel(campLevel);
+					if (luxuryResource) {
+						let name = this.getProjectName(improvementNames.luxuryOutpost, campLevel);
+						let projectPosition = new PositionVO(campLevel, sectorPos.sectorX, sectorPos.sectorY);
+						projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.luxuryOutpost), "build_out_luxury_outpost", projectPosition, null, name));
+					}
 				}
 			}
 			

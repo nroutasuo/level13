@@ -25,6 +25,14 @@ define(['ash'], function (Ash) {
 			let levelS = short ? "L" + this.level : "level " + this.level;
 			return sectorXS + " " + sectorYS + (includeLevel ? " " + levelS : "");
 		},
+
+		sectorId: function () {
+			return this.sectorX + "." + this.sectorY;
+		},
+		
+		getPosition: function () {
+			return this;
+		},
 		
 		toInt: function () {
 			return this.level * 1000000 + this.sectorY * 1000 + this.sectorX;
