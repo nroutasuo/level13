@@ -3,6 +3,7 @@ define([
 	'ash',
 	'game/GameGlobals',
 	'game/GlobalSignals',
+	'game/constants/LocaleConstants',
 	'game/constants/PositionConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/PlayerStatConstants',
@@ -37,6 +38,7 @@ define([
 	'game/components/sector/PassagesComponent',
 	'game/components/sector/EnemiesComponent',
 	'game/components/sector/MovementOptionsComponent',
+	'game/components/sector/SectorControlComponent',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/SectorLocalesComponent',
@@ -47,12 +49,12 @@ define([
 	'game/vos/ResourcesVO',
 	'game/vos/ImprovementVO'
 ], function (
-	Ash, GameGlobals, GlobalSignals, PositionConstants, PlayerActionConstants, PlayerStatConstants, FollowerConstants,
+	Ash, GameGlobals, GlobalSignals, LocaleConstants, PositionConstants, PlayerActionConstants, PlayerStatConstants, FollowerConstants,
 	ImprovementConstants, ItemConstants, BagConstants, MovementConstants, UpgradeConstants, PerkConstants, TextConstants,
 	TradeConstants, UIConstants, WorldConstants, PlayerActionResultNode, PlayerStatsNode, PlayerResourcesNode,
 	PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode, LevelComponent, CurrencyComponent, PositionComponent,
 	PlayerActionComponent, BagComponent, ExcursionComponent, ItemsComponent, DeityComponent, FightComponent,
-	OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent, SectorFeaturesComponent,
+	OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent, SectorControlComponent, SectorFeaturesComponent,
 	SectorStatusComponent, SectorLocalesComponent, SectorImprovementsComponent, TraderComponent, RaidComponent,
 	CampComponent, ResourcesVO, ImprovementVO
 ) {
@@ -904,6 +906,18 @@ define([
 							}
 						}
 					}
+					if (typeof requirements.sector.controlledLocales !== "undefined") {
+						let sectorControlComponent = sector.get(SectorControlComponent);
+						for(let localei in requirements.sector.controlledLocales) {
+							let requiredStatus = requirements.sector.controlledLocales[localei];
+							let currentStatus = sectorControlComponent.hasControlOfLocale(localei);
+							if (requiredStatus !== currentStatus) {
+								if (requiredStatus) reason = "Must be scouted first.";
+								if (!requiredStatus) reason = "Already scouted.";
+								return { value: 0, reason: reason };
+							}
+						}
+					}
 
 					for (let i in PositionConstants.getLevelDirections()) {
 						var direction = PositionConstants.getLevelDirections()[i];
@@ -1554,6 +1568,13 @@ define([
 					requirements.sector.scouted = true;
 					requirements.sector.scoutedLocales = {};
 					requirements.sector.scoutedLocales[localei] = false;
+					return requirements;
+				
+				case "clear_workshop":
+					requirements.sector = {};
+					requirements.sector.scouted = true;
+					requirements.sector.controlledLocales = {};
+					requirements.sector.controlledLocales[LocaleConstants.LOCALE_ID_WORKSHOP] = false;
 					return requirements;
 					
 				case "fight_gang":
