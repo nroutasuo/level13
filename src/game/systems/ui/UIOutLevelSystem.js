@@ -128,9 +128,10 @@ define([
 			GlobalSignals.add(this, GlobalSignals.collectorCollectedSignal, this.updateOutImprovementsStatus);
 			GlobalSignals.add(this, GlobalSignals.movementBlockerClearedSignal, this.updateAll);
 			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
-			GlobalSignals.add(this, GlobalSignals.sectorRevealedSignal, this.onSectorRevealed);
 			GlobalSignals.add(this, GlobalSignals.popupClosedSignal, this.updateLocales);
 			GlobalSignals.add(this, GlobalSignals.buttonStateChangedSignal, this.onButtonStateChanged);
+			GlobalSignals.add(this, GlobalSignals.equipmentChangedSignal, this.scheduleMapUpdate);
+			GlobalSignals.add(this, GlobalSignals.sectorRevealedSignal, this.scheduleMapUpdate);
 			this.rebuildVis();
 			this.updateUnlockedFeatures();
 		},
@@ -170,6 +171,10 @@ define([
 			this.updateUnlockedFeatures();
 			this.updateOutImprovementsList();
 			this.updateOutImprovementsStatus();
+		},
+		
+		scheduleMapUpdate: function () {
+			this.pendingUpdateMap = true;
 		},
 
 		updateUnlockedFeatures: function () {
@@ -912,10 +917,6 @@ define([
 				return improvementNames.collector_food;
 			}
 			return null;
-		},
-		
-		onSectorRevealed: function () {
-			this.pendingUpdateMap = true;
 		},
 		
 		onButtonStateChanged: function (action, isEnabled) {
