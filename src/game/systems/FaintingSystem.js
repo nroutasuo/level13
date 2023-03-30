@@ -246,6 +246,7 @@ define([
 				} else {
 					if (GameGlobals.logWarnings) log.w("Fainting target sector has no CampComponent");
 				}
+				sys.playerStatsNodes.head.stamina.limitStamina(sys.playerStatsNodes.head.maxStamina / 2);
 			}, 100);
 		},
 	

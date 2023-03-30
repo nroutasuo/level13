@@ -27,6 +27,10 @@ define(['ash'], function (Ash) {
 		resetShield: function () {
 			this.shield = this.maxShield;
 		},
+		
+		limitStamina: function (max) {
+			this.stamina = Math.min(this.stamina, max);
+		},
 
 		getSaveKey: function () {
 			return "Stamina";
