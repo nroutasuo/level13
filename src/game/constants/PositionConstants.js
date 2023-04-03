@@ -105,8 +105,8 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 			if (dx > 0 && dy < 0) return this.DIRECTION_SW;
 			if (dx < 0 && dy < 0) return this.DIRECTION_SE;
 			
-			if (dl > 0) return this.DIRECTION_UP;
-			if (dl < 0) return this.DIRECTION_DOWN;
+			if (dl < 0) return this.DIRECTION_UP;
+			if (dl > 0) return this.DIRECTION_DOWN;
 			
 			return this.DIRECTION_NONE;
 		},
