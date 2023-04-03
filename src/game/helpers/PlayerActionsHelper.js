@@ -329,10 +329,11 @@ define([
 		checkGeneralRequirementaInternal: function (requirements, action, sector, checksToSkip) {
 			sector = sector || (this.playerLocationNodes && this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null);
 			
-			var playerVision = this.playerStatsNodes.head.vision.value;
-			var playerPerks = this.playerStatsNodes.head.perks;
-			var playerStamina = this.playerStatsNodes.head.stamina.stamina;
-			var deityComponent = this.playerResourcesNodes.head.entity.get(DeityComponent);
+			let playerVision = this.playerStatsNodes.head.vision.value;
+			let playerMaxVision = this.playerStatsNodes.head.vision.maximum;
+			let playerPerks = this.playerStatsNodes.head.perks;
+			let playerStamina = this.playerStatsNodes.head.stamina.stamina;
+			let deityComponent = this.playerResourcesNodes.head.entity.get(DeityComponent);
 			
 			var positionComponent = sector.get(PositionComponent);
 			var improvementComponent = sector.get(SectorImprovementsComponent);
@@ -376,6 +377,13 @@ define([
 				
 				if (requirements.vision) {
 					let result = this.checkRequirementsRange(requirements.vision, playerVision, "{min} vision needed", "{max} vision max");
+					if (result) {
+						return result;
+					}
+				}
+				
+				if (requirements.maxVision) {
+					let result = this.checkRequirementsRange(requirements.maxVision, playerMaxVision, "{min} vision needed", "{max} vision max");
 					if (result) {
 						return result;
 					}

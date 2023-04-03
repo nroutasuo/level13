@@ -189,7 +189,7 @@ define(['ash'], function (Ash) {
 				repeats: "COOLDOWN",
 				delay: 1500,
 				logMessage: "Collected enough metal to craft a Lantern",
-				conditions: { vision: [-1, 50], actionsAvailable: ["craft_light1"], featureUnlocked: { bag: true } }
+				conditions: { maxVision: [-1, 50], actionsAvailable: ["craft_light1"], featureUnlocked: { bag: true } }
 			},
 			TUTORIAL_ENCOUNTER_BLOCKER_TYPE_GAP_NO_TECH: {
 				group: "TUTORIAL_ENCOUNTER_BLOCKER_TYPE_GAP",
