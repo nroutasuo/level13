@@ -157,6 +157,7 @@ define([
 			
 			if (population >= housingCap) {
 				changePerSec = Math.min(changePerSec, 0);
+				changePerSecWithoutCooldown = Math.min(changePerSec, 0);
 			}
 			
 			camp.populationChangePerSecRaw = changePerSec;
