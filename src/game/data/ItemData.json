@@ -140,7 +140,7 @@
     },
     "artefact_history_1": {
         "campOrdinalRequired": 1,
-        "description": "Long since dried and useless as a writing implement, but still popular among sages and philosophers as a symbol of knowledge.",
+        "description": "Long since dried and useless as a writing implement, but popular among sages as a symbol of knowledge.",
         "icon": "img/items/artefact-test.png",
         "id": "artefact_history_1",
         "isCraftable": false,

@@ -168,14 +168,14 @@ define(['ash'], function (Ash) {
 			TUTORIAL_BUILT_TRADEPOST_1: {
 				triggers: [ "action_build" ],
 				repeats: "NEVER",
-				logMessage: "Built a trading post for trade between camps. Need another one connect to.",
+				logMessage: "The trading post is ready, but there is no camp to trade with. Need to build another one.",
 				conditions: { improvements: { tradepost: [ 1, 2 ] }, tribe: { improvements: { tradepost: [ 1, 2 ] } } }
 			},
 			TUTORIAL_BUILT_TRADEPOST_2: {
 				triggers: [ "action_build" ],
 				repeats: "NEVER",
-				logMessage: "Built a trading post. The two camps now share resources and storage.",
-				conditions: { improvements: { tradepost: [ 1, 2 ] }, tribe: { improvements: { tradepost: [ 2, 3 ] } } }
+				logMessage: "Built a trading post. Our two camps now share resources and storage.",
+				conditions: { improvements: { tradepost: [ 2, -1 ] }, tribe: { improvements: { tradepost: [ 2, 3 ] } } }
 			},
 			TUTORIAL_USED_HOSPITAL: {
 				triggers: [ "action_any" ],
@@ -305,7 +305,7 @@ define(['ash'], function (Ash) {
 				triggers: [ "feature_unlocked" ],
 				repeats: "NEVER",
 				delay: 1500,
-				logMessage: "A bag allows carrying more stuff.",
+				logMessage: "Found a bag that allows carrying more stuff.",
 				conditions: { featureUnlocked: { bag: true } }
 			},
 			TUTORIAL_FOUND_METAL: {

@@ -915,9 +915,10 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		},
 		
 		getLocaleName: function (locale, sectorFeatures, isShort) {
-			var condition = sectorFeatures.getCondition();
-			var modifier = "";
-			var noun = "";
+			let condition = sectorFeatures.getCondition();
+			let modifier = "";
+			let noun = "";
+			
 			// default modifiers
 			switch (condition) {
 				case SectorConstants.SECTOR_CONDITION_RUINED:
@@ -939,6 +940,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					modifier = "pristine";
 					break;
 			}
+			
 			// nouns and special modifiers
 			switch (locale.type) {
 				case localeTypes.factory:
@@ -946,6 +948,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					break;
 				case localeTypes.house:
 					if (condition === SectorConstants.SECTOR_CONDITION_DAMAGED) modifier = "destroyed";
+					if (condition === SectorConstants.SECTOR_CONDITION_WORN) modifier = "derelict";
 					noun = "house";
 					break;
 				case localeTypes.lab:

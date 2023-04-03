@@ -766,7 +766,7 @@ define(['ash',
 			let luxuryResource = localeVO.luxuryResource;
 			if (luxuryResource) {
 				logMsgSuccess += "<br/>Found a source of <span class='hl-functionality'>" + TribeConstants.getLuxuryDisplayName(luxuryResource) + "</span>. ";
-				logMsgSuccess += "There will be a now project available in camp.";
+				logMsgSuccess += "There is a project available in camp.";
 			}
 
 			let playerActionFunctions = this;
@@ -2063,7 +2063,7 @@ define(['ash',
 			GameGlobals.gameState.numUnlockedMilestones = index;
 			
 			let hasDeity = this.playerStatsNodes.head.entity.has(DeityComponent);
-			let baseMsg = "We now call this a " + newMilestone.name + ".";
+			let baseMsg = "Milestone claimed. We now call this a " + newMilestone.name + ".";
 			let popupMsg = "<p>" + baseMsg + "</p>";
 			popupMsg += "<p>" + UIConstants.getMilestoneUnlocksDescriptionHTML(newMilestone, oldMilestone, true, true, hasDeity) + "<p>";
 			GameGlobals.uiFunctions.showInfoPopup("Milestone", popupMsg, "Continue", null, null, false, false);
