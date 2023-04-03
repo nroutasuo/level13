@@ -1,5 +1,5 @@
-define(['ash', 'game/GameGlobals', 'game/GlobalSignals', 'game/systems/GameManager', 'game/systems/SaveSystem',],
-function (Ash, GameGlobals, GlobalSignals, GameManager, SaveSystem) {
+define(['ash', 'utils/FileUtils', 'game/GameGlobals', 'game/GlobalSignals', 'game/systems/GameManager', 'game/systems/SaveSystem',],
+function (Ash, FileUtils, GameGlobals, GlobalSignals, GameManager, SaveSystem) {
 var UIOutManageSaveSystem = Ash.System.extend({
 
 		spanSaveSeed: null,
@@ -8,12 +8,15 @@ var UIOutManageSaveSystem = Ash.System.extend({
 		loadImportcontainer: null,
 		spanWarning: null,
 		spanMsg: null,
+		
+		lastExport: null,
 
 		constructor: function () {
 			this.spanSaveSeed = $("#save-seed");
 			this.spanSaveVersion = $("#save-version");
 			this.textField = $("#manage-save-textarea");
 			this.loadImportcontainer = $("#load-import-container");
+			this.downloadExportContainer = $("#export-download-container");
 			this.spanWarning = $("#manage-save-warning");
 			this.spanMsg = $("#manage-save-msg");
 
@@ -26,6 +29,9 @@ var UIOutManageSaveSystem = Ash.System.extend({
 			});
 			$("#load-import").click(function () {
 				system.loadImport();
+			});
+			$("#btn-download-export").click(function () {
+				system.downloadExport();
 			});
 			$("#close-manage-save-popup").click(function (e) {
 				system.resetElements();
@@ -63,6 +69,7 @@ var UIOutManageSaveSystem = Ash.System.extend({
 			GameGlobals.uiFunctions.toggle(this.spanWarning, false);
 			GameGlobals.uiFunctions.toggle(this.textField, false);
 			GameGlobals.uiFunctions.toggle(this.loadImportcontainer, false);
+			GameGlobals.uiFunctions.toggle(this.downloadExportContainer, false);
 		},
 
 		openExport: function () {
@@ -73,7 +80,9 @@ var UIOutManageSaveSystem = Ash.System.extend({
 			var saveObject = GameGlobals.saveHelper.parseSaveJSON(saveJSON);
 			var isOk = saveObject != null;
 			if (isOk) {
+				this.lastExport = saveString;
 				GameGlobals.uiFunctions.toggle(this.textField, true);
+				GameGlobals.uiFunctions.toggle(this.downloadExportContainer, true);
 				this.textField.val(saveString);
 				this.textField.select();
 				GameGlobals.uiFunctions.toggle(this.spanMsg, true);
@@ -88,6 +97,7 @@ var UIOutManageSaveSystem = Ash.System.extend({
 			this.resetElements();
 			GameGlobals.uiFunctions.toggle(this.textField, true);
 			GameGlobals.uiFunctions.toggle(this.loadImportcontainer, true);
+			GameGlobals.uiFunctions.toggle(this.downloadExportContainer, false);
 		},
 
 		loadImport: function () {
@@ -132,7 +142,12 @@ var UIOutManageSaveSystem = Ash.System.extend({
 			}
 			GlobalSignals.restartGameSignal.dispatch(false);
 			GameGlobals.uiFunctions.showGame(true);
-		}
+		},
+		
+		downloadExport: function () {
+			let now = new Date();
+			FileUtils.saveTextToFile("level13-save", this.lastExport);
+		},
 
 	});
 	return UIOutManageSaveSystem;
