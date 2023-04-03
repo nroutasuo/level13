@@ -1,5 +1,6 @@
 define([
 	'ash',
+	'utils/FileUtils',
 	'utils/MapUtils',
 	'game/GameGlobals',
 	'game/GlobalSignals',
@@ -28,7 +29,7 @@ define([
 	'game/components/player/ItemsComponent',
 	'game/components/type/LevelComponent',
 	'game/systems/CheatSystem',
-], function (Ash, MapUtils, GameGlobals, GlobalSignals, GameConstants, ItemConstants, LevelConstants, MovementConstants, PositionConstants, SectorConstants, TextConstants, TradeConstants, UIConstants,
+], function (Ash, FileUtils, MapUtils, GameGlobals, GlobalSignals, GameConstants, ItemConstants, LevelConstants, MovementConstants, PositionConstants, SectorConstants, TextConstants, TradeConstants, UIConstants,
 	PlayerLocationNode, PlayerPositionNode,
 	CampComponent, PositionComponent, VisitedComponent, EnemiesComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, SectorImprovementsComponent, WorkshopComponent, ItemsComponent, LevelComponent,
 	CheatSystem) {
@@ -77,6 +78,9 @@ define([
 			var sys = this;
 			$("#btn-cheat-teleport").click(function () {
 				sys.teleport();
+			});
+			$("#btn-download-map").click(function () {
+				sys.downloadASCIIMap();
 			});
 			$("#btn-mainmap-sector-details-next").click($.proxy(this.selectNextSector, this));
 			$("#btn-mainmap-sector-details-previous").click($.proxy(this.selectPreviousSector, this));
@@ -184,6 +188,7 @@ define([
 			$("#mainmap-sector-details-empty-text-canvas").toggle(mapStyle == this.MAP_STYLE_CANVAS);
 			$("#mainmap-container-ascii").toggle(mapStyle == this.MAP_STYLE_ASCII);
 			$("#mainmap-sector-details-empty-text-ascii").toggle(mapStyle == this.MAP_STYLE_ASCII);
+			$("#btn-download-map").toggle(mapStyle == this.MAP_STYLE_ASCII);
 			
 			this.updateMap();
 			this.centerMap();
@@ -192,13 +197,9 @@ define([
 		updateMap: function () {
 			if (!this.playerPositionNodes || !this.playerPositionNodes.head) return;
 			
-			var mapPosition = this.playerPositionNodes.head.position.getPosition();
-			var sys = this;
-			if (this.selectedLevel || this.selectedLevel == 0) {
-				mapPosition.level = this.selectedLevel;
-				mapPosition.sectorX = 0;
-				mapPosition.sectorY = 0;
-			}
+			let sys = this;
+			
+			let mapPosition = this.getCurrentMapPosition();
 			
 			var levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(mapPosition.level);
 			var hasCampOnLevel = levelEntity.get(CampComponent) !== null;
@@ -379,6 +380,16 @@ define([
 			}
 			
 			return newIndex == null ? null : sectors[newIndex];
+		},
+		
+		getCurrentMapPosition: function () {
+			let mapPosition = this.playerPositionNodes.head.position.getPosition();
+			if (this.selectedLevel || this.selectedLevel == 0) {
+				mapPosition.level = this.selectedLevel;
+				mapPosition.sectorX = 0;
+				mapPosition.sectorY = 0;
+			}
+			return mapPosition;
 		},
 		
 		showSectorPath: function () {
@@ -680,6 +691,12 @@ define([
 		findPathTo: function (sector) {
 			if (!sector) return null;
 			return GameGlobals.levelHelper.findPathTo(this.playerLocationNodes.head.entity, sector, { skipBlockers: true, skipUnvisited: false });
+		},
+		
+		downloadASCIIMap: function () {
+			let mapPosition = this.getCurrentMapPosition();
+			let ascii = GameGlobals.uiMapHelper.getASCII(this.selectedMapMode, mapPosition, false);
+         	FileUtils.saveTextToFile("level-" + mapPosition.level, ascii);
 		},
 		
 		teleport: function () {
