@@ -64,7 +64,7 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 			}
 			
 			if (baseActionID == "craft") {
-				return 3 / speed;
+				return 2 / speed;
 			}
 			
 			return 0;
