@@ -79,6 +79,17 @@ define([
 			return effects;
 		},
 		
+		getEffectHints: function (upgradeID) {
+			let result = "";
+			let unlockedActions = this.getUnlockedActions(upgradeID);
+			
+			if (unlockedActions.indexOf("clear_waste_t") >= 0) {
+				result += "Workers cannot clear toxic waste. You must go to the sector yourself.";
+			}
+			
+			return result;
+		},
+		
 		getImprovementDisplayName: function (improvementName) {
 			// TODO determine what improvement level to use (average? current camp?)
 			return ImprovementConstants.getImprovementDisplayName(improvementName);
@@ -228,10 +239,10 @@ define([
 		getUnlockedActions: function (upgradeID, filter) {
 			// TODO performance
 			let result = [];
-			var reqsDefinition;
+			let reqsDefinition;
 			for (var action in PlayerActionConstants.requirements) {
 				reqsDefinition = PlayerActionConstants.requirements[action];
-				if (reqsDefinition.upgrades && filter(action)) {
+				if (reqsDefinition.upgrades && (!filter || filter(action))) {
 					for (var requiredUpgradeId in reqsDefinition.upgrades) {
 						if (requiredUpgradeId === upgradeID) {
 							result.push(action);

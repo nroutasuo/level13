@@ -2039,7 +2039,10 @@ define(['ash',
 			gtag('event', 'upgrade_bought', { event_category: 'progression', event_label: upgradeID });
 			
 			let title = "Researched complete ";
-			let message = "<p>You've researched <span class='hl-functionality'>" + upgradeDefinition.name + "</span>.</p><p class='p-meta'>" + GameGlobals.upgradeEffectsHelper.getEffectDescription(upgradeID, true) + "</p>";
+			let message = "<p>You've researched <span class='hl-functionality'>" + upgradeDefinition.name + "</span>.</p>";
+			message += "<p class='p-meta'>" + GameGlobals.upgradeEffectsHelper.getEffectDescription(upgradeID, true) + "</p>";
+			let hints = GameGlobals.upgradeEffectsHelper.getEffectHints(upgradeID);
+			if (hints && hints.length > 0) message += "<p class='p-meta'>" + hints + "</p>";
 			
 			GameGlobals.uiFunctions.showInfoPopup(title, message, "Continue", null, null, true, false);
 			
