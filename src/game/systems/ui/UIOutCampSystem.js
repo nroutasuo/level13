@@ -824,12 +824,17 @@
 		
 		updateCampActionListItem: function (li, data) {
 			let action = data.action;
-			let displayName = data.improvementName ? "Build " + ImprovementConstants.getImprovementDisplayName(data.improvementName) : action;
+			let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+			
+			let displayName = baseActionID.replaceAll("_", " ");
+			
+			if (data.improvementName) {
+				displayName = "Build " + ImprovementConstants.getImprovementDisplayName(data.improvementName);
+			}
 			
 			li.$root.data("progress-percent", data.percent);
 			li.$label.html(displayName);
 		},
-		
 
 		onTabChanged: function () {
 			if (GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.in) {
