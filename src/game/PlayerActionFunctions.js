@@ -869,6 +869,8 @@ define(['ash',
 				sys.clearBlocker(action, blocker.type, sectorPos);
 			};
 			
+			let logMsgFailBase = "Tried to clear the waste. ";
+			
 			let messages = {
 				id: LogConstants.MSG_ID_CLEAR_WASTE,
 				msgSuccess: "Cleared the waste. The area is now safe to pass through.",
