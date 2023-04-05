@@ -74,8 +74,15 @@ define([
 				if (project.improvement.name != improvementNames.luxuryOutpost) continue;
 				
 				let level = project.position.level;
-				let resource = GameGlobals.levelHelper.getLuxuryResourceOnLevel(level);
-				result.push(resource);
+				let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+				let getLevelsForCamp = GameGlobals.gameState.getLevelsForCamp(campOrdinal);
+				for (let i = 0; i < getLevelsForCamp.length; i++) {
+					let campLevel = getLevelsForCamp[i];
+					let resource = GameGlobals.levelHelper.getLuxuryResourceOnLevel(campLevel);
+					if (resource) {
+						result.push(resource);
+					}
+				}
 			}
 			return result;
 		},
