@@ -846,6 +846,7 @@ define([
 		},
 		
 		updateLevelIcon: function (animate) {
+			if (!this.currentLocationNodes.head) return;
 			let playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
 			let inCamp = playerPosition.inCamp;
 			
