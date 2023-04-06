@@ -2,7 +2,7 @@ require.config({
 
 	deps: ["level13-app"],
 
-	waitSeconds: 10,
+	waitSeconds: 30,
 
 	baseUrl: 'src',
 
