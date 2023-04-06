@@ -1010,10 +1010,10 @@ define([
 			
 			// Ingredients
 			if (ingredientProbability > 0) {
-				var ingredientProbabilityWithEfficiency = ingredientProbability / 2 + ingredientProbability / 2 * efficiency;
-				var max = Math.floor(Math.random() * 3);
-				var amount = Math.floor(Math.random() * efficiency * max) + 1;
-				var addedIngredient = false;
+				let ingredientProbabilityWithEfficiency = ingredientProbability / 2 + ingredientProbability / 2 * efficiency;
+				let max = Math.floor(Math.random() * 3);
+				let amount = Math.floor(Math.random() * efficiency * max) + 1;
+				let addedIngredient = false;
 				
 				// . Necessity ingredient (stuff blocking the player from progressing)
 				// TODO replace with something that's not random & is better communicated in-game
@@ -1029,11 +1029,12 @@ define([
 
 				// - Normal ingredients
 				if (!availableIngredients || availableIngredients.length > 0) {
-					if (hasBag && hasCamp && hasDecentEfficiency && !addedIngredient && Math.random() < ingredientProbabilityWithEfficiency) {
-						var ingredient = GameGlobals.itemsHelper.getUsableIngredient(availableIngredients);
+					if (hasBag && hasCamp && !addedIngredient && Math.random() < ingredientProbabilityWithEfficiency) {
+						let ingredient = GameGlobals.itemsHelper.getUsableIngredient(availableIngredients);
 						for (let i = 0; i <= amount; i++) {
 							result.push(ingredient.clone());
 						}
+						addedIngredient = true;
 					}
 				}
 			}
