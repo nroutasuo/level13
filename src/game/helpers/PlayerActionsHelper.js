@@ -212,12 +212,13 @@ define([
 		
 		isInProgress: function (action) {
 			if (this.playerResourcesNodes.head == null) return false;
+			let playerPos = this.playerStatsNodes.head.entity.get(PositionComponent);
 			let playerActionComponent = this.playerResourcesNodes.head.entity.get(PlayerActionComponent);
 			let actions = playerActionComponent.getAllActions();
 			for (let i = 0; i < actions.length; i++) {
-				if (actions[i].action == action) {
-					return true;
-				}
+				if (actions[i].action != action) continue;
+				if ((actions[i].level || actions[i].level !== 0) && actions[i].level != playerPos.level) continue;
+				return true;
 			}
 			return false;
 		},
@@ -1982,6 +1983,11 @@ define([
 			var remainder = action.replace(this.getBaseActionID(action) + "_", "");
 			if (remainder && remainder !== action) return remainder;
 			return "";
+		},
+		
+		getActionDefaultParam: function () {
+			let playerPos = this.playerStatsNodes.head.entity.get(PositionComponent);
+			return playerPos.level + "." + playerPos.sectorX + "." + playerPos.sectorY;
 		},
 
 		getActionNameForImprovement: function (improvementName, disableWarnings) {

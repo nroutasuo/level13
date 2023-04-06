@@ -170,8 +170,9 @@ define(['ash',
 						var param = null;
 						var actionIDParam = GameGlobals.playerActionsHelper.getActionIDParam(action);
 						if (actionIDParam) param = actionIDParam;
-						var isProject = $(this).hasClass("action-level-project");
+						let isProject = $(this).hasClass("action-level-project");
 						if (isProject) param = $(this).attr("sector");
+						if (!param) param = GameGlobals.playerActionsHelper.getActionDefaultParam();
 
 						var locationKey = uiFunctions.getLocationKey(action);
 						var isStarted = GameGlobals.playerActionFunctions.startAction(action, param);
@@ -973,7 +974,8 @@ define(['ash',
 				durationLeft = Math.min(durationTotal, GameGlobals.gameState.getActionDuration(action, locationKey, durationTotal) / 1000);
 				if (cooldownLeft > 0) this.startButtonCooldown(button, cooldownTotal, cooldownLeft);
 				else this.stopButtonCooldown(button);
-				if (durationLeft > 0) this.startButtonDuration(button, cooldownTotal, durationLeft);
+				if (durationLeft > 0) this.startButtonDuration(button, durationTotal, durationLeft);
+				else this.stopButtonDuration(button);
 			},
 
 			startButtonCooldown: function (button, cooldown, cooldownLeft) {
@@ -1004,8 +1006,8 @@ define(['ash',
 
 			startButtonDuration: function (button, duration, durationLeft) {
 				if (!durationLeft) durationLeft = duration;
-				var uiFunctions = this;
-				var startingWidth = (1 - durationLeft / duration) * 100;
+				let uiFunctions = this;
+				let startingWidth = (1 - durationLeft / duration) * 100;
 				$(button).attr("data-isInProgress", "true");
 				$(button).children(".cooldown-duration").stop(true, false).css("display", "inherit").css("width", startingWidth + "%").animate({
 						width: '100%'

@@ -60,11 +60,11 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/PlayerActionVO'
 			return lastTimeStamp;
 		},
 		
-		getActionTimestamp: function (action) {
+		getActionTimestamp: function (action, level) {
 			let result = -1;
 			for (let i = this.endTimeStampList.length - 1; i >= 0; i--) {
 				let timestampAction = this.endTimeStampToActionDict[this.endTimeStampList[i]];
-				if (timestampAction.action == action) {
+				if (timestampAction.action == action && timestampAction.level == level) {
 					result = this.endTimeStampList[i];
 					break;
 				}
@@ -72,11 +72,11 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/PlayerActionVO'
 			return result;
 		},
 		
-		getAction: function (action) {
+		getAction: function (action, level) {
 			let result = null;
 			for (let i = this.endTimeStampList.length - 1; i >= 0; i--) {
 				let timestampAction = this.endTimeStampToActionDict[this.endTimeStampList[i]];
-				if (timestampAction.action == action) {
+				if (timestampAction.action == action && timestampAction.level == level) {
 					return timestampAction;
 				}
 			}
@@ -145,10 +145,10 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/PlayerActionVO'
 			return (lastTimeStamp - new Date().getTime()) / 1000;
 		},
 		
-		getActionCompletionPercentage: function (action) {
-			let actionVO = this.getAction(action);
+		getActionCompletionPercentage: function (action, level) {
+			let actionVO = this.getAction(action, level);
 			if (!actionVO) return 1;
-			let timestamp = this.getActionTimestamp(action);
+			let timestamp = this.getActionTimestamp(action, level);
 			if (!timestamp) return 1;
 			
 			let totalTime = timestamp - actionVO.startTime;

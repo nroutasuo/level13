@@ -314,6 +314,7 @@ define(['ash',
 		},
 		
 		getPositionVO: function (sectorPos) {
+			if (!sectorPos) return null;
 			var l = parseInt(sectorPos.split(".")[0]);
 			var sX = parseInt(sectorPos.split(".")[1]);
 			var sY = parseInt(sectorPos.split(".")[2]);
@@ -324,6 +325,12 @@ define(['ash',
 			if (!param) return null;
 			var position = this.getPositionVO(param);
 			return GameGlobals.levelHelper.getSectorByPosition(position.level, position.sectorX, position.sectorY);
+		},
+		
+		getActionSectorOrCurrent: function (sectorPos) {
+			let current = this.playerPositionNodes.head.entity;
+			let position = this.getPositionVO(sectorPos);
+			return this.getActionSector("", sectorPos) || current;
 		},
 
 		moveTo: function (direction) {
@@ -1471,114 +1478,139 @@ define(['ash',
 			sector.add(new BeaconComponent());
 		},
 
-		buildHouse: function (otherSector) {
-			this.buildImprovement("build_in_house", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_house"), otherSector);
+		buildHouse: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_house", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_house"), sector);
 		},
 
-		buildHouse2: function (otherSector) {
-			this.buildImprovement("build_in_house2", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_house2"), otherSector);
+		buildHouse2: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_house2", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_house2"), sector);
 		},
 
-		buildGenerator: function () {
-			this.buildImprovement("build_in_generator", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_generator"));
+		buildGenerator: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_generator", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_generator"), sector);
 		},
 
-		buildLights: function () {
-			this.buildImprovement("build_in_lights", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_lights"));
+		buildLights: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_lights", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_lights"), sector);
 			var msg = "Installed lights in the camp.";
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_LIGHTS, msg);
 		},
 
-		buildStorage: function (sector) {
+		buildStorage: function (sectorPos) {
 			this.buildImprovement("build_in_storage", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_storage"), sector);
 		},
 
-		buildFortification: function () {
-			this.buildImprovement("build_in_fortification", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_fortification"));
+		buildFortification: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_fortification", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_fortification"), sector);
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_FORTIFICATION, "Fortified the camp.");
 		},
 
-		buildAqueduct: function () {
-			this.buildImprovement("build_in_aqueduct", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_aqueduct"));
+		buildAqueduct: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_aqueduct", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_aqueduct"), sector);
 		},
 
-		buildStable: function () {
-			this.buildImprovement("build_in_stable", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_stable"));
+		buildStable: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_stable", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_stable"), sector);
 		},
 
-		buildBarracks: function () {
-			this.buildImprovement("build_in_barracks", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_barracks"));
+		buildBarracks: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_barracks", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_barracks"), sector);
 		},
 
-		buildSmithy: function () {
-			this.buildImprovement("build_in_smithy", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_smithy"));
+		buildSmithy: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_smithy", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_smithy"), sector);
 		},
 
-		buildApothecary: function () {
-			this.buildImprovement("build_in_apothecary", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_apothecary"));
+		buildApothecary: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_apothecary", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_apothecary"), sector);
 		},
 
-		buildCementMill: function () {
-			this.buildImprovement("build_in_cementmill", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_cementmill"));
+		buildCementMill: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_cementmill", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_cementmill"), sector);
 		},
 
-		buildRobotFactory: function () {
-			this.buildImprovement("build_in_robotFactory", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_robotFactory"));
+		buildRobotFactory: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_robotFactory", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_robotFactory"), sector);
 		},
 
-		buildRadioTower: function () {
-			this.buildImprovement("build_in_radiotower", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_radiotower"));
+		buildRadioTower: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_radiotower", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_radiotower"), sector);
 		},
 
-		buildCampfire: function () {
-			this.buildImprovement("build_in_campfire", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_campfire"));
+		buildCampfire: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_campfire", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_campfire"), sector);
 		},
 
-		buildDarkFarm: function () {
-			this.buildImprovement("build_in_darkfarm", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_darkfarm"));
+		buildDarkFarm: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_darkfarm", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_darkfarm"), sector);
 		},
 
-		buildHospital: function () {
-			this.buildImprovement("build_in_hospital", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_hospital"));
+		buildHospital: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_hospital", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_hospital"), sector);
 		},
 
-		buildLibrary: function () {
-			this.buildImprovement("build_in_library", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_library"));
+		buildLibrary: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_library", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_library"), sector);
 		},
 
-		buildMarket: function () {
-			this.buildImprovement("build_in_market", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_market"));
+		buildMarket: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_market", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_market"), sector);
 			GameGlobals.playerActionFunctions.unlockFeature("trade");
 		},
 
-		buildTradingPost: function () {
+		buildTradingPost: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
 			var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_tradepost");
 			this.buildImprovement("build_in_tradepost", improvementName);
 		},
 
-		buildInn: function () {
-			this.buildImprovement("build_in_inn", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_inn"));
+		buildInn: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_inn", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_inn"), sector);
 			GameGlobals.playerActionFunctions.unlockFeature("followers");
 		},
 
-		buildSquare: function () {
-			this.buildImprovement("build_in_square", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_square"));
+		buildSquare: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_square", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_square"), sector);
 		},
 
-		buildGarden: function () {
-			this.buildImprovement("build_in_garden", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_garden"));
+		buildGarden: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_garden", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_garden"), sector);
 		},
 		
-		buildShrine: function () {
-			this.buildImprovement("build_in_shrine", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_shrine"));
+		buildShrine: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_shrine", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_shrine"), sector);
 		},
 		
-		buildTemple: function () {
-			this.buildImprovement("build_in_temple", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_temple"));
+		buildTemple: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_temple", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_temple"), sector);
 		},
 		
-		buildResearchCenter: function () {
-			this.buildImprovement("build_in_researchcenter", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_researchcenter"));
+		buildResearchCenter: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_researchcenter", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_researchcenter"), sector);
 		},
 
 		buildSpaceShip1: function (sectorPos) {
@@ -2115,8 +2147,8 @@ define(['ash',
 		},
 
 		buildImprovement: function (actionName, improvementName, otherSector) {
-			var sector = otherSector ? otherSector : this.playerLocationNodes.head.entity;
-			var improvementsComponent = sector.get(SectorImprovementsComponent);
+			let sector = otherSector ? otherSector : this.playerLocationNodes.head.entity;
+			let improvementsComponent = sector.get(SectorImprovementsComponent);
 			improvementsComponent.add(improvementName);
 			GlobalSignals.improvementBuiltSignal.dispatch();
 			this.save();

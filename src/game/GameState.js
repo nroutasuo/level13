@@ -214,16 +214,17 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 		},
 
 		getActionDuration: function (action, key, max) {
-			var actionKey = action;
+			let actionKey = action;
 			if (key.length > 0) actionKey += "-" + key;
-			var timestamp = this.actionDurationEndTimestamps[actionKey];
+			let timestamp = this.actionDurationEndTimestamps[actionKey];
+			let maxMillis = max * 1000;
 			if (timestamp) {
-				var now = new Date().getTime();
-				var diff = timestamp - now;
+				let now = new Date().getTime();
+				let diff = timestamp - now;
 				if (diff > 0) {
-					if (max && diff > max) {
-						log.w("fix action duration: " + diff + " -> " + max);
-						this.actionDurationEndTimestamps[actionKey] = now + max;
+					if (max && diff > maxMillis) {
+						log.w("fix action duration: " + diff + " -> " + maxMillis);
+						this.actionDurationEndTimestamps[actionKey] = now + maxMillis;
 					}
 					return timestamp - now;
 				}

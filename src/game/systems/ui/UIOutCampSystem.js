@@ -604,7 +604,7 @@
 				if (!actionVO.isBusy && actionVO.level == playerPos.level) {
 					let improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(action);
 					let isImprovement = ImprovementConstants.isProject(improvementName);
-					let percent = playerActionComponent.getActionCompletionPercentage(action);
+					let percent = playerActionComponent.getActionCompletionPercentage(action, actionVO.level);
 					if (percent < 100) {
 						result.push({ action: action, improvementName: improvementName, percent: percent });
 					}
