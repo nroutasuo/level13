@@ -178,6 +178,8 @@ define([
 					buttonStatus.disabledReason = displayReason;
 				}
 			}
+			
+			buttonStatus.isInProgress = GameGlobals.playerActionsHelper.isInProgress(action);
 
 			// overlays
 			this.updateButtonCooldownOverlays($button, action, buttonStatus, buttonElements, sectorEntity, isHardDisabled, costsStatus);
@@ -195,7 +197,7 @@ define([
 		},
 
 		updateButtonCalloutCosts: function ($button, action, buttonStatus, buttonElements, costs, costsStatus) {
-			if (!buttonStatus.displayedCosts) buttonStatus.displayedCosts = {};			
+			if (!buttonStatus.displayedCosts) buttonStatus.displayedCosts = {};
 			GameGlobals.uiFunctions.updateCostsSpans(action, costs, buttonElements, costsStatus, buttonStatus.displayedCosts, this.buttonCalloutSignalParams);
 		},
 
@@ -241,7 +243,7 @@ define([
 		updateButtonCooldownOverlays: function ($button, action, buttonStatus, buttonElements, sectorEntity, isHardDisabled, costsStatus) {
 			costsStatus.bottleneckCostFraction = Math.min(costsStatus.bottleneckCostFraction, GameGlobals.playerActionsHelper.checkRequirements(action, false, sectorEntity).value);
 			if (costsStatus.hasCostBlockers) costsStatus.bottleneckCostFraction = 0;
-			if (isHardDisabled) costsStatus.bottleneckCostFraction = 0;
+			if (isHardDisabled || buttonStatus.isInProgress) costsStatus.bottleneckCostFraction = 0;
 
 			if (buttonStatus.bottleneckCostFraction !== costsStatus.bottleneckCostFraction) {
 				buttonElements.cooldownReqs.css("width", ((costsStatus.bottleneckCostFraction) * 100) + "%");
