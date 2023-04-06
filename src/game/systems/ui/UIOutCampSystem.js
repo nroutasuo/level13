@@ -632,7 +632,7 @@
 			$("#in-demographics-general-age .value").text(inGameFoundingDate);
 			GameGlobals.uiFunctions.toggle("#in-demographics-general-age", showCalendar);
 			
-			let availableLuxuryResources = GameGlobals.campHelper.getAvailableLuxuryResources();
+			let availableLuxuryResources = GameGlobals.campHelper.getAvailableLuxuryResources(sector);
 			$("#in-demographics-general-luxuries .value").text(availableLuxuryResources.map(res => TribeConstants.getLuxuryDisplayName(res)).join(","));
 			GameGlobals.uiFunctions.toggle("#in-demographics-general-luxuries", availableLuxuryResources.length > 0);
 

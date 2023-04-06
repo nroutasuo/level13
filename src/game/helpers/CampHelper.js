@@ -66,21 +66,28 @@ define([
 			return result;
 		},
 		
-		getAvailableLuxuryResources: function () {
+		getAvailableLuxuryResources: function (campEntity) {
 			let result = [];
+			let position = campEntity.get(PositionComponent);
+			let level = position.level;
+			let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+			
+			let hasAccessToTradeNetwork = GameGlobals.resourcesHelper.hasAccessToTradeNetwork(campEntity);
 			let builtProjects = GameGlobals.levelHelper.getBuiltProjects();
 			for (let i = 0; i < builtProjects.length; i++) {
 				let project = builtProjects[i];
 				if (project.improvement.name != improvementNames.luxuryOutpost) continue;
 				
-				let level = project.position.level;
-				let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
-				let getLevelsForCamp = GameGlobals.gameState.getLevelsForCamp(campOrdinal);
-				for (let i = 0; i < getLevelsForCamp.length; i++) {
-					let campLevel = getLevelsForCamp[i];
-					let resource = GameGlobals.levelHelper.getLuxuryResourceOnLevel(campLevel);
-					if (resource) {
-						result.push(resource);
+				let projectLevel = project.position.level;
+				let projectCampOrdinal = GameGlobals.gameState.getCampOrdinal(projectLevel);
+				if (hasAccessToTradeNetwork || projectCampOrdinal == campOrdinal) {
+					let levelsForCamp = GameGlobals.gameState.getLevelsForCamp(projectCampOrdinal);
+					for (let i = 0; i < levelsForCamp.length; i++) {
+						let campLevel = levelsForCamp[i];
+						let resource = GameGlobals.levelHelper.getLuxuryResourceOnLevel(campLevel);
+						if (resource) {
+							result.push(resource);
+						}
 					}
 				}
 			}
@@ -504,8 +511,8 @@ define([
 			return ImprovementConstants.getMajorLevel(id, level + 1);
 		},
 		
-		getTargetReputation: function (baseValue, improvementsComponent, resourcesVO, population, populationFactor, danger, isSunlit) {
-			let availableLuxuryResources = this.getAvailableLuxuryResources();
+		getTargetReputation: function (campEntity, baseValue, improvementsComponent, resourcesVO, population, populationFactor, danger, isSunlit) {
+			let availableLuxuryResources = this.getAvailableLuxuryResources(campEntity);
 			return GameGlobals.campBalancingHelper.getTargetReputation(baseValue, improvementsComponent, availableLuxuryResources.length, resourcesVO, population, populationFactor, danger, isSunlit);
 		},
 		

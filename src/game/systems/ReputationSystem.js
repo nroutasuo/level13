@@ -94,7 +94,7 @@ define([
 			
 			let isSunlit = sectorFeatures.sunlit;
 			
-			let targetReputation = GameGlobals.campHelper.getTargetReputation(baseValue, sectorImprovements, resources, campNode.camp.population, levelComponent.populationFactor, danger, isSunlit);
+			let targetReputation = GameGlobals.campHelper.getTargetReputation(campNode.entity, baseValue, sectorImprovements, resources, campNode.camp.population, levelComponent.populationFactor, danger, isSunlit);
 			
 			let sources = targetReputation.sources;
 			let percentages = targetReputation.percentages;
