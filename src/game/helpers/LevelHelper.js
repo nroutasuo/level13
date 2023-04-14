@@ -812,7 +812,8 @@ define([
 		getProjectName: function (improvementName, level) {
 			switch (improvementName) {
 				case improvementNames.luxuryOutpost:
-					let luxuryResource = this.getFoundLuxuryResourceOnLevel(level);
+					let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+					let luxuryResource = this.getFoundLuxuryResourceOnCampOrdinal(campOrdinal);
 					let resourceName = TribeConstants.getLuxuryDisplayName(luxuryResource);
 					return "Resource outpost (" + resourceName + ")";
 			}
@@ -921,6 +922,18 @@ define([
 				}
 			}
 			
+			return null;
+		},
+		
+		getFoundLuxuryResourceOnCampOrdinal: function (campOrdinal) {
+			let levelsForCamp = GameGlobals.gameState.getLevelsForCamp(campOrdinal);
+			for (let i = 0; i < levelsForCamp.length; i++) {
+				let level = levelsForCamp[i];
+				let resourceOnLevel = this.getFoundLuxuryResourceOnLevel(level);
+				if (resourceOnLevel) {
+					return resourceOnLevel;
+				}
+			}
 			return null;
 		},
 
