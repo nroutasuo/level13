@@ -1501,6 +1501,7 @@ define(['ash',
 		},
 
 		buildStorage: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
 			this.buildImprovement("build_in_storage", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_storage"), sector);
 		},
 
@@ -1645,16 +1646,17 @@ define(['ash',
 		},
 		
 		improveBuilding: function (param) {
+			// TODO define sector so that the action can have a duration
 			let actionName = "improve_in_" + param;
 			let improvementID = param;
-			var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(actionName);
+			let improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(actionName);
 			
 			this.improveImprovement(actionName, improvementName);
 		},
 		
-		improveImprovement: function (actionName, improvementName) {
-			var sector = this.playerLocationNodes.head.entity;
-			var improvementsComponent = sector.get(SectorImprovementsComponent);
+		improveImprovement: function (actionName, improvementName, otherSector) {
+			let sector = otherSector ? otherSector : this.playerLocationNodes.head.entity;
+			let improvementsComponent = sector.get(SectorImprovementsComponent);
 			let improvementID = ImprovementConstants.getImprovementID(improvementName);
 			improvementsComponent.improve(improvementName);
 			let level = improvementsComponent.getLevel(improvementName);
@@ -1665,6 +1667,7 @@ define(['ash',
 		},
 		
 		repairBuilding: function (param) {
+			// TODO define action sector so that the action can have a duration
 			let improvementID = param;
 			let improvementName = improvementNames[improvementID];
 			let sector = this.playerLocationNodes.head.entity;
@@ -1681,6 +1684,7 @@ define(['ash',
 		},
 
 		dismantleBuilding: function (param) {
+			// TODO define action sector so that the action can have a duration
 			let sector = this.playerLocationNodes.head.entity;
 			let improvementsComponent = sector.get(SectorImprovementsComponent);
 			let improvementID = param;
