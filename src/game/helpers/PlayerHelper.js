@@ -169,6 +169,11 @@ define([
 		},
 		
 		addItem: function (itemDef, sourcePosition) {
+			if (!itemDef) {
+				log.w("trying to add item with no item def");
+				return;
+			}
+			
 			var itemsComponent = this.playerStatsNodes.head.items;
 			var playerPosition = this.playerPosNodes.head.position.getPosition();
 			sourcePosition = sourcePosition || playerPosition.clone();
