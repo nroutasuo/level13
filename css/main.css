@@ -1537,6 +1537,18 @@ body.dark .follower-slot-small {
   width: 37px;
   height: 37px;
 }
+body.dark .item-slot-equipment .item-count {
+  background: #853;
+}
+body.dark .item-slot-consumable .item-count {
+  background: #358;
+}
+body.dark .item-slot-ingredient .item-count {
+  background: #385;
+}
+body.dark .item-slot-other .item-count {
+  background: #444;
+}
 body.dark .item-slot-equipped,
 body.dark .follower-slot-selected {
   border-color: #555;
@@ -1703,6 +1715,7 @@ body.dark .res div.item-count {
   line-height: 1em;
   text-align: center;
   z-index: 3;
+  border-radius: 5px;
 }
 body.dark li.item-with-count {
   margin-bottom: 1em;
@@ -3752,6 +3765,18 @@ body.sunlit .follower-slot-small {
   width: 37px;
   height: 37px;
 }
+body.sunlit .item-slot-equipment .item-count {
+  background: #fa6;
+}
+body.sunlit .item-slot-consumable .item-count {
+  background: #6af;
+}
+body.sunlit .item-slot-ingredient .item-count {
+  background: #6fa;
+}
+body.sunlit .item-slot-other .item-count {
+  background: #ddd;
+}
 body.sunlit .item-slot-equipped,
 body.sunlit .follower-slot-selected {
   border-color: #999;
@@ -3918,6 +3943,7 @@ body.sunlit .res div.item-count {
   line-height: 1em;
   text-align: center;
   z-index: 3;
+  border-radius: 5px;
 }
 body.sunlit li.item-with-count {
   margin-bottom: 1em;

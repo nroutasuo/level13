@@ -32,6 +32,13 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			note: "note",
 		},
 		
+		itemCategories: {
+			equipment: "equipment",
+			consumable: "consumable",
+			ingredient: "ingredient",
+			other: "other",
+		},
+		
 		itemTypesEquipment: {
 			bag: "bag",
 			light: "light",
@@ -143,6 +150,27 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			return ItemConstants.itemTypes[type];
 		},
 		
+		getItemCategory: function (item) {
+			switch (item.type) {
+				case ItemConstants.itemTypes.weapon:
+				case ItemConstants.itemTypes.clothing_over:
+				case ItemConstants.itemTypes.clothing_upper:
+				case ItemConstants.itemTypes.clothing_lower:
+				case ItemConstants.itemTypes.clothing_hands:
+				case ItemConstants.itemTypes.clothing_head:
+				case ItemConstants.itemTypes.light:
+				case ItemConstants.itemTypes.bag:
+				case ItemConstants.itemTypes.shoes:
+					return ItemConstants.itemCategories.equipment;
+				case ItemConstants.itemTypes.ingredient:
+					return ItemConstants.itemCategories.ingredient;
+				case ItemConstants.itemTypes.voucher:
+				case ItemConstants.itemTypes.exploration:
+					return ItemConstants.itemCategories.consumable;
+			}
+			return ItemConstants.itemCategories.other;
+		},
+			
 		getItemDisplayName: function (item, short) {
 			if (!short) return item.name;
 			if (item.nameShort) return item.nameShort;

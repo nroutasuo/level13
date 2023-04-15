@@ -101,13 +101,18 @@ define(['ash',
 
 			return div;
 		},
-
+		
 		getItemSlot: function (itemsComponent, item, count, isLost, simple, showBagOptions, bagOptions, tab) {
+			let itemCategory = ItemConstants.getItemCategory(item);
 			let itemDev = this.getItemDiv(itemsComponent, item, count, this.getItemCallout(item, false, showBagOptions, bagOptions, tab));
-			var imageDiv = "<div class='item-slot-image'>"+ itemDev + "</div>";
-			var liclasses = "item-slot item-slot-small lvl13-box-1 ";
+			let imageDiv = "<div class='item-slot-image'>"+ itemDev + "</div>";
+			let liclasses = "item-slot item-slot-small lvl13-box-1 ";
 			if (simple) liclasses += "item-slot-simple";
 			if (isLost) liclasses += "item-slot-lost";
+			if (itemCategory == ItemConstants.itemCategories.equipment) liclasses += " item-slot-equipment";
+			if (itemCategory == ItemConstants.itemCategories.ingredient) liclasses += " item-slot-ingredient";
+			if (itemCategory == ItemConstants.itemCategories.consumable) liclasses += " item-slot-consumable";
+			if (itemCategory == ItemConstants.itemCategories.other) liclasses += " item-slot-other";
 			return "<li class='" + liclasses + "'>" + imageDiv + "</li>"
 		},
 
@@ -845,9 +850,9 @@ define(['ash',
 			return "";
 		},
 
-		getBagCapacityDisplayValue: function (bagComponent) {
-			if (bagComponent.bonusCapacity > 0) {
-				return bagComponent.totalCapacity + " +" + bagComponent.bonusCapacity;
+		getBagCapacityDisplayValue: function (bagComponent, isSimple) {
+			if (bagComponent.bonusCapacity > 0 && !isSimple) {
+				return bagComponent.baseCapacity + " +" + bagComponent.bonusCapacity;
 			} else {
 				return bagComponent.totalCapacity;
 			}

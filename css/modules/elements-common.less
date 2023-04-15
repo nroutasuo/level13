@@ -750,6 +750,22 @@ table .bubble {
 	height: 37px;
 }
 
+.item-slot-equipment .item-count {
+	background: @color-bg-community;
+}
+
+.item-slot-consumable .item-count {
+	background: @color-bg-science;
+}
+
+.item-slot-ingredient .item-count {
+	background: @color-bg-nature;
+}
+
+.item-slot-other .item-count {
+	background: @color-bg-element-2;
+}
+
 .item-slot-equipped, .follower-slot-selected {
 	border-color: @color-border-strong;
 }
@@ -925,6 +941,7 @@ ul.itemlist, ul.resultlist {
 	line-height: 1em;
 	text-align: center;
 	z-index: 3;
+    border-radius: 5px;
 }
 
 li.item-with-count {
