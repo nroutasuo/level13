@@ -380,7 +380,8 @@ define([
 			if (GameGlobals.gameState.uiBagStatus.itemsUsableSeen) {
 				for (let i = 0; i < GameGlobals.gameState.uiBagStatus.itemsUsableSeen.length; i++) {
 					let id = GameGlobals.gameState.uiBagStatus.itemsUsableSeen[i];
-					if (this.isOwned(id)) {
+					let itemDefinition = ItemConstants.getItemByID(id);
+					if (this.isOwned(itemDefinition)) {
 						newList.push(id);
 					}
 				}
