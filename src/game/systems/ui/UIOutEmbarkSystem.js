@@ -65,32 +65,37 @@ define([
 		},
 		
 		initLeaveCampRes: function () {
-			if (GameGlobals.gameState.uiStatus.leaveCampRes) {
-				var campResources = GameGlobals.resourcesHelper.getCurrentStorage();
-				for (var key in resourceNames) {
-					var name = resourceNames[key];
-					var oldVal = GameGlobals.gameState.uiStatus.leaveCampRes[name];
-					var campVal = campResources.resources.getResource(name);
-					if (oldVal && oldVal > 0) {
-						var value = Math.floor(Math.min(oldVal, campVal));
-						$("#stepper-embark-" + name + " input").val(value);
-					}
+			if (!GameGlobals.gameState.uiStatus.leaveCampRes) return;
+			var campResources = GameGlobals.resourcesHelper.getCurrentStorage();
+			for (var key in resourceNames) {
+				var name = resourceNames[key];
+				var oldVal = GameGlobals.gameState.uiStatus.leaveCampRes[name];
+				var campVal = campResources.resources.getResource(name);
+				if (oldVal && oldVal > 0) {
+					var value = Math.floor(Math.min(oldVal, campVal));
+					$("#stepper-embark-" + name + " input").val(value);
 				}
 			}
 		},
 		
 		initLeaveCampItems: function () {
-			if (GameGlobals.gameState.uiStatus.leaveCampItems) {
-				var itemsComponent = this.playerPosNodes.head.entity.get(ItemsComponent);
-				for (var key in GameGlobals.gameState.uiStatus.leaveCampItems) {
-					var itemID = key;
-					var oldVal = GameGlobals.gameState.uiStatus.leaveCampItems[itemID];
-					var ownedCount = itemsComponent.getCountByIdAndStatus(itemID, false, true);
-					if (oldVal && oldVal > 0) {
-						var value = Math.floor(Math.min(oldVal, ownedCount));
-						$("#stepper-embark-" + itemID + " input").val(value);
-					}
+			if (!GameGlobals.gameState.uiStatus.leaveCampItems) return;
+			let itemsComponent = this.playerPosNodes.head.entity.get(ItemsComponent);
+			for (let key in GameGlobals.gameState.uiStatus.leaveCampItems) {
+				let itemID = key;
+				let oldVal = GameGlobals.gameState.uiStatus.leaveCampItems[itemID];
+				if (!oldVal) continue;
+				let ownedCount = itemsComponent.getCountByIdAndStatus(itemID, false, true);
+				if (ownedCount < 1) continue;
+				let item = ItemConstants.getItemByID(itemID);
+				if (item.equippable) {
+					let isEquipped = itemsComponent.isEquipped(item);
+					if (isEquipped) continue;
+					let equipmentComparison = itemsComponent.getEquipmentComparison(item);
+					if (equipmentComparison < 0) continue;
 				}
+				let value = Math.floor(Math.min(oldVal, ownedCount));
+				$("#stepper-embark-" + itemID + " input").val(value);
 			}
 		},
 		
@@ -231,15 +236,24 @@ define([
 		
 		saveSelections: function () {
 			$.each($("#embark-resources tr"), function () {
-				var resourceName = $(this).attr("id").split("-")[2];
-				var selectedVal = parseInt($(this).children("td").children(".stepper").children("input").val());
+				let resourceName = $(this).attr("id").split("-")[2];
+				let selectedVal = parseInt($(this).children("td").children(".stepper").children("input").val());
 				GameGlobals.gameState.uiStatus.leaveCampRes[resourceName] = selectedVal;
 			});
+			
 			$.each($("#embark-items tr"), function () {
-				var itemID = $(this).attr("id").split("-")[2];
-				var selectedVal = parseInt($(this).children("td").children(".stepper").children("input").val());
+				let itemID = $(this).attr("id").split("-")[2];
+				let selectedVal = parseInt($(this).children("td").children(".stepper").children("input").val());
 				GameGlobals.gameState.uiStatus.leaveCampItems[itemID] = selectedVal;
 			});
+			
+			let itemsComponent = this.playerPosNodes.head.entity.get(ItemsComponent);
+			let equipment = itemsComponent.getEquipped();
+			for (let i = 0; i < equipment.length; i++) {
+				let item = equipment[i];
+				let val = GameGlobals.gameState.uiStatus.leaveCampItems[item.id] || 0;
+				GameGlobals.gameState.uiStatus.leaveCampItems[item.id] = val + 1;
+			}
 		},
 		
 		registerStepperListeners: function (scope) {

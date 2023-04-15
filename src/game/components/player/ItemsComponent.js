@@ -376,6 +376,11 @@ function (Ash, ItemVO, ItemConstants) {
 			return null;
 		},
 
+		isEquipped: function (item) {
+			let equippedItems = this.getEquipped(item.type);
+			return equippedItems.length > 0 && equippedItems[0].id == item.id;
+		},
+
 		contains: function (name) {
 			for (var key in this.items) {
 				for (let i = 0; i < this.items[key].length; i++) {
