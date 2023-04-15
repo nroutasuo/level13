@@ -42,7 +42,7 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 			this.requirements.vision = [this.getVisionRequirement(), -1];
 			this.costs = {};
 			this.costs.stamina = this.getStaminaRequirement();
-			if (type !== localeTypes.grove) {
+			if (type !== localeTypes.grove && type !== localeTypes.tradingpartner) {
 				 this.costs.item_exploration_1 = 1;
 			}
 		},
