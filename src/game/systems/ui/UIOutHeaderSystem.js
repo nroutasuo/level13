@@ -685,7 +685,7 @@ define([
 					);
 
 					let bagComponent = this.playerStatsNodes.head.entity.get(BagComponent);
-					let bagCapacityDisplayValue = UIConstants.getBagCapacityDisplayValue(bagComponent);
+					let bagCapacityDisplayValue = UIConstants.getBagCapacityDisplayValue(bagComponent, true);
 					$("#header-bag-storage .value").text(Math.floor(bagComponent.usedCapacity * 10) / 10);
 					UIAnimations.animateOrSetNumber($("#header-bag-storage .value-total"), true, bagCapacityDisplayValue);
 				}
