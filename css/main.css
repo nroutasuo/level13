@@ -1284,7 +1284,7 @@ body.dark .progress-wrap-science {
 }
 body.dark .progress-multibar-container {
   display: flex;
-  margin: 2px 0;
+  margin: 5px 0;
 }
 body.dark .progress-multibar-container .progress-wrap {
   display: inline-block !important;
@@ -2239,6 +2239,9 @@ body.dark .row-detail-indicator {
 }
 body.dark .row-detail-indicator {
   color: #bbb;
+}
+body.dark #mainmap-ascii-legend {
+  padding: 5px;
 }
 body.dark #incoming-caravan-popup-multiplier {
   justify-content: flex-end;
@@ -3512,7 +3515,7 @@ body.sunlit .progress-wrap-science {
 }
 body.sunlit .progress-multibar-container {
   display: flex;
-  margin: 2px 0;
+  margin: 5px 0;
 }
 body.sunlit .progress-multibar-container .progress-wrap {
   display: inline-block !important;
@@ -4467,6 +4470,9 @@ body.sunlit .row-detail-indicator {
 }
 body.sunlit .row-detail-indicator {
   color: #777;
+}
+body.sunlit #mainmap-ascii-legend {
+  padding: 5px;
 }
 body.sunlit #incoming-caravan-popup-multiplier {
   justify-content: flex-end;
