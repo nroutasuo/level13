@@ -26,7 +26,7 @@ define([
 			this.nodeList = engine.getNodeList(StaminaNode);
 			
 			var sys = this;
-			GlobalSignals.playerMovedSignal.add(function () { sys.updateWarningLimit(); });
+			GlobalSignals.playerPositionChangedSignal.add(function () { sys.updateWarningLimit(); });
 			GlobalSignals.healthChangedSignal.add(function () { sys.updateWarningLimit(); });
 			GlobalSignals.gameShownSignal.add(function () { sys.updateWarningLimit(); });
 		},

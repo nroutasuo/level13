@@ -28,7 +28,7 @@ define([
 			this.playerNodes = engine.getNodeList(PlayerStatsNode);
 			this.locationNodes = engine.getNodeList(PlayerLocationNode);
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onGameShown);
-			GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.onPlayerMoved);
+			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.onPlayerPositionChanged);
 			GlobalSignals.add(this, GlobalSignals.equipmentChangedSignal, this.onEquipmentChanged);
 			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.onImprovementBuilt);
 			GlobalSignals.add(this, GlobalSignals.actionStartedSignal, this.onActionStarted);
@@ -283,7 +283,7 @@ define([
 			});
 		},
 		
-		onPlayerMoved: function () {
+		onPlayerPositionChanged: function () {
 			this.updateLocationPerks();
 			this.updateHazardPerks();
 		},

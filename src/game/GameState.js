@@ -30,6 +30,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 				mapVisited: false,
 				isHidden: false,
 				isBlocked: false,
+				isTransitioning: false,
 				isInitialized: false,
 				isInCamp: false,
 				hiddenProjects: [],

@@ -53,7 +53,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.playerEnteredCampSignal, function () { this.onTutorialTrigger("action_enter_camp"); });
 			GlobalSignals.add(this, GlobalSignals.actionRewardsCollectedSignal, function () { this.onTutorialTrigger("action_collect_rewards"); });
 			GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, function () { this.onTutorialTrigger("change_inventory"); });
-			GlobalSignals.add(this, GlobalSignals.playerMovedSignal, function () { this.onTutorialTrigger("change_position"); });
+			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, function () { this.onTutorialTrigger("change_position"); });
 			GlobalSignals.add(this, GlobalSignals.featureUnlockedSignal, function () { this.onTutorialTrigger("feature_unlocked"); });
 		},
 		

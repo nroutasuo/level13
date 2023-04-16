@@ -16,7 +16,7 @@ define(['ash',
 				GlobalSignals.add(this, GlobalSignals.popupClosedSignal, this.onPopupClosed);
 				GlobalSignals.add(this, GlobalSignals.actionStartedSignal, this.onActionStarted);
 				GlobalSignals.add(this, GlobalSignals.actionButtonClickedSignal, this.onActionButtonClicked);
-				GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.onPlayerMoved);
+				GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.onPlayerPositionChanged);
 			}
 		},
 		
@@ -58,7 +58,7 @@ define(['ash',
 			this.log(msg);
 		},
 		
-		onPlayerMoved: function (pos) {
+		onPlayerPositionChanged: function (pos) {
 			if (GameGlobals.gameState.isAutoPlaying) return;
 			this.log("player moved to " + pos);
 		},

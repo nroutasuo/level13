@@ -54,7 +54,7 @@ define([
 			this.itemsNodes = engine.getNodeList(ItemsNode);
 
 			var sys = this;
-			GlobalSignals.playerMovedSignal.add(function () {
+			GlobalSignals.playerPositionChangedSignal.add(function () {
 				sys.updateCurrentLocation();
 			});
 			GlobalSignals.fightEndedSignal.add(function () {

@@ -82,7 +82,7 @@
 			
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
 			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.onImprovementBuilt);
-			GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.onPlayerMoved);
+			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.onPlayerPositionChanged);
 			GlobalSignals.add(this, GlobalSignals.campRenamedSignal, this.onCampRenamed);
 			GlobalSignals.add(this, GlobalSignals.populationChangedSignal, this.onPopulationChanged);
 			GlobalSignals.add(this, GlobalSignals.workersAssignedSignal, this.onWorkersAssigned);
@@ -834,7 +834,7 @@
 			this.refresh();
 		},
 
-		onPlayerMoved: function () {
+		onPlayerPositionChanged: function () {
 			this.refresh();
 		},
 

@@ -197,9 +197,6 @@ define([
 			if (!sector.has(VisitedComponent)) {
 				this.handleNewSector(sector, true);
 			}
-			
-			//GlobalSignals.playerMovedSignal.dispatch(playerPos);
-			//GameGlobals.uiFunctions.onPlayerMoved();
 		},
 
 		updateCamps: function () {

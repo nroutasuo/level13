@@ -53,7 +53,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onElementsVisibilityChanged);
 			GlobalSignals.add(this, GlobalSignals.updateButtonsSignal, this.onElementsVisibilityChanged);
 			GlobalSignals.add(this, GlobalSignals.featureUnlockedSignal, this.onElementsVisibilityChanged);
-			GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.onElementsVisibilityChanged);
+			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.onElementsVisibilityChanged);
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onElementsVisibilityChanged);
 			GlobalSignals.add(this, GlobalSignals.elementCreatedSignal, this.onElementsVisibilityChanged);
 			GlobalSignals.add(this, GlobalSignals.actionButtonClickedSignal, this.onElementsVisibilityChanged);
@@ -63,6 +63,8 @@ define([
 			GlobalSignals.add(this, GlobalSignals.updateButtonsSignal, this.onButtonStatusChanged);
 			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.onButtonStatusChanged);
 			GlobalSignals.add(this, GlobalSignals.actionStartedSignal, this.onButtonStatusChanged);
+			GlobalSignals.add(this, GlobalSignals.playerMoveStartedSignal, this.onButtonStatusChanged);
+			GlobalSignals.add(this, GlobalSignals.playerMoveCompletedSignal, this.onButtonStatusChanged);
 			
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.refreshGlobalSavedElements);
 			GlobalSignals.add(this, GlobalSignals.calloutsGeneratedSignal, this.refreshGlobalSavedElements);

@@ -858,7 +858,7 @@ define(['ash',
 					this.passTime(60, function () {
 						setTimeout(function () {
 							GameGlobals.uiFunctions.showGame();
-							GameGlobals.uiFunctions.onPlayerMoved(); // reset cooldowns
+							GameGlobals.uiFunctions.onPlayerPositionChanged(); // reset cooldowns
 							if (excursionComponent) excursionComponent.numNaps++;
 							sys.playerStatsNodes.head.vision.value = Math.min(sys.playerStatsNodes.head.vision.value, PlayerStatConstants.VISION_BASE);
 							let logMsgFail = "Tried to rest but got attacked.";
@@ -893,7 +893,7 @@ define(['ash',
 					this.passTime(60, function () {
 						setTimeout(function () {
 							GameGlobals.uiFunctions.showGame();
-							GameGlobals.uiFunctions.onPlayerMoved(); // reset cooldowns
+							GameGlobals.uiFunctions.onPlayerPositionChanged(); // reset cooldowns
 							let msgFail = "Settled down to pass some time but got attacked.";
 							let messages = {
 								id: LogConstants.MSG_ID_WAIT,
@@ -2126,7 +2126,7 @@ define(['ash',
 		passTime: function (seconds, callback) {
 			this.engine.updateComplete.addOnce(function () {
 				GameGlobals.gameState.passTime(seconds);
-				GameGlobals.uiFunctions.onPlayerMoved(); // reset cooldowns for buttons
+				GameGlobals.uiFunctions.onPlayerPositionChanged(); // reset cooldowns for buttons
 				this.engine.updateComplete.addOnce(function () {
 					if (callback) callback();
 				}, this);

@@ -24,6 +24,7 @@ define([
 	'game/components/player/PlayerActionComponent',
 	'game/components/common/PositionComponent',
 	'game/components/common/CampComponent',
+	'game/components/common/MovementComponent',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/ReputationComponent',
@@ -40,6 +41,7 @@ define([
 	PlayerActionComponent,
 	PositionComponent,
 	CampComponent,
+	MovementComponent,
 	SectorFeaturesComponent,
 	SectorImprovementsComponent,
 	ReputationComponent,
@@ -109,6 +111,7 @@ define([
 			var sys = this;
 			GlobalSignals.playerEnteredCampSignal.add(function () { sys.onPlayerEnteredCamp(); });
 			GlobalSignals.playerLeftCampSignal.add(function () { sys.onPlayerLeftCamp(); });
+			GlobalSignals.playerLeftCampSignal.add(function () { sys.onPlayerLeftCamp(); });
 			GlobalSignals.actionStartingSignal.add(function () { sys.onActionStarting(); });
 			GlobalSignals.actionStartedSignal.add(function () { sys.onInventoryChanged(); });
 			GlobalSignals.visionChangedSignal.add(function () { sys.onVisionChanged(); });
@@ -121,7 +124,8 @@ define([
 			GlobalSignals.actionCompletedSignal.add(function () { sys.onPlayerActionCompleted(); });
 			GlobalSignals.slowUpdateSignal.add(function () { sys.slowUpdate(); });
 			GlobalSignals.changelogLoadedSignal.add(function () { sys.updateGameVersion(); });
-			GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.onPlayerMoved);
+			GlobalSignals.add(this, GlobalSignals.playerMoveStartedSignal, this.onPlayerMoveStarted);
+			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.onPlayerPositionChanged);
 			GlobalSignals.add(this, GlobalSignals.perksChangedSignal, this.onPerksChanged);
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onGameShown);
 			GlobalSignals.add(this, GlobalSignals.levelTypeRevealedSignal, this.onLevelTypeRevealed);
@@ -907,6 +911,15 @@ define([
 				sunlit = featuresComponent.sunlit;
 			}
 			
+			if (this.playerStatsNodes.head && this.playerStatsNodes.head.entity.has(MovementComponent)) {
+				let movementComponent = this.playerStatsNodes.head.entity.get(MovementComponent);
+				let movementSector = GameGlobals.levelHelper.getSectorByPosition(movementComponent.level, movementComponent.sectorX, movementComponent.sectorY);
+				if (movementSector) {
+					let movementSectorFeaturesComponent = movementSector.get(SectorFeaturesComponent);
+					sunlit = movementSectorFeaturesComponent.sunlit;
+				}
+			}
+			
 			if (GameGlobals.gameState.uiStatus.forceSunlit) sunlit = true;
 			if (GameGlobals.gameState.uiStatus.forceDark) sunlit = false;
 			
@@ -914,15 +927,17 @@ define([
 		},
 		
 		updateThemeTo: function (sunlit) {
-			log.w("[ui] update theme to: " + (sunlit ? "sunlit" : "dark"));
 			let wasSunlit = this.elements.body.hasClass("sunlit");
-			if (sunlit != wasSunlit) {
-				this.transitionTheme(wasSunlit, sunlit);
+			if (sunlit == wasSunlit) {
 				return;
 			}
 			
-			// update elements affected by sunligt
-			// TODO move to some place more generic
+			log.w("[ui] update theme to: " + (sunlit ? "sunlit" : "dark"));
+			this.transitionTheme(wasSunlit, sunlit);
+		},
+		
+		updateThemedIcons: function () {
+			let sunlit = this.elements.body.hasClass("sunlit");
 			for (let i = 0; i < this.themedIcons.length; i++) {
 				let icon = this.themedIcons[i];
 				let path = sunlit ? icon.pathSunlit : icon.pathDark;
@@ -970,9 +985,9 @@ define([
 			$("body").toggleClass("theme-transition", true);
 			
 			let sys = this;
-			let fadeOutDuration = 500;
-			let transitionDuration = 200;
-			let fadeInDuration = 500;
+			let fadeOutDuration = UIConstants.THEME_TRANSITION_DURATION * 0.4;
+			let transitionDuration = UIConstants.THEME_TRANSITION_DURATION * 0.2;
+			let fadeInDuration = UIConstants.THEME_TRANSITION_DURATION * 0.4;
 			
 			$("#theme-transition-overlay").css("display", "block");
 			$("#theme-transition-overlay").stop(true).animate({ opacity: 1 }, fadeOutDuration).delay(transitionDuration).animate({ opacity: 0 }, fadeInDuration);
@@ -982,6 +997,7 @@ define([
 				sys.elements.body.toggleClass("dark", !newValue);
 				
 				sys.updateVisionStatus();
+				sys.updateThemedIcons();
 				sys.updateResources(); // resource fill progress bar color
 				
 				GlobalSignals.themeToggledSignal.dispatch();
@@ -1080,7 +1096,7 @@ define([
 			this.completeResourceAnimations();
 		},
 
-		onPlayerMoved: function () {
+		onPlayerPositionChanged: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			this.updateTabVisibility();
 			this.updateStaminaWarningLimit();
@@ -1088,6 +1104,10 @@ define([
 			this.updateHeaderTexts();
 			this.updateResourcesIfNotPending();
 			this.updatePlayerStats();
+		},
+		
+		onPlayerMoveStarted: function () {
+			this.updateTheme();
 		},
 		
 		onPlayerEnteredCamp: function () {

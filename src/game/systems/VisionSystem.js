@@ -49,7 +49,7 @@ define([
 			this.visionNodes = engine.getNodeList(VisionNode);
 			this.locationNodes = engine.getNodeList(PlayerLocationNode);
 			
-			GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.onPlayerMoved, GlobalSignals.PRIORITY_HIGH);
+			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.onPlayerPositionChanged, GlobalSignals.PRIORITY_HIGH);
 		},
 
 		removeFromEngine: function (engine) {
@@ -204,7 +204,7 @@ define([
 			}
 		},
 		
-		onPlayerMoved: function () {
+		onPlayerPositionChanged: function () {
 			this.update(0);
 		}
 	});

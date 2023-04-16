@@ -18,7 +18,7 @@ define([
 			
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 				
-			GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.onPlayerMoved);
+			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.onPlayerPositionChanged);
 		},
 
 		removeFromEngine: function (engine) {
@@ -26,7 +26,7 @@ define([
 			GlobalSignals.removeAll(this);
 		},
 		
-		onPlayerMoved: function () {
+		onPlayerPositionChanged: function () {
 			let excursionComponent = this.playerStatsNodes.head.entity.get(ExcursionComponent);
 			if (excursionComponent) {
 				excursionComponent.numConsecutiveScavengeUselessSameLocation = 0;

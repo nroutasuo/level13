@@ -35,6 +35,8 @@ define(['ash',
 		UNLOCKABLE_FEATURE_MAP_MODES: "mapModes",
 		
 		ICON_FALLBACK: "img/eldorado/icon_placeholder.png",
+		
+		THEME_TRANSITION_DURATION: 1200,
 
 		names: {
 			resources: {

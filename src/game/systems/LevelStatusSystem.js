@@ -48,7 +48,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.sectorScoutedSignal, this.updateAllLevels);
 			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.updateAllPassages);
 			GlobalSignals.add(this, GlobalSignals.campBuiltSignal, this.updateAllLevels);
-			GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.onPlayerMoved);
+			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.onPlayerPositionChanged);
 		},
 
 		removeFromEngine: function (engine) {
@@ -127,7 +127,7 @@ define([
 			GlobalSignals.levelTypeRevealedSignal.dispatch(level);
 		},
 		
-		onPlayerMoved: function () {
+		onPlayerPositionChanged: function () {
 			let level = this.playerLocationNodes.head.position.level;
 			if (GameGlobals.levelHelper.isLevelTypeRevealed(level)) return;
 			

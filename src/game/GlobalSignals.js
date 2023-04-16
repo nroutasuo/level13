@@ -27,7 +27,6 @@ define(['ash',], function (Ash) {
 		themeToggledSignal: new Ash.Signals.Signal(),
 		
 		// player move
-		playerMovedSignal: new Ash.Signals.Signal(), // deprecated
 		playerMoveStartedSignal: new Ash.Signals.Signal(),
 		playerPositionChangedSignal: new Ash.Signals.Signal(),
 		playerMoveCompletedSignal: new Ash.Signals.Signal(),

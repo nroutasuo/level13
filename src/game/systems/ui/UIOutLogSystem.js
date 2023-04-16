@@ -14,16 +14,16 @@ define([
 		addToEngine: function (engine) {
 			var logSystem = this;
 			this.logNodes = engine.getNodeList(LogNode);
-			this.onPlayerMoved = function(playerPosition) {
+			this.onPlayerPositionChanged = function(playerPosition) {
 				logSystem.checkPendingMessages(playerPosition);
 			};
-			GlobalSignals.playerMovedSignal.add(this.onPlayerMoved);
+			GlobalSignals.playerPositionChangedSignal.add(this.onPlayerPositionChanged);
 			this.updateMessages();
 		},
 
 		removeFromEngine: function (engine) {
 			this.logNodes = null;
-			GlobalSignals.playerMovedSignal.remove(this.onPlayerMoved);
+			GlobalSignals.playerPositionChangedSignal.remove(this.onPlayerPositionChanged);
 		},
 
 		update: function () {

@@ -41,7 +41,7 @@ define([
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.refresh);
 			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.refresh);
-			GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.refresh);
+			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.refresh);
 			GlobalSignals.add(this, GlobalSignals.windowResizedSignal, this.onResize);
 			GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onResize);
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onResize);

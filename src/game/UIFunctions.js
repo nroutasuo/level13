@@ -776,7 +776,7 @@ define(['ash',
 				$(e.target).val(value);
 			},
 
-			onPlayerMoved: function () {
+			onPlayerPositionChanged: function () {
 				if (GameGlobals.gameState.uiStatus.isHidden) return;
 				var updates = false;
 				updates = this.updateButtonCooldowns("") || updates;

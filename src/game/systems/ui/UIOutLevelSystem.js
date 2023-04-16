@@ -91,7 +91,7 @@ define([
 
 		initListeners: function () {
 			var sys = this;
-			GlobalSignals.playerMovedSignal.add(function () {
+			GlobalSignals.playerPositionChangedSignal.add(function () {
 				if (GameGlobals.gameState.uiStatus.isHidden) return;
 				sys.updateAll();
 			});

@@ -47,7 +47,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.upgradeUnlockedSignal, this.refresh);
 			GlobalSignals.add(this, GlobalSignals.sectorScoutedSignal, this.refresh);
 			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.refresh);
-			GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.refresh);
+			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.refresh);
 			GlobalSignals.add(this, GlobalSignals.movementBlockerClearedSignal, this.refresh);
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.refresh);
 			GlobalSignals.add(this, GlobalSignals.projectHiddenSignal, this.refresh);
