@@ -430,11 +430,7 @@ define(['ash',
 		},
 
 		setPlayerPosition: function (lvl, x, y, inCamp) {
-			var playerPos = this.playerPositionNodes.head.position;
-			playerPos.level = lvl;
-			playerPos.sectorX = x;
-			playerPos.sectorY = y;
-			playerPos.inCamp = inCamp || false;
+			GameGlobals.playerHelper.moveTo(lvl, x, y, inCamp || false);
 		},
 
 		goToLevel: function (level) {
@@ -611,6 +607,7 @@ define(['ash',
 
 		scoutLevel: function () {
 			GameGlobals.playerActionFunctions.leaveCamp();
+			// TODO fix this, probably not working after PlayerMovementSystem was added and leaveCamp is not instant
 			var startSector = this.playerLocationNodes.head.entity;
 			var originalPos = this.playerPositionNodes.head.position.getPosition();
 			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);

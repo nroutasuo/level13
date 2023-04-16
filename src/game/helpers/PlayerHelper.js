@@ -11,7 +11,8 @@ define([
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/player/PlayerResourcesNode',
-	'game/components/common/LogMessagesComponent'
+	'game/components/common/LogMessagesComponent',
+	'game/components/common/MovementComponent',
 ], function (
 	Ash,
 	ValueCache,
@@ -25,7 +26,8 @@ define([
 	PlayerLocationNode,
 	PlayerStatsNode,
 	PlayerResourcesNode,
-	LogMessagesComponent
+	LogMessagesComponent,
+	MovementComponent,
 ) {
 	
 	let PlayerHelper = Ash.Class.extend({
@@ -47,6 +49,16 @@ define([
 		isInCamp: function () {
 			if (!this.playerPosNodes.head) return false;
 			return this.playerPosNodes.head.position.inCamp;
+		},
+		
+		moveTo: function (level, sectorX, sectorY, inCamp) {
+			let player = this.playerStatsNodes.head.entity;
+			if (!player) return;
+			if (player.has(MovementComponent)) {
+				log.w("trying to move but already moving");
+				return;
+			}
+			player.add(new MovementComponent(level, sectorX, sectorY, inCamp));
 		},
 
 		addLogMessage: function (msg) {

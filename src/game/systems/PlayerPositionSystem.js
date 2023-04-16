@@ -12,22 +12,25 @@ define([
 	'game/nodes/PlayerPositionNode',
 	'game/nodes/level/LevelNode',
 	'game/nodes/PlayerLocationNode',
+	'game/nodes/LastVisitedCampNode',
 	'game/nodes/sector/SectorNode',
 	'game/nodes/sector/CampNode',
 	'game/components/common/CurrentPlayerLocationComponent',
 	'game/components/sector/CurrentNearestCampComponent',
+	'game/components/sector/LastVisitedCampComponent',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/PassagesComponent',
 	'game/components/common/LogMessagesComponent',
+	'game/components/common/MovementComponent',
 	'game/components/common/PositionComponent',
 	'game/components/common/VisitedComponent',
 	'game/components/common/RevealedComponent',
 	'game/components/common/CampComponent',
 	'game/components/type/LevelComponent',
 ], function (Ash, GameGlobals, GlobalSignals, GameConstants, ItemConstants, LevelConstants, LogConstants, PositionConstants,
-	PlayerPositionNode, LevelNode, PlayerLocationNode, SectorNode, CampNode,
-	CurrentPlayerLocationComponent, CurrentNearestCampComponent, SectorStatusComponent, PassagesComponent,
-	LogMessagesComponent, PositionComponent,
+	PlayerPositionNode, LevelNode, PlayerLocationNode, LastVisitedCampNode, SectorNode, CampNode,
+	CurrentPlayerLocationComponent, CurrentNearestCampComponent, LastVisitedCampComponent, SectorStatusComponent, PassagesComponent,
+	LogMessagesComponent, MovementComponent, PositionComponent,
 	VisitedComponent, RevealedComponent, CampComponent, LevelComponent) {
 
 	var PlayerPositionSystem = Ash.System.extend({
@@ -37,6 +40,7 @@ define([
 		playerPositionNodes: null,
 		playerLocationNodes: null,
 		campNodes: null,
+		lastVisitedCampNodes: null,
 
 		lastUpdatePosition: null,
 		visitedSectorsPendingRevealNeighbours: [],
@@ -50,6 +54,7 @@ define([
 			this.playerPositionNodes = engine.getNodeList(PlayerPositionNode);
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			this.campNodes = engine.getNodeList(CampNode);
+			this.lastVisitedCampNodes = engine.getNodeList(LastVisitedCampNode);
 
 			let sys = this;
 			this.playerPositionNodes.nodeAdded.addOnce(function(node) {
@@ -64,7 +69,8 @@ define([
 
 			GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
 			GlobalSignals.add(this, GlobalSignals.gameResetSignal, this.onGameStarted);
-			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.ontabChanged);
+			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.onPlayerPositionChanged);
+			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
 			GlobalSignals.add(this, GlobalSignals.campBuiltSignal, this.updateCamps);
 			GlobalSignals.add(this, GlobalSignals.mapPieceUsedSignal, this.onMapPieceUsed);
 		},
@@ -82,8 +88,12 @@ define([
 			this.lastUpdatePosition = null;
 			this.lastValidPosition = null;
 		},
+		
+		onPlayerPositionChanged: function () {
+			this.updateEntities(true);
+		},
 
-		ontabChanged: function () {
+		onTabChanged: function () {
 			this.lastUpdatePosition = null;
 			this.lastValidPosition = null;
 		},
@@ -113,8 +123,8 @@ define([
 		},
 
 		updateEntities: function (updateAll) {
-			var playerPos = this.playerPositionNodes.head.position;
-			var playerSector = GameGlobals.levelHelper.getSectorByPosition(playerPos.level, playerPos.sectorX, playerPos.sectorY);
+			let playerPos = this.playerPositionNodes.head.position;
+			let playerSector = GameGlobals.levelHelper.getSectorByPosition(playerPos.level, playerPos.sectorX, playerPos.sectorY);
 			
 			if (playerSector) {
 				this.updateLevelEntities(updateAll);
@@ -164,39 +174,56 @@ define([
 
 		updateSector: function (sector) {
 			if (!sector) return;
-			var playerPos = this.playerPositionNodes.head.position;
+			let playerPos = this.playerPositionNodes.head.position;
 			if (!playerPos) return;
-			var levelpos = sector.get(PositionComponent).level;
-			var sectorPos = sector.get(PositionComponent).sectorId();
-			var hasLocationComponent = sector.has(CurrentPlayerLocationComponent);
+			let levelpos = sector.get(PositionComponent).level;
+			let sectorPos = sector.get(PositionComponent).sectorId();
+			let hasLocationComponent = sector.has(CurrentPlayerLocationComponent);
 
 			if (levelpos === playerPos.level && sectorPos === playerPos.sectorId() && !hasLocationComponent) {
-				if (this.playerLocationNodes.head)
-					this.playerLocationNodes.head.entity.remove(CurrentPlayerLocationComponent);
-				sector.add(new CurrentPlayerLocationComponent());
-				if (!sector.has(VisitedComponent)) {
-					this.handleNewSector(sector, true);
-				}
-				GlobalSignals.playerMovedSignal.dispatch(playerPos);
-				GameGlobals.uiFunctions.onPlayerMoved();
+				this.setCurrentPlayerLocation(sector);
 			} else if ((levelpos !== playerPos.level || sectorPos !== playerPos.sectorId()) && hasLocationComponent) {
 				sector.remove(CurrentPlayerLocationComponent);
 			}
 		},
+		
+		setCurrentPlayerLocation: function (sector) {
+			if (this.playerLocationNodes.head) {
+				this.playerLocationNodes.head.entity.remove(CurrentPlayerLocationComponent);
+			}
+			
+			sector.add(new CurrentPlayerLocationComponent());
+			
+			if (!sector.has(VisitedComponent)) {
+				this.handleNewSector(sector, true);
+			}
+			
+			//GlobalSignals.playerMovedSignal.dispatch(playerPos);
+			//GameGlobals.uiFunctions.onPlayerMoved();
+		},
 
 		updateCamps: function () {
-			var playerPos = this.playerPositionNodes.head.position;
-			var levelpos;
-			var hasCurrentCampComponent;
-			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
-				hasCurrentCampComponent = campNode.entity.has(CurrentNearestCampComponent);
-				levelpos = campNode.entity.get(PositionComponent).level;
+			let playerPos = this.playerPositionNodes.head.position;
+			for (let campNode = this.campNodes.head; campNode; campNode = campNode.next) {
+				let hasCurrentCampComponent = campNode.entity.has(CurrentNearestCampComponent);
+				let levelpos = campNode.position.level;
 				if (levelpos === playerPos.level && !hasCurrentCampComponent) {
 					campNode.entity.add(new CurrentNearestCampComponent());
 				} else if (levelpos !== playerPos.level && hasCurrentCampComponent) {
 					campNode.entity.remove(CurrentNearestCampComponent);
 				}
+				
+				if (playerPos.inCamp && playerPos.equals(campNode.position, true)) {
+					this.updateLastVisitedCamp(campNode.entity);
+				}
 			}
+		},
+		
+		updateLastVisitedCamp: function (entity) {
+			if (this.lastVisitedCampNodes.head && this.lastVisitedCampNodes.head.entity == entity) return;
+			if (this.lastVisitedCampNodes.head) this.lastVisitedCampNodes.head.entity.remove(LastVisitedCampComponent);
+			entity.add(new LastVisitedCampComponent());
+			log.i("updateLastVisitedCamp: " + entity.get(PositionComponent));
 		},
 
 		revealVisitedSectorsNeighbours: function () {
@@ -281,22 +308,18 @@ define([
 		},
 
 		handleInvalidPosition: function () {
-			var playerPos = this.playerPositionNodes.head.position;
+			if (this.playerPositionNodes.head.entity.has(MovementComponent)) return;
+			
+			let playerPos = this.playerPositionNodes.head.position;
 			log.w("Player location could not be found (" + playerPos.level + "." + playerPos.sectorId() + ").");
 			if (this.lastValidPosition) {
 				log.w("Moving to a known valid position " + this.lastValidPosition);
-				playerPos.level = this.lastValidPosition.level;
-				playerPos.sectorX = this.lastValidPosition.sectorX;
-				playerPos.sectorY = this.lastValidPosition.sectorY;
-				playerPos.inCamp = this.lastValidPosition.inCamp;
+				GameGlobals.playerHelper.moveTo(this.lastValidPosition.level, this.lastValidPosition.sectorX, this.lastValidPosition.sectorY, this.lastValidPosition.inCamp);
 			} else {
-				var sectors = GameGlobals.levelHelper.getSectorsByLevel(playerPos.level);
-				var newPos = sectors[0].get(PositionComponent);
+				let sectors = GameGlobals.levelHelper.getSectorsByLevel(playerPos.level);
+				let newPos = sectors[0].get(PositionComponent);
 				log.w("Moving to random position " + newPos);
-				playerPos.level = newPos.level;
-				playerPos.sectorX = newPos.sectorX;
-				playerPos.sectorY = newPos.sectorY;
-				playerPos.inCamp = false;
+				GameGlobals.playerHelper.moveTo(newPos.level, newPos.sectorX, newPos.sectorY, false);
 			}
 			this.lastUpdatePosition = null;
 		},

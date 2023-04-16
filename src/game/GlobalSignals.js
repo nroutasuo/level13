@@ -25,12 +25,17 @@ define(['ash',], function (Ash) {
 		clearBubblesSignal: new Ash.Signals.Signal(),
 		projectHiddenSignal: new Ash.Signals.Signal(),
 		themeToggledSignal: new Ash.Signals.Signal(),
+		
+		// player move
+		playerMovedSignal: new Ash.Signals.Signal(), // deprecated
+		playerMoveStartedSignal: new Ash.Signals.Signal(),
+		playerPositionChangedSignal: new Ash.Signals.Signal(),
+		playerMoveCompletedSignal: new Ash.Signals.Signal(),
 
 		// player actions
 		actionStartingSignal: new Ash.Signals.Signal(),
 		actionStartedSignal: new Ash.Signals.Signal(),
 		actionCompletedSignal: new Ash.Signals.Signal(),
-		playerMovedSignal: new Ash.Signals.Signal(),
 		playerEnteredCampSignal: new Ash.Signals.Signal(),
 		playerLeftCampSignal: new Ash.Signals.Signal(),
 		sectorScavengedSignal: new Ash.Signals.Signal(),

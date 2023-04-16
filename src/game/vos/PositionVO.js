@@ -6,11 +6,13 @@ define(['ash'], function (Ash) {
 		level: 0,
 		sectorX: 0,
 		sectorY: 0,
+		inCamp: false,
 	
-		constructor: function (level, sectorX, sectorY) {
+		constructor: function (level, sectorX, sectorY, inCamp) {
 			this.level = level;
 			this.sectorX = sectorX;
 			this.sectorY = sectorY;
+			this.inCamp = inCamp || false;
 		},
 		
 		normalize: function () {
@@ -38,16 +40,16 @@ define(['ash'], function (Ash) {
 			return this.level * 1000000 + this.sectorY * 1000 + this.sectorX;
 		},
 		
-		equals: function (positionVO) {
+		equals: function (positionVO, ignore) {
 			return this.level === positionVO.level && this.sectorX === positionVO.sectorX && this.sectorY === positionVO.sectorY;
 		},
 		
 		toString: function () {
-			return this.level + "." + this.sectorX + "." + this.sectorY;
+			return this.level + "." + this.sectorX + "." + this.sectorY + (this.inCamp ? " (in camp)" : "");
 		},
 		
 		clone: function () {
-			return new PositionVO(this.level, this.sectorX, this.sectorY);
+			return new PositionVO(this.level, this.sectorX, this.sectorY, this.inCamp);
 		},
 	});
 

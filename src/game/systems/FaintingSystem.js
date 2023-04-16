@@ -241,8 +241,7 @@ define([
 			
 			setTimeout(function () {
 				if (sector.has(CampComponent)) {
-					GameGlobals.playerActionFunctions.enterCamp(false);
-					GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.in);
+					GameGlobals.playerActionFunctions.enterCamp();
 				} else {
 					if (GameGlobals.logWarnings) log.w("Fainting target sector has no CampComponent");
 				}

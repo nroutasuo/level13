@@ -104,25 +104,13 @@
 		},
 
 		update: function () {
-			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.in;
-			var campCount = GameGlobals.gameState.numCamps;
+			let isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.in;
+			let campCount = GameGlobals.gameState.numCamps;
 			if (!this.playerLocationNodes.head) return;
 			if (!this.playerPosNodes.head.position.inCamp) return;
 
 			this.updateWorkers(isActive);
 			this.updateEvents(isActive);
-
-			if (!isActive) {
-				return;
-			}
-
-			var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
-			if (!campComponent) {
-				log.w("Camp UI systen active but no camp found. Switching out.");
-				this.playerPosNodes.head.position.inCamp = false;
-				GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.out);
-				return;
-			}
 		},
 
 		slowUpdate: function () {

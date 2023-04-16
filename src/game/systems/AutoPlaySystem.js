@@ -224,7 +224,7 @@ define(['ash',
 					var selectedResVO = new ResourcesVO();
 					selectedResVO.setResource(resourceNames.food, Math.min(10, currentStorage.resources.getResource(resourceNames.food) / 2));
 					selectedResVO.setResource(resourceNames.water, Math.min(10, currentStorage.resources.getResource(resourceNames.water) / 2));
-					GameGlobals.playerActionFunctions.moveResFromCampToBag(selectedResVO);
+					GameGlobals.resourcesHelper.moveResFromCampToBag(selectedResVO);
 
 					var selectedItems = {};
 					var itemID = ItemConstants.itemDefinitions.exploration[0].id;
@@ -291,7 +291,7 @@ define(['ash',
 			var sectorPosition = directions.sector.get(PositionComponent);
 			if (playerPosition.level !== sectorPosition.level || playerPosition.sectorId() !== sectorPosition.sectorId()) {
 				this.logStep("move to " + sectorPosition + " (" + directions.type + ")");
-				playerPosition.setTo(sectorPosition);
+				GameGlobals.playerHelper.moveTo(sectorPosition.level, sectorPosition.sectorX, sectorPosition.sectorY, false);
 				return true;
 			}
 

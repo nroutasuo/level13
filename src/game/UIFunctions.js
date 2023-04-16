@@ -230,7 +230,7 @@ define(['ash',
 					});
 
 					GameGlobals.playerActionFunctions.updateCarriedItems(selectedItems);
-					GameGlobals.playerActionFunctions.moveResFromCampToBag(selectedResVO);
+					GameGlobals.resourcesHelper.moveResFromCampToBag(selectedResVO);
 					GameGlobals.playerActionFunctions.leaveCamp();
 				});
 

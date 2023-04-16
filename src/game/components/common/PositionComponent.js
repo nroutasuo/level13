@@ -18,23 +18,18 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		},
 
 		getPosition: function () {
-			return new PositionVO(this.level, this.sectorX, this.sectorY);
+			return new PositionVO(this.level, this.sectorX, this.sectorY, this.inCamp);
 		},
 
-		setTo: function (position) {
-			this.level = position.level;
-			this.sectorX = position.sectorX;
-			this.sectorY = position.sectorY;
-			this.inCamp = position.inCamp;
-		},
-
-		equals: function (position) {
+		equals: function (position, ignoreCamp) {
 			if (!position) return false;
 			if (this.level !== position.level) return false;
 			if (this.sectorX !== position.sectorX) return false;
 			if (this.sectorY !== position.sectorY) return false;
-			if (typeof this.inCamp !== "undefined" && typeof position.inCamp !== 'undefined') {
-				if (this.inCamp !== position.inCamp) return false;
+			if (!ignoreCamp) {
+				if (typeof this.inCamp !== "undefined" && typeof position.inCamp !== 'undefined') {
+					if (this.inCamp !== position.inCamp) return false;
+				}
 			}
 			return true;
 		},

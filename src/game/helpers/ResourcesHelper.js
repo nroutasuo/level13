@@ -167,7 +167,43 @@ define([
 
 		getGlobalStorage: function () {
 			return this.globalResourcesNodes.head ? this.globalResourcesNodes.head.resources : null;
-		}
+		},
+		
+		moveResFromBagToCamp: function () {
+			let playerLevelCamp = this.nearestCampNodes.head !== null ? this.nearestCampNodes.head.entity : null;
+			let playerResources = this.playerResourcesNodes.head.resources.resources;
+			let campResourcesSource = playerLevelCamp.get(ResourcesComponent).resources;
+			this.moveResourcesFromVOToVO(playerResources, playerResources, campResourcesSource);
+		},
+
+		moveCurrencyFromBagToCamp: function (campSector) {
+			let playerLevelCamp = this.nearestCampNodes.head !== null ? this.nearestCampNodes.head.entity : null;
+			campSector = campSector || this.nearestCampNodes.head.entity;
+			let playerCurrency = this.playerResourcesNodes.head.entity.get(CurrencyComponent);
+			let campCurrency = campSector.get(CurrencyComponent);
+			campCurrency.currency += playerCurrency.currency;
+			playerCurrency.currency = 0;
+		},
+
+		moveResFromCampToBag: function (resourcesVO) {
+			var playerLevelCamp = this.nearestCampNodes.head !== null ? this.nearestCampNodes.head.entity : null;
+			if (playerLevelCamp) {
+				var playerResources = this.playerResourcesNodes.head.resources.resources;
+				var campResourcesSource = this.getCurrentStorage().resources;
+				this.moveResourcesFromVOToVO(resourcesVO, campResourcesSource, playerResources);
+			}
+		},
+
+		moveResourcesFromVOToVO: function (amountsVO, fromResVO, toResVO) {
+			for (var key in resourceNames) {
+				var name = resourceNames[key];
+				var amount = Math.min(amountsVO.getResource(name), fromResVO.getResource(name));
+				if (amount > 0) {
+					toResVO.addResource(name, amount);
+					fromResVO.addResource(name, -amount);
+				}
+			}
+		},
 
 	});
 

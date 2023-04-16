@@ -36,6 +36,7 @@ define([
 	'game/systems/StaminaSystem',
 	'game/systems/PlayerPositionSystem',
 	'game/systems/PlayerActionSystem',
+	'game/systems/PlayerMovementSystem',
 	'game/systems/SectorStatusSystem',
 	'game/systems/TutorialSystem',
 	'game/systems/LevelStatusSystem',
@@ -99,6 +100,7 @@ define([
 	StaminaSystem,
 	PlayerPositionSystem,
 	PlayerActionSystem,
+	PlayerMovementSystem,
 	SectorStatusSystem,
 	TutorialSystem,
 	LevelStatusSystem,
@@ -192,6 +194,7 @@ define([
 			this.engine.addSystem(new EvidenceSystem(), SystemPriorities.update);
 			this.engine.addSystem(new FavourSystem(), SystemPriorities.update);
 			this.engine.addSystem(new PlayerActionSystem(), SystemPriorities.update);
+			this.engine.addSystem(new PlayerMovementSystem(), SystemPriorities.update);
 			this.engine.addSystem(new SectorStatusSystem(), SystemPriorities.update);
 			this.engine.addSystem(new UnlockedFeaturesSystem(), SystemPriorities.update);
 			this.engine.addSystem(new GlobalResourcesSystem(), SystemPriorities.update);
