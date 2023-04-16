@@ -160,10 +160,10 @@ define([
 			let locationKey = GameGlobals.gameState.getActionLocationKey(isLocationAction, playerPos);
 			
 			if (!skipCooldown) {
-				var cooldownTotal = PlayerActionConstants.getCooldown(action);
-				var cooldownLeft = GameGlobals.gameState.getActionCooldown(action, locationKey, cooldownTotal) / 1000;
+				let cooldownTotal = PlayerActionConstants.getCooldown(action);
+				let cooldownLeft = GameGlobals.gameState.getActionCooldown(action, locationKey, cooldownTotal);
 				if (cooldownLeft) {
-					if (logUnavailable) log.w("Action blocked by cooldown [" + action + "] " + cooldownLeft);
+					if (logUnavailable) log.w("Action blocked by cooldown [" + action + "] " + cooldownLeft + " / " + cooldownTotal);
 					return false;
 				}
 			}

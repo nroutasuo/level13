@@ -969,9 +969,9 @@ define(['ash',
 				var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
 				var locationKey = this.getLocationKey(action);
 				cooldownTotal = PlayerActionConstants.getCooldown(baseId);
-				cooldownLeft = Math.min(cooldownTotal, GameGlobals.gameState.getActionCooldown(action, locationKey, cooldownTotal) / 1000);
+				cooldownLeft = Math.min(cooldownTotal, GameGlobals.gameState.getActionCooldown(action, locationKey, cooldownTotal));
 				durationTotal = PlayerActionConstants.getDuration(baseId);
-				durationLeft = Math.min(durationTotal, GameGlobals.gameState.getActionDuration(action, locationKey, durationTotal) / 1000);
+				durationLeft = Math.min(durationTotal, GameGlobals.gameState.getActionDuration(action, locationKey, durationTotal));
 				if (cooldownLeft > 0) this.startButtonCooldown(button, cooldownTotal, cooldownLeft);
 				else this.stopButtonCooldown(button);
 				if (durationLeft > 0) this.startButtonDuration(button, durationTotal, durationLeft);

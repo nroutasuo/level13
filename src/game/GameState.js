@@ -172,7 +172,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 
 		setActionCooldown: function (action, key, cooldown) {
 			this.pruneActionCooldowns();
-			var actionKey = action;
+			let actionKey = action;
 			if (key.length > 0) actionKey += "-" + key;
 			this.actionCooldownEndTimestamps[actionKey] = new Date().getTime() + cooldown * 1000;
 		},
@@ -189,7 +189,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 						log.w("fix action cooldown: " + diff + " -> " + max);
 						this.actionCooldownEndTimestamps[actionKey] = now + max;
 					}
-					return timestamp - now;
+					return (timestamp - now) / 1000;
 				}
 			}
 			return 0;
@@ -226,7 +226,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 						log.w("fix action duration: " + diff + " -> " + maxMillis);
 						this.actionDurationEndTimestamps[actionKey] = now + maxMillis;
 					}
-					return timestamp - now;
+					return (timestamp - now) / 1000;
 				}
 			}
 			return 0;
