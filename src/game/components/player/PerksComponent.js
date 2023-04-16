@@ -98,10 +98,11 @@ function (Ash, GlobalSignals, PerkVO, PerkConstants) {
 		removePerkById: function (perkId) {
 			for (var key in this.perks) {
 				for( let i = 0; i < this.perks[key].length; i++) {
-					if (this.perks[key][i].id === perkId) {
+					let perk = this.perks[key][i];
+					if (perk.id === perkId) {
 						this.perks[key].splice(i, 1);
 						GlobalSignals.perksChangedSignal.dispatch();
-						return;
+						return perk;
 					}
 				}
 			}

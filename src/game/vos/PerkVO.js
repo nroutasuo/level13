@@ -16,6 +16,8 @@ define(['ash'], function (Ash) {
 		removeTimerDuration: -1,
 		
 		effectFactor: 1,
+		
+		loggedAdd: false,
 	
 		constructor: function (id, name, type, effect, icon, addTimestamp) {
 			this.id = id;
@@ -24,6 +26,7 @@ define(['ash'], function (Ash) {
 			this.effect = effect;
 			this.icon = icon;
 			this.addTimestamp = addTimestamp;
+			this.loggedAdd = false;
 		},
 		
 		setStartTimer: function (duration) {

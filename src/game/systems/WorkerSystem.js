@@ -37,6 +37,7 @@ define([
 	
 		isPendingProductionRateUpdate: false,
 		lastMsgTimeStamp: 0,
+		lastPerksChangedTimestamp: 0,
 		msgFrequency: 1000 * 120,
 
 		constructor: function () { },
@@ -260,7 +261,7 @@ define([
 		
 		updatePlayerPerks: function () {
 			let inCamp = this.playerNodes.head.position.inCamp;
-			var hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
+			let hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
 			
 			let isThirsty = this.isPlayerThirsty();
 			let isHungry = this.isPlayerHungry();
@@ -269,27 +270,88 @@ define([
 			let hasThirstPerk = perksComponent.hasPerk(PerkConstants.perkIds.thirst);
 			let hasHungerPerk = perksComponent.hasPerk(PerkConstants.perkIds.hunger);
 			
+			let addedPerks = [];
+			let removedPerks = [];
+			
 			if (!isThirsty) {
 				if (hasThirstPerk) {
-					if (!inCamp && !hasCampHere) this.logWithDelay("No longer thirsty.", 500, () => !this.isPlayerThirsty());
-					perksComponent.removePerkById(PerkConstants.perkIds.thirst);
+					let perk = perksComponent.removePerkById(PerkConstants.perkIds.thirst);
+					removedPerks.push(perk);
 				}
 			} else if (!hasThirstPerk) {
-				if (!inCamp && !hasCampHere && (GameGlobals.gameState.unlockedFeatures["resource_water"])) this.log("Out of water!", true);
-				var thirstPerk = PerkConstants.getPerk(PerkConstants.perkIds.thirst, PerkConstants.ACTIVATION_TIME_HEALTH_DEBUFF);
+				let thirstPerk = PerkConstants.getPerk(PerkConstants.perkIds.thirst, PerkConstants.ACTIVATION_TIME_HEALTH_DEBUFF);
 				perksComponent.addPerk(thirstPerk);
+				addedPerks.push(thirstPerk);
 			}
 			
 			if (!isHungry) {
 				if (hasHungerPerk) {
-					if (!inCamp && !hasCampHere) this.logWithDelay("No longer hungry.", 500, () => !this.isPlayerHungry());
-					perksComponent.removePerkById(PerkConstants.perkIds.hunger);
+					let perk = perksComponent.removePerkById(PerkConstants.perkIds.hunger);
+					removedPerks.push(perk);
 				}
 			} else if (!hasHungerPerk) {
-				if (!inCamp && !hasCampHere && (GameGlobals.gameState.unlockedFeatures["resource_food"])) this.log("Out of food!", true);
-				var hungerPerk = PerkConstants.getPerk(PerkConstants.perkIds.hunger, PerkConstants.ACTIVATION_TIME_HEALTH_DEBUFF);
+				let hungerPerk = PerkConstants.getPerk(PerkConstants.perkIds.hunger, PerkConstants.ACTIVATION_TIME_HEALTH_DEBUFF);
 				perksComponent.addPerk(hungerPerk);
+				addedPerks.push(hungerPerk);
 			}
+			
+			if (addedPerks.length > 0 || removedPerks.length > 0) {
+				this.lastPerksChangedTimestamp = new Date().getTime();
+				setTimeout(() => {
+					let msg = this.getPlayerPerkChangeLogMsg(addedPerks, removedPerks, perksComponent);
+					if (msg && msg.length > 0) {
+						for (let i in addedPerks) {
+							addedPerks[i].loggedAdd = true;
+						}
+					}
+					this.log(msg, true);
+				}, 1000);
+			}
+		},
+		
+		getPlayerPerkChangeLogMsg: function (addedPerks, removedPerks, perksComponent) {
+			if (addedPerks.length == 0 && removedPerks.length == 0) return;
+			
+			let isThirsty = this.isPlayerThirsty();
+			let isHungry = this.isPlayerHungry();
+			
+			let addedHungerPerk = addedPerks.find(perk => perk.id == PerkConstants.perkIds.hunger);
+			let addedThirstPerk = addedPerks.find(perk => perk.id == PerkConstants.perkIds.thirst);
+			
+			let removedHungerPerk = removedPerks.find(perk => perk.id == PerkConstants.perkIds.hunger);
+			let removedThirstPerk = removedPerks.find(perk => perk.id == PerkConstants.perkIds.thirst);
+			
+			let logAddHunger = addedHungerPerk && isHungry;
+			let logAddThirst = addedThirstPerk  && isThirsty;
+			
+			let logRemovedHunger = removedHungerPerk && removedHungerPerk.loggedAdd && !isHungry;
+			let logRemovedThirst = removedThirstPerk && removedThirstPerk.loggedAdd && !isThirsty;
+			
+			if (logAddHunger && logAddThirst) {
+				return "Out of food and water!";
+			}
+			
+			if (logAddThirst) {
+				return "Out of water!";
+			}
+			
+			if (logAddHunger) {
+				return "Out of food!";
+			}
+			
+			if (logRemovedHunger && logRemovedThirst) {
+				return "No longer hungry or thirsty";
+			}
+			
+			if (logRemovedThirst) {
+				return "No longer thirsty";
+			}
+			
+			if (logRemovedHunger) {
+				return "No longer hungry";
+			}
+			
+			return null;
 		},
 		
 		isPlayerThirsty: function () {
@@ -347,12 +409,12 @@ define([
 			let inCampSector = playerLevelCamp !== null && playerLevelCamp.get(PositionComponent).sector === this.playerLocationNodes.head.position.sector;
 			let hasPopulation = this.nearestCampNodes.head !== null ? this.nearestCampNodes.head.camp.population >= 1 : false;
 			
-			var timeStamp = new Date().getTime();
-			var log = timeStamp - this.lastMsgTimeStamp > this.msgFrequency;
+			let timeStamp = new Date().getTime();
+			let log = timeStamp - this.lastMsgTimeStamp > this.msgFrequency && timeStamp - this.lastPerksChangedTimestamp > this.msgFrequency;;
 			if (log) {
-				var isThirsty = playerFoodSource.water < 1;
-				var isHungry = playerFoodSource.food < 1;
-				var msg = null;
+				let isThirsty = playerFoodSource.water < 1;
+				let isHungry = playerFoodSource.food < 1;
+				let msg = null;
 				
 				if (inCamp && hasPopulation && isThirsty && Math.random() < 0.05) {
 					msg = "There is no more water.";
@@ -366,7 +428,7 @@ define([
 					msg = "Your throat is dry.";
 				}
 				
-				if (!inCamp&& !inCampSector && msg === null && isHungry && Math.random() < 0.05) {
+				if (!inCamp && !inCampSector && msg === null && isHungry && Math.random() < 0.05) {
 					msg = "Your stomach is grumbling.";
 				}
 				
@@ -376,15 +438,8 @@ define([
 			}
 		},
 		
-		logWithDelay: function (msg, delay, condition) {
-			setTimeout(() => {
-				if (condition()) {
-					this.log(msg, true);
-				}
-			}, delay)
-		},
-		
 		log: function (msg, isAmbient, campNode) {
+			if (msg == null || msg.length == 0) return;
 			let logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
 			if (campNode) {
 				logComponent.addMessage(LogConstants.getUniqueID(), msg, null, null, null, null, true, campNode.position.level);
@@ -394,7 +449,7 @@ define([
 			if (isAmbient) {
 				this.lastMsgTimeStamp = new Date().getTime();
 			}
-		}
+		},
 
 	});
 
