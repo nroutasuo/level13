@@ -293,7 +293,7 @@ define([
 
 				this.elements.valReputation.text(UIConstants.roundValue(reputationComponent.value, true, true) + " / " + UIConstants.roundValue(reputationComponent.targetValue, true, true));
 				this.updateChangeIndicator(this.elements.changeIndicatorReputation, reputationComponent.accumulation, true);
-				let reputationCalloutContent = "Attracts more people to the camp.<br/";
+				let reputationCalloutContent = "Attracts more people to the camp.<br/>";
 				for (let i in reputationComponent.targetValueSources) {
 					let source = reputationComponent.targetValueSources[i];
 					if (source.amount !== 0) {
@@ -304,7 +304,7 @@ define([
 				UIConstants.updateCalloutContent("#header-camp-reputation", reputationCalloutContent);
 
 				$("#header-camp-population .value").text(Math.floor(campComponent.population) + " / " + maxPopulation);
-				this.updateChangeIndicator(this.elements.changeIndicatorPopulation, campComponent.populationChangePerSec, maxPopulation > 0);
+				this.updateChangeIndicator(this.elements.changeIndicatorPopulation, campComponent.populationChangePerSecWithoutCooldown, maxPopulation > 0);
 				var populationCalloutContent = "Required reputation:<br/>";
 				populationCalloutContent += "current: " + reqReputationCurrent + "<br/>";
 				populationCalloutContent += "next: " + reqReputationNext;
