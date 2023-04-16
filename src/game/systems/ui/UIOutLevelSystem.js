@@ -588,7 +588,7 @@ define([
 							else if (inhabited && featuresComponent.buildingDensity > 5)
 								notCampableDesc = "Walls are covered in graffiti warning about some kind of <span class='hl-functionality'>pollution</span>. ";
 							else
-								notCampableDesc = "A <span class='hl-functionality'>noxious smell</span> hangs in the air.";
+								notCampableDesc = "A <span class='hl-functionality'>noxious smell</span> hangs in the air. ";
 							break;
 
 						case LevelConstants.UNCAMPABLE_LEVEL_TYPE_SUPERSTITION:

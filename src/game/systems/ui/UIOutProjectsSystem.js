@@ -143,6 +143,10 @@ define([
 					GameGlobals.uiFunctions.registerActionButtonListeners("#in-improvements-colony");
 					GameGlobals.uiFunctions.generateButtonOverlays("#in-improvements-colony");
 					GameGlobals.uiFunctions.generateCallouts("#in-improvements-colony");
+					
+					// TODO fix better, now forcing an update after ovelays generated but build into UIList
+					UIList.update(this.availableLevelProjectList, projects.filter(project => !project.isColonyProject() && !isHidden(project)));
+					UIList.update(this.availableColonyProjectList, projects.filter(project => project.isColonyProject()));
 				}
 			}
 			

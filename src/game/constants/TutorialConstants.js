@@ -349,7 +349,7 @@ define(['ash'], function (Ash) {
 			TUTORIAL_FOUND_MEDICINE: {
 				triggers: [ "action_collect_rewards" ],
 				repeats: "NEVER",
-				logMessage: "Found some medicine. Rare to find it just lying around like this.",
+				logMessage: "Found some medicine. Rare remnants of safer times.",
 				conditions: { playerInventory: { resource_medicine: [1, -1] } }
 			},
 			TUTORIAL_FOUND_TOOLS: {
