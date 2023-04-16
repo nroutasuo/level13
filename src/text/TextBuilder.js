@@ -9,17 +9,17 @@ define(function () {
 	var TextBuilder = {
 		
 		// predefined variables
-		VAR_INDEFINITE_ARTICLE: "A",
+		VAR_INDEFINITE_ARTICLE: "a",
 		
 		isDebugMode: false,
 		language: null,
 		
 		build: function (template, params) {
 			let result = template;
-			var vars = template.match(/\[\S*\]/g);
+			let vars = template.match(/\[\S*\]/g);
 			if (vars) {
 				// 1dt pass: replace custom variables
-				var replacedVars = {};
+				let replacedVars = {};
 				for (let i = 0; i < vars.length; i++) {
 					var v = vars[i].substring(1, vars[i].length - 1);
 					if (this.isPredefinedVar(v)) continue;
@@ -46,6 +46,7 @@ define(function () {
 					replacedVars[v]++;
 				}
 			}
+			
 			return result;
 		},
 		
