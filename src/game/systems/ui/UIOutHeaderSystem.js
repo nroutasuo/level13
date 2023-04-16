@@ -59,6 +59,9 @@ define([
 		previousStats: {},
 		previousStatsUpdates: {},
 		
+		currentThemeTransitionID: null,
+		currentThemeTransitionTargetValue: null,
+		
 		SCAVENGE_BONUS_TYPES: [
 			{ itemBonusType: ItemConstants.itemBonusTypes.scavenge_general, displayName: "general", containerID: "scavenge-bonus-general" },
 			{ itemBonusType: ItemConstants.itemBonusTypes.scavenge_ingredients, displayName: "ingredients", containerID: "scavenge-bonus-ingredients" },
@@ -104,7 +107,6 @@ define([
 			this.autoPlayNodes = engine.getNodeList(AutoPlayNode);
 
 			var sys = this;
-			GlobalSignals.playerMovedSignal.add(function () { sys.onPlayerMoved(); });
 			GlobalSignals.playerEnteredCampSignal.add(function () { sys.onPlayerEnteredCamp(); });
 			GlobalSignals.playerLeftCampSignal.add(function () { sys.onPlayerLeftCamp(); });
 			GlobalSignals.actionStartingSignal.add(function () { sys.onActionStarting(); });
@@ -119,6 +121,7 @@ define([
 			GlobalSignals.actionCompletedSignal.add(function () { sys.onPlayerActionCompleted(); });
 			GlobalSignals.slowUpdateSignal.add(function () { sys.slowUpdate(); });
 			GlobalSignals.changelogLoadedSignal.add(function () { sys.updateGameVersion(); });
+			GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.onPlayerMoved);
 			GlobalSignals.add(this, GlobalSignals.perksChangedSignal, this.onPerksChanged);
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onGameShown);
 			GlobalSignals.add(this, GlobalSignals.levelTypeRevealedSignal, this.onLevelTypeRevealed);
@@ -138,7 +141,7 @@ define([
 			this.autoPlayNodes = null;
 		},
 		
-			initElements: function () {
+		initElements: function () {
 			// equipment stats
 			for (var bonusKey in ItemConstants.itemBonusTypes) {
 				let bonusType = ItemConstants.itemBonusTypes[bonusKey];
@@ -175,6 +178,7 @@ define([
 					pathDark: $(this).attr("src"),
 				});
 			});
+			
 			this.themedIcons = themedIcons;
 		},
 
@@ -891,31 +895,31 @@ define([
 		},
 
 		updateVisionStatus: function () {
-			// update sunlit/dark
+			this.updateTheme();
+			this.updateVisionLevel();
+		},
+		
+		updateTheme: function () {
 			let sunlit = false;
+			
 			if (this.currentLocationNodes.head) {
 				let featuresComponent = this.currentLocationNodes.head.entity.get(SectorFeaturesComponent);
 				sunlit = featuresComponent.sunlit;
 			}
+			
 			if (GameGlobals.gameState.uiStatus.forceSunlit) sunlit = true;
 			if (GameGlobals.gameState.uiStatus.forceDark) sunlit = false;
-			this.elements.body.toggleClass("sunlit", sunlit);
-			this.elements.body.toggleClass("dark", !sunlit);
 			
-			// update elements affected by vision
-			let visionValue = 0;
-			if (this.playerStatsNodes.head) {
-				visionValue = this.playerStatsNodes.head.vision.value;
+			this.updateThemeTo(sunlit);
+		},
+		
+		updateThemeTo: function (sunlit) {
+			log.w("[ui] update theme to: " + (sunlit ? "sunlit" : "dark"));
+			let wasSunlit = this.elements.body.hasClass("sunlit");
+			if (sunlit != wasSunlit) {
+				this.transitionTheme(wasSunlit, sunlit);
+				return;
 			}
-			let visionFactor = visionValue;
-			visionFactor = Math.max(0, visionFactor);
-			visionFactor = Math.min(100, visionFactor);
-			let visionStep = Math.round(visionFactor / 10);
-			UIState.refreshState(this, "vision-step", visionStep, function () {
-				for (let i = 0; i <= 10; i++) {
-					 this.elements.body.toggleClass("vision-step-" + i, i == visionStep);
-				}
-			});
 			
 			// update elements affected by sunligt
 			// TODO move to some place more generic
@@ -928,6 +932,68 @@ define([
 					log.w("no path defined for themed icon " + icon.$elem.attr("id"));
 				}
 			}
+		},
+		
+		updateVisionLevel: function () {
+			let visionValue = 0;
+			if (this.playerStatsNodes.head) {
+				visionValue = this.playerStatsNodes.head.vision.value;
+			}
+			
+			let visionFactor = visionValue;
+			visionFactor = Math.max(0, visionFactor);
+			visionFactor = Math.min(100, visionFactor);
+			
+			let visionStep = Math.round(visionFactor / 10);
+			
+			UIState.refreshState(this, "vision-step", visionStep, function () {
+				for (let i = 0; i <= 10; i++) {
+					 this.elements.body.toggleClass("vision-step-" + i, i == visionStep);
+				}
+			});
+		},
+		
+		transitionTheme: function (oldValue, newValue) {
+			if (oldValue == newValue) return;
+			if (this.currentThemeTransitionTargetValue != null && this.currentThemeTransitionTargetValue === newValue) {
+				return;
+			}
+			
+			log.w("transitionTheme " + oldValue + " -> " + newValue + " | " + this.currentThemeTransitionID);
+			
+			if (this.currentThemeTransitionID) {
+				clearTimeout(this.currentThemeTransitionID);
+			}
+			
+			this.currentThemeTransitionTargetValue = newValue;
+			
+			$("body").toggleClass("theme-transition", true);
+			
+			let sys = this;
+			let fadeOutDuration = 500;
+			let transitionDuration = 200;
+			let fadeInDuration = 500;
+			
+			$("#theme-transition-overlay").css("display", "block");
+			$("#theme-transition-overlay").stop(true).animate({ opacity: 1 }, fadeOutDuration).delay(transitionDuration).animate({ opacity: 0 }, fadeInDuration);
+			
+			this.currentThemeTransitionID = setTimeout(function () {
+				sys.elements.body.toggleClass("sunlit", newValue);
+				sys.elements.body.toggleClass("dark", !newValue);
+				
+				sys.updateVisionStatus();
+				sys.updateResources(); // resource fill progress bar color
+				
+				GlobalSignals.themeToggledSignal.dispatch();
+				
+				sys.currentThemeTransitionID = setTimeout(function () {
+					$("body").toggleClass("theme-transition", false);
+					$("#theme-transition-overlay").css("display", "none");
+					sys.currentThemeTransitionID = null;
+					sys.currentThemeTransitionTargetValue = null;
+				}, transitionDuration + fadeOutDuration);
+			}, fadeOutDuration);
+		
 		},
 		
 		isResting: function () {

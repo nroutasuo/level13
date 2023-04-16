@@ -132,6 +132,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.buttonStateChangedSignal, this.onButtonStateChanged);
 			GlobalSignals.add(this, GlobalSignals.equipmentChangedSignal, this.scheduleMapUpdate);
 			GlobalSignals.add(this, GlobalSignals.sectorRevealedSignal, this.scheduleMapUpdate);
+			GlobalSignals.add(this, GlobalSignals.themeToggledSignal, this.scheduleMapUpdate);
 			this.rebuildVis();
 			this.updateUnlockedFeatures();
 		},
@@ -162,7 +163,6 @@ define([
 
 			this.rebuildVis();
 			this.updateLocales();
-			this.updateOutImprovementsList();
 			this.updateMovementRelatedActions();
 			this.updateLocationDetails();
 			this.updateSectorDescription();

@@ -2500,6 +2500,17 @@ body.dark .loading-spinner .loading-dot3 {
     transform: scale(1);
   }
 }
+body.dark #theme-transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  width: 100%;
+  height: 100%;
+  background: #8E8F8E;
+  transition: opacity 0s;
+  opacity: 0;
+}
 body.dark div {
   scrollbar-color: #2f322f #666;
 }
@@ -4730,6 +4741,17 @@ body.sunlit .loading-spinner .loading-dot3 {
     -webkit-transform: scale(1);
     transform: scale(1);
   }
+}
+body.sunlit #theme-transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  width: 100%;
+  height: 100%;
+  background: #8E8F8E;
+  transition: opacity 0s;
+  opacity: 0;
 }
 body.sunlit div {
   scrollbar-color: #e6e6e6 #999;

@@ -24,6 +24,7 @@ define(['ash',], function (Ash) {
 		updateButtonsSignal: new Ash.Signals.Signal(),
 		clearBubblesSignal: new Ash.Signals.Signal(),
 		projectHiddenSignal: new Ash.Signals.Signal(),
+		themeToggledSignal: new Ash.Signals.Signal(),
 
 		// player actions
 		actionStartingSignal: new Ash.Signals.Signal(),
