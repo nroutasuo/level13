@@ -83,10 +83,13 @@ define([
 				this.engine.updateComplete.add(function () {
 					sys.cache.reqs = {};
 				});
-				GlobalSignals.add(this, GlobalSignals.actionStartedSignal, function () {
-					sys.cache.reqs = {};
-				});
+				GlobalSignals.add(this, GlobalSignals.actionStartedSignal, this.clearReqsCache);
+				GlobalSignals.add(this, GlobalSignals.sectorScoutedSignal, this.clearReqsCache);
 			}
+		},
+		
+		clearReqsCache: function () {
+			this.cache.reqs = {};
 		},
 
 		deductCosts: function (action) {
