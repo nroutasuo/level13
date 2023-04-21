@@ -303,6 +303,7 @@ define([
 		
 		onActionCompleted: function () {
 			this.updateStatusPerks();
+			this.updateLocationPerks();
 		},
 		
 		

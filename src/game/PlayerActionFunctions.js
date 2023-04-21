@@ -1381,23 +1381,22 @@ define(['ash',
 		},
 
 		buildTrap: function () {
-			this.buildImprovement("build_out_collector_food", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_collector_food"));
 			if (!this.playerLocationNodes.head.entity.has(SectorCollectorsComponent))
 				this.playerLocationNodes.head.entity.add(new SectorCollectorsComponent());
+			this.buildImprovement("build_out_collector_food", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_collector_food"));
 			GlobalSignals.improvementBuiltSignal.dispatch();
 		},
 
 		buildBucket: function () {
-			this.buildImprovement("build_out_collector_water", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_collector_water"));
 			if (!this.playerLocationNodes.head.entity.has(SectorCollectorsComponent))
 				this.playerLocationNodes.head.entity.add(new SectorCollectorsComponent());
+			this.buildImprovement("build_out_collector_water", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_collector_water"));
 		},
 		
 		buildBeacon: function () {
-			this.buildImprovement("build_out_beacon", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_beacon"));
-			
 			let sector = this.playerLocationNodes.head.entity;
 			sector.add(new BeaconComponent());
+			this.buildImprovement("build_out_beacon", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_beacon"));
 		},
 
 		buildHouse: function (sectorPos) {

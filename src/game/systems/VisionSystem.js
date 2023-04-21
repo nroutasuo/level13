@@ -50,6 +50,7 @@ define([
 			this.locationNodes = engine.getNodeList(PlayerLocationNode);
 			
 			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.onPlayerPositionChanged, GlobalSignals.PRIORITY_HIGH);
+			GlobalSignals.add(this, GlobalSignals.perksChangedSignal, this.onPerksChanged, GlobalSignals.PRIORITY_HIGH);
 		},
 
 		removeFromEngine: function (engine) {
@@ -202,6 +203,10 @@ define([
 				this.lastSignalValue = vision.value;
 				GlobalSignals.visionChangedSignal.dispatch();
 			}
+		},
+		
+		onPerksChanged: function () {
+			this.update(0);
 		},
 		
 		onPlayerPositionChanged: function () {
