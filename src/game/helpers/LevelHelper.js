@@ -8,6 +8,7 @@ define([
 	'game/constants/FightConstants',
 	'game/constants/ImprovementConstants',
 	'game/constants/LocaleConstants',
+	'game/constants/PlayerActionConstants',
 	'game/constants/PositionConstants',
 	'game/constants/MovementConstants',
 	'game/constants/TribeConstants',
@@ -45,6 +46,7 @@ define([
 	FightConstants,
 	ImprovementConstants,
 	LocaleConstants,
+	PlayerActionConstants,
 	PositionConstants,
 	MovementConstants,
 	TribeConstants,
@@ -676,7 +678,7 @@ define([
 						actionLabel = "repair";
 						break;
 				}
-				if (GameGlobals.playerActionsHelper.isVisible(actionName, sectorEntity)) {
+				if (GameGlobals.playerActionsHelper.isVisible(actionName, sectorEntity, [ PlayerActionConstants.DISABLED_REASON_UPGRADE ])) {
 					actionName = actionName + "_" + levelOrdinal;
 					projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, sectorPosition, PositionConstants.DIRECTION_UP, null, actionLabel));
 				}
