@@ -10,7 +10,9 @@ define([
 	'game/vos/ImprovementVO',
 ], function (Ash, GameGlobals, ImprovementConstants, PlayerActionConstants, UpgradeConstants, TribeConstants, OccurrenceConstants, ImprovementVO) {
 	
-	var MilestoneEffectsHelper = Ash.Class.extend({
+	let MilestoneEffectsHelper = Ash.Class.extend({
+		
+		upgradesRevealingMilestones: {}, // upgradeID => milestone index
 		
 		constructor: function () {},
 		
@@ -109,6 +111,28 @@ define([
 		
 		getUnlockedGeneralActions: function (milestoneIndex) {
 			
+		},
+		
+		getMilestoneRevealingUpgrade: function (upgradeID) {
+			let cachedValue = this.upgradesRevealingMilestones[upgradeID];
+			
+			if (cachedValue) {
+				return cachedValue;
+			}
+			
+			let result = -1;
+			for (let i = 0; i < TribeConstants.milestones.length; i++) {
+				let revealedUpgrades = GameGlobals.milestoneEffectsHelper.getUnlockedUpgrades(i);
+				for (let j = 0; j < revealedUpgrades.length; j++) {
+					if (revealedUpgrades[j] == upgradeID) {
+						result = i;
+						break;
+					}
+				}
+			}
+			
+			this.upgradesRevealingMilestones[upgradeID] = result;
+			return result;
 		},
 		
 	});

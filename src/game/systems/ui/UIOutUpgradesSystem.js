@@ -243,13 +243,8 @@ define([
 		
 		isRevealedByMilestone: function (id) {
 			let currentMilestone = GameGlobals.tribeHelper.getCurrentMilestone();
-			for (let i = 0; i <= currentMilestone.index; i++) {
-				let revealedUpgrades = GameGlobals.milestoneEffectsHelper.getUnlockedUpgrades(i);
-				for (let j = 0; j < revealedUpgrades.length; j++) {
-					if (revealedUpgrades[j] == id) return true;
-				}
-			}
-			return false;
+			let revealingMilestoneIndex = GameGlobals.milestoneEffectsHelper.getMilestoneRevealingUpgrade(id);
+			return revealingMilestoneIndex >= 0 && revealingMilestoneIndex <= currentMilestone.index;
 		},
 		
 		getUpgradeTR: function (upgradeDefinition, status) {
