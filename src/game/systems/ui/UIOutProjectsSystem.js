@@ -262,7 +262,7 @@ define([
 			li.$btnAction.attr("id", "btn-" + action + "-" + sector);
 			li.$btnAction.find(".btn-label").html(actionLabel);
 			
-			GameGlobals.uiFunctions.toggle(li.$btnHide, isAvailable && !project.isColonyProject());
+			GameGlobals.uiFunctions.toggle(li.$btnHide, isAvailable && !project.isColonyProject() && this.canHideProject(projectID));
 			GameGlobals.uiFunctions.toggle(li.$btnMap, isAvailable && !project.isColonyProject());
 			GameGlobals.uiFunctions.toggle(li.$btnAction, isAvailable);
 		},
@@ -316,9 +316,16 @@ define([
 			}
 		},
 		
+		canHideProject: function (projectID) {
+			if (projectID.indexOf("greenhouse") >= 0) return false;
+			if (projectID.indexOf("passage") >= 0) return false;
+			return true;
+		},
+		
 		onHideProjectButtonClicked: function () {
 			let projectID = $(this).data("project");
 			if (!projectID) return;
+			if (!this.canHideProject(projectID)) return;
 			GameGlobals.gameState.uiStatus.hiddenProjects.push(projectID);
 			GlobalSignals.projectHiddenSignal.dispatch();
 		},
