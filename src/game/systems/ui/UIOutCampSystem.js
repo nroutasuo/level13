@@ -589,6 +589,8 @@
 			for (let i = 0; i < actions.length; i++) {
 				let actionVO = actions[i];
 				let action = actionVO.action;
+				let baseActionID = PlayerActionConstants.getBaseActionID(action);
+				if (baseActionID == "send_caravan") continue // shown separately
 				if (!actionVO.isBusy && actionVO.level == playerPos.level) {
 					let improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(action);
 					let isImprovement = ImprovementConstants.isProject(improvementName);
