@@ -603,8 +603,7 @@ define([
 			}
 
 			if (foundSomething) {
-				msg = msg.slice(0, -2);
-				msg += ".";
+				msg = TextConstants.sentencify(msg);
 			} else {
 				msg = "Didn't find anything.";
 			}

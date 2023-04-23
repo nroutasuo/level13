@@ -20,6 +20,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		sentencify: function (s) {
 			s = s.trim();
 			if (s.length > 0) {
+				if (s.endsWith(", ")) s = s.slice(0, -2);
 				if (s[s.length - 1] != ".") s = s + ".";
 				if (s[s.length - 1] != " ") s = s + " ";
 			}
@@ -827,7 +828,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			var msg = "";
 			var replacements = [];
 			var values = [];
-			for (var key in resourceNames) {
+			for (let key in resourceNames) {
 				var name = resourceNames[key];
 				var amount = resourcesVO.getResource(name);
 				msg += "$" + replacements.length + ", ";
