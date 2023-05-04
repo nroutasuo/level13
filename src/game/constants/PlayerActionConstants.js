@@ -313,6 +313,11 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 		isRepairBuildingAction: function (baseActionID) {
 			return baseActionID == "repair_in" || baseActionID == "repair_out";
 		},
+		
+		isProjectAction: function (baseActionID) {
+			let improvementName = this.getImprovementNameForAction(baseActionID, true);
+			return improvementName && ImprovementConstants.isProject(improvementName);
+		},
 
 		isLocationAction: function (action) {
 			if (!action) return false;

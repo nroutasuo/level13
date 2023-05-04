@@ -503,6 +503,12 @@ define(['ash',
 			return false;
 		},
 		
+		canHideProject: function (projectID) {
+			if (projectID.indexOf("greenhouse") >= 0) return false;
+			if (projectID.indexOf("passage") >= 0) return false;
+			return true;
+		},
+		
 		getMultiplierBonusDisplayValue: function (value) {
 			return Math.round(Math.abs(1 - value) * 100) + "%";
 		},

@@ -213,14 +213,28 @@ define([
 			return false;
 		},
 		
-		isInProgress: function (action) {
+		isProjectInProgress: function () {
+			if (this.playerResourcesNodes.head == null) return false;
+			let playerActionComponent = this.playerResourcesNodes.head.entity.get(PlayerActionComponent);
+			let actions = playerActionComponent.getAllActions();
+			for (let i = 0; i < actions.length; i++) {
+				if (PlayerActionConstants.isProjectAction(actions[0].action)) {
+					return true;
+				}
+			}
+			return false;
+		},
+		
+		isInProgress: function (action, sector) {
 			if (this.playerResourcesNodes.head == null) return false;
 			let playerPos = this.playerStatsNodes.head.entity.get(PositionComponent);
+			let sectorPos = sector ? sector.get(PositionComponent) : playerPos;
+			
 			let playerActionComponent = this.playerResourcesNodes.head.entity.get(PlayerActionComponent);
 			let actions = playerActionComponent.getAllActions();
 			for (let i = 0; i < actions.length; i++) {
 				if (actions[i].action != action) continue;
-				if ((actions[i].level || actions[i].level !== 0) && actions[i].level != playerPos.level) continue;
+				if ((actions[i].level || actions[i].level !== 0) && actions[i].level != sectorPos.level) continue;
 				return true;
 			}
 			return false;
@@ -237,10 +251,11 @@ define([
 		checkRequirements: function (action, doLog, otherSector, checksToSkip) {
 			if (!action) return { value: 0, reason: "No action", baseReason: PlayerActionConstants.DISABLED_REASON_INVALID_PARAMS };
 			if (GameGlobals.gameState.uiStatus.isTransitioning) return { value: 0, reason: "Transitioning", baseReason: PlayerActionConstants.DISABLED_REASON_BUSY };
-			if (this.isInProgress(action)) return { value: 0, reason: "Already in progress", baseReason: PlayerActionConstants.DISABLED_REASON_IN_PROGRESS };
 			let sector = otherSector;
 			if (!sector) sector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
 			if (!sector) return { value: 0, reason: "No selected sector", baseReason: PlayerActionConstants.DISABLED_REASON_INVALID_PARAMS };
+			
+			if (this.isInProgress(action, sector)) return { value: 0, reason: "Already in progress", baseReason: PlayerActionConstants.DISABLED_REASON_IN_PROGRESS };
 
 			let sectorID = sector.get(PositionComponent).positionId();
 			let reqsID = action + "-" + sectorID;
@@ -280,6 +295,10 @@ define([
 				if (ordinal >= maxLevel) {
 					return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENT_LEVEL };
 				}
+			}
+			
+			if (PlayerActionConstants.isProjectAction(baseActionID) && this.isProjectInProgress()) {
+				return { value: 0, reason: "There is already a building project in progress", baseReason: PlayerActionConstants.DISABLED_REASON_IN_PROGRESS };
 			}
 
 			if (costs) {

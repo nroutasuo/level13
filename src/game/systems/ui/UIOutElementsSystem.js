@@ -181,7 +181,7 @@ define([
 				}
 			}
 			
-			buttonStatus.isInProgress = GameGlobals.playerActionsHelper.isInProgress(action);
+			buttonStatus.isInProgress = GameGlobals.playerActionsHelper.isInProgress(action, sectorEntity);
 
 			// overlays
 			this.updateButtonCooldownOverlays($button, action, buttonStatus, buttonElements, sectorEntity, isHardDisabled, costsStatus);

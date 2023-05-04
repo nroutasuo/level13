@@ -754,18 +754,10 @@ define([
 			}
 			
 			// lxuury resources
-			if (camp && improvementsComponent.getCount(improvementNames.luxuryOutpost) == 0) {
-				let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
-				let getLevelsForCamp = GameGlobals.gameState.getLevelsForCamp(campOrdinal);
-				let result = 0;
-				for (let i = 0; i < getLevelsForCamp.length; i++) {
-					let campLevel = getLevelsForCamp[i];
-					let luxuryResource = this.getFoundLuxuryResourceOnLevel(campLevel);
-					if (luxuryResource) {
-						let name = this.getProjectName(improvementNames.luxuryOutpost, campLevel);
-						let projectPosition = new PositionVO(campLevel, sectorPos.sectorX, sectorPos.sectorY);
-						projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.luxuryOutpost), "build_out_luxury_outpost", projectPosition, null, name));
-					}
+			if (improvementsComponent.getCount(improvementNames.luxuryOutpost) <= 0) {
+				if (GameGlobals.sectorHelper.getLuxuryResourceOnSector(sectorEntity)) {
+					let name = this.getProjectName(improvementNames.luxuryOutpost, sectorEntity);
+					projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.luxuryOutpost), "build_out_luxury_outpost", sectorPosition, null, name));
 				}
 			}
 			
@@ -804,23 +796,24 @@ define([
 				if (improvement.name === improvementNames.collector_food) continue;
 				if (improvement.name === improvementNames.collector_water) continue;
 				if (improvement.name === improvementNames.beacon) continue;
-				let name = this.getProjectName(improvement.name, level);
-				projects.push(new LevelProjectVO(improvement, "", sectorPosition, name));
+				if (improvement.name === improvementNames.luxuryOutpost && !GameGlobals.sectorHelper.getLuxuryResourceOnSector(sectorEntity, true)) continue;
+				let name = this.getProjectName(improvement.name, sectorEntity);
+				projects.push(new LevelProjectVO(improvement, "", sectorPosition, null, name));
 			}
 
 			return projects;
 		},
 		
-		getProjectName: function (improvementName, level) {
+		getProjectName: function (improvementName, sector) {
 			switch (improvementName) {
 				case improvementNames.luxuryOutpost:
-					let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
-					let luxuryResource = this.getFoundLuxuryResourceOnCampOrdinal(campOrdinal);
+					let luxuryResource = GameGlobals.sectorHelper.getLuxuryResourceOnSector(sector);
 					let resourceName = TribeConstants.getLuxuryDisplayName(luxuryResource);
 					return "Resource outpost (" + resourceName + ")";
 			}
 			
-			return ImprovementConstants.getImprovementDisplayName(improvementName);
+			let improvementID = ImprovementConstants.getImprovementID(improvementName);
+			return ImprovementConstants.getImprovementDisplayName(improvementID);
 		},
 		
 		getTotalClearedWorkshopCount: function (resourceName) {
