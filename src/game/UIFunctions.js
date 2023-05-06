@@ -1178,9 +1178,14 @@ define(['ash',
 			},
 
 			showSpecialPopup: function (popupID) {
-				if ($("#" + popupID).is(":visible")) return;
-				$("#" + popupID).wrap("<div class='popup-overlay popup-overlay-ingame' style='display:none'></div>");
-				var uiFunctions = this;
+				log.i("[ui] showSpecialPopup " + popupID);
+				let $popup = $("#" + popupID);
+				if ($popup.is(":visible")) return;
+				
+				if ($popup.parent().hasClass("popup-overlay")) $popup.unwrap();
+				$popup.wrap("<div class='popup-overlay popup-overlay-ingame' style='display:none'></div>");
+				
+				let uiFunctions = this;
 				$(".popup-overlay").fadeIn(200, function () {
 					uiFunctions.popupManager.repositionPopups();
 					GlobalSignals.popupOpenedSignal.dispatch(popupID);
