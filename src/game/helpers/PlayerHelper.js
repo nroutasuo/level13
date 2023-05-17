@@ -108,13 +108,13 @@ define([
 			}
 			
 			if (passageDown) {
-				let pathDown = GameGlobals.levelHelper.findPathTo(this.playerLocationNodes.head.entity, passageUp, { skipBlockers: true, skipUnvisited: true });
+				let pathDown = GameGlobals.levelHelper.findPathTo(this.playerLocationNodes.head.entity, passageDown, { skipBlockers: true, skipUnvisited: true });
 				if (result == null || result.length > pathDown.length) {
 					result = pathDown;
 				}
 			}
 			
-			return path;
+			return result;
 		},
 		
 		hasItem: function (id) {
