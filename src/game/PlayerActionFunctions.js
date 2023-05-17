@@ -980,7 +980,7 @@ define(['ash',
 				if (failCallback) failCallback();
 			}, function () {
 				playerActionFunctions.completeAction(action);
-				if (messages.addToLog && messages.msgDefeat) playerActionFunctions.addLogMessage(logMsgId, msgDefeat);
+				if (messages.addToLog && messages.msgDefeat) playerActionFunctions.addLogMessage(logMsgId, messages.msgDefeat);
 				if (failCallback) failCallback();
 			});
 		},
