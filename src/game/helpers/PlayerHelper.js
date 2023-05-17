@@ -11,6 +11,7 @@ define([
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/player/PlayerResourcesNode',
+	'game/components/player/DeityComponent',
 	'game/components/common/LogMessagesComponent',
 	'game/components/common/MovementComponent',
 ], function (
@@ -26,6 +27,7 @@ define([
 	PlayerLocationNode,
 	PlayerStatsNode,
 	PlayerResourcesNode,
+	DeityComponent,
 	LogMessagesComponent,
 	MovementComponent,
 ) {
@@ -209,6 +211,16 @@ define([
 				}
 			}
 			return result;
+		},
+		
+		isAffectedByHazardAt: function (sector) {
+			return GameGlobals.sectorHelper.isSectorAffectedByHazard(sector, this.playerStatsNodes.head.items);
+		},
+		
+		getMaxFavour: function () {
+			let deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
+			let hasDeity = deityComponent != null;
+			return hasDeity ? deityComponent.maxFavour : 0;
 		},
 		
 	});

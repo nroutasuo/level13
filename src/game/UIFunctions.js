@@ -1028,6 +1028,9 @@ define(['ash',
 			
 			updateCostsSpans: function (action, costs, elements, costsStatus, displayedCosts, signalParams) {
 				let playerHealth = GameGlobals.playerActionFunctions.playerStatsNodes.head.stamina.health;
+				let maxRumours = GameGlobals.playerActionFunctions.playerStatsNodes.head.rumours.maxValue;
+				let maxEvidence = GameGlobals.playerActionFunctions.playerStatsNodes.head.evidence.maxValue;
+				let maxFavour = GameGlobals.playerHelper.getMaxFavour();
 				let showStorage = GameGlobals.resourcesHelper.getCurrentStorageCap();
 				
 				for (let key in costs) {
@@ -1038,7 +1041,13 @@ define(['ash',
 					}
 					let value = costs[key];
 					let costFraction = GameGlobals.playerActionsHelper.checkCost(action, key);
-					let isFullCostBlocker = (isResource(key.split("_")[1]) && value > showStorage) || (key == "stamina" && value > playerHealth * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR);
+					let isFullCostBlocker =
+						(isResource(key.split("_")[1]) && value > showStorage) ||
+						(key == "stamina" && value > playerHealth * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR) ||
+						(key == "rumours" && value > maxRumours) ||
+						(key == "evidence" && value > maxEvidence) ||
+						(key == "favour" && value > maxFavour);
+						
 					if (costsStatus) {
 						if (isFullCostBlocker) {
 							costsStatus.hasCostBlockers = true;

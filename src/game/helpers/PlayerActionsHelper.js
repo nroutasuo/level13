@@ -1354,10 +1354,15 @@ define([
 						return this.playerStatsNodes.head.stamina.maxStamina / costs.stamina;
 
 					case "rumours":
-					case "favour":
+						return this.playerStatsNodes.head.rumours.maxValue / costs.rumours;
+						
 					case "evidence":
-						// TODO update if there is a cap for rumorus/favour/evidence
-						return 1;
+						return this.playerStatsNodes.head.evidence.maxValue / costs.evidence;
+						
+					case "favour":
+						let deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
+						let hasDeity = deityComponent != null;
+						return hasDeity ? (deityComponent.maxFavour / costs.favour) : 0;
 
 					case "blueprint":
 						return 1;
