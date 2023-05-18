@@ -321,8 +321,8 @@ define([
 			let removedHungerPerk = removedPerks.find(perk => perk.id == PerkConstants.perkIds.hunger);
 			let removedThirstPerk = removedPerks.find(perk => perk.id == PerkConstants.perkIds.thirst);
 			
-			let logAddHunger = addedHungerPerk && isHungry;
-			let logAddThirst = addedThirstPerk  && isThirsty;
+			let logAddHunger = addedHungerPerk && isHungry && !this.isInCampWithProduction(resourceNames.food);
+			let logAddThirst = addedThirstPerk  && isThirsty && !this.isInCampWithProduction(resourcenames.water);
 			
 			let logRemovedHunger = removedHungerPerk && removedHungerPerk.loggedAdd && !isHungry;
 			let logRemovedThirst = removedThirstPerk && removedThirstPerk.loggedAdd && !isThirsty;
@@ -362,6 +362,15 @@ define([
 		isPlayerHungry: function () {
 			let playerFoodSource = GameGlobals.resourcesHelper.getCurrentStorage();
 			return playerFoodSource.resources.food < 1;
+		},
+		
+		isInCampWithProduction: function (resourceName) {
+			if (!GameGlobals.playerHelper.isInCamp()) return false;
+			
+			let camp = this.nearestCampNodes.head.camp;
+			let resourceAccComponent = this.nearestCampNodes.head.entity.get(ResourceAccumulationComponent);
+			
+			return resourceAccComponent.getChange(resourceName) > 0;
 		},
 		
 		updateImprovementProduction: function (node, time) {
