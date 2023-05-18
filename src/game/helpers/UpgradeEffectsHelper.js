@@ -82,9 +82,14 @@ define([
 		getEffectHints: function (upgradeID) {
 			let result = "";
 			let unlockedActions = this.getUnlockedActions(upgradeID);
+			let unlockedProjects = GameGlobals.upgradeEffectsHelper.getUnlockedProjects(upgradeID);
 			
 			if (unlockedActions.indexOf("clear_waste_t") >= 0) {
-				result += "Workers cannot clear toxic waste. You must go to the sector yourself.";
+				result += "Workers cannot clear toxic waste. You must go to the sector yourself. ";
+			}
+			
+			if (unlockedProjects.indexOf(improvementNames.greenhouse) >= 0) {
+				result += "Greenhouses can only be built at certain locations with good conditions. If you've found those locations they will appear in the projects tab. ";
 			}
 			
 			return result;

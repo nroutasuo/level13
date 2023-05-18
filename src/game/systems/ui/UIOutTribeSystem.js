@@ -47,6 +47,9 @@ define([
 			BUILDING_DAMAGED: "building-damaged",
 			EVENT_OUTGOING_CARAVAN: "outoing-caravan",
 			STATUS_NON_REACHABLE_BY_TRADERS: "not-reachable-by-traders",
+			POP_NO_GARDENERS: "no-gardeners",
+			POP_NO_CHEMISTS: "no-chemists",
+			POP_NO_RUBBERMAKERS: "no-rubbermakers",
 		},
 
 		constructor: function () {
@@ -229,6 +232,15 @@ define([
 				}
 				if (numCaravans > 0) {
 					this.notifications[level].push(this.campNotificationTypes.EVENT_OUTGOING_CARAVAN);
+				}
+				if (GameGlobals.campHelper.getMaxWorkers(node.entity, "gardener") > 0 && camp.assignedWorkers.gardener < 1) {
+					this.notifications[level].push(this.campNotificationTypes.POP_NO_GARDENERS);
+				}
+				if (GameGlobals.campHelper.getMaxWorkers(node.entity, "rubbermaker") > 0 && camp.assignedWorkers.rubbermaker < 1) {
+					this.notifications[level].push(this.campNotificationTypes.POP_NO_RUBBERMAKERS);
+				}
+				else if (GameGlobals.campHelper.getMaxWorkers(node.entity, "chemist") > 0 && camp.assignedWorkers.chemist < 1) {
+					this.notifications[level].push(this.campNotificationTypes.POP_NO_CHEMISTS);
 				}
 			}
 			
@@ -427,6 +439,9 @@ define([
 				case this.campNotificationTypes.POP_UNASSIGNED: return "Unassigned workers on level " + level + ".";
 				case this.campNotificationTypes.POP_DECREASING: return "Population is decreasing on level " + level + "!";
 				case this.campNotificationTypes.POP_INCREASING: return "Population is increasing on level " + level + ".";
+				case this.campNotificationTypes.POP_NO_GARDENERS: return "Level " + level + " camp has access to a Greenhouse but no Gardeners working in it.";
+				case this.campNotificationTypes.POP_NO_RUBBERMAKERS: return "Level " + level + " camp has access to a plantation but no Rubbermakers working in it.";
+				case this.campNotificationTypes.POP_NO_CHEMISTS: return "Level " + level + " camp has access to a Refinery but no Chemists working in it.";
 				case this.campNotificationTypes.BUILDING_DAMAGED: return "Damaged building(s) on level " + level + ".";
 				case this.campNotificationTypes.STATUS_NON_REACHABLE_BY_TRADERS: return "Camp on level " + level + " can't trade resources with other camps.";
 				default: return null;
@@ -445,8 +460,11 @@ define([
 				case this.campNotificationTypes.POP_UNASSIGNED: return 5;
 				case this.campNotificationTypes.EVENT_OUTGOING_CARAVAN: return 6;
 				case this.campNotificationTypes.STATUS_NON_REACHABLE_BY_TRADERS: return 7;
-				case this.campNotificationTypes.POP_INCREASING: return 8;
-				default: return 9;
+				case this.campNotificationTypes.POP_NO_GARDENERS: return 8;
+				case this.campNotificationTypes.POP_NO_RUBBERMAKERS: return 9;
+				case this.campNotificationTypes.POP_NO_CHEMISTS: return 10;
+				case this.campNotificationTypes.POP_INCREASING: return 11;
+				default: return 12;
 			}
 		},
 

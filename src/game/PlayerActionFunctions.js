@@ -1341,9 +1341,15 @@ define(['ash',
 			let action = "build_out_greenhouse";
 			let position = this.getPositionVO(sectorPos);
 			let sector = this.getActionSector(action, sectorPos);
+			let level = position.level;
+			let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+			let campLevel = GameGlobals.gameState.getLevelForCamp(campOrdinal);
+			
+			// TODO use camp name in message if defined
+			
 			this.buildImprovement(action, improvementNames.greenhouse, sector);
 			GameGlobals.playerActionFunctions.unlockFeature("herbs");
-			this.addLogMessage(LogConstants.getUniqueID(), "Greenhouse is ready.");
+			this.addLogMessage(LogConstants.getUniqueID(), "Greenhouse is ready. Workers in camp on level " + campLevel + " can now use it.");
 		},
 		
 		buildLuxuryResourceOutpost: function (sectorPos) {

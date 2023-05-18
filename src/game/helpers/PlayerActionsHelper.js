@@ -307,7 +307,7 @@ define([
 					requirements.health = Math.ceil(costs.stamina / PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR);
 				}
 				if (costs.favour && !GameGlobals.gameState.unlockedFeatures.favour) {
-					reason = "Locked stats.";
+					reason = "Required Deity.";
 					return { value: 0, reason: reason };
 				}
 				if ((costs.resource_fuel > 0 && !GameGlobals.gameState.unlockedFeatures["resource_fuel"]) ||

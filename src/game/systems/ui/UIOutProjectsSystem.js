@@ -252,6 +252,11 @@ define([
 			
 			let info = this.getProjectInfoText(project);
 			
+			li.$tdDescription.attr("colspan", isAvailable ? 1 : 4);
+			li.$btnHide.css("display", isAvailable ? "initial" : "none");
+			li.$btnMap.css("display", isAvailable ? "initial" : "none");
+			li.$btnAction.css("display", isAvailable ? "initial" : "none");
+			
 			li.$root.toggleClass("current", this.isCurrentLevel(project));
 			li.$tdName.html(name);
 			li.$tdDescription.html(info);
@@ -272,7 +277,8 @@ define([
 		},
 		
 		getProjectInfoText: function (project) {
-			let location = project.position.getPosition().getInGameFormat();
+			let position = project.position.getPosition();
+			let location = position.getInGameFormat();
 			let showLevel = GameGlobals.gameState.unlockedFeatures.levels;
 			
 			let info = "at " + location + " on level " + project.level;
@@ -287,6 +293,15 @@ define([
 				let neighbourPosition = PositionConstants.getPositionOnPath(project.position.getPosition(), project.direction, 1);
 				let neighbourLocation = neighbourPosition.getInGameFormat();
 				info = "between " + location + " and " + neighbourLocation + " on level " + project.level;
+			}
+			
+			if (project.improvement && project.improvement.name == improvementNames.greenhouse) {
+				let level = position.level;
+				let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+				let campLevel = GameGlobals.gameState.getLevelForCamp(campOrdinal);
+				let campNode = GameGlobals.campHelper.getCampNodeForLevel(campLevel);
+				let numWorkers = campNode.camp.assignedWorkers.gardener || 0;
+				info += " (used by " + numWorkers + " Gardeners at camp on level " + campLevel + ")";
 			}
 			
 			return info;
