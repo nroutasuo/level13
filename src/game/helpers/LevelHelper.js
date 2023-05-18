@@ -550,7 +550,7 @@ define([
 					}
 					
 					// neighbouring movement blockers
-					if (project.direction !== undefined) {
+					if (existingProject.action == project.action && project.direction && project.direction !== undefined) {
 						var dist = PositionConstants.getDistanceTo(existingProject.position, project.position);
 						if (dist < 2) {
 							if (PositionConstants.getOppositeDirection(project.direction) == existingProject.direction) {
