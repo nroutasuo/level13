@@ -129,6 +129,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.perksChangedSignal, this.onPerksChanged);
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onGameShown);
 			GlobalSignals.add(this, GlobalSignals.levelTypeRevealedSignal, this.onLevelTypeRevealed);
+			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.updateResourcesIfNotPending);
 
 			this.generateStatsCallouts();
 			this.updateGameVersion();
