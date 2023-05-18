@@ -1052,7 +1052,7 @@ define(['ash',
 			}
 			
 			let result = TradeConstants.makeResultVO(caravan);
-			var logMsg = GameGlobals.playerActionResultsHelper.getRewardsMessage(result, "A trade caravan returns from " + tradePartner.name + ". ");
+			var logMsg = GameGlobals.playerActionResultsHelper.getRewardsMessage(result, "A trade caravan returned from " + tradePartner.name + ". ");
 			var pendingPosition = campSector.get(PositionComponent).clone();
 			pendingPosition.inCamp = true;
 

@@ -40,6 +40,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				case "build_out_sundome": "build sun dome";
 				case "bridge_gap": return "bridge gap";
 				case "repair_item": return "repair item";
+				case "clear_workshop": return "clear workshop";
 				default:
 					return baseActionID;
 			}
@@ -76,7 +77,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			var type = hasVision ? "sector-vision" : "sector-novision";
 			var template = DescriptionMapper.get(type, features);
 			if (features.hasGrove) {
-				template = " [a] [a-street] park overrun by plant-life. In the middle there is a grove of mature trees. Though strange and wild, it also seems somehow peaceful";
+				template = " [a] [a-street] park overrun by plant-life. In the middle there is a grove of tall trees. Though strange and wild, it also seems somehow peaceful";
 			}
 			var params = this.getSectorTextParams(features);
 			var phrase = TextBuilder.build(template, params);
@@ -96,7 +97,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			addOptions("a-street", [ "quiet" ]);
 			addOptions("n-building", [ "building", "structure" ]);
 			addOptions("n-buildings", [ "buildings" ]);
-			addOptions("a-building", [ "towering", "tall", "gloomy", "abandoned", "nondescript", "small", "typical", "monolithic", "blocky", "massive", "functional", "colossal", "immense" ]);
+			addOptions("a-building", [ "towering", "tall", "gloomy", "abandoned", "nondescript", "small", "typical", "monolithic", "blocky", "massive", "colossal", "immense" ]);
 			addOptions("an-decos", [ "stranded benches", "broken elevators" ]);
 			addOptions("an-items", [ "debris" ]);
 			// - sector type: determines n-sector and affects many others
@@ -211,6 +212,8 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				addOptions("a-street", [ "sunlit", "sun-swathed", "dazzling", "bright", "windy", "" ]);
 				if (features.wear < 5 && features.damage < 5)
 					addOptions("a-street", [ "gleaming", "glistening" ]);
+				if (features.wear > 5)
+					addOptions("a-street", [ "overgrown" ]);
 				addOptions("a-building", [ "vibrant", "sunlit" ]);
 				addOptions("an-decos", [ "persistent weeds" ]);
 			} else {
@@ -240,7 +243,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			}
 			// - level population
 			if (features.populationFactor == 0) {
-				addOptions("a-street", [ "empty", "uninhabited", "desolate", "deserted" ] )
+				addOptions("a-street", [ "empty", "uninhabited", "desolate", "deserted", "dusty" ] )
 				addOptions("a-building", [ "long abandoned", "empty", "polluted" ]);
 			} else if (features.populationFactor < 1) {
 				addOptions("a-street", [ "calm" ]);
@@ -257,7 +260,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			// - level: architectural style / age
 			if (features.level < 6) {
 				addOptions("a-street", [ "ancient", "quaint" ]);
-				addOptions("a-building", [ "ancient", "obsolete", "quaint", "historical" ]);
+				addOptions("a-building", [ "ancient", "obsolete", "quaint", "historical", "ornate", "baroque" ]);
 			} else if (features.level < 14) {
 				addOptions("a-street", [ "dated" ]);
 				addOptions("a-building", [ "dated" ]);
@@ -1508,7 +1511,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("book-description", { bookType: t_H }, "You learn that [c-fact].");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "It seems that [c-fact].");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "You learn about [c-event].");
-		DescriptionMapper.add("book-description", { bookType: t_H }, "There is a [a] [a-style] chapter on [c-event].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "There is [a] [a-style] chapter on [c-event].");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "A section on [c-event] catches your eye.");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "There are several references to [c-event].");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "It is [a] very [a-good] explanation of [n-topic].");

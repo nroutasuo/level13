@@ -292,7 +292,7 @@ define([
 					
 					if (raidComponent.damagedBuilding != null) {
 						logMsg += " A building was damaged.";
-						awayLogMsg += "A building was damaged.";
+						awayLogMsg += " A building was damaged.";
 					}
 					
 					campNode.entity.remove(RaidComponent);
