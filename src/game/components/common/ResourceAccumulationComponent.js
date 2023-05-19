@@ -24,18 +24,22 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			}
 			
 			var resSources = this.getSources(resourceName);
-		for (let i = 0; i < resSources.length; i++) {
+			for (let i = 0; i < resSources.length; i++) {
 				var change = resSources[i];
 				if (change.source == source) {
 					change.amount += amount;
 					return;
 				}
 			}
-			
+				
 			this.sources[resourceName].push({
 				source: source,
 				amount: amount
 			});
+		},
+		
+		getChange: function (resourceName) {
+			return this.resourceChange.getResource(resourceName);
 		},
 		
 		reset: function() {

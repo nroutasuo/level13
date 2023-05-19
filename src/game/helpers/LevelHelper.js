@@ -962,6 +962,12 @@ define([
 			return path && path.length >= 0;
 		},
 		
+		isLevelCampable: function (level) {
+			let levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(level);
+			let levelComponent = levelEntity.get(LevelComponent);
+			return levelComponent.isCampable;
+		},
+		
 		isCampReachableByTribeTraders: function (sector) {
 			let camp = sector.get(CampComponent);
 			if (!camp) return false;

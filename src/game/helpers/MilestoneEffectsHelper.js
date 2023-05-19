@@ -109,10 +109,6 @@ define([
 			return result;
 		},
 		
-		getUnlockedGeneralActions: function (milestoneIndex) {
-			
-		},
-		
 		getMilestoneRevealingUpgrade: function (upgradeID) {
 			let cachedValue = this.upgradesRevealingMilestones[upgradeID];
 			

@@ -68,11 +68,16 @@ define([
 		
 		getAvailableLuxuryResources: function (campEntity) {
 			let result = [];
-			let position = campEntity.get(PositionComponent);
-			let level = position.level;
-			let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+			let hasAccessToTradeNetwork = true;
+			let campOrdinal = GameGlobals.gameState.numCamps;
 			
-			let hasAccessToTradeNetwork = GameGlobals.resourcesHelper.hasAccessToTradeNetwork(campEntity);
+			if (campEntity) {
+				let position = campEntity.get(PositionComponent);
+				let level = position.level;
+				campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+				hasAccessToTradeNetwork = GameGlobals.resourcesHelper.hasAccessToTradeNetwork(campEntity);
+			}
+			
 			let builtProjects = GameGlobals.levelHelper.getBuiltProjects();
 			for (let i = 0; i < builtProjects.length; i++) {
 				let project = builtProjects[i];

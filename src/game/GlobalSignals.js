@@ -30,6 +30,7 @@ define(['ash',], function (Ash) {
 		playerMoveStartedSignal: new Ash.Signals.Signal(),
 		playerPositionChangedSignal: new Ash.Signals.Signal(),
 		playerMoveCompletedSignal: new Ash.Signals.Signal(),
+		playerLocationChangedSignal: new Ash.Signals.Signal(),
 
 		// player actions
 		actionStartingSignal: new Ash.Signals.Signal(),

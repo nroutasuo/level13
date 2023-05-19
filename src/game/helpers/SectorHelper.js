@@ -113,6 +113,10 @@ define([
 			
 			return false;
 		},
+		
+		isSectorAffectedByHazard: function (sector, itemsComponent) {
+			return this.isAffectedByHazard(sector.get(SectorFeaturesComponent), sector.get(SectorStatusComponent), itemsComponent);
+		},
 			
 		isAffectedByHazard: function (featuresComponent, statusComponent, itemsComponent) {
 			var hazards = this.getEffectiveHazards(featuresComponent, statusComponent);
@@ -307,6 +311,7 @@ define([
 		},
 		
 		isInDetectionRange: function (sector, itemBonusType) {
+			if (!this.playerLocationNodes.head) return false;
 			let detectionRange = GameGlobals.playerHelper.getCurrentBonus(itemBonusType);
 			if (detectionRange <= 0) return false;
 			let sectorPos = sector.get(PositionComponent);
