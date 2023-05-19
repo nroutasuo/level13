@@ -1428,6 +1428,9 @@ define([
 					if (perksComponent.hasPerk(PerkConstants.perkIds.healthBonus2))
 						ordinal = 2;
 					return ordinal;
+				
+				case "build_out_luxury_outpost":
+					return GameGlobals.campHelper.getAvailableLuxuryResources().length + 1;
 
 				case "build_out_passage_down_stairs":
 				case "build_out_passage_down_elevator":
