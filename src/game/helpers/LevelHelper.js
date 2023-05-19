@@ -706,7 +706,7 @@ define([
 						break;
 				}
 				
-				if (GameGlobals.playerActionsHelper.checkRequirements(actionName, false, sectorEntity).value > 0) {
+				if (GameGlobals.playerActionsHelper.isVisible(actionName, sectorEntity, [ PlayerActionConstants.DISABLED_REASON_UPGRADE ])) {
 					actionName = actionName + "_" + levelOrdinal;
 					projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, sectorPosition, PositionConstants.DIRECTION_DOWN, null, actionLabel));
 				}
