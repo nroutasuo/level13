@@ -191,6 +191,13 @@ define(['ash'], function (Ash) {
 				logMessage: "Collected enough metal to craft a Lantern",
 				conditions: { maxVision: [-1, 50], actionsAvailable: ["craft_light1"], featureUnlocked: { bag: true } }
 			},
+			TUTORIAL_CAN_BUILD_TEMPLE: {
+				triggers: [ "change_inventory", "change_position" ],
+				repeats: "NEVER",
+				delay: 1500,
+				logMessage: "We now have enough materials to build a Temple",
+				conditions: { ctionsAvailable: ["build_in_temple"] }
+			},
 			TUTORIAL_ENCOUNTER_BLOCKER_TYPE_GAP_NO_TECH: {
 				group: "TUTORIAL_ENCOUNTER_BLOCKER_TYPE_GAP",
 				triggers: [ "change_position" ],
