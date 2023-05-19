@@ -40,6 +40,8 @@
 	RecruitComponent, TraderComponent, RaidComponent, Text
 ) {
 	var UIOutCampSystem = Ash.System.extend({
+		
+		context: "UIOutCampSystem",
 
 		engine: null,
 
@@ -89,6 +91,7 @@
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onGameShown);
 			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
 			GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.refresh);
+			GlobalSignals.add(this, GlobalSignals.playerLocationChangedSignal, this.onPlayerPositionChanged);
 
 			this.refresh();
 		},
@@ -126,12 +129,12 @@
 			if (!this.playerPosNodes.head.position.inCamp) return;
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 
-			var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
+			let campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
 			if (!campComponent) return;
-			var campCount = GameGlobals.gameState.numCamps;
+			let campCount = GameGlobals.gameState.numCamps;
 
 			// Header
-			var header = campComponent.getName();
+			let header = campComponent.getName();
 			if (campCount > 1) header += " (" + this.playerPosNodes.head.position.getPosition().getInGameFormat(true) + ")";
 			$("#tab-header h2").text(header);
 
@@ -165,7 +168,7 @@
 
 		updateWorkers: function (isActive) {
 			isActive = isActive && !GameGlobals.gameState.uiStatus.isBlocked;
-			var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
+			let campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
 			if (!campComponent) return;
 
 			let currentPopulation = Math.floor(campComponent.population);
@@ -589,15 +592,19 @@
 			for (let i = 0; i < actions.length; i++) {
 				let actionVO = actions[i];
 				let action = actionVO.action;
+				if (actionVO.isBusy) continue;
+				
 				let baseActionID = PlayerActionConstants.getBaseActionID(action);
-				if (baseActionID == "send_caravan") continue // shown separately
-				if (!actionVO.isBusy && actionVO.level == playerPos.level) {
-					let improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(action);
-					let isImprovement = ImprovementConstants.isProject(improvementName);
-					let percent = playerActionComponent.getActionCompletionPercentage(action, actionVO.level);
-					if (percent < 100) {
-						result.push({ action: action, improvementName: improvementName, percent: percent });
-					}
+				if (baseActionID == "send_caravan") continue; // shown separately
+				
+				let improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(action);
+				let improvementType = getImprovementType(improvementName);
+				if (improvementType == improvementTypes.camp && actionVO.level != playerPos.level) continue;
+				
+				let isProject = ImprovementConstants.isProject(improvementName);
+				let percent = playerActionComponent.getActionCompletionPercentage(action, actionVO.level);
+				if (percent < 100) {
+					result.push({ action: action, improvementName: improvementName, percent: percent });
 				}
 			}
 			return result;
@@ -865,7 +872,6 @@
 		},
 
 		onGameShown: function () {
-			if (!this.playerLocationNodes.head) return;
 			this.refresh();
 		},
 
