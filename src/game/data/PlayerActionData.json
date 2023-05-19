@@ -3432,7 +3432,10 @@
                 1,
                 -1
             ],
-            "rumourpoolchecked": false
+            "rumourpoolchecked": false,
+			"tribe": {
+				"rumoursFull": false
+			}
         },
         "use_in_home": {
             "busy": false,
@@ -3482,21 +3485,30 @@
                     1,
                     -1
                 ]
-            }
+            },
+			"tribe": {
+				"rumoursFull": false
+			}
         },
         "use_in_shrine": {
             "busy": false,
             "camp": {
                 "raid": false
             },
-            "deity": true
+            "deity": true,
+			"tribe": {
+				"favourFull" :false
+			}
         },
         "use_in_temple": {
             "busy": false,
             "camp": {
                 "raid": false
             },
-            "deity": true
+            "deity": true,
+			"tribe": {
+				"favourFull" :false
+			}
         },
         "use_item_cache_evidence": {
             "inCamp": true

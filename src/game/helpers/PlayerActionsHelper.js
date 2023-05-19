@@ -1164,6 +1164,42 @@ define([
 							return { value: currentPopulation / requiredPopulation, reason: "Required: " + requiredPopulation + " total population" };
 						}
 					}
+					
+					if (typeof requirements.tribe.favourFull != "undefined") {
+						let requiredValue = requirements.tribe.favourFull;
+						let currentValue = deityComponent.favour >= deityComponent.maxFavour;
+						if (requiredValue !== currentValue) {
+							if (currentValue) {
+								return { value: 0, reason: "Maximum favour" };
+							} else {
+								return { value: 0, reason: "Requires maximum favour" };
+							}
+						}
+					}
+					
+					if (typeof requirements.tribe.evidenceFull != "undefined") {
+						let requiredValue = requirements.tribe.evidenceFull;
+						let currentValue = this.playerStatsNodes.head.evidence.value >= this.playerStatsNodes.head.evidence.maxValue;
+						if (requiredValue !== currentValue) {
+							if (currentValue) {
+								return { value: 0, reason: "Maximum evidence" };
+							} else {
+								return { value: 0, reason: "Requires maximum evidence" };
+							}
+						}
+					}
+					
+					if (typeof requirements.tribe.rumoursFull != "undefined") {
+						let requiredValue = requirements.tribe.rumoursFull;
+						let currentValue = this.playerStatsNodes.head.rumours.value >= this.playerStatsNodes.head.rumours.maxValue;
+						if (requiredValue !== currentValue) {
+							if (currentValue) {
+								return { value: 0, reason: "Maximum rumours" };
+							} else {
+								return { value: 0, reason: "Requires maximum rumours" };
+							}
+						}
+					}
 				}
 				
 				if (requirements.excursion) {
@@ -1546,8 +1582,11 @@ define([
 		getImproveBuildingActionReqs: function (improvementID) {
 			let result = {};
 			let improvementName = improvementNames[improvementID];
+			let improvementType = getImprovementType(improvementName);
 			result.improvements = {};
-			result.improvements.camp = [ 1, -1 ];
+			if (improvementType == improvementTypes.camp) {
+				result.improvements.camp = [ 1, -1 ];
+			}
 			result.improvements[improvementID] = [ 1, - 1];
 			
 			// if 1 improvement per tech level, improvement is locked until first tech that unlocks improvements
