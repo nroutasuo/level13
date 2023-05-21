@@ -133,7 +133,7 @@ define([
 			if (isWarning && !this.isWarning) {
 				var logComponent = node.entity.get(LogMessagesComponent);
 				var hasCamp = GameGlobals.gameState.unlockedFeatures.camp;
-				if (!node.position.inCamp) {
+				if (!node.position.inCamp && !GameGlobals.playerHelper.hasRestedThisExcursion()) {
 					if (hasCamp)
 						logComponent.addMessage(LogConstants.MSG_ID_STAMINA_WARNING, "Getting tired. Should head back to camp soon.");
 					else

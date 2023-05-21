@@ -12,6 +12,7 @@ define([
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/player/PlayerResourcesNode',
 	'game/components/player/DeityComponent',
+	'game/components/player/ExcursionComponent',
 	'game/components/common/LogMessagesComponent',
 	'game/components/common/MovementComponent',
 ], function (
@@ -28,6 +29,7 @@ define([
 	PlayerStatsNode,
 	PlayerResourcesNode,
 	DeityComponent,
+	ExcursionComponent,
 	LogMessagesComponent,
 	MovementComponent,
 ) {
@@ -76,6 +78,13 @@ define([
 			}
 			
 			return true;
+		},
+		
+		hasRestedThisExcursion: function () {
+			if (this.isInCamp()) return false;
+			
+			let excursionComponent = this.playerStatsNodes.head.entity.get(ExcursionComponent);
+			return excursionComponent != null ? excursionComponent.numNaps > 0 : false;
 		},
 		
 		getCurrentStamina: function () {
