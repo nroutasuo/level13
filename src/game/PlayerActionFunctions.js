@@ -744,7 +744,7 @@ define(['ash',
 				msgSuccess: "Refilled water at the " + springName + ".",
 				msgFlee: logMsgFailBase + "Fled empty-handed.",
 				msgDefeat: logMsgFailBase + "Lost the fight.",
-				addToLog: true,
+				addToLog: false,
 			};
 
 			this.handleOutActionResults("use_spring", messages, true, false);

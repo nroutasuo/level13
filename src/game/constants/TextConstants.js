@@ -1260,26 +1260,28 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 	};
 		
 	function initSectorTexts() {
-		var wildcard = DescriptionMapper.WILDCARD;
+		let wildcard = DescriptionMapper.WILDCARD;
 		
-		var t_R = SectorConstants.SECTOR_TYPE_RESIDENTIAL;
-		var t_I = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
-		var t_M = SectorConstants.SECTOR_TYPE_MAINTENANCE;
-		var t_C = SectorConstants.SECTOR_TYPE_COMMERCIAL;
-		var t_P = SectorConstants.SECTOR_TYPE_PUBLIC;
-		var t_S = SectorConstants.SECTOR_TYPE_SLUM;
+		let t_R = SectorConstants.SECTOR_TYPE_RESIDENTIAL;
+		let t_I = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
+		let t_M = SectorConstants.SECTOR_TYPE_MAINTENANCE;
+		let t_C = SectorConstants.SECTOR_TYPE_COMMERCIAL;
+		let t_P = SectorConstants.SECTOR_TYPE_PUBLIC;
+		let t_S = SectorConstants.SECTOR_TYPE_SLUM;
 		
 		// brackets for values like building density, wear, damage
-		var b0 = [0, 0];
-		var bfull = [10, 10];
-		var b12 = [0, 5];
-		var b22 = [5, 10];
-		var b13 = [0, 3];
-		var b23 = [4, 6];
-		var b33 = [7, 10];
+		let b0 = [0, 0];
+		let bfull = [10, 10];
+		let b12 = [0, 5];
+		let b22 = [5, 10];
+		let b13 = [0, 3];
+		let b23 = [4, 6];
+		let b33 = [7, 10];
 		
-		var lmodern = [15, 100];
-		var lold = [10, 18];
+		let lmodern = [15, 100];
+		let lold = [10, 18];
+		
+		// TODO add some sunlit sector specific descriptions (can we determine WHY sunlit? edge / hole)
 		
 		// default descriptions (player has vision)
 		DescriptionMapper.add("sector-vision", { sectorType: wildcard }, "[a] [n-street] in front of what looks like [a] [a-building] [n-building]");
@@ -1298,7 +1300,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("sector-vision", { buildingDensity: b12, isGroundLevel: false, campable: false }, "[a] [a-street] bridge over the level below with separate levels for tram tracks, utilities and pedestrians");
 		DescriptionMapper.add("sector-vision", { buildingDensity: b22 }, "Some kind of [a] [a-sectortype] complex with several narrow passages this way and that");
 		DescriptionMapper.add("sector-vision", { buildingDensity: b13 }, "A wide square with [a] [a-building] [n-building] on one side and what looks like the remains of [a] [a-building] [n-building] on the other");
-		DescriptionMapper.add("sector-vision", { buildingDensity: b23, isSurfaceLevel: false }, "[a] [a-street] [n-street] beneath a vast [n-building]");
+		DescriptionMapper.add("sector-vision", { buildingDensity: b23, isSurfaceLevel: false, sunlit: false }, "[a] [a-street] [n-street] beneath a vast [n-building]");
 		DescriptionMapper.add("sector-vision", { buildingDensity: b23, isSurfaceLevel: false }, "[a] [n-street] with multiple levels of passages crawling along the walls of the surrounding [a-sectortype] buildings");
 		DescriptionMapper.add("sector-vision", { buildingDensity: b33 }, "Some sort of [a] [a-sectortype] corridor between two vast [n-buildings] with barely enough space to walk");
 		DescriptionMapper.add("sector-vision", { buildingDensity: b33 }, "[a] [a-street] [n-street] packed so full with [a-building] [n-buildings] and [an-decos] that there is barely enough space to pass through");

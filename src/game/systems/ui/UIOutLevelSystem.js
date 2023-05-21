@@ -398,8 +398,9 @@ define([
 			}
 
 			if (isScouted) {
-				var canBucket = featuresComponent.resourcesCollectable.water > 0;
-				var canTrap = featuresComponent.resourcesCollectable.food > 0;
+				let canBucket = featuresComponent.resourcesCollectable.water > 0;
+				let canTrap = featuresComponent.resourcesCollectable.food > 0;
+				
 				if (canBucket && canTrap) {
 					description += "Both <span class='hl-functionality'>water</span> and <span class='hl-functionality'>food</span> can be collected here. ";
 				} else if (canBucket) {
@@ -429,6 +430,10 @@ define([
 			let luxuryResource = GameGlobals.sectorHelper.getLuxuryResourceOnSector(this.playerLocationNodes.head.entity, true);
 			if (isScouted && luxuryResource) {
 				description += "There is a source of <span class='hl-functionality'>" + TribeConstants.getLuxuryDisplayName(luxuryResource) + "</span> here. ";
+			}
+			
+			if (isScouted && GameGlobals.levelHelper.isFirstScoutedSectorWithFeatureOnLevel(this.playerLocationNodes.head.entity, "hasTradeConnectorSpot")) {
+				description += "There is space here for a bigger building project. ";
 			}
 
 			return description;
@@ -612,11 +617,8 @@ define([
 					hazardDesc += "This place is dangerously <span class='hl-functionality'>polluted</span> (" + hazards.poison + "). ";
 				}
 				if (hazards.cold > 0) {
-					if (hazards.cold >= 30) {
-						hazardDesc += "It's very <span class='hl-functionality'>cold</span> here (" + hazards.cold + "). ";
-					} else {
-						hazardDesc += "It's <span class='hl-functionality'>cold</span> here (" + hazards.cold + "). ";
-					}
+					let coldAdjective = hazards.cold < 20 ? "quite" : hazards.cold < 50 ? "very" : "extremely";
+					hazardDesc += "It's " + coldAdjective + " <span class='hl-functionality'>cold</span> here (" + hazards.cold + "). ";
 				}
 				if (hazards.debris > 0) {
 					hazardDesc += "It difficult to move around here due to the amount of <span class='hl-functionality'>debris</span>.";

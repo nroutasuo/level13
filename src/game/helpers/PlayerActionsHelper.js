@@ -1078,7 +1078,7 @@ define([
 								"Min {min} " + hazard,
 								"Max {max} " + hazard,
 								"Requires " + hazard,
-								"No " + hazard + " allowed",
+								"Too much " + hazard + " here",
 							);
 							if (result) {
 								return result;
