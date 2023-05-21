@@ -112,7 +112,7 @@ define([
 			this.notifications = {};
 			this.campsWithAlert = 0;
 			
-			GameGlobals.uiFunctions.toggle($("#camp-overview tr"), false);
+			GameGlobals.uiFunctions.toggle($("#camp-overview tr.camp-overview-camp"), false);
 			
 			for (let i = 0; i < this.sortedCampNodes.length; i++) {
 				this.updateNode(this.sortedCampNodes[i], isActive);
