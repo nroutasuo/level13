@@ -118,7 +118,8 @@ define([
 				}
 				if (reqs.tribe && reqs.tribe.projects) {
 					for (let improvementID in reqs.tribe.projects) {
-						requirementsDiv += this.getMilestoneReqsListEntry(improvementID, reqs.tribe.projects[improvementID], GameGlobals.playerActionsHelper.getCurrentImprovementCountTotal(improvementID));
+						let improvementName = improvementNames[improvementID];
+						requirementsDiv += this.getMilestoneReqsListEntry(improvementName, reqs.tribe.projects[improvementID], GameGlobals.playerActionsHelper.getCurrentImprovementCountTotal(improvementID));
 					}
 				}
 				
@@ -168,9 +169,9 @@ define([
 			return GameGlobals.playerActionsHelper.checkAvailability(action);
 		},
 		
-		getMilestoneReqsListEntry: function (name, reqAmount, currentAmount) {
+		getMilestoneReqsListEntry: function (displayName, reqAmount, currentAmount) {
 			let isReady = currentAmount >= reqAmount;
-			let spanName = "<span>" + name + "</span>";
+			let spanName = "<span>" + displayName + "</span>";
 			let spanAmount = "<span class='" + (isReady ? "" : "action-cost-blocker") + "'>" + currentAmount + "/" + reqAmount + "</span>";
 			let spanIcon = isReady ? "<span class='reqs-checkmark' title='checkmark' />" : "";
 			return "<span class='reqs-list-entry'>" + spanName + ": " + spanAmount + spanIcon + "</span>";
