@@ -581,11 +581,11 @@ define([
 				}
 				
 				if (requirements.workers) {
-					var workerRequirements = requirements.workers;
+					let workerRequirements = requirements.workers;
 					
 					for (let workerType in workerRequirements) {
-						var range = workerRequirements[workerType];
-						var amount = campComponent.assignedWorkers[workerType] || 0;
+						let range = workerRequirements[workerType];
+						let amount = GameGlobals.campHelper.getTotalWorkers(workerType);
 						let result = this.checkRequirementsRange(range, amount, workerType + " required", "no " + workerType + " required");
 						if (result) {
 							return result;

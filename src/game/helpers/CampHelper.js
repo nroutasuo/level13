@@ -455,6 +455,15 @@ define([
 			return GameGlobals.campBalancingHelper.getMaxWorkers(workerID, improvements, upgrades, workshops);
 		},
 		
+		getTotalWorkers: function (workerType) {
+			if (!this.campNodes.head) return 0;
+			let result = 0;
+			for (let campNode = this.campNodes.head; campNode; campNode = campNode.next) {
+				result += campNode.camp.assignedWorkers[workerType] || 0;
+			}
+			return result;
+		},
+		
 		hasUnlockedWorker: function (workerID) {
 			for (let campNode = this.campNodes.head; campNode; campNode = campNode.next) {
 				if (this.getMaxWorkers(campNode.entity, workerID) > 0) {
