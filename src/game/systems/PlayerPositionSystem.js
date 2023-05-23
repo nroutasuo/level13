@@ -5,7 +5,6 @@ define([
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
-	'game/constants/ItemConstants',
 	'game/constants/LevelConstants',
 	'game/constants/LogConstants',
 	'game/constants/PositionConstants',
@@ -18,6 +17,7 @@ define([
 	'game/components/common/CurrentPlayerLocationComponent',
 	'game/components/sector/CurrentNearestCampComponent',
 	'game/components/sector/LastVisitedCampComponent',
+	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/PassagesComponent',
 	'game/components/common/LogMessagesComponent',
@@ -27,9 +27,9 @@ define([
 	'game/components/common/RevealedComponent',
 	'game/components/common/CampComponent',
 	'game/components/type/LevelComponent',
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, ItemConstants, LevelConstants, LogConstants, PositionConstants,
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, LevelConstants, LogConstants, PositionConstants,
 	PlayerPositionNode, LevelNode, PlayerLocationNode, LastVisitedCampNode, SectorNode, CampNode,
-	CurrentPlayerLocationComponent, CurrentNearestCampComponent, LastVisitedCampComponent, SectorStatusComponent, PassagesComponent,
+	CurrentPlayerLocationComponent, CurrentNearestCampComponent, LastVisitedCampComponent, SectorFeaturesComponent, SectorStatusComponent, PassagesComponent,
 	LogMessagesComponent, MovementComponent, PositionComponent,
 	VisitedComponent, RevealedComponent, CampComponent, LevelComponent) {
 
@@ -47,6 +47,9 @@ define([
 		mapRevealedSectorsPendingRevealNeighbours: [],
 
 		constructor: function () { },
+		
+		previousLocation: null,
+		currentLocation: null,
 
 		addToEngine: function (engine) {
 			this.sectorNodes = engine.getNodeList(SectorNode);
@@ -197,6 +200,11 @@ define([
 			if (!sector.has(VisitedComponent)) {
 				this.handleNewSector(sector, true);
 			}
+			
+			this.previousLocation = this.currentLocation;
+			this.currentLocation = sector;
+			
+			GlobalSignals.playerLocationChangedSignal.dispatch();
 		},
 
 		updateCamps: function () {
@@ -291,6 +299,8 @@ define([
 		},
 
 		handleNewSector: function (sectorEntity, isNew) {
+			let previousSectorEntity = this.previousLocation;
+			
 			sectorEntity.remove(RevealedComponent);
 			sectorEntity.add(new VisitedComponent());
 
@@ -301,6 +311,17 @@ define([
 			if (isNew) {
 				GameGlobals.gameState.numVisitedSectors++;
 				GameGlobals.playerActionFunctions.unlockFeature("sectors");
+			}
+			
+			if (isNew && previousSectorEntity != null && previousSectorEntity != sectorEntity && GameGlobals.levelHelper.isLevelCampable(sectorPos.level)) {
+				let featuresComponentPrevious = previousSectorEntity.get(SectorFeaturesComponent);
+				let featuresComponentCurrent = sectorEntity.get(SectorFeaturesComponent);
+				
+				let isPreviousEarlyZone = featuresComponentPrevious.isEarlyZone();
+				let isEarlyZone = featuresComponentCurrent.isEarlyZone();
+				if (isPreviousEarlyZone && !isEarlyZone && !GameGlobals.playerHelper.isAffectedByHazardAt(sectorEntity)) {
+					this.addLogMessage(LogConstants.MSG_ID_ENTER_OUTSKIRTS, "Entering the outskirts.");
+				}
 			}
 		},
 
