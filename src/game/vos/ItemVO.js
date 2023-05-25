@@ -71,9 +71,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			let result = 0;
 			if (this.bonus) {
 				for (let key in this.bonus.bonuses) {
-					let value = this.bonus.getBonus(key);
-					if (this.broken && this.isBonusAffectedByBrokenStatus(key)) value = Math.floor(value / 2);
-					result += value;
+					result += this.getCurrentBonus(key);
 				}
 			}
 			return result;
@@ -84,9 +82,23 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		},
 
 		getCurrentBonus: function (bonusType) {
-			let result = this.getBaseBonus(bonusType);
-			if (this.broken && this.isBonusAffectedByBrokenStatus(bonusType)) result = Math.floor(result / 2);
-			return result;
+			if (this.broken && this.isBonusAffectedByBrokenStatus(bonusType)) {
+				return this.getBrokenBonus(bonusType);
+			} else {
+				return this.getBaseBonus(bonusType);
+			}
+		},
+		
+		getBrokenBonus: function (bonusType) {
+			// TODO refer to ItemConstants isIncreasing isMultiplier
+			let baseValue = this.getBaseBonus(bonusType);
+			switch (bonusType) {
+				//case itemBonusTypes.movement:
+				case "movement":
+					return baseValue > 1 ? baseValue : baseValue + (1 - baseValue) / 2;
+				default:
+					return Math.floor(baseValue / 2);
+			}
 		},
 		
 		isBonusAffectedByBrokenStatus: function (bonusType) {
