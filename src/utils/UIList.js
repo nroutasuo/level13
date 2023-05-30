@@ -5,7 +5,7 @@
 // TODO two definitions of equality (data is the same, no update needed vs data has changed a bit but keep the same element anyway)
 // TODO animations
 
-define(function () {
+define(['game/GameGlobals'], function (GameGlobals) {
 
 	let UIList = {
 		
@@ -27,8 +27,8 @@ define(function () {
 		// list: a data structure returned by create
 		// data: an array of data entries that the list's fnUpdateItem and fnIsDataEqual can use
 		update: function (list, data) {
-			let numCreated = 0;
 			let newItems = [];
+			let createdItems = [];
 			
 			for (let i = 0; i < list.items.length; i++) {
 				let li = list.items[i];
@@ -53,7 +53,7 @@ define(function () {
 					li = list.fnCreateItem();
 					list.fnUpdateItem(li, d);
 					newItems[i] = li;
-					numCreated++;
+					createdItems.push(li);
 				}
 				
 				li.data = data[i];
@@ -63,8 +63,28 @@ define(function () {
 			list.items = newItems;
 			let newRoots = newItems.map(item => item.$root);
 			list.$container.append(newRoots);
+			
+			// update any buttons (needs to be after they've been added to the DOM)
+			this.initButtonsInCreatedItems(list, createdItems);
 
-			return numCreated;
+			return createdItems.length;
+		},
+		
+		initButtonsInCreatedItems: function (list, createdItems) {
+			if (createdItems.length <= 0) return;
+			
+			// TODO get rid of the GameGlobals/UIFunctions dependency (put buttons in their own module like List?)
+			// TODO fix assumption that container has an id
+			
+			let scope = "#" + list.$container.attr("id");
+			GameGlobals.uiFunctions.registerActionButtonListeners(scope);
+			GameGlobals.uiFunctions.generateButtonOverlays(scope);
+			GameGlobals.uiFunctions.generateCallouts(scope);
+			
+			for (let i = 0; i < createdItems.length; i++) {
+				let li = createdItems[i];
+				list.fnUpdateItem(li, li.data);
+			}
 		},
 		
 		getItemIndex: function (list, li, data) {

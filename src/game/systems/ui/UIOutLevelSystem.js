@@ -716,8 +716,8 @@ define([
 		
 		createLocaleListItem: function () {
 			let li = {};
-			var button = "<button class='action multiline'></button>";
-			var info = "<span class='p-meta'></span";
+			let button = "<button class='action multiline'></button>";
+			let info = "<span class='p-meta'></span";
 			li.$root = $("<tr><td>" + button + "</td><td>" + info + "</td></tr>");
 			li.$button = li.$root.find("button");
 			li.$info = li.$root.find("span");
@@ -732,7 +732,7 @@ define([
 			let locale = data.locale;
 			
 			li.$button.attr("action", "scout_locale_" + locale.getCategory() + "_" + data.index);
-			li.$button.html(TextConstants.getLocaleName(locale, data.sectorFeaturesComponent));
+			li.$button.find(".btn-label").html(TextConstants.getLocaleName(locale, data.sectorFeaturesComponent));
 			
 			let info = "";
 			if (data.isScouted) {
@@ -865,7 +865,7 @@ define([
 					return true;
 				}
 			}
-						 
+			
 			return false;
 		},
 		
