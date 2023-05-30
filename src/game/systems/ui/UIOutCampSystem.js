@@ -258,9 +258,10 @@
 			GameGlobals.uiFunctions.slideToggleIf("#in-population-details", null, campComponent.population >= 1, 200, 200);
 			GameGlobals.uiFunctions.slideToggleIf("#in-population-status", null, campComponent.population >= 1, 200, 200);
 			GameGlobals.uiFunctions.slideToggleIf("#in-population #in-population-autoassigned", null, GameGlobals.gameState.unlockedFeatures.workerAutoAssignment, 200, 200);
-			GameGlobals.uiFunctions.slideToggleIf(".in-assign-workers-auto-toggle", null, GameGlobals.gameState.unlockedFeatures.workerAutoAssignment, 200, 200);
 			GameGlobals.uiFunctions.slideToggleIf("#in-population-robots", null, robots > 0, 200, 200);
 			GameGlobals.uiFunctions.slideToggleIf("#in-assign-workers", null, campComponent.population >= 1, 200, 200);
+			
+			GameGlobals.uiFunctions.toggle(".in-assign-workers-auto-toggle", GameGlobals.gameState.unlockedFeatures.workerAutoAssignment);
 			
 			let robotBonus = GameGlobals.campBalancingHelper.getWorkerRobotBonus(robots);
 			let robotCalloutContent = "worker resource production: +" + UIConstants.roundValue(robotBonus * 100, true, false) + "%";
