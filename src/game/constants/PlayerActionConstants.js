@@ -36,7 +36,8 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 		},
 
 		getCooldown: function (action) {
-			var speed = this.isExplorationAction(action) ? GameConstants.gameSpeedExploration : GameConstants.gameSpeedCamp;
+			action = this.getBaseActionID(action);
+			let speed = this.isExplorationAction(action) ? GameConstants.gameSpeedExploration : GameConstants.gameSpeedCamp;
 			if (this.cooldowns[action]) {
 				return this.cooldowns[action] / speed;
 			}
