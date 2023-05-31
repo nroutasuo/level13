@@ -250,7 +250,6 @@ define([
 		// reason: string to describe the non-passed requirement (for button explanations)
 		checkRequirements: function (action, doLog, otherSector, checksToSkip) {
 			if (!action) return { value: 0, reason: "No action", baseReason: PlayerActionConstants.DISABLED_REASON_INVALID_PARAMS };
-			if (GameGlobals.gameState.uiStatus.isTransitioning) return { value: 0, reason: "Transitioning", baseReason: PlayerActionConstants.DISABLED_REASON_BUSY };
 			let sector = otherSector;
 			if (!sector) sector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
 			if (!sector) return { value: 0, reason: "No selected sector", baseReason: PlayerActionConstants.DISABLED_REASON_INVALID_PARAMS };
@@ -1243,6 +1242,7 @@ define([
 				}
 			}
 			
+			if (GameGlobals.gameState.uiStatus.isTransitioning) return { value: 0, reason: "Transitioning", baseReason: PlayerActionConstants.DISABLED_REASON_BUSY };
 			if (GameGlobals.gameState.isLaunchStarted) return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_LAUNCHED };
 			
 			return { value: lowestFraction, reason: reason };
