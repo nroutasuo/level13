@@ -630,6 +630,7 @@ define([
 
 		updateOutImprovementsList: function (improvements) {
 			if (!this.playerLocationNodes.head) return;
+			if (GameGlobals.playerHelper.isInCamp()) return;
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var uiFunctions = GameGlobals.uiFunctions;
 			var numVisible = 0;

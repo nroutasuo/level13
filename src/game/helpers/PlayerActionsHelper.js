@@ -1,6 +1,7 @@
 // Helper methods related to player actions (costs, requirements, descriptions) - common definitions for all actions
 define([
 	'ash',
+	'utils/ValueCache',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/LocaleConstants',
@@ -49,7 +50,7 @@ define([
 	'game/vos/ResourcesVO',
 	'game/vos/ImprovementVO'
 ], function (
-	Ash, GameGlobals, GlobalSignals, LocaleConstants, PositionConstants, PlayerActionConstants, PlayerStatConstants, FollowerConstants,
+	Ash, ValueCache, GameGlobals, GlobalSignals, LocaleConstants, PositionConstants, PlayerActionConstants, PlayerStatConstants, FollowerConstants,
 	ImprovementConstants, ItemConstants, BagConstants, MovementConstants, UpgradeConstants, PerkConstants, TextConstants,
 	TradeConstants, UIConstants, WorldConstants, PlayerActionResultNode, PlayerStatsNode, PlayerResourcesNode,
 	PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode, LevelComponent, CurrencyComponent, PositionComponent,
@@ -2294,12 +2295,17 @@ define([
 		
 		getPathToNearestCamp: function (sector) {
 			if (!this.nearestCampNodes.head) return null;
-			var campSector = this.nearestCampNodes.head.entity;
+			let campSector = this.nearestCampNodes.head.entity;
 			if (!campSector || !sector) return null;
-			var sectorLevel = sector.get(PositionComponent).level;
-			var campLevel = campSector.get(PositionComponent).level;
+			
+			let sectorPosition = sector.get(PositionComponent);
+			let sectorLevel = sectorPosition.level;
+			let campLevel = campSector.get(PositionComponent).level;
 			if (Math.abs(campLevel - sectorLevel) > 2) return null;
-			return GameGlobals.levelHelper.findPathTo(sector, campSector, { skipBlockers: true, skipUnvisited: true, omitWarnings: true });
+			
+			return ValueCache.getValue("PathToNearestCamp", 5, sectorPosition.positionId(), () =>
+				GameGlobals.levelHelper.findPathTo(sector, campSector, { skipBlockers: true, skipUnvisited: true, omitWarnings: true })
+			);
 		},
 
 		getCooldownForCurrentLocation: function (action) {
