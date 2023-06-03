@@ -88,6 +88,8 @@ define([
 			var maxValue = 0;
 			var visionPerSec = 0;
 			var accSpeedFactor = Math.max(100 - oldValue, 10) / 200;
+			let shadeBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.shade);
+			let lightBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.light);
 			
 			vision.accSources = [];
 			var addAccumulation = function (sourceName, value) {
@@ -97,7 +99,8 @@ define([
 			};
 			
 			// Check max value and accumulation
-			var maxValueBase = sunlit ? PlayerStatConstants.VISION_BASE_SUNLIT : PlayerStatConstants.VISION_BASE;
+			let maxValueBaseDefault =  PlayerStatConstants.VISION_BASE;
+			let maxValueBase = sunlit ? PlayerStatConstants.VISION_BASE_SUNLIT : PlayerStatConstants.VISION_BASE;
 			maxValue = maxValueBase;
 			addAccumulation("Base", (sunlit ? 75 : 25) / maxValueBase);
 			
@@ -115,25 +118,25 @@ define([
 			}
 			
 			if (sunlit) {
-				var shadeBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.shade);
 				if (shadeBonus + maxValueBase > maxValue) {
-					maxValue = shadeBonus + maxValueBase;
+					maxValue += shadeBonus;
 					addAccumulation("Sunglasses", shadeBonus / maxValueBase);
 				}
 			} else {
 				// equipment
-				var lightItem = itemsComponent.getEquipped(ItemConstants.itemTypes.light)[0];
-				if (lightItem && lightItem.getCurrentBonus(ItemConstants.itemBonusTypes.light) + maxValueBase > maxValue) {
-					maxValue = lightItem.getCurrentBonus(ItemConstants.itemBonusTypes.light) + maxValueBase;
-					addAccumulation(lightItem.name, lightItem.getCurrentBonus(ItemConstants.itemBonusTypes.light) / maxValueBase);
+				let lightItem = itemsComponent.getEquipped(ItemConstants.itemTypes.light)[0];
+				if (lightItem && lightBonus + maxValueBase > maxValue) {
+					maxValue += lightBonus;
+					addAccumulation(lightItem.name, lightBonus / maxValueBase);
 				}
 				// consumable items
 				if (statusComponent.glowStickSeconds > 0) {
 					// TODO remove hardcoded glowstick vision value
-					maxValue = 30 + maxValueBase;
-					addAccumulation("Glowstick", 30 / maxValueBase);
+					let glowstickValue = 30;
+					maxValue = Math.max(maxValue, maxValueBase + glowstickValue);
+					addAccumulation("Glowstick", glowstickValue / maxValueBase);
+					statusComponent.glowStickSeconds -= time * GameConstants.gameSpeedExploration;
 				}
-				statusComponent.glowStickSeconds -= time * GameConstants.gameSpeedExploration;
 				// pekrs
 				var perkBonus = perksComponent.getTotalEffect(PerkConstants.perkTypes.light);
 				if (perkBonus > 0) {
@@ -154,12 +157,14 @@ define([
 			vision.maximum = maxValue;
 			
 			// Effects of moving from different light environments
-			var logComponent = node.entity.get(LogMessagesComponent);
+			let logComponent = node.entity.get(LogMessagesComponent);
 			if (oldMaximum > 0 && this.wasSunlit !== null) {
 				if (this.wasSunlit !== sunlit) {
 					// switching between darkness and sunlight
-					var isTotalReset = maxValue === maxValueBase;
-					vision.value = isTotalReset ? 0 : maxValueBase;
+					let isTotalReset = maxValue === maxValueBase;
+					let maxValueExtra = maxValue - maxValueBaseDefault;
+					let newValue = isTotalReset ? 0 : (maxValueBaseDefault + maxValueExtra / 2);
+					vision.value = newValue;
 					if (sunlit) {
 						if (isTotalReset) {
 							logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "Blinded by sunlight.");
