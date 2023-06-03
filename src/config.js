@@ -9,7 +9,7 @@ require.config({
 	paths: {
 		brejep: "../lib/brejep",
 		ash: "../lib/ash/ash.min",
-		jquery: "../lib/jquery/",
+		jquery: "../lib/jquery",
 		lzstring: "../lib/lzstring",
         json: "../lib/requirejs/json",
 		utils: "utils",
