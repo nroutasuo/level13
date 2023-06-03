@@ -302,6 +302,9 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 				}
 			}
 			
+			if (result == 0 && itemOld.broken && !itemNew.broken) result = 1;
+			if (result == 0 && !itemOld.broken && itemNew.broken) result = -1;
+			
 			this.equipmentComparisonCache[cacheId] = result;
 			
 			return result;
