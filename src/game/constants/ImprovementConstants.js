@@ -6,6 +6,9 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			beacon: {
 				description: "Shines a light over a large area, making scavenging less dangerous.",
 			},
+			camp: {
+				canBeDismantled: false,
+			},
 			home: {
 				description: "Foundation of a camp.",
 				useActionName: "Rest",
@@ -192,6 +195,9 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			},
 			passageDownHole: {
 				isPassage: true,
+				isProject: true,
+			},
+			tradepost_connector: {
 				isProject: true,
 			},
 			spaceship1: {

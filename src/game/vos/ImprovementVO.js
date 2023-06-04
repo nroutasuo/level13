@@ -125,6 +125,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 	getImprovementType = function (name) {
 		if (!name) return null;
 		switch (name) {
+			case improvementNames.camp:
 			case improvementNames.collector_food:
 			case improvementNames.collector_water:
 			case improvementNames.greenhouse:
