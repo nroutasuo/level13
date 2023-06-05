@@ -607,7 +607,7 @@ define(['ash',
 				if (sectorLocalesComponent.locales.length > 1)
 					popupMsg += "<br/>There are some interesting buildings here.";
 				else
-					popupMsg += "<br/>There is a " + TextConstants.getLocaleName(locale, featuresComponent, true).toLowerCase() + " here that seems worth investigating.";
+					popupMsg += "<br/>There is a " + TextConstants.getLocaleName(locale, featuresComponent, true).toLowerCase() + " here that seems worth scouting.";
 			}
 			
 			if (featuresComponent.waymarks.length > 0) {
@@ -1824,7 +1824,7 @@ define(['ash',
 			var perksComponent = this.playerStatsNodes.head.perks;
 			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			
-			var item = deductedCosts.items[0];
+			let item = deductedCosts.items[0];
 			if (!item) {
 				log.w("trying to use item but none found in deductedCosts");
 			}

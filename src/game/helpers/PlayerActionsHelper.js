@@ -833,7 +833,8 @@ define([
 								let amount = caravan.campSelectedItems[itemID];
 								let item = ItemConstants.getItemByID(itemID);
 								if (amount > TradeConstants.MAX_ITEMS_TO_TRADE_PER_CARAVAN && item.type != ItemConstants.itemTypes.ingredient) {
-									return {value: 0, reason: "The trader doesn't want that many " + ItemConstants.getItemDisplayName(item)  + "."};
+									let itemName = ItemConstants.getItemDisplayName(item);
+									return {value: 0, reason: "The trader doesn't want that many " + TextConstants.pluralify(itemName)  + "."};
 								}
 							}
 						} else {

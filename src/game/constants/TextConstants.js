@@ -27,6 +27,10 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			return s;
 		},
 		
+		pluralify: function (s) {
+			return Text.pluralify(s);
+		},
+		
 		getActionName: function (baseActionID) {
 			switch (baseActionID) {
 				case "scout_locale_i":

@@ -46,7 +46,7 @@ define(['ash', 'game/constants/OccurrenceConstants', 'game/constants/UIConstants
 				baseReputation: 4,
 			},
 			{
-				name: "complex society",
+				name: "multiplex society",
 				description: "A tribe that spans multiple levels",
 				maxRumours: 10000,
 				maxEvidence: 1000,
