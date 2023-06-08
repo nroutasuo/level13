@@ -7,6 +7,7 @@ define([
 	'game/constants/GameConstants',
 	'game/constants/ItemConstants',
 	'game/constants/LevelConstants',
+	'game/constants/LocaleConstants',
 	'game/constants/MovementConstants',
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
@@ -29,7 +30,7 @@ define([
 	'game/components/player/ItemsComponent',
 	'game/components/type/LevelComponent',
 	'game/systems/CheatSystem',
-], function (Ash, FileUtils, MapUtils, GameGlobals, GlobalSignals, GameConstants, ItemConstants, LevelConstants, MovementConstants, PositionConstants, SectorConstants, TextConstants, TradeConstants, UIConstants,
+], function (Ash, FileUtils, MapUtils, GameGlobals, GlobalSignals, GameConstants, ItemConstants, LevelConstants, LocaleConstants, MovementConstants, PositionConstants, SectorConstants, TextConstants, TradeConstants, UIConstants,
 	PlayerLocationNode, PlayerPositionNode,
 	CampComponent, PositionComponent, VisitedComponent, EnemiesComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, SectorImprovementsComponent, WorkshopComponent, ItemsComponent, LevelComponent,
 	CheatSystem) {
@@ -522,7 +523,18 @@ define([
 			
 			let result = [];
 			if (sector.has(CampComponent)) result.push("camp");
-			if (sector.has(WorkshopComponent) && sector.get(WorkshopComponent).isClearable) result.push("workshop");
+			if (sector.has(WorkshopComponent)) {
+				let workshopComponent = sector.get(WorkshopComponent);
+				if (workshopComponent.isClearable) {
+					let sectorControlComponent = sector.get(SectorControlComponent);
+					if (sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP)) {
+						result.push("workshop (cleared)");
+					} else {
+						result.push("workshop (not cleared)");
+					}
+				}
+			}
+			
 			if (improvements.getCount(improvementNames.greenhouse)) result.push("greenhouse");
 			if (!hasCampOnLevel && sectorFeatures.canHaveCamp()) result.push("good place for camp");
 			if (sectorPassages.passageUp) {
