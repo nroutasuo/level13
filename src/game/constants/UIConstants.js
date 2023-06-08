@@ -646,7 +646,7 @@ define(['ash',
 			for (let i in changeSources) {
 				source = changeSources[i];
 				if (source.amount != 0) {
-					content += source.source + ": " + Math.round(source.amount * 10000) / 10000 + "/s<br/>";
+					content += source.source + " (" + source.sourceCount + ")" + ": " + Math.round(source.amount * 10000) / 10000 + "/s<br/>";
 				}
 			}
 

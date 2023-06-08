@@ -137,43 +137,43 @@ define([
 			// Basic: Scavengers
 			var metal = time * (node.camp.metalProductionPerSecond || 0);
 			campResources.addResource(resourceNames.metal, metal);
-			resourceAccComponent.addChange(resourceNames.metal, metal / time, "Scavengers");
+			resourceAccComponent.addChange(resourceNames.metal, metal / time, "Scavengers", camp.assignedWorkers.scavenger);
 			if (metal > 0) GameGlobals.playerActionFunctions.unlockFeature("resource_metal");
 			
 			// Basic: Trappers
 			var food = time * (node.camp.foodProductionPerSecond || 0);
 			campResources.addResource(resourceNames.food, food);
-			resourceAccComponent.addChange(resourceNames.food, food / time, "Trappers");
+			resourceAccComponent.addChange(resourceNames.food, food / time, "Trappers", camp.assignedWorkers.trapper);
 			if (food > 0) GameGlobals.playerActionFunctions.unlockFeature("resource_food");
 			
 			// Basic: Water collectors
 			var water = time * (node.camp.waterProductionPerSecond || 0);
 			campResources.addResource(resourceNames.water, water);
-			resourceAccComponent.addChange(resourceNames.water, water / time, "Collectors");
+			resourceAccComponent.addChange(resourceNames.water, water / time, "Collectors", camp.assignedWorkers.water);
 			if (water > 0) GameGlobals.playerActionFunctions.unlockFeature("resource_water");
 			
 			// Basic: Rope-makers
 			var rope = time * (node.camp.ropeProductionPerSecond || 0);
 			campResources.addResource(resourceNames.rope, rope);
-			resourceAccComponent.addChange(resourceNames.rope, rope / time, "Rope-makers");
+			resourceAccComponent.addChange(resourceNames.rope, rope / time, "Rope-makers", camp.assignedWorkers.ropemaker);
 			if (rope > 0) GameGlobals.playerActionFunctions.unlockFeature("resource_rope");
 			
 			// Workshop: Chemists
 			var fuel = time * (node.camp.fuelProductionPerSecond || 0);
 			campResources.addResource(resourceNames.fuel, fuel);
-			resourceAccComponent.addChange(resourceNames.fuel, fuel / time, "Chemists");
+			resourceAccComponent.addChange(resourceNames.fuel, fuel / time, "Chemists", camp.assignedWorkers.chemist);
 			if (fuel > 0) GameGlobals.playerActionFunctions.unlockFeature("resource_fuel");
 			
 			// Workshop: Rubbermakers
 			var rubber = time * (node.camp.rubberProductionPerSecond || 0);
 			campResources.addResource(resourceNames.rubber, rubber);
-			resourceAccComponent.addChange(resourceNames.rubber, rubber / time, "Plantation workers");
+			resourceAccComponent.addChange(resourceNames.rubber, rubber / time, "Plantation workers", camp.assignedWorkers.rubbermaker);
 			if (rubber > 0) GameGlobals.playerActionFunctions.unlockFeature("resource_rubber");
 			
 			// Greenhouses
 			var herbs = time * (node.camp.herbsProductionPerSecond || 0);
 			campResources.addResource(resourceNames.herbs, herbs);
-			resourceAccComponent.addChange(resourceNames.herbs, herbs / time, "Gardeners");
+			resourceAccComponent.addChange(resourceNames.herbs, herbs / time, "Gardeners", camp.assignedWorkers.gardener);
 			if (herbs > 0) GameGlobals.playerActionFunctions.unlockFeature("resource_herbs");
 			
 			// Advanced: Apothecaries
@@ -183,8 +183,8 @@ define([
 				var medicine = time * (herbsUsed / herbsRequired) * node.camp.medicineProductionPerSecond;
 				campResources.addResource(resourceNames.medicine, medicine);
 				campResources.addResource(resourceNames.herbs, -herbsUsed);
-				resourceAccComponent.addChange(resourceNames.medicine, medicine / time, "Apothecaries");
-				resourceAccComponent.addChange(resourceNames.herbs, -herbsUsed / time, "Apothecaries");
+				resourceAccComponent.addChange(resourceNames.medicine, medicine / time, "Apothecaries", camp.assignedWorkers.apothecary);
+				resourceAccComponent.addChange(resourceNames.herbs, -herbsUsed / time, "Apothecaries", camp.assignedWorkers.apothecary);
 				if (medicine > 0) GameGlobals.playerActionFunctions.unlockFeature("resource_medicine");
 			}
 			
@@ -195,8 +195,8 @@ define([
 				var tools = time * (metalUsedTools / metalRequiredTools) * node.camp.toolsProductionPerSecond;
 				campResources.addResource(resourceNames.tools, tools);
 				campResources.addResource(resourceNames.metal, -metalUsedTools);
-				resourceAccComponent.addChange(resourceNames.tools, tools / time, "Toolsmiths");
-				resourceAccComponent.addChange(resourceNames.metal, -metalUsedTools / time, "Toolsmiths");
+				resourceAccComponent.addChange(resourceNames.tools, tools / time, "Toolsmiths", camp.assignedWorkers.toolsmith);
+				resourceAccComponent.addChange(resourceNames.metal, -metalUsedTools / time, "Toolsmiths", camp.assignedWorkers.toolsmith);
 				if (tools > 0) GameGlobals.playerActionFunctions.unlockFeature("resource_tools");
 			}
 			
@@ -207,8 +207,8 @@ define([
 				var concrete = time * (metalUsedConcrete / metalRequiredConcrete) * node.camp.concreteProductionPerSecond;
 				campResources.addResource(resourceNames.concrete, concrete);
 				campResources.addResource(resourceNames.metal, -metalUsedConcrete);
-				resourceAccComponent.addChange(resourceNames.concrete, concrete / time, "Concrete mixers");
-				resourceAccComponent.addChange(resourceNames.metal, -metalUsedConcrete / time, "Concrete mixers");
+				resourceAccComponent.addChange(resourceNames.concrete, concrete / time, "Concrete mixers", camp.assignedWorkers.concrete);
+				resourceAccComponent.addChange(resourceNames.metal, -metalUsedConcrete / time, "Concrete mixers", camp.assignedWorkers.concrete);
 				if (concrete > 0) GameGlobals.playerActionFunctions.unlockFeature("resource_concrete");
 			}
 			
@@ -219,8 +219,8 @@ define([
 				var robots = time * (toolsUsedRobots / toolsRequiredRobots) * node.camp.robotsProductionPerSecond;
 				campResources.addResource(resourceNames.robots, robots);
 				campResources.addResource(resourceNames.tools, -toolsUsedRobots);
-				resourceAccComponent.addChange(resourceNames.robots, robots / time, "Robot makers");
-				resourceAccComponent.addChange(resourceNames.tools, -toolsUsedRobots / time, "Robot makers");
+				resourceAccComponent.addChange(resourceNames.robots, robots / time, "Robot makers", camp.assignedWorkeres.robotmaker);
+				resourceAccComponent.addChange(resourceNames.tools, -toolsUsedRobots / time, "Robot makers", camp.assignedWorkers.robotmaker);
 				if (robots > 0) GameGlobals.playerActionFunctions.unlockFeature("resource_robots");
 			}
 		},
@@ -381,12 +381,12 @@ define([
 			// Darkfarms
 			let farmFood = GameGlobals.campHelper.getDarkFarmProductionPerSecond(improvementsComponent) * time * GameConstants.gameSpeedCamp;
 			resources.addResource(resourceNames.food, farmFood);
-			resourceAcc.addChange(resourceNames.food, farmFood / time, "Snail farms");
+			resourceAcc.addChange(resourceNames.food, farmFood / time, "Snail farms", improvementsComponent.getCount(improvementNames.darkfarm));
 			
 			// Aqueduct
 			let aqueductWater = GameGlobals.campHelper.getAqueductProductionPerSecond(improvementsComponent) * time * GameConstants.gameSpeedCamp;
 			resources.addResource(resourceNames.water, aqueductWater);
-			resourceAcc.addChange(resourceNames.water, aqueductWater / time, "Aqueducts");
+			resourceAcc.addChange(resourceNames.water, aqueductWater / time, "Aqueducts", improvementsComponent.getCount(improvementNames.aqueduct));
 		},
 		
 		deductHunger: function (time, resourceVO, population, isExplorationMode, accumulation, accComponent, sourceName) {
@@ -397,8 +397,8 @@ define([
 				resourceVO.water -= waterChange;
 				resourceVO.food -= foodChange;
 			} else {
-				accComponent.addChange(resourceNames.water, -waterChange, sourceName);
-				accComponent.addChange(resourceNames.food, -foodChange, sourceName);
+				accComponent.addChange(resourceNames.water, -waterChange, sourceName, population);
+				accComponent.addChange(resourceNames.food, -foodChange, sourceName, population);
 			}
 		},
 		

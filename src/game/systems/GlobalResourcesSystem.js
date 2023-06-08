@@ -78,7 +78,7 @@ define([
 				if (sources) {
 					for (let i = 0; i < sources.length; i++) {
 						var source = sources[i];
-						globalResourceAccumulationComponent.addChange(name, source.amount, source.source);
+						globalResourceAccumulationComponent.addChange(name, source.amount, source.source, source.sourceCount);
 					}
 				}
 			};
