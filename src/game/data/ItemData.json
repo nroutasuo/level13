@@ -362,7 +362,7 @@
             "bag": 80
         },
         "campOrdinalRequired": 13,
-        "description": "A really practical backpack with lots of pockets.",
+        "description": "A practical backpack with lots of pockets.",
         "icon": "img/items/bag-1.png",
         "id": "bag_4",
         "isCraftable": true,

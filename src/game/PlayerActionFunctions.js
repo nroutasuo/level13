@@ -499,7 +499,11 @@ define(['ash',
 			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			var efficiency = GameGlobals.playerActionResultsHelper.getCurrentScavengeEfficiency();
 			
-			GameGlobals.playerActionFunctions.unlockFeature("investigate");
+			let isFirst = false;
+			if (!GameGlobals.gameState.unlockedFeatures.investigate) {
+				GameGlobals.playerActionFunctions.unlockFeature("investigate");
+				isFirst = true;
+			}
 
 			var logMsg = "Investigated the area. ";
 
@@ -523,7 +527,7 @@ define(['ash',
 				msgSuccess: logMsgSuccess,
 				msgFlee: logMsgFlee,
 				msgDefeat: logMsgDefeat,
-				addToLog: true,
+				addToLog: isFirst,
 			};
 			
 			this.handleOutActionResults("investigate", messages, true, false, successCallback);

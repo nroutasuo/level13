@@ -110,7 +110,7 @@ function (Ash, UpgradeData, PlayerActionConstants, WorldConstants, UpgradeVO) {
 			unlock_action_clear_waste_r: "Allow clearing some radioactive waste in the environment.",
 			unlock_action_clear_waste_t: "Allow clearing some toxic waste in the environment.",
 			improve_building_temple2: "Perhaps the spirits would appreciate offerings of food, jewelry, bones, plants, or clothing?",
-			improve_building_temple3: "Expand places into places where anyone can come meditate.",
+			improve_building_temple3: "Expand temples into places where anyone can come meditate.",
 			unlock_building_greenhouse: "Grow herbs in some rare locations in the City where conditions are right.",
 			unlock_item_clothingl14: "Clothing to protect from radiactive environments.",
 			unlock_building_beacon: "Lights out in the city that make exploration less dangerous.",

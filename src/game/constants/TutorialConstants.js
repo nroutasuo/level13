@@ -267,6 +267,13 @@ define(['ash'], function (Ash) {
 				logMessage: "This area is dangerous. Will require much better equipment to explore.",
 				conditions: { sector: { hazards: { radiation: [ 1, -1 ] } }, player: { affectedByHazard: true, position: { level: 14 } } },
 			},
+			TUTORIAL_ENCOUNTER_HAZARD_DEBRIS: {
+				triggers: [ "change_position" ],
+				repeats: "NEVER",
+				delay: 1500,
+				logMessage: "These streets are full of debris, making them difficult to traverse.",
+				conditions: { sector: { hazards: { debris: [ 1, -1 ] } } },
+			},
 			TUTORIAL_ENCOUNTER_SPRING: {
 				triggers: [ "action_scout" ],
 				repeats: "NEVER",
