@@ -1536,6 +1536,7 @@
                     -1
                 ]
             },
+            "sunlit": false,
             "upgrades": {
                 "unlock_building_darkfarm": true
             }
@@ -1560,13 +1561,16 @@
             }
         },
         "build_in_garden": {
+			"camp": {
+				"exposed": false
+			},
             "improvements": {
                 "garden": [
                     0,
                     1
                 ],
                 "house": [
-                    1,
+                    2,
                     -1
                 ]
             },
@@ -1776,6 +1780,9 @@
             }
         },
         "build_in_shrine": {
+			"camp": {
+				"exposed": false
+			},
             "deity": true,
             "improvements": {
                 "house": [
@@ -1808,6 +1815,9 @@
             }
         },
         "build_in_square": {
+			"camp": {
+				"exposed": false
+			},
             "improvements": {
                 "camp": [
                     1,
@@ -1831,6 +1841,9 @@
             }
         },
         "build_in_stable": {
+			"camp": {
+				"exposed": false
+			},
             "improvements": {
                 "market": [
                     1,
@@ -1860,6 +1873,9 @@
             }
         },
         "build_in_temple": {
+			"camp": {
+				"exposed": false
+			},
             "deity": true,
             "improvements": {
                 "house": [

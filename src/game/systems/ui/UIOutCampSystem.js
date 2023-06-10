@@ -448,6 +448,7 @@
 						case PlayerActionConstants.DISABLED_REASON_LOCKED_RESOURCES:
 						case PlayerActionConstants.DISABLED_REASON_NOT_REACHABLE_BY_TRADERS:
 						case PlayerActionConstants.DISABLED_REASON_IN_PROGRESS:
+						case PlayerActionConstants.DISABLED_REASON_EXPOSED:
 							showActionDisabledReason = true;
 					}
 				}

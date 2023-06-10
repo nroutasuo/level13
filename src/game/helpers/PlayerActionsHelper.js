@@ -203,6 +203,7 @@ define([
 			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENT_LEVEL) return true;
 			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENTS) return true;
 			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_SECTOR_FEATURES) return true;
+			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_EXPOSED) return true;
 			
 			// reasons that usually block visibility
 			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_SCOUTED) return false;
@@ -1239,6 +1240,16 @@ define([
 							} else {
 								return { value: 0, reason: "Already used " + itemName };
 							}
+						}
+					}
+				}
+				
+				if (requirements.camp) {
+					if (typeof requirements.camp.exposed !== "undefined") {
+						let currentValue = featuresComponent.sunlit && improvementComponent.getCount(improvementNames.sundome) <= 0;
+						let requiredValue = requirements.camp.exposed;
+						if (requiredValue != currentValue) {
+							return { value: 0, reason: (requiredValue ? "Camp not exposed" : "Camp is exposed to direct sunlight" ), baseReason: PlayerActionConstants.DISABLED_REASON_EXPOSED };
 						}
 					}
 				}
