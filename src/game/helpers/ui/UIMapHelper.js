@@ -672,7 +672,10 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 				if (hasHazardBorder) {
 					let borderColor = this.getSectorHazardBorderColor(options.mapMode, sector);
 					let isAffected = GameGlobals.sectorHelper.isAffectedByHazard(sectorFeatures, statusComponent, itemsComponent);
-					drawSectorBorder(borderColor, isAffected, false);
+					let hazards = GameGlobals.sectorHelper.getEffectiveHazards(sectorFeatures, statusComponent, itemsComponent);
+					let mainHazard = hazards.getMainHazard();
+					let isThickBorder = isAffected || mainHazard == "debris";
+					drawSectorBorder(borderColor, isThickBorder, false);
 				}
 				
 				if (hasSunlitBorder) {
