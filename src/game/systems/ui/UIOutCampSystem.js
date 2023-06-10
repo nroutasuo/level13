@@ -774,7 +774,7 @@
 					let robotVal = GameGlobals.campHelper.getRobotsProductionPerSecond(1, improvements);
 					let robotValDivisor = robotVal < 0.01 ? 10000 : null;
 					productionS = "robots +" + UIConstants.roundValue(robotVal, true, true, robotValDivisor) + "/s";
-					specialConsumptionS = "<br/><span class='warning'>metal -" + GameGlobals.campHelper.getMetalConsumptionPerSecondSmith(1) + "/s</span>";
+					specialConsumptionS = "<br/><span class='warning'>tools -" + GameGlobals.campHelper.getToolsConsumptionPerSecondRobots(1) + "/s</span>";
 					break;
 				case CampConstants.workerTypes.scientist.id:
 					productionS = "evidence +" + UIConstants.roundValue(GameGlobals.campHelper.getEvidenceProductionPerSecond(1, improvements), true, true) + "/s";
