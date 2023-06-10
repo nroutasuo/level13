@@ -219,7 +219,7 @@ define([
 				var robots = time * (toolsUsedRobots / toolsRequiredRobots) * node.camp.robotsProductionPerSecond;
 				campResources.addResource(resourceNames.robots, robots);
 				campResources.addResource(resourceNames.tools, -toolsUsedRobots);
-				resourceAccComponent.addChange(resourceNames.robots, robots / time, "Robot makers", camp.assignedWorkeres.robotmaker);
+				resourceAccComponent.addChange(resourceNames.robots, robots / time, "Robot makers", camp.assignedWorkers.robotmaker);
 				resourceAccComponent.addChange(resourceNames.tools, -toolsUsedRobots / time, "Robot makers", camp.assignedWorkers.robotmaker);
 				if (robots > 0) GameGlobals.playerActionFunctions.unlockFeature("resource_robots");
 			}
