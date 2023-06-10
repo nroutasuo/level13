@@ -225,7 +225,11 @@
 			$("#in-population h3").text("Population: " + Math.floor(campComponent.population) + " / " + (maxPopulation));
 			$("#in-population #in-population-status").text("Unassigned workers: " + freePopulation);
 			$("#in-population #in-population-autoassigned").text("Auto-assigned workers: " + autoAssignedWorkersText);
-			$("#in-population #in-population-robots").text("Robots: " + UIConstants.roundValue(robots, false, false, 1) + " / " + maxRobots);
+			$("#in-population #in-population-robots .value").text(Math.floor(robots) + " / " + maxRobots);
+			
+			if (robots > 0) {
+				this.updateChangeIndicator($("#robots-change-indicator"), campComponent.robotsProductionPerSecond);
+			}
 			
 			let isOnPopulationDecreaseCooldown = campComponent.populationDecreaseCooldown > 0 && campComponent.populationDecreaseCooldown < CampConstants.POPULATION_DECREASE_COOLDOWN;
 			let isPopulationStill = (isPopulationMaxed || populationChangePerSecWithoutCooldown === 0) && !isOnPopulationDecreaseCooldown;
@@ -263,10 +267,18 @@
 			
 			GameGlobals.uiFunctions.toggle(".in-assign-workers-auto-toggle", GameGlobals.gameState.unlockedFeatures.workerAutoAssignment);
 			
-			let robotBonus = GameGlobals.campBalancingHelper.getWorkerRobotBonus(robots);
-			let robotCalloutContent = "worker resource production: +" + UIConstants.roundValue(robotBonus * 100, true, false) + "%";
-			robotCalloutContent = robotCalloutContent + "<br/>" + CampConstants.SPECIAL_STORAGE_PER_FACTORY + " robots per factory";
-			UIConstants.updateCalloutContent("#in-population #in-population-robots", robotCalloutContent);
+			if (robots > 0) {
+				let robotBonus = GameGlobals.campBalancingHelper.getWorkerRobotBonus(robots);
+				let robotCalloutContent = "worker resource production: +" + UIConstants.roundValue(robotBonus * 100, true, false) + "%";
+				robotCalloutContent = robotCalloutContent + "<br/>" + CampConstants.SPECIAL_STORAGE_PER_FACTORY + " robots per factory";
+				UIConstants.updateCalloutContent("#in-population #in-population-robots", robotCalloutContent);
+			}
+		},
+
+		updateChangeIndicator: function (indicator, accumulation) {
+			indicator.toggleClass("indicator-increase", accumulation > 0);
+			indicator.toggleClass("indicator-even", accumulation === 0);
+			indicator.toggleClass("indicator-decrease", accumulation < 0);
 		},
 
 		updateAssignedWorkers: function (campComponent) {
