@@ -279,9 +279,11 @@ define([
 			
 			// penalties: sunlight
 			if (isSunlit && improvementsComponent.getCount(improvementNames.sundome) < 1) {
-				addValue(-3, "Sunlight");
+				let sunlightPenaltyFactor = -0.75;
+				let sunlightPenaltyValue = resultForPercentages * sunlightPenaltyFactor;
+				addValue(sunlightPenaltyValue, "Sunlight", true, sunlightPenaltyFactor * 100);
+				addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_SUNLIT, isSunlit);
 			}
-			addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_SUNLIT, isSunlit);
 			
 			return { value: Math.max(0, result), sources: sources, penalties: penalties, percentages: percentages };
 		},
