@@ -755,7 +755,8 @@ define([
 			
 			// lxuury resources
 			if (improvementsComponent.getCount(improvementNames.luxuryOutpost) <= 0) {
-				if (GameGlobals.sectorHelper.getLuxuryResourceOnSector(sectorEntity)) {
+				let luxuryResource = GameGlobals.sectorHelper.getLuxuryResourceOnSector(sectorEntity);
+				if (luxuryResource && GameGlobals.gameState.foundLuxuryResources.indexOf(luxuryResource) >= 0) {
 					let name = this.getProjectName(improvementNames.luxuryOutpost, sectorEntity);
 					projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.luxuryOutpost), "build_out_luxury_outpost", sectorPosition, null, name));
 				}
