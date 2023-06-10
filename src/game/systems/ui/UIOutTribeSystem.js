@@ -15,6 +15,7 @@ define([
 	'game/components/common/ResourceAccumulationComponent',
 	'game/components/player/DeityComponent',
 	'game/components/type/LevelComponent',
+	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/events/RecruitComponent',
 	'game/components/sector/events/TraderComponent',
@@ -23,7 +24,7 @@ define([
 ], function (
 	Ash, GameGlobals, GlobalSignals, UIConstants, CampConstants, OccurrenceConstants, WorldConstants,
 	CampNode, PlayerPositionNode, PlayerStatsNode, TribeUpgradesNode,
-	PositionComponent, ResourcesComponent, ResourceAccumulationComponent, DeityComponent, LevelComponent, SectorImprovementsComponent, RecruitComponent, TraderComponent, RaidComponent, OutgoingCaravansComponent
+	PositionComponent, ResourcesComponent, ResourceAccumulationComponent, DeityComponent, LevelComponent, SectorFeaturesComponent, SectorImprovementsComponent, RecruitComponent, TraderComponent, RaidComponent, OutgoingCaravansComponent
 ) {
 	var UIOutTribeSystem = Ash.System.extend({
 
@@ -43,6 +44,7 @@ define([
 			EVENT_RECRUIT: "event_recruit",
 			POP_UNASSIGNED: "population-unassigned",
 			POP_DECREASING: "population-decreasing",
+			SUNLIT: "sunlit",
 			POP_INCREASING: "population-increasing",
 			BUILDING_DAMAGED: "building-damaged",
 			EVENT_OUTGOING_CARAVAN: "outoing-caravan",
@@ -181,6 +183,8 @@ define([
 		updateCampNotifications: function (node) {
 			var camp = node.camp;
 			var level = node.entity.get(PositionComponent).level;
+			
+			let featuresComponent = node.entity.get(SectorFeaturesComponent);
 			var caravansComponent = node.entity.get(OutgoingCaravansComponent);
 			var playerPosComponent = this.playerPosNodes.head.position;
 			var isPlayerInCampLevel = level === playerPosComponent.level;
@@ -227,6 +231,9 @@ define([
 					this.alerts[level].push(this.campNotificationTypes.POP_DECREASING);
 					this.notifications[level].push(this.campNotificationTypes.POP_DECREASING);
 				}
+				if (featuresComponent.sunlit && improvements.getCount(improvementNames.sundome) <= 0) {
+					this.notifications[level].push(this.campNotificationTypes.SUNLIT);
+				}
 				if (camp.populationChangePerSecWithoutCooldown > 0) {
 					this.notifications[level].push(this.campNotificationTypes.POP_INCREASING);
 				}
@@ -236,7 +243,7 @@ define([
 				if (GameGlobals.campHelper.getMaxWorkers(node.entity, "gardener") > 0 && camp.assignedWorkers.gardener < 1) {
 					this.notifications[level].push(this.campNotificationTypes.POP_NO_GARDENERS);
 				}
-				if (GameGlobals.campHelper.getMaxWorkers(node.entity, "rubbermaker") > 0 && camp.assignedWorkers.rubbermaker < 1) {
+				else if (GameGlobals.campHelper.getMaxWorkers(node.entity, "rubbermaker") > 0 && camp.assignedWorkers.rubbermaker < 1) {
 					this.notifications[level].push(this.campNotificationTypes.POP_NO_RUBBERMAKERS);
 				}
 				else if (GameGlobals.campHelper.getMaxWorkers(node.entity, "chemist") > 0 && camp.assignedWorkers.chemist < 1) {
@@ -438,6 +445,7 @@ define([
 				case this.campNotificationTypes.EVENT_RECRUIT: return "There is a visitor currently on level " + level + ".";
 				case this.campNotificationTypes.POP_UNASSIGNED: return "Unassigned workers on level " + level + ".";
 				case this.campNotificationTypes.POP_DECREASING: return "Population is decreasing on level " + level + "!";
+				case this.campNotificationTypes.SUNLIT: return "Camp on level " + level + " is exposed to direct sunlight.";
 				case this.campNotificationTypes.POP_INCREASING: return "Population is increasing on level " + level + ".";
 				case this.campNotificationTypes.POP_NO_GARDENERS: return "Level " + level + " camp has access to a Greenhouse but no Gardeners working in it.";
 				case this.campNotificationTypes.POP_NO_RUBBERMAKERS: return "Level " + level + " camp has access to a plantation but no Rubbermakers working in it.";
@@ -458,13 +466,14 @@ define([
 				case this.campNotificationTypes.EVENT_RECRUIT: return 3;
 				case this.campNotificationTypes.BUILDING_DAMAGED: return 4;
 				case this.campNotificationTypes.POP_UNASSIGNED: return 5;
-				case this.campNotificationTypes.EVENT_OUTGOING_CARAVAN: return 6;
-				case this.campNotificationTypes.STATUS_NON_REACHABLE_BY_TRADERS: return 7;
-				case this.campNotificationTypes.POP_NO_GARDENERS: return 8;
-				case this.campNotificationTypes.POP_NO_RUBBERMAKERS: return 9;
-				case this.campNotificationTypes.POP_NO_CHEMISTS: return 10;
-				case this.campNotificationTypes.POP_INCREASING: return 11;
-				default: return 12;
+				case this.campNotificationTypes.SUNLIT: return 6;
+				case this.campNotificationTypes.EVENT_OUTGOING_CARAVAN: return 7;
+				case this.campNotificationTypes.STATUS_NON_REACHABLE_BY_TRADERS: return 8;
+				case this.campNotificationTypes.POP_NO_GARDENERS: return 9;
+				case this.campNotificationTypes.POP_NO_RUBBERMAKERS: return 10;
+				case this.campNotificationTypes.POP_NO_CHEMISTS: return 11;
+				case this.campNotificationTypes.POP_INCREASING: return 12;
+				default: return 13;
 			}
 		},
 
