@@ -473,9 +473,6 @@ body.dark .strike-through p {
 body.dark .container-dimmed .dimmable {
   opacity: 0.5;
 }
-body.dark span.icon {
-  padding: 2px;
-}
 body.dark img.icon-ui-generic {
   height: 1.5em;
   width: 1.5em;
@@ -1164,7 +1161,6 @@ body.dark .horizontal-select-option.selected {
 }
 body.dark .stats-indicator {
   display: block;
-  margin: 0 2px 0 0;
   white-space: nowrap;
 }
 body.dark .stats-indicator span {
@@ -2721,9 +2717,6 @@ body.sunlit .strike-through p {
 body.sunlit .container-dimmed .dimmable {
   opacity: 0.5;
 }
-body.sunlit span.icon {
-  padding: 2px;
-}
 body.sunlit img.icon-ui-generic {
   height: 1.5em;
   width: 1.5em;
@@ -3412,7 +3405,6 @@ body.sunlit .horizontal-select-option.selected {
 }
 body.sunlit .stats-indicator {
   display: block;
-  margin: 0 2px 0 0;
   white-space: nowrap;
 }
 body.sunlit .stats-indicator span {

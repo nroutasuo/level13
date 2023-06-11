@@ -263,6 +263,7 @@ define([
 			rowHTML += "<td class='camp-overview-level'><div class='camp-overview-level-container lvl13-box-1'></div></td>";
 			rowHTML += "<td class='camp-overview-name'></td>";
 			rowHTML += "<td class='camp-overview-population list-amount nowrap'><span class='value'></span><span class='change-indicator'></span></td>";
+			rowHTML += "<td class='camp-overview-robots list-amount nowrap'><span class='value'></span><span class='change-indicator'></span></td>";
 			rowHTML += "<td class='camp-overview-reputation list-amount nowrap'><span class='value'></span><span class='change-indicator'></span></td>";
 			rowHTML += "<td class='camp-overview-raid list-amount'><span class='value'></span></span></td>";
 			rowHTML += "<td class='camp-overview-storage list-amount'></td>";
@@ -273,7 +274,7 @@ define([
 			}
 			rowHTML += "</td>";
 			
-			rowHTML += "<td class='camp-overview-stats'>";
+			rowHTML += "<td class='camp-overview-stats nowrap'>";
 			rowHTML += "<span class='camp-overview-stats-evidence info-callout-target info-callout-target-small'>";
 			rowHTML += "<span class='icon'><img src='img/stat-evidence.png' alt='evidence'/></span><span class='change-indicator'></span> ";
 			rowHTML += "</span> ";
@@ -312,6 +313,7 @@ define([
 			var unAssignedPopulation = camp.getFreePopulation();
 			var improvements = node.entity.get(SectorImprovementsComponent);
 			var levelComponent = GameGlobals.levelHelper.getLevelEntityForSector(node.entity).get(LevelComponent);
+			var resources = node.entity.get(ResourcesComponent);
 
 			$("#camp-overview tr#" + rowID).toggleClass("current", isPlayerInCampLevel);
 			GameGlobals.uiFunctions.toggle("#camp-overview tr#" + rowID + " .camp-overview-btn button", !isPlayerInCampLevel);
@@ -334,6 +336,16 @@ define([
 			$("#camp-overview tr#" + rowID + " .camp-overview-population .value").text(Math.floor(camp.population) + "/" + maxPopulation + (unAssignedPopulation > 0 ? " (" + unAssignedPopulation + ")" : ""));
 			$("#camp-overview tr#" + rowID + " .camp-overview-population .value").toggleClass("warning", camp.populationChangePerSecWithoutCooldown < 0);
 			this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-population .change-indicator"), camp.populationChangePerSecWithoutCooldown);
+			
+			let showRobots = GameGlobals.gameState.unlockedFeatures.resource_robots || false;
+			if (showRobots) {
+				let factoryCount = improvements.getCount(improvementNames.robotFactory);
+				let factoryLevel = improvements.getLevel(improvementNames.robotFactory);
+				let robots = resources.resources.robots || 0;
+				let maxRobots = CampConstants.getRobotStorageCapacity(factoryCount, factoryLevel);
+				$("#camp-overview tr#" + rowID + " .camp-overview-robots .value").text(maxRobots > 0 ? Math.floor(robots) + "/" + maxRobots : "-");
+				this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-robots .change-indicator"), camp.robotsProductionPerSecond, false, robots <= 0);
+			}
 
 			var reputationComponent = node.reputation;
 			let reputationValue = UIConstants.roundValue(reputationComponent.value, true, true);
@@ -348,7 +360,6 @@ define([
 			$("#camp-overview tr#" + rowID + " .camp-overview-raid .value").text(UIConstants.roundValue(raidDanger * 100) + "%");
 			$("#camp-overview tr#" + rowID + " .camp-overview-raid .value").toggleClass("warning", raidWarning);
 			
-			var resources = node.entity.get(ResourcesComponent);
 			var hasTradePost = improvements.getCount(improvementNames.tradepost) > 0;
 			var storageText = resources.storageCapacity;
 			if (!hasTradePost) {
@@ -477,7 +488,8 @@ define([
 			}
 		},
 
-		updateChangeIndicator: function (indicator, accumulation, showWarning) {
+		updateChangeIndicator: function (indicator, accumulation, showWarning, hideCompletely) {
+			GameGlobals.uiFunctions.toggle(indicator, !hideCompletely);
 			indicator.toggleClass("indicator-increase", accumulation > 0);
 			indicator.toggleClass("indicator-even", accumulation === 0);
 			indicator.toggleClass("indicator-decrease", !showWarning && accumulation < 0);
