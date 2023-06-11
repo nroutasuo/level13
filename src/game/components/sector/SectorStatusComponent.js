@@ -4,7 +4,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 	var SectorStatusComponent = Ash.Class.extend({
 		
 		NUM_SCAVENGES_PER_SECTOR: 30,
-		NUM_INVESTIGATES_PER_SECTOR: 10,
+		NUM_INVESTIGATES_PER_SECTOR: 5,
 
 		discoveredResources: [],
 		discoveredItems: [],

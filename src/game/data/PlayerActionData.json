@@ -3,7 +3,7 @@
         "clear_workshop": 60,
         "despair": 10,
         "fight_gang": 60,
-        "investigate": 10,
+        "investigate": 120,
         "launch": 600,
         "scavenge": 10,
         "scout_locale_i": 60,
