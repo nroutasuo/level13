@@ -874,7 +874,7 @@ define([
 			workers = workers || 0;
 			robots = robots || 0;
 			let medicineUpgradeBonus = this.getWorkerUpgradeBonus("apothecary", upgrades);
-			let levelBonus = 1 + improvementsComponent.getLevel(improvementNames.apothecary) / 10;
+			let levelBonus = this.getWorkerImprovementBonus(improvementsComponent, improvementNames.apothecary);
 			let damagedBuildingsFactor = this.getDamagedBuildingsProductionFactor(improvementsComponent, improvementNames.apothecary);
 			let robotFactor = this.getWorkerRobotFactor(robots);
 			return workers * CampConstants.PRODUCTION_MEDICINE_PER_WORKER_PER_S * medicineUpgradeBonus * levelBonus * damagedBuildingsFactor * robotFactor;
@@ -884,7 +884,7 @@ define([
 			workers = workers || 0;
 			robots = robots || 0;
 			let toolsUpgradeBonus = this.getWorkerUpgradeBonus("smith", upgrades);
-			let levelBonus = 1 + improvementsComponent.getLevel(improvementNames.smithy) / 10;
+			let levelBonus = this.getWorkerImprovementBonus(improvementsComponent, improvementNames.smithy);
 			let damagedBuildingsFactor = this.getDamagedBuildingsProductionFactor(improvementsComponent, improvementNames.smithy);
 			let robotFactor = this.getWorkerRobotFactor(robots);
 			return workers * CampConstants.PRODUCTION_TOOLS_PER_WORKER_PER_S * toolsUpgradeBonus * levelBonus * damagedBuildingsFactor * robotFactor;
@@ -894,7 +894,7 @@ define([
 			workers = workers || 0;
 			robots = robots || 0;
 			let concreteUpgradeBonus = this.getWorkerUpgradeBonus("concrete", upgrades);
-			let levelBonus = 1 + improvementsComponent.getLevel(improvementNames.cementmill) / 10;
+			let levelBonus = this.getWorkerImprovementBonus(improvementsComponent, improvementNames.cementmill);
 			let damagedBuildingsFactor = this.getDamagedBuildingsProductionFactor(improvementsComponent, improvementNames.cementmill);
 			let robotFactor = this.getWorkerRobotFactor(robots);
 			return workers * CampConstants.PRODUCTION_CONCRETE_PER_WORKER_PER_S * concreteUpgradeBonus * levelBonus * damagedBuildingsFactor * robotFactor;
@@ -904,7 +904,7 @@ define([
 			workers = workers || 0;
 			robots = robots || 0;
 			let robotsUpgradeConus = this.getWorkerUpgradeBonus("robotmaker", upgrades);
-			let levelBonus = 1 + improvementsComponent.getLevel(improvementNames.robotFactory) / 10;
+			let levelBonus = this.getWorkerImprovementBonus(improvementsComponent, improvementNames.robotFactory);
 			let damagedBuildingsFactor = this.getDamagedBuildingsProductionFactor(improvementsComponent, improvementNames.cementmill);
 			let robotFactor = this.getWorkerRobotFactor(robots);
 			return workers * CampConstants.PRODUCTION_ROBOTS_PER_WORKER_PER_S * robotsUpgradeConus * levelBonus * damagedBuildingsFactor * robotFactor;
@@ -942,6 +942,10 @@ define([
 			return upgradeBonus;
 		},
 		
+		getWorkerImprovementBonus: function (improvementsComponent, improvementName) {
+			return 1 + (improvementsComponent.getLevel(improvementName) - 1) / 10;
+		},
+		
 		getDamagedBuildingsProductionFactor: function (improvementsComponent, improvementName) {
 			let num = improvementsComponent.getCount(improvementName);
 			if (num < 1) return 1;
@@ -954,7 +958,7 @@ define([
 		},
 		
 		getWorkerRobotBonus: function (robots) {
-			return robots * CampConstants.PRODUCTION_BONUS_PER_ROBOT_PER_SEC;
+			return Math.floor(robots) * CampConstants.PRODUCTION_BONUS_PER_ROBOT_PER_SEC;
 		},
 		
 		getWorkerRobotFactor: function (robots) {
