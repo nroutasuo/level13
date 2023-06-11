@@ -217,6 +217,7 @@ define(['ash'], function (Ash) {
 			if (this.tools !== 0) copy.t = this.tools;
 			if (this.medicine !== 0) copy.med = this.medicine;
 			if (this.concrete !== 0) copy.c = this.concrete;
+			if (this.robots !== 0) copy.rb = this.robots;
 			return copy;
 		},
 
@@ -232,6 +233,7 @@ define(['ash'], function (Ash) {
 			if (componentValues.t) this.tools = componentValues.t;
 			if (componentValues.med) this.medicine = componentValues.med;
 			if (componentValues.c) this.concrete = componentValues.c;
+			if (componentValues.rb) this.robots = componentValues.rb;
 		},
 		
 		clone: function() {
