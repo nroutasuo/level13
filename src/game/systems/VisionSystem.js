@@ -165,26 +165,30 @@ define([
 					let maxValueExtra = maxValue - maxValueBaseDefault;
 					let newValue = isTotalReset ? 0 : (maxValueBaseDefault + maxValueExtra / 2);
 					vision.value = newValue;
-					if (sunlit) {
-						if (isTotalReset) {
-							logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "Blinded by sunlight.");
+					if (!inCamp) {
+						if (sunlit) {
+							if (isTotalReset) {
+								logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "Blinded by sunlight.");
+							} else {
+								logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "Engulfed by sunlight.");
+							}
 						} else {
-							logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "Engulfed by sunlight.");
-						}
-					} else {
-						if (isTotalReset) {
-							logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "The darkness is like a wall.");
-						} else {
-							logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "Back into the darkness.");
+							if (isTotalReset) {
+								logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "The darkness is like a wall.");
+							} else {
+								logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "Back into the darkness.");
+							}
 						}
 					}
 				} else if (oldMaximum > maxValue && oldValue - 10 > maxValue && maxValue === maxValueBase) {
 					// being reset back to base value (losing equipment, not having equipment and leaving camp)
 					vision.value = 0;
-					if (sunlit) {
-						logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "Blinded by sunlight.");
-					} else {
-						logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "The darkness is like a wall.");
+					if (!inCamp) {
+						if (sunlit) {
+							logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "Blinded by sunlight.");
+						} else {
+							logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "The darkness is like a wall.");
+						}
 					}
 				}
 			}
