@@ -107,7 +107,7 @@ span.msg-count, span.time, span.msg-camp-level {
 #header-self-bar {
 	text-align: center;
 	padding: 5px 3px;
-	font-size: 80%;
+	font-size: @font-size-small;
 	border-width: 2px;
 	background: @color-bg-box-1;
 }
@@ -132,7 +132,7 @@ span.msg-count, span.time, span.msg-camp-level {
 }
 
 #header-self-bar .stats-indicator .value {
-	font-size: @font-size-small;
+	font-size: @font-size-tiny;
 	margin: 3px 0;
 }
 
@@ -166,6 +166,10 @@ span.msg-count, span.time, span.msg-camp-level {
 	min-width: 2em;
 	font-size: 100%;
 	margin: 0;
+}
+
+#container-equipment-stats {
+	line-height: 1em;
 }
 
 // LOCATION HEADER
@@ -202,7 +206,7 @@ span.msg-count, span.time, span.msg-camp-level {
 	border-width: 2px;
 	border-style: solid;
 	border-color: @color-border-strong;
-    font-size: 85%;
+    font-size: @font-size-small;
     display: none;
     margin-top: 5px;
 }
@@ -502,7 +506,8 @@ tr.camp-overview-special-row {
 }
 
 #resultlist-inventorymanagement .inventorybox {
-	max-width: 550px;
+	max-width: 25vw;
+    margin: 3px auto;
 }
 
 ul.resultlist li {

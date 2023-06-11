@@ -66,6 +66,7 @@ div.callout-container {
 
 div.btn-callout-content, div.info-callout-content {
 	font-size: @font-size-small;
+	line-height: @line-height-condensed;
 	overflow-wrap: break-word;
 }
 
@@ -143,7 +144,7 @@ ul.tabs li {
 	z-index: 0;
 	white-space: nowrap;
 	top: 3px;
-	height: 32px;
+	height: 2.25em;
 	cursor: pointer;
 	text-transform: lowercase;
 	background-color: @color-bg-page;
@@ -310,7 +311,7 @@ div.popup-overlay-meta {
 }
 
 .stats-indicator .change, .stats-indicator .forecast {
-	font-size: @font-size-small;
+	font-size: @font-size-tiny;
 	vertical-align: middle;
 }
 
@@ -326,6 +327,7 @@ div.popup-overlay-meta {
 }
 
 .stats-indicator-with-fill {
+	font-size: @font-size-small;
 	border: 2px solid @color-bg-element-1;
     background: linear-gradient(to right, @color-bg-element-1 50%, transparent 50%);
 	width: 13em;
@@ -530,6 +532,7 @@ div.popup-overlay-meta {
 	border-radius: 8px;
 	font-weight: bold;
 	font-size: @font-size-small;
+	line-height: 18px;
 }
 
 table .bubble {
@@ -700,7 +703,7 @@ table .bubble {
 }
 
 .info-detail {
-	font-size: 80%;
+	font-size: @font-size-small;
     line-height: 1.15em;
     display: block;
 }

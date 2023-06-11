@@ -434,8 +434,8 @@ body.dark {
   background: #202220;
   color: #fdfdfd;
   font-family: Arial, sans-serif;
-  font-size: 11pt;
-  line-height: 1.3em;
+  font-size: 1em;
+  line-height: 1.35em;
   /* WEBKIT BROWSERS */
 }
 body.dark .centered {
@@ -534,7 +534,7 @@ body.dark th {
   transition: all 0.15s;
 }
 body.dark .balancing-tab table {
-  font-size: 80%;
+  font-size: 0.85rem;
 }
 body.dark table.spacious {
   margin: 5px 0px;
@@ -641,7 +641,7 @@ body.dark td.item-name {
   min-width: 8em;
 }
 body.dark td.text-overflow {
-  font-size: 75%;
+  font-size: 0.75rem;
   width: 6em;
   max-width: 6em;
   overflow: hidden;
@@ -662,7 +662,7 @@ body.dark div.current {
   border-color: #2f322f;
 }
 body.dark tr.header-mini {
-  font-size: 85%;
+  font-size: 0.85rem;
 }
 body.dark hr {
   color: #555;
@@ -985,7 +985,8 @@ body.dark div.callout-container {
 }
 body.dark div.btn-callout-content,
 body.dark div.info-callout-content {
-  font-size: 85%;
+  font-size: 0.85rem;
+  line-height: 1.2em;
   overflow-wrap: break-word;
 }
 body.dark div.btn-callout-content,
@@ -1049,7 +1050,7 @@ body.dark ul.tabs li {
   z-index: 0;
   white-space: nowrap;
   top: 3px;
-  height: 32px;
+  height: 2.25em;
   cursor: pointer;
   text-transform: lowercase;
   background-color: #202220;
@@ -1185,7 +1186,7 @@ body.dark .stats-indicator .forecast {
 }
 body.dark .stats-indicator .change,
 body.dark .stats-indicator .forecast {
-  font-size: 85%;
+  font-size: 0.75rem;
   vertical-align: middle;
 }
 body.dark .stats-indicator .progress {
@@ -1198,6 +1199,7 @@ body.dark .stats-indicator .progress-wrap {
   margin: auto 1px auto 3px;
 }
 body.dark .stats-indicator-with-fill {
+  font-size: 0.85rem;
   border: 2px solid #2f322f;
   background: linear-gradient(to right, #2f322f 50%, transparent 50%);
   width: 13em;
@@ -1301,7 +1303,7 @@ body.dark .progress-label {
   top: 0;
   position: absolute;
   width: 100%;
-  font-size: 85%;
+  font-size: 0.85rem;
   text-align: center;
   vertical-align: text-top;
 }
@@ -1366,7 +1368,8 @@ body.dark .bubble {
   text-align: center;
   border-radius: 8px;
   font-weight: bold;
-  font-size: 85%;
+  font-size: 0.85rem;
+  line-height: 18px;
 }
 body.dark table .bubble {
   position: inherit;
@@ -1501,7 +1504,7 @@ body.dark .inventorybox-footer {
   border-color: #2f322f;
 }
 body.dark .info-detail {
-  font-size: 80%;
+  font-size: 0.85rem;
   line-height: 1.15em;
   display: block;
 }
@@ -1563,7 +1566,7 @@ body.dark .item-broken {
 }
 body.dark .item-slot-type-empty,
 body.dark .follower-slot-type-empty {
-  font-size: 85%;
+  font-size: 0.85rem;
   text-align: center;
   display: inline-block;
   opacity: 0.25;
@@ -1572,7 +1575,7 @@ body.dark .follower-slot-type-empty {
 }
 body.dark .item-slot-type-equipped,
 body.dark .follower-slot-type-selected {
-  font-size: 85%;
+  font-size: 0.85rem;
   text-align: center;
   width: 55px;
   height: 70px;
@@ -1580,7 +1583,7 @@ body.dark .follower-slot-type-selected {
   display: inline-block;
 }
 body.dark .item-slot-type-equipped {
-  font-size: 85%;
+  font-size: 0.85rem;
   text-align: center;
   display: inline-block;
 }
@@ -1706,7 +1709,7 @@ body.dark .item div.item-count,
 body.dark .res div.item-count {
   border-width: 1px;
   color: #bbb;
-  font-size: 75%;
+  font-size: 0.75rem;
   position: absolute;
   bottom: -0.9em;
   left: -2px;
@@ -1938,7 +1941,7 @@ body.dark #log ul li.log-loaded span {
 }
 body.dark span.time,
 body.dark span.msg-camp-level {
-  font-size: 75%;
+  font-size: 0.75rem;
   vertical-align: middle;
 }
 body.dark span.msg-count,
@@ -1997,7 +2000,7 @@ body.dark #statsbar-self .stats-indicator {
 body.dark #header-self-bar {
   text-align: center;
   padding: 5px 3px;
-  font-size: 80%;
+  font-size: 0.85rem;
   border-width: 2px;
   background: #282a28;
 }
@@ -2017,7 +2020,7 @@ body.dark #header-self-bar .callout-container {
   width: 100%;
 }
 body.dark #header-self-bar .stats-indicator .value {
-  font-size: 85%;
+  font-size: 0.75rem;
   margin: 3px 0;
 }
 body.dark #header-self-bar .info-callout {
@@ -2046,6 +2049,9 @@ body.dark .stats-indicator-secondary .value {
   font-size: 100%;
   margin: 0;
 }
+body.dark #container-equipment-stats {
+  line-height: 1em;
+}
 body.dark #grid-location-header {
   padding: 10px 0px 0px 0px;
 }
@@ -2070,7 +2076,7 @@ body.dark #notification-player {
   border-width: 2px;
   border-style: solid;
   border-color: #555;
-  font-size: 85%;
+  font-size: 0.85rem;
   display: none;
   margin-top: 5px;
 }
@@ -2136,7 +2142,7 @@ body.dark span.improvement-badge.improvement-upgrade-level {
   top: -1px;
   right: -1px;
   padding: 0 1px !important;
-  font-size: 75%;
+  font-size: 0.75rem;
   width: 1em;
 }
 body.dark #in-population-details > div {
@@ -2150,7 +2156,7 @@ body.dark .changelog-type {
   border-color: #3a3a3a;
 }
 body.dark #changelog {
-  font-size: 85%;
+  font-size: 0.85rem;
   margin-left: 10px;
   margin-right: 10px;
 }
@@ -2244,12 +2250,12 @@ body.dark #mainmap-ascii-legend {
 }
 body.dark #incoming-caravan-popup-multiplier {
   justify-content: flex-end;
-  font-size: 85%;
+  font-size: 0.85rem;
   margin-bottom: 1em;
 }
 body.dark .camp-overview-production,
 body.dark .camp-overview-stats {
-  font-size: 85%;
+  font-size: 0.85rem;
 }
 body.dark .camp-overview-name {
   max-width: 5em;
@@ -2268,7 +2274,7 @@ body.dark .camp-overview-level-container {
   border-color: #3a3a3a;
   border-radius: 1.75em;
   text-align: center;
-  font-size: 85%;
+  font-size: 0.85rem;
   width: 2em;
   height: 2em;
   line-height: 2em;
@@ -2312,7 +2318,8 @@ body.dark #resultlist-loststuff-lost ul li {
   padding-bottom: 5px;
 }
 body.dark #resultlist-inventorymanagement .inventorybox {
-  max-width: 550px;
+  max-width: 25vw;
+  margin: 3px auto;
 }
 body.dark ul.resultlist li {
   margin: 0px 3px;
@@ -2378,7 +2385,7 @@ body.dark #fight-popup {
 body.dark .fight-damage-indicator,
 body.dark .fight-status-indicator {
   margin: 0;
-  font-size: 85%;
+  font-size: 0.85rem;
   font-weight: bold;
   position: absolute;
   top: 0;
@@ -2434,7 +2441,7 @@ body.dark .reqs-checkmark {
   width: 1em;
 }
 body.dark #manage-save-textarea {
-  font-size: 85%;
+  font-size: 0.85rem;
 }
 body.dark .loading-content,
 body.dark .thinking-content {
@@ -2567,7 +2574,7 @@ body.dark .canvas-overlay-cell {
   position: absolute;
   pointer-events: auto;
   cursor: pointer;
-  font-size: 70%;
+  font-size: 0.75rem;
   display: table;
   line-height: 0.85;
 }
@@ -2616,7 +2623,7 @@ body.dark #vis-camp-info-overlay {
   width: 100%;
   height: 16px;
   background: #2f322f;
-  font-size: 75%;
+  font-size: 0.75rem;
   padding: 1px;
   vertical-align: middle;
   text-align: center;
@@ -2637,7 +2644,7 @@ body.dark .vis-camp-building-container {
   align-items: center;
   justify-content: center;
   z-index: 2;
-  font-size: 75%;
+  font-size: 0.75rem;
   color: transparent;
 }
 body.dark .vis-camp-building-container.filled {
@@ -2654,7 +2661,7 @@ body.dark .vis-camp-building {
   width: 12px;
   height: 12px;
   z-index: 3;
-  font-size: 75%;
+  font-size: 0.75rem;
 }
 body.dark .vis-camp-building-z0 {
   z-index: 4;
@@ -2675,8 +2682,8 @@ body.sunlit {
   background: #fbfbfb;
   color: #202220;
   font-family: Arial, sans-serif;
-  font-size: 11pt;
-  line-height: 1.3em;
+  font-size: 1em;
+  line-height: 1.35em;
   /* WEBKIT BROWSERS */
 }
 body.sunlit .centered {
@@ -2775,7 +2782,7 @@ body.sunlit th {
   transition: all 0.15s;
 }
 body.sunlit .balancing-tab table {
-  font-size: 80%;
+  font-size: 0.85rem;
 }
 body.sunlit table.spacious {
   margin: 5px 0px;
@@ -2882,7 +2889,7 @@ body.sunlit td.item-name {
   min-width: 8em;
 }
 body.sunlit td.text-overflow {
-  font-size: 75%;
+  font-size: 0.75rem;
   width: 6em;
   max-width: 6em;
   overflow: hidden;
@@ -2903,7 +2910,7 @@ body.sunlit div.current {
   border-color: #e6e6e6;
 }
 body.sunlit tr.header-mini {
-  font-size: 85%;
+  font-size: 0.85rem;
 }
 body.sunlit hr {
   color: #999;
@@ -3226,7 +3233,8 @@ body.sunlit div.callout-container {
 }
 body.sunlit div.btn-callout-content,
 body.sunlit div.info-callout-content {
-  font-size: 85%;
+  font-size: 0.85rem;
+  line-height: 1.2em;
   overflow-wrap: break-word;
 }
 body.sunlit div.btn-callout-content,
@@ -3290,7 +3298,7 @@ body.sunlit ul.tabs li {
   z-index: 0;
   white-space: nowrap;
   top: 3px;
-  height: 32px;
+  height: 2.25em;
   cursor: pointer;
   text-transform: lowercase;
   background-color: #fbfbfb;
@@ -3426,7 +3434,7 @@ body.sunlit .stats-indicator .forecast {
 }
 body.sunlit .stats-indicator .change,
 body.sunlit .stats-indicator .forecast {
-  font-size: 85%;
+  font-size: 0.75rem;
   vertical-align: middle;
 }
 body.sunlit .stats-indicator .progress {
@@ -3439,6 +3447,7 @@ body.sunlit .stats-indicator .progress-wrap {
   margin: auto 1px auto 3px;
 }
 body.sunlit .stats-indicator-with-fill {
+  font-size: 0.85rem;
   border: 2px solid #e6e6e6;
   background: linear-gradient(to right, #e6e6e6 50%, transparent 50%);
   width: 13em;
@@ -3542,7 +3551,7 @@ body.sunlit .progress-label {
   top: 0;
   position: absolute;
   width: 100%;
-  font-size: 85%;
+  font-size: 0.85rem;
   text-align: center;
   vertical-align: text-top;
 }
@@ -3607,7 +3616,8 @@ body.sunlit .bubble {
   text-align: center;
   border-radius: 8px;
   font-weight: bold;
-  font-size: 85%;
+  font-size: 0.85rem;
+  line-height: 18px;
 }
 body.sunlit table .bubble {
   position: inherit;
@@ -3742,7 +3752,7 @@ body.sunlit .inventorybox-footer {
   border-color: #e6e6e6;
 }
 body.sunlit .info-detail {
-  font-size: 80%;
+  font-size: 0.85rem;
   line-height: 1.15em;
   display: block;
 }
@@ -3804,7 +3814,7 @@ body.sunlit .item-broken {
 }
 body.sunlit .item-slot-type-empty,
 body.sunlit .follower-slot-type-empty {
-  font-size: 85%;
+  font-size: 0.85rem;
   text-align: center;
   display: inline-block;
   opacity: 0.25;
@@ -3813,7 +3823,7 @@ body.sunlit .follower-slot-type-empty {
 }
 body.sunlit .item-slot-type-equipped,
 body.sunlit .follower-slot-type-selected {
-  font-size: 85%;
+  font-size: 0.85rem;
   text-align: center;
   width: 55px;
   height: 70px;
@@ -3821,7 +3831,7 @@ body.sunlit .follower-slot-type-selected {
   display: inline-block;
 }
 body.sunlit .item-slot-type-equipped {
-  font-size: 85%;
+  font-size: 0.85rem;
   text-align: center;
   display: inline-block;
 }
@@ -3947,7 +3957,7 @@ body.sunlit .item div.item-count,
 body.sunlit .res div.item-count {
   border-width: 1px;
   color: #777;
-  font-size: 75%;
+  font-size: 0.75rem;
   position: absolute;
   bottom: -0.9em;
   left: -2px;
@@ -4179,7 +4189,7 @@ body.sunlit #log ul li.log-loaded span {
 }
 body.sunlit span.time,
 body.sunlit span.msg-camp-level {
-  font-size: 75%;
+  font-size: 0.75rem;
   vertical-align: middle;
 }
 body.sunlit span.msg-count,
@@ -4238,7 +4248,7 @@ body.sunlit #statsbar-self .stats-indicator {
 body.sunlit #header-self-bar {
   text-align: center;
   padding: 5px 3px;
-  font-size: 80%;
+  font-size: 0.85rem;
   border-width: 2px;
   background: #fff;
 }
@@ -4258,7 +4268,7 @@ body.sunlit #header-self-bar .callout-container {
   width: 100%;
 }
 body.sunlit #header-self-bar .stats-indicator .value {
-  font-size: 85%;
+  font-size: 0.75rem;
   margin: 3px 0;
 }
 body.sunlit #header-self-bar .info-callout {
@@ -4287,6 +4297,9 @@ body.sunlit .stats-indicator-secondary .value {
   font-size: 100%;
   margin: 0;
 }
+body.sunlit #container-equipment-stats {
+  line-height: 1em;
+}
 body.sunlit #grid-location-header {
   padding: 10px 0px 0px 0px;
 }
@@ -4311,7 +4324,7 @@ body.sunlit #notification-player {
   border-width: 2px;
   border-style: solid;
   border-color: #999;
-  font-size: 85%;
+  font-size: 0.85rem;
   display: none;
   margin-top: 5px;
 }
@@ -4377,7 +4390,7 @@ body.sunlit span.improvement-badge.improvement-upgrade-level {
   top: -1px;
   right: -1px;
   padding: 0 1px !important;
-  font-size: 75%;
+  font-size: 0.75rem;
   width: 1em;
 }
 body.sunlit #in-population-details > div {
@@ -4391,7 +4404,7 @@ body.sunlit .changelog-type {
   border-color: #aaa;
 }
 body.sunlit #changelog {
-  font-size: 85%;
+  font-size: 0.85rem;
   margin-left: 10px;
   margin-right: 10px;
 }
@@ -4485,12 +4498,12 @@ body.sunlit #mainmap-ascii-legend {
 }
 body.sunlit #incoming-caravan-popup-multiplier {
   justify-content: flex-end;
-  font-size: 85%;
+  font-size: 0.85rem;
   margin-bottom: 1em;
 }
 body.sunlit .camp-overview-production,
 body.sunlit .camp-overview-stats {
-  font-size: 85%;
+  font-size: 0.85rem;
 }
 body.sunlit .camp-overview-name {
   max-width: 5em;
@@ -4509,7 +4522,7 @@ body.sunlit .camp-overview-level-container {
   border-color: #aaa;
   border-radius: 1.75em;
   text-align: center;
-  font-size: 85%;
+  font-size: 0.85rem;
   width: 2em;
   height: 2em;
   line-height: 2em;
@@ -4553,7 +4566,8 @@ body.sunlit #resultlist-loststuff-lost ul li {
   padding-bottom: 5px;
 }
 body.sunlit #resultlist-inventorymanagement .inventorybox {
-  max-width: 550px;
+  max-width: 25vw;
+  margin: 3px auto;
 }
 body.sunlit ul.resultlist li {
   margin: 0px 3px;
@@ -4619,7 +4633,7 @@ body.sunlit #fight-popup {
 body.sunlit .fight-damage-indicator,
 body.sunlit .fight-status-indicator {
   margin: 0;
-  font-size: 85%;
+  font-size: 0.85rem;
   font-weight: bold;
   position: absolute;
   top: 0;
@@ -4675,7 +4689,7 @@ body.sunlit .reqs-checkmark {
   width: 1em;
 }
 body.sunlit #manage-save-textarea {
-  font-size: 85%;
+  font-size: 0.85rem;
 }
 body.sunlit .loading-content,
 body.sunlit .thinking-content {
@@ -4808,7 +4822,7 @@ body.sunlit .canvas-overlay-cell {
   position: absolute;
   pointer-events: auto;
   cursor: pointer;
-  font-size: 70%;
+  font-size: 0.75rem;
   display: table;
   line-height: 0.85;
 }
@@ -4857,7 +4871,7 @@ body.sunlit #vis-camp-info-overlay {
   width: 100%;
   height: 16px;
   background: #e6e6e6;
-  font-size: 75%;
+  font-size: 0.75rem;
   padding: 1px;
   vertical-align: middle;
   text-align: center;
@@ -4878,7 +4892,7 @@ body.sunlit .vis-camp-building-container {
   align-items: center;
   justify-content: center;
   z-index: 2;
-  font-size: 75%;
+  font-size: 0.75rem;
   color: transparent;
 }
 body.sunlit .vis-camp-building-container.filled {
@@ -4895,7 +4909,7 @@ body.sunlit .vis-camp-building {
   width: 12px;
   height: 12px;
   z-index: 3;
-  font-size: 75%;
+  font-size: 0.75rem;
 }
 body.sunlit .vis-camp-building-z0 {
   z-index: 4;
