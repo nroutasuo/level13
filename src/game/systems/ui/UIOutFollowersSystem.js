@@ -122,12 +122,12 @@ define([
 				let costs = GameGlobals.playerActionsHelper.getCosts(recruitAction);
 				
 				let tr = "<tr>";
-				tr += "<td class='maxwidth'>" + FollowerConstants.getFollowerTypeDisplayName(followerType) + " " + follower.name + "</td>";
+				tr += "<td>" + FollowerConstants.getFollowerTypeDisplayName(followerType) + " " + follower.name + "</td>";
 				tr += "<td class='list-ordinal'>" + UIConstants.getCostsSpans(recruitAction, costs) + "</td>";
-				tr += "<td>" + UIConstants.getFollowerDiv(follower, false, false, false) + "</td>";
+				tr += "<td class='minwidth'>" + UIConstants.getFollowerDiv(follower, false, false, false) + "</td>";
 				tr += "<td class='list-ordinal'>" + (recruitComponent.isFoundAsReward ? this.getFoundRecruitIcon() : "") + "</td>";
-				tr += "<td><button class='action recruit-select' action='" + recruitAction + "'>Recruit</button></td>";
-				tr += "<td><button class='action recruit-dismiss btn-secondary' action='dismiss_recruit_" + follower.id + "'>Dismiss</button></td>";
+				tr += "<td class='minwidth'><button class='action recruit-select' action='" + recruitAction + "'>Recruit</button></td>";
+				tr += "<td class='minwidth'><button class='action recruit-dismiss btn-secondary' action='dismiss_recruit_" + follower.id + "'>Dismiss</button></td>";
 				tr += "</tr>";
 				$table.append(tr);
 			}
