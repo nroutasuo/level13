@@ -151,6 +151,7 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 			switch (campOrdinal) {
 				case 1:
 				case WorldConstants.CAMPS_BEFORE_GROUND:
+				case WorldConstants.CAMPS_TOTAL:
 					return 0.5;
 				
 				case 10:
