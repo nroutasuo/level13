@@ -268,8 +268,9 @@ define([
 			rowHTML += "<td class='camp-overview-raid list-amount'><span class='value'></span></span></td>";
 			rowHTML += "<td class='camp-overview-storage list-amount'></td>";
 			rowHTML += "<td class='camp-overview-production'>";
-			for(var key in resourceNames) {
-				var name = resourceNames[key];
+			for(let key in resourceNames) {
+				let name = resourceNames[key];
+				if (name == resourceNames.robots) continue;
 				rowHTML += UIConstants.createResourceIndicator(name, false, rowID + "-" + name, false, true, false) + " ";
 			}
 			rowHTML += "</td>";
@@ -372,8 +373,9 @@ define([
 			// TODO updateResourceIndicatorCallout is a performance bottleneck
 			var resources = node.entity.get(ResourcesComponent);
 			var resourceAcc = node.entity.get(ResourceAccumulationComponent);
-			for (var key in resourceNames) {
-				var name = resourceNames[key];
+			for (let key in resourceNames) {
+				let name = resourceNames[key];
+				if (name == resourceNames.robots) continue;
 				var amount = Math.floor(resources.resources[name]);
 				var change = resourceAcc.resourceChange.getResource(name);
 				var storage = GameGlobals.resourcesHelper.getCurrentCampStorage(node.entity);
