@@ -137,7 +137,7 @@ function (Ash, UpgradeData, PlayerActionConstants, WorldConstants, UpgradeVO) {
 			improve_building_hospital_3: "Make hospital visits less traumatic and enable new implants.",
 			improve_worker_chemist_3: "Further refine fuel production",
 			improve_building_radiotower: "Improve the radio station and send messages over longer distances",
-			improve_building_robots: "Improve robot factories and build robots faster.",
+			improve_building_robots: "Improve robot factories to produce more robots.",
 			improve_worker_scientist: "Add dedicated working spaces to the libraries",
 		},
 		

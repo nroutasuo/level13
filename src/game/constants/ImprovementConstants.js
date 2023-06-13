@@ -139,7 +139,8 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			robotFactory: {
 				canBeDismantled: true,
 				description: "Enables production and storage of worker robots.",
-				improvementLevelsPerTechLevel: 5
+				improvementLevelsPerTechLevel: 1,
+				logMsgImproved: "Modernized the robot factory"
 			},
 			lights: {
 				canBeDismantled: true,

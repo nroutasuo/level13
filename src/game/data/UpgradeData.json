@@ -177,7 +177,7 @@
             "improvesWorker": "robotmaker"
         },
         "id": "improve_building_robots",
-        "name": "Improved Worker Robots"
+        "name": "Improved Robot Factory"
     },
     "improve_building_shrine": {
         "campOrdinal": "12",
