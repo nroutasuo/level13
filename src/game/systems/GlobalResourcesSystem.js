@@ -162,10 +162,8 @@ define([
 		},
 		
 		updateCampSpecialStorage: function (node) {
-			let factoryCount = node.improvements.getCount(improvementNames.robotFactory);
-			let factoryLevel = node.improvements.getLevel(improvementNames.robotFactory);
-			let maxRobots = CampConstants.getRobotStorageCapacity(factoryCount, factoryLevel);
-			node.resources.resources.limit(resourceNames.robots, 0, maxRobots);
+			let maxRobots = GameGlobals.campHelper.getRobotStorageCapacity(node.entity);
+			node.resources.resources.limit(resourceNames.robots, 0, maxRobots, true);
 		},
 		
 		onInventoryChanged: function () {

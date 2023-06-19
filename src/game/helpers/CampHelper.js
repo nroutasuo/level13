@@ -473,6 +473,13 @@ define([
 			return false;
 		},
 		
+		getRobotStorageCapacity: function (camp) {
+			let improvements = camp.get(SectorImprovementsComponent);
+			let factoryCount = improvements.getCount(improvementNames.robotFactory);
+			let factoryLevel = improvements.getLevel(improvementNames.robotFactory);
+			return CampConstants.getRobotStorageCapacity(factoryCount, factoryLevel);
+		},
+		
 		getCurrentMaxImprovementLevel: function (improvementName) {
             let techLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementName, this.tribeUpgradesNodes.head.upgrades);
 			return GameGlobals.campBalancingHelper.getMaxImprovementLevel(improvementName, techLevel);

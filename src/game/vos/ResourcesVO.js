@@ -157,7 +157,11 @@ define(['ash'], function (Ash) {
 			}
 		},
 		
-		limit: function (name, min, max) {
+		limit: function (name, min, max, allowDecimalOverflow) {
+			if (allowDecimalOverflow) {
+				max = Math.floor(max) + 0.9999;
+			}
+			
 			var amount = this.getResource(name);
 			if (amount == 0) return;
 			if (amount < min)

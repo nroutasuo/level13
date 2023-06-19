@@ -209,6 +209,10 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			return upgradeLevel;
 		},
 		
+		getWearPerRobotPerSec: function () {
+			return this.PRODUCTION_ROBOTS_PER_WORKER_PER_S / this.SPECIAL_STORAGE_PER_FACTORY / 2;
+		},
+		
 		getApothecariesPerShop: function (upgradeLevel) {
 			return 2 + (upgradeLevel - 1) * 2;
 		},

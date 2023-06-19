@@ -23,6 +23,7 @@
 	'game/components/player/PlayerActionComponent',
 	'game/components/common/CampComponent',
 	'game/components/common/ResourcesComponent',
+	'game/components/common/ResourceAccumulationComponent',
 	'game/components/sector/OutgoingCaravansComponent',
 	'game/components/sector/ReputationComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
@@ -36,7 +37,7 @@
 	ImprovementConstants, PlayerActionConstants, UIConstants, UpgradeConstants, OccurrenceConstants, CampConstants, PerkConstants, TextConstants, TribeConstants,
 	PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, DeityNode, TribeUpgradesNode,
 	PerksComponent, PlayerActionComponent,
-	CampComponent, ResourcesComponent, OutgoingCaravansComponent, ReputationComponent, SectorImprovementsComponent, CampEventTimersComponent,
+	CampComponent, ResourcesComponent, ResourceAccumulationComponent, OutgoingCaravansComponent, ReputationComponent, SectorImprovementsComponent, CampEventTimersComponent,
 	RecruitComponent, TraderComponent, RaidComponent, Text
 ) {
 	var UIOutCampSystem = Ash.System.extend({
@@ -168,21 +169,19 @@
 
 		updateWorkers: function (isActive) {
 			isActive = isActive && !GameGlobals.gameState.uiStatus.isBlocked;
-			let campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
+			let camp = this.playerLocationNodes.head.entity;
+			let campComponent = camp.get(CampComponent);
 			if (!campComponent) return;
 
 			let currentPopulation = Math.floor(campComponent.population);
-			let resources = this.playerLocationNodes.head.entity.get(ResourcesComponent);
-			let improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+			let resources = camp.get(ResourcesComponent);
 
 			if (!isActive) return;
 			
-			let factoryCount = improvements.getCount(improvementNames.robotFactory);
-			let factoryLevel = improvements.getLevel(improvementNames.robotFactory);
 			let maxPopulation = this.getCampMaxPopulation();
-			let reputation = this.playerLocationNodes.head.entity.get(ReputationComponent).value;
+			let reputation = camp.get(ReputationComponent).value;
 			let robots = resources.resources.robots || 0;
-			let maxRobots = CampConstants.getRobotStorageCapacity(factoryCount, factoryLevel);
+			let maxRobots = GameGlobals.campHelper.getRobotStorageCapacity(camp);
 			
 			this.updatePopulationDisplay(campComponent, maxPopulation, reputation, robots, maxRobots);
 		},
@@ -227,10 +226,6 @@
 			$("#in-population #in-population-autoassigned").text("Auto-assigned workers: " + autoAssignedWorkersText);
 			$("#in-population #in-population-robots .value").text(Math.floor(robots) + " / " + maxRobots);
 			
-			if (robots > 0) {
-				this.updateChangeIndicator($("#robots-change-indicator"), campComponent.robotsProductionPerSecond);
-			}
-			
 			let isOnPopulationDecreaseCooldown = campComponent.populationDecreaseCooldown > 0 && campComponent.populationDecreaseCooldown < CampConstants.POPULATION_DECREASE_COOLDOWN;
 			let isPopulationStill = (isPopulationMaxed || populationChangePerSecWithoutCooldown === 0) && !isOnPopulationDecreaseCooldown;
 
@@ -268,10 +263,24 @@
 			GameGlobals.uiFunctions.toggle(".in-assign-workers-auto-toggle", GameGlobals.gameState.unlockedFeatures.workerAutoAssignment);
 			
 			if (robots > 0) {
+				let resources = this.playerLocationNodes.head.entity.get(ResourcesComponent);
+				let campResourceAcc = this.playerLocationNodes.head.entity.get(ResourceAccumulationComponent);
 				let robotBonus = GameGlobals.campBalancingHelper.getWorkerRobotBonus(robots);
-				let robotCalloutContent = "worker resource production: +" + UIConstants.roundValue(robotBonus * 100, true, false) + "%";
-				robotCalloutContent = robotCalloutContent + "<br/>" + CampConstants.SPECIAL_STORAGE_PER_FACTORY + " robots per factory";
+				let robotSources = campResourceAcc.getSources(resourceNames.robots);
+				
+				let robotCalloutContent = "";
+				for (let i in robotSources) {
+					let source = robotSources[i];
+					if (source.amount != 0) {
+						robotCalloutContent += UIConstants.getResourceAccumulationSourceText(source) + "<br/>";
+					}
+				}
+				robotCalloutContent += "<br/>worker resource production: +" + UIConstants.roundValue(robotBonus * 100, true, false) + "%";
 				UIConstants.updateCalloutContent("#in-population #in-population-robots", robotCalloutContent);
+				
+				let robotsAccumulationRaw = campResourceAcc.getChange(resourceNames.robots);
+				let robotsAccumulation = robots <= maxRobots || robotsAccumulationRaw < 0 ? robotsAccumulationRaw : 0;
+				this.updateChangeIndicator($("#robots-change-indicator"), robotsAccumulation);
 			}
 		},
 

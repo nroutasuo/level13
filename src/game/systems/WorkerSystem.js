@@ -76,6 +76,7 @@ define([
 					this.updateWorkerProductionRate(node);
 				}
 				this.updateWorkerHunger(node, time);
+				this.updateRobotWear(node, time);
 				this.updateWorkerProduction(node, time);
 				this.updateImprovementProduction(node, time);
 			}
@@ -213,10 +214,11 @@ define([
 			}
 			
 			// Advanced: Robot makers
-			var toolsRequiredRobots = time * (node.camp.toolsConsumptionPerSecondRobots || 0);
+			let maxRobots = GameGlobals.campHelper.getRobotStorageCapacity(node.entity);
+			let toolsRequiredRobots = time * (node.camp.toolsConsumptionPerSecondRobots || 0);
 			if (toolsRequiredRobots > 0) {
-				var toolsUsedRobots = Math.min(availableResources.getResource(resourceNames.tools), toolsRequiredRobots);
-				var robots = time * (toolsUsedRobots / toolsRequiredRobots) * node.camp.robotsProductionPerSecond;
+				let toolsUsedRobots = Math.min(availableResources.getResource(resourceNames.tools), toolsRequiredRobots);
+				let robots = time * (toolsUsedRobots / toolsRequiredRobots) * node.camp.robotsProductionPerSecond;
 				campResources.addResource(resourceNames.robots, robots);
 				campResources.addResource(resourceNames.tools, -toolsUsedRobots);
 				resourceAccComponent.addChange(resourceNames.robots, robots / time, "Robot makers", camp.assignedWorkers.robotmaker);
@@ -257,6 +259,18 @@ define([
 			var campResourceAcc = node.entity.get(ResourceAccumulationComponent);
 			this.deductHunger(time, campResources.resources, node.camp.getAssignedPopulation(), false, false);
 			this.deductHunger(time, campResourceAcc.resourceChange, node.camp.getAssignedPopulation(), false, true, campResourceAcc, "Workers");
+		},
+		
+		updateRobotWear: function (node, time) {
+			let campResources = node.entity.get(ResourcesComponent).resources;
+			let resourceAccComponent = node.entity.get(ResourceAccumulationComponent);
+			
+			let numRobots = Math.floor(campResources.getResource(resourceNames.robots));
+			let robotsChangePerSec = numRobots * CampConstants.getWearPerRobotPerSec();
+			let robotsChange = time * robotsChangePerSec;
+			
+			campResources.addResource(resourceNames.robots, -robotsChange);
+			resourceAccComponent.addChange(resourceNames.robots, -robotsChangePerSec, "Robot wear", numRobots);
 		},
 		
 		updatePlayerPerks: function () {

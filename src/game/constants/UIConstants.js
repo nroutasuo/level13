@@ -646,7 +646,7 @@ define(['ash',
 			for (let i in changeSources) {
 				source = changeSources[i];
 				if (source.amount != 0) {
-					content += source.source + " (" + source.sourceCount + ")" + ": " + Math.round(source.amount * 10000) / 10000 + "/s<br/>";
+					content += this.getResourceAccumulationSourceText(source) + "<br/>";
 				}
 			}
 
@@ -655,6 +655,12 @@ define(['ash',
 			}
 
 			this.updateCalloutContent(id, content);
+		},
+		
+		getResourceAccumulationSourceText: function (source) {
+			let divisor = 10000;
+			if (source.amount < 0.0001) divisor = 100000;
+			return source.source + " (" + source.sourceCount + ")" + ": " + Math.round(source.amount * divisor) / divisor + "/s";
 		},
 
 		updateCalloutContent: function (targetElementId, content, isTargetDirect) {

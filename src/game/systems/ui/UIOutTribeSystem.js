@@ -315,6 +315,7 @@ define([
 			var improvements = node.entity.get(SectorImprovementsComponent);
 			var levelComponent = GameGlobals.levelHelper.getLevelEntityForSector(node.entity).get(LevelComponent);
 			var resources = node.entity.get(ResourcesComponent);
+			var resourceAcc = node.entity.get(ResourceAccumulationComponent);
 
 			$("#camp-overview tr#" + rowID).toggleClass("current", isPlayerInCampLevel);
 			GameGlobals.uiFunctions.toggle("#camp-overview tr#" + rowID + " .camp-overview-btn button", !isPlayerInCampLevel);
@@ -340,12 +341,12 @@ define([
 			
 			let showRobots = GameGlobals.gameState.unlockedFeatures.resource_robots || false;
 			if (showRobots) {
-				let factoryCount = improvements.getCount(improvementNames.robotFactory);
-				let factoryLevel = improvements.getLevel(improvementNames.robotFactory);
 				let robots = resources.resources.robots || 0;
-				let maxRobots = CampConstants.getRobotStorageCapacity(factoryCount, factoryLevel);
+				let maxRobots = GameGlobals.campHelper.getRobotStorageCapacity(node.entity);
+				let robotsAccumulationRaw = resourceAcc.getChange(resourceNames.robots);
+				let robotsAccumulation = robots <= maxRobots || robotsAccumulationRaw < 0 ? robotsAccumulationRaw : 0;
 				$("#camp-overview tr#" + rowID + " .camp-overview-robots .value").text(maxRobots > 0 ? Math.floor(robots) + "/" + maxRobots : "-");
-				this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-robots .change-indicator"), camp.robotsProductionPerSecond, false, robots <= 0);
+				this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-robots .change-indicator"), robotsAccumulation, false, robots <= 0);
 			}
 
 			var reputationComponent = node.reputation;
