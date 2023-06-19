@@ -88,12 +88,17 @@ define([
 			let nextMilestone = GameGlobals.tribeHelper.getNextMilestone();
 			let action = this.getUnlockMilestoneAction(nextMilestone);
 			let hasDeity = this.playerStatsNodes.head.entity.has(DeityComponent);
+			let hasNextMilestone = nextMilestone.name || false;
 			
 			// texts
 			$("#milestone-current-name").text(currentMilestone.name + " (" + currentMilestone.index + ")");
 			$("#milestone-current-description").text(TextConstants.sentencify(currentMilestone.description));
 			$("#milestone-next-name").text(nextMilestone.name + " (" + nextMilestone.index + ")");
 			GameGlobals.uiFunctions.toggle($("#milestone-next-description"), false);
+			
+			GameGlobals.uiFunctions.toggle($("#milestone-container-next"), hasNextMilestone);
+			
+			if (!hasNextMilestone) return;
 			
 			// unlocks
 			$("#milestone-next-unlocks").empty();
@@ -165,6 +170,7 @@ define([
 		
 		canClaimMilestone: function () {
 			let nextMilestone = GameGlobals.tribeHelper.getNextMilestone();
+			if (!nextMilestone.name) return false;
 			let action = "claim_milestone_" + nextMilestone.index;
 			return GameGlobals.playerActionsHelper.checkAvailability(action);
 		},
