@@ -152,6 +152,8 @@ define([
 		},
 
 		isCampValidForEvent: function (campNode, event) {
+			if (GameGlobals.endingHelper.isReadyForLaunch()) false;
+			if (GameGlobals.gameState.isLaunched) return false;
 			if (GameGlobals.gameState.isAutoPlaying) return false;
 			
 			let milestoneIndex = GameGlobals.milestoneEffectsHelper.getMilestoneIndexForOccurrence(event);
