@@ -89,7 +89,7 @@ function (Ash) {
 				case improvementNames.hospital:
 					return { x: s * 1.25, y: s * 1.25 };
 				case improvementNames.house2:
-					return { x: s, y: s * 3.25 };
+					return { x: s * 1.25, y: s * 6 };
 				case improvementNames.inn:
 					return { x: s, y: s * 1.25 };
 				case improvementNames.library:
