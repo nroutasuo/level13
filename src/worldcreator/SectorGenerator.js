@@ -1529,8 +1529,9 @@ define([
 			let options = { requireCentral: false, excludingFeature: excludedFeatures, pathConstraints: pathConstraints, excludedZones: excludedZones };
 			let count = levelVO.numInvestigateSectors;
 			let sectors = WorldCreatorRandom.randomSectorsScored(seed, worldVO, levelVO, count, count + 1, options, getInvestigateSectorScore);
+			WorldCreatorLogger.i("add investigate sectors on level " + l + ": " + sectors.length);
 			for (let i = 0; i < sectors.length; i++) {
-				addSector(sectors[0]);
+				addSector(sectors[i]);
 			}
 			
 		},
