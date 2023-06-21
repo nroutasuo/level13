@@ -2910,7 +2910,7 @@
                 "passageDown": true
             },
             "vision": [
-                25,
+                35,
                 -1
             ]
         },
@@ -2926,7 +2926,7 @@
                 "passageUp": true
             },
             "vision": [
-                25,
+                35,
                 -1
             ]
         },
