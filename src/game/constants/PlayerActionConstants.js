@@ -27,6 +27,7 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 		DISABLED_REASON_INVALID_SECTOR: 'DISABLED_REASON_INVALID_SECTOR',
 		DISABLED_REASON_MILESTONE: 'DISABLED_REASON_MILESTONE',
 		DISABLED_REASON_EXPOSED: "DISABLED_REASON_EXPOSED",
+		DISABLED_REASON_VISION: "DISABLED_REASON_VISION",
 		
 		loadData: function (data) {
 			Object.assign(this, data);

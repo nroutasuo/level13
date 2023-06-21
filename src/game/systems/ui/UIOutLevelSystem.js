@@ -226,7 +226,7 @@ define([
 			GameGlobals.uiFunctions.toggle("#out-action-enter", hasCampHere);
 			GameGlobals.uiFunctions.toggle("#out-action-scout", GameGlobals.gameState.unlockedFeatures.vision);
 			GameGlobals.uiFunctions.toggle("#out-action-use-spring", isScouted && featuresComponent.hasSpring);
-			GameGlobals.uiFunctions.toggle("#out-action-investigate", GameGlobals.gameState.unlockedFeatures.investigate);
+			GameGlobals.uiFunctions.toggle("#out-action-investigate", this.showInvestigate());
 
 			var showWorkshop = isScouted && workshopComponent != null && workshopComponent.isClearable && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP)
 			GameGlobals.uiFunctions.toggle("#out-action-clear-workshop", showWorkshop);
@@ -470,7 +470,7 @@ define([
 			if (isScouted && GameGlobals.gameState.unlockedFeatures.scavenge) {
 				description += "Scavenged: " + UIConstants.roundValue(statusComponent.getScavengedPercent()) + "%<br/>";
 			}
-			if (isScouted && GameGlobals.gameState.unlockedFeatures.investigate) {
+			if (this.showInvestigate()) {
 				let investigatedPercent = statusComponent.getInvestigatedPercent();
 				let investigationComplete = investigatedPercent >= 100;
 				description += "Investigated: ";
@@ -853,6 +853,10 @@ define([
 			let mapPosition = this.playerLocationNodes.head.position.getPosition();
 			GameGlobals.uiMapHelper.rebuildMapHints("minimap-background", "minimap", mapPosition);
 			GameGlobals.uiMapHelper.rebuildMap("minimap", null, mapPosition, UIConstants.MAP_MINIMAP_SIZE, true, MapUtils.MAP_MODE_DEFAULT);
+		},
+		
+		showInvestigate: function () {
+			return GameGlobals.playerActionsHelper.isVisible("investigate");
 		},
 		
 		hasAccessToResource: function (resourceName, includeScavenge, includeUnbuiltCollectible) {

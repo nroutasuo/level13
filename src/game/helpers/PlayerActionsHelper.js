@@ -207,6 +207,7 @@ define([
 			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENTS) return true;
 			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_SECTOR_FEATURES) return true;
 			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_EXPOSED) return true;
+			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_VISION) return true;
 			
 			// reasons that usually block visibility
 			if (reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_SCOUTED) return false;
@@ -400,13 +401,6 @@ define([
 						if (requiredValue != currentValue) {
 							return { value: 0, reason: (requiredValue ? ("Locked feature: " + featureID) : "Feature already unlocked") };
 						}
-					}
-				}
-				
-				if (requirements.vision) {
-					let result = this.checkRequirementsRange(requirements.vision, playerVision, "{min} vision needed", "{max} vision max");
-					if (result) {
-						return result;
 					}
 				}
 				
@@ -683,17 +677,6 @@ define([
 						return { value: 0, reason: reason };
 					}
 				}
-
-				if (typeof requirements.busy !== "undefined") {
-					var currentValue = playerActionComponent.isBusy();
-					var requiredValue = requirements.busy;
-					if (currentValue !== requiredValue) {
-						var timeLeft = Math.ceil(playerActionComponent.getBusyTimeLeft());
-						if (currentValue) reason = "Busy " + playerActionComponent.getBusyDescription() + " (" + timeLeft + "s)";
-						else reason = "Need to be busy to do this.";
-						return { value: 0, reason: reason, baseReason: PlayerActionConstants.DISABLED_REASON_BUSY };
-					}
-				}
 				
 				if (typeof requirements.path_to_camp !== "undefined") {
 					var path = this.getPathToNearestCamp(sector);
@@ -746,7 +729,6 @@ define([
 					if (typeof requirements.bag.space !== "undefined") {
 						let range = requirements.bag.space;
 						let currentVal = bagComponent.totalCapacity - bagComponent.usedCapacity;
-						// checkRequirementsRange: function (range, value, minreason, maxreason, minreason1, maxreason1, minReasonBase, maxReasonBase) {
 						let result = this.checkRequirementsRange(range, currentVal, "Bag is too full", "Bag has enough space");
 						if (result) {
 							return result;
@@ -926,6 +908,14 @@ define([
 						let result = this.checkRequirementsRange(range, currentVal, "", "This area has beens scavenged clean.");
 						if (result) {
 							return result;
+						}
+					}
+					if (typeof requirements.sector.investigatable != "undefined") {
+						var requiredValue = requirements.sector.investigatable;
+						var currentValue = featuresComponent.isInvestigatable;
+						if (currentValue !== requiredValue) {
+							var reason = requiredValue ? "There is nothing to investigate." : "This sector can be investigated";
+							return { value: 0, reason: reason };
 						}
 					}
 					if (typeof requirements.sector.investigatedPercent != "undefined") {
@@ -1267,6 +1257,24 @@ define([
 						}
 					}
 				}
+				
+				if (requirements.vision) {
+					let result = this.checkRequirementsRange(requirements.vision, playerVision, "{min} vision needed", "{max} vision max", null, null, PlayerActionConstants.DISABLED_REASON_VISION);
+					if (result) {
+						return result;
+					}
+				}
+
+				if (typeof requirements.busy !== "undefined" && !shouldSkipCheck(PlayerActionConstants.DISABLED_REASON_BUSY)) {
+					var currentValue = playerActionComponent.isBusy();
+					var requiredValue = requirements.busy;
+					if (currentValue !== requiredValue) {
+						var timeLeft = Math.ceil(playerActionComponent.getBusyTimeLeft());
+						if (currentValue) reason = "Busy " + playerActionComponent.getBusyDescription() + " (" + timeLeft + "s)";
+						else reason = "Need to be busy to do this.";
+						return { value: 0, reason: reason, baseReason: PlayerActionConstants.DISABLED_REASON_BUSY };
+					}
+				}
 			}
 			
 			if (GameGlobals.gameState.uiStatus.isTransitioning) return { value: 0, reason: "Transitioning", baseReason: PlayerActionConstants.DISABLED_REASON_BUSY };
@@ -1278,6 +1286,7 @@ define([
 		checkRequirementsRange: function (range, value, minreason, maxreason, minreason1, maxreason1, minReasonBase, maxReasonBase) {
 			minreason = minreason || "";
 			maxreason = maxreason || "";
+			maxReasonBase = maxReasonBase || minReasonBase;
 			let min = range[0];
 			let max = range[1];
 			if (max < 0) max = 9999999;
