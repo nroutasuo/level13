@@ -471,7 +471,13 @@ define([
 				description += "Scavenged: " + UIConstants.roundValue(statusComponent.getScavengedPercent()) + "%<br/>";
 			}
 			if (isScouted && GameGlobals.gameState.unlockedFeatures.investigate) {
-				description += "Investigated: " + UIConstants.roundValue(statusComponent.getInvestigatedPercent()) + "%<br/>";
+				let investigatedPercent = statusComponent.getInvestigatedPercent();
+				let investigationComplete = investigatedPercent >= 100;
+				description += "Investigated: ";
+				if (investigationComplete) description += "<span class='dimmed'>";
+				description += UIConstants.roundValue(investigatedPercent) + "%";
+				if (investigationComplete) description += "</span>";
+				description += "<br/>";
 			}
 			if (featuresComponent.resourcesScavengable.getTotal() > 0) {
 				let discoveredResources = GameGlobals.sectorHelper.getLocationDiscoveredResources();

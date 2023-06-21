@@ -78,11 +78,12 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 		},
 		
 		getScavengedPercent: function () {
-			return Math.min(this.weightedNumScavenges/this.NUM_SCAVENGES_PER_SECTOR, 1) * 100;
+			return Math.min(this.weightedNumScavenges / this.NUM_SCAVENGES_PER_SECTOR, 1) * 100;
 		},
 		
-		getInvestigatedPercent: function () {
-			return Math.min(this.weightedNumInvestigates/this.NUM_INVESTIGATES_PER_SECTOR, 1) * 100;
+		getInvestigatedPercent: function (addition) {
+			addition = addition || 0;
+			return Math.min((this.weightedNumInvestigates + addition) / this.NUM_INVESTIGATES_PER_SECTOR, 1) * 100;
 		},
 		
 		getHazardReduction: function (hazard) {

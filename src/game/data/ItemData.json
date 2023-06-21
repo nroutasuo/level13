@@ -718,8 +718,7 @@
         "isUseable": true,
         "level": 1,
         "name": "Research summary",
-        "rarityInvestigate": 5,
-        "rarityLocale": 9,
+        "rarityLocale": -1,
         "rarityScavenge": -1,
         "rarityTrade": -1,
         "type": "voucher"
@@ -734,8 +733,8 @@
         "isUseable": true,
         "level": 2,
         "name": "Research paper",
-        "rarityInvestigate": 5,
-        "rarityLocale": 9,
+        "rarityInvestigate": -1,
+        "rarityLocale": -1,
         "rarityScavenge": -1,
         "rarityTrade": -1,
         "type": "voucher"

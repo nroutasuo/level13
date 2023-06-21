@@ -210,22 +210,27 @@ define([
 		},
 
 		getInvestigateRewards: function () {
-			var rewards = new ResultVO("investigate");
+			let rewards = new ResultVO("investigate");
 
-			var sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			let sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			
-			var itemOptions = { rarityKey: "investigateRarity" };
+			let efficiency = this.getCurrentScavengeEfficiency();
+			let investigatedPercentBefore = sectorStatus.getInvestigatedPercent();
+			let weightedInvestigateAdded = Math.min(1, efficiency);
+			let investigatePercentAfter = sectorStatus.getInvestigatedPercent(weightedInvestigateAdded);
+			let isCompletion = investigatePercentAfter >= 100;
 			
-			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound);
-			rewards.gainedItems = this.getRewardItems(0.25, 0, [], itemOptions);
-			rewards.gainedEvidence = 1;
+			log.i("getInvestigateRewards | isCompletion: " + isCompletion, this);
 			
-			/*
-			if (rewards.foundStashVO == null) {
-				this.addFollowerBonuses(rewards, sectorResources, [], itemOptions);
+			if (isCompletion) {
+				let possibleCompletionRewards = [ "cache_insight_11", "cache_insight_21" ];
+	 			rewards.gainedItems = [ this.getSpecificRewardItem(1, possibleCompletionRewards) ];
+			} else {
+				let itemOptions = { rarityKey: "investigateRarity", allowNextCampOrdinal: isCompletion };
+	 			rewards.gainedItems = this.getRewardItems(0.25, 0, [], itemOptions);
+				rewards.gainedEvidence = 1;
 			}
-			*/
 			
 			return rewards;
 		},
@@ -1148,6 +1153,18 @@ define([
 			if (!GameGlobals.gameState.uiStatus.isHidden)
 				log.i("- selected index " + index + "/" + validItems.length + ": "+ item.id);
 			
+			return item.clone();
+		},
+		
+		getSpecificRewardItem: function (itemProbability, possibleItemIds) {
+			if (!possibleItemIds || possibleItemIds.length === 0) {
+				log.w("No valid reward items for getSpecificRewardItem");
+				return null;
+			}
+			
+			let index = MathUtils.getWeightedRandom(0, possibleItemIds.length);
+			let itemID = possibleItemIds[index];
+			let item = ItemConstants.getItemByID(itemID);
 			return item.clone();
 		},
 

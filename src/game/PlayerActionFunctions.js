@@ -496,30 +496,40 @@ define(['ash',
 		},
 
 		investigate: function () {
-			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-			var efficiency = GameGlobals.playerActionResultsHelper.getCurrentScavengeEfficiency();
+			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			let efficiency = GameGlobals.playerActionResultsHelper.getCurrentScavengeEfficiency();
 			
 			let isFirst = false;
 			if (!GameGlobals.gameState.unlockedFeatures.investigate) {
 				GameGlobals.playerActionFunctions.unlockFeature("investigate");
 				isFirst = true;
 			}
+			
+			let investigatedPercentBefore = sectorStatus.getInvestigatedPercent();
+			
+			if (investigatedPercentBefore >= 100) return;
+			
+			let weightedInvestigateAdded = Math.min(1, efficiency);
+			let investigatePercentAfter = sectorStatus.getInvestigatedPercent(weightedInvestigateAdded);
+			let isCompletion = investigatePercentAfter >= 100;
 
-			var logMsg = "Investigated the area. ";
+			let logMsg = "Investigated the sector. ";
 
-			var logMsgSuccess = logMsg;
-			var logMsgFlee = logMsg + "Fled empty-handed.";
-			var logMsgDefeat = logMsg + "Got into a fight and was defeated.";
+			let logMsgSuccess = logMsg;
+			let logMsgFlee = logMsg + "Fled empty-handed.";
+			let logMsgDefeat = logMsg + "Got into a fight and was defeated.";
 			let sys = this;
-			var successCallback = function () {
-				let investigatedPercentBefore = sectorStatus.getInvestigatedPercent();
+			
+			if (isCompletion) {
+				logMsgSuccess += " Investigation completed. ";
+			} else {
+				logMsgSuccess += " Investigation progress: " + Math.round(investigatePercentAfter) + "%";
+			}
+			
+			let successCallback = function () {
 				sectorStatus.investigated = true;
-				sectorStatus.weightedNumInvestigates += Math.min(1, efficiency);
+				sectorStatus.weightedNumInvestigates += weightedInvestigateAdded;
 				let investigatedPercentAfter = sectorStatus.getInvestigatedPercent();
-				let warningThreshold = 90;
-				if (investigatedPercentBefore < warningThreshold && investigatedPercentAfter >= warningThreshold) {
-					sys.addLogMessage(LogConstants.getUniqueID(), "There isn't much left to see here.");
-				}
 			};
 			
 			let messages = {

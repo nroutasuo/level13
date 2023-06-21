@@ -920,7 +920,7 @@ define([
 					if (typeof requirements.sector.investigatedPercent != "undefined") {
 						var range = requirements.sector.investigatedPercent;
 						var currentVal = statusComponent.getInvestigatedPercent() / 100;
-						let result = this.checkRequirementsRange(range, currentVal, "", "This area has beens investigated thoroughly.");
+						let result = this.checkRequirementsRange(range, currentVal, "", "This sector has been fully investigated.");
 						if (result) {
 							return result;
 						}
