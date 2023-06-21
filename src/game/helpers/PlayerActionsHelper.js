@@ -1715,7 +1715,8 @@ define([
 					let itemID = action.replace(baseActionID + "_", "");
 					let baseItemID = ItemConstants.getBaseItemId(itemID);
 					let actionID = baseActionID + "_" + baseItemID;
-					return PlayerActionConstants.requirements[actionID];
+					// some items define reqs per item (bag_1, first_aid_kit_1) some by base item (stamina_potion)
+					return PlayerActionConstants.requirements[actionID] || PlayerActionConstants.requirements[action];
 					
 				case "build_out_passage_up_stairs":
 				case "build_out_passage_up_elevator":
