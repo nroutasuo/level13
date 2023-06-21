@@ -3229,7 +3229,6 @@
             }
         },
         "unlock_building_spaceship1": {
-			"blueprint": 15,
             "milestone": 7
         },
         "unlock_building_spaceship2": {
