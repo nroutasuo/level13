@@ -3,15 +3,18 @@ define([
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
-], function (Ash, GameGlobals, GlobalSignals, GameConstants) {
+	'game/constants/UIConstants',
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants) {
 	
 	var EndingSystem = Ash.System.extend({
+		
+		context: "EndingSystem",
 
 		constructor: function () { },
 
 		addToEngine: function (engine) {
 			this.engine = engine;
-			GlobalSignals.add(this, GlobalSignals.launcedSignal, this.onLaunched);
+			GlobalSignals.add(this, GlobalSignals.launchedSignal, this.onLaunched);
 			GlobalSignals.add(this, GlobalSignals.gameEndedSignal, this.onGameFinished);
 			GlobalSignals.add(this, GlobalSignals.restartGameSignal, this.onRestart);
 		},
@@ -22,24 +25,48 @@ define([
 		},
 		
 		showLaunch: function () {
-			let sys = this;
-			let duration = 3000;
+			log.i("show launch", this);
 			
-			$(".game-opacity-controller").animate({
-				opacity: 0,
-				scale: 0.5
+			let sys = this;
+			let duration = UIConstants.LAUNCH_FADEOUT_DURATION;
+			let delay = UIConstants.THEME_TRANSITION_DURATION + 500;
+			
+			$(".game-opacity-controller").stop().animate({
+				opacity: 0
+			}, duration);
+			
+			setTimeout(function() {
+				GameGlobals.gameState.isLaunchCompleted = true;
+				GlobalSignals.launchCompletedSignal.dispatch();
 			}, duration);
 			
 			setTimeout(function () {
-				log.i("game finished");
+				log.i("game finished", this);
 				gtag('event', 'game_complete', { event_category: 'progression' });
 				GameGlobals.gameState.isFinished = true;
 				GlobalSignals.gameEndedSignal.dispatch();
-			}, duration);
+			}, duration + delay);
 		},
 		
-		showPopup: function () {
-			log.i("show ending popup");
+		showStoryPopup: function () {
+			log.i("show story popup", this);
+			
+			let msg = "";
+			let sys = this;
+			
+			msg += "<p>The Colony Ship launches successfully and heads out into space. Into a new darkness, unimaginably vast.";
+			msg += "<p>The ship is crowded. We brought as many as we could. Somehow, we will find another home.</p>";
+			
+			GameGlobals.uiFunctions.showInfoPopup("Launch", msg, "Continue", null,
+				function () {
+					setTimeout(function () {
+						sys.showMetaPopup();
+					}, 500);
+				}, true, false);
+		},
+		
+		showMetaPopup: function () {
+			log.i("show meta popup", this);
 			
 			let msg = "";
 			
@@ -60,6 +87,7 @@ define([
 		
 		resetShowLaunch: function () {
 			let duration = 200;
+			
 			$(".game-opacity-controller").stop().animate({
 				opacity: 1,
 				scale: 1
@@ -76,7 +104,7 @@ define([
 		onGameFinished: function () {
 			var sys = this;
 			setTimeout(function () {
-				sys.showPopup();
+				sys.showStoryPopup();
 			}, 1);
 		},
 

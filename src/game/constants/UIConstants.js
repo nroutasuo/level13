@@ -36,6 +36,7 @@ define(['ash',
 		
 		ICON_FALLBACK: "img/eldorado/icon_placeholder.png",
 		
+		LAUNCH_FADEOUT_DURATION: 1000,
 		THEME_TRANSITION_DURATION: 1200,
 
 		names: {

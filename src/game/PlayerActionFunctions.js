@@ -2112,7 +2112,7 @@ define(['ash',
 			this.addLogMessage(LogConstants.getUniqueID(), "The colony ship launches.");
 			
 			GameGlobals.gameState.isLaunched = true;
-			GlobalSignals.launcedSignal.dispatch();
+			GlobalSignals.launchedSignal.dispatch();
 		},
 
 		getNearestCampName: function () {

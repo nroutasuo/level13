@@ -912,6 +912,10 @@ define([
 				sunlit = featuresComponent.sunlit;
 			}
 			
+			if (GameGlobals.gameState.isFinished || GameGlobals.gameState.isLaunchCompleted) {
+				sunlit = false;
+			}
+			
 			if (this.playerStatsNodes.head && this.playerStatsNodes.head.entity.has(MovementComponent)) {
 				let movementComponent = this.playerStatsNodes.head.entity.get(MovementComponent);
 				let movementSector = GameGlobals.levelHelper.getSectorByPosition(movementComponent.level, movementComponent.sectorX, movementComponent.sectorY);
@@ -1179,6 +1183,11 @@ define([
 			if (playerPosition.level == level) {
 				this.updateLevelIcon(true);
 			}
+		},
+		
+		onLaunchCompleted: function () {
+			log.i("onLaunchCompleted", this);
+			this.updateTheme();
 		},
 		
 		onGameShown: function () {

@@ -19,6 +19,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.numUnlockedMilestones = 0;
 			this.isLaunchStarted = false;
 			this.isLaunched = false;
+			this.isLaunchCompleted = false;
 			this.isFinished = false;
 			this.playedVersions = [];
 

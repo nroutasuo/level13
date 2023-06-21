@@ -2689,6 +2689,9 @@ body.sunlit .centered {
 body.sunlit .hidden {
   display: none;
 }
+body.sunlit .container-disabled {
+  pointer-events: none;
+}
 body.sunlit .nowrap {
   white-space: nowrap;
 }
