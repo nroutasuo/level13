@@ -3,31 +3,43 @@ define([
 	'ash',
 	'game/GameGlobals',
 	'game/constants/ItemConstants',
+	'game/constants/LocaleConstants',
 	'game/constants/PerkConstants',
 	'game/constants/PositionConstants',
+	'game/constants/SectorConstants',
 	'game/constants/ExplorationConstants',
 	'game/nodes/sector/SectorNode',
 	'game/nodes/PlayerLocationNode',
 	'game/components/common/CampComponent',
 	'game/components/common/PositionComponent',
+	'game/components/common/VisitedComponent',
+	'game/components/common/RevealedComponent',
+	'game/components/sector/SectorControlComponent',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorLocalesComponent',
+	'game/components/sector/improvements/WorkshopComponent',
 	'game/components/type/LevelComponent',
 ], function (
 	Ash,
 	GameGlobals,
 	ItemConstants,
+	LocaleConstants,
 	PerkConstants,
 	PositionConstants,
+	SectorConstants,
 	ExplorationConstants,
 	SectorNode,
 	PlayerLocationNode,
 	CampComponent,
 	PositionComponent,
+	VisitedComponent,
+	RevealedComponent,
+	SectorControlComponent,
 	SectorStatusComponent,
 	SectorFeaturesComponent,
 	SectorLocalesComponent,
+	WorkshopComponent,
 	LevelComponent
 ) {
 	var SectorHelper = Ash.Class.extend({
@@ -269,6 +281,49 @@ define([
 				return true;
 			}
 			return false;
+		},
+		
+		getSectorStatus: function (sector) {
+			if (!sector) return null;
+			
+			var statusComponent = sector.get(SectorStatusComponent);
+			
+			if (statusComponent.scouted) {
+				var localesComponent = sector.get(SectorLocalesComponent);
+				var workshopComponent = sector.get(WorkshopComponent);
+				var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
+				var sectorControlComponent = sector.get(SectorControlComponent);
+				var hasUnclearedWorkshop = workshopComponent != null && workshopComponent.isClearable && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP);
+				let canBeInvestigated = this.canBeInvestigated(sector);
+				let isCleared = unScoutedLocales <= 0 && !hasUnclearedWorkshop && !canBeInvestigated;
+				
+				if (isCleared) {
+					return SectorConstants.MAP_SECTOR_STATUS_VISITED_CLEARED;
+				} else {
+					return SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED;
+				}
+			}
+			
+			if (statusComponent.revealedByMap) {
+				return SectorConstants.MAP_SECTOR_STATUS_REVEALED_BY_MAP;
+			}
+			
+			var isVisited = sector.has(VisitedComponent);
+			if (isVisited) {
+				return SectorConstants.MAP_SECTOR_STATUS_VISITED_UNSCOUTED;
+			} else {
+				if (sector.has(RevealedComponent)) {
+					return SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE;
+				}
+			}
+			
+			return SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE;
+		},
+		
+		canBeInvestigated: function (sector) {
+			let statusComponent = sector.get(SectorStatusComponent);
+			let featuresComponent = sector.get(SectorFeaturesComponent);
+			return statusComponent.scouted && featuresComponent.isInvestigatable && statusComponent.getInvestigatedPercent() < 100;
 		},
 		
 		getLocationDiscoveredItems: function (sector) {

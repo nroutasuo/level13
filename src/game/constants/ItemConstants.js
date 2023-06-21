@@ -423,18 +423,36 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		},
 		
 		getAvailableMetalCaches: function (campOrdinal) {
+			return this.getAvailableCaches("cache_metal", campOrdinal);
+		},
+		
+		getAvailableInsightCaches: function (campOrdinal) {
+			return this.getAvailableCaches("cache_insight", campOrdinal);
+		},
+		
+		getAvailableCaches: function (cacheType, campOrdinal) {
 			let result = [];
-				for (var type in this.itemDefinitions ) {
-					for (let i in this.itemDefinitions[type]) {
-						var item = this.itemDefinitions[type][i];
-						if (item.id.indexOf("cache_metal") == 0) {
-							if (item.requiredCampOrdinal <= campOrdinal) {
-								result.push(item.id);
-							}
-						}
+			for (let type in this.itemDefinitions ) {
+				for (let i in this.itemDefinitions[type]) {
+					let item = this.itemDefinitions[type][i];
+					if (item.id.indexOf(cacheType) == 0) {
+						if (item.requiredCampOrdinal && item.requiredCampOrdinal > campOrdinal) continue;
+						if (item.maximumCampOrdinal && item.maximumCampOrdinal < campOrdinal) continue;
+						result.push(item.id);
 					}
 				}
+			}
 			return result;
+		},
+		
+		getInsightForCache: function (itemConfig) {
+			if (!itemConfig) return 0;
+			if (itemConfig.configData && (itemConfig.configData.insightValue || itemConfig.configData.insightValue == 0)) {
+				return itemConfig.configData.insightValue;
+			}
+			
+			let level = itemConfig.level || 1;
+			return Math.pow(level, 2);
 		},
 		
 		getIngredient: function (i) {

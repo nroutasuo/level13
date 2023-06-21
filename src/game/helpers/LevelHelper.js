@@ -575,20 +575,24 @@ define([
 			levelStats.countRevealedSectors = 0;
 			levelStats.countVisitedSectors = 0;
 			levelStats.countKnownIngredientSectors = 0;
+			levelStats.countInvestigatableSectors = 0;
 			levelStats.hasCamp = false;
 			
 			for (var node = this.sectorNodes.head; node; node = node.next) {
 				let sectorPosition = node.entity.get(PositionComponent);
-				let sectorStatus = SectorConstants.getSectorStatus(node.entity);
+				let sectorStatus = GameGlobals.sectorHelper.getSectorStatus(node.entity);
 				if (sectorPosition.level !== level) continue;
 				levelStats.totalSectors++;
 
 				let statusComponent = node.entity.get(SectorStatusComponent);
+				let featuresComponent = node.entity.get(SectorFeaturesComponent);
+				
 				if (sectorStatus === SectorConstants.MAP_SECTOR_STATUS_VISITED_CLEARED) levelStats.countClearedSectors++;
 				if (statusComponent.scouted) levelStats.countScoutedSectors++;
 				if (node.entity.has(VisitedComponent)) levelStats.countVisitedSectors++;
 				if (node.entity.has(RevealedComponent) || node.entity.has(VisitedComponent)) levelStats.countRevealedSectors++;
 				if (GameGlobals.sectorHelper.hasSectorVisibleIngredients(node.entity)) levelStats.countKnownIngredientSectors++;
+				if (GameGlobals.sectorHelper.canBeInvestigated(node.entity)) levelStats.countInvestigatableSectors++;
 				if (node.entity.has(CampComponent)) levelStats.hasCamp = true;
 			}
 

@@ -1,13 +1,4 @@
-define(['ash',
-	'game/GameGlobals',
-	'game/constants/LocaleConstants',
-	'game/components/common/VisitedComponent',
-	'game/components/common/RevealedComponent',
-	'game/components/sector/SectorStatusComponent',
-	'game/components/sector/SectorLocalesComponent',
-	'game/components/sector/SectorControlComponent',
-	'game/components/sector/improvements/WorkshopComponent',
-], function (Ash, GameGlobals, LocaleConstants, VisitedComponent, RevealedComponent, SectorStatusComponent, SectorLocalesComponent, SectorControlComponent, WorkshopComponent) {
+define(['ash'], function (Ash) {
 	
 	var SectorConstants = {
 		
@@ -43,41 +34,6 @@ define(['ash',
 		HAZARD_TYPE_POLLUTION: "poison",
 		HAZARD_TYPE_DEBRIS: "debris",
 		
-		getSectorStatus: function (sector) {
-			if (!sector) return null;
-			
-			var statusComponent = sector.get(SectorStatusComponent);
-			
-			if (statusComponent.scouted) {
-				var localesComponent = sector.get(SectorLocalesComponent);
-				var workshopComponent = sector.get(WorkshopComponent);
-				var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
-				var sectorControlComponent = sector.get(SectorControlComponent);
-				var hasUnclearedWorkshop = workshopComponent != null && workshopComponent.isClearable && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP);
-				var isCleared = unScoutedLocales <= 0 && !hasUnclearedWorkshop;
-				if (isCleared) {
-					return this.MAP_SECTOR_STATUS_VISITED_CLEARED;
-				} else {
-					return this.MAP_SECTOR_STATUS_VISITED_SCOUTED;
-				}
-			}
-			
-			if (statusComponent.revealedByMap) {
-				return this.MAP_SECTOR_STATUS_REVEALED_BY_MAP;
-			}
-			
-			var isVisited = sector.has(VisitedComponent);
-			if (isVisited) {
-				return this.MAP_SECTOR_STATUS_VISITED_UNSCOUTED;
-			} else {
-				if (sector.has(RevealedComponent)) {
-					return this.MAP_SECTOR_STATUS_UNVISITED_VISIBLE;
-				}
-			}
-			
-			return this.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE;
-		},
-		
 		isVisited: function (sectorStatus) {
 			switch (sectorStatus) {
 				case SectorConstants.MAP_SECTOR_STATUS_VISITED_UNSCOUTED: return true;
@@ -98,5 +54,6 @@ define(['ash',
 		},
 		
 	};
+	
 	return SectorConstants;
 });

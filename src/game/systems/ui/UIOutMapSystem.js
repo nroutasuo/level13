@@ -89,6 +89,7 @@ define([
 			$("#btn-mainmap-sector-details-unknown").click($.proxy(this.selectUnknownSector, this));
 			$("#btn-mainmap-sector-details-unscouted").click($.proxy(this.selectUnscoutedLocaleSector, this));
 			$("#btn-mainmap-sector-details-ingredients").click($.proxy(this.selectIngredientSector, this));
+			$("#btn-mainmap-sector-details-investigate").click($.proxy(this.selectInvestigateSector, this));
 			
 			$("#btn-mainmap-sector-path").click($.proxy(this.showSectorPath, this));
 		},
@@ -210,10 +211,12 @@ define([
 			let hasUnknownSectors = mapStatus.percentVisitedSectors < 1 || mapStatus.countVisitedSectors > mapStatus.countScoutedSectors;
 			let hasUnscoutedLocaleSectors = mapStatus.countClearedSectors != mapStatus.countScoutedSectors;
 			let hasIngredientSectors = mapStatus.countKnownIngredientSectors > 0;
+			let hasInvestigateSectors = mapStatus.countInvestigatableSectors > 0;
 			
 			GameGlobals.uiFunctions.toggle($("#btn-mainmap-sector-details-unknown"), hasUnknownSectors);
 			GameGlobals.uiFunctions.toggle($("#btn-mainmap-sector-details-unscouted"), hasUnscoutedLocaleSectors);
 			GameGlobals.uiFunctions.toggle($("#btn-mainmap-sector-details-ingredients"), hasIngredientSectors);
+			GameGlobals.uiFunctions.toggle($("#btn-mainmap-sector-details-investigate"), hasInvestigateSectors);
 				
 			if (this.selectedMapStyle == this.MAP_STYLE_CANVAS) {
 				$("#mainmap-container-container").css("opacity", 0);
@@ -327,7 +330,7 @@ define([
 		
 		selectUnknownSector: function () {
 			let newSector = this.getNextSelectableSector(1, (sector) => {
-				let sectorStatus = SectorConstants.getSectorStatus(sector);
+				let sectorStatus = GameGlobals.sectorHelper.getSectorStatus(sector);
 				return sectorStatus == SectorConstants.MAP_SECTOR_STATUS_REVEALED_BY_MAP || sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE || sectorStatus == SectorConstants.MAP_SECTOR_STATUS_VISITED_UNSCOUTED;
 			});
 			if (!newSector) return null;
@@ -338,7 +341,7 @@ define([
 		
 		selectUnscoutedLocaleSector: function () {
 			let newSector = this.getNextSelectableSector(1, (sector) => {
-				let sectorStatus = SectorConstants.getSectorStatus(sector);
+				let sectorStatus = GameGlobals.sectorHelper.getSectorStatus(sector);
 				return sectorStatus == SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED;
 			});
 			if (!newSector) return null;
@@ -351,6 +354,17 @@ define([
 			let newSector = this.getNextSelectableSector(1, (sector) => {
 				let sectorFeatures = sector.get(SectorFeaturesComponent);
 				return GameGlobals.sectorHelper.hasSectorVisibleIngredients(sector);
+			});
+			if (!newSector) return null;
+			let pos = newSector.get(PositionComponent);
+			this.selectSector(pos.level, pos.sectorX, pos.sectorY);
+			this.centerMap(pos, true);
+		},
+		
+		selectInvestigateSector: function () {
+			let newSector = this.getNextSelectableSector(1, (sector) => {
+				let sectorFeatures = sector.get(SectorFeaturesComponent);
+				return GameGlobals.sectorHelper.canBeInvestigated(sector);
 			});
 			if (!newSector) return null;
 			let pos = newSector.get(PositionComponent);
@@ -373,7 +387,7 @@ define([
 				if (i < 0) i = sectors.length - 1;
 				if (i >= sectors.length) i = 0;
 				let sector = sectors[i];
-				let sectorStatus = SectorConstants.getSectorStatus(sector);
+				let sectorStatus = GameGlobals.sectorHelper.getSectorStatus(sector);
 				if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE) continue;
 				if (filter && !filter(sector)) continue;
 				newIndex = i;
