@@ -98,7 +98,7 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Ga
 			return result;
 		},
 		
-		getRandomSectorsBig:function (seed, worldVO, levelVO, numSectors, options) {
+		getRandomSectorsBig: function (seed, worldVO, levelVO, numSectors, options) {
 			var sectors = [];
 			var availableSectors = levelVO.sectors;
 			var maxDuplicates = options.numDuplicates || 1;
@@ -133,6 +133,17 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Ga
 				if (sectors.length === numSectors) break;
 			}
 			return sectors;
+		},
+		
+		// Same as randomSectors but with additional scoring
+		// Selects 2n sectors, sorts them by score and returns the best scoring ones
+		// - scoringFunction: function that takes a sectorVO and returns and int (higher is more likely to be selected)
+		randomSectorsScored: function (seed, worldVO, levelVO, min, max, options, scoringFunction) {
+			let numSectors = this.randomInt(seed, min, max);
+			let numCandidates = Math.max(3, numSectors * 2);
+			let candidates = this.randomSectors(seed, worldVO, levelVO, numCandidates, numCandidates + 1, options);
+			candidates = candidates.sort((a, b) => scoringFunction(b,) - scoringFunction(a));
+			return candidates.slice(0, numSectors);
 		},
 		
 		getSectorInvalidReason: function (worldVO, sectorVO, options) {

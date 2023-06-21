@@ -200,6 +200,7 @@ define([
 					sectorFeatures.itemsScavengeable,
 					sectorFeatures.hasSpring,
 					sectorFeatures.hasTradeConnectorSpot,
+					sectorFeatures.isInvestigatable,
 					sectorFeatures.stashes,
 					sectorFeatures.waymarks
 				))

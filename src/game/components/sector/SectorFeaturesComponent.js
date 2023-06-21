@@ -34,7 +34,7 @@ define(
 		itemsScavengeable: [],
 		
 		constructor: function (level, criticalPaths, zone, buildingDensity, wear, damage, sectorType, sunlit, ground, surface, hazards,
-							   campable, notCampableReason, resourcesScavengable, resourcesCollectable, itemsScavengeable, hasSpring, hasTradeConnectorSpot, stashes, waymarks) {
+							   campable, notCampableReason, resourcesScavengable, resourcesCollectable, itemsScavengeable, hasSpring, hasTradeConnectorSpot, isInvestigatable, stashes, waymarks) {
 			this.level = level;
 			this.criticalPaths = criticalPaths;
 			this.zone = zone;
@@ -53,6 +53,7 @@ define(
 			this.itemsScavengeable = itemsScavengeable || [];
 			this.hasSpring = hasSpring;
 			this.hasTradeConnectorSpot = hasTradeConnectorSpot;
+			this.isInvestigatable = isInvestigatable;
 			this.stashes = stashes || [];
 			this.waymarks = waymarks || [];
 		},

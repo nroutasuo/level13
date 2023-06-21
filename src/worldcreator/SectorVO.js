@@ -26,6 +26,7 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			this.hazards = new EnvironmentalHazardsVO();
 			this.hasSpring = false;
 			this.hasTradeConnectorSpot = false;
+			this.isInvestigatable = false;
 			this.scavengeDifficulty = 5;
 			this.resourcesScavengable = new ResourcesVO();
 			this.resourcesCollectable = new ResourcesVO();

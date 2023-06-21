@@ -35,6 +35,9 @@ define(['ash'], function (Ash) {
 		
 		LEVEL_NUMBER_STASH_ADVANCED_MAP: 11,
 		
+		NUM_INVESTIGATE_SECTORS_TOTAL: 15,
+		NUM_INVESTIGATE_SECTORS_SURFACE: 10,
+		
 		resourcePrevalence: {
 			RARE: 1,		// only for rare resources
 			DEFAULT: 2, 	// default value, scavenging is worth it but not traveling a long way for it

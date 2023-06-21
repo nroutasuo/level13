@@ -45,6 +45,7 @@ define([
 				levelVO.zones = this.generateZones(seed, levelVO);
 				levelVO.seaPadding = this.getSeaPadding(seed, levelVO);
 				levelVO.predefinedFollowers = this.getPredefinedFollowers(seed, l);
+				levelVO.numInvestigateSectors = this.getNumInvestigateSectors(seed, l);
 				levelVO.luxuryResources = this.getLuxuryResources(seed, l, campOrdinal, worldVO.levels);
 				worldVO.addLevel(levelVO);
 			}
@@ -144,6 +145,15 @@ define([
 			let follower = FollowerConstants.predefinedFollowers[campOrdinal];
 			if (!follower) return [];
 			return [ follower ];
+		},
+		
+		getNumInvestigateSectors: function (seed, level) {
+			let topLevel = WorldCreatorHelper.getHighestLevel(seed);
+			
+			if (level == topLevel) return WorldConstants.NUM_INVESTIGATE_SECTORS_SURFACE;
+			if (level == topLevel - 1) return WorldConstants.NUM_INVESTIGATE_SECTORS_TOTAL - WorldConstants.NUM_INVESTIGATE_SECTORS_SURFACE;
+			
+			return 0;
 		},
 		
 		getLuxuryResources: function (seed, level, campOrdinal, previousLevels) {
