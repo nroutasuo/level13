@@ -170,6 +170,15 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			}
 			return ItemConstants.itemCategories.other;
 		},
+		
+		getUseItemVerb: function (item) {
+			if (item.id.startsWith("cache_metal")) return "Disassemble";
+			if (item.id.startsWith("cache_evidence")) return "Read";
+			if (item.id.startsWith("cache_rumours")) return "Read";
+			if (item.id.startsWith("cache_insight")) return "Read";
+			if (item.id.startsWith("cache_favour")) return "Donate";
+			return "Use";
+		},
 			
 		getItemDisplayName: function (item, short) {
 			if (!short) return item.name;

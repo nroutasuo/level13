@@ -176,6 +176,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.pruneActionCooldowns();
 			let actionKey = action;
 			if (key.length > 0) actionKey += "-" + key;
+			log.i("setActionCooldown: [" + action + "] [" + key + "] [" + actionKey + "] [" + cooldown + "]");
 			this.actionCooldownEndTimestamps[actionKey] = new Date().getTime() + cooldown * 1000;
 		},
 

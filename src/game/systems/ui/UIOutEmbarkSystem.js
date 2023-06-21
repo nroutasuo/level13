@@ -216,6 +216,9 @@ define([
 				if (item.type === ItemConstants.itemTypes.ingredient) continue;
 				if (item.type === ItemConstants.itemTypes.voucher) continue;
 				if (baseItemId == "cache_evidence") continue;
+				if (baseItemId == "cache_rumours") continue;
+				if (baseItemId == "cache_favour") continue;
+				if (baseItemId == "cache_insight") continue;
 				
 				let count = itemsComponent.getCount(item, true);
 				let showCount = item.equipped ? count - 1 : count;

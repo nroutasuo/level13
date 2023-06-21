@@ -780,6 +780,134 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			return result;
 		},
 		
+		getReadNewspaperMessage: function (itemVO) {
+			let features = {};
+			features.itemName = itemVO.name;
+			features.itemLevel = itemVO.level || 1;
+			features.randomSeed = itemVO.itemID;
+			let params = this.getNewspaperTextParams(features);
+			
+			let template = "You leaf through the newspaper. " + DescriptionMapper.get("newspaper-description", features);
+			let phrase = TextBuilder.build(template, params);
+			
+			return phrase;
+		},
+		
+		getNewspaperTextParams: function (features) {
+			let result = {};
+			
+			let events = [];
+			events.push("a worker strike");
+			events.push("a celebration");
+			events.push("the arrival of a group of refugees");
+			events.push("the birth of triplets");
+			events.push("a disease outbreak");
+			events.push("a lost trade caravan");
+			events.push("a ghost sighting");
+			events.push("an unexplained light in a certain building");
+			switch (features.itemLevel) {
+				case 1:
+					events.push("the discovery of a new hunting grounds");
+					events.push("the collapse of a level floor");
+					events.push("a population milestone");
+					break;
+				case 2:
+					events.push("the discovery of a new smelting technique");
+					events.push("the election of a new leader");
+					events.push("a music festival");
+					events.push("the completion of a new aqueduct");
+					events.push("an expedition to unexplored parts of the City");
+					break;
+				case 3:
+					events.push("the discovery of a new building material");
+					events.push("the discovery of a new medicine");
+					events.push("a local sports event");
+					break;
+			}
+			result["c-event"] = DescriptionMapper.pickRandom(events, features);
+			
+			let topics = [];
+			topics.push("local politics");
+			topics.push("local gossip");
+			topics.push("horoscopes");
+			topics.push("plant life surrounding the settlement");
+			topics.push("the erosion of the City");
+			topics.push("a haunted commercial center");
+			switch (features.itemLevel) {
+				case 1:
+					topics.push("survival techniques in the Dark Levels");
+					topics.push("life in the Dark Levels before the Fall");
+					topics.push("keeping bats as pets");
+					break;
+				case 2:
+					topics.push("medicine");
+					topics.push("cooking");
+					topics.push("private property");
+					topics.push("small scale gardening");
+					break;
+				case 3:
+					topics.push("the Network");
+					topics.push("moral issues");
+					break;
+			}
+			result["n-topic"] = DescriptionMapper.pickRandom(topics, features);
+			
+			return result;
+		},
+		
+		getDonateSeedsMessage: function (itemVO) {
+			return "Donated the seeds to the temple. The clerics will cherish them and perhaps something will grow.";
+		},
+		
+		getReadResearchPaperMessage: function (itemVO) {
+			let features = {};
+			features.itemName = itemVO.name;
+			features.itemLevel = itemVO.level || 1;
+			features.randomSeed = itemVO.itemID;
+			let params = this.getResearchPaperTextParams(features);
+			
+			let template = "You read the paper. " + DescriptionMapper.get("researchpaper-description", features);
+			let phrase = TextBuilder.build(template, params);
+			
+			return phrase;
+		},
+		
+		getResearchPaperTextParams: function (features) {
+			let result = {};
+			
+			let facts = [];
+			facts.push("the City is disintegrating faster than its current population can possibly maintain it");
+			facts.push("the City was built on marshland and is slowly sinking in it");
+			facts.push("the Ocean currents were changing direction before the Fall");
+			facts.push("some researchers were worried about volcanic activity years before the Fall");
+			facts.push("there was a research group investigating returning to live on the Surface before the Fall");
+			facts.push("the air outside of the City is dangerous to breathe");
+			facts.push("there was a top secret research group just before the Fall");
+			facts.push("the Fall involved a large explosion near the Surface of the City");
+			facts.push("the Government before the Fall was investing heavily in space research");
+			facts.push("prisoners were used in secret experiments related to space travel");
+			facts.push("the Government was compiling a classified list of priority individuals that would be evacuated in case of emergency");
+			facts.push("there was a top secret gene bank that was being prepared for something just before the Fall");
+			facts.push("the City Government wanted to conceal the stockpiling of large amounts of fuel and building materials");
+			result["c-fact"] = DescriptionMapper.pickRandom(facts, features);
+			
+			let topics = [];
+			topics.push("the possible consequences on the City of a failed space rocket launch");
+			topics.push("the number of people that can live on a spacecraft");
+			topics.push("the possibility of long-distance space travel");
+			topics.push("the habitability of nearby planets and star systems");
+			topics.push("fuel calculations for a very large spacecraft");
+			topics.push("the number of people that are required for a sustainable settlement");
+			topics.push("a supervolcano");
+			topics.push("air quality");
+			topics.push("the possibility of controlling the weather through singing");
+			topics.push("the effect of flowering plants on dice rolls");
+			
+			result["n-topic"] = DescriptionMapper.pickRandom(topics, features);
+			
+			return result;
+		},
+		
 		getFoundStashMessage: function (stashVO) {
 			switch (stashVO.stashType) {
 				case ItemConstants.STASH_TYPE_ITEM:
@@ -1550,9 +1678,41 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("book-description", { bookType: t_F, bookLevel: l_3 }, "It is a [a-good] story about [n-theme].");
 	}
 	
+	function initNewspaperTexts() {
+		var wildcard = DescriptionMapper.WILDCARD;
+		
+		let l_1 = 1;
+		let l_2 = 2;
+		let l_3 = 3;
+		
+		DescriptionMapper.add("newspaper-description", { itemLevel: wildcard }, "There is an editorial about [n-topic].");
+		DescriptionMapper.add("newspaper-description", { itemLevel: wildcard }, "There is an opinion piece about [n-topic].");
+		DescriptionMapper.add("newspaper-description", { itemLevel: wildcard }, "There is a big story about [c-event].");
+		DescriptionMapper.add("newspaper-description", { itemLevel: wildcard }, "The issue revolves around [c-event].");
+		DescriptionMapper.add("newspaper-description", { itemLevel: l_3 }, "There is an investigative story about [n-topic].");
+	}
+	
+	function initResearchPaperTexts() {
+		var wildcard = DescriptionMapper.WILDCARD;
+		
+		let l_1 = 1;
+		let l_2 = 2;
+		let l_3 = 3;
+		
+		DescriptionMapper.add("researchpaper-description", { itemLevel: wildcard }, "It is about [n-topic].");
+		DescriptionMapper.add("researchpaper-description", { itemLevel: wildcard }, "You learn that [c-fact].");
+		DescriptionMapper.add("researchpaper-description", { itemLevel: wildcard }, "You deduce that [c-fact].");
+		DescriptionMapper.add("researchpaper-description", { itemLevel: wildcard }, "It seems that [c-fact].");
+		DescriptionMapper.add("researchpaper-description", { itemLevel: l_1 }, "It is a basic overview of [n-topic].");
+		DescriptionMapper.add("researchpaper-description", { itemLevel: l_2 }, "It is an outline of [n-topic].");
+		DescriptionMapper.add("researchpaper-description", { itemLevel: l_3 }, "It is a detailed analysis of [n-topic].");
+	}
+	
 	initSectorTexts();
 	initWaymarkTexts();
 	initBookTexts();
+	initNewspaperTexts();
+	initResearchPaperTexts();
 	
 	return TextConstants;
 	

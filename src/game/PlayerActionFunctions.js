@@ -1834,6 +1834,8 @@ define(['ash',
 			}
 			var foundPosition = item.foundPosition || playerPos;
 			var foundPositionCampOrdinal = GameGlobals.gameState.getCampOrdinal(foundPosition.level);
+			let resultVO = new ResultVO("use_item");
+			let message = "";
 			
 			let itemConfig = ItemConstants.getItemConfigByID(itemId);
 			let baseItemId = ItemConstants.getBaseItemId(itemId);
@@ -1885,8 +1887,7 @@ define(['ash',
 					
 				case "cache_evidence":
 					let evidence = itemConfig.configData.evidenceValue || Math.pow(itemConfig.level, 2);
-					let message = TextConstants.getReadBookMessage(item, itemConfig.configData.bookType || ItemConstants.bookTypes.science, foundPositionCampOrdinal);
-					let resultVO = new ResultVO("use_item");
+					message = TextConstants.getReadBookMessage(item, itemConfig.configData.bookType || ItemConstants.bookTypes.science, foundPositionCampOrdinal);
 					resultVO.gainedEvidence = evidence;
 					GameGlobals.uiFunctions.showInfoPopup(
 						item.name,
@@ -1896,6 +1897,48 @@ define(['ash',
 					);
 					this.playerStatsNodes.head.evidence.value += evidence;
 					this.addLogMessage(LogConstants.MSG_ID_USE_BOOK, "Read a book. Gained " + evidence + " evidence.");
+					break;
+				
+				case "cache_rumours":
+					let rumours = itemConfig.configData.rumoursValue || Math.pow(itemConfig.level, 2);
+					message = TextConstants.getReadNewspaperMessage(item);
+					resultVO.gainedRumours = rumours;
+					GameGlobals.uiFunctions.showInfoPopup(
+						item.name,
+						message,
+						"Continue",
+						resultVO
+					);
+					this.playerStatsNodes.head.rumours.value += rumours;
+					this.addLogMessage(LogConstants.MSG_ID_USE_NEWSPAPER, "Read a newspaper. Gained " + rumours + " rumours.");
+					break;
+				
+				case "cache_favour":
+					let favour = itemConfig.configData.favourValue || Math.pow(itemConfig.level, 2);
+					message = TextConstants.getDonateSeedsMessage(item);
+					resultVO.gainedFavour = favour;
+					GameGlobals.uiFunctions.showInfoPopup(
+						item.name,
+						message,
+						"Continue",
+						resultVO
+					);
+					this.playerStatsNodes.head.entity.get(DeityComponent).favour += favour;
+					this.addLogMessage(LogConstants.MSG_ID_USE_SEED, "Donated seeds. Gained " + favour + " favour.");
+					break;
+				
+				case "cache_insight":
+					let insight = itemConfig.configData.insightValue || Math.pow(itemConfig.level, 2);
+					message = TextConstants.getReadResearchPaperMessage(item);
+					resultVO.gainedInsight = insight;
+					GameGlobals.uiFunctions.showInfoPopup(
+						item.name,
+						message,
+						"Continue",
+						resultVO
+					);
+					this.playerStatsNodes.head.insight.value += insight;
+					this.addLogMessage(LogConstants.MSG_ID_USE_RESEARCHPAPER, "Read a research paper. Gained " + insight + " insight.");
 					break;
 				
 				case "consumable_graffiti":

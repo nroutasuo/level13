@@ -3536,9 +3536,19 @@
         "use_item_cache_evidence": {
             "inCamp": true
         },
+		"use_item_cache_favour": {
+			"deity": true,
+            "inCamp": true
+		},
+		"use_item_cache_insight": {
+            "inCamp": true
+		},
         "use_item_cache_metal": {
             "inCamp": true
         },
+		"use_item_cache_rumours": {
+            "inCamp": true
+		},
         "use_item_consumable_graffiti": {
             "inCamp": false,
             "scouted": true

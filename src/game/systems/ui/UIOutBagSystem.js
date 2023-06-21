@@ -115,7 +115,7 @@ define([
 			};
 			let fnUpdateItem = function (li, data) {
 				let actionName = "use_item_" + data.id;
-				let actionVerb = data.id.startsWith("cache_metal") ? "Disassemble" : "Use";
+				let actionVerb = ItemConstants.getUseItemVerb(data);
 				let buttonLabel = actionVerb + " " + ItemConstants.getItemDisplayName(data, true);
 				li.$root.find("button.action").attr("action", actionName);
 				li.$root.find("button.action").html(buttonLabel);

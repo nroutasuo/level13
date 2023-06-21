@@ -720,6 +720,8 @@ define([
 				"cache_evidence_22",
 				"cache_evidence_31",
 				"cache_evidence_32",
+				"cache_rumours_11",
+				"cache_rumours_22",
 				"cache_metal_1",
 				"cache_metal_2",
 				"cache_metal_3",
