@@ -112,6 +112,7 @@ define([
 			
 			levelVO.additionalCampPositions = [];
 			
+			let isSurfaceLevel = levelVO.level === worldVO.topLevel;
 			let campOrdinal = levelVO.campOrdinal;
 			let minPathlenC2P = 3;
 			let maxPathLenC2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
@@ -122,6 +123,7 @@ define([
 				if (sectorVO.isCamp) return false;
 				if (sectorVO.isPassageUp || sectorVO.isPassageDown) return false;
 				if (sectorVO.stage != WorldConstants.CAMP_STAGE_EARLY) return false;
+				if (sectorVO.sunlit && !isSurfaceLevel) return false;
 				if (WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO, WorldCreatorConstants.MAX_CAMP_POS_DISTANCE) > WorldCreatorConstants.MAX_CAMP_POS_DISTANCE) return false;
 				
 				for (let i = 0; i < levelVO.passagePositions.length; i++) {
@@ -2054,6 +2056,9 @@ define([
 		},
 		
 		isSunlit: function (seed, worldVO, levelVO, sectorVO) {
+			let isSurfaceLevel = levelVO.level === worldVO.topLevel;
+			if (sectorVO.isCamp && !isSurfaceLevel) return false;
+			
 			let l = sectorVO.position.level;
 			
 			let isHole = function (pos) {
@@ -2100,6 +2105,8 @@ define([
 		},
 		
 		isSunlitByNeighbours: function (worldVO, levelVO, sectorVO) {
+			let isSurfaceLevel = levelVO.level === worldVO.topLevel;
+			if (sectorVO.isCamp && !isSurfaceLevel) return false;
 			let numTotal = 0;
 			let numSunlit = 0;
 			let neighbours = levelVO.getNeighbourList(sectorVO.position.sectorX, sectorVO.position.sectorY);
