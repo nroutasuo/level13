@@ -755,6 +755,7 @@ define([
 
 		updateMovementRelatedActions: function () {
 			if (!this.playerLocationNodes.head) return;
+			if (GameGlobals.playerHelper.isInCamp()) return;
 
 			var currentSector = this.playerLocationNodes.head.entity;
 			var movementOptionsComponent = currentSector.get(MovementOptionsComponent);
