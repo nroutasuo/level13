@@ -366,6 +366,7 @@ define([
 			
 			let canBuild = function (improvementName, actionName, ordinal) {
 				if (ordinal >= 100) return false;
+				if (improvementName == improvementNames.sundome) return campOrdinal == 15;
 				
 				let reqs = GameGlobals.playerActionsHelper.getReqs(actionName);
 				
@@ -483,16 +484,23 @@ define([
 				return true;
 			};
 			
+			let isRelevantImprovementForCampBalancing = function (improvementName) {
+				if (getImprovementType(improvementName) === improvementTypes.camp) return true;
+				if (improvementName == improvementNames.sundome) return true;
+				return false;
+			}
+			
 			let result = new SectorImprovementsComponent();
 			
 			let builtSomething = true;
 			let improvedSomething = false;
+			
 			while (builtSomething || improvedSomething) {
 				builtSomething = false;
 				improvedSomething = false;
 				for (var improvementID in ImprovementConstants.improvements) {
 					let improvementName = improvementNames[improvementID];
-					if (getImprovementType(improvementName) !== improvementTypes.camp) continue;
+					if (!isRelevantImprovementForCampBalancing(improvementName)) continue;
 					
 					if (checkBuild(improvementName)) {
 						builtSomething = true;
