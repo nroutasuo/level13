@@ -184,6 +184,13 @@ define(['ash'], function (Ash) {
 				logMessage: "Healed all injuries.",
 				conditions: { perkEffects: { "Injury": [ -1, 0 ] } }
 			},
+			TUTORIAL_PRODUCED_ROBOT: {
+				triggers: [ "feature_unlocked", "action_any" ],
+				repeats: "NEVER",
+				delay: 1000,
+				logMessage: "Our first worker robot is ready. It will help workers in camp with their tasks.",
+				conditions: { featureUnlocked: { resource_robots: true }, inCamp: true, campInventory: { resource_robots: [1, -1 ] } }
+			},
 			TUTORIAL_CAN_MAKE_LIGHT: {
 				triggers: [ "change_inventory" ],
 				repeats: "COOLDOWN",
@@ -196,7 +203,7 @@ define(['ash'], function (Ash) {
 				repeats: "NEVER",
 				delay: 1500,
 				logMessage: "We now have enough materials to build a Temple",
-				conditions: { ctionsAvailable: ["build_in_temple"] }
+				conditions: { actionsAvailable: ["build_in_temple"] }
 			},
 			TUTORIAL_ENCOUNTER_BLOCKER_TYPE_GAP_NO_TECH: {
 				group: "TUTORIAL_ENCOUNTER_BLOCKER_TYPE_GAP",

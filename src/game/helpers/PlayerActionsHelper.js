@@ -764,6 +764,17 @@ define([
 						}
 					}
 				}
+				
+				if (requirements.campInventory) {
+					for (let key in requirements.playerInventory) {
+						let range = requirements.playerInventory[key];
+						let currentVal = this.getCostAmountOwned(key);
+						let result = this.checkRequirementsRange(range, currentVal, "Not enough " + key, "Too  much " + key);
+						if (result) {
+							return result;
+						}
+					}
+				}
 
 				if (requirements.player) {
 					if (typeof requirements.affectedByHazard !== "undefined") {
