@@ -70,13 +70,12 @@ define([
 			
 			if (!isActive) return;
 			if (GameGlobals.gameState.isLaunchStarted) return;
-			
-			GameGlobals.uiFunctions.toggle("#in-improvements-level-empty-message", this.tabCounts.lastShown.visible.regular <= 0);
 		},
 		
 		slowUpdate: function () {
 			if (GameGlobals.gameState.isLaunchStarted) return;
 			this.updateAvailableProjects(false);
+			this.updateContainers();
 		},
 		
 		refresh: function () {
@@ -90,6 +89,7 @@ define([
 			this.updateAvailableProjects(true);
 			this.updateBuiltProjects(true);
 			this.updateHiddenMsg();
+			this.updateContainers();
 		},
 		
 		updateBubble: function () {
@@ -170,7 +170,6 @@ define([
 				}
 			}
 			
-			GameGlobals.uiFunctions.toggle("#container-in-improvements-colony", visibleColony > 0 || GameGlobals.endingHelper.isReadyForLaunch() || GameGlobals.gameState.isLaunched);
 			GameGlobals.uiFunctions.toggle("#container-in-improvements-level-hidden", hiddenRegular > 0);
 			
 			this.tabCounts.updateCounts({ regular: visibleRegular, colony: visibleColony }, { regular: availableRegular, colony: availableColony }, isActive);
@@ -202,6 +201,8 @@ define([
 				if (!isColonyProject) numProjectsOther++;
 			}
 			
+			this.numBuiltColonyProjects = numProjectsColony;
+			
 			GameGlobals.uiFunctions.toggle("#header-in-improvements-colony-built", numProjectsColony > 0);
 			GameGlobals.uiFunctions.toggle("#header-in-improvements-level-built", numProjectsOther > 0);
 		},
@@ -209,6 +210,13 @@ define([
 		updateHiddenMsg: function () {
 			let numHidden = GameGlobals.gameState.uiStatus.hiddenProjects.length;
 			this.elements.hiddenImprovementsMsg.text(numHidden + " projects hidden");
+		},
+		
+		updateContainers: function () {
+			let visibleColonyProjects = this.tabCounts.current.visible.colony + (this.numBuiltColonyProjects || 0);
+				
+			GameGlobals.uiFunctions.toggle("#in-improvements-level-empty-message", this.tabCounts.lastShown.visible.regular <= 0);
+			GameGlobals.uiFunctions.toggle("#container-in-improvements-colony", visibleColonyProjects > 0 || GameGlobals.endingHelper.isReadyForLaunch() || GameGlobals.gameState.isLaunched);
 		},
 		
 		resetHidden: function () {
