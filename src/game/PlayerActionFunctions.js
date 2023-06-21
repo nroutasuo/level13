@@ -1938,7 +1938,7 @@ define(['ash',
 					break;
 				
 				case "cache_insight":
-					let insight = itemConfig.configData.insightValue || Math.pow(itemConfig.level, 2);
+					let insight = ItemConstants.getInsightForCache(itemConfig);
 					message = TextConstants.getReadResearchPaperMessage(item);
 					resultVO.gainedInsight = insight;
 					GameGlobals.uiFunctions.showInfoPopup(

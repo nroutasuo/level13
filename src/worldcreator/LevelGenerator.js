@@ -149,11 +149,7 @@ define([
 		
 		getNumInvestigateSectors: function (seed, level) {
 			let topLevel = WorldCreatorHelper.getHighestLevel(seed);
-			
-			if (level == topLevel) return WorldConstants.NUM_INVESTIGATE_SECTORS_SURFACE;
-			if (level == topLevel - 1) return WorldConstants.NUM_INVESTIGATE_SECTORS_TOTAL - WorldConstants.NUM_INVESTIGATE_SECTORS_SURFACE;
-			
-			return 0;
+			return WorldConstants.getNumInvestigateSectors(level, topLevel);
 		},
 		
 		getLuxuryResources: function (seed, level, campOrdinal, previousLevels) {

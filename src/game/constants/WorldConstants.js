@@ -113,6 +113,13 @@ define(['ash'], function (Ash) {
 			return false;
 		},
 		
+		getNumInvestigateSectors: function (level, topLevel) {
+			if (level == topLevel) return WorldConstants.NUM_INVESTIGATE_SECTORS_SURFACE;
+			if (level == topLevel - 1) return WorldConstants.NUM_INVESTIGATE_SECTORS_TOTAL - WorldConstants.NUM_INVESTIGATE_SECTORS_SURFACE;
+			
+			return 0;
+		},
+		
 		getCampAndStep: function (campOrdinal, step, offset) {
 			let resultOrdinal = campOrdinal;
 			let resultStep = step;
