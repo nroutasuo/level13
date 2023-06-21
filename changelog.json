@@ -27,7 +27,7 @@
 				},
 				{
 					"type": "GD",
-					"summary": "Add robots"
+					"summary": "Add worker robots"
 				},
 				{
 					"type": "GD",
@@ -39,7 +39,7 @@
 				},
 				{
 					"type": "GD",
-					"summary": "Add chance that defenders (soldiers) get killed or buildings damaged during raids"
+					"summary": "Add a chance that defenders (soldiers) get killed or buildings damaged during raids"
 				},
 				{
 					"type": "UI",

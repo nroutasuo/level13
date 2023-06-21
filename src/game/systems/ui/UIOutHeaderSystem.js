@@ -345,7 +345,7 @@ define([
 			}
 			let displayValue = amount;
 			if (source.isPercentage && source.percentageValue) {
-				displayValue = (source.amount > 0 ? "+" : "-") + Math.round(source.percentageValue) + "%";
+				displayValue = (source.amount > 0 ? "+" : "") + Math.round(source.percentageValue) + "%";
 			}
 			return source.source + ": " + displayValue + "<br/>";
 		},

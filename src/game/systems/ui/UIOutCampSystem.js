@@ -653,7 +653,7 @@
 			GameGlobals.uiFunctions.toggle("#in-demographics-general-age", showCalendar);
 			
 			let availableLuxuryResources = GameGlobals.campHelper.getAvailableLuxuryResources(sector);
-			$("#in-demographics-general-luxuries .value").text(availableLuxuryResources.map(res => TribeConstants.getLuxuryDisplayName(res)).join(","));
+			$("#in-demographics-general-luxuries .value").text(availableLuxuryResources.length + " (" + availableLuxuryResources.map(res => TribeConstants.getLuxuryDisplayName(res)).join(", ") + ")");
 			GameGlobals.uiFunctions.toggle("#in-demographics-general-luxuries", availableLuxuryResources.length > 0);
 
 			var showRaid = raidDanger > 0 || raidDefence > CampConstants.CAMP_BASE_DEFENCE || campComponent.population > 1;
@@ -662,7 +662,7 @@
 				var defenceS = OccurrenceConstants.getRaidDefenceString(improvements, soldiers, soldierLevel);
 				$("#in-demographics-raid-danger .value").text(Math.round(raidDanger * 100) + "%");
 				$("#in-demographics-raid-danger .value").toggleClass("warning", raidWarning);
-				UIAnimations.animateOrSetNumber($("#in-demographics-raid-defence .value"), true, raidDefence);
+				UIAnimations.animateOrSetNumber($("#in-demographics-raid-defence .value"), true, raidDefence, "", false, Math.round);
 				UIConstants.updateCalloutContent("#in-demographics-raid-danger", "Increases with camp size and decreases with camp defences.");
 				UIConstants.updateCalloutContent("#in-demographics-raid-defence", defenceS);
 				var hasLastRaid = campComponent.lastRaid && campComponent.lastRaid.isValid();
