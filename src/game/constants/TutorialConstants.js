@@ -90,7 +90,7 @@ define(['ash'], function (Ash) {
 			TUTORIAL_BUILT_ROBOT_FACTORY: {
 				triggers: [ "action_build" ],
 				repeats: "NEVER",
-				logMessage: "Built a robot factory.",
+				logMessage: "Robot Factory is ready for workers.",
 				conditions: { improvements: { robotFactory: [ 1, 2 ] } }
 			},
 			TUTORIAL_BUILT_ROBOT_RADIO: {

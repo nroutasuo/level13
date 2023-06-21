@@ -704,7 +704,7 @@
 		getLastRaidDescription: function (sector, campComponent, raidVO) {
 			let result = "(none)";
 			if (campComponent.lastRaid.wasVictory) {
-				result = "Camp was defended.";
+				result = "Camp defended.";
 			} else {
 				let resourcesLost = campComponent.lastRaid.resourcesLost;
 				let defendersLost = campComponent.lastRaid.defendersLost;
