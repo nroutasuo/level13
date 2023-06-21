@@ -50,6 +50,8 @@ define([
 	UIAnimations
 ) {
 	var UIOutHeaderSystem = Ash.System.extend({
+		
+		context: "UIOutHeaderSystem",
 
 		playerStatsNodes: null,
 		deityNodes: null,
@@ -125,11 +127,14 @@ define([
 			GlobalSignals.slowUpdateSignal.add(function () { sys.slowUpdate(); });
 			GlobalSignals.changelogLoadedSignal.add(function () { sys.updateGameVersion(); });
 			GlobalSignals.add(this, GlobalSignals.playerMoveStartedSignal, this.onPlayerMoveStarted);
+			GlobalSignals.add(this, GlobalSignals.playerLocationChangedSignal, this.onPlayerLocationChanged);
 			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.onPlayerPositionChanged);
+			GlobalSignals.add(this, GlobalSignals.playerMoveCompletedSignal, this.onPlayerMoveCompleted);
 			GlobalSignals.add(this, GlobalSignals.perksChangedSignal, this.onPerksChanged);
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onGameShown);
 			GlobalSignals.add(this, GlobalSignals.levelTypeRevealedSignal, this.onLevelTypeRevealed);
 			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.updateResourcesIfNotPending);
+			GlobalSignals.add(this, GlobalSignals.launchCompletedSignal, this.onLaunchCompleted);
 
 			this.generateStatsCallouts();
 			this.updateGameVersion();
@@ -1109,6 +1114,15 @@ define([
 			this.updateHeaderTexts();
 			this.updateResourcesIfNotPending();
 			this.updatePlayerStats();
+		},
+		
+		onPlayerMoveCompleted: function () {
+			this.updatePlayerStats();
+			this.updateLocation();
+		},
+		
+		onPlayerLocationChanged: function () {
+			this.updateLocation();
 		},
 		
 		onPlayerMoveStarted: function () {
