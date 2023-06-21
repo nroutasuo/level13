@@ -231,8 +231,8 @@ define([
 		getUnlockedGeneralActions: function (upgradeID) {
 			return this.getUnlockedActions(upgradeID, function (action) {
 				let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
-				if (action == "build_out_greenhouse") return true;
-				if (action == "build_out_tradepost_connector") return true;
+				// if (action == "build_out_greenhouse") return true;
+				if (action == "build_out_tradepost_connector") return false;
 				if (GameGlobals.playerActionsHelper.isUnlockUpgradeAction(action)) return false;
 				if (baseActionID.indexOf("build_") >= 0) return false;
 				if (baseActionID.indexOf("craft") >= 0) return false;
