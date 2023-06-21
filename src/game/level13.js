@@ -55,6 +55,7 @@ define([
 	'game/systems/FavourSystem',
 	'game/systems/GlobalResourcesSystem',
 	'game/systems/GlobalResourcesResetSystem',
+	'game/systems/InsightSystem',
 	'game/systems/BagSystem',
 	'game/systems/UnlockedFeaturesSystem',
 	'game/systems/occurrences/CampEventsSystem',
@@ -119,6 +120,7 @@ define([
 	FavourSystem,
 	GlobalResourcesSystem,
 	GlobalResourcesResetSystem,
+	InsightSystem,
 	BagSystem,
 	UnlockedFeaturesSystem,
 	CampEventsSystem,
@@ -193,6 +195,7 @@ define([
 			this.engine.addSystem(new RumourSystem(), SystemPriorities.update);
 			this.engine.addSystem(new EvidenceSystem(), SystemPriorities.update);
 			this.engine.addSystem(new FavourSystem(), SystemPriorities.update);
+			this.engine.addSystem(new InsightSystem(), SystemPriorities.update);
 			this.engine.addSystem(new PlayerActionSystem(), SystemPriorities.update);
 			this.engine.addSystem(new PlayerMovementSystem(), SystemPriorities.update);
 			this.engine.addSystem(new SectorStatusSystem(), SystemPriorities.update);

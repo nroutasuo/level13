@@ -2038,9 +2038,10 @@ define(['ash',
 			GameGlobals.gameState.numUnlockedMilestones = index;
 			
 			let hasDeity = this.playerStatsNodes.head.entity.has(DeityComponent);
+			let hasInsight = this.playerStatsNodes.head.insight.value > 0;
 			let baseMsg = "Milestone claimed. We now call this a " + newMilestone.name + ".";
 			let popupMsg = "<p>" + baseMsg + "</p>";
-			popupMsg += "<p>" + UIConstants.getMilestoneUnlocksDescriptionHTML(newMilestone, oldMilestone, true, true, hasDeity) + "<p>";
+			popupMsg += "<p>" + UIConstants.getMilestoneUnlocksDescriptionHTML(newMilestone, oldMilestone, true, true, hasDeity, hasInsight) + "<p>";
 			GameGlobals.uiFunctions.showInfoPopup("Milestone", popupMsg, "Continue", null, null, false, false);
 			
 			this.addLogMessage(LogConstants.getUniqueID(), baseMsg);

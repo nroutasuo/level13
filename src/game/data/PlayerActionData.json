@@ -1097,15 +1097,18 @@
         },
         "unlock_building_spaceship1": {
             "evidence": 643,
-            "rumours": 5812
+            "rumours": 5812,
+			"insight": 10
         },
         "unlock_building_spaceship2": {
             "favour": 430,
-            "rumours": 6975
+            "rumours": 6975,
+			"insight": 20
         },
         "unlock_building_spaceship3": {
             "evidence": 848,
-            "favour": 430
+            "favour": 430,
+			"insight": 10
         },
         "unlock_building_square": {
             "rumours": 58

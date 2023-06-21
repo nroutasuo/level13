@@ -9,6 +9,7 @@ define(['ash', 'game/constants/OccurrenceConstants', 'game/constants/UIConstants
 				maxRumours: 100,
 				maxEvidence: 300,
 				maxFavour: 0,
+				maxInsight: 0,
 				baseReputation: 0,
 			},
 			{
@@ -17,6 +18,7 @@ define(['ash', 'game/constants/OccurrenceConstants', 'game/constants/UIConstants
 				maxRumours: 500,
 				maxEvidence: 400,
 				maxFavour: 0,
+				maxInsight: 0,
 				baseReputation: 1,
 				unlockedEvents: [ OccurrenceConstants.campOccurrenceTypes.raid ],
 			},
@@ -26,6 +28,7 @@ define(['ash', 'game/constants/OccurrenceConstants', 'game/constants/UIConstants
 				maxRumours: 1000,
 				maxEvidence: 500,
 				maxFavour: 0,
+				maxInsight: 0,
 				baseReputation: 2,
 			},
 			{
@@ -34,6 +37,7 @@ define(['ash', 'game/constants/OccurrenceConstants', 'game/constants/UIConstants
 				maxRumours: 3000,
 				maxEvidence: 700,
 				maxFavour: 100,
+				maxInsight: 0,
 				baseReputation: 3,
 				unlockedFeatures: [ UIConstants.UNLOCKABLE_FEATURE_WORKER_AUTO_ASSIGNMENT ],
 			},
@@ -43,6 +47,7 @@ define(['ash', 'game/constants/OccurrenceConstants', 'game/constants/UIConstants
 				maxRumours: 5000,
 				maxEvidence: 900,
 				maxFavour: 400,
+				maxInsight: 0,
 				baseReputation: 4,
 			},
 			{
@@ -51,6 +56,7 @@ define(['ash', 'game/constants/OccurrenceConstants', 'game/constants/UIConstants
 				maxRumours: 10000,
 				maxEvidence: 1200,
 				maxFavour: 500,
+				maxInsight: 100,
 				baseReputation: 5,
 			},
 			{
@@ -59,6 +65,7 @@ define(['ash', 'game/constants/OccurrenceConstants', 'game/constants/UIConstants
 				maxRumours: 15000,
 				maxEvidence: 3000,
 				maxFavour: 1000,
+				maxInsight: 200,
 				baseReputation: 6,
 			},
 			{
@@ -67,6 +74,7 @@ define(['ash', 'game/constants/OccurrenceConstants', 'game/constants/UIConstants
 				maxRumours: 20000,
 				maxEvidence: 6000,
 				maxFavour: 2000,
+				maxInsight: 500,
 				baseReputation: 8,
 			},
 		],

@@ -113,6 +113,9 @@ define(['ash',
 				var value = parseInt(params[0]);
 				this.setFavour(value);
 			});
+			this.registerCheat(CheatConstants.CHEAT_NAME_INSIGHT, "Set insight.", ["value"], function (params) {
+				this.setInsight(parseInt(params[0]));
+			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_POPULATION, "Add population to nearest camp.", ["value (1-n)"], function (params) {
 				this.addPopulation(Math.max(1, parseInt(params[0])));
 			});
@@ -384,6 +387,10 @@ define(['ash',
 			}
 
 			this.playerStatsNodes.head.entity.get(DeityComponent).favour = Math.max(0, value);
+		},
+		
+		setInsight: function (value) {
+			this.playerStatsNodes.head.insight.value = Math.max(0, value);
 		},
 		
 		addSupplies: function () {

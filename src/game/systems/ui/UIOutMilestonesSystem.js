@@ -88,6 +88,7 @@ define([
 			let nextMilestone = GameGlobals.tribeHelper.getNextMilestone();
 			let action = this.getUnlockMilestoneAction(nextMilestone);
 			let hasDeity = this.playerStatsNodes.head.entity.has(DeityComponent);
+			let hasInsight = this.playerStatsNodes.head.insight.value > 0;
 			let hasNextMilestone = nextMilestone.name || false;
 			
 			// texts
@@ -103,7 +104,7 @@ define([
 			// unlocks
 			$("#milestone-next-unlocks").empty();
 			let unlocksDiv = "<div class='p-meta'>";
-			unlocksDiv += UIConstants.getMilestoneUnlocksDescriptionHTML(nextMilestone, currentMilestone, false, false, hasDeity);
+			unlocksDiv += UIConstants.getMilestoneUnlocksDescriptionHTML(nextMilestone, currentMilestone, false, false, hasDeity, hasInsight);
 			unlocksDiv += "</div>";
 			$("#milestone-next-unlocks").append(unlocksDiv);
 			

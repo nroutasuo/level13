@@ -60,6 +60,11 @@ define([
 			return currentMilestone.maxFavour || -1;
 		},
 		
+		getCurrentInsightLimit: function () {
+			let currentMilestone = this.getCurrentMilestone();
+			return currentMilestone.maxInsight || -1;
+		},
+		
 		getCurrentReputationBaseValue: function () {
 			let milestone = this.getCurrentMilestone();
 			return GameGlobals.tribeBalancingHelper.getReputationBaseValue(milestone.index);

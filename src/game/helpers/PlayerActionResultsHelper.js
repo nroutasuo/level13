@@ -509,6 +509,7 @@ define([
 			if (rewards.gainedEvidence) this.playerStatsNodes.head.evidence.value += rewards.gainedEvidence;
 			if (rewards.gainedRumours) this.playerStatsNodes.head.rumours.value += rewards.gainedRumours;
 			if (rewards.gainedFavour) this.playerStatsNodes.head.entity.get(DeityComponent).favour += rewards.gainedFavour;
+			if (rewards.gainedInsight) this.playerStatsNodes.head.insight.value += rewards.gainedInsight;
 			// if (rewards.gainedReputation) this.playerStatsNodes.head.reputation.value += rewards.gainedReputation;
 
 			GlobalSignals.inventoryChangedSignal.dispatch();
@@ -568,6 +569,14 @@ define([
 				msg += "$" + replacements.length + ", ";
 				replacements.push("#" + replacements.length + " evidence");
 				values.push(rewards.gainedEvidence);
+			}
+			
+			if (rewards.gainedInsight) {
+				msg += ", ";
+				foundSomething = true;
+				msg += "$" + replacements.length + ", ";
+				replacements.push("#" + replacements.length + " insight");
+				values.push(rewards.gainedInsight);
 			}
 
 			if (rewards.gainedRumours) {
@@ -704,6 +713,9 @@ define([
 			}
 			if (resultVO.gainedFavour) {
 				gainedhtml += "<li>" + resultVO.gainedFavour + " favour</li>";
+			}
+			if (resultVO.gainedInsight) {
+				gainedhtml += "<li>" + resultVO.gainedInsight + " insight</li>";
 			}
 			if (resultVO.gainedPopulation) {
 				gainedhtml += "<li>" + resultVO.gainedPopulation + " population</li>";
@@ -1339,6 +1351,7 @@ define([
 				|| result.gainedEvidence > 0
 				|| result.gainedRumours > 0
 				|| result.gainedFavour > 0
+				|| result.gainedInsight > 0
 				|| result.gainedReputation > 0
 				|| result.gainedPopulation > 0;
 		},

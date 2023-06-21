@@ -1031,6 +1031,7 @@ define(['ash',
 				let maxRumours = GameGlobals.playerActionFunctions.playerStatsNodes.head.rumours.maxValue;
 				let maxEvidence = GameGlobals.playerActionFunctions.playerStatsNodes.head.evidence.maxValue;
 				let maxFavour = GameGlobals.playerHelper.getMaxFavour();
+				let maxInsight = GameGlobals.playerActionFunctions.playerStatsNodes.head.insight.maxValue;
 				let showStorage = GameGlobals.resourcesHelper.getCurrentStorageCap();
 				
 				for (let key in costs) {
@@ -1046,6 +1047,7 @@ define(['ash',
 						(key == "stamina" && value > playerHealth * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR) ||
 						(key == "rumours" && value > maxRumours) ||
 						(key == "evidence" && value > maxEvidence) ||
+						(key == "insight" && value > maxInsight) ||
 						(key == "favour" && value > maxFavour);
 						
 					if (costsStatus) {

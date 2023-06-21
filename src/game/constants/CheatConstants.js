@@ -12,6 +12,7 @@ define(function () {
 		CHEAT_NAME_EVIDENCE: "evidence",
 		CHEAT_NAME_RUMOURS: "rumours",
 		CHEAT_NAME_FAVOUR: "favour",
+		CHEAT_NAME_INSIGHT: "insight",
 		CHEAT_NAME_POPULATION: "pop",
 		CHEAT_NAME_WORKERS: "workers",
 		CHEAT_NAME_STAMINA: "stamina",

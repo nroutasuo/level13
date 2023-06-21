@@ -11,6 +11,7 @@ define([
 	'game/components/sector/ReputationComponent',
 	'game/components/player/RumoursComponent',
 	'game/components/player/EvidenceComponent',
+	'game/components/player/InsightComponent',
 	'game/components/player/DeityComponent',
 	'game/components/player/FollowersComponent',
 	'game/components/player/ItemsComponent',
@@ -62,6 +63,7 @@ define([
 	ReputationComponent,
 	RumoursComponent,
 	EvidenceComponent,
+	InsightComponent,
 	DeityComponent,
 	FollowersComponent,
 	ItemsComponent,
@@ -127,6 +129,7 @@ define([
 				.add(new ResourceAccumulationComponent(saveKey))
 				.add(new RumoursComponent())
 				.add(new EvidenceComponent())
+				.add(new InsightComponent())
 				.add(new PositionComponent(13, 0, 0, false))
 				.add(new LogMessagesComponent())
 				.add(new PlayerActionComponent())
@@ -141,6 +144,7 @@ define([
 					PositionComponent,
 					RumoursComponent,
 					EvidenceComponent,
+					InsightComponent,
 					LogMessagesComponent,
 					PlayerActionComponent,
 					ExcursionComponent,

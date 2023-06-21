@@ -56,6 +56,7 @@ define(['ash',
 				item_exploration_1: "lock pick",
 				rumours: "rumours",
 				evidence: "evidence",
+				insight: "insight",
 			}
 		},
 		
@@ -676,7 +677,7 @@ define(['ash',
 			return "<img src='img/items/blueprints/blueprint-" + type + ".png' alt='' />";
 		},
 		
-		getMilestoneUnlocksDescriptionHTML: function (milestone, previousMilestone, showComparison, showMultiline, hasDeity) {
+		getMilestoneUnlocksDescriptionHTML: function (milestone, previousMilestone, showComparison, showMultiline, hasDeity, hasInvestigate) {
 			let html = "";
 			let baseReputation = Math.max(milestone.baseReputation || 0 , previousMilestone.baseReputation || 0);
 			
@@ -705,8 +706,13 @@ define(['ash',
 			
 			addValue("Max evidence", milestone.maxEvidence);
 			addValue("Max rumours", milestone.maxRumours);
+			
 			if (milestone.maxFavour && hasDeity) {
 				addValue("Max favour", milestone.maxFavour);
+			}
+			
+			if (milestone.maxInsight && hasInvestigate) {
+				addValue("Max insight", milestone.maxInsight);
 			}
 			
 			addGroup("", milestone.unlockedFeatures, UIConstants.getUnlockedFeatureDisplayName);

@@ -125,6 +125,9 @@ define([
 				} else if (costName === "evidence") {
 					this.playerStatsNodes.head.evidence.value -= costAmount;
 					result.evidence = costAmount;
+				} else if (costName === "insight") {
+					this.playerStatsNodes.head.insight.value -= costAmount;
+					result.insight = costAmount;
 				} else if (costName === "silver") {
 					var currencyComponent = GameGlobals.resourcesHelper.getCurrentCurrency();
 					currencyComponent.currency -= costAmount;
@@ -1351,6 +1354,9 @@ define([
 					case "evidence":
 						return this.playerStatsNodes.head.evidence.value;
 
+					case "insight":
+						return this.playerStatsNodes.head.insight.value;
+
 					case "blueprint":
 						return 1;
 					
@@ -1407,6 +1413,9 @@ define([
 						
 					case "evidence":
 						return this.playerStatsNodes.head.evidence.maxValue / costs.evidence;
+						
+					case "insight":
+						return this.playerStatsNodes.head.insight.maxValue / costs.insight;
 						
 					case "favour":
 						let deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);

@@ -87,6 +87,7 @@ define([
 			this.elements.valRumours = $("#stats-rumours .value");
 			this.elements.valEvidence = $("#stats-evidence .value");
 			this.elements.valFavour = $("#stats-favour .value");
+			this.elements.valInsight = $("#stats-insight .value");
 			this.elements.valScavenge = $("#stats-scavenge .value");
 			this.elements.valReputation = $("#header-camp-reputation .value");
 			this.elements.changeIndicatorVision = $("#vision-change-indicator");
@@ -98,6 +99,7 @@ define([
 			this.elements.changeIndicatorEvidence = $("#evidence-change-indicator");
 			this.elements.changeIndicatorRumours = $("#rumours-change-indicator");
 			this.elements.changeIndicatorFavour = $("#favour-change-indicator");
+			this.elements.changeIndicatorInsight = $("#insight-change-indicator");
 
 			return this;
 		},
@@ -287,6 +289,7 @@ define([
 			let showEvidence = GameGlobals.gameState.unlockedFeatures.evidence;
 			let showRumours = playerStatsNode.rumours.value > 0 || playerStatsNode.rumours.isAccumulating;
 			let hasDeity = this.deityNodes.head != null;
+			let hasInsight = playerStatsNode.insight.value > 0;
 			
 			this.updatePlayerStat("rumours", playerStatsNode.rumours, showRumours, playerStatsNode.rumours.value, playerStatsNode.rumours.maxValue, false, this.elements.valRumours, this.elements.changeIndicatorRumours);
 			this.updatePlayerStat("evidence", playerStatsNode.evidence, showEvidence, playerStatsNode.evidence.value, playerStatsNode.evidence.maxValue, false, this.elements.valEvidence, this.elements.changeIndicatorEvidence);
@@ -295,8 +298,13 @@ define([
 			} else {
 				this.updatePlayerStat("favour", null, hasDeity, 0, this.elements.valFavour, 0, false, this.elements.changeIndicatorFavour);
 			}
+			if (hasInsight) {
+				this.updatePlayerStat("insight", playerStatsNode.insight, hasInsight, playerStatsNode.insight.value, playerStatsNode.insight.maxValue, false, this.elements.valInsight, this.elements.changeIndicatorInsight);
+			} else {
+				this.updatePlayerStat("insight", null, hasInsight, 0, this.elements.valInsight, 0, false, this.elements.changeIndicatorInsight);
+			}
 
-			GameGlobals.uiFunctions.toggle($("#header-tribe-container"), showEvidence || showRumours || hasDeity);
+			GameGlobals.uiFunctions.toggle($("#header-tribe-container"), showEvidence || showRumours || hasDeity || hasInsight);
 
 			var improvements = this.currentLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var maxPopulation = CampConstants.getHousingCap(improvements);
