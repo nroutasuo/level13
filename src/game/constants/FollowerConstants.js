@@ -40,6 +40,7 @@ define(['ash',
 			SCAVENGE_CAPACITY: "scavenge_capacity",
 		},
 		
+		// in order of rarity
 		animalType: {
 			DOG: "dog",
 			MULE: "mule",
@@ -123,7 +124,7 @@ define(['ash',
 			let gender = CultureConstants.getRandomGender();
 			if (isAnimal) {
 				let animalKeys = Object.keys(FollowerConstants.animalType);
-				let animalType = FollowerConstants.animalType[animalKeys[MathUtils.randomIntBetween(0, animalKeys.length)]];
+				let animalType = FollowerConstants.animalType[animalKeys[MathUtils.getWeightedRandom(0, animalKeys.length)]];
 				name = this.getRandomAnimalName(animalType);
 				icon = this.getRandomAnimalIcon(animalType);
 			} else {

@@ -65,7 +65,7 @@ define(function () {
 		},
 		
 		randomIntBetween: function (min, max) {
-			return this.intBetween(Math.random(), min, max);
+			return this.intBetween(min, max, Math.random());
 		},
 		
 		intBetween: function (min, max, pos) {
