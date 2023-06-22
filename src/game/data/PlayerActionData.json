@@ -3626,7 +3626,7 @@
                 30
             ]
         },
-        "use_item_stamina_potion_1": {
+        "use_item_stamina_potion": {
             "inCamp": false,
             "perks": {
                 "energized": false
