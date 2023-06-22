@@ -21,7 +21,7 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 		OCCURRENCE_CAMP_RAID_VARIATION: 3,
 		
 		OCCURRENCE_CAMP_RECRUIT_LENGTH: 60 * 5,
-		OCCURRENCE_CAMP_RECRUIT_COOLDOWN: 60 * 20,
+		OCCURRENCE_CAMP_RECRUIT_COOLDOWN: 60 * 25,
 		OCCURRENCE_CAMP_RECRUIT_VARIATION: 3,
 		
 		getTimeToNext: function (occurrenceType, isNew, upgradeLevel, reputation, numCamps) {

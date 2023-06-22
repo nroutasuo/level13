@@ -335,9 +335,10 @@ define([
 					
 				case OccurrenceConstants.campOccurrenceTypes.recruit:
 					let hasPendingFollower = campNode.camp.pendingRecruits.length > 0;
+					let forcedType = Math.random() < 0.2 ? FollowerConstants.abilityType.ATTACK : null;
 					let follower = hasPendingFollower ?
 						campNode.camp.pendingRecruits.shift() :
-						FollowerConstants.getNewRandomFollower(FollowerConstants.followerSource.EVENT, GameGlobals.gameState.numCamps, campPos.level);
+						FollowerConstants.getNewRandomFollower(FollowerConstants.followerSource.EVENT, GameGlobals.gameState.numCamps, campPos.level, forcedType);
 					let isFoundAsReward = hasPendingFollower && follower.source != FollowerConstants.followerSource.EVENT;
 					campNode.entity.add(new RecruitComponent(follower, isFoundAsReward));
 					logMsg = hasPendingFollower ? "Follower met when exploring is waiting at the inn." : "A visitor arrives at the Inn. ";
