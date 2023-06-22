@@ -301,6 +301,13 @@ define(['ash'], function (Ash) {
 				logMessage: "There are some hostile creatures here. Scavenging is more risky.",
 				conditions: { sector: { enemies: true } },
 			},
+			TUTORIAL_ENCOUNTER_OUTPOST: {
+				triggers: [ "action_enter_camp" ],
+				repeats: "NEVER",
+				delay: 1500,
+				logMessage: "There are few people living on this level. The camp will grow slower.",
+				conditions: { inCamp: true, "level": { "population": [ -1, 1 ] } }
+			},
 			TUTORIAL_FEATURE_UNLOCKED_MOVE: {
 				triggers: [ "feature_unlocked", "change_inventory" ],
 				repeats: "NEVER",
