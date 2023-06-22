@@ -4,6 +4,7 @@ define([
 	'game/GlobalSignals',
 	'game/constants/TradeConstants',
 	'game/constants/ItemConstants',
+	'game/constants/OccurrenceConstants',
 	'game/constants/UIConstants',
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/ItemsNode',
@@ -15,7 +16,7 @@ define([
 	'game/vos/ResourcesVO',
 	'game/vos/OutgoingCaravanVO'
 ], function (
-	Ash, GameGlobals, GlobalSignals, TradeConstants, ItemConstants, UIConstants, PlayerLocationNode, ItemsNode, TribeUpgradesNode, PositionComponent, OutgoingCaravansComponent, TraderComponent, SectorImprovementsComponent, ResourcesVO, OutgoingCaravanVO
+	Ash, GameGlobals, GlobalSignals, TradeConstants, ItemConstants, OccurrenceConstants, UIConstants, PlayerLocationNode, ItemsNode, TribeUpgradesNode, PositionComponent, OutgoingCaravansComponent, TraderComponent, SectorImprovementsComponent, ResourcesVO, OutgoingCaravanVO
 ) {
 	var UIOutTradeSystem = Ash.System.extend({
 
@@ -276,7 +277,11 @@ define([
 
 			$("#trade-caravans-incoming-container table").empty();
 			if (caravan) {
-				var nameTD = "<td class='item-name'>" + caravan.name + "</td>";
+				log.i("updateIncomingCaravan", this);
+				log.i(caravan, this);
+				
+				let traderLevel = GameGlobals.campHelper.getEventUpgradeLevel(OccurrenceConstants.campOccurrenceTypes.trader);
+				var nameTD = "<td class='item-name'>" + caravan.name + " <span class='p-meta'>level " + traderLevel + "</span></td>";
 
 				var inventoryUL = "<ul class='ul-horizontal'>";
 				var numLis = 0;
@@ -323,7 +328,7 @@ define([
 
 				inventoryUL += "</ul>";
 				var inventoryTD = "<td><div style='margin-right: 5px'>" + inventoryUL + "</div></td>";
-				var buttonsTD = "<td><button class='trade-caravans-incoming-trade'>Trade</button>";
+				var buttonsTD = "<td class='nowrap'><button class='trade-caravans-incoming-trade'>Trade</button>";
 				buttonsTD += "<button class='trade-caravans-incoming-dismiss btn-secondary'>Dismiss</button></td>";
 				var tr = "<tr>" + nameTD + inventoryTD + buttonsTD + "</tr>";
 				$("#trade-caravans-incoming-container table").append(tr);
