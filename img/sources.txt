@@ -34,3 +34,4 @@ Fugue Icons
 (C) 2013 Yusuke Kamiyamane
 see items/FUGURE-README.txt
 
+Additional icons adapted from Fugue Icons.

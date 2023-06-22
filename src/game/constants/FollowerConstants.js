@@ -45,7 +45,8 @@ define(['ash',
 			DOG: "dog",
 			MULE: "mule",
 			BAT: "bat",
-			OLM: "olm"
+			RAVEN: "raven",
+			OLM: "olm",
 		},
 		
 		followerSource: {
@@ -123,7 +124,7 @@ define(['ash',
 			
 			let gender = CultureConstants.getRandomGender();
 			if (isAnimal) {
-				let animalKeys = Object.keys(FollowerConstants.animalType);
+				let animalKeys = this.getAvailableAnimalTypes(source, campOrdinal);
 				let animalType = FollowerConstants.animalType[animalKeys[MathUtils.getWeightedRandom(0, animalKeys.length)]];
 				name = this.getRandomAnimalName(animalType);
 				icon = this.getRandomAnimalIcon(animalType);
@@ -213,6 +214,20 @@ define(['ash',
 			return result;
 		},
 		
+		getAvailableAnimalTypes: function (source, campOrdinal) {
+			let result = Object.keys(FollowerConstants.animalType);
+			if (campOrdinal < 8) {
+				result.splice(result.indexOf(this.animalType.RAVEN), 1);
+			}
+			if (campOrdinal > 8) {
+				result.splice(result.indexOf(this.animalType.OLM), 1);
+			}
+			if (campOrdinal > 13) {
+				result.splice(result.indexOf(this.animalType.BAT), 1);
+			}
+			return result;
+		},
+		
 		getUnlockCampOrdinal: function (abilityType) {
 			let firstFollowerCampOrdinal = FollowerConstants.FIRST_FOLLOWER_CAMP_ORDINAL;
 			
@@ -252,11 +267,13 @@ define(['ash',
 				case FollowerConstants.animalType.DOG:
 					return "dog";
 				case FollowerConstants.animalType.MULE:
-					return "blind mule";
+					return "mule";
 				case FollowerConstants.animalType.BAT:
 					return "giant bat";
 				case FollowerConstants.animalType.OLM:
 					return "giant olm";
+				case FollowerConstants.animalType.RAVEN:
+					return "raven";
 				default:
 					return "monitor lizard";
 			}
@@ -265,9 +282,13 @@ define(['ash',
 		getRandomAnimalIcon: function (animalType) {
 			switch (animalType) {
 				case FollowerConstants.animalType.DOG:
-					return "img/followers/follower_animal_dog.png"
+					return "img/followers/follower_animal_dog.png";
+				case FollowerConstants.animalType.RAVEN:
+					return "img/followers/follower_animal_bird.png";
+				case FollowerConstants.animalType.BAT:
+					return "img/followers/follower_animal_bat.png";
 				default:
-					return "img/followers/follower_animal_generic.png"
+					return "img/followers/follower_animal_generic.png";
 			}
 		},
 		
