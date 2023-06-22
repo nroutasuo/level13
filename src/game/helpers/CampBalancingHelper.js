@@ -945,13 +945,13 @@ define([
 			var workerUpgrade;
 			for (let i in workerUpgrades) {
 				workerUpgrade = workerUpgrades[i];
-				if (upgrades.hasUpgrade(workerUpgrade)) upgradeBonus += 0.15;
+				if (upgrades.hasUpgrade(workerUpgrade)) upgradeBonus += 0.2;
 			}
 			return upgradeBonus;
 		},
 		
 		getWorkerImprovementBonus: function (improvementsComponent, improvementName) {
-			return 1 + (improvementsComponent.getLevel(improvementName) - 1) / 10;
+			return 1 + (improvementsComponent.getLevel(improvementName) - 1) / 5;
 		},
 		
 		getDamagedBuildingsProductionFactor: function (improvementsComponent, improvementName) {
