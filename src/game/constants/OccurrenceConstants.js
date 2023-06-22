@@ -29,7 +29,7 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 			let maximumTime = this.getMaximumTimeToNext(occurrenceType, isNew, numCamps);
 			
 			let randomFactor = Math.random();
-            let upgradeFactor = 1 - (upgradeLevel - 1) * 0.05;
+            let upgradeFactor = 1 - (upgradeLevel - 1) * 0.075;
 			let reputationFactor = 1 - MathUtils.map(reputation, 1, CampConstants.MAX_REPUTATION, 0, 1);
 			
 			let variationFactor = MathUtils.clamp(randomFactor * upgradeFactor * reputationFactor, 0, 1);
