@@ -301,10 +301,10 @@
             "resource_rubber": 300
         },
         "clear_debris_e": {
-            "resource_rope": 50
+            "resource_rope": 80
         },
         "clear_debris_l": {
-            "resource_rope": 100
+            "resource_rope": 120
         },
         "clear_waste_r": {
             "stamina": 50
@@ -313,7 +313,7 @@
             "stamina": 50
         },
         "clear_workshop": {
-            "stamina": 10
+            "stamina": 200
         },
         "craft_bag_0": {
             "item_res_bands": 1,
@@ -954,7 +954,7 @@
             "rumours": 2583
         },
         "investigate": {
-            "stamina": 10
+            "stamina": 50
         },
         "launch": {
             "resource_fuel": 1000
