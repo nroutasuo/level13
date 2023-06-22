@@ -1771,6 +1771,7 @@
         "rarityLocale": 2,
         "rarityScavenge": 7,
         "rarityTrade": 4,
+        "tradePrice": 1,
         "type": "exploration"
     },
     "consumable_map_1": {
