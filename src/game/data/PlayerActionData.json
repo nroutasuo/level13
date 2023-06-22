@@ -3,7 +3,7 @@
         "clear_workshop": 60,
         "despair": 10,
         "fight_gang": 60,
-        "investigate": 120,
+        "investigate": 1,
         "launch": 600,
         "scavenge": 10,
         "scout_locale_i": 60,
@@ -1344,10 +1344,11 @@
         "bridge_gap": 60,
         "build_out_collector_food": 3,
         "build_out_collector_water": 3,
+		"investigate": 3,
         "clear_debris": 30,
         "clear_waste_r": 10,
         "clear_waste_t": 5,
-        "launch": 5,
+        "launch": 3,
         "send_caravan": 600,
         "use_in_campfire": 5,
         "use_in_home": 60,
@@ -1483,6 +1484,10 @@
         },
         "build_in_aqueduct": {
             "improvements": {
+	            "house": [
+	                2,
+	                -1
+	            ],
                 "aqueduct": [
                     -1,
                     3
@@ -1493,11 +1498,11 @@
             }
         },
         "build_in_barracks": {
-            "house": [
-                2,
-                -1
-            ],
             "improvements": {
+	            "house": [
+	                2,
+	                -1
+	            ],
                 "barracks": [
                     -1,
                     2
@@ -1591,6 +1596,7 @@
                     -1
                 ]
             },
+			"sunlit": false,
             "upgrades": {
                 "improve_building_inn": true
             }
@@ -1744,12 +1750,6 @@
                 "radiotower": [
                     -1,
                     1
-                ]
-            },
-            "level": {
-                "population": [
-                    1,
-                    -1
                 ]
             },
             "upgrades": {
@@ -2158,10 +2158,6 @@
         },
         "build_out_spaceship2": {
             "improvements": {
-                "spaceship1": [
-                    1,
-                    -1
-                ],
                 "spaceship2": [
                     0,
                     1
@@ -2863,7 +2859,9 @@
         },
         "investigate": {
             "busy": false,
+			"inCamp": false,
             "sector": {
+				"investigatable": true,
                 "investigatedPercent": [
                     -1,
                     1
@@ -2874,25 +2872,20 @@
                 "unlock_building_researchcenter": true
             },
             "vision": [
-                30,
+                70,
                 -1
             ]
         },
         "launch": {
             "busy": false,
-            "improvements": {
-                "spaceship1": [
-                    1,
-                    -1
-                ],
-                "spaceship2": [
-                    1,
-                    -1
-                ],
-                "spaceship3": [
-                    1,
-                    -1
-                ]
+            "inCamp": true,
+			"sunlit": true,
+            "tribe": {
+                "projects": {
+                    "spaceship1": 1,
+                    "spaceship2": 1,
+                    "spaceship3": 1
+                }
             }
         },
         "leave_camp": {
@@ -3499,6 +3492,7 @@
             }
         },
         "use_in_hospital_2": {
+            "busy": false,
             "camp": {
                 "raid": false
             },
@@ -3507,9 +3501,6 @@
                     1,
                     -1
                 ]
-            },
-            "upgrades": {
-                "improve_building_hospital_3": true
             }
         },
         "use_in_market": {
