@@ -623,6 +623,7 @@
         "rarityLocale": 8,
         "rarityScavenge": -1,
         "rarityTrade": 5,
+        "tradePrice": 2,
         "type": "voucher"
 	},
 	"cache_rumours_12": {
@@ -640,6 +641,7 @@
         "rarityLocale": 8,
         "rarityScavenge": -1,
         "rarityTrade": 5,
+        "tradePrice": 3,
         "type": "voucher"
 	},
 	"cache_rumours_22": {
@@ -657,6 +659,7 @@
         "rarityLocale": 8,
         "rarityScavenge": -1,
         "rarityTrade": 5,
+        "tradePrice": 3,
         "type": "voucher"
 	},
 	"cache_rumours_23": {
@@ -674,6 +677,7 @@
         "rarityLocale": 8,
         "rarityScavenge": -1,
         "rarityTrade": 5,
+        "tradePrice": 4,
         "type": "voucher"
 	},
 	"cache_favour_11": {
@@ -690,6 +694,7 @@
         "rarityLocale": 5,
         "rarityScavenge": -1,
         "rarityTrade": 8,
+        "tradePrice": 2,
         "type": "voucher"
 	},
 	"cache_favour_12": {
@@ -706,6 +711,7 @@
         "rarityLocale": 5,
         "rarityScavenge": -1,
         "rarityTrade": 8,
+        "tradePrice": 3,
         "type": "voucher"
 	},
 	"cache_insight_11": {

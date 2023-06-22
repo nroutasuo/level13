@@ -151,6 +151,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		},
 		
 		getItemCategory: function (item) {
+			if (!item) return ItemConstants.itemCategories.other;
 			switch (item.type) {
 				case ItemConstants.itemTypes.weapon:
 				case ItemConstants.itemTypes.clothing_over:
@@ -255,6 +256,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		},
 
 		getItemDefaultBonus: function (item) {
+			if (!item) return null;
 			switch (item.type) {
 				case ItemConstants.itemTypes.light:
 					return ItemConstants.itemBonusTypes.light;

@@ -266,9 +266,9 @@ define([
 			traderTypeRelativeProbabilities[TradeConstants.traderType.EQUIPMENT] = 1;
 			traderTypeRelativeProbabilities[TradeConstants.traderType.GENERAL] = 1;
 			traderTypeRelativeProbabilities[TradeConstants.traderType.CRAFTING] = 1 - (traderLevel - 1) * 0.1;
-			traderTypeRelativeProbabilities[TradeConstants.traderType.RESOURCES] = 1;
-			traderTypeRelativeProbabilities[TradeConstants.traderType.PARTNER] = 1;
-			traderTypeRelativeProbabilities[TradeConstants.traderType.VALUABLES] = traderLevel * 0.15;
+			traderTypeRelativeProbabilities[TradeConstants.traderType.RESOURCES] = 1 + traderLevel * 0.1;
+			traderTypeRelativeProbabilities[TradeConstants.traderType.PARTNER] = 1.1;
+			traderTypeRelativeProbabilities[TradeConstants.traderType.VALUABLES] = (traderLevel - 1) * 0.2;
 			
 			if (neededIngredient) {
 				traderTypeRelativeProbabilities[TradeConstants.traderType.CRAFTING] = 10;
@@ -291,44 +291,56 @@ define([
 			let randResAmount = 450 + campOrdinal * 50;
 			
 			// TODO unify logic with scavenge rewards - many similar checks
-			let addSellItemsFromCategories = function (categories, probability, maxAmount, includeCommon) {
+			let addSellItemIfValid = function (itemDefinition, probability, maxAmount) {
+				// check hard requirements
+				var tradeRarity = itemDefinition.tradeRarity;
+				if (tradeRarity <= 0)
+					return;
+				if (itemDefinition.requiredCampOrdinal > campOrdinal + 1)
+					return;
+				if (campOrdinal <= 8 && itemDefinition.requiredCampOrdinal >= 9)
+					return;
+				if (ItemConstants.isQuicklyObsoletable(itemDefinition.type)) {
+					if (itemDefinition.requiredCampOrdinal > 0 && itemDefinition.requiredCampOrdinal <= campOrdinal - 5)
+						return;
+				}
+				var craftingReq = GameGlobals.itemsHelper.getRequiredCampAndStepToCraft(itemDefinition);
+				if (craftingReq.campOrdinal > campOrdinal + 1)
+					return;
+				// check probability
+				var isNeededIngredient = neededIngredient && itemDefinition.id == neededIngredient;
+				var itemProbability = probability * (1/tradeRarity);
+				if (craftingReq.campOrdinal > campOrdinal || itemDefinition.requiredCampOrdinal > campOrdinal) {
+					itemProbability *= 0.5;
+				}
+				if (Math.random() > itemProbability && !isNeededIngredient) {
+					return;
+				}
+				// add item
+				var amount = Math.ceil(Math.random() * maxAmount);
+				for (let j = 0; j < amount; j++) {
+					sellItems.push(itemDefinition.clone());
+				}
+			}
+			
+			// TODO fix probability of ending up with some items depending on number of matching items
+			let addSellItemsFromCategories = function (categories, probability, maxAmount, maxDifferentItems, includeCommon, filter) {
+				let numDifferentItemsAdded = 0;
 				for (let j in categories) {
 					var category = categories[j];
 					var isObsoletable = ItemConstants.isObsoletable(category);
 					var itemList = ItemConstants.itemDefinitions[category];
 					for (let i in itemList) {
-						var itemDefinition = itemList[i];
-						// check hard requirements
-						var tradeRarity = itemDefinition.tradeRarity;
-						if (tradeRarity <= 0)
+						let itemDefinition = itemList[i];
+						if (filter && itemDefinition.id.indexOf(filter) !== 0)
 							continue;
-						if (itemDefinition.requiredCampOrdinal > campOrdinal + 1)
-							continue;
-						if (campOrdinal <= 8 && itemDefinition.requiredCampOrdinal >= 9)
-							continue;
-						if (ItemConstants.isQuicklyObsoletable(category)) {
-							if (itemDefinition.requiredCampOrdinal > 0 && itemDefinition.requiredCampOrdinal <= campOrdinal - 5)
-								continue;
-						}
 						if (!includeCommon && isObsoletable && itemDefinition.craftable && itemDefinition.requiredCampOrdinal < campOrdinal)
 							continue;
-						var craftingReq = GameGlobals.itemsHelper.getRequiredCampAndStepToCraft(itemDefinition);
-						if (craftingReq.campOrdinal > campOrdinal + 1)
-							continue;
-						// check probability
-						var isNeededIngredient = neededIngredient && itemDefinition.id == neededIngredient;
-						var itemProbability = probability * (1/tradeRarity);
-						if (craftingReq.campOrdinal > campOrdinal || itemDefinition.requiredCampOrdinal > campOrdinal) {
-							itemProbability *= 0.5;
-						}
-						if (Math.random() > itemProbability && !isNeededIngredient) {
-							continue;
-						}
-						// add item
-						var amount = Math.ceil(Math.random() * maxAmount);
-						for (let j = 0; j < amount; j++) {
-							sellItems.push(itemDefinition.clone());
-						}
+						let numBefore = sellItems.length;
+						addSellItemIfValid(itemDefinition, probability, maxAmount);
+						let numAfter = sellItems.length;
+						if (numBefore < numAfter) numDifferentItemsAdded++;
+						if (numDifferentItemsAdded >= maxDifferentItems) return;
 					}
 				}
 			}
@@ -358,15 +370,15 @@ define([
 				}
 				var prob = 0.75;
 				while (sellItems.length < 4 && prob <= 1) {
-					addSellItemsFromCategories(categories, prob, 1, true);
+					addSellItemsFromCategories(categories, prob, 1, 4, true);
 					prob += 0.05;
 				}
 				if (neededIngredient) {
-					addSellItemsFromCategories([ "ingredient"], 0.25, 5 + campOrdinal + 2, true);
+					addSellItemsFromCategories([ "ingredient"], 0.25, 5 + campOrdinal + 2, 2, true);
 				}
 				buyItemTypes = categories;
 				buyItemTypes.push("trade");
-				usesCurrency = true;
+				usesCurrency = traderLevel > 1;
 			} else if (traderType == TradeConstants.traderType.GENERAL) {
 				// 2) misc trader: sells ingredients, random items, buys all items, uses currency
 				name = "general trader";
@@ -382,34 +394,48 @@ define([
 					if (Math.random() <= 0.3) categories.push("shoes");
 					if (Math.random() <= 0.2) categories.push("bag");
 					if (Math.random() <= 0.7) categories.push("exploration");
-					if (Math.random() <= 0.1) categories.push("artefact");
 				}
 				var prob = 0.05;
 				while (sellItems.length < 5 && prob < 1) {
-					addSellItemsFromCategories(categories, prob, 1, true);
+					addSellItemsFromCategories(categories, prob, 1, 5, true);
 					prob += 0.05;
 				}
 				if (Math.random() < 0.5 || neededIngredient) {
-					addSellItemsFromCategories([ "ingredient"], 0.7, 5 + campOrdinal + 2, true);
+					addSellItemsFromCategories([ "ingredient"], 0.7, 5 + campOrdinal + 2, 2, true);
+				} else if (Math.random() < 0.2 * traderLevel) {
+					addSellItemsFromCategories([ "voucher" ], 0.5, 1, 1, true, "cache_rumours");
+				} else if (Math.random() < 0.1 * traderLevel) {
+					addSellItemsFromCategories([ "voucher" ], 0.2, 1, 1, true, "cache_evidence");
 				}
 				buyItemTypes = Object.keys(ItemConstants.itemTypes);
-				usesCurrency = true;
+				usesCurrency = traderLevel > 1;
 			} else if (traderType == TradeConstants.traderType.CRAFTING) {
 				// 3) ingredient trader: sells ingredients, buys ingredients, occational items, no currency
 				name = "crafting trader";
-				var prob = 0.25;
-				var num = 5 + campOrdinal * 3;
-				while (sellItems.length < num && prob < 1) {
-					addSellItemsFromCategories([ "ingredient"], prob, num / 3, true);
-					prob += 0.05;
+				let ingredientProbability = 0.25;
+				let num = 5 + campOrdinal * 3;
+				while (sellItems.length < num && ingredientProbability < 1) {
+					addSellItemsFromCategories([ "ingredient"], ingredientProbability, num / 3, num, true);
+					ingredientProbability += 0.05;
 				}
-				addSellItemsFromCategories([ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head", "shoes", "bag", "exploration" ], 0.05, 1, false);
+				addSellItemsFromCategories([ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head", "shoes", "bag" ], 0.05, 1, num, false);
+				addSellItemsFromCategories([ "exploration" ], 0.1, 1, 2, true);
+				
 				buyItemTypes.push("ingredient");
 				buyItemTypes.push("trade");
 				usesCurrency = false;
 			} else if (traderType == TradeConstants.traderType.RESOURCES) {
 				// 4) resource trader: sells and buys a specific resource
-				if (rand2 <= 0.2 && unlockedResources.herbs) {
+				let mainResourceRelativeProbabilities = {};
+				mainResourceRelativeProbabilities[resourceNames.metal] = 1; // building materials
+				mainResourceRelativeProbabilities[resourceNames.water] = 1; // supplies
+				if (unlockedResources.herbs) mainResourceRelativeProbabilities[resourceNames.herbs] = 0.5;
+				if (unlockedResources.tools) mainResourceRelativeProbabilities[resourceNames.tools] = 0.4 + traderLevel * 2;
+				if (unlockedResources.fuel) mainResourceRelativeProbabilities[resourceNames.fuel] = 0.4 + traderLevel * 2;
+				if (unlockedResources.rubber) mainResourceRelativeProbabilities[resourceNames.rubber] = 0.2;
+				let mainResource = RandomUtils.selectOneFromRelativeProbabilities(mainResourceRelativeProbabilities);
+					
+				if (mainResource == resourceNames.herbs) {
 					name = "herbs trader";
 					sellResources.addResource(resourceNames.herbs, minResAmount + Math.random() * randResAmount);
 					buyResources.push(resourceNames.herbs);
@@ -418,15 +444,22 @@ define([
 						sellResources.addResource(resourceNames.medicine, minResAmount + Math.random() * randResAmount);
 						buyResources.push(resourceNames.medicine);
 					}
-				} else if (rand2 <= 0.3 && unlockedResources.tools) {
+					if (traderLevel > 1 && Math.random() < 0.1 * traderLevel) {
+						addSellItemsFromCategories([ "voucher" ], 0.3, 1, 1, true, "cache_favour");
+					}
+				} else if (mainResource == resourceNames.tools) {
 					name = "tools trader";
 					sellResources.addResource(resourceNames.tools, minResAmount + Math.random() * randResAmount);
 					buyResources.push(resourceNames.tools);
-				} else if (rand2 <= 0.4 && unlockedResources.fuel) {
+				} else if (mainResource == resourceNames.fuel) {
 					name = "fuel trader";
 					sellResources.addResource(resourceNames.fuel, minResAmount + Math.random() * randResAmount);
 					buyResources.push(resourceNames.fuel);
-				} else if (rand2 < 0.7) {
+				} else if (mainResource == resourceNames.rubber) {
+					name = "rubber trader";
+					sellResources.addResource(resourceNames.rubber, minResAmount + Math.random() * randResAmount);
+					buyResources.push(resourceNames.rubber);
+				} else if (mainResource == resourceNames.water) {
 					name = "supplies trader";
 					sellResources.addResource(resourceNames.water, minResAmount + Math.random() * randResAmount);
 					sellResources.addResource(resourceNames.food, minResAmount + Math.random() * randResAmount);
@@ -435,9 +468,9 @@ define([
 				} else {
 					name = "materials trader";
 					sellResources.addResource(resourceNames.metal, minResAmount + Math.random() * randResAmount);
-						buyResources.push(resourceNames.metal);
+					buyResources.push(resourceNames.metal);
 					sellResources.addResource(resourceNames.rope, minResAmount + Math.random() * randResAmount);
-						buyResources.push(resourceNames.rope);
+					buyResources.push(resourceNames.rope);
 					if (unlockedResources.concrete) {
 						sellResources.addResource(resourceNames.concrete, minResAmount + Math.random() * randResAmount);
 						buyResources.push(resourceNames.concrete);
@@ -458,7 +491,7 @@ define([
 				var prob = 0.01;
 				var numItems = Math.floor(Math.random() * 2);
 				while (sellItems.length < numItems && prob < 1) {
-					addSellItemsFromCategories(partner.sellItemTypes, prob, 1, true);
+					addSellItemsFromCategories(partner.sellItemTypes, prob, 1, numItems, true);
 					prob += 0.01;
 				}
 				for (let i = 0; i < partner.buyItemTypes.length; i++) {
@@ -466,15 +499,31 @@ define([
 				}
 				if (!partner.usesCurrency || neededIngredient)
 					buyItemTypes.push("ingredient");
+				addSellItemsFromCategories([ "voucher" ], traderLevel * 0.15, 1, 1, true, "cache_rumours");
 				buyItemTypes.push("trade");
 				usesCurrency = partner.usesCurrency;
 			} else if (traderType == TradeConstants.traderType.VALUABLES) {
+				// 6) valuables trader (artefacts, cahces)
+				name = "rarities trader";
+				addSellItemsFromCategories([ "bag" ], 0.1, 1, 1, false);
+				addSellItemsFromCategories([ "light" ], 0.1, 1, 1, false);
+				addSellItemsFromCategories([ "artefact" ], 0.3, 1, 2, true);
+				if (Math.random() < 0.15 * traderLevel) {
+					addSellItemsFromCategories([ "voucher" ], 0.2, 1, 1, true, "cache_evidence");
+				} else if (Math.random() < 0.25 * traderLevel) {
+					addSellItemsFromCategories([ "voucher" ], 0.1, 1, 1, true, "cache_favour");
+				} else if (Math.random() < 0.25 * traderLevel) {
+					addSellItemsFromCategories([ "voucher" ], 0.5, 1, 1, true, "cache_rumours");
+				}
+				buyItemTypes.push("artefact");
+				buyItemTypes.push("trade");
+				usesCurrency = true;
 			} else {
 				log.w("unknown trader type: " + traderType);
 				return null;
 			}
 			
-			var currency = usesCurrency ? 2 + Math.floor(Math.random() * levelOrdinal) : 0;
+			var currency = usesCurrency ? traderLevel * 2 + Math.floor(Math.random() * levelOrdinal) : 0;
 			return new IncomingCaravanVO(name, sellItems, sellResources, buyItemTypes, buyResources, usesCurrency, currency);
 		},
 		
