@@ -28,6 +28,15 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 			new TradingPartnerVO(14, "Factory 32", [resourceNames.concrete], [resourceNames.metal], true, false, [], [ "exploration" ]),
 		],
 		
+		traderType: {
+			EQUIPMENT: "EQUIPMENT",
+			GENERAL: "GENERAL",
+			CRAFTING: "CRAFTING",
+			RESOURCES: "RESOURCES",
+			PARTNER: "PARTNER",
+			VALUABLES: "VALUABLES",
+		},
+				
 		getTradePartner: function (campOrdinal) {
 			for (let i = 0; i < this.TRADING_PARTNERS.length; i++) {
 				if (this.TRADING_PARTNERS[i].campOrdinal === campOrdinal)

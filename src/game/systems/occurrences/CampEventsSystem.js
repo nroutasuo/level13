@@ -327,7 +327,8 @@ define([
 					var isHardLevel = false;
 					var neededIngredients = GameGlobals.itemsHelper.getNeededIngredients(numCamps, WorldConstants.CAMP_STEP_END, isHardLevel, itemsComponent, false);
 					var neededIngredient = neededIngredients.length > 0 ? neededIngredients[0] : null;
-					var caravan = GameGlobals.campHelper.getRandomIncomingCaravan(numCamps, GameGlobals.gameState.level, GameGlobals.gameState.getUnlockedResources(), neededIngredient);
+					let traderLevel = GameGlobals.campHelper.getEventUpgradeLevel(OccurrenceConstants.campOccurrenceTypes.trader);
+					var caravan = GameGlobals.campHelper.getRandomIncomingCaravan(numCamps, GameGlobals.gameState.level, traderLevel, GameGlobals.gameState.getUnlockedResources(), neededIngredient);
 					campNode.entity.add(new TraderComponent(caravan));
 					logMsg = Text.capitalize(Text.addArticle(caravan.name)) + " arrives. ";
 					break;
@@ -576,7 +577,7 @@ define([
 		getTimeToNext: function (campNode, event) {
 			let isNew = this.isNew(event);
 			let numCamps = GameGlobals.gameState.numCamps;
-			let upgradeLevel = this.getEventUpgradeLevel(event);
+			let upgradeLevel = GameGlobals.campHelper.getEventUpgradeLevel(event);
 			let reputationComponent = campNode.reputation;
 			return OccurrenceConstants.getTimeToNext(event, isNew, upgradeLevel, reputationComponent.value, numCamps);
 		},
@@ -594,17 +595,6 @@ define([
 					return isCurrentCamp ? dt * 2 : dt;
 			}
 			return dt;
-		},
-
-		getEventUpgradeLevel: function (event) {
-			var upgradeLevel = 1;
-			var eventUpgrades = GameGlobals.upgradeEffectsHelper.getImprovingUpgradeIdsForOccurrence(event);
-			var eventUpgrade;
-			for (let i in eventUpgrades) {
-				eventUpgrade = eventUpgrades[i];
-				if (this.tribeUpgradesNodes.head.upgrades.hasUpgrade(eventUpgrade)) upgradeLevel++;
-			}
-			return upgradeLevel;
 		},
 		
 		getEventSkipProbability: function (campNode, event) {

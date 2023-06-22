@@ -1,6 +1,8 @@
 // Helpers for camp stuff that can use current game state
 define([
 	'ash',
+	'utils/MathUtils',
+	'utils/RandomUtils',
 	'game/GameGlobals',
 	'game/constants/GameConstants',
 	'game/constants/CampConstants',
@@ -19,7 +21,7 @@ define([
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/vos/ResourcesVO',
 	'game/vos/IncomingCaravanVO'
-], function (Ash, GameGlobals, GameConstants, CampConstants, FollowerConstants, ImprovementConstants, ItemConstants, OccurrenceConstants, TradeConstants, WorldConstants,
+], function (Ash, MathUtils, RandomUtils, GameGlobals, GameConstants, CampConstants, FollowerConstants, ImprovementConstants, ItemConstants, OccurrenceConstants, TradeConstants, WorldConstants,
 	CampComponent, PositionComponent, RecruitComponent, SectorImprovementsComponent, LevelComponent, CampNode, TribeUpgradesNode, ResourcesVO, IncomingCaravanVO) {
 	
 	var CampHelper = Ash.Class.extend({
@@ -247,21 +249,49 @@ define([
 				
 			return OccurrenceConstants.getRaidDanger(improvements, soldiers, soldierLevel, levelRaidDangerFactor);
 		},
+
+		getEventUpgradeLevel: function (event) {
+			var upgradeLevel = 1;
+			var eventUpgrades = GameGlobals.upgradeEffectsHelper.getImprovingUpgradeIdsForOccurrence(event);
+			var eventUpgrade;
+			for (let i in eventUpgrades) {
+				eventUpgrade = eventUpgrades[i];
+				if (this.tribeUpgradesNodes.head.upgrades.hasUpgrade(eventUpgrade)) upgradeLevel++;
+			}
+			return upgradeLevel;
+		},
 		
-		getRandomIncomingCaravan: function (campOrdinal, levelOrdinal, unlockedResources, neededIngredient) {
-			var name = "";
-			var sellItems = [];
-			var sellResources = new ResourcesVO();
-			var buyItemTypes = [];
-			var buyResources = [];
-			var usesCurrency = false;
+		getRandomIncomingCaravan: function (campOrdinal, levelOrdinal, traderLevel, unlockedResources, neededIngredient) {
+			let traderTypeRelativeProbabilities = {};
+			traderTypeRelativeProbabilities[TradeConstants.traderType.EQUIPMENT] = 1;
+			traderTypeRelativeProbabilities[TradeConstants.traderType.GENERAL] = 1;
+			traderTypeRelativeProbabilities[TradeConstants.traderType.CRAFTING] = 1 - (traderLevel - 1) * 0.1;
+			traderTypeRelativeProbabilities[TradeConstants.traderType.RESOURCES] = 1;
+			traderTypeRelativeProbabilities[TradeConstants.traderType.PARTNER] = 1;
+			traderTypeRelativeProbabilities[TradeConstants.traderType.VALUABLES] = traderLevel * 0.15;
 			
+			if (neededIngredient) {
+				traderTypeRelativeProbabilities[TradeConstants.traderType.CRAFTING] = 10;
+			}
+			
+			let traderType = RandomUtils.selectOneFromRelativeProbabilities(traderTypeRelativeProbabilities);
+			return this.getRandomIncomingCaravanWithType(traderType, campOrdinal, levelOrdinal, traderLevel, unlockedResources, neededIngredient);
+		},
+		
+		getRandomIncomingCaravanWithType: function (traderType, campOrdinal, levelOrdinal, traderLevel, unlockedResources, neededIngredient) {
+			let name = "";
+			let sellItems = [];
+			let sellResources = new ResourcesVO();
+			let buyItemTypes = [];
+			let buyResources = [];
+			let usesCurrency = false;
+				
 			// TODO adjust resource amounts based on resource rarity / value (plenty of metal, less herbs)
-			var minResAmount = 40 + campOrdinal * 10;
-			var randResAmount = 450 + campOrdinal * 50;
+			let minResAmount = 40 + campOrdinal * 10;
+			let randResAmount = 450 + campOrdinal * 50;
 			
 			// TODO unify logic with scavenge rewards - many similar checks
-			var addSellItemsFromCategories = function (categories, probability, maxAmount, includeCommon) {
+			let addSellItemsFromCategories = function (categories, probability, maxAmount, includeCommon) {
 				for (let j in categories) {
 					var category = categories[j];
 					var isObsoletable = ItemConstants.isObsoletable(category);
@@ -303,9 +333,10 @@ define([
 				}
 			}
 			
-			var rand = Math.random();
-			var rand2 = Math.random();
-			if (rand <= 0.2) {
+			let rand = Math.random();
+			let rand2 = Math.random();
+			
+			if (traderType == TradeConstants.traderType.EQUIPMENT) {
 				// 1) equipment trader: sells (equipment caterogy), buys equipment, uses currency
 				var categories = [];
 				if (rand2 <= 0.33) {
@@ -336,7 +367,7 @@ define([
 				buyItemTypes = categories;
 				buyItemTypes.push("trade");
 				usesCurrency = true;
-			} else if (rand <= 0.4) {
+			} else if (traderType == TradeConstants.traderType.GENERAL) {
 				// 2) misc trader: sells ingredients, random items, buys all items, uses currency
 				name = "general trader";
 				var categories = [];
@@ -363,7 +394,7 @@ define([
 				}
 				buyItemTypes = Object.keys(ItemConstants.itemTypes);
 				usesCurrency = true;
-			} else if (rand <= 0.6 || neededIngredient) {
+			} else if (traderType == TradeConstants.traderType.CRAFTING) {
 				// 3) ingredient trader: sells ingredients, buys ingredients, occational items, no currency
 				name = "crafting trader";
 				var prob = 0.25;
@@ -376,7 +407,7 @@ define([
 				buyItemTypes.push("ingredient");
 				buyItemTypes.push("trade");
 				usesCurrency = false;
-			} else if (rand <= 0.8) {
+			} else if (traderType == TradeConstants.traderType.RESOURCES) {
 				// 4) resource trader: sells and buys a specific resource
 				if (rand2 <= 0.2 && unlockedResources.herbs) {
 					name = "herbs trader";
@@ -414,7 +445,7 @@ define([
 				}
 				buyItemTypes.push("trade");
 				usesCurrency = true;
-			} else {
+			} else if (traderType == TradeConstants.traderType.PARTNER) {
 				// 5) trading partner trader: buys and sells same stuff as partner, plus occational items, currency based on partner
 				var partner = TradeConstants.getRandomTradePartner(campOrdinal);
 				name = "trader from " + partner.name;
@@ -437,6 +468,10 @@ define([
 					buyItemTypes.push("ingredient");
 				buyItemTypes.push("trade");
 				usesCurrency = partner.usesCurrency;
+			} else if (traderType == TradeConstants.traderType.VALUABLES) {
+			} else {
+				log.w("unknown trader type: " + traderType);
+				return null;
 			}
 			
 			var currency = usesCurrency ? 2 + Math.floor(Math.random() * levelOrdinal) : 0;
