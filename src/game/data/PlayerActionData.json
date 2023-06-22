@@ -2204,7 +2204,7 @@
                 "improvements": {
                     "tradepost": 2
                 },
-                "population": 24
+                "population": 22
             }
         },
         "claim_milestone_3": {
@@ -2217,7 +2217,7 @@
                 "improvements": {
                     "smithy": 2
                 },
-                "population": 280,
+                "population": 200,
                 "projects": {
                     "greenhouse": 1
                 }
@@ -2225,7 +2225,7 @@
         },
         "claim_milestone_5": {
             "tribe": {
-                "population": 400,
+                "population": 300,
                 "projects": {
                     "tradepost_connector": 1
                 }
@@ -2234,14 +2234,14 @@
         "claim_milestone_6": {
             "tribe": {
                 "improvements": {
-                    "researchcenter": 1
+                    "researchcenter": 2
                 },
-                "population": 700
+                "population": 500
             }
         },
         "claim_milestone_7": {
             "tribe": {
-                "population": 1000,
+                "population": 800,
                 "projects": {
                     "sundome": 1
                 }
