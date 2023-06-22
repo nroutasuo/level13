@@ -1408,12 +1408,12 @@
     },
     "randomEncounterProbabilities": {
         "clear_waste_r": [
-            0.1,
-            0.1
+            0.15,
+            0
         ],
         "clear_waste_t": [
-            0.1,
-            0.1
+            0.15,
+            0
         ],
         "clear_workshop": [
             1,
@@ -1424,16 +1424,16 @@
             0
         ],
         "investigate": [
-            0.02,
-            0.02
+            0.05,
+            0
         ],
         "nap": [
-            0.1,
+            0.2,
             0
         ],
         "scavenge": [
             0.02,
-            0.02
+            0.03
         ],
         "scout_locale_i": [
             0.2,
@@ -1445,7 +1445,7 @@
         ],
         "use_spring": [
             0.1,
-            0.1
+            0.15
         ],
         "wait": [
             0.1,
