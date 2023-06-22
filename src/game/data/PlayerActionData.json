@@ -28,8 +28,8 @@
                 "expCost": 25,
                 "linearCost": 25
             },
-            "resource_metal": 440,
-            "resource_rope": 200
+            "resource_metal": 450,
+            "resource_rope": 300
         },
         "build_in_aqueduct": {
             "cost_factor_expBase": 1.15,
@@ -39,7 +39,7 @@
         },
         "build_in_barracks": {
             "cost_factor_expBase": 1.2,
-            "resource_concrete": 100,
+            "resource_concrete": 150,
             "resource_metal": 300,
             "resource_rope": 200
         },
@@ -55,7 +55,7 @@
                 "expCost": 5,
                 "linearCost": 5
             },
-            "resource_metal": 600,
+            "resource_metal": 650,
             "resource_rope": 200
         },
         "build_in_darkfarm": {
@@ -66,7 +66,7 @@
                 "linearCost": 8
             },
             "resource_metal": {
-                "expCost": 25,
+                "expCost": 20,
                 "linearCost": 80
             },
             "resource_water": 30
@@ -95,13 +95,13 @@
             "resource_metal": 27
         },
         "build_in_house2": {
-            "cost_factor_expBase": 1.3,
+            "cost_factor_expBase": 1.25,
             "resource_concrete": 100,
             "resource_metal": {
-                "expCost": 500,
-                "linearCost": 1500
+                "expCost": 480,
+                "linearCost": 1300
             },
-            "resource_rope": 320
+            "resource_rope": 350
         },
         "build_in_inn": {
             "resource_fuel": 50,
@@ -133,8 +133,8 @@
             "resource_tools": 300
         },
         "build_in_robotFactory": {
-            "resource_fuel": 800,
-            "resource_metal": 800,
+            "resource_fuel": 700,
+            "resource_concrete": 100,
             "resource_rope": 100
         },
         "build_in_shrine": {
@@ -203,11 +203,12 @@
             "resource_tools": 100
         },
         "build_out_luxury_outpost": {
-            "cost_factor_expBase": 1.05,
-            "resource_metal": 100
+            "cost_factor_expBase": 1.25,
+            "resource_metal": 100,
+			"resource_rope": 150
         },
         "build_out_passage_down_elevator": {
-            "cost_factor_expBase": 1.88,
+            "cost_factor_expBase": 1.85,
             "resource_fuel": {
                 "constantCost": 10,
                 "expCost": 0,
@@ -220,7 +221,7 @@
             }
         },
         "build_out_passage_down_hole": {
-            "cost_factor_expBase": 1.88,
+            "cost_factor_expBase": 1.85,
             "resource_concrete": {
                 "constantCost": 50,
                 "linearCost": 25
@@ -232,7 +233,7 @@
             }
         },
         "build_out_passage_down_stairs": {
-            "cost_factor_expBase": 1.88,
+            "cost_factor_expBase": 1.85,
             "resource_metal": {
                 "constantCost": 10,
                 "expCost": 40,
@@ -271,20 +272,20 @@
             "resource_concrete": 3000,
             "resource_metal": 10000,
             "resource_rope": 3000,
-            "resource_tools": 1000
+            "resource_tools": 500
         },
         "build_out_spaceship2": {
             "resource_concrete": 1000,
             "resource_metal": 10000,
             "resource_rubber": 1000,
-            "resource_tools": 2000
+            "resource_tools": 500
         },
         "build_out_spaceship3": {
             "resource_fuel": 800,
             "resource_medicine": 500,
             "resource_metal": 10000,
             "resource_rope": 5000,
-            "resource_tools": 1000,
+            "resource_tools": 500,
             "resource_water": 10000
         },
         "build_out_sundome": {
@@ -315,7 +316,7 @@
             "stamina": 10
         },
         "craft_bag_0": {
-            "item_res_tape": 1,
+            "item_res_bands": 1,
             "resource_rope": 20
         },
         "craft_bag_1": {
@@ -465,7 +466,7 @@
         "craft_clothing_over_l14": {
             "item_res_silk": 2,
             "item_res_tape": 2,
-            "resource_rubber": 60
+            "resource_rubber": 80
         },
         "craft_clothing_over_w": {
             "item_res_silk": 5,
@@ -544,7 +545,7 @@
         },
         "craft_shoe_l14": {
             "item_res_bands": 10,
-            "resource_rubber": 20
+            "resource_rubber": 30
         },
         "craft_weapon1": {
             "resource_metal": 10,
@@ -742,20 +743,20 @@
             },
             "resource_rope": {
                 "constantCost": 10,
-                "expCost": 5
+                "expCost": 10
             },
             "resource_tools": 10
         },
         "improve_in_darkfarm": {
-            "cost_factor_expBase": 1.25,
-            "resource_fuel": 10,
+            "cost_factor_expBase": 1.5,
+            "resource_fuel": 20,
             "resource_rope": 50
         },
         "improve_in_fortification": {
-            "cost_factor_expBase": 1.15,
+            "cost_factor_expBase": 1.2,
             "resource_concrete": {
-                "constantCost": 30,
-                "linearCost": 30,
+                "constantCost": 20,
+                "linearCost": 40,
                 "requiredOrdinal": 5
             },
             "resource_rope": 100,
@@ -765,11 +766,11 @@
             }
         },
         "improve_in_generator": {
-            "cost_factor_expBase": 1.4,
-            "resource_concrete": 30,
+            "cost_factor_expBase": 1.35,
+            "resource_concrete": 35,
             "resource_fuel": 50,
             "resource_metal": {
-                "expCost": 20
+                "expCost": 30
             }
         },
         "improve_in_hospital": {
@@ -779,7 +780,7 @@
             "resource_water": 100
         },
         "improve_in_inn": {
-            "cost_factor_expBase": 1.25,
+            "cost_factor_expBase": 1.3,
             "resource_metal": {
                 "constantCost": 60,
                 "expCost": 10,
@@ -787,16 +788,17 @@
             },
             "resource_rope": 50,
             "resource_rubber": {
+				"constantCost": 10,
                 "expCost": 10,
                 "requiredOrdinal": 5
             }
         },
         "improve_in_library": {
-            "cost_factor_expBase": 1.25,
+            "cost_factor_expBase": 1.3,
             "resource_metal": {
                 "constantCost": 55,
-                "expCost": 5,
-                "linearCost": 20
+                "expCost": 10,
+                "linearCost": 15
             },
             "resource_rope": 20
         },
@@ -820,8 +822,16 @@
         "improve_in_radiotower": {
             "resource_metal": 600
         },
+		"improve_in_researchcenter": {
+			"resource_metal": 100,
+			"resource_tools": 30
+		},
+		"improve_in_robotFactory": {
+			"resource_tools": 50,
+			"resource_concrete": 100
+		},
         "improve_in_shrine": {
-            "cost_factor_expBase": 1.25,
+            "cost_factor_expBase": 1.35,
             "resource_herbs": 10
         },
         "improve_in_smithy": {
@@ -833,8 +843,7 @@
             "resource_rubber": {
                 "constantCost": 50,
                 "expCost": 5
-            },
-            "resource_tools": 10
+            }
         },
         "improve_in_square": {
             "cost_factor_expBase": 1.25,
@@ -852,23 +861,28 @@
         "improve_in_stable": {
             "cost_factor_expBase": 1.1,
             "resource_metal": 100,
-            "resource_rope": 50
+            "resource_rope": 200,
+			"resource_rubber": 100
         },
         "improve_in_storage": {
-            "cost_factor_expBase": 1.5,
+            "cost_factor_expBase": 3,
             "resource_metal": 120,
             "resource_rope": 100
         },
         "improve_in_temple": {
-            "cost_factor_expBase": 1.25,
+            "cost_factor_expBase": 1.3,
             "resource_herbs": {
-                "constantCost": 35,
+                "constantCost": 30,
                 "expCost": 15
             },
             "resource_metal": {
-                "constantCost": 25,
-                "expCost": 25
-            }
+                "constantCost": 30,
+                "expCost": 30
+            },
+			"silver": {
+				"constantCost": 1,
+                "requiredOrdinal": 10
+			}
         },
         "improve_out_collector_food": {
             "cost_factor_expBase": 1.25,
@@ -943,7 +957,7 @@
             "stamina": 10
         },
         "launch": {
-            "resource_fuel": 10000
+            "resource_fuel": 1000
         },
         "move_level_down": {
             "resource_food": 1,
