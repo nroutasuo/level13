@@ -739,7 +739,41 @@
         "rarityScavenge": 6,
         "type": "voucher"
     },
-    "cache_rumours_11": {
+    "cache_food_1": {
+        "campOrdinalMaximum": 14,
+        "campOrdinalRequired": 1,
+        "configData": {
+            "foodValue": 5
+        },
+        "description": "Old emergency rations. Probably still edible.",
+        "icon": "img/items/cache-food.png",
+        "id": "cache_food_1",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "name": "Emergency rations",
+        "rarityLocale": 4,
+        "rarityScavenge": 9,
+        "type": "voucher"
+	},
+    "cache_water_1": {
+        "campOrdinalMaximum": 14,
+        "campOrdinalRequired": 1,
+        "configData": {
+            "waterValue": 5
+        },
+        "description": "A big package of juice boxes. Might still be good.",
+        "icon": "img/items/cache-water.png",
+        "id": "cache_water_1",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "name": "Juice boxes",
+        "rarityLocale": 5,
+        "rarityScavenge": 9,
+        "type": "voucher"
+	},
+	"cache_rumours_11": {
         "campOrdinalRequired": 5,
         "description": "A dated newspaper printed in Old Waterworks on recycled rag paper",
         "icon": "img/items/newspaper.png",

@@ -652,6 +652,8 @@ define([
 				let campNeighbours = levelVO.getNeighbourList(campPosition.sectorX, campPosition.sectorY);
 				let firstCacheSector = WorldCreatorRandom.getRandomItemFromArray(seed, campNeighbours);
 				addStash(firstCacheSector, "first-cache", ItemConstants.STASH_TYPE_ITEM, 1, "cache_metal_1");
+				addStashes(seed / 2 * 401 + l * 801, "guaranteed-early", ItemConstants.STASH_TYPE_ITEM, ["cache_water_1"], 3, 1, lateZones);
+				addStashes(seed / 4 * 278 + l * 151, "guaranteed-early", ItemConstants.STASH_TYPE_ITEM, ["cache_food_1"], 3, 1, lateZones);
 				addStashes(seed / 3 * 338 + l * 402, "guaranteed-early", ItemConstants.STASH_TYPE_ITEM, ["cache_metal_1"], 7, 1, lateZones);
 				addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, "guaranteed-early", ItemConstants.STASH_TYPE_ITEM, [ "exploration_1" ], 1, 1, lateZones);
 			}
@@ -727,6 +729,8 @@ define([
 				"cache_metal_2",
 				"cache_metal_3",
 				"cache_metal_4",
+				"cache_food_1",
+				"cache_water_1",
 			];
 			var maxRarity = 9;
 			return allItems.filter((itemID) => this.itemsHelper.isAvailable(ItemConstants.getItemConfigByID(itemID), levelVO.campOrdinal, WorldConstants.CAMP_STEP_END, true, true, maxRarity));

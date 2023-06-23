@@ -1849,6 +1849,9 @@ define(['ash',
 			
 			let itemConfig = ItemConstants.getItemConfigByID(itemId);
 			let baseItemId = ItemConstants.getBaseItemId(itemId);
+			let itemNameParts = item.name.split(" ");
+			let itemShortName = itemNameParts[itemNameParts.length - 1];
+			let currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
 			
 			switch (baseItemId) {
 				case "first_aid_kit":
@@ -1888,11 +1891,16 @@ define(['ash',
 				case "cache_metal":
 					let baseValue = itemConfig.configData.metalValue || 10;
 					let value = baseValue + Math.round(Math.random() * 10);
-					let itemNameParts = item.name.split(" ");
-					let itemName = itemNameParts[itemNameParts.length - 1];
-					let currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
 					currentStorage.resources.addResource(resourceNames.metal, value);
-					this.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, "Took apart " + Text.addArticle(itemName) + ". Gained " + value + " metal.");
+					this.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, "Took apart " + Text.addArticle(itemShortName) + ". Gained " + value + " metal.");
+					break;
+					
+				case "cache_food":
+				case "cache_water":
+					let resourceName = baseItemId == "cache_food" ? resourceNames.food : resourceNames.water;
+					let val = itemConfig.configData.waterValue || itemConfig.configData.foodValue || 10;
+					currentStorage.resources.addResource(resourceName, val);
+					this.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, "Used " + Text.addArticle(itemShortName) + ". Gained " + val + " " + resourceName + ".");
 					break;
 					
 				case "cache_evidence":

@@ -214,11 +214,11 @@ define([
 				if (item.type === ItemConstants.itemTypes.trade) continue;
 				if (item.type === ItemConstants.itemTypes.note) continue;
 				if (item.type === ItemConstants.itemTypes.ingredient) continue;
-				if (item.type === ItemConstants.itemTypes.voucher) continue;
-				if (baseItemId == "cache_evidence") continue;
-				if (baseItemId == "cache_rumours") continue;
-				if (baseItemId == "cache_favour") continue;
-				if (baseItemId == "cache_insight") continue;
+				if (item.type === ItemConstants.itemTypes.voucher) {
+					let useAction = "use_item_" + baseItemId;
+					let useActionReqs = GameGlobals.playerActionsHelper.getReqs(useAction);
+					if (useActionReqs && useActionReqs.inCamp) continue;
+				}
 				
 				let count = itemsComponent.getCount(item, true);
 				let showCount = item.equipped ? count - 1 : count;
