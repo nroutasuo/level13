@@ -139,7 +139,7 @@ define([
 			var buildingsToDraw = [[],[],[],[],[]];
 			for (let i = 0; i < all.length; i++) {
 				building = all[i];
-				var size = this.getBuildingSize(building);
+				let size = this.getBuildingSize(building);
 				var count = building.count;
 				var visualCount = building.getVisCount();
 				if (!this.elements.buildings[building.name]) this.elements.buildings[building.name] = [];
@@ -526,8 +526,8 @@ define([
 			return "vis-building-" + building.getKey() + "-" + n;
 		},
 		
-		getBuildingSize: function (building) {
-			return GameGlobals.campVisHelper.getBuildingSize(building.name);
+		getBuildingSize: function (building, buildingLevel) {
+			return GameGlobals.campVisHelper.getBuildingSize(building.name, building.level);
 		},
 		
 		getBuildingZClass: function (building, coords) {

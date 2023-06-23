@@ -2019,13 +2019,12 @@ define([
 			
 			let baseAction = this.getBaseActionID(action);
 			let improvementName = this.getImprovementNameForAction(action, true);
+			let sector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
 			
 			if (baseAction.indexOf("build_in_") == 0) {
-				var buildingKey = baseAction.replace("build_in_", "");
-				var baseDesc = "";
-				if (ImprovementConstants.improvements[buildingKey]) {
-					baseDesc = ImprovementConstants.improvements[buildingKey].description || "";
-				}
+				let buildingKey = baseAction.replace("build_in_", "");
+				let improvementLevel = this.getImprovementLevel(buildingKey, sector);
+				let baseDesc = ImprovementConstants.getImprovementDescription(buildingKey, improvementLevel);
 				var reputationDesc = "";
 				var reputation = getImprovementReputationBonus(improvementName);
 				if (reputation > 0) reputationDesc = "Reputation: " + reputation;
@@ -2080,6 +2079,13 @@ define([
 			}
 			
 			return "Improve " + improvementName;
+		},
+		
+		getImprovementLevel: function (improvementID, sector) {
+			if (!sector) return 1;
+			let improvementName = improvementNames[improvementID];
+			let improvementsComponent = sector.get(SectorImprovementsComponent);
+			return improvementsComponent.getLevel(improvementName);
 		},
 
 		getBaseActionID: function (action) {
@@ -2261,6 +2267,10 @@ define([
 		
 		isImproveBuildingAction: function (baseActionID) {
 			return PlayerActionConstants.isImproveBuildingAction(baseActionID);
+		},
+		
+		isBuildImprovementAction: function (baseActionID) {
+			return PlayerActionConstants.isBuildImprovementAction(baseActionID);
 		},
 		
 		isRepairBuildingAction: function (baseActionID) {

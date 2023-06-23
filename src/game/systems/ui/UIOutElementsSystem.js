@@ -188,14 +188,14 @@ define([
 		},
 		
 		updateButtonCalloutDescription: function ($button, action, buttonStatus, buttonElements, showDescription) {
-			let baseActionId = GameGlobals.playerActionsHelper.getBaseActionID(action);
-			if (!GameGlobals.playerActionsHelper.isImproveBuildingAction(baseActionId)) {
+			let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+			if (!GameGlobals.playerActionsHelper.isImproveBuildingAction(baseActionID) && !GameGlobals.playerActionsHelper.isBuildImprovementAction(baseActionID)) {
 				return;
 			}
 			
 			GameGlobals.uiFunctions.toggle(buttonElements.calloutDisabledDivider, showDescription);
 			GameGlobals.uiFunctions.toggle(buttonElements.descriptionSpan, showDescription);
-			buttonElements.descriptionSpan.text(GameGlobals.playerActionsHelper.getDescription(action));
+			buttonElements.descriptionSpan.html(GameGlobals.playerActionsHelper.getDescription(action));
 		},
 
 		updateButtonCalloutCosts: function ($button, action, buttonStatus, buttonElements, costs, costsStatus) {

@@ -5,6 +5,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		// population
 		POPULATION_PER_HOUSE: 4,
 		POPULATION_PER_HOUSE2: 6,
+		POPULATION_PER_HOUSE2_LEVEL_2: 8,
 		POOL_RUMOURS_PER_POPULATION: 3,
 		POPULATION_DECREASE_COOLDOWN: 60,
 		
@@ -192,13 +193,18 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		getHousingCap: function (improvementsComponent) {
 			return this.getHousingCap2(
 				improvementsComponent.getCount(improvementNames.house),
-				improvementsComponent.getCount(improvementNames.house2));
+				improvementsComponent.getCount(improvementNames.house2),
+				improvementsComponent.getLevel(improvementNames.house2));
 		},
 		
-		getHousingCap2: function (numHouses, numHouses2) {
+		getHousingCap2: function (numHouses, numHouses2, levelHouses2) {
 			let result = numHouses * CampConstants.POPULATION_PER_HOUSE;
-			result += numHouses2 * CampConstants.POPULATION_PER_HOUSE2;
+			result += numHouses2 * this.getPopulationPerHouse2(levelHouses2);
 			return result;
+		},
+		
+		getPopulationPerHouse2: function (improvementLevel) {
+			return improvementLevel == 1 ? CampConstants.POPULATION_PER_HOUSE2 : CampConstants.POPULATION_PER_HOUSE2_LEVEL_2;
 		},
 		
 		getSmithsPerSmithy: function (upgradeLevel) {

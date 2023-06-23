@@ -30,8 +30,10 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 				sortScore: 9000,
 			},
 			house2: {
-				description: "Houses " + CampConstants.POPULATION_PER_HOUSE2 + " people.",
+				description: [ "Houses " + CampConstants.POPULATION_PER_HOUSE2 + " people.", "Houses " + CampConstants.POPULATION_PER_HOUSE2_LEVEL_2 + " people." ],
 				sortScore: 9000,
+				improvementLevelsPerTechLevel: 1,
+				improvementLevelsPerMajorLevel: 1,
 			},
 			storage: {
 				description: "Increases resource storage.",
@@ -290,6 +292,18 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			} else {
 				return "improve_out_" + improvementID;
 			}
+		},
+		
+		getImprovementDescription: function (improvementID, level) {
+			level = level || 1;
+			let def = this.getDef(improvementID);
+			if (!def) return "";
+			let descriptions = def.description;
+			if (!descriptions || descriptions.length == 0) return "";
+			if (typeof descriptions === "string") return descriptions;
+			let majorLevel = this.getMajorLevel(improvementID, level);
+			let index = Math.min(majorLevel - 1, descriptions.length - 1);
+			return descriptions[index];
 		},
 		
 		isProject: function (improvementName) {

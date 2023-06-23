@@ -348,7 +348,11 @@ define([
 			let isOutpost = GameGlobals.campBalancingHelper.isOutpost(campOrdinal);
 			let numHouses = GameGlobals.campBalancingHelper.getMaxImprovementsPerCamp(improvementNames.house, totalStorage, isOutpost);
 			let numHouses2 = GameGlobals.campBalancingHelper.getMaxImprovementsPerCamp(improvementNames.house2, totalStorage, isOutpost);
-			return CampConstants.getHousingCap2(numHouses, numHouses2);
+			
+			let house2UpgradeLevel  = GameGlobals.upgradeEffectsHelper.getExpectedBuildingUpgradeLevel(improvementNames.house2, maxCampOrdinal);
+			let levelHouses2 = GameGlobals.campBalancingHelper.getMaxImprovementLevel(improvementNames.house2, house2UpgradeLevel);
+			
+			return CampConstants.getHousingCap2(numHouses, numHouses2, levelHouses2);
 		},
 		
 		getMaxImprovements: function (maxCampOrdinal, campOrdinal, storage, milestone) {

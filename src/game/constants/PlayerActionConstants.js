@@ -313,6 +313,10 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 			return baseActionID == "improve_in" || baseActionID == "improve_out";
 		},
 		
+		isBuildImprovementAction: function (baseActionID) {
+			return baseActionID.indexOf("build_in_") >= 0 || baseActionID.indexOf("build_out_") >= 0
+		},
+		
 		isRepairBuildingAction: function (baseActionID) {
 			return baseActionID == "repair_in" || baseActionID == "repair_out";
 		},
