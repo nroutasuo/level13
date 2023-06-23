@@ -94,6 +94,14 @@
         "id": "improve_building_hospital_3",
         "name": "Anesthesia"
     },
+    "improve_building_house2": {
+        "campOrdinal": "12",
+        "effects": {
+            "improvesBuildings": "house2"
+        },
+        "id": "improve_building_house2",
+        "name": "Improved Tower Blocks"
+    },
     "improve_building_inn": {
         "campOrdinal": "9",
         "effects": {
@@ -255,6 +263,14 @@
         "id": "improve_worker_chemist_3",
         "name": "Advanced Chemistry"
     },
+    "improve_worker_chemist_4": {
+        "campOrdinal": "15",
+        "effects": {
+            "improvesWorker": "chemist"
+        },
+        "id": "improve_worker_chemist_4",
+        "name": "Advanced Chemistry II"
+    },
     "improve_worker_cleric_2": {
         "campOrdinal": "9",
         "effects": {
@@ -355,6 +371,14 @@
         },
         "id": "improve_worker_smith_3",
         "name": "Modularity"
+    },
+    "improve_worker_smith_4": {
+        "campOrdinal": "15",
+        "effects": {
+            "improvesWorker": "toolsmith"
+        },
+        "id": "improve_worker_smith_4",
+        "name": "Modularity II"
     },
     "improve_worker_trapper_2": {
         "blueprintCampOrdinal": 9,
@@ -827,7 +851,7 @@
         "name": "Augmented Clothing 3"
     },
     "unlock_item_clothing_body_15": {
-        "campOrdinal": "15",
+        "campOrdinal": "14",
         "effects": {},
         "id": "unlock_item_clothing_body_15",
         "name": "Scavenger Gear"
