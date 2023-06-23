@@ -133,8 +133,8 @@
             "resource_tools": 300
         },
         "build_in_robotFactory": {
-            "resource_fuel": 700,
             "resource_concrete": 100,
+            "resource_fuel": 700,
             "resource_rope": 100
         },
         "build_in_shrine": {
@@ -205,7 +205,7 @@
         "build_out_luxury_outpost": {
             "cost_factor_expBase": 1.25,
             "resource_metal": 100,
-			"resource_rope": 150
+            "resource_rope": 150
         },
         "build_out_passage_down_elevator": {
             "cost_factor_expBase": 1.85,
@@ -788,7 +788,7 @@
             },
             "resource_rope": 50,
             "resource_rubber": {
-				"constantCost": 10,
+                "constantCost": 10,
                 "expCost": 10,
                 "requiredOrdinal": 5
             }
@@ -822,14 +822,14 @@
         "improve_in_radiotower": {
             "resource_metal": 600
         },
-		"improve_in_researchcenter": {
-			"resource_metal": 100,
-			"resource_tools": 30
-		},
-		"improve_in_robotFactory": {
-			"resource_tools": 50,
-			"resource_concrete": 100
-		},
+        "improve_in_researchcenter": {
+            "resource_metal": 100,
+            "resource_tools": 30
+        },
+        "improve_in_robotFactory": {
+            "resource_concrete": 100,
+            "resource_tools": 50
+        },
         "improve_in_shrine": {
             "cost_factor_expBase": 1.35,
             "resource_herbs": 10
@@ -862,7 +862,7 @@
             "cost_factor_expBase": 1.1,
             "resource_metal": 100,
             "resource_rope": 200,
-			"resource_rubber": 100
+            "resource_rubber": 100
         },
         "improve_in_storage": {
             "cost_factor_expBase": 3,
@@ -879,10 +879,10 @@
                 "constantCost": 30,
                 "expCost": 30
             },
-			"silver": {
-				"constantCost": 1,
+            "silver": {
+                "constantCost": 1,
                 "requiredOrdinal": 10
-			}
+            }
         },
         "improve_out_collector_food": {
             "cost_factor_expBase": 1.25,
@@ -1111,18 +1111,18 @@
         },
         "unlock_building_spaceship1": {
             "evidence": 643,
-            "rumours": 5812,
-			"insight": 10
+            "insight": 10,
+            "rumours": 5812
         },
         "unlock_building_spaceship2": {
             "favour": 430,
-            "rumours": 6975,
-			"insight": 20
+            "insight": 20,
+            "rumours": 6975
         },
         "unlock_building_spaceship3": {
             "evidence": 848,
             "favour": 430,
-			"insight": 10
+            "insight": 10
         },
         "unlock_building_square": {
             "rumours": 58
@@ -1344,10 +1344,10 @@
         "bridge_gap": 60,
         "build_out_collector_food": 3,
         "build_out_collector_water": 3,
-		"investigate": 3,
         "clear_debris": 30,
         "clear_waste_r": 10,
         "clear_waste_t": 5,
+        "investigate": 3,
         "launch": 3,
         "send_caravan": 600,
         "use_in_campfire": 5,
@@ -1484,13 +1484,13 @@
         },
         "build_in_aqueduct": {
             "improvements": {
-	            "house": [
-	                2,
-	                -1
-	            ],
                 "aqueduct": [
                     -1,
                     3
+                ],
+                "house": [
+                    2,
+                    -1
                 ]
             },
             "upgrades": {
@@ -1499,13 +1499,13 @@
         },
         "build_in_barracks": {
             "improvements": {
-	            "house": [
-	                2,
-	                -1
-	            ],
                 "barracks": [
                     -1,
                     2
+                ],
+                "house": [
+                    2,
+                    -1
                 ]
             },
             "upgrades": {
@@ -1583,9 +1583,9 @@
             }
         },
         "build_in_garden": {
-			"camp": {
-				"exposed": false
-			},
+            "camp": {
+                "exposed": false
+            },
             "improvements": {
                 "garden": [
                     0,
@@ -1596,7 +1596,7 @@
                     -1
                 ]
             },
-			"sunlit": false,
+            "sunlit": false,
             "upgrades": {
                 "improve_building_inn": true
             }
@@ -1797,9 +1797,9 @@
             }
         },
         "build_in_shrine": {
-			"camp": {
-				"exposed": false
-			},
+            "camp": {
+                "exposed": false
+            },
             "deity": true,
             "improvements": {
                 "house": [
@@ -1832,9 +1832,9 @@
             }
         },
         "build_in_square": {
-			"camp": {
-				"exposed": false
-			},
+            "camp": {
+                "exposed": false
+            },
             "improvements": {
                 "camp": [
                     1,
@@ -1858,9 +1858,9 @@
             }
         },
         "build_in_stable": {
-			"camp": {
-				"exposed": false
-			},
+            "camp": {
+                "exposed": false
+            },
             "improvements": {
                 "market": [
                     1,
@@ -1890,9 +1890,9 @@
             }
         },
         "build_in_temple": {
-			"camp": {
-				"exposed": false
-			},
+            "camp": {
+                "exposed": false
+            },
             "deity": true,
             "improvements": {
                 "house": [
@@ -2859,9 +2859,9 @@
         },
         "investigate": {
             "busy": false,
-			"inCamp": false,
+            "inCamp": false,
             "sector": {
-				"investigatable": true,
+                "investigatable": true,
                 "investigatedPercent": [
                     -1,
                     1
@@ -2879,7 +2879,7 @@
         "launch": {
             "busy": false,
             "inCamp": true,
-			"sunlit": true,
+            "sunlit": true,
             "tribe": {
                 "projects": {
                     "spaceship1": 1,
@@ -3463,9 +3463,9 @@
                 -1
             ],
             "rumourpoolchecked": false,
-			"tribe": {
-				"rumoursFull": false
-			}
+            "tribe": {
+                "rumoursFull": false
+            }
         },
         "use_in_home": {
             "busy": false,
@@ -3514,9 +3514,9 @@
                     -1
                 ]
             },
-			"tribe": {
-				"rumoursFull": false
-			}
+            "tribe": {
+                "rumoursFull": false
+            }
         },
         "use_in_shrine": {
             "busy": false,
@@ -3524,9 +3524,9 @@
                 "raid": false
             },
             "deity": true,
-			"tribe": {
-				"favourFull" :false
-			}
+            "tribe": {
+                "favourFull": false
+            }
         },
         "use_in_temple": {
             "busy": false,
@@ -3534,26 +3534,26 @@
                 "raid": false
             },
             "deity": true,
-			"tribe": {
-				"favourFull" :false
-			}
+            "tribe": {
+                "favourFull": false
+            }
         },
         "use_item_cache_evidence": {
             "inCamp": true
         },
-		"use_item_cache_favour": {
-			"deity": true,
+        "use_item_cache_favour": {
+            "deity": true,
             "inCamp": true
-		},
-		"use_item_cache_insight": {
+        },
+        "use_item_cache_insight": {
             "inCamp": true
-		},
+        },
         "use_item_cache_metal": {
             "inCamp": true
         },
-		"use_item_cache_rumours": {
+        "use_item_cache_rumours": {
             "inCamp": true
-		},
+        },
         "use_item_consumable_graffiti": {
             "inCamp": false,
             "scouted": true
@@ -3625,7 +3625,10 @@
         },
         "use_out_collector_food": {
             "bag": {
-                "space": [ 1, -1 ]
+                "space": [
+                    1,
+                    -1
+                ]
             },
             "improvements": {
                 "collector_food": [
@@ -3643,7 +3646,10 @@
         },
         "use_out_collector_food_one": {
             "bag": {
-                "space": [ 1, -1 ]
+                "space": [
+                    1,
+                    -1
+                ]
             },
             "improvements": {
                 "collector_food": [
@@ -3661,7 +3667,10 @@
         },
         "use_out_collector_water": {
             "bag": {
-                "space": [ 1, -1 ]
+                "space": [
+                    1,
+                    -1
+                ]
             },
             "improvements": {
                 "collector_water": [
@@ -3679,7 +3688,10 @@
         },
         "use_out_collector_water_one": {
             "bag": {
-                "space": [ 1, -1 ]
+                "space": [
+                    1,
+                    -1
+                ]
             },
             "improvements": {
                 "collector_water": [
@@ -3697,7 +3709,10 @@
         },
         "use_spring": {
             "bag": {
-                "space": [ 1, -1 ]
+                "space": [
+                    1,
+                    -1
+                ]
             },
             "busy": false,
             "sector": {

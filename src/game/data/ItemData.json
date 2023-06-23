@@ -608,79 +608,7 @@
         "rarityScavenge": 8,
         "type": "voucher"
     },
-    "cache_rumours_11": {
-        "campOrdinalRequired": 5,
-        "description": "A dated newspaper printed in Old Waterworks on recycled rag paper",
-        "icon": "img/items/newspaper.png",
-        "id": "cache_rumours_11",
-        "isCraftable": false,
-        "isEquippable": false,
-        "isUseable": true,
-        "level": 1,
-        "name": "Dated Waterworks Monthly",
-        "nameShort": "Newspaper",
-        "rarityInvestigate": 9,
-        "rarityLocale": 8,
-        "rarityScavenge": -1,
-        "rarityTrade": 5,
-        "tradePrice": 2,
-        "type": "voucher"
-	},
-	"cache_rumours_12": {
-        "campOrdinalRequired": 6,
-        "description": "A fairly recent newspaper printed in Old Waterworks on recycled rag paper",
-        "icon": "img/items/newspaper.png",
-        "id": "cache_rumours_12",
-        "isCraftable": false,
-        "isEquippable": false,
-        "isUseable": true,
-        "level": 2,
-        "name": "Recent Waterworks Monthly",
-        "nameShort": "Newspaper",
-        "rarityInvestigate": 9,
-        "rarityLocale": 8,
-        "rarityScavenge": -1,
-        "rarityTrade": 5,
-        "tradePrice": 3,
-        "type": "voucher"
-	},
-	"cache_rumours_22": {
-        "campOrdinalRequired": 9,
-        "description": "A dated newspaper printed in Highgate on recycled rag paper",
-        "icon": "img/items/newspaper.png",
-        "id": "cache_rumours_21",
-        "isCraftable": false,
-        "isEquippable": false,
-        "isUseable": true,
-        "level": 2,
-        "name": "Dated Highgate Gazette",
-        "nameShort": "Newspaper",
-        "rarityInvestigate": 9,
-        "rarityLocale": 8,
-        "rarityScavenge": -1,
-        "rarityTrade": 5,
-        "tradePrice": 3,
-        "type": "voucher"
-	},
-	"cache_rumours_23": {
-        "campOrdinalRequired": 12,
-        "description": "A fairly recent newspaper printed in Highgate on recycled rag paper",
-        "icon": "img/items/newspaper.png",
-        "id": "cache_rumours_22",
-        "isCraftable": false,
-        "isEquippable": false,
-        "isUseable": true,
-        "level": 3,
-        "name": "Recent Highgate Gazette",
-        "nameShort": "Newspaper",
-        "rarityInvestigate": 9,
-        "rarityLocale": 8,
-        "rarityScavenge": -1,
-        "rarityTrade": 5,
-        "tradePrice": 4,
-        "type": "voucher"
-	},
-	"cache_favour_11": {
+    "cache_favour_11": {
         "campOrdinalRequired": 8,
         "description": "Old seeds of an extinct or rare plant. Might still grow if planted at a temple.",
         "icon": "img/items/seed.png",
@@ -696,8 +624,8 @@
         "rarityTrade": 8,
         "tradePrice": 2,
         "type": "voucher"
-	},
-	"cache_favour_12": {
+    },
+    "cache_favour_12": {
         "campOrdinalRequired": 12,
         "description": "Well-preserved seeds of an extinct or rare plant. Might grow if planted at a temple.",
         "icon": "img/items/seed.png",
@@ -713,8 +641,8 @@
         "rarityTrade": 8,
         "tradePrice": 3,
         "type": "voucher"
-	},
-	"cache_insight_11": {
+    },
+    "cache_insight_11": {
         "campOrdinalRequired": 14,
         "description": "Summary by a scientist working just before the Fall",
         "icon": "img/items/clipboard.png",
@@ -728,8 +656,8 @@
         "rarityScavenge": -1,
         "rarityTrade": -1,
         "type": "voucher"
-	},
-	"cache_insight_21": {
+    },
+    "cache_insight_21": {
         "campOrdinalRequired": 14,
         "description": "Summary by a scientist working just before the Fall",
         "icon": "img/items/clipboard.png",
@@ -744,8 +672,8 @@
         "rarityScavenge": -1,
         "rarityTrade": -1,
         "type": "voucher"
-	},
-	"cache_metal_1": {
+    },
+    "cache_metal_1": {
         "campOrdinalMaximum": 10,
         "campOrdinalRequired": 1,
         "configData": {
@@ -809,6 +737,78 @@
         "name": "Obsolete computer",
         "rarityLocale": 3,
         "rarityScavenge": 6,
+        "type": "voucher"
+    },
+    "cache_rumours_11": {
+        "campOrdinalRequired": 5,
+        "description": "A dated newspaper printed in Old Waterworks on recycled rag paper",
+        "icon": "img/items/newspaper.png",
+        "id": "cache_rumours_11",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "level": 1,
+        "name": "Dated Waterworks Monthly",
+        "nameShort": "Newspaper",
+        "rarityInvestigate": 9,
+        "rarityLocale": 8,
+        "rarityScavenge": -1,
+        "rarityTrade": 5,
+        "tradePrice": 2,
+        "type": "voucher"
+    },
+    "cache_rumours_12": {
+        "campOrdinalRequired": 6,
+        "description": "A fairly recent newspaper printed in Old Waterworks on recycled rag paper",
+        "icon": "img/items/newspaper.png",
+        "id": "cache_rumours_12",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "level": 2,
+        "name": "Recent Waterworks Monthly",
+        "nameShort": "Newspaper",
+        "rarityInvestigate": 9,
+        "rarityLocale": 8,
+        "rarityScavenge": -1,
+        "rarityTrade": 5,
+        "tradePrice": 3,
+        "type": "voucher"
+    },
+    "cache_rumours_22": {
+        "campOrdinalRequired": 9,
+        "description": "A dated newspaper printed in Highgate on recycled rag paper",
+        "icon": "img/items/newspaper.png",
+        "id": "cache_rumours_21",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "level": 2,
+        "name": "Dated Highgate Gazette",
+        "nameShort": "Newspaper",
+        "rarityInvestigate": 9,
+        "rarityLocale": 8,
+        "rarityScavenge": -1,
+        "rarityTrade": 5,
+        "tradePrice": 3,
+        "type": "voucher"
+    },
+    "cache_rumours_23": {
+        "campOrdinalRequired": 12,
+        "description": "A fairly recent newspaper printed in Highgate on recycled rag paper",
+        "icon": "img/items/newspaper.png",
+        "id": "cache_rumours_22",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "level": 3,
+        "name": "Recent Highgate Gazette",
+        "nameShort": "Newspaper",
+        "rarityInvestigate": 9,
+        "rarityLocale": 8,
+        "rarityScavenge": -1,
+        "rarityTrade": 5,
+        "tradePrice": 4,
         "type": "voucher"
     },
     "clothing_hands_1": {
