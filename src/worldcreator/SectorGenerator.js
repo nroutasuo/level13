@@ -1062,9 +1062,9 @@ define([
 			var r3 = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66);
 			var r4 = WorldCreatorRandom.random(seed / x * ll + x * y * 16);
 			var sca = new ResourcesVO();
-			var metalThresholds = { "ABUNDANT": 0.95, "COMMON": 0.8, "DEFAULT": 0.03 };
-			var foodThresholds = { "ABUNDANT": 0.98, "COMMON": 0.95, "DEFAULT": 0.75 };
-			var waterThresholds = { "ABUNDANT": 1, "COMMON": 0.95, "DEFAULT": 0.85 };
+			let metalThresholds = { "ABUNDANT": 0.95, "COMMON": 0.8, "DEFAULT": Math.ceil(campOrdinal / 3) * 0.02 };
+			let foodThresholds = { "ABUNDANT": 0.98, "COMMON": 0.95, "DEFAULT": 0.75 };
+			let waterThresholds = { "ABUNDANT": 1, "COMMON": 0.95, "DEFAULT": 0.85 };
 			switch (sectorType) {
 				case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
 					metalThresholds.ABUNDANT = 1;
