@@ -39,7 +39,6 @@ define(['ash', 'game/constants/OccurrenceConstants', 'game/constants/UIConstants
 				maxFavour: 100,
 				maxInsight: 0,
 				baseReputation: 3,
-				unlockedFeatures: [ UIConstants.UNLOCKABLE_FEATURE_WORKER_AUTO_ASSIGNMENT ],
 			},
 			{
 				name: "city within the City",
@@ -49,6 +48,7 @@ define(['ash', 'game/constants/OccurrenceConstants', 'game/constants/UIConstants
 				maxFavour: 400,
 				maxInsight: 0,
 				baseReputation: 4,
+				unlockedFeatures: [ UIConstants.UNLOCKABLE_FEATURE_WORKER_AUTO_ASSIGNMENT ],
 			},
 			{
 				name: "multiplex society",
