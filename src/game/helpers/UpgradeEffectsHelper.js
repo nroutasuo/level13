@@ -88,6 +88,10 @@ define([
 				result += "Workers cannot clear toxic waste. You must go to the sector yourself. ";
 			}
 			
+			if (unlockedActions.indexOf("investigate") >= 0) {
+				result += "Investigation is now available on certain sectors. Use the map to find them. ";
+			}
+			
 			if (unlockedProjects.indexOf(improvementNames.greenhouse) >= 0) {
 				result += "Greenhouses can only be built at certain locations with good conditions. If you've found those locations they will appear in the projects tab. ";
 			}
