@@ -140,6 +140,9 @@ function (Ash, UpgradeData, PlayerActionConstants, WorldConstants, UpgradeVO) {
 			improve_building_radiotower: "Improve the radio station and send messages over longer distances",
 			improve_building_robots: "Improve robot factories to produce more robots.",
 			improve_worker_scientist: "Add dedicated working spaces to the libraries",
+			improve_building_house2: "Build higher tower blocks with room for more people",
+			improve_worker_chemist_4: "Improve fuel production even more",
+			improve_worker_smith_4: "Optimize tools production",
 		},
 		
 		piecesByBlueprint: {},
