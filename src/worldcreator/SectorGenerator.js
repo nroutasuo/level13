@@ -1264,7 +1264,7 @@ define([
 			for (let i = 0; i < stages.length; i++) {
 				var stageVO = stages[i];
 				let step = WorldConstants.getStepForStage(stageVO.stage);
-				let maxPerType = levelVO.levelOrdinal > 10 ? 1 : levelVO.levelOrdinal > 3 ? 3 : 10;
+				let maxPerType = levelVO.levelOrdinal > 10 ? 1 : levelVO.levelOrdinal > 3 ? 2 : 8;
 				
 				// ingredients for required equipment
 				let requiredEquipment = [];
@@ -1294,7 +1294,7 @@ define([
 				}
 				
 				// a couple of random ingredients
-				let numRandomIngredients = 2;
+				let numRandomIngredients = Math.min(2, levelVO.campOrdinal);
 				for (let i = 0; i < numRandomIngredients; i++) {
 					var s1 = 4200 + seed % 3000 + (levelVO.level + 5) * 217 + i * 991;
 					var r1 = WorldCreatorRandom.random(s1);
