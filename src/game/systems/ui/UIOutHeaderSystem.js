@@ -78,7 +78,6 @@ define([
 			this.elements = {};
 			this.elements.body = $("body");
 			this.elements.locationHeader = $("#grid-location-header h1");
-			this.elements.date = $("#in-game-date");
 			this.elements.gameMsg = $("#game-msg")
 			this.elements.gameVersion = $("#game-version");
 			this.elements.valVision = $("#stats-vision .value");
@@ -906,11 +905,7 @@ define([
 			var headerText = isInCamp && campComponent ? campComponent.getName() + " (level " + playerPosition.level + ")" : "level " + playerPosition.level;
 			this.elements.locationHeader.text(headerText);
 
-			var showCalendar = this.tribeNodes.head.upgrades.hasUpgrade(GameGlobals.upgradeEffectsHelper.getUpgradeIdForUIEffect(UpgradeConstants.upgradeUIEffects.calendar));
-			GameGlobals.uiFunctions.toggle(this.elements.date, showCalendar);
 			GameGlobals.uiFunctions.toggle("#grid-tab-header", GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.out || isInCamp);
-
-			this.elements.date.text(UIConstants.getInGameDate(GameGlobals.gameState.gameTime));
 		},
 
 		updateVisionStatus: function () {

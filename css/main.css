@@ -2050,10 +2050,6 @@ body.dark #header-self-bar .stats-indicator .value {
   font-size: 0.75rem;
   margin: 3px 0;
 }
-body.dark #header-self-bar .info-callout {
-  width: 75px;
-  max-width: 75px;
-}
 body.dark #header-self-bar .change-indicator {
   vertical-align: top;
   margin: 0.2em 0 0 0.25em;
@@ -4324,10 +4320,6 @@ body.sunlit #header-self-bar .callout-container {
 body.sunlit #header-self-bar .stats-indicator .value {
   font-size: 0.75rem;
   margin: 3px 0;
-}
-body.sunlit #header-self-bar .info-callout {
-  width: 75px;
-  max-width: 75px;
 }
 body.sunlit #header-self-bar .change-indicator {
   vertical-align: top;
