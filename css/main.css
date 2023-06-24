@@ -2114,6 +2114,7 @@ body.dark #footer {
   display: flex;
   align-items: flex-end;
   height: 100%;
+  gap: 5px;
 }
 body.dark ul#game-options,
 body.dark ul#game-options-extended {
@@ -2357,9 +2358,6 @@ body.dark #switch {
 body.dark div.grid-content {
   background: #282a28;
   border: 2px solid #3a3a3a;
-}
-body.dark #in-game-date {
-  float: right;
 }
 body.dark .blueprint:hover {
   border-width: 2px !important;
@@ -4385,6 +4383,7 @@ body.sunlit #footer {
   display: flex;
   align-items: flex-end;
   height: 100%;
+  gap: 5px;
 }
 body.sunlit ul#game-options,
 body.sunlit ul#game-options-extended {
@@ -4628,9 +4627,6 @@ body.sunlit #switch {
 body.sunlit div.grid-content {
   background: #fff;
   border: 1px solid #aaa;
-}
-body.sunlit #in-game-date {
-  float: right;
 }
 body.sunlit .blueprint:hover {
   border-width: 2px !important;

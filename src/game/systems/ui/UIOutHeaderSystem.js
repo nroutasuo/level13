@@ -823,10 +823,10 @@ define([
 				if (saveSystem && saveSystem.error)
 					gameMsg = saveSystem.error;
 				else if (saveSystem && saveSystem.lastSaveTimeStamp > 0 && timeStamp - saveSystem.lastSaveTimeStamp < 3 * 1000)
-					gameMsg = " Game saved ";
+					gameMsg = "Game saved ";
 
-				if (this.autoPlayNodes.head) gameMsg += " Autoplaying";
-				if (GameGlobals.gameState.isPaused) gameMsg += " Paused";
+				if (this.autoPlayNodes.head) gameMsg += "Autoplaying";
+				if (GameGlobals.gameState.isPaused) gameMsg += "Paused";
 
 				if (this.lastGameMsg !== gameMsg) {
 					this.elements.gameMsg.text(gameMsg);

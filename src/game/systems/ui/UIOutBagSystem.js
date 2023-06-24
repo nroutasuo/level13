@@ -223,7 +223,6 @@ define([
 		updateBagActions: function () {
 			let inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
 			
-			GameGlobals.uiFunctions.toggle("#header-self-bag-actions", !inCamp);
 			GameGlobals.uiFunctions.toggle("#self-bag-actions", !inCamp);
 		},
 

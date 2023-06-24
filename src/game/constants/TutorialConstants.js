@@ -290,7 +290,7 @@ define(['ash'], function (Ash) {
 			TUTORIAL_ENCOUNTER_INGREDIENT_SECTOR: {
 				triggers: [ "action_scout" ],
 				repeats: "NEVER",
-				delay: 1500,
+				delay: 500,
 				logMessage: "Seems like the kind of place where you might find crafting ingredients.",
 				conditions: { sector: { scavengeableItems: { count: [ 1, -1 ] } } },
 			},

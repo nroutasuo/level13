@@ -468,6 +468,7 @@ define(['ash',
 						switch (key) {
 							case "improvementsOnLevel":
 								let actionImprovementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(action);
+								if (actionImprovementName != improvementNames.camp) {
 								for (let improvementID in specialReqs[key]) {
 									let range = specialReqs[key][improvementID];
 									let count = GameGlobals.playerActionsHelper.getCurrentImprovementCountOnLevel(position.level, improvementID);
@@ -477,6 +478,7 @@ define(['ash',
 										displayName = "";
 									}
 									s += rangeText + " " + displayName + " on level (" + count + ")";
+								}
 								}
 								break;
 							default:
