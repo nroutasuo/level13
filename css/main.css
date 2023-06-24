@@ -931,6 +931,14 @@ body.dark .info-callout-target:focus + div.info-callout,
 body.dark div.info-callout:focus {
   display: block;
 }
+body.dark .info-callout-target-side:hover + div.info-callout,
+body.dark .info-callout-target-side + div.info-callout:hover,
+body.dark .info-callout-target-side:focus + div.info-callout,
+body.dark .info-callout-target-side + div.info-callout:focus {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+}
 body.dark div.btn-callout,
 body.dark div.info-callout {
   text-align: left;
@@ -952,6 +960,9 @@ body.dark div.info-callout {
   width: auto;
   min-width: 50%;
   max-width: 100%;
+}
+body.dark .info-callout-side + div.info-callout {
+  max-width: unset;
 }
 body.dark .info-callout-target {
   border-width: 0px;
@@ -977,6 +988,13 @@ body.dark .itemlist div.info-callout-target {
 body.dark .info-callout-target-small + div.info-callout {
   width: auto !important;
   max-width: none !important;
+  white-space: nowrap;
+}
+body.dark .info-callout-target-side + div.info-callout {
+  max-width: none;
+  width: auto;
+  height: 100%;
+  top: 0;
   white-space: nowrap;
 }
 body.dark div.callout-container {
@@ -1005,18 +1023,28 @@ body.dark div.info-callout-content {
 body.dark .info-callout-content-section-long {
   white-space: normal;
 }
-body.dark div.callout-arrow-up {
-  border-bottom-color: #555 !important;
+body.dark div.callout-arrow-up,
+body.dark div.callout-arrow-left {
   width: 0;
   height: 0;
   z-index: 10;
   position: relative;
-  top: 0px;
   margin: 0 0 0 3.5px;
   margin: 0px auto;
+}
+body.dark div.callout-arrow-up {
+  border-bottom-color: #555 !important;
+  top: 0px;
   border-left: 7px solid transparent;
   border-right: 7px solid transparent;
   border-bottom: 7px solid;
+}
+body.dark div.callout-arrow-left {
+  border-right-color: #555 !important;
+  left: 0px;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-right: 7px solid;
 }
 body.dark .item div.callout-arrow-up {
   margin: 0 0 0 2px;
@@ -3178,6 +3206,14 @@ body.sunlit .info-callout-target:focus + div.info-callout,
 body.sunlit div.info-callout:focus {
   display: block;
 }
+body.sunlit .info-callout-target-side:hover + div.info-callout,
+body.sunlit .info-callout-target-side + div.info-callout:hover,
+body.sunlit .info-callout-target-side:focus + div.info-callout,
+body.sunlit .info-callout-target-side + div.info-callout:focus {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+}
 body.sunlit div.btn-callout,
 body.sunlit div.info-callout {
   text-align: left;
@@ -3199,6 +3235,9 @@ body.sunlit div.info-callout {
   width: auto;
   min-width: 50%;
   max-width: 100%;
+}
+body.sunlit .info-callout-side + div.info-callout {
+  max-width: unset;
 }
 body.sunlit .info-callout-target {
   border-width: 0px;
@@ -3224,6 +3263,13 @@ body.sunlit .itemlist div.info-callout-target {
 body.sunlit .info-callout-target-small + div.info-callout {
   width: auto !important;
   max-width: none !important;
+  white-space: nowrap;
+}
+body.sunlit .info-callout-target-side + div.info-callout {
+  max-width: none;
+  width: auto;
+  height: 100%;
+  top: 0;
   white-space: nowrap;
 }
 body.sunlit div.callout-container {
@@ -3252,18 +3298,28 @@ body.sunlit div.info-callout-content {
 body.sunlit .info-callout-content-section-long {
   white-space: normal;
 }
-body.sunlit div.callout-arrow-up {
-  border-bottom-color: #999 !important;
+body.sunlit div.callout-arrow-up,
+body.sunlit div.callout-arrow-left {
   width: 0;
   height: 0;
   z-index: 10;
   position: relative;
-  top: 0px;
   margin: 0 0 0 3.5px;
   margin: 0px auto;
+}
+body.sunlit div.callout-arrow-up {
+  border-bottom-color: #999 !important;
+  top: 0px;
   border-left: 7px solid transparent;
   border-right: 7px solid transparent;
   border-bottom: 7px solid;
+}
+body.sunlit div.callout-arrow-left {
+  border-right-color: #999 !important;
+  left: 0px;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-right: 7px solid;
 }
 body.sunlit .item div.callout-arrow-up {
   margin: 0 0 0 2px;

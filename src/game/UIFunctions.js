@@ -329,12 +329,16 @@ define(['ash',
 						return;
 					}
 					
+					let isSidePosition = $target.hasClass("info-callout-target-side")
+					let arrowClass = isSidePosition ? "callout-arrow-left" : "callout-arrow-up";
+					
 					$target.wrap('<div class="callout-container"></div>');
 					$target.after(function () {
-						var description = $(this).attr("description");
-						var content = description;
-						content = '<div class="callout-arrow-up"></div><div class="info-callout-content">' + content + "</div>";
-						return '<div class="info-callout">' + content + '</div>'
+						let description = $(this).attr("description");
+						let content = description;
+						content = '<div class="' + arrowClass + '"></div><div class="info-callout-content">' + content + "</div>";
+						let callout = '<div class="info-callout">' + content + '</div>';
+						return callout;
 					});
 					$target.data("callout-generated", true);
 				});

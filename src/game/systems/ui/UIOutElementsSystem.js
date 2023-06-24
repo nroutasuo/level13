@@ -300,9 +300,8 @@ define([
 		},
 
 		updateInfoCallouts: function () {
-			var targets;
 			$.each(this.elementsCalloutContainers, function () {
-				targets = $(this).children(".info-callout-target");
+				let targets = $(this).children(".info-callout-target");
 				if (targets.length > 0) {
 					var visible = true;
 					$.each(targets, function() {
@@ -312,6 +311,10 @@ define([
 						visible = visible && $(this).css("display") !== "none";
 					});
 					GameGlobals.uiFunctions.toggle($(this), visible, this.buttonCalloutSignalParams);
+				}
+				let sideTargets = $(this).children(".info-callout-target-side");
+				if (sideTargets.length > 0) {
+					$(this).children(".info-callout").css("left", $(this).width() + "px")
 				}
 			});
 		},

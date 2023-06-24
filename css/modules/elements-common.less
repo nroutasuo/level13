@@ -9,6 +9,13 @@ div.container-btn-action:focus + div.btn-callout, div.btn-callout:focus, .info-c
 	display: block;
 }
 
+.info-callout-target-side:hover + div.info-callout, .info-callout-target-side + div.info-callout:hover,
+.info-callout-target-side:focus + div.info-callout, .info-callout-target-side + div.info-callout:focus {
+	display: flex !important;
+	justify-content: center;
+	align-items: center;
+}
+
 div.btn-callout, div.info-callout {
 	text-align: left;
 	display: none;
@@ -31,6 +38,10 @@ div.info-callout {
 	width: auto;
 	min-width: 50%;
 	max-width: 100%;
+}
+
+.info-callout-side + div.info-callout {
+	max-width: unset;
 }
 
 .info-callout-target {
@@ -56,6 +67,14 @@ div.btn-callout-content, div.info-callout-content {
 .info-callout-target-small + div.info-callout {
 	width: auto !important;
 	max-width: none !important;
+	white-space: nowrap;
+}
+
+.info-callout-target-side + div.info-callout {
+	max-width: none;
+	width: auto;
+	height: 100%;
+	top: 0;
 	white-space: nowrap;
 }
 
@@ -88,18 +107,29 @@ div.btn-callout-content, div.info-callout-content {
 
 // CALLOUT ARROWS
 
-div.callout-arrow-up {
-	border-bottom-color: @color-border-strong !important;
+div.callout-arrow-up, div.callout-arrow-left {
 	width: 0;
 	height: 0;
 	z-index: 10;
 	position: relative;
-	top: 0px;
 	margin: 0 0 0 @callout-arrow-size/2;
 	margin: 0px auto;
+}
+
+div.callout-arrow-up {
+	border-bottom-color: @color-border-strong !important;
+	top: 0px;
 	border-left: @callout-arrow-size solid transparent;
 	border-right: @callout-arrow-size solid transparent;
 	border-bottom: @callout-arrow-size solid;
+}
+
+div.callout-arrow-left {
+	border-right-color: @color-border-strong !important;
+	left: 0px;
+	border-top: @callout-arrow-size solid transparent;
+  	border-bottom: @callout-arrow-size solid transparent;
+  	border-right: @callout-arrow-size solid;
 }
 
 .item div.callout-arrow-up {
