@@ -89,7 +89,7 @@ define([
 			let action = this.getUnlockMilestoneAction(nextMilestone);
 			let hasDeity = this.playerStatsNodes.head.entity.has(DeityComponent);
 			let hasInsight = this.playerStatsNodes.head.insight.value > 0;
-			let hasNextMilestone = nextMilestone.name || false;
+			let hasNextMilestone = nextMilestone.name && nextMilestone.name.length > 0;
 			
 			// texts
 			$("#milestone-current-name").text(currentMilestone.name + " (" + currentMilestone.index + ")");
