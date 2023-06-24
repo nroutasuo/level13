@@ -553,7 +553,7 @@ define([
 				liClass += " item item-equipped";
 				let li =
 					"<li class='" + liClass + "' id='perk-header-" + perk.id + "'>" +
-					"<div class='info-callout-target info-callout-target-small' description='" + desc + "'>" +
+					"<div class='info-callout-target info-callout-target-side' description='" + desc + "'>" +
 					"<img src='" + url + "' alt='" + perk.name + "'/>" +
 					"</div></li>";
 				$li = $(li);
@@ -597,7 +597,7 @@ define([
 				liClass += " item item-equipped";
 				var li =
 					"<li class='" + liClass + "'>" +
-					"<div class='info-callout-target info-callout-target-small' description='" + status.name + "'>" +
+					"<div class='info-callout-target info-callout-target-side' description='" + status.name + "'>" +
 					"<img src='" + status.icon + "' alt='" + status.name + "'/>" +
 					"</div></li>";
 				$("ul#list-items-statuses").append(li);
@@ -823,10 +823,10 @@ define([
 				if (saveSystem && saveSystem.error)
 					gameMsg = saveSystem.error;
 				else if (saveSystem && saveSystem.lastSaveTimeStamp > 0 && timeStamp - saveSystem.lastSaveTimeStamp < 3 * 1000)
-					gameMsg = "Game saved ";
+					gameMsg = " Game saved ";
 
-				if (this.autoPlayNodes.head) gameMsg += "Autoplaying";
-				if (GameGlobals.gameState.isPaused) gameMsg += "Paused";
+				if (this.autoPlayNodes.head) gameMsg += " Autoplaying";
+				if (GameGlobals.gameState.isPaused) gameMsg += " Paused";
 
 				if (this.lastGameMsg !== gameMsg) {
 					this.elements.gameMsg.text(gameMsg);
