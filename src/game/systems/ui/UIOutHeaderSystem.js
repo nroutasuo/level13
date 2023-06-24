@@ -655,7 +655,8 @@ define([
 			GameGlobals.uiFunctions.toggle("#header-bag-storage", !inCamp && GameGlobals.gameState.unlockedFeatures.bag);
 			GameGlobals.uiFunctions.toggle("#header-bag-currency", !inCamp && currencyComponent.currency > 0);
 			GameGlobals.uiFunctions.toggle("#bag-resources", !inCamp);
-			$("#header-camp-container").toggleClass("hidden", !inCamp && !GameGlobals.gameState.unlockedFeatures.bag && itemsComponent.getAll().length == 0 && showResources.getTotal() === 0);
+			
+			$("#grid-main-header").toggleClass("hidden", !GameGlobals.gameState.unlockedFeatures.bag && itemsComponent.getAll().length == 0 && showResources.getTotal() === 0);
 
 			$("#header-camp-currency .value").text(currencyComponent ? currencyComponent.currency : "??");
 			$("#header-bag-currency .value").text(currencyComponent ? currencyComponent.currency : "??");
