@@ -876,7 +876,8 @@ define([
 			if ($("#level-icon").attr("src") !== icon.src)
 				$("#level-icon").attr("src", icon.src);
 			$("#level-icon").attr("alt", icon.desc);
-			$("#level-icon").attr("title", icon.desc);
+			
+			UIConstants.updateCalloutContent("#level-icon", icon.desc);
 			
 			if (animate) {
 				UIAnimations.animateIcon($("#level-icon"), UIAnimations.LONG_ANIM_DURATION);
