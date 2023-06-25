@@ -811,7 +811,7 @@ define([
 				if (isVisible && value > 0) visibleStats++;
 			}
 
-			GameGlobals.uiFunctions.toggle("#header-self-bar > hr", visibleStats > 1)
+			GameGlobals.uiFunctions.toggle("#header-self-bar > hr", visibleStats > 0);
 		},
 
 		updateGameMsg: function () {
