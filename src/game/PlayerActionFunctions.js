@@ -602,7 +602,7 @@ define(['ash',
 					improvements.getCount(improvementNames.passageUpHole) > 0;
 				found = true;
 				popupMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageUp, PositionConstants.DIRECTION_UP, sunlit, passageUpBuilt) + " ";
-				if (!passageUpBuilt) logMsg += "Found a passage to the level above.";
+				if (!passageUpBuilt) logMsg += level == 13 ? "Found a hole in the ceiling leading to the passage above, but it's far too high to reach." : "Found a passage to the level above.";
 			}
 
 			if (passagesComponent.passageDown) {
@@ -1850,7 +1850,7 @@ define(['ash',
 			let itemConfig = ItemConstants.getItemConfigByID(itemId);
 			let baseItemId = ItemConstants.getBaseItemId(itemId);
 			let itemNameParts = item.name.split(" ");
-			let itemShortName = itemNameParts[itemNameParts.length - 1];
+			let itemShortName = ItemConstants.getItemDisplayName(item, true);
 			let currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
 			
 			switch (baseItemId) {

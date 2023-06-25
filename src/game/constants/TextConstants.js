@@ -144,14 +144,15 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					addOptions("an-items", [ "broken glass" ]);
 					break;
 				case SectorConstants.SECTOR_TYPE_PUBLIC:
-					addOptions("n-sector", ["prison complex", "amusement park", "library"]);
+					addOptions("n-sector", ["prison complex", "amusement park", "library", "park" ]);
 					addOptions("a-street", [ "dignified", "solemn", "grand", "ordinary" ]);
 					addOptions("a-street-past", [ "leisurely", "orderly", "cheerful" ]);
 					addOptions("n-building", [ "library", "prison", "school", "university building", "park", "public square", "sports field", "metro station", "research laboratory", "government building" ]);
 					addOptions("n-buildings", [ "public buildings", "government buildings" ]);
 					addOptions("a-building", [ "empty", "inaccessible", "enormous", "uncanny", "symmetrical" ]);
 					addOptions("an-decos", [ "withered trees" ]);
-					addOptions("an-items", [ "research samples", "trash" ]);
+					addOptions("an-items", [ "trash" ]);
+					if (features.level > 13) addOptions("an-items", [ "research samples" ]);
 					break;
 				case SectorConstants.SECTOR_TYPE_SLUM:
 					addOptions("n-sector", [ "shanty town", "landfill site" ]);

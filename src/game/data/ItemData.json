@@ -762,13 +762,14 @@
         "configData": {
             "waterValue": 5
         },
-        "description": "A big package of juice boxes. Might still be good.",
+        "description": "A big package of juice boxes. Might still be good to drink.",
         "icon": "img/items/cache-water.png",
         "id": "cache_water_1",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
         "name": "Juice boxes",
+        "nameShort": "Juice boxes",
         "rarityLocale": 5,
         "rarityScavenge": 9,
         "type": "voucher"
