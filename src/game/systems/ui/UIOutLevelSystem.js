@@ -130,6 +130,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
 			GlobalSignals.add(this, GlobalSignals.popupClosedSignal, this.updateLocales);
 			GlobalSignals.add(this, GlobalSignals.buttonStateChangedSignal, this.onButtonStateChanged);
+			GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, this.scheduleMapUpdate);
 			GlobalSignals.add(this, GlobalSignals.equipmentChangedSignal, this.scheduleMapUpdate);
 			GlobalSignals.add(this, GlobalSignals.sectorRevealedSignal, this.scheduleMapUpdate);
 			GlobalSignals.add(this, GlobalSignals.themeToggledSignal, this.scheduleMapUpdate);
