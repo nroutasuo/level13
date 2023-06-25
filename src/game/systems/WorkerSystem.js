@@ -336,7 +336,7 @@ define([
 			let removedThirstPerk = removedPerks.find(perk => perk.id == PerkConstants.perkIds.thirst);
 			
 			let logAddHunger = addedHungerPerk && isHungry && !this.isInCampWithProduction(resourceNames.food);
-			let logAddThirst = addedThirstPerk  && isThirsty && !this.isInCampWithProduction(resourcenames.water);
+			let logAddThirst = addedThirstPerk  && isThirsty && !this.isInCampWithProduction(resourceNames.water);
 			
 			let logRemovedHunger = removedHungerPerk && removedHungerPerk.loggedAdd && !isHungry;
 			let logRemovedThirst = removedThirstPerk && removedThirstPerk.loggedAdd && !isThirsty;
