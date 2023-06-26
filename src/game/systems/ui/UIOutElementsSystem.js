@@ -337,7 +337,7 @@ define([
 			$.each($("button.action"), function () {
 				var $button = $(this);
 				var action = $button.attr("action");
-				var isVisible = (GameGlobals.uiFunctions.isElementToggled($button) !== false) && GameGlobals.uiFunctions.isElementVisible($button);
+				var isVisible = GameGlobals.uiFunctions.isElementToggled($button) === true || GameGlobals.uiFunctions.isElementVisible($button);
 				sys.updateButtonContainer($button, isVisible);
 				if (isVisible) {
 					sys.elementsVisibleButtons.push($button);
