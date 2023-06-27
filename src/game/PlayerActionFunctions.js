@@ -4,6 +4,7 @@ define(['ash',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
 	'game/constants/CampConstants',
+	'game/constants/ExplorationConstants',
 	'game/constants/FollowerConstants',
 	'game/constants/LogConstants',
 	'game/constants/ImprovementConstants',
@@ -62,7 +63,7 @@ define(['ash',
 	'text/Text',
 	'utils/StringUtils'
 ], function (Ash, GameGlobals, GlobalSignals,
-	GameConstants, CampConstants, FollowerConstants, LogConstants, ImprovementConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, TribeConstants, UIConstants, UpgradeConstants, TextConstants,
+	GameConstants, CampConstants, ExplorationConstants, FollowerConstants, LogConstants, ImprovementConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, TribeConstants, UIConstants, UpgradeConstants, TextConstants,
 	PositionVO, LocaleVO, ResultVO,
 	PlayerPositionNode, FightNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, CampNode, TribeUpgradesNode,
@@ -459,7 +460,10 @@ define(['ash',
 			let logMsg = "";
 			let playerMaxVision = this.playerStatsNodes.head.vision.maximum;
 			let sector = this.playerLocationNodes.head.entity;
-			let sunlit = sector.get(SectorFeaturesComponent).sunlit;
+			let sectorFeatures = sector.get(SectorFeaturesComponent);
+			let sunlit = sectorFeatures.sunlit;
+			let sectorResources = sectorFeatures.resourcesScavengable;
+			let sectorItems = sectorFeatures.itemsScavengeable.length;
 			
 			if (playerMaxVision <= PlayerStatConstants.VISION_BASE) {
 				if (sunlit) logMsg = "Rummaged blindly for loot. ";
@@ -472,14 +476,17 @@ define(['ash',
 			var logMsgFlee = logMsg + "Fled empty-handed.";
 			var logMsgDefeat = logMsg + "Got into a fight and was defeated.";
 			let sys = this;
-			var successCallback = function () {
+			let successCallback = function () {
 				GameGlobals.gameState.stats.numTimesScavenged++;
 				let scavengedPercentBefore = sectorStatus.getScavengedPercent();
 				sectorStatus.scavenged = true;
 				sectorStatus.weightedNumScavenges += Math.min(1, efficiency);
 				let scavengedPercentAfter = sectorStatus.getScavengedPercent();
-				let warningThreshold = 75;
-				if (scavengedPercentBefore < warningThreshold && scavengedPercentAfter >= warningThreshold) {
+				let warningThresholdHighScavengedPercent = 75;
+				let warningThresholdNoScavengeResources = ExplorationConstants.THRESHOLD_SCAVENGED_PERCENT_REVEAL_NO_RESOURCES;
+				if (sectorResources.getTotal() <= 0 && sectorItems.legnth <= 0 && scavengedPercentAfter >= warningThresholdNoScavengeResources) {
+					sys.addLogMessage(LogConstants.getUniqueID(), logMsg + " There doesn't seem to be anything to scavenge here.");
+				} else if (scavengedPercentBefore < warningThresholdHighScavengedPercent && scavengedPercentAfter >= warningThresholdHighScavengedPercent) {
 					sys.addLogMessage(LogConstants.getUniqueID(), logMsg + " There isn't much left to scavenge here.");
 				}
 			};

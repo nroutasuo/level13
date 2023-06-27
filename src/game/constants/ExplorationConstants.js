@@ -3,6 +3,7 @@ define(['ash', 'game/vos/LocaleVO'], function (Ash, LocaleVO) {
 	var ExplorationConstants = {
 		
 		BEACON_RADIUS: 4,
+		THRESHOLD_SCAVENGED_PERCENT_REVEAL_NO_RESOURCES: 10,
 		
 		getScoutLocaleReward: function (localeType, campOrdinal) {
 			switch (localeType) {

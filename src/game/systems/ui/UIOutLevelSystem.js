@@ -5,6 +5,7 @@ define([
 	'utils/UIList',
 	'game/GameGlobals',
 	'game/GlobalSignals',
+	'game/constants/ExplorationConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/PlayerStatConstants',
 	'game/constants/TextConstants',
@@ -36,7 +37,7 @@ define([
 	'game/components/sector/EnemiesComponent'
 ], function (
 	Ash,
-	Text, MapUtils,  UIList, GameGlobals, GlobalSignals, PlayerActionConstants, PlayerStatConstants, TextConstants,
+	Text, MapUtils,  UIList, GameGlobals, GlobalSignals, ExplorationConstants, PlayerActionConstants, PlayerStatConstants, TextConstants,
 	LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, TradeConstants,
 	TribeConstants, PlayerPositionNode, PlayerLocationNode, NearestCampNode, VisionComponent, StaminaComponent,
 	ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
@@ -480,13 +481,23 @@ define([
 				if (investigationComplete) description += "</span>";
 				description += "<br/>";
 			}
-			if (featuresComponent.resourcesScavengable.getTotal() > 0) {
-				let discoveredResources = GameGlobals.sectorHelper.getLocationDiscoveredResources();
-				let knownResources = GameGlobals.sectorHelper.getLocationKnownResources();
-				if (knownResources.length > 0) {
-					description += "Resources found: " + TextConstants.getScaResourcesString(discoveredResources, knownResources, featuresComponent.resourcesScavengable) + " ";
+			
+			let scavengedPercent = statusComponent.getScavengedPercent();
+			let discoveredResources = GameGlobals.sectorHelper.getLocationDiscoveredResources();
+			let knownResources = GameGlobals.sectorHelper.getLocationKnownResources();
+			
+			if (knownResources.length > 0) {
+				description += "Resources found: " + TextConstants.getScaResourcesString(discoveredResources, knownResources, featuresComponent.resourcesScavengable) + "<br/>";
+			} else if (scavengedPercent >= ExplorationConstants.THRESHOLD_SCAVENGED_PERCENT_REVEAL_NO_RESOURCES) {
+				if (featuresComponent.resourcesScavengable.getTotal() > 0) {
+					description += "Resources found: ?<br/>";
+				} else {
+					description += "Resources found: (none)<br/>";
 				}
+			} else {
+				description += "Resources found: ?<br/>";
 			}
+			
 			if (featuresComponent.itemsScavengeable.length > 0) {
 				let discoveredItems = GameGlobals.sectorHelper.getLocationDiscoveredItems();
 				let knownItems = GameGlobals.sectorHelper.getLocationKnownItems();
