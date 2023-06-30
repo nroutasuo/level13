@@ -161,11 +161,13 @@ define(['ash',
 		},
 		
 		getRandomAbilityLevelByCampOrdinal: function (abilityType, campOrdinal, forcedAbilityLevelRandomFactor) {
+			campOrdinal = parseInt(campOrdinal);
 			let minCampOrdinal = Math.min(campOrdinal, this.getUnlockCampOrdinal(abilityType));
 			let maxCampOrdinal = WorldConstants.CAMPS_TOTAL;
 			
-			let minAbilityLevel = MathUtils.map(campOrdinal - 1, minCampOrdinal - 1, maxCampOrdinal + 1, 1, 100);
-			let maxAbilityLevel = MathUtils.map(campOrdinal + 1, minCampOrdinal - 1, maxCampOrdinal + 1, 1, 100);
+			let variation = campOrdinal >= 3 ? 1 : 0.5;
+			let minAbilityLevel = MathUtils.map(campOrdinal - variation, minCampOrdinal - 1, maxCampOrdinal + 1, 1, 100);
+			let maxAbilityLevel = MathUtils.map(campOrdinal + variation, minCampOrdinal - 1, maxCampOrdinal + 1, 1, 100);
 			let abilityLevel = MathUtils.randomIntBetween(minAbilityLevel, maxAbilityLevel);
 			
 			if (forcedAbilityLevelRandomFactor) {
