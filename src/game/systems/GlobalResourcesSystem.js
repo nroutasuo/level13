@@ -144,7 +144,7 @@ define([
 				if (globalResources[name] > 0) shouldUnlock = true;
 				
 				if (shouldUnlock) {
-					GameGlobals.playerActionFunctions.unlockFeature("reasource_" + name);
+					GameGlobals.playerActionFunctions.unlockFeature("resource_" + name);
 				}
 			};
 			
