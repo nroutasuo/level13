@@ -92,6 +92,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		getBrokenBonus: function (bonusType) {
 			// TODO refer to ItemConstants isIncreasing isMultiplier
 			let baseValue = this.getBaseBonus(bonusType);
+			if (baseValue == 0) return 0;
 			switch (bonusType) {
 				//case itemBonusTypes.movement:
 				case "movement":
