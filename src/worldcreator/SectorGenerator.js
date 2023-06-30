@@ -1198,6 +1198,7 @@ define([
 					sca.metal = WorldConstants.resourcePrevalence.ABUNDANT;
 					sca.food = WorldConstants.resourcePrevalence.COMMON;
 					col.water = WorldConstants.resourcePrevalence.RARE;
+					col.food = WorldConstants.resourcePrevalence.RARE;
 				} else {
 					if (isOutpost) {
 						sca.metal = MathUtils.clamp(sca.metal, WorldConstants.resourcePrevalence.COMMON, WorldConstants.resourcePrevalence.ABUNDANT);
