@@ -270,6 +270,7 @@ define([
 				$("#mainmap-sector-details-threats").text(this.getThreatsText(this.selectedSector, isScouted));
 				$("#mainmap-sector-details-blockers").text(this.getBlockersHTML(this.selectedSector, isScouted));
 				$("#mainmap-sector-details-env").html(this.getEnvironmentHTML(this.selectedSector, isScouted));
+				$("#mainmap-sector-details-misc").html(this.getMiscHTML(this.selectedSector, isScouted));
 				$("#mainmap-sector-debug-text").text("Zone: " + sectorFeatures.zone);
 			}
 		},
@@ -703,6 +704,22 @@ define([
 				result.push(getHazardSpan("pollution", hazards.poison, hazards.poison > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_poison)));
 			if (hazards.cold > 0)
 				result.push(getHazardSpan("cold", hazards.cold, hazards.cold > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_cold)));
+			
+			if (result.length < 1) return "-";
+			else return result.join(", ");
+		},
+		
+		getMiscHTML: function (sector, isScouted) {
+			let isVisited = sector.has(VisitedComponent);
+			if (!isVisited) return "?";
+			let result = [];
+			
+			if (isScouted) {
+				let statusComponent = this.selectedSector.get(SectorStatusComponent);
+				if (statusComponent.graffiti) {
+					result.push("Graffiti: '" + statusComponent.graffiti + "'");
+				}
+			}
 			
 			if (result.length < 1) return "-";
 			else return result.join(", ");

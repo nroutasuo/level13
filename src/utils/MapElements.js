@@ -47,6 +47,7 @@ define(['game/constants/ColorConstants', 'game/constants/SectorConstants'], func
 	MapElements.initIcon("beacon", "map-beacon");
 	MapElements.initIcon("ingredient", "map-ingredient");
 	MapElements.initIcon("investigate", "map-investigate");
+	MapElements.initIcon("graffiti", "map-graffiti");
 
 	return MapElements;
 });

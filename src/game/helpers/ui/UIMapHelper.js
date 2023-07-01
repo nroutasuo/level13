@@ -808,6 +808,9 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 				ctx.drawImage(this.icons["ingredient" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
 				ctx.globalAlpha = 1;
 				return true;
+			} else if (statusComponent.graffiti) {
+				ctx.drawImage(this.icons["graffiti" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
+				return true;
 			}
 			
 			return false;
