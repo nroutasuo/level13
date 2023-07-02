@@ -449,6 +449,8 @@ define([
 						GlobalSignals.followersChangedSignal.dispatch();
 					} else if (nearestCampNode) {
 						nearestCampNode.camp.pendingRecruits.push(follower);
+					} else {
+						log.w("no place to put reward follower!")
 					}
 				}
 				GameGlobals.playerActionFunctions.unlockFeature("followers");
@@ -994,6 +996,7 @@ define([
 			let hasBag = currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
 			let hasCamp = GameGlobals.gameState.unlockedFeatures.camp;
 			let hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
+			// TODO override for scout localea (sector scavenged % should not decrease efficiency for them)
 			let efficiency = this.getCurrentScavengeEfficiency();
 			
 			var playerPos = this.playerLocationNodes.head.position;
@@ -1085,7 +1088,7 @@ define([
 			
 			// choose rarity and camp ordinal thresholds
 			let maxPossibleRarity = Math.min(campOrdinal * 4, 10);
-			let maxRarity = MathUtils.clamp(maxPossibleRarity * efficiency * Math.random(), 2, 10);
+			let maxRarity = MathUtils.clamp(maxPossibleRarity * Math.random(), 2, 10);
 			
 			let maxCampOrdinalBonus = 0;
 			if (step == WorldConstants.CAMP_STEP_END) maxCampOrdinalBonus++;
