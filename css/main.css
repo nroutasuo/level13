@@ -17,13 +17,13 @@ body {
 }
 #unit-main,
 #footer {
-  padding-left: 85px;
+  padding-left: 95px;
 }
 #header-side {
   position: fixed;
-  width: 65px;
+  width: 75px;
   z-index: 5;
-  margin-left: -85px;
+  margin-left: -95px;
 }
 #log {
   max-width: 244px;
@@ -1193,6 +1193,7 @@ body.dark .horizontal-select-option.selected {
 body.dark .stats-indicator {
   display: block;
   white-space: nowrap;
+  padding-right: 5px;
 }
 body.dark .stats-indicator span {
   display: inline-block;
@@ -2040,7 +2041,7 @@ body.dark #header-self-bar > span {
 body.dark #header-self-bar .stats-indicator {
   margin: 1px 0px;
   width: 100%;
-  max-width: 60px;
+  max-width: 70px;
   line-height: 1em;
 }
 body.dark #header-self-bar .callout-container {
@@ -2055,7 +2056,7 @@ body.dark #header-self-bar .change-indicator {
   margin: 0.2em 0 0 0.25em;
 }
 body.dark #header-self-bar div.callout-arrow-up {
-  margin: 0 0 0 25.5px;
+  margin: 0 0 0 30.5px;
 }
 body.dark .stats-indicator-secondary {
   display: flex;
@@ -2110,7 +2111,7 @@ body.dark #notification-player .progress {
   height: 1.25em;
 }
 body.dark #footer {
-  padding: 1px 5px 1px 85px;
+  padding: 1px 5px 1px 95px;
   display: flex;
   align-items: flex-end;
   height: 100%;
@@ -3462,6 +3463,7 @@ body.sunlit .horizontal-select-option.selected {
 body.sunlit .stats-indicator {
   display: block;
   white-space: nowrap;
+  padding-right: 5px;
 }
 body.sunlit .stats-indicator span {
   display: inline-block;
@@ -4309,7 +4311,7 @@ body.sunlit #header-self-bar > span {
 body.sunlit #header-self-bar .stats-indicator {
   margin: 1px 0px;
   width: 100%;
-  max-width: 60px;
+  max-width: 70px;
   line-height: 1em;
 }
 body.sunlit #header-self-bar .callout-container {
@@ -4324,7 +4326,7 @@ body.sunlit #header-self-bar .change-indicator {
   margin: 0.2em 0 0 0.25em;
 }
 body.sunlit #header-self-bar div.callout-arrow-up {
-  margin: 0 0 0 25.5px;
+  margin: 0 0 0 30.5px;
 }
 body.sunlit .stats-indicator-secondary {
   display: flex;
@@ -4379,7 +4381,7 @@ body.sunlit #notification-player .progress {
   height: 1.25em;
 }
 body.sunlit #footer {
-  padding: 1px 5px 1px 85px;
+  padding: 1px 5px 1px 95px;
   display: flex;
   align-items: flex-end;
   height: 100%;
