@@ -430,8 +430,8 @@ define([
 				mainResourceRelativeProbabilities[resourceNames.metal] = 1; // building materials
 				mainResourceRelativeProbabilities[resourceNames.water] = 1; // supplies
 				if (unlockedResources.herbs) mainResourceRelativeProbabilities[resourceNames.herbs] = 0.5;
-				if (unlockedResources.tools) mainResourceRelativeProbabilities[resourceNames.tools] = 0.4 + traderLevel * 2;
-				if (unlockedResources.fuel) mainResourceRelativeProbabilities[resourceNames.fuel] = 0.4 + traderLevel * 2;
+				if (unlockedResources.tools) mainResourceRelativeProbabilities[resourceNames.tools] = 0.4 + traderLevel * 2 * 0.5;
+				if (unlockedResources.fuel) mainResourceRelativeProbabilities[resourceNames.fuel] = 0.4 + traderLevel * 2 * 0.5;
 				if (unlockedResources.rubber) mainResourceRelativeProbabilities[resourceNames.rubber] = 0.2;
 				let mainResource = RandomUtils.selectOneFromRelativeProbabilities(mainResourceRelativeProbabilities);
 					
