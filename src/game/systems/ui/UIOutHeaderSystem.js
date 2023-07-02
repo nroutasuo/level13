@@ -507,7 +507,8 @@ define([
 						case ItemConstants.itemTypes.light:
 						case ItemConstants.itemTypes.weapon:
 							break;
-
+							
+						case ItemConstants.itemTypes.voucher:
 						case ItemConstants.itemTypes.exploration:
 							$("ul#list-header-items").append("<li>" + UIConstants.getItemDiv(itemsComponent, item, count, UIConstants.getItemCallout(item, true)) + "</li>");
 							break;
