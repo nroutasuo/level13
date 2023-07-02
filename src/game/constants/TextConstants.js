@@ -160,7 +160,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					addOptions("a-street-past", [ "gloomy", "crowded", "lively" ]);
 					addOptions("n-building", [ "apartment building" ]);
 					addOptions("a-building", [ "abandoned", "sketchy", "depressing", "dishevelled" ]);
-					addOptions("n-buildings", [ "shacks", "huts", "slum residences", "residential towers that don't seem to have ever been connected to the grid" ]);
+					addOptions("n-buildings", [ "shacks", "huts", "slum residences", "apartment buildings", "residential towers that don't seem to have ever been connected to the grid" ]);
 					addOptions("an-decos", [ "collapsed shacks", "garbage piles" ]);
 					addOptions("an-items", [ "rusted pipes" ]);
 					break;
@@ -542,7 +542,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					topics.push("fermentation");
 					topics.push("viruses");
 					topics.push("the solar calendar");
-					topics.push("radar");
+					topics.push("radar technology");
 					topics.push("mathematics");
 					topics.push("ecosystems");
 					topics.push("dentistry");
@@ -726,7 +726,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					facts.push("most of the food greenhouses of the City were on its edges");
 					facts.push("most of the water in the City is rainwater collected on the Surface and the Ground");
 					facts.push("there are animals that live their entire lives underwater");
-					facts.push("spiders silk is the strongest natural material");
+					facts.push("spider silk is the strongest known natural material");
 					facts.push("bananas are radioactive");
 					facts.push("you can't taste food without saliva");
 					break;
@@ -1589,7 +1589,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("book-description", { bookType: wildcard }, "A passage describing [n-topic] catches your eye.");
 		DescriptionMapper.add("book-description", { bookType: wildcard }, "A section describing [n-topic] seems interesting.");
 		DescriptionMapper.add("book-description", { bookType: wildcard }, "You learn something about [n-topic].");
-		DescriptionMapper.add("book-description", { bookType: wildcard }, "You think it's rather [a-bad], but you learn something anyway.");
+		DescriptionMapper.add("book-description", { bookType: wildcard }, "Tt's rather [a-bad], but you learn something anyway.");
 		
 		DescriptionMapper.add("book-description", { bookLevel: l_1 }, "It gives you some insights into [n-topic].");
 		DescriptionMapper.add("book-description", { bookLevel: l_2 }, "It seems like a good source on [n-topic].");

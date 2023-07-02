@@ -24,6 +24,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 		// in actions
 		MSG_ID_USE_CAMPFIRE_SUCC: "USE_CAMPFIRE_SUCC",
 		MSG_ID_USE_CAMPFIRE_FAIL: "USE_CAMPFIRE_FAIL",
+		MSG_ID_USE_LIBRARY: "MSG_ID_USE_LIBRARY",
 		MSG_ID_USE_MARKET: "USE_MARKET",
 		MSG_ID_USE_HOSPITAL: "USE_HOSPITAL",
 		MSG_ID_USE_HOSPITAL2: "USE_HOSPITAL2",

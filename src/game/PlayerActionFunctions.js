@@ -719,7 +719,7 @@ define(['ash',
 			let luxuryResource = localeVO.luxuryResource;
 			if (luxuryResource) {
 				logMsgSuccess += "<br/>Found a source of <span class='hl-functionality'>" + TribeConstants.getLuxuryDisplayName(luxuryResource) + "</span>. ";
-				logMsgSuccess += "There is a project available in camp.";
+				logMsgSuccess += "There is a building project available in camp to use it.";
 			}
 
 			let playerActionFunctions = this;
@@ -1299,9 +1299,6 @@ define(['ash',
 			gtag('event', 'build_camp_time', { event_category: 'game_time', event_label: campOrdinal, value: GameGlobals.gameState.playTime });
 
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP, "Built a camp.");
-			if (level.get(LevelComponent).populationFactor < 1) {
-				this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP_LEVEL_POPULATION, "There are few signs of human life on this level.");
-			}
 			if (position.level == 15) {
 				this.addLogMessage(LogConstants.getUniqueID(), "It will be difficult to trade resources with camps from below Level 14 from here.");
 			}
@@ -1762,7 +1759,7 @@ define(['ash',
 			
 			let libraryLevel = improvementsComponent.getLevel(improvementNames.library);
 			this.playerStatsNodes.head.evidence.value += GameGlobals.campBalancingHelper.getEvidencePerUseLibrary(libraryLevel);
-			this.addLogMessage(LogConstants.MSG_ID_USE_LIBRARY, "Spent time in the library studying.");
+			this.addLogMessage(LogConstants.MSG_ID_USE_LIBRARY, "Spent some time studying in the library.");
 
 			this.completeAction("use_in_library");
 		},
@@ -1924,7 +1921,7 @@ define(['ash',
 					let resourceName = baseItemId == "cache_food" ? resourceNames.food : resourceNames.water;
 					let val = itemConfig.configData.waterValue || itemConfig.configData.foodValue || 10;
 					currentStorage.resources.addResource(resourceName, val);
-					this.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, "Used " + Text.addArticle(itemShortName) + ". Gained " + val + " " + resourceName + ".");
+					this.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, "Used " + Text.addArticle(item.name) + ". Gained " + val + " " + resourceName + ".");
 					break;
 					
 				case "cache_evidence":

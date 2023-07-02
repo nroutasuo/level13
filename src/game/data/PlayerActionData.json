@@ -1299,7 +1299,7 @@
         "build_out_collector_food": "Accumulates food.",
         "build_out_collector_water": "Accumulates water.",
         "build_out_greenhouse": "A place to grow herbs.",
-        "build_out_luxury_outpost": "Gives access to the luxury resource found in this level, making workers happier.",
+        "build_out_luxury_outpost": "Gives access to the luxury resource, making workers happier.",
         "build_out_sundome": "Protects the inhabitants from sunlight.",
         "build_out_tradepost_connector": "Allows traders and workers to cross the level safely.",
         "claim_milestone": "Unlock new milestone and new undertakings.",

@@ -28,6 +28,15 @@ define(function () {
 			return this.language.getIndefiniteArticle(s);
 		},
 		
+		isPlural: function (s) {
+			if (s[s.length - 1] === "s") {
+				if (s[s.length - 1] === "e") return true;
+				// can't tell
+				return null;
+			}
+			return false;
+		},
+		
 		pluralify: function (s) {
 			let irregular = this.getIrregularPlural(s);
 			if (irregular) return irregular;
@@ -50,6 +59,7 @@ define(function () {
 		},
 		
 		addArticle: function (s) {
+			if (this.isPlural(s)) return s;
 			return this.getArticle(s) + " " + s;
 		},
 		
