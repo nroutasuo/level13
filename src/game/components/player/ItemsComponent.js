@@ -308,7 +308,24 @@ function (Ash, ItemVO, ItemConstants) {
 					}
 				}
 			}
-								
+			
+			return result;
+		},
+		
+		getCountByBaseId: function (itemBaseId, includeNotCarried) {
+			let result = 0;
+			
+			for (let key in this.items) {
+				for (let i = 0; i < this.items[key].length; i++) {
+					var item = this.items[key][i];
+					if (!includeNotCarried && !item.carried) continue;
+					let baseID = ItemConstants.getBaseItemId(item.id);
+					if (baseID == itemBaseId) {
+						result++;
+					}
+				}
+			}
+			
 			return result;
 		},
 		

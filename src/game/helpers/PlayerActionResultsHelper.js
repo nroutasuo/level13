@@ -1109,6 +1109,16 @@ define([
 				return false;
 			}
 			
+			let isPlayerInventoryTooMany = function (itemDefinition) {
+				if (itemDefinition.equippable) return false;
+				if (itemDefinition.type == ItemConstants.itemTypes.ingredient) return false;
+				if (itemDefinition.type == ItemConstants.itemTypes.exploration) return false;
+				if (itemDefinition.type == ItemConstants.itemTypes.trade) return false;
+				if (itemDefinition.type == ItemConstants.itemTypes.artefact) return false;
+				let numOwned = itemsComponent.getCountByBaseId(ItemConstants.getBaseItemId(itemDefinition.id), true);
+				return numOwned >= 5;
+			}
+			
 			// list and score possible items
 			var validItems = [];
 			var itemScores = {};
@@ -1124,9 +1134,10 @@ define([
 					if (rarity <= 0) continue;
 					if (rarity > maxRarity) continue;
 					
-					if (isUseActionBlockedByProgress(itemDefinition)) continue;
 					if (itemDefinition.requiredCampOrdinal > maxCampOrdinal) continue;
 					if (getMaximumCampOrdinal(itemDefinition, isObsolete) < campOrdinal) continue;
+					if (isUseActionBlockedByProgress(itemDefinition)) continue;
+					if (isPlayerInventoryTooMany(itemDefinition)) continue;
 					
 					validItems.push(itemDefinition);
 					
