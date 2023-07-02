@@ -101,8 +101,15 @@ define([
 		
 		updatePendingEvents: function (campNode, campTimers) {
 			if (campNode.camp.pendingRecruits.length > 0) {
-				if (!this.isScheduled(campNode, OccurrenceConstants.campOccurrenceTypes.recruit)) {
-					campTimers.scheduleNext(OccurrenceConstants.campOccurrenceTypes.recruit, 0);
+				let eventType = OccurrenceConstants.campOccurrenceTypes.recruit;
+				if (!this.isScheduled(campNode, eventType)) {
+					campTimers.scheduleNext(eventType, 0);
+				} else {
+					let fastTrackTimeToNext = this.getFastTrackTimeToNext(campNode, eventType);
+					let currentTimeToNext = campTimers.getEventStartTimeLeft(eventType);
+					if (fastTrackTimeToNext < currentTimeToNext) {
+						this.fastTrackEvent(eventType);
+					}
 				}
 			}
 		},
@@ -187,8 +194,10 @@ define([
 			
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.trader:
-				case OccurrenceConstants.campOccurrenceTypes.recruit:
 					return improvements.getCount(improvementType) + improvements.getLevel(improvementType);
+					
+				case OccurrenceConstants.campOccurrenceTypes.recruit:
+					return improvements.getCount(improvementType) + improvements.getLevel(improvementType) + campNode.camp.pendingRecruits.length * 100;
 
 				case OccurrenceConstants.campOccurrenceTypes.raid:
 					return this.getRaidDanger(campNode.entity);
@@ -390,11 +399,13 @@ define([
 			
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.recruit:
-					let campOrdinal = GameGlobals.campHelper.getCurrentCampOrdinal();
-					let campStep = GameGlobals.campHelper.getCurrentCampStep();
-					let abilityType = FollowerConstants.abilityType.ATTACK;
-					let follower = FollowerConstants.getNewRandomFollower(FollowerConstants.followerSource.EVENT, GameGlobals.gameState.numCamps, campNode.position.level, abilityType);
-					campNode.camp.pendingRecruits.push(follower);
+					if (campNode.camp.pendingRecruits.length == 0) {
+						let campOrdinal = GameGlobals.campHelper.getCurrentCampOrdinal();
+						let campStep = GameGlobals.campHelper.getCurrentCampStep();
+						let abilityType = FollowerConstants.abilityType.ATTACK;
+						let follower = FollowerConstants.getNewRandomFollower(FollowerConstants.followerSource.EVENT, GameGlobals.gameState.numCamps, campNode.position.level, abilityType);
+						campNode.camp.pendingRecruits.push(follower);
+					}
 					break;
 			}
 			
