@@ -1085,6 +1085,7 @@ define([
 		getRewardItem: function (efficiency, campOrdinal, step, options) {
 			let rarityKey = options.rarityKey || "scavengeRarity";
 			let itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+			let hasDeity = this.playerStatsNodes.head.entity.has(DeityComponent);
 			
 			// choose rarity and camp ordinal thresholds
 			let maxPossibleRarity = Math.min(campOrdinal * 4, 10);
@@ -1099,6 +1100,14 @@ define([
 				if (isObsolete) return itemDefinition.requiredCampOrdinal || 1;
 				return itemDefinition.maximumCampOrdinal > 0 ? itemDefinition.maximumCampOrdinal : 100;
 			};
+			
+			let isUseActionBlockedByProgress = function (itemDefinition) {
+				let useActionName = "use_item_" + itemDefinition.id;
+				let useActionReqs = GameGlobals.playerActionsHelper.getReqs(useActionName);
+				if (!useActionReqs) return false;
+				if (useActionReqs.deity && !hasDeity) return true;
+				return false;
+			}
 			
 			// list and score possible items
 			var validItems = [];
@@ -1115,6 +1124,7 @@ define([
 					if (rarity <= 0) continue;
 					if (rarity > maxRarity) continue;
 					
+					if (isUseActionBlockedByProgress(itemDefinition)) continue;
 					if (itemDefinition.requiredCampOrdinal > maxCampOrdinal) continue;
 					if (getMaximumCampOrdinal(itemDefinition, isObsolete) < campOrdinal) continue;
 					
