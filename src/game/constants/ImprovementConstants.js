@@ -65,6 +65,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			library: {
 				canBeDismantled: true,
 				description: "Generates evidence.",
+				useActionName: "Study",
 				improvementLevelsPerTechLevel: 5,
 				logMsgImproved: "Upgraded the library",
 			},

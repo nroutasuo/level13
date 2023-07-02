@@ -943,6 +943,13 @@ define([
 			return CampConstants.getRumoursPerVisitMarket(marketLevel, majorLevel);
 		},
 		
+		getEvidencePerUseLibrary: function (libraryLevel) {
+			libraryLevel = libraryLevel || 1;
+			let id = ImprovementConstants.getImprovementID(improvementNames.library);
+			let majorLevel = ImprovementConstants.getMajorLevel(id, libraryLevel);
+			return CampConstants.getEvidencePerUseLibrary(libraryLevel, majorLevel);
+		},
+		
 		getWorkerUpgradeBonus: function (workerID, upgrades) {
 			var upgradeBonus = 1;
 			var workerUpgrades = GameGlobals.upgradeEffectsHelper.getImprovingUpgradeIdsForWorker(workerID);

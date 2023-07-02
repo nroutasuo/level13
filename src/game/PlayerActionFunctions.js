@@ -242,6 +242,7 @@ define(['ash',
 				case "use_in_market": this.useMarket(param); break;
 				case "use_in_hospital": this.useHospital(param); break;
 				case "use_in_hospital_2": this.useHospital2(param); break;
+				case "use_in_library": this.useLibrary(param); break;
 				case "use_in_temple": this.useTemple(param); break;
 				case "use_in_shrine": this.useShrine(param); break;
 				case "improve_in": this.improveBuilding(param); break;
@@ -843,7 +844,7 @@ define(['ash',
 			let position = this.getPositionVO(sectorPos);
 			let playerPos = this.playerPositionNodes.head.position;
 			this.clearBlocker("clear_debris", MovementConstants.BLOCKER_TYPE_DEBRIS, sectorPos);
-			this.addLogMessage(LogConstants.MSG_ID_CLEAR_DEBRIS, "Debris cleared at " + position.getInGameFormat(position.level !== playerPos.level));
+			this.addLogMessage(LogConstants.MSG_ID_CLEAR_DEBRIS, "Debris cleared at " + position.getInGameFormat(position.level !== playerPos.level), null, null, position);
 		},
 		
 		clearBlocker: function (action, blockerType, sectorPos) {
@@ -1748,6 +1749,22 @@ define(['ash',
 			}
 			this.addLogMessage(LogConstants.MSG_ID_USE_HOSPITAL2, "Improved health.");
 			this.completeAction("use_in_hospital_2");
+		},
+		
+		useLibrary: function () {
+			let campSector = this.nearestCampNodes.head.entity;
+			let campComponent = campSector.get(CampComponent);
+			let improvementsComponent = campSector.get(SectorImprovementsComponent);
+			if (!campSector) {
+				log.w("No camp sector found.");
+				return;
+			}
+			
+			let libraryLevel = improvementsComponent.getLevel(improvementNames.library);
+			this.playerStatsNodes.head.evidence.value += GameGlobals.campBalancingHelper.getEvidencePerUseLibrary(libraryLevel);
+			this.addLogMessage(LogConstants.MSG_ID_USE_LIBRARY, "Spent time in the library studying.");
+
+			this.completeAction("use_in_library");
 		},
 
 		useTemple: function () {

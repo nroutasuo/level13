@@ -122,6 +122,7 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/PlayerActionVO'
 				case "use_in_hospital": return "recovering";
 				case "use_in_hospital_2": return "augmenting";
 				case "use_in_market": return "visiting";
+				case "use_in_library": return "studying";
 				case "use_in_temple": return "donating";
 				case "use_in_shrine": return "meditating";
 				case "clear_waste_t": return "clearing waste";

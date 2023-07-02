@@ -469,6 +469,12 @@ define(['ash',
 				this.logStep("used hospital 2");
 				return true;
 			}
+
+			if (GameGlobals.playerActionsHelper.checkAvailability("use_in_library")) {
+				GameGlobals.playerActionFunctions.useLibrary();
+				this.logStep("used library");
+				return true;
+			}
 		},
 
 		manageWorkers: function () {

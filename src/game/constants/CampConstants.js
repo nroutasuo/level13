@@ -28,6 +28,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		RUMOURS_BONUS_PER_INN_PER_UPGRADE: 0.01,
 		RUMOURS_PER_VISIT_CAMPFIRE_BASE: 1,
 		RUMOURS_PER_VISIT_MARKET_BASE: 2,
+		RUMOURS_PER_VISIT_LIBRARY_BASE: 1,
 		
 		// Evidence
 		EVIDENCE_BONUS_PER_LIBRARY_LEVEL: 0.15,
@@ -265,6 +266,12 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			marketLevel = marketLevel || 1;
 			majorLevel = majorLevel || majorLevel;
 			return CampConstants.RUMOURS_PER_VISIT_MARKET_BASE * majorLevel;
+		},
+		
+		getEvidencePerUseLibrary: function (libraryLevel, majorLevel) {
+			libraryLevel = libraryLevel || 1;
+			majorLevel = majorLevel || majorLevel;
+			return CampConstants.RUMOURS_PER_VISIT_LIBRARY_BASE * majorLevel;
 		},
 		
 		getLibraryEvidenceGenerationPerSecond: function (libraryCount, libraryLevel) {

@@ -11,6 +11,7 @@
         "send_caravan": 600,
         "use_in_campfire": 60,
         "use_in_home": 180,
+		"use_in_library": 360,
         "use_in_market": 360,
         "use_in_shrine": 600,
         "use_in_temple": 1200,
@@ -1349,6 +1350,7 @@
         "use_in_home": "Recover stamina.",
         "use_in_hospital": "Heal injuries.",
         "use_in_hospital_2": "Add implants that improve overall health",
+		"use_in_library": "Study the records and collect more evidence",
         "use_in_market": "Go hear the latest gossip.",
         "use_in_shrine": "Reconnect with the spirits",
         "use_in_temple": "Donate silver for favour with the spirits",
@@ -1374,6 +1376,7 @@
         "use_in_home": 60,
         "use_in_hospital": 180,
         "use_in_hospital_2": 120,
+		"use_in_library": 30,
         "use_in_market": 10,
         "use_in_shrine": 10,
         "use_in_temple": 5
@@ -3495,6 +3498,7 @@
             "camp": {
                 "raid": false
             },
+            "inCamp": true,
             "population": [
                 1,
                 -1
@@ -3540,6 +3544,19 @@
                 ]
             }
         },
+        "use_in_library": {
+            "busy": false,
+            "camp": {
+                "raid": false
+            },
+            "improvements": {
+                "library": [
+                    1,
+                    -1
+                ]
+            },
+            "inCamp": true
+		},
         "use_in_market": {
             "busy": false,
             "camp": {
@@ -3551,6 +3568,7 @@
                     -1
                 ]
             },
+            "inCamp": true,
             "tribe": {
                 "rumoursFull": false
             }
@@ -3561,6 +3579,7 @@
                 "raid": false
             },
             "deity": true,
+            "inCamp": true,
             "tribe": {
                 "favourFull": false
             }
@@ -3571,6 +3590,7 @@
                 "raid": false
             },
             "deity": true,
+            "inCamp": true,
             "tribe": {
                 "favourFull": false
             }
