@@ -267,7 +267,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 					sectorXpx = this.getSectorPixelPos(dimensions, options.centered, sectorSize, sectorPos.sectorX, sectorPos.sectorY).x;
 					sectorYpx = this.getSectorPixelPos(dimensions, options.centered, sectorSize, sectorPos.sectorX, sectorPos.sectorY).y;
 					ctx.beginPath();
-					ctx.arc(sectorXpx + sectorSize * 0.5, sectorYpx + 0.5 * sectorSize, sectorSize * (ExplorationConstants.BEACON_RADIUS - 1) * 2, 0, 2 * Math.PI);
+					ctx.arc(sectorXpx + sectorSize * 0.5, sectorYpx + 0.5 * sectorSize, sectorSize * (ExplorationConstants.BEACON_RADIUS - 1) * 2 + 1, 0, 2 * Math.PI);
 					ctx.stroke();
 				}
 			}
