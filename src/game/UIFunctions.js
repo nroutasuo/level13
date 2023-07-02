@@ -174,10 +174,12 @@ define(['ash',
 						if (isProject) param = $(this).attr("sector");
 						if (!param) param = GameGlobals.playerActionsHelper.getActionDefaultParam();
 
-						var locationKey = uiFunctions.getLocationKey(action);
-						var isStarted = GameGlobals.playerActionFunctions.startAction(action, param);
-						if (!isStarted)
+						let locationKey = uiFunctions.getLocationKey(action);
+						let isStarted = GameGlobals.playerActionFunctions.startAction(action, param);
+						if (!isStarted) {
+							uiFunctions.updateButtonCooldown($(this), action);
 							return;
+						}
 
 						var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
 						var duration = PlayerActionConstants.getDuration(baseId);
