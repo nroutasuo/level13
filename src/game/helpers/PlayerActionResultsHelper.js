@@ -972,10 +972,10 @@ define([
 			switch (sectorFeatures.sectorType) {
 				case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
 				case SectorConstants.SECTOR_TYPE_PUBLIC:
-					findProbability = 0.0025;
+					findProbability = 0.002;
 					break;
 				case SectorConstants.SECTOR_TYPE_COMMERCIAL:
-					findProbability = 0.05;
+					findProbability = 0.03;
 					break;
 			}
 
