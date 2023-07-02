@@ -65,6 +65,7 @@ define([
 			this.lastShownTradingPartnersCount = this.availableTradingPartnersCount;
 
 			GameGlobals.uiFunctions.toggle("#trade-caravans-incoming-empty-message", this.currentIncomingTraders === 0);
+			GameGlobals.uiFunctions.toggle("#trade-caravans-incoming-container", this.currentIncomingTraders > 0);
 			$("#tab-header h2").text("Trade");
 		},
 		
