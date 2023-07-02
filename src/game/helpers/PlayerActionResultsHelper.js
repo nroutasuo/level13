@@ -782,6 +782,8 @@ define([
 				if (isFight) div += "<p class='p-meta'>Nothing left behind.</p>"
 				else if (resultVO.action === "despair") div += "";
 				else if (resultVO.action === "clear_workshop") div += "";
+				else if (resultVO.action === "clear_waste_r") div += "";
+				else if (resultVO.action === "clear_waste_t") div += "";
 				else if (resultVO.hasCustomReward) div += "";
 				else div += "<p class='p-meta'>Didn't find anything useful.</p>";
 			}
