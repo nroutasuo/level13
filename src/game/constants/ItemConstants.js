@@ -324,7 +324,12 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		getItemBonusComparisonValue: function (item, bonusType) {
 			if (!item) return 0;
 			if (!bonusType) {
-				return item.getCurrentTotalBonus();
+				let result = 0;
+				for (let bonusKey in ItemConstants.itemBonusTypes) {
+					bonusType = ItemConstants.itemBonusTypes[bonusKey];
+					result += this.getItemBonusComparisonValue(item, bonusType)
+				}
+				return result;
 			}
 			let result = item.getCurrentBonus(bonusType);
 			if (!ItemConstants.isIncreasing(bonusType)) {

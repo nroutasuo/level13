@@ -163,8 +163,8 @@ function (Ash, ItemVO, ItemConstants) {
 					let item = this.items[key][i];
 					if (!item.equippable) continue;
 					if (!includeNotCarried && !item.carried) continue;
-					let itemBonus = item.getCurrentBonus(itemBonusType);
-					let totalBonus = item.getCurrentTotalBonus();
+					let itemBonus = ItemConstants.getItemBonusComparisonValue(item, itemBonusType);
+					let totalBonus = ItemConstants.getItemBonusComparisonValue(item);
 					if (itemBonus > bestItemBonus || (itemBonus == bestItemBonus && totalBonus > bestItemTotalBonus)) {
 						bestItem = item;
 						bestItemBonus = itemBonus;
