@@ -24,6 +24,7 @@ define([
 	'game/nodes/player/PlayerResourcesNode',
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/nodes/sector/CampNode',
+	'game/nodes/LastVisitedCampNode',
 	'game/nodes/NearestCampNode',
 	'game/components/common/CampComponent',
 	'game/components/common/PositionComponent',
@@ -65,6 +66,7 @@ define([
 	PlayerResourcesNode,
 	TribeUpgradesNode,
 	CampNode,
+	LastVisitedCampNode,
 	NearestCampNode,
 	CampComponent,
 	PositionComponent,
@@ -112,6 +114,7 @@ define([
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
 			this.nearestCampNodes = engine.getNodeList(NearestCampNode);
+			this.lastVisitedCampNodes = engine.getNodeList(LastVisitedCampNode);
 			this.campNodes = engine.getNodeList(CampNode);
 		},
 
@@ -411,7 +414,7 @@ define([
 				sectorStatus.stashesFound++;
 			}
 			
-			var nearestCampNode = this.nearestCampNodes.head;
+			let defaultRewardCampNode = this.getDefaultRewardCampNode();
 			var currentStorage = campSector ? GameGlobals.resourcesHelper.getCurrentCampStorage(campSector) : GameGlobals.resourcesHelper.getCurrentStorage();
 			var playerPos = this.playerLocationNodes.head.position;
 			let sourcePos = campSector ? campSector.get(PositionComponent) : playerPos;
@@ -447,8 +450,8 @@ define([
 						followersComponent.addFollower(follower);
 						followersComponent.setFollowerInParty(follower, true);
 						GlobalSignals.followersChangedSignal.dispatch();
-					} else if (nearestCampNode) {
-						nearestCampNode.camp.pendingRecruits.push(follower);
+					} else if (defaultRewardCampNode) {
+						defaultRewardCampNode.camp.pendingRecruits.push(follower);
 					} else {
 						log.w("no place to put reward follower!")
 					}
@@ -500,14 +503,10 @@ define([
 			}
 
 			if (rewards.gainedPopulation > 0) {
-				var campNode = this.campNodes.head;
-				if (nearestCampNode) {
-					nearestCampNode.camp.pendingPopulation += 1;
+				if (defaultRewardCampNode) {
+					defaultRewardCampNode.camp.pendingPopulation += 1;
 				} else {
-					log.w("No nearest camp found.");
-					if (campNode) {
-						campNode.camp.pendingPopulation += 1;
-					}
+					log.w("No reward camp found for reward population.");
 				}
 			}
 
@@ -695,16 +694,18 @@ define([
 					let follower = resultVO.gainedFollowers[i];
 					let followerType = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
 					let willJoin = this.willGainedFollowerJoinParty(follower);
+					let followerCamp = this.getDefaultRewardCampNode();
 					let pronoun = FollowerConstants.getPronoun(follower);
 					let followerTypeName = FollowerConstants.getFollowerTypeDisplayName(followerType);
 					div += "<div>"
 					div += UIConstants.getFollowerDiv(follower, false, false, true);
 					div += "<br/>";
 					div += "Met <span class='hl-functionality'>" + Text.addArticle(followerTypeName) + "</span> called " + follower.name + ". ";
+					
 					if (willJoin) {
 						div += Text.capitalize(pronoun) + " joined the party.";
-					} else if (this.nearestCampNodes.head) {
-						div += Text.capitalize(pronoun) +" will meet you at " + this.nearestCampNodes.head.camp.getName() + " on level " + this.nearestCampNodes.head.position.level + ".";
+					} else if (followerCamp) {
+						div += Text.capitalize(pronoun) +" will meet you at " + followerCamp.camp.getName() + " on level " + followerCamp.position.level + ".";
 					}
 					div += "</div>";
 				}
@@ -1784,9 +1785,17 @@ define([
 			}
 			return result;
 		},
+		
+		getDefaultRewardCampNode: function () {
+			let nearestCampNode = this.nearestCampNodes.head;
+			if (nearestCampNode) return nearestCampNode;
+			let lastVisitedCampNode = this.lastVisitedCampNodes.head;
+			if (lastVisitedCampNode) return lastVisitedCampNode;
+			return null;
+		},
 
 		willGainedFollowerJoinParty: function (follower) {
-			var followersComponent = this.playerStatsNodes.head.followers;
+			let followersComponent = this.playerStatsNodes.head.followers;
 			let followerType = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
 			let existingInParty = followersComponent.getFollowerInPartyByType(followerType);
 			if (existingInParty) return false;
