@@ -146,13 +146,14 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		},
 
 		clone: function () {
-			var clone = new ItemVO(this.id, this.name, this.type, this.level, this.requiredCampOrdinal, this.maximumCampOrdinal, this.equippable, this.craftable, this.repairable, this.useable, this.bonus.bonuses, this.icon, this.description, this.isSpecialEquipment);
+			let clone = new ItemVO(this.id, this.name, this.type, this.level, this.requiredCampOrdinal, this.maximumCampOrdinal, this.equippable, this.craftable, this.repairable, this.useable, this.bonus.bonuses, this.icon, this.description, this.isSpecialEquipment);
 			clone.scavengeRarity = this.scavengeRarity;
 			clone.localeRarity = this.localeRarity;
 			clone.tradeRarity = this.tradeRarity;
 			clone.investigateRarity = this.investigateRarity;
 			clone.tradePrice = this.tradePrice;
 			clone.broken = this.broken;
+			clone.nameShort = this.nameShort;
 			return clone;
 		}
 	});
