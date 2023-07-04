@@ -65,6 +65,7 @@ body {
   -ms-transition: none;
   -o-transition: none;
   transition: none;
+  overflow: hidden;
 }
 div.grid-content {
   margin: 0px 0px 15px 0px !important;
@@ -830,6 +831,7 @@ body.dark button.btn-meta {
   background: none;
   border-width: 0px;
   text-transform: lowercase;
+  z-index: inherit;
 }
 body.dark button.btn-meta-float {
   float: right;
@@ -3100,6 +3102,7 @@ body.sunlit button.btn-meta {
   background: none;
   border-width: 0px;
   text-transform: lowercase;
+  z-index: inherit;
 }
 body.sunlit button.btn-meta-float {
   float: right;
