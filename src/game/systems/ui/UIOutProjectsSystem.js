@@ -258,7 +258,7 @@ define([
 			name = name.replace(" Up", "");
 			name = name.replace(" Down", "");
 			
-			let info = this.getProjectInfoText(project);
+			let info = this.getProjectInfoText(project, isAvailable);
 			
 			li.$tdDescription.attr("colspan", isAvailable ? 1 : 4);
 			li.$btnHide.css("display", isAvailable ? "initial" : "none");
@@ -284,7 +284,7 @@ define([
 			return project1.getID() == project2.getID();
 		},
 		
-		getProjectInfoText: function (project) {
+		getProjectInfoText: function (project, isAvailable) {
 			let position = project.position.getPosition();
 			let location = position.getInGameFormat();
 			let showLevel = GameGlobals.gameState.unlockedFeatures.levels;
@@ -303,7 +303,7 @@ define([
 				info = "between " + location + " and " + neighbourLocation + " on level " + project.level;
 			}
 			
-			if (project.improvement && project.improvement.name == improvementNames.greenhouse) {
+			if (project.improvement && project.improvement.name == improvementNames.greenhouse && !isAvailable) {
 				let level = position.level;
 				let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
 				let campLevel = GameGlobals.gameState.getLevelForCamp(campOrdinal);
