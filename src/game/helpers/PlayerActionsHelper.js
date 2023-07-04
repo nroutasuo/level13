@@ -2232,6 +2232,7 @@ define([
 				case "craft": return true;
 				case "equip": return true;
 				case "unequip": return true;
+				case "auto_equip": return true;
 				case "move_camp_level": return true;
 				case "despair": return true;
 				case "accept_inventory": return true;
