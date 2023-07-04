@@ -5,6 +5,7 @@ define(['ash'], function (Ash) {
 		id: "",
 		name: "",
 		type: "",
+		requiredTags: [],
 		att: 0,
 		def: 0,
 		speed: 0,
@@ -34,6 +35,7 @@ define(['ash'], function (Ash) {
 			this.id = id;
 			this.name = name;
 			this.type = type;
+			this.requiredTags = [];
 			this.att = Math.round(att);
 			this.def = Math.round(def);
 			this.speed = speed || 1;
@@ -104,6 +106,7 @@ define(['ash'], function (Ash) {
 		clone: function () {
 			let clone = new EnemyVO(this.id, this.name, this.type, this.nouns, this.groupN, this.activeV, this.defeatedV, this.size, this.att, this.def, this.maxHP, this.maxShield, this.speed, this.rarity, this.droppedResources, this.droppedIngredients, this.causedInjuryTypes);
 			clone.enemyClass = this.enemyClass;
+			clone.requiredTags = this.requiredTags;
 			return clone;
 		},
 		

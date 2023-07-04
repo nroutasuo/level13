@@ -86,6 +86,7 @@ define([
 				);
 				
 				enemyVO.enemyClass = enemyClass;
+				enemyVO.requiredTags = def.requiredTags || [];
 				
 				if (!EnemyConstants.enemyDefinitions[type]) EnemyConstants.enemyDefinitions[type] = [];
 			 	EnemyConstants.enemyDefinitions[type].push(enemyVO.cloneWithIV(50));
@@ -256,12 +257,10 @@ define([
 		// get enemies by type (string) and difficulty (campOrdinal and step)
 		// by default will also include enemies of one difficulty lower, if restrictDifficulty, then not
 		// will return at least one enemy; if no matching enemy exists, one with lower difficulty is returned
-		getEnemies: function (type, difficulty, restrictDifficulty) {
+		getEnemies: function (type, difficulty, restrictDifficulty, tags) {
 			var enemies = [];
 			if (difficulty <= 0) return enemies;
 
-			var enemy;
-			var enemyDifficulty;
 			var enemyList = [];
 			if (type) {
 				enemyList = EnemyConstants.enemyDefinitions[type];
@@ -271,9 +270,22 @@ define([
 				}
 			}
 			
+			let isMatchingTags = function (enemy) {
+				if (enemy.requiredTags.length > 0) {
+					if (tags.length < enemy.requiredTags.length) return false;
+					for (let j = 0; j < enemy.requiredTags.length; j++) {
+						if (tags.indexOf(enemy.requiredTags[j]) < 0) {
+							return false;
+						}
+					}
+				}
+				return true;
+			}
+			
 			for (let i = 0; i < enemyList.length; i++) {
-				enemy = enemyList[i];
-				enemyDifficulty = Math.max(EnemyConstants.enemyDifficulties[enemy.id], 1);
+				let enemy = enemyList[i];
+				if (!isMatchingTags(enemy)) continue;
+				let enemyDifficulty = Math.max(EnemyConstants.enemyDifficulties[enemy.id], 1);
 				if (enemyDifficulty === difficulty)
 					enemies.push(enemy);
 				if (enemyDifficulty === difficulty - 1 && difficulty > 1 && !restrictDifficulty)
@@ -281,7 +293,7 @@ define([
 			}
 
 			if (enemies.length <= 0) {
-				return this.getEnemies(type, difficulty - 1, restrictDifficulty);
+				return this.getEnemies(type, difficulty - 1, restrictDifficulty, tags);
 			}
 
 			return enemies;

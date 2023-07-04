@@ -130,6 +130,7 @@
 	"black_bear": {
 		"name": "black bear",
 		"environment": "sunlit",
+		"requiredTags": [ "ground" ],
 		"enemyType": "big_animal",
 		"campOrdinal": 8,
 		"difficulty": 6,
@@ -696,6 +697,7 @@
 	"great_black_pelican": {
 		"name": "great black pelican",
 		"environment": "sparse",
+		"requiredTags": [ "ground" ],
 		"enemyType": "bird",
 		"campOrdinal": 15,
 		"difficulty": 4,
@@ -1081,6 +1083,7 @@
 	"porcupine": {
 		"name": "Porcupine",
 		"environment": "nohazard",
+		"requiredTags": [ "ground" ],
 		"enemyType": "small_animal",
 		"campOrdinal": 8,
 		"attackRatio": 0.45,

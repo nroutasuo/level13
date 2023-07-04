@@ -2297,6 +2297,10 @@ define([
 			let step = WorldConstants.getCampStep(sectorVO.zone);
 			let isPollutedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
 			let isRadiatedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
+			let tags = [];
+			
+			if (levelVO.level == worldVO.bottomLevel) tags.push("ground");
+			if (levelVO.level == worldVO.topLevel) tags.push("surface");
 			
 			let enemyDifficulty = enemyCreator.getDifficulty(campOrdinal, step);
 			if (sectorVO.isOnEarlyCriticalPath()) enemyDifficulty -= 2;
@@ -2310,7 +2314,7 @@ define([
 			let enemy;
 			let candidateDifficulties = [];
 			let addEnemyCandidates = function (enemyType) {
-				var typeEnemies = enemyCreator.getEnemies(enemyType, enemyDifficulty, false);
+				let typeEnemies = enemyCreator.getEnemies(enemyType, enemyDifficulty, false, tags);
 				for (var e in typeEnemies) {
 					enemy = typeEnemies[e];
 					candidates.push(enemy);
