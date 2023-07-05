@@ -263,7 +263,7 @@ define([
 			if (this.isInProgress(action, sector)) return { value: 0, reason: "Already in progress", baseReason: PlayerActionConstants.DISABLED_REASON_IN_PROGRESS };
 
 			let sectorID = sector.get(PositionComponent).positionId();
-			let reqsID = action + "-" + sectorID;
+			let reqsID = action + "-" + sectorID + "-" + (checksToSkip ? checksToSkip.join(",") : "");
 			let ordinal = this.getActionOrdinal(action, sector);
 
 			if (!this.cache.reqs[reqsID]) {
