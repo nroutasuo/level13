@@ -741,6 +741,7 @@
 		},
 
 		getWorkerDescription: function (def) {
+			let workerLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel(def.id, this.tribeUpgradesNodes.head.upgrades);
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var productionS = "";
 			var generalConsumptionS =
@@ -802,7 +803,7 @@
 					log.w("no description defined for worker type: " + def.id);
 					break;
 			}
-			return productionS + generalConsumptionS + specialConsumptionS;
+			return "Level " + workerLevel + "<br/>" + productionS + generalConsumptionS + specialConsumptionS;
 		},
 
 		sortImprovements: function (a, b) {
