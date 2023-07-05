@@ -744,6 +744,14 @@ define(['ash',
 						if (e.keyCode == 67) {
 							GameGlobals.playerActionFunctions.startAction("move_sector_se")
 						}
+						if (GameConstants.isCheatsEnabled) {
+							if (e.keyCode == 78) {
+								GameGlobals.playerActionFunctions.startAction("scavenge")
+							}
+							if (e.keyCode == 77) {
+								GameGlobals.playerActionFunctions.startAction("scout")
+							}
+						}
 					}
 					if (e.keyCode == 27) {
 						GameGlobals.uiFunctions.popupManager.dismissPopups();
