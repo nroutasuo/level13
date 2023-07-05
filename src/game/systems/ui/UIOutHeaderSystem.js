@@ -1160,6 +1160,7 @@ define([
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			this.updateResourcesIfNotPending();
 			this.updatePlayerStats();
+			this.updateItems(true);
 		},
 		
 		onEquipmentChanged: function () {
