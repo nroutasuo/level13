@@ -508,6 +508,7 @@ define(['ash',
 		canHideProject: function (projectID) {
 			if (projectID.indexOf("greenhouse") >= 0) return false;
 			if (projectID.indexOf("passage") >= 0) return false;
+			if (projectID.indexOf("tradepost_") >= 0) return false;
 			return true;
 		},
 		
