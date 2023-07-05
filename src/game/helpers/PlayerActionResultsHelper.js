@@ -1499,8 +1499,10 @@ define([
 		},
 
 		getItemLoseOrBreakChanceWeight: function (action, item) {
-			let campCount = GameGlobals.gameState.numCamps;
+			let baseItemId = ItemConstants.getBaseItemId(item.id);
 			let result = 1;
+			
+			let campCount = GameGlobals.gameState.numCamps;
 			switch (item.type) {
 				case ItemConstants.itemTypes.uniqueEquipment:
 				case ItemConstants.itemTypes.ingredient:
@@ -1523,6 +1525,12 @@ define([
 					break;
 				default:
 					result = 5;
+					break;
+			}
+			
+			switch (baseItemId) {
+				case "cache_insight":
+					result = 0;
 					break;
 			}
 			
