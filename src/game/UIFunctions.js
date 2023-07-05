@@ -471,16 +471,16 @@ define(['ash',
 							case "improvementsOnLevel":
 								let actionImprovementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(action);
 								if (actionImprovementName != improvementNames.camp) {
-								for (let improvementID in specialReqs[key]) {
-									let range = specialReqs[key][improvementID];
-									let count = GameGlobals.playerActionsHelper.getCurrentImprovementCountOnLevel(position.level, improvementID);
-									let rangeText = UIConstants.getRangeText(range);
-									let displayName = GameGlobals.playerActionsHelper.getImprovementDisplayName(improvementID);
-									if (actionImprovementName == displayName) {
-										displayName = "";
+									for (let improvementID in specialReqs[key]) {
+										let range = specialReqs[key][improvementID];
+										let count = GameGlobals.playerActionsHelper.getCurrentImprovementCountOnLevel(position.level, improvementID);
+										let rangeText = UIConstants.getRangeText(range);
+										let displayName = GameGlobals.playerActionsHelper.getImprovementDisplayName(improvementID);
+										if (actionImprovementName == displayName) {
+											displayName = "";
+										}
+										s += rangeText + " " + displayName + " on level (" + count + ")";
 									}
-									s += rangeText + " " + displayName + " on level (" + count + ")";
-								}
 								}
 								break;
 							default:
@@ -575,6 +575,7 @@ define(['ash',
 				log.i("[ui] show game ");
 				this.setGameOverlay(false, false);
 				this.setGameElementsVisibility(true);
+				this.updateButtonCooldowns();
 				this.setUIStatus(false, false);
 				GlobalSignals.gameShownSignal.dispatch();
 			},
@@ -796,8 +797,9 @@ define(['ash',
 				if (GameGlobals.gameState.uiStatus.isHidden) return;
 				var updates = false;
 				updates = this.updateButtonCooldowns("") || updates;
-				if (updates)
+				if (updates) {
 					GlobalSignals.updateButtonsSignal.dispatch();
+				}
 			},
 			
 			onRestartButton: function () {
@@ -961,16 +963,16 @@ define(['ash',
 				if (toggled === false)
 					return false;
 				if (!skipParentsCheck) {
-				var $e = $element.parent();
-				while ($e && $e.length > 0) {
+					var $e = $element.parent();
+					while ($e && $e.length > 0) {
 						if (!$e.hasClass("collapsible-content") && !$e.hasClass("callout-container")) {
-						var parentToggled = this.isElementToggled($e);
-						if (parentToggled === false) {
-							return false;
+							var parentToggled = this.isElementToggled($e);
+							if (parentToggled === false) {
+								return false;
+							}
 						}
+						$e = $e.parent();
 					}
-					$e = $e.parent();
-				}
 				}
 				return (($element).is(":visible"));
 			},
