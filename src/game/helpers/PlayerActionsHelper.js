@@ -715,7 +715,8 @@ define([
 							let unselectedItems = resultVO.getUnselectedAndDiscardedItems();
 							for (let i = 0; i < unselectedItems.length; i++) {
 								let unselectedItem = unselectedItems[i];
-								if (unselectedItem.type == ItemConstants.itemTypes.uniqueEquipment) {
+								let baseItemId = ItemConstants.getBaseItemId(unselectedItem.id);
+								if (unselectedItem.type == ItemConstants.itemTypes.uniqueEquipment || baseItemId == "cache_insight") {
 									return { value: 0, reason: "Can't leave " + ItemConstants.getItemDisplayName(unselectedItem) + " behind" };
 								}
 							}
