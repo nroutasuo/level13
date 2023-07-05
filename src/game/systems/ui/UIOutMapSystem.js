@@ -715,6 +715,10 @@ define([
 			let result = [];
 			
 			if (isScouted) {
+				if (GameGlobals.sectorHelper.canBeInvestigated(sector)) {
+					result.push("can be investigated");
+				}
+				
 				let statusComponent = this.selectedSector.get(SectorStatusComponent);
 				if (statusComponent.graffiti) {
 					result.push("Graffiti: '" + statusComponent.graffiti + "'");
