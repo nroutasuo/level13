@@ -467,8 +467,8 @@
 				var useAction = "use_in_" + improvementID;
 				var useActionExtra = "use_in_" + improvementID + "_2";
 				var hasUseActionExtra = PlayerActionConstants.hasAction(useActionExtra);
-				var useActionAvailable = GameGlobals.playerActionsHelper.isRequirementsMet(useAction);
-				var useAction2Available = hasUseActionExtra && GameGlobals.playerActionsHelper.isRequirementsMet(useActionExtra);
+				var useActionAvailable = GameGlobals.playerActionsHelper.isRequirementsMet(useAction, null, [ PlayerActionConstants.DISABLED_REASON_BUSY ]);
+				var useAction2Available = hasUseActionExtra && GameGlobals.playerActionsHelper.isRequirementsMet(useActionExtra, null, [ PlayerActionConstants.DISABLED_REASON_BUSY ]);
 				
 				var improvementLevel = improvements.getLevel(improvementName);
 				var maxImprovementLevel = GameGlobals.campHelper.getCurrentMaxImprovementLevel(improvementName);
@@ -492,7 +492,8 @@
 				if (id === "in-improvements-market") specialVisibilityRule = hasTradePost;
 				if (id === "in-improvements-inn") specialVisibilityRule = hasTradePost;
 				let isVisible = specialVisibilityRule && commonVisibilityRule;
-				let showUseAction1 = useActionAvailable || !useAction2Available;
+				let showUseAction2 = (useAction2Available || GameGlobals.playerActionsHelper.isInProgress(useActionExtra)) && !GameGlobals.playerActionsHelper.isInProgress(useAction);
+				let showUseAction1 = useActionAvailable || !showUseAction2;
 				let isDamaged = improvements.isDamaged(improvementName);
 				
 				GameGlobals.uiFunctions.toggle(elem.tr, isVisible);
