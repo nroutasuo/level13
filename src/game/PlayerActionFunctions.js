@@ -639,6 +639,11 @@ define(['ash',
 				}
 			}
 			
+			if (GameGlobals.sectorHelper.canBeInvestigated(sector, true)) {
+				popupMsg += "<br/>Something happened here just before the Fall. This sector can be <span class='hl-functionality'>investigated</span>.";
+				logMsg += "This sector can be investigated.";
+			}
+			
 			let successCallback = function () {
 				GameGlobals.gameState.stats.numTimesScouted++;
 				sectorStatus.scouted = true;

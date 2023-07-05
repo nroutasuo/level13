@@ -320,11 +320,11 @@ define([
 			return SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE;
 		},
 		
-		canBeInvestigated: function (sector) {
+		canBeInvestigated: function (sector, ignoreScoutedStatus) {
 			if (!GameGlobals.gameState.isFeatureUnlocked("investigate")) return false;
 			let statusComponent = sector.get(SectorStatusComponent);
 			let featuresComponent = sector.get(SectorFeaturesComponent);
-			return statusComponent.scouted && featuresComponent.isInvestigatable && statusComponent.getInvestigatedPercent() < 100;
+			return (ignoreScoutedStatus || statusComponent.scouted) && featuresComponent.isInvestigatable && statusComponent.getInvestigatedPercent() < 100;
 		},
 		
 		getLocationDiscoveredItems: function (sector) {
