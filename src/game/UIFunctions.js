@@ -955,20 +955,22 @@ define(['ash',
 				return visible;
 			},
 
-			isElementVisible: function (element) {
+			isElementVisible: function (element, skipParentsCheck) {
 				var $element = typeof (element) === "string" ? $(element) : element;
 				var toggled = this.isElementToggled($element);
 				if (toggled === false)
 					return false;
+				if (!skipParentsCheck) {
 				var $e = $element.parent();
 				while ($e && $e.length > 0) {
-					if (!$e.hasClass("collapsible-content")) {
+						if (!$e.hasClass("collapsible-content") && !$e.hasClass("callout-container")) {
 						var parentToggled = this.isElementToggled($e);
 						if (parentToggled === false) {
 							return false;
 						}
 					}
 					$e = $e.parent();
+				}
 				}
 				return (($element).is(":visible"));
 			},

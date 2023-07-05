@@ -62,11 +62,11 @@ define([
 
 		update: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
-			this.updateBubble();
 		},
 
 		slowUpdate: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
+			this.updateBubble();
 		},
 
 		refresh: function () {

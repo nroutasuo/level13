@@ -128,6 +128,7 @@ define([
 		},
 		
 		updateStaminaWarning: function (node, time) {
+			if (GameGlobals.gameState.uiStatus.isTransitioning) return;
 			var staminaComponent = node.stamina;
 			var isWarning = staminaComponent.stamina <= this.warningLimit;
 			if (isWarning && !this.isWarning) {
