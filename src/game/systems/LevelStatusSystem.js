@@ -182,7 +182,11 @@ define([
 			if (level == 13) return null;
 			
 			if (levelComponent.isCampable) {
-				return "There are enough signs of life on this level that it should be possible to find a spot for a camp.";
+				if (level % 2 == 0) {
+					return "This level seems safe enough that it should be possible to find a spot for a camp.";
+				} else {
+					return "There are enough signs of life on this level that it should be possible to find a spot for a camp.";
+				}
 			} else {
 				switch (levelComponent.notCampableReason) {
 					case LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION:

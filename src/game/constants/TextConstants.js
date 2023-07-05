@@ -314,10 +314,14 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			switch (passageVO.type) {
 				case MovementConstants.PASSAGE_TYPE_HOLE:
 					if (direction === PositionConstants.DIRECTION_UP) {
-						if (sunlit)
-							return "Far above in the ceiling there is a hole. Blinding sunlight streams in from it.";
-						else
-							return "Far above in the ceiling there is a hole, a mouth leading into blackness.";
+						if (isBuilt) {
+							return "There is an elevator here.";
+						} else {
+							if (sunlit)
+								return "Far above in the ceiling there is a hole.";
+							else
+								return "Far above in the ceiling there is a hole, a mouth leading into blackness.";
+						}
 					} else {
 						if (isBuilt) {
 							return "There is a massive sinkhole here. An elevator has been built.";

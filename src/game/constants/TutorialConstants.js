@@ -203,7 +203,7 @@ define(['ash'], function (Ash) {
 				repeats: "NEVER",
 				delay: 1500,
 				logMessage: "We now have enough materials to build a Temple",
-				conditions: { actionsAvailable: ["build_in_temple"] }
+				conditions: { inCamp: true, actionsAvailable: ["build_in_temple"] }
 			},
 			TUTORIAL_ENCOUNTER_BLOCKER_TYPE_GAP_NO_TECH: {
 				group: "TUTORIAL_ENCOUNTER_BLOCKER_TYPE_GAP",
