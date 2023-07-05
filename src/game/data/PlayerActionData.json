@@ -2939,6 +2939,9 @@
         },
         "move_camp_level": {
             "busy": false,
+			"featureUnlocked": {
+				"move": true
+			},
             "path_to_camp": true,
             "vision": [
                 25,
@@ -2947,6 +2950,9 @@
         },
         "move_level_down": {
             "busy": false,
+			"featureUnlocked": {
+				"move": true
+			},
             "improvements": {
                 "passageDown": [
                     1,
@@ -2963,6 +2969,9 @@
         },
         "move_level_up": {
             "busy": false,
+			"featureUnlocked": {
+				"move": true
+			},
             "improvements": {
                 "passageUp": [
                     1,
@@ -2979,6 +2988,9 @@
         },
         "move_sector_east": {
             "busy": false,
+			"featureUnlocked": {
+				"move": true
+			},
             "inCamp": false,
             "sector": {
                 "blockerE": false
@@ -2990,6 +3002,9 @@
         },
         "move_sector_ne": {
             "busy": false,
+			"featureUnlocked": {
+				"move": true
+			},
             "inCamp": false,
             "sector": {
                 "blockerNE": false
@@ -3001,6 +3016,9 @@
         },
         "move_sector_north": {
             "busy": false,
+			"featureUnlocked": {
+				"move": true
+			},
             "inCamp": false,
             "sector": {
                 "blockerN": false
@@ -3012,6 +3030,9 @@
         },
         "move_sector_nw": {
             "busy": false,
+			"featureUnlocked": {
+				"move": true
+			},
             "inCamp": false,
             "sector": {
                 "blockerNW": false
@@ -3023,6 +3044,9 @@
         },
         "move_sector_se": {
             "busy": false,
+			"featureUnlocked": {
+				"move": true
+			},
             "inCamp": false,
             "sector": {
                 "blockerSE": false
@@ -3034,6 +3058,9 @@
         },
         "move_sector_south": {
             "busy": false,
+			"featureUnlocked": {
+				"move": true
+			},
             "inCamp": false,
             "sector": {
                 "blockerS": false
@@ -3045,6 +3072,9 @@
         },
         "move_sector_sw": {
             "busy": false,
+			"featureUnlocked": {
+				"move": true
+			},
             "inCamp": false,
             "sector": {
                 "blockerSW": false
@@ -3056,6 +3086,9 @@
         },
         "move_sector_west": {
             "busy": false,
+			"featureUnlocked": {
+				"move": true
+			},
             "inCamp": false,
             "sector": {
                 "blockerW": false
