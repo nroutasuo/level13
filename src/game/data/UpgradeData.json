@@ -112,7 +112,7 @@
     },
     "improve_building_library": {
         "blueprintCampOrdinal": 5,
-        "blueprintIsCampless": true,
+        "blueprintIsCampless": false,
         "blueprintIsEarly": false,
         "blueprintPieces": 2,
         "campOrdinal": "5",
