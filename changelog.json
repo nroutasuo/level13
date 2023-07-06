@@ -2,12 +2,13 @@
 	"versions": [
 		{
 			"version": "0.5.1",
+			"released": "2023-07-06",
 			"phase": "alpha",
-			"final": false,
+			"final": true,
 			"changes": [
 				{
 					"type": "UI",
-					"summary": "Remove many repetitive log messages and add some new ones."
+					"summary": "Add simple ending"
 				},
 				{
 					"type": "GD",
@@ -15,7 +16,11 @@
 				},
 				{
 					"type": "GD",
-					"summary": "Add investigate action and Insight stat"
+					"summary": "Add investigate action and insight stat"
+				},
+				{
+					"type": "GD",
+					"summary": "Add study at library action"
 				},
 				{
 					"type": "GD",
@@ -23,7 +28,7 @@
 				},
 				{
 					"type": "GD",
-					"summary": "Add luxury resources"
+					"summary": "Add luxury resources and outposts"
 				},
 				{
 					"type": "GD",
@@ -47,11 +52,11 @@
 				},
 				{
 					"type": "UI",
-					"summary": "Many smaller UI improvements"
+					"summary": "Remove many repetitive log messages and add some new ones"
 				},
 				{
 					"type": "UI",
-					"summary": "Add simple ending"
+					"summary": "Many smaller UI improvements"
 				}
 			]
 		},
