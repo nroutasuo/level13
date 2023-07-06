@@ -344,6 +344,8 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			let canvas = canvases[0];
 			let ctx = CanvasUtils.getCTX(canvases);
 			
+			if (!ctx) return;
+			
 			let mapSize = UIConstants.MAP_MINIMAP_SIZE;
 			let visibleSectors = {};
 			let allSectors = {};
