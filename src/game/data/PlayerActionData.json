@@ -2220,7 +2220,7 @@
         "claim_milestone_1": {
             "tribe": {
                 "improvements": {
-                    "hospital": 1
+                    "hospital": [ 1, -1 ]
                 },
                 "population": 6
             }
@@ -2228,7 +2228,7 @@
         "claim_milestone_2": {
             "tribe": {
                 "improvements": {
-                    "tradepost": 2
+                    "tradepost": [ 1, -1 ]
                 },
                 "population": 22
             }
@@ -2241,7 +2241,7 @@
         "claim_milestone_4": {
             "tribe": {
                 "improvements": {
-                    "smithy": 2
+                    "smithy": [ 2, -1 ]
                 },
                 "population": 200,
                 "projects": {
@@ -2260,7 +2260,7 @@
         "claim_milestone_6": {
             "tribe": {
                 "improvements": {
-                    "researchcenter": 2
+                    "researchcenter": [ 2, -1 ]
                 },
                 "population": 500
             }

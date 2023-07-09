@@ -169,13 +169,13 @@ define(['ash'], function (Ash) {
 				triggers: [ "action_build" ],
 				repeats: "NEVER",
 				logMessage: "The trading post is ready, but there is no camp to trade with. Need to build another one.",
-				conditions: { improvements: { tradepost: [ 1, 2 ] }, tribe: { improvements: { tradepost: [ 1, 2 ] } } }
+				conditions: { tribe: { improvements: { tradepost: [ 1, 2 ] } } }
 			},
 			TUTORIAL_BUILT_TRADEPOST_2: {
 				triggers: [ "action_build" ],
 				repeats: "NEVER",
 				logMessage: "Built a trading post. Our two camps now share resources and storage.",
-				conditions: { improvements: { tradepost: [ 2, -1 ] }, tribe: { improvements: { tradepost: [ 2, 3 ] } } }
+				conditions: { tribe: { improvements: { tradepost: [ 2, 3 ] } } }
 			},
 			TUTORIAL_USED_HOSPITAL: {
 				triggers: [ "action_any" ],

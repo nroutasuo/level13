@@ -1143,12 +1143,24 @@ define([
 					if (requirements.tribe.improvements) {
 						for (var improvementID in requirements.tribe.improvements) {
 							var amount = this.getCurrentImprovementCountTotal(improvementID);
-							var requiredAmount = requirements.tribe.improvements[improvementID];
+							var range = requirements.tribe.improvements[improvementID];
 							
-							if (amount < requiredAmount) {
-								var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
-								var displayName = requiredImprovementDisplayName;
-								return { value: amount / requiredAmount, reason: requiredAmount + "x " + displayName + " required" };
+							var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
+							
+							let result = this.checkRequirementsRange(
+								range,
+								amount,
+								"{min}x " + displayName + " required",
+								"max " + displayName + " built",
+								displayName + " required",
+								displayName + " already built",
+								PlayerActionConstants.DISABLED_REASON_MIN_IMPROVEMENTS,
+								PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENTS
+							);
+							
+							if (result) {
+								result.reason.trim();
+								return result;
 							}
 						}
 					}
