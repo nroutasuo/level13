@@ -327,29 +327,31 @@ define([
 			
 			let result = this.checkGeneralRequirementaInternal(requirements, action, sector, checksToSkip);
 			
-			let featuresComponent = sector.get(SectorFeaturesComponent);
-			let statusComponent = sector.get(SectorStatusComponent);
-			let itemsComponent = this.playerStatsNodes.head.items;
-			let isAffectedByHazard = GameGlobals.sectorHelper.isAffectedByHazard(featuresComponent, statusComponent, itemsComponent)
-			if (isAffectedByHazard && !this.isActionIndependentOfHazards(action)) {
-				return { value: 0, reason: GameGlobals.sectorHelper.getHazardDisabledReason(featuresComponent, statusComponent, itemsComponent) };
-			}
-			
-			let item = this.getItemForCraftAction(action);
-			if (item && baseActionID == "craft") {
-				if (!inCamp) {
-					let bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
-					let spaceNow = bagComponent.totalCapacity - bagComponent.usedCapacity;
-					let spaceRequired = BagConstants.getItemCapacity(item);
-					let spaceFreed = BagConstants.getResourcesCapacity(this.getCostResourcesVO(action));
-					if (spaceNow - spaceRequired + spaceFreed < 0) {
-						return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_BAG_FULL };
+			if (result.value > 0) {
+				let featuresComponent = sector.get(SectorFeaturesComponent);
+				let statusComponent = sector.get(SectorStatusComponent);
+				let itemsComponent = this.playerStatsNodes.head.items;
+				let isAffectedByHazard = GameGlobals.sectorHelper.isAffectedByHazard(featuresComponent, statusComponent, itemsComponent)
+				if (isAffectedByHazard && !this.isActionIndependentOfHazards(action)) {
+					return { value: 0, reason: GameGlobals.sectorHelper.getHazardDisabledReason(featuresComponent, statusComponent, itemsComponent) };
+				}
+				
+				let item = this.getItemForCraftAction(action);
+				if (item && baseActionID == "craft") {
+					if (!inCamp) {
+						let bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
+						let spaceNow = bagComponent.totalCapacity - bagComponent.usedCapacity;
+						let spaceRequired = BagConstants.getItemCapacity(item);
+						let spaceFreed = BagConstants.getResourcesCapacity(this.getCostResourcesVO(action));
+						if (spaceNow - spaceRequired + spaceFreed < 0) {
+							return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_BAG_FULL };
+						}
 					}
 				}
-			}
-			
-			if (action == "build_out_camp" && !statusComponent.canBuildCamp) {
-				return { value: 0, reason: "Can't build camp here"};
+				
+				if (action == "build_out_camp" && !statusComponent.canBuildCamp) {
+					return { value: 0, reason: "Can't build camp here"};
+				}
 			}
 			
 			return result;

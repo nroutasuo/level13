@@ -278,9 +278,6 @@ define([
 
 			$("#trade-caravans-incoming-container table").empty();
 			if (caravan) {
-				log.i("updateIncomingCaravan", this);
-				log.i(caravan, this);
-				
 				let traderLevel = GameGlobals.campHelper.getEventUpgradeLevel(OccurrenceConstants.campOccurrenceTypes.trader);
 				var nameTD = "<td class='item-name'>" + caravan.name + " <span class='p-meta'>level " + traderLevel + "</span></td>";
 
@@ -297,7 +294,7 @@ define([
 
 				for (var itemID in itemCounts) {
 					var item = ItemConstants.getItemByID(itemID);
-					if (numLis < 6) {
+					if (item && numLis < 6) {
 						inventoryUL += UIConstants.getItemSlot(itemsComponent, item, null, false, true);
 						numLis++;
 					} else {

@@ -128,6 +128,7 @@ define(['ash',
 		},
 
 		getItemCallout: function (item, smallCallout, showBagOptions, bagOptions, tab) {
+			if (!item) return "";
 			var detail = " (" + this.getItemBonusDescription(item, false) + ")";
 			if (detail.length < 5) detail = "";
 			var weight = BagConstants.getItemCapacity(item);
@@ -340,6 +341,7 @@ define(['ash',
 
 		getItemBonusDescription: function (item, useLineBreaks) {
 			let result = "";
+			if (!item) return result;
 			let defaultType = ItemConstants.getItemDefaultBonus(item);
 			for (var bonusKey in ItemConstants.itemBonusTypes) {
 				var bonusType = ItemConstants.itemBonusTypes[bonusKey];
