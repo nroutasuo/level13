@@ -1533,8 +1533,8 @@ define(['ash',
 
 		buildTradingPost: function (sectorPos) {
 			let sector = this.getActionSectorOrCurrent(sectorPos);
-			var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_tradepost");
-			this.buildImprovement("build_in_tradepost", improvementName);
+			let improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_tradepost");
+			this.buildImprovement("build_in_tradepost", improvementName, sector);
 		},
 
 		buildInn: function (sectorPos) {
