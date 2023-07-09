@@ -73,11 +73,14 @@ define(['ash',
 			if (item && item.equipped) classes += " item-equipped";
 			if (item && item.broken) classes += " item-broken";
 			if (hasCount) classes += " item-with-count";
-			var div = "<div class='" + classes + (item ? "' data-itemid='" + item.id + "' data-iteminstanceid='" + item.itemID + "'>" : ">");
+			
+			let div = "";
 
 			if (item && calloutContent) {
 				div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
 			}
+			
+			div += "<div class='" + classes + (item ? "' data-itemid='" + item.id + "' data-iteminstanceid='" + item.itemID + "'>" : ">");
 
 			if (item) div += "<img src='" + url + "' alt='" + item.name + "'/>";
 
