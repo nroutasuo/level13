@@ -1281,11 +1281,11 @@ define([
 				}
 
 				if (typeof requirements.busy !== "undefined" && !shouldSkipCheck(PlayerActionConstants.DISABLED_REASON_BUSY)) {
-					var currentValue = playerActionComponent.isBusy();
+					var currentValue = GameGlobals.playerHelper.isBusy();
 					var requiredValue = requirements.busy;
 					if (currentValue !== requiredValue) {
-						var timeLeft = Math.ceil(playerActionComponent.getBusyTimeLeft());
-						if (currentValue) reason = "Busy " + playerActionComponent.getBusyDescription() + " (" + timeLeft + "s)";
+						var timeLeft = Math.ceil(GameGlobals.playerHelper.getBusyTimeLeft());
+						if (currentValue) reason = "Busy " + GameGlobals.playerHelper.getBusyDescription() + " (" + timeLeft + "s)";
 						else reason = "Need to be busy to do this.";
 						return { value: 0, reason: reason, baseReason: PlayerActionConstants.DISABLED_REASON_BUSY };
 					}

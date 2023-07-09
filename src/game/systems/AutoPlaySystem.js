@@ -194,9 +194,7 @@ define(['ash',
 				return false;
 
 			var autoPlayComponent = this.autoPlayNodes.head.autoPlay;
-			var busyComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
-			if (busyComponent && busyComponent.isBusy())
-				return false;
+			if (GameGlobals.playerHelper.isBusy()) return false;
 
 			var currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
 			var currentFood = currentStorage.resources.getResource(resourceNames.food);

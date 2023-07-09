@@ -13,6 +13,7 @@ define([
 	'game/nodes/player/PlayerResourcesNode',
 	'game/components/player/DeityComponent',
 	'game/components/player/ExcursionComponent',
+	'game/components/player/PlayerActionComponent',
 	'game/components/common/LogMessagesComponent',
 	'game/components/common/MovementComponent',
 ], function (
@@ -30,6 +31,7 @@ define([
 	PlayerResourcesNode,
 	DeityComponent,
 	ExcursionComponent,
+	PlayerActionComponent,
 	LogMessagesComponent,
 	MovementComponent,
 ) {
@@ -53,6 +55,27 @@ define([
 		isInCamp: function () {
 			if (!this.playerPosNodes.head) return false;
 			return this.playerPosNodes.head.position.inCamp;
+		},
+		
+		isBusy: function () {
+			let player = this.playerStatsNodes.head.entity;
+			if (player.has(MovementComponent)) return true;
+			let playerActionComponent = this.playerResourcesNodes.head.entity.get(PlayerActionComponent);
+			return playerActionComponent.isBusy();
+		},
+		
+		getBusyTimeLeft: function () {
+			let player = this.playerStatsNodes.head.entity;
+			if (player.has(MovementComponent)) return 1;
+			let playerActionComponent = this.playerResourcesNodes.head.entity.get(PlayerActionComponent);
+			return playerActionComponent.getBusyTimeLeft();
+		},
+		
+		getBusyDescription: function () {
+			let player = this.playerStatsNodes.head.entity;
+			if (player.has(MovementComponent)) return "moving";
+			let playerActionComponent = this.playerResourcesNodes.head.entity.get(PlayerActionComponent);
+			return playerActionComponent.getBusyDescription()
 		},
 		
 		moveTo: function (level, sectorX, sectorY, inCamp) {

@@ -121,6 +121,7 @@ define(['ash',
 			
 			var otherSector = this.getActionSector(action, param);
 			if (!GameGlobals.playerActionsHelper.checkAvailability(action, true, otherSector)) {
+				log.w("Tried to start action but it's not available: " + action);
 				return false;
 			}
 			
