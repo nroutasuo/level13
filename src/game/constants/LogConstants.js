@@ -198,7 +198,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 					intros.push("Fell through a rotten floor");
 					intros.push("Dropped an item while climbing a fence");
 					intros.push("Stumbled on some wrecked pipes");
-					intros.push("Fell while climbings");
+					intros.push("Fell while climbing");
 					break;
 			}
 			var intro = intros[Math.floor(Math.random() * intros.length)];
