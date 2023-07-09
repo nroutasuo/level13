@@ -830,11 +830,12 @@ define([
 							}
 							
 							for (let itemID in caravan.campSelectedItems) {
-								let amount = caravan.campSelectedItems[itemID];
 								let item = ItemConstants.getItemByID(itemID);
-								if (amount > TradeConstants.MAX_ITEMS_TO_TRADE_PER_CARAVAN && item.type != ItemConstants.itemTypes.ingredient) {
+								if (item.type == ItemConstants.itemTypes.ingredient) continue;
+								let amount = caravan.campSelectedItems[itemID] + caravan.getSellItemCount(itemID);
+								if (amount > TradeConstants.MAX_ITEMS_TO_TRADE_PER_CARAVAN) {
 									let itemName = ItemConstants.getItemDisplayName(item);
-									return {value: 0, reason: "The trader doesn't want that many " + TextConstants.pluralify(itemName)  + "."};
+									return { value: 0, reason: "The trader doesn't want that many " + TextConstants.pluralify(itemName)  + "." };
 								}
 							}
 						} else {

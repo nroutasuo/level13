@@ -43,7 +43,15 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			this.campSelectedItems = {};
 			this.campSelectedResources = new ResourcesVO();
 			this.campSelectedCurrency = 0;
-		}
+		},
+		
+		getSellItemCount: function (itemID) {
+			let result = 0;
+			for (let i = 0; i < this.sellItems.length; i++) {
+				if (this.sellItems[i].id == itemID) result++;
+			}
+			return result;
+		},
 	});
 
 	return IncomingCaravanVO;
