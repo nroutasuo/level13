@@ -141,6 +141,12 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			
 			if (this.foundPosition == null)
 				delete clone.foundPosition;
+			
+			if (!this.broken)
+				delete clone.broken;
+			
+			if (!this.equippable)
+				delete clone.equipped;
 
 			return clone;
 		},

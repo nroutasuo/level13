@@ -227,6 +227,19 @@ define(['ash'], function (Ash) {
 
 		customLoadFromSave: function (componentValues) {
 			if (!componentValues) return;
+			
+			if (componentValues.water) this.water = componentValues.water;
+			if (componentValues.food) this.food = componentValues.food;
+			if (componentValues.metal) this.metal = componentValues.metal;
+			if (componentValues.rope) this.rope = componentValues.rope;
+			if (componentValues.herbs) this.herbs = componentValues.herbs;
+			if (componentValues.fuel) this.fuel = componentValues.fuel;
+			if (componentValues.rubber) this.rubber = componentValues.rubber;
+			if (componentValues.tools) this.tools = componentValuestoolst;
+			if (componentValues.medicine) this.medicine = componentValues.medicine;
+			if (componentValues.concrete) this.concrete = componentValues.concrete;
+			if (componentValues.robots) this.robots = componentValues.robots;
+			
 			if (componentValues.w) this.water = componentValues.w;
 			if (componentValues.f) this.food = componentValues.f;
 			if (componentValues.m) this.metal = componentValues.m;

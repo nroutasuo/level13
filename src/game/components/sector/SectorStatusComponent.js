@@ -139,7 +139,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 				copy.i = this.investigated ? 1 : 0;
 			if (this.scouted) {
 				copy.s = this.scouted ? 1 : 0;
-				copy.st = this.scoutedTimestamp ? this.scoutedTimestamp : 1;
+				copy.st = this.scoutedTimestamp ? Math.round(this.scoutedTimestamp) : 1;
 			}
 			if (this.revealedByMap && !this.scouted) {
 				copy.rm = this.revealedByMap;

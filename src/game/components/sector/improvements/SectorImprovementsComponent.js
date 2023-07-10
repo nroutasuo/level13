@@ -201,8 +201,11 @@ define(['ash', 'game/GameGlobals', 'game/constants/ImprovementConstants', 'game/
 
 		getCustomSaveObject: function () {
 			if (Object.keys(this.improvements).length === 0) return null;
-			var copy = {};
-			copy.i = this.improvements;
+			let copy = {};
+			copy.i = {};
+			for (let key in this.improvements) {
+				copy.i[key] = this.improvements[key].getCustomSaveObject();
+			}
 			if (this.buildingSpots.length > 0) copy.s = this.buildingSpots;
 			return copy;
 		},
@@ -211,14 +214,7 @@ define(['ash', 'game/GameGlobals', 'game/constants/ImprovementConstants', 'game/
 			for (var key in componentValues.i) {
 				if (key == "undefined") continue;
 				this.improvements[key] = new ImprovementVO(key);
-				this.improvements[key].count = componentValues.i[key].count || 1;
-				this.improvements[key].level = componentValues.i[key].level || 1;
-				this.improvements[key].numDamaged = componentValues.i[key].numDamaged || 0;
-				if (componentValues.i[key].storedResources) {
-					for (var res in componentValues.i[key].storedResources) {
-						this.improvements[key].storedResources[res] = componentValues.i[key].storedResources[res];
-					}
-				}
+				this.improvements[key].customLoadFromSave(componentValues.i[key]);
 			}
 			if (componentValues.s) {
 				this.buildingSpots = componentValues.s;

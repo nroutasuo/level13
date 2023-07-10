@@ -116,8 +116,34 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 				default:
 					return 1;
 			}
+		},
+		
+		getCustomSaveObject: function () {
+			let copy = {};
+			copy.name = this.name;
+			copy.count = this.count;
+			if (this.level > 1) {
+				copy.level = this.level;
+			}
+			if (this.numDamaged > 0) {
+				copy.numDamaged = this.numDamaged;
+			}
+			if (this.storedResources) copy.storedResources = this.storedResources.getCustomSaveObject();
+			if (this.storageCapacity) copy.storageCapacity = this.storageCapacity.getCustomSaveObject();
+			return copy;
+		},
+
+		customLoadFromSave: function (componentValues) {
+			if (!componentValues) return;
+			if (componentValues.name) this.name = componentValues.name;
+			if (componentValues.count) this.count = componentValues.count;
 			
-		}
+			this.level = componentValues.level ? componentValues.level : 1;
+			this.numDamaged = componentValues.numDamaged ? componentValues.numDamaged : 0;
+			
+			if (this.storedResources) this.storedResources.customLoadFromSave(componentValues.storedResources);
+			if (this.storageCapacity) this.storageCapacity.customLoadFromSave(componentValues.storageCapacity);
+		},
 	});
 	
 	// TODO move to ImprovementConstants
