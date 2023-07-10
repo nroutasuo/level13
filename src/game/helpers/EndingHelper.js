@@ -1,5 +1,5 @@
-define(['ash', 'game/GameGlobals', 'game/constants/UpgradeConstants', 'game/constants/WorldConstants', 'game/constants/PlayerActionConstants'],
-function (Ash, GameGlobals, UpgradeConstants, WorldConstants, PlayerActionConstants) {
+define(['ash', 'utils/ValueCache', 'game/GameGlobals', 'game/constants/UpgradeConstants', 'game/constants/WorldConstants', 'game/constants/PlayerActionConstants'],
+function (Ash, ValueCache, GameGlobals, UpgradeConstants, WorldConstants, PlayerActionConstants) {
 	
 	var EndingHelper = Ash.Class.extend({
 		
@@ -7,13 +7,14 @@ function (Ash, GameGlobals, UpgradeConstants, WorldConstants, PlayerActionConsta
 
 		constructor: function (engine) {},
 		
-		isReadyForLaunch: function () {
+		isReadyForLaunch: function (invalidateCache) {
 			if (GameGlobals.gameState.isLaunched) return false;
 			if (GameGlobals.gameState.numCamps < WorldConstants.CAMPS_TOTAL) return false;
 			
-			let reqsCheck = GameGlobals.playerActionsHelper.checkRequirements("launch", false);
-			
-			return reqsCheck.value >= 1 || reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_BUSY;
+			return ValueCache.getValue("IsReadyForLaunch", 5, invalidateCache ? true : false, () => {
+				let reqsCheck = GameGlobals.playerActionsHelper.checkRequirements("launch", false);
+				return reqsCheck.value >= 1 || reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_BUSY;
+			});
 		},
 		
 		isFinished: function () {
