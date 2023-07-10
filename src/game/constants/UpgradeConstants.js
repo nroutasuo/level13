@@ -293,6 +293,23 @@ function (Ash, UpgradeData, PlayerActionConstants, WorldConstants, UpgradeVO) {
 			return result;
 		},
 		
+		getAllUpgradesRequiringInsight: function () {
+			if (this.allUpgradesRequiringInsight) return this.allUpgradesRequiringInsight;
+			
+			let result = [];
+			
+			for (let upgradeID in UpgradeConstants.upgradeDefinitions) {
+				let costs = PlayerActionConstants.costs[upgradeID] || {};
+				if (costs.insight > 0) {
+					result.push(upgradeID);
+				}
+			}
+			
+			this.allUpgradesRequiringInsight = result;
+			
+			return result;
+		},
+		
 	};
 	
 	UpgradeConstants.loadData(UpgradeData);

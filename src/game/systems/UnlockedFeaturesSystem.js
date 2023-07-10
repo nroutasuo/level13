@@ -8,9 +8,10 @@ define([
 	'game/nodes/player/ItemsNode',
 	'game/nodes/sector/CampNode',
 	'game/nodes/tribe/TribeUpgradesNode',
+	'game/components/common/PositionComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/vos/ResourcesVO'
-], function (Ash, GameGlobals, GlobalSignals, ItemConstants, UpgradeConstants, ItemsNode, CampNode, TribeUpgradesNode, SectorImprovementsComponent, ResourcesVO) {
+], function (Ash, GameGlobals, GlobalSignals, ItemConstants, UpgradeConstants, ItemsNode, CampNode, TribeUpgradesNode, PositionComponent, SectorImprovementsComponent, ResourcesVO) {
 	var UnlockedFeaturesSystem = Ash.System.extend({
 		
 		gameState: null,
@@ -18,8 +19,7 @@ define([
 		tribeUpgradesNodes: null,
 		itemNodes: null,
 	
-		constructor: function () {
-		},
+		constructor: function () { },
 
 		addToEngine: function (engine) {
 			this.engine = engine;
@@ -28,6 +28,7 @@ define([
 			this.itemNodes = engine.getNodeList(ItemsNode);
 			
 			GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
+			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
 		},
 
 		removeFromEngine: function (engine) {
@@ -39,6 +40,10 @@ define([
 
 		update: function (time) {
 			this.updateUnlockedFeaturesDynamic();
+		},
+		
+		slowUpdate: function (time) {
+			this.updateDeadlocks();
 		},
 		
 		updateUnlockedFeaturesDynamic: function () {
@@ -65,6 +70,23 @@ define([
 				// TODO check with upgrade effects (has unlocked any upgrade that unlocks projects)
 				if (this.tribeUpgradesNodes.head.upgrades.hasUpgrade("unlock_building_passage_staircase")) {
 					GameGlobals.playerActionFunctions.unlockFeature("projects");
+				}
+			}
+		},
+		
+		updateDeadlocks: function () {
+			if (GameGlobals.gameState.isFeatureUnlocked("investigate") && !GameGlobals.playerHelper.hasItemBaseID("cache_insight")) {
+				let insightUpgradeIDs = UpgradeConstants.getAllUpgradesRequiringInsight();
+				let lockedInsightUpgradeIDs = insightUpgradeIDs.filter(upgradeID => !GameGlobals.tribeHelper.hasUpgrade(upgradeID));
+				let totalCost = GameGlobals.playerActionsHelper.getTotalCosts(lockedInsightUpgradeIDs);
+				let totalCostInsight = totalCost.insight || 0;
+				let currentInsight = GameGlobals.playerHelper.playerStatsNodes.head.insight.value;
+				if (totalCostInsight > currentInsight && GameGlobals.levelHelper.getAllInvestigateableSectors().length == 0) {
+					let sectors = GameGlobals.levelHelper.addFallbackInvestigateSectors();
+					let positions = sectors.map(sector => sector.get(PositionComponent).getPosition());
+					log.w("insight missing! adding fallback investigate sectors: " + positions.join(","));
+					GameGlobals.playerHelper.addLogMessage("We have discovered new locations to investigate");
+					return;
 				}
 			}
 		},

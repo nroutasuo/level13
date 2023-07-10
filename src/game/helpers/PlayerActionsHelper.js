@@ -916,7 +916,7 @@ define([
 					}
 					if (typeof requirements.sector.investigatable != "undefined") {
 						var requiredValue = requirements.sector.investigatable;
-						var currentValue = featuresComponent.isInvestigatable;
+						var currentValue = featuresComponent.isInvestigatable || statusComponent.isFallbackInvestigateSector;
 						if (currentValue !== requiredValue) {
 							var reason = requiredValue ? "There is nothing to investigate." : "This sector can be investigated";
 							return { value: 0, reason: reason };
@@ -2028,6 +2028,16 @@ define([
 				var value = costs[key];
 				result[key] += value;
 			}
+		},
+
+		getTotalCosts: function (actions) {
+			let result = {};
+			
+			for (let i in actions) {
+				this.addCosts(result, this.getCosts(actions[i]));
+			}
+			
+			return result;
 		},
 
 		getDescription: function (action) {

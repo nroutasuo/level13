@@ -902,6 +902,82 @@ define([
 			return count;
 		},
 
+		getAllInvestigateableSectors: function () {
+			let result = [];
+			for (let node = this.sectorNodes.head; node; node = node.next) {
+				if (GameGlobals.sectorHelper.canBeInvestigated(node.entity)) {
+					result.push(node.entity);
+				}
+			}
+			return result;
+		},
+		
+		// TODO move to a system
+		addFallbackInvestigateSectors: function () {
+			let sectorNodes = this.sectorNodes;
+			
+			let isValidFallbackInvestigateSector = function (sector) {
+				let featuresComponent = sector.get(SectorFeaturesComponent);
+				if (featuresComponent.isInvestigatable) return false;
+				if (featuresComponent.campable) return false;
+				let statusComponent = sector.get(SectorStatusComponent);
+				if (statusComponent.isFallbackInvestigateSector) return false;
+				return true;
+			};
+			
+			let getSectorScore = function (sector) {
+				let result = 0;
+				let featuresComponent = sector.get(SectorFeaturesComponent);
+				let statusComponent = sector.get(SectorStatusComponent);
+				let position = sector.get(PositionComponent);
+				result += position.level * 100;
+				result += featuresComponent.hazards.radiation || 0;
+				result += featuresComponent.hazards.poison || 0;
+				result -= statusComponent.getScavengedPercent();
+				return result;
+			};
+			
+			let selectCandidates = function (num) {
+				let candidates = [];
+				let maxCandidates = num * 3;
+				
+				for (let level = GameGlobals.gameState.getSurfaceLevel(); level >= GameGlobals.gameState.getGroundLevel(); level--) {
+					let sectors = GameGlobals.levelHelper.getSectorsByLevel(level);
+					for (let i in sectors) {
+						let sector = sectors[i];
+						if (isValidFallbackInvestigateSector(sector)) {
+							candidates.push({ sector: sector, score: getSectorScore(sector) });
+							if (candidates.length >= maxCandidates) return candidates;
+						}
+					}
+				}
+				
+				return candidates;
+			}
+			
+			let selectSectors = function (num) {
+				let candidates = selectCandidates(num);
+				
+				if (candidates.length < num) return [];
+				
+				candidates.sort(function (a, b) { return a.score - b.score; });
+				
+				return candidates.slice(0, num);
+			}
+			
+			let sectors = selectSectors(2);
+			let result = [];
+			
+			for (let i in sectors) {
+				let sector = sectors[i].sector;
+				let statusComponent = sector.get(SectorStatusComponent);
+				statusComponent.isFallbackInvestigateSector = true;
+				result.push(sector);
+			}
+			
+			return result;
+		},
+
 		getFoundLuxuryResourceOnLevel: function (level) {
 			let resource = this.getLuxuryResourceOnLevel(level);
 			

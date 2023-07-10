@@ -21,6 +21,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 		weightedNumInvestigates: 0,
 		stashesFound: 0,
 		graffiti: null,
+		isFallbackInvestigateSector: false,
 		
 		scoutedTimestamp: 0,
 		
@@ -43,6 +44,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			this.weightedNumInvestigates = 0;
 			this.stashesFound = 0;
 			this.graffiti = null;
+			this.isFallbackInvestigateSector = false;
 			
 			this.hazardReduction = {};
 			this.glowStickSeconds = -100;
@@ -161,6 +163,8 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 				copy.sf = this.stashesFound;
 			if (this.graffiti)
 				copy.g = this.graffiti;
+			if (this.isFallbackInvestigateSector)
+				copy.fis = true;
 			return Object.keys(copy).length > 0 ? copy : null;
 		},
 
@@ -184,6 +188,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			this.weightedNumInvestigates = componentValues.iw ? componentValues.iw : 0;
 			this.stashesFound = componentValues.sf ? componentValues.sf : 0;
 			this.graffiti = componentValues.g ? componentValues.g : null;
+			this.isFallbackInvestigateSector = componentValues.fis ? true : false;
 		}
 
 	});

@@ -160,6 +160,11 @@ define([
 			return itemsComponent.getCountById(id, true) > 0;
 		},
 		
+		hasItemBaseID: function (itemBaseID) {
+			let itemsComponent = this.playerStatsNodes.head.items;
+			return itemsComponent.getCountByBaseId(itemBaseID, true) > 0;
+		},
+		
 		getCurrentBonus: function (itemBonusType) {
 			var isMultiplier = ItemConstants.isMultiplier(itemBonusType);
 			var result = isMultiplier ? 1 : 0;

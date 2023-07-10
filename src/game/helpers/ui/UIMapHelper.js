@@ -736,7 +736,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			let isScouted = statusComponent.scouted;
 			let isRevealed = isScouted || this.isMapRevealed;
 			let isBigSectorSize = sectorSize >= this.getSectorSize(true);
-			let isInvestigatable = GameGlobals.gameState.isFeatureUnlocked("investigate") && sectorFeatures.isInvestigatable && statusComponent.getInvestigatedPercent() < 100;
+			let isInvestigatable = GameGlobals.sectorHelper.canBeInvestigated(sector);
 			
 			let mapModeHasPois = MapUtils.showPOIsInMapMode(options.mapMode);
 			
