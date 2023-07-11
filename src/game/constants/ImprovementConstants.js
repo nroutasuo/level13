@@ -76,7 +76,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 				sortScore: 10,
 			},
 			aqueduct: {
-				description: "Water infrastructure to improve collecting efficiency.",
+				description: "Produces water.",
 				improvementLevelsPerTechLevel: 1,
 			},
 			temple: {

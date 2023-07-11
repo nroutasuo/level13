@@ -803,7 +803,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			
 			let events = [];
 			events.push("a worker strike");
-			events.push("a celebration");
+			events.push("a local celebration");
 			events.push("the arrival of a group of refugees");
 			events.push("the birth of triplets");
 			events.push("a disease outbreak");
