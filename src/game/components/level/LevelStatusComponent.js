@@ -11,7 +11,16 @@ define(['ash'], function (Ash) {
 		getSaveKey: function () {
 			return "LS";
 		},
-		
+
+		getCustomSaveObject: function () {
+			let result = {};
+			if (this.isLevelTypeRevealed) result.isLevelTypeRevealed = true;
+			return result;
+		},
+
+		customLoadFromSave: function (componentValues) {
+			this.isLevelTypeRevealed = componentValues.isLevelTypeRevealed || false;
+		}
 	});
 
 	return LevelStatusComponent;
