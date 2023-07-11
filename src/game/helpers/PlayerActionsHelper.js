@@ -1433,7 +1433,9 @@ define([
 			let costs = this.getCosts(action);
 
 			let costNameParts = name.split("_");
-			let costAmount = costs[name];
+			let costAmount = costs[name] || 0;
+			
+			if (costAmount <= 0) return 1;
 
 			if (costNameParts[0] === "resource") {
 				return playerResources.storageCapacity / costAmount;

@@ -466,7 +466,8 @@ define([
 				let name = selectedResources[i].name;
 				let campProductionFactor = Math.min(0.5, selectedResources[i].campProductionFactor);
 				
-				let storageAmount = storageResources.getResource(name);
+				let storageAmount = storageResources.getResource(name) || 0;
+				if (!storageAmount) continue;
 				let maxLostAmount = Math.min(storageAmount, storageMax / 2, 3000);
 				
 				let randomFactor = 0.75 + Math.random() * 0.25;
@@ -477,7 +478,8 @@ define([
 				let lostAmount = Math.floor(lostAmountRaw / rounding) * rounding;
 				
 				if (lostAmount >= 5) {
-					storageResources.setResource(name, storageAmount - lostAmount);
+					let amount = storageAmount - lostAmount;
+					storageResources.setResource(name, amount);
 					raidComponent.resourcesLost.addResource(name, lostAmount);
 				}
 			}

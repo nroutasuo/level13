@@ -64,6 +64,7 @@ define(['ash'], function (Ash) {
 		},
 		
 		addResource: function (res, amount) {
+			if (isNaN(amount)) return;
 			if (amount == 0) return;
 			this.cleanUp();
 			switch(res) {
@@ -84,6 +85,7 @@ define(['ash'], function (Ash) {
 		},
 		
 		setResource: function(res, amount) {
+			if (isNaN(amount)) return;
 			switch(res) {
 				case resourceNames.water: this.water = amount; break;
 				case resourceNames.food: this.food = amount; break;

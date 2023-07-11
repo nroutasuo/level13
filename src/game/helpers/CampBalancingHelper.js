@@ -977,6 +977,7 @@ define([
 		},
 		
 		getWorkerRobotBonus: function (robots) {
+			robots = robots || 0;
 			return Math.floor(robots) * CampConstants.PRODUCTION_BONUS_PER_ROBOT_PER_SEC;
 		},
 		

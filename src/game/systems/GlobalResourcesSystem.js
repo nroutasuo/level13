@@ -54,7 +54,8 @@ define([
 				let storageCount = campImprovements.getCount(improvementNames.storage);
 				let storageLevel = campImprovements.getLevel(improvementNames.storage);
 				let hasTradePost = campImprovements.getCount(improvementNames.tradepost) > 0;
-				node.resources.storageCapacity = CampConstants.getStorageCapacity(storageCount, storageLevel);
+				let storageCapacity = CampConstants.getStorageCapacity(storageCount, storageLevel);
+				node.resources.storageCapacity = storageCapacity;
 				node.resources.limitToStorage(!hasTradePost);
 				
 				this.updateCampSpecialStorage(node);
