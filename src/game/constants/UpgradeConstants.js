@@ -56,7 +56,7 @@ function (Ash, UpgradeData, PlayerActionConstants, WorldConstants, UpgradeVO) {
 			improve_building_fortification_2: "Better fortifications",
 			unlock_item_clothing3h: "Good gloves to keep explorers safe",
 			unlock_item_clothing4he: "Protection against environmental hazards",
-			unlock_item_bag_3: "Unlock the automatic luggage.",
+			unlock_item_bag_3: "Make better bags.",
 			unlock_item_weapon_10: "A gun that allows the user to fire multiple rounds without reloading.",
 			unlock_building_aqueduct: "Tapping into the decaying water infrastructure and extending it to efficiently store and convey water.",
 			unlock_item_clothing4: "Basic protective clothing to give an edge in fights.",
