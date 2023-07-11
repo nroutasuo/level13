@@ -128,6 +128,9 @@ define([
 		},
 		
 		updateWorkerProduction: function (node, time) {
+			time = time || 0;
+			if (time <= 0) return;
+			
 			var camp = node.camp;
 			var campResources = node.entity.get(ResourcesComponent).resources;
 			var availableResources = GameGlobals.resourcesHelper.getCurrentCampStorage(node.entity).resources;
@@ -388,6 +391,9 @@ define([
 		},
 		
 		updateImprovementProduction: function (node, time) {
+			time = time || 0;
+			if (time <= 0) return;
+			
 			let resources = node.entity.get(ResourcesComponent).resources;
 			let resourceAcc = node.entity.get(ResourceAccumulationComponent);
 			let improvementsComponent = node.entity.get(SectorImprovementsComponent);

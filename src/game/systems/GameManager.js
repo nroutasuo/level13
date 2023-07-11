@@ -100,7 +100,9 @@ define([
 				}
 			}
 			
+			if (tickTime > 0) {
 			this.engine.update(tickTime);
+			}
 			
 			GameGlobals.gameState.gameTime += tickTime;
 			GameGlobals.gameState.playTime += playTime;

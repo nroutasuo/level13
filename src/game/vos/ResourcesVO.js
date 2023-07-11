@@ -152,7 +152,7 @@ define(['ash'], function (Ash) {
 		
 		limitAll: function (min, max) {
 			for (let key in resourceNames) {
-				var name = resourceNames[key];
+				let name = resourceNames[key];
 				this.limit(name, min, max);
 			}
 		},
@@ -162,7 +162,7 @@ define(['ash'], function (Ash) {
 				max = Math.floor(max) + 0.9999;
 			}
 			
-			var amount = this.getResource(name);
+			let amount = this.getResource(name);
 			if (amount == 0) return;
 			if (amount < min)
 				this.setResource(name, min);
@@ -172,9 +172,10 @@ define(['ash'], function (Ash) {
 	
 		cleanUp: function() {
 			for (let key in resourceNames) {
-				var name = resourceNames[key];
-				var amount = this.getResource(name);
+				let name = resourceNames[key];
+				let amount = this.getResource(name);
 				if (isNaN(amount)) {
+					log.e("resource value was NaN, setting to 0 (" + name + ")");
 					this.setResource(name, 0);
 				}
 			}
