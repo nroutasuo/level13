@@ -46,12 +46,16 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 			return 0;
 		},
 
-		getDuration: function (baseActionID) {
+		getDuration: function (action, baseActionID) {
 			var speed = this.isExplorationAction(baseActionID) ? GameConstants.gameSpeedExploration : GameConstants.gameSpeedCamp;
 
 			// TODO make send_caravan duration dependent on the trade partner's location
 			if (this.durations[baseActionID]) {
 				return parseInt(this.durations[baseActionID]) / speed;
+			}
+			
+			if (this.durations[action]) {
+				return parseInt(this.durations[action]) / speed;
 			}
 
 			if (baseActionID.indexOf("build_out") >= 0) {
@@ -175,6 +179,12 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 				return action.substring(0, action.lastIndexOf("_"));
 			}
 			return action;
+		},
+		
+		getActionIDParam: function (action) {
+			var remainder = action.replace(this.getBaseActionID(action) + "_", "");
+			if (remainder && remainder !== action) return remainder;
+			return "";
 		},
 		
 		getImprovementNameForAction: function (action, disableWarnings) {

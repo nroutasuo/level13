@@ -182,7 +182,7 @@ define(['ash',
 						}
 
 						var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
-						var duration = PlayerActionConstants.getDuration(baseId);
+						var duration = PlayerActionConstants.getDuration(action, baseId);
 						if (duration > 0) {
 							GameGlobals.gameState.setActionDuration(action, locationKey, duration);
 							uiFunctions.startButtonDuration($(this), duration);
@@ -408,7 +408,7 @@ define(['ash',
 					enabledContent += costsSpans;
 				}
 
-				var duration = PlayerActionConstants.getDuration(baseActionId);
+				var duration = PlayerActionConstants.getDuration(action, baseActionId);
 				if (duration > 0) {
 					if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
 					enabledContent += "<span class='action-duration'>duration: " + Math.round(duration * 100) / 100 + "s</span>";
@@ -990,7 +990,7 @@ define(['ash',
 				var locationKey = this.getLocationKey(action);
 				cooldownTotal = PlayerActionConstants.getCooldown(baseId);
 				cooldownLeft = Math.min(cooldownTotal, GameGlobals.gameState.getActionCooldown(action, locationKey, cooldownTotal));
-				durationTotal = PlayerActionConstants.getDuration(baseId);
+				durationTotal = PlayerActionConstants.getDuration(action, baseId);
 				durationLeft = Math.min(durationTotal, GameGlobals.gameState.getActionDuration(action, locationKey, durationTotal));
 				if (cooldownLeft > 0) this.startButtonCooldown(button, cooldownTotal, cooldownLeft);
 				else this.stopButtonCooldown(button);

@@ -242,6 +242,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		},
 		
 		getItemByID: function (id, skipWarning) {
+			if (!id) return null;
 			let config = this.getItemConfigByID(id, skipWarning);
 			if (!config) return null;
 			return config.clone();

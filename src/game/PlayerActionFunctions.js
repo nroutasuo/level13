@@ -133,7 +133,7 @@ define(['ash',
 			var deductedCosts = GameGlobals.playerActionsHelper.deductCosts(action);
 
 			var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
-			var duration = PlayerActionConstants.getDuration(baseId);
+			var duration = PlayerActionConstants.getDuration(action, baseId);
 			if (duration > 0) {
 				this.startBusy(action, param, deductedCosts);
 			} else {
@@ -145,7 +145,7 @@ define(['ash',
 
 		startBusy: function (action, param, deductedCosts) {
 			let baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
-			let duration = PlayerActionConstants.getDuration(baseId);
+			let duration = PlayerActionConstants.getDuration(action, baseId);
 			if (duration > 0) {
 				let playerPos = this.playerPositionNodes.head.position;
 				let isBusy = PlayerActionConstants.isBusyAction(baseId);

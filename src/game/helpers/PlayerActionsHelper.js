@@ -2127,9 +2127,7 @@ define([
 		},
 
 		getActionIDParam: function (action) {
-			var remainder = action.replace(this.getBaseActionID(action) + "_", "");
-			if (remainder && remainder !== action) return remainder;
-			return "";
+			return PlayerActionConstants.getActionIDParam(action);
 		},
 		
 		getActionDefaultParam: function () {
