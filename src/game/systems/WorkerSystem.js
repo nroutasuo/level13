@@ -71,7 +71,7 @@ define([
 			if (GameGlobals.gameState.isPaused) return;
 			
 			for (var node = this.campNodes.head; node; node = node.next) {
-				this.updateWorkerAssignment(node);
+				this.updateWorkerAutoAssignment(node);
 				if (this.isPendingProductionRateUpdate) {
 					this.updateWorkerProductionRate(node);
 				}
@@ -87,7 +87,7 @@ define([
 			this.logAmbient();
 		},
 		
-		updateWorkerAssignment: function (node) {
+		updateWorkerAutoAssignment: function (node) {
 			if (!GameGlobals.gameState.unlockedFeatures.workerAutoAssignment) return;
 			
 			let freePopulation = node.camp.getFreePopulation();

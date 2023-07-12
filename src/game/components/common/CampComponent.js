@@ -50,6 +50,10 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 			return assigned;
 		},
 		
+		getCurrentWorkerAssignment: function () {
+			return this.assignedWorkers;
+		},
+		
 		getAutoAssignedWorkers: function () {
 			let result = [];
 			for(var key in this.autoAssignedWorkers) {
