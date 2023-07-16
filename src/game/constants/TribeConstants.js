@@ -33,7 +33,7 @@ define(['ash', 'game/constants/OccurrenceConstants', 'game/constants/UIConstants
 			},
 			{
 				name: "sanguine tribe",
-				description: "Enough people to call a it tribe",
+				description: "Enough people to call it a tribe",
 				maxRumours: 3000,
 				maxEvidence: 700,
 				maxFavour: 100,
