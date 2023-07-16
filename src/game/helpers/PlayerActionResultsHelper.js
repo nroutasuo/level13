@@ -224,10 +224,13 @@ define([
 			let investigatePercentAfter = sectorStatus.getInvestigatedPercent(weightedInvestigateAdded);
 			let isCompletion = investigatePercentAfter >= 100;
 			
+			let playerPos = this.playerLocationNodes.head.position;
+			let campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
+			
 			log.i("getInvestigateRewards | isCompletion: " + isCompletion, this);
 			
 			if (isCompletion) {
-				let possibleCompletionRewards = [ "cache_insight_11", "cache_insight_21" ];
+				let possibleCompletionRewards = ItemConstants.getAvailableInsightCaches(campOrdinal);
 	 			rewards.gainedItems = [ this.getSpecificRewardItem(1, possibleCompletionRewards) ];
 			} else {
 				let itemOptions = { rarityKey: "investigateRarity", allowNextCampOrdinal: isCompletion };
