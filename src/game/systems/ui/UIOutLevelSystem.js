@@ -477,7 +477,7 @@ define([
 				let investigationComplete = investigatedPercent >= 100;
 				description += "Investigated: ";
 				if (investigationComplete) description += "<span class='dimmed'>";
-				description += UIConstants.roundValue(investigatedPercent) + "%";
+				description += Math.floor(investigatedPercent) + "%";
 				if (investigationComplete) description += "</span>";
 				description += "<br/>";
 			}
