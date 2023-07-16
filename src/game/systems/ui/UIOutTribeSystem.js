@@ -355,7 +355,7 @@ define([
 			$("#camp-overview tr#" + rowID + " .camp-overview-reputation .value").toggleClass("warning", reputationComponent.targetValue < 1);
 			this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-reputation .change-indicator"), reputationComponent.accumulation);
 			
-			var soldiers = camp.assignedWorkers.soldier;
+			var soldiers = camp.assignedWorkers.soldier || 0;
 			var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
 			var raidDanger = OccurrenceConstants.getRaidDanger(improvements, soldiers, soldierLevel, levelComponent.raidDangerFactor);
 			var raidWarning = raidDanger > CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;

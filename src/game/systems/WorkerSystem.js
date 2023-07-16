@@ -105,7 +105,7 @@ define([
 				for (let i = 0; i < autoAssignedWorkers.length; i++) {
 					let workerType = autoAssignedWorkers[i];
 					let max = GameGlobals.campHelper.getMaxWorkers(node.entity, workerType);
-					let current = node.camp.assignedWorkers[workerType];
+					let current = node.camp.assignedWorkers[workerType] || 0;
 					if (max > 0 && current >= max) continue;
 					if (result == null || resultCurrentAssigned > current) {
 						result = workerType;
@@ -119,7 +119,7 @@ define([
 			while (numToAssign > 0) {
 				let assignType = getAssignType();
 				if (assignType == null) break;
-				node.camp.assignedWorkers[assignType] = node.camp.assignedWorkers[assignType] + 1;
+				node.camp.assignedWorkers[assignType] = (node.camp.assignedWorkers[assignType] || 0) + 1;
 				numToAssign--;
 				this.log("A previously unassigned worker has started working as " + CampConstants.getWorkerDisplayName(assignType), false, node);
 			}

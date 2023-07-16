@@ -194,7 +194,7 @@
 		updateWorkerStepper: function (campComponent, id, workerType, maxWorkers, showMax, isAutoAssigned) {
 			GameGlobals.uiFunctions.toggle($(id).closest("tr"), maxWorkers > 0);
 
-			var freePopulation = campComponent.getFreePopulation();
+			var freePopulation = campComponent.getFreePopulation() || 0;
 			var assignedWorkers = Math.max(0, campComponent.assignedWorkers[workerType]) || 0;
 			var maxAssigned = Math.min(assignedWorkers + freePopulation, maxWorkers);
 			GameGlobals.uiFunctions.updateStepper(id, assignedWorkers, 0, maxAssigned);
@@ -642,7 +642,7 @@
 			let sector = this.playerLocationNodes.head.entity;
 
 			var improvements = sector.get(SectorImprovementsComponent);
-			var soldiers = sector.get(CampComponent).assignedWorkers.soldier;
+			var soldiers = sector.get(CampComponent).assignedWorkers.soldier || 0;
 			var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
 			var raidDanger = GameGlobals.campHelper.getCampRaidDanger(sector);
 			var raidAttack = OccurrenceConstants.getRaidDangerPoints(improvements, levelComponent.raidDangerFactor);

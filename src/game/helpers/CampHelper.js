@@ -242,7 +242,7 @@ define([
 		
 		getCampRaidDanger: function (sector) {
 			let improvements = sector.get(SectorImprovementsComponent);
-			let soldiers = sector.get(CampComponent).assignedWorkers.soldier;
+			let soldiers = sector.get(CampComponent).assignedWorkers.soldier || 0;
 			let soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
 			var levelComponent = GameGlobals.levelHelper.getLevelEntityForSector(sector).get(LevelComponent);
 			let levelRaidDangerFactor = levelComponent.raidDangerFactor;

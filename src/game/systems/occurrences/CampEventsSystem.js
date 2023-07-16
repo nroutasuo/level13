@@ -488,7 +488,7 @@ define([
 		addRaidKilledDefenders: function (sectorEntity, probability) {
 			let raidComponent = sectorEntity.get(RaidComponent);
 			let campComponent = sectorEntity.get(CampComponent);
-			let numSoldiers = campComponent.assignedWorkers.soldier;
+			let numSoldiers = campComponent.assignedWorkers.soldier || 0;
 			if (numSoldiers > 0 && Math.random() < probability) {
 				let maxKilled = Math.ceil(numSoldiers / 3);
 				let numKilled = Math.ceil(Math.random() * maxKilled);
