@@ -2071,10 +2071,12 @@ define([
 				switch(baseAction) {
 					case "craft":
 						var item = this.getItemForCraftAction(action);
+						if (!item) return "";
 						return item.description + (item.getBaseTotalBonus() === 0 ? "" : "<hr/>" + UIConstants.getItemBonusDescription(item, true));
 					case "use_item":
 					case "use_item_fight":
 						var item = this.getItemForCraftAction(action);
+						if (!item) return "";
 						return item.description;
 					case "improve_in":
 						return this.getImproveActionDescription(action);
