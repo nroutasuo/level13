@@ -588,8 +588,9 @@
 						bar += '<div class="progress-bar progress"></div>';
 						bar += '<span class="progress progress-label">Outgoing caravan</span>';
 						bar += '</div>';
-						$("#in-occurrences-outgoing-caravans-container").append(bar)
+						$("#in-occurrences-outgoing-caravans-container").append(bar);
 					}
+					GlobalSignals.elementCreatedSignal.dispatch();
 				});
 				for (let i = 0; i < numCaravans; i++) {
 					var caravan = caravansComponent.outgoingCaravans[i];
