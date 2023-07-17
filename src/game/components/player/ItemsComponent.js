@@ -156,19 +156,20 @@ function (Ash, ItemVO, ItemConstants) {
 		
 		autoEquipByBonusType: function (itemBonusType, includeNotCarried) {
 			for (let key in this.items) {
+				let defaultBonusType = ItemConstants.getItemTypeDefaultBonus(key);
 				let bestItem = null;
 				let bestItemBonus = 0;
-				let bestItemTotalBonus = 0;
+				let bestItemTiebreakerBonus = 0;
 				for (let i = 0; i < this.items[key].length; i++) {
 					let item = this.items[key][i];
 					if (!item.equippable) continue;
 					if (!includeNotCarried && !item.carried) continue;
 					let itemBonus = ItemConstants.getItemBonusComparisonValue(item, itemBonusType);
-					let totalBonus = ItemConstants.getItemBonusComparisonValue(item);
-					if (itemBonus > bestItemBonus || (itemBonus == bestItemBonus && totalBonus > bestItemTotalBonus)) {
+					let tiebreakerBonus = defaultBonusType ? ItemConstants.getItemBonusComparisonValue(item, defaultBonusType) : ItemConstants.getItemBonusComparisonValue(item);
+					if (itemBonus > bestItemBonus || (itemBonus == bestItemBonus && tiebreakerBonus > bestItemTiebreakerBonus)) {
 						bestItem = item;
 						bestItemBonus = itemBonus;
-						bestItemTotalBonus = totalBonus;
+						bestItemTiebreakerBonus = tiebreakerBonus;
 					}
 				}
 				

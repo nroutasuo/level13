@@ -258,7 +258,11 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 
 		getItemDefaultBonus: function (item) {
 			if (!item) return null;
-			switch (item.type) {
+			return this.getItemTypeDefaultBonus(item.type);
+		},
+		
+		getItemTypeDefaultBonus: function (itemType) {
+			switch (itemType) {
 				case ItemConstants.itemTypes.light:
 					return ItemConstants.itemBonusTypes.light;
 				case ItemConstants.itemTypes.weapon:
@@ -334,7 +338,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			}
 			let result = item.getCurrentBonus(bonusType);
 			if (!ItemConstants.isIncreasing(bonusType)) {
-				result = 1-result;
+				result = 1 - result;
 			}
 			if (bonusType == ItemConstants.itemBonusTypes.fight_att) {
 				result = result * item.getCurrentBonus(ItemConstants.itemBonusTypes.fight_speed);
