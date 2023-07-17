@@ -75,7 +75,7 @@ define([
 		},
 		
 		updateDeadlocks: function () {
-			if (GameGlobals.gameState.isFeatureUnlocked("investigate") && !GameGlobals.playerHelper.hasItemBaseID("cache_insight")) {
+			if (GameGlobals.gameState.isFeatureUnlocked("investigate") && !GameGlobals.playerHelper.hasItemBaseID("cache_insight") && GameGlobals.playerHelper.playerStatsNodes.head.insight.maxValue > 0) {
 				let insightUpgradeIDs = UpgradeConstants.getAllUpgradesRequiringInsight();
 				let lockedInsightUpgradeIDs = insightUpgradeIDs.filter(upgradeID => !GameGlobals.tribeHelper.hasUpgrade(upgradeID));
 				let totalCost = GameGlobals.playerActionsHelper.getTotalCosts(lockedInsightUpgradeIDs);
