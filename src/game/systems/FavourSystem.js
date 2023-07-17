@@ -35,6 +35,7 @@ define([
 
 		update: function (time) {
 			if (GameGlobals.gameState.isPaused) return;
+			if (GameGlobals.gameState.isLaunched) return;
 			if (!this.campNodes.head) return;
 			
 			let deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);

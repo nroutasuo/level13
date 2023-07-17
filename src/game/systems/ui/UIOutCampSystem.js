@@ -110,6 +110,7 @@
 		update: function () {
 			let isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.in;
 			let campCount = GameGlobals.gameState.numCamps;
+			
 			if (!this.playerLocationNodes.head) return;
 			if (!this.playerPosNodes.head.position.inCamp) return;
 

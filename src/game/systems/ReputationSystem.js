@@ -48,11 +48,13 @@ define([
 
 		update: function (time) {
 			if (GameGlobals.gameState.isPaused) return;
+			if (GameGlobals.gameState.isLaunched) return;
 			this.updateCurrentReputations(time);
 		},
 		
 		slowUpdate: function () {
 			if (GameGlobals.gameState.isPaused) return;
+			if (GameGlobals.gameState.isLaunched) return;
 			this.updateTargetReputations();
 		},
 		

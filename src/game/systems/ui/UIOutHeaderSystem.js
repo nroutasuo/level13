@@ -214,6 +214,11 @@ define([
 		update: function (time) {
 			if (!this.currentLocationNodes.head) return;
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
+			
+			if (GameGlobals.gameState.isLaunchCompleted) {
+				this.updateEndingView();
+				return;
+			}
 
 			var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
 			var campComponent = this.currentLocationNodes.head.entity.get(CampComponent);
@@ -982,6 +987,14 @@ define([
 					 this.elements.body.toggleClass("vision-step-" + i, i == visionStep);
 				}
 			});
+		},
+		
+		updateEndingView: function () {
+			if (GameGlobals.gameState.isFinished) {
+				$(".game-opacity-controller").css("opacity", 0);
+				$("#container-tab-vis-in").css("display", "none");
+				$("#container-tab-two-in").css("display", "none");
+			}
 		},
 		
 		transitionTheme: function (oldValue, newValue) {

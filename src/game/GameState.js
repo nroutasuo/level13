@@ -72,7 +72,6 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 
 		syncData: function () {
 			// remove duplicates / old values
-						
 			let partners = this.foundTradingPartners;
 			this.foundTradingPartners = [];
 			for (let campOrdinal = 1; campOrdinal < 15; campOrdinal++) {
@@ -81,7 +80,16 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 				}
 			}
 			
+			// reset ui state
 			if (!this.uiStatus.lastSelection) this.uiStatus.lastSelection = {};
+			
+			// complete ending if launch started
+			if (this.isLaunchStarted || this.isLaunched || this.isLaunchCompleted || this.isFinished) {
+				this.isLaunchStarted = true;
+				this.isLaunched = true;
+				this.isLaunchCompleted = true;
+				this.isFinished = true;
+			}
 		},
 		
 		isFeatureUnlocked: function (featureID) {

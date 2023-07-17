@@ -69,6 +69,7 @@ define([
 
 		update: function (time) {
 			if (GameGlobals.gameState.isPaused) return;
+			if (GameGlobals.gameState.isLaunched) return;
 			
 			for (var node = this.campNodes.head; node; node = node.next) {
 				this.updateWorkerAutoAssignment(node);

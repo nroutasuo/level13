@@ -31,10 +31,17 @@ define([
 			if (GameGlobals.gameState.isPaused) return;
 		},
 		
+		showIntroPopup: function () {
+			let intro = "You wake up alone, remembering very little. There barely any light. It takes awhile for you to make out your surroundings.";
+			GameGlobals.uiFunctions.showInfoPopup("Darkness", intro, "Continue", null, null, true, false);
+		},
+		
 		onGamestateLoaded: function (hasState) {
 			if (!hasState) {
-				let intro = "You wake up alone, remembering very little. There barely any light. It takes awhile for you to make out your surroundings.";
-				GameGlobals.uiFunctions.showInfoPopup("Darkness", intro, "Continue", null, null, true, false);
+				let sys = this;
+				setTimeout(function () {
+					sys.showIntroPopup();
+				}, 1);
 			}
 		},
 

@@ -15,6 +15,7 @@ define([
 		addToEngine: function (engine) {
 			this.engine = engine;
 			GlobalSignals.add(this, GlobalSignals.launchedSignal, this.onLaunched);
+			GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
 			GlobalSignals.add(this, GlobalSignals.gameEndedSignal, this.onGameFinished);
 			GlobalSignals.add(this, GlobalSignals.restartGameSignal, this.onRestart);
 		},
@@ -106,6 +107,12 @@ define([
 			setTimeout(function () {
 				sys.showStoryPopup();
 			}, 1);
+		},
+		
+		onGameStarted: function () {
+			if (GameGlobals.gameState.isFinished) {
+				this.onGameFinished();
+			}
 		},
 
 		onRestart: function (resetSave) {

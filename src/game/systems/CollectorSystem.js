@@ -21,6 +21,7 @@ define([
 
 		update: function (time) {
 			if (GameGlobals.gameState.isPaused) return;
+			if (GameGlobals.gameState.isLaunched) return;
 			this.updateNodes(time);
 		},
 		

@@ -37,11 +37,13 @@ define([
 
 		update: function (time) {
 			if (GameGlobals.gameState.isPaused) return;
+			if (GameGlobals.gameState.isLaunched) return;
 			this.updateCampsPopulation(time);
 		},
 		
 		slowUpdate: function () {
 			if (GameGlobals.gameState.isPaused) return;
+			if (GameGlobals.gameState.isLaunched) return;
 			this.updateCampsPopulationChange();
 			this.unassignInvalidWorkers();
 		},
