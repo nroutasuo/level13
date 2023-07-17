@@ -542,7 +542,7 @@ define([
 					existingProject = result[j];
 					
 					// corresponding up and down passages
-					if (existingProject.improvement && existingProject.improvement.isPassage()) {
+					if (existingProject.improvement && existingProject.improvement.isPassage() && project.improvement && project.improvement.isPassage()) {
 						if (existingProject.sector === project.sector && (existingProject.level - 1 === project.level || existingProject.level + 1 === project.level)) {
 							projectExists = true;
 							break;
