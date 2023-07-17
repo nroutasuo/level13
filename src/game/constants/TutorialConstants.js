@@ -189,7 +189,7 @@ define(['ash'], function (Ash) {
 				repeats: "NEVER",
 				delay: 1000,
 				logMessage: "Our first worker robot is ready. It will help workers in camp with their tasks.",
-				conditions: { featureUnlocked: { resource_robots: true }, inCamp: true, campInventory: { resource_robots: [1, -1 ] } }
+				conditions: { featureUnlocked: { resource_robots: true }, inCamp: true, campInventory: { resource_robots: [ 1, -1 ] } }
 			},
 			TUTORIAL_CAN_MAKE_LIGHT: {
 				triggers: [ "change_inventory" ],
@@ -197,6 +197,13 @@ define(['ash'], function (Ash) {
 				delay: 1500,
 				logMessage: "Collected enough metal to craft a Lantern",
 				conditions: { maxVision: [-1, 50], actionsAvailable: ["craft_light1"], featureUnlocked: { bag: true } }
+			},
+			TUTORIAL_CAN_BUILD_SHRINE: {
+				triggers: [ "change_inventory", "change_position" ],
+				repeats: "NEVER",
+				delay: 1500,
+				logMessage: "We can now build Shrines to the Spirits",
+				conditions: { inCamp: true, deity: true }
 			},
 			TUTORIAL_CAN_BUILD_TEMPLE: {
 				triggers: [ "change_inventory", "change_position" ],
