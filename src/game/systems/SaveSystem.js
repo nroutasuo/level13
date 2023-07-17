@@ -35,6 +35,7 @@ define([
 
 		update: function () {
 			if (this.paused) return;
+			if (GameGlobals.gameState.isLaunched) return;
 			if (!GameConstants.isAutosaveEnabled) return;
 			var timeStamp = new Date().getTime();
 			if (timeStamp - this.lastSaveTimeStamp > this.saveFrequency) {
@@ -53,6 +54,7 @@ define([
 		save: function (isPlayerInitiated) {
 			if (this.paused) return;
 			if (!isPlayerInitiated && !GameConstants.isAutosaveEnabled) return;
+			if (GameGlobals.gameState.isLaunchStarted || GameGlobals.gameState.isLaunched || GameGlobals.gameState.isLaunchCompleted || GameGlobals.gameState.isFinished) return;
 			this.error = null;
 			if (typeof(Storage) !== "undefined") {
 				try {
