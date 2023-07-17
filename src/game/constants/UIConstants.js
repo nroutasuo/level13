@@ -87,7 +87,7 @@ define(['ash',
 			if (hasCount)
 				div += "<div class='item-count lvl13-box-1 vision-text'>" + count + "x </div>";
 
-			if (!hideComparisonIndicator && item.equippable) {
+			if (!hideComparisonIndicator && item && item.equippable) {
 				var comparisonClass = "indicator-even";
 				if (item.equipped) {
 					comparisonClass = "indicator-equipped";

@@ -1195,6 +1195,7 @@ define([
 			let index = MathUtils.getWeightedRandom(0, possibleItemIds.length);
 			let itemID = possibleItemIds[index];
 			let item = ItemConstants.getItemByID(itemID);
+			if (!item) return null;
 			return item.clone();
 		},
 

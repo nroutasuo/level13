@@ -831,6 +831,7 @@ define([
 							
 							for (let itemID in caravan.campSelectedItems) {
 								let item = ItemConstants.getItemByID(itemID);
+								if (!item) continue;
 								if (item.type == ItemConstants.itemTypes.ingredient) continue;
 								let amount = caravan.campSelectedItems[itemID] + caravan.getSellItemCount(itemID);
 								if (amount > TradeConstants.MAX_ITEMS_TO_TRADE_PER_CARAVAN) {
@@ -1251,7 +1252,9 @@ define([
 						var min = def[0];
 						var max = def[1];
 						var current = fightComponent ? fightComponent.itemsUsed[itemID] || 0 : 0;
-						var itemName = ItemConstants.getItemByID(itemID).name;
+						var item = ItemConstants.getItemByID(itemID);
+						if (!item) continue;
+						var itemName = item.name;
 						if (min > current) {
 							return { value: 0, reason: "Must use " + itemName + " first" };
 						} else if (max <= current) {

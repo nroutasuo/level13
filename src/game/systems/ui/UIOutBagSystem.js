@@ -728,6 +728,7 @@ define([
 		},
 		
 		isOwned: function (itemDefinition) {
+			if (!itemDefinition) return false;
 			var itemsComponent = this.itemNodes.head.items;
 		    return itemsComponent.contains(itemDefinition.name);
 		},

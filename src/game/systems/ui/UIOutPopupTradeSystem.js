@@ -97,9 +97,10 @@ define([
 			}
 
 			// trader items: create
-			for (var itemID in this.traderTotalItems) {
-				var item = ItemConstants.getItemByID(itemID);
-				var li = UIConstants.getItemSlot(itemsComponent, item, 0, false, true);
+			for (let itemID in this.traderTotalItems) {
+				let item = ItemConstants.getItemByID(itemID);
+				if (!item) continue;
+				let li = UIConstants.getItemSlot(itemsComponent, item, 0, false, true);
 				addLis(li, itemID, "trader")
 			}
 
@@ -121,6 +122,7 @@ define([
 			var count = 0;
 			for (var itemID in this.campTotalItems) {
 				var item = ItemConstants.getItemByID(itemID);
+				if (!item) continue;
 				var li = UIConstants.getItemSlot(itemsComponent, item, 0, false, true);
 				addLis(li, itemID, "camp")
 				count++;
@@ -272,9 +274,10 @@ define([
 			var visibleLisCampOffer = 0;
 
 			// trader items
-			for (var itemID in this.traderTotalItems) {
-				var item = ItemConstants.getItemByID(itemID);
-				var selectedAmount = (caravan.traderSelectedItems[itemID] ? caravan.traderSelectedItems[itemID] : 0);
+			for (let itemID in this.traderTotalItems) {
+				let item = ItemConstants.getItemByID(itemID);
+				if  (!item) continue;
+				let selectedAmount = (caravan.traderSelectedItems[itemID] ? caravan.traderSelectedItems[itemID] : 0);
 				var inventoryAmount = this.traderTotalItems[itemID] - selectedAmount;
 				UIConstants.updateItemSlot(this.traderInventoryLis[itemID], inventoryAmount);
 				UIConstants.updateItemSlot(this.traderOfferLis[itemID], selectedAmount);
@@ -286,6 +289,7 @@ define([
 			// camp items
 			for (var itemID in this.campTotalItems) {
 				var item = ItemConstants.getItemByID(itemID);
+				if (!item) continue;
 				var selectedAmount = (caravan.campSelectedItems[itemID] ? caravan.campSelectedItems[itemID] : 0);
 				var inventoryAmount = this.campTotalItems[itemID] - selectedAmount;
 				UIConstants.updateItemSlot(this.campInventoryLis[itemID], inventoryAmount);

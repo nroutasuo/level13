@@ -156,6 +156,7 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 		},
 		
 		getItemValue: function (item, isTrader, isUsed) {
+			if (!item) return 0;
 			if (item.broken) return 0;
 			let value = this.getItemBaseValue(item, isTrader);
 		

@@ -88,6 +88,7 @@ define([
 				let ownedCount = itemsComponent.getCountByIdAndStatus(itemID, false, true);
 				if (ownedCount < 1) continue;
 				let item = ItemConstants.getItemByID(itemID);
+				if (!item) continue;
 				if (item.equippable) {
 					let isEquipped = itemsComponent.isEquipped(item);
 					if (isEquipped) continue;
