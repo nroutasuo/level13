@@ -742,7 +742,7 @@ define([
 				if (requirements.playerInventory) {
 					for (let key in requirements.playerInventory) {
 						let range = requirements.playerInventory[key];
-						let currentVal = this.getCostAmountOwned(key);
+						let currentVal = this.getCostAmountOwned(sector, key);
 						let result = this.checkRequirementsRange(range, currentVal, "Not enough " + key, "Too  much " + key);
 						if (result) {
 							return result;
@@ -751,9 +751,9 @@ define([
 				}
 				
 				if (requirements.campInventory) {
-					for (let key in requirements.playerInventory) {
-						let range = requirements.playerInventory[key];
-						let currentVal = this.getCostAmountOwned(key);
+					for (let key in requirements.campInventory) {
+						let range = requirements.campInventory[key];
+						let currentVal = this.getCostAmountOwned(sector, key);
 						let result = this.checkRequirementsRange(range, currentVal, "Not enough " + key, "Too  much " + key);
 						if (result) {
 							return result;
@@ -1361,20 +1361,26 @@ define([
 			let costs = this.getCosts(action);
 
 			let costAmount = costs[name];
-			let costAmountOwned = this.getCostAmountOwned(name);
+			let costAmountOwned = this.getCostAmountOwned(sector, name);
 			
 			return costAmountOwned / costAmount;
 		},
 		
-		getCostAmountOwned: function (name) {
+		getCostAmountOwned: function (sector, name) {
 			let itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			let inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
 			let playerResources = GameGlobals.resourcesHelper.getCurrentStorage();
+			let campStorage = GameGlobals.resourcesHelper.getCampStorage(sector);
 			
 			let costNameParts = name.split("_");
 			
 			if (costNameParts[0] === "resource") {
-				return playerResources.resources.getResource(costNameParts[1]);
+				let resourceName = costNameParts[1];
+				if (resourceName == resourceNames.robots) {
+					return campStorage.resources.getResource(resourceName);
+				} else {
+					return playerResources.resources.getResource(resourceName);
+				}
 			} else if (costNameParts[0] === "item") {
 				let itemId = name.replace(costNameParts[0] + "_", "");
 				return itemsComponent.getCountById(itemId, inCamp);

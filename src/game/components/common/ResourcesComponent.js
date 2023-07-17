@@ -34,6 +34,10 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			return spilledResources;
 		},
 		
+		getResource: function (resourceName) {
+			return this.resources.getResource(resourceName);
+		},
+		
 		addResources: function (resourceVO) {
 			if (resourceVO !== null) {
 				for(var key in resourceNames) {
