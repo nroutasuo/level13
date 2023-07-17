@@ -91,6 +91,10 @@ define([
 				log.i("gang enemy: " + gangComponent.enemyIDs.join(",") + ", previous attempts: " + gangComponent.numAttempts);
 			}
 			var enemy = this.getEnemy(enemiesComponent, gangComponent);
+			if (!enemy) {
+				log.w("couldn't start fight because there is no valid enemy for location");
+				return;
+			}
 			sector.add(new FightEncounterComponent(enemy, action, this.pendingEnemies, this.totalEnemies, gangComponent));
 			GameGlobals.uiFunctions.showFight();
 		},

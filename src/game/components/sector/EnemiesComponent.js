@@ -8,7 +8,7 @@ define(['ash'], function (Ash) {
 		possibleEnemies: [],
 		
 		constructor: function (hasEnemies, possibleEnemies) {
-			this.hasEnemies = hasEnemies;
+			this.hasEnemies = hasEnemies && possibleEnemies.length > 0;
 			this.possibleEnemies = possibleEnemies;
 		},
 		
