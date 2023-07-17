@@ -75,6 +75,7 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 		},
 		
 		getResourceBonus: function (unlockedResources, campOrdinal) {
+			// TODO make robot rewards work (figure out what to do if camp has space, and make sure to assign to camp and not to global resources)
 			let res = new ResourcesVO();
 			let abundant = WorldConstants.resourcePrevalence.ABUNDANT;
 			let defaultAmount = WorldConstants.resourcePrevalence.DEFAULT;
@@ -82,7 +83,7 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 			case localeTypes.factory:
 				res.addResource(resourceNames.metal, abundant);
 				if (unlockedResources.concrete) res.addResource(resourceNames.concrete, abundant);
-				if (unlockedResources.robots) res.addResource(resourceNames.robots, defaultAmount);
+				//if (unlockedResources.robots) res.addResource(resourceNames.robots, defaultAmount);
 				if (unlockedResources.tools) res.addResource(resourceNames.tools, defaultAmount);
 				break;
 			case localeTypes.house:
@@ -107,7 +108,7 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 			case localeTypes.transport:
 				res.addResource(resourceNames.water, defaultAmount);
 				if (unlockedResources.tools) res.addResource(resourceNames.tools, defaultAmount);
-				if (unlockedResources.robots) res.addResource(resourceNames.robots, defaultAmount);
+				//if (unlockedResources.robots) res.addResource(resourceNames.robots, defaultAmount);
 				break;
 			case localeTypes.sewer:
 			case localeTypes.warehouse:
