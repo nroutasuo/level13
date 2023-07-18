@@ -1285,7 +1285,7 @@ define([
 			let efficiency = this.getCurrentScavengeEfficiency();
 			
 			log.i("applying fixed rewards", this);
-			console.log(fixedRewards);
+			if (GameGlobals.logInfo) console.log(fixedRewards);
 			
 			this.addFixedRewardsResources(rewardsVO, fixedRewards, efficiency, availableResources);
 			this.addFixedRewardsItems(rewardsVO, fixedRewards);
