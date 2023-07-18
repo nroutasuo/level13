@@ -1821,7 +1821,7 @@ define(['ash',
 		equipItem: function (itemInstanceId) {
 			var playerPos = this.playerPositionNodes.head.position;
 			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-			var item = itemsComponent.getItem(null, itemInstanceId, playerPos.inCamp, false);
+			var item = itemsComponent.getItem(null, itemInstanceId, playerPos.inCamp, false, item => item.equippable);
 			itemsComponent.equip(item);
 			GlobalSignals.equipmentChangedSignal.dispatch();
 		},
@@ -1849,7 +1849,7 @@ define(['ash',
 		
 		repairItem: function (itemInstanceId) {
 			let itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-			let itemVO = itemsComponent.getItem(null, itemInstanceId, true, true);
+			let itemVO = itemsComponent.getItem(null, itemInstanceId, true, true, item => item.repairable);
 			if (!itemVO) return;
 			itemVO.broken = false;
 			GlobalSignals.equipmentChangedSignal.dispatch();

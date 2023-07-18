@@ -56,7 +56,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			
 			this.configData = {};
 			
-			this.itemID = Math.floor(Math.random() * 100000);
+			this.itemID = Math.floor(Math.random() * 1000000);
 			this.equipped = false;
 			this.carried = false;
 			this.broken = false;

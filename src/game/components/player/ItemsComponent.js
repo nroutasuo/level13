@@ -368,7 +368,7 @@ function (Ash, ItemVO, ItemConstants) {
 			return strongest;
 		},
 
-		getItem: function (id, instanceId, includeNotCarried, includeEquipped) {
+		getItem: function (id, instanceId, includeNotCarried, includeEquipped, filter) {
 			for (var key in this.items) {
 				for( let i = 0; i < this.items[key].length; i++) {
 					var item = this.items[key][i];
@@ -376,6 +376,7 @@ function (Ash, ItemVO, ItemConstants) {
 					if (instanceId && instanceId != item.itemID) continue;
 					if (!includeNotCarried && !item.carried) continue;
 					if (!includeEquipped && item.equipped) continue;
+					if (filter && !filter(item)) continue;
 					return item;
 				}
 			}
