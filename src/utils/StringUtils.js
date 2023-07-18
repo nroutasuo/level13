@@ -19,6 +19,7 @@ define(['game/vos/PositionVO'], function (PositionVO) {
 			if (stackParts.length > 0) shortstack += " " + stackParts[1];
 			shortstack = shortstack.replace(/\s+/g, ' ');
 			shortstack = shortstack.replace(/\(.*:[\/\\]+.*[\/\\]/g, '(');
+			shortstack = shortstack.replace(title, '');
 
 			return { title: title, shortstack: shortstack, stack: stack };
 		},
