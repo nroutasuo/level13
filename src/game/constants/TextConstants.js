@@ -1258,7 +1258,9 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			for (let i = 0; i < itemsScavengeable.length; i++) {
 				let id = itemsScavengeable[i];
 				if (knownItems.indexOf(id) < 0) continue;
-				validItems.push(ItemConstants.getItemByID(id).name);
+				let item = ItemConstants.getItemByID(id);
+				if (!item) continue;
+				validItems.push(item.name);
 			}
 			
 			if (validItems.length == 0) {
@@ -1508,7 +1510,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("sector-vision", { isSurfaceLevel: true, buildingDensity: b33 }, "[a] [a-street] [n-street] between tall, ornate [n-buildings]");
 		DescriptionMapper.add("sector-vision", { isSurfaceLevel: true, buildingDensity: b33 }, "[a] [a-street] passage between what used to be two shopping centers");
 		DescriptionMapper.add("sector-vision", { isSurfaceLevel: true, buildingDensity: b33 }, "[a] [a-street] [n-street] where the wind is constantly howling in the narrow passages");
-		DescriptionMapper.add("sector-vision", { isSurfaceLevel: true, sectorType: t_C }, "[a] [a-street] between what used to be two shopping centers");
+		DescriptionMapper.add("sector-vision", { isSurfaceLevel: true, sectorType: t_C }, "[a] [a-street] [n-street] between what used to be two shopping centers");
 		DescriptionMapper.add("sector-vision", { isSurfaceLevel: true, sectorType: t_C }, "An imposing shopping center which seems to have been full of shops selling luxury goods");
 		DescriptionMapper.add("sector-vision", { isSurfaceLevel: true, sectorType: t_I }, "[a] [a-street] with grand office buildings");
 		DescriptionMapper.add("sector-vision", { debris: b22 }, "A [n-street] full of debris");
