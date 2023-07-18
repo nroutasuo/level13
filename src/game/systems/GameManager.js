@@ -101,7 +101,7 @@ define([
 			}
 			
 			if (tickTime > 0) {
-			this.engine.update(tickTime);
+				this.engine.update(tickTime);
 			}
 			
 			GameGlobals.gameState.gameTime += tickTime;
@@ -437,6 +437,7 @@ define([
 			var saveSystem = this.engine.getSystem(SaveSystem);
 			try {
 				var compressed = localStorage.save;
+				localStorage.loadedSave = compressed;
 				var json = saveSystem.getSaveJSONfromCompressed(compressed);
 				var object = GameGlobals.saveHelper.parseSaveJSON(json);
 				return object;

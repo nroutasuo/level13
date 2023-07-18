@@ -609,6 +609,9 @@ body.dark th.folded-table-cell {
   user-select: none;
   /* Standard */
 }
+body.dark td.nowidth {
+  width: 0%;
+}
 body.dark td.minwidth {
   width: 5%;
 }
@@ -2879,6 +2882,9 @@ body.sunlit th.folded-table-cell {
   /* IE10+/Edge */
   user-select: none;
   /* Standard */
+}
+body.sunlit td.nowidth {
+  width: 0%;
 }
 body.sunlit td.minwidth {
   width: 5%;
