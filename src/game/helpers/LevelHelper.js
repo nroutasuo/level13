@@ -905,7 +905,7 @@ define([
 		getAllInvestigateableSectors: function () {
 			let result = [];
 			for (let node = this.sectorNodes.head; node; node = node.next) {
-				if (GameGlobals.sectorHelper.canBeInvestigated(node.entity)) {
+				if (GameGlobals.sectorHelper.canBeInvestigated(node.entity, true)) {
 					result.push(node.entity);
 				}
 			}
