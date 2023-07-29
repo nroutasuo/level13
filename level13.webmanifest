@@ -1,0 +1,21 @@
+{
+    "name": "js13kGames Progressive Web App",
+    "short_name": "js13kPWA",
+    "description": "Progressive Web App that lists games submitted to the A-Frame category in the js13kGames 2017 competition.",
+    "icons": [
+      {
+        "src": "/favicon-32x32.png",
+        "sizes": "32x32",
+        "type": "image/png"
+      },
+    {
+        "src": "/favicon-16x16.png",
+        "sizes": "16x16",
+        "type": "image/png"
+      }
+    ],
+    "start_url": "/index.html",
+    "display": "fullscreen",
+    "theme_color": "#aaaaaa",
+    "background_color": "#000000"
+  }

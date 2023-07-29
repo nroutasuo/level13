@@ -17,6 +17,7 @@
 	<meta itemprop="image" property="og:image" content="favicon.png" />
 	<meta itemprop="name" property="og:title" content="Level 13" />
 	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<link rel="manifest" href="level13.webmanifest">
 	<link rel="shortcut icon" href="favicon.ico" />
 	<link rel="image_src" href="favicon.png" />
 	<link rel="stylesheet" type="text/css" href="css/normalize.css" />
@@ -872,6 +873,11 @@
 
 	<!-- RequireJS -->
 	<script data-main="src/config" src="lib/requirejs/require.min.js"></script>
+	<script>
+		if ("serviceWorker" in navigator) {
+			navigator.serviceWorker.register("/src/pwa-sw.js");
+		}		  
+	</script>
 
 </body>
 </html>
