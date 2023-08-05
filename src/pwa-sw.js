@@ -3,7 +3,7 @@ My(@aeiea) attempt at making level 13 offline.
 */
 
 
-cachecontent = JSON.parse(await fetch('/src/files.json'));
+cachecontent = await fetch('/src/files.json').then(response => response.JSON());
 self.addEventListener("install", (e) => {
     console.log("[Offline Service Worker]: Installed");
     e.waitUntil((async () => {
