@@ -20,8 +20,7 @@
         "type": "image/png"
       }
     ],
-    "start_url": "/index.html",
-    "id": "/index.html",
+    "start_url": "/",
     "display": "fullscreen",
     "theme_color": "#202220",
     "background_color": "#202220"
