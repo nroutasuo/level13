@@ -8,7 +8,7 @@ self.addEventListener("install", (e) => {
     e.waitUntil((async () => {
         const cache = await caches.open('level13');
         console.log('[Offline Service Worker] Caching all: app shell and content');
-        cache.addAll(cachecontent);
+        await cache.addAll(cachecontent);
         console.log('[Offline Service Worker] Caching all: Done');
     })());
 });
