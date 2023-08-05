@@ -112,7 +112,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					addOptions("n-building", [ "residential tower", "apartment house", "residential building with countless of rows of identical balconies", "housing block" ]);
 					addOptions("n-buildings", [ "residential towers", "apartments", "tower blocks", "identical residential towers" ]);
 					addOptions("an-decos", [ "tram tracks" ]);
-					addOptions("a-building", [ "silent", "regular", "enourmous", "symmetrical" ]);
+					addOptions("a-building", [ "silent", "regular", "enormous", "symmetrical" ]);
 					addOptions("an-items", [ "garbage" ]);
 					break;
 				case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
