@@ -3,6 +3,12 @@
     "short_name": "Level 13",
     "description": "Incremental browser text adventure",
     "icons": [
+
+      {
+        "src": "/favicon-32x32.png",
+        "sizes": "256x256",
+        "type": "image/png"
+      },
       {
         "src": "/favicon-32x32.png",
         "sizes": "32x32",
@@ -15,6 +21,7 @@
       }
     ],
     "start_url": "/index.html",
+    "id": "/index.html",
     "display": "fullscreen",
     "theme_color": "#aaaaaa",
     "background_color": "#000000"
