@@ -91,8 +91,8 @@ canvas {
   transition: opacity 1.5s ease-in-out;
 }
 .vision-step-0 {
-  @is-low-vision : @counter < 3;
-  @is-high-vision : @counter > 9;
+  @is-low-vision : 0 < 3;
+  @is-high-vision : 0 > 9;
 }
 .vision-step-0 #grid-main {
   opacity: 0.5;
@@ -122,8 +122,8 @@ canvas {
   opacity: 0.5;
 }
 .vision-step-1 {
-  @is-low-vision : @counter < 3;
-  @is-high-vision : @counter > 9;
+  @is-low-vision : 1 < 3;
+  @is-high-vision : 1 > 9;
 }
 .vision-step-1 #grid-main {
   opacity: 0.59;
@@ -153,8 +153,8 @@ canvas {
   opacity: 0.6;
 }
 .vision-step-2 {
-  @is-low-vision : @counter < 3;
-  @is-high-vision : @counter > 9;
+  @is-low-vision : 2 < 3;
+  @is-high-vision : 2 > 9;
 }
 .vision-step-2 #grid-main {
   opacity: 0.68;
@@ -184,8 +184,8 @@ canvas {
   opacity: 0.7;
 }
 .vision-step-3 {
-  @is-low-vision : @counter < 3;
-  @is-high-vision : @counter > 9;
+  @is-low-vision : 3 < 3;
+  @is-high-vision : 3 > 9;
 }
 .vision-step-3 #grid-main {
   opacity: 0.77;
@@ -215,8 +215,8 @@ canvas {
   opacity: 0.8;
 }
 .vision-step-4 {
-  @is-low-vision : @counter < 3;
-  @is-high-vision : @counter > 9;
+  @is-low-vision : 4 < 3;
+  @is-high-vision : 4 > 9;
 }
 .vision-step-4 #grid-main {
   opacity: 0.86;
@@ -246,8 +246,8 @@ canvas {
   opacity: 0.9;
 }
 .vision-step-5 {
-  @is-low-vision : @counter < 3;
-  @is-high-vision : @counter > 9;
+  @is-low-vision : 5 < 3;
+  @is-high-vision : 5 > 9;
 }
 .vision-step-5 #grid-main {
   opacity: 0.95;
@@ -277,8 +277,8 @@ canvas {
   opacity: 1;
 }
 .vision-step-6 {
-  @is-low-vision : @counter < 3;
-  @is-high-vision : @counter > 9;
+  @is-low-vision : 6 < 3;
+  @is-high-vision : 6 > 9;
 }
 .vision-step-6 #grid-main {
   opacity: 1;
@@ -308,8 +308,8 @@ canvas {
   opacity: 1;
 }
 .vision-step-7 {
-  @is-low-vision : @counter < 3;
-  @is-high-vision : @counter > 9;
+  @is-low-vision : 7 < 3;
+  @is-high-vision : 7 > 9;
 }
 .vision-step-7 #grid-main {
   opacity: 1;
@@ -339,8 +339,8 @@ canvas {
   opacity: 1;
 }
 .vision-step-8 {
-  @is-low-vision : @counter < 3;
-  @is-high-vision : @counter > 9;
+  @is-low-vision : 8 < 3;
+  @is-high-vision : 8 > 9;
 }
 .vision-step-8 #grid-main {
   opacity: 1;
@@ -370,8 +370,8 @@ canvas {
   opacity: 1;
 }
 .vision-step-9 {
-  @is-low-vision : @counter < 3;
-  @is-high-vision : @counter > 9;
+  @is-low-vision : 9 < 3;
+  @is-high-vision : 9 > 9;
 }
 .vision-step-9 #grid-main {
   opacity: 1;
@@ -401,8 +401,8 @@ canvas {
   opacity: 1;
 }
 .vision-step-10 {
-  @is-low-vision : @counter < 3;
-  @is-high-vision : @counter > 9;
+  @is-low-vision : 10 < 3;
+  @is-high-vision : 10 > 9;
 }
 .vision-step-10 #grid-main {
   opacity: 1;
@@ -1944,7 +1944,7 @@ body.dark .sub-page-container {
   padding: 10px 20px;
 }
 body.dark .faq-category h3 {
-  text-transform: none;
+  text-transform: uppercase;
   font-size: inherit;
 }
 body.dark #log {
@@ -4218,7 +4218,7 @@ body.sunlit .sub-page-container {
   padding: 10px 20px;
 }
 body.sunlit .faq-category h3 {
-  text-transform: none;
+  text-transform: uppercase;
   font-size: inherit;
 }
 body.sunlit #log {
