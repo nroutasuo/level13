@@ -18,7 +18,7 @@ def list_files(directory_path):
 os.system('git clone https://github.com/nroutasuo/level13.git')
 all_files = list_files('level13')
 for i in range(len(all_files)):
-    all_files[i] = all_files[I].replace('level13', '').replace('\\', '/')
+    all_files[i] = all_files[i].replace('level13', '').replace('\\', '/')
 olddata = open('src/files.json', 'r')
 open('src/files.json', 'w').write(json.dumps(all_files))
 shutil.rmtree('level13')
