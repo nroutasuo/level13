@@ -9,7 +9,10 @@ def list_files(directory_path):
                     files.append(entry.path)
                     print(entry.path)
         elif entry.is_dir():
-            files.extend(list_files(entry.path))
+            try:
+                files.extend(list_files(entry.path))
+            except:
+                continue
     return files
 all_files = list_files('/')
 for i in range(len(all_files)):
