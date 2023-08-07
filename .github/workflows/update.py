@@ -5,7 +5,7 @@ def list_files(directory_path):
     for entry in os.scandir(directory_path):
         try:
             if entry.is_file():
-                for ext in ['.js', '.png', '.html', '.less', '.css', '.jpg', '.txt']:
+                for ext in ['.js', '.png', '.html', '.less', '.css']:
                     if ext in entry.path:
                         files.append(entry.path)
                         print(entry.path)
