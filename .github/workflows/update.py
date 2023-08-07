@@ -11,7 +11,7 @@ def list_files(directory_path):
         elif entry.is_dir():
             c = 0
             for fol in ['src', 'img', 'lib', 'css']:
-                if fol in entry.name:
+                if fol in entry.path:
                     c += 1
             if c <= 1:
                 files.extend(list_files(entry.path))
