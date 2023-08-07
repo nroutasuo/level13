@@ -3,18 +3,16 @@ import os, json
 def list_files(directory_path):
     files = []
     for entry in os.scandir(directory_path):
-        if entry.is_file():
-            for ext in ['.js', '.png', '.html', '.less', '.css', '.jpg', '.txt']:
-                if ext in entry.path:
-                    files.append(entry.path)
-                    print(entry.path)
-        elif entry.is_dir():
-            c = 0
-            for fol in ['src', 'img', 'lib', 'css']:
-                if fol in entry.path:
-                    c += 1
-            if c <= 1:
+        try:
+            if entry.is_file():
+                for ext in ['.js', '.png', '.html', '.less', '.css', '.jpg', '.txt']:
+                    if ext in entry.path:
+                        files.append(entry.path)
+                        print(entry.path)
+            elif entry.is_dir():
                 files.extend(list_files(entry.path))
+        except:
+            ''
     return files
 all_files = list_files('/')
 for i in range(len(all_files)):
