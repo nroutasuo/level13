@@ -10,7 +10,10 @@ def list_files(directory_path):
                         files.append(entry.path)
                         print(entry.path)
             elif entry.is_dir():
-                files.extend(list_files(entry.path))
+                for fol in ["css", "modules", "themes", "img", "eldorado", "followers", "items", "blueprints", "map", "open-iconic", "lib", "ash", "brejep", "jquery", "lzstring", "requirejs", "src", "core", "game", "components", "common", "level", "player", "sector", "events", "improvements", "tribe", "type", "constants", "data", "elements", "helpers", "ui", "nodes", "common", "level", "player", "sector", "tribe", "systems", "occurrences", "ui", "vos", "text", "lang", "utils", "worldcreator"]:
+                    if fol in entry.path:
+                        files.extend(list_files(entry.path))
+                        print(entry.path)
         except:
             ''
     return files
