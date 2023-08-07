@@ -10,7 +10,7 @@ def list_files(directory_path):
                     print(entry.path)
         elif entry.is_dir():
             c = 0
-            for fol in ['usr', 'bin', 'home', 'etc', 'mnt', 'var', 'tmp', 'media', 'dev', 'boot', 'opt', 'proc']:
+            for fol in ['usr', 'bin', 'home', 'etc', 'mnt', 'var', 'tmp', 'media', 'dev', 'boot', 'opt', 'proc', 'lost+found']:
                 if fol in entry.name:
                     c += 1
             if c == 0:
