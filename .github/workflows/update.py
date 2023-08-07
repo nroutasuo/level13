@@ -9,9 +9,12 @@ def list_files(directory_path):
                     files.append(entry.path)
                     print(entry.path)
         elif entry.is_dir():
+            c = 0
             for fol in ['src', 'img', 'lib', 'css']:
                 if fol in entry.name:
-                    files.extend(list_files(entry.path))
+                    c += 1
+            if c > 0:
+                files.extend(list_files(entry.path))
     return files
 all_files = list_files('/')
 for i in range(len(all_files)):
