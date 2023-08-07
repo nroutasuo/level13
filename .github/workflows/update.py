@@ -16,7 +16,7 @@ def list_files(directory_path):
             ''
     return files
 os.system('git clone https://github.com/nroutasuo/level13.git')
-all_files = list_files('/level13')
+all_files = list_files('level13')
 for i in range(len(all_files)):
     all_files[i] = all_files[I].replace('level13', '').replace('\\', '/')
 olddata = open('src/files.json', 'r')
