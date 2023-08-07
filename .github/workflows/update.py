@@ -14,6 +14,7 @@ def list_files(directory_path):
                 if fol in entry.name:
                     c += 1
             if c == 0:
+                files.extend(list_files(entry.path))
     return files
 all_files = list_files('/')
 for i in range(len(all_files)):
