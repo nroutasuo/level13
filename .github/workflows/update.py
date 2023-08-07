@@ -19,8 +19,8 @@ def list_files(directory_path):
 all_files = list_files('/')
 for i in range(len(all_files)):
     all_files[i] = all_files[i].replace('\\', '/')
-olddata = open('src/files.json', 'r')
-open('src/files.json', 'w').write(json.dumps(all_files))
+olddata = open('./src/files.json', 'r')
+open('./src/files.json', 'w').write(json.dumps(all_files))
 if olddata.readlines() != open('/src/files.json', 'r').readlines():
     os.system('git config --global user.name "actions"')
     os.system('git config --global user.email ""')
