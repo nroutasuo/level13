@@ -10,11 +10,10 @@ def list_files(directory_path):
                     print(entry.path)
         elif entry.is_dir():
             c = 0
-            g = len(['/usr', '/bin', '/home', '/etc', '/mnt', '/var', '/tmp', '/media', '/dev', '/boot'])
-            for fol in ['/usr', '/bin', '/home', '/etc', '/mnt', '/var', '/tmp', '/media', '/dev', '/boot']:
-                if not fol in entry.name:
+            for fol in ['usr', 'bin', 'home', 'etc', 'mnt', 'var', 'tmp', 'media', 'dev', 'boot']:
+                if fol in entry.name:
                     c += 1
-            if c == g:
+            if c == 0:
                 files.extend(list_files(entry.path))
     return files
 all_files = list_files('/')
