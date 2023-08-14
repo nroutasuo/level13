@@ -93,7 +93,7 @@ define([
 					this.currentMovementTarget = null;
 					if (blockUI) GameGlobals.gameState.uiStatus.isTransitioning = false;
 					GlobalSignals.playerMoveCompletedSignal.dispatch(position);
-					if (isCampTransition) GlobalSignals.saveGameSignal.dispatch();
+					if (isCampTransition) GlobalSignals.saveGameSignal.dispatch(GameConstants.SAVE_SLOT_DEFAULT, false);
 				}, moveDuration / 2);
 			}, moveDuration / 2);
 		},

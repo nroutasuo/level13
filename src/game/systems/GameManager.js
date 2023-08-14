@@ -434,12 +434,12 @@ define([
 		},
 
 		getSaveObject: function () {
-			var saveSystem = this.engine.getSystem(SaveSystem);
+			let saveSystem = this.engine.getSystem(SaveSystem);
 			try {
-				var compressed = localStorage.save;
-				localStorage.loadedSave = compressed;
-				var json = saveSystem.getSaveJSONfromCompressed(compressed);
-				var object = GameGlobals.saveHelper.parseSaveJSON(json);
+				let compressed = saveSystem.getDataFromSlot(GameConstants.SAVE_SLOT_DEFAULT);
+				saveSystem.saveDataToSlot(GameConstants.SAVE_SLOT_LOADED, compressed);
+				let json = saveSystem.getSaveJSONfromCompressed(compressed);
+				let object = GameGlobals.saveHelper.parseSaveJSON(json);
 				return object;
 			} catch (exception) {
 				// TODO show no save found to user?

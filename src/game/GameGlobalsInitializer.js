@@ -60,8 +60,10 @@ define([
 	var GameGlobalsInitializer = {
 		
 		init: function (engine) {
+			GameGlobals.engine = engine;
 			GameGlobals.gameState = new GameState();
 			GameGlobals.playerActionsHelper = new PlayerActionsHelper(engine);
+
 			if (engine) {
 				GameGlobals.playerActionFunctions = new PlayerActionFunctions(engine);
 			}

@@ -1,6 +1,7 @@
 // Singleton with helper methods for saving and loading and related string manipulation
 define([
 	'ash',
+	'game/constants/GameConstants',
 	'game/components/common/CampComponent',
 	'game/components/common/CurrencyComponent',
 	'game/components/sector/improvements/BeaconComponent',
@@ -15,9 +16,9 @@ define([
 	'game/components/sector/events/RaidComponent',
 	'game/components/sector/events/TraderComponent',
 	'game/components/sector/events/RecruitComponent',
-], function (Ash, CampComponent, CurrencyComponent, BeaconComponent, ReputationComponent, VisitedComponent, RevealedComponent, DeityComponent, ExcursionComponent, LastVisitedCampComponent, OutgoingCaravansComponent, CampEventTimersComponent, RaidComponent, TraderComponent, RecruitComponent) {
+], function (Ash, GameConstants, CampComponent, CurrencyComponent, BeaconComponent, ReputationComponent, VisitedComponent, RevealedComponent, DeityComponent, ExcursionComponent, LastVisitedCampComponent, OutgoingCaravansComponent, CampEventTimersComponent, RaidComponent, TraderComponent, RecruitComponent) {
 
-	var SaveHelper = Ash.Class.extend({
+	let SaveHelper = Ash.Class.extend({
 
 		saveKeys: {
 			player: "player",
@@ -186,6 +187,19 @@ define([
 					if (!object[attr]) object[attr] = new Object();
 					this.loadObject(object[attr], attrValues[attr]);
 				}
+			}
+		},
+
+		hasManualSave: function (saveSlotID) {
+			return saveSlotID && saveSlotID != GameConstants.SAVE_SLOT_LOADED && saveSlotID != GameConstants.SAVE_SLOT_BACKUP;
+		},
+
+		isCustomSaveSlot: function (saveSlotID) {
+			switch (saveSlotID) {
+				case GameConstants.SAVE_SLOT_USER_1: return true;
+				case GameConstants.SAVE_SLOT_USER_2: return true;
+				case GameConstants.SAVE_SLOT_USER_3: return true;
+				default: return false;
 			}
 		},
 

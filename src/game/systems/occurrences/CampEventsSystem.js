@@ -320,7 +320,7 @@ define([
 			}
 			
 			GlobalSignals.campEventEndedSignal.dispatch();
-			GlobalSignals.saveGameSignal.dispatch();
+			GlobalSignals.saveGameSignal.dispatch(GameConstants.SAVE_SLOT_DEFAULT, false);
 		},
 
 		startEvent: function (campNode, event) {
@@ -381,7 +381,7 @@ define([
 			campTimers.onEventSkipped(event);
 			log.i("Skip " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ") (skip probability: " + this.getEventSkipProbability(campNode, event) + ")");
 			this.scheduleEvent(campNode, event);
-			GlobalSignals.saveGameSignal.dispatch();
+			GlobalSignals.saveGameSignal.dispatch(GameConstants.SAVE_SLOT_DEFAULT, false);
 		},
 
 		fastTrackEvent: function (event) {

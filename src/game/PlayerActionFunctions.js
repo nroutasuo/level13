@@ -1311,7 +1311,8 @@ define(['ash',
 			
 			GlobalSignals.improvementBuiltSignal.dispatch();
 			GlobalSignals.campBuiltSignal.dispatch();
-			this.save();
+			this.save(GameConstants.SAVE_SLOT_DEFAULT);
+			this.save(GameConstants.SAVE_SLOT_BACKUP);
 		},
 
 		buildPassageUpStairs: function (sectorPos) {
@@ -2288,8 +2289,8 @@ define(['ash',
 			system.updateTabVisibility();
 		},
 
-		save: function () {
-			GlobalSignals.saveGameSignal.dispatch();
+		save: function (slotID) {
+			GlobalSignals.saveGameSignal.dispatch(slotID, false);
 		},
 
 	});
