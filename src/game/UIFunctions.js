@@ -77,7 +77,7 @@ define(['ash',
 
 				// Meta/non-action buttons
 				$("#btn-save").click(function (e) {
-					GlobalSignals.saveGameSignal.dispatch(true);
+					GlobalSignals.saveGameSignal.dispatch(GameConstants.SAVE_SLOT_DEFAULT, true);
 				});
 				$("#btn-restart").click(function (e) {
 					uiFunctions.onRestartButton();

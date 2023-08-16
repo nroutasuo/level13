@@ -63,7 +63,6 @@ define([
 			
 			if (GameGlobals.gameState.numCamps !== numCamps) {
 				GameGlobals.gameState.numCamps = numCamps;
-				gtag('set', { 'max_camp': GameGlobals.gameState.numCamps });
 			}
 			
 			if (!GameGlobals.gameState.unlockedFeatures.projects) {

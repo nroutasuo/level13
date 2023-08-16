@@ -58,7 +58,7 @@ define([
 
 			if (!isPlayerInitiated) {
 				if (isDefaultSlot && this.paused) return;
-				if (!GameConstants.isAutosaveEnabled) return;
+				if (isDefaultSlot && !GameConstants.isAutosaveEnabled) return;
 				if (GameGlobals.gameState.isLaunchStarted || GameGlobals.gameState.isLaunched || GameGlobals.gameState.isLaunchCompleted || GameGlobals.gameState.isFinished) return;
 			}
 
