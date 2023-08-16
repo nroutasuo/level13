@@ -104,25 +104,29 @@ define(['ash'], function (Ash) {
 		},
 	
 		getResource: function(res) {
+			let val = 0;
+
 			switch(res) {
-				case resourceNames.water: return this.water;
-				case resourceNames.food: return this.food;
-				case resourceNames.metal: return this.metal;
-				case resourceNames.rope: return this.rope;
+				case resourceNames.water: val = this.water || 0; break;
+				case resourceNames.food: val = this.food || 0; break;
+				case resourceNames.metal: val = this.metal || 0; break;
+				case resourceNames.rope: val = this.rope || 0; break;
 					
-				case resourceNames.herbs: return this.herbs;
-				case resourceNames.fuel: return this.fuel;
-				case resourceNames.rubber: return this.rubber;
+				case resourceNames.herbs: val = this.herbs || 0; break;
+				case resourceNames.fuel: val = this.fuel || 0; break;
+				case resourceNames.rubber: val = this.rubber || 0; break;
 			
-				case resourceNames.medicine: return this.medicine;
-				case resourceNames.tools: return this.tools;
-				case resourceNames.concrete: return this.concrete;
-				case resourceNames.robots: return this.robots;
+				case resourceNames.medicine: val = this.medicine || 0; break;
+				case resourceNames.tools: val = this.tools || 0; break;
+				case resourceNames.concrete: val = this.concrete || 0; break;
+				case resourceNames.robots: val = this.robots || 0; break;
 				
-				default:
-					log.w("Unknown resource name: " + res);
+				default: log.w("Unknown resource name: " + res); break;
 			}
-			return 0;
+
+			if (isNaN(val)) val = 0;
+
+			return val;
 		},
 		
 		getResourcesWithHighestAmount: function () {
@@ -184,10 +188,10 @@ define(['ash'], function (Ash) {
 		},
 		
 		getTotal: function() {
-			var total = 0;
-			 for (let key in resourceNames) {
-				var name = resourceNames[key];
-				var amount = this.getResource(name);
+			let total = 0;
+			for (let key in resourceNames) {
+				let name = resourceNames[key];
+				let amount = this.getResource(name);
 				total += amount;
 			}
 			return total;
