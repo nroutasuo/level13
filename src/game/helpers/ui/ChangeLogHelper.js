@@ -92,6 +92,8 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants) {
 		},
 		
 		isOldVersion: function (version) {
+			if (!version) return true;
+			
 			var currentVersionNumber = this.getCurrentVersionNumber();
 			var currentVersionDetails = this.getCurrentVersion();
 			var requiredVersion = currentVersionDetails && currentVersionDetails.requiredVersion || currentVersionNumber;

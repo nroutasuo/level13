@@ -1303,15 +1303,19 @@ define(['ash',
 			
 			gtag('event', 'build_camp', { event_category: 'progression', event_label: campOrdinal });
 			gtag('event', 'build_camp_time', { event_category: 'game_time', event_label: campOrdinal, value: GameGlobals.gameState.playTime });
+			gtag('set', { 'max_camp': GameGlobals.gameState.numCamps });
 
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP, "Built a camp.");
 			if (position.level == 15) {
 				this.addLogMessage(LogConstants.getUniqueID(), "It will be difficult to trade resources with camps from below Level 14 from here.");
 			}
+
+			GameGlobals.gameState.numCamps++;
 			
 			GlobalSignals.improvementBuiltSignal.dispatch();
 			GlobalSignals.campBuiltSignal.dispatch();
-			this.save();
+			this.save(GameConstants.SAVE_SLOT_DEFAULT);
+			this.save(GameConstants.SAVE_SLOT_BACKUP);
 		},
 
 		buildPassageUpStairs: function (sectorPos) {
@@ -2288,8 +2292,8 @@ define(['ash',
 			system.updateTabVisibility();
 		},
 
-		save: function () {
-			GlobalSignals.saveGameSignal.dispatch();
+		save: function (slotID) {
+			GlobalSignals.saveGameSignal.dispatch(slotID, false);
 		},
 
 	});

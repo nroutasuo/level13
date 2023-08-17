@@ -6,6 +6,13 @@ define( function () {
 		isDebugVersion: false,
 		isCheatsEnabled: false,
 		isAutosaveEnabled: true,
+
+		SAVE_SLOT_DEFAULT: "default",
+		SAVE_SLOT_BACKUP: "backup",
+		SAVE_SLOT_LOADED: "loaded",
+		SAVE_SLOT_USER_1: "user1",
+		SAVE_SLOT_USER_2: "user2",
+		SAVE_SLOT_USER_3: "user3",
 		
 		gameURL: "https://nroutasuo.github.io/level13",
 		

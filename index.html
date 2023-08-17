@@ -699,7 +699,7 @@
 			<span id="game-msg" class="p-meta"></span>
 			<ul id="game-options-extended" style="display:none">
 				<li><button class="btn-meta" id="btn-info">Info</button></li>
-				<li><button class="btn-meta" id="btn-importexport">Import/export</button></li>
+				<li><button class="btn-meta" id="btn-importexport">Data</button></li>
 				<li><span>:</span></li>
 			</ul>
 			<ul id="game-options">
@@ -809,23 +809,45 @@
 	</div>
 	
 	<div id="manage-save-popup" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display:none">
-		<h3>Export / import save</h3>
-		<p>Export / import your save data for backup or to continue playing on another computer.<br/>Note that the game is still in alpha and updates can break old saves.</p>
-		<p>Your world seed: <span id="save-seed">?</span><br>Current version: <span id="save-version">?</span></p>
-		<div class="infobox">
-			<textarea id="manage-save-textarea" rows="5" cols="60"></textarea>
+		<h3 id="manage-save-popup-header">Manage saves</h3>
+		<p id="manage-save-info">Note that the game is still in alpha and updates can break old saves.</p>
+
+		<div class="columns-container" id="save-list-container">
+			<div id="save-list" class="columns-child">
+			</div>
+			<div id="save-list-options" class="columns-child columns-child-small">
+				<div id="save-list-options-empty">
+					<p id="save-list-options-empty-text" class="dimmed">Select a save slot from the list</p>
+				</div>
+				<div id="save-list-options-selected">
+					<p id="save-list-options-info">Info</p>
+					<button id="btn-save-list-options-save">Save</button>
+					<button id="btn-save-list-options-load">Load</button>
+					<button id="btn-save-list-options-export">Export</button>
+				</div>
+				<div id="save-list-options-export">
+					<p>Export</p>
+					<textarea id="textarea-export-save" rows="4"></textarea>
+					<p id="save-export-info"></p>
+					<button id="btn-copy-export">Copy</button>
+					<button id="btn-download-export">Download</button>
+					<button id="btn-back-from-export">Back</button>
+				</div>
+			</div>
 		</div>
-		<p id="manage-save-warning" class="warning"></p>
-		<p id="manage-save-msg"></p>
-		<div class="buttonbox" id="load-import-container">
+
+		<div id="save-import-container">
+			<textarea id="textarea-import-save" rows="5" cols="60"></textarea>
+			<div>
+			<p id="import-save-warning" class="warning"></p>
+			<p id="import-save-msg"></p>
 			<button id="load-import">Load</button>
+			</div>
 		</div>
-		<div class="buttonbox" id="export-download-container">
-			<button id="btn-download-export">Download</button>
-		</div>
+
 		<div class="buttonbox">
-			<button id="open-export">Export</button>
 			<button id="open-import">Import</button>
+			<button id="open-save-list">Back to list</button>
 			<button id="close-manage-save-popup">Close</button>
 		</div>
 	</div>

@@ -828,7 +828,7 @@ define([
 
 				if (saveSystem && saveSystem.error)
 					gameMsg = saveSystem.error;
-				else if (saveSystem && saveSystem.lastSaveTimeStamp > 0 && timeStamp - saveSystem.lastSaveTimeStamp < 3 * 1000)
+				else if (saveSystem && saveSystem.lastDefaultSaveTimestamp > 0 && timeStamp - saveSystem.lastDefaultSaveTimestamp < 3 * 1000)
 					gameMsg = "Game saved ";
 
 				if (this.autoPlayNodes.head) gameMsg += "Autoplaying";
