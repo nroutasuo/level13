@@ -63,4 +63,4 @@ Level 13 is heavily inspired by [A Dark Room]( http://adarkroom.doublespeakgames
 * [Shark Game](http://cirri.al/sharks/)
 * [Crank](https://faedine.com/games/crank/b39/)
 * [CivClicker](http://civclicker.sourceforge.net/civclicker/civclicker.html)
-* [Properity](http://playprosperity.ca/)
+* [Prosperity](http://playprosperity.ca/)
