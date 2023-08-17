@@ -58,7 +58,7 @@ define(function () {
 			var words = sentence.split(" ");
 			if (v == this.VAR_INDEFINITE_ARTICLE) {
 				var next_word = this.deparametrify(words[word_ordinal + 1]);
-				return this.language.getIndefiniteArticle(next_word);
+				return this.getIndefiniteArticle(next_word);
 			}
 			return null;
 		},
@@ -100,6 +100,11 @@ define(function () {
 		deparametrify: function (word) {
 			return word.replace("[", "").replace("]", "");
 		},
+
+		getIndefiniteArticle: function (word) {
+			if (!this.language) return "";
+			return this.language.getIndefiniteArticle(word);
+		}
 		
 	};
 	return TextBuilder;

@@ -63,10 +63,16 @@ define([
 			GlobalSignals.gameShownSignal.add(function () {
 				sys.updateCurrentLocation();
 			});
+			GlobalSignals.gameStateReadySignal.add(function () {
+				sys.updateCurrentLocation();
+			});
 			GlobalSignals.sectorScoutedSignal.add(function () {
 				sys.updateCurrentLocation();
 			});
 			GlobalSignals.equipmentChangedSignal.add(function () {
+				sys.updateCurrentLocation();
+			});
+			GlobalSignals.improvementBuiltSignal.add(function () {
 				sys.updateCurrentLocation();
 			});
 			GlobalSignals.movementBlockerClearedSignal.add(function () {
