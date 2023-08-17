@@ -7,6 +7,12 @@
 			"final": false,
 			"changes": [
 				{
+					"type": "Dev",
+					"summary": "Add better save management"
+				},				
+				{
+					"type": "Dev",
+					"summary": "Bugfixes and text improvements"
 				}
 			]
 		},
