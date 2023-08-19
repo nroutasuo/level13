@@ -51,7 +51,6 @@ define(['ash',
 			},
 
 			registerListeners: function () {
-				var elementIDs = this.elementIDs;
 				var uiFunctions = this;
 
 				$(window).resize(this.onResize);
@@ -83,10 +82,8 @@ define(['ash',
 					uiFunctions.onRestartButton();
 				});
 				$("#btn-more").click(function (e) {
-					var wasVisible = $("#game-options-extended").is(":visible");
-					$("#game-options-extended").toggle();
-					$(this).text(wasVisible ? "more" : "less");
-					GlobalSignals.elementToggledSignal.dispatch($(this), !wasVisible);
+					let wasVisible = $("#game-options-extended").is(":visible");
+					uiFunctions.showGameOptions(!wasVisible);
 				});
 				$("#btn-importexport").click(function (e) {
 					gtag('event', 'screen_view', {
@@ -1313,6 +1310,12 @@ define(['ash',
 				$("#common-popup input").keydown(uiFunctions.onTextInputKeyDown);
 				$("#common-popup input").keyup(uiFunctions.onTextInputKeyUp);
 			},
+
+			showGameOptions: function (show) {
+				$("#game-options-extended").toggle(show);
+				$("#btn-more").text(show ? "less" : "more");
+				GlobalSignals.elementToggledSignal.dispatch($("#game-options-extended"), show);
+			}
 		});
 
 		return UIFunctions;

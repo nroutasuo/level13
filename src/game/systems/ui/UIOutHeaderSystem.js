@@ -1123,6 +1123,7 @@ define([
 		
 		onActionStarting: function (action) {
 			this.completeResourceAnimations();
+			GameGlobals.uiFunctions.showGameOptions(false);
 		},
 
 		onPlayerPositionChanged: function () {
