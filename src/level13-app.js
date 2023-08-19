@@ -13,6 +13,10 @@ define([
 	function Level13App() {
 
 		this.initialise = function (config) {
+			let isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent);
+
+			GameConstants.isMobile = isMobileDevice;
+			GameConstants.isMobileOverlayShown = isMobileDevice;
 
 			GameConstants.isDebugVersion = config.isDebugVersion;
 			GameConstants.isCheatsEnabled = config.isCheatsEnabled;

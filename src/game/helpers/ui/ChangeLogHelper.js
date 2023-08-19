@@ -7,7 +7,9 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants) {
 		loadingSuccesfull: undefined,
 		versions: null,
 		
-		constructor: function () {
+		constructor: function () { },
+
+		loadVersion: function () {
 			var helper = this;
 			$.getJSON('changelog.json', function (json) {
 				helper.loadingSuccessful = true;
@@ -28,7 +30,9 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants) {
 				if (error) err += ", " + error;
 				gtag('set', { 'app_version': 'unknown' });
 				GlobalSignals.changelogLoadedSignal.dispatch(false);
-				helper.displayVersionWarnings();
+				if (!GameConstants.isMobileOverlayShown) {
+					helper.displayVersionWarnings();
+				}
 			});
 		},
 		

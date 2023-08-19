@@ -2500,6 +2500,14 @@ body.dark #save-list-options.selected {
 body.dark #save-list-options {
   padding: 3px;
 }
+body.dark #save-list-options-empty {
+  display: flex;
+  height: 100%;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+}
 body.dark #manage-save-textarea {
   font-size: 0.85rem;
 }
@@ -2524,6 +2532,16 @@ body.dark .li-save-slot div {
 body.dark .save-slot-date {
   float: right;
   color: #bbb;
+}
+body.dark #mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  width: 100%;
+  height: 100%;
+  background: #202220;
+  padding: 1em;
 }
 body.dark .loading-content,
 body.dark .thinking-content {
@@ -4829,6 +4847,14 @@ body.sunlit #save-list-options.selected {
 body.sunlit #save-list-options {
   padding: 3px;
 }
+body.sunlit #save-list-options-empty {
+  display: flex;
+  height: 100%;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+}
 body.sunlit #manage-save-textarea {
   font-size: 0.85rem;
 }
@@ -4853,6 +4879,16 @@ body.sunlit .li-save-slot div {
 body.sunlit .save-slot-date {
   float: right;
   color: #777;
+}
+body.sunlit #mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  width: 100%;
+  height: 100%;
+  background: #fbfbfb;
+  padding: 1em;
 }
 body.sunlit .loading-content,
 body.sunlit .thinking-content {

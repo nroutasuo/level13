@@ -136,12 +136,27 @@ define([
 		tickProvider: null,
 
 		constructor: function (plugins) {
-			var game = this;
 			this.engine = new Ash.Engine();
 			this.tickProvider = new TickProvider(null, function (ex) { game.handleException(ex) });
 			this.gameManager = new GameManager(this.tickProvider, this.engine);
 
 			GameGlobalsInitializer.init(this.engine);
+
+			this.initMobileOverlay();
+			this.setupGame(plugins);
+		},
+
+		setupGame: function (plugins) {
+			let game = this;
+
+			if (GameConstants.isMobileOverlayShown) {
+				log.w("START mobile overlay shown, game setup delayed");
+				setTimeout(function() {
+					game.setupGame();
+				}, 500);
+				return;
+			}
+
 			this.addSystems();
 
 			GameGlobals.uiFunctions.init();
@@ -159,6 +174,22 @@ define([
 				ExceptionHandler.wrapCall(this, function () {
 					game.gameManager.setupGame();
 				});
+			});
+
+			GameGlobals.changeLogHelper.loadVersion();
+		},
+
+		initMobileOverlay: function () {
+			$("#mobile-overlay").toggle(GameConstants.isMobileOverlayShown);
+
+			if (GameConstants.isMobileOverlayShown) {
+				GameGlobals.uiFunctions.setGameOverlay(false, false);
+			}
+
+			$("#btn-dismiss-mobile-overlay").click(() => {
+				GameConstants.isMobileOverlayShown = false;
+				GameGlobals.uiFunctions.setGameOverlay(true, false);
+				$("#mobile-overlay").toggle(false);
 			});
 		},
 
