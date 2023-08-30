@@ -1,6 +1,22 @@
 {
 	"versions": [
 		{
+			"version": "0.5.3",
+			"requiredVersion": "0.5.1",
+			"phase": "alpha",
+			"final": false,
+			"changes": [
+				{
+					"type": "Dev",
+					"summary": "Add better save management"
+				},				
+				{
+					"type": "Dev",
+					"summary": "Bugfixes and text improvements"
+				}
+			]
+		},
+		{
 			"version": "0.5.2",
 			"requiredVersion": "0.5.1",
 			"released": "2023-07-18",

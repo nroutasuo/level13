@@ -91,8 +91,8 @@ canvas {
   transition: opacity 1.5s ease-in-out;
 }
 .vision-step-0 {
-  @is-low-vision : @counter < 3;
-  @is-high-vision : @counter > 9;
+  @is-low-vision : 0 < 3;
+  @is-high-vision : 0 > 9;
 }
 .vision-step-0 #grid-main {
   opacity: 0.5;
@@ -122,8 +122,8 @@ canvas {
   opacity: 0.5;
 }
 .vision-step-1 {
-  @is-low-vision : @counter < 3;
-  @is-high-vision : @counter > 9;
+  @is-low-vision : 1 < 3;
+  @is-high-vision : 1 > 9;
 }
 .vision-step-1 #grid-main {
   opacity: 0.59;
@@ -153,8 +153,8 @@ canvas {
   opacity: 0.6;
 }
 .vision-step-2 {
-  @is-low-vision : @counter < 3;
-  @is-high-vision : @counter > 9;
+  @is-low-vision : 2 < 3;
+  @is-high-vision : 2 > 9;
 }
 .vision-step-2 #grid-main {
   opacity: 0.68;
@@ -184,8 +184,8 @@ canvas {
   opacity: 0.7;
 }
 .vision-step-3 {
-  @is-low-vision : @counter < 3;
-  @is-high-vision : @counter > 9;
+  @is-low-vision : 3 < 3;
+  @is-high-vision : 3 > 9;
 }
 .vision-step-3 #grid-main {
   opacity: 0.77;
@@ -215,8 +215,8 @@ canvas {
   opacity: 0.8;
 }
 .vision-step-4 {
-  @is-low-vision : @counter < 3;
-  @is-high-vision : @counter > 9;
+  @is-low-vision : 4 < 3;
+  @is-high-vision : 4 > 9;
 }
 .vision-step-4 #grid-main {
   opacity: 0.86;
@@ -246,8 +246,8 @@ canvas {
   opacity: 0.9;
 }
 .vision-step-5 {
-  @is-low-vision : @counter < 3;
-  @is-high-vision : @counter > 9;
+  @is-low-vision : 5 < 3;
+  @is-high-vision : 5 > 9;
 }
 .vision-step-5 #grid-main {
   opacity: 0.95;
@@ -277,8 +277,8 @@ canvas {
   opacity: 1;
 }
 .vision-step-6 {
-  @is-low-vision : @counter < 3;
-  @is-high-vision : @counter > 9;
+  @is-low-vision : 6 < 3;
+  @is-high-vision : 6 > 9;
 }
 .vision-step-6 #grid-main {
   opacity: 1;
@@ -308,8 +308,8 @@ canvas {
   opacity: 1;
 }
 .vision-step-7 {
-  @is-low-vision : @counter < 3;
-  @is-high-vision : @counter > 9;
+  @is-low-vision : 7 < 3;
+  @is-high-vision : 7 > 9;
 }
 .vision-step-7 #grid-main {
   opacity: 1;
@@ -339,8 +339,8 @@ canvas {
   opacity: 1;
 }
 .vision-step-8 {
-  @is-low-vision : @counter < 3;
-  @is-high-vision : @counter > 9;
+  @is-low-vision : 8 < 3;
+  @is-high-vision : 8 > 9;
 }
 .vision-step-8 #grid-main {
   opacity: 1;
@@ -370,8 +370,8 @@ canvas {
   opacity: 1;
 }
 .vision-step-9 {
-  @is-low-vision : @counter < 3;
-  @is-high-vision : @counter > 9;
+  @is-low-vision : 9 < 3;
+  @is-high-vision : 9 > 9;
 }
 .vision-step-9 #grid-main {
   opacity: 1;
@@ -401,8 +401,8 @@ canvas {
   opacity: 1;
 }
 .vision-step-10 {
-  @is-low-vision : @counter < 3;
-  @is-high-vision : @counter > 9;
+  @is-low-vision : 10 < 3;
+  @is-high-vision : 10 > 9;
 }
 .vision-step-10 #grid-main {
   opacity: 1;
@@ -507,6 +507,9 @@ body.dark .p-meta {
 }
 body.dark .dimmed {
   color: #666;
+}
+body.dark .secondary {
+  color: #bbb;
 }
 body.dark .columns-container {
   display: flex;
@@ -1944,7 +1947,7 @@ body.dark .sub-page-container {
   padding: 10px 20px;
 }
 body.dark .faq-category h3 {
-  text-transform: none;
+  text-transform: uppercase;
   font-size: inherit;
 }
 body.dark #log {
@@ -2467,8 +2470,60 @@ body.dark .reqs-checkmark {
   height: 1em;
   width: 1em;
 }
+body.dark #manage-save-popup {
+  width: 42em;
+  max-width: 90% !important;
+}
+body.dark #manage-save-popup textarea {
+  font-size: 0.85rem;
+  color: #bbb;
+}
+body.dark #save-list-container {
+  padding: 3px;
+  display: flex;
+  gap: 5px;
+  border: 1px solid #555;
+}
+body.dark #save-list {
+  flex: 0.7;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+body.dark #save-list-options {
+  flex: 0.3;
+  border: 1px solid #3a3a3a;
+}
+body.dark #save-list-options.selected {
+  background-color: #2f322f;
+}
+body.dark #save-list-options {
+  padding: 3px;
+}
 body.dark #manage-save-textarea {
   font-size: 0.85rem;
+}
+body.dark .li-save-slot {
+  width: 100%;
+  min-height: 1em;
+  text-align: left;
+  border: 1px solid #3a3a3a;
+}
+body.dark .save-slot-header {
+  padding: 3px 3px 0 3px;
+}
+body.dark .save-slot-content {
+  padding: 0px 3px 3px 3px;
+}
+body.dark .li-save-slot.selected {
+  background-color: #2f322f;
+}
+body.dark .li-save-slot div {
+  margin: 0 3px;
+}
+body.dark .save-slot-date {
+  float: right;
+  color: #bbb;
 }
 body.dark .loading-content,
 body.dark .thinking-content {
@@ -2781,6 +2836,9 @@ body.sunlit .p-meta {
 }
 body.sunlit .dimmed {
   color: #999;
+}
+body.sunlit .secondary {
+  color: #777;
 }
 body.sunlit .columns-container {
   display: flex;
@@ -4218,7 +4276,7 @@ body.sunlit .sub-page-container {
   padding: 10px 20px;
 }
 body.sunlit .faq-category h3 {
-  text-transform: none;
+  text-transform: uppercase;
   font-size: inherit;
 }
 body.sunlit #log {
@@ -4741,8 +4799,60 @@ body.sunlit .reqs-checkmark {
   height: 1em;
   width: 1em;
 }
+body.sunlit #manage-save-popup {
+  width: 42em;
+  max-width: 90% !important;
+}
+body.sunlit #manage-save-popup textarea {
+  font-size: 0.85rem;
+  color: #777;
+}
+body.sunlit #save-list-container {
+  padding: 3px;
+  display: flex;
+  gap: 5px;
+  border: 1px solid #999;
+}
+body.sunlit #save-list {
+  flex: 0.7;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+body.sunlit #save-list-options {
+  flex: 0.3;
+  border: 1px solid #aaa;
+}
+body.sunlit #save-list-options.selected {
+  background-color: #e6e6e6;
+}
+body.sunlit #save-list-options {
+  padding: 3px;
+}
 body.sunlit #manage-save-textarea {
   font-size: 0.85rem;
+}
+body.sunlit .li-save-slot {
+  width: 100%;
+  min-height: 1em;
+  text-align: left;
+  border: 1px solid #aaa;
+}
+body.sunlit .save-slot-header {
+  padding: 3px 3px 0 3px;
+}
+body.sunlit .save-slot-content {
+  padding: 0px 3px 3px 3px;
+}
+body.sunlit .li-save-slot.selected {
+  background-color: #e6e6e6;
+}
+body.sunlit .li-save-slot div {
+  margin: 0 3px;
+}
+body.sunlit .save-slot-date {
+  float: right;
+  color: #777;
 }
 body.sunlit .loading-content,
 body.sunlit .thinking-content {

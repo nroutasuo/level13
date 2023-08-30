@@ -481,9 +481,6 @@ tr.camp-overview-camp {
 	border-width: 1px;
 }
 
-tr.camp-overview-special-row {
-}
-
 .camp-overview-lvl14 {
 	text-align: center;
 	height: 1em;
@@ -640,8 +637,73 @@ div.grid-content {
     width: 1em;
 }
 
-// MISC
+// SAVE MANAGEMENT POPUP
+
+#manage-save-popup {
+	width: 42em;
+	max-width: 90% !important;
+}
+
+#manage-save-popup textarea {
+	font-size: @font-size-small;
+	color: @color-text-secondary;
+}
+
+#save-list-container {
+	padding: 3px;
+    display: flex;
+	gap: 5px;
+	border: 1px solid @color-border-strong;
+}
+
+#save-list {
+	flex: 0.7;
+	display: flex;	
+    flex-direction: column;
+    gap: 3px;
+}
+
+#save-list-options {
+	flex: 0.3;
+	border: 1px solid @color-border-box-1;
+}
+
+#save-list-options.selected {	
+	background-color: @color-bg-element-1;
+}
+
+#save-list-options {
+	padding: 3px;
+}
 
 #manage-save-textarea {
 	font-size: @font-size-small;
+}
+
+.li-save-slot {
+	width: 100%;
+	min-height: 1em;
+	text-align: left;
+	border: 1px solid @color-border-box-1;
+}
+
+.save-slot-header {
+	padding: 3px 3px 0 3px;
+}
+
+.save-slot-content {
+	padding: 0px 3px 3px 3px;
+}
+
+.li-save-slot.selected {
+	background-color: @color-bg-element-1;
+}
+
+.li-save-slot div {
+	margin: 0 3px;
+}
+
+.save-slot-date {
+	float: right;
+    color: @color-text-secondary;
 }

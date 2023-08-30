@@ -10,10 +10,10 @@ define([
 
 		engine: null,
 
-		saveNodes:null,
+		saveNodes: null,
 
-		lastSaveTimeStamp: 0,
-		saveFrequency: 1000 * 60 * 2,
+		lastDefaultSaveTimestamp: 0,
+		autoSaveFrequency: 1000 * 60 * 2,
 
 		error: null,
 
@@ -22,7 +22,7 @@ define([
 		addToEngine: function (engine) {
 			this.engine = engine;
 			this.saveNodes = engine.getNodeList(SaveNode);
-			this.lastSaveTimeStamp = new Date().getTime();
+			this.lastDefaultSaveTimestamp = new Date().getTime();
 			GlobalSignals.add(this, GlobalSignals.saveGameSignal, this.save);
 			GlobalSignals.add(this, GlobalSignals.restartGameSignal, this.onRestart);
 		},
@@ -38,8 +38,8 @@ define([
 			if (GameGlobals.gameState.isLaunched) return;
 			if (!GameConstants.isAutosaveEnabled) return;
 			var timeStamp = new Date().getTime();
-			if (timeStamp - this.lastSaveTimeStamp > this.saveFrequency) {
-				this.save();
+			if (timeStamp - this.lastDefaultSaveTimestamp > this.autoSaveFrequency) {
+				this.save(GameConstants.SAVE_SLOT_DEFAULT, false);
 			}
 		},
 
@@ -51,22 +51,68 @@ define([
 			this.paused = false;
 		},
 
-		save: function (isPlayerInitiated) {
-			if (this.paused) return;
-			if (!isPlayerInitiated && !GameConstants.isAutosaveEnabled) return;
-			if (GameGlobals.gameState.isLaunchStarted || GameGlobals.gameState.isLaunched || GameGlobals.gameState.isLaunchCompleted || GameGlobals.gameState.isFinished) return;
-			this.error = null;
-			if (typeof(Storage) !== "undefined") {
-				try {
-					localStorage.save = this.getCompressedSaveJSON();
-					log.i("Saved");
-				} catch (ex) {
-					this.error = "Failed to save.";
-				}
-				this.lastSaveTimeStamp = new Date().getTime();
-			} else {
-				this.error = "Can't save (incompatible browser).";
+		save: function (slotID, isPlayerInitiated) {
+			slotID = slotID || GameConstants.SAVE_SLOT_DEFAULT;
+			isPlayerInitiated = isPlayerInitiated || false;
+			let isDefaultSlot = slotID == GameConstants.SAVE_SLOT_DEFAULT;
+
+			if (!isPlayerInitiated) {
+				if (isDefaultSlot && this.paused) return;
+				if (isDefaultSlot && !GameConstants.isAutosaveEnabled) return;
+				if (GameGlobals.gameState.isLaunchStarted || GameGlobals.gameState.isLaunched || GameGlobals.gameState.isLaunchCompleted || GameGlobals.gameState.isFinished) return;
 			}
+
+			let data = this.getCompressedSaveJSON();
+			let success = this.saveDataToSlot(slotID, data);
+			
+			if (isDefaultSlot) {
+				this.error = success ? null : "Failed to save";
+				this.lastDefaultSaveTimestamp = new Date().getTime();
+			}
+		},
+
+		saveDataToDefaultSlot: function (data) {
+			return this.saveDataToSlot(GameConstants.SAVE_SLOT_DEFAULT, data);
+		},
+
+		saveDataToSlot: function (slotID, data) {
+			if (!data) return;
+
+			if (typeof(Storage) === "undefined") {
+				log.w("Could not save to save slot [" + slotID + "]: Storage not found");
+				return false;
+			}
+			
+			try {
+				let storageKeys = this.getStorageKeysForSaveSlotID(slotID);
+				for (let i = 0; i < storageKeys.length; i++) {
+					localStorage.setItem(storageKeys[i], data);
+				}
+				log.i("Saved to slot [" + slotID + "]");
+				return true;
+			} catch (ex) {
+				log.w("Could not save to save slot [" + slotID + "]: Exception: " + ex);
+				return false;
+			}
+		},
+
+		getDataFromSlot: function (slotID) {
+			let storageKeys = this.getStorageKeysForSaveSlotID(slotID);
+			for (let i = 0; i < storageKeys.length; i++) {
+				let data = localStorage.getItem(storageKeys[i]);
+				if (data) return data;
+			}
+			return null;
+		},
+
+		clearSlot: function (slotID) {
+			if(typeof(Storage) === "undefined") return;
+
+			let storageKeys = this.getStorageKeysForSaveSlotID(slotID);
+			for (let i = 0; i < storageKeys.length; i++) {
+				localStorage.removeItem(storageKeys[i]);
+			}
+			log.i("Cleared save slot [" + slotID + "]");
 		},
 
 		getSaveJSON: function () {
@@ -142,12 +188,18 @@ define([
 			return compressed;
 		},
 
+		getStorageKeysForSaveSlotID: function (slotID) {
+			let result = [ "save-" + slotID ];
+			if (slotID == GameConstants.SAVE_SLOT_DEFAULT) {
+				// backwards compatibility
+				result.push("save");
+			}
+			return result;
+		},
+
 		onRestart: function (resetSave) {
 			if (!resetSave) return;
-			if(typeof(Storage) !== "undefined") {
-				localStorage.removeItem("save");
-				log.i("Removed save");
-			}
+			this.clearSlot(GameConstants.SAVE_SLOT_DEFAULT);
 		}
 
 	});

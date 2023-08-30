@@ -176,7 +176,7 @@ define([
 		},
 
 		save: function () {
-			GlobalSignals.saveGameSignal.dispatch();
+			GlobalSignals.saveGameSignal.dispatch(GameConstants.SAVE_SLOT_DEFAULT, false);
 		},
 
 	});
