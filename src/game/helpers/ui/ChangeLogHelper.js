@@ -81,7 +81,7 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants) {
 		},
 		
 		getVersion: function (version) {
-			for (let i = 0; i < this.versions.legnth; i++) {
+			for (let i = 0; i < this.versions.length; i++) {
 				if (this.versions[i].version == version) {
 					return this.versions[i];
 				}

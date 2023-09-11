@@ -486,7 +486,7 @@ define(['ash',
 				let scavengedPercentAfter = sectorStatus.getScavengedPercent();
 				let warningThresholdHighScavengedPercent = 75;
 				let warningThresholdNoScavengeResources = ExplorationConstants.THRESHOLD_SCAVENGED_PERCENT_REVEAL_NO_RESOURCES;
-				if (sectorResources.getTotal() <= 0 && sectorItems.legnth <= 0 && scavengedPercentAfter >= warningThresholdNoScavengeResources) {
+				if (sectorResources.getTotal() <= 0 && sectorItems.length <= 0 && scavengedPercentAfter >= warningThresholdNoScavengeResources) {
 					sys.addLogMessage(LogConstants.getUniqueID(), logMsg + " There doesn't seem to be anything to scavenge here.");
 				} else if (scavengedPercentBefore < warningThresholdHighScavengedPercent && scavengedPercentAfter >= warningThresholdHighScavengedPercent) {
 					sys.addLogMessage(LogConstants.getUniqueID(), logMsg + " There isn't much left to scavenge here.");
