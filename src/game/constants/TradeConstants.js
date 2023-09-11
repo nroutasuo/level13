@@ -75,7 +75,7 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 				amountTraded = outgoingCaravan.capacity;
 			}
 			if (isResource(outgoingCaravan.buyGood)) {
-				result.gainedResources.setResource(outgoingCaravan.buyGood, amountTraded);
+				result.gainedResources.setResource(outgoingCaravan.buyGood, amountTraded, "outgoing-caravan");
 			} else if (outgoingCaravan.buyGood === TradeConstants.GOOD_TYPE_NAME_CURRENCY) {
 				result.gainedCurrency = amountTraded;
 			} else if (outgoingCaravan.buyGood === TradeConstants.GOOD_TYPE_NAME_INGREDIENTS) {

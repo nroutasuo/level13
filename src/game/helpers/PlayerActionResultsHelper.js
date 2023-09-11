@@ -255,8 +255,8 @@ define([
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
 
 			var availableResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable.clone();
-			availableResources.addAll(localeVO.getResourceBonus(GameGlobals.gameState.getUnlockedResources(), campOrdinal));
-			availableResources.limitAll(WorldConstants.resourcePrevalence.RARE, WorldConstants.resourcePrevalence.ABUNDANT);
+			availableResources.addAll(localeVO.getResourceBonus(GameGlobals.gameState.getUnlockedResources(), campOrdinal), "scout-rewards");
+			availableResources.limitAll(WorldConstants.resourcePrevalence.RARE, WorldConstants.resourcePrevalence.ABUNDANT, "scout-rewards");
 			var efficiency = this.getCurrentScavengeEfficiency();
 			var localeDifficulty = (localeVO.requirements.vision[0] + localeVO.costs.stamina / 10) / 100;
 
@@ -303,7 +303,7 @@ define([
 			var rewards = new ResultVO("use_spring");
 			var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
 			var water = Math.floor(Math.min(bagComponent.totalCapacity - bagComponent.usedCapacity, 30));
-			rewards.gainedResources = new ResourcesVO();
+			rewards.gainedResources = new ResourcesVO(storageTypes.RESULT);
 			rewards.gainedResources.water = water;
 			return rewards;
 		},
@@ -426,7 +426,7 @@ define([
 				rewards.selectedItems = rewards.gainedItems;
 				rewards.selectedResources = rewards.gainedResources;
 				rewards.discardedItems = [];
-				rewards.discardedResources = new ResourcesVO();
+				rewards.discardedResources = new ResourcesVO(storageTypes.RESULT);
 			}
 
 			currentStorage.addResources(rewards.selectedResources);
@@ -918,7 +918,7 @@ define([
 			amountFactor = amountFactor || 1;
 			efficiency = efficiency || 1;
 			
-			var results = new ResourcesVO();
+			var results = new ResourcesVO(storageTypes.RESULT);
 			
 			if (probabilityFactor == 0) return results;
 			if (Math.random() > probabilityFactor) return results;
@@ -937,7 +937,7 @@ define([
 				let baseAmount = this.getBaseResourceFindAmount(name, availableAmount);
 				let resultAmount = this.getFinalResourceFindAmount(name, baseAmount, efficiency, Math.random());
 				
-				results.setResource(name, resultAmount);
+				results.setResource(name, resultAmount, "reward");
 			}
 			
 			// consolation prize: if found nothing (useful) at this point, add 1 resource every few tries
@@ -949,7 +949,7 @@ define([
 						let resourceName = highestResources[Math.floor(Math.random() * highestResources.length)];
 						let resourceAmount = availableResources.getResource(resourceName);
 						if (resourceAmount > WorldConstants.resourcePrevalence.RARE) {
-							results.setResource(resourceName, 1);
+							results.setResource(resourceName, 1, "reward-consolation");
 						}
 					}
 				}
@@ -1292,7 +1292,7 @@ define([
 		},
 		
 		addFixedRewardsResources: function (rewardsVO, fixedRewards, efficiency, availableResources) {
-			let results = new ResourcesVO();
+			let results = new ResourcesVO(storageTypes.RESULT);
 			for (let key in fixedRewards.resources) {
 				let name = resourceNames[key];
 				let availableAmount = availableResources.getResource(name);
@@ -1302,7 +1302,7 @@ define([
 				let baseAmount = this.getBaseResourceFindAmount(name, availableAmount);
 				let resultAmount = this.getFinalResourceFindAmount(name, baseAmount, efficiency, randomVal);
 				
-				results.setResource(name, resultAmount);
+				results.setResource(name, resultAmount, "reward-fixed");
 			}
 			
 			rewardsVO.gainedResources = results;
@@ -1363,7 +1363,7 @@ define([
 			let bonusResourceProb = generalBonus - 1;
 			let bonusResources = this.getRewardResources(bonusResourceProb, 1, efficiency, sectorResources);
 			rewards.gainedResourcesFromFollowers = bonusResources;
-			rewards.gainedResources.addAll(bonusResources);
+			rewards.gainedResources.addAll(bonusResources, "reward-follower-bonus");
 			
 			if (bonusResources.getTotal() > 0) {
 				generalBonus = 0;
@@ -1371,12 +1371,12 @@ define([
 			
 			// supplies
 			let bonusSuppliesProb = suppliesBonus - 1;
-			let sectorSupplies = new ResourcesVO();
-			sectorSupplies.setResource(resourceNames.food, sectorResources.getResource(resourceNames.food));
-			sectorSupplies.setResource(resourceNames.water, sectorResources.getResource(resourceNames.water));
+			let sectorSupplies = new ResourcesVO(storageTypes.RESULT);
+			sectorSupplies.setResource(resourceNames.food, sectorResources.getResource(resourceNames.food), "reward-follower-bonus");
+			sectorSupplies.setResource(resourceNames.water, sectorResources.getResource(resourceNames.water), "reward-follower-bonus");
 			let bonusSupplies = this.getRewardResources(bonusSuppliesProb, 1, efficiency, sectorSupplies);
-			rewards.gainedResourcesFromFollowers.addAll(bonusSupplies);
-			rewards.gainedResources.addAll(bonusSupplies);
+			rewards.gainedResourcesFromFollowers.addAll(bonusSupplies, "reward-follower-bonus");
+			rewards.gainedResources.addAll(bonusSupplies, "reward-follower-bonus");
 			
 			// ingredients
 			if (rewards.gainedItems.length == 0) {
@@ -1791,9 +1791,9 @@ define([
 		},
 
 		getAvailableResourcesForEnemy: function (enemyVO) {
-			let result = new ResourcesVO();
+			let result = new ResourcesVO(storageTypes.DEFINITION);
 			for (let i = 0; i < enemyVO.droppedResources.length; i++) {
-				result.setResource(enemyVO.droppedResources[i], WorldConstants.resourcePrevalence.COMMON);
+				result.setResource(enemyVO.droppedResources[i], WorldConstants.resourcePrevalence.COMMON, "definition");
 			}
 			return result;
 		},

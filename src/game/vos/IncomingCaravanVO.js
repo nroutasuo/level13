@@ -25,7 +25,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		constructor: function (name, sellItems, sellResources, buyItemTypes, buyResources, usesCurrency, currency) {
 			this.name = name;
 			this.sellItems = sellItems ? sellItems : [];
-			this.sellResources = sellResources ? sellResources : new ResourcesVO();
+			this.sellResources = sellResources ? sellResources : new ResourcesVO(storageTypes.DEFINITION);
 			this.buyItemTypes = buyItemTypes ? buyItemTypes : [];
 			this.buyResources = buyResources ? buyResources : [];
 			this.usesCurrency = usesCurrency ? usesCurrency : false;
@@ -38,10 +38,10 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 
 		clearSelection: function () {
 			this.traderSelectedItems = {};
-			this.traderSelectedResources = new ResourcesVO();
+			this.traderSelectedResources = new ResourcesVO(storageTypes.RESULT);
 			this.traderSelectedCurrency = 0;
 			this.campSelectedItems = {};
-			this.campSelectedResources = new ResourcesVO();
+			this.campSelectedResources = new ResourcesVO(storageTypes.RESULT);
 			this.campSelectedCurrency = 0;
 		},
 		

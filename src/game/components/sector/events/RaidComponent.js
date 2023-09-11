@@ -6,7 +6,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		victory: false,
 		
 		constructor: function () {
-			this.resourcesLost = new ResourcesVO();
+			this.resourcesLost = new ResourcesVO(storageTypes.RESULT);
 			this.defendersLost = 0;
 			this.damagedBuilding = null;
 		},

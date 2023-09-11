@@ -281,7 +281,7 @@ define([
 		getRandomIncomingCaravanWithType: function (traderType, campOrdinal, levelOrdinal, traderLevel, unlockedResources, neededIngredient) {
 			let name = "";
 			let sellItems = [];
-			let sellResources = new ResourcesVO();
+			let sellResources = new ResourcesVO(storageTypes.DEFINITION);
 			let buyItemTypes = [];
 			let buyResources = [];
 			let usesCurrency = false;
@@ -437,11 +437,11 @@ define([
 					
 				if (mainResource == resourceNames.herbs) {
 					name = "herbs trader";
-					sellResources.addResource(resourceNames.herbs, minResAmount + Math.random() * randResAmount);
+					sellResources.addResource(resourceNames.herbs, minResAmount + Math.random() * randResAmount, "get-trader");
 					buyResources.push(resourceNames.herbs);
 					if (unlockedResources.medicine && Math.random() < 0.75) {
 						name = "medicine trader";
-						sellResources.addResource(resourceNames.medicine, minResAmount + Math.random() * randResAmount);
+						sellResources.addResource(resourceNames.medicine, minResAmount + Math.random() * randResAmount, "get-trader");
 						buyResources.push(resourceNames.medicine);
 					}
 					if (traderLevel > 1 && Math.random() < 0.1 * traderLevel) {
@@ -449,30 +449,30 @@ define([
 					}
 				} else if (mainResource == resourceNames.tools) {
 					name = "tools trader";
-					sellResources.addResource(resourceNames.tools, minResAmount + Math.random() * randResAmount);
+					sellResources.addResource(resourceNames.tools, minResAmount + Math.random() * randResAmount, "get-trader");
 					buyResources.push(resourceNames.tools);
 				} else if (mainResource == resourceNames.fuel) {
 					name = "fuel trader";
-					sellResources.addResource(resourceNames.fuel, minResAmount + Math.random() * randResAmount);
+					sellResources.addResource(resourceNames.fuel, minResAmount + Math.random() * randResAmount, "get-trader");
 					buyResources.push(resourceNames.fuel);
 				} else if (mainResource == resourceNames.rubber) {
 					name = "rubber trader";
-					sellResources.addResource(resourceNames.rubber, minResAmount + Math.random() * randResAmount);
+					sellResources.addResource(resourceNames.rubber, minResAmount + Math.random() * randResAmount, "get-trader");
 					buyResources.push(resourceNames.rubber);
 				} else if (mainResource == resourceNames.water) {
 					name = "supplies trader";
-					sellResources.addResource(resourceNames.water, minResAmount + Math.random() * randResAmount);
-					sellResources.addResource(resourceNames.food, minResAmount + Math.random() * randResAmount);
+					sellResources.addResource(resourceNames.water, minResAmount + Math.random() * randResAmount, "get-trader");
+					sellResources.addResource(resourceNames.food, minResAmount + Math.random() * randResAmount, "get-trader");
 					buyResources.push(resourceNames.water);
 					buyResources.push(resourceNames.food);
 				} else {
 					name = "materials trader";
-					sellResources.addResource(resourceNames.metal, minResAmount + Math.random() * randResAmount);
+					sellResources.addResource(resourceNames.metal, minResAmount + Math.random() * randResAmount, "get-trader");
 					buyResources.push(resourceNames.metal);
-					sellResources.addResource(resourceNames.rope, minResAmount + Math.random() * randResAmount);
+					sellResources.addResource(resourceNames.rope, minResAmount + Math.random() * randResAmount, "get-trader");
 					buyResources.push(resourceNames.rope);
 					if (unlockedResources.concrete) {
-						sellResources.addResource(resourceNames.concrete, minResAmount + Math.random() * randResAmount);
+						sellResources.addResource(resourceNames.concrete, minResAmount + Math.random() * randResAmount, "get-trader");
 						buyResources.push(resourceNames.concrete);
 					}
 				}
@@ -483,7 +483,7 @@ define([
 				var partner = TradeConstants.getRandomTradePartner(campOrdinal);
 				name = "trader from " + partner.name;
 				for (let i = 0; i < partner.sellsResources.length; i++) {
-					sellResources.addResource(partner.sellsResources[i], minResAmount + Math.random() * randResAmount);
+					sellResources.addResource(partner.sellsResources[i], minResAmount + Math.random() * randResAmount, "get-trader");
 				}
 				for (let i = 0; i < partner.buysResources.length; i++) {
 					buyResources.push(partner.buysResources[i]);

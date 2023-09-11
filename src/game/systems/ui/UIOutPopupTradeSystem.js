@@ -193,16 +193,16 @@ define([
 					caravan.campSelectedCurrency = MathUtils.clamp(caravan.campSelectedCurrency, 0, currencyComponent.currency);
 				} else if (resourceName) {
 					if (isTraderInventory) {
-						caravan.traderSelectedResources.addResource(resourceName, amount);
+						caravan.traderSelectedResources.addResource(resourceName, amount, "trade-popup");
 					} else if (isTraderOffer) {
-						caravan.traderSelectedResources.addResource(resourceName, -amount);
+						caravan.traderSelectedResources.addResource(resourceName, -amount, "trade-popup");
 					} else if (isCampInventory) {
-						caravan.campSelectedResources.addResource(resourceName, amount);
+						caravan.campSelectedResources.addResource(resourceName, amount, "trade-popup");
 					} else if (isCampOffer) {
-						caravan.campSelectedResources.addResource(resourceName, -amount);
+						caravan.campSelectedResources.addResource(resourceName, -amount, "trade-popup");
 					}
-					caravan.traderSelectedResources.limit(resourceName, 0, caravan.sellResources.getResource(resourceName));
-					caravan.campSelectedResources.limit(resourceName, 0, campStorage.resources.getResource(resourceName));
+					caravan.traderSelectedResources.limit(resourceName, 0, caravan.sellResources.getResource(resourceName), false, "trade-popup");
+					caravan.campSelectedResources.limit(resourceName, 0, campStorage.resources.getResource(resourceName), false, "trade-popup");
 				} else if (itemID) {
 					if (!caravan.traderSelectedItems[itemID])
 						caravan.traderSelectedItems[itemID] = 0;

@@ -106,9 +106,9 @@ define([
 
 				if (resourceName) {
 					if (isInKeptList) {
-						rewards.discardedResources.addResource(resourceName, 1);
+						rewards.discardedResources.addResource(resourceName, 1, "add-discarded");
 					} else {
-						rewards.selectedResources.addResource(resourceName, 1);
+						rewards.selectedResources.addResource(resourceName, 1, "add-selected");
 					}
 				} else if (itemId) {
 					var isInRewards = findItemById(itemId, rewards.gainedItems, null) !== null;

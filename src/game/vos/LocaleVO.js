@@ -76,45 +76,45 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 		
 		getResourceBonus: function (unlockedResources, campOrdinal) {
 			// TODO make robot rewards work (figure out what to do if camp has space, and make sure to assign to camp and not to global resources)
-			let res = new ResourcesVO();
+			let res = new ResourcesVO(storageTypes.DEFINITION);
 			let abundant = WorldConstants.resourcePrevalence.ABUNDANT;
 			let defaultAmount = WorldConstants.resourcePrevalence.DEFAULT;
 			switch (this.type) {
 			case localeTypes.factory:
-				res.addResource(resourceNames.metal, abundant);
-				if (unlockedResources.concrete) res.addResource(resourceNames.concrete, abundant);
-				//if (unlockedResources.robots) res.addResource(resourceNames.robots, defaultAmount);
-				if (unlockedResources.tools) res.addResource(resourceNames.tools, defaultAmount);
+				res.addResource(resourceNames.metal, abundant, "definition");
+				if (unlockedResources.concrete) res.addResource(resourceNames.concrete, abundant, "definition");
+				//if (unlockedResources.robots) res.addResource(resourceNames.robots, defaultAmount, "definition");
+				if (unlockedResources.tools) res.addResource(resourceNames.tools, defaultAmount, "definition");
 				break;
 			case localeTypes.house:
-				res.addResource(resourceNames.food, abundant);
-				res.addResource(resourceNames.water, abundant);
-				if (campOrdinal > 3) res.addResource(resourceNames.medicine, defaultAmount);
+				res.addResource(resourceNames.food, abundant, "definition");
+				res.addResource(resourceNames.water, abundant, "definition");
+				if (campOrdinal > 3) res.addResource(resourceNames.medicine, defaultAmount, "definition");
 				break;
 			case localeTypes.lab:
-				res.addResource(resourceNames.water, defaultAmount);
-				if (campOrdinal > 3) res.addResource(resourceNames.medicine, abundant);
+				res.addResource(resourceNames.water, defaultAmount, "definition");
+				if (campOrdinal > 3) res.addResource(resourceNames.medicine, abundant, "definition");
 				break;
 			case localeTypes.grove:
-				res.addResource(resourceNames.water, defaultAmount);
-				res.addResource(resourceNames.herbs, abundant);
+				res.addResource(resourceNames.water, defaultAmount, "definition");
+				res.addResource(resourceNames.herbs, abundant, "definition");
 				break;
 			case localeTypes.market:
-				res.addResource(resourceNames.food, abundant);
-				res.addResource(resourceNames.water, defaultAmount);
-				if (unlockedResources.tools) res.addResource(resourceNames.tools, defaultAmount);
+				res.addResource(resourceNames.food, abundant, "definition");
+				res.addResource(resourceNames.water, defaultAmount, "definition");
+				if (unlockedResources.tools) res.addResource(resourceNames.tools, defaultAmount, "definition");
 				break;
 			case localeTypes.maintenance:
 			case localeTypes.transport:
-				res.addResource(resourceNames.water, defaultAmount);
-				if (unlockedResources.tools) res.addResource(resourceNames.tools, defaultAmount);
-				//if (unlockedResources.robots) res.addResource(resourceNames.robots, defaultAmount);
+				res.addResource(resourceNames.water, defaultAmount, "definition");
+				if (unlockedResources.tools) res.addResource(resourceNames.tools, defaultAmount, "definition");
+				//if (unlockedResources.robots) res.addResource(resourceNames.robots, defaultAmount, "definition");
 				break;
 			case localeTypes.sewer:
 			case localeTypes.warehouse:
-				res.addResource(resourceNames.metal, abundant);
-				res.addResource(resourceNames.food, abundant);
-				if (unlockedResources.concrete) res.addResource(resourceNames.concrete, abundant);
+				res.addResource(resourceNames.metal, abundant, "definition");
+				res.addResource(resourceNames.food, abundant, "definition");
+				if (unlockedResources.concrete) res.addResource(resourceNames.concrete, abundant, "definition");
 				break;
 			}
 			

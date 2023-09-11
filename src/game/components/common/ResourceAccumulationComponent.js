@@ -9,7 +9,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		
 		constructor: function (name) {
 			this.name = name;
-			this.resourceChange = new ResourcesVO();
+			this.resourceChange = new ResourcesVO(storageTypes.ACCUMULATION);
 		},
 		
 		getSources: function(resourceName) {
@@ -22,7 +22,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			source = source || "Unknown";
 			sourceCount = sourceCount || 1;
 			
-			this.resourceChange.addResource(resourceName, amount);
+			this.resourceChange.addResource(resourceName, amount, "add-resource-change");
 			
 			if (!this.sources[resourceName]) {
 				this.sources[resourceName] = [];
@@ -49,8 +49,8 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			return this.resourceChange.getResource(resourceName);
 		},
 		
-		reset: function() {
-			this.resourceChange.reset();
+		reset: function(reason) {
+			this.resourceChange.reset(reason);
 			this.sources = {};
 		},
 	});

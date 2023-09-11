@@ -30,14 +30,14 @@ define([
 		},
 
 		update: function (time) {
-			this.playerNodes.head.resourcesAcc.reset();
+			this.playerNodes.head.resourcesAcc.reset("global-resources-acc-reset");
 
 			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
-				campNode.entity.get(ResourceAccumulationComponent).reset();
+				campNode.entity.get(ResourceAccumulationComponent).reset("global-resources-acc-reset");
 			}
 
 			this.tribeNodes.head.resources.storageCapacity = 0;
-			this.tribeNodes.head.resourceAccumulation.reset();
+			this.tribeNodes.head.resourceAccumulation.reset("global-resources-acc-reset");
 		},
 		
 		

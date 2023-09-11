@@ -1129,13 +1129,13 @@ define(['ash',
 				var name = resourceNames[key];
 				var traderSelectedAmount = caravan.traderSelectedResources.getResource(name);
 				if (traderSelectedAmount > 0) {
-					caravan.sellResources.addResource(name, -traderSelectedAmount);
-					campStorage.resources.addResource(name, traderSelectedAmount);
+					caravan.sellResources.addResource(name, -traderSelectedAmount, "trade");
+					campStorage.resources.addResource(name, traderSelectedAmount, "trade");
 				}
 				var campSelectedAmount = caravan.campSelectedResources.getResource(name);
 				if (campSelectedAmount > 0) {
-					caravan.sellResources.addResource(name, campSelectedAmount);
-					campStorage.resources.addResource(name, -campSelectedAmount);
+					caravan.sellResources.addResource(name, campSelectedAmount, "trade");
+					campStorage.resources.addResource(name, -campSelectedAmount, "trade");
 				}
 			}
 
@@ -1666,7 +1666,8 @@ define(['ash',
 				let campStorage = GameGlobals.resourcesHelper.getCurrentStorage();
 				for (let key in buildingCosts) {
 					let resource = key.split("_")[1]
-					campStorage.resources.addResource(resource, buildingCosts[key]);
+					let value = Math.max(buildingCosts[key], 0);
+					campStorage.resources.addResource(resource, value, "dismantle");
 				}
 				
 				GlobalSignals.improvementBuiltSignal.dispatch();
@@ -1922,7 +1923,7 @@ define(['ash',
 				case "cache_metal":
 					let baseValue = itemConfig.configData.metalValue || 10;
 					let value = baseValue + Math.round(Math.random() * 10);
-					currentStorage.resources.addResource(resourceNames.metal, value);
+					currentStorage.resources.addResource(resourceNames.metal, value, "cache_metal");
 					this.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, "Took apart " + Text.addArticle(itemShortName) + ". Gained " + value + " metal.");
 					break;
 					
@@ -1930,7 +1931,7 @@ define(['ash',
 				case "cache_water":
 					let resourceName = baseItemId == "cache_food" ? resourceNames.food : resourceNames.water;
 					let val = itemConfig.configData.waterValue || itemConfig.configData.foodValue || 10;
-					currentStorage.resources.addResource(resourceName, val);
+					currentStorage.resources.addResource(resourceName, val, "cache_supplies");
 					this.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, "Used " + Text.addArticle(item.name) + ". Gained " + val + " " + resourceName + ".");
 					break;
 					
@@ -2163,8 +2164,8 @@ define(['ash',
 				var improvementAmount = Math.floor(resourcesVO.getResource(name))
 				if (improvementAmount >= 1) {
 					var toCollect = Math.min(improvementAmount, maxToCollect - totalCollected);
-					currentStorage.resources.addResource(name, toCollect);
-					resourcesVO.addResource(name, -toCollect);
+					currentStorage.resources.addResource(name, toCollect, "collect");
+					resourcesVO.addResource(name, -toCollect, "collect");
 					totalCollected += toCollect;
 				}
 			}
@@ -2180,6 +2181,10 @@ define(['ash',
 		buildImprovement: function (actionName, improvementName, otherSector) {
 			let sector = otherSector ? otherSector : this.playerLocationNodes.head.entity;
 			let improvementsComponent = sector.get(SectorImprovementsComponent);
+			if (!improvementsComponent) {
+				log.w("trying to build an improvement but there is no SectorImprovementsComponent " + actionName, this);
+				return;
+			}
 			improvementsComponent.add(improvementName);
 			GlobalSignals.improvementBuiltSignal.dispatch();
 			this.save();

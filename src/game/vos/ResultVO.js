@@ -42,7 +42,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		constructor: function (action) {
 			this.action = action;
 			
-			this.gainedResources = new ResourcesVO();
+			this.gainedResources = new ResourcesVO(storageTypes.RESULT);
 			this.gainedCurrency = 0;
 			this.gainedItems = [];
 			this.gainedFollowers = [];
@@ -54,7 +54,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			this.gainedReputation = 0;
 			this.gainedPopulation = 0;
 			
-			this.lostResources = new ResourcesVO();
+			this.lostResources = new ResourcesVO(storageTypes.RESULT);
 			this.lostCurrency = 0;
 			this.lostItems = [];
 			this.brokenItems = [];
@@ -63,11 +63,11 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			this.gainedInjuries = [];
 			
 			this.selectedItems = [];
-			this.selectedResources = new ResourcesVO();
+			this.selectedResources = new ResourcesVO(storageTypes.RESULT);
 			this.discardedItems = [];
-			this.discardedResources = new ResourcesVO();
+			this.discardedResources = new ResourcesVO(storageTypes.RESULT);
 			
-			this.gainedResourcesFromFollowers = new ResourcesVO();
+			this.gainedResourcesFromFollowers = new ResourcesVO(storageTypes.RESULT);
 		},
 		
 		hasSelectable: function () {

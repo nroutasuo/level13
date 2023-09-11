@@ -300,7 +300,7 @@ define(['ash',
 
 					// leave from selected resources
 					if (resultVO.selectedResources.getResource(name) > 0 && totalAmount > min) {
-						resultVO.selectedResources.addResource(name, -1);
+						resultVO.selectedResources.addResource(name, -1, "autoplay");
 						// this.printStep("leave 1 " + name);
 						discarded = true;
 						break;
@@ -308,7 +308,7 @@ define(['ash',
 
 					// discard from already carried resources
 					if (playerResources.resources.getResource(name) > 0 && totalAmount > min) {
-						resultVO.discardedResources.addResource(name, 1);
+						resultVO.discardedResources.addResource(name, 1, "autoplay");
 						// this.printStep("discard 1 " + name);
 						discarded = true;
 						break;

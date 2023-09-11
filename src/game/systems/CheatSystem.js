@@ -91,7 +91,7 @@ define(['ash',
 			this.registerCheat(CheatConstants.CHEAT_NAME_RES, "Set a resource to a given value.", ["resource name", "amount"], function (params) {
 				var name = params[0];
 				var amount = parseInt(params[1]);
-				this.setResource(name, amount);
+				this.setResource(name, amount, "cheat");
 			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_SUPPLIES, "Refill supplies (water and food).", [], function () {
 				this.addSupplies();
@@ -395,19 +395,19 @@ define(['ash',
 		
 		addSupplies: function () {
 			var playerResources = GameGlobals.resourcesHelper.getCurrentStorage().resources;
-			playerResources.setResource("food", 15);
-			playerResources.setResource("water", 15);
+			playerResources.setResource("food", 15, "cheat");
+			playerResources.setResource("water", 15, "cheat");
 		},
 		
 		addMaterials: function () {
 			var playerStorage = GameGlobals.resourcesHelper.getCurrentStorage();
 			var playerResources = playerStorage.resources;
-			playerResources.setResource("metal", playerStorage.storageCapacity);
-			playerResources.setResource("rope", playerStorage.storageCapacity / 2);
+			playerResources.setResource("metal", playerStorage.storageCapacity, "cheat");
+			playerResources.setResource("rope", playerStorage.storageCapacity / 2, "cheat");
 			if (GameGlobals.gameState.unlockedFeatures["resource_concrete"])
-				playerResources.setResource("concrete", playerStorage.storageCapacity / 4);
+				playerResources.setResource("concrete", playerStorage.storageCapacity / 4, "cheat");
 			if (GameGlobals.gameState.unlockedFeatures["resource_tools"])
-				playerResources.setResource("tools", playerStorage.storageCapacity / 4);
+				playerResources.setResource("tools", playerStorage.storageCapacity / 4, "cheat");
 		},
 
 		addPopulation: function (amount) {

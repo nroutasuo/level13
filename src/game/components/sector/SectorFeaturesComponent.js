@@ -48,8 +48,8 @@ define(
 			this.hazards = hazards;
 			this.campable = campable;
 			this.notCampableReason = notCampableReason;
-			this.resourcesScavengable = resourcesScavengable || new ResourcesVO();
-			this.resourcesCollectable = resourcesCollectable || new ResourcesVO();
+			this.resourcesScavengable = resourcesScavengable || new ResourcesVO(storageTypes.DEFINITION);
+			this.resourcesCollectable = resourcesCollectable || new ResourcesVO(storageTypes.DEFINITION);
 			this.itemsScavengeable = itemsScavengeable || [];
 			this.hasSpring = hasSpring;
 			this.hasTradeConnectorSpot = hasTradeConnectorSpot;

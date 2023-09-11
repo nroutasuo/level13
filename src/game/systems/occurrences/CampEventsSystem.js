@@ -480,8 +480,8 @@ define([
 				
 				if (lostAmount >= 5) {
 					let amount = storageAmount - lostAmount;
-					storageResources.setResource(name, amount);
-					raidComponent.resourcesLost.addResource(name, lostAmount);
+					storageResources.setResource(name, amount, "raid-res-lost");
+					raidComponent.resourcesLost.addResource(name, lostAmount, "add-raid-res-lost");
 				}
 			}
 		},

@@ -124,7 +124,7 @@ define([
 				.add(new FollowersComponent())
 				.add(new PerksComponent())
 				.add(new StaminaComponent(1000))
-				.add(new ResourcesComponent(ItemConstants.PLAYER_DEFAULT_STORAGE))
+				.add(new ResourcesComponent("player", ItemConstants.PLAYER_DEFAULT_STORAGE))
 				.add(new CurrencyComponent(0))
 				.add(new ResourceAccumulationComponent(saveKey))
 				.add(new RumoursComponent())
@@ -169,7 +169,7 @@ define([
 		createSector: function (saveKey, level, posX, posY, passageOptions, movementBlockers, sectorFeatures, locales, criticalPaths, enemies, hasRegularEnemies, localeEnemyNum) {
 			var sector = new Ash.Entity()
 				.add(new SectorComponent())
-				.add(new ResourcesComponent(0))
+				.add(new ResourcesComponent("sector", 0))
 				.add(new ResourceAccumulationComponent(saveKey))
 				.add(new EnemiesComponent(hasRegularEnemies, enemies))
 				.add(new SectorImprovementsComponent())
@@ -233,7 +233,7 @@ define([
 		createTribe: function (saveKey) {
 			var tribe = new Ash.Entity()
 				.add(new TribeComponent())
-				.add(new ResourcesComponent(0))
+				.add(new ResourcesComponent("tribe", 0))
 				.add(new CurrencyComponent(0))
 				.add(new UpgradesComponent())
 				.add(new ResourceAccumulationComponent(saveKey))

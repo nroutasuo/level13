@@ -133,7 +133,7 @@ define([
 					currencyComponent.currency -= costAmount;
 					result.currency = costAmount;
 				} else if (costNameParts[0] === "resource") {
-					currentStorage.resources.addResource(costNameParts[1], -costAmount);
+					currentStorage.resources.addResource(costNameParts[1], -costAmount, "deduct-cost-" + action);
 					result.resources = result.resources || {};
 					result.resources[costNameParts[1]] = costAmount;
 				} else if (costNameParts[0] === "item") {
@@ -1485,13 +1485,13 @@ define([
 		
 		getCostResourcesVO: function (action) {
 			var costs = this.getCosts(action);
-			var resourcesVO = new ResourcesVO();
+			var resourcesVO = new ResourcesVO(storageTypes.DEFINITION);
 			if (costs) {
 				for (var key in costs) {
 					var costNameParts = key.split("_");
 					var costAmount = costs[key];
 					if (costNameParts[0] === "resource") {
-						resourcesVO.addResource(costNameParts[1], costAmount);
+						resourcesVO.addResource(costNameParts[1], costAmount, "get-cost");
 					}
 				}
 			}

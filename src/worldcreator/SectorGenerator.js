@@ -1067,7 +1067,7 @@ define([
 			var r2 = WorldCreatorRandom.random(seed + l * x / y * 44 + 6);
 			var r3 = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66);
 			var r4 = WorldCreatorRandom.random(seed / x * ll + x * y * 16);
-			var sca = new ResourcesVO();
+			var sca = new ResourcesVO(storageTypes.DEFINITION);
 			let metalThresholds = { "ABUNDANT": 0.95, "COMMON": 0.8, "DEFAULT": Math.ceil(campOrdinal / 3) * 0.02 };
 			let foodThresholds = { "ABUNDANT": 0.98, "COMMON": 0.95, "DEFAULT": 0.75 };
 			let waterThresholds = { "ABUNDANT": 1, "COMMON": 0.95, "DEFAULT": 0.85 };
@@ -1125,7 +1125,7 @@ define([
 					rw > waterThresholds.DEFAULT ? WorldConstants.resourcePrevalence.DEFAULT : 0;
 			
 			// collectable resources
-			var col = new ResourcesVO();
+			var col = new ResourcesVO(storageTypes.DEFINITION);
 			var sectorCentralness = (10 - (Math.abs(x) / 10) + 10 - (Math.abs(y) / 10)) / 2;
 			var s11 = seed + (x + 1453) * 3 + (y * 4155) / 71 + sectorVO.wear * 35;
 			var s12 = (x % 2 + 1) * 449 + (x + 11) * 521 + (y + 50) * 121 + 2 * Math.abs(x) * Math.abs(y) + sectorCentralness * 541;
@@ -1241,7 +1241,7 @@ define([
 			sectorVO.resourcesScavengable = sca;
 			sectorVO.resourcesCollectable = col;
 			sectorVO.resourcesAll = sca.clone();
-			sectorVO.resourcesAll.addAll(col);
+			sectorVO.resourcesAll.addAll(col, "resources-all");
 		},
 		
 		generateItems: function (seed, worldVO, levelVO) {

@@ -219,9 +219,9 @@ define(['ash',
 			} else {
 				// this.logStep("leave camp");
 				if (GameGlobals.playerActionFunctions.nearestCampNodes.head) {
-					var selectedResVO = new ResourcesVO();
-					selectedResVO.setResource(resourceNames.food, Math.min(10, currentStorage.resources.getResource(resourceNames.food) / 2));
-					selectedResVO.setResource(resourceNames.water, Math.min(10, currentStorage.resources.getResource(resourceNames.water) / 2));
+					var selectedResVO = new ResourcesVO(storageTypes.RESULT);
+					selectedResVO.setResource(resourceNames.food, Math.min(10, currentStorage.resources.getResource(resourceNames.food) / 2), "autoplay");
+					selectedResVO.setResource(resourceNames.water, Math.min(10, currentStorage.resources.getResource(resourceNames.water) / 2), "autoplay");
 					GameGlobals.resourcesHelper.moveResFromCampToBag(selectedResVO);
 
 					var selectedItems = {};

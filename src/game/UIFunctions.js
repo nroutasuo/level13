@@ -214,11 +214,11 @@ define(['ash',
 					gameState.uiStatus.leaveCampItems = {};
 					gameState.uiStatus.leaveCampRes = {};
 
-					var selectedResVO = new ResourcesVO();
+					let selectedResVO = new ResourcesVO(storageTypes.RESULT);
 					$.each($("#embark-resources tr"), function () {
 						var resourceName = $(this).attr("id").split("-")[2];
 						var selectedVal = parseInt($(this).children("td").children(".stepper").children("input").val());
-						selectedResVO.setResource(resourceName, selectedVal);
+						selectedResVO.setResource(resourceName, selectedVal, "leave_camp");
 					});
 
 					var selectedItems = {};

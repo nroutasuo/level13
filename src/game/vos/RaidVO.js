@@ -11,7 +11,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 	
 		constructor: function (raidComponent) {
 			this.wasVictory = raidComponent ? raidComponent.victory : false;
-			this.resourcesLost = raidComponent ? raidComponent.resourcesLost : new ResourcesVO();
+			this.resourcesLost = raidComponent ? raidComponent.resourcesLost : new ResourcesVO(storageTypes.RESULT);
 			this.defendersLost = raidComponent ? raidComponent.defendersLost : 0;
 			this.damagedBuilding = raidComponent ? raidComponent.damagedBuilding : null;
 			this.timestamp = raidComponent ? new Date().getTime() : -1;
