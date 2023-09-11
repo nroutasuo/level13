@@ -305,6 +305,11 @@ define([
 			if (PlayerActionConstants.isProjectAction(baseActionID) && this.isProjectInProgress()) {
 				return { value: 0, reason: "There is already a building project in progress", baseReason: PlayerActionConstants.DISABLED_REASON_IN_PROGRESS };
 			}
+				
+			let statusComponent = sector.get(SectorStatusComponent);
+			if (action == "build_out_camp" && !statusComponent.canBuildCamp) {
+				return { value: 0, reason: "Can't build camp here"};
+			}
 
 			if (costs) {
 				if (costs.stamina > 0) {
@@ -329,7 +334,6 @@ define([
 			
 			if (result.value > 0) {
 				let featuresComponent = sector.get(SectorFeaturesComponent);
-				let statusComponent = sector.get(SectorStatusComponent);
 				let itemsComponent = this.playerStatsNodes.head.items;
 				let isAffectedByHazard = GameGlobals.sectorHelper.isAffectedByHazard(featuresComponent, statusComponent, itemsComponent)
 				if (isAffectedByHazard && !this.isActionIndependentOfHazards(action)) {
@@ -347,10 +351,6 @@ define([
 							return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_BAG_FULL };
 						}
 					}
-				}
-				
-				if (action == "build_out_camp" && !statusComponent.canBuildCamp) {
-					return { value: 0, reason: "Can't build camp here"};
 				}
 			}
 			
