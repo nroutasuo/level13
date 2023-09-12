@@ -118,7 +118,11 @@ define([
 			
 			let save;
 			let worldVO;
-			this.loadGameState()
+			this.loadMetaState()
+				.then(() => {
+					log.i("START " + GameConstants.STARTTimeNow() + "\t meta state loaded");
+				})
+				.then(() => this.loadGameState())
 				.then(s => {
 					save = s;
 					log.i("START " + GameConstants.STARTTimeNow() + "\t game state loaded " + (save == null ? "(empty)" : "") + "");
@@ -182,6 +186,8 @@ define([
 			GameGlobals.uiFunctions.hideGame(true);
 			var sys = this;
 			setTimeout(function () {
+				GameGlobals.metaState.hasCompletedGame = GameGlobals.metaState.hasCompletedGame || GameGlobals.gameState.isLaunchStarted;
+				GameGlobals.metaState.maxCampOrdinalReached = Math.max(GameGlobals.metaState.maxCampOrdinalReached, GameGlobals.gameState.numCamps);
 				sys.engine.removeAllEntities();
 				GameGlobals.levelHelper.reset();
 				GameGlobals.gameState.reset();
@@ -207,7 +213,22 @@ define([
 		setupNewGame: function () {
 			gtag('event', 'game_start_new', { event_category: 'game_data' });
 			GameGlobals.gameState.gameStartTimeStamp = new Date().getTime();
-			this.creator.initPlayer(this.player);
+			this.creator.initPlayer(this.player, GameGlobals.metaState);
+		},
+
+		loadMetaState: function () {
+			return new Promise((resolve, reject) => {
+				let data = this.getMetaStateObject();
+				let hasData = data != null;
+	
+				if (hasData) {
+					let loadedMetaState = data;
+					for (let key in loadedMetaState) {
+						GameGlobals.metaState[key] = loadedMetaState[key];
+					}
+				}
+				resolve();
+			});
 		},
 
 		loadGameState: function () {
@@ -217,7 +238,7 @@ define([
 	
 				if (hasSave) {
 					var loadedGameState = save.gameState;
-					for (key in loadedGameState) {
+					for (let key in loadedGameState) {
 						GameGlobals.gameState[key] = loadedGameState[key];
 					}
 				}
@@ -440,6 +461,20 @@ define([
 				saveSystem.saveDataToSlot(GameConstants.SAVE_SLOT_LOADED, compressed);
 				let json = saveSystem.getSaveJSONfromCompressed(compressed);
 				let object = GameGlobals.saveHelper.parseSaveJSON(json);
+				return object;
+			} catch (exception) {
+				// TODO show no save found to user?
+				log.i("Error loading save: " + exception);
+			}
+			return null;
+		},
+
+		getMetaStateObject: function () {
+			let saveSystem = this.engine.getSystem(SaveSystem);
+			try {
+				let compressed = saveSystem.getMetaStateData();
+				let json = saveSystem.getSaveJSONfromCompressed(compressed);
+				let object = GameGlobals.saveHelper.parseMetaStateJSON(json);
 				return object;
 			} catch (exception) {
 				// TODO show no save found to user?

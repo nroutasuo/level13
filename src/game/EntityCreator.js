@@ -251,17 +251,25 @@ define([
 			return gang;
 		},
 
-		initPlayer: function (entity) {
-			var defaultInjury = PerkConstants.perkDefinitions.injury[0].clone();
+		initPlayer: function (entity, metaState) {
+			let perksComponent = entity.get(PerksComponent);
+			let defaultInjury = PerkConstants.perkDefinitions.injury[0].clone();
 			defaultInjury.startTimer = PerkConstants.TIMER_DISABLED;
 			defaultInjury.removeTimer = PerkConstants.TIMER_DISABLED;
-			var perksComponent = entity.get(PerksComponent);
 			perksComponent.addPerk(defaultInjury);
+
+			if (metaState.hasCompletedGame) {
+				perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.restartBonusCompletion));
+			} else if (metaState.maxCampOrdinalReached > 2) {
+				perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.restartBonusSmall));
+			}
+
 			perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.hunger));
 			perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.thirst));
+
 			entity.add(new ExcursionComponent());
 
-			var logComponent = entity.get(LogMessagesComponent);
+			let logComponent = entity.get(LogMessagesComponent);
 			logComponent.addMessage(LogConstants.MSG_ID_START, "You are alone in a massive dark corridor, far below sunlight.");
 		},
 		

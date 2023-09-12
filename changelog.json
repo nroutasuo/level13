@@ -15,6 +15,10 @@
 					"summary": "Add warning for mobile devices"
 				},
 				{
+					"type": "GD",
+					"summary": "Add a small perk when restarting game"
+				},
+				{
 					"type": "Dev",
 					"summary": "Bugfixes and text improvements"
 				}

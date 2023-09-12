@@ -64,6 +64,8 @@ define([
 
 			let data = this.getCompressedSaveJSON();
 			let success = this.saveDataToSlot(slotID, data);
+
+			this.saveMetaState();
 			
 			if (isDefaultSlot) {
 				this.error = success ? null : "Failed to save";
@@ -94,6 +96,28 @@ define([
 				log.w("Could not save to save slot [" + slotID + "]: Exception: " + ex);
 				return false;
 			}
+		},
+
+		saveMetaState: function () {
+			if (typeof(Storage) === "undefined") {
+				log.w("Could not save meta state: Storage not found");
+				return false;
+			}
+
+			let data = this.getCompressedMetaStateJSON();
+			
+			try {
+				localStorage.setItem("meta-state", data);
+				log.i("Saved meta state");
+				return true;
+			} catch (ex) {
+				log.w("Could not save meta state: Exception: " + ex);
+				return false;
+			}
+		},
+
+		getMetaStateData: function () {
+			return localStorage.getItem("meta-state") || {};
 		},
 
 		getDataFromSlot: function (slotID) {
@@ -176,15 +200,25 @@ define([
 		},
 
 		getSaveJSONfromCompressed: function (compressed) {
-			var json = LZString.decompressFromBase64(compressed);
+			let json = LZString.decompressFromBase64(compressed);
 			return json;
 		},
 
 		getCompressedSaveJSON: function (json) {
-			var json = json || this.getSaveJSON();
-			log.i("basic json: " + json.length);
-			var compressed = LZString.compressToBase64(json);
-			log.i("compressed: " + compressed.length);
+			json = json || this.getSaveJSON();
+			let compressed = LZString.compressToBase64(json);
+			return compressed;
+		},
+
+		getMetaStateJSON: function () {
+			let data = GameGlobals.metaState;
+			let result = JSON.stringify(data);
+			return result;
+		},
+
+		getCompressedMetaStateJSON: function () {
+			let json = this.getMetaStateJSON();
+			let compressed = LZString.compressToBase64(json);
 			return compressed;
 		},
 

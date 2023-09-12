@@ -35,12 +35,27 @@ function (Ash, GlobalSignals, PerkVO, PerkConstants) {
 			return false;
 		},
 
+		hasOneOfPerks: function (perkIDs) {
+			for (let i = 0; i < perkIDs.length; i++) {
+				if (this.hasPerk(perkIDs[i])) return true;
+			}
+			return false;
+		},
+
 		getPerk: function (perkID) {
 			for (var key in this.perks) {
 				for (let i = 0; i < this.perks[key].length; i++) {
 					if (this.perks[key][i].id == perkID)
 						return this.perks[key][i];
 				}
+			}
+			return null;
+		},
+
+		getOneOfPerks: function (perkIDs) {
+			for (let i = 0; i < perkIDs.length; i++) {
+				let perk = this.getPerk(perkIDs[i]);
+				if (perk) return perk;
 			}
 			return null;
 		},

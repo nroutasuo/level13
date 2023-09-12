@@ -446,7 +446,7 @@ define(['ash',
 		},
 
 		getPerkBonusText: function (perk) {
-			var value = 0;
+			let value = 0;
 			if (PerkConstants.isPercentageEffect(perk.type)) {
 				if (perk.effect == 1) return null;
 				if (perk.effect < 1) {
@@ -459,7 +459,7 @@ define(['ash',
 				value = "+" + PerkConstants.getCurrentEffect(perk);
 			}
 
-			var effect = perk.type;
+			let effect = perk.type;
 			switch (perk.type) {
 				case PerkConstants.perkTypes.movement:
 					effect = "movement cost";
@@ -469,7 +469,7 @@ define(['ash',
 					effect = "health";
 					break;
 				case PerkConstants.perkTypes.luck:
-					return "Reduces probability of negative random events when out exploring";
+					return "Lower probability of negative random events when exploring";
 			}
 
 			return effect + " " + value;

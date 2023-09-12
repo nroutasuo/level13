@@ -45,6 +45,20 @@ define([
 
 		constructor: function () {},
 
+		parseMetaStateJSON: function (json) {
+			if (!json) return null;
+
+			let result = null;
+			try {
+				result = JSON.parse(json);
+			} catch (ex) {
+				log.w("Error parsing meta state JSON. " + ex);
+				return null;
+			}
+
+			return result;
+		},
+
 		// returns null if invalid, a parsed save object if valid
 		parseSaveJSON: function (json) {
 			if (!json) return null;

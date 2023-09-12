@@ -1,3 +1,5 @@
+// persistent data related to the current playthrough
+
 define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHelper) {
 	var GameState = Ash.Class.extend({
 

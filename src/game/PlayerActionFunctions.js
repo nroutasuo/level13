@@ -1311,6 +1311,7 @@ define(['ash',
 			}
 
 			GameGlobals.gameState.numCamps++;
+			GameGlobals.metaState.maxCampOrdinalReached = Math.max(GameGlobals.metaState.maxCampOrdinalReached, campOrdinal);
 			
 			GlobalSignals.improvementBuiltSignal.dispatch();
 			GlobalSignals.campBuiltSignal.dispatch();
@@ -2210,6 +2211,7 @@ define(['ash',
 			this.addLogMessage(LogConstants.getUniqueID(), "The colony ship launches.");
 			
 			GameGlobals.gameState.isLaunched = true;
+			GameGlobals.metaState.hasCompletedGame = true;
 			GlobalSignals.launchedSignal.dispatch();
 		},
 

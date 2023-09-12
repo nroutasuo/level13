@@ -136,6 +136,8 @@ define([
 		tickProvider: null,
 
 		constructor: function (plugins) {
+			let game = this;
+			
 			this.engine = new Ash.Engine();
 			this.tickProvider = new TickProvider(null, function (ex) { game.handleException(ex) });
 			this.gameManager = new GameManager(this.tickProvider, this.engine);

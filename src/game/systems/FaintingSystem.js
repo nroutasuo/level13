@@ -7,6 +7,7 @@ define([
 	'game/constants/GameConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/LogConstants',
+	'game/constants/PerkConstants',
 	'game/constants/PositionConstants',
 	'game/nodes/player/PlayerResourcesNode',
 	'game/nodes/player/PlayerStatsNode',
@@ -31,6 +32,7 @@ define([
 	GameConstants,
 	PlayerActionConstants,
 	LogConstants,
+	PerkConstants,
 	PositionConstants,
 	PlayerResourcesNode,
 	PlayerStatsNode,
@@ -104,6 +106,29 @@ define([
 			var msgAdjective = hasWater ? (hasFood ? "exhausted" : "hungry") : "thirsty";
 			var msgMain = "";
 			var msgLog = "";
+
+			// rescued by luck perks: back to nearest camp, keep items, maybe injured
+			let perksComponent = this.playerStatsNodes.head.perks;
+			let playerLuck = perksComponent.getTotalEffect(PerkConstants.perkTypes.luck);
+			let hasRestartPerk = perksComponent.hasOneOfPerks(PerkConstants.restartPerkIDs);
+			if (hasRestartPerk && this.lastVisitedCampNodes.head && Math.random() < playerLuck / 100) {
+				let restarPerk = perksComponent.getOneOfPerks(PerkConstants.restartPerkIDs);
+				let perkName = restarPerk.name;
+				msgMain = "Weak and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>You wake up back in camp. <span class='hl-functionality'>" + perkName + "</span> have guided you home.";
+				msgLog = "The world fades. You wake up back in camp.";
+				this.fadeOut(msgMain, msgLog, true, this.lastVisitedCampNodes.head.entity, 0, 0.25, 0, 0);
+				return;
+			}
+			
+			// rescued by followers: back to nearest camp, keep items, maybe injured
+			if (hasFollowers && this.lastVisitedCampNodes.head && Math.random() < 0.1) {
+				let party = this.playerStatsNodes.head.followers.getParty();
+				let follower = party[MathUtils.randomIntBetween(0, party.length)];
+				msgMain = "Weak and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>You wake up back in camp. <span class='hl-functionality'>" + follower.name + "</span> brought you back.";
+				msgLog = "The world fades. You wake up back in camp.";
+				this.fadeOut(msgMain, msgLog, true, this.lastVisitedCampNodes.head.entity, 0, 0.5, 0, 0);
+				return;
+			}
 			
 			// rescued by campers: back to nearest camp, keep items, get injured
 			if (hasCampOnLevel && this.lastVisitedCampNodes.head && this.lastVisitedCampNodes.head.camp.population >= 1 && Math.random() < 0.2) {
@@ -116,16 +141,6 @@ define([
 			// rescued by deity: back to nearest camp, keep items, maybe injured
 			if (hasDeity && this.lastVisitedCampNodes.head && Math.random() < 0.1) {
 				msgMain = "Weak and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>You wake up back in camp. The spirits have guided you home.";
-				msgLog = "The world fades. You wake up back in camp.";
-				this.fadeOut(msgMain, msgLog, true, this.lastVisitedCampNodes.head.entity, 0, 0.5, 0, 0);
-				return;
-			}
-			
-			// rescued by followers: back to nearest camp, keep items, maybe injured
-			if (hasFollowers && this.lastVisitedCampNodes.head && Math.random() < 0.1) {
-				let party = this.playerStatsNodes.head.followers.getParty();
-				let follower = party[MathUtils.randomIntBetween(0, party.length)];
-				msgMain = "Weak and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>You wake up back in camp. <span class='hl-functionality'>" + follower.name + "</span> brought you back.";
 				msgLog = "The world fades. You wake up back in camp.";
 				this.fadeOut(msgMain, msgLog, true, this.lastVisitedCampNodes.head.entity, 0, 0.5, 0, 0);
 				return;

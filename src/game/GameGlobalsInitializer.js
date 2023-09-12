@@ -2,6 +2,7 @@ define([
 	'game/GameGlobals',
 	'game/GameState',
 	'game/GameFlowLogger',
+	'game/MetaState',
 	'game/PlayerActionFunctions',
 	'game/UIFunctions',
 	'game/helpers/AutoPlayHelper',
@@ -31,6 +32,7 @@ define([
 	GameGlobals,
 	GameState,
 	GameFlowLogger,
+	MetaState,
 	PlayerActionFunctions,
 	UIFunctions,
 	AutoPlayHelper,
@@ -62,6 +64,7 @@ define([
 		init: function (engine) {
 			GameGlobals.engine = engine;
 			GameGlobals.gameState = new GameState();
+			GameGlobals.metaState = new MetaState();
 			GameGlobals.playerActionsHelper = new PlayerActionsHelper(engine);
 
 			if (engine) {

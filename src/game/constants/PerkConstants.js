@@ -18,6 +18,8 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 			thirst: "thirst",
 			tired: "tired",
 			blessed: "blessed",
+			restartBonusSmall: "restart-small",
+			restartBonusCompletion: "restart-completion",
 			healthPenalty: "health--",
 			healthBonus1: "health-1",
 			healthBonus2: "health-2",
@@ -59,6 +61,8 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 			MEDIUM: "MEDIUM",
 			SERIOUS: "SERIOUS"
 		},
+
+		restartPerkIDs: [ "restart-small", "restart-completion" ],
 		
 		PERK_RECOVERY_FACTOR_REST: 3,
 		TIMER_DISABLED: -1,
@@ -215,6 +219,8 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 	PerkConstants.perkDefinitions.stamina.push(new PerkVO(PerkConstants.perkIds.lightBeacon, "Beacon", "Light", 20, "img/items/perk-light-beacon.png"));
 	
 	PerkConstants.perkDefinitions.luck.push(new PerkVO(PerkConstants.perkIds.blessed, "Blessed", "Luck", 20, "img/items/perk-blessed.png"));
+	PerkConstants.perkDefinitions.luck.push(new PerkVO(PerkConstants.perkIds.restartBonusSmall, "Dreams of past lives", "Luck", 10, "img/items/perk-restart.png"));
+	PerkConstants.perkDefinitions.luck.push(new PerkVO(PerkConstants.perkIds.restartBonusCompletion, "Dreams of escape", "Luck", 30, "img/items/perk-restart.png"));
 	
 	PerkConstants.perkDefinitions.visualNegative.push(new PerkVO(PerkConstants.perkIds.tired, "Tired", "VisualN", 0, "img/items/perk-tired.png"));
 	
@@ -235,8 +241,8 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 	}
 	
 	let bruiseBodyParts = ["Leg", "Arm", "Shoulder", "Knee" ];
-	for (let i = 0; i < woundBodyParts.length; i++) {
-		let bodyPart = woundBodyParts[i];
+	for (let i = 0; i < bruiseBodyParts.length; i++) {
+		let bodyPart = bruiseBodyParts[i];
 		let id = "bruised-" + bodyPart.toLowerCase();
 		
 		PerkConstants.addInjuryDefinition(PerkConstants.injuryLevel.LIGHT, PerkConstants.injuryType.BLUNT, id, "Bruised " + bodyPart + " (light)");
