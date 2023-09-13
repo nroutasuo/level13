@@ -162,7 +162,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					addOptions("a-building", [ "abandoned", "sketchy", "depressing", "dishevelled" ]);
 					addOptions("n-buildings", [ "shacks", "huts", "slum residences", "apartment buildings", "residential towers that don't seem to have ever been connected to the grid" ]);
 					addOptions("an-decos", [ "collapsed shacks", "garbage piles" ]);
-					addOptions("an-items", [ "rusted pipes" ]);
+					addOptions("an-items", [ "rusted pipes", "empty cans" ]);
 					break;
 			}
 			// - building density

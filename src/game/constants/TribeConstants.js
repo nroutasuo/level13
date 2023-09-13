@@ -5,7 +5,7 @@ define(['ash', 'game/constants/OccurrenceConstants', 'game/constants/UIConstants
 		milestones: [
 			{
 				name: "lone camp",
-				description: "A shelter for a few rugged outcasts with few belongings",
+				description: "A shelter for a few rugged outcasts with sparse belongings",
 				maxRumours: 100,
 				maxEvidence: 300,
 				maxFavour: 0,

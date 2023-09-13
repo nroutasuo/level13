@@ -319,7 +319,7 @@ define(['ash'], function (Ash) {
 				triggers: [ "feature_unlocked", "change_inventory" ],
 				repeats: "NEVER",
 				delay: 1500,
-				logMessage: "Might be worthwhile to explore the neighbourhood a bit.",
+				logMessage: "Might be worthwhile to explore the surroundings.",
 				conditions: { featureUnlocked: { move: true }, playerInventory: { resource_food: [2, -1], resource_water: [2, -1 ], inCamp: false } }
 			},
 			TUTORIAL_FEATURE_UNLOCKED_UPGRADES: {
