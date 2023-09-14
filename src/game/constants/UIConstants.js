@@ -30,6 +30,8 @@ define(['ash',
 
 		MAP_MINIMAP_SIZE: 7,
 		SCROLL_INDICATOR_SIZE: 5,
+
+		SMALL_LAYOUT_THRESHOLD: 850,  // make sure this corresponds to something in gridism.css
 		
 		UNLOCKABLE_FEATURE_WORKER_AUTO_ASSIGNMENT: "workerAutoAssignment",
 		UNLOCKABLE_FEATURE_MAP_MODES: "mapModes",

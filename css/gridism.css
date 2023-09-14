@@ -96,11 +96,8 @@
 
 /* Responsive Stuff */
 @media screen and (max-width: 850px) {
-  
-	#grid-main > .unit, .sticky-footer > .unit {
-		width: 100% !important;
-        padding-left: 80px;
-	}
+
+	.grid .unit:first-child { padding-left: 15px !important }
   
 	#footer {
 		border-width: 2px 0px !important;

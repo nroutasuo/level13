@@ -1,8 +1,7 @@
 // Manages showing and hiding pop-ups
-define(['ash', 'core/ExceptionHandler', 'game/GameGlobals', 'game/GlobalSignals'],
-function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
+define(['ash', 'core/ExceptionHandler', 'game/GameGlobals', 'game/GlobalSignals', 'game/constants/UIConstants'],
+function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 	var UIPopupManager = Ash.Class.extend({
-		
 		popupQueue: null,
 		hiddenQueue: null,
 		
@@ -158,12 +157,13 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
 		},
 		
 		repositionPopups: function () {
-			var winh = $(window).height();
-			var winw = $(window).width();
-			var padding = 20;
+			let isSmallLayout =  $(window).width() <= UIConstants.SMALL_LAYOUT_THRESHOLD;
+			let winh = $(window).height();
+			let winw = $(window).width();
+			let padding = isSmallLayout ? 0 : 20;
 			$.each($(".popup"), function () {
-				var popuph = $(this).height();
-				var popupw = $(this).width();
+				var popuph = Math.min($(this).height(), winh);
+				var popupw = Math.min($(this).width(), winw);
 				$(this).css("top", Math.max(0, (winh - popuph) / 2 - padding));
 				$(this).css("left", (winw - popupw) / 2);
 			});

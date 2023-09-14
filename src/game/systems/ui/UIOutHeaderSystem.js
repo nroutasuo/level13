@@ -80,6 +80,7 @@ define([
 			this.elements.locationHeader = $("#grid-location-header h1");
 			this.elements.gameMsg = $("#game-msg")
 			this.elements.gameVersion = $("#game-version");
+			
 			this.elements.valVision = $("#stats-vision .value");
 			this.elements.valStamina = $("#stats-stamina .value");
 			this.elements.valHealth = $("#stats-health .value");
@@ -99,6 +100,8 @@ define([
 			this.elements.changeIndicatorRumours = $("#rumours-change-indicator");
 			this.elements.changeIndicatorFavour = $("#favour-change-indicator");
 			this.elements.changeIndicatorInsight = $("#insight-change-indicator");
+			
+			this.updateLayoutMode();
 
 			return this;
 		},
@@ -136,6 +139,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.levelTypeRevealedSignal, this.onLevelTypeRevealed);
 			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.updateResourcesIfNotPending);
 			GlobalSignals.add(this, GlobalSignals.launchCompletedSignal, this.onLaunchCompleted);
+			GlobalSignals.add(this, GlobalSignals.windowResizedSignal, this.onWindowResized);
 
 			this.generateStatsCallouts();
 			this.updateGameVersion();
@@ -890,6 +894,15 @@ define([
 			}
 		},
 
+		updateLayoutMode: function () {
+			let isSmallLayout =  $(window).width() <= UIConstants.SMALL_LAYOUT_THRESHOLD;
+			this.elements.body.toggleClass("layout-small", isSmallLayout);
+			this.elements.body.toggleClass("layout-regular", !isSmallLayout);
+
+			let padding = isSmallLayout ? Math.ceil($("#mobile-header").height()) + 20 : 0;
+			$("#unit-main").css("padding-top", padding + "px");
+		},
+
 		updateTabVisibility: function () {
 			var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
 			var isInCamp = playerPosition.inCamp;
@@ -1236,6 +1249,10 @@ define([
 			this.refreshPerks();
 			this.refreshStatuses();
 			this.updateItemStats();
+		},
+
+		onWindowResized: function () {
+			this.updateLayoutMode();
 		}
 	});
 
