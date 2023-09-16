@@ -126,7 +126,7 @@ define(['ash',
 		},
 
 		updateItemSlot: function (slot, count) {
-			var $slot = typeof (slot) === "string" ? $(slot) : slot;
+			var $slot = this.parseElement(slot);
 			if (!$slot) return;
 			$slot.find(".item-count").text(count + "x");
 			GameGlobals.uiFunctions.toggle($slot, count > 0);
@@ -296,7 +296,7 @@ define(['ash',
 		},
 
 		updateResourceLi: function (li, amount) {
-			var $li = typeof (li) === "string" ? $(li) : li;
+			var $li = this.parseElement(li);
 			if (!$li) return;
 			var showAmount = Math.floor(amount);
 			$li.find(".item-count").text(showAmount + "x");
@@ -318,7 +318,7 @@ define(['ash',
 		},
 
 		updateCurrencyLi: function (li, amount) {
-			var $li = typeof (li) === "string" ? $(li) : li;
+			var $li = this.parseElement(li);
 			if (!$li) return;
 			var showAmount = Math.floor(amount);
 			$li.find(".item-count").text(showAmount + "x");
@@ -673,11 +673,27 @@ define(['ash',
 			return source.source + " (" + source.sourceCount + ")" + ": " + Math.round(source.amount * divisor) / divisor + "/s";
 		},
 
-		updateCalloutContent: function (targetElementId, content, isTargetDirect) {
-			if (isTargetDirect)
-				$(targetElementId).siblings(".info-callout").children(".info-callout-content").html(content);
-			else
-				$(targetElementId).parents(".info-callout-target").siblings(".info-callout").children(".info-callout-content").html(content);
+		updateCalloutContent: function ($targetElement, content, isTargetDirect) {
+			$targetElement = UIConstants.parseElement($targetElement);
+			if (isTargetDirect) {
+				$targetElement.siblings(".info-callout").children(".info-callout-content").html(content);
+			} else {
+				$targetElement.parents(".info-callout-target").siblings(".info-callout").children(".info-callout-content").html(content);
+			}
+		},
+
+		parseElement: function ($elem) {
+			if (typeof $elem == 'object') {
+				return $elem;
+			}
+			if (typeof $elem == 'string' && $elem.length > 0) {
+				if ($elem[0] == '#' || $elem[0] == '.') {
+					return $($elem);
+				} else {
+					return $("#" + $elem);
+				}
+			}
+			return null;
 		},
 
 		getBlueprintPieceIcon: function (upgradeID) {
