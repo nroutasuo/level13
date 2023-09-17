@@ -53,7 +53,7 @@ define([
 				return false;
 			}
 			
-			let startValue = parseFloat($elem.text()) || 0;
+			let startValue = parseFloat($elem.first().text()) || 0;
 			let diff = roundedTargetValue - startValue;
 			if (diff === 0) {
 				return false;
