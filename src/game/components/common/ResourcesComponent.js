@@ -44,7 +44,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			if (resourceVO !== null) {
 				for(var key in resourceNames) {
 					var name = resourceNames[key];
-					this.resources.addResource(name, resourceVO[name], reason);
+					this.resources.addResource(name, resourceVO[name]);
 				}
 			}
 		},
@@ -53,7 +53,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			if (resourceVO !== null) {
 				for(var key in resourceNames) {
 					var name = resourceNames[key];
-					this.resources.addResource(name, -resourceVO[name], reason);
+					this.resources.addResource(name, -resourceVO[name]);
 				}
 			}
 		},

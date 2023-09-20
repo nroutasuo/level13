@@ -50,7 +50,7 @@ define([
 		initElements: function () {
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
-				var indicatorEmbark = UIConstants.createResourceIndicator(name, true, "embark-resources-" + name, true, false, false);
+				var indicatorEmbark = UIConstants.createResourceIndicator(name, true, "embark-resources-" + name, true, false, false, false);
 				$("#embark-resources").append(
 					"<tr id='embark-assign-" + name + "'>" +
 					"<td class='dimmable'>" + indicatorEmbark + "</td>" +

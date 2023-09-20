@@ -32,37 +32,92 @@
 		<div class="grid" id="grid-main">
 			<div class="unit four-fifths" id="unit-main" style="display: none">
 
+				<div id="mobile-header">
+					<div id="mobile-header-tribe">
+						<div id="statsbar-tribe-stats-mobile" class="statsbar-tribe-stats mobile-header-section"></div>
+						<!--
+						<span id="statsbar-deity-mobile" class="statsbar statsbar-deity">
+							Deity: <span id="deity-name-mobile" class="deity-name">Name</span>
+						</span>
+						-->
+					</div>
+					<div id="mobile-header-self">
+						<div class="player-stats-container mobile-header-section"></div>
+						<!--
+						<div id="container-equipment-stats-mobile" class="container-equipment-stats"></div>
+						-->
+					</div>
+					<div id="mobile-header-status" class="mobile-header-section">
+						<ul class="itemlist player-perks-list" id="player-perks-list-mobile"></ul>
+						<ul class="itemlist player-statuses-list" id="player-statuses-list-mobile"></ul>
+					</div>
+					<div id="mobile-header-bag" class="mobile-header-section">
+						<div id="header-bag-storage-mobile" class="header-bag-storage stat-indicator">
+							<span class="label">Bag capacity</span>
+							<span class="value">0</span>
+							/
+							<span class="value-total">0</span>
+						</div>
+						<span id="header-bag-currency-mobile" class="header-bag-currency stat-indicator">
+							<span class="label">Silver</span>
+							<span class="value">0</span>
+						</span>
+						<div id="bag-resources-mobile" class="bag-resources statsbar"></div>
+						<!--
+						<ul class="itemlist list-header-items" id="list-header-items-mobile"></ul>
+						-->
+					</div>
+					<!--
+					<div id="mobile-header-followers" class="mobile-header-section">
+						<ul class="itemlist list-header-followers" id="list-header-followers-mobile"></ul>
+					</div>
+					-->
+					<div id="mobile-header-camp" class="mobile-header-section">
+						<div id="header-camp-storage-mobile" class="stat-indicator header-camp-storage">
+							<span class="label">Storage</span>
+							<span class="value">0</span>
+						</div>
+						<div id="header-camp-reputation-mobile" class="stat-indicator header-camp-reputation">
+							<span class="label">Reputation</span>
+							<span class="value">0</span>
+							<span id="reputation-change-indicator-mobile" class="change-indicator"></span>
+						</div>
+						<div id="header-camp-population-mobile" class="stat-indicator header-camp-population">
+							<span class="label">Population</span>
+							<span class="value">0</span>
+							<span id="population-change-indicator-mobile" class="change-indicator"></span>
+						</div>
+						<div id="header-camp-currency-mobile" class="stat-indicator header-camp-currency">
+							<span class="label">Silver</span>
+							<span class="value">0</span>
+						</div>
+					</div>
+					<div id="mobile-header-camp-res" class="mobile-header-section">
+						<div id="statsbar-resources-mobile" class="statsbar-resources"></div>
+					</div>
+					<div id="mobile-header-notification-container" class="mobile-header-section">
+						<div id="notification-player-mobile" class="notification-player">
+							<div id="notification-player-bar-mobile" class="progress-wrap progress notification-player-bar">
+								<div class="progress-bar progress"></div>
+								<span class="progress-label progress"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+
 				<div id="header-side">
 					<div id="header-self-bar" class="lvl13-box-2">
-						<ul class="itemlist" id="list-items-perks"></ul>
-						<ul class="itemlist" id="list-items-statuses"></ul>
+						<ul class="itemlist player-perks-list" id="player-perks-list-regular"></ul>
+						<ul class="itemlist player-statuses-list" id="player-statuses-list-regular"></ul>
 						
-						<div id="stats-vision" class="stats-indicator">
-							<span class="label">Vision</span>
-							<div class="stats-value-container"><span class="value">0</span><span id="vision-change-indicator" class="change-indicator"></span></div>
-						</div>
-						<div id="stats-health" class="stats-indicator">
-							<span class="label">Health</span>
-							<div class="stats-value-container"><span class="value">0</span><span id="health-change-indicator" class="change-indicator"></span></div>
-						</div>
-						<div id="stats-stamina" class="stats-indicator">
-							<span class="label">Stamina</span>
-							<div class="stats-value-container"><span class="value">0</span><span id="stamina-change-indicator" class="change-indicator"></span></div>
-						</div>
-						<div id="stats-scavenge" class="stats-indicator">
-							<span class="label">Scavenge<br/>efficiency</span>
-							<div class="stats-value-container"><span class="value">0</span><span id="scavenge-change-indicator" class="change-indicator"></span></div>
-						</div>
-						<div id="stats-scavenge-bonus" class="stats-indicator">
-							<span class="label">Scavenge<br/>bonus</span>
-						</div>
+						<div class="player-stats-container"></div>
 						
 						<hr/>
-						<div id="container-equipment-stats"></div>
+						<div id="container-equipment-stats-side" class="container-equipment-stats"></div>
 					</div>
 					
-					<div id="notification-player" class="unit whole notification">
-						<div id="notification-player-bar" class="progress-wrap progress">
+					<div id="notification-player-regular" class="unit whole notification-player">
+						<div id="notification-player-bar-regular" class="progress-wrap progress notification-player-bar">
 							<div class="progress-bar progress"></div>
 							<span class="progress-label progress"></span>
 						</div>
@@ -72,28 +127,9 @@
 				<div class="grid" id="grid-main-header" class="vision-container">
 					<div class="unit whole lvl13-box-1 header-row" id="header-tribe-container">
 						<div id="statsbar-self" class="statsbar">
-							<div id="stats-evidence" class="stats-indicator">
-								<span class="label">Evidence</span>
-								<span class="value">0</span>
-								<span id="evidence-change-indicator" class="change-indicator"></span>
-							</div>
-							<div id="stats-rumours" class="stats-indicator">
-								<span class="label">Rumours</span>
-								<span class="value">0</span>
-								<span id="rumours-change-indicator" class="change-indicator"></span>
-							</div>
-							<span id="stats-favour" class="stats-indicator">
-								<span class="label">Favour</span>
-								<span class="value">0</span>
-								<span id="favour-change-indicator" class="change-indicator"></span>
-							</span>
-							<span id="stats-insight" class="stats-indicator">
-								<span class="label">Insight</span>
-								<span class="value">0</span>
-								<span id="insight-change-indicator" class="change-indicator"></span>
-							</span>
-							<span id="statsbar-deity" class="statsbar">
-								Deity: <span id="deity-name">Name</span>
+							<div id="statsbar-tribe-stats-regular" class="statsbar-tribe-stats"></div>
+							<span id="statsbar-deity-regular" class="statsbar statsbar-deity">
+								Deity: <span id="deity-name-regular" class="deity-name">Name</span>
 							</span>
 						</div>
 					</div>
@@ -101,47 +137,47 @@
 					<div class="unit whole lvl13-box-1 header-row" id="header-camp-container">
 						
 						<div class="header-section" id="main-header-bag">
-							<div id="header-bag-storage" class="stats-indicator">
+							<div id="header-bag-storage-regular" class="header-bag-storage stat-indicator">
 								<span class="label">Bag capacity</span>
 								<span class="value">0</span>
 								/
 								<span class="value-total">0</span>
 							</div>
-							<div id="header-bag-currency" class="stats-indicator">
+							<div id="header-bag-currency-regular" class="header-bag-currency stat-indicator">
 								<span class="label">Silver</span>
 								<span class="value">0</span>
 							</div>
-							<div id="bag-resources" class="statsbar"></div>
-							<ul class="itemlist" id="list-header-items"></ul>
+							<div id="bag-resources-regular" class="bag-resources statsbar"></div>
+							<ul class="itemlist list-header-items" id="list-header-items-regular"></ul>
 						</div>
 						
 						<div class="header-section" id="main-header-items">
-							<ul class="itemlist" id="list-header-followers"></ul>
+							<ul class="itemlist list-header-followers" id="list-header-followers-regular"></ul>
 						</div>
 							
 						<div class="header-section" id="main-header-camp">
 							<div class="header-section" id="main-header-camp-overview">
-							<div id="header-camp-storage" class="stats-indicator">
+							<div id="header-camp-storage-regular" class="stat-indicator header-camp-storage">
 								<span class="label">Storage</span>
 								<span class="value">0</span>
 							</div>
-							<div id="header-camp-reputation" class="stats-indicator">
+							<div id="header-camp-reputation-regular" class="stat-indicator header-camp-reputation">
 								<span class="label">Reputation</span>
 								<span class="value">0</span>
-								<span id="reputation-change-indicator" class="change-indicator"></span>
+								<span id="reputation-change-indicator-regular" class="change-indicator"></span>
 							</div>
-							<div id="header-camp-population" class="stats-indicator">
+							<div id="header-camp-population-regular" class="stat-indicator header-camp-population">
 								<span class="label">Population</span>
 								<span class="value">0</span>
-								<span id="population-change-indicator" class="change-indicator"></span>
+								<span id="population-change-indicator-regular" class="change-indicator"></span>
 							</div>
-							<div id="header-camp-currency" class="stats-indicator">
+							<div id="header-camp-currency-regular" class="stat-indicator header-camp-currency">
 								<span class="label">Silver</span>
 								<span class="value">0</span>
 							</div>
 							</div>
 							<div class="header-section" id="main-header-camp-resources">
-							<div id="statsbar-resources" class="statsbar">
+							<div id="statsbar-resources-regular" class="statsbar-resources">
 							</div>
 							</div>
 						</div>
@@ -291,7 +327,7 @@
 								</div>
 							</div>
 							<p>
-							<div class="stats-indicator" id="embark-bag">
+							<div class="stat-indicator" id="embark-bag">
 								<span class="label">Selected</span>
 								<span class="value">0</span>
 								/

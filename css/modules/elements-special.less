@@ -90,7 +90,7 @@ span.msg-count, span.time, span.msg-camp-level {
 	position: relative;
 }
 
-#statsbar-resources {
+#statsbar-resources-camp {
 	width: 100%;
 	display: flex;
     flex-wrap: wrap;
@@ -98,9 +98,25 @@ span.msg-count, span.time, span.msg-camp-level {
     gap: 5px;
 }
 
+#statsbar-resources-mobile {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+#statsbar-resources-mobile .stat-indicator {
+	width: 5em;
+}
+
+#statsbar-tribe-stats-regular, #bag-resources-regular {
+	display: inline-block;
+}
+
 // "HEADER" SELF-BAR
 
-#statsbar-self .stats-indicator {
+#statsbar-self .stat-indicator {
 	display: inline-block;
 }
 
@@ -116,11 +132,11 @@ span.msg-count, span.time, span.msg-camp-level {
 	margin-top: 10px;
 }
 
-#header-self-bar > span {
+#header-self-bar > span, #header-size .stat-indicator span {
 	display: block;
 }
 
-#header-self-bar .stats-indicator {
+#header-self-bar .stat-indicator {
 	margin: 1px 0px;
 	width: 100%;
 	max-width: @header-side-width - 5;
@@ -131,7 +147,7 @@ span.msg-count, span.time, span.msg-camp-level {
 	width: 100%;
 }
 
-#header-self-bar .stats-indicator .value {
+#header-self-bar .stat-indicator .value {
 	font-size: @font-size-tiny;
 	margin: 3px 0;
 }
@@ -145,26 +161,30 @@ span.msg-count, span.time, span.msg-camp-level {
 	margin: 0 0 0 (@header-side-width/2 - @callout-arrow-size);
 }
 
-.stats-indicator-secondary {
+.stat-indicator-secondary {
     display: flex;
     flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
 }
 
-.stats-indicator-secondary img {
+.stat-indicator-secondary img {
 	width: 1.75em;
 	height: 1.75em;
 }
 
-.stats-indicator-secondary .value {
+.stat-indicator-secondary .value {
 	min-width: 2em;
 	font-size: 100%;
 	margin: 0;
 }
 
-#container-equipment-stats {
+#container-equipment-stats-side {
 	line-height: 1em;
+}
+
+#container-equipment-stats-mobile div {
+	display: inline-block;
 }
 
 // LOCATION HEADER
@@ -184,6 +204,33 @@ span.msg-count, span.time, span.msg-camp-level {
 	height: 2.5em;
 }
 
+// MOBILE HEADER
+
+#mobile-header {
+    background: @color-bg-box-1;
+    border-bottom: 5px solid @color-bg-page;
+}
+
+#mobile-header img.stat-icon {
+	height: 1em;
+	width: 1em;
+}
+
+.mobile-header-section {
+	display: flex;
+    justify-content: center;
+	padding: 3px;
+	flex-wrap: wrap;
+}
+
+#mobile-header-notification-container {
+	min-height: 1em;
+}
+
+#mobile-header .stat-indicator-with-fill {
+	max-width: 5em;
+}
+
 // BAG SCREEN
 
 .item-bag-options {
@@ -196,7 +243,7 @@ span.msg-count, span.time, span.msg-camp-level {
 
 // PLAYER NOTIFICATION (BUSY INDICATOR)
 
-#notification-player {
+.notification-player {
 	padding: 0px;
 	border-width: 2px;
 	border-style: solid;
@@ -206,7 +253,7 @@ span.msg-count, span.time, span.msg-camp-level {
     margin-top: 5px;
 }
 
-#notification-player .progress {
+.notification-player .progress {
 	width: 100%;
 	max-width: 100%;
 	margin: 0;
@@ -499,8 +546,15 @@ tr.camp-overview-camp {
 }
 
 #resultlist-inventorymanagement .inventorybox {
-	max-width: 25vw;
     margin: 3px auto;
+}
+
+.layout-regular #resultlist-inventorymanagement .inventorybox {
+	max-width: 25vw;
+}
+
+.layout-mobile #resultlist-inventorymanagement .inventorybox {
+	max-width: 90vw;
 }
 
 ul.resultlist li {

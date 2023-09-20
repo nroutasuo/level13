@@ -232,7 +232,7 @@ define([
 			tr += "<td class='minwidth'><button class='btn-mini btn-meta hide-project'>hide</button></td>";
 			tr += "<td class='minwidth'><button class='btn-mini navigation'>map</button></td>";
 			
-			let btnAction = "<button class='action action-build action-level-project multiline'></button>";
+			let btnAction = "<button class='action action-build action-level-project multiline tabbutton' data-tab='switch-projects'></button>";
 			tr += "<td style='width:138px;text-align:right;' class='bg-reset'>" + btnAction + "</td>";
 						
 			tr += "</tr>";

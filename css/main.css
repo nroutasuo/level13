@@ -19,11 +19,37 @@ body {
 #footer {
   padding-left: 95px;
 }
+.layout-regular #mobile-header {
+  display: none;
+}
+.layout-small #header-side {
+  display: none;
+}
+.layout-small #grid-main-header {
+  display: none;
+}
 #header-side {
   position: fixed;
-  width: 75px;
   z-index: 5;
+  width: 75px;
   margin-left: -95px;
+}
+#mobile-header {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+  top: 0;
+  left: 0;
+  padding: 10px 0px;
+  width: 100%;
+}
+#notification-player-mobile {
+  width: 95%;
 }
 #log {
   padding-right: 50px;
@@ -119,7 +145,7 @@ canvas {
 .vision-step-0 #grid-main h2,
 .vision-step-0 #grid-main h3,
 .vision-step-0 #grid-main .vision-text,
-.vision-step-0 #grid-main .stats-indicator,
+.vision-step-0 #grid-main .stat-indicator,
 .vision-step-0 #grid-main .list-amount,
 .vision-step-0 #grid-main .item-name,
 .vision-step-0 #grid-main #mainmap-sector-details-content td,
@@ -150,7 +176,7 @@ canvas {
 .vision-step-1 #grid-main h2,
 .vision-step-1 #grid-main h3,
 .vision-step-1 #grid-main .vision-text,
-.vision-step-1 #grid-main .stats-indicator,
+.vision-step-1 #grid-main .stat-indicator,
 .vision-step-1 #grid-main .list-amount,
 .vision-step-1 #grid-main .item-name,
 .vision-step-1 #grid-main #mainmap-sector-details-content td,
@@ -181,7 +207,7 @@ canvas {
 .vision-step-2 #grid-main h2,
 .vision-step-2 #grid-main h3,
 .vision-step-2 #grid-main .vision-text,
-.vision-step-2 #grid-main .stats-indicator,
+.vision-step-2 #grid-main .stat-indicator,
 .vision-step-2 #grid-main .list-amount,
 .vision-step-2 #grid-main .item-name,
 .vision-step-2 #grid-main #mainmap-sector-details-content td,
@@ -212,7 +238,7 @@ canvas {
 .vision-step-3 #grid-main h2,
 .vision-step-3 #grid-main h3,
 .vision-step-3 #grid-main .vision-text,
-.vision-step-3 #grid-main .stats-indicator,
+.vision-step-3 #grid-main .stat-indicator,
 .vision-step-3 #grid-main .list-amount,
 .vision-step-3 #grid-main .item-name,
 .vision-step-3 #grid-main #mainmap-sector-details-content td,
@@ -243,7 +269,7 @@ canvas {
 .vision-step-4 #grid-main h2,
 .vision-step-4 #grid-main h3,
 .vision-step-4 #grid-main .vision-text,
-.vision-step-4 #grid-main .stats-indicator,
+.vision-step-4 #grid-main .stat-indicator,
 .vision-step-4 #grid-main .list-amount,
 .vision-step-4 #grid-main .item-name,
 .vision-step-4 #grid-main #mainmap-sector-details-content td,
@@ -274,7 +300,7 @@ canvas {
 .vision-step-5 #grid-main h2,
 .vision-step-5 #grid-main h3,
 .vision-step-5 #grid-main .vision-text,
-.vision-step-5 #grid-main .stats-indicator,
+.vision-step-5 #grid-main .stat-indicator,
 .vision-step-5 #grid-main .list-amount,
 .vision-step-5 #grid-main .item-name,
 .vision-step-5 #grid-main #mainmap-sector-details-content td,
@@ -305,7 +331,7 @@ canvas {
 .vision-step-6 #grid-main h2,
 .vision-step-6 #grid-main h3,
 .vision-step-6 #grid-main .vision-text,
-.vision-step-6 #grid-main .stats-indicator,
+.vision-step-6 #grid-main .stat-indicator,
 .vision-step-6 #grid-main .list-amount,
 .vision-step-6 #grid-main .item-name,
 .vision-step-6 #grid-main #mainmap-sector-details-content td,
@@ -336,7 +362,7 @@ canvas {
 .vision-step-7 #grid-main h2,
 .vision-step-7 #grid-main h3,
 .vision-step-7 #grid-main .vision-text,
-.vision-step-7 #grid-main .stats-indicator,
+.vision-step-7 #grid-main .stat-indicator,
 .vision-step-7 #grid-main .list-amount,
 .vision-step-7 #grid-main .item-name,
 .vision-step-7 #grid-main #mainmap-sector-details-content td,
@@ -367,7 +393,7 @@ canvas {
 .vision-step-8 #grid-main h2,
 .vision-step-8 #grid-main h3,
 .vision-step-8 #grid-main .vision-text,
-.vision-step-8 #grid-main .stats-indicator,
+.vision-step-8 #grid-main .stat-indicator,
 .vision-step-8 #grid-main .list-amount,
 .vision-step-8 #grid-main .item-name,
 .vision-step-8 #grid-main #mainmap-sector-details-content td,
@@ -398,7 +424,7 @@ canvas {
 .vision-step-9 #grid-main h2,
 .vision-step-9 #grid-main h3,
 .vision-step-9 #grid-main .vision-text,
-.vision-step-9 #grid-main .stats-indicator,
+.vision-step-9 #grid-main .stat-indicator,
 .vision-step-9 #grid-main .list-amount,
 .vision-step-9 #grid-main .item-name,
 .vision-step-9 #grid-main #mainmap-sector-details-content td,
@@ -429,7 +455,7 @@ canvas {
 .vision-step-10 #grid-main h2,
 .vision-step-10 #grid-main h3,
 .vision-step-10 #grid-main .vision-text,
-.vision-step-10 #grid-main .stats-indicator,
+.vision-step-10 #grid-main .stat-indicator,
 .vision-step-10 #grid-main .list-amount,
 .vision-step-10 #grid-main .item-name,
 .vision-step-10 #grid-main #mainmap-sector-details-content td,
@@ -1203,43 +1229,43 @@ body.dark .horizontal-select-option:hover {
 body.dark .horizontal-select-option.selected {
   background: #444;
 }
-body.dark .stats-indicator {
+body.dark .stat-indicator {
   display: block;
   white-space: nowrap;
   padding-right: 5px;
 }
-body.dark .stats-indicator span {
+body.dark .stat-indicator span {
   display: inline-block;
   margin: auto 0 auto 1px;
 }
-body.dark .stats-indicator span.label {
+body.dark .stat-indicator span.label {
   text-transform: lowercase;
 }
-body.dark .stats-indicator span.value {
+body.dark .stat-indicator span.value {
   text-align: center;
   margin-left: 4px;
 }
-body.dark .stats-indicator .value,
-body.dark .stats-indicator .value-total,
-body.dark .stats-indicator .change,
-body.dark .stats-indicator .forecast {
+body.dark .stat-indicator .value,
+body.dark .stat-indicator .value-total,
+body.dark .stat-indicator .change,
+body.dark .stat-indicator .forecast {
   color: #bbb;
 }
-body.dark .stats-indicator .change,
-body.dark .stats-indicator .forecast {
+body.dark .stat-indicator .change,
+body.dark .stat-indicator .forecast {
   font-size: 0.75rem;
   vertical-align: middle;
 }
-body.dark .stats-indicator .progress {
+body.dark .stat-indicator .progress {
   height: 0.5em;
   width: 35px;
   display: inline-block;
   vertical-align: middle;
 }
-body.dark .stats-indicator .progress-wrap {
+body.dark .stat-indicator .progress-wrap {
   margin: auto 1px auto 3px;
 }
-body.dark .stats-indicator-with-fill {
+body.dark .stat-indicator-with-fill {
   font-size: 0.85rem;
   border: 2px solid #2f322f;
   background: linear-gradient(to right, #2f322f 50%, transparent 50%);
@@ -1439,9 +1465,6 @@ body.dark .container-relative p {
 }
 body.dark .container-nomargin {
   margin: 0;
-}
-body.dark .statsbar {
-  padding: 3px 2px;
 }
 body.dark .actionbox,
 body.dark .infobox,
@@ -2028,14 +2051,28 @@ body.dark #grid-switch-content {
   z-index: 1;
   position: relative;
 }
-body.dark #statsbar-resources {
+body.dark #statsbar-resources-camp {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: end;
   gap: 5px;
 }
-body.dark #statsbar-self .stats-indicator {
+body.dark #statsbar-resources-mobile {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+body.dark #statsbar-resources-mobile .stat-indicator {
+  width: 5em;
+}
+body.dark #statsbar-tribe-stats-regular,
+body.dark #bag-resources-regular {
+  display: inline-block;
+}
+body.dark #statsbar-self .stat-indicator {
   display: inline-block;
 }
 body.dark #header-self-bar {
@@ -2048,10 +2085,11 @@ body.dark #header-self-bar {
 body.dark #header-self-bar ul {
   margin-top: 10px;
 }
-body.dark #header-self-bar > span {
+body.dark #header-self-bar > span,
+body.dark #header-size .stat-indicator span {
   display: block;
 }
-body.dark #header-self-bar .stats-indicator {
+body.dark #header-self-bar .stat-indicator {
   margin: 1px 0px;
   width: 100%;
   max-width: 70px;
@@ -2060,7 +2098,7 @@ body.dark #header-self-bar .stats-indicator {
 body.dark #header-self-bar .callout-container {
   width: 100%;
 }
-body.dark #header-self-bar .stats-indicator .value {
+body.dark #header-self-bar .stat-indicator .value {
   font-size: 0.75rem;
   margin: 3px 0;
 }
@@ -2071,23 +2109,26 @@ body.dark #header-self-bar .change-indicator {
 body.dark #header-self-bar div.callout-arrow-up {
   margin: 0 0 0 30.5px;
 }
-body.dark .stats-indicator-secondary {
+body.dark .stat-indicator-secondary {
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
   align-items: center;
 }
-body.dark .stats-indicator-secondary img {
+body.dark .stat-indicator-secondary img {
   width: 1.75em;
   height: 1.75em;
 }
-body.dark .stats-indicator-secondary .value {
+body.dark .stat-indicator-secondary .value {
   min-width: 2em;
   font-size: 100%;
   margin: 0;
 }
-body.dark #container-equipment-stats {
+body.dark #container-equipment-stats-side {
   line-height: 1em;
+}
+body.dark #container-equipment-stats-mobile div {
+  display: inline-block;
 }
 body.dark #grid-location-header {
   padding: 10px 0px 0px 0px;
@@ -2106,13 +2147,29 @@ body.dark #mobile-header {
   background: #282a28;
   border-bottom: 5px solid #202220;
 }
+body.dark #mobile-header img.stat-icon {
+  height: 1em;
+  width: 1em;
+}
+body.dark .mobile-header-section {
+  display: flex;
+  justify-content: center;
+  padding: 3px;
+  flex-wrap: wrap;
+}
+body.dark #mobile-header-notification-container {
+  min-height: 1em;
+}
+body.dark #mobile-header .stat-indicator-with-fill {
+  max-width: 5em;
+}
 body.dark .item-bag-options {
   margin-top: 5px;
 }
 body.dark #bag-resources > .callout-container {
   max-width: 49%;
 }
-body.dark #notification-player {
+body.dark .notification-player {
   padding: 0px;
   border-width: 2px;
   border-style: solid;
@@ -2121,7 +2178,7 @@ body.dark #notification-player {
   display: none;
   margin-top: 5px;
 }
-body.dark #notification-player .progress {
+body.dark .notification-player .progress {
   width: 100%;
   max-width: 100%;
   margin: 0;
@@ -2360,8 +2417,13 @@ body.dark #resultlist-loststuff-lost ul li {
   padding-bottom: 5px;
 }
 body.dark #resultlist-inventorymanagement .inventorybox {
-  max-width: 25vw;
   margin: 3px auto;
+}
+body.dark .layout-regular #resultlist-inventorymanagement .inventorybox {
+  max-width: 25vw;
+}
+body.dark .layout-mobile #resultlist-inventorymanagement .inventorybox {
+  max-width: 90vw;
 }
 body.dark ul.resultlist li {
   margin: 0px 3px;
@@ -3556,43 +3618,43 @@ body.sunlit .horizontal-select-option:hover {
 body.sunlit .horizontal-select-option.selected {
   background: #ddd;
 }
-body.sunlit .stats-indicator {
+body.sunlit .stat-indicator {
   display: block;
   white-space: nowrap;
   padding-right: 5px;
 }
-body.sunlit .stats-indicator span {
+body.sunlit .stat-indicator span {
   display: inline-block;
   margin: auto 0 auto 1px;
 }
-body.sunlit .stats-indicator span.label {
+body.sunlit .stat-indicator span.label {
   text-transform: lowercase;
 }
-body.sunlit .stats-indicator span.value {
+body.sunlit .stat-indicator span.value {
   text-align: center;
   margin-left: 4px;
 }
-body.sunlit .stats-indicator .value,
-body.sunlit .stats-indicator .value-total,
-body.sunlit .stats-indicator .change,
-body.sunlit .stats-indicator .forecast {
+body.sunlit .stat-indicator .value,
+body.sunlit .stat-indicator .value-total,
+body.sunlit .stat-indicator .change,
+body.sunlit .stat-indicator .forecast {
   color: #777;
 }
-body.sunlit .stats-indicator .change,
-body.sunlit .stats-indicator .forecast {
+body.sunlit .stat-indicator .change,
+body.sunlit .stat-indicator .forecast {
   font-size: 0.75rem;
   vertical-align: middle;
 }
-body.sunlit .stats-indicator .progress {
+body.sunlit .stat-indicator .progress {
   height: 0.5em;
   width: 35px;
   display: inline-block;
   vertical-align: middle;
 }
-body.sunlit .stats-indicator .progress-wrap {
+body.sunlit .stat-indicator .progress-wrap {
   margin: auto 1px auto 3px;
 }
-body.sunlit .stats-indicator-with-fill {
+body.sunlit .stat-indicator-with-fill {
   font-size: 0.85rem;
   border: 2px solid #e6e6e6;
   background: linear-gradient(to right, #e6e6e6 50%, transparent 50%);
@@ -3792,9 +3854,6 @@ body.sunlit .container-relative p {
 }
 body.sunlit .container-nomargin {
   margin: 0;
-}
-body.sunlit .statsbar {
-  padding: 3px 2px;
 }
 body.sunlit .actionbox,
 body.sunlit .infobox,
@@ -4381,14 +4440,28 @@ body.sunlit #grid-switch-content {
   z-index: 1;
   position: relative;
 }
-body.sunlit #statsbar-resources {
+body.sunlit #statsbar-resources-camp {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: end;
   gap: 5px;
 }
-body.sunlit #statsbar-self .stats-indicator {
+body.sunlit #statsbar-resources-mobile {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+body.sunlit #statsbar-resources-mobile .stat-indicator {
+  width: 5em;
+}
+body.sunlit #statsbar-tribe-stats-regular,
+body.sunlit #bag-resources-regular {
+  display: inline-block;
+}
+body.sunlit #statsbar-self .stat-indicator {
   display: inline-block;
 }
 body.sunlit #header-self-bar {
@@ -4401,10 +4474,11 @@ body.sunlit #header-self-bar {
 body.sunlit #header-self-bar ul {
   margin-top: 10px;
 }
-body.sunlit #header-self-bar > span {
+body.sunlit #header-self-bar > span,
+body.sunlit #header-size .stat-indicator span {
   display: block;
 }
-body.sunlit #header-self-bar .stats-indicator {
+body.sunlit #header-self-bar .stat-indicator {
   margin: 1px 0px;
   width: 100%;
   max-width: 70px;
@@ -4413,7 +4487,7 @@ body.sunlit #header-self-bar .stats-indicator {
 body.sunlit #header-self-bar .callout-container {
   width: 100%;
 }
-body.sunlit #header-self-bar .stats-indicator .value {
+body.sunlit #header-self-bar .stat-indicator .value {
   font-size: 0.75rem;
   margin: 3px 0;
 }
@@ -4424,23 +4498,26 @@ body.sunlit #header-self-bar .change-indicator {
 body.sunlit #header-self-bar div.callout-arrow-up {
   margin: 0 0 0 30.5px;
 }
-body.sunlit .stats-indicator-secondary {
+body.sunlit .stat-indicator-secondary {
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
   align-items: center;
 }
-body.sunlit .stats-indicator-secondary img {
+body.sunlit .stat-indicator-secondary img {
   width: 1.75em;
   height: 1.75em;
 }
-body.sunlit .stats-indicator-secondary .value {
+body.sunlit .stat-indicator-secondary .value {
   min-width: 2em;
   font-size: 100%;
   margin: 0;
 }
-body.sunlit #container-equipment-stats {
+body.sunlit #container-equipment-stats-side {
   line-height: 1em;
+}
+body.sunlit #container-equipment-stats-mobile div {
+  display: inline-block;
 }
 body.sunlit #grid-location-header {
   padding: 10px 0px 0px 0px;
@@ -4459,13 +4536,29 @@ body.sunlit #mobile-header {
   background: #fff;
   border-bottom: 5px solid #fbfbfb;
 }
+body.sunlit #mobile-header img.stat-icon {
+  height: 1em;
+  width: 1em;
+}
+body.sunlit .mobile-header-section {
+  display: flex;
+  justify-content: center;
+  padding: 3px;
+  flex-wrap: wrap;
+}
+body.sunlit #mobile-header-notification-container {
+  min-height: 1em;
+}
+body.sunlit #mobile-header .stat-indicator-with-fill {
+  max-width: 5em;
+}
 body.sunlit .item-bag-options {
   margin-top: 5px;
 }
 body.sunlit #bag-resources > .callout-container {
   max-width: 49%;
 }
-body.sunlit #notification-player {
+body.sunlit .notification-player {
   padding: 0px;
   border-width: 2px;
   border-style: solid;
@@ -4474,7 +4567,7 @@ body.sunlit #notification-player {
   display: none;
   margin-top: 5px;
 }
-body.sunlit #notification-player .progress {
+body.sunlit .notification-player .progress {
   width: 100%;
   max-width: 100%;
   margin: 0;
@@ -4713,8 +4806,13 @@ body.sunlit #resultlist-loststuff-lost ul li {
   padding-bottom: 5px;
 }
 body.sunlit #resultlist-inventorymanagement .inventorybox {
-  max-width: 25vw;
   margin: 3px auto;
+}
+body.sunlit .layout-regular #resultlist-inventorymanagement .inventorybox {
+  max-width: 25vw;
+}
+body.sunlit .layout-mobile #resultlist-inventorymanagement .inventorybox {
+  max-width: 90vw;
 }
 body.sunlit ul.resultlist li {
   margin: 0px 3px;

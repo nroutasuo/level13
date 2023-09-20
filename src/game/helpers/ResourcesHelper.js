@@ -89,8 +89,17 @@ define([
 			return showStorage;
 		},
 
-		getCurrentStorageName: function () {
+		getCurrentStorageName: function (short) {
 			var playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
+
+			if (short) {
+				if (playerPosition.inCamp) {
+					return "Storage";
+				} else {
+					return "Capacity";
+				}
+			}
+
 			var showStorage = this.playerResourcesNodes.head.entity.get(ResourcesComponent).storageCapacity;
 			var storageName = "Bag capacity";
 

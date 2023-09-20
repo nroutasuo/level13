@@ -309,11 +309,12 @@ define(['ash',
 			},
 
 			generateResourceIndicators: function () {
-				for (var key in resourceNames) {
-					var name = resourceNames[key];
-					var isSupplies = name === resourceNames.food || name === resourceNames.water;
-					$("#statsbar-resources").append(UIConstants.createResourceIndicator(name, false, "resources-" + name, true, true, true));
-					$("#bag-resources").append(UIConstants.createResourceIndicator(name, false, "resources-bag-" + name, true, true, false));
+				for (let key in resourceNames) {
+					let name = resourceNames[key];
+					$("#statsbar-resources-regular").append(UIConstants.createResourceIndicator(name, false, "resources-camp-regular-" + name, true, true, true, true));
+					$("#statsbar-resources-mobile").append(UIConstants.createResourceIndicator(name, false, "resources-camp-mobile-" + name, true, true, true, false));
+					$("#bag-resources-regular").append(UIConstants.createResourceIndicator(name, false, "resources-bag-regular-" + name, true, true, false, false));
+					$("#bag-resources-mobile").append(UIConstants.createResourceIndicator(name, false, "resources-bag-mobile-" + name, true, true, false, false));
 				}
 			},
 

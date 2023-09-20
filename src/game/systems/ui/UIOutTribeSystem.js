@@ -271,7 +271,7 @@ define([
 			for(let key in resourceNames) {
 				let name = resourceNames[key];
 				if (name == resourceNames.robots) continue;
-				rowHTML += UIConstants.createResourceIndicator(name, false, rowID + "-" + name, false, true, false) + " ";
+				rowHTML += UIConstants.createResourceIndicator(name, false, rowID + "-" + name, false, true, false, false) + " ";
 			}
 			rowHTML += "</td>";
 			

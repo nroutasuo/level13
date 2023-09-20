@@ -29,11 +29,42 @@ body {
 	padding-left: @header-side-space;
 }
 
+.layout-regular #mobile-header {
+	display: none;
+}
+
+.layout-small #header-side {
+	display: none;
+}
+
+.layout-small #grid-main-header {
+	display: none;
+}
+
 #header-side {
 	position: fixed;
-	width: @header-side-width;
 	z-index: 5;
+	width: @header-side-width;
 	margin-left: -@header-side-space;
+}
+
+#mobile-header {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+    top: 0;
+    left: 0;
+    padding: 10px 0px;
+	width: 100%;
+}
+
+#notification-player-mobile {
+	width: 95%;
 }
 
 #log {

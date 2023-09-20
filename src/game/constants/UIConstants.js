@@ -571,9 +571,9 @@ define(['ash',
 			return aVal - bVal;
 		},
 
-		createResourceIndicator: function (name, showName, id, showAmount, showChange, showFill) {
-			let classes = [ "stats-indicator" ];
-			if (showFill) classes.push("stats-indicator-with-fill");
+		createResourceIndicator: function (name, showName, id, showAmount, showChange, showDetails, showFill) {
+			let classes = [ "stat-indicator" ];
+			if (showFill) classes.push("stat-indicator-with-fill");
 			
 			let div = "<div class='" + classes.join(" ") + "' id='" + id + "'>";
 
@@ -589,8 +589,8 @@ define(['ash',
 
 			if (showAmount) div += "<span class='value'></span>";
 			div += "<span class='change-indicator'></span>";
-			div += "<span class='change'></span>";
-			div += "<span class='forecast'></span>";
+			if (showDetails) div += "<span class='change'></span>";
+			if (showDetails) div += "<span class='forecast'></span>";
 			div += "</div>";
 
 			if (!showName || showChange) div = div + "</div>";
@@ -635,7 +635,7 @@ define(['ash',
 					}
 				}
 				
-				if ($indicator.hasClass("stats-indicator-with-fill")) {
+				if ($indicator.hasClass("stat-indicator-with-fill")) {
 					let sunlit = $("body").hasClass("sunlit");
 					let fillColor = ColorConstants.getColor(sunlit, "bg_element_1");
 					let fillPercent = Math.round(value / storage * 100);
