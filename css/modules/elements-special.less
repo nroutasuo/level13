@@ -265,9 +265,10 @@ span.msg-count, span.time, span.msg-camp-level {
 #footer {
 	padding: 1px 5px 1px  @header-side-space;
 	display: flex;
-    align-items: flex-end;
+    align-items: center;
     height: 100%;
     gap: 5px;
+	font-size: @font-size-small;
  }
 
 ul#game-options, ul#game-options-extended {
@@ -570,6 +571,10 @@ ul.resultlist-positive li:before {
 
 #switch {
 	background-color: @color-bg-page;
+}
+
+.layout-mobile #switch {
+	padding: 0 !important;
 }
 
 // CONTENT GRID

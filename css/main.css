@@ -63,12 +63,15 @@ body {
 }
 #switch,
 #switch-content {
-  padding: 0;
+  padding: 0 !important;
 }
 #grid-switch {
   margin: 0px !important;
   border: 0;
   padding: 0;
+}
+ul.tabs {
+  padding: 0 !important;
 }
 #tab-header {
   margin: 5px 0px;
@@ -77,18 +80,18 @@ body {
   margin: 2px 0px;
 }
 .sticky-footer {
-  height: 65px;
+  height: 55px;
   padding: 10px 0;
   display: none;
 }
 .sticky-footer-push {
   margin: 0;
-  height: 65px;
+  height: 55px;
 }
 .sticky-footer-wrapper {
   min-height: 100%;
   height: auto !important;
-  margin: 0 auto -65px;
+  margin: 0 auto -55px;
 }
 .game-opacity-controller {
   -webkit-transition: none;
@@ -860,7 +863,7 @@ body.dark button.btn-glyph-big {
 }
 body.dark button.btn-meta {
   width: auto;
-  padding: 0px 7px;
+  padding: 0px 3px;
   border-radius: 0px !important;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
@@ -1104,7 +1107,6 @@ body.dark .action-separator {
 }
 body.dark ul.tabs {
   margin: 0;
-  padding: 0 10px;
   list-style-type: none;
 }
 body.dark ul.tabs li {
@@ -2187,9 +2189,10 @@ body.dark .notification-player .progress {
 body.dark #footer {
   padding: 1px 5px 1px 95px;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   height: 100%;
   gap: 5px;
+  font-size: 0.85rem;
 }
 body.dark ul#game-options,
 body.dark ul#game-options-extended {
@@ -2434,6 +2437,9 @@ body.dark ul.resultlist-positive li:before {
 }
 body.dark #switch {
   background-color: #202220;
+}
+body.dark .layout-mobile #switch {
+  padding: 0 !important;
 }
 body.dark div.grid-content {
   background: #282a28;
@@ -3249,7 +3255,7 @@ body.sunlit button.btn-glyph-big {
 }
 body.sunlit button.btn-meta {
   width: auto;
-  padding: 0px 7px;
+  padding: 0px 3px;
   border-radius: 0px !important;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
@@ -3493,7 +3499,6 @@ body.sunlit .action-separator {
 }
 body.sunlit ul.tabs {
   margin: 0;
-  padding: 0 10px;
   list-style-type: none;
 }
 body.sunlit ul.tabs li {
@@ -4576,9 +4581,10 @@ body.sunlit .notification-player .progress {
 body.sunlit #footer {
   padding: 1px 5px 1px 95px;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   height: 100%;
   gap: 5px;
+  font-size: 0.85rem;
 }
 body.sunlit ul#game-options,
 body.sunlit ul#game-options-extended {
@@ -4823,6 +4829,9 @@ body.sunlit ul.resultlist-positive li:before {
 }
 body.sunlit #switch {
   background-color: #fbfbfb;
+}
+body.sunlit .layout-mobile #switch {
+  padding: 0 !important;
 }
 body.sunlit div.grid-content {
   background: #fff;

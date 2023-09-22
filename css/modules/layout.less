@@ -2,7 +2,7 @@
 
 @header-side-width: 75px;
 @header-side-space: @header-side-width + 20px;
-@footer-height: 65px;
+@footer-height: 55px;
 
 html {
 	height: 100%;
@@ -13,12 +13,6 @@ body {
 	margin: 0;
 	border-width: 0px !important;
 	overflow-x: hidden;
-}
-
-.div-horizontal-space-filler {
-	visibility:hidden;
-	padding:1px;
-	height:1px
 }
 
 #grid-main {
@@ -81,13 +75,17 @@ body {
 }
 
 #switch, #switch-content {
-	padding: 0;
+	padding: 0 !important;
 }
 
 #grid-switch {
 	margin: 0px !important;
 	border: 0;
 	padding: 0;
+}
+	
+ul.tabs {
+	padding: 0 !important;
 }
 
 #tab-header {
