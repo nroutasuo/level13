@@ -436,9 +436,10 @@
 			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.in;
 			var campCount = GameGlobals.gameState.numCamps;
 
-			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
-			var hasTradePost = improvements.getCount(improvementNames.tradepost) > 0;
-			var hasDeity = this.deityNodes.head !== null;
+			let improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+			let hasTradePost = improvements.getCount(improvementNames.tradepost) > 0;
+			let hasDeity = this.deityNodes.head !== null;
+			let isSmallLayout = $("body").hasClass("layout-small");
 
 			var availableBuildingCount = 0;
 			var visibleBuildingCount = 0;
@@ -501,7 +502,7 @@
 				GameGlobals.uiFunctions.toggle(elem.btnUse, existingImprovements > 0 && showUseAction1 && !isDamaged);
 				GameGlobals.uiFunctions.toggle(elem.btnUse2, existingImprovements > 0 && !showUseAction1 && !isDamaged);
 				GameGlobals.uiFunctions.toggle(elem.btnImprove, existingImprovements > 0 && maxImprovementLevel > 1 && !isDamaged);
-				GameGlobals.uiFunctions.toggle(elem.btnDismantle, existingImprovements > 0);
+				GameGlobals.uiFunctions.toggle(elem.btnDismantle, !isSmallLayout && existingImprovements > 0);
 				GameGlobals.uiFunctions.toggle(elem.btnRepair, isDamaged);
 				GameGlobals.uiFunctions.toggle(elem.iconDamaged, isDamaged);
 				

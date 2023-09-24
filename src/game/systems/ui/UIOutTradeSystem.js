@@ -272,7 +272,8 @@ define([
 				return;
 			}
 
-			var itemsComponent = this.itemNodes.head.items;
+			let itemsComponent = this.itemNodes.head.items;
+			let isSmallLayout = $("body").hasClass("layout-small");
 
 			// TODO show currency / more information about the trader
 
@@ -326,9 +327,10 @@ define([
 
 				inventoryUL += "</ul>";
 				var inventoryTD = "<td><div style='margin-right: 5px'>" + inventoryUL + "</div></td>";
-				var buttonsTD = "<td class='nowrap'><button class='trade-caravans-incoming-trade'>Trade</button>";
+				var buttonsTD = "<td class='nowrap-on-regular-layout'><button class='trade-caravans-incoming-trade'>Trade</button>";
 				buttonsTD += "<button class='trade-caravans-incoming-dismiss btn-secondary'>Dismiss</button></td>";
-				var tr = "<tr>" + nameTD + inventoryTD + buttonsTD + "</tr>";
+
+				var tr = "<tr>" + nameTD + (isSmallLayout ? "" : inventoryTD) + buttonsTD + "</tr>";
 				$("#trade-caravans-incoming-container table").append(tr);
 
 				var uiFunctions = GameGlobals.uiFunctions;

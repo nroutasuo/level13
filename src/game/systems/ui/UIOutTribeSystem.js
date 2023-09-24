@@ -257,15 +257,16 @@ define([
 		},
 
 		createCampRow: function (campOrdinal, rowID) {
+
 			var rowHTML = "<tr id='" + rowID + "' class='camp-overview-camp'>";
 			var btnID = "out-action-move-camp-" + campOrdinal;
 			var btnAction = "move_camp_global_" + campOrdinal;
 			rowHTML += "<td class='camp-overview-level'><div class='camp-overview-level-container lvl13-box-1'></div></td>";
 			rowHTML += "<td class='camp-overview-name'></td>";
-			rowHTML += "<td class='camp-overview-population list-amount nowrap'><span class='value'></span><span class='change-indicator'></span></td>";
-			rowHTML += "<td class='camp-overview-robots list-amount nowrap'><span class='value'></span><span class='change-indicator'></span></td>";
-			rowHTML += "<td class='camp-overview-reputation list-amount nowrap'><span class='value'></span><span class='change-indicator'></span></td>";
-			rowHTML += "<td class='camp-overview-raid list-amount'><span class='value'></span></span></td>";
+			rowHTML += "<td class='camp-overview-population list-amount hide-in-small-layout nowrap'><span class='value'></span><span class='change-indicator'></span></td>";
+			rowHTML += "<td class='camp-overview-robots list-amount hide-in-small-layout nowrap'><span class='value'></span><span class='change-indicator'></span></td>";
+			rowHTML += "<td class='camp-overview-reputation list-amount hide-in-small-layout nowrap'><span class='value'></span><span class='change-indicator'></span></td>";
+			rowHTML += "<td class='camp-overview-raid list-amount hide-in-small-layout'><span class='value'></span></span></td>";
 			rowHTML += "<td class='camp-overview-storage list-amount'></td>";
 			rowHTML += "<td class='camp-overview-production'>";
 			for(let key in resourceNames) {
@@ -275,14 +276,14 @@ define([
 			}
 			rowHTML += "</td>";
 			
-			rowHTML += "<td class='camp-overview-stats nowrap'>";
-			rowHTML += "<span class='camp-overview-stats-evidence info-callout-target info-callout-target-small'>";
+			rowHTML += "<td class='camp-overview-stats nowrap hide-in-small-layout'>";
+			rowHTML += "<span class='camp-overview-stats-evidence hide-in-small-layout info-callout-target info-callout-target-small'>";
 			rowHTML += "<span class='icon'><img src='img/stat-evidence.png' alt='evidence'/></span><span class='change-indicator'></span> ";
 			rowHTML += "</span> ";
-			rowHTML += "<span class='camp-overview-stats-rumours info-callout-target info-callout-target-small'>";
+			rowHTML += "<span class='camp-overview-stats-rumours hide-in-small-layout info-callout-target info-callout-target-small'>";
 			rowHTML += "<span class='icon'><img src='img/stat-rumours.png' alt='rumours'/></span><span class='change-indicator'></span> ";
 			rowHTML += "</span>";
-			rowHTML += "<span class='camp-overview-stats-favour info-callout-target info-callout-target-small'>";
+			rowHTML += "<span class='camp-overview-stats-favour hide-in-small-layout info-callout-target info-callout-target-small'>";
 			rowHTML += "<span class='icon'><img src='img/stat-favour.png' alt='favour'/></span><span class='change-indicator'></span> ";
 			rowHTML += "</span>";
 			rowHTML += "</td>";

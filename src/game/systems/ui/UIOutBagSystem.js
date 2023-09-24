@@ -107,10 +107,10 @@ define([
 		},
 		
 		initUseItemButtons: function () {
-			let container = $("#self-use-items table");
+			let container = $("#self-use-items ul");
 			let fnCreateItem = function () {
 				var li = {};
-				li.$root = $("<tr><td><button class='action multiline' action=''></button></td></tr>");
+				li.$root = $("<li><button class='action multiline' action=''></button></li>");
 				return li;
 			};
 			let fnUpdateItem = function (li, data) {

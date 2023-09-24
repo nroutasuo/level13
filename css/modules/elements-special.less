@@ -224,7 +224,12 @@ span.msg-count, span.time, span.msg-camp-level {
 }
 
 #mobile-header-notification-container {
+	width: 100%;
 	min-height: 1em;
+}
+
+#mobile-header .stat-indicator {
+	text-align: center;
 }
 
 #mobile-header .stat-indicator-with-fill {
@@ -303,7 +308,7 @@ ul#game-options li, ul#game-options-extended li {
 // CAMP buildings
 
 span.improvement-badge {
-	padding: 5px;
+	padding: 3px;
 	margin: 1px;
 	background-color: @color-bg-box-1;
 	border: 1px solid @color-border-box-1;
@@ -384,6 +389,7 @@ span.improvement-badge.improvement-upgrade-level {
     height: 224px;
     width: 224px;
 	border-width: 2px;
+    margin: auto;
 }
 
 #minimap-background {
@@ -600,6 +606,11 @@ div.grid-content {
 	vertical-align: middle;
 }
 
+.layout-small .blueprint-piece-box {
+	width: 2em;
+	height: 2em;
+}
+
 .blueprint-piece-box-found {
 	background: @color-bg-element-2;
 	border-color: @color-border-strong;
@@ -614,6 +625,12 @@ div.grid-content {
 	margin: 0.4em;
 	width: 1.2em;
 	height: 1.2em;
+}
+
+.layout-small .blueprint-piece-box img {
+	margin: 0.2em;
+	width: 0.8em;
+	height: 0.8em;
 }
 
 // CAMP EVENTS (AND PERKS)

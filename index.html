@@ -474,8 +474,8 @@
 							</div>
 							<div class="subheader" id="header-self-use-items"><h3>Use</h3></div>
 							<div id="self-use-items" class="actionbox">
-								<table>
-								</table>
+								<ul class="buttonlist">
+								</ul>
 							</div>
 							<div class="subheader" id="header-self-repair-items"><h3>Repair</h3></div>
 							<div id="self-repair-items" class="actionbox">
@@ -677,9 +677,9 @@
 									<tr id="camp-overview-header" class="lvl13-box-1 header-mini">
 										<th class="th-text" colspan="2">camp</th>
 										<th class="th-number" colspan="2">pop</th>
-										<th class="th-number">rep</th>
-										<th class="th-number">raid</th>
-										<th class="th-number">storage</th>
+										<th class="th-number hide-in-small-layout">rep</th>
+										<th class="th-number hide-in-small-layout">raid</th>
+										<th class="th-number hide-in-small-layout">storage</th>
 										<th class="th-text" colspan="2">production</th>
 										<th class="th-number"></th>
 										<th class="th-number"></th>
@@ -694,6 +694,7 @@
 							<div class="milestone-container" id="milestone-container-current">
 								<h3>Current: <span id='milestone-current-name' class="hl-functionality"></span></h3>
 								<p id="milestone-current-description"></p>
+								<div id="milestone-current-unlocks"></div>
 							</div>
 							<div class="milestone-container" id="milestone-container-next">
 								<h3>Next: <span id='milestone-next-name' class="hl-functionality"></span></h3>
@@ -744,7 +745,6 @@
 				<li><button class="btn-meta" id="btn-save">Save</button></li>
 			</ul>
 		</div>
-		<div class="unit one-fifth" class="div-horizontal-space-filler"></div>
 	</div><!-- sticky footer -->
 	
 	<!-- popups -->
@@ -899,8 +899,8 @@
 	<!-- whole page overlays -->
 
 	<div id="mobile-overlay" style="display:none">
-		<p>Level 13 isn't optimized for mobile. Many elements rely on hover effects. For the best experience, please come back on a different device.</p>
-		<p>If you want to try anyway, <a href="#" id="btn-dismiss-mobile-overlay">click here</a> to dismiss this message.</p>
+		<p>Level 13 isn't optimized for mobile. The layout works best on larger screens and many elements rely on hover effects. For the best experience, please come back on a different device.</p>
+		<p>If you want to try it out anyway, <a href="#" id="btn-dismiss-mobile-overlay">click here</a> to dismiss this message.</p>
 	</div>
 	
 	<div class="thinking-content">

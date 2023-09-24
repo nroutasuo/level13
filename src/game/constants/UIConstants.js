@@ -701,9 +701,10 @@ define(['ash',
 			return "<img src='img/items/blueprints/blueprint-" + type + ".png' alt='' />";
 		},
 		
-		getMilestoneUnlocksDescriptionHTML: function (milestone, previousMilestone, showComparison, showMultiline, hasDeity, hasInvestigate) {
+		getMilestoneUnlocksDescriptionHTML: function (milestone, previousMilestone, isNew, showMultiline, hasDeity, hasInvestigate) {
+			if (!previousMilestone) previousMilestone = {};
 			let html = "";
-			let baseReputation = Math.max(milestone.baseReputation || 0 , previousMilestone.baseReputation || 0);
+			let baseReputation = Math.max(milestone.baseReputation || 0, previousMilestone.baseReputation || 0);
 			
 			let addValue = function (label, value) {
 				html += "<span class='unlocks-list-entry'>";
@@ -726,7 +727,7 @@ define(['ash',
 				html += "<br/>";
 			};
 			
-			addValue("Base reputation", milestone.baseReputation);
+			addValue("Base reputation", baseReputation);
 			
 			addValue("Max evidence", milestone.maxEvidence);
 			addValue("Max rumours", milestone.maxRumours);
@@ -739,19 +740,21 @@ define(['ash',
 				addValue("Max insight", milestone.maxInsight);
 			}
 			
-			addGroup("", milestone.unlockedFeatures, UIConstants.getUnlockedFeatureDisplayName);
-			addGroup("New events", milestone.unlockedEvents);
-			
-			let unlockedUpgrades = GameGlobals.milestoneEffectsHelper.getUnlockedUpgrades(milestone.index);
-			addGroup("Unlocked upgrades", unlockedUpgrades, (upgradeID) => {
-				let upgrade = UpgradeConstants.upgradeDefinitions[upgradeID];
-				let isOtherRequirementsMet = GameGlobals.playerActionsHelper.isRequirementsMet(upgradeID, null, [ PlayerActionConstants.DISABLED_REASON_MILESTONE ]);
-				let c = isOtherRequirementsMet ? "" : "strike-through";
-				return "<span class='" + c + "'>" + upgrade.name + "</span>";
-			});
-			
-			let unlockedActions = GameGlobals.milestoneEffectsHelper.getUnlockedGeneralActions(milestone.index);
-			addGroup("Other", unlockedActions);
+			if (isNew) {
+				addGroup("", milestone.unlockedFeatures, UIConstants.getUnlockedFeatureDisplayName);
+				addGroup("New events", milestone.unlockedEvents);
+				
+				let unlockedUpgrades = GameGlobals.milestoneEffectsHelper.getUnlockedUpgrades(milestone.index);
+				addGroup("Unlocked upgrades", unlockedUpgrades, (upgradeID) => {
+					let upgrade = UpgradeConstants.upgradeDefinitions[upgradeID];
+					let isOtherRequirementsMet = GameGlobals.playerActionsHelper.isRequirementsMet(upgradeID, null, [ PlayerActionConstants.DISABLED_REASON_MILESTONE ]);
+					let c = isOtherRequirementsMet ? "" : "strike-through";
+					return "<span class='" + c + "'>" + upgrade.name + "</span>";
+				});
+				
+				let unlockedActions = GameGlobals.milestoneEffectsHelper.getUnlockedGeneralActions(milestone.index);
+				addGroup("Other", unlockedActions);
+			}
 			
 			return html;
 		},

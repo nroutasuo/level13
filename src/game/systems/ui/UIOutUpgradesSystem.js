@@ -248,19 +248,21 @@ define([
 		},
 		
 		getUpgradeTR: function (upgradeDefinition, status) {
-			var nameTD = "<td class='item-name'>" + upgradeDefinition.name + "</td>";
-			var classes = status == UpgradeStatus.BLUEPRINT_USABLE ? "item item-equipped" : "item";
-			var iconTD = "<td style='padding: 0px 3px'>";
-			var hasBlueprint = this.tribeNodes.head.upgrades.getBlueprint(upgradeDefinition.id);
-			if (hasBlueprint)
+			let isSmallLayout = $("body").hasClass("layout-small");
+
+			let classes = status == UpgradeStatus.BLUEPRINT_USABLE ? "item item-equipped" : "item";
+			let iconTD = "<td style='padding: 0px 3px'>";
+			let hasBlueprint = this.tribeNodes.head.upgrades.getBlueprint(upgradeDefinition.id);
+			if (hasBlueprint && !isSmallLayout)
 				iconTD += "<span class='" + classes + "'><div class='info-callout-target info-callout-target-small' description='blueprint'><img src='img/items/blueprint.png' alt='blueprint'/></div></span>";
 			iconTD += "</td>";
 
-			var effectDesc = "<span class='p-meta'>" + this.getEffectDescription(upgradeDefinition.id, status) + "</span>"
-			var descriptionTD = "<td class='maxwidth'>";
-			descriptionTD += upgradeDefinition.description + "<br/>" + effectDesc + "</td>";
+			let effectDesc = "<span class='p-meta'>" + this.getEffectDescription(upgradeDefinition.id, status) + "</span>"
+			let description = upgradeDefinition.description + "<br/>" + effectDesc;
+			let showDescription = true;
+			let blueprintTD = "";
 
-			var buttonTD;
+			let buttonTD;
 			switch (status) {
 				case UpgradeStatus.VISIBLE:
 				case UpgradeStatus.UNLOCKABLE:
@@ -273,14 +275,14 @@ define([
 					 break;
 				case UpgradeStatus.BLUEPRINT_IN_PROGRESS:
 					var blueprintVO = this.tribeNodes.head.upgrades.getBlueprint(upgradeDefinition.id);
-					var piecesTD = "<td style='text-align:left'>";
+					blueprintTD = "<td style='text-align:left'>";
 					for (let j = 0; j < blueprintVO.maxPieces; j++) {
 						var icon = j < blueprintVO.currentPieces ? UIConstants.getBlueprintPieceIcon(blueprintVO.upgradeID) : "";
-						var classes = "blueprint-piece-box" + (j < blueprintVO.currentPieces ? " blueprint-piece-box-found" : " blueprint-piece-box-missing");
-						piecesTD += "<div class='" + classes + "'>" + icon + "</div>";
+						classes = "blueprint-piece-box" + (j < blueprintVO.currentPieces ? " blueprint-piece-box-found" : " blueprint-piece-box-missing");
+						blueprintTD += "<div class='" + classes + "'>" + icon + "</div>";
 					}
-					piecesTD += "</td>";
-					descriptionTD = piecesTD;
+					blueprintTD += "</td>";
+					showDescription = false;
 					iconTD = "<td class='hide-on-mobiles list-amount'>" + blueprintVO.currentPieces + " / " + blueprintVO.maxPieces + "</td>";
 					buttonTD = "<td class='list-action'><button class='action multiline' action='create_blueprint_" + upgradeDefinition.id + "'>Combine</button></td>";
 					break;
@@ -288,7 +290,15 @@ define([
 					buttonTD = "<td></td>";
 					break;
 			}
-			return "<tr data-upgrade-id='" + upgradeDefinition.id + "' data-status='" + status + "'>" + nameTD + "" + descriptionTD + "" + iconTD + "" + buttonTD + "</tr>";
+
+			if (isSmallLayout) {
+				let nameAndDescriptionTD = "<td class='item-name'>" + upgradeDefinition.name + (showDescription ? ("<br/>" + description) : "") + "</td>";
+				return "<tr data-upgrade-id='" + upgradeDefinition.id + "' data-status='" + status + "'>" + nameAndDescriptionTD + "" + blueprintTD + "" + iconTD + "" + buttonTD + "</tr>";
+			} else {
+				let nameTD = "<td class='item-name'>" + upgradeDefinition.name + "</td>";
+				let descriptionTD = "<td class='maxwidth'>" + description + "</td>";
+				return "<tr data-upgrade-id='" + upgradeDefinition.id + "' data-status='" + status + "'>" + nameTD + "" + (showDescription ? descriptionTD : "") + ""+ blueprintTD + "" + iconTD + "" + buttonTD + "</tr>";
+			}
 		},
 
 		getEffectDescription: function (upgradeID, status) {

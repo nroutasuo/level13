@@ -70,6 +70,11 @@ div.btn-callout-content, div.info-callout-content {
 	white-space: nowrap;
 }
 
+.layout-small .info-callout-target-small + div.info-callout {
+	white-space: normal;
+    min-width: 10em;
+}
+
 .info-callout-target-side + div.info-callout {
 	max-width: none;
 	width: auto;
@@ -731,6 +736,16 @@ table .bubble {
 	font-size: @font-size-small;
     line-height: 1.15em;
     display: block;
+}
+
+// BUTTON LISTS
+
+ul.buttonlist {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-wrap: wrap;
 }
 
 // ITEMs

@@ -233,7 +233,7 @@ define([
 			tr += "<td class='minwidth'><button class='btn-mini navigation'>map</button></td>";
 			
 			let btnAction = "<button class='action action-build action-level-project multiline tabbutton' data-tab='switch-projects'></button>";
-			tr += "<td style='width:138px;text-align:right;' class='bg-reset'>" + btnAction + "</td>";
+			tr += "<td style='width:138px;text-align:right;' class='bg-reset td-button'>" + btnAction + "</td>";
 						
 			tr += "</tr>";
 			
@@ -244,10 +244,12 @@ define([
 			li.$btnHide = li.$root.find("button.hide-project");
 			li.$btnMap = li.$root.find("button.navigation");
 			li.$btnAction = li.$root.find("button.action");
+			li.$tdAction = li.$root.find("td.td-button");
 			return li;
 		},
 		
 		updateProjectListItem: function (li, project, isAvailable) {
+			let isSmallLayout = $("body").hasClass("layout-small");
 			let projectID = project.getID();
 			let sector = project.level + "." + project.sector + "." + project.direction;
 			let name = project.name;
@@ -258,11 +260,12 @@ define([
 			name = name.replace(" Up", "");
 			name = name.replace(" Down", "");
 			
-			let info = this.getProjectInfoText(project, isAvailable);
+			let info = this.getProjectInfoText(project, isAvailable, isSmallLayout);
 			
 			li.$tdDescription.attr("colspan", isAvailable ? 1 : 4);
 			li.$btnHide.css("display", isAvailable ? "initial" : "none");
-			li.$btnMap.css("display", isAvailable ? "initial" : "none");
+			li.$btnMap.css("display", isAvailable && !isSmallLayout ? "initial" : "none");
+			li.$tdAction.css("display", isAvailable ? "initial" : "none");
 			li.$btnAction.css("display", isAvailable ? "initial" : "none");
 			
 			li.$root.toggleClass("current", this.isCurrentLevel(project));
@@ -284,26 +287,32 @@ define([
 			return project1.getID() == project2.getID();
 		},
 		
-		getProjectInfoText: function (project, isAvailable) {
-			let position = project.position.getPosition();
-			let location = position.getInGameFormat();
+		getProjectInfoText: function (project, isAvailable, short) {
 			let showLevel = GameGlobals.gameState.unlockedFeatures.levels;
+			let position = project.position.getPosition();
+			let location = position.getInGameFormat(false, short);
+			let levelWord = short ? "lvl" : "level";
+			let levelText = (showLevel ? (" on " + levelWord + " " + project.level) : "");
 			
-			let info = "at " + location + " on level " + project.level;
+			let info = "at " + location + levelText;
 			
 			let isPassage = project.improvement && project.improvement.isPassage();
 			if (isPassage) {
-				var levels = this.getProjectLevels(project);
-				info = "connecting levels <span class='hl-functionality'>" + levels[0] + "</span> and <span class='hl-functionality'>" + levels[1] + "</span> at " + location;
+				let levels = this.getProjectLevels(project);
+				if (short) {
+					info = "connecting levels <span class='hl-functionality'>" + levels[0] + "</span> and <span class='hl-functionality'>" + levels[1] + "</span>";
+				} else {
+					info = "connecting levels <span class='hl-functionality'>" + levels[0] + "</span> and <span class='hl-functionality'>" + levels[1] + "</span> at " + location;
+				}
 			}
 			
 			if (project.action == "clear_debris_e" || project.action == "clear_debris_l" || project.action == "bridge_gap") {
 				let neighbourPosition = PositionConstants.getPositionOnPath(project.position.getPosition(), project.direction, 1);
 				let neighbourLocation = neighbourPosition.getInGameFormat();
-				info = "between " + location + " and " + neighbourLocation + " on level " + project.level;
+				info = "between " + location + " and " + neighbourLocation + levelText;
 			}
 			
-			if (project.improvement && project.improvement.name == improvementNames.greenhouse && !isAvailable) {
+			if (!short && project.improvement && project.improvement.name == improvementNames.greenhouse && !isAvailable) {
 				let level = position.level;
 				let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
 				let campLevel = GameGlobals.gameState.getLevelForCamp(campOrdinal);

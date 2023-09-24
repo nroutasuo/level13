@@ -102,9 +102,15 @@ define([
 			if (!hasNextMilestone) return;
 			
 			// unlocks
+			$("#milestone-current-unlocks").empty();
+			let oldUnlocksDiv = "<div class='p-meta'>";
+			oldUnlocksDiv += UIConstants.getMilestoneUnlocksDescriptionHTML(currentMilestone, null, false, false, hasDeity, hasInsight);
+			oldUnlocksDiv += "</div>";
+			$("#milestone-current-unlocks").append(oldUnlocksDiv);
+
 			$("#milestone-next-unlocks").empty();
 			let unlocksDiv = "<div class='p-meta'>";
-			unlocksDiv += UIConstants.getMilestoneUnlocksDescriptionHTML(nextMilestone, currentMilestone, false, false, hasDeity, hasInsight);
+			unlocksDiv += UIConstants.getMilestoneUnlocksDescriptionHTML(nextMilestone, currentMilestone, true, false, hasDeity, hasInsight);
 			unlocksDiv += "</div>";
 			$("#milestone-next-unlocks").append(unlocksDiv);
 			
