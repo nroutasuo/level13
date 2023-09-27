@@ -11,8 +11,12 @@
 					"summary": "Add better save management"
 				},
 				{
-					"type": "Dev",
+					"type": "UI",
 					"summary": "Improve mobile layout a bit and add a warning for mobile devices"
+				},
+				{
+					"type": "UI",
+					"summary": "Improve page structure for screen readers"
 				},
 				{
 					"type": "GD",

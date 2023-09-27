@@ -768,11 +768,13 @@ define([
 				var baghtml = "<div id='resultlist-inventorymanagement' class='unselectable'>";
 
 				baghtml += "<div id='resultlist-inventorymanagement-found' class='infobox inventorybox'>";
+				baghtml += "<h4 class='hide-from-visual-layout'>Found</h4>";
 				baghtml += "<ul></ul>";
 				baghtml += "<p class='msg-empty p-meta'>" + (isFight ? "Nothing left of the opponent." : "Nothing left here.") + "</p>";
 				baghtml += "</div>"
 
 				baghtml += "<div id='resultlist-inventorymanagement-kept' class='infobox inventorybox'>";
+				baghtml += "<h4 class='hide-from-visual-layout'>Bag</h4>";
 				baghtml += "<ul></ul>";
 				baghtml += "<p class='msg-empty p-meta'>Your " + (hasBag ? "bag is" : "pockets are") + " empty.</p>";
 				baghtml += "</div>"

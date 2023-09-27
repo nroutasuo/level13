@@ -612,6 +612,7 @@ define(['ash',
 				$(".sticky-footer").css("display", visible ? "block" : "none");
 				$("#grid-main").css("display", visible ? "block" : "none");
 				$("#unit-main").css("display", visible ? "block" : "none");
+				$(".hide-while-loading").css("display", visible ? "initial" : "none");
 			},
 
 			scrollToTabTop: function () {

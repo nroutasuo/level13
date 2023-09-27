@@ -123,8 +123,13 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 				$defaultButton.focus()
 			}
 			
-			// pause the game while a popup is open
-			GameGlobals.gameState.isPaused = this.hasOpenPopup();
+			this.updatePause();
+		},
+
+		updatePause: function () {
+			let hasOpenPopup = this.hasOpenPopup();
+			GameGlobals.gameState.isPaused = hasOpenPopup;
+			$(".hidden-by-popups").attr("aria-hidden", hasOpenPopup);
 		},
 		
 		handleOkButton: function (isTakeAll, okCallback) {
@@ -134,7 +139,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 		},
 		
 		closePopup: function (id) {
-			var popupManager = this;
+			let popupManager = this;
 			if (popupManager.popupQueue.length === 0) {
 				GlobalSignals.popupClosingSignal.dispatch(id);
 				$("#" + id).data("fading", true);
@@ -145,14 +150,14 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 					$("#" + id + "p#common-popup-desc");
 					GlobalSignals.popupClosedSignal.dispatch(id);
 					popupManager.showQueuedPopup();
-					GameGlobals.gameState.isPaused = popupManager.hasOpenPopup();
+					popupManager.updatePause();
 				});
 			} else {
 				$("#" + id).data("fading", false);
 				GameGlobals.uiFunctions.toggle("#" + id, false);
 				GlobalSignals.popupClosedSignal.dispatch(id);
 				popupManager.showQueuedPopup();
-				GameGlobals.gameState.isPaused = popupManager.hasOpenPopup();
+				popupManager.updatePause();
 			}
 		},
 		
@@ -186,6 +191,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 			$.each($(".popup:visible"), function () {
 				popupManager.closePopup($(this).attr("id"));
 			});
+			this.updatePause();
 		},
 		
 		dismissPopups: function () {
@@ -200,12 +206,15 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 					$(this).find("#info-ok").trigger("click");
 				}
 			});
+			this.updatePause();
 		},
 		
 		showQueuedPopup: function () {
 			if (this.popupQueue.length > 0) {
 				let queued = this.popupQueue.pop();
 				this.showPopup(queued.title, queued.msg, queued.okButtonLabel, queued.cancelButtonLabel, queued.resultVO, queued.okCallback, queued.cancelCallback, queued.options);
+			} else {
+				this.updatePause();
 			}
 		},
 		

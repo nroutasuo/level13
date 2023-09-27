@@ -32,7 +32,7 @@
 		<div class="grid" id="grid-main">
 			<div class="unit four-fifths" id="unit-main" style="display: none">
 
-				<div id="mobile-header">
+				<div id="mobile-header" role="banner">
 					<div id="mobile-header-tribe">
 						<div id="statsbar-tribe-stats-mobile" class="statsbar-tribe-stats mobile-header-section"></div>
 						<!--
@@ -105,7 +105,7 @@
 					</div>
 				</div>
 
-				<div id="header-side">
+				<div id="header-side" role="banner">
 					<div id="header-self-bar" class="lvl13-box-2">
 						<ul class="itemlist player-perks-list" id="player-perks-list-regular"></ul>
 						<ul class="itemlist player-statuses-list" id="player-statuses-list-regular"></ul>
@@ -124,7 +124,7 @@
 					</div>
 				</div>
 				
-				<div class="grid" id="grid-main-header" class="vision-container">
+				<div class="grid" id="grid-main-header" class="vision-container" role="banner">
 					<div class="unit whole lvl13-box-1 header-row" id="header-tribe-container">
 						<div id="statsbar-self" class="statsbar">
 							<div id="statsbar-tribe-stats-regular" class="statsbar-tribe-stats"></div>
@@ -192,7 +192,7 @@
 					</div>
 				</div>
 				
-				<div class="grid grid-content" id="grid-switch">
+				<div class="grid grid-content hidden-by-popups" id="grid-switch" role="navigation">
 					<div id="switch" class="unit whole">
 						<ul class="tabs" id="switch-tabs">
 							<li id="switch-out"><span class="name vision-text">Outside</span></li>
@@ -210,7 +210,7 @@
 					</div>
 				</div><!-- grid for the switch -->
 				
-				<div class="grid grid-content" id="grid-switch-content">
+				<div class="grid grid-content hidden-by-popups" id="grid-switch-content" role="main">
 				
 					<div class="grid" id="grid-tab-header">
 						<div class="unit whole" id="tab-header">
@@ -755,7 +755,7 @@
 	
 	<!-- popups -->
 	
-	<div id="fight-popup" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display:none">
+	<div id="fight-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display:none" aria-labelledby="fight-title">
 		<h3 id="fight-title"></h3>
 		<p id="fight-desc"></p>
 		<div class="infobox" id="fight-popup-enemy-info">
@@ -815,8 +815,8 @@
 		</div>
 	</div>
 	
-	<div id="incoming-caravan-popup" class="popup popup-wide fill-on-mobiles hidden-by-default popup-ingame" style="display:none">
-		<h3>Trader</h3>
+	<div id="incoming-caravan-popup" role="dialog" class="popup popup-wide fill-on-mobiles hidden-by-default popup-ingame" style="display:none" aria-labelledby="trade-header">
+		<h3 id="trade-header">Trader</h3>
 		<p id="incoming-caravan-popup-markup"></p>
 		<div class="inventorybox" style="display:flex">
 			<div id="inventorylist-incoming-caravan-camp-inventory" class="inventorydivision" style="width: 170px">
@@ -850,7 +850,7 @@
 		</div>
 	</div>
 	
-	<div id="manage-save-popup" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display:none">
+	<div id="manage-save-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display:none" aria-labelledby="manage-save-popup-header">
 		<h3 id="manage-save-popup-header">Manage saves</h3>
 		<p id="manage-save-info">Note that the game is still in alpha and updates can break old saves.</p>
 
@@ -894,8 +894,8 @@
 		</div>
 	</div>
 	
-	<div id="common-popup" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display:none">
-		<h3></h3>
+	<div id="common-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display:none" aria-labelledby="common-popup-header">
+		<h3 id="common-popup-header"></h3>
 		<p id="common-popup-desc"></p>
 		<p id="common-popup-input-container"><input class="text" autocomplete="false" autofocus="true"/></p>
 		<div id="info-results"></div>
@@ -918,6 +918,7 @@
 	</div>
 	
 	<div class="loading-content">
+		<p class="hide-from-visual-layout">Loading</p>
 		<div class="loading-spinner">
 			<div class="loading-dot loading-dot1"></div>
 			<div class="loading-dot loading-dot2"></div>
