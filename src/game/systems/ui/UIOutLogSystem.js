@@ -30,6 +30,7 @@ define([
 
 		initElements: function () {
 			this.logList = UIList.create($("#log ul"), this.createLogListItem, this.updateLogListItem, this.isLogListItemDataEqual);
+			this.logListLatest = UIList.create($("#log-latest ul"), this.createLogListItem, this.updateLogListItem, this.isLogListItemDataEqual);
 		},
 
 		update: function () {
@@ -86,6 +87,8 @@ define([
 			*/
 
 			let newItems = UIList.update(this.logList, messages);
+			
+			UIList.update(this.logListLatest, newItems.map(li => li.data));
 
 			for (var i = 0; i < newItems.length; i++) {
 				newItems[i].$root.toggle(false);
