@@ -129,8 +129,8 @@ define([
 			}
 			
 			if (updateTables) {
-				let numCreated1 = UIList.update(this.availableLevelProjectList, projects.filter(project => !project.isColonyProject() && !isHidden(project)));
-				let numCreated2 = UIList.update(this.availableColonyProjectList, projects.filter(project => project.isColonyProject()));
+				let numCreated1 = UIList.update(this.availableLevelProjectList, projects.filter(project => !project.isColonyProject() && !isHidden(project))).length;
+				let numCreated2 = UIList.update(this.availableColonyProjectList, projects.filter(project => project.isColonyProject())).length;
 				
 				if (numCreated1 > 0 || numCreated2 > 0) {
 					GameGlobals.uiFunctions.registerCustomButtonListeners("#in-improvements-level", "navigation", this.onMapLinkButtonClicked);
@@ -182,8 +182,8 @@ define([
 			projects.sort((a, b) => { return b.level - a.level; });
 			
 			if (updateTables) {
-				let numCreated1 = UIList.update(this.builtLevelProjectList, projects.filter(project => !project.isColonyProject()));
-				let numCreated2 = UIList.update(this.builtColonyProjectList, projects.filter(project => project.isColonyProject()));
+				let numCreated1 = UIList.update(this.builtLevelProjectList, projects.filter(project => !project.isColonyProject())).length;
+				let numCreated2 = UIList.update(this.builtColonyProjectList, projects.filter(project => project.isColonyProject())).length;
 				
 				if (numCreated1) {
 					GameGlobals.uiFunctions.registerCustomButtonListeners("#in-improvements-level-built", "navigation", this.onMapLinkButtonClicked);

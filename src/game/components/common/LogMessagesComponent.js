@@ -1,6 +1,5 @@
 // Contains a list of messages to be shown in the log
-define(
-['ash', 'game/GameGlobals', 'game/constants/LogConstants', 'game/vos/LogMessageVO'],
+define(['ash', 'game/GameGlobals', 'game/constants/LogConstants', 'game/vos/LogMessageVO'],
 function (Ash, GameGlobals, LogConstants, LogMessageVO) {
 	var LogMessagesComponent = Ash.Class.extend({
 

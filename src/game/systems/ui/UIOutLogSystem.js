@@ -1,6 +1,6 @@
 define([
-	'ash', 'game/GameGlobals', 'game/GlobalSignals', 'game/nodes/LogNode', 'game/constants/UIConstants',
-], function (Ash, GameGlobals, GlobalSignals, LogNode, UIConstants) {
+	'ash', 'utils/UIList', 'game/GameGlobals', 'game/GlobalSignals', 'game/nodes/LogNode', 'game/constants/UIConstants',
+], function (Ash, UIList, GameGlobals, GlobalSignals, LogNode, UIConstants) {
 	var UIOutLogSystem = Ash.System.extend({
 	
 		gameState: null,
@@ -9,7 +9,9 @@ define([
 		lastUpdateTimeStamp: 0,
 		updateFrequency: 1000 * 15,
 
-		constructor: function () {},
+		constructor: function () {
+			this.initElements();
+		},
 
 		addToEngine: function (engine) {
 			var logSystem = this;
@@ -24,6 +26,10 @@ define([
 		removeFromEngine: function (engine) {
 			this.logNodes = null;
 			GlobalSignals.playerPositionChangedSignal.remove(this.onPlayerPositionChanged);
+		},
+
+		initElements: function () {
+			this.logList = UIList.create($("#log ul"), this.createLogListItem, this.updateLogListItem, this.isLogListItemDataEqual);
 		},
 
 		update: function () {
@@ -70,37 +76,47 @@ define([
 				node.logMessages.hasNewMessages = false;
 			}
 			this.pruneMessages();
-			this.updateMessageList(messages);
+			this.updateMessageList(messages.reverse());
 		},
 	
 		updateMessageList: function (messages) {
+			/*
 			var animateFromIndex = messages.length - (messages.length - $("#log ul li").length);
-			$("#log ul").empty();
-				
-			var msg;
-			var liMsg;
-			for	(var index = 0; index < messages.length; index++) {
-				msg = messages[index];
-				if (msg.text.length < 3) {
-					log.w("log contains empty message")
-					log.w(msg);
-				}
-				var li = '<li';
-				if (msg.loadedFromSave)
-					li += ' class="log-loaded"';
-				li += '><span class="time">' + UIConstants.getTimeSinceText(msg.time) + " ago" + '</span> ';
-				if (msg.campLevel) li += '<span class="msg-camp-level"> (level ' + msg.campLevel + ')</span>';
-				li += '<span class="msg">' + msg.text;
-				if (msg.combined > 0) li += '<span class="msg-count"> (x' + (msg.combined + 1) + ')</span>';
-				li += '</span></li>';
-				liMsg = $(li);
-				$("#log ul").prepend(liMsg);
-				var animate = index >= animateFromIndex;
-				if (animate) {
-					liMsg.toggle(false);
-					liMsg.fadeIn(600);
-				}
+			var animate = index >= animateFromIndex;
+			*/
+
+			let newItems = UIList.update(this.logList, messages);
+
+			for (var i = 0; i < newItems.length; i++) {
+				newItems[i].$root.toggle(false);
+				newItems[i].$root.fadeIn(600);
 			}
+		},
+
+		createLogListItem: function () {
+			let li = {};
+			li.$root = $("<li><span class='time'></span><span class='msg-camp-level'></span><span class='msg'></span><span class='msg-count'></span></li>");
+			li.$spanTime = li.$root.find(".time");
+			li.$spanLevel = li.$root.find(".msg-camp-level");
+			li.$spanMsg = li.$root.find(".msg");
+			li.$spanMsgCount = li.$root.find(".msg-count");
+			return li;
+		},
+
+		updateLogListItem: function (li, data) {
+			let hasLevel = data.campLevel || data.campLevel == 0;
+			let hasCount = data.combined > 0;
+			li.$root.toggleClass("log-loaded", data.loadedFromSave);
+			li.$spanMsg.text(data.text);
+			li.$spanTime.text(UIConstants.getTimeSinceText(data.time) + " ago");
+			li.$spanLevel.toggle(hasLevel);
+			if (hasLevel) li.$spanLevel.text(' (level ' + data.campLevel + ')');
+			li.$spanMsgCount.toggle(hasCount);
+			if (hasCount) li.$spanMsgCount.text(' (x ' + data.combined + 1 + ')');
+		},
+
+		isLogListItemDataEqual: function (d1, d2) {
+			return d1.logMsgID == d2.logMsgID && d1.time == d2.time;
 		},
 		
 		pruneMessages: function () {

@@ -722,7 +722,7 @@ define([
 				return result;
 			});
 			
-			let numNewItems = UIList.update(this.localeList, data);
+			let numNewItems = UIList.update(this.localeList, data).length;
 			
 			if (numNewItems > 0) {
 				GameGlobals.buttonHelper.updateButtonDisabledStates("#table-out-actions-locales", true);

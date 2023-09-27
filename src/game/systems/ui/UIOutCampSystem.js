@@ -545,7 +545,7 @@
 			
 			// Camp actions (buildings, projects)
 			let campActions = this.getCampActionData();
-			let numNewEvents = UIList.update(this.campActionList, campActions);
+			UIList.update(this.campActionList, campActions);
 			if (campActions.length > 0) hasEvents = true;
 
 			// Traders

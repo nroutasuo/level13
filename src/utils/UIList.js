@@ -67,7 +67,7 @@ define(['game/GameGlobals'], function (GameGlobals) {
 			// update any buttons (needs to be after they've been added to the DOM)
 			this.initButtonsInCreatedItems(list, createdItems);
 
-			return createdItems.length;
+			return createdItems;
 		},
 		
 		initButtonsInCreatedItems: function (list, createdItems) {

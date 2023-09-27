@@ -294,7 +294,7 @@ define([
 			items = items.sort(UIConstants.sortItemsByType);
 			items = items.filter(item => this.isUsable(item));
 
-			let numNewItems = UIList.update(this.useItemButtonList, items);
+			let numNewItems = UIList.update(this.useItemButtonList, items).length;
 			
 			GameGlobals.uiFunctions.toggle("#header-self-use-items", items.length > 0);
 
@@ -312,7 +312,7 @@ define([
 			items = items.sort(UIConstants.sortItemsByType);
 			items = items.filter(item => this.isRepairable(item));
 
-			let numNewItems = UIList.update(this.repairItemButtonList, items);
+			let numNewItems = UIList.update(this.repairItemButtonList, items).length;
 			
 			GameGlobals.uiFunctions.toggle("#header-self-repair-items", items.length > 0);
 
