@@ -119,6 +119,8 @@ define([
 			for (let i = 0; i < this.sortedCampNodes.length; i++) {
 				this.updateNode(this.sortedCampNodes[i], isActive);
 			}
+
+			GameGlobals.uiFunctions.updateCallouts("#camp-overview");
 		},
 
 		updateBubble: function () {
@@ -262,7 +264,7 @@ define([
 			var btnID = "out-action-move-camp-" + campOrdinal;
 			var btnAction = "move_camp_global_" + campOrdinal;
 			rowHTML += "<td class='camp-overview-level'><div class='camp-overview-level-container lvl13-box-1'></div></td>";
-			rowHTML += "<td class='camp-overview-name'></td>";
+			rowHTML += "<td class='camp-overview-name'><span class='label info-callout-target info-callout-target-side'></span></td>";
 			rowHTML += "<td class='camp-overview-population list-amount hide-in-small-layout nowrap'><span class='value'></span><span class='change-indicator'></span></td>";
 			rowHTML += "<td class='camp-overview-robots list-amount hide-in-small-layout nowrap'><span class='value'></span><span class='change-indicator'></span></td>";
 			rowHTML += "<td class='camp-overview-reputation list-amount hide-in-small-layout nowrap'><span class='value'></span><span class='change-indicator'></span></td>";
@@ -320,7 +322,8 @@ define([
 
 			$("#camp-overview tr#" + rowID).toggleClass("current", isPlayerInCampLevel);
 			GameGlobals.uiFunctions.toggle("#camp-overview tr#" + rowID + " .camp-overview-btn button", !isPlayerInCampLevel);
-			$("#camp-overview tr#" + rowID + " .camp-overview-name").text(camp.campName);
+			$("#camp-overview tr#" + rowID + " .camp-overview-name .label").text(camp.campName);
+			$("#camp-overview tr#" + rowID + " .camp-overview-name .label").attr("description", camp.campName);
 			GameGlobals.uiFunctions.toggle("#camp-overview tr#" + rowID + " .camp-overview-camp-bubble .bubble", isAlert);
 			
 			$("#camp-overview tr#" + rowID + " .camp-overview-level-container").text(level);

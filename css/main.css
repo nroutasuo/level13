@@ -2393,7 +2393,10 @@ body.dark .camp-overview-stats {
 body.dark .camp-overview-name {
   max-width: 5em;
   white-space: nowrap;
+}
+body.dark .camp-overview-name .label {
   overflow-x: hidden;
+  max-width: 5em;
 }
 body.dark .camp-overview-btn {
   text-align: center;
@@ -4819,7 +4822,10 @@ body.sunlit .camp-overview-stats {
 body.sunlit .camp-overview-name {
   max-width: 5em;
   white-space: nowrap;
+}
+body.sunlit .camp-overview-name .label {
   overflow-x: hidden;
+  max-width: 5em;
 }
 body.sunlit .camp-overview-btn {
   text-align: center;
