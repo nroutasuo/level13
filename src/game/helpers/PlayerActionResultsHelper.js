@@ -1507,6 +1507,8 @@ define([
 		getItemLoseOrBreakChanceWeight: function (action, item) {
 			let baseItemId = ItemConstants.getBaseItemId(item.id);
 			let result = 1;
+
+			if (!ItemConstants.isUnselectable(item)) return 0;
 			
 			let campCount = GameGlobals.gameState.numCamps;
 			switch (item.type) {

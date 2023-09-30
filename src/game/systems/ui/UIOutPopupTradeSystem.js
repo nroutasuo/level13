@@ -112,6 +112,7 @@ define([
 				for (let k in itemList) {
 					if (itemList[k].equipped) continue;
 					if (itemList[k].broken) continue;
+					if (!ItemConstants.isUnselectable(itemList[k])) continue;
 					if (!this.campTotalItems[itemList[k].id])
 						this.campTotalItems[itemList[k].id] = 0;
 					this.campTotalItems[itemList[k].id]++;
