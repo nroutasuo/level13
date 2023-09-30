@@ -86,8 +86,8 @@ define([
 				this.elements.tabHeader.text("Building projects");
 			}
 			
-			this.updateAvailableProjects(true);
-			this.updateBuiltProjects(true);
+			this.updateAvailableProjects(isActive);
+			this.updateBuiltProjects(isActive);
 			this.updateHiddenMsg();
 			this.updateContainers();
 		},
@@ -249,6 +249,7 @@ define([
 		},
 		
 		updateProjectListItem: function (li, project, isAvailable) {
+			let isTabOpen = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.projects;
 			let isSmallLayout = $("body").hasClass("layout-small");
 			let projectID = project.getID();
 			let sector = project.level + "." + project.sector + "." + project.direction;
@@ -280,7 +281,7 @@ define([
 			
 			GameGlobals.uiFunctions.toggle(li.$btnHide, isAvailable && !project.isColonyProject() && UIConstants.canHideProject(projectID));
 			GameGlobals.uiFunctions.toggle(li.$btnMap, isAvailable && !project.isColonyProject());
-			GameGlobals.uiFunctions.toggle(li.$btnAction, isAvailable);
+			GameGlobals.uiFunctions.toggle(li.$btnAction, isAvailable && isTabOpen);
 		},
 		
 		isProjectListItemDataEqual: function (project1, project2) {
