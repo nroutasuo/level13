@@ -152,7 +152,13 @@ define(['ash',
 			};
 
 			if (showBagOptions) {
-				var options = "<div class='item-bag-options'>";
+				let options = "<div class='item-bag-options'>";
+
+				if (bagOptions.canUse) {
+					var action = "use_item_" + item.id;
+					options += makeButton(action, ItemConstants.getUseItemVerb(item));
+				}
+
 				if (bagOptions.canEquip) {
 					var action = "equip_" + item.itemID;
 					options += makeButton(action, "Equip");
@@ -160,10 +166,12 @@ define(['ash',
 					var action = "unequip_" + item.id;
 					options += makeButton(action, "Unequip");
 				}
+
 				if (bagOptions.canDiscard) {
 					var action = "discard_" + item.id;
 					options += makeButton(action, "Discard");
 				}
+
 				options += "</div>";
 				itemCalloutContent += options;
 			}

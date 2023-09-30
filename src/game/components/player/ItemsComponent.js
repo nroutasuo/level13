@@ -30,14 +30,12 @@ function (Ash, ItemVO, ItemConstants) {
 			item.carried = isCarried;
 		},
 
-		discardItem: function (item, autoEquip) {
-			if (!item) log.w("Trying to discard null item.");
-			if (!this.isItemDiscardable(item)) {
-				log.w("Trying to discard un-discardable item.");
+		removeItem: function (item, autoEquip) {
+			if (!item) {
+				log.w("Trying to remove null item.");
 				return;
 			}
 			
-
 			if (typeof this.items[item.type] !== 'undefined') {
 				var typeItems = this.items[item.type];
 				var splicei = -1;
@@ -57,25 +55,43 @@ function (Ash, ItemVO, ItemConstants) {
 						if (nextItem) this.equip(nextItem);
 					}
 				} else {
-					log.w("Item to discard not found.");
+					log.w("Item to remove not found.");
 				}
 			}
 		},
 
-		isItemDiscardable: function (item) {
-			return this.isItemsDiscardable(item) || this.getCount(item, true) > 1;
+		discardItem: function (item, autoEquip) {
+			if (!item) {
+				log.w("Trying to discard null item.");
+				return;
+			}
+			
+			if (!this.isItemDiscardable(item)) {
+				log.w("Trying to discard un-discardable item.");
+				return;
+			}
+			
+			if (!ItemConstants.isUnselectable(item)) {
+				log.w("Trying to discard non unselectable item.");
+				return;
+			}	
+
+			this.removeItem(item, autoEquip);
 		},
 
-		isItemsDiscardable: function (item) {
+		isItemDiscardable: function (item) {
 			if (!item) return false;
+			if (!ItemConstants.isUnselectable(item)) return false;
 			switch (item.type) {
 				case ItemConstants.itemTypes.bag:
 					return this.getStrongestByType(item.type).id !== item.id;
 
+				case ItemConstants.itemTypes.voucher:
+				case ItemConstants.itemTypes.ingredient:
 				case ItemConstants.itemTypes.uniqueEquipment:
 					return false;
 
-				default: return true;
+				default: return this.getCount(item, true) > 1;
 			}
 		},
 		

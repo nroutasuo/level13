@@ -114,9 +114,11 @@ define([
 				return li;
 			};
 			let fnUpdateItem = function (li, data) {
+				let item = data.items[0];
 				let actionName = "use_item_" + data.id;
-				let actionVerb = ItemConstants.getUseItemVerb(data);
-				let buttonLabel = actionVerb + " " + ItemConstants.getItemDisplayName(data, true);
+				let buttonLabel = ItemConstants.getUseItemActionDisplaName(item);
+				if (data.items.length > 1) buttonLabel += " (" + (data.items.length) + ")";
+
 				li.$root.find("button.action").attr("action", actionName);
 				li.$root.find("button.action").html(buttonLabel);
 			};
@@ -289,12 +291,20 @@ define([
 		},
 
 		updateUseItems: function () {
-			var items = this.getOwnedItems();
+			let items = this.getOwnedItems();
 
 			items = items.sort(UIConstants.sortItemsByType);
 			items = items.filter(item => this.isUsable(item));
 
-			let numNewItems = UIList.update(this.useItemButtonList, items).length;
+			let itemsById = {};
+
+			for (let i = 0; i < items.length; i++) {
+				let item = items[i];
+				if (!itemsById[item.id]) itemsById[item.id] = { id: item.id, items: [] };
+				itemsById[item.id].items.push(item);
+			}
+
+			let numNewItems = UIList.update(this.useItemButtonList, Object.values(itemsById)).length;
 			
 			GameGlobals.uiFunctions.toggle("#header-self-use-items", items.length > 0);
 
@@ -433,6 +443,9 @@ define([
 				let equipped = itemsComponent.getEquipped(item.type);
 				let isEquipped = equipped && equipped.length > 0 && equipped[0].id == item.id && equipped[0].broken == item.broken;
 				let count = itemsComponent.getCount(item, inCamp);
+				let canDiscard = itemsComponent.isItemDiscardable(item);
+				let options = { canEquip: false, isEquipped: item.equipped, canUnequip: false, canDiscard: canDiscard, canUse: item.useable };
+
 				switch (item.type) {
 					case ItemConstants.itemTypes.light:
 					case ItemConstants.itemTypes.weapon:
@@ -443,15 +456,14 @@ define([
 					case ItemConstants.itemTypes.clothing_hands:
 					case ItemConstants.itemTypes.shoes:
 					case ItemConstants.itemTypes.bag:
-						var showCount = count;
-						var canEquip = !isEquipped;
-						var canDiscard = itemsComponent.isItemDiscardable(item);
+						let showCount = count;
+						let canEquip = !isEquipped;
 						if (isEquipped) {
 							this.updateItemSlot(item.type, item);
 							showCount = count - 1;
 						}
 						if (showCount > 0) {
-							var options = { canEquip: canEquip, isEquipped: item.equipped, canUnequip: false, canDiscard: canDiscard };
+							options.canEquip = canEquip;
 							var smallSlot = UIConstants.getItemSlot(itemsComponent, item, showCount, false, false, true, options, "switch-bag");
 							$("#bag-items").append(smallSlot);
 							this.inventoryItemsBag.push(item);
@@ -462,7 +474,7 @@ define([
 						break;
 
 					default:
-						var smallSlot = UIConstants.getItemSlot(itemsComponent, item, count);
+						var smallSlot = UIConstants.getItemSlot(itemsComponent, item, count, false, false, true, options, "switch-bag");
 						$("#bag-items").append(smallSlot);
 						this.inventoryItemsBag.push(item);
 						break;
@@ -512,7 +524,7 @@ define([
 					break;
 			}
 
-			var options = { canEquip: false, isEquipped: true, canUnequip: true };
+			let options = { canEquip: false, isEquipped: true, canUnequip: true, canUse: false };
 			$(slot).children(".item-slot-image").html(itemVO ? UIConstants.getItemDiv(itemsComponent, itemVO, null, UIConstants.getItemCallout(itemVO, false, true, options, "switch-bag"), true) : "");
 			$(slot).children(".item-slot-name").html(itemVO ? itemVO.name.toLowerCase() : "");
 
@@ -767,13 +779,13 @@ define([
 		},
 		
 		getOwnedItems: function () {
-			var itemsComponent = this.itemNodes.head.items;
-			return itemsComponent.getUnique(true);
+			let itemsComponent = this.itemNodes.head.items;
+			return itemsComponent.getAll(true);
 		},
 		
 		getCarriedItems: function () {
-			var itemsComponent = this.itemNodes.head.items;
-			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
+			let itemsComponent = this.itemNodes.head.items;
+			let inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
 			return itemsComponent.getUnique(inCamp);
 		},
 		

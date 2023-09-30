@@ -171,6 +171,11 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			}
 			return ItemConstants.itemCategories.other;
 		},
+
+		getUseItemActionDisplaName: function (item) {
+			let actionVerb = ItemConstants.getUseItemVerb(item);
+			return actionVerb + " " + ItemConstants.getItemDisplayName(item, true);
+		},
 		
 		getUseItemVerb: function (item) {
 			if (item.id.startsWith("cache_metal")) return "Disassemble";
@@ -503,6 +508,11 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 				default:
 					return false;
 			}
+		},
+
+		isUnselectable: function (item) {
+			let baseItemId = ItemConstants.getBaseItemId(item.id);
+			return item.type == ItemConstants.itemTypes.uniqueEquipment || baseItemId == "cache_insight";
 		},
 	};
 	

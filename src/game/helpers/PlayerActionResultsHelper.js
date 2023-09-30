@@ -469,7 +469,7 @@ define([
 
 			if (rewards.lostItems) {
 				for (let i = 0; i < rewards.lostItems.length; i++) {
-					itemsComponent.discardItem(rewards.lostItems[i], false);
+					itemsComponent.removeItem(rewards.lostItems[i], false);
 				}
 			}
 			

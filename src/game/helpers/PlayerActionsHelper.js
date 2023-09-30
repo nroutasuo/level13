@@ -141,7 +141,7 @@ define([
 					result.items = result.items || [];
 					for (let i = 0; i < costAmount; i++) {
 						var item = itemsComponent.getItem(itemId, null, inCamp, false) || itemsComponent.getItem(itemId, null, inCamp, true);
-						itemsComponent.discardItem(item, false);
+						itemsComponent.removeItem(item, false);
 						result.items.push(item);
 					}
 				} else if (costName == "blueprint") {
@@ -717,8 +717,7 @@ define([
 							let unselectedItems = resultVO.getUnselectedAndDiscardedItems();
 							for (let i = 0; i < unselectedItems.length; i++) {
 								let unselectedItem = unselectedItems[i];
-								let baseItemId = ItemConstants.getBaseItemId(unselectedItem.id);
-								if (unselectedItem.type == ItemConstants.itemTypes.uniqueEquipment || baseItemId == "cache_insight") {
+								if (!ItemConstants.isUnselectable(unselectedItem)) {
 									return { value: 0, reason: "Can't leave " + ItemConstants.getItemDisplayName(unselectedItem) + " behind" };
 								}
 							}
