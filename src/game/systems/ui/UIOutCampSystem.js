@@ -225,9 +225,11 @@
 			$("#in-population-next").text(populationChangePerSecWithoutCooldown >= 0 ? "Next worker:" : "Worker leaving:");
 			$("#in-population-reputation").text("Reputation required: " + reqRepCur + " (current) " + reqRepNext + " (next)");
 			$("#in-population h3").text("Population: " + Math.floor(campComponent.population) + " / " + (maxPopulation));
-			$("#in-population #in-population-status").text("Unassigned workers: " + freePopulation);
+			$("#in-population #in-population-status span").text("Unassigned workers: " + freePopulation);
 			$("#in-population #in-population-autoassigned").text("Auto-assigned workers: " + autoAssignedWorkersText);
 			$("#in-population #in-population-robots .value").text(Math.floor(robots) + " / " + maxRobots);
+
+			GameGlobals.uiFunctions.toggle($("#unassigned-workers-bubble"), freePopulation > 0);
 			
 			let isOnPopulationDecreaseCooldown = campComponent.populationDecreaseCooldown > 0 && campComponent.populationDecreaseCooldown < CampConstants.POPULATION_DECREASE_COOLDOWN;
 			let isPopulationStill = (isPopulationMaxed || populationChangePerSecWithoutCooldown === 0) && !isOnPopulationDecreaseCooldown;

@@ -554,12 +554,10 @@ div.popup-overlay-meta {
 .bubble {
 	background-color: @color-bg-contrast;
 	color: @color-text-dark;
+	display: inline-block;
 	background-size: 12px;
 	background-repeat: no-repeat;
 	background-position: center;
-	position: absolute;
-	top: -6px;
-	right: -6px;
 	width: 16px;
 	height: 16px;
 	text-align: center;
@@ -569,10 +567,10 @@ div.popup-overlay-meta {
 	line-height: 18px;
 }
 
-table .bubble {
-	position: inherit;
-	top: inherit;
-	left: inherit;
+#switch .bubble {
+	position: absolute;
+	top: -6px;
+	right: -6px;
 }
 
 .bubble-even {

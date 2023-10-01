@@ -1445,12 +1445,10 @@ body.dark .scrollable.scroll-enabled {
 body.dark .bubble {
   background-color: #ccc;
   color: #202220;
+  display: inline-block;
   background-size: 12px;
   background-repeat: no-repeat;
   background-position: center;
-  position: absolute;
-  top: -6px;
-  right: -6px;
   width: 16px;
   height: 16px;
   text-align: center;
@@ -1459,10 +1457,10 @@ body.dark .bubble {
   font-size: 0.85rem;
   line-height: 18px;
 }
-body.dark table .bubble {
-  position: inherit;
-  top: inherit;
-  left: inherit;
+body.dark #switch .bubble {
+  position: absolute;
+  top: -6px;
+  right: -6px;
 }
 body.dark .bubble-even {
   background-image: url('../img/eldorado/icon-even.png');
@@ -3871,12 +3869,10 @@ body.sunlit .scrollable.scroll-enabled {
 body.sunlit .bubble {
   background-color: #ccc;
   color: #202220;
+  display: inline-block;
   background-size: 12px;
   background-repeat: no-repeat;
   background-position: center;
-  position: absolute;
-  top: -6px;
-  right: -6px;
   width: 16px;
   height: 16px;
   text-align: center;
@@ -3885,10 +3881,10 @@ body.sunlit .bubble {
   font-size: 0.85rem;
   line-height: 18px;
 }
-body.sunlit table .bubble {
-  position: inherit;
-  top: inherit;
-  left: inherit;
+body.sunlit #switch .bubble {
+  position: absolute;
+  top: -6px;
+  right: -6px;
 }
 body.sunlit .bubble-even {
   background-image: url('../img/eldorado/icon-even-dark.png');
