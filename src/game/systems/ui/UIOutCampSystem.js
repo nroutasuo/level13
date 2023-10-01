@@ -241,6 +241,9 @@
 					let secondsToLoseOnePop = 1 / -populationChangePerSecWithoutCooldown + CampConstants.POPULATION_DECREASE_COOLDOWN;
 					secondsToChange = (campComponent.populationDecreaseCooldown || 0) + (populationOverflow / -populationChangePerSecWithoutCooldown);
 					progress = secondsToChange / secondsToLoseOnePop;
+
+					let hint = this.getPopulationDecreaseHint();
+					if (hint) $("#in-population-decrease-hint").text("People are leaving because of: " + hint);
 				}
 
 				let progressLabel = populationChangePerSecWithoutCooldown !== 0 ? UIConstants.getTimeToNum(secondsToChange) : "no change";
@@ -260,7 +263,8 @@
 			GameGlobals.uiFunctions.slideToggleIf("#in-population #in-population-autoassigned", null, GameGlobals.gameState.unlockedFeatures.workerAutoAssignment, 200, 200);
 			GameGlobals.uiFunctions.slideToggleIf("#in-population-robots", null, robots > 0, 200, 200);
 			GameGlobals.uiFunctions.slideToggleIf("#in-assign-workers", null, campComponent.population >= 1, 200, 200);
-			
+			GameGlobals.uiFunctions.slideToggleIf($("#in-population-decrease-hint"), null, populationChangePerSecWithoutCooldown < 0);
+
 			GameGlobals.uiFunctions.toggle(".in-assign-workers-auto-toggle", GameGlobals.gameState.unlockedFeatures.workerAutoAssignment);
 			
 			if (robots > 0) {
@@ -807,6 +811,26 @@
 					break;
 			}
 			return "Level " + workerLevel + "<br/>" + productionS + generalConsumptionS + specialConsumptionS;
+		},
+
+		getPopulationDecreaseHint: function () {
+			let camp = this.playerLocationNodes.head.entity;
+			let reputationComponent = camp.get(ReputationComponent);
+			if (!reputationComponent) return null;
+			if (!reputationComponent.targetValueSources) return null;
+			
+			let mainSource = null;
+			for (let i in reputationComponent.targetValueSources) {
+				let source = reputationComponent.targetValueSources[i];
+				if (source.amount > 0) continue;
+				if (!mainSource || (mainSource.amount > source.amount) || mainSource.isStatic && !source.isStatic) {
+					mainSource = source;
+				}
+			}
+
+			if (!mainSource) return null;
+
+			return mainSource.source;
 		},
 
 		sortImprovements: function (a, b) {

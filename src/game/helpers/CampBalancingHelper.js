@@ -171,8 +171,9 @@ define([
 			let sources = {}; // text -> value
 			let percentages = {}; // text -> percentage value (for those sources that are calculated as percentages of the base value)
 			let penalties = {}; // id -> bool
+			let staticValues = {}; // id -> bool (is the value something the player can't do much about, aka not useful for a hint)
 			
-			let addValue = function (value, name, isPercentage, percentageValue) {
+			let addValue = function (value, name, isStatic, isPercentage, percentageValue) {
 				if (value == 0) return;
 				result += value;
 				if (!sources[name]) sources[name] = 0;
@@ -180,6 +181,7 @@ define([
 				if (isPercentage) {
 					percentages[name] = percentageValue;
 				}
+				staticValues[name] = isStatic;
 			};
 			
 			let addPenalty = function (id, active) {
@@ -187,12 +189,12 @@ define([
 			};
 			
 			if (baseValue > 0) {
-				addValue(baseValue, "Tribe milestones");
+				addValue(baseValue, "Tribe milestones", false);
 			}
 			
 			// luxury resources
 			if (numAvailableLuxuryResources > 0) {
-				addValue(numAvailableLuxuryResources, "Luxury resources");
+				addValue(numAvailableLuxuryResources, "Luxury resources", false);
 			}
 			
 			// building happiness values
@@ -206,19 +208,19 @@ define([
 						var numHouses = improvementsComponent.getCount(improvementNames.house) + improvementsComponent.getCount(improvementNames.house2);
 						var generatorBonus = numHouses * CampConstants.REPUTATION_PER_HOUSE_FROM_GENERATOR * (1 + level * 0.1);
 						generatorBonus = Math.round(generatorBonus * 100) / 100;
-						addValue(generatorBonus, "Generator");
+						addValue(generatorBonus, "Generator", false);
 						break;
 					case improvementNames.radiotower:
-						addValue(improvementVO.count * defaultBonus, "Radio");
+						addValue(improvementVO.count * defaultBonus, "Radio", false);
 						break;
 					case improvementNames.shrine:
 						let levelBonus = 1 + (level - 1) * 0.25;
-						addValue(improvementVO.count * defaultBonus * levelBonus, "Shrine");
+						addValue(improvementVO.count * defaultBonus * levelBonus, "Shrine", false);
 						break;
 					case improvementNames.sundome:
-						addValue(improvementVO.count * defaultBonus, "Sun Dome");
+						addValue(improvementVO.count * defaultBonus, "Sun Dome", false);
 					default:
-						addValue(improvementVO.count * defaultBonus, "Buildings");
+						addValue(improvementVO.count * defaultBonus, "Buildings", false);
 						break;
 				}
 			}
@@ -230,7 +232,7 @@ define([
 			if (populationFactor != 1) {
 				let levelPopValueFactor = (populationFactor - 1);
 				let levelPopValue = resultForPercentages * levelPopValueFactor;
-				addValue(levelPopValue, "Level population", true, levelPopValueFactor * 100);
+				addValue(levelPopValue, "Level population", true, true, levelPopValueFactor * 100);
 				addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_LEVEL_POP, levelPopValue < 0);
 			}
 			
@@ -240,10 +242,10 @@ define([
 				let noWater = resourcesVO && resourcesVO.getResource(resourceNames.water) <= 0;
 				let penalty = Math.max(5, Math.ceil(resultWithoutPenalties));
 				if (noFood) {
-					addValue(-penalty, "No food");
+					addValue(-penalty, "No food", false);
 				}
 				if (noWater) {
-					addValue(-penalty, "No water");
+					addValue(-penalty, "No water", false);
 				}
 				addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_FOOD, noFood);
 				addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_WATER, noWater);
@@ -257,11 +259,11 @@ define([
 				let penaltyRatio = steppedDanger / (100 - defenceLimit);
 				let defencePenalty = Math.ceil(resultForPercentages * penaltyRatio * 4) / 4;
 				if (penaltyRatio > 0.25) {
-					addValue(-defencePenalty, "Terrible defences", true, penaltyRatio * 100);
+					addValue(-defencePenalty, "Terrible defences", false, true, penaltyRatio * 100);
 				} else if (penaltyRatio > 0.15) {
-					addValue(-defencePenalty, "Poor defences", true, penaltyRatio * 100);
+					addValue(-defencePenalty, "Poor defences", false, true, penaltyRatio * 100);
 				} else {
-					addValue(-defencePenalty, "Inadequate defences", true, penaltyRatio * 100);
+					addValue(-defencePenalty, "Inadequate defences", false, true, penaltyRatio * 100);
 				}
 			}
 			addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_DEFENCES, noDefences);
@@ -273,7 +275,7 @@ define([
 			if (noHousing) {
 				let housingPenaltyRatio = Math.ceil((populationFullPeople - housingCap) / populationFullPeople * 20) / 20;
 				let housingPenalty = Math.ceil(resultForPercentages * housingPenaltyRatio);
-				addValue(-housingPenalty, "Overcrowding", true, housingPenaltyRatio * 100);
+				addValue(-housingPenalty, "Overcrowding", false, true, housingPenaltyRatio * 100);
 			}
 			addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_HOUSING, noHousing);
 			
@@ -281,11 +283,11 @@ define([
 			if (isSunlit && improvementsComponent.getCount(improvementNames.sundome) < 1) {
 				let sunlightPenaltyFactor = -0.75;
 				let sunlightPenaltyValue = resultForPercentages * sunlightPenaltyFactor;
-				addValue(sunlightPenaltyValue, "Sunlight", true, sunlightPenaltyFactor * 100);
+				addValue(sunlightPenaltyValue, "Sunlight", true, true, sunlightPenaltyFactor * 100);
 				addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_SUNLIT, isSunlit);
 			}
 			
-			return { value: Math.max(0, result), sources: sources, penalties: penalties, percentages: percentages };
+			return { value: Math.max(0, result), sources: sources, penalties: penalties, percentages: percentages, isStatic: staticValues };
 		},
 		
 		getMaxImprovementActionOrdinal: function (improvementName, actionName) {

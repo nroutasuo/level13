@@ -65,7 +65,6 @@ define([
 				var sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
 				
 				reputationComponent.accSources = [];
-				reputationComponent.targetValueSources = [];
 				reputationComponent.accumulation = 0;
 				
 				this.applyReputationAccumulation(campNode, time);
@@ -101,9 +100,11 @@ define([
 			let sources = targetReputation.sources;
 			let percentages = targetReputation.percentages;
 			let penalties = targetReputation.penalties;
+			let isStatic = targetReputation.isStatic;
 			
+			campNode.reputation.targetValueSources = [];
 			for (let key in sources) {
-				campNode.reputation.addTargetValueSource(key, sources[key], percentages[key] != 0, percentages[key]);
+				campNode.reputation.addTargetValueSource(key, sources[key], percentages[key] != 0, percentages[key], isStatic[key]);
 			}
 			
 			for (let key in penalties) {

@@ -25,7 +25,7 @@ define(['ash'], function (Ash) {
 			this.accSources.push({ source: source, amount: amount });
 		},
 
-		addTargetValueSource: function (source, amount, isPercentage, percentageValue) {
+		addTargetValueSource: function (source, amount, isPercentage, percentageValue, isStatic) {
 			if (amount === 0) return;
 
 			for (let i = 0; i < this.targetValueSources.length; i++) {
@@ -36,7 +36,9 @@ define(['ash'], function (Ash) {
 				}
 			}
 
-			this.targetValueSources.push({ source: source, amount: amount, isPercentage: isPercentage, percentageValue: percentageValue });
+			isStatic = isStatic || false;
+
+			this.targetValueSources.push({ source: source, amount: amount, isPercentage: isPercentage, percentageValue: percentageValue, isStatic: isStatic });
 		},
 
 		getTotalChange: function () {
