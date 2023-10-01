@@ -376,7 +376,9 @@ define(['ash',
 			updateCallouts: function (scope) {
 				$.each($(scope + " .callout-container"), function () {
 					var description = $(this).children(".info-callout-target").attr("description");
-					$(this).find(".info-callout-content").html(description);
+					if (description && description.length > 0) {
+						$(this).find(".info-callout-content").html(description);
+					}
 				});
 			},
 			

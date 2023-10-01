@@ -683,11 +683,10 @@ define(['ash',
 
 		updateCalloutContent: function ($targetElement, content, isTargetDirect) {
 			$targetElement = UIConstants.parseElement($targetElement);
-			if (isTargetDirect) {
-				$targetElement.siblings(".info-callout").children(".info-callout-content").html(content);
-			} else {
-				$targetElement.parents(".info-callout-target").siblings(".info-callout").children(".info-callout-content").html(content);
-			}
+			let $calloutTarget = isTargetDirect ? $targetElement : $targetElement.parents(".info-callout-target");
+
+			$calloutTarget.attr("description", content);
+			$calloutTarget.siblings(".info-callout").children(".info-callout-content").html(content);
 		},
 
 		parseElement: function ($elem) {
