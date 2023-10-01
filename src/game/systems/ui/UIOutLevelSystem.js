@@ -390,6 +390,10 @@ define([
 
 		// Existing improvements. Workshops. Potential improvements (camp).
 		getFunctionalDescription: function (hasVision, isScouted, featuresComponent, workshopComponent, hasCampHere, hasCampOnLevel) {
+			let currentSector = this.playerLocationNodes.head.entity;
+			let positionComponent = currentSector.get(PositionComponent);
+			let position = positionComponent.getPosition();
+
 			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 
@@ -416,7 +420,14 @@ define([
 				}
 			}
 
-			if (hasCampHere) description += "There is a <span class='hl-functionality'>camp</span> here. ";
+			if (hasCampHere) {
+				let campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
+				let isOutpost = GameGlobals.campBalancingHelper.isOutpost(campOrdinal);
+				let campTerm = "camp";
+				if (isOutpost) campTerm = "small camp";
+
+				description += "There is a <span class='hl-functionality'>" + campTerm + "</span> here. ";
+			}
 
 			if (isScouted && workshopComponent && workshopComponent.isClearable) {
 				var workshopName = TextConstants.getWorkshopName(workshopComponent.resource);

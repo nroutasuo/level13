@@ -2406,29 +2406,26 @@ body.dark td.camp-overview-level {
   width: 1em;
 }
 body.dark .camp-overview-level-container {
-  background: inherit;
-  border-color: #3a3a3a;
   border-radius: 1.75em;
   text-align: center;
   font-size: 0.85rem;
-  width: 2em;
-  height: 2em;
-  line-height: 2em;
   margin: 2px auto;
   vertical-align: middle;
   font-weight: bold;
 }
 body.dark .lvl-container-camp-normal {
-  border-width: 3px;
   width: 2em;
   height: 2em;
   line-height: 2em;
+  background-color: #666;
+  border-color: #666;
 }
 body.dark .lvl-container-camp-outpost {
-  border-width: 2px;
   width: 1.5em;
   height: 1.5em;
   line-height: 1.5em;
+  background-color: #444;
+  border-color: #444;
 }
 body.dark .lvl-container-camp-capital {
   border-width: 3px;
@@ -4835,29 +4832,26 @@ body.sunlit td.camp-overview-level {
   width: 1em;
 }
 body.sunlit .camp-overview-level-container {
-  background: inherit;
-  border-color: #aaa;
   border-radius: 1.75em;
   text-align: center;
   font-size: 0.85rem;
-  width: 2em;
-  height: 2em;
-  line-height: 2em;
   margin: 2px auto;
   vertical-align: middle;
   font-weight: bold;
 }
 body.sunlit .lvl-container-camp-normal {
-  border-width: 3px;
   width: 2em;
   height: 2em;
   line-height: 2em;
+  background-color: #999;
+  border-color: #999;
 }
 body.sunlit .lvl-container-camp-outpost {
-  border-width: 2px;
   width: 1.5em;
   height: 1.5em;
   line-height: 1.5em;
+  background-color: #ddd;
+  border-color: #ddd;
 }
 body.sunlit .lvl-container-camp-capital {
   border-width: 3px;

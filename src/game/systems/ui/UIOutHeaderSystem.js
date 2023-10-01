@@ -996,10 +996,13 @@ define([
 
 		updateHeaderTexts: function () {
 			if (!this.currentLocationNodes.head) return;
-			var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
-			var campComponent = this.currentLocationNodes.head.entity.get(CampComponent);
-			var isInCamp = playerPosition.inCamp;
-			var headerText = isInCamp && campComponent ? campComponent.getName() + " (level " + playerPosition.level + ")" : "level " + playerPosition.level;
+			let campCount = GameGlobals.gameState.numCamps;
+			let playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
+			let campComponent = this.currentLocationNodes.head.entity.get(CampComponent);
+			let isInCamp = playerPosition.inCamp;
+			let headerText = isInCamp && campComponent ? 
+				campComponent.getName() + (campCount > 1 ? " (level " + playerPosition.level + ")" : "") : 
+				"level " + playerPosition.level;
 			this.elements.locationHeader.text(headerText);
 
 			GameGlobals.uiFunctions.toggle("#grid-tab-header", GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.out || isInCamp);
@@ -1243,11 +1246,13 @@ define([
 		onPlayerEnteredCamp: function () {
 			this.pendingResourceUpdateTime = 0.75;
 			this.updateFollowers();
+			GameGlobals.uiFunctions.scrollToTabTop();
 		},
 		
 		onPlayerLeftCamp: function () {
 			this.updateItems();
 			this.updateFollowers();
+			GameGlobals.uiFunctions.scrollToTabTop();
 		},
 
 		onHealthChanged: function () {

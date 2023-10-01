@@ -133,11 +133,13 @@
 
 			let campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
 			if (!campComponent) return;
-			let campCount = GameGlobals.gameState.numCamps;
 
 			// Header
-			let header = campComponent.getName();
-			if (campCount > 1) header += " (" + this.playerPosNodes.head.position.getPosition().getInGameFormat(true) + ")";
+			let position = this.playerPosNodes.head.position.getPosition();
+			let campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
+			let isOutpost = GameGlobals.campBalancingHelper.isOutpost(campOrdinal);
+			let header = "Camp";
+			if (isOutpost) header += " (small)";
 			$("#tab-header h2").text(header);
 
 			this.updateAssignedWorkers();
