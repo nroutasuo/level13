@@ -1,18 +1,22 @@
 define([
 	'ash',
 	'game/GameGlobals',
+	'game/constants/PlayerActionConstants',
 	'game/constants/TribeConstants',
+	'game/constants/UpgradeConstants',
 	'game/nodes/sector/CampNode',
 	'game/nodes/tribe/TribeUpgradesNode'
 ], function (
 	Ash,
 	GameGlobals,
+	PlayerActionConstants,
 	TribeConstants,
+	UpgradeConstants,
 	CampNode,
 	TribeUpgradesNode
 ) {
 	
-	var TribeHelper = Ash.Class.extend({
+	let TribeHelper = Ash.Class.extend({
 		
 		tribeUpgradesNodes: null,
 		campNodes: null,
@@ -25,6 +29,56 @@ define([
 		hasUpgrade: function (upgradeID) {
 			if (!upgradeID) return true;
 			return this.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeID);
+		},
+		
+		getUpgradeStatus: function (upgradeID) {
+			if (this.hasUpgrade(upgradeID))
+				return UpgradeConstants.upgradeStatus.UNLOCKED;
+
+			if (GameGlobals.playerActionsHelper.checkAvailability(upgradeID, false))
+				return UpgradeConstants.upgradeStatus.UNLOCKABLE;
+
+			if (GameGlobals.playerActionsHelper.isVisible(upgradeID))
+				return UpgradeConstants.upgradeStatus.VISIBLE_FULL;
+
+			if (this.tribeUpgradesNodes.head.upgrades.hasAvailableBlueprint(upgradeID))
+				return UpgradeConstants.upgradeStatus.VISIBLE_FULL;
+
+			if (this.isUpgradeRevealedByMilestone(upgradeID))
+				return UpgradeConstants.upgradeStatus.VISIBLE_FULL;
+
+			if (this.tribeUpgradesNodes.head.upgrades.hasNewBlueprint(upgradeID))
+				return UpgradeConstants.upgradeStatus.BLUEPRINT_USABLE;
+
+			if (this.tribeUpgradesNodes.head.upgrades.hasUnfinishedBlueprint(upgradeID))
+				return UpgradeConstants.upgradeStatus.BLUEPRINT_IN_PROGRESS;
+
+			if (this.isUpgradeRevealedByVisibleUpgrade(upgradeID))
+				return UpgradeConstants.upgradeStatus.VISIBLE_HINT;
+				
+			return UpgradeConstants.upgradeStatus.HIDDEN;
+		},
+
+		isUpgradeRevealedByVisibleUpgrade: function (upgradeID) {
+			let reqs = PlayerActionConstants.requirements[upgradeID];
+
+			if (!reqs) return false;
+			if (!reqs.upgrades) return false;
+			if (reqs.blueprint) return false;
+			if (reqs.milestone) return false;
+			if (reqs.deity) return false;
+
+			for (let requiredUpgradeID in reqs.upgrades) {
+				if (requiredUpgradeID != upgradeID) return false;
+			}
+			
+			return true;
+		},
+		
+		isUpgradeRevealedByMilestone: function (upgradeID) {
+			let currentMilestone = GameGlobals.tribeHelper.getCurrentMilestone();
+			let revealingMilestoneIndex = GameGlobals.milestoneEffectsHelper.getMilestoneRevealingUpgrade(upgradeID);
+			return revealingMilestoneIndex >= 0 && revealingMilestoneIndex <= currentMilestone.index;
 		},
 		
 		getTotalPopulation: function () {

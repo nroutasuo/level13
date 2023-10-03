@@ -2,26 +2,14 @@ define([
 	'ash',
 	'game/GameGlobals',
 	'game/GlobalSignals',
-	'game/constants/CampConstants',
-	'game/constants/ImprovementConstants',
-	'game/constants/ItemConstants',
-	'game/constants/PlayerActionConstants',
+	'game/constants/GameConstants',
 	'game/constants/UIConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/TextConstants',
 	'game/nodes/tribe/TribeUpgradesNode',
-], function (Ash, GameGlobals, GlobalSignals, CampConstants, ImprovementConstants, ItemConstants, PlayerActionConstants, UIConstants, UpgradeConstants, TextConstants, TribeUpgradesNode) {
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, UpgradeConstants, TextConstants, TribeUpgradesNode) {
 	
-	let UpgradeStatus = {
-		HIDDEN: 0,
-		BLUEPRINT_IN_PROGRESS: 1,
-		BLUEPRINT_USABLE: 2,
-		VISIBLE: 3,
-		UNLOCKABLE: 4,
-		UNLOCKED: 5,
-	};
-	
-	var UIOutUpgradesSystem = Ash.System.extend({
+	let UIOutUpgradesSystem = Ash.System.extend({
 
 		engine: null,
 
@@ -94,12 +82,12 @@ define([
 
 			var status;
 			for (var id in UpgradeConstants.upgradeDefinitions) {
-				status = this.getUpgradeStatus(id);
+				status = GameGlobals.tribeHelper.getUpgradeStatus(id);
 				switch (status) {
-					case UpgradeStatus.BLUEPRINT_USABLE:
+					case UpgradeConstants.upgradeStatus.BLUEPRINT_USABLE:
 						this.numCurrentNewBlueprints++;
 						break;
-					case UpgradeStatus.UNLOCKABLE:
+					case UpgradeConstants.upgradeStatus.UNLOCKABLE:
 						this.numCurrentResearchableUpgrades++;
 						break;
 				}
@@ -118,19 +106,19 @@ define([
 			
 			for (let id in UpgradeConstants.upgradeDefinitions) {
 				upgradeDefinition = UpgradeConstants.upgradeDefinitions[id];
-				status = this.getUpgradeStatus(id);
+				status = GameGlobals.tribeHelper.getUpgradeStatus(id);
 				
-				if (status != UpgradeStatus.UNLOCKED)
+				if (status != UpgradeConstants.upgradeStatus.UNLOCKED)
 					numUnResearched++;
 					
 				switch (status) {
-					case UpgradeStatus.UNLOCKABLE:
-					case UpgradeStatus.VISIBLE:
+					case UpgradeConstants.upgradeStatus.UNLOCKABLE:
+					case UpgradeConstants.upgradeStatus.VISIBLE_FULL:
 						var tr = this.getUpgradeTR(upgradeDefinition, status);
 						$("#upgrades-list").append(tr);
 						break;
-					case UpgradeStatus.BLUEPRINT_USABLE:
-					case UpgradeStatus.BLUEPRINT_IN_PROGRESS:
+					case UpgradeConstants.upgradeStatus.BLUEPRINT_USABLE:
+					case UpgradeConstants.upgradeStatus.BLUEPRINT_IN_PROGRESS:
 						var tr = this.getUpgradeTR(upgradeDefinition, status);
 							$("#blueprints-list").append(tr);
 						break;
@@ -185,6 +173,7 @@ define([
 				$("#upgrade-details-name").text(definition.name);
 				$("#upgrade-details-desc").text(definition.description);
 				$("#upgrade-details-effect").text(this.getEffectDescription(this.vis.selectedID, false));
+				$("#upgrade-details-unlocked-research").text(this.getUnlockedResearchDescription(this.vis.selectedID));
 			}
 		},
 		
@@ -222,58 +211,41 @@ define([
 			else this.updateUpgradesLists(false, false);
 		},
 		
-		getUpgradeStatus: function (id) {
-			if (this.tribeNodes.head.upgrades.hasUpgrade(id))
-				return UpgradeStatus.UNLOCKED;
-			if (GameGlobals.playerActionsHelper.checkAvailability(id, false))
-				return UpgradeStatus.UNLOCKABLE;
-			if (GameGlobals.playerActionsHelper.isRequirementsMet(id))
-				return UpgradeStatus.VISIBLE;
-			if (this.tribeNodes.head.upgrades.hasAvailableBlueprint(id))
-				return UpgradeStatus.VISIBLE;
-			if (this.isRevealedByMilestone(id))
-				return UpgradeStatus.VISIBLE;
-			if (this.tribeNodes.head.upgrades.hasNewBlueprint(id))
-				return UpgradeStatus.BLUEPRINT_USABLE;
-			if (this.tribeNodes.head.upgrades.hasUnfinishedBlueprint(id))
-				return UpgradeStatus.BLUEPRINT_IN_PROGRESS;
-				
-			return UpgradeStatus.HIDDEN;
-		},
-		
-		isRevealedByMilestone: function (id) {
-			let currentMilestone = GameGlobals.tribeHelper.getCurrentMilestone();
-			let revealingMilestoneIndex = GameGlobals.milestoneEffectsHelper.getMilestoneRevealingUpgrade(id);
-			return revealingMilestoneIndex >= 0 && revealingMilestoneIndex <= currentMilestone.index;
-		},
-		
 		getUpgradeTR: function (upgradeDefinition, status) {
 			let isSmallLayout = $("body").hasClass("layout-small");
 
-			let classes = status == UpgradeStatus.BLUEPRINT_USABLE ? "item item-equipped" : "item";
+			let classes = status == UpgradeConstants.upgradeStatus.BLUEPRINT_USABLE ? "item item-equipped" : "item";
 			let iconTD = "<td style='padding: 0px 3px'>";
 			let hasBlueprint = this.tribeNodes.head.upgrades.getBlueprint(upgradeDefinition.id);
 			if (hasBlueprint && !isSmallLayout)
 				iconTD += "<span class='" + classes + "'><div class='info-callout-target info-callout-target-small' description='blueprint'><img src='img/items/blueprint.png' alt='blueprint'/></div></span>";
 			iconTD += "</td>";
 
-			let effectDesc = "<span class='p-meta'>" + this.getEffectDescription(upgradeDefinition.id, status) + "</span>"
-			let description = upgradeDefinition.description + "<br/>" + effectDesc;
+			let unlockedResearchDescription = this.getUnlockedResearchDescription(upgradeDefinition.id);
+
+			let effectSpan = "<span class='p-meta'>" + this.getEffectDescription(upgradeDefinition.id, status) + "</span>"
+			let unlockedResearchSpan = "<span class='p-meta'>" + unlockedResearchDescription + "</span>"
+			let description = upgradeDefinition.description + "<br/>" + effectSpan;
+			
+			if (unlockedResearchDescription && unlockedResearchDescription.length > 0) {
+				description += "<br/>" + unlockedResearchSpan;
+			}
+			
 			let showDescription = true;
 			let blueprintTD = "";
 
 			let buttonTD;
 			switch (status) {
-				case UpgradeStatus.VISIBLE:
-				case UpgradeStatus.UNLOCKABLE:
+				case UpgradeConstants.upgradeStatus.VISIBLE_FULL:
+				case UpgradeConstants.upgradeStatus.UNLOCKABLE:
 					let action = upgradeDefinition.id;
 					let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
 					buttonTD = "<td class='minwidth'><button class='action' action='" + action + "' baseaction='" + baseActionID + "'>research</button></td>";
 					break;
-				case UpgradeStatus.BLUEPRINT_USABLE:
+				case UpgradeConstants.upgradeStatus.BLUEPRINT_USABLE:
 					 buttonTD = "<td class='minwidth'><button class='action' action='unlock_upgrade_" + upgradeDefinition.id + "'>unlock</button></td>";
 					 break;
-				case UpgradeStatus.BLUEPRINT_IN_PROGRESS:
+				case UpgradeConstants.upgradeStatus.BLUEPRINT_IN_PROGRESS:
 					var blueprintVO = this.tribeNodes.head.upgrades.getBlueprint(upgradeDefinition.id);
 					blueprintTD = "<td style='text-align:left'>";
 					for (let j = 0; j < blueprintVO.maxPieces; j++) {
@@ -304,13 +276,51 @@ define([
 		getEffectDescription: function (upgradeID, status) {
 			let effects = "";
 
-			if (status == UpgradeStatus.BLUEPRINT_USABLE || status == UpgradeStatus.BLUEPRINT_IN_PROGRESS) {
+			if (status == UpgradeConstants.upgradeStatus.BLUEPRINT_USABLE || status == UpgradeConstants.upgradeStatus.BLUEPRINT_IN_PROGRESS) {
 				effects = "";
 			} else {
 				effects = GameGlobals.upgradeEffectsHelper.getEffectDescription(upgradeID, false);
 			}
 
 			return effects;
+		},
+
+		getUnlockedResearchDescription: function (upgradeID) {
+			let status = GameGlobals.tribeHelper.getUpgradeStatus(upgradeID);
+
+			switch (status) {
+				case UpgradeConstants.upgradeStatus.HIDDEN:
+				case UpgradeConstants.upgradeStatus.VISIBLE_HINT:
+				case UpgradeConstants.upgradeStatus.BLUEPRINT_IN_PROGRESS:
+				case UpgradeConstants.upgradeStatus.BLUEPRINT_USABLE:
+					return "";
+				
+				default:
+					let researchIDs = GameGlobals.upgradeEffectsHelper.getUnlockedResearchIDs(upgradeID);
+
+					if (researchIDs.length == 0) return "";
+
+					let shownResearchNames = [];
+					let hiddenResearchNames = [];
+
+					for (let i = 0; i < researchIDs.length; i++) {
+						let researchStatus = GameGlobals.tribeHelper.getUpgradeStatus(researchIDs[i]);
+						let researchName = UpgradeConstants.upgradeDefinitions[researchIDs[i]].name;
+
+						switch (researchStatus) {
+							case UpgradeConstants.upgradeStatus.HIDDEN:
+								hiddenResearchNames.push(researchName);
+								break;
+							default:
+								shownResearchNames.push(researchName);
+								break;
+						}
+					}
+
+					if (shownResearchNames.length == 0) return "";
+
+					return "unlocked research: " + shownResearchNames.join(", ");
+			}
 		},
 		
 	});

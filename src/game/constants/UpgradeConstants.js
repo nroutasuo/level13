@@ -1,7 +1,7 @@
 define(['ash', 'json!game/data/UpgradeData.json', 'game/constants/PlayerActionConstants', 'game/constants/WorldConstants', 'game/vos/UpgradeVO'],
 function (Ash, UpgradeData, PlayerActionConstants, WorldConstants, UpgradeVO) {
 	
-	var UpgradeConstants = {
+	let UpgradeConstants = {
 		
 		BLUEPRINT_BRACKET_EARLY: "b-early",
 		BLUEPRINT_BRACKET_LATE: "b-late",
@@ -10,6 +10,16 @@ function (Ash, UpgradeData, PlayerActionConstants, WorldConstants, UpgradeVO) {
 		UPGRADE_TYPE_FAVOUR: "favour",
 		UPGRADE_TYPE_EVIDENCE: "evidence",
 		UPGRADE_TYPE_INSIGHT: "insight",
+
+		upgradeStatus: {
+			HIDDEN: "HIDDEN",
+			BLUEPRINT_IN_PROGRESS: "BLUEPRINT_IN_PROGRESS",
+			BLUEPRINT_USABLE: "BLUEPRINT_USABLE", 
+			VISIBLE_HINT: "VISIBLE_HINT",
+			VISIBLE_FULL: "VISIBLE_FULL",
+			UNLOCKABLE: "UNLOCKABLE", 
+			UNLOCKED: "UNLOCKED", 
+		},
 
 		upgradeDefinitions: {},
 		
@@ -288,6 +298,17 @@ function (Ash, UpgradeData, PlayerActionConstants, WorldConstants, UpgradeVO) {
 				let indirect = this.getRequiredTechAll(direct[i]);
 				for (let j = 0; j < indirect.length; j++) {
 					result.push(indirect[j]);
+				}
+			}
+			return result;
+		},
+
+		getUnlockedTech: function (upgradeID) {
+			let result = [];
+			for (let otherID in UpgradeConstants.upgradeDefinitions) {
+				let requiredTech = this.getRequiredTech(otherID);
+				if (requiredTech.indexOf(upgradeID) >= 0) {
+					result.push(otherID);
 				}
 			}
 			return result;

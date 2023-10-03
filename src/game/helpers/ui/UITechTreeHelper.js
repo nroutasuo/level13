@@ -81,32 +81,17 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
 		},
 		
 		pruneNodes: function (tribeNodes) {
-			var node;
-			for (var id in this.nodesById) {
-				node = this.nodesById[id];
-				
-				// unlocked
-				if (tribeNodes.head.upgrades.hasUpgrade(node.definition.id))
-					continue;
-				
-				// available
-				var isAvailable = GameGlobals.playerActionsHelper.checkRequirements(node.definition.id, false).value > 0;
-				if (isAvailable)
-					continue;
-					
-				// visible (requirements available)
-				var isVisible = false;
-				var reqs = GameGlobals.playerActionsHelper.getReqs(node.definition.id);
-				var isMissingBlueprint = reqs && reqs.blueprint && !tribeNodes.head.upgrades.hasAvailableBlueprint(node.definition.id);
-				if (!isMissingBlueprint) {
-					for (let i = 0; i < node.requires.length; i++) {
-						isVisible = isVisible || GameGlobals.playerActionsHelper.checkRequirements(node.requires[i].definition.id, false).value > 0;
-					}
-				} else {
-					isVisible = tribeNodes.head.upgrades.hasNewBlueprint(node.definition.id);
-				}
-				if (isVisible)
-					continue;
+			for (let id in this.nodesById) {
+				let node = this.nodesById[id];
+
+				let status = GameGlobals.tribeHelper.getUpgradeStatus(node.definition.id);
+
+				if (status == UpgradeConstants.upgradeStatus.UNLOCKED) continue;
+				if (status == UpgradeConstants.upgradeStatus.UNLOCKABLE) continue;
+				if (status == UpgradeConstants.upgradeStatus.VISIBLE_HINT) continue;
+				if (status == UpgradeConstants.upgradeStatus.VISIBLE_FULL) continue;
+				if (status == UpgradeConstants.upgradeStatus.BLUEPRINT_USABLE) continue;
+				if (status == UpgradeConstants.upgradeStatus.BLUEPRINT_IN_PROGRESS) continue;
 					
 				// none of the above - prune
 				this.removeNode(this.nodesById[id]);

@@ -78,6 +78,10 @@ define([
 			
 			return effects;
 		},
+
+		getUnlockedResearchIDs: function (upgradeID) {
+			return  UpgradeConstants.getUnlockedTech(upgradeID);
+		},
 		
 		getEffectHints: function (upgradeID) {
 			let result = "";

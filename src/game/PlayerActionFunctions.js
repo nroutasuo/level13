@@ -2103,10 +2103,20 @@ define(['ash',
 			GlobalSignals.upgradeUnlockedSignal.dispatch(upgradeID);
 			this.save();
 			gtag('event', 'upgrade_bought', { event_category: 'progression', event_label: upgradeID });
+
+			let unlockedResearchIDs = GameGlobals.upgradeEffectsHelper.getUnlockedResearchIDs(upgradeID);
 			
 			let title = "Researched complete ";
 			let message = "<p>You've researched <span class='hl-functionality'>" + upgradeDefinition.name + "</span>.</p>";
 			message += "<p class='p-meta'>" + GameGlobals.upgradeEffectsHelper.getEffectDescription(upgradeID, true) + "</p>";
+			
+			if (unlockedResearchIDs.length > 0) {
+				let unlockedResearchNames = unlockedResearchIDs
+					.filter(upgradeID => GameGlobals.playerActionsHelper.isVisible(upgradeID))
+					.map(upgradeID => UpgradeConstants.upgradeDefinitions[upgradeID].name);
+				message += "<p class='p-meta'>new research:<br/>" + unlockedResearchNames.join("<br/>") + "</p>";
+			}
+
 			let hints = GameGlobals.upgradeEffectsHelper.getEffectHints(upgradeID);
 			if (hints && hints.length > 0) message += "<p class='p-meta'>" + hints + "</p>";
 			
