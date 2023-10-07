@@ -151,19 +151,19 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 				case PerkConstants.perkStatus.DEACTIVATING:
 					return this.getPartialEffect(perk, perk.effectFactor);
 				case PerkConstants.perkStatus.ACTIVATING:
-					var activePercent = this.getPerkActivePercent(perk);
+					var activePercent = this.getPerkActivePercent(perk, true);
 					return this.getPartialEffect(perk, activePercent);
 			}
 		},
 		
-		getPerkActivePercent: function (perk) {
+		getPerkActivePercent: function (perk, round) {
 			if (perk.removeTimer != PerkConstants.TIMER_DISABLED)
 				return 1;
 			if (perk.startTimer == PerkConstants.TIMER_DISABLED)
 				return 1;
 			var duration = perk.startTimerDuration || perk.startTimer;
 			var activePercent = Math.min(1, 1 - perk.startTimer / duration);
-			activePercent = Math.round(activePercent * 10) / 10;
+			if (round) activePercent = Math.round(activePercent * 10) / 10;
 			return activePercent;
 		},
 		

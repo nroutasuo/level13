@@ -448,7 +448,6 @@ define(['ash',
 				var timeleft = perk.removeTimer / factor;
 				return "time left: " + this.getTimeToNum(timeleft);
 			} else if (perk.startTimer >= 0) {
-				var percent = PerkConstants.getPerkActivePercent(perk);
 				return "time to full: " + this.getTimeToNum(perk.startTimer);
 			} else {
 				return null;

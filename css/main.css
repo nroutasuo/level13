@@ -1599,8 +1599,7 @@ body.dark ul.buttonlist {
   flex-wrap: wrap;
 }
 body.dark .li-item-negative {
-  background: rgba(230, 70, 70, 0.15) !important;
-  border: 1px solid #E13232 !important;
+  border: 2px solid #E13232 !important;
 }
 body.dark .item-slot,
 body.dark .follower-slot {
@@ -4023,8 +4022,7 @@ body.sunlit ul.buttonlist {
   flex-wrap: wrap;
 }
 body.sunlit .li-item-negative {
-  background: rgba(250, 0, 0, 0.15) !important;
-  border: 1px solid #ee1111 !important;
+  border: 2px solid #ee1111 !important;
 }
 body.sunlit .item-slot,
 body.sunlit .follower-slot {
@@ -4193,7 +4191,7 @@ body.sunlit .res,
 body.sunlit .li-item-negative,
 body.sunlit .li-item-positive {
   background: #fff;
-  border: 1px solid #aaa;
+  border: 2px solid #aaa;
 }
 body.sunlit .item.highlighted {
   background: #ffffff;

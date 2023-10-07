@@ -2,6 +2,7 @@ define([
 	'ash',
 	'game/GameGlobals',
 	'game/GlobalSignals',
+	'game/constants/ColorConstants',
 	'game/constants/GameConstants',
 	'game/constants/CampConstants',
 	'game/constants/LevelConstants',
@@ -31,7 +32,7 @@ define([
 	'utils/UIState',
 	'utils/UIAnimations'
 ], function (Ash,
-	GameGlobals, GlobalSignals, GameConstants, CampConstants, LevelConstants, UIConstants, FollowerConstants, ItemConstants, FightConstants, PerkConstants, UpgradeConstants, PlayerStatConstants,
+	GameGlobals, GlobalSignals, ColorConstants, GameConstants, CampConstants, LevelConstants, UIConstants, FollowerConstants, ItemConstants, FightConstants, PerkConstants, UpgradeConstants, PlayerStatConstants,
 	SaveSystem,
 	PlayerStatsNode, AutoPlayNode, PlayerLocationNode, TribeUpgradesNode, DeityNode,
 	BagComponent,
@@ -629,6 +630,7 @@ define([
 					"<div class='" + calloutTargetClasses + "' description='" + desc + "'>" +
 					"<img src='" + url + "' alt='" + perk.name + "'/>" +
 					"</div></li>";
+
 				$li = $(li);
 				$container.append($li);
 				let diff = now - perk.addTimestamp;
@@ -681,16 +683,27 @@ define([
 		},
 
 		updatePerks: function () {
-			var perksComponent = this.playerStatsNodes.head.perks;
-			var perks = perksComponent.getAll();
-			var isResting = this.isResting();
+			let perksComponent = this.playerStatsNodes.head.perks;
+			let perks = perksComponent.getAll();
+			let isResting = this.isResting();
+			let sunlit = this.elements.body.hasClass("sunlit");
 
 			for (let i = 0; i < perks.length; i++) {
 				let perk = perks[i];
 				let desc = this.getPerkDescription(perk, isResting);
+				let isNegative = PerkConstants.isNegative(perk);
+
 				$(".perk-li-" + perk.id + " .info-callout-target").attr("description", desc);
 				$(".perk-li-" + perk.id + " .info-callout-target").toggleClass("event-starting", perk.startTimer >= 0);
 				$(".perk-li-" + perk.id + " .info-callout-target").toggleClass("event-ending", perk.removeTimer >= 0 && perk.removeTimer < 5);
+				
+				let backgroundColor = ColorConstants.getColor(sunlit, "bg_box_1");
+				let fillColor = isNegative ? ColorConstants.getColor(sunlit, "bg_warning_stronger") : ColorConstants.getColor(sunlit, "bg_element_1");
+				let warningPercentage = PerkConstants.getPerkActivePercent(perk) * 100;
+				let backgroundValue = "conic-gradient(" + fillColor + " " + warningPercentage + "%, " + backgroundColor + " 0%)";
+
+				$(".perk-li-" + perk.id).attr("data-percentage", warningPercentage);
+				$(".perk-li-" + perk.id).css("background", backgroundValue);
 			}
 		},
 		
