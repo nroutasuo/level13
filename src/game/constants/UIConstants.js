@@ -266,7 +266,7 @@ define(['ash',
 				case FollowerConstants.abilityType.DETECT_HAZARDS:
 					return "foresee hazards in unvisited sectors";
 				case FollowerConstants.abilityType.DETECT_SUPPLIES:
-					return "foresee supplies in found in current and neighbouring sectors";
+					return "foresee supplies found in current and neighbouring sectors";
 				case FollowerConstants.abilityType.DETECT_INGREDIENTS:
 					return "foresee crafting ingredients found in current and neighbouring sectors";
 				case FollowerConstants.abilityType.SCAVENGE_GENERAL:

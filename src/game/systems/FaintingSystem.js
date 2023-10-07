@@ -193,7 +193,7 @@ define([
 			}
 			
 			var msgMain = "Weak and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>When you wake up, you find yourself back in a familiar area.";
-			var msgLog = "The world fades. You wake up with no memory how you got here.";
+			var msgLog = "The world fades. You wake up with no memory of how you got here.";
 			if (nearestKnownSafeSector) {
 				this.fadeOut(msgMain, msgLog, true, nearestKnownSafeSector, 1, 0, 0, 0);
 			} else if (nearestVisitedSafeSector) {
@@ -206,7 +206,7 @@ define([
 		fadeOutToLastVisitedCamp: function (handleResults, msgAdjective) {
 			if (!this.lastVisitedCampNodes.head) return;
 			var msgMain = "Weak and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>When you wake up, you find yourself back in camp.";
-			var msgLog = "The world fades. You wake up with no memory how you found your way back.";
+			var msgLog = "The world fades. You wake up with no memory of how you found your way back.";
 			this.fadeOut(msgMain, msgLog, handleResults, this.lastVisitedCampNodes.head.entity, 1, 1, 0.5, 0.25);
 		},
 		
