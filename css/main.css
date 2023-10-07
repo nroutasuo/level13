@@ -14,6 +14,9 @@ body {
 #footer {
   padding-left: 95px;
 }
+.layout-small #footer {
+  font-size: 0.85rem;
+}
 .layout-regular #mobile-header {
   display: none;
 }
@@ -2219,7 +2222,6 @@ body.dark #footer {
   align-items: center;
   height: 100%;
   gap: 5px;
-  font-size: 0.85rem;
 }
 body.dark ul#game-options,
 body.dark ul#game-options-extended {
@@ -4642,7 +4644,6 @@ body.sunlit #footer {
   align-items: center;
   height: 100%;
   gap: 5px;
-  font-size: 0.85rem;
 }
 body.sunlit ul#game-options,
 body.sunlit ul#game-options-extended {
