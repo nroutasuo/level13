@@ -512,7 +512,9 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 
 		isUnselectable: function (item) {
 			let baseItemId = ItemConstants.getBaseItemId(item.id);
-			return item.type == ItemConstants.itemTypes.uniqueEquipment || baseItemId == "cache_insight";
+			if (item.type == ItemConstants.itemTypes.uniqueEquipment) return false;
+			if (baseItemId == "cache_insight") return false;
+			return true;
 		},
 	};
 	
