@@ -16,8 +16,7 @@ define([
 	'game/components/common/ResourceAccumulationComponent',
 	'game/components/player/PerksComponent',
 	'game/components/common/CampComponent',
-	'game/components/sector/improvements/SectorImprovementsComponent',
-	'game/components/common/LogMessagesComponent',
+	'game/components/sector/improvements/SectorImprovementsComponent'
 ], function (Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, PlayerActionConstants, PerkConstants, CampConstants,
 	CampNode, PlayerPositionNode, PlayerLocationNode, NearestCampNode,
 	ResourcesComponent,
@@ -25,8 +24,7 @@ define([
 	ResourceAccumulationComponent,
 	PerksComponent,
 	CampComponent,
-	SectorImprovementsComponent,
-	LogMessagesComponent
+	SectorImprovementsComponent
 ) {
 	var WorkerSystem = Ash.System.extend({
 		
@@ -470,12 +468,13 @@ define([
 		
 		log: function (msg, isAmbient, campNode) {
 			if (msg == null || msg.length == 0) return;
-			let logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
+
 			if (campNode) {
-				logComponent.addMessage(LogConstants.getUniqueID(), msg, null, null, null, null, true, campNode.position.level);
+				GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.getUniqueID(), msg, campNode.position);
 			} else {
-				logComponent.addMessage(LogConstants.MSG_ID_WORKER_STATUS, msg);
+				GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_WORKER_STATUS, msg);
 			}
+
 			if (isAmbient) {
 				this.lastMsgTimeStamp = new Date().getTime();
 			}

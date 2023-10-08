@@ -98,9 +98,7 @@ define([
 			}, moveDuration / 2);
 		},
 		
-		enterCamp: function (position) {
-		 	let sector = GameGlobals.levelHelper.getSectorByPosition(position.level, position.sectorX, position.sectorY);
-			
+		enterCamp: function (position) {			
 			GameGlobals.resourcesHelper.moveResFromBagToCamp();
 			GameGlobals.resourcesHelper.moveCurrencyFromBagToCamp();
 			

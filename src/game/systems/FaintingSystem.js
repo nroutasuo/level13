@@ -266,8 +266,7 @@ define([
 	
 		log: function (msg) {
 			if (!msg) return;
-			var logComponent = this.playerResourcesNodes.head.entity.get(LogMessagesComponent);
-			logComponent.addMessage(LogConstants.MSG_ID_FAINTED, msg);
+			GameGlobals.playerHelper.addLogMessage(msg);
 			this.lastMsgTimeStamp = new Date().getTime();
 		},
 		

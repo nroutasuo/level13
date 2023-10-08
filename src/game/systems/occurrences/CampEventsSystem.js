@@ -630,10 +630,10 @@ define([
 		},
 		
 		addLogMessage: function (msg, replacements, values, camp) {
-			var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
-			var campPos = camp.entity.get(PositionComponent);
-			var playerPosition = this.playerNodes.head.entity.get(PositionComponent);
-			logComponent.addMessage(LogConstants.MSG_ID_CAMP_EVENT, msg, replacements, values, null, null, !playerPosition.inCamp, campPos.level);
+			let logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
+			let campPos = camp.entity.get(PositionComponent);
+			let visibility = LogConstants.MSG_VISIBILITY_PRIORITY;
+			logComponent.addMessage(LogConstants.MSG_ID_CAMP_EVENT, msg, replacements, values, campPos, visibility, true);
 		}
 
 	});

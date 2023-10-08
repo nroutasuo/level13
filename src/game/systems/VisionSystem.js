@@ -10,7 +10,6 @@ define([
 	'game/nodes/player/VisionNode',
 	'game/nodes/PlayerLocationNode',
 	'game/components/common/PositionComponent',
-	'game/components/common/LogMessagesComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorStatusComponent'
@@ -26,7 +25,6 @@ define([
 	VisionNode,
 	PlayerLocationNode,
 	PositionComponent,
-	LogMessagesComponent,
 	SectorImprovementsComponent,
 	SectorFeaturesComponent,
 	SectorStatusComponent
@@ -157,7 +155,6 @@ define([
 			vision.maximum = maxValue;
 			
 			// Effects of moving from different light environments
-			let logComponent = node.entity.get(LogMessagesComponent);
 			if (oldMaximum > 0 && this.wasSunlit !== null) {
 				if (this.wasSunlit !== sunlit) {
 					// switching between darkness and sunlight
@@ -168,15 +165,15 @@ define([
 					if (!inCamp) {
 						if (sunlit) {
 							if (isTotalReset) {
-								logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "Blinded by sunlight.");
+								GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_VISION_RESET, "Blinded by sunlight.");
 							} else {
-								logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "Engulfed by sunlight.");
+								GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_VISION_RESET, "Engulfed by sunlight.");
 							}
 						} else {
 							if (isTotalReset) {
-								logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "The darkness is like a wall.");
+								GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_VISION_RESET, "The darkness is like a wall.");
 							} else {
-								logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "Back into the darkness.");
+								GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_VISION_RESET, "Back into the darkness.");
 							}
 						}
 					}
@@ -185,9 +182,9 @@ define([
 					vision.value = 0;
 					if (!inCamp) {
 						if (sunlit) {
-							logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "Blinded by sunlight.");
+							GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_VISION_RESET, "Blinded by sunlight.");
 						} else {
-							logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "The darkness is like a wall.");
+							GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_VISION_RESET, "The darkness is like a wall.");
 						}
 					}
 				}

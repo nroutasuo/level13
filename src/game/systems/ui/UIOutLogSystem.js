@@ -1,6 +1,7 @@
 define([
-	'ash', 'utils/UIList', 'game/GameGlobals', 'game/GlobalSignals', 'game/nodes/LogNode', 'game/constants/UIConstants',
-], function (Ash, UIList, GameGlobals, GlobalSignals, LogNode, UIConstants) {
+	'ash', 'utils/UIList', 'game/GameGlobals', 'game/GlobalSignals', 'game/nodes/LogNode', 'game/constants/UIConstants', 'game/vos/PositionVO'], 
+function (Ash, UIList, GameGlobals, GlobalSignals, LogNode, UIConstants, PositionVO) {
+	
 	var UIOutLogSystem = Ash.System.extend({
 	
 		gameState: null,
@@ -17,7 +18,7 @@ define([
 			var logSystem = this;
 			this.logNodes = engine.getNodeList(LogNode);
 			this.onPlayerPositionChanged = function(playerPosition) {
-				logSystem.checkPendingMessages(playerPosition);
+				logSystem.updatePendingMessages(playerPosition);
 			};
 			GlobalSignals.playerPositionChangedSignal.add(this.onPlayerPositionChanged);
 			this.updateMessages();
@@ -52,17 +53,14 @@ define([
 			this.lastUpdateTimeStamp = timeStamp;
 		},
 	
-		checkPendingMessages: function (playerPosition) {
-			var validLevel;
-			var validSector;
-			var validInCamp;
-			for (var node = this.logNodes.head; node; node = node.next) {
-				var pendingMessages = node.logMessages.messagesPendingMovement;
+		updatePendingMessages: function (playerPosition) {
+			for (let node = this.logNodes.head; node; node = node.next) {
+				let pendingMessages = node.logMessages.messagesPendingMovement;
 				for (let i in pendingMessages) {
-					var msg = node.logMessages.messagesPendingMovement[i];
-					validLevel = !msg.pendingLevel || msg.pendingLevel == playerPosition.level;
-					validSector = !msg.pendingSector || msg.pendingSector == playerPosition.sectorId();
-					validInCamp = (typeof msg.pendingInCamp === "undefined") || msg.pendingInCamp === playerPosition.inCamp;
+					let msg = node.logMessages.messagesPendingMovement[i];
+					let validLevel = !msg.pendingLevel || msg.pendingLevel == playerPosition.level;
+					let validSector = !msg.pendingSector || msg.pendingSector == playerPosition.sectorId();
+					let validInCamp = (typeof msg.pendingInCamp === "undefined") || msg.pendingInCamp === playerPosition.inCamp;
 					if (validLevel && validSector && validInCamp) {
 						node.logMessages.showPendingMessage(msg);
 					}
@@ -81,11 +79,6 @@ define([
 		},
 	
 		updateMessageList: function (messages) {
-			/*
-			var animateFromIndex = messages.length - (messages.length - $("#log ul li").length);
-			var animate = index >= animateFromIndex;
-			*/
-
 			let newItems = UIList.update(this.logList, messages);
 			
 			UIList.update(this.logListLatest, newItems.map(li => li.data));
@@ -107,15 +100,28 @@ define([
 		},
 
 		updateLogListItem: function (li, data) {
-			let hasLevel = data.campLevel || data.campLevel == 0;
+			let hasPosition = data.position != null;
 			let hasCount = data.combined > 0;
+
+			let positionText = "";
+			if (hasPosition) {
+				positionText += " (";
+				let campNode = GameGlobals.campHelper.getCampNodeForLevel(data.position.level);
+				if (data.position.inCamp && campNode) {
+					positionText += UIConstants.getCampDisplayName(campNode, true);
+				} else {
+					positionText += new PositionVO(data.position.level, data.position.sectorX, data.position.sectorY).getInGameFormat(true, true);
+				}
+				positionText += ")"
+			}
+
 			li.$root.toggleClass("log-loaded", data.loadedFromSave);
 			li.$spanMsg.text(data.text);
 			li.$spanTime.text(UIConstants.getTimeSinceText(data.time) + " ago");
-			li.$spanLevel.toggle(hasLevel);
-			if (hasLevel) li.$spanLevel.text(' (level ' + data.campLevel + ')');
+			li.$spanLevel.toggle(hasPosition);
+			if (hasPosition) li.$spanLevel.text(positionText);
 			li.$spanMsgCount.toggle(hasCount);
-			if (hasCount) li.$spanMsgCount.text(' (x ' + data.combined + 1 + ')');
+			if (hasCount) li.$spanMsgCount.text(' (x ' + (parseInt(data.combined) + 1) + ')');
 		},
 
 		isLogListItemDataEqual: function (d1, d2) {

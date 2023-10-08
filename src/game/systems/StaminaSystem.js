@@ -8,9 +8,8 @@ define([
 	'game/constants/PlayerStatConstants',
 	'game/constants/PerkConstants',
 	'game/nodes/player/StaminaNode',
-	'game/components/common/LogMessagesComponent',
 	'game/components/player/PlayerActionComponent'
-], function (Ash, GameGlobals, GlobalSignals, FightConstants, GameConstants, LogConstants, PlayerStatConstants, PerkConstants, StaminaNode, LogMessagesComponent, PlayerActionComponent) {
+], function (Ash, GameGlobals, GlobalSignals, FightConstants, GameConstants, LogConstants, PlayerStatConstants, PerkConstants, StaminaNode, PlayerActionComponent) {
 	var StaminaSystem = Ash.System.extend({
 		
 		gameState: null,
@@ -132,13 +131,12 @@ define([
 			var staminaComponent = node.stamina;
 			var isWarning = staminaComponent.stamina <= this.warningLimit;
 			if (isWarning && !this.isWarning) {
-				var logComponent = node.entity.get(LogMessagesComponent);
 				var hasCamp = GameGlobals.gameState.unlockedFeatures.camp;
 				if (!node.position.inCamp && !GameGlobals.playerHelper.hasRestedThisExcursion()) {
 					if (hasCamp)
-						logComponent.addMessage(LogConstants.MSG_ID_STAMINA_WARNING, "Getting tired. Should head back to camp soon.");
+						GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_STAMINA_WARNING, "Getting tired. Should head back to camp soon.");
 					else
-						logComponent.addMessage(LogConstants.MSG_ID_STAMINA_WARNING, "Getting tired. Should find a place to rest soon.");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_STAMINA_WARNING, "Getting tired. Should find a place to rest soon.");
 				}
 			}
 			this.isWarning = isWarning;

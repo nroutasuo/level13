@@ -20,7 +20,6 @@ define([
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/PassagesComponent',
-	'game/components/common/LogMessagesComponent',
 	'game/components/common/MovementComponent',
 	'game/components/common/PositionComponent',
 	'game/components/common/VisitedComponent',
@@ -30,7 +29,7 @@ define([
 ], function (Ash, GameGlobals, GlobalSignals, GameConstants, LevelConstants, LogConstants, PositionConstants,
 	PlayerPositionNode, LevelNode, PlayerLocationNode, LastVisitedCampNode, SectorNode, CampNode,
 	CurrentPlayerLocationComponent, CurrentNearestCampComponent, LastVisitedCampComponent, SectorFeaturesComponent, SectorStatusComponent, PassagesComponent,
-	LogMessagesComponent, MovementComponent, PositionComponent,
+	MovementComponent, PositionComponent,
 	VisitedComponent, RevealedComponent, CampComponent, LevelComponent) {
 
 	var PlayerPositionSystem = Ash.System.extend({
@@ -374,8 +373,7 @@ define([
 		},
 
 		addLogMessage: function (msgID, msg, replacements, values) {
-			let logComponent = this.playerPositionNodes.head.entity.get(LogMessagesComponent);
-			logComponent.addMessage(msgID, msg, replacements, values);
+			GameGlobals.playerHelper.addLogMessageWithParams(msgID, msg, replacements, values);
 		},
 
 	});

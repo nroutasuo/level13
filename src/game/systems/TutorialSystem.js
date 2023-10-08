@@ -188,7 +188,7 @@ define([
 		},
 		
 		showTutorialLogMessage: function (tutorialID, msg) {
-			this.logNodes.head.logMessages.addMessage(tutorialID, msg);
+			GameGlobals.playerHelper.addLogMessage(tutorialID, msg);
 		},
 		
 	});

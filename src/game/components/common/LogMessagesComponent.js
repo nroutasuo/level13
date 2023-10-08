@@ -1,6 +1,7 @@
 // Contains a list of messages to be shown in the log
 define(['ash', 'game/GameGlobals', 'game/constants/LogConstants', 'game/vos/LogMessageVO'],
 function (Ash, GameGlobals, LogConstants, LogMessageVO) {
+	
 	var LogMessagesComponent = Ash.Class.extend({
 
 		messages: [],
@@ -12,13 +13,14 @@ function (Ash, GameGlobals, LogConstants, LogMessageVO) {
 			this.hasNewMessages = true;
 		},
 
-		addMessage: function (logMsgID, message, replacements, values, visibleLevel, visibleSector, visibleInCamp, campLevel) {
+		// addMessage: function (logMsgID, message, replacements, values, visibleLevel, visibleSector, visibleInCamp, campLevel) {
+		addMessage: function (logMsgID, message, replacements, values, position, visibility, isVisibleImmediately) {
 			message = message.replace(/<br\s*[\/]?>/gi, " ");
-			var isPending = Boolean(visibleLevel || visibleSector || visibleInCamp);
-			var timeOffset = GameGlobals.gameState.pendingUpdateTime;
-			var newMsg = new LogMessageVO(logMsgID, message, replacements, values, campLevel, timeOffset);
 
-			if (!isPending) {
+			let timeOffset = GameGlobals.gameState.pendingUpdateTime;
+			let newMsg = new LogMessageVO(logMsgID, message, replacements, values, position, visibility, timeOffset);
+
+			if (true) {
 				this.addMessageImmediate(newMsg);
 			} else {
 				newMsg.setPending(visibleLevel, visibleSector, visibleInCamp);
@@ -40,8 +42,6 @@ function (Ash, GameGlobals, LogConstants, LogMessageVO) {
 		},
 
 		showPendingMessage: function (message) {
-			// TODO this doesn't work for some reason
-			// message.setPendingOver();
 			this.messagesPendingMovement.splice(this.messagesPendingMovement.indexOf(message), 1);
 			this.addMessageImmediate(message);
 		},
@@ -77,7 +77,8 @@ function (Ash, GameGlobals, LogConstants, LogMessageVO) {
 			if (prevMsg.loadedFromSave) return false;
 			if (newMsg.message !== prevMsg.message) return false;
 			if (newMsg.logMsgID !== prevMsg.logMsgID) return false;
-			if (newMsg.campLevel !== prevMsg.campLevel) return false;
+			if (newMsg.contextLevel !== prevMsg.contextLevel) return false;
+			if (newMsg.contextInCamp !== prevMsg.contextInCamp) return false;
 			return true;
 		},
 
@@ -103,20 +104,20 @@ function (Ash, GameGlobals, LogConstants, LogMessageVO) {
 		},
 
 		getMergedMessage: function (newMsg) {
-			var prevMsg = this.messages[this.messages.length - 1];
+			let prevMsg = this.messages[this.messages.length - 1];
 			if (!prevMsg || prevMsg.loadedFromSave) return newMsg;
 
-			var mergedMsgID;
-			var prevMsg2 = this.messages[this.messages.length - 2];
+			let mergedMsgID;
+			let prevMsg2 = this.messages[this.messages.length - 2];
 			if (prevMsg2 && !prevMsg2.loadedFromSave)
 				mergedMsgID = LogConstants.getMergedMsgID([newMsg, prevMsg, prevMsg2]);
 			if (!mergedMsgID)
 				mergedMsgID = LogConstants.getMergedMsgID([newMsg, prevMsg]);
 
 			if (mergedMsgID) {
-				var mergedText = LogConstants.getMergedMsgText(mergedMsgID);
-				var timeOffset = GameGlobals.gameState.pendingUpdateTime;
-				var mergedMsg = new LogMessageVO(mergedMsgID, mergedText, null, null, null, timeOffset);
+				let mergedText = LogConstants.getMergedMsgText(mergedMsgID);
+				let timeOffset = GameGlobals.gameState.pendingUpdateTime;
+				let mergedMsg = new LogMessageVO(mergedMsgID, mergedText, null, null, newMsg.contextLevel, newMsg.contextInCamp, timeOffset);
 				this.mergeReplacements(mergedMsg, prevMsg);
 				this.mergeReplacements(mergedMsg, newMsg);
 				return mergedMsg;

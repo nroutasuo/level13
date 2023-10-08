@@ -88,11 +88,26 @@ define([
 			player.add(new MovementComponent(level, sectorX, sectorY, inCamp));
 		},
 
-		addLogMessage: function (msg) {
+		addLogMessage: function (id, msg) {
 			if (!msg || msg.length == 0) return;
 			let playerPosition = this.playerPosNodes.head.position;
 			let logComponent = this.playerPosNodes.head.entity.get(LogMessagesComponent);
-			logComponent.addMessage(LogConstants.getUniqueID(), msg);
+			logComponent.addMessage(id || LogConstants.getUniqueID(), msg, null, null, playerPosition, LogConstants.MSG_VISIBILITY_DEFAULT, true);
+		},
+
+		addLogMessageWithParams: function (id, msg, replacements, values) {
+			if (!msg || msg.length == 0) return;
+			let playerPosition = this.playerPosNodes.head.position;
+			let logComponent = this.playerPosNodes.head.entity.get(LogMessagesComponent);
+			logComponent.addMessage(id || LogConstants.getUniqueID(), msg, replacements, values, playerPosition, LogConstants.MSG_VISIBILITY_DEFAULT, true);
+		},
+		
+		addLogMessageWithPosition: function (id, msg, position) {
+			if (!msg || msg.length == 0) return;
+			let playerPosition = this.playerPosNodes.head.position;
+			let logComponent = this.playerPosNodes.head.entity.get(LogMessagesComponent);
+			let isVisibleImmediately = !position || position.equals(playerPosition)
+			logComponent.addMessage(id || LogConstants.getUniqueID(), msg, null, null, position, LogConstants.MSG_VISIBILITY_DEFAULT, isVisibleImmediately);
 		},
 		
 		isReadyForExploration: function () {

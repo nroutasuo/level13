@@ -2033,6 +2033,11 @@ body.dark #log ul li.log-loaded span {
 }
 body.dark span.time,
 body.dark span.msg-camp-level {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
   font-size: 0.75rem;
   vertical-align: middle;
 }
@@ -4455,6 +4460,11 @@ body.sunlit #log ul li.log-loaded span {
 }
 body.sunlit span.time,
 body.sunlit span.msg-camp-level {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
   font-size: 0.75rem;
   vertical-align: middle;
 }

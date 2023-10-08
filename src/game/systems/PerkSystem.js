@@ -148,7 +148,6 @@ define([
 		},
 		
 		addPerkAddedLogMessage: function (perkID) {
-			let logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
 			let playerPos = this.playerNodes.head.entity.get(PositionComponent);
 			
 			let msg = "";
@@ -176,7 +175,7 @@ define([
 			
 			if (!msg) return;
 			
-			logComponent.addMessage(LogConstants.MSG_ID_ADD_HAZARD_PERK, msg);
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_ADD_HAZARD_PERK, msg);
 		},
 		
 		addPerkStartedLogMessage: function (perkID) {
@@ -217,11 +216,10 @@ define([
 			
 			if (!msg) return;
 			
-			logComponent.addMessage(LogConstants.MSG_ID_TIME_HAZARD_PERK, msg);
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_TIME_HAZARD_PERK, msg);
 		},
 		
 		addPerkRemovedLogMessage: function (perkID) {
-			var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
 			var msg = "";
 			switch (perkID) {
 				case PerkConstants.perkIds.hazardCold:
@@ -253,7 +251,7 @@ define([
 			
 			if (!msg) return;
 			
-			logComponent.addMessage(LogConstants.MSG_ID_REMOVE_HAZARD_PERK, msg);
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_REMOVE_HAZARD_PERK, msg);
 		},
 		
 		getHazardPerksForSector: function (featuresComponent, statusComponent, itemsComponent) {

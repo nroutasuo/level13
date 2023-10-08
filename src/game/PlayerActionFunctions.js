@@ -101,14 +101,16 @@ define(['ash',
 			this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
 		},
 
-		addLogMessage: function (msgID, msg, replacements, values, pendingPosition) {
-			var playerPosition = this.playerPositionNodes.head.position;
-			var logComponent = this.playerPositionNodes.head.entity.get(LogMessagesComponent);
-			if (pendingPosition && !pendingPosition.equals(playerPosition)) {
-				logComponent.addMessage(msgID, msg, replacements, values, pendingPosition.level, pendingPosition.sectorId(), pendingPosition.inCamp);
-			} else {
-				logComponent.addMessage(msgID, msg, replacements, values);
-			}
+		addLogMessage: function (msgID, msg, replacements, values, actionPosition) {
+			let playerPosition = this.playerPositionNodes.head.position;
+			let logComponent = this.playerPositionNodes.head.entity.get(LogMessagesComponent);
+			let visibility = LogConstants.MSG_VISIBILITY_DEFAULT;
+
+			actionPosition = actionPosition || playerPosition;
+
+			let isVisibleImmediately = actionPosition.equals(playerPosition);
+
+			logComponent.addMessage(msgID, msg, replacements, values, actionPosition, visibility, isVisibleImmediately);
 		},
 
 		startAction: function (action, param) {

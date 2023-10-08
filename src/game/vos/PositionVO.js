@@ -40,7 +40,7 @@ define(['ash'], function (Ash) {
 			return this.level * 1000000 + this.sectorY * 1000 + this.sectorX;
 		},
 		
-		equals: function (positionVO, ignore) {
+		equals: function (positionVO) {
 			return this.level === positionVO.level && this.sectorX === positionVO.sectorX && this.sectorY === positionVO.sectorY;
 		},
 		

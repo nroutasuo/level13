@@ -11,11 +11,10 @@ define([
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/SectorFeaturesComponent',
-	'game/components/common/LogMessagesComponent',
 	'game/components/type/LevelComponent',
 ], function (
 	Ash, GameGlobals, GlobalSignals, GameConstants, CampConstants, LogConstants, OccurrenceConstants, CampNode,
-	PlayerPositionNode, TribeUpgradesNode, SectorImprovementsComponent, SectorFeaturesComponent, LogMessagesComponent,
+	PlayerPositionNode, TribeUpgradesNode, SectorImprovementsComponent, SectorFeaturesComponent,
 	LevelComponent) {
 	var ReputationSystem = Ash.System.extend({
 	
@@ -186,13 +185,12 @@ define([
 				var playerPosition = this.playerNodes.head.position;
 				var campPosition = campNode.position;
 				if (playerPosition.level === campNode.position.level && playerPosition.sectorId() === campPosition.sectorId()) {
-					var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
 					switch (penaltyType) {
 						case CampConstants.REPUTATION_PENALTY_TYPE_DEFENCES:
-							logComponent.addMessage(LogConstants.MSG_ID_REPUTATION_PENALTY_DEFENCES, "People are anxious. They say the camp needs better defences.");
+							GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_REPUTATION_PENALTY_DEFENCES, "People are anxious. They say the camp needs better defences.");
 							break;
 						case CampConstants.REPUTATION_PENALTY_TYPE_HOUSING:
-							logComponent.addMessage(LogConstants.MSG_ID_REPUTATION_PENALTY_HOUSING, "People are unhappy because the camp is over-crowded.");
+							GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_REPUTATION_PENALTY_HOUSING, "People are unhappy because the camp is over-crowded.");
 							break;
 					}
 				}

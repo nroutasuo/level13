@@ -306,9 +306,7 @@ define([
 			if (showDespair) {
 				this.showDespairTimeoutID = window.setTimeout(function () {
 					let msg = LogConstants.getDespairMessage(isValidDespairHunger, isValidDespairThirst, isValidDespairStamina, isValidDespairMove);
-					if (msg && msg.length > 0) {
-						logComponent.addMessage(LogConstants.MSG_ID_DESPAIR_AVAILABLE, msg);
-					}
+					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_DESPAIR_AVAILABLE, msg);
 					GameGlobals.uiFunctions.toggle("#out-action-despair", true);
 				}, 1250);
 				// TODO do this somewhere other than UI system - maybe a global detection if despair is available

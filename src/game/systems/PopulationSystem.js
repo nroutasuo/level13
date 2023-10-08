@@ -11,8 +11,7 @@ define([
 	'game/components/type/LevelComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/common/PositionComponent',
-	'game/components/common/LogMessagesComponent',
-], function (Ash, MathUtils, GameGlobals, GlobalSignals, GameConstants, LogConstants, CampConstants, CampNode, PlayerStatsNode, LevelComponent, SectorImprovementsComponent, PositionComponent, LogMessagesComponent) {
+], function (Ash, MathUtils, GameGlobals, GlobalSignals, GameConstants, LogConstants, CampConstants, CampNode, PlayerStatsNode, LevelComponent, SectorImprovementsComponent, PositionComponent) {
 	var PopulationSystem = Ash.System.extend({
 	
 		campNodes: null,
@@ -243,11 +242,10 @@ define([
 		logChangePopulation: function (campPosition, isIncrease) {
 			var playerPosition = this.playerNodes.head.entity.get(PositionComponent);
 			if (playerPosition.level === campPosition.level && playerPosition.sectorId() === campPosition.sectorId()) {
-				var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
 				if (isIncrease) {
-					logComponent.addMessage(LogConstants.MSG_ID_POPULATION_NATURAL, "A stranger showed up.");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_POPULATION_NATURAL, "A stranger showed up.");
 				} else {
-					logComponent.addMessage(LogConstants.MSG_ID_POPULATION_NATURAL, "An inhabitant packed their belongings and left.");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_POPULATION_NATURAL, "An inhabitant packed their belongings and left.");
 				}
 			}
 		},

@@ -1,6 +1,10 @@
 define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/ItemConstants'], function (Ash, Text, TextConstants, ItemConstants) {
 
-	var LogConstants = {
+	let LogConstants = {
+
+		MSG_VISIBILITY_DEFAULT: "MSG_VISIBILITY_DEFAULT",
+		MSG_VISIBILITY_PRIORITY: "MSG_VISIBILITY_PRIORITY",
+		MSG_VISIBILITY_GLOBAL: "MSG_VISIBILITY_GLOBAL",
 
 		// story
 		MSG_ID_START: "START",

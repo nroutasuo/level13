@@ -270,7 +270,8 @@ define([
 			entity.add(new ExcursionComponent());
 
 			let logComponent = entity.get(LogMessagesComponent);
-			logComponent.addMessage(LogConstants.MSG_ID_START, "You are alone in a massive dark corridor, far below sunlight.");
+			let positionComponent = entity.get(PositionComponent);
+			logComponent.addMessage(LogConstants.MSG_ID_START, "You are alone in a massive dark corridor, far below sunlight.", positionComponent.getPosition(), LogConstants.MSG_VISIBILITY_DEFAULT, true);
 		},
 		
 		syncPlayer: function (entity) {

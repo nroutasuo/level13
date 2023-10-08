@@ -845,6 +845,10 @@ define(['ash',
 			return featureID;
 		},
 
+		getCampDisplayName: function (campNode, short) {
+			return "camp on level " + campNode.position.level;
+		},
+
 		roundValue: function (value, showDecimalsWhenSmall, showDecimalsAlways, decimalDivisor) {
 			decimalDivisor = decimalDivisor || 100;
 			let divisor = 0;
