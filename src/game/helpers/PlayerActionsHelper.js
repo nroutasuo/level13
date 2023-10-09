@@ -1414,6 +1414,31 @@ define([
 				}
 			}
 		},
+
+		getCostAmountProduction: function (sector, costName) {
+			let costNameParts = costName.split("_");
+			
+			if (costNameParts[0] === "resource") {
+				let resourceName = costNameParts[1];
+				let resourceAccumulation = GameGlobals.resourcesHelper.getCurrentStorageAccumulation(false).resourceChange;
+				return resourceAccumulation.getResource(resourceName);
+			} else {
+				switch (costName) {
+					case "rumours":
+						return this.playerStatsNodes.head.rumours.accumulation;
+
+					case "favour":
+						var favour = this.playerStatsNodes.head.entity.has(DeityComponent) ? this.playerStatsNodes.head.entity.get(DeityComponent).accumulation : 0;
+						return favour;
+
+					case "evidence":
+						return this.playerStatsNodes.head.evidence.accumulation;
+
+					default:
+						return 0;
+				}
+			}
+		},
 		
 		checkCostsVersusStorage: function (action, otherSector) {
 			let costs = this.getCosts(action);
@@ -2048,6 +2073,38 @@ define([
 			}
 			
 			return result;
+		},
+
+		isOnlyAccumulatingCosts: function (costs) {
+			if (!costs) return false;
+			if (Object.keys(costs).length == 0) return false;
+
+			for (let key in costs) {
+				if (!this.isAccumulatingCost(key)) return false;
+			}
+
+			return true;
+		},
+
+		isAccumulatingCost: function (costName) {
+			if (costName === "rumours") return true;
+			if (costName === "favour") return GameGlobals.gameState.unlockedFeatures.favour;
+			if (costName === "evidence") return true;
+			let costNameParts = costName.split("_");
+			if (costNameParts[0] === "resource") return true;
+			return false;
+		},
+
+		getCostCountdownSeconds: function (costName, amount, otherSector) {
+			let sector = otherSector || (this.playerLocationNodes.head && this.playerLocationNodes.head.entity);
+			let costAmountOwned = this.getCostAmountOwned(sector, costName);
+			if (costAmountOwned >= amount) return 0;
+			if (!this.isAccumulatingCost(costName)) return -1;
+			
+			let costAmountProduction = this.getCostAmountProduction(sector, costName);
+			if (costAmountProduction <= 0) return -1;
+
+			return (amount - costAmountOwned) / costAmountProduction;
 		},
 
 		getDescription: function (action) {

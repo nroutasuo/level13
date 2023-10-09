@@ -140,10 +140,10 @@ define([
 		},
 
 		updateButtonCallout: function ($button, action, buttonStatus, buttonElements, isHardDisabled) {
-			var $enabledContent = buttonElements.calloutContentEnabled;
-			var $disabledContent = buttonElements.calloutContentDisabled;
+			let $enabledContent = buttonElements.calloutContentEnabled;
+			let $disabledContent = buttonElements.calloutContentDisabled;
 
-			var costs = GameGlobals.playerActionsHelper.getCosts(action);
+			let costs = GameGlobals.playerActionsHelper.getCosts(action);
 
 			let costsStatus = {};
 			costsStatus.hasCostBlockers = false;
@@ -161,7 +161,7 @@ define([
 			if (!isHardDisabled && !isDisabledOnlyForCooldown) {
 				GameGlobals.uiFunctions.toggle($enabledContent, true, this.buttonCalloutSignalParams);
 				GameGlobals.uiFunctions.toggle($disabledContent, false, this.buttonCalloutSignalParams);
-				var hasCosts = action && costs && Object.keys(costs).length > 0;
+				let hasCosts = action && costs && Object.keys(costs).length > 0;
 				if (hasCosts) {
 					this.updateButtonCalloutCosts($button, action, buttonStatus, buttonElements, costs, costsStatus);
 				}
@@ -357,6 +357,8 @@ define([
 					elements.calloutRiskFight = elements.calloutContentEnabled.children(".action-risk-fight");
 					elements.calloutRiskFightValue = elements.calloutRiskFight.children(".action-risk-value");
 					elements.calloutSpecialReqs = elements.calloutContentEnabled.children(".action-special-reqs")
+					elements.calloutCostsCountdownContainer = elements.calloutContentEnabled.children(".action-costs-countdown-container")
+					elements.calloutCostsCountdown = elements.calloutCostsCountdownContainer.children(".action-costs-countdown")
 					elements.descriptionSpan = elements.calloutContent.children(".action-description");
 					elements.cooldownReqs = $button.siblings(".cooldown-reqs");
 					elements.cooldownDuration = $button.children(".cooldown-duration");

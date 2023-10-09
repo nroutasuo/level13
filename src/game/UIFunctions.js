@@ -401,6 +401,7 @@ define(['ash',
 				}
 
 				// visible if button is enabled: costs, special requirements, & risks
+				// - costs
 				let costs = GameGlobals.playerActionsHelper.getCosts(action);
 				let costsSpans = UIConstants.getCostsSpans(action, costs);
 				if (costsSpans.length > 0) {
@@ -408,12 +409,22 @@ define(['ash',
 					enabledContent += costsSpans;
 				}
 
+				// - time to available
+				if (GameGlobals.playerActionsHelper.isOnlyAccumulatingCosts(costs)) {
+					enabledContent += "<div class='action-costs-countdown-container'>";
+					if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
+					enabledContent += "<span class='action-costs-countdown'></span>";
+					enabledContent += "</div>";
+				}
+
+				// - duration
 				var duration = PlayerActionConstants.getDuration(action, baseActionId);
 				if (duration > 0) {
 					if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
 					enabledContent += "<span class='action-duration'>duration: " + Math.round(duration * 100) / 100 + "s</span>";
 				}
 				
+				// - special requirements (such as max improvements on level)
 				let specialReqs = GameGlobals.playerActionsHelper.getSpecialReqs(action);
 				if (specialReqs) {
 					let s = this.getSpecialReqsText(action);
@@ -423,6 +434,7 @@ define(['ash',
 					}
 				}
 
+				// - risks
 				var encounterFactor = GameGlobals.playerActionsHelper.getEncounterFactor(action);
 				var injuryRiskMax = PlayerActionConstants.getInjuryProbability(action, 0, 0);
 				var inventoryRiskMax = PlayerActionConstants.getLoseInventoryProbability(action, 0, 0);
@@ -577,7 +589,7 @@ define(['ash',
 				this.setGameElementsVisibility(true);
 				this.updateButtonCooldowns();
 				this.setUIStatus(false, false);
-				GlobalSignals.gameShownSignal.dispatch();
+					GlobalSignals.gameShownSignal.dispatch();
 			},
 
 			hideGame: function (showLoading, showThinking) {
@@ -1058,14 +1070,29 @@ define(['ash',
 				let maxFavour = GameGlobals.playerHelper.getMaxFavour();
 				let maxInsight = GameGlobals.playerActionFunctions.playerStatsNodes.head.insight.maxValue;
 				let showStorage = GameGlobals.resourcesHelper.getCurrentStorageCap();
+
+				let maxCostCountdown = -1;
+				let hasNonAccumulatingCost = false;
 				
+				// costs themselves
 				for (let key in costs) {
+					let value = costs[key];
+					let isAccumulatingCost = GameGlobals.playerActionsHelper.isAccumulatingCost(key);
+
+					if (isAccumulatingCost && !hasNonAccumulatingCost) {
+						let costCountdown = GameGlobals.playerActionsHelper.getCostCountdownSeconds(key, value);
+						if (costCountdown >= 0 && costCountdown > maxCostCountdown) {
+							maxCostCountdown = costCountdown;
+						}
+					} else {
+						hasNonAccumulatingCost = true;
+					}
+
 					let $costSpan = elements.costSpans[key];
 					if (!$costSpan || $costSpan.length == 0) {
 						log.w("cost span missing: " + key + " " + action);
 						continue;
 					}
-					let value = costs[key];
 					let costFraction = GameGlobals.playerActionsHelper.checkCost(action, key);
 					let isFullCostBlocker =
 						(isResource(key.split("_")[1]) && value > showStorage) ||
@@ -1091,6 +1118,15 @@ define(['ash',
 						GameGlobals.uiFunctions.toggle($costSpan, value > 0, signalParams);
 						displayedCosts[key] = value;
 					}
+				}
+
+				// cost countdown
+				let $costsCountdown = elements.calloutCostsCountdown;
+				let $costsCountdownContainer = elements.calloutCostsCountdownContainer;
+				let showCostCountdown = !hasNonAccumulatingCost && maxCostCountdown >= 0 && costsStatus.bottleneckCostFraction < 1;
+				GameGlobals.uiFunctions.toggle($costsCountdownContainer, showCostCountdown, signalParams);
+				if (showCostCountdown) {
+					$costsCountdown.text("Available in: " + UIConstants.getTimeToNum(maxCostCountdown));
 				}
 			},
 
