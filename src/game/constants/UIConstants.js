@@ -680,6 +680,17 @@ define(['ash',
 			return source.source + " (" + source.sourceCount + ")" + ": " + Math.round(source.amount * divisor) / divisor + "/s";
 		},
 
+		getAccumulationText: function (value) {
+			if (value == 0) return "-";
+
+			if (Math.abs(value) < 0.01) {
+				let minutesValue = value * 60;
+				return this.roundValue(minutesValue, true) + "/m";
+			}
+
+			return this.roundValue(value, true) + "/s";
+		},
+
 		updateCalloutContent: function ($targetElement, content, isTargetDirect) {
 			$targetElement = UIConstants.parseElement($targetElement);
 			let $calloutTarget = isTargetDirect ? $targetElement : $targetElement.parents(".info-callout-target");

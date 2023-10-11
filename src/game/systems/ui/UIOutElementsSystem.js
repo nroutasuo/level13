@@ -189,6 +189,14 @@ define([
 		
 		updateButtonCalloutDescription: function ($button, action, buttonStatus, buttonElements, showDescription) {
 			let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+			let dynamicDescription = GameGlobals.playerActionsHelper.getEffectDescription(action);
+			let showDynamicDescription = showDescription && dynamicDescription && dynamicDescription.length > 0;
+
+			GameGlobals.uiFunctions.toggle(buttonElements.dynamicDescriptionSpanContainer, showDynamicDescription);
+			if (showDynamicDescription) {
+				buttonElements.dynamicDescriptionSpan.html(dynamicDescription);
+			}
+
 			if (!GameGlobals.playerActionsHelper.isImproveBuildingAction(baseActionID) && !GameGlobals.playerActionsHelper.isBuildImprovementAction(baseActionID)) {
 				return;
 			}
@@ -360,6 +368,8 @@ define([
 					elements.calloutCostsCountdownContainer = elements.calloutContentEnabled.children(".action-costs-countdown-container")
 					elements.calloutCostsCountdown = elements.calloutCostsCountdownContainer.children(".action-costs-countdown")
 					elements.descriptionSpan = elements.calloutContent.children(".action-description");
+					elements.dynamicDescriptionSpanContainer = elements.calloutContent.children(".action-effect-description-container");
+					elements.dynamicDescriptionSpan = elements.dynamicDescriptionSpanContainer.children(".action-effect-description");
 					elements.cooldownReqs = $button.siblings(".cooldown-reqs");
 					elements.cooldownDuration = $button.children(".cooldown-duration");
 					elements.cooldownAction = $button.children(".cooldown-action");

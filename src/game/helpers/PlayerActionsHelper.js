@@ -4,6 +4,7 @@ define([
 	'utils/ValueCache',
 	'game/GameGlobals',
 	'game/GlobalSignals',
+	'game/constants/CampConstants',
 	'game/constants/LocaleConstants',
 	'game/constants/PositionConstants',
 	'game/constants/PlayerActionConstants',
@@ -50,7 +51,7 @@ define([
 	'game/vos/ResourcesVO',
 	'game/vos/ImprovementVO'
 ], function (
-	Ash, ValueCache, GameGlobals, GlobalSignals, LocaleConstants, PositionConstants, PlayerActionConstants, PlayerStatConstants, FollowerConstants,
+	Ash, ValueCache, GameGlobals, GlobalSignals, CampConstants, LocaleConstants, PositionConstants, PlayerActionConstants, PlayerStatConstants, FollowerConstants,
 	ImprovementConstants, ItemConstants, BagConstants, MovementConstants, UpgradeConstants, PerkConstants, TextConstants,
 	TradeConstants, UIConstants, WorldConstants, PlayerActionResultNode, PlayerStatsNode, PlayerResourcesNode,
 	PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode, LevelComponent, CurrencyComponent, PositionComponent,
@@ -2111,17 +2112,12 @@ define([
 			if (!action) return "";
 			
 			let baseAction = this.getBaseActionID(action);
-			let improvementName = this.getImprovementNameForAction(action, true);
 			let sector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
 			
 			if (baseAction.indexOf("build_in_") == 0) {
 				let buildingKey = baseAction.replace("build_in_", "");
 				let improvementLevel = this.getImprovementLevel(buildingKey, sector);
-				let baseDesc = ImprovementConstants.getImprovementDescription(buildingKey, improvementLevel);
-				var reputationDesc = "";
-				var reputation = getImprovementReputationBonus(improvementName);
-				if (reputation > 0) reputationDesc = "Reputation: " + reputation;
-				return baseDesc + (baseDesc && reputationDesc ? "<hr>" : "") + reputationDesc;
+				return ImprovementConstants.getImprovementDescription(buildingKey, improvementLevel);
 			} else if (PlayerActionConstants.descriptions[action]) {
 				return PlayerActionConstants.descriptions[action];
 			} else if (PlayerActionConstants.descriptions[baseAction]) {
@@ -2151,6 +2147,45 @@ define([
 			
 			log.w("no description defined for action: " + action)
 			return "";
+		},
+
+		getEffectDescription: function (action) {
+			if (!action) return null;
+
+			let entries = [];
+			let sector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
+			let baseAction = this.getBaseActionID(action);
+
+			let improvementsComponent = sector.get(SectorImprovementsComponent);
+			let campComponent = sector.get(CampComponent);
+			let currentPopulation = campComponent ? Math.floor(campComponent.population) : 0;
+			let accSpeedPopulation = GameGlobals.campHelper.getPopulationRumourGenerationPerSecond(currentPopulation);
+
+			if (baseAction.indexOf("build_in_") == 0) {
+				let improvementName = this.getImprovementNameForAction(action, true);
+				let reputation = getImprovementReputationBonus(improvementName);
+				if (reputation > 0) entries.push("Reputation: +" + reputation);
+			}
+
+			if (action == "build_in_campfire") {
+				var campfireCount = improvementsComponent.getCount(improvementNames.campfire);
+				var campfireLevel = improvementsComponent.getLevel(improvementNames.campfire);
+
+				let current = CampConstants.getCampfireRumourGenerationPerSecond(campfireCount, campfireLevel, accSpeedPopulation);
+				let next = CampConstants.getCampfireRumourGenerationPerSecond(campfireCount + 1, campfireLevel, accSpeedPopulation);
+				entries.push("Rumours: +" + UIConstants.getAccumulationText(next - current));
+			}
+
+			if (action == "improve_in_campfire") {
+				var campfireCount = improvementsComponent.getCount(improvementNames.campfire);
+				var campfireLevel = improvementsComponent.getLevel(improvementNames.campfire);
+
+				let current = CampConstants.getCampfireRumourGenerationPerSecond(campfireCount, campfireLevel, accSpeedPopulation);
+				let next = CampConstants.getCampfireRumourGenerationPerSecond(campfireCount, campfireLevel + 1, accSpeedPopulation);
+				entries.push("Rumours: +" + UIConstants.getAccumulationText(next - current));
+			}
+
+			return entries.length > 0 ? entries.map(e => "<span class='action-effect-description-entry'>" + e + "</span>") : null;
 		},
 		
 		getImproveActionDescription: function (action) {

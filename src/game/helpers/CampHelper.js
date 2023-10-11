@@ -216,6 +216,10 @@ define([
 			var templeLevel = improvementsComponent.getLevel(improvementNames.temple);
 			return CampConstants.getTempleFavourGenerationPerSecond(templeCount, templeLevel) * GameConstants.gameSpeedCamp;
 		},
+
+		getPopulationRumourGenerationPerSecond: function (population) {
+			return CampConstants.RUMOURS_PER_POP_PER_SEC_BASE * Math.floor(population || 0)
+		},
 		
 		getCampfireRumourGenerationPerSecond: function (improvementsComponent, accSpeedPopulation) {
 			var campfireCount = improvementsComponent.getCount(improvementNames.campfire);

@@ -1113,6 +1113,12 @@ body.dark div.callout-arrow-left {
 body.dark .item div.callout-arrow-up {
   margin: 0 0 0 2px;
 }
+body.dark span.action-effect-description {
+  display: block;
+}
+body.dark span.action-effect-description-entry {
+  display: block;
+}
 body.dark span.action-risk {
   display: block;
 }
@@ -3539,6 +3545,12 @@ body.sunlit div.callout-arrow-left {
 }
 body.sunlit .item div.callout-arrow-up {
   margin: 0 0 0 2px;
+}
+body.sunlit span.action-effect-description {
+  display: block;
+}
+body.sunlit span.action-effect-description-entry {
+  display: block;
 }
 body.sunlit span.action-risk {
   display: block;

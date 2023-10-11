@@ -394,11 +394,18 @@ define(['ash',
 				content += "<span>" + action + " " + ordinal + "</span>"
 				*/
 
-				// always visible: description
-				var description = GameGlobals.playerActionsHelper.getDescription(action);
+				// always visible
+				// - basic description
+				let description = GameGlobals.playerActionsHelper.getDescription(action);
 				if (description) {
 					content += "<span class='action-description'>" + description + "</span>";
 				}
+
+				// - dynamic effect description
+				content += "<div class='action-effect-description-container'>";
+				if (content.length > 0) content += "<hr/>";
+				content += "<span class='action-effect-description'></span>"
+				content += "</div>";
 
 				// visible if button is enabled: costs, special requirements, & risks
 				// - costs
