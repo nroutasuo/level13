@@ -181,7 +181,7 @@ define([
 			var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
 			if (!campComponent) return;
 			var campPopulation = Math.floor(campComponent.population);
-			if (staminaComponent.stamina < PlayerStatConstants.getStaminaWarningLimit(staminaComponent)) {
+			if (staminaComponent.stamina < PlayerStatConstants.getStaminaWarningLimit(staminaComponent) * 2) {
 				warning = "Won't get far with low stamina.";
 			} else if (campPopulation >= 1) {
 				var remainingWater = campResources.resources.getResource(resourceNames.water) - selectedWater;
