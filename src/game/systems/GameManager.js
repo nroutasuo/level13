@@ -106,6 +106,11 @@ define([
 			
 			GameGlobals.gameState.gameTime += tickTime;
 			GameGlobals.gameState.playTime += playTime;
+
+			let playerPosition = GameGlobals.playerHelper.getPosition();
+			if (playerPosition && !playerPosition.inCamp) {
+				GameGlobals.gameState.increaseGameStatKeyed("timeOutsidePerLevel", playerPosition.level, playTime);
+			}
 		},
 
 		// Called on page load
@@ -347,7 +352,7 @@ define([
 					}
 
 					var sectorNodes = this.engine.getNodeList(SectorNode);
-					var positionComponent;
+					let positionComponent;
 					var saveKey;
 					for (var sectorNode = sectorNodes.head; sectorNode; sectorNode = sectorNode.next) {
 						positionComponent = sectorNode.entity.get(PositionComponent);

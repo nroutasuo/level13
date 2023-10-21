@@ -2477,7 +2477,11 @@ define([
 		getPathToNearestCamp: function (sector) {
 			if (!this.nearestCampNodes.head) return null;
 			let campSector = this.nearestCampNodes.head.entity;
-			if (!campSector || !sector) return null;
+			if (!campSector) return null;
+
+			sector = sector || (this.playerLocationNodes && this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null);
+
+			if (!sector) return null;
 			
 			let sectorPosition = sector.get(PositionComponent);
 			let sectorLevel = sectorPosition.level;

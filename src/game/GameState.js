@@ -46,11 +46,8 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 				
 			};
 			
-			this.stats = {
-				numTimesScavenged: 0,
-				numTimesScouted: 0,
-				numTimesDespaired: 0,
-			};
+			this.stats = {};
+			this.initStats();
 
 			this.completedTutorials = {}; // id -> timestamp
 			this.completedTutorialGroups = {}; // id -> timestamp
@@ -72,6 +69,38 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.extraUpdateTime = 0;
 		},
 
+		initStats: function () {
+			// simple: simple value (int)
+			this.initGameStatSimple("numBlueprintPiecesFound");
+			this.initGameStatSimple("numExcursionsStarted");
+			this.initGameStatSimple("numExcursionsSurvived");
+			this.initGameStatSimple("numFightsFled");
+			this.initGameStatSimple("numFightsStarted");
+			this.initGameStatSimple("numFightsWon");
+			this.initGameStatSimple("numFollowersRecruited");
+			this.initGameStatSimple("numItemsCrafted");
+			this.initGameStatSimple("numStepsTaken");
+			this.initGameStatSimple("numTimesScavenged");
+			this.initGameStatSimple("numTimesScouted");
+			this.initGameStatSimple("numTradesMade");
+
+			// keyed: value (int) by key (string / int)
+			this.initGameStatKeyed("numBuildingsBuiltPerId");
+			this.initGameStatKeyed("numItemsUsedPerId");
+			this.initGameStatKeyed("numStepsPerLevel");
+			this.initGameStatKeyed("numTimesDespairedPerLevel");
+			this.initGameStatKeyed("timeOutsidePerLevel");
+			this.initGameStatKeyed("numTimesKilledByEnemy");
+			this.initGameStatKeyed("numTimesKilledEnemy");
+
+			// high score: value (int) with corresponding entry (vo)
+			this.initHighScoreStat("mostDistantSectorFromCampVisited");
+			this.initHighScoreStat("mostDistantSectorFromCenterVisited");
+
+			// list: list of unique ids (string) where value is length
+			this.initListStat("uniqueItemsCrafted");
+		},
+
 		syncData: function () {
 			// remove duplicates / old values
 			let partners = this.foundTradingPartners;
@@ -84,6 +113,9 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			
 			// reset ui state
 			if (!this.uiStatus.lastSelection) this.uiStatus.lastSelection = {};
+
+			// init stats in case new ones added
+			this.initStats();
 			
 			// complete ending if launch started
 			if (this.isLaunchStarted || this.isLaunched || this.isLaunchCompleted || this.isFinished) {
@@ -120,6 +152,178 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 				this.playedVersions.push(version);
 			}
 			log.i("played versions: " + this.playedVersions.join(","));
+		},
+
+		isSimpleStat: function (name) {
+			return (typeof (this.stats[name]) === 'number');
+		},
+
+		initGameStatSimple: function (name) {
+			if (this.isSimpleStat(name)) return;
+			this.stats[name] = 0;
+		},
+
+		increaseGameStatSimple: function (name, value) {
+			if (!this.stats[name] && this.stats[name] !== 0) {
+				debugger
+				log.w("[GameStats] can't increase simple player stat [" + name + "]: no such player stat");
+				return;
+			}
+			
+			if (!this.isSimpleStat(name)) {
+				debugger
+				log.w("[GameStats] can't increase simple player stat [" + name + "]: not a simple stat");
+				return;
+			}
+
+			if (!value && value !== 0) value = 1;
+
+			this.stats[name] += value;
+
+			if (this.logStatChanges(name)) log.i("[GameStats] increased simple stat [" + name + "]: now " + this.stats[name]);
+		},
+
+		getGameStatSimple: function (name) {
+			return this.stats[name] || this[name] || 0;
+		},
+
+		isKeyedStat: function (name) {
+			return (typeof (this.stats[name]) === 'object') && !("entry" in this.stats[name]);
+		},
+
+		initGameStatKeyed: function (name) {
+			if (this.isKeyedStat(name)) return;
+			this.stats[name] = {};
+		},
+
+		increaseGameStatKeyed: function (name, key, value) {
+			if (!this.stats[name]) {
+				debugger
+				log.w("[GameStats] can't increase keyed player stat [" + name + "]: no such player stat");
+				return;
+			}
+
+			if (!this.isKeyedStat(name)) {
+				debugger
+				log.w("[GameStats] can't increase keyed player stat [" + name + "]: not a keyed stat");
+				return;
+			}
+
+			if (!value && value !== 0) value = 1;
+			if (typeof (key) === "object") key = key.id;
+
+			if (!this.stats[name][key]) this.stats[name][key] = 0;
+			this.stats[name][key] += value;
+
+			if (this.logStatChanges(name)) log.i("[GameStats] increased keyed stat [" + name + "][" + key + "]: now " + this.stats[name][key]);
+		},
+
+		getGameStatKeyedSum: function (name) {
+			if (!this.isKeyedStat(name)) {
+				log.w("[GameStats] no such keyed stat [" + name + "]");
+				return 0;
+			}
+
+			let result = 0;
+			for (let key in this.stats[name]) {
+				result += this.stats[name][key];
+			}
+
+			return result;
+		},
+
+		isHighScoreStat: function (name) {
+			return (typeof (this.stats[name]) === 'object') && ("entry" in this.stats[name]);
+		},
+
+		initHighScoreStat: function (name) {
+			if (this.isHighScoreStat(name)) return;
+			this.stats[name] = { value: 0, entry: null };
+		},
+
+		increaseGameStatHighScore: function (name, entry, value) {
+			if (!this.stats[name]) {
+				debugger
+				log.w("[GameStats] can't increase high score player stat [" + name + "]: no such player stat");
+				return;
+			}
+
+			if (!this.isHighScoreStat(name)) {
+				debugger
+				log.w("[GameStats] can't increase high score player stat [" + name + "]: not a high score stat");
+				return;
+			}
+			
+			if (this.stats[name].entry != null && this.stats[name].value >= value) return;
+
+			this.stats[name] = { value: value, entry: entry };
+			
+			if (this.logStatChanges(name)) log.i("[GameStats] increased high score stat [" + name + "]: now " + this.stats[name].value);
+		},
+
+		getGameStatHighScore: function (name) {
+			if (this.isKeyedStat(name)) {
+				return this.getGameStatHighScoreFromKeyed(name);
+			}
+
+			if (!this.isHighScoreStat(name)) {
+				log.w("[GameStats] no such high score stat [" + name + "]");
+				return null;
+			}
+			return this.stats[name] || {};
+		},
+
+		getGameStatHighScoreFromKeyed: function (name) {
+			if (!this.isKeyedStat(name)) {
+				log.w("[GameStats] no such keyed stat [" + name + "]");
+				return null;
+			}
+
+			let maxValue = 0;
+			let maxValueKey = null;
+
+			for (let key in this.stats[name]) {
+				let value = this.stats[name][key];
+				if (value > maxValue) {
+					maxValue = value;
+					maxValueKey = key;
+				}
+			}
+
+			return { value: maxValue, entry: maxValueKey };
+		},
+
+		isListStat: function (name) {
+			return Array.isArray(this.stats[name]);
+		},
+
+		initListStat: function (name) {
+			if (this.isListStat(name)) return;
+			this.stats[name] = [];
+		},
+
+		increaseGameStatList: function (name, id) {
+			if (!this.stats[name]) {
+				debugger
+				log.w("[GameStats] can't increase list player stat [" + name + "]: no such player stat");
+				return;
+			}
+
+			if (!this.isListStat(name)) {
+				debugger
+				log.w("[GameStats] can't increase list player stat [" + name + "]: not a list stat");
+				return;
+			}
+
+			if (this.stats[name].indexOf(id) >= 0) return;
+
+			this.stats[name].push(id);
+			
+			if (this.logStatChanges(name)) log.i("[GameStats] increased list stat [" + name + "] with [" + id + "]: now " + this.stats[name].length);
+		},
+
+		getGameStatList: function (name) {
+			return this.stats[name].length;
 		},
 
 		getLevelOrdinal: function (level) {
@@ -249,7 +453,11 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			var locationKey = "";
 			if (isLocationAction) locationKey = playerPos.level + "-" + playerPos.sectorId();
 			return locationKey;
-		}
+		},
+
+		logStatChanges: function (name) {
+			return name && name.indexOf("timeOutside") < 0;
+		},
 
 	});
 

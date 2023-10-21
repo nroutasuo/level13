@@ -452,6 +452,7 @@ define([
 					if (this.willGainedFollowerJoinParty(follower)) {
 						followersComponent.addFollower(follower);
 						followersComponent.setFollowerInParty(follower, true);
+						GameGlobals.gameState.increaseGameStatSimple("numFollowersRecruited");
 						GlobalSignals.followersChangedSignal.dispatch();
 					} else if (defaultRewardCampNode) {
 						defaultRewardCampNode.camp.pendingRecruits.push(follower);
@@ -465,6 +466,7 @@ define([
 			if (rewards.gainedBlueprintPiece) {
 				this.tribeUpgradesNodes.head.upgrades.addNewBlueprintPiece(rewards.gainedBlueprintPiece);
 				GameGlobals.playerActionFunctions.unlockFeature("blueprints");
+				GameGlobals.gameState.increaseGameStatSimple("numBlueprintPiecesFound");
 			}
 
 			if (rewards.lostItems) {

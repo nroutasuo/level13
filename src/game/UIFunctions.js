@@ -91,6 +91,16 @@ define(['ash',
 					});
 					uiFunctions.showManageSave();
 				});
+				$("#btn-stats").click(function (e) {
+					gtag('event', 'screen_view', {
+						'screen_name': "popup-stats"
+					});
+					uiFunctions.updateGameStatsPopup();
+					uiFunctions.showSpecialPopup("game-stats-popup");
+				});
+				$("#game-stats-popup-close").click(function (e) {
+					uiFunctions.popupManager.closePopup("game-stats-popup");
+				});
 				$("#btn-info").click(function (e) {
 					gtag('event', 'screen_view', {
 						'screen_name': "popup-game-info"
@@ -596,7 +606,10 @@ define(['ash',
 				this.setGameElementsVisibility(true);
 				this.updateButtonCooldowns();
 				this.setUIStatus(false, false);
+
+				setTimeout(function () {
 					GlobalSignals.gameShownSignal.dispatch();
+				}, 1);
 			},
 
 			hideGame: function (showLoading, showThinking) {
@@ -656,8 +669,40 @@ define(['ash',
 				GlobalSignals.windowResizedSignal.dispatch();
 			},
 
+			updateGameStatsPopup: function () {
+				let html = "";
+				let stats = GameGlobals.playerHelper.getVisibleGameStats();
+				for (let i in stats) {
+					let category = stats[i];
+					let isCategoryDebugVisible = !category.isVisible && GameConstants.isDebugVersion;
+					let isCategoryVisible = category.isVisible || isCategoryDebugVisible;
+					if (!isCategoryVisible) continue;
+					html += "<div class='game-stat-category" + (isCategoryDebugVisible ? " debug-info" : "") + "'>";
+					html += "<h3>" + category.displayName + "</h3>";
+					for (let j in category.stats) {
+						let stat = category.stats[j];
+						let isDebugVisible = !stat.isVisible && GameConstants.isDebugVersion;
+						let isVisible = stat.isVisible || isDebugVisible;
+						if (!isVisible) continue;
+						let classes = [ "" ];
+						if (isDebugVisible) classes.push("debug-info");
+						let displayValue = stat.isPercentage ? UIConstants.roundValue(stat.value * 100) + "%" : UIConstants.roundValue(stat.value);
+						html += "<div class='game-stat-entry" + (isDebugVisible ? " debug-info" : "") + "'>";
+						html += "<span class='game-stat-span game-stat-name'>" + stat.displayName + "</span>";
+						html += "<span class='game-stat-span game-stat-value'>" + displayValue + "</span>";
+						if (stat.entry) {
+							html += "<span class='game-stat-span game-stat-entry'>" + stat.entry + "</span>";
+						}
+						html += "</div>";
+					}
+					html += "</div>";
+				}
+				
+				$("#game-stats-container").html(html);
+			},
+
 			getGameInfoDiv: function () {
-				var html = "";
+				let html = "";
 				html += "<span id='changelog-version'>version " + GameGlobals.changeLogHelper.getCurrentVersionNumber() + "<br/>updated " + GameGlobals.changeLogHelper.getCurrentVersionDate() + "</span>";
 				html += "<p>Note that this game is still in development and many features are incomplete and unbalanced. Updates might break saves. Feedback and bug reports are appreciated!</p>";
 				html += "<p>Feedback:<br/>" + GameConstants.getFeedbackLinksHTML() + "</p>";

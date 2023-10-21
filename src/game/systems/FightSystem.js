@@ -92,6 +92,8 @@ define([
 			var playerStamina = this.playerStatsNodes.head.stamina;
 			playerStamina.resetHP();
 			playerStamina.resetShield();
+
+			GameGlobals.gameState.increaseGameStatSimple("numFightsStarted");
 			
 			this.log("init fight | enemy IV: " + enemy.getIVAverage() + " | next turn player: " + nextTurnPlayer + ", enemy: " + nextTurnEnemy);
 		},
@@ -203,14 +205,22 @@ define([
 		},
 		
 		endFight: function () {
-			var sector = this.fightNodes.head.entity;
-			var enemy = this.fightNodes.head.fight.enemy;
-			var playerStamina = this.playerStatsNodes.head.stamina;
-			var won = FightConstants.isWin(playerStamina.hp, enemy.hp);
+			let sector = this.fightNodes.head.entity;
+			let enemy = this.fightNodes.head.fight.enemy;
+			let playerStamina = this.playerStatsNodes.head.stamina;
+			let won = FightConstants.isWin(playerStamina.hp, enemy.hp);
 			
 			GlobalSignals.fightUpdateSignal.dispatch(0, 0, null, null);
+
+			if (won) {
+				GameGlobals.gameState.increaseGameStatSimple("numFightsWon");
+				GameGlobals.gameState.increaseGameStatKeyed("numTimesKilledEnemy", enemy.id);
+			} else {
+				GameGlobals.gameState.increaseGameStatKeyed("numTimesKilledByEnemy", enemy.id);
+			}
 			
 			this.fightNodes.head.fight.finishedPending = true;
+
 			setTimeout(function () {
 				var encounterComponent = sector.get(FightEncounterComponent);
 				if (encounterComponent.gangComponent) {
@@ -247,6 +257,8 @@ define([
 			playerStamina.resetHP();
 			playerStamina.resetShield();
 			this.fightNodes.head.fight.fled = true;
+			
+			GameGlobals.gameState.increaseGameStatSimple("numFightsFled");
 		},
 		
 		log: function (msg) {

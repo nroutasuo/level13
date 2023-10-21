@@ -1,12 +1,14 @@
 define(['ash'], function (Ash) {
 
-	var ExcursionComponent = Ash.Class.extend({
+	let ExcursionComponent = Ash.Class.extend({
 		
+		numSteps: 0,
 		numNaps: 0,
 		numConsecutiveScavengeUseless: 0,
 		numConsecutiveScavengeUselessSameLocation: 0,
 
 		constructor: function () {
+			this.numSteps = 0;
 			this.numNaps = 0;
 			this.numConsecutiveScavengeUseless = 0;
 			this.numConsecutiveScavengeUselessSameLocation = 0;

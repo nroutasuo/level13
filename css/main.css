@@ -1860,6 +1860,10 @@ body.dark .item-comparison-badge {
   border-radius: 6px;
   background: #282a28;
 }
+body.dark .debug-info {
+  color: #bbb;
+  background: #22992299;
+}
 body.dark .dev-hud {
   opacity: 0.75;
   background: #999;
@@ -2659,6 +2663,9 @@ body.dark .li-save-slot div {
 body.dark .save-slot-date {
   float: right;
   color: #bbb;
+}
+body.dark .game-stat-span {
+  margin: 0 2px;
 }
 body.dark #mobile-overlay {
   position: fixed;
@@ -4293,6 +4300,10 @@ body.sunlit .item-comparison-badge {
   border-radius: 6px;
   background: #fff;
 }
+body.sunlit .debug-info {
+  color: #777;
+  background: #22992299;
+}
 body.sunlit .dev-hud {
   opacity: 0.75;
   background: #999;
@@ -5092,6 +5103,9 @@ body.sunlit .li-save-slot div {
 body.sunlit .save-slot-date {
   float: right;
   color: #777;
+}
+body.sunlit .game-stat-span {
+  margin: 0 2px;
 }
 body.sunlit #mobile-overlay {
   position: fixed;

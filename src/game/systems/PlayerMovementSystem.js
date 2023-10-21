@@ -83,8 +83,15 @@ define([
 						this.leaveCamp(position);
 					}
 				}
+
+				let pathToCamp = GameGlobals.playerActionsHelper.getPathToNearestCamp();
+				let distanceToCamp = pathToCamp ? pathToCamp.length : -1;
+				let distanceToCenter = PositionConstants.getDistanceTo(position, new PositionVO(position.level, 0, 0, false));
+
+				GameGlobals.gameState.increaseGameStatHighScore("mostDistantSectorFromCampVisited", position, distanceToCamp);
+				GameGlobals.gameState.increaseGameStatHighScore("mostDistantSectorFromCenterVisited", position, distanceToCenter);
 				
-				GlobalSignals.playerPositionChangedSignal.dispatch(position);
+				GlobalSignals.playerPositionChangedSignal.dispatch(position, oldPosition);
 				GameGlobals.uiFunctions.onPlayerPositionChanged();
 				
 				setTimeout(() => {

@@ -30,6 +30,10 @@ define([
 			if (!upgradeID) return true;
 			return this.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeID);
 		},
+
+		getAllUnlockedUpgrades: function () {
+			return this.tribeUpgradesNodes.head.upgrades.boughtUpgrades;
+		},
 		
 		getUpgradeStatus: function (upgradeID) {
 			if (this.hasUpgrade(upgradeID))

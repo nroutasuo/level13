@@ -344,31 +344,39 @@ define(['ash',
 			switch (direction) {
 				case PositionConstants.DIRECTION_WEST:
 					newPos.sectorX--;
+					this.recordSteps(1);
 					break;
 				case PositionConstants.DIRECTION_NORTH:
 					newPos.sectorY--;
+					this.recordSteps(1);
 					break;
 				case PositionConstants.DIRECTION_SOUTH:
 					newPos.sectorY++;
+					this.recordSteps(1);
 					break;
 				case PositionConstants.DIRECTION_EAST:
 					newPos.sectorX++;
+					this.recordSteps(1);
 					break;
 				case PositionConstants.DIRECTION_NE:
 					newPos.sectorX++;
 					newPos.sectorY--;
+					this.recordSteps(1);
 					break;
 				case PositionConstants.DIRECTION_SE:
 					newPos.sectorX++;
 					newPos.sectorY++;
+					this.recordSteps(1);
 					break;
 				case PositionConstants.DIRECTION_SW:
 					newPos.sectorX--;
 					newPos.sectorY++;
+					this.recordSteps(1);
 					break;
 				case PositionConstants.DIRECTION_NW:
 					newPos.sectorX--;
 					newPos.sectorY--;
+					this.recordSteps(1);
 					break;
 				case PositionConstants.DIRECTION_UP:
 					newPos.level++;
@@ -381,8 +389,11 @@ define(['ash',
 					if (this.nearestCampNodes.head) {
 						let campSector = this.nearestCampNodes.head.entity;
 						let campPosition = campSector.get(PositionComponent);
+						let path = GameGlobals.playerActionsHelper.getPathToNearestCamp();
 						newPos = campPosition.clone();
 						newPos.inCamp = true;
+						this.recordExcursionSurvived();
+						this.recordSteps(path.length);
 					}
 					break;
 				default:
@@ -441,6 +452,7 @@ define(['ash',
 
 		enterCamp: function () {
 			let playerPos = this.playerPositionNodes.head.position;
+			this.recordExcursionSurvived();
 			GameGlobals.playerHelper.moveTo(playerPos.level, playerPos.sectorX, playerPos.sectorY, true);
 		},
 
@@ -1156,6 +1168,7 @@ define(['ash',
 
 			caravan.clearSelection();
 			caravan.tradesMade++;
+			GameGlobals.gameState.increaseGameStatSimple("numTradesMade");
 			
 			GlobalSignals.inventoryChangedSignal.dispatch();
 			this.addLogMessage(LogConstants.MSG_ID_TRADE_WITH_CARAVAN, "Traded with a caravan.");
@@ -1173,6 +1186,7 @@ define(['ash',
 			recruitComponent.isRecruited = true;
 			
 			GameGlobals.playerActionFunctions.unlockFeature("followers");
+			GameGlobals.gameState.increaseGameStatSimple("numFollowersRecruited");
 			GlobalSignals.followersChangedSignal.dispatch();
 			
 			this.addLogMessage(LogConstants.MSG_ID_RECRUIT, "Recruited a new follower.");
@@ -1277,8 +1291,10 @@ define(['ash',
 		},
 
 		despair: function () {
-			GameGlobals.gameState.stats.numTimesDespaired++;
+			let playerPos = this.playerPositionNodes.head.position;
 			this.engine.getSystem(FaintingSystem).despair();
+			GameGlobals.gameState.increaseGameStatKeyed("numTimesDespairedPerLevel", playerPos.level);
+			GameGlobals.gameState.stats.numTimesDespaired++;
 			this.completeAction("despair");
 		},
 
@@ -1810,7 +1826,6 @@ define(['ash',
 
 		craftItem: function (itemId) {
 			var actionName = "craft_" + itemId;
-			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
 			var item = GameGlobals.playerActionsHelper.getItemForCraftAction(actionName);
 			GameGlobals.playerHelper.addItem(item);
 
@@ -1820,6 +1835,9 @@ define(['ash',
 			if (item.type == ItemConstants.itemTypes.light) {
 				GameGlobals.playerActionFunctions.unlockFeature("vision");
 			}
+
+			GameGlobals.gameState.increaseGameStatSimple("numItemsCrafted");
+			GameGlobals.gameState.increaseGameStatList("uniqueItemsCrafted", itemId);
 
 			//this.addLogMessage(LogConstants.MSG_ID_CRAFT_ITEM, LogConstants.getCraftItemMessage(item));
 			GlobalSignals.inventoryChangedSignal.dispatch();
@@ -2037,6 +2055,8 @@ define(['ash',
 					log.w("Item not mapped for useItem: " + itemId);
 					break;
 			}
+
+			GameGlobals.gameState.increaseGameStatKeyed("numItemsUsedPerId", baseItemId);
 			
 			GlobalSignals.inventoryChangedSignal.dispatch();
 		},
@@ -2198,7 +2218,9 @@ define(['ash',
 				log.w("trying to build an improvement but there is no SectorImprovementsComponent " + actionName, this);
 				return;
 			}
+			let improvementID = ImprovementConstants.getImprovementID(improvementName);
 			improvementsComponent.add(improvementName);
+			GameGlobals.gameState.increaseGameStatKeyed("numBuildingsBuiltPerId", improvementID);
 			GlobalSignals.improvementBuiltSignal.dispatch();
 			this.save();
 		},
@@ -2294,6 +2316,20 @@ define(['ash',
 			log.i("locked feature: " + featureID);
 			
 			GameGlobals.gameState.unlockedFeatures[featureSaveKey] = false;
+		},
+
+		recordSteps: function (steps) {
+			let playerPos = this.playerPositionNodes.head.position;
+			if (!playerPos) return;
+			GameGlobals.gameState.increaseGameStatSimple("numStepsTaken", steps);
+			GameGlobals.gameState.increaseGameStatKeyed("numStepsPerLevel", playerPos.level, steps);
+		},
+
+		recordExcursionSurvived: function () {
+			let excursionComponent = this.playerPositionNodes.head.entity.get(ExcursionComponent);
+			if (excursionComponent && excursionComponent.numSteps >= ExplorationConstants.MIN_EXCURSION_LENGTH) {
+				GameGlobals.gameState.increaseGameStatSimple("numExcursionsSurvived");
+			}
 		},
 		
 		forceStatsBarUpdate: function () {

@@ -56,6 +56,11 @@ define([
 			if (!this.playerPosNodes.head) return false;
 			return this.playerPosNodes.head.position.inCamp;
 		},
+
+		getPosition: function () {
+			if (!this.playerPosNodes.head) return null;
+			return this.playerPosNodes.head.position;
+		},
 		
 		isBusy: function () {
 			let player = this.playerStatsNodes.head.entity;
@@ -277,6 +282,108 @@ define([
 			let deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
 			let hasDeity = deityComponent != null;
 			return hasDeity ? deityComponent.maxFavour : 0;
+		},
+
+		getVisibleGameStats: function () {
+			let result = [];
+
+			let addStat = function (category, stat, isVisible) {
+				stat.displayName = stat.name;
+				stat.isVisible = !(isVisible === false);
+				category.push(stat);
+			};
+
+			// General
+			let generalStats = [];
+			addStat(generalStats, this.getGameStatSimple("playTime"));
+			addStat(generalStats, this.getGameStatKeyedSum("timeOutsidePerLevel"));
+			addStat(generalStats, this.getGameStatDerived("numTechResearched", () => GameGlobals.tribeHelper.getAllUnlockedUpgrades().length));
+			addStat(generalStats, this.getGameStatSimple("numBlueprintPiecesFound"));
+			result.push({ displayName: "General", stats: generalStats, isVisible: true });
+
+			// Exploration
+			let explorationStats = [];
+			addStat(explorationStats, this.getGameStatSimple("numStepsTaken"));
+			addStat(explorationStats, this.getGameStatSimple("numTimesScavenged"));
+			addStat(explorationStats, this.getGameStatSimple("numTimesScouted"));
+			addStat(explorationStats, this.getGameStatSimple("numVisitedSectors"));
+			addStat(explorationStats, this.getGameStatHighScore("numStepsPerLevel"));
+			addStat(explorationStats, this.getGameStatSimple("numExcursionsStarted"), GameGlobals.gameState.isFeatureUnlocked("camp"));
+			addStat(explorationStats, this.getGameStatSimple("numExcursionsSurvived"), GameGlobals.gameState.isFeatureUnlocked("camp"));
+			addStat(explorationStats, this.getStatPercentage("numExcursionsSurvived", "numExcursionsStarted"), GameGlobals.gameState.isFeatureUnlocked("camp"));
+			addStat(explorationStats, this.getGameStatHighScore("mostDistantSectorFromCenterVisited"));
+			result.push({ displayName: "Exploration", stats: explorationStats, isVisible: true });
+
+			// Survival
+			let survivalStats = [];
+			addStat(survivalStats, this.getGameStatKeyedSum("numTimesDespairedPerLevel"));
+			addStat(survivalStats, this.getGameStatHighScore("numTimesDespairedPerLevel"));
+			result.push({ displayName: "Survival", stats: survivalStats, isVisible: true });
+
+			// Camp
+			let campStats = [];
+			addStat(campStats, this.getGameStatKeyedSum("numBuildingsBuiltPerId"));
+			result.push({ displayName: "Camp", stats: campStats, isVisible: GameGlobals.gameState.isFeatureUnlocked("camp") });
+
+			// Trade
+			let tradeStats = [];
+			addStat(tradeStats, this.getGameStatSimple("numTradesMade"));
+			result.push({ displayName: "Trade", stats: tradeStats, isVisible: GameGlobals.gameState.isFeatureUnlocked("trade") });
+
+			// Fights
+			let fightStats = [];
+			addStat(fightStats, this.getGameStatSimple("numFightsStarted"));
+			addStat(fightStats, this.getGameStatSimple("numFightsWon"));
+			addStat(fightStats, this.getGameStatSimple("numFightsFled"));
+			addStat(fightStats, this.getStatPercentage("numFightsWon", "numFightsStarted"));
+			addStat(fightStats, this.getGameStatHighScore("numTimesKilledByEnemy"));
+			addStat(fightStats, this.getGameStatHighScore("numTimesKilledEnemy"));
+			result.push({ displayName: "Fights", stats: fightStats, isVisible: GameGlobals.gameState.isFeatureUnlocked("fight") });
+
+			// Items
+			let itemStats = [];
+			addStat(itemStats, this.getGameStatSimple("numItemsCrafted"));
+			addStat(itemStats, this.getGameStatList("uniqueItemsCrafted"));
+			addStat(itemStats, this.getGameStatKeyedSum("numItemsUsedPerId"));
+			result.push({ displayName: "Items", stats: itemStats, isVisible: true });
+
+			// Followers
+			let followerStats = [];
+			addStat(fightStats, this.getGameStatSimple("numFollowersRecruited"));
+			result.push({ displayName: "Followers", stats: followerStats, isVisible: GameGlobals.gameState.isFeatureUnlocked("followers") });
+
+			return result;
+		},
+
+		getGameStatSimple: function (name) {
+			return { name: name, value: GameGlobals.gameState.getGameStatSimple(name) };
+		},
+
+		getGameStatDerived: function (name, getter) {
+			return { name: name, value: getter() };
+		},
+
+		getStatPercentage: function (name1, name2) {
+			let value = GameGlobals.gameState.getGameStatSimple(name1) / GameGlobals.gameState.getGameStatSimple(name2);
+			return { name: name1 + "/" + name2, value: value, isPercentage: true };
+		},
+
+		getGameStatKeyedSum: function (name) {
+			let value = GameGlobals.gameState.getGameStatKeyedSum(name);
+			return { name: name, value: value };
+		},
+
+		getGameStatList: function (name) {
+			return { name: name, value: GameGlobals.gameState.getGameStatList(name) };
+		},
+
+		getGameStatHighScore: function (name) {
+			let entry = GameGlobals.gameState.getGameStatHighScore(name);
+			if (entry) {
+				return { name: name, value: entry.value, entry: entry.entry };
+			} else {
+				return { name: name, value: null, entry: null };
+			}
 		},
 		
 	});

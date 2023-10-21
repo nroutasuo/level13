@@ -2,6 +2,7 @@ define(['ash', 'game/vos/LocaleVO'], function (Ash, LocaleVO) {
 
 	var ExplorationConstants = {
 		
+		MIN_EXCURSION_LENGTH: 1,
 		BEACON_RADIUS: 4,
 		THRESHOLD_SCAVENGED_PERCENT_REVEAL_NO_RESOURCES: 10,
 		
