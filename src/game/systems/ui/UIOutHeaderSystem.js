@@ -699,7 +699,9 @@ define([
 				
 				let backgroundColor = ColorConstants.getColor(sunlit, "bg_box_1");
 				let fillColor = isNegative ? ColorConstants.getColor(sunlit, "bg_warning_stronger") : ColorConstants.getColor(sunlit, "bg_element_1");
-				let warningPercentage = PerkConstants.getPerkActivePercent(perk) * 100;
+				let warningPercentage = perk.removeTimer > 0 ? 
+					perk.effectFactor * 100:
+					PerkConstants.getPerkActivePercent(perk) * 100;
 				let backgroundValue = "conic-gradient(" + fillColor + " " + warningPercentage + "%, " + backgroundColor + " 0%)";
 
 				$(".perk-li-" + perk.id).attr("data-percentage", warningPercentage);
