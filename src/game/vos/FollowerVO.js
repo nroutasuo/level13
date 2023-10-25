@@ -10,6 +10,8 @@ define(['ash'], function (Ash) {
 		gender: null,
 		
 		inParty: false,
+		numFights: 0,
+		numSteps: 0,
 
 		constructor: function (id, name, abilityType, abilityLevel, icon, gender, source) {
 			this.id = id;

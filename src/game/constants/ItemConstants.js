@@ -261,6 +261,12 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			return null;
 		},
 
+		getItemType: function (id) {
+			var item = this.getItemConfigByID(id);
+			if (!item) return null;
+			return item.type;
+		},
+
 		getItemDefaultBonus: function (item) {
 			if (!item) return null;
 			return this.getItemTypeDefaultBonus(item.type);

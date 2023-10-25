@@ -142,42 +142,49 @@ define([
 			campResources.addResource(resourceNames.metal, metal, "update-worker-production");
 			resourceAccComponent.addChange(resourceNames.metal, metal / time, "Scavengers", camp.assignedWorkers.scavenger);
 			if (metal > 0) GameGlobals.playerActionFunctions.unlockFeature("resource_metal");
+			GameGlobals.gameState.increaseGameStatKeyed("amountResourcesProducedInCampsPerName", resourceNames.metal, metal);
 			
 			// Basic: Trappers
 			var food = time * (node.camp.foodProductionPerSecond || 0);
 			campResources.addResource(resourceNames.food, food, "update-worker-production");
 			resourceAccComponent.addChange(resourceNames.food, food / time, "Trappers", camp.assignedWorkers.trapper);
 			if (food > 0) GameGlobals.playerActionFunctions.unlockFeature("resource_food");
+			GameGlobals.gameState.increaseGameStatKeyed("amountResourcesProducedInCampsPerName", resourceNames.food, food);
 			
 			// Basic: Water collectors
 			var water = time * (node.camp.waterProductionPerSecond || 0);
 			campResources.addResource(resourceNames.water, water, "update-worker-production");
 			resourceAccComponent.addChange(resourceNames.water, water / time, "Collectors", camp.assignedWorkers.water);
 			if (water > 0) GameGlobals.playerActionFunctions.unlockFeature("resource_water");
+			GameGlobals.gameState.increaseGameStatKeyed("amountResourcesProducedInCampsPerName", resourceNames.water, water);
 			
 			// Basic: Rope-makers
 			var rope = time * (node.camp.ropeProductionPerSecond || 0);
 			campResources.addResource(resourceNames.rope, rope, "update-worker-production");
 			resourceAccComponent.addChange(resourceNames.rope, rope / time, "Rope-makers", camp.assignedWorkers.ropemaker);
 			if (rope > 0) GameGlobals.playerActionFunctions.unlockFeature("resource_rope");
+			GameGlobals.gameState.increaseGameStatKeyed("amountResourcesProducedInCampsPerName", resourceNames.rope, rope);
 			
 			// Workshop: Chemists
 			var fuel = time * (node.camp.fuelProductionPerSecond || 0);
 			campResources.addResource(resourceNames.fuel, fuel, "update-worker-production");
 			resourceAccComponent.addChange(resourceNames.fuel, fuel / time, "Chemists", camp.assignedWorkers.chemist);
 			if (fuel > 0) GameGlobals.playerActionFunctions.unlockFeature("resource_fuel");
+			GameGlobals.gameState.increaseGameStatKeyed("amountResourcesProducedInCampsPerName", resourceNames.fuel, fuel);
 			
 			// Workshop: Rubbermakers
 			var rubber = time * (node.camp.rubberProductionPerSecond || 0);
 			campResources.addResource(resourceNames.rubber, rubber, "update-worker-production");
 			resourceAccComponent.addChange(resourceNames.rubber, rubber / time, "Plantation workers", camp.assignedWorkers.rubbermaker);
 			if (rubber > 0) GameGlobals.playerActionFunctions.unlockFeature("resource_rubber");
+			GameGlobals.gameState.increaseGameStatKeyed("amountResourcesProducedInCampsPerName", resourceNames.rubber, rubber);
 			
 			// Greenhouses
 			var herbs = time * (node.camp.herbsProductionPerSecond || 0);
 			campResources.addResource(resourceNames.herbs, herbs, "update-worker-production");
 			resourceAccComponent.addChange(resourceNames.herbs, herbs / time, "Gardeners", camp.assignedWorkers.gardener);
 			if (herbs > 0) GameGlobals.playerActionFunctions.unlockFeature("resource_herbs");
+			GameGlobals.gameState.increaseGameStatKeyed("amountResourcesProducedInCampsPerName", resourceNames.herbs, herbs);
 			
 			// Advanced: Apothecaries
 			var herbsRequired = time * (node.camp.herbConsumptionPerSecond || 0);
@@ -189,6 +196,7 @@ define([
 				resourceAccComponent.addChange(resourceNames.medicine, medicine / time, "Apothecaries", camp.assignedWorkers.apothecary);
 				resourceAccComponent.addChange(resourceNames.herbs, -herbsUsed / time, "Apothecaries", camp.assignedWorkers.apothecary);
 				if (medicine > 0) GameGlobals.playerActionFunctions.unlockFeature("resource_medicine");
+				GameGlobals.gameState.increaseGameStatKeyed("amountResourcesProducedInCampsPerName", resourceNames.medicine, medicine);
 			}
 			
 			// Advanced: Toolsmiths
@@ -201,6 +209,7 @@ define([
 				resourceAccComponent.addChange(resourceNames.tools, tools / time, "Toolsmiths", camp.assignedWorkers.toolsmith);
 				resourceAccComponent.addChange(resourceNames.metal, -metalUsedTools / time, "Toolsmiths", camp.assignedWorkers.toolsmith);
 				if (tools > 0) GameGlobals.playerActionFunctions.unlockFeature("resource_tools");
+				GameGlobals.gameState.increaseGameStatKeyed("amountResourcesProducedInCampsPerName", resourceNames.tools, tools);
 			}
 			
 			// Advanced: Concrete mixers
@@ -213,6 +222,7 @@ define([
 				resourceAccComponent.addChange(resourceNames.concrete, concrete / time, "Concrete mixers", camp.assignedWorkers.concrete);
 				resourceAccComponent.addChange(resourceNames.metal, -metalUsedConcrete / time, "Concrete mixers", camp.assignedWorkers.concrete);
 				if (concrete > 0) GameGlobals.playerActionFunctions.unlockFeature("resource_concrete");
+				GameGlobals.gameState.increaseGameStatKeyed("amountResourcesProducedInCampsPerName", resourceNames.concrete, concrete);
 			}
 			
 			// Advanced: Robot makers
@@ -226,6 +236,7 @@ define([
 				resourceAccComponent.addChange(resourceNames.robots, robots / time, "Robot makers", camp.assignedWorkers.robotmaker);
 				resourceAccComponent.addChange(resourceNames.tools, -toolsUsedRobots / time, "Robot makers", camp.assignedWorkers.robotmaker);
 				if (robots > 0) GameGlobals.playerActionFunctions.unlockFeature("resource_robots");
+				GameGlobals.gameState.increaseGameStatKeyed("amountResourcesProducedInCampsPerName", resourceNames.robots, robots);
 			}
 		},
 		
@@ -401,11 +412,13 @@ define([
 			let farmFood = GameGlobals.campHelper.getDarkFarmProductionPerSecond(improvementsComponent) * time * GameConstants.gameSpeedCamp;
 			resources.addResource(resourceNames.food, farmFood, "update-improvement-production");
 			resourceAcc.addChange(resourceNames.food, farmFood / time, "Snail farms", improvementsComponent.getCount(improvementNames.darkfarm));
+			GameGlobals.gameState.increaseGameStatKeyed("amountResourcesProducedInCampsPerName", resourceNames.food, farmFood);
 			
 			// Aqueduct
 			let aqueductWater = GameGlobals.campHelper.getAqueductProductionPerSecond(improvementsComponent) * time * GameConstants.gameSpeedCamp;
 			resources.addResource(resourceNames.water, aqueductWater, "update-improvement-production");
 			resourceAcc.addChange(resourceNames.water, aqueductWater / time, "Aqueducts", improvementsComponent.getCount(improvementNames.aqueduct));
+			GameGlobals.gameState.increaseGameStatKeyed("amountResourcesProducedInCampsPerName", resourceNames.water, aqueductWater);
 		},
 		
 		deductHunger: function (time, resourceVO, population, isExplorationMode, accumulation, accComponent, sourceName) {

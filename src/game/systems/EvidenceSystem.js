@@ -77,7 +77,10 @@ define([
 					evidenceComponent.accumulationPerCamp[campNode.position.level] = accSpeedCamp;
 				}
 				
-				evidenceComponent.value += time * accSpeed;
+				let change = time * accSpeed;
+				evidenceComponent.value += change;
+
+				GameGlobals.gameState.increaseGameStatKeyed("amountPlayerStatsProducedInCampsPerId", "evidence", change);
 			}
 			
 			if (evidenceComponent.value < 0) {

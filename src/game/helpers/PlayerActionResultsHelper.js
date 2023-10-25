@@ -388,6 +388,7 @@ define([
 			if (rewards.brokenItems) {
 				for (let i = 0; i < rewards.brokenItems.length; i++) {
 					rewards.brokenItems[i].broken = true;
+					GameGlobals.gameState.increaseGameStatSimple("numItemsBroken");
 				}
 			}
 		},
@@ -433,6 +434,14 @@ define([
 			currentStorage.substractResources(rewards.discardedResources);
 			currentStorage.substractResources(rewards.lostResources);
 
+			for (let key in resourceNames) {
+				let name = resourceNames[key];
+				let amount = rewards.selectedResources.getResource(name);
+				if (amount > 0) {
+					GameGlobals.gameState.increaseGameStatKeyed("amountResourcesFoundPerName", name, amount);
+				}
+			}
+
 			let currencyComponent = this.playerStatsNodes.head.entity.get(CurrencyComponent);
 			currencyComponent.currency += rewards.gainedCurrency;
 			currencyComponent.currency -= rewards.lostCurrency;
@@ -441,7 +450,10 @@ define([
 			let itemsComponent = this.playerStatsNodes.head.items;
 			if (rewards.selectedItems) {
 				for (let i = 0; i < rewards.selectedItems.length; i++) {
+					let baseItemID = ItemConstants.getBaseItemId(rewards.selectedItems[i].id);
 					GameGlobals.playerHelper.addItem(rewards.selectedItems[i], sourcePos);
+					GameGlobals.gameState.increaseGameStatKeyed("numItemsFoundPerId", itemID);
+					GameGlobals.gameState.increaseGameStatList("uniqueItemsFound", itemID);
 				}
 			}
 			
@@ -472,6 +484,7 @@ define([
 			if (rewards.lostItems) {
 				for (let i = 0; i < rewards.lostItems.length; i++) {
 					itemsComponent.removeItem(rewards.lostItems[i], false);
+					GameGlobals.gameState.increaseGameStatSimple("numItemsLost");
 				}
 			}
 			
@@ -484,6 +497,7 @@ define([
 			if (rewards.lostFollowers) {
 				for (let i = 0; i < rewards.lostFollowers.length; i++) {
 					followersComponent.removeFollower(rewards.lostFollowers[i]);
+					GameGlobals.gameState.increaseGameStatSimple("numFollowersLost");
 				}
 			}
 
@@ -498,6 +512,7 @@ define([
 				for (let i = 0; i < rewards.gainedInjuries.length; i++) {
 					perksComponent.addPerk(PerkConstants.getPerk(rewards.gainedInjuries[i].id));
 				}
+				GameGlobals.gameState.increaseGameStatSimple("numInjuriesReceived", rewards.gainedInjuries.length);
 			}
 			
 			if (rewards.lostPerks) {
@@ -517,11 +532,26 @@ define([
 
 			// TODO assign reputation to nearest camp
 
-			if (rewards.gainedEvidence) this.playerStatsNodes.head.evidence.value += rewards.gainedEvidence;
-			if (rewards.gainedRumours) this.playerStatsNodes.head.rumours.value += rewards.gainedRumours;
-			if (rewards.gainedFavour) this.playerStatsNodes.head.entity.get(DeityComponent).favour += rewards.gainedFavour;
-			if (rewards.gainedInsight) this.playerStatsNodes.head.insight.value += rewards.gainedInsight;
-			// if (rewards.gainedReputation) this.playerStatsNodes.head.reputation.value += rewards.gainedReputation;
+			if (rewards.gainedEvidence) {
+				this.playerStatsNodes.head.evidence.value += rewards.gainedEvidence;
+				GameGlobals.gameState.increaseGameStatKeyed("amountPlayerStatsFoundPerId", "evidence", rewards.gainedEvidence);
+			}
+
+			if (rewards.gainedRumours) {
+				this.playerStatsNodes.head.rumours.value += rewards.gainedRumours;
+				GameGlobals.gameState.increaseGameStatKeyed("amountPlayerStatsFoundPerId", "rumours", rewards.gainedRumours);
+			}
+
+			if (rewards.gainedFavour) {
+				this.playerStatsNodes.head.entity.get(DeityComponent).favour += rewards.gainedFavour;
+				GameGlobals.gameState.increaseGameStatKeyed("amountPlayerStatsFoundPerId", "favour", rewards.gainedFavour);
+			}
+
+			if (rewards.gainedInsight) {
+				this.playerStatsNodes.head.insight.value += rewards.gainedInsight;
+				GameGlobals.gameState.increaseGameStatKeyed("amountPlayerStatsFoundPerId", "insight", rewards.gainedInsight);
+				GameGlobals.playerActionFunctions.unlockFeature("insight");
+			}
 
 			GlobalSignals.inventoryChangedSignal.dispatch();
 		},
@@ -543,6 +573,7 @@ define([
 				msg += "$" + replacements.length + ", ";
 				replacements.push("#" + replacements.length + " currency");
 				values.push(rewards.gainedCurrency);
+				GameGlobals.gameState.increaseGameStatSimple("amountFoundCurrency");
 			}
 
 			if (rewards.selectedItems && rewards.selectedItems.length > 0) {

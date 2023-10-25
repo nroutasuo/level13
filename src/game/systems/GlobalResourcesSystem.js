@@ -56,7 +56,8 @@ define([
 				let hasTradePost = campImprovements.getCount(improvementNames.tradepost) > 0;
 				let storageCapacity = CampConstants.getStorageCapacity(storageCount, storageLevel);
 				node.resources.storageCapacity = storageCapacity;
-				node.resources.limitToStorage(!hasTradePost);
+				let spilledResources = node.resources.limitToStorage(!hasTradePost);
+				this.updateSpilledResources(spilledResources);
 				
 				this.updateCampSpecialStorage(node);
 			}
@@ -117,7 +118,8 @@ define([
 			this.tribeNodes.head.tribe.numCamps = numCamps;
 			this.tribeNodes.head.tribe.numCampsInTradeNetwork = numCampsInTradeNetwork;
 			
-			globalResourcesComponent.limitToStorage(true);
+			let spilledResources = globalResourcesComponent.limitToStorage(true);
+			this.updateSpilledResources(spilledResources);
 		},
 		
 		updatePlayerResources: function () {
@@ -165,6 +167,16 @@ define([
 		updateCampSpecialStorage: function (node) {
 			let maxRobots = GameGlobals.campHelper.getRobotStorageCapacity(node.entity);
 			node.resources.resources.limit(resourceNames.robots, 0, maxRobots, true, "max-robots");
+		},
+
+		updateSpilledResources: function (spilledResources) {
+			for (let key in resourceNames) {
+				let name = resourceNames[key];
+				let amount = spilledResources.getResource(name);
+				if (amount > 0) {
+					GameGlobals.gameState.increaseGameStatKeyed("amountResourcesOverflownPerName", name);
+				}
+			}
 		},
 		
 		onInventoryChanged: function () {

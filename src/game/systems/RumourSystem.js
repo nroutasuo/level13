@@ -75,7 +75,13 @@ define([
 					rumoursComponent.accumulationPerCamp[campNode.position.level] = accSpeedCamp;
 				}
 				
-				rumoursComponent.value += time * accSpeed;
+				let change = time * accSpeed;
+				rumoursComponent.value += change;
+				GameGlobals.gameState.increaseGameStatKeyed("amountPlayerStatsProducedInCampsPerId", "rumours", change);
+
+				if (change !== 0) {
+					GameGlobals.playerActionFunctions.unlockFeature("rumours");
+				}
 			}
 			
 			if (rumoursComponent.value < 0) {

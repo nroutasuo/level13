@@ -63,12 +63,15 @@ define([
 				var numClerics = campNode.camp.assignedWorkers.cleric || 0;
 				var accClerics = GameGlobals.campHelper.getFavourProductionPerSecond(numClerics, improvementsComponent);
 				var accCamp = accTemple + accClerics;
+				let change = time * accCamp;
 				
 				deityComponent.addChange("Temples", accTemple, campNode.position.level);
 				deityComponent.addChange("Clerics", accClerics, campNode.position.level);
-				deityComponent.favour += time * accCamp;
+				deityComponent.favour += change;
 				deityComponent.accumulation += accCamp;
 				deityComponent.accumulationPerCamp[campNode.position.level] = accCamp;
+
+				GameGlobals.gameState.increaseGameStatKeyed("amountPlayerStatsProducedInCampsPerId", "favour", change);
 			}
 			
 			if (deityComponent.favour < 0) {

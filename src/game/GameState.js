@@ -71,34 +71,69 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 
 		initStats: function () {
 			// simple: simple value (int)
+			this.initGameStatSimple("amountFoundCurrency");
 			this.initGameStatSimple("numBlueprintPiecesFound");
+			this.initGameStatSimple("numCaravansSent");
 			this.initGameStatSimple("numExcursionsStarted");
 			this.initGameStatSimple("numExcursionsSurvived");
 			this.initGameStatSimple("numFightsFled");
 			this.initGameStatSimple("numFightsStarted");
 			this.initGameStatSimple("numFightsWon");
 			this.initGameStatSimple("numFollowersRecruited");
+			this.initGameStatSimple("numFollowersLost");
+			this.initGameStatSimple("numFollowersDismissed");
+			this.initGameStatSimple("numGraffitiMade");
+			this.initGameStatSimple("numInjuriesReceived");
 			this.initGameStatSimple("numItemsCrafted");
+			this.initGameStatSimple("numItemsBroken");
+			this.initGameStatSimple("numItemsRepaired");
+			this.initGameStatSimple("numItemsLost");
 			this.initGameStatSimple("numStepsTaken");
+			this.initGameStatSimple("numTimesBlindedBySunlight");
+			this.initGameStatSimple("numTimesRestedOutside");
 			this.initGameStatSimple("numTimesScavenged");
 			this.initGameStatSimple("numTimesScouted");
 			this.initGameStatSimple("numTradesMade");
 
 			// keyed: value (int) by key (string / int)
+			this.initGameStatKeyed("amountResourcesSoldPerName");
+			this.initGameStatKeyed("amountResourcesBoughtPerName");
+			this.initGameStatKeyed("amountResourcesProducedInCampsPerName");
+			this.initGameStatKeyed("amountResourcesFoundPerName");
+			this.initGameStatKeyed("amountResourcesOverflownPerName");
+			this.initGameStatKeyed("amountResourcesCollectedFromCollectorsPerName");
+			this.initGameStatKeyed("amountPlayerStatsProducedInCampsPerId");
+			this.initGameStatKeyed("amountPlayerStatsFoundPerId");
 			this.initGameStatKeyed("numBuildingsBuiltPerId");
+			this.initGameStatKeyed("numBuildingImprovementsPerId");
+			this.initGameStatKeyed("numBuildingsDismantledPerId");
+			this.initGameStatKeyed("numCampEventsByType");
+			this.initGameStatKeyed("numItemsFoundPerId");
 			this.initGameStatKeyed("numItemsUsedPerId");
+			this.initGameStatKeyed("numItemsSoldPerId");
+			this.initGameStatKeyed("numItemsBoughtPerId");
 			this.initGameStatKeyed("numStepsPerLevel");
 			this.initGameStatKeyed("numTimesDespairedPerLevel");
 			this.initGameStatKeyed("timeOutsidePerLevel");
+			this.initGameStatKeyed("timeUsingCampBuildingPerId");
 			this.initGameStatKeyed("numTimesKilledByEnemy");
 			this.initGameStatKeyed("numTimesKilledEnemy");
 
 			// high score: value (int) with corresponding entry (vo)
+			this.initHighScoreStat("highestPriceItemBought");
+			this.initHighScoreStat("highestPriceItemSold");
+			this.initHighScoreStat("lowestStaminaReturnedToCampWith");
+			this.initHighScoreStat("longestExcrusion");
 			this.initHighScoreStat("mostDistantSectorFromCampVisited");
 			this.initHighScoreStat("mostDistantSectorFromCenterVisited");
+			this.initHighScoreStat("mostResourcesLostInRaid");
+			this.initHighScoreStat("mostFightsWithFollower");
+			this.initHighScoreStat("mostStepsWithFollower");
 
 			// list: list of unique ids (string) where value is length
 			this.initListStat("uniqueItemsCrafted");
+			this.initListStat("uniqueItemsFound");
+			this.initListStat("uniqueEnemiesDefeated");
 		},
 
 		syncData: function () {
@@ -197,6 +232,8 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 		},
 
 		increaseGameStatKeyed: function (name, key, value) {
+			if (value === 0) return;
+
 			if (!this.stats[name]) {
 				debugger
 				log.w("[GameStats] can't increase keyed player stat [" + name + "]: no such player stat");
@@ -218,7 +255,20 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			if (this.logStatChanges(name)) log.i("[GameStats] increased keyed stat [" + name + "][" + key + "]: now " + this.stats[name][key]);
 		},
 
-		getGameStatKeyedSum: function (name) {
+		getGameStatKeyed: function (name, key) {
+			if (!this.isKeyedStat(name)) {
+				log.w("[GameStats] no such keyed stat [" + name + "]");
+				return 0;
+			}
+
+			if (typeof key === "undefined") {
+				return this.getGameStatKeyedSum(name);
+			}
+
+			return this.stats[name][key] || 0;
+		},
+
+		getGameStatKeyedSum: function (name, filter) {
 			if (!this.isKeyedStat(name)) {
 				log.w("[GameStats] no such keyed stat [" + name + "]");
 				return 0;
@@ -226,7 +276,9 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 
 			let result = 0;
 			for (let key in this.stats[name]) {
-				result += this.stats[name][key];
+				if (!filter || filter(key)) {
+					result += this.stats[name][key];
+				}
 			}
 
 			return result;
@@ -323,7 +375,9 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 		},
 
 		getGameStatList: function (name) {
-			return this.stats[name].length;
+			let list = this.stats[name] || this[name];
+			if (list) return list.length;
+			return 0;
 		},
 
 		getLevelOrdinal: function (level) {
@@ -456,7 +510,11 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 		},
 
 		logStatChanges: function (name) {
-			return name && name.indexOf("timeOutside") < 0;
+			if (!name) false;
+			if (name.indexOf("timeOutside") >= 0) return false;
+			if (name.indexOf("amountResourcesProduced") >= 0) return false;
+			if (name.indexOf("amountPlayerStatsProduced") >= 0) return false;
+			return true;
 		},
 
 	});

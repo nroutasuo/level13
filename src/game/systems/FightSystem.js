@@ -95,6 +95,14 @@ define([
 
 			GameGlobals.gameState.increaseGameStatSimple("numFightsStarted");
 			
+			let followers = this.playerStatsNodes.head.followers.getParty();
+			for (let i = 0; i < followers.length; i++) {
+				let follower = followers[i];
+				follower.numFights = follower.numFights || 0;
+				follower.numFights++;
+				GameGlobals.gameState.increaseGameStatHighScore("mostFightsWithFollower", follower, follower.numFights);
+			}
+			
 			this.log("init fight | enemy IV: " + enemy.getIVAverage() + " | next turn player: " + nextTurnPlayer + ", enemy: " + nextTurnEnemy);
 		},
 		
@@ -215,6 +223,7 @@ define([
 			if (won) {
 				GameGlobals.gameState.increaseGameStatSimple("numFightsWon");
 				GameGlobals.gameState.increaseGameStatKeyed("numTimesKilledEnemy", enemy.id);
+				GameGlobals.gameState.increaseGameStatList("uniqueEnemiesDefeated", enemy.id);
 			} else {
 				GameGlobals.gameState.increaseGameStatKeyed("numTimesKilledByEnemy", enemy.id);
 			}

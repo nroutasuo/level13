@@ -172,6 +172,7 @@ define(['ash',
 						caravansComponent.pendingCaravan = null;
 						this.addLogMessage(LogConstants.MSG_ID_START_SEND_CAMP, "A trade caravan heads out.");
 						GlobalSignals.caravanSentSignal.dispatch();
+						GameGlobals.gameState.increaseGameStatSimple("numCaravansSent");
 						break;
 						
 					case "use_in_home":
@@ -313,6 +314,14 @@ define(['ash',
 		completeAction: function (action) {
 			if (this.currentAction == action)
 				this.currentAction = null;
+
+			if (action.indexOf("use_in_") >= 0) {
+				let improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_collector_water");
+				let improvementID = ImprovementConstants.getImprovementID(improvementName);
+				let duration = PlayerActionConstants.getDuration(action);
+				GameGlobals.gameState.increaseGameStatKeyed("timeUsingCampBuildingPerId", improvementID, duration);
+			}
+			
 			GameGlobals.uiFunctions.completeAction(action);
 			GlobalSignals.actionCompletedSignal.dispatch();
 		},
@@ -905,6 +914,7 @@ define(['ash',
 							GameGlobals.uiFunctions.showGame();
 							GameGlobals.uiFunctions.onPlayerPositionChanged(); // reset cooldowns
 							if (excursionComponent) excursionComponent.numNaps++;
+							GameGlobals.gameState.increaseGameStatSimple("numTimesRestedOutside");
 							sys.playerStatsNodes.head.vision.value = Math.min(sys.playerStatsNodes.head.vision.value, PlayerStatConstants.VISION_BASE);
 							let logMsgFail = "Tried to rest but got attacked.";
 							let messages = {
@@ -1098,6 +1108,22 @@ define(['ash',
 			var pendingPosition = campSector.get(PositionComponent).clone();
 			pendingPosition.inCamp = true;
 
+			for (let key in resourceNames) {
+				let name = resourceNames[key];
+				let soldAmount = caravan.sellGood === name ? caravan.sellAmount : 0;
+				let boughtAmount = result.selectedResources.getResource(name);
+
+				GameGlobals.gameState.increaseGameStatKeyed("amountResourcesSoldPerName", name, soldAmount);
+				GameGlobals.gameState.increaseGameStatKeyed("amountResourcesBoughtPerName", name, boughtAmount);
+			}
+
+			if (result.selectedItems) {
+				for (let i = 0; i < result.selectedItems.length; i++) {
+					let itemID = result.selectedItems[i].id;
+					GameGlobals.gameState.increaseGameStatKeyed("numItemsBoughtPerId", itemID);
+				}
+			}
+
 			campOutgoingCaravansComponent.outgoingCaravans.splice(caravanI, 1);
 
 			GameGlobals.playerActionResultsHelper.collectRewards(true, result, campSector);
@@ -1115,46 +1141,63 @@ define(['ash',
 			var caravan = traderComponent.caravan;
 
 			// items
-			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-			for (var itemID in caravan.traderSelectedItems) {
-				var amount = caravan.traderSelectedItems[itemID];
-				for (let i = 0; i < amount; i++) {
-					for (let j = 0; j < caravan.sellItems.length; j++) {
-						if (caravan.sellItems[j].id == itemID) {
-							caravan.sellItems.splice(j, 1);
-							break;
+			let itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
+			let amount;
+			let value;
+			let baseItemID;
+			for (let itemID in caravan.traderSelectedItems) {
+				amount = caravan.traderSelectedItems[itemID];
+				if (amount > 0) {
+					baseItemID = ItemConstants.getBaseItemId(itemID);
+					value = TradeConstants.getItemValue(ItemConstants.getItemByID(itemID), true, false);
+					for (let i = 0; i < amount; i++) {
+						for (let j = 0; j < caravan.sellItems.length; j++) {
+							if (caravan.sellItems[j].id == itemID) {
+								caravan.sellItems.splice(j, 1);
+								break;
+							}
 						}
+						GameGlobals.playerHelper.addItem(ItemConstants.getItemByID(itemID));
 					}
-					GameGlobals.playerHelper.addItem(ItemConstants.getItemByID(itemID));
+					GameGlobals.gameState.increaseGameStatKeyed("numItemsBoughtPerId", itemID, amount);
+					GameGlobals.gameState.increaseGameStatHighScore("highestPriceItemBought", itemID, value);
 				}
 			}
 
-			for (var itemID in caravan.campSelectedItems) {
-				var amount = caravan.campSelectedItems[itemID];
-				for (let i = 0; i < amount; i++) {
-					caravan.sellItems.push(ItemConstants.getItemByID(itemID));
-					itemsComponent.removeItem(itemsComponent.getItem(itemID, null, true, false), false);
+			for (let itemID in caravan.campSelectedItems) {
+				amount = caravan.campSelectedItems[itemID];
+				if (amount > 0) {
+					baseItemID = ItemConstants.getBaseItemId(itemID);
+					value = TradeConstants.getItemValue(ItemConstants.getItemByID(itemID), false, true);
+					for (let i = 0; i < amount; i++) {
+						caravan.sellItems.push(ItemConstants.getItemByID(itemID));
+						itemsComponent.removeItem(itemsComponent.getItem(itemID, null, true, false), false);
+					}
+					GameGlobals.gameState.increaseGameStatKeyed("numItemsSoldPerId", itemID, amount);
+					GameGlobals.gameState.increaseGameStatHighScore("highestPriceItemSold", itemID, value);
 				}
 			}
 
 			// resources
-			var campStorage = GameGlobals.resourcesHelper.getCurrentStorage();
+			let campStorage = GameGlobals.resourcesHelper.getCurrentStorage();
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
 				var traderSelectedAmount = caravan.traderSelectedResources.getResource(name);
 				if (traderSelectedAmount > 0) {
 					caravan.sellResources.addResource(name, -traderSelectedAmount, "trade");
 					campStorage.resources.addResource(name, traderSelectedAmount, "trade");
+					GameGlobals.gameState.increaseGameStatKeyed("amountResourcesSoldPerName", name, traderSelectedAmount);
 				}
 				var campSelectedAmount = caravan.campSelectedResources.getResource(name);
 				if (campSelectedAmount > 0) {
 					caravan.sellResources.addResource(name, campSelectedAmount, "trade");
 					campStorage.resources.addResource(name, -campSelectedAmount, "trade");
+					GameGlobals.gameState.increaseGameStatKeyed("amountResourcesBoughtPerName", name, campSelectedAmount);
 				}
 			}
 
 			// currency
-			var currencyComponent = GameGlobals.resourcesHelper.getCurrentCurrency();
+			let currencyComponent = GameGlobals.resourcesHelper.getCurrentCurrency();
 			if (caravan.traderSelectedCurrency > 0) {
 				caravan.currency -= caravan.traderSelectedCurrency;
 				currencyComponent.currency += caravan.traderSelectedCurrency;
@@ -1218,6 +1261,7 @@ define(['ash',
 				"Are you sure you want to dismiss " + follower.name + "?",
 				function () {
 					followersComponent.removeFollower(follower);
+					GameGlobals.gameState.increaseGameStatSimple("numFollowersDismissed");
 					sys.addLogMessage(LogConstants.getUniqueID(), follower.name + " leaves.");
 					GlobalSignals.followersChangedSignal.dispatch();
 				}
@@ -1639,6 +1683,7 @@ define(['ash',
 			improvementsComponent.improve(improvementName);
 			let level = improvementsComponent.getLevel(improvementName);
 			GlobalSignals.improvementBuiltSignal.dispatch();
+			GameGlobals.gameState.increaseGameStatKeyed("numBuildingImprovementsPerId", improvementID);
 			this.save();
 			
 			this.addLogMessage("MSG_ID_IMPROVE_" + improvementName, ImprovementConstants.getImprovedLogMessage(improvementID, level));
@@ -1689,6 +1734,7 @@ define(['ash',
 					campStorage.resources.addResource(resource, value, "dismantle");
 				}
 				
+				GameGlobals.gameState.increaseGameStatKeyed("numBuildingsDismantledPerId", improvementID);
 				GlobalSignals.improvementBuiltSignal.dispatch();
 				sys.save();
 				
@@ -1736,6 +1782,7 @@ define(['ash',
 				log.w("No camp sector found.");
 			}
 			this.completeAction("use_in_campfire");
+			GameGlobals.playerActionFunctions.unlockFeature("rumours");
 			
 			GlobalSignals.tribeStatsChangedSignal.dispatch();
 		},
@@ -1877,6 +1924,7 @@ define(['ash',
 			let itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
 			let itemVO = itemsComponent.getItem(null, itemInstanceId, true, true, item => item.repairable);
 			if (!itemVO) return;
+			GameGlobals.gameState.increaseGameStatSimple("numItemsRepaired");
 			itemVO.broken = false;
 			GlobalSignals.equipmentChangedSignal.dispatch();
 			GlobalSignals.inventoryChangedSignal.dispatch();
@@ -2019,6 +2067,7 @@ define(['ash',
 							sys.addLogMessage(LogConstants.getUniqueID(), "Left a message on a wall.");
 							GlobalSignals.actionCompletedSignal.dispatch();
 						});
+					GameGlobals.gameState.increaseGameStatSimple("numGraffitiMade");
 					break;
 					
 				case "consumable_map":
@@ -2055,8 +2104,6 @@ define(['ash',
 					log.w("Item not mapped for useItem: " + itemId);
 					break;
 			}
-
-			GameGlobals.gameState.increaseGameStatKeyed("numItemsUsedPerId", baseItemId);
 			
 			GlobalSignals.inventoryChangedSignal.dispatch();
 		},
@@ -2200,12 +2247,14 @@ define(['ash',
 					currentStorage.resources.addResource(name, toCollect, "collect");
 					resourcesVO.addResource(name, -toCollect, "collect");
 					totalCollected += toCollect;
+					GameGlobals.gameState.increaseGameStatKeyed("amountResourcesCollectedFromCollectorsPerName", name, toCollect);
 				}
 			}
 
 			if (totalCollected < 1 && maxToCollect >= 1) {
 				this.addLogMessage(LogConstants.MSG_ID_USE_COLLECTOR_FAIL, "Nothing to collect yet.");
 			}
+					GameGlobals.gameState.increaseGameStatKeyed("amountResourcesOverflownPerName", name);
 
 			GlobalSignals.inventoryChangedSignal.dispatch();
 			GlobalSignals.collectorCollectedSignal.dispatch();
@@ -2323,13 +2372,22 @@ define(['ash',
 			if (!playerPos) return;
 			GameGlobals.gameState.increaseGameStatSimple("numStepsTaken", steps);
 			GameGlobals.gameState.increaseGameStatKeyed("numStepsPerLevel", playerPos.level, steps);
+
+			let followers = this.playerStatsNodes.head.followers.getParty();
+			for (let i = 0; i < followers.length; i++) {
+				let follower = followers[i];
+				GameGlobals.gameState.increaseGameStatHighScore("mostStepsWithFollower", follower, follower.numSteps);
+			}
 		},
 
 		recordExcursionSurvived: function () {
+			let playerPos = this.playerPositionNodes.head.position;
+
 			let excursionComponent = this.playerPositionNodes.head.entity.get(ExcursionComponent);
 			if (excursionComponent && excursionComponent.numSteps >= ExplorationConstants.MIN_EXCURSION_LENGTH) {
 				GameGlobals.gameState.increaseGameStatSimple("numExcursionsSurvived");
 			}
+			GameGlobals.gameState.increaseGameStatHighScore("lowestStaminaReturnedToCampWith", playerPos.level, this.playerStatsNodes.head.stamina.stamina);
 		},
 		
 		forceStatsBarUpdate: function () {

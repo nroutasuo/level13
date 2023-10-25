@@ -2,9 +2,12 @@ define([
 	'ash',
 	'utils/ValueCache',
 	'game/GameGlobals',
+	'game/constants/GameConstants',
 	'game/constants/FollowerConstants',
+	'game/constants/ImprovementConstants',
 	'game/constants/ItemConstants',
 	'game/constants/LogConstants',
+	'game/constants/PlayerActionConstants',
 	'game/constants/PlayerStatConstants',
 	'game/nodes/NearestCampNode',
 	'game/nodes/PlayerPositionNode',
@@ -20,9 +23,12 @@ define([
 	Ash,
 	ValueCache,
 	GameGlobals,
+	GameConstants,
 	FollowerConstants,
+	ImprovementConstants,
 	ItemConstants,
 	LogConstants,
+	PlayerActionConstants,
 	PlayerStatConstants,
 	NearestCampNode,
 	PlayerPositionNode,
@@ -287,69 +293,149 @@ define([
 		getVisibleGameStats: function () {
 			let result = [];
 
-			let addStat = function (category, stat, isVisible) {
-				stat.displayName = stat.name;
+			let addStat = function (category, displayName, stat, isVisible, unit) {
+				unit = unit || GameConstants.gameStatUnits.count;
+				stat.displayName = displayName || stat.name;
+				stat.unit = unit;
 				stat.isVisible = !(isVisible === false);
 				category.push(stat);
 			};
 
 			// General
 			let generalStats = [];
-			addStat(generalStats, this.getGameStatSimple("playTime"));
-			addStat(generalStats, this.getGameStatKeyedSum("timeOutsidePerLevel"));
-			addStat(generalStats, this.getGameStatDerived("numTechResearched", () => GameGlobals.tribeHelper.getAllUnlockedUpgrades().length));
-			addStat(generalStats, this.getGameStatSimple("numBlueprintPiecesFound"));
+			addStat(generalStats, "Time played", this.getGameStatSimple("playTime"), true, GameConstants.gameStatUnits.seconds);
+			addStat(generalStats, "Time outside", this.getGameStatKeyedSum("timeOutsidePerLevel"), true, GameConstants.gameStatUnits.seconds);
+			addStat(generalStats, "Upgrades researched", this.getGameStatDerived("numTechResearched", () => GameGlobals.tribeHelper.getAllUnlockedUpgrades().length));
+			addStat(generalStats, "Blueprint pieces found", this.getGameStatSimple("numBlueprintPiecesFound"));
 			result.push({ displayName: "General", stats: generalStats, isVisible: true });
 
 			// Exploration
+			let levelStats = GameGlobals.levelHelper.getLevelStatsGlobal();
 			let explorationStats = [];
-			addStat(explorationStats, this.getGameStatSimple("numStepsTaken"));
-			addStat(explorationStats, this.getGameStatSimple("numTimesScavenged"));
-			addStat(explorationStats, this.getGameStatSimple("numTimesScouted"));
-			addStat(explorationStats, this.getGameStatSimple("numVisitedSectors"));
-			addStat(explorationStats, this.getGameStatHighScore("numStepsPerLevel"));
-			addStat(explorationStats, this.getGameStatSimple("numExcursionsStarted"), GameGlobals.gameState.isFeatureUnlocked("camp"));
-			addStat(explorationStats, this.getGameStatSimple("numExcursionsSurvived"), GameGlobals.gameState.isFeatureUnlocked("camp"));
-			addStat(explorationStats, this.getStatPercentage("numExcursionsSurvived", "numExcursionsStarted"), GameGlobals.gameState.isFeatureUnlocked("camp"));
-			addStat(explorationStats, this.getGameStatHighScore("mostDistantSectorFromCenterVisited"));
+			addStat(explorationStats, "Steps taken", this.getGameStatSimple("numStepsTaken"));
+			addStat(explorationStats, "Sectors visited", this.getGameStatSimple("numVisitedSectors"));
+			addStat(explorationStats, "Sectors scouted", this.getGameStatSimple("numTimesScouted"));
+			addStat(explorationStats, "Sectors scavenged bare", this.getGameStatDerived("numFullyScavengedSectors", () => levelStats.countFullyScavengedSectors));
+			addStat(explorationStats, "Times scavenged", this.getGameStatSimple("numTimesScavenged"));
+			addStat(explorationStats, "Most steps on level", this.getGameStatHighScore("numStepsPerLevel"));
+			addStat(explorationStats, "Expeditions started", this.getGameStatSimple("numExcursionsStarted"), GameGlobals.gameState.isFeatureUnlocked("camp"));
+			addStat(explorationStats, "Expeditions survived", this.getGameStatSimple("numExcursionsSurvived"), GameGlobals.gameState.isFeatureUnlocked("camp"));
+			addStat(explorationStats, "% of expeditions survived", this.getStatPercentage("numExcursionsSurvived", "numExcursionsStarted"), GameGlobals.gameState.isFeatureUnlocked("camp"));
+			addStat(explorationStats, "% of sectors visited scavenged at least once", this.getStatPercentageDerived("ratioVisitedSectorsScavengedOnce", () => levelStats.countScavengedSectors, "numVisitedSectors"));
+			addStat(explorationStats, "% of sectors visited scavenged bare", this.getStatPercentageDerived("ratioVisitedSectorsScavengedFully", () => levelStats.countFullyScavengedSectors, "numVisitedSectors"));
+			addStat(explorationStats, "Longest expedition", this.getGameStatHighScore("longestExcrusion"));
+			addStat(explorationStats, "Highest coordinates visited", this.getGameStatHighScore("mostDistantSectorFromCenterVisited"));
+			addStat(explorationStats, "Furthest away from camp visited", this.getGameStatHighScore("mostDistantSectorFromCampVisited"));
+			addStat(explorationStats, "Lowest stamina returned to camp with", this.getGameStatHighScore("lowestStaminaReturnedToCampWith"));
+			addStat(explorationStats, "Injuries received", this.getGameStatSimple("numInjuriesReceived"));
+			addStat(explorationStats, "Times rested outside", this.getGameStatSimple("numTimesRestedOutside"));
+			addStat(explorationStats, "Times despaired", this.getGameStatKeyedSum("numTimesDespairedPerLevel"));
+			addStat(explorationStats, "Most despairs on level", this.getGameStatHighScore("numTimesDespairedPerLevel"));
+			addStat(explorationStats, "Times blinded by sunlight", this.getGameStatSimple("numTimesBlindedBySunlight"), GameGlobals.gameState.isFeatureUnlocked("sunlight"));
+			addStat(explorationStats, "Graffiti made", this.getGameStatSimple("numGraffitiMade"));
 			result.push({ displayName: "Exploration", stats: explorationStats, isVisible: true });
-
-			// Survival
-			let survivalStats = [];
-			addStat(survivalStats, this.getGameStatKeyedSum("numTimesDespairedPerLevel"));
-			addStat(survivalStats, this.getGameStatHighScore("numTimesDespairedPerLevel"));
-			result.push({ displayName: "Survival", stats: survivalStats, isVisible: true });
 
 			// Camp
 			let campStats = [];
-			addStat(campStats, this.getGameStatKeyedSum("numBuildingsBuiltPerId"));
+			addStat(campStats, "Buildings built", this.getGameStatKeyedSum("numBuildingsBuiltPerId"));
+			addStat(campStats, "Buildings dismantled", this.getGameStatKeyedSum("numBuildingsDismantledPerId"));
+			addStat(campStats, "Building improvements made", this.getGameStatKeyedSum("numBuildingImprovementsPerId"));
+			for (let improvementID in improvementNames) {
+				let improvementName = improvementNames[improvementID];
+				let useAction = "use_in_" + improvementID;
+				let hasUseAction = PlayerActionConstants.hasAction(useAction);
+				if (hasUseAction) {
+					let actionName = ImprovementConstants.getDef(improvementID).useActionName
+					let isImprovementVisible = GameGlobals.campHelper.getTotalNumImprovementsBuilt(improvementName) > 0;
+					addStat(campStats, "Total time: " + actionName, this.getGameStatKeyed("timeUsingCampBuildingPerId", improvementID), isImprovementVisible, GameConstants.gameStatUnits.seconds);
+				}
+			}
+			addStat(campStats, "Most resources lost in a raid", this.getGameStatHighScore("mostResourcesLostInRaid"));
+
+			let playerStats = [ "rumours", "evidence", "favour", "insight"];
+			let playerStatsAllSources = [ "amountPlayerStatsFoundPerId", "amountPlayerStatsProducedInCampsPerId" ];
+			for (let i = 0; i < playerStats.length; i++) {
+				let stat = playerStats[i];
+				let isStatVisible = GameGlobals.gameState.isFeatureUnlocked(stat);
+				addStat(campStats, stat + ": Produced in camp", this.getGameStatKeyed("amountPlayerStatsProducedInCampsPerId", stat), isStatVisible);
+				addStat(campStats, stat + ": found exploring", this.getGameStatKeyed("amountPlayerStatsFoundPerId", stat), isStatVisible);
+				addStat(campStats, stat + ": % produced in camp", this.getStatPercentageFromKeyedSum("amountPlayerStatsProducedInCampsPerId", playerStatsAllSources, stat), isStatVisible);
+				addStat(campStats, stat + ": % found exploring", this.getStatPercentageFromKeyedSum("amountPlayerStatsFoundPerId", playerStatsAllSources, stat), isStatVisible);
+			}
 			result.push({ displayName: "Camp", stats: campStats, isVisible: GameGlobals.gameState.isFeatureUnlocked("camp") });
+
+			// Resources
+			let resStats = [];
+			let resStatsAllSources = [ "amountResourcesProducedInCampsPerName", "amountResourcesFoundPerName" ];
+			addStat(resStats, "Resources produced in camp", this.getGameStatKeyedSum("amountResourcesProducedInCampsPerName"));
+			addStat(resStats, "Resources found", this.getGameStatKeyedSum("amountResourcesFoundPerName"));
+			addStat(resStats, "% of resources produced in camp", this.getStatPercentageFromKeyedSum("amountResourcesProducedInCampsPerName", resStatsAllSources));
+			addStat(resStats, "% of resources found", this.getStatPercentageFromKeyedSum("amountResourcesFoundPerName", resStatsAllSources));
+
+			for (let key in resourceNames) {
+				let name = resourceNames[key];
+				let isVisible = GameGlobals.gameState.isFeatureUnlocked("resource_" + name);
+				addStat(resStats, name + ": produced in camp", this.getGameStatKeyed("amountResourcesProducedInCampsPerName", name), isVisible);
+				addStat(resStats, name + ": produced found", this.getGameStatKeyed("amountResourcesProducedInCampsPerName", name), isVisible);
+				addStat(resStats, name + ": % produced in camp", this.getStatPercentageFromKeyedSum("amountResourcesProducedInCampsPerName", resStatsAllSources, name), isVisible);
+				addStat(resStats, name + ": % found", this.getStatPercentageFromKeyedSum("amountResourcesFoundPerName", resStatsAllSources, name), isVisible);
+			}
+			
+			addStat(resStats, "Resources overflown due to storage", this.getGameStatKeyedSum("amountResourcesOverflownPerName"));
+			addStat(resStats, "% of produced resources overflown", this.getStatPercentageFromKeyedSum("amountResourcesOverflownPerName", "amountResourcesProducedInCampsPerName"));
+			addStat(resStats, "Food collected from traps", this.getGameStatKeyed("amountResourcesCollectedFromCollectorsPerName", resourceNames.food));
+			addStat(resStats, "Water collected from buckets", this.getGameStatKeyed("amountResourcesCollectedFromCollectorsPerName", resourceNames.water));
+			result.push({ displayName: "Resources", stats: resStats, isVisible: true });
 
 			// Trade
 			let tradeStats = [];
-			addStat(tradeStats, this.getGameStatSimple("numTradesMade"));
+			addStat(tradeStats, "Traders received", this.getGameStatKeyed("numCampEventsByType", "trader"), GameGlobals.gameState.isFeatureUnlocked("trade"));
+			addStat(tradeStats, "Trades made", this.getGameStatSimple("numTradesMade"));
+			addStat(tradeStats, "Trade partners found", this.getGameStatList("foundTradingPartners"));
+			addStat(tradeStats, "Caravans sent", this.getGameStatList("numCaravansSent"));
+			addStat(tradeStats, "Silver found", this.getGameStatSimple("amountFoundCurrency"));
+			addStat(tradeStats, "Items sold", this.getGameStatKeyedSum("numItemsSoldPerId"));
+			addStat(tradeStats, "Items bought", this.getGameStatKeyedSum("numItemsBoughtPerId"));
+			addStat(tradeStats, "Most items sold", this.getGameStatHighScore("numItemsSoldPerId"));
+			addStat(tradeStats, "Most items bought", this.getGameStatHighScore("numItemsBoughtPerId"));
+			addStat(tradeStats, "Resources sold", this.getGameStatKeyedSum("amountResourcesSoldPerName"));
+			addStat(tradeStats, "Most resource sold", this.getGameStatHighScore("amountResourcesSoldPerName"));
+			addStat(tradeStats, "Most resource bought", this.getGameStatKeyedSum("amountResourcesBoughtPerName"));
+			addStat(tradeStats, "Item bought for highest price", this.getGameStatHighScore("highestPriceItemBought"));
+			addStat(tradeStats, "Item sold for highest price", this.getGameStatHighScore("highestPriceItemSold"));
 			result.push({ displayName: "Trade", stats: tradeStats, isVisible: GameGlobals.gameState.isFeatureUnlocked("trade") });
 
 			// Fights
 			let fightStats = [];
-			addStat(fightStats, this.getGameStatSimple("numFightsStarted"));
-			addStat(fightStats, this.getGameStatSimple("numFightsWon"));
-			addStat(fightStats, this.getGameStatSimple("numFightsFled"));
-			addStat(fightStats, this.getStatPercentage("numFightsWon", "numFightsStarted"));
-			addStat(fightStats, this.getGameStatHighScore("numTimesKilledByEnemy"));
-			addStat(fightStats, this.getGameStatHighScore("numTimesKilledEnemy"));
+			addStat(fightStats, "Fights started", this.getGameStatSimple("numFightsStarted"));
+			addStat(fightStats, "Fights won", this.getGameStatSimple("numFightsWon"));
+			addStat(fightStats, "Fights fled", this.getGameStatSimple("numFightsFled"));
+			addStat(fightStats, "% of fights won", this.getStatPercentage("numFightsWon", "numFightsStarted"));
+			addStat(fightStats, "Enemy most defeated of", this.getGameStatHighScore("numTimesKilledEnemy"));
+			addStat(fightStats, "Enemy most defeated by", this.getGameStatHighScore("numTimesKilledByEnemy"));
+			addStat(fightStats, "Unique enemy types defeated", this.getGameStatList("uniqueEnemiesDefeated"));
 			result.push({ displayName: "Fights", stats: fightStats, isVisible: GameGlobals.gameState.isFeatureUnlocked("fight") });
 
 			// Items
 			let itemStats = [];
-			addStat(itemStats, this.getGameStatSimple("numItemsCrafted"));
-			addStat(itemStats, this.getGameStatList("uniqueItemsCrafted"));
-			addStat(itemStats, this.getGameStatKeyedSum("numItemsUsedPerId"));
+			addStat(itemStats, "Items found", this.getGameStatKeyedSum("numItemsFoundPerId"));
+			addStat(itemStats, "Unique items found", this.getGameStatList("uniqueItemsFound"));
+			addStat(itemStats, "Items crafted", this.getGameStatSimple("numItemsCrafted"));
+			addStat(itemStats, "Unique items crafted", this.getGameStatList("uniqueItemsCrafted"));
+			addStat(itemStats, "Items broken", this.getGameStatSimple("numItemsBroken"));
+			addStat(itemStats, "Items used", this.getGameStatKeyedSum("numItemsUsedPerId"));
+			addStat(itemStats, "Ingredients found", this.getGameStatKeyedSum("numItemsFoundPerId", (id) => ItemConstants.getItemType(id) == ItemConstants.itemTypes.ingredient));
+			addStat(itemStats, "Ingredients used", this.getGameStatKeyedSum("numItemsUsedPerId", (id) => ItemConstants.getItemType(id) == ItemConstants.itemTypes.ingredient));
+			addStat(itemStats, "Lock picks used", this.getGameStatKeyedSum("numItemsUsedPerId", (id) => id == "exploration_1"));
 			result.push({ displayName: "Items", stats: itemStats, isVisible: true });
 
 			// Followers
 			let followerStats = [];
-			addStat(fightStats, this.getGameStatSimple("numFollowersRecruited"));
+			addStat(followerStats, "Followers recruited", this.getGameStatSimple("numFollowersRecruited"));
+			addStat(followerStats, "Followers lost", this.getGameStatSimple("numFollowersLost"));
+			addStat(followerStats, "Followers dismissed", this.getGameStatSimple("numFollowersDismissed"));
+			addStat(followerStats, "Follower with most steps", this.getGameStatHighScore("mostStepsWithFollower"));
+			addStat(followerStats, "Follower with most fights", this.getGameStatHighScore("mostFightsWithFollower"));
 			result.push({ displayName: "Followers", stats: followerStats, isVisible: GameGlobals.gameState.isFeatureUnlocked("followers") });
 
 			return result;
@@ -363,14 +449,49 @@ define([
 			return { name: name, value: getter() };
 		},
 
+		getStatPercentageValue: function (numerator, denominator) {
+			if (!denominator) return null;
+			return numerator / denominator;
+		},
+
 		getStatPercentage: function (name1, name2) {
-			let value = GameGlobals.gameState.getGameStatSimple(name1) / GameGlobals.gameState.getGameStatSimple(name2);
+			let value = this.getStatPercentageValue(GameGlobals.gameState.getGameStatSimple(name1), GameGlobals.gameState.getGameStatSimple(name2));
 			return { name: name1 + "/" + name2, value: value, isPercentage: true };
 		},
 
-		getGameStatKeyedSum: function (name) {
-			let value = GameGlobals.gameState.getGameStatKeyedSum(name);
-			return { name: name, value: value };
+		getStatPercentageFromKeyedSum: function (name1, name2, key) {
+			let numerator = GameGlobals.gameState.getGameStatKeyed(name1, key);
+			let denominator = 0;
+
+			if (Array.isArray(name2)) {
+				for (let i in name2) {
+					denominator += GameGlobals.gameState.getGameStatKeyed(name2[i], key);
+				}
+			} else {
+				denominator = GameGlobals.gameState.getGameStatKeyed(name2, key);
+			}
+
+			let value = this.getStatPercentageValue(numerator, denominator);
+			return { name: name1 + "/" + name2, value: value, isPercentage: true };
+		},
+
+		getStatPercentageDerived: function (name, stat1, stat2) {
+			let getStat = function (stat) {
+				if (typeof stat === "string") return GameGlobals.gameState.getGameStatSimple(stat);
+				else return stat();
+			}
+			let value = this.getStatPercentageValue(getStat(stat1), getStat(stat2));
+			return { name: name, value: value, isPercentage: true };
+		},
+
+		getGameStatKeyed: function (name, key) {
+			let value = GameGlobals.gameState.getGameStatKeyed(name, key);
+			return { name: name + "." + key, value: value };
+		},
+
+		getGameStatKeyedSum: function (name, filter) {
+			let value = GameGlobals.gameState.getGameStatKeyedSum(name, filter);
+			return { name: name + (filter ? "-filtered" : ""), value: value };
 		},
 
 		getGameStatList: function (name) {

@@ -166,6 +166,7 @@ define([
 						if (sunlit) {
 							if (isTotalReset) {
 								GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_VISION_RESET, "Blinded by sunlight.");
+								GameGlobals.gameState.increaseGameStatSimple("numTimesBlindedBySunlight");
 							} else {
 								GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_VISION_RESET, "Engulfed by sunlight.");
 							}

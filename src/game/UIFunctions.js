@@ -9,12 +9,12 @@ define(['ash',
 		'game/constants/ItemConstants',
 		'game/constants/PlayerActionConstants',
 		'game/constants/PlayerStatConstants',
-		'game/constants/PositionConstants',
 		'game/helpers/ui/UIPopupManager',
 		'game/vos/ResourcesVO',
+		'game/vos/PositionVO',
 		'utils/MathUtils',
 	],
-	function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, GameConstants, CampConstants, UIConstants, ItemConstants, PlayerActionConstants, PlayerStatConstants, PositionConstants, UIPopupManager, ResourcesVO, MathUtils) {
+	function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, GameConstants, CampConstants, UIConstants, ItemConstants, PlayerActionConstants, PlayerStatConstants, UIPopupManager, ResourcesVO, PositionVO, MathUtils) {
 
 		// TODO separate generic utils and tabs handling to a different file
 
@@ -678,7 +678,7 @@ define(['ash',
 					let isCategoryVisible = category.isVisible || isCategoryDebugVisible;
 					if (!isCategoryVisible) continue;
 					html += "<div class='game-stat-category" + (isCategoryDebugVisible ? " debug-info" : "") + "'>";
-					html += "<h3>" + category.displayName + "</h3>";
+					html += "<h4>" + category.displayName + "</h4>";
 					for (let j in category.stats) {
 						let stat = category.stats[j];
 						let isDebugVisible = !stat.isVisible && GameConstants.isDebugVersion;
@@ -686,12 +686,25 @@ define(['ash',
 						if (!isVisible) continue;
 						let classes = [ "" ];
 						if (isDebugVisible) classes.push("debug-info");
-						let displayValue = stat.isPercentage ? UIConstants.roundValue(stat.value * 100) + "%" : UIConstants.roundValue(stat.value);
+						let displayValue = "-";
+						if (stat.value) {
+							if (stat.unit == GameConstants.gameStatUnits.seconds) {
+								displayValue = UIConstants.getTimeToNum(stat.value)
+							} else if (stat.isPercentage) {
+								displayValue = UIConstants.roundValue(stat.value * 100) + "%";
+							} else {
+								displayValue = UIConstants.roundValue(stat.value);
+							}
+						}
 						html += "<div class='game-stat-entry" + (isDebugVisible ? " debug-info" : "") + "'>";
 						html += "<span class='game-stat-span game-stat-name'>" + stat.displayName + "</span>";
 						html += "<span class='game-stat-span game-stat-value'>" + displayValue + "</span>";
 						if (stat.entry) {
-							html += "<span class='game-stat-span game-stat-entry'>" + stat.entry + "</span>";
+							let entryDisplay = stat.entry;
+							if (stat.entry.hasOwnProperty("sectorX")) {
+								entryDisplay = new PositionVO(stat.entry.level, stat.entry.sectorX, stat.entry.sectorY).getInGameFormat(true);
+							}
+							html += "<span class='game-stat-span game-stat-entry'>(" + entryDisplay + ")</span>";
 						}
 						html += "</div>";
 					}

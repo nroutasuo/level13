@@ -138,13 +138,15 @@ define([
 					result.resources = result.resources || {};
 					result.resources[costNameParts[1]] = costAmount;
 				} else if (costNameParts[0] === "item") {
-					var itemId = costName.replace(costNameParts[0] + "_", "");
+					let itemID = costName.replace(costNameParts[0] + "_", "");
+					let baseItemID = ItemConstants.getBaseItemId(itemID);
 					result.items = result.items || [];
 					for (let i = 0; i < costAmount; i++) {
-						var item = itemsComponent.getItem(itemId, null, inCamp, false) || itemsComponent.getItem(itemId, null, inCamp, true);
+						var item = itemsComponent.getItem(itemID, null, inCamp, false) || itemsComponent.getItem(itemID, null, inCamp, true);
 						itemsComponent.removeItem(item, false);
 						result.items.push(item);
 					}
+					GameGlobals.gameState.increaseGameStatKeyed("numItemsUsedPerId", itemID, costAmount);
 				} else if (costName == "blueprint") {
 				} else {
 					log.w("unknown cost: " + costName + ", action: " + action);

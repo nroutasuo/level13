@@ -567,10 +567,29 @@ define([
 			return result;
 		},
 
+		getLevelStatsGlobal: function () {
+			let result = {};
+			for (let level = GameGlobals.gameState.getGroundLevel(); level <= GameGlobals.gameState.getSurfaceLevel(); level++) {
+				let levelStats = this.getLevelStats(level);
+				for (let key in levelStats) {
+					if (!result[key]) result[key] = 0;
+					
+					let value = levelStats[key];
+					result[key] += value;
+				}
+			}
+
+			this.calculateLevelStatPercentages(result);
+
+			return result;
+		},
+
 		getLevelStats: function (level) {
-			var levelStats = {};
+			let levelStats = {};
 			levelStats.totalSectors = 0;
 			levelStats.countClearedSectors = 0;
+			levelStats.countScavengedSectors = 0;
+			levelStats.countFullyScavengedSectors = 0;
 			levelStats.countScoutedSectors = 0;
 			levelStats.countRevealedSectors = 0;
 			levelStats.countVisitedSectors = 0;
@@ -589,6 +608,8 @@ define([
 				
 				if (sectorStatus === SectorConstants.MAP_SECTOR_STATUS_VISITED_CLEARED) levelStats.countClearedSectors++;
 				if (statusComponent.scouted) levelStats.countScoutedSectors++;
+				if (statusComponent.scavenged) levelStats.countScavengedSectors++;
+				if (statusComponent.getScavengedPercent() >= 100) levelStats.countFullyScavengedSectors++;
 				if (node.entity.has(VisitedComponent)) levelStats.countVisitedSectors++;
 				if (node.entity.has(RevealedComponent) || node.entity.has(VisitedComponent)) levelStats.countRevealedSectors++;
 				if (GameGlobals.sectorHelper.hasSectorVisibleIngredients(node.entity)) levelStats.countKnownIngredientSectors++;
@@ -596,12 +617,16 @@ define([
 				if (node.entity.has(CampComponent)) levelStats.hasCamp = true;
 			}
 
+			this.calculateLevelStatPercentages(levelStats);
+
+			return levelStats;
+		},
+
+		calculateLevelStatPercentages: function (levelStats) {
 			levelStats.percentClearedSectors = levelStats.countClearedSectors == levelStats.totalSectors ? 1 : levelStats.countClearedSectors / levelStats.totalSectors;
 			levelStats.percentScoutedSectors = levelStats.countScoutedSectors == levelStats.totalSectors ? 1 : levelStats.countScoutedSectors / levelStats.totalSectors;
 			levelStats.percentRevealedSectors = levelStats.countRevealedSectors == levelStats.totalSectors ? 1 : levelStats.countRevealedSectors / levelStats.totalSectors;
 			levelStats.percentVisitedSectors = levelStats.countVisitedSectors == levelStats.totalSectors ? 1 : levelStats.countVisitedSectors / levelStats.totalSectors;
-
-			return levelStats;
 		},
 		
 		getWorkshopsSectorsForLevel: function (level) {

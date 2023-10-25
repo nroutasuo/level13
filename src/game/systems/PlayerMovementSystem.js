@@ -90,6 +90,7 @@ define([
 
 				GameGlobals.gameState.increaseGameStatHighScore("mostDistantSectorFromCampVisited", position, distanceToCamp);
 				GameGlobals.gameState.increaseGameStatHighScore("mostDistantSectorFromCenterVisited", position, distanceToCenter);
+				if (newSector.get(SectorFeaturesComponent).sunlit) GameGlobals.playerActionFunctions.unlockFeature("sunlight");
 				
 				GlobalSignals.playerPositionChangedSignal.dispatch(position, oldPosition);
 				GameGlobals.uiFunctions.onPlayerPositionChanged();

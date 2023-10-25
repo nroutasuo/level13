@@ -47,7 +47,8 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 		},
 
 		getDuration: function (action, baseActionID) {
-			var speed = this.isExplorationAction(baseActionID) ? GameConstants.gameSpeedExploration : GameConstants.gameSpeedCamp;
+			baseActionID = baseActionID || this.getBaseActionID(action);
+			let speed = this.isExplorationAction(baseActionID) ? GameConstants.gameSpeedExploration : GameConstants.gameSpeedCamp;
 
 			// TODO make send_caravan duration dependent on the trade partner's location
 			if (this.durations[baseActionID]) {
@@ -258,6 +259,9 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 			if (this.isImproveBuildingAction(baseId)) {
 				return actionName.replace("improve_in_", "").replace("improve_out_", "");
 			}
+			if (this.isUseImprovementAction(baseId)) {
+				return actionName.replace("use_in_", "").replace("use_out_", "");
+			}
 			if (this.isRepairBuildingAction(baseId)) {
 				return actionName.replace("repair_in_", "").replace("repar_out_", "");
 			}
@@ -321,6 +325,10 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 		
 		isImproveBuildingAction: function (baseActionID) {
 			return baseActionID == "improve_in" || baseActionID == "improve_out";
+		},
+		
+		isUseImprovementAction: function (baseActionID) {
+			return baseActionID.indexOf("use_in_") >= 0 || baseActionID.indexOf("use_out_") >= 0
 		},
 		
 		isBuildImprovementAction: function (baseActionID) {

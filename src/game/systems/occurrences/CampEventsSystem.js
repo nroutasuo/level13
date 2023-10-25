@@ -306,6 +306,9 @@ define([
 						logMsg += " A building was damaged.";
 						awayLogMsg += " A building was damaged.";
 					}
+
+					let raidEntry = { level: campNode.position.level, timeStamp: raidVO.timeStamp };
+					GameGlobals.gameState.increaseGameStatHighScore("mostResourcesLostInRaid", raidEntry, lostResources.getTotal());
 					
 					campNode.entity.remove(RaidComponent);
 					campNode.camp.lastRaid = raidVO;
@@ -369,6 +372,7 @@ define([
 				GameGlobals.gameState.unlockedFeatures.events.push(event);
 			log.i("Start " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ") (" + duration + "s)");
 			
+			GameGlobals.gameState.increaseGameStatKeyed("numCampEventsByType", event);
 			GlobalSignals.campEventStartedSignal.dispatch();
 
 			if (this.isPlayerInCamp(campNode) && logMsg) {

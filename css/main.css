@@ -1451,6 +1451,13 @@ body.dark .scroll-position-indicator-horizontal {
 body.dark .scrollable.scroll-enabled {
   cursor: all-scroll;
 }
+body.dark .scrollable-container {
+  max-height: 100vh;
+  overflow-y: scroll;
+  background: #282a28;
+  border: #3a3a3a 1px solid;
+  border-radius: 3px;
+}
 body.dark .bubble {
   background-color: #ccc;
   color: #202220;
@@ -2664,8 +2671,20 @@ body.dark .save-slot-date {
   float: right;
   color: #bbb;
 }
-body.dark .game-stat-span {
-  margin: 0 2px;
+body.dark #game-stats-container {
+  max-height: 70vh;
+}
+body.dark .game-stat-category h3 {
+  margin-bottom: 0 !important;
+  background: #2f322f;
+}
+body.dark .game-stat-entry {
+  display: flex;
+  gap: 5px;
+}
+body.dark .game-stat-name {
+  min-width: 35%;
+  text-align: left;
 }
 body.dark #mobile-overlay {
   position: fixed;
@@ -3891,6 +3910,13 @@ body.sunlit .scroll-position-indicator-horizontal {
 body.sunlit .scrollable.scroll-enabled {
   cursor: all-scroll;
 }
+body.sunlit .scrollable-container {
+  max-height: 100vh;
+  overflow-y: scroll;
+  background: #fff;
+  border: #aaa 1px solid;
+  border-radius: 3px;
+}
 body.sunlit .bubble {
   background-color: #ccc;
   color: #202220;
@@ -5104,8 +5130,20 @@ body.sunlit .save-slot-date {
   float: right;
   color: #777;
 }
-body.sunlit .game-stat-span {
-  margin: 0 2px;
+body.sunlit #game-stats-container {
+  max-height: 70vh;
+}
+body.sunlit .game-stat-category h3 {
+  margin-bottom: 0 !important;
+  background: #e6e6e6;
+}
+body.sunlit .game-stat-entry {
+  display: flex;
+  gap: 5px;
+}
+body.sunlit .game-stat-name {
+  min-width: 35%;
+  text-align: left;
 }
 body.sunlit #mobile-overlay {
   position: fixed;
