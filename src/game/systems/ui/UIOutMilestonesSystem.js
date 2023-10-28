@@ -198,6 +198,7 @@ define([
 		
 		onMilestoneClaimed: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
+			this.updateBubble();
 			if (GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.milestones) {
 				this.updateMilestones();
 			}
