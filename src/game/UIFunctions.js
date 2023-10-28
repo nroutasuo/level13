@@ -1163,7 +1163,7 @@ define(['ash',
 				// costs themselves
 				for (let key in costs) {
 					let value = costs[key];
-					let isAccumulatingCost = GameGlobals.playerActionsHelper.isAccumulatingCost(key);
+					let isAccumulatingCost = GameGlobals.playerActionsHelper.isAccumulatingCost(key, false);
 
 					if (isAccumulatingCost && !hasNonAccumulatingCost) {
 						let costCountdown = GameGlobals.playerActionsHelper.getCostCountdownSeconds(key, value);

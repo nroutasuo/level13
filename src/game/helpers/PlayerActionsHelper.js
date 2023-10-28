@@ -2078,23 +2078,23 @@ define([
 			return result;
 		},
 
-		isOnlyAccumulatingCosts: function (costs) {
+		isOnlyAccumulatingCosts: function (costs, ignorePlayerState) {
 			if (!costs) return false;
 			if (Object.keys(costs).length == 0) return false;
 
 			for (let key in costs) {
-				if (!this.isAccumulatingCost(key)) return false;
+				if (!this.isAccumulatingCost(key, ignorePlayerState)) return false;
 			}
 
 			return true;
 		},
 
-		isAccumulatingCost: function (costName) {
+		isAccumulatingCost: function (costName, ignorePlayerState) {
 			if (costName === "rumours") return true;
-			if (costName === "favour") return GameGlobals.gameState.unlockedFeatures.favour;
+			if (costName === "favour") return ignorePlayerState || GameGlobals.gameState.unlockedFeatures.favour;
 			if (costName === "evidence") return true;
 			let costNameParts = costName.split("_");
-			if (costNameParts[0] === "resource") return true;
+			if (costNameParts[0] === "resource") return ignorePlayerState || GameGlobals.gameState.unlockedFeatures.camp;
 			return false;
 		},
 
@@ -2102,7 +2102,7 @@ define([
 			let sector = otherSector || (this.playerLocationNodes.head && this.playerLocationNodes.head.entity);
 			let costAmountOwned = this.getCostAmountOwned(sector, costName);
 			if (costAmountOwned >= amount) return 0;
-			if (!this.isAccumulatingCost(costName)) return -1;
+			if (!this.isAccumulatingCost(costName, false)) return -1;
 			
 			let costAmountProduction = this.getCostAmountProduction(sector, costName);
 			if (costAmountProduction <= 0) return -1;
