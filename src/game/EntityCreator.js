@@ -271,7 +271,7 @@ define([
 
 			let logComponent = entity.get(LogMessagesComponent);
 			let positionComponent = entity.get(PositionComponent);
-			logComponent.addMessage(LogConstants.MSG_ID_START, "You are alone in a massive dark corridor, far below sunlight.", positionComponent.getPosition(), LogConstants.MSG_VISIBILITY_DEFAULT, true);
+			logComponent.addMessage(LogConstants.MSG_ID_START, "You are alone in a massive dark corridor, far below sunlight.", null, null, positionComponent.getPosition(), LogConstants.MSG_VISIBILITY_DEFAULT, true);
 		},
 		
 		syncPlayer: function (entity) {
