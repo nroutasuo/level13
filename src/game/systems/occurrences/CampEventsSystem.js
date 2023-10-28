@@ -300,6 +300,8 @@ define([
 							logMsg += " " + raidComponent.defendersLost + " defenders were killed.";
 							awayLogMsg += " " + raidComponent.defendersLost + " defenders were killed.";
 						}
+
+						GameGlobals.gameState.increaseGameStatSimple("numRaidsLost");
 					}
 					
 					if (raidComponent.damagedBuilding != null) {

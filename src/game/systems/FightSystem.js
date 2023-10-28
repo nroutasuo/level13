@@ -4,7 +4,8 @@ define([
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/FightConstants',
-	'game/constants/PositionConstants',
+	'game/constants/FollowerConstants',
+	'game/constants/ItemConstants',
 	'game/constants/EnemyConstants',
 	'game/nodes/FightNode',
 	'game/nodes/player/PlayerStatsNode',
@@ -13,7 +14,7 @@ define([
 	'game/components/sector/SectorControlComponent',
 	'game/components/player/ItemsComponent',
 	'game/components/player/PlayerActionResultComponent',
-], function (Ash, GameGlobals, GlobalSignals, FightConstants, PositionConstants, EnemyConstants,
+], function (Ash, GameGlobals, GlobalSignals, FightConstants, FollowerConstants, ItemConstants, EnemyConstants,
 	FightNode, PlayerStatsNode,
 	PositionComponent,
 	FightEncounterComponent, SectorControlComponent,
@@ -98,9 +99,13 @@ define([
 			let followers = this.playerStatsNodes.head.followers.getParty();
 			for (let i = 0; i < followers.length; i++) {
 				let follower = followers[i];
-				follower.numFights = follower.numFights || 0;
-				follower.numFights++;
-				GameGlobals.gameState.increaseGameStatHighScore("mostFightsWithFollower", follower, follower.numFights);
+				let bonusAtt = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_att);
+				let bonusDef = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_def);
+				if (bonusAtt > 0 || bonusDef > 0) {
+					follower.numFights = follower.numFights || 0;
+					follower.numFights++;
+					GameGlobals.gameState.increaseGameStatHighScore("mostFightsWithFollower", follower, follower.numFights);
+				}
 			}
 			
 			this.log("init fight | enemy IV: " + enemy.getIVAverage() + " | next turn player: " + nextTurnPlayer + ", enemy: " + nextTurnEnemy);

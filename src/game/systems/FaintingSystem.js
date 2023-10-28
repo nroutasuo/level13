@@ -243,8 +243,9 @@ define([
 		},
 		
 		teleport: function (sector) {
-			var playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
-			var sectorPosition = sector.get(PositionComponent);
+			let sys = this;
+			let playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
+			let sectorPosition = sector.get(PositionComponent);
 			playerPosition.level = sectorPosition.level;
 			playerPosition.sectorX = sectorPosition.sectorX;
 			playerPosition.sectorY = sectorPosition.sectorY;
@@ -256,7 +257,7 @@ define([
 			
 			setTimeout(function () {
 				if (sector.has(CampComponent)) {
-					GameGlobals.playerActionFunctions.enterCamp();
+					GameGlobals.playerActionFunctions.enterCamp(true);
 				} else {
 					if (GameGlobals.logWarnings) log.w("Fainting target sector has no CampComponent");
 				}

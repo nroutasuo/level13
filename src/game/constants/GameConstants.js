@@ -15,8 +15,9 @@ define( function () {
 		SAVE_SLOT_USER_3: "user3",
 
 		gameStatUnits: {
-			count: "count",
+			general: "general",
 			seconds: "seconds",
+			steps: "steps"
 		},
 		
 		gameURL: "https://nroutasuo.github.io/level13",

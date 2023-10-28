@@ -38,6 +38,9 @@ define([
 
 				if (excursionComponent.numSteps == ExplorationConstants.MIN_EXCURSION_LENGTH) {
 					GameGlobals.gameState.increaseGameStatSimple("numExcursionsStarted");
+				}
+
+				if (excursionComponent.numSteps >= ExplorationConstants.MIN_EXCURSION_LENGTH) {
 					GameGlobals.gameState.increaseGameStatHighScore("longestExcrusion", newPosition.level, excursionComponent.numSteps);
 				}
 			}

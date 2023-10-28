@@ -5,6 +5,7 @@ define(['ash',
 		'game/GlobalSignals',
 		'game/constants/GameConstants',
 		'game/constants/CampConstants',
+		'game/constants/EnemyConstants',
 		'game/constants/UIConstants',
 		'game/constants/ItemConstants',
 		'game/constants/PlayerActionConstants',
@@ -14,7 +15,7 @@ define(['ash',
 		'game/vos/PositionVO',
 		'utils/MathUtils',
 	],
-	function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, GameConstants, CampConstants, UIConstants, ItemConstants, PlayerActionConstants, PlayerStatConstants, UIPopupManager, ResourcesVO, PositionVO, MathUtils) {
+	function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, GameConstants, CampConstants, EnemyConstants, UIConstants, ItemConstants, PlayerActionConstants, PlayerStatConstants, UIPopupManager, ResourcesVO, PositionVO, MathUtils) {
 
 		// TODO separate generic utils and tabs handling to a different file
 
@@ -427,7 +428,7 @@ define(['ash',
 				}
 
 				// - time to available
-				if (GameGlobals.playerActionsHelper.isOnlyAccumulatingCosts(costs)) {
+				if (GameGlobals.playerActionsHelper.isOnlyAccumulatingCosts(costs, true)) {
 					enabledContent += "<div class='action-costs-countdown-container'>";
 					if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
 					enabledContent += "<span class='action-costs-countdown'></span>";
@@ -681,28 +682,48 @@ define(['ash',
 					html += "<h4>" + category.displayName + "</h4>";
 					for (let j in category.stats) {
 						let stat = category.stats[j];
+
 						let isDebugVisible = !stat.isVisible && GameConstants.isDebugVersion;
 						let isVisible = stat.isVisible || isDebugVisible;
 						if (!isVisible) continue;
-						let classes = [ "" ];
-						if (isDebugVisible) classes.push("debug-info");
+
+						let divClasses = [ "game-stat-entry" ];
+						if (isDebugVisible) divClasses.push("debug-info");
+						if (stat.isInSubCategory) divClasses.push("game-stat-in-subcategory")
+
+						if (stat.isSubCategory) {
+							divClasses.push("game-stat-sub-category");
+							html += "<div class='" + divClasses.join(" ") + "'>" + stat.displayName + "</div>";
+							continue;
+						}
+
 						let displayValue = "-";
 						if (stat.value) {
 							if (stat.unit == GameConstants.gameStatUnits.seconds) {
 								displayValue = UIConstants.getTimeToNum(stat.value)
 							} else if (stat.isPercentage) {
 								displayValue = UIConstants.roundValue(stat.value * 100) + "%";
+							} else if (stat.unit == GameConstants.gameStatUnits.steps) {
+								displayValue = UIConstants.roundValue(stat.value) + " steps";
 							} else {
 								displayValue = UIConstants.roundValue(stat.value);
 							}
 						}
-						html += "<div class='game-stat-entry" + (isDebugVisible ? " debug-info" : "") + "'>";
+						html += "<div class='" + divClasses.join(" ") + "'>";
 						html += "<span class='game-stat-span game-stat-name'>" + stat.displayName + "</span>";
 						html += "<span class='game-stat-span game-stat-value'>" + displayValue + "</span>";
 						if (stat.entry) {
 							let entryDisplay = stat.entry;
 							if (stat.entry.hasOwnProperty("sectorX")) {
 								entryDisplay = new PositionVO(stat.entry.level, stat.entry.sectorX, stat.entry.sectorY).getInGameFormat(true);
+							} else if (stat.entry.hasOwnProperty("name")) {
+								entryDisplay = stat.entry.name;
+							} else if (EnemyConstants.getEnemy(stat.entry)) {
+								entryDisplay = EnemyConstants.getEnemy(stat.entry).name;
+							} else if(ItemConstants.getItemByID(stat.entry, true)) {
+								entryDisplay = ItemConstants.getItemByID(stat.entry).name;
+							} else if (stat.entry.hasOwnProperty("timestamp")) {
+								entryDisplay = UIConstants.getTimeSinceText(stat.entry.timestamp);
 							}
 							html += "<span class='game-stat-span game-stat-entry'>(" + entryDisplay + ")</span>";
 						}

@@ -306,9 +306,9 @@ define([
 			var items = itemsComponent.getEquipped();
 			for (let i = 0; i < items.length; i++) {
 				var item = items[i];
-				var bonusatt = item.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att) > 0;
+				var bonusAtt = item.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att) > 0;
 				var bonusDef = item.getCurrentBonus(ItemConstants.itemBonusTypes.fight_def) > 0;
-				if (bonusatt || bonusDef) {
+				if (bonusAtt || bonusDef) {
 					this.numItems++;
 					$("ul#list-fight-items").append("<li>" + UIConstants.getItemDiv(null, item, null, UIConstants.getItemCallout(item, true), true) + "</li>");
 				}
@@ -320,10 +320,10 @@ define([
 			this.numFollowers = 0;
 			var followers = this.playerStatsNodes.head.followers.getParty();
 			for (let i = 0; i < followers.length; i++) {
-				var follower = followers[i];
-				var bonusatt = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_att) > 0;
-				var bonusDef = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_def) > 0;
-				if (bonusatt || bonusDef) {
+				let follower = followers[i];
+				let bonusAtt = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_att) > 0;
+				let bonusDef = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_def) > 0;
+				if (bonusAtt || bonusDef) {
 					this.numFollowers++;
 					$("ul#list-fight-followers").append("<li>" + UIConstants.getFollowerDiv(follower, true, false, true) + "</li>");
 				}

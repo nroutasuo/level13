@@ -174,7 +174,7 @@ define([
 				let name = resourceNames[key];
 				let amount = spilledResources.getResource(name);
 				if (amount > 0) {
-					GameGlobals.gameState.increaseGameStatKeyed("amountResourcesOverflownPerName", name);
+					GameGlobals.gameState.increaseGameStatKeyed("amountResourcesOverflownPerName", name, amount);
 				}
 			}
 		},

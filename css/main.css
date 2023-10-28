@@ -2673,6 +2673,7 @@ body.dark .save-slot-date {
 }
 body.dark #game-stats-container {
   max-height: 70vh;
+  padding: 0 5px;
 }
 body.dark .game-stat-category h3 {
   margin-bottom: 0 !important;
@@ -2682,8 +2683,14 @@ body.dark .game-stat-entry {
   display: flex;
   gap: 5px;
 }
+body.dark .game-stat-in-subcategory {
+  padding-left: 1em;
+}
 body.dark .game-stat-name {
   min-width: 35%;
+  text-align: left;
+}
+body.dark .game-stat-sub-category {
   text-align: left;
 }
 body.dark #mobile-overlay {
@@ -5132,6 +5139,7 @@ body.sunlit .save-slot-date {
 }
 body.sunlit #game-stats-container {
   max-height: 70vh;
+  padding: 0 5px;
 }
 body.sunlit .game-stat-category h3 {
   margin-bottom: 0 !important;
@@ -5141,8 +5149,14 @@ body.sunlit .game-stat-entry {
   display: flex;
   gap: 5px;
 }
+body.sunlit .game-stat-in-subcategory {
+  padding-left: 1em;
+}
 body.sunlit .game-stat-name {
   min-width: 35%;
+  text-align: left;
+}
+body.sunlit .game-stat-sub-category {
   text-align: left;
 }
 body.sunlit #mobile-overlay {

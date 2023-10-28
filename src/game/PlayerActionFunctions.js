@@ -261,7 +261,7 @@ define(['ash',
 				case "use_item_fight": this.useItemFight(param); break;
 				case "repair_item": this.repairItem(param); break;
 				// Other actions
-				case "enter_camp": this.enterCamp(param); break;
+				case "enter_camp": this.enterCamp(false); break;
 				case "scavenge": this.scavenge(param); break;
 				case "investigate": this.investigate(param); break;
 				case "scout": this.scout(param); break;
@@ -316,8 +316,7 @@ define(['ash',
 				this.currentAction = null;
 
 			if (action.indexOf("use_in_") >= 0) {
-				let improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_collector_water");
-				let improvementID = ImprovementConstants.getImprovementID(improvementName);
+				let improvementID = GameGlobals.playerActionsHelper.getImprovementIDForAction(action);
 				let duration = PlayerActionConstants.getDuration(action);
 				GameGlobals.gameState.increaseGameStatKeyed("timeUsingCampBuildingPerId", improvementID, duration);
 			}
@@ -459,10 +458,12 @@ define(['ash',
 			itemsComponent.uniqueItemsCarried = null;
 		},
 
-		enterCamp: function () {
+		enterCamp: function (isFainted) {
 			let playerPos = this.playerPositionNodes.head.position;
-			this.recordExcursionSurvived();
 			GameGlobals.playerHelper.moveTo(playerPos.level, playerPos.sectorX, playerPos.sectorY, true);
+			if (!isFainted) {
+				this.recordExcursionSurvived();
+			}
 		},
 
 		enterOutTab: function () {
@@ -1331,6 +1332,8 @@ define(['ash',
 			if (GameGlobals.playerActionsHelper.checkAvailability("flee", true)) {
 				GameGlobals.playerActionsHelper.deductCosts("flee");
 				this.completeAction("flee");
+			
+				GameGlobals.gameState.increaseGameStatSimple("numFightsFled");
 			}
 		},
 
@@ -1895,6 +1898,7 @@ define(['ash',
 			var playerPos = this.playerPositionNodes.head.position;
 			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
 			var item = itemsComponent.getItem(null, itemInstanceId, playerPos.inCamp, false, item => item.equippable);
+			GameGlobals.gameState.increaseGameStatList("uniqueItemsEquipped", item.id);
 			itemsComponent.equip(item);
 			GlobalSignals.equipmentChangedSignal.dispatch();
 		},
@@ -2386,8 +2390,9 @@ define(['ash',
 			let excursionComponent = this.playerPositionNodes.head.entity.get(ExcursionComponent);
 			if (excursionComponent && excursionComponent.numSteps >= ExplorationConstants.MIN_EXCURSION_LENGTH) {
 				GameGlobals.gameState.increaseGameStatSimple("numExcursionsSurvived");
+				GameGlobals.gameState.increaseGameStatHighScore("longestSurvivedExcrusion", playerPos.level, excursionComponent.numSteps);
 			}
-			GameGlobals.gameState.increaseGameStatHighScore("lowestStaminaReturnedToCampWith", playerPos.level, this.playerStatsNodes.head.stamina.stamina);
+			GameGlobals.gameState.increaseGameStatHighScore("lowestStaminaReturnedToCampWith", playerPos.level, Math.round(this.playerStatsNodes.head.stamina.stamina));
 		},
 		
 		forceStatsBarUpdate: function () {

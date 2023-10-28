@@ -445,15 +445,18 @@ define([
 			let currencyComponent = this.playerStatsNodes.head.entity.get(CurrencyComponent);
 			currencyComponent.currency += rewards.gainedCurrency;
 			currencyComponent.currency -= rewards.lostCurrency;
-			if (rewards.gainedCurrency > 0) GameGlobals.playerActionFunctions.unlockFeature("currency");
+			if (rewards.gainedCurrency > 0) {
+				GameGlobals.playerActionFunctions.unlockFeature("currency");
+				GameGlobals.gameState.increaseGameStatSimple("amountFoundCurrency", rewards.gainedCurrency);
+			}
 
 			let itemsComponent = this.playerStatsNodes.head.items;
 			if (rewards.selectedItems) {
 				for (let i = 0; i < rewards.selectedItems.length; i++) {
-					let baseItemID = ItemConstants.getBaseItemId(rewards.selectedItems[i].id);
-					GameGlobals.playerHelper.addItem(rewards.selectedItems[i], sourcePos);
-					GameGlobals.gameState.increaseGameStatKeyed("numItemsFoundPerId", itemID);
-					GameGlobals.gameState.increaseGameStatList("uniqueItemsFound", itemID);
+					let item = rewards.selectedItems[i];
+					GameGlobals.playerHelper.addItem(item, sourcePos);
+					GameGlobals.gameState.increaseGameStatKeyed("numItemsFoundPerId", item.id);
+					GameGlobals.gameState.increaseGameStatList("uniqueItemsFound", item.id);
 				}
 			}
 			
@@ -573,7 +576,6 @@ define([
 				msg += "$" + replacements.length + ", ";
 				replacements.push("#" + replacements.length + " currency");
 				values.push(rewards.gainedCurrency);
-				GameGlobals.gameState.increaseGameStatSimple("amountFoundCurrency");
 			}
 
 			if (rewards.selectedItems && rewards.selectedItems.length > 0) {
