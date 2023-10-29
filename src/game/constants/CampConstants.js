@@ -85,6 +85,9 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		CHEMISTS_PER_WORKSHOP: 5,
 		RUBBER_WORKER_PER_WORKSHOP: 5,
 		GARDENER_PER_GREENHOUSE: 5,
+
+		MAX_DEITY_NAME_LENGTH: 20,
+		MAX_CAMP_NAME_LENGTH: 20,
 	
 		workerTypes: {
 			scavenger: {

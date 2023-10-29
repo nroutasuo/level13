@@ -23,6 +23,15 @@ define(['game/vos/PositionVO'], function (PositionVO) {
 
 			return { title: title, shortstack: shortstack, stack: stack };
 		},
+
+		cleanUpInput: function (str, maxlength, replacement) {
+			replacement = replacement || '';
+			let result = str.replace(/[&\/\\#,+()$~%.?'":*?<>{}%\[\]=]$/g, replacement);
+			if (maxlength && maxlength > 0) {
+				result = result.substring(0, maxlength);
+			}
+			return result;
+		},
 		
 		encodeURI: function (s) {
 			return encodeURI(s).replace(/\'/g, "%27");

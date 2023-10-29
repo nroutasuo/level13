@@ -2312,7 +2312,6 @@ define(['ash',
 		},
 
 		setNearestCampName: function (newName) {
-			var newName = newName.substring(0, 20);
 			var campSector = this.nearestCampNodes.head.entity;
 			if (campSector) {
 				campSector.get(CampComponent).campName = newName;
@@ -2391,8 +2390,8 @@ define(['ash',
 			if (excursionComponent && excursionComponent.numSteps >= ExplorationConstants.MIN_EXCURSION_LENGTH) {
 				GameGlobals.gameState.increaseGameStatSimple("numExcursionsSurvived");
 				GameGlobals.gameState.increaseGameStatHighScore("longestSurvivedExcrusion", playerPos.level, excursionComponent.numSteps);
+				GameGlobals.gameState.increaseGameStatHighScore("lowestStaminaReturnedToCampWith", playerPos.level, Math.round(this.playerStatsNodes.head.stamina.stamina));
 			}
-			GameGlobals.gameState.increaseGameStatHighScore("lowestStaminaReturnedToCampWith", playerPos.level, Math.round(this.playerStatsNodes.head.stamina.stamina));
 		},
 		
 		forceStatsBarUpdate: function () {

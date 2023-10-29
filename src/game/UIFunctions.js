@@ -14,8 +14,9 @@ define(['ash',
 		'game/vos/ResourcesVO',
 		'game/vos/PositionVO',
 		'utils/MathUtils',
+		'utils/StringUtils',
 	],
-	function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, GameConstants, CampConstants, EnemyConstants, UIConstants, ItemConstants, PlayerActionConstants, PlayerStatConstants, UIPopupManager, ResourcesVO, PositionVO, MathUtils) {
+	function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, GameConstants, CampConstants, EnemyConstants, UIConstants, ItemConstants, PlayerActionConstants, PlayerStatConstants, UIPopupManager, ResourcesVO, PositionVO, MathUtils, StringUtils) {
 
 		// TODO separate generic utils and tabs handling to a different file
 
@@ -127,7 +128,9 @@ define(['ash',
 						true,
 						function (input) {
 							GameGlobals.playerActionFunctions.setNearestCampName(input);
-						}
+						},
+						null,
+						CampConstants.MAX_CAMP_NAME_LENGTH
 					);
 				});
 				
@@ -891,8 +894,8 @@ define(['ash',
 			},
 
 			onTextInputKeyUp: function (e) {
-				var value = $(e.target).val();
-				value = value.replace(/[&\/\\#,+()$~%.'":*?<>{}\[\]=]/g, '_');
+				let value = $(e.target).val();
+				value = StringUtils.cleanUpInput(value, $(e.target).data("max-input-length"), '_');
 				$(e.target).val(value);
 			},
 
@@ -914,10 +917,6 @@ define(['ash',
 					},
 					true
 				);
-			},
-
-			cleanUpInput: function (str) {
-				return str.replace(/[&\/\\#,+()$~%.'":*?<>{}]$/g, '');
 			},
 
 			slideToggleIf: function (element, replacement, show, durationIn, durationOut, cb) {
@@ -1405,11 +1404,11 @@ define(['ash',
 				this.popupManager.showPopup(title, msg, buttonLabel, cancelButtonLabel, null, okCallback, cancelCallback, options);
 			},
 
-			showInput: function (title, msg, defaultValue, allowCancel, confirmCallback, inputCallback) {
+			showInput: function (title, msg, defaultValue, allowCancel, confirmCallback, inputCallback, maxLength) {
 				// TODO improve input validation (check and show feedback on input, not just on confirm)
 				let okCallback = function () {
 					let input = $("#common-popup input").val();
-					input = GameGlobals.uiFunctions.cleanUpInput(input);
+					input = StringUtils.cleanUpInput(input, maxLength);
 					let ok = input && input.length > 0 && (inputCallback ? inputCallback(input) : true);
 					if (ok) {
 						confirmCallback(input);
@@ -1433,6 +1432,7 @@ define(['ash',
 				$("#common-popup-input-container input").attr("maxlength", maxChar);
 
 				$("#common-popup input").val(defaultValue);
+				$("#common-popup input").data("max-input-length", maxLength)
 				$("#common-popup input").keydown(uiFunctions.onTextInputKeyDown);
 				$("#common-popup input").keyup(uiFunctions.onTextInputKeyUp);
 			},

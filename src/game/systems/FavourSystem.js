@@ -92,6 +92,9 @@ define([
 			if (!name || name.length < 1) {
 				return false;
 			}
+			if (name.length > CampConstants.MAX_DEITY_NAME_LENGTH) {
+				return false;
+			}
 			return true;
 		},
 		
@@ -108,6 +111,7 @@ define([
 				function (input) {
 					return sys.isValidDeityName(input);
 				},
+				CampConstants.MAX_DEITY_NAME_LENGTH
 			);
 		},
 		
