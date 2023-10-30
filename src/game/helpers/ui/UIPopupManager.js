@@ -67,6 +67,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 			$("#common-popup .buttonbox").append("<button id='info-ok' class='action'>" + okButtonLabel + "</button>");
 			$("#info-ok").attr("action", showInventoryManagement ? "accept_inventory" : null);
 			$("#info-ok").toggleClass("inventory-selection-ok", showInventoryManagement);
+			$("#info-ok").toggleClass("button-popup-default", true);
 			$("#info-ok").toggleClass("action", showInventoryManagement);
 			$("#info-ok").click(ExceptionHandler.wrapClick(function (e) {
 				e.stopPropagation();
@@ -111,19 +112,24 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 			GameGlobals.uiFunctions.generateButtonOverlays("#common-popup .buttonbox");
 			GameGlobals.uiFunctions.generateCallouts("#common-popup .buttonbox");
 			
-			popup.attr("data-dismissable", isDismissable);
-			popup.attr("data-dismissed", "false");
-			if (isDismissable) {
-				$(".popup-overlay").click(ExceptionHandler.wrapClick(function (e) {
-					GameGlobals.uiFunctions.popupManager.dismissPopups();
-				}));
-			}
+			this.setDismissable(popup, isDismissable);
 		
 			if ($defaultButton) {
 				$defaultButton.focus()
 			}
 			
 			this.updatePause();
+		},
+
+		setDismissable: function ($popup, isDismissable) {
+			$popup.attr("data-dismissable", isDismissable);
+			$popup.attr("data-dismissed", "false");
+			if (isDismissable) {
+				$(".popup-overlay").click(ExceptionHandler.wrapClick(function (e) {
+					if (e.target !== e.currentTarget) return;
+					GameGlobals.uiFunctions.popupManager.dismissPopups();
+				}));
+			}
 		},
 
 		updatePause: function () {
@@ -200,13 +206,17 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 				let dataDismissable = $(this).attr("data-dismissable");
 				let isDismissable = dataDismissable == true || dataDismissable == "true";
 				if (isDismissable) {
-					let dataDismissed = $(this).attr("data-dismissed");
-					if (dataDismissed == true || dataDismissed == "true") return;
-					$(this).attr("data-dismissed", "true");
-					$(this).find("#info-ok").trigger("click");
+					popupManager.dismissPopup($(this));
 				}
 			});
 			this.updatePause();
+		},
+
+		dismissPopup: function ($popup) {
+			let dataDismissed = $popup.attr("data-dismissed");
+			if (dataDismissed == true || dataDismissed == "true") return;
+			$popup.attr("data-dismissed", "true");
+			$popup.find(".button-popup-default").trigger("click");
 		},
 		
 		showQueuedPopup: function () {

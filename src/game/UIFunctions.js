@@ -94,11 +94,12 @@ define(['ash',
 					uiFunctions.showManageSave();
 				});
 				$("#btn-stats").click(function (e) {
+					let options = { isMeta: true, isDismissable: true };
 					gtag('event', 'screen_view', {
 						'screen_name': "popup-stats"
 					});
 					uiFunctions.updateGameStatsPopup();
-					uiFunctions.showSpecialPopup("game-stats-popup");
+					uiFunctions.showSpecialPopup("game-stats-popup", options);
 				});
 				$("#game-stats-popup-close").click(function (e) {
 					uiFunctions.popupManager.closePopup("game-stats-popup");
@@ -107,7 +108,7 @@ define(['ash',
 					gtag('event', 'screen_view', {
 						'screen_name': "popup-game-info"
 					});
-					uiFunctions.showInfoPopup("Level 13", uiFunctions.getGameInfoDiv(), null, null, null, true, false);
+					uiFunctions.showInfoPopup("Level 13", uiFunctions.getGameInfoDiv(), null, null, null, true, true);
 				});
 
 				$("#in-assign-workers input.amount").change(function (e) {
@@ -1331,10 +1332,11 @@ define(['ash',
 			},
 
 			showManageSave: function () {
-				this.showSpecialPopup("manage-save-popup");
+				let options = { isMeta: true, isDismissable: true };
+				this.showSpecialPopup("manage-save-popup", options);
 			},
 
-			showSpecialPopup: function (popupID) {
+			showSpecialPopup: function (popupID, options) {
 				log.i("[ui] showSpecialPopup " + popupID);
 				let $popup = $("#" + popupID);
 				if ($popup.is(":visible")) return;
@@ -1422,6 +1424,7 @@ define(['ash',
 				let options = {
 					isMeta: false,
 					isDismissable: false,
+					isCloseable: false,
 				};
 				
 				this.popupManager.showPopup(title, msg, "Confirm", cancelButtonLabel, null, okCallback, null, options);
