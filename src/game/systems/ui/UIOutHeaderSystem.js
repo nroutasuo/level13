@@ -156,6 +156,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onGameShown);
 			GlobalSignals.add(this, GlobalSignals.levelTypeRevealedSignal, this.onLevelTypeRevealed);
 			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.updateResourcesIfNotPending);
+			GlobalSignals.add(this, GlobalSignals.workersAssignedSignal, this.updateResourcesIfNotPending);
 			GlobalSignals.add(this, GlobalSignals.launchCompletedSignal, this.onLaunchCompleted);
 			GlobalSignals.add(this, GlobalSignals.windowResizedSignal, this.onWindowResized);
 
