@@ -159,6 +159,11 @@ define(['ash',
 					options += makeButton(action, ItemConstants.getUseItemVerb(item));
 				}
 
+				if (bagOptions.canRepair) {
+					var action = "repair_item_" + item.itemID;
+					options += makeButton(action, "Repair");
+				}
+
 				if (bagOptions.canEquip) {
 					var action = "equip_" + item.itemID;
 					options += makeButton(action, "Equip");

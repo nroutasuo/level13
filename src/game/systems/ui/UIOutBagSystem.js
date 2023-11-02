@@ -444,7 +444,8 @@ define([
 				let isEquipped = equipped && equipped.length > 0 && equipped[0].id == item.id && equipped[0].broken == item.broken;
 				let count = itemsComponent.getCount(item, inCamp);
 				let canDiscard = itemsComponent.isItemDiscardable(item);
-				let options = { canEquip: false, isEquipped: item.equipped, canUnequip: false, canDiscard: canDiscard, canUse: item.useable };
+				let canRepair = this.isRepairable(item);
+				let options = { canEquip: false, isEquipped: item.equipped, canUnequip: false, canDiscard: canDiscard, canUse: item.useable, canRepair: canRepair };
 
 				switch (item.type) {
 					case ItemConstants.itemTypes.light:
@@ -524,7 +525,8 @@ define([
 					break;
 			}
 
-			let options = { canEquip: false, isEquipped: true, canUnequip: true, canUse: false };
+			let canRepair = this.isRepairable(itemVO);
+			let options = { canEquip: false, isEquipped: true, canUnequip: true, canUse: false, canRepair: canRepair };
 			$(slot).children(".item-slot-image").html(itemVO ? UIConstants.getItemDiv(itemsComponent, itemVO, null, UIConstants.getItemCallout(itemVO, false, true, options, "switch-bag"), true) : "");
 			$(slot).children(".item-slot-name").html(itemVO ? itemVO.name.toLowerCase() : "");
 
