@@ -746,6 +746,7 @@
 			<span id="game-version" class="p-meta"></span>
 			<span id="game-msg" class="p-meta"></span>
 			<ul id="game-options-extended" style="display:none">
+				<li class="hide-in-small-layout"><button class="btn-meta" id="btn-settings">Settings</button></li>
 				<li><button class="btn-meta" id="btn-info">Info</button></li>
 				<li><button class="btn-meta" id="btn-stats">Stats</button></li>
 				<li><button class="btn-meta" id="btn-importexport">Data</button></li>
@@ -905,6 +906,20 @@
 		<div id="game-stats-container" class="scrollable-container"></div>
 		<div class="buttonbox">
 			<button id="game-stats-popup-close" class="button-popup-default">Close</button>
+		</div>
+	</div>
+
+	<div id="settings-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display: none" settings-popup-header">
+		<h3 id="settings-popup-header">Settings</h3>
+		<span class="settings-entry">
+			<input type="checkbox" class="checkbox" id="settings-checkbox-hotkeys-enabled" /><p class="checkbox-label">Enable hotkeys</p>
+		</span>
+		<span class="settings-entry">
+			<input type="checkbox" class="checkbox" id="settings-checkbox-hotkeys-numpad" /><p class="checkbox-label">Use Numpad for movement</p>
+		</span>
+		<div id="hotkeys-list" class="scrollable-container"></div>
+		<div class="buttonbox">
+			<button id="settings-popup-close" class="button-popup-default">Close</button>
 		</div>
 	</div>
 	

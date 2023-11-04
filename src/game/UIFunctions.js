@@ -25,6 +25,11 @@ define(['ash',
 			context: "UIFunctions",
 			popupManager: null,
 
+			hotkeys: {},
+
+			HOTKEY_DEFAULT_MODIFIER: "HOTKEY_DEFAULT_MODIFIER",
+			HOTKEY_DEFAULT_MODIFIER_KEY: "shiftKey",
+
 			elementIDs: {
 				tabs: {
 					bag: "switch-bag",
@@ -46,6 +51,7 @@ define(['ash',
 			},
 			
 			init: function () {
+				this.registerHotkeys();
 				this.generateElements();
 				this.hideElements();
 				this.registerListeners();
@@ -104,6 +110,16 @@ define(['ash',
 				$("#game-stats-popup-close").click(function (e) {
 					uiFunctions.popupManager.closePopup("game-stats-popup");
 				});
+				$("#btn-settings").click(function (e) {
+					let options = { isMeta: true, isDismissable: true };
+					gtag('event', 'screen_view', {
+						'screen_name': "popup-settings"
+					});
+					uiFunctions.showSpecialPopup("settings-popup", options);
+				});
+				$("#settings-popup-close").click(function (e) {
+					uiFunctions.popupManager.closePopup("settings-popup");
+				});
 				$("#btn-info").click(function (e) {
 					gtag('event', 'screen_view', {
 						'screen_name': "popup-game-info"
@@ -153,6 +169,93 @@ define(['ash',
 					GameGlobals.gameState.uiStatus.mouseDown = true;
 					GameGlobals.gameState.uiStatus.mouseDownElement = e.target;
 				});
+			},
+
+			registerHotkeys: function () {
+				let tabs = GameGlobals.uiFunctions.elementIDs.tabs;
+				let defaultModifier = this.HOTKEY_DEFAULT_MODIFIER;
+				this.registerHotkey("Move N", "KeyW", defaultModifier, tabs.out, false, "move_sector_north");
+				this.registerHotkey("Move N", "Numpad8", defaultModifier, tabs.out, false, "move_sector_north");
+				this.registerHotkey("Move W", "KeyA", defaultModifier, tabs.out, false, "move_sector_west");
+				this.registerHotkey("Move W", "Numpad4", defaultModifier, tabs.out, false, "move_sector_west");
+				this.registerHotkey("Move S", "KeyS", defaultModifier, tabs.out, false, "move_sector_south");
+				this.registerHotkey("Move S", "Numpad0", defaultModifier, tabs.out, false, "move_sector_south");
+				this.registerHotkey("Move E", "KeyD", defaultModifier, tabs.out, false, "move_sector_east");
+				this.registerHotkey("Move E", "Numpad6", defaultModifier, tabs.out, false, "move_sector_east");
+				this.registerHotkey("Move NW", "KeyQ", defaultModifier, tabs.out, false, "move_sector_nw");
+				this.registerHotkey("Move NW", "Numpad7", defaultModifier, tabs.out, false, "move_sector_nw");
+				this.registerHotkey("Move NE", "KeyE", defaultModifier, tabs.out, false, "move_sector_ne");
+				this.registerHotkey("Move NE", "Numpad9", defaultModifier, tabs.out, false, "move_sector_ne");
+				this.registerHotkey("Move SW", "KeyZ", defaultModifier, tabs.out, false, "move_sector_sw");
+				this.registerHotkey("Move SW", "Numpad1", defaultModifier, tabs.out, false, "move_sector_sw");
+				this.registerHotkey("Move SE", "KeyC", defaultModifier, tabs.out, false, "move_sector_se");
+				this.registerHotkey("Move SE", "Numpad3", defaultModifier, tabs.out, false, "move_sector_se");
+
+				this.registerHotkey("Scavenge", "KeyN", defaultModifier, tabs.out, false, "scavenge");
+				this.registerHotkey("Scout", "KeyM", defaultModifier, tabs.out, false, "scout");
+				this.registerHotkey("Collect water", "KeyG", defaultModifier, tabs.out, false, "use_out_collector_water");
+				this.registerHotkey("Collect food", "KeyF", defaultModifier, tabs.out, false, "use_out_collector_food");
+
+				this.registerHotkey("Previous tab", "ArrowLeft", "shiftKey", null, false, () => GameGlobals.uiFunctions.showPreviousTab());
+				this.registerHotkey("Next tab", "ArrowRight", "shiftKey", null, false, () => GameGlobals.uiFunctions.showNextTab());
+
+				this.registerHotkey("Dismiss popup", "Escape", null, null, true, () => GameGlobals.uiFunctions.popupManager.dismissPopups());
+			},
+
+			registerHotkey: function (description, code, modifier, tab, isUniversal, cb) {
+				if (!code) return;
+				if (!cb) return;
+
+				modifier = modifier || null;
+				tab = tab || null;
+				isUniversal = isUniversal || false;
+
+				let displayKey = code.replace("Key", "");
+				let displayKeyShort = displayKey.replace("Numpad", "");
+
+				let action = null;
+				if (typeof cb === "string") {
+					action = cb;
+					cb = () => GameGlobals.playerActionFunctions.startAction(action);
+				}
+
+				let activeCondition = null;
+
+				if (action && action.indexOf("move_") >= 0) {
+					if (code.indexOf("Numpad") >= 0) {
+						activeCondition = () => GameGlobals.gameState.settings.hotkeysNumpad;
+					} else {
+						activeCondition = () => !GameGlobals.gameState.settings.hotkeysNumpad;
+					}
+				}
+
+				if (!this.hotkeys[code]) this.hotkeys[code] = [];
+
+				let hotkey = { 
+					activeCondition: activeCondition,
+					code: code, 
+					modifier: modifier, 
+					description: description, 
+					displayKey: displayKey, 
+					displayKeyShort: displayKeyShort,
+					tab: tab, 
+					isUniversal: isUniversal,
+					action: action, 
+					cb: cb 
+				};
+				this.hotkeys[code].push(hotkey);
+			},
+
+			getActionHotkey: function (action) {
+				if (!action) return null;
+				for (let code in this.hotkeys) {
+					for (let i = 0; i < this.hotkeys[code].length; i++) {
+						let hotkey = this.hotkeys[code][i];
+						if (hotkey.activeCondition && !hotkey.activeCondition()) continue;
+						if (hotkey.action == action) return hotkey;
+					}
+				}
+				return null;
 			},
 
 			registerActionButtonListeners: function (scope) {
@@ -551,11 +654,15 @@ define(['ash',
 						return;
 					}
 					let action = $btn.attr("action");
+					let hotkey = GameGlobals.uiFunctions.getActionHotkey(action);
 					let text = $btn.text();
 					$btn.text("");
 					$btn.append("<span class='btn-label'>" + text + "</span>");
 					$btn.append("<div class='cooldown-action' style='display:none' />");
 					$btn.append("<div class='cooldown-duration' style='display:none' />");
+					if (hotkey) {
+						$btn.append("<div class='hotkey-hint hide-in-small-layout'>" + hotkey.displayKeyShort + "</div>");
+					}
 					$btn.wrap("<div class='container-btn-action' />");
 				});
 				
@@ -570,6 +677,22 @@ define(['ash',
 					if (hasCosts) {
 						$container.append("<div class='cooldown-reqs' data-action='" + action + "' />");
 					}
+				});
+
+				this.updateHotkeyHints();
+			},
+
+			updateHotkeyHints: function () {
+				let hotkeysEnabled = GameGlobals.gameState.settings.hotkeysEnabled;
+				$(".hotkey-hint").toggleClass("hidden", !hotkeysEnabled);
+
+				if (!hotkeysEnabled) return;
+
+				$.each($("button.action"), function () {
+					let $btn = $(this);
+					let action = $btn.attr("action");
+					let hotkey = GameGlobals.uiFunctions.getActionHotkey(action);
+					$btn.children(".hotkey-hint").html(hotkey ? hotkey.displayKeyShort : "");
 				});
 			},
 			
@@ -751,11 +874,15 @@ define(['ash',
 			onTabClicked: function (tabID, tabProps) {
 				if (GameGlobals.gameState.isLaunchStarted) return;
 				if (GameGlobals.gameState.isLaunched) return;
+
+				let inCamp = GameGlobals.playerHelper.isInCamp();
+				if (inCamp && tabID == GameGlobals.uiFunctions.elementIDs.tabs.out) tabID == GameGlobals.uiFunctions.elementIDs.tabs.embark;
 				
 				GameGlobals.uiFunctions.selectTab(tabID, tabProps);
 			},
 			
 			selectTab: function (tabID, tabProps) {
+
 				$("#switch-tabs li").removeClass("selected");
 				$("#switch-tabs li#" + tabID).addClass("selected");
 				$("#tab-header h2").text(tabID);
@@ -824,47 +951,42 @@ define(['ash',
 			},
 			
 			onKeyUp: function (e) {
-				var isInCamp = GameGlobals.playerHelper.isInCamp();
+				if (e.originalEvent.isTextInput) return;
+				if (!GameGlobals.uiFunctions.triggerHotkey(e.originalEvent.code, e)) return;
+			},
+
+			triggerHotkey: function (code, modifiers) {
+				if (!this.hotkeys[code]) return false;
+				let currentTab = GameGlobals.gameState.uiStatus.currentTab;
 				let hasPopups = GameGlobals.uiFunctions.popupManager.hasOpenPopup();
-				if (!e.shiftKey) {
-					if (!isInCamp && !hasPopups) {
-						if (e.keyCode == 65) {
-							GameGlobals.playerActionFunctions.startAction("move_sector_west");
-						}
-						if (e.keyCode == 87) {
-							GameGlobals.playerActionFunctions.startAction("move_sector_north");
-						}
-						if (e.keyCode == 83) {
-							GameGlobals.playerActionFunctions.startAction("move_sector_south")
-						}
-						if (e.keyCode == 68) {
-							GameGlobals.playerActionFunctions.startAction("move_sector_east")
-						}
-						if (e.keyCode == 81) {
-							GameGlobals.playerActionFunctions.startAction("move_sector_nw")
-						}
-						if (e.keyCode == 69) {
-							GameGlobals.playerActionFunctions.startAction("move_sector_ne")
-						}
-						if (e.keyCode == 90) {
-							GameGlobals.playerActionFunctions.startAction("move_sector_sw")
-						}
-						if (e.keyCode == 67) {
-							GameGlobals.playerActionFunctions.startAction("move_sector_se")
-						}
-						if (GameConstants.isCheatsEnabled) {
-							if (e.keyCode == 78) {
-								GameGlobals.playerActionFunctions.startAction("scavenge")
-							}
-							if (e.keyCode == 77) {
-								GameGlobals.playerActionFunctions.startAction("scout")
-							}
-						}
-					}
-					if (e.keyCode == 27) {
-						GameGlobals.uiFunctions.popupManager.dismissPopups();
-					}
+
+				for (let i = 0; i < this.hotkeys[code].length; i++) {
+					let hotkey = this.hotkeys[code][i];
+					if (hotkey.tab && hotkey.tab !== currentTab) continue;
+					if (!hotkey.isUniversal && hasPopups) continue;
+					if (hotkey.activeCondition && !hotkey.activeCondition()) continue;
+					if (!GameGlobals.gameState.settings.hotkeysEnabled && !hotkey.isUniversal) continue;
+
+					let modifier = GameGlobals.uiFunctions.getActualHotkeyModifier(hotkey.modifier);
+					if (modifier && !modifiers[modifier]) continue;
+
+					log.i("[hotkey] triggered " + hotkey.code + " " + hotkey.modifier + " " + hotkey.tab);
+
+					hotkey.cb.apply(this);
+					return true;
 				}
+
+				return false;
+			},
+
+			getActualHotkeyModifier: function (modifier) {
+				if (!modifier) return null;
+
+				let result = modifier.modifier || modifier;
+				if (result == GameGlobals.uiFunctions.HOTKEY_DEFAULT_MODIFIER) {
+					result = null;
+				}
+				return result;
 			},
 
 			onNumberInputKeyDown: function (e) {
@@ -892,12 +1014,14 @@ define(['ash',
 					// let it happen, don't do anything
 					return;
 				}
+				e.originalEvent.isTextInput = true;
 			},
 
 			onTextInputKeyUp: function (e) {
 				let value = $(e.target).val();
 				value = StringUtils.cleanUpInput(value, $(e.target).data("max-input-length"), '_');
 				$(e.target).val(value);
+				e.originalEvent.isTextInput = true;
 			},
 
 			onPlayerPositionChanged: function () {
@@ -1322,6 +1446,26 @@ define(['ash',
 				this.onTabClicked(tabID, tabProps);
 			},
 
+			showPreviousTab: function () {
+				let visibleTabElements = $("#switch-tabs li").filter("[data-visible=true]");
+				let currentTabElement = $("#switch-tabs li.selected")[0];
+				let currentTabElementIndex = visibleTabElements.toArray().indexOf(currentTabElement);
+				let previousTabElementIndex = currentTabElementIndex - 1;
+				if (previousTabElementIndex < 0) previousTabElementIndex = visibleTabElements.length - 1;
+				visibleTabElements[previousTabElementIndex].click();
+				GameGlobals.uiFunctions.scrollToTabTop();
+			},
+
+			showNextTab: function () {
+				let visibleTabElements = $("#switch-tabs li").filter("[data-visible=true]");
+				let currentTabElement = $("#switch-tabs li.selected")[0];
+				let currentTabElementIndex = visibleTabElements.toArray().indexOf(currentTabElement);
+				let nextTabElementIndex = currentTabElementIndex + 1;
+				if (nextTabElementIndex >= visibleTabElements.length) nextTabElementIndex = 0;
+				visibleTabElements[nextTabElementIndex].click();
+				GameGlobals.uiFunctions.scrollToTabTop();
+			},
+
 			showFight: function () {
 				if (GameGlobals.gameState.uiStatus.isHidden) return;
 				this.showSpecialPopup("fight-popup");
@@ -1343,6 +1487,8 @@ define(['ash',
 				
 				if ($popup.parent().hasClass("popup-overlay")) $popup.unwrap();
 				$popup.wrap("<div class='popup-overlay popup-overlay-ingame' style='display:none'></div>");
+
+				GameGlobals.uiFunctions.popupManager.setDismissable($popup, options.isDismissable);
 				
 				let uiFunctions = this;
 				$(".popup-overlay").fadeIn(200, function () {

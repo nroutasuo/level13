@@ -24,6 +24,7 @@ define([
 	'game/systems/ui/UIOutUpgradesSystem',
 	'game/systems/ui/UIOutTribeSystem',
 	'game/systems/ui/UIOutMilestonesSystem',
+	'game/systems/ui/UIOutMetaPopupsSystem',
 	'game/systems/ui/UIOutFightSystem',
 	'game/systems/ui/UIOutLogSystem',
 	'game/systems/ui/UIOutManageSaveSystem',
@@ -89,6 +90,7 @@ define([
 	UIOutUpgradesSystem,
 	UIOutTribeSystem,
 	UIOutMilestonesSystem,
+	UIOutMetaPopupsSystem,
 	UIOutFightSystem,
 	UIOutLogSystem,
 	UIOutManageSaveSystem,
@@ -257,6 +259,7 @@ define([
 			this.engine.addSystem(new UIOutUpgradesSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutTribeSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutMilestonesSystem(), SystemPriorities.render);
+			this.engine.addSystem(new UIOutMetaPopupsSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutFightSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutLogSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutManageSaveSystem(), SystemPriorities.render);
