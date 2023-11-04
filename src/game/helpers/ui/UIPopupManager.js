@@ -215,6 +215,8 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 		dismissPopup: function ($popup) {
 			let dataDismissed = $popup.attr("data-dismissed");
 			if (dataDismissed == true || dataDismissed == "true") return;
+			let dataToggling = $popup.attr("data-toggling");
+			if (dataToggling == true || dataToggling == "true") return;
 			$popup.attr("data-dismissed", "true");
 			$popup.find(".button-popup-default").trigger("click");
 		},

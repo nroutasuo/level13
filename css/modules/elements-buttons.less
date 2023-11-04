@@ -225,8 +225,34 @@ button.btn-disabled-basic, button.btn-disabled-vision, button.btn-disabled-resou
 	color: @color-text-disabled !important;
 }
 
-// DETAIL LABEL
+// MISC ELEMENTS
 
 .button-detail-label {
 	margin: -4px 0 2px 0;
+}
+
+.hotkey-hint {
+	position: absolute;
+	top: 1px;
+	right: 1px;
+	text-transform: uppercase;
+	color: @color-text-secondary;
+	border: 1px solid @color-border-box-2;
+	border-radius: 0.25em;
+	height: 1em;
+	width: 1em;
+	font-size: @font-size-tiny;
+	pointer-events: none;
+}
+
+.container-btn-action .hotkey-hint {
+	display: none;
+}
+
+.container-btn-action:hover .hotkey-hint {
+    display: block;
+}
+
+button.btn-disabled .hotkey-hint {
+    display: none !important;
 }

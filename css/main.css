@@ -487,7 +487,7 @@ body.dark .centered {
   margin-right: auto;
 }
 body.dark .hidden {
-  display: none;
+  display: none !important;
 }
 body.dark .container-disabled {
   pointer-events: none;
@@ -980,6 +980,28 @@ body.dark button.btn-disabled-cooldown {
 }
 body.dark .button-detail-label {
   margin: -4px 0 2px 0;
+}
+body.dark .hotkey-hint {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  text-transform: uppercase;
+  color: #bbb;
+  border: 1px solid #3a3a3a;
+  border-radius: 0.25em;
+  height: 1em;
+  width: 1em;
+  font-size: 0.75rem;
+  pointer-events: none;
+}
+body.dark .container-btn-action .hotkey-hint {
+  display: none;
+}
+body.dark .container-btn-action:hover .hotkey-hint {
+  display: block;
+}
+body.dark button.btn-disabled .hotkey-hint {
+  display: none !important;
 }
 body.dark div.container-btn-action:hover + div.btn-callout,
 body.dark div.btn-callout:hover,
@@ -2693,6 +2715,17 @@ body.dark .game-stat-name {
 body.dark .game-stat-sub-category {
   text-align: left;
 }
+body.dark .settings-entry {
+  display: block;
+}
+body.dark .hotkey-list-item {
+  display: flex;
+  gap: 5px;
+}
+body.dark .hotkey-list-item-label {
+  min-width: 35%;
+  text-align: left;
+}
 body.dark #mobile-overlay {
   position: fixed;
   top: 0;
@@ -2953,7 +2986,7 @@ body.sunlit .centered {
   margin-right: auto;
 }
 body.sunlit .hidden {
-  display: none;
+  display: none !important;
 }
 body.sunlit .container-disabled {
   pointer-events: none;
@@ -3446,6 +3479,28 @@ body.sunlit button.btn-disabled-cooldown {
 }
 body.sunlit .button-detail-label {
   margin: -4px 0 2px 0;
+}
+body.sunlit .hotkey-hint {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  text-transform: uppercase;
+  color: #777;
+  border: 1px solid #aaa;
+  border-radius: 0.25em;
+  height: 1em;
+  width: 1em;
+  font-size: 0.75rem;
+  pointer-events: none;
+}
+body.sunlit .container-btn-action .hotkey-hint {
+  display: none;
+}
+body.sunlit .container-btn-action:hover .hotkey-hint {
+  display: block;
+}
+body.sunlit button.btn-disabled .hotkey-hint {
+  display: none !important;
 }
 body.sunlit div.container-btn-action:hover + div.btn-callout,
 body.sunlit div.btn-callout:hover,
@@ -5157,6 +5212,17 @@ body.sunlit .game-stat-name {
   text-align: left;
 }
 body.sunlit .game-stat-sub-category {
+  text-align: left;
+}
+body.sunlit .settings-entry {
+  display: block;
+}
+body.sunlit .hotkey-list-item {
+  display: flex;
+  gap: 5px;
+}
+body.sunlit .hotkey-list-item-label {
+  min-width: 35%;
   text-align: left;
 }
 body.sunlit #mobile-overlay {

@@ -86,6 +86,7 @@ define(['ash',], function (Ash) {
 
 		// system events
 		slowUpdateSignal: new Ash.Signals.Signal(),
+		settingsChangedSignal: new Ash.Signals.Signal(),
 		changelogLoadedSignal: new Ash.Signals.Signal(),
 
 		add: function (system, signal, listener, priority) {
