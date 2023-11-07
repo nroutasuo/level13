@@ -762,6 +762,19 @@ define([
 						}
 					}
 				}
+				
+					
+				if (typeof requirements.campInventoryFull != "undefined") {
+					let requiredValue = requirements.campInventoryFull;
+					let currentValue = GameGlobals.campHelper.isCampInventoryFull(sector);
+					if (requiredValue !== currentValue) {
+						if (currentValue) {
+							return { value: 0, reason: "Camp inventory is full." };
+						} else {
+							return { value: 0, reason: "Camp inventory is not full." };
+						}
+					}
+				}
 
 				if (requirements.player) {
 					if (typeof requirements.affectedByHazard !== "undefined") {

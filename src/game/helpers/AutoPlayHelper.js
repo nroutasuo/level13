@@ -41,13 +41,11 @@ define(['ash',
 			var playerPosition = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
 			var itemsComponent = GameGlobals.movementHelper.itemsNodes.head.items;
 			var perksComponent = GameGlobals.playerActionFunctions.playerStatsNodes.head.entity.get(PerksComponent);
-			var campResources = GameGlobals.playerActionFunctions.nearestCampNodes.head ? GameGlobals.resourcesHelper.getCurrentCampStorage(GameGlobals.playerActionFunctions.nearestCampNodes.head.entity) : null;
 
 			var injuries = perksComponent.getPerksByType(PerkConstants.perkTypes.injury);
 			var hasInjuries = injuries.length > 0;
 			var hasHospital = this.getTotalImprovementsCount(improvementNames.hospital) > 0;
 			var prioritizeHeal = hasInjuries && hasHospital;
-			var prioritizeScouting = campResources ? campResources.isStocked(GameGlobals.gameState) : false;
 			var hasLockPick = itemsComponent.getCountById("exploration_1", true);
 
 			// 1. check sectors

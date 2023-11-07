@@ -411,6 +411,12 @@ define(['ash'], function (Ash) {
 				logMessage: "Found some silver coins. Some traders accept these.",
 				conditions: { playerInventory: { silver: [1, -1] } }
 			},
+			TUTORIAL_WARNING_STORAGE_FULL: {
+				triggers: [ "update" ],
+				repeats: "COOLDOWN",
+				logMessage: "Storage is full.",
+				conditions: { inCamp: true, campInventoryFull: true } 
+			},
 		},
 
 	};

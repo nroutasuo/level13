@@ -46,6 +46,7 @@ define([
 		},
 		
 		registerListeners: function () {
+			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, function () { this.onTutorialTrigger("update"); });
 			GlobalSignals.add(this, GlobalSignals.sectorScavengedSignal, function () { this.onTutorialTrigger("action_scavenge"); });
 			GlobalSignals.add(this, GlobalSignals.sectorScoutedSignal, function () { this.onTutorialTrigger("action_scout"); });
 			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, function () { this.onTutorialTrigger("action_build"); });

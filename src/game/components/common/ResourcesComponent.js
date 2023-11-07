@@ -58,16 +58,13 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			}
 		},
 		
-		isStocked: function (gameState) {
-			var threshold = this.storageCapacity;
-			for (var key in resourceNames) {
-				var name = resourceNames[key];
-				if (!gameState.unlockedFeatures["resource_" + name])
-					continue;
-				if (this.resources.getResource(name) < threshold)
-					return false;
+		isAtCapacity: function () {
+			let threshold = this.storageCapacity;
+			for (let key in resourceNames) {
+				let name = resourceNames[key];
+				if (this.resources.getResource(name) >= threshold) return true;
 			}
-			return true;
+			return false;
 		},
 		
 		getSaveKey: function () {

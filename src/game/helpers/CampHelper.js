@@ -67,6 +67,11 @@ define([
 			}
 			return result;
 		},
+
+		isCampInventoryFull: function (sector) {
+			let currentStorage = sector ? GameGlobals.resourcesHelper.getCurrentCampStorage(sector) : GameGlobals.resourcesHelper.getCurrentStorage();
+			return currentStorage.isAtCapacity();
+		},
 		
 		getAvailableLuxuryResources: function (campEntity) {
 			let result = [];
