@@ -3,6 +3,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 	let LogConstants = {
 
 		MSG_VISIBILITY_DEFAULT: "MSG_VISIBILITY_DEFAULT",
+		MGS_VISIBILITY_LEVEL: "MGS_VISIBILITY_LEVEL",
 		MSG_VISIBILITY_PRIORITY: "MSG_VISIBILITY_PRIORITY",
 		MSG_VISIBILITY_GLOBAL: "MSG_VISIBILITY_GLOBAL",
 

@@ -101,12 +101,12 @@ define(['ash',
 			this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
 		},
 
-		addLogMessage: function (msgID, msg, replacements, values, actionPosition) {
+		addLogMessage: function (msgID, msg, replacements, values, actionPosition, visibility) {
 			let playerPosition = this.playerPositionNodes.head.position;
 			let logComponent = this.playerPositionNodes.head.entity.get(LogMessagesComponent);
-			let visibility = LogConstants.MSG_VISIBILITY_DEFAULT;
-
+			
 			actionPosition = actionPosition || playerPosition;
+			visibility = visibility || LogConstants.MSG_VISIBILITY_DEFAULT;
 
 			let isVisibleImmediately = actionPosition.equals(playerPosition);
 
@@ -1370,7 +1370,7 @@ define(['ash',
 			gtag('event', 'build_camp_time', { event_category: 'game_time', event_label: campOrdinal, value: GameGlobals.gameState.playTime });
 			gtag('set', { 'max_camp': GameGlobals.gameState.numCamps });
 
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP, "Built a camp.");
+			this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP, "Built a camp.", null, null, null, LogConstants.MGS_VISIBILITY_LEVEL);
 			if (position.level == 15) {
 				this.addLogMessage(LogConstants.getUniqueID(), "It will be difficult to trade resources with camps from below Level 14 from here.");
 			}

@@ -249,18 +249,20 @@ define([
 
 		endEvent: function (campNode, event) {
 			log.i("Ending " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ")");
-			var campTimers = campNode.entity.get(CampEventTimersComponent);
+			let campTimers = campNode.entity.get(CampEventTimersComponent);
 			campTimers.onEventEnded(event);
 			this.scheduleEvent(campNode, event);
 
 			if (!this.hasCampEvent(campNode, event)) return;
 
-			var logMsg;
-			var awayLogMsg;
-			var replacements = [];
-			var values = [];
+			let logMsg;
+			let replacements = [];
+			let values = [];
+			let visibility = LogConstants.MSG_VISIBILITY_DEFAULT;
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.trader:
+					let traderComponent = campNode.entity.get(TraderComponent);
+					let isDismissed = traderComponent && traderComponent.isDismissed;
 					campNode.entity.remove(TraderComponent);
 					logMsg = "Trader leaves.";
 					break;
@@ -276,37 +278,34 @@ define([
 
 				case OccurrenceConstants.campOccurrenceTypes.raid:
 					this.endRaid(campNode.entity);
-					var raidComponent = campNode.entity.get(RaidComponent);
-					var lostResources = raidComponent.resourcesLost;
-					var raidVO = new RaidVO(raidComponent);
+					let raidComponent = campNode.entity.get(RaidComponent);
+					let lostResources = raidComponent.resourcesLost;
+					let raidVO = new RaidVO(raidComponent);
+
 					if (raidComponent.victory) {
 						logMsg = "Raid over. We drove the attackers away.";
-						awayLogMsg = "There has been a raid, but the camp was defended.";
 					} else {
-						awayLogMsg = "There has been a raid.";
 						logMsg = "Raid over.";
 						if (lostResources.getTotal() > 0) {
 							var lostResTxt = TextConstants.getLogResourceText(lostResources);
 							logMsg += " We lost " + lostResTxt.msg + ".";
-							awayLogMsg += " We lost " + lostResTxt.msg + ".";
 							replacements = replacements.concat(lostResTxt.replacements);
 							values = values.concat(lostResTxt.values);
 						} else {
 							logMsg += " There was nothing left to steal.";
-							awayLogMsg += " There was nothing left to steal.";
 						}
 						
 						if (raidComponent.defendersLost > 0) {
 							logMsg += " " + raidComponent.defendersLost + " defenders were killed.";
-							awayLogMsg += " " + raidComponent.defendersLost + " defenders were killed.";
 						}
 
 						GameGlobals.gameState.increaseGameStatSimple("numRaidsLost");
+
+						visibility = LogConstants.MSG_VISIBILITY_PRIORITY;
 					}
 					
 					if (raidComponent.damagedBuilding != null) {
 						logMsg += " A building was damaged.";
-						awayLogMsg += " A building was damaged.";
 					}
 
 					let raidEntry = { level: campNode.position.level, timeStamp: raidVO.timeStamp };
@@ -317,12 +316,7 @@ define([
 					break;
 			}
 
-			var playerInCamp = this.isPlayerInCamp(null);
-			if (playerInCamp && logMsg) {
-				this.addLogMessage(logMsg, replacements, values, campNode);
-			} else if (!playerInCamp && awayLogMsg) {
-				this.addLogMessage(awayLogMsg, replacements, values, campNode);
-			}
+			this.addLogMessage(logMsg, replacements, values, campNode, visibility);
 			
 			GlobalSignals.campEventEndedSignal.dispatch();
 			GlobalSignals.saveGameSignal.dispatch(GameConstants.SAVE_SLOT_DEFAULT, false);
@@ -370,16 +364,13 @@ define([
 			}
 			
 			campTimers.onEventStarted(event, duration);
-			if (this.isNew(event))
-				GameGlobals.gameState.unlockedFeatures.events.push(event);
+			if (this.isNew(event)) GameGlobals.gameState.unlockedFeatures.events.push(event);
 			log.i("Start " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ") (" + duration + "s)");
 			
 			GameGlobals.gameState.increaseGameStatKeyed("numCampEventsByType", event);
 			GlobalSignals.campEventStartedSignal.dispatch();
 
-			if (this.isPlayerInCamp(campNode) && logMsg) {
-				this.addLogMessage(logMsg, null, null, campNode);
-			}
+			this.addLogMessage(logMsg, null, null, campNode);
 		},
 		
 		skipEvent: function (campNode, event) {
@@ -635,10 +626,10 @@ define([
 			return GameGlobals.campHelper.getCampRaidDanger(campSector);
 		},
 		
-		addLogMessage: function (msg, replacements, values, camp) {
+		addLogMessage: function (msg, replacements, values, camp, visibility) {
 			let logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
 			let campPos = camp.entity.get(PositionComponent);
-			let visibility = LogConstants.MSG_VISIBILITY_PRIORITY;
+			visibility = visibility || LogConstants.MSG_VISIBILITY_DEFAULT;
 			logComponent.addMessage(LogConstants.MSG_ID_CAMP_EVENT, msg, replacements, values, campPos, visibility, true);
 		}
 

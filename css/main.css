@@ -2048,12 +2048,14 @@ body.dark .faq-category h3 {
 body.dark #log {
   background: none;
 }
-body.dark #log ul {
+body.dark #log ul,
+body.dark #log-latest ul {
   list-style-type: none;
   padding-left: 0;
   margin: 0;
 }
-body.dark #log ul li {
+body.dark #log ul li,
+body.dark #log-latest ul li {
   margin: 0px 0px 0.8em 0px;
 }
 body.dark #log .msg {
@@ -4547,12 +4549,14 @@ body.sunlit .faq-category h3 {
 body.sunlit #log {
   background: none;
 }
-body.sunlit #log ul {
+body.sunlit #log ul,
+body.sunlit #log-latest ul {
   list-style-type: none;
   padding-left: 0;
   margin: 0;
 }
-body.sunlit #log ul li {
+body.sunlit #log ul li,
+body.sunlit #log-latest ul li {
   margin: 0px 0px 0.8em 0px;
 }
 body.sunlit #log .msg {

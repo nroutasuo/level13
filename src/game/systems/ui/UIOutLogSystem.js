@@ -1,11 +1,20 @@
 define([
-	'ash', 'utils/UIList', 'game/GameGlobals', 'game/GlobalSignals', 'game/nodes/LogNode', 'game/constants/UIConstants', 'game/vos/PositionVO'], 
-function (Ash, UIList, GameGlobals, GlobalSignals, LogNode, UIConstants, PositionVO) {
-	
+	'ash', 
+	'utils/UIList', 
+	'game/GameGlobals', 
+	'game/GlobalSignals', 
+	'game/constants/LogConstants',
+	'game/nodes/LogNode', 
+	'game/nodes/PlayerPositionNode', 
+	'game/constants/UIConstants', 
+	'game/vos/PositionVO'],
+function (Ash, UIList, GameGlobals, GlobalSignals, LogConstants, LogNode, PlayerPositionNode, UIConstants, PositionVO) {
+
 	var UIOutLogSystem = Ash.System.extend({
 	
 		gameState: null,
 		logNodes: null,
+		playerPositionNodes: null,
 		
 		lastUpdateTimeStamp: 0,
 		updateFrequency: 1000 * 15,
@@ -15,18 +24,18 @@ function (Ash, UIList, GameGlobals, GlobalSignals, LogNode, UIConstants, Positio
 		},
 
 		addToEngine: function (engine) {
-			var logSystem = this;
 			this.logNodes = engine.getNodeList(LogNode);
-			this.onPlayerPositionChanged = function(playerPosition) {
-				logSystem.updatePendingMessages(playerPosition);
-			};
-			GlobalSignals.playerPositionChangedSignal.add(this.onPlayerPositionChanged);
+			this.playerPositionNodes = engine.getNodeList(PlayerPositionNode);
+
+			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, function (position) { this.onPlayerPositionChanged(position); });
+
 			this.updateMessages();
 		},
 
 		removeFromEngine: function (engine) {
 			this.logNodes = null;
-			GlobalSignals.playerPositionChangedSignal.remove(this.onPlayerPositionChanged);
+			this.playerPositionNodes = null;
+			GlobalSignals.removeAll(this);
 		},
 
 		initElements: function () {
@@ -41,7 +50,7 @@ function (Ash, UIList, GameGlobals, GlobalSignals, LogNode, UIConstants, Positio
 			var timeStamp = new Date().getTime();
 			var isTime = timeStamp - this.lastUpdateTimeStamp > this.updateFrequency;
 			
-			var hasNewMessages = false;
+			let hasNewMessages = false;
 			for (var node = this.logNodes.head; node; node = node.next) {
 				hasNewMessages = hasNewMessages || node.logMessages.hasNewMessages;
 				node.logMessages.hasNewMessages = false;
@@ -69,21 +78,72 @@ function (Ash, UIList, GameGlobals, GlobalSignals, LogNode, UIConstants, Positio
 		},
 		
 		updateMessages: function () {
-			var messages = [];
-			for (var node = this.logNodes.head; node; node = node.next) {
+			this.pruneMessages();
+
+			let messages = [];
+			for (let node = this.logNodes.head; node; node = node.next) {
 				messages = messages.concat(node.logMessages.messages);
 				node.logMessages.hasNewMessages = false;
 			}
-			this.pruneMessages();
+			
 			this.updateMessageList(messages.reverse());
 		},
 	
 		updateMessageList: function (messages) {
-			let newItems = UIList.update(this.logList, messages);
-			
-			UIList.update(this.logListLatest, newItems.map(li => li.data));
+			if (!this.playerPositionNodes.head) return;
 
-			for (var i = 0; i < newItems.length; i++) {
+			let playerPosition = this.playerPositionNodes.head.position;
+
+			if (!playerPosition) return;
+
+			let showMessage = function (message) {
+				if (!message.position) return true;
+
+				if (message.visibility == LogConstants.MSG_VISIBILITY_GLOBAL) {
+					return true;
+				}
+
+				if (message.visibility == LogConstants.MSG_VISIBILITY_PRIORITY) {
+					return message.position.inCamp == playerPosition.inCamp;
+				}
+
+				if (message.visibility == LogConstants.MGS_VISIBILITY_LEVEL) {
+					return message.position.level == playerPosition.level;
+				}
+
+				// default priority:
+				if (playerPosition.inCamp) {
+					return message.position.inCamp == playerPosition.inCamp && message.position.level == playerPosition.level;
+				} else {
+					return message.position.inCamp == playerPosition.inCamp;
+				}
+			};
+
+			let shownMessages = messages.filter(m => showMessage(m));
+			let hiddenMessages = messages.filter(m => shownMessages.indexOf(m) < 0);
+
+			let newItems = UIList.update(this.logList, shownMessages);
+			let latestMessages = newItems.map(li => li.data).filter(m => !m.hasBeenHiddenAfterShown && !m.loadedFromSave);
+			
+			UIList.update(this.logListLatest, latestMessages);
+
+			for (let i = 0; i < shownMessages.length; i++) {
+				if (!shownMessages[i].hasBeenShown) {
+					log.i("mark as shown: " + shownMessages[i].message);
+					shownMessages[i].hasBeenShown = true;
+				}
+			}
+
+			for (let i = 0; i < hiddenMessages.length; i++) {
+				if (!hiddenMessages[i].hasBeenHiddenAfterShown) {
+					if (hiddenMessages[i].hasBeenShown) {
+						log.i("mark as hidden after shown: " + hiddenMessages[i].message);
+						hiddenMessages[i].hasBeenHiddenAfterShown = true;
+					}
+				}
+			}
+
+			for (let i = 0; i < newItems.length; i++) {
 				newItems[i].$root.toggle(false);
 				newItems[i].$root.fadeIn(600);
 			}
@@ -115,7 +175,10 @@ function (Ash, UIList, GameGlobals, GlobalSignals, LogNode, UIConstants, Positio
 				positionText += ")"
 			}
 
-			li.$root.toggleClass("log-loaded", data.loadedFromSave);
+			li.$root.toggleClass("log-loaded", (data.loadedFromSave || (data.hasBeenShown == true && data.hasBeenHiddenAfterShown == true)));
+			li.$root.attr("data-loadedFromSave", data.loadedFromSave);
+			li.$root.attr("data-hasBeenShown", data.hasBeenHiddenAfterShown);
+			li.$root.attr("data-hasBeenHiddenAfterShown", data.hasBeenHiddenAfterShown);
 			li.$spanMsg.text(data.text);
 			li.$spanTime.text(UIConstants.getTimeSinceText(data.time) + " ago");
 			li.$spanLevel.toggle(hasPosition);
@@ -129,17 +192,42 @@ function (Ash, UIList, GameGlobals, GlobalSignals, LogNode, UIConstants, Positio
 		},
 		
 		pruneMessages: function () {
-			var maxMessages = 30;
-			var messagesToPrune = 10;
-					
-			var nodeMessages;
-			for (var node = this.logNodes.head; node; node = node.next) {
-				nodeMessages = node.logMessages.messages;
-				if (nodeMessages.length > maxMessages) {
-					nodeMessages.splice(0, nodeMessages.length - maxMessages + messagesToPrune);
+			let maxMessagesByKey = 20;
+			let getVisibilityKey = function (message) {
+				if (!message.position || message.visibility == LogConstants.MSG_VISIBILITY_GLOBAL) return "global";
+				if (!message.position.inCamp) return "out";
+				return message.position.level;
+			}
+
+			for (let node = this.logNodes.head; node; node = node.next) {
+				let nodeMessages = node.logMessages.messages;
+				let messagesToPrune = [];
+				let messagesByKey = {};
+
+				for (let i = nodeMessages.length - 1; i >= 0; i--) {
+					let message = nodeMessages[i];
+					let k = getVisibilityKey(message);
+					if (!messagesByKey[k]) messagesByKey[k] = [];
+
+					if (messagesByKey[k].length > maxMessagesByKey) {
+						messagesToPrune.push(message);
+					}
+
+					messagesByKey[k].push(message);
+				}
+
+				for (let i = 0; i < messagesToPrune.length; i++) {
+					let messageToPrune = messagesToPrune[i];
+					let index = nodeMessages.indexOf(messageToPrune);
+					nodeMessages.splice(index, 1);
 				}
 			}
 		},
+
+		onPlayerPositionChanged: function (position) {
+			this.updatePendingMessages(position);
+			this.updateMessages();
+		}
 
 	});
 

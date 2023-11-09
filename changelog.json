@@ -19,6 +19,14 @@
 					"summary": "Improve page structure for screen readers"
 				},
 				{
+					"type": "UI",
+					"summary": "Make hotkeys more visible and add settings to turn them on / off"
+				},
+				{
+					"type": "UI",
+					"summary": "Change the log to only show messages relevant for current location"
+				},
+				{
 					"type": "GD",
 					"summary": "Add a popup with some game stats"
 				},

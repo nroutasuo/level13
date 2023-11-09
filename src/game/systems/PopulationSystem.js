@@ -240,13 +240,12 @@ define([
 		},
 		
 		logChangePopulation: function (campPosition, isIncrease) {
-			var playerPosition = this.playerNodes.head.entity.get(PositionComponent);
-			if (playerPosition.level === campPosition.level && playerPosition.sectorId() === campPosition.sectorId()) {
-				if (isIncrease) {
-					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_POPULATION_NATURAL, "A stranger showed up.");
-				} else {
-					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_POPULATION_NATURAL, "An inhabitant packed their belongings and left.");
-				}
+			let pos = campPosition.getPosition();
+			pos.inCamp = true;
+			if (isIncrease) {
+				GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.MSG_ID_POPULATION_NATURAL, "A stranger showed up.", pos);
+			} else {
+				GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.MSG_ID_POPULATION_NATURAL, "An inhabitant packed their belongings and left.", pos);
 			}
 		},
 		
