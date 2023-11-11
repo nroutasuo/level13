@@ -1483,6 +1483,8 @@ define(['ash',
 			},
 
 			showSpecialPopup: function (popupID, options) {
+				options = options || {};
+				
 				log.i("[ui] showSpecialPopup " + popupID);
 				let $popup = $("#" + popupID);
 				if ($popup.is(":visible")) return;
