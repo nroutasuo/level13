@@ -1,5 +1,6 @@
 define([
 	'ash',
+	'utils/UIList',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/ColorConstants',
@@ -32,7 +33,9 @@ define([
 	'utils/UIState',
 	'utils/UIAnimations'
 ], function (Ash,
-	GameGlobals, GlobalSignals, ColorConstants, GameConstants, CampConstants, LevelConstants, UIConstants, FollowerConstants, ItemConstants, FightConstants, PerkConstants, UpgradeConstants, PlayerStatConstants,
+	UIList, 
+	GameGlobals, GlobalSignals, 
+	ColorConstants, GameConstants, CampConstants, LevelConstants, UIConstants, FollowerConstants, ItemConstants, FightConstants, PerkConstants, UpgradeConstants, PlayerStatConstants,
 	SaveSystem,
 	PlayerStatsNode, AutoPlayNode, PlayerLocationNode, TribeUpgradesNode, DeityNode,
 	BagComponent,
@@ -251,6 +254,9 @@ define([
 			});
 			
 			this.themedIcons = themedIcons;
+
+			// perks list
+			this.perksList = UIList.create(this, $(".player-perks-list"), this.createPerkListItem, this.updatePerkListItem, this.isPerkListItemDataEqual);
 		},
 
 		generateStatsCallouts: function () {
@@ -610,36 +616,13 @@ define([
 			if (!this.playerStatsNodes.head) return;
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 
-			let isSmallLayout = this.elements.body.hasClass("layout-small");
-			var isResting = this.isResting();
-			var perksComponent = this.playerStatsNodes.head.perks;
-			var perks = perksComponent.getAll();
-			var now = new Date().getTime();
-			let $container = $(".player-perks-list");
+			let perksComponent = this.playerStatsNodes.head.perks;
+			let perks = perksComponent.getAll();
+			let newItems = UIList.update(this.perksList, perks);
 
-			$container.empty();
-			for (let i = 0; i < perks.length; i++) {
-				let perk = perks[i];
-				let desc = this.getPerkDescription(perk, isResting);
-				let url = perk.icon;
-				let isNegative = PerkConstants.isNegative(perk);
-				let liClass = isNegative ? "li-item-negative" : "li-item-positive";
-				let calloutTargetClasses = isSmallLayout ? "info-callout-target info-callout-target-small" : "info-callout-target info-callout-target-side";
-				liClass += " item item-equipped";
-				let li =
-					"<li class='" + liClass + " perk-li-" + perk.id + "'>" +
-					"<div class='" + calloutTargetClasses + "' description='" + desc + "'>" +
-					"<img src='" + url + "' alt='" + perk.name + "'/>" +
-					"</div></li>";
-
-				$li = $(li);
-				$container.append($li);
-				let diff = now - perk.addTimestamp;
-				let animate = diff < 100;
-				if (animate) {
-					$li.toggle(false);
-					$li.fadeIn(500);
-				}
+			for (let i = 0; i < newItems.length; i++) {
+				newItems[i].$root.toggle(false);
+				newItems[i].$root.fadeIn(500);
 			}
 
 			GameGlobals.uiFunctions.generateCallouts(".player-perks-list");
@@ -684,30 +667,56 @@ define([
 		},
 
 		updatePerks: function () {
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
+
 			let perksComponent = this.playerStatsNodes.head.perks;
 			let perks = perksComponent.getAll();
+			UIList.update(this.perksList, perks);
+		},
+		
+		createPerkListItem: function () {
+			let li = {};
+			li.$root = $("<li class='item item-equipped'><div class='info-callout-target'><img /></div></li>");
+			li.$calloutTarget = li.$root.find("div");
+			li.$icon = li.$root.find("img");
+
+			return li;
+		},
+		
+		updatePerkListItem: function (li, data) {
+			let perk = data;
+
+			let isSmallLayout = this.elements.body.hasClass("layout-small");
 			let isResting = this.isResting();
+			let now = new Date().getTime();			
 			let sunlit = this.elements.body.hasClass("sunlit");
+			let isNegative = PerkConstants.isNegative(perk);
+			let backgroundColor = ColorConstants.getColor(sunlit, "bg_box_1");
+			
+			let fillColor = isNegative ? ColorConstants.getColor(sunlit, "bg_warning_stronger") : ColorConstants.getColor(sunlit, "bg_element_1");
+			let warningPercentage = perk.removeTimer > 0 ? 
+				perk.effectFactor * 100:
+				PerkConstants.getPerkActivePercent(perk) * 100;
+			let backgroundValue = "conic-gradient(" + fillColor + " " + warningPercentage + "%, " + backgroundColor + " 0%)";
 
-			for (let i = 0; i < perks.length; i++) {
-				let perk = perks[i];
-				let desc = this.getPerkDescription(perk, isResting);
-				let isNegative = PerkConstants.isNegative(perk);
+			li.$root.toggleClass("li-item-negative", isNegative);
+			li.$root.toggleClass("li-item-positive", !isNegative);
+			li.$root.attr("data-percentage", warningPercentage);
+			li.$root.css("background", backgroundValue);
 
-				$(".perk-li-" + perk.id + " .info-callout-target").attr("description", desc);
-				$(".perk-li-" + perk.id + " .info-callout-target").toggleClass("event-starting", perk.startTimer >= 0);
-				$(".perk-li-" + perk.id + " .info-callout-target").toggleClass("event-ending", perk.removeTimer >= 0 && perk.removeTimer < 5);
-				
-				let backgroundColor = ColorConstants.getColor(sunlit, "bg_box_1");
-				let fillColor = isNegative ? ColorConstants.getColor(sunlit, "bg_warning_stronger") : ColorConstants.getColor(sunlit, "bg_element_1");
-				let warningPercentage = perk.removeTimer > 0 ? 
-					perk.effectFactor * 100:
-					PerkConstants.getPerkActivePercent(perk) * 100;
-				let backgroundValue = "conic-gradient(" + fillColor + " " + warningPercentage + "%, " + backgroundColor + " 0%)";
+			let desc = this.getPerkDescription(perk, isResting);
+			li.$calloutTarget.attr("description", desc);
+			li.$calloutTarget.toggleClass("event-starting", perk.startTimer >= 0);
+			li.$calloutTarget.toggleClass("event-ending", perk.removeTimer >= 0 && perk.removeTimer < 5);
+			li.$calloutTarget.toggleClass("info-callout-target-small", isSmallLayout);
+			li.$calloutTarget.toggleClass("info-callout-target-side", !isSmallLayout);
 
-				$(".perk-li-" + perk.id).attr("data-percentage", warningPercentage);
-				$(".perk-li-" + perk.id).css("background", backgroundValue);
-			}
+			li.$icon.attr("src", perk.icon);
+			li.$icon.attr("alt", perk.name);
+		},
+		
+		isPerkListItemDataEqual: function (d1, d2) {
+			return d1.id == d2.id;
 		},
 		
 		getPerkDescription: function (perk, isResting) {
