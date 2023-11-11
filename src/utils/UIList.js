@@ -9,12 +9,14 @@ define(['game/GameGlobals'], function (GameGlobals) {
 
 	let UIList = {
 		
+		// owner: object that controls the list - will be used to invoke list functions with owner as "this"
 		// container: element inside which list items will be added
 		// fnCreateItem: function () - should return new item that has a member called $root which will be added to container
 		// fnUpdateItem: function (li, data) - should update the given list item with the given data
 		// fnIsDataEqual: function (data1, data2) - optional - defines if a data is the same (no update needed)
-		create: function (container, fnCreateItem, fnUpdateItem, fnIsDataEqual) {
+		create: function (owner, container, fnCreateItem, fnUpdateItem, fnIsDataEqual) {
 			let list = {};
+			list.owner = owner;
 			list.$container = $(container);
 			list.data = [];
 			list.items = [];
@@ -27,45 +29,68 @@ define(['game/GameGlobals'], function (GameGlobals) {
 		// list: a data structure returned by create
 		// data: an array of data entries that the list's fnUpdateItem and fnIsDataEqual can use
 		update: function (list, data) {
+			let newIndices = [];
 			let newItems = [];
 			let createdItems = [];
+
+			let foundDifferingIndex = false;
+
+			let li;
+			let newIndex;
 			
 			for (let i = 0; i < list.items.length; i++) {
-				let li = list.items[i];
-				let newIndex = this.getItemIndex(list, li, data);
-				
-				if (newIndex >= 0) {
-					li.$root.detach();
-					newItems[newIndex] = li;
-				} else {
-					li.data = null;
-					li.$root.remove();
+				li = list.items[i];
+				newIndex = this.getItemIndex(list, li, data);
+				if (newIndex != i) {
+					foundDifferingIndex = true;
 				}
+				newIndices[i] = newIndex;
 			}
-			
-			// go through data and add any missing items
-			for (let i = 0; i < data.length; i++) {
-				let d = data[i]
-				let li = newItems[i];
-				if (li) {
-					list.fnUpdateItem(li, d);
-				} else  {
-					li = list.fnCreateItem();
-					list.fnUpdateItem(li, d);
-					newItems[i] = li;
-					createdItems.push(li);
+
+			let keepItems = list.items.length == data.length && !foundDifferingIndex;
+
+			if (keepItems) {
+				for (let i = 0; i < list.items.length; i++) {
+					list.fnUpdateItem.apply(list.owner, [ list.items[i], data[i] ]);
+				}
+			} else {
+				for (let i = 0; i < list.items.length; i++) {
+					li = list.items[i];
+					newIndex = newIndices[i];
+					
+					if (newIndex >= 0) {
+						li.$root.detach();
+						newItems[newIndex] = li;
+					} else {
+						li.data = null;
+						li.$root.remove();
+					}
 				}
 				
-				li.data = data[i];
+				// go through data and add any missing items
+				for (let i = 0; i < data.length; i++) {
+					let d = data[i]
+					let li = newItems[i];
+					if (li) {
+						list.fnUpdateItem.apply(list.owner, [li, d]);
+					} else  {
+						li = list.fnCreateItem.apply(list.owner);
+						list.fnUpdateItem.apply(list.owner, [li, d]);
+						newItems[i] = li;
+						createdItems.push(li);
+					}
+					
+					li.data = data[i];
+				}
+				
+				// append and save new items
+				list.items = newItems;
+				let newRoots = newItems.map(item => item.$root);
+				list.$container.append(newRoots);
+				
+				// update any buttons (needs to be after they've been added to the DOM)
+				this.initButtonsInCreatedItems(list, createdItems);
 			}
-			
-			// append and save new items
-			list.items = newItems;
-			let newRoots = newItems.map(item => item.$root);
-			list.$container.append(newRoots);
-			
-			// update any buttons (needs to be after they've been added to the DOM)
-			this.initButtonsInCreatedItems(list, createdItems);
 
 			return createdItems;
 		},
@@ -83,7 +108,7 @@ define(['game/GameGlobals'], function (GameGlobals) {
 			
 			for (let i = 0; i < createdItems.length; i++) {
 				let li = createdItems[i];
-				list.fnUpdateItem(li, li.data);
+				list.fnUpdateItem.apply(list.owner, [ li, li.data ]);
 			}
 		},
 		
@@ -99,7 +124,7 @@ define(['game/GameGlobals'], function (GameGlobals) {
 		
 		isDataEqual: function (list, d1, d2) {
 			if (list.fnIsDataEqual) {
-				return list.fnIsDataEqual(d1, d2);
+				return list.fnIsDataEqual.apply(list.owner, [d1, d2]);
 			} else {
 				return d1 === d2;
 			}

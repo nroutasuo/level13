@@ -72,7 +72,7 @@
 		},
 		
 		initElements: function () {
-			this.campActionList = UIList.create($("#in-occurrences-building-container"), this.createCampActionListItem, this.updateCampActionListItem, this.isCampActionListItemDataEqual);
+			this.campActionList = UIList.create(this, $("#in-occurrences-building-container"), this.createCampActionListItem, this.updateCampActionListItem, this.isCampActionListItemDataEqual);
 		},
 
 		addToEngine: function (engine) {

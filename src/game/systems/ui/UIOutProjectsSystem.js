@@ -29,10 +29,10 @@ define([
 			this.elements.bubble = $("#switch-projects .bubble");
 			this.elements.hiddenImprovementsMsg = $("#in-improvements-hidden-message");
 			
-			this.availableLevelProjectList = UIList.create("#in-improvements-level table", this.createProjectListItem, (li, project) => { this.updateProjectListItem(li, project, true) }, this.isProjectListItemDataEqual);
-			this.availableColonyProjectList = UIList.create("#in-improvements-colony table", this.createProjectListItem, (li, project) => { this.updateProjectListItem(li, project, true) }, this.isProjectListItemDataEqual);
-			this.builtLevelProjectList = UIList.create("#in-improvements-level-built table", this.createProjectListItem, (li, project) => { this.updateProjectListItem(li, project, false) }, this.isProjectListItemDataEqual);
-			this.builtColonyProjectList = UIList.create("#in-improvements-colony-built table", this.createProjectListItem, (li, project) => { this.updateProjectListItem(li, project, false) }, this.isProjectListItemDataEqual);
+			this.availableLevelProjectList = UIList.create(this, "#in-improvements-level table", this.createProjectListItem, (li, project) => { this.updateProjectListItem(li, project, true) }, this.isProjectListItemDataEqual);
+			this.availableColonyProjectList = UIList.create(this, "#in-improvements-colony table", this.createProjectListItem, (li, project) => { this.updateProjectListItem(li, project, true) }, this.isProjectListItemDataEqual);
+			this.builtLevelProjectList = UIList.create(this, "#in-improvements-level-built table", this.createProjectListItem, (li, project) => { this.updateProjectListItem(li, project, false) }, this.isProjectListItemDataEqual);
+			this.builtColonyProjectList = UIList.create(this, "#in-improvements-colony-built table", this.createProjectListItem, (li, project) => { this.updateProjectListItem(li, project, false) }, this.isProjectListItemDataEqual);
 			
 			let sys = this;
 			$("#in-improvements-reset-hidden").click(function () {

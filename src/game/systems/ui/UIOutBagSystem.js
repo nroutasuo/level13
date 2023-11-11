@@ -125,7 +125,7 @@ define([
 			let fnIsDataEqual = function (a, b) {
 				return a.id == b.id;
 			};
-			this.useItemButtonList = UIList.create(container, fnCreateItem, fnUpdateItem, fnIsDataEqual);
+			this.useItemButtonList = UIList.create(this, container, fnCreateItem, fnUpdateItem, fnIsDataEqual);
 		},
 		
 		initRepairItemButtons: function () {
@@ -146,7 +146,7 @@ define([
 			let fnIsDataEqual = function (a, b) {
 				return a.itemID == b.itemID;
 			};
-			this.repairItemButtonList = UIList.create(container, fnCreateItem, fnUpdateItem, fnIsDataEqual);
+			this.repairItemButtonList = UIList.create(this, container, fnCreateItem, fnUpdateItem, fnIsDataEqual);
 		},
 
 		update: function (time) {

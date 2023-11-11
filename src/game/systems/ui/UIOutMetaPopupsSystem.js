@@ -22,7 +22,7 @@ define([
 		},
 
         initElements: function () {
-            this.settingsPopupHotkeysList = UIList.create($("#hotkeys-list"), this.createHotkeyListItem, this.updateHotkeyListItem, this.isHotkeyListItemDataEqual);
+            this.settingsPopupHotkeysList = UIList.create(this, $("#hotkeys-list"), this.createHotkeyListItem, this.updateHotkeyListItem, this.isHotkeyListItemDataEqual);
 
             let sys = this;
 			$("#settings-checkbox-hotkeys-enabled").change(() => sys.onSettingToggled());

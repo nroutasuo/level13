@@ -87,7 +87,7 @@ define([
 		},
 		
 		initElements: function () {
-			this.localeList = UIList.create($("#table-out-actions-locales"), this.createLocaleListItem, this.updateLocaleListItem, this.isLocaleListItemDataEqual);
+			this.localeList = UIList.create(this, $("#table-out-actions-locales"), this.createLocaleListItem, this.updateLocaleListItem, this.isLocaleListItemDataEqual);
 		},
 
 		initListeners: function () {

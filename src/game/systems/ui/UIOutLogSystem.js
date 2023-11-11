@@ -39,8 +39,8 @@ function (Ash, UIList, GameGlobals, GlobalSignals, LogConstants, LogNode, Player
 		},
 
 		initElements: function () {
-			this.logList = UIList.create($("#log ul"), this.createLogListItem, this.updateLogListItem, this.isLogListItemDataEqual);
-			this.logListLatest = UIList.create($("#log-latest ul"), this.createLogListItem, this.updateLogListItem, this.isLogListItemDataEqual);
+			this.logList = UIList.create(this, $("#log ul"), this.createLogListItem, this.updateLogListItem, this.isLogListItemDataEqual);
+			this.logListLatest = UIList.create(this, $("#log-latest ul"), this.createLogListItem, this.updateLogListItem, this.isLogListItemDataEqual);
 		},
 
 		update: function () {

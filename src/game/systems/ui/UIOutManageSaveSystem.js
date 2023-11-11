@@ -30,7 +30,7 @@ function (Ash, UIList, FileUtils, GameGlobals, GlobalSignals, GameConstants, Sav
 			this.containerSaveListOptionsExport = $("#save-list-options-export");
 			this.containerImport = $("#save-import-container");
 
-			this.saveSlotList = UIList.create($("#save-list"), this.createSaveSlotListItem, this.updateSaveSlotListItem, this.isSaveSlotListItemDataEqual);
+			this.saveSlotList = UIList.create(this, $("#save-list"), this.createSaveSlotListItem, this.updateSaveSlotListItem, this.isSaveSlotListItemDataEqual);
 
 			let system = this;
 			$("#open-import").click(function () {
