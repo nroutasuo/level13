@@ -21,6 +21,10 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 			return new PositionVO(this.level, this.sectorX, this.sectorY, this.inCamp);
 		},
 
+		getPositionInCamp: function () {
+			return new PositionVO(this.level, this.sectorX, this.sectorY, true);
+		},
+
 		equals: function (position, ignoreCamp) {
 			if (!position) return false;
 			if (this.level !== position.level) return false;

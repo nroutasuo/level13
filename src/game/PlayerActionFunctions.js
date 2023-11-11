@@ -874,7 +874,8 @@ define(['ash',
 			let position = this.getPositionVO(sectorPos);
 			let playerPos = this.playerPositionNodes.head.position;
 			this.clearBlocker("clear_debris", MovementConstants.BLOCKER_TYPE_DEBRIS, sectorPos);
-			this.addLogMessage(LogConstants.MSG_ID_CLEAR_DEBRIS, "Debris cleared at " + position.getInGameFormat(position.level !== playerPos.level), null, null, position);
+			let msg = "Debris cleared at " + position.getInGameFormat(position.level !== playerPos.level);
+			this.addLogMessage(LogConstants.MSG_ID_CLEAR_DEBRIS, msg, null, null, position, LogConstants.MSG_VISIBILITY_GLOBAL);
 		},
 		
 		clearBlocker: function (action, blockerType, sectorPos) {
@@ -1061,7 +1062,7 @@ define(['ash',
 			for (let i = 0; i < messages.length; i++) {
 				let message = messages[i];
 				if (message.addToLog) {
-					this.addLogMessage(message.id, message.text);
+					this.addLogMessage(message.id, message.text, null, null, null, message.visibility);
 				}
 			}
 		},

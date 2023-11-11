@@ -19,6 +19,8 @@ function (Ash, UIList, GameGlobals, GlobalSignals, LogConstants, LogNode, Player
 		lastUpdateTimeStamp: 0,
 		updateFrequency: 1000 * 15,
 
+		currentMessages: [],
+
 		constructor: function () {
 			this.initElements();
 		},
@@ -27,6 +29,7 @@ function (Ash, UIList, GameGlobals, GlobalSignals, LogConstants, LogNode, Player
 			this.logNodes = engine.getNodeList(LogNode);
 			this.playerPositionNodes = engine.getNodeList(PlayerPositionNode);
 
+			GlobalSignals.add(this, GlobalSignals.markLogMessagesSeenSignal, this.onMarkLogMessagesSeen);
 			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, function (position) { this.onPlayerPositionChanged(position); });
 
 			this.updateMessages();
@@ -120,10 +123,9 @@ function (Ash, UIList, GameGlobals, GlobalSignals, LogConstants, LogNode, Player
 			};
 
 			let shownMessages = messages.filter(m => showMessage(m));
-			let hiddenMessages = messages.filter(m => shownMessages.indexOf(m) < 0);
 
 			let newItems = UIList.update(this.logList, shownMessages);
-			let latestMessages = newItems.map(li => li.data).filter(m => !m.hasBeenHiddenAfterShown && !m.loadedFromSave);
+			let latestMessages = newItems.map(li => li.data).filter(m => !m.markedAsSeen && !m.loadedFromSave);
 			
 			UIList.update(this.logListLatest, latestMessages);
 
@@ -134,19 +136,12 @@ function (Ash, UIList, GameGlobals, GlobalSignals, LogConstants, LogNode, Player
 				}
 			}
 
-			for (let i = 0; i < hiddenMessages.length; i++) {
-				if (!hiddenMessages[i].hasBeenHiddenAfterShown) {
-					if (hiddenMessages[i].hasBeenShown) {
-						log.i("mark as hidden after shown: " + hiddenMessages[i].message);
-						hiddenMessages[i].hasBeenHiddenAfterShown = true;
-					}
-				}
-			}
-
 			for (let i = 0; i < newItems.length; i++) {
 				newItems[i].$root.toggle(false);
 				newItems[i].$root.fadeIn(600);
 			}
+
+			this.currentMessages = shownMessages;
 		},
 
 		createLogListItem: function () {
@@ -175,10 +170,10 @@ function (Ash, UIList, GameGlobals, GlobalSignals, LogConstants, LogNode, Player
 				positionText += ")"
 			}
 
-			li.$root.toggleClass("log-loaded", (data.loadedFromSave || (data.hasBeenShown == true && data.hasBeenHiddenAfterShown == true)));
+			li.$root.toggleClass("log-loaded", (data.loadedFromSave || data.markedAsSeen == true));
 			li.$root.attr("data-loadedFromSave", data.loadedFromSave);
-			li.$root.attr("data-hasBeenShown", data.hasBeenHiddenAfterShown);
-			li.$root.attr("data-hasBeenHiddenAfterShown", data.hasBeenHiddenAfterShown);
+			li.$root.attr("data-hasBeenShown", data.hasBeenShown);
+			li.$root.attr("data-markedAsSeen", data.markedAsSeen);
 			li.$spanMsg.text(data.text);
 			li.$spanTime.text(UIConstants.getTimeSinceText(data.time) + " ago");
 			li.$spanLevel.toggle(hasPosition);
@@ -189,6 +184,17 @@ function (Ash, UIList, GameGlobals, GlobalSignals, LogConstants, LogNode, Player
 
 		isLogListItemDataEqual: function (d1, d2) {
 			return d1.logMsgID == d2.logMsgID && d1.time == d2.time;
+		},
+
+		markLogMessagesSeen: function () {
+			if (!this.currentMessages || this.currentMessages.length == 0) return;
+
+			for (let i = 0; i < this.currentMessages.length; i++) {
+				if (!this.currentMessages[i].markedAsSeen) {
+					log.i("mark as seen: " + this.currentMessages[i].message);
+					this.currentMessages[i].markedAsSeen = true;
+				}
+			}
 		},
 		
 		pruneMessages: function () {
@@ -222,6 +228,10 @@ function (Ash, UIList, GameGlobals, GlobalSignals, LogConstants, LogNode, Player
 					nodeMessages.splice(index, 1);
 				}
 			}
+		},
+
+		onMarkLogMessagesSeen: function () {
+			this.markLogMessagesSeen();
 		},
 
 		onPlayerPositionChanged: function (position) {

@@ -1,6 +1,6 @@
 define(['ash',], function (Ash) {
 
-	var GlobalSignals = {
+	let GlobalSignals = {
 		
 		PRIORITY_DEFAULT: 0,
 		PRIORITY_HIGH: 1,
@@ -23,6 +23,7 @@ define(['ash',], function (Ash) {
 		popupResizedSignal: new Ash.Signals.Signal(),
 		updateButtonsSignal: new Ash.Signals.Signal(),
 		clearBubblesSignal: new Ash.Signals.Signal(),
+		markLogMessagesSeenSignal: new Ash.Signals.Signal(),
 		projectHiddenSignal: new Ash.Signals.Signal(),
 		themeToggledSignal: new Ash.Signals.Signal(),
 		

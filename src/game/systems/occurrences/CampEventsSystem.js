@@ -628,7 +628,7 @@ define([
 		
 		addLogMessage: function (msg, replacements, values, camp, visibility) {
 			let logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
-			let campPos = camp.entity.get(PositionComponent);
+			let campPos = camp.entity.get(PositionComponent).getPositionInCamp();
 			visibility = visibility || LogConstants.MSG_VISIBILITY_DEFAULT;
 			logComponent.addMessage(LogConstants.MSG_ID_CAMP_EVENT, msg, replacements, values, campPos, visibility, true);
 		}

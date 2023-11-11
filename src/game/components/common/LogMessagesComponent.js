@@ -74,7 +74,7 @@ function (Ash, GameGlobals, LogConstants, LogMessageVO) {
 		canCombineMessages: function (prevMsg, newMsg) {
 			if (!prevMsg) return false;
 			if (prevMsg.loadedFromSave) return false;
-			if (prevMsg.hasBeenHiddenAfterShown) return false;
+			if (prevMsg.markedAsSeen) return false;
 			if (newMsg.message !== prevMsg.message) return false;
 			if (newMsg.logMsgID !== prevMsg.logMsgID) return false;
 			if (newMsg.contextLevel !== prevMsg.contextLevel) return false;
@@ -105,7 +105,7 @@ function (Ash, GameGlobals, LogConstants, LogMessageVO) {
 
 		getMergedMessage: function (newMsg) {
 			let prevMsg = this.messages[this.messages.length - 1];
-			if (!prevMsg || prevMsg.loadedFromSave || prevMsg.hasBeenHiddenAfterShown) return newMsg;
+			if (!prevMsg || prevMsg.loadedFromSave || prevMsg.markedAsSeen) return newMsg;
 
 			let mergedMsgID;
 			let prevMsg2 = this.messages[this.messages.length - 2];

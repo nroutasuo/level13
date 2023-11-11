@@ -57,6 +57,11 @@ define([
 			let playerPositionComponent = this.playerPositionNodes.head.position;
 			let oldPosition = playerPositionComponent.getPosition();
 			let isCampTransition = oldPosition.inCamp != position.inCamp;
+			let isCampToCampTransition = oldPosition.level != position.level && oldPosition.inCamp && position.inCamp;
+
+			if (isCampTransition || isCampToCampTransition) {
+				GlobalSignals.markLogMessagesSeenSignal.dispatch();
+			}
 			
 			let oldSector = GameGlobals.levelHelper.getSectorByPosition(oldPosition.level, oldPosition.sectorX, oldPosition.sectorY);
 			let newSector = GameGlobals.levelHelper.getSectorByPosition(position.level, position.sectorX, position.sectorY);

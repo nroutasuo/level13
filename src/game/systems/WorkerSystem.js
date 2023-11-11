@@ -484,7 +484,7 @@ define([
 
 			if (!hasPopulation) return;
 
-			let campStorage = GameGlobals.resourcesHelper.getCampStorage(campNode.entity);
+			let campStorage = GameGlobals.resourcesHelper.getCurrentCampStorage(campNode.entity);
 			let isThirsty = campStorage.getResource(resourceNames.water) < 1;
 			let isHungry = campStorage.getResource(resourceNames.food) < 1;
 			let campMsgFrequency = 10 * 60 * 1000;

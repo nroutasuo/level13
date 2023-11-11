@@ -35,6 +35,10 @@ define(['ash'], function (Ash) {
 		getPosition: function () {
 			return this;
 		},
+
+		getPositionInCamp: function () {
+			return new PositionVO(this.level, this.sectorX, this.sectorY, true);
+		},
 		
 		toInt: function () {
 			return this.level * 1000000 + this.sectorY * 1000 + this.sectorX;
