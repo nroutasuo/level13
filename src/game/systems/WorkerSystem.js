@@ -34,8 +34,6 @@ define([
 		nearestCampNodes: null,
 	
 		isPendingProductionRateUpdate: false,
-		lastMsgTimeStamp: 0,
-		lastMsgTimeStampByCamp: {},
 		lastPerksChangedTimestamp: 0,
 		msgFrequency: 1000 * 120,
 
@@ -128,7 +126,7 @@ define([
 				if (assignType == null) break;
 				node.camp.assignedWorkers[assignType] = (node.camp.assignedWorkers[assignType] || 0) + 1;
 				numToAssign--;
-				this.log("A previously unassigned worker has started working as " + CampConstants.getWorkerDisplayName(assignType), node);
+				this.log(LogConstants.getUniqueID(), "A previously unassigned worker has started working as " + CampConstants.getWorkerDisplayName(assignType), node);
 			}
 			
 			GlobalSignals.workersAssignedSignal.dispatch(node.entity);
@@ -331,7 +329,7 @@ define([
 				this.lastPerksChangedTimestamp = new Date().getTime();
 				setTimeout(() => {
 					let msg = this.getPlayerPerkChangeLogMsgAndMarkPerksLogged(addedPerks, removedPerks);
-					this.log(msg);
+					this.log(LogConstants.MSG_ID_PLAYER_HUNGER, msg);
 				}, 1500);
 			}
 		},
@@ -458,7 +456,7 @@ define([
 			let inCampSector = playerLevelCamp !== null && playerLevelCamp.get(PositionComponent).sector === this.playerLocationNodes.head.position.sector;
 			
 			let timeStamp = new Date().getTime();
-			let log = timeStamp - this.lastMsgTimeStamp > this.msgFrequency && timeStamp - this.lastPerksChangedTimestamp > this.msgFrequency;
+			let log = timeStamp - this.lastPerksChangedTimestamp > this.msgFrequency;
 			if (log) {
 				let isThirsty = playerFoodSource.water < 1;
 				let isHungry = playerFoodSource.food < 1;
@@ -473,8 +471,7 @@ define([
 				}
 				
 				if (msg != null) {
-					this.log(msg);
-					this.lastMsgTimeStamp = timeStamp;
+					this.log(LogConstants.MSG_ID_AMBIENT_PLAYER, msg);
 				}
 			}
 		},
@@ -487,38 +484,30 @@ define([
 			let campStorage = GameGlobals.resourcesHelper.getCurrentCampStorage(campNode.entity);
 			let isThirsty = campStorage.getResource(resourceNames.water) < 1;
 			let isHungry = campStorage.getResource(resourceNames.food) < 1;
-			let campMsgFrequency = 10 * 60 * 1000;
-			
-			let timeStamp = new Date().getTime();
-			let lastCampMessageTimestamp = this.lastMsgTimeStampByCamp[campNode.position.level] || 0;
-			let log = timeStamp - lastCampMessageTimestamp > campMsgFrequency;
 
-			if (log) {
-				let msg = null;
+			if (!isHungry && !isThirsty) return;
 
-				if (isThirsty && Math.random() < 0.25) {
-					msg = "There is no more water.";
-				}  else if (isHungry && Math.random() < 0.25) {
-					msg = "There is no more food.";
-				}
+			let msg = null;
 
-				if (msg != null) {
-					this.log(msg, campNode);
-					this.lastMsgTimeStampByCamp[campNode.position.level] = timeStamp;
-				}
+			if (isThirsty && Math.random() < 0.25) {
+				msg = "There is no more water.";
+			}  else if (isHungry && Math.random() < 0.25) {
+				msg = "There is no more food.";
 			}
+
+			this.log(LogConstants.MSG_ID_AMBIENT_CAMP, msg, campNode);
 
 		},
 		
-		log: function (msg, campNode) {
+		log: function (id, msg, campNode) {
 			if (msg == null || msg.length == 0) return;
 
 			if (campNode) {
 				let pos = campNode.position.getPosition();
 				pos.inCamp = true;
-				GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.getUniqueID(), msg, pos);
+				GameGlobals.playerHelper.addLogMessageWithPosition(id, msg, pos);
 			} else {
-				GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_WORKER_STATUS, msg);
+				GameGlobals.playerHelper.addLogMessage(id, msg);
 			}
 		},
 

@@ -48,6 +48,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 		MSG_ID_REMOVE_STAMINA_PERK: "MSG_ID_REMOVE_STAMINA_PERK",
 		MSG_ID_FOUND_BLUEPRINT_FIRST: "MSG_ID_FOUND_BLUEPRINT_FIRST",
 		MSG_ID_FOUND_BLUEPRINT_CONSECUTIVE: "MSG_ID_FOUND_BLUEPRINT_CONSECUTIVE",
+		MSG_ID_FOUND_BLUEPRINT_LAST: "MSG_ID_FOUND_BLUEPRINT_LAST",
 		MSG_ID_FOUND_ITEM_FIRST: "MSG_ID_FOUND_ITEM_FIRST",
 		MSG_ID_LOST_ITEM: "MSG_ID_LOST_ITEM",
 		MSG_ID_BROKE_ITEM: "MSG_ID_BROKE_ITEM",
@@ -61,7 +62,9 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 
 		// in atmospheric and results
 		MSG_ID_POPULATION_NATURAL: "POPULATION_NATURAL",
-		MSG_ID_WORKER_STATUS: "WORKER_STATUS",
+		MSG_ID_PLAYER_HUNGER: "MSG_ID_PLAYER_HUNGER",
+		MSG_ID_AMBIENT_PLAYER: "MSG_ID_AMBIENT_PLAYER",
+		MSG_ID_AMBIENT_CAMP: "MSG_ID_AMBIENT_CAMP",
 		MSG_ID_CAMP_EVENT: "CAMP_EVENT",
 		MSG_ID_BUILT_CAMP_LEVEL_POPULATION: "MSG_ID_BUILT_CAMP_LEVEL_POPULATION",
 		MSG_ID_ENTER_LEVEL: "MSG_ID_ENTER_LEVEL",
@@ -131,6 +134,23 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 		
 		getUniqueID: function () {
 			return "unique-" + Math.floor(Math.random() * 100000);
+		},
+
+		isUniqueID: function (id) {
+			return id.indexOf("unique-") == 0;
+		},
+
+		getCooldown: function (id) {
+			let seconds = 0;
+			let minutes = 0;
+
+			switch (id) {
+				case LogConstants.MSG_ID_ENTER_OUTSKIRTS: minutes = 10; break;
+				case LogConstants.MSG_ID_AMBIENT_PLAYER: minutes = 3; break;
+				case LogConstants.MSG_ID_AMBIENT_CAMP: minutes = 10; break;
+			}
+
+			return (minutes * 60 + seconds) * 1000;
 		},
 
 		getMergedMsgID: function (messages) {

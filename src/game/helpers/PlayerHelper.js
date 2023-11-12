@@ -50,6 +50,8 @@ define([
 		nearestCampNodes: null,
 		playerLocationNodes: null,
 
+		lastLogMessageByID: {},
+
 		constructor: function (engine) {
 			this.playerPosNodes = engine.getNodeList(PlayerPositionNode);
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
@@ -99,24 +101,40 @@ define([
 			player.add(new MovementComponent(level, sectorX, sectorY, inCamp));
 		},
 
-		addLogMessage: function (id, msg) {
-			if (!msg || msg.length == 0) return;
-			let playerPosition = this.playerPosNodes.head.position;
-			let logComponent = this.playerPosNodes.head.entity.get(LogMessagesComponent);
-			logComponent.addMessage(id || LogConstants.getUniqueID(), msg, null, null, playerPosition, LogConstants.MSG_VISIBILITY_DEFAULT, true);
-		},
-
 		addLogMessageWithParams: function (id, msg, replacements, values) {
-			if (!msg || msg.length == 0) return;
-			let playerPosition = this.playerPosNodes.head.position;
-			let logComponent = this.playerPosNodes.head.entity.get(LogMessagesComponent);
-			logComponent.addMessage(id || LogConstants.getUniqueID(), msg, replacements, values, playerPosition, LogConstants.MSG_VISIBILITY_DEFAULT, true);
+			this.addLogMessage(id, msg, { replacements: replacements, values: values });
 		},
 		
 		addLogMessageWithPosition: function (id, msg, position) {
+			this.addLogMessage(id, msg, { position: position });
+		},
+
+		addLogMessage: function (id, msg, options) {
 			if (!msg || msg.length == 0) return;
+
+			id = id || LogConstants.getUniqueID();
+			options = options || {};
+
+			let cooldown = LogConstants.getCooldown(id);
+			if (cooldown) {
+				let now = new Date().getTime();
+				let lastMessageTimestamp = this.lastLogMessageByID[id] || 0;
+
+				if (now - lastMessageTimestamp < cooldown) {
+					log.i("Skipping log message due to cooldown: " + id);
+					return;
+				}
+
+				this.lastLogMessageByID[id] = now;
+			}
+
+			let replacements = options.replacements || null;
+			let values = options.values || null;
+			let position = options.position || this.playerPosNodes.head.position.getPosition();
+			let visibility = options.visibility || LogConstants.MSG_VISIBILITY_DEFAULT;
+
 			let logComponent = this.playerPosNodes.head.entity.get(LogMessagesComponent);
-			logComponent.addMessage(id || LogConstants.getUniqueID(), msg, null, null, position, LogConstants.MSG_VISIBILITY_DEFAULT);
+			logComponent.addMessage(id, msg, replacements, values, position, visibility);
 		},
 		
 		isReadyForExploration: function () {

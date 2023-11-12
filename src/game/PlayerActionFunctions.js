@@ -54,7 +54,6 @@ define(['ash',
 	'game/components/sector/OutgoingCaravansComponent',
 	'game/components/sector/events/CampEventTimersComponent',
 	'game/components/sector/events/TraderComponent',
-	'game/components/common/LogMessagesComponent',
 	'game/systems/ui/UIOutHeaderSystem',
 	'game/systems/ui/UIOutTabBarSystem',
 	'game/systems/ui/UIOutLevelSystem',
@@ -72,7 +71,6 @@ define(['ash',
 	CampComponent, CurrencyComponent, LevelComponent, BeaconComponent, SectorImprovementsComponent, SectorCollectorsComponent, WorkshopComponent,
 	ReputationComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent,
 	PassagesComponent, OutgoingCaravansComponent, CampEventTimersComponent, TraderComponent,
-	LogMessagesComponent,
 	UIOutHeaderSystem, UIOutTabBarSystem, UIOutLevelSystem, FaintingSystem, PlayerPositionSystem,
 	Text, StringUtils
 ) {
@@ -103,12 +101,18 @@ define(['ash',
 
 		addLogMessage: function (msgID, msg, replacements, values, actionPosition, visibility) {
 			let playerPosition = this.playerPositionNodes.head.position;
-			let logComponent = this.playerPositionNodes.head.entity.get(LogMessagesComponent);
 			
 			actionPosition = actionPosition || playerPosition;
 			visibility = visibility || LogConstants.MSG_VISIBILITY_DEFAULT;
 
-			logComponent.addMessage(msgID, msg, replacements, values, actionPosition, visibility);
+			let options = {
+				replacements: replacements,
+				values: values,
+				position: actionPosition,
+				visibility: visibility || LogConstants.MSG_VISIBILITY_DEFAULT
+			};
+
+			GameGlobals.playerHelper.addLogMessage(msgID, msg, options);
 		},
 
 		startAction: function (action, param) {
@@ -168,7 +172,7 @@ define(['ash',
 						caravansComponent.pendingCaravan.returnDuration = duration;
 						caravansComponent.outgoingCaravans.push(caravansComponent.pendingCaravan);
 						caravansComponent.pendingCaravan = null;
-						this.addLogMessage(LogConstants.MSG_ID_START_SEND_CAMP, "A trade caravan heads out.");
+						GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_START_SEND_CAMP, "A trade caravan heads out.");
 						GlobalSignals.caravanSentSignal.dispatch();
 						GameGlobals.gameState.increaseGameStatSimple("numCaravansSent");
 						break;
@@ -499,7 +503,7 @@ define(['ash',
 			var logMsgSuccess = logMsg;
 			var logMsgFlee = logMsg + "Fled empty-handed.";
 			var logMsgDefeat = logMsg + "Got into a fight and was defeated.";
-			let sys = this;
+
 			let successCallback = function () {
 				GameGlobals.gameState.stats.numTimesScavenged++;
 				let scavengedPercentBefore = sectorStatus.getScavengedPercent();
@@ -509,9 +513,9 @@ define(['ash',
 				let warningThresholdHighScavengedPercent = 75;
 				let warningThresholdNoScavengeResources = ExplorationConstants.THRESHOLD_SCAVENGED_PERCENT_REVEAL_NO_RESOURCES;
 				if (sectorResources.getTotal() <= 0 && sectorItems.length <= 0 && scavengedPercentAfter >= warningThresholdNoScavengeResources) {
-					sys.addLogMessage(LogConstants.getUniqueID(), logMsg + " There doesn't seem to be anything to scavenge here.");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), logMsg + " There doesn't seem to be anything to scavenge here.");
 				} else if (scavengedPercentBefore < warningThresholdHighScavengedPercent && scavengedPercentAfter >= warningThresholdHighScavengedPercent) {
-					sys.addLogMessage(LogConstants.getUniqueID(), logMsg + " There isn't much left to scavenge here.");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), logMsg + " There isn't much left to scavenge here.");
 				}
 			};
 			
@@ -673,7 +677,7 @@ define(['ash',
 				sectorStatus.scoutedTimestamp = new Date().getTime() / 1000;
 				
 				if (logMsg) {
-					GameGlobals.playerActionFunctions.addLogMessage(LogConstants.getUniqueID(), logMsg);
+					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), logMsg);
 				}
 				
 				GlobalSignals.sectorScoutedSignal.dispatch();
@@ -864,8 +868,9 @@ define(['ash',
 		},
 
 		bridgeGap: function (sectorPos) {
+			let position = this.getPositionVO(sectorPos);
 			this.clearBlocker("bridge_gap", MovementConstants.BLOCKER_TYPE_GAP, sectorPos);
-			this.addLogMessage(LogConstants.MSG_ID_BRIDGED_GAP, "Built a bridge.");
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_BRIDGED_GAP, "Built a bridge.", { position: position, visibility: LogConstants.MGS_VISIBILITY_LEVEL });
 		},
 		
 		clearDebris: function (sectorPos) {
@@ -873,7 +878,7 @@ define(['ash',
 			let playerPos = this.playerPositionNodes.head.position;
 			this.clearBlocker("clear_debris", MovementConstants.BLOCKER_TYPE_DEBRIS, sectorPos);
 			let msg = "Debris cleared at " + position.getInGameFormat(position.level !== playerPos.level);
-			this.addLogMessage(LogConstants.MSG_ID_CLEAR_DEBRIS, msg, null, null, position, LogConstants.MSG_VISIBILITY_GLOBAL);
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_CLEAR_DEBRIS, msg, { position: position, visibility: LogConstants.MGS_VISIBILITY_LEVEL });
 		},
 		
 		clearBlocker: function (action, blockerType, sectorPos) {
@@ -1005,7 +1010,7 @@ define(['ash',
 					let messages2 = GameGlobals.playerActionResultsHelper.getResultMessagesAfterSelection(rewards);
 					
 					if (!GameGlobals.gameState.isAutoPlaying) {
-						if (messages.addToLog && logMsgSuccess) playerActionFunctions.addLogMessage(logMsgId, logMsgSuccess);
+						if (messages.addToLog && logMsgSuccess) GameGlobals.playerHelper.addLogMessage(logMsgId, logMsgSuccess);
 						playerActionFunctions.logResultMessages(messages1);
 						playerActionFunctions.logResultMessages(messages2);
 						playerActionFunctions.forceTabUpdate();
@@ -1028,11 +1033,11 @@ define(['ash',
 				}
 			}, function () {
 				playerActionFunctions.completeAction(action);
-				if (messages.addToLog && messages.msgFlee) playerActionFunctions.addLogMessage(logMsgId, messages.msgFlee);
+				if (messages.addToLog && messages.msgFlee) GameGlobals.playerHelper.addLogMessage(logMsgId, messages.msgFlee);
 				if (failCallback) failCallback();
 			}, function () {
 				playerActionFunctions.completeAction(action);
-				if (messages.addToLog && messages.msgDefeat) playerActionFunctions.addLogMessage(logMsgId, messages.msgDefeat);
+				if (messages.addToLog && messages.msgDefeat) GameGlobals.playerHelper.addLogMessage(logMsgId, messages.msgDefeat);
 				if (failCallback) failCallback();
 			});
 		},
@@ -1129,7 +1134,7 @@ define(['ash',
 			GameGlobals.playerActionResultsHelper.collectRewards(true, result, campSector);
 			GameGlobals.resourcesHelper.moveCurrencyFromBagToCamp(campSector);
 			this.completeAction("send_caravan");
-
+			
 			this.addLogMessage(LogConstants.MSG_ID_FINISH_SEND_CAMP, logMsg.msg, logMsg.replacements, logMsg.values, pendingPosition);
 			GlobalSignals.inventoryChangedSignal.dispatch();
 		},
@@ -1214,7 +1219,7 @@ define(['ash',
 			GameGlobals.gameState.increaseGameStatSimple("numTradesMade");
 			
 			GlobalSignals.inventoryChangedSignal.dispatch();
-			this.addLogMessage(LogConstants.MSG_ID_TRADE_WITH_CARAVAN, "Traded with a caravan.");
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_TRADE_WITH_CARAVAN, "Traded with a caravan.");
 		},
 		
 		recruitFollower: function (followerId) {
@@ -1232,7 +1237,7 @@ define(['ash',
 			GameGlobals.gameState.increaseGameStatSimple("numFollowersRecruited");
 			GlobalSignals.followersChangedSignal.dispatch();
 			
-			this.addLogMessage(LogConstants.MSG_ID_RECRUIT, "Recruited a new follower.");
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_RECRUIT, "Recruited a new follower.");
 		},
 		
 		dismissRecruit: function (followerId) {
@@ -1256,13 +1261,12 @@ define(['ash',
 				return;
 			}
 			
-			let sys = this;
 			GameGlobals.uiFunctions.showConfirmation(
 				"Are you sure you want to dismiss " + follower.name + "?",
 				function () {
 					followersComponent.removeFollower(follower);
 					GameGlobals.gameState.increaseGameStatSimple("numFollowersDismissed");
-					sys.addLogMessage(LogConstants.getUniqueID(), follower.name + " leaves.");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), follower.name + " leaves.");
 					GlobalSignals.followersChangedSignal.dispatch();
 				}
 			);
@@ -1369,9 +1373,9 @@ define(['ash',
 			gtag('event', 'build_camp_time', { event_category: 'game_time', event_label: campOrdinal, value: GameGlobals.gameState.playTime });
 			gtag('set', { 'max_camp': GameGlobals.gameState.numCamps });
 
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP, "Built a camp.", null, null, null, LogConstants.MGS_VISIBILITY_LEVEL);
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP, "Built a camp.", { visibility: LogConstants.MGS_VISIBILITY_LEVEL });
 			if (position.level == 15) {
-				this.addLogMessage(LogConstants.getUniqueID(), "It will be difficult to trade resources with camps from below Level 14 from here.");
+				GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "It will be difficult to trade resources with camps from below Level 14 from here.");
 			}
 
 			GameGlobals.gameState.numCamps++;
@@ -1422,7 +1426,7 @@ define(['ash',
 				var msg = TextConstants.getPassageRepairedMessage(passageType, direction, sectorPosVO, GameGlobals.gameState.numCamps);
 				this.buildImprovement(action, GameGlobals.playerActionsHelper.getImprovementNameForAction(action), sector);
 				this.buildImprovement(neighbourAction, GameGlobals.playerActionsHelper.getImprovementNameForAction(neighbourAction), neighbour, true);
-				this.addLogMessage(LogConstants.MSG_ID_BUILT_PASSAGE, msg);
+				GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_BUILT_PASSAGE, msg, { position: position, visibility: LogConstants.MGS_VISIBILITY_LEVEL });
 			} else {
 				log.w("Couldn't find sectors for building passage.");
 				log.i(sector);
@@ -1440,10 +1444,12 @@ define(['ash',
 			let campLevel = GameGlobals.gameState.getLevelForCamp(campOrdinal);
 			
 			// TODO use camp name in message if defined
+
+			let msg = "Greenhouse is ready. Workers in camp on level " + campLevel + " can now use it.";
 			
 			this.buildImprovement(action, improvementNames.greenhouse, sector);
 			GameGlobals.playerActionFunctions.unlockFeature("herbs");
-			this.addLogMessage(LogConstants.getUniqueID(), "Greenhouse is ready. Workers in camp on level " + campLevel + " can now use it.");
+			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), msg, { position: position, visibility: LogConstants.MSG_VISIBILITY_GLOBAL });
 		},
 		
 		buildLuxuryResourceOutpost: function (sectorPos) {
@@ -1455,9 +1461,12 @@ define(['ash',
 				log.w("trying to build a luxury resource outpost but there is no resource");
 				return;
 			}
+
 			let resourceName = TribeConstants.getLuxuryDisplayName(resource);
+			let msg = "Resource outpost is ready. " + Text.capitalize(resourceName) + " is now available in all camps.";
+
 			this.buildImprovement(action, improvementNames.luxuryOutpost, sector);
-			this.addLogMessage(LogConstants.getUniqueID(), "Resource outpost is ready. " + Text.capitalize(resourceName) + " is now available in all camps.");
+			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), msg, { position: position, visibility: LogConstants.MSG_VISIBILITY_GLOBAL });
 		},
 		
 		buildTradeConnector: function (sectorPos) {
@@ -1465,15 +1474,15 @@ define(['ash',
 			var position = this.getPositionVO(sectorPos);
 			var sector = this.getActionSector(action, sectorPos);
 			this.buildImprovement(action, improvementNames.tradepost_connector, sector);
-			this.addLogMessage(LogConstants.getUniqueID(), "Great Elevator is ready.");
+			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "Great Elevator is ready.", { position: position, visibility: LogConstants.MSG_VISIBILITY_GLOBAL });
 		},
 		
 		buildSundome: function (sectorPos) {
-			var action = "build_out_sundome";
-			var position = this.getPositionVO(sectorPos);
+			let action = "build_out_sundome";
+			let position = this.getPositionVO(sectorPos).getPositionInCamp();
 			var sector = this.getActionSector(action, sectorPos);
 			this.buildImprovement(action, improvementNames.sundome, sector);
-			this.addLogMessage(LogConstants.getUniqueID(), "Sundome is completed.");
+			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "Sundome is completed.", { position: position, visibility: LogConstants.MSG_VISIBILITY_GLOBAL });
 		},
 		
 		improveOutImprovement: function (param) {
@@ -1521,7 +1530,7 @@ define(['ash',
 			let sector = this.getActionSectorOrCurrent(sectorPos);
 			this.buildImprovement("build_in_lights", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_lights"), sector);
 			var msg = "Installed lights in the camp.";
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_LIGHTS, msg);
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_BUILT_LIGHTS, msg, { position: sector.get(PositionComponent).getPositionInCamp() });
 		},
 
 		buildStorage: function (sectorPos) {
@@ -1532,7 +1541,7 @@ define(['ash',
 		buildFortification: function (sectorPos) {
 			let sector = this.getActionSectorOrCurrent(sectorPos);
 			this.buildImprovement("build_in_fortification", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_fortification"), sector);
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_FORTIFICATION, "Fortified the camp.");
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_BUILT_FORTIFICATION, "Fortified the camp.", { position: sector.get(PositionComponent).getPositionInCamp() });
 		},
 
 		buildAqueduct: function (sectorPos) {
@@ -1656,11 +1665,13 @@ define(['ash',
 			var playerPos = this.playerPositionNodes.head.position;
 
 			if (sector) {
+				let msgOptions = { position: sectorPosVO.getPositionInCamp() };
 				var msg = "Colony construction project ready at " + sectorPosVO.getInGameFormat(playerPos.level === sectorPosVO.level);
 				this.buildImprovement(action, GameGlobals.playerActionsHelper.getImprovementNameForAction(action), sector);
-				this.addLogMessage(LogConstants.MSG_ID_BUILT_SPACESHIP, msg);
+
+				GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_BUILT_SPACESHIP, msg, msgOptions);
 				if (GameGlobals.endingHelper.isReadyForLaunch(true)) {
-					this.addLogMessage(LogConstants.getUniqueID(), "The colony ship is ready to launch.");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "The colony ship is ready to launch.", msgOptions);
 				}
 			} else {
 				log.w("Couldn't find sectors for building space ship.");
@@ -1688,7 +1699,8 @@ define(['ash',
 			GameGlobals.gameState.increaseGameStatKeyed("numBuildingImprovementsPerId", improvementID);
 			this.save();
 			
-			this.addLogMessage("MSG_ID_IMPROVE_" + improvementName, ImprovementConstants.getImprovedLogMessage(improvementID, level));
+			let msg = ImprovementConstants.getImprovedLogMessage(improvementID, level);
+			GameGlobals.playerHelper.addLogMessage("MSG_ID_IMPROVE_" + improvementName, msg, { position: sector.get(PositionComponent).getPositionInCamp() });
 		},
 		
 		repairBuilding: function (param) {
@@ -1705,7 +1717,9 @@ define(['ash',
 			
 			GlobalSignals.improvementBuiltSignal.dispatch();
 			this.save();
-			this.addLogMessage("MSG_ID_REPAIR_" + improvementName, "Repaired " + Text.addArticle(displayName));
+
+			let msg = "Repaired " + Text.addArticle(displayName);
+			GameGlobals.playerHelper.addLogMessage("MSG_ID_REPAIR_" + improvementName, msg, { position: sector.get(PositionComponent).getPositionInCamp() });
 		},
 
 		dismantleBuilding: function (param) {
@@ -1740,7 +1754,8 @@ define(['ash',
 				GlobalSignals.improvementBuiltSignal.dispatch();
 				sys.save();
 				
-				sys.addLogMessage("MSG_ID_DISMANTLE_" + improvementName, "Dismantled " + Text.addArticle(displayName));
+				let msg = "Dismantled " + Text.addArticle(displayName);
+				GameGlobals.playerHelper.addLogMessage("MSG_ID_DISMANTLE_" + improvementName, msg, { position: sector.get(PositionComponent).getPositionInCamp() });
 			});
 		},
 		
@@ -1775,9 +1790,9 @@ define(['ash',
 					campComponent.rumourpool--;
 					var campfireLevel = improvementsComponent.getLevel(improvementNames.campfire);
 					this.playerStatsNodes.head.rumours.value += GameGlobals.campBalancingHelper.getRumoursPerVisitCampfire(campfireLevel);
-					this.addLogMessage(LogConstants.MSG_ID_USE_CAMPFIRE_SUCC, "Sat at the campfire to exchange stories about the corridors.");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_CAMPFIRE_SUCC, "Sat at the campfire to exchange stories about the corridors.");
 				} else {
-					this.addLogMessage(LogConstants.MSG_ID_USE_CAMPFIRE_FAIL, "Sat at the campfire to exchange stories, but there was nothing new.");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_CAMPFIRE_FAIL, "Sat at the campfire to exchange stories, but there was nothing new.");
 					campComponent.rumourpoolchecked = true;
 				}
 			} else {
@@ -1797,7 +1812,7 @@ define(['ash',
 			if (campSector) {
 				var marketLevel = improvementsComponent.getLevel(improvementNames.market);
 				this.playerStatsNodes.head.rumours.value += GameGlobals.campBalancingHelper.getRumoursPerVisitMarket(marketLevel);
-				this.addLogMessage(LogConstants.MSG_ID_USE_MARKET, "Visited the market and listened to the latest gossip.");
+				GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_MARKET, "Visited the market and listened to the latest gossip.");
 			} else {
 				log.w("No camp sector found.");
 			}
@@ -1823,7 +1838,7 @@ define(['ash',
 			} else {
 				perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.healthBonus2));
 			}
-			this.addLogMessage(LogConstants.MSG_ID_USE_HOSPITAL2, "Improved health.");
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_HOSPITAL2, "Improved health.");
 			this.completeAction("use_in_hospital_2");
 		},
 		
@@ -1838,7 +1853,7 @@ define(['ash',
 			
 			let libraryLevel = improvementsComponent.getLevel(improvementNames.library);
 			this.playerStatsNodes.head.evidence.value += GameGlobals.campBalancingHelper.getEvidencePerUseLibrary(libraryLevel);
-			this.addLogMessage(LogConstants.MSG_ID_USE_LIBRARY, "Spent some time studying in the library.");
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_LIBRARY, "Spent some time studying in the library.");
 
 			this.completeAction("use_in_library");
 		},
@@ -1846,7 +1861,7 @@ define(['ash',
 		useTemple: function () {
 			this.playerStatsNodes.head.entity.get(DeityComponent).favour += CampConstants.FAVOUR_PER_DONATION;
 			this.completeAction("use_in_temple");
-			this.addLogMessage(LogConstants.MSG_ID_USE_TEMPLE, "Donated to the temple.");
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_TEMPLE, "Donated to the temple.");
 			GlobalSignals.inventoryChangedSignal.dispatch();
 			this.forceStatsBarUpdate();
 		},
@@ -1863,9 +1878,9 @@ define(['ash',
 				log.i("meditation success chance: " + successChance)
 				if (Math.random() < successChance) {
 					deityComponent.favour += 1;
-					this.addLogMessage(LogConstants.MSG_ID_USE_SHRINE, "Spent some time listening to the spirits.");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_SHRINE, "Spent some time listening to the spirits.");
 				} else {
-					this.addLogMessage(LogConstants.MSG_ID_USE_SHRINE, "Tried to meditate, but found no peace.");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_SHRINE, "Tried to meditate, but found no peace.");
 				}
 			}
 			
@@ -1888,7 +1903,6 @@ define(['ash',
 			GameGlobals.gameState.increaseGameStatSimple("numItemsCrafted");
 			GameGlobals.gameState.increaseGameStatList("uniqueItemsCrafted", itemId);
 
-			//this.addLogMessage(LogConstants.MSG_ID_CRAFT_ITEM, LogConstants.getCraftItemMessage(item));
 			GlobalSignals.inventoryChangedSignal.dispatch();
 			this.save();
 		},
@@ -1973,14 +1987,14 @@ define(['ash',
 					} else {
 						log.w("No injury found that can be healed!");
 					}
-					this.addLogMessage(LogConstants.MSG_ID_USE_FIRST_AID_KIT, "Used a first aid kit.");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_FIRST_AID_KIT, "Used a first aid kit.");
 					this.forceStatsBarUpdate();
 					break;
 				
 				case "stamina_potion":
 					perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.staminaBonus));
 					this.engine.updateComplete.addOnce(function () {
-						sys.addLogMessage(LogConstants.MSG_ID_USE_STAMINA_POTION, "Feeling stronger and more awake.");
+						GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_STAMINA_POTION, "Feeling stronger and more awake.");
 						sys.playerStatsNodes.head.stamina.stamina += PlayerStatConstants.STAMINA_GAINED_FROM_POTION_1;
 						sys.engine.updateComplete.addOnce(function () {
 							sys.forceStatsBarUpdate();
@@ -1996,7 +2010,7 @@ define(['ash',
 					let baseValue = itemConfig.configData.metalValue || 10;
 					let value = baseValue + Math.round(Math.random() * 10);
 					currentStorage.resources.addResource(resourceNames.metal, value, "cache_metal");
-					this.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, "Took apart " + Text.addArticle(itemShortName) + ". Gained " + value + " metal.");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, "Took apart " + Text.addArticle(itemShortName) + ". Gained " + value + " metal.");
 					break;
 					
 				case "cache_food":
@@ -2004,7 +2018,7 @@ define(['ash',
 					let resourceName = baseItemId == "cache_food" ? resourceNames.food : resourceNames.water;
 					let val = itemConfig.configData.waterValue || itemConfig.configData.foodValue || 10;
 					currentStorage.resources.addResource(resourceName, val, "cache_supplies");
-					this.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, "Used " + Text.addArticle(item.name) + ". Gained " + val + " " + resourceName + ".");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, "Used " + Text.addArticle(item.name) + ". Gained " + val + " " + resourceName + ".");
 					break;
 					
 				case "cache_evidence":
@@ -2018,7 +2032,7 @@ define(['ash',
 						resultVO
 					);
 					this.playerStatsNodes.head.evidence.value += evidence;
-					this.addLogMessage(LogConstants.MSG_ID_USE_BOOK, "Read a book. Gained " + evidence + " evidence.");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_BOOK, "Read a book. Gained " + evidence + " evidence.");
 					break;
 				
 				case "cache_rumours":
@@ -2032,7 +2046,7 @@ define(['ash',
 						resultVO
 					);
 					this.playerStatsNodes.head.rumours.value += rumours;
-					this.addLogMessage(LogConstants.MSG_ID_USE_NEWSPAPER, "Read a newspaper. Gained " + rumours + " rumours.");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_NEWSPAPER, "Read a newspaper. Gained " + rumours + " rumours.");
 					break;
 				
 				case "cache_favour":
@@ -2046,7 +2060,7 @@ define(['ash',
 						resultVO
 					);
 					this.playerStatsNodes.head.entity.get(DeityComponent).favour += favour;
-					this.addLogMessage(LogConstants.MSG_ID_USE_SEED, "Donated seeds. Gained " + favour + " favour.");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_SEED, "Donated seeds. Gained " + favour + " favour.");
 					break;
 				
 				case "cache_insight":
@@ -2060,14 +2074,14 @@ define(['ash',
 						resultVO
 					);
 					this.playerStatsNodes.head.insight.value += insight;
-					this.addLogMessage(LogConstants.MSG_ID_USE_RESEARCHPAPER, "Read a research paper. Gained " + insight + " insight.");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_RESEARCHPAPER, "Read a research paper. Gained " + insight + " insight.");
 					break;
 				
 				case "consumable_graffiti":
 					GameGlobals.uiFunctions.showInput("Graffiti", "Choose message to leave to this sector.", "", false,
 						function (input) {
 							sectorStatus.graffiti = input;
-							sys.addLogMessage(LogConstants.getUniqueID(), "Left a message on a wall.");
+							GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "Left a message on a wall.");
 							GlobalSignals.actionCompletedSignal.dispatch();
 						});
 					GameGlobals.gameState.increaseGameStatSimple("numGraffitiMade");
@@ -2094,9 +2108,9 @@ define(['ash',
 					log.i("reveal map around " + centerPosition + " radius " + radius);
 					
 					if (revealedSomething) {
-						this.addLogMessage(LogConstants.MSG_ID_USE_MAP_PIECE, "Recorded any useful information from the map.");
+						GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_MAP_PIECE, "Recorded any useful information from the map.");
 					} else {
-						this.addLogMessage(LogConstants.MSG_ID_USE_MAP_PIECE, "Checked the map, but there was nothing interesting there.");
+						GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_MAP_PIECE, "Checked the map, but there was nothing interesting there.");
 					}
 					
 					GlobalSignals.mapPieceUsedSignal.dispatch();
@@ -2170,7 +2184,7 @@ define(['ash',
 			
 			let upgradeDefinition = UpgradeConstants.upgradeDefinitions[upgradeID];
 			GameGlobals.playerActionsHelper.deductCosts(upgradeID);
-			this.addLogMessage(LogConstants.getUniqueID(), "Researched " + upgradeDefinition.name, null, null, null, LogConstants.MSG_VISIBILITY_PRIORITY);
+			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "Researched " + upgradeDefinition.name, { visibility: LogConstants.MSG_VISIBILITY_PRIORITY });
 			this.tribeUpgradesNodes.head.upgrades.addUpgrade(upgradeID);
 			GlobalSignals.upgradeUnlockedSignal.dispatch(upgradeID);
 			this.save();
@@ -2219,8 +2233,8 @@ define(['ash',
 			let popupMsg = "<p>" + baseMsg + "</p>";
 			popupMsg += "<p>" + UIConstants.getMilestoneUnlocksDescriptionHTML(newMilestone, oldMilestone, true, true, hasDeity, hasInsight) + "<p>";
 			GameGlobals.uiFunctions.showInfoPopup("Milestone", popupMsg, "Continue", null, null, false, false);
-			
-			this.addLogMessage(LogConstants.getUniqueID(), baseMsg);
+
+			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), baseMsg, { visibility: LogConstants.MSG_VISIBILITY_PRIORITY });
 			
 			GlobalSignals.milestoneUnlockedSignal.dispatch();
 		},
@@ -2255,9 +2269,8 @@ define(['ash',
 			}
 
 			if (totalCollected < 1 && maxToCollect >= 1) {
-				this.addLogMessage(LogConstants.MSG_ID_USE_COLLECTOR_FAIL, "Nothing to collect yet.");
+				GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_COLLECTOR_FAIL, "Nothing to collect yet.");
 			}
-					GameGlobals.gameState.increaseGameStatKeyed("amountResourcesOverflownPerName", name);
 
 			GlobalSignals.inventoryChangedSignal.dispatch();
 			GlobalSignals.collectorCollectedSignal.dispatch();
@@ -2294,7 +2307,7 @@ define(['ash',
 		},
 
 		launch: function () {
-			this.addLogMessage(LogConstants.getUniqueID(), "The colony ship launches.");
+			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "The colony ship launches.", { visibility: LogConstants.MSG_VISIBILITY_GLOBAL });
 			
 			GameGlobals.gameState.isLaunched = true;
 			GameGlobals.metaState.hasCompletedGame = true;

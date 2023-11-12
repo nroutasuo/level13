@@ -19,7 +19,6 @@ define([
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/components/common/CampComponent',
 	'game/components/common/PositionComponent',
-	'game/components/common/LogMessagesComponent',
 	'game/components/player/ItemsComponent',
 	'game/components/sector/events/RecruitComponent',
 	'game/components/sector/events/TraderComponent',
@@ -31,7 +30,7 @@ define([
 ], function (
 	Ash, GameGlobals, GlobalSignals, GameConstants, CampConstants, FollowerConstants, ItemConstants, LogConstants, OccurrenceConstants, TradeConstants, TribeConstants, TextConstants, UIConstants, WorldConstants,
 	PlayerResourcesNode, CampNode, TribeUpgradesNode,
-	CampComponent, PositionComponent, LogMessagesComponent, ItemsComponent,
+	CampComponent, PositionComponent, ItemsComponent,
 	RecruitComponent, TraderComponent, RaidComponent, CampEventTimersComponent,
 	SectorImprovementsComponent, RaidVO, Text) {
 
@@ -627,10 +626,16 @@ define([
 		},
 		
 		addLogMessage: function (msg, replacements, values, camp, visibility) {
-			let logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
 			let campPos = camp.entity.get(PositionComponent).getPositionInCamp();
-			visibility = visibility || LogConstants.MSG_VISIBILITY_DEFAULT;
-			logComponent.addMessage(LogConstants.MSG_ID_CAMP_EVENT, msg, replacements, values, campPos, visibility, true);
+
+			let options = {
+				replacements: replacements,
+				values: values,
+				position: campPos,
+				visibility: visibility
+			};
+
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_CAMP_EVEN, msg, options);
 		}
 
 	});
