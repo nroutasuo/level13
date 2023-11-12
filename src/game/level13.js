@@ -212,8 +212,8 @@ define([
 			log.i("START " + GameConstants.STARTTimeNow() + "\t initializing systems");
 
 			this.engine.addSystem(new SaveSystem(), SystemPriorities.preUpdate);
-			this.engine.addSystem(new LevelStatusSystem(), SystemPriorities.preupdate);
-			this.engine.addSystem(new PlayerPositionSystem(), SystemPriorities.preupdate);
+			this.engine.addSystem(new LevelStatusSystem(), SystemPriorities.preUpdate);
+			this.engine.addSystem(new PlayerPositionSystem(), SystemPriorities.preUpdate);
 
 			this.engine.addSystem(new GlobalResourcesResetSystem(), SystemPriorities.update);
 			this.engine.addSystem(new VisionSystem(), SystemPriorities.update);
