@@ -5,11 +5,9 @@ function (Ash, GameGlobals, LogConstants, LogMessageVO) {
 	var LogMessagesComponent = Ash.Class.extend({
 
 		messages: [],
-		messagesPendingMovement: [],
 
 		constructor: function () {
 			this.messages = [];
-			this.messagesPendingMovement = [];
 			this.hasNewMessages = true;
 		},
 
@@ -17,20 +15,13 @@ function (Ash, GameGlobals, LogConstants, LogMessageVO) {
 			message = message.replace(/<br\s*[\/]?>/gi, " ");
 
 			let timeOffset = GameGlobals.gameState.pendingUpdateTime;
-			let newMsg = new LogMessageVO(logMsgID, message, replacements, values, position, visibility, timeOffset);
+			let messageVO = new LogMessageVO(logMsgID, message, replacements, values, position, visibility, timeOffset);
 
-			if (true) {
-				this.addMessageImmediate(newMsg);
-			} else {
-				newMsg.setPending(visibleLevel, visibleSector, visibleInCamp);
-				this.messagesPendingMovement.push(newMsg);
-			}
-		},
-
-		addMessageImmediate: function (message) {
 			this.hasNewMessages = true;
-			var merged = this.getMergedMessage(message);
-			var combined = this.combineMessagesCheck(merged);
+
+			let merged = this.getMergedMessage(messageVO);
+			let combined = this.combineMessagesCheck(merged);
+
 			if (!combined) {
 				this.messages.push(merged);
 			}
@@ -38,11 +29,6 @@ function (Ash, GameGlobals, LogConstants, LogMessageVO) {
 
 		removeMessage: function (message) {
 			this.messages.splice(this.messages.indexOf(message), 1);
-		},
-
-		showPendingMessage: function (message) {
-			this.messagesPendingMovement.splice(this.messagesPendingMovement.indexOf(message), 1);
-			this.addMessageImmediate(message);
 		},
 
 		combineMessagesCheck: function (newMsg) {
@@ -133,7 +119,6 @@ function (Ash, GameGlobals, LogConstants, LogMessageVO) {
 		getCustomSaveObject: function () {
 			var copy = {};
 			copy.messages = this.messages.slice(-30);
-			copy.messagesPendingMovement = this.messagesPendingMovement;
 			copy.hasNewMessages = this.hasNewMessages;
 			return copy;
 		},

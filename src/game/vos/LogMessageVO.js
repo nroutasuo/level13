@@ -21,12 +21,6 @@ define(['ash', 'game/constants/LogConstants', 'game/constants/TextConstants'], f
 			this.combined = 0;
 			this.text = this.createText();
 		},
-	
-		setPending: function (visibleLevel, visibleSector, visibleInCamp) {
-			this.pendingLevel = visibleLevel;
-			this.pendingSector = visibleSector;
-			this.pendingInCamp = visibleInCamp;
-		},
 		
 		createText: function () {
 			this.text = TextConstants.createTextFromLogMessage(this.message, this.replacements, this.values, true);

@@ -64,21 +64,6 @@ function (Ash, UIList, GameGlobals, GlobalSignals, LogConstants, LogNode, Player
 			this.updateMessages();
 			this.lastUpdateTimeStamp = timeStamp;
 		},
-	
-		updatePendingMessages: function (playerPosition) {
-			for (let node = this.logNodes.head; node; node = node.next) {
-				let pendingMessages = node.logMessages.messagesPendingMovement;
-				for (let i in pendingMessages) {
-					let msg = node.logMessages.messagesPendingMovement[i];
-					let validLevel = !msg.pendingLevel || msg.pendingLevel == playerPosition.level;
-					let validSector = !msg.pendingSector || msg.pendingSector == playerPosition.sectorId();
-					let validInCamp = (typeof msg.pendingInCamp === "undefined") || msg.pendingInCamp === playerPosition.inCamp;
-					if (validLevel && validSector && validInCamp) {
-						node.logMessages.showPendingMessage(msg);
-					}
-				}
-			}
-		},
 		
 		updateMessages: function () {
 			this.pruneMessages();
@@ -235,7 +220,6 @@ function (Ash, UIList, GameGlobals, GlobalSignals, LogConstants, LogNode, Player
 		},
 
 		onPlayerPositionChanged: function (position) {
-			this.updatePendingMessages(position);
 			this.updateMessages();
 		}
 

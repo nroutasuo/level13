@@ -115,10 +115,8 @@ define([
 		
 		addLogMessageWithPosition: function (id, msg, position) {
 			if (!msg || msg.length == 0) return;
-			let playerPosition = this.playerPosNodes.head.position;
 			let logComponent = this.playerPosNodes.head.entity.get(LogMessagesComponent);
-			let isVisibleImmediately = !position || position.equals(playerPosition)
-			logComponent.addMessage(id || LogConstants.getUniqueID(), msg, null, null, position, LogConstants.MSG_VISIBILITY_DEFAULT, isVisibleImmediately);
+			logComponent.addMessage(id || LogConstants.getUniqueID(), msg, null, null, position, LogConstants.MSG_VISIBILITY_DEFAULT);
 		},
 		
 		isReadyForExploration: function () {

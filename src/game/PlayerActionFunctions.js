@@ -108,9 +108,7 @@ define(['ash',
 			actionPosition = actionPosition || playerPosition;
 			visibility = visibility || LogConstants.MSG_VISIBILITY_DEFAULT;
 
-			let isVisibleImmediately = actionPosition.equals(playerPosition);
-
-			logComponent.addMessage(msgID, msg, replacements, values, actionPosition, visibility, isVisibleImmediately);
+			logComponent.addMessage(msgID, msg, replacements, values, actionPosition, visibility);
 		},
 
 		startAction: function (action, param) {
@@ -2172,7 +2170,7 @@ define(['ash',
 			
 			let upgradeDefinition = UpgradeConstants.upgradeDefinitions[upgradeID];
 			GameGlobals.playerActionsHelper.deductCosts(upgradeID);
-			this.addLogMessage(LogConstants.getUniqueID(), "Researched " + upgradeDefinition.name);
+			this.addLogMessage(LogConstants.getUniqueID(), "Researched " + upgradeDefinition.name, null, null, null, LogConstants.MSG_VISIBILITY_PRIORITY);
 			this.tribeUpgradesNodes.head.upgrades.addUpgrade(upgradeID);
 			GlobalSignals.upgradeUnlockedSignal.dispatch(upgradeID);
 			this.save();
