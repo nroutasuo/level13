@@ -15,6 +15,7 @@ define(['ash',
 				GlobalSignals.add(this, GlobalSignals.popupOpenedSignal, this.onPopupOpened);
 				GlobalSignals.add(this, GlobalSignals.popupClosedSignal, this.onPopupClosed);
 				GlobalSignals.add(this, GlobalSignals.actionStartedSignal, this.onActionStarted);
+				GlobalSignals.add(this, GlobalSignals.actionCompletedSignal, this.onActionCompleted);
 				GlobalSignals.add(this, GlobalSignals.actionButtonClickedSignal, this.onActionButtonClicked);
 				GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.onPlayerPositionChanged);
 			}
@@ -47,6 +48,14 @@ define(['ash',
 		
 		onActionStarted: function (action, param) {
 			var msg = "action started: " + action;
+			if (param && action.indexOf(param) < 0) {
+				msg += " " + param;
+			}
+			this.log(msg);
+		},
+		
+		onActionCompleted: function (action, param) {
+			var msg = "action completed: " + action;
 			if (param && action.indexOf(param) < 0) {
 				msg += " " + param;
 			}
