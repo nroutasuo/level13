@@ -166,6 +166,8 @@ define([
 			this.addLostAndBrokenItems(resultVO, action, loseInventoryProbability, true);
 			resultVO.gainedInjuries = this.getResultInjuries(PlayerActionConstants.getInjuryProbability(action, playerVision, playerLuck), action);
 			resultVO.hasCustomReward = hasCustomReward;
+
+			resultVO.collected = false;
 			
 			return resultVO;
 		},
@@ -394,6 +396,13 @@ define([
 		},
 
 		collectRewards: function (isTakeAll, rewards, campSector) {
+			if (rewards.collected) {
+				log.w("trying to collect rewards twice: " + rewards.action);
+				return false;
+			}
+
+			rewards.collected = true;
+
 			if (rewards && rewards.action == "scavenge") {
 				var excursionComponent = this.playerResourcesNodes.head.entity.get(ExcursionComponent);
 				if (excursionComponent) {
@@ -408,7 +417,7 @@ define([
 			}
 			
 			if (rewards == null || rewards.isEmpty()) {
-				return;
+				return true;
 			}
 			
 			let sourceSector = this.playerLocationNodes.head.entity;
@@ -557,6 +566,8 @@ define([
 			}
 
 			GlobalSignals.inventoryChangedSignal.dispatch();
+
+			return true;
 		},
 
 		getRewardsMessage: function (rewards, baseMsg) {

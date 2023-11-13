@@ -116,8 +116,6 @@ define(['ash',
 		},
 
 		startAction: function (action, param) {
-			// log.i("start action: " + action + " | " + param);
-			
 			if (this.currentAction && !this.isSubAction(action)) {
 				log.w("There is an incompleted action: " + this.currentAction + " (tried to start: " + action + ")");
 				return;
@@ -969,8 +967,6 @@ define(['ash',
 			);
 		},
 
-		
-		// messages: { id, msgSuccess, msgFlee, msgDefeat, addToLog }
 		handleOutActionResults: function (action, messages, showResultPopup, hasCustomReward, successCallback, failCallback) {
 			this.currentAction = action;
 			
@@ -1005,15 +1001,17 @@ define(['ash',
 				}
 				
 				let resultPopupCallback = function (isTakeAll) {
-					GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, rewards);
+					let collected = GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, rewards);
 					
-					let messages2 = GameGlobals.playerActionResultsHelper.getResultMessagesAfterSelection(rewards);
-					
-					if (!GameGlobals.gameState.isAutoPlaying) {
-						if (messages.addToLog && logMsgSuccess) GameGlobals.playerHelper.addLogMessage(logMsgId, logMsgSuccess);
-						playerActionFunctions.logResultMessages(messages1);
-						playerActionFunctions.logResultMessages(messages2);
-						playerActionFunctions.forceTabUpdate();
+					if (collected) {
+						let messages2 = GameGlobals.playerActionResultsHelper.getResultMessagesAfterSelection(rewards);
+						
+						if (!GameGlobals.gameState.isAutoPlaying) {
+							if (messages.addToLog && logMsgSuccess) GameGlobals.playerHelper.addLogMessage(logMsgId, logMsgSuccess);
+							playerActionFunctions.logResultMessages(messages1);
+							playerActionFunctions.logResultMessages(messages2);
+							playerActionFunctions.forceTabUpdate();
+						}
 					}
 					
 					player.remove(PlayerActionResultComponent);
