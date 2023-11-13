@@ -274,16 +274,20 @@ define(['ash',
 					}
 					$element.addClass("click-bound");
 					$element.click(ExceptionHandler.wrapClick(function (e) {
-						var action = $(this).attr("action");
+						let action = $(this).attr("action");
 						if (!action) {
 							log.w("No action mapped for button.");
 							return;
 						}
-						
+
+						if (!GameGlobals.gameState.isPlayerInputAccepted()) return;
+
 						GlobalSignals.actionButtonClickedSignal.dispatch(action);
 
-						var param = null;
-						var actionIDParam = GameGlobals.playerActionsHelper.getActionIDParam(action);
+						GameGlobals.gameState.uiStatus.isBusyCounter++;
+
+						let param = null;
+						let actionIDParam = GameGlobals.playerActionsHelper.getActionIDParam(action);
 						if (actionIDParam) param = actionIDParam;
 						let isProject = $(this).hasClass("action-level-project");
 						if (isProject) param = $(this).attr("sector");
@@ -291,16 +295,18 @@ define(['ash',
 
 						let locationKey = uiFunctions.getLocationKey(action);
 						let isStarted = GameGlobals.playerActionFunctions.startAction(action, param);
+
+						GameGlobals.gameState.uiStatus.isBusyCounter--;
+
 						if (!isStarted) {
 							uiFunctions.updateButtonCooldown($(this), action);
-							return;
-						}
-
-						var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
-						var duration = PlayerActionConstants.getDuration(action, baseId);
-						if (duration > 0) {
-							GameGlobals.gameState.setActionDuration(action, locationKey, duration);
-							uiFunctions.startButtonDuration($(this), duration);
+						} else {
+							let baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
+							let duration = PlayerActionConstants.getDuration(action, baseId);
+							if (duration > 0) {
+								GameGlobals.gameState.setActionDuration(action, locationKey, duration);
+								uiFunctions.startButtonDuration($(this), duration);
+							}
 						}
 					}));
 				});

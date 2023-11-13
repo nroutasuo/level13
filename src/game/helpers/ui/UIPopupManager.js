@@ -23,7 +23,6 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 			let forceShowInventoryManagement = options.forceShowInventoryManagement;
 			
 			let hasResult = resultVO && typeof resultVO !== 'undefined';
-			let hasNonEmptyResult = hasResult && !resultVO.isEmpty();
 			let showInventoryManagement = hasResult || forceShowInventoryManagement;
 			
 			let isDismissable = options.isDismissable || (typeof options.isDismissable == 'undefined' && !showInventoryManagement && !cancelButtonLabel);
@@ -41,6 +40,8 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 			}
 			
 			log.i("show popup (" + title + ")", "ui");
+
+			GameGlobals.gameState.uiStatus.isBusyCounter++;
 			
 			// use the same popup container for all popups
 			let popUpManager = this;
@@ -87,6 +88,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 			if (cancelButtonLabel) {
 				$("#common-popup .buttonbox").append("<button id='confirmation-cancel'>" + cancelButtonLabel + "</button>");
 				$("#confirmation-cancel").click(ExceptionHandler.wrapClick(function (e) {
+					if (!GameGlobals.gameState.isPlayerInputAccepted()) return;
 					popUpManager.closePopup("common-popup");
 					if (cancelCallback) cancelCallback();
 				}));
@@ -119,6 +121,10 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 			}
 			
 			this.updatePause();
+
+			setTimeout(() => {
+				GameGlobals.gameState.uiStatus.isBusyCounter--;
+			}, 500);
 		},
 
 		setDismissable: function ($popup, isDismissable) {
@@ -139,13 +145,21 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 		},
 		
 		handleOkButton: function (isTakeAll, okCallback) {
-			let canClose = !okCallback || okCallback(isTakeAll) !== false;
+			let id = "common-popup";
+			if (!GameGlobals.gameState.isPlayerInputAccepted()) return;
+			if (this.isClosing(id)) {
+				log.w("popup already closing: " + id)
+				return;
+			}
+			let canClose =  !okCallback || okCallback(isTakeAll) !== false;
 			if (!canClose) return;
-			this.closePopup("common-popup");
+			this.closePopup(id);
 		},
 		
 		closePopup: function (id) {
 			let popupManager = this;
+			$("#" + id).data("closing", true);
+
 			if (popupManager.popupQueue.length === 0) {
 				GlobalSignals.popupClosingSignal.dispatch(id);
 				$("#" + id).data("fading", true);
@@ -153,6 +167,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 					GameGlobals.uiFunctions.toggle(".popup-overlay", false);
 					$("#" + id).unwrap();
 					$("#" + id).data("fading", false);
+					$("#" + id).data("closing", false);
 					$("#" + id + "p#common-popup-desc");
 					GlobalSignals.popupClosedSignal.dispatch(id);
 					popupManager.showQueuedPopup();
@@ -213,6 +228,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 		},
 
 		dismissPopup: function ($popup) {
+			if (!GameGlobals.gameState.isPlayerInputAccepted()) return;
 			let dataDismissed = $popup.attr("data-dismissed");
 			if (dataDismissed == true || dataDismissed == "true") return;
 			let dataToggling = $popup.attr("data-toggling");
@@ -228,6 +244,10 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 			} else {
 				this.updatePause();
 			}
+		},
+
+		isClosing: function (id) {
+			return $("#" + id).data("closing") === true;
 		},
 		
 		hasOpenPopup: function () {

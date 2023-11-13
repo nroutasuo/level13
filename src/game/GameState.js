@@ -31,6 +31,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 				mouseDown: false,
 				currentTab: null,
 				mapVisited: false,
+				isBusyCounter: 0,
 				isHidden: false,
 				isBlocked: false,
 				isTransitioning: false,
@@ -151,6 +152,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			}
 			
 			// reset ui state
+			this.uiStatus.isBusyCounter = 0;
 			if (!this.uiStatus.lastSelection) this.uiStatus.lastSelection = {};
 
 			// init stats in case new ones added
@@ -439,6 +441,14 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 
 		getSurfaceLevelOrdinal: function () {
 			return WorldCreatorHelper.getLevelOrdinal(this.worldSeed, WorldCreatorHelper.getHighestLevel(this.worldSeed));
+		},
+
+		isPlayerInputAccepted: function () {
+			if (this.uiStatus.isBusyCounter > 0) {
+				log.w("Player input rejected");
+				return false;
+			}
+			return true;
 		},
 
 		setActionCooldown: function (action, key, cooldown) {
