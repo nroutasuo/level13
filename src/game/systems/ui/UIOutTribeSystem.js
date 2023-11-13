@@ -460,9 +460,9 @@ define([
 					
 					let duration = caravan.returnDuration * 1000;
 					let timeLeft = (caravan.returnTimeStamp - new Date().getTime()) / 1000;
-					let caravanTimeS = timeLeft < 30 ? "very soon" : timeLeft < 60 ? "less than a minute" : UIConstants.getTimeToNum(timeLeft);
+					let caravanTimeS = timeLeft < 30 ? "very soon" : timeLeft < 60 ? "in less than a minute" : "in " + UIConstants.getTimeToNum(timeLeft);
 					
-				 	return "Outgoing caravan on level " + level + " (expected to return in " + caravanTimeS + ").";
+				 	return "Outgoing caravan on level " + level + " (expected to return " + caravanTimeS + ").";
 					
 				case this.campNotificationTypes.EVENT_RECRUIT: return "There is a visitor currently on level " + level + ".";
 				case this.campNotificationTypes.POP_UNASSIGNED: return "Unassigned workers on level " + level + ".";
