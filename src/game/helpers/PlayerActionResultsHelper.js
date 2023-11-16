@@ -91,6 +91,9 @@ define([
 		playerLocationNodes: null,
 		tribeUpgradesNodes: null,
 
+		RESULT_MGS_FORMAT_LOG: "RESULT_MGS_FORMAT_LOG",
+		RESULT_MSG_FORMAT_PREVIW: "RESULT_MSG_FORMAT_PREVIW",
+
 		fixedRewards: {
 			"scavenge": [
 				{ resources: { metal: 1 } },
@@ -170,6 +173,24 @@ define([
 			resultVO.collected = false;
 			
 			return resultVO;
+		},
+
+		getUseItemRewards: function (itemID) {
+			let rewards = new ResultVO("use_item");
+			
+			let baseItemId = ItemConstants.getBaseItemId(itemID);
+			let itemConfig = ItemConstants.getItemConfigByID(itemID);
+
+			switch (baseItemId) {
+				case "cache_food":
+					rewards.gainedResources.addResource(resourceNames.food, itemConfig.configData.foodValue || 10);
+					break;
+				case "cache_water":
+					rewards.gainedResources.addResource(resourceNames.water, itemConfig.configData.waterValue || 10);
+					break;
+			}
+
+			return rewards;
 		},
 
 		getScavengeRewards: function () {
@@ -570,16 +591,35 @@ define([
 			return true;
 		},
 
-		getRewardsMessage: function (rewards, baseMsg) {
-			var msg = baseMsg;
-			var replacements = [];
-			var values = [];
-			var foundSomething = rewards.gainedResources.getTotal() > 0;
+		getRewardsMessageText: function (rewards, baseMsg, format) {
+			let msg = this.getRewardsMessage(rewards, baseMsg, format);
+			return TextConstants.createTextFromLogMessage(msg.msg, msg.replacements, msg.values);
+		},
 
-			var resourceTemplate = TextConstants.getLogResourceText(rewards.gainedResources);
-			msg += "Gained " + resourceTemplate.msg;
-			replacements = replacements.concat(resourceTemplate.replacements);
-			values = values.concat(resourceTemplate.values);
+		getRewardsMessage: function (rewards, baseMsg, format) {
+			if (!rewards) return null;
+
+			baseMsg = baseMsg || "";
+			format = format || this.RESULT_MGS_FORMAT_LOG;
+
+			let msg = baseMsg;
+			let replacements = [];
+			let values = [];
+			let foundSomething = rewards.gainedResources.getTotal() > 0;
+
+			if (baseMsg.length > 0) baseMsg += " ";
+
+
+			if (rewards.gainedResources.getTotal() > 0) {
+				let resourceTemplate = TextConstants.getLogResourceText(rewards.gainedResources);
+
+				if (format == this.RESULT_MGS_FORMAT_LOG) msg += "Gained ";
+				if (format == this.RESULT_MSG_FORMAT_PREVIW) msg += "+";
+
+				msg += resourceTemplate.msg;
+				replacements = replacements.concat(resourceTemplate.replacements);
+				values = values.concat(resourceTemplate.values);
+			}
 
 			if (rewards.gainedCurrency) {
 				msg += ", ";
@@ -667,7 +707,11 @@ define([
 			}
 
 			if (foundSomething) {
-				msg = TextConstants.sentencify(msg);
+				if (format == this.RESULT_MGS_FORMAT_LOG) {
+					msg = TextConstants.sentencify(msg);
+				} else {
+					msg = msg.trim();
+				}
 			} else {
 				msg = "Didn't find anything.";
 			}

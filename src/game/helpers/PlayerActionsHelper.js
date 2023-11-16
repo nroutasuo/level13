@@ -2182,6 +2182,17 @@ define([
 				if (reputation > 0) entries.push("Reputation: +" + reputation);
 			}
 
+			if (baseAction.indexOf("use_item") == 0) {
+				let itemID = this.getActionIDParam(action);
+				let useItemRewards = GameGlobals.playerActionResultsHelper.getUseItemRewards(itemID);
+				if (!useItemRewards.isEmpty()) {
+					let useItemRewardsMsg = GameGlobals.playerActionResultsHelper.getRewardsMessageText(useItemRewards, null, GameGlobals.playerActionResultsHelper.RESULT_MSG_FORMAT_PREVIW);
+					if (useItemRewardsMsg && useItemRewardsMsg.length > 0) {
+						entries.push(useItemRewardsMsg);
+					}
+				}
+			}
+
 			if (action == "build_in_campfire") {
 				var campfireCount = improvementsComponent.getCount(improvementNames.campfire);
 				var campfireLevel = improvementsComponent.getLevel(improvementNames.campfire);

@@ -2013,10 +2013,10 @@ define(['ash',
 					
 				case "cache_food":
 				case "cache_water":
-					let resourceName = baseItemId == "cache_food" ? resourceNames.food : resourceNames.water;
-					let val = itemConfig.configData.waterValue || itemConfig.configData.foodValue || 10;
-					currentStorage.resources.addResource(resourceName, val, "cache_supplies");
-					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, "Used " + Text.addArticle(item.name) + ". Gained " + val + " " + resourceName + ".");
+					let suppliesCacheRewards = GameGlobals.playerActionResultsHelper.getUseItemRewards(itemId);
+					let suppliesResultMsg = GameGlobals.playerActionResultsHelper.getRewardsMessageText(suppliesCacheRewards);
+					GameGlobals.playerActionResultsHelper.collectRewards(true, suppliesCacheRewards);
+					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_SUPPLIES_CACHE, "Used " + Text.addArticle(item.name) + ". " + suppliesResultMsg);
 					break;
 					
 				case "cache_evidence":

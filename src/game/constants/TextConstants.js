@@ -969,11 +969,13 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			var replacements = [];
 			var values = [];
 			for (let key in resourceNames) {
-				var name = resourceNames[key];
-				var amount = resourcesVO.getResource(name);
+				let name = resourceNames[key];
+				let amount = resourcesVO.getResource(name);
+				if (amount > 0) {
 				msg += "$" + replacements.length + ", ";
 				replacements.push("#" + replacements.length + " " + name);
 				values.push(Math.round(amount));
+			}
 			}
 			msg = msg.slice(0, -2);
 			return { msg: msg, replacements: replacements, values: values };
