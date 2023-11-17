@@ -1040,25 +1040,37 @@ define([
 
 		isLevelUnlocked: function (level) {
 			if (level === 13) return true;
-			var levelEntity = this.getLevelEntityForPosition(level);
+			let levelEntity = this.getLevelEntityForPosition(level);
 			if (levelEntity) {
-				var levelPassagesComponent = levelEntity.get(LevelPassagesComponent);
-				var passageSectors;
 				if (level < 13) {
-					passageSectors = Object.keys(levelPassagesComponent.passagesUpBuilt);
-					for (var iu = 0; iu < passageSectors.length; iu++) {
-						if (levelPassagesComponent.passagesUpBuilt[passageSectors[iu]]) return true;
-					}
+					return this.isPassageUpBuilt(level);
 				}
 
 				if (level > 13) {
-					passageSectors = Object.keys(levelPassagesComponent.passagesDownBuilt);
-					for (var id = 0; id < passageSectors.length; id++) {
-						if (levelPassagesComponent.passagesDownBuilt[passageSectors[id]]) return true;
-					}
+					return this.isPassageDownBuilt(level);
 				}
 			}
 
+			return false;
+		},
+
+		isPassageUpBuilt: function (level) {
+			let levelEntity = this.getLevelEntityForPosition(level);
+			let levelPassagesComponent = levelEntity.get(LevelPassagesComponent);
+			let passageSectors = Object.keys(levelPassagesComponent.passagesUpBuilt);
+			for (let iu = 0; iu < passageSectors.length; iu++) {
+				if (levelPassagesComponent.passagesUpBuilt[passageSectors[iu]]) return true;
+			}
+			return false;
+		},
+
+		isPassageDownBuilt: function (level) {
+			let levelEntity = this.getLevelEntityForPosition(level);
+			let levelPassagesComponent = levelEntity.get(LevelPassagesComponent);
+			let passageSectors = Object.keys(levelPassagesComponent.passagesDownBuilt);
+			for (let id = 0; id < passageSectors.length; id++) {
+				if (levelPassagesComponent.passagesDownBuilt[passageSectors[id]]) return true;
+			}
 			return false;
 		},
 

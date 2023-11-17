@@ -628,23 +628,19 @@ define(['ash',
 				}
 			}
 
-			let passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
-			if (passagesComponent.passageUp) {
-				let passageUpBuilt = improvements.getCount(improvementNames.passageUpStairs) +
-					improvements.getCount(improvementNames.passageUpElevator) +
-					improvements.getCount(improvementNames.passageUpHole) > 0;
-				found = true;
-				popupMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageUp, PositionConstants.DIRECTION_UP, sunlit, passageUpBuilt) + " ";
-				if (!passageUpBuilt) logMsg += level == 13 ? "Found a hole in the ceiling leading to the passage above, but it's far too high to reach." : "Found a passage to the level above.";
-			}
+			if (improvements.getTotalCount() == 0 || true) {
+				let passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
+				if (passagesComponent.passageUp && !GameGlobals.levelHelper.isPassageUpBuilt(level)) {
+					found = true;
+					popupMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageUp, PositionConstants.DIRECTION_UP, sunlit) + " ";
+					logMsg += level == 13 ? "Found a hole in the ceiling leading to the passage above, but it's far too high to reach." : "Found a passage to the level above.";
+				}
 
-			if (passagesComponent.passageDown) {
-				let passageDownBuilt = improvements.getCount(improvementNames.passageDownStairs) +
-					improvements.getCount(improvementNames.passageDownElevator) +
-					improvements.getCount(improvementNames.passageDownHole) > 0;
-				found = true;
-				popupMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageDown, PositionConstants.DIRECTION_DOWN, sunlit, passageDownBuilt) + " ";
-				if (!passageDownBuilt) logMsg += "Found a passage to the level below.";
+				if (passagesComponent.passageDown && !GameGlobals.levelHelper.isPassageDownBuilt(level)) {
+					found = true;
+					popupMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageDown, PositionConstants.DIRECTION_DOWN, sunlit) + " ";
+					logMsg += "Found a passage to the level below.";
+				}
 			}
 
 			let sectorLocalesComponent = sector.get(SectorLocalesComponent);
