@@ -304,6 +304,7 @@ define([
 			sectorEntity.add(new VisitedComponent());
 
 			let sectorPos = sectorEntity.get(PositionComponent);
+			let levelCampOrdinal = GameGlobals.gameState.getCampOrdinal(sectorPos.level);
 
 			this.visitedSectorsPendingRevealNeighbours.push(sectorEntity);
 
@@ -311,17 +312,25 @@ define([
 				GameGlobals.gameState.numVisitedSectors++;
 				GameGlobals.playerActionFunctions.unlockFeature("sectors");
 			}
-			
-			if (isNew && previousSectorEntity != null && previousSectorEntity != sectorEntity && GameGlobals.levelHelper.isLevelCampable(sectorPos.level)) {
-				let featuresComponentPrevious = previousSectorEntity.get(SectorFeaturesComponent);
-				let featuresComponentCurrent = sectorEntity.get(SectorFeaturesComponent);
-				
-				let isPreviousEarlyZone = featuresComponentPrevious.isEarlyZone();
-				let isEarlyZone = featuresComponentCurrent.isEarlyZone();
-				if (isPreviousEarlyZone && !isEarlyZone && !GameGlobals.playerHelper.isAffectedByHazardAt(sectorEntity)) {
-					this.addLogMessage(LogConstants.MSG_ID_ENTER_OUTSKIRTS, "Entering the outskirts.");
+
+			if (isNew && !GameGlobals.levelHelper.isLevelCampable(sectorPos.level) && levelCampOrdinal < 6) {
+				let levelSectors = GameGlobals.levelHelper.getSectorsByLevel(sectorPos.level);
+				let levelVisitedSectors = levelSectors.filter(s => s.has(VisitedComponent));
+				if (levelVisitedSectors.length == 15) {
+					this.addLogMessage(LogConstants.getUniqueID(), "Another inhospitable street. You won't find a place for a camp on this level.");
 				}
 			}
+			
+			if (isNew && previousSectorEntity != null && previousSectorEntity != sectorEntity && GameGlobals.levelHelper.isLevelCampable(sectorPos.level)) {
+			let featuresComponentPrevious = previousSectorEntity.get(SectorFeaturesComponent);
+			let featuresComponentCurrent = sectorEntity.get(SectorFeaturesComponent);
+			
+			let isPreviousEarlyZone = featuresComponentPrevious.isEarlyZone();
+			let isEarlyZone = featuresComponentCurrent.isEarlyZone();
+			if (isPreviousEarlyZone && !isEarlyZone && !GameGlobals.playerHelper.isAffectedByHazardAt(sectorEntity)) {
+				this.addLogMessage(LogConstants.MSG_ID_ENTER_OUTSKIRTS, "Entering the outskirts.");
+			}
+		}
 		},
 
 		handleInvalidPosition: function () {
