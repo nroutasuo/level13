@@ -373,6 +373,64 @@ define([
 
 			return resultVO;
 		},
+
+		getSectorsRevealedByMap: function (foundPosition) {
+			// NOTE: This should be deterministic so you can't save scum
+			let campSector = GameGlobals.levelHelper.getCampSectorOnLevel(foundPosition.level);
+			let campPosition = campSector ? campSector.get(PositionComponent) : null;
+
+			let entranceSector = GameGlobals.levelHelper.getEntranceSectorOnLevel(foundPosition.level);
+			let entrancePosition = entranceSector ? entranceSector.get(PositionComponent) : null;
+
+			let revealRadius = 3;
+
+			let getCenterSectorScore = function (s) {
+				let score = 0;
+				
+				let featuresComponent = s.get(SectorFeaturesComponent);
+				let localesComponent = s.get(SectorLocalesComponent);
+				let sectorPosition = s.get(PositionComponent);
+
+				// most important: sector is POI
+				if (!campSector && featuresComponent.campable) score += 30;
+				if (localesComponent.locales.length > 0) score += 20;
+				if (featuresComponent.itemsScavengeable.length > 0) score += 10;
+				if (featuresComponent.hasSpring) score += 10;
+				if (featuresComponent.isInvestigatable) score += 5;
+				if (featuresComponent.resourcesCollectable.getTotal() > 0) score += 5;
+				if (featuresComponent.resourcesCollectable.length > 0) score += 5;
+
+				// second important: distance to found position, camp and entrance				
+				let foundDistance = GameGlobals.levelHelper.getSimpleDistance(foundPosition, sectorPosition);
+				score += foundDistance <= revealRadius * 2 ? 0 : foundDistance * (-3);
+				if (campPosition) score += GameGlobals.levelHelper.getSimpleDistance(campPosition, sectorPosition);
+				if (entrancePosition) score += GameGlobals.levelHelper.getSimpleDistance(entrancePosition, sectorPosition);
+
+				// tie-breakers: small things
+				switch (featuresComponent.zone) {
+					case WorldConstants.ZONE_ENTRANCE: score += -1; break;
+					case WorldConstants.ZONE_POI_1: score += 1; break;
+					case WorldConstants.ZONE_POI_2: score += 1; break;
+				}
+				if (featuresComponent.sunlit) score += -1;
+				score += Math.min(revealRadius * 3, GameGlobals.levelHelper.getSectorsAround(sectorPosition, revealRadius).length);
+
+				return score;
+			};
+
+			let candidates = GameGlobals.levelHelper.getSectorsByLevel(foundPosition.level);
+
+			candidates = candidates.sort((a, b) => getCenterSectorScore(b) - getCenterSectorScore(a));
+
+			let centerSector = candidates[0];
+			
+			let centerPosition = centerSector.get(PositionComponent);
+			let sectorsToReveal = GameGlobals.levelHelper.getSectorsAround(centerPosition, revealRadius);
+			
+			log.i("sectors revealed by map: center: " + centerPosition + " radius: " + revealRadius + ", num: " + sectorsToReveal.length, this);
+
+			return sectorsToReveal;
+		},
 		
 		saveDiscoveredGoods: function (rewards) {
 			let result = {};

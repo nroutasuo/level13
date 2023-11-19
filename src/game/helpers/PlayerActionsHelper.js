@@ -2499,6 +2499,11 @@ define([
 				return result;
 			}
 		},
+
+		getDistanceToNearestCamp: function (sector) {
+			let path = this.getPathToNearestCamp(sector);
+			return path ? path.length : -1;
+		},
 		
 		getPathToNearestCamp: function (sector) {
 			if (!this.nearestCampNodes.head) return null;

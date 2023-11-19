@@ -445,6 +445,17 @@ define([
 			return campNode ? campNode.entity : null;
 		},
 
+		getEntranceSectorOnLevel: function (level) {
+			if (level == 13) return this.getSectorByPosition(level, 0, 0);
+
+			let isGoingDown = level < 13;
+			if (isGoingDown) {
+				return this.findPassageUp(level, true);
+			} else {
+				return this.findPassageDown(level, true);
+			}
+		},
+
 		forEverySectorFromLocation: function (pos, func, limitToCurrentLevel) {
 			// TODO go by path distance, not distance in coordinates / make that an option
 
@@ -1185,6 +1196,10 @@ define([
 				}
 			}
 			return sectors;
+		},
+
+		getSimpleDistance: function (pos1, pos2) {
+			return PositionConstants.getDistanceTo(pos1, pos2);
 		},
 		
 		getNearestBeacon: function (pos) {

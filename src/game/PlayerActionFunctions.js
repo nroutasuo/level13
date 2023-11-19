@@ -2082,24 +2082,16 @@ define(['ash',
 					break;
 					
 				case "consumable_map":
-					// TODO score and prefer unvisited sectors
-					var radius = 3;
-					var centerSectors = GameGlobals.levelHelper.getSectorsAround(foundPosition, 2);
-					var centerSector = centerSectors[Math.floor(Math.random() * centerSectors.length)];
-					var centerPosition = centerSector.get(PositionComponent);
-					var sectorsToReveal = GameGlobals.levelHelper.getSectorsAround(centerPosition, radius);
-					
-					var revealedSomething = false;
-					for (var i = 0; i < sectorsToReveal.length; i++) {
-						var statusComponent = sectorsToReveal[i].get(SectorStatusComponent);
+					let sectorsToReveal = GameGlobals.playerActionResultsHelper.getSectorsRevealedByMap(foundPosition);
+					let revealedSomething = false;
+					for (let i = 0; i < sectorsToReveal.length; i++) {
+						let statusComponent = sectorsToReveal[i].get(SectorStatusComponent);
 						if (statusComponent.scouted) continue;
 						if (statusComponent.revealedByMap) continue;
 						if (statusComponent.pendingRevealByMap) continue;
 						statusComponent.pendingRevealByMap = true;
 						revealedSomething = true;
 					}
-					
-					log.i("reveal map around " + centerPosition + " radius " + radius);
 					
 					if (revealedSomething) {
 						GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_MAP_PIECE, "Recorded any useful information from the map.");
