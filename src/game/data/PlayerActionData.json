@@ -5,7 +5,7 @@
         "fight_gang": 60,
         "investigate": 1,
         "launch": 600,
-        "scavenge": 10,
+        "scavenge": 9,
         "scavenge_heap": 3,
         "scout_locale_i": 60,
         "scout_locale_u": 60,
@@ -191,13 +191,13 @@
         },
         "build_out_camp": {
             "resource_food": 2,
-            "resource_metal": 10
+            "resource_metal": 9
         },
         "build_out_collector_food": {
-            "resource_metal": 8
+            "resource_metal": 7
         },
         "build_out_collector_water": {
-            "resource_metal": 8
+            "resource_metal": 7
         },
         "build_out_greenhouse": {
             "resource_fuel": 100,
@@ -727,12 +727,12 @@
             "resource_tools": 50
         },
         "improve_in_campfire": {
-            "cost_factor_expBase": 1.25,
+            "cost_factor_expBase": 1.35,
             "resource_food": 5,
             "resource_metal": {
-                "constantCost": 2,
-                "expCost": 10,
-                "linearCost": 18
+                "constantCost": 0,
+                "expCost": 5,
+                "linearCost": 25
             },
             "resource_rope": {
                 "constantCost": 5,
