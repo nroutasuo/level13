@@ -60,6 +60,7 @@ define([
 			this.elements = {};
 			this.elements.sectorHeader = $("#header-sector");
 			this.elements.description = $("#out-desc");
+			this.elements.btnScavengeHeap = $("#out-action-scavenge-heap");
 			this.elements.btnClearWorkshop = $("#out-action-clear-workshop");
 			this.elements.btnNap = $("#out-action-nap");
 			this.elements.btnWait = $("#out-action-wait");
@@ -220,6 +221,7 @@ define([
 			var passageDownBuilt = improvements.getCount(improvementNames.passageDownStairs) +
 				improvements.getCount(improvementNames.passageDownElevator) +
 				improvements.getCount(improvementNames.passageDownHole) > 0;
+
 			GameGlobals.uiFunctions.toggle("#out-action-move-up", (isScouted && passagesComponent.passageUp != null) || passageUpBuilt);
 			GameGlobals.uiFunctions.toggle("#out-action-move-down", (isScouted && passagesComponent.passageDown != null) || passageDownBuilt);
 			GameGlobals.uiFunctions.toggle("#out-action-move-camp", hasCamp && !hasCampHere);
@@ -230,11 +232,20 @@ define([
 			GameGlobals.uiFunctions.toggle("#out-action-use-spring", isScouted && featuresComponent.hasSpring);
 			GameGlobals.uiFunctions.toggle("#out-action-investigate", this.showInvestigate());
 
-			var showWorkshop = isScouted && workshopComponent != null && workshopComponent.isClearable && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP)
-			GameGlobals.uiFunctions.toggle("#out-action-clear-workshop", showWorkshop);
+			// workshop
+			let showWorkshop = isScouted && workshopComponent != null && workshopComponent.isClearable && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP)
+			GameGlobals.uiFunctions.toggle(this.elements.btnClearWorkshop, showWorkshop);
 			if (showWorkshop) {
-				var workshopName = TextConstants.getWorkshopName(workshopComponent.resource);
+				let workshopName = TextConstants.getWorkshopName(workshopComponent.resource);
 				this.elements.btnClearWorkshop.find(".btn-label").text("scout " + workshopName);
+			}
+
+			// resource heap
+			let showHeap = isScouted && featuresComponent.heapResource != null;
+			GameGlobals.uiFunctions.toggle(this.elements.btnScavengeHeap, showHeap);
+			if (showHeap) {
+				let heapName = TextConstants.getHeapDisplayName(featuresComponent.heapResource, featuresComponent);
+				this.elements.btnScavengeHeap.find(".btn-label").text("scavenge " + heapName);
 			}
 
 			GameGlobals.uiFunctions.slideToggleIf("#out-locales", null, isScouted && sectorLocalesComponent.locales.length > 0, 200, 0);
@@ -393,6 +404,7 @@ define([
 			let position = positionComponent.getPosition();
 
 			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
+			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 
 			var description = "";
@@ -415,6 +427,19 @@ define([
 					}
 				} else if (canTrap) {
 					description += "It might be worthwhile to install <span class='hl-functionality'>traps</span> here. ";
+				}
+
+				if (featuresComponent.heapResource) {
+					let heapDisplayName = 
+						"<span class='hl-functionality'>" +
+						Text.addArticle(TextConstants.getHeapDisplayName(featuresComponent.heapResource, featuresComponent)) +
+						"</span>";
+					let resourceDisplayName = TextConstants.getResourceDisplayName(featuresComponent.heapResource);
+					if (sectorStatus.getHeapScavengedPercent() >= 100) {
+						description += "There is " + heapDisplayName + ", but it has been picked clean. ";
+					} else {
+						description += "There is " + heapDisplayName + ", which can be scavenged for " + resourceDisplayName + ". ";
+					}
 				}
 			}
 

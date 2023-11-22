@@ -24,6 +24,7 @@ define(['ash', 'game/constants/LogConstants', 'game/constants/TextConstants'], f
 		
 		createText: function () {
 			this.text = TextConstants.createTextFromLogMessage(this.message, this.replacements, this.values, true);
+			this.text = TextConstants.sentencify(this.text);
 			
 			return this.text;
 		},

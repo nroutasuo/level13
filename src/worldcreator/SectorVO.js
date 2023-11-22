@@ -25,6 +25,8 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			this.sunlit = false;
 			this.hazards = new EnvironmentalHazardsVO();
 			this.hasSpring = false;
+			this.hasWorkshop = false;
+			this.hasHeap = false;
 			this.hasTradeConnectorSpot = false;
 			this.isInvestigatable = false;
 			this.scavengeDifficulty = 5;
@@ -35,6 +37,9 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			this.possibleEnemies = [];
 			this.stashes = [];
 			this.waymarks = [];
+
+			this.workshopResource = null;
+			this.heapResource = null;
 			
 			this.distanceToCamp = -1;
 		},

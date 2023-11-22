@@ -181,29 +181,7 @@ define([
 					passageOptions.passageUpType,
 					passageOptions.passageDownType,
 					movementBlockers))
-				.add(new SectorFeaturesComponent(
-					level,
-					sectorFeatures.criticalPaths,
-					sectorFeatures.zone,
-					sectorFeatures.buildingDensity,
-					sectorFeatures.wear,
-					sectorFeatures.damage,
-					sectorFeatures.sectorType,
-					sectorFeatures.sunlit,
-					sectorFeatures.ground,
-					sectorFeatures.surface,
-					sectorFeatures.hazards,
-					sectorFeatures.isCamp,
-					sectorFeatures.notCampableReason,
-					sectorFeatures.resourcesScavengable,
-					sectorFeatures.resourcesCollectable,
-					sectorFeatures.itemsScavengeable,
-					sectorFeatures.hasSpring,
-					sectorFeatures.hasTradeConnectorSpot,
-					sectorFeatures.isInvestigatable,
-					sectorFeatures.stashes,
-					sectorFeatures.waymarks
-				))
+				.add(new SectorFeaturesComponent(level, sectorFeatures))
 				.add(new SectorLocalesComponent(locales))
 				.add(new SaveComponent(saveKey, [
 					ResourcesComponent,

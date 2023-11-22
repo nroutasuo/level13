@@ -12,6 +12,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 
 		// out actions
 		MSG_ID_SCAVENGE: "SCAVENGE",
+		MSG_ID_SCAVENGE_HEAP: "MSG_ID_SCAVENGE_HEAP",
 		MSG_ID_SCOUT: "SCOUT",
 		MSG_ID_SCOUT_FOUND_SOMETHING: "MSG_ID_SCOUT_FOUND_SOMETHING",
 		MSG_ID_INVESTIGATE: "MSG_ID_INVESTIGATE",

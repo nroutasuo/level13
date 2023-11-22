@@ -43,6 +43,7 @@ define(['ash'], function (Ash) {
 			DEFAULT: 2, 	// default value, scavenging is worth it but not traveling a long way for it
 			COMMON: 3,		// good sectors
 			ABUNDANT: 4,	// exceptionally good sectors
+			HEAP: 5,		// only in limited use heaps
 		},
 		
 		getCampStep: function (zone) {

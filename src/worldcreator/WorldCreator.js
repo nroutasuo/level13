@@ -143,6 +143,7 @@ define([
 			sectorFeatures.notCampableReason = sectorVO.notCampableReason;
 			sectorFeatures.stashes = sectorVO.stashes || null;
 			sectorFeatures.waymarks = sectorVO.waymarks || [];
+			sectorFeatures.heapResource = sectorVO.heapResource || null;
 			return sectorFeatures;
 		},
 

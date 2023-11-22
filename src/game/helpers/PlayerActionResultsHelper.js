@@ -7,7 +7,6 @@ define([
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
 	'game/constants/ExplorationConstants',
-	'game/constants/FightConstants',
 	'game/constants/FollowerConstants',
 	'game/constants/LocaleConstants',
 	'game/constants/PlayerActionConstants',
@@ -30,7 +29,6 @@ define([
 	'game/components/common/PositionComponent',
 	'game/components/common/ResourcesComponent',
 	'game/components/common/CurrencyComponent',
-	'game/components/common/LogMessagesComponent',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/SectorLocalesComponent',
@@ -49,7 +47,6 @@ define([
 	GlobalSignals,
 	GameConstants,
 	ExplorationConstants,
-	FightConstants,
 	FollowerConstants,
 	LocaleConstants,
 	PlayerActionConstants,
@@ -72,7 +69,6 @@ define([
 	PositionComponent,
 	ResourcesComponent,
 	CurrencyComponent,
-	LogMessagesComponent,
 	SectorFeaturesComponent,
 	SectorStatusComponent,
 	SectorLocalesComponent,
@@ -128,6 +124,9 @@ define([
 			switch (baseActionID) {
 				case "scavenge":
 					resultVO = this.getScavengeRewards();
+					break;
+				case "scavenge_heap":
+					resultVO = this.getScavengeHeapRewards();
 					break;
 				case "scout":
 					resultVO = this.getScoutRewards();
@@ -200,7 +199,6 @@ define([
 			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			let sectorResources = sectorFeatures.resourcesScavengable;
 			let sectorIngredients = sectorFeatures.itemsScavengeable || [];
-			let itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			let efficiency = this.getCurrentScavengeEfficiency();
 			
 			let itemOptions = { rarityKey: "scavengeRarity" };
@@ -231,6 +229,25 @@ define([
 	
 				rewards.gainedFollowers = this.getFallbackFollowers(0.1);
 			}
+
+			return rewards;
+		},
+
+		getScavengeHeapRewards: function () {
+			let rewards = new ResultVO("scavenge_heap");
+			
+			let sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			let efficiency = this.getCurrentScavengeEfficiency();
+
+			let heapResource = sectorFeatures.heapResource;
+
+			if (!heapResource) return rewards;
+
+			let heapResources = new ResourcesVO(storageTypes.DEFINITION);
+			heapResources.addResource(heapResource, WorldConstants.resourcePrevalence.HEAP);
+
+			rewards.gainedResources = this.getRewardResources(1, 1, efficiency, heapResources);
 
 			return rewards;
 		},
@@ -987,11 +1004,18 @@ define([
 			if (resultVO.gainedBlueprintPiece) {
 				if (!this.tribeUpgradesNodes.head.upgrades.hasUpgrade(resultVO.gainedBlueprintPiece)) {
 					let blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(resultVO.gainedBlueprintPiece);
+					let blueprintMessage = { addToPopup: true, addToLog: true, visibility: LogConstants.MSG_VISIBILITY_GLOBAL };
 					if (blueprintVO.currentPieces === 1) {
-						messages.push({ id: LogConstants.MSG_ID_FOUND_BLUEPRINT_FIRST, text: "Found a piece of forgotten technology.", addToPopup: true, addToLog: true });
+						blueprintMessage.id = LogConstants.MSG_ID_FOUND_BLUEPRINT_FIRST;
+						blueprintMessage.text = "Found a piece of a forgotten technology.";
+					} else if (blueprintVO.currentPieces == blueprintVO.maxPieces) {
+						blueprintMessage.id = LogConstants.MSG_ID_FOUND_BLUEPRINT_LAST;
+						blueprintMessage.text = "Found the last piece of a blueprint";
 					} else {
-						messages.push({ id: LogConstants.MSG_ID_FOUND_BLUEPRINT_CONSECUTIVE, text: "Found another piece of a blueprint.", addToPopup: true, addToLog: true });
+						blueprintMessage.id = LogConstants.MSG_ID_FOUND_BLUEPRINT_CONSECUTIVE;
+						blueprintMessage.text = "Found another piece of a blueprint";
 					}
+					messages.push(blueprintMessage);
 				}
 			}
 	
@@ -1909,6 +1933,8 @@ define([
 				case WorldConstants.resourcePrevalence.COMMON: return 1;
 				// not quite 100% chance with 50% scavenge efficiency
 				case WorldConstants.resourcePrevalence.ABUNDANT: return 1.9;
+				// 100% chance with 50% scavenge efficiency
+				case WorldConstants.resourcePrevalence.HEAP: return 2;
 			}
 			log.w("unknown resource prevalence: " + prevalence);
 			return 0;
@@ -1924,6 +1950,8 @@ define([
 					return 3;
 				case WorldConstants.resourcePrevalence.ABUNDANT:
 					return 5;
+				case WorldConstants.resourcePrevalence.HEAP:
+					return 6;
 			}
 			log.w("unknown resource prevalence: " + prevalence);
 			return 0;

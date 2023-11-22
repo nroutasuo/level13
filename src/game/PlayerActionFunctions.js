@@ -263,6 +263,7 @@ define(['ash',
 				// Other actions
 				case "enter_camp": this.enterCamp(false); break;
 				case "scavenge": this.scavenge(param); break;
+				case "scavenge_heap": this.scavengeHeap(param); break;
 				case "investigate": this.investigate(param); break;
 				case "scout": this.scout(param); break;
 				case "scout_locale_i": this.scoutLocale(param); break;
@@ -483,20 +484,12 @@ define(['ash',
 			
 			GameGlobals.playerActionFunctions.unlockFeature("scavenge");
 
-			let logMsg = "";
-			let playerMaxVision = this.playerStatsNodes.head.vision.maximum;
 			let sector = this.playerLocationNodes.head.entity;
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
-			let sunlit = sectorFeatures.sunlit;
 			let sectorResources = sectorFeatures.resourcesScavengable;
 			let sectorItems = sectorFeatures.itemsScavengeable.length;
 			
-			if (playerMaxVision <= PlayerStatConstants.VISION_BASE) {
-				if (sunlit) logMsg = "Rummaged blindly for loot. ";
-				else logMsg = "Rummaged in the dark. ";
-			} else {
-				logMsg = "Went scavenging. ";
-			}
+			let logMsg = this.getScavengeMessageBase(sector);
 
 			var logMsgSuccess = logMsg;
 			var logMsgFlee = logMsg + "Fled empty-handed.";
@@ -526,6 +519,63 @@ define(['ash',
 			};
 			
 			this.handleOutActionResults("scavenge", messages, true, false, successCallback);
+		},
+
+		scavengeHeap: function () {
+			let sector = this.playerLocationNodes.head.entity;
+			let sectorStatus = sector.get(SectorStatusComponent);
+			let sectorFeatures = sector.get(SectorFeaturesComponent);
+			let efficiency = GameGlobals.playerActionResultsHelper.getCurrentScavengeEfficiency();
+			
+			let weightedProgress = Math.min(1, efficiency);
+			let scavengedPercentBefore = sectorStatus.getHeapScavengedPercent();
+			let scavengedPercentAfter = sectorStatus.getHeapScavengedPercent(weightedProgress);
+
+			let resourceNameDisplayName = TextConstants.getResourceDisplayName(sectorFeatures.heapResource);
+			let heapDisplayName = TextConstants.getHeapDisplayName(sectorFeatures.heapResource, sectorFeatures);
+			
+			let logMsg = this.getScavengeMessageBase(sector);
+
+			var logMsgSuccess = logMsg;
+			var logMsgFlee = logMsg + "Fled empty-handed.";
+			var logMsgDefeat = logMsg + "Got into a fight and was defeated.";
+			
+			logMsgSuccess += " " + Text.capitalize(resourceNameDisplayName) + " remaining: " + Math.round(100 - scavengedPercentAfter) + "%";
+
+			let successCallback = function () {
+				GameGlobals.gameState.stats.numTimesScavenged++;
+				sectorStatus.weightedNumHeapScavenges += weightedProgress;
+
+				let warningThresholdHighScavengedPercent = 100;
+				if (scavengedPercentBefore < warningThresholdHighScavengedPercent && scavengedPercentAfter >= warningThresholdHighScavengedPercent) {
+					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), heapDisplayName + " picked clean");
+				}
+			};
+			
+			let messages = {
+				id: LogConstants.MSG_ID_SCAVENGE_HEAP,
+				msgSuccess: logMsgSuccess,
+				msgFlee: logMsgFlee,
+				msgDefeat: logMsgDefeat,
+				addToLog: false,
+			};
+			
+			this.handleOutActionResults("scavenge_heap", messages, true, false, successCallback);
+		},
+
+		getScavengeMessageBase: function (sector) {
+			let sectorFeatures = sector.get(SectorFeaturesComponent);
+			let sunlit = sectorFeatures.sunlit;
+			let playerMaxVision = this.playerStatsNodes.head.vision.maximum;
+
+			let logMsg = "";
+			if (playerMaxVision <= PlayerStatConstants.VISION_BASE) {
+				if (sunlit) logMsg = "Rummaged blindly for loot. ";
+				else logMsg = "Rummaged in the dark. ";
+			} else {
+				logMsg = "Went scavenging. ";
+			}
+			return logMsg;
 		},
 
 		investigate: function () {
@@ -658,6 +708,11 @@ define(['ash',
 				for (let i = 0; i < featuresComponent.waymarks.length; i++) {
 					popupMsg += "<br/>" + TextConstants.getWaymarkText(featuresComponent.waymarks[i], sectorFeatures);
 				}
+			}
+
+			if (featuresComponent.heapResource) {
+				let heapDisplayName = TextConstants.getHeapDisplayName(featuresComponent.heapResource, featuresComponent);
+				popupMsg += "<br/>There is " + Text.addArticle(heapDisplayName) + " which can be scavenged for " + featuresComponent.heapResource + ".";
 			}
 			
 			if (GameGlobals.sectorHelper.canBeInvestigated(sector, true)) {

@@ -923,12 +923,16 @@ define([
 						}
 					}
 					if (typeof requirements.sector.scavengedPercent != "undefined") {
-						var range = requirements.sector.scavengedPercent;
-						var currentVal = statusComponent.getScavengedPercent() / 100;
-						let result = this.checkRequirementsRange(range, currentVal, "", "This area has beens scavenged clean.");
-						if (result) {
-							return result;
-						}
+						let range = requirements.sector.scavengedPercent;
+						let currentVal = statusComponent.getScavengedPercent() / 100;
+						let result = this.checkRequirementsRange(range, currentVal, "", "This area has been scavenged clean.");
+						if (result) return result;
+					}
+					if (typeof requirements.sector.heapScavengedPercent != "undefined") {
+						let range = requirements.sector.heapScavengedPercent;
+						let currentVal = statusComponent.getHeapScavengedPercent() / 100;
+						let result = this.checkRequirementsRange(range, currentVal, "", "Nothing left of the heap.");
+						if (result) return result;
 					}
 					if (typeof requirements.sector.investigatable != "undefined") {
 						var requiredValue = requirements.sector.investigatable;
@@ -2172,6 +2176,8 @@ define([
 			let baseAction = this.getBaseActionID(action);
 
 			let improvementsComponent = sector.get(SectorImprovementsComponent);
+			let featuresComponent = sector.get(SectorFeaturesComponent);
+			let statusComponent = sector.get(SectorStatusComponent);
 			let campComponent = sector.get(CampComponent);
 			let currentPopulation = campComponent ? Math.floor(campComponent.population) : 0;
 			let accSpeedPopulation = GameGlobals.campHelper.getPopulationRumourGenerationPerSecond(currentPopulation);
@@ -2209,6 +2215,10 @@ define([
 				let current = CampConstants.getCampfireRumourGenerationPerSecond(campfireCount, campfireLevel, accSpeedPopulation);
 				let next = CampConstants.getCampfireRumourGenerationPerSecond(campfireCount, campfireLevel + 1, accSpeedPopulation);
 				entries.push("Rumours: +" + UIConstants.getAccumulationText(next - current));
+			}
+
+			if (action == "scavenge_heap") {
+				entries.push("Remaining: " + (100 - statusComponent.getHeapScavengedPercent() + "%"));
 			}
 
 			return entries.length > 0 ? entries.map(e => "<span class='action-effect-description-entry'>" + e + "</span>") : null;

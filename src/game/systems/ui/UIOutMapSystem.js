@@ -598,7 +598,7 @@ define([
 			let knownResources = GameGlobals.sectorHelper.getLocationKnownResources(sector);
 			let items = GameGlobals.sectorHelper.getLocationDiscoveredItems(sector);
 			let knownItems = GameGlobals.sectorHelper.getLocationKnownItems(sector);
-			let allItems = GameGlobals.sectorHelper.getLocationScavengeableItems(sector);
+			
 			let showIngredients = GameGlobals.sectorHelper.hasSectorVisibleIngredients(sector);
 			if (resources.length < 1 && !showIngredients) {
 				result = "-";
@@ -609,6 +609,13 @@ define([
 			}
 			
 			result += " (" + scavengedPercent + "% scavenged) ";
+
+			if (featuresComponent.heapResource) {
+				let heapName = TextConstants.getHeapDisplayName(featuresComponent.heapResource, featuresComponent);
+				let heapScavengedPercentage = statusComponent.getHeapScavengedPercent();
+				let resourceName = TextConstants.getResourceDisplayName(featuresComponent.heapResource);
+				result += ", " + heapName + " (" + resourceName + ", " + heapScavengedPercentage + "% scavenged)";
+			}
 			
 			if (investigatedPercent > 0) {
 				result += " (" + investigatedPercent + "% investigated) ";
@@ -715,11 +722,13 @@ define([
 			let result = [];
 			
 			if (isScouted) {
+				let statusComponent = this.selectedSector.get(SectorStatusComponent);
+				let featuresComponent = sector.get(SectorFeaturesComponent);
+
 				if (GameGlobals.sectorHelper.canBeInvestigated(sector)) {
 					result.push("can be investigated");
 				}
 				
-				let statusComponent = this.selectedSector.get(SectorStatusComponent);
 				if (statusComponent.graffiti) {
 					result.push("Graffiti: '" + statusComponent.graffiti + "'");
 				}

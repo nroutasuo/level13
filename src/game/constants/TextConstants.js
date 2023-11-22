@@ -126,7 +126,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					break;
 				case SectorConstants.SECTOR_TYPE_MAINTENANCE:
 					addOptions("n-sector", [ "transport hall", "maintenance area", "transport hub" ]);
-					addOptions("a-street", [ "strange", "chaotic", "cluttered" ]);
+					addOptions("a-street", [ "strange", "chaotic", "cluttered", "bare" ]);
 					addOptions("a-street-past", [ "orderly" ]);
 					addOptions("n-building", [ "maintenace hub", "cable car station", "utility building", "water treatment station" ]);
 					addOptions("n-buildings", [ "utility buildings", "data centers", "control rooms", "automated control units" ]);
@@ -136,10 +136,10 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					break;
 				case SectorConstants.SECTOR_TYPE_COMMERCIAL:
 					addOptions("n-sector", [ "shopping mall", "shopping center", "office complex" ]);
-					addOptions("a-street-past", [ "glamorous", "buzzling" ]);
+					addOptions("a-street-past", [ "glamorous", "buzzling", "vibrant" ]);
 					addOptions("n-building", [ "shopping center", "department store", "office building", "cafe", "bar" ]);
 					addOptions("n-buildings", [ "shopping towers", "shopping malls", "shops", "stores", "offices", "office towers" ]);
-					addOptions("a-building", [ "empty", "deserted", "ransacked", "ensormous", "bizarre", "symmetrical" ]);
+					addOptions("a-building", [ "empty", "deserted", "ransacked", "ensormous", "bizarre", "symmetrical", "colourful" ]);
 					addOptions("an-decos", [ "empty fountains", "abandoned stalls" ]);
 					addOptions("an-items", [ "broken glass" ]);
 					break;
@@ -159,7 +159,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					addOptions("a-street", [ "shabby", "chaotic" ]);
 					addOptions("a-street-past", [ "gloomy", "crowded", "lively" ]);
 					addOptions("n-building", [ "apartment building" ]);
-					addOptions("a-building", [ "abandoned", "sketchy", "depressing", "dishevelled" ]);
+					addOptions("a-building", [ "abandoned", "sketchy", "depressing", "dishevelled", "grey", "graffiti-covered" ]);
 					addOptions("n-buildings", [ "shacks", "huts", "slum residences", "apartment buildings", "residential towers that don't seem to have ever been connected to the grid" ]);
 					addOptions("an-decos", [ "collapsed shacks", "garbage piles" ]);
 					addOptions("an-items", [ "rusted pipes", "empty cans" ]);
@@ -963,6 +963,29 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					return "safe";
 			}
 		},
+
+		getResourceDisplayName: function (resourceName) {
+			return resourceName;
+		},
+
+		getHeapDisplayName: function (resourceName, features) {
+			let sectorType = features.sectorType;
+			let condition = features.getCondition();
+			let isBadCondition = condition == SectorConstants.SECTOR_CONDITION_RUINED || condition == SectorConstants.SECTOR_CONDITION_DAMAGED;
+			let isHumbleSectorType = sectorType == SectorConstants.SECTOR_TYPE_SLUM || sectorType == features.SECTOR_TYPE_MAINTENANCE || sectorType == SectorConstants.SECTOR_TYPE_INDUSTRIAL;
+			let isLivable = !features.hasHazards() && !features.sunlit && features.buildingDensity > 1 && features.buildingDensity < 8;
+
+			switch (resourceName) {
+				case resourceNames.metal:
+					if (features.buildingDensity > 3 && isBadCondition) return "collapsed building";
+					if (sectorType == SectorConstants.SECTOR_TYPE_MAINTENANCE) return "wrecked vehicle";
+					if (features.buildingDensity < 7 && isHumbleSectorType) return "landfill";
+					if (isLivable && condition == SectorConstants.SECTOR_CONDITION_ABANDONED) return "ruined camp";
+					return "metal heap";
+					
+			}
+			return "resource heap (" + resourceName + ")";
+		},
 		
 		getLogResourceText: function (resourcesVO) {
 			var msg = "";
@@ -972,10 +995,10 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				let name = resourceNames[key];
 				let amount = resourcesVO.getResource(name);
 				if (amount > 0) {
-				msg += "$" + replacements.length + ", ";
-				replacements.push("#" + replacements.length + " " + name);
-				values.push(Math.round(amount));
-			}
+					msg += "$" + replacements.length + ", ";
+					replacements.push("#" + replacements.length + " " + name);
+					values.push(Math.round(amount));
+				}
 			}
 			msg = msg.slice(0, -2);
 			return { msg: msg, replacements: replacements, values: values };

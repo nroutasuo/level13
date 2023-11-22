@@ -80,6 +80,7 @@ define([
 				this.generateInvestigateSectors(seed, worldVO, levelVO);
 				this.generateLocales(seed, worldVO, levelVO);
 				this.generateMovementBlockers(seed, worldVO, levelVO);
+				this.generateHeaps(seed, worldVO, levelVO);
 				this.generateEnemies(seed, worldVO, levelVO, enemyCreator);
 				this.generateItems(seed, worldVO, levelVO);
 				
@@ -778,6 +779,44 @@ define([
 					let criticalPathVO = new CriticalPathVO(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, workshopSectors[i].position, pathConstraints[j].startPosition);
 					WorldCreatorHelper.addCriticalPath(worldVO, criticalPathVO);
 				}
+			}
+		},
+
+		generateHeaps: function (seed, worldVO, levelVO) {
+			let heapResource = resourceNames.metal;
+
+			let getHeapSectorScore = function (sectorVO) {
+				let score = sectorVO.resourcesScavengable.getResource(heapResource);
+				score -= WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO);
+				if (sectorVO.hazards.radiation > 0) score -= 5;
+				if (sectorVO.hazards.poison > 0) score -= 5;
+				if (sectorVO.locales.length > 0) score -= 1;
+				if (sectorVO.resourcesCollectable.getTotal() > 0) score -= 1;
+				if (sectorVO.hasWater()) score -= 1;
+				if (sectorVO.sectorType == SectorConstants.SECTOR_TYPE_SLUM) score += 10;
+				if (sectorVO.sectorType == SectorConstants.SECTOR_TYPE_MAINTENANCE) score += 1;
+				if (sectorVO.sectorType == SectorConstants.SECTOR_TYPE_PUBLIC) score -= 1;
+				if (sectorVO.sectorType == SectorConstants.SECTOR_TYPE_COMMERCIAL) score -= 2;
+				return score;
+			};
+
+			let count = 2;
+			if (levelVO.level == 13) count++;
+			if (!levelVO.isCampable) count--;
+			if (levelVO.isHard) count--;
+
+			let excludedZones = [ WorldConstants.ZONE_EXTRA_CAMPABLE, WorldConstants.ZONE_EXTRA_UNCAMPABLE ];
+			if (levelVO.campOrdinal == 1) {
+				excludedZones.push(WorldConstants.ZONE_POI_2);
+			}
+			let excludedFeatures = [ "isCamp", "isPassageUp", "isPassageDown", "hasWorkshop" ];
+			let options = { requireCentral: true, excludingFeature: excludedFeatures, excludedZones: excludedZones };
+			let heapSectors = WorldCreatorRandom.randomSectorsScored(seed, worldVO, levelVO, count, count + 1, options, getHeapSectorScore);
+
+			for (let i = 0; i < heapSectors.length; i++) {
+				heapSectors[i].hasHeap = true;
+				heapSectors[i].heapResource = heapResource;
+				WorldCreatorLogger.i("heap [" +  heapResource + "]: " + heapSectors[i].position);
 			}
 		},
 		

@@ -819,19 +819,29 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 		},
 		
 		drawResourcesOnSector: function (ctx, options, sector, knownResources, sectorXpx, sectorYpx, sectorSize) {
-			let mapResources = options.mapMode == MapUtils.MAP_MODE_SCAVENGING ?
-				[ resourceNames.water, resourceNames.food, resourceNames.metal, resourceNames.rope, resourceNames.herbs, resourceNames.fuel, resourceNames.rubber, resourceNames.medicine, resourceNames.tools, resourceNames.concrete, resourceNames.robots ] :
-				[ resourceNames.water, resourceNames.food ];
+			let allResources = [ resourceNames.water, resourceNames.food, resourceNames.metal, resourceNames.rope, resourceNames.herbs, resourceNames.fuel, resourceNames.rubber, resourceNames.medicine, resourceNames.tools, resourceNames.concrete, resourceNames.robots ];
+			let defaultResources = [ resourceNames.water, resourceNames.food ];
+			let mapResources = options.mapMode == MapUtils.MAP_MODE_SCAVENGING ? allResources : defaultResources;
 
 			let sectorImprovements = sector.get(SectorImprovementsComponent);
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
-			let sectorPosition = sector.get(PositionComponent);
 			
 			let resourcesCollectable = sectorFeatures.resourcesCollectable;
+
+			let hasHeap = function (resourceName) {
+				if (!sectorFeatures.heapResource) return false;
+				 if (sectorFeatures.heapResource !== resourceNames.metal) return false;
+				 return true;
+			};
 				
 			let directResources = {};
 			directResources[resourceNames.water] = sectorImprovements.getCount(improvementNames.collector_water) > 0 || sectorFeatures.hasSpring;
 			directResources[resourceNames.food] = sectorImprovements.getCount(improvementNames.collector_food) > 0;
+
+			if (hasHeap(resourceNames.metal)) {
+				directResources[resourceNames.metal] = true;
+				defaultResources.push(resourceNames.metal);
+			}
 			
 			let totalWidth = 0;
 			let bigResSize = 5;
@@ -851,6 +861,8 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 					if (sectorFeatures.resourcesScavengable.getResource(name) >= minAmountToShow) {
 						potentialResources[name] = true;
 					}
+				} else if (hasHeap(name)) {
+					potentialResources[name] = true;
 				}
 				
 				if (directResources[name]) totalWidth += bigResSize + padding;

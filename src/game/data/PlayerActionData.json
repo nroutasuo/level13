@@ -6,6 +6,7 @@
         "investigate": 1,
         "launch": 600,
         "scavenge": 10,
+        "scavenge_heap": 3,
         "scout_locale_i": 60,
         "scout_locale_u": 60,
         "send_caravan": 600,
@@ -1038,6 +1039,9 @@
         "scavenge": {
             "stamina": 3
         },
+        "scavenge_heap": {
+            "stamina": 3
+        },
         "scout": {
             "stamina": 6
         },
@@ -1344,6 +1348,7 @@
         "nap": "Sleep rough and regain a bit of stamina.",
         "repair_in": "Repair damaged building",
         "scavenge": "Look for resources.",
+        "scavenge_heap": "Look for resources.",
         "scout": "Scout the area for evidence.",
         "scout_locale_i": "Find out if there is anyone living here.",
         "scout_locale_u": "Scout for additional resources and evidence.",
@@ -1404,6 +1409,10 @@
             0.0005,
             0.005
         ],
+        "scavenge_heap": [
+            0.0005,
+            0.005
+        ],
         "scout": [
             0.005,
             0.01
@@ -1415,6 +1424,7 @@
         "fight_gang": true,
         "investigate": true,
         "scavenge": true,
+        "scavenge_heap": true,
         "scout": true,
         "use_in_home": false,
         "use_in_hospital": false,
@@ -3143,6 +3153,19 @@
             "busy": false,
             "sector": {
                 "scavengedPercent": [
+                    -1,
+                    1
+                ]
+            },
+            "vision": [
+                8,
+                -1
+            ]
+        },
+        "scavenge_heap": {
+            "busy": false,
+            "sector": {
+                "heapScavengedPercent": [
                     -1,
                     1
                 ]

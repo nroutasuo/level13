@@ -4,6 +4,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 	var SectorStatusComponent = Ash.Class.extend({
 		
 		NUM_SCAVENGES_PER_SECTOR: 30,
+		NUM_HEAP_SCAVENGES_PER_SECTOR: 5,
 		NUM_INVESTIGATES_PER_SECTOR: 3,
 
 		discoveredResources: [],
@@ -18,6 +19,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 		debrisClearedDirections: [],
 		gapBridgedDirections: [],
 		weightedNumScavenges: 0,
+		weightedNumHeapScavenges: 0,
 		weightedNumInvestigates: 0,
 		stashesFound: 0,
 		graffiti: null,
@@ -41,6 +43,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			this.debrisClearedDirections = [];
 			this.gapBridgedDirections = [];
 			this.weightedNumScavenges = 0;
+			this.weightedNumHeapScavenges = 0;
 			this.weightedNumInvestigates = 0;
 			this.stashesFound = 0;
 			this.graffiti = null;
@@ -79,13 +82,19 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			return scouted;
 		},
 		
-		getScavengedPercent: function () {
-			return Math.min(this.weightedNumScavenges / this.NUM_SCAVENGES_PER_SECTOR, 1) * 100;
+		getScavengedPercent: function (addition) {
+			addition = addition || 0;
+			return Math.min((this.weightedNumScavenges + addition) / this.NUM_SCAVENGES_PER_SECTOR, 1) * 100;
 		},
 		
 		getInvestigatedPercent: function (addition) {
 			addition = addition || 0;
 			return Math.min((this.weightedNumInvestigates + addition) / this.NUM_INVESTIGATES_PER_SECTOR, 1) * 100;
+		},
+		
+		getHeapScavengedPercent: function (addition) {
+			addition = addition || 0;
+			return Math.min((this.weightedNumHeapScavenges + addition) / this.NUM_HEAP_SCAVENGES_PER_SECTOR, 1) * 100;
 		},
 		
 		getHazardReduction: function (hazard) {
@@ -157,6 +166,8 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 				copy.bd = this.gapBridgedDirections;
 			if (this.weightedNumScavenges)
 				copy.sw = Math.round(this.weightedNumScavenges * 1000)/1000;
+			if (this.weightedNumHeapScavenges)
+				copy.shw = Math.round(this.weightedNumHeapScavenges * 1000)/1000;
 			if (this.weightedNumInvestigates)
 				copy.iw = Math.round(this.weightedNumInvestigates * 1000)/1000;
 			if (this.stashesFound)
@@ -185,6 +196,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			this.debrisClearedDirections = componentValues.dd ? componentValues.dd : [];
 			this.gapBridgedDirections = componentValues.bd ? componentValues.bd : [];
 			this.weightedNumScavenges = componentValues.sw ? componentValues.sw : 0;
+			this.weightedNumHeapScavenges = componentValues.shw ? componentValues.shw : 0;
 			this.weightedNumInvestigates = componentValues.iw ? componentValues.iw : 0;
 			this.stashesFound = componentValues.sf ? componentValues.sf : 0;
 			this.graffiti = componentValues.g ? componentValues.g : null;
