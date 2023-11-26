@@ -1502,12 +1502,12 @@ define(['ash',
 				
 				let uiFunctions = this;
 				$(".popup-overlay").fadeIn(200, function () {
-					uiFunctions.popupManager.repositionPopups();
+					uiFunctions.popupManager.repositionPopup($popup);
 					GlobalSignals.popupOpenedSignal.dispatch(popupID);
 					GameGlobals.gameState.isPaused = true;
 					$("#" + popupID).fadeIn(200, function () {
 						uiFunctions.toggle("#" + popupID, true);
-						uiFunctions.popupManager.repositionPopups();
+						uiFunctions.popupManager.repositionPopup($popup);
 					});
 					GlobalSignals.elementToggledSignal.dispatch(("#" + popupID), true);
 				});

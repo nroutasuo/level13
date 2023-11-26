@@ -1020,7 +1020,13 @@ define(['ash',
 
 		handleOutActionResults: function (action, messages, showResultPopup, hasCustomReward, successCallback, failCallback) {
 			this.currentAction = action;
-			
+
+			setTimeout(function () {
+				GameGlobals.playerActionFunctions.handleOutActionResultsInternal(action, messages, showResultPopup, hasCustomReward, successCallback, failCallback);
+			}, 1);
+		},
+
+		handleOutActionResultsInternal: function (action, messages, showResultPopup, hasCustomReward, successCallback, failCallback) {
 			let playerActionFunctions = this;
 			let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			
@@ -1082,6 +1088,7 @@ define(['ash',
 				} else {
 					resultPopupCallback(true);
 				}
+
 			}, function () {
 				playerActionFunctions.completeAction(action);
 				if (messages.addToLog && messages.msgFlee) GameGlobals.playerHelper.addLogMessage(logMsgId, messages.msgFlee);

@@ -322,6 +322,7 @@ define([
 		},
 
 		updatePlayerStats: function () {
+			if (GameGlobals.uiFunctions.popupManager.hasOpenPopup()) return;
 			if (!this.currentLocationNodes.head) return;
 			let isSmallLayout = this.elements.body.hasClass("layout-small");
 			var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
@@ -613,6 +614,7 @@ define([
 		},
 		
 		refreshPerks: function () {
+			if (GameGlobals.gameState.isPaused) return;
 			if (!this.playerStatsNodes.head) return;
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 
@@ -938,6 +940,7 @@ define([
 		},
 
 		updateNotifications: function (inCamp) {
+			if (GameGlobals.gameState.isPaused) return;
 			let busyComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
 			let isBusy = this.playerStatsNodes.head.entity.has(PlayerActionComponent) && busyComponent.isBusy();
 			if (isBusy) {

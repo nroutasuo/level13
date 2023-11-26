@@ -45,8 +45,8 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 			
 			// use the same popup container for all popups
 			let popUpManager = this;
-			let popup = $("#common-popup");
-			if ($(popup).parent().hasClass("popup-overlay")) $(popup).unwrap();
+			let $popup = $("#common-popup");
+			if ($popup.parent().hasClass("popup-overlay")) $popup.unwrap();
 			
 			// text
 			GameGlobals.uiFunctions.toggle("#common-popup-input-container", false);
@@ -96,16 +96,16 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 			
 			// overlay
 			let overlayClass = isMeta ? "popup-overlay-meta" : "popup-overlay-ingame";
-			$("#common-popup").toggleClass("popup-meta", isMeta);
-			$("#common-popup").toggleClass("popup-ingame", !isMeta);
-			$("#common-popup").wrap("<div class='popup-overlay " + overlayClass + "' style='display:none'></div>");
+			$popup.toggleClass("popup-meta", isMeta);
+			$popup.toggleClass("popup-ingame", !isMeta);
+			$popup.wrap("<div class='popup-overlay " + overlayClass + "' style='display:none'></div>");
 			GameGlobals.uiFunctions.toggle(".popup-overlay", true);
-			popUpManager.repositionPopups();
+			popUpManager.repositionPopup($popup);
 			
 			let slideTime = GameGlobals.gameState.uiStatus.isInitialized ? 150 : 0;
-			GameGlobals.uiFunctions.slideToggleIf($("#common-popup"), null, true, slideTime, slideTime, () => {
+			GameGlobals.uiFunctions.slideToggleIf($popup, null, true, slideTime, slideTime, () => {
 				log.i("showed popup", "ui");
-				popUpManager.repositionPopups();
+				popUpManager.repositionPopup($popup);
 			});
 			GlobalSignals.popupOpenedSignal.dispatch("common-popup");
 			
@@ -114,7 +114,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 			GameGlobals.uiFunctions.generateButtonOverlays("#common-popup .buttonbox");
 			GameGlobals.uiFunctions.generateCallouts("#common-popup .buttonbox");
 			
-			this.setDismissable(popup, isDismissable);
+			this.setDismissable($popup, isDismissable);
 		
 			if ($defaultButton) {
 				$defaultButton.focus()
@@ -163,7 +163,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 			if (popupManager.popupQueue.length === 0) {
 				GlobalSignals.popupClosingSignal.dispatch(id);
 				$("#" + id).data("fading", true);
-				GameGlobals.uiFunctions.slideToggleIf($("#" + id), null, false, 100, 100, function () {
+				GameGlobals.uiFunctions.slideToggleIf($("#" + id), null, false, 50, 50, function () {
 					GameGlobals.uiFunctions.toggle(".popup-overlay", false);
 					$("#" + id).unwrap();
 					$("#" + id).data("fading", false);
@@ -183,16 +183,21 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 		},
 		
 		repositionPopups: function () {
-			let isSmallLayout =  $(window).width() <= UIConstants.SMALL_LAYOUT_THRESHOLD;
+			$.each($(".popup"), function () {
+				GameGlobals.uiFunctions.popupManager.repositionPopup($(this));
+			});
+		},
+
+		repositionPopup: function ($popup) {
 			let winh = $(window).height();
 			let winw = $(window).width();
+			let isSmallLayout = winw <= UIConstants.SMALL_LAYOUT_THRESHOLD;
 			let padding = isSmallLayout ? 0 : 20;
-			$.each($(".popup"), function () {
-				var popuph = Math.min($(this).height(), winh);
-				var popupw = Math.min($(this).width(), winw);
-				$(this).css("top", Math.max(0, (winh - popuph) / 2 - padding));
-				$(this).css("left", (winw - popupw) / 2);
-			});
+
+			let popuph = Math.min($popup.height(), winh);
+			let popupw = Math.min($popup.width(), winw);
+			$popup.css("top", Math.max(0, (winh - popuph) / 2 - padding));
+			$popup.css("left", (winw - popupw) / 2);
 		},
 		
 		closeHidden: function (ok) {
