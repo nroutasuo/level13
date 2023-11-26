@@ -11,25 +11,42 @@ define(['ash', 'game/constants/ItemConstants'], function (Ash, ItemConstants) {
 		CAPACITY_CURRENCY: 0.05,
 		
 		updateCapacity: function (bagComponent, rewards, playerResources, playerAllItems) {
-			var originalResC = this.getResourcesCapacity(playerResources.resources);
-			var discardedResC = this.getResourcesCapacity(rewards.discardedResources);
-			var lostResC = this.getResourcesCapacity(rewards.lostResources);
-			var selectedResC = this.getResourcesCapacity(rewards.selectedResources);
-			var gainedResC = this.getResourcesCapacity(rewards.gainedResources);
-			
-			var originalItemC = this.getItemsCapacity(playerAllItems);
-			var discardedItemC = this.getItemsCapacity(rewards.discardedItems);
-			var lostItemC = this.getItemsCapacity(rewards.lostItems);
-			var selectedItemC = this.getItemsCapacity(rewards.selectedItems);
-			var gainedItemC = this.getItemsCapacity(rewards.gainedItems);
-			
-			var selectionStartCapacity = originalResC + originalItemC;
-			var selectedCapacity = originalResC - discardedResC - lostResC + selectedResC + originalItemC - discardedItemC - lostItemC + selectedItemC;
-			var selectableCapacity = originalResC - lostResC + gainedResC + originalItemC - lostItemC + gainedItemC;
+			bagComponent.selectionStartCapacity = this.getSelectionStartCapacity(playerResources, playerAllItems);
+			bagComponent.selectedCapacity = this.getSelectedCapacity(rewards, playerResources, playerAllItems);
+			bagComponent.selectableCapacity = this.getSelectableCapacity(rewards, playerResources, playerAllItems);
+		},
 
-			bagComponent.selectionStartCapacity = selectionStartCapacity;
-			bagComponent.selectedCapacity = selectedCapacity;
-			bagComponent.selectableCapacity = selectableCapacity;
+		getSelectionStartCapacity: function (playerResources, playerAllItems) {
+			let originalResC = this.getResourcesCapacity(playerResources.resources);
+			let originalItemC = this.getItemsCapacity(playerAllItems);
+
+			return originalResC + originalItemC;
+		},
+
+		getSelectedCapacity: function (rewards, playerResources, playerAllItems) {
+			let originalResC = this.getResourcesCapacity(playerResources.resources);
+			let discardedResC = this.getResourcesCapacity(rewards.discardedResources);
+			let lostResC = this.getResourcesCapacity(rewards.lostResources);
+			let selectedResC = this.getResourcesCapacity(rewards.selectedResources);
+
+			let originalItemC = this.getItemsCapacity(playerAllItems);
+			let discardedItemC = this.getItemsCapacity(rewards.discardedItems);
+			let lostItemC = this.getItemsCapacity(rewards.lostItems);
+			let selectedItemC = this.getItemsCapacity(rewards.selectedItems);
+
+			return originalResC - discardedResC - lostResC + selectedResC + originalItemC - discardedItemC - lostItemC + selectedItemC;
+		},
+
+		getSelectableCapacity: function (rewards, playerResources, playerAllItems) {
+			let originalResC = this.getResourcesCapacity(playerResources.resources);
+			let lostResC = this.getResourcesCapacity(rewards.lostResources);
+			let gainedResC = this.getResourcesCapacity(rewards.gainedResources);
+
+			let originalItemC = this.getItemsCapacity(playerAllItems);
+			let lostItemC = this.getItemsCapacity(rewards.lostItems);
+			let gainedItemC = this.getItemsCapacity(rewards.gainedItems);
+
+			return originalResC - lostResC + gainedResC + originalItemC - lostItemC + gainedItemC;
 		},
 		
 		getItemsCapacity: function (itemList) {

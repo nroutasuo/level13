@@ -1042,6 +1042,8 @@ define(['ash',
 					let discoveredGoodsText = "Found a source of " + TextConstants.getListText(discoveredGoods.items.map(item => ItemConstants.getItemDisplayName(item).toLowerCase()));
 					messages1.push({ id: LogConstants.getUniqueID(), text: discoveredGoodsText, addToPopup: true, addToLog: true });
 				}
+
+				showResultPopup = showResultPopup || !GameGlobals.playerHelper.canTakeAllRewards(rewards);
 				
 				let popupMsg = logMsgSuccess;
 				
@@ -1078,7 +1080,7 @@ define(['ash',
 				if (showResultPopup) {
 					GameGlobals.uiFunctions.showResultPopup(TextConstants.getActionName(baseActionID), popupMsg, rewards, resultPopupCallback);
 				} else {
-					resultPopupCallback();
+					resultPopupCallback(true);
 				}
 			}, function () {
 				playerActionFunctions.completeAction(action);

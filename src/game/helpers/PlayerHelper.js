@@ -2,6 +2,7 @@ define([
 	'ash',
 	'utils/ValueCache',
 	'game/GameGlobals',
+	'game/constants/BagConstants',
 	'game/constants/GameConstants',
 	'game/constants/FollowerConstants',
 	'game/constants/ImprovementConstants',
@@ -23,6 +24,7 @@ define([
 	Ash,
 	ValueCache,
 	GameGlobals,
+	BagConstants,
 	GameConstants,
 	FollowerConstants,
 	ImprovementConstants,
@@ -142,6 +144,19 @@ define([
 				return false;
 			}
 			
+			return true;
+		},
+
+		canTakeAllRewards: function (resultVO) {
+			if (resultVO.isEmpty()) return true;
+
+			let bagComponent = this.playerResourcesNodes.head.bag;
+			let inCamp = this.isInCamp();
+			let resources = this.playerResourcesNodes.head.resources;
+			let items =  this.playerStatsNodes.head.items.getAll(inCamp);
+			let selectableCapacity = BagConstants.getSelectableCapacity(resultVO, resources, items);
+			if (selectableCapacity > bagComponent.totalCapacity) return false;
+
 			return true;
 		},
 		
