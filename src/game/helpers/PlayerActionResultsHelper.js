@@ -153,6 +153,7 @@ define([
 					break;
 				case "clear_waste_r":
 				case "clear_waste_t":
+				case "flee":
 				case "wait":
 					resultVO = new ResultVO(baseActionID);
 					break;
@@ -361,7 +362,8 @@ define([
 		},
 
 		getFightRewards: function (won, enemyVO) {
-			var rewards = new ResultVO("fight");
+			let rewards = new ResultVO("fight");
+
 			if (won) {
 				// TODO make fight rewards dependent on enemy difficulty (amount)
 				let availableResources = this.getAvailableResourcesForEnemy(enemyVO);
@@ -369,9 +371,16 @@ define([
 				rewards.gainedResources = this.getRewardResources(0.5, 2, this.getCurrentScavengeEfficiency(), availableResources);
 				rewards.gainedItems = this.getRewardItems(0, 1, enemyVO.droppedIngredients, {});
 				rewards.gainedReputation = 1;
+
+				let playerVision = this.playerStatsNodes.head.vision.value;
+				let perksComponent = this.playerStatsNodes.head.perks;
+				let playerLuck = perksComponent.getTotalEffect(PerkConstants.perkTypes.luck);
+				let loseInventoryProbability = PlayerActionConstants.getLoseInventoryProbability("fight", playerVision, playerLuck);
+				this.addLostAndBrokenItems(rewards, "fight", loseInventoryProbability, true);
 			} else {
 				rewards = this.getFadeOutResults("fight", 0.5, 1, 0.75, 0.5, enemyVO);
 			}
+
 			return rewards;
 		},
 

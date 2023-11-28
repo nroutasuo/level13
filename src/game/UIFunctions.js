@@ -316,20 +316,19 @@ define(['ash',
 					GameGlobals.fightHelper.startFight();
 				});
 				$(scope + "#out-action-fight-close").click(function (e) {
-					GameGlobals.fightHelper.endFight(false);
+					GameGlobals.fightHelper.endFight(false, false);
 				});
 				$(scope + "#out-action-fight-continue").click(function (e) {
-					GameGlobals.fightHelper.endFight(false);
+					GameGlobals.fightHelper.endFight(false, false);
 				});
 				$(scope + "#out-action-fight-takeselected").click(function (e) {
-					GameGlobals.fightHelper.endFight(false);
+					GameGlobals.fightHelper.endFight(false, false);
 				});
 				$(scope + "#out-action-fight-takeall").click(function (e) {
-					GameGlobals.fightHelper.endFight(true);
+					GameGlobals.fightHelper.endFight(true, false);
 				});
 				$(scope + "#out-action-fight-cancel").click(function (e) {
-					GameGlobals.fightHelper.endFight(false);
-					GameGlobals.playerActionFunctions.flee();
+					GameGlobals.fightHelper.endFight(false, true);
 				});
 				$(scope + "#incoming-caravan-popup-cancel").click(function (e) {
 					uiFunctions.popupManager.closePopup("incoming-caravan-popup");

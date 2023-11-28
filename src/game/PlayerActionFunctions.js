@@ -1028,76 +1028,87 @@ define(['ash',
 
 		handleOutActionResultsInternal: function (action, messages, showResultPopup, hasCustomReward, successCallback, failCallback) {
 			let playerActionFunctions = this;
-			let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			
 			let logMsgId = messages.id || LogConstants.getUniqueID();
-			let logMsgSuccess = messages.msgSuccess || "";
 			
 			showResultPopup = showResultPopup && !GameGlobals.gameState.uiStatus.isHidden;
 			
 			GameGlobals.fightHelper.handleRandomEncounter(action, function () {
+				// if no fight or fight won
 				let rewards = GameGlobals.playerActionResultsHelper.getResultVOByAction(action, hasCustomReward);
-				let player = playerActionFunctions.playerStatsNodes.head.entity;
-				let sector = playerActionFunctions.playerLocationNodes.head.entity;
-				if (!GameGlobals.gameState.isAutoPlaying) player.add(new PlayerActionResultComponent(rewards));
-				
-				let messages1 = GameGlobals.playerActionResultsHelper.getResultMessagesBeforeSelection(rewards);
-				
-				let discoveredGoods = GameGlobals.playerActionResultsHelper.saveDiscoveredGoods(rewards);
-				if (discoveredGoods.items && discoveredGoods.items.length > 0) {
-					let discoveredGoodsText = "Found a source of " + TextConstants.getListText(discoveredGoods.items.map(item => ItemConstants.getItemDisplayName(item).toLowerCase()));
-					messages1.push({ id: LogConstants.getUniqueID(), text: discoveredGoodsText, addToPopup: true, addToLog: true });
-				}
+				playerActionFunctions.handleActionRewards(action, rewards, messages, successCallback, showResultPopup);
+			}, function () {
+				// if fled (either before fight or mid-fight)
+                playerActionFunctions.completeAction(action);
+				let fleeRewards = GameGlobals.playerActionResultsHelper.getResultVOByAction("flee");
+				let fleeMessages = { addToLog: false, logMsgSuccess: messages.msgFlee };
+				playerActionFunctions.handleActionRewards("flee", fleeRewards, fleeMessages, successCallback, showResultPopup);
+                if (messages.addToLog && messages.msgFlee) GameGlobals.playerHelper.addLogMessage(logMsgId, messages.msgFlee);
+                if (failCallback) failCallback();
+            }, function () {
+				// if fight lost
+                playerActionFunctions.completeAction(action);
+                if (messages.addToLog && messages.msgDefeat) GameGlobals.playerHelper.addLogMessage(logMsgId, messages.msgDefeat);
+                if (failCallback) failCallback();
+            });
+		},
 
-				showResultPopup = showResultPopup || !GameGlobals.playerHelper.canTakeAllRewards(rewards);
+		handleActionRewards: function (action, rewards, messages, callback, showResultPopup) {
+			let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+			let player = this.playerStatsNodes.head.entity;
+			let playerActionFunctions = this;
+
+			let logMsgId = messages.id || LogConstants.getUniqueID();
+
+			if (!GameGlobals.gameState.isAutoPlaying) player.add(new PlayerActionResultComponent(rewards));
+			
+			let messages1 = GameGlobals.playerActionResultsHelper.getResultMessagesBeforeSelection(rewards);
+			
+			let discoveredGoods = GameGlobals.playerActionResultsHelper.saveDiscoveredGoods(rewards);
+			if (discoveredGoods.items && discoveredGoods.items.length > 0) {
+				let discoveredGoodsText = "Found a source of " + TextConstants.getListText(discoveredGoods.items.map(item => ItemConstants.getItemDisplayName(item).toLowerCase()));
+				messages1.push({ id: LogConstants.getUniqueID(), text: discoveredGoodsText, addToPopup: true, addToLog: true });
+			}
+
+			showResultPopup = showResultPopup || !GameGlobals.playerHelper.canTakeAllRewards(rewards);
+			
+			let popupMsg = messages.logMsgSuccess;
+			
+			for (let i = 0; i < messages1.length; i++) {
+				if (messages1[i].addToPopup) {
+					popupMsg += TextConstants.sentencify(messages1[i].text);
+				}
+			}
+			
+			let resultPopupCallback = function (isTakeAll) {
+				let collected = GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, rewards);
 				
-				let popupMsg = logMsgSuccess;
-				
-				for (let i = 0; i < messages1.length; i++) {
-					if (messages1[i].addToPopup) {
-						popupMsg += TextConstants.sentencify(messages1[i].text);
+				if (collected) {
+					let messages2 = GameGlobals.playerActionResultsHelper.getResultMessagesAfterSelection(rewards);
+					
+					if (!GameGlobals.gameState.isAutoPlaying) {
+						if (messages.addToLog && msgBase) GameGlobals.playerHelper.addLogMessage(logMsgId, msgBase);
+						playerActionFunctions.logResultMessages(messages1);
+						playerActionFunctions.logResultMessages(messages2);
+						playerActionFunctions.forceTabUpdate();
 					}
 				}
 				
-				let resultPopupCallback = function (isTakeAll) {
-					let collected = GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, rewards);
-					
-					if (collected) {
-						let messages2 = GameGlobals.playerActionResultsHelper.getResultMessagesAfterSelection(rewards);
-						
-						if (!GameGlobals.gameState.isAutoPlaying) {
-							if (messages.addToLog && logMsgSuccess) GameGlobals.playerHelper.addLogMessage(logMsgId, logMsgSuccess);
-							playerActionFunctions.logResultMessages(messages1);
-							playerActionFunctions.logResultMessages(messages2);
-							playerActionFunctions.forceTabUpdate();
-						}
-					}
-					
-					player.remove(PlayerActionResultComponent);
-					if (successCallback) successCallback();
-					GlobalSignals.inventoryChangedSignal.dispatch();
-					GlobalSignals.actionRewardsCollectedSignal.dispatch();
-					GlobalSignals.sectorScavengedSignal.dispatch();
-					playerActionFunctions.completeAction(action);
-				};
-				
-				GameGlobals.playerActionResultsHelper.preCollectRewards(rewards);
-				
-				if (showResultPopup) {
-					GameGlobals.uiFunctions.showResultPopup(TextConstants.getActionName(baseActionID), popupMsg, rewards, resultPopupCallback);
-				} else {
-					resultPopupCallback(true);
-				}
-
-			}, function () {
+				player.remove(PlayerActionResultComponent);
+				if (callback) callback();
+				GlobalSignals.inventoryChangedSignal.dispatch();
+				GlobalSignals.actionRewardsCollectedSignal.dispatch();
+				GlobalSignals.sectorScavengedSignal.dispatch();
 				playerActionFunctions.completeAction(action);
-				if (messages.addToLog && messages.msgFlee) GameGlobals.playerHelper.addLogMessage(logMsgId, messages.msgFlee);
-				if (failCallback) failCallback();
-			}, function () {
-				playerActionFunctions.completeAction(action);
-				if (messages.addToLog && messages.msgDefeat) GameGlobals.playerHelper.addLogMessage(logMsgId, messages.msgDefeat);
-				if (failCallback) failCallback();
-			});
+			};
+			
+			GameGlobals.playerActionResultsHelper.preCollectRewards(rewards);
+			
+			if (showResultPopup) {
+				GameGlobals.uiFunctions.showResultPopup(TextConstants.getActionName(baseActionID), popupMsg, rewards, resultPopupCallback);
+			} else {
+				resultPopupCallback(true);
+			}
 		},
 		
 		startInventoryManagement: function () {
@@ -1375,27 +1386,13 @@ define(['ash',
 
 		fightGang: function (direction) {
 			let action = "fight_gang_" + direction;
-			this.currentAction = action;
-			var playerActionFunctions = this;
-			GameGlobals.fightHelper.handleRandomEncounter(action, function () {
-				playerActionFunctions.completeAction(action);
-				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
-			}, function () {
-				// fled
-				playerActionFunctions.completeAction(action);
-			}, function () {
-				// lost
-				playerActionFunctions.completeAction(action);
-			});
-		},
+			let messages = { addToLog: false };
 
-		flee: function () {
-			if (GameGlobals.playerActionsHelper.checkAvailability("flee", true)) {
-				GameGlobals.playerActionsHelper.deductCosts("flee");
-				this.completeAction("flee");
-			
-				GameGlobals.gameState.increaseGameStatSimple("numFightsFled");
+			let successCallback = function () {
+				GameGlobals.playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 			}
+			
+			this.handleOutActionResults(action, messages, false, false, successCallback);
 		},
 
 		despair: function () {

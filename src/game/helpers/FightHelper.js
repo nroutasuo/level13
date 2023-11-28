@@ -115,30 +115,30 @@ define([
 			}
 		},
 
-		endFight: function (isTakeAll) {
-			var sector = this.playerLocationNodes.head.entity;
-			var encounterComponent = sector.get(FightEncounterComponent);
-			var fightComponent = sector.get(FightComponent);
-			if (fightComponent && !fightComponent.fled) {
-				if (fightComponent.won) {
-					GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, fightComponent.resultVO);
-					sector.get(EnemiesComponent).resetNextEnemy();
-					this.pendingEnemies--;
-					if (this.pendingEnemies > 0) {
-						this.initFight(encounterComponent.context);
-						return;
-					}
-					if (this.pendingWinCallback) {
-						this.pendingWinCallback();
-					}
-				} else {
-					GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, fightComponent.resultVO);
-					if (this.pendingLoseCallback) this.pendingLoseCallback();
-					this.engine.getSystem(FaintingSystem).fadeOutToLastVisitedCamp(false);
+		endFight: function (isTakeAll, isFlee) {
+			let sector = this.playerLocationNodes.head.entity;
+			let encounterComponent = sector.get(FightEncounterComponent);
+			let fightComponent = sector.get(FightComponent);
+
+			if (isFlee || !fightComponent || fightComponent.fled) {
+				if (this.pendingFleeCallback) this.pendingFleeCallback();
+			} else if (fightComponent.won) {
+				GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, fightComponent.resultVO);
+				sector.get(EnemiesComponent).resetNextEnemy();
+				this.pendingEnemies--;
+				if (this.pendingEnemies > 0) {
+					this.initFight(encounterComponent.context);
+					return;
+				}
+				if (this.pendingWinCallback) {
+					this.pendingWinCallback();
 				}
 			} else {
-				if (this.pendingFleeCallback) this.pendingFleeCallback();
+				GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, fightComponent.resultVO);
+				if (this.pendingLoseCallback) this.pendingLoseCallback();
+				this.engine.getSystem(FaintingSystem).fadeOutToLastVisitedCamp(false);
 			}
+
 			GameGlobals.uiFunctions.popupManager.closePopup("fight-popup");
 			sector.remove(FightComponent);
 			this.pendingWinCallback = null;
