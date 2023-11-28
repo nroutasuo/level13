@@ -1416,6 +1416,10 @@
         "scout": [
             0.005,
             0.01
+        ],
+        "flee": [
+            0.05,
+            0.05
         ]
     },
     "location_actions": {
@@ -1442,11 +1446,19 @@
         ],
         "scavenge": [
             0,
-            0.03
+            0.05
         ],
         "scout": [
             0,
-            0.03
+            0.05
+        ],
+        "fight": [
+            0.01,
+            0
+        ],
+        "flee": [
+            0.05,
+            0.05
         ]
     },
     "randomEncounterProbabilities": {
