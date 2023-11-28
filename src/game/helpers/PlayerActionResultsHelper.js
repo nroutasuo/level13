@@ -213,7 +213,9 @@ define([
 			
 			if (!isUsingFixedRewards) {
 				rewards.gainedResources = this.getRewardResources(1, 1, efficiency, sectorResources);
-				rewards.gainedCurrency = this.getRewardCurrency(efficiency);
+				if (GameGlobals.gameState.isFeatureUnlocked("trade")) {
+					rewards.gainedCurrency = this.getRewardCurrency(efficiency);
+				}
 			}
 			
 			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound);
