@@ -1727,8 +1727,9 @@ define([
 
 		getReqs: function (action, sector) {
 			var sector = sector || (this.playerLocationNodes && this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null);
-			var baseActionID = this.getBaseActionID(action);
-			var requirements = {};
+			let baseActionID = this.getBaseActionID(action);
+			let actionIDParam = this.getActionIDParam(action);
+			let requirements = {};
 			
 			if (this.isImproveBuildingAction(baseActionID)) {
 				requirements = PlayerActionConstants.requirements[baseActionID] || {};
@@ -1812,11 +1813,16 @@ define([
 					return requirements;
 				
 				case "use_item":
-					let itemID = action.replace(baseActionID + "_", "");
-					let baseItemID = ItemConstants.getBaseItemId(itemID);
+					let baseItemID = ItemConstants.getBaseItemId(actionIDParam);
 					let actionID = baseActionID + "_" + baseItemID;
 					// some items define reqs per item (bag_1, first_aid_kit_1) some by base item (stamina_potion)
 					return PlayerActionConstants.requirements[actionID] || PlayerActionConstants.requirements[action];
+
+				case "repair_item":
+					let itemVO = this.playerStatsNodes.head.items.getItem(null, actionIDParam, true, true);
+					this.addReqs(requirements, PlayerActionConstants.requirements[baseActionID]);	
+					this.addReqs(requirements, this.getReqs("craft_" + itemVO.id));	
+					return requirements;
 					
 				case "build_out_passage_up_stairs":
 				case "build_out_passage_up_elevator":
@@ -1834,9 +1840,25 @@ define([
 				case "select_follower":
 				case "deselect_follower":
 				case "repair_item":
-					return PlayerActionConstants.requirements[baseActionID];
 				default:
 					return PlayerActionConstants.requirements[action];
+			}
+		},
+		
+		addReqs: function (result, reqs) {
+			if (!reqs) return;
+
+			result = result || {};
+
+			for (let key in reqs) {
+				if (key == "upgrades") {
+					if (!result.upgrades) result.upgrades = {};
+					for (let upgradeID in reqs.upgrades) {
+						result.upgrades[upgradeID] = reqs.upgrades[upgradeID];
+					}
+				} else {
+					result[key] = reqs[key];
+				}
 			}
 		},
 		
@@ -2006,8 +2028,7 @@ define([
 				
 				case "repair_item":
 					let itemID = this.getActionIDParam(action);
-					let itemsComponent = this.playerStatsNodes.head.items;
-					let item = itemsComponent.getItem(null, itemID, true, true);
+					let item = this.playerStatsNodes.head.items.getItem(null, itemID, true, true);
 					Object.assign(result, this.getCraftItemCosts(item));
 					break;
 
@@ -2172,11 +2193,10 @@ define([
 			if (!action) return null;
 
 			let entries = [];
-			let sector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
+			let sector = GameGlobals.sectorHelper.getCurrentActionSector();
 			let baseAction = this.getBaseActionID(action);
 
 			let improvementsComponent = sector.get(SectorImprovementsComponent);
-			let featuresComponent = sector.get(SectorFeaturesComponent);
 			let statusComponent = sector.get(SectorStatusComponent);
 			let campComponent = sector.get(CampComponent);
 			let currentPopulation = campComponent ? Math.floor(campComponent.population) : 0;
