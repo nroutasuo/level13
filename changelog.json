@@ -35,6 +35,10 @@
 					"summary": "Add a small perk when restarting game"
 				},
 				{
+					"type": "GD",
+					"summary": "Add dedicated metal scavenging spots (heaps)"
+				},
+				{
 					"type": "Dev",
 					"summary": "Bugfixes and UI and text improvements"
 				}
