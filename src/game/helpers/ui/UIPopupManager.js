@@ -168,7 +168,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 					$("#" + id).unwrap();
 					$("#" + id).data("fading", false);
 					$("#" + id).data("closing", false);
-					$("#" + id + "p#common-popup-desc");
+					$("#" + id + "p#common-popup-desc").html("");
 					GlobalSignals.popupClosedSignal.dispatch(id);
 					popupManager.showQueuedPopup();
 					popupManager.updatePause();
