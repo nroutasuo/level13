@@ -1841,7 +1841,7 @@ define([
 				case "deselect_follower":
 				case "repair_item":
 				default:
-					return PlayerActionConstants.requirements[action];
+					return PlayerActionConstants.requirements[action] || PlayerActionConstants.requirements[baseActionID];
 			}
 		},
 		
