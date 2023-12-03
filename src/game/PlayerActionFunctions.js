@@ -2247,7 +2247,9 @@ define(['ash',
 				let unlockedResearchNames = unlockedResearchIDs
 					.filter(upgradeID => GameGlobals.playerActionsHelper.isVisible(upgradeID))
 					.map(upgradeID => UpgradeConstants.upgradeDefinitions[upgradeID].name);
+				if (unlockedResearchNames.length > 0) {
 				message += "<p class='p-meta'>new research:<br/>" + unlockedResearchNames.join("<br/>") + "</p>";
+			}
 			}
 
 			let hints = GameGlobals.upgradeEffectsHelper.getEffectHints(upgradeID);
