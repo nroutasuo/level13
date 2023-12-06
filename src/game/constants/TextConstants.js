@@ -21,7 +21,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			s = s.trim();
 			if (s.length > 0) {
 				if (s.endsWith(", ")) s = s.slice(0, -2);
-				if (s[s.length - 1] != ".") s = s + ".";
+				if (!this.isPunctuation(s[s.length - 1])) s = s + ".";
 				if (s[s.length - 1] != " ") s = s + " ";
 			}
 			return s;
@@ -30,9 +30,14 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		pluralify: function (s) {
 			return Text.pluralify(s);
 		},
+
+		isPunctuation: function (c) {
+			return c == "." || c == "!" || c == "?";
+		},
 		
 		getActionName: function (baseActionID) {
 			switch (baseActionID) {
+				case "scavenge_heap": return "Scavenge";
 				case "scout_locale_i":
 				case "scout_locale_u":
 					return "Scout";

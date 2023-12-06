@@ -42,7 +42,7 @@ define([
 	WorkshopComponent,
 	LevelComponent
 ) {
-	var SectorHelper = Ash.Class.extend({
+	let SectorHelper = Ash.Class.extend({
 		
 		engine: null,
 		sectorNodes: null,
@@ -52,6 +52,13 @@ define([
 			this.engine = engine;
 			this.sectorNodes = engine.getNodeList(SectorNode);
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
+		},
+
+		getCurrentActionSector: function (sector) {
+			if (sector) return sector;
+			if (this.playerLocationNodes && this.playerLocationNodes.head) return this.playerLocationNodes.head.entity;
+			if (this.sectorNodes.head) return this.sectorNodes.head.entity;
+			return null;
 		},
 		
 		getTextFeatures: function (sector) {
