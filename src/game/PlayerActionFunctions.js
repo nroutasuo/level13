@@ -1072,7 +1072,8 @@ define(['ash',
 
 			showResultPopup = showResultPopup || !GameGlobals.playerHelper.canTakeAllRewards(rewards);
 			
-			let popupMsg = messages.logMsgSuccess;
+			let logMsg = messages.msgSuccess;
+			let popupMsg = messages.msgSuccess;
 			
 			for (let i = 0; i < messages1.length; i++) {
 				if (messages1[i].addToPopup) {
@@ -1087,7 +1088,7 @@ define(['ash',
 					let messages2 = GameGlobals.playerActionResultsHelper.getResultMessagesAfterSelection(rewards);
 					
 					if (!GameGlobals.gameState.isAutoPlaying) {
-						if (messages.addToLog && msgBase) GameGlobals.playerHelper.addLogMessage(logMsgId, msgBase);
+						if (messages.addToLog && logMsg) GameGlobals.playerHelper.addLogMessage(logMsgId, logMsg);
 						playerActionFunctions.logResultMessages(messages1);
 						playerActionFunctions.logResultMessages(messages2);
 						playerActionFunctions.forceTabUpdate();
@@ -2248,8 +2249,8 @@ define(['ash',
 					.filter(upgradeID => GameGlobals.playerActionsHelper.isVisible(upgradeID))
 					.map(upgradeID => UpgradeConstants.upgradeDefinitions[upgradeID].name);
 				if (unlockedResearchNames.length > 0) {
-				message += "<p class='p-meta'>new research:<br/>" + unlockedResearchNames.join("<br/>") + "</p>";
-			}
+					message += "<p class='p-meta'>new research:<br/>" + unlockedResearchNames.join("<br/>") + "</p>";
+				}
 			}
 
 			let hints = GameGlobals.upgradeEffectsHelper.getEffectHints(upgradeID);
