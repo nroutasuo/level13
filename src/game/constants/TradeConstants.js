@@ -87,7 +87,7 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 					var min = Math.min(amountLeft, 1);
 					var amount = Math.floor(Math.random() * max) + min;
 					for (let j = 0; j < amount; j++) {
-						result.gainedItems.push(ingredient.clone());
+						result.gainedItems.push(ItemConstants.getNewItemInstanceByDefinition(ingredient));
 					}
 					amountLeft -= amount;
 				}
@@ -270,7 +270,7 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 			let ingredients = ItemConstants.getIngredientsToCraft(item.id);
 			for (let i = 0; i < ingredients.length; i++) {
 				let def = ingredients[i];
-				let ingredient = ItemConstants.getItemByID(def.id);
+				let ingredient = ItemConstants.getNewItemInstanceByID(def.id);
 				result += def.amount * this.getItemValue(ingredient);
 			}
 			

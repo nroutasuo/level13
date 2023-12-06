@@ -495,7 +495,7 @@ define(['ash',
 			if (hasCosts) {
 				for (let key in costs) {
 					let itemName = key.replace("item_", "");
-					let item = ItemConstants.getItemByID(itemName, true);
+					let item = ItemConstants.getItemDefinitionByID(itemName, true);
 					let name = (this.names.resources[key] ? this.names.resources[key] : item !== null ? item.name : key).toLowerCase();
 					let value = costs[key];
 					result += "<span class='action-cost action-cost-" + key + "'>" + name + ": <span class='action-cost-value'>" + UIConstants.getDisplayValue(value) + "</span><br/></span>";

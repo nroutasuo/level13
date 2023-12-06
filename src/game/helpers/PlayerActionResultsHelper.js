@@ -179,7 +179,7 @@ define([
 			let rewards = new ResultVO("use_item");
 			
 			let baseItemId = ItemConstants.getBaseItemId(itemID);
-			let itemConfig = ItemConstants.getItemConfigByID(itemID);
+			let itemConfig = ItemConstants.getItemDefinitionByID(itemID);
 
 			switch (baseItemId) {
 				case "cache_food":
@@ -1231,7 +1231,7 @@ define([
 					var necessityIngredient = this.getNecessityIngredient(ingredientProbability);
 					if (necessityIngredient != null) {
 						for (let i = 0; i <= amount; i++) {
-							result.push(necessityIngredient.clone());
+							result.push(ItemConstants.getNewItemInstanceByDefinition(necessityIngredient));
 						}
 						addedIngredient = true;
 					}
@@ -1242,7 +1242,7 @@ define([
 					if (hasBag && hasCamp && !addedIngredient && Math.random() < ingredientProbabilityWithEfficiency) {
 						let ingredient = GameGlobals.itemsHelper.getUsableIngredient(availableIngredients);
 						for (let i = 0; i <= amount; i++) {
-							result.push(ingredient.clone());
+							result.push(ItemConstants.getNewItemInstanceByDefinition(ingredient));
 						}
 						addedIngredient = true;
 					}
@@ -1368,7 +1368,7 @@ define([
 			if (!GameGlobals.gameState.uiStatus.isHidden)
 				log.i("- selected index " + index + "/" + validItems.length + ": "+ item.id);
 			
-			return item.clone();
+			return ItemConstants.getNewItemInstanceByDefinition(item);
 		},
 		
 		getSpecificRewardItem: function (itemProbability, possibleItemIds) {
@@ -1379,9 +1379,9 @@ define([
 			
 			let index = MathUtils.getWeightedRandom(0, possibleItemIds.length);
 			let itemID = possibleItemIds[index];
-			let item = ItemConstants.getItemByID(itemID);
+			let item = ItemConstants.getNewItemInstanceByID(itemID);
 			if (!item) return null;
-			return item.clone();
+			return ItemConstants.getNewItemInstanceByDefinition(item);
 		},
 
 		getNecessityItem: function (currentItems, campOrdinal) {
@@ -1391,7 +1391,7 @@ define([
 				if (currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) < firstBag.getBaseBonus(ItemConstants.itemBonusTypes.bag)) {
 					let res = this.playerResourcesNodes.head.resources;
 					if (res.resources.getTotal() > 2) {
-						return firstBag.clone();
+						return ItemConstants.getNewItemInstanceByDefinition(firstBag);
 					}
 				}
 			}
@@ -1401,12 +1401,12 @@ define([
 				let visitedSectors = GameGlobals.gameState.numVisitedSectors;
 				let numSectorsRequiredForMap = 5;
 				if (visitedSectors > numSectorsRequiredForMap && currentItems.getCountById("equipment_map", true) <= 0) {
-					return ItemConstants.getItemByID("equipment_map");
+					return ItemConstants.getNewItemInstanceByID("equipment_map");
 				}
 				
 				let playerPos = this.playerLocationNodes.head.position;
 				if (playerPos.level < WorldConstants.LEVEL_NUMBER_STASH_ADVANCED_MAP && currentItems.getCountById("equipment_map_2", true) <= 0) {
-					return ItemConstants.getItemByID("equipment_map_2");
+					return ItemConstants.getNewItemInstanceByID("equipment_map_2");
 				}
 			}
 
@@ -1505,10 +1505,10 @@ define([
 			
 			for (let key in fixedRewards.items) {
 				let num = fixedRewards.items[key] || 1;
-				let itemVO = ItemConstants.getItemByID(key);
+				let itemVO = ItemConstants.getItemDefinitionByID(key);
 				if (itemVO) {
 					for (let i = 0; i < num; i++) {
-						result.push(itemVO.clone());
+						result.push(ItemConstants.getNewItemInstanceByDefinition(itemVO));
 					}
 				}
 			}
@@ -1524,10 +1524,10 @@ define([
 			rewardsVO.foundStashVO = stashVO;
 			switch (stashVO.stashType) {
 				case ItemConstants.STASH_TYPE_ITEM:
-					var item = ItemConstants.getItemByID(stashVO.itemID);
+					let item = ItemConstants.getItemDefinitionByID(stashVO.itemID);
 					if (item) {
 						for (let i = 0; i < stashVO.amount; i++) {
-							rewardsVO.gainedItems.push(item.clone());
+							rewardsVO.gainedItems.push(ItemConstants.getNewItemInstanceByDefinition(item));
 						}
 					}
 					break;

@@ -1224,7 +1224,7 @@ define(['ash',
 				amount = caravan.traderSelectedItems[itemID];
 				if (amount > 0) {
 					baseItemID = ItemConstants.getBaseItemId(itemID);
-					value = TradeConstants.getItemValue(ItemConstants.getItemByID(itemID), true, false);
+					value = TradeConstants.getItemValue(ItemConstants.getNewItemInstanceByID(itemID), true, false);
 					for (let i = 0; i < amount; i++) {
 						for (let j = 0; j < caravan.sellItems.length; j++) {
 							if (caravan.sellItems[j].id == itemID) {
@@ -1232,7 +1232,7 @@ define(['ash',
 								break;
 							}
 						}
-						GameGlobals.playerHelper.addItem(ItemConstants.getItemByID(itemID));
+						GameGlobals.playerHelper.addItem(ItemConstants.getNewItemInstanceByID(itemID));
 					}
 					GameGlobals.gameState.increaseGameStatKeyed("numItemsBoughtPerId", itemID, amount);
 					GameGlobals.gameState.increaseGameStatHighScore("highestPriceItemBought", itemID, value);
@@ -1243,9 +1243,9 @@ define(['ash',
 				amount = caravan.campSelectedItems[itemID];
 				if (amount > 0) {
 					baseItemID = ItemConstants.getBaseItemId(itemID);
-					value = TradeConstants.getItemValue(ItemConstants.getItemByID(itemID), false, true);
+					value = TradeConstants.getItemValue(ItemConstants.getNewItemInstanceByID(itemID), false, true);
 					for (let i = 0; i < amount; i++) {
-						caravan.sellItems.push(ItemConstants.getItemByID(itemID));
+						caravan.sellItems.push(ItemConstants.getNewItemInstanceByID(itemID));
 						itemsComponent.removeItem(itemsComponent.getItem(itemID, null, true, false), false);
 					}
 					GameGlobals.gameState.increaseGameStatKeyed("numItemsSoldPerId", itemID, amount);
@@ -2021,7 +2021,7 @@ define(['ash',
 			let resultVO = new ResultVO("use_item");
 			let message = "";
 			
-			let itemConfig = ItemConstants.getItemConfigByID(itemId);
+			let itemConfig = ItemConstants.getItemDefinitionByID(itemId);
 			let baseItemId = ItemConstants.getBaseItemId(itemId);
 			let itemNameParts = item.name.split(" ");
 			let itemShortName = ItemConstants.getItemDisplayName(item, true);

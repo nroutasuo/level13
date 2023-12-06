@@ -1,9 +1,11 @@
 define(['ash', 'json!game/data/ItemData.json', 'game/constants/PlayerActionConstants', 'game/constants/UpgradeConstants', 'game/constants/WorldConstants', 'game/vos/ItemVO'],
 function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) {
 
-	var ItemConstants = {
+	let ItemConstants = {
 		
 		PLAYER_DEFAULT_STORAGE: 10,
+
+		DEFAULT_EQUIPMENT_ITEM_LEVEL: 50,
 		
 		MAX_RANDOM_EQUIPMENT_STASH_RARITY: 6,
 			
@@ -108,7 +110,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		},
 
 		loadData: function (data) {
-			for (itemID in data) {
+			for (let itemID in data) {
 				let item = data[itemID];
 				let bonuses = item.bonuses;
 				let type = item.type;
@@ -117,7 +119,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 				if (isRepairable === undefined) {
 					isRepairable = item.isCraftable && item.isEquippable;
 				}
-				var itemVO = new ItemVO(item.id, item.name, item.type, item.level || 1, item.campOrdinalRequired, item.campOrdinalMaximum, item.isEquippable, item.isCraftable, isRepairable, item.isUseable, bonuses, item.icon, item.description, item.isSpecialEquipment);
+				let itemVO = new ItemVO(item.id, item.name, item.type, item.level || 1, item.campOrdinalRequired, item.campOrdinalMaximum, item.isEquippable, item.isCraftable, isRepairable, item.isUseable, bonuses, item.icon, item.description, item.isSpecialEquipment);
 				itemVO.scavengeRarity = item.rarityScavenge;
 				itemVO.investigateRarity = item.rarityInvestigate;
 				itemVO.localeRarity = item.rarityLocale;
@@ -246,23 +248,29 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			return true;
 		},
 		
-		getItemByID: function (id, skipWarning) {
+		getNewItemInstanceByID: function (id, level, skipWarning) {
 			if (!id) return null;
-			let config = this.getItemConfigByID(id, skipWarning);
-			if (!config) return null;
-			return config.clone();
+			let definition = this.getItemDefinitionByID(id, skipWarning);
+			return this.getNewItemInstanceByDefinition(definition, level);
+		},
+
+		getNewItemInstanceByDefinition: function (definition, level) {
+			if (!definition) return null;
+			let instance = definition.clone();
+			instance.level = level || 1;
+			return instance;
 		},
 		
-		getItemConfigByID: function (id, skipWarning) {
+		getItemDefinitionByID: function (id, skipWarning) {
 			if (this.itemByID[id]) {
 				return this.itemByID[id];
 			}
-			if (!skipWarning) log.w("no such item: config " + id);
+			if (!skipWarning) log.w("no such item definition " + id);
 			return null;
 		},
 
 		getItemType: function (id) {
-			var item = this.getItemConfigByID(id);
+			var item = this.getItemDefinitionByID(id);
 			if (!item) return null;
 			return item.type;
 		},

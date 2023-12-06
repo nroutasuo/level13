@@ -845,7 +845,7 @@ define([
 							}
 							
 							for (let itemID in caravan.campSelectedItems) {
-								let item = ItemConstants.getItemByID(itemID);
+								let item = ItemConstants.getNewItemInstanceByID(itemID);
 								if (!item) continue;
 								if (item.type == ItemConstants.itemTypes.ingredient) continue;
 								let amount = caravan.campSelectedItems[itemID] + caravan.getSellItemCount(itemID);
@@ -1271,7 +1271,7 @@ define([
 						var min = def[0];
 						var max = def[1];
 						var current = fightComponent ? fightComponent.itemsUsed[itemID] || 0 : 0;
-						var item = ItemConstants.getItemByID(itemID);
+						var item = ItemConstants.getNewItemInstanceByID(itemID);
 						if (!item) continue;
 						var itemName = item.name;
 						if (min > current) {
@@ -2309,10 +2309,10 @@ define([
 			var baseActionName = this.getBaseActionID(actionName);
 			switch (baseActionName) {
 				case "craft":
-					return ItemConstants.getItemByID(this.getActionIDParam(actionName));
+					return ItemConstants.getNewItemInstanceByID(this.getActionIDParam(actionName));
 				case "use_item":
 				case "use_item_fight":
-					return ItemConstants.getItemByID(this.getActionIDParam(actionName));
+					return ItemConstants.getNewItemInstanceByID(this.getActionIDParam(actionName));
 
 				default: return null;
 			}

@@ -328,7 +328,7 @@ define([
 				// add item
 				var amount = Math.ceil(Math.random() * maxAmount);
 				for (let j = 0; j < amount; j++) {
-					sellItems.push(itemDefinition.clone());
+					sellItems.push(ItemConstants.getNewItemInstanceByDefinition(itemDefinition));
 				}
 			}
 			

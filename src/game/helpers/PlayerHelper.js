@@ -290,7 +290,7 @@ define([
 			var playerPosition = this.playerPosNodes.head.position.getPosition();
 			sourcePosition = sourcePosition || playerPosition.clone();
 			
-			var item = itemDef.clone();
+			let item = ItemConstants.getNewItemInstanceByDefinition(itemDef);
 			
 			itemsComponent.addItem(item, !playerPosition.inCamp && sourcePosition.equals(playerPosition));
 			item.foundPosition = sourcePosition.clone();

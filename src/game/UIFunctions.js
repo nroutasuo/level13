@@ -852,8 +852,8 @@ define(['ash',
 								entryDisplay = stat.entry.name;
 							} else if (EnemyConstants.getEnemy(stat.entry)) {
 								entryDisplay = EnemyConstants.getEnemy(stat.entry).name;
-							} else if(ItemConstants.getItemByID(stat.entry, true)) {
-								entryDisplay = ItemConstants.getItemByID(stat.entry).name;
+							} else if(ItemConstants.getItemDefinitionByID(stat.entry, true)) {
+								entryDisplay = ItemConstants.getItemDefinitionByID(stat.entry).name;
 							} else if (stat.entry.hasOwnProperty("timestamp")) {
 								entryDisplay = UIConstants.getTimeSinceText(stat.entry.timestamp);
 							}

@@ -736,7 +736,7 @@ define([
 				"cache_water_1",
 			];
 			var maxRarity = 9;
-			return allItems.filter((itemID) => this.itemsHelper.isAvailable(ItemConstants.getItemConfigByID(itemID), levelVO.campOrdinal, WorldConstants.CAMP_STEP_END, true, true, maxRarity));
+			return allItems.filter((itemID) => this.itemsHelper.isAvailable(ItemConstants.getItemDefinitionByID(itemID), levelVO.campOrdinal, WorldConstants.CAMP_STEP_END, true, true, maxRarity));
 		},
 		
 		generateWorkshops: function (seed, worldVO, levelVO) {
@@ -1326,7 +1326,7 @@ define([
 				
 				// ingredients for crafting other important items
 				if (stageVO.stage == WorldConstants.CAMP_STAGE_EARLY) {
-					let requiredItems = [ "exploration_1" ].map(itemID => ItemConstants.getItemConfigByID(itemID));
+					let requiredItems = [ "exploration_1" ].map(itemID => ItemConstants.getItemDefinitionByID(itemID));
 					let requiredItemIngredients = ItemConstants.getIngredientsToCraftMany(requiredItems);
 					let requiredItemIngredientsMax = Math.min(maxPerType, requiredItemIngredients.length);
 					for (let i = 0; i < requiredItemIngredientsMax; i++) {

@@ -389,7 +389,7 @@ define([
 			if (GameGlobals.gameState.uiBagStatus.itemsUsableSeen) {
 				for (let i = 0; i < GameGlobals.gameState.uiBagStatus.itemsUsableSeen.length; i++) {
 					let id = GameGlobals.gameState.uiBagStatus.itemsUsableSeen[i];
-					let itemDefinition = ItemConstants.getItemByID(id);
+					let itemDefinition = ItemConstants.getItemDefinitionByID(id);
 					if (this.isOwned(itemDefinition)) {
 						newList.push(id);
 					}
@@ -485,7 +485,7 @@ define([
 			var sys = this;
 			$("#bag-items .item").each(function () {
 				var id = $(this).attr("data-itemid");
-				var item = ItemConstants.getItemByID(id);
+				var item = ItemConstants.getItemDefinitionByID(id);
 				$(this).hover(function () {
 					sys.highlightItemType(item.type);
 				}, function () {
@@ -595,8 +595,8 @@ define([
 		
 		highlightItemType: function (itemType) {
 			$("#bag-items .item").each(function () {
-				var id = $(this).attr("data-itemid");
-				var item = ItemConstants.getItemByID(id);
+				let id = $(this).attr("data-itemid");
+				let item = ItemConstants.getItemDefinitionByID(id);
 				if (itemType && item && item.equippable && item.type == itemType) {
 					$(this).toggleClass("highlighted", true);
 				} else {
@@ -735,7 +735,7 @@ define([
 			if (!this.isItemUnlocked(itemDefinition)) return false;
 			if (!this.isCraftableItemVisible(itemDefinition)) return false;
 			if (this.isOwned(itemDefinition)) return false;
-			var actionName = "craft_" + itemDefinition.id;
+			let actionName = "craft_" + itemDefinition.id;
 			if (!GameGlobals.playerActionsHelper.checkAvailability(actionName, false)) return false;
 			
 			return true;
@@ -743,7 +743,7 @@ define([
 		
 		isOwned: function (itemDefinition) {
 			if (!itemDefinition) return false;
-			var itemsComponent = this.itemNodes.head.items;
+			let itemsComponent = this.itemNodes.head.items;
 		    return itemsComponent.contains(itemDefinition.name);
 		},
 		

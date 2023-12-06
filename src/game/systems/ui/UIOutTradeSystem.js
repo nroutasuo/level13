@@ -294,7 +294,7 @@ define([
 				}
 
 				for (var itemID in itemCounts) {
-					var item = ItemConstants.getItemByID(itemID);
+					var item = ItemConstants.getNewItemInstanceByID(itemID);
 					if (item && numLis < 6) {
 						inventoryUL += UIConstants.getItemSlot(itemsComponent, item, null, false, true);
 						numLis++;

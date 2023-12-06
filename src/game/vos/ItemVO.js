@@ -1,11 +1,10 @@
 define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 
-	var ItemVO = Ash.Class.extend({
+	let ItemVO = Ash.Class.extend({
 
 		id: "",
 		name: "",
 		type: "",
-		level: 1,
 		bonus: null,
 		icon: "",
 		description: "",
@@ -23,7 +22,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		repairable: false,
 		useable: false,
 		
-		// item specific data (not saved on instances)
+		// item config specific data (not saved on instances)
 		configData: {},
 
 		// instance data (varies between instances)
@@ -32,6 +31,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		carried: false,
 		broken: false,
 		foundPosition: null,
+		level: 1,
 
 		constructor: function (id, name, type, level, requiredCampOrdinal, maximumCampOrdinal, equippable, craftable, repairable, useable, bonuses, icon, description, isSpecialEquipment) {
 			this.id = id;
@@ -109,13 +109,14 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		},
 
 		getCustomSaveObject: function () {
-			var clone = this.clone();
+			let clone = this.clone();
 
 			// add instance data
 			clone.itemID = this.itemID;
 			clone.equipped = this.equipped ? 1 : 0;
 			clone.carried = this.carried ? 1 : 0;
 			clone.broken = this.broken ? 1 : 0;
+			clone.level = this.level;
 
 			// delete static data
 			delete clone.name;
@@ -133,7 +134,6 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			delete clone.repairable;
 			delete clone.useable;
 			delete clone.type;
-			delete clone.level;
 			delete clone.equippable;
 			delete clone.balancingData;
 			delete clone.configData;

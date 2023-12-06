@@ -1288,7 +1288,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			for (let i = 0; i < itemsScavengeable.length; i++) {
 				let id = itemsScavengeable[i];
 				if (knownItems.indexOf(id) < 0) continue;
-				let item = ItemConstants.getItemByID(id);
+				let item = ItemConstants.getItemDefinitionByID(id);
 				if (!item) continue;
 				validItems.push(item.name);
 			}

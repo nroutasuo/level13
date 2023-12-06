@@ -268,14 +268,14 @@ define([
 						if (resultIds.indexOf(def.id) < 0) {
 							if (itemsComponent.getCountById(def.id, true) < (isStrict ? def.amount : Math.max(def.amount, 3))) {
 								resultIds.push(def.id);
-								result.push(ItemConstants.getItemByID(def.id));
+								result.push(ItemConstants.getNewItemInstanceByID(def.id));
 							}
 						}
 					}
 				}
 			}
 			
-			checkItem(ItemConstants.getItemByID("exploration_1"));
+			checkItem(ItemConstants.getNewItemInstanceByID("exploration_1"));
 			checkItem(this.getDefaultWeapon(campOrdinal, step));
 			
 			let bonusTypes = [ ItemConstants.itemBonusTypes.res_poison, ItemConstants.itemBonusTypes.res_cold, ItemConstants.itemBonusTypes.res_radiation ];
@@ -283,7 +283,7 @@ define([
 			for (let i = 0; i < bonusTypes.length; i++) {
 				var neededClothing = this.getDefaultClothing(campOrdinal, step, bonusTypes[i], isHardLevel);
 				for (let j = 0; j < neededClothing.length; j++) {
-					checkItem(ItemConstants.getItemByID(neededClothing[j].id));
+					checkItem(ItemConstants.getNewItemInstanceByID(neededClothing[j].id));
 				}
 			}
 			

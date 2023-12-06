@@ -632,11 +632,11 @@
 				let baseActionID = PlayerActionConstants.getBaseActionID(action);
 				if (baseActionID == "send_caravan") continue; // shown separately
 				
-				let improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(action);
+				let improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(action, true);
 				let improvementType = getImprovementType(improvementName);
 				if (improvementType == improvementTypes.camp && actionVO.level != playerPos.level) continue;
 				
-				let isProject = ImprovementConstants.isProject(improvementName);
+				let isProject = improvementName && ImprovementConstants.isProject(improvementName);
 				let percent = playerActionComponent.getActionCompletionPercentage(action, actionVO.level);
 				if (percent < 100) {
 					result.push({ action: action, improvementName: improvementName, percent: percent });

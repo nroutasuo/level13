@@ -478,19 +478,22 @@ function (Ash, ItemVO, ItemConstants) {
 		},
 
 		customLoadFromSave: function (componentValues) {
-			for(var key in componentValues.items) {
+			for(let key in componentValues.items) {
 				for (let i in componentValues.items[key]) {
-					var id = componentValues.items[key][i].id;
-					var definition = ItemConstants.getItemByID(id);
+					let savedItem =  componentValues.items[key][i];
+					let id = savedItem.id;
+					let definition = ItemConstants.getItemDefinitionByID(id);
 					if (!definition) {
 						log.w("no item definition found: " + id);
 						continue;
 					}
-					var item = definition.clone();
-					item.itemID = componentValues.items[key][i].itemID;
-					item.foundPosition = componentValues.items[key][i].foundPosition;
-					item.broken = componentValues.items[key][i].broken == 1;
-					var carried = componentValues.items[key][i].carried;
+
+					let item = definition.clone();
+					item.itemID = savedItem.itemID;
+					item.foundPosition = savedItem.foundPosition;
+					item.broken = savedItem.broken == 1;
+					item.level = savedItem.level || 50;
+					let carried = savedItem.carried;
 					this.addItem(item, carried);
 					if (componentValues.items[key][i].equipped) {
 						this.equip(item);
