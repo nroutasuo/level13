@@ -27,7 +27,7 @@
 					"summary": "Change the log to only show messages relevant for current location"
 				},
 				{
-					"type": "GD",
+					"type": "UI",
 					"summary": "Add a popup with some game stats"
 				},
 				{
@@ -40,7 +40,7 @@
 				},
 				{
 					"type": "Dev",
-					"summary": "Bugfixes and UI and text improvements"
+					"summary": "Bugfixes and balancing, UI and text improvements"
 				}
 			]
 		},

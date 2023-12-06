@@ -1629,17 +1629,17 @@ define([
 
 			if (playerItems.length <= 0) return;
 
-			// make list with duplicates based on probabilities
-			// ignore ingredients here, they're handled below
+			// 1) regular items (excluding ingredients)
+			// - make list with duplicates based on probabilities
 			let itemList = [];
 			let numValidItems = 0;
 			let weightSum = 0;
 			for (let i = 0; i < playerItems.length; i++) {
 				let item = playerItems[i];
 				if (item.type == ItemConstants.itemTypes.ingredient) continue;
-				let weight = this.getItemLoseOrBreakChanceWeight(action, item);
+				let weight = this.getItemLoseOrBreakWeight(action, item);
 				if (weight <= 0) continue;
-				let count = Math.round(weight * 2);
+				let count = Math.round(weight * 10);
 				for (let j = 0; j < count; j++) {
 					itemList.push(item);
 				}
@@ -1647,18 +1647,19 @@ define([
 				numValidItems++;
 			}
 			
-			// pick n items from the list
+			// - pick n items from the list and mark them as either broken or lost (per item)
 			if (numValidItems > 0) {
-				let weightAvg = weightSum / numValidItems;
-				let numMaxLost = weightAvg * 2;
-				let numItems = onlySingleItem ? 1 : Math.ceil(Math.random() * numMaxLost);
+				let maxItems = Math.min(5, Math.floor(numValidItems / 2));
+				let numItems = onlySingleItem ? 1 : Math.ceil(Math.random() * maxItems);
 				numItems = Math.min(numValidItems, numItems);
 
 				for (let i = 0; i < numItems; i++) {
 					let itemi = Math.floor(Math.random() * itemList.length);
 					let selectedItem = itemList[itemi];
+					let breakProbability = this.getItemBreakProbability(action, item);
+					let isBreak = Math.random() < breakProbability;
 					
-					if (selectedItem.repairable && !selectedItem.broken && Math.random() < 0.9) {
+					if (isBreak) {
 						brokenItems.push(selectedItem);
 					} else {
 						lostItems.push(selectedItem);
@@ -1674,7 +1675,7 @@ define([
 				}
 			}
 			
-			// ingredients: lose all or nothing
+			// 2) ingredients: lose all or nothing
 			if (!onlySingleItem) {
 				for (let i = 0; i < playerItems.length; i++) {
 					var item = playerItems[i];
@@ -1687,48 +1688,75 @@ define([
 			resultVO.brokenItems = brokenItems;
 		},
 
-		getItemLoseOrBreakChanceWeight: function (action, item) {
-			let baseItemId = ItemConstants.getBaseItemId(item.id);
-			let result = 1;
-
+		// normalized (0-1) weight of the given item to be lost or broken, used when selecting which items(s) to lose or break
+		getItemLoseOrBreakWeight: function (action, item) {
 			if (!ItemConstants.isUnselectable(item)) return 0;
+			if (item.type == ItemConstants.itemTypes.uniqueEquipment) return 0;
+			if (item.type == ItemConstants.itemTypes.ingredient) return 0;
 			
 			let campCount = GameGlobals.gameState.numCamps;
-			switch (item.type) {
-				case ItemConstants.itemTypes.uniqueEquipment:
-				case ItemConstants.itemTypes.ingredient:
-					result = 0;
-					break;
-				case ItemConstants.itemTypes.bag:
-				case ItemConstants.itemTypes.light:
-					result = campCount > 0 ? 2 : 0;
-					break;
-				case ItemConstants.itemTypes.clothing_over:
-				case ItemConstants.itemTypes.clothing_upper:
-				case ItemConstants.itemTypes.clothing_lower:
-				case ItemConstants.itemTypes.clothing_head:
-				case ItemConstants.itemTypes.clothing_hands:
-				case ItemConstants.itemTypes.shoes:
-					result = 3;
-					break;
-				case ItemConstants.itemTypes.weapon:
-					result = 4;
-					break;
-				default:
-					result = 5;
-					break;
+			let hasFirstCamp = campCount > 0;
+			let isFight = action == "fight";
+			let isDespair = action == "despair";
+			let isLowerChanceForEquipment = item.equipped && !isDespair;
+
+			let result = 0.5;
+
+			if (isFight) {
+				// fights: only equipment, mainly weapon
+				if (item.equipped) {
+					if (item.type == ItemConstants.itemTypes.weapon) {
+						result = 1;
+					}
+					result = 0.5;
+				}
+				result = 0;
+			} else {
+				// other actions: by item type
+				switch (item.type) {
+					case ItemConstants.itemTypes.voucher:
+						result = isDespair ? 0.5 : 0.25;
+						break;
+					case ItemConstants.itemTypes.exploration:
+					case ItemConstants.itemTypes.artefact:
+					case ItemConstants.itemTypes.trade:
+					case ItemConstants.itemTypes.note:
+						result = 0.5;
+						break;
+					case ItemConstants.itemTypes.clothing_over:
+					case ItemConstants.itemTypes.clothing_upper:
+					case ItemConstants.itemTypes.clothing_lower:
+					case ItemConstants.itemTypes.clothing_head:
+					case ItemConstants.itemTypes.clothing_hands:
+					case ItemConstants.itemTypes.shoes:
+						result = isLowerChanceForEquipment ? 0.1 : 0.65;
+						break;
+					case ItemConstants.itemTypes.weapon:
+						result = isLowerChanceForEquipment ? 0.25 : 0.75;
+						break;
+					case ItemConstants.itemTypes.bag:
+					case ItemConstants.itemTypes.light:
+						result = hasFirstCamp ? item.equipped ? 0.25 : 0.75 : 0;
+						break;
+				}
 			}
 			
-			switch (baseItemId) {
-				case "cache_insight":
-					result = 0;
-					break;
-			}
-			
-			if (item.equipped) result = result / 2;
 			if (item.broken) result = result / 2;
 				
 			return result;
+		},
+
+		// probability (0-1) that an item will break (rather than be lost), used when item has already been selected for lose/break to choose which
+		getItemBreakProbability: function (action, item) {
+			let isFight = action == "fight";
+			let isDespair = action == "despair";
+			
+			if (!item.repairable) return 0;
+			if (item.broken) return 0;
+			if (isDespair) return 0.95;
+			if (isFight) return 1;
+			if (item.equipped) return 0.99;
+			return 0.9;
 		},
 		
 		getLostFollowers: function (loseProbability) {
