@@ -1212,45 +1212,35 @@ define(['ash',
 		tradeWithCaravan: function () {
 			GameGlobals.uiFunctions.popupManager.closePopup("incoming-caravan-popup");
 
-			var traderComponent = this.playerLocationNodes.head.entity.get(TraderComponent);
-			var caravan = traderComponent.caravan;
+			let traderComponent = this.playerLocationNodes.head.entity.get(TraderComponent);
+			let caravan = traderComponent.caravan;
 
 			// items
 			let itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-			let amount;
+			let item;
 			let value;
-			let baseItemID;
-			for (let itemID in caravan.traderSelectedItems) {
-				amount = caravan.traderSelectedItems[itemID];
-				if (amount > 0) {
-					baseItemID = ItemConstants.getBaseItemId(itemID);
-					value = TradeConstants.getItemValue(ItemConstants.getNewItemInstanceByID(itemID), true, false);
-					for (let i = 0; i < amount; i++) {
-						for (let j = 0; j < caravan.sellItems.length; j++) {
-							if (caravan.sellItems[j].id == itemID) {
-								caravan.sellItems.splice(j, 1);
-								break;
-							}
-						}
-						GameGlobals.playerHelper.addItem(ItemConstants.getNewItemInstanceByID(itemID));
-					}
-					GameGlobals.gameState.increaseGameStatKeyed("numItemsBoughtPerId", itemID, amount);
-					GameGlobals.gameState.increaseGameStatHighScore("highestPriceItemBought", itemID, value);
+
+			for (let i in caravan.traderSelectedItems) {
+				item = caravan.traderSelectedItems[i];
+				value = TradeConstants.getItemValue(item, true, false);
+				let j = caravan.sellItems.indexOf(item);
+				if (j >= 0) {
+					caravan.sellItems.splice(j, 1);
+				} else {
+					log.w("could not find bought item in caravan");
 				}
+				GameGlobals.playerHelper.addItem(item, item.level);
+				GameGlobals.gameState.increaseGameStatKeyed("numItemsBoughtPerId", item.id);
+				GameGlobals.gameState.increaseGameStatHighScore("highestPriceItemBought", item.id, value);
 			}
 
-			for (let itemID in caravan.campSelectedItems) {
-				amount = caravan.campSelectedItems[itemID];
-				if (amount > 0) {
-					baseItemID = ItemConstants.getBaseItemId(itemID);
-					value = TradeConstants.getItemValue(ItemConstants.getNewItemInstanceByID(itemID), false, true);
-					for (let i = 0; i < amount; i++) {
-						caravan.sellItems.push(ItemConstants.getNewItemInstanceByID(itemID));
-						itemsComponent.removeItem(itemsComponent.getItem(itemID, null, true, false), false);
-					}
-					GameGlobals.gameState.increaseGameStatKeyed("numItemsSoldPerId", itemID, amount);
-					GameGlobals.gameState.increaseGameStatHighScore("highestPriceItemSold", itemID, value);
-				}
+			for (let i in caravan.campSelectedItems) {
+				item = caravan.campSelectedItems[i];
+				value = TradeConstants.getItemValue(item, false, true);
+				caravan.sellItems.push(item);
+				itemsComponent.removeItem(itemsComponent.getItem(item.id, item.itemID, true, false), false);
+				GameGlobals.gameState.increaseGameStatKeyed("numItemsSoldPerId", item.id);
+				GameGlobals.gameState.increaseGameStatHighScore("highestPriceItemSold", item.id, value);
 			}
 
 			// resources
@@ -1945,9 +1935,10 @@ define(['ash',
 		},
 
 		craftItem: function (itemId) {
-			var actionName = "craft_" + itemId;
-			var item = GameGlobals.playerActionsHelper.getItemForCraftAction(actionName);
-			GameGlobals.playerHelper.addItem(item);
+			let actionName = "craft_" + itemId;
+			let item = GameGlobals.playerActionsHelper.getItemForCraftAction(actionName);
+			let level = ItemConstants.getRandomItemLevel(ItemConstants.itemSource.crafting, item);
+			GameGlobals.playerHelper.addItem(item, level);
 
 			if (item.type === ItemConstants.itemTypes.weapon)
 				GameGlobals.playerActionFunctions.unlockFeature("fight");

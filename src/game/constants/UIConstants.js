@@ -139,6 +139,10 @@ define(['ash',
 			var weight = BagConstants.getItemCapacity(item);
 			var itemCalloutContent = "<b>" + item.name + "</b><br/>Type: " + ItemConstants.getItemTypeDisplayName(item.type, false) + " " + detail;
 			itemCalloutContent += "</br>Weight: " + weight;
+			if (ItemConstants.hasItemTypeQualityLevels(item.type)) {
+				let quality = ItemConstants.getItemQuality(item);
+				itemCalloutContent += "</br>Quality: " + ItemConstants.getQualityDisplayName(quality);
+			}
 			if (item.broken) itemCalloutContent += "<br><span class='warning'>Broken</span>";
 			itemCalloutContent += "</br>" + ItemConstants.getItemDescription(item);
 			if (smallCallout) itemCalloutContent = item.name + (detail.length > 0 ? " " + detail : "");
@@ -363,9 +367,9 @@ define(['ash',
 			let defaultType = ItemConstants.getItemDefaultBonus(item);
 			for (var bonusKey in ItemConstants.itemBonusTypes) {
 				var bonusType = ItemConstants.itemBonusTypes[bonusKey];
-				let baseValue = item.getBaseBonus(bonusType);
+				let baseValue = ItemConstants.getDefaultBonus(item, bonusType);
 				if (baseValue <= 0) continue;
-				let currentValue = item.getCurrentBonus(bonusType);
+				let currentValue = ItemConstants.getCurrentBonus(item, bonusType);
 				
 				result += this.getItemBonusName(bonusType, true);
 				if (currentValue == baseValue) {

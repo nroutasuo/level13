@@ -1,5 +1,6 @@
 define(['ash', 'game/vos/ItemVO', 'game/constants/ItemConstants'],
 function (Ash, ItemVO, ItemConstants) {
+
 	var ItemsComponent = Ash.Class.extend({
 
 		items: {},
@@ -35,12 +36,23 @@ function (Ash, ItemVO, ItemConstants) {
 				log.w("Trying to remove null item.");
 				return;
 			}
+
+			let longID = ItemConstants.getLongItemID(item);
+
+			// for ingredients itemID alone isn't a perfect guarantee it's the right kind of item
+			let isMatchingItem = function (i) {
+				if (i.itemID !== item.itemID) return false;
+				if (i.equipped !== item.equipped) return false;
+				if (i.broken !== item.broken) return false;
+				if (ItemConstants.getLongItemID(i) != longID) return false;
+				return true;
+			}
 			
 			if (typeof this.items[item.type] !== 'undefined') {
 				var typeItems = this.items[item.type];
 				var splicei = -1;
 				for (let i = 0; i < typeItems.length; i++) {
-					if (typeItems[i].id === item.id && typeItems[i].equipped == item.equipped) {
+					if (isMatchingItem(typeItems[i])) {
 						splicei = i;
 						if (typeItems[i].carried) {
 							break;
@@ -54,10 +66,12 @@ function (Ash, ItemVO, ItemConstants) {
 						var nextItem = this.getSimilar(item);
 						if (nextItem) this.equip(nextItem);
 					}
-				} else {
-					log.w("Item to remove not found.");
+					return;
 				}
 			}
+
+			debugger
+			log.w("Item to remove not found.");
 		},
 
 		discardItem: function (item, autoEquip) {
@@ -136,7 +150,7 @@ function (Ash, ItemVO, ItemConstants) {
 					var existingItem = this.items[item.type][i];
 					if (existingItem.itemID === item.itemID) continue;
 					if (existingItem.equipped && !(this.isItemMultiEquippable(existingItem) && this.isItemMultiEquippable(item))) {
-						let isExistingBonusBetter = existingItem.getCurrentTotalBonus() >= item.getCurrentTotalBonus();
+						let isExistingBonusBetter = ItemConstants.getCurrentTotalBonus(existingItem) >= ItemConstants.getCurrentTotalBonus(item);
 						if (!isExistingBonusBetter) {
 							this.unequip(existingItem);
 						}
@@ -162,7 +176,7 @@ function (Ash, ItemVO, ItemConstants) {
 			for (let i = 0; i < this.items[itemType].length; i++) {
 				var item = this.items[itemType][i];
 				if (!item.equippable) continue;
-				if (best === null || best.getCurrentTotalBonus() < item.getCurrentTotalBonus()) {
+				if (best === null || ItemConstants.getCurrentTotalBonus(best) < ItemConstants.getCurrentTotalBonus(item)) {
 					 best = item;
 				}
 			}
@@ -248,7 +262,7 @@ function (Ash, ItemVO, ItemConstants) {
 					for (let i = 0; i < this.items[key].length; i++) {
 						var item = this.items[key][i];
 						if (item.equipped) {
-							let itemBonus = item.getCurrentBonus(bonusType);
+							let itemBonus = ItemConstants.getCurrentBonus(item, bonusType);
 							if (isMultiplier) {
 								if (itemBonus != 0) {
 									bonus *= itemBonus;
@@ -370,7 +384,7 @@ function (Ash, ItemVO, ItemConstants) {
 			var weakest = null;
 			for (let i = 0; i < this.items[type].length; i++) {
 				var item = this.items[type][i];
-				if (!weakest || item.getCurrentTotalBonus() < weakest.getCurrentTotalBonus()) weakest = item;
+				if (!weakest || ItemConstants.getCurrentTotalBonus(item) < ItemConstants.getCurrentTotalBonus(weakest)) weakest = item;
 			}
 			return weakest;
 		},
@@ -379,7 +393,7 @@ function (Ash, ItemVO, ItemConstants) {
 			var strongest = null;
 			for (let i = 0; i < this.items[type].length; i++) {
 				var item = this.items[type][i];
-				if (!strongest || item.getCurrentTotalBonus() > strongest.getCurrentTotalBonus()) strongest = item;
+				if (!strongest || ItemConstants.getCurrentTotalBonus(item) > ItemConstants.getCurrentTotalBonus(strongest)) strongest = item;
 			}
 			return strongest;
 		},
@@ -457,7 +471,7 @@ function (Ash, ItemVO, ItemConstants) {
 			};
 			if (getSortTypeValue(a.type) > getSortTypeValue(b.type)) return 1;
 			if (getSortTypeValue(a.type) < getSortTypeValue(b.type)) return -1;
-			return b.getCurrentTotalBonus() - a.getCurrentTotalBonus();
+			return ItemConstants.getCurrentTotalBonus(b) - ItemConstants.getCurrentTotalBonus(a);
 		},
 
 		getSaveKey: function () {
@@ -481,18 +495,10 @@ function (Ash, ItemVO, ItemConstants) {
 			for(let key in componentValues.items) {
 				for (let i in componentValues.items[key]) {
 					let savedItem =  componentValues.items[key][i];
-					let id = savedItem.id;
-					let definition = ItemConstants.getItemDefinitionByID(id);
-					if (!definition) {
-						log.w("no item definition found: " + id);
-						continue;
-					}
+					let definition = ItemConstants.getItemDefinitionByID(savedItem.id);
+					if (!definition) continue;
 
-					let item = definition.clone();
-					item.itemID = savedItem.itemID;
-					item.foundPosition = savedItem.foundPosition;
-					item.broken = savedItem.broken == 1;
-					item.level = savedItem.level || 50;
+					let item = definition.clone(savedItem);
 					let carried = savedItem.carried;
 					this.addItem(item, carried);
 					if (componentValues.items[key][i].equipped) {

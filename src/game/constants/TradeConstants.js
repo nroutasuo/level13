@@ -230,14 +230,14 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 		getItemValueByBonuses: function (item) {
 			switch (item.type) {
 				case ItemConstants.itemTypes.light:
-					var lightBonus = item.getBaseTotalBonus(ItemConstants.itemBonusTypes.light);
+					var lightBonus = ItemConstants.getDefaultBonus(item, ItemConstants.itemBonusTypes.light);
 					if (lightBonus <= 25)
 						return 0.1;
 					else
 						return (lightBonus - 10) / 30;
 					
 				case ItemConstants.itemTypes.weapon:
-					var attackBonus = item.getBaseTotalBonus(ItemConstants.itemBonusTypes.fight_att);
+					var attackBonus = ItemConstants.getDefaultBonus(item, ItemConstants.itemBonusTypes.fight_att);
 					if (attackBonus <= 3)
 						return 0.1;
 					else
@@ -248,15 +248,15 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 				case ItemConstants.itemTypes.clothing_lower:
 				case ItemConstants.itemTypes.clothing_hands:
 				case ItemConstants.itemTypes.clothing_head:
-					return Math.max(0.1, (item.getBaseTotalBonus() / 12));
+					return Math.max(0.1, (ItemConstants.getDefaultTotalBonus(item) / 12));
 					
 				case ItemConstants.itemTypes.shoes:
-					var shoeBonus = 1 - item.getBaseBonus(ItemConstants.itemBonusTypes.movement);
-					var otherBonus = item.getBaseTotalBonus() - shoeBonus;
+					let shoeBonus = 1 - ItemConstants.getDefaultBonus(item, ItemConstants.itemBonusTypes.movement);
+					let otherBonus = ItemConstants.getDefaultTotalBonus(item) - shoeBonus;
 					return Math.pow(((shoeBonus) * 5), 2) + otherBonus / 10;
 					
 				case ItemConstants.itemTypes.bag:
-					return Math.pow(((item.getBaseTotalBonus() - 25) / 15), 1.75);
+					return Math.pow(((ItemConstants.getDefaultTotalBonus(item) - 25) / 15), 1.75);
 			}
 			
 			return null;
@@ -270,7 +270,7 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 			let ingredients = ItemConstants.getIngredientsToCraft(item.id);
 			for (let i = 0; i < ingredients.length; i++) {
 				let def = ingredients[i];
-				let ingredient = ItemConstants.getNewItemInstanceByID(def.id);
+				let ingredient = ItemConstants.getItemDefinitionByID(def.id);
 				result += def.amount * this.getItemValue(ingredient);
 			}
 			

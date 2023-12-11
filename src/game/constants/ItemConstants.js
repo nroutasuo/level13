@@ -1,5 +1,5 @@
-define(['ash', 'json!game/data/ItemData.json', 'game/constants/PlayerActionConstants', 'game/constants/UpgradeConstants', 'game/constants/WorldConstants', 'game/vos/ItemVO'],
-function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) {
+define(['ash', 'json!game/data/ItemData.json', 'game/constants/PlayerActionConstants', 'game/vos/ItemVO'],
+function (Ash, ItemData, PlayerActionConstants, ItemVO) {
 
 	let ItemConstants = {
 		
@@ -81,6 +81,18 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			science: "science",
 			engineering: "engineering",
 		},
+
+		itemSource: {
+			trade: "trade",
+			exploration: "exploration",
+			crafting: "crafting",
+		},
+
+		itemQuality: {
+			low: "low",
+			medium: "medium",
+			high: "high",
+		},
 		
 		itemBonusTypeIcons: {},
 		
@@ -119,7 +131,8 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 				if (isRepairable === undefined) {
 					isRepairable = item.isCraftable && item.isEquippable;
 				}
-				let itemVO = new ItemVO(item.id, item.name, item.type, item.level || 1, item.campOrdinalRequired, item.campOrdinalMaximum, item.isEquippable, item.isCraftable, isRepairable, item.isUseable, bonuses, item.icon, item.description, item.isSpecialEquipment);
+				let level = item.level || this.getDefaultItemLevel(type);
+				let itemVO = new ItemVO(item.id, item.name, type, level, item.campOrdinalRequired, item.campOrdinalMaximum, item.isEquippable, item.isCraftable, isRepairable, item.isUseable, bonuses, item.icon, item.description, item.isSpecialEquipment);
 				itemVO.scavengeRarity = item.rarityScavenge;
 				itemVO.investigateRarity = item.rarityInvestigate;
 				itemVO.localeRarity = item.rarityLocale;
@@ -151,6 +164,10 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			}
 			return ItemConstants.itemTypes[type];
 		},
+
+		getQualityDisplayName: function (quality) {
+			return quality;
+		},
 		
 		getItemCategory: function (item) {
 			if (!item) return ItemConstants.itemCategories.other;
@@ -172,6 +189,92 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 					return ItemConstants.itemCategories.consumable;
 			}
 			return ItemConstants.itemCategories.other;
+		},
+
+		getLongItemID: function (item) {
+			if (!item) return null;
+			return item.id + ":" + this.getItemQuality(item);
+		},
+
+		getItemIDFromLongID: function (longID) {
+			return longID.split(":")[0];
+		},
+
+		getItemQualityFromLongID: function (longID) {
+			return longID.split(":")[1];
+		},
+
+		// ITEM BONUSES
+		// base bonus: bonus without any modifiers, bonus in balancing / item definition
+		// default bonus: bonus without broken status but with quality, bonus in this item instance by default
+		// current bonus: bonus including all modifiers (quality and broken status)
+
+		getBaseTotalBonus: function (itemVO) {
+			return itemVO.getBaseTotalBonus();
+		},
+
+		getBaseBonus: function (itemVO, bonusType) {
+			if (!itemVO) return 0;
+			return itemVO.getBaseBonus(bonusType);
+		},
+
+		getDefaultTotalBonus: function (itemVO) {
+			let result = 0;
+			if (itemVO.bonus) {
+				for (let key in itemVO.bonus.bonuses) {
+					result += this.getDefaultBonus(itemVO, key);
+				}
+			}
+			return result;
+		},
+
+		getDefaultBonus: function (itemVO, itemBonusType) {
+			let baseBonus = this.getBaseBonus(itemVO, itemBonusType);
+			if (!baseBonus) return 0;
+			let quality = ItemConstants.getItemQuality(itemVO);
+			let modifier = ItemConstants.getItemBonusModifierFromQuality(itemBonusType, quality);
+			let isMultiplier = this.isMultiplier(itemBonusType);
+			return isMultiplier ? Math.round(baseBonus * modifier * 100) / 100 : Math.round(baseBonus * modifier);
+		},
+
+		getCurrentTotalBonus: function (itemVO) {
+			let result = 0;
+			if (itemVO.bonus) {
+				for (let key in itemVO.bonus.bonuses) {
+					result += this.getCurrentBonus(itemVO, key);
+				}
+			}
+			return result;
+		},
+
+		getCurrentBonus: function (itemVO, bonusType) {
+			let defaultBonus = this.getDefaultBonus(itemVO, bonusType);
+			if (!defaultBonus) return 0;
+			if (itemVO.broken && ItemConstants.isBonusTypeAffectedByBrokenStatus(bonusType)) {
+				let modifier = this.getBrokenBonusModifier(itemVO, bonusType);
+				return this.getItemBonusWithModifier(bonus, defaultBonus, modifier);
+			} else {
+				return defaultBonus;
+			}
+		},
+		
+		getBrokenBonusModifier: function (itemVO, bonusType) {
+			let baseValue = this.getBaseBonus(itemVO, bonusType);
+			if (baseValue == 0) return 0;
+			switch (bonusType) {
+				case ItemConstants.itemBonusTypes.movement:
+					// if the item increases movement (cost) keep it the same
+					if (baseValue > 1) {
+						return 1;
+					}
+					// if it decreases movement (cost), reduce the reduction
+					let reduction = (1 - baseValue);
+					let newReduction = reduction / 2;
+					let newValue = 1 - newReduction;
+					return newValue / baseValue;
+				default:
+					return 0.5;
+			}
 		},
 
 		getUseItemActionDisplaName: function (item) {
@@ -247,6 +350,39 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			}
 			return true;
 		},
+
+		isBonusTypeAffectedByQuality: function (itemBonusType) {
+			if (itemBonusType == ItemConstants.itemBonusTypes.light) return false;
+			if (itemBonusType == ItemConstants.itemBonusTypes.fight_speed) return false;
+			if (itemBonusType == ItemConstants.itemBonusTypes.movement) return false;
+			if (itemBonusType == ItemConstants.itemBonusTypes.bag) return false;
+			if (itemBonusType == ItemConstants.itemBonusTypes.detect_hazards) return false;
+			if (itemBonusType == ItemConstants.itemBonusTypes.detect_supplies) return false;
+			if (itemBonusType == ItemConstants.itemBonusTypes.detect_ingredients) return false;
+			return true;
+		},
+		
+		isBonusTypeAffectedByBrokenStatus: function (itemBonusType) {
+			if (itemBonusType == ItemConstants.itemBonusTypes.fight_speed) return false;
+			return true;
+		},
+
+		getItemQuality: function (itemVO) {
+			if (!this.hasItemTypeQualityLevels(itemVO.type)) {
+				return ItemConstants.itemQuality.medium;
+			}
+			let level = itemVO.level || 1;
+			if (level >= 70) return ItemConstants.itemQuality.high;
+			if (level <= 30) return ItemConstants.itemQuality.low;
+			return ItemConstants.itemQuality.medium;
+		},
+
+		getItemBonusModifierFromQuality: function (itemBonusType, itemQuality) {
+			if (!this.isBonusTypeAffectedByQuality(itemBonusType)) return 1;
+			if (itemQuality == ItemConstants.itemQuality.high) return 1.15;
+			if (itemQuality == ItemConstants.itemQuality.low) return 0.85;
+			return 1;
+		},
 		
 		getNewItemInstanceByID: function (id, level, skipWarning) {
 			if (!id) return null;
@@ -257,7 +393,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		getNewItemInstanceByDefinition: function (definition, level) {
 			if (!definition) return null;
 			let instance = definition.clone();
-			instance.level = level || 1;
+			instance.level = level || this.getDefaultItemLevel(definition.type);
 			return instance;
 		},
 		
@@ -267,6 +403,38 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			}
 			if (!skipWarning) log.w("no such item definition " + id);
 			return null;
+		},
+
+		getDefaultItemLevel: function (itemType) {
+			switch (itemType) {
+				case ItemConstants.itemTypes.light:
+				case ItemConstants.itemTypes.bag:
+				case ItemConstants.itemTypes.weapon:
+				case ItemConstants.itemTypes.shoes:
+				case ItemConstants.itemTypes.clothing_over:
+				case ItemConstants.itemTypes.clothing_upper:
+				case ItemConstants.itemTypes.clothing_lower:
+				case ItemConstants.itemTypes.clothing_head:
+				case ItemConstants.itemTypes.clothing_hands:
+					return ItemConstants.DEFAULT_EQUIPMENT_ITEM_LEVEL;
+				default:
+					return 1;
+			}
+		},
+
+		getRandomItemLevel: function (itemSource, itemDefinition) {
+			// crafting: always default
+			if (itemSource == ItemConstants.itemSource.crafting) {
+				return this.getDefaultItemLevel(itemDefinition.type);
+			}
+
+			// trade: varies a bit
+			if (itemSource == ItemConstants.itemSource.trade) {
+				return Math.ceil(20 + Math.random() * 60);
+			}
+
+			// exploration: varies a lot
+			return Math.ceil(Math.random() * 100);
 		},
 
 		getItemType: function (id) {
@@ -298,6 +466,20 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 					return ItemConstants.itemBonusTypes.fight_def;
 				default:
 					return null;
+			}
+		},
+
+		hasItemTypeQualityLevels: function (itemType) {
+			switch (itemType) {
+				case ItemConstants.itemTypes.weapon:
+				case ItemConstants.itemTypes.clothing_over:
+				case ItemConstants.itemTypes.clothing_upper:
+				case ItemConstants.itemTypes.clothing_lower:
+				case ItemConstants.itemTypes.clothing_hands:
+				case ItemConstants.itemTypes.clothing_head:
+					return true;
+				default:
+					return false;
 			}
 		},
 		
@@ -355,12 +537,12 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 				}
 				return result;
 			}
-			let result = item.getCurrentBonus(bonusType);
+			let result = ItemConstants.getCurrentBonus(item, bonusType);
 			if (!ItemConstants.isIncreasing(bonusType)) {
 				result = 1 - result;
 			}
 			if (bonusType == ItemConstants.itemBonusTypes.fight_att) {
-				result = result * item.getCurrentBonus(ItemConstants.itemBonusTypes.fight_speed);
+				result = result * ItemConstants.getCurrentBonus(item, ItemConstants.itemBonusTypes.fight_speed);
 			}
 			return result;
 		},

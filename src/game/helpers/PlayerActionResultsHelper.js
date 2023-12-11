@@ -570,7 +570,7 @@ define([
 			if (rewards.selectedItems) {
 				for (let i = 0; i < rewards.selectedItems.length; i++) {
 					let item = rewards.selectedItems[i];
-					GameGlobals.playerHelper.addItem(item, sourcePos);
+					GameGlobals.playerHelper.addItem(item, item.level, sourcePos);
 					GameGlobals.gameState.increaseGameStatKeyed("numItemsFoundPerId", item.id);
 					GameGlobals.gameState.increaseGameStatList("uniqueItemsFound", item.id);
 				}
@@ -1213,7 +1213,7 @@ define([
 				// - Normal items
 				let itemProbabilityWithEfficiency = itemProbability * efficiency;
 				if (Math.random() < itemProbabilityWithEfficiency && hasBag && hasDecentEfficiency && result.length == 0) {
-					var item = this.getRewardItem(efficiency, campOrdinal, step, options);
+					var item = this.getRewardItem(campOrdinal, step, options);
 					if (item) result.push(item);
 				}
 			}
@@ -1271,7 +1271,7 @@ define([
 		// options
 		// - rarityKey: context-specific key used to determine item rarity (scavengeRarity/localeRarity/tradeRarity/investigateRarity)
 		// - allowNextCampOrdinal: include items that require next camp ordinal in the valid items (for high value rewards)
-		getRewardItem: function (efficiency, campOrdinal, step, options) {
+		getRewardItem: function (campOrdinal, step, options) {
 			let rarityKey = options.rarityKey || "scavengeRarity";
 			let itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			let hasDeity = this.playerStatsNodes.head.entity.has(DeityComponent);
@@ -1368,7 +1368,11 @@ define([
 			if (!GameGlobals.gameState.uiStatus.isHidden)
 				log.i("- selected index " + index + "/" + validItems.length + ": "+ item.id);
 			
-			return ItemConstants.getNewItemInstanceByDefinition(item);
+			
+			// select level / quality
+			let level = ItemConstants.getRandomItemLevel(item, ItemConstants.itemSource.exploration);
+
+			return ItemConstants.getNewItemInstanceByDefinition(item, level);
 		},
 		
 		getSpecificRewardItem: function (itemProbability, possibleItemIds) {
@@ -1379,9 +1383,8 @@ define([
 			
 			let index = MathUtils.getWeightedRandom(0, possibleItemIds.length);
 			let itemID = possibleItemIds[index];
-			let item = ItemConstants.getNewItemInstanceByID(itemID);
-			if (!item) return null;
-			return ItemConstants.getNewItemInstanceByDefinition(item);
+			let level = ItemConstants.getRandomItemLevel(item, ItemConstants.itemSource.exploration);
+			return ItemConstants.getNewItemInstanceByID(itemID, level);
 		},
 
 		getNecessityItem: function (currentItems, campOrdinal) {
@@ -1494,13 +1497,6 @@ define([
 		},
 		
 		addFixedRewardsItems: function (rewardsVO, fixedRewards) {
-			let efficiency = this.getCurrentScavengeEfficiency();
-			
-			var playerPos = this.playerLocationNodes.head.position;
-			var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(playerPos.level);
-			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
-			var step = GameGlobals.levelHelper.getCampStep(playerPos);
-			
 			let result = [];
 			
 			for (let key in fixedRewards.items) {
@@ -1508,7 +1504,8 @@ define([
 				let itemVO = ItemConstants.getItemDefinitionByID(key);
 				if (itemVO) {
 					for (let i = 0; i < num; i++) {
-						result.push(ItemConstants.getNewItemInstanceByDefinition(itemVO));
+						let level = ItemConstants.getRandomItemLevel(item, ItemConstants.itemSource.exploration);
+						result.push(ItemConstants.getNewItemInstanceByDefinition(itemVO, level));
 					}
 				}
 			}
@@ -1527,7 +1524,8 @@ define([
 					let item = ItemConstants.getItemDefinitionByID(stashVO.itemID);
 					if (item) {
 						for (let i = 0; i < stashVO.amount; i++) {
-							rewardsVO.gainedItems.push(ItemConstants.getNewItemInstanceByDefinition(item));
+							let level = ItemConstants.getRandomItemLevel(item, ItemConstants.itemSource.exploration);
+							rewardsVO.gainedItems.push(ItemConstants.getNewItemInstanceByDefinition(item, level));
 						}
 					}
 					break;

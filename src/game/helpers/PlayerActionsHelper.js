@@ -844,11 +844,10 @@ define([
 								}
 							}
 							
-							for (let itemID in caravan.campSelectedItems) {
-								let item = ItemConstants.getNewItemInstanceByID(itemID);
-								if (!item) continue;
+							for (let i in caravan.campSelectedItems) {
+								let item = caravan.campSelectedItems[i];
 								if (item.type == ItemConstants.itemTypes.ingredient) continue;
-								let amount = caravan.campSelectedItems[itemID] + caravan.getSellItemCount(itemID);
+								let amount = caravan.getCampSelectedItemCount(item.id) + caravan.getSellItemCount(item.id);
 								if (amount > TradeConstants.MAX_ITEMS_TO_TRADE_PER_CARAVAN) {
 									let itemName = ItemConstants.getItemDisplayName(item);
 									return { value: 0, reason: "The trader doesn't want that many " + TextConstants.pluralify(itemName)  + "." };
@@ -1271,7 +1270,7 @@ define([
 						var min = def[0];
 						var max = def[1];
 						var current = fightComponent ? fightComponent.itemsUsed[itemID] || 0 : 0;
-						var item = ItemConstants.getNewItemInstanceByID(itemID);
+						var item = ItemConstants.getItemDefinitionByID(itemID);
 						if (!item) continue;
 						var itemName = item.name;
 						if (min > current) {
@@ -2309,10 +2308,10 @@ define([
 			var baseActionName = this.getBaseActionID(actionName);
 			switch (baseActionName) {
 				case "craft":
-					return ItemConstants.getNewItemInstanceByID(this.getActionIDParam(actionName));
+					return ItemConstants.getItemDefinitionByID(this.getActionIDParam(actionName));
 				case "use_item":
 				case "use_item_fight":
-					return ItemConstants.getNewItemInstanceByID(this.getActionIDParam(actionName));
+					return ItemConstants.getItemDefinitionByID(this.getActionIDParam(actionName));
 
 				default: return null;
 			}

@@ -68,17 +68,19 @@ define([
 			var caravan = traderComponent.caravan;
 			var campStorage = GameGlobals.resourcesHelper.getCurrentStorage();
 			var currencyComponent = GameGlobals.resourcesHelper.getCurrentCurrency();
-			var itemsComponent = this.itemNodes.head.items;
+			let itemsComponent = this.itemNodes.head.items;
 
-			this.traderTotalItems = {};
+			this.traderTotalItems = {}; // id:quality => []
 			this.traderOfferLis = {};
 			this.traderInventoryLis = {};
-			this.campTotalItems = {};
+			this.campTotalItems = {}; // id:quality => []
 			this.campOfferLis = {};
 			this.campInventoryLis = {};
 
-			var sys = this;
-			var highestAmount = 0;
+			this.allItems = {}; // instanceID => itemVO
+
+			let sys = this;
+			let highestAmount = 0;
 
 			var addLis = function (li, key, section) {
 				var inventoryLi = $(li).clone();
@@ -91,17 +93,20 @@ define([
 
 			// trader items: count
 			for (let i = 0; i < caravan.sellItems.length; i++) {
-				if (!this.traderTotalItems[caravan.sellItems[i].id])
-					this.traderTotalItems[caravan.sellItems[i].id] = 0;
-				this.traderTotalItems[caravan.sellItems[i].id]++;
+				let id = ItemConstants.getLongItemID(caravan.sellItems[i]);
+				if (!this.traderTotalItems[id])
+					this.traderTotalItems[id] = [];
+				this.traderTotalItems[id].push(caravan.sellItems[i])
+				this.allItems[caravan.sellItems[i].itemID] = caravan.sellItems[i];
 			}
 
 			// trader items: create
-			for (let itemID in this.traderTotalItems) {
-				let item = ItemConstants.getNewItemInstanceByID(itemID);
-				if (!item) continue;
+			for (let longItemID in this.traderTotalItems) {
+				let items = this.traderTotalItems[longItemID];
+				if (!items || items.length <= 0) continue;
+				let item = items[0];
 				let li = UIConstants.getItemSlot(itemsComponent, item, 0, false, true);
-				addLis(li, itemID, "trader")
+				addLis(li, longItemID, "trader")
 			}
 
 			// camp items: count
@@ -113,25 +118,29 @@ define([
 					if (itemList[k].equipped) continue;
 					if (itemList[k].broken) continue;
 					if (!ItemConstants.isUnselectable(itemList[k])) continue;
-					if (!this.campTotalItems[itemList[k].id])
-						this.campTotalItems[itemList[k].id] = 0;
-					this.campTotalItems[itemList[k].id]++;
+					let longID = ItemConstants.getLongItemID(itemList[k]);
+					if (!this.campTotalItems[longID])
+						this.campTotalItems[longID] = [];
+					this.campTotalItems[longID].push(itemList[k]);
+					this.allItems[itemList[k].itemID] = itemList[k];
 				}
 			}
 
 			// camp items: create
-			var count = 0;
-			for (var itemID in this.campTotalItems) {
-				var item = ItemConstants.getNewItemInstanceByID(itemID);
+			let count = 0;
+			for (var longItemID in this.campTotalItems) {
+				let items = this.campTotalItems[longItemID];
+				if (!items || items.length <= 0) continue;
+				let item = items[0];
 				if (!item) continue;
-				var li = UIConstants.getItemSlot(itemsComponent, item, 0, false, true);
-				addLis(li, itemID, "camp")
+				let li = UIConstants.getItemSlot(itemsComponent, item, 0, false, true);
+				addLis(li, longItemID, "camp")
 				count++;
 				if (count >= 23) break;
 			}
 
 			// trader and camp resources
-			for (var key in resourceNames) {
+			for (let key in resourceNames) {
 				var name = resourceNames[key];
 				var traderInventoryAmount = caravan.sellResources.getResource(name);
 				var campInventoryAmount = campStorage.resources.getResource(name);
@@ -166,19 +175,23 @@ define([
 				highestAmount = Math.max(highestAmount, traderInventoryAmount, campInventoryAmount);
 			}
 
-			var moveItem = function ($li, source) {
-				var divRes = $li.find(".res");
-				var divItem = $li.find(".item");
-				var resourceName = $(divRes).attr("data-resourcename");
-				var itemID = $(divItem).attr("data-itemid");
-				var isCurrency = resourceName === "currency";
+			let isMatchingItem = function (liItem, item) {
+				return liItem && item && ItemConstants.getLongItemID(liItem) == ItemConstants.getLongItemID(item);
+			};
 
-				var isTraderInventory = $li.parents("#inventorylist-incoming-caravan-trader-inventory").length > 0;
-				var isTraderOffer = $li.parents("#inventorylist-incoming-caravan-trader-offer").length > 0;
-				var isCampInventory = $li.parents("#inventorylist-incoming-caravan-camp-inventory").length > 0;
-				var isCampOffer = $li.parents("#inventorylist-incoming-caravan-camp-offer").length > 0;
+			let moveItem = function ($li, source) {
+				let divRes = $li.find(".res");
+				let divItem = $li.find(".item");
+				let resourceName = $(divRes).attr("data-resourcename");
+				let itemID = $(divItem).attr("data-itemid");
+				let isCurrency = resourceName === "currency";
+
+				let isTraderInventory = $li.parents("#inventorylist-incoming-caravan-trader-inventory").length > 0;
+				let isTraderOffer = $li.parents("#inventorylist-incoming-caravan-trader-offer").length > 0;
+				let isCampInventory = $li.parents("#inventorylist-incoming-caravan-camp-inventory").length > 0;
+				let isCampOffer = $li.parents("#inventorylist-incoming-caravan-camp-offer").length > 0;
 				
-				var amount = Math.max(1, HorizontalSelect.getSelection(sys.multiplierSelect).value);
+				let amount = Math.max(1, HorizontalSelect.getSelection(sys.multiplierSelect).value);
 
 				if (isCurrency) {
 					if (isTraderInventory) {
@@ -205,21 +218,26 @@ define([
 					caravan.traderSelectedResources.limit(resourceName, 0, caravan.sellResources.getResource(resourceName), false, "trade-popup");
 					caravan.campSelectedResources.limit(resourceName, 0, campStorage.resources.getResource(resourceName), false, "trade-popup");
 				} else if (itemID) {
-					if (!caravan.traderSelectedItems[itemID])
-						caravan.traderSelectedItems[itemID] = 0;
-					if (!caravan.campSelectedItems[itemID])
-						caravan.campSelectedItems[itemID] = 0;
+					let itemInstanceID = $(divItem).attr("data-iteminstanceid");
+					let liItem = sys.allItems[itemInstanceID];
+
 					if (isTraderInventory) {
-						caravan.traderSelectedItems[itemID] += amount;
+						let traderInventoryItem = caravan.sellItems.find(i => isMatchingItem(liItem, i) && caravan.traderSelectedItems.indexOf(i) < 0);
+						if (traderInventoryItem) {
+							caravan.traderSelectedItems.push(traderInventoryItem);
+						}
 					} else if (isTraderOffer) {
-						caravan.traderSelectedItems[itemID] -= amount;
+						let traderOfferItem = caravan.traderSelectedItems.find(i => isMatchingItem(liItem, i) && caravan.traderSelectedItems.indexOf(i) >= 0);
+						caravan.traderSelectedItems = caravan.traderSelectedItems.filter(i => i.itemID != traderOfferItem.itemID);
 					} else if (isCampInventory) {
-						caravan.campSelectedItems[itemID] += amount;
+						let campInventoryItem = itemsComponent.getItem(itemID, null, true, false, i => isMatchingItem(liItem, i) && caravan.campSelectedItems.indexOf(i) < 0);
+						if (campInventoryItem) {
+							caravan.campSelectedItems.push(campInventoryItem);
+						}
 					} else if (isCampOffer) {
-						caravan.campSelectedItems[itemID] -= amount;
+						let campOfferItem = caravan.campSelectedItems.find(i => isMatchingItem(liItem, i));
+						caravan.campSelectedItems = caravan.campSelectedItems.filter(i => i.itemID != campOfferItem.itemID);
 					}
-					caravan.traderSelectedItems[itemID] = MathUtils.clamp(caravan.traderSelectedItems[itemID], 0, sys.traderTotalItems[itemID] || 0);
-					caravan.campSelectedItems[itemID] = MathUtils.clamp(caravan.campSelectedItems[itemID], 0, sys.campTotalItems[itemID] || 0);
 				}
 
 				sys.updateLists();
@@ -275,33 +293,39 @@ define([
 			var visibleLisCampOffer = 0;
 
 			// trader items
-			for (let itemID in this.traderTotalItems) {
-				let item = ItemConstants.getNewItemInstanceByID(itemID);
-				if  (!item) continue;
-				let selectedAmount = (caravan.traderSelectedItems[itemID] ? caravan.traderSelectedItems[itemID] : 0);
-				var inventoryAmount = this.traderTotalItems[itemID] - selectedAmount;
-				UIConstants.updateItemSlot(this.traderInventoryLis[itemID], inventoryAmount);
-				UIConstants.updateItemSlot(this.traderOfferLis[itemID], selectedAmount);
+			for (let longItemID in this.traderTotalItems) {
+				let itemID = ItemConstants.getItemIDFromLongID(longItemID);
+				let quality = ItemConstants.getItemQualityFromLongID(longItemID);
+				let items = this.traderTotalItems[longItemID];
+				if (!items || items.length <= 0) continue;
+				let item = items[0];
+				let selectedAmount = caravan.traderSelectedItems.filter(i => i.id == itemID && ItemConstants.getItemQuality(i) == quality).length;
+				let inventoryAmount = this.traderTotalItems[longItemID].length - selectedAmount;
+				UIConstants.updateItemSlot(this.traderInventoryLis[longItemID], inventoryAmount);
+				UIConstants.updateItemSlot(this.traderOfferLis[longItemID], selectedAmount);
 				traderOfferValue += selectedAmount * TradeConstants.getItemValue(item, true, false);
 				visibleLisTraderInventory += inventoryAmount > 0 ? 1 : 0;
 				visibleLisTraderOffer += selectedAmount > 0 ? 1 : 0;
 			}
 
 			// camp items
-			for (var itemID in this.campTotalItems) {
-				var item = ItemConstants.getNewItemInstanceByID(itemID);
-				if (!item) continue;
-				var selectedAmount = (caravan.campSelectedItems[itemID] ? caravan.campSelectedItems[itemID] : 0);
-				var inventoryAmount = this.campTotalItems[itemID] - selectedAmount;
-				UIConstants.updateItemSlot(this.campInventoryLis[itemID], inventoryAmount);
-				UIConstants.updateItemSlot(this.campOfferLis[itemID], selectedAmount);
+			for (let longItemID in this.campTotalItems) {
+				let itemID = ItemConstants.getItemIDFromLongID(longItemID);
+				let quality = ItemConstants.getItemQualityFromLongID(longItemID);
+				let items = this.campTotalItems[longItemID];
+				if (!items || items.length <= 0) continue;
+				let item = items[0];
+				let selectedAmount = caravan.campSelectedItems.filter(i => i.id == itemID && ItemConstants.getItemQuality(i) == quality).length;
+				let inventoryAmount = this.campTotalItems[longItemID].length - selectedAmount;
+				UIConstants.updateItemSlot(this.campInventoryLis[longItemID], inventoryAmount);
+				UIConstants.updateItemSlot(this.campOfferLis[longItemID], selectedAmount);
 				campOfferValue += selectedAmount * TradeConstants.getItemValue(item, false, true);
 				visibleLisCampInventory += inventoryAmount > 0 ? 1 : 0;
 				visibleLisCampOffer += selectedAmount > 0 ? 1 : 0;
 			}
 
 			// trader and camp resources
-			for (var key in resourceNames) {
+			for (let key in resourceNames) {
 				var name = resourceNames[key];
 				var traderOfferAmount = caravan.traderSelectedResources.getResource(name);
 				var traderInventoryAmount = caravan.sellResources.getResource(name) - traderOfferAmount;

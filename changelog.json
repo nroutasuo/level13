@@ -39,6 +39,10 @@
 					"summary": "Add dedicated metal scavenging spots (heaps)"
 				},
 				{
+					"type": "GD",
+					"summary": "Add varying quality to equipment items"
+				},
+				{
 					"type": "Dev",
 					"summary": "Bugfixes and balancing, UI and text improvements"
 				}

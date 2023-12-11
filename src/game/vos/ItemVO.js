@@ -27,11 +27,13 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 
 		// instance data (varies between instances)
 		itemID: -1,
+		foundPosition: null,
+		level: 1,
+
+		// status data (varies over time)
 		equipped: false,
 		carried: false,
 		broken: false,
-		foundPosition: null,
-		level: 1,
 
 		constructor: function (id, name, type, level, requiredCampOrdinal, maximumCampOrdinal, equippable, craftable, repairable, useable, bonuses, icon, description, isSpecialEquipment) {
 			this.id = id;
@@ -66,46 +68,9 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		getBaseTotalBonus: function () {
 			return this.bonus.getTotal();
 		},
-
-		getCurrentTotalBonus: function () {
-			let result = 0;
-			if (this.bonus) {
-				for (let key in this.bonus.bonuses) {
-					result += this.getCurrentBonus(key);
-				}
-			}
-			return result;
-		},
 		
 		getBaseBonus: function (bonusType) {
 			return this.bonus ? this.bonus.getBonus(bonusType) : 0;
-		},
-
-		getCurrentBonus: function (bonusType) {
-			if (this.broken && this.isBonusAffectedByBrokenStatus(bonusType)) {
-				return this.getBrokenBonus(bonusType);
-			} else {
-				return this.getBaseBonus(bonusType);
-			}
-		},
-		
-		getBrokenBonus: function (bonusType) {
-			// TODO refer to ItemConstants isIncreasing isMultiplier
-			let baseValue = this.getBaseBonus(bonusType);
-			if (baseValue == 0) return 0;
-			switch (bonusType) {
-				//case itemBonusTypes.movement:
-				case "movement":
-					return baseValue > 1 ? baseValue : baseValue + (1 - baseValue) / 2;
-				default:
-					return Math.floor(baseValue / 2);
-			}
-		},
-		
-		isBonusAffectedByBrokenStatus: function (bonusType) {
-			// TODO refer to ItemConstants here / move whole function
-			if (bonusType == "spd") return false;
-			return true;
 		},
 
 		getCustomSaveObject: function () {
@@ -151,15 +116,25 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			return clone;
 		},
 
-		clone: function () {
+		clone: function (componentValues) {
 			let clone = new ItemVO(this.id, this.name, this.type, this.level, this.requiredCampOrdinal, this.maximumCampOrdinal, this.equippable, this.craftable, this.repairable, this.useable, this.bonus.bonuses, this.icon, this.description, this.isSpecialEquipment);
+
 			clone.scavengeRarity = this.scavengeRarity;
 			clone.localeRarity = this.localeRarity;
 			clone.tradeRarity = this.tradeRarity;
 			clone.investigateRarity = this.investigateRarity;
+
 			clone.tradePrice = this.tradePrice;
 			clone.broken = this.broken;
 			clone.nameShort = this.nameShort;
+
+			if (componentValues) {
+				if (componentValues.itemID) clone.itemID = componentValues.itemID; 
+				if (componentValues.foundPosition) clone.foundPosition = componentValues.foundPosition; 
+				if (componentValues.level) clone.level = componentValues.level;
+				clone.broken = componentValues.broken == 1;
+			}
+
 			return clone;
 		}
 	});

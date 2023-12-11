@@ -541,9 +541,8 @@ define(['ash',
 		},
 
 		addItem: function (itemID, onlyIfMissing) {
-			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-			var playerPos = this.playerPositionNodes.head.position;
-			var item = ItemConstants.getNewItemInstanceByID(itemID);
+			let itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
+			let item = ItemConstants.getItemDefinitionByID(itemID);
 			if (item) {
 				if (!onlyIfMissing || !itemsComponent.contains(item.name)) {
 					GameGlobals.playerHelper.addItem(item);

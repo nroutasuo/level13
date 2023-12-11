@@ -560,7 +560,7 @@ define([
 			let hasBonus = function (itemBonusType) {
 				for (let i = 0; i < items.length; i++) {
 					if (!items[i].equippable) continue;
-					if (items[i].getCurrentBonus(itemBonusType) > 0) return true;
+					if (ItemConstants.getCurrentBonus(items[i], itemBonusType) > 0) return true;
 				}
 				return false;
 			}
@@ -569,7 +569,7 @@ define([
 				for (let itemType in itemsBySlot) {
 					if (itemsBySlot[itemType].length < 2) continue;
 					for (let i = 0; i < itemsBySlot[itemType].length; i++) {
-						if (itemsBySlot[itemType][i].getCurrentBonus(itemBonusType)) {
+						if (ItemConstants.getCurrentBonus(itemsBySlot[itemType][i], itemBonusType)) {
 							// has at least 2 items for slot and at least one of them has matching bonus
 							return true;
 						}

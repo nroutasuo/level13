@@ -2,20 +2,20 @@ define([
 	'ash',
 	'game/GameGlobals',
 	'game/constants/ItemConstants',
-	'game/constants/UpgradeConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/WorldConstants',
 ], function (
 	Ash,
 	GameGlobals,
 	ItemConstants,
-	UpgradeConstants,
 	PlayerActionConstants,
 	WorldConstants,
 ) {
-	var ItemsHelper = Ash.Class.extend({
+	let ItemsHelper = Ash.Class.extend({
 		
 		MAX_SCA_RARITY_DEFAULT_CLOTHING: 1,
+		
+		requiredCampAndStepToCraftCache: {},
 
 		constructor: function () {},
 		
@@ -232,8 +232,6 @@ define([
 			result.push(weapon);
 			return result;
 		},
-		
-		requiredCampAndStepToCraftCache: {},
 		
 		getRequiredCampAndStepToCraft: function (item) {
 			var cache = this.requiredCampAndStepToCraftCache;

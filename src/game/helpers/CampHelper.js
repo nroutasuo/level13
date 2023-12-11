@@ -326,9 +326,10 @@ define([
 					return;
 				}
 				// add item
-				var amount = Math.ceil(Math.random() * maxAmount);
+				let amount = Math.ceil(Math.random() * maxAmount);
 				for (let j = 0; j < amount; j++) {
-					sellItems.push(ItemConstants.getNewItemInstanceByDefinition(itemDefinition));
+					let level = ItemConstants.getRandomItemLevel(ItemConstants.itemSource.trade, itemDefinition);
+					sellItems.push(ItemConstants.getNewItemInstanceByDefinition(itemDefinition, level));
 				}
 			}
 			

@@ -243,7 +243,7 @@ define([
 			let items = this.playerStatsNodes.head.items.getEquipped();
 			for (let i = 0; i < items.length; i++) {
 				let item = items[i];
-				let itemBonus = item.getCurrentBonus(itemBonusType);
+				let itemBonus = ItemConstants.getCurrentBonus(item, itemBonusType);
 				if (itemBonus > 0) {
 					if (result.length > 0) result += "<br/>";
 					result += item.name + ": " + itemBonus;
@@ -280,19 +280,21 @@ define([
 			return result;
 		},
 		
-		addItem: function (itemDef, sourcePosition) {
+		addItem: function (itemDef, level, sourcePosition) {
 			if (!itemDef) {
 				log.w("trying to add item with no item def");
 				return;
 			}
 			
-			var itemsComponent = this.playerStatsNodes.head.items;
-			var playerPosition = this.playerPosNodes.head.position.getPosition();
+			let itemsComponent = this.playerStatsNodes.head.items;
+			let playerPosition = this.playerPosNodes.head.position.getPosition();
 			sourcePosition = sourcePosition || playerPosition.clone();
 			
-			let item = ItemConstants.getNewItemInstanceByDefinition(itemDef);
+			level = level || ItemConstants.getDefaultItemLevel(itemDef.type);
+			let item = ItemConstants.getNewItemInstanceByDefinition(itemDef, level);
 			
-			itemsComponent.addItem(item, !playerPosition.inCamp && sourcePosition.equals(playerPosition));
+			let isCarried = !playerPosition.inCamp && sourcePosition.equals(playerPosition);
+			itemsComponent.addItem(item, isCarried);
 			item.foundPosition = sourcePosition.clone();
 		},
 		

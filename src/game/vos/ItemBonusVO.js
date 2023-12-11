@@ -1,6 +1,6 @@
 define(['ash'], function (Ash) {
 
-	var ItemBonusVO = Ash.Class.extend({
+	let ItemBonusVO = Ash.Class.extend({
 		
 		bonuses: null,
 		
@@ -9,8 +9,8 @@ define(['ash'], function (Ash) {
 		},
 		
 		getTotal: function () {
-			var total = 0;
-			for (var key in this.bonuses) {
+			let total = 0;
+			for (let key in this.bonuses) {
 				if (this.bonuses[key] > 0 && this.bonuses[key] < 1)
 					total += 1 - this.bonuses[key];
 				else
