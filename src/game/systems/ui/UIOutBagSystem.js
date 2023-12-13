@@ -60,7 +60,8 @@ define([
 		initItemSlots: function () {
 			var sys = this;
 			$.each($("#container-equipment-slots .item-slot"), function () {
-				var rawType = $(this).attr("id").split("-")[2];
+				let $slot = $(this);
+				var rawType = $slot.attr("id").split("-")[2];
 				var itemTypeName = ItemConstants.itemTypes[rawType];
 				var typeDisplay = ItemConstants.getItemTypeDisplayName(itemTypeName, true);
 				$(this).append("<span class='item-slot-type-empty'>" + typeDisplay + "</span>");
@@ -68,6 +69,7 @@ define([
 				$(this).append("<span class='item-slot-name '></span>");
 				$(this).append("<div class='item-slot-image'></div>");
 				$(this).hover(function () {
+					sys.refreshButtonsInCallout($slot);
 					sys.highlightItemType(itemTypeName);
 				}, function () {
 					sys.highlightItemType(null);
@@ -418,7 +420,6 @@ define([
 		},
 
 		updateItemLists: function () {
-			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.bag;
 			var itemsComponent = this.itemNodes.head.items;
 			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
 			var items = itemsComponent.getUnique(inCamp);
@@ -484,9 +485,11 @@ define([
 			
 			var sys = this;
 			$("#bag-items .item").each(function () {
-				var id = $(this).attr("data-itemid");
+				let $item = $(this);
+				var id = $item.attr("data-itemid");
 				var item = ItemConstants.getItemDefinitionByID(id);
-				$(this).hover(function () {
+				$item.hover(function () {
+					sys.refreshButtonsInCallout($item.parents(".item-slot"));
 					sys.highlightItemType(item.type);
 				}, function () {
 					sys.highlightItemType(null);
@@ -611,6 +614,14 @@ define([
 				} else {
 					$(this).toggleClass("highlighted", false);
 				}
+			});
+		},
+
+		refreshButtonsInCallout: function ($slot) {
+			let $calloutContent = $slot.find(".info-callout-content");
+			let $buttons = $calloutContent.find("button.action");
+			$.each($buttons, function () {
+				GameGlobals.buttonHelper.updateButtonDisabledState($(this));
 			});
 		},
 

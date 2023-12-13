@@ -463,6 +463,7 @@ define(['ash',
 						let callout = '<div class="info-callout">' + content + '</div>';
 						return callout;
 					});
+
 					$target.data("callout-generated", true);
 				});
 
