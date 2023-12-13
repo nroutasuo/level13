@@ -25,11 +25,10 @@ define([
 	'game/nodes/player/PlayerResourcesNode',
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/tribe/TribeUpgradesNode',
-	'game/nodes/sector/CampNode',
 	'game/nodes/NearestCampNode',
 	'game/components/type/LevelComponent',
-	'game/components/common/CurrencyComponent',
 	'game/components/common/PositionComponent',
+	'game/components/common/ResourcesComponent',
 	'game/components/player/PlayerActionComponent',
 	'game/components/player/BagComponent',
 	'game/components/player/ExcursionComponent',
@@ -54,7 +53,7 @@ define([
 	Ash, ValueCache, GameGlobals, GlobalSignals, CampConstants, LocaleConstants, PositionConstants, PlayerActionConstants, PlayerStatConstants, FollowerConstants,
 	ImprovementConstants, ItemConstants, BagConstants, MovementConstants, UpgradeConstants, PerkConstants, TextConstants,
 	TradeConstants, UIConstants, WorldConstants, PlayerActionResultNode, PlayerStatsNode, PlayerResourcesNode,
-	PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode, LevelComponent, CurrencyComponent, PositionComponent,
+	PlayerLocationNode, TribeUpgradesNode, NearestCampNode, LevelComponent, PositionComponent, ResourcesComponent,
 	PlayerActionComponent, BagComponent, ExcursionComponent, ItemsComponent, DeityComponent, FightComponent,
 	OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent, SectorControlComponent, SectorFeaturesComponent,
 	SectorStatusComponent, SectorLocalesComponent, SectorImprovementsComponent, TraderComponent, RaidComponent,
@@ -762,7 +761,6 @@ define([
 						}
 					}
 				}
-				
 					
 				if (typeof requirements.campInventoryFull != "undefined") {
 					let requiredValue = requirements.campInventoryFull;
@@ -866,11 +864,21 @@ define([
 							return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_NOT_REACHABLE_BY_TRADERS };
 						}
 					}
+
 					if (typeof requirements.camp.raid !== "undefined") {
 						let currentValue = this.playerLocationNodes.head.entity.has(RaidComponent);
 						let requiredValue = requirements.camp.raid;
 						if (requiredValue != currentValue) {
 							return { value: 0, reason: (requiredValue ? "No raid currently" : "There is a raid" ) };
+						}
+					}
+
+					if (requirements.camp.robotStorageAvailable) {
+						let currentRobotStorage = GameGlobals.campHelper.getRobotStorageCapacity(sector);
+						let resources = sector.get(ResourcesComponent);
+						let currentRobots = resources.resources.robots || 0;
+						if (currentRobotStorage - currentRobots <= 0) {
+							return { value: 0, reason: "No storage space for robots in camp" };
 						}
 					}
 				}
@@ -2551,6 +2559,16 @@ define([
 			return ValueCache.getValue("PathToNearestCamp", 5, sectorPosition.positionId(), () =>
 				GameGlobals.levelHelper.findPathTo(sector, campSector, { skipBlockers: true, skipUnvisited: true, omitWarnings: true })
 			);
+		},
+
+		getActionCampSector: function () {
+			if (this.playerLocationNodes.head && this.playerLocationNodes.head.entity.has(CampComponent)) {
+				return this.playerLocationNodes.head.entity;
+			}
+			if (this.nearestCampNodes.head) {
+				return this.nearestCampNodes.head.entity;
+			}
+			return GameGlobals.levelHelper.getCampSectorOnLevel(13);
 		},
 
 		getCooldownForCurrentLocation: function (action) {

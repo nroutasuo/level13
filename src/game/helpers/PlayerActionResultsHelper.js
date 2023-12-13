@@ -188,6 +188,10 @@ define([
 				case "cache_water":
 					rewards.gainedResources.addResource(resourceNames.water, itemConfig.configData.waterValue || 10);
 					break;
+				case "cache_robots":
+					// robots wear out so if we gave just 1 it would instantly become 0.999
+					rewards.gainedResources.addResource(resourceNames.robots, 1.25);
+					break;
 			}
 
 			return rewards;
@@ -508,6 +512,8 @@ define([
 				return false;
 			}
 
+			let actionCampSector = campSector || GameGlobals.playerActionsHelper.getActionCampSector();
+
 			rewards.collected = true;
 
 			if (rewards && rewards.action == "scavenge") {
@@ -535,8 +541,10 @@ define([
 			}
 			
 			let defaultRewardCampNode = this.getDefaultRewardCampNode();
-			var currentStorage = campSector ? GameGlobals.resourcesHelper.getCurrentCampStorage(campSector) : GameGlobals.resourcesHelper.getCurrentStorage();
-			var playerPos = this.playerLocationNodes.head.position;
+			let currentStorage = campSector ? GameGlobals.resourcesHelper.getCurrentCampStorage(campSector) : GameGlobals.resourcesHelper.getCurrentStorage();
+			let campStorage = actionCampSector ? GameGlobals.resourcesHelper.getCampStorage(actionCampSector) : null;
+
+			let playerPos = this.playerLocationNodes.head.position;
 			let sourcePos = campSector ? campSector.get(PositionComponent) : playerPos;
 
 			if (isTakeAll) {
@@ -544,6 +552,16 @@ define([
 				rewards.selectedResources = rewards.gainedResources;
 				rewards.discardedItems = [];
 				rewards.discardedResources = new ResourcesVO(storageTypes.RESULT);
+			}
+
+			let gainedRobots = rewards.selectedResources.getResource(resourceNames.robots);
+			if (gainedRobots > 0) {
+				rewards.selectedResources.setResource(resourceNames.robots, 0);
+				if (campStorage) {
+					campStorage.addResource(resourceNames.robots, gainedRobots);
+				} else {
+					log.w("gained robots from rewards but found no camp storage to put them");
+				}
 			}
 
 			currentStorage.addResources(rewards.selectedResources);

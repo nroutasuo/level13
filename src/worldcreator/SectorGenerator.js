@@ -735,8 +735,7 @@ define([
 				"cache_food_1",
 				"cache_water_1",
 			];
-			var maxRarity = 9;
-			return allItems.filter((itemID) => this.itemsHelper.isAvailable(ItemConstants.getItemDefinitionByID(itemID), levelVO.campOrdinal, WorldConstants.CAMP_STEP_END, true, true, maxRarity));
+			return allItems.filter((itemID) => this.itemsHelper.isAvailable(ItemConstants.getItemDefinitionByID(itemID), levelVO.campOrdinal, WorldConstants.CAMP_STEP_END, true, true));
 		},
 		
 		generateWorkshops: function (seed, worldVO, levelVO) {

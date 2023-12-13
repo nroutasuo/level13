@@ -3686,6 +3686,12 @@
         "use_item_cache_metal": {
             "inCamp": true
         },
+        "use_item_cache_robots": {
+            "inCamp": true,
+            "camp": {
+                "robotStorageAvailable": true
+            }
+        },
         "use_item_cache_rumours": {
             "inCamp": true
         },

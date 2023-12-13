@@ -133,10 +133,10 @@ function (Ash, ItemData, PlayerActionConstants, ItemVO) {
 				}
 				let level = item.level || this.getDefaultItemLevel(type);
 				let itemVO = new ItemVO(item.id, item.name, type, level, item.campOrdinalRequired, item.campOrdinalMaximum, item.isEquippable, item.isCraftable, isRepairable, item.isUseable, bonuses, item.icon, item.description, item.isSpecialEquipment);
-				itemVO.scavengeRarity = item.rarityScavenge;
-				itemVO.investigateRarity = item.rarityInvestigate;
-				itemVO.localeRarity = item.rarityLocale;
-				itemVO.tradeRarity = item.rarityTrade;
+				itemVO.scavengeRarity = item.rarityScavenge || -1;
+				itemVO.investigateRarity = item.rarityInvestigate || -1;
+				itemVO.localeRarity = item.rarityLocale || -1;
+				itemVO.tradeRarity = item.rarityTrade || -1;
 				itemVO.configData = item.configData || {};
 				itemVO.nameShort = item.nameShort || null;
 				itemVO.tradePrice = item.tradePrice;
@@ -288,6 +288,7 @@ function (Ash, ItemData, PlayerActionConstants, ItemVO) {
 			if (item.id.startsWith("cache_rumours")) return "Read";
 			if (item.id.startsWith("cache_insight")) return "Read";
 			if (item.id.startsWith("cache_favour")) return "Donate";
+			if (item.id.startsWith("cache_robots")) return "Repair";
 			return "Use";
 		},
 			

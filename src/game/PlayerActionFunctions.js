@@ -2067,6 +2067,12 @@ define(['ash',
 					GameGlobals.playerActionResultsHelper.collectRewards(true, suppliesCacheRewards);
 					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_SUPPLIES_CACHE, "Used " + Text.addArticle(item.name) + ". " + suppliesResultMsg);
 					break;
+
+				case "cache_robots":
+					let robotsCacheRewards = GameGlobals.playerActionResultsHelper.getUseItemRewards(itemId);
+					GameGlobals.playerActionResultsHelper.collectRewards(true, robotsCacheRewards);
+					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "Repaired the Robot and took it to the Factory.");
+					break;
 					
 				case "cache_evidence":
 					let evidence = itemConfig.configData.evidenceValue || Math.pow(itemConfig.level, 2);

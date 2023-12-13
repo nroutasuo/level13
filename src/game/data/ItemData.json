@@ -757,6 +757,22 @@
         "rarityScavenge": 6,
         "type": "voucher"
     },
+    "cache_robots_1": {
+        "campOrdinalRequired": 14,
+        "configData": {
+            "robotsValue": 1
+        },
+        "description": "An old worker robot that might still be repairable.",
+        "icon": "img/items/cache-robots.png",
+        "id": "cache_robots_1",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "name": "Faulty Worker Robot",
+        "nameShort": "Robot",
+        "rarityLocale": 9,
+        "type": "voucher"
+    },
     "cache_rumours_11": {
         "campOrdinalRequired": 5,
         "description": "A dated newspaper printed in Old Waterworks on recycled rag paper",

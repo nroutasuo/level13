@@ -569,6 +569,7 @@ define([
 		
 		getRobotStorageCapacity: function (camp) {
 			let improvements = camp.get(SectorImprovementsComponent);
+			if (!improvements) return 0;
 			let factoryCount = improvements.getCount(improvementNames.robotFactory);
 			let factoryLevel = improvements.getLevel(improvementNames.robotFactory);
 			return CampConstants.getRobotStorageCapacity(factoryCount, factoryLevel);
