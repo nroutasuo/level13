@@ -43,6 +43,10 @@
 					"summary": "Add varying quality to equipment items"
 				},
 				{
+					"type": "GD",
+					"summary": "Add a few more building upgrade levels (trading post, caravan stable)"
+				},
+				{
 					"type": "Dev",
 					"summary": "Bugfixes and balancing, UI and text improvements"
 				}

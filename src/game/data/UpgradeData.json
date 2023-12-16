@@ -203,6 +203,14 @@
         "id": "improve_building_stable_2",
         "name": "Animal Feed"
     },
+    "improve_building_stable_3": {
+        "campOrdinal": "11",
+        "effects": {
+            "improvesBuildings": "stable"
+        },
+        "id": "improve_building_stable_3",
+        "name": "Motorized wagons"
+    },
     "improve_building_storage1": {
         "blueprintCampOrdinal": 6,
         "blueprintIsCampless": false,

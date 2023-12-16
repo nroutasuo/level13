@@ -651,7 +651,7 @@
             "rumours": 394
         },
         "improve_building_hospital": {
-            "rumours": 1245
+            "rumours": 996
         },
         "improve_building_hospital_3": {
             "rumours": 3099
@@ -694,6 +694,10 @@
         },
         "improve_building_stable_2": {
             "rumours": 328
+        },
+        "improve_building_stable_3": {
+            "evidence": 220,
+            "rumours": 937
         },
         "improve_building_storage1": {
             "evidence": 289
@@ -936,7 +940,7 @@
             "favour": 115
         },
         "improve_worker_rubber_2": {
-            "evidence": 329
+            "evidence": 247
         },
         "improve_worker_rubber_3": {
             "favour": 168
@@ -1086,8 +1090,8 @@
             "rumours": 95
         },
         "unlock_building_fortifications2": {
-            "evidence": 403,
-            "rumours": 1611
+            "evidence": 302,
+            "rumours": 1289
         },
         "unlock_building_generator": {
             "rumours": 462
@@ -1191,7 +1195,7 @@
         },
         "unlock_item_clothing3h": {
             "favour": 151,
-            "rumours": 1318
+            "rumours": 1055
         },
         "unlock_item_clothing4": {
             "evidence": 189
@@ -1208,7 +1212,7 @@
             "rumours": 546
         },
         "unlock_item_clothing6": {
-            "rumours": 1318
+            "rumours": 1055
         },
         "unlock_item_clothing_body_13": {
             "favour": 184,
@@ -1249,7 +1253,7 @@
             "rumours": 850
         },
         "unlock_item_weapon_11": {
-            "evidence": 366,
+            "evidence": 275,
             "favour": 160
         },
         "unlock_item_weapon_12": {
@@ -2789,6 +2793,11 @@
         "improve_building_stable_2": {
             "upgrades": {
                 "improve_building_storage1": true
+            }
+        },
+        "improve_building_stable_3": {
+            "upgrades": {
+                "unlock_project_tradingpost_connector": true
             }
         },
         "improve_building_storage1": {
