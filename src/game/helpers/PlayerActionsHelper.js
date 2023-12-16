@@ -716,11 +716,13 @@ define([
 						let resultNode = this.playerActionResultNodes.head;
 						if (resultNode) {
 							let resultVO = resultNode.result.pendingResultVO;
-							let unselectedItems = resultVO.getUnselectedAndDiscardedItems();
-							for (let i = 0; i < unselectedItems.length; i++) {
-								let unselectedItem = unselectedItems[i];
-								if (!ItemConstants.isUnselectable(unselectedItem)) {
-									return { value: 0, reason: "Can't leave " + ItemConstants.getItemDisplayName(unselectedItem) + " behind" };
+							if (resultVO) {
+								let unselectedItems = resultVO.getUnselectedAndDiscardedItems();
+								for (let i = 0; i < unselectedItems.length; i++) {
+									let unselectedItem = unselectedItems[i];
+									if (!ItemConstants.isUnselectable(unselectedItem)) {
+										return { value: 0, reason: "Can't leave " + ItemConstants.getItemDisplayName(unselectedItem) + " behind" };
+									}
 								}
 							}
 						}

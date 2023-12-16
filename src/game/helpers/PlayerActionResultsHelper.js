@@ -466,6 +466,8 @@ define([
 		
 		saveDiscoveredGoods: function (rewards) {
 			let result = {};
+
+			if (!rewards) return result;
 			
 			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			var sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
@@ -498,6 +500,7 @@ define([
 		},
 		
 		preCollectRewards: function (rewards) {
+			if (!rewards) return;
 			if (rewards.brokenItems) {
 				for (let i = 0; i < rewards.brokenItems.length; i++) {
 					rewards.brokenItems[i].broken = true;
@@ -507,6 +510,8 @@ define([
 		},
 
 		collectRewards: function (isTakeAll, rewards, campSector) {
+			if (!rewards) return;
+			
 			if (rewards.collected) {
 				log.w("trying to collect rewards twice: " + rewards.action);
 				return false;

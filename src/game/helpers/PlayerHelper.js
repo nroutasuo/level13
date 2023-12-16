@@ -148,7 +148,7 @@ define([
 		},
 
 		canTakeAllRewards: function (resultVO) {
-			if (resultVO.isEmpty()) return true;
+			if (!resultVO || resultVO.isEmpty()) return true;
 
 			let bagComponent = this.playerResourcesNodes.head.bag;
 			let inCamp = this.isInCamp();
