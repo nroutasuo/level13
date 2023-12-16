@@ -1615,10 +1615,10 @@ define([
 			if (!this.playerLocationNodes || !this.playerLocationNodes.head) return 1;
 
 			var sector = otherSector || this.playerLocationNodes.head.entity;
-			var passageComponent = sector.get(PassagesComponent);
 			let improvements = sector.get(SectorImprovementsComponent);
 			var playerStatsNode = this.playerStatsNodes.head;
-			var playerEntity = this.playerStatsNodes.head.entity;
+
+			let baseActionID = this.getBaseActionID(action);
 
 			var getShoeBonus = function () {
 				var itemsComponent = playerStatsNode.items;
@@ -1648,13 +1648,13 @@ define([
 				return followersComponent.getCurrentBonus(itemBonusType);
 			}
 			
-			var getImprovementLevelBonus = function (improvementName) {
+			var getImprovementLevelBonus = function (improvementName, levelFactor) {
 				let level = improvements.getMajorLevel(improvementName);
-				return 1 - (level - 1) * 0.1;
+				return 1 - (level - 1) * levelFactor;
 			};
 
 			var factor = 1;
-			switch (action) {
+			switch (baseActionID) {
 				case "move_sector_north":
 				case "move_sector_east":
 				case "move_sector_west":
@@ -1673,11 +1673,16 @@ define([
 					break;
 				case "move_level_down":
 				case "move_level_up":
-				case "move_camp_global":
 					if (cost == "stamina") {
 						factor *= getShoeBonus();
 						factor *= getFollowerBonus(ItemConstants.itemBonusTypes.movement);
 						factor *= getPerkBonus();
+					}
+					break;
+				
+				case "move_camp_global":
+					if (cost == "stamina") {
+						factor *= getImprovementLevelBonus(improvementNames.tradepost, 0.333);
 					}
 					break;
 				
@@ -1694,7 +1699,7 @@ define([
 					break;
 				
 				case "use_in_hospital":
-					factor *= getImprovementLevelBonus(improvementNames.hospital);
+					factor *= getImprovementLevelBonus(improvementNames.hospital, 0.1);
 					break;
 			}
 

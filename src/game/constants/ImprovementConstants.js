@@ -133,6 +133,8 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			},
 			tradepost: {
 				description: "Connect camps to a trade network.",
+				improvementLevelsPerTechLevel: 1,
+				improvementLevelsPerMajorLevel: 1,
 			},
 			radiotower: {
 				canBeDismantled: true,

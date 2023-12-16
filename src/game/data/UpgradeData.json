@@ -606,7 +606,9 @@
         "blueprintIsEarly": false,
         "blueprintPieces": 3,
         "campOrdinal": "5",
-        "effects": {},
+        "effects": {
+            "improvesBuildings": "tradepost"
+        },
         "id": "unlock_building_passage_elevator",
         "name": "Elevator mechanics"
     },
@@ -616,7 +618,9 @@
         "blueprintIsEarly": false,
         "blueprintPieces": 5,
         "campOrdinal": "7",
-        "effects": {},
+        "effects": {
+            "improvesBuildings": "tradepost"
+        },
         "id": "unlock_building_passage_hole",
         "name": "Engineering"
     },
