@@ -284,18 +284,25 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 		},
 		
 		getItemValueByRarity: function (item) {
-			let rarity = -1;
+			let rarity = 99;
+
 			if (item.tradeRarity > 0) {
-				rarity = item.tradeRarity;
-			} else if (item.scavengeRarity > 0) {
-				rarity = item.scavengeRarity;
-			} else if (item.localeRarity > 0) {
-				rarity = item.localeRarity;
-			} else if (item.investigateRarity > 0) {
-				rarity = item.investigateRarity;
+				rarity = Math.min(item.tradeRarity);
+			} 
+			
+			if (item.scavengeRarity > 0) {
+				rarity = Math.min(rarity, item.scavengeRarity);
+			} 
+			
+			if (item.localeRarity > 0) {
+				rarity = Math.min(rarity, item.localeRarity);
 			}
 			
-			if (rarity > 0) {
+			if (item.investigateRarity > 0) {
+				rarity = Math.min(rarity, item.investigateRarity);
+			}
+			
+			if (rarity < 99) {
 				return Math.ceil(rarity / 1.5);
 			} else {
 				return null;

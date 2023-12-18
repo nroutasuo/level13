@@ -657,6 +657,7 @@
         "name": "Emergency rations",
         "rarityLocale": 4,
         "rarityScavenge": 9,
+        "tradePrice": 1,
         "type": "voucher"
     },
     "cache_insight_11": {
@@ -861,6 +862,7 @@
         "nameShort": "Juice boxes",
         "rarityLocale": 5,
         "rarityScavenge": 9,
+        "tradePrice": 1,
         "type": "voucher"
     },
     "clothing_hands_1": {
