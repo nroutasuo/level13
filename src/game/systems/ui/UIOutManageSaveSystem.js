@@ -39,6 +39,9 @@ function (Ash, UIList, FileUtils, GameGlobals, GlobalSignals, GameConstants, Sav
 			$("#open-save-list").click(function () {
 				system.closeImport();
 			});
+			$("#paste-import").click(function () {
+				system.pasteImport();
+			});
 			$("#load-import").click(function () {
 				system.loadImport();
 			});
@@ -80,6 +83,7 @@ function (Ash, UIList, FileUtils, GameGlobals, GlobalSignals, GameConstants, Sav
 		},
 
 		resetElements: function () {
+			$("#textarea-import-save").val("");
 			$(".li-save-slot").toggleClass("selected", false);
 		},
 
@@ -121,11 +125,14 @@ function (Ash, UIList, FileUtils, GameGlobals, GlobalSignals, GameConstants, Sav
 			let slotInfoText = data.slotDisplayName + "<br/>";
 			if (data.hasData) {
 				slotInfoText += "<span class='secondary'>" + this.getDateDisplayString(data.date) +"</span></br><br/>";
+				slotInfoText += "<span class='secondary'>"
 				slotInfoText += "world seed: " + data.seed +"</br>";
 				slotInfoText += "camps: " + data.numCamps +"</br>";
-				slotInfoText += "<span class='" + (showVersionWarning ? "warning" : "") + "'>version: " + data.version +"</span></br>";
+				slotInfoText += "<span class='" + (showVersionWarning ? "warning" : "") + "'>version: " + data.version + "</span>";
+				slotInfoText += "</span>";
+				slotInfoText += "</br>";
 			} else {
-				slotInfoText += "(empty)"
+				slotInfoText += "<span class='secondary'>(empty)</span>"
 			}
 
 			if (!GameGlobals.saveHelper.hasManualSave(slotID)) {
@@ -170,7 +177,7 @@ function (Ash, UIList, FileUtils, GameGlobals, GlobalSignals, GameConstants, Sav
 		updateSaveSlotListItem: function (li, data) {
 			let hasData = data.hasData;
 			let sys = GameGlobals.engine.getSystem(UIOutManageSaveSystem);
-			let infoText = hasData ? ("world seed: " + data.seed + ", camps: " + data.numCamps) : "(empty)";
+			let infoText = hasData ? ("seed: " + data.seed + ", camps: " + data.numCamps) : "(empty)";
 			li.$root.data("slotID", data.slotID);
 			li.$slotName.text(data.slotDisplayName);
 			li.$saveName.text(data.saveName || "");
@@ -315,6 +322,10 @@ function (Ash, UIList, FileUtils, GameGlobals, GlobalSignals, GameConstants, Sav
 			this.updateHeader();
 			this.updateContainers();
 			this.updateSlotList();
+		},
+
+		pasteImport: function () {
+			navigator.clipboard.readText().then((text) => ($("#textarea-import-save").val(text)));
 		},
 
 		loadImport: function () {

@@ -2639,6 +2639,7 @@ body.dark #manage-save-popup {
 body.dark #manage-save-popup textarea {
   font-size: 0.85rem;
   color: #bbb;
+  overflow-x: hidden;
 }
 body.dark #save-list-container {
   padding: 3px;
@@ -2685,6 +2686,9 @@ body.dark .save-slot-header {
 body.dark .save-slot-content {
   padding: 0px 3px 3px 3px;
 }
+body.dark .save-slot-info {
+  color: #bbb;
+}
 body.dark .li-save-slot.selected {
   background-color: #2f322f;
 }
@@ -2694,6 +2698,7 @@ body.dark .li-save-slot div {
 body.dark .save-slot-date {
   float: right;
   color: #bbb;
+  font-size: 0.85rem;
 }
 body.dark #game-stats-container {
   max-height: 70vh;
@@ -5140,6 +5145,7 @@ body.sunlit #manage-save-popup {
 body.sunlit #manage-save-popup textarea {
   font-size: 0.85rem;
   color: #777;
+  overflow-x: hidden;
 }
 body.sunlit #save-list-container {
   padding: 3px;
@@ -5186,6 +5192,9 @@ body.sunlit .save-slot-header {
 body.sunlit .save-slot-content {
   padding: 0px 3px 3px 3px;
 }
+body.sunlit .save-slot-info {
+  color: #777;
+}
 body.sunlit .li-save-slot.selected {
   background-color: #e6e6e6;
 }
@@ -5195,6 +5204,7 @@ body.sunlit .li-save-slot div {
 body.sunlit .save-slot-date {
   float: right;
   color: #777;
+  font-size: 0.85rem;
 }
 body.sunlit #game-stats-container {
   max-height: 70vh;
