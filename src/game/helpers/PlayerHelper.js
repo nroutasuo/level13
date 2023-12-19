@@ -92,6 +92,11 @@ define([
 			let playerActionComponent = this.playerResourcesNodes.head.entity.get(PlayerActionComponent);
 			return playerActionComponent.getBusyDescription()
 		},
+
+		getBusyAction: function () {
+			let playerActionComponent = this.playerResourcesNodes.head.entity.get(PlayerActionComponent);
+			return playerActionComponent.getBusyAction();
+		},
 		
 		moveTo: function (level, sectorX, sectorY, inCamp) {
 			let player = this.playerStatsNodes.head.entity;

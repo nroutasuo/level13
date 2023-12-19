@@ -1312,6 +1312,19 @@ define([
 					}
 				}
 
+				if (requirements.busyAction) {
+					for (let action in requirements.busyAction) {
+						let requiredValue = requirements.busyAction[action];
+						let currentValue = GameGlobals.playerHelper.isBusy() && GameGlobals.playerHelper.getBusyAction() == action;
+						if (requiredValue != currentValue) {
+							let busyDescription = PlayerActionConstants.getActionBusyDescription(action);
+							if (requiredValue) reason = "Not " + busyDescription;
+							else reason = "Busy " + busyDescription;
+							return { value: 0, reason: reason, baseReason: PlayerActionConstants.DISABLED_REASON_UPGRADE };
+						}
+					}
+				}
+
 				if (typeof requirements.busy !== "undefined" && !shouldSkipCheck(PlayerActionConstants.DISABLED_REASON_BUSY)) {
 					var currentValue = GameGlobals.playerHelper.isBusy();
 					var requiredValue = requirements.busy;
@@ -1824,6 +1837,13 @@ define([
 					requirements.improvementMajorLevel["hospital"] = [ minLevel, -1 ];
 					requirements.perkEffects = {};
 					requirements.perkEffects["Health"] = [ -1, maxHealth ];
+					return requirements;
+
+				case "dismantle_in":
+					let improvementID = this.getImprovementIDForAction(action);
+					this.addReqs(requirements, PlayerActionConstants.requirements[action]);	
+					requirements.busyAction = {};
+					requirements.busyAction["use_in_" + improvementID] = false;
 					return requirements;
 				
 				case "use_item":

@@ -111,25 +111,17 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/PlayerActionVO'
 			return diff > 0;
 		},
 
+		getBusyAction: function () {
+			let action = this.getLastAction(true);
+			return action ? action.action : null;
+		},
+
 		getBusyDescription: function () {
-			let action = this.getLastAction(true).action;
+			let action = this.getBusyAction();
 			if (action.indexOf("build_") >= 0) return "building";
 			
 			let baseActionID = PlayerActionConstants.getBaseActionID(action);
-			switch (baseActionID) {
-				case "use_in_home": return "resting";
-				case "use_in_campfire": return "discussing";
-				case "use_in_hospital": return "recovering";
-				case "use_in_hospital_2": return "augmenting";
-				case "use_in_market": return "visiting";
-				case "use_in_library": return "studying";
-				case "use_in_temple": return "donating";
-				case "use_in_shrine": return "meditating";
-				case "clear_waste_t": return "clearing waste";
-				case "clear_waste_r": return "clearing waste";
-				case "launch": return "launch";
-				default: return baseActionID;
-			}
+			return PlayerActionConstants.getActionBusyDescription(baseActionID);
 		},
 
 		getBusyPercentage: function () {

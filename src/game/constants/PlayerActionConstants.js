@@ -254,6 +254,23 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 			return "";
 		},
 		
+		getActionBusyDescription: function (baseActionID) {
+			switch (baseActionID) {
+				case "use_in_home": return "resting";
+				case "use_in_campfire": return "discussing";
+				case "use_in_hospital": return "recovering";
+				case "use_in_hospital_2": return "augmenting";
+				case "use_in_market": return "visiting";
+				case "use_in_library": return "studying";
+				case "use_in_temple": return "donating";
+				case "use_in_shrine": return "meditating";
+				case "clear_waste_t": return "clearing waste";
+				case "clear_waste_r": return "clearing waste";
+				case "launch": return "launch";
+				default: return baseActionID;
+			}
+		},
+		
 		getImprovementIDForAction: function (actionName) {
 			let baseId = this.getBaseActionID(actionName);
 			if (this.isImproveBuildingAction(baseId)) {
@@ -264,6 +281,9 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 			}
 			if (this.isRepairBuildingAction(baseId)) {
 				return actionName.replace("repair_in_", "").replace("repar_out_", "");
+			}
+			if (baseId == "dismantle_in") {
+				return actionName.replace("dismantle_in_", "");
 			}
 			let improvementName = this.getImprovementNameForAction(actionName);
 			return ImprovementConstants.getImprovementID(improvementName);
