@@ -2272,7 +2272,8 @@ define([
 			}
 
 			if (action == "scavenge_heap") {
-				entries.push("Remaining: " + (100 - statusComponent.getHeapScavengedPercent() + "%"));
+				let heapScavengedPercent = Math.round(statusComponent.getHeapScavengedPercent());
+				entries.push("Remaining: " + (100 - heapScavengedPercent + "%"));
 			}
 
 			return entries.length > 0 ? entries.map(e => "<span class='action-effect-description-entry'>" + e + "</span>") : null;

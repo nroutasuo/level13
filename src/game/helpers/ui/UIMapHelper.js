@@ -281,7 +281,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 
 			// sectors
 			this.foreachVisibleSector(level, options.centered, dimensions, visibleSectors, (sector, sectorPos, sectorStatus, sectorXpx, sectorYpx) => {
-				this.drawSectorOnCanvas(ctx, options, sectorPos.x, sectorPos.y, sector, levelEntity, sectorStatus, sectorXpx, sectorYpx, sectorSize);
+				this.drawSectorOnCanvas(ctx, options, sectorPos.sectorX, sectorPos.sectorY, sector, levelEntity, sectorStatus, sectorXpx, sectorYpx, sectorSize);
 			});
 
 			// border on current
@@ -830,7 +830,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 
 			let hasHeap = function (resourceName) {
 				if (!sectorFeatures.heapResource) return false;
-				 if (sectorFeatures.heapResource !== resourceNames.metal) return false;
+				 if (sectorFeatures.heapResource !== resourceName) return false;
 				 return true;
 			};
 				

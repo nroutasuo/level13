@@ -612,7 +612,7 @@ define([
 
 			if (featuresComponent.heapResource) {
 				let heapName = TextConstants.getHeapDisplayName(featuresComponent.heapResource, featuresComponent);
-				let heapScavengedPercentage = statusComponent.getHeapScavengedPercent();
+				let heapScavengedPercentage = Math.round(statusComponent.getHeapScavengedPercent());
 				let resourceName = TextConstants.getResourceDisplayName(featuresComponent.heapResource);
 				result += ", " + heapName + " (" + resourceName + ", " + heapScavengedPercentage + "% scavenged)";
 			}
