@@ -413,7 +413,7 @@ function (Ash, UIList, FileUtils, GameGlobals, GlobalSignals, GameConstants, Sav
 			let slotID = this.selectedSaveSlot;
 			let saveSystem = this.getSaveSystem();
 			let saveString = saveSystem.getDataFromSlot(slotID);
-			$("#textarea-export-save").text(saveString);
+			$("#textarea-export-save").val(saveString);
 
 			if (GameConstants.isDebugVersion) {
 				let size = new Blob([saveString]).size;
@@ -428,7 +428,7 @@ function (Ash, UIList, FileUtils, GameGlobals, GlobalSignals, GameConstants, Sav
 		},
 
 		closeExport: function () {
-			$("#textarea-export-save").text("");
+			$("#textarea-export-save").val("");
 			this.showExport = false;
 			this.updateContainers();
 		},
