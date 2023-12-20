@@ -252,7 +252,7 @@ function (Ash, ItemData, PlayerActionConstants, ItemVO) {
 			if (!defaultBonus) return 0;
 			if (itemVO.broken && ItemConstants.isBonusTypeAffectedByBrokenStatus(bonusType)) {
 				let modifier = this.getBrokenBonusModifier(itemVO, bonusType);
-				return this.getItemBonusWithModifier(bonus, defaultBonus, modifier);
+				return Math.round(defaultBonus * modifier * 100) / 100;
 			} else {
 				return defaultBonus;
 			}

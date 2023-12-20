@@ -2103,7 +2103,6 @@ define([
 			let result = {};
 			if (!itemVO) return result;
 			
-			let craftAction = "craft_" + itemID;
 			let costsResources = ItemConstants.getResourcesToCraft(itemVO.id);
 			let costsIngredients = ItemConstants.getIngredientsToCraft(itemVO.id);
 			
