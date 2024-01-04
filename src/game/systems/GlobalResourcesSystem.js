@@ -46,16 +46,16 @@ define([
 			this.updatePlayerResources();
 		},
 		
-		updateCampsResources: function () {
-			var storageUpgradeLevel = this.getStorageUpgradeLevel();
-			
-			for (var node = this.campNodes.head; node; node = node.next) {
+		updateCampsResources: function () {			
+			for (let node = this.campNodes.head; node; node = node.next) {
 				let campImprovements = node.improvements;
 				let storageCount = campImprovements.getCount(improvementNames.storage);
 				let storageLevel = campImprovements.getLevel(improvementNames.storage);
 				let hasTradePost = campImprovements.getCount(improvementNames.tradepost) > 0;
+				
 				let storageCapacity = CampConstants.getStorageCapacity(storageCount, storageLevel);
 				node.resources.storageCapacity = storageCapacity;
+
 				let spilledResources = node.resources.limitToStorage(!hasTradePost);
 				this.updateSpilledResources(spilledResources);
 				
@@ -181,10 +181,6 @@ define([
 		
 		onInventoryChanged: function () {
 			this.updateUnlockedResources();
-		},
-		
-		getStorageUpgradeLevel: function () {
-			return GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.storage, this.tribeNodes.head.entity.get(UpgradesComponent));
 		},
 		
 	});
