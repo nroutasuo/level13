@@ -262,9 +262,10 @@ define([
 			name = name.replace(" Down", "");
 			
 			let info = this.getProjectInfoText(project, isAvailable, isSmallLayout);
+			let showHideButton = isAvailable && !project.isColonyProject() && UIConstants.canHideProject(projectID);
 			
 			li.$tdDescription.attr("colspan", isAvailable ? 1 : 4);
-			li.$btnHide.css("display", isAvailable ? "initial" : "none");
+			li.$btnHide.css("display", showHideButton ? "initial" : "none");
 			li.$btnMap.css("display", isAvailable && !isSmallLayout ? "initial" : "none");
 			li.$tdAction.css("display", isAvailable ? "initial" : "none");
 			li.$btnAction.css("display", isAvailable ? "initial" : "none");
@@ -279,7 +280,7 @@ define([
 			li.$btnAction.attr("id", "btn-" + action + "-" + sector);
 			li.$btnAction.find(".btn-label").html(actionLabel);
 			
-			GameGlobals.uiFunctions.toggle(li.$btnHide, isAvailable && !project.isColonyProject() && UIConstants.canHideProject(projectID));
+			GameGlobals.uiFunctions.toggle(li.$btnHide, showHideButton);
 			GameGlobals.uiFunctions.toggle(li.$btnMap, isAvailable && !project.isColonyProject());
 			GameGlobals.uiFunctions.toggle(li.$btnAction, isAvailable && isTabOpen);
 		},

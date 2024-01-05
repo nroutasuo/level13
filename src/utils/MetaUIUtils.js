@@ -1,4 +1,4 @@
-define(['jquery/jquery-1.11.1.min'], function (jQuery) {
+define(['jquery/jquery-3.7.1.min'], function (jQuery) {
 	
 	var MetaUIUtils = {
 		

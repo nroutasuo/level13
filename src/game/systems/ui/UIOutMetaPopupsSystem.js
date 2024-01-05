@@ -64,7 +64,7 @@ define([
 
         createHotkeyListItem: function () {
 			let li = {};
-			let div = "<div class='hotkey-list-item'><span class='hotkey-list-item-label'/><span class='hotkey-list-item-value'></div>";
+			let div = "<div class='hotkey-list-item'><span class='hotkey-list-item-label'></span><span class='hotkey-list-item-value'></span></div>";
 			li.$root = $(div);
 			li.$label = li.$root.find("span.hotkey-list-item-label");
 			li.$value = li.$root.find("span.hotkey-list-item-value");

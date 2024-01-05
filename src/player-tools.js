@@ -1,5 +1,5 @@
 define([
-	'jquery/jquery-1.11.1.min',
+	'jquery/jquery-3.7.1.min',
 	'core/ConsoleLogger',
 	'lzstring/lz-string',
 	'game/helpers/SaveHelper',

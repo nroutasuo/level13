@@ -52,9 +52,9 @@ define([
 
 		addToEngine: function (engine) {
 			this.engine = engine;
-			$("#select-header-level").bind("change", $.proxy(this.onLevelSelectorChanged, this));
-			$("#select-header-mapmode").bind("change", $.proxy(this.onMapModeSelectorChanged, this));
-			$("#select-header-mapstyle").bind("change", $.proxy(this.onMapStyleSelectorChanged, this));
+			$("#select-header-level").on("change", $.proxy(this.onLevelSelectorChanged, this));
+			$("#select-header-mapmode").on("change", $.proxy(this.onMapModeSelectorChanged, this));
+			$("#select-header-mapstyle").on("change", $.proxy(this.onMapStyleSelectorChanged, this));
 			GameGlobals.uiMapHelper.enableScrollingForMap("mainmap");
 			this.playerPositionNodes = engine.getNodeList(PlayerPositionNode);
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
@@ -67,9 +67,9 @@ define([
 		removeFromEngine: function (engine) {
 			this.engine = null;
 			GlobalSignals.removeAll(this);
-			$("#select-header-level").unbind("change", $.proxy(this.onLevelSelectorChanged, this));
-			$("#select-header-mapmode").unbind("change", $.proxy(this.onMapModeSelectorChanged, this));
-			$("#select-header-mapstyle").unbind("change", $.proxy(this.onMapStyleSelectorChanged, this));
+			$("#select-header-level").off("change", $.proxy(this.onLevelSelectorChanged, this));
+			$("#select-header-mapmode").off("change", $.proxy(this.onMapModeSelectorChanged, this));
+			$("#select-header-mapstyle").off("change", $.proxy(this.onMapStyleSelectorChanged, this));
 			GameGlobals.uiMapHelper.disableScrollingForMap("mainmap");
 			this.playerPositionNodes = null;
 			this.playerLocationNodes = null;
