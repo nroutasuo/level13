@@ -487,6 +487,8 @@ define([
 			let $container = $(".stat-indicator-" + stat);
 			GameGlobals.uiFunctions.toggle($container, isVisible);
 			if (!isVisible) return;
+
+			let displayValue = Math.floor(currentValue);
 			
 			let isSmallLayout = this.elements.body.hasClass("layout-small");
 			let isAtLimit = currentLimit > 0 && currentValue >= currentLimit;
@@ -497,12 +499,12 @@ define([
 			let suffix = isSmallLayout ? "" : " / " + currentLimit;
 		
 			$container.children(".value").toggleClass("warning", isAtLimit);
-			let animate = UIAnimations.shouldAnimateChange(previousValue, currentValue, previousUpdate, now, component.accumulation);
-			UIAnimations.animateOrSetNumber(valueElement, animate, currentValue, suffix, flipNegative, (v) => { return Math.floor(v); });
+			let animate = UIAnimations.shouldAnimateChange(previousValue, displayValue, previousUpdate, now, component.accumulation);
+			UIAnimations.animateOrSetNumber(valueElement, animate, displayValue, suffix, flipNegative, (v) => { return Math.floor(v); });
 			
 			this.updateStatsCallout("", $container, component.accSources);
 			this.updateChangeIndicator(changeIndicatorElement, component.accumulation, isVisible && !isAtLimit);
-			this.previousStats[stat] = currentValue;
+			this.previousStats[stat] = displayValue;
 			this.previousStatsUpdates[stat] = now;
 		},
 
