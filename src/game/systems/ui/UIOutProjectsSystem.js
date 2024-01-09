@@ -136,13 +136,8 @@ define([
 					GameGlobals.uiFunctions.registerCustomButtonListeners("#in-improvements-level", "navigation", this.onMapLinkButtonClicked);
 					GameGlobals.uiFunctions.registerCustomButtonListeners("#in-improvements-level", "hide-project", this.onHideProjectButtonClicked);
 					
-					GameGlobals.uiFunctions.registerActionButtonListeners("#in-improvements-level");
-					GameGlobals.uiFunctions.generateButtonOverlays("#in-improvements-level");
-					GameGlobals.uiFunctions.generateCallouts("#in-improvements-level");
-					
-					GameGlobals.uiFunctions.registerActionButtonListeners("#in-improvements-colony");
-					GameGlobals.uiFunctions.generateButtonOverlays("#in-improvements-colony");
-					GameGlobals.uiFunctions.generateCallouts("#in-improvements-colony");
+					GameGlobals.uiFunctions.createButtons("#in-improvements-level");
+					GameGlobals.uiFunctions.createButtons("#in-improvements-colony");
 					
 					// TODO fix better, now forcing an update after ovelays generated but build into UIList
 					UIList.update(this.availableLevelProjectList, projects.filter(project => !project.isColonyProject() && !isHidden(project)));

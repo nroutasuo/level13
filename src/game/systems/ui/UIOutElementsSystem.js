@@ -342,6 +342,7 @@ define([
 			this.buttonElements = [];
 			var buttonActions = [];
 			var sys = this;
+
 			$.each($("button.action"), function () {
 				var $button = $(this);
 				var action = $button.attr("action");

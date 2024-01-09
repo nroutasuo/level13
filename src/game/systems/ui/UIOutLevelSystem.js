@@ -760,9 +760,7 @@ define([
 			
 			if (numNewItems > 0) {
 				GameGlobals.buttonHelper.updateButtonDisabledStates("#table-out-actions-locales", true);
-				GameGlobals.uiFunctions.registerActionButtonListeners("#table-out-actions-locales");
-				GameGlobals.uiFunctions.generateButtonOverlays("#table-out-actions-locales");
-				GameGlobals.uiFunctions.generateCallouts("#table-out-actions-locales");
+				GameGlobals.uiFunctions.createButtons("#table-out-actions-locales");
 				GlobalSignals.elementCreatedSignal.dispatch();
 			}
 		},
@@ -836,9 +834,7 @@ define([
 				}
 			}
 
-			GameGlobals.uiFunctions.registerActionButtonListeners("#container-out-actions-movement-related");
-			GameGlobals.uiFunctions.generateButtonOverlays("#container-out-actions-movement-related");
-			GameGlobals.uiFunctions.generateCallouts("#container-out-actions-movement-related");
+			GameGlobals.uiFunctions.createButtons("#container-out-actions-movement-related");
 			GameGlobals.uiFunctions.updateButtonCooldowns("#container-out-actions-movement-related");
 			
 			GlobalSignals.elementCreatedSignal.dispatch();

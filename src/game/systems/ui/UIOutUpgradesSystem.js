@@ -140,14 +140,11 @@ define([
 				})
 			});
 
-			GameGlobals.uiFunctions.generateButtonOverlays("#upgrades-list");
-			GameGlobals.uiFunctions.generateCallouts("#upgrades-list");
-			GameGlobals.uiFunctions.setInitialButtonState("#upgrades-list");
+			GameGlobals.uiFunctions.createButtons("#upgrades-list");
+			GameGlobals.uiFunctions.generateInfoCallouts("#upgrades-list");
 			
-			GameGlobals.uiFunctions.generateButtonOverlays("#blueprints-list");
-			GameGlobals.uiFunctions.generateCallouts("#blueprints-list");
-			GameGlobals.uiFunctions.setInitialButtonState("#blueprints-list");
-			GameGlobals.uiFunctions.registerActionButtonListeners("#blueprints-list");
+			GameGlobals.uiFunctions.createButtons("#blueprints-list");
+			GameGlobals.uiFunctions.generateInfoCallouts("#blueprints-list");
 			
 			GlobalSignals.elementCreatedSignal.dispatch();
 			

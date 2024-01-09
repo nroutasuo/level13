@@ -311,9 +311,7 @@ define([
 			GameGlobals.uiFunctions.toggle("#header-self-use-items", items.length > 0);
 
 			if (numNewItems > 0) {
-				GameGlobals.uiFunctions.registerActionButtonListeners("#self-use-items");
-				GameGlobals.uiFunctions.generateButtonOverlays("#self-use-items");
-				GameGlobals.uiFunctions.generateCallouts("#self-use-items");
+				GameGlobals.uiFunctions.createButtons("#self-use-items");
 				GlobalSignals.elementCreatedSignal.dispatch();
 			}
 		},
@@ -329,9 +327,7 @@ define([
 			GameGlobals.uiFunctions.toggle("#header-self-repair-items", items.length > 0);
 
 			if (numNewItems > 0) {
-				GameGlobals.uiFunctions.registerActionButtonListeners("#self-repair-items");
-				GameGlobals.uiFunctions.generateButtonOverlays("#self-repair-items");
-				GameGlobals.uiFunctions.generateCallouts("#self-repair-items");
+				GameGlobals.uiFunctions.createButtons("#self-repair-items");
 				GlobalSignals.elementCreatedSignal.dispatch();
 			}
 		},
@@ -498,12 +494,10 @@ define([
 
 			GameGlobals.uiFunctions.toggle($("#bag-items-empty"), this.inventoryItemsBag.length === 0);
 
-			GameGlobals.uiFunctions.generateCallouts("#bag-items");
-			GameGlobals.uiFunctions.generateCallouts("#container-equipment-slots");
-			GameGlobals.uiFunctions.generateButtonOverlays("#bag-items");
-			GameGlobals.uiFunctions.generateButtonOverlays("#container-equipment-slots");
-			GameGlobals.uiFunctions.registerActionButtonListeners("#bag-items");
-			GameGlobals.uiFunctions.registerActionButtonListeners("#container-equipment-slots");
+			GameGlobals.uiFunctions.generateInfoCallouts("#bag-items");
+			GameGlobals.uiFunctions.generateInfoCallouts("#container-equipment-slots");
+			GameGlobals.uiFunctions.createButtons("#bag-items");
+			GameGlobals.uiFunctions.createButtons("#container-equipment-slots");
 		},
 
 		updateItemSlot: function (itemType, itemVO) {

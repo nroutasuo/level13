@@ -76,10 +76,6 @@ define([
 
 		constructor: function () {
 			this.initElements();
-
-			GameGlobals.uiFunctions.generateCallouts("#mobile-header");
-			GameGlobals.uiFunctions.generateCallouts("#header-side");
-			GameGlobals.uiFunctions.generateCallouts("#header-side");
 			
 			this.elements = {};
 			this.elements.body = $("body");
@@ -314,7 +310,7 @@ define([
 			this.updateResourcesIfNotPending();
 			this.updateItemStats();
 			
-			GameGlobals.uiFunctions.updateCallouts("ul.player-perks-list");
+			GameGlobals.uiFunctions.updateInfoCallouts("ul.player-perks-list");
 		},
 		
 		updateGameVersion: function () {
@@ -593,7 +589,7 @@ define([
 					}
 				}
 
-				GameGlobals.uiFunctions.generateCallouts("ul.list-header-items");
+				GameGlobals.uiFunctions.generateInfoCallouts("ul.list-header-items");
 
 				this.lastItemsUpdateItemCount = items.length;
 			}
@@ -612,7 +608,7 @@ define([
 				$("ul.list-header-followers").append("<li>" + UIConstants.getFollowerDiv(follower, true, false, true) + "</li>");
 			}
 			
-			GameGlobals.uiFunctions.generateCallouts("ul.list-header-followers");
+			GameGlobals.uiFunctions.generateInfoCallouts("ul.list-header-followers");
 		},
 		
 		refreshPerks: function () {
@@ -629,7 +625,7 @@ define([
 				newItems[i].$root.fadeIn(500);
 			}
 
-			GameGlobals.uiFunctions.generateCallouts(".player-perks-list");
+			GameGlobals.uiFunctions.generateInfoCallouts(".player-perks-list");
 		},
 		
 		refreshStatuses: function () {
@@ -667,7 +663,7 @@ define([
 				$container.append(li);
 			}
 
-			GameGlobals.uiFunctions.generateCallouts(".player-statuses-list");
+			GameGlobals.uiFunctions.generateInfoCallouts(".player-statuses-list");
 		},
 
 		updatePerks: function () {

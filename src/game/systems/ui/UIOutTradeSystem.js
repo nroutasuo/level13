@@ -215,9 +215,7 @@ define([
 				sys.confirmPendingCaravan();
 			});
 
-			GameGlobals.uiFunctions.generateButtonOverlays("#trade-caravans-outgoing-container table");
-			GameGlobals.uiFunctions.generateCallouts("#trade-caravans-outgoing-container table");
-			GameGlobals.uiFunctions.registerActionButtonListeners("#trade-caravans-outgoing-container table");
+			GameGlobals.uiFunctions.createButtons("#trade-caravans-outgoing-container table");
 		},
 		
 		updateOutgoingCaravansHints: function () {
@@ -341,7 +339,7 @@ define([
 					traderComponent.isDismissed = true;
 				});
 
-				GameGlobals.uiFunctions.generateCallouts("#trade-caravans-incoming-container table");
+				GameGlobals.uiFunctions.generateInfoCallouts("#trade-caravans-incoming-container table");
 				GlobalSignals.elementCreatedSignal.dispatch();
 			}
 

@@ -120,7 +120,7 @@ define([
 				this.updateNode(this.sortedCampNodes[i], isActive);
 			}
 
-			GameGlobals.uiFunctions.updateCallouts("#camp-overview");
+			GameGlobals.uiFunctions.updateInfoCallouts("#camp-overview");
 		},
 
 		updateBubble: function () {

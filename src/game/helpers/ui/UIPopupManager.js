@@ -59,7 +59,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 			if (showInventoryManagement) {
 				let rewardDiv = GameGlobals.playerActionResultsHelper.getRewardDiv(resultVO, false, forceShowInventoryManagement);
 				$("#info-results").append(rewardDiv);
-				GameGlobals.uiFunctions.generateCallouts("#reward-div");
+				GameGlobals.uiFunctions.generateInfoCallouts("#reward-div");
 			}
 			
 			// buttons and callbacks
@@ -111,8 +111,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 			
 			gtag('event', 'screen_view', { 'screen_name': "popup-common" });
 			
-			GameGlobals.uiFunctions.generateButtonOverlays("#common-popup .buttonbox");
-			GameGlobals.uiFunctions.generateCallouts("#common-popup .buttonbox");
+			GameGlobals.uiFunctions.createButtons("#common-popup .buttonbox");
 			
 			this.setDismissable($popup, isDismissable);
 		

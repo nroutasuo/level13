@@ -132,9 +132,8 @@ define([
 				$table.append(tr);
 			}
 
-			GameGlobals.uiFunctions.generateButtonOverlays("#recruits-container table");
-			GameGlobals.uiFunctions.generateCallouts("#recruits-container table");
-			GameGlobals.uiFunctions.registerActionButtonListeners("#recruits-container table");
+			GameGlobals.uiFunctions.createButtons("#recruits-container table");
+			GameGlobals.uiFunctions.generateInfoCallouts("#recruits-container table");
 		},
 
 		updateFollowers: function () {
@@ -187,12 +186,10 @@ define([
 			GameGlobals.uiFunctions.toggle("#header-followers", showFollowers);
 			GameGlobals.uiFunctions.toggle("#followers-empty", showFollowers && !hasUnselectedFollowers);
 			
-			GameGlobals.uiFunctions.generateCallouts("#list-followers");
-			GameGlobals.uiFunctions.generateCallouts("#container-party-slots");
-			GameGlobals.uiFunctions.generateButtonOverlays("#list-followers");
-			GameGlobals.uiFunctions.generateButtonOverlays("#container-party-slots");
-			GameGlobals.uiFunctions.registerActionButtonListeners("#list-followers");
-			GameGlobals.uiFunctions.registerActionButtonListeners("#container-party-slots");
+			GameGlobals.uiFunctions.createButtons("#list-followers");
+			GameGlobals.uiFunctions.createButtons("#container-party-slots");
+			GameGlobals.uiFunctions.generateInfoCallouts("#list-followers");
+			GameGlobals.uiFunctions.generateInfoCallouts("#container-party-slots");
 		},
 		
 		updateSelectedFollowerSlot: function (followerType, follower, inCamp) {

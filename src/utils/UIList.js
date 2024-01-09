@@ -102,9 +102,7 @@ define(['game/GameGlobals'], function (GameGlobals) {
 			// TODO fix assumption that container has an id
 			
 			let scope = "#" + list.$container.attr("id");
-			GameGlobals.uiFunctions.registerActionButtonListeners(scope);
-			GameGlobals.uiFunctions.generateButtonOverlays(scope);
-			GameGlobals.uiFunctions.generateCallouts(scope);
+			GameGlobals.uiFunctions.createButtons(scope);
 			
 			for (let i = 0; i < createdItems.length; i++) {
 				let li = createdItems[i];

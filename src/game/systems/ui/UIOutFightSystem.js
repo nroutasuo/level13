@@ -162,9 +162,7 @@ define([
 					$("#fight-buttons-infightactions").append("<button class='action' action='" + action + "'>" + item.name + "</button>");
 				}
 				
-				GameGlobals.uiFunctions.registerActionButtonListeners("#fight-buttons-infightactions");
-				GameGlobals.uiFunctions.generateButtonOverlays("#fight-buttons-infightactions");
-				GameGlobals.uiFunctions.generateCallouts("#fight-buttons-infightactions");
+				GameGlobals.uiFunctions.createButtons("#fight-buttons-infightactions");
 				GlobalSignals.elementCreatedSignal.dispatch();
 			}
 		},
@@ -313,7 +311,7 @@ define([
 					$("ul#list-fight-items").append("<li>" + UIConstants.getItemDiv(null, item, null, UIConstants.getItemCallout(item, true), true) + "</li>");
 				}
 			}
-			GameGlobals.uiFunctions.generateCallouts("ul#list-fight-items");
+			GameGlobals.uiFunctions.generateInfoCallouts("ul#list-fight-items");
 			
 			// followers
 			$("ul#list-fight-followers").empty();
@@ -328,7 +326,7 @@ define([
 					$("ul#list-fight-followers").append("<li>" + UIConstants.getFollowerDiv(follower, true, false, true) + "</li>");
 				}
 			}
-			GameGlobals.uiFunctions.generateCallouts("ul#list-fight-followers");
+			GameGlobals.uiFunctions.generateInfoCallouts("ul#list-fight-followers");
 			
 			GameGlobals.uiFunctions.toggle("#fight-popup-itemlist-separator", this.numFollowers > 0 && this.numItems > 0);
 			this.updateFightActive();
@@ -355,7 +353,7 @@ define([
 			
 			GameGlobals.playerActionResultsHelper.preCollectRewards(resultVO);
 			$("#fight-popup-results").html(GameGlobals.playerActionResultsHelper.getRewardDiv(resultVO, true, false));
-			GameGlobals.uiFunctions.generateCallouts("#fight-popup-results");
+			GameGlobals.uiFunctions.generateInfoCallouts("#fight-popup-results");
 		},
 		
 		refreshFightFled: function () {

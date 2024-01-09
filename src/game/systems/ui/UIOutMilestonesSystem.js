@@ -143,10 +143,7 @@ define([
 			$("#milestone-next-button-container").empty();
 			$("#milestone-next-button-container").append("<div><button class='action' action='" + action + "'>Unlock</button></div>");
 			
-			GameGlobals.uiFunctions.generateButtonOverlays("#milestone-next-button-container");
-			GameGlobals.uiFunctions.generateCallouts("#milestone-next-button-container");
-			GameGlobals.uiFunctions.setInitialButtonState("#milestone-next-button-container");
-			GameGlobals.uiFunctions.registerActionButtonListeners("#milestone-next-button-container");
+			GameGlobals.uiFunctions.createButtons("#milestone-next-button-container");
 		},
 		
 		updatePopulation: function () {

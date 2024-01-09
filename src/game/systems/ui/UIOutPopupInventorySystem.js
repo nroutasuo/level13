@@ -153,9 +153,9 @@ define([
 			$("#resultlist-inventorymanagement-kept li").click(onLiClicked);
 			$("#resultlist-inventorymanagement-found li").click(onLiClicked);
 
-			GameGlobals.uiFunctions.generateCallouts("#resultlist-inventorymanagement-kept");
-			GameGlobals.uiFunctions.generateCallouts("#resultlist-inventorymanagement-found");
-			GameGlobals.uiFunctions.generateCallouts("#resultlist-loststuff-lost");
+			GameGlobals.uiFunctions.generateInfoCallouts("#resultlist-inventorymanagement-kept");
+			GameGlobals.uiFunctions.generateInfoCallouts("#resultlist-inventorymanagement-found");
+			GameGlobals.uiFunctions.generateInfoCallouts("#resultlist-loststuff-lost");
 
 			this.updateCapacity(rewards, resultNode, playerAllItems);
 			

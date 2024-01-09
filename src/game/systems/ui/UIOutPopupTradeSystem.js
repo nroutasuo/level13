@@ -264,10 +264,10 @@ define([
 				GameGlobals.uiFunctions.registerLongTap(lis[i], onLiLongTap);
 			}
 
-			GameGlobals.uiFunctions.generateCallouts("#inventorylist-incoming-caravan-trader-inventory");
-			GameGlobals.uiFunctions.generateCallouts("#inventorylist-incoming-caravan-trader-offer");
-			GameGlobals.uiFunctions.generateCallouts("#inventorylist-incoming-caravan-camp-inventory");
-			GameGlobals.uiFunctions.generateCallouts("#inventorylist-incoming-caravan-camp-offer");
+			GameGlobals.uiFunctions.generateInfoCallouts("#inventorylist-incoming-caravan-trader-inventory");
+			GameGlobals.uiFunctions.generateInfoCallouts("#inventorylist-incoming-caravan-trader-offer");
+			GameGlobals.uiFunctions.generateInfoCallouts("#inventorylist-incoming-caravan-camp-inventory");
+			GameGlobals.uiFunctions.generateInfoCallouts("#inventorylist-incoming-caravan-camp-offer");
 			
 			var selectionOptions = [{ value: 1, label: "1x" }];
 			if (highestAmount > 10) selectionOptions.push({ value: 10, label: "10x" });

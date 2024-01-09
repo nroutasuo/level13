@@ -13,10 +13,11 @@ define(['ash',
 		'game/helpers/ui/UIPopupManager',
 		'game/vos/ResourcesVO',
 		'game/vos/PositionVO',
+		'utils/ActionButton',
 		'utils/MathUtils',
 		'utils/StringUtils',
 	],
-	function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, GameConstants, CampConstants, EnemyConstants, UIConstants, ItemConstants, PlayerActionConstants, PlayerStatConstants, UIPopupManager, ResourcesVO, PositionVO, MathUtils, StringUtils) {
+	function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, GameConstants, CampConstants, EnemyConstants, UIConstants, ItemConstants, PlayerActionConstants, PlayerStatConstants, UIPopupManager, ResourcesVO, PositionVO, ActionButton, MathUtils, StringUtils) {
 
 		// TODO separate generic utils and tabs handling to a different file
 
@@ -78,9 +79,6 @@ define(['ash',
 
 				// Steppers and stepper buttons
 				this.registerStepperListeners("");
-
-				// Action buttons buttons
-				this.registerActionButtonListeners("");
 
 				// Meta/non-action buttons
 				$("#btn-save").click(function (e) {
@@ -257,108 +255,6 @@ define(['ash',
 				}
 				return null;
 			},
-
-			registerActionButtonListeners: function (scope) {
-				var uiFunctions = this;
-				var gameState = GameGlobals.gameState;
-
-				// All action buttons
-				$.each($(scope + " button.action"), function () {
-					var $element = $(this);
-					if ($element.hasClass("click-bound")) {
-						log.w("trying to bind click twice! id: " + $element.attr("id"));
-						return;
-					}
-					if ($element.hasClass("action-manual-trigger")) {
-						return;
-					}
-					$element.addClass("click-bound");
-					$element.click(ExceptionHandler.wrapClick(function (e) {
-						let action = $(this).attr("action");
-						if (!action) {
-							log.w("No action mapped for button.");
-							return;
-						}
-
-						if (!GameGlobals.gameState.isPlayerInputAccepted()) return;
-
-						GlobalSignals.actionButtonClickedSignal.dispatch(action);
-
-						GameGlobals.gameState.uiStatus.isBusyCounter++;
-
-						let param = null;
-						let actionIDParam = GameGlobals.playerActionsHelper.getActionIDParam(action);
-						if (actionIDParam) param = actionIDParam;
-						let isProject = $(this).hasClass("action-level-project");
-						if (isProject) param = $(this).attr("sector");
-						if (!param) param = GameGlobals.playerActionsHelper.getActionDefaultParam();
-
-						let locationKey = uiFunctions.getLocationKey(action);
-						let isStarted = GameGlobals.playerActionFunctions.startAction(action, param);
-
-						GameGlobals.gameState.uiStatus.isBusyCounter--;
-
-						if (!isStarted) {
-							uiFunctions.updateButtonCooldown($(this), action);
-						} else {
-							let baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
-							let duration = PlayerActionConstants.getDuration(action, baseId);
-							if (duration > 0) {
-								GameGlobals.gameState.setActionDuration(action, locationKey, duration);
-								uiFunctions.startButtonDuration($(this), duration);
-							}
-						}
-					}));
-				});
-
-				// Special actions
-				$(scope + "#out-action-fight-confirm").click(function (e) {
-					GameGlobals.fightHelper.startFight();
-				});
-				$(scope + "#out-action-fight-close").click(function (e) {
-					GameGlobals.fightHelper.endFight(false, false);
-				});
-				$(scope + "#out-action-fight-continue").click(function (e) {
-					GameGlobals.fightHelper.endFight(false, false);
-				});
-				$(scope + "#out-action-fight-takeselected").click(function (e) {
-					GameGlobals.fightHelper.endFight(false, false);
-				});
-				$(scope + "#out-action-fight-takeall").click(function (e) {
-					GameGlobals.fightHelper.endFight(true, false);
-				});
-				$(scope + "#out-action-fight-cancel").click(function (e) {
-					GameGlobals.fightHelper.endFight(false, true);
-				});
-				$(scope + "#incoming-caravan-popup-cancel").click(function (e) {
-					uiFunctions.popupManager.closePopup("incoming-caravan-popup");
-				});
-				$(scope + " button[action='leave_camp']").click(function (e) {
-					gameState.uiStatus.leaveCampItems = {};
-					gameState.uiStatus.leaveCampRes = {};
-
-					let selectedResVO = new ResourcesVO(storageTypes.RESULT);
-					$.each($("#embark-resources tr"), function () {
-						var resourceName = $(this).attr("id").split("-")[2];
-						var selectedVal = parseInt($(this).children("td").children(".stepper").children("input").val());
-						selectedResVO.setResource(resourceName, selectedVal, "leave_camp");
-					});
-
-					var selectedItems = {};
-					$.each($("#embark-items tr"), function () {
-						var itemID = $(this).attr("id").split("-")[2];
-						var selectedVal = parseInt($(this).children("td").children(".stepper").children("input").val());
-						selectedItems[itemID] = selectedVal;
-					});
-
-					GameGlobals.playerActionFunctions.updateCarriedItems(selectedItems);
-					GameGlobals.resourcesHelper.moveResFromCampToBag(selectedResVO);
-					GameGlobals.playerActionFunctions.leaveCamp();
-				});
-
-				// Buttons: Bag: Item details
-				// some in UIOoutBagSystem
-			},
 			
 			registerCustomButtonListeners: function (scope, btnClass, fn) {
 				$.each($(scope + " button." + btnClass), function () {
@@ -418,9 +314,8 @@ define(['ash',
 				this.generateTabBubbles();
 				this.generateResourceIndicators();
 				this.generateSteppers("body");
-				this.generateButtonOverlays("body");
-				this.generateCallouts("body");
-				this.setInitialButtonState("body");
+				this.createButtons("body");
+				this.generateInfoCallouts("body");
 			},
 			
 			hideElements: function () {
@@ -441,8 +336,7 @@ define(['ash',
 				}
 			},
 
-			generateCallouts: function (scope) {
-				// Info callouts
+			generateInfoCallouts: function (scope) {
 				$.each($(scope + " .info-callout-target"), function () {
 					let $target = $(this);
 					let generated = $target.data("callout-generated") || $target.parent().hasClass("callout-container");
@@ -467,141 +361,16 @@ define(['ash',
 					$target.data("callout-generated", true);
 				});
 
-				// Button callouts
-				// TODO performance bottleneck - detach elements to edit
-				var uiFunctions = this;
-				$.each($(scope + " div.container-btn-action"), function () {
-					let $container = $(this);
-					let button = $(this).children("button")[0];
-					let action = $(button).attr("action");
-					let generated = $container.data("callout-generated");
-					if (generated) {
-						log.w("Button callout already generated!");
-						log.i($container);
-						return;
-					}
-					$container.data("callout-generated", true);
-					$container.wrap('<div class="callout-container"></div>');
-					$container.after(function () {
-						if (!action) {
-							log.w("Action button with no action ");
-							log.i($(button))
-							return "";
-						}
-						if (action === "take_all" || action === "accept_inventory" || action === "fight")
-							return "";
-						return uiFunctions.generateActionButtonCallout(action);
-					});
-				});
-
 				GlobalSignals.calloutsGeneratedSignal.dispatch();
 			},
 			
-			updateCallouts: function (scope) {
+			updateInfoCallouts: function (scope) {
 				$.each($(scope + " .callout-container"), function () {
 					var description = $(this).children(".info-callout-target").attr("description");
 					if (description && description.length > 0) {
 						$(this).find(".info-callout-content").html(description);
 					}
 				});
-			},
-			
-			generateActionButtonCallout: function (action) {
-				var baseActionId = GameGlobals.playerActionsHelper.getBaseActionID(action);
-
-				var content = "";
-				var enabledContent = "";
-				var disabledContent = "";
-				
-				/*
-				var ordinal = GameGlobals.playerActionsHelper.getActionOrdinal(action);
-				content += "<span>" + action + " " + ordinal + "</span>"
-				*/
-
-				// always visible
-				// - basic description
-				let description = GameGlobals.playerActionsHelper.getDescription(action);
-				if (description) {
-					content += "<span class='action-description'>" + description + "</span>";
-				}
-
-				// - dynamic effect description
-				content += "<div class='action-effect-description-container'>";
-				if (content.length > 0) content += "<hr/>";
-				content += "<span class='action-effect-description'></span>"
-				content += "</div>";
-
-				// visible if button is enabled: costs, special requirements, & risks
-				// - costs
-				let costs = GameGlobals.playerActionsHelper.getCosts(action);
-				let costsSpans = UIConstants.getCostsSpans(action, costs);
-				if (costsSpans.length > 0) {
-					if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
-					enabledContent += costsSpans;
-				}
-
-				// - time to available
-				if (GameGlobals.playerActionsHelper.isOnlyAccumulatingCosts(costs, true)) {
-					enabledContent += "<div class='action-costs-countdown-container'>";
-					if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
-					enabledContent += "<span class='action-costs-countdown'></span>";
-					enabledContent += "</div>";
-				}
-
-				// - duration
-				var duration = PlayerActionConstants.getDuration(action, baseActionId);
-				if (duration > 0) {
-					if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
-					enabledContent += "<span class='action-duration'>duration: " + Math.round(duration * 100) / 100 + "s</span>";
-				}
-				
-				// - special requirements (such as max improvements on level)
-				let specialReqs = GameGlobals.playerActionsHelper.getSpecialReqs(action);
-				if (specialReqs) {
-					let s = this.getSpecialReqsText(action);
-					if (s.length > 0) {
-						if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
-						enabledContent += "<span class='action-special-reqs'>" + s + "</span>";
-					}
-				}
-
-				// - risks
-				var encounterFactor = GameGlobals.playerActionsHelper.getEncounterFactor(action);
-				var injuryRiskMax = PlayerActionConstants.getInjuryProbability(action, 0, 0);
-				var inventoryRiskMax = PlayerActionConstants.getLoseInventoryProbability(action, 0, 0);
-				var fightRiskMax = PlayerActionConstants.getRandomEncounterProbability(baseActionId, 0, 1, encounterFactor);
-				var fightRiskMin = PlayerActionConstants.getRandomEncounterProbability(baseActionId, 100, 1, encounterFactor);
-				if (injuryRiskMax > 0 || inventoryRiskMax > 0 || fightRiskMax > 0) {
-					if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
-					var inventoryRiskLabel = action === "despair" ? "drop items" : "drop item";
-					if (injuryRiskMax > 0)
-						enabledContent += "<span class='action-risk action-risk-injury warning'>injury: <span class='action-risk-value'></span>%</span>";
-					if (inventoryRiskMax > 0)
-						enabledContent += "<span class='action-risk action-risk-inventory warning'>" + inventoryRiskLabel + ": <span class='action-risk-value'></span>%</span>";
-					if (fightRiskMax > 0)
-						enabledContent += "<span class='action-risk action-risk-fight warning'>fight: <span class='action-risk-value'></span>%</span>";
-				}
-
-				// visible if button is disabled: disabled reason
-				if (content.length > 0 || enabledContent.length > 0) {
-					if (content.length > 0) disabledContent += "<hr/>";
-					disabledContent += "<span class='btn-disabled-reason action-cost-blocker'></span>";
-				}
-
-				if (enabledContent.length > 0) {
-					content += "<span class='btn-callout-content-enabled'>" + enabledContent + "</span>";
-				}
-
-				if (disabledContent.length > 0) {
-					content += "<span class='btn-callout-content-disabled' style='display:none'>" + disabledContent + "</span>";
-				}
-
-				if (content.length > 0) {
-					return '<div class="btn-callout"><div class="callout-arrow-up"></div><div class="btn-callout-content">' + content + '</div></div>';
-				} else {
-					log.w("No callout could be created for action button with action " + action + ". No content for callout.");
-					return "";
-				}
 			},
 
 			getSpecialReqsText: function (action) {
@@ -652,40 +421,18 @@ define(['ash',
 				});
 			},
 
-			generateButtonOverlays: function (scope) {
+			createButtons: function (scope) {
 				$.each($(scope + " button.action"), function () {
-					let $btn = $(this);
-					if ($btn.parent().hasClass("container-btn-action")) {
-						log.w("generating double button overlays: " + $(this) + " | " + scope);
-						return;
-					}
-					let action = $btn.attr("action");
-					let hotkey = GameGlobals.uiFunctions.getActionHotkey(action);
-					let text = $btn.text();
-					$btn.text("");
-					$btn.append("<span class='btn-label'>" + text + "</span>");
-					$btn.append("<div class='cooldown-action' style='display:none' />");
-					$btn.append("<div class='cooldown-duration' style='display:none' />");
-					if (hotkey) {
-						$btn.append("<div class='hotkey-hint hide-in-small-layout'>" + hotkey.displayKeyShort + "</div>");
-					}
-					$btn.wrap("<div class='container-btn-action' />");
-				});
-				
-				
-				$.each($(scope + " div.container-btn-action"), function () {
-					let $container = $(this);
-					if ($container.find(".cooldown-reqs").length > 0) return;
-					let $button = $container.find("button");
-					let action = $button.attr("action");
-					let costs = GameGlobals.playerActionsHelper.getCosts(action);
-					let hasCosts = action && costs && Object.keys(costs).length > 0;
-					if (hasCosts) {
-						$container.append("<div class='cooldown-reqs' data-action='" + action + "' />");
-					}
+					if (ActionButton.isButton(this)) return;
+					let button = ActionButton.create(this);
+					if (!button) return;
+					ActionButton.registerListener(button, GameGlobals.uiFunctions, GameGlobals.uiFunctions.onActionButtonClicked);
 				});
 
+				GameGlobals.buttonHelper.updateButtonDisabledStates(scope, true);
 				this.updateHotkeyHints();
+
+				GlobalSignals.calloutsGeneratedSignal.dispatch();
 			},
 
 			updateHotkeyHints: function () {
@@ -700,10 +447,6 @@ define(['ash',
 					let hotkey = GameGlobals.uiFunctions.getActionHotkey(action);
 					$btn.children(".hotkey-hint").html(hotkey ? hotkey.displayKeyShort : "");
 				});
-			},
-			
-			setInitialButtonState: function (scope) {
-				GameGlobals.buttonHelper.updateButtonDisabledStates(scope, true);
 			},
 
 			startGame: function () {
@@ -997,6 +740,85 @@ define(['ash',
 				return result;
 			},
 
+			onActionButtonClicked: function (button) {
+				var uiFunctions = this;
+				var gameState = GameGlobals.gameState;
+
+				let $btn = button.$button;
+				let action = $btn.attr("action");
+				let id = $btn.attr("id");
+
+				if (!GameGlobals.gameState.isPlayerInputAccepted()) return;
+
+				GlobalSignals.actionButtonClickedSignal.dispatch(action);
+
+				if (id == "out-action-fight-confirm") {
+					GameGlobals.fightHelper.startFight();
+				} else if  (id == "out-action-fight-close") {
+					GameGlobals.fightHelper.endFight(false, false);
+				} else if  (id == "out-action-fight-continue") {
+					GameGlobals.fightHelper.endFight(false, false);
+				} else if  (id == "out-action-fight-takeselected") {
+					GameGlobals.fightHelper.endFight(false, false);
+				} else if  (id == "out-action-fight-takeall") {
+					GameGlobals.fightHelper.endFight(true, false);
+				} else if  (id == "out-action-fight-cancel") {
+					GameGlobals.fightHelper.endFight(false, true);
+				} else if  (id == "incoming-caravan-popup-cancel") {
+					uiFunctions.popupManager.closePopup("incoming-caravan-popup");
+				} else if (action == "leave_camp") {
+					gameState.uiStatus.leaveCampItems = {};
+					gameState.uiStatus.leaveCampRes = {};
+
+					let selectedResVO = new ResourcesVO(storageTypes.RESULT);
+					$.each($("#embark-resources tr"), function () {
+						var resourceName = $btn.attr("id").split("-")[2];
+						var selectedVal = parseInt($btn.children("td").children(".stepper").children("input").val());
+						selectedResVO.setResource(resourceName, selectedVal, "leave_camp");
+					});
+
+					var selectedItems = {};
+					$.each($("#embark-items tr"), function () {
+						var itemID = $btn.attr("id").split("-")[2];
+						var selectedVal = parseInt($btn.children("td").children(".stepper").children("input").val());
+						selectedItems[itemID] = selectedVal;
+					});
+
+					GameGlobals.playerActionFunctions.updateCarriedItems(selectedItems);
+					GameGlobals.resourcesHelper.moveResFromCampToBag(selectedResVO);
+					GameGlobals.playerActionFunctions.leaveCamp();
+				} else {
+					if ($btn.hasClass("action-manual-trigger")) {
+						return;
+					}
+
+					GameGlobals.gameState.uiStatus.isBusyCounter++;
+
+					let param = null;
+					let actionIDParam = GameGlobals.playerActionsHelper.getActionIDParam(action);
+					if (actionIDParam) param = actionIDParam;
+					let isProject = $btn.hasClass("action-level-project");
+					if (isProject) param = $btn.attr("sector");
+					if (!param) param = GameGlobals.playerActionsHelper.getActionDefaultParam();
+
+					let locationKey = uiFunctions.getLocationKey(action);
+					let isStarted = GameGlobals.playerActionFunctions.startAction(action, param);
+
+					GameGlobals.gameState.uiStatus.isBusyCounter--;
+
+					if (!isStarted) {
+						uiFunctions.updateButtonCooldown($btn, action);
+					} else {
+						let baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
+						let duration = PlayerActionConstants.getDuration(action, baseId);
+						if (duration > 0) {
+							GameGlobals.gameState.setActionDuration(action, locationKey, duration);
+							uiFunctions.startButtonDuration($btn, duration);
+						}
+					}
+				}
+			},
+
 			onNumberInputKeyDown: function (e) {
 				// Allow: backspace, delete, tab, escape, enter and .
 				if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 190]) !== -1 ||
@@ -1236,7 +1058,8 @@ define(['ash',
 			startButtonCooldown: function (button, cooldown, cooldownLeft) {
 				if (GameGlobals.gameState.uiStatus.isHidden) return;
 				let action = $(button).attr("action");
-				if (!GameGlobals.playerActionsHelper.isRequirementsMet(action)) return;
+				let isAvailable = GameGlobals.playerActionsHelper.isRequirementsMet(action, null, [ PlayerActionConstants.DISABLED_REASON_BUSY ]);
+				if (!isAvailable) return;
 				if (!cooldownLeft) cooldownLeft = cooldown;
 				var uiFunctions = this;
 				var startingWidth = (cooldownLeft / cooldown * 100);
@@ -1511,7 +1334,7 @@ define(['ash',
 					});
 					GlobalSignals.elementToggledSignal.dispatch(("#" + popupID), true);
 				});
-				this.generateCallouts("#" + popupID);
+				this.generateInfoCallouts("#" + popupID);
 			},
 
 			showInfoPopup: function (title, msg, buttonLabel, resultVO, callback, isMeta, isDismissable) {
