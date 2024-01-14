@@ -85,7 +85,9 @@ define([
 					sys.cache.reqs = {};
 				});
 				GlobalSignals.add(this, GlobalSignals.actionStartedSignal, this.clearReqsCache);
+				GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.clearReqsCache);
 				GlobalSignals.add(this, GlobalSignals.sectorScoutedSignal, this.clearReqsCache);
+				GlobalSignals.add(this, GlobalSignals.transitionCompletedSignal, this.clearReqsCache);
 			}
 		},
 		
@@ -1337,7 +1339,6 @@ define([
 				}
 			}
 			
-			if (GameGlobals.gameState.uiStatus.isTransitioning) return { value: 0, reason: "Transitioning", baseReason: PlayerActionConstants.DISABLED_REASON_BUSY };
 			if (GameGlobals.gameState.isLaunchStarted) return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_LAUNCHED };
 			
 			return { value: lowestFraction, reason: reason };

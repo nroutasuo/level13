@@ -764,12 +764,12 @@ define(['ash',
 				GameGlobals.uiFunctions.showTab(tabID, tabProps);
 			},
 
-			showTab: function (tabID, tabProps) {
+			showTab: function (tabID, tabProps, isCampTransition) {
 				if (GameGlobals.gameState.isLaunchStarted) return;
 				if (GameGlobals.gameState.isLaunched) return;
 
-				let inCamp = GameGlobals.playerHelper.isInCamp();
-				if (inCamp && tabID == GameGlobals.uiFunctions.elementIDs.tabs.out) tabID == GameGlobals.uiFunctions.elementIDs.tabs.embark;
+				let isInCamp = GameGlobals.playerHelper.isInCamp();
+				if (isInCamp && tabID == GameGlobals.uiFunctions.elementIDs.tabs.out) tabID == GameGlobals.uiFunctions.elementIDs.tabs.embark;
 
 				let previousTabID = GameGlobals.gameState.uiStatus.currentTab;
 
@@ -780,6 +780,18 @@ define(['ash',
 				transitionElements.$slideOut = $(".tabcontainer").filter("[data-tab!='" + tabID + "']");
 				transitionElements.$slideInOut = null;
 				transitionElements.$slideIn = $(".tabcontainer").filter("[data-tab='" + tabID + "']");
+
+				if (isCampTransition) {
+					if (isInCamp) {
+						transitionElements.$slideIn.add("#main-header-camp");
+						transitionElements.$slideOut.add("#main-header-bag");
+						transitionElements.$slideOut.add("#main-header-items");
+					} else {
+						transitionElements.$slideOut.add("#main-header-camp");
+						transitionElements.$slideIn.add("#main-header-bag");
+						transitionElements.$slideIn.add("#main-header-items");
+					}
+				}
 
 				let callbacks = {
 					started: () => GlobalSignals.tabClosedSignal.dispatch(previousTabID),

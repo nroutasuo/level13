@@ -1009,9 +1009,9 @@ define([
 		updateTabVisibility: function () {
 			var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
 			var isInCamp = playerPosition.inCamp;
-			GameGlobals.uiFunctions.slideToggleIf("#main-header-camp", null, isInCamp, 250, 50);
-			GameGlobals.uiFunctions.slideToggleIf("#main-header-bag", null, !isInCamp, 250, 50);
-			GameGlobals.uiFunctions.slideToggleIf("#main-header-items", null, !isInCamp, 250, 50);
+			GameGlobals.uiFunctions.toggle("#main-header-camp", isInCamp);
+			GameGlobals.uiFunctions.toggle("#main-header-bag", !isInCamp);
+			GameGlobals.uiFunctions.toggle("#main-header-items", !isInCamp);
 			GameGlobals.gameState.uiStatus.isInCamp = isInCamp;
 		},
 
@@ -1270,7 +1270,7 @@ define([
 		},
 		
 		onPlayerEnteredCamp: function () {
-			this.pendingResourceUpdateTime = 0.75;
+			this.pendingResourceUpdateTime = 0.25;
 			this.updateFollowers();
 			GameGlobals.uiFunctions.scrollToTabTop();
 		},

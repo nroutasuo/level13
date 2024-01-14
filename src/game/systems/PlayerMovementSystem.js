@@ -116,7 +116,7 @@ define([
 			GameGlobals.resourcesHelper.moveCurrencyFromBagToCamp();
 			
 			this.playerPositionNodes.head.entity.remove(ExcursionComponent);
-			GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.in);
+			GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.in, {}, true);
 			
 			GlobalSignals.playerEnteredCampSignal.dispatch();
 		},
@@ -125,7 +125,7 @@ define([
 		 	let sector = GameGlobals.levelHelper.getSectorByPosition(position.level, position.sectorX, position.sectorY);
 			
 			this.playerPositionNodes.head.entity.add(new ExcursionComponent());
-			GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.out);
+			GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.out, {}, true);
 			
 			if (GameGlobals.playerHelper.isReadyForExploration()) {
 				GameGlobals.playerActionFunctions.unlockFeature("move");

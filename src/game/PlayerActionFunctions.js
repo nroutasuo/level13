@@ -116,6 +116,8 @@ define(['ash',
 		},
 
 		startAction: function (action, param) {
+			if (GameGlobals.gameState.uiStatus.isTransitioning) return;
+			
 			if (this.currentAction && !this.isSubAction(action)) {
 				log.w("There is an incompleted action: " + this.currentAction + " (tried to start: " + action + ")");
 				return;
