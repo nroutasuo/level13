@@ -133,6 +133,13 @@ canvas {
   -o-transition: opacity 1.5s ease-in-out;
   transition: opacity 1.5s ease-in-out;
 }
+.ui-transition-element {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
+}
 .vision-step-0 {
   @is-low-vision : 0 < 3;
   @is-high-vision : 0 > 9;

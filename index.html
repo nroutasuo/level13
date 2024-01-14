@@ -226,7 +226,7 @@
 					</div><!-- grid for the header" -->
 			
 					<!-- vis for camp -->
-					<div class="grid tabelement" id="container-tab-vis-in" data-tab="switch-in">
+					<div class="grid tabcontainer" id="container-tab-vis-in" data-tab="switch-in">
 						<div class="unit whole" id="tab-vis-in">
 							<div id="tab-vis-in-container" class="vis-container canvas-container">
 								<canvas id="campvis" width="800" height="10" role="img" aria-label="camp view"></canvas>
@@ -237,7 +237,7 @@
 					</div>
 					
 					<!-- camp basic stuff: buildings & population -->
-					<div class="grid tabelement" id="container-tab-two-in" data-tab="switch-in" style="display:none">
+					<div class="grid tabcontainer" id="container-tab-two-in" data-tab="switch-in" style="display:none">
 						<div class="unit golden-large">
 							<h3>Buildings</h3>
 							<div id="in-improvements" class="actionbox">
@@ -315,7 +315,7 @@
 					</div>
 					
 					<!-- "embark" page when leaving camp -->
-					<div class="grid tabelement" id="container-tab-enter-out" data-tab="switch-embark">
+					<div class="grid tabcontainer" id="container-tab-enter-out" data-tab="switch-embark">
 						<div class="unit whole">
 							<p>Make sure you pack enough supplies before you leave.</p>
 							<div class="grid">
@@ -346,7 +346,7 @@
 					</div>
 					
 					<!-- level: minimap and header -->
-					<div class="grid tabelement" id="container-tab-two-out" data-tab="switch-out">
+					<div class="grid tabcontainer" id="container-tab-two-out" data-tab="switch-out">
 						<div class="unit unit-compass" id="out-container-compass">
 							<div id="minimap-background-container" class="canvas-container">
 								<canvas id="minimap-background" width="224" height="224"></canvas>
@@ -365,7 +365,7 @@
 						</div>
 					</div>
 					
-					<div class="grid tabelement" id="container-tab-two-out-actions" data-tab="switch-out" style="display:none;">
+					<div class="grid tabcontainer" id="container-tab-two-out-actions" data-tab="switch-out" style="display:none;">
 						<div class="unit unit-compass" id="out-container-compass-actions">
 						<h3>Wander</h3>
 							<table id="table-out-actions-movement">
@@ -448,7 +448,7 @@
 					</div>
 					
 					<!-- bag main div: item list & crafting -->
-					<div class="grid tabelement" id="container-tab-two-bag" data-tab="switch-bag" style="display:none">
+					<div class="grid tabcontainer" id="container-tab-two-bag" data-tab="switch-bag" style="display:none">
 						<div class="unit three-quarters">
 							<div class="subheader" id="header-bag-equipment"><h3>Equipment</h3></div>
 							<div class="infobox" id="container-equipment-slots">
@@ -494,7 +494,7 @@
 						</div>
 					</div>
 					
-					<div class="grid tabelement" id="container-tab-two-followers" data-tab="switch-followers" style="display:none;">
+					<div class="grid tabcontainer" id="container-tab-two-followers" data-tab="switch-followers" style="display:none;">
 						<div class="unit whole">
 							<p id="followers-max" class="p-meta">Maximum followers</p>
 							
@@ -522,10 +522,10 @@
 						</div>
 					</div>
 					
-					<div class="grid tabelement" id="container-tab-two-map" data-tab="switch-map" style="display:none">
+					<div class="grid tabcontainer" id="container-tab-two-map" data-tab="switch-map" style="display:none">
 						<div class="unit whole">
 							<p id="map-completion-hint">There are still places to explore on this level.</p>
-							<div id="mainmap-container-container">
+							<div id="mainmap-container-container tabelement" data-tab="switch-map">
 								<div id="mainmap-container" class="canvas-container lvl13-box-1">
 									<canvas id="mainmap" width="500" height="500" role="img" aria-label="level map"></canvas>
 									<div id="mainmap-overlay" class="canvas-overlay"></div>
@@ -584,7 +584,7 @@
 						</div>
 					</div>
 					
-					<div class="grid tabelement" id="container-tab-trade" data-tab="switch-trade" style="display:none">
+					<div class="grid tabcontainer" id="container-tab-trade" data-tab="switch-trade" style="display:none">
 						<div class="unit whole">
 							<div class="subheader"><h3>Incoming caravans</h3></div>
 							<p id="trade-caravans-incoming-empty-message">No traders here at the moment.</p>
@@ -600,7 +600,7 @@
 						</div>
 					</div>
 					
-					<div class="grid tabelement" id="container-tab-two-projects" data-tab="switch-projects" style="display:none">
+					<div class="grid tabcontainer" id="container-tab-two-projects" data-tab="switch-projects" style="display:none">
 						<div class="unit whole">
 							<div class="actionbox" id="container-in-improvements-colony">
 								<div class="subheader"><h3>Colony projects</h3></div>
@@ -632,7 +632,7 @@
 						</div>
 					</div>
 					
-					<div class="grid tabelement" id="container-tab-two-upgrades" data-tab="switch-upgrades" style="display: none;">
+					<div class="grid tabcontainer" id="container-tab-two-upgrades" data-tab="switch-upgrades" style="display: none;">
 						<div class="unit whole">
 							<div id="world-blueprints" class="actionbox">
 								<div class="subheader"><h3>Blueprints</h3></div>
@@ -673,7 +673,7 @@
 						</div>
 					</div>
 			
-					<div class="grid tabelement" id="container-tab-two-world" data-tab="switch-world" style="display:none">
+					<div class="grid tabcontainer" id="container-tab-two-world" data-tab="switch-world" style="display:none">
 						<div class="unit whole">
 							<div class="infobox">
 								<div class="subheader"><h3>Messages</h3></div>
@@ -695,7 +695,7 @@
 						</div>
 					</div>
 					
-					<div class="grid tabelement" id="container-tab-two-milestones" data-tab="switch-milestones" style="display:none">
+					<div class="grid tabcontainer" id="container-tab-two-milestones" data-tab="switch-milestones" style="display:none">
 						<div class="unit whole">
 							<div class="milestone-container" id="milestone-container-current">
 								<h3>Current: <span id='milestone-current-name' class="hl-functionality"></span></h3>

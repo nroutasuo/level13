@@ -363,6 +363,146 @@ define(['ash',
 
 				GlobalSignals.calloutsGeneratedSignal.dispatch();
 			},
+
+			transition: function (transitionID, targetValue, duration, transitionElements, callbacks) {
+				if (!transitionID) return;
+
+				let currentTransition = this.currentTransition;
+
+				if (currentTransition) {
+					if (currentTransition.id == transitionID && currentTransition.targetValue == targetValue) return;
+
+					this.completeTransition();
+				}
+
+				transitionElements = transitionElements || {};
+				callbacks = callbacks || {};
+				duration = duration || 1;
+				
+				let blockUI = duration > 100;
+				let fade = duration > 300;
+				let fadeOutDuration = fade ? duration * 0.4 : 0;
+				let transitionDuration = fade ? duration * 0.2 : duration;
+				let fadeInDuration = fade ? duration * 0.4 : 0;
+				let transition = { id: transitionID, targetValue: targetValue, transitionElements: transitionElements, callbacks: callbacks };
+
+				this.currentTransition = transition;
+
+				$("body").toggleClass("ui-transition", true);
+				if (blockUI) GameGlobals.gameState.uiStatus.isTransitioning = true;
+				GlobalSignals.transitionStartedSignal.dispatch();
+
+				if (callbacks.started) callbacks.started();
+
+				this.transitionElementsOut(transitionElements, fadeOutDuration, transitionDuration, fadeInDuration);
+
+				transition.currentTimeoutID = setTimeout(function () {
+					GameGlobals.uiFunctions.transitionElementsIn(transitionElements, fadeOutDuration, transitionDuration, fadeInDuration);
+
+					if (callbacks.toggled) callbacks.toggled();
+					
+					transition.currentTimeoutID = setTimeout(function () {
+						GameGlobals.uiFunctions.completeTransition();
+						if (callbacks.completed) callbacks.completed();
+					}, transitionDuration + fadeOutDuration);
+				}, fadeOutDuration);
+			},
+
+			transitionElementsOut: function (transitionElements, fadeOutDuration, transitionDuration, fadeInDuration) {
+				if (transitionElements.$fadeInOut) {
+					transitionElements.$fadeInOut.toggleClass("ui-transition-element", true);
+					transitionElements.$fadeInOut.stop(true).animate({ opacity: 1 }, fadeOutDuration).delay(transitionDuration).animate({ opacity: 0 }, fadeInDuration);
+				}
+
+				if (transitionElements.$fadeOut) {
+					transitionElements.$fadeOut.toggleClass("ui-transition-element", true);
+					transitionElements.$fadeOut.stop(true).animate({ opacity: 0 }, fadeOutDuration);
+				}
+
+				if (transitionElements.$slideInOut) {
+					$.each(transitionElements.$slideInOut, function () {
+						GameGlobals.uiFunctions.slideToggleIf($(this), null, true, fadeOutDuration, fadeOutDuration);
+					});
+				}
+
+				if (transitionElements.$slideOut) {
+					$.each(transitionElements.$slideOut, function () {
+						GameGlobals.uiFunctions.slideToggleIf($(this), null, false, fadeOutDuration, fadeOutDuration);
+					});
+				}
+			},
+
+			transitionElementsIn: function (transitionElements, fadeOutDuration, transitionDuration, fadeInDuration) {
+				if (transitionElements.$fadeIn) {
+					transitionElements.$fadeIn.toggleClass("ui-transition-element", true);
+					transitionElements.$fadeIn.stop(true).animate({ opacity: 1 }, fadeInDuration);
+				}
+
+				if (transitionElements.$slideInOut) {
+					$.each(transitionElements.$slideInOut, function () {
+						GameGlobals.uiFunctions.slideToggleIf($(this), null, false, fadeInDuration, fadeInDuration);
+					});
+				}
+
+				if (transitionElements.$slideIn) {
+					$.each(transitionElements.$slideIn, function () {
+						GameGlobals.uiFunctions.slideToggleIf($(this), null, true, fadeInDuration, fadeInDuration);
+					});
+				}
+			},
+
+			transitionElementsComplete: function (transitionElements) {
+				if (!transitionElements) return;
+
+				if (transitionElements.$fadeInOut) {
+					transitionElements.$fadeInOut.toggleClass("ui-transition-element", false);
+					transitionElements.$fadeInOut.stop(true).animate({ opacity: 0 }, 1);
+				}
+
+				if (transitionElements.$fadeOut) {
+					transitionElements.$fadeOut.toggleClass("ui-transition-element", false);
+					transitionElements.$fadeOut.stop(true).animate({ opacity: 0 }, 1);
+				}
+
+				if (transitionElements.$fadeIn) {
+					transitionElements.$fadeIn.toggleClass("ui-transition-element", false);
+					transitionElements.$fadeIn.stop(true).animate({ opacity: 1 }, 1);
+				}
+
+				if (transitionElements.$slideInOut) {
+					$.each(transitionElements.$slideInOut, function () {
+						GameGlobals.uiFunctions.toggle($(this), false);
+					});
+				}
+
+				if (transitionElements.$slideOut) {
+					$.each(transitionElements.$slideOut, function () {
+						GameGlobals.uiFunctions.toggle($(this), false);
+					});
+				}
+
+				if (transitionElements.$slideIn) {
+					$.each(transitionElements.$slideIn, function () {
+						GameGlobals.uiFunctions.toggle($(this), true);
+					});
+				}
+			},
+
+			completeTransition: function () {
+				let transition = this.currentTransition;
+
+				this.currentTransition = null;
+				$("body").toggleClass("ui-transition", false);
+				GameGlobals.gameState.uiStatus.isTransitioning = false;
+
+				if (!transition) return;
+
+				clearTimeout(transition.timeoutID);
+
+				this.transitionElementsComplete(transition.elements);
+				
+				GlobalSignals.transitionCompletedSignal.dispatch();
+			},
 			
 			updateInfoCallouts: function (scope) {
 				$.each($(scope + " .callout-container"), function () {
@@ -454,7 +594,7 @@ define(['ash',
 				var startTab = this.elementIDs.tabs.out;
 				var playerPos = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
 				if (playerPos.inCamp) startTab = this.elementIDs.tabs.in;
-				this.selectTab(startTab);
+				this.showTabInstant(startTab);
 			},
 
 			/**
@@ -621,17 +761,43 @@ define(['ash',
 			},
 
 			onTabClicked: function (tabID, tabProps) {
+				GameGlobals.uiFunctions.showTab(tabID, tabProps);
+			},
+
+			showTab: function (tabID, tabProps) {
 				if (GameGlobals.gameState.isLaunchStarted) return;
 				if (GameGlobals.gameState.isLaunched) return;
 
 				let inCamp = GameGlobals.playerHelper.isInCamp();
 				if (inCamp && tabID == GameGlobals.uiFunctions.elementIDs.tabs.out) tabID == GameGlobals.uiFunctions.elementIDs.tabs.embark;
+
+				let previousTabID = GameGlobals.gameState.uiStatus.currentTab;
+
+				let transitionElements = {};
+				transitionElements.$fadeOut = $(".tabelement, .tabbutton").filter("[data-tab!='" + tabID + "']");
+				transitionElements.$fadeInOut = null;
+				transitionElements.$fadeIn = $(".tabelement, .tabbutton").filter("[data-tab='" + tabID + "']");
+				transitionElements.$slideOut = $(".tabcontainer").filter("[data-tab!='" + tabID + "']");
+				transitionElements.$slideInOut = null;
+				transitionElements.$slideIn = $(".tabcontainer").filter("[data-tab='" + tabID + "']");
+
+				let callbacks = {
+					started: () => GlobalSignals.tabClosedSignal.dispatch(previousTabID),
+					toggled: () => GameGlobals.uiFunctions.setTab(tabID, tabProps),
+					completed: () => GlobalSignals.tabOpenedSignal.dispatch(tabID),
+				};
 				
-				GameGlobals.uiFunctions.selectTab(tabID, tabProps);
+				GameGlobals.uiFunctions.transition("tab", tabID, 500, transitionElements, callbacks);
 			},
 			
-			selectTab: function (tabID, tabProps) {
+			showTabInstant: function (tabID, tabProps) {
+				let previousTabID = GameGlobals.gameState.uiStatus.currentTab;
+				GlobalSignals.tabClosedSignal.dispatch(previousTabID);
+				GameGlobals.uiFunctions.setTab(tabID, tabProps);
+				GlobalSignals.tabOpenedSignal.dispatch(tabID);
+			},
 
+			setTab: function (tabID, tabProps) {
 				$("#switch-tabs li").removeClass("selected");
 				$("#switch-tabs li#" + tabID).addClass("selected");
 				$("#tab-header h2").text(tabID);
@@ -640,15 +806,18 @@ define(['ash',
 					'screen_name': tabID
 				});
 
-				var transition = !(GameGlobals.gameState.uiStatus.currentTab === tabID);
-				var transitionTime = transition ? 200 : 0;
 				GameGlobals.gameState.uiStatus.currentTab = tabID;
 
-				$.each($(".tabelement"), function () {
-					GameGlobals.uiFunctions.slideToggleIf($(this), null, $(this).attr("data-tab") === tabID, transitionTime, 200);
+				$.each($(".tabcontainer"), function () {
+					GameGlobals.uiFunctions.toggle($(this), $(this).attr("data-tab") === tabID);
 				});
+
+				$.each($(".tabelement"), function () {
+					GameGlobals.uiFunctions.toggle($(this), $(this).attr("data-tab") === tabID);
+				});
+
 				$.each($(".tabbutton"), function () {
-					GameGlobals.uiFunctions.slideToggleIf($(this), null, $(this).attr("data-tab") === tabID, transitionTime, 200);
+					GameGlobals.uiFunctions.toggle($(this), $(this).attr("data-tab") === tabID);
 				});
 				
 				log.i("tabChanged: " + tabID, "ui");
@@ -1270,11 +1439,6 @@ define(['ash',
 				$element.on('mouseup', function (e) {
 					cancelLongTap();
 				});
-			},
-
-			showTab: function (tabID, tabProps) {
-				if (GameGlobals.gameState.isLaunched) return;
-				this.onTabClicked(tabID, tabProps);
 			},
 
 			showPreviousTab: function () {

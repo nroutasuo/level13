@@ -10,7 +10,9 @@ define(['ash',], function (Ash) {
 		// ui events
 		pageSetUpSignal:new Ash.Signals.Signal(),
 		gameShownSignal: new Ash.Signals.Signal(),
+		tabClosedSignal: new Ash.Signals.Signal(),
 		tabChangedSignal: new Ash.Signals.Signal(),
+		tabOpenedSignal: new Ash.Signals.Signal(),
 		actionButtonClickedSignal: new Ash.Signals.Signal(),
 		calloutsGeneratedSignal: new Ash.Signals.Signal(),
 		popupOpenedSignal: new Ash.Signals.Signal(),
@@ -26,6 +28,8 @@ define(['ash',], function (Ash) {
 		markLogMessagesSeenSignal: new Ash.Signals.Signal(),
 		projectHiddenSignal: new Ash.Signals.Signal(),
 		themeToggledSignal: new Ash.Signals.Signal(),
+		transitionStartedSignal: new Ash.Signals.Signal(),
+		transitionCompletedSignal: new Ash.Signals.Signal(),
 		
 		// player move
 		playerMoveStartedSignal: new Ash.Signals.Signal(),

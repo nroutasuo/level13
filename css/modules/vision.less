@@ -19,6 +19,10 @@ img, p, span, h1, h2, h3, div, span, canvas {
 	.opacity-transition();
 }
 
+.ui-transition-element {
+	.opacity-transition-reset();
+}
+
 .vision_steps(@counter) when (@counter >= 0) {
 	.vision_steps(@counter - 1);
 	.vision-step-@{counter} {
