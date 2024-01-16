@@ -978,7 +978,7 @@ define([
 				baghtml += "<p class='msg-empty p-meta'>Your " + (hasBag ? "bag is" : "pockets are") + " empty.</p>";
 				baghtml += "</div>"
 
-				baghtml += "<div id='inventory-popup-bar' class='progress-wrap progress centered' style='margin-top: 10px'><div class='progress-bar progress'/><span class='progress-label progress'>?/?</span></div>";
+				baghtml += "<div id='inventory-popup-bar' class='progress-wrap progress centered' style='margin-top: 10px'><div class='progress-bar progress'></div><span class='progress-label progress'>?/?</span></div>";
 				baghtml += "</div>"
 				div += baghtml;
 			}
