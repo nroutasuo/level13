@@ -3,6 +3,7 @@ define(['ash',
 		'core/ExceptionHandler',
 		'game/GameGlobals',
 		'game/GlobalSignals',
+		'game/constants/CheatConstants',
 		'game/constants/GameConstants',
 		'game/constants/CampConstants',
 		'game/constants/EnemyConstants',
@@ -17,7 +18,7 @@ define(['ash',
 		'utils/MathUtils',
 		'utils/StringUtils',
 	],
-	function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, GameConstants, CampConstants, EnemyConstants, UIConstants, ItemConstants, PlayerActionConstants, PlayerStatConstants, UIPopupManager, ResourcesVO, PositionVO, ActionButton, MathUtils, StringUtils) {
+	function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, CheatConstants, GameConstants, CampConstants, EnemyConstants, UIConstants, ItemConstants, PlayerActionConstants, PlayerStatConstants, UIPopupManager, ResourcesVO, PositionVO, ActionButton, MathUtils, StringUtils) {
 
 		// TODO separate generic utils and tabs handling to a different file
 
@@ -172,37 +173,42 @@ define(['ash',
 			registerHotkeys: function () {
 				let tabs = GameGlobals.uiFunctions.elementIDs.tabs;
 				let defaultModifier = this.HOTKEY_DEFAULT_MODIFIER;
-				this.registerHotkey("Move N", "KeyW", defaultModifier, tabs.out, false, "move_sector_north");
-				this.registerHotkey("Move N", "Numpad8", defaultModifier, tabs.out, false, "move_sector_north");
-				this.registerHotkey("Move W", "KeyA", defaultModifier, tabs.out, false, "move_sector_west");
-				this.registerHotkey("Move W", "Numpad4", defaultModifier, tabs.out, false, "move_sector_west");
-				this.registerHotkey("Move S", "KeyS", defaultModifier, tabs.out, false, "move_sector_south");
-				this.registerHotkey("Move S", "Numpad0", defaultModifier, tabs.out, false, "move_sector_south");
-				this.registerHotkey("Move E", "KeyD", defaultModifier, tabs.out, false, "move_sector_east");
-				this.registerHotkey("Move E", "Numpad6", defaultModifier, tabs.out, false, "move_sector_east");
-				this.registerHotkey("Move NW", "KeyQ", defaultModifier, tabs.out, false, "move_sector_nw");
-				this.registerHotkey("Move NW", "Numpad7", defaultModifier, tabs.out, false, "move_sector_nw");
-				this.registerHotkey("Move NE", "KeyE", defaultModifier, tabs.out, false, "move_sector_ne");
-				this.registerHotkey("Move NE", "Numpad9", defaultModifier, tabs.out, false, "move_sector_ne");
-				this.registerHotkey("Move SW", "KeyZ", defaultModifier, tabs.out, false, "move_sector_sw");
-				this.registerHotkey("Move SW", "Numpad1", defaultModifier, tabs.out, false, "move_sector_sw");
-				this.registerHotkey("Move SE", "KeyC", defaultModifier, tabs.out, false, "move_sector_se");
-				this.registerHotkey("Move SE", "Numpad3", defaultModifier, tabs.out, false, "move_sector_se");
+				this.registerHotkey("Move N", "KeyW", defaultModifier, tabs.out, false, false, "move_sector_north");
+				this.registerHotkey("Move N", "Numpad8", defaultModifier, tabs.out, false, false, "move_sector_north");
+				this.registerHotkey("Move W", "KeyA", defaultModifier, tabs.out, false, false, "move_sector_west");
+				this.registerHotkey("Move W", "Numpad4", defaultModifier, tabs.out, false, false, "move_sector_west");
+				this.registerHotkey("Move S", "KeyS", defaultModifier, tabs.out, false, false, "move_sector_south");
+				this.registerHotkey("Move S", "Numpad0", defaultModifier, tabs.out, false, false, "move_sector_south");
+				this.registerHotkey("Move E", "KeyD", defaultModifier, tabs.out, false, false, "move_sector_east");
+				this.registerHotkey("Move E", "Numpad6", defaultModifier, tabs.out, false, false, "move_sector_east");
+				this.registerHotkey("Move NW", "KeyQ", defaultModifier, tabs.out, false, false, "move_sector_nw");
+				this.registerHotkey("Move NW", "Numpad7", defaultModifier, tabs.out, false, false, "move_sector_nw");
+				this.registerHotkey("Move NE", "KeyE", defaultModifier, tabs.out, false, false, "move_sector_ne");
+				this.registerHotkey("Move NE", "Numpad9", defaultModifier, tabs.out, false, false, "move_sector_ne");
+				this.registerHotkey("Move SW", "KeyZ", defaultModifier, tabs.out, false, false, "move_sector_sw");
+				this.registerHotkey("Move SW", "Numpad1", defaultModifier, tabs.out, false, false, "move_sector_sw");
+				this.registerHotkey("Move SE", "KeyC", defaultModifier, tabs.out, false, false, "move_sector_se");
+				this.registerHotkey("Move SE", "Numpad3", defaultModifier, tabs.out, false, false, "move_sector_se");
 
-				this.registerHotkey("Scavenge", "KeyN", defaultModifier, tabs.out, false, "scavenge");
-				this.registerHotkey("Scout", "KeyM", defaultModifier, tabs.out, false, "scout");
-				this.registerHotkey("Collect water", "KeyG", defaultModifier, tabs.out, false, "use_out_collector_water");
-				this.registerHotkey("Collect food", "KeyF", defaultModifier, tabs.out, false, "use_out_collector_food");
+				this.registerHotkey("Scavenge", "KeyN", defaultModifier, tabs.out, false, false, "scavenge");
+				this.registerHotkey("Scout", "KeyM", defaultModifier, tabs.out, false, false, "scout");
+				this.registerHotkey("Collect water", "KeyG", defaultModifier, tabs.out, false, false, "use_out_collector_water");
+				this.registerHotkey("Collect food", "KeyF", defaultModifier, tabs.out, false, false, "use_out_collector_food");
 
-				this.registerHotkey("Previous tab", "ArrowLeft", "shiftKey", null, false, () => GameGlobals.uiFunctions.showPreviousTab());
-				this.registerHotkey("Next tab", "ArrowRight", "shiftKey", null, false, () => GameGlobals.uiFunctions.showNextTab());
+				this.registerHotkey("Teleport home", "KeyH", defaultModifier, null, false, true, () => GlobalSignals.triggerCheatSignal.dispatch(CheatConstants.CHEAT_TELEPORT_HOME));
+				this.registerHotkey("Pass time", "KeyK", defaultModifier, null, false, true, () => GlobalSignals.triggerCheatSignal.dispatch(CheatConstants.CHEAT_NAME_TIME + " " + 1));
+				this.registerHotkey("Toggle map", "KeyL", defaultModifier, null, false, true, () => GlobalSignals.triggerCheatSignal.dispatch(CheatConstants.CHEAT_NAME_REVEAL_MAP));
 
-				this.registerHotkey("Dismiss popup", "Escape", null, null, true, () => GameGlobals.uiFunctions.popupManager.dismissPopups());
+				this.registerHotkey("Previous tab", "ArrowLeft", "shiftKey", null, false, false, () => GameGlobals.uiFunctions.showPreviousTab());
+				this.registerHotkey("Next tab", "ArrowRight", "shiftKey", null, false, false, () => GameGlobals.uiFunctions.showNextTab());
+
+				this.registerHotkey("Dismiss popup", "Escape", null, null, true, false, () => GameGlobals.uiFunctions.popupManager.dismissPopups());
 			},
 
-			registerHotkey: function (description, code, modifier, tab, isUniversal, cb) {
+			registerHotkey: function (description, code, modifier, tab, isUniversal, isDev, cb) {
 				if (!code) return;
 				if (!cb) return;
+				if (isDev && !GameConstants.isCheatsEnabled) return;
 
 				modifier = modifier || null;
 				tab = tab || null;
@@ -238,6 +244,7 @@ define(['ash',
 					displayKeyShort: displayKeyShort,
 					tab: tab, 
 					isUniversal: isUniversal,
+					isDev: isDev,
 					action: action, 
 					cb: cb 
 				};

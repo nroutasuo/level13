@@ -71,6 +71,8 @@ define(['ash',
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
 
+			GlobalSignals.add(this, GlobalSignals.triggerCheatSignal, this.onTriggerCheatSignal);
+
 			this.registerCheats();
 		},
 
@@ -206,9 +208,13 @@ define(['ash',
 			this.registerCheat(CheatConstants.CHEAT_NAME_RESET_BUILDING_SPOTS, "Reset building spots for buildings in the current camp.", [], function (params) {
 				this.resetBuildingSpots();
 			});
+			this.registerCheat(CheatConstants.CHEAT_TELEPORT_HOME, "Teleport home.", [], function (params) {
+				this.teleportHome();
+			});
 		},
 
 		registerCheat: function (cmd, desc, params, func) {
+			if (!GameConstants.isCheatsEnabled) return;
 			this.cheatDefinitions[cmd] = {};
 			this.cheatDefinitions[cmd].desc = desc;
 			this.cheatDefinitions[cmd].params = params;
@@ -217,6 +223,10 @@ define(['ash',
 
 		isHidden: function (cmd) {
 			return false;
+		},
+
+		onTriggerCheatSignal: function (param) {
+			this.applyCheatInput(param);
 		},
 
 		applyCheatInput: function (input) {
@@ -613,6 +623,14 @@ define(['ash',
 			if (improvements) {
 				improvements.resetBuildingSpots();
 			}
+		},
+
+		teleportHome: function () {
+			if (!GameConstants.isCheatsEnabled) return;
+			if (GameGlobals.playerHelper.isInCamp()) return;
+			let sector = GameGlobals.playerActionsHelper.getActionCampSector();
+			let targetPosition = sector.get(PositionComponent).getPosition();
+			this.setPlayerPosition(targetPosition.level, targetPosition.sectorX, targetPosition.sectorY, false);
 		}
 
 	});

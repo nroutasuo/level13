@@ -88,6 +88,7 @@ define(['ash',], function (Ash) {
 		restartGameSignal: new Ash.Signals.Signal(),
 		gameResetSignal: new Ash.Signals.Signal(),
 		gameEndedSignal: new Ash.Signals.Signal(),
+		triggerCheatSignal: new Ash.Signals.Signal(),
 
 		// system events
 		slowUpdateSignal: new Ash.Signals.Signal(),

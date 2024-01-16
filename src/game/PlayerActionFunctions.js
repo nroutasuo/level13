@@ -2384,6 +2384,7 @@ define(['ash',
 			this.engine.updateComplete.addOnce(function () {
 				GameGlobals.gameState.passTime(seconds);
 				GameGlobals.uiFunctions.onPlayerPositionChanged(); // reset cooldowns for buttons
+				GameGlobals.uiFunctions.playerMoveCompletedSignal(); // update resources etc
 				this.engine.updateComplete.addOnce(function () {
 					if (callback) callback();
 				}, this);

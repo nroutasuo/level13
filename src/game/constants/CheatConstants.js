@@ -41,6 +41,7 @@ define(function () {
 		CHEAT_NAME_RECRUIT: "recruit",
 		CHEAT_NAME_RAID: "raid",
 		CHEAT_NAME_RESET_BUILDING_SPOTS: "resetBuildingSpots",
+		CHEAT_TELEPORT_HOME: "teleportHome",
 		
 	};
 	return CheatConstants;
