@@ -847,6 +847,9 @@ body.dark button.context {
 body.dark button.btn-wide {
   width: 110pt;
 }
+body.dark button.btn-x-wide {
+  width: 180pt;
+}
 body.dark button.btn-narrow {
   width: 80pt;
 }
@@ -1034,7 +1037,8 @@ body.dark div.info-callout {
   display: none;
   position: absolute;
   width: 100%;
-  min-width: 80px;
+  min-width: 55pt;
+  max-width: 100pt;
   z-index: 5;
   text-transform: none;
 }
@@ -1042,6 +1046,9 @@ body.dark div.btn-callout {
   width: 100%;
   text-align: center;
   top: 37px;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
   pointer-events: none;
   opacity: 0.95;
 }
@@ -3353,6 +3360,9 @@ body.sunlit button.context {
 body.sunlit button.btn-wide {
   width: 110pt;
 }
+body.sunlit button.btn-x-wide {
+  width: 180pt;
+}
 body.sunlit button.btn-narrow {
   width: 80pt;
 }
@@ -3540,7 +3550,8 @@ body.sunlit div.info-callout {
   display: none;
   position: absolute;
   width: 100%;
-  min-width: 80px;
+  min-width: 55pt;
+  max-width: 100pt;
   z-index: 5;
   text-transform: none;
 }
@@ -3548,6 +3559,9 @@ body.sunlit div.btn-callout {
   width: 100%;
   text-align: center;
   top: 37px;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
   pointer-events: none;
   opacity: 0.95;
 }
