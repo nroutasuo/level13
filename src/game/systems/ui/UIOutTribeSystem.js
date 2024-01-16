@@ -295,11 +295,6 @@ define([
 
 			rowHTML += "</tr>";
 			$("#camp-overview").append(rowHTML);
-			$("#" + btnID).click(function(e) {
-				GameGlobals.uiFunctions.onTabClicked(GameGlobals.uiFunctions.elementIDs.tabs.in);
-			});
-			
-			var row = $("#camp-overview tr#" + rowID);
 		},
 		
 		createLevel14Row: function () {

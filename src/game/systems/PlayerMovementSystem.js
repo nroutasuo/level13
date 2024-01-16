@@ -87,6 +87,8 @@ define([
 					} else {
 						this.leaveCamp(position);
 					}
+				} else if (isCampToCampTransition) {
+					GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.in, {}, true);
 				}
 
 				let pathToCamp = GameGlobals.playerActionsHelper.getPathToNearestCamp();
