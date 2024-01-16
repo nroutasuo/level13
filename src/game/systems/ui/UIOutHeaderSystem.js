@@ -16,7 +16,6 @@ define([
 	'game/constants/PlayerStatConstants',
 	'game/systems/SaveSystem',
 	'game/nodes/player/PlayerStatsNode',
-	'game/nodes/player/AutoPlayNode',
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/nodes/player/DeityNode',
@@ -37,7 +36,7 @@ define([
 	GameGlobals, GlobalSignals, 
 	ColorConstants, GameConstants, CampConstants, LevelConstants, UIConstants, FollowerConstants, ItemConstants, FightConstants, PerkConstants, UpgradeConstants, PlayerStatConstants,
 	SaveSystem,
-	PlayerStatsNode, AutoPlayNode, PlayerLocationNode, TribeUpgradesNode, DeityNode,
+	PlayerStatsNode, PlayerLocationNode, TribeUpgradesNode, DeityNode,
 	BagComponent,
 	ItemsComponent,
 	PlayerActionComponent,
@@ -129,7 +128,6 @@ define([
 			this.deityNodes = engine.getNodeList(DeityNode);
 			this.tribeNodes = engine.getNodeList(TribeUpgradesNode);
 			this.currentLocationNodes = engine.getNodeList(PlayerLocationNode);
-			this.autoPlayNodes = engine.getNodeList(AutoPlayNode);
 
 			let sys = this;
 			GlobalSignals.playerEnteredCampSignal.add(function () { sys.onPlayerEnteredCamp(); });
@@ -174,7 +172,6 @@ define([
 			this.playerStatsNodes = null;
 			this.deityNodes = null;
 			this.currentLocationNodes = null;
-			this.autoPlayNodes = null;
 		},
 		
 		initElements: function () {
@@ -927,7 +924,6 @@ define([
 				else if (saveSystem && saveSystem.lastDefaultSaveTimestamp > 0 && timeStamp - saveSystem.lastDefaultSaveTimestamp < 3 * 1000)
 					gameMsg = "Game saved ";
 
-				if (this.autoPlayNodes.head) gameMsg += "Autoplaying";
 				if (GameGlobals.gameState.isPaused) gameMsg += "Paused";
 
 				if (this.lastGameMsg !== gameMsg) {

@@ -607,10 +607,8 @@ define(['ash',
 				if (cooldown > 0) {
 					let locationKey = this.getLocationKey(action);
 					GameGlobals.gameState.setActionCooldown(action, locationKey, cooldown);
-					if (!GameGlobals.gameState.isAutoPlaying) {
-						let button = $("button[action='" + action + "']");
-						this.startButtonCooldown($(button), cooldown);
-					}
+					let button = $("button[action='" + action + "']");
+					this.startButtonCooldown($(button), cooldown);
 				}
 			},
 

@@ -14,7 +14,6 @@ define(['ash',
 	'game/constants/WorldConstants',
 	'game/components/common/CampComponent',
 	'game/components/common/PositionComponent',
-	'game/components/player/AutoPlayComponent',
 	'game/components/player/ItemsComponent',
 	'game/components/player/PerksComponent',
 	'game/components/player/DeityComponent',
@@ -44,7 +43,6 @@ define(['ash',
 	WorldConstants,
 	CampComponent,
 	PositionComponent,
-	AutoPlayComponent,
 	ItemsComponent,
 	PerksComponent,
 	DeityComponent,
@@ -208,12 +206,6 @@ define(['ash',
 			this.registerCheat(CheatConstants.CHEAT_NAME_RESET_BUILDING_SPOTS, "Reset building spots for buildings in the current camp.", [], function (params) {
 				this.resetBuildingSpots();
 			});
-			this.registerCheat(CheatConstants.CHEAT_NAME_AUTOPLAY, "Autoplay.", ["on/off/camp/expedition", "(optional) camp ordinal"], function (params) {
-				this.setAutoPlay(params[0], parseInt(params[1]));
-			});
-			this.registerCheat(CheatConstants.CHEAT_NAME_SCAVENGE, "Do a scavenge expedition on the current level.", [], function (params) {
-				this.setAutoPlay("expedition", null, "scout");
-			});
 		},
 
 		registerCheat: function (cmd, desc, params, func) {
@@ -224,7 +216,7 @@ define(['ash',
 		},
 
 		isHidden: function (cmd) {
-			return cmd === CheatConstants.CHEAT_NAME_AUTOPLAY;
+			return false;
 		},
 
 		applyCheatInput: function (input) {
@@ -299,65 +291,6 @@ define(['ash',
 
 		passTime: function (mins) {
 			GameGlobals.playerActionFunctions.passTime(mins * 60);
-		},
-
-		setAutoPlay: function (type, numCampsTarget) {
-			var start = false;
-			var stop = false;
-			var isExpedition = false;
-			var endConditionUpdateFunction;
-			switch (type) {
-				case "false":
-				case "off":
-					stop = true;
-					break;
-
-				case "true":
-				case "on":
-					start = true;
-					break;
-
-				case "camp":
-					start = true;
-					if (!numCampsTarget || numCampsTarget < 1) numCampsTarget = 1;
-					endConditionUpdateFunction = function () {
-						if (GameGlobals.gameState.numCamps >= numCampsTarget) {
-							this.engine.updateComplete.remove(endConditionUpdateFunction, this);
-							this.applyCheatInput("autoplay off");
-						}
-					};
-					break;
-
-				case "expedition":
-					start = true;
-					isExpedition = true;
-					endConditionUpdateFunction = function () {
-						var autoplayComponent = this.playerStatsNodes.head.entity.get(AutoPlayComponent);
-						if (autoplayComponent && autoplayComponent.isPendingExploring)
-							return;
-						if (!autoplayComponent || !autoplayComponent.isExploring) {
-							this.engine.updateComplete.remove(endConditionUpdateFunction, this);
-							this.applyCheatInput("autoplay off");
-						}
-					};
-					break;
-			}
-
-			if (endConditionUpdateFunction) this.engine.updateComplete.add(endConditionUpdateFunction, this);
-
-			if (stop) {
-				this.playerStatsNodes.head.entity.remove(AutoPlayComponent);
-			} else if (start) {
-				if (!this.playerStatsNodes.head.entity.has(AutoPlayComponent)) {
-					var component = new AutoPlayComponent();
-					if (isExpedition) {
-						component.isPendingExploring = true;
-						component.isExpedition = true;
-						component.explorationVO.limitToCurrentLevel = true;
-					}
-					this.playerStatsNodes.head.entity.add(component);
-				}
-			}
 		},
 
 		setResource: function (name, amount) {

@@ -9,7 +9,6 @@ define([
 	'game/constants/PerkConstants',
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/PlayerStatsNode',
-	'game/nodes/player/AutoPlayNode',
 ], function (Ash,
 	GameGlobals,
 	GlobalSignals,
@@ -19,14 +18,12 @@ define([
 	PlayerActionConstants,
 	PerkConstants,
 	PlayerLocationNode,
-	PlayerStatsNode,
-	AutoPlayNode,
+	PlayerStatsNode
 ) {
 	var UIOutElementsSystem = Ash.System.extend({
 		
 		playerLocationNodes: null,
 		playerStatsNodes: null,
-		autoPlayNodes: null,
 
 		engine: null,
 		
@@ -45,7 +42,6 @@ define([
 			this.engine = engine;
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
-			this.autoPlayNodes = engine.getNodeList(AutoPlayNode);
 			
 			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
 
@@ -75,7 +71,6 @@ define([
 			this.engine = null;
 			this.playerLocationNodes = null;
 			this.playerStatsNodes = null;
-			this.autoPlayNodes = null;
 		},
 
 		update: function (time) {
@@ -135,8 +130,7 @@ define([
 
 		updateButtonDisabledState: function ($button, action, buttonStatus, buttonElements) {
 			var playerVision = this.playerStatsNodes.head.vision.value;
-			var isAutoPlaying = this.autoPlayNodes.head;
-			return GameGlobals.buttonHelper.updateButtonDisabledState($button, buttonElements.container, playerVision, isAutoPlaying);
+			return GameGlobals.buttonHelper.updateButtonDisabledState($button, buttonElements.container, playerVision);
 		},
 
 		updateButtonCallout: function ($button, action, buttonStatus, buttonElements, isHardDisabled) {

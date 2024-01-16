@@ -42,7 +42,7 @@ define([
 		handleRandomEncounter: function (action, winCallback, fleeCallback, loseCallback) {
 			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			var hasEnemies = this.hasEnemiesCurrentLocation(action);
-			if (hasEnemies && GameGlobals.gameState.unlockedFeatures.camp && !GameGlobals.gameState.isAutoPlaying) {
+			if (hasEnemies && GameGlobals.gameState.unlockedFeatures.camp) {
 				var vision = this.playerStatsNodes.head.vision.value;
 				var encounterFactor = GameGlobals.playerActionsHelper.getEncounterFactor(action);
 				var sectorFactor = GameGlobals.sectorHelper.getDangerFactor(this.playerLocationNodes.head.entity);

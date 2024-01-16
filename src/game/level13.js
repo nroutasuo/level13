@@ -9,7 +9,6 @@ define([
 	'game/constants/SystemPriorities',
 	'game/systems/GameManager',
 	'game/systems/SaveSystem',
-	'game/systems/AutoPlaySystem',
 	'game/systems/ui/UIOutHeaderSystem',
 	'game/systems/ui/UIOutElementsSystem',
 	'game/systems/ui/UIOutLevelSystem',
@@ -75,7 +74,6 @@ define([
 	SystemPriorities,
 	GameManager,
 	SaveSystem,
-	AutoPlaySystem,
 	UIOutHeaderSystem,
 	UIOutElementsSystem,
 	UIOutLevelSystem,
@@ -242,7 +240,6 @@ define([
 			this.engine.addSystem(new TutorialSystem(), SystemPriorities.update);
 			this.engine.addSystem(new EndingSystem(), SystemPriorities.update);
 
-			this.engine.addSystem(new AutoPlaySystem(), SystemPriorities.postUpdate);
 			this.engine.addSystem(new SlowUpdateSystem(), SystemPriorities.postUpdate);
 
 			this.engine.addSystem(new UIOutHeaderSystem(), SystemPriorities.render);

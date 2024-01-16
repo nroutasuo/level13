@@ -351,7 +351,6 @@ define([
 		},
 		
 		showLevelPopup: function (title, msg) {
-			if (GameGlobals.gameState.isAutoPlaying) return;
 			setTimeout(function () {
 				GameGlobals.uiFunctions.showInfoPopup(title, msg, "Continue", null, null, true, false);
 			}, 300);

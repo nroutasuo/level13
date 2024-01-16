@@ -5,7 +5,6 @@ define([
 	'game/MetaState',
 	'game/PlayerActionFunctions',
 	'game/UIFunctions',
-	'game/helpers/AutoPlayHelper',
 	'game/helpers/CampHelper',
 	'game/helpers/CampBalancingHelper',
 	'game/helpers/CampVisHelper',
@@ -35,7 +34,6 @@ define([
 	MetaState,
 	PlayerActionFunctions,
 	UIFunctions,
-	AutoPlayHelper,
 	CampHelper,
 	CampBalancingHelper,
 	CampVisHelper,
@@ -88,7 +86,6 @@ define([
 				GameGlobals.playerHelper = new PlayerHelper(engine);
 				GameGlobals.tribeHelper = new TribeHelper(engine);
 				GameGlobals.playerActionResultsHelper = new PlayerActionResultsHelper(engine);
-				GameGlobals.autoPlayHelper = new AutoPlayHelper();
 				GameGlobals.saveHelper = new SaveHelper();
 				GameGlobals.changeLogHelper = new ChangeLogHelper();
 				GameGlobals.gameFlowLogger = new GameFlowLogger();

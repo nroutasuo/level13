@@ -3,7 +3,6 @@ define(function () {
 		
 		CHEAT_NAME_CHEATLIST: "cheatlist",
 		CHEAT_NAME_SPEED: "speed",
-		CHEAT_NAME_AUTOPLAY: "autoplay",
 		CHEAT_NAME_TIME: "time",
 		CHEAT_NAME_RES: "res",
 		CHEAT_NAME_SUPPLIES: "supplies",

@@ -1149,7 +1149,7 @@ define([
 			}
 			
 			// consolation prize: if found nothing (useful) at this point, add 1 resource every few tries
-			if (!this.isSomethingUsefulResources(results) && !GameGlobals.gameState.isAutoPlaying) {
+			if (!this.isSomethingUsefulResources(results)) {
 				let excursionComponent = this.playerResourcesNodes.head.entity.get(ExcursionComponent);
 				if (excursionComponent && excursionComponent.numConsecutiveScavengeUselessSameLocation > 0) {
 					let highestResources = availableResources.getResourcesWithHighestAmount();
@@ -1423,35 +1423,29 @@ define([
 			}
 
 			// map
-			if (!GameGlobals.gameState.isAutoPlaying) {
-				let visitedSectors = GameGlobals.gameState.numVisitedSectors;
-				let numSectorsRequiredForMap = 5;
-				if (visitedSectors > numSectorsRequiredForMap && currentItems.getCountById("equipment_map", true) <= 0) {
-					return ItemConstants.getNewItemInstanceByID("equipment_map");
-				}
-				
-				let playerPos = this.playerLocationNodes.head.position;
-				if (playerPos.level < WorldConstants.LEVEL_NUMBER_STASH_ADVANCED_MAP && currentItems.getCountById("equipment_map_2", true) <= 0) {
-					return ItemConstants.getNewItemInstanceByID("equipment_map_2");
-				}
+			let visitedSectors = GameGlobals.gameState.numVisitedSectors;
+			let numSectorsRequiredForMap = 5;
+			if (visitedSectors > numSectorsRequiredForMap && currentItems.getCountById("equipment_map", true) <= 0) {
+				return ItemConstants.getNewItemInstanceByID("equipment_map");
+			}
+			
+			let playerPos = this.playerLocationNodes.head.position;
+			if (playerPos.level < WorldConstants.LEVEL_NUMBER_STASH_ADVANCED_MAP && currentItems.getCountById("equipment_map_2", true) <= 0) {
+				return ItemConstants.getNewItemInstanceByID("equipment_map_2");
 			}
 
 			// non-craftable level clothing
-			if (!GameGlobals.gameState.isAutoPlaying) {
-				var clothing = GameGlobals.itemsHelper.getScavengeNecessityClothing(campOrdinal, 1);
-				for (let i = 0; i < clothing.length; i++) {
-					if (currentItems.getCountById(clothing[i].id, true) <= 0) {
-						return clothing[i];
-					}
+			var clothing = GameGlobals.itemsHelper.getScavengeNecessityClothing(campOrdinal, 1);
+			for (let i = 0; i < clothing.length; i++) {
+				if (currentItems.getCountById(clothing[i].id, true) <= 0) {
+					return clothing[i];
 				}
 			}
 
 			return null;
 		},
 		
-		getNecessityIngredient: function (ingredientProbability) {
-			if (GameGlobals.gameState.isAutoPlaying) return null;
-			
+		getNecessityIngredient: function (ingredientProbability) {			
 			var playerPos = this.playerLocationNodes.head.position;
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
 			var step = GameGlobals.levelHelper.getCampStep(playerPos);
@@ -1919,7 +1913,6 @@ define([
 		
 		getFallbackFollowers: function (probability) {
 			let result = [];
-			if (GameGlobals.gameState.isAutoPlaying) return result;
 			
 			let playerPos = this.playerLocationNodes.head.position;
 			let campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
@@ -1949,7 +1942,6 @@ define([
 		},
 		
 		getFallbackBlueprint: function (probability) {
-			if (GameGlobals.gameState.isAutoPlaying) return;
 			var missedBlueprints = [];
 			var playerPos = this.playerLocationNodes.head.position;
 			var upgradesComponent = this.tribeUpgradesNodes.head.upgrades;

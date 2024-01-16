@@ -1062,7 +1062,7 @@ define(['ash',
 
 			let logMsgId = messages.id || LogConstants.getUniqueID();
 
-			if (!GameGlobals.gameState.isAutoPlaying) player.add(new PlayerActionResultComponent(rewards));
+			player.add(new PlayerActionResultComponent(rewards));
 			
 			let messages1 = GameGlobals.playerActionResultsHelper.getResultMessagesBeforeSelection(rewards);
 			
@@ -1089,12 +1089,10 @@ define(['ash',
 				if (collected) {
 					let messages2 = GameGlobals.playerActionResultsHelper.getResultMessagesAfterSelection(rewards);
 					
-					if (!GameGlobals.gameState.isAutoPlaying) {
-						if (messages.addToLog && logMsg) GameGlobals.playerHelper.addLogMessage(logMsgId, logMsg);
-						playerActionFunctions.logResultMessages(messages1);
-						playerActionFunctions.logResultMessages(messages2);
-						playerActionFunctions.forceTabUpdate();
-					}
+					if (messages.addToLog && logMsg) GameGlobals.playerHelper.addLogMessage(logMsgId, logMsg);
+					playerActionFunctions.logResultMessages(messages1);
+					playerActionFunctions.logResultMessages(messages2);
+					playerActionFunctions.forceTabUpdate();
 				}
 				
 				player.remove(PlayerActionResultComponent);

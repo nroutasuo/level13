@@ -36,13 +36,11 @@ define(['ash',
 		
 		onPopupOpened: function (id) {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
-			if (GameGlobals.gameState.isAutoPlaying) return;
 			this.log("popup opened: " + id);
 		},
 		
 		onPopupClosed: function (id) {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
-			if (GameGlobals.gameState.isAutoPlaying) return;
 			this.log("popup closed: " + id);
 		},
 		
@@ -68,7 +66,6 @@ define(['ash',
 		},
 		
 		onPlayerPositionChanged: function (pos) {
-			if (GameGlobals.gameState.isAutoPlaying) return;
 			this.log("player moved to " + pos);
 		},
 		
