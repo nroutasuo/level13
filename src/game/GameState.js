@@ -310,6 +310,8 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 				return;
 			}
 			
+			value = value || 0;
+			
 			if (this.stats[name].entry != null) {
 				let currentValue = this.stats[name].value;
 				if (this.stats[name].isInverted && currentValue <= value) return;

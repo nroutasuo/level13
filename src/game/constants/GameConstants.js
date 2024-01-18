@@ -17,7 +17,8 @@ define( function () {
 		gameStatUnits: {
 			general: "general",
 			seconds: "seconds",
-			steps: "steps"
+			steps: "steps",
+			level: "level",
 		},
 		
 		gameURL: "https://nroutasuo.github.io/level13",

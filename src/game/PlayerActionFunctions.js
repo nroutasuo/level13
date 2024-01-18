@@ -2439,7 +2439,7 @@ define(['ash',
 			let followers = this.playerStatsNodes.head.followers.getParty();
 			for (let i = 0; i < followers.length; i++) {
 				let follower = followers[i];
-				GameGlobals.gameState.increaseGameStatHighScore("mostStepsWithFollower", follower, follower.numSteps);
+				GameGlobals.gameState.increaseGameStatHighScore("mostStepsWithFollower", follower, steps);
 			}
 		},
 

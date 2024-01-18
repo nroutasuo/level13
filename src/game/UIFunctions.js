@@ -1,24 +1,25 @@
 // A class that checks raw user input from the DOM and passes game-related actions to PlayerActionFunctions
 define(['ash',
-		'core/ExceptionHandler',
-		'game/GameGlobals',
-		'game/GlobalSignals',
-		'game/constants/CheatConstants',
-		'game/constants/GameConstants',
-		'game/constants/CampConstants',
-		'game/constants/EnemyConstants',
-		'game/constants/UIConstants',
-		'game/constants/ItemConstants',
-		'game/constants/PlayerActionConstants',
-		'game/constants/PlayerStatConstants',
-		'game/helpers/ui/UIPopupManager',
-		'game/vos/ResourcesVO',
-		'game/vos/PositionVO',
-		'utils/ActionButton',
-		'utils/MathUtils',
-		'utils/StringUtils',
-	],
-	function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, CheatConstants, GameConstants, CampConstants, EnemyConstants, UIConstants, ItemConstants, PlayerActionConstants, PlayerStatConstants, UIPopupManager, ResourcesVO, PositionVO, ActionButton, MathUtils, StringUtils) {
+	'text/Text',
+	'core/ExceptionHandler',
+	'game/GameGlobals',
+	'game/GlobalSignals',
+	'game/constants/CheatConstants',
+	'game/constants/GameConstants',
+	'game/constants/CampConstants',
+	'game/constants/EnemyConstants',
+	'game/constants/UIConstants',
+	'game/constants/ItemConstants',
+	'game/constants/PlayerActionConstants',
+	'game/constants/PlayerStatConstants',
+	'game/helpers/ui/UIPopupManager',
+	'game/vos/ResourcesVO',
+	'game/vos/PositionVO',
+	'utils/ActionButton',
+	'utils/MathUtils',
+	'utils/StringUtils',
+],
+	function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, CheatConstants, GameConstants, CampConstants, EnemyConstants, UIConstants, ItemConstants, PlayerActionConstants, PlayerStatConstants, UIPopupManager, ResourcesVO, PositionVO, ActionButton, MathUtils, StringUtils) {
 
 		// TODO separate generic utils and tabs handling to a different file
 
@@ -731,7 +732,7 @@ define(['ash',
 							}
 						}
 						html += "<div class='" + divClasses.join(" ") + "'>";
-						html += "<span class='game-stat-span game-stat-name'>" + stat.displayName + "</span>";
+						html += "<span class='game-stat-span game-stat-name'>" + Text.capitalize(stat.displayName) + "</span>";
 						html += "<span class='game-stat-span game-stat-value'>" + displayValue + "</span>";
 						if (stat.entry) {
 							let entryDisplay = stat.entry;
@@ -745,8 +746,10 @@ define(['ash',
 								entryDisplay = ItemConstants.getItemDefinitionByID(stat.entry).name;
 							} else if (stat.entry.hasOwnProperty("timestamp")) {
 								entryDisplay = UIConstants.getTimeSinceText(stat.entry.timestamp);
+							} else if (stat.entryUnit == GameConstants.gameStatUnits.level) {
+								entryDisplay = "on level " + stat.entry;
 							}
-							html += "<span class='game-stat-span game-stat-entry'>(" + entryDisplay + ")</span>";
+							html += "<span class='game-stat-span game-stat-highscore-entry'>(" + entryDisplay + ")</span>";
 						}
 						html += "</div>";
 					}

@@ -2724,17 +2724,22 @@ body.dark .game-stat-category h3 {
 }
 body.dark .game-stat-entry {
   display: flex;
-  gap: 5px;
+  gap: 20px;
 }
 body.dark .game-stat-in-subcategory {
   padding-left: 1em;
 }
 body.dark .game-stat-name {
-  min-width: 35%;
   text-align: left;
 }
 body.dark .game-stat-sub-category {
   text-align: left;
+}
+body.dark .game-stat-highscore-value {
+  color: #bbb;
+}
+body.dark .game-stat-highscore-entry {
+  color: #bbb;
 }
 body.dark .settings-entry {
   display: block;
@@ -5237,17 +5242,22 @@ body.sunlit .game-stat-category h3 {
 }
 body.sunlit .game-stat-entry {
   display: flex;
-  gap: 5px;
+  gap: 20px;
 }
 body.sunlit .game-stat-in-subcategory {
   padding-left: 1em;
 }
 body.sunlit .game-stat-name {
-  min-width: 35%;
   text-align: left;
 }
 body.sunlit .game-stat-sub-category {
   text-align: left;
+}
+body.sunlit .game-stat-highscore-value {
+  color: #777;
+}
+body.sunlit .game-stat-highscore-entry {
+  color: #777;
 }
 body.sunlit .settings-entry {
   display: block;
