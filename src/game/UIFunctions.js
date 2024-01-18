@@ -958,15 +958,15 @@ define(['ash',
 
 					let selectedResVO = new ResourcesVO(storageTypes.RESULT);
 					$.each($("#embark-resources tr"), function () {
-						var resourceName = $btn.attr("id").split("-")[2];
-						var selectedVal = parseInt($btn.children("td").children(".stepper").children("input").val());
+						var resourceName = $(this).attr("id").split("-")[2];
+						var selectedVal = parseInt($(this).children("td").children(".stepper").children("input").val());
 						selectedResVO.setResource(resourceName, selectedVal, "leave_camp");
 					});
 
 					var selectedItems = {};
 					$.each($("#embark-items tr"), function () {
-						var itemID = $btn.attr("id").split("-")[2];
-						var selectedVal = parseInt($btn.children("td").children(".stepper").children("input").val());
+						var itemID = $(this).attr("id").split("-")[2];
+						var selectedVal = parseInt($(this).children("td").children(".stepper").children("input").val());
 						selectedItems[itemID] = selectedVal;
 					});
 
