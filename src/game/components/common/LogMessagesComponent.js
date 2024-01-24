@@ -119,6 +119,9 @@ function (Ash, GameGlobals, LogConstants, LogMessageVO) {
 		getCustomSaveObject: function () {
 			var copy = {};
 			copy.messages = this.messages.slice(-30);
+			for (let i = 0; i < copy.messages.length; i++) {
+				delete copy.messages[i].loadedFromSave;
+			}
 			copy.hasNewMessages = this.hasNewMessages;
 			return copy;
 		},

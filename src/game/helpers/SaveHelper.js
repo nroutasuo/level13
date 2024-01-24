@@ -96,10 +96,13 @@ define([
 				if (!component) {
 					for (let i in existingComponents) {
 						var existingComponent = existingComponents[i];
-						if (existingComponent.getSaveKey) {
-							if (existingComponent.getSaveKey() === componentKey) {
-								component = existingComponent;
-							}
+						if (existingComponent.getSaveKey && existingComponent.getSaveKey() === componentKey) {
+							component = existingComponent;
+							break;
+						}
+						if (existingComponent.getOldSaveKey && existingComponent.getOldSaveKey() === componentKey) {
+							component = existingComponent;
+							break;
 						}
 					}
 				}
@@ -120,12 +123,15 @@ define([
 				if (!component) {
 					for (let i = 0; i < this.optionalComponents.length; i++) {
 						var optionalComponent = this.optionalComponents[i];
-						if (optionalComponent.prototype.getSaveKey) {
-							if (optionalComponent.prototype.getSaveKey() === componentKey) {
-								component = new optionalComponent();
-								entity.add(component);
-								break;
-							}
+						if (optionalComponent.prototype.getSaveKey &&  optionalComponent.prototype.getSaveKey() === componentKey) {
+							component = new optionalComponent();
+							entity.add(component);
+							break;
+						}
+						if (optionalComponent.prototype.getOldSaveKey &&  optionalComponent.prototype.getOldSaveKey() === componentKey) {
+							component = new optionalComponent();
+							entity.add(component);
+							break;
 						}
 					}
 				}

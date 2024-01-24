@@ -25,7 +25,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 		graffiti: null,
 		isFallbackInvestigateSector: false,
 		
-		scoutedTimestamp: 0,
+		scoutedTimestamp: 0, // seconds 
 		
 		glowStickSeconds: -100, // not saved
 		hazardReduction: null, // not saved
@@ -133,6 +133,10 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 		},
 
 		getSaveKey: function () {
+			return "ScS";
+		},
+
+		getOldSaveKey: function () {
 			return "ScStatus";
 		},
 

@@ -121,7 +121,9 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		getCustomSaveObject: function () {
 			let copy = {};
 			copy.name = this.name;
-			copy.count = this.count;
+			if (this.count !== 1) {
+				copy.count = this.count;
+			}
 			if (this.level > 1) {
 				copy.level = this.level;
 			}
@@ -138,6 +140,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			if (componentValues.name) this.name = componentValues.name;
 			if (componentValues.count) this.count = componentValues.count;
 			
+			this.count = componentValues.count === 0 ? 0 : componentValues.count ? componentValues.count : 1;
 			this.level = componentValues.level ? componentValues.level : 1;
 			this.numDamaged = componentValues.numDamaged ? componentValues.numDamaged : 0;
 			

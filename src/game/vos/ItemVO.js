@@ -109,6 +109,12 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			
 			if (!this.broken)
 				delete clone.broken;
+		
+			if (!this.equipped)
+				delete clone.equipped;
+		
+			if (!this.carried)
+				delete clone.carried;
 			
 			if (!this.equippable)
 				delete clone.equipped;

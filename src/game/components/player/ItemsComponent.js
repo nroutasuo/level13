@@ -70,7 +70,6 @@ function (Ash, ItemVO, ItemConstants) {
 				}
 			}
 
-			debugger
 			log.w("Item to remove not found.");
 		},
 
@@ -479,33 +478,69 @@ function (Ash, ItemVO, ItemConstants) {
 		},
 
 		getCustomSaveObject: function () {
-			var copy = {};
+			let copy = {};
 			copy.items = {};
-			for(var key in this.items) {
+			copy.ingredientsCarried = {};
+			copy.ingredientsNotCarried = {};
+
+			for (let key in this.items) {
 				copy.items[key] = [];
 				for (let i = 0; i < this.items[key].length; i++) {
-					var item = this.items[key][i];
-					copy.items[key][i] = item.getCustomSaveObject();
+					let item = this.items[key][i];
+					if (key == ItemConstants.itemTypes.ingredient) {
+						let id = item.id;
+						if (item.carried) {
+							if (!copy.ingredientsCarried[id]) copy.ingredientsCarried[id] = 0;
+							copy.ingredientsCarried[id]++;
+						} else {
+							if (!copy.ingredientsNotCarried[id]) copy.ingredientsNotCarried[id] = 0;
+							copy.ingredientsNotCarried[id]++;
+						}
+					} else {
+						copy.items[key][i] = item.getCustomSaveObject();
+					}
 				}
 			}
+			
 			return copy;
 		},
 
 		customLoadFromSave: function (componentValues) {
-			for(let key in componentValues.items) {
+			let component = this;
+
+			for (let key in componentValues.items) {
 				for (let i in componentValues.items[key]) {
 					let savedItem =  componentValues.items[key][i];
+					if (!savedItem || !savedItem.id) continue;
 					let definition = ItemConstants.getItemDefinitionByID(savedItem.id);
 					if (!definition) continue;
 
 					let item = definition.clone(savedItem);
-					let carried = savedItem.carried;
+					let carried = savedItem.carried || false;
+					let equipped = savedItem.equipped || false;
+
 					this.addItem(item, carried);
-					if (componentValues.items[key][i].equipped) {
+					if (equipped) {
 						this.equip(item);
 					}
 				}
 			}
+
+			let addIngredients = function (source, carried) {
+				for (let ingredientID in source) {
+					let num = source[ingredientID];
+					let definition = ItemConstants.getItemDefinitionByID(ingredientID);
+					if (!definition) continue;
+
+					for (let i = 0; i < num; i++) {
+						let item = definition.clone();
+						component.addItem(item, true);
+					}
+				}
+			};
+
+			addIngredients(componentValues.ingredientsCarried, true);
+			addIngredients(componentValues.ingredientsNotCarried, false);
 		}
 	});
 
