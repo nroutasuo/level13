@@ -64,7 +64,7 @@ define([
 				sys.updateCurrentLocation();
 			});
 			GlobalSignals.gameStateReadySignal.add(function () {
-				sys.updateCurrentLocation();
+				sys.updateAllSectors();
 			});
 			GlobalSignals.sectorScoutedSignal.add(function () {
 				sys.updateCurrentLocation();
@@ -95,6 +95,12 @@ define([
 		reset: function () {
 			this.neighboursDict = {};
 		},
+
+		updateAllSectors: function () {
+			for (let sectorNode = this.sectorNodes.head; sectorNode; sectorNode = sectorNode.next) {
+				this.updateSector(sectorNode.entity);
+			}
+		},
 		
 		updateSector: function (entity) {
 			var positionComponent = entity.get(PositionComponent);
@@ -103,11 +109,16 @@ define([
 			
 			if (!positionComponent) return;
 			
-			var levelEntity = GameGlobals.levelHelper.getLevelEntityForSector(entity);
+			let levelEntity = GameGlobals.levelHelper.getLevelEntityForSector(entity);
 			
-			var isScouted = sectorStatusComponent.scouted;
-			var hasCampLevel = levelEntity.has(CampComponent);
-			var hasCampSector = entity.has(CampComponent);
+			let isVisited = GameGlobals.sectorHelper.isVisited(entity);
+			let isScouted = sectorStatusComponent.scouted;
+			let hasCampLevel = levelEntity.has(CampComponent);
+			let hasCampSector = entity.has(CampComponent);
+
+			sectorStatusComponent.visited = isVisited;
+
+			entity.remove(VisitedComponent);
 			
 			this.updateGangs(entity);
 			this.updateMovementOptions(entity);
@@ -171,7 +182,7 @@ define([
 				var direction = PositionConstants.getLevelDirections()[i];
 				var neighbour = this.getNeighbour(sectorKey, direction);
 				var isNeighbourAffectedByHazard = neighbour ? GameGlobals.sectorHelper.isAffectedByHazard(neighbour.get(SectorFeaturesComponent), neighbour.get(SectorStatusComponent), this.itemsNodes.head.items) : false;
-				var isBlockedByHazard = neighbour ? isAffectedByHazard && !(neighbour.has(VisitedComponent) && !isNeighbourAffectedByHazard) : false;
+				var isBlockedByHazard = neighbour ? isAffectedByHazard && !(GameGlobals.sectorHelper.isVisited(neighbour) && !isNeighbourAffectedByHazard) : false;
 				movementOptions.canMoveTo[direction] = neighbour != null;
 				movementOptions.canMoveTo[direction] = movementOptions.canMoveTo[direction] && !isBlockedByHazard;
 				movementOptions.canMoveTo[direction] = movementOptions.canMoveTo[direction] && !GameGlobals.movementHelper.isBlocked(entity, direction);

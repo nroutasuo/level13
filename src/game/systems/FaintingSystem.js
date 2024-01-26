@@ -16,7 +16,6 @@ define([
 	'game/nodes/NearestCampNode',
 	'game/nodes/LastVisitedCampNode',
 	'game/components/common/PositionComponent',
-	'game/components/common/VisitedComponent',
 	'game/components/common/CampComponent',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorStatusComponent',
@@ -41,7 +40,6 @@ define([
 	NearestCampNode,
 	LastVisitedCampNode,
 	PositionComponent,
-	VisitedComponent,
 	CampComponent,
 	SectorFeaturesComponent,
 	SectorStatusComponent,
@@ -175,7 +173,7 @@ define([
 			var isKnownSafe;
 			for (var node = this.sectorNodes.head; node; node = node.next) {
 				if (node.position.level === playerPosition.level) {
-					isVisited = node.entity.has(VisitedComponent);
+					isVisited = GameGlobals.sectorHelper.isVisited(node.entity);
 					if (!isVisited) continue;
 					isSafe = this.isSectorSafe(node.entity);
 					if (!isSafe) continue;

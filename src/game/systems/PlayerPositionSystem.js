@@ -20,17 +20,17 @@ define([
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/PassagesComponent',
+	'game/components/level/LevelStatusComponent',
 	'game/components/common/MovementComponent',
 	'game/components/common/PositionComponent',
-	'game/components/common/VisitedComponent',
 	'game/components/common/RevealedComponent',
 	'game/components/common/CampComponent',
 	'game/components/type/LevelComponent',
 ], function (Ash, GameGlobals, GlobalSignals, GameConstants, LevelConstants, LogConstants, PositionConstants,
 	PlayerPositionNode, LevelNode, PlayerLocationNode, LastVisitedCampNode, SectorNode, CampNode,
 	CurrentPlayerLocationComponent, CurrentNearestCampComponent, LastVisitedCampComponent, SectorFeaturesComponent, SectorStatusComponent, PassagesComponent,
-	MovementComponent, PositionComponent,
-	VisitedComponent, RevealedComponent, CampComponent, LevelComponent) {
+	LevelStatusComponent, MovementComponent, PositionComponent,
+	RevealedComponent, CampComponent, LevelComponent) {
 
 	var PlayerPositionSystem = Ash.System.extend({
 
@@ -147,7 +147,7 @@ define([
 				levelpos = levelNode.level.position;
 				if (levelpos == playerPos.level && !levelNode.entity.has(CurrentPlayerLocationComponent)) {
 					levelNode.entity.add(new CurrentPlayerLocationComponent());
-					if (!levelNode.entity.has(VisitedComponent)) {
+					if (GameGlobals.levelHelper.isVisited(levelNode.entity)) {
 						this.handleNewLevel(levelNode, levelpos);
 					}
 				} else if (levelpos != playerPos.level && levelNode.entity.has(CurrentPlayerLocationComponent)) {
@@ -196,7 +196,7 @@ define([
 			
 			sector.add(new CurrentPlayerLocationComponent());
 			
-			if (!sector.has(VisitedComponent)) {
+			if (GameGlobals.sectorHelper.isVisited(sector)) {
 				this.handleNewSector(sector, true);
 			}
 			
@@ -242,7 +242,7 @@ define([
 			for (let direction in neighbours) {
 				let revealedNeighbour = neighbours[direction];
 				if (!revealedNeighbour) continue;
-				if (revealedNeighbour.has(VisitedComponent)) continue;
+				if (GameGlobals.sectorHelper.isVisited(revealedNeighbour)) continue;
 				
 				if (!revealedNeighbour.has(RevealedComponent)) {
 					revealedNeighbour.add(new RevealedComponent());
@@ -252,7 +252,8 @@ define([
 		},
 
 		handleNewLevel: function (levelNode, levelPos) {
-			levelNode.entity.add(new VisitedComponent());
+			let levelStatus = levelNode.entity.get(LevelStatusComponent);
+			levelStatus.isVisited = true;
 			let levelOrdinal = GameGlobals.gameState.getLevelOrdinal(levelPos);
 			let campOrdinal = GameGlobals.gameState.getCampOrdinal(levelPos);
 			GameGlobals.gameState.level = Math.max(GameGlobals.gameState.level, levelOrdinal);
@@ -299,9 +300,10 @@ define([
 
 		handleNewSector: function (sectorEntity, isNew) {
 			let previousSectorEntity = this.previousLocation;
+			let statusComponent = sectorEntity.get(SectorStatusComponent);
 			
 			sectorEntity.remove(RevealedComponent);
-			sectorEntity.add(new VisitedComponent());
+			statusComponent.visited = true;
 
 			let sectorPos = sectorEntity.get(PositionComponent);
 			let levelCampOrdinal = GameGlobals.gameState.getCampOrdinal(sectorPos.level);
@@ -311,11 +313,12 @@ define([
 			if (isNew) {
 				GameGlobals.gameState.numVisitedSectors++;
 				GameGlobals.playerActionFunctions.unlockFeature("sectors");
+				GlobalSignals.sectorVisitedSignal.dispatch();
 			}
 
 			if (isNew && !GameGlobals.levelHelper.isLevelCampable(sectorPos.level) && levelCampOrdinal < 6) {
 				let levelSectors = GameGlobals.levelHelper.getSectorsByLevel(sectorPos.level);
-				let levelVisitedSectors = levelSectors.filter(s => s.has(VisitedComponent));
+				let levelVisitedSectors = levelSectors.filter(s => GameGlobals.sectorHelper.isVisited(s));
 				if (levelVisitedSectors.length == 15) {
 					this.addLogMessage(LogConstants.getUniqueID(), "Another inhospitable street. You won't find a place for a camp on this level.");
 				}

@@ -20,8 +20,8 @@ define([
 	'game/nodes/GangNode',
 	'game/components/common/PositionComponent',
 	'game/components/common/RevealedComponent',
-	'game/components/common/CampComponent',
 	'game/components/common/VisitedComponent',
+	'game/components/common/CampComponent',
 	'game/components/type/LevelComponent',
 	'game/components/type/GangComponent',
 	'game/components/sector/SectorStatusComponent',
@@ -58,8 +58,8 @@ define([
 	GangNode,
 	PositionComponent,
 	RevealedComponent,
-	CampComponent,
 	VisitedComponent,
+	CampComponent,
 	LevelComponent,
 	GangComponent,
 	SectorStatusComponent,
@@ -120,6 +120,14 @@ define([
 				if (levelPosition.level === level) return node.entity;
 			}
 			return null;
+		},
+
+		isVisited: function (entity) {
+			if (typeof(entity) == "number") 
+				entity = this.getLevelEntityForPosition(entity);
+			if (!entity) return false;
+			let levelStatus = entity.get(LevelStatusComponent);
+			return levelStatus.isVisited || entity.has(VisitedComponent) || false;
 		},
 		
 		isLevelTypeRevealed: function (level) {
@@ -215,7 +223,7 @@ define([
 				var hasValidSector = false;
 				for (let i = 0; i < sectors.length; i++) {
 					let pos = sectors[i].get(PositionComponent);
-					let visited = sectors[i].has(VisitedComponent);
+					let visited = GameGlobals.sectorHelper.isVisited(sectors[i]);
 					let canExplore = GameGlobals.sectorHelper.canExploreSector(sectors[i], itemsComponent);
 					if (visited && canExplore) {
 						hasValidSector = true;
@@ -283,7 +291,7 @@ define([
 		
 		hasUsableScavengingSpotsForItem: function (item) {
 			for (let node = this.sectorNodes.head; node; node = node.next) {
-				let visited = node.entity.has(VisitedComponent);
+				let visited = GameGlobals.sectorHelper.isVisited(node.entity);
 				if (!visited) continue;
 				let statusComponent = node.entity.get(SectorStatusComponent);
 				if (!statusComponent.scavenged) continue;
@@ -372,7 +380,7 @@ define([
 				if (!entity) return null;
 				return {
 					position: entity.get(PositionComponent).getPosition(),
-					isVisited: entity.has(VisitedComponent),
+					isVisited: GameGlobals.sectorHelper.isVisited(entity),
 					result: entity
 				};
 			};
@@ -616,13 +624,14 @@ define([
 
 				let statusComponent = node.entity.get(SectorStatusComponent);
 				let featuresComponent = node.entity.get(SectorFeaturesComponent);
+				let isVisited = GameGlobals.sectorHelper.isVisited(node.entity);
 				
 				if (sectorStatus === SectorConstants.MAP_SECTOR_STATUS_VISITED_CLEARED) levelStats.countClearedSectors++;
 				if (statusComponent.scouted) levelStats.countScoutedSectors++;
 				if (statusComponent.scavenged) levelStats.countScavengedSectors++;
 				if (statusComponent.getScavengedPercent() >= 100) levelStats.countFullyScavengedSectors++;
-				if (node.entity.has(VisitedComponent)) levelStats.countVisitedSectors++;
-				if (node.entity.has(RevealedComponent) || node.entity.has(VisitedComponent)) levelStats.countRevealedSectors++;
+				if (isVisited) levelStats.countVisitedSectors++;
+				if (node.entity.has(RevealedComponent) || isVisited) levelStats.countRevealedSectors++;
 				if (GameGlobals.sectorHelper.hasSectorVisibleIngredients(node.entity)) levelStats.countKnownIngredientSectors++;
 				if (GameGlobals.sectorHelper.canBeInvestigated(node.entity)) levelStats.countInvestigatableSectors++;
 				if (node.entity.has(CampComponent)) levelStats.hasCamp = true;

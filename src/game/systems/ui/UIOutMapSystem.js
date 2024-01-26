@@ -18,7 +18,6 @@ define([
 	'game/nodes/PlayerPositionNode',
 	'game/components/common/CampComponent',
 	'game/components/common/PositionComponent',
-	'game/components/common/VisitedComponent',
 	'game/components/sector/EnemiesComponent',
 	'game/components/sector/PassagesComponent',
 	'game/components/sector/SectorControlComponent',
@@ -32,7 +31,7 @@ define([
 	'game/systems/CheatSystem',
 ], function (Ash, FileUtils, MapUtils, GameGlobals, GlobalSignals, GameConstants, ItemConstants, LevelConstants, LocaleConstants, MovementConstants, PositionConstants, SectorConstants, TextConstants, TradeConstants, UIConstants,
 	PlayerLocationNode, PlayerPositionNode,
-	CampComponent, PositionComponent, VisitedComponent, EnemiesComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, SectorImprovementsComponent, WorkshopComponent, ItemsComponent, LevelComponent,
+	CampComponent, PositionComponent, EnemiesComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, SectorImprovementsComponent, WorkshopComponent, ItemsComponent, LevelComponent,
 	CheatSystem) {
 
 	var UIOutMapSystem = Ash.System.extend({
@@ -139,7 +138,7 @@ define([
 			var groundLevel = GameGlobals.gameState.getGroundLevel();
 			var countVisible = 0;
 			for (let i = surfaceLevel; i >= groundLevel; i--) {
-				let isVisible = GameGlobals.uiMapHelper.isMapRevealed || GameGlobals.levelHelper.getLevelEntityForPosition(i).has(VisitedComponent);
+				let isVisible = GameGlobals.uiMapHelper.isMapRevealed || GameGlobals.levelHelper.isVisited(i);
 				let $elem = $("#map-level-selector-level-" + i);
 				let levelStats = GameGlobals.levelHelper.getLevelStats(i);
 				let isCleared = levelStats.percentClearedSectors >= 1;
@@ -256,7 +255,7 @@ define([
 			if (hasSector) {
 				let statusComponent = this.selectedSector.get(SectorStatusComponent);
 				var isScouted = statusComponent.scouted;
-				var isVisited = this.selectedSector.has(VisitedComponent);
+				var isVisited = GameGlobals.sectorHelper.isVisited(this.selectedSector);
 				var sectorFeatures = this.selectedSector.get(SectorFeaturesComponent);
 				var features = GameGlobals.sectorHelper.getTextFeatures(this.selectedSector);
 				var header = isVisited ? TextConstants.getSectorName(isScouted, features) : "Sector";
@@ -688,7 +687,7 @@ define([
 		},
 		
 		getEnvironmentHTML: function (sector, isScouted) {
-			let isVisited = sector.has(VisitedComponent);
+			let isVisited = GameGlobals.sectorHelper.isVisited(sector);
 			if (!isVisited) return "?";
 			let result = [];
 			let featuresComponent = sector.get(SectorFeaturesComponent);
@@ -717,7 +716,7 @@ define([
 		},
 		
 		getMiscHTML: function (sector, isScouted) {
-			let isVisited = sector.has(VisitedComponent);
+			let isVisited = GameGlobals.sectorHelper.isVisited(sector);
 			if (!isVisited) return "?";
 			let result = [];
 			

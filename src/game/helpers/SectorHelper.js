@@ -12,8 +12,8 @@ define([
 	'game/nodes/PlayerLocationNode',
 	'game/components/common/CampComponent',
 	'game/components/common/PositionComponent',
-	'game/components/common/VisitedComponent',
 	'game/components/common/RevealedComponent',
+	'game/components/common/VisitedComponent',
 	'game/components/sector/SectorControlComponent',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/SectorFeaturesComponent',
@@ -33,8 +33,8 @@ define([
 	PlayerLocationNode,
 	CampComponent,
 	PositionComponent,
-	VisitedComponent,
 	RevealedComponent,
+	VisitedComponent,
 	SectorControlComponent,
 	SectorStatusComponent,
 	SectorFeaturesComponent,
@@ -59,6 +59,12 @@ define([
 			if (this.playerLocationNodes && this.playerLocationNodes.head) return this.playerLocationNodes.head.entity;
 			if (this.sectorNodes.head) return this.sectorNodes.head.entity;
 			return null;
+		},
+
+		isVisited: function (sector) {
+			if (!sector) return false;
+			let statusComponent = sector.get(SectorStatusComponent);
+			return statusComponent.visited || sector.has(VisitedComponent);
 		},
 		
 		getTextFeatures: function (sector) {
@@ -315,7 +321,7 @@ define([
 				return SectorConstants.MAP_SECTOR_STATUS_REVEALED_BY_MAP;
 			}
 			
-			var isVisited = sector.has(VisitedComponent);
+			var isVisited = this.isVisited(sector);
 			if (isVisited) {
 				return SectorConstants.MAP_SECTOR_STATUS_VISITED_UNSCOUTED;
 			} else {
