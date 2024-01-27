@@ -26,7 +26,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 		graffiti: null,
 		isFallbackInvestigateSector: false,
 		
-		scoutedTimestamp: 0, // seconds 
+		scoutedTimestamp: 0, // seconds (DEPRECATED - See LevelStatusSystem)
 		
 		glowStickSeconds: -100, // not saved
 		hazardReduction: null, // not saved
@@ -148,9 +148,9 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 				copy.dR = this.discoveredResources;
 			if (this.discoveredItems.length > 0)
 				copy.dI = this.discoveredItems;
-			if (this.visited) 
+			if (this.visited && !this.scouted && !this.scavenged) 
 				copy.v = this.visited ? 1 : 0;
-			if (this.scavenged)
+			if (this.scavenged && !this.weightedNumScavenges)
 				copy.sc = this.scavenged ? 1 : 0;
 			if (this.investigated)
 				copy.i = this.investigated ? 1 : 0;
@@ -173,7 +173,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			if (this.gapBridgedDirections && this.gapBridgedDirections.length > 0)
 				copy.bd = this.gapBridgedDirections;
 			if (this.weightedNumScavenges)
-				copy.sw = Math.round(this.weightedNumScavenges * 1000)/1000;
+				copy.sw = Math.round(this.weightedNumScavenges * 100)/100;
 			if (this.weightedNumHeapScavenges)
 				copy.shw = Math.round(this.weightedNumHeapScavenges * 1000)/1000;
 			if (this.weightedNumInvestigates)
@@ -210,6 +210,18 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			this.stashesFound = componentValues.sf ? componentValues.sf : 0;
 			this.graffiti = componentValues.g ? componentValues.g : null;
 			this.isFallbackInvestigateSector = componentValues.fis ? true : false;
+
+			if (this.scouted) {
+				this.visited = true;
+			}
+
+			if (this.scavenged) {
+				this.visited = true;
+			}
+
+			if (this.weightedNumScavenges) {
+				this.scavenged = true;
+			}
 		}
 
 	});

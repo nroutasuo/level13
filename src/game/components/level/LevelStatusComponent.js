@@ -4,10 +4,12 @@ define(['ash'], function (Ash) {
 		
 		isVisited: false,
 		isLevelTypeRevealed: false,
+		firstScoutedSectorByFeature: {},
 		
 		constructor: function () {
 			this.isVisited = false;
 			this.isLevelTypeRevealed = false;
+			this.firstScoutedSectorByFeature = {};
 		},
 
 		getSaveKey: function () {
@@ -18,12 +20,14 @@ define(['ash'], function (Ash) {
 			let result = {};
 			if (this.isVisited) result.isVisited = true;
 			if (this.isLevelTypeRevealed) result.isLevelTypeRevealed = true;
+			if (Object.keys(this.firstScoutedSectorByFeature).length > 0) result.firstScoutedSectorByFeature = this.firstScoutedSectorByFeature;
 			return result;
 		},
 
 		customLoadFromSave: function (componentValues) {
 			this.isVisited = componentValues.isVisited || false;
 			this.isLevelTypeRevealed = componentValues.isLevelTypeRevealed || false;
+			this.firstScoutedSectorByFeature = componentValues.firstScoutedSectorByFeature || {};
 		}
 	});
 

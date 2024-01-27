@@ -725,13 +725,12 @@ define(['ash',
 			let successCallback = function () {
 				GameGlobals.gameState.stats.numTimesScouted++;
 				sectorStatus.scouted = true;
-				sectorStatus.scoutedTimestamp = new Date().getTime() / 1000;
 				
 				if (logMsg) {
 					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), logMsg);
 				}
 				
-				GlobalSignals.sectorScoutedSignal.dispatch();
+				GlobalSignals.sectorScoutedSignal.dispatch(sector);
 				GameGlobals.playerActionFunctions.completeAction("scout");
 				GameGlobals.playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 				GameGlobals.playerActionFunctions.save();

@@ -114,6 +114,8 @@ define([
 		},
 
 		getLevelEntityForPosition: function (level) {
+			if (!level) return null;
+			level = parseInt(level);
 			var levelPosition;
 			for (var node = this.levelNodes.head; node; node = node.next) {
 				levelPosition = node.entity.get(PositionComponent);
@@ -178,6 +180,11 @@ define([
 			this.sectorEntitiesByPosition[level][sectorX][sectorY] = null;
 
 			return null;
+		},
+
+		getSectorBySectorId: function (level, sectorId) {
+			let parts = sectorId.split(".");
+			return this.getSectorByPosition(level, parts[0], parts[1]);
 		},
 		
 		getSectorsAround: function (position, radius) {
@@ -1127,21 +1134,14 @@ define([
 		},
 		
 		getFirstScoutedSectorWithFeatureOnLevel: function (level, feature) {
-			let result = null;
-			let minTimestamp = null;
-				
-			for (let i = 0; i < this.sectorEntitiesByLevel[level].length; i++) {
-				var sector = this.sectorEntitiesByLevel[level][i];
-				if (!this.isScoutedSectorWithFeature(sector, feature)) continue;
-				
-				let timestamp = sector.get(SectorStatusComponent).scoutedTimestamp;
-				if (!minTimestamp || minTimestamp > timestamp) {
-					result = sector;
-					minTimestamp = timestamp;
-				}
-			}
+			let entity = this.getLevelEntityForPosition(level);
+			let levelStatus = entity.get(LevelStatusComponent);
+
+			let sectorId = levelStatus.firstScoutedSectorByFeature[feature];
+
+			if (!sectorId) return null;
 			
-			return result;
+			return this.getSectorBySectorId(level, sectorId);
 		},
 		
 		isFirstScoutedSectorWithFeatureOnLevel: function (sector, feature) {

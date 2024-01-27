@@ -13,6 +13,7 @@ define([
 	'game/components/sector/PassagesComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/SectorFeaturesComponent',
+	'game/components/sector/SectorStatusComponent',
 	'game/components/type/LevelComponent'
 ], function (Ash,
 		GameGlobals,
@@ -27,6 +28,7 @@ define([
 		PassagesComponent,
 		SectorImprovementsComponent,
 		SectorFeaturesComponent,
+		SectorStatusComponent,
 		LevelComponent) {
 
 	let LevelStatusSystem = Ash.System.extend({
@@ -37,6 +39,8 @@ define([
 		sectorNodes: null,
 		playerLocationNodes: null,
 
+		featuresToSaveFirstScoutedSectorFor: [ "hasTradeConnectorSpot", "campable" ],
+
 		constructor: function () { },
 
 		addToEngine: function (engine) {
@@ -45,7 +49,7 @@ define([
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			
 			GlobalSignals.add(this, GlobalSignals.gameStateReadySignal, this.updateAll);
-			GlobalSignals.add(this, GlobalSignals.sectorScoutedSignal, this.updateAllLevels);
+			GlobalSignals.add(this, GlobalSignals.sectorScoutedSignal, this.onSectorScouted);
 			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.updateAllPassages);
 			GlobalSignals.add(this, GlobalSignals.campBuiltSignal, this.updateAllLevels);
 			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.onPlayerPositionChanged);
@@ -74,6 +78,8 @@ define([
 					if (shouldBeRevealed) this.revealLevelType(level);
 				}
 			}
+
+			this.updateFirstScoutedSectorsForOldSaves();
 		},
 
 		updateAllPassages: function () {
@@ -125,6 +131,54 @@ define([
 			GameGlobals.playerHelper.addLogMessage(this.getLevelTypeRevealedLogMessage(level));
 			
 			GlobalSignals.levelTypeRevealedSignal.dispatch(level);
+		},
+
+		registerScoutedFeatures: function (sector) {
+			let position = sector.get(PositionComponent);
+			let sectorFeatures = sector.get(SectorFeaturesComponent);
+			let levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(position);
+			let levelStatus = levelEntity.get(LevelStatusComponent);
+			for (let i in this.featuresToSaveFirstScoutedSectorFor) {
+				let feature = this.featuresToSaveFirstScoutedSectorFor[i];
+				if (levelStatus.firstScoutedSectorByFeature[feature]) continue;
+				if (!GameGlobals.levelHelper.isScoutedSectorWithFeature(sector, feature)) continue;
+				levelStatus.firstScoutedSectorByFeature[feature] = position.sectorId();
+			}
+		},
+
+		updateFirstScoutedSectorsForOldSaves: function () {
+			// this is for backwards compatibility with saves for 0.5.2 and earlier 
+			// (using time stamps on sectors rather than LevelStatusComponent.firstScoutedSectorByFeature)
+			// TODO remove at some point
+			let firstScoutedSectorByLevelAndFeature = {};
+			for (let node = this.sectorNodes.head; node; node = node.next) {
+				let level = node.position.level;
+				let sectorStatus = node.entity.get(SectorStatusComponent);
+				if (!sectorStatus.scoutedTimestamp) continue;
+				for (let i in this.featuresToSaveFirstScoutedSectorFor) {
+					let feature = this.featuresToSaveFirstScoutedSectorFor[i];
+					if (!GameGlobals.levelHelper.isScoutedSectorWithFeature(node.entity, feature)) continue;
+					if (!firstScoutedSectorByLevelAndFeature[level]) firstScoutedSectorByLevelAndFeature[level] = {};
+					let scoutedTimestamp = sectorStatus.scoutedTimestamp;
+					if (!firstScoutedSectorByLevelAndFeature[level][feature] || scoutedTimestamp < firstScoutedSectorByLevelAndFeature[level][feature].timestamp) {
+						firstScoutedSectorByLevelAndFeature[level][feature] = { entity: node.entity, timestamp: scoutedTimestamp };
+					}
+				}
+				sectorStatus.scoutedTimestamp = null;
+			}
+
+			for (let level in firstScoutedSectorByLevelAndFeature) {
+				let levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(level);
+				let levelStatus = levelEntity.get(LevelStatusComponent);
+				for (let feature in firstScoutedSectorByLevelAndFeature[level]) {
+					levelStatus.firstScoutedSectorByFeature[feature] = firstScoutedSectorByLevelAndFeature[level][feature].entity.get(PositionComponent).sectorId();
+				}
+			}
+		},
+
+		onSectorScouted: function (sector) {
+			this.updateAllLevels();
+			this.registerScoutedFeatures(sector);
 		},
 		
 		onPlayerPositionChanged: function () {
