@@ -65,6 +65,7 @@ function (Ash, GameGlobals, LogConstants, LogMessageVO) {
 			if (newMsg.logMsgID !== prevMsg.logMsgID) return false;
 			if (newMsg.contextLevel !== prevMsg.contextLevel) return false;
 			if (newMsg.contextInCamp !== prevMsg.contextInCamp) return false;
+			if (!prevMsg.createText) return false;
 			return true;
 		},
 
