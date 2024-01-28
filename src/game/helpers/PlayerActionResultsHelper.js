@@ -1671,7 +1671,7 @@ define([
 				for (let i = 0; i < numItems; i++) {
 					let itemi = Math.floor(Math.random() * itemList.length);
 					let selectedItem = itemList[itemi];
-					let breakProbability = this.getItemBreakProbability(action, item);
+					let breakProbability = this.getItemBreakProbability(action, selectedItem);
 					let isBreak = Math.random() < breakProbability;
 					
 					if (isBreak) {
@@ -1763,6 +1763,7 @@ define([
 
 		// probability (0-1) that an item will break (rather than be lost), used when item has already been selected for lose/break to choose which
 		getItemBreakProbability: function (action, item) {
+			if (!item) return 0;
 			let isFight = action == "fight";
 			let isDespair = action == "despair";
 			
