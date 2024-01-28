@@ -534,7 +534,7 @@ function (Ash, ItemVO, ItemConstants) {
 
 					for (let i = 0; i < num; i++) {
 						let item = definition.clone();
-						component.addItem(item, true);
+						component.addItem(item, carried);
 					}
 				}
 			};

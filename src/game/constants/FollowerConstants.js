@@ -1,12 +1,14 @@
 define(['ash',
 	'utils/MathUtils',
 	'game/vos/FollowerVO',
+	'game/vos/LocaleVO',
 	'game/constants/CultureConstants',
 	'game/constants/ItemConstants',
 	'game/constants/WorldConstants'
 ], function (Ash,
 	MathUtils,
 	FollowerVO,
+	LocaleVO,
 	CultureConstants,
 	ItemConstants,
 	WorldConstants
