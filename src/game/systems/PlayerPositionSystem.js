@@ -196,7 +196,7 @@ define([
 			
 			sector.add(new CurrentPlayerLocationComponent());
 			
-			if (GameGlobals.sectorHelper.isVisited(sector)) {
+			if (!GameGlobals.sectorHelper.isVisited(sector)) {
 				this.handleNewSector(sector, true);
 			}
 			
