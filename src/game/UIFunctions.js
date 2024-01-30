@@ -1223,6 +1223,12 @@ define(['ash',
 				return (($element).is(":visible"));
 			},
 
+			updateText: function ($elem, text) {
+				let current = $elem.text();
+				if (current == text) return;
+				$elem.text(text);
+			},
+
 			stopButtonCooldown: function (button) {
 				$(button).children(".cooldown-action").stop(true, true);
 				$(button).attr("data-hasCooldown", "false");

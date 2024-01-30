@@ -222,12 +222,12 @@
 			let reqRepNext = CampConstants.getRequiredReputation(Math.floor(campComponent.population) + 1);
 			let isReputationBlocking = reqRepNext < reputation;
 
-			$("#in-population-next").text(populationChangePerSecWithoutCooldown >= 0 ? "Next worker:" : "Worker leaving:");
-			$("#in-population-reputation").text("Reputation required: " + reqRepCur + " (current) " + reqRepNext + " (next)");
-			$("#in-population h3").text("Population: " + Math.floor(campComponent.population) + " / " + (maxPopulation));
-			$("#in-population #in-population-status span").text("Unassigned workers: " + freePopulation);
-			$("#in-population #in-population-autoassigned").text("Auto-assigned workers: " + autoAssignedWorkersText);
-			$("#in-population #in-population-robots .value").text(Math.floor(robots) + " / " + maxRobots);
+			GameGlobals.uiFunctions.updateText($("#in-population-next"), populationChangePerSecWithoutCooldown >= 0 ? "Next worker:" : "Worker leaving:");
+			GameGlobals.uiFunctions.updateText($("#in-population-reputation"), "Reputation required: " + reqRepCur + " (current) " + reqRepNext + " (next)");
+			GameGlobals.uiFunctions.updateText($("#in-population h3"), "Population: " + Math.floor(campComponent.population) + " / " + (maxPopulation));
+			GameGlobals.uiFunctions.updateText($("#in-population #in-population-status span"), "Unassigned workers: " + freePopulation);
+			GameGlobals.uiFunctions.updateText($("#in-population #in-population-autoassigned"), "Auto-assigned workers: " + autoAssignedWorkersText);
+			GameGlobals.uiFunctions.updateText($("#in-population #in-population-robots .value"), Math.floor(robots) + " / " + maxRobots);
 
 			GameGlobals.uiFunctions.toggle($("#unassigned-workers-bubble"), freePopulation > 0);
 			

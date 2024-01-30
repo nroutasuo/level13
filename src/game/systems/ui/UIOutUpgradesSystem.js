@@ -33,25 +33,28 @@ define([
 			this.tribeNodes = engine.getNodeList(TribeUpgradesNode);
 			this.lastUpdateUpgradeCount = 0;
 			GameGlobals.uiTechTreeHelper.enableScrolling(this.vis);
+			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
 			GlobalSignals.add(this, GlobalSignals.blueprintsChangedSignal, this.onBlueprintsChanged);
 			GlobalSignals.add(this, GlobalSignals.upgradeUnlockedSignal, this.onUpgradeUnlocked);
 		},
 
 		removeFromEngine: function (engine) {
+			GlobalSignals.removeAll(this);
 			this.engine = null;
 			this.tribeNodes = null;
-			GlobalSignals.removeAll(this);
 		},
 
 		update: function (time) {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (!GameGlobals.gameState.uiStatus.isInCamp) return;
-			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.upgrades;
 
 			this.updateBubble();
-			// TODO performance bottleneck (GC rrelated to update status check)
-			this.updateUpgradesLists(isActive);
+		},
+
+		slowUpdate: function (time) {
+			let isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.upgrades;
+			this.updateUpgradeCounts(isActive);
 		},
 		
 		refresh: function () {
@@ -76,13 +79,12 @@ define([
 			this.bubbleNumber = newBubbleNumber;
 		},
 
-		updateUpgradesLists: function (isActive) {
+		updateUpgradeCounts: function (isActive) {
 			this.numCurrentNewBlueprints = 0;
 			this.numCurrentResearchableUpgrades = 0;
 
-			var status;
-			for (var id in UpgradeConstants.upgradeDefinitions) {
-				status = GameGlobals.tribeHelper.getUpgradeStatus(id);
+			for (let id in UpgradeConstants.upgradeDefinitions) {
+				let status = GameGlobals.tribeHelper.getUpgradeStatus(id);
 				switch (status) {
 					case UpgradeConstants.upgradeStatus.BLUEPRINT_USABLE:
 						this.numCurrentNewBlueprints++;
@@ -205,7 +207,7 @@ define([
 		onBlueprintsChanged: function () {
 			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.upgrades;
 			if (isActive) this.refresh();
-			else this.updateUpgradesLists(false, false);
+			else this.updateUpgradeCounts(false);
 		},
 		
 		getUpgradeTR: function (upgradeDefinition, status) {
