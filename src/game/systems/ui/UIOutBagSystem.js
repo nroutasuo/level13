@@ -293,7 +293,7 @@ define([
 		},
 
 		updateUseItems: function () {
-			let items = this.getOwnedItems();
+			let items = this.getAvailableItems();
 
 			items = items.sort(UIConstants.sortItemsByType);
 			items = items.filter(item => this.isUsable(item));
@@ -788,6 +788,12 @@ define([
 		getOwnedItems: function () {
 			let itemsComponent = this.itemNodes.head.items;
 			return itemsComponent.getAll(true);
+		},
+
+		getAvailableItems: function () {
+			let inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
+			let itemsComponent = this.itemNodes.head.items;
+			return itemsComponent.getAll(inCamp);
 		},
 		
 		getCarriedItems: function () {
