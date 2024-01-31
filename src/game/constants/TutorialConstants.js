@@ -168,7 +168,7 @@ define(['ash'], function (Ash) {
 			TUTORIAL_BUILT_TRADEPOST_1: {
 				triggers: [ "action_build" ],
 				repeats: "NEVER",
-				logMessage: "The trading post is ready, but there is no camp to trade with. Need to build another one.",
+				logMessage: "The trading post is ready, but we need to build another one to trade with.",
 				conditions: { tribe: { improvements: { tradepost: [ 1, 2 ] } } }
 			},
 			TUTORIAL_BUILT_TRADEPOST_2: {

@@ -4,11 +4,12 @@ define([
 	'game/GameGlobals', 
 	'game/GlobalSignals', 
 	'game/constants/LogConstants',
+	'game/constants/TextConstants',
 	'game/nodes/LogNode', 
 	'game/nodes/PlayerPositionNode', 
 	'game/constants/UIConstants', 
 	'game/vos/PositionVO'],
-function (Ash, UIList, GameGlobals, GlobalSignals, LogConstants, LogNode, PlayerPositionNode, UIConstants, PositionVO) {
+function (Ash, UIList, GameGlobals, GlobalSignals, LogConstants, TextConstants, LogNode, PlayerPositionNode, UIConstants, PositionVO) {
 
 	var UIOutLogSystem = Ash.System.extend({
 	
@@ -159,7 +160,7 @@ function (Ash, UIList, GameGlobals, GlobalSignals, LogConstants, LogNode, Player
 			li.$root.attr("data-loadedFromSave", data.loadedFromSave);
 			li.$root.attr("data-hasBeenShown", data.hasBeenShown);
 			li.$root.attr("data-markedAsSeen", data.markedAsSeen);
-			li.$spanMsg.text(data.text);
+			li.$spanMsg.text(TextConstants.sentencify(data.text));
 			li.$spanTime.text(UIConstants.getTimeSinceText(data.time) + " ago");
 			li.$spanLevel.toggle(hasPosition);
 			if (hasPosition) li.$spanLevel.text(positionText);
