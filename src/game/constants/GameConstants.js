@@ -30,6 +30,8 @@ define( function () {
 			result += " | ";
 			result += "<a href='https://www.reddit.com/r/level13' target='reddit'>reddit</a>";
 			result += " | ";
+			result += "<a href='https://discord.gg/BzMbATyKph' target='discord'>discord</a>";
+			result += " | ";
 			result += "<a href='mailto:" + a.join("@") + "' rel='noopener noreferrer'>email</a>";
 			return result;
 		}
