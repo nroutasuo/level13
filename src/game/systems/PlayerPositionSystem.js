@@ -147,7 +147,7 @@ define([
 				levelpos = levelNode.level.position;
 				if (levelpos == playerPos.level && !levelNode.entity.has(CurrentPlayerLocationComponent)) {
 					levelNode.entity.add(new CurrentPlayerLocationComponent());
-					if (GameGlobals.levelHelper.isVisited(levelNode.entity)) {
+					if (!GameGlobals.levelHelper.isVisited(levelNode.entity)) {
 						this.handleNewLevel(levelNode, levelpos);
 					}
 				} else if (levelpos != playerPos.level && levelNode.entity.has(CurrentPlayerLocationComponent)) {
