@@ -51,7 +51,7 @@ define(
 			this.ground = features.ground || false;
 			this.surface = features.surface || false;
 			this.hazards = features.hazards || null;
-			this.campable = features.campable || false;
+			this.campable = features.isCamp || false;
 			this.notCampableReason = features.notCampableReason || null;
 			this.resourcesScavengable = features.resourcesScavengable || new ResourcesVO(storageTypes.DEFINITION);
 			this.resourcesCollectable = features.resourcesCollectable || new ResourcesVO(storageTypes.DEFINITION);
