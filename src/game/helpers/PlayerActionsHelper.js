@@ -288,7 +288,7 @@ define([
 			let actionIDParam = this.getActionIDParam(action);
 			let ordinal = this.getActionOrdinal(action, sector);
 			
-			let inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
+			let inCamp = GameGlobals.playerHelper.isInCamp();
 			
 			let movementOptionsComponent = sector.get(MovementOptionsComponent);
 			if (action === "move_level_up" && !movementOptionsComponent.canMoveTo[PositionConstants.DIRECTION_UP])
@@ -809,8 +809,9 @@ define([
 				}
 
 				if (requirements.outgoingcaravan) {
+					let caravansComponent = sector.get(OutgoingCaravansComponent);
+
 					if (typeof requirements.outgoingcaravan.available !== "undefined") {
-						var caravansComponent = sector.get(OutgoingCaravansComponent);
 						var requiredValue = requirements.outgoingcaravan.available ? 1 : 0;
 						var totalCaravans = improvementComponent.getCount(improvementNames.stable);
 						var busyCaravans = caravansComponent.outgoingCaravans.length;
@@ -828,6 +829,12 @@ define([
 							else
 								return {value: 0, reason: "Valid selection."};
 						}
+					}
+					if (requirements.outgoingcaravan.active) {
+						let range = requirements.outgoingcaravan.active;
+						let currentVal = caravansComponent.outgoingCaravans.length;
+						let result = this.checkRequirementsRange(range, currentVal, "There are no active caravans", "There is an active caravan.");
+						if (result) return result;
 					}
 				}
 

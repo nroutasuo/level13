@@ -2668,6 +2668,11 @@
             "busy": false,
             "inCamp": false
         },
+        "dismantle_in_stable": {
+            "outgoingcaravan": {
+                "active": [-1, 1]
+            }
+        },
         "dismiss_follower": {
             "inCamp": true
         },
