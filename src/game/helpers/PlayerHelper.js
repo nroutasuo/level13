@@ -98,14 +98,14 @@ define([
 			return playerActionComponent.getBusyAction();
 		},
 		
-		moveTo: function (level, sectorX, sectorY, inCamp) {
+		moveTo: function (level, sectorX, sectorY, inCamp, isInstant) {
 			let player = this.playerStatsNodes.head.entity;
 			if (!player) return;
 			if (player.has(MovementComponent)) {
 				log.w("trying to move but already moving");
 				return;
 			}
-			player.add(new MovementComponent(level, sectorX, sectorY, inCamp));
+			player.add(new MovementComponent(level, sectorX, sectorY, inCamp, isInstant));
 		},
 
 		addLogMessageWithParams: function (id, msg, replacements, values) {

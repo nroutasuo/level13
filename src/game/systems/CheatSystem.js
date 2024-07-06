@@ -379,8 +379,8 @@ define(['ash',
 			this.playerStatsNodes.head.stamina.stamina = value;
 		},
 
-		setPlayerPosition: function (lvl, x, y, inCamp) {
-			GameGlobals.playerHelper.moveTo(lvl, x, y, inCamp || false);
+		setPlayerPosition: function (lvl, x, y, inCamp, isInstant) {
+			GameGlobals.playerHelper.moveTo(lvl, x, y, inCamp || false, isInstant);
 		},
 
 		goToLevel: function (level) {

@@ -52,8 +52,7 @@ define([
 			this.pendingMovementTarget = null;
 		},
 		
-		movePlayer: function (position) {
-			let player = this.playerPositionNodes.head.entity;
+		movePlayer: function (position, isInstant) {
 			let playerPositionComponent = this.playerPositionNodes.head.position;
 			let oldPosition = playerPositionComponent.getPosition();
 			let isCampTransition = oldPosition.inCamp != position.inCamp;
@@ -69,48 +68,77 @@ define([
 			let moveDuration = isThemeTransition ? UIConstants.THEME_TRANSITION_DURATION : 50;
 			let blockUI = moveDuration > 100;
 			
+			this.startPlayerMovement(oldPosition, position, blockUI);
+
+			if (isInstant) {
+				this.setPlayerPosition(oldPosition, position, isCampTransition, isCampToCampTransition);
+				this.updateStatsAfterMove(position, oldSector, newSector);
+				this.completePlayerMovement(position, blockUI, isCampTransition);
+				return;
+			}
+
+			let sys = this;
+			
+			setTimeout(() => {
+				this.setPlayerPosition(oldPosition, position, isCampTransition, isCampToCampTransition);
+				this.updateStatsAfterMove(position, oldSector, newSector);
+				
+				setTimeout(() => {
+					sys.completePlayerMovement(position, blockUI, isCampTransition);
+				}, moveDuration / 2);
+			}, moveDuration / 2);
+		},
+
+		startPlayerMovement: function (oldPosition, position, blockUI) {
 			log.i("start player movement from [" + oldPosition + "] to: [" + position + "]", this);
 			this.currentMovementTarget = position;
 			if (blockUI) GameGlobals.gameState.uiStatus.isTransitioning = true;
 			GlobalSignals.playerMoveStartedSignal.dispatch(position);
-			
-			setTimeout(() => {
-				log.i("set player position to: [" + position + "]", this);
-				playerPositionComponent.level = position.level;
-				playerPositionComponent.sectorX = position.sectorX;
-				playerPositionComponent.sectorY = position.sectorY;
+		},
+
+		setPlayerPosition: function (oldPosition, position, isCampTransition, isCampToCampTransition) {
+			let playerPositionComponent = this.playerPositionNodes.head.position;
+
+			log.i("set player position to: [" + position + "]", this);
+			playerPositionComponent.level = position.level;
+			playerPositionComponent.sectorX = position.sectorX;
+			playerPositionComponent.sectorY = position.sectorY;
 				
-				if (isCampTransition) {
-					playerPositionComponent.inCamp = position.inCamp;
-					if (position.inCamp) {
-						this.enterCamp(position);
-					} else {
-						this.leaveCamp(position);
-					}
-				} else if (isCampToCampTransition) {
-					GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.in, {}, true);
+			if (isCampTransition) {
+				playerPositionComponent.inCamp = position.inCamp;
+				if (position.inCamp) {
+					this.enterCamp(position);
+				} else {
+					this.leaveCamp(position);
 				}
+			} else if (isCampToCampTransition) {
+				GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.in, {}, true);
+			}
+			
+			GlobalSignals.playerPositionChangedSignal.dispatch(position, oldPosition);
+			GameGlobals.uiFunctions.onPlayerPositionChanged();
+		},
 
-				let pathToCamp = GameGlobals.playerActionsHelper.getPathToNearestCamp();
-				let distanceToCamp = pathToCamp ? pathToCamp.length : -1;
-				let distanceToCenter = PositionConstants.getDistanceTo(position, new PositionVO(position.level, 0, 0, false));
+		updateStatsAfterMove: function (position, oldSector, newSector) {
+			let pathToCamp = GameGlobals.playerActionsHelper.getPathToNearestCamp();
+			let distanceToCamp = pathToCamp ? pathToCamp.length : -1;
+			let distanceToCenter = PositionConstants.getDistanceTo(position, new PositionVO(position.level, 0, 0, false));
 
-				GameGlobals.gameState.increaseGameStatHighScore("mostDistantSectorFromCampVisited", position, distanceToCamp);
-				GameGlobals.gameState.increaseGameStatHighScore("mostDistantSectorFromCenterVisited", position, distanceToCenter);
-				if (newSector.get(SectorFeaturesComponent).sunlit) GameGlobals.playerActionFunctions.unlockFeature("sunlight");
-				
-				GlobalSignals.playerPositionChangedSignal.dispatch(position, oldPosition);
-				GameGlobals.uiFunctions.onPlayerPositionChanged();
-				
-				setTimeout(() => {
-					log.i("finish player movement to: [" + position + "]", this);
-					player.remove(MovementComponent);
-					this.currentMovementTarget = null;
-					if (blockUI) GameGlobals.gameState.uiStatus.isTransitioning = false;
-					GlobalSignals.playerMoveCompletedSignal.dispatch(position);
-					if (isCampTransition) GlobalSignals.saveGameSignal.dispatch(GameConstants.SAVE_SLOT_DEFAULT, false);
-				}, moveDuration / 2);
-			}, moveDuration / 2);
+			GameGlobals.gameState.increaseGameStatHighScore("mostDistantSectorFromCampVisited", position, distanceToCamp);
+			GameGlobals.gameState.increaseGameStatHighScore("mostDistantSectorFromCenterVisited", position, distanceToCenter);
+			if (newSector.get(SectorFeaturesComponent).sunlit) GameGlobals.playerActionFunctions.unlockFeature("sunlight");
+		},
+
+		completePlayerMovement: function (position, blockUI, isCampTransition) {
+			let player = this.playerPositionNodes.head.entity;
+
+			log.i("finish player movement to: [" + position + "]", this);
+			player.remove(MovementComponent);
+			this.currentMovementTarget = null;
+
+			if (blockUI) GameGlobals.gameState.uiStatus.isTransitioning = false;
+			GlobalSignals.playerMoveCompletedSignal.dispatch(position);
+			if (isCampTransition) GlobalSignals.saveGameSignal.dispatch(GameConstants.SAVE_SLOT_DEFAULT, false);
 		},
 		
 		enterCamp: function (position) {			
@@ -161,6 +189,12 @@ define([
 			
 			if (this.currentMovementTarget != null) {
 				log.w("tried to move while already moving: " + position);
+				return;
+			}
+
+			let isInstant = node.movement.isInstant;
+			if (isInstant) {
+				this.movePlayer(position, true);
 				return;
 			}
 			
