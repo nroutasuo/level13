@@ -126,6 +126,8 @@ define(['ash',
 					});
 					uiFunctions.showInfoPopup("Level 13", uiFunctions.getGameInfoDiv(), null, null, null, true, true);
 				});
+				$("#out-action-fight-close").click(this.onMetaButtonClicked);
+				$("#out-action-fight-continue").click(this.onMetaButtonClicked);
 
 				$("#in-assign-workers input.amount").change(function (e) {
 					var assignment = {};
@@ -929,6 +931,17 @@ define(['ash',
 				return result;
 			},
 
+			onMetaButtonClicked: function (e) {
+				let $btn = $(button.target);
+				let id = $btn.attr("id");
+
+				if (id == "out-action-fight-close") {
+					GameGlobals.fightHelper.endFight(false, false);
+				} else if (id == "out-action-fight-continue") {
+					GameGlobals.fightHelper.endFight(false, false);
+				}
+			},
+
 			onActionButtonClicked: function (button) {
 				var uiFunctions = this;
 				var gameState = GameGlobals.gameState;
@@ -943,10 +956,6 @@ define(['ash',
 
 				if (id == "out-action-fight-confirm") {
 					GameGlobals.fightHelper.startFight();
-				} else if  (id == "out-action-fight-close") {
-					GameGlobals.fightHelper.endFight(false, false);
-				} else if  (id == "out-action-fight-continue") {
-					GameGlobals.fightHelper.endFight(false, false);
 				} else if  (id == "out-action-fight-takeselected") {
 					GameGlobals.fightHelper.endFight(false, false);
 				} else if  (id == "out-action-fight-takeall") {
