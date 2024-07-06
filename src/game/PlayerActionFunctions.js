@@ -881,6 +881,7 @@ define(['ash',
 				msgFlee: "Fled the " + name + ".",
 				msgDefeat: "Got driven out of the " + name + ".",
 				addToLog: true,
+				logVisibility: LogConstants.MGS_VISIBILITY_LEVEL,
 			};
 
 			this.handleOutActionResults(action, messages, true, true, successCallback);
@@ -1088,7 +1089,11 @@ define(['ash',
 				if (collected) {
 					let messages2 = GameGlobals.playerActionResultsHelper.getResultMessagesAfterSelection(rewards);
 					
-					if (messages.addToLog && logMsg) GameGlobals.playerHelper.addLogMessage(logMsgId, logMsg);
+					if (messages.addToLog && logMsg) {
+						let logMsgOptions = {};
+						if (messages.logVisibility) options.visibility = messages.logVisibility;
+						GameGlobals.playerHelper.addLogMessage(logMsgId, logMsg, logMsgOptions);
+					}
 					playerActionFunctions.logResultMessages(messages1);
 					playerActionFunctions.logResultMessages(messages2);
 					playerActionFunctions.forceTabUpdate();
