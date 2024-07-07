@@ -4,7 +4,9 @@ define([
 	'game/constants/PlayerActionConstants',
 	'game/constants/TribeConstants',
 	'game/constants/UpgradeConstants',
+	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/sector/CampNode',
+	'game/components/player/HopeComponent',
 	'game/nodes/tribe/TribeUpgradesNode'
 ], function (
 	Ash,
@@ -12,7 +14,9 @@ define([
 	PlayerActionConstants,
 	TribeConstants,
 	UpgradeConstants,
+	PlayerStatsNode,
 	CampNode,
+	HopeComponent,
 	TribeUpgradesNode
 ) {
 	
@@ -20,10 +24,16 @@ define([
 		
 		tribeUpgradesNodes: null,
 		campNodes: null,
+		plyerStatsNodes: null,
 
 		constructor: function (engine) {
 			this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
 			this.campNodes = engine.getNodeList(CampNode);
+			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
+		},
+
+		hasDeity: function () {
+			return this.playerStatsNodes.head.entity.has(HopeComponent);
 		},
 		
 		hasUpgrade: function (upgradeID) {
@@ -113,9 +123,9 @@ define([
 			return currentMilestone.maxRumours || -1;
 		},
 		
-		getCurrentFavourLimit: function () {
+		getCurrentHopeLimit: function () {
 			let currentMilestone = this.getCurrentMilestone();
-			return currentMilestone.maxFavour || -1;
+			return currentMilestone.maxHope || -1;
 		},
 		
 		getCurrentInsightLimit: function () {

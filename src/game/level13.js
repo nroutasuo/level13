@@ -52,7 +52,7 @@ define([
 	'game/systems/EvidenceSystem',
 	'game/systems/EndingSystem',
 	'game/systems/ExcursionSystem',
-	'game/systems/FavourSystem',
+	'game/systems/HopeSystem',
 	'game/systems/GlobalResourcesSystem',
 	'game/systems/GlobalResourcesResetSystem',
 	'game/systems/InsightSystem',
@@ -117,7 +117,7 @@ define([
 	EvidenceSystem,
 	EndingSystem,
 	ExcursionSystem,
-	FavourSystem,
+	HopeSystem,
 	GlobalResourcesSystem,
 	GlobalResourcesResetSystem,
 	InsightSystem,
@@ -227,7 +227,7 @@ define([
 			this.engine.addSystem(new ReputationSystem(), SystemPriorities.update);
 			this.engine.addSystem(new RumourSystem(), SystemPriorities.update);
 			this.engine.addSystem(new EvidenceSystem(), SystemPriorities.update);
-			this.engine.addSystem(new FavourSystem(), SystemPriorities.update);
+			this.engine.addSystem(new HopeSystem(), SystemPriorities.update);
 			this.engine.addSystem(new InsightSystem(), SystemPriorities.update);
 			this.engine.addSystem(new PlayerActionSystem(), SystemPriorities.update);
 			this.engine.addSystem(new PlayerMovementSystem(), SystemPriorities.update);

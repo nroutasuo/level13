@@ -33,7 +33,7 @@ define([
 	'game/components/player/BagComponent',
 	'game/components/player/ExcursionComponent',
 	'game/components/player/ItemsComponent',
-	'game/components/player/DeityComponent',
+	'game/components/player/HopeComponent',
 	'game/components/sector/FightComponent',
 	'game/components/sector/OutgoingCaravansComponent',
 	'game/components/sector/PassagesComponent',
@@ -54,7 +54,7 @@ define([
 	ImprovementConstants, ItemConstants, BagConstants, MovementConstants, UpgradeConstants, PerkConstants, TextConstants,
 	TradeConstants, UIConstants, WorldConstants, PlayerActionResultNode, PlayerStatsNode, PlayerResourcesNode,
 	PlayerLocationNode, TribeUpgradesNode, NearestCampNode, LevelComponent, PositionComponent, ResourcesComponent,
-	PlayerActionComponent, BagComponent, ExcursionComponent, ItemsComponent, DeityComponent, FightComponent,
+	PlayerActionComponent, BagComponent, ExcursionComponent, ItemsComponent, HopeComponent, FightComponent,
 	OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent, SectorControlComponent, SectorFeaturesComponent,
 	SectorStatusComponent, SectorLocalesComponent, SectorImprovementsComponent, TraderComponent, RaidComponent,
 	CampComponent, ResourcesVO, ImprovementVO
@@ -116,13 +116,13 @@ define([
 				} else if (costName === "rumours") {
 					this.playerStatsNodes.head.rumours.value -= costAmount;
 					result.rumours = costAmount;
-				} else if (costName === "favour") {
-					var deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
-					if (deityComponent) {
-						deityComponent.favour -= costAmount;
-						result.favour = costAmount;
+				} else if (costName === "hope") {
+					var hopeComponent = this.playerStatsNodes.head.entity.get(HopeComponent);
+					if (hopeComponent) {
+						hopeComponent.hope -= costAmount;
+						result.hope = costAmount;
 					} else {
-						log.w("Trying to deduct favour cost but there's no deity component!");
+						log.w("Trying to deduct hope cost but there's no hope component!");
 					}
 				} else if (costName === "evidence") {
 					this.playerStatsNodes.head.evidence.value -= costAmount;
@@ -320,7 +320,7 @@ define([
 					if (!requirements) requirements = {};
 					requirements.health = Math.ceil(costs.stamina / PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR);
 				}
-				if (costs.favour && !GameGlobals.gameState.unlockedFeatures.favour) {
+				if (costs.hope && !GameGlobals.gameState.unlockedFeatures.hope) {
 					reason = "Required Deity.";
 					return { value: 0, reason: reason };
 				}
@@ -368,7 +368,7 @@ define([
 			let playerMaxVision = this.playerStatsNodes.head.vision.maximum;
 			let playerPerks = this.playerStatsNodes.head.perks;
 			let playerStamina = this.playerStatsNodes.head.stamina.stamina;
-			let deityComponent = this.playerResourcesNodes.head.entity.get(DeityComponent);
+			let hopeComponent = this.playerResourcesNodes.head.entity.get(HopeComponent);
 			
 			var positionComponent = sector.get(PositionComponent);
 			var improvementComponent = sector.get(SectorImprovementsComponent);
@@ -453,7 +453,7 @@ define([
 				}
 
 				if (requirements.deity) {
-					if (!deityComponent) {
+					if (!hopeComponent) {
 						return { value: 0, reason: "Deity required." };
 					}
 				}
@@ -1225,14 +1225,14 @@ define([
 						}
 					}
 					
-					if (typeof requirements.tribe.favourFull != "undefined") {
-						let requiredValue = requirements.tribe.favourFull;
-						let currentValue = deityComponent.favour >= deityComponent.maxFavour;
+					if (typeof requirements.tribe.hopeFull != "undefined") {
+						let requiredValue = requirements.tribe.hopeFull;
+						let currentValue = hopeComponent.hope >= hopeComponent.maxHope;
 						if (requiredValue !== currentValue) {
 							if (currentValue) {
-								return { value: 0, reason: "Maximum favour" };
+								return { value: 0, reason: "Maximum hope" };
 							} else {
-								return { value: 0, reason: "Requires maximum favour" };
+								return { value: 0, reason: "Requires maximum hope" };
 							}
 						}
 					}
@@ -1441,9 +1441,9 @@ define([
 					case "rumours":
 						return this.playerStatsNodes.head.rumours.value;
 
-					case "favour":
-						var favour = this.playerStatsNodes.head.entity.has(DeityComponent) ? this.playerStatsNodes.head.entity.get(DeityComponent).favour : 0;
-						return favour;
+					case "hope":
+						var hope = this.playerStatsNodes.head.entity.has(HopeComponent) ? this.playerStatsNodes.head.entity.get(HopeComponent).hope : 0;
+						return hope;
 
 					case "evidence":
 						return this.playerStatsNodes.head.evidence.value;
@@ -1477,9 +1477,9 @@ define([
 					case "rumours":
 						return this.playerStatsNodes.head.rumours.accumulation;
 
-					case "favour":
-						var favour = this.playerStatsNodes.head.entity.has(DeityComponent) ? this.playerStatsNodes.head.entity.get(DeityComponent).accumulation : 0;
-						return favour;
+					case "hope":
+						var hope = this.playerStatsNodes.head.entity.has(HopeComponent) ? this.playerStatsNodes.head.entity.get(HopeComponent).accumulation : 0;
+						return hope;
 
 					case "evidence":
 						return this.playerStatsNodes.head.evidence.accumulation;
@@ -1538,10 +1538,10 @@ define([
 					case "insight":
 						return this.playerStatsNodes.head.insight.maxValue / costs.insight;
 						
-					case "favour":
-						let deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
-						let hasDeity = deityComponent != null;
-						return hasDeity ? (deityComponent.maxFavour / costs.favour) : 0;
+					case "hope":
+						let hopeComponent = this.playerStatsNodes.head.entity.get(HopeComponent);
+						let hasDeity = hopeComponent != null;
+						return hasDeity ? (hopeComponent.maxHope / costs.hope) : 0;
 
 					case "blueprint":
 						return 1;
@@ -1827,7 +1827,7 @@ define([
 					let upgradeID = action.replace(baseActionID + "_", "");
 					let type = UpgradeConstants.getUpgradeType(upgradeID);
 					requirements.blueprintpieces = upgradeID;
-					if (type == UpgradeConstants.UPGRADE_TYPE_FAVOUR) {
+					if (type == UpgradeConstants.UPGRADE_TYPE_HOPE) {
 						if (upgradeID != "unlock_building_greenhouse") {
 							requirements.workers = {};
 							requirements.workers.cleric = [1, -1];
@@ -2170,7 +2170,7 @@ define([
 
 		isAccumulatingCost: function (costName, ignorePlayerState) {
 			if (costName === "rumours") return true;
-			if (costName === "favour") return ignorePlayerState || GameGlobals.gameState.unlockedFeatures.favour;
+			if (costName === "hope") return ignorePlayerState || GameGlobals.gameState.unlockedFeatures.hope;
 			if (costName === "evidence") return true;
 			let costNameParts = costName.split("_");
 			if (costNameParts[0] === "resource") return ignorePlayerState || GameGlobals.gameState.unlockedFeatures.camp;

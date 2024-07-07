@@ -200,6 +200,13 @@ function (Ash, ItemData, PlayerActionConstants, ItemVO) {
 			return longID.split(":")[0];
 		},
 
+		getItemIDFromSaved: function (savedItemID) {
+			// converts old item ids to new ones for backwards compatibility
+			let result = savedItemID;
+			result = result.replaceAll("cache_favour", "cache_hope");
+			return result;
+		},
+
 		getItemQualityFromLongID: function (longID) {
 			return longID.split(":")[1];
 		},
@@ -287,7 +294,7 @@ function (Ash, ItemData, PlayerActionConstants, ItemVO) {
 			if (item.id.startsWith("cache_evidence")) return "Read";
 			if (item.id.startsWith("cache_rumours")) return "Read";
 			if (item.id.startsWith("cache_insight")) return "Read";
-			if (item.id.startsWith("cache_favour")) return "Donate";
+			if (item.id.startsWith("cache_hope")) return "Donate";
 			if (item.id.startsWith("cache_robots")) return "Repair";
 			return "Use";
 		},

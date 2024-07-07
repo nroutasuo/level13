@@ -415,12 +415,12 @@ define([
 				if (!costs) {
 					log.w("upgrade has no costs: " + upgrade);
 				} else {
-					if (costs.favour) {
+					if (costs.hope) {
 						costCampOrdinal = Math.max(costCampOrdinal, WorldConstants.CAMPS_BEFORE_GROUND);
 					}
 				}
 			}
-			if (costs.favour) {
+			if (costs.hope) {
 				costCampOrdinal = WorldConstants.CAMP_ORDINAL_GROUND;
 			}
 			
@@ -445,7 +445,7 @@ define([
 			}
 			
 			let costs = PlayerActionConstants.costs[upgrade];
-			if (costs && costs.favour) {
+			if (costs && costs.hope) {
 				result = WorldConstants.CAMP_STEP_POI_2;
 			}
 			

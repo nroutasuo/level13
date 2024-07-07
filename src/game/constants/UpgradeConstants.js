@@ -7,7 +7,7 @@ function (Ash, UpgradeData, PlayerActionConstants, WorldConstants, UpgradeVO) {
 		BLUEPRINT_BRACKET_LATE: "b-late",
 		
 		UPGRADE_TYPE_RUMOURS: "rumours",
-		UPGRADE_TYPE_FAVOUR: "favour",
+		UPGRADE_TYPE_HOPE: "hope",
 		UPGRADE_TYPE_EVIDENCE: "evidence",
 		UPGRADE_TYPE_INSIGHT: "insight",
 
@@ -246,7 +246,7 @@ function (Ash, UpgradeData, PlayerActionConstants, WorldConstants, UpgradeVO) {
 			let costs = PlayerActionConstants.costs[upgradeID] || {};
 			let type = UpgradeConstants.UPGRADE_TYPE_RUMOURS;
 			if (costs.insight > 0) type = UpgradeConstants.UPGRADE_TYPE_INSIGHT;
-			if (costs.favour > 0) type = UpgradeConstants.UPGRADE_TYPE_FAVOUR;
+			if (costs.hope > 0) type = UpgradeConstants.UPGRADE_TYPE_HOPE;
 			else if (costs.evidence > 0) type = UpgradeConstants.UPGRADE_TYPE_EVIDENCE;
 			return type;
 		},

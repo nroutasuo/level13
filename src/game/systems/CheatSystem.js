@@ -16,7 +16,7 @@ define(['ash',
 	'game/components/common/PositionComponent',
 	'game/components/player/ItemsComponent',
 	'game/components/player/PerksComponent',
-	'game/components/player/DeityComponent',
+	'game/components/player/HopeComponent',
 	'game/components/sector/EnemiesComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/SectorControlComponent',
@@ -45,7 +45,7 @@ define(['ash',
 	PositionComponent,
 	ItemsComponent,
 	PerksComponent,
-	DeityComponent,
+	HopeComponent,
 	EnemiesComponent,
 	SectorImprovementsComponent,
 	SectorControlComponent,
@@ -109,9 +109,9 @@ define(['ash',
 			this.registerCheat(CheatConstants.CHEAT_NAME_RUMOURS, "Set rumours.", ["value"], function (params) {
 				this.setRumours(parseInt(params[0]));
 			});
-			this.registerCheat(CheatConstants.CHEAT_NAME_FAVOUR, "Set favour.", ["value"], function (params) {
+			this.registerCheat(CheatConstants.CHEAT_NAME_HOPE, "Set hope.", ["value"], function (params) {
 				var value = parseInt(params[0]);
-				this.setFavour(value);
+				this.setHope(value);
 			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_INSIGHT, "Set insight.", ["value"], function (params) {
 				this.setInsight(parseInt(params[0]));
@@ -321,15 +321,15 @@ define(['ash',
 			this.playerStatsNodes.head.rumours.value = Math.max(0, value);
 		},
 
-		setFavour: function (value) {
+		setHope: function (value) {
 			if (value > 0) {
-				GameGlobals.playerActionFunctions.unlockFeature("favour");
+				GameGlobals.playerActionFunctions.unlockFeature("hope");
 			}
-			if (!this.playerStatsNodes.head.entity.has(DeityComponent)) {
-				this.playerStatsNodes.head.entity.add(new DeityComponent("Hoodwinker"))
+			if (!this.playerStatsNodes.head.entity.has(HopeComponent)) {
+				this.playerStatsNodes.head.entity.add(new HopeComponent("Hoodwinker"))
 			}
 
-			this.playerStatsNodes.head.entity.get(DeityComponent).favour = Math.max(0, value);
+			this.playerStatsNodes.head.entity.get(HopeComponent).hope = Math.max(0, value);
 		},
 		
 		setInsight: function (value) {

@@ -15,7 +15,7 @@ define([
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/player/PlayerResourcesNode',
-	'game/components/player/DeityComponent',
+	'game/components/player/HopeComponent',
 	'game/components/player/ExcursionComponent',
 	'game/components/player/PlayerActionComponent',
 	'game/components/common/LogMessagesComponent',
@@ -37,7 +37,7 @@ define([
 	PlayerLocationNode,
 	PlayerStatsNode,
 	PlayerResourcesNode,
-	DeityComponent,
+	HopeComponent,
 	ExcursionComponent,
 	PlayerActionComponent,
 	LogMessagesComponent,
@@ -322,10 +322,10 @@ define([
 			return GameGlobals.sectorHelper.isSectorAffectedByHazard(sector, this.playerStatsNodes.head.items);
 		},
 		
-		getMaxFavour: function () {
-			let deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
-			let hasDeity = deityComponent != null;
-			return hasDeity ? deityComponent.maxFavour : 0;
+		getMaxHope: function () {
+			let hopeComponent = this.playerStatsNodes.head.entity.get(HopeComponent);
+			let hasDeity = hopeComponent != null;
+			return hasDeity ? hopeComponent.maxHope : 0;
 		},
 
 		getVisibleGameStats: function () {
@@ -420,7 +420,7 @@ define([
 			addStat("Raids lost", this.getGameStatSimple("numRaidsLost"));
 			addStat("Most resources lost in a raid", this.getGameStatHighScore("mostResourcesLostInRaid"));
 
-			let playerStats = [ "rumours", "evidence", "favour", "insight"];
+			let playerStats = [ "rumours", "evidence", "hope", "insight"];
 			let playerStatsAllSources = [ "amountPlayerStatsFoundPerId", "amountPlayerStatsProducedInCampsPerId" ];
 			for (let i = 0; i < playerStats.length; i++) {
 				let stat = playerStats[i];

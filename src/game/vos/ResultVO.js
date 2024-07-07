@@ -13,7 +13,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		gainedBlueprintPiece: null,
 		gainedEvidence: 0,
 		gainedRumours: 0,
-		gainedFavour: 0,
+		gainedHope: 0,
 		gainedInsight: 0,
 		gainedReputation: 0,
 		gainedPopulation: 0,
@@ -49,7 +49,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			this.gainedBlueprintPiece = null;
 			this.gainedEvidence = 0;
 			this.gainedRumours = 0;
-			this.gainedFavour = 0;
+			this.gainedHope = 0;
 			this.gainedInsight = 0;
 			this.gainedReputation = 0;
 			this.gainedPopulation = 0;
@@ -104,7 +104,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 				&& this.gainedPopulation == 0
 				&& this.gainedEvidence == 0
 				&& this.gainedRumours == 0
-				&& this.gainedFavour == 0
+				&& this.gainedHope == 0
 				&& this.gainedInsight == 0
 				&& this.gainedReputation == 0
 				&& this.discardedItems.length == 0
@@ -128,7 +128,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			result.gainedPopulation = this.gainedPopulation;
 			result.gainedEvidence = this.gainedEvidence;
 			result.gainedRumours = this.gainedRumours;
-			result.gainedFavour = this.gainedFavour;
+			result.gainedHope = this.gainedHope;
 			result.gainedInsight = this.gainedInsight;
 			result.gainedReputation = this.gainedReputation;
 			return result;

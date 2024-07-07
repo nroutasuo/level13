@@ -512,7 +512,8 @@ function (Ash, ItemVO, ItemConstants) {
 				for (let i in componentValues.items[key]) {
 					let savedItem =  componentValues.items[key][i];
 					if (!savedItem || !savedItem.id) continue;
-					let definition = ItemConstants.getItemDefinitionByID(savedItem.id);
+					let itemID = ItemConstants.getItemIDFromSaved(savedItem.id);
+					let definition = ItemConstants.getItemDefinitionByID(itemID);
 					if (!definition) continue;
 
 					let item = definition.clone(savedItem);

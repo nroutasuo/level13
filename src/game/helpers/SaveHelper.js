@@ -8,7 +8,7 @@ define([
 	'game/components/sector/ReputationComponent',
 	'game/components/common/VisitedComponent',
 	'game/components/common/RevealedComponent',
-	'game/components/player/DeityComponent',
+	'game/components/player/HopeComponent',
 	'game/components/player/ExcursionComponent',
 	'game/components/sector/LastVisitedCampComponent',
 	'game/components/sector/OutgoingCaravansComponent',
@@ -16,7 +16,7 @@ define([
 	'game/components/sector/events/RaidComponent',
 	'game/components/sector/events/TraderComponent',
 	'game/components/sector/events/RecruitComponent',
-], function (Ash, GameConstants, CampComponent, CurrencyComponent, BeaconComponent, ReputationComponent, VisitedComponent, RevealedComponent, DeityComponent, ExcursionComponent, LastVisitedCampComponent, OutgoingCaravansComponent, CampEventTimersComponent, RaidComponent, TraderComponent, RecruitComponent) {
+], function (Ash, GameConstants, CampComponent, CurrencyComponent, BeaconComponent, ReputationComponent, VisitedComponent, RevealedComponent, HopeComponent, ExcursionComponent, LastVisitedCampComponent, OutgoingCaravansComponent, CampEventTimersComponent, RaidComponent, TraderComponent, RecruitComponent) {
 
 	let SaveHelper = Ash.Class.extend({
 
@@ -38,7 +38,7 @@ define([
 			// sector: status
 			VisitedComponent, RevealedComponent, LastVisitedCampComponent,
 			// tribe: overall progress
-			DeityComponent,
+			HopeComponent,
 			// player: status
 			ExcursionComponent
 		],
@@ -96,11 +96,7 @@ define([
 				if (!component) {
 					for (let i in existingComponents) {
 						var existingComponent = existingComponents[i];
-						if (existingComponent.getSaveKey && existingComponent.getSaveKey() === componentKey) {
-							component = existingComponent;
-							break;
-						}
-						if (existingComponent.getOldSaveKey && existingComponent.getOldSaveKey() === componentKey) {
+						if (this.isMatchingComponent(existingComponent, componentKey)) {
 							component = existingComponent;
 							break;
 						}
@@ -123,12 +119,7 @@ define([
 				if (!component) {
 					for (let i = 0; i < this.optionalComponents.length; i++) {
 						var optionalComponent = this.optionalComponents[i];
-						if (optionalComponent.prototype.getSaveKey &&  optionalComponent.prototype.getSaveKey() === componentKey) {
-							component = new optionalComponent();
-							entity.add(component);
-							break;
-						}
-						if (optionalComponent.prototype.getOldSaveKey &&  optionalComponent.prototype.getOldSaveKey() === componentKey) {
+						if (this.isMatchingComponent(optionalComponent.prototype, componentKey)) {
 							component = new optionalComponent();
 							entity.add(component);
 							break;
@@ -221,6 +212,16 @@ define([
 				case GameConstants.SAVE_SLOT_USER_3: return true;
 				default: return false;
 			}
+		},
+
+		isMatchingComponent: function (existingComponent, componentSaveKey) {
+			if (existingComponent.getSaveKey && existingComponent.getSaveKey() === componentSaveKey) {
+				return true;
+			}
+			if (existingComponent.getOldSaveKey && existingComponent.getOldSaveKey() === componentSaveKey) {
+				return true;
+			}
+			return false;
 		},
 
 		isDate: function (s) {

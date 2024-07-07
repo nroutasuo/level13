@@ -1313,7 +1313,7 @@ define(['ash',
 				let playerHealth = GameGlobals.playerActionFunctions.playerStatsNodes.head.stamina.health;
 				let maxRumours = GameGlobals.playerActionFunctions.playerStatsNodes.head.rumours.maxValue;
 				let maxEvidence = GameGlobals.playerActionFunctions.playerStatsNodes.head.evidence.maxValue;
-				let maxFavour = GameGlobals.playerHelper.getMaxFavour();
+				let maxHope = GameGlobals.playerHelper.getMaxHope();
 				let maxInsight = GameGlobals.playerActionFunctions.playerStatsNodes.head.insight.maxValue;
 				let showStorage = GameGlobals.resourcesHelper.getCurrentStorageCap();
 
@@ -1346,7 +1346,7 @@ define(['ash',
 						(key == "rumours" && value > maxRumours) ||
 						(key == "evidence" && value > maxEvidence) ||
 						(key == "insight" && value > maxInsight) ||
-						(key == "favour" && value > maxFavour);
+						(key == "hope" && value > maxHope);
 						
 					if (costsStatus) {
 						if (isFullCostBlocker) {

@@ -20,7 +20,7 @@ define([
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/MovementOptionsComponent',
-	'game/components/player/DeityComponent',
+	'game/components/player/HopeComponent',
 	'game/components/player/PlayerActionResultComponent',
 	'game/components/common/LogMessagesComponent',
 	'game/systems/PlayerPositionSystem'
@@ -44,7 +44,7 @@ define([
 	SectorFeaturesComponent,
 	SectorStatusComponent,
 	MovementOptionsComponent,
-	DeityComponent,
+	HopeComponent,
 	PlayerActionResultComponent,
 	LogMessagesComponent,
 	PlayerPositionSystem
@@ -93,7 +93,7 @@ define([
 				return;
 			}
 			
-			var hasDeity = this.playerStatsNodes.head.entity.has(DeityComponent);
+			var hasDeity = this.playerStatsNodes.head.entity.has(HopeComponent);
 			let hasFollowers = this.playerStatsNodes.head.followers.getParty().length > 0;
 			var hasLastVisitedCamp = this.lastVisitedCampNodes.head !== null;
 			var hasCampOnLevel = this.nearestCampNodes.head !== null;

@@ -15,7 +15,7 @@ define([
 	'game/components/common/PositionComponent',
 	'game/components/common/ResourcesComponent',
 	'game/components/common/ResourceAccumulationComponent',
-	'game/components/player/DeityComponent',
+	'game/components/player/HopeComponent',
 	'game/components/type/LevelComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/events/RecruitComponent',
@@ -25,7 +25,7 @@ define([
 ], function (
 	Ash, GameGlobals, GlobalSignals, UIConstants, CampConstants, ImprovementConstants, OccurrenceConstants, TextConstants, WorldConstants,
 	CampNode, PlayerPositionNode, PlayerStatsNode, TribeUpgradesNode,
-	PositionComponent, ResourcesComponent, ResourceAccumulationComponent, DeityComponent, LevelComponent, SectorImprovementsComponent, RecruitComponent, TraderComponent, RaidComponent, OutgoingCaravansComponent
+	PositionComponent, ResourcesComponent, ResourceAccumulationComponent, HopeComponent, LevelComponent, SectorImprovementsComponent, RecruitComponent, TraderComponent, RaidComponent, OutgoingCaravansComponent
 ) {
 	var UIOutMilestonesSystem = Ash.System.extend({
 
@@ -87,7 +87,7 @@ define([
 			let currentMilestone = GameGlobals.tribeHelper.getCurrentMilestone();
 			let nextMilestone = GameGlobals.tribeHelper.getNextMilestone();
 			let action = this.getUnlockMilestoneAction(nextMilestone);
-			let hasDeity = this.playerStatsNodes.head.entity.has(DeityComponent);
+			let hasDeity = this.playerStatsNodes.head.entity.has(HopeComponent);
 			let hasInsight = this.playerStatsNodes.head.insight.value > 0;
 			let hasNextMilestone = nextMilestone.name && nextMilestone.name.length > 0;
 			

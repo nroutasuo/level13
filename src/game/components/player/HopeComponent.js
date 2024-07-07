@@ -1,11 +1,11 @@
 define(['ash'], function (Ash) {
 	
-	var DeityComponent = Ash.Class.extend({
+	let HopeComponent = Ash.Class.extend({
 		
 		constructor: function (name) {
-			this.name = name;
-			this.favour = 0;
-			this.maxFavour = 0;
+			this.deityName = name;
+			this.hope = 0;
+			this.maxHope = 0;
 			this.accumulation = 0;
 			this.accSources = [];
 			this.accumulationPerCamp = {};
@@ -25,10 +25,20 @@ define(['ash'], function (Ash) {
 			this.accSources.push({ source: source, amount: amount });
 		},
 
-		getSaveKey: function () {
-			return "Deity";
+		customLoadFromSave: function(componentValues) {
+			this.deityName = componentValues.deityName || componentValues.name;
+			this.hope = componentValues.hope || componentValues.favour;
+			this.maxHope = componentValues.maxHope || componentValues.maxFavour;
 		},
+
+		getSaveKey: function () {
+			return "Hope";
+		},
+
+		getOldSaveKey: function () {
+			return "Deity";
+		}
 	});
 
-	return DeityComponent;
+	return HopeComponent;
 });

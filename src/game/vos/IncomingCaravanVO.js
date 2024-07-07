@@ -69,7 +69,9 @@ define(['ash', 'game/vos/ResourcesVO', 'game/constants/ItemConstants'], function
 			this.sellItems = [];
 			for (let i in componentValues.sellItems) {
 				let savedItem =  componentValues.sellItems[i];
-				let definition = ItemConstants.getItemDefinitionByID(savedItem.id);
+				if (!savedItem || !savedItem.id) continue;
+				let itemID = ItemConstants.getItemIDFromSaved(savedItem.id);
+				let definition = ItemConstants.getItemDefinitionByID(itemID);
 				if (!definition) continue;
 				let item = definition.clone(savedItem);
 				this.sellItems.push(item);

@@ -4,14 +4,14 @@ define([
 	'game/GlobalSignals',
 	'game/constants/CampConstants',
 	'game/constants/GameConstants',
-	'game/components/player/DeityComponent',
+	'game/components/player/HopeComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/nodes/sector/CampNode',
-], function (Ash, GameGlobals, GlobalSignals, CampConstants, GameConstants, DeityComponent, SectorImprovementsComponent, PlayerStatsNode, TribeUpgradesNode, CampNode) {
+], function (Ash, GameGlobals, GlobalSignals, CampConstants, GameConstants, HopeComponent, SectorImprovementsComponent, PlayerStatsNode, TribeUpgradesNode, CampNode) {
 	
-	var FavourSystem = Ash.System.extend({
+	var HopeSystem = Ash.System.extend({
 
 		constructor: function () {},
 
@@ -38,54 +38,54 @@ define([
 			if (GameGlobals.gameState.isLaunched) return;
 			if (!this.campNodes.head) return;
 			
-			let deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
-			if (!deityComponent) return;
+			let hopeComponent = this.playerStatsNodes.head.entity.get(HopeComponent);
+			if (!hopeComponent) return;
 			
-			this.updateFavourLimit();
-			this.updateFavourValue(time);
+			this.updateHopeLimit();
+			this.updateHopeValue(time);
 		},
 		
-		updateFavourLimit: function () {
-			let deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
-			deityComponent.maxFavour = GameGlobals.tribeHelper.getCurrentFavourLimit();
+		updateHopeLimit: function () {
+			let hopeComponent = this.playerStatsNodes.head.entity.get(HopeComponent);
+			hopeComponent.maxHope = GameGlobals.tribeHelper.getCurrentHopeLimit();
 		},
 		
-		updateFavourValue: function (time) {
-			let deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
+		updateHopeValue: function (time) {
+			let hopeComponent = this.playerStatsNodes.head.entity.get(HopeComponent);
 			
-			deityComponent.accSources = [];
-			deityComponent.accumulation = 0;
+			hopeComponent.accSources = [];
+			hopeComponent.accumulation = 0;
 			
 			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
 				var improvementsComponent = campNode.entity.get(SectorImprovementsComponent);
 				
-				var accTemple = GameGlobals.campHelper.getTempleFavourGenerationPerSecond(improvementsComponent) * GameConstants.gameSpeedCamp;
+				var accTemple = GameGlobals.campHelper.getTempleHopeGenerationPerSecond(improvementsComponent) * GameConstants.gameSpeedCamp;
 				var numClerics = campNode.camp.assignedWorkers.cleric || 0;
-				var accClerics = GameGlobals.campHelper.getFavourProductionPerSecond(numClerics, improvementsComponent);
+				var accClerics = GameGlobals.campHelper.getHopeProductionPerSecond(numClerics, improvementsComponent);
 				var accCamp = accTemple + accClerics;
 				let change = time * accCamp;
 				
-				deityComponent.addChange("Temples", accTemple, campNode.position.level);
-				deityComponent.addChange("Clerics", accClerics, campNode.position.level);
-				deityComponent.favour += change;
-				deityComponent.accumulation += accCamp;
-				deityComponent.accumulationPerCamp[campNode.position.level] = accCamp;
+				hopeComponent.addChange("Temples", accTemple, campNode.position.level);
+				hopeComponent.addChange("Clerics", accClerics, campNode.position.level);
+				hopeComponent.hope += change;
+				hopeComponent.accumulation += accCamp;
+				hopeComponent.accumulationPerCamp[campNode.position.level] = accCamp;
 
-				GameGlobals.gameState.increaseGameStatKeyed("amountPlayerStatsProducedInCampsPerId", "favour", change);
+				GameGlobals.gameState.increaseGameStatKeyed("amountPlayerStatsProducedInCampsPerId", "hope", change);
 			}
 			
-			if (deityComponent.favour < 0) {
-				deityComponent.favour = 0;
+			if (hopeComponent.hope < 0) {
+				hopeComponent.hope = 0;
 			}
 			
-			if (deityComponent.maxFavour > 0 && deityComponent.favour > deityComponent.maxFavour) {
-				deityComponent.favour = deityComponent.maxFavour;
+			if (hopeComponent.maxHope > 0 && hopeComponent.hope > hopeComponent.maxHope) {
+				hopeComponent.hope = hopeComponent.maxHope;
 			}
 		},
 		
 		setDeityName: function (name) {
-			let deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
-			deityComponent.name = name;
+			let hopeComponent = this.playerStatsNodes.head.entity.get(HopeComponent);
+			hopeComponent.deityName = name;
 		},
 		
 		isValidDeityName: function (name) {
@@ -124,8 +124,8 @@ define([
 			if (!hasTemple) {
 				return;
 			}
-			let deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
-			if (this.isValidDeityName(deityComponent.name)) {
+			let hopeComponent = this.playerStatsNodes.head.entity.get(HopeComponent);
+			if (this.isValidDeityName(hopeComponent.deityName)) {
 				return;
 			}
 			this.showDeityNamePopup();
@@ -133,6 +133,6 @@ define([
 		
 	});
 	
-	return FavourSystem;
+	return HopeSystem;
 	
 });

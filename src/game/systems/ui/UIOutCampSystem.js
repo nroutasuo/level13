@@ -17,7 +17,6 @@
 	'game/nodes/level/PlayerLevelNode',
 	'game/nodes/PlayerPositionNode',
 	'game/nodes/PlayerLocationNode',
-	'game/nodes/player/DeityNode',
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/components/player/PerksComponent',
 	'game/components/player/PlayerActionComponent',
@@ -35,7 +34,7 @@
 ], function (
 	Ash, UIState, UIList, UIAnimations, GameGlobals, GlobalSignals,
 	ImprovementConstants, PlayerActionConstants, UIConstants, UpgradeConstants, OccurrenceConstants, CampConstants, PerkConstants, TextConstants, TribeConstants,
-	PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, DeityNode, TribeUpgradesNode,
+	PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, TribeUpgradesNode,
 	PerksComponent, PlayerActionComponent,
 	CampComponent, ResourcesComponent, ResourceAccumulationComponent, OutgoingCaravansComponent, ReputationComponent, SectorImprovementsComponent, CampEventTimersComponent,
 	RecruitComponent, TraderComponent, RaidComponent, Text
@@ -49,7 +48,6 @@
 		playerPosNodes: null,
 		playerLocationNodes: null,
 		playerLevelNodes: null,
-		deityNodes: null,
 		tribeUpgradesNodes: null,
 
 		bubbleNumber: -1,
@@ -80,7 +78,6 @@
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			this.playerPosNodes = engine.getNodeList(PlayerPositionNode);
 			this.playerLevelNodes = engine.getNodeList(PlayerLevelNode);
-			this.deityNodes = engine.getNodeList(DeityNode);
 			this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
 			
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
@@ -102,7 +99,6 @@
 			this.playerLocationNodes = null;
 			this.playerPosNodes = null;
 			this.playerLevelNodes = null;
-			this.deityNodes = null;
 			this.tribeUpgradesNodes = null;
 			GlobalSignals.removeAll(this);
 		},
@@ -446,7 +442,7 @@
 
 			let improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			let hasTradePost = improvements.getCount(improvementNames.tradepost) > 0;
-			let hasDeity = this.deityNodes.head !== null;
+			let hasDeity = GameGlobals.tribeHelper.hasDeity();
 			let isSmallLayout = $("body").hasClass("layout-small");
 
 			var availableBuildingCount = 0;
@@ -803,7 +799,7 @@
 					productionS = "evidence +" + UIConstants.roundValue(GameGlobals.campHelper.getEvidenceProductionPerSecond(1, improvements), true, true, 1000) + "/s";
 					break;
 				case CampConstants.workerTypes.cleric.id:
-					productionS = "favour +" + UIConstants.roundValue(GameGlobals.campHelper.getFavourProductionPerSecond(1, improvements), true, true, 100000) + "/s";
+					productionS = "hope +" + UIConstants.roundValue(GameGlobals.campHelper.getHopeProductionPerSecond(1, improvements), true, true, 100000) + "/s";
 					break;
 				case CampConstants.workerTypes.soldier.id:
 					var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);

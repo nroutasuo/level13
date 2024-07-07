@@ -36,7 +36,7 @@ define(['ash',
 	'game/components/player/BagComponent',
 	'game/components/player/ExcursionComponent',
 	'game/components/player/ItemsComponent',
-	'game/components/player/DeityComponent',
+	'game/components/player/HopeComponent',
 	'game/components/player/PlayerActionComponent',
 	'game/components/player/PlayerActionResultComponent',
 	'game/components/common/CampComponent',
@@ -67,7 +67,7 @@ define(['ash',
 	PlayerPositionNode, FightNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent,
-	BagComponent, ExcursionComponent, ItemsComponent, DeityComponent, PlayerActionComponent, PlayerActionResultComponent,
+	BagComponent, ExcursionComponent, ItemsComponent, HopeComponent, PlayerActionComponent, PlayerActionResultComponent,
 	CampComponent, CurrencyComponent, LevelComponent, BeaconComponent, SectorImprovementsComponent, SectorCollectorsComponent, WorkshopComponent,
 	ReputationComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent,
 	PassagesComponent, OutgoingCaravansComponent, CampEventTimersComponent, TraderComponent,
@@ -330,6 +330,7 @@ define(['ash',
 		
 		getPositionVO: function (sectorPos) {
 			if (!sectorPos) return null;
+			if (!sectorPos.split) return null;
 			var l = parseInt(sectorPos.split(".")[0]);
 			var sX = parseInt(sectorPos.split(".")[1]);
 			var sY = parseInt(sectorPos.split(".")[2]);
@@ -339,6 +340,7 @@ define(['ash',
 		getActionSector: function (action, param) {
 			if (!param) return null;
 			var position = this.getPositionVO(param);
+			if (!position) return null;
 			return GameGlobals.levelHelper.getSectorByPosition(position.level, position.sectorX, position.sectorY);
 		},
 		
@@ -785,9 +787,9 @@ define(['ash',
 			}
 			
 			if (localeVO.type == localeTypes.grove) {
-				GameGlobals.playerActionFunctions.unlockFeature("favour");
-				if (!this.playerStatsNodes.head.entity.has(DeityComponent)) {
-					this.playerStatsNodes.head.entity.add(new DeityComponent())
+				GameGlobals.playerActionFunctions.unlockFeature("hope");
+				if (!this.playerStatsNodes.head.entity.has(HopeComponent)) {
+					this.playerStatsNodes.head.entity.add(new HopeComponent())
 				}
 				
 				let perksComponent = this.playerStatsNodes.head.perks;
@@ -1909,7 +1911,7 @@ define(['ash',
 		},
 
 		useTemple: function () {
-			this.playerStatsNodes.head.entity.get(DeityComponent).favour += CampConstants.FAVOUR_PER_DONATION;
+			this.playerStatsNodes.head.entity.get(HopeComponent).hope += CampConstants.HOPE_PER_DONATION;
 			this.completeAction("use_in_temple");
 			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_TEMPLE, "Donated to the temple.");
 			GlobalSignals.inventoryChangedSignal.dispatch();
@@ -1917,8 +1919,8 @@ define(['ash',
 		},
 
 		useShrine: function () {
-			let deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
-			if (!deityComponent) return;
+			let hopeComponent = this.playerStatsNodes.head.entity.get(HopeComponent);
+			if (!hopeComponent) return;
 			let campSector = this.nearestCampNodes.head.entity;
 			let improvementsComponent = campSector.get(SectorImprovementsComponent);
 			
@@ -1927,7 +1929,7 @@ define(['ash',
 				let successChance = GameGlobals.campBalancingHelper.getMeditationSuccessRate(shrineLevel);
 				log.i("meditation success chance: " + successChance)
 				if (Math.random() < successChance) {
-					deityComponent.favour += 1;
+					hopeComponent.hope += 1;
 					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_SHRINE, "Spent some time listening to the spirits.");
 				} else {
 					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_SHRINE, "Tried to meditate, but found no peace.");
@@ -2106,18 +2108,18 @@ define(['ash',
 					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_NEWSPAPER, "Read a newspaper. Gained " + rumours + " rumours.");
 					break;
 				
-				case "cache_favour":
-					let favour = itemConfig.configData.favourValue || Math.pow(itemConfig.level, 2);
+				case "cache_hope":
+					let hope = itemConfig.configData.hopeValue || Math.pow(itemConfig.level, 2);
 					message = TextConstants.getDonateSeedsMessage(item);
-					resultVO.gainedFavour = favour;
+					resultVO.gainedHope = hope;
 					GameGlobals.uiFunctions.showInfoPopup(
 						item.name,
 						message,
 						"Continue",
 						resultVO
 					);
-					this.playerStatsNodes.head.entity.get(DeityComponent).favour += favour;
-					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_SEED, "Donated seeds. Gained " + favour + " favour.");
+					this.playerStatsNodes.head.entity.get(HopeComponent).hope += hope;
+					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_SEED, "Donated seeds. Gained " + hope + " favour.");
 					break;
 				
 				case "cache_insight":
@@ -2278,7 +2280,7 @@ define(['ash',
 			
 			GameGlobals.gameState.numUnlockedMilestones = index;
 			
-			let hasDeity = this.playerStatsNodes.head.entity.has(DeityComponent);
+			let hasDeity = this.playerStatsNodes.head.entity.has(HopeComponent);
 			let hasInsight = this.playerStatsNodes.head.insight.value > 0;
 			let baseMsg = "Milestone claimed. We now call this a " + newMilestone.name + ".";
 			let popupMsg = "<p>" + baseMsg + "</p>";

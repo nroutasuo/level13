@@ -34,7 +34,7 @@ define([
 	'game/components/sector/SectorLocalesComponent',
 	'game/components/player/ItemsComponent',
 	'game/components/player/BagComponent',
-	'game/components/player/DeityComponent',
+	'game/components/player/HopeComponent',
 	'game/components/player/ExcursionComponent',
 	'game/components/type/LevelComponent',
 	'game/vos/ResultVO',
@@ -74,7 +74,7 @@ define([
 	SectorLocalesComponent,
 	ItemsComponent,
 	BagComponent,
-	DeityComponent,
+	HopeComponent,
 	ExcursionComponent,
 	LevelComponent,
 	ResultVO,
@@ -312,7 +312,7 @@ define([
 			
 			// tribe stats
 			if (localeVO.type == localeTypes.grove) {
-				rewards.gainedFavour = 2;
+				rewards.gainedHope = 2;
 			} else if (localeVO.type == localeTypes.tradingpartner) {
 			} else {
 				rewards.gainedEvidence = ExplorationConstants.getScoutLocaleReward(localeVO.type, campOrdinal);
@@ -684,9 +684,9 @@ define([
 				GameGlobals.gameState.increaseGameStatKeyed("amountPlayerStatsFoundPerId", "rumours", rewards.gainedRumours);
 			}
 
-			if (rewards.gainedFavour) {
-				this.playerStatsNodes.head.entity.get(DeityComponent).favour += rewards.gainedFavour;
-				GameGlobals.gameState.increaseGameStatKeyed("amountPlayerStatsFoundPerId", "favour", rewards.gainedFavour);
+			if (rewards.gainedHope) {
+				this.playerStatsNodes.head.entity.get(HopeComponent).hope += rewards.gainedHope;
+				GameGlobals.gameState.increaseGameStatKeyed("amountPlayerStatsFoundPerId", "hope", rewards.gainedHope);
 			}
 
 			if (rewards.gainedInsight) {
@@ -791,12 +791,12 @@ define([
 				values.push(rewards.gainedRumours);
 			}
 
-			if (rewards.gainedFavour) {
+			if (rewards.gainedHope) {
 				msg += ", ";
 				foundSomething = true;
 				msg += "$" + replacements.length + ", ";
-				replacements.push("#" + replacements.length + " favour");
-				values.push(rewards.gainedFavour);
+				replacements.push("#" + replacements.length + " hope");
+				values.push(rewards.gainedHope);
 			}
 
 			if (rewards.gainedBlueprintPiece) {
@@ -921,8 +921,8 @@ define([
 			if (resultVO.gainedRumours) {
 				gainedhtml += "<li>" + resultVO.gainedRumours + " rumours</li>";
 			}
-			if (resultVO.gainedFavour) {
-				gainedhtml += "<li>" + resultVO.gainedFavour + " favour</li>";
+			if (resultVO.gainedHope) {
+				gainedhtml += "<li>" + resultVO.gainedHope + " hope</li>";
 			}
 			if (resultVO.gainedInsight) {
 				gainedhtml += "<li>" + resultVO.gainedInsight + " insight</li>";
@@ -1297,7 +1297,7 @@ define([
 		getRewardItem: function (campOrdinal, step, options) {
 			let rarityKey = options.rarityKey || "scavengeRarity";
 			let itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-			let hasDeity = this.playerStatsNodes.head.entity.has(DeityComponent);
+			let hasDeity = this.playerStatsNodes.head.entity.has(HopeComponent);
 			
 			// choose rarity and camp ordinal thresholds
 			let maxPossibleRarity = Math.min(campOrdinal * 4, 10);
@@ -1521,7 +1521,7 @@ define([
 				let itemVO = ItemConstants.getItemDefinitionByID(key);
 				if (itemVO) {
 					for (let i = 0; i < num; i++) {
-						let level = ItemConstants.getRandomItemLevel(item, ItemConstants.itemSource.exploration);
+						let level = ItemConstants.getRandomItemLevel(itemVO, ItemConstants.itemSource.exploration);
 						result.push(ItemConstants.getNewItemInstanceByDefinition(itemVO, level));
 					}
 				}
@@ -1598,7 +1598,7 @@ define([
 				|| result.gainedBlueprintPiece
 				|| result.gainedEvidence > 0
 				|| result.gainedRumours > 0
-				|| result.gainedFavour > 0
+				|| result.gainedHope > 0
 				|| result.gainedInsight > 0
 				|| result.gainedReputation > 0
 				|| result.gainedPopulation > 0;

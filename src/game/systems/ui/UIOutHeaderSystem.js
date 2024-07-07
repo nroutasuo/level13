@@ -102,9 +102,9 @@ define([
 			this.elements.valRumours = $(".stat-indicator-rumours .value");
 			this.elements.changeIndicatorRumours = $(".change-indicator-rumours");
 
-			this.elements.statIndicatorFavour = $(".stat-indicator-favour");
-			this.elements.valFavour = $(".stat-indicator-favour .value");
-			this.elements.changeIndicatorFavour = $(".change-indicator-favour");
+			this.elements.statIndicatorHope = $(".stat-indicator-hope");
+			this.elements.valHope = $(".stat-indicator-hope .value");
+			this.elements.changeIndicatorHope = $(".change-indicator-hope");
 
 			this.elements.statIndicatorInsight = $(".stat-indicator-insight");
 			this.elements.valInsight = $(".stat-indicator-insight .value");
@@ -178,7 +178,7 @@ define([
 			let statDiv = "";
 
 			// tribe stats
-			let tribeStatNames = [ "evidence", "rumours", "favour", "insight" ];
+			let tribeStatNames = [ "evidence", "rumours", "hope", "insight" ];
 			for (let i = 0; i < tribeStatNames.length; i++) {
 				let tribeStatName = tribeStatNames[i];
 				statDiv = "";
@@ -360,9 +360,9 @@ define([
 			this.updatePlayerStat("rumours", playerStatsNode.rumours, showRumours, playerStatsNode.rumours.value, playerStatsNode.rumours.maxValue, false, this.elements.valRumours, this.elements.changeIndicatorRumours);
 			this.updatePlayerStat("evidence", playerStatsNode.evidence, showEvidence, playerStatsNode.evidence.value, playerStatsNode.evidence.maxValue, false, this.elements.valEvidence, this.elements.changeIndicatorEvidence);
 			if (hasDeity) {
-				this.updatePlayerStat("favour", this.deityNodes.head.deity, hasDeity, this.deityNodes.head.deity.favour, this.deityNodes.head.deity.maxFavour, false, this.elements.valFavour, this.elements.changeIndicatorFavour);
+				this.updatePlayerStat("hope", this.deityNodes.head.deity, hasDeity, this.deityNodes.head.deity.hope, this.deityNodes.head.deity.maxHope, false, this.elements.valHope, this.elements.changeIndicatorHope);
 			} else {
-				this.updatePlayerStat("favour", null, hasDeity, 0, this.elements.valFavour, 0, false, this.elements.changeIndicatorFavour);
+				this.updatePlayerStat("hope", null, hasDeity, 0, this.elements.valHope, 0, false, this.elements.changeIndicatorHope);
 			}
 			if (hasInsight) {
 				this.updatePlayerStat("insight", playerStatsNode.insight, hasInsight, playerStatsNode.insight.value, playerStatsNode.insight.maxValue, false, this.elements.valInsight, this.elements.changeIndicatorInsight);
@@ -549,9 +549,9 @@ define([
 
 		updateDeity: function () {
 			var hasDeity = this.deityNodes.head != null;
-			GameGlobals.uiFunctions.toggle(".statsbar-deity", hasDeity);
+			GameGlobals.uiFunctions.toggle(".statsbar-hope", hasDeity);
 			if (hasDeity) {
-				$(".deity-name").text(this.deityNodes.head.deity.name || "?");
+				$(".deity-name").text(this.deityNodes.head.deity.deityName || "?");
 			}
 		},
 
@@ -1058,6 +1058,8 @@ define([
 			
 			if (GameGlobals.gameState.uiStatus.forceSunlit) sunlit = true;
 			if (GameGlobals.gameState.uiStatus.forceDark) sunlit = false;
+
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			
 			this.updateThemeTo(sunlit);
 		},

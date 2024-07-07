@@ -12,7 +12,7 @@ define([
 	'game/components/player/RumoursComponent',
 	'game/components/player/EvidenceComponent',
 	'game/components/player/InsightComponent',
-	'game/components/player/DeityComponent',
+	'game/components/player/HopeComponent',
 	'game/components/player/FollowersComponent',
 	'game/components/player/ItemsComponent',
 	'game/components/player/PerksComponent',
@@ -64,7 +64,7 @@ define([
 	RumoursComponent,
 	EvidenceComponent,
 	InsightComponent,
-	DeityComponent,
+	HopeComponent,
 	FollowersComponent,
 	ItemsComponent,
 	PerksComponent,
@@ -148,7 +148,7 @@ define([
 					LogMessagesComponent,
 					PlayerActionComponent,
 					ExcursionComponent,
-					DeityComponent
+					HopeComponent
 				]));
 
 			this.engine.addEntity(player);

@@ -630,7 +630,7 @@
         },
         "improve_building_apothecary": {
             "evidence": 382,
-            "favour": 184
+            "hope": 184
         },
         "improve_building_barracks_3": {
             "rumours": 4649
@@ -661,7 +661,7 @@
             "rumours": 2106
         },
         "improve_building_inn": {
-            "favour": 90,
+            "hope": 90,
             "rumours": 1735
         },
         "improve_building_library": {
@@ -676,10 +676,10 @@
         },
         "improve_building_market2": {
             "evidence": 212,
-            "favour": 143
+            "hope": 143
         },
         "improve_building_market3": {
-            "favour": 221,
+            "hope": 221,
             "rumours": 3590
         },
         "improve_building_radiotower": {
@@ -689,7 +689,7 @@
             "evidence": 755
         },
         "improve_building_shrine": {
-            "favour": 181,
+            "hope": 181,
             "rumours": 2211
         },
         "improve_building_stable_2": {
@@ -707,11 +707,11 @@
             "rumours": 2842
         },
         "improve_building_temple2": {
-            "favour": 92,
+            "hope": 92,
             "rumours": 1062
         },
         "improve_building_temple3": {
-            "favour": 221
+            "hope": 221
         },
         "improve_in_apothecary": {
             "cost_factor_expBase": 1.25,
@@ -918,32 +918,32 @@
         },
         "improve_worker_chemist_3": {
             "evidence": 244,
-            "favour": 249
+            "hope": 249
         },
         "improve_worker_chemist_4": {
             "evidence": 755,
-            "favour": 246
+            "hope": 246
         },
         "improve_worker_cleric_2": {
             "rumours": 1735
         },
         "improve_worker_cleric_3": {
-            "favour": 174,
+            "hope": 174,
             "rumours": 3099
         },
         "improve_worker_gardener_2": {
             "evidence": 290,
-            "favour": 227
+            "hope": 227
         },
         "improve_worker_gardener_3": {
             "evidence": 263,
-            "favour": 115
+            "hope": 115
         },
         "improve_worker_rubber_2": {
             "evidence": 247
         },
         "improve_worker_rubber_3": {
-            "favour": 168
+            "hope": 168
         },
         "improve_worker_scavenger_2": {
             "evidence": 99,
@@ -958,7 +958,7 @@
         },
         "improve_worker_scientist": {
             "evidence": {},
-            "favour": 164,
+            "hope": 164,
             "rumours": 3804
         },
         "improve_worker_smith_2": {
@@ -968,15 +968,15 @@
             "evidence": 382
         },
         "improve_worker_smith_4": {
-            "favour": 246,
+            "hope": 246,
             "rumours": 5706
         },
         "improve_worker_trapper_2": {
             "evidence": 297,
-            "favour": 119
+            "hope": 119
         },
         "improve_worker_trapper_3": {
-            "favour": 151
+            "hope": 151
         },
         "improve_worker_water_2": {
             "rumours": 609
@@ -1056,7 +1056,7 @@
         },
         "unlock_action_clear_waste_r": {
             "evidence": 312,
-            "favour": 43
+            "hope": 43
         },
         "unlock_action_clear_waste_t": {
             "evidence": 66
@@ -1065,7 +1065,7 @@
             "rumours": 977
         },
         "unlock_building_aqueduct": {
-            "favour": 184,
+            "hope": 184,
             "rumours": 977
         },
         "unlock_building_barracks": {
@@ -1097,7 +1097,7 @@
             "rumours": 462
         },
         "unlock_building_greenhouse": {
-            "favour": 21,
+            "hope": 21,
             "rumours": 482
         },
         "unlock_building_hospital": {
@@ -1151,13 +1151,13 @@
             "rumours": 4755
         },
         "unlock_building_spaceship2": {
-            "favour": 213,
+            "hope": 213,
             "insight": 15,
             "rumours": 4755
         },
         "unlock_building_spaceship3": {
             "evidence": 654,
-            "favour": 213,
+            "hope": 213,
             "insight": 15
         },
         "unlock_building_square": {
@@ -1185,7 +1185,7 @@
             "rumours": 680
         },
         "unlock_item_bag_4": {
-            "favour": 212
+            "hope": 212
         },
         "unlock_item_clothing2": {
             "rumours": 13
@@ -1194,7 +1194,7 @@
             "rumours": 514
         },
         "unlock_item_clothing3h": {
-            "favour": 151,
+            "hope": 151,
             "rumours": 1055
         },
         "unlock_item_clothing4": {
@@ -1215,11 +1215,11 @@
             "rumours": 1055
         },
         "unlock_item_clothing_body_13": {
-            "favour": 184,
+            "hope": 184,
             "rumours": 3099
         },
         "unlock_item_clothing_body_15": {
-            "favour": 212,
+            "hope": 212,
             "rumours": 3447
         },
         "unlock_item_clothing_hands_25": {
@@ -1229,13 +1229,13 @@
             "rumours": 248
         },
         "unlock_item_clothing_head_5": {
-            "favour": 138
+            "hope": 138
         },
         "unlock_item_clothing_over_15": {
             "rumours": 4755
         },
         "unlock_item_clothingl14": {
-            "favour": 55,
+            "hope": 55,
             "rumours": 642
         },
         "unlock_item_firstaid": {
@@ -1254,7 +1254,7 @@
         },
         "unlock_item_weapon_11": {
             "evidence": 275,
-            "favour": 160
+            "hope": 160
         },
         "unlock_item_weapon_12": {
             "evidence": 232
@@ -1268,7 +1268,7 @@
         },
         "unlock_item_weapon_15": {
             "evidence": 604,
-            "favour": 164
+            "hope": 164
         },
         "unlock_item_weapon_2": {
             "evidence": 66
@@ -1344,7 +1344,7 @@
         "improve_in_square": "Increase reputation bonus",
         "improve_in_stable": "Improve caravan capacity",
         "improve_in_storage": "Improve storage capacity",
-        "improve_in_temple": "Increase favour generation",
+        "improve_in_temple": "Increase hope generation",
         "improve_in_tradepost": "Decrease stamina cost of moving from this camp directly to another",
         "improve_out_collector_food": "Increase trap capacity",
         "improve_out_collector_water": "Increase bucket capacity",
@@ -1371,7 +1371,7 @@
         "use_in_library": "Study the records and collect more evidence",
         "use_in_market": "Go hear the latest gossip.",
         "use_in_shrine": "Reconnect with the spirits",
-        "use_in_temple": "Donate silver for favour with the spirits",
+        "use_in_temple": "Donate silver for hope with the spirits",
         "use_item_glowstick_1": "Create a temporary light in this location.",
         "use_out_collector_food": "Collect accumulated food.",
         "use_out_collector_food_one": "Collect 1 food.",
@@ -3691,7 +3691,7 @@
             "deity": true,
             "inCamp": true,
             "tribe": {
-                "favourFull": false
+                "hopeFull": false
             }
         },
         "use_in_temple": {
@@ -3702,13 +3702,13 @@
             "deity": true,
             "inCamp": true,
             "tribe": {
-                "favourFull": false
+                "hopeFull": false
             }
         },
         "use_item_cache_evidence": {
             "inCamp": true
         },
-        "use_item_cache_favour": {
+        "use_item_cache_hope": {
             "deity": true,
             "inCamp": true
         },

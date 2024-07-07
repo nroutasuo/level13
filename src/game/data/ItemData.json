@@ -608,11 +608,11 @@
         "rarityScavenge": 8,
         "type": "voucher"
     },
-    "cache_favour_11": {
+    "cache_hope_11": {
         "campOrdinalRequired": 8,
         "description": "Old seeds of an extinct or rare plant. Might still grow if planted at a temple.",
         "icon": "img/items/seed.png",
-        "id": "cache_favour_11",
+        "id": "cache_hope_11",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
@@ -625,11 +625,11 @@
         "tradePrice": 2,
         "type": "voucher"
     },
-    "cache_favour_12": {
+    "cache_hope_12": {
         "campOrdinalRequired": 12,
         "description": "Well-preserved seeds of an extinct or rare plant. Might grow if planted at a temple.",
         "icon": "img/items/seed.png",
-        "id": "cache_favour_12",
+        "id": "cache_hope_12",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,

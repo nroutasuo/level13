@@ -156,10 +156,10 @@ define([
 			return workers * CampConstants.PRODUCTION_EVIDENCE_PER_WORKER_PER_S * evidenceUpgradeBonus * GameConstants.gameSpeedCamp;
 		},
 		
-		getFavourProductionPerSecond: function (workers, improvementComponent) {
+		getHopeProductionPerSecond: function (workers, improvementComponent) {
 			workers = workers || 0;
 			var upgradeBonus = this.getUpgradeBonus("cleric");
-			return workers * CampConstants.PRODUCTION_FAVOUR_PER_WORKER_PER_S * upgradeBonus * GameConstants.gameSpeedCamp;
+			return workers * CampConstants.PRODUCTION_HOPE_PER_WORKER_PER_S * upgradeBonus * GameConstants.gameSpeedCamp;
 		},
 		
 		getWaterConsumptionPerSecond: function (population, useExplorationSpeed) {
@@ -216,10 +216,10 @@ define([
 			return CampConstants.getResearchCenterEvidenceGenerationPerSecond(centerCount, centerLevel) * GameConstants.gameSpeedCamp;
 		},
 		
-		getTempleFavourGenerationPerSecond: function (improvementsComponent) {
+		getTempleHopeGenerationPerSecond: function (improvementsComponent) {
 			var templeCount = improvementsComponent.getCount(improvementNames.temple);
 			var templeLevel = improvementsComponent.getLevel(improvementNames.temple);
-			return CampConstants.getTempleFavourGenerationPerSecond(templeCount, templeLevel) * GameConstants.gameSpeedCamp;
+			return CampConstants.getTempleHopeGenerationPerSecond(templeCount, templeLevel) * GameConstants.gameSpeedCamp;
 		},
 
 		getPopulationRumourGenerationPerSecond: function (population) {
@@ -455,7 +455,7 @@ define([
 						buyResources.push(resourceNames.medicine);
 					}
 					if (traderLevel > 1 && Math.random() < 0.1 * traderLevel) {
-						addSellItemsFromCategories([ "voucher" ], 0.3, 1, 1, true, "cache_favour");
+						addSellItemsFromCategories([ "voucher" ], 0.3, 1, 1, true, "cache_hope");
 					}
 				} else if (mainResource == resourceNames.tools) {
 					name = "tools trader";
@@ -521,7 +521,7 @@ define([
 				if (Math.random() < 0.15 * traderLevel) {
 					addSellItemsFromCategories([ "voucher" ], 0.2, 1, 1, true, "cache_evidence");
 				} else if (Math.random() < 0.25 * traderLevel) {
-					addSellItemsFromCategories([ "voucher" ], 0.1, 1, 1, true, "cache_favour");
+					addSellItemsFromCategories([ "voucher" ], 0.1, 1, 1, true, "cache_hope");
 				} else if (Math.random() < 0.25 * traderLevel) {
 					addSellItemsFromCategories([ "voucher" ], 0.5, 1, 1, true, "cache_rumours");
 				}

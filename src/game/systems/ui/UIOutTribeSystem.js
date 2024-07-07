@@ -13,7 +13,7 @@ define([
 	'game/components/common/PositionComponent',
 	'game/components/common/ResourcesComponent',
 	'game/components/common/ResourceAccumulationComponent',
-	'game/components/player/DeityComponent',
+	'game/components/player/HopeComponent',
 	'game/components/type/LevelComponent',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
@@ -24,7 +24,7 @@ define([
 ], function (
 	Ash, GameGlobals, GlobalSignals, UIConstants, CampConstants, OccurrenceConstants, WorldConstants,
 	CampNode, PlayerPositionNode, PlayerStatsNode, TribeUpgradesNode,
-	PositionComponent, ResourcesComponent, ResourceAccumulationComponent, DeityComponent, LevelComponent, SectorFeaturesComponent, SectorImprovementsComponent, RecruitComponent, TraderComponent, RaidComponent, OutgoingCaravansComponent
+	PositionComponent, ResourcesComponent, ResourceAccumulationComponent, HopeComponent, LevelComponent, SectorFeaturesComponent, SectorImprovementsComponent, RecruitComponent, TraderComponent, RaidComponent, OutgoingCaravansComponent
 ) {
 	var UIOutTribeSystem = Ash.System.extend({
 
@@ -287,8 +287,8 @@ define([
 			rowHTML += "<span class='camp-overview-stats-rumours hide-in-small-layout info-callout-target info-callout-target-small'>";
 			rowHTML += "<span class='icon'><img src='img/stat-rumours.png' alt='rumours'/></span><span class='change-indicator'></span> ";
 			rowHTML += "</span>";
-			rowHTML += "<span class='camp-overview-stats-favour hide-in-small-layout info-callout-target info-callout-target-small'>";
-			rowHTML += "<span class='icon'><img src='img/stat-favour.png' alt='favour'/></span><span class='change-indicator'></span> ";
+			rowHTML += "<span class='camp-overview-stats-hope hide-in-small-layout info-callout-target info-callout-target-small'>";
+			rowHTML += "<span class='icon'><img src='img/stat-hope.png' alt='hope'/></span><span class='change-indicator'></span> ";
 			rowHTML += "</span>";
 			rowHTML += "</td>";
 
@@ -417,11 +417,11 @@ define([
 			this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-stats-rumours .change-indicator"), rumoursChange);
 			UIConstants.updateCalloutContent("#camp-overview tr#" + rowID + " .camp-overview-stats-rumours", "rumours: " + UIConstants.roundValue(rumoursChange, true, true, 1000), true);
 			
-			var deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
-			var favourChange = deityComponent ? deityComponent.accumulationPerCamp[level] || 0 : 0;
-			GameGlobals.uiFunctions.toggle($("#camp-overview tr#" + rowID + " .camp-overview-stats-favour"), favourChange > 0);
-			this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-stats-favour .change-indicator"), favourChange);
-			UIConstants.updateCalloutContent("#camp-overview tr#" + rowID + " .camp-overview-stats-favour", "favour: " + UIConstants.roundValue(favourChange, true, true, 1000), true);
+			var hopeComponent = this.playerStatsNodes.head.entity.get(HopeComponent);
+			var hopeChange = hopeComponent ? hopeComponent.accumulationPerCamp[level] || 0 : 0;
+			GameGlobals.uiFunctions.toggle($("#camp-overview tr#" + rowID + " .camp-overview-stats-hope"), hopeChange > 0);
+			this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-stats-hope .change-indicator"), hopeChange);
+			UIConstants.updateCalloutContent("#camp-overview tr#" + rowID + " .camp-overview-stats-hope", "hope: " + UIConstants.roundValue(hopeChange, true, true, 1000), true);
 		},
 
 		getAlertDescription: function (notificationType) {

@@ -7,6 +7,10 @@
 			"final": false,
 			"changes": [
 				{
+					"type": "Text",
+					"summary": "Rename 'favour' to 'hope'"
+				},
+				{
 					"type": "Dev",
 					"summary": "Add better save management"
 				},

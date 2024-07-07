@@ -34,9 +34,9 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		EVIDENCE_BONUS_PER_LIBRARY_LEVEL: 0.15,
 		EVIDENCE_BONUS_PER_RESEARCH_CENTER_LEVEL: 0.25,
 		
-		// Favour
-		FAVOUR_BONUS_PER_TEMPLE_LEVEL: 0.1,
-		FAVOUR_PER_DONATION: 5,
+		// Hope
+		HOPE_BONUS_PER_TEMPLE_LEVEL: 0.1,
+		HOPE_PER_DONATION: 5,
 		
 		// Cost of workers
 		CONSUMPTION_WATER_PER_WORKER_PER_S: 0.02,
@@ -59,7 +59,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		PRODUCTION_CONCRETE_PER_WORKER_PER_S: 0.01,
 		PRODUCTION_ROBOTS_PER_WORKER_PER_S: 0.001,
 		PRODUCTION_EVIDENCE_PER_WORKER_PER_S: 0.00075,
-		PRODUCTION_FAVOUR_PER_WORKER_PER_S: 0.00075,
+		PRODUCTION_HOPE_PER_WORKER_PER_S: 0.00075,
 		
 		PRODUCTION_BONUS_PER_ROBOT_PER_SEC: 0.02,
 		
@@ -287,10 +287,10 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			return 0.0025 * centerCount * levelFactor;
 		},
 		
-		getTempleFavourGenerationPerSecond: function (templeCount, templeLevel) {
+		getTempleHopeGenerationPerSecond: function (templeCount, templeLevel) {
 			if (templeCount <= 0) return 0;
 			templeLevel = templeLevel || 1;
-			var templeLevelFactor = (1 + templeLevel * CampConstants.FAVOUR_BONUS_PER_TEMPLE_LEVEL);
+			var templeLevelFactor = (1 + templeLevel * CampConstants.HOPE_BONUS_PER_TEMPLE_LEVEL);
 			return 0.0015 * templeCount * templeLevelFactor;
 		},
 		

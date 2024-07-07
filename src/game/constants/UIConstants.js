@@ -757,8 +757,8 @@ define(['ash',
 			addValue("Max evidence", milestone.maxEvidence);
 			addValue("Max rumours", milestone.maxRumours);
 			
-			if (milestone.maxFavour && hasDeity) {
-				addValue("Max favour", milestone.maxFavour);
+			if (milestone.maxHope && hasDeity) {
+				addValue("Max hope", milestone.maxHope);
 			}
 			
 			if (milestone.maxInsight && hasInvestigate) {

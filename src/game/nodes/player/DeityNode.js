@@ -1,9 +1,9 @@
 define([
-	'ash', 'game/components/player/DeityComponent'
-], function(Ash, DeityComponent) {
+	'ash', 'game/components/player/HopeComponent'
+], function(Ash, HopeComponent) {
 	
 	var DeityNode = Ash.Node.create({
-		deity : DeityComponent
+		deity : HopeComponent
 	});
 
 	return DeityNode;
