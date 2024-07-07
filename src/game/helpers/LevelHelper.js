@@ -1067,6 +1067,8 @@ define([
 
 		isLevelUnlocked: function (level) {
 			if (level === 13) return true;
+			if (level > GameGlobals.gameState.getSurfaceLevel()) return false;
+			if (level < GameGlobals.gameState.getGroundLevel()) return false;
 			let levelEntity = this.getLevelEntityForPosition(level);
 			if (levelEntity) {
 				if (level < 13) {
