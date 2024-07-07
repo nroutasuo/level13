@@ -2337,6 +2337,13 @@ define(['ash',
 				return;
 			}
 			let improvementID = ImprovementConstants.getImprovementID(improvementName);
+			let currentAmount = improvementsComponent.getCount(improvementName);
+
+			if (currentAmount > CampConstants.MAX_IMPROVEMENTS_PER_TYPE) {
+				log.w("trying to build too many improvements of type " + improvementName, this);
+				return;
+			}
+
 			improvementsComponent.add(improvementName);
 			GameGlobals.gameState.increaseGameStatKeyed("numBuildingsBuiltPerId", improvementID);
 			GlobalSignals.improvementBuiltSignal.dispatch();

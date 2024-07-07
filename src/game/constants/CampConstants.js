@@ -88,6 +88,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 
 		MAX_DEITY_NAME_LENGTH: 20,
 		MAX_CAMP_NAME_LENGTH: 20,
+		MAX_IMPROVEMENTS_PER_TYPE: 100,
 	
 		workerTypes: {
 			scavenger: {
