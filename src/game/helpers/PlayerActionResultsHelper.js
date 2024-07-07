@@ -847,6 +847,10 @@ define([
 			let bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
 			let isInitialSelectionValid = bagComponent.usedCapacity <= bagComponent.totalCapacity;
 
+			if (!isInitialSelectionValid && !GameGlobals.playerHelper.isInCamp()) {
+				forceShowInventoryManagement = true;
+			}
+
 			let div = "<div id='reward-div'>";
 			
 			if (resultVO.gainedResourcesFromFollowers.getTotal() > 0 || resultVO.gainedItemsFromFollowers.length > 0) {
@@ -963,7 +967,7 @@ define([
 				}
 			}
 
-			if (resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0 || !isInitialSelectionValid || forceShowInventoryManagement) {
+			if (resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0 || forceShowInventoryManagement) {
 				var baghtml = "<div id='resultlist-inventorymanagement' class='unselectable'>";
 
 				baghtml += "<div id='resultlist-inventorymanagement-found' class='infobox inventorybox'>";
