@@ -88,6 +88,8 @@ define([
 				GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.clearReqsCache);
 				GlobalSignals.add(this, GlobalSignals.sectorScoutedSignal, this.clearReqsCache);
 				GlobalSignals.add(this, GlobalSignals.transitionCompletedSignal, this.clearReqsCache);
+			} else {
+				this.playerLocationNodes = {};
 			}
 		},
 		

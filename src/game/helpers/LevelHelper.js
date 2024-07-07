@@ -114,13 +114,19 @@ define([
 		},
 
 		getLevelEntityForPosition: function (level) {
-			if (!level) return null;
+			if (!level && level !== 0) {
+				log.w("getLevelEntityForPosition: level is null")
+				return null;
+			}
+
 			level = parseInt(level);
-			var levelPosition;
-			for (var node = this.levelNodes.head; node; node = node.next) {
+			let levelPosition;
+			for (let node = this.levelNodes.head; node; node = node.next) {
 				levelPosition = node.entity.get(PositionComponent);
 				if (levelPosition.level === level) return node.entity;
 			}
+
+			log.w("getLevelEntityForPosition: could not find level entity for position: [" + level + "]")
 			return null;
 		},
 
