@@ -66,6 +66,7 @@ define([
 		
 		refresh: function () {
 			if (!this.playerLocationNodes.head) return;
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.in) return;
 			
 			this.refreshSettings();
