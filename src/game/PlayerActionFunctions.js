@@ -343,7 +343,7 @@ define(['ash',
 		},
 		
 		getActionSectorOrCurrent: function (sectorPos) {
-			let current = this.playerPositionNodes.head.entity;
+			let current = this.playerLocationNodes.head.entity;
 			let position = this.getPositionVO(sectorPos);
 			return this.getActionSector("", sectorPos) || current;
 		},
