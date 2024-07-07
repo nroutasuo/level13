@@ -369,6 +369,7 @@ define(['ash',
 					});
 
 					$target.data("callout-generated", true);
+					$target.hover(() => GlobalSignals.elementToggledSignal.dispatch());
 				});
 
 				GlobalSignals.calloutsGeneratedSignal.dispatch();
