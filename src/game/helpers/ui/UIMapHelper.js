@@ -825,13 +825,15 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 
 			let sectorImprovements = sector.get(SectorImprovementsComponent);
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
+			let sectorStatus = sector.get(SectorStatusComponent);
 			
 			let resourcesCollectable = sectorFeatures.resourcesCollectable;
 
 			let hasHeap = function (resourceName) {
 				if (!sectorFeatures.heapResource) return false;
-				 if (sectorFeatures.heapResource !== resourceName) return false;
-				 return true;
+				if (sectorStatus.getHeapScavengedPercent() >= 100) return false;
+				if (sectorFeatures.heapResource !== resourceName) return false;
+				return true;
 			};
 				
 			let directResources = {};
