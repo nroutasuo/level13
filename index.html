@@ -195,17 +195,17 @@
 				<div class="grid grid-content hidden-by-popups" id="grid-switch" role="navigation">
 					<div id="switch" class="unit whole">
 						<ul class="tabs" id="switch-tabs">
-							<li id="switch-out"><span class="name vision-text">Outside</span></li>
-							<li id="switch-embark"><span class="name vision-text">Outside</span></li>
-							<li id="switch-in"><span class="name vision-text">Camp</span></li>
-							<li id="switch-bag"><span class="name vision-text">Bag</span></li>
-							<li id="switch-followers"><span class="name vision-text">Party</span></li>
-							<li id="switch-map"><span class="name vision-text">Map</span></li>
-							<li id="switch-trade"><span class="name vision-text">Trade</span></li>
-							<li id="switch-projects"><span class="name vision-text">Projects</span></li>
-							<li id="switch-upgrades"><span class="name vision-text">Upgrades</span></li>
-							<li id="switch-world"><span class="name vision-text">Tribe</span></li>
-							<li id="switch-milestones"><span class="name vision-text">Milestones</span></li>
+							<li id="switch-out"><span class="name vision-text text-key" data-text-key="ui.main.tab_out_button_label"></span></li>
+							<li id="switch-embark"><span class="name vision-text text-key" data-text-key="ui.main.tab_embark_button_label"></span></li>
+							<li id="switch-in"><span class="name vision-text text-key" data-text-key="ui.main.tab_camp_button_label"></span></li>
+							<li id="switch-bag"><span class="name vision-text text-key" data-text-key="ui.main.tab_bag_button_label"></span></li>
+							<li id="switch-followers"><span class="name vision-text text-key" data-text-key="ui.main.tab_followers_button_label"></span></li>
+							<li id="switch-map"><span class="name vision-text text-key" data-text-key="ui.main.tab_map_button_label"></span></li>
+							<li id="switch-trade"><span class="name vision-text text-key" data-text-key="ui.main.tab_trade_button_label"></span></li>
+							<li id="switch-projects"><span class="name vision-text text-key" data-text-key="ui.main.tab_projects_button_label"></span></li>
+							<li id="switch-upgrades"><span class="name vision-text text-key" data-text-key="ui.main.tab_upgrades_button_label"></span></li>
+							<li id="switch-world"><span class="name vision-text text-key" data-text-key="ui.main.tab_tribe_button_label"></span></li>
+							<li id="switch-milestones"><span class="name vision-text text-key" data-text-key="ui.main.tab_milestones_button_label"></span></li>
 						</ul>
 					</div>
 				</div><!-- grid for the switch -->
@@ -565,15 +565,15 @@
 								<div id="mainmap-sector-details-content">
 									<h3><span id="mainmap-sector-details-name">Sector</span> <span id="mainmap-sector-details-pos"/></h3>
 									<table class="spacious full-width">
-										<tr><td class="textwidth">District:</td><td><span id="mainmap-sector-details-district"></span></td></tr>
-										<tr><td class="textwidth">Distance:</td><td><span id="mainmap-sector-details-distance"></span> <button id="btn-mainmap-sector-path" class="btn-meta">(directions)</button></td></tr>
-										<tr><td class="textwidth">Points of interest:</td><td><span id="mainmap-sector-details-poi"></span></td></tr>
-										<tr><td class="textwidth">Scavenging:</td><td><span id="mainmap-sector-details-res-sca"></span></td></tr>
-										<tr><td class="textwidth">Collectors:</td><td><span id="mainmap-sector-details-res-col"></span></td></tr>
-										<tr><td class="textwidth">Threats:</td><td><span id="mainmap-sector-details-threats"></span></td></tr>
-										<tr><td class="textwidth">Blockers:</td><td><span id="mainmap-sector-details-blockers"></span></td></tr>
-										<tr><td class="textwidth">Environment:</td><td><span id="mainmap-sector-details-env"></span></td></tr>
-										<tr><td class="textwidth">Other:</td><td><span id="mainmap-sector-details-misc"></span></td></tr>
+										<tr><td class="textwidth text-key" data-text-key="ui.map.sector_detail_district_label"></td><td><span id="mainmap-sector-details-district"></span></td></tr>
+										<tr><td class="textwidth text-key" data-text-key="ui.map.sector_detail_distance_label"></td><td><span id="mainmap-sector-details-distance"></span> <button id="btn-mainmap-sector-path" class="btn-meta">(directions)</button></td></tr>
+										<tr><td class="textwidth text-key" data-text-key="ui.map.sector_detail_poi_label"></td><td><span id="mainmap-sector-details-poi"></span></td></tr>
+										<tr><td class="textwidth text-key" data-text-key="ui.map.sector_detail_scavenging_label"></td><td><span id="mainmap-sector-details-res-sca"></span></td></tr>
+										<tr><td class="textwidth text-key" data-text-key="ui.map.sector_detail_collectors_label"></td><td><span id="mainmap-sector-details-res-col"></span></td></tr>
+										<tr><td class="textwidth text-key" data-text-key="ui.map.sector_detail_threats_label"></td><td><span id="mainmap-sector-details-threats"></span></td></tr>
+										<tr><td class="textwidth text-key" data-text-key="ui.map.sector_detail_blockers_label"></td><td><span id="mainmap-sector-details-blockers"></span></td></tr>
+										<tr><td class="textwidth text-key" data-text-key="ui.map.sector_detail_environment_label"></td><td><span id="mainmap-sector-details-env"></span></td></tr>
+										<tr><td class="textwidth text-key" data-text-key="ui.map.sector_detail_other_label"></td><td><span id="mainmap-sector-details-misc"></span></td></tr>
 									</table>
 								</div>
 								<div id="mainmap-sector-details-content-debug">
@@ -635,12 +635,12 @@
 					<div class="grid tabcontainer" id="container-tab-two-upgrades" data-tab="switch-upgrades" style="display: none;">
 						<div class="unit whole">
 							<div id="world-blueprints" class="actionbox">
-								<div class="subheader"><h3>Blueprints</h3></div>
+								<div class="subheader"><h3 class="text-key" data-text-key="ui.upgrades.blueprints_header"></h3></div>
 								<table id="blueprints-list" class="fullwidth">
 								</table>
 							</div>
 							<div id="world-upgrades" class="actionbox">
-								<div class="subheader"><h3>Available upgrades</h3></div>
+								<div class="subheader"><h3 class="text-key" data-text-key="ui.upgrades.available_upgrades_header"></h3></div>
 								<table id="upgrades-list" class="fullwidth spacious">
 								</table>
 								<p id="world-upgrades-empty-message">No available upgrades at the moment.</p>
@@ -871,17 +871,17 @@
 				</div>
 				<div id="save-list-options-selected">
 					<p id="save-list-options-info">Info</p>
-					<button id="btn-save-list-options-save" class="btn-narrow">Save</button>
-					<button id="btn-save-list-options-load" class="btn-narrow">Load</button>
-					<button id="btn-save-list-options-export" class="btn-narrow btn-secondary">Export</button>
+					<button id="btn-save-list-options-save">Save</button>
+					<button id="btn-save-list-options-load">Load</button>
+					<button id="btn-save-list-options-export">Export</button>
 				</div>
 				<div id="save-list-options-export">
 					<p>Export</p>
 					<textarea id="textarea-export-save" rows="4"></textarea>
 					<p id="save-export-info"></p>
-					<button id="btn-copy-export" class="btn-narrow">Copy</button>
-					<button id="btn-download-export" class="btn-narrow">Download</button>
-					<button id="btn-back-from-export" class="btn-narrow btn-secondary">Back</button>
+					<button id="btn-copy-export">Copy</button>
+					<button id="btn-download-export">Download</button>
+					<button id="btn-back-from-export">Back</button>
 				</div>
 			</div>
 		</div>

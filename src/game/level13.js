@@ -31,6 +31,7 @@ define([
 	'game/systems/ui/UIOutPopupTradeSystem',
 	'game/systems/ui/UIOutPopupInventorySystem',
 	'game/systems/ui/UIOutTabBarSystem',
+	'game/systems/ui/UIOutTextSystem',
 	'game/systems/CheatSystem',
 	'game/systems/SlowUpdateSystem',
 	'game/systems/VisionSystem',
@@ -97,6 +98,7 @@ define([
 	UIOutPopupTradeSystem,
 	UIOutPopupInventorySystem,
 	UIOutTabBarSystem,
+	UIOutTextSystem,
 	CheatSystem,
 	SlowUpdateSystem,
 	VisionSystem,
@@ -313,6 +315,7 @@ define([
 
 			this.engine.addSystem(new SlowUpdateSystem(), SystemPriorities.postUpdate);
 
+			this.engine.addSystem(new UIOutTextSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutHeaderSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutElementsSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutLevelSystem(), SystemPriorities.render);

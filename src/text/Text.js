@@ -40,6 +40,7 @@ define(function () {
 			}
 
 			this.defaultTexts = lookup;
+			this.currentTexts = lookup;
 		},
 
 		hasKey: function (key, skipFallback) {

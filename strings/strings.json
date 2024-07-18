@@ -134,19 +134,36 @@
             "_unequip_button_label": "Unequip"
         },
         "main": {
-            "_tab_bag_button_label": "Bag",
+            "tab_bag_button_label": "Bag",
             "tab_bag_header": "Bag",
+            "tab_camp_button_label": "Camp",
+            "tab_embark_button_label": "Outside",
             "tab_embark_header": "Leave camp",
+            "tab_followers_button_label": "Party",
+            "tab_map_button_label": "Map",
+            "tab_milestones_button_label": "Milestones",
             "tab_milestones_header": "Milestones",
+            "tab_out_button_label": "Outside",
+            "tab_projects_button_label": "Projects",
+            "tab_trade_button_label": "Trade",
             "tab_trade_header": "Trade",
+            "tab_tribe_button_label": "Tribe",
             "tab_tribe_header": "Tribe",
+            "tab_upgrades_button_label": "Upgrades",
             "tab_upgrades_header": "Upgrades"
         },
         "map": {
             "_level_status_unexplored_description": "There are still many unvisited streets on this level.",
-            "_sector_detail_district_label": "District",
+            "sector_detail_district_label": "District",
+            "sector_detail_distance_label": "Distance",
+            "sector_detail_poi_label": "Points of interest",
+            "sector_detail_scavenging_label": "Scavenging",
+            "sector_detail_collectors_label": "Collectors",
+            "sector_detail_threats_label": "Threats",
+            "sector_detail_blockers_label": "Blockers",
+            "sector_detail_environment_label": "Environment",
+            "sector_detail_other_label": "Other",
             "_sector_detail_district_type_central_name": "Central",
-            "_sector_detail_poi_label": "Points of interest",
             "_selection_map_style_ascii_label": "ASCII",
             "_selection_map_style_canvas_label": "Canvas"
         },
@@ -170,7 +187,8 @@
             "_injury_effect_description": "Health -{value}%"
         },
         "upgrades": {
-            "_blueprints_header": "Blueprints",
+            "available_upgrades_header": "Available upgrades",
+            "blueprints_header": "Blueprints",
             "_effect_unlocked_buildings_description": "unlocked camp buildings: {list}",
             "_upgrade_status_locked_name": "Locked",
             "_upgrade_status_researched_name": "Researched"
