@@ -144,41 +144,92 @@ define([
 
 			GameGlobalsInitializer.init(this.engine);
 
-			this.initMobileOverlay();
-			this.setupGame(plugins);
+			this.setup(plugins);
 		},
 
-		setupGame: function (plugins) {
-			let game = this;
+		setup: function (plugins) {
+			this.initMobileOverlay();
 
-			if (GameConstants.isMobileOverlayShown) {
-				log.w("START mobile overlay shown, game setup delayed");
-				setTimeout(function() {
-					game.setupGame();
-				}, 500);
-				return;
-			}
-
-			this.addSystems();
-
-			GameGlobals.uiFunctions.init();
-			GameGlobals.uiFunctions.hideGame();
-			GlobalSignals.pageSetUpSignal.dispatch();
-			
-			ExceptionHandler.exceptionCallback = function (ex) { game.handleException(ex) };
-			GlobalSignals.exceptionCallback = function (ex) { game.handleException(ex) };
-			GlobalSignals.gameStateReadySignal.addOnce(function () {
-				game.start();
-				game.initializePlugins(plugins);
-			});
-			
-			GlobalSignals.changelogLoadedSignal.addOnce(function () {
-				ExceptionHandler.wrapCall(this, function () {
-					game.gameManager.setupGame();
+			this.waitForMobileOverlay()
+				.then(() => this.setupEngine())
+				.then(() => this.setupPage())
+				.then(() => this.loadVersion())
+				.then(() => this.setupGame())
+				.then(() => this.initializePlugins(plugins))
+				.catch(ex => {
+					ExceptionHandler.handleException(ex);
 				});
-			});
+		},
 
-			GameGlobals.changeLogHelper.loadVersion();
+		waitForMobileOverlay: function () {
+			return new Promise((resolve, reject) => {
+				if (GameConstants.isMobileOverlayShown) {
+					log.w("START mobile overlay shown, game setup delayed");
+
+					let wait = function () {
+						setTimeout(() => {
+							if (GameConstants.isMobileOverlayShown) {
+								wait();
+							} else {
+								resolve();
+							}
+						}, 500);
+					};
+
+					wait();
+				} else {
+					resolve();
+				}
+			});
+		},
+
+		setupPage: function () {
+			return new Promise((resolve, reject) => {
+				log.i("START " + GameConstants.STARTTimeNow() + "\t setting up page");
+				GameGlobals.uiFunctions.init();
+				GameGlobals.uiFunctions.hideGame();
+				GlobalSignals.pageSetUpSignal.dispatch();
+				resolve();
+			});
+		},
+
+		setupEngine: function () {
+			return new Promise((resolve, reject) => {
+				log.i("START " + GameConstants.STARTTimeNow() + "\t setting up engine");
+				let game = this;
+				
+				ExceptionHandler.exceptionCallback = function (ex) { game.handleException(ex) };
+				GlobalSignals.exceptionCallback = function (ex) { game.handleException(ex) };
+				
+				this.addSystems();
+				resolve();
+			});
+		},
+
+		loadVersion: function () {
+			return new Promise((resolve, reject) => {
+				log.i("START " + GameConstants.STARTTimeNow() + "\t loading versions");
+				GlobalSignals.changelogLoadedSignal.addOnce(function () {
+					ExceptionHandler.wrapCall(this, function () {
+						resolve();
+					});
+				});
+
+				GameGlobals.changeLogHelper.loadVersion();
+			});
+		},
+
+		setupGame: function () {
+			return new Promise((resolve, reject) => {
+				var game = this;
+				
+				GlobalSignals.gameStateReadySignal.addOnce(function () {
+					game.start();
+					resolve();
+				});
+
+				this.gameManager.setupGame();
+			});
 		},
 
 		initMobileOverlay: function () {
@@ -196,14 +247,17 @@ define([
 		},
 
 		initializePlugins: function (plugins) {
-			if (!plugins) return;
-			var game = this;
-			for (let i = 0; i < plugins.length; i++) {
-				log.i("Add plugin " + (i+1) + "/" + plugins.length + ": " + plugins[i]);
-				require([plugins[i]], function (plugin) {
-					game.engine.addSystem(new plugin(), SystemPriorities.update);
-				});
-			}
+			return new Promise((resolve, reject) => {
+				if (!plugins) resolve();;
+				var game = this;
+				for (let i = 0; i < plugins.length; i++) {
+					log.i("Add plugin " + (i+1) + "/" + plugins.length + ": " + plugins[i]);
+					require([plugins[i]], function (plugin) {
+						game.engine.addSystem(new plugin(), SystemPriorities.update);
+					});
+				}
+				resolve();
+			});
 		},
 
 		addSystems: function () {
