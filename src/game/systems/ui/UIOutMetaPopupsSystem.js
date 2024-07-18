@@ -7,6 +7,8 @@ define([
 	
     let UIOutMetaPopupsSystem = Ash.System.extend({
 
+        metaMessages: [],
+
 		constructor: function () {
             this.initElements();
 			return this;
@@ -15,6 +17,7 @@ define([
 		addToEngine: function (engine) {
 			GlobalSignals.add(this, GlobalSignals.popupOpenedSignal, this.onPopupOpened);
 			GlobalSignals.add(this, GlobalSignals.popupClosedSignal, this.onPopupClosed);
+			GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
 		},
 
 		removeFromEngine: function (engine) {
@@ -27,6 +30,37 @@ define([
             let sys = this;
 			$("#settings-checkbox-hotkeys-enabled").change(() => sys.onSettingToggled());
 			$("#settings-checkbox-hotkeys-numpad").change(() => sys.onSettingToggled());
+        },
+
+        loadMetaMessages: function () {
+			let sys = this;
+			$.getJSON('messages.json', function (json) {
+				sys.metaMessages = json.messages;
+                sys.onMetaMessagesLoaded();
+			})
+			.fail(function () {
+                log.w("Failed to load meta messages");
+			});
+        },
+
+        showUnseenMetaMessages: function () {
+            GameGlobals.gameState.seenMetaMessages = GameGlobals.gameState.seenMetaMessages || [];
+            
+            for (let i = 0; i < this.metaMessages.length; i++) {
+                let message = this.metaMessages[i];
+                let id = message.id;
+                if (GameGlobals.gameState.seenMetaMessages.indexOf(id) >= 0) continue;
+
+                this.showMetaMessage(message);
+                GameGlobals.gameState.seenMetaMessages.push(id);
+                return;
+            }
+        },
+
+        showMetaMessage: function (message) {
+            let text = message.text;
+            if (!text) return;
+            GameGlobals.uiFunctions.showInfoPopup("System Message", text, "Continue");
         },
 
         refreshSettingsPopup: function () {
@@ -104,7 +138,15 @@ define([
                 GameGlobals.uiFunctions.updateHotkeyHints();
                 GlobalSignals.settingsChangedSignal.dispatch();
 			}
-        }
+        },
+
+        onGameStarted: function () {
+            this.loadMetaMessages();
+        },
+
+        onMetaMessagesLoaded: function () {
+            this.showUnseenMetaMessages();
+        },
 
 
 	});
