@@ -1,5 +1,6 @@
 define([
 	'ash',
+	'text/Text',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/UIConstants',
@@ -23,7 +24,7 @@ define([
 	'game/components/sector/events/RaidComponent',
 	'game/components/sector/OutgoingCaravansComponent'
 ], function (
-	Ash, GameGlobals, GlobalSignals, UIConstants, CampConstants, ImprovementConstants, OccurrenceConstants, TextConstants, WorldConstants,
+	Ash, Text, GameGlobals, GlobalSignals, UIConstants, CampConstants, ImprovementConstants, OccurrenceConstants, TextConstants, WorldConstants,
 	CampNode, PlayerPositionNode, PlayerStatsNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent, ResourceAccumulationComponent, HopeComponent, LevelComponent, SectorImprovementsComponent, RecruitComponent, TraderComponent, RaidComponent, OutgoingCaravansComponent
 ) {
@@ -70,7 +71,7 @@ define([
 		},
 
 		refresh: function () {
-			$("#tab-header h2").text("Milestones");
+			$("#tab-header h2").text(Text.t("ui.main.tab_milestones_header"));
 			this.updateMilestones();
 		},
 

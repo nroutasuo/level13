@@ -1,5 +1,6 @@
 define([
 	'ash',
+	'text/Text',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/PlayerStatConstants',
@@ -13,7 +14,7 @@ define([
 	'game/components/player/StaminaComponent',
 	'game/components/common/CampComponent',
 ], function (
-	Ash, GameGlobals, GlobalSignals, PlayerStatConstants, UIConstants, ItemConstants, BagConstants,
+	Ash, Text, GameGlobals, GlobalSignals, PlayerStatConstants, UIConstants, ItemConstants, BagConstants,
 	PlayerPositionNode, PlayerLocationNode,
 	BagComponent, ItemsComponent, StaminaComponent, CampComponent
 ) {
@@ -101,7 +102,7 @@ define([
 		},
 		
 		refresh: function () {
-			$("#tab-header h2").text("Leave camp");
+			$("#tab-header h2").text(Text.t("ui.main.tab_embark_header"));
 			if (!this.playerLocationNodes.head) return;
 			this.updateSteppers();
 		},

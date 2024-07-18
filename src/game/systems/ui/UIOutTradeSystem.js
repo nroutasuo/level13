@@ -1,5 +1,6 @@
 define([
 	'ash',
+	'text/Text',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/TradeConstants',
@@ -16,7 +17,7 @@ define([
 	'game/vos/ResourcesVO',
 	'game/vos/OutgoingCaravanVO'
 ], function (
-	Ash, GameGlobals, GlobalSignals, TradeConstants, ItemConstants, OccurrenceConstants, UIConstants, PlayerLocationNode, ItemsNode, TribeUpgradesNode, PositionComponent, OutgoingCaravansComponent, TraderComponent, SectorImprovementsComponent, ResourcesVO, OutgoingCaravanVO
+	Ash, Text, GameGlobals, GlobalSignals, TradeConstants, ItemConstants, OccurrenceConstants, UIConstants, PlayerLocationNode, ItemsNode, TribeUpgradesNode, PositionComponent, OutgoingCaravansComponent, TraderComponent, SectorImprovementsComponent, ResourcesVO, OutgoingCaravanVO
 ) {
 	var UIOutTradeSystem = Ash.System.extend({
 
@@ -66,7 +67,7 @@ define([
 
 			GameGlobals.uiFunctions.toggle("#trade-caravans-incoming-empty-message", this.currentIncomingTraders === 0);
 			GameGlobals.uiFunctions.toggle("#trade-caravans-incoming-container", this.currentIncomingTraders > 0);
-			$("#tab-header h2").text("Trade");
+			$("#tab-header h2").text(Text.t("ui.main.tab_trade_header"));
 		},
 		
 		refresh: function () {

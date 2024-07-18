@@ -1,5 +1,6 @@
 define([
 	'ash',
+	'text/Text',
 	'utils/UIState',
 	'utils/UIList',
 	'game/GameGlobals',
@@ -9,7 +10,7 @@ define([
 	'game/constants/PlayerActionConstants',
 	'game/nodes/player/ItemsNode',
 	'game/components/common/PositionComponent',
-], function (Ash, UIState, UIList, GameGlobals, GlobalSignals, UIConstants, ItemConstants, PlayerActionConstants, ItemsNode, PositionComponent) {
+], function (Ash, Text, UIState, UIList, GameGlobals, GlobalSignals, UIConstants, ItemConstants, PlayerActionConstants, ItemsNode, PositionComponent) {
 
 	var UIOutBagSystem = Ash.System.extend({
 
@@ -173,7 +174,7 @@ define([
 		},
 
 		refresh: function () {
-			this.elements.tabHeader.text("Bag");
+			this.elements.tabHeader.text(Text.t("ui.main.tab_bag_header"));
 
 			var showObsolete = this.showObsolete();
 			var itemDefinitions = this.getCraftableItemDefinitionsByType();

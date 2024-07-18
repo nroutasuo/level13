@@ -1,5 +1,6 @@
 define([
 	'ash',
+	'text/Text',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
@@ -7,7 +8,7 @@ define([
 	'game/constants/UpgradeConstants',
 	'game/constants/TextConstants',
 	'game/nodes/tribe/TribeUpgradesNode',
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, UpgradeConstants, TextConstants, TribeUpgradesNode) {
+], function (Ash, Text, GameGlobals, GlobalSignals, GameConstants, UIConstants, UpgradeConstants, TextConstants, TribeUpgradesNode) {
 	
 	let UIOutUpgradesSystem = Ash.System.extend({
 
@@ -58,7 +59,7 @@ define([
 		},
 		
 		refresh: function () {
-			$("#tab-header h2").text("Upgrades");
+			$("#tab-header h2").text(Text.t("ui.main.tab_upgrades_header"));
 			this.refreshUpgradesLists();
 			this.refreshTechTree(true);
 			this.refreshTechDetails();

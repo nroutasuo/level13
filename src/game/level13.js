@@ -1,5 +1,6 @@
 define([
 	'ash',
+	'text/Text',
 	'core/ExceptionHandler',
 	'core/ConsoleLogger',
 	'game/GameGlobals',
@@ -65,6 +66,7 @@ define([
 	'brejep/tickprovider',
 ], function (
 	Ash,
+	Text,
 	ExceptionHandler,
 	ConsoleLogger,
 	GameGlobals,
@@ -151,6 +153,7 @@ define([
 			this.initMobileOverlay();
 
 			this.waitForMobileOverlay()
+				.then(() => this.loadTexts())
 				.then(() => this.setupEngine())
 				.then(() => this.setupPage())
 				.then(() => this.loadVersion())
@@ -203,6 +206,20 @@ define([
 				
 				this.addSystems();
 				resolve();
+			});
+		},
+
+		loadTexts: function () {
+			return new Promise((resolve, reject) => {
+				log.i("START " + GameConstants.STARTTimeNow() + "\t loading texts");
+				$.getJSON('strings/strings.json', function (json) {
+					Text.setTexts(json);
+					resolve();
+				})
+				.fail(function (jqxhr, textStatus, error) {
+					log.e("Failed to load texts: " + error);
+					reject();
+				});
 			});
 		},
 

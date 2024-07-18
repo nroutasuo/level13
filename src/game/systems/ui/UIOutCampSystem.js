@@ -1,5 +1,6 @@
  define([
 	'ash',
+	'text/Text',
 	'utils/UIState',
 	'utils/UIList',
 	'utils/UIAnimations',
@@ -32,7 +33,7 @@
 	'game/components/sector/events/RaidComponent',
 	'text/Text'
 ], function (
-	Ash, UIState, UIList, UIAnimations, GameGlobals, GlobalSignals,
+	Ash, Text, UIState, UIList, UIAnimations, GameGlobals, GlobalSignals,
 	ImprovementConstants, PlayerActionConstants, UIConstants, UpgradeConstants, OccurrenceConstants, CampConstants, PerkConstants, TextConstants, TribeConstants,
 	PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, TribeUpgradesNode,
 	PerksComponent, PlayerActionComponent,
