@@ -9,6 +9,8 @@ define(function () {
 		defaultTexts: {},
 		currentTexts: {},
 
+		TEXT_PARAM_WILDCARD: "wildcard",
+
 		t: function (key, options) {
 			if (!key) return "";
 
@@ -23,9 +25,16 @@ define(function () {
 				return wrap(key);
 			}
 
-			let text = this.getText(key);
+			if (typeof (options) !== "object") {
+				let p = options;
+				options = {};
+				options[this.TEXT_PARAM_WILDCARD] = p;
+			}
 
-			return wrap(text);
+			let text = this.getText(key);
+			let result = this.replaceParameters(key, text, options);
+
+			return wrap(result);
 		},
 
 		setTexts: function (json) {
@@ -57,6 +66,25 @@ define(function () {
 				log.w("no text found for key [" + key + "] in default texts");
 			}
 			return null;
+		},
+
+		replaceParameters: function (key, text, options) {
+			let result = text;
+
+			let wildcard = this.TEXT_PARAM_WILDCARD;
+
+			result = result.replace(/{(\w+)}/ig, function(match, p) { 
+				if (options[p]) {
+					return options[p];
+				} else if (options[wildcard]) {
+					return options[wildcard];
+				} else {
+					log.w("no parameter [" + p + "] provided for key [" + key + "]");
+					return "?";
+				}
+			});
+
+			return result;
 		},
 		
 		irregularPlurals: {
