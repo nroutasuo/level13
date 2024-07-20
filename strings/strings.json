@@ -66,7 +66,6 @@
         "actions": {
             "_disabled_reason_missing_pieces_description": "Missing pieces",
             "_scavenge_result_description": "Went scavenging",
-            "_scavenge_result_nothing_description": "Didn't find anything useful.",
             "_scout_result_description": "Scouted the area"
         },
         "camp": {
@@ -74,14 +73,16 @@
             "_events_none_description": "All is quiet in the camp.",
             "_improvements_header": "Buildings",
             "_improvements_list_count_label": "Count",
-            "_page_header": "Camp",
             "_population_header": "Population: {value_and_max}",
             "_rename_button_label": "rename",
             "_tooltip_raid_danger_description": "Increases with camp size and decreases with camp defences.",
             "_tooltip_reputation_buildings_label": "Buildings",
             "_tooltip_resource_workers_label": "Workers ({num}): {change}",
             "_tooltip_rumours_population_label": "Population",
-            "_unassigned_workers_field": "Unassigned workers: {value}"
+            "_unassigned_workers_field": "Unassigned workers: {value}",
+            "page_header_default": "Camp",
+            "page_header_outpost": "Outpost",
+            "population_reputation_status_field": "Reputation required: current: {current}, next: {next}"
         },
         "common": {
             "_accumulation_time_left_to_cap_minutes_template": "{value} min to cap",
@@ -101,7 +102,14 @@
             "_tooltip_duration_seconds_field": "Duration: {value}s",
             "_value_and_label_template": "{label}: {value}",
             "_value_and_max_template": "{value}/{max}",
-            "_value_simple_template": "{value}"
+            "_value_simple_template": "{value}",
+            "item_count_field": "{value}x"
+        },
+        "embark": {
+            "warning_low_food_description": "There won't be much food left in the camp.",
+            "warning_low_stamina_description": "Won't get far with low stamina.",
+            "warning_low_supplies_description": "Won't get far without food and water.",
+            "warning_low_water_description": "There won't be much water left in the camp."
         },
         "exploration": {
             "_actions_header": "Search",
@@ -115,7 +123,9 @@
             "_sector_status_no_enemies_description": "There doesn't seem to be anything hostile around.",
             "_sector_status_resources_found_entry": "{name} ({abundance} {value})",
             "_sector_status_resources_found_template": "Resources_found: {list}",
-            "_sector_status_scavenged_percent_template": "Scavenged: {value}%"
+            "_sector_status_scavenged_percent_template": "Scavenged: {value}%",
+            "current_distance_to_camp_field": "Distance to camp: {num}",
+            "current_distance_to_passage_field": "Distance to passage: {num}"
         },
         "inventory": {
             "_equipment_header": "Equipment",
@@ -131,9 +141,13 @@
         "inventory_management": {
             "_take_all_button_label": "Take all",
             "_take_none_button_label": "Leave",
-            "_unequip_button_label": "Unequip"
+            "_unequip_button_label": "Unequip",
+            "result_nothing_found_description": "Didn't find anything useful."
         },
         "main": {
+            "location_header_in_default": "{name} (Level {level})",
+            "location_header_in_onecamp": "{name}",
+            "location_header_out": "Level {level}",
             "tab_bag_button_label": "Bag",
             "tab_bag_header": "Bag",
             "tab_camp_button_label": "Camp",
@@ -154,18 +168,18 @@
         },
         "map": {
             "_level_status_unexplored_description": "There are still many unvisited streets on this level.",
-            "sector_detail_district_label": "District",
-            "sector_detail_distance_label": "Distance",
-            "sector_detail_poi_label": "Points of interest",
-            "sector_detail_scavenging_label": "Scavenging",
-            "sector_detail_collectors_label": "Collectors",
-            "sector_detail_threats_label": "Threats",
-            "sector_detail_blockers_label": "Blockers",
-            "sector_detail_environment_label": "Environment",
-            "sector_detail_other_label": "Other",
             "_sector_detail_district_type_central_name": "Central",
             "_selection_map_style_ascii_label": "ASCII",
-            "_selection_map_style_canvas_label": "Canvas"
+            "_selection_map_style_canvas_label": "Canvas",
+            "sector_detail_blockers_label": "Blockers",
+            "sector_detail_collectors_label": "Collectors",
+            "sector_detail_distance_label": "Distance",
+            "sector_detail_district_label": "District",
+            "sector_detail_environment_label": "Environment",
+            "sector_detail_other_label": "Other",
+            "sector_detail_poi_label": "Points of interest",
+            "sector_detail_scavenging_label": "Scavenging",
+            "sector_detail_threats_label": "Threats"
         },
         "meta": {
             "_enable_hotkeys_checkbox_label": "Enable hotkeys",
@@ -181,17 +195,19 @@
         },
         "milestones": {
             "_effect_base_reputation_label": "Base reputation",
-            "_effect_new_events_template": "New events: {list}"
+            "_effect_new_events_template": "New events: {list}",
+            "population_progress_label": "Population: {current} / {max}"
         },
         "perks": {
             "_injury_effect_description": "Health -{value}%"
         },
         "upgrades": {
-            "available_upgrades_header": "Available upgrades",
-            "blueprints_header": "Blueprints",
             "_effect_unlocked_buildings_description": "unlocked camp buildings: {list}",
             "_upgrade_status_locked_name": "Locked",
-            "_upgrade_status_researched_name": "Researched"
+            "_upgrade_status_researched_name": "Researched",
+            "available_upgrades_header": "Available upgrades",
+            "blueprints_header": "Blueprints",
+            "reseached_upgrades_field": "Upgrades researched: {num}"
         }
     }
 }

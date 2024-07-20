@@ -163,9 +163,8 @@ define([
 				
 				// - requirements: population
 				let populationProgress = Math.min(currentPopulation / requiredPopulation, 1);
-				let populationProgressLabel = "population: " + currentPopulation + " / " + requiredPopulation;
 				$("#milestone-population-bar").data("progress-percent", populationProgress * 100);
-				$("#milestone-population-bar .progress-label").text(populationProgressLabel);
+				$("#milestone-population-bar .progress-label").text(Text.t("ui.milestones.population_progress_label", { current: currentPopulation, max: requiredPopulation }));
 			}
 		},
 		

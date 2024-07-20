@@ -65,7 +65,7 @@ define([
 			this.refreshTechDetails();
 			GameGlobals.uiFunctions.toggle("#world-blueprints", $("#blueprints-list tr").length > 0);
 			GameGlobals.uiFunctions.toggle("#world-upgrades-count", this.lastUpdateUpgradeCount > 0);
-			$("#world-upgrades-count").text("Upgrades researched: " + this.lastUpdateUpgradeCount);
+			$("#world-upgrades-count").text(Text.t("ui.upgrades.reseached_upgrades_field", { num: this.lastUpdateUpgradeCount }));
 		},
 
 		updateBubble: function () {

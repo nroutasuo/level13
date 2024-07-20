@@ -996,7 +996,7 @@ define([
 				else if (resultVO.action === "clear_waste_r") div += "";
 				else if (resultVO.action === "clear_waste_t") div += "";
 				else if (resultVO.hasCustomReward) div += "";
-				else div += "<p class='p-meta'>Didn't find anything useful.</p>";
+				else div += "<p class='p-meta'>" + Text.t("ui.inventory_management.result_nothing_found_description") + ".</p>";
 			}
 			
 			if (resultVO.lostFollowers && resultVO.lostFollowers.length > 0) {

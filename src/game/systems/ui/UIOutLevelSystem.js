@@ -878,11 +878,11 @@ define([
 			GameGlobals.uiFunctions.toggle($("#out-distance-indicator"), showDistanceIndicator);
 			if (showDistanceIndicator) {
 				if (hasCampOnLevel) {
-					$("#out-distance-indicator").text("Distance to camp: " + pathToCampLen);
+					$("#out-distance-indicator").text(Text.t("ui.exploration.current_distance_to_camp_field", pathToCampLen));
 				} else {
 					let pathToPassage = GameGlobals.playerHelper.getPathToPassage();
 					let pathToPassageLen = pathToPassage ? pathToPassage.length : "?";
-					$("#out-distance-indicator").text("Distance to passage: " + pathToPassageLen);
+					$("#out-distance-indicator").text(Text.t("ui.exploration.current_distance_to_passage_field", pathToPassageLen));
 				}
 			}
 		},

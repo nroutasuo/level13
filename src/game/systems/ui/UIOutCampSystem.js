@@ -135,9 +135,9 @@
 			let position = this.playerPosNodes.head.position.getPosition();
 			let campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
 			let isOutpost = GameGlobals.campBalancingHelper.isOutpost(campOrdinal);
-			let header = "Camp";
-			if (isOutpost) header += " (small)";
-			$("#tab-header h2").text(header);
+			let headerTextKey = "ui.camp.page_header_default";
+			if (isOutpost) header += "ui.camp.page_header_outpost";
+			$("#tab-header h2").text(Text.t(headerTextKey));
 
 			this.updateAssignedWorkers();
 			this.updateWorkerMaxDescriptions();
@@ -220,7 +220,7 @@
 			let isReputationBlocking = reqRepNext < reputation;
 
 			GameGlobals.uiFunctions.updateText($("#in-population-next"), populationChangePerSecWithoutCooldown >= 0 ? "Next worker:" : "Worker leaving:");
-			GameGlobals.uiFunctions.updateText($("#in-population-reputation"), "Reputation required: " + reqRepCur + " (current) " + reqRepNext + " (next)");
+			GameGlobals.uiFunctions.updateText($("#in-population-reputation"), Text.t("ui.camp.population_reputation_status_field", { current: reqRepCur, next: reqRepNext }));
 			GameGlobals.uiFunctions.updateText($("#in-population h3"), "Population: " + Math.floor(campComponent.population) + " / " + (maxPopulation));
 			GameGlobals.uiFunctions.updateText($("#in-population #in-population-status span"), "Unassigned workers: " + freePopulation);
 			GameGlobals.uiFunctions.updateText($("#in-population #in-population-autoassigned"), "Auto-assigned workers: " + autoAssignedWorkersText);

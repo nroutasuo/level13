@@ -177,29 +177,32 @@ define([
 		},
 		
 		updateWarning: function (campResourcesAcc, campResources, selectedWater, selectedFood) {
-			var warning = "";
 			var staminaComponent = this.playerPosNodes.head.entity.get(StaminaComponent);
 			var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
 			if (!campComponent) return;
+
+			let warningTextKey = "";
+
 			var campPopulation = Math.floor(campComponent.population);
 			if (staminaComponent.stamina < PlayerStatConstants.getStaminaWarningLimit(staminaComponent) * 2) {
-				warning = "Won't get far with low stamina.";
+				warningTextKey = "ui.embark.warning_low_stamina_description";
+			} else if (selectedWater < 1 || selectedFood < 1) {
+				warningTextKey = "ui.embark.warning_low_supplies_description";
 			} else if (campPopulation >= 1) {
 				var remainingWater = campResources.resources.getResource(resourceNames.water) - selectedWater;
 				var remainingFood = campResources.resources.getResource(resourceNames.food) - selectedFood;
 				var isWaterDecreasing = campResourcesAcc.resourceChange.getResource(resourceNames.water) < 0;
 				var isFoodDecreasing = campResourcesAcc.resourceChange.getResource(resourceNames.food) < 0;
 				if ((isWaterDecreasing && selectedWater > 0 && remainingWater <= campPopulation) || remainingWater < 1) {
-					warning = "There won't be much water left in the camp.";
+					warningTextKey = "ui.embark.warning_low_water_description";
 				}
 				else if ((isFoodDecreasing && selectedFood > 0 && remainingFood <= campPopulation) || remainingFood < 1) {
-					warning = "There won't be much food left in the camp.";
+					warningTextKey = "ui.embark.warning_low_food_description";
 				}
-			} else if (selectedWater < 1 || selectedFood < 1) {
-				warning = "Won't get far without food and water.";
-			}
-			$("#embark-warning").text(warning);
-			GameGlobals.uiFunctions.toggle("#embark-warning", warning.length > 0);
+			} 
+			
+			$("#embark-warning").text(Text.t(warningTextKey));
+			GameGlobals.uiFunctions.toggle("#embark-warning", warningTextKey.length > 0);
 		},
 		
 		regenrateEmbarkItems: function () {

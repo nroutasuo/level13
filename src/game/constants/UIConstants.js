@@ -1,5 +1,6 @@
 // Singleton with helper methods for UI elements used throughout the game
 define(['ash',
+	'text/Text',
 	'game/GameGlobals',
 	'game/constants/ColorConstants',
 	'game/constants/StoryConstants',
@@ -17,7 +18,7 @@ define(['ash',
 	'game/components/sector/SectorLocalesComponent',
 	'game/components/sector/PassagesComponent',
 	'utils/UIAnimations'
-], function (Ash, GameGlobals,
+], function (Ash, Text, GameGlobals,
 	ColorConstants, StoryConstants, PositionConstants, SectorConstants, FollowerConstants, ItemConstants, BagConstants, PerkConstants, UpgradeConstants, PlayerActionConstants,
 	PositionComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent,
 	PassagesComponent, UIAnimations) {
@@ -127,7 +128,7 @@ define(['ash',
 		updateItemSlot: function (slot, count) {
 			var $slot = this.parseElement(slot);
 			if (!$slot) return;
-			$slot.find(".item-count").text(count + "x");
+			$slot.find(".item-count").text(Text.t("ui.common.item_count_field", count));
 			GameGlobals.uiFunctions.toggle($slot, count > 0);
 		},
 
@@ -315,7 +316,7 @@ define(['ash',
 			var $li = this.parseElement(li);
 			if (!$li) return;
 			var showAmount = Math.floor(amount);
-			$li.find(".item-count").text(showAmount + "x");
+			$li.find(".item-count").text(sText.t("ui.common.item_count_field", showAmount));
 			GameGlobals.uiFunctions.toggle($li, showAmount > 0);
 		},
 
@@ -337,7 +338,7 @@ define(['ash',
 			var $li = this.parseElement(li);
 			if (!$li) return;
 			var showAmount = Math.floor(amount);
-			$li.find(".item-count").text(showAmount + "x");
+			$li.find(".item-count").text(Text.t("ui.common.item_count_field", showAmount));
 			GameGlobals.uiFunctions.toggle($li, showAmount > 0);
 		},
 

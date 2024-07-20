@@ -1,5 +1,6 @@
 define([
 	'ash',
+	'text/Text',
 	'utils/UIList',
 	'game/GameGlobals',
 	'game/GlobalSignals',
@@ -32,6 +33,7 @@ define([
 	'utils/UIState',
 	'utils/UIAnimations'
 ], function (Ash,
+	Text,
 	UIList, 
 	GameGlobals, GlobalSignals, 
 	ColorConstants, GameConstants, CampConstants, LevelConstants, UIConstants, FollowerConstants, ItemConstants, FightConstants, PerkConstants, UpgradeConstants, PlayerStatConstants,
@@ -1018,13 +1020,22 @@ define([
 
 		updateHeaderTexts: function () {
 			if (!this.currentLocationNodes.head) return;
-			let campCount = GameGlobals.gameState.numCamps;
 			let playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
 			let campComponent = this.currentLocationNodes.head.entity.get(CampComponent);
 			let isInCamp = playerPosition.inCamp;
-			let headerText = isInCamp && campComponent ? 
-				campComponent.getName() + (campCount > 1 ? " (level " + playerPosition.level + ")" : "") : 
-				"level " + playerPosition.level;
+
+			let headerText; 
+			if (isInCamp && campComponent) { 
+				let campCount = GameGlobals.gameState.numCamps;
+				if (campCount > 1) {
+					headerText = Text.t("ui.main.location_header_in_onecamp", { name: campComponent.getName(), level: playerPosition.level });
+				} else {
+					headerText = Text.t("ui.main.location_header_in_default", { name: campComponent.getName(), level: playerPosition.level });
+				}
+			} else {
+				headerText = Text.t("ui.main.location_header_out", playerPosition.level);
+			}
+
 			this.elements.locationHeader.text(headerText);
 
 			GameGlobals.uiFunctions.toggle("#grid-tab-header", GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.out || isInCamp);
