@@ -70,19 +70,21 @@
         },
         "camp": {
             "_events_header": "Events",
-            "_events_none_description": "All is quiet in the camp.",
-            "_improvements_header": "Buildings",
+            "improvements_header": "Buildings",
             "_improvements_list_count_label": "Count",
-            "_population_header": "Population: {value_and_max}",
             "_rename_button_label": "rename",
             "_tooltip_raid_danger_description": "Increases with camp size and decreases with camp defences.",
             "_tooltip_reputation_buildings_label": "Buildings",
             "_tooltip_resource_workers_label": "Workers ({num}): {change}",
             "_tooltip_rumours_population_label": "Population",
-            "_unassigned_workers_field": "Unassigned workers: {value}",
+            "events_none_description": "All is quiet in the camp.",
             "page_header_default": "Camp",
             "page_header_outpost": "Outpost",
-            "population_reputation_status_field": "Reputation required: current: {current}, next: {next}"
+            "population_header": "Population: {current} / {max}",
+            "population_next_worker_progress_label": "Next worker:",
+            "population_reputation_status_field": "Reputation required: current: {current}, next: {next}",
+            "population_unassigned_workers_field": "Unassigned workers: {value}",
+            "population_worker_leaving_progress_label": "Worker leaving:"
         },
         "common": {
             "_accumulation_time_left_to_cap_minutes_template": "{value} min to cap",
@@ -191,7 +193,9 @@
             "_hotkey_move_north_label": "Move N",
             "_quick_save_button_label": "Save",
             "_restart_button_label": "Restart",
-            "_version_number_indicator_field": "v. {major}.{minor}.{patch} ({type})"
+            "_version_number_indicator_field": "v. {major}.{minor}.{patch} ({type})",
+            "game_paused_message": "Game paused",
+            "game_saved_message": "Game saved"
         },
         "milestones": {
             "_effect_base_reputation_label": "Base reputation",

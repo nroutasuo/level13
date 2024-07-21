@@ -917,20 +917,21 @@ define([
 
 		updateGameMsg: function () {
 			if (this.engine) {
-				var gameMsg = "";
-				var saveSystem = this.engine.getSystem(SaveSystem);
-				var timeStamp = new Date().getTime();
+				let gameMsgKey = "";
+				let saveSystem = this.engine.getSystem(SaveSystem);
+				let timeStamp = new Date().getTime();
 
-				if (saveSystem && saveSystem.error)
-					gameMsg = saveSystem.error;
-				else if (saveSystem && saveSystem.lastDefaultSaveTimestamp > 0 && timeStamp - saveSystem.lastDefaultSaveTimestamp < 3 * 1000)
-					gameMsg = "Game saved ";
+				if (saveSystem && saveSystem.error) {
+					gameMsgKey = saveSystem.error;
+				} else if (saveSystem && saveSystem.lastDefaultSaveTimestamp > 0 && timeStamp - saveSystem.lastDefaultSaveTimestamp < 3 * 1000)
+					gameMsgKey = "ui.meta.game_saved_message";
+				else if (GameGlobals.gameState.isPaused) {
+					gameMsgKey = "ui.meta.game_paused_message";
+				}
 
-				if (GameGlobals.gameState.isPaused) gameMsg += "Paused";
-
-				if (this.lastGameMsg !== gameMsg) {
-					this.elements.gameMsg.text(gameMsg);
-					this.lastGameMsg = gameMsg;
+				if (this.lastGameMsg !== gameMsgKey) {
+					this.elements.gameMsg.text(Text.t(gameMsgKey));
+					this.lastGameMsg = gameMsgKey;
 				}
 			}
 		},

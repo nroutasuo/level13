@@ -206,6 +206,7 @@
 		},
 
 		updatePopulationDisplay: function (campComponent, maxPopulation, reputation, robots, maxRobots) {
+			let currentPopulation =  Math.floor(campComponent.population);
 			let freePopulation = campComponent.getFreePopulation();
 			let isPopulationMaxed = campComponent.population >= maxPopulation;
 			let populationChangePerSec = campComponent.populationChangePerSec || 0;
@@ -219,10 +220,12 @@
 			let reqRepNext = CampConstants.getRequiredReputation(Math.floor(campComponent.population) + 1);
 			let isReputationBlocking = reqRepNext < reputation;
 
-			GameGlobals.uiFunctions.updateText($("#in-population-next"), populationChangePerSecWithoutCooldown >= 0 ? "Next worker:" : "Worker leaving:");
+			let populationProgressLabelKey = populationChangePerSecWithoutCooldown >= 0 ? "ui.camp.population_next_worker_progress_label" : "ui.camp.population_worker_leaving_progress_label";
+
+			GameGlobals.uiFunctions.updateText($("#in-population-next"), Text.t(populationProgressLabelKey));
 			GameGlobals.uiFunctions.updateText($("#in-population-reputation"), Text.t("ui.camp.population_reputation_status_field", { current: reqRepCur, next: reqRepNext }));
-			GameGlobals.uiFunctions.updateText($("#in-population h3"), "Population: " + Math.floor(campComponent.population) + " / " + (maxPopulation));
-			GameGlobals.uiFunctions.updateText($("#in-population #in-population-status span"), "Unassigned workers: " + freePopulation);
+			GameGlobals.uiFunctions.updateText($("#in-population h3"), Text.t("ui.camp.population_header", { current: currentPopulation, max: maxPopulation }));
+			GameGlobals.uiFunctions.updateText($("#in-population #in-population-status span"), Text.t("ui.camp.population_unassigned_workers_field", { value: freePopulation }));
 			GameGlobals.uiFunctions.updateText($("#in-population #in-population-autoassigned"), "Auto-assigned workers: " + autoAssignedWorkersText);
 			GameGlobals.uiFunctions.updateText($("#in-population #in-population-robots .value"), Math.floor(robots) + " / " + maxRobots);
 
