@@ -1,6 +1,7 @@
 // Helper methods related to player actions (costs, requirements, descriptions) - common definitions for all actions
 define([
 	'ash',
+	'text/Text',
 	'utils/ValueCache',
 	'game/GameGlobals',
 	'game/GlobalSignals',
@@ -50,7 +51,7 @@ define([
 	'game/vos/ResourcesVO',
 	'game/vos/ImprovementVO'
 ], function (
-	Ash, ValueCache, GameGlobals, GlobalSignals, CampConstants, LocaleConstants, PositionConstants, PlayerActionConstants, PlayerStatConstants, FollowerConstants,
+	Ash, Text, ValueCache, GameGlobals, GlobalSignals, CampConstants, LocaleConstants, PositionConstants, PlayerActionConstants, PlayerStatConstants, FollowerConstants,
 	ImprovementConstants, ItemConstants, BagConstants, MovementConstants, UpgradeConstants, PerkConstants, TextConstants,
 	TradeConstants, UIConstants, WorldConstants, PlayerActionResultNode, PlayerStatsNode, PlayerResourcesNode,
 	PlayerLocationNode, TribeUpgradesNode, NearestCampNode, LevelComponent, PositionComponent, ResourcesComponent,
@@ -2515,12 +2516,10 @@ define([
 			switch (improvementID) {
 				case "passageUp":
 				case "passageDown":
-					return "passage";
-				case "camp":
-					return "camp";
+					return "game.improvements.passage_general_name_default";
 				default:
 					// TODO determine improvement level to use
-					return ImprovementConstants.getImprovementDisplayName(improvementID);
+					return Text.t(ImprovementConstants.getImprovementDisplayNameKey(improvementID));
 			}
 		},
 		

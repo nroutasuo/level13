@@ -16,7 +16,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 				sortScore: 10000,
 			},
 			campfire: {
-				displayNames: [ "Campfire", "Townfire", "Everfire" ],
+				displayNames: [ "campfire_name_default", "campfire_name_l2", "campfire_name_l3" ],
 				description: "Increases rumour generation and unlocks upgrades.",
 				useActionName: "Sit down",
 				improvementLevelsPerTechLevel: 5,
@@ -24,7 +24,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 				logMsgImproved: "Made the campfire a bit cozier",
 			},
 			house: {
-				displayNames: [ "Hut", "House" ],
+				displayNames: [ "house_name_l1", "house_name_default" ],
 				description: "A place for " + CampConstants.POPULATION_PER_HOUSE + " people to stay.",
 				improvementLevelsPerTechLevel: 0,
 				sortScore: 9000,
@@ -42,7 +42,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 			},
 			hospital: {
 				canBeDismantled: true,
-				displayNames: [ "Clinic", "Hospital", "Medical Center" ],
+				displayNames: [ "hospital_name_l1", "hospital_name_default", "hospital_name_l3" ],
 				description: "Enables healing injuries.",
 				useActionName: "Treatment",
 				useActionName2: "Augment",
@@ -276,15 +276,20 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 		},
 		
 		getImprovementDisplayName: function (improvementID, level) {
+			log.w("deprecated getImprovementDisplayName");
+			return this.getImprovementDisplayNameKey(improvementID, level);
+		},
+
+		getImprovementDisplayNameKey: function (improvementID, level) {
 			level = level || 1;
 			let def = this.getDef(improvementID);
-			let result = improvementNames[improvementID] || "[" + improvementID + "]";
+			let result = "game.improvements." + improvementID + "_name_default";
 			if (!def) return result;
 			let names = def.displayNames;
 			if (!names || names.length == 0) return result;
 			let majorLevel = this.getMajorLevel(improvementID, level);
 			let index = Math.min(majorLevel - 1, names.length - 1);
-			return names[index];
+			return "game.improvements." + names[index];
 		},
 		
 		getImproveActionName: function (improvementName) {

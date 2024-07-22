@@ -9,9 +9,57 @@
             "_scout_name": "Scout"
         },
         "improvements": {
-            "_improvement_campfire_name": "Campfire",
-            "_improvement_home_name": "Tent",
-            "_improvement_house_description": "A place for {num} people to stay."
+            "_improvement_house_description": "A place for {num} people to stay.",
+            "apothecary_name_default": "Apothecary",
+            "aqueduct_name_default": "Aqueduct",
+            "barracks_name_default": "Barracks",
+            "beacon_name_default": "Beacon",
+            "camp_name_default": "Camp",
+            "campfire_name_default": "Campfire",
+            "campfire_name_l2": "Townfire",
+            "campfire_name_l3": "Everfire",
+            "cementmill_name_default": "Cement mill",
+            "collector_food_name_default": "Trap",
+            "collector_water_name_default": "Bucker",
+            "darkfarm_name_default": "Snail Farm",
+            "fortification_name_default": "Fortifications",
+            "garden_name_default": "Moss Garden",
+            "generator_name_default": "Generator",
+            "greenhouse_name_default": "Greenhouse",
+            "home_name_default": "Tent",
+            "hospital_name_default": "Hospital",
+            "hospital_name_l1": "Clinic",
+            "hospital_name_l3": "Medical Center",
+            "house2_name_default": "Tower Block",
+            "house_name_default": "House",
+            "house_name_l1": "Hut",
+            "inn_name_default": "Inn",
+            "library_name_default": "Library",
+            "lights_name_default": "Lights",
+            "luxuryOutpost_name_default": "Resource Outpost",
+            "market_name_default": "Market",
+            "passage_general_name_default": "Passage",
+            "passageDownElevator_name_default": "Elevator Down (Repair)",
+            "passageDownHole_name_default": "Elevator Down (Build)",
+            "passageDownStairs_name_default": "Staircase Down",
+            "passageUpElevator_name_default": "Elevator Up (Repair)",
+            "passageUpHole_name_default": "Elevator Up (Build)",
+            "passageUpStairs_name_default": "Staircase Up",
+            "radiotower_name_default": "Radio Tower",
+            "researchcenter_name_default": "Research Center",
+            "robotFactory_name_default": "Robot Factory",
+            "shrine_name_default": "Shrine",
+            "smithy_name_default": "Smithy",
+            "spaceship1_name_default": "Colony Hull",
+            "spaceship2_name_default": "Colony Shield",
+            "spaceship3_name_default": "Colony Life Support",
+            "square_name_default": "Square",
+            "stable_name_default": "Caravan stable",
+            "storage_name_default": "Storage",
+            "sundome_name_default": "Sun Dome",
+            "temple_name_default": "Temple",
+            "tradepost_connector_name_default": "Great Elevator",
+            "tradepost_name_default": "Trading Post"
         },
         "item": {
             "_category_exploration_name": "Exploration",
@@ -34,9 +82,15 @@
         },
         "stats": {
             "_health_maximum_name": "Max vision",
-            "_health_name": "Health",
             "_vision_description": "Makes exploration safer and scavenging more effective",
-            "_vision_name": "Vision"
+            "evidence_name": "Evidence",
+            "health_name": "Health",
+            "hope_name": "Hope",
+            "insight_name": "Insight",
+            "rumours_name": "Rumours",
+            "scavenge_name_short": "Scavenge",
+            "stamina_name": "Stamina",
+            "vision_name": "Vision"
         },
         "upgrades": {
             "_crafting_name": "Crafting",
@@ -70,21 +124,25 @@
         },
         "camp": {
             "_events_header": "Events",
-            "improvements_header": "Buildings",
             "_improvements_list_count_label": "Count",
             "_rename_button_label": "rename",
             "_tooltip_raid_danger_description": "Increases with camp size and decreases with camp defences.",
             "_tooltip_reputation_buildings_label": "Buildings",
             "_tooltip_resource_workers_label": "Workers ({num}): {change}",
             "_tooltip_rumours_population_label": "Population",
+            "current_population_label": "Population",
             "events_none_description": "All is quiet in the camp.",
+            "improvements_header": "Buildings",
             "page_header_default": "Camp",
             "page_header_outpost": "Outpost",
             "population_header": "Population: {current} / {max}",
             "population_next_worker_progress_label": "Next worker:",
             "population_reputation_status_field": "Reputation required: current: {current}, next: {next}",
             "population_unassigned_workers_field": "Unassigned workers: {value}",
-            "population_worker_leaving_progress_label": "Worker leaving:"
+            "population_worker_leaving_progress_label": "Worker leaving:",
+            "storage_name_long_camp": "Camp storage",
+            "storage_name_long_connected": "Tribe storage",
+            "storage_name_short": "Storage"
         },
         "common": {
             "_accumulation_time_left_to_cap_minutes_template": "{value} min to cap",
@@ -114,8 +172,6 @@
             "warning_low_water_description": "There won't be much water left in the camp."
         },
         "exploration": {
-            "_actions_header": "Search",
-            "_build_actions_header": "Build",
             "_distance_to_poi_template": "({value} blocks)",
             "_move_header": "Wander",
             "_sector_position_ne_template": "{X}E {Y}N",
@@ -126,8 +182,11 @@
             "_sector_status_resources_found_entry": "{name} ({abundance} {value})",
             "_sector_status_resources_found_template": "Resources_found: {list}",
             "_sector_status_scavenged_percent_template": "Scavenged: {value}%",
+            "build_actions_header": "Build",
             "current_distance_to_camp_field": "Distance to camp: {num}",
-            "current_distance_to_passage_field": "Distance to passage: {num}"
+            "current_distance_to_passage_field": "Distance to passage: {num}",
+            "locales_header": "Locales",
+            "scavenge_actions_header": "Search"
         },
         "inventory": {
             "_equipment_header": "Equipment",
@@ -138,7 +197,10 @@
             "_item_stat_field_template": "{name}: +{value}",
             "_other_items_header": "Other items",
             "_show_obsolete_checkbox_label": "Show obsolete",
-            "_tooltip_equipment_label": "equipment"
+            "_tooltip_equipment_label": "equipment",
+            "storage_name_long": "Bag capacity",
+            "storage_name_no_bag": "Carry capacity",
+            "storage_name_short": "Capacity"
         },
         "inventory_management": {
             "_take_all_button_label": "Take all",
@@ -204,6 +266,9 @@
         },
         "perks": {
             "_injury_effect_description": "Health -{value}%"
+        },
+        "tribe": {
+            "current_reputation_label": "Reputation"
         },
         "upgrades": {
             "_effect_unlocked_buildings_description": "unlocked camp buildings: {list}",

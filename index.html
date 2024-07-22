@@ -74,16 +74,16 @@
 					-->
 					<div id="mobile-header-camp" class="mobile-header-section">
 						<div id="header-camp-storage-mobile" class="stat-indicator header-camp-storage">
-							<span class="label">Storage</span>
+							<span class="label"></span>
 							<span class="value">0</span>
 						</div>
 						<div id="header-camp-reputation-mobile" class="stat-indicator header-camp-reputation">
-							<span class="label">Reputation</span>
+							<span class="label text-key" data-text-key="ui.tribe.current_reputation_label"></span>
 							<span class="value">0</span>
 							<span id="reputation-change-indicator-mobile" class="change-indicator"></span>
 						</div>
 						<div id="header-camp-population-mobile" class="stat-indicator header-camp-population">
-							<span class="label">Population</span>
+							<span class="label text-key" data-text-key="ui.camp.current_population_label"></span>
 							<span class="value">0</span>
 							<span id="population-change-indicator-mobile" class="change-indicator"></span>
 						</div>
@@ -162,12 +162,12 @@
 								<span class="value">0</span>
 							</div>
 							<div id="header-camp-reputation-regular" class="stat-indicator header-camp-reputation">
-								<span class="label">Reputation</span>
+								<span class="label text-key" data-text-key="ui.tribe.current_reputation_label"></span>
 								<span class="value">0</span>
 								<span id="reputation-change-indicator-regular" class="change-indicator"></span>
 							</div>
 							<div id="header-camp-population-regular" class="stat-indicator header-camp-population">
-								<span class="label">Population</span>
+								<span class="label text-key" data-text-key="ui.camp.current_population_label"></span>
 								<span class="value">0</span>
 								<span id="population-change-indicator-regular" class="change-indicator"></span>
 							</div>
@@ -340,7 +340,7 @@
 							</p>
 							<div class="actionbox">
 							<button class="action" id="in-action-leave" action="leave_camp">Go</button>
-							<span class="warning hidden" id="embark-warning"></span>
+							<span class="warning hidden-by-default" id="embark-warning"></span>
 							</div>
 						</div>
 					</div>
@@ -396,7 +396,7 @@
 						
 						<div class="unit unit-rest">
 							<div class="subheader" id="header-out-actions">
-								<h3>Search</h3>
+								<h3 class="text-key" data-text-key="ui.exploration.scavenge_actions_header"></h3>
 							</div>
 							<div id="out-actions" class="actionbox">
 							<button class="action action-location tabbutton" data-tab="switch-out" id="out-action-sca" action="scavenge">Scavenge</button>
@@ -413,6 +413,7 @@
 							</div>
 							
 							<div class="subheader" id="header-out-improvements">
+								<h3 class="text-key" data-text-key="ui.exploration.build_actions_header"></h3>
 								<h3>Build</h3>
 							</div>
 							<div id="out-improvements" class="actionbox">
@@ -439,7 +440,7 @@
 							</div>
 							<div class="actionbox" id="out-locales">
 								<div class="subheader">
-									<h3>Locations</h3>
+									<h3 class="text-key" data-text-key="ui.exploration.locales_header"></h3>
 								</div>
 								<table id="table-out-actions-locales">
 								</table>

@@ -125,8 +125,9 @@ define([
 				if (reqs.tribe && reqs.tribe.improvements) {
 					for (let improvementID in reqs.tribe.improvements) {
 						let improvementLevel = GameGlobals.campHelper.getCurrentMaxBuiltImprovementLevel(improvementID);
-						let getImprovementDisplayName = ImprovementConstants.getImprovementDisplayName(improvementID, improvementLevel);
-						requirementsDiv += this.getMilestoneReqsListEntry(getImprovementDisplayName, reqs.tribe.improvements[improvementID][0], GameGlobals.playerActionsHelper.getCurrentImprovementCountTotal(improvementID));
+						let improvementDisplayNameKey = ImprovementConstants.getImprovementDisplayNameKey(improvementID, improvementLevel);
+						let improvementDisplayName = Text.t(improvementDisplayNameKey);
+						requirementsDiv += this.getMilestoneReqsListEntry(improvementDisplayName, reqs.tribe.improvements[improvementID][0], GameGlobals.playerActionsHelper.getCurrentImprovementCountTotal(improvementID));
 					}
 				}
 				if (reqs.tribe && reqs.tribe.projects) {

@@ -30,6 +30,8 @@ define(['ash',
 
 			hotkeys: {},
 
+			texts: [],
+
 			HOTKEY_DEFAULT_MODIFIER: "HOTKEY_DEFAULT_MODIFIER",
 			HOTKEY_DEFAULT_MODIFIER_KEY: "shiftKey",
 
@@ -1231,6 +1233,18 @@ define(['ash',
 					}
 				}
 				return (($element).is(":visible"));
+			},
+
+			setText: function (selector, key, options) {
+				this.texts[selector] = { key: key, options: options };
+				this.updateText($(selector), Text.t(key, options));
+			},
+
+			updateTexts: function () {
+				for (let selector in this.texts) {
+					let saved = this.texts[selector];
+					this.updateText($(selector), Text.t(saved.key, saved.options));
+				}
 			},
 
 			updateText: function ($elem, text) {

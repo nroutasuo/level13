@@ -137,7 +137,7 @@
 			let isOutpost = GameGlobals.campBalancingHelper.isOutpost(campOrdinal);
 			let headerTextKey = "ui.camp.page_header_default";
 			if (isOutpost) header += "ui.camp.page_header_outpost";
-			$("#tab-header h2").text(Text.t(headerTextKey));
+			GameGlobals.uiFunctions.setText("#tab-header h2", headerTextKey);
 
 			this.updateAssignedWorkers();
 			this.updateWorkerMaxDescriptions();
@@ -224,7 +224,7 @@
 
 			GameGlobals.uiFunctions.updateText($("#in-population-next"), Text.t(populationProgressLabelKey));
 			GameGlobals.uiFunctions.updateText($("#in-population-reputation"), Text.t("ui.camp.population_reputation_status_field", { current: reqRepCur, next: reqRepNext }));
-			GameGlobals.uiFunctions.updateText($("#in-population h3"), Text.t("ui.camp.population_header", { current: currentPopulation, max: maxPopulation }));
+			GameGlobals.uiFunctions.setText("#in-population h3", "ui.camp.population_header", { current: currentPopulation, max: maxPopulation });
 			GameGlobals.uiFunctions.updateText($("#in-population #in-population-status span"), Text.t("ui.camp.population_unassigned_workers_field", { value: freePopulation }));
 			GameGlobals.uiFunctions.updateText($("#in-population #in-population-autoassigned"), "Auto-assigned workers: " + autoAssignedWorkersText);
 			GameGlobals.uiFunctions.updateText($("#in-population #in-population-robots .value"), Math.floor(robots) + " / " + maxRobots);
@@ -490,7 +490,7 @@
 				elem.level.text(improvementLevel);
 				elem.level.toggleClass("badge-disabled", existingImprovements < 1 || !improveAction || maxImprovementLevel <= 1);
 				
-				elem.btnBuild.find(".btn-label").text(ImprovementConstants.getImprovementDisplayName(improvementID, improvementLevel));
+				elem.btnBuild.find(".btn-label").text(Text.t(ImprovementConstants.getImprovementDisplayNameKey(improvementID, improvementLevel)));
 				elem.btnImprove.find(".btn-label").text(isNextLevelMajor ? "▲" : "△")
 
 				var commonVisibilityRule = (buildActionEnabled || existingImprovements > 0 || showActionDisabledReason);

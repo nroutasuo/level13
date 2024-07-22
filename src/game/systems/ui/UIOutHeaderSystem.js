@@ -183,10 +183,11 @@ define([
 			let tribeStatNames = [ "evidence", "rumours", "hope", "insight" ];
 			for (let i = 0; i < tribeStatNames.length; i++) {
 				let tribeStatName = tribeStatNames[i];
+				let playerStatTextKey = "game.stats." + tribeStatName + "_name";
 				statDiv = "";
 				statDiv += "<div class='info-callout-target info-callout-target-small'>";
 				statDiv += "<div class='stat-indicator stat-indicator-" + tribeStatName + "'>";
-				statDiv += "<span class='label'>" + tribeStatName + "</span>";
+				statDiv += "<span class='label text-key' data-text-key='" + playerStatTextKey + "'></span>";
 				statDiv += "<span class='value'>0</span>";
 				statDiv += "<span class='change-indicator change-indicator-" + tribeStatName + "'><span>";
 				statDiv += "</div>";
@@ -198,10 +199,13 @@ define([
 			let playerStatNames = [ "vision", "health", "stamina", "scavenge", "scavenge-bonus" ];
 			for (let i = 0; i < playerStatNames.length; i++) {
 				let playerStatName = playerStatNames[i];
+				let playerStatTextKey = "game.stats." + playerStatName + "_name";
+				if (playerStatName == "scavenge") playerStatTextKey += "_short";
+
 				statDiv = "";
 				statDiv += "<div class='info-callout-target info-callout-target-small'>";
 				statDiv += "<div class='stat-indicator-" + playerStatName + " stat-indicator'>";
-				statDiv += "<span class='label'>" + playerStatName + "</span>";
+				statDiv += "<span class='label text-key' data-text-key='" + playerStatTextKey + "'></span>";
 				statDiv += "<div class='stats-value-container'>";
 				statDiv += "<span class='value'>0</span>";
 				statDiv += "<span class='change-indicator change-indicator-" + playerStatName + "'><span>";
@@ -743,11 +747,12 @@ define([
 			var showResources = this.getShowResources();
 			var showResourceAcc = this.getShowResourceAcc();
 			var storageCap = GameGlobals.resourcesHelper.getCurrentStorageCap();
-			var showStorageName = GameGlobals.resourcesHelper.getCurrentStorageName(isSmallLayout);
 			var currencyComponent = GameGlobals.resourcesHelper.getCurrentCurrency();
 			var inventoryUnlocked = false;
 			let now = GameGlobals.gameState.gameTime;
 			let changedInOut = inCamp != this.lastResourceUpdateInCamp;
+
+			let showStorageNameKey = GameGlobals.resourcesHelper.getCurrentStorageNameKey(isSmallLayout);
 
 			GameGlobals.uiFunctions.toggle(".header-camp-storage", inCamp);
 			GameGlobals.uiFunctions.toggle(".header-camp-currency", inCamp && currencyComponent.currency > 0);
@@ -762,7 +767,7 @@ define([
 			$(".header-bag-currency .value").text(currencyComponent ? currencyComponent.currency : "??");
 			
 			UIConstants.updateCalloutContent(".header-camp-storage", "Amount of each resource that can be stored");
-			$(".header-camp-storage .label").text(showStorageName);
+			GameGlobals.uiFunctions.setText(".header-camp-storage .label", showStorageNameKey);
 			$(".header-camp-storage .value").text(storageCap);
 
 			for (let key in resourceNames) {

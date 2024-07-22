@@ -89,28 +89,28 @@ define([
 			return showStorage;
 		},
 
-		getCurrentStorageName: function (short) {
-			var playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
+		getCurrentStorageNameKey: function (short) {
+			let playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
 
 			if (short) {
 				if (playerPosition.inCamp) {
-					return "Storage";
+					return "ui.camp.storage_name_short";
 				} else {
-					return "Capacity";
+					return "ui.inventory.storage_name_short";
 				}
 			}
 
-			var showStorage = this.playerResourcesNodes.head.entity.get(ResourcesComponent).storageCapacity;
-			var storageName = "Bag capacity";
+			let showStorage = this.playerResourcesNodes.head.entity.get(ResourcesComponent).storageCapacity;
+			let storageName = "ui.inventory.storage_name_long";
 
 			if (showStorage < 10) {
-				storageName = "Carry capacity";
+				storageName = "ui.inventory.storage_name_no_bag";
 			}
 
 			if (playerPosition.inCamp && this.hasCampStorage()) {
-				storageName = "Camp storage";
+				storageName = "ui.camp.storage_name_long_camp";
 				if (this.hasAccessToTradeNetwork()) {
-					storageName = "Tribe storage";
+					storageName = "ui.camp.storage_name_long_connected";
 				}
 			}
 
