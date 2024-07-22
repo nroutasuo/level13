@@ -154,9 +154,10 @@ define([
 		setup: function (plugins) {
 			this.initMobileOverlay();
 
-			this.waitForMobileOverlay()
+			this.setupEngine()
+				.then(() => this.loadMetaState())
 				.then(() => this.loadTexts())
-				.then(() => this.setupEngine())
+				.then(() => this.waitForMobileOverlay())
 				.then(() => this.setupPage())
 				.then(() => this.loadVersion())
 				.then(() => this.setupGame())
@@ -164,6 +165,10 @@ define([
 				.catch(ex => {
 					ExceptionHandler.handleException(ex);
 				});
+		},
+
+		loadMetaState: function () {
+			return this.gameManager.loadMetaState();
 		},
 
 		waitForMobileOverlay: function () {
@@ -188,9 +193,22 @@ define([
 			});
 		},
 
+		setupEngine: function () {
+			return new Promise((resolve, reject) => {
+				log.i("START " + GameConstants.STARTTimeNow() + "\t setting up engine");
+				
+				ExceptionHandler.exceptionCallback = function (ex) { game.handleException(ex) };
+				GlobalSignals.exceptionCallback = function (ex) { game.handleException(ex) };
+				
+				this.addLogicSystems();
+				resolve();
+			});
+		},
+
 		setupPage: function () {
 			return new Promise((resolve, reject) => {
 				log.i("START " + GameConstants.STARTTimeNow() + "\t setting up page");
+				this.addUISystems();
 				GameGlobals.uiFunctions.init();
 				GameGlobals.uiFunctions.hideGame();
 				GlobalSignals.pageSetUpSignal.dispatch();
@@ -198,31 +216,9 @@ define([
 			});
 		},
 
-		setupEngine: function () {
-			return new Promise((resolve, reject) => {
-				log.i("START " + GameConstants.STARTTimeNow() + "\t setting up engine");
-				let game = this;
-				
-				ExceptionHandler.exceptionCallback = function (ex) { game.handleException(ex) };
-				GlobalSignals.exceptionCallback = function (ex) { game.handleException(ex) };
-				
-				this.addSystems();
-				resolve();
-			});
-		},
-
 		loadTexts: function () {
-			return new Promise((resolve, reject) => {
-				log.i("START " + GameConstants.STARTTimeNow() + "\t loading texts");
-				$.getJSON('strings/strings.json', function (json) {
-					Text.setTexts(json);
-					resolve();
-				})
-				.fail(function (jqxhr, textStatus, error) {
-					log.e("Failed to load texts: " + error);
-					reject();
-				});
-			});
+			log.i("START " + GameConstants.STARTTimeNow() + "\t loading texts");
+			return GameGlobals.textLoader.loadTexts();
 		},
 
 		loadVersion: function () {
@@ -279,8 +275,8 @@ define([
 			});
 		},
 
-		addSystems: function () {
-			log.i("START " + GameConstants.STARTTimeNow() + "\t initializing systems");
+		addLogicSystems: function () {
+			log.i("START " + GameConstants.STARTTimeNow() + "\t initializing logic systems");
 
 			this.engine.addSystem(new SaveSystem(), SystemPriorities.preUpdate);
 			this.engine.addSystem(new LevelStatusSystem(), SystemPriorities.preUpdate);
@@ -315,6 +311,14 @@ define([
 
 			this.engine.addSystem(new SlowUpdateSystem(), SystemPriorities.postUpdate);
 
+			if (GameConstants.isCheatsEnabled) {
+				this.engine.addSystem(new CheatSystem(), SystemPriorities.update);
+			}
+		},
+
+		addUISystems: function () {
+			log.i("START " + GameConstants.STARTTimeNow() + "\t initializing ui systems");
+
 			this.engine.addSystem(new UIOutTextSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutHeaderSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutElementsSystem(), SystemPriorities.render);
@@ -337,10 +341,6 @@ define([
 			this.engine.addSystem(new UIOutPopupInventorySystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupTradeSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutTabBarSystem(), SystemPriorities.render);
-
-			if (GameConstants.isCheatsEnabled) {
-				this.engine.addSystem(new CheatSystem(), SystemPriorities.update);
-			}
 		},
 
 		start: function () {

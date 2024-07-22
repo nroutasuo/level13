@@ -1,4 +1,5 @@
 define([
+	'text/TextLoader',
 	'game/GameGlobals',
 	'game/GameState',
 	'game/GameFlowLogger',
@@ -28,6 +29,7 @@ define([
 	'game/helpers/ui/UIMapHelper',
 	'game/helpers/ui/UITechTreeHelper',
 ], function (
+	TextLoader,
 	GameGlobals,
 	GameState,
 	GameFlowLogger,
@@ -75,6 +77,7 @@ define([
 			GameGlobals.campHelper = new CampHelper(engine);
 			GameGlobals.campBalancingHelper = new CampBalancingHelper();
 			GameGlobals.tribeBalancingHelper = new TribeBalancingHelper();
+			GameGlobals.textLoader = new TextLoader();
 			
 			if (engine) {
 				GameGlobals.resourcesHelper = new ResourcesHelper(engine);

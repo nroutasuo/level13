@@ -5,8 +5,9 @@ define(function () {
 	let Text = {
 		
 		isDebugMode: false,
-		language: null,
+		language: null, // language utility
 		defaultTexts: {},
+		currentLanguage: null, // language code
 		currentTexts: {},
 
 		TEXT_PARAM_WILDCARD: "wildcard",
@@ -37,7 +38,26 @@ define(function () {
 			return wrap(result);
 		},
 
-		setTexts: function (json) {
+		updateTexts: function (language, json) {
+			if (language == "default") {
+				this.setDefaultTexts(json);
+			} else {
+				this.setCurrentTexts(language, json);
+			}
+		},
+
+		setDefaultTexts: function (json) {
+			let mapping = this.getTextsFromJSON(json);
+			this.defaultTexts = mapping;
+		},
+
+		setCurrentTexts: function (language, json) {
+			let mapping = this.getTextsFromJSON(json);
+			this.currentLanguage = language;
+			this.currentTexts = mapping;
+		},
+
+		getTextsFromJSON: function (json) {
 			let lookup = {};
 			for (var category in json) {
 				for (var group in json[category]) {
@@ -47,24 +67,40 @@ define(function () {
 					}
 				}
 			}
+			return lookup;
+		},
 
-			this.defaultTexts = lookup;
-			this.currentTexts = lookup;
+		hasDefaultTexts: function () {
+			return Object.keys(this.defaultTexts).length > 0;
+		},
+
+		hasCurrentLanguage: function (language) {
+			if (!language) return this.currentLanguage != null;
+			return this.currentLanguage == language;
 		},
 
 		hasKey: function (key, skipFallback) {
+			let hasLanguage = this.hasCurrentLanguage();
+			skipFallback = skipFallback && hasLanguage;
+			
 			if (this.currentTexts[key]) return true;
 			if (!skipFallback && this.defaultTexts[key]) return true;
 			return false;
 		},
 
 		getText: function (key, skipFallback) {
-			if (this.currentTexts[key]) return this.currentTexts[key];
-			log.w("no text found for key [" + key + "] in current texts");
+			let hasLanguage = this.hasCurrentLanguage();
+			skipFallback = skipFallback && hasLanguage;
+
+			if (hasLanguage) {
+				if (this.currentTexts[key]) return this.currentTexts[key];
+				log.w("no text found for key [" + key + "] in current texts");
+			}
 			if (!skipFallback) {
 				if (this.defaultTexts[key]) return this.defaultTexts[key];
 				log.w("no text found for key [" + key + "] in default texts");
 			}
+
 			return null;
 		},
 
@@ -74,12 +110,14 @@ define(function () {
 			let wildcard = this.TEXT_PARAM_WILDCARD;
 
 			result = result.replace(/{(\w+)}/ig, function(match, p) { 
-				if (options[p]) {
+				let isValidValue = (value) => value || value === 0;
+
+				if (isValidValue(options[p])) {
 					return options[p];
-				} else if (options[wildcard]) {
+				} else if (isValidValue(options[wildcard])) {
 					return options[wildcard];
 				} else {
-					log.w("no parameter [" + p + "] provided for key [" + key + "]");
+					log.w("no parameter value [" + p + "] provided for key [" + key + "]");
 					return "?";
 				}
 			});

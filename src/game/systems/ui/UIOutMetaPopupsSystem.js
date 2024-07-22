@@ -3,13 +3,15 @@ define([
 	'utils/UIList',
 	'game/GameGlobals',
 	'game/GlobalSignals',
-], function (Ash, UIList, GameGlobals, GlobalSignals) {
+	'game/constants/GameConstants',
+], function (Ash, UIList, GameGlobals, GlobalSignals, GameConstants) {
 	
     let UIOutMetaPopupsSystem = Ash.System.extend({
 
         metaMessages: [],
 
 		constructor: function () {
+            this.showLanguageSelection = GameConstants.isDebugVersion;
             this.initElements();
 			return this;
 		},
@@ -30,6 +32,15 @@ define([
             let sys = this;
 			$("#settings-checkbox-hotkeys-enabled").change(() => sys.onSettingToggled());
 			$("#settings-checkbox-hotkeys-numpad").change(() => sys.onSettingToggled());
+
+            let languageOptions = "";
+            for (var key in GameGlobals.textLoader.textSources) {
+                if (key == "default") continue;
+                let source = GameGlobals.textLoader.textSources[key];
+                languageOptions += "<option value='" + key + "' id='language-dropdown-option-" + key + "'>" + source.name + "</option>";
+            }
+
+            $("#language-dropdown").append(languageOptions);
         },
 
         loadMetaMessages: function () {
@@ -64,7 +75,6 @@ define([
         },
 
         refreshSettingsPopup: function () {
-            console.log(GameGlobals.gameState.settings);
             this.updateSettingsValues();
             this.updateHotkeyList();
         },
@@ -75,6 +85,8 @@ define([
 
             $("#settings-checkbox-hotkeys-numpad").parent().find("input").prop('disabled', !GameGlobals.gameState.settings.hotkeysEnabled);
             $("#settings-checkbox-hotkeys-numpad").parent().toggleClass("dimmed", !GameGlobals.gameState.settings.hotkeysEnabled);
+            
+            GameGlobals.uiFunctions.toggle($("#language-selection"), this.showLanguageSelection);
         },
         
         updateHotkeyList: function () {
@@ -118,6 +130,18 @@ define([
         saveSettings: function () {
             GameGlobals.gameState.settings.hotkeysEnabled = $("#settings-checkbox-hotkeys-enabled").is(':checked');
             GameGlobals.gameState.settings.hotkeysNumpad = $("#settings-checkbox-hotkeys-numpad").is(':checked');
+        
+            debugger
+            let language = this.getSelectedValidLanguage();
+            if (language) {
+                GameGlobals.metaState.settings.language = language;
+            }
+        },
+
+        getSelectedValidLanguage: function () {
+            if (!this.showLanguageSelection) return null;
+            let language = $("#language-dropdown").val();
+            return GameGlobals.textLoader.isSupportedLanguage(language) ? language : null;
         },
 
         onSettingToggled: function () {

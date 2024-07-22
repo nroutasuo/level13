@@ -123,11 +123,8 @@ define([
 			
 			let save;
 			let worldVO;
-			this.loadMetaState()
-				.then(() => {
-					log.i("START " + GameConstants.STARTTimeNow() + "\t meta state loaded");
-				})
-				.then(() => this.loadGameState())
+			
+			this.loadGameState()
 				.then(s => {
 					save = s;
 					log.i("START " + GameConstants.STARTTimeNow() + "\t game state loaded " + (save == null ? "(empty)" : "") + "");
@@ -223,8 +220,11 @@ define([
 
 		loadMetaState: function () {
 			return new Promise((resolve, reject) => {
+				debugger
 				let data = this.getMetaStateObject();
 				let hasData = data != null;
+
+				log.i("START " + GameConstants.STARTTimeNow() + "\t meta state loaded (hasData: " + hasData + ")");
 	
 				if (hasData) {
 					let loadedMetaState = data;

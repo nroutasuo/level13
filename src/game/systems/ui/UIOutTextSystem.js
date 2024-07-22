@@ -3,10 +3,10 @@ define([
     'text/Text',
 	'game/GameGlobals',
 	'game/GlobalSignals',
-], function (Ash, Text, GameGlobals, GlobalSignals) {
+	'game/constants/TextConstants',
+], function (Ash, Text, GameGlobals, GlobalSignals, TextConstants) {
 	
     let UIOutTextSystem = Ash.System.extend({
-
 
 		constructor: function () {
 			return this;
@@ -14,13 +14,19 @@ define([
 
 		addToEngine: function (engine) {
 			GlobalSignals.add(this, GlobalSignals.pageSetUpSignal, this.onPageSetup);
+			GlobalSignals.add(this, GlobalSignals.settingsChangedSignal, this.onSettingsChanged);
 		},
 
 		removeFromEngine: function (engine) {
 			GlobalSignals.removeAll(this);
 		},
 
-		setTexts: function () {
+		refreshLanguage: function () {
+			GameGlobals.textLoader.loadTexts()
+				.then(() => this.updateTexts());
+		},
+
+		updateTexts: function () {
 			$.each($(".text-key"), function () {
 				let key = $(this).data("text-key");
 				if (!key) {
@@ -29,10 +35,15 @@ define([
 				}
 				$(this).text(Text.t(key));
 			});
+			GameGlobals.uiFunctions.updateTexts();
 		},
 
 		onPageSetup: function () {
-			this.setTexts();
+			this.refreshLanguage();
+		},
+
+		onSettingsChanged: function () {
+			this.refreshLanguage();
 		},
 
 	});

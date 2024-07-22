@@ -1,0 +1,222 @@
+{
+    "game": {
+        "actions": {
+            "_create_blueprint_name": "Combine",
+            "_embark_name": "embark",
+            "_scavenge_description_dark": "Look for resources",
+            "_scavenge_description_lit": "Look for resources",
+            "_scavenge_name": "Scavenge",
+            "_scout_name": "Scout"
+        },
+        "improvements": {
+            "_improvement_campfire_name": "Campfire",
+            "_improvement_home_name": "Tent",
+            "_improvement_house_description": "A place for {num} people to stay."
+        },
+        "item": {
+            "_category_exploration_name": "Exploration",
+            "_quality_medium_name": "Medium",
+            "_quality_name": "Quality",
+            "_stat_warmth_name": "Warmth",
+            "_type_name": "Type"
+        },
+        "items": {
+            "_lower_01_description": "Description",
+            "_lower_01_name": "Ragged pants"
+        },
+        "milestones": {
+            "_milestone_00_description": "Build a space just for relaxation and socializing.",
+            "_milestone_00_name": "Lone camp"
+        },
+        "perk": {
+            "_injury_severity_light_name": "Light",
+            "_injury_type_leg_name": "Leg wound"
+        },
+        "stats": {
+            "_health_maximum_name": "Max vision",
+            "_vision_description": "Makes exploration safer and scavenging more effective",
+            "evidence_name": "Näyttö",
+            "health_name": "Terveys",
+            "hope_name": "Toivo",
+            "insight_name": "Oivallus",
+            "rumours_name": "Huhut",
+            "stamina_name": "Stamina",
+            "vision_name": "Näkö"
+        },
+        "upgrades": {
+            "_crafting_name": "Crafting",
+            "_square_description": "Build a space just for relaxation and socializing.",
+            "_square_name": "Square"
+        },
+        "workers": {
+            "_scavenger_name": "Scavenger"
+        }
+    },
+    "story": {
+        "notes": {
+            "_use_robot_message": "Took apart a {name}. Gained {value} metal."
+        },
+        "sector_descriptions": {
+            "_example_01": "[A] [narrow] [street] between two [monolithic] [huts]. Both water and food can be collected here. There is a camp here.",
+            "_example_02": "[A] [narrow] [street] between two [monolithic] [huts]. Both water and food can be collected here. There is a camp here."
+        },
+        "sector_names": {
+            "_commercial_passage_name": "Commercial passage"
+        },
+        "sector_status": {
+            "_enemies_message": "There are some hostile creatures here. Scavenging is more risky."
+        }
+    },
+    "ui": {
+        "actions": {
+            "_disabled_reason_missing_pieces_description": "Missing pieces",
+            "_scavenge_result_description": "Went scavenging",
+            "_scout_result_description": "Scouted the area"
+        },
+        "camp": {
+            "_events_header": "Events",
+            "improvements_header": "Buildings",
+            "_improvements_list_count_label": "Count",
+            "_rename_button_label": "rename",
+            "_tooltip_raid_danger_description": "Increases with camp size and decreases with camp defences.",
+            "_tooltip_reputation_buildings_label": "Buildings",
+            "_tooltip_resource_workers_label": "Workers ({num}): {change}",
+            "_tooltip_rumours_population_label": "Population",
+            "events_none_description": "All is quiet in the camp.",
+            "page_header_default": "Leiri",
+            "page_header_outpost": "Outpost",
+            "population_header": "Asukkaat: {current} / {max}",
+            "population_next_worker_progress_label": "Next worker:",
+            "population_reputation_status_field": "Reputation required: current: {current}, next: {next}",
+            "population_unassigned_workers_field": "Toimettomat asukkaat: {value}",
+            "population_worker_leaving_progress_label": "Worker leaving:"
+        },
+        "common": {
+            "_accumulation_time_left_to_cap_minutes_template": "{value} min to cap",
+            "_accumulation_time_left_to_value_minutes_template": "{value} min to {target}",
+            "_accumulation_value_seconds": "{value}/s",
+            "_close_popup_button_label": "close",
+            "_continue_button_label": "Continue",
+            "_decrease_button_label": "-",
+            "_increase_button_label": "+",
+            "_list_template_many": "{value}, {value}, {value}, {value}",
+            "_list_template_one": "{value}",
+            "_list_template_two": "{value} and {value}",
+            "_list_template_zero": "(none)",
+            "_stat_gained_template": "+ {value} {name}",
+            "_stat_no_change_description": "(no change)",
+            "_time_ago_months_template": "{value} months ago",
+            "_tooltip_duration_seconds_field": "Duration: {value}s",
+            "_value_and_label_template": "{label}: {value}",
+            "_value_and_max_template": "{value}/{max}",
+            "_value_simple_template": "{value}",
+            "item_count_field": "{value}x"
+        },
+        "embark": {
+            "warning_low_food_description": "There won't be much food left in the camp.",
+            "warning_low_stamina_description": "Won't get far with low stamina.",
+            "warning_low_supplies_description": "Won't get far without food and water.",
+            "warning_low_water_description": "There won't be much water left in the camp."
+        },
+        "exploration": {
+            "_actions_header": "Search",
+            "_build_actions_header": "Build",
+            "_distance_to_poi_template": "({value} blocks)",
+            "_move_header": "Wander",
+            "_sector_position_ne_template": "{X}E {Y}N",
+            "_sector_position_nw_template": "{X}W {Y}N",
+            "_sector_position_se_template": "{X}E {Y}S",
+            "_sector_position_sw_template": "{X}W {Y}S",
+            "_sector_status_no_enemies_description": "There doesn't seem to be anything hostile around.",
+            "_sector_status_resources_found_entry": "{name} ({abundance} {value})",
+            "_sector_status_resources_found_template": "Resources_found: {list}",
+            "_sector_status_scavenged_percent_template": "Scavenged: {value}%",
+            "current_distance_to_camp_field": "Distance to camp: {num}",
+            "current_distance_to_passage_field": "Distance to passage: {num}"
+        },
+        "inventory": {
+            "_equipment_header": "Equipment",
+            "_equipment_slot_bag_name": "Bag",
+            "_equipment_slot_light_name": "Light",
+            "_equipment_slot_lower_name_long": "Lower body",
+            "_equipment_slot_lower_name_short": "Lower",
+            "_item_stat_field_template": "{name}: +{value}",
+            "_other_items_header": "Other items",
+            "_show_obsolete_checkbox_label": "Show obsolete",
+            "_tooltip_equipment_label": "equipment"
+        },
+        "inventory_management": {
+            "_take_all_button_label": "Take all",
+            "_take_none_button_label": "Leave",
+            "_unequip_button_label": "Unequip",
+            "result_nothing_found_description": "Didn't find anything useful."
+        },
+        "main": {
+            "location_header_in_default": "{name} (Taso {level})",
+            "location_header_in_onecamp": "{name}",
+            "location_header_out": "Taso {level}",
+            "tab_bag_button_label": "Reppu",
+            "tab_bag_header": "Reppu",
+            "tab_camp_button_label": "Leiri",
+            "tab_embark_button_label": "Matkaan",
+            "tab_embark_header": "Lähde ulos",
+            "tab_followers_button_label": "Seurue",
+            "tab_map_button_label": "Kartta",
+            "tab_milestones_button_label": "Virstanpylväät",
+            "tab_milestones_header": "Virstanpylväät",
+            "tab_out_button_label": "Ulos",
+            "tab_projects_button_label": "Projektit",
+            "tab_trade_button_label": "Kauppa",
+            "tab_trade_header": "Kauppa",
+            "tab_tribe_button_label": "Heimo",
+            "tab_tribe_header": "Heimo",
+            "tab_upgrades_button_label": "Tutkimus",
+            "tab_upgrades_header": "Tutkimus"
+        },
+        "map": {
+            "_level_status_unexplored_description": "There are still many unvisited streets on this level.",
+            "_sector_detail_district_type_central_name": "Central",
+            "_selection_map_style_ascii_label": "ASCII",
+            "_selection_map_style_canvas_label": "Canvas",
+            "sector_detail_blockers_label": "Blockers",
+            "sector_detail_collectors_label": "Collectors",
+            "sector_detail_distance_label": "Distance",
+            "sector_detail_district_label": "District",
+            "sector_detail_environment_label": "Environment",
+            "sector_detail_other_label": "Other",
+            "sector_detail_poi_label": "Points of interest",
+            "sector_detail_scavenging_label": "Scavenging",
+            "sector_detail_threats_label": "Threats"
+        },
+        "meta": {
+            "_enable_hotkeys_checkbox_label": "Enable hotkeys",
+            "_expand_footer_button_label": "more",
+            "_game_info_faq_link": "FAQ",
+            "_game_info_feedback_github_link": "github",
+            "_game_info_feedback_header": "Feedback",
+            "_game_info_wip_description": "Note that this game is still in development and many features are incomplete and unbalanced. Updates might break saves. Feedback and bug reports are appreciated!",
+            "_hotkey_move_north_label": "Move N",
+            "_quick_save_button_label": "Save",
+            "_restart_button_label": "Restart",
+            "_version_number_indicator_field": "v. {major}.{minor}.{patch} ({type})",
+            "game_paused_message": "Game paused",
+            "game_saved_message": "Game saved"
+        },
+        "milestones": {
+            "_effect_base_reputation_label": "Base reputation",
+            "_effect_new_events_template": "New events: {list}",
+            "population_progress_label": "Population: {current} / {max}"
+        },
+        "perks": {
+            "_injury_effect_description": "Health -{value}%"
+        },
+        "upgrades": {
+            "_effect_unlocked_buildings_description": "unlocked camp buildings: {list}",
+            "_upgrade_status_locked_name": "Locked",
+            "_upgrade_status_researched_name": "Researched",
+            "available_upgrades_header": "Available upgrades",
+            "blueprints_header": "Blueprints",
+            "reseached_upgrades_field": "Upgrades researched: {num}"
+        }
+    }
+}

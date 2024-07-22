@@ -11,6 +11,7 @@ define(['ash'], function (Ash) {
 		reset: function () {
 			this.maxCampOrdinalReached = 0;
 			this.hasCompletedGame = false;
+			this.settings = {};
 		},
 	});
 
