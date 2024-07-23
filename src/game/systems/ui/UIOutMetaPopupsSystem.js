@@ -131,7 +131,6 @@ define([
             GameGlobals.gameState.settings.hotkeysEnabled = $("#settings-checkbox-hotkeys-enabled").is(':checked');
             GameGlobals.gameState.settings.hotkeysNumpad = $("#settings-checkbox-hotkeys-numpad").is(':checked');
         
-            debugger
             let language = this.getSelectedValidLanguage();
             if (language) {
                 GameGlobals.metaState.settings.language = language;

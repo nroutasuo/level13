@@ -36,7 +36,6 @@ define(['ash', 'text/Text', 'game/GameGlobals', 'game/GlobalSignals', 'game/cons
     
                 return new Promise((resolve, reject) => {
                     let language = null;
-                    debugger
                     
                     if (GameGlobals.metaState.settings && GameGlobals.metaState.settings.language) {
                         language = GameGlobals.metaState.settings.language;

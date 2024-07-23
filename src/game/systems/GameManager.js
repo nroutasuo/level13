@@ -220,7 +220,6 @@ define([
 
 		loadMetaState: function () {
 			return new Promise((resolve, reject) => {
-				debugger
 				let data = this.getMetaStateObject();
 				let hasData = data != null;
 
