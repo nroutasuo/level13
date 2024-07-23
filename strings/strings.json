@@ -166,6 +166,9 @@
             "item_count_field": "{value}x"
         },
         "embark": {
+            "items_subheader": "Items",
+            "page_description": "Make sure you pack enough supplies before you leave.",
+            "resources_subheader": "Resources",
             "warning_low_food_description": "There won't be much food left in the camp.",
             "warning_low_stamina_description": "Won't get far with low stamina.",
             "warning_low_supplies_description": "Won't get far without food and water.",
@@ -274,9 +277,12 @@
             "_effect_unlocked_buildings_description": "unlocked camp buildings: {list}",
             "_upgrade_status_locked_name": "Locked",
             "_upgrade_status_researched_name": "Researched",
+            "all_upgrades_header": "All upgrades",
             "available_upgrades_header": "Available upgrades",
             "blueprints_header": "Blueprints",
-            "reseached_upgrades_field": "Upgrades researched: {num}"
+            "reseached_upgrades_field": "Upgrades researched: {num}",
+            "upgrade_details_header": "Upgrade details",
+            "upgrade_details_none_selected_hint": "Click on an upgrade to see details."
         }
     }
 }

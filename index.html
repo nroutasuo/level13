@@ -53,7 +53,7 @@
 					</div>
 					<div id="mobile-header-bag" class="mobile-header-section">
 						<div id="header-bag-storage-mobile" class="header-bag-storage stat-indicator">
-							<span class="label">Bag capacity</span>
+							<span class="label text-key" data-text-key="ui.inventory.storage_name_long"></span>
 							<span class="value">0</span>
 							/
 							<span class="value-total">0</span>
@@ -138,7 +138,7 @@
 						
 						<div class="header-section" id="main-header-bag">
 							<div id="header-bag-storage-regular" class="header-bag-storage stat-indicator">
-								<span class="label">Bag capacity</span>
+								<span class="label text-key" data-text-key="ui.inventory.storage_name_long"></span>
 								<span class="value">0</span>
 								/
 								<span class="value-total">0</span>
@@ -317,15 +317,15 @@
 					<!-- "embark" page when leaving camp -->
 					<div class="grid tabcontainer" id="container-tab-enter-out" data-tab="switch-embark">
 						<div class="unit whole">
-							<p>Make sure you pack enough supplies before you leave.</p>
+							<p class="text-key" data-text-key="ui.embark.page_description"></p>
 							<div class="grid">
 								<div class="unit one-third" id="embark-resources-container">
-									<div class="subheader"><h3>Resources</h3></div>
+									<div class="subheader"><h3 class="text-key" data-text-key="ui.embark.resources_subheader"></h3></div>
 									<table id="embark-resources">
 									</table>
 								</div>
 								<div class="unit two-thirds" id="embark-items-container">
-									<div class="subheader"><h3>Items</h3></div>
+									<div class="subheader"><h3 class="text-key" data-text-key="ui.embark.items_subheader"></h3></div>
 									<table id="embark-items">
 									</table>
 								</div>
@@ -414,7 +414,6 @@
 							
 							<div class="subheader" id="header-out-improvements">
 								<h3 class="text-key" data-text-key="ui.exploration.build_actions_header"></h3>
-								<h3>Build</h3>
 							</div>
 							<div id="out-improvements" class="actionbox">
 								<table>
@@ -647,7 +646,7 @@
 								<p id="world-upgrades-empty-message">No available upgrades at the moment.</p>
 							</div>
 							<div id="world-upgrades-info" class="infobox">
-								<div class="subheader"><h3>All upgrades</h3></div>
+								<div class="subheader"><h3 class="text-key" data-text-key="ui.upgrades.all_upgrades_header"></h3></div>
 								<p id="world-upgrades-count">Completed upgrades: 0</p>
 								<div class ="infobox">
 								<div id="researched-upgrades-vis-container" class="canvas-container lvl13-box-1">
@@ -656,8 +655,8 @@
 								</div>
 								<div id="upgrade-details" class="lvl13-box-1" style="margin: 5px; padding: 5px;">
 									<div id="upgrade-details-content-empty">
-										<h4>Upgrade details</h4>
-										<p class="meta">Click on an upgrade to see details.</p>
+										<h4 class="text-key" data-text-key="ui.upgrades.upgrade_details_header">Upgrade details</h4>
+										<p class="meta text-key" data-text-key="ui.upgrades.upgrade_details_none_selected_hint"></p>
 									</div>
 									<div id="upgrade-details-content">
 									<span id="upgrade-details-status" class="status-badge">Status</span>
