@@ -97,8 +97,24 @@
             "_square_description": "Build a space just for relaxation and socializing.",
             "_square_name": "Square"
         },
+        "resources": {
+            "currency_name": "silver"
+        },
         "workers": {
-            "_scavenger_name": "Scavenger"
+            "apothecary_name": "apothecary",
+            "chemist_name": "chemist",
+            "cleric_name": "cleric",
+            "concrete_name": "concrete",
+            "gardener_name": "gardener",
+            "robotmaker_name": "robotmaker",
+            "ropemaker_name": "ropemaker",
+            "rubbermaker_name": "rubbermaker",
+            "scavenger_name": "scavenger",
+            "scientist_name": "scientist",
+            "soldier_name": "soldier",
+            "toolsmith_name": "toolsmith",
+            "trapper_name": "trapper",
+            "water_name": "water collector"
         }
     },
     "story": {
@@ -131,10 +147,16 @@
             "_tooltip_resource_workers_label": "Workers ({num}): {change}",
             "_tooltip_rumours_population_label": "Population",
             "current_population_label": "Population",
+            "details_subheader": "Details",
+            "event_raid_name": "Raid!",
+            "event_trader_name": "Trader",
+            "event_visitor_name": "Visitor",
             "events_none_description": "All is quiet in the camp.",
+            "events_subheader": "Events",
             "improvements_header": "Buildings",
             "page_header_default": "Camp",
             "page_header_outpost": "Outpost",
+            "population_auto_assigned_workers_field": "Auto-assigned workers: {value}",
             "population_header": "Population: {current} / {max}",
             "population_next_worker_progress_label": "Next worker:",
             "population_reputation_status_field": "Reputation required: current: {current}, next: {next}",
@@ -153,9 +175,6 @@
             "_decrease_button_label": "-",
             "_increase_button_label": "+",
             "_list_template_many": "{value}, {value}, {value}, {value}",
-            "_list_template_one": "{value}",
-            "_list_template_two": "{value} and {value}",
-            "_list_template_zero": "(none)",
             "_stat_gained_template": "+ {value} {name}",
             "_stat_no_change_description": "(no change)",
             "_time_ago_months_template": "{value} months ago",
@@ -163,7 +182,16 @@
             "_value_and_label_template": "{label}: {value}",
             "_value_and_max_template": "{value}/{max}",
             "_value_simple_template": "{value}",
-            "item_count_field": "{value}x"
+            "item_count_field": "{value}x",
+            "list_template_cropped_delimiter": ", ",
+            "list_template_cropped_end": " +{numCropped}",
+            "list_template_cropped_start": "",
+            "list_template_many_delimiter": ", ",
+            "list_template_many_end": "",
+            "list_template_many_start": "",
+            "list_template_one": "{value}",
+            "list_template_two": "{value1} and {value2}",
+            "list_template_zero": "(none)"
         },
         "embark": {
             "items_subheader": "Items",
@@ -271,7 +299,23 @@
             "_injury_effect_description": "Health -{value}%"
         },
         "tribe": {
-            "current_reputation_label": "Reputation"
+            "current_reputation_label": "Reputation",
+            "messages_header": "Messages",
+            "overview_header": "Camp overview",
+            "status_damaged_buildings_message": "Damaged building(s) on level {level}.",
+            "status_no_news_message": "No news from other camps at the moment.",
+            "status_no_trade_message": "Camp on level {level} can't trade resources with other camps.",
+            "status_outgoing_caravan_message": "Outgoing caravan on level {level} (expected to return in {timeUntil}).",
+            "status_population_decreasing_message": "Population is decreasing on level {level}!",
+            "status_population_increasing_message": "Population is increasing on level {level}.",
+            "status_raid_message": "There has been a raid on level {level} ({timeSince} ago). We need better defences.",
+            "status_sunlit_message": "Camp on level {level} is exposed to direct sunlight.",
+            "status_trader_message": "There is a trader ({name}) currently on level {level}.",
+            "status_unassigned_workers_message": "Unassigned workers on level {level}.",
+            "status_unused_greenhouse_message": "Level {level} camp has access to a Greenhouse but no Gardeners working in it.",
+            "status_unused_plantation_message": "Level {level} camp has access to a plantation but no Rubbermakers working in it.",
+            "status_unused_refinery_message": "Level {level} camp has access to a Refinery but no Chemists working in it.",
+            "status_visitor_message": "There is a visitor currently on level {level}."
         },
         "upgrades": {
             "_effect_unlocked_buildings_description": "unlocked camp buildings: {list}",

@@ -1,4 +1,4 @@
-define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
+define(['ash', 'text/Text', 'game/vos/ResourcesVO'], function (Ash, Text, ResourcesVO) {
 	
 	var CampConstants = {
 	
@@ -101,7 +101,6 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			},
 			water: {
 				id: "water",
-				displayName: "water collector",
 				resourceProduced: resourceNames.water,
 			},
 			ropemaker: {
@@ -322,13 +321,12 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		},
 		
 		getWorkerDisplayName: function (workerType) {
-			let def = CampConstants.workerTypes[workerType];
-			if (!def) {
-				log.w("no such workerType:" + workerType);
-				return workerType;
-			}
-			return def.displayName || workerType;
+			return Text.t(this.getWorkerDisplayNameKey(workerType));
 		},
+
+		getWorkerDisplayNameKey: function (workerType) {
+			return "game.workers." + workerType + "_name";
+		}
 	
 	};
 	

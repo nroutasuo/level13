@@ -59,7 +59,7 @@
 							<span class="value-total">0</span>
 						</div>
 						<span id="header-bag-currency-mobile" class="header-bag-currency stat-indicator">
-							<span class="label">Silver</span>
+							<span class="label text-key" data-text-key="game.resources.currency_name"></span>
 							<span class="value">0</span>
 						</span>
 						<div id="bag-resources-mobile" class="bag-resources statsbar"></div>
@@ -88,7 +88,7 @@
 							<span id="population-change-indicator-mobile" class="change-indicator"></span>
 						</div>
 						<div id="header-camp-currency-mobile" class="stat-indicator header-camp-currency">
-							<span class="label">Silver</span>
+							<span class="label text-key" data-text-key="game.resources.currency_name"></span>
 							<span class="value">0</span>
 						</div>
 					</div>
@@ -144,7 +144,7 @@
 								<span class="value-total">0</span>
 							</div>
 							<div id="header-bag-currency-regular" class="header-bag-currency stat-indicator">
-								<span class="label">Silver</span>
+								<span class="label text-key" data-text-key="game.resources.currency_name"></span>
 								<span class="value">0</span>
 							</div>
 							<div id="bag-resources-regular" class="bag-resources statsbar"></div>
@@ -172,7 +172,7 @@
 								<span id="population-change-indicator-regular" class="change-indicator"></span>
 							</div>
 							<div id="header-camp-currency-regular" class="stat-indicator header-camp-currency">
-								<span class="label">Silver</span>
+								<span class="label text-key" data-text-key="game.resources.currency_name"></span>
 								<span class="value">0</span>
 							</div>
 							</div>
@@ -265,31 +265,31 @@
 									<div class="progress-bar progress"></div>
 									<span class="progress progress-label"></span>
 								</div>
-								<span style="display: none; font-size: 85%" id="in-population-reputation">Reputation required: </span>
+								<span style="display: none; font-size: 85%" id="in-population-reputation"></span>
 								<span style="display: none; font-size: 85%" id="in-population-decrease-hint" class="warning"></span>
 							</div>
 							<div id="in-occurrences" class="infobox">
-								<h3>Events</h3>
+								<h3 class="text-key" data-text-key="ui.camp.events_subheader"></h3>
 								<div id="in-occurrences-building-container">
 								</div>
 								<div id="in-occurrences-trader" class="progress-wrap progress">
 									<div class="progress-bar progress"></div>
-									<span class="progress progress-label">Trader</span>
+									<span class="progress progress-label text-key" data-text-key="ui.camp.event_trader_name"></span>
 								</div>
 								<div id="in-occurrences-recruit" class="progress-wrap progress">
 									<div class="progress-bar progress"></div>
-									<span class="progress progress-label">Visitor</span>
+									<span class="progress progress-label text-key" data-text-key="ui.camp.event_visitor_name"></span>
 								</div>
 								<div id="in-occurrences-raid" class="progress-wrap progress warning" data-animation-length="50">
 									<div class="progress-bar progress"></div>
-									<span class="progress progress-label">Raid!</span>
+									<span class="progress progress-label text-key" data-text-key="ui.camp.event_raid_name"></span>
 								</div>
 								<div id="in-occurrences-outgoing-caravans-container">
 								</div>
 								<p class="p-meta text-key" id="in-occurrences-empty" data-text-key="ui.camp.events_none_description"></p>
 							</div>
 							<div id="in-demographics" class="infobox p-dense">
-								<h3>Details</h3>
+								<h3 class="text-key" data-text-key="ui.camp.details_subheader"></h3>
 								<div id="in-demographics-general">
 									<p id="in-demographics-general-age">Founded: <span class="value">-</span></p>
 									<div class='info-callout-target' description="Luxury resources increase camp Reputation">
@@ -676,9 +676,9 @@
 					<div class="grid tabcontainer" id="container-tab-two-world" data-tab="switch-world" style="display:none">
 						<div class="unit whole">
 							<div class="infobox">
-								<div class="subheader"><h3>Messages</h3></div>
-								<p id="world-message">No news from other camps at the moment.</p>
-								<div class="subheader"><h3>Camp overview</h3></div>
+								<div class="subheader"><h3 class="text-key" data-text-key="ui.tribe.messages_header"></h3></div>
+								<p id="world-message"></p>
+								<div class="subheader"><h3 class="text-key" data-text-key="ui.tribe.overview_header"></h3></div>
 								<table id="camp-overview" class="full-width dense">
 									<tr id="camp-overview-header" class="lvl13-box-1 header-mini">
 										<th class="th-text" colspan="2">camp</th>

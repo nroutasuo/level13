@@ -136,7 +136,7 @@
 			let campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
 			let isOutpost = GameGlobals.campBalancingHelper.isOutpost(campOrdinal);
 			let headerTextKey = "ui.camp.page_header_default";
-			if (isOutpost) header += "ui.camp.page_header_outpost";
+			if (isOutpost) headerTextKey = "ui.camp.page_header_outpost";
 			GameGlobals.uiFunctions.setText("#tab-header h2", headerTextKey);
 
 			this.updateAssignedWorkers();
@@ -222,11 +222,11 @@
 
 			let populationProgressLabelKey = populationChangePerSecWithoutCooldown >= 0 ? "ui.camp.population_next_worker_progress_label" : "ui.camp.population_worker_leaving_progress_label";
 
-			GameGlobals.uiFunctions.updateText($("#in-population-next"), Text.t(populationProgressLabelKey));
-			GameGlobals.uiFunctions.updateText($("#in-population-reputation"), Text.t("ui.camp.population_reputation_status_field", { current: reqRepCur, next: reqRepNext }));
+			GameGlobals.uiFunctions.setText("#in-population-next", populationProgressLabelKey);
+			GameGlobals.uiFunctions.setText("#in-population-reputation", "ui.camp.population_reputation_status_field", { current: reqRepCur, next: reqRepNext });
 			GameGlobals.uiFunctions.setText("#in-population h3", "ui.camp.population_header", { current: currentPopulation, max: maxPopulation });
-			GameGlobals.uiFunctions.updateText($("#in-population #in-population-status span"), Text.t("ui.camp.population_unassigned_workers_field", { value: freePopulation }));
-			GameGlobals.uiFunctions.updateText($("#in-population #in-population-autoassigned"), "Auto-assigned workers: " + autoAssignedWorkersText);
+			GameGlobals.uiFunctions.setText("#in-population #in-population-status span", "ui.camp.population_unassigned_workers_field", { value: freePopulation });
+			GameGlobals.uiFunctions.setText("#in-population #in-population-autoassigned", "ui.camp.population_auto_assigned_workers_field", { value: autoAssignedWorkersText });
 			GameGlobals.uiFunctions.updateText($("#in-population #in-population-robots .value"), Math.floor(robots) + " / " + maxRobots);
 
 			GameGlobals.uiFunctions.toggle($("#unassigned-workers-bubble"), freePopulation > 0);
@@ -425,7 +425,8 @@
 			for (let key in CampConstants.workerTypes) {
 				let def = CampConstants.workerTypes[key];
 				let tds = "";
-				tds += "<td class='in-assign-worker-desc'><div class='info-callout-target info-callout-target-small'>" + (def.displayName || def.id) + "</div></td>";
+				let displayName = CampConstants.getWorkerDisplayName(key);
+				tds += "<td class='in-assign-worker-desc'><div class='info-callout-target info-callout-target-small'>" + displayName + "</div></td>";
 				tds += "<td><div class='stepper' id='stepper-" + def.id + "'></div></td>";
 				tds += "<td class='in-assign-worker-limit'><div class='info-callout-target info-callout-target-small'></div></td>"
 				tds += "<td class='in-assign-worker-auto'><input type='checkbox' id='in-assing-worker-auto-" + def.id + "' class='in-assign-workers-auto-toggle' title='Auto-assign worker' /></td>"

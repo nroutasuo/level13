@@ -1412,17 +1412,23 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		
 		getListText: function (list, max) {
 			if (!list || list.length == 0) {
-				return "none";
+				return Text.t("ui.common.list_template_zero");
 			} else if (list.length == 1) {
-				return list[0];
+				return Text.t("ui.common.list_template_one", { value: list[0] });
 			} else if (list.length == 2) {
-				return list[0] + " and " + list[1];
+				return Text.t("ui.common.list_template_two", { value1: list[0], value2: list[1] });
 			} else if (max && list.length > max) {
 				let displayedList = list.slice(0, max);
 				let numHiddenItems = list.length - displayedList.length;
-				return displayedList.join(", ") + ", +" + numHiddenItems;
+				let start = Text.t("ui.common.list_template_cropped_start");
+				let items = displayedList.join(Text.t("ui.common.list_template_cropped_delimiter"));
+				let end = Text.t("ui.common.list_template_cropped_end", { numCropped: numHiddenItems });
+				return start + items + end;
 			} else {
-				return list.join(", ");
+				let start = Text.t("ui.common.list_template_many_start");
+				let items = list.join(Text.t("ui.common.list_template_many_delimiter"));
+				let end = Text.t("ui.common.list_template_many_end");
+				return start + items + end;
 			}
 		},
 		

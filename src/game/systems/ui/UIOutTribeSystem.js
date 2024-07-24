@@ -146,13 +146,14 @@ define([
 			}
 
 			// show
-			var msg = "No news from other camps at the moment.";
+			let msg = { key: "ui.tribe.status_no_news_message" }
 			if (highestprio > 0) {
-				var selection = vosbyprio[highestprio];
-				var vo = selection[Math.floor(Math.random()*selection.length)];
-				msg = this.getNotificationMessage(vo.type, vo.lvl) || msg;
+				let selection = vosbyprio[highestprio];
+				let vo = selection[Math.floor(Math.random() * selection.length)];
+				msg = this.getNotificationMessage(vo.type, vo.lvl) || msgKey;
 			}
-			$("#world-message").text(msg);
+
+			GameGlobals.uiFunctions.setText("#world-message", msg.key, msg.options);
 		},
 
 		updateNode: function (node, isActive) {
@@ -440,38 +441,49 @@ define([
 
 		getNotificationMessage: function (notificationType, level) {
 			let campNode = GameGlobals.campHelper.getCampNodeForLevel(level);
+			let options = { level: level };
+
 			switch (notificationType) {
 				case this.campNotificationTypes.EVENT_RAID_RECENT:
 					let campComponent = campNode.camp;
-					let timeS = "(" + UIConstants.getTimeSinceText(campComponent.lastRaid.timestamp) + " ago)";
-					return "There has been a raid on level " + level + " " + timeS + ". We need better defences.";
+					options.timeSince = UIConstants.getTimeSinceText(campComponent.lastRaid.timestamp);
+					return { key: "ui.tribe.status_raid_message", options: options };
 					
 				case this.campNotificationTypes.EVENT_TRADER:
 					let traderComponent = campNode.entity.get(TraderComponent);
 					if (!traderComponent || !traderComponent.caravan) return "";
-					return "There is a trader (" + traderComponent.caravan.name + ") currently on level " + level + ".";
+					options.traderName = traderComponent.caravan.name;
+					return { key: "ui.tribe.status_trader_message", options: options };
 				
 				case this.campNotificationTypes.EVENT_OUTGOING_CARAVAN:
 					let caravansComponent = campNode.entity.get(OutgoingCaravansComponent);
 					if (!caravansComponent || caravansComponent.outgoingCaravans.length < 1) return null;
 					let caravan = caravansComponent.outgoingCaravans[0];
-					
 					let duration = caravan.returnDuration * 1000;
 					let timeLeft = (caravan.returnTimeStamp - new Date().getTime()) / 1000;
-					let caravanTimeS = timeLeft < 30 ? "very soon" : timeLeft < 60 ? "in less than a minute" : "in " + UIConstants.getTimeToNum(timeLeft);
+					options.timeUntil = timeLeft < 30 ? "very soon" : timeLeft < 60 ? "less than a minute" : UIConstants.getTimeToNum(timeLeft);
+					return { key: "ui.tribe.status_outgoing_caravan_message", options: options };
 					
-				 	return "Outgoing caravan on level " + level + " (expected to return " + caravanTimeS + ").";
-					
-				case this.campNotificationTypes.EVENT_RECRUIT: return "There is a visitor currently on level " + level + ".";
-				case this.campNotificationTypes.POP_UNASSIGNED: return "Unassigned workers on level " + level + ".";
-				case this.campNotificationTypes.POP_DECREASING: return "Population is decreasing on level " + level + "!";
-				case this.campNotificationTypes.SUNLIT: return "Camp on level " + level + " is exposed to direct sunlight.";
-				case this.campNotificationTypes.POP_INCREASING: return "Population is increasing on level " + level + ".";
-				case this.campNotificationTypes.POP_NO_GARDENERS: return "Level " + level + " camp has access to a Greenhouse but no Gardeners working in it.";
-				case this.campNotificationTypes.POP_NO_RUBBERMAKERS: return "Level " + level + " camp has access to a plantation but no Rubbermakers working in it.";
-				case this.campNotificationTypes.POP_NO_CHEMISTS: return "Level " + level + " camp has access to a Refinery but no Chemists working in it.";
-				case this.campNotificationTypes.BUILDING_DAMAGED: return "Damaged building(s) on level " + level + ".";
-				case this.campNotificationTypes.STATUS_NON_REACHABLE_BY_TRADERS: return "Camp on level " + level + " can't trade resources with other camps.";
+				case this.campNotificationTypes.EVENT_RECRUIT: 
+					return { key: "ui.tribe.status_visitor_message", options: options };
+				case this.campNotificationTypes.POP_UNASSIGNED: 
+					return { key: "ui.tribe.status_unassigned_workers_message", options: options };
+				case this.campNotificationTypes.POP_DECREASING: 
+					return { key: "ui.tribe.status_population_decreasing_message", options: options };
+				case this.campNotificationTypes.SUNLIT: 
+					return { key: "ui.tribe.status_sunlit_message", options: options };
+				case this.campNotificationTypes.POP_INCREASING: 
+					return { key: "ui.tribe.status_population_increasing_message", options: options };
+				case this.campNotificationTypes.POP_NO_GARDENERS: 
+					return { key: "ui.tribe.status_unused_greenhouse_message", options: options };
+				case this.campNotificationTypes.POP_NO_RUBBERMAKERS: 
+					return { key: "ui.tribe.status_unused_plantation_message", options: options };
+				case this.campNotificationTypes.POP_NO_CHEMISTS: 
+					return { key: "ui.tribe.status_unused_refinery_message", options: options };
+				case this.campNotificationTypes.BUILDING_DAMAGED: 
+					return { key: "ui.tribe.status_damaged_buildings_message", options: options };
+				case this.campNotificationTypes.STATUS_NON_REACHABLE_BY_TRADERS: 
+					return { key: "ui.tribe.status_no_trade_message", options: options };
 				default: return null;
 			}
 		},

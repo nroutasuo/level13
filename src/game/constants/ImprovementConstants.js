@@ -1,4 +1,4 @@
-define(['game/constants/CampConstants'], function (CampConstants) {
+define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConstants) {
 	
 	var ImprovementConstants = {
 
@@ -276,8 +276,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 		},
 		
 		getImprovementDisplayName: function (improvementID, level) {
-			log.w("deprecated getImprovementDisplayName");
-			return this.getImprovementDisplayNameKey(improvementID, level);
+			return Text.t(this.getImprovementDisplayNameKey(improvementID, level));
 		},
 
 		getImprovementDisplayNameKey: function (improvementID, level) {
