@@ -66,7 +66,37 @@
             "_quality_medium_name": "Medium",
             "_quality_name": "Quality",
             "_stat_warmth_name": "Warmth",
-            "_type_name": "Type"
+            "_type_name": "Type",
+            "type_artefact_name": "artefact",
+            "type_artefact_name_short": "artefact",
+            "type_bag_name": "bag",
+            "type_bag_name_short": "bag",
+            "type_clothing_hands_name": "clothing (hands)",
+            "type_clothing_hands_name_short": "hands",
+            "type_clothing_head_name": "clothing (head)",
+            "type_clothing_head_name_short": "head",
+            "type_clothing_lower_name": "clothing (lower body)",
+            "type_clothing_lower_name_short": "lower",
+            "type_clothing_over_name": "clothing (over)",
+            "type_clothing_over_name_short": "over",
+            "type_clothing_upper_name": "clothing (upper body)",
+            "type_clothing_upper_name_short": "upper",
+            "type_exploration_name": "exploration item",
+            "type_exploration_name_short": "exploration",
+            "type_ingredient_name": "crafting ingredient",
+            "type_ingredient_name_short": "ingredient",
+            "type_light_name": "light",
+            "type_light_name_short": "light",
+            "type_note_name": "note",
+            "type_note_name_short": "note",
+            "type_shoes_name": "shoes",
+            "type_shoes_name_short": "shoes",
+            "type_trade_name": "trade item",
+            "type_trade_name_short": "trade",
+            "type_voucher_name": "consumable",
+            "type_voucher_name_short": "consumable",
+            "type_weapon_name": "weapon",
+            "type_weapon_name_short": "weapon"
         },
         "items": {
             "_lower_01_description": "Description",
@@ -79,6 +109,9 @@
         "perk": {
             "_injury_severity_light_name": "Light",
             "_injury_type_leg_name": "Leg wound"
+        },
+        "resources": {
+            "currency_name": "silver"
         },
         "stats": {
             "_health_maximum_name": "Max vision",
@@ -96,9 +129,6 @@
             "_crafting_name": "Crafting",
             "_square_description": "Build a space just for relaxation and socializing.",
             "_square_name": "Square"
-        },
-        "resources": {
-            "currency_name": "silver"
         },
         "workers": {
             "apothecary_name": "apothecary",
@@ -220,18 +250,21 @@
             "scavenge_actions_header": "Search"
         },
         "inventory": {
-            "_equipment_header": "Equipment",
             "_equipment_slot_bag_name": "Bag",
             "_equipment_slot_light_name": "Light",
             "_equipment_slot_lower_name_long": "Lower body",
             "_equipment_slot_lower_name_short": "Lower",
             "_item_stat_field_template": "{name}: +{value}",
-            "_other_items_header": "Other items",
             "_show_obsolete_checkbox_label": "Show obsolete",
             "_tooltip_equipment_label": "equipment",
+            "craft_item_header": "Craft",
+            "equipment_header": "Equipment",
+            "other_items_header": "Other items",
+            "repair_item_header": "Repair",
             "storage_name_long": "Bag capacity",
             "storage_name_no_bag": "Carry capacity",
-            "storage_name_short": "Capacity"
+            "storage_name_short": "Capacity",
+            "use_item_header": "Use"
         },
         "inventory_management": {
             "_take_all_button_label": "Take all",
@@ -284,11 +317,16 @@
             "_game_info_feedback_header": "Feedback",
             "_game_info_wip_description": "Note that this game is still in development and many features are incomplete and unbalanced. Updates might break saves. Feedback and bug reports are appreciated!",
             "_hotkey_move_north_label": "Move N",
-            "_quick_save_button_label": "Save",
-            "_restart_button_label": "Restart",
             "_version_number_indicator_field": "v. {major}.{minor}.{patch} ({type})",
+            "game_data_button_label": "Data",
+            "game_info_button_label": "Info",
             "game_paused_message": "Game paused",
-            "game_saved_message": "Game saved"
+            "game_saved_message": "Game saved",
+            "more_options_button_label": "More",
+            "player_stats_button_label": "Stats",
+            "quick_save_button_label": "Save",
+            "restart_button_label": "Restart",
+            "settings_button_label": "Settings"
         },
         "milestones": {
             "_effect_base_reputation_label": "Base reputation",

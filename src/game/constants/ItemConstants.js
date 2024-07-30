@@ -1,5 +1,5 @@
-define(['ash', 'json!game/data/ItemData.json', 'game/constants/PlayerActionConstants', 'game/vos/ItemVO'],
-function (Ash, ItemData, PlayerActionConstants, ItemVO) {
+define(['ash', 'json!game/data/ItemData.json', 'text/Text', 'game/constants/PlayerActionConstants', 'game/vos/ItemVO'],
+function (Ash, ItemData, Text, PlayerActionConstants, ItemVO) {
 
 	let ItemConstants = {
 		
@@ -146,23 +146,11 @@ function (Ash, ItemData, PlayerActionConstants, ItemVO) {
 		},
 		
 		getItemTypeDisplayName: function (type, short) {
-			switch (type) {
-				case ItemConstants.itemTypes.clothing_over:
-					return short ? "over" : "clothing (over)";
-				case ItemConstants.itemTypes.clothing_upper:
-					return short ? "upper" : "clothing (upper body)";
-				case ItemConstants.itemTypes.clothing_lower:
-					return short ? "lower" : "clothing (lower body)";
-				case ItemConstants.itemTypes.clothing_hands:
-					return short ? "hands" : "clothing (hands)";
-				case ItemConstants.itemTypes.clothing_head:
-					return short ? "head" : "clothing (head)";
-				case ItemConstants.itemTypes.ingredient:
-					return short ? "ingredient" : "crafting ingredient";
-				case ItemConstants.itemTypes.voucher:
-					return short ? "consumable" : "consumable";
-			}
-			return ItemConstants.itemTypes[type];
+			return Text.t(this.getItemTypeDisplayNameKey(type, short));
+		},
+
+		getItemTypeDisplayNameKey: function (type, short) {
+			return "game.item.type_" + type + "_name" + (short ? "_short" : "");
 		},
 
 		getQualityDisplayName: function (quality) {

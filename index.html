@@ -450,7 +450,9 @@
 					<!-- bag main div: item list & crafting -->
 					<div class="grid tabcontainer" id="container-tab-two-bag" data-tab="switch-bag" style="display:none">
 						<div class="unit three-quarters">
-							<div class="subheader" id="header-bag-equipment"><h3>Equipment</h3></div>
+							<div class="subheader" id="header-bag-equipment">
+								<h3 class="text-key" data-text-key="ui.inventory.equipment_header"></h3>
+							</div>
 							<div class="infobox" id="container-equipment-slots">
 								<div id="item-slot-bag" class="item-slot item-slot-big lvl13-box-1"></div>
 								<div id="item-slot-light" class="item-slot item-slot-big lvl13-box-1"></div>
@@ -467,7 +469,9 @@
 								<select id="select-bag-autoequip-type"></select>
 								<button id="btn-bag-autoequip" class="action btn-mini" action="auto_equip">Equip</button>
 							</div>
-							<div class="subheader" id="header-bag-items"><h3>Other items</h3></div>
+							<div class="subheader" id="header-bag-items">
+								<h3 class="text-key" data-text-key="ui.inventory.other_items_header"></h3>
+							</div>
 							<div class="infobox">
 								<ul id="bag-items" style="padding:0px; margin: 0px"></ul>
 								<p id="bag-items-empty" class="p-meta">Nothing here</p>
@@ -477,17 +481,23 @@
 							<div id="self-bag-actions" class="actionbox">
 								<button id="btn-self-manage-inventory">Manage inventory</button>
 							</div>
-							<div class="subheader" id="header-self-use-items"><h3>Use</h3></div>
+							<div class="subheader" id="header-self-use-items">
+								<h3 class="text-key" data-text-key="ui.inventory.use_item_header"></h3>
+							</div>
 							<div id="self-use-items" class="actionbox">
 								<ul class="buttonlist">
 								</ul>
 							</div>
-							<div class="subheader" id="header-self-repair-items"><h3>Repair</h3></div>
+							<div class="subheader" id="header-self-repair-items">
+								<h3 class="text-key" data-text-key="ui.inventory.repair_item_header"></h3>
+							</div>
 							<div id="self-repair-items" class="actionbox">
 								<table>
 								</table>
 							</div>
-							<div class="subheader"><h3>Craft</h3></div>
+							<div class="subheader">
+								<h3 class="text-key" data-text-key="ui.inventory.craft_item_header"></h3>
+							</div>
 							<input type="checkbox" class="checkbox" id="checkbox-crafting-show-obsolete" /><p class="checkbox-label" id="label-crafting-show-obsolete">Show obsolete</p>
 							<div id="self-craft" class="actionbox">
 							</div>
@@ -747,16 +757,16 @@
 			<span id="game-version" class="p-meta"></span>
 			<span id="game-msg" class="p-meta"></span>
 			<ul id="game-options-extended" style="display:none">
-				<li class="hide-in-small-layout"><button class="btn-meta" id="btn-settings">Settings</button></li>
-				<li><button class="btn-meta" id="btn-info">Info</button></li>
-				<li><button class="btn-meta" id="btn-stats">Stats</button></li>
-				<li><button class="btn-meta" id="btn-importexport">Data</button></li>
+				<li class="hide-in-small-layout"><button class="btn-meta text-key" data-text-key="ui.meta.settings_button_label" id="btn-settings"></button></li>
+				<li><button class="btn-meta text-key" data-text-key="ui.meta.game_info_button_label" id="btn-info"></button></li>
+				<li><button class="btn-meta text-key" data-text-key="ui.meta.player_stats_button_label" id="btn-stats"></button></li>
+				<li><button class="btn-meta text-key" data-text-key="ui.meta.game_data_button_label" id="btn-importexport"></button></li>
 				<li><span>:</span></li>
 			</ul>
 			<ul id="game-options">
-				<li><button class="btn-meta" id="btn-more">More</button>
-				<li><button class="btn-meta" id="btn-restart">Restart</button></li>
-				<li><button class="btn-meta" id="btn-save">Save</button></li>
+				<li><button class="btn-meta text-key" data-text-key="ui.meta.more_options_button_label" id="btn-more"></button>
+				<li><button class="btn-meta text-key" data-text-key="ui.meta.restart_button_label" id="btn-restart"></button></li>
+				<li><button class="btn-meta text-key" data-text-key="ui.meta.quick_save_button_label" id="btn-save"></button></li>
 			</ul>
 		</div>
 	</div><!-- sticky footer -->
