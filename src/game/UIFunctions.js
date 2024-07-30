@@ -935,7 +935,7 @@ define(['ash',
 			},
 
 			onMetaButtonClicked: function (e) {
-				let $btn = $(button.target);
+				let $btn = $(e.currentTarget);
 				let id = $btn.attr("id");
 
 				if (id == "out-action-fight-close") {
