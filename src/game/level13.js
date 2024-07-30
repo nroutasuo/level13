@@ -194,6 +194,8 @@ define([
 		},
 
 		setupEngine: function () {
+			let game = this;
+			
 			return new Promise((resolve, reject) => {
 				log.i("START " + GameConstants.STARTTimeNow() + "\t setting up engine");
 				
