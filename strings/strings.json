@@ -221,7 +221,8 @@
             "list_template_many_start": "",
             "list_template_one": "{value}",
             "list_template_two": "{value1} and {value2}",
-            "list_template_zero": "(none)"
+            "list_template_zero": "(none)",
+            "value_unknown": "?"
         },
         "embark": {
             "items_subheader": "Items",
@@ -242,12 +243,16 @@
             "_sector_status_no_enemies_description": "There doesn't seem to be anything hostile around.",
             "_sector_status_resources_found_entry": "{name} ({abundance} {value})",
             "_sector_status_resources_found_template": "Resources_found: {list}",
-            "_sector_status_scavenged_percent_template": "Scavenged: {value}%",
             "build_actions_header": "Build",
             "current_distance_to_camp_field": "Distance to camp: {num}",
             "current_distance_to_passage_field": "Distance to passage: {num}",
             "locales_header": "Locales",
-            "scavenge_actions_header": "Search"
+            "scavenge_actions_header": "Search",
+            "sector_status_items_found_field": "Items found: {list}",
+            "sector_status_investigated_percent_field_completed": "Investigated: <style='dimmed'>{value}%</style>",
+            "sector_status_investigated_percent_field_default": "Investigated: {value}%",
+            "sector_status_scavenged_percent_field": "Scavenged: {value}%",
+            "sector_status_resources_found_field": "Resources found: {list}"
         },
         "inventory": {
             "_equipment_slot_bag_name": "Bag",
