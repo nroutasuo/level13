@@ -321,7 +321,7 @@ define(['ash', 'text/Text', 'game/vos/ResourcesVO'], function (Ash, Text, Resour
 		},
 		
 		getWorkerDisplayName: function (workerType) {
-			return Text.t(this.getWorkerDisplayNameKey(workerType));
+			return Text.t(CampConstants.getWorkerDisplayNameKey(workerType));
 		},
 
 		getWorkerDisplayNameKey: function (workerType) {

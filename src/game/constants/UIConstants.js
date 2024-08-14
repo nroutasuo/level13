@@ -343,8 +343,7 @@ define(['ash',
 		},
 
 		getBlueprintPieceLI: function (upgradeID) {
-			var upgradeDefinition = UpgradeConstants.upgradeDefinitions[upgradeID];
-			var name = upgradeDefinition.name;
+			let name = Text.t(UpgradeConstants.getDisplayNameTextKey(upgradeID));
 			return "<li><div class='info-callout-target' description='Blueprint (" + name + ")'>" + this.getBlueprintPieceIcon(upgradeID) + " blueprint</li>";
 		},
 
@@ -773,9 +772,10 @@ define(['ash',
 				let unlockedUpgrades = GameGlobals.milestoneEffectsHelper.getUnlockedUpgrades(milestone.index);
 				addGroup("Unlocked upgrades", unlockedUpgrades, (upgradeID) => {
 					let upgrade = UpgradeConstants.upgradeDefinitions[upgradeID];
+					let name = Text.t(UpgradeConstants.getDisplayNameTextKey(upgradeID));
 					let isOtherRequirementsMet = GameGlobals.playerActionsHelper.isRequirementsMet(upgradeID, null, [ PlayerActionConstants.DISABLED_REASON_MILESTONE ]);
 					let c = isOtherRequirementsMet ? "" : "strike-through";
-					return "<span class='" + c + "'>" + upgrade.name + "</span>";
+					return "<span class='" + c + "'>" + name + "</span>";
 				});
 				
 				let unlockedActions = GameGlobals.milestoneEffectsHelper.getUnlockedGeneralActions(milestone.index);

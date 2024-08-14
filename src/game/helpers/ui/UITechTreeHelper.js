@@ -1,5 +1,6 @@
 // Creates and updates maps (mini-map and main)
 define(['ash',
+	'text/Text',
 	'utils/CanvasUtils',
 	'game/GameGlobals',
 	'game/constants/CanvasConstants',
@@ -7,7 +8,7 @@ define(['ash',
 	'game/constants/PlayerActionConstants',
 	'game/constants/UpgradeConstants',
 	'game/nodes/tribe/TribeUpgradesNode'],
-function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, PlayerActionConstants, UpgradeConstants, TribeUpgradesNode) {
+function (Ash, Text, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, PlayerActionConstants, UpgradeConstants, TribeUpgradesNode) {
 	
 	var UITechTreeNode = Ash.Class.extend({
 		
@@ -217,7 +218,7 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
 			var xpx = this.getPixelPosX(node.x);
 			var ypx = this.getPixelPosY(node.y);
 			var data = "data-id='" + node.definition.id + "'";
-			var text = node.definition.name;
+			var text = Text.t(UpgradeConstants.getDisplayNameTextKey(node.definition.id))
 			var $div = $("<div class='canvas-overlay-cell upgrades-overlay-cell' style='top: " + ypx + "px; left: " + xpx + "px' " + data +"><p>" + text +"</p></div>");
 			var helper = this;
 			$div.click(function (e) {
@@ -263,8 +264,9 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
 			var grids = 1/this.minGridStep;
 			var gridX = Math.round(x*grids) / grids;
 			var gridY = Math.round(y*grids) / grids;
+			let name = Text.t(UpgradeConstants.getDisplayNameTextKey(node.definition.id));
 			if (!tree.grid[gridY]) tree.grid[gridY] = {};
-			if (this.isOccupiedArea(tree, gridX, gridY, 0.5, 0.5)) log.w("Overlapping position: " + gridX + "-" + gridY + " " + node.definition.name);
+			if (this.isOccupiedArea(tree, gridX, gridY, 0.5, 0.5)) log.w("Overlapping position: " + gridX + "-" + gridY + " " + name);
 			tree.grid[gridY][gridX] = node;
 		},
 		

@@ -34,7 +34,7 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 		},
 
 		hasAction: function (action) {
-			return this.requirements[action] || this.costs[action] || this.cooldowns[action] || this.durations[action] || this.descriptions[action] || false;
+			return this.requirements[action] || this.costs[action] || this.cooldowns[action] || this.durations[action] || false;
 		},
 
 		getCooldown: function (action) {

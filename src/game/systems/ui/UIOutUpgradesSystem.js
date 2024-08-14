@@ -169,9 +169,11 @@ define([
 				var isUnlocked = this.tribeNodes.head.upgrades.hasUpgrade(definition.id);
 				var isAvailable = GameGlobals.playerActionsHelper.checkRequirements(definition.id, false).value > 0;
 				var statusS = isUnlocked ? "researched" : isAvailable ? "available" : "locked";
+				let name = Text.t(UpgradeConstants.getDisplayNameTextKey(definition.id));
+				let description = Text.t(UpgradeConstants.getDescriptionTextKey(definition.id));
 				$("#upgrade-details-status").text(statusS);
-				$("#upgrade-details-name").text(definition.name);
-				$("#upgrade-details-desc").text(definition.description);
+				$("#upgrade-details-name").text(name);
+				$("#upgrade-details-desc").text(description);
 				$("#upgrade-details-effect").text(this.getEffectDescription(this.vis.selectedID, false));
 				$("#upgrade-details-unlocked-research").text(this.getUnlockedResearchDescription(this.vis.selectedID));
 			}
@@ -225,7 +227,7 @@ define([
 
 			let effectSpan = "<span class='p-meta'>" + this.getEffectDescription(upgradeDefinition.id, status) + "</span>"
 			let unlockedResearchSpan = "<span class='p-meta'>" + unlockedResearchDescription + "</span>"
-			let description = upgradeDefinition.description + "<br/>" + effectSpan;
+			let description = Text.t(UpgradeConstants.getDescriptionTextKey(upgradeDefinition.id)) + "<br/>" + effectSpan;
 			
 			if (unlockedResearchDescription && unlockedResearchDescription.length > 0) {
 				description += "<br/>" + unlockedResearchSpan;
@@ -263,11 +265,13 @@ define([
 					break;
 			}
 
+			let name = Text.t(UpgradeConstants.getDisplayNameTextKey(upgradeDefinition.id));
+
 			if (isSmallLayout) {
-				let nameAndDescriptionTD = "<td class='item-name'>" + upgradeDefinition.name + (showDescription ? ("<br/>" + description) : "") + "</td>";
+				let nameAndDescriptionTD = "<td class='item-name'>" + name + (showDescription ? ("<br/>" + description) : "") + "</td>";
 				return "<tr data-upgrade-id='" + upgradeDefinition.id + "' data-status='" + status + "'>" + nameAndDescriptionTD + "" + blueprintTD + "" + iconTD + "" + buttonTD + "</tr>";
 			} else {
-				let nameTD = "<td class='item-name'>" + upgradeDefinition.name + "</td>";
+				let nameTD = "<td class='item-name'>" + name + "</td>";
 				let descriptionTD = "<td class='maxwidth'>" + description + "</td>";
 				return "<tr data-upgrade-id='" + upgradeDefinition.id + "' data-status='" + status + "'>" + nameTD + "" + (showDescription ? descriptionTD : "") + ""+ blueprintTD + "" + iconTD + "" + buttonTD + "</tr>";
 			}
@@ -305,7 +309,8 @@ define([
 
 					for (let i = 0; i < researchIDs.length; i++) {
 						let researchStatus = GameGlobals.tribeHelper.getUpgradeStatus(researchIDs[i]);
-						let researchName = UpgradeConstants.upgradeDefinitions[researchIDs[i]].name;
+						let researchID = UpgradeConstants.upgradeDefinitions[researchIDs[i]].id;
+						let researchName = Text.t(UpgradeConstants.getDisplayNameTextKey(researchID))
 
 						switch (researchStatus) {
 							case UpgradeConstants.upgradeStatus.HIDDEN:

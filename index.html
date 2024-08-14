@@ -214,7 +214,7 @@
 				
 					<div class="grid" id="grid-tab-header">
 						<div class="unit whole" id="tab-header">
-						<button id="btn-header-rename" class="context btn-meta tabelement tab-options" data-tab="switch-in" style="display:none">Rename</button>
+						<button id="btn-header-rename" class="context btn-meta tabelement tab-options text-key" data-tab="switch-in" data-text-key="ui.camp.rename_camp_button_label" style="display:none"></button>
 						<div class="tabelement" data-tab="switch-map" style="display:none;">
 							<select id="select-header-mapstyle" class="context tab-options"></select>
 							<select id="select-header-mapmode" class="context tab-options"></select>
@@ -298,7 +298,7 @@
 								</div>
 								<div id="in-demographics-raid">
 									<div class='info-callout-target'>
-										<p id="in-demographics-raid-danger">Danger from raids: <span class="value"></span></p>
+											<p id="in-demographics-raid-danger">Danger from raids: <span class="value"></span></p>
 									</div><br/>
 									<div class='info-callout-target'>
 										<p id="in-demographics-raid-defence">Camp defences: <span class="value"></span></p>
@@ -332,14 +332,14 @@
 							</div>
 							<p>
 							<div class="stat-indicator" id="embark-bag">
-								<span class="label">Selected</span>
+								<span class="label text-key" data-text-key="ui.embark.selected_bag_amount_label"></span>
 								<span class="value">0</span>
 								/
 								<span class="value-total">0</span>
 							</div>
 							</p>
 							<div class="actionbox">
-							<button class="action" id="in-action-leave" action="leave_camp">Go</button>
+								<button class="action text-key" id="in-action-leave" action="leave_camp" data-text-key="ui.embark.leave_camp_button_label"></button>
 							<span class="warning hidden-by-default" id="embark-warning"></span>
 							</div>
 						</div>
@@ -367,7 +367,7 @@
 					
 					<div class="grid tabcontainer" id="container-tab-two-out-actions" data-tab="switch-out" style="display:none;">
 						<div class="unit unit-compass" id="out-container-compass-actions">
-						<h3>Wander</h3>
+						<h3 class="text-key" data-text-key="ui.exploration.move_header"></h3>
 							<table id="table-out-actions-movement">
 								<tr>
 									<td><button class="action btn-icon action-move tabbutton" data-tab="switch-out" id="out-action-move-nw" action="move_sector_nw"><span>NW</span></button></td>
@@ -568,9 +568,9 @@
 									<img src="img/map/map-ingredient-sunlit.png" class="img-themed" data-src-sunlit="img/map/map-ingredient.png" />
 								</button>
 								<div id="mainmap-sector-details-content-empty">
-									<h3>Sector details</h3>
-									<p class="meta" id="mainmap-sector-details-empty-text-canvas">Click on a sector to see details.</p>
-									<p class="meta" id="mainmap-sector-details-empty-text-ascii">Select a sector to see details.</p>
+									<h3 class="text-key" data-text-key="ui.map.sector_details_header"></h3>
+									<p class="meta text-key" id="mainmap-sector-details-empty-text-canvas" data-text-key="ui.map.sector_details_empty_info_canvas"></p>
+									<p class="meta text-key" id="mainmap-sector-details-empty-text-ascii" data-text-key="ui.map.sector_details_empty_info_ascii"></p>
 								</div>
 								<div id="mainmap-sector-details-content">
 									<h3><span id="mainmap-sector-details-name">Sector</span> <span id="mainmap-sector-details-pos"/></h3>

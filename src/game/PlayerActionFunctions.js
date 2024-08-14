@@ -2235,7 +2235,8 @@ define(['ash',
 			
 			let upgradeDefinition = UpgradeConstants.upgradeDefinitions[upgradeID];
 			GameGlobals.playerActionsHelper.deductCosts(upgradeID);
-			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "Researched " + upgradeDefinition.name, { visibility: LogConstants.MSG_VISIBILITY_PRIORITY });
+			let name = Text.t(UpgradeConstants.getDisplayNameTextKey(upgradeID));
+			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "Researched " + name, { visibility: LogConstants.MSG_VISIBILITY_PRIORITY });
 			this.tribeUpgradesNodes.head.upgrades.addUpgrade(upgradeID);
 			GlobalSignals.upgradeUnlockedSignal.dispatch(upgradeID);
 			this.save();
@@ -2244,13 +2245,14 @@ define(['ash',
 			let unlockedResearchIDs = GameGlobals.upgradeEffectsHelper.getUnlockedResearchIDs(upgradeID);
 			
 			let title = "Researched complete ";
-			let message = "<p>You've researched <span class='hl-functionality'>" + upgradeDefinition.name + "</span>.</p>";
+			let upgradeName = Text.t(UpgradeConstants.getDisplayNameTextKey(upgradeID));
+			let message = "<p>You've researched <span class='hl-functionality'>" + upgradeName + "</span>.</p>";
 			message += "<p class='p-meta'>" + GameGlobals.upgradeEffectsHelper.getEffectDescription(upgradeID, true) + "</p>";
 			
 			if (unlockedResearchIDs.length > 0) {
 				let unlockedResearchNames = unlockedResearchIDs
 					.filter(upgradeID => GameGlobals.playerActionsHelper.isVisible(upgradeID))
-					.map(upgradeID => UpgradeConstants.upgradeDefinitions[upgradeID].name);
+					.map(upgradeID => Text.t(UpgradeConstants.getDisplayNameTextKey(upgradeID)));
 				if (unlockedResearchNames.length > 0) {
 					message += "<p class='p-meta'>new research:<br/>" + unlockedResearchNames.join("<br/>") + "</p>";
 				}

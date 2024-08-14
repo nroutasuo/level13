@@ -176,19 +176,16 @@ define([
 		refresh: function () {
 			this.elements.tabHeader.text(Text.t("ui.main.tab_bag_header"));
 
-			var showObsolete = this.showObsolete();
-			var itemDefinitions = this.getCraftableItemDefinitionsByType();
+			let itemDefinitions = this.getCraftableItemDefinitionsByType();
 
 			// close all but first
-			var firstFound = false;
+			let firstFound = false;
 			for (let type in itemDefinitions) {
 				let itemList = itemDefinitions[type];
 				var containerID = this.getItemCraftContainerID(type);
 				var numVisible = 0;
 				for (let i in itemList) {
 					let itemDefinition = itemList[i];
-					var isUnlocked = this.isItemUnlocked(itemDefinition);
-					var isObsolete = this.isObsolete(itemDefinition);
 					var isVisible = this.isCraftableItemVisible(itemDefinition);
 					if (isVisible) numVisible++;
 				}
@@ -227,8 +224,9 @@ define([
 		
 		updateBagActions: function () {
 			let inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
+			let hasUnlockedCamp = GameGlobals.gameState.isFeatureUnlocked("camp");
 			
-			GameGlobals.uiFunctions.toggle("#self-bag-actions", !inCamp);
+			GameGlobals.uiFunctions.toggle("#self-bag-actions", !inCamp && hasUnlockedCamp);
 		},
 
 		updateItems: function () {

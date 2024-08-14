@@ -1,5 +1,6 @@
 define([
 	'ash',
+	'text/Text',
 	'utils/FileUtils',
 	'utils/MapUtils',
 	'game/GameGlobals',
@@ -29,7 +30,7 @@ define([
 	'game/components/player/ItemsComponent',
 	'game/components/type/LevelComponent',
 	'game/systems/CheatSystem',
-], function (Ash, FileUtils, MapUtils, GameGlobals, GlobalSignals, GameConstants, ItemConstants, LevelConstants, LocaleConstants, MovementConstants, PositionConstants, SectorConstants, TextConstants, TradeConstants, UIConstants,
+], function (Ash, Text, FileUtils, MapUtils, GameGlobals, GlobalSignals, GameConstants, ItemConstants, LevelConstants, LocaleConstants, MovementConstants, PositionConstants, SectorConstants, TextConstants, TradeConstants, UIConstants,
 	PlayerLocationNode, PlayerPositionNode,
 	CampComponent, PositionComponent, EnemiesComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, SectorImprovementsComponent, WorkshopComponent, ItemsComponent, LevelComponent,
 	CheatSystem) {
@@ -802,7 +803,7 @@ define([
 		},
 		
 		updateHeader: function () {
-			let header = "Map";
+			let header = Text.t("ui.map.page_header");
 			if (this.isMapModesVisible()) header += " (" + this.selectedMapMode + ")";
 			$("#tab-header h2").text(header);
 		},

@@ -477,10 +477,16 @@ define([
 
 		// Found resources, enemies
 		getStatusDescription: function (hasVision, isScouted, hasEnemies, featuresComponent, passagesComponent, hasCampHere, hasCampOnLevel) {
-			var description = "";
+			let description = "";
 
+			// Scouted status
+			if (hasVision && !isScouted) {
+				description += Text.t("ui.exploration.sector_status_not_scouted_description");
+			}
+
+			// Danger
 			if (hasVision) {
-				description += this.getDangerDescription(isScouted, featuresComponent, passagesComponent, hasCampHere);
+				description += this.getDangerDescription(isScouted, featuresComponent, hasCampHere);
 			}
 			
 			// Waymarks
@@ -614,24 +620,20 @@ define([
 			return description;
 		},
 
-		getDangerDescription: function (isScouted, featuresComponent, passagesComponent, hasCampOnLevel) {
-			var enemyDesc = "";
+		getDangerDescription: function (isScouted, featuresComponent, hasCampOnLevel) {
+			let sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
+			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			let enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
+			let hasEnemies = enemiesComponent.hasEnemies;
 
-			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
-			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-			var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
-			var hasEnemies = enemiesComponent.hasEnemies;
-
-			if (!isScouted) {
-				enemyDesc += "You have not scouted this sector yet. ";
-			}
+			let enemyDesc = "";
 
 			if (hasEnemies) {
 				if (isScouted) {
 					enemyDesc = "This area is " + TextConstants.getEnemyText(enemiesComponent.possibleEnemies, sectorControlComponent).toLowerCase() + ". ";
 				}
 			} else if (isScouted) {
-				enemyDesc += "There doesn't seem to be anything hostile around. ";
+				enemyDesc += Text.t("ui.exploration.sector_status_no_enemies_description");
 			}
 
 			var notCampableDesc = "";

@@ -2202,12 +2202,12 @@ define([
 				let buildingKey = baseAction.replace("build_in_", "");
 				let improvementLevel = this.getImprovementLevel(buildingKey, sector);
 				return ImprovementConstants.getImprovementDescription(buildingKey, improvementLevel);
-			} else if (PlayerActionConstants.descriptions[action]) {
-				return PlayerActionConstants.descriptions[action];
-			} else if (PlayerActionConstants.descriptions[baseAction]) {
-				return PlayerActionConstants.descriptions[baseAction];
-			} else if (UpgradeConstants.upgradeDescriptions[action]) {
-				// upgrade action descriptions are in the list outside of the button
+			} else if (Text.hasKey("game.actions." + action + "_description")) {
+				return Text.t("game.actions." + action + "_description");
+			} else if (Text.hasKey("game.actions." + baseAction + "_description")) {
+				return Text.t("game.actions." + baseAction + "_description");
+			} else if (UpgradeConstants.hasUpgrade[action]) {
+				// upgrade action descriptions are displayed in the list outside of the button
 				return "";
 			} else if (action.indexOf("move_sector_") >= 0) {
 				// no need for description

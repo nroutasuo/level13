@@ -173,7 +173,6 @@
 			let campComponent = camp.get(CampComponent);
 			if (!campComponent) return;
 
-			let currentPopulation = Math.floor(campComponent.population);
 			let resources = camp.get(ResourcesComponent);
 
 			if (!isActive) return;
