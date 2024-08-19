@@ -49,9 +49,9 @@ define([
 		},
 		
 		initElements: function () {
-			for (var key in resourceNames) {
-				var name = resourceNames[key];
-				var indicatorEmbark = UIConstants.createResourceIndicator(name, true, "embark-resources-" + name, true, false, false, false);
+			for (let key in resourceNames) {
+				let name = resourceNames[key];
+				let indicatorEmbark = UIConstants.createResourceIndicator(name, true, "embark-resources-" + name, true, false, false, false);
 				$("#embark-resources").append(
 					"<tr id='embark-assign-" + name + "'>" +
 					"<td class='dimmable'>" + indicatorEmbark + "</td>" +
@@ -213,6 +213,7 @@ define([
 			uniqueItems = uniqueItems.filter(item => !item.broken);
 			for (let i = 0; i < uniqueItems.length; i++) {
 				let item = uniqueItems[i];
+				let itemName = ItemConstants.getItemDisplayName(item);
 				let baseItemId = ItemConstants.getBaseItemId(item.id);
 				if (item.type === ItemConstants.itemTypes.uniqueEquipment) continue;
 				if (item.type === ItemConstants.itemTypes.artefact) continue;
@@ -231,7 +232,7 @@ define([
 				
 				$("#embark-items").append(
 					"<tr id='embark-assign-" + item.id + "'>" +
-					"<td class='dimmable'><img src='" + item.icon + "'/><span>" + item.name + "</span></td>" +
+					"<td class='dimmable'><img src='" + item.icon + "'/><span>" + itemName + "</span></td>" +
 					"<td><div class='stepper' id='stepper-embark-" + item.id + "'></div></td>" +
 					"<td class='list-amount dimmable'><span> / " + showCount + "</span></div></td>" +
 					"</tr>"

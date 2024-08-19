@@ -1,5 +1,5 @@
-define(['ash', 'json!game/data/ItemData.json', 'text/Text', 'game/constants/PlayerActionConstants', 'game/vos/ItemVO'],
-function (Ash, ItemData, Text, PlayerActionConstants, ItemVO) {
+define(['ash', 'text/Text', 'json!game/data/ItemData.json', 'text/Text', 'game/constants/PlayerActionConstants', 'game/vos/ItemVO'],
+function (Ash, Text, ItemData, Text, PlayerActionConstants, ItemVO) {
 
 	let ItemConstants = {
 		
@@ -132,13 +132,12 @@ function (Ash, ItemData, Text, PlayerActionConstants, ItemVO) {
 					isRepairable = item.isCraftable && item.isEquippable;
 				}
 				let level = item.level || this.getDefaultItemLevel(type);
-				let itemVO = new ItemVO(item.id, item.name, type, level, item.campOrdinalRequired, item.campOrdinalMaximum, item.isEquippable, item.isCraftable, isRepairable, item.isUseable, bonuses, item.icon, item.description, item.isSpecialEquipment);
+				let itemVO = new ItemVO(item.id, type, level, item.campOrdinalRequired, item.campOrdinalMaximum, item.isEquippable, item.isCraftable, isRepairable, item.isUseable, bonuses, item.icon, item.isSpecialEquipment);
 				itemVO.scavengeRarity = item.rarityScavenge || -1;
 				itemVO.investigateRarity = item.rarityInvestigate || -1;
 				itemVO.localeRarity = item.rarityLocale || -1;
 				itemVO.tradeRarity = item.rarityTrade || -1;
 				itemVO.configData = item.configData || {};
-				itemVO.nameShort = item.nameShort || null;
 				itemVO.tradePrice = item.tradePrice;
 				this.itemDefinitions[type].push(itemVO);
 				this.itemByID[itemID] = itemVO;
@@ -288,16 +287,33 @@ function (Ash, ItemData, Text, PlayerActionConstants, ItemVO) {
 		},
 			
 		getItemDisplayName: function (item, short) {
-			if (!short) return item.name;
-			if (item.nameShort) return item.nameShort;
-			let parts = item.name.split(" ");
-			return parts[parts.length - 1];
+			if (!item) return "";
+			return Text.t(this.getItemDisplayNameKey(item, short));
+		},
+
+		getItemDisplayNameKey: function (item, short) {
+			if (!item) return "";
+			let defaultKey = "game.items." + item.id + "_name";
+			let shortKey = "game.items." + item.id + "_name_short";
+			if (short && Text.hasKey(shortKey)) {
+				shortKey;
+			}
+			return defaultKey;
 		},
 		
 		getItemDescription: function (item) {
-			let result = item.description;
-			if (item.id.indexOf("consumable_weapon") >= 0) result += " (Only one per fight.)";
+			if (!item) return "";
+			let result = Text.t(this.getItemDescriptionKey(item));
+			if (item.id.indexOf("consumable_weapon") >= 0) {
+				result += Text.t("ui.common.sentence_separator");
+				result += Text.t("ui.inventory.fight_consumable_only_one_per_fight_hint");
+			}
 			return result;
+		},
+
+		getItemDescriptionKey: function (item) {
+			if (!item) return "";
+			return "game.items." + item.id + "_description";
 		},
 		
 		getItemBonusIcons: function (itemBonusType) {

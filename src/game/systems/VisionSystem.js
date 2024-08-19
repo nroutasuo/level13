@@ -125,7 +125,8 @@ define([
 				let lightItem = itemsComponent.getEquipped(ItemConstants.itemTypes.light)[0];
 				if (lightItem && lightBonus + maxValueBase > maxValue) {
 					maxValue += lightBonus;
-					addAccumulation(lightItem.name, lightBonus / maxValueBase);
+					let itemName = ItemConstants.getItemDisplayName(item);
+					addAccumulation(itemName, lightBonus / maxValueBase);
 				}
 				// consumable items
 				if (statusComponent.glowStickSeconds > 0) {

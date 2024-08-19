@@ -747,7 +747,8 @@ define([
 					var item = rewards.selectedItems[i];
 					if (typeof loggedItems[item.id] === 'undefined') {
 						msg += "$" + replacements.length + ", ";
-						replacements.push("#" + replacements.length + " " + item.name.toLowerCase());
+						let itemName = ItemConstants.getItemDisplayName(item);
+						replacements.push("#" + replacements.length + " " + itemName.toLowerCase());
 						values.push(1);
 						loggedItems[item.id] = replacements.length - 1;
 					} else {
@@ -876,7 +877,8 @@ define([
 					let uniqueTypes = [];
 					for (let i = 0; i < resultVO.gainedItemsFromFollowers.length; i++) {
 						let item = resultVO.gainedItemsFromFollowers[i];
-						if (uniqueNames.indexOf(item.name) < 0) uniqueNames.push(item.name);
+						let itemName = ItemConstants.getItemDisplayName(item);
+						if (uniqueNames.indexOf(itemName) < 0) uniqueNames.push(itemName);
 						if (uniqueTypes.indexOf(item.type) < 0) uniqueTypes.push(item.type);
 					}
 					if (uniqueNames.length == 1) {
@@ -1062,7 +1064,8 @@ define([
 					var item = resultVO.selectedItems[i];
 					if (itemsComponent.getCountById(item.id, true) === 1) {
 						if (item.equippable && !item.equipped) continue;
-						messages.push({ id: LogConstants.MSG_ID_FOUND_ITEM_FIRST, text: "Found " + Text.addArticle(item.name) + ".", addToPopup: true, addToLog: true });
+						let itemName = ItemConstants.getItemDisplayName(item);
+						messages.push({ id: LogConstants.MSG_ID_FOUND_ITEM_FIRST, text: "Found " + Text.addArticle(itemName) + ".", addToPopup: true, addToLog: true });
 					}
 				}
 			}

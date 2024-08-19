@@ -249,9 +249,10 @@ define([
 			for (let i = 0; i < items.length; i++) {
 				let item = items[i];
 				let itemBonus = ItemConstants.getCurrentBonus(item, itemBonusType);
+				let itemName = ItemConstants.getItemDisplayName(item);
 				if (itemBonus > 0) {
 					if (result.length > 0) result += "<br/>";
-					result += item.name + ": " + itemBonus;
+					result += itemName + ": " + itemBonus;
 				}
 			}
 			

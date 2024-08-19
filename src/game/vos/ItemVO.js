@@ -3,11 +3,9 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 	let ItemVO = Ash.Class.extend({
 
 		id: "",
-		name: "",
 		type: "",
 		bonus: null,
 		icon: "",
-		description: "",
 		requiredCampOrdinal: 1,
 		maximumCampOrdinal: -1,
 		isSpecialEquipment: false,
@@ -35,9 +33,8 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		carried: false,
 		broken: false,
 
-		constructor: function (id, name, type, level, requiredCampOrdinal, maximumCampOrdinal, equippable, craftable, repairable, useable, bonuses, icon, description, isSpecialEquipment) {
+		constructor: function (id, type, level, requiredCampOrdinal, maximumCampOrdinal, equippable, craftable, repairable, useable, bonuses, icon, isSpecialEquipment) {
 			this.id = id;
-			this.name = name;
 			this.type = type;
 			this.level = level;
 			this.bonus = new ItemBonusVO(bonuses);
@@ -46,7 +43,6 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			this.repairable = repairable;
 			this.useable = useable;
 			this.icon = icon;
-			this.description = description;
 			this.requiredCampOrdinal = typeof requiredCampOrdinal != 'undefined' ? requiredCampOrdinal : 1;
 			this.maximumCampOrdinal = typeof maximumCampOrdinal != 'undefined' ? maximumCampOrdinal : 0;
 			this.isSpecialEquipment = isSpecialEquipment || false;
@@ -84,11 +80,8 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			clone.level = this.level;
 
 			// delete static data
-			delete clone.name;
-			delete clone.nameShort;
 			delete clone.bonus;
 			delete clone.icon;
-			delete clone.description;
 			delete clone.requiredCampOrdinal;
 			delete clone.isSpecialEquipment;
 			delete clone.scavengeRarity;
@@ -123,7 +116,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		},
 
 		clone: function (componentValues) {
-			let clone = new ItemVO(this.id, this.name, this.type, this.level, this.requiredCampOrdinal, this.maximumCampOrdinal, this.equippable, this.craftable, this.repairable, this.useable, this.bonus.bonuses, this.icon, this.description, this.isSpecialEquipment);
+			let clone = new ItemVO(this.id, this.type, this.level, this.requiredCampOrdinal, this.maximumCampOrdinal, this.equippable, this.craftable, this.repairable, this.useable, this.bonus.bonuses, this.icon, this.isSpecialEquipment);
 
 			clone.scavengeRarity = this.scavengeRarity;
 			clone.localeRarity = this.localeRarity;
@@ -132,7 +125,6 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 
 			clone.tradePrice = this.tradePrice;
 			clone.broken = this.broken;
-			clone.nameShort = this.nameShort;
 
 			if (componentValues) {
 				if (componentValues.itemID) clone.itemID = componentValues.itemID; 

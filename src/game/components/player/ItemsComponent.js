@@ -429,10 +429,10 @@ function (Ash, ItemVO, ItemConstants) {
 			return equippedItems.length > 0 && equippedItems[0].id == item.id;
 		},
 
-		contains: function (name) {
+		contains: function (id) {
 			for (var key in this.items) {
 				for (let i = 0; i < this.items[key].length; i++) {
-					if(this.items[key][i].name == name) return true;
+					if(this.items[key][i].id == id) return true;
 				}
 			}
 			return false;

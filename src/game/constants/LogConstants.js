@@ -261,7 +261,8 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 					itemDetails = " Light will make scavenging safer.";
 					break;
 			}
-			return "Made " + Text.addArticle(itemVO.name).toLowerCase() + "." + itemDetails;
+			let itemName = ItemConstants.getItemDisplayName(itemVO);
+			return "Made " + Text.addArticle(itemName).toLowerCase() + "." + itemDetails;
 		},
 
 	}

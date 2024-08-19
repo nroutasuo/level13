@@ -158,8 +158,9 @@ define([
 				$("#fight-buttons-infightactions").empty();
 				for(let i = 0; i < itemsToShow.length; i++) {
 					var item = itemsToShow[i];
+					let itemName = ItemConstants.getItemDisplayName(item);
 					var action = "use_item_fight_" + item.id;
-					$("#fight-buttons-infightactions").append("<button class='action' action='" + action + "'>" + item.name + "</button>");
+					$("#fight-buttons-infightactions").append("<button class='action' action='" + action + "'>" + itemName + "</button>");
 				}
 				
 				GameGlobals.uiFunctions.createButtons("#fight-buttons-infightactions");

@@ -411,8 +411,9 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		
 		getReadBookMessage: function (itemVO, bookType, campOrdinal) {
 			let features = {};
+			let itemName = ItemConstants.getItemDisplayName(itemVO);
 			features.bookType = bookType;
-			features.bookName = itemVO.name;
+			features.bookName = itemName;
 			features.bookLevel = itemVO.level || 1;
 			features.campOrdinal = campOrdinal;
 			features.randomSeed = itemVO.itemID;
@@ -792,7 +793,8 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		
 		getReadNewspaperMessage: function (itemVO) {
 			let features = {};
-			features.itemName = itemVO.name;
+			let itemName = ItemConstants.getItemDisplayName(itemVO);
+			features.itemName = itemName;
 			features.itemLevel = itemVO.level || 1;
 			features.randomSeed = itemVO.itemID;
 			let params = this.getNewspaperTextParams(features);
@@ -871,7 +873,8 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		
 		getReadResearchPaperMessage: function (itemVO) {
 			let features = {};
-			features.itemName = itemVO.name;
+			let itemName = ItemConstants.getItemDisplayName(itemVO);
+			features.itemName = itemName;
 			features.itemLevel = itemVO.level || 1;
 			features.randomSeed = itemVO.itemID;
 			let params = this.getResearchPaperTextParams(features);
@@ -970,7 +973,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		},
 
 		getResourceDisplayName: function (resourceName) {
-			return resourceName;
+			return Text.t("game.resources." + resourceName + "_name");
 		},
 
 		getHeapDisplayName: function (resourceName, features) {
@@ -1018,7 +1021,8 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				var item = items[i];
 				if (typeof loggedItems[item.id] === 'undefined') {
 					msg += "$" + replacements.length + ", ";
-					replacements.push("#" + replacements.length + " " + item.name.toLowerCase());
+					let itemName = ItemConstants.getItemDisplayName(item);
+					replacements.push("#" + replacements.length + " " + itemName.toLowerCase());
 					values.push(1);
 					loggedItems[item.id] = replacements.length - 1;
 				} else {
@@ -1290,7 +1294,8 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				if (knownItems.indexOf(id) < 0) continue;
 				let item = ItemConstants.getItemDefinitionByID(id);
 				if (!item) continue;
-				validItems.push(item.name);
+				let itemName = ItemConstants.getItemDisplayName(item);
+				validItems.push(itemName);
 			}
 			
 			if (validItems.length == 0) {

@@ -106,7 +106,8 @@ define([
 
 		makeCraftingButton: function(itemDefinition) {
 			var actionName = "craft_" + itemDefinition.id;
-			return "<button class='action tabbutton multiline' action='" + actionName + "' data-tab='switch-bag'>" + itemDefinition.name + "</button>";
+			let itemName = ItemConstants.getItemDisplayName(itemDefinition);
+			return "<button class='action tabbutton multiline' action='" + actionName + "' data-tab='switch-bag'>" + itemName + "</button>";
 		},
 		
 		initUseItemButtons: function () {
@@ -523,8 +524,9 @@ define([
 
 			let canRepair = this.isRepairable(itemVO);
 			let options = { canEquip: false, isEquipped: true, canUnequip: true, canUse: false, canRepair: canRepair };
+			let itemName = ItemConstants.getItemDisplayName(itemVO);
 			$(slot).children(".item-slot-image").html(itemVO ? UIConstants.getItemDiv(itemsComponent, itemVO, null, UIConstants.getItemCallout(itemVO, false, true, options, "switch-bag"), true) : "");
-			$(slot).children(".item-slot-name").html(itemVO ? itemVO.name.toLowerCase() : "");
+			$(slot).children(".item-slot-name").html(itemVO ? itemName.toLowerCase() : "");
 
 			GameGlobals.uiFunctions.toggle($(slot).children(".item-slot-type-empty"), itemVO === null);
 			GameGlobals.uiFunctions.toggle($(slot).children(".item-slot-type-equipped"), itemVO !== null);
@@ -748,7 +750,7 @@ define([
 		isOwned: function (itemDefinition) {
 			if (!itemDefinition) return false;
 			let itemsComponent = this.itemNodes.head.items;
-		    return itemsComponent.contains(itemDefinition.name);
+		    return itemsComponent.contains(itemDefinition.id);
 		},
 		
 		isStatIncreaseAvailable: function () {

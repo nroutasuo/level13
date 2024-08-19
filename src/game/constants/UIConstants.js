@@ -4,14 +4,13 @@ define(['ash',
 	'game/GameGlobals',
 	'game/constants/ColorConstants',
 	'game/constants/StoryConstants',
-	'game/constants/PositionConstants',
-	'game/constants/SectorConstants',
 	'game/constants/FollowerConstants',
 	'game/constants/ItemConstants',
 	'game/constants/BagConstants',
 	'game/constants/PerkConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/PlayerActionConstants',
+	'game/constants/TextConstants',
 	'game/components/common/PositionComponent',
 	'game/components/common/CampComponent',
 	'game/components/sector/SectorStatusComponent',
@@ -19,7 +18,7 @@ define(['ash',
 	'game/components/sector/PassagesComponent',
 	'utils/UIAnimations'
 ], function (Ash, Text, GameGlobals,
-	ColorConstants, StoryConstants, PositionConstants, SectorConstants, FollowerConstants, ItemConstants, BagConstants, PerkConstants, UpgradeConstants, PlayerActionConstants,
+	ColorConstants, StoryConstants, FollowerConstants, ItemConstants, BagConstants, PerkConstants, UpgradeConstants, PlayerActionConstants, TextConstants,
 	PositionComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent,
 	PassagesComponent, UIAnimations) {
 
@@ -84,7 +83,8 @@ define(['ash',
 			
 			div += "<div class='" + classes + (item ? "' data-itemid='" + item.id + "' data-iteminstanceid='" + item.itemID + "'>" : ">");
 
-			if (item) div += "<img src='" + url + "' alt='" + item.name + "'/>";
+			let itemName = ItemConstants.getItemDisplayName(item);
+			if (item) div += "<img src='" + url + "' alt='" + itemName + "'/>";
 
 			if (hasCount)
 				div += "<div class='item-count lvl13-box-1 vision-text'>" + count + "x </div>";
@@ -137,7 +137,8 @@ define(['ash',
 			var detail = " (" + this.getItemBonusDescription(item, false) + ")";
 			if (detail.length < 5) detail = "";
 			var weight = BagConstants.getItemCapacity(item);
-			var itemCalloutContent = "<b>" + item.name + "</b><br/>Type: " + ItemConstants.getItemTypeDisplayName(item.type, false) + " " + detail;
+			let itemName = ItemConstants.getItemDisplayName(item);
+			var itemCalloutContent = "<b>" + itemName + "</b><br/>Type: " + ItemConstants.getItemTypeDisplayName(item.type, false) + " " + detail;
 			itemCalloutContent += "</br>Weight: " + weight;
 			if (ItemConstants.hasItemTypeQualityLevels(item.type)) {
 				let quality = ItemConstants.getItemQuality(item);
@@ -145,7 +146,7 @@ define(['ash',
 			}
 			if (item.broken) itemCalloutContent += "<br><span class='warning'>Broken</span>";
 			itemCalloutContent += "</br>" + ItemConstants.getItemDescription(item);
-			if (smallCallout) itemCalloutContent = item.name + (detail.length > 0 ? " " + detail : "");
+			if (smallCallout) itemCalloutContent = itemName + (detail.length > 0 ? " " + detail : "");
 			
 			var makeButton = function (action, name) {
 				if (!tab) {
@@ -497,9 +498,10 @@ define(['ash',
 			let hasCosts = action && costs && Object.keys(costs).length > 0;
 			if (hasCosts) {
 				for (let key in costs) {
-					let itemName = key.replace("item_", "");
-					let item = ItemConstants.getItemDefinitionByID(itemName, true);
-					let name = (this.names.resources[key] ? this.names.resources[key] : item !== null ? item.name : key).toLowerCase();
+					let itemID = key.replace("item_", "");
+					let item = ItemConstants.getItemDefinitionByID(itemID, true);
+					let itemName = ItemConstants.getItemDisplayName(item);
+					let name = (this.names.resources[key] ? this.names.resources[key] : item !== null ? itemName : key).toLowerCase();
 					let value = costs[key];
 					result += "<span class='action-cost action-cost-" + key + "'>" + name + ": <span class='action-cost-value'>" + UIConstants.getDisplayValue(value) + "</span><br/></span>";
 				}
@@ -589,10 +591,12 @@ define(['ash',
 		createResourceIndicator: function (name, showName, id, showAmount, showChange, showDetails, showFill) {
 			let classes = [ "stat-indicator" ];
 			if (showFill) classes.push("stat-indicator-with-fill");
+
+			let displayName = TextConstants.getResourceDisplayName(name);
 			
 			let div = "<div class='" + classes.join(" ") + "' id='" + id + "'>";
 
-			if (!showName) div = "<div class='info-callout-target info-callout-target-small' description='" + name + "'>" + div;
+			if (!showName) div = "<div class='info-callout-target info-callout-target-small' description='" + displayName + "'>" + div;
 			else if (showChange) div = "<div class='info-callout-target' description=''>" + div;
 
 			div += "<span class='icon'>";
@@ -600,7 +604,7 @@ define(['ash',
 			if (!showName && !showChange) div += "</div>";
 			div += "</span>";
 
-			if (showName) div += "<span class='label'>" + name + "</span>";
+			if (showName) div += "<span class='label'>" + displayName + "</span>";
 
 			if (showAmount) div += "<span class='value'></span>";
 			div += "<span class='change-indicator'></span>";

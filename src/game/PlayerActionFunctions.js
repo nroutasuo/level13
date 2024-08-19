@@ -2013,6 +2013,8 @@ define(['ash',
 			if (!item) {
 				log.w("trying to use item but none found in deductedCosts");
 			}
+			let itemName = ItemConstants.getItemDisplayName(item);
+
 			var foundPosition = item.foundPosition || playerPos;
 			var foundPositionCampOrdinal = GameGlobals.gameState.getCampOrdinal(foundPosition.level);
 			let resultVO = new ResultVO("use_item");
@@ -2020,7 +2022,6 @@ define(['ash',
 			
 			let itemConfig = ItemConstants.getItemDefinitionByID(itemId);
 			let baseItemId = ItemConstants.getBaseItemId(itemId);
-			let itemNameParts = item.name.split(" ");
 			let itemShortName = ItemConstants.getItemDisplayName(item, true);
 			let currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
 			
@@ -2071,7 +2072,7 @@ define(['ash',
 					let suppliesCacheRewards = GameGlobals.playerActionResultsHelper.getUseItemRewards(itemId);
 					let suppliesResultMsg = GameGlobals.playerActionResultsHelper.getRewardsMessageText(suppliesCacheRewards);
 					GameGlobals.playerActionResultsHelper.collectRewards(true, suppliesCacheRewards);
-					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_SUPPLIES_CACHE, "Used " + Text.addArticle(item.name) + ". " + suppliesResultMsg);
+					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_SUPPLIES_CACHE, "Used " + Text.addArticle(itemName) + ". " + suppliesResultMsg);
 					break;
 
 				case "cache_robots":
@@ -2085,7 +2086,7 @@ define(['ash',
 					message = TextConstants.getReadBookMessage(item, itemConfig.configData.bookType || ItemConstants.bookTypes.science, foundPositionCampOrdinal);
 					resultVO.gainedEvidence = evidence;
 					GameGlobals.uiFunctions.showInfoPopup(
-						item.name,
+						itemName,
 						message,
 						"Continue",
 						resultVO
@@ -2099,7 +2100,7 @@ define(['ash',
 					message = TextConstants.getReadNewspaperMessage(item);
 					resultVO.gainedRumours = rumours;
 					GameGlobals.uiFunctions.showInfoPopup(
-						item.name,
+						itemName,
 						message,
 						"Continue",
 						resultVO
@@ -2113,7 +2114,7 @@ define(['ash',
 					message = TextConstants.getDonateSeedsMessage(item);
 					resultVO.gainedHope = hope;
 					GameGlobals.uiFunctions.showInfoPopup(
-						item.name,
+						itemName,
 						message,
 						"Continue",
 						resultVO
@@ -2127,7 +2128,7 @@ define(['ash',
 					message = TextConstants.getReadResearchPaperMessage(item);
 					resultVO.gainedInsight = insight;
 					GameGlobals.uiFunctions.showInfoPopup(
-						item.name,
+						itemName,
 						message,
 						"Continue",
 						resultVO

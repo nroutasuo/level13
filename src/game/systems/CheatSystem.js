@@ -487,7 +487,8 @@ define(['ash',
 			let itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
 			let item = ItemConstants.getItemDefinitionByID(itemID);
 			if (item) {
-				if (!onlyIfMissing || !itemsComponent.contains(item.name)) {
+				let itemName = ItemConstants.getItemDisplayName(item);
+				if (!onlyIfMissing || !itemsComponent.contains(itemName)) {
 					GameGlobals.playerHelper.addItem(item);
 					GlobalSignals.inventoryChangedSignal.dispatch();
 				}

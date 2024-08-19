@@ -1294,7 +1294,7 @@ define([
 						var current = fightComponent ? fightComponent.itemsUsed[itemID] || 0 : 0;
 						var item = ItemConstants.getItemDefinitionByID(itemID);
 						if (!item) continue;
-						var itemName = item.name;
+						let itemName = ItemConstants.getItemDisplayName(item);
 						if (min > current) {
 							return { value: 0, reason: "Must use " + itemName + " first" };
 						} else if (max <= current) {
@@ -2217,12 +2217,14 @@ define([
 					case "craft":
 						var item = this.getItemForCraftAction(action);
 						if (!item) return "";
-						return item.description + (item.getBaseTotalBonus() === 0 ? "" : "<hr/>" + UIConstants.getItemBonusDescription(item, true));
+						var itemDescription = ItemConstants.getItemDescription(item);
+						return itemDescription + (item.getBaseTotalBonus() === 0 ? "" : "<hr/>" + UIConstants.getItemBonusDescription(item, true));
 					case "use_item":
 					case "use_item_fight":
 						var item = this.getItemForCraftAction(action);
 						if (!item) return "";
-						return item.description;
+						var itemDescription = ItemConstants.getItemDescription(item);
+						return itemDescription;
 					case "improve_in":
 						return this.getImproveActionDescription(action);
 					case "dismantle_in": return "Dismantle building";
