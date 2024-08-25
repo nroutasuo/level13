@@ -912,7 +912,7 @@ define(['ash',
 			let messages = {
 				id: LogConstants.MSG_ID_CLEAR_WASTE,
 				msgSuccess: "Cleared the waste. The area is now safe to pass through.",
-				msgFlee: logMsgFailBase + "Feld before completing the operation.",
+				msgFlee: logMsgFailBase + "Fled before completing the operation.",
 				msgDefeat: logMsgFailBase + "Lost the fight.",
 				addToLog: true,
 			};
