@@ -498,10 +498,7 @@ define(['ash',
 			let hasCosts = action && costs && Object.keys(costs).length > 0;
 			if (hasCosts) {
 				for (let key in costs) {
-					let itemID = key.replace("item_", "");
-					let item = ItemConstants.getItemDefinitionByID(itemID, true);
-					let itemName = ItemConstants.getItemDisplayName(item);
-					let name = (this.names.resources[key] ? this.names.resources[key] : item !== null ? itemName : key).toLowerCase();
+					let name = UIConstants.getCostDisplayName(key).toLowerCase();
 					let value = costs[key];
 					result += "<span class='action-cost action-cost-" + key + "'>" + name + ": <span class='action-cost-value'>" + UIConstants.getDisplayValue(value) + "</span><br/></span>";
 				}
@@ -871,6 +868,26 @@ define(['ash',
 
 		getCampDisplayName: function (campNode, short) {
 			return "camp on level " + campNode.position.level;
+		},
+
+		getCostDisplayName: function (name) {
+			if (name.indexOf("item_") == 0) {
+				let itemID = name.replace("item_", "");
+				let item = ItemConstants.getItemDefinitionByID(itemID, true);
+				return ItemConstants.getItemDisplayName(item);
+			}
+
+			if (name.indexOf("resource_") == 0) {
+				let resourceName = name.split("_")[1];
+				return Text.t("game.resources." + resourceName + "_name");
+			}
+
+			if (name == "stamina") {
+				return Text.t("game.stats.stamina_name");
+			}
+
+			log.w("no cost display name defined for cost [" + name + "]");
+			return name;
 		},
 
 		roundValue: function (value, showDecimalsWhenSmall, showDecimalsAlways, decimalDivisor) {

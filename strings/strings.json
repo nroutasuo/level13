@@ -1,13 +1,11 @@
 {
     "game": {
         "actions": {
-            "_create_blueprint_name": "Combine",
-            "_embark_name": "embark",
-            "_scavenge_description_dark": "Look for resources",
-            "_scavenge_description_lit": "Look for resources",
-            "_scavenge_name": "Scavenge",
-            "_scout_name": "Scout",
             "bridge_gap_description": "Build a bridge to cross the gap",
+            "enter_camp_name": "Enter camp",
+            "move_level_up_name": "Move up",
+            "move_level_down_name": "Move down",
+            "move_camp_level_name": "Back to camp",
             "build_out_beacon_description": "Makes exploration in surrounding sectors easier",
             "build_out_camp_description": "A place to rest.",
             "build_out_collector_food_description": "Accumulates food.",
@@ -799,7 +797,9 @@
         "actions": {
             "_disabled_reason_missing_pieces_description": "Missing pieces",
             "_scavenge_result_description": "Went scavenging",
-            "_scout_result_description": "Scouted the area"
+            "_scout_result_description": "Scouted the area",
+            "action_available_in_field": "Available in: {time}",
+            "action_duration_field": "Duration: {time}"
         },
         "camp": {
             "_events_header": "Events",
@@ -942,6 +942,14 @@
             "_sector_detail_district_type_central_name": "Central",
             "_selection_map_style_ascii_label": "ASCII",
             "_selection_map_style_canvas_label": "Canvas",
+            "direction_east_name_short": "E",
+            "direction_ne_name_short": "NE",
+            "direction_north_name_short": "N",
+            "direction_nw_name_short": "NW",
+            "direction_se_name_short": "SE",
+            "direction_south_name_short": "S",
+            "direction_sw_name_short": "SE",
+            "direction_west_name_short": "W",
             "page_header": "Map",
             "sector_detail_blockers_label": "Blockers",
             "sector_detail_collectors_label": "Collectors",

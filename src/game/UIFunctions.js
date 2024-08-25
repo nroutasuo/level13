@@ -1386,7 +1386,7 @@ define(['ash',
 				let showCostCountdown = !hasNonAccumulatingCost && maxCostCountdown >= 0 && costsStatus.bottleneckCostFraction < 1;
 				GameGlobals.uiFunctions.toggle($costsCountdownContainer, showCostCountdown, signalParams);
 				if (showCostCountdown) {
-					$costsCountdown.text("Available in: " + UIConstants.getTimeToNum(maxCostCountdown));
+					$costsCountdown.text(Text.t("ui.actions.action_available_in_field", UIConstants.getTimeToNum(maxCostCountdown)));
 				}
 			},
 

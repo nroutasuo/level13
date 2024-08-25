@@ -145,7 +145,7 @@ define([
 			let maxRecruited = GameGlobals.campHelper.getCurrentMaxFollowersRecruited();
 			let inCamp = GameGlobals.playerHelper.isInCamp();
 			
-			$("#followers-max").text("Total followers: " + + followers.length + "/" + maxRecruited);
+			$("#followers-max").text("Total followers: " + followers.length + "/" + maxRecruited);
 			
 			// slots
 			let selectedFollowers = [];

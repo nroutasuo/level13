@@ -2,10 +2,11 @@
 
 define([
     'core/ExceptionHandler', 
+    'text/Text',
     'game/GameGlobals',
     'game/constants/PlayerActionConstants',
 	'game/constants/UIConstants',
-], function (ExceptionHandler, GameGlobals, PlayerActionConstants, UIConstants) {
+], function (ExceptionHandler, Text, GameGlobals, PlayerActionConstants, UIConstants) {
 
 	let ActionButton = {
 
@@ -133,7 +134,9 @@ define([
             let duration = PlayerActionConstants.getDuration(action, baseActionId);
             if (duration > 0) {
                 if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
-                enabledContent += "<span class='action-duration'>duration: " + Math.round(duration * 100) / 100 + "s</span>";
+                let time = Math.round(duration * 100) / 100 + "s";
+                let durationText = Text.t("ui.actions.action_duration_field", time);
+                enabledContent += "<span class='action-duration'>" + durationText + "</span>";
             }
             
             // - special requirements (such as max improvements on level)
