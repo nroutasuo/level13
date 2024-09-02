@@ -643,7 +643,7 @@ define([
 						var hasBoolean = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeID);
 						if (requirementBoolean != hasBoolean) {
 							var def = UpgradeConstants.upgradeDefinitions[upgradeID];
-							var name = def ? def.name : upgradeID;
+							var name = Text.t(UpgradeConstants.getDisplayNameTextKey(upgradeID));
 							if (requirementBoolean) reason = "Upgrade required: " + name;
 							else reason = "Upgrade already researched (" + name + ")";
 							return { value: 0, reason: reason, baseReason: PlayerActionConstants.DISABLED_REASON_UPGRADE };
