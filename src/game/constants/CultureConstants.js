@@ -33,6 +33,9 @@ define(function () {
 			this.names.personalNames.push({name: "Adya" });
 			this.names.personalNames.push({name: "Gift" });
 			this.names.personalNames.push({name: "Noa" });
+			this.names.personalNames.push({name: "Nat" });
+			this.names.personalNames.push({name: "Idris" });
+
 			this.names.personalNames.push({name: "Fiore", culture: this.cultures.ETRURIAN });
 			this.names.personalNames.push({name: "Giusi", culture: this.cultures.ETRURIAN });
 			this.names.personalNames.push({name: "Loue", culture: this.cultures.HANSA });
@@ -105,6 +108,7 @@ define(function () {
 			this.names.personalNames.push({name: "Sabine", gender: this.genders.FEMALE, culture:this.cultures.ETRURIAN });;
 			this.names.personalNames.push({name: "Gia", gender: this.genders.FEMALE, culture:this.cultures.ETRURIAN });;
 			this.names.personalNames.push({name: "Elda", gender: this.genders.FEMALE, culture:this.cultures.ETRURIAN, origin: this.origins.DARKLEVELS });;
+			this.names.personalNames.push({name: "Aurelia", gender: this.genders.FEMALE, culture:this.cultures.ETRURIAN, origin: this.origins.DARKLEVELS });;
 			this.names.personalNames.push({name: "Annike", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Elke", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Ilse", gender: this.genders.FEMALE, culture: this.cultures.HANSA });

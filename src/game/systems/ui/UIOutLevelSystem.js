@@ -634,6 +634,7 @@ define([
 				}
 			} else if (isScouted) {
 				enemyDesc += Text.t("ui.exploration.sector_status_no_enemies_description");
+				enemyDesc += Text.t("ui.common.sentence_separator");
 			}
 
 			var notCampableDesc = "";

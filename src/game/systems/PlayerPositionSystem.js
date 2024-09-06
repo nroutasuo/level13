@@ -320,7 +320,7 @@ define([
 				let levelSectors = GameGlobals.levelHelper.getSectorsByLevel(sectorPos.level);
 				let levelVisitedSectors = levelSectors.filter(s => GameGlobals.sectorHelper.isVisited(s));
 				if (levelVisitedSectors.length == 15) {
-					this.addLogMessage(LogConstants.getUniqueID(), "Another inhospitable street. You won't find a place for a camp on this level.");
+					this.addLogMessage(LogConstants.getUniqueID(), "Another inhospitable street. There won't be a place for a camp on this level.");
 				}
 			}
 			

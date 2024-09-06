@@ -171,19 +171,6 @@
         "rarityScavenge": 8,
         "type": "artefact"
     },
-    "artefact_science": {
-        "campOrdinalRequired": 10,
-        "icon": "img/items/artefact-test.png",
-        "id": "artefact_science",
-        "isCraftable": false,
-        "isEquippable": false,
-        "isUseable": false,
-        "rarityInvestigate": 3,
-        "rarityLocale": 5,
-        "rarityScavenge": 8,
-        "rarityTrade": 8,
-        "type": "artefact"
-    },
     "artefact_surface_1": {
         "campOrdinalRequired": 15,
         "icon": "img/items/artefact-test.png",

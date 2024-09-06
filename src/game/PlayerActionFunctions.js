@@ -172,7 +172,7 @@ define(['ash',
 						caravansComponent.pendingCaravan.returnDuration = duration;
 						caravansComponent.outgoingCaravans.push(caravansComponent.pendingCaravan);
 						caravansComponent.pendingCaravan = null;
-						GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_START_SEND_CAMP, "A trade caravan heads out.");
+						GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_START_SEND_CAMP, "A trade caravan heads out into the City.");
 						GlobalSignals.caravanSentSignal.dispatch();
 						GameGlobals.gameState.increaseGameStatSimple("numCaravansSent");
 						break;
@@ -1890,7 +1890,7 @@ define(['ash',
 			} else {
 				perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.healthBonus2));
 			}
-			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_HOSPITAL2, "Improved health.");
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_HOSPITAL2, "Augmentation complete.");
 			this.completeAction("use_in_hospital_2");
 		},
 		
@@ -1905,7 +1905,7 @@ define(['ash',
 			
 			let libraryLevel = improvementsComponent.getLevel(improvementNames.library);
 			this.playerStatsNodes.head.evidence.value += GameGlobals.campBalancingHelper.getEvidencePerUseLibrary(libraryLevel);
-			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_LIBRARY, "Spent some time studying in the library.");
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_LIBRARY, "Spent some time studying knowledge of old the library.");
 
 			this.completeAction("use_in_library");
 		},
@@ -2141,7 +2141,7 @@ define(['ash',
 					GameGlobals.uiFunctions.showInput("Graffiti", "Choose message to leave to this sector.", "", false,
 						function (input) {
 							sectorStatus.graffiti = input;
-							GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "Left a message on a wall.");
+							GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "Left a message in the City.");
 							GlobalSignals.actionCompletedSignal.dispatch();
 						});
 					GameGlobals.gameState.increaseGameStatSimple("numGraffitiMade");
