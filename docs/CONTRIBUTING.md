@@ -17,6 +17,10 @@ You can use Issues to submit bug reports or to suggest new features or enhanceme
 
 If you've found a bug and know how to fix it, you can use pull requests to submit small fixes to the code. Just roughly follow the style of the existing code and include one fix per pull request. For the time being please refrain from sending pull requests containing bigger refactoring or new behaviour without getting in touch with me first.
 
+## Translations
+
+There is currently no system in place for translating Level 13, but the work is in progress to eventually make this possible. If you're interested in translating, check back later!
+
 ## Other
 
 Feel free to open discussions and edit the wiki - just remember to remain civil.
