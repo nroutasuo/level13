@@ -2,13 +2,13 @@
 	"versions": [
 		{
 			"version": "0.5.3",
-			"requiredVersion": "0.5.1",
+			"requiredVersion": "0.5.3",
 			"phase": "alpha",
 			"final": false,
 			"changes": [
 				{
 					"type": "Text",
-					"summary": "Rename 'favour' to 'hope'"
+					"summary": "Rename 'favour' to 'hope', 'follower' to 'explorer', and adjust a few other terms"
 				},
 				{
 					"type": "Dev",

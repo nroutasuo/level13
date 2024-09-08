@@ -325,9 +325,6 @@ define(['ash',
 			if (value > 0) {
 				GameGlobals.playerActionFunctions.unlockFeature("hope");
 			}
-			if (!this.playerStatsNodes.head.entity.has(HopeComponent)) {
-				this.playerStatsNodes.head.entity.add(new HopeComponent("Hoodwinker"))
-			}
 
 			this.playerStatsNodes.head.entity.get(HopeComponent).hope = Math.max(0, value);
 		},

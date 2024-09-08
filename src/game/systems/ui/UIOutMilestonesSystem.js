@@ -88,7 +88,7 @@ define([
 			let currentMilestone = GameGlobals.tribeHelper.getCurrentMilestone();
 			let nextMilestone = GameGlobals.tribeHelper.getNextMilestone();
 			let action = this.getUnlockMilestoneAction(nextMilestone);
-			let hasDeity = this.playerStatsNodes.head.entity.has(HopeComponent);
+			let hasDeity = GameGlobals.tribeHelper.hasDeity();
 			let hasInsight = this.playerStatsNodes.head.insight.value > 0;
 			let hasNextMilestone = nextMilestone.name && nextMilestone.name.length > 0;
 			

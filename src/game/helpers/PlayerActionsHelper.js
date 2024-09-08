@@ -324,7 +324,7 @@ define([
 					requirements.health = Math.ceil(costs.stamina / PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR);
 				}
 				if (costs.hope && !GameGlobals.gameState.unlockedFeatures.hope) {
-					reason = "Required Deity.";
+					reason = "Requires Hope";
 					return { value: 0, reason: reason };
 				}
 				if ((costs.resource_fuel > 0 && !GameGlobals.gameState.unlockedFeatures["resource_fuel"]) ||
@@ -1445,7 +1445,7 @@ define([
 						return this.playerStatsNodes.head.rumours.value;
 
 					case "hope":
-						var hope = this.playerStatsNodes.head.entity.has(HopeComponent) ? this.playerStatsNodes.head.entity.get(HopeComponent).hope : 0;
+						var hope = this.playerStatsNodes.head.hope.hope;
 						return hope;
 
 					case "evidence":
@@ -1481,8 +1481,7 @@ define([
 						return this.playerStatsNodes.head.rumours.accumulation;
 
 					case "hope":
-						var hope = this.playerStatsNodes.head.entity.has(HopeComponent) ? this.playerStatsNodes.head.entity.get(HopeComponent).accumulation : 0;
-						return hope;
+						return this.playerStatsNodes.head.hope.accumulation;
 
 					case "evidence":
 						return this.playerStatsNodes.head.evidence.accumulation;

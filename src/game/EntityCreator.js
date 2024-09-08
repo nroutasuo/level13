@@ -129,6 +129,7 @@ define([
 				.add(new ResourceAccumulationComponent(saveKey))
 				.add(new RumoursComponent())
 				.add(new EvidenceComponent())
+				.add(new HopeComponent())
 				.add(new InsightComponent())
 				.add(new PositionComponent(13, 0, 0, false))
 				.add(new LogMessagesComponent())

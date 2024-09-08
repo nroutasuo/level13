@@ -93,7 +93,7 @@ define([
 				return;
 			}
 			
-			var hasDeity = this.playerStatsNodes.head.entity.has(HopeComponent);
+			let hasDeity = GameGlobals.tribeHelper.hasDeity();
 			let hasExplorers = this.playerStatsNodes.head.explorers.getParty().length > 0;
 			var hasLastVisitedCamp = this.lastVisitedCampNodes.head !== null;
 			var hasCampOnLevel = this.nearestCampNodes.head !== null;

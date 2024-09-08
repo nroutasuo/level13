@@ -786,12 +786,7 @@ define(['ash',
 				}
 			}
 			
-			if (localeVO.type == localeTypes.grove) {
-				GameGlobals.playerActionFunctions.unlockFeature("hope");
-				if (!this.playerStatsNodes.head.entity.has(HopeComponent)) {
-					this.playerStatsNodes.head.entity.add(new HopeComponent())
-				}
-				
+			if (localeVO.type == localeTypes.grove) {				
 				let perksComponent = this.playerStatsNodes.head.perks;
 				if (!perksComponent.hasPerk(PerkConstants.perkIds.blessed)) {
 					perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.blessed));
@@ -2283,7 +2278,7 @@ define(['ash',
 			
 			GameGlobals.gameState.numUnlockedMilestones = index;
 			
-			let hasDeity = this.playerStatsNodes.head.entity.has(HopeComponent);
+			let hasDeity = GameGlobals.tribeHelper.hasDeity();
 			let hasInsight = this.playerStatsNodes.head.insight.value > 0;
 			let baseMsg = "Milestone claimed. We now call this a " + newMilestone.name + ".";
 			let popupMsg = "<p>" + baseMsg + "</p>";

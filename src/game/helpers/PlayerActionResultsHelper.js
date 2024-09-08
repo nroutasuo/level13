@@ -1308,7 +1308,7 @@ define([
 		getRewardItem: function (campOrdinal, step, options) {
 			let rarityKey = options.rarityKey || "scavengeRarity";
 			let itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-			let hasDeity = this.playerStatsNodes.head.entity.has(HopeComponent);
+			let hasDeity = GameGlobals.tribeHelper.hasDeity();
 			
 			// choose rarity and camp ordinal thresholds
 			let maxPossibleRarity = Math.min(campOrdinal * 4, 10);

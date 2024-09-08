@@ -2669,6 +2669,7 @@
             }
         },
         "improve_building_inn": {
+            "deity": true,
             "upgrades": {
                 "improve_worker_cleric_2": true
             }
@@ -2692,12 +2693,14 @@
             }
         },
         "improve_building_market2": {
+            "deity": true,
             "blueprint": 9,
             "upgrades": {
                 "improve_building_market": true
             }
         },
         "improve_building_market3": {
+            "deity": true,
             "blueprint": 14,
             "upgrades": {
                 "unlock_building_radio": true
@@ -2715,6 +2718,7 @@
             }
         },
         "improve_building_shrine": {
+            "deity": true,
             "milestone": 5,
             "upgrades": {
                 "improve_building_campfire_2": true
@@ -2746,6 +2750,7 @@
             }
         },
         "improve_building_temple2": {
+            "deity": true,
             "upgrades": {
                 "improve_worker_cleric_2": true
             }
@@ -2806,16 +2811,19 @@
             }
         },
         "improve_worker_cleric_3": {
+            "deity": true,
             "upgrades": {
                 "improve_building_shrine": true
             }
         },
         "improve_worker_gardener_2": {
+            "deity": true,
             "upgrades": {
                 "improve_worker_gardener_3": true
             }
         },
         "improve_worker_gardener_3": {
+            "deity": true,
             "upgrades": {
                 "unlock_building_greenhouse": true
             }
@@ -3257,6 +3265,7 @@
             }
         },
         "unlock_building_inn": {
+            "deity": true,
             "blueprint": 3,
             "upgrades": {
                 "unlock_building_market": true
