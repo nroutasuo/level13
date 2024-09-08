@@ -100,6 +100,10 @@ function (Ash, ExplorerConstants, ItemConstants) {
 			return "Explorers";
 		},
 
+		getOldSaveKey: function () {
+			return "Followers";
+		},
+
 		getCustomSaveObject: function () {
 			var copy = {};
 			copy.explorers = this.explorers;
@@ -108,7 +112,7 @@ function (Ash, ExplorerConstants, ItemConstants) {
 
 		customLoadFromSave: function (componentValues) {
 			this.explorers = componentValues.explorers;
-		}
+		},
 	});
 
 	return ExplorersComponent;
