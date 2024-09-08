@@ -463,7 +463,7 @@ define([
 
 				if (requirements.population && !shouldSkipCheck(PlayerActionConstants.DISABLED_REASON_POPULATION)) {
 					var currentPopulation = campComponent ? Math.floor(campComponent.population) : 0;
-					let result = this.checkRequirementsRange(requirements.population, currentPopulation, "{min} population required", "Maximum {max} population", "workers required", "no workers allowed");
+					let result = this.checkRequirementsRange(requirements.population, currentPopulation, "{min} population required", "Maximum {max} population", "inhabitants required", "no inhabitants allowed");
 					if (result) {
 						return result;
 					}

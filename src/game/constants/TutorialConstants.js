@@ -188,7 +188,7 @@ define(['ash'], function (Ash) {
 				triggers: [ "feature_unlocked", "action_any" ],
 				repeats: "NEVER",
 				delay: 1000,
-				logMessage: "Our first worker robot is ready. It will help workers with their tasks.",
+				logMessage: "Our first worker robot is ready. It will help inhabitants with their tasks.",
 				conditions: { featureUnlocked: { resource_robots: true }, inCamp: true, campInventory: { resource_robots: [ 1, -1 ] } }
 			},
 			TUTORIAL_CAN_MAKE_LIGHT: {
