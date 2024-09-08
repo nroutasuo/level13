@@ -160,13 +160,13 @@ define([
 		getMaxReputationWithParams: function (campOrdinal, maxCampOrdinal, milestone, improvementsComponent) {
 			let baseValue = GameGlobals.tribeBalancingHelper.getMaxReputationBaseValue(maxCampOrdinal, milestone);
 			let numAvailableLuxuryResources = GameGlobals.campBalancingHelper.getMaxNumAvailableLuxuryResources(maxCampOrdinal);
-			let populationFactor = GameGlobals.campBalancingHelper.getPopulationFactor(campOrdinal);
+			let habitability = GameGlobals.campBalancingHelper.getHabitability(campOrdinal);
 			let isSunlit = campOrdinal == 15;
 			let danger = 0;
-			return GameGlobals.campBalancingHelper.getTargetReputation(baseValue, improvementsComponent, numAvailableLuxuryResources, null, 0, populationFactor, danger, isSunlit);
+			return GameGlobals.campBalancingHelper.getTargetReputation(baseValue, improvementsComponent, numAvailableLuxuryResources, null, 0, habitability, danger, isSunlit);
 		},
 		
-		getTargetReputation: function (baseValue, improvementsComponent, numAvailableLuxuryResources, resourcesVO, population, populationFactor, danger, isSunlit) {
+		getTargetReputation: function (baseValue, improvementsComponent, numAvailableLuxuryResources, resourcesVO, population, habitability, danger, isSunlit) {
 			let result = 0;
 			let sources = {}; // text -> value
 			let percentages = {}; // text -> percentage value (for those sources that are calculated as percentages of the base value)
@@ -229,8 +229,8 @@ define([
 			let resultForPercentages = result;
 			
 			// factor: level population
-			if (populationFactor != 1) {
-				let levelPopValueFactor = (populationFactor - 1);
+			if (habitability != 1) {
+				let levelPopValueFactor = (habitability - 1);
 				let levelPopValue = resultForPercentages * levelPopValueFactor;
 				addValue(levelPopValue, "Level population", true, true, levelPopValueFactor * 100);
 				addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_LEVEL_POP, levelPopValue < 0);
@@ -988,11 +988,11 @@ define([
 		},
 		
 		isOutpost: function (campOrdinal) {
-			return this.getPopulationFactor(campOrdinal) < 1;
+			return this.getHabitability(campOrdinal) < 1;
 		},
 		
-		getPopulationFactor: function (campOrdinal) {
-			return WorldCreatorConstants.getPopulationFactor(campOrdinal);
+		getHabitability: function (campOrdinal) {
+			return WorldCreatorConstants.getHabitability(campOrdinal);
 		},
 	
 	});

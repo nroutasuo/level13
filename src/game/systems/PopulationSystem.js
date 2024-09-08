@@ -151,7 +151,7 @@ define([
 			}
 
 			if (changePerSec > 0) {
-				changePerSec *= levelComponent.populationFactor;
+				changePerSec *= levelComponent.habitability;
 			}
 
 			let improvements = node.entity.get(SectorImprovementsComponent);

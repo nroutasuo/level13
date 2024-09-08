@@ -90,7 +90,7 @@ define([
 			features.levelOrdinal = levelOrdinal;
 			features.campOrdinal = campOrdinal;
 			features.condition = featuresComponent.getCondition();
-			features.populationFactor = levelComponent.populationFactor;
+			features.habitability = levelComponent.habitability;
 			features.raidDangerFactor = levelComponent.raidDangerFactor;
 			features.isSurfaceLevel = position.level == GameGlobals.gameState.getSurfaceLevel();
 			features.isGroundLevel = position.level == GameGlobals.gameState.getGroundLevel();

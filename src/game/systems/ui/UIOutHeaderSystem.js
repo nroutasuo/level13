@@ -1192,8 +1192,8 @@ define([
 			let desc = "";
 			
 			if (inCamp) {
-				base = levelComponent.populationFactor < 1 ? "ui-camp-outpost" : "ui-camp-default";
-				desc = levelComponent.populationFactor < 1 ? "in camp | outpost" : "in camp | regular";
+				base = levelComponent.habitability < 1 ? "ui-camp-outpost" : "ui-camp-default";
+				desc = levelComponent.habitability < 1 ? "in camp | outpost" : "in camp | regular";
 			} else if (!GameGlobals.levelHelper.isLevelTypeRevealed(position.level)) {
 				base = "ui-level-unknown";
 				desc = "outside | unknown level";

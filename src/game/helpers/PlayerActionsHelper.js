@@ -1162,7 +1162,7 @@ define([
 
 					if (requirements.level.population) {
 						var range = requirements.level.population;
-						var value = levelComponent.populationFactor;
+						var value = levelComponent.habitability;
 						let result = this.checkRequirementsRange(range, value,
 							PlayerActionConstants.DISABLED_REASON_NOT_ENOUGH_LEVEL_POP,
 							"Too many people on this level",
@@ -1586,7 +1586,7 @@ define([
 			var baseActionID = this.getBaseActionID(action);
 
 			var levelComponent = sector ? GameGlobals.levelHelper.getLevelEntityForSector(sector).get(LevelComponent) : null;
-			var isOutpost = levelComponent ? levelComponent.populationFactor < 1 : false;
+			var isOutpost = levelComponent ? levelComponent.habitability < 1 : false;
 
 			if (action.indexOf("build_in") >= 0) {
 				var improvementName = this.getImprovementNameForAction(action);
@@ -1937,7 +1937,7 @@ define([
 			var levelComponent = sector ? GameGlobals.levelHelper.getLevelEntityForSector(sector).get(LevelComponent) : null;
 
 			var ordinal = this.getActionOrdinal(action, sector);
-			var isOutpost = levelComponent ? levelComponent.populationFactor < 1 : false;
+			var isOutpost = levelComponent ? levelComponent.habitability < 1 : false;
 			
 			return this.getCostsByOrdinal(action, multiplier, ordinal, isOutpost, sector);
 		},

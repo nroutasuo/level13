@@ -94,7 +94,7 @@ define([
 			
 			let isSunlit = sectorFeatures.sunlit;
 			
-			let targetReputation = GameGlobals.campHelper.getTargetReputation(campNode.entity, baseValue, sectorImprovements, resources, campNode.camp.population, levelComponent.populationFactor, danger, isSunlit);
+			let targetReputation = GameGlobals.campHelper.getTargetReputation(campNode.entity, baseValue, sectorImprovements, resources, campNode.camp.population, levelComponent.habitability, danger, isSunlit);
 			
 			let sources = targetReputation.sources;
 			let percentages = targetReputation.percentages;
@@ -128,15 +128,15 @@ define([
 			if (accTargetDiff < 0) accTargetDiff = Math.max(-10, Math.min(-1, accTargetDiff));
 			var accTarget = (accTargetDiff < 0 ? accTargetDiff * 0.05 : accTargetDiff * 0.01) * GameConstants.gameSpeedCamp;
 			
-			// level population factor
+			// level habitability
 			var accLevelPop = 0;
 			if (accTarget > 0) {
-				accLevelPop += accTarget * levelComponent.populationFactor - accTarget;
-				accTarget *= levelComponent.populationFactor;
+				accLevelPop += accTarget * levelComponent.habitability - accTarget;
+				accTarget *= levelComponent.habitability;
 			}
 			if (accRadio > 0) {
-				accLevelPop += accRadio * levelComponent.populationFactor - accRadio;
-				accRadio *= levelComponent.populationFactor;
+				accLevelPop += accRadio * levelComponent.habitability - accRadio;
+				accRadio *= levelComponent.habitability;
 			}
 			
 			// limits

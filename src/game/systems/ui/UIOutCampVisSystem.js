@@ -84,7 +84,7 @@ define([
 			// TODO add more detail depending on world structure (what kind of sector/level the camp is actually located on)
 			// TODO define constants someplace neater
 			var settings = Object.assign({}, this.campSettings[campOrdinal] || {});
-			settings.populationFactor = levelComponent.populationFactor;
+			settings.habitability = levelComponent.habitability;
 			settings.raidDangerFactor = levelComponent.raidDangerFactor;
 			GameGlobals.campVisHelper.initCampSettings(campOrdinal, settings);
 		},

@@ -627,9 +627,9 @@ define([
 			return ImprovementConstants.getMajorLevel(id, level + 1);
 		},
 		
-		getTargetReputation: function (campEntity, baseValue, improvementsComponent, resourcesVO, population, populationFactor, danger, isSunlit) {
+		getTargetReputation: function (campEntity, baseValue, improvementsComponent, resourcesVO, population, habitability, danger, isSunlit) {
 			let availableLuxuryResources = this.getAvailableLuxuryResources(campEntity);
-			return GameGlobals.campBalancingHelper.getTargetReputation(baseValue, improvementsComponent, availableLuxuryResources.length, resourcesVO, population, populationFactor, danger, isSunlit);
+			return GameGlobals.campBalancingHelper.getTargetReputation(baseValue, improvementsComponent, availableLuxuryResources.length, resourcesVO, population, habitability, danger, isSunlit);
 		},
 		
 		getUpgradeBonus: function (worker) {

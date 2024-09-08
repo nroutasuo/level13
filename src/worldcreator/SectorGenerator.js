@@ -665,7 +665,7 @@ define([
 			
 			// stashes: every campable level guaranteed items
 			if (levelVO.isCampable && l != 13) {
-				let numCaches = levelVO.populationFactor >= 1 ? 3 : 5;
+				let numCaches = levelVO.habitability >= 1 ? 3 : 5;
 				addStashes(seed / 7 * 937 + l * 331, "guaranteed-campable-early", ItemConstants.STASH_TYPE_ITEM, ItemConstants.getAvailableMetalCaches(levelVO.campOrdinal), numCaches, 1, lateZones);
 				addStashes(3000 + seed % 7 * 188 + (levelVO.level % 3) * 105 + Math.abs(levelVO.minX + 50) * 77, "guaranteed-campable", ItemConstants.STASH_TYPE_ITEM, [ "consumable_map_1", "consumable_map_2" ], [1, 3], 1, lateZones);
 			}
@@ -1058,8 +1058,8 @@ define([
 					break;
 			}
 			
-			// - population factor (easier scavenging around outposts)
-			scavengeDifficultyScore *= MathUtils.map(levelVO.populationFactor, 0, 1, 0.75, 1.25);
+			// - habitability (easier scavenging around outposts)
+			scavengeDifficultyScore *= MathUtils.map(levelVO.habitability, 0, 1, 0.75, 1.25);
 			
 			// - hazards
 			if (sectorVO.hazards.poison > 0) scavengeDifficultyScore *= 1.5;
@@ -1230,7 +1230,7 @@ define([
 			// adjustments for camp positions
 			if (sectorVO.isCamp) {
 				let isMainCamp = sectorVO.position.equals(levelVO.campPosition);
-				let isOutpost = levelVO.populationFactor < 1;
+				let isOutpost = levelVO.habitability < 1;
 				
 				if (isStartPosition) {
 					sca.metal = WorldConstants.resourcePrevalence.ABUNDANT;
@@ -1863,7 +1863,7 @@ define([
 			};
 			
 			// select waymarks by type
-			let maxNumWaymarksCommon = levelVO.populationFactor >= 1 ? 3 : 2;
+			let maxNumWaymarksCommon = levelVO.habitability >= 1 ? 3 : 2;
 			
 			if (levelVO.isCampable && levelVO.campOrdinal > 1) {
 				selectWaymarks(SectorConstants.WAYMARK_TYPE_CAMP, false, 1, 5, 3, sectorVO => sectorVO.isCamp);
@@ -2369,8 +2369,8 @@ define([
 			if (!sectorVO.sunlit) addEnemyCandidates(EnemyConstants.enemyTypes.dark);
 			if (!isPollutedLevel && !isRadiatedLevel && sectorVO.buildingDensity > 5) addEnemyCandidates(EnemyConstants.enemyTypes.dense);
 			if (!isPollutedLevel && !isRadiatedLevel && sectorVO.buildingDensity <= 5) addEnemyCandidates(EnemyConstants.enemyTypes.sparse);
-			if (levelVO.populationFactor > 0) addEnemyCandidates(EnemyConstants.enemyTypes.inhabited);
-			if (levelVO.populationFactor <= 0) addEnemyCandidates(EnemyConstants.enemyTypes.uninhabited);
+			if (levelVO.habitability > 0) addEnemyCandidates(EnemyConstants.enemyTypes.inhabited);
+			if (levelVO.habitability <= 0) addEnemyCandidates(EnemyConstants.enemyTypes.uninhabited);
 			
 			let hasWater = sectorVO.hasWater();
 			let directions = PositionConstants.getLevelDirections();

@@ -689,7 +689,7 @@
 			if (showLevelStats) {
 				var levelComponent = this.playerLevelNodes.head.level;
 				var hasUnlockedTrade = this.hasUpgrade(GameGlobals.upgradeEffectsHelper.getUpgradeToUnlockBuilding(improvementNames.tradepost));
-				$("#in-demographics-level-population .value").text(levelComponent.populationFactor * 100 + "%");
+				$("#in-demographics-level-population .value").text(levelComponent.habitability * 100 + "%");
 				$("#in-demographics-level-danger .value").text(levelComponent.raidDangerFactor * 100 + "%");
 				$("#in-demographics-trade-network").toggle(hasUnlockedTrade);
 				if (hasUnlockedTrade) {

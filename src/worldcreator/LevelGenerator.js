@@ -26,11 +26,11 @@ define([
 				let notCampableReason = isCampableLevel ? null : WorldCreatorHelper.getNotCampableReason(seed, l);
 				let ordinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
 				let campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
-				let populationFactor = isCampableLevel ? WorldCreatorConstants.getPopulationFactor(campOrdinal) : 0;
+				let habitability = isCampableLevel ? WorldCreatorConstants.getHabitability(campOrdinal) : 0;
 				let raidDangerFactor = isCampableLevel ? WorldCreatorConstants.getRaidDangerFactor(campOrdinal) : 0;
 				let numSectors = WorldCreatorHelper.getNumSectorsForLevel(seed, l);
 				
-				let levelVO = new LevelVO(l, ordinal, campOrdinal, isCampableLevel, isHardLevel, notCampableReason, populationFactor, raidDangerFactor, numSectors);
+				let levelVO = new LevelVO(l, ordinal, campOrdinal, isCampableLevel, isHardLevel, notCampableReason, habitability, raidDangerFactor, numSectors);
 				levelVO.campPosition = worldVO.campPositions[l];
 				levelVO.passageUpPosition = worldVO.passagePositions[l].up;
 				levelVO.passageDownPosition = worldVO.passagePositions[l].down;

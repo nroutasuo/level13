@@ -252,10 +252,10 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				addOptions("na-items", [ "debris" ]);
 			}
 			// - level population
-			if (features.populationFactor == 0) {
+			if (features.habitability == 0) {
 				addOptions("a-street", [ "empty", "uninhabited", "desolate", "deserted", "dusty" ] )
 				addOptions("a-building", [ "long abandoned", "empty", "polluted" ]);
-			} else if (features.populationFactor < 1) {
+			} else if (features.habitability < 1) {
 				addOptions("a-street", [ "calm" ]);
 				addOptions("a-building", [ "empty" ]);
 			} else {

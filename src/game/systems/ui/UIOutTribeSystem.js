@@ -326,9 +326,9 @@ define([
 			GameGlobals.uiFunctions.toggle("#camp-overview tr#" + rowID + " .camp-overview-camp-bubble .bubble", isAlert);
 			
 			$("#camp-overview tr#" + rowID + " .camp-overview-level-container").text(level);
-			$("#camp-overview tr#" + rowID + " .camp-overview-level-container").toggleClass("lvl-container-camp-normal", levelComponent.populationFactor == 1);
-			$("#camp-overview tr#" + rowID + " .camp-overview-level-container").toggleClass("lvl-container-camp-outpost", levelComponent.populationFactor < 1);
-			$("#camp-overview tr#" + rowID + " .camp-overview-level-container").toggleClass("lvl-container-camp-capital", levelComponent.populationFactor > 1);
+			$("#camp-overview tr#" + rowID + " .camp-overview-level-container").toggleClass("lvl-container-camp-normal", levelComponent.habitability == 1);
+			$("#camp-overview tr#" + rowID + " .camp-overview-level-container").toggleClass("lvl-container-camp-outpost", levelComponent.habitability < 1);
+			$("#camp-overview tr#" + rowID + " .camp-overview-level-container").toggleClass("lvl-container-camp-capital", levelComponent.habitability > 1);
 
 			var alertDesc = "";
 			for (let i = 0; i < alerts.length; i++) {

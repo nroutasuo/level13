@@ -123,7 +123,7 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 			return Math.floor(maxLength);
 		},
 		
-		getPopulationFactor: function (campOrdinal) {
+		getHabitability: function (campOrdinal) {
 			if (campOrdinal <= 0) return 0;
 			switch (campOrdinal) {
 				// outposts
@@ -161,7 +161,7 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 					return 1.5;
 				
 				default:
-					return this.getPopulationFactor(campOrdinal);
+					return this.getHabitability(campOrdinal);
 			}
 		},
 		
