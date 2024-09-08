@@ -6,7 +6,7 @@ define([
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
 	'game/constants/FightConstants',
-	'game/constants/FollowerConstants',
+	'game/constants/ExplorerConstants',
 	'game/constants/ItemConstants',
 	'game/constants/TextConstants',
 	'game/constants/UIConstants',
@@ -16,7 +16,7 @@ define([
 	'game/components/player/ItemsComponent',
 	'game/components/sector/FightEncounterComponent',
 	'game/components/sector/EnemiesComponent'
-], function (Ash, Text, UIState, GameGlobals, GlobalSignals, GameConstants, FightConstants, FollowerConstants, ItemConstants, TextConstants, UIConstants, PlayerLocationNode, PlayerStatsNode, FightNode, ItemsComponent, FightEncounterComponent, EnemiesComponent) {
+], function (Ash, Text, UIState, GameGlobals, GlobalSignals, GameConstants, FightConstants, ExplorerConstants, ItemConstants, TextConstants, UIConstants, PlayerLocationNode, PlayerStatsNode, FightNode, ItemsComponent, FightEncounterComponent, EnemiesComponent) {
 	
 	var FightPopupStateEnum = {
 		CLOSED: 0,
@@ -84,7 +84,7 @@ define([
 		
 		updateFightActive: function () {
 			var itemsComponent = this.playerStatsNodes.head.items;
-			var followersComponent = this.playerStatsNodes.head.followers;
+			var explorersComponent = this.playerStatsNodes.head.explorers;
 			
 			// update progress bars
 			var enemy = this.fightNodes.head.fight.enemy;
@@ -136,12 +136,12 @@ define([
 				$("#fight-bar-self-shield").data("animation-length", this.progressBarAnimationLen);
 			}
 				
-			var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent, followersComponent);
-			var playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent, followersComponent);
+			var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent, explorersComponent);
+			var playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent, explorersComponent);
 			var playerSpeed = FightConstants.getPlayerSpeed(itemsComponent);
 			var playerHP = playerStamina.maxHP;
 			var playerShield = playerStamina.maxShield;
-			$("#fight-popup-self-name").text(this.numFollowers > 0 ? " Party " : " Wanderer ");
+			$("#fight-popup-self-name").text(this.numExplorers > 0 ? " Party " : " Wanderer ");
 			$("#fight-popup-self-stats").text(this.getStatsText(playerAtt, playerDef, playerSpeed, playerHP, playerShield));
 			
 			// update action buttons
@@ -230,7 +230,7 @@ define([
 			GameGlobals.uiFunctions.toggle("#fight-popup-bars", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
 			GameGlobals.uiFunctions.toggle("#fight-popup-self-info", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
 			GameGlobals.uiFunctions.toggle("#list-fight-items", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
-			GameGlobals.uiFunctions.toggle("#list-fight-followers", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
+			GameGlobals.uiFunctions.toggle("#list-fight-explorers", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
 			GameGlobals.uiFunctions.toggle("#fight-popup-results", this.state == FightPopupStateEnum.FIGHT_FINISHED);
 			GameGlobals.uiFunctions.toggle("#fight-desc", this.state != FightPopupStateEnum.FIGHT_ACTIVE);
 			GameGlobals.uiFunctions.toggle("#fight-popup-enemy-info", this.state != FightPopupStateEnum.FIGHT_FLED && !fightWon);
@@ -314,22 +314,22 @@ define([
 			}
 			GameGlobals.uiFunctions.generateInfoCallouts("ul#list-fight-items");
 			
-			// followers
-			$("ul#list-fight-followers").empty();
-			this.numFollowers = 0;
-			var followers = this.playerStatsNodes.head.followers.getParty();
-			for (let i = 0; i < followers.length; i++) {
-				let follower = followers[i];
-				let bonusAtt = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_att) > 0;
-				let bonusDef = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_def) > 0;
+			// explorers
+			$("ul#list-fight-explorers").empty();
+			this.numExplorers = 0;
+			var explorers = this.playerStatsNodes.head.explorers.getParty();
+			for (let i = 0; i < explorers.length; i++) {
+				let explorer = explorers[i];
+				let bonusAtt = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.fight_att) > 0;
+				let bonusDef = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.fight_def) > 0;
 				if (bonusAtt || bonusDef) {
-					this.numFollowers++;
-					$("ul#list-fight-followers").append("<li>" + UIConstants.getFollowerDiv(follower, true, false, true) + "</li>");
+					this.numExplorers++;
+					$("ul#list-fight-explorers").append("<li>" + UIConstants.getExplorerDiv(explorer, true, false, true) + "</li>");
 				}
 			}
-			GameGlobals.uiFunctions.generateInfoCallouts("ul#list-fight-followers");
+			GameGlobals.uiFunctions.generateInfoCallouts("ul#list-fight-explorers");
 			
-			GameGlobals.uiFunctions.toggle("#fight-popup-itemlist-separator", this.numFollowers > 0 && this.numItems > 0);
+			GameGlobals.uiFunctions.toggle("#fight-popup-itemlist-separator", this.numExplorers > 0 && this.numItems > 0);
 			this.updateFightActive();
 		},
 		
@@ -391,9 +391,9 @@ define([
 			
 			var playerStamina = this.playerStatsNodes.head.stamina;
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-			var followersComponent = this.playerStatsNodes.head.followers;
+			var explorersComponent = this.playerStatsNodes.head.explorers;
 			
-			FightConstants.getFightWinProbability(currentEnemy, playerStamina, itemsComponent, followersComponent).
+			FightConstants.getFightWinProbability(currentEnemy, playerStamina, itemsComponent, explorersComponent).
 				then(chances => {
 					var chancesText = TextConstants.getFightChancesText(chances);
 					if (GameConstants.isDebugVersion) {

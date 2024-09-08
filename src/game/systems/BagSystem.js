@@ -7,11 +7,11 @@ define([
 	'game/constants/PerkConstants',
 	'game/nodes/player/PlayerResourcesNode',
 	'game/components/player/ItemsComponent',
-	'game/components/player/FollowersComponent',
+	'game/components/player/ExplorersComponent',
 	'game/components/player/BagComponent',
 	'game/components/player/PerksComponent',
 	'game/vos/ResourcesVO'
-], function (Ash, GameGlobals, ItemConstants, BagConstants, PerkConstants, PlayerResourcesNode, ItemsComponent, FollowersComponent, BagComponent, PerksComponent, ResourcesVO) {
+], function (Ash, GameGlobals, ItemConstants, BagConstants, PerkConstants, PlayerResourcesNode, ItemsComponent, ExplorersComponent, BagComponent, PerksComponent, ResourcesVO) {
 	
 	var BagSystem = Ash.System.extend({
 		
@@ -33,16 +33,16 @@ define([
 			var playerBag = this.playerNodes.head.entity.get(BagComponent);
 			var playerResources = this.playerNodes.head.resources;
 			var playerItems = this.playerNodes.head.entity.get(ItemsComponent);
-			var playerFollowers = this.playerNodes.head.entity.get(FollowersComponent);
+			var playerExplorers = this.playerNodes.head.entity.get(ExplorersComponent);
 			
 			var playerBagBonus = playerItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag, null, true);
-			var followerBagBonus = playerFollowers.getCurrentBonus(ItemConstants.itemBonusTypes.bag);
+			var explorerBagBonus = playerExplorers.getCurrentBonus(ItemConstants.itemBonusTypes.bag);
 			let baseCapacity = Math.max(playerBagBonus, ItemConstants.PLAYER_DEFAULT_STORAGE);
-			let carryCapacity = baseCapacity + followerBagBonus;
+			let carryCapacity = baseCapacity + explorerBagBonus;
 			
 			playerResources.storageCapacity = carryCapacity;
 			playerBag.baseCapacity = baseCapacity;
-			playerBag.bonusCapacity = followerBagBonus;
+			playerBag.bonusCapacity = explorerBagBonus;
 			playerBag.totalCapacity = carryCapacity;
 			
 			this.updateUsedCapacity(playerBag, playerResources, playerItems);

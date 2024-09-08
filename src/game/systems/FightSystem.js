@@ -4,7 +4,7 @@ define([
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/FightConstants',
-	'game/constants/FollowerConstants',
+	'game/constants/ExplorerConstants',
 	'game/constants/ItemConstants',
 	'game/constants/EnemyConstants',
 	'game/nodes/FightNode',
@@ -14,7 +14,7 @@ define([
 	'game/components/sector/SectorControlComponent',
 	'game/components/player/ItemsComponent',
 	'game/components/player/PlayerActionResultComponent',
-], function (Ash, GameGlobals, GlobalSignals, FightConstants, FollowerConstants, ItemConstants, EnemyConstants,
+], function (Ash, GameGlobals, GlobalSignals, FightConstants, ExplorerConstants, ItemConstants, EnemyConstants,
 	FightNode, PlayerStatsNode,
 	PositionComponent,
 	FightEncounterComponent, SectorControlComponent,
@@ -96,15 +96,15 @@ define([
 
 			GameGlobals.gameState.increaseGameStatSimple("numFightsStarted");
 			
-			let followers = this.playerStatsNodes.head.followers.getParty();
-			for (let i = 0; i < followers.length; i++) {
-				let follower = followers[i];
-				let bonusAtt = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_att);
-				let bonusDef = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_def);
+			let explorers = this.playerStatsNodes.head.explorers.getParty();
+			for (let i = 0; i < explorers.length; i++) {
+				let explorer = explorers[i];
+				let bonusAtt = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.fight_att);
+				let bonusDef = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.fight_def);
 				if (bonusAtt > 0 || bonusDef > 0) {
-					follower.numFights = follower.numFights || 0;
-					follower.numFights++;
-					GameGlobals.gameState.increaseGameStatHighScore("mostFightsWithFollower", follower, follower.numFights);
+					explorer.numFights = explorer.numFights || 0;
+					explorer.numFights++;
+					GameGlobals.gameState.increaseGameStatHighScore("mostFightsWithExplorer", explorer, explorer.numFights);
 				}
 			}
 			
@@ -116,7 +116,7 @@ define([
 			this.totalFightTime += fightTime;
 			
 			var itemsComponent = this.playerStatsNodes.head.items;
-			var followersComponent = this.playerStatsNodes.head.followers;
+			var explorersComponent = this.playerStatsNodes.head.explorers;
 			var enemy = this.fightNodes.head.fight.enemy;
 			var playerStamina = this.playerStatsNodes.head.stamina;
 			var itemEffects = this.fightNodes.head.fight.itemEffects;
@@ -132,7 +132,7 @@ define([
 			this.fightNodes.head.fight.nextTurnPlayer -= fightTime;
 			if (this.fightNodes.head.fight.nextTurnPlayer <= 0) {
 				isPlayerTurn = true;
-				let scenarios = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_FRIENDLY, enemy, playerStamina, itemsComponent, followersComponent, this.totalFightTime);
+				let scenarios = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_FRIENDLY, enemy, playerStamina, itemsComponent, explorersComponent, this.totalFightTime);
 				let scenario = this.pickTurnScenario(scenarios);
 				damageToEnemy = scenario.damage;
 				playerMissed = scenario.type == "MISS";
@@ -150,7 +150,7 @@ define([
 					isEnemyTurn = true;
 					this.fightNodes.head.fight.nextTurnEnemy -= fightTime;
 					if (this.fightNodes.head.fight.nextTurnEnemy <= 0) {
-						let scenarios = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_ENEMY, enemy, playerStamina, itemsComponent, followersComponent, this.totalFightTime);
+						let scenarios = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_ENEMY, enemy, playerStamina, itemsComponent, explorersComponent, this.totalFightTime);
 						let scenario = this.pickTurnScenario(scenarios);
 						damageToPlayer = scenario.damage;
 						enemyMissed = scenario.type == "MISS";

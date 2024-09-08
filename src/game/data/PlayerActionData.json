@@ -2589,7 +2589,7 @@
         "create_blueprint": {
             "inCamp": true
         },
-        "deselect_follower": {
+        "deselect_explorer": {
             "inCamp": true
         },
         "despair": {
@@ -2601,7 +2601,7 @@
                 "active": [-1, 1]
             }
         },
-        "dismiss_follower": {
+        "dismiss_explorer": {
             "inCamp": true
         },
         "enter_camp": {
@@ -3111,8 +3111,8 @@
                 }
             }
         },
-        "recruit_follower": {
-            "followers": {
+        "recruit_explorer": {
+            "explorers": {
                 "maxRecruited": false
             }
         },
@@ -3157,7 +3157,7 @@
                 -1
             ]
         },
-        "select_follower": {
+        "select_explorer": {
             "inCamp": true
         },
         "send_caravan": {

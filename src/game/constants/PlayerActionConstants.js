@@ -167,10 +167,10 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 			if (action.indexOf("clear_debris_") == 0) return "clear_debris";
 			if (action.indexOf("fight_gang_") >= 0) return "fight_gang";
 			if (action.indexOf("send_caravan_") >= 0) return "send_caravan";
-			if (action.indexOf("recruit_follower_") >= 0) return "recruit_follower";
-			if (action.indexOf("dismiss_follower") >= 0) return "dismiss_follower";
-			if (action.indexOf("deselect_follower") >= 0) return "deselect_follower";
-			if (action.indexOf("select_follower") >= 0) return "select_follower";
+			if (action.indexOf("recruit_explorer_") >= 0) return "recruit_explorer";
+			if (action.indexOf("dismiss_explorer") >= 0) return "dismiss_explorer";
+			if (action.indexOf("deselect_explorer") >= 0) return "deselect_explorer";
+			if (action.indexOf("select_explorer") >= 0) return "select_explorer";
 			if (action.indexOf("dismiss_recruit_") >= 0) return "dismiss_recruit";
 			if (action.indexOf("move_camp_global_") >= 0) return "move_camp_global";
 			if (action.indexOf("build_out_passage") >= 0) {

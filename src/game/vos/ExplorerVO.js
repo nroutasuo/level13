@@ -1,6 +1,6 @@
 define(['ash'], function (Ash) {
 
-	var FollowerVO = Ash.Class.extend({
+	let ExplorerVO = Ash.Class.extend({
 
 		id: "",
 		name: "",
@@ -24,5 +24,5 @@ define(['ash'], function (Ash) {
 		},
 	});
 
-	return FollowerVO;
+	return ExplorerVO;
 });

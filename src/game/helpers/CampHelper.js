@@ -6,7 +6,7 @@ define([
 	'game/GameGlobals',
 	'game/constants/GameConstants',
 	'game/constants/CampConstants',
-	'game/constants/FollowerConstants',
+	'game/constants/ExplorerConstants',
 	'game/constants/ImprovementConstants',
 	'game/constants/ItemConstants',
 	'game/constants/OccurrenceConstants',
@@ -21,7 +21,7 @@ define([
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/vos/ResourcesVO',
 	'game/vos/IncomingCaravanVO'
-], function (Ash, MathUtils, RandomUtils, GameGlobals, GameConstants, CampConstants, FollowerConstants, ImprovementConstants, ItemConstants, OccurrenceConstants, TradeConstants, WorldConstants,
+], function (Ash, MathUtils, RandomUtils, GameGlobals, GameConstants, CampConstants, ExplorerConstants, ImprovementConstants, ItemConstants, OccurrenceConstants, TradeConstants, WorldConstants,
 	CampComponent, PositionComponent, RecruitComponent, SectorImprovementsComponent, LevelComponent, CampNode, TribeUpgradesNode, ResourcesVO, IncomingCaravanVO) {
 	
 	var CampHelper = Ash.Class.extend({
@@ -596,7 +596,7 @@ define([
 			return result;
 		},
 		
-		getCurrentMaxFollowersRecruited: function () {
+		getCurrentMaxExplorersRecruited: function () {
 			let innMajorLevels = [];
 			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
 				let improvements = campNode.entity.get(SectorImprovementsComponent);
@@ -606,15 +606,15 @@ define([
 				let majorLevel = ImprovementConstants.getMajorLevel("inn", level);
 				innMajorLevels.push(majorLevel);
 			}
-			return FollowerConstants.getMaxFollowersRecruited(innMajorLevels);
+			return ExplorerConstants.getMaxExplorersRecruited(innMajorLevels);
 		},
 		
-		findRecruitComponentWithFollowerId: function (followerId) {
+		findRecruitComponentWithExplorerId: function (explorerId) {
 			for (var node = this.campNodes.head; node; node = node.next) {
 				let campRecruitComponent = node.entity.get(RecruitComponent);
 				if (!campRecruitComponent) continue;
-				let campFollower = campRecruitComponent.follower;
-				if (campFollower.id == followerId) {
+				let campExplorer = campRecruitComponent.explorer;
+				if (campExplorer.id == explorerId) {
 					return campRecruitComponent;
 				}
 			}

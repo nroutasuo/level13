@@ -1,4 +1,4 @@
-// Result of a player action such as scavenge or fight: rewards (res, items, ..) and penalties (injuries, lost followers, ..)
+// Result of a player action such as scavenge or fight: rewards (res, items, ..) and penalties (injuries, lost explorers, ..)
 define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 	
 	var ResultVO = Ash.Class.extend({
@@ -9,7 +9,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		gainedResources: null,
 		gainedCurrency: null,
 		gainedItems: [],
-		gainedFollowers: [],
+		gainedExplorers: [],
 		gainedBlueprintPiece: null,
 		gainedEvidence: 0,
 		gainedRumours: 0,
@@ -23,14 +23,14 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		lostCurrency: null,
 		lostItems: [],
 		brokenItems: [],
-		lostFollowers: [],
+		lostExplorers: [],
 		lostPerks: [],
 		gainedInjuries: [],
 		
 		// additional info for UI
 		foundStashVO: null,
-		gainedResourcesFromFollowers: null, // subset of gainedResources
-		gainedItemsFromFollowers: [], // subset of gainedItems
+		gainedResourcesFromExplorers: null, // subset of gainedResources
+		gainedItemsFromExplorers: [], // subset of gainedItems
 		
 		// inventory management selection
 		// gained resources and items must be manually picked up; status saved here; this is the final change to the player bag
@@ -45,7 +45,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			this.gainedResources = new ResourcesVO(storageTypes.RESULT);
 			this.gainedCurrency = 0;
 			this.gainedItems = [];
-			this.gainedFollowers = [];
+			this.gainedExplorers = [];
 			this.gainedBlueprintPiece = null;
 			this.gainedEvidence = 0;
 			this.gainedRumours = 0;
@@ -58,7 +58,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			this.lostCurrency = 0;
 			this.lostItems = [];
 			this.brokenItems = [];
-			this.lostFollowers = [];
+			this.lostExplorers = [];
 			this.lostPerks = [];
 			this.gainedInjuries = [];
 			
@@ -67,7 +67,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			this.discardedItems = [];
 			this.discardedResources = new ResourcesVO(storageTypes.RESULT);
 			
-			this.gainedResourcesFromFollowers = new ResourcesVO(storageTypes.RESULT);
+			this.gainedResourcesFromExplorers = new ResourcesVO(storageTypes.RESULT);
 		},
 		
 		hasSelectable: function () {
@@ -94,10 +94,10 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 				&& this.lostResources.getTotal() == 0
 				&& this.lostCurrency == 0
 				&& this.gainedItems.length == 0
-				&& this.gainedFollowers.length == 0
+				&& this.gainedExplorers.length == 0
 				&& this.lostItems.length == 0
 				&& this.brokenItems.length == 0
-				&& this.lostFollowers.length == 0
+				&& this.lostExplorers.length == 0
 				&& this.lostPerks.length == 0
 				&& this.gainedInjuries.length == 0
 				&& this.gainedBlueprintPiece == null
@@ -118,10 +118,10 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			result.lostResources = this.lostResources.clone();
 			result.lostCurrency = this.lostCurrency;
 			result.gainedItems = this.gainedItems.concat();
-			result.gainedFollowers = this.gainedFollowers.concat();
+			result.gainedExplorers = this.gainedExplorers.concat();
 			result.lostItems = this.lostItems.concat();
 			result.brokenItems = this.brokenItems.concat();
-			result.lostFollowers = this.lostFollowers.concat();
+			result.lostExplorers = this.lostExplorers.concat();
 			result.lostPerks = this.lostPerks.concat();
 			result.gainedInjuries = this.gainedInjuries.concat();
 			result.gainedBlueprintPiece = this.gainedBlueprintPiece;

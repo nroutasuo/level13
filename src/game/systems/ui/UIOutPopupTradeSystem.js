@@ -112,7 +112,7 @@ define([
 			// camp items: count
 			for (let j in caravan.buyItemTypes) {
 				var category = caravan.buyItemTypes[j];
-				if (category == "uniqueEquipment" || category == "follower") continue;
+				if (category == "uniqueEquipment" || category == "explorer") continue;
 				var itemList = itemsComponent.getAllByType(ItemConstants.itemTypes[category], true);
 				for (let k in itemList) {
 					if (itemList[k].equipped) continue;

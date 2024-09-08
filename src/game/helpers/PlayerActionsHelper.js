@@ -10,7 +10,7 @@ define([
 	'game/constants/PositionConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/PlayerStatConstants',
-	'game/constants/FollowerConstants',
+	'game/constants/ExplorerConstants',
 	'game/constants/ImprovementConstants',
 	'game/constants/ItemConstants',
 	'game/constants/BagConstants',
@@ -51,7 +51,7 @@ define([
 	'game/vos/ResourcesVO',
 	'game/vos/ImprovementVO'
 ], function (
-	Ash, Text, ValueCache, GameGlobals, GlobalSignals, CampConstants, LocaleConstants, PositionConstants, PlayerActionConstants, PlayerStatConstants, FollowerConstants,
+	Ash, Text, ValueCache, GameGlobals, GlobalSignals, CampConstants, LocaleConstants, PositionConstants, PlayerActionConstants, PlayerStatConstants, ExplorerConstants,
 	ImprovementConstants, ItemConstants, BagConstants, MovementConstants, UpgradeConstants, PerkConstants, TextConstants,
 	TradeConstants, UIConstants, WorldConstants, PlayerActionResultNode, PlayerStatsNode, PlayerResourcesNode,
 	PlayerLocationNode, TribeUpgradesNode, NearestCampNode, LevelComponent, PositionComponent, ResourcesComponent,
@@ -698,14 +698,14 @@ define([
 					}
 				}
 				
-				if (requirements.followers) {
-					if (typeof requirements.followers.maxRecruited !== "undefined") {
-						var followersComponent = this.playerStatsNodes.head.followers;
-						var numCurrentFollowers = followersComponent.getAll().length;
-						var numMaxFollowers = GameGlobals.campHelper.getCurrentMaxFollowersRecruited();
-						var currentValue = numCurrentFollowers >= numMaxFollowers;
-						var requiredValue = requirements.followers.maxRecruited;
-						let result = this.checkRequirementsBoolean(requiredValue, currentValue, "Maximum followers recruited", "Maximum followers not recruited");
+				if (requirements.explorers) {
+					if (typeof requirements.explorers.maxRecruited !== "undefined") {
+						var explorersComponent = this.playerStatsNodes.head.explorers;
+						var numCurrentExplorers = explorersComponent.getAll().length;
+						var numMaxExplorers = GameGlobals.campHelper.getCurrentMaxExplorersRecruited();
+						var currentValue = numCurrentExplorers >= numMaxExplorers;
+						var requiredValue = requirements.explorers.maxRecruited;
+						let result = this.checkRequirementsBoolean(requiredValue, currentValue, "Maximum explorers recruited", "Maximum explorers not recruited");
 						if (result) return result;
 					}
 				}
@@ -1634,7 +1634,7 @@ define([
 			}
 		},
 
-		// Returns the cost factor of a given action, usually 1, but may depend on the current status (items, followers, perks, improvement level etc) for some actions
+		// Returns the cost factor of a given action, usually 1, but may depend on the current status (items, explorers, perks, improvement level etc) for some actions
 		getCostFactor: function (action, cost, otherSector) {
 			if (!this.playerLocationNodes || !this.playerLocationNodes.head) return 1;
 
@@ -1667,9 +1667,9 @@ define([
 				return GameGlobals.sectorHelper.getDebrisMovementMalus(sector);
 			};
 			
-			var getFollowerBonus = function (itemBonusType) {
-				let followersComponent = playerStatsNode.followers;
-				return followersComponent.getCurrentBonus(itemBonusType);
+			var getExplorerBonus = function (itemBonusType) {
+				let explorersComponent = playerStatsNode.explorers;
+				return explorersComponent.getCurrentBonus(itemBonusType);
 			}
 			
 			var getImprovementLevelBonus = function (improvementName, levelFactor) {
@@ -1689,7 +1689,7 @@ define([
 				case "move_sector_nw":
 					if (cost == "stamina") {
 						factor *= getShoeBonus();
-						factor *= getFollowerBonus(ItemConstants.itemBonusTypes.movement);
+						factor *= getExplorerBonus(ItemConstants.itemBonusTypes.movement);
 						factor *= getPerkBonus();
 						factor *= getBeaconBonus();
 						factor *= getHazardMalus();
@@ -1699,7 +1699,7 @@ define([
 				case "move_level_up":
 					if (cost == "stamina") {
 						factor *= getShoeBonus();
-						factor *= getFollowerBonus(ItemConstants.itemBonusTypes.movement);
+						factor *= getExplorerBonus(ItemConstants.itemBonusTypes.movement);
 						factor *= getPerkBonus();
 					}
 					break;
@@ -1712,13 +1712,13 @@ define([
 				
 				case "scavenge":
 					if (cost == "stamina") {
-						factor *= getFollowerBonus(ItemConstants.itemBonusTypes.scavenge_cost);
+						factor *= getExplorerBonus(ItemConstants.itemBonusTypes.scavenge_cost);
 					}
 					break;
 				
 				case "scout":
 					if (cost == "stamina") {
-						factor *= getFollowerBonus(ItemConstants.itemBonusTypes.scout_cost);
+						factor *= getExplorerBonus(ItemConstants.itemBonusTypes.scout_cost);
 					}
 					break;
 				
@@ -1880,10 +1880,10 @@ define([
 				case "clear_debris_e":
 				case "clear_debris_l":
 				case "bridge_gap":
-				case "recruit_follower":
-				case "dismiss_follower":
-				case "select_follower":
-				case "deselect_follower":
+				case "recruit_explorer":
+				case "dismiss_explorer":
+				case "select_explorer":
+				case "deselect_explorer":
 				case "repair_item":
 				default:
 					return PlayerActionConstants.requirements[action] || PlayerActionConstants.requirements[baseActionID];
@@ -2057,11 +2057,11 @@ define([
 					if (localeVO) this.addCosts(result, localeVO.costs);
 					break;
 				
-				case "recruit_follower":
-					let followerID = parseInt(action.replace(baseActionID + "_", ""));
-					let recruitComponent = GameGlobals.campHelper.findRecruitComponentWithFollowerId(followerID);
+				case "recruit_explorer":
+					let explorerID = parseInt(action.replace(baseActionID + "_", ""));
+					let recruitComponent = GameGlobals.campHelper.findRecruitComponentWithExplorerId(explorerID);
 					if (recruitComponent != null) {
-						this.addCosts(result, FollowerConstants.getRecruitCost(recruitComponent.follower, recruitComponent.isFoundAsReward));
+						this.addCosts(result, ExplorerConstants.getRecruitCost(recruitComponent.explorer, recruitComponent.isFoundAsReward));
 					}
 					break;
 
@@ -2308,7 +2308,7 @@ define([
 				case "improve_in_shrine":
 					return isNextLevelMajor ? "Increase reputation bonus and meditation success chance" : "Increase reputation bonus";
 				case "improve_in_inn":
-					return isNextLevelMajor ? "Increase rumour generation and maximum followers" : "Increase rumour generation";
+					return isNextLevelMajor ? "Increase rumour generation and maximum explorers" : "Increase rumour generation";
 			}
 			
 			return "Improve " + improvementName;

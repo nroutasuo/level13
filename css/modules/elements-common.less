@@ -774,15 +774,15 @@ ul.buttonlist {
 	border: 2px solid @color-border-warning !important;
 }
 
-// ITEM AND FOLLOWER SLOTS
+// ITEM AND EXPLORER SLOTS
 
 @item-slot-big-width: 55px;
 @item-slot-big-height: 70px;
-@follower-slot-big-width: 65px;
-@follower-slot-big-height: 75px;
+@explorer-slot-big-width: 65px;
+@explorer-slot-big-height: 75px;
 @item-div-size: 18px;
 
-.item-slot, .follower-slot {
+.item-slot, .explorer-slot {
 	background: inherit !important;
 	margin: 0px 2px 2px 0px;
 	padding: 0;
@@ -792,7 +792,7 @@ ul.buttonlist {
 	position: relative;
 }
 
-.item-slot.highlighted, .follower-slot.highlighted {
+.item-slot.highlighted, .explorer-slot.highlighted {
 	border-color: lighten(@color-border-strong, 15%);
 	color: lighten(@color-text-default, 15%);
 }
@@ -802,12 +802,12 @@ ul.buttonlist {
 	height: @item-slot-big-height;
 }
 
-.follower-slot-big {
-	width: @follower-slot-big-width;
-	height: @follower-slot-big-height;
+.explorer-slot-big {
+	width: @explorer-slot-big-width;
+	height: @explorer-slot-big-height;
 }
 
-.item-slot-small, .follower-slot-small {
+.item-slot-small, .explorer-slot-small {
 	width: 37px;
 	height: 37px;
 }
@@ -828,11 +828,11 @@ ul.buttonlist {
 	background: @color-bg-element-2;
 }
 
-.item-slot-equipped, .follower-slot-selected {
+.item-slot-equipped, .explorer-slot-selected {
 	border-color: @color-border-strong;
 }
 
-.item-equipped, .follower-selected {
+.item-equipped, .explorer-selected {
 	background: @color-bg-element-1;
 }
 
@@ -841,7 +841,7 @@ ul.buttonlist {
 	background: linear-gradient(90deg, @color-bg-box-1 0%, @color-bg-box-1 50%, @color-bg-warning-stronger 50%, @color-bg-warning-stronger 100%) !important;
 }
 
-.item-slot-type-empty, .follower-slot-type-empty {
+.item-slot-type-empty, .explorer-slot-type-empty {
 	font-size: @font-size-small;
 	text-align: center;
 	display: inline-block;
@@ -850,7 +850,7 @@ ul.buttonlist {
 	font-style: oblique;
 }
 
-.item-slot-type-equipped, .follower-slot-type-selected {
+.item-slot-type-equipped, .explorer-slot-type-selected {
 	font-size: @font-size-small;
 	text-align: center;
 	width: @item-slot-big-width;
@@ -871,13 +871,13 @@ ul.buttonlist {
 	line-height: @item-slot-big-height;
 }
 
-.follower-slot-type-equipped {
-	width: @follower-slot-big-width;
-	height: @follower-slot-big-height;
-	line-height: @follower-slot-big-height;
+.explorer-slot-type-equipped {
+	width: @explorer-slot-big-width;
+	height: @explorer-slot-big-height;
+	line-height: @explorer-slot-big-height;
 }
 
-.item-slot-image, .follower-slot-image {
+.item-slot-image, .explorer-slot-image {
 	position: absolute;
 }
 
@@ -886,12 +886,12 @@ ul.buttonlist {
 	top: @item-slot-big-height / 2 - @item-div-size + 10px;
 }
 
-.follower-slot-big .follower-slot-image {
-	left: @follower-slot-big-width / 2 - @item-div-size;
-	top: @follower-slot-big-height / 2 - @item-div-size + 10px;
+.explorer-slot-big .explorer-slot-image {
+	left: @explorer-slot-big-width / 2 - @item-div-size;
+	top: @explorer-slot-big-height / 2 - @item-div-size + 10px;
 }
 
-.item-slot-name, .item-slot-type-equipped, .follower-slot-type-selected {
+.item-slot-name, .item-slot-type-equipped, .explorer-slot-type-selected {
 	background-color: @color-bg-element-1;
 	width: 100%;
 	text-align: center;
@@ -902,7 +902,7 @@ ul.buttonlist {
 	padding: 0.35em 0;
 }
 
-.item-slot.highlighted .item-slot-type-equipped, .follower-slot.highlighted .follower-slot-type-selected {
+.item-slot.highlighted .item-slot-type-equipped, .explorer-slot.highlighted .explorer-slot-type-selected {
 	background: lighten( @color-bg-element-1, 8%);
 }
 
@@ -915,7 +915,7 @@ ul.buttonlist {
 	opacity: 0;
 }
 
-.item-slot-type-equipped, .follower-slot-type-selected {
+.item-slot-type-equipped, .explorer-slot-type-selected {
 	top: 0px;
 }
 
@@ -923,12 +923,12 @@ ul.buttonlist {
 	border-width: 0px !important;
 }
 
-div.item-slot > div, div.item-slot > span, .follower-slot > div, .follower-slot > span {
+div.item-slot > div, div.item-slot > span, .explorer-slot > div, .explorer-slot > span {
 	position: absolute;
 	cursor: default;
 }
 
-.follower-slot-follower {
+.explorer-slot-explorer {
 	width: 100%;
 	display: block;
 	text-align: center;

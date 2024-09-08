@@ -1622,15 +1622,15 @@ define([
 				WorldCreatorLogger.i("add grove at: " + groveSector);
 			}
 			
-			// 3) spawn locales with hard-coded followers
-			for (let i = 0; i < levelVO.predefinedFollowers.length; i++) {
-				let follower = levelVO.predefinedFollowers[i];
+			// 3) spawn locales with hard-coded explorers
+			for (let i = 0; i < levelVO.predefinedExplorers.length; i++) {
+				let explorer = levelVO.predefinedExplorers[i];
 				let options = { excludingFeature: excludedFeatures, excludedZones: lateZones };
 				let sector = WorldCreatorRandom.randomSectors(1000 + seed * 2, worldVO, levelVO, 1, 2, options)[0];
-				let locale = new LocaleVO(follower.localeType, true, true);
-				locale.followerID = follower.id;
+				let locale = new LocaleVO(explorer.localeType, true, true);
+				locale.explorerID = explorer.id;
 				addLocale(sector, locale);
-				// WorldCreatorLogger.i("add follower locale at " + sector)
+				// WorldCreatorLogger.i("add explorer locale at " + sector)
 			}
 			
 			// 4) spawn locales for luxury resources

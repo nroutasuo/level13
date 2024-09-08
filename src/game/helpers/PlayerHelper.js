@@ -4,7 +4,7 @@ define([
 	'game/GameGlobals',
 	'game/constants/BagConstants',
 	'game/constants/GameConstants',
-	'game/constants/FollowerConstants',
+	'game/constants/ExplorerConstants',
 	'game/constants/ImprovementConstants',
 	'game/constants/ItemConstants',
 	'game/constants/LogConstants',
@@ -26,7 +26,7 @@ define([
 	GameGlobals,
 	BagConstants,
 	GameConstants,
-	FollowerConstants,
+	ExplorerConstants,
 	ImprovementConstants,
 	ItemConstants,
 	LogConstants,
@@ -233,10 +233,10 @@ define([
 			
 			if (isMultiplier) {
 				result *= this.playerStatsNodes.head.items.getCurrentBonus(itemBonusType);
-				result *= this.playerStatsNodes.head.followers.getCurrentBonus(itemBonusType);
+				result *= this.playerStatsNodes.head.explorers.getCurrentBonus(itemBonusType);
 			} else {
 				result += this.playerStatsNodes.head.items.getCurrentBonus(itemBonusType);
-				result += this.playerStatsNodes.head.followers.getCurrentBonus(itemBonusType);
+				result += this.playerStatsNodes.head.explorers.getCurrentBonus(itemBonusType);
 			}
 			
 			return result;
@@ -256,13 +256,13 @@ define([
 				}
 			}
 			
-			let followers = this.playerStatsNodes.head.followers.getParty();
-			for (let i = 0; i < followers.length; i++) {
-				let follower = followers[i];
-				let followerBonus = FollowerConstants.getFollowerItemBonus(follower, itemBonusType);
-				if (followerBonus > 0) {
+			let explorers = this.playerStatsNodes.head.explorers.getParty();
+			for (let i = 0; i < explorers.length; i++) {
+				let explorer = explorers[i];
+				let explorerBonus = ExplorerConstants.getExplorerItemBonus(explorer, itemBonusType);
+				if (explorerBonus > 0) {
 					if (result.length > 0) result += "<br/>";
-					result += follower.name + ": " + Math.round(followerBonus*10)/10;
+					result += explorer.name + ": " + Math.round(explorerBonus*10)/10;
 				}
 			}
 			
@@ -304,16 +304,16 @@ define([
 			item.foundPosition = sourcePosition.clone();
 		},
 		
-		getBestAvailableFollower: function (followerType) {
-			let followersComponent = this.playerStatsNodes.head.followers;
-			let followers = followersComponent.getFollowersByType(followerType, false);
+		getBestAvailableExplorer: function (explorerType) {
+			let explorersComponent = this.playerStatsNodes.head.explorers;
+			let explorers = explorersComponent.getExplorersByType(explorerType, false);
 			let result = null;
 			let resultLevel = 0;
-			for (let i = 0; i < followers.length; i++) {
-				let follower = followers[i];
-				if (follower.abilityLevel > resultLevel) {
-					result = follower;
-					resultLevel = follower.abilityLevel;
+			for (let i = 0; i < explorers.length; i++) {
+				let explorer = explorers[i];
+				if (explorer.abilityLevel > resultLevel) {
+					result = explorer;
+					resultLevel = explorer.abilityLevel;
 				}
 			}
 			return result;
@@ -504,13 +504,13 @@ define([
 			addStat("Ingredients used", this.getGameStatKeyedSum("numItemsUsedPerId", (id) => ItemConstants.getItemType(id) == ItemConstants.itemTypes.ingredient));
 			endCategory();
 
-			// Followers
-			startCategory("Followers", GameGlobals.gameState.isFeatureUnlocked("followers"));
-			addStat("Followers recruited", this.getGameStatSimple("numFollowersRecruited"));
-			addStat("Followers lost", this.getGameStatSimple("numFollowersLost"));
-			addStat("Followers dismissed", this.getGameStatSimple("numFollowersDismissed"));
-			addStat("Most steps together", this.getGameStatHighScore("mostStepsWithFollower"));
-			addStat("Most fights together", this.getGameStatHighScore("mostFightsWithFollower"));
+			// Explorers
+			startCategory("Explorers", GameGlobals.gameState.isFeatureUnlocked("explorers"));
+			addStat("Explorers recruited", this.getGameStatSimple("numExplorersRecruited"));
+			addStat("Explorers lost", this.getGameStatSimple("numExplorersLost"));
+			addStat("Explorers dismissed", this.getGameStatSimple("numExplorersDismissed"));
+			addStat("Most steps together", this.getGameStatHighScore("mostStepsWithExplorer"));
+			addStat("Most fights together", this.getGameStatHighScore("mostFightsWithExplorer"));
 			endCategory();
 
 			return result;

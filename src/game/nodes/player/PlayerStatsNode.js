@@ -7,8 +7,8 @@ define([
 	'game/components/player/InsightComponent',
 	'game/components/player/PerksComponent',
 	'game/components/player/ItemsComponent',
-	'game/components/player/FollowersComponent',
-], function (Ash, VisionComponent, StaminaComponent, RumoursComponent, EvidenceComponent, InsightComponent, PerksComponent, ItemsComponent, FollowersComponent) {
+	'game/components/player/ExplorersComponent',
+], function (Ash, VisionComponent, StaminaComponent, RumoursComponent, EvidenceComponent, InsightComponent, PerksComponent, ItemsComponent, ExplorersComponent) {
 	var PlayerStatsNode = Ash.Node.create({
 		vision : VisionComponent,
 		stamina : StaminaComponent,
@@ -17,7 +17,7 @@ define([
 		insight: InsightComponent,
 		perks: PerksComponent,
 		items: ItemsComponent,
-		followers: FollowersComponent
+		explorers: ExplorersComponent
 	});
 
 	return PlayerStatsNode;

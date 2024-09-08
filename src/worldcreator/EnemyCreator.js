@@ -3,14 +3,14 @@ define([
 	'json!game/data/EnemyData.json',
 	'game/GameGlobals',
 	'game/constants/EnemyConstants',
-	'game/constants/FollowerConstants',
+	'game/constants/ExplorerConstants',
 	'game/constants/PerkConstants',
 	'game/constants/ItemConstants',
 	'game/constants/FightConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/WorldConstants',
 	'game/components/player/ItemsComponent',
-	'game/components/player/FollowersComponent',
+	'game/components/player/ExplorersComponent',
 	'game/vos/EnemyVO',
 	'utils/MathUtils',
 ], function (
@@ -18,14 +18,14 @@ define([
 	EnemyData,
 	GameGlobals,
 	EnemyConstants,
-	FollowerConstants,
+	ExplorerConstants,
 	PerkConstants,
 	ItemConstants,
 	FightConstants,
 	UpgradeConstants,
 	WorldConstants,
 	ItemsComponent,
-	FollowersComponent,
+	ExplorersComponent,
 	EnemyVO,
 	MathUtils
 ) {
@@ -201,15 +201,15 @@ define([
 		getPlayerAtt: function (campOrdinal, step) {
 			let playerStamina = this.getTypicalStamina(campOrdinal, step);
 			let itemsComponent = this.getTypicalItems(campOrdinal, step);
-			let followersComponent = this.getTypicalFollowers(campOrdinal, step);
-			return FightConstants.getPlayerAtt(playerStamina, itemsComponent, followersComponent);
+			let explorersComponent = this.getTypicalExplorers(campOrdinal, step);
+			return FightConstants.getPlayerAtt(playerStamina, itemsComponent, explorersComponent);
 		},
 		
 		getPlayerDef: function (campOrdinal, step) {
 			let playerStamina = this.getTypicalStamina(campOrdinal, step);
 			let itemsComponent = this.getTypicalItems(campOrdinal, step);
-			let followersComponent = this.getTypicalFollowers(campOrdinal, step);
-			return FightConstants.getPlayerDef(playerStamina, itemsComponent, followersComponent);
+			let explorersComponent = this.getTypicalExplorers(campOrdinal, step);
+			return FightConstants.getPlayerDef(playerStamina, itemsComponent, explorersComponent);
 		},
 		
 		getPlayerSpeed: function (campOrdinal, step) {
@@ -242,8 +242,8 @@ define([
 			
 			let playerStamina = this.getTypicalStamina(campOrdinal, step);
 			let itemsComponent = this.getTypicalItems(campOrdinal, step);
-			let followersComponent = this.getTypicalFollowers(campOrdinal, step);
-			let playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent, followersComponent);
+			let explorersComponent = this.getTypicalExplorers(campOrdinal, step);
+			let playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent, explorersComponent);
 			
 			// average of two factors:
 			// - player hp and shield (should be comparable)
@@ -339,23 +339,23 @@ define([
 			return typicalItems;
 		},
 		
-		getTypicalFollowers: function (campOrdinal, step) {
-			let typicalFollowers = new FollowersComponent();
-			if (!WorldConstants.isHigherOrEqualCampOrdinalAndStep(campOrdinal, step, FollowerConstants.FIRST_FOLLOWER_CAMP_ORDINAL, WorldConstants.CAMP_STEP_POI_2)) {
-				return typicalFollowers;
+		getTypicalExplorers: function (campOrdinal, step) {
+			let typicalExplorers = new ExplorersComponent();
+			if (!WorldConstants.isHigherOrEqualCampOrdinalAndStep(campOrdinal, step, ExplorerConstants.FIRST_EXPLORER_CAMP_ORDINAL, WorldConstants.CAMP_STEP_POI_2)) {
+				return typicalExplorers;
 			}
 			
 			if (campOrdinal <= GameGlobals.upgradeEffectsHelper.getCampOrdinalToUnlockBuilding(improvementNames.inn)) {
-				campOrdinal = FollowerConstants.FIRST_FOLLOWER_CAMP_ORDINAL;
+				campOrdinal = ExplorerConstants.FIRST_EXPLORER_CAMP_ORDINAL;
 				step = WorldConstants.CAMP_STEP_POI_2;
 			}
 			
-			// only considering fight related followers here
-			let follower = FollowerConstants.getTypicalFighter(campOrdinal, step);
-			typicalFollowers.addFollower(follower);
-			typicalFollowers.setFollowerInParty(follower, true);
+			// only considering fight related explorers here
+			let explorer = ExplorerConstants.getTypicalFighter(campOrdinal, step);
+			typicalExplorers.addExplorer(explorer);
+			typicalExplorers.setExplorerInParty(explorer, true);
 			
-			return typicalFollowers;
+			return typicalExplorers;
 		},
 		
 		getTypicalStamina: function (campOrdinal, step, isHardLevel) {

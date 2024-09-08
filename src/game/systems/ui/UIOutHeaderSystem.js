@@ -9,7 +9,7 @@ define([
 	'game/constants/CampConstants',
 	'game/constants/LevelConstants',
 	'game/constants/UIConstants',
-	'game/constants/FollowerConstants',
+	'game/constants/ExplorerConstants',
 	'game/constants/ItemConstants',
 	'game/constants/FightConstants',
 	'game/constants/PerkConstants',
@@ -36,7 +36,7 @@ define([
 	Text,
 	UIList, 
 	GameGlobals, GlobalSignals, 
-	ColorConstants, GameConstants, CampConstants, LevelConstants, UIConstants, FollowerConstants, ItemConstants, FightConstants, PerkConstants, UpgradeConstants, PlayerStatConstants,
+	ColorConstants, GameConstants, CampConstants, LevelConstants, UIConstants, ExplorerConstants, ItemConstants, FightConstants, PerkConstants, UpgradeConstants, PlayerStatConstants,
 	SaveSystem,
 	PlayerStatsNode, PlayerLocationNode, TribeUpgradesNode, DeityNode,
 	BagComponent,
@@ -143,7 +143,7 @@ define([
 			GlobalSignals.tribeStatsChangedSignal.add(function () { sys.onTribeStatsChanged(); });
 			GlobalSignals.inventoryChangedSignal.add(function () { sys.onInventoryChanged(); });
 			GlobalSignals.equipmentChangedSignal.add(function () { sys.onEquipmentChanged(); });
-			GlobalSignals.followersChangedSignal.add(function () { sys.onFollowersChanged(); });
+			GlobalSignals.explorersChangedSignal.add(function () { sys.onExplorersChanged(); });
 			GlobalSignals.actionCompletedSignal.add(function () { sys.onPlayerActionCompleted(); });
 			GlobalSignals.slowUpdateSignal.add(function () { sys.slowUpdate(); });
 			GlobalSignals.changelogLoadedSignal.add(function () { sys.updateGameVersion(); });
@@ -468,12 +468,12 @@ define([
 					GameGlobals.uiFunctions.toggle($container, value > 0);
 					$container.find(".value").text(Math.round(value) + "%");
 					
-					let party = this.playerStatsNodes.head.followers.getParty();
+					let party = this.playerStatsNodes.head.explorers.getParty();
 					for (let j = 0; j < party.length; j++) {
-						let follower = party[j];
-						let followerContribution = FollowerConstants.getFollowerItemBonus(follower, bonus.itemBonusType);
-						if (followerContribution > 0) {
-							scavengeBonusCallout += follower.name + ": +" + Math.round(followerContribution * 100 - 100) + "%";
+						let explorer = party[j];
+						let explorerContribution = ExplorerConstants.getExplorerItemBonus(explorer, bonus.itemBonusType);
+						if (explorerContribution > 0) {
+							scavengeBonusCallout += explorer.name + ": +" + Math.round(explorerContribution * 100 - 100) + "%";
 						}
 					}
 					scavengeBonusCallout += "";
@@ -598,20 +598,20 @@ define([
 			}
 		},
 		
-		updateFollowers: function () {
+		updateExplorers: function () {
 			let inCamp = GameGlobals.playerHelper.isInCamp();
 			if (inCamp) return;
 			
-			let followersComponent = this.playerStatsNodes.head.followers;
-			let party = followersComponent.getParty();
+			let explorersComponent = this.playerStatsNodes.head.explorers;
+			let party = explorersComponent.getParty();
 			
-			$("ul.list-header-followers").empty();
+			$("ul.list-header-explorers").empty();
 			for (let i = 0; i < party.length; i++) {
-				let follower = party[i];
-				$("ul.list-header-followers").append("<li>" + UIConstants.getFollowerDiv(follower, true, false, true) + "</li>");
+				let explorer = party[i];
+				$("ul.list-header-explorers").append("<li>" + UIConstants.getExplorerDiv(explorer, true, false, true) + "</li>");
 			}
 			
-			GameGlobals.uiFunctions.generateInfoCallouts("ul.list-header-followers");
+			GameGlobals.uiFunctions.generateInfoCallouts("ul.list-header-explorers");
 		},
 		
 		refreshPerks: function () {
@@ -848,7 +848,7 @@ define([
 			if (!this.currentLocationNodes.head) return;
 			
 			let itemsComponent = this.playerStatsNodes.head.items;
-			let followersComponent = this.playerStatsNodes.head.followers;
+			let explorersComponent = this.playerStatsNodes.head.explorers;
 			let playerStamina = this.playerStatsNodes.head.stamina;
 			let visibleStats = 0;
 			
@@ -865,20 +865,20 @@ define([
 				
 				switch (bonusType) {
 					case ItemConstants.itemBonusTypes.fight_att:
-						value = FightConstants.getPlayerAtt(playerStamina, itemsComponent, followersComponent);
-						detail = FightConstants.getPlayerAttDesc(playerStamina, itemsComponent, followersComponent);
+						value = FightConstants.getPlayerAtt(playerStamina, itemsComponent, explorersComponent);
+						detail = FightConstants.getPlayerAttDesc(playerStamina, itemsComponent, explorersComponent);
 						isVisible = GameGlobals.gameState.unlockedFeatures.fight;
 						break;
 
 					case ItemConstants.itemBonusTypes.fight_def:
-						value = FightConstants.getPlayerDef(playerStamina, itemsComponent, followersComponent);
-						detail = FightConstants.getPlayerDefDesc(playerStamina, itemsComponent, followersComponent);
+						value = FightConstants.getPlayerDef(playerStamina, itemsComponent, explorersComponent);
+						detail = FightConstants.getPlayerDefDesc(playerStamina, itemsComponent, explorersComponent);
 						isVisible = GameGlobals.gameState.unlockedFeatures.fight;
 						break;
 
 					case ItemConstants.itemBonusTypes.fight_shield:
-						value = FightConstants.getPlayerShield(playerStamina, itemsComponent, followersComponent);
-						detail = FightConstants.getPlayerShieldDesc(playerStamina, itemsComponent, followersComponent);
+						value = FightConstants.getPlayerShield(playerStamina, itemsComponent, explorersComponent);
+						detail = FightConstants.getPlayerShieldDesc(playerStamina, itemsComponent, explorersComponent);
 						isVisible = GameGlobals.gameState.unlockedFeatures.fight;
 						break;
 						
@@ -1286,13 +1286,13 @@ define([
 		
 		onPlayerEnteredCamp: function () {
 			this.pendingResourceUpdateTime = 0.25;
-			this.updateFollowers();
+			this.updateExplorers();
 			GameGlobals.uiFunctions.scrollToTabTop();
 		},
 		
 		onPlayerLeftCamp: function () {
 			this.updateItems();
-			this.updateFollowers();
+			this.updateExplorers();
 			GameGlobals.uiFunctions.scrollToTabTop();
 		},
 
@@ -1321,11 +1321,11 @@ define([
 			this.refreshPerks();
 		},
 		
-		onFollowersChanged: function () {
+		onExplorersChanged: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			this.updatePlayerStats();
 			this.updateItemStats();
-			this.updateFollowers();
+			this.updateExplorers();
 			this.refreshStatuses();
 		},
 		
@@ -1374,7 +1374,7 @@ define([
 			this.refreshPerks();
 			this.refreshStatuses();
 			this.updateItemStats();
-			this.updateFollowers();
+			this.updateExplorers();
 			this.updateLayout();
 		},
 

@@ -86,43 +86,43 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			return this.getAttackTime(playerSpeed);
 		},
 		 
-		getPlayerAtt: function (playerStamina, itemsComponent, followersComponent) {
+		getPlayerAtt: function (playerStamina, itemsComponent, explorersComponent) {
 			var itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att, ItemConstants.itemTypes.weapon);
 			var playerAtt = itemBonus;
 			if (itemBonus <= 0)
 				playerAtt = this.FIGHT_PLAYER_BASE_ATT;
-			var followerBonus = followersComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att);
-			return playerAtt + followerBonus;
+			var explorerBonus = explorersComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att);
+			return playerAtt + explorerBonus;
 		},
 		 
-		getPlayerAttDesc: function (playerStamina, itemsComponent, followersComponent) {
+		getPlayerAttDesc: function (playerStamina, itemsComponent, explorersComponent) {
 			var itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att, ItemConstants.itemTypes.weapon);
 			var healthFactor = (playerStamina.health/100);
-			var followerBonus = followersComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att);
+			var explorerBonus = explorersComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att);
 			var desc = "";
 			if (itemBonus <= 0) desc += "player: " + this.FIGHT_PLAYER_BASE_ATT;
 			if (itemBonus > 0) desc += "equipment: " + itemBonus;
 			if (healthFactor < 1) desc += "<br/>health: -" + Math.round((1-healthFactor) * 1000) / 10 + "%";
-			if (followerBonus > 0) desc += "<br/>followers: " + followerBonus;
+			if (explorerBonus > 0) desc += "<br/>explorers: " + explorerBonus;
 			return desc;
 		},
 		
-		getPlayerDef: function (playerStamina, itemsComponent, followersComponent) {
+		getPlayerDef: function (playerStamina, itemsComponent, explorersComponent) {
 			var itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_def);
 			var playerDef = itemBonus;
 			if (itemBonus <= 0)
 			 	playerDef = this.FIGHT_PLAYER_BASE_DEF;
-			var followerBonus = followersComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_def);
-			return playerDef + followerBonus;
+			var explorerBonus = explorersComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_def);
+			return playerDef + explorerBonus;
 		},
 		
-		getPlayerDefDesc: function (playerStamina, itemsComponent, followersComponent) {
+		getPlayerDefDesc: function (playerStamina, itemsComponent, explorersComponent) {
 			let itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_def);
 			let desc = "";
 			if (itemBonus > 0) desc += "equipment: " + itemBonus;
 			else desc += "player: " + this.FIGHT_PLAYER_BASE_DEF;
-			var followerBonus = followersComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_def);
-			if (followerBonus > 0) desc += "<br/>followers: " + followerBonus;
+			var explorerBonus = explorersComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_def);
+			if (explorerBonus > 0) desc += "<br/>explorers: " + explorerBonus;
 			return desc;
 		},
 		
@@ -146,26 +146,26 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 		},
 		
 		// Damage done by player to an enemy per sec
-		getDamageByPlayerPerSec: function (enemy, playerStamina, itemsComponent, followersComponent) {
+		getDamageByPlayerPerSec: function (enemy, playerStamina, itemsComponent, explorersComponent) {
 			if (!enemy) return 0;
-			var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent, followersComponent);
+			var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent, explorersComponent);
 			let playerSpeed = FightConstants.getPlayerSpeed(itemsComponent);
 			return this.getDamagePerSec(playerAtt, enemy.getDef(), playerSpeed);
 		},
 		
-		getDamageByPlayerPerHit: function (enemy, playerStamina, itemsComponent, followersComponent) {
-			var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent, followersComponent);
+		getDamageByPlayerPerHit: function (enemy, playerStamina, itemsComponent, explorersComponent) {
+			var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent, explorersComponent);
 			return this.getDamagePerHit(playerAtt, enemy.getDef());
 		},
 		
 		// Damage done by the enemy to the player per sec
-		getDamageByEnemyPerSec: function (enemy, playerStamina, itemsComponent, followersComponent) {
-			var playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent, followersComponent);
+		getDamageByEnemyPerSec: function (enemy, playerStamina, itemsComponent, explorersComponent) {
+			var playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent, explorersComponent);
 			return this.getDamagePerSec(enemy.getAtt(), playerDef, enemy.getSpeed());
 		},
 		
-		getDamageByEnemyPerHit: function (enemy, playerStamina, itemsComponent, followersComponent) {
-			var playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent, followersComponent);
+		getDamageByEnemyPerHit: function (enemy, playerStamina, itemsComponent, explorersComponent) {
+			var playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent, explorersComponent);
 			return this.getDamagePerHit(enemy.getAtt(), playerDef);
 		},
 		
@@ -193,15 +193,15 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			return enemyHP <= 0 && playerHP > 0;
 		},
 		
-		getTurnScenarios: function (participantType, enemy, playerStamina, itemsComponent, followersComponent, fightTime) {
+		getTurnScenarios: function (participantType, enemy, playerStamina, itemsComponent, explorersComponent, fightTime) {
 			let missChance = Math.round(FightConstants.getMissChance(participantType, fightTime) * 1000)/1000;
 			let criticalChance = Math.round(FightConstants.getCriticalHitChance(participantType, fightTime) * 1000)/1000;
 			let regularChance = 1 - missChance - criticalChance;
 			
 			let participantName = participantType == FightConstants.PARTICIPANT_TYPE_FRIENDLY ? "player" : "enemy";
 			let regularDamage = participantType == FightConstants.PARTICIPANT_TYPE_FRIENDLY ?
-				FightConstants.getDamageByPlayerPerHit(enemy, playerStamina, itemsComponent, followersComponent) :
-				FightConstants.getDamageByEnemyPerHit(enemy, playerStamina, itemsComponent, followersComponent);
+				FightConstants.getDamageByPlayerPerHit(enemy, playerStamina, itemsComponent, explorersComponent) :
+				FightConstants.getDamageByEnemyPerHit(enemy, playerStamina, itemsComponent, explorersComponent);
 			
 			let result = [];
 			if (regularChance > 0) {
@@ -217,7 +217,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			return result;
 		},
 		
-		getFightWinProbability: function (enemy, playerStamina, itemsComponent, followersComponent) {
+		getFightWinProbability: function (enemy, playerStamina, itemsComponent, explorersComponent) {
 			return new Promise((resolve, reject) => {
 				if (!enemy) resolve(1);
 				
@@ -322,7 +322,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 							numDiscardedBranches++;
 							continue;
 						}
-						let resultBranches = FightConstants.applyFightStepToProbabilityBranch(branch, enemy, playerStamina, itemsComponent, followersComponent, stepTime, totalTime);
+						let resultBranches = FightConstants.applyFightStepToProbabilityBranch(branch, enemy, playerStamina, itemsComponent, explorersComponent, stepTime, totalTime);
 						for (let j = 0; j < resultBranches.length; j++) {
 							let resultBranch = resultBranches[j];
 							if (resultBranch.isEnded) {
@@ -360,7 +360,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			});
 		},
 		
-		applyFightStepToProbabilityBranch: function (branch, enemy, playerStamina, itemsComponent, followersComponent, stepTime, fightTime) {
+		applyFightStepToProbabilityBranch: function (branch, enemy, playerStamina, itemsComponent, explorersComponent, stepTime, fightTime) {
 			let resultBranches = [];
 			
 			var playerAttackTime = FightConstants.getPlayerAttackTime(itemsComponent);
@@ -373,7 +373,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			let isPlayerTurn = false;
 			if (branch.nextTurnPlayer <= 0) {
 				isPlayerTurn = true;
-				turnScenariosPlayer = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_FRIENDLY, enemy, playerStamina, itemsComponent, followersComponent, fightTime);
+				turnScenariosPlayer = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_FRIENDLY, enemy, playerStamina, itemsComponent, explorersComponent, fightTime);
 				branch.nextTurnPlayer = playerAttackTime;
 			} else {
 				turnScenariosPlayer.push({ probability: 1, type: "WAIT", damage: 0 });
@@ -381,7 +381,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			
 			let turnScenariosEnemy = [];
 			if (!isPlayerTurn && branch.nextTurnEnemy <= 0) {
-				turnScenariosEnemy = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_ENEMY, enemy, playerStamina, itemsComponent, followersComponent, fightTime);
+				turnScenariosEnemy = FightConstants.getTurnScenarios(FightConstants.PARTICIPANT_TYPE_ENEMY, enemy, playerStamina, itemsComponent, explorersComponent, fightTime);
 				branch.nextTurnEnemy = enemyAttackTime;
 			} else {
 				turnScenariosEnemy.push({ probability: 1, type: "WAIT",  damage: 0 });
@@ -410,9 +410,9 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			return resultBranches;
 		},
 		
-		getFightExpectedDuration: function (enemy, playerStamina, itemsComponent, followersComponent) {
-			let playerAtt = this.getPlayerAtt(playerStamina, itemsComponent, followersComponent);
-			let playerDef = this.getPlayerDef(playerStamina, itemsComponent, followersComponent);
+		getFightExpectedDuration: function (enemy, playerStamina, itemsComponent, explorersComponent) {
+			let playerAtt = this.getPlayerAtt(playerStamina, itemsComponent, explorersComponent);
+			let playerDef = this.getPlayerDef(playerStamina, itemsComponent, explorersComponent);
 			let playerSpeed = this.getPlayerSpeed(itemsComponent);
 			let playerHP = playerStamina.maxHP;
 			let playerShield = playerStamina.maxShield;

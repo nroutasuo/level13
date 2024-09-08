@@ -13,7 +13,7 @@ define([
 	'game/components/player/EvidenceComponent',
 	'game/components/player/InsightComponent',
 	'game/components/player/HopeComponent',
-	'game/components/player/FollowersComponent',
+	'game/components/player/ExplorersComponent',
 	'game/components/player/ItemsComponent',
 	'game/components/player/PerksComponent',
 	'game/components/type/GangComponent',
@@ -65,7 +65,7 @@ define([
 	EvidenceComponent,
 	InsightComponent,
 	HopeComponent,
-	FollowersComponent,
+	ExplorersComponent,
 	ItemsComponent,
 	PerksComponent,
 	GangComponent,
@@ -121,7 +121,7 @@ define([
 				.add(new BagComponent(0))
 				.add(new VisionComponent(0))
 				.add(new ItemsComponent())
-				.add(new FollowersComponent())
+				.add(new ExplorersComponent())
 				.add(new PerksComponent())
 				.add(new StaminaComponent(1000))
 				.add(new ResourcesComponent("player", ItemConstants.PLAYER_DEFAULT_STORAGE))
@@ -138,7 +138,7 @@ define([
 					CurrencyComponent,
 					VisionComponent,
 					ItemsComponent,
-					FollowersComponent,
+					ExplorersComponent,
 					PerksComponent,
 					StaminaComponent,
 					PositionComponent,

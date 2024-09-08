@@ -81,9 +81,9 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.initGameStatSimple("numFightsFled");
 			this.initGameStatSimple("numFightsStarted");
 			this.initGameStatSimple("numFightsWon");
-			this.initGameStatSimple("numFollowersRecruited");
-			this.initGameStatSimple("numFollowersLost");
-			this.initGameStatSimple("numFollowersDismissed");
+			this.initGameStatSimple("numExplorersRecruited");
+			this.initGameStatSimple("numExplorersLost");
+			this.initGameStatSimple("numExplorersDismissed");
 			this.initGameStatSimple("numGraffitiMade");
 			this.initGameStatSimple("numInjuriesReceived");
 			this.initGameStatSimple("numItemsCrafted");
@@ -131,8 +131,8 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.initHighScoreStat("mostDistantSectorFromCampVisited"); // currently only counts when there is camp on level
 			this.initHighScoreStat("mostDistantSectorFromCenterVisited");
 			this.initHighScoreStat("mostResourcesLostInRaid");
-			this.initHighScoreStat("mostFightsWithFollower");
-			this.initHighScoreStat("mostStepsWithFollower");
+			this.initHighScoreStat("mostFightsWithExplorer");
+			this.initHighScoreStat("mostStepsWithExplorer");
 
 			// list: list of unique ids (string) where value is length
 			this.initListStat("uniqueItemsCrafted");

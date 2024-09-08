@@ -18,7 +18,7 @@ define([
 	'game/systems/ui/UIOutProjectsSystem',
 	'game/systems/ui/UIOutEmbarkSystem',
 	'game/systems/ui/UIOutBagSystem',
-	'game/systems/ui/UIOutFollowersSystem',
+	'game/systems/ui/UIOutExplorersSystem',
 	'game/systems/ui/UIOutMapSystem',
 	'game/systems/ui/UIOutTradeSystem',
 	'game/systems/ui/UIOutUpgradesSystem',
@@ -44,7 +44,6 @@ define([
 	'game/systems/LevelStatusSystem',
 	'game/systems/CollectorSystem',
 	'game/systems/FightSystem',
-	'game/systems/FollowerSystem',
 	'game/systems/PopulationSystem',
 	'game/systems/PerkSystem',
 	'game/systems/WorkerSystem',
@@ -85,7 +84,7 @@ define([
 	UIOutProjectsSystem,
 	UIOutEmbarkSystem,
 	UIOutBagSystem,
-	UIOutFollowersSystem,
+	UIOutExplorersSystem,
 	UIOutMapSystem,
 	UIOutTradeSystem,
 	UIOutUpgradesSystem,
@@ -111,7 +110,6 @@ define([
 	LevelStatusSystem,
 	CollectorSystem,
 	FightSystem,
-	FollowerSystem,
 	PopulationSystem,
 	PerkSystem,
 	WorkerSystem,
@@ -290,7 +288,6 @@ define([
 			this.engine.addSystem(new BagSystem(), SystemPriorities.update);
 			this.engine.addSystem(new CollectorSystem(), SystemPriorities.update);
 			this.engine.addSystem(new FightSystem(true), SystemPriorities.update);
-			this.engine.addSystem(new FollowerSystem(), SystemPriorities.update);
 			this.engine.addSystem(new PopulationSystem(), SystemPriorities.update);
 			this.engine.addSystem(new PerkSystem(), SystemPriorities.update);
 			this.engine.addSystem(new WorkerSystem(), SystemPriorities.update);
@@ -330,7 +327,7 @@ define([
 			this.engine.addSystem(new UIOutProjectsSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutEmbarkSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutBagSystem(), SystemPriorities.render);
-			this.engine.addSystem(new UIOutFollowersSystem(), SystemPriorities.render);
+			this.engine.addSystem(new UIOutExplorersSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutMapSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutTradeSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutUpgradesSystem(), SystemPriorities.render);

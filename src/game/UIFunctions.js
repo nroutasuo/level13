@@ -38,7 +38,7 @@ define(['ash',
 			elementIDs: {
 				tabs: {
 					bag: "switch-bag",
-					followers: "switch-followers",
+					explorers: "switch-explorers",
 					projects: "switch-projects",
 					map: "switch-map",
 					trade: "switch-trade",

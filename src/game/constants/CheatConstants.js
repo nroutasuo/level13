@@ -29,7 +29,7 @@ define(function () {
 		CHEAT_NAME_TRADE_PARTNER: "tradepartner",
 		CHEAT_NAME_WORKSHOPS: "workshops",
 		CHEAT_NAME_ITEM: "item",
-		CHEAT_NAME_FOLLOWER: "follower",
+		CHEAT_NAME_EXPLORER: "explorer",
 		CHEAT_NAME_EQUIP_BEST: "equipBest",
 		CHEAT_NAME_BREAK_ITEM: "breakItem",
 		CHEAT_NAME_PERK: "perk",

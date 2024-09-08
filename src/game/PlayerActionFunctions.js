@@ -5,7 +5,7 @@ define(['ash',
 	'game/constants/GameConstants',
 	'game/constants/CampConstants',
 	'game/constants/ExplorationConstants',
-	'game/constants/FollowerConstants',
+	'game/constants/ExplorerConstants',
 	'game/constants/LogConstants',
 	'game/constants/ImprovementConstants',
 	'game/constants/PositionConstants',
@@ -62,7 +62,7 @@ define(['ash',
 	'text/Text',
 	'utils/StringUtils'
 ], function (Ash, GameGlobals, GlobalSignals,
-	GameConstants, CampConstants, ExplorationConstants, FollowerConstants, LogConstants, ImprovementConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, TribeConstants, UIConstants, UpgradeConstants, TextConstants,
+	GameConstants, CampConstants, ExplorationConstants, ExplorerConstants, LogConstants, ImprovementConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, TribeConstants, UIConstants, UpgradeConstants, TextConstants,
 	PositionVO, LocaleVO, ResultVO,
 	PlayerPositionNode, FightNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, CampNode, TribeUpgradesNode,
@@ -279,11 +279,11 @@ define(['ash',
 				case "fight_gang": this.fightGang(param); break;
 				case "send_caravan": this.sendCaravan(param); break;
 				case "trade_with_caravan": this.tradeWithCaravan(); break;
-				case "recruit_follower": this.recruitFollower(param); break;
+				case "recruit_explorer": this.recruitExplorer(param); break;
 				case "dismiss_recruit": this.dismissRecruit(param); break;
-				case "dismiss_follower": this.dismissFollower(param); break;
-				case "select_follower": this.selectFollower(param); break;
-				case "deselect_follower": this.deselectFollower(param); break;
+				case "dismiss_explorer": this.dismissExplorer(param); break;
+				case "select_explorer": this.selectExplorer(param); break;
+				case "deselect_explorer": this.deselectExplorer(param); break;
 				case "nap": this.nap(param); break;
 				case "wait": this.wait(param); break;
 				case "despair": this.despair(param); break;
@@ -1288,97 +1288,97 @@ define(['ash',
 			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_TRADE_WITH_CARAVAN, "Traded with a caravan.");
 		},
 		
-		recruitFollower: function (followerId) {
-			let recruitComponent = GameGlobals.campHelper.findRecruitComponentWithFollowerId(followerId);
+		recruitExplorer: function (explorerId) {
+			let recruitComponent = GameGlobals.campHelper.findRecruitComponentWithExplorerId(explorerId);
 			
 			if (!recruitComponent) {
-				log.w("no recruit found: " + followerId);
+				log.w("no recruit found: " + explorerId);
 				return;
 			}
 			
-			this.playerStatsNodes.head.followers.addFollower(recruitComponent.follower);
+			this.playerStatsNodes.head.explorers.addExplorer(recruitComponent.explorer);
 			recruitComponent.isRecruited = true;
 			
-			GameGlobals.playerActionFunctions.unlockFeature("followers");
-			GameGlobals.gameState.increaseGameStatSimple("numFollowersRecruited");
-			GlobalSignals.followersChangedSignal.dispatch();
+			GameGlobals.playerActionFunctions.unlockFeature("explorers");
+			GameGlobals.gameState.increaseGameStatSimple("numExplorersRecruited");
+			GlobalSignals.explorersChangedSignal.dispatch();
 			
-			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_RECRUIT, "Recruited a new follower.");
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_RECRUIT, "Recruited a new explorer.");
 		},
 		
-		dismissRecruit: function (followerId) {
-			log.i("dismiss recruit: " + followerId);
-			let recruitComponent = GameGlobals.campHelper.findRecruitComponentWithFollowerId(followerId);
+		dismissRecruit: function (explorerId) {
+			log.i("dismiss recruit: " + explorerId);
+			let recruitComponent = GameGlobals.campHelper.findRecruitComponentWithExplorerId(explorerId);
 			
 			if (!recruitComponent) {
-				log.w("no recruit found: " + followerId);
+				log.w("no recruit found: " + explorerId);
 				return;
 			}
 			
 			recruitComponent.isDismissed = true;
 		},
 		
-		dismissFollower: function (followerID) {
-			let followersComponent = this.playerStatsNodes.head.followers;
-			let follower = followersComponent.getFollowerByID(followerID);
+		dismissExplorer: function (explorerID) {
+			let explorersComponent = this.playerStatsNodes.head.explorers;
+			let explorer = explorersComponent.getExplorerByID(explorerID);
 			
-			if (!follower) {
-				log.w("no such follower: " + followerID);
+			if (!explorer) {
+				log.w("no such explorer: " + explorerID);
 				return;
 			}
 			
 			GameGlobals.uiFunctions.showConfirmation(
-				"Are you sure you want to dismiss " + follower.name + "?",
+				"Are you sure you want to dismiss " + explorer.name + "?",
 				function () {
-					followersComponent.removeFollower(follower);
-					GameGlobals.gameState.increaseGameStatSimple("numFollowersDismissed");
-					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), follower.name + " leaves.");
-					GlobalSignals.followersChangedSignal.dispatch();
+					explorersComponent.removeExplorer(explorer);
+					GameGlobals.gameState.increaseGameStatSimple("numExplorersDismissed");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), explorer.name + " leaves.");
+					GlobalSignals.explorersChangedSignal.dispatch();
 				}
 			);
 		},
 		
-		selectFollower: function (followerID) {
-			let followersComponent = this.playerStatsNodes.head.followers;
-			let follower = followersComponent.getFollowerByID(followerID);
+		selectExplorer: function (explorerID) {
+			let explorersComponent = this.playerStatsNodes.head.explorers;
+			let explorer = explorersComponent.getExplorerByID(explorerID);
 			
-			if (follower.inParty) {
-				log.w("follower already in party");
+			if (explorer.inParty) {
+				log.w("explorer already in party");
 				return;
 			}
 			
-			if (!follower) {
-				log.w("no such follower: " + followerID);
+			if (!explorer) {
+				log.w("no such explorer: " + explorerID);
 				return;
 			}
 			
-			let followerType = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
-			let previous = followersComponent.getFollowerInPartyByType(followerType);
+			let explorerType = ExplorerConstants.getExplorerTypeForAbilityType(explorer.abilityType);
+			let previous = explorersComponent.getExplorerInPartyByType(explorerType);
 			if (previous) {
-				followersComponent.setFollowerInParty(previous, false);
+				explorersComponent.setExplorerInParty(previous, false);
 			}
 			
-			followersComponent.setFollowerInParty(follower, true);
+			explorersComponent.setExplorerInParty(explorer, true);
 			
-			GlobalSignals.followersChangedSignal.dispatch();
+			GlobalSignals.explorersChangedSignal.dispatch();
 		},
 		
-		deselectFollower: function (followerID) {
-			let followersComponent = this.playerStatsNodes.head.followers;
-			let follower = followersComponent.getFollowerByID(followerID);
+		deselectExplorer: function (explorerID) {
+			let explorersComponent = this.playerStatsNodes.head.explorers;
+			let explorer = explorersComponent.getExplorerByID(explorerID);
 			
-			if (!follower) {
-				log.w("no such follower: " + followerID);
+			if (!explorer) {
+				log.w("no such explorer: " + explorerID);
 				return;
 			}
 			
-			if (!follower.inParty) {
-				log.w("can't deselect follower that is not in party");
+			if (!explorer.inParty) {
+				log.w("can't deselect explorer that is not in party");
 				return;
 			}
 			
-			followersComponent.setFollowerInParty(follower, false);
-			GlobalSignals.followersChangedSignal.dispatch();
+			explorersComponent.setExplorerInParty(explorer, false);
+			GlobalSignals.explorersChangedSignal.dispatch();
 		},
 
 		fightGang: function (direction) {
@@ -1671,7 +1671,7 @@ define(['ash',
 		buildInn: function (sectorPos) {
 			let sector = this.getActionSectorOrCurrent(sectorPos);
 			this.buildImprovement("build_in_inn", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_inn"), sector);
-			GameGlobals.playerActionFunctions.unlockFeature("followers");
+			GameGlobals.playerActionFunctions.unlockFeature("explorers");
 		},
 
 		buildSquare: function (sectorPos) {
@@ -2452,10 +2452,10 @@ define(['ash',
 			GameGlobals.gameState.increaseGameStatSimple("numStepsTaken", steps);
 			GameGlobals.gameState.increaseGameStatKeyed("numStepsPerLevel", playerPos.level, steps);
 
-			let followers = this.playerStatsNodes.head.followers.getParty();
-			for (let i = 0; i < followers.length; i++) {
-				let follower = followers[i];
-				GameGlobals.gameState.increaseGameStatHighScore("mostStepsWithFollower", follower, steps);
+			let explorers = this.playerStatsNodes.head.explorers.getParty();
+			for (let i = 0; i < explorers.length; i++) {
+				let explorer = explorers[i];
+				GameGlobals.gameState.increaseGameStatHighScore("mostStepsWithExplorer", explorer, steps);
 			}
 		},
 

@@ -5,7 +5,7 @@ define([
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
 	'game/constants/CampConstants',
-	'game/constants/FollowerConstants',
+	'game/constants/ExplorerConstants',
 	'game/constants/ItemConstants',
 	'game/constants/LogConstants',
 	'game/constants/OccurrenceConstants',
@@ -28,7 +28,7 @@ define([
 	'game/vos/RaidVO',
 	'text/Text'
 ], function (
-	Ash, GameGlobals, GlobalSignals, GameConstants, CampConstants, FollowerConstants, ItemConstants, LogConstants, OccurrenceConstants, TradeConstants, TribeConstants, TextConstants, UIConstants, WorldConstants,
+	Ash, GameGlobals, GlobalSignals, GameConstants, CampConstants, ExplorerConstants, ItemConstants, LogConstants, OccurrenceConstants, TradeConstants, TribeConstants, TextConstants, UIConstants, WorldConstants,
 	PlayerResourcesNode, CampNode, TribeUpgradesNode,
 	CampComponent, PositionComponent, ItemsComponent,
 	RecruitComponent, TraderComponent, RaidComponent, CampEventTimersComponent,
@@ -341,16 +341,16 @@ define([
 					break;
 					
 				case OccurrenceConstants.campOccurrenceTypes.recruit:
-					let hasPendingFollower = campNode.camp.pendingRecruits.length > 0;
-					let forcedType = Math.random() < 0.2 ? FollowerConstants.abilityType.ATTACK : null;
-					let follower = hasPendingFollower ?
+					let hasPendingExplorer = campNode.camp.pendingRecruits.length > 0;
+					let forcedType = Math.random() < 0.2 ? ExplorerConstants.abilityType.ATTACK : null;
+					let explorer = hasPendingExplorer ?
 						campNode.camp.pendingRecruits.shift() :
-						FollowerConstants.getNewRandomFollower(FollowerConstants.followerSource.EVENT, GameGlobals.gameState.numCamps, campPos.level, forcedType);
-					let isFoundAsReward = hasPendingFollower && follower.source != FollowerConstants.followerSource.EVENT;
-					campNode.entity.add(new RecruitComponent(follower, isFoundAsReward));
-					logMsg = hasPendingFollower ? "Follower met when exploring is waiting at the inn." : "A visitor arrives at the Inn. ";
-					GameGlobals.playerActionFunctions.unlockFeature("followers");
-					if (hasPendingFollower) {
+						ExplorerConstants.getNewRandomExplorer(ExplorerConstants.explorerSource.EVENT, GameGlobals.gameState.numCamps, campPos.level, forcedType);
+					let isFoundAsReward = hasPendingExplorer && explorer.source != ExplorerConstants.explorerSource.EVENT;
+					campNode.entity.add(new RecruitComponent(explorer, isFoundAsReward));
+					logMsg = hasPendingExplorer ? "Explorer met when exploring is waiting at the inn." : "A visitor arrives at the Inn. ";
+					GameGlobals.playerActionFunctions.unlockFeature("explorers");
+					if (hasPendingExplorer) {
 						duration = OccurrenceConstants.EVENT_DURATION_INFINITE;
 					}
 					break;
@@ -398,9 +398,9 @@ define([
 					if (campNode.camp.pendingRecruits.length == 0) {
 						let campOrdinal = GameGlobals.campHelper.getCurrentCampOrdinal();
 						let campStep = GameGlobals.campHelper.getCurrentCampStep();
-						let abilityType = FollowerConstants.abilityType.ATTACK;
-						let follower = FollowerConstants.getNewRandomFollower(FollowerConstants.followerSource.EVENT, GameGlobals.gameState.numCamps, campNode.position.level, abilityType);
-						campNode.camp.pendingRecruits.push(follower);
+						let abilityType = ExplorerConstants.abilityType.ATTACK;
+						let explorer = ExplorerConstants.getNewRandomExplorer(ExplorerConstants.explorerSource.EVENT, GameGlobals.gameState.numCamps, campNode.position.level, abilityType);
+						campNode.camp.pendingRecruits.push(explorer);
 					}
 					break;
 			}
@@ -555,16 +555,16 @@ define([
 					let campOrdinal = GameGlobals.campHelper.getCurrentCampOrdinal();
 					let campStep = GameGlobals.campHelper.getCurrentCampStep();
 					
-					let getFollowerFightTotal = function (follower) {
-						if (!follower) return 0;
-						return FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_att)
-							+ FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_def);
+					let getExplorerFightTotal = function (explorer) {
+						if (!explorer) return 0;
+						return ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.fight_att)
+							+ ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.fight_def);
 					}
 					
-					let currentBestFighter = GameGlobals.playerHelper.getBestAvailableFollower(FollowerConstants.followerType.FIGHTER);
-					let typicalFighter = FollowerConstants.getTypicalFighter(campOrdinal, campStep);
-					let currentBestTotal = getFollowerFightTotal(currentBestFighter);
-					let typicalTotal = getFollowerFightTotal(typicalFighter);
+					let currentBestFighter = GameGlobals.playerHelper.getBestAvailableExplorer(ExplorerConstants.explorerType.FIGHTER);
+					let typicalFighter = ExplorerConstants.getTypicalFighter(campOrdinal, campStep);
+					let currentBestTotal = getExplorerFightTotal(currentBestFighter);
+					let typicalTotal = getExplorerFightTotal(typicalFighter);
 					return currentBestTotal < 0.75 * typicalTotal;
 						
 				default: return false;

@@ -629,7 +629,7 @@ function (Ash, Text, ItemData, Text, PlayerActionConstants, ItemVO) {
 		},
 		
 		getBagBonus: function (campOrdinal) {
-			// takes only account bag and no follower bonuses
+			// takes only account bag and no explorer bonuses
 			let bag = this.getBag(campOrdinal);
 			if (!bag) {
 				return ItemConstants.PLAYER_DEFAULT_STORAGE;

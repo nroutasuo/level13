@@ -94,7 +94,7 @@ define([
 			}
 			
 			var hasDeity = this.playerStatsNodes.head.entity.has(HopeComponent);
-			let hasFollowers = this.playerStatsNodes.head.followers.getParty().length > 0;
+			let hasExplorers = this.playerStatsNodes.head.explorers.getParty().length > 0;
 			var hasLastVisitedCamp = this.lastVisitedCampNodes.head !== null;
 			var hasCampOnLevel = this.nearestCampNodes.head !== null;
 			
@@ -118,11 +118,11 @@ define([
 				return;
 			}
 			
-			// rescued by followers: back to nearest camp, keep items, maybe injured
-			if (hasFollowers && this.lastVisitedCampNodes.head && Math.random() < 0.1) {
-				let party = this.playerStatsNodes.head.followers.getParty();
-				let follower = party[MathUtils.randomIntBetween(0, party.length)];
-				msgMain = "Weak and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>You wake up back in camp. <span class='hl-functionality'>" + follower.name + "</span> brought you back.";
+			// rescued by explorers: back to nearest camp, keep items, maybe injured
+			if (hasExplorers && this.lastVisitedCampNodes.head && Math.random() < 0.1) {
+				let party = this.playerStatsNodes.head.explorers.getParty();
+				let explorer = party[MathUtils.randomIntBetween(0, party.length)];
+				msgMain = "Weak and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>You wake up back in camp. <span class='hl-functionality'>" + explorer.name + "</span> brought you back.";
 				msgLog = "The world fades. You wake up back in camp.";
 				this.fadeOut(msgMain, msgLog, true, this.lastVisitedCampNodes.head.entity, 0, 0.5, 0, 0);
 				return;
@@ -208,7 +208,7 @@ define([
 			this.fadeOut(msgMain, msgLog, handleResults, this.lastVisitedCampNodes.head.entity, 1, 1, 0.5, 0.25);
 		},
 		
-		fadeOut: function (msg, msgLog, handleResults, sector, loseInventoryProbability, injuryProbability, loseAugmentationProbability, loseFollowerProbability) {
+		fadeOut: function (msg, msgLog, handleResults, sector, loseInventoryProbability, injuryProbability, loseAugmentationProbability, loseExplorerProbability) {
 			var sys = this;
 			
 			var finalStep = function () {
@@ -227,7 +227,7 @@ define([
 			};
 			
 			if (handleResults) {
-				var resultVO = GameGlobals.playerActionResultsHelper.getFadeOutResults("despair", loseInventoryProbability, injuryProbability, loseAugmentationProbability, loseFollowerProbability);
+				var resultVO = GameGlobals.playerActionResultsHelper.getFadeOutResults("despair", loseInventoryProbability, injuryProbability, loseAugmentationProbability, loseExplorerProbability);
 				this.playerResourcesNodes.head.entity.add(new PlayerActionResultComponent(resultVO));
 				var resultPopUpCallback = function (isTakeAll) {
 					GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, resultVO);

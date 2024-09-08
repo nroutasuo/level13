@@ -4,7 +4,7 @@ define(['ash',
 	'game/GameGlobals',
 	'game/constants/ColorConstants',
 	'game/constants/StoryConstants',
-	'game/constants/FollowerConstants',
+	'game/constants/ExplorerConstants',
 	'game/constants/ItemConstants',
 	'game/constants/BagConstants',
 	'game/constants/PerkConstants',
@@ -18,7 +18,7 @@ define(['ash',
 	'game/components/sector/PassagesComponent',
 	'utils/UIAnimations'
 ], function (Ash, Text, GameGlobals,
-	ColorConstants, StoryConstants, FollowerConstants, ItemConstants, BagConstants, PerkConstants, UpgradeConstants, PlayerActionConstants, TextConstants,
+	ColorConstants, StoryConstants, ExplorerConstants, ItemConstants, BagConstants, PerkConstants, UpgradeConstants, PlayerActionConstants, TextConstants,
 	PositionComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent,
 	PassagesComponent, UIAnimations) {
 
@@ -210,13 +210,13 @@ define(['ash',
 			return html;
 		},
 		
-		getFollowerDiv: function (follower, isRecruited, isInCamp, hideComparisonIndicator) {
+		getExplorerDiv: function (explorer, isRecruited, isInCamp, hideComparisonIndicator) {
 			let classes = "item";
-			let div = "<div class='" + classes + "' data-followerid='" + follower.id + "'>";
-			let calloutContent = this.getFollowerCallout(follower, isRecruited, isInCamp);
+			let div = "<div class='" + classes + "' data-explorerid='" + explorer.id + "'>";
+			let calloutContent = this.getExplorerCallout(explorer, isRecruited, isInCamp);
 			
 			div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
-			div += "<img src='" + follower.icon + "' alt='" + follower.name + "'/>";
+			div += "<img src='" + explorer.icon + "' alt='" + explorer.name + "'/>";
 			
 			if (!hideComparisonIndicator) {
 				div += "<div class='item-comparison-badge'><div class='item-comparison-indicator indicator-even'/></div>";
@@ -228,15 +228,15 @@ define(['ash',
 			return div;
 		},
 		
-		getFollowerCallout: function (follower, isRecruited, isInCamp) {
-			let followerType = FollowerConstants.getFollowerTypeForAbilityType(follower.abilityType);
-			let result = "<b>" + follower.name + "</b>";
+		getExplorerCallout: function (explorer, isRecruited, isInCamp) {
+			let explorerType = ExplorerConstants.getExplorerTypeForAbilityType(explorer.abilityType);
+			let result = "<b>" + explorer.name + "</b>";
 			if (isRecruited) {
-				result += "<br/>In party: " + (follower.inParty ? "yes" : "no");
+				result += "<br/>In party: " + (explorer.inParty ? "yes" : "no");
 			}
-			result += "<br/>Type: " + FollowerConstants.getFollowerTypeDisplayName(followerType);
-			result += "<br/>Ability: " + FollowerConstants.getAbilityTypeDisplayName(follower.abilityType)
-				+ " (" + UIConstants.getFollowerAbilityDescription(follower) + ")";
+			result += "<br/>Type: " + ExplorerConstants.getExplorerTypeDisplayName(explorerType);
+			result += "<br/>Ability: " + ExplorerConstants.getAbilityTypeDisplayName(explorer.abilityType)
+				+ " (" + UIConstants.getExplorerAbilityDescription(explorer) + ")";
 			
 			if (isRecruited && isInCamp) {
 				var makeButton = function (action, name) {
@@ -244,11 +244,11 @@ define(['ash',
 				};
 
 				var options = "<div class='item-bag-options'>";
-				options += makeButton("dismiss_follower_" + follower.id, "Dismiss");
-				if (!follower.inParty) {
-					options += makeButton("select_follower_" + follower.id, "Add to party");
+				options += makeButton("dismiss_explorer_" + explorer.id, "Dismiss");
+				if (!explorer.inParty) {
+					options += makeButton("select_explorer_" + explorer.id, "Add to party");
 				} else {
-					options += makeButton("deselect_follower_" + follower.id, "Switch out");
+					options += makeButton("deselect_explorer_" + explorer.id, "Switch out");
 				}
 				options += "</div>";
 				result += options;
@@ -257,43 +257,43 @@ define(['ash',
 			return result;
 		},
 		
-		getFollowerAbilityDescription: function (follower) {
-			switch (follower.abilityType) {
-				case FollowerConstants.abilityType.ATTACK:
-				case FollowerConstants.abilityType.DEFENCE:
-					let att = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_att);
-					let def = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.fight_def);
+		getExplorerAbilityDescription: function (explorer) {
+			switch (explorer.abilityType) {
+				case ExplorerConstants.abilityType.ATTACK:
+				case ExplorerConstants.abilityType.DEFENCE:
+					let att = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.fight_att);
+					let def = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.fight_def);
 					return "attack +" + att + ", defence +" + def;
-				case FollowerConstants.abilityType.COST_MOVEMENT:
-					let movementCostReduction = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.movement);
+				case ExplorerConstants.abilityType.COST_MOVEMENT:
+					let movementCostReduction = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.movement);
 					return "movement cost -" + UIConstants.getMultiplierBonusDisplayValue(movementCostReduction);
-				case FollowerConstants.abilityType.COST_SCAVENGE:
-					let scavengeCostReduction = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.scavenge_cost);
+				case ExplorerConstants.abilityType.COST_SCAVENGE:
+					let scavengeCostReduction = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.scavenge_cost);
 					return "scavenge cost -" + UIConstants.getMultiplierBonusDisplayValue(scavengeCostReduction);
-				case FollowerConstants.abilityType.COST_SCOUT:
-					let scoutCostReduction = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.scout_cost);
+				case ExplorerConstants.abilityType.COST_SCOUT:
+					let scoutCostReduction = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.scout_cost);
 					return "scout cost -" + UIConstants.getMultiplierBonusDisplayValue(scoutCostReduction);
-				case FollowerConstants.abilityType.DETECT_HAZARDS:
+				case ExplorerConstants.abilityType.DETECT_HAZARDS:
 					return "foresee hazards in unvisited sectors";
-				case FollowerConstants.abilityType.DETECT_SUPPLIES:
+				case ExplorerConstants.abilityType.DETECT_SUPPLIES:
 					return "foresee supplies found in current and neighbouring sectors";
-				case FollowerConstants.abilityType.DETECT_INGREDIENTS:
+				case ExplorerConstants.abilityType.DETECT_INGREDIENTS:
 					return "foresee crafting ingredients found in current and neighbouring sectors";
-				case FollowerConstants.abilityType.SCAVENGE_GENERAL:
-					let scaBonus = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.scavenge_general);
+				case ExplorerConstants.abilityType.SCAVENGE_GENERAL:
+					let scaBonus = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.scavenge_general);
 					return "+" + UIConstants.getMultiplierBonusDisplayValue(scaBonus) + " chance for extra loot when scavenging";
-				case FollowerConstants.abilityType.SCAVENGE_INGREDIENTS:
-					let ingredientBonus = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.scavenge_ingredients);
+				case ExplorerConstants.abilityType.SCAVENGE_INGREDIENTS:
+					let ingredientBonus = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.scavenge_ingredients);
 					return "+" + UIConstants.getMultiplierBonusDisplayValue(ingredientBonus) + " chance to find ingredients when scavenging";
-				case FollowerConstants.abilityType.SCAVENGE_SUPPLIES:
-					let suppliesBonus = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.scavenge_supplies);
+				case ExplorerConstants.abilityType.SCAVENGE_SUPPLIES:
+					let suppliesBonus = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.scavenge_supplies);
 					return "+" + UIConstants.getMultiplierBonusDisplayValue(suppliesBonus) + " chance to find more supplies when scavenging";
-				case FollowerConstants.abilityType.SCAVENGE_CAPACITY:
-					let capacityBonus = FollowerConstants.getFollowerItemBonus(follower, ItemConstants.itemBonusTypes.bag);
+				case ExplorerConstants.abilityType.SCAVENGE_CAPACITY:
+					let capacityBonus = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.bag);
 					return "+" + capacityBonus + " carry capacity";
 				default:
-					log.w("no display name defined for abilityType: " + follower.abilityType);
-					return follower.abilityType;
+					log.w("no display name defined for abilityType: " + explorer.abilityType);
+					return explorer.abilityType;
 			}
 		},
 
@@ -520,7 +520,7 @@ define(['ash',
 		isActionFreeCostShown: function (action) {
 			let baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			switch (baseId) {
-				case "recruit_follower": return true;
+				case "recruit_explorer": return true;
 				case "wait": return true;
 			}
 			return false;
@@ -568,20 +568,20 @@ define(['ash',
 			return aVal - bVal;
 		},
 		
-		sortFollowersByType: function (a, b) {
-			let getFollowerSortVal = function (followerVO) {
-				let abilityType = followerVO.abilityType;
-				let followerType = FollowerConstants.getFollowerTypeForAbilityType(abilityType);
+		sortExplorersByType: function (a, b) {
+			let getExplorerSortVal = function (explorerVO) {
+				let abilityType = explorerVO.abilityType;
+				let explorerType = ExplorerConstants.getExplorerTypeForAbilityType(abilityType);
 				let typeVal = 0;
-				switch (followerType) {
-					case FollowerConstants.followerType.FIGHTER: typeVal = 1; break;
-					case FollowerConstants.followerType.EXPLORER: typeVal = 2; break;
-					case FollowerConstants.followerType.SCAVENGER: typeVal = 3; break;
+				switch (explorerType) {
+					case ExplorerConstants.explorerType.FIGHTER: typeVal = 1; break;
+					case ExplorerConstants.explorerType.SCOUT: typeVal = 2; break;
+					case ExplorerConstants.explorerType.SCAVENGER: typeVal = 3; break;
 				}
-				return typeVal * 1000 - followerVO.abilityLevel;
+				return typeVal * 1000 - explorerVO.abilityLevel;
 			};
-			let aVal = getFollowerSortVal(a);
-			let bVal = getFollowerSortVal(b);
+			let aVal = getExplorerSortVal(a);
+			let bVal = getExplorerSortVal(b);
 			return aVal - bVal;
 		},
 

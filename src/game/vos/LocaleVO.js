@@ -31,7 +31,7 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 		costs: {},
 		
 		hasBlueprints: false,
-		followerID: null,
+		explorerID: null,
 		luxuryResource: null,
 	
 		constructor: function (type, isEasy, isEarly) {

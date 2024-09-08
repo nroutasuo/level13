@@ -1,7 +1,7 @@
 // Handles the first step of world generation, the abstract world template itself
 define([
 	'ash',
-	'game/constants/FollowerConstants',
+	'game/constants/ExplorerConstants',
 	'game/constants/PositionConstants',
 	'game/constants/TribeConstants',
 	'game/constants/WorldConstants',
@@ -12,7 +12,7 @@ define([
 	'worldcreator/WorldCreatorRandom',
 	'worldcreator/LevelVO',
 	'worldcreator/ZoneVO',
-], function (Ash, FollowerConstants, PositionConstants, TribeConstants, WorldConstants, PositionVO, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorLogger, WorldCreatorRandom, LevelVO, ZoneVO) {
+], function (Ash, ExplorerConstants, PositionConstants, TribeConstants, WorldConstants, PositionVO, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorLogger, WorldCreatorRandom, LevelVO, ZoneVO) {
 	
 	var LevelGenerator = {
 		
@@ -44,7 +44,7 @@ define([
 				levelVO.excursionStartPosition = this.getExcursionStartPosition(worldVO, levelVO);
 				levelVO.zones = this.generateZones(seed, levelVO);
 				levelVO.seaPadding = this.getSeaPadding(seed, levelVO);
-				levelVO.predefinedFollowers = this.getPredefinedFollowers(seed, l);
+				levelVO.predefinedExplorers = this.getPredefinedExplorers(seed, l);
 				levelVO.numInvestigateSectors = this.getNumInvestigateSectors(seed, l);
 				levelVO.luxuryResources = this.getLuxuryResources(seed, l, campOrdinal, worldVO.levels);
 				worldVO.addLevel(levelVO);
@@ -137,14 +137,14 @@ define([
 			return levelVO.passageDownPosition;
 		},
 		
-		getPredefinedFollowers: function (seed, level) {
+		getPredefinedExplorers: function (seed, level) {
 			let result = [];
 			let isCampableLevel = WorldCreatorHelper.isCampableLevel(seed, level);
 			if (!isCampableLevel) return result;
 			let campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, level);
-			let follower = FollowerConstants.predefinedFollowers[campOrdinal];
-			if (!follower) return [];
-			return [ follower ];
+			let explorer = ExplorerConstants.predefinedExplorers[campOrdinal];
+			if (!explorer) return [];
+			return [ explorer ];
 		},
 		
 		getNumInvestigateSectors: function (seed, level) {
