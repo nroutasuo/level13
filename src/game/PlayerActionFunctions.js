@@ -1782,7 +1782,9 @@ define(['ash',
 			if (!def.canBeDismantled) return;
 			
 			let buildAction = "build_in_" + improvementID;
-			let buildingCosts = GameGlobals.playerActionsHelper.getCosts(buildAction);
+			let lastActionOrdinal = GameGlobals.playerActionsHelper.getActionOrdinalLast(buildAction);
+			let buildingCostsFirst = GameGlobals.playerActionsHelper.getCosts(buildAction, 1, null, 1);
+			let buildingCostsLast = GameGlobals.playerActionsHelper.getCosts(buildAction, 1, null, lastActionOrdinal);
 			
 			let msg = "Are you sure you want to dismantle this building? Only some of its building materials can be salvaged";
 			let sys = this;
@@ -1791,10 +1793,14 @@ define(['ash',
 				improvementsComponent.remove(improvementName);
 				
 				let campStorage = GameGlobals.resourcesHelper.getCurrentStorage();
-				for (let key in buildingCosts) {
+				for (let key in buildingCostsFirst) {
 					let resource = key.split("_")[1]
-					let value = Math.max(buildingCosts[key], 0);
-					campStorage.resources.addResource(resource, value, "dismantle");
+					let valueFirst = Math.max(buildingCostsFirst[key], 0);
+					let valueLast = Math.max(buildingCostsLast[key], 0);
+					let value = Math.round((valueFirst + valueLast) / 2 / 2);
+					if (value > 0) {
+						campStorage.resources.addResource(resource, value, "dismantle");
+					}
 				}
 				
 				GameGlobals.gameState.increaseGameStatKeyed("numBuildingsDismantledPerId", improvementID);
