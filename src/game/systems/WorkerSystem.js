@@ -390,12 +390,34 @@ define([
 		
 		isPlayerThirsty: function () {
 			let playerFoodSource = GameGlobals.resourcesHelper.getCurrentStorage();
-			return playerFoodSource.resources.water < 1;
+			let playerFoodAccumulation = GameGlobals.resourcesHelper.getCurrentStorageAccumulation();
+			return this.isThirsty(playerFoodSource, playerFoodAccumulation);
+		},
+
+		isCampThirsty: function (campNode) {
+			let foodSource = GameGlobals.resourcesHelper.getCurrentCampStorage(campNode.entity);
+			let foodAccumulation = GameGlobals.resourcesHelper.getCampStorageAccumulation(campNode.entity);
+			return this.isThirsty(foodSource, foodAccumulation);
+		},
+
+		isThirsty: function (waterSource, waterAccumulation) {
+			return waterSource.resources.water < 1 && waterAccumulation.resourceChange.water <= 0;
 		},
 		
 		isPlayerHungry: function () {
 			let playerFoodSource = GameGlobals.resourcesHelper.getCurrentStorage();
-			return playerFoodSource.resources.food < 1;
+			let playerFoodAccumulation = GameGlobals.resourcesHelper.getCurrentStorageAccumulation();
+			return this.isHungry(playerFoodSource, playerFoodAccumulation);
+		},
+
+		isCampHungry: function (campNode) {
+			let foodSource = GameGlobals.resourcesHelper.getCurrentCampStorage(campNode.entity);
+			let foodAccumulation = GameGlobals.resourcesHelper.getCampStorageAccumulation(campNode.entity);
+			return this.isHungry(foodSource, foodAccumulation);
+		},
+
+		isHungry: function (foodSource, foodAccumulation) {
+			return foodSource.resources.food < 1 && foodAccumulation.resourceChange.food <= 0;
 		},
 		
 		isInCampWithProduction: function (resourceName) {
@@ -449,8 +471,6 @@ define([
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (!this.playerLocationNodes.head || !this.playerLocationNodes.head.position) return;
 			if (GameGlobals.playerHelper.isInCamp()) return;
-
-			let playerFoodSource = GameGlobals.resourcesHelper.getCurrentStorage().resources;
 			
 			let playerLevelCamp = this.nearestCampNodes.head !== null ? this.nearestCampNodes.head.entity : null;
 			let inCampSector = playerLevelCamp !== null && playerLevelCamp.get(PositionComponent).sector === this.playerLocationNodes.head.position.sector;
@@ -458,8 +478,8 @@ define([
 			let timeStamp = new Date().getTime();
 			let log = timeStamp - this.lastPerksChangedTimestamp > this.msgFrequency;
 			if (log) {
-				let isThirsty = playerFoodSource.water < 1;
-				let isHungry = playerFoodSource.food < 1;
+				let isThirsty = this.isPlayerThirsty();
+				let isHungry = this.isPlayerHungry();
 				let msg = null;
 				
 				if (!inCampSector && isThirsty && Math.random() < 0.25) {
@@ -481,9 +501,8 @@ define([
 
 			if (!hasPopulation) return;
 
-			let campStorage = GameGlobals.resourcesHelper.getCurrentCampStorage(campNode.entity);
-			let isThirsty = campStorage.getResource(resourceNames.water) < 1;
-			let isHungry = campStorage.getResource(resourceNames.food) < 1;
+			let isThirsty = this.isCampThirsty(campNode);
+			let isHungry = this.isCampHungry(campNode);
 
 			if (!isHungry && !isThirsty) return;
 
@@ -496,7 +515,6 @@ define([
 			}
 
 			this.log(LogConstants.MSG_ID_AMBIENT_CAMP, msg, campNode);
-
 		},
 		
 		log: function (id, msg, campNode) {
