@@ -802,7 +802,6 @@
         "camp": {
             "_events_header": "Events",
             "_improvements_list_count_label": "Count",
-            "_tooltip_raid_danger_description": "Increases with camp size and decreases with camp defences.",
             "_tooltip_reputation_buildings_label": "Buildings",
             "_tooltip_resource_workers_label": "Workers ({num}): {change}",
             "_tooltip_rumours_population_label": "Population",
@@ -815,6 +814,7 @@
             "events_subheader": "Events",
             "improvements_header": "Buildings",
             "page_header_default": "Camp",
+            "raid_danger_description": "Risk that a raid against the camp is successful.",
             "page_header_outpost": "Outpost",
             "population_auto_assigned_workers_field": "Auto-assigned workers: {value}",
             "population_header": "Population: {current} / {max}",

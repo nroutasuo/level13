@@ -1,6 +1,7 @@
 // Helpers for camp balancing that are independent of game state
 define([
 	'ash',
+	'utils/MathUtils',
 	'game/GameGlobals',
 	'game/constants/GameConstants',
 	'game/constants/CampConstants',
@@ -16,7 +17,7 @@ define([
 	'game/vos/ResourcesVO',
 	'worldcreator/WorldCreatorConstants',
 ], function (
-	Ash, GameGlobals, GameConstants, CampConstants, ImprovementConstants, OccurrenceConstants, PlayerActionConstants,
+	Ash, MathUtils, GameGlobals, GameConstants, CampConstants, ImprovementConstants, OccurrenceConstants, PlayerActionConstants,
 	UpgradeConstants, TribeConstants, WorldConstants, CampComponent, SectorImprovementsComponent, UpgradesComponent,
 	ResourcesVO, WorldCreatorConstants
 ) {
@@ -252,18 +253,18 @@ define([
 			}
 			
 			// penalties: defences
-			let defenceLimit = CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
-			let noDefences = danger > defenceLimit;
+			let minDangerForPenalty = CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
+			let noDefences = danger > minDangerForPenalty;
 			if (noDefences) {
-				let steppedDanger = Math.ceil((danger - defenceLimit) * 100 / 5) * 5;
-				let penaltyRatio = steppedDanger / (100 - defenceLimit);
-				let defencePenalty = Math.ceil(resultForPercentages * penaltyRatio * 4) / 4;
+				let penaltyRatio = MathUtils.map(danger, minDangerForPenalty, 1, 0.05, 0.5);
+				let penaltyRatioRounded = Math.round(penaltyRatio * 20) / 20;
+				let defencePenalty = resultForPercentages * penaltyRatioRounded;
 				if (penaltyRatio > 0.25) {
-					addValue(-defencePenalty, "Terrible defences", false, true, penaltyRatio * 100);
+					addValue(-defencePenalty, "Terrible defences", false, true, penaltyRatioRounded * 100);
 				} else if (penaltyRatio > 0.15) {
-					addValue(-defencePenalty, "Poor defences", false, true, penaltyRatio * 100);
+					addValue(-defencePenalty, "Poor defences", false, true, penaltyRatioRounded * 100);
 				} else {
-					addValue(-defencePenalty, "Inadequate defences", false, true, penaltyRatio * 100);
+					addValue(-defencePenalty, "Inadequate defences", false, true, penaltyRatioRounded * 100);
 				}
 			}
 			addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_DEFENCES, noDefences);

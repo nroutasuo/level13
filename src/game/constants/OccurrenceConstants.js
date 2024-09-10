@@ -134,7 +134,7 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 				}
 			}
 			let soldierPoints = this.getSoldierDefencePoints(soldiers, soldierLevel, improvements.getLevel(improvementNames.barracks));
-			if (soldierPoints > 0) result += "<br/>Soldiers:" + soldierPoints;
+			if (soldierPoints > 0) result += "<br/>Soldiers: " + soldierPoints;
 			
 			return result;
 		},

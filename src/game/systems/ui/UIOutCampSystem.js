@@ -656,7 +656,6 @@
 			var soldiers = sector.get(CampComponent).assignedWorkers.soldier || 0;
 			var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
 			var raidDanger = GameGlobals.campHelper.getCampRaidDanger(sector);
-			var raidAttack = OccurrenceConstants.getRaidDangerPoints(improvements, levelComponent.raidDangerFactor);
 			var raidDefence = OccurrenceConstants.getRaidDefencePoints(improvements, soldiers, soldierLevel);
 
 			let inGameFoundingDate = UIConstants.getInGameDate(campComponent.foundedTimeStamp);
@@ -668,14 +667,14 @@
 			$("#in-demographics-general-luxuries .value").text(availableLuxuryResources.length + " (" + availableLuxuryResources.map(res => TribeConstants.getLuxuryDisplayName(res)).join(", ") + ")");
 			GameGlobals.uiFunctions.toggle("#in-demographics-general-luxuries", availableLuxuryResources.length > 0);
 
-			var showRaid = raidDanger > 0 || raidDefence > CampConstants.CAMP_BASE_DEFENCE || campComponent.population > 1;
+			let showRaid = raidDanger > 0 || raidDefence > CampConstants.CAMP_BASE_DEFENCE || campComponent.population > 1;
 			if (showRaid) {
-				var raidWarning = raidDanger > CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
-				var defenceS = OccurrenceConstants.getRaidDefenceString(improvements, soldiers, soldierLevel);
+				let showRaidWarning = raidDanger > CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
+				let defenceS = OccurrenceConstants.getRaidDefenceString(improvements, soldiers, soldierLevel);
 				$("#in-demographics-raid-danger .value").text(Math.round(raidDanger * 100) + "%");
-				$("#in-demographics-raid-danger .value").toggleClass("warning", raidWarning);
+				$("#in-demographics-raid-danger .value").toggleClass("warning", showRaidWarning);
 				UIAnimations.animateOrSetNumber($("#in-demographics-raid-defence .value"), true, raidDefence, "", false, Math.round);
-				UIConstants.updateCalloutContent("#in-demographics-raid-danger", "Increases with camp size and decreases with camp defences.");
+				UIConstants.updateCalloutContent("#in-demographics-raid-danger", this.getRaidDangerCalloutContent());
 				UIConstants.updateCalloutContent("#in-demographics-raid-defence", defenceS);
 				var hasLastRaid = campComponent.lastRaid && campComponent.lastRaid.isValid();
 				if (hasLastRaid) {
@@ -835,6 +834,24 @@
 			if (!mainSource) return null;
 
 			return mainSource.source;
+		},
+
+		getRaidDangerCalloutContent: function () {
+			let levelComponent = this.playerLevelNodes.head.level;
+			let sector = this.playerLocationNodes.head.entity;
+			let improvements = sector.get(SectorImprovementsComponent);
+			let soldiers = sector.get(CampComponent).assignedWorkers.soldier || 0;
+			let soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
+
+			let dangerPoints = OccurrenceConstants.getRaidDangerPoints(improvements, levelComponent.raidDangerFactor);
+			let defencePoints = OccurrenceConstants.getRaidDefencePoints(improvements, soldiers, soldierLevel);
+
+			let result = Text.t("ui.camp.raid_danger_description");
+			result += "<hr/>";
+			result += "Danger points: " + dangerPoints + "<br/>";
+			result += "Defence points: " + defencePoints + "<br/>";
+
+			return result;
 		},
 
 		sortImprovements: function (a, b) {
