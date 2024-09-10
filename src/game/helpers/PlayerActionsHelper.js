@@ -384,6 +384,8 @@ define([
 			var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			var inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
+
+			var currentPopulation = campComponent ? Math.floor(campComponent.population) : 0;
 			
 			var shouldSkipCheck = function (reason) {
 				if (!checksToSkip) return false;
@@ -462,7 +464,6 @@ define([
 				}
 
 				if (requirements.population && !shouldSkipCheck(PlayerActionConstants.DISABLED_REASON_POPULATION)) {
-					var currentPopulation = campComponent ? Math.floor(campComponent.population) : 0;
 					let result = this.checkRequirementsRange(requirements.population, currentPopulation, "{min} population required", "Maximum {max} population", "inhabitants required", "no inhabitants allowed");
 					if (result) {
 						return result;
@@ -478,6 +479,20 @@ define([
 							return { value: 0, reason: reason };
 						}
 					}
+				}
+
+				if (requirements.freeHousing) {
+					let currentFreeHousing = GameGlobals.campHelper.getCampMaxPopulation(sector) - currentPopulation;
+					let result = this.checkRequirementsRange(requirements.freeHousing, currentFreeHousing, "{min} free housing required", "Maximum {max} free housing");
+					if (result) return result;
+				}
+
+				if (requirements.freeStorageBuildings) {
+					let freeStorage = GameGlobals.campHelper.getMinimumFreeStorage(sector);
+					let storagePerBuilding = GameGlobals.campHelper.getStorageCapacityPerBuilding(sector);
+					let currentFreeStorageBuildings = Math.floor(freeStorage / storagePerBuilding);
+					let result = this.checkRequirementsRange(requirements.freeStorageBuildings, currentFreeStorageBuildings, "{min} free storage required", "Maximum {max} free storage");
+					if (result) return result;
 				}
 
 				if (requirements.numCamps) {
@@ -1365,7 +1380,7 @@ define([
 				if (min == 1 && minreason1) {
 					return { value: 0, reason: minreason1, baseReason: minReasonBase };
 				} else {
-					return { value: value / min, reason: minreason.replace("{min}", min), baseReason: minReasonBase };
+					return { value: (value === 0 ? 0 : value / min), reason: minreason.replace("{min}", min), baseReason: minReasonBase };
 				}
 			}
 			if (value >= max) {
@@ -1575,7 +1590,7 @@ define([
 		},
 
 		// Return the current ordinal of an action (depending on action, level ordinal / camp ordinal / num of existing buildings)
-		getActionOrdinal: function (action, otherSector) {
+		getActionOrdinal: function (action, otherSector, modifier) {
 			if (!action) return 1;
 			if (!otherSector && (!this.playerLocationNodes || !this.playerLocationNodes.head)) {
 				return 1;
@@ -1583,6 +1598,7 @@ define([
 
 			var sector = otherSector || this.playerLocationNodes.head.entity;
 			var baseActionID = this.getBaseActionID(action);
+			modifier = modifier || 0;
 
 			var levelComponent = sector ? GameGlobals.levelHelper.getLevelEntityForSector(sector).get(LevelComponent) : null;
 			var isOutpost = levelComponent ? levelComponent.habitability < 1 : false;
@@ -1590,16 +1606,16 @@ define([
 			if (action.indexOf("build_in") >= 0) {
 				var improvementName = this.getImprovementNameForAction(action);
 				var improvementsComponent = sector.get(SectorImprovementsComponent);
-				let result = improvementsComponent.getCount(improvementName) + 1;
+				let result = improvementsComponent.getCount(improvementName) + 1 + modifier;
 				if (action === "build_in_house" && result === 1) result = isOutpost ? 0.85 : 0.5;
-				return result;
+				return result + modifier;
 			}
 			
 			if (action.indexOf("improve_in") >= 0 || action.indexOf("improve_out") >= 0) {
 				var improvementName = this.getImprovementNameForAction(action);
 				var improvementsComponent = sector.get(SectorImprovementsComponent);
 				let result = improvementsComponent.getLevel(improvementName);
-				return result;
+				return result + modifier;
 			}
 
 			switch (baseActionID) {
@@ -1608,10 +1624,10 @@ define([
 					let ordinal = 1;
 					if (perksComponent.hasPerk(PerkConstants.perkIds.healthBonus2))
 						ordinal = 2;
-					return ordinal;
+					return ordinal + modifier;
 				
 				case "build_out_luxury_outpost":
-					return GameGlobals.campHelper.getAvailableLuxuryResources().length + 1;
+					return GameGlobals.campHelper.getAvailableLuxuryResources().length + 1 + modifier;
 
 				case "build_out_passage_down_stairs":
 				case "build_out_passage_down_elevator":
@@ -1627,10 +1643,14 @@ define([
 							campOrdinal = WorldConstants.CAMP_ORDINAL_GROUND;
 						}
 					}
-					return campOrdinal;
-
-				default: return 1;
+					return campOrdinal + modifier;
 			}
+
+			return 1;
+		},
+
+		getActionOrdinalLast: function (action, otherSector) {
+			return this.getActionOrdinal(action, otherSector, -1);
 		},
 
 		// Returns the cost factor of a given action, usually 1, but may depend on the current status (items, explorers, perks, improvement level etc) for some actions
@@ -1928,14 +1948,14 @@ define([
 		// NOTE: this should always return all possible costs as keys (even if value currently is 0)
 		// NOTE: if you change this mess, keep GDD up to date
 		// multiplier: simple multiplier applied to ALL of the costs
-		getCosts: function (action, multiplier, otherSector) {
+		getCosts: function (action, multiplier, otherSector, actionOrdinal) {
 			if (!action) return null;
 			if (!multiplier) multiplier = 1;
 
 			var sector = otherSector ? otherSector : (this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null);
 			var levelComponent = sector ? GameGlobals.levelHelper.getLevelEntityForSector(sector).get(LevelComponent) : null;
 
-			var ordinal = this.getActionOrdinal(action, sector);
+			var ordinal = actionOrdinal || this.getActionOrdinal(action, sector);
 			var isOutpost = levelComponent ? levelComponent.habitability < 1 : false;
 			
 			return this.getCostsByOrdinal(action, multiplier, ordinal, isOutpost, sector);

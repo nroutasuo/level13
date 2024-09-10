@@ -89,6 +89,13 @@ define([
 			return showStorage;
 		},
 
+		getCampStorageCap: function (sector) {
+			if (this.hasAccessToTradeNetwork(sector)) {
+				return this.getGlobalStorage().storageCapacity;
+			}
+			return sector.get(ResourcesComponent).storageCapacity;
+		},
+
 		getCurrentStorageNameKey: function (short) {
 			let playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
 

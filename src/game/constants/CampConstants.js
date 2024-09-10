@@ -180,10 +180,15 @@ define(['ash', 'text/Text', 'game/vos/ResourcesVO'], function (Ash, Text, Resour
 		
 		// storage capacity of one camp
 		getStorageCapacity: function (storageCount, storageLevel) {
-			var storagePerImprovement = CampConstants.STORAGE_PER_IMPROVEMENT;
+			let storagePerImprovement = this.getStorageCapacityPerBuilding(storageLevel);
+			return CampConstants.BASE_STORAGE + storageCount * storagePerImprovement;
+		},
+
+		getStorageCapacityPerBuilding: function (storageLevel) {
+			let storagePerImprovement = CampConstants.STORAGE_PER_IMPROVEMENT;
 			if (storageLevel > 1) storagePerImprovement = CampConstants.STORAGE_PER_IMPROVEMENT_LEVEL_2;
 			if (storageLevel > 2) storagePerImprovement = CampConstants.STORAGE_PER_IMPROVEMENT_LEVEL_3;
-			return CampConstants.BASE_STORAGE + storageCount * storagePerImprovement;
+			return storagePerImprovement;
 		},
 		
 		getRobotStorageCapacity: function (factoryCount, factoryLevel) {

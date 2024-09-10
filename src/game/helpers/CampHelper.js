@@ -72,6 +72,17 @@ define([
 			let currentStorage = sector ? GameGlobals.resourcesHelper.getCurrentCampStorage(sector) : GameGlobals.resourcesHelper.getCurrentStorage();
 			return currentStorage.isAtCapacity();
 		},
+
+		getMinimumFreeStorage: function (sector) {
+			let currentStorage = sector ? GameGlobals.resourcesHelper.getCurrentCampStorage(sector) : GameGlobals.resourcesHelper.getCurrentStorage();
+			return currentStorage.getMinimumFreeStorage();
+		},
+
+		getStorageCapacityPerBuilding: function (sector) {
+			let improvements = sector.get(SectorImprovementsComponent);
+			let storageLevel = improvements.getLevel(improvementNames.storage);
+			return CampConstants.getStorageCapacityPerBuilding(storageLevel);
+		},
 		
 		getAvailableLuxuryResources: function (campEntity) {
 			let result = [];

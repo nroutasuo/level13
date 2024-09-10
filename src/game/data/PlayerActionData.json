@@ -2596,6 +2596,15 @@
             "busy": false,
             "inCamp": false
         },
+        "dismantle_in_house": {
+            "freeHousing": [ 4, -1 ]
+        },
+        "dismantle_in_house2": {
+            "freeHousing": [ 6, -1 ]
+        },
+        "dismantle_in_storage": {
+            "freeStorageBuildings": [ 1, -1 ]
+        },
         "dismantle_in_stable": {
             "outgoingcaravan": {
                 "active": [-1, 1]

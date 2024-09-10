@@ -70,6 +70,16 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			}
 			return false;
 		},
+
+		getMinimumFreeStorage: function () {
+			let result = this.storageCapacity;
+			for (let key in resourceNames) {
+				let name = resourceNames[key];
+				let freeStorage = this.storageCapacity - this.resources.getResource(name);
+				if (freeStorage < result) result = freeStorage;
+			}
+			return result;
+		},
 		
 		getSaveKey: function () {
 			return "Res";

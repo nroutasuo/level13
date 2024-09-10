@@ -11,6 +11,7 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 				useActionName: "Rest",
 				improvementLevelsPerTechLevel: 0,
 				sortScore: 10000,
+				canBeDismantled: false,
 			},
 			campfire: {
 				displayNames: [ "campfire_name_default", "campfire_name_l2", "campfire_name_l3" ],
@@ -18,19 +19,23 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 				improvementLevelsPerTechLevel: 5,
 				improvementLevelsPerMajorLevel: 5,
 				logMsgImproved: "Made the campfire a bit cozier",
+				canBeDismantled: false,
 			},
 			house: {
+				canBeDismantled: true,
 				displayNames: [ "house_name_l1", "house_name_default" ],
 				improvementLevelsPerTechLevel: 0,
 				sortScore: 9000,
 			},
 			house2: {
+				canBeDismantled: true,
 				description: [ "Houses " + CampConstants.POPULATION_PER_HOUSE2 + " people.", "Houses " + CampConstants.POPULATION_PER_HOUSE2_LEVEL_2 + " people." ],
 				sortScore: 9000,
 				improvementLevelsPerTechLevel: 1,
 				improvementLevelsPerMajorLevel: 1,
 			},
 			storage: {
+				canBeDismantled: true,
 				improvementLevelsPerTechLevel: 1,
 				sortScore: 8000,
 			},
@@ -111,6 +116,7 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 				improvementLevelsPerTechLevel: 5,
 			},
 			tradepost: {
+				canBeDismantled: false,
 				improvementLevelsPerTechLevel: 1,
 				improvementLevelsPerMajorLevel: 1,
 			},
