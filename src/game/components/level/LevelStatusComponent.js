@@ -5,11 +5,13 @@ define(['ash'], function (Ash) {
 		isVisited: false,
 		isLevelTypeRevealed: false,
 		firstScoutedSectorByFeature: {},
+		clearedWorkshops: {}, // resourceName -> count
 		
 		constructor: function () {
 			this.isVisited = false;
 			this.isLevelTypeRevealed = false;
 			this.firstScoutedSectorByFeature = {};
+			this.clearedWorkshops = {};
 		},
 
 		getSaveKey: function () {
@@ -28,6 +30,7 @@ define(['ash'], function (Ash) {
 			this.isVisited = componentValues.isVisited || false;
 			this.isLevelTypeRevealed = componentValues.isLevelTypeRevealed || false;
 			this.firstScoutedSectorByFeature = componentValues.firstScoutedSectorByFeature || {};
+			this.clearedWorkshops = {};
 		}
 	});
 

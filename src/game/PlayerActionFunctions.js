@@ -870,6 +870,7 @@ define(['ash',
 			let successCallback = function () {
 				GameGlobals.playerActionFunctions.unlockFeature("resource_" + workshopComponent.resource);
 				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
+				GlobalSignals.workshopClearedSignal.dispatch();
 			};
 			
 			let messages = {

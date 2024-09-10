@@ -905,23 +905,9 @@ define([
 		},
 
 		getLevelClearedWorkshopCount: function (level, resourceName) {
-			var count = 0;
-			var featuresComponent;
-			var sectorControlComponent;
-			var workshopComponent;
-			for (var node = this.sectorNodes.head; node; node = node.next) {
-				if (node.entity.get(PositionComponent).level === level) {
-					featuresComponent = node.entity.get(SectorFeaturesComponent);
-					sectorControlComponent = node.entity.get(SectorControlComponent);
-					workshopComponent = node.entity.get(WorkshopComponent);
-					if (workshopComponent && workshopComponent.resource === resourceName) {
-						if (sectorControlComponent && sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP)) {
-							count++;
-						}
-					}
-				}
-			}
-			return count;
+			let entity = this.getLevelEntityForPosition(level);
+			let levelStatus = entity.get(LevelStatusComponent);
+			return levelStatus.clearedWorkshops[resourceName] || 0;
 		},
 
 		getSectorUnclearedWorkshopCount: function (sectorEntity) {
