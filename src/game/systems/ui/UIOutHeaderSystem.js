@@ -360,7 +360,7 @@ define([
 			
 			let showEvidence = GameGlobals.gameState.unlockedFeatures.evidence;
 			let showRumours = playerStatsNode.rumours.value > 0 || playerStatsNode.rumours.isAccumulating;
-			let hasDeity = this.deityNodes.head != null;
+			let hasDeity = GameGlobals.tribeHelper.hasDeity();
 			let hasInsight = playerStatsNode.insight.value > 0;
 			
 			this.updatePlayerStat("rumours", playerStatsNode.rumours, showRumours, playerStatsNode.rumours.value, playerStatsNode.rumours.maxValue, false, this.elements.valRumours, this.elements.changeIndicatorRumours);
@@ -554,8 +554,8 @@ define([
 		},
 
 		updateDeity: function () {
-			var hasDeity = this.deityNodes.head != null;
-			GameGlobals.uiFunctions.toggle(".statsbar-hope", hasDeity);
+			let hasDeity = GameGlobals.tribeHelper.hasDeity();
+			GameGlobals.uiFunctions.toggle(".statsbar-deity", hasDeity);
 			if (hasDeity) {
 				$(".deity-name").text(this.deityNodes.head.deity.deityName || "?");
 			}
