@@ -288,7 +288,7 @@ function (Ash, Text, ItemData, Text, PlayerActionConstants, ItemVO) {
 			
 		getItemDisplayName: function (item, short) {
 			if (!item) return "";
-			return Text.t(this.getItemDisplayNameKey(item, short));
+			return Text.t(ItemConstants.getItemDisplayNameKey(item, short));
 		},
 
 		getItemDisplayNameKey: function (item, short) {
