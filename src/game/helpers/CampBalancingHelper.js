@@ -226,27 +226,33 @@ define([
 				}
 			}
 			
-			let resultWithoutPenalties = result;
-			let resultForPercentages = result;
-			
 			// factor: level population
 			if (habitability != 1) {
 				let levelPopValueFactor = (habitability - 1);
-				let levelPopValue = resultForPercentages * levelPopValueFactor;
+				let levelPopValue = result * levelPopValueFactor;
 				addValue(levelPopValue, "Level population", true, true, levelPopValueFactor * 100);
 				addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_LEVEL_POP, levelPopValue < 0);
+			}
+			
+			// penalties: sunlight
+			if (isSunlit && improvementsComponent.getCount(improvementNames.sundome) < 1) {
+				let sunlightPenaltyFactor = -0.75;
+				let sunlightPenaltyValue = result * sunlightPenaltyFactor;
+				addValue(sunlightPenaltyValue, "Sunlight", true, true, sunlightPenaltyFactor * 100);
+				addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_SUNLIT, isSunlit);
 			}
 			
 			// penalties: food and water
 			if (population >= 1) {
 				let noFood = resourcesVO && resourcesVO.getResource(resourceNames.food) <= 0;
 				let noWater = resourcesVO && resourcesVO.getResource(resourceNames.water) <= 0;
-				let penalty = Math.max(5, Math.ceil(resultWithoutPenalties));
+				let penaltyRatio = 0.25;
+				let penalty = result * penaltyRatio;
 				if (noFood) {
-					addValue(-penalty, "No food", false);
+					addValue(-penalty, "No food", false, true, -penaltyRatio * 100);
 				}
 				if (noWater) {
-					addValue(-penalty, "No water", false);
+					addValue(-penalty, "No water", false, true, -penaltyRatio * 100);
 				}
 				addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_FOOD, noFood);
 				addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_WATER, noWater);
@@ -258,16 +264,25 @@ define([
 			if (noDefences) {
 				let penaltyRatio = MathUtils.map(danger, minDangerForPenalty, 1, 0.05, 0.5);
 				let penaltyRatioRounded = Math.round(penaltyRatio * 20) / 20;
-				let defencePenalty = resultForPercentages * penaltyRatioRounded;
+				let defencePenalty = result * penaltyRatioRounded;
 				if (penaltyRatio > 0.25) {
-					addValue(-defencePenalty, "Terrible defences", false, true, penaltyRatioRounded * 100);
+					addValue(-defencePenalty, "Terrible defences", false, true, -penaltyRatioRounded * 100);
 				} else if (penaltyRatio > 0.15) {
-					addValue(-defencePenalty, "Poor defences", false, true, penaltyRatioRounded * 100);
+					addValue(-defencePenalty, "Poor defences", false, true, -penaltyRatioRounded * 100);
 				} else {
-					addValue(-defencePenalty, "Inadequate defences", false, true, penaltyRatioRounded * 100);
+					addValue(-defencePenalty, "Inadequate defences", false, true, -penaltyRatioRounded * 100);
 				}
 			}
 			addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_DEFENCES, noDefences);
+
+			// penalties: damaged buildings
+			var hasDamagedBuildings = improvementsComponent.hasDamagedBuildings();
+			if (hasDamagedBuildings) {
+				let penaltyRatio = 0.25;
+				let penaltyValue = result * penaltyRatio;
+				addValue(-penaltyValue, "Damaged buildings", false, true, -penaltyRatio * 100);
+			}
+			addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_DAMAGED_BUILDINGS, hasDamagedBuildings);
 			
 			// penalties: over-crowding
 			let housingCap = CampConstants.getHousingCap(improvementsComponent);
@@ -275,18 +290,10 @@ define([
 			let noHousing = populationFullPeople > housingCap;
 			if (noHousing) {
 				let housingPenaltyRatio = Math.ceil((populationFullPeople - housingCap) / populationFullPeople * 20) / 20;
-				let housingPenalty = Math.ceil(resultForPercentages * housingPenaltyRatio);
+				let housingPenalty = Math.ceil(result * housingPenaltyRatio);
 				addValue(-housingPenalty, "Overcrowding", false, true, housingPenaltyRatio * 100);
 			}
 			addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_HOUSING, noHousing);
-			
-			// penalties: sunlight
-			if (isSunlit && improvementsComponent.getCount(improvementNames.sundome) < 1) {
-				let sunlightPenaltyFactor = -0.75;
-				let sunlightPenaltyValue = resultForPercentages * sunlightPenaltyFactor;
-				addValue(sunlightPenaltyValue, "Sunlight", true, true, sunlightPenaltyFactor * 100);
-				addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_SUNLIT, isSunlit);
-			}
 			
 			return { value: Math.max(0, result), sources: sources, penalties: penalties, percentages: percentages, isStatic: staticValues };
 		},
