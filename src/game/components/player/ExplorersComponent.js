@@ -111,7 +111,7 @@ function (Ash, ExplorerConstants, ItemConstants) {
 		},
 
 		customLoadFromSave: function (componentValues) {
-			this.explorers = componentValues.explorers;
+			this.explorers = componentValues.explorers || componentValues.followers || [];
 		},
 	});
 
