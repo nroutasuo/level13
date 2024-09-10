@@ -107,6 +107,8 @@ define(function () {
 		replaceParameters: function (key, text, options) {
 			let result = text;
 
+			options = options || {};
+
 			let wildcard = this.TEXT_PARAM_WILDCARD;
 
 			result = result.replace(/{(\w+)}/ig, function(match, p) { 
