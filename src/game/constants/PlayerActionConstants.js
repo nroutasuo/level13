@@ -31,6 +31,52 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 		
 		loadData: function (data) {
 			Object.assign(this, data);
+
+			this.applyTemplates(data);
+		},
+
+		applyTemplates: function (data) {
+			let templateActions = [];
+
+			for (let templateAction in data.requirements) {
+				if (!this.isTemplateAction(templateAction)) continue;
+				
+				let templatePrefix = templateAction.replace("__", "");
+				let templateReqs = data.requirements[templateAction] || {};
+				let templateCosts = data.costs[templateAction] || {};
+				let actionsToApply = [];
+
+				for (let action in this.requirements) {
+					if (this.isTemplateAction(action)) continue;
+					if (action.startsWith(templatePrefix)) {
+						actionsToApply.push(action);
+					}
+				}
+
+				for (let i in actionsToApply) {
+					let action = actionsToApply[i];
+
+					let oldReqs = data.requirements[action] || {};
+					let newReqs = Object.assign({}, templateReqs, oldReqs);
+					this.requirements[action] = newReqs;
+
+					let oldCosts = data.costs[action] || {};
+					let newCosts = Object.assign({}, templateCosts, oldCosts);
+					this.costs[action] = newCosts;
+				}
+
+				templateActions.push(templateAction);
+			}
+
+			for (let i in templateActions) {
+				let templateAction = templateActions[i];
+				delete this.requirements[templateAction];
+				delete this.costs[templateAction];
+			}
+		},
+
+		isTemplateAction: function (action) {
+			return action.endsWith("__");
 		},
 
 		hasAction: function (action) {
