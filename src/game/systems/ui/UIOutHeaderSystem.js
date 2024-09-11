@@ -387,7 +387,8 @@ define([
 
 				this.elements.valReputation.text(UIConstants.roundValue(reputationComponent.value, true, true) + " / " + UIConstants.roundValue(reputationComponent.targetValue, true, true));
 				this.updateChangeIndicator(this.elements.changeIndicatorReputation, reputationComponent.accumulation, true);
-				let reputationCalloutContent = "Attracts more people to the camp.<br/>";
+				let reputationCalloutContent = Text.t("ui.tribe.current_reputatiion_description");
+				reputationCalloutContent += "<hr>";
 				for (let i in reputationComponent.targetValueSources) {
 					let source = reputationComponent.targetValueSources[i];
 					if (source.amount !== 0) {

@@ -991,6 +991,7 @@
         },
         "tribe": {
             "current_reputation_label": "Reputation",
+            "current_reputatiion_description": "Attracts more people to the camp.",
             "messages_header": "Messages",
             "overview_header": "Camp overview",
             "status_damaged_buildings_message": "Damaged building(s) on level {level}.",
