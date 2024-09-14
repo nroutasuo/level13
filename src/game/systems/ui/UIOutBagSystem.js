@@ -397,12 +397,16 @@ define([
 		},
 
 		updateItemComparisonIndicators: function () {
-			var itemsComponent = this.itemNodes.head.items;
-			for (let i = 0; i < this.inventoryItemsBag.length; i++) {
-				var item = this.inventoryItemsBag[i];
-				if (!item.equippable) continue;
-				var slot = $("#bag-items div[data-itemid='" + item.id + "']");
-				var indicator = $(slot[0]).find(".item-comparison-indicator");
+			let itemsComponent = this.itemNodes.head.items;
+			$("#bag-items .item").each(function () {
+				let $slot = $(this);
+				let itemID = $slot.attr("data-itemid");
+				let itemInstanceID = $slot.attr("data-iteminstanceid");
+
+				let item = itemsComponent.getItem(itemID, itemInstanceID);
+				if (!item) return;
+				if (!item.equippable) return;
+				var indicator = $slot.find(".item-comparison-indicator");
 				
 				let equippedItems = itemsComponent.getEquipped(item.type);
 				let comparison = itemsComponent.getEquipmentComparison(item);
@@ -412,7 +416,7 @@ define([
 				$(indicator).toggleClass("indicator-increase", !isEquipped && comparison > 0);
 				$(indicator).toggleClass("indicator-even", !isEquipped && comparison == 0);
 				$(indicator).toggleClass("indicator-decrease", !isEquipped && comparison < 0);
-			}
+			});
 		},
 
 		updateItemLists: function () {
