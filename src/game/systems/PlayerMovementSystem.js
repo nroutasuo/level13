@@ -25,6 +25,8 @@ define([
 		
 		currentMovementTarget: null,
 		pendingMovementTarget: null,
+
+		pendingMovementAction: null,
 		
 		constructor: function () { },
 
@@ -48,11 +50,13 @@ define([
 			if (this.currentMovementTarget != null) return;
 			if (this.pendingMovementTarget == null) return;
 			let position = this.pendingMovementTarget;
-			this.movePlayer(position);
+			let action = this.pendingMovementAction;
+			this.movePlayer(position, false, action);
 			this.pendingMovementTarget = null;
+			this.pendingMovementAction = null;
 		},
 		
-		movePlayer: function (position, isInstant) {
+		movePlayer: function (position, isInstant, action) {
 			let playerPositionComponent = this.playerPositionNodes.head.position;
 			let oldPosition = playerPositionComponent.getPosition();
 			let isCampTransition = oldPosition.inCamp != position.inCamp;
@@ -71,7 +75,7 @@ define([
 			this.startPlayerMovement(oldPosition, position, blockUI);
 
 			if (isInstant) {
-				this.setPlayerPosition(oldPosition, position, isCampTransition, isCampToCampTransition);
+				this.setPlayerPosition(oldPosition, position, isCampTransition, isCampToCampTransition, action);
 				this.updateStatsAfterMove(position, oldSector, newSector);
 				this.completePlayerMovement(position, blockUI, isCampTransition);
 				return;
@@ -80,7 +84,7 @@ define([
 			let sys = this;
 			
 			setTimeout(() => {
-				this.setPlayerPosition(oldPosition, position, isCampTransition, isCampToCampTransition);
+				this.setPlayerPosition(oldPosition, position, isCampTransition, isCampToCampTransition, action);
 				this.updateStatsAfterMove(position, oldSector, newSector);
 				
 				setTimeout(() => {
@@ -96,7 +100,7 @@ define([
 			GlobalSignals.playerMoveStartedSignal.dispatch(position);
 		},
 
-		setPlayerPosition: function (oldPosition, position, isCampTransition, isCampToCampTransition) {
+		setPlayerPosition: function (oldPosition, position, isCampTransition, isCampToCampTransition, action) {
 			let playerPositionComponent = this.playerPositionNodes.head.position;
 
 			log.i("set player position to: [" + position + "]", this);
@@ -115,7 +119,7 @@ define([
 				GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.in, {}, true);
 			}
 			
-			GlobalSignals.playerPositionChangedSignal.dispatch(position, oldPosition);
+			GlobalSignals.playerPositionChangedSignal.dispatch(position, oldPosition, action);
 			GameGlobals.uiFunctions.onPlayerPositionChanged();
 		},
 
@@ -173,6 +177,7 @@ define([
 		
 		onPlayerMovementNodeAdded: function (node) {
 			let position = node.movement.getPosition();
+			let action = node.movement.action || null;
 			
 			log.i("player movement node added: " + position, this);
 			
@@ -194,11 +199,12 @@ define([
 
 			let isInstant = node.movement.isInstant;
 			if (isInstant) {
-				this.movePlayer(position, true);
+				this.movePlayer(position, true, action);
 				return;
 			}
 			
 			this.pendingMovementTarget = position;
+			this.pendingMovementAction = action;
 		},
 
 	});

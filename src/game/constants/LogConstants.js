@@ -1,4 +1,4 @@
-define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/ItemConstants'], function (Ash, Text, TextConstants, ItemConstants) {
+define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/ItemConstants', 'game/constants/ItemConstants'], function (Ash, Text, TextConstants, ItemConstants, MovementConstants) {
 
 	let LogConstants = {
 
@@ -57,6 +57,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 		MSG_ID_GOT_INJURED: "MSG_ID_GOT_INJURED",
 		MSG_ID_FAINTED: "MSG_ID_FAINTED",
 		MSG_ID_DESPAIR_AVAILABLE: "MSG_ID_DESPAIR_AVAILABLE",
+		MSD_ID_MOVE_UNAVAILABLE: "MSD_ID_MOVE_UNAVAILABLE",
 		MSG_ID_STAMINA_WARNING: "MSG_ID_STAMINA_WARNING",
 		MSG_ID_VISION_RESET: "MSG_ID_VISION_RESET",
 		MSG_ID_ENTER_OUTSKIRTS: "MSG_ID_ENTER_OUTSKIRTS",
@@ -239,19 +240,39 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 			return "Lost an augmentation.";
 		},
 
-		getDespairMessage: function (isValidDespairHunger, isValidDespairThirst, isValidDespairStamina, isValidDespairMove) {
-			if (isValidDespairThirst) {
+		getDespairMessage: function (despairType) {
+			if (despairType == MovementConstants.DESPAIR_TYPE_THIRST) {
 				// NOTE: thirst perk will trigger message
 				return null;
 			}
-			if (isValidDespairHunger) {
+			if (despairType == MovementConstants.DESPAIR_TYPE_HUNGRER) {
 				// NOTE: hunger perk will trigger message
 				return null;
 			}
-			if (isValidDespairMove) {
+			if (despairType == MovementConstants.DESPAIR_TYPE_STAMINA) {
+				// NOTE: will be logged when not able to move anymore
+				return null;
+			}
+			if (despairType == MovementConstants.DESPAIR_TYPE_MOVEMENT) {
 				return "There is nowhere to go.";
 			}
-			return "Too tired to go on.";
+
+			return null;
+		},
+
+		getCantMoveMessage: function (despairType) {		
+			if (despairType == MovementConstants.DESPAIR_TYPE_STAMINA) {
+				return "Too tired to go on.";
+			}
+
+			if (despairType == MovementConstants.DESPAIR_TYPE_THIRST) {
+				return "Can't go any further without water.";
+			}
+			if (despairType == MovementConstants.DESPAIR_TYPE_HUNGRER) {
+				return "Can't go any further without food.";
+			}
+
+			return null;
 		},
 
 		getCraftItemMessage: function (itemVO) {

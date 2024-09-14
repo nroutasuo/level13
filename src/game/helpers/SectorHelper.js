@@ -18,6 +18,7 @@ define([
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorLocalesComponent',
+	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/improvements/WorkshopComponent',
 	'game/components/type/LevelComponent',
 ], function (
@@ -39,6 +40,7 @@ define([
 	SectorStatusComponent,
 	SectorFeaturesComponent,
 	SectorLocalesComponent,
+	SectorImprovementsComponent,
 	WorkshopComponent,
 	LevelComponent
 ) {
@@ -269,6 +271,39 @@ define([
 			sector = sector ? sector : this.playerLocationNodes.head.entity;
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
 			return sectorFeatures.resourcesScavengable.getNames();
+		},
+		
+		hasScavengeableResource: function (resourceName) {
+			var discoveredResources = GameGlobals.sectorHelper.getLocationKnownResources();
+			if (discoveredResources.indexOf(resourceName) > 0) {
+				return true;
+			}
+			return false;
+		},
+		
+		hasCollectibleResource: function (resourceName, includeUnbuilt) {
+			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			var statusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+			
+			var isScouted = statusComponent.scouted;
+				
+			if (isScouted && featuresComponent.resourcesCollectable.getResource(resourceName) > 0) {
+				return includeUnbuilt || improvements.getVO(this.getCollectorName(resourceName)).count > 0;
+			}
+			if (isScouted && resourceName == resourceNames.water && featuresComponent.hasSpring) {
+				return includeUnbuilt || improvements.getVO(this.getCollectorName(resourceName)).count > 0;
+			}
+		},
+		
+		getCollectorName: function (resourceName) {
+			if (resourceName == resourceNames.water) {
+				return improvementNames.collector_water;
+			}
+			if (resourceName == resourceNames.food) {
+				return improvementNames.collector_food;
+			}
+			return null;
 		},
 		
 		resourceSortFunc: function (a, b) {

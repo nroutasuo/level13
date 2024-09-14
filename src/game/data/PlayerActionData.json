@@ -1001,45 +1001,63 @@
             "resource_water": 1,
             "stamina": 30
         },
-        "move_sector_east": {
+        "move_camp_level": {
+            "resource_food": 0,
+            "resource_water": 0,
+            "stamina": 0
+        },
+        "move_sector__": {
             "resource_food": 1,
             "resource_water": 1,
             "stamina": 12
         },
-        "move_sector_ne": {
-            "resource_food": 1,
-            "resource_water": 1,
-            "stamina": 12
+        "move_sector_east": {},
+        "move_sector_grit_east": {
+            "resource_food": 0,
+            "resource_water": 0,
+            "stamina": 60
         },
-        "move_sector_north": {
-            "resource_food": 1,
-            "resource_water": 1,
-            "stamina": 12
+        "move_sector_ne": {},
+        "move_sector_grit_ne": {
+            "resource_food": 0,
+            "resource_water": 0,
+            "stamina": 60
         },
-        "move_sector_nw": {
-            "resource_food": 1,
-            "resource_water": 1,
-            "stamina": 12
+        "move_sector_north": {},
+        "move_sector_grit_north": {
+            "resource_food": 0,
+            "resource_water": 0,
+            "stamina": 60
         },
-        "move_sector_se": {
-            "resource_food": 1,
-            "resource_water": 1,
-            "stamina": 12
+        "move_sector_nw": {},
+        "move_sector_grit_nw": {
+            "resource_food": 0,
+            "resource_water": 0,
+            "stamina": 60
         },
-        "move_sector_south": {
-            "resource_food": 1,
-            "resource_water": 1,
-            "stamina": 12
+        "move_sector_se": {},
+        "move_sector_grit_se": {
+            "resource_food": 0,
+            "resource_water": 0,
+            "stamina": 60
         },
-        "move_sector_sw": {
-            "resource_food": 1,
-            "resource_water": 1,
-            "stamina": 12
+        "move_sector_south": {},
+        "move_sector_grit_south": {
+            "resource_food": 0,
+            "resource_water": 0,
+            "stamina": 60
         },
-        "move_sector_west": {
-            "resource_food": 1,
-            "resource_water": 1,
-            "stamina": 12
+        "move_sector_sw": {},
+        "move_sector_grit_sw": {
+            "resource_food": 0,
+            "resource_water": 0,
+            "stamina": 60
+        },
+        "move_sector_west": {},
+        "move_sector_grit_west": {
+            "resource_food": 0,
+            "resource_water": 0,
+            "stamina": 60
         },
         "nap": {
             "resource_food": 1,
@@ -2597,18 +2615,30 @@
             "inCamp": false
         },
         "dismantle_in_house": {
-            "freeHousing": [ 4, -1 ]
+            "freeHousing": [
+                4,
+                -1
+            ]
         },
         "dismantle_in_house2": {
-            "freeHousing": [ 6, -1 ]
-        },
-        "dismantle_in_storage": {
-            "freeStorageBuildings": [ 1, -1 ]
+            "freeHousing": [
+                6,
+                -1
+            ]
         },
         "dismantle_in_stable": {
             "outgoingcaravan": {
-                "active": [-1, 1]
+                "active": [
+                    -1,
+                    1
+                ]
             }
+        },
+        "dismantle_in_storage": {
+            "freeStorageBuildings": [
+                1,
+                -1
+            ]
         },
         "dismiss_explorer": {
             "inCamp": true
@@ -2702,15 +2732,15 @@
             }
         },
         "improve_building_market2": {
-            "deity": true,
             "blueprint": 9,
+            "deity": true,
             "upgrades": {
                 "improve_building_market": true
             }
         },
         "improve_building_market3": {
-            "deity": true,
             "blueprint": 14,
+            "deity": true,
             "upgrades": {
                 "unlock_building_radio": true
             }
@@ -2995,117 +3025,104 @@
                 -1
             ]
         },
-        "move_sector_east": {
+        "move_sector__": {
             "busy": false,
             "featureUnlocked": {
                 "move": true
             },
             "inCamp": false,
+            "vision": [
+                5,
+                -1
+            ]
+        },
+        "move_sector_grit__": {
+            "excursion": {
+                "numGritSteps": [
+                    0,
+                    2
+                ]
+            }
+        },
+        "move_sector_east": {
             "sector": {
                 "blockerE": false
-            },
-            "vision": [
-                5,
-                -1
-            ]
+            }
+        },
+        "move_sector_grit_east": {
+            "sector": {
+                "blockerE": false
+            }
         },
         "move_sector_ne": {
-            "busy": false,
-            "featureUnlocked": {
-                "move": true
-            },
-            "inCamp": false,
             "sector": {
                 "blockerNE": false
-            },
-            "vision": [
-                5,
-                -1
-            ]
+            }
+        },
+        "move_sector_grit_ne": {
+            "sector": {
+                "blockerNE": false
+            }
         },
         "move_sector_north": {
-            "busy": false,
-            "featureUnlocked": {
-                "move": true
-            },
-            "inCamp": false,
             "sector": {
                 "blockerN": false
-            },
-            "vision": [
-                5,
-                -1
-            ]
+            }
+        },
+        "move_sector_grit_north": {
+            "sector": {
+                "blockerN": false
+            }
         },
         "move_sector_nw": {
-            "busy": false,
-            "featureUnlocked": {
-                "move": true
-            },
-            "inCamp": false,
             "sector": {
                 "blockerNW": false
-            },
-            "vision": [
-                5,
-                -1
-            ]
+            }
+        },
+        "move_sector_grit_nw": {
+            "sector": {
+                "blockerNW": false
+            }
         },
         "move_sector_se": {
-            "busy": false,
-            "featureUnlocked": {
-                "move": true
-            },
-            "inCamp": false,
             "sector": {
                 "blockerSE": false
-            },
-            "vision": [
-                5,
-                -1
-            ]
+            }
+        },
+        "move_sector_grit_se": {
+            "sector": {
+                "blockerSE": false
+            }
         },
         "move_sector_south": {
-            "busy": false,
-            "featureUnlocked": {
-                "move": true
-            },
-            "inCamp": false,
             "sector": {
                 "blockerS": false
-            },
-            "vision": [
-                5,
-                -1
-            ]
+            }
+        },
+        "move_sector_grit_south": {
+            "sector": {
+                "blockerS": false
+            }
         },
         "move_sector_sw": {
-            "busy": false,
-            "featureUnlocked": {
-                "move": true
-            },
-            "inCamp": false,
             "sector": {
                 "blockerSW": false
-            },
-            "vision": [
-                5,
-                -1
-            ]
+            }
+        },
+        "move_sector_grit_sw": {
+            "sector": {
+                "blockerSW": false
+            }
         },
         "move_sector_west": {
-            "busy": false,
-            "featureUnlocked": {
-                "move": true
-            },
-            "inCamp": false,
             "sector": {
                 "blockerW": false
-            },
-            "vision": [
-                5,
-                -1
-            ]
+            }
+        },
+        "move_sector_grit_west": {
+            "sector": {
+                "blockerW": false
+            }
         },
         "nap": {
             "excursion": {
@@ -3274,8 +3291,8 @@
             }
         },
         "unlock_building_inn": {
-            "deity": true,
             "blueprint": 3,
+            "deity": true,
             "upgrades": {
                 "unlock_building_market": true
             }

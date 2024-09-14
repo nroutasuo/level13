@@ -4,12 +4,13 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 	
 	let MovementComponent = Ash.Class.extend({
 
-		constructor: function (level, sectorX, sectorY, inCamp, isInstant) {
+		constructor: function (level, sectorX, sectorY, inCamp, action, isInstant) {
 			this.level = level;
 			this.sectorX = sectorX;
 			this.sectorY = sectorY;
 			this.inCamp = inCamp ? true : false;
 			this.isInstant = isInstant;
+			this.action = action;
 		},
 
 		getPosition: function () {

@@ -8,6 +8,7 @@ define([
 	'game/constants/ImprovementConstants',
 	'game/constants/ItemConstants',
 	'game/constants/LogConstants',
+	'game/constants/MovementConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/PlayerStatConstants',
 	'game/nodes/NearestCampNode',
@@ -15,9 +16,13 @@ define([
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/player/PlayerResourcesNode',
+	'game/components/common/CampComponent',
 	'game/components/player/HopeComponent',
 	'game/components/player/ExcursionComponent',
 	'game/components/player/PlayerActionComponent',
+	'game/components/sector/SectorFeaturesComponent',
+	'game/components/sector/MovementOptionsComponent',
+	'game/components/sector/SectorStatusComponent',
 	'game/components/common/LogMessagesComponent',
 	'game/components/common/MovementComponent',
 ], function (
@@ -30,6 +35,7 @@ define([
 	ImprovementConstants,
 	ItemConstants,
 	LogConstants,
+	MovementConstants,
 	PlayerActionConstants,
 	PlayerStatConstants,
 	NearestCampNode,
@@ -37,9 +43,13 @@ define([
 	PlayerLocationNode,
 	PlayerStatsNode,
 	PlayerResourcesNode,
+	CampComponent,
 	HopeComponent,
 	ExcursionComponent,
 	PlayerActionComponent,
+	SectorFeaturesComponent,
+	MovementOptionsComponent,
+	SectorStatusComponent,
 	LogMessagesComponent,
 	MovementComponent,
 ) {
@@ -97,15 +107,106 @@ define([
 			let playerActionComponent = this.playerResourcesNodes.head.entity.get(PlayerActionComponent);
 			return playerActionComponent.getBusyAction();
 		},
+
+		getActiveDespairType: function () {
+			if (!GameGlobals.gameState.isFeatureUnlocked("camp")) return null;
+			if (!GameGlobals.gameState.isFeatureUnlocked("move")) return null;
+			if (!GameGlobals.gameState.isFeatureUnlocked("sectors")) return null;
+			if (this.playerLocationNodes.head.entity.has(CampComponent)) return null;
+
+			 // can happen in hazard sectors if you lose equipment
+			let movementOptionsComponent = this.playerLocationNodes.head.entity.get(MovementOptionsComponent);
+			let isValidDespairMove = !movementOptionsComponent.canMove();
+			if (isValidDespairMove) return MovementConstants.DESPAIR_TYPE_MOVEMENT;
+
+			// should have higher prio than food / water
+			let isValidDespairStamina = this.playerStatsNodes.head.stamina.stamina < PlayerActionConstants.costs.move_sector_east.stamina;
+			if (isValidDespairStamina) return MovementConstants.DESPAIR_TYPE_STAMINA;
+
+			let isValidDespairThirst = GameGlobals.gameState.unlockedFeatures["resource_water"] && !this.hasAccessToResource(resourceNames.water, false, false);
+			if (isValidDespairThirst) return MovementConstants.DESPAIR_TYPE_THIRST;
+
+			let isValidDespairHunger = GameGlobals.gameState.unlockedFeatures["resource_food"] && !this.hasAccessToResource(resourceNames.food, false, false);
+			if (isValidDespairHunger) return MovementConstants.DESPAIR_TYPE_HUNGRER;
+
+			return null;
+		},
 		
-		moveTo: function (level, sectorX, sectorY, inCamp, isInstant) {
+		hasAccessToResource: function (resourceName, includeScavenge, includeUnbuiltCollectible) {
+			if (this.getResouceInInventory(resourceName) >= 1) {
+				return true;
+			}
+			
+			var statusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			var itemsComponent = this.playerStatsNodes.head.items;
+			var isAffectedByHazard = GameGlobals.sectorHelper.isAffectedByHazard(featuresComponent, statusComponent, itemsComponent);
+			
+			if (!isAffectedByHazard) {
+				if (includeScavenge && this.hasScavengeableResource(resourceName)) {
+					return true;
+				}
+				if (this.hasCollectibleResource(resourceName, includeUnbuiltCollectible)) {
+					return true;
+				}
+			}
+			
+			return false;
+		},
+		
+		getResouceInInventory: function (resourceName) {
+			return GameGlobals.resourcesHelper.getCurrentStorage().resources.getResource(resourceName) || 0;
+		},
+		
+		hasScavengeableResource: function (resourceName) {
+			return GameGlobals.sectorHelper.hasScavengeableResource(resourceName);
+		},
+		
+		hasCollectibleResource: function (resourceName, includeUnbuilt) {
+			return GameGlobals.sectorHelper.hasCollectibleResource(resourceName, includeUnbuilt);
+		},
+		
+		moveTo: function (level, sectorX, sectorY, inCamp, action, isInstant) {
 			let player = this.playerStatsNodes.head.entity;
 			if (!player) return;
 			if (player.has(MovementComponent)) {
 				log.w("trying to move but already moving");
 				return;
 			}
-			player.add(new MovementComponent(level, sectorX, sectorY, inCamp, isInstant));
+			player.add(new MovementComponent(level, sectorX, sectorY, inCamp, action, isInstant));
+		},
+
+		canMove: function () {
+			let hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
+			if (hasCampHere) return true;
+
+			let moveActions = [
+				"move_camp_level",
+				"move_level_down",
+				"move_level_up",
+				"move_sector_east",
+				"move_sector_grit_east",
+				"move_sector_ne",
+				"move_sector_grit_ne",
+				"move_sector_north",
+				"move_sector_grit_north",
+				"move_sector_nw",
+				"move_sector_grit_nw",
+				"move_sector_se",
+				"move_sector_grit_se",
+				"move_sector_south",
+				"move_sector_grit_south",
+				"move_sector_sw",
+				"move_sector_grit_sw",
+				"move_sector_west",
+				"move_sector_grit_west",
+			];
+			for (let i = 0; i < moveActions.length; i++) {
+				let action = moveActions[i];
+				if (GameGlobals.playerActionsHelper.isAvailable(action)) return true;
+			}
+
+			return false;
 		},
 
 		addLogMessageWithParams: function (id, msg, replacements, values) {

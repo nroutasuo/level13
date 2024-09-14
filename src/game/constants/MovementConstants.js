@@ -1,6 +1,6 @@
 define(['ash'], function (Ash) {
 
-	var MovementConstants = {
+	let MovementConstants = {
 	
 		BLOCKER_TYPE_GAP: 1,
 		BLOCKER_TYPE_GANG: 3,
@@ -12,6 +12,11 @@ define(['ash'], function (Ash) {
 		PASSAGE_TYPE_ELEVATOR: 2,
 		PASSAGE_TYPE_STAIRWELL: 3,
 		PASSAGE_TYPE_BLOCKED: 4,
+
+		DESPAIR_TYPE_HUNGRER: "hunger",
+		DESPAIR_TYPE_THIRST: "thirst",
+		DESPAIR_TYPE_STAMINA: "stamina",
+		DESPAIR_TYPE_MOVEMENT: "movement",
 	
 	};
 	

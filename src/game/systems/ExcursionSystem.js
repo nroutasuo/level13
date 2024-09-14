@@ -27,7 +27,7 @@ define([
 			GlobalSignals.removeAll(this);
 		},
 		
-		onPlayerPositionChanged: function (newPosition, oldPosition) {
+		onPlayerPositionChanged: function (newPosition, oldPosition, action) {
 			let excursionComponent = this.playerStatsNodes.head.entity.get(ExcursionComponent);
 			if (!excursionComponent) return;
 			
@@ -35,6 +35,10 @@ define([
 
 			if (!newPosition.inCamp && !oldPosition.inCamp) {
 				excursionComponent.numSteps++;
+
+				if (action && action.startsWith("move_sector_grit")) {
+					excursionComponent.numGritSteps++;
+				}
 
 				if (excursionComponent.numSteps == ExplorationConstants.MIN_EXCURSION_LENGTH) {
 					GameGlobals.gameState.increaseGameStatSimple("numExcursionsStarted");

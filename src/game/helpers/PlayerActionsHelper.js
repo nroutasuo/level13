@@ -193,6 +193,10 @@ define([
 
 			return true;
 		},
+
+		isAvailable: function (action) {
+			return this.checkAvailability(action);
+		},
 		
 		// Should the action be shown to the user
 		// Based on requirements - some reqs always hide the action, some never do, and some depend on options (visibleReasons)
@@ -1281,8 +1285,9 @@ define([
 				}
 				
 				if (requirements.excursion) {
+					let excursionComponent = this.playerStatsNodes.head.entity.get(ExcursionComponent);
+
 					if (requirements.excursion.numNaps) {
-						var excursionComponent = this.playerStatsNodes.head.entity.get(ExcursionComponent);
 						var currentValue = excursionComponent != null ? excursionComponent.numNaps : 0;
 						var min = requirements.excursion.numNaps[0];
 						var max = requirements.excursion.numNaps[1];
@@ -1295,6 +1300,12 @@ define([
 								lowestFraction = 0;
 							}
 						}
+					}
+
+					if (requirements.excursion.numGritSteps) {
+						let currentValue = excursionComponent != null ? excursionComponent.numGritSteps : 0;
+						let result = this.checkRequirementsRange(requirements.excursion.numGritSteps, currentValue, "{min} grit steps needed", "Need supplies");
+						if (result) return result;
 					}
 				}
 				
@@ -1696,24 +1707,18 @@ define([
 				return 1 - (level - 1) * levelFactor;
 			};
 
+			if (baseActionID.startsWith("move_sector_")) {
+				if (cost == "stamina") {
+					factor *= getShoeBonus();
+					factor *= getExplorerBonus(ItemConstants.itemBonusTypes.movement);
+					factor *= getPerkBonus();
+					factor *= getBeaconBonus();
+					factor *= getHazardMalus();
+				}
+			}
+
 			var factor = 1;
 			switch (baseActionID) {
-				case "move_sector_north":
-				case "move_sector_east":
-				case "move_sector_west":
-				case "move_sector_south":
-				case "move_sector_ne":
-				case "move_sector_se":
-				case "move_sector_sw":
-				case "move_sector_nw":
-					if (cost == "stamina") {
-						factor *= getShoeBonus();
-						factor *= getExplorerBonus(ItemConstants.itemBonusTypes.movement);
-						factor *= getPerkBonus();
-						factor *= getBeaconBonus();
-						factor *= getHazardMalus();
-					}
-					break;
 				case "move_level_down":
 				case "move_level_up":
 					if (cost == "stamina") {
@@ -2048,18 +2053,36 @@ define([
 		},
 		
 		addDynamicCosts: function (action, multiplier, ordinal, isOutpost, sector, result) {
+			if (!this.playerResourcesNodes.head) return;
+
+			if (action.startsWith("move_sector_grit_")) {
+				let defaultMovementCost = this.getCosts("move_sector_west");
+				let playerFood = this.playerResourcesNodes.head.resources.getResource("food");
+				if (playerFood >= 1) {
+					result.resource_food = 1;
+				}
+				let playerWater = this.playerResourcesNodes.head.resources.getResource("water");
+				if (playerWater >= 1) {
+					result.resource_water = 1;
+				}
+
+				let excursionComponent = this.playerStatsNodes.head.entity.get(ExcursionComponent);
+				let numGritSteps = excursionComponent.numGritSteps || 0;
+				result.stamina = defaultMovementCost.stamina * 5 * (1 + numGritSteps);
+			}
+
 			var baseActionID = this.getBaseActionID(action);
 			switch (baseActionID) {
 				case "move_camp_level":
-					var path = this.getPathToNearestCamp(sector);
+					let defaultMovementCost = this.getCosts("move_sector_west");
+					let path = this.getPathToNearestCamp(sector);
 					if (path && path.length > 0) {
 						for (let i = 0; i < path.length; i++) {
 							let costs = this.getCosts("move_sector_west", 1, path[i]);
 							this.addCosts(result, costs);
 						}
 					} else {
-						let costs = this.getCosts("move_sector_west");
-						this.addCosts(result, costs);
+						this.addCosts(result, defaultMovementCost);
 					}
 					break;
 
@@ -2477,6 +2500,11 @@ define([
 				}
 			}
 
+			if (action.startsWith("move_sector_") || action.startsWith("move_level_")) {
+				// handled by the SectorStatusSystem / MovementOptionsComponent
+				return true;
+			}
+
 			var baseActionID = this.getBaseActionID(action);
 			switch (baseActionID) {
 				case "craft": return true;
@@ -2491,19 +2519,6 @@ define([
 				case "build_out_tradepost_connector": return true;
 				case "clear_debris": return true;
 				case "bridge_gap": return true;
-
-				case "move_sector_north":
-				case "move_sector_south":
-				case "move_sector_east":
-				case "move_sector_west":
-				case "move_sector_ne":
-				case "move_sector_se":
-				case "move_sector_sw":
-				case "move_sector_nw":
-				case "move_level_up":
-				case "move_level_down":
-					// handled by the SectorStatusSystem / MovementOptionsComponent
-					return true;
 
 				default: return false;
 			}

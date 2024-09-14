@@ -377,7 +377,7 @@ define(['ash',
 		},
 
 		setPlayerPosition: function (lvl, x, y, inCamp, isInstant) {
-			GameGlobals.playerHelper.moveTo(lvl, x, y, inCamp || false, isInstant);
+			GameGlobals.playerHelper.moveTo(lvl, x, y, inCamp || false, "cheat", isInstant);
 		},
 
 		goToLevel: function (level) {

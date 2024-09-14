@@ -296,17 +296,25 @@ define(['ash',
 				case "fight": break;
 				case "auto_equip": break;
 				// Movement
-				case "move_level_up": this.moveTo(PositionConstants.DIRECTION_UP); break;
-				case "move_level_down": this.moveTo(PositionConstants.DIRECTION_DOWN); break;
-				case "move_camp_level": this.moveTo(PositionConstants.DIRECTION_CAMP); break;
-				case "move_sector_north": this.moveTo(PositionConstants.DIRECTION_NORTH); break;
-				case "move_sector_east": this.moveTo(PositionConstants.DIRECTION_EAST); break;
-				case "move_sector_south": this.moveTo(PositionConstants.DIRECTION_SOUTH); break;
-				case "move_sector_west": this.moveTo(PositionConstants.DIRECTION_WEST); break;
-				case "move_sector_ne": this.moveTo(PositionConstants.DIRECTION_NE); break;
-				case "move_sector_se": this.moveTo(PositionConstants.DIRECTION_SE); break;
-				case "move_sector_sw": this.moveTo(PositionConstants.DIRECTION_SW); break;
-				case "move_sector_nw": this.moveTo(PositionConstants.DIRECTION_NW); break;
+				case "move_level_up": this.moveTo(PositionConstants.DIRECTION_UP, action); break;
+				case "move_level_down": this.moveTo(PositionConstants.DIRECTION_DOWN, action); break;
+				case "move_camp_level": this.moveTo(PositionConstants.DIRECTION_CAMP, action); break;
+				case "move_sector_north": this.moveTo(PositionConstants.DIRECTION_NORTH, action); break;
+				case "move_sector_grit_north": this.moveTo(PositionConstants.DIRECTION_NORTH, action); break;
+				case "move_sector_east": this.moveTo(PositionConstants.DIRECTION_EAST, action); break;
+				case "move_sector_grit_east": this.moveTo(PositionConstants.DIRECTION_EAST, action); break;
+				case "move_sector_south": this.moveTo(PositionConstants.DIRECTION_SOUTH, action); break;
+				case "move_sector_grit_south": this.moveTo(PositionConstants.DIRECTION_SOUTH, action); break;
+				case "move_sector_west": this.moveTo(PositionConstants.DIRECTION_WEST, action); break;
+				case "move_sector_grit_west": this.moveTo(PositionConstants.DIRECTION_WEST, action); break;
+				case "move_sector_ne": this.moveTo(PositionConstants.DIRECTION_NE, action); break;
+				case "move_sector_grit_ne": this.moveTo(PositionConstants.DIRECTION_NE, action); break;
+				case "move_sector_se": this.moveTo(PositionConstants.DIRECTION_SE, action); break;
+				case "move_sector_grit_se": this.moveTo(PositionConstants.DIRECTION_SE, action); break;
+				case "move_sector_sw": this.moveTo(PositionConstants.DIRECTION_SW, action); break;
+				case "move_sector_grit_sw": this.moveTo(PositionConstants.DIRECTION_SW, action); break;
+				case "move_sector_nw": this.moveTo(PositionConstants.DIRECTION_NW, action); break;
+				case "move_sector_grit_nw": this.moveTo(PositionConstants.DIRECTION_NW, action); break;
 				case "move_camp_global": this.moveToCamp(param); break;
 				default:
 					log.w("No function mapped for action " + action + " in PlayerActionFunctions.performAction");
@@ -350,7 +358,7 @@ define(['ash',
 			return this.getActionSector("", sectorPos) || current;
 		},
 
-		moveTo: function (direction) {
+		moveTo: function (direction, action) {
 			let playerPos = this.playerPositionNodes.head.position;
 			let newPos = playerPos.clone();
 			
@@ -414,7 +422,7 @@ define(['ash',
 					break;
 			}
 			
-			GameGlobals.playerHelper.moveTo(newPos.level, newPos.sectorX, newPos.sectorY, newPos.inCamp);
+			GameGlobals.playerHelper.moveTo(newPos.level, newPos.sectorX, newPos.sectorY, newPos.inCamp, action);
 		},
 
 		moveToCamp: function (param) {
@@ -436,7 +444,7 @@ define(['ash',
 
 			let campPosition = campSector.get(PositionComponent);
 			
-			GameGlobals.playerHelper.moveTo(campPosition.level, campPosition.sectorX, campPosition.sectorY, true);
+			GameGlobals.playerHelper.moveTo(campPosition.level, campPosition.sectorX, campPosition.sectorY, true, "move_camp_global", false);
 		},
 
 		updateCarriedItems: function (selectedItems) {
@@ -465,7 +473,7 @@ define(['ash',
 
 		enterCamp: function (isFainted) {
 			let playerPos = this.playerPositionNodes.head.position;
-			GameGlobals.playerHelper.moveTo(playerPos.level, playerPos.sectorX, playerPos.sectorY, true);
+			GameGlobals.playerHelper.moveTo(playerPos.level, playerPos.sectorX, playerPos.sectorY, true, "enter_camp", false);
 			if (!isFainted) {
 				this.recordExcursionSurvived();
 			}
@@ -478,7 +486,7 @@ define(['ash',
 
 		leaveCamp: function () {
 			let playerPos = this.playerPositionNodes.head.position;
-			GameGlobals.playerHelper.moveTo(playerPos.level, playerPos.sectorX, playerPos.sectorY, false);
+			GameGlobals.playerHelper.moveTo(playerPos.level, playerPos.sectorX, playerPos.sectorY, false, "leave_camp", false);
 		},
 
 		scavenge: function () {
