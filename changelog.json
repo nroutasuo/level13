@@ -51,8 +51,20 @@
 					"summary": "Add a few more building upgrade levels (trading post, caravan stable)"
 				},
 				{
+					"type": "GD",
+					"summary": "Add option to move a few more steps when out of food or water"
+				},
+				{
+					"type": "GD",
+					"summary": "Add rare prebuilt passages between levels"
+				},
+				{
 					"type": "Dev",
-					"summary": "Bugfixes and balancing, UI and text improvements"
+					"summary": "Other UI and text improvements"
+				},
+				{
+					"type": "Dev",
+					"summary": "Bugfixes and balancing"
 				}
 			]
 		},

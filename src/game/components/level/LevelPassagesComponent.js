@@ -3,9 +3,12 @@ define(['ash'], function (Ash) {
 	var LevelPassagesComponent = Ash.Class.extend({
 		
 		constructor: function () {
+			// sectorID -> PassageVO
 			this.passagesUp = {};
-			this.passagesUpBuilt = {};
 			this.passagesDown = {};
+
+			// sectorID -> bool
+			this.passagesUpBuilt = {};
 			this.passagesDownBuilt = {};
 		},
 		

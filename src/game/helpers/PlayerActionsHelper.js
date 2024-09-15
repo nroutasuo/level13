@@ -387,7 +387,9 @@ define([
 			var playerActionComponent = this.playerResourcesNodes.head.entity.get(PlayerActionComponent);
 			var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-			var inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
+
+			let inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
+			let level = sector.get(PositionComponent).level;
 
 			var currentPopulation = campComponent ? Math.floor(campComponent.population) : 0;
 			
@@ -1087,6 +1089,14 @@ define([
 							}
 						}
 					}
+
+					if (typeof requirements.sector.passageUpAvailable != 'undefined') {
+						let currentValue = GameGlobals.levelHelper.isPassageUpAvailable(level);
+						let requiredValue = requirements.sector.passageUpAvailable;
+						let result = this.checkRequirementsBoolean(requiredValue, currentValue, "Passage up not clear", "Passage up clear");
+						if (result) return result;
+					}
+
 					if (typeof requirements.sector.passageDown != 'undefined') {
 						if (!passagesComponent.passageDown) {
 							reason = "No passage down.";
@@ -1101,6 +1111,13 @@ define([
 								}
 							}
 						}
+					}
+
+					if (typeof requirements.sector.passageDownAvailable != 'undefined') {
+						let currentValue = GameGlobals.levelHelper.isPassageDownAvailable(level);
+						let requiredValue = requirements.sector.passageDownAvailable;
+						let result = this.checkRequirementsBoolean(requiredValue, currentValue, "Passage down not clear", "Passage down clear");
+						if (result) return result;
 					}
 
 					if (typeof requirements.sector.collected_food != "undefined") {
@@ -1176,7 +1193,6 @@ define([
 				}
 
 				if (requirements.level) {
-					var level = sector.get(PositionComponent).level;
 					var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
 
 					if (requirements.level.population) {

@@ -69,8 +69,17 @@ define([
 					sectorVO.requiredFeatures = this.getRequiredFeatures(seed, worldVO, levelVO, sectorVO);
 					sectorVO.sectorType = this.getSectorType(seed, worldVO, levelVO, sectorVO);
 					sectorVO.sunlit = this.isSunlit(seed, worldVO, levelVO, sectorVO);
+
 					sectorVO.passageUpType = this.getPassageUpType(seed, worldVO, levelVO, sectorVO);
+					if (sectorVO.passageUpType) {
+						WorldCreatorLogger.i("add passage up at level " + levelVO.level + " type " + sectorVO.passageUpType);						
+					}
+
 					sectorVO.passageDownType = this.getPassageDownType(seed, worldVO, levelVO, sectorVO);
+					if (sectorVO.passageDownType) {
+						WorldCreatorLogger.i("add passage down at level " + levelVO.level + " type " + sectorVO.passageDownType);
+					}
+
 					this.generateTexture(seed, worldVO, levelVO, sectorVO);
 					this.generateDifficulty(seed, worldVO, levelVO, sectorVO);
 					this.generateResources(seed, worldVO, levelVO, sectorVO);
@@ -2302,29 +2311,73 @@ define([
 		
 		getPassageDownType: function (seed, worldVO, levelVO, sectorVO) {
 			if (!sectorVO.isPassageDown) return null;
-			var l = levelVO.level;
-			var s1 = seed + l * 7 + sectorVO.position.sectorX * seed % 6 * 10;
-			var campOrdinal = levelVO.campOrdinal;
-			var unlockElevatorOrdinal = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade("unlock_building_passage_elevator");
-			var unlockHoleOrdinal = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade("unlock_building_passage_hole");
+			let l = levelVO.level;
+			let s1 = seed/ 2 + l * 8 + Math.abs(sectorVO.position.sectorX) * 34;
+
+			let isPlayerGoingDown = l <= 13;
+			let otherLevel = worldVO.getLevel(l - 1);
+			let startLevelVO = isPlayerGoingDown ? levelVO : otherLevel;
+			let endLevelVO = isPlayerGoingDown ? otherLevel : levelVO;
+			
+			let campOrdinal = startLevelVO.campOrdinal;
+			let unlockElevatorOrdinal = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade("unlock_building_passage_elevator");
+			let unlockHoleOrdinal = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade("unlock_building_passage_hole");
+
+			let guaranteedReadyPassageLevel = this.getGuaranteedReadyPassageLevel(seed, worldVO);
+
 			if (l === 13) {
 				return MovementConstants.PASSAGE_TYPE_STAIRWELL;
 			} else if (l === 14) {
 				return MovementConstants.PASSAGE_TYPE_HOLE;
 			} else if (levelVO.isCampable && campOrdinal == unlockElevatorOrdinal) {
 				return MovementConstants.PASSAGE_TYPE_ELEVATOR;
-			}else if (levelVO.isCampable && campOrdinal == unlockHoleOrdinal) {
+			} else if (levelVO.isCampable && campOrdinal == unlockHoleOrdinal) {
 				return MovementConstants.PASSAGE_TYPE_HOLE;
+			} else if (startLevelVO.level == guaranteedReadyPassageLevel) {
+				return MovementConstants.PASSAGE_TYPE_PREBUILT;
 			} else {
-				var availablePassageTypes = [MovementConstants.PASSAGE_TYPE_STAIRWELL];
-				if (campOrdinal >= unlockElevatorOrdinal)
-					availablePassageTypes.push(MovementConstants.PASSAGE_TYPE_ELEVATOR);
-				if (campOrdinal >= unlockHoleOrdinal)
-					availablePassageTypes.push(MovementConstants.PASSAGE_TYPE_HOLE);
-				var passageTypeIndex = WorldCreatorRandom.randomInt(s1, 0, availablePassageTypes.length);
-				var passageType = availablePassageTypes[passageTypeIndex];
+				let availablePassageTypes = this.getAvailablePassageTypes(startLevelVO, endLevelVO, unlockElevatorOrdinal, unlockHoleOrdinal);
+				let passageTypeIndex = WorldCreatorRandom.randomInt(s1, 0, availablePassageTypes.length);
+				let passageType = availablePassageTypes[passageTypeIndex];
 				return passageType;
 			}
+		},
+
+		getAvailablePassageTypes: function (startLevelVO, endLevelVO, unlockElevatorOrdinal, unlockHoleOrdinal) {
+			let campOrdinal = startLevelVO.campOrdinal;
+			let result = [ MovementConstants.PASSAGE_TYPE_STAIRWELL ];
+
+			if (campOrdinal >= unlockElevatorOrdinal) {
+				result.push(MovementConstants.PASSAGE_TYPE_ELEVATOR);
+			}
+			
+			if (campOrdinal >= unlockHoleOrdinal) {
+				result.push(MovementConstants.PASSAGE_TYPE_HOLE);
+			}
+
+			let isKeyCamp = campOrdinal == 1 || campOrdinal == WorldConstants.CAMPS_BEFORE_GROUND || campOrdinal == WorldConstants.CAMPS_TOTAL;
+			let isSurface = endLevelVO.campOrdinal == WorldConstants.CAMPS_TOTAL;
+			if (!isKeyCamp && !isSurface && !startLevelVO.isCampable) {
+				result.push(MovementConstants.PASSAGE_TYPE_PREBUILT);
+			}
+			
+			return result;
+		},
+
+		getGuaranteedReadyPassageLevel: function (seed, worldVO) {
+			let camplessLevels = WorldCreatorHelper.getCamplessLevelOrdinals(seed);
+			let validCamplessLevels = [];
+			for (let i = 0; i < camplessLevels.length; i++) {
+				let level = camplessLevels[i];
+				if (level >= worldVO.topLevel - 2) continue;
+				if (level == 15) continue;
+				if (level == 14) continue;
+				if (level == 11) continue;
+				validCamplessLevels.push(level);
+			}
+
+			let levelIndex = WorldCreatorRandom.randomInt(seed, 0, validCamplessLevels.length);
+			return validCamplessLevels[levelIndex];
 		},
 		
 		getPossibleEnemies: function (seed, worldVO, levelVO, sectorVO, enemyCreator) {

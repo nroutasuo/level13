@@ -2,10 +2,6 @@
     "game": {
         "actions": {
             "bridge_gap_description": "Build a bridge to cross the gap",
-            "enter_camp_name": "Enter camp",
-            "move_level_up_name": "Move up",
-            "move_level_down_name": "Move down",
-            "move_camp_level_name": "Back to camp",
             "build_out_beacon_description": "Makes exploration in surrounding sectors easier",
             "build_out_camp_description": "A place to rest.",
             "build_out_collector_food_description": "Accumulates food.",
@@ -22,6 +18,7 @@
             "create_blueprint_description": "Combine pieces to a blueprint.",
             "despair_description": "Give up. Stop moving. Rest.",
             "enter_camp_description": "Rest and manage camp.",
+            "enter_camp_name": "Enter camp",
             "fight_gang_description": "Clear the enemies blocking passage.",
             "flee_description": "Abandon what you were doing and run.",
             "improve_in_apothecary_description": "Increase efficiency",
@@ -49,8 +46,11 @@
             "leave_camp_description": "Venture out into the corridors.",
             "move_camp_global_description": "Shortcut to the camp on this level.",
             "move_camp_level_description": "Shortcut back to the nearest camp.",
+            "move_camp_level_name": "Back to camp",
             "move_level_down_description": "Use the passage to move one level down",
+            "move_level_down_name": "Move down",
             "move_level_up_description": "Use the passage to move one level up",
+            "move_level_up_name": "Move up",
             "nap_description": "Sleep rough and regain a bit of stamina.",
             "repair_in_description": "Repair damaged building",
             "scavenge_description": "Look for resources.",
@@ -100,6 +100,7 @@
             "fortification_name_default": "Fortifications",
             "garden_description_default": "A dash of beauty in the concrete desert.",
             "garden_name_default": "Moss Garden",
+            "generator_description_default": "Increases reputation bonus from housing ({value}% per house).",
             "generator_name_default": "Generator",
             "greenhouse_name_default": "Greenhouse",
             "home_description_default": "Foundation of a camp.",
@@ -122,13 +123,13 @@
             "luxuryOutpost_name_default": "Resource Outpost",
             "market_description_default": "Enables foreign traders to visit.",
             "market_name_default": "Market",
-            "passage_general_name_default": "Passage",
             "passageDownElevator_name_default": "Elevator Down (Repair)",
             "passageDownHole_name_default": "Elevator Down (Build)",
             "passageDownStairs_name_default": "Staircase Down",
             "passageUpElevator_name_default": "Elevator Up (Repair)",
             "passageUpHole_name_default": "Elevator Up (Build)",
             "passageUpStairs_name_default": "Staircase Up",
+            "passage_general_name_default": "Passage",
             "radiotower_description_default": "Increases reputation.",
             "radiotower_name_default": "Radio Tower",
             "researchcenter_description_default": "Generates evidence.",
@@ -777,6 +778,18 @@
         }
     },
     "story": {
+        "messages": {
+            "passage_found_elevator_built_message": "There is an elevator here.",
+            "passage_found_elevator_message": "There used to be an elevator here.",
+            "passage_found_hole_built_message": "There is an elevator here.",
+            "passage_found_hole_down_dark_message": "There is a massive sinkhole here. Only vast emptiness is visible below.",
+            "passage_found_hole_down_sunlit_message": "There is a massive sinkhole here. A street is visible far, far below.",
+            "passage_found_hole_up_dark_message": "Far above in the ceiling there is a hole, a mouth leading into blackness.",
+            "passage_found_hole_up_sunlit_message": "Far above in the ceiling there is a hole leading to the level above.",
+            "passage_found_prebuilt_message": "There is a maintenance staircase here that is in good repair.",
+            "passage_found_staircase_built_message": "There is a staircase here.",
+            "passage_found_staircase_message": "There used to be a staircase here."
+        },
         "notes": {
             "_use_robot_message": "Took apart a {name}. Gained {value} metal."
         },
@@ -814,7 +827,6 @@
             "events_subheader": "Events",
             "improvements_header": "Buildings",
             "page_header_default": "Camp",
-            "raid_danger_description": "Risk that a raid against the camp is successful.",
             "page_header_outpost": "Outpost",
             "population_auto_assigned_workers_field": "Auto-assigned workers: {value}",
             "population_header": "Population: {current} / {max}",
@@ -822,6 +834,7 @@
             "population_reputation_status_field": "Reputation required: current: {current}, next: {next}",
             "population_unassigned_workers_field": "Unassigned workers: {value}",
             "population_worker_leaving_progress_label": "Inhabitant leaving:",
+            "raid_danger_description": "Risk that a raid against the camp is successful.",
             "rename_camp_button_label": "rename",
             "storage_name_long_camp": "Camp storage",
             "storage_name_long_connected": "Tribe storage",
@@ -881,6 +894,14 @@
             "locales_header": "Locales",
             "move_header": "Wander",
             "scavenge_actions_header": "Search",
+            "sector_status_passage_prebuilt_default_description": "There is an old <style='highlight'>staircase</style> {direction} here that is in a good shape and can be used.",
+            "sector_status_passage_hole_down_default_description": "There is a <style='highlight'>hole</style> in the level ceiling here.",
+            "sector_status_passage_hole_up_default_description": "There is a <style='highlight'>hole</style> in the level floor here.",
+            "sector_status_passage_hole_built_description": "There is a newly built <style='highlight'>elevator</style> going {direction} here.",
+            "sector_status_passage_elevator_default_description": "There is an <style='highlight'>elevator</style> here, but it is broken.",
+            "sector_status_passage_elevator_built_description": "There is an <style='highlight'>elevator</style> here, and it has been repaired.",
+            "sector_status_passage_stairwell_default_description": "There is a <style='highlight'>staircase</style> here, but it needs repair.",
+            "sector_status_passage_stairwell_built_description": "There is a <style='highlight'>staircase</style> here, and it has been repaired.",
             "sector_status_investigated_percent_field_completed": "Investigated: <style='dimmed'>{value}%</style>",
             "sector_status_investigated_percent_field_default": "Investigated: {value}%",
             "sector_status_items_found_field": "Items found: {list}",
@@ -960,7 +981,13 @@
             "sector_detail_threats_label": "Threats",
             "sector_details_empty_info_ascii": "Select a sector to see details.",
             "sector_details_empty_info_canvas": "Click on a sector to see details.",
-            "sector_details_header": "Sector details"
+            "sector_details_header": "Sector details",
+            "passage_status_prebuilt": "good condition",
+            "passage_status_built": "built",
+            "passage_status_hole": "nothing",
+            "passage_status_repaired": "repaired",
+            "passage_status_broken": "broken",
+            "passage_description_template_short": "passage {direction} ({passageType}) ({status})"
         },
         "meta": {
             "_enable_hotkeys_checkbox_label": "Enable hotkeys",
@@ -989,9 +1016,12 @@
         "perks": {
             "_injury_effect_description": "Health -{value}%"
         },
+        "projects": {
+            "no_available_projects_description": "There are no building projects available currently. Explore the map to find some."
+        },
         "tribe": {
-            "current_reputation_label": "Reputation",
             "current_reputatiion_description": "Attracts more people to the camp.",
+            "current_reputation_label": "Reputation",
             "messages_header": "Messages",
             "overview_header": "Camp overview",
             "status_damaged_buildings_message": "Damaged building(s) on level {level}.",

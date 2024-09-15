@@ -259,13 +259,14 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 
 		getImprovementDisplayNameKey: function (improvementID, level) {
 			level = level || 1;
-			let def = this.getDef(improvementID);
-			let result = "game.improvements." + improvementID + "_name_default";
+			let id = this.getImprovementID(improvementID);
+			let def = this.getDef(id);
+			let result = "game.improvements." + id + "_name_default";
 			if (!def) return result;
 			let names = def.displayNames;
 			if (!names || names.length == 0) return result;
 			if (typeof names === "string") return names;
-			let majorLevel = this.getMajorLevel(improvementID, level);
+			let majorLevel = this.getMajorLevel(id, level);
 			let index = Math.min(majorLevel - 1, names.length - 1);
 			return "game.improvements." + names[index];
 		},

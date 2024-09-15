@@ -102,6 +102,9 @@ define([
 			if (passage == null) return false;
 			
 			let passageType = passage.type;
+
+			if (passageType == MovementConstants.PASSAGE_TYPE_PREBUILT) return true;
+
 			let action = this.getBuildActionForPassageType(passageType);
 			if (action == null) return false;
 			

@@ -2080,7 +2080,7 @@
                 ]
             },
             "sector": {
-                "passageDown": 2
+                "passageDown": "elevator"
             },
             "upgrades": {
                 "unlock_building_passage_elevator": true
@@ -2094,7 +2094,7 @@
                 ]
             },
             "sector": {
-                "passageDown": 1
+                "passageDown": "hole"
             },
             "upgrades": {
                 "unlock_building_passage_hole": true
@@ -2108,7 +2108,7 @@
                 ]
             },
             "sector": {
-                "passageDown": 3
+                "passageDown": "stairwell"
             },
             "upgrades": {
                 "unlock_building_passage_staircase": true
@@ -2122,7 +2122,7 @@
                 ]
             },
             "sector": {
-                "passageUp": 2
+                "passageUp": "elevator"
             },
             "upgrades": {
                 "unlock_building_passage_elevator": true
@@ -2136,7 +2136,7 @@
                 ]
             },
             "sector": {
-                "passageUp": 1
+                "passageUp": "hole"
             },
             "upgrades": {
                 "unlock_building_passage_hole": true
@@ -2150,7 +2150,7 @@
                 ]
             },
             "sector": {
-                "passageUp": 3
+                "passageUp": "stairwell"
             },
             "upgrades": {
                 "unlock_building_passage_staircase": true
@@ -2992,14 +2992,9 @@
             "featureUnlocked": {
                 "move": true
             },
-            "improvements": {
-                "passageDown": [
-                    1,
-                    -1
-                ]
-            },
             "sector": {
-                "passageDown": true
+                "passageDown": true,
+                "passageDownAvailable": true
             },
             "vision": [
                 35,
@@ -3011,14 +3006,9 @@
             "featureUnlocked": {
                 "move": true
             },
-            "improvements": {
-                "passageUp": [
-                    1,
-                    -1
-                ]
-            },
             "sector": {
-                "passageUp": true
+                "passageUp": true,
+                "passageUpAvailable": true
             },
             "vision": [
                 35,

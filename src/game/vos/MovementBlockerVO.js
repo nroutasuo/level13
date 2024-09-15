@@ -8,7 +8,6 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			this.bridgeable = type === MovementConstants.BLOCKER_TYPE_GAP;
 			this.cleanable = type === MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE || MovementConstants.BLOCKER_TYPE_WASTE_TOXIC;
 			this.defeatable = type === MovementConstants.BLOCKER_TYPE_GANG;
-			this.flyable = type === MovementConstants.BLOCKER_TYPE_GAP || MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE || MovementConstants.BLOCKER_TYPE_WASTE_TOXIC;
 			
 			this.actionBaseID = this.getActionBaseId();
 		},

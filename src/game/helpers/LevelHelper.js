@@ -764,8 +764,6 @@ define([
 						actionName = "build_out_passage_down_stairs";
 						actionLabel = "repair";
 						break;
-					case MovementConstants.PASSAGE_TYPE_BLOCKED:
-						break;
 				}
 				
 				if (GameGlobals.playerActionsHelper.isVisible(actionName, sectorEntity, [ PlayerActionConstants.DISABLED_REASON_UPGRADE ])) {
@@ -1080,7 +1078,8 @@ define([
 			let levelPassagesComponent = levelEntity.get(LevelPassagesComponent);
 			let passageSectors = Object.keys(levelPassagesComponent.passagesUpBuilt);
 			for (let iu = 0; iu < passageSectors.length; iu++) {
-				if (levelPassagesComponent.passagesUpBuilt[passageSectors[iu]]) return true;
+				let sectorID = passageSectors[iu];
+				if (levelPassagesComponent.passagesUpBuilt[sectorID]) return true;
 			}
 			return false;
 		},
@@ -1090,7 +1089,38 @@ define([
 			let levelPassagesComponent = levelEntity.get(LevelPassagesComponent);
 			let passageSectors = Object.keys(levelPassagesComponent.passagesDownBuilt);
 			for (let id = 0; id < passageSectors.length; id++) {
-				if (levelPassagesComponent.passagesDownBuilt[passageSectors[id]]) return true;
+				let sectorID = passageSectors[id];
+				if (levelPassagesComponent.passagesDownBuilt[sectorID]) return true;
+			}
+			return false;
+		},
+
+		isPassageUpAvailable: function (level) {
+			let levelEntity = this.getLevelEntityForPosition(level);
+			let levelPassagesComponent = levelEntity.get(LevelPassagesComponent);
+			let passageSectors = Object.keys(levelPassagesComponent.passagesUp);
+			for (let iu = 0; iu < passageSectors.length; iu++) {
+				let sectorID = passageSectors[iu];
+				if (levelPassagesComponent.passagesUpBuilt[sectorID]) return true;
+				let passageVO = levelPassagesComponent.passagesUp[sectorID];
+				if (!passageVO) continue;
+				let passageType = passageVO.type;
+				if (passageType == MovementConstants.PASSAGE_TYPE_PREBUILT) return true;
+			}
+			return false;
+		},
+
+		isPassageDownAvailable: function (level) {
+			let levelEntity = this.getLevelEntityForPosition(level);
+			let levelPassagesComponent = levelEntity.get(LevelPassagesComponent);
+			let passageSectors = Object.keys(levelPassagesComponent.passagesDown);
+			for (let id = 0; id < passageSectors.length; id++) {
+				let sectorID = passageSectors[id];
+				if (levelPassagesComponent.passagesDownBuilt[sectorID]) return true;
+				let passageVO = levelPassagesComponent.passagesDown[sectorID];
+				if (!passageVO) continue;
+				let passageType = passageVO.type;
+				if (passageType == MovementConstants.PASSAGE_TYPE_PREBUILT) return true;
 			}
 			return false;
 		},

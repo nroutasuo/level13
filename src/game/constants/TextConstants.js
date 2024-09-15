@@ -315,37 +315,35 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			return result;
 		},
 		
-		getPassageFoundMessage: function (passageVO, direction, sunlit, isBuilt) {
-			switch (passageVO.type) {
-				case MovementConstants.PASSAGE_TYPE_HOLE:
-					if (direction === PositionConstants.DIRECTION_UP) {
-						if (isBuilt) {
-							return "There is an elevator here.";
-						} else {
-							if (sunlit)
-								return "Far above in the ceiling there is a hole.";
-							else
-								return "Far above in the ceiling there is a hole, a mouth leading into blackness.";
-						}
-					} else {
-						if (isBuilt) {
-							return "There is a massive sinkhole here. An elevator has been built.";
-						} else {
-							if (sunlit)
-								return "There is a massive sinkhole here. A street is visible far, far below.";
-							else
-								return "There is a massive sinkhole here. Only vast emptiness is visible below.";
-						}
-					}
-				case MovementConstants.PASSAGE_TYPE_BLOCKED:
-					return "There seems to have been a staircase here once but it has been destroyed beyond repair.";
-				default:
-					if (isBuilt) {
-						return "There is a " + Text.addArticle(passageVO.name.toLowerCase()) + " here.";
-					} else {
-						return "There used to be " + Text.addArticle(passageVO.name.toLowerCase()) + " here.";
-					}
+		getPassageFoundMessage: function (passageVO, direction, sunlit, isBuilt) {			
+			let passageType = passageVO.type;
+			let textKey = "passage_found_" + passageType + "_message";
+
+			if (isBuilt) {
+				textKey = "passage_found_" + passageType + "_built_message";
 			}
+
+			if (passageVO.type == MovementConstants.PASSAGE_TYPE_HOLE) {
+				if (direction === PositionConstants.DIRECTION_UP) {
+					if (!isBuilt) {
+						if (sunlit) {
+							textKey = "passage_found_hole_up_sunlit_message";
+						} else {
+							textKey = "passage_found_hole_up_dark_message";
+						}
+					}
+				} else {
+					if (!isBuilt) {
+						if (sunlit) {
+							textKey = "passage_found_hole_down_sunlit_message";
+						} else {
+							textKey = "passage_found_hole_down_dark_message";
+						}
+					}
+				}
+			}
+
+			return Text.t("story.messages." + textKey);
 		},
 		
 		getPassageRepairedMessage: function (passageType, direction, sectorPosVO, numCampsBuilt) {
@@ -365,47 +363,43 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		},
 				
 		getPassageDescription: function (passageVO, direction, isBuilt, isShort) {
-			var makeHighlight = function (content) { return "<span class='hl-functionality'>" + content + "</span>"; };
-			var directionName = (direction === PositionConstants.DIRECTION_UP ? " up" : " down");
+			let passageType = passageVO.type;
+			let passageTypeName = passageType;
+			let directionName = (direction === PositionConstants.DIRECTION_UP ? " up" : " down");
+			let directionKeyName = (direction === PositionConstants.DIRECTION_UP ? " up" : " down");
+
+			let result = "";
+
 			if (isShort) {
-				switch (passageVO.type) {
-					case MovementConstants.PASSAGE_TYPE_HOLE:
-						if (isBuilt) {
-							return "passage " + directionName + " (elevator) (built)";
-						} else {
-							return "hole in the level " + (direction === PositionConstants.DIRECTION_UP ? "ceiling" : "floor");
-						}
-					default:
-						var status = isBuilt ? "repaired" : "broken";
-						if (passageVO.type === MovementConstants.PASSAGE_TYPE_BLOCKED) {
-							status = "unrepairable"
-						}
-						return "passage " + directionName + " (" + passageVO.name.toLowerCase() + ") (" + status + ")";
-				}
+				let statusDescription = this.getPassageStatusDescription(passageVO, isBuilt);
+				result = Text.t("ui.map.passage_description_template_short", { direction: directionName, passageType: passageTypeName, status: statusDescription });
 			} else {
-				switch (passageVO.type) {
-					case MovementConstants.PASSAGE_TYPE_HOLE:
-						if (isBuilt) {
-							return "A brand new " + makeHighlight("elevator " + directionName) + " has been built here. ";
-						} else {
-							return "There is a " + makeHighlight("hole") + " in the level " + (direction === PositionConstants.DIRECTION_UP ? "ceiling" : "floor") + " here. ";
-						}
-					default:
-						var name = passageVO.name.toLowerCase() + " " + directionName;
-						var article = Text.getArticle(name);
-						var span = article + " " + makeHighlight(name);
-						var state;
-						if (isBuilt) {
-							state = "and it has been repaired";
-						} else if (passageVO.type === MovementConstants.PASSAGE_TYPE_ELEVATOR) {
-							state = "but it is broken";
-						} else if (passageVO.type === MovementConstants.PASSAGE_TYPE_BLOCKED) {
-							state = "but it is unrepairable";
-						} else {
-							state = "but it needs to be repaired";
-						}
-						return "There is " + span + " here, " + state + ". ";
-				}
+					let textKey = "ui.exploration.sector_status_passage_" + passageType + "_default_description";
+
+					if (isBuilt) {
+						textKey = "ui.exploration.sector_status_passage_" + passageType + "_built_description";
+					}
+
+					if (!isBuilt && passageType == MovementConstants.PASSAGE_TYPE_HOLE) {
+						textKey = "ui.exploration.sector_status_passage_hole_" + directionKeyName + "_default_description";
+					}
+
+					result = Text.t(textKey, { direction: directionName });
+			}
+
+			return result;
+		},
+
+		getPassageStatusDescription: function (passageVO, isBuilt) {
+			switch (passageVO.type) {
+				case MovementConstants.PASSAGE_TYPE_PREBUILT:
+					return Text.t("ui.map.passage_status_prebuilt");
+				case MovementConstants.PASSAGE_TYPE_HOLE:
+					return isBuilt ? Text.t("ui.map.passage_status_built") : Text.t("ui.map.passage_status_hole");
+				case MovementConstants.PASSAGE_TYPE_ELEVATOR:
+					return isBuilt ? Text.t("ui.map.passage_status_repaired") : Text.t("ui.map.passage_status_broken");
+				case MovementConstants.PASSAGE_TYPE_STAIRWELL:
+					return isBuilt ? Text.t("ui.map.passage_status_repaired") : Text.t("ui.map.passage_status_broken");
 			}
 		},
 		
