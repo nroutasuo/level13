@@ -1177,6 +1177,7 @@ body.dark ul.tabs {
   list-style-type: none;
 }
 body.dark ul.tabs li {
+  background: #202220;
   display: inline-block;
   margin: 0px;
   padding: 5px 10px 5px 10px;
@@ -1189,7 +1190,6 @@ body.dark ul.tabs li {
   height: 2.25em;
   cursor: pointer;
   text-transform: lowercase;
-  background-color: #202220;
   border-color: #3a3a3a;
   box-sizing: border-box;
 }
@@ -2104,12 +2104,6 @@ body.dark span.time,
 body.dark span.msg-camp-level {
   color: #bbb;
 }
-body.dark .lvl13-fade-down {
-  background: -webkit-linear-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 75%, #202220 100%);
-  background: linear-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 75%, #202220 100%);
-  background: -o-linear-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 75%, #202220 100%);
-  background: -moz-linear-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 75%, #202220 100%);
-}
 body.dark #header-camp-container {
   display: flex;
 }
@@ -2527,9 +2521,6 @@ body.dark ul.resultlist li {
 }
 body.dark ul.resultlist-positive li:before {
   content: "+ ";
-}
-body.dark #switch {
-  background-color: #202220;
 }
 body.dark .layout-mobile #switch {
   padding: 0 !important;
@@ -3698,6 +3689,7 @@ body.sunlit ul.tabs {
   list-style-type: none;
 }
 body.sunlit ul.tabs li {
+  background: #fbfbfb;
   display: inline-block;
   margin: 0px;
   padding: 5px 10px 5px 10px;
@@ -3710,7 +3702,6 @@ body.sunlit ul.tabs li {
   height: 2.25em;
   cursor: pointer;
   text-transform: lowercase;
-  background-color: #fbfbfb;
   border-color: #aaa;
   box-sizing: border-box;
 }
@@ -4625,12 +4616,6 @@ body.sunlit span.time,
 body.sunlit span.msg-camp-level {
   color: #777;
 }
-body.sunlit .lvl13-fade-down {
-  background: -webkit-linear-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 75%, #fbfbfb 100%);
-  background: linear-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 75%, #fbfbfb 100%);
-  background: -o-linear-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 75%, #fbfbfb 100%);
-  background: -moz-linear-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 75%, #fbfbfb 100%);
-}
 body.sunlit #header-camp-container {
   display: flex;
 }
@@ -5048,9 +5033,6 @@ body.sunlit ul.resultlist li {
 }
 body.sunlit ul.resultlist-positive li:before {
   content: "+ ";
-}
-body.sunlit #switch {
-  background-color: #fbfbfb;
 }
 body.sunlit .layout-mobile #switch {
   padding: 0 !important;

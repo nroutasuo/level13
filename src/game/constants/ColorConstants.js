@@ -7,6 +7,9 @@ define(function () {
 		colors: {
 			dark: {
 				bg_page: "#202220",
+				bg_page_vision_level_1: "#121312",
+				bg_page_vision_level_2: "#161816",
+				bg_page_vision_level_3: "#1b1d1b",
 				bg_box_1: "#282a28",
 				bg_element_1: "#2f322f",
 				bg_warning: "#e6464626",
@@ -58,6 +61,9 @@ define(function () {
 			sunlit: {
 				// f4f2ea
 				bg_page: "#fdfdfd",
+				bg_page_vision_level_1: "#fdfdfd",
+				bg_page_vision_level_2: "#fdfdfd",
+				bg_page_vision_level_3: "#fdfdfd",
 				bg_box_1: "#efefef",
 				bg_element_1: "#e6e6e6",
 				bg_warning: "#fa000026",

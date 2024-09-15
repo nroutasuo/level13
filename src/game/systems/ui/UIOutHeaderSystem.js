@@ -203,7 +203,7 @@ define([
 				if (playerStatName == "scavenge") playerStatTextKey += "_short";
 
 				statDiv = "";
-				statDiv += "<div class='info-callout-target info-callout-target-small'>";
+				statDiv += "<div class='info-callout-target-small'>";
 				statDiv += "<div class='stat-indicator-" + playerStatName + " stat-indicator'>";
 				statDiv += "<span class='label text-key' data-text-key='" + playerStatTextKey + "'></span>";
 				statDiv += "<div class='stats-value-container'>";
@@ -1107,6 +1107,7 @@ define([
 		
 		updateVisionLevel: function () {
 			let visionValue = 0;
+			
 			if (this.playerStatsNodes.head) {
 				visionValue = this.playerStatsNodes.head.vision.value;
 			}
@@ -1119,7 +1120,18 @@ define([
 			
 			UIState.refreshState(this, "vision-step", visionStep, function () {
 				for (let i = 0; i <= 10; i++) {
-					 this.elements.body.toggleClass("vision-step-" + i, i == visionStep);
+					this.elements.body.toggleClass("vision-step-" + i, i == visionStep);
+				}
+			});
+
+			let visionLevel = Math.ceil(visionFactor / 25);
+
+			UIState.refreshState(this, "vision-level", visionLevel, function () {
+				let sunlit = this.elements.body.hasClass("sunlit");
+				let backgroundColor = ColorConstants.getColor(sunlit, "bg_page_vision_level_" + visionLevel);
+				$("body").css("background", backgroundColor);
+				for (let i = 1; i <= 4; i++) {
+					this.elements.body.toggleClass("vision-level-" + i, i == visionLevel);
 				}
 			});
 		},

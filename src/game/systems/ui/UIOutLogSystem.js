@@ -1,6 +1,7 @@
 define([
 	'ash', 
 	'utils/UIList', 
+	'utils/MathUtils',
 	'game/GameGlobals', 
 	'game/GlobalSignals', 
 	'game/constants/LogConstants',
@@ -9,9 +10,9 @@ define([
 	'game/nodes/PlayerPositionNode', 
 	'game/constants/UIConstants', 
 	'game/vos/PositionVO'],
-function (Ash, UIList, GameGlobals, GlobalSignals, LogConstants, TextConstants, LogNode, PlayerPositionNode, UIConstants, PositionVO) {
+function (Ash, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants, TextConstants, LogNode, PlayerPositionNode, UIConstants, PositionVO) {
 
-	var UIOutLogSystem = Ash.System.extend({
+	let UIOutLogSystem = Ash.System.extend({
 	
 		gameState: null,
 		logNodes: null,
@@ -32,6 +33,8 @@ function (Ash, UIList, GameGlobals, GlobalSignals, LogConstants, TextConstants, 
 
 			GlobalSignals.add(this, GlobalSignals.markLogMessagesSeenSignal, this.onMarkLogMessagesSeen);
 			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, function (position) { this.onPlayerPositionChanged(position); });
+			GlobalSignals.add(this, GlobalSignals.windowResizedSignal, this.onWindowResized);
+			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onWindowResized);
 
 			this.updateMessages();
 		},
@@ -76,6 +79,7 @@ function (Ash, UIList, GameGlobals, GlobalSignals, LogConstants, TextConstants, 
 			}
 			
 			this.updateMessageList(messages.reverse());
+			this.updateOpacity();
 		},
 	
 		updateMessageList: function (messages) {
@@ -132,7 +136,7 @@ function (Ash, UIList, GameGlobals, GlobalSignals, LogConstants, TextConstants, 
 
 		createLogListItem: function () {
 			let li = {};
-			li.$root = $("<li><span class='time'></span><span class='msg-camp-level'></span><span class='msg'></span><span class='msg-count'></span></li>");
+			li.$root = $("<li class='log-entry'><span class='time'></span><span class='msg-camp-level'></span><span class='msg'></span><span class='msg-count'></span></li>");
 			li.$spanTime = li.$root.find(".time");
 			li.$spanLevel = li.$root.find(".msg-camp-level");
 			li.$spanMsg = li.$root.find(".msg");
@@ -182,6 +186,28 @@ function (Ash, UIList, GameGlobals, GlobalSignals, LogConstants, TextConstants, 
 				}
 			}
 		},
+
+		updateOpacity: function () {
+			let fadeThreshold = 70;
+			let fadeArea = 100 - fadeThreshold;
+
+			$.each($(".log-entry"), function () {
+				let entry = $(this);
+
+				let entryPosition = entry.offset().top;
+				let scrollTop = $(window).scrollTop();
+				let windowHeight = $(window).height();
+			
+				let distanceToTop = entryPosition - scrollTop;
+				let distanceToTopPercent = Math.round((distanceToTop / windowHeight) * 100);
+				let distanceToFadeThreshold = MathUtils.map(distanceToTopPercent - fadeThreshold, 0, fadeArea, 0, 100);
+
+				let opacityLevelRaw = 1 - distanceToFadeThreshold / 100;
+				let opacityLevel = Math.min(1, Math.max(0, opacityLevelRaw));
+				
+				$(this).css("opacity", opacityLevel);
+			});
+		},
 		
 		pruneMessages: function () {
 			let maxMessagesByKey = 20;
@@ -222,6 +248,10 @@ function (Ash, UIList, GameGlobals, GlobalSignals, LogConstants, TextConstants, 
 
 		onPlayerPositionChanged: function (position) {
 			this.updateMessages();
+		},
+
+		onWindowResized: function () {
+			this.updateOpacity();
 		}
 
 	});
