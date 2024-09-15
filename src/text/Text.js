@@ -34,6 +34,7 @@ define(function () {
 
 			let text = this.getText(key);
 			let result = this.replaceParameters(key, text, options);
+			result = this.addStyles(result);
 
 			return wrap(result);
 		},
@@ -111,7 +112,9 @@ define(function () {
 
 			let wildcard = this.TEXT_PARAM_WILDCARD;
 
-			result = result.replace(/{(\w+)}/ig, function(match, p) { 
+			let regex = /{(\w+)}/ig;
+
+			result = result.replace(regex, function(match, p) { 
 				let isValidValue = (value) => value || value === 0;
 
 				if (isValidValue(options[p])) {
@@ -122,6 +125,18 @@ define(function () {
 					log.w("no parameter value [" + p + "] provided for key [" + key + "]");
 					return "?";
 				}
+			});
+
+			return result;
+		},
+
+		addStyles: function (text) {
+			let result = text;
+
+			let regex = /<style='(.*?)'>(.*?)<\/style>/g;
+			
+			result = result.replace(regex, function(match, styleName, content) {
+				return "<span class='text-style text-style-" + styleName + "'>" + content + "</span>";
 			});
 
 			return result;
