@@ -112,9 +112,6 @@ define([
 			this.elements.valInsight = $(".stat-indicator-insight .value");
 			this.elements.changeIndicatorInsight = $(".change-indicator-insight");
 
-			this.elements.valScavenge = $(".stat-indicator-scavenge .value");
-			this.elements.changeIndicatorScavenge = $(".change-indicator-scavenge");
-
 			this.elements.valReputation = $(".header-camp-reputation .value");
 			this.elements.changeIndicatorReputation = $(".header-camp-reputation.change-indicator");
 			this.elements.changeIndicatorPopulation = $(".header-camp-population .change-indicator");
@@ -196,7 +193,7 @@ define([
 			}
 
 			// player stats
-			let playerStatNames = [ "vision", "health", "stamina", "scavenge", "scavenge-bonus" ];
+			let playerStatNames = [ "vision", "health", "stamina", "scavenge-bonus" ];
 			for (let i = 0; i < playerStatNames.length; i++) {
 				let playerStatName = playerStatNames[i];
 				let playerStatTextKey = "game.stats." + playerStatName + "_name";
@@ -413,7 +410,6 @@ define([
 			
 			let isOnLevelPage = GameGlobals.gameState.uiStatus.currentTab == GameGlobals.uiFunctions.elementIDs.tabs.out;
 			let showScavangeAbility = GameGlobals.gameState.unlockedFeatures.scavenge && !isInCamp && isOnLevelPage;
-			this.updateScavengeAbility(showScavangeAbility, isInCamp, maxVision, shownVision);
 			this.updateScavengeBonus(showScavangeAbility);
 		},
 		
@@ -427,27 +423,6 @@ define([
 				displayValue = (source.amount > 0 ? "+" : "") + Math.round(source.percentageValue) + "%";
 			}
 			return source.source + ": " + displayValue + "<br/>";
-		},
-		
-		updateScavengeAbility: function (showScavangeAbility, isInCamp, maxVision, shownVision, maxStamina) {
-			let showScavangeAbilityLastUpdate = this.showScavangeAbilityLastUpdate;
-			GameGlobals.uiFunctions.toggle(".stat-indicator-scavenge", showScavangeAbility);
-			if (showScavangeAbility) {
-				var scavengeEfficiency = Math.round(GameGlobals.playerActionResultsHelper.getCurrentScavengeEfficiency() * 100);
-				if (scavengeEfficiency != this.scavangeAbilityLastUpdateValue) {
-					var factors = GameGlobals.playerActionResultsHelper. getCurrentScavengeEfficiencyFactors();
-					var scavengeEfficiencyExplanation = "<span class='info-callout-content-section-long'>Rate of finding loot in current sector.</span>";
-					var factorsExplanation = "";
-					for (var key in factors) {
-						factorsExplanation += key + ": " + Math.round(factors[key] * 100) + "%<br/>";
-					}
-					UIAnimations.animateOrSetNumber(this.elements.valScavenge, showScavangeAbilityLastUpdate, scavengeEfficiency, "%", false, Math.round);
-					UIConstants.updateCalloutContent($(".stat-indicator-scavenge"), scavengeEfficiencyExplanation + "<hr/>" + factorsExplanation);
-					this.updateChangeIndicator(this.elements.changeIndicatorScavenge, maxVision - shownVision, shownVision < maxVision);
-				}
-				this.scavangeAbilityLastUpdateValue = scavengeEfficiency;
-			}
-			this.showScavangeAbilityLastUpdate = showScavangeAbility;
 		},
 		
 		updateScavengeBonus: function (showScavangeAbility) {

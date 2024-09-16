@@ -205,6 +205,7 @@ define([
 			let sectorResources = sectorFeatures.resourcesScavengable;
 			let sectorIngredients = sectorFeatures.itemsScavengeable || [];
 			let efficiency = this.getCurrentScavengeEfficiency();
+			let clearedPercent = this.getCurrentSectorScavengedFactor();
 			
 			let itemOptions = { rarityKey: "scavengeRarity" };
 			
@@ -219,7 +220,7 @@ define([
 			if (!isUsingFixedRewards) {
 				rewards.gainedResources = this.getRewardResources(1, 1, efficiency, sectorResources);
 				if (GameGlobals.gameState.isFeatureUnlocked("trade")) {
-					rewards.gainedCurrency = this.getRewardCurrency(efficiency);
+					rewards.gainedCurrency = this.getRewardCurrency(efficiency, clearedPercent);
 				}
 			}
 			
@@ -244,7 +245,6 @@ define([
 			let rewards = new ResultVO("scavenge_heap");
 			
 			let sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			let efficiency = this.getCurrentScavengeEfficiency();
 
 			let heapResource = sectorFeatures.heapResource;
@@ -262,11 +262,9 @@ define([
 		getInvestigateRewards: function () {
 			let rewards = new ResultVO("investigate");
 
-			let sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			
 			let efficiency = this.getCurrentScavengeEfficiency();
-			let investigatedPercentBefore = sectorStatus.getInvestigatedPercent();
 			let weightedInvestigateAdded = Math.min(1, efficiency);
 			let investigatePercentAfter = sectorStatus.getInvestigatedPercent(weightedInvestigateAdded);
 			let isCompletion = investigatePercentAfter >= 100;
@@ -298,7 +296,6 @@ define([
 			var rewards = new ResultVO("scout");
 			var localeCategory = localeVO.getCategory();
 			var playerPos = this.playerLocationNodes.head.position;
-			var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(playerPos.level);
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
 
 			var availableResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable.clone();
@@ -1106,26 +1103,16 @@ define([
 		},
 
 		getCurrentScavengeEfficiency: function () {
-			let factors = this.getCurrentScavengeEfficiencyFactors();
-			let result = 1;
-			for (let key in factors) {
-				result = result * (factors[key] || 1);
-			}
-			return result;
-		},
-		
-		getCurrentScavengeEfficiencyFactors: function () {
-			let result = {};
-			
 			let playerVision = this.playerStatsNodes.head.vision.value || 0;
-			result["vision"] = MathUtils.map(playerVision, 0, 150, 0, 1.5);
+			let result = MathUtils.map(playerVision, 0, 150, 0, 1.5);
+			return MathUtils.clamp(result, 0, 1);
+		},
 
-			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-			let scavengedPercent = sectorStatus.getScavengedPercent();
-			let notScavengedPercent = MathUtils.map(scavengedPercent, 0, 100, 1, 0);
-			result["sector"] = MathUtils.clamp(notScavengedPercent, 0.05, 1);
-				
-			return result;
+		getCurrentSectorScavengedFactor: function () {
+            let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+            let scavengedPercent = sectorStatus.getScavengedPercent();
+            let scavengedFactor = MathUtils.map(scavengedPercent, 0, 100, 0, 1);
+            return MathUtils.clamp(scavengedFactor, 0, 1);
 		},
 
 		// probabilityFactor (action-specific): base chance to get any resources at all (0-1)
@@ -1135,7 +1122,7 @@ define([
 		getRewardResources: function (probabilityFactor, amountFactor, efficiency, availableResources) {
 			probabilityFactor = probabilityFactor || 0;
 			amountFactor = amountFactor || 1;
-			efficiency = efficiency || 1;
+			efficiency = efficiency || this.getCurrentScavengeEfficiency();
 			
 			var results = new ResourcesVO(storageTypes.RESULT);
 			
@@ -1177,9 +1164,9 @@ define([
 			return results;
 		},
 
-		getRewardCurrency: function (efficiency) {
-			var campCount = GameGlobals.gameState.numCamps;
-			var sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+		getRewardCurrency: function (efficiency, clearedPercent) {
+			let campCount = GameGlobals.gameState.numCamps;
+			let sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			
 			if (campCount < 2)
 				return 0;
@@ -1191,7 +1178,7 @@ define([
 				return 0;
 			}
 			
-			var findProbability = 0;
+			let findProbability = 0;
 			switch (sectorFeatures.sectorType) {
 				case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
 				case SectorConstants.SECTOR_TYPE_PUBLIC:
@@ -1202,8 +1189,13 @@ define([
 					break;
 			}
 
-			if (Math.random() > findProbability * efficiency)
+			if (clearedPercent > 50) {
+				findProbability = findProbability / 2;
+			}
+
+			if (Math.random() > findProbability * efficiency) {
 				return 0;
+			}
 			
 			let max = 1 + Math.round(campCount / 3);
 
@@ -1213,21 +1205,17 @@ define([
 		// itemProbability: base probability of finding one item (0-1)
 		// ingredientProbability: base probability of finding some ingredients (0-1)
 		// availableIngredients: optional list of ingredients that can drop (if null, any can drop, but if empty, none found)
-		// options: see getRwardItem
+		// options: see getRewardItem
 		getRewardItems: function (itemProbability, ingredientProbability, availableIngredients, options) {
 			let currentItems = this.playerStatsNodes.head.items;
 			let hasBag = currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
 			let hasCamp = GameGlobals.gameState.unlockedFeatures.camp;
 			let hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
-			// TODO override for scout localea (sector scavenged % should not decrease efficiency for them)
 			let efficiency = this.getCurrentScavengeEfficiency();
 			
 			var playerPos = this.playerLocationNodes.head.position;
-			var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(playerPos.level);
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
 			var step = GameGlobals.levelHelper.getCampStep(playerPos);
-			var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(playerPos.level).get(LevelComponent);
-			var isHardLevel = levelComponent.isHard;
 			
 			let hasDecentEfficiency = efficiency > 0.25;
 			
@@ -2021,13 +2009,13 @@ define([
 			return 0;
 		},
 		
-		getFinalResourceFindAmount: function (name, baseAmount, efficiency, random) {
+		getFinalResourceFindAmount: function (name, baseAmount, efficiency, randomVal) {
 			let resMin = 1;
 			let resMax = 10;
 			let minRandomAmoutFactor = 1/3*2;
 			let maxRandomAmountFactor  = 1/3*4;
 			
-			let randomAmountFactor  = MathUtils.map(Math.random(), 0, 1, minRandomAmoutFactor, maxRandomAmountFactor);
+			let randomAmountFactor  = MathUtils.map(randomVal, 0, 1, minRandomAmoutFactor, maxRandomAmountFactor);
 			let resultAmount = baseAmount * efficiency * randomAmountFactor;
 			resultAmount = Math.round(resultAmount);
 			resultAmount = MathUtils.clamp(resultAmount, resMin, resMax);
