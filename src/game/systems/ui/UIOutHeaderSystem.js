@@ -1107,15 +1107,16 @@ define([
 		
 		updateVisionLevel: function () {
 			let visionValue = 0;
+			let visionMaxValue = 0;
 			
 			if (this.playerStatsNodes.head) {
 				visionValue = this.playerStatsNodes.head.vision.value;
+				visionMaxValue = this.playerStatsNodes.head.vision.maximum;
 			}
 			
 			let visionFactor = visionValue;
 			visionFactor = Math.max(0, visionFactor);
 			visionFactor = Math.min(100, visionFactor);
-			
 			let visionStep = Math.round(visionFactor / 10);
 			
 			UIState.refreshState(this, "vision-step", visionStep, function () {
@@ -1124,7 +1125,10 @@ define([
 				}
 			});
 
-			let visionLevel = Math.ceil(visionFactor / 25);
+			let visionMaxFactor = visionValue;
+			visionMaxFactor = Math.max(0, visionMaxFactor);
+			visionMaxFactor = Math.min(100, visionMaxFactor);
+			let visionLevel = Math.ceil(visionMaxFactor / 25);
 
 			UIState.refreshState(this, "vision-level", visionLevel, function () {
 				let sunlit = this.elements.body.hasClass("sunlit");
