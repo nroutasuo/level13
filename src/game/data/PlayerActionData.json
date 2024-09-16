@@ -1420,11 +1420,11 @@
     "randomEncounterProbabilities": {
         "clear_waste_r": [
             0.15,
-            0
+            0.15
         ],
         "clear_waste_t": [
             0.15,
-            0
+            0.15
         ],
         "clear_workshop": [
             1,
@@ -1436,31 +1436,31 @@
         ],
         "investigate": [
             0.1,
-            0
+            0.1
         ],
         "nap": [
             0.2,
-            0
+            0.2
         ],
         "scavenge": [
-            0.02,
-            0.03
+            0.05,
+            0.05
         ],
         "scout_locale_i": [
-            0.2,
-            0.1
+            0,
+            0.2
         ],
         "scout_locale_u": [
             0.1,
-            0.1
+            0.2
         ],
         "use_spring": [
             0.1,
-            0.15
+            0.1
         ],
         "wait": [
             0.1,
-            0.1
+            0.3
         ]
     },
     "requirements": {
@@ -1945,6 +1945,12 @@
                 "unlock_building_tradingpost": true
             }
         },
+        "build_out__": {
+            "vision": [
+                30,
+                -1
+            ]
+        },
         "build_out_beacon": {
             "busy": false,
             "improvements": {
@@ -1979,11 +1985,7 @@
             "sunlit": false,
             "upgrades": {
                 "unlock_building_beacon": true
-            },
-            "vision": [
-                30,
-                -1
-            ]
+            }
         },
         "build_out_camp": {
             "busy": false,
@@ -2001,11 +2003,7 @@
             },
             "sector": {
                 "canHaveCamp": true
-            },
-            "vision": [
-                30,
-                -1
-            ]
+            }
         },
         "build_out_collector_food": {
             "busy": false,
@@ -2024,11 +2022,7 @@
                     ]
                 },
                 "scouted": true
-            },
-            "vision": [
-                30,
-                -1
-            ]
+            }
         },
         "build_out_collector_water": {
             "busy": false,
@@ -2047,11 +2041,7 @@
                     ]
                 },
                 "scouted": true
-            },
-            "vision": [
-                30,
-                -1
-            ]
+            }
         },
         "build_out_greenhouse": {
             "upgrades": {
@@ -2310,7 +2300,7 @@
                 "scouted": true
             },
             "vision": [
-                30,
+                50,
                 -1
             ]
         },
@@ -2997,7 +2987,7 @@
                 "passageDownAvailable": true
             },
             "vision": [
-                35,
+                50,
                 -1
             ]
         },
@@ -3011,7 +3001,7 @@
                 "passageUpAvailable": true
             },
             "vision": [
-                35,
+                50,
                 -1
             ]
         },
@@ -3022,7 +3012,7 @@
             },
             "inCamp": false,
             "vision": [
-                5,
+                10,
                 -1
             ]
         },
@@ -3143,7 +3133,11 @@
         "repair_item": {
             "upgrades": {
                 "unlock_item_shoe1": true
-            }
+            },
+            "vision": [
+                50,
+                -1
+            ]
         },
         "scavenge": {
             "busy": false,
@@ -3657,6 +3651,12 @@
             "tribe": {
                 "hopeFull": false
             }
+        },
+        "use_item__": {
+            "vision": [
+                30,
+                -1
+            ]
         },
         "use_item_cache_evidence": {
             "inCamp": true

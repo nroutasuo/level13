@@ -124,14 +124,18 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 			return 0;
 		},
 
+		// sectorFactor is 0-2, usually 1, can be >1 for dangerous sectors
+		// actionFactor is 0-1, usually 1, typically 0 for things like scout_locale_i
 		getRandomEncounterProbability: function (baseActionID, vision, sectorFactor, actionFactor) {
 			if (vision === undefined) vision = 100;
 			if (actionFactor === undefined) actionFactor = 1;
 			if (this.randomEncounterProbabilities[baseActionID]) {
-				var baseProbability = this.randomEncounterProbabilities[baseActionID][0];
-				var visionFactor = Math.pow(1 - (vision / 100), 2);
-				var visionProbability = this.randomEncounterProbabilities[baseActionID][1] * visionFactor;
-				return Math.min(1, (baseProbability + visionProbability) * actionFactor * sectorFactor);
+				let baseProbability = this.randomEncounterProbabilities[baseActionID][0];
+				// 0-1, decreasing fast for higher vision, 0.25 for vision 50
+				let visionFactor = Math.pow(1 - (vision / 100), 2); 
+				let visionProbability = this.randomEncounterProbabilities[baseActionID][1] * visionFactor;
+				let result = Math.min(1, (baseProbability + visionProbability) * actionFactor * sectorFactor);
+				return this.roundProbability(result);
 			}
 			return 0;
 		},
@@ -144,8 +148,7 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 				let luckFactor = this.getNegativeProbabiltityLuckFactor(luck);
 				let visionProbability = this.injuryProbabilities[action][1] * visionFactor;
 				let result = (baseProbability + visionProbability) * luckFactor;
-				if (result < 0.001) result = 0;
-				return result;
+				return this.roundProbability(result);
 			}
 			return 0;
 		},
@@ -158,10 +161,16 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 				let luckFactor = this.getNegativeProbabiltityLuckFactor(luck);
 				let visionProbability = this.loseInventoryProbabilities[action][1] * visionFactor;
 				let result = (baseProbability + visionProbability) * luckFactor;
-				if (result < 0.001) result = 0;
-				return result;
+				return this.roundProbability(result);
 			}
 			return 0;
+		},
+
+		roundProbability: function (value) {
+			if (value > 1) return 1;
+			if (value < 0) return 0;
+			if (value < 0.001) value = 0;
+			return Math.round(value * 2000) / 2000;
 		},
 		
 		getNegativeProbabiltityLuckFactor: function (luck) {

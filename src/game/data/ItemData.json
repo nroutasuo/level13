@@ -1789,7 +1789,7 @@
     },
     "light2": {
         "bonuses": {
-            "light": 50
+            "light": 40
         },
         "campOrdinalRequired": 5,
         "icon": "img/items/light-electric.png",
@@ -1805,7 +1805,7 @@
     },
     "light3": {
         "bonuses": {
-            "light": 100
+            "light": 50
         },
         "campOrdinalRequired": 15,
         "icon": "img/items/light-ghost.png",
