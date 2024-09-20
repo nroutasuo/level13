@@ -1081,8 +1081,8 @@ define([
 		},
 		
 		updateVisionLevel: function () {
-			let visionValue = 0;
-			let visionMaxValue = 0;
+			let visionValue = 100;
+			let visionMaxValue = 100;
 			
 			if (this.playerStatsNodes.head) {
 				visionValue = this.playerStatsNodes.head.vision.value;

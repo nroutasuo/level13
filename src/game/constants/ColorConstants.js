@@ -10,6 +10,7 @@ define(function () {
 				bg_page_vision_level_1: "#121312",
 				bg_page_vision_level_2: "#161816",
 				bg_page_vision_level_3: "#1b1d1b",
+				bg_page_vision_level_4: "#202220",
 				bg_box_1: "#282a28",
 				bg_element_1: "#2f322f",
 				bg_warning: "#e6464626",
