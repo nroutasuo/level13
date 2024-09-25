@@ -48,6 +48,9 @@ define([
 				sys.clearSelection();
 				sys.updateLists();
 			});
+			$("#incoming-caravan-popup-cancel").click(function (e) {
+				GameGlobals.uiFunctions.popupManager.closePopup("incoming-caravan-popup");
+			});
 			this.multiplierSelect = HorizontalSelect.init("incoming-caravan-popup-multiplier", "Selection");
 		},
 
