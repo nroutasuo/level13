@@ -63,8 +63,15 @@ define(function () {
 
 		    return {x, y}
 		},
+
+		randomElement: function (arr) {
+			let index = Math.floor(Math.random() * arr.length);
+			return arr[index];
+		},
 		
 		randomIntBetween: function (min, max) {
+			min = min || 0;
+			max = max || 0;
 			return this.intBetween(min, max, Math.random());
 		},
 		

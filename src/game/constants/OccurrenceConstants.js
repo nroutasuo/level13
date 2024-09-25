@@ -1,28 +1,62 @@
 define(['ash', 'utils/MathUtils', 'game/constants/CampConstants', 'game/constants/GameConstants'],
-function (Ash, MathUtils, CampConstants, GameConstants) {
+	function (Ash, MathUtils, CampConstants, GameConstants) {
 
-	var OccurrenceConstants = {
+	let OccurrenceConstants = {
 	
 		campOccurrenceTypes: {
-			trader: "trader",
+			accident: "accident",
+			birth: "birth",
+			disaster: "disaster",
+			disease: "disease",
 			raid: "raid",
-			recruit: "recruit"
+			recruit: "recruit",
+			refugees: "refugees",
+			trader: "trader",
+			visitor: "visitor",
 		},
+
+		// NTOE: all times are in seconds
 		
 		EVENT_DURATION_INFINITE: -999,
+
+		campOccurrenceDurations: {
+			accident: 0,
+			disaster: 10,
+			disease: -999,
+			raid: 10,
+			recruit: 60 * 5,
+			refugees: 60 * 10,
+			trader: 60 * 10,
+			visitor: 60 * 5,
+		},
+
+		campOccurrenceCooldowns: {
+			accident: 60 * 30,
+			disaster: 60 * 60,
+			disease: 60 * 30,
+			raid: 60 * 20,
+			recruit: 60 * 25,
+			refugees: 60 * 30,
+			trader: 60 * 20,
+			visitor: 60 * 10,
+		},
+
+		campOccurrenceCooldownsNew: {
+			trader: 60,
+		},
 		
-		OCCURRENCE_CAMP_TRADER_LENGTH: 60 * 10,
-		OCCURRENCE_CAMP_TRADER_COOLDOWN: 60 * 20,
-		OCCURRENCE_CAMP_TRADER_COOLDOWN_START: 60,
-		OCCURRENCE_CAMP_TRADER_VARIATION: 1.5,
-		
-		OCCURRENCE_CAMP_RAID_LENGTH: 10,
-		OCCURRENCE_CAMP_RAID_COOLDOWN: 60 * 20,
-		OCCURRENCE_CAMP_RAID_VARIATION: 3,
-		
-		OCCURRENCE_CAMP_RECRUIT_LENGTH: 60 * 5,
-		OCCURRENCE_CAMP_RECRUIT_COOLDOWN: 60 * 25,
-		OCCURRENCE_CAMP_RECRUIT_VARIATION: 3,
+		campOccurrenceCooldownsVariations: {
+			accident: 5,
+			disaster: 5,
+			disease: 3,
+			raid: 3,
+			recruit: 3,
+			refugees: 3,
+			trader: 1.5,
+			visitor: 2,
+		},
+
+		RAID_RANGER_FACTOR: 1 / 25,
 		
 		getTimeToNext: function (occurrenceType, isNew, upgradeLevel, reputation, numCamps) {
 			let minimumTime = this.getMinimumTimeToNext(occurrenceType, isNew, numCamps);
@@ -40,69 +74,70 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 		},
 		
 		getMinimumTimeToNext: function (occurrenceType, isNew, numCamps) {
-			// base value per event type
-			let base = 60 * 10;
+			let baseValue = this.campOccurrenceCooldowns[occurrenceType] || 60 * 10;
 			let numCampsFactor = 1;
+
+			if (isNew) {
+				baseValue = this.campOccurrenceCooldownsNew[occurrenceType] || baseValue;
+			}
+
 			switch (occurrenceType) {
+				case this.campOccurrenceTypes.disaster:
 				case this.campOccurrenceTypes.trader:
-					if (isNew) {
-						base = this.OCCURRENCE_CAMP_TRADER_COOLDOWN_START;
-					} else {
-						base = this.OCCURRENCE_CAMP_TRADER_COOLDOWN;
-					}
-					numCampsFactor = numCamps;
-					break;
-				
-				case this.campOccurrenceTypes.raid:
-					base = this.OCCURRENCE_CAMP_RAID_COOLDOWN;
-					break;
 				case this.campOccurrenceTypes.recruit:
-					base = this.OCCURRENCE_CAMP_RECRUIT_COOLDOWN;
+				case this.campOccurrenceTypes.visitor:
 					numCampsFactor = numCamps;
 					break;
 			}
 			
-			return base * numCampsFactor;
+			return baseValue * numCampsFactor;
 		},
 		
 		getMaximumTimeToNext: function (occurrenceType, isNew, numCamps) {
-			let variation = 2;
-			switch (occurrenceType) {
-				case this.campOccurrenceTypes.trader:
-					variation = this.OCCURRENCE_CAMP_TRADER_VARIATION;
-					break;
-				
-				case this.campOccurrenceTypes.raid:
-					variation = this.OCCURRENCE_CAMP_RAID_VARIATION;
-					break;
-				
-				case this.campOccurrenceTypes.recruit:
-					variation = this.OCCURRENCE_CAMP_RECRUIT_VARIATION;
-					break;
-			}
-			
+			let variation = this.campOccurrenceCooldownsVariations[occurrenceType] || 2;
 			return this.getMinimumTimeToNext(occurrenceType, isNew, numCamps) * variation;
 		},
 		
 		getDuration: function (occurrenceType) {
-			switch(occurrenceType) {
-				case this.campOccurrenceTypes.trader:
-					return this.OCCURRENCE_CAMP_TRADER_LENGTH;
-				
-				case this.campOccurrenceTypes.raid:
-					return this.OCCURRENCE_CAMP_RAID_LENGTH;
-				
-				case this.campOccurrenceTypes.recruit:
-					return this.OCCURRENCE_CAMP_RECRUIT_LENGTH;
+			return this.campOccurrenceDurations[occurrenceType] || 0;
+		},
+
+		isNegative: function (occurrenceType) {
+			switch (occurrenceType) {
+				case OccurrenceConstants.campOccurrenceTypes.accident: return true;
+				case OccurrenceConstants.campOccurrenceTypes.disaster: return true;
+				case OccurrenceConstants.campOccurrenceTypes.disease: return true;
+				case OccurrenceConstants.campOccurrenceTypes.raid: return true;
+				default: return false;
 			}
-			return 0;
+		},
+
+		getDiseaseOutbreakChance: function (population, hasHerbs, hasMedicine) {
+			let rawChance = population / (population + 80);
+			let baseChance = Math.min(0.5, rawChance);
+			
+			if (hasMedicine) {
+				return baseChance * this.getDiseaseMedicineFactor();
+			} else if (hasHerbs) {
+				return baseChance * this.getDiseaseHerbsFactor();
+			} else {
+				return baseChance;
+			}
+		},
+
+		getDiseaseMedicineFactor: function () {
+			return 0.2;
+		},
+
+		getDiseaseHerbsFactor: function () {
+			return 0.5;
 		},
 		
 		getRaidDanger: function (improvements, soldiers, soldierLevel, levelRaidDangerFactor) {
 			soldiers = soldiers || 0;
-			var dangerPoints = this.getRaidDangerPoints(improvements, levelRaidDangerFactor);
-			var defencePoints = this.getRaidDefencePoints(improvements, soldiers, soldierLevel);
-			let result = (dangerPoints - defencePoints) / 25;
+			let dangerPoints = this.getRaidDangerPoints(improvements, levelRaidDangerFactor);
+			let defencePoints = this.getRaidDefencePoints(improvements, soldiers, soldierLevel);
+			let result = (dangerPoints - defencePoints) * this.RAID_RANGER_FACTOR;
 			return Math.max(0, Math.min(1, result));
 		},
 		

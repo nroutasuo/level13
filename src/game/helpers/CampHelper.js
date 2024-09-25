@@ -14,15 +14,25 @@ define([
 	'game/constants/WorldConstants',
 	'game/components/common/CampComponent',
 	'game/components/common/PositionComponent',
+	'game/components/sector/events/DisasterComponent',
+	'game/components/sector/events/DiseaseComponent',
+	'game/components/sector/events/RaidComponent',
+	'game/components/sector/events/TraderComponent',
 	'game/components/sector/events/RecruitComponent',
+	'game/components/sector/events/RefugeesComponent',
+	'game/components/sector/events/VisitorComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
+	'game/components/sector/SectorFeaturesComponent',
 	'game/components/type/LevelComponent',
 	'game/nodes/sector/CampNode',
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/vos/ResourcesVO',
 	'game/vos/IncomingCaravanVO'
-], function (Ash, MathUtils, RandomUtils, GameGlobals, GameConstants, CampConstants, ExplorerConstants, ImprovementConstants, ItemConstants, OccurrenceConstants, TradeConstants, WorldConstants,
-	CampComponent, PositionComponent, RecruitComponent, SectorImprovementsComponent, LevelComponent, CampNode, TribeUpgradesNode, ResourcesVO, IncomingCaravanVO) {
+], function (Ash, MathUtils, RandomUtils, GameGlobals, 
+	GameConstants, CampConstants, ExplorerConstants, ImprovementConstants, ItemConstants, OccurrenceConstants, TradeConstants, WorldConstants,
+	CampComponent, PositionComponent, 
+	DisasterComponent, DiseaseComponent, RaidComponent, TraderComponent, RecruitComponent, RefugeesComponent, VisitorComponent, 
+	SectorImprovementsComponent, SectorFeaturesComponent, LevelComponent, CampNode, TribeUpgradesNode, ResourcesVO, IncomingCaravanVO) {
 	
 	var CampHelper = Ash.Class.extend({
 		
@@ -216,7 +226,7 @@ define([
 		},
 		
 		getLibraryEvidenceGenerationPerSecond: function (improvementsComponent) {
-			var libraryCount = improvementsComponent.getCount(improvementNames.library);
+			var libraryCount = improvementsComponent.getCountWithModifierForDamaged(improvementNames.library, 0.5);
 			var libraryLevel = improvementsComponent.getLevel(improvementNames.library);
 			return CampConstants.getLibraryEvidenceGenerationPerSecond(libraryCount, libraryLevel) * GameConstants.gameSpeedCamp;
 		},
@@ -244,7 +254,7 @@ define([
 		},
 		
 		getMarketRumourGenerationPerSecond: function (improvementsComponent, accSpeedPopulation) {
-			var marketCount = improvementsComponent.getCount(improvementNames.market);
+			var marketCount = improvementsComponent.getCountWithModifierForDamaged(improvementNames.market, 0.5);
 			var marketLevel = improvementsComponent.getLevel(improvementNames.market);
 			return CampConstants.getMarketRumourGenerationPerSecond(marketCount, marketLevel, accSpeedPopulation);
 		},
@@ -259,6 +269,12 @@ define([
 			var improvements = sector.get(SectorImprovementsComponent);
 			return CampConstants.getHousingCap(improvements);
 		},
+
+		getCampFreeHousing: function (sector) {
+			let campComponent = sector.get(CampComponent);
+			let currentPopulation = campComponent ? Math.floor(campComponent.population) : 0;
+			return GameGlobals.campHelper.getCampMaxPopulation(sector) - currentPopulation;
+		},
 		
 		getCampRaidDanger: function (sector) {
 			let improvements = sector.get(SectorImprovementsComponent);
@@ -270,6 +286,37 @@ define([
 			return OccurrenceConstants.getRaidDanger(improvements, soldiers, soldierLevel, levelRaidDangerFactor);
 		},
 
+		hasEvent: function (sector, event) {
+			switch (event) {
+				case OccurrenceConstants.campOccurrenceTypes.accident: 
+					return false; // instant
+
+				case OccurrenceConstants.campOccurrenceTypes.disaster:
+					return sector.has(DisasterComponent);
+
+				case OccurrenceConstants.campOccurrenceTypes.disease:
+					return sector.has(DiseaseComponent);
+
+				case OccurrenceConstants.campOccurrenceTypes.raid:
+					return sector.has(RaidComponent);
+					
+				case OccurrenceConstants.campOccurrenceTypes.recruit:
+					return sector.has(RecruitComponent);
+					
+				case OccurrenceConstants.campOccurrenceTypes.refugees:
+					return sector.has(RefugeesComponent);
+
+				case OccurrenceConstants.campOccurrenceTypes.trader:
+					return sector.has(TraderComponent);
+
+				case OccurrenceConstants.campOccurrenceTypes.visitor:
+					return sector.has(VisitorComponent);
+
+				default:
+					return false;
+			}
+		},
+
 		getEventUpgradeLevel: function (event) {
 			var upgradeLevel = 1;
 			var eventUpgrades = GameGlobals.upgradeEffectsHelper.getImprovingUpgradeIdsForOccurrence(event);
@@ -279,6 +326,23 @@ define([
 				if (this.tribeUpgradesNodes.head.upgrades.hasUpgrade(eventUpgrade)) upgradeLevel++;
 			}
 			return upgradeLevel;
+		},
+
+		getValidDisasterTypes: function (sector) {
+			let result = [];
+
+			let position = sector.get(PositionComponent);
+			let features = sector.get(SectorFeaturesComponent);
+
+			let surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
+			let groundLevel = GameGlobals.gameState.getGroundLevel();
+
+			result.push(CampConstants.DISASTER_TYPE_COLLAPSE);
+			result.push(CampConstants.DISASTER_TYPE_EARTHQUAKE);
+			if (features.sunlit) result.push(CampConstants.DISASTER_TYPE_STORM);
+			if (position.level != surfaceLevel && position.level != groundLevel) result.push(CampConstants.DISASTER_TYPE_FLOOD);
+
+			return result;
 		},
 		
 		getRandomIncomingCaravan: function (campOrdinal, levelOrdinal, traderLevel, unlockedResources, neededIngredient) {
@@ -567,6 +631,18 @@ define([
 				result += campNode.camp.assignedWorkers[workerType] || 0;
 			}
 			return result;
+		},
+
+		
+		addDisabledPopulation: function (sector, num, workerType, reason, timer) {
+			let campComponent = sector.get(CampComponent);
+			campComponent.addDisabledPopulation(num, workerType, reason, timer);
+
+			if (workerType) {
+				if (campComponent.assignedWorkers[workerType] > 0) {
+					campComponent.assignedWorkers[workerType] -= num;
+				}
+			}
 		},
 		
 		hasUnlockedWorker: function (workerID) {

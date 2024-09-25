@@ -53,6 +53,7 @@ define(['ash',
 	'game/components/sector/PassagesComponent',
 	'game/components/sector/OutgoingCaravansComponent',
 	'game/components/sector/events/CampEventTimersComponent',
+	'game/components/sector/events/RefugeesComponent',
 	'game/components/sector/events/TraderComponent',
 	'game/systems/ui/UIOutHeaderSystem',
 	'game/systems/ui/UIOutTabBarSystem',
@@ -70,7 +71,7 @@ define(['ash',
 	BagComponent, ExcursionComponent, ItemsComponent, HopeComponent, PlayerActionComponent, PlayerActionResultComponent,
 	CampComponent, CurrencyComponent, LevelComponent, BeaconComponent, SectorImprovementsComponent, SectorCollectorsComponent, WorkshopComponent,
 	ReputationComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent,
-	PassagesComponent, OutgoingCaravansComponent, CampEventTimersComponent, TraderComponent,
+	PassagesComponent, OutgoingCaravansComponent, CampEventTimersComponent, RefugeesComponent, TraderComponent,
 	UIOutHeaderSystem, UIOutTabBarSystem, UIOutLevelSystem, FaintingSystem, PlayerPositionSystem,
 	Text, StringUtils
 ) {
@@ -282,6 +283,8 @@ define(['ash',
 				case "recruit_explorer": this.recruitExplorer(param); break;
 				case "dismiss_recruit": this.dismissRecruit(param); break;
 				case "dismiss_explorer": this.dismissExplorer(param); break;
+				case "accept_refugees": this.acceptRefugees(param); break;
+				case "dismiss_refugees": this.dismissRefugees(param); break;
 				case "select_explorer": this.selectExplorer(param); break;
 				case "deselect_explorer": this.deselectExplorer(param); break;
 				case "nap": this.nap(param); break;
@@ -295,6 +298,7 @@ define(['ash',
 				case "leave_camp": break;
 				case "fight": break;
 				case "auto_equip": break;
+				case "accept_inventory": break;
 				// Movement
 				case "move_level_up": this.moveTo(PositionConstants.DIRECTION_UP, action); break;
 				case "move_level_down": this.moveTo(PositionConstants.DIRECTION_DOWN, action); break;
@@ -1338,6 +1342,34 @@ define(['ash',
 					GameGlobals.gameState.increaseGameStatSimple("numExplorersDismissed");
 					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), explorer.name + " leaves.");
 					GlobalSignals.explorersChangedSignal.dispatch();
+				}
+			);
+		},
+
+		acceptRefugees: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			let eventComponent = sector.get(RefugeesComponent);
+			
+			if (!eventComponent) return;
+
+			let campComponent = sector.get(CampComponent);
+			let numRefugees =  eventComponent.num || 1;
+
+			campComponent.population += numRefugees;
+
+			eventComponent.isAccepted = true;
+		},
+		
+		dismissRefugees: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			let eventComponent = sector.get(RefugeesComponent);
+			
+			if (!eventComponent) return;
+			
+			GameGlobals.uiFunctions.showConfirmation(
+				"Are you sure you want to dismiss the refugees?",
+				function () {
+					eventComponent.isDismissed = true;
 				}
 			);
 		},

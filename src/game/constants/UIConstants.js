@@ -297,6 +297,23 @@ define(['ash',
 			}
 		},
 
+		getNPCDiv: function (visitor) {
+			visitor = visitor || { id: "temp" };
+			let classes = "item";
+			let div = "<div class='" + classes + "' data-visitorid='" + visitor.id + "'>";
+			let calloutContent = "Visitor";//this.getNPCCallout(explorer, isRecruited, isInCamp);
+			let icon = "img/followers/explorer_yellow_m.png";
+			let name = "Visitor";
+			
+			div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
+			div += "<img src='" + icon + "' alt='" + name + "'/>";
+			
+			div += "</div>";
+			div += "</div>"
+			
+			return div;
+		},
+
 		getResourceLi: function (name, amount, isLost, simple) {
 			var divclasses = "res item-with-count";
 			var div = "<div class='" + divclasses + "' data-resourcename='" + name + "'>";

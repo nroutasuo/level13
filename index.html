@@ -270,22 +270,10 @@
 							</div>
 							<div id="in-occurrences" class="infobox">
 								<h3 class="text-key" data-text-key="ui.camp.events_subheader"></h3>
-								<div id="in-occurrences-building-container">
-								</div>
-								<div id="in-occurrences-trader" class="progress-wrap progress">
-									<div class="progress-bar progress"></div>
-									<span class="progress progress-label text-key" data-text-key="ui.camp.event_trader_name"></span>
-								</div>
-								<div id="in-occurrences-recruit" class="progress-wrap progress">
-									<div class="progress-bar progress"></div>
-									<span class="progress progress-label text-key" data-text-key="ui.camp.event_visitor_name"></span>
-								</div>
-								<div id="in-occurrences-raid" class="progress-wrap progress warning" data-animation-length="50">
-									<div class="progress-bar progress"></div>
-									<span class="progress progress-label text-key" data-text-key="ui.camp.event_raid_name"></span>
-								</div>
-								<div id="in-occurrences-outgoing-caravans-container">
-								</div>
+								<div id="in-occurrences-building-container"></div>
+								<div id="in-occurrences-camp-container"></div>
+								<div id="in-occurrences-misc-container"></div>
+								<div id="in-occurrences-outgoing-caravans-container"></div>
 								<p class="p-meta text-key" id="in-occurrences-empty" data-text-key="ui.camp.events_none_description"></p>
 							</div>
 							<div id="in-demographics" class="infobox p-dense">
@@ -304,6 +292,11 @@
 										<p id="in-demographics-raid-defence">Camp defences: <span class="value"></span></p>
 									</div>
 									<p id="in-demographics-raid-last">Last raid: <span class="value"></span></p>
+								</div>
+								<div id="in-demographics-disease">
+									<div class='info-callout-target'>
+										<p id="in-demographics-disease-chance">Disease outbreak chance: <span class="value"></span></p>
+									</div><br/>
 								</div>
 								<div id="in-demographics-level">
 									<p id="in-demographics-trade-network">Trade with other camps: <span class="value"></span></p>
@@ -508,9 +501,17 @@
 							</div>
 							
 							<div id="tab-explorers-section-recruits" class="unit-section">
-								<div class="subheader" id="header-recruits"><h3>Visitors</h3></div>
-								<p id="recruits-empty-message">No visitors here at the moment.</p>
+								<div class="subheader" id="header-recruits"><h3>Recruits</h3></div>
+								<p id="recruits-empty-message">No recruits here at the moment.</p>
 								<div id="recruits-container" class="actionbox">
+									<table></table>
+								</div>
+							</div>
+
+							<div id="tab-explorers-section-visitors" class="unit-section">
+								<div class="subheader" id="header-visitors"><h3>Visitors</h3></div>
+								<p id="visitors-empty-message">No visitors here at the moment.</p>
+								<div id="visitors-container" class="actionbox">
 									<table></table>
 								</div>
 							</div>

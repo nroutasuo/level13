@@ -5,15 +5,21 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 		
 		id: "",
 		population: 0,
+		disabledPopulation: [], // population not available for work, { num: int, reason: string, timer: int (seconds), initialTimer: int (seconds) }
+
 		maxPopulation: 0, // maximum population ever reached in this camp
 		populationChangePerSec: 0,
 		populationChangePerSecWithoutCooldown: 0,
 		populationDecreaseCooldown: 0,
+		
 		rumourpool: 0,
 		rumourpoolchecked: false,
+		
 		assignedWorkers: {}, // id => number
 		autoAssignedWorkers: {}, // id => bool
+		
 		campName: "",
+		
 		lastRaid: null,
 		
 		pendingPopulation: 0,
@@ -22,6 +28,7 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 		constructor: function (id) {
 			this.id = id;
 			this.population = 0;
+			this.disabledPopulation = [];
 			this.maxPopulation = 0;
 			this.rumourpool = 0;
 			this.rumourpoolchecked = false;
@@ -38,16 +45,37 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 			this.pendingRecruits = [];
 		},
 		
+		// population available for work
 		getFreePopulation: function () {
-			return Math.floor(this.population - this.getAssignedPopulation());
+			return Math.floor(this.population - this.getAssignedPopulation() - this.getDisabledPopulation());
 		},
 		
+		// population assigned to work
 		getAssignedPopulation: function () {
 			var assigned = 0;
 			for(var key in this.assignedWorkers) {
 				assigned += this.assignedWorkers[key] || 0;
 			}
 			return assigned;
+		},
+
+		// population unable to work
+		getDisabledPopulation: function () {
+			let result = 0;
+			for (let i = 0; i < this.disabledPopulation.length; i++) {
+				result += this.disabledPopulation[i].num;
+			}
+			return result;
+		},
+
+		getDisabledPopulationBySource: function (source) {
+			for (let i = 0; i < this.disabledPopulation.length; i++) {
+				let pop = this.disabledPopulation[i];
+				if (pop.reason == source) {
+					return pop;
+				}
+			}
+			return null;
 		},
 		
 		getCurrentWorkerAssignment: function () {
@@ -65,11 +93,40 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 		},
 		
 		addPopulation: function (value) {
-			var oldPopulation = this.population;
+			let oldPopulation = this.population;
 			this.population += value;
 			this.maxPopulation = Math.max(this.population, this.maxPopulation);
-			var change = this.population - oldPopulation;
+			let change = this.population - oldPopulation;
 			this.rumourpool += change * CampConstants.POOL_RUMOURS_PER_POPULATION;
+		},
+
+		addDisabledPopulation: function (num, workerType, reason, timer) {
+			let initialTimer = timer > 0 ? timer : null;
+			this.disabledPopulation.push({ num: num, workerType: workerType, reason: reason, timer: initialTimer, initialTimer: initialTimer });
+		},
+
+		handlePopulationDecreased: function (value) {
+			for (let i = 0; i < value; i++) {
+				let numDisabled = this.getDisabledPopulation();
+				let disabledChance = Math.pow(numDisabled, 2) / Math.pow(this.population, 2);
+				if (numDisabled >= this.population) disabledChance = 1;
+				if (Math.random() < disabledChance) {
+					this.removeDisabledPopulation(1);
+				}
+			}
+		},
+
+		removeDisabledPopulation: function (num) {
+			let remaining = num;
+			for (let i = 0; i < this.disabledPopulation.length; i++) {
+				let pop = this.disabledPopulation[i];
+				let removed = Math.min(pop.num, remaining);
+				pop.num -= removed;
+				remaining -= removed;
+				if (remaining <= 0) {
+					break;
+				}
+			}
 		},
 		
 		getType: function () {
@@ -93,6 +150,7 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 			copy.id = this.id;
 			copy.campName = this.campName;
 			copy.population = this.population || 0;
+			copy.disabledPopulation = this.disabledPopulation || [];
 			copy.maxPopulation = this.maxPopulation || 0;
 			copy.foundedTimeStamp = this.foundedTimeStamp;
 			copy.lastRaid = this.lastRaid;

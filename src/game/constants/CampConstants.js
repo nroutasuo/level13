@@ -81,6 +81,20 @@ define(['ash', 'text/Text', 'game/vos/ResourcesVO'], function (Ash, Text, Resour
 		// raids
 		CAMP_BASE_DEFENCE: 7,
 		FORTIFICATION_1_DEFENCE: 6,
+
+		// other events
+		DISASTER_TYPE_EARTHQUAKE: "earthquake",
+		DISASTER_TYPE_STORM: "storm",
+		DISASTER_TYPE_FLOOD: "flood",
+		DISASTER_TYPE_COLLAPSE: "collapse",
+
+		DISABLED_POPULATION_REASON_DISEASE: "disease",
+		DISABLED_POPULATION_REASON_ACCIDENT: "accident",
+
+		DISEASE_UPDATE_TYPE_SPREAD: "spread",
+		DISEASE_UPDATE_TYPE_WANE: "wane",
+		DISEASE_UPDATE_TYPE_KILL: "kill",
+		DISEASE_UPDATE_TYPE_END: "end",
 		
 		// Workers per building
 		CHEMISTS_PER_WORKSHOP: 5,
@@ -324,6 +338,11 @@ define(['ash', 'text/Text', 'game/vos/ResourcesVO'], function (Ash, Text, Resour
 			shrineLevel = shrineLevel || 1;
 			majorLevel = majorLevel || 1;
 			return 0.5 + (majorLevel - 1) * 0.2;
+		},
+
+		getNextDiseaseUpdateTimer: function () {
+			 // 3-7 min
+			return 60 * 3 + Math.floor(Math.random() * 60 * 7);
 		},
 		
 		getWorkerDisplayName: function (workerType) {

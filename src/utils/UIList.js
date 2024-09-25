@@ -22,7 +22,7 @@ define(['game/GameGlobals'], function (GameGlobals) {
 			list.items = [];
 			list.fnCreateItem = fnCreateItem;
 			list.fnUpdateItem = fnUpdateItem;
-			list.fnIsDataEqual = fnIsDataEqual;
+			list.fnIsDataEqual = fnIsDataEqual || ((d1, d2) => d1.id === d2.id);
 			return list;
 		},
 		

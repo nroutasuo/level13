@@ -11,14 +11,15 @@ define([
 	'game/constants/OccurrenceConstants',
 	'game/constants/TextConstants',
 	'game/vos/ImprovementVO',
-], function (Ash, GameGlobals, CampConstants, ImprovementConstants, ItemConstants, UpgradeConstants, PlayerActionConstants, WorldConstants, OccurrenceConstants, TextConstants, ImprovementVO) {
+], function (Ash, Text, GameGlobals, CampConstants, ImprovementConstants, ItemConstants, UpgradeConstants, PlayerActionConstants, WorldConstants, OccurrenceConstants, TextConstants, ImprovementVO) {
 	
-	var UpgradeEffectsHelper = Ash.Class.extend({
+	let UpgradeEffectsHelper = Ash.Class.extend({
 		
 		improvementsByOccurrence: {},
 		
 		constructor: function () {
 			this.improvementsByOccurrence[OccurrenceConstants.campOccurrenceTypes.trader] = improvementNames.market;
+			this.improvementsByOccurrence[OccurrenceConstants.campOccurrenceTypes.visitor] = improvementNames.inn;
 			this.improvementsByOccurrence[OccurrenceConstants.campOccurrenceTypes.recruit] = improvementNames.inn;
 		},
 		

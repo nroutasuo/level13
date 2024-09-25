@@ -13,10 +13,16 @@ define([
 	'game/components/sector/LastVisitedCampComponent',
 	'game/components/sector/OutgoingCaravansComponent',
 	'game/components/sector/events/CampEventTimersComponent',
+	'game/components/sector/events/DisasterComponent',
+	'game/components/sector/events/DiseaseComponent',
 	'game/components/sector/events/RaidComponent',
 	'game/components/sector/events/TraderComponent',
 	'game/components/sector/events/RecruitComponent',
-], function (Ash, GameConstants, CampComponent, CurrencyComponent, BeaconComponent, ReputationComponent, VisitedComponent, RevealedComponent, HopeComponent, ExcursionComponent, LastVisitedCampComponent, OutgoingCaravansComponent, CampEventTimersComponent, RaidComponent, TraderComponent, RecruitComponent) {
+	'game/components/sector/events/RefugeesComponent',
+	'game/components/sector/events/VisitorComponent',
+], function (Ash, GameConstants, 
+	CampComponent, CurrencyComponent, BeaconComponent, ReputationComponent, VisitedComponent, RevealedComponent, HopeComponent, ExcursionComponent, LastVisitedCampComponent, OutgoingCaravansComponent, 
+	CampEventTimersComponent, DisasterComponent, DiseaseComponent, RaidComponent, TraderComponent, RecruitComponent, RefugeesComponent, VisitorComponent) {
 
 	let SaveHelper = Ash.Class.extend({
 
@@ -32,7 +38,7 @@ define([
 			// sector: all camps
 			CampComponent, CurrencyComponent, ReputationComponent, CampEventTimersComponent, OutgoingCaravansComponent,
 			// sector: camp events
-			TraderComponent, RecruitComponent, RaidComponent,
+			DisasterComponent, DiseaseComponent, TraderComponent, RecruitComponent, RaidComponent, RefugeesComponent, VisitorComponent,
 			// sector: buildings
 			BeaconComponent,
 			// sector: status

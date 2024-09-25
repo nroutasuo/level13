@@ -1,6 +1,7 @@
 // Triggers in-occurrences (camp events)
 define([
 	'ash',
+	'utils/MathUtils',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
@@ -20,18 +21,22 @@ define([
 	'game/components/common/CampComponent',
 	'game/components/common/PositionComponent',
 	'game/components/player/ItemsComponent',
-	'game/components/sector/events/RecruitComponent',
-	'game/components/sector/events/TraderComponent',
+	'game/components/sector/events/DisasterComponent',
+	'game/components/sector/events/DiseaseComponent',
 	'game/components/sector/events/RaidComponent',
+	'game/components/sector/events/TraderComponent',
+	'game/components/sector/events/RecruitComponent',
+	'game/components/sector/events/RefugeesComponent',
+	'game/components/sector/events/VisitorComponent',
 	'game/components/sector/events/CampEventTimersComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/vos/RaidVO',
 	'text/Text'
 ], function (
-	Ash, GameGlobals, GlobalSignals, GameConstants, CampConstants, ExplorerConstants, ItemConstants, LogConstants, OccurrenceConstants, TradeConstants, TribeConstants, TextConstants, UIConstants, WorldConstants,
+	Ash, MathUtils, GameGlobals, GlobalSignals, GameConstants, CampConstants, ExplorerConstants, ItemConstants, LogConstants, OccurrenceConstants, TradeConstants, TribeConstants, TextConstants, UIConstants, WorldConstants,
 	PlayerResourcesNode, CampNode, TribeUpgradesNode,
 	CampComponent, PositionComponent, ItemsComponent,
-	RecruitComponent, TraderComponent, RaidComponent, CampEventTimersComponent,
+	DisasterComponent, DiseaseComponent, RaidComponent, TraderComponent, RecruitComponent, RefugeesComponent, VisitorComponent,  CampEventTimersComponent,
 	SectorImprovementsComponent, RaidVO, Text) {
 
 	var CampEventsSystem = Ash.System.extend({
@@ -144,15 +149,28 @@ define([
 		isEventEnded: function (campNode, event) {
 			var campTimers = campNode.entity.get(CampEventTimersComponent);
 			if (campTimers.hasTimeEnded(event)) return true;
+
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.trader:
 					var tradeComponent = campNode.entity.get(TraderComponent)
 					if (tradeComponent.isDismissed) return true;
 					break;
+
 				case OccurrenceConstants.campOccurrenceTypes.recruit:
 					var recruitComponent = campNode.entity.get(RecruitComponent)
 					if (recruitComponent.isDismissed) return true;
 					if (recruitComponent.isRecruited) return true;
+					break;
+					
+				case OccurrenceConstants.campOccurrenceTypes.refugees:
+					let refugeesComponent = campNode.entity.get(RefugeesComponent);
+					if (refugeesComponent.isDismissed) return true;
+					if (refugeesComponent.isAccepted) return true;
+					break;
+
+				case OccurrenceConstants.campOccurrenceTypes.disease:
+					let pop = campNode.camp.getDisabledPopulationBySource(CampConstants.DISABLED_POPULATION_REASON_DISEASE);
+					if (!pop || pop.num <= 0) return true;
 					break;
 			}
 			return false;
@@ -165,19 +183,34 @@ define([
 			let milestoneIndex = GameGlobals.milestoneEffectsHelper.getMilestoneIndexForOccurrence(event);
 			if (GameGlobals.gameState.numUnlockedMilestones < milestoneIndex) return;
 			
-			var population = campNode.camp.population;
-			var improvements = campNode.entity.get(SectorImprovementsComponent);
+			let population = campNode.camp.population;
+			let improvements = campNode.entity.get(SectorImprovementsComponent);
+
 			switch (event) {
-				case OccurrenceConstants.campOccurrenceTypes.trader:
-					return improvements.getCount(GameGlobals.upgradeEffectsHelper.getImprovementForOccurrence(event)) > 0;
-					
+				case OccurrenceConstants.campOccurrenceTypes.accident:
+					return population > 5;
+
+				case OccurrenceConstants.campOccurrenceTypes.disaster:
+					return true;
+
+				case OccurrenceConstants.campOccurrenceTypes.disease:
+					return population > 10;
+
+				case OccurrenceConstants.campOccurrenceTypes.raid:
+					return population > 1 && this.getRaidDanger(campNode.entity) > 0;
+
 				case OccurrenceConstants.campOccurrenceTypes.recruit:
 					if (campNode.camp.pendingRecruits.length > 0) return true;
 					return improvements.getCount(GameGlobals.upgradeEffectsHelper.getImprovementForOccurrence(event)) > 0;
 
-				case OccurrenceConstants.campOccurrenceTypes.raid:
-					if (population < 1) return false;
-					return this.getRaidDanger(campNode.entity) > 0;
+				case OccurrenceConstants.campOccurrenceTypes.refugees:
+					return campNode.reputation.value > CampConstants.getRequiredReputation(12);
+
+				case OccurrenceConstants.campOccurrenceTypes.trader:
+					return improvements.getCount(GameGlobals.upgradeEffectsHelper.getImprovementForOccurrence(event)) > 0;
+
+				case OccurrenceConstants.campOccurrenceTypes.visitor:
+					return improvements.getCount(GameGlobals.upgradeEffectsHelper.getImprovementForOccurrence(event)) > 0;
 
 				default:
 					return true;
@@ -192,34 +225,37 @@ define([
 			let improvementType = GameGlobals.upgradeEffectsHelper.getImprovementForOccurrence(event);
 			
 			switch (event) {
-				case OccurrenceConstants.campOccurrenceTypes.trader:
-					return improvements.getCount(improvementType) + improvements.getLevel(improvementType);
-					
-				case OccurrenceConstants.campOccurrenceTypes.recruit:
-					return improvements.getCount(improvementType) + improvements.getLevel(improvementType) + campNode.camp.pendingRecruits.length * 100;
+				case OccurrenceConstants.campOccurrenceTypes.accident:
+					return campNode.population;
+
+				case OccurrenceConstants.campOccurrenceTypes.disaster:
+					return 1;
+
+				case OccurrenceConstants.campOccurrenceTypes.disease:
+					return campNode.population;
 
 				case OccurrenceConstants.campOccurrenceTypes.raid:
 					return this.getRaidDanger(campNode.entity);
 
-				default:
-					return true;
+				case OccurrenceConstants.campOccurrenceTypes.recruit:
+					return improvements.getCount(improvementType) + improvements.getLevel(improvementType) + campNode.camp.pendingRecruits.length * 100;
+
+				case OccurrenceConstants.campOccurrenceTypes.refugees:
+					let currentFreeHousing = GameGlobals.campHelper.getCampFreeHousing(campNode.entity);
+					return campNode.reputation.value + currentFreeHousing;
+
+				case OccurrenceConstants.campOccurrenceTypes.trader:
+					return improvements.getCount(improvementType) + improvements.getLevel(improvementType);
+
+				case OccurrenceConstants.campOccurrenceTypes.visitor:
+					return improvements.getCount(improvementType) + improvements.getLevel(improvementType);
+
+				default: return 1;
 			}
 		},
 
 		hasCampEvent: function (campNode, event) {
-			switch (event) {
-				case OccurrenceConstants.campOccurrenceTypes.trader:
-					return campNode.entity.has(TraderComponent);
-					
-				case OccurrenceConstants.campOccurrenceTypes.recruit:
-					return campNode.entity.has(RecruitComponent);
-
-				case OccurrenceConstants.campOccurrenceTypes.raid:
-					return campNode.entity.has(RaidComponent);
-
-				default:
-					return false;
-			}
+			return GameGlobals.campHelper.hasEvent(campNode.entity, event);
 		},
 
 		isScheduled: function (campNode, event) {
@@ -245,19 +281,44 @@ define([
 			log.i("Scheduled " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ")" + " in " + timeToNext + "s.");
 		},
 
-		endEvent: function (campNode, event) {
+		endEvent: function (campNode, event) {			
+			let duration = OccurrenceConstants.getDuration(event);
+
+			if (duration > 0 && !this.hasCampEvent(campNode, event)) return;
+
 			log.i("Ending " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ")");
 			let campTimers = campNode.entity.get(CampEventTimersComponent);
 			campTimers.onEventEnded(event);
 			this.scheduleEvent(campNode, event);
-
-			if (!this.hasCampEvent(campNode, event)) return;
 
 			let logMsg;
 			let replacements = [];
 			let values = [];
 			let visibility = LogConstants.MSG_VISIBILITY_DEFAULT;
 			switch (event) {
+				case OccurrenceConstants.campOccurrenceTypes.accident:
+					let num = 1;
+					let workerType = this.getInjuredWorkerType(campNode);
+					GameGlobals.campHelper.addDisabledPopulation(campNode.entity, num, workerType, CampConstants.DISABLED_POPULATION_REASON_ACCIDENT, 60 * 10);
+					logMsg = "There has been an accident. " + num + " worker (" + workerType + ") got injured.";
+					break;
+
+				case OccurrenceConstants.campOccurrenceTypes.disaster:
+					// TODO make damaged buildings disaster type dependent
+					let disasterComponent = campNode.entity.get(DisasterComponent);
+					let disasterType = disasterComponent.disasterType;
+					let damagedBuilding = this.addDamagedBuilding(campNode.entity, 1);
+
+					campNode.entity.remove(DisasterComponent);
+					logMsg = disasterType + " ended. A building was damaged.";
+					break;
+
+				case OccurrenceConstants.campOccurrenceTypes.disease:
+					let diseaseComponent = campNode.entity.get(DiseaseComponent);
+					campNode.entity.remove(DiseaseComponent);
+					logMsg = "The disease outbreak is over.";
+					break;
+
 				case OccurrenceConstants.campOccurrenceTypes.trader:
 					let traderComponent = campNode.entity.get(TraderComponent);
 					let isDismissed = traderComponent && traderComponent.isDismissed;
@@ -312,11 +373,27 @@ define([
 					campNode.entity.remove(RaidComponent);
 					campNode.camp.lastRaid = raidVO;
 					break;
+
+				case OccurrenceConstants.campOccurrenceTypes.refugees:
+					let refugeesComponent = campNode.entity.get(RefugeesComponent);
+					campNode.entity.remove(RefugeesComponent);
+					if (refugeesComponent.isAccepted) {
+						logMsg = "Refugees joined the camp.";
+					} else {
+						logMsg = "Refugees left.";
+					}
+					break;
+
+				case OccurrenceConstants.campOccurrenceTypes.visitor:
+					let visitorComponent = campNode.entity.get(VisitorComponent);
+					campNode.entity.remove(VisitorComponent);
+					logMsg = "Visitor left.";
+					break;
 			}
 
 			this.addLogMessage(logMsg, replacements, values, campNode, visibility);
 			
-			GlobalSignals.campEventEndedSignal.dispatch();
+			GlobalSignals.campEventEndedSignal.dispatch(campNode.entity);
 			GlobalSignals.saveGameSignal.dispatch(GameConstants.SAVE_SLOT_DEFAULT, false);
 		},
 
@@ -324,10 +401,23 @@ define([
 			var campTimers = campNode.entity.get(CampEventTimersComponent);
 			var duration = OccurrenceConstants.getDuration(event);
 			var campPos = campNode.entity.get(PositionComponent);
-			var campOrdinal = GameGlobals.gameState.getCampOrdinal(campPos.level);
 
-			var logMsg;
+			var logMsg = null;
 			switch (event) {
+				case OccurrenceConstants.campOccurrenceTypes.disaster:
+					let disasterType = MathUtils.randomElement(GameGlobals.campHelper.getValidDisasterTypes(campNode.entity));
+					campNode.entity.add(new DisasterComponent(disasterType));
+					logMsg = "A " + disasterType + "!";
+					break;
+
+				case OccurrenceConstants.campOccurrenceTypes.disease:
+					let num = MathUtils.randomIntBetween(1, Math.min(5, campNode.camp.population / 2) + 1);
+					let numUpdates = MathUtils.randomIntBetween(2, 8);
+					GameGlobals.campHelper.addDisabledPopulation(campNode.entity, num, null, CampConstants.DISABLED_POPULATION_REASON_DISEASE, -1);
+					campNode.entity.add(new DiseaseComponent("disease", numUpdates));
+					logMsg = "Disease outbreak!";
+					break;
+
 				case OccurrenceConstants.campOccurrenceTypes.trader:
 					var numCamps = GameGlobals.gameState.numCamps;
 					var itemsComponent = this.playerNodes.head.entity.get(ItemsComponent);
@@ -359,16 +449,34 @@ define([
 					campNode.entity.add(new RaidComponent());
 					logMsg = "A raid! The camp is under attack.";
 					break;
+
+				case OccurrenceConstants.campOccurrenceTypes.refugees:
+					let maxRefugees = MathUtils.clamp(campNode.camp.population / 6, 3, 16);
+					let refugeesNum = MathUtils.randomIntBetween(2, maxRefugees + 1);
+					campNode.entity.add(new RefugeesComponent(refugeesNum));
+					logMsg = "Refugees!";
+					break;
+
+				case OccurrenceConstants.campOccurrenceTypes.visitor:
+					campNode.entity.add(new VisitorComponent());
+					logMsg = "Visitor";
+					break;
 			}
 			
 			campTimers.onEventStarted(event, duration);
+			
 			if (this.isNew(event)) GameGlobals.gameState.unlockedFeatures.events.push(event);
+
 			log.i("Start " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ") (" + duration + "s)");
 			
 			GameGlobals.gameState.increaseGameStatKeyed("numCampEventsByType", event);
 			GlobalSignals.campEventStartedSignal.dispatch();
 
-			this.addLogMessage(logMsg, null, null, campNode);
+			if (logMsg) this.addLogMessage(logMsg, null, null, campNode);
+
+			if (duration == 0) {
+				this.endEvent(campNode, event);
+			}
 		},
 		
 		skipEvent: function (campNode, event) {
@@ -490,38 +598,70 @@ define([
 				let numKilled = Math.ceil(Math.random() * maxKilled);
 				campComponent.assignedWorkers.soldier -= numKilled;
 				campComponent.population -= numKilled;
+				campComponent.handlePopulationDecreased(numKilled);
 				GlobalSignals.workersAssignedSignal.dispatch(sectorEntity);
 				raidComponent.defendersLost = numKilled;
 			}
 		},
 		
 		addRaidDamagedBuildings: function (sectorEntity, probability, allowedTypes) {
-			if (Math.random() > probability) return;
+			let damagedBuilding = this.addDamagedBuilding(sectorEntity, probability, allowedTypes);
+			
+			if (damagedBuilding) {
+				let raidComponent = sectorEntity.get(RaidComponent);
+				raidComponent.damagedBuilding = damagedBuilding;
+			}
+		},
+
+		addDamagedBuilding: function (sectorEntity, probability, allowedTypes) {
+			if (Math.random() > probability) return null;
+
+			let improvements = sectorEntity.get(SectorImprovementsComponent);
 			
 			// TODO add more building types here (and implement their effects)
 			let allAllowedTypes = [
+				improvementNames.hospital,
+				improvementNames.market,
+				improvementNames.library,
 				improvementNames.fortification,
 				improvementNames.darkfarm,
+				improvementNames.aqueduct,
 				improvementNames.apothecary,
 				improvementNames.smithy,
 				improvementNames.cementmill,
 				improvementNames.robotFactory,
 			];
 			allowedTypes = allowedTypes || allAllowedTypes;
+
+			let possibleTypes = [];
+			for (let i = 0; i < allowedTypes.length; i++) {
+				let type = allowedTypes[i];
+				if (improvements.getCount(type) > 0) {
+					possibleTypes.push(type);
+				}
+			}
 			
-			let typeIndex = Math.floor(Math.random() * allowedTypes.length);
-			let selectedType = allowedTypes[typeIndex];
+			let selectedType = MathUtils.randomElement(possibleTypes);
 			
-			let improvements = sectorEntity.get(SectorImprovementsComponent);
 			let vo = improvements.getVO(selectedType);
 			
 			vo.numDamaged = vo.numDamaged || 0;
-			if (vo.numDamaged >= vo.count) return;
+			if (vo.numDamaged >= vo.count) return null;
 			
 			vo.numDamaged++;
-			
-			let raidComponent = sectorEntity.get(RaidComponent);
-			raidComponent.damagedBuilding = selectedType;
+
+			return selectedType;
+		},
+
+		getInjuredWorkerType: function (campNode) {
+			let assignedWorkers = campNode.camp.assignedWorkers;
+			let possibleTypes = [];
+			for (let key in assignedWorkers) {
+				for (let i = 0; i < assignedWorkers[key]; i++) {
+					possibleTypes.push(key);
+				}
+			}
+			return MathUtils.randomElement(possibleTypes);
 		},
 		
 		onGameStarted: function () {
@@ -609,14 +749,23 @@ define([
 		
 		getEventSkipProbability: function (campNode, event) {
 			let skipProbability = 0;
+
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.raid:
-					var danger = this.getRaidDanger(campNode.entity);
+					let danger = this.getRaidDanger(campNode.entity);
 					if (danger < CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD / 2) {
 						skipProbability = 1 - danger * 15;
 					}
 					break;
+				
+				case OccurrenceConstants.campOccurrenceTypes.disease:
+					let storage = GameGlobals.resourcesHelper.getCurrentCampStorage(campNode.entity);
+					let hasHerbs = storage.resources.getResource(resourceNames.herbs) > 0;
+					let hasMedicine = storage.resources.getResource(resourceNames.medicine) > 0;
+					return 1 - OccurrenceConstants.getDiseaseOutbreakChance(campNode.camp.population, hasHerbs, hasMedicine);
 			}
+
+
 			return skipProbability;
 		},
 		

@@ -43,6 +43,9 @@ define([
 			EVENT_RAID_RECENT: "event_raid-recent",
 			EVENT_TRADER: "event_trader",
 			EVENT_RECRUIT: "event_recruit",
+			EVENT_VISITOR: "event_visitor",
+			EVENT_REFUGEES: "event_refugees",
+			EVENT_DISEASE: "event_disease",
 			POP_UNASSIGNED: "population-unassigned",
 			POP_DECREASING: "population-decreasing",
 			SUNLIT: "sunlit",
@@ -146,7 +149,7 @@ define([
 			}
 
 			// show
-			let msg = { key: "ui.tribe.status_no_news_message" }
+			let msgKey = { key: "ui.tribe.status_no_news_message" }
 			if (highestprio > 0) {
 				let selection = vosbyprio[highestprio];
 				let vo = selection[Math.floor(Math.random() * selection.length)];
@@ -198,17 +201,22 @@ define([
 			this.alerts[level] = [];
 			this.notifications[level] = [];
 
-			var hasTrader = node.entity.has(TraderComponent);
-			var hasRecruit = node.entity.has(RecruitComponent);
-			var hasRaid = node.entity.has(RaidComponent);
-			var secondsSinceLastRaid = camp.lastRaid ? Math.floor((new Date() - camp.lastRaid.timestamp) / 1000) : 0;
-			var hasRecentRaid = camp.lastRaid && !camp.lastRaid.wasVictory && camp.lastRaid.isValid() && secondsSinceLastRaid < 60 * 60;
-			var unAssignedPopulation = camp.getFreePopulation();
+			let hasTrader = GameGlobals.campHelper.hasEvent(node.entity, OccurrenceConstants.campOccurrenceTypes.trader);
+			let hasRecruit = GameGlobals.campHelper.hasEvent(node.entity, OccurrenceConstants.campOccurrenceTypes.recruit);
+			let hasVisitor = GameGlobals.campHelper.hasEvent(node.entity, OccurrenceConstants.campOccurrenceTypes.visitor);
+			let hasRefugees = GameGlobals.campHelper.hasEvent(node.entity, OccurrenceConstants.campOccurrenceTypes.refugees);
+			let hasDisease = GameGlobals.campHelper.hasEvent(node.entity, OccurrenceConstants.campOccurrenceTypes.disease);
+			let hasRaid = GameGlobals.campHelper.hasEvent(node.entity, OccurrenceConstants.campOccurrenceTypes.raid);
+
+			let secondsSinceLastRaid = camp.lastRaid ? Math.floor((new Date() - camp.lastRaid.timestamp) / 1000) : 0;
+			let hasRecentRaid = camp.lastRaid && !camp.lastRaid.wasVictory && camp.lastRaid.isValid() && secondsSinceLastRaid < 60 * 60;
+
+			let unAssignedPopulation = camp.getFreePopulation();
 			
-			var improvements = node.entity.get(SectorImprovementsComponent);
+			let improvements = node.entity.get(SectorImprovementsComponent);
 			let hasDamagedBuildings = improvements.hasDamagedBuildings();
 			
-			var numCaravans = caravansComponent.outgoingCaravans.length;
+			let numCaravans = caravansComponent.outgoingCaravans.length;
 
 			if (!isPlayerInCampLevel) {
 				if (hasRaid) {
@@ -220,6 +228,17 @@ define([
 				if (hasRecruit) {
 					this.alerts[level].push(this.campNotificationTypes.EVENT_RECRUIT);
 					this.notifications[level].push(this.campNotificationTypes.EVENT_RECRUIT);
+				}
+				if (hasVisitor) {
+					this.alerts[level].push(this.campNotificationTypes.EVENT_VISITOR);
+					this.notifications[level].push(this.campNotificationTypes.EVENT_VISITOR);
+				}
+				if (hasRefugees) {
+					this.alerts[level].push(this.campNotificationTypes.EVENT_REFUGEES);
+					this.notifications[level].push(this.campNotificationTypes.EVENT_REFUGEES);
+				}
+				if (hasDisease) {
+					this.notifications[level].push(this.campNotificationTypes.EVENT_DISEASE);
 				}
 				if (hasTrader) {
 					this.alerts[level].push(this.campNotificationTypes.EVENT_TRADER);
@@ -430,7 +449,10 @@ define([
 			switch (notificationType) {
 				case this.campNotificationTypes.EVENT_RAID_ONGOING: return "raid";
 				case this.campNotificationTypes.EVENT_TRADER: return "trader";
-				case this.campNotificationTypes.EVENT_RECRUIT: return "visitor";
+				case this.campNotificationTypes.EVENT_RECRUIT: return "recruit";
+				case this.campNotificationTypes.EVENT_REFUGEES: return "refugees";
+				case this.campNotificationTypes.EVENT_DISEASE: return "disease";
+				case this.campNotificationTypes.EVENT_VISITOR: return "visitor";
 				case this.campNotificationTypes.POP_UNASSIGNED: return "unassigned workers";
 				case this.campNotificationTypes.POP_DECREASING: return "population decreasing";
 				case this.campNotificationTypes.BUILDING_DAMAGED: return "damaged building";
@@ -465,7 +487,13 @@ define([
 					return { key: "ui.tribe.status_outgoing_caravan_message", options: options };
 					
 				case this.campNotificationTypes.EVENT_RECRUIT: 
+					return { key: "ui.tribe.status_recruit_message", options: options };
+				case this.campNotificationTypes.EVENT_VISITOR: 
 					return { key: "ui.tribe.status_visitor_message", options: options };
+				case this.campNotificationTypes.EVENT_REFUGEES: 
+					return { key: "ui.tribe.status_refugees_message", options: options };
+				case this.campNotificationTypes.EVENT_DISEASE: 
+					return { key: "ui.tribe.status_disease_message", options: options };
 				case this.campNotificationTypes.POP_UNASSIGNED: 
 					return { key: "ui.tribe.status_unassigned_workers_message", options: options };
 				case this.campNotificationTypes.POP_DECREASING: 
@@ -493,18 +521,21 @@ define([
 			switch (notificationType) {
 				case this.campNotificationTypes.POP_DECREASING: return 1;
 				case this.campNotificationTypes.EVENT_RAID_ONGOING: return 2;
-				case this.campNotificationTypes.EVENT_RAID_RECENT: return 2;
-				case this.campNotificationTypes.EVENT_TRADER: return 3;
-				case this.campNotificationTypes.EVENT_RECRUIT: return 3;
+				case this.campNotificationTypes.EVENT_RAID_RECENT: return 3;
 				case this.campNotificationTypes.BUILDING_DAMAGED: return 4;
-				case this.campNotificationTypes.POP_UNASSIGNED: return 5;
-				case this.campNotificationTypes.SUNLIT: return 6;
-				case this.campNotificationTypes.EVENT_OUTGOING_CARAVAN: return 7;
-				case this.campNotificationTypes.STATUS_NON_REACHABLE_BY_TRADERS: return 8;
-				case this.campNotificationTypes.POP_NO_GARDENERS: return 9;
-				case this.campNotificationTypes.POP_NO_RUBBERMAKERS: return 10;
-				case this.campNotificationTypes.POP_NO_CHEMISTS: return 11;
-				case this.campNotificationTypes.POP_INCREASING: return 12;
+				case this.campNotificationTypes.EVENT_TRADER: return 5;
+				case this.campNotificationTypes.EVENT_RECRUIT: return 6;
+				case this.campNotificationTypes.EVENT_VISITOR: return 7;
+				case this.campNotificationTypes.POP_UNASSIGNED: return 8;
+				case this.campNotificationTypes.EVENT_DISEASE: return 9;
+				case this.campNotificationTypes.EVENT_REFUGEES: return 10;
+				case this.campNotificationTypes.STATUS_NON_REACHABLE_BY_TRADERS: return 11;
+				case this.campNotificationTypes.SUNLIT: return 12;
+				case this.campNotificationTypes.EVENT_OUTGOING_CARAVAN: return 13;
+				case this.campNotificationTypes.POP_NO_GARDENERS: return 14;
+				case this.campNotificationTypes.POP_NO_RUBBERMAKERS: return 15;
+				case this.campNotificationTypes.POP_NO_CHEMISTS: return 16;
+				case this.campNotificationTypes.POP_INCREASING: return 17;
 				default: return 13;
 			}
 		},

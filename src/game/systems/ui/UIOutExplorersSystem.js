@@ -1,16 +1,17 @@
 define([
 	'ash',
 	'utils/UIState',
+	'utils/UIList',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/UIConstants',
-	'game/constants/ItemConstants',
-	'game/constants/FightConstants',
 	'game/constants/ExplorerConstants',
 	'game/components/sector/events/RecruitComponent',
+	'game/components/sector/events/RefugeesComponent',
+	'game/components/sector/events/VisitorComponent',
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/PlayerStatsNode',
-], function (Ash, UIState, GameGlobals, GlobalSignals, UIConstants, ItemConstants, FightConstants, ExplorerConstants, RecruitComponent, PlayerLocationNode, PlayerStatsNode) {
+], function (Ash, UIState, UIList, GameGlobals, GlobalSignals, UIConstants, ExplorerConstants, RecruitComponent, RefugeesComponent, VisitorComponent, PlayerLocationNode, PlayerStatsNode) {
 	var UIOutExplorersSystem = Ash.System.extend({
 		
 		playerLocationNodes: null,
@@ -64,6 +65,8 @@ define([
 				this.explorerSlotElementsByType[explorerType].slot = $slot;
 				this.explorerSlotElementsByType[explorerType].container = $slot.find(".explorer-slot-image");
 			}
+
+			this.visitorList = UIList.create(this, $("#visitors-container table"), this.createVisitorListItem, this.updateVisitorListItem);
 		},
 
 		update: function (time) {
@@ -87,11 +90,12 @@ define([
 			
 			this.updateExplorers();
 			this.refreshRecruits();
+			this.refreshVisitors();
 		},
 		
 		updateBubble: function () {
 			let inCamp = GameGlobals.playerHelper.isInCamp();
-			let bubbleNumber = inCamp ? this.getNumRecruits() : 0;
+			let bubbleNumber = inCamp ? this.getNumRecruits() + this.getNumVisitors() : 0;
 			let isStatIncreaseAvailable = this.getIsStatIncreaseAvailable();
 			
 			let state = bubbleNumber + (isStatIncreaseAvailable ? 1000 : 0);
@@ -134,6 +138,36 @@ define([
 
 			GameGlobals.uiFunctions.createButtons("#recruits-container table");
 			GameGlobals.uiFunctions.generateInfoCallouts("#recruits-container table");
+		},
+
+		refreshVisitors: function () {
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
+			
+			let visitorData = this.getCampVisitorData();
+			let numNewListItems = UIList.update(this.visitorList, visitorData);
+
+			GameGlobals.uiFunctions.toggle($("#visitors-empty-message"), visitorData.length == 0);
+
+			if (numNewListItems.length > 0) {
+				GameGlobals.uiFunctions.createButtons("#visitors-container table");
+				GlobalSignals.elementCreatedSignal.dispatch();
+			}
+		},
+
+		getCampVisitorData: function () {
+			let result = [];
+
+			let visitorComponent = this.playerLocationNodes.head.entity.get(VisitorComponent);
+			if (visitorComponent) {
+				result.push({ id: "visitor", type: "visitor" });
+			}
+
+			let refugeesComponent = this.playerLocationNodes.head.entity.get(RefugeesComponent);
+			if (refugeesComponent) {
+				result.push({ id: "refugees", type: "refugees", num: refugeesComponent.num, acceptAction: "accept_refugees", dismissAction: "dismiss_refugees" });
+			}
+
+			return result;
 		},
 
 		updateExplorers: function () {
@@ -225,6 +259,41 @@ define([
 			});
 		},
 		
+		createVisitorListItem: function () {
+			let li = {};
+			let div = UIConstants.getNPCDiv();
+
+			let tr = "<tr>";
+			tr += "<td class='visitor-type'></td>";
+			tr += "<td>" + div + "</td>";
+			tr += "<td class='list-ordinal'></td>";
+			tr += "<td class='minwidth'><button class='action visitor-accept'>Accept</button></td>";
+			tr += "<td class='minwidth'><button class='action visitor-dismiss btn-secondary'>Dismiss</button></td>";
+			tr += "</tr>";
+
+			li.$root = $(tr);
+			li.$typeLabel = li.$root.find(".visitor-type");
+			li.$numLabel = li.$root.find(".list-ordinal");
+			li.$acceptButton = li.$root.find(".visitor-accept");
+			li.$dismissButton = li.$root.find(".visitor-dismiss");
+
+			return li;
+		},
+		
+		updateVisitorListItem: function (li, data) {
+			let acceptAction = data.acceptAction || null;
+			let dismissAction = data.dismissAction || null;
+
+			li.$typeLabel.html(data.type);
+			li.$numLabel.html(data.num || "");
+
+			li.$acceptButton.attr("action", acceptAction);
+			li.$dismissButton.attr("action", dismissAction);
+
+			GameGlobals.uiFunctions.toggle(li.$acceptButton, acceptAction != null);
+			GameGlobals.uiFunctions.toggle(li.$dismissButton, dismissAction != null);
+		},
+		
 		getFoundRecruitIcon: function () {
 			var sunlit = $("body").hasClass("sunlit");
 			var img = "<img src='img/eldorado/" + (sunlit ? "icon-star.png" : "icon-star-dark.png") + "' class='icon-ui-generic' alt='reward' />";
@@ -234,6 +303,12 @@ define([
 		getNumRecruits: function () {
 			var recruitComponent = this.playerLocationNodes.head.entity.get(RecruitComponent);
 			if (recruitComponent) return 1;
+			return 0;
+		},
+		
+		getNumVisitors: function () {
+			let visitorComponent = this.playerLocationNodes.head.entity.get(VisitorComponent);
+			if (visitorComponent) return 1;
 			return 0;
 		},
 		
@@ -279,10 +354,12 @@ define([
 		
 		onCampEventStarted: function () {
 			this.refreshRecruits();
+			this.refreshVisitors();
 		},
 		
 		onCampEventEnded: function () {
 			this.refreshRecruits();
+			this.refreshVisitors();
 		},
 		
 		onTabChanged: function () {

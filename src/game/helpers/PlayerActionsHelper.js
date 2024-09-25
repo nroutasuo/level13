@@ -488,7 +488,7 @@ define([
 				}
 
 				if (requirements.freeHousing) {
-					let currentFreeHousing = GameGlobals.campHelper.getCampMaxPopulation(sector) - currentPopulation;
+					let currentFreeHousing = GameGlobals.campHelper.getCampFreeHousing(sector);
 					let result = this.checkRequirementsRange(requirements.freeHousing, currentFreeHousing, "{min} free housing required", "Maximum {max} free housing");
 					if (result) return result;
 				}
@@ -2083,8 +2083,10 @@ define([
 				}
 
 				let excursionComponent = this.playerStatsNodes.head.entity.get(ExcursionComponent);
-				let numGritSteps = excursionComponent.numGritSteps || 0;
-				result.stamina = defaultMovementCost.stamina * 5 * (1 + numGritSteps);
+				if (excursionComponent) {
+					let numGritSteps = excursionComponent.numGritSteps || 0;
+					result.stamina = defaultMovementCost.stamina * 5 * (1 + numGritSteps);
+				}
 			}
 
 			var baseActionID = this.getBaseActionID(action);

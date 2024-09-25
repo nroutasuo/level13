@@ -28,9 +28,6 @@
 	'game/components/sector/ReputationComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/events/CampEventTimersComponent',
-	'game/components/sector/events/RecruitComponent',
-	'game/components/sector/events/TraderComponent',
-	'game/components/sector/events/RaidComponent',
 	'text/Text'
 ], function (
 	Ash, Text, UIState, UIList, UIAnimations, GameGlobals, GlobalSignals,
@@ -38,7 +35,7 @@
 	PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, TribeUpgradesNode,
 	PerksComponent, PlayerActionComponent,
 	CampComponent, ResourcesComponent, ResourceAccumulationComponent, OutgoingCaravansComponent, ReputationComponent, SectorImprovementsComponent, CampEventTimersComponent,
-	RecruitComponent, TraderComponent, RaidComponent, Text
+	Text
 ) {
 	var UIOutCampSystem = Ash.System.extend({
 		
@@ -72,6 +69,8 @@
 		
 		initElements: function () {
 			this.campActionList = UIList.create(this, $("#in-occurrences-building-container"), this.createCampActionListItem, this.updateCampActionListItem, this.isCampActionListItemDataEqual);
+			this.campOccurrencesList = UIList.create(this, $("#in-occurrences-camp-container"), this.createCampActionListItem, this.updateCampOccurrenceListItem, this.isCampOccurrenceListItemDataEqual);
+			this.campMiscEventsList = UIList.create(this, $("#in-occurrences-misc-container"), this.createCampActionListItem, this.updateCampMiscEventListItem);
 		},
 
 		addToEngine: function (engine) {
@@ -86,6 +85,7 @@
 			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.onPlayerPositionChanged);
 			GlobalSignals.add(this, GlobalSignals.campRenamedSignal, this.onCampRenamed);
 			GlobalSignals.add(this, GlobalSignals.populationChangedSignal, this.onPopulationChanged);
+			GlobalSignals.add(this, GlobalSignals.campEventEndedSignal, this.onCampEventEnded);
 			GlobalSignals.add(this, GlobalSignals.workersAssignedSignal, this.onWorkersAssigned);
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onGameShown);
 			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
@@ -106,7 +106,6 @@
 
 		update: function () {
 			let isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.in;
-			let campCount = GameGlobals.gameState.numCamps;
 			
 			if (!this.playerLocationNodes.head) return;
 			if (!this.playerPosNodes.head.position.inCamp) return;
@@ -159,7 +158,6 @@
 			
 			let eventNum = this.currentEvents - this.lastShownEvents;
 
-			let currentPopulation = Math.floor(campComponent.population);
 			let freePopulation = campComponent.getFreePopulation();
 
 			let newBubbleNumber = buildingNum + eventNum + freePopulation;
@@ -220,7 +218,7 @@
 			let reqRepNext = CampConstants.getRequiredReputation(Math.floor(campComponent.population) + 1);
 			let isReputationBlocking = reqRepNext < reputation;
 
-			let populationProgressLabelKey = populationChangePerSecWithoutCooldown >= 0 ? "ui.camp.population_next_worker_progress_label" : "ui.camp.population_worker_leaving_progress_label";
+			let populationProgressLabelKey = populationChangePerSec >= 0 ? "ui.camp.population_next_worker_progress_label" : "ui.camp.population_worker_leaving_progress_label";
 
 			GameGlobals.uiFunctions.setText("#in-population-next", populationProgressLabelKey);
 			GameGlobals.uiFunctions.setText("#in-population-reputation", "ui.camp.population_reputation_status_field", { current: reqRepCur, next: reqRepNext });
@@ -232,31 +230,33 @@
 			GameGlobals.uiFunctions.toggle($("#unassigned-workers-bubble"), freePopulation > 0);
 			
 			let isOnPopulationDecreaseCooldown = campComponent.populationDecreaseCooldown > 0 && campComponent.populationDecreaseCooldown < CampConstants.POPULATION_DECREASE_COOLDOWN;
-			let isPopulationStill = (isPopulationMaxed || populationChangePerSecWithoutCooldown === 0) && !isOnPopulationDecreaseCooldown;
+			let isPopulationStill = populationChangePerSecWithoutCooldown === 0 && !isOnPopulationDecreaseCooldown;
 
-			if (!isPopulationStill) {
-				let secondsToChange = 0;
-				let progress = 0;
-				let populationOverflow = (campComponent.population - Math.floor(campComponent.population));
-				if (populationChangePerSecWithoutCooldown > 0) {
-					progress = populationOverflow;
-					secondsToChange = (1 - populationOverflow) / populationChangePerSec;
-				} else if(populationChangePerSecWithoutCooldown < 0) {
-					let secondsToLoseOnePop = 1 / -populationChangePerSecWithoutCooldown + CampConstants.POPULATION_DECREASE_COOLDOWN;
-					secondsToChange = (campComponent.populationDecreaseCooldown || 0) + (populationOverflow / -populationChangePerSecWithoutCooldown);
-					progress = secondsToChange / secondsToLoseOnePop;
+			let secondsToChange = 0;
+			let progress = 0;
 
-					let hint = this.getPopulationDecreaseHint();
-					if (hint) $("#in-population-decrease-hint").text("People are leaving because of: " + hint);
-				}
+			let populationOverflow = (campComponent.population - Math.floor(campComponent.population));
+			if (populationChangePerSecWithoutCooldown > 0) {
+				progress = populationOverflow;
+				secondsToChange = (1 - populationOverflow) / populationChangePerSec;
+			} else if(populationChangePerSec < 0 || isOnPopulationDecreaseCooldown) {
+				let secondsToLoseOnePop = 1 / -populationChangePerSecWithoutCooldown + CampConstants.POPULATION_DECREASE_COOLDOWN;
+				secondsToChange = (campComponent.populationDecreaseCooldown || 0) + (populationOverflow / -populationChangePerSecWithoutCooldown);
+				progress = secondsToChange / secondsToLoseOnePop;
 
-				let progressLabel = populationChangePerSecWithoutCooldown !== 0 ? UIConstants.getTimeToNum(secondsToChange) : "no change";
-
-				$("#in-population-bar-next").toggleClass("warning", populationChangePerSecWithoutCooldown < 0);
-				$("#in-population-bar-next").data("progress-percent", progress * 100);
-				$("#in-population-bar-next .progress-label").text(progressLabel);
-				$("#in-population-bar-next").data("animation-length", 500);
+				let hint = this.getPopulationDecreaseHint();
+				if (hint) $("#in-population-decrease-hint").text("People are leaving because of: " + hint);
 			}
+
+			let progressLabel = UIConstants.getTimeToNum(secondsToChange);
+			
+			if (populationChangePerSec === 0) progressLabel = "no change";
+			if (isOnPopulationDecreaseCooldown) progressLabel = "cooldown";
+
+			$("#in-population-bar-next").toggleClass("warning", populationChangePerSecWithoutCooldown < 0);
+			$("#in-population-bar-next").data("progress-percent", progress * 100);
+			$("#in-population-bar-next .progress-label").text(progressLabel);
+			$("#in-population-bar-next").data("animation-length", 500);
 
 			GameGlobals.uiFunctions.slideToggleIf("#in-population h3", null, maxPopulation > 0 || campComponent.population > 0, 200, 200);
 			GameGlobals.uiFunctions.slideToggleIf("#in-population-reputation", null, (maxPopulation > 0 && !isPopulationMaxed) || populationChangePerSecWithoutCooldown < 0, 200, 200);
@@ -543,7 +543,6 @@
 			isActive = isActive && !GameGlobals.gameState.uiStatus.isBlocked;
 			let campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
 			if (!campComponent) return;
-			let eventTimers = this.playerLocationNodes.head.entity.get(CampEventTimersComponent);
 			let caravansComponent = this.playerLocationNodes.head.entity.get(OutgoingCaravansComponent);
 
 			let hasEvents = false;
@@ -557,34 +556,15 @@
 			UIList.update(this.campActionList, campActions);
 			if (campActions.length > 0) hasEvents = true;
 
-			// Traders
-			var hasTrader = this.playerLocationNodes.head.entity.has(TraderComponent);
-			hasEvents = hasEvents || hasTrader;
-			if (isActive && showEvents) {
-				var isTraderLeaving = hasTrader && eventTimers.getEventTimeLeft(OccurrenceConstants.campOccurrenceTypes.trader) < 5;
-				GameGlobals.uiFunctions.toggle("#in-occurrences-trader", hasTrader);
-				$("#in-occurrences-trader .progress-label").toggleClass("event-ending", isTraderLeaving);
-				$("#in-occurrences-trader").data("progress-percent", eventTimers.getEventTimePercentage(OccurrenceConstants.campOccurrenceTypes.trader));
-			}
-			
-			// Recruits
-			var hasRecruit = this.playerLocationNodes.head.entity.has(RecruitComponent);
-			hasEvents = hasEvents || hasRecruit;
-			if (isActive && showEvents) {
-				var isRecruitLeaving = hasRecruit && eventTimers.getEventTimeLeft(OccurrenceConstants.campOccurrenceTypes.recruit) < 5;
-				GameGlobals.uiFunctions.toggle("#in-occurrences-recruit", hasRecruit);
-				$("#in-occurrences-recruit .progress-label").toggleClass("event-ending", isTraderLeaving);
-				$("#in-occurrences-recruit").data("progress-percent", eventTimers.getEventTimePercentage(OccurrenceConstants.campOccurrenceTypes.recruit));
-			}
+			// Camp occurrences (raids, traiders, visitors)
+			let campOccurrences = this.getCampOccurrencesData();
+			UIList.update(this.campOccurrencesList, campOccurrences);
+			if (campOccurrences.length > 0) hasEvents = true;
 
-			// Raiders
-			var hasRaid = this.playerLocationNodes.head.entity.has(RaidComponent);
-			hasEvents = hasEvents || hasRaid;
-			if (isActive && showEvents) {
-				GameGlobals.uiFunctions.toggle("#in-occurrences-raid", hasRaid);
-				$("#in-occurrences-raid .progress-label").toggleClass("event-ending", hasRaid);
-				$("#in-occurrences-raid").data("progress-percent", eventTimers.getEventTimePercentage(OccurrenceConstants.campOccurrenceTypes.raid));
-			}
+			// Miscellaneous
+			let campMisc = this.getCampMiscEventsData();
+			UIList.update(this.campMiscEventsList, campMisc);
+			if (campMisc.length > 0) hasEvents = true;
 			
 			// Outgoing caravans
 			var numCaravans = caravansComponent.outgoingCaravans.length;
@@ -614,9 +594,7 @@
 
 			GameGlobals.uiFunctions.toggle("#in-occurrences-empty", showEvents && !hasEvents && !hasOther);
 			
-			this.currentEvents = 0;
-			if (hasTrader) this.currentEvents++;
-			if (hasRaid) this.currentEvents++;
+			this.currentEvents = campOccurrences.length;
 			if (isActive) this.lastShownEvents = this.currentEvents;
 		},
 		
@@ -641,6 +619,46 @@
 				let percent = playerActionComponent.getActionCompletionPercentage(action, actionVO.level);
 				if (percent < 100) {
 					result.push({ action: action, improvementName: improvementName, percent: percent });
+				}
+			}
+			return result;
+		},
+
+		getCampOccurrencesData: function () {
+			let sector = this.playerLocationNodes.head.entity;
+			let eventTimers = sector.get(CampEventTimersComponent);
+
+			let result = [];
+
+			for (let key in OccurrenceConstants.campOccurrenceTypes) {
+				let event = OccurrenceConstants.campOccurrenceTypes[key];
+				let duration = OccurrenceConstants.getDuration(event);
+				if (duration <= 0) continue;
+				let hasEvent = GameGlobals.campHelper.hasEvent(sector, event);
+				if (!hasEvent) continue;
+				let isEventEnding = duration <= 10 || eventTimers.getEventTimeLeft(event) < 5;
+
+				let percent = eventTimers.getEventTimePercentage(event);
+				if (percent < 100) {
+					result.push({ event: event, percent: percent, isEnding : isEventEnding });
+				}
+			}
+
+			return result;
+		},
+
+		getCampMiscEventsData: function () {
+			let result = [];
+
+			let campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
+			for (let i = 0; i < campComponent.disabledPopulation.length; i++) {
+				let pop = campComponent.disabledPopulation[i];
+				if (pop.num > 0) {
+					let percent = Math.round((pop.initialTimer - pop.timer) / pop.initialTimer * 100);
+					let label = "disabled workers (" + pop.num + ")";
+					if (pop.reason == CampConstants.DISABLED_POPULATION_REASON_DISEASE) label = "disease (" + pop.num + ")";
+					let isNegative = true;
+					result.push({ id: "disabled-worker-" + i, label: label, percent: percent, isNegative: isNegative });
 				}
 			}
 			return result;
@@ -684,6 +702,17 @@
 				GameGlobals.uiFunctions.toggle("#in-demographics-raid-last", hasLastRaid);
 			}
 			GameGlobals.uiFunctions.toggle("#in-demographics-raid", showRaid);
+
+			let showDisease = campComponent.population > 1;
+			if (showDisease) {
+				let storage = GameGlobals.resourcesHelper.getCurrentCampStorage(sector);
+				let hasHerbs = storage.resources.getResource(resourceNames.herbs) > 0;
+				let hasMedicine = storage.resources.getResource(resourceNames.medicine) > 0;
+				let diseaseChance = OccurrenceConstants.getDiseaseOutbreakChance(campComponent.population, hasHerbs, hasMedicine) * 100;
+				UIConstants.updateCalloutContent("#in-demographics-disease-chance", this.getDiseaseChanceCalloutContent());
+				UIAnimations.animateOrSetNumber($("#in-demographics-disease-chance .value"), true, diseaseChance, "%", false, Math.round);
+			}
+			GameGlobals.uiFunctions.toggle("#in-demographics-disease", showDisease);
 
 			var showLevelStats = GameGlobals.gameState.numCamps > 1;
 			if (showLevelStats) {
@@ -855,6 +884,27 @@
 			return result;
 		},
 
+		getDiseaseChanceCalloutContent: function () {
+			let sector = this.playerLocationNodes.head.entity;
+			let campComponent = sector.get(CampComponent);
+
+			let storage = GameGlobals.resourcesHelper.getCurrentCampStorage(sector);
+			let hasHerbs = storage.resources.getResource(resourceNames.herbs) > 0;
+			let hasMedicine = storage.resources.getResource(resourceNames.medicine) > 0;
+
+			let result = "Risk that a disease occurring in the camp turns into an outbreak";
+			result += "<hr/>";
+			result += "Population: " + Math.round(OccurrenceConstants.getDiseaseOutbreakChance(campComponent.population, false, false) * 100) + "%<br/>";
+
+			if (hasMedicine) {
+				result += "Medicine: -" + ((1 - OccurrenceConstants.getDiseaseMedicineFactor()) * 100) + "%<br/>";
+			} else if (hasHerbs) {
+				result += "Herbs: -" + ((1 - OccurrenceConstants.getDiseaseHerbsFactor()) * 100) + "%<br/>";
+			}
+
+			return result;
+		},
+
 		sortImprovements: function (a, b) {
 			
 			let getImprovementSortScore = function (improvementID) {
@@ -883,14 +933,10 @@
 		
 		createCampActionListItem: function () {
 			let li = {};
-			let div = "<div class='progress-wrap progress'><div class='progress-bar progress'></div><span class='progress progress-label'></span></div>";
+			let div = "<div class='progress-wrap progress' data-animation-length='50'><div class='progress-bar progress'></div><span class='progress progress-label'></span></div>";
 			li.$root = $(div);
 			li.$label = li.$root.find("span.progress-label");
 			return li;
-		},
-		
-		isCampActionListItemDataEqual: function (d1, d2) {
-			return d1.action == d2.action;
 		},
 		
 		updateCampActionListItem: function (li, data) {
@@ -905,6 +951,33 @@
 			
 			li.$root.data("progress-percent", data.percent);
 			li.$label.html(displayName);
+		},
+
+		updateCampOccurrenceListItem: function (li, data) {
+			let event = data.event;
+			let displayName = Text.t("ui.camp.event_" + event + "_name");
+			let isNegative = OccurrenceConstants.isNegative(event);
+			
+			li.$root.data("progress-percent", data.percent);
+			li.$root.toggleClass("warning", isNegative);
+
+			li.$label.html(displayName);
+			li.$label.toggleClass("event-ending", data.isEnding);
+		}, 
+
+		updateCampMiscEventListItem: function (li, data) {
+			let displayName = data.label;
+			li.$root.data("progress-percent", data.percent);
+			li.$root.toggleClass("warning", data.isNegative);
+			li.$label.html(displayName);
+		},
+		
+		isCampActionListItemDataEqual: function (d1, d2) {
+			return d1.action == d2.action;
+		},
+
+		isCampOccurrenceListItemDataEqual: function (d1, d2) {
+			return d1.event == d2.event;
 		},
 
 		onTabChanged: function () {
@@ -937,6 +1010,11 @@
 			if (this.playerLocationNodes.head.entity === entity) {
 				this.refresh();
 			}
+		},
+
+		onCampEventEnded: function () {
+			if (!this.playerLocationNodes.head) return;
+			this.refresh();
 		},
 		
 		onAutoAssignWorkerToggled: function (e) {

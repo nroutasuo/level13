@@ -5,25 +5,25 @@ define(['ash',
 	'game/constants/GameConstants',
 	'game/constants/CheatConstants',
 	'game/constants/ItemConstants',
-	'game/constants/LocaleConstants',
-	'game/constants/PerkConstants',
-	'game/constants/FightConstants',
-	'game/constants/ExplorerConstants',
-	'game/constants/TradeConstants',
-	'game/constants/UpgradeConstants',
-	'game/constants/WorldConstants',
-	'game/components/common/CampComponent',
-	'game/components/common/PositionComponent',
-	'game/components/player/ItemsComponent',
-	'game/components/player/PerksComponent',
-	'game/components/player/HopeComponent',
-	'game/components/sector/EnemiesComponent',
-	'game/components/sector/improvements/SectorImprovementsComponent',
-	'game/components/sector/SectorControlComponent',
-	'game/components/sector/SectorFeaturesComponent',
-	'game/components/sector/SectorStatusComponent',
+    'game/constants/LocaleConstants',
+    'game/constants/PerkConstants',
+	'game/constants/OccurrenceConstants',
+    'game/constants/FightConstants',
+    'game/constants/ExplorerConstants',
+    'game/constants/TradeConstants',
+    'game/constants/UpgradeConstants',
+    'game/constants/WorldConstants',
+    'game/components/common/CampComponent',
+    'game/components/common/PositionComponent',
+    'game/components/player/ItemsComponent',
+    'game/components/player/PerksComponent',
+    'game/components/player/HopeComponent',
+    'game/components/sector/EnemiesComponent',
+    'game/components/sector/improvements/SectorImprovementsComponent',
+    'game/components/sector/SectorControlComponent',
+    'game/components/sector/SectorFeaturesComponent',
+    'game/components/sector/SectorStatusComponent',
 	'game/components/sector/events/CampEventTimersComponent',
-	'game/components/type/LevelComponent',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/nodes/PlayerPositionNode',
@@ -34,25 +34,25 @@ define(['ash',
 	GameConstants,
 	CheatConstants,
 	ItemConstants,
-	LocaleConstants,
-	PerkConstants,
-	FightConstants,
-	ExplorerConstants,
-	TradeConstants,
-	UpgradeConstants,
-	WorldConstants,
-	CampComponent,
-	PositionComponent,
-	ItemsComponent,
-	PerksComponent,
-	HopeComponent,
-	EnemiesComponent,
-	SectorImprovementsComponent,
-	SectorControlComponent,
-	SectorFeaturesComponent,
-	SectorStatusComponent,
+    LocaleConstants,
+    PerkConstants,
+	OccurrenceConstants,
+    FightConstants,
+    ExplorerConstants,
+    TradeConstants,
+    UpgradeConstants,
+    WorldConstants,
+    CampComponent,
+    PositionComponent,
+    ItemsComponent,
+    PerksComponent,
+    HopeComponent,
+    EnemiesComponent,
+    SectorImprovementsComponent,
+    SectorControlComponent,
+    SectorFeaturesComponent,
+    SectorStatusComponent,
 	CampEventTimersComponent,
-	LevelComponent,
 	PlayerStatsNode,
 	TribeUpgradesNode,
 	PlayerPositionNode,
@@ -196,14 +196,29 @@ define(['ash',
 			this.registerCheat(CheatConstants.CHEAT_NAME_SCOUT_LEVEL, "Scout all the sectors in the current level.", [], function (params) {
 				this.scoutLevel();
 			});
+			this.registerCheat(CheatConstants.CHEAT_NAME_ACCIDENT, "Trigger an accident immediately.", [], function (params) {
+				this.triggerCampEvent(OccurrenceConstants.campOccurrenceTypes.accident);
+			});
+			this.registerCheat(CheatConstants.CHEAT_NAME_DISASTER, "Trigger a disaster immediately.", [], function (params) {
+				this.triggerCampEvent(OccurrenceConstants.campOccurrenceTypes.disaster);
+			});
+			this.registerCheat(CheatConstants.CHEAT_NAME_DISEASE, "Trigger a disease immediately.", [], function (params) {
+				this.triggerCampEvent(OccurrenceConstants.campOccurrenceTypes.disease);
+			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_TRADER, "Trigger an incoming trader immediately.", [], function (params) {
-				this.triggerTrader();
+				this.triggerCampEvent(OccurrenceConstants.campOccurrenceTypes.trader);
 			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_RECRUIT, "Trigger an incoming recruit immediately.", [], function (params) {
-				this.triggerRecruit();
+				this.triggerCampEvent(OccurrenceConstants.campOccurrenceTypes.recruit);
 			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_RAID, "Trigger a raid immediately.", [], function (params) {
-				this.triggerRaid();
+				this.triggerCampEvent(OccurrenceConstants.campOccurrenceTypes.raid);
+			});
+			this.registerCheat(CheatConstants.CHEAT_NAME_REFUGEES, "Trigger refugees immediately.", [], function (params) {
+				this.triggerCampEvent(OccurrenceConstants.campOccurrenceTypes.refugees);
+			});
+			this.registerCheat(CheatConstants.CHEAT_NAME_VISITOR, "Trigger a visitor immediately.", [], function (params) {
+				this.triggerCampEvent(OccurrenceConstants.campOccurrenceTypes.visitor);
 			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_RESET_BUILDING_SPOTS, "Reset building spots for buildings in the current camp.", [], function (params) {
 				this.resetBuildingSpots();
@@ -591,27 +606,11 @@ define(['ash',
 			binding = this.engine.updateComplete.add(updateFunction, this);
 		},
 
-		triggerTrader: function () {
+		triggerCampEvent: function (event) {
 			var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
 			var campTimers = currentSector ? currentSector.get(CampEventTimersComponent) : null;
 			if (campTimers) {
-				campTimers.eventStartTimers["trader"] = 1;
-			}
-		},
-
-		triggerRecruit: function () {
-			var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
-			var campTimers = currentSector ? currentSector.get(CampEventTimersComponent) : null;
-			if (campTimers) {
-				campTimers.eventStartTimers["recruit"] = 1;
-			}
-		},
-
-		triggerRaid: function () {
-			var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
-			var campTimers = currentSector ? currentSector.get(CampEventTimersComponent) : null;
-			if (campTimers) {
-				campTimers.eventStartTimers["raid"] = 10;
+				campTimers.eventStartTimers[event] = 5;
 			}
 		},
 		
