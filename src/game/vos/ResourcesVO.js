@@ -277,7 +277,7 @@ define(['ash'], function (Ash) {
 			if (componentValues.herbs) this.herbs = componentValues.herbs;
 			if (componentValues.fuel) this.fuel = componentValues.fuel;
 			if (componentValues.rubber) this.rubber = componentValues.rubber;
-			if (componentValues.tools) this.tools = componentValuestoolst;
+			if (componentValues.tools) this.tools = componentValues.tools;
 			if (componentValues.medicine) this.medicine = componentValues.medicine;
 			if (componentValues.concrete) this.concrete = componentValues.concrete;
 			if (componentValues.robots) this.robots = componentValues.robots;
