@@ -10,6 +10,7 @@ define([
 	'game/constants/MovementConstants',
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
+	'game/constants/StoryConstants',
 	'game/constants/TradeConstants',
 	'game/constants/TribeConstants',
 	'game/constants/UpgradeConstants',
@@ -29,7 +30,7 @@ define([
 	'worldcreator/CriticalPathVO',
 ], function (
 	Ash, MathUtils, GameGlobals,
-	EnemyConstants, ItemConstants, LevelConstants, LocaleConstants, MovementConstants, PositionConstants, SectorConstants, TradeConstants, TribeConstants, UpgradeConstants, WorldConstants,
+	EnemyConstants, ItemConstants, LevelConstants, LocaleConstants, MovementConstants, PositionConstants, SectorConstants, StoryConstants, TradeConstants, TribeConstants, UpgradeConstants, WorldConstants,
 	GangVO, LocaleVO, PathConstraintVO, PositionVO, ResourcesVO, StashVO, WaymarkVO,
 	WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug, WorldCreatorLogger, CriticalPathVO
 ) {
@@ -87,6 +88,7 @@ define([
 				
 				// level-wide features 2
 				this.generateInvestigateSectors(seed, worldVO, levelVO);
+				this.generateSectorExamineSpots(seed, worldVO, levelVO);
 				this.generateLocales(seed, worldVO, levelVO);
 				this.generateMovementBlockers(seed, worldVO, levelVO);
 				this.generateHeaps(seed, worldVO, levelVO);
@@ -1589,6 +1591,37 @@ define([
 			}
 			
 		},
+
+		generateSectorExamineSpots: function (seed, worldVO, levelVO) {
+			let spots = worldVO.examineSpotsPerLevel[levelVO.level];
+			if (!spots || spots.length == 0) return;
+			
+			let getExamineSpotSectorScore = function (sectorVO) {
+				let score = 0;
+				score -= sectorVO.locales.length;
+				if (sectorVO.isInvestigatable) score -= 1;
+				return score;
+			};
+
+			for (let i = 0; i < spots.length; i++) {
+				let spotID = spots[i];
+				let spot = StoryConstants.getSectorExampineSpot(spotID);
+
+				let filter = function (sectorVO) {
+					if (sectorVO.examineSpots.length > 0) return false;
+					if (spot.positionParams.sectorType && spot.positionParams.sectorType != sectorVO.sectorType) return false;
+					return true;
+				};
+
+				let excludedZones = [ WorldConstants.ZONE_ENTRANCE ];
+				let excludedFeatures = [ "isCamp", "isPassageUp", "isPassageDown", "workshopResource" ];
+				let options = { requireCentral: false, excludingFeature: excludedFeatures, pathConstraints: [], excludedZones: excludedZones, filter: filter };
+				let sectors = WorldCreatorRandom.randomSectorsScored(1000 + i * 66, worldVO, levelVO, 1, 2, options, getExamineSpotSectorScore);
+				let sector = sectors[0];
+				sector.examineSpots.push(spotID);
+				WorldCreatorLogger.i("add examine spot " + spotID + " to " + sector.position);
+			}
+		},
 		
 		generateLocales: function (seed, worldVO, levelVO) {
 			var l = levelVO.level;
@@ -2537,8 +2570,8 @@ define([
 
 			var blockerTypes = [];
 			if (levelOrdinal > 1) {
-				blockerTypes.push(MovementConstants.BLOCKER_TYPE_DEBRIS);
-				blockerTypes.push(MovementConstants.BLOCKER_TYPE_DEBRIS);
+			blockerTypes.push(MovementConstants.BLOCKER_TYPE_DEBRIS);
+			blockerTypes.push(MovementConstants.BLOCKER_TYPE_DEBRIS);
 			}
 			
 			var unlockGapOrdinal = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade("unlock_building_bridge");

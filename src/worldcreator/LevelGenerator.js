@@ -14,7 +14,7 @@ define([
 	'worldcreator/ZoneVO',
 ], function (Ash, ExplorerConstants, PositionConstants, TribeConstants, WorldConstants, PositionVO, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorLogger, WorldCreatorRandom, LevelVO, ZoneVO) {
 	
-	var LevelGenerator = {
+	let LevelGenerator = {
 		
 		prepareLevels: function (seed, worldVO) {
 			let topLevel = WorldCreatorHelper.getHighestLevel(seed);

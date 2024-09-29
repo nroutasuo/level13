@@ -9,6 +9,8 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			this.level = position.level;
 			this.campableLevel = isCampableLevel;
 			this.notCampableReason = notCampableReason;
+
+			this.sectorType = null;
 			
 			this.isCamp = false;
 			this.isPassageUp = false;
@@ -37,6 +39,7 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			this.possibleEnemies = [];
 			this.stashes = [];
 			this.waymarks = [];
+			this.examineSpots = [];
 
 			this.workshopResource = null;
 			this.heapResource = null;

@@ -31,6 +31,7 @@ define(
 		isInvestigatable: false,
 		stashes: [],
 		waymarks: [],
+		examineSpots: [],
 		
 		// resources and items
 		scacengeDifficulty: 3,
@@ -62,6 +63,7 @@ define(
 			this.stashes = features.stashes || [];
 			this.waymarks = features.waymarks || [];
 			this.heapResource = features.heapResource || null;
+			this.examineSpots = features.examineSpots || [];
 		},
 		
 		// Secondary attributes

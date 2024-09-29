@@ -374,6 +374,20 @@ define([
 			let featuresComponent = sector.get(SectorFeaturesComponent);
 			return (ignoreScoutedStatus || statusComponent.scouted) && (featuresComponent.isInvestigatable || statusComponent.isFallbackInvestigateSector) && statusComponent.getInvestigatedPercent() < 100;
 		},
+
+		getNumUnexaminedSpots: function (sector) {
+			let featuresComponent = sector.get(SectorFeaturesComponent);
+
+			let result = 0;
+			for (let i = 0; i < featuresComponent.examineSpots.length; i++) {
+				let spotID = featuresComponent.examineSpots[i];
+				if (!GameGlobals.levelHelper.isExamineSpotExamined(sector, spotID)) {
+					result++;
+				}
+			}
+
+			return result;
+		},
 		
 		getLocationDiscoveredItems: function (sector) {
 			var items = [];

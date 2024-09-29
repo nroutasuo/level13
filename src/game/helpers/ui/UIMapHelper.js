@@ -731,6 +731,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			let hasCampOnSector = sector.has(CampComponent);
 			let hasCampOnLevel = levelEntity.has(CampComponent);
 			let numUnscoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
+			let numUnexaminedSpots = GameGlobals.sectorHelper.getNumUnexaminedSpots(sector);
 			
 			let isLocationSunlit = $("body").hasClass("sunlit");
 			let isScouted = statusComponent.scouted;
@@ -783,7 +784,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			} else if (mapModeHasPois && !hasCampOnLevel && sectorFeatures.canHaveCamp()) {
 				ctx.drawImage(this.icons["campable" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
 				return true;
-			} else if (mapModeHasPois && numUnscoutedLocales > 0) {
+			} else if (mapModeHasPois && (numUnscoutedLocales > 0 || numUnexaminedSpots > 0)) {
 				ctx.drawImage(this.icons["interest" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
 				return true;
 			} else if (mapModeHasPois && sectorPassages.passageUp) {

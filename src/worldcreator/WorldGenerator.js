@@ -11,10 +11,11 @@ define([
 	'game/vos/PositionVO',
 	'game/constants/SectorConstants',
 	'game/constants/PositionConstants',
+	'game/constants/StoryConstants',
 	'game/constants/WorldConstants',
-], function (Ash, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorLogger, WorldFeatureVO, StageVO, DistrictVO, PositionVO, SectorConstants, PositionConstants, WorldConstants) {
+], function (Ash, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorLogger, WorldFeatureVO, StageVO, DistrictVO, PositionVO, SectorConstants, PositionConstants, StoryConstants, WorldConstants) {
 	
-	var WorldGenerator = {
+	let WorldGenerator = {
 		
 		prepareWorld: function (seed, worldVO) {
 			worldVO.features = worldVO.features.concat(this.generateHoles(seed));
@@ -22,6 +23,7 @@ define([
 			worldVO.campPositions = this.generateCampPositions(seed, worldVO.features);
 			worldVO.passagePositions = this.generatePassagePositions(seed, worldVO.features, worldVO.campPositions);
 			worldVO.districts = this.generateDistricts(seed, worldVO.features);
+			worldVO.examineSpotsPerLevel = this.generateExamineSpotsPerLevel(seed);
 		},
 		
 		generateHoles: function (seed) {
@@ -109,6 +111,20 @@ define([
 				var up = previousDown ? new PositionVO(l, previousDown.sectorX, previousDown.sectorY) : null;
 				var down = l == bottomLevel ? null : this.getPassageDownPosition(seed, l, features, up, campThisUp, campPosDown);
 				result[l] = { up: up, down: down };
+			}
+			return result;
+		},
+
+		generateExamineSpotsPerLevel: function (seed) {
+			let result = {}; // level => [ id ] 
+			let spotDefinitions = StoryConstants.sectorExamineSpots;
+			for (let i = 0; i < spotDefinitions.length; i++) {
+				let def = spotDefinitions[i];
+				let campOrdinal = def.positionParams.campOrdinal;
+				let levels = WorldCreatorHelper.getLevelsForCamp(seed, campOrdinal);
+				let level = WorldCreatorRandom.getRandomItemFromArray(seed, levels);
+				if (!result[level]) result[level] = [];
+				result[level].push(def.id);
 			}
 			return result;
 		},

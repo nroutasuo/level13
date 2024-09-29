@@ -15,6 +15,7 @@ define(['ash',
 	'game/constants/ItemConstants',
 	'game/constants/PerkConstants',
 	'game/constants/FightConstants',
+	'game/constants/StoryConstants',
 	'game/constants/TradeConstants',
 	'game/constants/TribeConstants',
 	'game/constants/UIConstants',
@@ -55,6 +56,7 @@ define(['ash',
 	'game/components/sector/events/CampEventTimersComponent',
 	'game/components/sector/events/RefugeesComponent',
 	'game/components/sector/events/TraderComponent',
+	'game/components/level/LevelStatusComponent',
 	'game/systems/ui/UIOutHeaderSystem',
 	'game/systems/ui/UIOutTabBarSystem',
 	'game/systems/ui/UIOutLevelSystem',
@@ -63,7 +65,7 @@ define(['ash',
 	'text/Text',
 	'utils/StringUtils'
 ], function (Ash, GameGlobals, GlobalSignals,
-	GameConstants, CampConstants, ExplorationConstants, ExplorerConstants, LogConstants, ImprovementConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, TribeConstants, UIConstants, UpgradeConstants, TextConstants,
+	GameConstants, CampConstants, ExplorationConstants, ExplorerConstants, LogConstants, ImprovementConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, StoryConstants, TradeConstants, TribeConstants, UIConstants, UpgradeConstants, TextConstants,
 	PositionVO, LocaleVO, ResultVO,
 	PlayerPositionNode, FightNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, CampNode, TribeUpgradesNode,
@@ -71,7 +73,7 @@ define(['ash',
 	BagComponent, ExcursionComponent, ItemsComponent, HopeComponent, PlayerActionComponent, PlayerActionResultComponent,
 	CampComponent, CurrencyComponent, LevelComponent, BeaconComponent, SectorImprovementsComponent, SectorCollectorsComponent, WorkshopComponent,
 	ReputationComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent,
-	PassagesComponent, OutgoingCaravansComponent, CampEventTimersComponent, RefugeesComponent, TraderComponent,
+	PassagesComponent, OutgoingCaravansComponent, CampEventTimersComponent, RefugeesComponent, TraderComponent, LevelStatusComponent,
 	UIOutHeaderSystem, UIOutTabBarSystem, UIOutLevelSystem, FaintingSystem, PlayerPositionSystem,
 	Text, StringUtils
 ) {
@@ -268,6 +270,7 @@ define(['ash',
 				case "scavenge": this.scavenge(param); break;
 				case "scavenge_heap": this.scavengeHeap(param); break;
 				case "investigate": this.investigate(param); break;
+				case "examine": this.examine(param); break;
 				case "scout": this.scout(param); break;
 				case "scout_locale_i": this.scoutLocale(param); break;
 				case "scout_locale_u": this.scoutLocale(param); break;
@@ -642,6 +645,28 @@ define(['ash',
 			this.handleOutActionResults("investigate", messages, true, false, successCallback);
 		},
 
+		examine: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			let featuresComponent = sector.get(SectorFeaturesComponent);
+			let spotID = featuresComponent.examineSpots[0];
+			let spotDef = StoryConstants.getSectorExampineSpot(spotID);
+
+			
+			let successCallback = function () {
+				let level = GameGlobals.levelHelper.getLevelEntityForSector(sector);
+				let levelStatus = level.get(LevelStatusComponent);
+				levelStatus.examinedSpots.push(spotID);
+			};
+
+			let messages = {
+				id: LogConstants.getUniqueID(),
+				msgSuccess: spotDef.popupMsg,
+				addToLog: false,
+			};
+
+			this.handleOutActionResults("examine", messages, true, false, successCallback);
+		},
+
 		scout: function () {
 			let sector = this.playerLocationNodes.head.entity;
 			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
@@ -685,6 +710,11 @@ define(['ash',
 				found = true;
 				popupMsg += "<br/>Found " + Text.addArticle(TextConstants.getWorkshopName(workshopComponent.resource));
 				logMsg += "Found " + Text.addArticle(TextConstants.getWorkshopName(workshopComponent.resource));
+			}
+
+			if (featuresComponent.examineSpots.length > 0) {
+				found = true;
+				popupMsg += "<br/>Found some interesting objects.";
 			}
 			
 			if (featuresComponent.campable) {
@@ -798,7 +828,7 @@ define(['ash',
 				}
 			}
 			
-			if (localeVO.type == localeTypes.grove) {				
+			if (localeVO.type == localeTypes.grove) {
 				let perksComponent = this.playerStatsNodes.head.perks;
 				if (!perksComponent.hasPerk(PerkConstants.perkIds.blessed)) {
 					perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.blessed));
@@ -941,7 +971,7 @@ define(['ash',
 			let msg = "Debris cleared at " + position.getInGameFormat(position.level !== playerPos.level);
 			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_CLEAR_DEBRIS, msg, { position: position, visibility: LogConstants.MGS_VISIBILITY_LEVEL });
 		},
-		
+
 		clearBlocker: function (action, blockerType, sectorPos) {
 			// parse sector pos
 			var direction = parseInt(sectorPos.split(".")[3]);

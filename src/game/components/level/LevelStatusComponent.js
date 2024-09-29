@@ -6,12 +6,14 @@ define(['ash'], function (Ash) {
 		isLevelTypeRevealed: false,
 		firstScoutedSectorByFeature: {},
 		clearedWorkshops: {}, // resourceName -> count
+		examinedSpots: [], // ids
 		
 		constructor: function () {
 			this.isVisited = false;
 			this.isLevelTypeRevealed = false;
 			this.firstScoutedSectorByFeature = {};
 			this.clearedWorkshops = {};
+			this.examinedSpots = [];
 		},
 
 		getSaveKey: function () {
@@ -23,6 +25,7 @@ define(['ash'], function (Ash) {
 			if (this.isVisited) result.isVisited = true;
 			if (this.isLevelTypeRevealed) result.isLevelTypeRevealed = true;
 			if (Object.keys(this.firstScoutedSectorByFeature).length > 0) result.firstScoutedSectorByFeature = this.firstScoutedSectorByFeature;
+			if (this.examinedSpots.length > 0) result.examinedSpots = this.examinedSpots;
 			return result;
 		},
 
@@ -30,6 +33,7 @@ define(['ash'], function (Ash) {
 			this.isVisited = componentValues.isVisited || false;
 			this.isLevelTypeRevealed = componentValues.isLevelTypeRevealed || false;
 			this.firstScoutedSectorByFeature = componentValues.firstScoutedSectorByFeature || {};
+			this.examinedSpots = componentValues.examinedSpots || [];
 			this.clearedWorkshops = {};
 		}
 	});

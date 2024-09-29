@@ -530,6 +530,17 @@ body.dark .strike-through p {
 body.dark .container-dimmed .dimmable {
   opacity: 0.5;
 }
+body.dark .info-icon {
+  width: 1em;
+  height: 1em;
+  background: url(img/eldorado/icon-detail.png);
+}
+body.dark .info-icon img {
+  height: 1em;
+  width: 1em;
+  line-height: 1em;
+  vertical-align: middle;
+}
 body.dark img.icon-ui-generic {
   height: 1.5em;
   width: 1.5em;
@@ -3041,6 +3052,17 @@ body.sunlit .strike-through p {
 }
 body.sunlit .container-dimmed .dimmable {
   opacity: 0.5;
+}
+body.sunlit .info-icon {
+  width: 1em;
+  height: 1em;
+  background: url(img/eldorado/icon-detail.png);
+}
+body.sunlit .info-icon img {
+  height: 1em;
+  width: 1em;
+  line-height: 1em;
+  vertical-align: middle;
 }
 body.sunlit img.icon-ui-generic {
   height: 1.5em;
