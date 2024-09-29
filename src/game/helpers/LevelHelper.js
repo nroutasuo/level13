@@ -319,6 +319,22 @@ define([
 			return false;
 		},
 
+		isExamineSpotExamined: function (sector, id) {
+			let levelEntity = GameGlobals.levelHelper.getLevelEntityForSector(sector);
+			let levelStatus = levelEntity.get(LevelStatusComponent);
+
+			for (let i = 0; i < levelStatus.examinedSpots.length; i++) {
+				let spotID = levelStatus.examinedSpots[i];
+				if (spotID == id) return true;
+			}
+			
+			return false;
+		},
+
+		isDeadEnd: function (sector) {
+			return this.getSectorNeighboursList(sector).length == 1;
+		},
+
 		// todo use neighboursmap so we benefit from the same cache
 		getSectorNeighboursList: function (sector) {
 			if (!sector)

@@ -267,6 +267,16 @@ define([
 			GameGlobals.uiFunctions.toggle("#out-action-use-spring", isScouted && featuresComponent.hasSpring);
 			GameGlobals.uiFunctions.toggle("#out-action-investigate", this.showInvestigate());
 
+			// examine spots
+			let showExamine = featuresComponent.examineSpots.length > 0;
+			GameGlobals.uiFunctions.toggle("#out-action-examine", showExamine);
+			if (showExamine) {
+				let spotID = featuresComponent.examineSpots[0];
+				let spotDef = StoryConstants.getSectorExampineSpot(spotID);
+				let examineSpotName = spotDef.shortName;
+				$("#out-action-examine").find(".btn-label").text("examine " + examineSpotName);
+			}
+
 			// workshop
 			let showWorkshop = isScouted && workshopComponent != null && workshopComponent.isClearable && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP)
 			GameGlobals.uiFunctions.toggle(this.elements.btnClearWorkshop, showWorkshop);
@@ -484,6 +494,15 @@ define([
 				if (isOutpost) campTerm = "small camp";
 
 				description += "There is a <span class='hl-functionality'>" + campTerm + "</span> here. ";
+			}
+
+			if (isScouted && featuresComponent.examineSpots.length > 0) {
+				for (let i = 0; i < featuresComponent.examineSpots.length; i++) {
+					let spotID = featuresComponent.examineSpots[i];
+					let spotDef = StoryConstants.getSectorExampineSpot(spotID);
+					if (!spotDef) continue;
+					description += "There is a " + spotDef.name + " here. ";
+				}
 			}
 
 			if (isScouted && workshopComponent && workshopComponent.isClearable) {

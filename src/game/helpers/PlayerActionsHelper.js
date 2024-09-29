@@ -984,6 +984,14 @@ define([
 							return { value: 0, reason: reason };
 						}
 					}
+					if (typeof requirements.sector.examinable != "undefined") {
+						var requiredValue = requirements.sector.examinable;
+						var currentValue = GameGlobals.sectorHelper.getNumUnexaminedSpots(sector) > 0;
+						if (currentValue !== requiredValue) {
+							var reason = requiredValue ? "There is nothing to examine." : "This sector can be examined";
+							return { value: 0, reason: reason };
+						}
+					}
 					if (typeof requirements.sector.investigatedPercent != "undefined") {
 						var range = requirements.sector.investigatedPercent;
 						var currentVal = statusComponent.getInvestigatedPercent() / 100;

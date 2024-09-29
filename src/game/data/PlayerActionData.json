@@ -622,6 +622,9 @@
             "resource_metal": 300,
             "resource_tools": 50
         },
+        "examine": {
+            "stamina": 100
+        },
         "fight_gang": {
             "stamina": 10
         },
@@ -1382,6 +1385,7 @@
         "clear_workshop": true,
         "despair": true,
         "fight_gang": true,
+        "examine": true,
         "investigate": true,
         "scavenge": true,
         "scavenge_heap": true,
@@ -2635,6 +2639,18 @@
         },
         "enter_camp": {
             "busy": false
+        },
+        "examine": {
+            "busy": false,
+            "inCamp": false,
+            "sector": {
+                "examinable": true,
+                "scouted": true
+            },
+            "vision": [
+                50,
+                -1
+            ]
         },
         "fight": {
             "busy": false

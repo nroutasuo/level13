@@ -142,6 +142,9 @@ define([
 				case "investigate":
 					resultVO = this.getInvestigateRewards();
 					break;
+				case "examine":
+					resultVO = this.getExamineRewards();
+					break;
 				case "use_spring":
 					resultVO = this.getUseSpringRewards();
 					break;
@@ -280,6 +283,18 @@ define([
 			} else {
 				let itemOptions = { rarityKey: "investigateRarity", allowNextCampOrdinal: isCompletion };
 	 			rewards.gainedItems = this.getRewardItems(0.25, 0, [], itemOptions);
+				rewards.gainedEvidence = 1;
+			}
+			
+			return rewards;
+		},
+
+		getExamineRewards: function () {
+			let rewards = new ResultVO("examine");
+			
+			if (GameGlobals.gameState.isFeatureUnlocked("insight")) {
+				rewards.gainedInsight = 1;
+			} else {
 				rewards.gainedEvidence = 1;
 			}
 			
