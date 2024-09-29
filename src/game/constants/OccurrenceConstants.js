@@ -5,7 +5,6 @@ define(['ash', 'utils/MathUtils', 'game/constants/CampConstants', 'game/constant
 	
 		campOccurrenceTypes: {
 			accident: "accident",
-			birth: "birth",
 			disaster: "disaster",
 			disease: "disease",
 			raid: "raid",
@@ -36,7 +35,7 @@ define(['ash', 'utils/MathUtils', 'game/constants/CampConstants', 'game/constant
 			disease: 60 * 30,
 			raid: 60 * 20,
 			recruit: 60 * 25,
-			refugees: 60 * 30,
+			refugees: 60 * 60,
 			trader: 60 * 20,
 			visitor: 60 * 10,
 		},

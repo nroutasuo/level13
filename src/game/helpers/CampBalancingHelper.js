@@ -174,15 +174,15 @@ define([
 			let penalties = {}; // id -> bool
 			let staticValues = {}; // id -> bool (is the value something the player can't do much about, aka not useful for a hint)
 			
-			let addValue = function (value, name, isStatic, isPercentage, percentageValue) {
+			let addValue = function (value, id, isStatic, isPercentage, percentageValue) {
 				if (value == 0) return;
 				result += value;
-				if (!sources[name]) sources[name] = 0;
-				sources[name] += value;
+				if (!sources[id]) sources[id] = 0;
+				sources[id] += value;
 				if (isPercentage) {
-					percentages[name] = percentageValue;
+					percentages[id] = percentageValue;
 				}
-				staticValues[name] = isStatic;
+				staticValues[id] = isStatic;
 			};
 			
 			let addPenalty = function (id, active) {
@@ -190,12 +190,12 @@ define([
 			};
 			
 			if (baseValue > 0) {
-				addValue(baseValue, "Tribe milestones", false);
+				addValue(baseValue, CampConstants.REPUTATION_SOURCE_MILESTONES, false);
 			}
 			
 			// luxury resources
 			if (numAvailableLuxuryResources > 0) {
-				addValue(numAvailableLuxuryResources, "Luxury resources", false);
+				addValue(numAvailableLuxuryResources, CampConstants.REPUTATION_SOURCE_LUXURY_RESOURCES, false);
 			}
 			
 			// building happiness values
@@ -230,7 +230,7 @@ define([
 			if (habitability != 1) {
 				let levelPopValueFactor = (habitability - 1);
 				let levelPopValue = result * levelPopValueFactor;
-				addValue(levelPopValue, "Level population", true, true, levelPopValueFactor * 100);
+				addValue(levelPopValue, CampConstants.REPUTATION_SOURCE_LEVEL_POP, true, true, levelPopValueFactor * 100);
 				addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_LEVEL_POP, levelPopValue < 0);
 			}
 			
@@ -289,7 +289,8 @@ define([
 			let populationFullPeople = Math.floor(population);
 			let noHousing = populationFullPeople > housingCap;
 			if (noHousing) {
-				let housingPenaltyRatio = Math.ceil((populationFullPeople - housingCap) / populationFullPeople * 20) / 20;
+				let overflowRatio = (populationFullPeople - housingCap) / populationFullPeople;
+				let housingPenaltyRatio = Math.round(overflowRatio * 20) / 20 / 2;
 				let housingPenalty = Math.ceil(result * housingPenaltyRatio);
 				addValue(-housingPenalty, "Overcrowding", false, true, housingPenaltyRatio * 100);
 			}

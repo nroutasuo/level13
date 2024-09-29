@@ -8,6 +8,7 @@ define(['ash', 'text/Text', 'game/vos/ResourcesVO'], function (Ash, Text, Resour
 		POPULATION_PER_HOUSE2_LEVEL_2: 8,
 		POOL_RUMOURS_PER_POPULATION: 3,
 		POPULATION_DECREASE_COOLDOWN: 60,
+		POPULATION_DECREASE_COOLDOWN_REFUGEES: 60 * 5,
 		
 		// Storage
 		BASE_STORAGE: 50,
@@ -76,6 +77,9 @@ define(['ash', 'text/Text', 'game/vos/ResourcesVO'], function (Ash, Text, Resour
 		REPUTATION_PENALTY_TYPE_LEVEL_POP: "LEVEL_POPULATION",
 		REPUTATION_PENALTY_TYPE_SUNLIT: "SUNLIT",
 		REPUTATION_PENALTY_TYPE_DAMAGED_BUILDINGS: "DAMAGED_BUILDINGS",
+		REPUTATION_SOURCE_MILESTONES: "milestones",
+		REPUTATION_SOURCE_LUXURY_RESOURCES: "luxury-resources",
+		REPUTATION_SOURCE_LEVEL_POP: "level-population",
 		MAX_REPUTATION: 30,
 		
 		// raids

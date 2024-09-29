@@ -126,7 +126,7 @@ define([
 			if (Math.abs(accTargetDiff) < 0.01) accTargetDiff = 0;
 			if (accTargetDiff > 0) accTargetDiff = Math.min(10, Math.max(1, accTargetDiff));
 			if (accTargetDiff < 0) accTargetDiff = Math.max(-10, Math.min(-1, accTargetDiff));
-			var accTarget = (accTargetDiff < 0 ? accTargetDiff * 0.05 : accTargetDiff * 0.01) * GameConstants.gameSpeedCamp;
+			let accTarget = accTargetDiff * 0.01 * GameConstants.gameSpeedCamp;
 			
 			// level habitability
 			var accLevelPop = 0;
@@ -154,14 +154,6 @@ define([
 			
 			// apply accumulation
 			reputationComponent.value += time * accSpeed;
-			if (accTargetDiff === 0) {
-				reputationComponent.value = reputationComponent.targetValue;
-			} else if (reputationComponent.value > reputationComponent.targetValue && accTargetDiff > 0) {
-				reputationComponent.value = reputationComponent.targetValue;
-			}
-			else if (reputationComponent.value < reputationComponent.targetValue && accTargetDiff < 0) {
-				reputationComponent.value = reputationComponent.targetValue;
-			}
 		},
 		
 		onImprovementBuilt: function () {

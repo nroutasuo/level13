@@ -1388,6 +1388,7 @@ define(['ash',
 			let numRefugees =  eventComponent.num || 1;
 
 			campComponent.population += numRefugees;
+			campComponent.populationDecreaseCooldown = CampConstants.POPULATION_DECREASE_COOLDOWN_REFUGEES;
 
 			eventComponent.isAccepted = true;
 		},

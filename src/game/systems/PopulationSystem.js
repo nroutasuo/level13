@@ -232,6 +232,7 @@ define([
 				// decreasing
 				let repMissing = reputation - reqRepCurPop;
 				changePerSecWithoutCooldown = -MathUtils.clamp((repMissing + 1)/(repMissing + 60), 0.01, 0.5);
+				
 				if (populationDecreaseCooldown == null) {
 					// - cooldown not set
 					changePerSec = 0;
@@ -259,7 +260,6 @@ define([
 			
 			camp.populationChangePerSecRaw = changePerSec;
 			camp.populationChangePerSecWithoutCooldown = changePerSecWithoutCooldown;
-			camp.populationDecreaseCooldown = Math.max(0, populationDecreaseCooldown);
 		},
 		
 		handlePopulationChanged: function (node, isIncrease) {

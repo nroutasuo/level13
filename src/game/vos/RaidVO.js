@@ -3,11 +3,13 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 	
 	var RaidVO = Ash.Class.extend({
 	
-		wasVictory: false,
+		timestamp: null, // end time
 		resourcesLost: null,
 		defendersLost: null,
 		damagedBuilding: null,
-		timestamp: null, // end time
+
+		// raid
+		wasVictory: false,
 	
 		constructor: function (raidComponent) {
 			this.wasVictory = raidComponent ? raidComponent.victory : false;

@@ -95,7 +95,7 @@ define([
 		
 		updateBubble: function () {
 			let inCamp = GameGlobals.playerHelper.isInCamp();
-			let bubbleNumber = inCamp ? this.getNumRecruits() + this.getNumVisitors() : 0;
+			let bubbleNumber = inCamp ? this.getNumRecruits() + this.getNumVisitors() + this.getNumRefugees() : 0;
 			let isStatIncreaseAvailable = this.getIsStatIncreaseAvailable();
 			
 			let state = bubbleNumber + (isStatIncreaseAvailable ? 1000 : 0);
@@ -309,6 +309,12 @@ define([
 		getNumVisitors: function () {
 			let visitorComponent = this.playerLocationNodes.head.entity.get(VisitorComponent);
 			if (visitorComponent) return 1;
+			return 0;
+		},
+		
+		getNumRefugees: function () {
+			let refugeesComponent = this.playerLocationNodes.head.entity.get(RefugeesComponent);
+			if (refugeesComponent) return 1;
 			return 0;
 		},
 		

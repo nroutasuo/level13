@@ -217,8 +217,9 @@
 			let reqRepCur = CampConstants.getRequiredReputation(Math.floor(campComponent.population));
 			let reqRepNext = CampConstants.getRequiredReputation(Math.floor(campComponent.population) + 1);
 			let isReputationBlocking = reqRepNext < reputation;
+			let isOnPopulationDecreaseCooldown = campComponent.populationDecreaseCooldown;
 
-			let populationProgressLabelKey = populationChangePerSec >= 0 ? "ui.camp.population_next_worker_progress_label" : "ui.camp.population_worker_leaving_progress_label";
+			let populationProgressLabelKey = populationChangePerSec >= 0 && !isOnPopulationDecreaseCooldown ? "ui.camp.population_next_worker_progress_label" : "ui.camp.population_worker_leaving_progress_label";
 
 			GameGlobals.uiFunctions.setText("#in-population-next", populationProgressLabelKey);
 			GameGlobals.uiFunctions.setText("#in-population-reputation", "ui.camp.population_reputation_status_field", { current: reqRepCur, next: reqRepNext });
@@ -229,7 +230,6 @@
 
 			GameGlobals.uiFunctions.toggle($("#unassigned-workers-bubble"), freePopulation > 0);
 			
-			let isOnPopulationDecreaseCooldown = campComponent.populationDecreaseCooldown > 0 && campComponent.populationDecreaseCooldown < CampConstants.POPULATION_DECREASE_COOLDOWN;
 			let isPopulationStill = populationChangePerSecWithoutCooldown === 0 && !isOnPopulationDecreaseCooldown;
 
 			let secondsToChange = 0;
@@ -253,7 +253,7 @@
 			if (populationChangePerSec === 0) progressLabel = "no change";
 			if (isOnPopulationDecreaseCooldown) progressLabel = "cooldown";
 
-			$("#in-population-bar-next").toggleClass("warning", populationChangePerSecWithoutCooldown < 0);
+			$("#in-population-bar-next").toggleClass("warning", populationChangePerSec < 0);
 			$("#in-population-bar-next").data("progress-percent", progress * 100);
 			$("#in-population-bar-next .progress-label").text(progressLabel);
 			$("#in-population-bar-next").data("animation-length", 500);
@@ -683,7 +683,9 @@
 			GameGlobals.uiFunctions.toggle("#in-demographics-general-age", showCalendar);
 			
 			let availableLuxuryResources = GameGlobals.campHelper.getAvailableLuxuryResources(sector);
-			$("#in-demographics-general-luxuries .value").text(availableLuxuryResources.length + " (" + availableLuxuryResources.map(res => TribeConstants.getLuxuryDisplayName(res)).join(", ") + ")");
+			let availableLuxuryResourcesInfoText = availableLuxuryResources.map(res => TribeConstants.getLuxuryDisplayName(res)).join(", ");
+			$("#in-demographics-general-luxuries .value").text(availableLuxuryResources.length);
+			UIConstants.updateCalloutContent($("#in-demographics-general-luxuries .info-icon"), availableLuxuryResourcesInfoText, true);
 			GameGlobals.uiFunctions.toggle("#in-demographics-general-luxuries", availableLuxuryResources.length > 0);
 
 			let showRaid = raidDanger > 0 || raidDefence > CampConstants.CAMP_BASE_DEFENCE || campComponent.population > 1;
@@ -856,6 +858,7 @@
 			for (let i in reputationComponent.targetValueSources) {
 				let source = reputationComponent.targetValueSources[i];
 				if (source.amount > 0) continue;
+				if (source.source == CampConstants.REPUTATION_SOURCE_LEVEL_POP) continue;
 				if (!mainSource || (mainSource.amount > source.amount) || mainSource.isStatic && !source.isStatic) {
 					mainSource = source;
 				}
