@@ -220,6 +220,7 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 			if (action.indexOf("clear_waste_t") == 0) return "clear_waste_t";
 			if (action.indexOf("clear_waste_r") == 0) return "clear_waste_r";
 			if (action.indexOf("clear_debris_") == 0) return "clear_debris";
+			if (action.indexOf("clear_explosives_") == 0) return "clear_explosives";
 			if (action.indexOf("fight_gang_") >= 0) return "fight_gang";
 			if (action.indexOf("send_caravan_") >= 0) return "send_caravan";
 			if (action.indexOf("recruit_explorer_") >= 0) return "recruit_explorer";
@@ -447,6 +448,7 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 			switch (baseActionID) {
 				case "send_caravan":
 				case "clear_debris":
+				case "clear_explosives":
 				case "bridge_gap":
 					return false;
 				default:

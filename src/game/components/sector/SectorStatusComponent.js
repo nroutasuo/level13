@@ -17,7 +17,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 		pendingRevealByMap: false,
 		localesScouted: [],
 		wasteClearedDirections: [],
-		debrisClearedDirections: [],
+		blockerClearedDirections: [], // debris, explosives
 		gapBridgedDirections: [],
 		weightedNumScavenges: 0,
 		weightedNumHeapScavenges: 0,
@@ -42,7 +42,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			this.pendingRevealByMap = false;
 			this.localesScouted = [];
 			this.wasteClearedDirections = [];
-			this.debrisClearedDirections = [];
+			this.blockerClearedDirections = [];
 			this.gapBridgedDirections = [];
 			this.weightedNumScavenges = 0;
 			this.weightedNumHeapScavenges = 0;
@@ -112,7 +112,10 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 				return this.wasteClearedDirections && this.wasteClearedDirections.indexOf(parseInt(direction)) >= 0;
 			}
 			if (blockerType == MovementConstants.BLOCKER_TYPE_DEBRIS) {
-				return this.debrisClearedDirections && this.debrisClearedDirections.indexOf(parseInt(direction)) >= 0;
+				return this.blockerClearedDirections && this.blockerClearedDirections.indexOf(parseInt(direction)) >= 0;
+			}
+			if (blockerType == MovementConstants.BLOCKED_TYPE_EXPLOSIVES) {
+				return this.blockerClearedDirections && this.blockerClearedDirections.indexOf(parseInt(direction)) >= 0;
 			}
 			if (blockerType == MovementConstants.BLOCKER_TYPE_GAP) {
 				return this.gapBridgedDirections && this.gapBridgedDirections.indexOf(parseInt(direction)) >= 0;
@@ -127,7 +130,10 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 				this.wasteClearedDirections.push(parseInt(direction));
 			}
 			if (blockerType == MovementConstants.BLOCKER_TYPE_DEBRIS) {
-				this.debrisClearedDirections.push(parseInt(direction));
+				this.blockerClearedDirections.push(parseInt(direction));
+			}
+			if (blockerType == MovementConstants.BLOCKED_TYPE_EXPLOSIVES) {
+				this.blockerClearedDirections.push(parseInt(direction));
 			}
 			if (blockerType == MovementConstants.BLOCKER_TYPE_GAP) {
 				this.gapBridgedDirections.push(parseInt(direction));
@@ -168,8 +174,8 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 				copy.lS = this.localesScouted;
 			if (this.wasteClearedDirections && this.wasteClearedDirections.length > 0)
 				copy.wd = this.wasteClearedDirections;
-			if (this.debrisClearedDirections && this.debrisClearedDirections.length > 0)
-				copy.dd = this.debrisClearedDirections;
+			if (this.blockerClearedDirections && this.blockerClearedDirections.length > 0)
+				copy.dd = this.blockerClearedDirections;
 			if (this.gapBridgedDirections && this.gapBridgedDirections.length > 0)
 				copy.bd = this.gapBridgedDirections;
 			if (this.weightedNumScavenges)
@@ -202,7 +208,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			else
 				this.localesScouted = [];
 			this.wasteClearedDirections = componentValues.wd ? componentValues.wd : [];
-			this.debrisClearedDirections = componentValues.dd ? componentValues.dd : [];
+			this.blockerClearedDirections = componentValues.dd ? componentValues.dd : [];
 			this.gapBridgedDirections = componentValues.bd ? componentValues.bd : [];
 			this.weightedNumScavenges = componentValues.sw ? componentValues.sw : 0;
 			this.weightedNumHeapScavenges = componentValues.shw ? componentValues.shw : 0;

@@ -19,6 +19,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 				case MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE: return "Radioactive waste";
 				case MovementConstants.BLOCKER_TYPE_GANG: return "Gang";
 				case MovementConstants.BLOCKER_TYPE_DEBRIS: return "Debris";
+				case MovementConstants.BLOCKED_TYPE_EXPLOSIVES: return "Explosives";
 			}
 		},
 		
@@ -29,6 +30,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 				case MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE: return "clear_waste_r";
 				case MovementConstants.BLOCKER_TYPE_GANG: return "fight_gang";
 				case MovementConstants.BLOCKER_TYPE_DEBRIS: return "clear_debris";
+				case MovementConstants.BLOCKED_TYPE_EXPLOSIVES: return "clear_explosives";
 			}
 		},
 		

@@ -506,7 +506,7 @@ define([
 			}
 			
 			// campable levels: zone borders
-			if (levelVO.isCampable) {
+			if (levelOrdinal > 1 && levelVO.isCampable) {
 				var freq = 0.75;
 				// - from ZONE_PASSAGE_TO_CAMP to other (to lead player towards camp)
 				var allowedCriticalPaths = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
@@ -2568,10 +2568,13 @@ define([
 			var isPollutedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
 			var isRadiatedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
 
-			var blockerTypes = [];
-			if (levelOrdinal > 1) {
+			let blockerTypes = [];
+
 			blockerTypes.push(MovementConstants.BLOCKER_TYPE_DEBRIS);
 			blockerTypes.push(MovementConstants.BLOCKER_TYPE_DEBRIS);
+
+			if (levelVO.level < 13 && campOrdinal < 6) {
+				blockerTypes.push(MovementConstants.BLOCKED_TYPE_EXPLOSIVES);
 			}
 			
 			var unlockGapOrdinal = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade("unlock_building_bridge");
@@ -2596,6 +2599,7 @@ define([
 			if (WorldConstants.isHigherCampOrdinalAndStage(campOrdinal, campStage, unlockRadioactiveWasteOrdinal, unlockRadioactiveWasteStage)) {
 				blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE);
 				if (isRadiatedLevel) {
+					blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE);
 					blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE);
 				}
 			}

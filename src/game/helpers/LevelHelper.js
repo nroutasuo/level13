@@ -794,21 +794,22 @@ define([
 				var directionBlocker = sectorPassagesComponent.getBlocker(direction);
 				if (directionBlocker) {
 					if (!GameGlobals.movementHelper.isBlocked(sectorEntity, direction)) continue;
+
 					switch (directionBlocker.type) {
 						case MovementConstants.BLOCKER_TYPE_GAP:
 							projects.push(new LevelProjectVO(null, "bridge_gap", sectorPosition, direction, "Gap", "bridge"));
 							break;
 						case MovementConstants.BLOCKER_TYPE_DEBRIS:
-							let actionName = "clear_debris_e";
+						case MovementConstants.BLOCKED_TYPE_EXPLOSIVES:
 							let neighbour = this.getNeighbour(sectorEntity, direction);
-							if (!neighbour) {
-								log.w("no neighbour for clear debris action found at " + sectorPosition)
-							}
 							let neighbourFeaturesComponent = neighbour.get(SectorFeaturesComponent);
-							if (!featuresComponent.isEarlyZone() || !neighbourFeaturesComponent.isEarlyZone()) {
-								actionName = "clear_debris_l";
+							if (!neighbour) {
+								log.w("no neighbour for clear blocker action found at " + sectorPosition)
 							}
-							projects.push(new LevelProjectVO(null, actionName, sectorPosition, direction, "Debris", "clear"));
+							let isEarlyZone = featuresComponent.isEarlyZone() && neighbourFeaturesComponent.isEarlyZone();
+							let actionName = this.getClearBlockerActionName(directionBlocker.type, isEarlyZone);
+							let projectName = this.getClearBlockerProjectName(directionBlocker.type);
+							projects.push(new LevelProjectVO(null, actionName, sectorPosition, direction, projectName, "clear"));
 							break;
 					}
 				}
@@ -856,6 +857,24 @@ define([
 			}
 
 			return projects;
+		},
+
+		getClearBlockerActionName: function (blockerType, isEarlyZone) {
+			switch (blockerType) {
+				case MovementConstants.BLOCKER_TYPE_GAP: return "bridge_gap";
+				case MovementConstants.BLOCKER_TYPE_DEBRIS: return isEarlyZone ? "clear_debris_e" : "clear_debris_l";
+				case MovementConstants.BLOCKED_TYPE_EXPLOSIVES: return isEarlyZone ? "clear_explosives_e" : "clear_explosives_l";
+			}
+			
+		},
+
+		getClearBlockerProjectName: function (blockerType, isEarlyZone) {
+			switch (blockerType) {
+				case MovementConstants.BLOCKER_TYPE_GAP: return "Bridge";
+				case MovementConstants.BLOCKER_TYPE_DEBRIS: return "Debris";
+				case MovementConstants.BLOCKED_TYPE_EXPLOSIVES: return "Explosives";
+			}
+			
 		},
 
 		getBuiltProjectsForSector: function (sectorEntity) {

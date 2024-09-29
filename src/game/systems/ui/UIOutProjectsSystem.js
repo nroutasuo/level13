@@ -303,10 +303,12 @@ define([
 				}
 			}
 			
-			if (project.action == "clear_debris_e" || project.action == "clear_debris_l" || project.action == "bridge_gap") {
-				let neighbourPosition = PositionConstants.getPositionOnPath(project.position.getPosition(), project.direction, 1);
-				let neighbourLocation = neighbourPosition.getInGameFormat();
-				info = "between " + location + " and " + neighbourLocation + levelText;
+			if (project.action) {
+				if (project.action.startsWith("clear_debris_e") || project.action == "bridge_gap" || project.action.startsWith("clear_explosives")) {
+					let neighbourPosition = PositionConstants.getPositionOnPath(project.position.getPosition(), project.direction, 1);
+					let neighbourLocation = neighbourPosition.getInGameFormat();
+					info = "between " + location + " and " + neighbourLocation + levelText;
+				}
 			}
 			
 			if (!short && project.improvement && project.improvement.name == improvementNames.greenhouse && !isAvailable) {

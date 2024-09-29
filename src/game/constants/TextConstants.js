@@ -1348,6 +1348,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				case MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE: return "cleared";
 				case MovementConstants.BLOCKER_TYPE_GANG: return "defeated";
 				case MovementConstants.BLOCKER_TYPE_DEBRIS: return "cleared";
+				case MovementConstants.BLOCKED_TYPE_EXPLOSIVES: return "cleared";
 			}
 		},
 		

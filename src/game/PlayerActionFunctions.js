@@ -275,6 +275,7 @@ define(['ash',
 				case "clear_waste_r": this.clearWaste(action, param); break;
 				case "bridge_gap": this.bridgeGap(param); break;
 				case "clear_debris": this.clearDebris(param); break;
+				case "clear_explosives": this.clearExplosives(param); break;
 				case "use_spring": this.useSpring(param); break;
 				case "fight_gang": this.fightGang(param); break;
 				case "send_caravan": this.sendCaravan(param); break;
@@ -965,6 +966,14 @@ define(['ash',
 			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_CLEAR_DEBRIS, msg, { position: position, visibility: LogConstants.MGS_VISIBILITY_LEVEL });
 		},
 
+		clearExplosives: function (sectorPos) {
+			let position = this.getPositionVO(sectorPos);
+			let playerPos = this.playerPositionNodes.head.position;
+			this.clearBlocker("clear_explosives", MovementConstants.BLOCKED_TYPE_EXPLOSIVES, sectorPos);
+			let msg = "Explosives cleared at " + position.getInGameFormat(position.level !== playerPos.level);
+			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), msg, { position: position, visibility: LogConstants.MGS_VISIBILITY_LEVEL });
+		},
+		
 		clearBlocker: function (action, blockerType, sectorPos) {
 			// parse sector pos
 			var direction = parseInt(sectorPos.split(".")[3]);

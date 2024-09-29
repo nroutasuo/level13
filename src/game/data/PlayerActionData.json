@@ -308,6 +308,14 @@
         "clear_debris_l": {
             "resource_rope": 120
         },
+        "clear_explosives_e": {
+            "resource_metal": 10,
+            "resource_rope": 80
+        },
+        "clear_explosives_l": {
+            "resource_metal": 30,
+            "resource_rope": 120
+        },
         "clear_waste_r": {
             "stamina": 50
         },
@@ -1334,6 +1342,7 @@
         "build_out_collector_food": 3,
         "build_out_collector_water": 3,
         "clear_debris": 30,
+        "clear_explosives": 60,
         "clear_waste_r": 10,
         "clear_waste_t": 5,
         "craft_consumable_weapon_1": 1,
@@ -2265,6 +2274,12 @@
             }
         },
         "clear_debris": {
+            "sector": {
+                "acessible_to_workers": true,
+                "scouted": true
+            }
+        },
+        "clear_explosives": {
             "sector": {
                 "acessible_to_workers": true,
                 "scouted": true

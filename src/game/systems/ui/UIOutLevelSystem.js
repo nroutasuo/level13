@@ -16,6 +16,7 @@ define([
 	'game/constants/LocaleConstants',
 	'game/constants/LevelConstants',
 	'game/constants/MovementConstants',
+	'game/constants/StoryConstants',
 	'game/constants/TradeConstants',
 	'game/constants/TribeConstants',
 	'game/nodes/PlayerPositionNode',
@@ -39,7 +40,7 @@ define([
 ], function (
 	Ash,
 	Text, MapUtils,  UIList, UIState, GameGlobals, GlobalSignals, ExplorationConstants, PlayerActionConstants, PlayerStatConstants, TextConstants,
-	LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, TradeConstants,
+	LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, StoryConstants, TradeConstants,
 	TribeConstants, PlayerPositionNode, PlayerLocationNode, NearestCampNode, VisionComponent, StaminaComponent,
 	ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
 	MovementOptionsComponent, PositionComponent, LogMessagesComponent, CampComponent, SectorImprovementsComponent,
@@ -614,7 +615,6 @@ define([
 		getMovementDescription: function (isScouted, passagesComponent, entity) {
 			var description = "";
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
-			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			var position = entity.get(PositionComponent);
 
 			// Passages up / down
@@ -657,6 +657,8 @@ define([
 						var gang = GameGlobals.levelHelper.getGang(position, direction);
 						if (blocker.type == MovementConstants.BLOCKER_TYPE_DEBRIS) {
 							description += "Debris to the " + directionName + " has been cleared away. ";
+						} else if (blocker.type == MovementConstants.BLOCKED_TYPE_EXPLOSIVES) {
+							description += "Old explosives to the " + directionName + " have been cleared away. ";
 						} else if (blocker.type == MovementConstants.BLOCKER_TYPE_GANG) {
 							if (gang) {
 								description += "A " + blockerName + " to the " + directionName + " has been " + TextConstants.getUnblockedVerb(blocker.type) + ". ";
@@ -901,7 +903,7 @@ define([
 			for (let i in PositionConstants.getLevelDirections()) {
 				var direction = PositionConstants.getLevelDirections()[i];
 				var directionBlocker = GameGlobals.movementHelper.getBlocker(currentSector, direction);
-				if (directionBlocker && directionBlocker.type != MovementConstants.BLOCKER_TYPE_DEBRIS) {
+				if (directionBlocker && !GameGlobals.movementHelper.isProjectBlocker(directionBlocker.type)) {
 					addBlockerActionButton(directionBlocker, direction);
 				}
 			}

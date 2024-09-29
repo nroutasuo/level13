@@ -242,6 +242,13 @@ define(['ash'], function (Ash) {
 				logMessage: "There is too much debris blocking the path. Workers from the camp can clear it.",
 				conditions: { sector: { blockers: { 4: true } } }
 			},
+			TUTORIAL_ENCOUNTER_BLOCKER_TYPE_EXPLOSIVES: {
+				triggers: [ "change_position" ],
+				repeats: "NEVER",
+				delay: 1500,
+				logMessage: "There are explosives from an old war here, blocking the way. Workers from the camp can clear them.",
+				conditions: { sector: { blockers: { 7: true } } }
+			},
 			TUTORIAL_ENCOUNTER_BLOCKER_TYPE_WASTE_RADIOACTIVE_NO_TECH: {
 				group: "TUTORIAL_ENCOUNTER_BLOCKER_TYPE_WASTE_RADIOACTIVE",
 				triggers: [ "change_position" ],
