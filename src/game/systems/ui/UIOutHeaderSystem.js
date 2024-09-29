@@ -113,7 +113,7 @@ define([
 			this.elements.changeIndicatorInsight = $(".change-indicator-insight");
 
 			this.elements.valReputation = $(".header-camp-reputation .value");
-			this.elements.changeIndicatorReputation = $(".header-camp-reputation.change-indicator");
+			this.elements.changeIndicatorReputation = $(".header-camp-reputation .change-indicator");
 			this.elements.changeIndicatorPopulation = $(".header-camp-population .change-indicator");
 			
 			this.updateLayoutMode();
