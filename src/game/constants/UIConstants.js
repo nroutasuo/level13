@@ -504,7 +504,11 @@ define(['ash',
 					effect = "health";
 					break;
 				case PerkConstants.perkTypes.luck:
-					return "Lower probability of negative random events when exploring";
+					if (perk.effect > 0) {
+						return "Lower probability of negative random events when exploring";
+					} else { 
+						return "Higher probability of negative random events when exploring";
+					}
 			}
 
 			return effect + " " + value;

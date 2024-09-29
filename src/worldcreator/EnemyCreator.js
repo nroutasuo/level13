@@ -72,6 +72,7 @@ define([
 				
 				let causedInjuryTypes = EnemyConstants.enemyInjuries[enemyClass];
 				def.causedInjuryTypes = (def.causedInjuryTypes || []).concat(causedInjuryTypes);
+				def.curseProbability = def.curseProbability || 0;
 				
 				let type = def.environment || template.environment;
 				let enemyVO = this.createEnemy(
@@ -87,6 +88,7 @@ define([
 				
 				enemyVO.enemyClass = enemyClass;
 				enemyVO.requiredTags = def.requiredTags || [];
+				enemyVO.curseProbability = def.curseProbability || 0;
 				
 				if (!EnemyConstants.enemyDefinitions[type]) EnemyConstants.enemyDefinitions[type] = [];
 			 	EnemyConstants.enemyDefinitions[type].push(enemyVO.cloneWithIV(50));

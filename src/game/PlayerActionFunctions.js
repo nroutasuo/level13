@@ -181,12 +181,8 @@ define(['ash',
 						break;
 						
 					case "use_in_home":
-						var perksComponent = this.playerStatsNodes.head.perks;
-						var hasStaminaPerk = perksComponent.hasPerk(PerkConstants.perkIds.staminaBonus);
-						if (hasStaminaPerk) {
-							perksComponent.removePerkById(PerkConstants.perkIds.staminaBonus);
-							this.playerStatsNodes.head.stamina.isPendingPenalty = true;
-						}
+					case "use_in_hospital":
+						this.handlePerksOnStartRest();
 						break;
 				}
 			}
@@ -829,10 +825,7 @@ define(['ash',
 			}
 			
 			if (localeVO.type == localeTypes.grove) {
-				let perksComponent = this.playerStatsNodes.head.perks;
-				if (!perksComponent.hasPerk(PerkConstants.perkIds.blessed)) {
-					perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.blessed));
-				}
+				GameGlobals.playerHelper.addPerk(PerkConstants.perkIds.blessed);
 				this.playerStatsNodes.head.stamina.stamina += PlayerStatConstants.STAMINA_GAINED_FROM_GROVE;
 				logMsgSuccess += "The trees seem alive. They whisper, but the words are unintelligible. You have found a source of <span class='hl-functionality'>ancient power</span>.";
 			}
@@ -1894,14 +1887,36 @@ define(['ash',
 		useHome: function () {
 			this.playerStatsNodes.head.stamina.stamina = this.playerStatsNodes.head.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
 			
-			if (this.playerStatsNodes.head.stamina.isPendingPenalty) {
-				var perksComponent = this.playerStatsNodes.head.perks;
-				perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.staminaBonusPenalty, PerkConstants.TIMER_DISABLED, 300));
-				this.playerStatsNodes.head.stamina.isPendingPenalty = false;
-			}
+			this.handlePerksOnFinishRest();
 			
 			this.completeAction("use_in_home");
 			this.forceStatsBarUpdate();
+		},
+
+		handlePerksOnStartRest: function () {
+			let perksComponent = this.playerStatsNodes.head.perks;
+
+			// remove stamina bonus and queue hangover
+			let hasStaminaPerk = perksComponent.hasPerk(PerkConstants.perkIds.staminaBonus);
+			if (hasStaminaPerk) {
+				perksComponent.removePerkById(PerkConstants.perkIds.staminaBonus);
+				this.playerStatsNodes.head.stamina.isPendingPenalty = true;
+			}
+
+			// clear other perks removed by resting
+			let perkIDs = [ PerkConstants.perkIds.cursed, PerkConstants.perkIds.stressed, PerkConstants.perkIds.accomplished ];
+			for (let i = 0; i < perkIDs.length; i++) {
+				let perkID = perkIDs[i];
+				if (perksComponent.hasPerk(perkID)) perksComponent.removePerkById(perkID);
+			}
+		},
+
+		handlePerksOnFinishRest: function () {
+			// add stamina potion hangover
+			if (this.playerStatsNodes.head.stamina.isPendingPenalty) {
+				GameGlobals.playerHelper.addPerk(PerkConstants.perkIds.staminaBonusPenalty, PerkConstants.TIMER_DISABLED, 300);
+				this.playerStatsNodes.head.stamina.isPendingPenalty = false;
+			}
 		},
 
 		useCampfire: function () {
@@ -1949,6 +1964,8 @@ define(['ash',
 
 			let maxStamina = PlayerStatConstants.getMaxStamina(perksComponent);
 			this.playerStatsNodes.head.stamina.stamina = maxStamina;
+
+			this.handlePerksOnFinishRest();
 
 			this.completeAction("use_in_hospital");
 			GameGlobals.playerActionFunctions.unlockFeature("fight");
@@ -2118,7 +2135,7 @@ define(['ash',
 					break;
 				
 				case "stamina_potion":
-					perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.staminaBonus));
+					GameGlobals.playerHelper.addPerk(PerkConstants.perkIds.staminaBonus);
 					this.engine.updateComplete.addOnce(function () {
 						GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_STAMINA_POTION, "Feeling stronger and more awake.");
 						sys.playerStatsNodes.head.stamina.stamina += PlayerStatConstants.STAMINA_GAINED_FROM_POTION_1;

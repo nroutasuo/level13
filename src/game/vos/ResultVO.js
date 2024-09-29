@@ -1,5 +1,5 @@
 // Result of a player action such as scavenge or fight: rewards (res, items, ..) and penalties (injuries, lost explorers, ..)
-define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
+define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function (Ash, PerkConstants, ResourcesVO) {
 	
 	var ResultVO = Ash.Class.extend({
 		
@@ -25,7 +25,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		brokenItems: [],
 		lostExplorers: [],
 		lostPerks: [],
-		gainedInjuries: [],
+		gainedPerks: [],
 		
 		// additional info for UI
 		foundStashVO: null,
@@ -60,7 +60,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			this.brokenItems = [];
 			this.lostExplorers = [];
 			this.lostPerks = [];
-			this.gainedInjuries = [];
+			this.gainedPerks = [];
 			
 			this.selectedItems = [];
 			this.selectedResources = new ResourcesVO(storageTypes.RESULT);
@@ -72,6 +72,14 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		
 		hasSelectable: function () {
 			return this.gainedResources.getTotal() > 0 || this.gainedItems.length > 0;
+		},
+
+		getGainedInjuries: function () {
+			return this.gainedPerks.filter(perk => perk.type == PerkConstants.perkTypes.injury);
+		},
+
+		getGainedCurses: function () {
+			return this.gainedPerks.filter(perk => perk.id == PerkConstants.perkIds.cursed);
 		},
 		
 		getUnselectedAndDiscardedItems: function () {
@@ -99,7 +107,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 				&& this.brokenItems.length == 0
 				&& this.lostExplorers.length == 0
 				&& this.lostPerks.length == 0
-				&& this.gainedInjuries.length == 0
+				&& this.gainedPerks.length == 0
 				&& this.gainedBlueprintPiece == null
 				&& this.gainedPopulation == 0
 				&& this.gainedEvidence == 0
@@ -123,7 +131,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			result.brokenItems = this.brokenItems.concat();
 			result.lostExplorers = this.lostExplorers.concat();
 			result.lostPerks = this.lostPerks.concat();
-			result.gainedInjuries = this.gainedInjuries.concat();
+			result.gainedPerks = this.gainedPerks.concat();
 			result.gainedBlueprintPiece = this.gainedBlueprintPiece;
 			result.gainedPopulation = this.gainedPopulation;
 			result.gainedEvidence = this.gainedEvidence;

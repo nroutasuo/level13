@@ -535,14 +535,8 @@ define(['ash',
 			GlobalSignals.inventoryChangedSignal.dispatch();
 		},
 
-		addPerk: function () {
-			var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);
-			var perk = PerkConstants.getPerk(perkID);
-			if (perk) {
-				perksComponent.addPerk(perk);
-			} else {
-				log.w("No such perk: " + perkID);
-			}
+		addPerk: function (perkID) {
+			GameGlobals.playerHelper.addPerk(perkID);
 		},
 
 		heal: function() {

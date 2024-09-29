@@ -170,7 +170,10 @@ define([
 			let playerLuck = perksComponent.getTotalEffect(PerkConstants.perkTypes.luck);
 			let loseInventoryProbability = PlayerActionConstants.getLoseInventoryProbability(action, playerVision, playerLuck);
 			this.addLostAndBrokenItems(resultVO, action, loseInventoryProbability, true);
-			resultVO.gainedInjuries = this.getResultInjuries(PlayerActionConstants.getInjuryProbability(action, playerVision, playerLuck), action);
+			
+			let gainedInjuries =  this.getResultInjuries(PlayerActionConstants.getInjuryProbability(action, playerVision, playerLuck), action);
+			resultVO.gainedPerks = resultVO.gainedPerks.concat(gainedInjuries);
+
 			resultVO.hasCustomReward = hasCustomReward;
 
 			resultVO.collected = false;
@@ -308,16 +311,18 @@ define([
 		},
 
 		getScoutLocaleRewards: function (localeVO) {
-			var rewards = new ResultVO("scout");
-			var localeCategory = localeVO.getCategory();
-			var playerPos = this.playerLocationNodes.head.position;
-			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
+			let rewards = new ResultVO("scout");
 
-			var availableResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable.clone();
+			let localeCategory = localeVO.getCategory();
+			let sector = this.playerLocationNodes.head.entity;
+			let playerPos = this.playerLocationNodes.head.position;
+			let campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
+
+			let availableResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable.clone();
 			availableResources.addAll(localeVO.getResourceBonus(GameGlobals.gameState.getUnlockedResources(), campOrdinal), "scout-rewards");
 			availableResources.limitAll(WorldConstants.resourcePrevalence.RARE, WorldConstants.resourcePrevalence.ABUNDANT, "scout-rewards");
-			var efficiency = this.getCurrentScavengeEfficiency();
-			var localeDifficulty = (localeVO.requirements.vision[0] + localeVO.costs.stamina / 10) / 100;
+			let efficiency = this.getCurrentScavengeEfficiency();
+			let localeDifficulty = (localeVO.requirements.vision[0] + localeVO.costs.stamina / 10) / 100;
 
 			// blueprints
 			rewards.gainedBlueprintPiece = this.getResultBlueprint(localeVO);
@@ -332,6 +337,7 @@ define([
 			
 			let explorerID = localeVO.explorerID;
 			if (explorerID) {
+				// hard-coded explorer
 				rewards.gainedExplorers = [ ExplorerConstants.getNewPredefinedExplorer(explorerID) ];
 			} else {
 				if (localeVO.type !== localeTypes.tradingpartner && localeVO.type != localeTypes.grove) {
@@ -352,6 +358,17 @@ define([
 						let itemOptions = { rarityKey: "tradeRarity", allowNextCampOrdinal: true };
 						rewards.gainedItems = this.getRewardItems(0.25, 0, null, itemOptions);
 					}
+
+					let perkProbabilities = {};
+					perkProbabilities[PerkConstants.perkIds.accomplished] = 
+						rewards.gainedBlueprintPiece ? 0.5 : 
+						GameGlobals.levelHelper.isDeadEnd(sector) ? 0.25 :
+						rewards.gainedItems.length > 0 ? 0.1 : 
+						0;
+					perkProbabilities[PerkConstants.perkIds.stressed] = localeVO.getStressedProbability();
+
+					// temporary perks
+					rewards.gainedPerks = this.getGainedPerks(perkProbabilities);
 				}
 			}
 
@@ -386,6 +403,7 @@ define([
 				
 				rewards.gainedResources = this.getRewardResources(0.5, 2, this.getCurrentScavengeEfficiency(), availableResources);
 				rewards.gainedItems = this.getRewardItems(0, 1, enemyVO.droppedIngredients, {});
+				rewards.gainedPerks = this.getGainedCurses(enemyVO.curseProbability);
 				rewards.gainedReputation = 1;
 
 				let playerVision = this.playerStatsNodes.head.vision.value;
@@ -413,7 +431,7 @@ define([
 			resultVO.lostPerks = this.getLostPerks(loseAugmentationProbability);
 			
 			let finalInjuryProbability = resultVO.lostPerks.length > 0 ? injuryProbability / 2 : injuryProbability;
-			resultVO.gainedInjuries = this.getResultInjuries(finalInjuryProbability, sourceAction, enemyVO);
+			resultVO.gainedPerks = this.getResultInjuries(finalInjuryProbability, sourceAction, enemyVO);
 
 			return resultVO;
 		},
@@ -661,16 +679,17 @@ define([
 				}
 			}
 
-			if (rewards.gainedInjuries) {
-				var perksComponent = this.playerStatsNodes.head.perks;
-				for (let i = 0; i < rewards.gainedInjuries.length; i++) {
-					perksComponent.addPerk(PerkConstants.getPerk(rewards.gainedInjuries[i].id));
+			if (rewards.gainedPerks) {
+				for (let i = 0; i < rewards.gainedPerks.length; i++) {
+					let perkID = rewards.gainedPerks[i].id;
+					GameGlobals.playerHelper.addPerk(perkID);
 				}
-				GameGlobals.gameState.increaseGameStatSimple("numInjuriesReceived", rewards.gainedInjuries.length);
+
+				GameGlobals.gameState.increaseGameStatSimple("numInjuriesReceived", rewards.getGainedInjuries().length);
 			}
 			
 			if (rewards.lostPerks) {
-				var perksComponent = this.playerStatsNodes.head.perks;
+				let perksComponent = this.playerStatsNodes.head.perks;
 				for (let i = 0; i < rewards.lostPerks.length; i++) {
 					perksComponent.removePerkById(rewards.lostPerks[i].id);
 				}
@@ -840,8 +859,12 @@ define([
 
 			// TODO more (varied?) messages for getting injured
 
-			if (rewards.gainedInjuries.length > 0) {
+			if (rewards.getGainedInjuries().length > 0) {
 				msg += " Got injured.";
+			}
+
+			if (rewards.getGainedCurses().length > 0) {
+				msg += " Got cursed.";
 			}
 			
 			if (rewards.lostPerks.length > 0) {
@@ -960,7 +983,14 @@ define([
 			if (hasGainedStuff || forceShowInventoryManagement) div += gainedhtml;
 
 			let hasLostInventoryStuff = resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.lostCurrency > 0;
-			let hasLostSomething = resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.lostCurrency > 0 || resultVO.brokenItems > 0 || resultVO.lostExplorers.length > 0 || resultVO.gainedInjuries.length > 0 || resultVO.lostPerks.length > 0;
+			let hasLostSomething = 
+				resultVO.lostResources.getTotal() > 0 || 
+				resultVO.lostItems.length > 0 || 
+				resultVO.lostCurrency > 0 || 
+				resultVO.brokenItems > 0 || 
+				resultVO.lostExplorers.length > 0 || 
+				resultVO.gainedPerks.length > 0 || 
+				resultVO.lostPerks.length > 0;
 
 			if (hasLostInventoryStuff) {
 				var lostMsg = resultVO.lostItems.length > 1 ? "Lost some items." : resultVO.lostItems.length > 0 ? "Lost an item." : ""
@@ -1019,8 +1049,12 @@ define([
 				}
 			}
 
-			if (resultVO.gainedInjuries.length > 0) {
+			if (resultVO.getGainedInjuries().length > 0) {
 				div += "<p class='warning'>You got injured.</p>";
+			}
+
+			if (resultVO.getGainedCurses().length > 0) {
+				div += "<p class='warning'>You got cursed.</p>";
 			}
 
 			if (resultVO.lostPerks.length > 0) {
@@ -1106,8 +1140,12 @@ define([
 				messages.push({ id: LogConstants.MSG_ID_LOST_EXPLORER, text: "Lost " + resultVO.lostExplorers.length + " explorers.", addToPopup: true, addToLog: true });
 			}
 
-			if (resultVO.gainedInjuries.length > 0) {
+			if (resultVO.getGainedInjuries().length > 0) {
 				messages.push({ id: LogConstants.MSG_ID_GOT_INJURED, text: "Got injured.", addToPopup: true, addToLog: true });
+			}
+
+			if (resultVO.getGainedCurses().length > 0) {
+				messages.push({ id: LogConstants.MSG_ID_GOT_INJURED, text: "Got cursed.", addToPopup: true, addToLog: true });
 			}
 
 			if (resultVO.lostPerks.length > 0) {
@@ -1876,6 +1914,44 @@ define([
 				result = enemyVO.causedInjuryTypes;
 			}
 			
+			return result;
+		},
+
+		getGainedCurses: function (curseProbability) {
+			let perksComponent = this.playerStatsNodes.head.perks;
+			let result = [];
+
+			if (curseProbability <= 0) return result;
+
+			if (perksComponent.hasPerk(PerkConstants.perkIds.cursed)) return result;
+			
+			if (curseProbability > Math.random()) {
+				result.push(PerkConstants.getPerk(PerkConstants.perkIds.cursed));
+			}
+
+			return result;
+		},
+
+		getGainedPerks: function (perkProbabilities) {
+			let perksComponent = this.playerStatsNodes.head.perks;
+			let result = [];
+
+			for (let key in perkProbabilities) {
+				let perkID = key;
+				let perkProbability = perkProbabilities[perkID];
+
+				if (perkProbability <= 0) return result;
+
+				if (perksComponent.hasPerk(perkID)) return result;
+				
+				if (perkProbability > Math.random()) {
+					result.push(PerkConstants.getPerk(perkID));
+
+					// only one perk per result
+					return result;
+				}
+			}
+
 			return result;
 		},
 

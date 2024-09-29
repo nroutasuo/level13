@@ -9,6 +9,7 @@ define([
 	'game/constants/ItemConstants',
 	'game/constants/LogConstants',
 	'game/constants/MovementConstants',
+	'game/constants/PerkConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/PlayerStatConstants',
 	'game/nodes/NearestCampNode',
@@ -36,6 +37,7 @@ define([
 	ItemConstants,
 	LogConstants,
 	MovementConstants,
+	PerkConstants,
 	PlayerActionConstants,
 	PlayerStatConstants,
 	NearestCampNode,
@@ -403,6 +405,22 @@ define([
 			let isCarried = !playerPosition.inCamp && sourcePosition.equals(playerPosition);
 			itemsComponent.addItem(item, isCarried);
 			item.foundPosition = sourcePosition.clone();
+		},
+
+		addPerk: function (perkID, startTimer, endTimer) {
+			let perksComponent = this.playerStatsNodes.head.perks;
+			if (!perksComponent) return;
+			if (perksComponent.hasPerk(perkID)) return;
+
+			let blockingPerks = PerkConstants.getBlockingPerks(perkID);
+			for (let i = 0; i < blockingPerks.length; i++) {
+				if (perksComponent.hasPerk(blockingPerks[i])) {
+					log.i("addPerk " + perkID + " blocked by existing perk " + blockingPerks[i]);
+					return;
+				}
+			}
+
+			perksComponent.addPerk(PerkConstants.getPerk(perkID, startTimer, endTimer));
 		},
 		
 		getBestAvailableExplorer: function (explorerType) {

@@ -195,8 +195,8 @@
 		],
 		"enemyType": "flora",
 		"environment": "sunlit",
-		"size": 0.5,
-		"name": "Bloodwort"
+		"name": "Bloodwort",
+		"size": 0.5
 	},
 	"camel_spider": {
 		"attackRatio": 0.35,
@@ -300,9 +300,9 @@
 		"enemyType": "small_animal",
 		"environment": "radiation",
 		"name": "radioactive centipede",
+		"rarity": 5,
 		"size": 0.3,
-		"speed": 0.5,
-		"rarity": 5
+		"speed": 0.5
 	},
 	"centipede__template": {
 		"enemyType": "small_animal"
@@ -346,8 +346,8 @@
 		"difficulty": 2,
 		"environment": "radiation",
 		"name": "radioactive cockroach",
-		"speed": 0.6,
-		"rarity": 5
+		"rarity": 5,
+		"speed": 0.6
 	},
 	"cockroach__template": {
 		"enemyType": "small_animal",
@@ -489,6 +489,7 @@
 	"doomsayer": {
 		"attackRatio": 0.55,
 		"campOrdinal": 13,
+		"curseProbability": 0.25,
 		"difficulty": 3,
 		"droppedResources": [
 			"herbs"
@@ -527,30 +528,25 @@
 		"rarity": 1
 	},
 	"dryad__mad": {
-		"attackRatio": 0.55,
 		"campOrdinal": 6,
+		"environment": "global",
+		"name": "mad dryad"
+	},
+	"dryad__template": {
+		"attackRatio": 0.55,
+		"curseProbability": 0.25,
 		"difficulty": 8,
 		"droppedResources": [
 			"herbs"
 		],
 		"enemyType": "humanoid",
-		"environment": "global",
-		"name": "mad dryad",
 		"rarity": 90,
 		"speed": 1.1
 	},
 	"dryad__vengeful": {
-		"attackRatio": 0.55,
 		"campOrdinal": 7,
-		"difficulty": 8,
-		"droppedResources": [
-			"herbs"
-		],
-		"enemyType": "humanoid",
 		"environment": "sunlit",
-		"name": "vengeful dryad",
-		"rarity": 90,
-		"speed": 1.1
+		"name": "vengeful dryad"
 	},
 	"duskboar": {
 		"attackRatio": 0.4,
@@ -789,12 +785,13 @@
 	},
 	"ghost__template": {
 		"attackRatio": 0.55,
+		"curseProbability": 0.5,
 		"difficulty": 8,
 		"enemyType": "apparition",
 		"environment": "dark",
 		"healthFactor": 0.9,
-		"speed": 0.9,
-		"rarity": 75
+		"rarity": 75,
+		"speed": 0.9
 	},
 	"ghost__vengeful": {
 		"campOrdinal": 7,
@@ -1325,8 +1322,8 @@
 	},
 	"raccoon__alarmed": {
 		"campOrdinal": 3,
-		"speed": 1,
-		"name": "alarmed raccoon"
+		"name": "alarmed raccoon",
+		"speed": 1
 	},
 	"raccoon__mutant": {
 		"campOrdinal": 7,
@@ -1631,6 +1628,7 @@
 	},
 	"shadow__template": {
 		"attackRatio": 0.45,
+		"curseProbability": 0.5,
 		"difficulty": 7,
 		"enemyType": "apparition",
 		"environment": "dark",
@@ -1767,8 +1765,8 @@
 		"name": "Glowing stinkhorn"
 	},
 	"stinkhorn__template": {
-		"difficulty": 1,
 		"attackRatio": 0.9,
+		"difficulty": 1,
 		"enemyType": "fungi"
 	},
 	"suspicious_moss": {
@@ -1932,8 +1930,8 @@
 		"enemyType": "structure",
 		"environment": "global",
 		"rarity": 10,
-		"size": 0.8,
 		"shieldRatio": 1,
+		"size": 0.8,
 		"speed": 0.5
 	},
 	"turret__big": {

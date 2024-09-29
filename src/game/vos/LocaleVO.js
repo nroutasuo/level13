@@ -133,6 +133,15 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 					return "u";
 			}
 		},
+
+		getStressedProbability: function () {
+			switch (this.type) {
+				case localeTypes.house: return 0.1;
+				case localeTypes.lab: return 0.2;
+				case localeTypes.sewer: return 0.3;
+				default: return 0;
+			}
+		},
 		
 		getBracket: function () {
 			return this.isEarly ? LocaleConstants.LOCALE_BRACKET_EARLY : LocaleConstants.LOCALE_BRACKET_LATE;

@@ -22,6 +22,7 @@ define(['ash'], function (Ash) {
 		droppedResources: [],
 		droppedIngredients: [],
 		causedInjuryTypes: [],
+		curseProbability: 0,
 		
 		// stat IVs (0-100)
 		attIV: 0,
@@ -54,6 +55,7 @@ define(['ash'], function (Ash) {
 			this.droppedResources = droppedResources || [];
 			this.droppedIngredients = droppedIngredients || [];
 			this.causedInjuryTypes = causedInjuryTypes || null;
+			this.curseProbability = 0;
 			
 			this.attIV = Math.round(Math.random() * 100);
 			this.defIV = Math.round(Math.random() * 100);
@@ -107,6 +109,7 @@ define(['ash'], function (Ash) {
 			let clone = new EnemyVO(this.id, this.name, this.type, this.nouns, this.groupN, this.activeV, this.defeatedV, this.size, this.att, this.def, this.maxHP, this.maxShield, this.speed, this.rarity, this.droppedResources, this.droppedIngredients, this.causedInjuryTypes);
 			clone.enemyClass = this.enemyClass;
 			clone.requiredTags = this.requiredTags;
+			clone.curseProbability = this.curseProbability;
 			return clone;
 		},
 		
