@@ -965,8 +965,6 @@ define(['ash',
 					GameGlobals.fightHelper.endFight(true, false);
 				} else if  (id == "out-action-fight-cancel") {
 					GameGlobals.fightHelper.endFight(false, true);
-				} else if  (id == "incoming-caravan-popup-cancel") {
-					uiFunctions.popupManager.closePopup("incoming-caravan-popup");
 				} else if (action == "leave_camp") {
 					gameState.uiStatus.leaveCampItems = {};
 					gameState.uiStatus.leaveCampRes = {};
