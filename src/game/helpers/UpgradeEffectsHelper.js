@@ -1,6 +1,7 @@
 // Helper to check effects of upgrades on workers and buildings
 define([
 	'ash',
+	'text/Text',
 	'game/GameGlobals',
 	'game/constants/CampConstants',
 	'game/constants/ImprovementConstants',
@@ -31,7 +32,7 @@ define([
 				if  (title && title.length > 0) effects += title + ": ";
 				if (showMultiline) effects += "<br/>";
 				for (let i = 0; i < items.length; i++) {
-					if (i > 0) effects += ", ";
+					if (i > 0) effects += Text.t("ui.common.list_template_many_delimiter");
 					effects += getItemDisplayName(items[i]).toLowerCase();
 				}
 				if (showMultiline) effects += "<br/>";

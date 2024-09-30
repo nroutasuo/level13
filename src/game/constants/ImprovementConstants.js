@@ -29,7 +29,6 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 			},
 			house2: {
 				canBeDismantled: true,
-				description: [ "Houses " + CampConstants.POPULATION_PER_HOUSE2 + " people.", "Houses " + CampConstants.POPULATION_PER_HOUSE2_LEVEL_2 + " people." ],
 				sortScore: 9000,
 				improvementLevelsPerTechLevel: 1,
 				improvementLevelsPerMajorLevel: 1,
@@ -248,6 +247,7 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 		getImprovementID: function (improvementName) {
 			for (var key in improvementNames) {
 				var name = improvementNames[key];
+				if (key == improvementName) return key;
 				if (name == improvementName) return key;
 			}
 			return null;
