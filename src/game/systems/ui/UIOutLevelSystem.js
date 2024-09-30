@@ -739,6 +739,9 @@ define([
 					let coldAdjective = hazards.cold < 20 ? "quite" : hazards.cold < 50 ? "very" : "extremely";
 					hazardDesc += "It's " + coldAdjective + " <span class='hl-functionality'>cold</span> here (" + hazards.cold + "). ";
 				}
+				if (hazards.flooded > 0) {
+					hazardDesc += "This place is <span class='hl-functionality'>flooded</span>. ";
+				}
 				if (hazards.debris > 0) {
 					hazardDesc += "It difficult to move around here due to the amount of <span class='hl-functionality'>debris</span>.";
 				}

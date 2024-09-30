@@ -381,7 +381,12 @@ define([
 					let debrisMalus = GameGlobals.sectorHelper.getDebrisMovementMalus(sector);
 					if (debrisMalus !== 1) {
 						if (result.length > 0) result += "<br/>";
-						result += "Debirs: " + debrisMalus;
+						result += "Debris: " + debrisMalus;
+					}
+					let floodedMalus = GameGlobals.sectorHelper.getFloodedMovementMalus(sector);
+					if (floodedMalus !== 1) {
+						if (result.length > 0) result += "<br/>";
+						result += "Flooded: " + floodedMalus;
 					}
 					break;
 			}

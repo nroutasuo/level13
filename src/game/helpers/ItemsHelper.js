@@ -96,7 +96,8 @@ define([
 				ItemConstants.itemDefinitions.clothing_upper,
 				ItemConstants.itemDefinitions.clothing_lower,
 				ItemConstants.itemDefinitions.clothing_hands,
-				ItemConstants.itemDefinitions.clothing_head
+				ItemConstants.itemDefinitions.clothing_head,
+				ItemConstants.itemDefinitions.shoes,
 			];
 			
 			var bestAvailableItem;
@@ -194,6 +195,15 @@ define([
 			}
 			return poisonProtection;
 		},
+
+		getMaxHazardFloodedForLevel: function (campOrdinal, step, isHardLevel) {
+			let defaultClothing = this.getDefaultClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_water, isHardLevel);
+			let waterProtection = 0;
+			for (let i = 0; i < defaultClothing.length; i++) {
+				waterProtection += defaultClothing[i].getBaseBonus(ItemConstants.itemBonusTypes.res_water);
+			}
+			return waterProtection;
+		},
 		
 		getMaxHazardColdForLevel: function (campOrdinal, step, isHardLevel) {
 			var defaultClothing = this.getDefaultClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_cold, isHardLevel);
@@ -218,7 +228,7 @@ define([
 			// all equipment required to clear a level (all hazards), even if multiple per slot
 			let result = [];
 			var addedIDs = [];
-			var bonusTypes = [ ItemConstants.itemBonusTypes.res_poison, ItemConstants.itemBonusTypes.res_cold, ItemConstants.itemBonusTypes.res_radiation ];
+			var bonusTypes = [ ItemConstants.itemBonusTypes.res_poison, ItemConstants.itemBonusTypes.res_cold, ItemConstants.itemBonusTypes.res_radiation, ItemConstants.itemBonusTypes.res_water ];
 			for (let i = 0; i < bonusTypes.length; i++) {
 				var neededClothing = this.getDefaultClothing(campOrdinal, step, bonusTypes[i], isHardLevel);
 				for (let j = 0; j < neededClothing.length; j++) {
@@ -276,7 +286,7 @@ define([
 			checkItem(ItemConstants.getNewItemInstanceByID("exploration_1"));
 			checkItem(this.getDefaultWeapon(campOrdinal, step));
 			
-			let bonusTypes = [ ItemConstants.itemBonusTypes.res_poison, ItemConstants.itemBonusTypes.res_cold, ItemConstants.itemBonusTypes.res_radiation ];
+			let bonusTypes = [ ItemConstants.itemBonusTypes.res_poison, ItemConstants.itemBonusTypes.res_cold, ItemConstants.itemBonusTypes.res_radiation, ItemConstants.itemBonusTypes.res_water ];
 			
 			for (let i = 0; i < bonusTypes.length; i++) {
 				var neededClothing = this.getDefaultClothing(campOrdinal, step, bonusTypes[i], isHardLevel);

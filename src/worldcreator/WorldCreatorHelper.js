@@ -409,10 +409,10 @@ define([
 			if (level === 14) return LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
 			if (level == bottomLevel) return LevelConstants.UNCAMPABLE_LEVEL_TYPE_SUPERSTITION;
 			
-			var campOrdinal = this.getCampOrdinal(seed, level);
+			let campOrdinal = this.getCampOrdinal(seed, level);
 			
 			let options = [];
-			var levelOrdinal = this.getLevelOrdinal(seed, level);
+			let levelOrdinal = this.getLevelOrdinal(seed, level);
 			
 			let unlockToxicWasteCampOrdinal = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade("unlock_action_clear_waste_t");
 			if (levelOrdinal == this.getNextUncampableLevelOrdinalForCampOrdinal(seed, unlockToxicWasteCampOrdinal)) {
@@ -424,10 +424,12 @@ define([
 				return LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
 			}
 			
-			if (campOrdinal >= WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_RADIATION)
+			if (campOrdinal >= WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_RADIATION && campOrdinal != 9)
 				options.push(LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION);
 			if (campOrdinal >= WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_POISON)
 				options.push(LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION);
+			if (campOrdinal != 8 && campOrdinal != 15 && campOrdinal != 14)
+				options.push(LevelConstants.UNCAMPABLE_LEVEL_TYPE_FLOODED);
 				
 			if (options.length == 0)
 				return LevelConstants.UNCAMPABLE_LEVEL_TYPE_SUPERSTITION;

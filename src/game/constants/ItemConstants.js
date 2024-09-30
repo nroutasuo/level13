@@ -69,6 +69,7 @@ function (Ash, Text, ItemData, Text, PlayerActionConstants, ItemVO) {
 			res_cold: "warmth",
 			res_radiation: "res_rad",
 			res_poison: "res_poison",
+			res_water: "res_water",
 			shade: "shade",
 			detect_hazards: "detect_hazards",
 			detect_supplies: "detect_supplies",
@@ -117,6 +118,7 @@ function (Ash, Text, ItemData, Text, PlayerActionConstants, ItemVO) {
 			defineItemBonusIcon(ItemConstants.itemBonusTypes.res_cold, "icon_stat_resistance_cold");
 			defineItemBonusIcon(ItemConstants.itemBonusTypes.res_radiation, "icon_stat_resistance_radiation");
 			defineItemBonusIcon(ItemConstants.itemBonusTypes.res_poison, "icon_stat_resistance_poison");
+			defineItemBonusIcon(ItemConstants.itemBonusTypes.res_water, "icon_stat_resistance_water");
 			defineItemBonusIcon(ItemConstants.itemBonusTypes.shade, "icon_stat_shade");
 			defineItemBonusIcon(ItemConstants.itemBonusTypes.movement, "icon_stat_movement_cost");
 		},

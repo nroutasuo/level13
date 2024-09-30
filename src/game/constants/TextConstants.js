@@ -245,6 +245,10 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				addOptions("a-building", [ "polluted" ]);
 				addOptions("na-items", [ "used medical masks" ]);
 			}
+			if (features.hazards.flooded > 0) {
+				addOptions("a-street", [ "flooded", "water-logged" ]);
+				addOptions("a-building", [ "flooded" ]);
+			}
 			if (features.hazards.debris) {
 				addOptions("a-street", [ "destroyed", "damaged", "ruined" ]);
 				addOptions("n-building", [ "building" ]);

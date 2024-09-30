@@ -101,6 +101,7 @@ define([
 			features.radiation = featuresComponent.hazards.radiation;
 			features.poison = featuresComponent.hazards.poison;
 			features.debris = featuresComponent.hazards.debris;
+			features.flooded = featuresComponent.hazards.flooded;
 			return features;
 		},
 		
@@ -120,6 +121,7 @@ define([
 			result.radiation = Math.max(0, result.radiation - sectorStatus.getHazardReduction("radiation"));
 			result.poison = Math.max(0, result.poison - sectorStatus.getHazardReduction("poison"));
 			result.cold = Math.max(0, result.cold - sectorStatus.getHazardReduction("cold"));
+			result.flooded = Math.max(0, result.flooded - sectorStatus.getHazardReduction("flooded"));
 			return result;
 		},
 		
@@ -137,6 +139,7 @@ define([
 			if (hazards.poison > 0 && hazards.poison > GameGlobals.itemsHelper.getMaxHazardPoisonForLevel(campOrdianl2, 0, false)) return true;
 			if (hazards.cold > 0 && hazards.cold > GameGlobals.itemsHelper.getMaxHazardColdForLevel(campOrdianl2, 0, false)) return true;
 			if (hazards.debris > 0) return true;
+			if (hazards.flooded > 0) return true;
 			
 			return false;
 		},
@@ -161,6 +164,8 @@ define([
 				return "area too polluted";
 			if (hazards.cold > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_cold))
 				return "area too cold";
+			if (hazards.flooded > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_water))
+				return "area too flooded";
 			return null;
 		},
 		
@@ -195,10 +200,19 @@ define([
 			}
 			return perkBonus;
 		},
+
+		getHazardsMovementMalus: function (sector) {
+			return this.getDebrisMovementMalus(sector) + this.getFloodedMovementMalus(sector);
+		},
 		
 		getDebrisMovementMalus: function (sector) {
 			let featuresComponent = sector.get(SectorFeaturesComponent);
 			return featuresComponent.hazards.debris > 0 ? 2 : 1;
+		},
+
+		getFloodedMovementMalus: function (sector) {
+			let featuresComponent = sector.get(SectorFeaturesComponent);
+			return featuresComponent.hazards.flooded > 0 ? 2 : 1;
 		},
 		
 		canHaveBeacon: function (sector) {

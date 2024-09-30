@@ -1,17 +1,19 @@
 define(['ash'], function (Ash) {
 
-	var EnvironmentalHazardsVO = Ash.Class.extend({
+	let EnvironmentalHazardsVO = Ash.Class.extend({
 		
 		radiation: 0,
 		poison: 0,
 		cold: 0,
 		debris: 0,
+		flooded: 0,
 		
 		constructor: function () {
 			this.radiation = 0;
 			this.poison = 0;
 			this.cold = 0;
 			this.debris = 0;
+			this.flooded = 0;
 		},
 			
 		getMainHazard: function () {
@@ -19,6 +21,7 @@ define(['ash'], function (Ash) {
 			if (this.poison > this.radiation && this.poison > this.cold) return "poison";
 			if (this.radiation > 0) return "radiation";
 			if (this.poison > 0) return "poison";
+			if (this.flooded > 0) return "flooded";
 			if (this.debris > 0) return "debris";
 			if (this.cold > 0) return "cold";
 			return null;
@@ -29,7 +32,7 @@ define(['ash'], function (Ash) {
 		},
 		
 		hasHazards: function () {
-			return this.radiation > 0 || this.poison > 0 || this.cold > 0 || this.debris > 0;
+			return this.radiation > 0 || this.poison > 0 || this.cold > 0 || this.debris > 0 || this.flooded > 0;
 		},
 		
 		clone: function () {
@@ -38,6 +41,7 @@ define(['ash'], function (Ash) {
 			result.poison = this.poison;
 			result.cold = this.cold;
 			result.debris = this.debris;
+			result.flooded = this.flooded;
 			return result;
 		}
 		

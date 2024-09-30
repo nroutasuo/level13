@@ -33,6 +33,7 @@ define(['ash'], function (Ash) {
 		HAZARD_TYPE_RADIATION: "radiation",
 		HAZARD_TYPE_POLLUTION: "poison",
 		HAZARD_TYPE_DEBRIS: "debris",
+		HAZARD_TYPE_FLOODED: "flooded",
 		
 		isVisited: function (sectorStatus) {
 			switch (sectorStatus) {

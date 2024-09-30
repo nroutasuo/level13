@@ -711,6 +711,8 @@ define([
 				result.push(getHazardSpan("pollution", hazards.poison, hazards.poison > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_poison)));
 			if (hazards.cold > 0)
 				result.push(getHazardSpan("cold", hazards.cold, hazards.cold > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_cold)));
+			if (hazards.flooded > 0)
+				result.push(getHazardSpan("flooded", hazards.flooded, hazards.flooded > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_water)));
 			
 			if (result.length < 1) return "-";
 			else return result.join(", ");

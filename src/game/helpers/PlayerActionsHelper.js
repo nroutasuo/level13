@@ -1718,7 +1718,7 @@ define([
 			}
 			
 			var getHazardMalus = function () {
-				return GameGlobals.sectorHelper.getDebrisMovementMalus(sector);
+				return GameGlobals.sectorHelper.getHazardsMovementMalus(sector);
 			};
 			
 			var getExplorerBonus = function (itemBonusType) {

@@ -424,6 +424,7 @@ define(['ash',
 				case ItemConstants.itemBonusTypes.res_cold: return "warmth";
 				case ItemConstants.itemBonusTypes.res_radiation: return short ? "radiation prot" : "radiation protection";
 				case ItemConstants.itemBonusTypes.res_poison: return short ? "poison prot" : "poison protection";
+				case ItemConstants.itemBonusTypes.res_water: return short ? "water prot" : "water protection";
 				case ItemConstants.itemBonusTypes.shade: return short ? "sun prot" : "sunblindness protection";
 				case ItemConstants.itemBonusTypes.detect_hazards: return short ? "hazards" : "surveying (hazards)";
 				case ItemConstants.itemBonusTypes.detect_supplies: return short ? "supplies" : "surveying (supplies)";

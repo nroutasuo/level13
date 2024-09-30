@@ -471,6 +471,7 @@ define(['ash',
 				case ItemConstants.itemBonusTypes.res_cold:
 				case ItemConstants.itemBonusTypes.res_radiation:
 				case ItemConstants.itemBonusTypes.res_poison:
+				case ItemConstants.itemBonusTypes.res_water:
 					return 0;
 					
 				default:

@@ -545,6 +545,7 @@ define([
 				ItemConstants.itemBonusTypes.res_cold,
 				ItemConstants.itemBonusTypes.res_radiation,
 				ItemConstants.itemBonusTypes.res_poison,
+				ItemConstants.itemBonusTypes.res_water,
 				ItemConstants.itemBonusTypes.fight_def,
 			];
 			

@@ -235,8 +235,16 @@ define([
 				}
 				
 			}
+
 			if (levelComponent.notCampableReason == LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION) {
 				if (isRevealedByHazard("poison")) {
+					this.revealLevelType(level);
+					return;
+				}
+			}
+
+			if (levelComponent.notCampableReason == LevelConstants.UNCAMPABLE_LEVEL_TYPE_FLOODED) {
+				if (isRevealedByHazard("flooded")) {
 					this.revealLevelType(level);
 					return;
 				}

@@ -109,6 +109,7 @@ define([
 			// WorldCreatorDebug.printWorld(worldVO, [ "possibleEnemies.length" ]);
 			// WorldCreatorDebug.printWorld(worldVO, [ "enemyDifficulty" ]);
 			// WorldCreatorDebug.printWorld(worldVO, [ "hazards.radiation" ], "red");
+			// WorldCreatorDebug.printWorld(worldVO, [ "hazards.flooded" ], "blue");
 			// WorldCreatorDebug.printWorld(worldVO, [ "resourcesAll.water"], "blue");
 			// WorldCreatorDebug.printWorld(worldVO, [ "resourcesScavengable.food" ], "#ee8822");
 			// WorldCreatorDebug.printWorld(worldVO, [ "resourcesScavengable.metal" ], "#000");
@@ -297,7 +298,8 @@ define([
 			
 			let isPollutedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
 			let isRadiatedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
-			let isHazardLevel = isPollutedLevel || isRadiatedLevel;
+			let isFloodedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_FLOODED;
+			let isHazardLevel = isPollutedLevel || isRadiatedLevel || isFloodedLevel;
 			
 			// hazard areas (cold)
 			let hasCold = levelVO.level != 14;
@@ -355,12 +357,19 @@ define([
 				}
 			}
 			
-			// hazard clusters (radiation, poison and debris)
-			if (campOrdinal < WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_RADIATION && campOrdinal < WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_POISON && campOrdinal < WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_DEBRIS) {
+			// hazard clusters (radiation, poison, debris, flooded)
+			let minHazardClusterLevel = Math.min(
+				WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_RADIATION, 
+				WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_POISON,
+				WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_DEBRIS,
+				WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_FLOODED
+			)
+
+			if (campOrdinal < minHazardClusterLevel) {
 				return;
 			}
 			
-			var hazardType = isRadiatedLevel ? SectorConstants.HAZARD_TYPE_RADIATION : SectorConstants.HAZARD_TYPE_POLLUTION;
+			let defaultHazardType = isRadiatedLevel ? SectorConstants.HAZARD_TYPE_RADIATION : isFloodedLevel ? SectorConstants.HAZARD_TYPE_FLOODED : SectorConstants.HAZARD_TYPE_POLLUTION;
 			
 			if (!isHazardLevel) {
 				// normal level
@@ -387,7 +396,7 @@ define([
 				for (let i = 0; i < borderSectors.length; i++) {
 					var pair = borderSectors[i];
 					if (pair.neighbour.zone == WorldConstants.ZONE_ENTRANCE) continue;
-					var maxHazardValue = this.getMaxHazardValue(levelVO, pair.neighbour, hazardType, pair.neighbour.zone);
+					var maxHazardValue = this.getMaxHazardValue(levelVO, pair.neighbour, defaultHazardType, pair.neighbour.zone);
 					if (maxHazardValue < 1) continue;
 					var distanceToCamp = Math.min(
 						WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, pair.sector),
@@ -406,7 +415,7 @@ define([
 				for (let i = 0; i < levelVO.sectors.length; i++) {
 					var sectorVO = levelVO.sectors[i];
 					if (sectorVO.zone == WorldConstants.ZONE_ENTRANCE) continue;
-					var maxHazardValue = this.getMaxHazardValue(levelVO, sectorVO, hazardType, sectorVO.zone);
+					var maxHazardValue = this.getMaxHazardValue(levelVO, sectorVO, defaultHazardType, sectorVO.zone);
 					var minHazardValue = Math.floor(maxHazardValue / 2);
 					if (levelVO.isHard) minHazardValue = maxHazardValue;
 					var hazardValueRand = WorldCreatorRandom.random(levelOrdinal * (i + 11) / seed * 55 + seed / (i + 99) - i * i);
@@ -416,6 +425,8 @@ define([
 						sectorVO.hazards.poison = hazardValue;
 					} else if (isRadiatedLevel) {
 						sectorVO.hazards.radiation = hazardValue;
+					} else if (isFloodedLevel) {
+						sectorVO.hazards.flooded = hazardValue;
 					}
 				}
 			}
@@ -800,6 +811,7 @@ define([
 				score -= WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO);
 				if (sectorVO.hazards.radiation > 0) score -= 5;
 				if (sectorVO.hazards.poison > 0) score -= 5;
+				if (sectorVO.hazards.flooded > 0) score -= 1;
 				if (sectorVO.locales.length > 0) score -= 1;
 				if (sectorVO.resourcesCollectable.getTotal() > 0) score -= 1;
 				if (sectorVO.hasWater()) score -= 1;
@@ -1075,6 +1087,7 @@ define([
 			// - hazards
 			if (sectorVO.hazards.poison > 0) scavengeDifficultyScore *= 1.5;
 			if (sectorVO.hazards.radiation > 0)  scavengeDifficultyScore *= 2;
+			if (sectorVO.hazards.flooded > 0)  scavengeDifficultyScore *= 1.25;
 			
 			// - special levels
 			if (levelVO.level == worldVO.bottomLevel) scavengeDifficultyScore *= 1.25;
@@ -1232,6 +1245,10 @@ define([
 			if (sectorVO.hazards.poison > 0 || sectorVO.hazards.radiation > 0) {
 				col.water = 0;
 				col.food = 0;
+			}
+
+			if (sectorVO.hazards.flooded > 0) {
+				col.flood = 0;
 			}
 			
 			if (sectorVO.hazards.hasHazards()) {
@@ -2040,10 +2057,13 @@ define([
 						neighbour.hazards.cold = 0;
 					}
 				}
+
 				if (hazardType == SectorConstants.HAZARD_TYPE_RADIATION) {
 					sectorVO.hazards.poison = 0;
-				} else if (hazardType == "poison") {
-					sectorVO.hazards.radiation = 0;
+				
+					if (hazardType == SectorConstants.HAZARD_TYPE_POLLUTION) {
+						sectorVO.hazards.radiation = 0;
+					}
 				}
 			}
 		},
@@ -2289,6 +2309,7 @@ define([
 		getPossibleWeightedHazardTypesForLevel: function (levelVO, sectorVO) {
 			let result = [];
 			let campOrdinal = levelVO.campOrdinal;
+
 			if (campOrdinal >= WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_POISON) {
 				result.push(SectorConstants.HAZARD_TYPE_POLLUTION);
 				result.push(SectorConstants.HAZARD_TYPE_POLLUTION);
@@ -2304,6 +2325,12 @@ define([
 			if (campOrdinal > WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_RADIATION) {
 				result.push(SectorConstants.HAZARD_TYPE_RADIATION);
 				result.push(SectorConstants.HAZARD_TYPE_RADIATION);
+			}
+			if (campOrdinal > WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_FLOODED) {
+				result.push(SectorConstants.HAZARD_TYPE_FLOODED);
+				result.push(SectorConstants.HAZARD_TYPE_FLOODED);
+				result.push(SectorConstants.HAZARD_TYPE_FLOODED);
+				result.push(SectorConstants.HAZARD_TYPE_FLOODED);
 			}
 			if (!sectorVO.isOnPassageCriticalPath()) {
 				if (campOrdinal >= WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_DEBRIS) {
@@ -2543,9 +2570,11 @@ define([
 					value = Math.floor(value * 2 / 3);
 				}
 			}
+			
 			if (isDebris && sectorVO.isOnPassageCriticalPath()) {
 				value = 0;
 			}
+
 			return value;
 		},
 		
@@ -2557,6 +2586,8 @@ define([
 				return Math.min(100, this.itemsHelper.getMaxHazardPoisonForLevel(campOrdinal, step, isHardLevel));
 			} else if (hazardType == SectorConstants.HAZARD_TYPE_DEBRIS) {
 				return campOrdinal >= WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_DEBRIS ? 9 : 0;
+			} else if (hazardType == SectorConstants.HAZARD_TYPE_FLOODED) {
+				return Math.min(100, this.itemsHelper.getMaxHazardFloodedForLevel(campOrdinal, step, isHardLevel));
 			} else {
 				return 0;
 			}
