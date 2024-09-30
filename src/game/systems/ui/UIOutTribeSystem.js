@@ -149,7 +149,7 @@ define([
 			}
 
 			// show
-			let msgKey = { key: "ui.tribe.status_no_news_message" }
+			let msg = { key: "ui.tribe.status_no_news_message" }
 			if (highestprio > 0) {
 				let selection = vosbyprio[highestprio];
 				let vo = selection[Math.floor(Math.random() * selection.length)];
