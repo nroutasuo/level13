@@ -1731,6 +1731,8 @@ define([
 				return 1 - (level - 1) * levelFactor;
 			};
 
+			let factor = 1;
+
 			if (baseActionID.startsWith("move_sector_")) {
 				if (cost == "stamina") {
 					factor *= getShoeBonus();
@@ -1741,7 +1743,6 @@ define([
 				}
 			}
 
-			var factor = 1;
 			switch (baseActionID) {
 				case "move_level_down":
 				case "move_level_up":
@@ -1925,8 +1926,6 @@ define([
 				case "build_out_passage_down_hole":
 				case "move_camp_global":
 				case "send_caravan":
-				case "clear_debris_e":
-				case "clear_debris_l":
 				case "bridge_gap":
 				case "recruit_explorer":
 				case "dismiss_explorer":
@@ -2077,20 +2076,18 @@ define([
 		},
 		
 		addDynamicCosts: function (action, multiplier, ordinal, isOutpost, sector, result) {
-			if (!this.playerResourcesNodes.head) return;
-
 			if (action.startsWith("move_sector_grit_")) {
 				let defaultMovementCost = this.getCosts("move_sector_west");
-				let playerFood = this.playerResourcesNodes.head.resources.getResource("food");
+				let playerFood = this.playerResourcesNodes.head ? this.playerResourcesNodes.head.resources.getResource("food") : 1;
 				if (playerFood >= 1) {
 					result.resource_food = 1;
 				}
-				let playerWater = this.playerResourcesNodes.head.resources.getResource("water");
+				let playerWater = this.playerResourcesNodes.head ? this.playerResourcesNodes.head.resources.getResource("water") : 1;
 				if (playerWater >= 1) {
 					result.resource_water = 1;
 				}
 
-				let excursionComponent = this.playerStatsNodes.head.entity.get(ExcursionComponent);
+				let excursionComponent = this.playerStatsNodes.head ? this.playerStatsNodes.head.entity.get(ExcursionComponent) : null;
 				if (excursionComponent) {
 					let numGritSteps = excursionComponent.numGritSteps || 0;
 					result.stamina = defaultMovementCost.stamina * 5 * (1 + numGritSteps);
@@ -2544,6 +2541,7 @@ define([
 				case "build_out_greenhouse": return true;
 				case "build_out_tradepost_connector": return true;
 				case "clear_debris": return true;
+				case "clear_explosives": return true;
 				case "bridge_gap": return true;
 
 				default: return false;
