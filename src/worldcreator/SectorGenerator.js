@@ -2650,17 +2650,27 @@ define([
 			
 			if (l == 14)
 				possibleTypes.push(localeTypes.factory);
+
+			if (l < 13)
+				possibleTypes.push(localeTypes.caravan);
+
+			if (l > 15)
+				possibleTypes.push(localeTypes.clinic);
+			
+			let isValidForSettlement = distanceToCamp > 3 && levelVO.level !== 13 && levelVO.isCampable;
 				
 			// sector type based
 			switch (sectorType) {
 				case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
+					possibleTypes.push(localeTypes.grocery);
+					possibleTypes.push(localeTypes.grocery);
 					possibleTypes.push(localeTypes.house);
-					possibleTypes.push(localeTypes.transport);
-					possibleTypes.push(localeTypes.sewer);
-					possibleTypes.push(localeTypes.warehouse);
+					possibleTypes.push(localeTypes.house);
 					possibleTypes.push(localeTypes.hut);
-					possibleTypes.push(localeTypes.market);
-					if (distanceToCamp > 3 && levelVO.level !== 13) {
+					possibleTypes.push(localeTypes.sewer);
+					possibleTypes.push(localeTypes.transport);
+					possibleTypes.push(localeTypes.warehouse);
+					if (isValidForSettlement) {
 						possibleTypes.push(localeTypes.camp);
 						possibleTypes.push(localeTypes.hermit);
 					}
@@ -2668,46 +2678,64 @@ define([
 
 				case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
 					possibleTypes.push(localeTypes.factory);
-					possibleTypes.push(localeTypes.warehouse);
-					possibleTypes.push(localeTypes.transport);
+					possibleTypes.push(localeTypes.factory);
 					possibleTypes.push(localeTypes.sewer);
+					possibleTypes.push(localeTypes.transport);
+					possibleTypes.push(localeTypes.warehouse);
+					possibleTypes.push(localeTypes.warehouse);
 					break;
 
 				case SectorConstants.SECTOR_TYPE_MAINTENANCE:
-					possibleTypes.push(localeTypes.maintenance);
-					possibleTypes.push(localeTypes.transport);
+					possibleTypes.push(localeTypes.bunker);
 					possibleTypes.push(localeTypes.hermit);
+					possibleTypes.push(localeTypes.maintenance);
+					possibleTypes.push(localeTypes.maintenance);
 					possibleTypes.push(localeTypes.sewer);
+					possibleTypes.push(localeTypes.transport);
 					break;
 
 				case SectorConstants.SECTOR_TYPE_COMMERCIAL:
-					possibleTypes.push(localeTypes.market);
-					possibleTypes.push(localeTypes.warehouse);
-					possibleTypes.push(localeTypes.transport);
-					possibleTypes.push(localeTypes.hut);
+					possibleTypes.push(localeTypes.farm);
+					possibleTypes.push(localeTypes.grocery);
+					possibleTypes.push(localeTypes.grocery);
 					possibleTypes.push(localeTypes.hermit);
-					possibleTypes.push(localeTypes.house);
+					possibleTypes.push(localeTypes.hut);
+					possibleTypes.push(localeTypes.lab);
+					possibleTypes.push(localeTypes.market);
+					possibleTypes.push(localeTypes.market);
+					possibleTypes.push(localeTypes.restaurant);
+					possibleTypes.push(localeTypes.store);
+					possibleTypes.push(localeTypes.store);
+					possibleTypes.push(localeTypes.transport);
+					possibleTypes.push(localeTypes.transport);
+					possibleTypes.push(localeTypes.warehouse);
 					break;
 
 				case SectorConstants.SECTOR_TYPE_SLUM:
-					possibleTypes.push(localeTypes.house);
-					possibleTypes.push(localeTypes.hut);
 					possibleTypes.push(localeTypes.hermit);
+					possibleTypes.push(localeTypes.hut);
+					possibleTypes.push(localeTypes.hut);
 					possibleTypes.push(localeTypes.sewer);
-					if (distanceToCamp > 3 && levelVO.level !== 13) {
+					possibleTypes.push(localeTypes.sewer);
+					if (isValidForSettlement) {
 						possibleTypes.push(localeTypes.camp);
 					}
 					break;
 					
 				case SectorConstants.SECTOR_TYPE_PUBLIC:
 					possibleTypes.push(localeTypes.lab);
-					possibleTypes.push(localeTypes.transport);
 					possibleTypes.push(localeTypes.library);
+					possibleTypes.push(localeTypes.transport);
 					break;
 
 				default:
 					WorldCreatorLogger.w("Unknown sector type " + sectorType);
 					return null;
+			}
+
+			// other
+			if (sectorVO.sunlit) {
+				possibleTypes.push(localeTypes.farm);
 			}
 			
 			var localeRandom = WorldCreatorRandom.random(s1);

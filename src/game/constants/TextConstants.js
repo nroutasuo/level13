@@ -1088,6 +1088,8 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		},
 		
 		getLocaleName: function (locale, sectorFeatures, isShort) {
+			// TODO TRANSLATION figure out how to structure these for translation
+
 			let condition = sectorFeatures.getCondition();
 			let modifier = "";
 			let noun = "";
@@ -1188,6 +1190,8 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					if (condition === SectorConstants.SECTOR_CONDITION_MAINTAINED) modifier = "well-kept";
 					noun = "hut";
 					break;
+				case localeTypes.clinic:
+					noun = "clinic";
 				case localeTypes.library:
 					modifier = "abandoned";
 					if (sectorFeatures.level < 10) modifier = "ancient";
@@ -1197,6 +1201,18 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					modifier = "overgrown";
 					if (sectorFeatures.level < 10) modifier = "ancient";
 					noun = "farm";
+					break;
+				case localeTypes.bunker:
+					modifier = "empty";
+					noun = "bunker";
+					break;
+				case localeTypes.restaurant:
+					noun = "restaurant";
+					break;
+				case localeTypes.grocery:
+				case localeTypes.store:
+					noun = "store";
+					break;
 				default:
 					log.w("unknown locale type: " + locale.type);
 					noun = "building";
