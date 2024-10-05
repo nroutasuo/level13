@@ -1381,7 +1381,12 @@ define([
 			var blockerType = MovementConstants.BLOCKER_TYPE_GANG;
 			
 			var selectEnemyIDsForGang = function (s1, s2) {
-				let possibleEnemies = s1.possibleEnemies.concat(s2.possibleEnemies);
+				let allEnemies = s1.possibleEnemies.concat(s2.possibleEnemies);
+				let allEnemiesWithTags = allEnemies.filter(e => e.environment.indexOf("nogang") < 0);
+
+				let possibleEnemies = allEnemiesWithTags;
+				if (possibleEnemies.length == 0) possibleEnemies = allEnemies;
+				
 				possibleEnemies.sort(function (a, b) {
 					var diff1 = EnemyConstants.enemyDifficulties[a.id];
 					var diff2 = EnemyConstants.enemyDifficulties[b.id];
@@ -2446,12 +2451,8 @@ define([
 			let y = sectorVO.position.sectorY;
 			let campOrdinal = levelVO.campOrdinal;
 			let step = WorldConstants.getCampStep(sectorVO.zone);
-			let isPollutedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
-			let isRadiatedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
-			let tags = [];
-			
-			if (levelVO.level == worldVO.bottomLevel) tags.push("ground");
-			if (levelVO.level == worldVO.topLevel) tags.push("surface");
+
+			let environmentTags = this.getSectorEnvironmentTags(worldVO, levelVO, sectorVO);
 			
 			let enemyDifficulty = enemyCreator.getDifficulty(campOrdinal, step);
 			if (sectorVO.isOnEarlyCriticalPath()) enemyDifficulty -= 2;
@@ -2462,43 +2463,19 @@ define([
 			
 			// collect all valid enemies for this sector (candidates)
 			let candidates = [];
-			let enemy;
 			let candidateDifficulties = [];
-			let addEnemyCandidates = function (enemyType) {
-				let typeEnemies = enemyCreator.getEnemies(enemyType, enemyDifficulty, false, tags);
-				for (var e in typeEnemies) {
-					enemy = typeEnemies[e];
-					candidates.push(enemy);
-					candidateDifficulties.push(enemyCreator.getEnemyDifficultyLevel(enemy));
-				}
-			};
 
-			addEnemyCandidates(EnemyConstants.enemyTypes.global);
-			if (!isPollutedLevel && !isRadiatedLevel && !sectorVO.hazards.hasHazards()) addEnemyCandidates(EnemyConstants.enemyTypes.nohazard);
-			if (sectorVO.hazards.cold > 0) addEnemyCandidates(EnemyConstants.enemyTypes.cold);
-			if (isPollutedLevel || sectorVO.hazards.poison > 0) addEnemyCandidates(EnemyConstants.enemyTypes.toxic);
-			if (isRadiatedLevel || sectorVO.hazards.radiation > 0) addEnemyCandidates(EnemyConstants.enemyTypes.radiation);
-			if (sectorVO.sunlit) addEnemyCandidates(EnemyConstants.enemyTypes.sunlit);
-			if (!sectorVO.sunlit) addEnemyCandidates(EnemyConstants.enemyTypes.dark);
-			if (!isPollutedLevel && !isRadiatedLevel && sectorVO.buildingDensity > 5) addEnemyCandidates(EnemyConstants.enemyTypes.dense);
-			if (!isPollutedLevel && !isRadiatedLevel && sectorVO.buildingDensity <= 5) addEnemyCandidates(EnemyConstants.enemyTypes.sparse);
-			if (levelVO.habitability > 0) addEnemyCandidates(EnemyConstants.enemyTypes.inhabited);
-			if (levelVO.habitability <= 0) addEnemyCandidates(EnemyConstants.enemyTypes.uninhabited);
-			
-			let hasWater = sectorVO.hasWater();
-			let directions = PositionConstants.getLevelDirections();
-			let neighbours = levelVO.getNeighbours(x, y);
-			for (var d in directions) {
-				let direction = directions[d];
-				let neighbour = neighbours[direction];
-				if (neighbour) {
-					hasWater = hasWater || neighbour.hasWater();
-				}
+			let allEnemies = enemyCreator.getEnemies(enemyDifficulty, environmentTags, 2);
+			for (let e in allEnemies) {
+				let enemy = allEnemies[e];
+				candidates.push(enemy);
+				candidateDifficulties.push(enemyCreator.getEnemyDifficultyLevel(enemy));
+				enemyCreator.registerEnemyAsCandidateForSector(enemy.id, l, campOrdinal);
 			}
-			if (!isPollutedLevel && !isRadiatedLevel && hasWater) addEnemyCandidates(EnemyConstants.enemyTypes.water);
-
+			
 			// check that we found some candidates
 			if (candidates.length < 1) {
+				debugger
 				WorldCreatorLogger.w("No valid enemies defined for sector " + sectorVO.position + " difficulty " + enemyDifficulty);
 				return enemies;
 			}
@@ -2528,10 +2505,56 @@ define([
 				let r = WorldCreatorRandom.random(9999 + l * seed + x * l * 80 + y * 10 + i * x *22 - y * i * x * 15);
 				if (i == 0 || r > threshold) {
 					enemies.push(enemy);
+					enemyCreator.registerEnemyAsPresentForSector(enemy.id, l, campOrdinal);
 				}
 			}
 
 			return enemies;
+		},
+
+		getSectorEnvironmentTags: function (worldVO, levelVO, sectorVO) {
+			let l = sectorVO.position.level;
+			let x = sectorVO.position.sectorX;
+			let y = sectorVO.position.sectorY;
+
+			let tags = [];
+
+			let isPollutedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
+			let isRadiatedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
+			
+			tags.push("nogang")
+			if (levelVO.level == worldVO.bottomLevel) tags.push("ground");
+			if (levelVO.level == worldVO.topLevel) tags.push("surface");
+			if (levelVO.level < 14) tags.push("lowlevels");
+			if (levelVO.level > 14) tags.push("highlevels");
+			if (!isPollutedLevel && !isRadiatedLevel && !sectorVO.hazards.hasHazards()) tags.push("nohazard");
+			if (sectorVO.hazards.cold > 0) tags.push("cold");
+			if (isPollutedLevel || sectorVO.hazards.poison > 0) tags.push("toxic");
+			if (isRadiatedLevel || sectorVO.hazards.radiation > 0) tags.push("radiation");
+			if (sectorVO.sunlit) tags.push("sunlit");
+			if (!sectorVO.sunlit) tags.push("dark");
+			if (sectorVO.buildingDensity > 5) tags.push("dense");
+			if (sectorVO.buildingDensity < 5) tags.push("sparse");
+			if (levelVO.habitability > 0) tags.push("inhabited");
+			if (levelVO.habitability <= 0) tags.push("uninhabited");
+			if (sectorVO.hazards.flooded > 0) tags.push("flooded");
+			if (sectorVO.hazards.flooded === 0) tags.push("noflood");
+			if (sectorVO.sectorType == SectorConstants.SECTOR_TYPE_INDUSTRIAL) tags.push("industrial");
+
+			let hasWater = sectorVO.hasWater();
+			let directions = PositionConstants.getLevelDirections();
+			let neighbours = levelVO.getNeighbours(x, y);
+			for (var d in directions) {
+				let direction = directions[d];
+				let neighbour = neighbours[direction];
+				if (neighbour) {
+					hasWater = hasWater || neighbour.hasWater();
+				}
+			}
+
+			if (!isPollutedLevel && !isRadiatedLevel && hasWater) tags.push("water");
+
+			return tags;
 		},
 		
 		getMaxHazardValue: function (levelVO, sectorVO, hazardType, zone, override) {

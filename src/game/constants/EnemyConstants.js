@@ -3,35 +3,9 @@ function (Ash, EnemyVO, PerkConstants) {
 
 	var EnemyConstants = {
 		
-		enemyTypes: {
-			global: "global",			// anywhere
-			nohazard: "nohazard",    	// sectors with no hazards
-			cold: "cold",            	// cold sectors
-			dark: "dark",            	// dark sectors
-			radiation: "radiation",  	// radiactive sectors
-			dense: "dense",          	// densely built sectors
-			sparse: "sparse",        	// sparsely built sectors
-			inhabited: "inhabited",  	// has fairly recent human habitation
-			uninhabited: "inhabited",	// no recent human habitation
-			sunlit: "sunlit",        	// sunlit sectors
-			toxic: "toxic",          	// polluted sectors
-			water: "water",          	// sectors with water (or neighbours)
-		},
-		
-		enemyDefinitions: {
-			global: [ ],
-			nohazard: [ ],
-			cold: [ ],
-			dark: [ ],
-			radiation: [ ],
-			dense: [ ],
-			sparse: [ ],
-			inhabited: [ ],
-			uninhabited: [ ],
-			sunlit: [ ],
-			toxic: [ ],
-			water: [ ],
-		},
+		enemyDefinitions: [],
+
+		enemyUsage: {}, // usage in current world, just for debug
 		
 		enemyTexts: {
 			bandit: {
@@ -145,12 +119,10 @@ function (Ash, EnemyVO, PerkConstants) {
 		enemyDifficulties: {},
 		
 		getEnemy: function (enemyID) {
-			for (var type in this.enemyDefinitions) {
-				for (let i in this.enemyDefinitions[type]) {
-					var enemy = this.enemyDefinitions[type][i];
-					if (enemy.id == enemyID) {
-						return enemy;
-					}
+			for (let i in this.enemyDefinitions) {
+				let enemy = this.enemyDefinitions[i];
+				if (enemy.id == enemyID) {
+					return enemy;
 				}
 			}
 			log.w("no such enemy found: " + enemyID);
@@ -159,11 +131,9 @@ function (Ash, EnemyVO, PerkConstants) {
 		
 		getAll: function () {
 			let result = [];
-			for (var type in this.enemyDefinitions ) {
-				for (let i in this.enemyDefinitions[type]) {
-					var enemy = this.enemyDefinitions[type][i];
-					result.push(enemy);
-				}
+			for (let i in this.enemyDefinitions) {
+				let enemy = this.enemyDefinitions[i];
+				result.push(enemy);
 			}
 			return result;
 		},
