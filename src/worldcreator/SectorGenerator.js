@@ -2475,7 +2475,6 @@ define([
 			
 			// check that we found some candidates
 			if (candidates.length < 1) {
-				debugger
 				WorldCreatorLogger.w("No valid enemies defined for sector " + sectorVO.position + " difficulty " + enemyDifficulty);
 				return enemies;
 			}

@@ -65,6 +65,9 @@ function (Ash, EnemyVO, PerkConstants) {
 		},
 		
 		enemyLoot: {
+			apparition: {
+				droppedResources: [ "water" ],
+			},
 			bandit: {
 				droppedResources: [ "food", "water", "rope" ],
 				droppedIngredients: [ "res_bands", "res_bottle", "res_hairpin", "res_leather", "res_silk", "res_tape" ],
@@ -75,11 +78,11 @@ function (Ash, EnemyVO, PerkConstants) {
 			},
 			bird: {
 				droppedResources: [ "food" ],
-				droppedIngredients: [ "res_bands", "res_bottle", "res_glowbug", "res_hairpin", "res_leather", "res_tape" ],
+				droppedIngredients: [ "res_bands", "res_bottle", "res_hairpin", "res_leather", "res_tape" ],
 			},
 			flora: {
 				droppedResources: [ "food" ],
-				droppedIngredients: [ "res_bottle", "res_glowbug", "res_silk" ],
+				droppedIngredients: [ "res_glowbug", "res_silk" ],
 			},
 			fungi: {
 				droppedResources: [ "food" ],
@@ -140,6 +143,13 @@ function (Ash, EnemyVO, PerkConstants) {
 		
 		getDifficulty: function (enemy) {
 			return this.enemyDifficulties[enemy.id];
+		},
+
+		getDropsCurrency: function (enemyVO) {
+			switch (enemyVO.enemyClass) {
+				case "bandit": return true;
+				default: return false;
+			}
 		}
 		
 	};

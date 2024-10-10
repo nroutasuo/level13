@@ -307,6 +307,9 @@
 	},
 	"cloud__noxious": {
 		"campOrdinal": 10,
+		"droppedResources": [
+			"fuel"
+		],
 		"environment": [ "toxic" ],
 		"name": "noxious cloud"
 	},
@@ -317,6 +320,9 @@
 	},
 	"cloud__pollen": {
 		"campOrdinal": 8,
+		"droppedResources": [
+			"herbs"
+		],
 		"environment": [ "lowlevels", "sparse" ],
 		"name": "cloud of pollen",
 		"rarity": 10
@@ -583,11 +589,11 @@
 		"rarity": 10,
 		"speed": 1.1
 	},
-	"eel_drain": {
+	"eel__drain": {
 		"campOrdinal": 3,
 		"name": "drain eel"
 	},
-	"eel_electric": {
+	"eel__electric": {
 		"campOrdinal": 10,
 		"name": "electric eel"
 	},
@@ -781,6 +787,9 @@
 	"garbage_robot__template": {
 		"attackRatio": 0.55,
 		"enemyType": "robot",
+		"droppedResources": [
+			"metal", "fuel", "tools"
+		],
 		"shieldRatio": 1,
 		"size": 0.6
 	},
@@ -1026,6 +1035,9 @@
 	"harvester_bot": {
 		"attackRatio": 0.4,
 		"campOrdinal": 9,
+		"droppedResources": [
+			"metal", "fuel", "herbs"
+		],
 		"enemyType": "robot",
 		"environment": [ "uninhabited" ],
 		"name": "Harvester bot",
@@ -1940,7 +1952,7 @@
 		"attackRatio": 1.25,
 		"difficulty": 5,
 		"droppedResources": [
-			"metal"
+			"metal", "rope"
 		],
 		"enemyType": "structure",
 		"environment": [ "nogang" ],
