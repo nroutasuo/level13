@@ -7,6 +7,18 @@
 			"final": false,
 			"changes": [
 				{
+					"type": "GD",
+					"summary": "Add several new camp events"
+				},
+				{
+					"type": "GD",
+					"summary": "Add a new movement blockers and hazards (flooding, old explosives)"
+				},
+				{
+					"type": "GD",
+					"summary": "Add new temporary perks which can be gained while out exploring"
+				},
+				{
 					"type": "Text",
 					"summary": "Rename 'favour' to 'hope', 'follower' to 'explorer', and adjust a few other terms"
 				},
