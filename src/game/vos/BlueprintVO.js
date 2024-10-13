@@ -1,6 +1,6 @@
 define(['ash'], function (Ash) {
 	
-	var BlueprintVO = Ash.Class.extend({
+	let BlueprintVO = Ash.Class.extend({
 	
 		upgradeID: "",
 		maxPieces: 0,

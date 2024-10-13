@@ -161,6 +161,86 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 			
 			return res;
 		},
+
+		getCurrencyFindProbabilityModifier: function () {
+			switch (this.type) {
+				case localeTypes.bunker:
+				case localeTypes.clinic:
+				case localeTypes.factory:
+				case localeTypes.farm:
+				case localeTypes.grove:
+				case localeTypes.library:
+				case localeTypes.maintenance:
+				case localeTypes.sewer:
+				case localeTypes.warehouse:
+					return 0;
+				case localeTypes.camp:
+				case localeTypes.caravan:
+				case localeTypes.hermit:
+				case localeTypes.tradingpartner:
+					return 0;
+				case localeTypes.grocery:
+				case localeTypes.hut:
+				case localeTypes.lab:
+				case localeTypes.restaurant:
+				case localeTypes.transport:
+					return 0.5;
+				case localeTypes.house:
+				case localeTypes.market:
+				case localeTypes.store:
+					return 1;
+			}
+
+			return 0;
+		},
+
+		getItemTags: function () {
+			switch (this.type) {
+				case localeTypes.bunker: 
+					return [ "old" ];
+				case localeTypes.clinic: 
+					return [ "medical" ];
+				case localeTypes.factory:
+					return [ "industrial" ];
+				case localeTypes.farm:
+					return [ "agriculture" ];
+				case localeTypes.grove:
+					return [ "nature" ];
+				case localeTypes.library:
+					return [ "science" ];
+				case localeTypes.maintenance:
+					return [ "maintenance" ];
+				case localeTypes.sewer:
+					return [ "maintenance" ];
+				case localeTypes.warehouse:
+					return [ "old" ];
+				case localeTypes.camp:
+					return [ "keepsake" ];
+				case localeTypes.caravan:
+					return [ "valuable" ];
+				case localeTypes.hermit:
+					return [ "keepsake" ];
+				case localeTypes.tradingpartner:
+					return [ "valuable" ];
+				case localeTypes.grocery:
+					return [ "perishable" ];
+				case localeTypes.hut:
+					return [ "keepsake" ];
+				case localeTypes.lab:
+					return [ "science" ];
+				case localeTypes.restaurant:
+					return [ "perishable" ];
+				case localeTypes.transport:
+					return [ "maintenance" ];
+				case localeTypes.house:
+					return [ "keepsake" ];
+				case localeTypes.market:
+					return [ "clothing" ];
+				case localeTypes.store:
+					return [ "clothing" ];
+				default: return [];
+			}
+		},
 		
 		getCategory: function () {
 			switch (this.type) {

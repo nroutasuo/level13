@@ -10,6 +10,7 @@
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 7,
+        "tags": [ "nature" ],
         "type": "artefact"
     },
     "artefact_doom_2": {
@@ -23,6 +24,7 @@
         "rarityLocale": 8,
         "rarityScavenge": 9,
         "rarityTrade": 7,
+        "tags": [ "history" ],
         "type": "artefact"
     },
     "artefact_doom_3": {
@@ -36,6 +38,7 @@
         "rarityLocale": 5,
         "rarityScavenge": 9,
         "rarityTrade": 7,
+        "tags": [ "nature" ],
         "type": "artefact"
     },
     "artefact_doom_4": {
@@ -49,6 +52,7 @@
         "rarityLocale": 3,
         "rarityScavenge": 5,
         "rarityTrade": 5,
+        "tags": [ "politics" ],
         "type": "artefact"
     },
     "artefact_doom_5": {
@@ -62,6 +66,7 @@
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 7,
+        "tags": [ "history" ],
         "type": "artefact"
     },
     "artefact_ground_1": {
@@ -76,6 +81,7 @@
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 7,
+        "tags": [ "history" ],
         "type": "artefact"
     },
     "artefact_ground_2": {
@@ -90,6 +96,7 @@
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 7,
+        "tags": [ "nature" ],
         "type": "artefact"
     },
     "artefact_ground_3": {
@@ -104,6 +111,7 @@
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 7,
+        "tags": [ "nature" ],
         "type": "artefact"
     },
     "artefact_ground_4": {
@@ -118,6 +126,7 @@
         "rarityLocale": 4,
         "rarityScavenge": 6,
         "rarityTrade": 3,
+        "tags": [ "history" ],
         "type": "artefact"
     },
     "artefact_history_1": {
@@ -220,12 +229,13 @@
         "rarityInvestigate": 3,
         "rarityLocale": 5,
         "rarityScavenge": 8,
+        "tags": [ "technology", "maintenance" ],
         "type": "artefact"
     },
     "artefact_surface_5": {
         "campOrdinalRequired": 9,
         "icon": "img/items/artefact-test.png",
-        "id": "artefact_surface_4",
+        "id": "artefact_surface_5",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": false,
@@ -343,6 +353,7 @@
         "rarityInvestigate": 2,
         "rarityLocale": 3,
         "rarityScavenge": 6,
+        "tags": [ "book" ],
         "type": "voucher"
     },
     "cache_evidence_12": {
@@ -359,6 +370,7 @@
         "rarityInvestigate": 2,
         "rarityLocale": 3,
         "rarityScavenge": 6,
+        "tags": [ "book" ],
         "type": "voucher"
     },
     "cache_evidence_13": {
@@ -375,6 +387,7 @@
         "rarityInvestigate": 2,
         "rarityLocale": 3,
         "rarityScavenge": 6,
+        "tags": [ "book" ],
         "type": "voucher"
     },
     "cache_evidence_21": {
@@ -391,6 +404,7 @@
         "rarityInvestigate": 4,
         "rarityLocale": 3,
         "rarityScavenge": 6,
+        "tags": [ "book" ],
         "type": "voucher"
     },
     "cache_evidence_22": {
@@ -407,6 +421,7 @@
         "rarityInvestigate": 4,
         "rarityLocale": 3,
         "rarityScavenge": 6,
+        "tags": [ "book" ],
         "type": "voucher"
     },
     "cache_evidence_23": {
@@ -423,6 +438,7 @@
         "rarityInvestigate": 4,
         "rarityLocale": 3,
         "rarityScavenge": 6,
+        "tags": [ "book" ],
         "type": "voucher"
     },
     "cache_evidence_31": {
@@ -439,6 +455,7 @@
         "rarityInvestigate": 3,
         "rarityLocale": 3,
         "rarityScavenge": 6,
+        "tags": [ "book" ],
         "type": "voucher"
     },
     "cache_evidence_32": {
@@ -455,6 +472,7 @@
         "rarityInvestigate": 3,
         "rarityLocale": 3,
         "rarityScavenge": 6,
+        "tags": [ "book" ],
         "type": "voucher"
     },
     "cache_evidence_33": {
@@ -471,6 +489,7 @@
         "rarityInvestigate": 3,
         "rarityLocale": 3,
         "rarityScavenge": 6,
+        "tags": [ "book" ],
         "type": "voucher"
     },
     "cache_evidence_41": {
@@ -487,6 +506,7 @@
         "rarityInvestigate": 1,
         "rarityLocale": 5,
         "rarityScavenge": 8,
+        "tags": [ "book" ],
         "type": "voucher"
     },
     "cache_evidence_42": {
@@ -503,6 +523,7 @@
         "rarityInvestigate": 1,
         "rarityLocale": 5,
         "rarityScavenge": 8,
+        "tags": [ "book" ],
         "type": "voucher"
     },
     "cache_evidence_43": {
@@ -519,6 +540,7 @@
         "rarityInvestigate": 1,
         "rarityLocale": 5,
         "rarityScavenge": 8,
+        "tags": [ "book" ],
         "type": "voucher"
     },
     "cache_hope_11": {
@@ -534,6 +556,7 @@
         "rarityScavenge": -1,
         "rarityTrade": 8,
         "tradePrice": 2,
+        "tags": [ "nature" ],
         "type": "voucher"
     },
     "cache_hope_12": {
@@ -549,6 +572,7 @@
         "rarityScavenge": -1,
         "rarityTrade": 8,
         "tradePrice": 3,
+        "tags": [ "nature" ],
         "type": "voucher"
     },
     "cache_food_1": {
@@ -565,6 +589,7 @@
         "rarityLocale": 4,
         "rarityScavenge": 9,
         "tradePrice": 1,
+        "tags": [ "perishable" ],
         "type": "voucher"
     },
     "cache_insight_11": {
@@ -579,6 +604,7 @@
         "rarityLocale": -1,
         "rarityScavenge": -1,
         "rarityTrade": -1,
+        "tags": [ "book", "modern" ],
         "type": "voucher"
     },
     "cache_insight_21": {
@@ -593,6 +619,7 @@
         "rarityLocale": -1,
         "rarityScavenge": -1,
         "rarityTrade": -1,
+        "tags": [ "book", "modern" ],
         "type": "voucher"
     },
     "cache_metal_1": {
@@ -608,6 +635,7 @@
         "isUseable": true,
         "rarityLocale": 3,
         "rarityScavenge": 6,
+        "tags": [ "industrial" ],
         "type": "voucher"
     },
     "cache_metal_2": {
@@ -623,6 +651,7 @@
         "isUseable": true,
         "rarityLocale": 3,
         "rarityScavenge": 6,
+        "tags": [ "industrial" ],
         "type": "voucher"
     },
     "cache_metal_3": {
@@ -637,6 +666,7 @@
         "isUseable": true,
         "rarityLocale": 3,
         "rarityScavenge": 6,
+        "tags": [ "industrial" ],
         "type": "voucher"
     },
     "cache_metal_4": {
@@ -651,6 +681,7 @@
         "isUseable": true,
         "rarityLocale": 3,
         "rarityScavenge": 6,
+        "tags": [ "industrial" ],
         "type": "voucher"
     },
     "cache_robots_1": {
@@ -665,6 +696,7 @@
         "isUseable": true,
         "nameShort": "Robot",
         "rarityLocale": 9,
+        "tags": [ "industrial" ],
         "type": "voucher"
     },
     "cache_rumours_11": {
@@ -681,6 +713,7 @@
         "rarityScavenge": -1,
         "rarityTrade": 5,
         "tradePrice": 2,
+        "tags": [ "book", "new" ],
         "type": "voucher"
     },
     "cache_rumours_12": {
@@ -697,6 +730,7 @@
         "rarityScavenge": -1,
         "rarityTrade": 5,
         "tradePrice": 3,
+        "tags": [ "book", "new" ],
         "type": "voucher"
     },
     "cache_rumours_22": {
@@ -713,6 +747,7 @@
         "rarityScavenge": -1,
         "rarityTrade": 5,
         "tradePrice": 3,
+        "tags": [ "book", "new" ],
         "type": "voucher"
     },
     "cache_rumours_23": {
@@ -729,6 +764,7 @@
         "rarityScavenge": -1,
         "rarityTrade": 5,
         "tradePrice": 4,
+        "tags": [ "book", "new" ],
         "type": "voucher"
     },
     "cache_water_1": {
@@ -746,6 +782,7 @@
         "rarityLocale": 5,
         "rarityScavenge": 9,
         "tradePrice": 1,
+        "tags": [ "perishable" ],
         "type": "voucher"
     },
     "clothing_hands_1": {
@@ -895,6 +932,7 @@
         "rarityScavenge": -1,
         "rarityTrade": -1,
         "source": "equipment",
+        "tags": [ "industrial" ],
         "type": "clothing_hands"
     },
     "clothing_head_0": {
@@ -944,6 +982,7 @@
         "rarityScavenge": 5,
         "rarityTrade": 2,
         "source": "equipment",
+        "tags": [ "medical" ],
         "type": "clothing_head"
     },
     "clothing_head_25": {
@@ -1737,6 +1776,7 @@
         "rarityLocale": 3,
         "rarityScavenge": 9,
         "rarityTrade": 1,
+        "tags": [ "medical" ],
         "type": "exploration"
     },
     "first_aid_kit_2": {
@@ -1749,6 +1789,7 @@
         "rarityLocale": 4,
         "rarityScavenge": -1,
         "rarityTrade": 1,
+        "tags": [ "medical" ],
         "type": "exploration"
     },
     "flee_1": {
@@ -1997,6 +2038,7 @@
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": -1,
+        "tags": [ "valuable" ],
         "type": "trade"
     },
     "trade_2": {
@@ -2009,6 +2051,7 @@
         "rarityLocale": 7,
         "rarityScavenge": 9,
         "rarityTrade": -1,
+        "tags": [ "perishable" ],
         "type": "trade"
     },
     "trade_3": {
@@ -2021,6 +2064,7 @@
         "rarityLocale": 6,
         "rarityScavenge": 9,
         "rarityTrade": -1,
+        "tags": [ "perishable" ],
         "type": "trade"
     },
     "trade_4": {
@@ -2033,6 +2077,7 @@
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": -1,
+        "tags": [ "valuable" ],
         "type": "trade"
     },
     "weapon1": {

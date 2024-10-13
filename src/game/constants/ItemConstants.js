@@ -134,15 +134,46 @@ function (Ash, Text, ItemData, Text, PlayerActionConstants, ItemVO) {
 					isRepairable = item.isCraftable && item.isEquippable;
 				}
 				let level = item.level || this.getDefaultItemLevel(type);
+				let tags = (item.tags || []).concat(this.getItemDefaultTags(item.type));
+
 				let itemVO = new ItemVO(item.id, type, level, item.campOrdinalRequired, item.campOrdinalMaximum, item.isEquippable, item.isCraftable, isRepairable, item.isUseable, bonuses, item.icon, item.isSpecialEquipment);
 				itemVO.scavengeRarity = item.rarityScavenge || -1;
 				itemVO.investigateRarity = item.rarityInvestigate || -1;
 				itemVO.localeRarity = item.rarityLocale || -1;
 				itemVO.tradeRarity = item.rarityTrade || -1;
+				itemVO.tags = tags;
 				itemVO.configData = item.configData || {};
 				itemVO.tradePrice = item.tradePrice;
 				this.itemDefinitions[type].push(itemVO);
 				this.itemByID[itemID] = itemVO;
+			}
+		},
+
+		getItemDefaultTags: function (itemType) {
+			switch (itemType) {
+				case ItemConstants.itemTypes.weapon:
+					return [ "weapon" ];
+				case ItemConstants.itemTypes.clothing_over:
+				case ItemConstants.itemTypes.clothing_upper:
+				case ItemConstants.itemTypes.clothing_lower:
+				case ItemConstants.itemTypes.clothing_hands:
+				case ItemConstants.itemTypes.clothing_head:
+					return [ "clothing" ];
+				case ItemConstants.itemTypes.light:
+					return [ "equipment", "new" ];
+				case ItemConstants.itemTypes.bag:
+					return [ "equipment" ];
+				case ItemConstants.itemTypes.shoes:
+					return [ "clothing" ];
+				case ItemConstants.itemTypes.exploration:
+					return [ "equipment", "new" ];
+				case ItemConstants.itemTypes.artefact:
+					return [ "keepsake", "old" ];
+				case ItemConstants.itemTypes.trade:
+					return [ "old" ];
+				case ItemConstants.itemTypes.uniqueEquipment:
+					return [ "equipment" ];
+				default: return [];
 			}
 		},
 		

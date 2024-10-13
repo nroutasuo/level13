@@ -6,6 +6,7 @@ define([
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
+	'game/constants/EnemyConstants',
 	'game/constants/ExplorationConstants',
 	'game/constants/ExplorerConstants',
 	'game/constants/LocaleConstants',
@@ -46,6 +47,7 @@ define([
 	GameGlobals,
 	GlobalSignals,
 	GameConstants,
+	EnemyConstants,
 	ExplorationConstants,
 	ExplorerConstants,
 	LocaleConstants,
@@ -212,8 +214,8 @@ define([
 			let sectorIngredients = sectorFeatures.itemsScavengeable || [];
 			let efficiency = this.getCurrentScavengeEfficiency();
 			let clearedPercent = this.getCurrentSectorScavengedFactor();
-			
-			let itemOptions = { rarityKey: "scavengeRarity" };
+
+			let itemTags = this.getSectorItemTags();
 			
 			let fixedRewards = this.getFixedRewards("scavenge");
 			let isUsingFixedRewards = false;
@@ -225,14 +227,16 @@ define([
 			
 			if (!isUsingFixedRewards) {
 				rewards.gainedResources = this.getRewardResources(1, 1, efficiency, sectorResources);
-				if (GameGlobals.gameState.isFeatureUnlocked("trade")) {
-					rewards.gainedCurrency = this.getRewardCurrency(efficiency, clearedPercent);
-				}
+
+				let currencyModifier = this.getSectorCurrencyFindProbabilityModifier();
+				rewards.gainedCurrency = this.getRewardCurrency(currencyModifier, efficiency, clearedPercent);
 			}
 			
 			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound);
 			
-			if (!isUsingFixedRewards) {
+			if (!isUsingFixedRewards) {			
+				let itemOptions = { rarityKey: "scavengeRarity", tags: itemTags };
+
 				if (rewards.gainedItems.length == 0) {
 					rewards.gainedItems = this.getRewardItems(0.02, 0.5, sectorIngredients, itemOptions);
 				}
@@ -284,7 +288,8 @@ define([
 				let possibleCompletionRewards = ItemConstants.getAvailableInsightCaches(campOrdinal);
 	 			rewards.gainedItems = [ this.getSpecificRewardItem(1, possibleCompletionRewards) ];
 			} else {
-				let itemOptions = { rarityKey: "investigateRarity", allowNextCampOrdinal: isCompletion };
+				let itemTags = this.getSectorItemTags();
+				let itemOptions = { rarityKey: "investigateRarity", allowNextCampOrdinal: isCompletion, tags: itemTags };
 	 			rewards.gainedItems = this.getRewardItems(0.25, 0, [], itemOptions);
 				rewards.gainedEvidence = 1;
 			}
@@ -325,7 +330,7 @@ define([
 			let localeDifficulty = (localeVO.requirements.vision[0] + localeVO.costs.stamina / 10) / 100;
 
 			// blueprints
-			rewards.gainedBlueprintPiece = this.getResultBlueprint(localeVO);
+			rewards.gainedBlueprintPiece = this.getResultBlueprint(0.35, localeVO);
 			
 			// tribe stats
 			if (localeVO.type == localeTypes.grove) {
@@ -350,14 +355,18 @@ define([
 					}
 					
 					// items and resources
+					let itemTags = this.getSectorItemTags().concat(localeVO.getItemTags());
 					if (localeCategory === "u") {
-						let itemOptions = { rarityKey: "localeRarity", allowNextCampOrdinal: true };
+						let itemOptions = { rarityKey: "localeRarity", allowNextCampOrdinal: true, tags: itemTags };
 						rewards.gainedResources = this.getRewardResources(1, 5 * localeDifficulty, efficiency, availableResources);
 						rewards.gainedItems = this.getRewardItems(0.5, 0.1, null, itemOptions);
 					} else {
-						let itemOptions = { rarityKey: "tradeRarity", allowNextCampOrdinal: true };
+						let itemOptions = { rarityKey: "tradeRarity", allowNextCampOrdinal: true, tags: itemTags };
 						rewards.gainedItems = this.getRewardItems(0.25, 0, null, itemOptions);
 					}
+
+					let currencyModifier = localeVO.getCurrencyFindProbabilityModifier();
+					rewards.gainedCurrency = this.getRewardCurrency(currencyModifier, efficiency, 0);
 
 					let perkProbabilities = {};
 					perkProbabilities[PerkConstants.perkIds.accomplished] = 
@@ -400,11 +409,15 @@ define([
 			if (won) {
 				// TODO make fight rewards dependent on enemy difficulty (amount)
 				let availableResources = this.getAvailableResourcesForEnemy(enemyVO);
+				let efficiency = this.getCurrentScavengeEfficiency();
 				
-				rewards.gainedResources = this.getRewardResources(0.5, 2, this.getCurrentScavengeEfficiency(), availableResources);
+				rewards.gainedResources = this.getRewardResources(0.5, 2, efficiency, availableResources);
 				rewards.gainedItems = this.getRewardItems(0, 1, enemyVO.droppedIngredients, {});
 				rewards.gainedPerks = this.getGainedCurses(enemyVO.curseProbability);
 				rewards.gainedReputation = 1;
+
+				let currencyModifier = EnemyConstants.getDropsCurrency(enemyVO) ? 1 : 0;
+				rewards.gainedCurrency = this.getRewardCurrency(currencyModifier, efficiency, 0);
 
 				let playerVision = this.playerStatsNodes.head.vision.value;
 				let perksComponent = this.playerStatsNodes.head.perks;
@@ -1217,30 +1230,18 @@ define([
 			return results;
 		},
 
-		getRewardCurrency: function (efficiency, clearedPercent) {
+		getRewardCurrency: function (contextModifier, efficiency, clearedPercent) {
+			if (contextModifier <= 0) return 0;
+
 			let campCount = GameGlobals.gameState.numCamps;
 			let sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-			
-			if (campCount < 2)
-				return 0;
-				
-			if (efficiency < 0.25)
-				return 0;
-				
-			if (sectorFeatures.campable) {
-				return 0;
-			}
-			
-			let findProbability = 0;
-			switch (sectorFeatures.sectorType) {
-				case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
-				case SectorConstants.SECTOR_TYPE_PUBLIC:
-					findProbability = 0.002;
-					break;
-				case SectorConstants.SECTOR_TYPE_COMMERCIAL:
-					findProbability = 0.03;
-					break;
-			}
+
+			if (!GameGlobals.gameState.isFeatureUnlocked("trade")) return 0;
+			if (campCount < 2) return 0;
+			if (efficiency < 0.25) return 0;
+			if (sectorFeatures.campable)  return 0;
+
+			let findProbability = 0.035 * contextModifier
 
 			if (clearedPercent > 50) {
 				findProbability = findProbability / 2;
@@ -1253,6 +1254,23 @@ define([
 			let max = 1 + Math.round(campCount / 3);
 
 			return Math.ceil(Math.random() * max);
+		},
+
+		getSectorCurrencyFindProbabilityModifier: function () {
+			let sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			
+			let modifier = 0;
+			switch (sectorFeatures.sectorType) {
+				case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
+				case SectorConstants.SECTOR_TYPE_PUBLIC:
+					modifier = 0.5;
+					break;
+				case SectorConstants.SECTOR_TYPE_COMMERCIAL:
+					modifier = 1;
+					break;
+			}
+
+			return modifier;
 		},
 
 		// itemProbability: base probability of finding one item (0-1)
@@ -1299,21 +1317,25 @@ define([
 				let max = Math.floor(Math.random() * 3);
 				let amount = Math.floor(Math.random() * efficiency * max) + 1;
 				let addedIngredient = false;
+				let canDropAnyIngredient = !availableIngredients;
+				let hasSectorIngredients = availableIngredients && availableIngredients.length > 0;
 				
-				// . Necessity ingredient (stuff blocking the player from progressing)
+				// - Necessity ingredient (stuff blocking the player from progressing)
 				// TODO replace with something that's not random & is better communicated in-game
 				if (hasCamp && !hasCampHere && hasDecentEfficiency) {
-					var necessityIngredient = this.getNecessityIngredient(ingredientProbability);
+					let necessityIngredient = this.getNecessityIngredient(ingredientProbability);
 					if (necessityIngredient != null) {
-						for (let i = 0; i <= amount; i++) {
-							result.push(ItemConstants.getNewItemInstanceByDefinition(necessityIngredient));
+						if (!hasSectorIngredients || availableIngredients.indexOf(necessityIngredient) >= 0) {
+							for (let i = 0; i <= amount; i++) {
+								result.push(ItemConstants.getNewItemInstanceByDefinition(necessityIngredient));
+							}
+							addedIngredient = true;
 						}
-						addedIngredient = true;
 					}
 				}
 
 				// - Normal ingredients
-				if (!availableIngredients || availableIngredients.length > 0) {
+				if (canDropAnyIngredient || hasSectorIngredients) {
 					if (hasBag && hasCamp && !addedIngredient && Math.random() < ingredientProbabilityWithEfficiency) {
 						let ingredient = GameGlobals.itemsHelper.getUsableIngredient(availableIngredients);
 						for (let i = 0; i <= amount; i++) {
@@ -1346,6 +1368,7 @@ define([
 		// options
 		// - rarityKey: context-specific key used to determine item rarity (scavengeRarity/localeRarity/tradeRarity/investigateRarity)
 		// - allowNextCampOrdinal: include items that require next camp ordinal in the valid items (for high value rewards)
+		// - tags: context tags that increase chances of items with those tags
 		getRewardItem: function (campOrdinal, step, options) {
 			let rarityKey = options.rarityKey || "scavengeRarity";
 			let itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
@@ -1384,11 +1407,11 @@ define([
 			}
 			
 			// list and score possible items
-			var validItems = [];
-			var itemScores = {};
+			let validItems = [];
+			let itemScores = {};
 			for (var type in ItemConstants.itemDefinitions) {
 				if (type == ItemConstants.itemTypes.ingredient) continue;
-				var isObsoletable = ItemConstants.isObsoletable(type);
+				let isObsoletable = ItemConstants.isObsoletable(type);
 				let itemList = ItemConstants.itemDefinitions[type];
 				for (let i in itemList) {
 					let itemDefinition = itemList[i];
@@ -1405,12 +1428,18 @@ define([
 					
 					validItems.push(itemDefinition);
 					
-					var score = 1;
+					let score = 1;
+
+					for (let tag in itemDefinition.tags) {
+						if (options.tags && options.tags.indexOf(tag) >= 0) {
+							score += 1;
+						}
+					}
+					
 					if (itemDefinition.requiredCampOrdinal && itemDefinition.requiredCampOrdinal >= campOrdinal)
 						score = score + 2;
 					if (itemDefinition.requiredCampOrdinal && itemDefinition.requiredCampOrdinal > campOrdinal)
 						score = score + 2;
-						
 					if (itemDefinition.craftable)
 						score = score - 2;
 					if (itemDefinition.craftable && isObsoletable)
@@ -1449,7 +1478,52 @@ define([
 
 			return ItemConstants.getNewItemInstanceByDefinition(item, level);
 		},
-		
+
+		getSectorItemTags: function () {
+			let tags = [];
+			let sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			
+			switch (sectorFeatures.sectorType) {
+				case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
+					tags.push("keepsake");
+					tags.push("book");
+					tags.push("perishable");
+					tags.push("clothing");
+					break;
+				case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
+					tags.push("technology");
+					tags.push("industrial");
+					tags.push("clothing");
+					tags.push("medical");
+					break;
+				case SectorConstants.SECTOR_TYPE_MAINTENANCE:
+					tags.push("maintenance");
+					break;
+				case SectorConstants.SECTOR_TYPE_PUBLIC:
+					tags.push("history");
+					tags.push("book");
+					tags.push("medical");
+					break;
+				case SectorConstants.SECTOR_TYPE_COMMERCIAL:
+					tags.push("perishable");
+					tags.push("clothing");
+					tags.push("valuable");
+					break;
+				case SectorConstants.SECTOR_TYPE_SLUM:
+					tags.push("keepsake");
+					tags.push("perishable");
+					tags.push("weapon");
+					break;
+			}
+
+			if (sectorFeatures.wear > 5) tags.push("old");
+			if (sectorFeatures.wear < 5) tags.push("modern");
+			if (sectorFeatures.ground) tags.push("nature");
+			if (sectorFeatures.sunlit) tags.push("nature");
+
+			return tags;
+		},
+
 		getSpecificRewardItem: function (itemProbability, possibleItemIds) {
 			if (!possibleItemIds || possibleItemIds.length === 0) {
 				log.w("No valid reward items for getSpecificRewardItem");
@@ -1955,48 +2029,123 @@ define([
 			return result;
 		},
 
-		getResultBlueprint: function (localeVO) {
+		getResultBlueprint: function (minBlueprintProbability, localeVO) {
 			if (!localeVO.hasBlueprints) return null;
 			
-			var playerPos = this.playerLocationNodes.head.position;
-			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
+			let playerPos = this.playerLocationNodes.head.position;
+			let campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
 			let levelIndex = GameGlobals.gameState.getLevelIndex(playerPos.level);
 			let maxLevelIndex = GameGlobals.gameState.getMaxLevelIndex(playerPos.level);
-			var blueprintType = localeVO.isEarly ? UpgradeConstants.BLUEPRINT_BRACKET_EARLY : UpgradeConstants.BLUEPRINT_BRACKET_LATE;
-			var levelBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(campOrdinal, blueprintType, levelIndex, maxLevelIndex);
 
-			var upgradesComponent = this.tribeUpgradesNodes.head.upgrades;
-			var blueprintsToFind = [];
-			var blueprintPiecesToFind = 0;
+			let blueprintType = localeVO.isEarly ? UpgradeConstants.BLUEPRINT_BRACKET_EARLY : UpgradeConstants.BLUEPRINT_BRACKET_LATE;
+			let levelBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(campOrdinal, blueprintType, levelIndex, maxLevelIndex);
+
+			// find blueprints available to discover
+
+			let upgradesComponent = this.tribeUpgradesNodes.head.upgrades;
+			let blueprintsToFind = [];
+			let numBlueprintPiecesToFind = 0;
 			for (let i = 0; i < levelBlueprints.length; i++) {
-				var blueprintId = levelBlueprints[i];
-				if (!upgradesComponent.hasUpgrade(blueprintId) && !upgradesComponent.hasAvailableBlueprint(blueprintId)) {
-					var blueprintVO = upgradesComponent.getBlueprint(blueprintId);
-					var remainingPieces = blueprintVO ? blueprintVO.maxPieces - blueprintVO.currentPieces : UpgradeConstants.getMaxPiecesForBlueprint(blueprintId);
+				let blueprintID = levelBlueprints[i];
+				if (!upgradesComponent.hasUpgrade(blueprintID) && !upgradesComponent.hasAvailableBlueprint(blueprintID)) {
+					let blueprintVO = upgradesComponent.getBlueprint(blueprintID);
+					let remainingPieces = blueprintVO ? blueprintVO.maxPieces - blueprintVO.currentPieces : UpgradeConstants.getMaxPiecesForBlueprint(blueprintID);
 					if (remainingPieces > 0) {
-						blueprintsToFind.push(blueprintId);
-						blueprintPiecesToFind += remainingPieces;
+						blueprintsToFind.push(blueprintID);
+						numBlueprintPiecesToFind += remainingPieces;
 					}
 				}
 			}
 			
-			var bracket = localeVO.getBracket();
-			var unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(playerPos.level, false, bracket, localeVO, true);
-			var numUnscoutedLocales = unscoutedLocales.length + 1;
-			var scoutedLocales = GameGlobals.levelHelper.getLevelLocales(playerPos.level, true, bracket, localeVO, true);
-			var numScoutedLocales = scoutedLocales.length + 1 - numUnscoutedLocales;
-			var findBlueprintProbability = blueprintPiecesToFind / numUnscoutedLocales;
-			
-			if (!GameGlobals.gameState.uiStatus.isHidden) {
-				log.i("get result blueprint: " + blueprintType + " | pieces to find: " + blueprintPiecesToFind + " / unscouted locales: " + numUnscoutedLocales + " -> prob: " + Math.round(findBlueprintProbability*100)/100 + ", scouted locales: " + numScoutedLocales);
-				log.i(levelBlueprints);
-				log.i(blueprintsToFind);
+			// add missed blueprints (should be none but fallback in case of bugs)
+
+			let missedBlueprints = this.getMissedBlueprints();
+			for (let i = 0; i < missedBlueprints.length; i++) {
+				let blueprintID = missedBlueprints[i];
+				blueprintsToFind.push(blueprintID);
+				numBlueprintPiecesToFind += UpgradeConstants.getMaxPiecesForBlueprint(blueprintID);
 			}
 
-			var isFirstEver = playerPos.level == 13 && numScoutedLocales == 0;
-			if (isFirstEver || Math.random() < findBlueprintProbability) {
-				let i = Math.floor(Math.random() * blueprintsToFind.length);
-				return blueprintsToFind[i];
+			if (blueprintsToFind.length == 0) return 0;
+			
+			// calculate find probability (minimum)
+
+			let bracket = localeVO.getBracket();
+			let unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(playerPos.level, false, bracket, localeVO, true);
+			let numUnscoutedLocales = unscoutedLocales.length + 1;
+			let scoutedLocales = GameGlobals.levelHelper.getLevelLocales(playerPos.level, true, bracket, localeVO, true);
+			let numScoutedLocales = scoutedLocales.length + 1 - numUnscoutedLocales;
+
+			let findBlueprintProbability = MathUtils.clamp(numBlueprintPiecesToFind / numUnscoutedLocales, minBlueprintProbability, 1);
+
+			// roll and check if we found something
+
+			let isFirstEver = playerPos.level == 13 && numScoutedLocales == 0;
+			if (!isFirstEver && Math.random() > findBlueprintProbability) {
+				return null;
+			}
+
+			// select blueprint 
+
+			let sectorUpgradeType = this.getDefaultUpgradeTypeForSector();
+			let localeUpgradeType = this.getDefaultUpgradeTypeForLocale(localeVO);
+
+			let getBlueprintScore = function (blueprintID) {
+				let score = 0;
+				let blueprintVO = upgradesComponent.getBlueprint(blueprintID);
+				let upgradeType = UpgradeConstants.getUpgradeType(blueprintID);
+				
+				if (blueprintVO) score += blueprintVO.currentPieces;
+				if (upgradeType == sectorUpgradeType) score += 2;
+				if (upgradeType == localeUpgradeType) score += 4;
+
+				return score;
+			}
+
+			blueprintsToFind = blueprintsToFind.sort((a, b) => getBlueprintScore(b) - getBlueprintScore(a));
+
+			return blueprintsToFind[0];
+		},
+
+		getDefaultUpgradeTypeForSector: function () {
+			let sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+
+			switch (sectorFeatures.sectorType) {
+				case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
+					return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
+				case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
+					return UpgradeConstants.UPGRADE_TYPE_EVIDENCE;
+				case SectorConstants.SECTOR_TYPE_MAINTENANCE:
+					return UpgradeConstants.UPGRADE_TYPE_EVIDENCE;
+				case SectorConstants.SECTOR_TYPE_PUBLIC:
+					return UpgradeConstants.UPGRADE_TYPE_HOPE;
+				case SectorConstants.SECTOR_TYPE_COMMERCIAL:
+					return UpgradeConstants.UPGRADE_TYPE_HOPE;
+				case SectorConstants.SECTOR_TYPE_SLUM:
+					return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
+			}
+
+			return null;
+		},
+
+		getDefaultUpgradeTypeForLocale: function (localeVO) {
+			switch (localeVO.type) {
+				case localeTypes.bunker: return UpgradeConstants.UPGRADE_TYPE_INSIGHT;
+				case localeTypes.clinic: return UpgradeConstants.UPGRADE_TYPE_EVIDENCE;
+				case localeTypes.factory: return UpgradeConstants.UPGRADE_TYPE_EVIDENCE;
+				case localeTypes.farm: return UpgradeConstants.UPGRADE_TYPE_HOPE;
+				case localeTypes.sewer: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
+				case localeTypes.camp: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
+				case localeTypes.caravan: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
+				case localeTypes.hermit: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
+				case localeTypes.tradingpartner: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
+				case localeTypes.grocery: return UpgradeConstants.UPGRADE_TYPE_HOPE;
+				case localeTypes.hut: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
+				case localeTypes.lab: return UpgradeConstants.UPGRADE_TYPE_EVIDENCE;
+				case localeTypes.restaurant: return UpgradeConstants.UPGRADE_TYPE_HOPE;
+				case localeTypes.house: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
+				case localeTypes.market: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
+				case localeTypes.store: return UpgradeConstants.UPGRADE_TYPE_HOPE;
 			}
 
 			return null;
@@ -2032,38 +2181,31 @@ define([
 			return result;
 		},
 		
-		getFallbackBlueprint: function (probability) {
-			var missedBlueprints = [];
-			var playerPos = this.playerLocationNodes.head.position;
-			var upgradesComponent = this.tribeUpgradesNodes.head.upgrades;
-			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
-			var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(playerPos.level);
+		getMissedBlueprints: function () {
+			let missedBlueprints = [];
+			let playerPos = this.playerLocationNodes.head.position;
+			let upgradesComponent = this.tribeUpgradesNodes.head.upgrades;
+			let levelOrdinal = GameGlobals.gameState.getLevelOrdinal(playerPos.level);
 			for (let i = 1; i < levelOrdinal; i++) {
-				var level = GameGlobals.gameState.getLevelForOrdinal(i);
-				var allLocales = GameGlobals.levelHelper.getLevelLocales(level, true, null, true).length;
-				var unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(level, false, null, true).length;
+				let level = GameGlobals.gameState.getLevelForOrdinal(i);
+				let allLocales = GameGlobals.levelHelper.getLevelLocales(level, true, null, true).length;
+				let unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(level, false, null, true).length;
 				if (allLocales > 0 && unscoutedLocales === 0) {
-					var c = GameGlobals.gameState.getCampOrdinal(level);
-					var levelIndex = GameGlobals.gameState.getLevelIndex(level);
+					let c = GameGlobals.gameState.getCampOrdinal(level);
+					let levelIndex = GameGlobals.gameState.getLevelIndex(level);
 					let maxLevelIndex = GameGlobals.gameState.getMaxLevelIndex(playerPos.level);
-					var levelBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(c, null, levelIndex, maxLevelIndex);
+					let levelBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(c, null, levelIndex, maxLevelIndex);
 					for (let j = 0; j < levelBlueprints.length; j++) {
-						var blueprintId = levelBlueprints[j];
-						if (upgradesComponent.hasUpgrade(blueprintId)) continue;
-						if (upgradesComponent.hasAvailableBlueprint(blueprintId)) continue;
-						if (upgradesComponent.hasAllPieces(blueprintId)) continue;
-						missedBlueprints.push(blueprintId);
+						var blueprintID = levelBlueprints[j];
+						if (upgradesComponent.hasUpgrade(blueprintID)) continue;
+						if (upgradesComponent.hasAvailableBlueprint(blueprintID)) continue;
+						if (upgradesComponent.hasAllPieces(blueprintID)) continue;
+						missedBlueprints.push(blueprintID);
 					}
 				}
 			}
 			
-			if (missedBlueprints.length > 0) {
-				log.w("Found missed blueprints: " + missedBlueprints.join(","));
-				if (Math.random() < probability) {
-					return missedBlueprints[0];
-				}
-			}
-			return null;
+			return missedBlueprints;
 		},
 
 		getBaseResourceFindProbability: function (prevalence) {

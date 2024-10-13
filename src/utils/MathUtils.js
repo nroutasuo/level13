@@ -68,6 +68,21 @@ define(function () {
 			let index = Math.floor(Math.random() * arr.length);
 			return arr[index];
 		},
+
+		randomElements: function (arr, num) {
+			if (num >= arr.length) return arr;
+
+			let result = [];
+
+			while (result.length < num) {
+				let elem = this.randomElement(arr);
+				if (result.indexOf(elem) < 0) {
+					result.push(elem);
+				}
+			}
+
+			return result;
+		},
 		
 		randomIntBetween: function (min, max) {
 			min = min || 0;

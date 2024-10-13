@@ -142,7 +142,7 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Ga
 			let numSectors = this.randomInt(seed, min, max);
 			let numCandidates = Math.max(3, numSectors * 2);
 			let candidates = this.randomSectors(seed, worldVO, levelVO, numCandidates, numCandidates + 1, options);
-			candidates = candidates.sort((a, b) => scoringFunction(b,) - scoringFunction(a));
+			candidates = candidates.sort((a, b) => scoringFunction(b) - scoringFunction(a));
 			return candidates.slice(0, numSectors);
 		},
 		
