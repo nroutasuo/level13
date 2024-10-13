@@ -516,7 +516,7 @@ define([
 						if (required) {
 							return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_NOT_IN_CAMP };
 						} else {
-							return { value: 0, reason: "Must be outside to do this." };
+							return { value: 0, reason: "Must be outside." };
 						}
 					}
 				}
@@ -856,7 +856,7 @@ define([
 					}
 					if (requirements.outgoingcaravan.active) {
 						let range = requirements.outgoingcaravan.active;
-						let currentVal = caravansComponent.outgoingCaravans.length;
+						let currentVal = caravansComponent ? caravansComponent.outgoingCaravans.length : 0;
 						let result = this.checkRequirementsRange(range, currentVal, "There are no active caravans", "There is an active caravan.");
 						if (result) return result;
 					}
@@ -1393,7 +1393,7 @@ define([
 					if (currentValue !== requiredValue) {
 						var timeLeft = Math.ceil(GameGlobals.playerHelper.getBusyTimeLeft());
 						if (currentValue) reason = "Busy " + GameGlobals.playerHelper.getBusyDescription() + " (" + timeLeft + "s)";
-						else reason = "Need to be busy to do this.";
+						else reason = "Need to be busy.";
 						return { value: 0, reason: reason, baseReason: PlayerActionConstants.DISABLED_REASON_BUSY };
 					}
 				}

@@ -19,14 +19,11 @@ define([
 	'game/components/player/HopeComponent',
 	'game/components/type/LevelComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
-	'game/components/sector/events/RecruitComponent',
-	'game/components/sector/events/TraderComponent',
-	'game/components/sector/events/RaidComponent',
 	'game/components/sector/OutgoingCaravansComponent'
 ], function (
 	Ash, Text, GameGlobals, GlobalSignals, UIConstants, CampConstants, ImprovementConstants, OccurrenceConstants, TextConstants, WorldConstants,
 	CampNode, PlayerPositionNode, PlayerStatsNode, TribeUpgradesNode,
-	PositionComponent, ResourcesComponent, ResourceAccumulationComponent, HopeComponent, LevelComponent, SectorImprovementsComponent, RecruitComponent, TraderComponent, RaidComponent, OutgoingCaravansComponent
+	PositionComponent, ResourcesComponent, ResourceAccumulationComponent, HopeComponent, LevelComponent, SectorImprovementsComponent, OutgoingCaravansComponent
 ) {
 	var UIOutMilestonesSystem = Ash.System.extend({
 

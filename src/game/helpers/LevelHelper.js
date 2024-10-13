@@ -1213,7 +1213,6 @@ define([
 		
 		getLevelLocales: function (level, includeScouted, localeBracket, excludeLocaleVO, requireBlueprints) {
 			var locales = [];
-			var sectorPosition;
 			for (let i = 0; i < this.sectorEntitiesByLevel[level].length; i++) {
 				var sectorEntity = this.sectorEntitiesByLevel[level][i];
 				locales = locales.concat(this.getSectorLocales(sectorEntity, includeScouted, localeBracket, excludeLocaleVO, requireBlueprints));

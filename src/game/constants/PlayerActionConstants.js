@@ -12,7 +12,7 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 		DISABLED_REASON_IN_PROGRESS: "DISABLED_REASON_IN_PROGRESS",
 		DISABLED_REASON_LOCKED_RESOURCES: 'Requires undiscovered resources.',
 		DISABLED_REASON_BAG_FULL: 'Bag full.',
-		DISABLED_REASON_NOT_IN_CAMP: 'Must be in camp to do this.',
+		DISABLED_REASON_NOT_IN_CAMP: 'Must be in camp.',
 		DISABLED_REASON_POPULATION: "DISABLED_REASON_POPULATION",
 		DISABLED_REASON_NOT_ENOUGH_LEVEL_POP: 'Not enough people on this level.',
 		DISABLED_REASON_NOT_REACHABLE_BY_TRADERS: "Camp not reachable by traders.",
