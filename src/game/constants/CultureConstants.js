@@ -3,10 +3,13 @@ define(function () {
 	var CultureConstants = {
 		
 		cultures: {
+			ASSURIAN: "assurian",
+			DOMA: "doma",
 			ETRURIAN: "etrurian",
 			HANSA: "hansa",
 			INDUS: "indus",
 			KIEVAN: "kievan",
+			SAHEL: "sahel",
 			YUAN: "yuan",
 		},
 		
@@ -24,18 +27,64 @@ define(function () {
 		
 		names: {
 			personalNames: [],
-			familyNames: [],
 			nickNames: [],
 		},
 		
 		initNames: function () {
-			this.names.personalNames.push({name: "Jaro" });
+			// common names
 			this.names.personalNames.push({name: "Adya" });
-			this.names.personalNames.push({name: "Gift" });
-			this.names.personalNames.push({name: "Noa" });
-			this.names.personalNames.push({name: "Nat" });
 			this.names.personalNames.push({name: "Idris" });
+			this.names.personalNames.push({name: "Jaro" });
+			this.names.personalNames.push({name: "Nat" });
+			this.names.personalNames.push({name: "Noa" });
+			
+			this.names.personalNames.push({name: "Amanda", gender: this.genders.FEMALE });
+			this.names.personalNames.push({name: "Hana", gender: this.genders.FEMALE });
+			this.names.personalNames.push({name: "Julia", gender: this.genders.FEMALE });
+			this.names.personalNames.push({name: "Lena", gender: this.genders.FEMALE });
+			this.names.personalNames.push({name: "Natalia", gender: this.genders.FEMALE });
+			this.names.personalNames.push({name: "Olga", gender: this.genders.FEMALE });
+			this.names.personalNames.push({name: "Ulla", gender: this.genders.FEMALE });
+			this.names.personalNames.push({name: "Wanda", gender: this.genders.FEMALE });
+			
+			this.names.personalNames.push({name: "Ale", gender: this.genders.MALE });
+			this.names.personalNames.push({name: "Hugo", gender: this.genders.MALE });
+			this.names.personalNames.push({name: "Jakob", gender: this.genders.MALE });
+			this.names.personalNames.push({name: "Jakub", gender: this.genders.MALE });
+			this.names.personalNames.push({name: "Jan", gender: this.genders.MALE });
+			this.names.personalNames.push({name: "Leo", gender: this.genders.MALE });
+			this.names.personalNames.push({name: "Max", gender: this.genders.MALE });
+			this.names.personalNames.push({name: "Nax", gender: this.genders.MALE });
 
+			// names by origin
+			this.names.personalNames.push({name: "Gift", origin: this.origins.SURFACE });
+			this.names.personalNames.push({name: "Pal Noa", origin: this.origins.SURFACE });
+			this.names.personalNames.push({name: "Sin Noa", origin: this.origins.SURFACE });
+			this.names.personalNames.push({name: "Jan Bani", origin: this.origins.SURFACE });
+			this.names.personalNames.push({name: "Jan Naser", origin: this.origins.SURFACE });
+
+			this.names.personalNames.push({name: "Lucy", origin: this.origins.SURFACE, gender: this.genders.FEMALE });
+			this.names.personalNames.push({name: "Liz", origin: this.origins.SURFACE, gender: this.genders.FEMALE });
+
+			this.names.personalNames.push({name: "Nax Amir", origin: this.origins.SURFACE, gender: this.genders.MALE });
+			this.names.personalNames.push({name: "Maurice", origin: this.origins.SURFACE, gender: this.genders.MALE });
+			this.names.personalNames.push({name: "Prince", origin: this.origins.SURFACE, gender: this.genders.MALE });
+
+			this.names.personalNames.push({name: "Jorric", origin: this.origins.SLUMS, gender: this.genders.MALE });
+			this.names.personalNames.push({name: "Jerred", origin: this.origins.SLUMS, gender: this.genders.MALE });
+			this.names.personalNames.push({name: "Katryn", origin: this.origins.SLUMS, gender: this.genders.FEMALE });
+
+			this.names.personalNames.push({name: "Abi", origin: this.origins.DARKLEVELS });
+			this.names.personalNames.push({name: "Silence", origin: this.origins.DARKLEVELS });
+
+			// ethnic names
+			this.names.personalNames.push({name: "Farid", culture: this.cultures.ASSURIAN });
+			this.names.personalNames.push({name: "Feyz", culture: this.cultures.ASSURIAN });
+			this.names.personalNames.push({name: "Hoda", culture: this.cultures.ASSURIAN });
+			this.names.personalNames.push({name: "Mehdi", culture: this.cultures.ASSURIAN });
+			this.names.personalNames.push({name: "Nirari", culture: this.cultures.ASSURIAN });
+			this.names.personalNames.push({name: "Sam", culture: this.cultures.ASSURIAN });
+			this.names.personalNames.push({name: "Payam", culture: this.cultures.ASSURIAN });
 			this.names.personalNames.push({name: "Fiore", culture: this.cultures.ETRURIAN });
 			this.names.personalNames.push({name: "Giusi", culture: this.cultures.ETRURIAN });
 			this.names.personalNames.push({name: "Loue", culture: this.cultures.HANSA });
@@ -50,18 +99,73 @@ define(function () {
 			this.names.personalNames.push({name: "Noor", culture: this.cultures.INDUS });
 			this.names.personalNames.push({name: "Robin", culture: this.cultures.KIEVAN });
 			this.names.personalNames.push({name: "Vanja", culture: this.cultures.KIEVAN });
+			this.names.personalNames.push({name: "Dayo", culture: this.cultures.SAHEL });
+			this.names.personalNames.push({name: "Gbadela", culture: this.cultures.SAHEL });
 			this.names.personalNames.push({name: "Misheel", culture: this.cultures.YUAN });
 			this.names.personalNames.push({name: "Naran", culture: this.cultures.YUAN });
 			this.names.personalNames.push({name: "Togtuun", culture: this.cultures.YUAN });
-			
-			this.names.personalNames.push({name: "Jan", gender: this.genders.MALE });
-			this.names.personalNames.push({name: "Jakub", gender: this.genders.MALE });
-			this.names.personalNames.push({name: "Prince", gender: this.genders.MALE });
-			this.names.personalNames.push({name: "Ale", gender: this.genders.MALE });
-			this.names.personalNames.push({name: "Hugo", gender: this.genders.MALE });
-			this.names.personalNames.push({name: "Jakob", gender: this.genders.MALE });
-			this.names.personalNames.push({name: "Leo", gender: this.genders.MALE });
-			this.names.personalNames.push({name: "Max", gender: this.genders.MALE });
+
+			this.names.personalNames.push({name: "Izla", gender: this.genders.FEMALE, culture: this.cultures.ASSURIAN });
+			this.names.personalNames.push({name: "Laleh", gender: this.genders.FEMALE, culture: this.cultures.ASSURIAN });
+			this.names.personalNames.push({name: "Leni", gender: this.genders.FEMALE, culture: this.cultures.ASSURIAN });
+			this.names.personalNames.push({name: "Mahsa", gender: this.genders.FEMALE, culture: this.cultures.ASSURIAN });
+			this.names.personalNames.push({name: "Mimra", gender: this.genders.FEMALE, culture: this.cultures.ASSURIAN });
+			this.names.personalNames.push({name: "Veronica", gender: this.genders.FEMALE, culture: this.cultures.ASSURIAN });
+			this.names.personalNames.push({name: "Amberley", gender: this.genders.FEMALE, culture: this.cultures.DOMA });
+			this.names.personalNames.push({name: "Deana", gender: this.genders.FEMALE, culture: this.cultures.DOMA });
+			this.names.personalNames.push({name: "Jessamy", gender: this.genders.FEMALE, culture: this.cultures.DOMA });
+			this.names.personalNames.push({name: "Lidy", gender: this.genders.FEMALE, culture: this.cultures.DOMA });
+			this.names.personalNames.push({name: "Rania", gender: this.genders.FEMALE, culture: this.cultures.DOMA });
+			this.names.personalNames.push({name: "Anna", gender: this.genders.FEMALE, culture: this.cultures.ETRURIAN });
+			this.names.personalNames.push({name: "Aurelia", gender: this.genders.FEMALE, culture: this.cultures.ETRURIAN });
+			this.names.personalNames.push({name: "Sofia", gender: this.genders.FEMALE, culture: this.cultures.ETRURIAN });
+			this.names.personalNames.push({name: "Giulia", gender: this.genders.FEMALE, culture: this.cultures.ETRURIAN });
+			this.names.personalNames.push({name: "Sabine", gender: this.genders.FEMALE, culture: this.cultures.ETRURIAN });
+			this.names.personalNames.push({name: "Gia", gender: this.genders.FEMALE, culture: this.cultures.ETRURIAN });
+			this.names.personalNames.push({name: "Elda", gender: this.genders.FEMALE, culture: this.cultures.ETRURIAN, origin: this.origins.DARKLEVELS });
+			this.names.personalNames.push({name: "Aurelia", gender: this.genders.FEMALE, culture: this.cultures.ETRURIAN, origin: this.origins.DARKLEVELS });
+			this.names.personalNames.push({name: "Annike", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
+			this.names.personalNames.push({name: "Elke", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
+			this.names.personalNames.push({name: "Eine", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
+			this.names.personalNames.push({name: "Ilse", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
+			this.names.personalNames.push({name: "Anja", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
+			this.names.personalNames.push({name: "Johanna", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
+			this.names.personalNames.push({name: "Astrid", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
+			this.names.personalNames.push({name: "Ebba", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
+			this.names.personalNames.push({name: "Marjolein", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
+			this.names.personalNames.push({name: "Rosalena", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
+			this.names.personalNames.push({name: "Salome", gender: this.genders.FEMALE, culture: this.cultures.INDUS });
+			this.names.personalNames.push({name: "Sunita", gender: this.genders.FEMALE, culture: this.cultures.INDUS });
+			this.names.personalNames.push({name: "Zahra", gender: this.genders.FEMALE, culture: this.cultures.INDUS });
+			this.names.personalNames.push({name: "Miriam", gender: this.genders.FEMALE, culture: this.cultures.INDUS });
+			this.names.personalNames.push({name: "Zofia", gender: this.genders.FEMALE, culture: this.cultures.KIEVAN })
+			this.names.personalNames.push({name: "Magda", gender: this.genders.FEMALE, culture: this.cultures.KIEVAN })
+			this.names.personalNames.push({name: "Nadia", gender: this.genders.FEMALE, culture: this.cultures.KIEVAN })
+			this.names.personalNames.push({name: "Yevra", gender: this.genders.FEMALE, culture: this.cultures.KIEVAN })
+			this.names.personalNames.push({name: "Maja Amelia", gender: this.genders.FEMALE, culture: this.cultures.KIEVAN, origin: this.origins.SURFACE })
+			this.names.personalNames.push({name: "Adannaya", gender: this.genders.FEMALE, culture: this.cultures.SAHEL })
+			this.names.personalNames.push({name: "Ajoke", gender: this.genders.FEMALE, culture: this.cultures.SAHEL })
+			this.names.personalNames.push({name: "Ibukun", gender: this.genders.FEMALE, culture: this.cultures.SAHEL, origin: this.origins.SURFACE })
+			this.names.personalNames.push({name: "Jummai", gender: this.genders.FEMALE, culture: this.cultures.SAHEL, origin: this.origins.SURFACE })
+			this.names.personalNames.push({name: "Maren", gender: this.genders.FEMALE, culture: this.cultures.SAHEL, origin: this.origins.SURFACE })
+			this.names.personalNames.push({name: "Monifa", gender: this.genders.FEMALE, culture: this.cultures.SAHEL, origin: this.origins.SURFACE })
+			this.names.personalNames.push({name: "Orisa", gender: this.genders.FEMALE, culture: this.cultures.SAHEL, origin: this.origins.SURFACE })
+			this.names.personalNames.push({name: "Khaliun", gender: this.genders.FEMALE, culture: this.cultures.YUAN });
+			this.names.personalNames.push({name: "Yargui", gender: this.genders.FEMALE, culture: this.cultures.YUAN });
+			this.names.personalNames.push({name: "Muur", gender: this.genders.FEMALE, culture: this.cultures.YUAN });
+			this.names.personalNames.push({name: "Khulan", gender: this.genders.FEMALE, culture: this.cultures.YUAN });
+
+			this.names.personalNames.push({name: "Amir", gender: this.genders.MALE, culture: this.cultures.ASSURIAN, origin: this.origins.SURFACE });
+			this.names.personalNames.push({name: "Javad", gender: this.genders.MALE, culture: this.cultures.ASSURIAN });
+			this.names.personalNames.push({name: "Narsai", gender: this.genders.MALE, culture: this.cultures.ASSURIAN });
+			this.names.personalNames.push({name: "Sargon", gender: this.genders.MALE, culture: this.cultures.ASSURIAN });
+			this.names.personalNames.push({name: "Sharru", gender: this.genders.MALE, culture: this.cultures.ASSURIAN });
+			this.names.personalNames.push({name: "Baius", gender: this.genders.MALE, culture: this.cultures.DOMA });
+			this.names.personalNames.push({name: "Camlo", gender: this.genders.MALE, culture: this.cultures.DOMA });
+			this.names.personalNames.push({name: "Bui", gender: this.genders.MALE, culture: this.cultures.DOMA });
+			this.names.personalNames.push({name: "Merrick", gender: this.genders.MALE, culture: this.cultures.DOMA });
+			this.names.personalNames.push({name: "Moelus", gender: this.genders.MALE, culture: this.cultures.DOMA });
+			this.names.personalNames.push({name: "Taimi", gender: this.genders.MALE, culture: this.cultures.DOMA });
 			this.names.personalNames.push({name: "Alessio", gender: this.genders.MALE, culture: this.cultures.ETRURIAN });
 			this.names.personalNames.push({name: "Aurelio", gender: this.genders.MALE, culture: this.cultures.ETRURIAN });
 			this.names.personalNames.push({name: "Matteo", gender: this.genders.MALE, culture: this.cultures.ETRURIAN });
@@ -75,79 +179,64 @@ define(function () {
 			this.names.personalNames.push({name: "Florian", gender: this.genders.MALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Otto", gender: this.genders.MALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Eino", gender: this.genders.MALE, culture: this.cultures.HANSA });
+			this.names.personalNames.push({name: "Runar", gender: this.genders.MALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Ole", gender: this.genders.MALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Jori", gender: this.genders.MALE, culture: this.cultures.HANSA });
+			this.names.personalNames.push({name: "Aseem", gender: this.genders.MALE, culture: this.cultures.INDUS });
 			this.names.personalNames.push({name: "Armin", gender: this.genders.MALE, culture: this.cultures.INDUS });
 			this.names.personalNames.push({name: "Batu", gender: this.genders.MALE, culture: this.cultures.INDUS });
+			this.names.personalNames.push({name: "Hannes", gender: this.genders.MALE, culture: this.cultures.INDUS });
 			this.names.personalNames.push({name: "Mehdi", gender: this.genders.MALE, culture: this.cultures.INDUS });
 			this.names.personalNames.push({name: "Medad", gender: this.genders.MALE, culture: this.cultures.INDUS });
 			this.names.personalNames.push({name: "Omar", gender: this.genders.MALE, culture: this.cultures.INDUS });
 			this.names.personalNames.push({name: "Jurij", gender: this.genders.MALE, culture: this.cultures.KIEVAN });
 			this.names.personalNames.push({name: "Simon", gender: this.genders.MALE, culture: this.cultures.KIEVAN });
 			this.names.personalNames.push({name: "Pawel", gender: this.genders.MALE, culture: this.cultures.KIEVAN });
+			this.names.personalNames.push({name: "Sergey", gender: this.genders.MALE, culture: this.cultures.KIEVAN });
+			this.names.personalNames.push({name: "Yevry", gender: this.genders.MALE, culture: this.cultures.KIEVAN })
+			this.names.personalNames.push({name: "Akinde", gender: this.genders.MALE, culture: this.cultures.SAHEL })
+			this.names.personalNames.push({name: "Bosede", gender: this.genders.MALE, culture: this.cultures.SAHEL })
+			this.names.personalNames.push({name: "Folake", gender: this.genders.MALE, culture: this.cultures.SAHEL })
+			this.names.personalNames.push({name: "Okoro", gender: this.genders.MALE, culture: this.cultures.SAHEL })
+			this.names.personalNames.push({name: "Teleola", gender: this.genders.MALE, culture: this.cultures.SAHEL })
+			this.names.personalNames.push({name: "Temitope", gender: this.genders.MALE, culture: this.cultures.SAHEL })
 			this.names.personalNames.push({name: "Arban", gender: this.genders.MALE, culture: this.cultures.YUAN });
+			this.names.personalNames.push({name: "Erxin", gender: this.genders.MALE, culture: this.cultures.YUAN });
 			this.names.personalNames.push({name: "Chuluun", gender: this.genders.MALE, culture: this.cultures.YUAN });
 			this.names.personalNames.push({name: "Jargal", gender: this.genders.MALE, culture: this.cultures.YUAN });
 			this.names.personalNames.push({name: "Bataar", gender: this.genders.MALE, culture: this.cultures.YUAN });
 			this.names.personalNames.push({name: "Khuanli", gender: this.genders.MALE, culture: this.cultures.YUAN });
 			this.names.personalNames.push({name: "Batbayar", gender: this.genders.MALE, culture: this.cultures.YUAN });
 			this.names.personalNames.push({name: "Timur", gender: this.genders.MALE, culture: this.cultures.YUAN });
+			this.names.personalNames.push({name: "Tem", gender: this.genders.MALE, culture: this.cultures.YUAN });
 			
-			this.names.personalNames.push({name: "Wanda", gender: this.genders.FEMALE });
-			this.names.personalNames.push({name: "Olga", gender: this.genders.FEMALE });
-			this.names.personalNames.push({name: "Ulla", gender: this.genders.FEMALE });
-			this.names.personalNames.push({name: "Lena", gender: this.genders.FEMALE });
-			this.names.personalNames.push({name: "Julia", gender: this.genders.FEMALE });
-			this.names.personalNames.push({name: "Natalia", gender: this.genders.FEMALE });
-			this.names.personalNames.push({name: "Hana", gender: this.genders.FEMALE });
-			this.names.personalNames.push({name: "Anja", gender: this.genders.FEMALE });
-			this.names.personalNames.push({name: "Anna", gender: this.genders.FEMALE, culture:this.cultures.ETRURIAN });
-			this.names.personalNames.push({name: "Aurelia", gender: this.genders.FEMALE, culture:this.cultures.ETRURIAN });
-			this.names.personalNames.push({name: "Sofia", gender: this.genders.FEMALE, culture:this.cultures.ETRURIAN });
-			this.names.personalNames.push({name: "Giulia", gender: this.genders.FEMALE, culture:this.cultures.ETRURIAN });;
-			this.names.personalNames.push({name: "Sabine", gender: this.genders.FEMALE, culture:this.cultures.ETRURIAN });;
-			this.names.personalNames.push({name: "Gia", gender: this.genders.FEMALE, culture:this.cultures.ETRURIAN });;
-			this.names.personalNames.push({name: "Elda", gender: this.genders.FEMALE, culture:this.cultures.ETRURIAN, origin: this.origins.DARKLEVELS });;
-			this.names.personalNames.push({name: "Aurelia", gender: this.genders.FEMALE, culture:this.cultures.ETRURIAN, origin: this.origins.DARKLEVELS });;
-			this.names.personalNames.push({name: "Annike", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
-			this.names.personalNames.push({name: "Elke", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
-			this.names.personalNames.push({name: "Ilse", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
-			this.names.personalNames.push({name: "Johanna", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
-			this.names.personalNames.push({name: "Astrid", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
-			this.names.personalNames.push({name: "Ebba", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
-			this.names.personalNames.push({name: "Marjolein", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
-			this.names.personalNames.push({name: "Rosalena", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
-			this.names.personalNames.push({name: "Salome", gender: this.genders.FEMALE, culture: this.cultures.INDUS });
-			this.names.personalNames.push({name: "Zahra", gender: this.genders.FEMALE, culture: this.cultures.INDUS });
-			this.names.personalNames.push({name: "Miriam", gender: this.genders.FEMALE, culture: this.cultures.INDUS });
-			this.names.personalNames.push({name: "Zofia", gender: this.genders.FEMALE, culture: this.cultures.KIEVAN })
-			this.names.personalNames.push({name: "Magda", gender: this.genders.FEMALE, culture: this.cultures.KIEVAN })
-			this.names.personalNames.push({name: "Nadia", gender: this.genders.FEMALE, culture: this.cultures.KIEVAN })
-			this.names.personalNames.push({name: "Maja Amelia", gender: this.genders.FEMALE, culture: this.cultures.KIEVAN, origin: this.origins.SURFACE })
-			this.names.personalNames.push({name: "Khaliun", gender: this.genders.FEMALE, culture: this.cultures.YUAN });
-			this.names.personalNames.push({name: "Yargui", gender: this.genders.FEMALE, culture: this.cultures.YUAN });
-			this.names.personalNames.push({name: "Muur", gender: this.genders.FEMALE, culture: this.cultures.YUAN });
-			this.names.personalNames.push({name: "Khulan", gender: this.genders.FEMALE, culture: this.cultures.YUAN });
-			
-			this.names.nickNames.push({name: "Rat", origin: this.origins.DARKLEVELS});
-			this.names.nickNames.push({name: "Spider", origin: this.origins.DARKLEVELS});
-			this.names.nickNames.push({name: "Squint", origin: this.origins.DARKLEVELS});
-			this.names.nickNames.push({name: "Fang", origin: this.origins.DARKLEVELS});
-			this.names.nickNames.push({name: "Soot", origin: this.origins.DARKLEVELS});
-			this.names.nickNames.push({name: "Bullet", origin: this.origins.SLUMS});
-			this.names.nickNames.push({name: "Spark", origin: this.origins.SLUMS});
-			this.names.nickNames.push({name: "Junior", origin: this.origins.SLUMS});
-			this.names.nickNames.push({name: "Lion", origin: this.origins.SLUMS});
-			this.names.nickNames.push({name: "Lucky", origin: this.origins.SLUMS});
-			this.names.nickNames.push({name: "Needle", origin: this.origins.SLUMS});
-			this.names.nickNames.push({name: "Mouse", origin: this.origins.SLUMS});
-			this.names.nickNames.push({name: "Spike", origin: this.origins.SLUMS});
-			this.names.nickNames.push({name: "Sly", origin: this.origins.SLUMS});
-			this.names.nickNames.push({name: "Bandana", origin: this.origins.SLUMS});
-			this.names.nickNames.push({name: "Benny", gender: this.genders.MALE});
-			this.names.nickNames.push({name: "Vulture", gender: this.genders.MALE});
-			this.names.nickNames.push({name: "Denlüü", culture: this.cultures.YUAN, origin: this.origins.SLUMS}); // lantern
-			this.names.nickNames.push({name: "Chiiden", culture: this.cultures.YUAN, origin: this.origins.SLUMS}); // Light, eletric light
+			// nicknames by origin
+			this.names.nickNames.push({name: "Bullet", origin: this.origins.SLUMS });
+			this.names.nickNames.push({name: "Spark", origin: this.origins.SLUMS });
+			this.names.nickNames.push({name: "Junior", origin: this.origins.SLUMS });
+			this.names.nickNames.push({name: "Lion", origin: this.origins.SLUMS });
+			this.names.nickNames.push({name: "Lucky", origin: this.origins.SLUMS });
+			this.names.nickNames.push({name: "Needle", origin: this.origins.SLUMS });
+			this.names.nickNames.push({name: "Mouse", origin: this.origins.SLUMS });
+			this.names.nickNames.push({name: "Spike", origin: this.origins.SLUMS });
+			this.names.nickNames.push({name: "Sly", origin: this.origins.SLUMS });
+			this.names.nickNames.push({name: "Bandana", origin: this.origins.SLUMS });
+
+			this.names.nickNames.push({name: "Benny", origin: this.origins.SLUMS, gender: this.genders.MALE });
+			this.names.nickNames.push({name: "Vulture", origin: this.origins.SLUMS, gender: this.genders.MALE });
+
+			this.names.nickNames.push({name: "Denlüü", origin: this.origins.SLUMS, culture: this.cultures.YUAN });
+			this.names.nickNames.push({name: "Chiiden", origin: this.origins.SLUMS, culture: this.cultures.YUAN }); 
+
+			this.names.nickNames.push({name: "Rat", origin: this.origins.DARKLEVELS });
+			this.names.nickNames.push({name: "Comet", origin: this.origins.DARKLEVELS });
+			this.names.nickNames.push({name: "Spider", origin: this.origins.DARKLEVELS });
+			this.names.nickNames.push({name: "Squint", origin: this.origins.DARKLEVELS });
+			this.names.nickNames.push({name: "Fang", origin: this.origins.DARKLEVELS });
+			this.names.nickNames.push({name: "Light", origin: this.origins.DARKLEVELS });
+			this.names.nickNames.push({name: "Compass", origin: this.origins.DARKLEVELS });
+			this.names.nickNames.push({name: "River", origin: this.origins.DARKLEVELS });
+			this.names.nickNames.push({name: "Soot", origin: this.origins.DARKLEVELS });
 		},
 		
 		getRandomGender: function () {
