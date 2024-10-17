@@ -512,7 +512,8 @@ define(['ash',
 		addExplorer: function () {
 			let explorersComponent = this.playerStatsNodes.head.explorers;
 			let playerPos = this.playerPositionNodes.head.position;
-			let explorer = ExplorerConstants.getNewRandomExplorer(ExplorerConstants.explorerSource.SCOUT, GameGlobals.gameState.numCamps, playerPos.level);
+			let campOrdinal = GameGlobals.gameState.numCamps;
+			let explorer = ExplorerConstants.getNewRandomExplorer(ExplorerConstants.explorerSource.SCOUT, campOrdinal, playerPos.level);
 			explorersComponent.addExplorer(explorer);
 		},
 

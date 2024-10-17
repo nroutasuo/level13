@@ -320,9 +320,8 @@ define([
 			var explorers = this.playerStatsNodes.head.explorers.getParty();
 			for (let i = 0; i < explorers.length; i++) {
 				let explorer = explorers[i];
-				let bonusAtt = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.fight_att) > 0;
-				let bonusDef = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.fight_def) > 0;
-				if (bonusAtt || bonusDef) {
+				let isFighter = ExplorerConstants.isFighter(explorer);
+				if (isFighter) {
 					this.numExplorers++;
 					$("ul#list-fight-explorers").append("<li>" + UIConstants.getExplorerDiv(explorer, true, false, true) + "</li>");
 				}

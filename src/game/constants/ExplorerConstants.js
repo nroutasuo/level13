@@ -3,6 +3,7 @@ define(['ash',
 	'game/vos/ExplorerVO',
 	'game/vos/LocaleVO',
 	'game/constants/CultureConstants',
+	'game/constants/DialogueConstants',
 	'game/constants/ItemConstants',
 	'game/constants/WorldConstants'
 ], function (Ash,
@@ -10,6 +11,7 @@ define(['ash',
 	ExplorerVO,
 	LocaleVO,
 	CultureConstants,
+	DialogueConstants,
 	ItemConstants,
 	WorldConstants
 ) {
@@ -52,6 +54,7 @@ define(['ash',
 		},
 		
 		explorerSource: {
+			SYSTEM: "system",
 			SCOUT: "scout",
 			EVENT: "event"
 		},
@@ -61,11 +64,11 @@ define(['ash',
 		
 		// camp ordinal -> blueprint
 		predefinedExplorers: {
-			2: { id: 2, localeType: localeTypes.maintenance, abilityType: "attack", name: "Ilma", icon: "img/followers/explorer_black_f.png" },
-			4: { id: 4, localeType: localeTypes.warehouse, abilityType: "scavenge_capacity", name: "Dog", icon: "img/followers/explorer_animal_dog.png" },
-			8: { id: 8, localeType: localeTypes.hermit, abilityType: "scavenge_supplies", name: "Zory", icon: "img/followers/explorer_blue_m.png" },
-			10: { id: 10, localeType: localeTypes.market, abilityType: "cost_scout", name: "Erdene", icon: "img/followers/explorer_green_m.png" },
-			14: { id: 14, localeType: localeTypes.library, abilityType: "scavenge_ingredients", name: "Arushi", icon: "img/followers/explorer_yellow_f.png" },
+			2: { id: 2, localeType: localeTypes.maintenance, abilityType: "attack", name: "Ilma", icon: "img/followers/explorer_black_f.png", dialogueSource: "explorer_fighter" },
+			4: { id: 4, localeType: localeTypes.warehouse, abilityType: "scavenge_capacity", name: "Dog", icon: "img/followers/explorer_animal_dog.png", dialogueSource: "explorer_animal" },
+			8: { id: 8, localeType: localeTypes.hermit, abilityType: "scavenge_supplies", name: "Zory", icon: "img/followers/explorer_blue_m.png", dialogueSource: "explorer_generic" },
+			10: { id: 10, localeType: localeTypes.market, abilityType: "cost_scout", name: "Erdene", icon: "img/followers/explorer_green_m.png", dialogueSource: "explorer_generic" },
+			14: { id: 14, localeType: localeTypes.library, abilityType: "scavenge_ingredients", name: "Arushi", icon: "img/followers/explorer_yellow_f.png", dialogueSource: "explorer_generic" },
 		},
 		
 		icons: [
@@ -101,23 +104,27 @@ define(['ash',
 		},
 		
 		getTypicalFighter: function (campOrdinal, step) {
-			let source = ExplorerConstants.explorerSource.EVENT;
+			let source = ExplorerConstants.explorerSource.SYSTEM;
 			let abilityType = ExplorerConstants.abilityType.ATTACK;
-			return ExplorerConstants.getNewRandomExplorer(source, campOrdinal, campOrdinal, abilityType, 0.5);
+			let options = { forcedAbilityType : abilityType, forcedAbilityLevelRandomFactor: 0.5 }
+			return ExplorerConstants.getNewRandomExplorer(source, campOrdinal, campOrdinal, options);
 		},
 		
-		getNewRandomExplorer: function (source, campOrdinal, appearLevel, forcedAbilityType, forcedAbilityLevelRandomFactor) {
+		// options:
+		// - forcedAbilityType: specify follower ability type (otherwise random)
+		// - forcedAbilityLevelRandomFactor: replace random variation in ability level for camp ordinal with specified factor
+		getNewRandomExplorer: function (source, campOrdinal, appearLevel, options) {
 			campOrdinal = campOrdinal || 1;
 			
 			let id = 100 + Math.floor(Math.random() * 100000);
 			
-			let abilityType = forcedAbilityType;
+			let abilityType = options.forcedAbilityType;
 			if (!abilityType) {
 				let availableAbilityTypes = this.getAvailableAbilityTypes(source, campOrdinal);
 				abilityType = availableAbilityTypes[Math.floor(Math.random() * availableAbilityTypes.length)];
 			}
 			
-			let abilityLevel = this.getRandomAbilityLevelByCampOrdinal(abilityType, campOrdinal, forcedAbilityLevelRandomFactor);
+			let abilityLevel = this.getRandomAbilityLevelByCampOrdinal(abilityType, campOrdinal, options.forcedAbilityLevelRandomFactor);
 			
 			let name = "";
 			let icon = "";
@@ -136,8 +143,10 @@ define(['ash',
 				name = CultureConstants.getRandomShortName(gender, origin, culturalHeritage);
 				icon = this.getRandomIcon(gender, abilityType);
 			}
+
+			let dialogueSource = this.getRandomDialogueSource(abilityType);
 			
-			return new ExplorerVO(id, name, abilityType, abilityLevel, icon, gender, source);
+			return new ExplorerVO(id, name, abilityType, abilityLevel, icon, gender, source, dialogueSource);
 		},
 		
 		getNewPredefinedExplorer: function (explorerID) {
@@ -159,7 +168,7 @@ define(['ash',
 			
 			let abilityLevel = this.getRandomAbilityLevelByCampOrdinal(template.abilityType, templateCampOrdinal);
 			
-			return new ExplorerVO(explorerID, template.name, template.abilityType, abilityLevel, template.icon, template.gender, ExplorerConstants.explorerSource.SCOUT);
+			return new ExplorerVO(explorerID, template.name, template.abilityType, abilityLevel, template.icon, template.gender, ExplorerConstants.explorerSource.SCOUT, template.dialogueSource);
 		},
 		
 		getRandomAbilityLevelByCampOrdinal: function (abilityType, campOrdinal, forcedAbilityLevelRandomFactor) {
@@ -304,6 +313,38 @@ define(['ash',
 				if (this.isValidIcon(iconDef, gender, explorerType)) validIcons.push(iconDef);
 			}
 			return validIcons[Math.floor(Math.random() * validIcons.length)].icon;
+		},
+
+		getRandomDialogueSource: function (abilityType) {
+			let isAnimal = this.isAnimal(abilityType);
+
+			if (isAnimal) return "explorer_animal";
+
+			let possibleSources = [];
+			
+			switch (abilityType) {
+				case ExplorerConstants.abilityType.ATTACK:
+				case ExplorerConstants.abilityType.DEFENCE:
+					possibleSources.push("explorer_fighter");
+					break;
+				case ExplorerConstants.abilityType.COST_SCOUT:
+				case ExplorerConstants.abilityType.COST_SCAVENGE:
+				case ExplorerConstants.abilityType.DETECT_HAZARDS:
+				case ExplorerConstants.abilityType.DETECT_SUPPLIES:
+				case ExplorerConstants.abilityType.DETECT_INGREDIENTS:
+				case ExplorerConstants.abilityType.COST_MOVEMENT:
+				case ExplorerConstants.abilityType.SCAVENGE_INGREDIENTS:
+				case ExplorerConstants.abilityType.SCAVENGE_SUPPLIES:
+				case ExplorerConstants.abilityType.SCAVENGE_CAPACITY:
+				case ExplorerConstants.abilityType.SCAVENGE_GENERAL:
+					possibleSources.push("explorer_generic");
+					break;
+				default:
+				 	log.w("no dialogue sources defined for explorer ability type " + abilityType);
+					break;
+			}
+
+			return MathUtils.randomElement(possibleSources);
 		},
 		
 		isValidIcon: function (iconDef, gender, explorerType) {
@@ -488,6 +529,12 @@ define(['ash',
 		
 		isAnimal: function (abilityType) {
 			return abilityType == ExplorerConstants.abilityType.SCAVENGE_CAPACITY;
+		},
+
+		isFighter: function (explorerVO) {
+			let bonusAtt = ExplorerConstants.getExplorerItemBonus(explorerVO, ItemConstants.itemBonusTypes.fight_att) > 0;
+			let bonusDef = ExplorerConstants.getExplorerItemBonus(explorerVO, ItemConstants.itemBonusTypes.fight_def) > 0;
+			return bonusAtt > 0 || bonusDef > 0;
 		},
 		
 		isComparableAbilityTypes: function (a, b) {

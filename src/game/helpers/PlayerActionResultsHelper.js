@@ -343,7 +343,7 @@ define([
 			let explorerID = localeVO.explorerID;
 			if (explorerID) {
 				// hard-coded explorer
-				rewards.gainedExplorers = [ ExplorerConstants.getNewPredefinedExplorer(explorerID) ];
+				rewards.gainedExplorers = [ GameGlobals.explorerHelper.getNewPredefinedExplorer(explorerID) ];
 			} else {
 				if (localeVO.type !== localeTypes.tradingpartner && localeVO.type != localeTypes.grove) {
 					// population and explorers
@@ -2169,14 +2169,14 @@ define([
 			let nearestCampNode = this.nearestCampNodes.head;
 			if (nearestCampNode == null) return result;
 			if (nearestCampNode.camp.pendingRecruits.length > 0) return result;
-				
+			
 			let level = GameGlobals.gameState.getLevelForCamp(ExplorerConstants.FIRST_EXPLORER_CAMP_ORDINAL);
 			let unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(level, false, LocaleConstants.LOCALE_BRACKET_EARLY, null, false).length;
 			if (unscoutedLocales > 0) return result;
 			
 			if (Math.random() < probability) {
 				let explorerTemplate = ExplorerConstants.predefinedExplorers[ExplorerConstants.FIRST_EXPLORER_CAMP_ORDINAL];
-				let explorer = ExplorerConstants.getNewPredefinedExplorer(explorerTemplate.id);
+				let explorer = GameGlobals.explorerHelper.getNewPredefinedExplorer(explorerTemplate.id);
 				result.push(explorer);
 			}
 			

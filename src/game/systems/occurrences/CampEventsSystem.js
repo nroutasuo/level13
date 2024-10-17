@@ -432,10 +432,7 @@ define([
 					
 				case OccurrenceConstants.campOccurrenceTypes.recruit:
 					let hasPendingExplorer = campNode.camp.pendingRecruits.length > 0;
-					let forcedType = Math.random() < 0.2 ? ExplorerConstants.abilityType.ATTACK : null;
-					let explorer = hasPendingExplorer ?
-						campNode.camp.pendingRecruits.shift() :
-						ExplorerConstants.getNewRandomExplorer(ExplorerConstants.explorerSource.EVENT, GameGlobals.gameState.numCamps, campPos.level, forcedType);
+					let explorer = hasPendingExplorer ? campNode.camp.pendingRecruits.shift() : this.getRandomExplorer(campNode, 0.2);
 					let isFoundAsReward = hasPendingExplorer && explorer.source != ExplorerConstants.explorerSource.EVENT;
 					campNode.entity.add(new RecruitComponent(explorer, isFoundAsReward));
 					logMsg = hasPendingExplorer ? "Explorer met when exploring is waiting at the inn." : "A visitor arrives at the Inn. ";
@@ -504,10 +501,7 @@ define([
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.recruit:
 					if (campNode.camp.pendingRecruits.length == 0) {
-						let campOrdinal = GameGlobals.campHelper.getCurrentCampOrdinal();
-						let campStep = GameGlobals.campHelper.getCurrentCampStep();
-						let abilityType = ExplorerConstants.abilityType.ATTACK;
-						let explorer = ExplorerConstants.getNewRandomExplorer(ExplorerConstants.explorerSource.EVENT, GameGlobals.gameState.numCamps, campNode.position.level, abilityType);
+						let explorer = this.getRandomExplorer(campNode, 1);
 						campNode.camp.pendingRecruits.push(explorer);
 					}
 					break;
@@ -662,6 +656,20 @@ define([
 				}
 			}
 			return MathUtils.randomElement(possibleTypes);
+		},
+
+		getRandomExplorer: function (campNode, forceFighterProbability) {
+			let campPos = campNode.entity.get(PositionComponent);
+			let campOrdinal = GameGlobals.campHelper.getCurrentCampOrdinal();
+			let abilityType = null;
+
+			// sometimes we want to prefer fighters to keep fight balancing reasonable
+			if (forceFighterProbability >= 1 || Math.random() < forceFighterProbability) {
+				abilityType = ExplorerConstants.abilityType.ATTACK;
+			}
+
+			let options = { forcedAbilityType : abilityType }
+			return ExplorerConstants.getNewRandomExplorer(ExplorerConstants.explorerSource.EVENT, campOrdinal, campPos.level, options)
 		},
 		
 		onGameStarted: function () {

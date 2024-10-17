@@ -384,9 +384,7 @@ define([
 			var campComponent = sector.get(CampComponent);
 			var featuresComponent = sector.get(SectorFeaturesComponent);
 			var statusComponent = sector.get(SectorStatusComponent);
-			var playerActionComponent = this.playerResourcesNodes.head.entity.get(PlayerActionComponent);
 			var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
-			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 
 			let inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
 			let level = sector.get(PositionComponent).level;

@@ -779,6 +779,8 @@
         }
     },
     "story": {
+        "dialogue": {
+        },
         "messages": {
             "passage_found_elevator_built_message": "There is an elevator here.",
             "passage_found_elevator_message": "There used to be an elevator here.",
@@ -788,8 +790,8 @@
             "passage_found_hole_up_dark_message": "Far above in the ceiling there is a hole, a mouth leading into blackness.",
             "passage_found_hole_up_sunlit_message": "Far above in the ceiling there is a hole leading to the level above.",
             "passage_found_prebuilt_message": "There is a maintenance staircase here that is in good repair.",
-            "passage_found_staircase_built_message": "There is a staircase here.",
-            "passage_found_staircase_message": "There used to be a staircase here."
+            "passage_found_stairwell_built_message": "There is a staircase here.",
+            "passage_found_stairwell_message": "There used to be a staircase here."
         },
         "notes": {
             "_use_robot_message": "Took apart a {name}. Gained {value} metal."
