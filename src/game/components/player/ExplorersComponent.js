@@ -3,7 +3,7 @@ function (Ash, ExplorerConstants, ItemConstants) {
 
 	let ExplorersComponent = Ash.Class.extend({
 
-		explorers: [],
+		explorers: [], // ExplorerVO
 
 		constructor: function () {
 			this.explorers = [];

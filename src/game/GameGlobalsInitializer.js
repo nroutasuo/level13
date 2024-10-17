@@ -10,6 +10,7 @@ define([
 	'game/helpers/CampBalancingHelper',
 	'game/helpers/CampVisHelper',
 	'game/helpers/EndingHelper',
+	'game/helpers/ExplorerHelper',
 	'game/helpers/FightHelper',
 	'game/helpers/ItemsHelper',
 	'game/helpers/LevelHelper',
@@ -40,6 +41,7 @@ define([
 	CampBalancingHelper,
 	CampVisHelper,
 	EndingHelper,
+	ExplorerHelper,
 	FightHelper,
 	ItemsHelper,
 	LevelHelper,
@@ -86,6 +88,7 @@ define([
 				GameGlobals.sectorHelper = new SectorHelper(engine);
 				GameGlobals.fightHelper = new FightHelper(engine);
 				GameGlobals.endingHelper = new EndingHelper(engine);
+				GameGlobals.explorerHelper = new ExplorerHelper(engine);
 				GameGlobals.playerHelper = new PlayerHelper(engine);
 				GameGlobals.tribeHelper = new TribeHelper(engine);
 				GameGlobals.playerActionResultsHelper = new PlayerActionResultsHelper(engine);

@@ -99,9 +99,8 @@ define([
 			let explorers = this.playerStatsNodes.head.explorers.getParty();
 			for (let i = 0; i < explorers.length; i++) {
 				let explorer = explorers[i];
-				let bonusAtt = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.fight_att);
-				let bonusDef = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.fight_def);
-				if (bonusAtt > 0 || bonusDef > 0) {
+				let isFighter = ExplorerConstants.isFighter(explorer);
+				if (isFighter) {
 					explorer.numFights = explorer.numFights || 0;
 					explorer.numFights++;
 					GameGlobals.gameState.increaseGameStatHighScore("mostFightsWithExplorer", explorer, explorer.numFights);

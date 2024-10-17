@@ -2553,8 +2553,10 @@ define(['ash',
 
 			let explorers = this.playerStatsNodes.head.explorers.getParty();
 			for (let i = 0; i < explorers.length; i++) {
-				let explorer = explorers[i];
-				GameGlobals.gameState.increaseGameStatHighScore("mostStepsWithExplorer", explorer, steps);
+				let explorerVO = explorers[i];
+				if (!explorerVO.numSteps) explorerVO.numSteps = 0;
+				explorerVO.numSteps++;
+				GameGlobals.gameState.increaseGameStatHighScore("mostStepsWithExplorer", explorerVO, steps);
 			}
 		},
 
@@ -2566,6 +2568,13 @@ define(['ash',
 				GameGlobals.gameState.increaseGameStatSimple("numExcursionsSurvived");
 				GameGlobals.gameState.increaseGameStatHighScore("longestSurvivedExcrusion", playerPos.level, excursionComponent.numSteps);
 				GameGlobals.gameState.increaseGameStatHighScore("lowestStaminaReturnedToCampWith", playerPos.level, Math.round(this.playerStatsNodes.head.stamina.stamina));
+
+				let explorers = this.playerStatsNodes.head.explorers.getParty();
+				for (let i = 0; i < explorers.length; i++) {
+					let explorerVO = explorers[i];
+					if (!explorerVO.numExcursions) explorerVO.numExcursions = 0;
+					explorerVO.numExcursions++;
+				}
 			}
 		},
 		
