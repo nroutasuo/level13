@@ -316,6 +316,7 @@ function (Ash, Text, ItemData, Text, PlayerActionConstants, ItemVO) {
 			if (item.id.startsWith("cache_insight")) return "Read";
 			if (item.id.startsWith("cache_hope")) return "Donate";
 			if (item.id.startsWith("cache_robots")) return "Repair";
+			if (item.id.startsWith("robot")) return "Repair";
 			return "Use";
 		},
 			
@@ -755,6 +756,7 @@ function (Ash, Text, ItemData, Text, PlayerActionConstants, ItemVO) {
 			let baseItemId = ItemConstants.getBaseItemId(item.id);
 			if (item.type == ItemConstants.itemTypes.uniqueEquipment) return false;
 			if (baseItemId == "cache_insight") return false;
+			if (baseItemId == "robot_1") return false;
 			return true;
 		},
 	};

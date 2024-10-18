@@ -1002,6 +1002,11 @@
         "launch": {
             "resource_fuel": 1000
         },
+        "move_camp_level": {
+            "resource_food": 0,
+            "resource_water": 0,
+            "stamina": 0
+        },
         "move_level_down": {
             "resource_food": 1,
             "resource_water": 1,
@@ -1011,11 +1016,6 @@
             "resource_food": 1,
             "resource_water": 1,
             "stamina": 30
-        },
-        "move_camp_level": {
-            "resource_food": 0,
-            "resource_water": 0,
-            "stamina": 0
         },
         "move_sector__": {
             "resource_food": 1,
@@ -1028,48 +1028,48 @@
             "resource_water": 0,
             "stamina": 60
         },
-        "move_sector_ne": {},
         "move_sector_grit_ne": {
             "resource_food": 0,
             "resource_water": 0,
             "stamina": 60
         },
-        "move_sector_north": {},
         "move_sector_grit_north": {
             "resource_food": 0,
             "resource_water": 0,
             "stamina": 60
         },
-        "move_sector_nw": {},
         "move_sector_grit_nw": {
             "resource_food": 0,
             "resource_water": 0,
             "stamina": 60
         },
-        "move_sector_se": {},
         "move_sector_grit_se": {
             "resource_food": 0,
             "resource_water": 0,
             "stamina": 60
         },
-        "move_sector_south": {},
         "move_sector_grit_south": {
             "resource_food": 0,
             "resource_water": 0,
             "stamina": 60
         },
-        "move_sector_sw": {},
         "move_sector_grit_sw": {
             "resource_food": 0,
             "resource_water": 0,
             "stamina": 60
         },
-        "move_sector_west": {},
         "move_sector_grit_west": {
             "resource_food": 0,
             "resource_water": 0,
             "stamina": 60
         },
+        "move_sector_ne": {},
+        "move_sector_north": {},
+        "move_sector_nw": {},
+        "move_sector_se": {},
+        "move_sector_south": {},
+        "move_sector_sw": {},
+        "move_sector_west": {},
         "nap": {
             "resource_food": 1,
             "resource_water": 1
@@ -1321,6 +1321,11 @@
         "unlock_worker_rope": {
             "rumours": 11
         },
+        "use_item_robot_1": {
+            "item_res_bands": 3,
+            "resource_metal": 50,
+            "resource_tools": 30
+        },
         "use_in_hospital": {
             "resource_food": 50,
             "resource_water": 30
@@ -1393,8 +1398,8 @@
     "location_actions": {
         "clear_workshop": true,
         "despair": true,
-        "fight_gang": true,
         "examine": true,
+        "fight_gang": true,
         "investigate": true,
         "scavenge": true,
         "scavenge_heap": true,
@@ -3047,6 +3052,11 @@
                 -1
             ]
         },
+        "move_sector_east": {
+            "sector": {
+                "blockerE": false
+            }
+        },
         "move_sector_grit__": {
             "excursion": {
                 "numGritSteps": [
@@ -3055,22 +3065,47 @@
                 ]
             }
         },
-        "move_sector_east": {
-            "sector": {
-                "blockerE": false
-            }
-        },
         "move_sector_grit_east": {
             "sector": {
                 "blockerE": false
             }
         },
-        "move_sector_ne": {
+        "move_sector_grit_ne": {
             "sector": {
                 "blockerNE": false
             }
         },
-        "move_sector_grit_ne": {
+        "move_sector_grit_north": {
+            "sector": {
+                "blockerN": false
+            }
+        },
+        "move_sector_grit_nw": {
+            "sector": {
+                "blockerNW": false
+            }
+        },
+        "move_sector_grit_se": {
+            "sector": {
+                "blockerSE": false
+            }
+        },
+        "move_sector_grit_south": {
+            "sector": {
+                "blockerS": false
+            }
+        },
+        "move_sector_grit_sw": {
+            "sector": {
+                "blockerSW": false
+            }
+        },
+        "move_sector_grit_west": {
+            "sector": {
+                "blockerW": false
+            }
+        },
+        "move_sector_ne": {
             "sector": {
                 "blockerNE": false
             }
@@ -3080,17 +3115,7 @@
                 "blockerN": false
             }
         },
-        "move_sector_grit_north": {
-            "sector": {
-                "blockerN": false
-            }
-        },
         "move_sector_nw": {
-            "sector": {
-                "blockerNW": false
-            }
-        },
-        "move_sector_grit_nw": {
             "sector": {
                 "blockerNW": false
             }
@@ -3100,17 +3125,7 @@
                 "blockerSE": false
             }
         },
-        "move_sector_grit_se": {
-            "sector": {
-                "blockerSE": false
-            }
-        },
         "move_sector_south": {
-            "sector": {
-                "blockerS": false
-            }
-        },
-        "move_sector_grit_south": {
             "sector": {
                 "blockerS": false
             }
@@ -3120,17 +3135,7 @@
                 "blockerSW": false
             }
         },
-        "move_sector_grit_sw": {
-            "sector": {
-                "blockerSW": false
-            }
-        },
         "move_sector_west": {
-            "sector": {
-                "blockerW": false
-            }
-        },
-        "move_sector_grit_west": {
             "sector": {
                 "blockerW": false
             }
@@ -3772,6 +3777,17 @@
             "vision": [
                 0,
                 30
+            ]
+        },
+        "use_item_robot_1": {
+            "busy": false,
+            "explorers": {
+                "maxRecruited": false
+            },
+            "inCamp": true,
+            "vision": [
+                60,
+                -1
             ]
         },
         "use_item_stamina_potion": {

@@ -54,9 +54,10 @@ define(['ash',
 		},
 		
 		explorerSource: {
-			SYSTEM: "system",
+			CRAFT: "craft",
+			EVENT: "event",
 			SCOUT: "scout",
-			EVENT: "event"
+			SYSTEM: "system",
 		},
 		
 		MAX_ABILITY_LEVEL: 100,
@@ -115,10 +116,14 @@ define(['ash',
 		// - forcedAbilityLevelRandomFactor: replace random variation in ability level for camp ordinal with specified factor
 		getNewRandomExplorer: function (source, campOrdinal, appearLevel, options) {
 			campOrdinal = campOrdinal || 1;
+			options = options || {};
 			
 			let id = 100 + Math.floor(Math.random() * 100000);
 			
 			let abilityType = options.forcedAbilityType;
+
+			let isRobot = source == ExplorerConstants.explorerSource.CRAFT;
+
 			if (!abilityType) {
 				let availableAbilityTypes = this.getAvailableAbilityTypes(source, campOrdinal);
 				abilityType = availableAbilityTypes[Math.floor(Math.random() * availableAbilityTypes.length)];
@@ -131,12 +136,15 @@ define(['ash',
 			
 			let isAnimal = this.isAnimal(abilityType);
 			
-			let gender = CultureConstants.getRandomGender();
+			let gender = isRobot ? CultureConstants.genders.OTHER : CultureConstants.getRandomGender();
 			if (isAnimal) {
 				let animalKeys = this.getAvailableAnimalTypes(source, campOrdinal);
 				let animalType = ExplorerConstants.animalType[animalKeys[MathUtils.getWeightedRandom(0, animalKeys.length)]];
 				name = this.getRandomAnimalName(animalType);
 				icon = this.getRandomAnimalIcon(animalType);
+			} else if (isRobot) {
+				name = this.getRandomRobotName();
+				icon = this.getRandomRobotIcon();
 			} else {
 				let origin = CultureConstants.getRandomOrigin(appearLevel);
 				let culturalHeritage = CultureConstants.getRandomCultures(MathUtils.randomIntBetween(0, 3), origin);
@@ -215,13 +223,15 @@ define(['ash',
 		
 		getAvailableAbilityTypes: function (source, campOrdinal) {
 			let result = [];
+
+			let isRobot = source == ExplorerConstants.explorerSource.CRAFT;
 			
 			for (let k in ExplorerConstants.abilityType) {
 				let abilityType = ExplorerConstants.abilityType[k];
 				let unlockCampOrdinal = this.getUnlockCampOrdinal(abilityType);
-				if (unlockCampOrdinal <= campOrdinal) {
-					result.push(abilityType);
-				}
+				if (unlockCampOrdinal > campOrdinal) continue;
+				if (isRobot && !this.isValidRobotAbility(abilityType)) continue;
+				result.push(abilityType);
 			}
 			
 			return result;
@@ -295,14 +305,22 @@ define(['ash',
 		getRandomAnimalIcon: function (animalType) {
 			switch (animalType) {
 				case ExplorerConstants.animalType.DOG:
-					return "img/explorers/explorer_animal_dog.png";
+					return "img/explorers/follower_animal_dog.png";
 				case ExplorerConstants.animalType.RAVEN:
-					return "img/explorers/explorer_animal_bird.png";
+					return "img/explorers/follower_animal_bird.png";
 				case ExplorerConstants.animalType.BAT:
-					return "img/explorers/explorer_animal_bat.png";
+					return "img/explorers/follower_animal_bat.png";
 				default:
-					return "img/explorers/explorer_animal_generic.png";
+					return "img/explorersfollower_animal_generic.png";
 			}
+		},
+
+		getRandomRobotName: function () {
+			return "robot";
+		},
+		
+		getRandomRobotIcon: function () {
+			return "img/explorers/follower_robot.png";
 		},
 		
 		getRandomIcon: function (gender, abilityType) {
@@ -529,6 +547,17 @@ define(['ash',
 		
 		isAnimal: function (abilityType) {
 			return abilityType == ExplorerConstants.abilityType.SCAVENGE_CAPACITY;
+		},
+
+		isValidRobotAbility: function (abilityType) {
+			switch (abilityType) {
+				case ExplorerConstants.abilityType.DETECT_HAZARDS:
+				case ExplorerConstants.abilityType.DETECT_SUPPLIES:
+				case ExplorerConstants.abilityType.DETECT_INGREDIENTS:
+					return true;
+			}
+
+			return false;
 		},
 
 		isFighter: function (explorerVO) {

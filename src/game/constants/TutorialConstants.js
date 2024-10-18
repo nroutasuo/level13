@@ -368,7 +368,7 @@ define(['ash'], function (Ash) {
 				triggers: [ "action_collect_rewards" ],
 				repeats: "NEVER",
 				logMessage: "Found some rope. Could be useful for building and crafting.",
-				conditions: { playerInventory: { resource_rope: [1, -1] } }
+				conditions: { playerInventory: { resource_rope: [1, -1] }, campInventory: { resource_rope: [ -1, 1 ] } }
 			},
 			TUTORIAL_FOUND_HERBS: {
 				triggers: [ "action_collect_rewards" ],

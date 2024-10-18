@@ -2236,6 +2236,17 @@ define(['ash',
 					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_RESEARCHPAPER, "Read a research paper. Gained " + insight + " insight.");
 					break;
 				
+				case "robot": 
+					let explorerVO = ExplorerConstants.getNewRandomExplorer(ExplorerConstants.explorerSource.CRAFT, foundPositionCampOrdinal, foundPosition.level);
+					
+					this.playerStatsNodes.head.explorers.addExplorer(explorerVO);
+					
+					GameGlobals.gameState.increaseGameStatSimple("numExplorersRecruited");
+					GlobalSignals.explorersChangedSignal.dispatch();
+					
+					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_RECRUIT, "Robot repaired. It has joined the explorers.");
+					break;
+
 				case "consumable_graffiti":
 					GameGlobals.uiFunctions.showInput("Graffiti", "Choose message to leave to this sector.", "", false,
 						function (input) {

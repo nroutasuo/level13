@@ -1766,6 +1766,19 @@
         "rarityTrade": 1,
         "type": "exploration"
     },
+    "robot_1": {
+        "campOrdinalRequired": 10,
+        "icon": "img/items/robot.png",
+        "id": "robot_1",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "rarityLocale": -1,
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "tags": [ "industrial" ],
+        "type": "voucher"
+    },
     "first_aid_kit_1": {
         "campOrdinalRequired": 3,
         "icon": "img/items/firstaid-1.png",
