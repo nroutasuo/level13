@@ -29,10 +29,6 @@ define([
 		},
 		
 		onPlayerPositionChanged: function (newPosition, oldPosition, action) {
-			if (newPosition.inCamp && !oldPosition.inCamp) {
-				this.updateExplorersTrust();
-			}
-
 			let excursionComponent = this.playerStatsNodes.head.entity.get(ExcursionComponent);
 			if (!excursionComponent) return;
 			
@@ -52,29 +48,6 @@ define([
 				if (excursionComponent.numSteps >= ExplorationConstants.MIN_EXCURSION_LENGTH) {
 					GameGlobals.gameState.increaseGameStatHighScore("longestExcrusion", newPosition.level, excursionComponent.numSteps);
 				}
-			}
-		},
-
-		updateExplorersTrust: function () {
-			let explorers = this.playerStatsNodes.head.explorers.getParty();
-			for (let i = 0; i < explorers.length; i++) {
-				let explorerVO = explorers[i];
-				this.updateExplorerTrust(explorerVO);
-			}
-		},
-
-		updateExplorerTrust: function (explorerVO) {
-			let isFighter = ExplorerConstants.isFighter(explorerVO);
-
-			let fightThresholds = isFighter ? [ 1, 10, 50 ] : [ 0, 0, 0 ]
-			let stepThresholds = [ 30, 100, 500 ];
-			let excursionTresholds = [ 2, 10, 50 ];
-
-			for (let i = 1; i <= 3; i++) {
-				if (explorerVO.numFights < fightThresholds[i]) break;
-				if (explorerVO.numSteps < stepThresholds[i]) break;
-				if (explorerVO.numExcursions < excursionTresholds[i]) break;
-				explorerVO.trust = i;
 			}
 		},
 		

@@ -195,6 +195,10 @@ define(['ash',
 			
 			return abilityLevel;
 		},
+
+		getAverageAbilityLevelByCampOrdinal: function (abilityType, campOrdinal) {
+			return this.getRandomAbilityLevelByCampOrdinal(abilityType, campOrdinal, 0.5);
+		},
 		
 		getRecruitCost: function (explorer, isFoundAsReward) {
 			if (isFoundAsReward) return {};
@@ -543,6 +547,26 @@ define(['ash',
 			let rawValue = MathUtils.map(abilityLevel, 1, 100, minBonus, maxBonus);
 			
 			return MathUtils.roundToMultiple(rawValue, roundingStep);
+		},
+
+		isSignificantAbilityLevelDifference: function (explorer, oldLevel, newLevel) {
+			let currentLevel = explorer.abilityLevel;
+			explorer.abilityLevel = oldLevel;
+			let oldValue = this.getTotalItemBonus(explorer);
+			explorer.abilityLevel = newLevel;
+			let newValue = this.getTotalItemBonus(explorer);
+			explorer.abilityLevel = currentLevel;
+			return newValue > oldValue;
+		},
+
+		isValidAbilityTypeForLevelUp: function (abilityType) {
+			switch (abilityType) {
+				case ExplorerConstants.abilityType.DETECT_SUPPLIES: return false;
+				case ExplorerConstants.abilityType.DETECT_INGREDIENTS: return false;
+				case ExplorerConstants.abilityType.DETECT_HAZARDS: return false;
+				case ExplorerConstants.abilityType.SCAVENGE_CAPACITY: return false;
+				default: return true;
+			}
 		},
 		
 		isAnimal: function (abilityType) {

@@ -792,7 +792,8 @@
             "passage_found_hole_up_sunlit_message": "Far above in the ceiling there is a hole leading to the level above.",
             "passage_found_prebuilt_message": "There is a maintenance staircase here that is in good repair.",
             "passage_found_stairwell_built_message": "There is a staircase here.",
-            "passage_found_stairwell_message": "There used to be a staircase here."
+            "passage_found_stairwell_message": "There used to be a staircase here.",
+            "explorer_level_up_message_01": "{Name} found better equipment and improved their ability"
         },
         "notes": {
             "_use_robot_message": "Took apart a {name}. Gained {value} metal."

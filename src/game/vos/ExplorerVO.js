@@ -12,6 +12,7 @@ define(['ash'], function (Ash) {
 		dialogueSource: null,
 		
 		inParty: false,
+		pendingAbilityLevel: 0,
 		numFights: 0,
 		numSteps: 0,
 		numExcursions: 0,
@@ -27,8 +28,6 @@ define(['ash'], function (Ash) {
 			this.gender = gender;
 			this.source = source;
 			this.dialogueSource = dialogueSource;
-
-			this.seenDialogues = [];
 		},
 	});
 

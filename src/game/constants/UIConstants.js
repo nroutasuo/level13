@@ -302,7 +302,7 @@ define(['ash',
 			let classes = "item";
 			let div = "<div class='" + classes + "' data-visitorid='" + visitor.id + "'>";
 			let calloutContent = "Visitor";//this.getNPCCallout(explorer, isRecruited, isInCamp);
-			let icon = "img/followers/explorer_yellow_m.png";
+			let icon = "img/explorers/follower_yellow_m.png";
 			let name = "Visitor";
 			
 			div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
