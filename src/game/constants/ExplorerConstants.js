@@ -65,31 +65,31 @@ define(['ash',
 		
 		// camp ordinal -> blueprint
 		predefinedExplorers: {
-			2: { id: 2, localeType: localeTypes.maintenance, abilityType: "attack", name: "Ilma", icon: "img/followers/explorer_black_f.png", dialogueSource: "explorer_fighter" },
-			4: { id: 4, localeType: localeTypes.warehouse, abilityType: "scavenge_capacity", name: "Dog", icon: "img/followers/explorer_animal_dog.png", dialogueSource: "explorer_animal" },
-			8: { id: 8, localeType: localeTypes.hermit, abilityType: "scavenge_supplies", name: "Zory", icon: "img/followers/explorer_blue_m.png", dialogueSource: "explorer_generic" },
-			10: { id: 10, localeType: localeTypes.market, abilityType: "cost_scout", name: "Erdene", icon: "img/followers/explorer_green_m.png", dialogueSource: "explorer_generic" },
-			14: { id: 14, localeType: localeTypes.library, abilityType: "scavenge_ingredients", name: "Arushi", icon: "img/followers/explorer_yellow_f.png", dialogueSource: "explorer_generic" },
+			2: { id: 2, localeType: localeTypes.maintenance, abilityType: "attack", name: "Ilma", icon: "img/explorers/follower_black_f.png", dialogueSource: "explorer_fighter" },
+			4: { id: 4, localeType: localeTypes.warehouse, abilityType: "scavenge_capacity", name: "Dog", icon: "img/explorers/follower_animal_dog.png", dialogueSource: "explorer_animal" },
+			8: { id: 8, localeType: localeTypes.hermit, abilityType: "scavenge_supplies", name: "Zory", icon: "img/explorers/follower_blue_m.png", dialogueSource: "explorer_generic" },
+			10: { id: 10, localeType: localeTypes.market, abilityType: "cost_scout", name: "Erdene", icon: "img/explorers/follower_green_m.png", dialogueSource: "explorer_generic" },
+			14: { id: 14, localeType: localeTypes.library, abilityType: "scavenge_ingredients", name: "Arushi", icon: "img/explorers/follower_yellow_f.png", dialogueSource: "explorer_generic" },
 		},
 		
 		icons: [
 			// fighter
-			{ icon: "img/followers/explorer_black_f.png", explorerType: "fighter", gender: CultureConstants.genders.FEMALE },
-			{ icon: "img/followers/explorer_black_m.png", explorerType: "fighter" },
-			{ icon: "img/followers/explorer_red_f.png", explorerType: "fighter", gender: CultureConstants.genders.FEMALE },
-			{ icon: "img/followers/explorer_red_m.png", explorerType: "fighter" },
-			{ icon: "img/followers/explorer_white_f.png", explorerType: "fighter", gender: CultureConstants.genders.FEMALE },
-			{ icon: "img/followers/explorer_white_m.png", explorerType: "fighter" },
+			{ icon: "img/explorers/follower_black_f.png", explorerType: "fighter", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/explorers/follower_black_m.png", explorerType: "fighter" },
+			{ icon: "img/explorers/follower_red_f.png", explorerType: "fighter", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/explorers/follower_red_m.png", explorerType: "fighter" },
+			{ icon: "img/explorers/follower_white_f.png", explorerType: "fighter", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/explorers/follower_white_m.png", explorerType: "fighter" },
 			// scout
-			{ icon: "img/followers/explorer_gray_f.png", explorerType: "scout", gender: CultureConstants.genders.FEMALE },
-			{ icon: "img/followers/explorer_gray_m.png", explorerType: "scout" },
-			{ icon: "img/followers/explorer_green_f.png", explorerType: "scout", gender: CultureConstants.genders.FEMALE },
-			{ icon: "img/followers/explorer_green_m.png", explorerType: "scout" },
+			{ icon: "img/explorers/follower_gray_f.png", explorerType: "scout", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/explorers/follower_gray_m.png", explorerType: "scout" },
+			{ icon: "img/explorers/follower_green_f.png", explorerType: "scout", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/explorers/follower_green_m.png", explorerType: "scout" },
 			// scavenger
-			{ icon: "img/followers/explorer_blue_m.png", explorerType: "scavenger" },
-			{ icon: "img/followers/explorer_pink_f.png", explorerType: "scavenger", gender: CultureConstants.genders.FEMALE },
-			{ icon: "img/followers/explorer_yellow_f.png", explorerType: "scavenger", gender: CultureConstants.genders.FEMALE },
-			{ icon: "img/followers/explorer_yellow_m.png", explorerType: "scavenger" },
+			{ icon: "img/explorers/follower_blue_m.png", explorerType: "scavenger" },
+			{ icon: "img/explorers/follower_pink_f.png", explorerType: "scavenger", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/explorers/follower_yellow_f.png", explorerType: "scavenger", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/explorers/follower_yellow_m.png", explorerType: "scavenger" },
 		],
 		
 		getMaxExplorersRecruited: function (innMajorLevels) {
