@@ -575,7 +575,9 @@ define(['ash',
 			},
 
 			createButtons: function (scope) {
-				$.each($(scope + " button.action"), function () {
+				let $container = $(scope);
+
+				$.each($container.find("button.action"), function () {
 					if (ActionButton.isButton(this)) return;
 					let button = ActionButton.create(this);
 					if (!button) return;

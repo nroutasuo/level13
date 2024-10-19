@@ -220,10 +220,10 @@ define([
 			GameGlobals.uiFunctions.toggle("#header-explorers", showExplorers);
 			GameGlobals.uiFunctions.toggle("#explorers-empty", showExplorers && !hasUnselectedExplorers);
 			
-			GameGlobals.uiFunctions.createButtons("#list-explorers");
-			GameGlobals.uiFunctions.createButtons("#container-party-slots");
 			GameGlobals.uiFunctions.generateInfoCallouts("#list-explorers");
 			GameGlobals.uiFunctions.generateInfoCallouts("#container-party-slots");
+			GameGlobals.uiFunctions.createButtons("#list-explorers");
+			GameGlobals.uiFunctions.createButtons("#container-party-slots");
 		},
 		
 		updateSelectedExplorerSlot: function (explorerType, explorer, inCamp) {
