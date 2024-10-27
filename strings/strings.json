@@ -1038,6 +1038,7 @@
             "status_outgoing_caravan_message": "Outgoing caravan on level {level} (expected to return in {timeUntil}).",
             "status_population_decreasing_message": "Population is decreasing on level {level}!",
             "status_population_increasing_message": "Population is increasing on level {level}.",
+            "status_population_disabled_message": "Some workers are currently unable to work on level {level}.",
             "status_raid_message": "There has been a raid on level {level} ({timeSince} ago). We need better defences.",
             "status_recruit_message": "There is a visiting explorer currently on level {level}.",
             "status_refugees_message": "The are refugees currently on level {level}.",

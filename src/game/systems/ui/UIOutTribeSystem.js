@@ -48,6 +48,7 @@ define([
 			EVENT_DISEASE: "event_disease",
 			POP_UNASSIGNED: "population-unassigned",
 			POP_DECREASING: "population-decreasing",
+			POP_DISABLED: "population-disabled",
 			SUNLIT: "sunlit",
 			POP_INCREASING: "population-increasing",
 			BUILDING_DAMAGED: "building-damaged",
@@ -136,12 +137,12 @@ define([
 
 		updateMessages: function () {
 			// pick one
-			var vosbyprio = [];
-			var highestprio = -1;
-			for (var lvl in this.notifications) {
+			let vosbyprio = [];
+			let highestprio = -1;
+			for (let lvl in this.notifications) {
 				for (let i = 0; i < this.notifications[lvl].length; i++) {
-					var type = this.notifications[lvl][i];
-					var prio = this.getNotificationPriority(type);
+					let type = this.notifications[lvl][i];
+					let prio = this.getNotificationPriority(type);
 					if (!vosbyprio[prio]) vosbyprio[prio] = [];
 					if (highestprio < 0 || prio < highestprio) highestprio = prio;
 					vosbyprio[prio].push({ lvl: lvl, type: type });
@@ -153,7 +154,7 @@ define([
 			if (highestprio > 0) {
 				let selection = vosbyprio[highestprio];
 				let vo = selection[Math.floor(Math.random() * selection.length)];
-				msg = this.getNotificationMessage(vo.type, vo.lvl) || msgKey;
+				msg = this.getNotificationMessage(vo.type, vo.lvl) || msg;
 			}
 
 			GameGlobals.uiFunctions.setText("#world-message", msg.key, msg.options);
@@ -255,6 +256,9 @@ define([
 				if (camp.populationChangePerSecWithoutCooldown < 0) {
 					this.alerts[level].push(this.campNotificationTypes.POP_DECREASING);
 					this.notifications[level].push(this.campNotificationTypes.POP_DECREASING);
+				}
+				if (camp.getDisabledPopulation() > 0) {
+					this.notifications[level].push(this.campNotificationTypes.POP_DISABLED);
 				}
 				if (featuresComponent.sunlit && improvements.getCount(improvementNames.sundome) <= 0) {
 					this.notifications[level].push(this.campNotificationTypes.SUNLIT);
@@ -500,6 +504,8 @@ define([
 					return { key: "ui.tribe.status_population_decreasing_message", options: options };
 				case this.campNotificationTypes.SUNLIT: 
 					return { key: "ui.tribe.status_sunlit_message", options: options };
+				case this.campNotificationTypes.POP_DISABLED: 
+					return { key: "ui.tribe.status_population_disabled_message", options: options };
 				case this.campNotificationTypes.POP_INCREASING: 
 					return { key: "ui.tribe.status_population_increasing_message", options: options };
 				case this.campNotificationTypes.POP_NO_GARDENERS: 
@@ -535,7 +541,8 @@ define([
 				case this.campNotificationTypes.POP_NO_GARDENERS: return 14;
 				case this.campNotificationTypes.POP_NO_RUBBERMAKERS: return 15;
 				case this.campNotificationTypes.POP_NO_CHEMISTS: return 16;
-				case this.campNotificationTypes.POP_INCREASING: return 17;
+				case this.campNotificationTypes.POP_DISABLED: return 17;
+				case this.campNotificationTypes.POP_INCREASING: return 18;
 				default: return 13;
 			}
 		},
