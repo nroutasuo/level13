@@ -53,6 +53,7 @@ define([
 	'game/systems/EvidenceSystem',
 	'game/systems/EndingSystem',
 	'game/systems/ExcursionSystem',
+	'game/systems/ExplorerSystem',
 	'game/systems/HopeSystem',
 	'game/systems/GlobalResourcesSystem',
 	'game/systems/GlobalResourcesResetSystem',
@@ -119,6 +120,7 @@ define([
 	EvidenceSystem,
 	EndingSystem,
 	ExcursionSystem,
+	ExplorerSystem,
 	HopeSystem,
 	GlobalResourcesSystem,
 	GlobalResourcesResetSystem,
@@ -305,6 +307,7 @@ define([
 			this.engine.addSystem(new CampEventsSystem(), SystemPriorities.update);
 			this.engine.addSystem(new PlayerEventsSystem(), SystemPriorities.update);
 			this.engine.addSystem(new ExcursionSystem(), SystemPriorities.update);
+			this.engine.addSystem(new ExplorerSystem(), SystemPriorities.update);
 			this.engine.addSystem(new TutorialSystem(), SystemPriorities.update);
 			this.engine.addSystem(new EndingSystem(), SystemPriorities.update);
 
