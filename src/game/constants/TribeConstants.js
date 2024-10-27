@@ -14,7 +14,7 @@ define(['ash', 'game/constants/OccurrenceConstants', 'game/constants/UIConstants
 			},
 			{
 				name: "small settlement",
-				description: "A safe place that several people call home and is starting to accumualate some resources",
+				description: "A safe place that several people call home and is starting to accumulate some resources",
 				maxRumours: 500,
 				maxEvidence: 400,
 				maxHope: 0,
