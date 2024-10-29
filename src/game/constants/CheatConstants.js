@@ -47,6 +47,7 @@ define(function () {
 		CHEAT_NAME_VISITOR: "visitor",
 		CHEAT_NAME_RESET_BUILDING_SPOTS: "resetBuildingSpots",
 		CHEAT_TELEPORT_HOME: "teleportHome",
+		CHEAT_TEST_DIALOGUE: "dialogue",
 		
 	};
 	return CheatConstants;

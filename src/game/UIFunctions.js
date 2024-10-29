@@ -1535,6 +1535,10 @@ define(['ash',
 				if ($popup.parent().hasClass("popup-overlay")) $popup.unwrap();
 				$popup.wrap("<div class='popup-overlay popup-overlay-ingame' style='display:none'></div>");
 
+				if (options.setupCallback) {
+					options.setupCallback();
+				}
+
 				GameGlobals.uiFunctions.popupManager.setDismissable($popup, options.isDismissable);
 				
 				let uiFunctions = this;

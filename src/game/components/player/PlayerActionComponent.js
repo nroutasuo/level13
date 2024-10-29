@@ -1,6 +1,6 @@
 define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/PlayerActionVO'], function (Ash, PlayerActionConstants, PlayerActionVO) {
 
-	var PlayerActionComponent = Ash.Class.extend({
+	let PlayerActionComponent = Ash.Class.extend({
 
 		endTimeStampToActionDict: {},
 		endTimeStampList: [],

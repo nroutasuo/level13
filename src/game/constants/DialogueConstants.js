@@ -1,4 +1,5 @@
-define(['ash'], function (Ash) {
+define(['ash', 'json!game/data/DialogueData.json', 'game/vos/DialogueVO', 'game/vos/DialoguePageVO', 'game/vos/DialogueOptionVO'], 
+    function (Ash, DialogueData, DialogueVO, DialoguePageVO, DialogueOptionVO) {
 	
 	let DialogueConstants = {
 
@@ -11,30 +12,66 @@ define(['ash'], function (Ash) {
 
 		dialogueSources: {},
 
+        dialogues: {},
+
         init: function () {
-            this.addSource("explorer_generic", {
-                "meet": [ this.makeDialogueEntry("explorer_generic_meet_01") ],
-                "event": [ this.makeDialogueEntry("explorer_generic_event_01") ],
-                "interact": [ this.makeDialogueEntry("explorer_generic_interact_01"), this.makeDialogueEntry("explorer_generic_interact_02") ],
-                "dismiss": [ this.makeDialogueEntry("explorer_generic_dismiss_01") ],
-            });
-            this.addSource("explorer_fighter", {
-                "meet": [ this.makeDialogueEntry("explorer_fighter_meet_01") ],
-                "event": [ this.makeDialogueEntry("explorer_fighter_event_01") ],
-                "interact": [ this.makeDialogueEntry("explorer_fighter_interact_01"), this.makeDialogueEntry("explorer_fighter_interact_02") ],
-                "dismiss": [ this.makeDialogueEntry("explorer_fighter_dismiss_01") ],
-            });
-            this.addSource("explorer_animal", {
-                "meet": [ this.makeDialogueEntry("explorer_animal_meet_01") ],
-                "event": [ this.makeDialogueEntry("explorer_animal_event_01") ],
-                "interact": [ this.makeDialogueEntry("explorer_animal_interact_01"), this.makeDialogueEntry("explorer_animal_interact_02") ],
-                "dismiss": [ this.makeDialogueEntry("explorer_animal_dismiss_01") ],
-            });
         },
 
-        makeDialogueEntry: function (key, conditions, repeatable) {
-            let repeats = repeatable === false ? false : true;
-            return { key: key, conditions: conditions || {}, repeatable: repeats };
+        loadData: function (data) {
+            let sources = data.sources;
+            this.dialogueSources = sources;
+
+            let dialoguesRaw = data.dialogues;
+            let dialogues = {};
+
+            let getPageID = (i, data) => data.id || i;
+
+            for (let dialogueID in dialoguesRaw) {
+                let d = dialoguesRaw[dialogueID];
+                let vo = new DialogueVO(dialogueID);
+
+                for (let i = 0; i < d.pages.length; i++) {
+                    let pageData = d.pages[i];
+                    let pageID = getPageID(i, pageData);
+                    let pageVO = new DialoguePageVO(pageID);
+                    pageVO.textKey = pageData.key || null;
+                    
+                    pageVO.options = [];
+
+                    if (pageData.options === "NEXT") {
+                        pageData.options = [ "NEXT" ];
+                    }
+
+                    for (let j in pageData.options) {
+                        let optionData = pageData.options[j];
+
+                        let optionID = j;
+                        let optionVO = new DialogueOptionVO(optionID);
+
+                        if (typeof optionData === "string") {
+                            if (optionData === "NEXT") {
+                                optionVO.responsePageID = getPageID(i + 1, d.pages[i + 1]);
+                            } else {
+                                optionVO.responsePageID = optionData;
+                            }
+                        } else {
+                            optionVO.buttonTextKey = optionData.buttonKey || null;
+                            optionVO.costs = optionData.costs || {};
+                            optionVO.responsePageID = optionData.response || null;
+                        }
+
+                        pageVO.options.push(optionVO);
+                        pageVO.optionsByID[optionID] = optionVO;
+                    }
+
+                    vo.pages.push(pageVO);
+                    vo.pagesByID[pageID] = pageVO;
+                }
+
+                dialogues[dialogueID] = vo;
+            }
+
+            this.dialogues = dialogues;
         },
 
         addSource: function (id, entries) {
@@ -46,6 +83,10 @@ define(['ash'], function (Ash) {
             return source.entries[setting] || [];
         },
 
+        getDialogue: function (dialogueID) {
+            return this.dialogues[dialogueID] || null;
+        },
+
         getDialogueSource: function (sourceID) {
             return this.dialogueSources[sourceID] || {};
         },
@@ -53,6 +94,7 @@ define(['ash'], function (Ash) {
 	};
 
     DialogueConstants.init();
+    DialogueConstants.loadData(DialogueData);
 	
 	return DialogueConstants;
 	

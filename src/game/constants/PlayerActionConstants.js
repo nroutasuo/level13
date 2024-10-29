@@ -229,6 +229,9 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 			if (action.indexOf("select_explorer") >= 0) return "select_explorer";
 			if (action.indexOf("dismiss_recruit_") >= 0) return "dismiss_recruit";
 			if (action.indexOf("move_camp_global_") >= 0) return "move_camp_global";
+			if (action.indexOf("start_dialogue") >= 0) return "start_dialogue";
+			if (action.indexOf("end_dialogue") >= 0) return "end_dialogue";
+			if (action.indexOf("select_dialogue_option") >= 0) return "select_dialogue_option";
 			if (action.indexOf("build_out_passage") >= 0) {
 				var parts = action.split("_");
 				if (isNaN(parts[parts.length-1]))

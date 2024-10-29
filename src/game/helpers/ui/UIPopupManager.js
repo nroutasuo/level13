@@ -1,7 +1,9 @@
 // Manages showing and hiding pop-ups
 define(['ash', 'core/ExceptionHandler', 'game/GameGlobals', 'game/GlobalSignals', 'game/constants/UIConstants'],
 function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
-	var UIPopupManager = Ash.Class.extend({
+
+	let UIPopupManager = Ash.Class.extend({
+
 		popupQueue: null,
 		hiddenQueue: null,
 		
@@ -17,6 +19,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 		// - isMeta (bool) - default false
 		// - isDismissable (bool) - default derived from other params
 		// - forceShowInventoryManagement (bool) - default false
+		// - setupCallback - callback to set up the popup before it's actually shown
 		showPopup: function (title, msg, okButtonLabel, cancelButtonLabel, resultVO, okCallback, cancelCallback, options) {
 			options = options || {};
 			let isMeta = options.isMeta || false;
@@ -92,6 +95,10 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 					popUpManager.closePopup("common-popup");
 					if (cancelCallback) cancelCallback();
 				}));
+			}
+
+			if (options.setupCallback) {
+				options.setupCallback();
 			}
 			
 			// overlay

@@ -15,6 +15,7 @@ define([
 	'game/systems/ui/UIOutLevelSystem',
 	'game/systems/ui/UIOutCampSystem',
 	'game/systems/ui/UIOutCampVisSystem',
+	'game/systems/ui/UIOutDialogueSystem',
 	'game/systems/ui/UIOutProjectsSystem',
 	'game/systems/ui/UIOutEmbarkSystem',
 	'game/systems/ui/UIOutBagSystem',
@@ -33,6 +34,7 @@ define([
 	'game/systems/ui/UIOutTabBarSystem',
 	'game/systems/ui/UIOutTextSystem',
 	'game/systems/CheatSystem',
+	'game/systems/DialogueSystem',
 	'game/systems/SlowUpdateSystem',
 	'game/systems/VisionSystem',
 	'game/systems/StaminaSystem',
@@ -82,6 +84,7 @@ define([
 	UIOutLevelSystem,
 	UIOutCampSystem,
 	UIOutCampVisSystem,
+	UIOutDialogueSystem,
 	UIOutProjectsSystem,
 	UIOutEmbarkSystem,
 	UIOutBagSystem,
@@ -100,6 +103,7 @@ define([
 	UIOutTabBarSystem,
 	UIOutTextSystem,
 	CheatSystem,
+	DialogueSystem,
 	SlowUpdateSystem,
 	VisionSystem,
 	StaminaSystem,
@@ -289,6 +293,7 @@ define([
 			this.engine.addSystem(new StaminaSystem(), SystemPriorities.update);
 			this.engine.addSystem(new BagSystem(), SystemPriorities.update);
 			this.engine.addSystem(new CollectorSystem(), SystemPriorities.update);
+			this.engine.addSystem(new DialogueSystem(), SystemPriorities.update);
 			this.engine.addSystem(new FightSystem(true), SystemPriorities.update);
 			this.engine.addSystem(new PopulationSystem(), SystemPriorities.update);
 			this.engine.addSystem(new PerkSystem(), SystemPriorities.update);
@@ -327,6 +332,7 @@ define([
 			this.engine.addSystem(new UIOutLevelSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutCampSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutCampVisSystem(), SystemPriorities.render);
+			this.engine.addSystem(new UIOutDialogueSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutProjectsSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutEmbarkSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutBagSystem(), SystemPriorities.render);

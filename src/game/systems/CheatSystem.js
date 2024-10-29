@@ -4,11 +4,11 @@ define(['ash',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
 	'game/constants/CheatConstants',
+	'game/constants/DialogueConstants',
 	'game/constants/ItemConstants',
     'game/constants/LocaleConstants',
     'game/constants/PerkConstants',
 	'game/constants/OccurrenceConstants',
-    'game/constants/FightConstants',
     'game/constants/ExplorerConstants',
     'game/constants/TradeConstants',
     'game/constants/UpgradeConstants',
@@ -18,7 +18,6 @@ define(['ash',
     'game/components/player/ItemsComponent',
     'game/components/player/PerksComponent',
     'game/components/player/HopeComponent',
-    'game/components/sector/EnemiesComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/SectorControlComponent',
     'game/components/sector/SectorFeaturesComponent',
@@ -33,11 +32,11 @@ define(['ash',
 	GlobalSignals,
 	GameConstants,
 	CheatConstants,
+	DialogueConstants,
 	ItemConstants,
     LocaleConstants,
     PerkConstants,
 	OccurrenceConstants,
-    FightConstants,
     ExplorerConstants,
     TradeConstants,
     UpgradeConstants,
@@ -47,7 +46,6 @@ define(['ash',
     ItemsComponent,
     PerksComponent,
     HopeComponent,
-    EnemiesComponent,
     SectorImprovementsComponent,
     SectorControlComponent,
     SectorFeaturesComponent,
@@ -225,6 +223,9 @@ define(['ash',
 			});
 			this.registerCheat(CheatConstants.CHEAT_TELEPORT_HOME, "Teleport home.", [], function (params) {
 				this.teleportHome();
+			});
+			this.registerCheat(CheatConstants.CHEAT_TEST_DIALOGUE, "Trigger dialogue", [], function (params) {
+				this.triggerDialogue(params[0]);
 			});
 		},
 
@@ -623,7 +624,13 @@ define(['ash',
 			let sector = GameGlobals.playerActionsHelper.getActionCampSector();
 			let targetPosition = sector.get(PositionComponent).getPosition();
 			this.setPlayerPosition(targetPosition.level, targetPosition.sectorX, targetPosition.sectorY, false);
-		}
+		},
+
+		triggerDialogue: function (id) {
+			let dialogueKeys = Object.keys(DialogueConstants.dialogues);
+			id = id || dialogueKeys[Math.floor(Math.random() * dialogueKeys.length)];
+			GameGlobals.playerActionFunctions.startDialogue(id);
+		},
 
 	});
 

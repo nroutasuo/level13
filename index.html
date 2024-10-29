@@ -335,7 +335,7 @@
 							</div>
 							</p>
 							<div class="actionbox">
-								<button class="action text-key" id="in-action-leave" action="leave_camp" data-text-key="ui.embark.leave_camp_button_label"></button>
+							<button class="action text-key" id="in-action-leave" action="leave_camp" data-text-key="ui.embark.leave_camp_button_label"></button>
 							<span class="warning hidden-by-default" id="embark-warning"></span>
 							</div>
 						</div>
@@ -363,14 +363,14 @@
 					
 					<div class="grid tabcontainer" id="container-tab-two-out-actions" data-tab="switch-out" style="display:none;">
 						<div class="unit unit-compass" id="out-container-compass-actions">
-						<h3 class="text-key" data-text-key="ui.exploration.move_header"></h3>
+							<h3 class="text-key" data-text-key="ui.exploration.move_header"></h3>
 							<table id="table-out-actions-movement">
 							</table>
 							<div id="out-actions-movement" class="actionbox">
-								<button class="action action-location text-key" data-tab="switch-out" id="out-action-enter" action="enter_camp" data-text-key="game.actions.enter_camp_name">Enter camp</button>
-								<button class="action btn-icon text-key" data-tab="switch-out" id="out-action-move-up" action="move_level_up" data-text-key="game.actions.move_level_up_name"><span>Move up</span></button>
-								<button class="action btn-icon text-key" data-tab="switch-out" id="out-action-move-down" action="move_level_down" data-text-key="game.actions.move_level_down_name"><span>Move down</span></button>
-								<button class="action btn-icon text-key" data-tab="switch-out" id="out-action-move-camp" action="move_camp_level" data-text-key="game.actions.move_camp_level_name"><span>Back to camp</span></button>
+							<button class="action action-location text-key" data-tab="switch-out" id="out-action-enter" action="enter_camp" data-text-key="game.actions.enter_camp_name">Enter camp</button>
+							<button class="action btn-icon text-key" data-tab="switch-out" id="out-action-move-up" action="move_level_up" data-text-key="game.actions.move_level_up_name"><span>Move up</span></button>
+							<button class="action btn-icon text-key" data-tab="switch-out" id="out-action-move-down" action="move_level_down" data-text-key="game.actions.move_level_down_name"><span>Move down</span></button>
+							<button class="action btn-icon text-key" data-tab="switch-out" id="out-action-move-camp" action="move_camp_level" data-text-key="game.actions.move_camp_level_name"><span>Back to camp</span></button>
 							<p id="out-action-move-camp-details" class="p-meta button-detail-label">(2 blocks)</p>
 							</div>
 						</div>
@@ -452,7 +452,7 @@
 								<button id="btn-bag-autoequip" class="action btn-mini" action="auto_equip">Equip</button>
 							</div>
 							<div class="subheader" id="header-bag-items">
-								<h3 class="text-key" data-text-key="ui.inventory.other_items_header"></h3>
+								<h3 class="text-key" data-text-key="ui.inventory.other_items_header">Other items</h3>
 							</div>
 							<div class="infobox">
 								<ul id="bag-items" style="padding:0px; margin: 0px"></ul>
@@ -925,6 +925,13 @@
 		<div class="buttonbox">
 			<button id="settings-popup-close" class="button-popup-default">Close</button>
 		</div>
+	</div>
+
+	<div id="dialogue-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display: none" aria-label="Dialogue">
+		<div class="dialogue-module" id="dialogue-module-dialogue">
+			<p></p>
+		</div>
+		<div class="buttonbox"></div>
 	</div>
 	
 	<div id="common-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display:none" aria-labelledby="common-popup-header">

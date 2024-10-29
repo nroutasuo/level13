@@ -1,0 +1,121 @@
+{
+    "dialogues": {
+        "explorer_generic_01": {
+            "conditions": {},
+            "pages": [
+                {
+                    "id": "start",
+                    "key": "explorer_generic_01_start",
+                    "options": [
+                        {
+                            "buttonKey": "btn_label_agree",
+                            "response": "agree"
+                        },
+                        {
+                            "buttonKey": "btn_label_disagree",
+                            "response": "disagree"
+                        }
+                    ]
+                },
+                {
+                    "id": "agree",
+                    "key": "agree_key",
+                    "options": []
+                },
+                {
+                    "id": "disagree",
+                    "key": "disagree_key",
+                    "options": [
+                        "disagree2"
+                    ]
+                },
+                {
+                    "id": "disagree2",
+                    "key": "disagree2_key",
+                    "options": []
+                }
+            ],
+            "repeatable": true
+        },
+        "explorer_generic_02": {
+            "conditions": {},
+            "pages": [
+                {
+                    "key": "one",
+                    "options": "NEXT"
+                },
+                {
+                    "key": "two"
+                }
+            ],
+            "repeatable": true
+        },
+        "npc_generic_01": {
+            "pages": [
+                {
+                    "key": "npc_generic_01_01"
+                }
+            ],
+            "repeatable": true
+        },
+        "npc_generic_request_water": {
+            "conditions": {
+                "level": {
+                    "population": [
+                        1,
+                        -1
+                    ]
+                }
+            },
+            "pages": [
+                {
+                    "id": "start",
+                    "key": "npc_generic_request_water_01",
+                    "options": [
+                        {
+                            "buttonKey": "npc_request_agree",
+                            "costs": {
+                                "resource_water": 5
+                            },
+                            "response": "agree"
+                        },
+                        {
+                            "buttonKey": "npc_request_reject",
+                            "response": "reject"
+                        }
+                    ]
+                },
+                {
+                    "id": "agree",
+                    "key": "npc_generic_request_water_01_thanks"
+                },
+                {
+                    "id": "reject",
+                    "key": "npc_generic_request_water_01_reject"
+                }
+            ],
+            "repeatable": true
+        }
+    },
+    "sources": {
+        "explorer_generic": {
+            "dialogues": {
+                "dismiss": [],
+                "event": [],
+                "interact": [],
+                "meet": [
+                    "explorer_generic_01",
+                    "explorer_generic_02"
+                ]
+            }
+        },
+        "npc_generic": {
+            "dialogues": {
+                "meet": [
+                    "npc_generic_01",
+                    "npc_generic_request_water"
+                ]
+            }
+        }
+    }
+}

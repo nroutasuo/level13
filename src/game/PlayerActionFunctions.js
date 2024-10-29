@@ -4,6 +4,7 @@ define(['ash',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
 	'game/constants/CampConstants',
+	'game/constants/DialogueConstants',
 	'game/constants/ExplorationConstants',
 	'game/constants/ExplorerConstants',
 	'game/constants/LogConstants',
@@ -35,6 +36,7 @@ define(['ash',
 	'game/components/common/PositionComponent',
 	'game/components/common/ResourcesComponent',
 	'game/components/player/BagComponent',
+	'game/components/player/DialogueComponent',
 	'game/components/player/ExcursionComponent',
 	'game/components/player/ItemsComponent',
 	'game/components/player/HopeComponent',
@@ -65,12 +67,12 @@ define(['ash',
 	'text/Text',
 	'utils/StringUtils'
 ], function (Ash, GameGlobals, GlobalSignals,
-	GameConstants, CampConstants, ExplorationConstants, ExplorerConstants, LogConstants, ImprovementConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, StoryConstants, TradeConstants, TribeConstants, UIConstants, UpgradeConstants, TextConstants,
+	GameConstants, CampConstants, DialogueConstants, ExplorationConstants, ExplorerConstants, LogConstants, ImprovementConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, StoryConstants, TradeConstants, TribeConstants, UIConstants, UpgradeConstants, TextConstants,
 	PositionVO, LocaleVO, ResultVO,
 	PlayerPositionNode, FightNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent,
-	BagComponent, ExcursionComponent, ItemsComponent, HopeComponent, PlayerActionComponent, PlayerActionResultComponent,
+	BagComponent, DialogueComponent, ExcursionComponent, ItemsComponent, HopeComponent, PlayerActionComponent, PlayerActionResultComponent,
 	CampComponent, CurrencyComponent, LevelComponent, BeaconComponent, SectorImprovementsComponent, SectorCollectorsComponent, WorkshopComponent,
 	ReputationComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent,
 	PassagesComponent, OutgoingCaravansComponent, CampEventTimersComponent, RefugeesComponent, TraderComponent, LevelStatusComponent,
@@ -261,6 +263,10 @@ define(['ash',
 				case "use_item": this.useItem(param, deductedCosts); break;
 				case "use_item_fight": this.useItemFight(param); break;
 				case "repair_item": this.repairItem(param); break;
+				// Dialogue actions
+				case "start_dialogue": this.startDialogue(param); break;
+				case "end_dialogue": this.endDialogue(param); break;
+				case "select_dialogue_option": this.selectDialogueOption(param); break;
 				// Other actions
 				case "enter_camp": this.enterCamp(false); break;
 				case "scavenge": this.scavenge(param); break;
@@ -338,6 +344,26 @@ define(['ash',
 			
 			GameGlobals.uiFunctions.completeAction(action);
 			GlobalSignals.actionCompletedSignal.dispatch();
+		},
+
+		startDialogue: function (id) {
+			let dialogueVO = DialogueConstants.getDialogue(id);
+			if (!dialogueVO) {
+				log.w("no such dialogue found: " + id);
+			}
+
+			GameGlobals.gameFlowLogger.log("start dialogue: " + id);
+			this.playerStatsNodes.head.entity.add(new DialogueComponent(dialogueVO));
+		},
+
+		endDialogue: function () {
+			this.playerStatsNodes.head.entity.remove(DialogueComponent);
+		},
+
+		selectDialogueOption: function (selectionID) {
+			let dialogueComponent = this.playerStatsNodes.head.entity.get(DialogueComponent);
+			if (!dialogueComponent) return;
+			dialogueComponent.pendingSelectionID = selectionID;
 		},
 		
 		getPositionVO: function (sectorPos) {
