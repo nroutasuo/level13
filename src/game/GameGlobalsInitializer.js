@@ -9,6 +9,7 @@ define([
 	'game/helpers/CampHelper',
 	'game/helpers/CampBalancingHelper',
 	'game/helpers/CampVisHelper',
+	'game/helpers/DialogueHelper',
 	'game/helpers/EndingHelper',
 	'game/helpers/ExplorerHelper',
 	'game/helpers/FightHelper',
@@ -40,6 +41,7 @@ define([
 	CampHelper,
 	CampBalancingHelper,
 	CampVisHelper,
+	DialogueHelper,
 	EndingHelper,
 	ExplorerHelper,
 	FightHelper,
@@ -78,6 +80,7 @@ define([
 			GameGlobals.itemsHelper = new ItemsHelper();
 			GameGlobals.campHelper = new CampHelper(engine);
 			GameGlobals.campBalancingHelper = new CampBalancingHelper();
+			GameGlobals.dialogueHelper = new DialogueHelper(engine);
 			GameGlobals.tribeBalancingHelper = new TribeBalancingHelper();
 			GameGlobals.textLoader = new TextLoader();
 			

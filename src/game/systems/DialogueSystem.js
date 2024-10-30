@@ -3,7 +3,8 @@ define([
 	'ash',
 	'game/GameGlobals',
     'game/nodes/player/DialogueNode',
-], function (Ash, GameGlobals, DialogueNode) {
+	'game/components/player/DialogueComponent'
+], function (Ash, GameGlobals, DialogueNode, DialogueComponent) {
 	
 	let DialogueSystem = Ash.System.extend({
 
@@ -31,14 +32,13 @@ define([
 
 			let dialogueComponent = this.dialogueNodes.head.dialogue;
 
-
-			if (dialogueComponent.isClosed) {
-				this.endDialogue();
+			if (dialogueComponent.pendingSelectionID) {
+				this.selectPendingOption();
 				return;
 			}
 
-			if (dialogueComponent.pendingSelectionID) {
-				this.selectPendingOption();
+			if (dialogueComponent.isEnded) {
+				this.endDialogue();
 				return;
 			}
 		},
@@ -58,16 +58,34 @@ define([
 		},
 
 		startPage: function (pageID) {
+			let pageVO = this.dialogueNodes.head.dialogue.activeDialogue.pagesByID[pageID];
+
+			if (!pageVO) return;
+
 			log.i("start dialogue page: " + pageID);
+
+			if (pageVO.resultTemplate) {
+				let currentResultVO = pageVO.resultTemplate.clone();
+				GameGlobals.playerActionResultsHelper.preCollectRewards(currentResultVO);
+				this.dialogueNodes.head.dialogue.currentResultVO = currentResultVO;
+			} else {
+				this.dialogueNodes.head.dialogue.currentResultVO = null;
+			}
+
 			this.dialogueNodes.head.dialogue.currentPageID = pageID;
+		},
+
+		endPage: function () {
+			if (this.dialogueNodes.head.dialogue.currentResultVO) {
+				GameGlobals.playerActionResultsHelper.collectRewards(true, this.dialogueNodes.head.dialogue.currentResultVO);
+				this.dialogueNodes.head.dialogue.currentResultVO = null;
+			}
 		},
 
 		selectPendingOption: function () {
 			let dialogueComponent = this.dialogueNodes.head.dialogue;
 
-			let currentPageID = dialogueComponent.currentPageID;
-
-			let currentPageVO = this.dialogueNodes.head.dialogue.activeDialogue.pagesByID[currentPageID];
+			let currentPageVO = GameGlobals.dialogueHelper.getCurrentPageVO();
 
 			if (!currentPageVO) {
 				debugger
@@ -94,11 +112,14 @@ define([
 
 			let responsePageID = optionVO.responsePageID;
 
+			this.endPage(); 
 			this.startPage(responsePageID);
 		},
 
 		endDialogue: function () {
-			GameGlobals.playerActionFunctions.endDialogue();
+			this.endPage();
+
+			this.dialogueNodes.head.entity.remove(DialogueComponent);
 		},
 
 		selectNextPage: function () {

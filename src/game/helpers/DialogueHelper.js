@@ -1,7 +1,27 @@
-define(['ash', 'game/GameGlobals', 'game/constants/DialogueConstants', 'game/constants/ExplorerConstants' ],
-    function (Ash, GameGlobals, DialogueConstants, ExplorerConstants) {
+define(['ash', 'game/GameGlobals', 'game/constants/DialogueConstants', 'game/constants/ExplorerConstants', 'game/nodes/player/DialogueNode' ],
+    function (Ash, GameGlobals, DialogueConstants, ExplorerConstants, DialogueNode) {
         
         let DialogueHelper = Ash.Class.extend({
+
+            dialogueNodes: null,
+		
+            constructor: function (engine) {
+                if (engine) {
+                    this.dialogueNodes = engine.getNodeList(DialogueNode);
+                }
+            },
+
+            getCurrentPageVO: function () {
+                if (!this.dialogueNodes.head) return null;
+
+                let dialogueComponent = this.dialogueNodes.head.dialogue;
+
+                let currentPageID = dialogueComponent.currentPageID;
+
+                let currentPageVO = this.dialogueNodes.head.dialogue.activeDialogue.pagesByID[currentPageID];
+
+                return currentPageVO;
+            },
             
             getExplorerDialogueKey: function (explorerVO, setting) {
                 let entries = DialogueConstants.getDialogueKeys(explorerVO.dialogueSource, setting);

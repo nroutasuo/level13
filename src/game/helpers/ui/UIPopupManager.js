@@ -60,7 +60,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 			GameGlobals.uiFunctions.toggle("#info-results", showInventoryManagement);
 			$("#info-results").empty();
 			if (showInventoryManagement) {
-				let rewardDiv = GameGlobals.playerActionResultsHelper.getRewardDiv(resultVO, false, forceShowInventoryManagement);
+				let rewardDiv = GameGlobals.playerActionResultsHelper.getRewardDiv(resultVO, { forceShowInventoryManagement: forceShowInventoryManagement });
 				$("#info-results").append(rewardDiv);
 				GameGlobals.uiFunctions.generateInfoCallouts("#reward-div");
 			}
@@ -113,7 +113,9 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 			GameGlobals.uiFunctions.slideToggleIf($popup, null, true, slideTime, slideTime, () => {
 				log.i("showed popup", "ui");
 				popUpManager.repositionPopup($popup);
+				GlobalSignals.popupShownSignal.dispatch("common-popup");
 			});
+
 			GlobalSignals.popupOpenedSignal.dispatch("common-popup");
 			
 			gtag('event', 'screen_view', { 'screen_name': "popup-common" });

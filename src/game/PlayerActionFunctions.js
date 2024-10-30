@@ -357,12 +357,16 @@ define(['ash',
 		},
 
 		endDialogue: function () {
-			this.playerStatsNodes.head.entity.remove(DialogueComponent);
+			let dialogueComponent = this.playerStatsNodes.head.entity.get(DialogueComponent);
+			if (!dialogueComponent) return;
+			
+			dialogueComponent.isEnded = true;
 		},
 
 		selectDialogueOption: function (selectionID) {
 			let dialogueComponent = this.playerStatsNodes.head.entity.get(DialogueComponent);
 			if (!dialogueComponent) return;
+			
 			dialogueComponent.pendingSelectionID = selectionID;
 		},
 		

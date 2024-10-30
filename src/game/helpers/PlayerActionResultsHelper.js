@@ -544,10 +544,30 @@ define([
 		
 		preCollectRewards: function (rewards) {
 			if (!rewards) return;
+
 			if (rewards.brokenItems) {
 				for (let i = 0; i < rewards.brokenItems.length; i++) {
 					rewards.brokenItems[i].broken = true;
 					GameGlobals.gameState.increaseGameStatSimple("numItemsBroken");
+				}
+			}
+
+			if (rewards.gainedItems) {
+				for (let i = 0; i < rewards.gainedItems.length; i++) {
+					if (typeof rewards.gainedItems[i] === "string") {
+						let itemID = rewards.gainedItems[i];
+						let itemVO = this.getSpecificRewardItem(1, [ itemID ]);
+						rewards.gainedItems[i] = itemVO;
+					}
+				}
+			}
+
+			if (rewards.gainedPerks) {
+				for (let i = 0; i < rewards.gainedPerks.length; i++) {
+					if (rewards.gainedPerks[i] == "injury") {
+						let perkVO = this.getResultInjuries(1, rewards.action)[0];
+						rewards.gainedPerks[i] = perkVO;
+					}
 				}
 			}
 		},
@@ -887,8 +907,14 @@ define([
 			return { msg: msg, replacements: replacements, values: values };
 		},
 
-		getRewardDiv: function (resultVO, isFight, forceShowInventoryManagement) {
-			forceShowInventoryManagement = forceShowInventoryManagement || false;
+		// options:
+		// - isFight (bool) - changes texts
+		// - forceShowInventoryManagement (bool) - always show inventory management, even if no items or resources gained
+		// - hideInventoryManagement (bool) - never show inventory management, even if player will be overloaded
+		getRewardDiv: function (resultVO, options) {
+			let forceShowInventoryManagement = options.forceShowInventoryManagement || false;
+			let isFight = options.isFight || false;
+			let hideInventoryManagement = options.hideInventoryManagement || false;
 			
 			let itemsComponent = this.playerStatsNodes.head.items;
 			let explorersComponent = this.playerStatsNodes.head.explorers;
@@ -899,6 +925,11 @@ define([
 			if (!isInitialSelectionValid && !GameGlobals.playerHelper.isInCamp()) {
 				forceShowInventoryManagement = true;
 			}
+
+			let hasGainedBagStuff = resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0;
+			let showInventoryManagement = hasGainedBagStuff;
+			if (forceShowInventoryManagement) showInventoryManagement = true;
+			if (hideInventoryManagement) showInventoryManagement = false;
 
 			let div = "<div id='reward-div'>";
 			
@@ -993,7 +1024,7 @@ define([
 
 			gainedhtml += "</ul>";
 			let hasGainedStuff = gainedhtml.indexOf("<li") > 0;
-			if (hasGainedStuff || forceShowInventoryManagement) div += gainedhtml;
+			if (hasGainedStuff || showInventoryManagement) div += gainedhtml;
 
 			let hasLostInventoryStuff = resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.lostCurrency > 0;
 			let hasLostSomething = 
@@ -1024,7 +1055,7 @@ define([
 				}
 			}
 
-			if (resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0 || forceShowInventoryManagement) {
+			if (showInventoryManagement) {
 				var baghtml = "<div id='resultlist-inventorymanagement' class='unselectable'>";
 
 				baghtml += "<div id='resultlist-inventorymanagement-found' class='infobox inventorybox'>";
@@ -1042,11 +1073,32 @@ define([
 				baghtml += "<div id='inventory-popup-bar' class='progress-wrap progress centered' style='margin-top: 10px'><div class='progress-bar progress'></div><span class='progress-label progress'>?/?</span></div>";
 				baghtml += "</div>"
 				div += baghtml;
+			} else if (hasGainedBagStuff) {
+				var baghtml = "<div id='resultlist-static-inventory' class='unselectable'>";
+				baghtml += "<ul>"
+
+				for (let i = 0; i < resultVO.gainedItems.length; i++) {
+					let item = resultVO.gainedItems[i];
+					baghtml += UIConstants.getItemSlot(itemsComponent, item, 1, false, true);
+				}
+
+				
+				for (let key in resourceNames) {
+					let name = resourceNames[key];
+					let amountFound = resultVO.gainedResources.getResource(name);
+					if (amountFound >= 1) {
+						baghtml += UIConstants.getResourceLi(name, amountFound);
+					}
+				}
+
+				baghtml += "</ul>";
+				baghtml += "</div>"
+				div += baghtml;
 			}
 
 			hasGainedStuff = hasGainedStuff || resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0 || resultVO.gainedExplorers.length > 0;
 			
-			if (!hasGainedStuff && !hasLostSomething && !forceShowInventoryManagement) {
+			if (!hasGainedStuff && !hasLostSomething && !showInventoryManagement) {
 				if (isFight) div += "<p class='p-meta'>Nothing left behind.</p>"
 				else if (resultVO.action === "despair") div += "";
 				else if (resultVO.action === "clear_workshop") div += "";

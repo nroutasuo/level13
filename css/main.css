@@ -2533,6 +2533,9 @@ body.dark ul.resultlist li {
 body.dark ul.resultlist-positive li:before {
   content: "+ ";
 }
+body.dark div.resultlist-static-inventory ul {
+  padding: 0;
+}
 body.dark .layout-mobile #switch {
   padding: 0 !important;
 }
@@ -5055,6 +5058,9 @@ body.sunlit ul.resultlist li {
 }
 body.sunlit ul.resultlist-positive li:before {
   content: "+ ";
+}
+body.sunlit div.resultlist-static-inventory ul {
+  padding: 0;
 }
 body.sunlit .layout-mobile #switch {
   padding: 0 !important;

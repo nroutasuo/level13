@@ -2143,6 +2143,17 @@ define([
 				case "unlock_upgrade":
 					result.blueprint = 1;
 					break;
+				
+				case "select_dialogue_option":
+					let optionID = this.getActionIDParam(action);
+					let currentPageVO = GameGlobals.dialogueHelper.getCurrentPageVO();
+					if (currentPageVO) {
+						let optionVO = currentPageVO.optionsByID[optionID];
+						if (optionVO) {
+							Object.assign(result, optionVO.costs);
+						}
+					}
+					break;
 
 				case "send_caravan":
 					var caravansComponent = sector.get(OutgoingCaravansComponent);

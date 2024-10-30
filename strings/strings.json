@@ -851,7 +851,7 @@
             "_accumulation_time_left_to_value_minutes_template": "{value} min to {target}",
             "_accumulation_value_seconds": "{value}/s",
             "_close_popup_button_label": "close",
-            "_continue_button_label": "Continue",
+            "continue_button_label": "Continue",
             "_decrease_button_label": "-",
             "_increase_button_label": "+",
             "_list_template_many": "{value}, {value}, {value}, {value}",

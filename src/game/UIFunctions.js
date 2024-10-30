@@ -1549,6 +1549,7 @@ define(['ash',
 					$("#" + popupID).fadeIn(200, function () {
 						uiFunctions.toggle("#" + popupID, true);
 						uiFunctions.popupManager.repositionPopup($popup);
+						GlobalSignals.popupShownSignal.dispatch("common-popup");
 					});
 					GlobalSignals.elementToggledSignal.dispatch(("#" + popupID), true);
 				});

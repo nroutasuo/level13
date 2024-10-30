@@ -7,10 +7,11 @@ define(['ash'], function (Ash) {
 
 			this.currentPageID = null;
 			this.pendingSelectionID = null;
+			this.currentResultVO = null;
 
 			this.isStarted = false;
 			this.isShown = false;
-			this.isClosed  = false;
+			this.isEnded = false;
 		},
 	});
 
