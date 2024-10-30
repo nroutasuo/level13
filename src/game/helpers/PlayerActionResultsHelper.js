@@ -1476,7 +1476,7 @@ define([
 			
 			
 			// select level / quality
-			let level = ItemConstants.getRandomItemLevel(item, ItemConstants.itemSource.exploration);
+			let level = ItemConstants.getRandomItemLevel(ItemConstants.itemSource.exploration, item);
 
 			return ItemConstants.getNewItemInstanceByDefinition(item, level);
 		},
@@ -1534,7 +1534,8 @@ define([
 			
 			let index = MathUtils.getWeightedRandom(0, possibleItemIds.length);
 			let itemID = possibleItemIds[index];
-			let level = ItemConstants.getRandomItemLevel(item, ItemConstants.itemSource.exploration);
+			let item = ItemConstants.getItemDefinitionByID(itemID);
+			let level = ItemConstants.getRandomItemLevel(ItemConstants.itemSource.exploration, item);
 			return ItemConstants.getNewItemInstanceByID(itemID, level);
 		},
 
@@ -1649,7 +1650,7 @@ define([
 				let itemVO = ItemConstants.getItemDefinitionByID(key);
 				if (itemVO) {
 					for (let i = 0; i < num; i++) {
-						let level = ItemConstants.getRandomItemLevel(itemVO, ItemConstants.itemSource.exploration);
+						let level = ItemConstants.getRandomItemLevel(ItemConstants.itemSource.exploration, itemVO);
 						result.push(ItemConstants.getNewItemInstanceByDefinition(itemVO, level));
 					}
 				}
@@ -1669,7 +1670,7 @@ define([
 					let item = ItemConstants.getItemDefinitionByID(stashVO.itemID);
 					if (item) {
 						for (let i = 0; i < stashVO.amount; i++) {
-							let level = ItemConstants.getRandomItemLevel(item, ItemConstants.itemSource.exploration);
+							let level = ItemConstants.getRandomItemLevel(ItemConstants.itemSource.exploration, item);
 							rewardsVO.gainedItems.push(ItemConstants.getNewItemInstanceByDefinition(item, level));
 						}
 					}
