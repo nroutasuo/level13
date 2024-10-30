@@ -4,7 +4,7 @@ define(['ash'], function (Ash) {
 
         pageID: null,
         textKey: null,
-        options: [],
+		resultTemplate: null,
 	
 		constructor: function (pageID) {
 			this.pageID = pageID;

@@ -45,7 +45,10 @@
                     "options": "NEXT"
                 },
                 {
-                    "key": "two"
+                    "key": "two",
+                    "result": {
+                        "gainedItems": [ "artefact_history_1" ]
+                    }
                 }
             ],
             "repeatable": true
@@ -87,11 +90,17 @@
                 },
                 {
                     "id": "agree",
-                    "key": "npc_generic_request_water_01_thanks"
+                    "key": "npc_generic_request_water_01_thanks",
+                    "result": {
+                        "gainedRumours": 1
+                    }
                 },
                 {
                     "id": "reject",
-                    "key": "npc_generic_request_water_01_reject"
+                    "key": "npc_generic_request_water_01_reject",
+                    "result": {
+                        "gainedPerks": [ "injury" ]
+                    }
                 }
             ],
             "repeatable": true
