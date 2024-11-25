@@ -260,6 +260,15 @@ define([
 			if (!inCamp && !entity.has(ExcursionComponent)) {
 				entity.add(new ExcursionComponent());
 			}
+			
+			let explorers = entity.get(ExplorersComponent).getAll();
+			
+			for (let i = 0; i < explorers.length; i++) {
+				let explorer = explorers[i];
+				explorer.icon = explorer.icon.replace("followers", "explorers");
+
+				if (!explorer.dialogueSource) explorer.dialogueSource = "explorer_generic";
+			}
 		},
 
 		syncSector: function (entity) {

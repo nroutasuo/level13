@@ -111,7 +111,10 @@
             "dialogues": {
                 "dismiss": [],
                 "event": [],
-                "interact": [],
+                "interact": [
+                    "explorer_generic_01",
+                    "explorer_generic_02"
+                ],
                 "meet": [
                     "explorer_generic_01",
                     "explorer_generic_02"

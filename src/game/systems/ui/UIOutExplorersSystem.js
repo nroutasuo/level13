@@ -12,7 +12,8 @@ define([
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/PlayerStatsNode',
 ], function (Ash, UIState, UIList, GameGlobals, GlobalSignals, UIConstants, ExplorerConstants, RecruitComponent, RefugeesComponent, VisitorComponent, PlayerLocationNode, PlayerStatsNode) {
-	var UIOutExplorersSystem = Ash.System.extend({
+
+	let UIOutExplorersSystem = Ash.System.extend({
 		
 		playerLocationNodes: null,
 		playerStatsNodes: null,
@@ -42,14 +43,15 @@ define([
 		
 		initElements: function ()  {
 			let sys = this;
-			var slotsContainer = $("#container-party-slots");
+			let slotsContainer = $("#container-party-slots");
+			
 			for (k in ExplorerConstants.explorerType) {
 				let explorerType = ExplorerConstants.explorerType[k];
 				let slotID = "explorer-slot-" + explorerType;
 				let slot = "<div id='" + slotID + "' class='explorer-slot explorer-slot-big lvl13-box-1' data-explorertype='" + explorerType + "'>";
 				slot += "<span class='explorer-slot-type-empty'>" + ExplorerConstants.getExplorerTypeDisplayName(explorerType) + "</span>";
 				slot += "<span class='explorer-slot-type-selected'>" + ExplorerConstants.getExplorerTypeDisplayName(explorerType) + "</span>";
-				slot += "<div class='explorer-slot-image'></div>";
+				slot += "<div class='explorer-slot-container'></div>";
 				slot += "</div> ";
 				slotsContainer.append(slot);
 				
@@ -63,7 +65,7 @@ define([
 				
 				this.explorerSlotElementsByType[explorerType] = {};
 				this.explorerSlotElementsByType[explorerType].slot = $slot;
-				this.explorerSlotElementsByType[explorerType].container = $slot.find(".explorer-slot-image");
+				this.explorerSlotElementsByType[explorerType].container = $slot.find(".explorer-slot-container");
 			}
 
 			this.visitorList = UIList.create(this, $("#visitors-container table"), this.createVisitorListItem, this.updateVisitorListItem);
@@ -75,9 +77,11 @@ define([
 		
 		refresh: function () {
 			let explorersComponent = this.playerStatsNodes.head.explorers;
+
 			let totalRecruited = explorersComponent.getAll().length;
 			let totalSelected = explorersComponent.getParty().length;
 			let totalUnselected = totalRecruited - totalSelected;
+
 			let inCamp = GameGlobals.playerHelper.isInCamp();
 			let recruitComponent = this.playerLocationNodes.head.entity.get(RecruitComponent);
 			let hasRecruit = recruitComponent && recruitComponent.explorer != null;
@@ -128,7 +132,7 @@ define([
 				let tr = "<tr>";
 				tr += "<td>" + ExplorerConstants.getExplorerTypeDisplayName(explorerType) + " " + explorer.name + "</td>";
 				tr += "<td class='list-ordinal'>" + UIConstants.getCostsSpans(recruitAction, costs) + "</td>";
-				tr += "<td class='minwidth'>" + UIConstants.getExplorerDiv(explorer, false, false, false) + "</td>";
+				tr += "<td class='minwidth'>" + UIConstants.getExplorerDivSimple(explorer, false, false, false) + "</td>";
 				tr += "<td class='list-ordinal'>" + (recruitComponent.isFoundAsReward ? this.getFoundRecruitIcon() : "") + "</td>";
 				tr += "<td class='minwidth'><button class='action recruit-select' action='" + recruitAction + "'>Recruit</button></td>";
 				tr += "<td class='minwidth'><button class='action recruit-dismiss btn-secondary' action='dismiss_recruit_" + explorer.id + "'>Dismiss</button></td>";
@@ -173,8 +177,8 @@ define([
 		updateExplorers: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			
-			var explorersComponent = this.playerStatsNodes.head.explorers;
-			var explorers = explorersComponent.getAll();
+			let explorersComponent = this.playerStatsNodes.head.explorers;
+			let explorers = explorersComponent.getAll();
 			let party = explorersComponent.getParty();
 			let maxRecruited = GameGlobals.campHelper.getCurrentMaxExplorersRecruited();
 			let inCamp = GameGlobals.playerHelper.isInCamp();
@@ -196,12 +200,12 @@ define([
 			for (let i = 0; i < explorers.length; i++) {
 				var explorer = explorers[i];
 				if (selectedExplorers.indexOf(explorer) >= 0) continue;
-				var li = "<li>" + UIConstants.getExplorerDiv(explorer, true, inCamp, false) + "</li>";
+				var li = "<li>" + UIConstants.getExplorerDivWithOptions(explorer, true, inCamp) + "</li>";
 				$("#list-explorers").append(li);
 			}
 			
 			let sys = this;
-			$("#list-explorers .item").each(function () {
+			$("#list-explorers .npc").each(function () {
 				let id = $(this).attr("data-explorerid");
 				let explorer = explorersComponent.getExplorerByID(id);
 				let explorerType = ExplorerConstants.getExplorerTypeForAbilityType(explorer.abilityType);
@@ -237,7 +241,7 @@ define([
 			$container.empty();
 			
 			if (explorer) {
-				$container.append(UIConstants.getExplorerDiv(explorer, true, inCamp, true));
+				$container.append(UIConstants.getExplorerDivWithOptions(explorer, true, inCamp, true));
 			}
 		},
 		

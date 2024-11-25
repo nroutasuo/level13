@@ -102,7 +102,7 @@ div.btn-callout-content, div.info-callout-content {
 	padding: 4px;
 }
 
-.info-callout button {
+.info-callout button, .npc-container button {
 	padding: 4px 8px;
 }
 
@@ -778,11 +778,9 @@ ul.buttonlist {
 
 @item-slot-big-width: 55px;
 @item-slot-big-height: 70px;
-@explorer-slot-big-width: 65px;
-@explorer-slot-big-height: 75px;
 @item-div-size: 18px;
 
-.item-slot, .explorer-slot {
+.item-slot {
 	background: inherit !important;
 	margin: 0px 2px 2px 0px;
 	padding: 0;
@@ -800,16 +798,6 @@ ul.buttonlist {
 .item-slot-big {
 	width: @item-slot-big-width;
 	height: @item-slot-big-height;
-}
-
-.explorer-slot-big {
-	width: @explorer-slot-big-width;
-	height: @explorer-slot-big-height;
-}
-
-.item-slot-small, .explorer-slot-small {
-	width: 37px;
-	height: 37px;
 }
 
 .item-slot-equipment .item-count {
@@ -871,24 +859,9 @@ ul.buttonlist {
 	line-height: @item-slot-big-height;
 }
 
-.explorer-slot-type-equipped {
-	width: @explorer-slot-big-width;
-	height: @explorer-slot-big-height;
-	line-height: @explorer-slot-big-height;
-}
-
-.item-slot-image, .explorer-slot-image {
-	position: absolute;
-}
-
 .item-slot-big .item-slot-image {
 	left: @item-slot-big-width / 2 - @item-div-size;
 	top: @item-slot-big-height / 2 - @item-div-size + 10px;
-}
-
-.explorer-slot-big .explorer-slot-image {
-	left: @explorer-slot-big-width / 2 - @item-div-size;
-	top: @explorer-slot-big-height / 2 - @item-div-size + 10px;
 }
 
 .item-slot-name, .item-slot-type-equipped, .explorer-slot-type-selected {
@@ -923,15 +896,25 @@ ul.buttonlist {
 	border-width: 0px !important;
 }
 
-div.item-slot > div, div.item-slot > span, .explorer-slot > div, .explorer-slot > span {
+div.item-slot > div, div.item-slot > span {
 	position: absolute;
 	cursor: default;
+}
+
+#container-party-slots {
+	display: flex;
+	gap: 5px;
 }
 
 .explorer-slot-explorer {
 	width: 100%;
 	display: block;
 	text-align: center;
+}
+
+.explorer-slot {
+	display: inline-block;
+	min-width: 80px;
 }
 
 // ITEM AND RESOURCE DIVS
@@ -1054,6 +1037,46 @@ hr.warning {
 	padding: 2px;
 	border-radius: 6px;
 	background: @color-bg-box-1;
+}
+
+// NPCS
+
+.npc-container {
+	display: flex;
+	flex-direction: column;
+	border: 1px solid @color-border-strong;
+	min-width: 50px;
+	min-height: 50px;
+	margin: 2px;
+}
+
+.npc-portrait {
+	vertical-align: middle;
+	display: inline-flex;
+	position: relative;
+	margin: 2px 0;
+	width: 100%;
+}
+
+.npc-container .item-comparison-badge {
+	top: 1px;
+	right: 5px;
+}
+
+.npc-portrait img {
+	margin: auto;
+	vertical-align: middle;
+	height: 24px;
+	width: 24px;
+}
+
+.npc-container span {
+	text-align: center;
+}
+
+.interaction-options {
+	display: flex;
+	flex-direction: column;
 }
 
 // DEBUG OVERLAY

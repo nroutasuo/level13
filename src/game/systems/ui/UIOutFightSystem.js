@@ -323,7 +323,7 @@ define([
 				let isFighter = ExplorerConstants.isFighter(explorer);
 				if (isFighter) {
 					this.numExplorers++;
-					$("ul#list-fight-explorers").append("<li>" + UIConstants.getExplorerDiv(explorer, true, false, true) + "</li>");
+					$("ul#list-fight-explorers").append("<li>" + UIConstants.getExplorerDivSimple(explorer, true, false, true) + "</li>");
 				}
 			}
 			GameGlobals.uiFunctions.generateInfoCallouts("ul#list-fight-explorers");

@@ -985,7 +985,7 @@ define([
 					let pronoun = ExplorerConstants.getPronoun(explorer);
 					let explorerTypeName = ExplorerConstants.getExplorerTypeDisplayName(explorerType);
 					div += "<div>"
-					div += UIConstants.getExplorerDiv(explorer, false, false, true);
+					div += UIConstants.getExplorerDivSimple(explorer, false, false, true);
 					div += "<br/>";
 					div += "Met <span class='hl-functionality'>" + Text.addArticle(explorerTypeName) + "</span> called " + explorer.name + ". ";
 					

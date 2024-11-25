@@ -44,6 +44,9 @@ define([
         parseDialogue: function (dialogueID, d) {
             let vo = new DialogueVO(dialogueID);
 
+            vo.conditions = d.conditions;
+            vo.repeatable = d.repeatable === false ? false : true;
+
             for (let i = 0; i < d.pages.length; i++) {
                 let pageData = d.pages[i];
                 let pageVO = this.parsePage(i, pageData);
@@ -133,13 +136,13 @@ define([
             return optionVO;
         },
 
-        addSource: function (id, entries) {
-            this.dialogueSources[id] = { id: id, entries: entries };
-        },
-
         getDialogueEntries: function (sourceID, setting) {
             let source = this.getDialogueSource(sourceID);
-            return source.entries[setting] || [];
+            if (!source || !source.dialogues) {
+                log.w("no valid dialogue source found: " + sourceID);
+                return [];
+            }
+            return source.dialogues[setting] || [];
         },
 
         getDialogue: function (dialogueID) {

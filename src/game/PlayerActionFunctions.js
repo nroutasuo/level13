@@ -287,6 +287,7 @@ define(['ash',
 				case "send_caravan": this.sendCaravan(param); break;
 				case "trade_with_caravan": this.tradeWithCaravan(); break;
 				case "recruit_explorer": this.recruitExplorer(param); break;
+				case "start_explorer_dialogue": this.startExplorerDialogue(param); break;
 				case "dismiss_recruit": this.dismissRecruit(param); break;
 				case "dismiss_explorer": this.dismissExplorer(param); break;
 				case "accept_refugees": this.acceptRefugees(param); break;
@@ -1374,6 +1375,13 @@ define(['ash',
 			GlobalSignals.explorersChangedSignal.dispatch();
 			
 			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_RECRUIT, "Recruited a new explorer.");
+		},
+
+		startExplorerDialogue: function (explorerID) {
+			let explorersComponent = this.playerStatsNodes.head.explorers;
+			let explorerVO = explorersComponent.getExplorerByID(explorerID);
+			let dialogueID = GameGlobals.dialogueHelper.getExplorerDialogueKey(explorerVO, "interact");
+			this.startDialogue(dialogueID);
 		},
 		
 		dismissRecruit: function (explorerId) {

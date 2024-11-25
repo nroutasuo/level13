@@ -209,8 +209,51 @@ define(['ash',
 			}
 			return html;
 		},
+
+		getExplorerDivWithOptions: function (explorerVO, isRecruited, isInCamp) {
+			let classes = "npc-container";
+			let div = "<div class='" + classes + "' data-explorerid='" + explorerVO.id + "'>";
+			
+			// portrait
+			let calloutContent = this.getExplorerCallout(explorerVO, isRecruited, isInCamp, true);
+
+			let hideComparisonIndicator = explorerVO.inParty;
+			
+			div += "<div class='npc-portrait info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
+			div += "<img src='" + explorerVO.icon + "' alt='" + explorerVO.name + "'/>";
+
+			if (!hideComparisonIndicator) {
+				div += "<div class='item-comparison-badge'><div class='item-comparison-indicator indicator-even'></div></div>";
+			}
+			
+			div += "</div>";
+
+			// name
+			div += "<span>" + explorerVO.name + "</span>";
+
+			// interaction options
+			div += "<div class='interaction-options'>";
+			let actions = [];
+			actions.push({ label: "talk", action: "start_explorer_dialogue_" + explorerVO.id});
+			if (explorerVO.inParty) {
+				actions.push({ label: "switch out", action: "deselect_explorer_" + explorerVO.id });
+			} else {
+				actions.push({ label: "switch in", action: "select_explorer_" + explorerVO.id });
+			}
+			actions.push({ label: "dismiss", action: "dismiss_explorer_" + explorerVO.id });
+
+			for (let i = 0; i < actions.length; i++) {
+				let entry = actions[i];
+				div += "<button class='action btn-narrow' action='" + entry.action + "'>" + entry.label + "</button>";
+			}
+			div += "</div>";
+
+			div += "</div>";
+			
+			return div;
+		},
 		
-		getExplorerDiv: function (explorer, isRecruited, isInCamp, hideComparisonIndicator) {
+		getExplorerDivSimple: function (explorer, isRecruited, isInCamp, hideComparisonIndicator) {
 			let classes = "item";
 			let div = "<div class='" + classes + "' data-explorerid='" + explorer.id + "'>";
 			let calloutContent = this.getExplorerCallout(explorer, isRecruited, isInCamp);
@@ -228,7 +271,7 @@ define(['ash',
 			return div;
 		},
 		
-		getExplorerCallout: function (explorer, isRecruited, isInCamp) {
+		getExplorerCallout: function (explorer, isRecruited, isInCamp, hideButtons) {
 			let explorerType = ExplorerConstants.getExplorerTypeForAbilityType(explorer.abilityType);
 			let result = "<b>" + explorer.name + "</b>";
 			if (isRecruited) {
@@ -238,7 +281,7 @@ define(['ash',
 			result += "<br/>Ability: " + ExplorerConstants.getAbilityTypeDisplayName(explorer.abilityType)
 				+ " (" + UIConstants.getExplorerAbilityDescription(explorer) + ")";
 			
-			if (isRecruited && isInCamp) {
+			if (isRecruited && isInCamp && !hideButtons) {
 				var makeButton = function (action, name) {
 					 return "<button class='action btn-narrow' action='" + action + "'>" + name + "</button>";
 				};

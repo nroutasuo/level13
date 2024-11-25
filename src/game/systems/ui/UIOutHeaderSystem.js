@@ -584,7 +584,7 @@ define([
 			$("ul.list-header-explorers").empty();
 			for (let i = 0; i < party.length; i++) {
 				let explorer = party[i];
-				$("ul.list-header-explorers").append("<li>" + UIConstants.getExplorerDiv(explorer, true, false, true) + "</li>");
+				$("ul.list-header-explorers").append("<li>" + UIConstants.getExplorerDivSimple(explorer, true, false, true) + "</li>");
 			}
 			
 			GameGlobals.uiFunctions.generateInfoCallouts("ul.list-header-explorers");

@@ -324,7 +324,7 @@ define([
 		// TODO performance
 		updateButtonContainer: function (button, isVisible) {
 			$(button).siblings(".cooldown-reqs").css("display", isVisible ? "block" : "none");
-			var container = $(button).parent().parent(".callout-container");
+			let container = $(button).parent().parent(".callout-container");
 			if (container) {
 				$(container).css("display", $(button).css("display"));
 			}
