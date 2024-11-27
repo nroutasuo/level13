@@ -48,6 +48,7 @@ define(function () {
 		CHEAT_NAME_RESET_BUILDING_SPOTS: "resetBuildingSpots",
 		CHEAT_TELEPORT_HOME: "teleportHome",
 		CHEAT_TEST_DIALOGUE: "dialogue",
+		CHEAT_TRUST: "trust",
 		
 	};
 	return CheatConstants;

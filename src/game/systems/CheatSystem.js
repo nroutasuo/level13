@@ -227,6 +227,9 @@ define(['ash',
 			this.registerCheat(CheatConstants.CHEAT_TEST_DIALOGUE, "Trigger dialogue", [], function (params) {
 				this.triggerDialogue(params[0]);
 			});
+			this.registerCheat(CheatConstants.CHEAT_TRUST, "Set explorer trust", ["amount"], function (params) {
+				this.setTrust(params[0]);
+			});
 		},
 
 		registerCheat: function (cmd, desc, params, func) {
@@ -631,6 +634,18 @@ define(['ash',
 			id = id || dialogueKeys[Math.floor(Math.random() * dialogueKeys.length)];
 			GameGlobals.playerActionFunctions.startDialogue(id);
 		},
+
+		setTrust: function (amount) {
+			if (!amount || amount < 0) return;
+			if (amount > 3) amount = 3;
+
+			let explorersComponent = this.playerStatsNodes.head.explorers;
+			let explorers = explorersComponent.getAll();
+			for (let i = 0; i < explorers.length; i++) {
+				let explorerVO = explorers[i];
+				explorerVO.trust = amount;
+			}
+		}
 
 	});
 
