@@ -5,13 +5,14 @@ define([
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/UIConstants',
+	'game/constants/DialogueConstants',
 	'game/constants/ExplorerConstants',
 	'game/components/sector/events/RecruitComponent',
 	'game/components/sector/events/RefugeesComponent',
 	'game/components/sector/events/VisitorComponent',
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/PlayerStatsNode',
-], function (Ash, UIState, UIList, GameGlobals, GlobalSignals, UIConstants, ExplorerConstants, RecruitComponent, RefugeesComponent, VisitorComponent, PlayerLocationNode, PlayerStatsNode) {
+], function (Ash, UIState, UIList, GameGlobals, GlobalSignals, UIConstants, DialogueConstants, ExplorerConstants, RecruitComponent, RefugeesComponent, VisitorComponent, PlayerLocationNode, PlayerStatsNode) {
 
 	let UIOutExplorersSystem = Ash.System.extend({
 		
@@ -30,6 +31,7 @@ define([
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 			
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
+			GlobalSignals.add(this, GlobalSignals.actionCompletedSignal, this.onActionCompleted);
 			GlobalSignals.add(this, GlobalSignals.explorersChangedSignal, this.onExplorersChanged);
 			GlobalSignals.add(this, GlobalSignals.campEventStartedSignal, this.onCampEventStarted);
 			GlobalSignals.add(this, GlobalSignals.campEventEndedSignal, this.onCampEventEnded);
@@ -248,7 +250,7 @@ define([
 		updateComparisonIndicators: function () {
 			let explorersComponent = this.playerStatsNodes.head.explorers;
 			
-			$("#list-explorers .item").each(function () {
+			$("#list-explorers .npc-container").each(function () {
 				let id = $(this).attr("data-explorerid");
 				let explorer = explorersComponent.getExplorerByID(id);
 				let comparison = explorersComponent.getExplorerComparison(explorer);
@@ -260,6 +262,21 @@ define([
 				$(indicator).toggleClass("indicator-increase", !isSelected && comparison > 0);
 				$(indicator).toggleClass("indicator-even", !isSelected && comparison == 0);
 				$(indicator).toggleClass("indicator-decrease", !isSelected && comparison < 0);
+			});
+		},
+
+		updateDialogueIndicators: function () {
+			let explorersComponent = this.playerStatsNodes.head.explorers;
+			
+			$("#container-tab-two-explorers .npc-container").each(function () {
+				let id = $(this).attr("data-explorerid");
+				let explorer = explorersComponent.getExplorerByID(id);
+				let status = GameGlobals.dialogueHelper.getExplorerDialogueStatus(explorer, DialogueConstants.dialogueSettings.interact);
+				
+				let indicator = $(this).find(".npc-dialogue-indicator");
+				
+				$(indicator).toggleClass("indicator-new", status == DialogueConstants.STATUS_NEW);
+				$(indicator).toggleClass("indicator-urgent", status == DialogueConstants.STATUS_URGENT);
 			});
 		},
 		
@@ -376,6 +393,7 @@ define([
 			if (GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.explorers) {
 				this.refresh();
 				this.updateComparisonIndicators();
+				this.updateDialogueIndicators();
 			}
 		},
 		
@@ -384,6 +402,10 @@ define([
 			this.updateComparisonIndicators();
 			this.highlightExplorerType(null);
 		},
+
+		onActionCompleted: function () {
+			this.updateDialogueIndicators();
+		}
 	
 	});
 

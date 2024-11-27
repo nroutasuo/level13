@@ -225,6 +225,8 @@ define(['ash',
 			if (!hideComparisonIndicator) {
 				div += "<div class='item-comparison-badge'><div class='item-comparison-indicator indicator-even'></div></div>";
 			}
+
+			div += "<div class='npc-dialogue-badge'><div class='npc-dialogue-indicator'></div></div>"
 			
 			div += "</div>";
 

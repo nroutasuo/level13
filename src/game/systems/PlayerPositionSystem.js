@@ -307,12 +307,14 @@ define([
 
 			let sectorPos = sectorEntity.get(PositionComponent);
 			let levelCampOrdinal = GameGlobals.gameState.getCampOrdinal(sectorPos.level);
+			let isGround = this.isGroundLevel(sectorPos.level);
 
 			this.visitedSectorsPendingRevealNeighbours.push(sectorEntity);
 
 			if (isNew) {
 				GameGlobals.gameState.numVisitedSectors++;
 				GameGlobals.playerActionFunctions.unlockFeature("sectors");
+				if (isGround) GameGlobals.playerActionFunctions.unlockFeature("ground");
 				GlobalSignals.sectorVisitedSignal.dispatch();
 			}
 

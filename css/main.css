@@ -1901,6 +1901,31 @@ body.dark .item-comparison-badge {
   border-radius: 6px;
   background: #282a28;
 }
+body.dark .npc-dialogue-indicator {
+  background-size: 100%;
+  border: none;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 10px;
+  height: 10px;
+}
+body.dark .npc-dialogue-badge {
+  top: -11px;
+  right: -11px;
+  position: absolute;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #555;
+  padding: 2px;
+  border-radius: 6px;
+  background: #282a28;
+}
+body.dark .npc-dialogue-badge .indicator-new {
+  border: 1px solid green;
+}
+body.dark .npc-dialogue-badge .indicator-urgent {
+  border: 1px solid red;
+}
 body.dark .npc-container {
   display: flex;
   flex-direction: column;
@@ -4442,6 +4467,31 @@ body.sunlit .item-comparison-badge {
   padding: 2px;
   border-radius: 6px;
   background: #fff;
+}
+body.sunlit .npc-dialogue-indicator {
+  background-size: 100%;
+  border: none;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 10px;
+  height: 10px;
+}
+body.sunlit .npc-dialogue-badge {
+  top: -11px;
+  right: -11px;
+  position: absolute;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #999;
+  padding: 2px;
+  border-radius: 6px;
+  background: #fff;
+}
+body.sunlit .npc-dialogue-badge .indicator-new {
+  border: 1px solid green;
+}
+body.sunlit .npc-dialogue-badge .indicator-urgent {
+  border: 1px solid red;
 }
 body.sunlit .npc-container {
   display: flex;

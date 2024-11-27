@@ -1039,6 +1039,37 @@ hr.warning {
 	background: @color-bg-box-1;
 }
 
+// DIALOGUE INDICATOR
+
+.npc-dialogue-indicator {
+	background-size: 100%;
+	border: none;
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 10px;
+	height: 10px;
+}
+
+.npc-dialogue-badge {
+	top: 1px;
+	right: 5px;
+	position: absolute;
+	border-width: 1px;
+	border-style: solid;
+	border-color: @color-border-strong;
+	padding: 2px;
+	border-radius: 6px;
+	background: @color-bg-box-2;
+}
+
+.npc-dialogue-badge .indicator-new {
+	border: 1px solid green;
+}
+
+.npc-dialogue-badge .indicator-urgent {
+	border: 1px solid red;
+}
+
 // NPCS
 
 .npc-container {

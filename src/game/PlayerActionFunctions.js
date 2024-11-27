@@ -347,14 +347,14 @@ define(['ash',
 			GlobalSignals.actionCompletedSignal.dispatch();
 		},
 
-		startDialogue: function (id) {
+		startDialogue: function (id, explorerVO) {
 			let dialogueVO = DialogueConstants.getDialogue(id);
 			if (!dialogueVO) {
 				log.w("no such dialogue found: " + id);
 			}
 
 			GameGlobals.gameFlowLogger.log("start dialogue: " + id);
-			this.playerStatsNodes.head.entity.add(new DialogueComponent(dialogueVO));
+			this.playerStatsNodes.head.entity.add(new DialogueComponent(dialogueVO, explorerVO));
 		},
 
 		endDialogue: function () {
@@ -362,6 +362,18 @@ define(['ash',
 			if (!dialogueComponent) return;
 			
 			dialogueComponent.isEnded = true;
+
+			let explorerVO = dialogueComponent.explorerVO;
+
+			if (explorerVO) {
+				let dialogueID = dialogueComponent.activeDialogue.dialogueID;
+				if (!explorerVO.seenDialogues) explorerVO.seenDialogues = [];
+				if (explorerVO.seenDialogues.indexOf(dialogueID) < 0) {
+					explorerVO.seenDialogues.push(dialogueID);
+				}
+			}
+
+			GlobalSignals.actionCompletedSignal.dispatch();
 		},
 
 		selectDialogueOption: function (selectionID) {
@@ -1380,8 +1392,10 @@ define(['ash',
 		startExplorerDialogue: function (explorerID) {
 			let explorersComponent = this.playerStatsNodes.head.explorers;
 			let explorerVO = explorersComponent.getExplorerByID(explorerID);
+			GameGlobals.dialogueHelper.updateExplorerDialogueSource(explorerVO);
 			let dialogueID = GameGlobals.dialogueHelper.getExplorerDialogueKey(explorerVO, "interact");
-			this.startDialogue(dialogueID);
+
+			this.startDialogue(dialogueID, explorerVO);
 		},
 		
 		dismissRecruit: function (explorerId) {

@@ -16,6 +16,9 @@ define([
             interact: "interact", // when player chooses to interact with this NPC
         },
 
+        STATUS_NEW: 1,
+        STATUS_URGENT: 2,
+
 		dialogueSources: {},
 
         dialogues: {},

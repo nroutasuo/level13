@@ -38,8 +38,8 @@ define([
 
 		removeFromEngine: function (engine) {
 			this.playerPositionNodes = null;
-			this.playerMovementNodes = null;
 			this.playerMovementNodes.nodeAdded.remove(this.onPlayerMovementNodeAdded, this);
+			this.playerMovementNodes = null;
 		},
 		
 		update: function (time) {
