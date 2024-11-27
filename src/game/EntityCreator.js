@@ -264,10 +264,9 @@ define([
 			let explorers = entity.get(ExplorersComponent).getAll();
 			
 			for (let i = 0; i < explorers.length; i++) {
-				let explorer = explorers[i];
-				explorer.icon = explorer.icon.replace("followers", "explorers");
-
-				if (!explorer.dialogueSource) explorer.dialogueSource = "explorer_generic";
+				let explorerVO = explorers[i];
+				explorerVO.icon = explorerVO.icon.replace("followers", "explorers");
+				explorerVO.trust = explorerVO.trust || 0;
 			}
 		},
 

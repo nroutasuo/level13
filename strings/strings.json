@@ -781,8 +781,25 @@
         }
     },
     "story": {
-        "dialogue": {},
+        "dialogue": {
+            "explorer_generic_mercenary_event_01_p1": "It's not safe to wander around alone here",
+            "explorer_generic_mercenary_interact_01_p1": "Seen some strange creatures out there.",
+            "explorer_generic_mercenary_interact_02_p1": "Do you think there's anyone left alive outside the City?",
+            "explorer_generic_mercenary_interact_03_p1": "I don't miss the past. Now everyone is the architect of their own fortune.",
+            "explorer_generic_mercenary_meet_01_p1": "Do you actually know how to use that weapon?",
+            "explorer_generic_scavenger_event_01_p1": "I'm pretty good at finding the good stuff.",
+            "explorer_generic_scavenger_interact_01_p1": "Canned food will stay good for another several decades.",
+            "explorer_generic_scavenger_interact_02_p1": "Sometimes scavenging in these levels feels more like archeology.",
+            "explorer_generic_scavenger_interact_03_p1": "I'm lucky that I'm in good health.",
+            "explorer_generic_scavenger_meet_01_p1": "Good meeting another human being out here.",
+            "explorer_generic_scout_event_01_p1": "I can help you find passage through the City.",
+            "explorer_generic_scout_interact_01_p1": "I'm so used to the darkness now, I can't imagine what the City would look with the lights on.",
+            "explorer_generic_scout_interact_02_p1": "I hope to see the Ground one day.",
+            "explorer_generic_scout_interact_03_p1": "I used to run odd jobs for the Black Societies but I after the Fall I just left.",
+            "explorer_generic_scout_meet_01_p1": "I've heard of your settlement."
+        },
         "messages": {
+            "explorer_level_up_message_01": "{Name} found better equipment and improved their ability",
             "passage_found_elevator_built_message": "There is an elevator here.",
             "passage_found_elevator_message": "There used to be an elevator here.",
             "passage_found_hole_built_message": "There is an elevator here.",
@@ -792,8 +809,7 @@
             "passage_found_hole_up_sunlit_message": "Far above in the ceiling there is a hole leading to the level above.",
             "passage_found_prebuilt_message": "There is a maintenance staircase here that is in good repair.",
             "passage_found_stairwell_built_message": "There is a staircase here.",
-            "passage_found_stairwell_message": "There used to be a staircase here.",
-            "explorer_level_up_message_01": "{Name} found better equipment and improved their ability"
+            "passage_found_stairwell_message": "There used to be a staircase here."
         },
         "notes": {
             "_use_robot_message": "Took apart a {name}. Gained {value} metal."
@@ -851,7 +867,6 @@
             "_accumulation_time_left_to_value_minutes_template": "{value} min to {target}",
             "_accumulation_value_seconds": "{value}/s",
             "_close_popup_button_label": "close",
-            "continue_button_label": "Continue",
             "_decrease_button_label": "-",
             "_increase_button_label": "+",
             "_list_template_many": "{value}, {value}, {value}, {value}",
@@ -862,6 +877,7 @@
             "_value_and_label_template": "{label}: {value}",
             "_value_and_max_template": "{value}/{max}",
             "_value_simple_template": "{value}",
+            "continue_button_label": "Continue",
             "item_count_field": "{value}x",
             "list_template_cropped_delimiter": ", ",
             "list_template_cropped_end": " +{numCropped}",
@@ -1037,8 +1053,8 @@
             "status_no_trade_message": "Camp on level {level} can't trade resources with other camps.",
             "status_outgoing_caravan_message": "Outgoing caravan on level {level} (expected to return in {timeUntil}).",
             "status_population_decreasing_message": "Population is decreasing on level {level}!",
-            "status_population_increasing_message": "Population is increasing on level {level}.",
             "status_population_disabled_message": "Some workers are currently unable to work on level {level}.",
+            "status_population_increasing_message": "Population is increasing on level {level}.",
             "status_raid_message": "There has been a raid on level {level} ({timeSince} ago). We need better defences.",
             "status_recruit_message": "There is a visiting explorer currently on level {level}.",
             "status_refugees_message": "The are refugees currently on level {level}.",

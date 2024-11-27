@@ -14,7 +14,6 @@ define([
             meet: "meet", // when meeting outside
             event: "event", // when event relevant to the NPC is active (recruit, visit)
             interact: "interact", // when player chooses to interact with this NPC
-            dismiss: "dismiss", // when dismissing a follower
         },
 
 		dialogueSources: {},
@@ -45,7 +44,8 @@ define([
             let vo = new DialogueVO(dialogueID);
 
             vo.conditions = d.conditions;
-            vo.repeatable = d.repeatable === false ? false : true;
+            vo.isRepeatable = d.repeatable === false ? false : true;
+            vo.isUrgent = d.urgent;
 
             for (let i = 0; i < d.pages.length; i++) {
                 let pageData = d.pages[i];
@@ -70,7 +70,7 @@ define([
         parsePage: function (i, pageData) {
             let pageID = pageData.id || i;
             let pageVO = new DialoguePageVO(pageID);
-            pageVO.textKey = pageData.key || null;
+            pageVO.textKey = "story.dialogue." + pageData.key || null;
             
             pageVO.options = [];
 

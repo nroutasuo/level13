@@ -47,8 +47,172 @@
                 {
                     "key": "two",
                     "result": {
-                        "gainedItems": [ "artefact_history_1" ]
+                        "gainedItems": [
+                            "artefact_history_1"
+                        ]
                     }
+                }
+            ],
+            "repeatable": true
+        },
+        "explorer_generic_mercenary_event_01": {
+            "conditions": {},
+            "pages": [
+                {
+                    "key": "explorer_generic_mercenary_event_01_p1"
+                }
+            ],
+            "repeatable": true
+        },
+        "explorer_generic_mercenary_interact_01": {
+            "conditions": {},
+            "pages": [
+                {
+                    "key": "explorer_generic_mercenary_interact_01_p1"
+                }
+            ],
+            "repeatable": true
+        },
+        "explorer_generic_mercenary_interact_02": {
+            "conditions": {
+                "explorer": {
+                    "trust": 1
+                }
+            },
+            "pages": [
+                {
+                    "key": "explorer_generic_mercenary_interact_02_p1"
+                }
+            ],
+            "repeatable": true
+        },
+        "explorer_generic_mercenary_interact_03": {
+            "conditions": {
+                "explorer": {
+                    "trust": 2
+                }
+            },
+            "pages": [
+                {
+                    "key": "explorer_generic_mercenary_interact_03_p1"
+                }
+            ],
+            "repeatable": false
+        },
+        "explorer_generic_mercenary_meet_01": {
+            "conditions": {},
+            "pages": [
+                {
+                    "key": "explorer_generic_mercenary_meet_01_p1"
+                }
+            ],
+            "repeatable": true
+        },
+        "explorer_generic_scavenger_event_01": {
+            "conditions": {},
+            "pages": [
+                {
+                    "key": "explorer_generic_scavenger_event_01_p1"
+                }
+            ],
+            "repeatable": true
+        },
+        "explorer_generic_scavenger_interact_01": {
+            "conditions": {},
+            "pages": [
+                {
+                    "key": "explorer_generic_scavenger_interact_01_p1"
+                }
+            ],
+            "repeatable": true
+        },
+        "explorer_generic_scavenger_interact_02": {
+            "conditions": {
+                "explorer": {
+                    "trust": 1
+                }
+            },
+            "pages": [
+                {
+                    "key": "explorer_generic_scavenger_interact_02_p1"
+                }
+            ],
+            "repeatable": true
+        },
+        "explorer_generic_scavenger_interact_03": {
+            "conditions": {
+                "explorer": {
+                    "trust": 2
+                }
+            },
+            "pages": [
+                {
+                    "key": "explorer_generic_scavenger_interact_03_p1"
+                }
+            ],
+            "repeatable": true
+        },
+        "explorer_generic_scavenger_meet_01": {
+            "conditions": {},
+            "pages": [
+                {
+                    "key": "explorer_generic_scavenger_meet_01_p1"
+                }
+            ],
+            "repeatable": true
+        },
+        "explorer_generic_scout_event_01": {
+            "conditions": {},
+            "pages": [
+                {
+                    "key": "explorer_generic_scout_event_01_p1"
+                }
+            ],
+            "repeatable": true
+        },
+        "explorer_generic_scout_interact_01": {
+            "conditions": {},
+            "pages": [
+                {
+                    "key": "explorer_generic_scout_interact_01_p1"
+                }
+            ],
+            "repeatable": true
+        },
+        "explorer_generic_scout_interact_02": {
+            "conditions": {
+                "explorer": {
+                    "trust": 1
+                },
+                "featureUnlocked": {
+                    "ground": false
+                }
+            },
+            "pages": [
+                {
+                    "key": "explorer_generic_scout_interact_02_p1"
+                }
+            ],
+            "repeatable": true
+        },
+        "explorer_generic_scout_interact_03": {
+            "conditions": {
+                "explorer": {
+                    "trust": 2
+                }
+            },
+            "pages": [
+                {
+                    "key": "explorer_generic_scout_interact_03_p1"
+                }
+            ],
+            "repeatable": true
+        },
+        "explorer_generic_scout_meet_01": {
+            "conditions": {},
+            "pages": [
+                {
+                    "key": "explorer_generic_scout_meet_01_p1"
                 }
             ],
             "repeatable": true
@@ -99,7 +263,9 @@
                     "id": "reject",
                     "key": "npc_generic_request_water_01_reject",
                     "result": {
-                        "gainedPerks": [ "injury" ]
+                        "gainedPerks": [
+                            "injury"
+                        ]
                     }
                 }
             ],
@@ -109,7 +275,6 @@
     "sources": {
         "explorer_generic": {
             "dialogues": {
-                "dismiss": [],
                 "event": [],
                 "interact": [
                     "explorer_generic_01",
@@ -118,6 +283,51 @@
                 "meet": [
                     "explorer_generic_01",
                     "explorer_generic_02"
+                ]
+            }
+        },
+        "explorer_generic_mercenary": {
+            "dialogues": {
+                "event": [
+                    "explorer_generic_mercenary_event_01"
+                ],
+                "interact": [
+                    "explorer_generic_mercenary_interact_01",
+                    "explorer_generic_mercenary_interact_02",
+                    "explorer_generic_mercenary_interact_03"
+                ],
+                "meet": [
+                    "explorer_generic_mercenary_meet_01"
+                ]
+            }
+        },
+        "explorer_generic_scavenger": {
+            "dialogues": {
+                "event": [
+                    "explorer_generic_scavenger_event_01"
+                ],
+                "interact": [
+                    "explorer_generic_scavenger_interact_01",
+                    "explorer_generic_scavenger_interact_02",
+                    "explorer_generic_scavenger_interact_03"
+                ],
+                "meet": [
+                    "explorer_generic_scavenger_meet_01"
+                ]
+            }
+        },
+        "explorer_generic_scout": {
+            "dialogues": {
+                "event": [
+                    "explorer_generic_scout_event_01"
+                ],
+                "interact": [
+                    "explorer_generic_scout_interact_01",
+                    "explorer_generic_scout_interact_02",
+                    "explorer_generic_scout_interact_03"
+                ],
+                "meet": [
+                    "explorer_generic_scout_meet_01"
                 ]
             }
         },

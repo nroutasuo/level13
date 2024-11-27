@@ -65,11 +65,11 @@ define(['ash',
 		
 		// camp ordinal -> blueprint
 		predefinedExplorers: {
-			2: { id: 2, localeType: localeTypes.maintenance, abilityType: "attack", name: "Ilma", icon: "img/explorers/follower_black_f.png", dialogueSource: "explorer_fighter" },
+			2: { id: 2, localeType: localeTypes.maintenance, abilityType: "attack", name: "Ilma", icon: "img/explorers/follower_black_f.png", dialogueSource: "explorer_generic_mercenary" },
 			4: { id: 4, localeType: localeTypes.warehouse, abilityType: "scavenge_capacity", name: "Dog", icon: "img/explorers/follower_animal_dog.png", dialogueSource: "explorer_animal" },
-			8: { id: 8, localeType: localeTypes.hermit, abilityType: "scavenge_supplies", name: "Zory", icon: "img/explorers/follower_blue_m.png", dialogueSource: "explorer_generic" },
-			10: { id: 10, localeType: localeTypes.market, abilityType: "cost_scout", name: "Erdene", icon: "img/explorers/follower_green_m.png", dialogueSource: "explorer_generic" },
-			14: { id: 14, localeType: localeTypes.library, abilityType: "scavenge_ingredients", name: "Arushi", icon: "img/explorers/follower_yellow_f.png", dialogueSource: "explorer_generic" },
+			8: { id: 8, localeType: localeTypes.hermit, abilityType: "scavenge_supplies", name: "Zory", icon: "img/explorers/follower_blue_m.png", dialogueSource: "explorer_generic_scavenger" },
+			10: { id: 10, localeType: localeTypes.market, abilityType: "cost_scout", name: "Erdene", icon: "img/explorers/follower_green_m.png", dialogueSource: "explorer_generic_scout" },
+			14: { id: 14, localeType: localeTypes.library, abilityType: "scavenge_ingredients", name: "Arushi", icon: "img/explorers/follower_yellow_f.png", dialogueSource: "explorer_generic_scavenger" },
 		},
 		
 		icons: [
@@ -338,6 +338,8 @@ define(['ash',
 		},
 
 		getRandomDialogueSource: function (abilityType) {
+			// TODO check that dialogue source containts entries for all settings (meet, event, interact)
+			
 			let isAnimal = this.isAnimal(abilityType);
 
 			if (isAnimal) return "explorer_animal";
@@ -347,7 +349,7 @@ define(['ash',
 			switch (abilityType) {
 				case ExplorerConstants.abilityType.ATTACK:
 				case ExplorerConstants.abilityType.DEFENCE:
-					possibleSources.push("explorer_fighter");
+					possibleSources.push("explorer_generic_mercenary");
 					break;
 				case ExplorerConstants.abilityType.COST_SCOUT:
 				case ExplorerConstants.abilityType.COST_SCAVENGE:
@@ -355,11 +357,13 @@ define(['ash',
 				case ExplorerConstants.abilityType.DETECT_SUPPLIES:
 				case ExplorerConstants.abilityType.DETECT_INGREDIENTS:
 				case ExplorerConstants.abilityType.COST_MOVEMENT:
+					possibleSources.push("explorer_generic_scout");
+					break;
 				case ExplorerConstants.abilityType.SCAVENGE_INGREDIENTS:
 				case ExplorerConstants.abilityType.SCAVENGE_SUPPLIES:
 				case ExplorerConstants.abilityType.SCAVENGE_CAPACITY:
 				case ExplorerConstants.abilityType.SCAVENGE_GENERAL:
-					possibleSources.push("explorer_generic");
+					possibleSources.push("explorer_generic_scavenger");
 					break;
 				default:
 				 	log.w("no dialogue sources defined for explorer ability type " + abilityType);
