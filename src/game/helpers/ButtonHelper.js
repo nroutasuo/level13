@@ -74,7 +74,9 @@ define(['ash', 'game/GameGlobals', 'game/GlobalSignals', 'game/constants/PlayerA
 		},
 		
 		updateButtonDisabledStates: function (scope, forceDisable) {
-			$.each($(scope + " button.action"), function () {
+			let $container = $(scope);
+			
+			$.each($container.find("button.action"), function () {
 				GameGlobals.buttonHelper.updateButtonDisabledState($(this), null, 0, forceDisable);
 			});
 		},
