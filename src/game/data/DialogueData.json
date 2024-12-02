@@ -1,5 +1,61 @@
 {
     "dialogues": {
+        "character_bard_default_event_01": {
+            "pages": [
+                {
+                    "key": "character_bard_default_event_01_p1"
+                }
+            ]
+        },
+        "character_bard_default_event_02": {
+            "pages": [
+                {
+                    "key": "character_bard_default_event_02_p1"
+                }
+            ]
+        },
+        "character_crafter_default_event_01": {
+            "pages": [
+                {
+                    "key": "character_crafter_default_event_01_p1"
+                }
+            ]
+        },
+        "character_crafter_default_event_02": {
+            "pages": [
+                {
+                    "key": "character_crafter_default_event_02_p1"
+                }
+            ]
+        },
+        "character_doomsayer_default_event_01": {
+            "pages": [
+                {
+                    "key": "character_doomsayer_default_event_01_p1"
+                }
+            ]
+        },
+        "character_doomsayer_default_event_02": {
+            "pages": [
+                {
+                    "key": "character_doomsayer_default_event_02_p1"
+                }
+            ]
+        },
+        "character_shaman_default_event_01": {
+            "pages": [
+                {
+                    "key": "character_shaman_default_event_01_p1"
+                }
+            ]
+        },
+        "character_shaman_default_event_02": {
+            "pages": [
+                {
+                    "key": "character_shaman_default_event_02_p1"
+                }
+            ]
+        },
         "explorer_generic_01": {
             "conditions": {},
             "pages": [
@@ -270,9 +326,63 @@
                 }
             ],
             "repeatable": true
+        },
+        "refugees_default_event_01": {
+            "pages": [
+                {
+                    "key": "refugees_default_event_01_p1"
+                }
+            ]
+        },
+        "refugees_default_event_02": {
+            "pages": [
+                {
+                    "key": "refugees_default_event_02_p1"
+                }
+            ]
         }
     },
     "sources": {
+        "character_bard_default": {
+            "dialogues": {
+                "event": [
+                    "character_bard_default_event_01",
+                    "character_bard_default_event_02"
+                ]
+            }
+        },
+        "character_crafter_default": {
+            "dialogues": {
+                "event": [
+                    "character_crafter_default_event_01",
+                    "character_crafter_default_event_02"
+                ]
+            }
+        },
+        "character_doomsayer_default": {
+            "dialogues": {
+                "event": [
+                    "character_doomsayer_default_event_01",
+                    "character_doomsayer_default_event_02"
+                ]
+            }
+        },
+        "character_drifter_default": {
+            "dialogues": {
+                "event": [
+                    "character_drifter_default_event_01",
+                    "character_drifter_default_event_02"
+                ]
+            }
+        },
+        "character_shaman_default": {
+            "dialogues": {
+                "event": [
+                    "character_shaman_default_event_01",
+                    "character_shaman_default_event_02"
+                ]
+            }
+        },
         "explorer_generic": {
             "dialogues": {
                 "event": [],
@@ -333,9 +443,20 @@
         },
         "npc_generic": {
             "dialogues": {
+                "event": [
+                    "npc_generic_01"
+                ],
                 "meet": [
                     "npc_generic_01",
                     "npc_generic_request_water"
+                ]
+            }
+        },
+        "refugees_default": {
+            "dialogues": {
+                "event": [
+                    "refugees_default_event_01",
+                    "refugees_default_event_02"
                 ]
             }
         }

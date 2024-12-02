@@ -796,7 +796,17 @@
             "explorer_generic_scout_interact_01_p1": "I'm so used to the darkness now, I can't imagine what the City would look with the lights on.",
             "explorer_generic_scout_interact_02_p1": "I hope to see the Ground one day.",
             "explorer_generic_scout_interact_03_p1": "I used to run odd jobs for the Black Societies but I after the Fall I just left.",
-            "explorer_generic_scout_meet_01_p1": "I've heard of your settlement."
+            "explorer_generic_scout_meet_01_p1": "I've heard of your settlement.",
+            "refugees_default_event_01_p1": "We had a little settlement but it was destroyed",
+            "refugees_default_event_02_p1": "The City is unpredictable and dangerous.",
+            "character_bard_default_event_01_p1": "I go from settlement to settlement and play music.",
+            "character_bard_default_event_02_p1": "Music used to be everywhere. Now it is a kind of magic again.",
+            "character_shaman_default_event_01_p1": "There is a change going on the City. The Fall was just the beginning.",
+            "character_shaman_default_event_02_p1": "The City was built by humans but it cannot sustain us.",
+            "character_crafter_default_event_01_p1": "If you can find enough rubber you could make equipment to explore polluted areas.",
+            "character_crafter_default_event_02_p1": "You can never have too many hairpins.",
+            "character_doomsayer_default_event_01_p1": "We should never have left the Ground!",
+            "character_doomsayer_default_event_02_p1": "Rebuilding is futile!"
         },
         "messages": {
             "explorer_level_up_message_01": "{Name} found better equipment and improved their ability",
