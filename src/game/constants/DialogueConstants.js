@@ -1,12 +1,11 @@
 define([
     'ash', 
     'json!game/data/DialogueData.json', 
-    'game/constants/PerkConstants', 
     'game/vos/DialogueVO', 
     'game/vos/DialoguePageVO', 
     'game/vos/DialogueOptionVO', 
     'game/vos/ResultVO'
-], function (Ash, DialogueData, PerkConstants, DialogueVO, DialoguePageVO, DialogueOptionVO, ResultVO) {
+], function (Ash, DialogueData, DialogueVO, DialoguePageVO, DialogueOptionVO, ResultVO) {
 	
 	let DialogueConstants = {
 
@@ -27,8 +26,14 @@ define([
         },
 
         loadData: function (data) {
-            let sources = data.sources;
-            this.dialogueSources = sources;
+            let sourcesRaw = data.sources;
+            this.dialogueSources = {};
+
+            for (let dialogueSourceID in sourcesRaw) {
+                let source = sourcesRaw[dialogueSourceID];
+                source.id = dialogueSourceID;
+                this.dialogueSources[dialogueSourceID] = source;
+            }
 
             let dialoguesRaw = data.dialogues;
             let dialogues = {};

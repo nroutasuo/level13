@@ -6,6 +6,7 @@ define([
 	'game/GameGlobals',
 	'game/constants/GameConstants',
 	'game/constants/CampConstants',
+	'game/constants/CharacterConstants',
 	'game/constants/ExplorerConstants',
 	'game/constants/ImprovementConstants',
 	'game/constants/ItemConstants',
@@ -29,7 +30,7 @@ define([
 	'game/vos/ResourcesVO',
 	'game/vos/IncomingCaravanVO'
 ], function (Ash, MathUtils, RandomUtils, GameGlobals, 
-	GameConstants, CampConstants, ExplorerConstants, ImprovementConstants, ItemConstants, OccurrenceConstants, TradeConstants, WorldConstants,
+	GameConstants, CampConstants, CharacterConstants, ExplorerConstants, ImprovementConstants, ItemConstants, OccurrenceConstants, TradeConstants, WorldConstants,
 	CampComponent, PositionComponent, 
 	DisasterComponent, DiseaseComponent, RaidComponent, TraderComponent, RecruitComponent, RefugeesComponent, VisitorComponent, 
 	SectorImprovementsComponent, SectorFeaturesComponent, LevelComponent, CampNode, TribeUpgradesNode, ResourcesVO, IncomingCaravanVO) {
@@ -341,6 +342,25 @@ define([
 			result.push(CampConstants.DISASTER_TYPE_EARTHQUAKE);
 			if (features.sunlit) result.push(CampConstants.DISASTER_TYPE_STORM);
 			if (position.level != surfaceLevel && position.level != groundLevel) result.push(CampConstants.DISASTER_TYPE_FLOOD);
+
+			return result;
+		},
+
+		getValidVisitorTypes: function (sector) {
+			let result = [];
+			
+			let position = sector.get(PositionComponent);
+
+			result.push(CharacterConstants.characterTypes.drifter);
+			result.push(CharacterConstants.characterTypes.bard);
+
+			if (position.level < 14)
+				result.push(CharacterConstants.characterTypes.shaman);
+			
+			if (position.level > 14) {
+				result.push(CharacterConstants.characterTypes.crafter);
+				result.push(CharacterConstants.characterTypes.doomsayer);
+			}
 
 			return result;
 		},

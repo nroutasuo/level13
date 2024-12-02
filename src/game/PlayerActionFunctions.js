@@ -288,6 +288,7 @@ define(['ash',
 				case "trade_with_caravan": this.tradeWithCaravan(); break;
 				case "recruit_explorer": this.recruitExplorer(param); break;
 				case "start_explorer_dialogue": this.startExplorerDialogue(param); break;
+				case "start_npc_dialogue": this.startNPCDialogue(param); break;
 				case "dismiss_recruit": this.dismissRecruit(param); break;
 				case "dismiss_explorer": this.dismissExplorer(param); break;
 				case "accept_refugees": this.acceptRefugees(param); break;
@@ -1392,10 +1393,27 @@ define(['ash',
 		startExplorerDialogue: function (explorerID) {
 			let explorersComponent = this.playerStatsNodes.head.explorers;
 			let explorerVO = explorersComponent.getExplorerByID(explorerID);
+			let setting = "interact";
+
+			if (!explorerVO) {
+				let recruitComponent = GameGlobals.campHelper.findRecruitComponentWithExplorerId(explorerID);
+				explorerVO = recruitComponent.explorer;
+				setting = "event";
+			}
 			GameGlobals.dialogueHelper.updateExplorerDialogueSource(explorerVO);
-			let dialogueID = GameGlobals.dialogueHelper.getExplorerDialogueKey(explorerVO, "interact");
+			let dialogueID = GameGlobals.dialogueHelper.getExplorerDialogueKey(explorerVO, setting);
 
 			this.startDialogue(dialogueID, explorerVO);
+		},
+
+		startNPCDialogue: function (dialogueParams) {
+			let parts = dialogueParams.split("_");
+			let setting = parts[parts.length - 1];
+			let dialogueSourceID = dialogueParams.replace("_" + setting, "");
+
+			let dialogueID = GameGlobals.dialogueHelper.getCharacterDialogueKey(dialogueSourceID, setting);
+
+			this.startDialogue(dialogueID);
 		},
 		
 		dismissRecruit: function (explorerId) {

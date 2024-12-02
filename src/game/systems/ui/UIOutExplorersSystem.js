@@ -129,6 +129,7 @@ define([
 				let explorer = recruitComponent.explorer;
 				let explorerType = ExplorerConstants.getExplorerTypeForAbilityType(explorer.abilityType);
 				let recruitAction = "recruit_explorer_" + explorer.id;
+				let talkAction = "start_explorer_dialogue_" + explorer.id;
 				let costs = GameGlobals.playerActionsHelper.getCosts(recruitAction);
 				
 				let tr = "<tr>";
@@ -137,6 +138,7 @@ define([
 				tr += "<td class='minwidth'>" + UIConstants.getExplorerDivSimple(explorer, false, false, false) + "</td>";
 				tr += "<td class='list-ordinal'>" + (recruitComponent.isFoundAsReward ? this.getFoundRecruitIcon() : "") + "</td>";
 				tr += "<td class='minwidth'><button class='action recruit-select' action='" + recruitAction + "'>Recruit</button></td>";
+				tr += "<td class='minwidth'><button class='action recruit-select' action='" + talkAction + "'>Talk</button></td>";
 				tr += "<td class='minwidth'><button class='action recruit-dismiss btn-secondary' action='dismiss_recruit_" + explorer.id + "'>Dismiss</button></td>";
 				tr += "</tr>";
 				$table.append(tr);
@@ -165,12 +167,23 @@ define([
 
 			let visitorComponent = this.playerLocationNodes.head.entity.get(VisitorComponent);
 			if (visitorComponent) {
-				result.push({ id: "visitor", type: "visitor" });
+				result.push({ 
+					id: "visitor", 
+					type: "visitor", 
+					characterType: visitorComponent.visitorType });
 			}
 
 			let refugeesComponent = this.playerLocationNodes.head.entity.get(RefugeesComponent);
 			if (refugeesComponent) {
-				result.push({ id: "refugees", type: "refugees", num: refugeesComponent.num, acceptAction: "accept_refugees", dismissAction: "dismiss_refugees" });
+				result.push({ 
+					id: "refugees", 
+					type: "refugees", 
+					characterType: "settlementRefugee", 
+					dialogueSourceID: refugeesComponent.dialogueSource,
+					num: refugeesComponent.num, 
+					acceptAction: "accept_refugees", 
+					dismissAction: "dismiss_refugees"
+				});
 			}
 
 			return result;
@@ -282,11 +295,10 @@ define([
 		
 		createVisitorListItem: function () {
 			let li = {};
-			let div = UIConstants.getNPCDiv();
 
 			let tr = "<tr>";
 			tr += "<td class='visitor-type'></td>";
-			tr += "<td>" + div + "</td>";
+			tr += "<td class='npc-td'></td>";
 			tr += "<td class='list-ordinal'></td>";
 			tr += "<td class='minwidth'><button class='action visitor-accept'>Accept</button></td>";
 			tr += "<td class='minwidth'><button class='action visitor-dismiss btn-secondary'>Dismiss</button></td>";
@@ -294,6 +306,7 @@ define([
 
 			li.$root = $(tr);
 			li.$typeLabel = li.$root.find(".visitor-type");
+			li.$mainContainer = li.$root.find(".npc-td");
 			li.$numLabel = li.$root.find(".list-ordinal");
 			li.$acceptButton = li.$root.find(".visitor-accept");
 			li.$dismissButton = li.$root.find(".visitor-dismiss");
@@ -305,14 +318,21 @@ define([
 			let acceptAction = data.acceptAction || null;
 			let dismissAction = data.dismissAction || null;
 
+			let characterType = data.characterType;
+			let dialogueSourceID = data.dialogueSourceID;
+
 			li.$typeLabel.html(data.type);
 			li.$numLabel.html(data.num || "");
+
+			li.$mainContainer.html(UIConstants.getNPCDiv(characterType, "event", dialogueSourceID));
 
 			li.$acceptButton.attr("action", acceptAction);
 			li.$dismissButton.attr("action", dismissAction);
 
 			GameGlobals.uiFunctions.toggle(li.$acceptButton, acceptAction != null);
 			GameGlobals.uiFunctions.toggle(li.$dismissButton, dismissAction != null);
+
+			GameGlobals.uiFunctions.createButtons(li.$root);
 		},
 		
 		getFoundRecruitIcon: function () {

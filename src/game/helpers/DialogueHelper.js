@@ -23,6 +23,8 @@ define(['ash', 'game/GameGlobals', 'game/constants/DialogueConstants', 'game/con
                 return currentPageVO;
             },
 
+            // explorer dialogue
+
             isValidExplorerDialogueSource: function (dialogueSourceID) {
                 if (!dialogueSourceID) return false;
                 let dialogueSource = DialogueConstants.getDialogueSource(dialogueSourceID);
@@ -39,8 +41,11 @@ define(['ash', 'game/GameGlobals', 'game/constants/DialogueConstants', 'game/con
             },
 
             getExplorerDialogueStatus: function (explorerVO, setting) {
-                let validDialogues = this.getExplorerValidDialogues(explorerVO, setting);
                 let result = 0;
+
+                if (!explorerVO) return result;
+
+                let validDialogues = this.getExplorerValidDialogues(explorerVO, setting);
 
                 if (!explorerVO.seenDialogues) result = DialogueConstants.STATUS_NEW;
 
@@ -67,12 +72,19 @@ define(['ash', 'game/GameGlobals', 'game/constants/DialogueConstants', 'game/con
             
             getExplorerDialogueKey: function (explorerVO, setting) {
                 let validDialogues = this.getExplorerValidDialogues(explorerVO, setting);
+
+                if (validDialogues.length == 0) {
+                    log.w("no valid dialogues found for explorer");
+                    return null;
+                }
                 
                 let randomIndex = Math.floor(Math.random() * validDialogues.length);
                 return validDialogues[randomIndex].dialogueID;
             },
 
             getExplorerValidDialogues: function (explorerVO, setting) {
+                if (!explorerVO) return [];
+                
                 let entries = DialogueConstants.getDialogueEntries(explorerVO.dialogueSource, setting);
 
                 let result = [];
@@ -107,7 +119,55 @@ define(['ash', 'game/GameGlobals', 'game/constants/DialogueConstants', 'game/con
                 }
 
                 return result;
-            }
+            },
+
+            // refugee dialogue
+
+            getRandomRefugeeDialogueSource: function () {
+                let validSources = [];
+
+                validSources.push("refugees_default");
+
+                let randomIndex = Math.floor(Math.random() * validSources.length);
+                return validSources[randomIndex];
+
+            },
+            
+            // general
+
+            getCharacterDialogueKey: function (dialogueSourceID, setting) {
+                let validDialogues = this.getCharacterValidDialogues(dialogueSourceID, setting);
+
+                if (validDialogues.length == 0) {
+                    log.w("no valid dialogues found for character with " + dialogueSourceID + "." + setting);
+                    return null;
+                }
+                
+                let randomIndex = Math.floor(Math.random() * validDialogues.length);
+                return validDialogues[randomIndex].dialogueID;
+            },
+
+            getCharacterValidDialogues: function (dialogueSourceID, setting) {
+                let entries = DialogueConstants.getDialogueEntries(dialogueSourceID, setting);
+
+                let result = [];
+
+                for (let i = 0; i < entries.length; i++) {
+                    let dialogueID = entries[i];
+                    let entry = DialogueConstants.getDialogue(dialogueID);
+                    let conditions = entry.conditions;
+
+                    if (conditions) {
+                        let reqsCheck = GameGlobals.playerActionsHelper.checkGeneralRequirementaInternal(conditions);
+                        if (reqsCheck.value < 1) continue;
+                    }
+
+                    result.push(entry);
+                }
+
+                return result;
+            },
+
             
         });
     

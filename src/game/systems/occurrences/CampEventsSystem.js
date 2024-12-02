@@ -450,12 +450,14 @@ define([
 				case OccurrenceConstants.campOccurrenceTypes.refugees:
 					let maxRefugees = MathUtils.clamp(campNode.camp.population / 6, 3, 16);
 					let refugeesNum = MathUtils.randomIntBetween(2, maxRefugees + 1);
-					campNode.entity.add(new RefugeesComponent(refugeesNum));
+					let dialogueSource = GameGlobals.dialogueHelper.getRandomRefugeeDialogueSource();
+					campNode.entity.add(new RefugeesComponent(refugeesNum, dialogueSource));
 					logMsg = "A group of refugees from the City has arrived at the camp.";
 					break;
 
 				case OccurrenceConstants.campOccurrenceTypes.visitor:
-					campNode.entity.add(new VisitorComponent());
+					let visitorType = MathUtils.randomElement(GameGlobals.campHelper.getValidVisitorTypes(campNode.entity));
+					campNode.entity.add(new VisitorComponent(visitorType));
 					logMsg = "Visitor";
 					break;
 			}

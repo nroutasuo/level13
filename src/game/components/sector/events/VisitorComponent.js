@@ -5,7 +5,9 @@ define(['ash'], function (Ash) {
 		
 		id: "Visitor",
 
-		constructor: function () {},
+		constructor: function (npcType) {
+			this.visitorType = npcType;
+		},
 
 		getSaveKey: function () {
 			return this.id;

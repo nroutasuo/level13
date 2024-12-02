@@ -2,7 +2,9 @@
 define(['ash',
 	'text/Text',
 	'game/GameGlobals',
+	'game/constants/CharacterConstants',
 	'game/constants/ColorConstants',
+	'game/constants/DialogueConstants',
 	'game/constants/StoryConstants',
 	'game/constants/ExplorerConstants',
 	'game/constants/ItemConstants',
@@ -11,16 +13,10 @@ define(['ash',
 	'game/constants/UpgradeConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/TextConstants',
-	'game/components/common/PositionComponent',
-	'game/components/common/CampComponent',
-	'game/components/sector/SectorStatusComponent',
-	'game/components/sector/SectorLocalesComponent',
-	'game/components/sector/PassagesComponent',
 	'utils/UIAnimations'
 ], function (Ash, Text, GameGlobals,
-	ColorConstants, StoryConstants, ExplorerConstants, ItemConstants, BagConstants, PerkConstants, UpgradeConstants, PlayerActionConstants, TextConstants,
-	PositionComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent,
-	PassagesComponent, UIAnimations) {
+	CharacterConstants, ColorConstants, DialogueConstants, StoryConstants, ExplorerConstants, ItemConstants, BagConstants, PerkConstants, UpgradeConstants, PlayerActionConstants, TextConstants,
+	UIAnimations) {
 
 	var UIConstants = {
 
@@ -342,18 +338,21 @@ define(['ash',
 			}
 		},
 
-		getNPCDiv: function (visitor) {
-			visitor = visitor || { id: "temp" };
-			let classes = "item";
-			let div = "<div class='" + classes + "' data-visitorid='" + visitor.id + "'>";
-			let calloutContent = "Visitor";//this.getNPCCallout(explorer, isRecruited, isInCamp);
-			let icon = "img/explorers/follower_yellow_m.png";
+		getNPCDiv: function (characterType, setting, dialogueSourceID) {
+			let id = "test";
+			let classes = "npc-container";
+			let div = "<div class='" + classes + "' data-visitorid='" + id + "'>";
+			let calloutContent = "Visitor";
+			let dialogueSource = dialogueSourceID ? DialogueConstants.getDialogueSource(dialogueSourceID) : CharacterConstants.getDialogueSource(characterType);
+			let icon = CharacterConstants.getIcon(characterType);
 			let name = "Visitor";
 			
 			div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
 			div += "<img src='" + icon + "' alt='" + name + "'/>";
-			
 			div += "</div>";
+
+			div += "<button class='action btn-narrow' action='start_npc_dialogue_" + dialogueSource.id + "_" + setting + "'>talk</button>";
+			
 			div += "</div>"
 			
 			return div;
