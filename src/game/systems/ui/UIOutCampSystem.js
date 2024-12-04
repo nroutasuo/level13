@@ -1,6 +1,7 @@
  define([
 	'ash',
 	'text/Text',
+	'utils/MathUtils',
 	'utils/UIState',
 	'utils/UIList',
 	'utils/UIAnimations',
@@ -12,7 +13,7 @@
 	'game/constants/UpgradeConstants',
 	'game/constants/OccurrenceConstants',
 	'game/constants/CampConstants',
-	'game/constants/PerkConstants',
+	'game/constants/DialogueConstants',
 	'game/constants/TextConstants',
 	'game/constants/TribeConstants',
 	'game/nodes/level/PlayerLevelNode',
@@ -30,14 +31,14 @@
 	'game/components/sector/events/CampEventTimersComponent',
 	'text/Text'
 ], function (
-	Ash, Text, UIState, UIList, UIAnimations, GameGlobals, GlobalSignals,
-	ImprovementConstants, PlayerActionConstants, UIConstants, UpgradeConstants, OccurrenceConstants, CampConstants, PerkConstants, TextConstants, TribeConstants,
+	Ash, Text, MathUtils, UIState, UIList, UIAnimations, GameGlobals, GlobalSignals,
+	ImprovementConstants, PlayerActionConstants, UIConstants, UpgradeConstants, OccurrenceConstants, CampConstants, DialogueConstants, TextConstants, TribeConstants,
 	PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, TribeUpgradesNode,
 	PerksComponent, PlayerActionComponent,
 	CampComponent, ResourcesComponent, ResourceAccumulationComponent, OutgoingCaravansComponent, ReputationComponent, SectorImprovementsComponent, CampEventTimersComponent,
 	Text
 ) {
-	var UIOutCampSystem = Ash.System.extend({
+	let UIOutCampSystem = Ash.System.extend({
 		
 		context: "UIOutCampSystem",
 
@@ -49,6 +50,7 @@
 		tribeUpgradesNodes: null,
 
 		bubbleNumber: -1,
+		
 		visibleBuildingCount: 0,
 		availableBuildingCount: 0,
 		lastShownVisibleBuildingCount: 0,
@@ -71,6 +73,7 @@
 			this.campActionList = UIList.create(this, $("#in-occurrences-building-container"), this.createCampActionListItem, this.updateCampActionListItem, this.isCampActionListItemDataEqual);
 			this.campOccurrencesList = UIList.create(this, $("#in-occurrences-camp-container"), this.createCampActionListItem, this.updateCampOccurrenceListItem, this.isCampOccurrenceListItemDataEqual);
 			this.campMiscEventsList = UIList.create(this, $("#in-occurrences-misc-container"), this.createCampActionListItem, this.updateCampMiscEventListItem);
+			this.characterList = UIList.create(this, $("#in-characters ul"), this.createCharacterListItem, this.updateCharacterListItem);
 		},
 
 		addToEngine: function (engine) {
@@ -83,6 +86,7 @@
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
 			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.onImprovementBuilt);
 			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.onPlayerPositionChanged);
+			GlobalSignals.add(this, GlobalSignals.playerLocationChangedSignal, this.onPlayerPositionChanged);
 			GlobalSignals.add(this, GlobalSignals.campRenamedSignal, this.onCampRenamed);
 			GlobalSignals.add(this, GlobalSignals.populationChangedSignal, this.onPopulationChanged);
 			GlobalSignals.add(this, GlobalSignals.campEventEndedSignal, this.onCampEventEnded);
@@ -90,7 +94,6 @@
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onGameShown);
 			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
 			GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.refresh);
-			GlobalSignals.add(this, GlobalSignals.playerLocationChangedSignal, this.onPlayerPositionChanged);
 
 			this.refresh();
 		},
@@ -101,6 +104,7 @@
 			this.playerPosNodes = null;
 			this.playerLevelNodes = null;
 			this.tribeUpgradesNodes = null;
+
 			GlobalSignals.removeAll(this);
 		},
 
@@ -332,6 +336,98 @@
 				var text = def.getLimitText(num);
 				UIConstants.updateCalloutContent("#in-assign-" + def.id + " .in-assign-worker-limit .info-callout-target", text, true);
 			}
+		},
+
+		updateCharacters: function () {
+			this.updateCharactersSelection();
+			this.updateCharactersDisplay();
+		},
+
+		updateCharactersSelection: function () {
+			let campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
+			let improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+			let population = campComponent.population;
+			let hasCampfire = improvements.getCount(improvementNames.campfire);
+
+			let validCharacters = GameGlobals.campHelper.getValidCampCharacters(campComponent);
+
+			if (!hasCampfire || population < 1 || validCharacters.length < 1) {
+				campComponent.displayedCharacters = [];
+				return;
+			}
+
+			let currentCharacters = campComponent.displayedCharacters || [];
+
+			let isCurrentSelectionValid = currentCharacters.length > 0;
+
+			for (let i = 0; i < currentCharacters.length; i++) {
+				let currentCharacter = currentCharacters[i];
+				if (validCharacters.indexOf(currentCharacter) < 0) {
+					isCurrentSelectionValid = false;
+					break;
+				}
+			}
+
+			let maxNumCharacters = 1;
+			if (population > 4) maxNumCharacters = 2;
+			if (population > 16) maxNumCharacters = 3;
+			if (population > 32) maxNumCharacters = 4;
+			if (population > 60) maxNumCharacters = 5;
+			maxNumCharacters = Math.min(maxNumCharacters, validCharacters.length);
+			let minCharacters = Math.max(1, Math.floor(maxNumCharacters / 2));
+
+			if (currentCharacters.length < minCharacters || currentCharacters.length > maxNumCharacters) isCurrentSelectionValid = false;
+
+			let timestamp = new Date().getTime();
+			if (timestamp - campComponent.displayedCharactersRefreshTimestamp > 1000 * 60 * 10) isCurrentSelectionValid = false;
+
+			if (isCurrentSelectionValid) return;
+
+			let numCharacters = MathUtils.randomIntBetween(minCharacters, maxNumCharacters);
+
+			let currentNumCharacters = currentCharacters.length;
+			let keepNumCharacters = Math.max(0, Math.min(currentNumCharacters - 1, numCharacters - 1));
+
+			let characters = [];
+			let validCharactersRemaining = validCharacters.slice();
+			let charactersToKeep = MathUtils.randomElements(currentCharacters, keepNumCharacters);
+
+			for (let i = 0; i < numCharacters; i++) {
+				let character;
+				if (charactersToKeep[i] && validCharacters.indexOf(charactersToKeep[i]) >= 0) {
+					character = charactersToKeep[i];
+				} else {
+					character = MathUtils.randomElement(validCharacters);
+				}
+
+				validCharactersRemaining.splice(validCharactersRemaining.indexOf(character), 1);
+				characters.push(character);
+			}
+
+			campComponent.displayedCharacters = characters;
+
+			log.i("selected displayed characters: " + characters.join(","));
+		},
+
+		updateCharactersDisplay: function () {
+			let sector = this.playerLocationNodes.head.entity;
+			let characterData = sector.get(CampComponent).displayedCharacters || [];
+			UIList.update(this.characterList, characterData);
+				GameGlobals.uiFunctions.createButtons("#in-characters");
+		},
+
+		createCharacterListItem: function () {
+			let li = {};
+			let $root = $("<li>" + UIConstants.getNPCDiv(null, null, null) + "</li>");
+			li.$root = $root;
+			li.$container = $root.find("div.npc-container");
+			return li;
+		},
+
+		updateCharacterListItem: function (li, data) {
+			let characterType = data;
+			let setting = DialogueConstants.dialogueSettings.interact;
+			UIConstants.updateNPCDiv(li.$container, characterType, setting);
 		},
 
 		initImprovements: function () {
@@ -995,6 +1091,7 @@
 
 		onPlayerPositionChanged: function () {
 			this.refresh();
+			this.updateCharacters();
 		},
 
 		onCampRenamed: function () {
@@ -1005,6 +1102,7 @@
 			if (!this.playerLocationNodes.head) return;
 			if (this.playerLocationNodes.head.entity === entity) {
 				this.refresh();
+				this.updateCharacters();
 			}
 		},
 
@@ -1012,6 +1110,7 @@
 			if (!this.playerLocationNodes.head) return;
 			if (this.playerLocationNodes.head.entity === entity) {
 				this.refresh();
+				this.updateCharacters();
 			}
 		},
 

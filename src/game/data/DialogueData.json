@@ -28,6 +28,16 @@
                 }
             ]
         },
+        "character_darkDweller_default_interact_01": {
+            "pages": [
+                "character_darkDweller_default_interact_01_p1"
+            ]
+        },
+        "character_darkDweller_default_interact_02": {
+            "pages": [
+                "character_darkDweller_default_interact_02_p1"
+            ]
+        },
         "character_doomsayer_default_event_01": {
             "pages": [
                 {
@@ -42,6 +52,21 @@
                 }
             ]
         },
+        "character_surfaceRefugee_default_interact_01": {
+            "pages": [
+                "character_surfaceRefugee_default_interact_01_p1"
+            ]
+        },
+        "character_surfaceRefugee_default_interact_02": {
+            "pages": [
+                "character_surfaceRefugee_default_interact_02_p1"
+            ]
+        },
+        "character_surfaceRefugee_default_interact_03": {
+            "pages": [
+                "character_surfaceRefugee_default_interact_03_p1"
+            ]
+        },
         "character_shaman_default_event_01": {
             "pages": [
                 {
@@ -54,6 +79,161 @@
                 {
                     "key": "character_shaman_default_event_02_p1"
                 }
+            ]
+        },
+        "character_slumRefugee_default_interact_01": {
+            "pages": [
+                "character_slumRefugee_default_interact_01_p1"
+            ]
+        },
+        "character_slumRefugee_default_interact_02": {
+            "pages": [
+                "character_slumRefugee_default_interact_02_p1"
+            ]
+        },
+        "character_slumRefugee_default_interact_03": {
+            "pages": [
+                "character_slumRefugee_default_interact_03_p1"
+            ]
+        },
+        "character_workerApothecary_default_interact_01": {
+            "pages": [
+                "character_workerApothecary_default_interact_01_p1"
+            ]
+        },
+        "character_workerApothecary_default_interact_02": {
+            "pages": [
+                "character_workerApothecary_default_interact_02_p1"
+            ]
+        },
+        "character_workerChemist_default_interact_01": {
+            "pages": [
+                "character_workerChemist_default_interact_01_p1"
+            ]
+        },
+        "character_workerChemist_default_interact_02": {
+            "pages": [
+                "character_workerChemist_default_interact_02_p1"
+            ]
+        },
+        "character_workerCleric_default_interact_01": {
+            "pages": [
+                "character_workerCleric_default_interact_01_p1"
+            ]
+        },
+        "character_workerCleric_default_interact_02": {
+            "pages": [
+                "character_workerCleric_default_interact_02_p1"
+            ]
+        },
+        "character_workerConcrete_default_interact_01": {
+            "pages": [
+                "character_workerConcrete_default_interact_01_p1"
+            ]
+        },
+        "character_workerConcrete_default_interact_02": {
+            "pages": [
+                "character_workerConcrete_default_interact_02_p1"
+            ]
+        },
+        "character_workerGardener_default_interact_01": {
+            "pages": [
+                "character_workerGardener_default_interact_01_p1"
+            ]
+        },
+        "character_workerGardener_default_interact_02": {
+            "pages": [
+                "character_workerGardener_default_interact_02_p1"
+            ]
+        },
+        "character_workerRobotmaker_default_interact_01": {
+            "pages": [
+                "character_workerRobotmaker_default_interact_01_p1"
+            ]
+        },
+        "character_workerRobotmaker_default_interact_02": {
+            "pages": [
+                "character_workerRobotmaker_default_interact_02_p1"
+            ]
+        },
+        "character_workerRope_default_interact_01": {
+            "pages": [
+                "character_workerRope_default_interact_01_p1"
+            ]
+        },
+        "character_workerRope_default_interact_02": {
+            "pages": [
+                "character_workerRope_default_interact_02_p1"
+            ]
+        },
+        "character_workerRubber_default_interact_01": {
+            "pages": [
+                "character_workerRubber_default_interact_01_p1"
+            ]
+        },
+        "character_workerRubber_default_interact_02": {
+            "pages": [
+                "character_workerRubber_default_interact_02_p1"
+            ]
+        },
+        "character_workerScavenger_default_interact_01": {
+            "pages": [
+                "character_workerScavenger_default_interact_01_p1"
+            ]
+        },
+        "character_workerScavenger_default_interact_02": {
+            "pages": [
+                "character_workerScavenger_default_interact_02_p1"
+            ]
+        },
+        "character_workerScientist_default_interact_01": {
+            "pages": [
+                "character_workerScientist_default_interact_01_p1"
+            ]
+        },
+        "character_workerScientist_default_interact_02": {
+            "pages": [
+                "character_workerScientist_default_interact_02_p1"
+            ]
+        },
+        "character_workerSoldier_default_interact_01": {
+            "pages": [
+                "character_workerSoldier_default_interact_01_p1"
+            ]
+        },
+        "character_workerSoldier_default_interact_02": {
+            "pages": [
+                "character_workerSoldier_default_interact_02_p1"
+            ]
+        },
+        "character_workerToolsmith_default_interact_01": {
+            "pages": [
+                "character_workerToolsmith_default_interact_01_p1"
+            ]
+        },
+        "character_workerToolsmith_default_interact_02": {
+            "pages": [
+                "character_workerToolsmith_default_interact_02_p1"
+            ]
+        },
+        "character_workerTrapper_default_interact_01": {
+            "pages": [
+                "character_workerTrapper_default_interact_01_p1"
+            ]
+        },
+        "character_workerTrapper_default_interact_02": {
+            "pages": [
+                "character_workerTrapper_default_interact_02_p1"
+            ]
+        },
+        "character_workerWater_default_interact_01": {
+            "pages": [
+                "character_workerWater_default_interact_01_p1"
+            ]
+        },
+        "character_workerWater_default_interact_02": {
+            "pages": [
+                "character_workerWater_default_interact_02_p1"
             ]
         },
         "explorer_generic_01": {
@@ -359,6 +539,14 @@
                 ]
             }
         },
+        "character_darkDweller_default": {
+            "dialogues": {
+                "interact": [
+                    "character_darkDweller_default_interact_01",
+                    "character_darkDweller_default_interact_02"
+                ]
+            }
+        },
         "character_doomsayer_default": {
             "dialogues": {
                 "event": [
@@ -375,11 +563,141 @@
                 ]
             }
         },
+        "character_surfaceRefugee_default": {
+            "dialogues": {
+                "interact": [
+                    "character_surfaceRefugee_default_interact_01",
+                    "character_surfaceRefugee_default_interact_02",
+                    "character_surfaceRefugee_default_interact_03"
+                ]
+            }
+        },
         "character_shaman_default": {
             "dialogues": {
                 "event": [
                     "character_shaman_default_event_01",
                     "character_shaman_default_event_02"
+                ]
+            }
+        },
+        "character_slumRefugee_default": {
+            "dialogues": {
+                "interact": [
+                    "character_slumRefugee_default_interact_01",
+                    "character_slumRefugee_default_interact_02",
+                    "character_slumRefugee_default_interact_03"
+                ]
+            }
+        },
+        "character_workerApothecary_default": {
+            "dialogues": {
+                "interact": [
+                    "character_workerApothecary_default_interact_01",
+                    "character_workerApothecary_default_interact_02"
+                ]
+            }
+        },
+        "character_workerChemist_default": {
+            "dialogues": {
+                "interact": [
+                    "character_workerChemist_default_interact_01",
+                    "character_workerChemist_default_interact_02"
+                ]
+            }
+        },
+        "character_workerCleric_default": {
+            "dialogues": {
+                "interact": [
+                    "character_workerCleric_default_interact_01",
+                    "character_workerCleric_default_interact_02"
+                ]
+            }
+        },
+        "character_workerConcrete_default": {
+            "dialogues": {
+                "interact": [
+                    "character_workerConcrete_default_interact_01",
+                    "character_workerConcrete_default_interact_02"
+                ]
+            }
+        },
+        "character_workerGardener_default": {
+            "dialogues": {
+                "interact": [
+                    "character_workerGardener_default_interact_01",
+                    "character_workerGardener_default_interact_02"
+                ]
+            }
+        },
+        "character_workerRobotmaker_default": {
+            "dialogues": {
+                "interact": [
+                    "character_workerRobotmaker_default_interact_01",
+                    "character_workerRobotmaker_default_interact_02"
+                ]
+            }
+        },
+        "character_workerRope_default": {
+            "dialogues": {
+                "interact": [
+                    "character_workerRope_default_interact_01",
+                    "character_workerRope_default_interact_02"
+                ]
+            }
+        },
+        "character_workerRubber_default": {
+            "dialogues": {
+                "interact": [
+                    "character_workerRubber_default_interact_01",
+                    "character_workerRubber_default_interact_02"
+                ]
+            }
+        },
+        "character_workerScavenger_default": {
+            "dialogues": {
+                "interact": [
+                    "character_workerScavenger_default_interact_01",
+                    "character_workerScavenger_default_interact_02"
+                ]
+            }
+        },
+        "character_workerScientist_default": {
+            "dialogues": {
+                "interact": [
+                    "character_workerScientist_default_interact_01",
+                    "character_workerScientist_default_interact_02"
+                ]
+            }
+        },
+        "character_workerSoldier_default": {
+            "dialogues": {
+                "interact": [
+                    "character_workerSoldier_default_interact_01",
+                    "character_workerSoldier_default_interact_02"
+                ]
+            }
+        },
+        "character_workerToolsmith_default": {
+            "dialogues": {
+                "interact": [
+                    "character_workerToolsmith_default_interact_01",
+                    "character_workerToolsmith_default_interact_02"
+                ]
+            }
+        },
+        "character_workerTrapper_default": {
+            "dialogues": {
+                "interact": [
+                    "character_workerTrapper_default_interact_01",
+                    "character_workerTrapper_default_interact_02"
+                ]
+            }
+        },
+        "character_workerWater_default": {
+            "dialogues": {
+                "interact": [
+                    "character_workerWater_default_interact_01",
+                    "character_workerWater_default_interact_02"
                 ]
             }
         },

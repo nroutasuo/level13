@@ -1910,15 +1910,15 @@ body.dark .npc-dialogue-indicator {
   height: 10px;
 }
 body.dark .npc-dialogue-badge {
-  top: -11px;
-  right: -11px;
+  top: 1px;
+  right: 5px;
   position: absolute;
   border-width: 1px;
   border-style: solid;
   border-color: #555;
   padding: 2px;
   border-radius: 6px;
-  background: #282a28;
+  background: "inherit";
 }
 body.dark .npc-dialogue-badge .indicator-new {
   border: 1px solid green;
@@ -2387,6 +2387,12 @@ body.dark span.improvement-badge.improvement-upgrade-level {
 }
 body.dark #in-population-details > div {
   width: 100%;
+}
+body.dark #in-characters ul {
+  padding: 0;
+}
+body.dark #in-characters li {
+  display: inline-block;
 }
 body.dark .changelog-type {
   padding: 2px 5px;
@@ -4477,15 +4483,15 @@ body.sunlit .npc-dialogue-indicator {
   height: 10px;
 }
 body.sunlit .npc-dialogue-badge {
-  top: -11px;
-  right: -11px;
+  top: 1px;
+  right: 5px;
   position: absolute;
   border-width: 1px;
   border-style: solid;
   border-color: #999;
   padding: 2px;
   border-radius: 6px;
-  background: #fff;
+  background: "inherit";
 }
 body.sunlit .npc-dialogue-badge .indicator-new {
   border: 1px solid green;
@@ -4954,6 +4960,12 @@ body.sunlit span.improvement-badge.improvement-upgrade-level {
 }
 body.sunlit #in-population-details > div {
   width: 100%;
+}
+body.sunlit #in-characters ul {
+  padding: 0;
+}
+body.sunlit #in-characters li {
+  display: inline-block;
 }
 body.sunlit .changelog-type {
   padding: 2px 5px;

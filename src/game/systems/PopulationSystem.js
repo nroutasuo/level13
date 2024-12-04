@@ -66,6 +66,12 @@ define([
 				this.updateCampPopulationChange(node);
 			}
 		},
+
+		updateCampsDemographics: function () {
+			for (var node = this.campNodes.head; node; node = node.next) {
+				this.updateCampDemographics(node);
+			}
+		},
 		
 		updateCampPopulation: function (node, time) {
 			let camp = node.camp;
@@ -261,6 +267,43 @@ define([
 			camp.populationChangePerSecRaw = changePerSec;
 			camp.populationChangePerSecWithoutCooldown = changePerSecWithoutCooldown;
 		},
+
+		updateCampDemographics: function (node) {
+			let population = Math.floor(node.camp.population) || 0;
+			let populationByOrigin = node.camp.populationByOrigin || {};
+
+			let totalByOrigin = 0;
+			let origins = [];
+
+			let isPopulationByOriginValid = function () {
+				totalByOrigin = 0;
+				for (let origin in populationByOrigin) {
+					let num = populationByOrigin[origin];
+					if (num < 0) populationByOrigin[origin] = 0;
+					if (num <= 0) continue;
+					totalByOrigin += num;
+					origins.push(origin);
+				}
+				return totalByOrigin == population;
+			}
+
+			while (!isPopulationByOriginValid()) {
+				if (totalByOrigin < population) {
+					let origin = GameGlobals.campHelper.getRandomOrigin(node.entity);
+					if (!populationByOrigin[origin]) populationByOrigin[origin] = 0;
+					populationByOrigin[origin] = populationByOrigin[origin] + 1;
+					log.i("added population by origin: " + origin + " at camp " + node.position.level);
+				}
+
+				if (totalByOrigin > population) {
+					let origin = MathUtils.randomElement(origins);
+					populationByOrigin[origin] = populationByOrigin[origin] - 1;
+					log.i("removed population by origin: " + origin + " at camp " + node.position.level);
+				}
+			}
+
+			node.camp.populationByOrigin = populationByOrigin;
+		},
 		
 		handlePopulationChanged: function (node, isIncrease) {
 			let campPosition = node.entity.get(PositionComponent);
@@ -279,6 +322,7 @@ define([
 			this.logChangePopulation(campPosition, isIncrease);
 			
 			this.updateCampPopulationChange(node);
+			this.updateCampDemographics(node);
 		},
 		
 		reassignWorkers: function (node) {
@@ -380,6 +424,7 @@ define([
 		onGameStarted: function () {
 			this.updateCampsPopulationChange();
 			this.updateCampsPopulation(0);
+			this.updateCampsDemographics();
 		}
 	});
 

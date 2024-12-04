@@ -7,6 +7,7 @@ define([
 	'game/constants/GameConstants',
 	'game/constants/CampConstants',
 	'game/constants/CharacterConstants',
+	'game/constants/CultureConstants',
 	'game/constants/ExplorerConstants',
 	'game/constants/ImprovementConstants',
 	'game/constants/ItemConstants',
@@ -30,7 +31,7 @@ define([
 	'game/vos/ResourcesVO',
 	'game/vos/IncomingCaravanVO'
 ], function (Ash, MathUtils, RandomUtils, GameGlobals, 
-	GameConstants, CampConstants, CharacterConstants, ExplorerConstants, ImprovementConstants, ItemConstants, OccurrenceConstants, TradeConstants, WorldConstants,
+	GameConstants, CampConstants, CharacterConstants, CultureConstants, ExplorerConstants, ImprovementConstants, ItemConstants, OccurrenceConstants, TradeConstants, WorldConstants,
 	CampComponent, PositionComponent, 
 	DisasterComponent, DiseaseComponent, RaidComponent, TraderComponent, RecruitComponent, RefugeesComponent, VisitorComponent, 
 	SectorImprovementsComponent, SectorFeaturesComponent, LevelComponent, CampNode, TribeUpgradesNode, ResourcesVO, IncomingCaravanVO) {
@@ -363,6 +364,105 @@ define([
 			}
 
 			return result;
+		},
+
+		getValidCampCharacters: function (campComponent) {
+			let result = [];
+
+			for (let origin in campComponent.populationByOrigin) {
+				let num = campComponent.populationByOrigin[origin];
+				if (num <= 0) continue;
+				switch (origin) {
+					case CultureConstants.origins.SURFACE: 
+						result.push(CharacterConstants.characterTypes.surfaceRefugee);
+						break;
+					case CultureConstants.origins.SLUMS: 
+						result.push(CharacterConstants.characterTypes.slumRefugee);
+						break;
+					case CultureConstants.origins.DARKLEVELS: 
+						result.push(CharacterConstants.characterTypes.darkDweller);
+						break;
+				}
+			}
+
+			
+			for(let key in campComponent.assignedWorkers) {
+				let num = campComponent.assignedWorkers[key] || 0;
+				if (num <= 0) continue;
+				switch (key) {
+					case CampConstants.workerTypes.scavenger.id:
+						result.push(CharacterConstants.characterTypes.workerScavenger);
+						break;
+					case CampConstants.workerTypes.trapper.id:
+						result.push(CharacterConstants.characterTypes.workerTrapper);
+						break;
+					case CampConstants.workerTypes.water.id:
+						result.push(CharacterConstants.characterTypes.workerWater);
+						break;
+					case CampConstants.workerTypes.ropemaker.id:
+						result.push(CharacterConstants.characterTypes.workerRope);
+						break;
+					case CampConstants.workerTypes.chemist.id:
+						result.push(CharacterConstants.characterTypes.workerChemist);
+						break;
+					case CampConstants.workerTypes.rubbermaker.id:
+						result.push(CharacterConstants.characterTypes.workerRubber);
+						break;
+					case CampConstants.workerTypes.gardener.id:
+						result.push(CharacterConstants.characterTypes.workerGardener);
+						break;
+					case CampConstants.workerTypes.apothecary.id:
+						result.push(CharacterConstants.characterTypes.workerApothecary);
+						break;
+					case CampConstants.workerTypes.toolsmith.id:
+						result.push(CharacterConstants.characterTypes.workerToolsmith);
+						break;
+					case CampConstants.workerTypes.concrete.id:
+						result.push(CharacterConstants.characterTypes.workerConcrete);
+						break;
+					case CampConstants.workerTypes.robotmaker.id:
+						result.push(CharacterConstants.characterTypes.workerRobotmaker);
+						break;
+					case CampConstants.workerTypes.scientist.id:
+						result.push(CharacterConstants.characterTypes.workerScientist);
+						break;
+					case CampConstants.workerTypes.soldier.id:
+						result.push(CharacterConstants.characterTypes.workerSoldier);
+						break;
+					case CampConstants.workerTypes.cleric.id:
+						result.push(CharacterConstants.characterTypes.workerCleric);
+						break;
+				}
+			}
+
+
+			return result;
+		},
+
+		getRandomOrigin: function (sector) {
+			let campComponent = sector.get(CampComponent);
+			let position = sector.get(PositionComponent);
+			let level = position.level;
+			let maxPopulation = campComponent.maxPopulation;
+
+			let possibleOrigins = [];
+
+			possibleOrigins.push(CultureConstants.origins.SURFACE);
+			if (level > 20) possibleOrigins.push(CultureConstants.origins.SURFACE);
+			if (level > 17) possibleOrigins.push(CultureConstants.origins.SURFACE);
+			if (level > 14) possibleOrigins.push(CultureConstants.origins.SURFACE);
+
+			possibleOrigins.push(CultureConstants.origins.SLUMS);
+			if (level < 20) possibleOrigins.push(CultureConstants.origins.SLUMS);
+			if (level > 14) possibleOrigins.push(CultureConstants.origins.SLUMS);
+			if (level > 6) possibleOrigins.push(CultureConstants.origins.SLUMS);
+
+			possibleOrigins.push(CultureConstants.origins.DARKLEVELS);
+			if (level < 13) possibleOrigins.push(CultureConstants.origins.DARKLEVELS);
+			if (level < 10) possibleOrigins.push(CultureConstants.origins.DARKLEVELS);
+			if (maxPopulation < 24) possibleOrigins.push(CultureConstants.origins.DARKLEVELS);
+
+			return MathUtils.randomElement(possibleOrigins);
 		},
 		
 		getRandomIncomingCaravan: function (campOrdinal, levelOrdinal, traderLevel, unlockedResources, neededIngredient) {

@@ -155,6 +155,9 @@ define(['ash', 'game/GameGlobals', 'game/constants/DialogueConstants', 'game/con
                 for (let i = 0; i < entries.length; i++) {
                     let dialogueID = entries[i];
                     let entry = DialogueConstants.getDialogue(dialogueID);
+
+                    if (!entry) continue;
+
                     let conditions = entry.conditions;
 
                     if (conditions) {

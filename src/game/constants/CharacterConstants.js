@@ -14,12 +14,25 @@ define(['ash', 'game/constants/DialogueConstants'], function (Ash, DialogueConst
             pet: "pet",
             scavenger: "scavenger",
             scout: "scout",
-            shaman: "shaman",
             settlementRefugee: "settlementRefugee",
+            shaman: "shaman",
             slumRefugee: "slumRefugee",
             surfaceRefugee: "surfaceRefugee",
             trader: "trader",
-            worker: "worker"
+            workerApothecary: "workerApothecary",
+            workerChemist: "workerChemist",
+            workerCleric: "workerCleric",
+            workerConcrete: "workerConcrete",
+            workerGardener: "workerGardener",
+            workerRobotmaker: "workerRobotmaker",
+            workerRope: "workerRope",
+            workerRubber: "workerRubber",
+            workerScavenger: "workerScavenger",
+            workerScientist: "workerScientist",
+            workerSoldier: "workerSoldier",
+            workerToolsmith: "workerToolsmith",
+            workerTrapper: "workerTrapper",
+            workerWater: "workerWater",
         },
 
         getDialogueSource: function (characterType) {
@@ -44,7 +57,9 @@ define(['ash', 'game/constants/DialogueConstants'], function (Ash, DialogueConst
                 case CharacterConstants.characterTypes.slumRefugee: return "img/characters/slum-refugee.png"; 
                 case CharacterConstants.characterTypes.surfaceRefugee: return "img/characters/surface-refugee.png"; 
                 case CharacterConstants.characterTypes.trader: return "img/characters/trader.png"; 
-                case CharacterConstants.characterTypes.trader: return "img/characters/worker.png"; 
+                default:
+                    log.w("no icon defined for character type: " + characterType);
+                    return "img/characters/worker.png"; 
             }
         }
             

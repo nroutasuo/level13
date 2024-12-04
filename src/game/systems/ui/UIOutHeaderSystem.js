@@ -131,7 +131,6 @@ define([
 			let sys = this;
 			GlobalSignals.playerEnteredCampSignal.add(function () { sys.onPlayerEnteredCamp(); });
 			GlobalSignals.playerLeftCampSignal.add(function () { sys.onPlayerLeftCamp(); });
-			GlobalSignals.playerLeftCampSignal.add(function () { sys.onPlayerLeftCamp(); });
 			GlobalSignals.actionStartingSignal.add(function () { sys.onActionStarting(); });
 			GlobalSignals.actionStartedSignal.add(function () { sys.onInventoryChanged(); });
 			GlobalSignals.visionChangedSignal.add(function () { sys.onVisionChanged(); });

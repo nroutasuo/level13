@@ -1,13 +1,15 @@
 // Marks that given entity (should be a Sector) contains a Camp
 define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash, CampConstants, RaidVO) {
 	
-	var CampComponent = Ash.Class.extend({
+	let CampComponent = Ash.Class.extend({
 		
 		id: "",
 		population: 0,
-		disabledPopulation: [], // population not available for work, { num: int, reason: string, timer: int (seconds), initialTimer: int (seconds) }
 
+		disabledPopulation: [], // population not available for work, { num: int, reason: string, timer: int (seconds), initialTimer: int (seconds) }
 		maxPopulation: 0, // maximum population ever reached in this camp
+		populationByOrigin: {}, // origin: number
+
 		populationChangePerSec: 0,
 		populationChangePerSecWithoutCooldown: 0,
 		populationDecreaseCooldown: 0,
@@ -30,8 +32,11 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 			this.population = 0;
 			this.disabledPopulation = [];
 			this.maxPopulation = 0;
+			this.populationByOrigin = {};
+			
 			this.rumourpool = 0;
 			this.rumourpoolchecked = false;
+
 			this.assignedWorkers = {};
 			this.autoAssignedWorkers = {};
 			for(var worker in CampConstants.workerTypes) {
@@ -147,11 +152,13 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 
 		getCustomSaveObject: function () {
 			let copy = {};
+			
 			copy.id = this.id;
 			copy.campName = this.campName;
 			copy.population = this.population || 0;
 			copy.disabledPopulation = this.disabledPopulation || [];
 			copy.maxPopulation = this.maxPopulation || 0;
+			copy.populationByOrigin = this.populationByOrigin || {};
 			copy.foundedTimeStamp = this.foundedTimeStamp;
 			copy.lastRaid = this.lastRaid;
 			copy.assignedWorkers = this.assignedWorkers;

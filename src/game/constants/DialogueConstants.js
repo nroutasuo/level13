@@ -78,7 +78,8 @@ define([
         parsePage: function (i, pageData) {
             let pageID = pageData.id || i;
             let pageVO = new DialoguePageVO(pageID);
-            pageVO.textKey = "story.dialogue." + pageData.key || null;
+            let pageKey = typeof pageData === "string" ? pageData : pageData.key;
+            pageVO.textKey = "story.dialogue." + pageKey;
             
             pageVO.options = [];
 
@@ -101,7 +102,6 @@ define([
         },
 
         parsePageResult: function (data) {
-
             if (!data) return null;
 
             let resultVO = new ResultVO("start_dialogue_page");
@@ -147,18 +147,28 @@ define([
         getDialogueEntries: function (sourceID, setting) {
             let source = this.getDialogueSource(sourceID);
             if (!source || !source.dialogues) {
-                log.w("no valid dialogue source found: " + sourceID);
+                log.w("no valid dialogue entries found: " + sourceID);
                 return [];
             }
             return source.dialogues[setting] || [];
         },
 
         getDialogue: function (dialogueID) {
-            return this.dialogues[dialogueID] || null;
+            let result = this.dialogues[dialogueID];
+            if (!result) {
+                log.w("no such dialogue found: " + dialogueID);
+                return {};
+            }
+            return result;
         },
 
         getDialogueSource: function (sourceID) {
-            return this.dialogueSources[sourceID] || {};
+            let result = this.dialogueSources[sourceID]
+            if (!result) {
+                log.w("no such dialogue source found: " + sourceID);
+                return {};
+            }
+            return result;
         },
 		
 	};

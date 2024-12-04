@@ -339,23 +339,47 @@ define(['ash',
 		},
 
 		getNPCDiv: function (characterType, setting, dialogueSourceID) {
-			let id = "test";
 			let classes = "npc-container";
-			let div = "<div class='" + classes + "' data-visitorid='" + id + "'>";
+			let div = "<div class='" + classes + "'>";
 			let calloutContent = "Visitor";
-			let dialogueSource = dialogueSourceID ? DialogueConstants.getDialogueSource(dialogueSourceID) : CharacterConstants.getDialogueSource(characterType);
-			let icon = CharacterConstants.getIcon(characterType);
+
+			let dialogueSource = this.getNPCDialogueSource(characterType, dialogueSourceID);
+			let icon = this.getNPCIcon(characterType);
 			let name = "Visitor";
 			
 			div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
-			div += "<img src='" + icon + "' alt='" + name + "'/>";
+			div += "<div class='npc-portrait'><img src='" + icon + "' alt='" + name + "'/></div>";
 			div += "</div>";
 
-			div += "<button class='action btn-narrow' action='start_npc_dialogue_" + dialogueSource.id + "_" + setting + "'>talk</button>";
+			let action = this.getNPCTalkAction(dialogueSource, setting);
+			div += "<button class='action btn-compact' action='" + action + "'>talk</button>";
 			
 			div += "</div>"
 			
 			return div;
+		},
+
+		updateNPCDiv: function ($div, characterType, setting, dialogueSourceID) {
+			let dialogueSource = this.getNPCDialogueSource(characterType, dialogueSourceID);
+			let icon = this.getNPCIcon(characterType);
+			let action = this.getNPCTalkAction(dialogueSource, setting);
+
+			$div.find("img").attr("src", icon);
+			$div.find("button").attr("action", action);
+		},
+
+		getNPCIcon: function (characterType) {
+			return characterType ? CharacterConstants.getIcon(characterType) : null;
+		},
+
+		getNPCDialogueSource: function (characterType, dialogueSourceID) {
+			if (dialogueSourceID) return DialogueConstants.getDialogueSource(dialogueSourceID);
+			if (characterType) return CharacterConstants.getDialogueSource(characterType);
+			return null;
+		},
+
+		getNPCTalkAction: function (dialogueSource, setting) {
+			return dialogueSource && setting ? "start_npc_dialogue_" + dialogueSource.id + "_" + setting : "";
 		},
 
 		getResourceLi: function (name, amount, isLost, simple) {
