@@ -345,6 +345,9 @@
 
 		updateCharactersSelection: function () {
 			let campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
+
+			if (!campComponent) return;
+
 			let improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			let population = campComponent.population;
 			let hasCampfire = improvements.getCount(improvementNames.campfire);
@@ -410,8 +413,12 @@
 		},
 
 		updateCharactersDisplay: function () {
+			if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.in) return;
 			let sector = this.playerLocationNodes.head.entity;
-			let characterData = sector.get(CampComponent).displayedCharacters || [];
+			let campComponent = sector.get(CampComponent);
+			if (!campComponent) return;
+
+			let characterData = campComponent.displayedCharacters || [];
 			UIList.update(this.characterList, characterData);
 				GameGlobals.uiFunctions.createButtons("#in-characters");
 		},
