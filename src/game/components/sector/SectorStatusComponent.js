@@ -27,6 +27,8 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 		isFallbackInvestigateSector: false,
 		
 		scoutedTimestamp: 0, // seconds (DEPRECATED - See LevelStatusSystem)
+
+		currentCharacters: [], // CharacterVO
 		
 		glowStickSeconds: -100, // not saved
 		hazardReduction: null, // not saved
@@ -50,6 +52,8 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			this.stashesFound = 0;
 			this.graffiti = null;
 			this.isFallbackInvestigateSector = false;
+
+			this.currentCharacters = [];
 			
 			this.hazardReduction = {};
 			this.glowStickSeconds = -100;
@@ -150,6 +154,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 
 		getCustomSaveObject: function () {
 			var copy = {};
+
 			if (this.discoveredResources.length > 0)
 				copy.dR = this.discoveredResources;
 			if (this.discoveredItems.length > 0)
@@ -190,6 +195,9 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 				copy.g = this.graffiti;
 			if (this.isFallbackInvestigateSector)
 				copy.fis = true;
+			if (this.currentCharacters.length > 0)
+				copy.char = this.currentCharacters;
+			
 			return Object.keys(copy).length > 0 ? copy : null;
 		},
 
@@ -216,6 +224,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			this.stashesFound = componentValues.sf ? componentValues.sf : 0;
 			this.graffiti = componentValues.g ? componentValues.g : null;
 			this.isFallbackInvestigateSector = componentValues.fis ? true : false;
+			this.currentCharacters = componentValues.char ? componentValues.char : [];
 
 			if (this.scouted) {
 				this.visited = true;

@@ -70,9 +70,9 @@ define(
 		
 		isOnCriticalPath: function (type) {
 			if (type) {
-				return this.criticalPathTypes.indexOf(type) >= 0;
+				return this.criticalPaths.indexOf(type) >= 0;
 			} else {
-				return this.criticalPathTypes.length > 0;
+				return this.criticalPaths.length > 0;
 			}
 		},
 		

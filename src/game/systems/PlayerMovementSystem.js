@@ -120,6 +120,7 @@ define([
 			}
 			
 			GlobalSignals.playerPositionChangedSignal.dispatch(position, oldPosition, action);
+			if (!oldPosition || oldPosition.level != position.level) GlobalSignals.playerEnteredLevelSignal.dispatch(position.level);
 			GameGlobals.uiFunctions.onPlayerPositionChanged();
 		},
 

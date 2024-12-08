@@ -44,6 +44,7 @@ define([
 	'game/systems/SectorStatusSystem',
 	'game/systems/TutorialSystem',
 	'game/systems/LevelStatusSystem',
+	'game/systems/CharacterSystem',
 	'game/systems/CollectorSystem',
 	'game/systems/FightSystem',
 	'game/systems/PopulationSystem',
@@ -113,6 +114,7 @@ define([
 	SectorStatusSystem,
 	TutorialSystem,
 	LevelStatusSystem,
+	CharacterSystem,
 	CollectorSystem,
 	FightSystem,
 	PopulationSystem,
@@ -292,6 +294,7 @@ define([
 			this.engine.addSystem(new VisionSystem(), SystemPriorities.update);
 			this.engine.addSystem(new StaminaSystem(), SystemPriorities.update);
 			this.engine.addSystem(new BagSystem(), SystemPriorities.update);
+			this.engine.addSystem(new CharacterSystem(), SystemPriorities.update);
 			this.engine.addSystem(new CollectorSystem(), SystemPriorities.update);
 			this.engine.addSystem(new DialogueSystem(), SystemPriorities.update);
 			this.engine.addSystem(new FightSystem(true), SystemPriorities.update);

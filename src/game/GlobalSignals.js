@@ -37,6 +37,7 @@ define(['ash',], function (Ash) {
 		playerPositionChangedSignal: new Ash.Signals.Signal(),
 		playerMoveCompletedSignal: new Ash.Signals.Signal(),
 		playerLocationChangedSignal: new Ash.Signals.Signal(),
+		playerEnteredLevelSignal: new Ash.Signals.Signal(),
 
 		// player actions
 		actionStartingSignal: new Ash.Signals.Signal(),
