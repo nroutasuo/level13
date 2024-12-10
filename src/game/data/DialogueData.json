@@ -14,6 +14,16 @@
                 }
             ]
         },
+        "character_bard_default_meet_01": {
+            "pages": [
+                "character_bard_default_meet_01_p1"
+            ]
+        },
+        "character_bard_default_meet_02": {
+            "pages": [
+                "character_bard_default_meet_02_p1"
+            ]
+        },
         "character_crafter_default_event_01": {
             "pages": [
                 {
@@ -26,6 +36,16 @@
                 {
                     "key": "character_crafter_default_event_02_p1"
                 }
+            ]
+        },
+        "character_crafter_default_meet_01": {
+            "pages": [
+                "character_crafter_default_meet_01_p1"
+            ]
+        },
+        "character_crafter_default_meet_02": {
+            "pages": [
+                "character_crafter_default_meet_02_p1"
             ]
         },
         "character_darkDweller_default_interact_01": {
@@ -52,19 +72,64 @@
                 }
             ]
         },
-        "character_surfaceRefugee_default_interact_01": {
+        "character_doomsayer_default_meet_01": {
             "pages": [
-                "character_surfaceRefugee_default_interact_01_p1"
+                "character_doomsayer_default_meet_01_p1"
             ]
         },
-        "character_surfaceRefugee_default_interact_02": {
+        "character_doomsayer_default_meet_02": {
             "pages": [
-                "character_surfaceRefugee_default_interact_02_p1"
+                "character_doomsayer_default_meet_02_p1"
             ]
         },
-        "character_surfaceRefugee_default_interact_03": {
+        "character_drifer_default_meet_01": {
             "pages": [
-                "character_surfaceRefugee_default_interact_03_p1"
+                "character_drifer_default_meet_01_p1"
+            ]
+        },
+        "character_drifer_default_meet_02": {
+            "pages": [
+                "character_drifer_default_meet_02_p1"
+            ]
+        },
+        "character_hunter_default_meet_01": {
+            "pages": [
+                "character_hunter_default_meet_01_p1"
+            ]
+        },
+        "character_hunter_default_meet_02": {
+            "pages": [
+                "character_hunter_default_meet_02_p1"
+            ]
+        },
+        "character_mercenary_default_meet_01": {
+            "pages": [
+                "character_mercenary_default_meet_01_p1"
+            ]
+        },
+        "character_mercenary_default_meet_02": {
+            "pages": [
+                "character_mercenary_default_meet_02_p1"
+            ]
+        },
+        "character_messenger_default_meet_01": {
+            "pages": [
+                "character_messenger_default_meet_01_p1"
+            ]
+        },
+        "character_messenger_default_meet_02": {
+            "pages": [
+                "character_messenger_default_meet_02_p1"
+            ]
+        },
+        "character_scavenger_default_meet_01": {
+            "pages": [
+                "character_scavenger_default_meet_01_p1"
+            ]
+        },
+        "character_scavenger_default_meet_02": {
+            "pages": [
+                "character_scavenger_default_meet_02_p1"
             ]
         },
         "character_shaman_default_event_01": {
@@ -81,6 +146,16 @@
                 }
             ]
         },
+        "character_shaman_default_meet_01": {
+            "pages": [
+                "character_shaman_default_meet_01_p1"
+            ]
+        },
+        "character_shaman_default_meet_02": {
+            "pages": [
+                "character_shaman_default_meet_02_p1"
+            ]
+        },
         "character_slumRefugee_default_interact_01": {
             "pages": [
                 "character_slumRefugee_default_interact_01_p1"
@@ -94,6 +169,51 @@
         "character_slumRefugee_default_interact_03": {
             "pages": [
                 "character_slumRefugee_default_interact_03_p1"
+            ]
+        },
+        "character_slumRefugee_default_meet_01": {
+            "pages": [
+                "character_slumRefugee_default_meet_01_p1"
+            ]
+        },
+        "character_slumRefugee_default_meet_02": {
+            "pages": [
+                "character_slumRefugee_default_meet_02_p1"
+            ]
+        },
+        "character_surfaceRefugee_default_interact_01": {
+            "pages": [
+                "character_surfaceRefugee_default_interact_01_p1"
+            ]
+        },
+        "character_surfaceRefugee_default_interact_02": {
+            "pages": [
+                "character_surfaceRefugee_default_interact_02_p1"
+            ]
+        },
+        "character_surfaceRefugee_default_interact_03": {
+            "pages": [
+                "character_surfaceRefugee_default_interact_03_p1"
+            ]
+        },
+        "character_surfaceRefugee_default_meet_01": {
+            "pages": [
+                "character_surfaceRefugee_default_meet_01_p1"
+            ]
+        },
+        "character_surfaceRefugee_default_meet_02": {
+            "pages": [
+                "character_surfaceRefugee_default_meet_02_p1"
+            ]
+        },
+        "character_trader_default_meet_01": {
+            "pages": [
+                "character_trader_default_meet_01_p1"
+            ]
+        },
+        "character_trader_default_meet_02": {
+            "pages": [
+                "character_trader_default_meet_02_p1"
             ]
         },
         "character_workerApothecary_default_interact_01": {
@@ -528,6 +648,10 @@
                 "event": [
                     "character_bard_default_event_01",
                     "character_bard_default_event_02"
+                ],
+                "meet": [
+                    "character_bard_default_meet_01",
+                    "character_bard_default_meet_02"
                 ]
             }
         },
@@ -536,6 +660,10 @@
                 "event": [
                     "character_crafter_default_event_01",
                     "character_crafter_default_event_02"
+                ],
+                "meet": [
+                    "character_crafter_default_meet_01",
+                    "character_crafter_default_meet_02"
                 ]
             }
         },
@@ -552,6 +680,10 @@
                 "event": [
                     "character_doomsayer_default_event_01",
                     "character_doomsayer_default_event_02"
+                ],
+                "meet": [
+                    "character_doomsayer_default_meet_01",
+                    "character_doomsayer_default_meet_02"
                 ]
             }
         },
@@ -560,15 +692,42 @@
                 "event": [
                     "character_drifter_default_event_01",
                     "character_drifter_default_event_02"
+                ],
+                "meet": [
+                    "character_drifer_default_meet_01",
+                    "character_drifer_default_meet_02"
                 ]
             }
         },
-        "character_surfaceRefugee_default": {
+        "character_hunter_default": {
             "dialogues": {
-                "interact": [
-                    "character_surfaceRefugee_default_interact_01",
-                    "character_surfaceRefugee_default_interact_02",
-                    "character_surfaceRefugee_default_interact_03"
+                "meet": [
+                    "character_hunter_default_meet_01",
+                    "character_hunter_default_meet_02"
+                ]
+            }
+        },
+        "character_mercenary_default": {
+            "dialogues": {
+                "meet": [
+                    "character_mercenary_default_meet_01",
+                    "character_mercenary_default_meet_02"
+                ]
+            }
+        },
+        "character_messenger_default": {
+            "dialogues": {
+                "meet": [
+                    "character_messenger_default_meet_01",
+                    "character_messenger_default_meet_02"
+                ]
+            }
+        },
+        "character_scavenger_default": {
+            "dialogues": {
+                "meet": [
+                    "character_scavenger_default_meet_01",
+                    "character_scavenger_default_meet_02"
                 ]
             }
         },
@@ -577,6 +736,10 @@
                 "event": [
                     "character_shaman_default_event_01",
                     "character_shaman_default_event_02"
+                ],
+                "meet": [
+                    "character_shaman_default_meet_01",
+                    "character_shaman_default_meet_02"
                 ]
             }
         },
@@ -586,6 +749,31 @@
                     "character_slumRefugee_default_interact_01",
                     "character_slumRefugee_default_interact_02",
                     "character_slumRefugee_default_interact_03"
+                ],
+                "meet": [
+                    "character_slumRefugee_default_meet_01",
+                    "character_slumRefugee_default_meet_02"
+                ]
+            }
+        },
+        "character_surfaceRefugee_default": {
+            "dialogues": {
+                "interact": [
+                    "character_surfaceRefugee_default_interact_01",
+                    "character_surfaceRefugee_default_interact_02",
+                    "character_surfaceRefugee_default_interact_03"
+                ],
+                "meet": [
+                    "character_surfaceRefugee_default_meet_01",
+                    "character_surfaceRefugee_default_meet_02"
+                ]
+            }
+        },
+        "character_trader_default": {
+            "dialogues": {
+                "meet": [
+                    "character_trader_default_meet_01",
+                    "character_trader_default_meet_02"
                 ]
             }
         },

@@ -351,7 +351,8 @@ define(['ash',
 		startDialogue: function (id, explorerVO) {
 			let dialogueVO = DialogueConstants.getDialogue(id);
 			if (!dialogueVO) {
-				log.w("no such dialogue found: " + id);
+				log.w("not able to start dialogue - no such dialogue found: " + id);
+				return;
 			}
 
 			GameGlobals.gameFlowLogger.log("start dialogue: " + id);

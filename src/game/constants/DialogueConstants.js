@@ -51,7 +51,7 @@ define([
         parseDialogue: function (dialogueID, d) {
             let vo = new DialogueVO(dialogueID);
 
-            vo.conditions = d.conditions;
+            vo.conditions = d.conditions || {};
             vo.isRepeatable = d.repeatable === false ? false : true;
             vo.isUrgent = d.urgent;
 
