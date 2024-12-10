@@ -6,9 +6,9 @@ define([
 	'utils/UIState',
 	'game/GameGlobals',
 	'game/GlobalSignals',
+	'game/constants/DialogueConstants',
 	'game/constants/ExplorationConstants',
 	'game/constants/PlayerActionConstants',
-	'game/constants/PlayerStatConstants',
 	'game/constants/TextConstants',
 	'game/constants/LogConstants',
 	'game/constants/UIConstants',
@@ -24,14 +24,12 @@ define([
 	'game/nodes/NearestCampNode',
 	'game/components/player/VisionComponent',
 	'game/components/player/StaminaComponent',
-	'game/components/player/ItemsComponent',
 	'game/components/sector/PassagesComponent',
 	'game/components/sector/SectorControlComponent',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorLocalesComponent',
 	'game/components/sector/MovementOptionsComponent',
 	'game/components/common/PositionComponent',
-	'game/components/common/LogMessagesComponent',
 	'game/components/common/CampComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/improvements/WorkshopComponent',
@@ -39,11 +37,11 @@ define([
 	'game/components/sector/EnemiesComponent'
 ], function (
 	Ash,
-	Text, MapUtils,  UIList, UIState, GameGlobals, GlobalSignals, ExplorationConstants, PlayerActionConstants, PlayerStatConstants, TextConstants,
+	Text, MapUtils,  UIList, UIState, GameGlobals, GlobalSignals, DialogueConstants, ExplorationConstants, PlayerStatConstants, TextConstants,
 	LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, StoryConstants, TradeConstants,
 	TribeConstants, PlayerPositionNode, PlayerLocationNode, NearestCampNode, VisionComponent, StaminaComponent,
-	ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
-	MovementOptionsComponent, PositionComponent, LogMessagesComponent, CampComponent, SectorImprovementsComponent,
+	PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
+	MovementOptionsComponent, PositionComponent, CampComponent, SectorImprovementsComponent,
 	WorkshopComponent, SectorStatusComponent, EnemiesComponent
 ) {
 	var UIOutLevelSystem = Ash.System.extend({
@@ -211,6 +209,7 @@ define([
 			this.updateOutImprovementsList();
 			this.updateOutImprovementsStatus();
 			this.updateMovementActions();
+			this.updateCharacters();
 		},
 		
 		scheduleMapUpdate: function () {
@@ -878,6 +877,27 @@ define([
 			let showGrit = activeDespairType == MovementConstants.DESPAIR_TYPE_HUNGRER || activeDespairType == MovementConstants.DESPAIR_TYPE_THIRST;
 			GameGlobals.uiFunctions.toggle(".movement-action-normal", !showGrit);
 			GameGlobals.uiFunctions.toggle(".movement-action-grit", showGrit);
+		},
+
+		updateCharacters: function () {
+			$("#out-characters").empty();
+
+			if (!this.playerLocationNodes.head) return;
+
+			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+
+			if (sectorStatus.currentCharacters.length == 0) return;
+
+			let setting = DialogueConstants.dialogueSettings.meet;
+
+			for (let i = 0; i < sectorStatus.currentCharacters.length; i++) {
+				let character = sectorStatus.currentCharacters[i];
+
+				let div = UIConstants.getNPCDiv(character.characterType, setting, character.dialogueSourceID);
+				$("#out-characters").append(div);
+			}
+
+			GameGlobals.uiFunctions.createButtons("#out-characters");
 		},
 
 		updateMovementRelatedActions: function () {

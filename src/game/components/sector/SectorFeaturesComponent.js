@@ -34,7 +34,6 @@ define(
 		examineSpots: [],
 		
 		// resources and items
-		scacengeDifficulty: 3,
 		resourcesScavengable: null,
 		resourcesCollectable: null,
 		heapResource: null,
