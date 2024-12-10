@@ -87,7 +87,7 @@ define(['ash'], function (Ash) {
 			let currentValue = this.getResource(res);
 
 			if (amount < 0 && currentValue >= 0 && currentValue + amount < 0) {
-				if (this.type != storageTypes.ACCUMULATION && reason != "update-worker-production") {
+				if (this.type != storageTypes.ACCUMULATION && reason != "update-worker-production" && res != "food" && res != "water") {
 					log.w("addResource [" + res + "] [" + amount + "] taking total to negative [" + reason + "]", this);
 				}
 			}
