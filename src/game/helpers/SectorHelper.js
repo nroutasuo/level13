@@ -8,6 +8,8 @@ define([
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
 	'game/constants/ExplorationConstants',
+	'game/constants/TextConstants',
+	'game/constants/TradeConstants',
 	'game/nodes/sector/SectorNode',
 	'game/nodes/PlayerLocationNode',
 	'game/components/common/CampComponent',
@@ -30,6 +32,8 @@ define([
 	PositionConstants,
 	SectorConstants,
 	ExplorationConstants,
+	TextConstants,
+	TradeConstants,
 	SectorNode,
 	PlayerLocationNode,
 	CampComponent,
@@ -440,6 +444,40 @@ define([
 			sector = sector ? sector : this.playerLocationNodes.head.entity;
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
 			return sectorFeatures.itemsScavengeable;
+		},
+
+		getPOIData: function (sector, poiType) {
+			let sectorPosition = sector.get(PositionComponent);
+			let sectorFeatures = sector.get(SectorFeaturesComponent);
+			let sectorStatus = sector.get(SectorStatusComponent);
+			let sectorLocales = sector.get(SectorLocalesComponent);
+			
+			let campOrdinal = GameGlobals.gameState.getCampOrdinal(sectorPosition.level);
+
+			switch (poiType) {
+				case "campable":
+					if (sectorFeatures.campable) {
+						return {};
+					}
+					break;
+				case "settlement":
+					if (sectorLocales.hasLocale(localeTypes.tradingpartner)) {
+						let partner = TradeConstants.getTradePartner(campOrdinal);
+						return { nameTextKey: partner.name };
+					}
+					break;
+				case "spring":
+					if (sectorFeatures.hasSpring) {
+						let springName = TextConstants.getSpringName(sectorFeatures);
+						return { nameTextKey: springName };
+					}
+					break;
+				default:
+					log.w("no such poi type defined: " + poiType);
+					break;
+			}
+
+			return null;
 		},
 		
 		isInDetectionRange: function (sector, itemBonusType) {

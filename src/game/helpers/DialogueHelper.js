@@ -1,5 +1,11 @@
-define(['ash', 'game/GameGlobals', 'game/constants/DialogueConstants', 'game/constants/ExplorerConstants', 'game/nodes/player/DialogueNode' ],
-    function (Ash, GameGlobals, DialogueConstants, ExplorerConstants, DialogueNode) {
+define(['ash', 
+    'game/GameGlobals', 
+    'game/constants/DialogueConstants', 
+    'game/constants/ExplorerConstants',
+    'game/constants/PositionConstants',
+    'game/components/common/PositionComponent',
+    'game/nodes/player/DialogueNode' 
+], function (Ash, GameGlobals, DialogueConstants, ExplorerConstants, PositionConstants, PositionComponent, DialogueNode) {
         
         let DialogueHelper = Ash.Class.extend({
 
@@ -21,6 +27,61 @@ define(['ash', 'game/GameGlobals', 'game/constants/DialogueConstants', 'game/con
                 let currentPageVO = this.dialogueNodes.head.dialogue.activeDialogue.pagesByID[currentPageID];
 
                 return currentPageVO;
+            },
+
+            isDialogueValid: function (conditions, explorerVO) {
+                if (!conditions) return true;
+
+                let reqsCheck = GameGlobals.playerActionsHelper.checkGeneralRequirementaInternal(conditions);
+                if (reqsCheck.value < 1) return false;
+
+                if (conditions.explorer) {
+                    if (!explorerVO) return false;
+                    if (conditions.explorer.trust && conditions.explorer.trust > explorerVO.trust) return false;
+                }
+
+                if (conditions.vicinity) {
+                    let requiredPOIType = dialogueVO.conditions.vicinity;
+                    let requiredPOIData = this.findPOIDataForDialogue(requiredPOIType);
+                    if (!requiredPOIData) return false;
+                }
+
+                return true;
+            },
+
+            getDialogueTextParams: function (dialogueVO, pageVO) {
+                let result = {};
+
+                if (dialogueVO.conditions.vicinity) {
+                    let requiredPOIType = dialogueVO.conditions.vicinity;
+                    let requiredPOIData = this.findPOIDataForDialogue(requiredPOIType);
+                    if (requiredPOIData) {
+                        result.direction = requiredPOIData.directionTextKey;
+                        result.name = requiredPOIData.nameTextKey;
+                    }
+                }
+
+                return result;
+            },
+
+            findPOIDataForDialogue: function (poiType) {
+                let playerPosition = GameGlobals.playerHelper.getPosition();
+
+                let result = null;
+                
+                GameGlobals.levelHelper.forEverySectorFromLocation(playerPosition, (sector) => {
+                    let poiData = GameGlobals.sectorHelper.getPOIData(sector, poiType);
+                    if (poiData) {
+                        let sectorPosition = sector.get(PositionComponent);
+                        let direction = PositionConstants.getDirectionFrom(playerPosition, sectorPosition);
+                        result = poiData;
+                        result.directionTextKey = PositionConstants.getDirectionTextKey(direction);
+                        return true;
+                    }
+                    return false;
+                }, true);
+
+                return result;
             },
 
             // explorer dialogue
@@ -99,12 +160,7 @@ define(['ash', 'game/GameGlobals', 'game/constants/DialogueConstants', 'game/con
                         continue;
                     }
 
-                    if (conditions) {
-                        let reqsCheck = GameGlobals.playerActionsHelper.checkGeneralRequirementaInternal(conditions);
-                        if (reqsCheck.value < 1) continue;
-
-                        if (conditions.explorer && conditions.explorer.trust && conditions.explorer.trust > explorerVO.trust) continue;
-                    }
+                    if (!this.isDialogueValid(conditions, explorerVO)) continue;
 
                     let status = this.getExplorerDialogueStatusForEntry(explorerVO, entry);
 
@@ -160,10 +216,7 @@ define(['ash', 'game/GameGlobals', 'game/constants/DialogueConstants', 'game/con
 
                     let conditions = entry.conditions;
 
-                    if (conditions) {
-                        let reqsCheck = GameGlobals.playerActionsHelper.checkGeneralRequirementaInternal(conditions);
-                        if (reqsCheck.value < 1) continue;
-                    }
+                    if (!this.isDialogueValid(conditions)) continue;
 
                     result.push(entry);
                 }

@@ -67,23 +67,29 @@ define([
 		},
 
 		refreshPage: function () {
+			let dialogueVO = this.dialogueNodes.head.dialogue.activeDialogue;
+
+			if (!dialogueVO) return;
+
 			let pageID = this.dialogueNodes.head.dialogue.currentPageID;
 
 			if (!pageID && pageID !== 0) return;
 
-			let pageVO = this.dialogueNodes.head.dialogue.activeDialogue.pagesByID[pageID];
+			let pageVO = dialogueVO.pagesByID[pageID];
 
 			if (!pageVO) return;
 
-			this.refreshPageText(pageVO);
+			this.refreshPageText(dialogueVO, pageVO);
 			this.refreshPageResults(pageVO);
 			this.refreshPageOptions(pageVO);
 
 			this.shownPageID = pageID;
 		},
 
-		refreshPageText: function (pageVO) {
-			$("#dialogue-module-dialogue p").text(Text.t(pageVO.textKey));
+		refreshPageText: function (dialogueVO, pageVO) {
+			let textKey = pageVO.textKey;
+			let textParams = GameGlobals.dialogueHelper.getDialogueTextParams(dialogueVO, pageVO);
+			$("#dialogue-module-dialogue p").text(Text.t(textKey, textParams));
 		},
 
 		refreshPageResults: function (pageVO) {

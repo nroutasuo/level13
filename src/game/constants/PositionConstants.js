@@ -297,6 +297,27 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 			return "unknown";
 		},
 		
+		getDirectionTextKey: function (direction, short) {
+			let key = null;
+
+			switch (direction) {
+				case this.DIRECTION_WEST: key = "west"; break;
+				case this.DIRECTION_NORTH: key = "north"; break;
+				case this.DIRECTION_SOUTH: key = "south"; break;
+				case this.DIRECTION_EAST: key = "east"; break;
+				case this.DIRECTION_NE: key = "ne"; break;
+				case this.DIRECTION_SE: key = "se"; break;
+				case this.DIRECTION_SW: key = "sw"; break;
+				case this.DIRECTION_NW: key = "nw"; break;
+			}
+
+			if (!key) return null;
+
+			let result = "ui.map.direction_" + key + "_name_short";
+			if (short) result += "_short";
+			return result;
+		},
+		
 		getLevelDirections: function (excludeDiagonals) {
 			if (!excludeDiagonals)
 				return [this.DIRECTION_NORTH, this.DIRECTION_EAST, this.DIRECTION_SOUTH, this.DIRECTION_WEST,

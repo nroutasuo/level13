@@ -9,6 +9,17 @@ define(['ash'], function (Ash) {
 		constructor: function (locales) {
 			this.locales = locales;
 		},
+
+		hasLocale: function (localeType) {
+			for (let i = 0; i < this.locales.length; i++) {
+				let localeVO = this.locales[i];
+				if (localeVO.type == localeType) {
+						return true;
+				}
+			}
+
+			return false;
+		}
 		
 	});
 
