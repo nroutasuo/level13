@@ -117,14 +117,22 @@ define(function () {
 			result = result.replace(regex, function(match, p) { 
 				let isValidValue = (value) => value || value === 0;
 
+				let value = "?";
+
 				if (isValidValue(options[p])) {
-					return options[p];
+					value = options[p];
 				} else if (isValidValue(options[wildcard])) {
-					return options[wildcard];
+					value = options[wildcard];
 				} else {
 					log.w("no parameter value [" + p + "] provided for key [" + key + "]");
-					return "?";
+					return value;
 				}
+
+				if (Text.hasKey(value)) {
+					value = Text.t(value, options);
+				}
+
+				return value;
 			});
 
 			return result;
