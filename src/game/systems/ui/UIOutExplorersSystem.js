@@ -320,11 +320,14 @@ define([
 
 			let characterType = data.characterType;
 			let dialogueSourceID = data.dialogueSourceID;
+			let setting = DialogueConstants.dialogueSettings.event;
 
 			li.$typeLabel.html(data.type);
 			li.$numLabel.html(data.num || "");
 
-			li.$mainContainer.html(UIConstants.getNPCDiv(characterType, "event", dialogueSourceID));
+			let talkAction = "start_in_npc_dialogue_" + dialogueSourceID + "_" + setting;
+
+			li.$mainContainer.html(UIConstants.getNPCDiv(characterType, setting, talkAction));
 
 			li.$acceptButton.attr("action", acceptAction);
 			li.$dismissButton.attr("action", dismissAction);

@@ -288,7 +288,8 @@ define(['ash',
 				case "trade_with_caravan": this.tradeWithCaravan(); break;
 				case "recruit_explorer": this.recruitExplorer(param); break;
 				case "start_explorer_dialogue": this.startExplorerDialogue(param); break;
-				case "start_npc_dialogue": this.startNPCDialogue(param); break;
+				case "start_in_npc_dialogue": this.startInNPCDialogue(param); break;
+				case "start_out_npc_dialogue": this.startOutNPCDialogue(param); break;
 				case "dismiss_recruit": this.dismissRecruit(param); break;
 				case "dismiss_explorer": this.dismissExplorer(param); break;
 				case "accept_refugees": this.acceptRefugees(param); break;
@@ -1412,12 +1413,55 @@ define(['ash',
 			this.startDialogue(dialogueID, explorerVO);
 		},
 
-		startNPCDialogue: function (dialogueParams) {
+		startInNPCDialogue: function (dialogueParams) {
 			let parts = dialogueParams.split("_");
 			let setting = parts[parts.length - 1];
 			let dialogueSourceID = dialogueParams.replace("_" + setting, "");
 
 			let dialogueID = GameGlobals.dialogueHelper.getCharacterDialogueKey(dialogueSourceID, setting);
+
+			this.startDialogue(dialogueID);
+		},
+
+		startOutNPCDialogue: function (characterID) {
+			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			let characterVO = null;
+
+			for (let i = 0; i < sectorStatus.currentCharacters.length; i++) {
+				let sectorCharacterVO = sectorStatus.currentCharacters[i];
+				if (sectorCharacterVO.instanceID == characterID) {
+					characterVO = sectorCharacterVO;
+					break;
+				}
+			}
+
+			if (!characterVO) {
+				log.w("did not find character for starting dialogue");
+				return;
+			}
+
+			let dialogueID = null;
+			let lastShownDialogueID = characterVO.lastShownDialogue;
+			let now = new Date().getTime();
+
+			// pick previously shown if one saved and it's not been long
+			if (lastShownDialogueID && characterVO.lastShownDialogueTimestamp) {
+				if (now - characterVO.lastShownDialogueTimestamp < 1000 * 60 * 3) {
+					let lastShownDialogueVO = DialogueConstants.getDialogue(lastShownDialogueID);
+					if (GameGlobals.dialogueHelper.isDialogueValid(lastShownDialogueVO)) {
+						dialogueID = lastShownDialogueID;
+					}
+				}
+			}
+
+			// if previously shown not found / valid, pick new
+			if (!dialogueID) {
+				let setting = DialogueConstants.dialogueSettings.meet;
+				dialogueID = GameGlobals.dialogueHelper.getCharacterDialogueKey(characterVO.dialogueSourceID, setting);
+			}
+
+			characterVO.lastShownDialogue = dialogueID;
+			characterVO.lastShownDialogueTimestamp = now;
 
 			this.startDialogue(dialogueID);
 		},

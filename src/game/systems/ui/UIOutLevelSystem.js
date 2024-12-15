@@ -893,7 +893,11 @@ define([
 			for (let i = 0; i < sectorStatus.currentCharacters.length; i++) {
 				let character = sectorStatus.currentCharacters[i];
 
-				let div = UIConstants.getNPCDiv(character.characterType, setting, character.dialogueSourceID);
+				if (!character.instanceID) character.instanceID = Math.floor(Math.random() * 1000000);
+
+				let talkAction = "start_out_npc_dialogue_" + character.instanceID;
+
+				let div = UIConstants.getNPCDiv(character.characterType, setting, talkAction);
 				$("#out-characters").append(div);
 			}
 

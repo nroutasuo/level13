@@ -7,6 +7,7 @@
 	'utils/UIAnimations',
 	'game/GameGlobals',
 	'game/GlobalSignals',
+	'game/constants/CharacterConstants',
 	'game/constants/ImprovementConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/UIConstants',
@@ -32,7 +33,7 @@
 	'text/Text'
 ], function (
 	Ash, Text, MathUtils, UIState, UIList, UIAnimations, GameGlobals, GlobalSignals,
-	ImprovementConstants, PlayerActionConstants, UIConstants, UpgradeConstants, OccurrenceConstants, CampConstants, DialogueConstants, TextConstants, TribeConstants,
+	CharacterConstants, ImprovementConstants, PlayerActionConstants, UIConstants, UpgradeConstants, OccurrenceConstants, CampConstants, DialogueConstants, TextConstants, TribeConstants,
 	PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, TribeUpgradesNode,
 	PerksComponent, PlayerActionComponent,
 	CampComponent, ResourcesComponent, ResourceAccumulationComponent, OutgoingCaravansComponent, ReputationComponent, SectorImprovementsComponent, CampEventTimersComponent,
@@ -434,7 +435,9 @@
 		updateCharacterListItem: function (li, data) {
 			let characterType = data;
 			let setting = DialogueConstants.dialogueSettings.interact;
-			UIConstants.updateNPCDiv(li.$container, characterType, setting);
+			let dialogueSource = CharacterConstants.getDialogueSource(characterType);
+			let talkActionID = "start_in_npc_dialogue_" + dialogueSource.id + "_" + setting;
+			UIConstants.updateNPCDiv(li.$container, characterType, setting, talkActionID);
 		},
 
 		initImprovements: function () {

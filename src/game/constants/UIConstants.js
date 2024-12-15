@@ -338,12 +338,13 @@ define(['ash',
 			}
 		},
 
-		getNPCDiv: function (characterType, setting, dialogueSourceID) {
+		getNPCDiv: function (characterType, setting, talkActionID) {
 			let classes = "npc-container";
 			let div = "<div class='" + classes + "'>";
 			let calloutContent = "Visitor";
 
-			let dialogueSource = this.getNPCDialogueSource(characterType, dialogueSourceID);
+			talkActionID = talkActionID || "";
+
 			let icon = this.getNPCIcon(characterType);
 			let name = "Visitor";
 			
@@ -351,18 +352,16 @@ define(['ash',
 			div += "<div class='npc-portrait'><img src='" + icon + "' alt='" + name + "'/></div>";
 			div += "</div>";
 
-			let action = this.getNPCTalkAction(dialogueSource, setting);
-			div += "<button class='action btn-compact' action='" + action + "'>talk</button>";
+			div += "<button class='action btn-compact' action='" + talkActionID + "'>talk</button>";
 			
 			div += "</div>"
 			
 			return div;
 		},
 
-		updateNPCDiv: function ($div, characterType, setting, dialogueSourceID) {
-			let dialogueSource = this.getNPCDialogueSource(characterType, dialogueSourceID);
+		updateNPCDiv: function ($div, characterType, setting, talkActionID) {
 			let icon = this.getNPCIcon(characterType);
-			let action = this.getNPCTalkAction(dialogueSource, setting);
+			let action = talkActionID;
 
 			$div.find("img").attr("src", icon);
 			$div.find("button").attr("action", action);
@@ -370,16 +369,6 @@ define(['ash',
 
 		getNPCIcon: function (characterType) {
 			return characterType ? CharacterConstants.getIcon(characterType) : null;
-		},
-
-		getNPCDialogueSource: function (characterType, dialogueSourceID) {
-			if (dialogueSourceID) return DialogueConstants.getDialogueSource(dialogueSourceID);
-			if (characterType) return CharacterConstants.getDialogueSource(characterType);
-			return null;
-		},
-
-		getNPCTalkAction: function (dialogueSource, setting) {
-			return dialogueSource && setting ? "start_npc_dialogue_" + dialogueSource.id + "_" + setting : "";
 		},
 
 		getResourceLi: function (name, amount, isLost, simple) {
