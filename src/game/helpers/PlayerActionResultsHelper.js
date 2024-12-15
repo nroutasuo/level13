@@ -562,10 +562,32 @@ define([
 				}
 			}
 
+			if (rewards.gainedItemUpgrades) {
+				let gainedItemUpgrades = [];
+				for (let i = 0; i < rewards.gainedItemUpgrades.length; i++) {
+					let itemUpgradeID = rewards.gainedItemUpgrades[i];
+					if (itemUpgradeID.endsWith("_")) {
+						let itemVO = GameGlobals.playerHelper.selectItemForItemUpgrade(itemUpgradeID);
+						if (itemVO) {
+							gainedItemUpgrades.push(itemVO.id);
+						} else {
+							log.w("could not found valid item for item upgrade: " + itemUpgradeID);
+						}
+					} else {
+						gainedItemUpgrades.push(itemUpgradeID);
+					}
+				}
+				rewards.gainedItemUpgrades = gainedItemUpgrades;
+			}
+
 			if (rewards.gainedPerks) {
 				for (let i = 0; i < rewards.gainedPerks.length; i++) {
-					if (rewards.gainedPerks[i] == "injury") {
+					let perkIDOrVO = rewards.gainedPerks[i];
+					if (perkIDOrVO == "injury") {
 						let perkVO = this.getResultInjuries(1, rewards.action)[0];
+						rewards.gainedPerks[i] = perkVO;
+					} else if (typeof perkIDOrVO === 'string') {
+						let perkVO = PerkConstants.getPerk(perkIDOrVO);
 						rewards.gainedPerks[i] = perkVO;
 					}
 				}
@@ -659,6 +681,13 @@ define([
 					GameGlobals.playerHelper.addItem(item, item.level, sourcePos);
 					GameGlobals.gameState.increaseGameStatKeyed("numItemsFoundPerId", item.id);
 					GameGlobals.gameState.increaseGameStatList("uniqueItemsFound", item.id);
+				}
+			}
+
+			if (rewards.gainedItemUpgrades) {
+				for (let i = 0; i < rewards.gainedItemUpgrades.length; i++) {
+					let itemID = rewards.gainedItemUpgrades[i];
+					GameGlobals.playerHelper.upgradeItem(itemID);
 				}
 			}
 			
@@ -879,6 +908,14 @@ define([
 				replacements.push("#" + replacements.length + " population");
 				values.push(rewards.gainedPopulation);
 			}
+			
+			if (rewards.gainedItemUpgrades) {
+				msg += ", ";
+				foundSomething = true;
+				msg += "$" + replacements.length + ", ";
+				replacements.push("#" + replacements.length + " item upgrades");
+				values.push(rewards.gainedItemUpgrades.length);
+			}
 
 			if (foundSomething) {
 				if (format == this.RESULT_MGS_FORMAT_LOG) {
@@ -1017,6 +1054,12 @@ define([
 			}
 			if (resultVO.gainedBlueprintPiece) {
 				gainedhtml += UIConstants.getBlueprintPieceLI(resultVO.gainedBlueprintPiece);
+			}
+			if (resultVO.gainedItemUpgrades) {
+				for (let i = 0; i < resultVO.gainedItemUpgrades.length; i++) {
+					let itemID = resultVO.gainedItemUpgrades[i];
+					gainedhtml += "<li>Upgraded " + ItemConstants.getItemDisplayNameFromID(itemID) + "</li>";
+				}
 			}
 			if (resultVO.gainedCurrency) {
 				gainedhtml += "<li>" + resultVO.gainedCurrency + " silver</li>";
@@ -1782,7 +1825,8 @@ define([
 				|| result.gainedHope > 0
 				|| result.gainedInsight > 0
 				|| result.gainedReputation > 0
-				|| result.gainedPopulation > 0;
+				|| result.gainedPopulation > 0
+				|| result.gainedItemUpgrades > 0;
 		},
 		
 		isSomethingUsefulResources: function (resources) {

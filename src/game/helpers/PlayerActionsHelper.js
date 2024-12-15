@@ -828,6 +828,14 @@ define([
 							}
 						}
 					}
+
+					if (requirements.player.canHaveItemUpgrade) {
+						let upgradeFilter = requirements.player.canHaveItemUpgrade;
+						let itemVO = GameGlobals.playerHelper.selectItemForItemUpgrade(upgradeFilter);
+						if (!itemVO) {
+							return { value: 0, reason: "No valid item found" };
+						}
+					}
 				}
 
 				if (requirements.outgoingcaravan) {

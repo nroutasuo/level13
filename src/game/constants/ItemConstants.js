@@ -528,6 +528,14 @@ function (Ash, Text, ItemData, Text, PlayerActionConstants, ItemVO) {
 					return false;
 			}
 		},
+
+		canBeUpgraded: function (itemVO) {
+			if (!ItemConstants.hasItemTypeQualityLevels(itemVO.type)) return false;
+			let quality = ItemConstants.getItemQuality(itemVO);
+			if (quality == ItemConstants.itemQuality.high) return false;
+
+			return true;
+		},
 		
 		// returns 1 if given new item is better than the old item, 0 if the same or depends on bonus type, -1 if worse
 		getEquipmentComparison: function (itemOld, itemNew) {

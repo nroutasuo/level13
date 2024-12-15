@@ -27,7 +27,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		// instance data (varies between instances)
 		itemID: -1,
 		foundPosition: null,
-		level: 1,
+		level: 1, // 0-100
 
 		// status data (varies over time)
 		equipped: false,

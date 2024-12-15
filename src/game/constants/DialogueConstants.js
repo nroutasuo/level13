@@ -108,6 +108,8 @@ define([
 
             if (data.gainedRumours) resultVO.gainedRumours = parseInt(data.gainedRumours);
 
+            if (data.gainedPopulation) resultVO.gainedPopulation = parseInt(data.gainedPopulation);
+
             if (data.gainedItems) {
                 resultVO.gainedItems = [];
                 for (let i in data.gainedItems) {
@@ -120,10 +122,14 @@ define([
             if (data.gainedPerks) {
                 resultVO.gainedPerks = [];
                 for (let i in data.gainedPerks) {
-                    // TODO check item exists (or is general injury)
+                    // TODO check perk exists (or is general injury)
                     let perkID = data.gainedPerks[i];
                     resultVO.gainedPerks.push(perkID);
                 }
+            }
+
+            if (data.gainedItemUpgrades) {
+                resultVO.gainedItemUpgrades = data.gainedItemUpgrades;
             }
 
             return resultVO;

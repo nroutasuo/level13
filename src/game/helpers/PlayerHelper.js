@@ -1,5 +1,6 @@
 define([
 	'ash',
+	'utils/MathUtils',
 	'utils/ValueCache',
 	'game/GameGlobals',
 	'game/constants/BagConstants',
@@ -28,6 +29,7 @@ define([
 	'game/components/common/MovementComponent',
 ], function (
 	Ash,
+	MathUtils,
 	ValueCache,
 	GameGlobals,
 	BagConstants,
@@ -425,7 +427,60 @@ define([
 				}
 			}
 
-			perksComponent.addPerk(PerkConstants.getPerk(perkID, startTimer, endTimer));
+			let perkVO = PerkConstants.getPerk(perkID, startTimer, endTimer);
+
+			if (!perkVO) {
+				return;
+			}
+
+			perksComponent.addPerk(perkVO);
+		},
+
+		selectItemForItemUpgrade: function (itemFilter) {
+			let validItems = [];
+
+			let filter = itemFilter.replaceAll("_", ""); // so "weapon_" also matches "weapon4";
+			
+			let itemsComponent = this.playerStatsNodes.head.items;
+			let playerItems = itemsComponent.getAll(false);
+
+			for (let i = 0; i < playerItems.length; i++) {
+				let itemVO = playerItems[i];
+				if (!itemVO.id.startsWith(filter)) continue;
+				if (!ItemConstants.canBeUpgraded(itemVO)) continue;
+				validItems.push(itemVO);
+			}
+
+			if (validItems.length == 0) {
+				return null;
+			}
+
+			return MathUtils.randomElement(validItems);
+		},
+
+		upgradeItem: function (itemID) {
+			let itemsComponent = this.playerStatsNodes.head.items;
+			let itemVO = itemsComponent.getItem(itemID, null, false, true, itemVO => ItemConstants.canBeUpgraded(itemVO));
+
+			if (!itemVO) {
+				itemVO = itemsComponent.getItem(itemID, null, true, true, itemVO => ItemConstants.canBeUpgraded(itemVO));
+			}
+
+			if (!itemVO) {
+				log.w("could not find item to upgrade: " + itemID);
+				return;
+			}
+			
+			let currentQuality = ItemConstants.getItemQuality(itemVO);
+
+			switch (currentQuality) {
+				case ItemConstants.itemQuality.low:
+					itemVO.level = ItemConstants.DEFAULT_EQUIPMENT_ITEM_LEVEL;
+					break;
+				case ItemConstants.itemQuality.medium:
+					itemVO.level = 85;
+					break;
+			}
 		},
 		
 		getBestAvailableExplorer: function (explorerType) {

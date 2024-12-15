@@ -17,6 +17,7 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 		gainedInsight: 0,
 		gainedReputation: 0,
 		gainedPopulation: 0,
+		gainedItemUpgrades: [],
 		
 		// penalties
 		lostResources: null,
@@ -53,6 +54,7 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 			this.gainedInsight = 0;
 			this.gainedReputation = 0;
 			this.gainedPopulation = 0;
+			this.gainedItemUpgrades = [];
 			
 			this.lostResources = new ResourcesVO(storageTypes.RESULT);
 			this.lostCurrency = 0;
@@ -115,6 +117,7 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 				&& this.gainedHope == 0
 				&& this.gainedInsight == 0
 				&& this.gainedReputation == 0
+				&& this.gainedItemUpgrades.length == 0
 				&& this.discardedItems.length == 0
 				&& this.discardedResources.getTotal() == 0;
 		},
@@ -134,6 +137,7 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 			result.gainedPerks = this.gainedPerks.concat();
 			result.gainedBlueprintPiece = this.gainedBlueprintPiece;
 			result.gainedPopulation = this.gainedPopulation;
+			result.gainedItemUpgrades = this.gainedItemUpgrades;
 			result.gainedEvidence = this.gainedEvidence;
 			result.gainedRumours = this.gainedRumours;
 			result.gainedHope = this.gainedHope;
