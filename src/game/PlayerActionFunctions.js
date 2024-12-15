@@ -355,6 +355,11 @@ define(['ash',
 				return;
 			}
 
+			if (!GameGlobals.dialogueHelper.isDialogueValid(dialogueVO, explorerVO)) {
+				log.w("not able to start dialogue - not valid: " + id);
+				return;
+			}
+
 			GameGlobals.gameFlowLogger.log("start dialogue: " + id);
 			this.playerStatsNodes.head.entity.add(new DialogueComponent(dialogueVO, explorerVO));
 		},
@@ -1270,8 +1275,8 @@ define(['ash',
 			}
 			
 			let result = TradeConstants.makeResultVO(caravan);
-			var logMsg = GameGlobals.playerActionResultsHelper.getRewardsMessage(result, "A trade caravan returned from " + tradePartner.name + ". ");
-			var pendingPosition = campSector.get(PositionComponent).clone();
+			let logMsg = GameGlobals.playerActionResultsHelper.getRewardsMessage(result, "A trade caravan returned from " + tradePartner.name + ". ");
+			let pendingPosition = campSector.get(PositionComponent).clone();
 			pendingPosition.inCamp = true;
 
 			for (let key in resourceNames) {
@@ -1985,7 +1990,7 @@ define(['ash',
 			}
 
 			// clear other perks removed by resting
-			let perkIDs = [ PerkConstants.perkIds.cursed, PerkConstants.perkIds.stressed, PerkConstants.perkIds.accomplished ];
+			let perkIDs = [ PerkConstants.perkIds.cursed, PerkConstants.perkIds.stressed, PerkConstants.perkIds.accomplished, PerkConstants.perkIds.blessedShort ];
 			for (let i = 0; i < perkIDs.length; i++) {
 				let perkID = perkIDs[i];
 				if (perksComponent.hasPerk(perkID)) perksComponent.removePerkById(perkID);

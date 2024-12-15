@@ -18,6 +18,7 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 			thirst: "thirst",
 			tired: "tired",
 			blessed: "blessed",
+			blessedShort: "blessedShort",
 			cursed: "cursed",
 			stressed: "stressed",
 			accomplished: "accomplished",
@@ -109,6 +110,7 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 					};
 				}
 			}
+			log.w("found no perk with id: " + perkId)
 			return null;
 		},
 
@@ -235,6 +237,7 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 	PerkConstants.perkDefinitions.stamina.push(new PerkVO(PerkConstants.perkIds.lightBeacon, "Beacon", "Light", 20, "img/items/perk-light-beacon.png"));
 	
 	PerkConstants.perkDefinitions.luck.push(new PerkVO(PerkConstants.perkIds.blessed, "Blessed", "Luck", 20, "img/items/perk-blessed.png"));
+	PerkConstants.perkDefinitions.luck.push(new PerkVO(PerkConstants.perkIds.blessedShort, "Blessed", "Luck", 10, "img/items/perk-blessed.png"));
 	PerkConstants.perkDefinitions.luck.push(new PerkVO(PerkConstants.perkIds.cursed, "Cursed", "Luck", -20, "img/items/perk-cursed.png"));
 	PerkConstants.perkDefinitions.luck.push(new PerkVO(PerkConstants.perkIds.restartBonusSmall, "Dreams of past lives", "Luck", 10, "img/items/perk-restart.png"));
 	PerkConstants.perkDefinitions.luck.push(new PerkVO(PerkConstants.perkIds.restartBonusCompletion, "Dreams of escape", "Luck", 30, "img/items/perk-restart.png"));

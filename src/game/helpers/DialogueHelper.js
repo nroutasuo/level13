@@ -29,7 +29,9 @@ define(['ash',
                 return currentPageVO;
             },
 
-            isDialogueValid: function (conditions, explorerVO) {
+            isDialogueValid: function (dialogueVO, explorerVO) {
+                if (!dialogueVO) return false;
+                let conditions = dialogueVO.conditions;
                 if (!conditions) return true;
 
                 let reqsCheck = GameGlobals.playerActionsHelper.checkGeneralRequirementaInternal(conditions);
@@ -154,13 +156,12 @@ define(['ash',
                 for (let i = 0; i < entries.length; i++) {
                     let dialogueID = entries[i];
                     let entry = DialogueConstants.getDialogue(dialogueID);
-                    let conditions = entry.conditions;
 
                     if (!entry.isRepeatable && explorerVO.seenDialogues && explorerVO.seenDialogues.indexOf(entry.dialogueID) >= 0) {
                         continue;
                     }
 
-                    if (!this.isDialogueValid(conditions, explorerVO)) continue;
+                    if (!this.isDialogueValid(entry, explorerVO)) continue;
 
                     let status = this.getExplorerDialogueStatusForEntry(explorerVO, entry);
 
@@ -214,9 +215,7 @@ define(['ash',
 
                     if (!entry) continue;
 
-                    let conditions = entry.conditions;
-
-                    if (!this.isDialogueValid(conditions)) continue;
+                    if (!this.isDialogueValid(entry)) continue;
 
                     result.push(entry);
                 }

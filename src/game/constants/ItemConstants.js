@@ -324,11 +324,19 @@ function (Ash, Text, ItemData, Text, PlayerActionConstants, ItemVO) {
 			if (!item) return "";
 			return Text.t(ItemConstants.getItemDisplayNameKey(item, short));
 		},
+			
+		getItemDisplayNameFromID: function (itemID, short) {
+			return Text.t(ItemConstants.getItemDisplayNameKeyFromID(itemID, short));
+		},
 
 		getItemDisplayNameKey: function (item, short) {
 			if (!item) return "";
-			let defaultKey = "game.items." + item.id + "_name";
-			let shortKey = "game.items." + item.id + "_name_short";
+			return this.getItemDisplayNameKeyFromID(item.id, short);
+		},
+
+		getItemDisplayNameKeyFromID: function (itemID, short) {
+			let defaultKey = "game.items." + itemID + "_name";
+			let shortKey = "game.items." + itemID + "_name_short";
 			if (short && Text.hasKey(shortKey)) {
 				shortKey;
 			}

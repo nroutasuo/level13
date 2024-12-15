@@ -224,7 +224,7 @@ define(['ash',
 			this.registerCheat(CheatConstants.CHEAT_TELEPORT_HOME, "Teleport home.", [], function (params) {
 				this.teleportHome();
 			});
-			this.registerCheat(CheatConstants.CHEAT_TEST_DIALOGUE, "Trigger dialogue", [], function (params) {
+			this.registerCheat(CheatConstants.CHEAT_TEST_DIALOGUE, "Trigger dialogue", ["id"], function (params) {
 				this.triggerDialogue(params[0]);
 			});
 			this.registerCheat(CheatConstants.CHEAT_TRUST, "Set explorer trust", ["amount"], function (params) {
