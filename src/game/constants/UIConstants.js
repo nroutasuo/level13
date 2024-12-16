@@ -951,6 +951,26 @@ define(['ash',
 			return "Y" + year + "-N" + week;
 		},
 
+		getFactorLabel: function (factor) {
+			if (factor < 0.5) {
+				return "very low";
+			}
+
+			if (factor < 1) {
+				return "low";
+			}
+
+			if (factor == 1) {
+				return "average";
+			}
+
+			if (factor < 1.5) {
+				return "high";
+			}
+
+			return "very high";
+		},
+
 		getUnlockedFeatureDisplayName: function (featureID) {
 			switch (featureID) {
 				case UIConstants.UNLOCKABLE_FEATURE_MAP_MODES: return "map modes";

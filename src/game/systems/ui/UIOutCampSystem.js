@@ -826,8 +826,8 @@
 			if (showLevelStats) {
 				var levelComponent = this.playerLevelNodes.head.level;
 				var hasUnlockedTrade = this.hasUpgrade(GameGlobals.upgradeEffectsHelper.getUpgradeToUnlockBuilding(improvementNames.tradepost));
-				$("#in-demographics-level-population .value").text(levelComponent.habitability * 100 + "%");
-				$("#in-demographics-level-danger .value").text(levelComponent.raidDangerFactor * 100 + "%");
+				$("#in-demographics-level-population .value").text(UIConstants.getFactorLabel(levelComponent.habitability));
+				$("#in-demographics-level-danger .value").text(UIConstants.getFactorLabel(levelComponent.raidDangerFactor));
 				$("#in-demographics-trade-network").toggle(hasUnlockedTrade);
 				if (hasUnlockedTrade) {
 					var hasAccessToTradeNetwork = GameGlobals.resourcesHelper.hasAccessToTradeNetwork(this.playerLocationNodes.head.entity);
