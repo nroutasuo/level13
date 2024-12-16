@@ -44,6 +44,10 @@ div.info-callout {
 	max-width: 100%;
 }
 
+.btn-callout-empty {
+	visibility: hidden;
+}
+
 .info-callout-side + div.info-callout {
 	max-width: unset;
 }
@@ -1073,7 +1077,7 @@ hr.warning {
 // NPCS
 
 .npc-container {
-	display: flex;
+	display: inline-flex;
 	flex-direction: column;
 	border: 1px solid @color-border-strong;
 	min-width: 50px;

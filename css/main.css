@@ -1071,6 +1071,9 @@ body.dark div.info-callout {
   min-width: 50%;
   max-width: 100%;
 }
+body.dark .btn-callout-empty {
+  visibility: hidden;
+}
 body.dark .info-callout-side + div.info-callout {
   max-width: unset;
 }
@@ -3644,6 +3647,9 @@ body.sunlit div.info-callout {
   width: auto;
   min-width: 50%;
   max-width: 100%;
+}
+body.sunlit .btn-callout-empty {
+  visibility: hidden;
 }
 body.sunlit .info-callout-side + div.info-callout {
   max-width: unset;

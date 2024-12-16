@@ -87,10 +87,13 @@ define([
             if (!action) return;
             if (action === "take_all" || action === "accept_inventory" || action === "fight") return;
             let content = this.getCalloutContent(action);
-            if (!content) return;
+            if (!content.content) return;
+
+            let calloutClasses = "btn-callout";
+            if (!content.hasContent) calloutClasses += " btn-callout-empty"
             
             $container.wrap('<div class="callout-container"></div>');
-            $container.after('<div class="btn-callout"><div class="callout-arrow-up"></div><div class="btn-callout-content">' + content + '</div></div>');
+            $container.after('<div class="' + calloutClasses + '"><div class="callout-arrow-up"></div><div class="btn-callout-content">' + content.content + '</div></div>');
         },
 			
         getCalloutContent: function (action) {
@@ -100,11 +103,14 @@ define([
             let enabledContent = "";
             let disabledContent = "";
 
+            let hasContent = false;
+
             // always visible
             // - basic description
             let description = GameGlobals.playerActionsHelper.getDescription(action);
             if (description) {
                 content += "<span class='action-description'>" + description + "</span>";
+                hasContent = true;
             }
 
             // - dynamic effect description
@@ -120,6 +126,7 @@ define([
             if (costsSpans.length > 0) {
                 if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
                 enabledContent += costsSpans;
+                hasContent = true;
             }
 
             // - time to available
@@ -128,6 +135,7 @@ define([
                 if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
                 enabledContent += "<span class='action-costs-countdown'></span>";
                 enabledContent += "</div>";
+                hasContent = true;
             }
 
             // - duration
@@ -137,6 +145,7 @@ define([
                 let time = Math.round(duration * 100) / 100 + "s";
                 let durationText = Text.t("ui.actions.action_duration_field", time);
                 enabledContent += "<span class='action-duration'>" + durationText + "</span>";
+                hasContent = true;
             }
             
             // - special requirements (such as max improvements on level)
@@ -146,6 +155,7 @@ define([
                 if (s.length > 0) {
                     if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
                     enabledContent += "<span class='action-special-reqs'>" + s + "</span>";
+                    hasContent = true;
                 }
             }
 
@@ -165,6 +175,7 @@ define([
                     enabledContent += "<span class='action-risk action-risk-inventory warning'>" + inventoryRiskLabel + ": <span class='action-risk-value'></span>%</span>";
                 if (fightRiskMax > 0)
                     enabledContent += "<span class='action-risk action-risk-fight warning'>fight: <span class='action-risk-value'></span>%</span>";
+                hasContent = true;
             }
 
             // visible if button is disabled: disabled reason
@@ -181,7 +192,7 @@ define([
                 content += "<span class='btn-callout-content-disabled' style='display:none'>" + disabledContent + "</span>";
             }
 
-            return content;
+            return { content: content, hasContent: hasContent };
         },
 	};
 
