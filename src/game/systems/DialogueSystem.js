@@ -123,6 +123,7 @@ define([
 		},
 
 		selectNextPage: function () {
+			if (!this.dialogueNodes.head.dialogue || !this.dialogueNodes.head.dialogue.activeDialogue || this.dialogueNodes.head.dialogue.activeDialogue.pages.length == 0) return null;
 			return this.dialogueNodes.head.dialogue.activeDialogue.pages[0].pageID;
 		},
 

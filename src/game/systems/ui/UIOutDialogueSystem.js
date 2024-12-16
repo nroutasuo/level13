@@ -5,8 +5,9 @@ define([
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
+	'game/constants/UIConstants',
     'game/nodes/player/DialogueNode',
-], function (Ash, Text, UIList, GameGlobals, GlobalSignals, GameConstants, DialogueNode) {
+], function (Ash, Text, UIList, GameGlobals, GlobalSignals, GameConstants, UIConstants, DialogueNode) {
 	
     let UIOutDialogueSystem = Ash.System.extend({
 
@@ -79,11 +80,31 @@ define([
 
 			if (!pageVO) return;
 
+			let explorerVO = this.dialogueNodes.head.dialogue.explorerVO;
+			let characterVO = this.dialogueNodes.head.dialogue.characterVO;
+
+			this.refreshPageCharacter(explorerVO, characterVO);
 			this.refreshPageText(dialogueVO, pageVO);
 			this.refreshPageResults(pageVO);
 			this.refreshPageOptions(pageVO);
 
 			this.shownPageID = pageID;
+		},
+
+		refreshPageCharacter: function (explorerVO, characterVO) {
+			$("#dialogue-module-character").empty();
+
+			if (explorerVO) {
+				let portrait = UIConstants.getExplorerPortrait(explorerVO);
+				$("#dialogue-module-character").append(portrait);
+				GameGlobals.uiFunctions.toggle("#dialogue-module-character", true);
+			} else if (characterVO) {
+				let portrait = UIConstants.getNPCPortrait(characterVO.characterType);
+				$("#dialogue-module-character").append(portrait);
+				GameGlobals.uiFunctions.toggle("#dialogue-module-character", true);
+			} else {
+				GameGlobals.uiFunctions.toggle("#dialogue-module-character", false);
+			}
 		},
 
 		refreshPageText: function (dialogueVO, pageVO) {

@@ -8,7 +8,7 @@ define([
 	'game/GlobalSignals',
 	'game/constants/DialogueConstants',
 	'game/constants/ExplorationConstants',
-	'game/constants/PlayerActionConstants',
+	'game/constants/PlayerStatConstants',
 	'game/constants/TextConstants',
 	'game/constants/LogConstants',
 	'game/constants/UIConstants',
@@ -885,8 +885,12 @@ define([
 			if (!this.playerLocationNodes.head) return;
 
 			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			let hasCharacters = sectorStatus.currentCharacters.length > 0;
 
-			if (sectorStatus.currentCharacters.length == 0) return;
+			GameGlobals.uiFunctions.toggle($("#header-out-characters"), hasCharacters);
+			GameGlobals.uiFunctions.toggle($("#out-characters"), hasCharacters);
+
+			if (!hasCharacters) return;
 
 			let setting = DialogueConstants.dialogueSettings.meet;
 

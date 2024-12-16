@@ -22,6 +22,7 @@ define(['ash',
 	'game/constants/UIConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/TextConstants',
+	'game/vos/CharacterVO',
 	'game/vos/PositionVO',
 	'game/vos/LocaleVO',
 	'game/vos/ResultVO',
@@ -68,7 +69,7 @@ define(['ash',
 	'utils/StringUtils'
 ], function (Ash, GameGlobals, GlobalSignals,
 	GameConstants, CampConstants, DialogueConstants, ExplorationConstants, ExplorerConstants, LogConstants, ImprovementConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, StoryConstants, TradeConstants, TribeConstants, UIConstants, UpgradeConstants, TextConstants,
-	PositionVO, LocaleVO, ResultVO,
+	CharacterVO, PositionVO, LocaleVO, ResultVO,
 	PlayerPositionNode, FightNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent,
@@ -349,8 +350,9 @@ define(['ash',
 			GlobalSignals.actionCompletedSignal.dispatch();
 		},
 
-		startDialogue: function (id, explorerVO) {
+		startDialogue: function (id, explorerVO, chracterVO) {
 			let dialogueVO = DialogueConstants.getDialogue(id);
+			
 			if (!dialogueVO) {
 				log.w("not able to start dialogue - no such dialogue found: " + id);
 				return;
@@ -362,7 +364,7 @@ define(['ash',
 			}
 
 			GameGlobals.gameFlowLogger.log("start dialogue: " + id);
-			this.playerStatsNodes.head.entity.add(new DialogueComponent(dialogueVO, explorerVO));
+			this.playerStatsNodes.head.entity.add(new DialogueComponent(dialogueVO, explorerVO, chracterVO));
 		},
 
 		endDialogue: function () {
@@ -1415,12 +1417,15 @@ define(['ash',
 
 		startInNPCDialogue: function (dialogueParams) {
 			let parts = dialogueParams.split("_");
+
+			let characterType = parts[0];
 			let setting = parts[parts.length - 1];
-			let dialogueSourceID = dialogueParams.replace("_" + setting, "");
+			let dialogueSourceID = dialogueParams.replace("_" + setting, "").replace(characterType + "_", "");
 
 			let dialogueID = GameGlobals.dialogueHelper.getCharacterDialogueKey(dialogueSourceID, setting);
+			let characterVO = new CharacterVO(characterType, dialogueSourceID);
 
-			this.startDialogue(dialogueID);
+			this.startDialogue(dialogueID, null, characterVO);
 		},
 
 		startOutNPCDialogue: function (characterID) {
@@ -1463,7 +1468,7 @@ define(['ash',
 			characterVO.lastShownDialogue = dialogueID;
 			characterVO.lastShownDialogueTimestamp = now;
 
-			this.startDialogue(dialogueID);
+			this.startDialogue(dialogueID, null, characterVO);
 		},
 		
 		dismissRecruit: function (explorerId) {

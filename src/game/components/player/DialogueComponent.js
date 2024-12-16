@@ -2,9 +2,10 @@ define(['ash'], function (Ash) {
 	
 	let DialogueComponent = Ash.Class.extend({
 		
-		constructor: function (dialogueVO, explorerVO) {
+		constructor: function (dialogueVO, explorerVO, characterVO) {
             this.activeDialogue = dialogueVO;
 			this.explorerVO = explorerVO;
+			this.characterVO = characterVO;
 
 			this.currentPageID = null;
 			this.pendingSelectionID = null;

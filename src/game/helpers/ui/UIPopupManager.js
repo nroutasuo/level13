@@ -109,7 +109,8 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 			GameGlobals.uiFunctions.toggle(".popup-overlay", true);
 			popUpManager.repositionPopup($popup);
 			
-			let slideTime = GameGlobals.gameState.uiStatus.isInitialized ? 150 : 0;
+			let slideTime = GameGlobals.gameState.uiStatus.isInitialized ? UIConstants.POPUP_FADE_IN_DURATION : 0;
+			
 			GameGlobals.uiFunctions.slideToggleIf($popup, null, true, slideTime, slideTime, () => {
 				log.i("showed popup", "ui");
 				popUpManager.repositionPopup($popup);
@@ -171,7 +172,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 			if (popupManager.popupQueue.length === 0) {
 				GlobalSignals.popupClosingSignal.dispatch(id);
 				$("#" + id).data("fading", true);
-				GameGlobals.uiFunctions.slideToggleIf($("#" + id), null, false, 50, 50, function () {
+				GameGlobals.uiFunctions.slideToggleIf($("#" + id), null, false, UIConstants.POPUP_FADE_OUT_DURATION, UIConstants.POPUP_FADE_OUT_DURATION, function () {
 					GameGlobals.uiFunctions.toggle(".popup-overlay", false);
 					$("#" + id).unwrap();
 					$("#" + id).data("fading", false);

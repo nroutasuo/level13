@@ -1542,11 +1542,11 @@ define(['ash',
 				GameGlobals.uiFunctions.popupManager.setDismissable($popup, options.isDismissable);
 				
 				let uiFunctions = this;
-				$(".popup-overlay").fadeIn(200, function () {
+				$(".popup-overlay").fadeIn(UIConstants.POPUP_OVERLAY_FADE_IN_DURATION, function () {
 					uiFunctions.popupManager.repositionPopup($popup);
 					GlobalSignals.popupOpenedSignal.dispatch(popupID);
 					GameGlobals.gameState.isPaused = true;
-					$("#" + popupID).fadeIn(200, function () {
+					$("#" + popupID).fadeIn(UIConstants.POPUP_FADE_IN_DURATION, function () {
 						uiFunctions.toggle("#" + popupID, true);
 						uiFunctions.popupManager.repositionPopup($popup);
 						GlobalSignals.popupShownSignal.dispatch("common-popup");

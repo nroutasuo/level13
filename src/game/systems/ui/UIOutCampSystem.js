@@ -436,7 +436,7 @@
 			let characterType = data;
 			let setting = DialogueConstants.dialogueSettings.interact;
 			let dialogueSource = CharacterConstants.getDialogueSource(characterType);
-			let talkActionID = "start_in_npc_dialogue_" + dialogueSource.id + "_" + setting;
+			let talkActionID = "start_in_npc_dialogue_" + characterType + "_" + dialogueSource.id + "_" + setting;
 			UIConstants.updateNPCDiv(li.$container, characterType, setting, talkActionID);
 		},
 

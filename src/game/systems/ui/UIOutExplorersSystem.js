@@ -87,11 +87,12 @@ define([
 			let inCamp = GameGlobals.playerHelper.isInCamp();
 			let recruitComponent = this.playerLocationNodes.head.entity.get(RecruitComponent);
 			let hasRecruit = recruitComponent && recruitComponent.explorer != null;
-			let showVisitors = GameGlobals.campHelper.getTotalNumImprovementsBuilt(improvementNames.inn) > 0 || hasRecruit;
+			let showRecruits = GameGlobals.campHelper.getTotalNumImprovementsBuilt(improvementNames.inn) > 0 || hasRecruit;
 			
 			$("#tab-header h2").text("Exploration party");
 			
-			GameGlobals.uiFunctions.toggle($("#tab-explorers-section-recruits"), inCamp && showVisitors);
+			GameGlobals.uiFunctions.toggle($("#tab-explorers-section-recruits"), inCamp && showRecruits);
+			GameGlobals.uiFunctions.toggle($("#tab-explorers-section-visitors"), inCamp);
 			GameGlobals.uiFunctions.toggle($("#tab-explorers-section-unselected"), inCamp);
 			
 			this.updateExplorers();
@@ -325,7 +326,7 @@ define([
 			li.$typeLabel.html(data.type);
 			li.$numLabel.html(data.num || "");
 
-			let talkAction = "start_in_npc_dialogue_" + dialogueSourceID + "_" + setting;
+			let talkAction = "start_in_npc_dialogue_" + characterType + "_" + dialogueSourceID + "_" + setting;
 
 			li.$mainContainer.html(UIConstants.getNPCDiv(characterType, setting, talkAction));
 

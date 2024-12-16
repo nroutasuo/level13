@@ -36,6 +36,11 @@ define(['ash',
 		LAUNCH_FADEOUT_DURATION: 1000,
 		THEME_TRANSITION_DURATION: 1200,
 
+		POPUP_OVERLAY_FADE_IN_DURATION: 50,
+		POPUP_OVERLAY_FADE_OUT_DURATION: 50,
+		POPUP_FADE_IN_DURATION: 100,
+		POPUP_FADE_OUT_DURATION: 50,
+
 		names: {
 			resources: {
 				stamina: "stamina",
@@ -209,6 +214,7 @@ define(['ash',
 		getExplorerDivWithOptions: function (explorerVO, isRecruited, isInCamp) {
 			let classes = "npc-container";
 			let div = "<div class='" + classes + "' data-explorerid='" + explorerVO.id + "'>";
+			let isAnimal = ExplorerConstants.isAnimal(explorerVO.abilityType);
 			
 			// portrait
 			let calloutContent = this.getExplorerCallout(explorerVO, isRecruited, isInCamp, true);
@@ -216,7 +222,7 @@ define(['ash',
 			let hideComparisonIndicator = explorerVO.inParty;
 			
 			div += "<div class='npc-portrait info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
-			div += "<img src='" + explorerVO.icon + "' alt='" + explorerVO.name + "'/>";
+			div += UIConstants.getExplorerPortrait(explorerVO);
 
 			if (!hideComparisonIndicator) {
 				div += "<div class='item-comparison-badge'><div class='item-comparison-indicator indicator-even'></div></div>";
@@ -232,7 +238,7 @@ define(['ash',
 			// interaction options
 			div += "<div class='interaction-options'>";
 			let actions = [];
-			actions.push({ label: "talk", action: "start_explorer_dialogue_" + explorerVO.id});
+			actions.push({ label: isAnimal ? "pet" : "talk", action: "start_explorer_dialogue_" + explorerVO.id});
 			if (explorerVO.inParty) {
 				actions.push({ label: "switch out", action: "deselect_explorer_" + explorerVO.id });
 			} else {
@@ -257,7 +263,7 @@ define(['ash',
 			let calloutContent = this.getExplorerCallout(explorer, isRecruited, isInCamp);
 			
 			div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
-			div += "<img src='" + explorer.icon + "' alt='" + explorer.name + "'/>";
+			div += UIConstants.getExplorerPortrait(explorer);
 			
 			if (!hideComparisonIndicator) {
 				div += "<div class='item-comparison-badge'><div class='item-comparison-indicator indicator-even'/></div>";
@@ -338,21 +344,23 @@ define(['ash',
 			}
 		},
 
-		getNPCDiv: function (characterType, setting, talkActionID) {
+		getExplorerPortrait: function (explorerVO) {
+			return "<img src='" + explorerVO.icon + "' alt='" + explorerVO.name + "'/>";
+		},
+
+		getNPCDiv: function (characterType, setting, talkActionID, talkActionName) {
 			let classes = "npc-container";
 			let div = "<div class='" + classes + "'>";
 			let calloutContent = "Visitor";
 
 			talkActionID = talkActionID || "";
-
-			let icon = this.getNPCIcon(characterType);
-			let name = "Visitor";
+			talkActionName = talkActionName = "talk";
 			
 			div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
-			div += "<div class='npc-portrait'><img src='" + icon + "' alt='" + name + "'/></div>";
+			div += this.getNPCPortrait(characterType);
 			div += "</div>";
 
-			div += "<button class='action btn-compact' action='" + talkActionID + "'>talk</button>";
+			div += "<button class='action btn-compact' action='" + talkActionID + "'>" + talkActionName + "</button>";
 			
 			div += "</div>"
 			
@@ -365,6 +373,12 @@ define(['ash',
 
 			$div.find("img").attr("src", icon);
 			$div.find("button").attr("action", action);
+		},
+
+		getNPCPortrait: function (characterType) {
+			let icon = this.getNPCIcon(characterType);
+			let name = characterType;
+			return "<div class='npc-portrait'><img src='" + icon + "' alt='" + name + "'/></div>";
 		},
 
 		getNPCIcon: function (characterType) {

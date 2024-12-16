@@ -1927,7 +1927,7 @@ body.dark .npc-dialogue-badge .indicator-urgent {
   border: 1px solid red;
 }
 body.dark .npc-container {
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
   border: 1px solid #555;
   min-width: 50px;
@@ -4501,7 +4501,7 @@ body.sunlit .npc-dialogue-badge .indicator-urgent {
   border: 1px solid red;
 }
 body.sunlit .npc-container {
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
   border: 1px solid #999;
   min-width: 50px;
