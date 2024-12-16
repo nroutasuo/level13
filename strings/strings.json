@@ -896,7 +896,17 @@
             "explorer_generic_scout_interact_03_p1": "I used to run odd jobs for the Black Societies but I after the Fall I just left.",
             "explorer_generic_scout_meet_01_p1": "I've heard of your settlement.",
             "refugees_default_event_01_p1": "We had a little settlement but it was destroyed",
-            "refugees_default_event_02_p1": "The City is unpredictable and dangerous."
+            "refugees_default_event_02_p1": "The City is unpredictable and dangerous.",
+            "explorer_generic_animal_event_01_p1": "The animal stands patiently outside the camp. It looks hungry.",
+            "explorer_generic_animal_interact_01_p1": "The animal looks content.",
+            "explorer_generic_animal_interact_02_p1": "The animal wags its tail.",
+            "explorer_generic_animal_interact_03_p1": "The animal is looking comofortable.",
+            "explorer_generic_animal_meet_01_p1": "The animal looks trusting.",
+            "explorer_generic_dog_event_01_p1": "The dog wags its tail.",
+            "explorer_generic_dog_interact_01_p1": "The dog wags its tail.",
+            "explorer_generic_dog_interact_02_p1": "The dog gives out a happy bark.",
+            "explorer_generic_dog_interact_03_p1": "The dog looks ready for another adventure.",
+            "explorer_generic_dog_meet_01_p1": "The dog looks hungry."
         },
         "messages": {
             "explorer_level_up_message_01": "{Name} found better equipment and improved their ability",

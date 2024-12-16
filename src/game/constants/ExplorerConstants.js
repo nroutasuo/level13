@@ -65,31 +65,23 @@ define(['ash',
 		
 		// camp ordinal -> blueprint
 		predefinedExplorers: {
-			2: { id: 2, localeType: localeTypes.maintenance, abilityType: "attack", name: "Ilma", icon: "img/explorers/follower_black_f.png", dialogueSource: "explorer_generic_mercenary" },
-			4: { id: 4, localeType: localeTypes.warehouse, abilityType: "scavenge_capacity", name: "Dog", icon: "img/explorers/follower_animal_dog.png", dialogueSource: "explorer_animal" },
-			8: { id: 8, localeType: localeTypes.hermit, abilityType: "scavenge_supplies", name: "Zory", icon: "img/explorers/follower_blue_m.png", dialogueSource: "explorer_generic_scavenger" },
-			10: { id: 10, localeType: localeTypes.market, abilityType: "cost_scout", name: "Erdene", icon: "img/explorers/follower_green_m.png", dialogueSource: "explorer_generic_scout" },
-			14: { id: 14, localeType: localeTypes.library, abilityType: "scavenge_ingredients", name: "Arushi", icon: "img/explorers/follower_yellow_f.png", dialogueSource: "explorer_generic_scavenger" },
+			2: { id: 2, localeType: localeTypes.maintenance, abilityType: "attack", name: "Ilma", icon: "img/characters/mercenary.png", dialogueSource: "explorer_generic_mercenary" },
+			4: { id: 4, localeType: localeTypes.warehouse, abilityType: "scavenge_capacity", name: "Dog", icon: "img/characters/animal_dog.png", dialogueSource: "explorer_generic_dog" },
+			8: { id: 8, localeType: localeTypes.hermit, abilityType: "scavenge_supplies", name: "Zory", icon: "img/characters/scavenger.png", dialogueSource: "explorer_generic_scavenger" },
+			10: { id: 10, localeType: localeTypes.market, abilityType: "cost_scout", name: "Erdene", icon: "img/characters/scavenger.png", dialogueSource: "explorer_generic_scout" },
+			14: { id: 14, localeType: localeTypes.library, abilityType: "scavenge_ingredients", name: "Arushi", icon: "img/characters/scavenger.png", dialogueSource: "explorer_generic_scavenger" },
 		},
 		
 		icons: [
 			// fighter
-			{ icon: "img/explorers/follower_black_f.png", explorerType: "fighter", gender: CultureConstants.genders.FEMALE },
-			{ icon: "img/explorers/follower_black_m.png", explorerType: "fighter" },
-			{ icon: "img/explorers/follower_red_f.png", explorerType: "fighter", gender: CultureConstants.genders.FEMALE },
-			{ icon: "img/explorers/follower_red_m.png", explorerType: "fighter" },
-			{ icon: "img/explorers/follower_white_f.png", explorerType: "fighter", gender: CultureConstants.genders.FEMALE },
-			{ icon: "img/explorers/follower_white_m.png", explorerType: "fighter" },
+			{ icon: "img/characters/explorer_fighter_f.png", explorerType: "fighter", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/characters/explorer_fighter.png", explorerType: "fighter" },
 			// scout
-			{ icon: "img/explorers/follower_gray_f.png", explorerType: "scout", gender: CultureConstants.genders.FEMALE },
-			{ icon: "img/explorers/follower_gray_m.png", explorerType: "scout" },
-			{ icon: "img/explorers/follower_green_f.png", explorerType: "scout", gender: CultureConstants.genders.FEMALE },
-			{ icon: "img/explorers/follower_green_m.png", explorerType: "scout" },
+			{ icon: "img/characters/scout.png", explorerType: "scout_f", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/characters/scout.png", explorerType: "scout" },
 			// scavenger
-			{ icon: "img/explorers/follower_blue_m.png", explorerType: "scavenger" },
-			{ icon: "img/explorers/follower_pink_f.png", explorerType: "scavenger", gender: CultureConstants.genders.FEMALE },
-			{ icon: "img/explorers/follower_yellow_f.png", explorerType: "scavenger", gender: CultureConstants.genders.FEMALE },
-			{ icon: "img/explorers/follower_yellow_m.png", explorerType: "scavenger" },
+			{ icon: "img/characters/scavenger.png", explorerType: "scavenger", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/characters/explorer_scavenger_m.png", explorerType: "scavenger", gender: CultureConstants.genders.MALE },
 		],
 		
 		getMaxExplorersRecruited: function (innMajorLevels) {
@@ -135,11 +127,13 @@ define(['ash',
 			let icon = "";
 			
 			let isAnimal = this.isAnimal(abilityType);
+			let animalType = null;
 			
 			let gender = isRobot ? CultureConstants.genders.OTHER : CultureConstants.getRandomGender();
+
 			if (isAnimal) {
 				let animalKeys = this.getAvailableAnimalTypes(source, campOrdinal);
-				let animalType = ExplorerConstants.animalType[animalKeys[MathUtils.getWeightedRandom(0, animalKeys.length)]];
+				animalType = ExplorerConstants.animalType[animalKeys[MathUtils.getWeightedRandom(0, animalKeys.length)]];
 				name = this.getRandomAnimalName(animalType);
 				icon = this.getRandomAnimalIcon(animalType);
 			} else if (isRobot) {
@@ -152,7 +146,7 @@ define(['ash',
 				icon = this.getRandomIcon(gender, abilityType);
 			}
 
-			let dialogueSource = this.getRandomDialogueSource(abilityType);
+			let dialogueSource = this.getRandomDialogueSource(abilityType, animalType);
 			
 			return new ExplorerVO(id, name, abilityType, abilityLevel, icon, gender, source, dialogueSource);
 		},
@@ -309,13 +303,18 @@ define(['ash',
 		getRandomAnimalIcon: function (animalType) {
 			switch (animalType) {
 				case ExplorerConstants.animalType.DOG:
-					return "img/explorers/follower_animal_dog.png";
+					return "img/characters/animal_dog.png";
 				case ExplorerConstants.animalType.RAVEN:
-					return "img/explorers/follower_animal_bird.png";
+					return "img/characters/animal_bird.png";
 				case ExplorerConstants.animalType.BAT:
-					return "img/explorers/follower_animal_bat.png";
+					return "img/characters/animal_bat.png";
+				case ExplorerConstants.animalType.MULE:
+					return "img/characters/animal_mule.png";
+				case ExplorerConstants.animalType.OLM:
+					return "img/characters/animal_olm.png";
 				default:
-					return "img/explorersfollower_animal_generic.png";
+					log.w("no icon defined for animal type: " + animalType);
+					return "img/characters/animal_dog.png";
 			}
 		},
 
@@ -337,37 +336,46 @@ define(['ash',
 			return validIcons[Math.floor(Math.random() * validIcons.length)].icon;
 		},
 
-		getRandomDialogueSource: function (abilityType) {
+		getRandomDialogueSource: function (abilityType, animalType) {
 			// TODO check that dialogue source containts entries for all settings (meet, event, interact)
 			
 			let isAnimal = this.isAnimal(abilityType);
 
-			if (isAnimal) return "explorer_animal";
-
 			let possibleSources = [];
-			
-			switch (abilityType) {
-				case ExplorerConstants.abilityType.ATTACK:
-				case ExplorerConstants.abilityType.DEFENCE:
-					possibleSources.push("explorer_generic_mercenary");
-					break;
-				case ExplorerConstants.abilityType.COST_SCOUT:
-				case ExplorerConstants.abilityType.COST_SCAVENGE:
-				case ExplorerConstants.abilityType.DETECT_HAZARDS:
-				case ExplorerConstants.abilityType.DETECT_SUPPLIES:
-				case ExplorerConstants.abilityType.DETECT_INGREDIENTS:
-				case ExplorerConstants.abilityType.COST_MOVEMENT:
-					possibleSources.push("explorer_generic_scout");
-					break;
-				case ExplorerConstants.abilityType.SCAVENGE_INGREDIENTS:
-				case ExplorerConstants.abilityType.SCAVENGE_SUPPLIES:
-				case ExplorerConstants.abilityType.SCAVENGE_CAPACITY:
-				case ExplorerConstants.abilityType.SCAVENGE_GENERAL:
-					possibleSources.push("explorer_generic_scavenger");
-					break;
-				default:
-				 	log.w("no dialogue sources defined for explorer ability type " + abilityType);
-					break;
+
+			if (isAnimal) {
+				switch (animalType) {
+					case ExplorerConstants.animalType.DOG:
+						possibleSources.push("explorer_generic_dog");
+						break;
+					default:
+						possibleSources.push("explorer_generic_animal");
+						break;
+				}
+			} else {
+				switch (abilityType) {
+					case ExplorerConstants.abilityType.ATTACK:
+					case ExplorerConstants.abilityType.DEFENCE:
+						possibleSources.push("explorer_generic_mercenary");
+						break;
+					case ExplorerConstants.abilityType.COST_SCOUT:
+					case ExplorerConstants.abilityType.COST_SCAVENGE:
+					case ExplorerConstants.abilityType.DETECT_HAZARDS:
+					case ExplorerConstants.abilityType.DETECT_SUPPLIES:
+					case ExplorerConstants.abilityType.DETECT_INGREDIENTS:
+					case ExplorerConstants.abilityType.COST_MOVEMENT:
+						possibleSources.push("explorer_generic_scout");
+						break;
+					case ExplorerConstants.abilityType.SCAVENGE_INGREDIENTS:
+					case ExplorerConstants.abilityType.SCAVENGE_SUPPLIES:
+					case ExplorerConstants.abilityType.SCAVENGE_CAPACITY:
+					case ExplorerConstants.abilityType.SCAVENGE_GENERAL:
+						possibleSources.push("explorer_generic_scavenger");
+						break;
+					default:
+						log.w("no dialogue sources defined for explorer ability type " + abilityType);
+						break;
+				}
 			}
 
 			return MathUtils.randomElement(possibleSources);

@@ -65,10 +65,10 @@
                     "key": "character_crafter_default_meet_upgrade_clothing_p1",
                     "options": [
                         {
+                            "buttonKey": "npc_request_agree",
                             "costs": {
                                 "resource_food": 5
                             },
-                            "buttonKey": "npc_request_agree",
                             "response": "accept"
                         },
                         {
@@ -104,10 +104,10 @@
                     "key": "character_crafter_default_meet_upgrade_weapon_p1",
                     "options": [
                         {
+                            "buttonKey": "npc_request_agree",
                             "costs": {
                                 "resource_food": 5
                             },
-                            "buttonKey": "npc_request_agree",
                             "response": "accept"
                         },
                         {
@@ -387,7 +387,7 @@
                     "id": "accept",
                     "key": "character_shaman_default_meet_blessing_accept",
                     "result": {
-                        "gainedPerks":  [
+                        "gainedPerks": [
                             "blessedShort"
                         ]
                     }
@@ -613,58 +613,55 @@
                 "character_workerWater_default_interact_02_p1"
             ]
         },
-        "explorer_generic_01": {
+        "explorer_generic_animal_event_01": {
             "pages": [
-                {
-                    "id": "start",
-                    "key": "explorer_generic_01_start",
-                    "options": [
-                        {
-                            "buttonKey": "btn_label_agree",
-                            "response": "agree"
-                        },
-                        {
-                            "buttonKey": "btn_label_disagree",
-                            "response": "disagree"
-                        }
-                    ]
-                },
-                {
-                    "id": "agree",
-                    "key": "agree_key",
-                    "options": []
-                },
-                {
-                    "id": "disagree",
-                    "key": "disagree_key",
-                    "options": [
-                        "disagree2"
-                    ]
-                },
-                {
-                    "id": "disagree2",
-                    "key": "disagree2_key",
-                    "options": []
-                }
-            ],
-            "repeatable": true
+                "explorer_generic_animal_event_01_p1"
+            ]
         },
-        "explorer_generic_02": {
+        "explorer_generic_animal_interact_01": {
             "pages": [
-                {
-                    "key": "one",
-                    "options": "NEXT"
-                },
-                {
-                    "key": "two",
-                    "result": {
-                        "gainedItems": [
-                            "artefact_history_1"
-                        ]
-                    }
-                }
-            ],
-            "repeatable": true
+                "explorer_generic_animal_interact_01_p1"
+            ]
+        },
+        "explorer_generic_animal_interact_02": {
+            "pages": [
+                "explorer_generic_animal_interact_02_p1"
+            ]
+        },
+        "explorer_generic_animal_interact_03": {
+            "pages": [
+                "explorer_generic_animal_interact_03_p1"
+            ]
+        },
+        "explorer_generic_animal_meet_01": {
+            "pages": [
+                "explorer_generic_animal_meet_01_p1"
+            ]
+        },
+        "explorer_generic_dog_event_01": {
+            "pages": [
+                "explorer_generic_dog_event_01_p1"
+            ]
+        },
+        "explorer_generic_dog_interact_01": {
+            "pages": [
+                "explorer_generic_dog_interact_01_p1"
+            ]
+        },
+        "explorer_generic_dog_interact_02": {
+            "pages": [
+                "explorer_generic_dog_interact_02_p1"
+            ]
+        },
+        "explorer_generic_dog_interact_03": {
+            "pages": [
+                "explorer_generic_dog_interact_03_p1"
+            ]
+        },
+        "explorer_generic_dog_meet_01": {
+            "pages": [
+                "explorer_generic_dog_meet_01_p1"
+            ]
         },
         "explorer_generic_mercenary_event_01": {
             "pages": [
@@ -812,7 +809,6 @@
             "repeatable": true
         },
         "explorer_generic_scout_meet_01": {
-            "conditions": {},
             "pages": [
                 {
                     "key": "explorer_generic_scout_meet_01_p1"
@@ -1195,6 +1191,36 @@
                 "meet": [
                     "explorer_generic_01",
                     "explorer_generic_02"
+                ]
+            }
+        },
+        "explorer_generic_animal": {
+            "dialogues": {
+                "event": [
+                    "explorer_generic_animal_event_01"
+                ],
+                "interact": [
+                    "explorer_generic_animal_interact_01",
+                    "explorer_generic_animal_interact_02",
+                    "explorer_generic_animal_interact_03"
+                ],
+                "meet": [
+                    "explorer_generic_animal_meet_01"
+                ]
+            }
+        },
+        "explorer_generic_dog": {
+            "dialogues": {
+                "event": [
+                    "explorer_generic_dog_event_01"
+                ],
+                "interact": [
+                    "explorer_generic_dog_interact_01",
+                    "explorer_generic_dog_interact_02",
+                    "explorer_generic_dog_interact_03"
+                ],
+                "meet": [
+                    "explorer_generic_dog_meet_01"
                 ]
             }
         },
