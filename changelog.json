@@ -8,6 +8,14 @@
 			"changes": [
 				{
 					"type": "GD",
+					"summary": "Make it possible to talk to your explorers"
+				},
+				{
+					"type": "GD",
+					"summary": "Add NPCs you can talk to on levels and in camp"
+				},
+				{
+					"type": "GD",
 					"summary": "Add several new camp events"
 				},
 				{
