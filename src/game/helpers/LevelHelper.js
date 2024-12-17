@@ -802,10 +802,11 @@ define([
 						case MovementConstants.BLOCKER_TYPE_DEBRIS:
 						case MovementConstants.BLOCKED_TYPE_EXPLOSIVES:
 							let neighbour = this.getNeighbour(sectorEntity, direction);
-							let neighbourFeaturesComponent = neighbour.get(SectorFeaturesComponent);
 							if (!neighbour) {
-								log.w("no neighbour for clear blocker action found at " + sectorPosition)
+								log.w("no neighbour for clear blocker action found at " + sectorPosition);
+								continue;
 							}
+							let neighbourFeaturesComponent = neighbour.get(SectorFeaturesComponent);
 							let isEarlyZone = featuresComponent.isEarlyZone() && neighbourFeaturesComponent.isEarlyZone();
 							let actionName = this.getClearBlockerActionName(directionBlocker.type, isEarlyZone);
 							let projectName = this.getClearBlockerProjectName(directionBlocker.type);
