@@ -2,10 +2,13 @@ define([
 	'ash',
 	'game/GameGlobals',
 	'game/GlobalSignals',
+	'game/constants/LogConstants',
 	'game/constants/StoryConstants'
-], function (Ash, GameGlobals, GlobalSignals, StoryConstants) {
+], function (Ash, GameGlobals, GlobalSignals, LogConstants, StoryConstants) {
 	
 	let StorySystem = Ash.System.extend({
+
+        context: "story",
 
         storiesByTrigger: {}, // trigger -> storyID
 
@@ -127,9 +130,15 @@ define([
         },
 
         triggerEffects: function (effectVO) {
-            // TODO show popups
-            // TODO trigger logs
-            // TODO process result VOs
+            if (!effectVO) return;
+
+            if (effectVO.log) {
+                let msg = effectVO.log;
+                GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), msg, LogConstants.MSG_VISIBILITY_GLOBAL);
+            }
+
+            // TODO show popups (can we use DialogueSystem?)
+            // TODO process result VOs 
         },
 
         getActiveStories: function () {
@@ -180,7 +189,7 @@ define([
             let storyVO = StoryConstants.getStory(segmentVO.storyID);
             if (!storyVO) return [];
             
-            let possibleNextSegments = activeSegmentVO.possibleNextSegments;
+            let possibleNextSegments = segmentVO.possibleNextSegments;
 
             if (possibleNextSegments == null) {
                 // default: next segment
