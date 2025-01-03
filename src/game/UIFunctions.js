@@ -1341,6 +1341,11 @@ define(['ash',
 
 					if (isAccumulatingCost && !hasNonAccumulatingCost) {
 						let costCountdown = GameGlobals.playerActionsHelper.getCostCountdownSeconds(key, value);
+
+						if (costCountdown < 0) {
+							hasNonAccumulatingCost = true;
+						}
+
 						if (costCountdown >= 0 && costCountdown > maxCostCountdown) {
 							maxCostCountdown = costCountdown;
 						}
