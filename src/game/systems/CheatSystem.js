@@ -7,6 +7,7 @@ define(['ash',
 	'game/constants/DialogueConstants',
 	'game/constants/ItemConstants',
     'game/constants/LocaleConstants',
+    'game/constants/StoryConstants',
     'game/constants/PerkConstants',
 	'game/constants/OccurrenceConstants',
     'game/constants/ExplorerConstants',
@@ -26,7 +27,8 @@ define(['ash',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/nodes/PlayerPositionNode',
-	'game/nodes/PlayerLocationNode'
+	'game/nodes/PlayerLocationNode',
+	'game/systems/StorySystem'
 ], function (Ash,
 	GameGlobals,
 	GlobalSignals,
@@ -35,6 +37,7 @@ define(['ash',
 	DialogueConstants,
 	ItemConstants,
     LocaleConstants,
+    StoryConstants,
     PerkConstants,
 	OccurrenceConstants,
     ExplorerConstants,
@@ -54,7 +57,8 @@ define(['ash',
 	PlayerStatsNode,
 	TribeUpgradesNode,
 	PlayerPositionNode,
-	PlayerLocationNode
+	PlayerLocationNode,
+	StorySystem
 ) {
 	var CheatSystem = Ash.System.extend({
 
@@ -221,13 +225,22 @@ define(['ash',
 			this.registerCheat(CheatConstants.CHEAT_NAME_RESET_BUILDING_SPOTS, "Reset building spots for buildings in the current camp.", [], function (params) {
 				this.resetBuildingSpots();
 			});
-			this.registerCheat(CheatConstants.CHEAT_TELEPORT_HOME, "Teleport home.", [], function (params) {
+			this.registerCheat(CheatConstants.CHEAT_NAME_TELEPORT_HOME, "Teleport home.", [], function (params) {
 				this.teleportHome();
 			});
-			this.registerCheat(CheatConstants.CHEAT_TEST_DIALOGUE, "Trigger dialogue", ["id"], function (params) {
+			this.registerCheat(CheatConstants.CHEAT_NAME_TEST_DIALOGUE, "Trigger dialogue", ["id"], function (params) {
 				this.triggerDialogue(params[0]);
 			});
-			this.registerCheat(CheatConstants.CHEAT_TRUST, "Set explorer trust", ["amount"], function (params) {
+			this.registerCheat(CheatConstants.CHEAT_NAME_LIST_STORIES, "List status of all stories", [], function (params) {
+				this.listStories();
+			});
+			this.registerCheat(CheatConstants.CHEAT_NAME_START_STORY, "Start story by id", ["id"], function (params) {
+				this.startStory(params[0]);
+			});
+			this.registerCheat(CheatConstants.CHEAT_NAME_START_SEGMENT, "Start story segment by id", ["storyID", "segmentID"], function (params) {
+				this.startStorySegment(params[0], params[1]);
+			});
+			this.registerCheat(CheatConstants.CHEAT_NAME_TRUST, "Set explorer trust", ["amount"], function (params) {
 				this.setTrust(params[0]);
 			});
 		},
@@ -633,6 +646,28 @@ define(['ash',
 			let dialogueKeys = Object.keys(DialogueConstants.dialogues);
 			id = id || dialogueKeys[Math.floor(Math.random() * dialogueKeys.length)];
 			GameGlobals.playerActionFunctions.startDialogue(id);
+		},
+
+		listStories: function () {
+			log.i("Story status:", this);
+			let result = "";
+            for (let storyID in StoryConstants.stories) {
+                let storyVO = StoryConstants.getStory(storyID);
+				let status = this.engine.getSystem(StorySystem).getStoryStatus(storyID);
+				let activeSegmentID = GameGlobals.gameState.storyStatus[storyID] || "(none)";
+				result += storyID + " " + status + " " + activeSegmentID + "\n";
+            }
+			log.i(result);
+		},
+		
+		startStory: function (id) {
+			this.engine.getSystem(StorySystem).startStory(id);
+		},
+
+		startStorySegment: function (storyID, segmentID) {
+            let storyVO = StoryConstants.getStory(storyID);
+			let segmentVO = storyVO.getSegment(segmentVO);
+			this.engine.getSystem(StorySystem).startSegment(segmentVO);
 		},
 
 		setTrust: function (amount) {

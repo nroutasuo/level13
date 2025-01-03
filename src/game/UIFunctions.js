@@ -200,7 +200,7 @@ define(['ash',
 				this.registerHotkey("Collect water", "KeyG", defaultModifier, tabs.out, false, false, "use_out_collector_water");
 				this.registerHotkey("Collect food", "KeyF", defaultModifier, tabs.out, false, false, "use_out_collector_food");
 
-				this.registerHotkey("Teleport home", "KeyH", defaultModifier, null, false, true, () => GlobalSignals.triggerCheatSignal.dispatch(CheatConstants.CHEAT_TELEPORT_HOME));
+				this.registerHotkey("Teleport home", "KeyH", defaultModifier, null, false, true, () => GlobalSignals.triggerCheatSignal.dispatch(CheatConstants.CHEAT_NAME_TELEPORT_HOME));
 				this.registerHotkey("Pass time", "KeyK", defaultModifier, null, false, true, () => GlobalSignals.triggerCheatSignal.dispatch(CheatConstants.CHEAT_NAME_TIME + " " + 1));
 				this.registerHotkey("Toggle map", "KeyL", defaultModifier, null, false, true, () => GlobalSignals.triggerCheatSignal.dispatch(CheatConstants.CHEAT_NAME_REVEAL_MAP));
 
