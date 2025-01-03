@@ -96,13 +96,16 @@ define(['ash',], function (Ash) {
 
 		// system events
 		slowUpdateSignal: new Ash.Signals.Signal(),
+		triggerSignal: new Ash.Signals.Signal(),
 		settingsChangedSignal: new Ash.Signals.Signal(),
 		changelogLoadedSignal: new Ash.Signals.Signal(),
 
 		add: function (system, signal, listener, priority) {
 			priority = priority || GlobalSignals.PRIORITY_DEFAULT;
+
 			if (!system.signalBindings)
 				system.signalBindings = [];
+
 			var binding = signal.add(function () {
 				try {
 					listener.apply(system, arguments);
@@ -122,7 +125,11 @@ define(['ash',], function (Ash) {
 			for (let i = 0; i < system.signalBindings.length; i++)
 				system.signalBindings[i].detach();
 			system.signalBindings = [];
-		}
+		},
+
+		registerTrigger: function (signal, triggerID) {
+			signal.add(function () { GlobalSignals.triggerSignal.dispatch(triggerID); });
+		},
 
 	};
 

@@ -54,6 +54,8 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.completedTutorials = {}; // id -> timestamp
 			this.completedTutorialGroups = {}; // id -> timestamp
 
+			this.storyStatus = {}; // storyID -> current segmentID OR status (StoryConstants.storyStatuses)
+
 			this.uiBagStatus = {
 				itemsOwnedSeen: [],
 				itemsUsableSeen: [],

@@ -42,6 +42,7 @@ define([
 	'game/systems/PlayerActionSystem',
 	'game/systems/PlayerMovementSystem',
 	'game/systems/SectorStatusSystem',
+	'game/systems/StorySystem',
 	'game/systems/TutorialSystem',
 	'game/systems/LevelStatusSystem',
 	'game/systems/CharacterSystem',
@@ -112,6 +113,7 @@ define([
 	PlayerActionSystem,
 	PlayerMovementSystem,
 	SectorStatusSystem,
+	StorySystem,
 	TutorialSystem,
 	LevelStatusSystem,
 	CharacterSystem,
@@ -244,7 +246,7 @@ define([
 
 		setupGame: function () {
 			return new Promise((resolve, reject) => {
-				var game = this;
+				let game = this;
 				
 				GlobalSignals.gameStateReadySignal.addOnce(function () {
 					game.start();
@@ -316,6 +318,7 @@ define([
 			this.engine.addSystem(new PlayerEventsSystem(), SystemPriorities.update);
 			this.engine.addSystem(new ExcursionSystem(), SystemPriorities.update);
 			this.engine.addSystem(new ExplorerSystem(), SystemPriorities.update);
+			this.engine.addSystem(new StorySystem(), SystemPriorities.update);
 			this.engine.addSystem(new TutorialSystem(), SystemPriorities.update);
 			this.engine.addSystem(new EndingSystem(), SystemPriorities.update);
 
@@ -360,7 +363,6 @@ define([
 		},
 
 		handleException: function (ex) {
-			let sys = this;
 			let desc = StringUtils.getExceptionDescription(ex);
 			let gadesc = desc.title + " | " + desc.shortstack;
 			log.i("logging exception to gtag");
@@ -396,6 +398,8 @@ define([
 			);
 			
 			GameGlobals.gameState.numExceptions++;
+
+			debugger
 			
 			throw ex;
 		},

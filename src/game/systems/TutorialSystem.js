@@ -21,12 +21,14 @@ define([
 		addToEngine: function (engine) {
 			this.engine = engine;
 			this.logNodes = engine.getNodeList(LogNode);
-			this.registerListeners();
+			
+			GlobalSignals.add(this, GlobalSignals.triggerSignal, this.onTrigger);
 		},
 
 		removeFromEngine: function (engine) {
 			this.engine = null;
 			this.logNodes = null;
+
 			GlobalSignals.removeAll(this);
 		},
 		
@@ -45,25 +47,12 @@ define([
 			}
 		},
 		
-		registerListeners: function () {
-			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, function () { this.onTutorialTrigger("update"); });
-			GlobalSignals.add(this, GlobalSignals.sectorScavengedSignal, function () { this.onTutorialTrigger("action_scavenge"); });
-			GlobalSignals.add(this, GlobalSignals.sectorScoutedSignal, function () { this.onTutorialTrigger("action_scout"); });
-			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, function () { this.onTutorialTrigger("action_build"); });
-			GlobalSignals.add(this, GlobalSignals.actionCompletedSignal, function () { this.onTutorialTrigger("action_any"); });
-			GlobalSignals.add(this, GlobalSignals.playerEnteredCampSignal, function () { this.onTutorialTrigger("action_enter_camp"); });
-			GlobalSignals.add(this, GlobalSignals.actionRewardsCollectedSignal, function () { this.onTutorialTrigger("action_collect_rewards"); });
-			GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, function () { this.onTutorialTrigger("change_inventory"); });
-			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, function () { this.onTutorialTrigger("change_position"); });
-			GlobalSignals.add(this, GlobalSignals.featureUnlockedSignal, function () { this.onTutorialTrigger("feature_unlocked"); });
+		onTrigger: function (triggerID) {
+			this.triggerTutorials(triggerID);
 		},
 		
-		onTutorialTrigger: function (tutorialTriggerID) {
-			this.triggerTutorials(tutorialTriggerID);
-		},
-		
-		triggerTutorials: function (tutorialTriggerID) {
-			let tutorialIDs = this.tutorialsByTrigger[tutorialTriggerID];
+		triggerTutorials: function (triggerID) {
+			let tutorialIDs = this.tutorialsByTrigger[triggerID];
 			if (!tutorialIDs || tutorialIDs.length == 0) return;
 			
 			for (let i = 0; i < tutorialIDs.length; i++) {

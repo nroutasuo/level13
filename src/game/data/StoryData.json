@@ -1,0 +1,81 @@
+{
+    "stories": [
+        {
+            "id": "template",
+            "startTrigger": "",
+            "startConditions": {},
+            "onStart": {},
+            "onComplete": {},
+            "segments": [
+                {
+                    "id": "",
+                    "startTrigger": "",
+                    "startConditions": {},
+                    "completeTrigger": "",
+                    "completeConditions": {},
+                    "onStart": {
+                        "popup": {},
+                        "result": {}
+                    },
+                    "onComplete": {
+                        "result": {}
+                    },
+                    "possibleNextSegments": [ "id" ]    
+                }
+            ]
+        },
+        {
+            "id": "escape",
+            "startTrigger": "ANY",
+            "startConditions": {},
+            "onStart": {},
+            "onComplete": {},
+            "segments": [
+                {
+                    "id": "start",
+                    "completeTrigger": "popup_closed",
+                    "onStart": {
+                        "popup": {
+                            "title": "",
+                            "text": ""
+                        },
+                        "result": {}
+                    }
+                },
+                {
+                    "id": "darkness"
+                },
+                {
+                    "id": "camp",
+                    "startTrigger": "enter_camp",
+                    "completeTrigger": "action_complete",
+                    "completeConditions": {
+                        "no_injuries": true
+                    },
+                    "onStart": {
+                        "log": ""
+                    },
+                    "onComplete": {
+                        "log": ""
+                    }
+                },
+                {
+                    "id": "searching_for_first_passage",
+                    "completeTrigger": "sector_scouted"
+                },
+                {
+                    "id": "searching_for_ground",
+                    "onStart": {
+                        "addDialoguesUntilEndOfSegment": []
+                    }
+                },
+                {
+                    "id": "on_ground"
+                },
+                {
+                    "id": "searching_for_surface"
+                }
+            ]
+        }
+    ]
+}

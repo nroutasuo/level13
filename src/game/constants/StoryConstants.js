@@ -1,4 +1,12 @@
-define(['ash'], function (Ash) {
+define([
+	'ash', 
+	'json!game/data/StoryData.json',
+	'game/vos/StoryVO',
+	'game/vos/StorySegmentVO',
+	'game/vos/StoryEffectVO',
+], function (
+	Ash, StoryData, StoryVO, StorySegmentVO, StoryEffectVO
+) {
 	
 	let StoryConstants = {
 	
@@ -39,6 +47,87 @@ define(['ash'], function (Ash) {
 			},
 		],
 
+		storyStatuses: {
+			PENDING: "PENDING",
+			STARTED: "STARTED",
+			COMPLETED: "COMPLETED",
+		},
+
+		triggers: {
+			action_any: "action_any",
+			action_build: "action_build",
+			action_collect_rewards: "action_collect_rewards",
+			action_enter_camp: "action_enter_camp",
+			action_scavenge: "action_scavenge",
+			action_scout: "action_scout",
+			change_inventory: "change_inventory",
+			change_position: "change_position",
+			feature_unlocked: "feature_unlocked",
+			update: "update",
+		},
+
+		stories: {}, // id -> StoryVO
+
+		loadData: function (data) {
+			for (let i = 0; i < data.stories.length; i++) {
+				let storyData = data.stories[i];
+				let storyID = storyData.id;
+				let storyVO = new StoryVO(storyID);
+				storyVO.startTrigger = this.parseStoryTrigger(storyData.startTrigger);
+				storyVO.startConditions = this.parseStoryConditions(storyData.startConditions);
+				storyVO.onStart = this.parseStoryEffects(storyData.onStart);
+				storyVO.onComplete = this.parseStoryEffects(storyData.onComplete);
+
+				storyVO.segments = [];
+				for (let j = 0; j < storyData.segments.length; j++) {
+					storyVO.segments.push(this.parseSegment(storyID, storyData.segments[j]));
+				}
+
+				this.stories[storyVO.storyID] = storyVO;
+			}
+		},
+
+		parseStoryTrigger: function (data) {
+			// TODO check triggers exist
+			return data || "ANY";
+		},
+
+		parseStoryConditions: function (data) {
+			// TODO check conditions are valid
+			return data || {};
+		},
+
+		parseStoryEffects: function (data) {
+			let result = new StoryEffectVO();
+			if (!data) return result;
+
+			result.popup = data.popup;
+			result.result = data.result;
+			result.log = data.log;
+
+			return result;
+		},
+
+		parseSegment: function (storyID, data) {
+			// TODO check next segments actually exist
+			
+			let result = new StorySegmentVO(storyID, data.id);
+
+			result.startTrigger = this.parseStoryTrigger(data.startTrigger);
+			result.startConditions = this.parseStoryConditions(data.startConditions);
+			result.completeTrigger = this.parseStoryTrigger(data.completeTrigger);
+			result.completeConditions = this.parseStoryConditions(data.completeConditions);
+			result.onStart = this.parseStoryEffects(data.onStart);
+			result.onComplete = this.parseStoryEffects(data.onComplete);
+			result.possibleNextSegments = data.possibleNextSegments || null;
+
+			return result;
+		},
+
+		getStory: function (storyID) {
+			return this.stories[storyID];
+		},
+
 		getSectorExampineSpot: function (id) {
 			for (let i = 0; i < this.sectorExamineSpots.length; i++) {
 				if (this.sectorExamineSpots[i].id == id) {
@@ -49,6 +138,8 @@ define(['ash'], function (Ash) {
 		},
 		
 	};
+
+    StoryConstants.loadData(StoryData);
 	
 	return StoryConstants;
 	
