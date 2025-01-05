@@ -655,7 +655,11 @@ define(['ash',
                 let storyVO = StoryConstants.getStory(storyID);
 				let status = this.engine.getSystem(StorySystem).getStoryStatus(storyID);
 				let activeSegmentID = GameGlobals.gameState.storyStatus[storyID] || "(none)";
-				result += storyID + " " + status + " " + activeSegmentID + "\n";
+
+				let index = storyVO.getSegmentIndex(activeSegmentID);
+				let displayIndex = index >= 0 ? ((index + 1) + "/" + storyVO.segments.length) : "";
+
+				result += storyID + " " + status + " " + activeSegmentID + " " + displayIndex + "\n";
             }
 			log.i(result);
 		},

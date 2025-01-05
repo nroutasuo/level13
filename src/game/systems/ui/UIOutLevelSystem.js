@@ -346,6 +346,7 @@ define([
 		updateDespair: function () {
 			if (GameGlobals.playerHelper.isInCamp()) return;
 			if (GameGlobals.playerHelper.isBusy()) return;
+			if (!GameGlobals.playerHelper.isAwake()) return;
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 
 			let activeDespairType = GameGlobals.playerHelper.getActiveDespairType();

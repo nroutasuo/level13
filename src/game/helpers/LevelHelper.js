@@ -677,6 +677,19 @@ define([
 			levelStats.percentRevealedSectors = levelStats.countRevealedSectors == levelStats.totalSectors ? 1 : levelStats.countRevealedSectors / levelStats.totalSectors;
 			levelStats.percentVisitedSectors = levelStats.countVisitedSectors == levelStats.totalSectors ? 1 : levelStats.countVisitedSectors / levelStats.totalSectors;
 		},
+
+		getLevelNumScoutedSectors: function (level) {
+			let result = 0;
+			
+			for (let node = this.sectorNodes.head; node; node = node.next) {
+				let sectorPosition = node.entity.get(PositionComponent);
+				if (sectorPosition.level !== level) continue;
+				let statusComponent = node.entity.get(SectorStatusComponent);
+				if (statusComponent.scouted) result++;
+			}
+
+			return result;
+		},
 		
 		getWorkshopsSectorsForLevel: function (level) {
 			let result = [];

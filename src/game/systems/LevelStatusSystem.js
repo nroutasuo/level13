@@ -78,8 +78,7 @@ define([
 				let level = node.level.position;
 				
 				if (!node.levelStatus.isLevelTypeRevealed) {
-					let mapStatus = GameGlobals.levelHelper.getLevelStats(level);
-					let countScoutedSectors = mapStatus.countScoutedSectors || 0;
+					let countScoutedSectors = GameGlobals.levelHelper.getLevelNumScoutedSectors(level);
 					
 					let shouldBeRevealed = countScoutedSectors >= 5;
 					if (shouldBeRevealed) this.revealLevelType(level);

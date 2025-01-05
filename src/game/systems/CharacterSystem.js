@@ -32,6 +32,7 @@ define([
 		},
 
 		updateCurrentLevelCharacters: function () {
+			if (GameGlobals.gameState.uiStatus.isFastForwarding) return;
 			let playerPosition = GameGlobals.playerHelper.getPosition();
 			if (!playerPosition) return;
 
