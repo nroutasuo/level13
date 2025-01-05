@@ -470,6 +470,7 @@ define([
 		logAmbientPlayer: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (!this.playerLocationNodes.head || !this.playerLocationNodes.head.position) return;
+			if (!GameGlobals.playerHelper.isAwake()) return;
 			if (GameGlobals.playerHelper.isInCamp()) return;
 			
 			let playerLevelCamp = this.nearestCampNodes.head !== null ? this.nearestCampNodes.head.entity : null;

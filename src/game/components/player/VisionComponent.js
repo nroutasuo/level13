@@ -1,6 +1,9 @@
 define(['ash'], function (Ash) {
-	var VisionComponent = Ash.Class.extend({
+
+	let VisionComponent = Ash.Class.extend({
+
 		constructor: function (initialValue) {
+			this.isAwake = false;
 			this.value = initialValue;
 			this.maximum = 0;
 			this.accumulation = 0;

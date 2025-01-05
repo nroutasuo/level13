@@ -298,6 +298,7 @@ define(['ash',
 				case "select_explorer": this.selectExplorer(param); break;
 				case "deselect_explorer": this.deselectExplorer(param); break;
 				case "nap": this.nap(param); break;
+				case "get_up": this.getUp(param); break;
 				case "wait": this.wait(param); break;
 				case "despair": this.despair(param); break;
 				case "unlock_upgrade": this.unlockUpgrade(param); break;
@@ -1084,6 +1085,12 @@ define(['ash',
 					});
 				}
 			);
+		},
+
+		getUp: function () {
+			this.playerStatsNodes.head.vision.isAwake = true;
+			this.completeAction("get_up");
+			GlobalSignals.visionChangedSignal.dispatch();
 		},
 		
 		wait: function () {

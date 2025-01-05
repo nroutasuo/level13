@@ -28,6 +28,7 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 		DISABLED_REASON_MILESTONE: 'DISABLED_REASON_MILESTONE',
 		DISABLED_REASON_EXPOSED: "DISABLED_REASON_EXPOSED",
 		DISABLED_REASON_VISION: "DISABLED_REASON_VISION",
+		DISABLED_REASON_NOT_AWAKE: "DISABLED_REASON_NOT_AWAKE",
 		
 		loadData: function (data) {
 			Object.assign(this, data);
@@ -438,6 +439,12 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 			if (action.indexOf('fight_') === 0) return true;
 			if (action.indexOf('scout_') === 0) return true;
 			if (action == 'wait') return true;
+			return false;
+		},
+
+		isActionAllowedWhileNotAwake: function (action) {
+			if (action == "get_up") return true;
+
 			return false;
 		},
 

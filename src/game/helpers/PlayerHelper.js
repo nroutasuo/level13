@@ -92,6 +92,10 @@ define([
 			let playerActionComponent = this.playerResourcesNodes.head.entity.get(PlayerActionComponent);
 			return playerActionComponent.isBusy();
 		},
+
+		isAwake: function () {
+			return this.playerStatsNodes.head.vision.isAwake;
+		},
 		
 		getBusyTimeLeft: function () {
 			let player = this.playerStatsNodes.head.entity;

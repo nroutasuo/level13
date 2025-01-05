@@ -242,6 +242,7 @@ define([
 			var hasCamp = GameGlobals.levelHelper.getLevelEntityForSector(this.playerLocationNodes.head.entity).has(CampComponent);
 			var hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
 			var isScouted = sectorStatus.scouted;
+			let isAwake = this.playerPosNodes.head.entity.get(VisionComponent).isAwake;
 			
 			var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
 			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
@@ -262,10 +263,12 @@ define([
 			GameGlobals.uiFunctions.toggle("#out-action-move-camp", hasCamp && !hasCampHere);
 			GameGlobals.uiFunctions.toggle("#out-action-move-camp-details", hasCamp && !hasCampHere);
 
-			GameGlobals.uiFunctions.toggle("#out-action-enter", hasCampHere);
-			GameGlobals.uiFunctions.toggle("#out-action-scout", GameGlobals.gameState.unlockedFeatures.vision);
-			GameGlobals.uiFunctions.toggle("#out-action-use-spring", isScouted && featuresComponent.hasSpring);
-			GameGlobals.uiFunctions.toggle("#out-action-investigate", this.showInvestigate());
+			GameGlobals.uiFunctions.toggle("#out-action-get-up", !isAwake);
+			GameGlobals.uiFunctions.toggle("#out-action-enter", isAwake && hasCampHere);
+			GameGlobals.uiFunctions.toggle("#out-action-sca", isAwake);
+			GameGlobals.uiFunctions.toggle("#out-action-scout", isAwake && GameGlobals.gameState.unlockedFeatures.vision);
+			GameGlobals.uiFunctions.toggle("#out-action-use-spring", isAwake && isScouted && featuresComponent.hasSpring);
+			GameGlobals.uiFunctions.toggle("#out-action-investigate", isAwake && this.showInvestigate());
 
 			// examine spots
 			let showExamine = featuresComponent.examineSpots.length > 0;

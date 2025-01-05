@@ -294,6 +294,13 @@ define([
 			let baseActionID = this.getBaseActionID(action);
 			let actionIDParam = this.getActionIDParam(action);
 			let ordinal = this.getActionOrdinal(action, sector);
+
+			let isPlayerAwake = this.playerStatsNodes.head.vision.isAwake;
+			let isActionAllowedWhileNotAwake = PlayerActionConstants.isActionAllowedWhileNotAwake(action);
+
+			if (!isPlayerAwake && !isActionAllowedWhileNotAwake) {
+				return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_NOT_AWAKE };
+			}
 			
 			let inCamp = GameGlobals.playerHelper.isInCamp();
 			

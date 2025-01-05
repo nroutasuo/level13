@@ -29,7 +29,7 @@ define([
 	SectorFeaturesComponent,
 	SectorStatusComponent
 ) {
-	var VisionSystem = Ash.System.extend({
+	let VisionSystem = Ash.System.extend({
 	
 		gameState: null,
 	
@@ -82,10 +82,11 @@ define([
 			var improvements = this.locationNodes.head.entity.get(SectorImprovementsComponent);
 			var inCamp = node.entity.get(PositionComponent).inCamp;
 			var sunlit = featuresComponent.sunlit;
+			let isAwake = vision.isAwake;
 			
-			var maxValue = 0;
-			var visionPerSec = 0;
-			var accSpeedFactor = Math.max(100 - oldValue, 10) / 200;
+			let maxValue = 0;
+			let visionPerSec = 0;
+			let accSpeedFactor = Math.max(100 - oldValue, 10) / 200;
 			let shadeBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.shade);
 			let lightBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.light);
 			
@@ -98,49 +99,52 @@ define([
 			
 			// Check max value and accumulation
 			let maxValueBaseDefault =  PlayerStatConstants.VISION_BASE;
-			let maxValueBase = sunlit ? PlayerStatConstants.VISION_BASE_SUNLIT : PlayerStatConstants.VISION_BASE;
+			let maxValueBase = isAwake ? sunlit ? PlayerStatConstants.VISION_BASE_SUNLIT : PlayerStatConstants.VISION_BASE : 0;
 			maxValue = maxValueBase;
-			addAccumulation("Base", (sunlit ? 75 : 25) / maxValueBase);
+
+			if (isAwake) {
+				addAccumulation("Base", (sunlit ? 75 : 25) / maxValueBase);
 			
-			if (inCamp) {
-				if (!sunlit) {
-					if (improvements.getCount(improvementNames.campfire) > 0) {
-						maxValue = Math.max(maxValue, 70);
-						addAccumulation("Campfire", 70 / maxValueBase * 2);
+				if (inCamp) {
+					if (!sunlit) {
+						if (improvements.getCount(improvementNames.campfire) > 0) {
+							maxValue = Math.max(maxValue, 70);
+							addAccumulation("Campfire", 70 / maxValueBase * 2);
+						}
+						if (improvements.getCount(improvementNames.lights) > 0) {
+							maxValue = Math.max(maxValue, 100);
+							addAccumulation("Lights", 100 / maxValueBase);
+						}
 					}
-					if (improvements.getCount(improvementNames.lights) > 0) {
-						maxValue = Math.max(maxValue, 100);
-						addAccumulation("Lights", 100 / maxValueBase);
+				}
+				
+				if (sunlit) {
+					if (shadeBonus + maxValueBase > maxValue) {
+						maxValue += shadeBonus;
+						addAccumulation("Sunglasses", shadeBonus / maxValueBase);
 					}
-				}
-			}
-			
-			if (sunlit) {
-				if (shadeBonus + maxValueBase > maxValue) {
-					maxValue += shadeBonus;
-					addAccumulation("Sunglasses", shadeBonus / maxValueBase);
-				}
-			} else {
-				// equipment
-				let lightItem = itemsComponent.getEquipped(ItemConstants.itemTypes.light)[0];
-				if (lightItem && lightBonus + maxValueBase > maxValue) {
-					maxValue += lightBonus;
-					let itemName = ItemConstants.getItemDisplayName(lightItem);
-					addAccumulation(itemName, lightBonus / maxValueBase);
-				}
-				// consumable items
-				if (statusComponent.glowStickSeconds > 0) {
-					// TODO remove hardcoded glowstick vision value
-					let glowstickValue = 30;
-					maxValue = Math.max(maxValue, maxValueBase + glowstickValue);
-					addAccumulation("Glowstick", glowstickValue / maxValueBase);
-					statusComponent.glowStickSeconds -= time * GameConstants.gameSpeedExploration;
-				}
-				// pekrs
-				var perkBonus = perksComponent.getTotalEffect(PerkConstants.perkTypes.light);
-				if (perkBonus > 0) {
-					maxValue += perkBonus;
-					addAccumulation("Beacon" , perkBonus);
+				} else {
+					// equipment
+					let lightItem = itemsComponent.getEquipped(ItemConstants.itemTypes.light)[0];
+					if (lightItem && lightBonus + maxValueBase > maxValue) {
+						maxValue += lightBonus;
+						let itemName = ItemConstants.getItemDisplayName(lightItem);
+						addAccumulation(itemName, lightBonus / maxValueBase);
+					}
+					// consumable items
+					if (statusComponent.glowStickSeconds > 0) {
+						// TODO remove hardcoded glowstick vision value
+						let glowstickValue = 30;
+						maxValue = Math.max(maxValue, maxValueBase + glowstickValue);
+						addAccumulation("Glowstick", glowstickValue / maxValueBase);
+						statusComponent.glowStickSeconds -= time * GameConstants.gameSpeedExploration;
+					}
+					// pekrs
+					var perkBonus = perksComponent.getTotalEffect(PerkConstants.perkTypes.light);
+					if (perkBonus > 0) {
+						maxValue += perkBonus;
+						addAccumulation("Beacon" , perkBonus);
+					}
 				}
 			}
 			
