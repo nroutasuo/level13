@@ -352,11 +352,7 @@ define(['ash',
 				$.each($(scope + " .info-callout-target"), function () {
 					let $target = $(this);
 					let generated = $target.data("callout-generated") || $target.parent().hasClass("callout-container");
-					if (generated) {
-						log.w("Info callout already generated! id: " + $target.attr("id") + ", scope: " + scope);
-						log.i($target);
-						return;
-					}
+					if (generated) return;
 					
 					let isSidePosition = $target.hasClass("info-callout-target-side")
 					let arrowClass = isSidePosition ? "callout-arrow-left" : "callout-arrow-up";
