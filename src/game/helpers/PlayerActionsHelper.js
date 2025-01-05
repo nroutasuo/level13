@@ -469,7 +469,7 @@ define([
 				}
 
 				if (requirements.deity) {
-					if (!hopeComponent) {
+					if (!GameGlobals.tribeHelper.hasDeity()) {
 						return { value: 0, reason: "Deity required." };
 					}
 				}

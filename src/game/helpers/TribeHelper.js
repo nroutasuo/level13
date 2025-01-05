@@ -33,7 +33,7 @@ define([
 		},
 
 		hasDeity: function () {
-			var deityName =  this.playerStatsNodes.head.hope.deityName
+			var deityName =  this.playerStatsNodes.head.hope.deityName;
 			return deityName != null && deityName.length > 0;
 		},
 		
