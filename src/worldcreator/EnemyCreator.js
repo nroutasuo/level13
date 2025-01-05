@@ -263,7 +263,7 @@ define([
 		getEnemies: function (difficulty, tags, min) {
 			let result = [];
 			
-			if (difficulty <= 0) return enemies;
+			if (difficulty <= 0) return result;
 			
 			let isMatchingTags = function (enemy) {
 				if (!tags) return true;
