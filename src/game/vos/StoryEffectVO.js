@@ -4,8 +4,8 @@ define(['ash'], function (Ash) {
 		log: "", // textKey
 		popup: {}, // title, text
 		result: {}, // ResultVO
-
+		storyFlags: {}, // id -> bool
 	});
 
-return StoryEffectVO;
+	return StoryEffectVO;
 });

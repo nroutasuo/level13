@@ -639,6 +639,9 @@
         "flee": {
             "stamina": 20
         },
+        "get_up": {
+            "stamina": 1
+        },
         "improve_building_apothecary": {
             "evidence": 382,
             "hope": 184
@@ -2681,6 +2684,9 @@
                 50,
                 -1
             ]
+        },
+        "get_up": {
+            "awake": false
         },
         "improve_building_apothecary": {
             "blueprint": 13,

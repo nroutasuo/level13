@@ -338,6 +338,8 @@ define(['ash',
 		},
 		
 		completeAction: function (action) {
+			let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+
 			if (this.currentAction == action)
 				this.currentAction = null;
 
@@ -346,9 +348,11 @@ define(['ash',
 				let duration = PlayerActionConstants.getDuration(action);
 				GameGlobals.gameState.increaseGameStatKeyed("timeUsingCampBuildingPerId", improvementID, duration);
 			}
+
+			GameGlobals.gameState.lastAction = baseActionID;
 			
 			GameGlobals.uiFunctions.completeAction(action);
-			GlobalSignals.actionCompletedSignal.dispatch();
+			GlobalSignals.actionCompletedSignal.dispatch(action);
 		},
 
 		startDialogue: function (id, explorerVO, chracterVO) {
@@ -2592,6 +2596,9 @@ define(['ash',
 			improvementsComponent.add(improvementName);
 			GameGlobals.gameState.increaseGameStatKeyed("numBuildingsBuiltPerId", improvementID);
 			GlobalSignals.improvementBuiltSignal.dispatch();
+			
+			this.completeAction(actionName);
+			
 			this.save();
 		},
 

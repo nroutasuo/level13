@@ -54,10 +54,12 @@ define([
 		},
 
 		triggers: {
+			immediate: "immediate",
 			action_any: "action_any",
 			action_build: "action_build",
 			action_collect_rewards: "action_collect_rewards",
 			action_enter_camp: "action_enter_camp",
+			action_leave_camp: "action_leave_camp",
 			action_scavenge: "action_scavenge",
 			action_scout: "action_scout",
 			change_inventory: "change_inventory",
@@ -66,12 +68,15 @@ define([
 			update: "update",
 		},
 
+		flags: {
+			SEARCHING_FOR_GROUND: "SEARCHING_FOR_GROUND"
+		},
+
 		stories: {}, // id -> StoryVO
 
 		loadData: function (data) {
-			for (let i = 0; i < data.stories.length; i++) {
-				let storyData = data.stories[i];
-				let storyID = storyData.id;
+			for (let storyID in data.stories) {
+				let storyData = data.stories[storyID];
 				let storyVO = new StoryVO(storyID);
 				storyVO.startTrigger = this.parseStoryTrigger(storyData.startTrigger);
 				storyVO.startConditions = this.parseStoryConditions(storyData.startConditions);
@@ -102,8 +107,15 @@ define([
 			if (!data) return result;
 
 			result.popup = data.popup;
+
+			if (typeof data.popup === "string") {
+				result.popup = {};
+				result.popup.text = data.popup;
+			}
+
 			result.result = data.result;
 			result.log = data.log;
+			result.storyFlags = data.storyFlags || {};
 
 			return result;
 		},
@@ -120,6 +132,7 @@ define([
 			result.onStart = this.parseStoryEffects(data.onStart);
 			result.onComplete = this.parseStoryEffects(data.onComplete);
 			result.possibleNextSegments = data.possibleNextSegments || null;
+			result.startFromAny = data.startFromAny || false;
 
 			return result;
 		},

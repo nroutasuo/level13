@@ -376,28 +376,8 @@ define([
 		},
 		
 		checkGeneralRequirementaInternal: function (requirements, action, sector, checksToSkip) {
-			sector = sector || (this.playerLocationNodes && this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null);
-			
-			let playerVision = this.playerStatsNodes.head.vision.value;
-			let playerMaxVision = this.playerStatsNodes.head.vision.maximum;
-			let playerPerks = this.playerStatsNodes.head.perks;
-			let playerStamina = this.playerStatsNodes.head.stamina.stamina;
-			let hopeComponent = this.playerResourcesNodes.head.entity.get(HopeComponent);
-			
-			var positionComponent = sector.get(PositionComponent);
-			var improvementComponent = sector.get(SectorImprovementsComponent);
-			var movementOptionsComponent = sector.get(MovementOptionsComponent);
-			var passagesComponent = sector.get(PassagesComponent);
-			var campComponent = sector.get(CampComponent);
-			var featuresComponent = sector.get(SectorFeaturesComponent);
-			var statusComponent = sector.get(SectorStatusComponent);
-			var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
+			let hasRequirements = requirements && Object.keys(requirements).length > 0;
 
-			let inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
-			let level = sector.get(PositionComponent).level;
-
-			var currentPopulation = campComponent ? Math.floor(campComponent.population) : 0;
-			
 			var shouldSkipCheck = function (reason) {
 				if (!checksToSkip) return false;
 				return checksToSkip.indexOf(reason) >= 0;
@@ -406,7 +386,29 @@ define([
 			var lowestFraction = 1;
 			var reason = "";
 
-			if (requirements) {
+			if (hasRequirements) {
+				sector = GameGlobals.sectorHelper.getCurrentActionSector(sector);
+				
+				let playerVision = this.playerStatsNodes.head.vision.value;
+				let playerMaxVision = this.playerStatsNodes.head.vision.maximum;
+				let playerPerks = this.playerStatsNodes.head.perks;
+				let playerStamina = this.playerStatsNodes.head.stamina.stamina;
+				let hopeComponent = this.playerResourcesNodes.head.entity.get(HopeComponent);
+				
+				var positionComponent = sector.get(PositionComponent);
+				var improvementComponent = sector.get(SectorImprovementsComponent);
+				var movementOptionsComponent = sector.get(MovementOptionsComponent);
+				var passagesComponent = sector.get(PassagesComponent);
+				var campComponent = sector.get(CampComponent);
+				var featuresComponent = sector.get(SectorFeaturesComponent);
+				var statusComponent = sector.get(SectorStatusComponent);
+				var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
+	
+				let inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
+				let level = sector.get(PositionComponent).level;
+	
+				var currentPopulation = campComponent ? Math.floor(campComponent.population) : 0;
+				
 				if (requirements.actionsAvailable) {
 					let requiredActions = requirements.actionsAvailable;
 					for (let i = 0; i < requiredActions.length; i++) {
@@ -423,6 +425,15 @@ define([
 						if (requiredValue != currentValue) {
 							return { value: 0, reason: (requiredValue ? ("Locked feature: " + featureID) : "Feature already unlocked") };
 						}
+					}
+				}
+
+				if (requirements.storyFlags) {
+					for (let flagID in requirements.storyFlags) {
+						let requiredValue = requirements.storyFlags[flagID];
+						let currentValue = GameGlobals.gameState.storyFlags[flagID] || false;
+						let result = this.checkRequirementsBoolean(requiredValue, currentValue);
+						if (result) return result;
 					}
 				}
 				
@@ -932,12 +943,27 @@ define([
 				}
 
 				if (requirements.sector) {
+					if (requirements.sector.ground) {
+						let requiredValue = requirements.sector.ground;
+						let currentValue = positionComponent.level == GameGlobals.gameState.getGroundLevel();
+						let result = this.checkRequirementsBoolean(requiredValue, currentValue);
+						if (result) return result;
+					}
+
+					if (requirements.sector.surface) {
+						let requiredValue = requirements.sector.surface;
+						let currentValue = positionComponent.level == GameGlobals.gameState.getSurfaceLevel();
+						let result = this.checkRequirementsBoolean(requiredValue, currentValue);
+						if (result) return result;
+					}
+
 					if (requirements.sector.collectable_water) {
 						let hasWater = featuresComponent.resourcesCollectable.water > 0;
 						if (!hasWater) {
 							return { value: 0, reason: "No collectable water.", baseReason: PlayerActionConstants.DISABLED_REASON_INVALID_SECTOR };
 						}
 					}
+
 					if (requirements.sector.collectable_food) {
 						let hasFood = featuresComponent.resourcesCollectable.food > 0;
 						if (!hasFood) {
@@ -959,6 +985,7 @@ define([
 							return { value: 0, reason: "Location not suitable for camp", baseReason: PlayerActionConstants.DISABLED_REASON_INVALID_SECTOR };
 						}
 					}
+
 					if (typeof requirements.sector.enemies != "undefined") {
 						var enemiesComponent = sector.get(EnemiesComponent);
 						if (enemiesComponent.hasEnemies != requirements.sector.enemies) {
@@ -968,6 +995,7 @@ define([
 								return { value: 0, reason: "Too dangerous here" };
 						}
 					}
+
 					if (typeof requirements.sector.scouted != "undefined") {
 						if (statusComponent.scouted != requirements.sector.scouted) {
 							if (statusComponent.scouted) {
@@ -977,18 +1005,21 @@ define([
 							}
 						}
 					}
+
 					if (typeof requirements.sector.scavengedPercent != "undefined") {
 						let range = requirements.sector.scavengedPercent;
 						let currentVal = statusComponent.getScavengedPercent() / 100;
 						let result = this.checkRequirementsRange(range, currentVal, "", "This area has been scavenged clean.");
 						if (result) return result;
 					}
+
 					if (typeof requirements.sector.heapScavengedPercent != "undefined") {
 						let range = requirements.sector.heapScavengedPercent;
 						let currentVal = statusComponent.getHeapScavengedPercent() / 100;
 						let result = this.checkRequirementsRange(range, currentVal, "", "Nothing left of the heap.");
 						if (result) return result;
 					}
+
 					if (typeof requirements.sector.investigatable != "undefined") {
 						var requiredValue = requirements.sector.investigatable;
 						var currentValue = featuresComponent.isInvestigatable || statusComponent.isFallbackInvestigateSector;
@@ -997,6 +1028,7 @@ define([
 							return { value: 0, reason: reason };
 						}
 					}
+
 					if (typeof requirements.sector.examinable != "undefined") {
 						var requiredValue = requirements.sector.examinable;
 						var currentValue = GameGlobals.sectorHelper.getNumUnexaminedSpots(sector) > 0;
@@ -1005,6 +1037,7 @@ define([
 							return { value: 0, reason: reason };
 						}
 					}
+
 					if (typeof requirements.sector.investigatedPercent != "undefined") {
 						var range = requirements.sector.investigatedPercent;
 						var currentVal = statusComponent.getInvestigatedPercent() / 100;
@@ -1013,6 +1046,7 @@ define([
 							return result;
 						}
 					}
+
 					if (typeof requirements.sector.spring != "undefined") {
 						if (featuresComponent.hasSpring != requirements.sector.spring) {
 							if (featuresComponent.hasSpring)    reason = "There is a spring.";
@@ -1020,6 +1054,7 @@ define([
 							return { value: 0, reason: reason };
 						}
 					}
+
 					if (typeof requirements.sector.scoutedLocales !== "undefined") {
 						for(var localei in requirements.sector.scoutedLocales) {
 							var requiredStatus = requirements.sector.scoutedLocales[localei];
@@ -1031,6 +1066,7 @@ define([
 							}
 						}
 					}
+
 					if (typeof requirements.sector.controlledLocales !== "undefined") {
 						let sectorControlComponent = sector.get(SectorControlComponent);
 						for(let localei in requirements.sector.controlledLocales) {

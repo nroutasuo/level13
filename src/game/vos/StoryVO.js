@@ -22,6 +22,15 @@ define(['ash'], function (Ash) {
             return null;
         },
 
+        getSegmentIndex: function (segmentID) {
+            for (let i = 0; i < this.segments.length; i++) {
+                let segmentVO = this.segments[i];
+                if (segmentVO.segmentID == segmentID) return i;
+            }
+
+            return -1;
+        },
+
 	});
 
 	return StoryVO;
