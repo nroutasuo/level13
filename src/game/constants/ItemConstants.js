@@ -552,7 +552,7 @@ function (Ash, Text, ItemData, Text, PlayerActionConstants, ItemVO) {
 			if (!itemOld) return 1;
 			if (itemNew.id === itemOld.id && itemNew.broken && itemOld.broken) return 0;
 			
-			let getItemCacheId = function (itemVO) { return itemVO.id + (itemVO.broken ? "b" : ""); }
+			let getItemCacheId = function (itemVO) { return itemVO.id + (itemVO.broken ? "b" : "") + itemVO.level; }
 			let cacheId = getItemCacheId(itemOld) + "--" + getItemCacheId(itemNew);
 			
 			if (this.equipmentComparisonCache[cacheId]) {
