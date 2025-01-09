@@ -97,6 +97,12 @@ define([
 					GameGlobals.playerActionFunctions.lockFeature("investigate")
 				}
 			}
+
+			if (!GameGlobals.gameState.unlockedFeatures.explorers) {
+				if (GameGlobals.playerHelper.getExplorers().length > 0) {
+					GameGlobals.playerActionFunctions.unlockFeature("explorers");
+				}
+			}
 		},
 		
 		onGameStarted: function () {
