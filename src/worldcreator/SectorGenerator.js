@@ -805,6 +805,13 @@ define([
 					WorldCreatorHelper.addCriticalPath(worldVO, criticalPathVO);
 				}
 			}
+
+			// add locales associated with workshops
+			if (workshopResource == "herbs" && campOrdinal === WorldConstants.CAMP_ORDINAL_GREENHOUSE_1) {
+				let locale = new LocaleVO(localeTypes.greenhouse, true, false);
+				this.addLocale(levelVO, workshopSectors[0], locale);
+			}
+			
 		},
 
 		generateHeaps: function (seed, worldVO, levelVO) {
@@ -1653,15 +1660,11 @@ define([
 			var l = levelVO.level;
 			var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, levelVO.level);
 			var generator = this;
-						
-			var addLocale = function (sectorVO, locale) {
-				sectorVO.locales.push(locale);
-				levelVO.localeSectors.push(sectorVO);
-				levelVO.numLocales++;
-			};
 			
 			let excludedFeatures = [ "isCamp", "isPassageUp", "isPassageDown", "workshopResource" ];
 			let lateZones = [ WorldConstants.ZONE_POI_2, WorldConstants.ZONE_EXTRA_CAMPABLE ];
+
+			// TODO define hard coded locales in story constants or as input rather than hard-coding here
 			
 			// 1) spawn trading partners
 			for (let i = 0; i < TradeConstants.TRADING_PARTNERS.length; i++) {
@@ -1673,12 +1676,12 @@ define([
 					var sectorVO = WorldCreatorRandom.randomSectors(seed - 9393 + i * i, worldVO, levelVO, 1, 2, options)[0];
 					var locale = new LocaleVO(localeTypes.tradingpartner, true, false);
 					// WorldCreatorLogger.i("trade partner at " + sectorVO.position)
-					addLocale(sectorVO, locale);
+					this.addLocale(levelVO, sectorVO, locale);
 					sectorVO.scavengeDifficulty = 10;
 				}
 			}
 			
-			// 2) spanw grove
+			// 2) spawn grove
 			if (levelVO.level == worldVO.bottomLevel) {
 				var options = { excludingFeature: excludedFeatures };
 				var groveSector = WorldCreatorRandom.randomSectors(seed, worldVO, levelVO, 1, 2, options)[0];
@@ -1686,7 +1689,7 @@ define([
 				groveSector.sunlit = 1;
 				groveSector.hazards.radiation = 0;
 				groveSector.hazards.pollution = 0;
-				addLocale(groveSector, groveLocale);
+				this.addLocale(levelVO, groveSector, groveLocale);
 				WorldCreatorLogger.i("add grove at: " + groveSector);
 			}
 			
@@ -1697,7 +1700,7 @@ define([
 				let sector = WorldCreatorRandom.randomSectors(1000 + seed * 2, worldVO, levelVO, 1, 2, options)[0];
 				let locale = new LocaleVO(explorer.localeType, true, true);
 				locale.explorerID = explorer.id;
-				addLocale(sector, locale);
+				this.addLocale(levelVO, sector, locale);
 				// WorldCreatorLogger.i("add explorer locale at " + sector)
 			}
 			
@@ -1711,7 +1714,7 @@ define([
 				let localeType = this.getLocaleTypeForLuxuryResourceOnSector(seed, locationType, sector);
 				let locale = new LocaleVO(localeType, false, false);
 				locale.luxuryResource = resource;
-				addLocale(sector, locale);
+				this.addLocale(levelVO, sector, locale);
 				WorldCreatorLogger.i("add luxury resource locale at " + sector);
 			}
 
@@ -1745,7 +1748,7 @@ define([
 					var isEasy = i <= countEasy;
 					var locale = new LocaleVO(localeType, isEasy, isEarly);
 					locale.hasBlueprints = true;
-					addLocale(sectorVO, locale);
+					SectorGenerator.addLocale(levelVO, sectorVO, locale);
 					// WorldCreatorLogger.i(sectorVO.position + " added locale: isEarly:" + isEarly + ", distance to camp: " + WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO) + ", zone: " + sectorVO.zone);
 					for (let j = 0; j < pathConstraints.length; j++) {
 						let criticalPathVO = new CriticalPathVO(pathConstraints[j].pathType, sectorVO.position, pathConstraints[j].startPosition);
@@ -1775,6 +1778,12 @@ define([
 				var countLate = WorldCreatorRandom.randomInt((seed % 84) * l * l * l + 1, minLate, maxLate + 1);
 				createLocales(worldVO, levelVO, campOrdinal, false, countLate, minLate);
 			}
+		},
+
+		addLocale: function (levelVO, sectorVO, localeVO) {
+			sectorVO.locales.push(localeVO);
+			levelVO.localeSectors.push(sectorVO);
+			levelVO.numLocales++;
 		},
 		
 		generateWaymarks: function (seed, worldVO, levelVO) {

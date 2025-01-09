@@ -7,7 +7,6 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 		factory: 0,
 		house: 1,
 		lab: 2,
-		grove: 3,
 		market: 4,
 		maintenance: 5,
 		transport: 6,
@@ -27,6 +26,10 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 		caravan: 53,
 		tradingpartner: 54,
 		clinic: 55,
+
+		// unique
+		grove: 3,
+		greenhouse: "greenhouse",
 	};
 	
 	var LocaleVO = Ash.Class.extend({
@@ -69,6 +72,7 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 				case localeTypes.clinic: difficulty = 0.2; break;
 				case localeTypes.factory: difficulty = 1; break;
 				case localeTypes.farm: difficulty = 0.4; break;
+				case localeTypes.greenhouse: difficulty = 0.2; break;
 				case localeTypes.grocery: difficulty = 0.4; break;
 				case localeTypes.grove: difficulty = 0; break;
 				case localeTypes.hermit: difficulty = 0.5; break;
@@ -133,6 +137,9 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 					res.addResource(resourceNames.water, defaultAmount, "definition");
 					res.addResource(resourceNames.herbs, abundant, "definition");
 					break;
+				case localeTypes.greenhouse:
+					res.addResource(resourceNames.water, defaultAmount, "definition");
+					break;
 				case localeTypes.market:
 					res.addResource(resourceNames.food, abundant, "definition");
 					res.addResource(resourceNames.water, defaultAmount, "definition");
@@ -169,6 +176,7 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 				case localeTypes.factory:
 				case localeTypes.farm:
 				case localeTypes.grove:
+				case localeTypes.greenhouse:
 				case localeTypes.library:
 				case localeTypes.maintenance:
 				case localeTypes.sewer:
@@ -205,6 +213,8 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 				case localeTypes.farm:
 					return [ "agriculture" ];
 				case localeTypes.grove:
+					return [ "nature" ];
+				case localeTypes.greenhouse:
 					return [ "nature" ];
 				case localeTypes.library:
 					return [ "science" ];
