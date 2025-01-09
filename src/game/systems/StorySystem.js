@@ -38,40 +38,44 @@ define([
 		},
 
 		setupTriggers: function () {
-			GlobalSignals.registerTrigger(GlobalSignals.slowUpdateSignal, StoryConstants.triggers.update);
-			GlobalSignals.registerTrigger(GlobalSignals.sectorScavengedSignal, StoryConstants.triggers.action_scavenge);
-			GlobalSignals.registerTrigger(GlobalSignals.sectorScoutedSignal, StoryConstants.triggers.action_scout);
-			GlobalSignals.registerTrigger(GlobalSignals.improvementBuiltSignal, StoryConstants.triggers.action_build);
 			GlobalSignals.registerTrigger(GlobalSignals.actionCompletedSignal, StoryConstants.triggers.action_any);
+			GlobalSignals.registerTrigger(GlobalSignals.actionRewardsCollectedSignal, StoryConstants.triggers.action_collect_rewards);
+			GlobalSignals.registerTrigger(GlobalSignals.campEventStartedSignal, StoryConstants.triggers.camp_event);
+			GlobalSignals.registerTrigger(GlobalSignals.dialogueCompletedSignal, StoryConstants.triggers.action_complete_dialogue);
+			GlobalSignals.registerTrigger(GlobalSignals.featureUnlockedSignal, StoryConstants.triggers.feature_unlocked);
+			GlobalSignals.registerTrigger(GlobalSignals.improvementBuiltSignal, StoryConstants.triggers.action_build);
+			GlobalSignals.registerTrigger(GlobalSignals.inventoryChangedSignal, StoryConstants.triggers.change_inventory);
+			GlobalSignals.registerTrigger(GlobalSignals.localeScoutedSignal, StoryConstants.triggers.locale_scouted);
 			GlobalSignals.registerTrigger(GlobalSignals.playerEnteredCampSignal, StoryConstants.triggers.action_enter_camp);
 			GlobalSignals.registerTrigger(GlobalSignals.playerLeftCampSignal, StoryConstants.triggers.action_leave_camp);
-			GlobalSignals.registerTrigger(GlobalSignals.actionRewardsCollectedSignal, StoryConstants.triggers.action_collect_rewards);
-			GlobalSignals.registerTrigger(GlobalSignals.inventoryChangedSignal, StoryConstants.triggers.change_inventory);
 			GlobalSignals.registerTrigger(GlobalSignals.playerPositionChangedSignal, StoryConstants.triggers.change_position);
-			GlobalSignals.registerTrigger(GlobalSignals.featureUnlockedSignal, StoryConstants.triggers.feature_unlocked);
+			GlobalSignals.registerTrigger(GlobalSignals.sectorScavengedSignal, StoryConstants.triggers.action_scavenge);
+			GlobalSignals.registerTrigger(GlobalSignals.sectorScoutedSignal, StoryConstants.triggers.action_scout);
+			GlobalSignals.registerTrigger(GlobalSignals.slowUpdateSignal, StoryConstants.triggers.update);
+			GlobalSignals.registerTrigger(GlobalSignals.storyFlagChangedSignal, StoryConstants.triggers.story_flag_changed);
 		},
 
-		triggerStories: function (triggerID) {
+		triggerStories: function (triggerID, param) {
 			let storiesByTrigger = this.storiesByTrigger[triggerID];
 			if (!storiesByTrigger) return;
 			for (let i = 0; i < storiesByTrigger.length; i++) {
 				let storyID = storiesByTrigger[i];
-				this.triggerStartStory(storyID);
+				this.triggerStartStory(storyID, param);
 			}
 		},
 
-		triggerStartStory: function (storyID) {
-			if (!this.isStoryAvailable(storyID)) return;
+		triggerStartStory: function (storyID, triggerParam) {
+			if (!this.isStoryAvailable(storyID, triggerParam)) return;
 			this.startStory(storyID);
 		},
 
-		triggerSegments: function (triggerID) {
+		triggerSegments: function (triggerID, param) {
 			// complete active segments
 			let activeSegments = this.getActiveSegments();
 			for (let i = 0; i < activeSegments.length; i++) {
 				let segmentVO = activeSegments[i];
 				if (segmentVO.completeTrigger != triggerID) continue;
-				this.triggerCompleteSegment(segmentVO);
+				this.triggerCompleteSegment(segmentVO, param);
 			}
 
 			// start next segments
@@ -79,17 +83,17 @@ define([
 			for (let i = 0; i < possibleNextSegments.length; i++) {
 				let segmentVO = possibleNextSegments[i];
 				if (segmentVO.startTrigger != triggerID) continue;
-				this.triggerStartSegment(segmentVO);
+				this.triggerStartSegment(segmentVO, param);
 			}
 		},
 
-		triggerCompleteSegment: function (segmentVO) {
-			if (!this.isConditionsMet(segmentVO.completeConditions)) return;
+		triggerCompleteSegment: function (segmentVO, triggerParam) {
+			if (!this.isConditionsMet(segmentVO.completeConditions, triggerParam)) return;
 			this.completeSegment(segmentVO);
 		},
 
-		triggerStartSegment: function (segmentVO) {
-			if (!this.isConditionsMet(segmentVO.startConditions)) return;
+		triggerStartSegment: function (segmentVO, triggerParam) {
+			if (!this.isConditionsMet(segmentVO.startConditions, triggerParam)) return;
 			this.startSegment(segmentVO);
 		},
 
@@ -137,7 +141,8 @@ define([
 
 			for (let flagID in effectVO.storyFlags) {
 				let value = effectVO.storyFlags[flagID] == true;
-				GameGlobals.gameState.storyFlags[flagID] = value;
+				GameGlobals.gameState.setStoryFlag(flagID, value);
+				GlobalSignals.storyFlagChangedSignal.dispatch(flagID);
 			}
 
 			if (effectVO.popup) {
@@ -151,7 +156,10 @@ define([
 				GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), msg, LogConstants.MSG_VISIBILITY_GLOBAL);
 			}
 
-			// TODO show dialogues (can we use DialogueSystem?)
+			if (effectVO.dialogue) {
+				GlobalSignals.triggerDialogueSignal.dispatch(effectVO.dialogue.owner, effectVO.dialogue.storyTag);
+			}
+
 			// TODO process result VOs
 		},
 
@@ -177,7 +185,9 @@ define([
 					let storyVO = StoryConstants.getStory(storyID);
 					let activeSegmentID = GameGlobals.gameState.storyStatus[storyID];
 					let activeSegmentVO = storyVO.getSegment(activeSegmentID);
-					result.push(activeSegmentVO);
+					if (activeSegmentVO) {
+						result.push(activeSegmentVO);
+					}
 				}
 			}
 
@@ -259,17 +269,17 @@ define([
 			return null;
 		},
 
-		isStoryAvailable: function (storyID) {
+		isStoryAvailable: function (storyID, triggerParam) {
 			let storyVO = StoryConstants.getStory(storyID);
 			if (!storyVO) return false;
 			let status = this.getStoryStatus(storyID);
 			if (status != StoryConstants.storyStatuses.PENDING) return false;
-			if (!this.isConditionsMet(storyVO.startConditions)) return false;
+			if (!this.isConditionsMet(storyVO.startConditions, triggerParam)) return false;
 
 			return true;
 		},
 
-		isConditionsMet: function (conditions) {
+		isConditionsMet: function (conditions, triggerParam) {
 			let reqsCheck = GameGlobals.playerActionsHelper.checkGeneralRequirementaInternal(conditions);
 			if (reqsCheck.value < 1) return false;
 
@@ -278,6 +288,18 @@ define([
 				if (conditions.action != lastAction) {
 					return false;
 				}
+			}
+
+			if (conditions.dialogue) {
+				if (conditions.dialogue != triggerParam) return false;
+			}
+
+			if (conditions.eventType) {
+				if (conditions.eventType != triggerParam) return false;
+			}
+
+			if (conditions.locale) {
+				if (conditions.locale != triggerParam) return false;
 			}
 
 			return true;
@@ -293,9 +315,9 @@ define([
 			return StoryConstants.storyStatuses.STARTED;
 		},
 
-		onTrigger: function (triggerID) {
-			this.triggerStories(triggerID);
-			this.triggerSegments(triggerID);
+		onTrigger: function (triggerID, param) {
+			this.triggerStories(triggerID, param);
+			this.triggerSegments(triggerID, param);
 		},
 
 		onGameStateReady: function () {

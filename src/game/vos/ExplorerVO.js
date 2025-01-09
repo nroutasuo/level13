@@ -13,6 +13,7 @@ define(['ash'], function (Ash) {
 		
 		inParty: false,
 		pendingAbilityLevel: 0,
+		pendingDialogue: null, // storyTag
 		numFights: 0,
 		numSteps: 0,
 		numExcursions: 0,

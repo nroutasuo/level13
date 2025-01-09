@@ -6,6 +6,7 @@ define(['ash'], function (Ash) {
 		pages: [],
 		pagesByID: {},
 		conditions: {},
+		storyTag: null,
 		isRepeatable: true,
 		isUrgent: false,
 	

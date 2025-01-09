@@ -29,8 +29,14 @@ define(['ash',
                 return currentPageVO;
             },
 
-            isDialogueValid: function (dialogueVO, explorerVO) {
+            isDialogueValid: function (dialogueVO, explorerVO, storyTag) {
                 if (!dialogueVO) return false;
+
+                if (!storyTag && explorerVO.pendingDialogue) storyTag = explorerVO.pendingDialogue;
+
+                if (storyTag && dialogueVO.storyTag !== storyTag) return false;
+                if (!storyTag && dialogueVO.storyTag) return false;
+
                 let conditions = dialogueVO.conditions;
                 if (!conditions) return true;
 
@@ -108,6 +114,8 @@ define(['ash',
 
                 if (!explorerVO) return result;
 
+                if (!setting) setting = DialogueConstants.dialogueSettings.interact;
+
                 let validDialogues = this.getExplorerValidDialogues(explorerVO, setting);
 
                 if (!explorerVO.seenDialogues) result = DialogueConstants.STATUS_NEW;
@@ -123,6 +131,10 @@ define(['ash',
             },
 
             getExplorerDialogueStatusForEntry: function (explorerVO, entry) {
+                if (explorerVO.pendingDialogue && explorerVO.pendingDialogue == entry.storyTag)  {
+                    return DialogueConstants.STATUS_FORCED;
+                }
+                
                 if (explorerVO.seenDialogues && explorerVO.seenDialogues.indexOf(entry.dialogueID) < 0) {
                     if (entry.isUrgent) {
                         return DialogueConstants.STATUS_URGENT;
@@ -145,10 +157,13 @@ define(['ash',
                 return validDialogues[randomIndex].dialogueID;
             },
 
-            getExplorerValidDialogues: function (explorerVO, setting) {
+            getExplorerValidDialogues: function (explorerVO, setting, storyTag) {
                 if (!explorerVO) return [];
+                if (!explorerVO.dialogueSource) return [];
                 
                 let entries = DialogueConstants.getDialogueEntries(explorerVO.dialogueSource, setting);
+
+                if (!storyTag && explorerVO.pendingDialogue) storyTag = explorerVO.pendingDialogue;
 
                 let result = [];
                 let highestStatus = 0;
@@ -161,7 +176,7 @@ define(['ash',
                         continue;
                     }
 
-                    if (!this.isDialogueValid(entry, explorerVO)) continue;
+                    if (!this.isDialogueValid(entry, explorerVO, storyTag)) continue;
 
                     let status = this.getExplorerDialogueStatusForEntry(explorerVO, entry);
 

@@ -1,16 +1,21 @@
 // A system that updates the player's resource storage capacity based on their currently equipped bag
 define([
 	'ash',
+	'game/GlobalSignals',
 	'game/GameGlobals',
+	'game/constants/DialogueConstants',
     'game/nodes/player/DialogueNode',
 	'game/components/player/DialogueComponent'
-], function (Ash, GameGlobals, DialogueNode, DialogueComponent) {
+], function (Ash, GlobalSignals, GameGlobals, DialogueConstants, DialogueNode, DialogueComponent) {
 	
 	let DialogueSystem = Ash.System.extend({
 
         dialogueNodes: null,
+
+		pendingDialogues: [],
 		
 		constructor: function () {
+			this.pendingDialogues = [];
 		},
 
 		addToEngine: function (engine) {
@@ -18,6 +23,8 @@ define([
             
 			this.dialogueNodes = engine.getNodeList(DialogueNode);
 			this.dialogueNodes.nodeAdded.add(this.onDialogueNodeAdded, this);
+
+			GlobalSignals.add(this, GlobalSignals.triggerDialogueSignal, this.onTriggerDialogue);
 		},
 
 		removeFromEngine: function (engine) {
@@ -28,8 +35,16 @@ define([
 		},
 
 		update: function () {
-			if (!this.dialogueNodes.head) return;
+			if (this.dialogueNodes.head) {
+				this.updateActiveDialogue();
+			} else if (this.pendingDialogues.length > 0) {
+				this.updatePendingDialogues();
+			}
+		},
 
+		updateActiveDialogue: function () {
+			if (!this.dialogueNodes.head) return;
+			
 			let dialogueComponent = this.dialogueNodes.head.dialogue;
 
 			if (dialogueComponent.pendingSelectionID) {
@@ -41,6 +56,49 @@ define([
 				this.endDialogue();
 				return;
 			}
+		},
+
+		updatePendingDialogues: function () {
+			for (let i = 0; i < this.pendingDialogues.length; i++) {
+				let pendingDialogue = this.pendingDialogues[i]; 
+				if (this.tryTriggerPendingDialogue(pendingDialogue)) {
+					this.pendingDialogues.splice(i, 1);
+					return;
+				}
+			}
+		},
+
+		tryTriggerPendingDialogue: function (pendingDialogueVO) {
+			// TODO formalize
+
+			let owner = pendingDialogueVO.owner;
+			
+			switch (owner) {
+				case "explorer":
+					return this.tryTriggerPendingExplorerDialogue(pendingDialogueVO.storyTag);
+				default:
+					log.w("unknown owner for pending dialogue: " + owner);
+					return false;
+			}
+		},
+
+		tryTriggerPendingExplorerDialogue: function (storyTag) {
+			let explorers = GameGlobals.playerHelper.getExplorers();
+			let sortedExplorers = explorers.sort((a, b) => (a.inParty ? 1 : 0) - (b.inParty ? 1 : 0));
+			
+			let setting = DialogueConstants.dialogueSettings.interact;
+
+			for (let i = 0; i < sortedExplorers.length; i++) {
+				let explorerVO = sortedExplorers[i];
+				let validDialogues = GameGlobals.dialogueHelper.getExplorerValidDialogues(explorerVO, setting, storyTag);
+				if (validDialogues.length > 0) {
+					log.i("add pending dialogue: " + storyTag, this);
+					explorerVO.pendingDialogue = storyTag;
+					return true;
+				}
+			}
+
+			return false;
 		},
 
 		startDialogue: function () {
@@ -117,9 +175,21 @@ define([
 		},
 
 		endDialogue: function () {
+			let dialogueVO = this.dialogueNodes.head.dialogue.activeDialogue;
+			let explorerVO = this.dialogueNodes.head.dialogue.explorerVO;
+			
 			this.endPage();
 
 			this.dialogueNodes.head.entity.remove(DialogueComponent);
+
+			if (explorerVO && explorerVO.pendingDialogue == dialogueVO.storyTag) {
+				log.i("complete pending dialogue: " + dialogueVO.storyTag, this);
+				explorerVO.pendingDialogue = null;
+			}
+
+			if (dialogueVO && dialogueVO.storyTag) {
+				GlobalSignals.dialogueCompletedSignal.dispatch(dialogueVO.storyTag);
+			}
 		},
 
 		selectNextPage: function () {
@@ -129,7 +199,11 @@ define([
 
         onDialogueNodeAdded: function (node) {
             this.startDialogue();
-        }
+        },
+
+		onTriggerDialogue: function (owner, storyTag) {
+			this.pendingDialogues.push({ owner: owner, storyTag: storyTag });
+		},
 		
 		
 	});

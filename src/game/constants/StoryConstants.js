@@ -58,18 +58,24 @@ define([
 			action_any: "action_any",
 			action_build: "action_build",
 			action_collect_rewards: "action_collect_rewards",
+			action_complete_dialogue: "action_complete_dialogue",
 			action_enter_camp: "action_enter_camp",
 			action_leave_camp: "action_leave_camp",
 			action_scavenge: "action_scavenge",
 			action_scout: "action_scout",
+			camp_event: "camp_event",
 			change_inventory: "change_inventory",
 			change_position: "change_position",
 			feature_unlocked: "feature_unlocked",
+			locale_scouted: "locale_scouted",
+			story_flag_changed: "story_flag_changed",
 			update: "update",
 		},
 
 		flags: {
-			SEARCHING_FOR_GROUND: "SEARCHING_FOR_GROUND"
+			SEARCHING_FOR_GROUND: "SEARCHING_FOR_GROUND",
+			PENDING_DISEASE: "PENDING_DISEASE",
+			SEARCHING_FOR_CURE: "SEARCHING_FOR_CURE",
 		},
 
 		stories: {}, // id -> StoryVO
@@ -113,8 +119,11 @@ define([
 				result.popup.text = data.popup;
 			}
 
+			// TODO check dialogue definition parts in more detail
+
 			result.result = data.result;
 			result.log = data.log;
+			result.dialogue = data.dialogue;
 			result.storyFlags = data.storyFlags || {};
 
 			return result;

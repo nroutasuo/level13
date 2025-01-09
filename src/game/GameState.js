@@ -183,6 +183,15 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			return result;
 		},
 
+		getStoryFlag: function (flagID) {
+			return this.storyFlags[flagID] || false;
+		},
+
+		setStoryFlag: function (flagID, value) {
+			 if (value !== false) value = true;
+			this.storyFlags[flagID] = value;
+		},
+
 		passTime: function (seconds) {
 			this.extraUpdateTime = seconds;
 			var cooldownkeys = Object.keys(this.actionCooldownEndTimestamps);

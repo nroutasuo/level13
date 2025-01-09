@@ -32,6 +32,7 @@ define([
 			
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
 			GlobalSignals.add(this, GlobalSignals.actionCompletedSignal, this.onActionCompleted);
+			GlobalSignals.add(this, GlobalSignals.dialogueCompletedSignal, this.onDialogueCompleted);
 			GlobalSignals.add(this, GlobalSignals.explorersChangedSignal, this.onExplorersChanged);
 			GlobalSignals.add(this, GlobalSignals.campEventStartedSignal, this.onCampEventStarted);
 			GlobalSignals.add(this, GlobalSignals.campEventEndedSignal, this.onCampEventEnded);
@@ -102,7 +103,7 @@ define([
 		
 		updateBubble: function () {
 			let inCamp = GameGlobals.playerHelper.isInCamp();
-			let bubbleNumber = inCamp ? this.getNumRecruits() + this.getNumVisitors() + this.getNumRefugees() : 0;
+			let bubbleNumber = inCamp ? this.getNumRecruits() + this.getNumVisitors() + this.getNumRefugees() + this.getNumUrgentDialogues() : 0;
 			let isStatIncreaseAvailable = this.getIsStatIncreaseAvailable();
 			
 			let state = bubbleNumber + (isStatIncreaseAvailable ? 1000 : 0);
@@ -290,7 +291,7 @@ define([
 				let indicator = $(this).find(".npc-dialogue-indicator");
 				
 				$(indicator).toggleClass("indicator-new", status == DialogueConstants.STATUS_NEW);
-				$(indicator).toggleClass("indicator-urgent", status == DialogueConstants.STATUS_URGENT);
+				$(indicator).toggleClass("indicator-urgent", status == DialogueConstants.STATUS_URGENT || status == DialogueConstants.STATUS_FORCED);
 			});
 		},
 		
@@ -363,6 +364,19 @@ define([
 			return 0;
 		},
 		
+		getNumUrgentDialogues: function () {
+			let result = 0;
+			let explorers = GameGlobals.playerHelper.getExplorers();
+			for (let i = 0; i < explorers.length; i++) {
+				let explorerVO = explorers[i];
+				let status = GameGlobals.dialogueHelper.getExplorerDialogueStatus(explorerVO);
+				if (status == DialogueConstants.STATUS_URGENT || status == DialogueConstants.STATUS_FORCED) {
+					result++;
+				}
+			}
+			return result;
+		},
+		
 		getIsStatIncreaseAvailable: function () {
 			let inCamp = GameGlobals.playerHelper.isInCamp();
 			if (!inCamp) return false;
@@ -428,6 +442,10 @@ define([
 		},
 
 		onActionCompleted: function () {
+			this.updateDialogueIndicators();
+		},
+
+		onDialogueCompleted: function () {
 			this.updateDialogueIndicators();
 		}
 	

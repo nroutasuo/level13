@@ -1133,6 +1133,10 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					modifier = "flourishing";
 					noun = "grove";
 					break;
+				case localeTypes.greenhouse:
+					modified = "abandoned";
+					noun = "greenhouse";
+					break;
 				case localeTypes.market:
 					noun = sectorFeatures.level > 15 ? "shopping center" : "market";
 					break;

@@ -49,6 +49,7 @@ define(['ash',], function (Ash) {
 		sectorScoutedSignal: new Ash.Signals.Signal(),
 		sectorVisitedSignal: new Ash.Signals.Signal(),
 		sectorRevealedSignal: new Ash.Signals.Signal(),
+		localeScoutedSignal: new Ash.Signals.Signal(),
 		collectorCollectedSignal: new Ash.Signals.Signal(),
 		improvementBuiltSignal: new Ash.Signals.Signal(),
 		itemUsedSignal: new Ash.Signals.Signal(),
@@ -64,12 +65,17 @@ define(['ash',], function (Ash) {
 		fightEndedSignal: new Ash.Signals.Signal(),
 		workersAssignedSignal: new Ash.Signals.Signal(),
 		featureUnlockedSignal: new Ash.Signals.Signal(),
+		storyFlagChangedSignal: new Ash.Signals.Signal(),
 		campRenamedSignal: new Ash.Signals.Signal(),
 		caravanSentSignal: new Ash.Signals.Signal(),
 		mapPieceUsedSignal: new Ash.Signals.Signal(),
 		workshopClearedSignal: new Ash.Signals.Signal(),
 		launchedSignal: new Ash.Signals.Signal(),
 		launchCompletedSignal: new Ash.Signals.Signal(),
+
+		// story and dialogue
+		dialogueCompletedSignal: new Ash.Signals.Signal(),
+		triggerDialogueSignal: new Ash.Signals.Signal(),
 
 		// stats changes
 		visionChangedSignal: new Ash.Signals.Signal(),
@@ -128,7 +134,7 @@ define(['ash',], function (Ash) {
 		},
 
 		registerTrigger: function (signal, triggerID) {
-			signal.add(function () { GlobalSignals.triggerSignal.dispatch(triggerID); });
+			signal.add(function (p1) { GlobalSignals.triggerSignal.dispatch(triggerID, p1); });
 		},
 
 	};

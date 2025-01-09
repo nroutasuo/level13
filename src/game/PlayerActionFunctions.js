@@ -925,6 +925,8 @@ define(['ash',
 			};
 			
 			this.handleOutActionResults(action, messages, true, hasCustomReward, successCallback);
+
+			GlobalSignals.localeScoutedSignal.dispatch(localeVO.type);
 		},
 
 		useSpring: function () {

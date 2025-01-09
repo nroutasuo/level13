@@ -184,6 +184,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 				});
 			} else {
 				$("#" + id).data("fading", false);
+				$("#" + id).data("closing", false);
 				GameGlobals.uiFunctions.toggle("#" + id, false);
 				GlobalSignals.popupClosedSignal.dispatch(id);
 				popupManager.showQueuedPopup();

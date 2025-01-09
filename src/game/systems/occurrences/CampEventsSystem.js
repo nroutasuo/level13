@@ -10,8 +10,7 @@ define([
 	'game/constants/ItemConstants',
 	'game/constants/LogConstants',
 	'game/constants/OccurrenceConstants',
-	'game/constants/TradeConstants',
-	'game/constants/TribeConstants',
+	'game/constants/StoryConstants',
 	'game/constants/TextConstants',
 	'game/constants/UIConstants',
 	'game/constants/WorldConstants',
@@ -33,7 +32,7 @@ define([
 	'game/vos/RaidVO',
 	'text/Text'
 ], function (
-	Ash, MathUtils, GameGlobals, GlobalSignals, GameConstants, CampConstants, ExplorerConstants, ItemConstants, LogConstants, OccurrenceConstants, TradeConstants, TribeConstants, TextConstants, UIConstants, WorldConstants,
+	Ash, MathUtils, GameGlobals, GlobalSignals, GameConstants, CampConstants, ExplorerConstants, ItemConstants, LogConstants, OccurrenceConstants, StoryConstants, TextConstants, UIConstants, WorldConstants,
 	PlayerResourcesNode, CampNode, TribeUpgradesNode,
 	CampComponent, PositionComponent, ItemsComponent,
 	DisasterComponent, DiseaseComponent, RaidComponent, TraderComponent, RecruitComponent, RefugeesComponent, VisitorComponent,  CampEventTimersComponent,
@@ -226,13 +225,13 @@ define([
 			
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.accident:
-					return campNode.population;
+					return campNode.camp.population;
 
 				case OccurrenceConstants.campOccurrenceTypes.disaster:
 					return 1;
 
 				case OccurrenceConstants.campOccurrenceTypes.disease:
-					return campNode.population;
+					return campNode.camp.population;
 
 				case OccurrenceConstants.campOccurrenceTypes.raid:
 					return this.getRaidDanger(campNode.entity);
@@ -469,7 +468,7 @@ define([
 			log.i("Start " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ") (" + duration + "s)");
 			
 			GameGlobals.gameState.increaseGameStatKeyed("numCampEventsByType", event);
-			GlobalSignals.campEventStartedSignal.dispatch();
+			GlobalSignals.campEventStartedSignal.dispatch(event);
 
 			if (logMsg) this.addLogMessage(logMsg, null, null, campNode);
 
@@ -716,6 +715,9 @@ define([
 					let currentBestTotal = getExplorerFightTotal(currentBestFighter);
 					let typicalTotal = getExplorerFightTotal(typicalFighter);
 					return currentBestTotal < 0.75 * typicalTotal;
+				
+				case OccurrenceConstants.campOccurrenceTypes.disease:
+					return GameGlobals.gameState.getStoryFlag(StoryConstants.flags.PENDING_DISEASE);
 						
 				default: return false;
 			}
@@ -772,7 +774,10 @@ define([
 					let storage = GameGlobals.resourcesHelper.getCurrentCampStorage(campNode.entity);
 					let hasHerbs = storage.resources.getResource(resourceNames.herbs) > 0;
 					let hasMedicine = storage.resources.getResource(resourceNames.medicine) > 0;
-					return 1 - OccurrenceConstants.getDiseaseOutbreakChance(campNode.camp.population, hasHerbs, hasMedicine);
+					let isPendingDisease = GameGlobals.gameState.getStoryFlag(StoryConstants.flags.PENDING_DISEASE);
+					let value = 1 - OccurrenceConstants.getDiseaseOutbreakChance(campNode.camp.population, hasHerbs, hasMedicine);
+					if (isPendingDisease) value = value / 2;
+					return value;
 			}
 
 

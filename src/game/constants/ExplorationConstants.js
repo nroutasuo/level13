@@ -9,6 +9,7 @@ define(['ash', 'game/vos/LocaleVO'], function (Ash, LocaleVO) {
 		getScoutLocaleReward: function (localeType, campOrdinal) {
 			switch (localeType) {
 				case localeTypes.grove:
+				case localeTypes.greenhouse:
 				case localeTypes.tradingpartner:
 					return 0;
 				

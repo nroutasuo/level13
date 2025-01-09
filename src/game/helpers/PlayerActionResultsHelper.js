@@ -335,6 +335,7 @@ define([
 			// tribe stats
 			if (localeVO.type == localeTypes.grove) {
 				rewards.gainedHope = 2;
+			} else if (localeVO.type == localeTypes.greenhouse) {
 			} else if (localeVO.type == localeTypes.tradingpartner) {
 			} else {
 				rewards.gainedEvidence = ExplorationConstants.getScoutLocaleReward(localeVO.type, campOrdinal);
@@ -345,7 +346,7 @@ define([
 				// hard-coded explorer
 				rewards.gainedExplorers = [ GameGlobals.explorerHelper.getNewPredefinedExplorer(explorerID) ];
 			} else {
-				if (localeVO.type !== localeTypes.tradingpartner && localeVO.type != localeTypes.grove) {
+				if (localeVO.type !== localeTypes.tradingpartner && localeVO.type != localeTypes.grove && localeVO.type != localeTypes.greenhouse) {
 					// population and explorers
 					if (localeCategory !== "u") {
 						rewards.gainedExplorers = this.getRewardExplorers(0.075);

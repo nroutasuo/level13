@@ -431,7 +431,7 @@ define([
 				if (requirements.storyFlags) {
 					for (let flagID in requirements.storyFlags) {
 						let requiredValue = requirements.storyFlags[flagID];
-						let currentValue = GameGlobals.gameState.storyFlags[flagID] || false;
+						let currentValue = GameGlobals.gameState.getStoryFlag(flagID);
 						let result = this.checkRequirementsBoolean(requiredValue, currentValue);
 						if (result) return result;
 					}
@@ -1421,6 +1421,13 @@ define([
 					if (result) {
 						return result;
 					}
+				}
+
+				if (typeof requirements.hasForcedDialogue !== "undefined") {
+					let currentValue = GameGlobals.playerHelper.hasForcedDialogue();
+					let requiredValue = requirements.hasForcedDialogue;
+					let result = this.checkRequirementsBoolean(requiredValue, currentValue, "An explorer wants to talk to you.", "Requires pending dialogue.");
+					if (result) return result;
 				}
 
 				if (requirements.busyAction) {
@@ -2503,6 +2510,7 @@ define([
 					switch (localeVO.type) {
 						case localeTypes.tradingPartner:
 						case localeTypes.grove:
+						case localeTypes.greenhouse:
 							return 0;
 					}
 					return 1;

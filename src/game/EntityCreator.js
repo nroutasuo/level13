@@ -267,6 +267,7 @@ define([
 				let explorerVO = explorers[i];
 				explorerVO.icon = explorerVO.icon.replace("followers", "explorers");
 				explorerVO.trust = explorerVO.trust || 0;
+				explorerVO.dialogueSource = explorerVO.dialogueSource || "explorer_generic";
 			}
 		},
 

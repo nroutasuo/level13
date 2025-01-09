@@ -3003,7 +3003,8 @@
             "bag": {
                 "validSelection": true
             },
-            "busy": false
+            "busy": false,
+            "hasForcedDialogue": false
         },
         "move_camp_global": {
             "busy": false

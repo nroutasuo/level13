@@ -4,6 +4,7 @@ define([
 	'utils/ValueCache',
 	'game/GameGlobals',
 	'game/constants/BagConstants',
+	'game/constants/DialogueConstants',
 	'game/constants/GameConstants',
 	'game/constants/ExplorerConstants',
 	'game/constants/ImprovementConstants',
@@ -33,6 +34,7 @@ define([
 	ValueCache,
 	GameGlobals,
 	BagConstants,
+	DialogueConstants,
 	GameConstants,
 	ExplorerConstants,
 	ImprovementConstants,
@@ -95,6 +97,18 @@ define([
 
 		isAwake: function () {
 			return this.playerStatsNodes.head.vision.isAwake;
+		},
+
+		hasForcedDialogue: function () {
+			let explorers = this.getExplorers();
+			for (let i = 0; i < explorers.length; i++) {
+				let explorerVO = explorers[i];
+				let status = GameGlobals.dialogueHelper.getExplorerDialogueStatus(explorerVO);
+				if (status == DialogueConstants.STATUS_FORCED) {
+					return true;
+				}
+			}
+			return false;
 		},
 		
 		getBusyTimeLeft: function () {
@@ -510,6 +524,10 @@ define([
 			let hopeComponent = this.playerStatsNodes.head.entity.get(HopeComponent);
 			let hasDeity = hopeComponent != null;
 			return hasDeity ? hopeComponent.maxHope : 0;
+		},
+
+		getExplorers: function () {
+			return this.playerStatsNodes.head.explorers.getAll();
 		},
 
 		getVisibleGameStats: function () {
