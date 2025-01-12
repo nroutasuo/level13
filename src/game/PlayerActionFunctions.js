@@ -1504,6 +1504,11 @@ define(['ash',
 				log.w("no such explorer: " + explorerID);
 				return;
 			}
+
+			if (!GameGlobals.explorerHelper.isDismissable(explorer)) {
+				log.w("can't dismiss explorer " + explorerID);
+				return;
+			}
 			
 			GameGlobals.uiFunctions.showConfirmation(
 				"Are you sure you want to dismiss " + explorer.name + "?",
@@ -1929,7 +1934,7 @@ define(['ash',
 				this.buildImprovement(action, GameGlobals.playerActionsHelper.getImprovementNameForAction(action), sector);
 
 				GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_BUILT_SPACESHIP, msg, msgOptions);
-				if (GameGlobals.endingHelper.isReadyForLaunch(true)) {
+				if (GameGlobals.storyHelper.isReadyForLaunch(true)) {
 					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "The colony ship is ready to launch.", msgOptions);
 				}
 			} else {

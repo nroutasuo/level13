@@ -2004,18 +2004,23 @@ define([
 		getLostExplorers: function (loseProbability) {
 			let lostExplorers = [];
 			
-			if (loseProbability <= 0)
-				return lostExplorers;
+			if (loseProbability <= 0) return [];
 			
 			let playerExplorers = this.playerStatsNodes.head.explorers.getParty();
-			if (playerExplorers.length < 1)
-				return lostExplorers;
+			if (playerExplorers.length < 1) return [];
 				
 			let fightExplorers = this.playerStatsNodes.head.explorers.getExplorersByType(ExplorerConstants.explorerType.FIGHTER);
-			let possibleToLoseExplorers = fightExplorers.length > 1 ? playerExplorers : playerExplorers.filter(explorer => ExplorerConstants.getExplorerTypeForAbilityType(explorer.abilityType) != ExplorerConstants.explorerType.FIGHTER);
+
+			let isValidLostExplorer = function (explorerVO) {
+				let explorerType = ExplorerConstants.getExplorerTypeForAbilityType(explorerVO.abilityType);
+				if (fightExplorers.length == 1 && explorerType == ExplorerConstants.explorerType.FIGHTER) return false;
+				if (GameGlobals.explorerHelper.isDismissable(explorerVO)) return false;
+				return true;
+			};
+
+			let possibleToLoseExplorers = playerExplorers.filter(explorerVO => isValidLostExplorer(explorerVO));
 			
-			if (possibleToLoseExplorers.length < 1)
-				return lostExplorers;
+			if (possibleToLoseExplorers.length < 1) return [];
 				
 			let loseOne = Math.random() < loseProbability;
 			

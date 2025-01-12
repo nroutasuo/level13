@@ -163,19 +163,6 @@ define([
 			// TODO process result VOs
 		},
 
-		getActiveStories: function () {
-			let result = [];
-
-			for (let storyID in GameGlobals.gameState.storyStatus) {
-				let status = this.getStoryStatus(storyID);
-				if (status == StoryConstants.storyStatuses.STARTED) {
-					result.push(storyID);
-				}
-			}
-
-			return result;
-		},
-
 		getActiveSegments: function () {
 			let result = [];
 

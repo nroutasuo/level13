@@ -98,7 +98,7 @@ define([
 				(this.tabCounts.current.visible.regular - this.tabCounts.lastShown.visible.regular) +
 				(this.tabCounts.current.available.colony - this.tabCounts.lastShown.available.colony) +
 				(this.tabCounts.current.visible.colony - this.tabCounts.lastShown.visible.colony);
-			if (GameGlobals.endingHelper.isReadyForLaunch())
+			if (GameGlobals.storyHelper.isReadyForLaunch())
 				newBubbleNumber = 1;
 			if (this.bubbleNumber === newBubbleNumber)
 				return;
@@ -211,7 +211,7 @@ define([
 			let visibleColonyProjects = this.tabCounts.current.visible.colony + (this.numBuiltColonyProjects || 0);
 				
 			GameGlobals.uiFunctions.toggle("#in-improvements-level-empty-message", this.tabCounts.lastShown.visible.regular <= 0);
-			GameGlobals.uiFunctions.toggle("#container-in-improvements-colony", visibleColonyProjects > 0 || GameGlobals.endingHelper.isReadyForLaunch() || GameGlobals.gameState.isLaunched);
+			GameGlobals.uiFunctions.toggle("#container-in-improvements-colony", visibleColonyProjects > 0 || GameGlobals.storyHelper.isReadyForLaunch() || GameGlobals.gameState.isLaunched);
 		},
 		
 		resetHidden: function () {

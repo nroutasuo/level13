@@ -329,6 +329,13 @@ define([
 				return { value: 0, reason: "Can't build camp here"};
 			}
 
+			if (baseActionID == "dismiss_explorer") {
+				let explorerVO = this.playerStatsNodes.head.explorers.getExplorerByID(actionIDParam);
+				if (explorerVO && !GameGlobals.explorerHelper.isDismissable(explorerVO)) {
+					return { value: 0, reason: "Can't dismiss this explorer"};
+				}
+			}
+
 			if (costs) {
 				if (costs.stamina > 0) {
 					if (!requirements) requirements = {};
