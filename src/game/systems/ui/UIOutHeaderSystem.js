@@ -1103,14 +1103,21 @@ define([
 			visionMaxFactor = Math.min(100, visionMaxFactor);
 			let visionLevel = Math.ceil(visionMaxFactor / 25);
 
+			this.visionLevel = visionLevel;
+
 			UIState.refreshState(this, "vision-level", visionLevel, function () {
-				let sunlit = this.elements.body.hasClass("sunlit");
-				let backgroundColor = ColorConstants.getColor(sunlit, "bg_page_vision_level_" + visionLevel);
-				$("body").css("background", backgroundColor);
+				this.updatePageBackgroundColor();
 				for (let i = 1; i <= 4; i++) {
 					this.elements.body.toggleClass("vision-level-" + i, i == visionLevel);
 				}
 			});
+		},
+
+		updatePageBackgroundColor: function () {
+			let visionLevel = this.visionLevel;
+			let sunlit = this.elements.body.hasClass("sunlit");
+			let backgroundColor = ColorConstants.getColor(sunlit, "bg_page_vision_level_" + visionLevel);
+			$("body").css("background", backgroundColor);
 		},
 		
 		updateEndingView: function () {
@@ -1149,6 +1156,7 @@ define([
 				sys.elements.body.toggleClass("sunlit", newValue);
 				sys.elements.body.toggleClass("dark", !newValue);
 				
+				sys.updatePageBackgroundColor();
 				sys.updateVisionStatus();
 				sys.updateThemedIcons();
 				sys.updateResources(); // resource fill progress bar color
@@ -1366,6 +1374,7 @@ define([
 			this.updateItemStats();
 			this.updateExplorers();
 			this.updateLayout();
+			this.updatePageBackgroundColor();
 		},
 
 		onWindowResized: function () {
