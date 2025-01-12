@@ -35,6 +35,10 @@
 					"summary": "Add better save management"
 				},
 				{
+					"type": "Dev",
+					"summary": "Add story and dialogue systems"
+				}
+				{
 					"type": "UI",
 					"summary": "Improve mobile layout a bit and add a warning for mobile devices"
 				},
