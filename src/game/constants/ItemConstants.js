@@ -144,6 +144,7 @@ function (Ash, Text, ItemData, Text, PlayerActionConstants, ItemVO) {
 				itemVO.tags = tags;
 				itemVO.configData = item.configData || {};
 				itemVO.tradePrice = item.tradePrice;
+				itemVO.isStoryItem = item.isStoryItem || false;
 				this.itemDefinitions[type].push(itemVO);
 				this.itemByID[itemID] = itemVO;
 			}
@@ -771,6 +772,7 @@ function (Ash, Text, ItemData, Text, PlayerActionConstants, ItemVO) {
 		isUnselectable: function (item) {
 			let baseItemId = ItemConstants.getBaseItemId(item.id);
 			if (item.type == ItemConstants.itemTypes.uniqueEquipment) return false;
+			if (item.isStoryItem) return false;
 			if (baseItemId == "cache_insight") return false;
 			if (baseItemId == "robot_1") return false;
 			return true;

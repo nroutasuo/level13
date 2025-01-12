@@ -2041,6 +2041,16 @@
         "tradePrice": 5,
         "type": "exploration"
     },
+    "story_drum": {
+        "icon": "img/items/artefact-test.png",
+        "id": "story_drum",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "isStoryItem": true,
+        "tags": [ "nature" ],
+        "type": "artefact"
+    },
     "trade_1": {
         "campOrdinalRequired": 2,
         "icon": "img/items/pearl.png",
