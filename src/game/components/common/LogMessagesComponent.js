@@ -1,6 +1,6 @@
 // Contains a list of messages to be shown in the log
-define(['ash', 'game/GameGlobals', 'game/constants/LogConstants', 'game/vos/LogMessageVO'],
-function (Ash, GameGlobals, LogConstants, LogMessageVO) {
+define(['ash', 'game/GameGlobals', 'game/constants/LogConstants', 'game/constants/TextConstants', 'game/vos/LogMessageVO'],
+function (Ash, GameGlobals, LogConstants, TextConstants, LogMessageVO) {
 	
 	var LogMessagesComponent = Ash.Class.extend({
 
@@ -73,7 +73,7 @@ function (Ash, GameGlobals, LogConstants, LogMessageVO) {
 			this.mergeReplacements(oldMsg, newMsg);
 			oldMsg.time = newMsg.time;
 			oldMsg.combined++;
-			oldMsg.createText();
+			oldMsg.text = TextConstants.createTextFromLogMessage(oldMsg.message, oldMsg.replacements, oldMsg.values, true);
 		},
 
 		mergeReplacements: function (baseMsg, toAddMsg) {

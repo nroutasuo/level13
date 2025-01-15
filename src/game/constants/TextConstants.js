@@ -1062,6 +1062,8 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			if (includePeriod && text.substr(text.length - 1) !== "." && text.substr(text.length - 1) !== "!")
 				text += ".";
 			text = text.trim();
+			text = TextConstants.sentencify(text);
+			
 			return text;
 		},
 		
