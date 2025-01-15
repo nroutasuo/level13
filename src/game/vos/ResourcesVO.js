@@ -156,8 +156,6 @@ define(['ash'], function (Ash) {
 				default: log.w("Unknown resource name: " + res); break;
 			}
 
-			if (isNaN(val)) val = 0;
-
 			return val;
 		},
 		
