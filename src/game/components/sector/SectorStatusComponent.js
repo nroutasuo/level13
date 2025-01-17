@@ -146,6 +146,14 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 				this.blockerClearedDirections.push(parseInt(direction));
 			}
 		},
+
+		unsetBlockerCleared: function (direction, blockerType) {
+			if (blockerType == MovementConstants.BLOCKER_TYPE_TOLL_GATE) {
+				let index = this.blockerClearedDirections.indexOf(direction);
+				if (index >= 0) {
+					this.blockerClearedDirections.splice(index, 1);
+				}
+			}
 		},
 
 		getSaveKey: function () {
