@@ -32,7 +32,7 @@ define(['ash',
             isDialogueValid: function (dialogueVO, explorerVO, storyTag) {
                 if (!dialogueVO) return false;
 
-                if (!storyTag && explorerVO.pendingDialogue) storyTag = explorerVO.pendingDialogue;
+                if (!storyTag && explorerVO && explorerVO.pendingDialogue) storyTag = explorerVO.pendingDialogue;
 
                 if (storyTag && dialogueVO.storyTag !== storyTag) return false;
                 if (!storyTag && dialogueVO.storyTag) return false;
