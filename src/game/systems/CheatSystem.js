@@ -15,6 +15,7 @@ define(['ash',
     'game/constants/UpgradeConstants',
     'game/constants/WorldConstants',
     'game/components/common/CampComponent',
+    'game/components/common/CurrencyComponent',
     'game/components/common/PositionComponent',
     'game/components/player/ItemsComponent',
     'game/components/player/PerksComponent',
@@ -45,6 +46,7 @@ define(['ash',
     UpgradeConstants,
     WorldConstants,
     CampComponent,
+	CurrencyComponent,
     PositionComponent,
     ItemsComponent,
     PerksComponent,
@@ -94,6 +96,10 @@ define(['ash',
 				var name = params[0];
 				var amount = parseInt(params[1]);
 				this.setResource(name, amount, "cheat");
+			});
+			this.registerCheat(CheatConstants.CHEAT_NAME_SILVER, "Set currency to a given value", ["amount"], function (params) {
+				var amount = parseInt(params[0]);
+				this.setSilver(amount, "cheat");
 			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_SUPPLIES, "Refill supplies (water and food).", [], function () {
 				this.addSupplies();
@@ -343,6 +349,11 @@ define(['ash',
 				log.i(name + " is not a valid resource. Possible names are:");
 				log.i(Object.keys(resourceNames));
 			}
+		},
+
+		setSilver: function (amount) {
+			let currencyComponent = this.playerStatsNodes.head.entity.get(CurrencyComponent);
+			currencyComponent.currency = amount;
 		},
 		
 		setEvidence: function (value) {
