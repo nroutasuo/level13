@@ -1156,6 +1156,8 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 					return ColorConstants.getColor(sunlit, "map_stroke_sector_poison");
 				} else if (mainHazard == "flooded") {
 					return ColorConstants.getColor(sunlit, "map_stroke_sector_flooded");
+				} else if (mainHazard == "territory") {
+					return ColorConstants.getColor(sunlit, "map_stroke_sector_territory");
 				} else {
 					return ColorConstants.getColor(sunlit, "map_stroke_sector_hazard");
 				}
@@ -1185,6 +1187,8 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 					return ColorConstants.getColor(sunlit, "map_fill_sector_poison");
 				} else if (mainHazard == "flooded") {
 					return ColorConstants.getColor(sunlit, "map_fill_sector_flooded");
+				} else if (mainHazard == "territory") {
+					return ColorConstants.getColor(sunlit, "map_fill_sector_territory");
 				} else {
 					return ColorConstants.getColor(sunlit, "map_fill_sector_hazard");
 				}

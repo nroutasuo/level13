@@ -7,6 +7,7 @@ define(['ash'], function (Ash) {
 		cold: 0,
 		debris: 0,
 		flooded: 0,
+		territory: 0,
 		
 		constructor: function () {
 			this.radiation = 0;
@@ -14,6 +15,7 @@ define(['ash'], function (Ash) {
 			this.cold = 0;
 			this.debris = 0;
 			this.flooded = 0;
+			this.territory = 0;
 		},
 			
 		getMainHazard: function () {
@@ -22,6 +24,7 @@ define(['ash'], function (Ash) {
 			if (this.radiation > 0) return "radiation";
 			if (this.poison > 0) return "poison";
 			if (this.flooded > 0) return "flooded";
+			if (this.territory > 0) return "territory";
 			if (this.debris > 0) return "debris";
 			if (this.cold > 0) return "cold";
 			return null;
@@ -32,7 +35,7 @@ define(['ash'], function (Ash) {
 		},
 		
 		hasHazards: function () {
-			return this.radiation > 0 || this.poison > 0 || this.cold > 0 || this.debris > 0 || this.flooded > 0;
+			return this.radiation > 0 || this.poison > 0 || this.cold > 0 || this.debris > 0 || this.flooded > 0 || this.territory > 0;
 		},
 		
 		clone: function () {
@@ -42,6 +45,7 @@ define(['ash'], function (Ash) {
 			result.cold = this.cold;
 			result.debris = this.debris;
 			result.flooded = this.flooded;
+			result.territory = this.territory;
 			return result;
 		}
 		

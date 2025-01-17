@@ -277,12 +277,13 @@ define(['ash',
 				case "scout": this.scout(param); break;
 				case "scout_locale_i": this.scoutLocale(param); break;
 				case "scout_locale_u": this.scoutLocale(param); break;
-				case "clear_workshop": this.clearWorkshop(param); break;
-				case "clear_waste_t": this.clearWaste(action, param); break;
-				case "clear_waste_r": this.clearWaste(action, param); break;
 				case "bridge_gap": this.bridgeGap(param); break;
 				case "clear_debris": this.clearDebris(param); break;
 				case "clear_explosives": this.clearExplosives(param); break;
+				case "clear_gate": this.clearTollGate(param); break;
+				case "clear_waste_r": this.clearWaste(action, param); break;
+				case "clear_waste_t": this.clearWaste(action, param); break;
+				case "clear_workshop": this.clearWorkshop(param); break;
 				case "use_spring": this.useSpring(param); break;
 				case "fight_gang": this.fightGang(param); break;
 				case "send_caravan": this.sendCaravan(param); break;
@@ -982,7 +983,6 @@ define(['ash',
 		},
 
 		clearWaste: function (action, direction) {
-			log.i("clear waste " + direction);
 			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			let positionComponent = this.playerLocationNodes.head.entity.get(PositionComponent);
 			let passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
@@ -1029,9 +1029,23 @@ define(['ash',
 		clearExplosives: function (sectorPos) {
 			let position = this.getPositionVO(sectorPos);
 			let playerPos = this.playerPositionNodes.head.position;
-			this.clearBlocker("clear_explosives", MovementConstants.BLOCKED_TYPE_EXPLOSIVES, sectorPos);
+			this.clearBlocker("clear_explosives", MovementConstants.BLOCKER_TYPE_EXPLOSIVES, sectorPos);
 			let msg = "Explosives cleared at " + position.getInGameFormat(position.level !== playerPos.level);
 			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), msg, { position: position, visibility: LogConstants.MGS_VISIBILITY_LEVEL });
+		},
+
+		clearTollGate: function (direction) {
+			let positionComponent = this.playerLocationNodes.head.entity.get(PositionComponent);
+			let passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
+			let blocker = passagesComponent.getBlocker(direction);
+			
+			if (!blocker) {
+				log.w("can't clear toll gate - no blocker here");
+				return;
+			}
+
+			var sectorPos = positionComponent.level + "." + positionComponent.sectorId() + "." + direction;
+			this.clearBlocker("clear_gate", MovementConstants.BLOCKER_TYPE_TOLL_GATE, sectorPos);
 		},
 		
 		clearBlocker: function (action, blockerType, sectorPos) {

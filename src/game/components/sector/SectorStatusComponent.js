@@ -118,7 +118,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			if (blockerType == MovementConstants.BLOCKER_TYPE_DEBRIS) {
 				return this.blockerClearedDirections && this.blockerClearedDirections.indexOf(parseInt(direction)) >= 0;
 			}
-			if (blockerType == MovementConstants.BLOCKED_TYPE_EXPLOSIVES) {
+			if (blockerType == MovementConstants.BLOCKER_TYPE_EXPLOSIVES) {
 				return this.blockerClearedDirections && this.blockerClearedDirections.indexOf(parseInt(direction)) >= 0;
 			}
 			if (blockerType == MovementConstants.BLOCKER_TYPE_GAP) {
@@ -136,12 +136,16 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			if (blockerType == MovementConstants.BLOCKER_TYPE_DEBRIS) {
 				this.blockerClearedDirections.push(parseInt(direction));
 			}
-			if (blockerType == MovementConstants.BLOCKED_TYPE_EXPLOSIVES) {
+			if (blockerType == MovementConstants.BLOCKER_TYPE_EXPLOSIVES) {
 				this.blockerClearedDirections.push(parseInt(direction));
 			}
 			if (blockerType == MovementConstants.BLOCKER_TYPE_GAP) {
 				this.gapBridgedDirections.push(parseInt(direction));
 			}
+			if (blockerType == MovementConstants.BLOCKER_TYPE_TOLL_GATE) {
+				this.blockerClearedDirections.push(parseInt(direction));
+			}
+		},
 		},
 
 		getSaveKey: function () {

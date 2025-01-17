@@ -625,21 +625,24 @@ define([
 		},
 		
 		getCollectorsText: function (sector, isScouted) {
-			var improvements = sector.get(SectorImprovementsComponent);
-			var featuresComponent = sector.get(SectorFeaturesComponent);
+			let improvements = sector.get(SectorImprovementsComponent);
+			let featuresComponent = sector.get(SectorFeaturesComponent);
+			let statusComponent = sector.get(SectorStatusComponent);
 			
-			var collectorFood = improvements.getVO(improvementNames.collector_food);
-			var collectorWater = improvements.getVO(improvementNames.collector_water);
+			let hazards = GameGlobals.sectorHelper.getEffectiveHazards(featuresComponent, statusComponent);
+			
+			let collectorFood = improvements.getVO(improvementNames.collector_food);
+			let collectorWater = improvements.getVO(improvementNames.collector_water);
 			
 			var result1 = [];
 			var result2 = [];
 			if (isScouted) {
 				if (collectorFood.count === 1) result1.push("1 trap");
 				if (collectorFood.count > 1) result1.push("traps");
-				if (collectorFood.count == 0 && featuresComponent.resourcesCollectable.food > 0) result2.push ("food")
+				if (collectorFood.count == 0 && featuresComponent.resourcesCollectable.food > 0 && hazards.territory == 0) result2.push ("food")
 				if (collectorWater.count === 1) result1.push("1 bucket");
 				if (collectorWater.count > 1) result1.push("buckets");
-				if (collectorWater.count == 0 && featuresComponent.resourcesCollectable.water > 0) result2.push ("water")
+				if (collectorWater.count == 0 && featuresComponent.resourcesCollectable.water > 0 && hazards.territory == 0) result2.push ("water")
 			}
 			
 			let part1 = "-";
@@ -704,6 +707,7 @@ define([
 			
 			if (featuresComponent.sunlit) result.push("sunlit");
 			if (hazards.debris > 0) result.push("debris");
+			if (hazards.territory > 0) result.push("gang territory");
 			
 			if (hazards.radiation > 0)
 				result.push(getHazardSpan("radioactivity", hazards.radiation, hazards.radiation > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_radiation)));

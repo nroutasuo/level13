@@ -1483,6 +1483,8 @@ define([
 				// regular enemies (random encounters not tied to locales / gangs)
 				if (distanceToCamp < 3) {
 					sectorVO.hasRegularEnemies = false;
+				} else if (sectorVO.hazards.territory > 0) {
+					sectorVO.hasRegularEnemies = true;
 				} else {
 					let r = WorldCreatorRandom.random(l * sectorVO.position.sectorX * seed + sectorVO.position.sectorY * seed + 4848);
 					let probability = WorldCreatorRandom.getProbabilityFromFactors([
@@ -1784,6 +1786,8 @@ define([
 			sectorVO.locales.push(localeVO);
 			levelVO.localeSectors.push(sectorVO);
 			levelVO.numLocales++;
+
+			// WorldCreatorLogger.i("add locale " + sectorVO.position + ": " + localeVO.type);
 		},
 		
 		generateWaymarks: function (seed, worldVO, levelVO) {
@@ -2023,6 +2027,8 @@ define([
 			sectorVO.addBlocker(direction, blockerType);
 			neighbourVO.addBlocker(neighbourDirection, blockerType);
 
+			//WorldCreatorLogger.i("add movement blocker " + blockerType + " at " + sectorVO.position);
+
 			// add blockers to adjacent paths too (if present) so player can't just walk around the blocker
 			if (options.addDiagonals) {
 				var diagonalsOptions = Object.assign({}, options);
@@ -2054,6 +2060,7 @@ define([
 		
 		setSectorHazard: function (levelVO, sectorVO, hazardValueRand, hazardType, isClusterEdge, override) {
 			var maxHazardValue = this.getMaxHazardValue(levelVO, sectorVO, hazardType, sectorVO.zone, override);
+			if (maxHazardValue <= 0) return;
 			var minHazardValue = this.getMaxHazardValueForLevel(hazardType, levelVO.campOrdinal - 1, sectorVO.zone, false);
 			var hazardValue = minHazardValue + hazardValueRand * (maxHazardValue - minHazardValue);
 			if (isClusterEdge) {
@@ -2063,6 +2070,8 @@ define([
 			if (hazardValue > maxHazardValue) hazardValue = maxHazardValue;
 			
 			sectorVO.hazards[hazardType] = hazardValue;
+
+			//WorldCreatorLogger.i("set sector hazard " + sectorVO.position + " type " + hazardType + " " + hazardValue);	
 			
 			if (override && hazardValue > 0) {
 				sectorVO.hazards.cold = 0;
@@ -2330,26 +2339,23 @@ define([
 
 			if (campOrdinal >= WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_POISON) {
 				result.push(SectorConstants.HAZARD_TYPE_POLLUTION);
-				result.push(SectorConstants.HAZARD_TYPE_POLLUTION);
 			}
 			if (campOrdinal > WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_POISON) {
 				result.push(SectorConstants.HAZARD_TYPE_POLLUTION);
-				result.push(SectorConstants.HAZARD_TYPE_POLLUTION);
 			}
+
 			if (campOrdinal >= WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_RADIATION) {
-				result.push(SectorConstants.HAZARD_TYPE_RADIATION);
 				result.push(SectorConstants.HAZARD_TYPE_RADIATION);
 			}
 			if (campOrdinal > WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_RADIATION) {
 				result.push(SectorConstants.HAZARD_TYPE_RADIATION);
-				result.push(SectorConstants.HAZARD_TYPE_RADIATION);
 			}
-			if (campOrdinal > WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_FLOODED) {
-				result.push(SectorConstants.HAZARD_TYPE_FLOODED);
-				result.push(SectorConstants.HAZARD_TYPE_FLOODED);
+
+			if (campOrdinal >= WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_FLOODED) {
 				result.push(SectorConstants.HAZARD_TYPE_FLOODED);
 				result.push(SectorConstants.HAZARD_TYPE_FLOODED);
 			}
+
 			if (!sectorVO.isOnPassageCriticalPath()) {
 				if (campOrdinal >= WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_DEBRIS) {
 					result.push(SectorConstants.HAZARD_TYPE_DEBRIS);
@@ -2360,10 +2366,23 @@ define([
 				if (campOrdinal > WorldConstants.CAMPS_BEFORE_GROUND + 1) {
 					result.push(SectorConstants.HAZARD_TYPE_DEBRIS);
 					result.push(SectorConstants.HAZARD_TYPE_DEBRIS);
-					result.push(SectorConstants.HAZARD_TYPE_DEBRIS);
-					result.push(SectorConstants.HAZARD_TYPE_DEBRIS);
 				}
 			}
+
+			if (levelVO.isCampable && campOrdinal > WorldConstants.CAMPS_BEFORE_GROUND) {
+				let distanceToCamp = WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO);
+
+				if (distanceToCamp > 3) {
+					result.push(SectorConstants.HAZARD_TYPE_GANG_TERRITORY);
+					result.push(SectorConstants.HAZARD_TYPE_GANG_TERRITORY);
+
+					if (levelVO.habitability >= 1) {
+						result.push(SectorConstants.HAZARD_TYPE_GANG_TERRITORY);
+						result.push(SectorConstants.HAZARD_TYPE_GANG_TERRITORY);
+					}
+				}
+			}
+
 			return result;
 		},
 		
@@ -2550,6 +2569,7 @@ define([
 			if (levelVO.habitability > 0) tags.push("inhabited");
 			if (levelVO.habitability <= 0) tags.push("uninhabited");
 			if (sectorVO.hazards.flooded > 0) tags.push("flooded");
+			if (sectorVO.hazards.territory > 0) tags.push("territory");
 			if (sectorVO.hazards.flooded === 0) tags.push("noflood");
 			if (sectorVO.sectorType == SectorConstants.SECTOR_TYPE_INDUSTRIAL) tags.push("industrial");
 
@@ -2623,6 +2643,8 @@ define([
 				return campOrdinal >= WorldCreatorConstants.MIN_CAMP_ORDINAL_HAZARD_DEBRIS ? 9 : 0;
 			} else if (hazardType == SectorConstants.HAZARD_TYPE_FLOODED) {
 				return Math.min(100, this.itemsHelper.getMaxHazardFloodedForLevel(campOrdinal, step, isHardLevel));
+			} else if (hazardType == SectorConstants.HAZARD_TYPE_GANG_TERRITORY) {
+				return 1;
 			} else {
 				return 0;
 			}
@@ -2640,7 +2662,7 @@ define([
 			blockerTypes.push(MovementConstants.BLOCKER_TYPE_DEBRIS);
 
 			if (levelVO.level < 13 && campOrdinal < 6) {
-				blockerTypes.push(MovementConstants.BLOCKED_TYPE_EXPLOSIVES);
+				blockerTypes.push(MovementConstants.BLOCKER_TYPE_EXPLOSIVES);
 			}
 			
 			var unlockGapOrdinal = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade("unlock_building_bridge");
@@ -2667,6 +2689,14 @@ define([
 				if (isRadiatedLevel) {
 					blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE);
 					blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE);
+				}
+			}
+
+			if (levelVO.isCampable && campOrdinal > WorldConstants.CAMPS_BEFORE_GROUND) {
+				blockerTypes.push(MovementConstants.BLOCKER_TYPE_TOLL_GATE);
+
+				if (levelVO.habitability >= 1) {
+					blockerTypes.push(MovementConstants.BLOCKER_TYPE_TOLL_GATE);
 				}
 			}
 			

@@ -249,6 +249,13 @@ define(['ash'], function (Ash) {
 				logMessage: "There are explosives from an old war here, blocking the way. Workers from the camp can clear them.",
 				conditions: { sector: { blockers: { 7: true } } }
 			},
+			TUTORIAL_ENCOUNTER_BLOCKER_TYPE_TOLL_GATE: {
+				triggers: [ "change_position" ],
+				repeats: "NEVER",
+				delay: 1500,
+				logMessage: "There is a toll gate here guarded by gangsters. You will have to negotiate to pass.",
+				conditions: { sector: { blockers: { 8: true } } }
+			},
 			TUTORIAL_ENCOUNTER_BLOCKER_TYPE_WASTE_RADIOACTIVE_NO_TECH: {
 				group: "TUTORIAL_ENCOUNTER_BLOCKER_TYPE_WASTE_RADIOACTIVE",
 				triggers: [ "change_position" ],

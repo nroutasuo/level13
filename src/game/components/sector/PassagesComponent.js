@@ -89,8 +89,9 @@ function (Ash, MovementConstants, PositionConstants, PassageVO, MovementBlockerV
 			if (blocker.type == MovementConstants.BLOCKER_TYPE_WASTE_TOXIC) return true;
 			if (blocker.type == MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE) return true;
 			if (blocker.type == MovementConstants.BLOCKER_TYPE_DEBRIS) return true;
-			if (blocker.type == MovementConstants.BLOCKED_TYPE_EXPLOSIVES) return true;
+			if (blocker.type == MovementConstants.BLOCKER_TYPE_EXPLOSIVES) return true;
 			if (blocker.type == MovementConstants.BLOCKER_TYPE_GAP) return true;
+			if (blocker.type == MovementConstants.BLOCKER_TYPE_TOLL_GATE) return true;
 			return false;
 		},
 	});

@@ -38,10 +38,10 @@ define([
 		},
 		
 		isBlockedCheck: function (sectorEntity, direction) {
-			var passagesComponent = sectorEntity.get(PassagesComponent);
+			let passagesComponent = sectorEntity.get(PassagesComponent);
 			
-			var reason = "";
-			var blocked = true;
+			let reason = "";
+			let blocked = true;
 			
 			if (PositionConstants.isLevelDirection(direction)) {
 				var isBridged = this.isBridged(sectorEntity, direction);
@@ -62,8 +62,10 @@ define([
 							return { value: !isDefeated, reason: "Blocked by a fight." };
 						case MovementConstants.BLOCKER_TYPE_DEBRIS:
 							return { value: !isCleared, reason: "Blocked by debris." };
-						case MovementConstants.BLOCKED_TYPE_EXPLOSIVES:
+						case MovementConstants.BLOCKER_TYPE_EXPLOSIVES:
 							return { value: !isCleared, reason: "Blocked by explosives." };
+						case MovementConstants.BLOCKER_TYPE_TOLL_GATE:
+							return { value: !isCleared, reason: "Blocked by a toll gate." };
 						default:
 							log.w(this, "Unknown blocker type: " + blocker.type);
 							return { value: false };
@@ -135,7 +137,8 @@ define([
 			let statusComponent = sectorEntity.get(SectorStatusComponent);
 			if (!this.hasClearableBlocker(sectorEntity, direction)) return false;
 			if (statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_DEBRIS)) return true;
-			if (statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKED_TYPE_EXPLOSIVES)) return true;
+			if (statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_EXPLOSIVES)) return true;
+			if (statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_TOLL_GATE)) return true;
 			return false;
 		},
 		
@@ -163,7 +166,7 @@ define([
 			switch (blockerType) {
 				case MovementConstants.BLOCKER_TYPE_GAP: return true;
 				case MovementConstants.BLOCKER_TYPE_DEBRIS: return true;
-				case MovementConstants.BLOCKED_TYPE_EXPLOSIVES: return true;
+				case MovementConstants.BLOCKER_TYPE_EXPLOSIVES: return true;
 				default: return false;
 			}
 		},

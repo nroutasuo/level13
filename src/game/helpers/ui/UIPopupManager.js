@@ -1,6 +1,6 @@
 // Manages showing and hiding pop-ups
-define(['ash', 'core/ExceptionHandler', 'game/GameGlobals', 'game/GlobalSignals', 'game/constants/UIConstants'],
-function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
+define(['ash', 'text/Text', 'core/ExceptionHandler', 'game/GameGlobals', 'game/GlobalSignals', 'game/constants/UIConstants'],
+function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 
 	let UIPopupManager = Ash.Class.extend({
 
@@ -24,6 +24,8 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 			options = options || {};
 			let isMeta = options.isMeta || false;
 			let forceShowInventoryManagement = options.forceShowInventoryManagement;
+
+			let action = options.action;
 			
 			let hasResult = resultVO && typeof resultVO !== 'undefined';
 			let showInventoryManagement = hasResult || forceShowInventoryManagement;
@@ -68,16 +70,18 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 			// buttons and callbacks
 			var $defaultButton = null;
 			$("#common-popup .buttonbox").empty();
-			$("#common-popup .buttonbox").append("<button id='info-ok' class='action'>" + okButtonLabel + "</button>");
-			$("#info-ok").attr("action", showInventoryManagement ? "accept_inventory" : null);
-			$("#info-ok").toggleClass("inventory-selection-ok", showInventoryManagement);
-			$("#info-ok").toggleClass("button-popup-default", true);
-			$("#info-ok").toggleClass("action", showInventoryManagement);
-			$("#info-ok").click(ExceptionHandler.wrapClick(function (e) {
-				e.stopPropagation();
-				popUpManager.handleOkButton(false, okCallback);
-			}));
-			$defaultButton = $("#info-ok");
+
+			if (!action) {
+				$("#common-popup .buttonbox").append("<button id='info-ok' class='action'>" + okButtonLabel + "</button>");
+				$("#info-ok").attr("action", showInventoryManagement ? "accept_inventory" : null);
+				$("#info-ok").toggleClass("inventory-selection-ok", showInventoryManagement);
+				$("#info-ok").toggleClass("action", showInventoryManagement);
+				$("#info-ok").click(ExceptionHandler.wrapClick(function (e) {
+					e.stopPropagation();
+					popUpManager.handleOkButton(false, okCallback);
+				}));
+				$defaultButton = $("#info-ok");
+			}
 			
 			let showTakeAll = hasResult && resultVO.hasSelectable();
 			if (showTakeAll) {
@@ -87,6 +91,14 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 				}));
 				$defaultButton = $("#confirmation-takeall");
 			}
+
+			if (action) {
+				let actionName = Text.t(action + "_name");
+				$("#common-popup .buttonbox").append("<button id='info-action' class='action' action='" + action + "'>" + actionName + "</button>");
+				$("#info-action").click(ExceptionHandler.wrapClick(function (e) {
+					popUpManager.handleOkButton(true, okCallback);
+				}));
+			}
 			
 			if (cancelButtonLabel) {
 				$("#common-popup .buttonbox").append("<button id='confirmation-cancel'>" + cancelButtonLabel + "</button>");
@@ -95,6 +107,14 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) {
 					popUpManager.closePopup("common-popup");
 					if (cancelCallback) cancelCallback();
 				}));
+			}
+
+			if ($defaultButton == null) {
+				$defaultButton = $("#confirmation-cancel");
+			}
+
+			if ($defaultButton != null) {
+				$defaultButton.toggleClass("button-popup-default", true);
 			}
 
 			if (options.setupCallback) {

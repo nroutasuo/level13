@@ -554,6 +554,8 @@ define([
 		getBuiltProjectsForCamp: function (sectorEntity) {
 			var projects = [];
 
+			// TODO performance bottleneck: cache
+
 			// use to get projects only for that level: (now displaying all projects in all camps)
 			// var campLevelEntity = this.getLevelEntityForSector(sectorEntity);
 
@@ -645,7 +647,7 @@ define([
 			levelStats.countInvestigatableSectors = 0;
 			levelStats.hasCamp = false;
 			
-			for (var node = this.sectorNodes.head; node; node = node.next) {
+			for (let node = this.sectorNodes.head; node; node = node.next) {
 				let sectorPosition = node.entity.get(PositionComponent);
 				let sectorStatus = GameGlobals.sectorHelper.getSectorStatus(node.entity);
 				if (sectorPosition.level !== level) continue;
@@ -813,7 +815,7 @@ define([
 							projects.push(new LevelProjectVO(null, "bridge_gap", sectorPosition, direction, "Gap", "bridge"));
 							break;
 						case MovementConstants.BLOCKER_TYPE_DEBRIS:
-						case MovementConstants.BLOCKED_TYPE_EXPLOSIVES:
+						case MovementConstants.BLOCKER_TYPE_EXPLOSIVES:
 							let neighbour = this.getNeighbour(sectorEntity, direction);
 							if (!neighbour) {
 								log.w("no neighbour for clear blocker action found at " + sectorPosition);
@@ -877,7 +879,8 @@ define([
 			switch (blockerType) {
 				case MovementConstants.BLOCKER_TYPE_GAP: return "bridge_gap";
 				case MovementConstants.BLOCKER_TYPE_DEBRIS: return isEarlyZone ? "clear_debris_e" : "clear_debris_l";
-				case MovementConstants.BLOCKED_TYPE_EXPLOSIVES: return isEarlyZone ? "clear_explosives_e" : "clear_explosives_l";
+				case MovementConstants.BLOCKER_TYPE_EXPLOSIVES: return isEarlyZone ? "clear_explosives_e" : "clear_explosives_l";
+				case MovementConstants.BLOCKER_TYPE_TOLL_GATE: return "clear_gate";
 			}
 			
 		},
@@ -886,7 +889,7 @@ define([
 			switch (blockerType) {
 				case MovementConstants.BLOCKER_TYPE_GAP: return "Bridge";
 				case MovementConstants.BLOCKER_TYPE_DEBRIS: return "Debris";
-				case MovementConstants.BLOCKED_TYPE_EXPLOSIVES: return "Explosives";
+				case MovementConstants.BLOCKER_TYPE_EXPLOSIVES: return "Explosives";
 			}
 			
 		},

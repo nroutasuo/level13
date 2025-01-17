@@ -135,6 +135,7 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 				// 0-1, decreasing fast for higher vision, 0.25 for vision 50
 				let visionFactor = Math.pow(1 - (vision / 100), 2); 
 				let visionProbability = this.randomEncounterProbabilities[baseActionID][1] * visionFactor;
+				let hazardFactor = 1;
 				let result = Math.min(1, (baseProbability + visionProbability) * actionFactor * sectorFactor);
 				return this.roundProbability(result);
 			}
@@ -222,6 +223,7 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 			if (action.indexOf("clear_waste_r") == 0) return "clear_waste_r";
 			if (action.indexOf("clear_debris_") == 0) return "clear_debris";
 			if (action.indexOf("clear_explosives_") == 0) return "clear_explosives";
+			if (action.indexOf("clear_gate_") == 0) return "clear_gate";
 			if (action.indexOf("fight_gang_") >= 0) return "fight_gang";
 			if (action.indexOf("send_caravan_") >= 0) return "send_caravan";
 			if (action.indexOf("recruit_explorer_") >= 0) return "recruit_explorer";

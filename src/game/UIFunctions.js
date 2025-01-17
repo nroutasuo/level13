@@ -1570,6 +1570,20 @@ define(['ash',
 				this.popupManager.showPopup(title, msg, "Continue", false, resultVO, callback, null, options);
 			},
 
+			showActionPopup: function (action, title, msg) {
+				let options = {
+					isMeta: false,
+					isDismissable: true,
+					action: action,
+				};
+
+				let actionName = Text.t(action + "_name");
+
+				title = title || actionName;
+				
+				this.popupManager.showPopup(title, msg, null, "Cancel", null, null, null, options);
+			},
+
 			showConfirmation: function (msg, callback, isMeta) {
 				let uiFunctions = this;
 				

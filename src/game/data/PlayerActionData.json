@@ -316,6 +316,9 @@
             "resource_metal": 30,
             "resource_rope": 120
         },
+        "clear_gate": {
+            "silver": 2
+        },
         "clear_waste_r": {
             "stamina": 50
         },
@@ -1999,6 +2002,10 @@
                     "radiation": [
                         0,
                         1
+                    ],
+                    "territory": [
+                        -1,
+                        1
                     ]
                 },
                 "scouted": true
@@ -2040,6 +2047,10 @@
                     "radiation": [
                         0,
                         1
+                    ],
+                    "territory": [
+                        -1,
+                        1
                     ]
                 },
                 "scouted": true
@@ -2058,6 +2069,10 @@
                 "hazards": {
                     "radiation": [
                         0,
+                        1
+                    ],
+                    "territory": [
+                        -1,
                         1
                     ]
                 },
@@ -2290,6 +2305,12 @@
         "clear_explosives": {
             "sector": {
                 "acessible_to_workers": true,
+                "scouted": true
+            }
+        },
+        "clear_gate": {
+            "busy": false,
+            "sector": {
                 "scouted": true
             }
         },

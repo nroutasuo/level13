@@ -4,6 +4,7 @@ define([
 	'utils/MapUtils',
 	'utils/UIList',
 	'utils/UIState',
+	'core/ExceptionHandler',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/DialogueConstants',
@@ -37,7 +38,7 @@ define([
 	'game/components/sector/EnemiesComponent'
 ], function (
 	Ash,
-	Text, MapUtils,  UIList, UIState, GameGlobals, GlobalSignals, DialogueConstants, ExplorationConstants, PlayerStatConstants, TextConstants,
+	Text, MapUtils, UIList, UIState, ExceptionHandler, GameGlobals, GlobalSignals, DialogueConstants, ExplorationConstants, PlayerStatConstants, TextConstants,
 	LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, StoryConstants, TradeConstants,
 	TribeConstants, PlayerPositionNode, PlayerLocationNode, NearestCampNode, VisionComponent, StaminaComponent,
 	PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
@@ -376,6 +377,13 @@ define([
 			});
 		},
 
+		showTollGatePopup: function (direction) {
+			let action = "clear_gate_" + direction;
+			let title = "Toll gate";
+			let msg = "Some gangsters are lounging about. They want you to pay for passage.";
+			GameGlobals.uiFunctions.showActionPopup(action, title, msg);
+		},
+
 		getDescription: function (entity, hasCampHere, hasCampOnLevel, hasVision, isScouted) {
 			var position = entity.get(PositionComponent).getPosition();
 			var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
@@ -660,7 +668,7 @@ define([
 						var gang = GameGlobals.levelHelper.getGang(position, direction);
 						if (blocker.type == MovementConstants.BLOCKER_TYPE_DEBRIS) {
 							description += "Debris to the " + directionName + " has been cleared away. ";
-						} else if (blocker.type == MovementConstants.BLOCKED_TYPE_EXPLOSIVES) {
+						} else if (blocker.type == MovementConstants.BLOCKER_TYPE_EXPLOSIVES) {
 							description += "Old explosives to the " + directionName + " have been cleared away. ";
 						} else if (blocker.type == MovementConstants.BLOCKER_TYPE_GANG) {
 							if (gang) {
@@ -747,6 +755,9 @@ define([
 				}
 				if (hazards.debris > 0) {
 					hazardDesc += "It difficult to move around here due to the amount of <span class='hl-functionality'>debris</span>.";
+				}
+				if (hazards.territory > 0) {
+					hazardDesc += "This sector is <span class='hl-functionality'>gang territory</span>.";
 				}
 			}
 
@@ -923,15 +934,23 @@ define([
 			var position = currentSector.get(PositionComponent).getPosition();
 			$("#container-out-actions-movement-related").empty();
 
+			let sys = this;
+
 			function addBlockerActionButton(blocker, direction) {
-				if (blocker.type !== MovementConstants.BLOCKER_TYPE_GAP) {
-					if (!movementOptionsComponent.canMoveToDirection(direction)) {
-						var action = blocker.actionBaseID + "_" + direction;
-						var gangComponent = GameGlobals.levelHelper.getGangComponent(position, direction);
-						var description = TextConstants.getMovementBlockerAction(blocker, enemiesComponent, gangComponent) + " (" + PositionConstants.getDirectionName(direction, true) + ")";
-						var button = "<button class='action' action='" + action + "'>" + description + "</button>";
-						$("#container-out-actions-movement-related").append(button);
-					}
+				if (blocker.type === MovementConstants.BLOCKER_TYPE_GAP) return;
+				if (movementOptionsComponent.canMoveToDirection(direction)) return;
+
+				if (blocker.type === MovementConstants.BLOCKER_TYPE_TOLL_GATE) {
+					let button = $("<button>approach toll gate</button>");
+					button.data("direction", direction);
+					button.click(ExceptionHandler.wrapClick((e) => sys.onApproachTollGateButtonClicked(e)));
+					$("#container-out-actions-movement-related").append(button);
+				} else {
+					let action = blocker.actionBaseID + "_" + direction;
+					let gangComponent = GameGlobals.levelHelper.getGangComponent(position, direction);
+					let description = TextConstants.getMovementBlockerAction(blocker, enemiesComponent, gangComponent) + " (" + PositionConstants.getDirectionName(direction, true) + ")";
+					let button = "<button class='action' action='" + action + "'>" + description + "</button>";
+					$("#container-out-actions-movement-related").append(button);
 				}
 			}
 
@@ -1023,6 +1042,12 @@ define([
 			let sector = GameGlobals.levelHelper.getSectorByPosition(pos.level, pos.sectorX, pos.sectorY);
 			let sectorFeatures = GameGlobals.sectorHelper.getTextFeatures(sector);
 			return TextConstants.getWaymarkText(waymarkVO, sectorFeatures);
+		},
+
+		onApproachTollGateButtonClicked: function (e) {
+			let $btn = $(e.currentTarget);
+			let direction = $btn.data("direction");
+			this.showTollGatePopup(direction);
 		},
 		
 		onButtonStateChanged: function (action, isEnabled) {

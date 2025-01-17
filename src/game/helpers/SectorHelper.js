@@ -126,6 +126,7 @@ define([
 			result.poison = Math.max(0, result.poison - sectorStatus.getHazardReduction("poison"));
 			result.cold = Math.max(0, result.cold - sectorStatus.getHazardReduction("cold"));
 			result.flooded = Math.max(0, result.flooded - sectorStatus.getHazardReduction("flooded"));
+			result.territory = Math.max(0, result.territory - sectorStatus.getHazardReduction("territory"));
 			return result;
 		},
 		
@@ -494,10 +495,18 @@ define([
 			if (!sectorEntity) return 1;
 			let levelEntity = GameGlobals.levelHelper.getLevelEntityForSector(sectorEntity);
 			let levelComponent = levelEntity.get(LevelComponent);
+			let sectorStatus = sectorEntity.get(SectorStatusComponent);
+			let sectorFeatures = sectorEntity.get(SectorFeaturesComponent);
+			let hazards = this.getEffectiveHazards(sectorFeatures, sectorStatus);
+
 			let result = 1;
 			if (!levelComponent.isCampable) {
 				result *= 2;
 			}
+			if (hazards.territory > 0) {
+				result *= 2;
+			}
+
 			return result;
 		}
 		

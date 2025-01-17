@@ -764,7 +764,7 @@
 		"attackRatio": 0.55,
 		"difficulty": 6,
 		"enemyType": "bandit",
-		"environment": [ "nohazard" ],
+		"environment": [ "nohazard", "territory" ],
 		"healthFactor": 0.9,
 		"rarity": 30,
 		"speed": 0.95

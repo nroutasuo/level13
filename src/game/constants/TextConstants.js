@@ -255,6 +255,9 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				addOptions("a-building", [ "destroyed", "unrecognizable", "hollowed out" ]);
 				addOptions("na-items", [ "debris" ]);
 			}
+			if (features.hazards.territory) {
+				addOptions("na-items", [ "trash" ]);
+			}
 			// - level population
 			if (features.habitability == 0) {
 				addOptions("a-street", [ "empty", "uninhabited", "desolate", "deserted", "dusty" ] )
@@ -1350,6 +1353,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				case MovementConstants.BLOCKER_TYPE_GANG:
 					let enemies = this.getAllEnemies(null, gangComponent);
 					return "Fight " + this.getEnemyNoun(enemies, false, true);
+				case MovementConstants.BLOCKER_TYPE_TOLL_GATE: return "Pay toll";
 			}
 		},
 		
@@ -1374,7 +1378,8 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				case MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE: return "cleared";
 				case MovementConstants.BLOCKER_TYPE_GANG: return "defeated";
 				case MovementConstants.BLOCKER_TYPE_DEBRIS: return "cleared";
-				case MovementConstants.BLOCKED_TYPE_EXPLOSIVES: return "cleared";
+				case MovementConstants.BLOCKER_TYPE_EXPLOSIVES: return "cleared";
+				case MovementConstants.BLOCKER_TYPE_TOLL_GATE: return "paid";
 			}
 		},
 		
