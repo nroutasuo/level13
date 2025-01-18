@@ -801,6 +801,17 @@ define([
 						}
 					}
 				}
+
+				if (requirements.playerInventoryComplete) {
+					for (let key in requirements.playerInventoryComplete) {
+						let range = requirements.playerInventoryComplete[key];
+						let currentVal = this.getCostAmountOwned(sector, key, true);
+						let result = this.checkRequirementsRange(range, currentVal, "Not enough " + key, "Too  much " + key);
+						if (result) {
+							return result;
+						}
+					}
+				}
 				
 				if (requirements.campInventory) {
 					for (let key in requirements.campInventory) {
@@ -1253,6 +1264,16 @@ define([
 								return result;
 							}
 						}
+
+						let discoveredItems = GameGlobals.sectorHelper.getLocationDiscoveredItems(sector);
+
+						for (let itemID in requirements.sector.scavengeableItems) {
+							if (itemID == "count") continue;
+							let requiredValue = requirements.sector.scavengeableItems[itemID];
+							let currentValue = discoveredItems.indexOf(itemID) >= 0;
+							let result = this.checkRequirementsBoolean(requiredValue, currentValue);
+							if (result) return result;
+						}
 					}
 				}
 
@@ -1531,11 +1552,12 @@ define([
 			return costAmountOwned / costAmount;
 		},
 		
-		getCostAmountOwned: function (sector, name) {
+		getCostAmountOwned: function (sector, name, anyInventory) {
 			let itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			let inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
 			let playerResources = GameGlobals.resourcesHelper.getCurrentStorage();
 			let campStorage = GameGlobals.resourcesHelper.getCampStorage(sector);
+			let globalStorage = GameGlobals.resourcesHelper.getGlobalStorage();
 			
 			let costNameParts = name.split("_");
 			
@@ -1543,12 +1565,14 @@ define([
 				let resourceName = costNameParts[1];
 				if (resourceName == resourceNames.robots) {
 					return campStorage.resources.getResource(resourceName);
+				} else if (anyInventory) {
+					return playerResources.resources.getResource(resourceName) || globalStorage.getResource(resourceName);
 				} else {
 					return playerResources.resources.getResource(resourceName);
 				}
 			} else if (costNameParts[0] === "item") {
 				let itemId = name.replace(costNameParts[0] + "_", "");
-				return itemsComponent.getCountById(itemId, inCamp);
+				return itemsComponent.getCountById(itemId, inCamp | anyInventory);
 			} else {
 				switch (name) {
 					case "stamina":

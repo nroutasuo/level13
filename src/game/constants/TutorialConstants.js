@@ -312,8 +312,18 @@ define(['ash'], function (Ash) {
 				triggers: [ "action_scout" ],
 				repeats: "NEVER",
 				delay: 500,
-				logMessage: "Seems like the kind of place where you might find crafting ingredients.",
+				logMessage: "Seems like the kind of place where you might find some crafting ingredients.",
 				conditions: { sector: { scavengeableItems: { count: [ 1, -1 ] } } },
+			},
+			TUTORIAL_ENCOUNTER_INGREDIENT_SECTOR_FOR_NEEDED_HAIRPIN: {
+				triggers: [ "change_position" ],
+				repeats: "COOLDOWN",
+				delay: 500,
+				logMessage: "Scavenging here should yield some hairpins for crafting lockpicks.",
+				conditions: { 
+					sector: { scouted: true, scavengeableItems: { res_hairpin: true }, scavengedPercent: [ -1, 1 ] }, 
+					playerInventoryComplete: { item_res_hairpin: [ -1, 1 ], item_exploration_1: [ -1, 1 ] }
+				},
 			},
 			TUTORIAL_ENCOUNTER_SECTOR_ENEMIES: {
 				triggers: [ "action_scout" ],

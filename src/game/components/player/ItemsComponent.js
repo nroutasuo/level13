@@ -106,6 +106,8 @@ function (Ash, ItemVO, ItemConstants) {
 
 				default: return this.getCount(item, true) > 1;
 			}
+
+			return true;
 		},
 		
 		getEquipmentComparison: function (item) {
