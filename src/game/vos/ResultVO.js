@@ -27,6 +27,9 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 		lostExplorers: [],
 		lostPerks: [],
 		gainedPerks: [],
+
+		// neutral results
+		storyFlags: {}, // flagID -> new value
 		
 		// additional info for UI
 		foundStashVO: null,
@@ -63,6 +66,8 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 			this.lostExplorers = [];
 			this.lostPerks = [];
 			this.gainedPerks = [];
+
+			this.storyFlags = {};
 			
 			this.selectedItems = [];
 			this.selectedResources = new ResourcesVO(storageTypes.RESULT);
@@ -119,6 +124,7 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 				&& this.gainedReputation == 0
 				&& this.gainedItemUpgrades.length == 0
 				&& this.discardedItems.length == 0
+				&& Object.keys(this.storyFlags).length == 0
 				&& this.discardedResources.getTotal() == 0;
 		},
 		
@@ -143,6 +149,7 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 			result.gainedHope = this.gainedHope;
 			result.gainedInsight = this.gainedInsight;
 			result.gainedReputation = this.gainedReputation;
+			result.storyFlags = this.storyFlags;
 			return result;
 		},
 		

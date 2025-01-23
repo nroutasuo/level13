@@ -789,6 +789,13 @@ define([
 				GameGlobals.playerActionFunctions.unlockFeature("insight");
 			}
 
+			if (rewards.storyFlags) {
+				for (let flagID in rewards.storyFlags) {
+					GameGlobals.gameState.setStoryFlag(flagID, rewards.storyFlags[flagID]);
+					GlobalSignals.storyFlagChangedSignal.dispatch(flagID);
+				}
+			}
+
 			GlobalSignals.inventoryChangedSignal.dispatch();
 
 			return true;

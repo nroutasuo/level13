@@ -188,7 +188,9 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 		},
 
 		setStoryFlag: function (flagID, value) {
-			 if (value !== false) value = true;
+			if (value !== false) value = true;
+			if (this.storyFlags[flagID] === value) return;
+			log.i("set story flag: " + flagID + ":" + value);
 			this.storyFlags[flagID] = value;
 		},
 

@@ -134,6 +134,12 @@ define([
                 resultVO.gainedItemUpgrades = data.gainedItemUpgrades;
             }
 
+            if (data.storyFlags) {
+                for (let flagID in data.storyFlags) {
+                    resultVO.storyFlags[flagID] = data.storyFlags[flagID];
+                }
+            }
+
             return resultVO;
         },
 
