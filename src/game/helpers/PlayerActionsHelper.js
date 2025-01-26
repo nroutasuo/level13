@@ -958,6 +958,32 @@ define([
 							return { value: 0, reason: "No storage space for robots in camp" };
 						}
 					}
+
+					if (requirements.camp.isExpansionBlockedByStorage) {
+						let canBuildSomething = false;
+						for (let key in improvementNames) {
+							let improvementName = improvementNames[key];
+							let type = getImprovementType(improvementName);
+							if (type !== improvementTypes.camp) continue;
+							// even if you can't build a hospital now, you're guaranteed to be able to before blocked
+							let count = this.getCurrentImprovementCount(improvementComponent, campComponent, key);
+							if (count == 0 && improvementName == improvementNames.hospital) {
+								canBuildSomething = true;
+								break;
+							}
+							let buildActionName = PlayerActionConstants.getActionNameForImprovement(improvementName);
+							let canBuild = 
+								GameGlobals.playerActionsHelper.isRequirementsMet(buildActionName) &&
+								GameGlobals.playerActionsHelper.checkCostsVersusStorage(buildActionName, sector) >= 1;
+							if (canBuild) {
+								canBuildSomething = true;
+								break;
+							}
+						}
+						if (canBuildSomething) {
+							return { value: 0, reason: "Possible to build something" };
+						}
+					}
 				}
 
 				if (requirements.sector) {

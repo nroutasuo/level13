@@ -441,6 +441,12 @@ define(['ash'], function (Ash) {
 				logMessage: "Storage is full.",
 				conditions: { inCamp: true, campInventoryFull: true } 
 			},
+			TUTORIAL_WARNING_FIRST_CAMP_COMPLETED: {
+					triggers: [ "action_build" ],
+					repeats: "COOLDOWN",
+					logMessage: "There is nothing more we can build here now, with our current abilities. Best to explore the City more.",
+					conditions: { inCamp: true, camp: { isExpansionBlockedByStorage: true } }
+			}
 		},
 
 	};
