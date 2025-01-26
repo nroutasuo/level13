@@ -63,15 +63,16 @@ define(['ash',
 		MAX_ABILITY_LEVEL: 100,
 		MAX_EXPLORERS_BASE: 1,
 		
-		// camp ordinal -> blueprint
+		// camp ordinal -> explorer template
 		predefinedExplorers: {
-			2: { id: 2, localeType: localeTypes.maintenance, abilityType: "attack", name: "Ilma", icon: "img/characters/mercenary.png", dialogueSource: "explorer_generic_mercenary" },
-			4: { id: 4, localeType: localeTypes.warehouse, abilityType: "scavenge_capacity", name: "Dog", icon: "img/characters/animal_dog.png", dialogueSource: "explorer_generic_dog" },
-			8: { id: 8, localeType: localeTypes.hermit, abilityType: "scavenge_supplies", name: "Zory", icon: "img/characters/scavenger.png", dialogueSource: "explorer_generic_scavenger" },
-			10: { id: 10, localeType: localeTypes.market, abilityType: "cost_scout", name: "Erdene", icon: "img/characters/scavenger.png", dialogueSource: "explorer_generic_scout" },
-			14: { id: 14, localeType: localeTypes.library, abilityType: "scavenge_ingredients", name: "Arushi", icon: "img/characters/scavenger.png", dialogueSource: "explorer_generic_scavenger" },
+			2: { id: "gambler", localeType: localeTypes.maintenance, abilityType: "defence", name: "Yimin", icon: "img/characters/mercenary.png", dialogueSource: "explorer_unique_gambler" },
+			3: { id: "dog", localeType: localeTypes.warehouse, abilityType: "scavenge_capacity", name: "Dog", icon: "img/characters/animal_dog.png", dialogueSource: "explorer_generic_dog" },
+			4: { id: "journalist", localeType: localeTypes.library, abilityType: "cost_scout", name: "Yevry", icon: "img/characters/scavenger.png", dialogueSource: "explorer_unique_journalist" },
+			5: { id: "handler", localeType: localeTypes.house, abilityType: "detect_supplies", name: "Jezekiah", icon: "img/characters/scavenger.png", dialogueSource: "explorer_unique_handler" },
+			6: { id: "prospector", localeType: localeTypes.store, abilityType: "scavenge_supplies", name: "Sunita", icon: "img/characters/scavenger.png", dialogueSource: "explorer_unique_prospector" },
+			10: { id: "hermit", localeType: localeTypes.bunker, abilityType: "cost_scout", name: "Eliasco", icon: "img/characters/scavenger.png", dialogueSource: "explorer_unique_hermit" },
 		},
-		
+
 		icons: [
 			// fighter
 			{ icon: "img/characters/explorer_fighter_f.png", explorerType: "fighter", gender: CultureConstants.genders.FEMALE },

@@ -1,1292 +1,1422 @@
 {
-    "dialogues": {
-        "character_bard_default_event_01": {
-            "pages": [
-                {
-                    "key": "character_bard_default_event_01_p1"
-                }
-            ]
-        },
-        "character_bard_default_event_02": {
-            "pages": [
-                {
-                    "key": "character_bard_default_event_02_p1"
-                }
-            ]
-        },
-        "character_bard_default_meet_01": {
-            "pages": [
-                "character_bard_default_meet_01_p1"
-            ]
-        },
-        "character_bard_default_meet_02": {
-            "pages": [
-                "character_bard_default_meet_02_p1"
-            ]
-        },
-        "character_bard_default_meet_03": {
-            "pages": [
-                "character_bard_default_meet_03_p1"
-            ]
-        },
-        "character_crafter_default_event_01": {
-            "pages": [
-                {
-                    "key": "character_crafter_default_event_01_p1"
-                }
-            ]
-        },
-        "character_crafter_default_event_02": {
-            "pages": [
-                {
-                    "key": "character_crafter_default_event_02_p1"
-                }
-            ]
-        },
-        "character_crafter_default_meet_01": {
-            "pages": [
-                "character_crafter_default_meet_01_p1"
-            ]
-        },
-        "character_crafter_default_meet_02": {
-            "pages": [
-                "character_crafter_default_meet_02_p1"
-            ]
-        },
-        "character_crafter_default_meet_upgrade_clothing": {
-            "conditions": {
-                "player": {
-                    "canHaveItemUpgrade": "clothing_"
-                }
-            },
-            "pages": [
-                {
-                    "id": "request",
-                    "key": "character_crafter_default_meet_upgrade_clothing_p1",
-                    "options": [
-                        {
-                            "buttonKey": "npc_request_agree",
-                            "costs": {
-                                "resource_food": 5
-                            },
-                            "response": "accept"
-                        },
-                        {
-                            "buttonKey": "npc_request_reject",
-                            "response": "reject"
-                        }
-                    ]
-                },
-                {
-                    "id": "accept",
-                    "key": "character_crafter_default_meet_upgrade_clothing_accept",
-                    "result": {
-                        "gainedItemUpgrades": [
-                            "clothing_"
-                        ]
-                    }
-                },
-                {
-                    "id": "reject",
-                    "key": "character_crafter_default_meet_upgrade_clothing_reject"
-                }
-            ]
-        },
-        "character_crafter_default_meet_upgrade_weapon": {
-            "conditions": {
-                "player": {
-                    "canHaveItemUpgrade": "weapon_"
-                }
-            },
-            "pages": [
-                {
-                    "id": "request",
-                    "key": "character_crafter_default_meet_upgrade_weapon_p1",
-                    "options": [
-                        {
-                            "buttonKey": "npc_request_agree",
-                            "costs": {
-                                "resource_food": 5
-                            },
-                            "response": "accept"
-                        },
-                        {
-                            "buttonKey": "npc_request_reject",
-                            "response": "reject"
-                        }
-                    ]
-                },
-                {
-                    "id": "accept",
-                    "key": "character_crafter_default_meet_upgrade_weapon_accept",
-                    "result": {
-                        "gainedItemUpgrades": [
-                            "weapon_"
-                        ]
-                    }
-                },
-                {
-                    "id": "reject",
-                    "key": "character_crafter_default_meet_upgrade_weapon_reject"
-                }
-            ]
-        },
-        "character_darkDweller_default_interact_01": {
-            "pages": [
-                "character_darkDweller_default_interact_01_p1"
-            ]
-        },
-        "character_darkDweller_default_interact_02": {
-            "pages": [
-                "character_darkDweller_default_interact_02_p1"
-            ]
-        },
-        "character_darkDweller_default_interact_03": {
-            "pages": [
-                "character_darkDweller_default_interact_03_p1"
-            ]
-        },
-        "character_darkDweller_default_interact_04": {
-            "pages": [
-                "character_darkDweller_default_interact_04_p1"
-            ]
-        },
-        "character_doomsayer_default_event_01": {
-            "pages": [
-                {
-                    "key": "character_doomsayer_default_event_01_p1"
-                }
-            ]
-        },
-        "character_doomsayer_default_event_02": {
-            "pages": [
-                {
-                    "key": "character_doomsayer_default_event_02_p1"
-                }
-            ]
-        },
-        "character_doomsayer_default_meet_01": {
-            "pages": [
-                "character_doomsayer_default_meet_01_p1"
-            ]
-        },
-        "character_doomsayer_default_meet_02": {
-            "pages": [
-                "character_doomsayer_default_meet_02_p1"
-            ]
-        },
-        "character_drifer_default_meet_01": {
-            "pages": [
-                "character_drifer_default_meet_01_p1"
-            ]
-        },
-        "character_drifer_default_meet_02": {
-            "pages": [
-                "character_drifer_default_meet_02_p1"
-            ]
-        },
-        "character_drifer_default_meet_03": {
-            "pages": [
-                "character_drifer_default_meet_03_p1"
-            ]
-        },
-        "character_drifer_default_meet_04": {
-            "pages": [
+	"dialogues": {
+		"character_bard_default_event_01": {
+			"pages": [
+				{
+					"key": "character_bard_default_event_01_p1"
+				}
+			]
+		},
+		"character_bard_default_event_02": {
+			"pages": [
+				{
+					"key": "character_bard_default_event_02_p1"
+				}
+			]
+		},
+		"character_bard_default_meet_01": {
+			"pages": [
+				"character_bard_default_meet_01_p1"
+			]
+		},
+		"character_bard_default_meet_02": {
+			"pages": [
+				"character_bard_default_meet_02_p1"
+			]
+		},
+		"character_bard_default_meet_03": {
+			"pages": [
+				"character_bard_default_meet_03_p1"
+			]
+		},
+		"character_crafter_default_event_01": {
+			"pages": [
+				{
+					"key": "character_crafter_default_event_01_p1"
+				}
+			]
+		},
+		"character_crafter_default_event_02": {
+			"pages": [
+				{
+					"key": "character_crafter_default_event_02_p1"
+				}
+			]
+		},
+		"character_crafter_default_meet_01": {
+			"pages": [
+				"character_crafter_default_meet_01_p1"
+			]
+		},
+		"character_crafter_default_meet_02": {
+			"pages": [
+				"character_crafter_default_meet_02_p1"
+			]
+		},
+		"character_crafter_default_meet_upgrade_clothing": {
+			"conditions": {
+				"player": {
+					"canHaveItemUpgrade": "clothing_"
+				}
+			},
+			"pages": [
+				{
+					"id": "request",
+					"key": "character_crafter_default_meet_upgrade_clothing_p1",
+					"options": [
+						{
+							"buttonKey": "npc_request_agree",
+							"costs": {
+								"resource_food": 5
+							},
+							"response": "accept"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "accept",
+					"key": "character_crafter_default_meet_upgrade_clothing_accept",
+					"result": {
+						"gainedItemUpgrades": [
+							"clothing_"
+						]
+					}
+				},
+				{
+					"id": "reject",
+					"key": "character_crafter_default_meet_upgrade_clothing_reject"
+				}
+			]
+		},
+		"character_crafter_default_meet_upgrade_weapon": {
+			"conditions": {
+				"player": {
+					"canHaveItemUpgrade": "weapon_"
+				}
+			},
+			"pages": [
+				{
+					"id": "request",
+					"key": "character_crafter_default_meet_upgrade_weapon_p1",
+					"options": [
+						{
+							"buttonKey": "npc_request_agree",
+							"costs": {
+								"resource_food": 5
+							},
+							"response": "accept"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "accept",
+					"key": "character_crafter_default_meet_upgrade_weapon_accept",
+					"result": {
+						"gainedItemUpgrades": [
+							"weapon_"
+						]
+					}
+				},
+				{
+					"id": "reject",
+					"key": "character_crafter_default_meet_upgrade_weapon_reject"
+				}
+			]
+		},
+		"character_darkDweller_default_interact_01": {
+			"pages": [
+				"character_darkDweller_default_interact_01_p1"
+			]
+		},
+		"character_darkDweller_default_interact_02": {
+			"pages": [
+				"character_darkDweller_default_interact_02_p1"
+			]
+		},
+		"character_darkDweller_default_interact_03": {
+			"pages": [
+				"character_darkDweller_default_interact_03_p1"
+			]
+		},
+		"character_darkDweller_default_interact_04": {
+			"pages": [
+				"character_darkDweller_default_interact_04_p1"
+			]
+		},
+		"character_doomsayer_default_event_01": {
+			"pages": [
+				{
+					"key": "character_doomsayer_default_event_01_p1"
+				}
+			]
+		},
+		"character_doomsayer_default_event_02": {
+			"pages": [
+				{
+					"key": "character_doomsayer_default_event_02_p1"
+				}
+			]
+		},
+		"character_doomsayer_default_meet_01": {
+			"pages": [
+				"character_doomsayer_default_meet_01_p1"
+			]
+		},
+		"character_doomsayer_default_meet_02": {
+			"pages": [
+				"character_doomsayer_default_meet_02_p1"
+			]
+		},
+		"character_drifer_default_meet_01": {
+			"pages": [
+				"character_drifer_default_meet_01_p1"
+			]
+		},
+		"character_drifer_default_meet_02": {
+			"pages": [
+				"character_drifer_default_meet_02_p1"
+			]
+		},
+		"character_drifer_default_meet_03": {
+			"pages": [
+				"character_drifer_default_meet_03_p1"
+			]
+		},
+		"character_drifer_default_meet_04": {
+			"pages": [
                 "character_drifer_default_meet_04_p1"
-            ]
-        },
-        "character_generic_helpful_meet_poi_campable": {
-            "conditions": {
-                "improvementsOnLevel": {
-                    "camp": [
-                        0,
-                        1
-                    ]
-                },
-                "vicinity": "campable"
-            },
-            "pages": [
-                "character_generic_helpful_meet_poi_campable_p1"
-            ]
-        },
-        "character_generic_helpful_meet_poi_settlement": {
-            "conditions": {
-                "vicinity": "settlement"
-            },
-            "pages": [
-                "character_generic_helpful_meet_poi_settlement_p1"
-            ]
-        },
-        "character_generic_helpful_meet_poi_water": {
-            "conditions": {
-                "vicinity": "spring"
-            },
-            "pages": [
-                "character_generic_helpful_meet_poi_water_p1"
-            ]
-        },
-        "character_generic_reserved_meet_01": {
-            "pages": [
-                "character_generic_reserved_meet_01_p1"
-            ]
-        },
-        "character_generic_stranded_meet_directions": {
-            "pages": [
-                {
-                    "id": "request",
-                    "key": "character_generic_stranded_meet_directions_p1",
-                    "options": [
-                        {
-                            "buttonKey": "npc_request_agree",
-                            "response": "accept"
-                        },
-                        {
-                            "buttonKey": "npc_request_reject",
-                            "response": "reject"
-                        }
-                    ]
-                },
-                {
-                    "id": "accept",
-                    "key": "character_generic_stranded_meet_directions_accept",
-                    "result": {
-                        "gainedPopulation": 1
-                    }
-                },
-                {
-                    "id": "reject",
-                    "key": "character_generic_stranded_meet_directions_reject"
-                }
-            ]
-        },
-        "character_generic_stranded_meet_water": {
-            "pages": [
-                {
-                    "id": "request",
-                    "key": "character_generic_stranded_meet_water_p1",
-                    "options": [
-                        {
-                            "buttonKey": "npc_request_agree",
-                            "costs": {
-                                "resource_water": 5
-                            },
-                            "response": "accept"
-                        },
-                        {
-                            "buttonKey": "npc_request_reject",
-                            "response": "reject"
-                        }
-                    ]
-                },
-                {
-                    "id": "accept",
-                    "key": "character_generic_stranded_meet_water_p1_accept"
-                },
-                {
-                    "id": "reject",
-                    "key": "character_generic_stranded_meet_water_p1_reject"
-                }
-            ]
-        },
-        "character_hunter_default_meet_01": {
-            "pages": [
-                "character_hunter_default_meet_01_p1"
-            ]
-        },
-        "character_hunter_default_meet_02": {
-            "pages": [
-                "character_hunter_default_meet_02_p1"
-            ]
-        },
-        "character_mercenary_default_meet_01": {
-            "pages": [
-                "character_mercenary_default_meet_01_p1"
-            ]
-        },
-        "character_mercenary_default_meet_02": {
-            "pages": [
-                "character_mercenary_default_meet_02_p1"
-            ]
-        },
-        "character_messenger_default_meet_01": {
-            "pages": [
-                "character_messenger_default_meet_01_p1"
-            ]
-        },
-        "character_messenger_default_meet_02": {
-            "pages": [
-                "character_messenger_default_meet_02_p1"
-            ]
-        },
-        "character_messenger_default_meet_03": {
-            "pages": [
-                "character_messenger_default_meet_03_p1"
-            ]
-        },
-        "character_messenger_default_meet_04": {
-            "pages": [
-                "character_messenger_default_meet_04_p1"
-            ]
-        },
-        "character_scavenger_default_meet_01": {
-            "pages": [
-                "character_scavenger_default_meet_01_p1"
-            ]
-        },
-        "character_scavenger_default_meet_02": {
-            "pages": [
-                "character_scavenger_default_meet_02_p1"
-            ]
-        },
-        "character_shaman_default_event_01": {
-            "pages": [
-                {
-                    "key": "character_shaman_default_event_01_p1"
-                }
-            ]
-        },
-        "character_shaman_default_event_02": {
-            "pages": [
-                {
-                    "key": "character_shaman_default_event_02_p1"
-                }
-            ]
-        },
-        "character_shaman_default_meet_01": {
-            "pages": [
-                "character_shaman_default_meet_01_p1"
-            ]
-        },
-        "character_shaman_default_meet_02": {
-            "pages": [
-                "character_shaman_default_meet_02_p1"
-            ]
-        },
-        "character_shaman_default_meet_03": {
-            "pages": [
-                "character_shaman_default_meet_03_p1"
-            ]
-        },
-        "character_shaman_default_meet_blessing": {
-            "pages": [
-                {
-                    "id": "request",
-                    "key": "character_shaman_default_meet_blessing_p1",
-                    "options": [
-                        {
-                            "buttonKey": "npc_request_agree",
-                            "response": "accept"
-                        },
-                        {
-                            "buttonKey": "npc_request_reject",
-                            "response": "reject"
-                        }
-                    ]
-                },
-                {
-                    "id": "accept",
-                    "key": "character_shaman_default_meet_blessing_accept",
-                    "result": {
-                        "gainedPerks": [
-                            "blessedShort"
-                        ]
-                    }
-                },
-                {
-                    "id": "reject",
-                    "key": "character_shaman_default_meet_blessing_reject"
-                }
-            ]
-        },
-        "character_slumRefugee_default_interact_01": {
-            "pages": [
-                "character_slumRefugee_default_interact_01_p1"
-            ]
-        },
-        "character_slumRefugee_default_interact_02": {
-            "pages": [
-                "character_slumRefugee_default_interact_02_p1"
-            ]
-        },
-        "character_slumRefugee_default_interact_03": {
-            "pages": [
-                "character_slumRefugee_default_interact_03_p1"
-            ]
-        },
-        "character_slumRefugee_default_meet_01": {
-            "pages": [
-                "character_slumRefugee_default_meet_01_p1"
-            ]
-        },
-        "character_slumRefugee_default_meet_02": {
-            "pages": [
-                "character_slumRefugee_default_meet_02_p1"
-            ]
-        },
-        "character_slumRefugee_default_meet_03": {
-            "pages": [
-                "character_slumRefugee_default_meet_03_p1"
-            ]
-        },
-        "character_surfaceRefugee_default_interact_01": {
-            "pages": [
-                "character_surfaceRefugee_default_interact_01_p1"
-            ]
-        },
-        "character_surfaceRefugee_default_interact_02": {
-            "pages": [
-                "character_surfaceRefugee_default_interact_02_p1"
-            ]
-        },
-        "character_surfaceRefugee_default_interact_03": {
-            "pages": [
-                "character_surfaceRefugee_default_interact_03_p1"
-            ]
-        },
-        "character_surfaceRefugee_default_interact_04": {
-            "pages": [
-                "character_surfaceRefugee_default_interact_04_p1"
-            ]
-        },
-        "character_surfaceRefugee_default_meet_01": {
-            "pages": [
-                "character_surfaceRefugee_default_meet_01_p1"
-            ]
-        },
-        "character_surfaceRefugee_default_meet_02": {
-            "pages": [
-                "character_surfaceRefugee_default_meet_02_p1"
-            ]
-        },
-        "character_trader_default_meet_01": {
-            "pages": [
-                "character_trader_default_meet_01_p1"
-            ]
-        },
-        "character_trader_default_meet_02": {
-            "pages": [
-                "character_trader_default_meet_02_p1"
-            ]
-        },
-        "character_workerApothecary_default_interact_01": {
-            "pages": [
-                "character_workerApothecary_default_interact_01_p1"
-            ]
-        },
-        "character_workerApothecary_default_interact_02": {
-            "pages": [
-                "character_workerApothecary_default_interact_02_p1"
-            ]
-        },
-        "character_workerChemist_default_interact_01": {
-            "pages": [
-                "character_workerChemist_default_interact_01_p1"
-            ]
-        },
-        "character_workerChemist_default_interact_02": {
-            "pages": [
-                "character_workerChemist_default_interact_02_p1"
-            ]
-        },
-        "character_workerCleric_default_interact_01": {
-            "pages": [
-                "character_workerCleric_default_interact_01_p1"
-            ]
-        },
-        "character_workerCleric_default_interact_02": {
-            "pages": [
-                "character_workerCleric_default_interact_02_p1"
-            ]
-        },
-        "character_workerConcrete_default_interact_01": {
-            "pages": [
-                "character_workerConcrete_default_interact_01_p1"
-            ]
-        },
-        "character_workerConcrete_default_interact_02": {
-            "pages": [
-                "character_workerConcrete_default_interact_02_p1"
-            ]
-        },
-        "character_workerConcrete_default_interact_03": {
-            "pages": [
-                "character_workerConcrete_default_interact_03_p1"
-            ]
-        },
-        "character_workerGardener_default_interact_01": {
-            "pages": [
-                "character_workerGardener_default_interact_01_p1"
-            ]
-        },
-        "character_workerGardener_default_interact_02": {
-            "pages": [
-                "character_workerGardener_default_interact_02_p1"
-            ]
-        },
-        "character_workerRobotmaker_default_interact_01": {
-            "pages": [
-                "character_workerRobotmaker_default_interact_01_p1"
-            ]
-        },
-        "character_workerRobotmaker_default_interact_02": {
-            "pages": [
-                "character_workerRobotmaker_default_interact_02_p1"
-            ]
-        },
-        "character_workerRope_default_interact_01": {
-            "pages": [
-                "character_workerRope_default_interact_01_p1"
-            ]
-        },
-        "character_workerRope_default_interact_02": {
-            "pages": [
-                "character_workerRope_default_interact_02_p1"
-            ]
-        },
-        "character_workerRubber_default_interact_01": {
-            "pages": [
-                "character_workerRubber_default_interact_01_p1"
-            ]
-        },
-        "character_workerRubber_default_interact_02": {
-            "pages": [
-                "character_workerRubber_default_interact_02_p1"
-            ]
-        },
-        "character_workerScavenger_default_interact_01": {
-            "pages": [
-                "character_workerScavenger_default_interact_01_p1"
-            ]
-        },
-        "character_workerScavenger_default_interact_02": {
-            "pages": [
-                "character_workerScavenger_default_interact_02_p1"
-            ]
-        },
-        "character_workerScientist_default_interact_01": {
-            "pages": [
-                "character_workerScientist_default_interact_01_p1"
-            ]
-        },
-        "character_workerScientist_default_interact_02": {
-            "pages": [
-                "character_workerScientist_default_interact_02_p1"
-            ]
-        },
-        "character_workerSoldier_default_interact_01": {
-            "pages": [
-                "character_workerSoldier_default_interact_01_p1"
-            ]
-        },
-        "character_workerSoldier_default_interact_02": {
-            "pages": [
-                "character_workerSoldier_default_interact_02_p1"
-            ]
-        },
-        "character_workerToolsmith_default_interact_01": {
-            "pages": [
-                "character_workerToolsmith_default_interact_01_p1"
-            ]
-        },
-        "character_workerToolsmith_default_interact_02": {
-            "pages": [
-                "character_workerToolsmith_default_interact_02_p1"
-            ]
-        },
-        "character_workerTrapper_default_interact_01": {
-            "pages": [
-                "character_workerTrapper_default_interact_01_p1"
-            ]
-        },
-        "character_workerTrapper_default_interact_02": {
-            "pages": [
-                "character_workerTrapper_default_interact_02_p1"
-            ]
-        },
-        "character_workerWater_default_interact_01": {
-            "pages": [
-                "character_workerWater_default_interact_01_p1"
-            ]
-        },
-        "character_workerWater_default_interact_02": {
-            "pages": [
-                "character_workerWater_default_interact_02_p1"
-            ]
-        },
-        "explorer_generic_animal_event_01": {
-            "pages": [
-                "explorer_generic_animal_event_01_p1"
-            ]
-        },
-        "explorer_generic_animal_interact_01": {
-            "pages": [
-                "explorer_generic_animal_interact_01_p1"
-            ]
-        },
-        "explorer_generic_animal_interact_02": {
-            "pages": [
-                "explorer_generic_animal_interact_02_p1"
-            ]
-        },
-        "explorer_generic_animal_interact_03": {
-            "pages": [
-                "explorer_generic_animal_interact_03_p1"
-            ]
-        },
-        "explorer_generic_animal_meet_01": {
-            "pages": [
-                "explorer_generic_animal_meet_01_p1"
-            ]
-        },
-        "explorer_generic_dog_event_01": {
-            "pages": [
-                "explorer_generic_dog_event_01_p1"
-            ]
-        },
-        "explorer_generic_dog_interact_01": {
-            "pages": [
-                "explorer_generic_dog_interact_01_p1"
-            ]
-        },
-        "explorer_generic_dog_interact_02": {
-            "pages": [
-                "explorer_generic_dog_interact_02_p1"
-            ]
-        },
-        "explorer_generic_dog_interact_03": {
-            "pages": [
-                "explorer_generic_dog_interact_03_p1"
-            ]
-        },
-        "explorer_generic_dog_meet_01": {
-            "pages": [
-                "explorer_generic_dog_meet_01_p1"
-            ]
-        },
-        "explorer_generic_mercenary_event_01": {
-            "pages": [
-                {
-                    "key": "explorer_generic_mercenary_event_01_p1"
-                }
-            ],
-            "repeatable": true
-        },
-        "explorer_generic_mercenary_interact_01": {
-            "pages": [
-                {
-                    "key": "explorer_generic_mercenary_interact_01_p1"
-                }
-            ],
-            "repeatable": true
-        },
-        "explorer_generic_mercenary_interact_02": {
-            "conditions": {
-                "explorer": {
-                    "trust": 1
-                }
-            },
-            "pages": [
-                {
-                    "key": "explorer_generic_mercenary_interact_02_p1"
-                }
-            ],
-            "repeatable": true
-        },
-        "explorer_generic_mercenary_interact_03": {
-            "conditions": {
-                "explorer": {
-                    "trust": 2
-                }
-            },
-            "pages": [
-                {
-                    "key": "explorer_generic_mercenary_interact_03_p1"
-                }
-            ],
-            "repeatable": false
-        },
-        "explorer_generic_mercenary_meet_01": {
-            "pages": [
-                {
-                    "key": "explorer_generic_mercenary_meet_01_p1"
-                }
-            ],
-            "repeatable": true
-        },
-        "explorer_generic_scavenger_event_01": {
-            "pages": [
-                {
-                    "key": "explorer_generic_scavenger_event_01_p1"
-                }
-            ],
-            "repeatable": true
-        },
-        "explorer_generic_scavenger_interact_01": {
-            "pages": [
-                {
-                    "key": "explorer_generic_scavenger_interact_01_p1"
-                }
-            ],
-            "repeatable": true
-        },
-        "explorer_generic_scavenger_interact_02": {
-            "conditions": {
-                "explorer": {
-                    "trust": 1
-                }
-            },
-            "pages": [
-                {
-                    "key": "explorer_generic_scavenger_interact_02_p1"
-                }
-            ],
-            "repeatable": true
-        },
-        "explorer_generic_scavenger_interact_03": {
-            "conditions": {
-                "explorer": {
-                    "trust": 2
-                }
-            },
-            "pages": [
-                {
-                    "key": "explorer_generic_scavenger_interact_03_p1"
-                }
-            ],
-            "repeatable": true
-        },
-        "explorer_generic_scavenger_meet_01": {
-            "pages": [
-                {
-                    "key": "explorer_generic_scavenger_meet_01_p1"
-                }
-            ],
-            "repeatable": true
-        },
-        "explorer_generic_scout_event_01": {
-            "pages": [
-                {
-                    "key": "explorer_generic_scout_event_01_p1"
-                }
-            ],
-            "repeatable": true
-        },
-        "explorer_generic_scout_interact_01": {
-            "pages": [
-                {
-                    "key": "explorer_generic_scout_interact_01_p1"
-                }
-            ],
-            "repeatable": true
-        },
-        "explorer_generic_scout_interact_02": {
-            "conditions": {
-                "explorer": {
-                    "trust": 1
-                },
-                "featureUnlocked": {
-                    "ground": false
-                }
-            },
-            "pages": [
-                {
-                    "key": "explorer_generic_scout_interact_02_p1"
-                }
-            ],
-            "repeatable": true
-        },
-        "explorer_generic_scout_interact_03": {
-            "conditions": {
-                "explorer": {
-                    "trust": 2
-                }
-            },
-            "pages": [
-                {
-                    "key": "explorer_generic_scout_interact_03_p1"
-                }
-            ],
-            "repeatable": true
-        },
-        "explorer_generic_scout_meet_01": {
-            "pages": [
-                {
-                    "key": "explorer_generic_scout_meet_01_p1"
-                }
-            ],
-            "repeatable": true
-        },
+			]
+		},
+		"character_generic_helpful_meet_poi_campable": {
+			"conditions": {
+				"improvementsOnLevel": {
+					"camp": [
+						0,
+						1
+					]
+				},
+				"vicinity": "campable"
+			},
+			"pages": [
+				"character_generic_helpful_meet_poi_campable_p1"
+			]
+		},
+		"character_generic_helpful_meet_poi_settlement": {
+			"conditions": {
+				"vicinity": "settlement"
+			},
+			"pages": [
+				"character_generic_helpful_meet_poi_settlement_p1"
+			]
+		},
+		"character_generic_helpful_meet_poi_water": {
+			"conditions": {
+				"vicinity": "spring"
+			},
+			"pages": [
+				"character_generic_helpful_meet_poi_water_p1"
+			]
+		},
+		"character_generic_reserved_meet_01": {
+			"pages": [
+				"character_generic_reserved_meet_01_p1"
+			]
+		},
+		"character_generic_stranded_meet_directions": {
+			"pages": [
+				{
+					"id": "request",
+					"key": "character_generic_stranded_meet_directions_p1",
+					"options": [
+						{
+							"buttonKey": "npc_request_agree",
+							"response": "accept"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "accept",
+					"key": "character_generic_stranded_meet_directions_accept",
+					"result": {
+						"gainedPopulation": 1
+					}
+				},
+				{
+					"id": "reject",
+					"key": "character_generic_stranded_meet_directions_reject"
+				}
+			]
+		},
+		"character_generic_stranded_meet_water": {
+			"pages": [
+				{
+					"id": "request",
+					"key": "character_generic_stranded_meet_water_p1",
+					"options": [
+						{
+							"buttonKey": "npc_request_agree",
+							"costs": {
+								"resource_water": 5
+							},
+							"response": "accept"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "accept",
+					"key": "character_generic_stranded_meet_water_p1_accept"
+				},
+				{
+					"id": "reject",
+					"key": "character_generic_stranded_meet_water_p1_reject"
+				}
+			]
+		},
+		"character_hunter_default_meet_01": {
+			"pages": [
+				"character_hunter_default_meet_01_p1"
+			]
+		},
+		"character_hunter_default_meet_02": {
+			"pages": [
+				"character_hunter_default_meet_02_p1"
+			]
+		},
+		"character_mercenary_default_meet_01": {
+			"pages": [
+				"character_mercenary_default_meet_01_p1"
+			]
+		},
+		"character_mercenary_default_meet_02": {
+			"pages": [
+				"character_mercenary_default_meet_02_p1"
+			]
+		},
+		"character_messenger_default_meet_01": {
+			"pages": [
+				"character_messenger_default_meet_01_p1"
+			]
+		},
+		"character_messenger_default_meet_02": {
+			"pages": [
+				"character_messenger_default_meet_02_p1"
+			]
+		},
+		"character_messenger_default_meet_03": {
+			"pages": [
+				"character_messenger_default_meet_03_p1"
+			]
+		},
+		"character_messenger_default_meet_04": {
+			"pages": [
+				"character_messenger_default_meet_04_p1"
+			]
+		},
+		"character_scavenger_default_meet_01": {
+			"pages": [
+				"character_scavenger_default_meet_01_p1"
+			]
+		},
+		"character_scavenger_default_meet_02": {
+			"pages": [
+				"character_scavenger_default_meet_02_p1"
+			]
+		},
+		"character_shaman_default_event_01": {
+			"pages": [
+				{
+					"key": "character_shaman_default_event_01_p1"
+				}
+			]
+		},
+		"character_shaman_default_event_02": {
+			"pages": [
+				{
+					"key": "character_shaman_default_event_02_p1"
+				}
+			]
+		},
+		"character_shaman_default_meet_01": {
+			"pages": [
+				"character_shaman_default_meet_01_p1"
+			]
+		},
+		"character_shaman_default_meet_02": {
+			"pages": [
+				"character_shaman_default_meet_02_p1"
+			]
+		},
+		"character_shaman_default_meet_03": {
+			"pages": [
+				"character_shaman_default_meet_03_p1"
+			]
+		},
+		"character_shaman_default_meet_blessing": {
+			"pages": [
+				{
+					"id": "request",
+					"key": "character_shaman_default_meet_blessing_p1",
+					"options": [
+						{
+							"buttonKey": "npc_request_agree",
+							"response": "accept"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "accept",
+					"key": "character_shaman_default_meet_blessing_accept",
+					"result": {
+						"gainedPerks": [
+							"blessedShort"
+						]
+					}
+				},
+				{
+					"id": "reject",
+					"key": "character_shaman_default_meet_blessing_reject"
+				}
+			]
+		},
+		"character_slumRefugee_default_interact_01": {
+			"pages": [
+				"character_slumRefugee_default_interact_01_p1"
+			]
+		},
+		"character_slumRefugee_default_interact_02": {
+			"pages": [
+				"character_slumRefugee_default_interact_02_p1"
+			]
+		},
+		"character_slumRefugee_default_interact_03": {
+			"pages": [
+				"character_slumRefugee_default_interact_03_p1"
+			]
+		},
+		"character_slumRefugee_default_meet_01": {
+			"pages": [
+				"character_slumRefugee_default_meet_01_p1"
+			]
+		},
+		"character_slumRefugee_default_meet_02": {
+			"pages": [
+				"character_slumRefugee_default_meet_02_p1"
+			]
+		},
+		"character_slumRefugee_default_meet_03": {
+			"pages": [
+				"character_slumRefugee_default_meet_03_p1"
+			]
+		},
+		"character_surfaceRefugee_default_interact_01": {
+			"pages": [
+				"character_surfaceRefugee_default_interact_01_p1"
+			]
+		},
+		"character_surfaceRefugee_default_interact_02": {
+			"pages": [
+				"character_surfaceRefugee_default_interact_02_p1"
+			]
+		},
+		"character_surfaceRefugee_default_interact_03": {
+			"pages": [
+				"character_surfaceRefugee_default_interact_03_p1"
+			]
+		},
+		"character_surfaceRefugee_default_interact_04": {
+			"pages": [
+				"character_surfaceRefugee_default_interact_04_p1"
+			]
+		},
+		"character_surfaceRefugee_default_meet_01": {
+			"pages": [
+				"character_surfaceRefugee_default_meet_01_p1"
+			]
+		},
+		"character_surfaceRefugee_default_meet_02": {
+			"pages": [
+				"character_surfaceRefugee_default_meet_02_p1"
+			]
+		},
+		"character_trader_default_meet_01": {
+			"pages": [
+				"character_trader_default_meet_01_p1"
+			]
+		},
+		"character_trader_default_meet_02": {
+			"pages": [
+				"character_trader_default_meet_02_p1"
+			]
+		},
+		"character_workerApothecary_default_interact_01": {
+			"pages": [
+				"character_workerApothecary_default_interact_01_p1"
+			]
+		},
+		"character_workerApothecary_default_interact_02": {
+			"pages": [
+				"character_workerApothecary_default_interact_02_p1"
+			]
+		},
+		"character_workerChemist_default_interact_01": {
+			"pages": [
+				"character_workerChemist_default_interact_01_p1"
+			]
+		},
+		"character_workerChemist_default_interact_02": {
+			"pages": [
+				"character_workerChemist_default_interact_02_p1"
+			]
+		},
+		"character_workerCleric_default_interact_01": {
+			"pages": [
+				"character_workerCleric_default_interact_01_p1"
+			]
+		},
+		"character_workerCleric_default_interact_02": {
+			"pages": [
+				"character_workerCleric_default_interact_02_p1"
+			]
+		},
+		"character_workerConcrete_default_interact_01": {
+			"pages": [
+				"character_workerConcrete_default_interact_01_p1"
+			]
+		},
+		"character_workerConcrete_default_interact_02": {
+			"pages": [
+				"character_workerConcrete_default_interact_02_p1"
+			]
+		},
+		"character_workerConcrete_default_interact_03": {
+			"pages": [
+				"character_workerConcrete_default_interact_03_p1"
+			]
+		},
+		"character_workerGardener_default_interact_01": {
+			"pages": [
+				"character_workerGardener_default_interact_01_p1"
+			]
+		},
+		"character_workerGardener_default_interact_02": {
+			"pages": [
+				"character_workerGardener_default_interact_02_p1"
+			]
+		},
+		"character_workerRobotmaker_default_interact_01": {
+			"pages": [
+				"character_workerRobotmaker_default_interact_01_p1"
+			]
+		},
+		"character_workerRobotmaker_default_interact_02": {
+			"pages": [
+				"character_workerRobotmaker_default_interact_02_p1"
+			]
+		},
+		"character_workerRope_default_interact_01": {
+			"pages": [
+				"character_workerRope_default_interact_01_p1"
+			]
+		},
+		"character_workerRope_default_interact_02": {
+			"pages": [
+				"character_workerRope_default_interact_02_p1"
+			]
+		},
+		"character_workerRubber_default_interact_01": {
+			"pages": [
+				"character_workerRubber_default_interact_01_p1"
+			]
+		},
+		"character_workerRubber_default_interact_02": {
+			"pages": [
+				"character_workerRubber_default_interact_02_p1"
+			]
+		},
+		"character_workerScavenger_default_interact_01": {
+			"pages": [
+				"character_workerScavenger_default_interact_01_p1"
+			]
+		},
+		"character_workerScavenger_default_interact_02": {
+			"pages": [
+				"character_workerScavenger_default_interact_02_p1"
+			]
+		},
+		"character_workerScientist_default_interact_01": {
+			"pages": [
+				"character_workerScientist_default_interact_01_p1"
+			]
+		},
+		"character_workerScientist_default_interact_02": {
+			"pages": [
+				"character_workerScientist_default_interact_02_p1"
+			]
+		},
+		"character_workerSoldier_default_interact_01": {
+			"pages": [
+				"character_workerSoldier_default_interact_01_p1"
+			]
+		},
+		"character_workerSoldier_default_interact_02": {
+			"pages": [
+				"character_workerSoldier_default_interact_02_p1"
+			]
+		},
+		"character_workerToolsmith_default_interact_01": {
+			"pages": [
+				"character_workerToolsmith_default_interact_01_p1"
+			]
+		},
+		"character_workerToolsmith_default_interact_02": {
+			"pages": [
+				"character_workerToolsmith_default_interact_02_p1"
+			]
+		},
+		"character_workerTrapper_default_interact_01": {
+			"pages": [
+				"character_workerTrapper_default_interact_01_p1"
+			]
+		},
+		"character_workerTrapper_default_interact_02": {
+			"pages": [
+				"character_workerTrapper_default_interact_02_p1"
+			]
+		},
+		"character_workerWater_default_interact_01": {
+			"pages": [
+				"character_workerWater_default_interact_01_p1"
+			]
+		},
+		"character_workerWater_default_interact_02": {
+			"pages": [
+				"character_workerWater_default_interact_02_p1"
+			]
+		},
+		"explorer_generic_animal_event_01": {
+			"pages": [
+				"explorer_generic_animal_event_01_p1"
+			]
+		},
+		"explorer_generic_animal_interact_01": {
+			"pages": [
+				"explorer_generic_animal_interact_01_p1"
+			]
+		},
+		"explorer_generic_animal_interact_02": {
+			"pages": [
+				"explorer_generic_animal_interact_02_p1"
+			]
+		},
+		"explorer_generic_animal_interact_03": {
+			"pages": [
+				"explorer_generic_animal_interact_03_p1"
+			]
+		},
+		"explorer_generic_animal_meet_01": {
+			"pages": [
+				"explorer_generic_animal_meet_01_p1"
+			]
+		},
+		"explorer_generic_dog_event_01": {
+			"pages": [
+				"explorer_generic_dog_event_01_p1"
+			]
+		},
+		"explorer_generic_dog_interact_01": {
+			"pages": [
+				"explorer_generic_dog_interact_01_p1"
+			]
+		},
+		"explorer_generic_dog_interact_02": {
+			"pages": [
+				"explorer_generic_dog_interact_02_p1"
+			]
+		},
+		"explorer_generic_dog_interact_03": {
+			"pages": [
+				"explorer_generic_dog_interact_03_p1"
+			]
+		},
+		"explorer_generic_dog_meet_01": {
+			"pages": [
+				"explorer_generic_dog_meet_01_p1"
+			]
+		},
+		"explorer_generic_mercenary_event_01": {
+			"pages": [
+				{
+					"key": "explorer_generic_mercenary_event_01_p1"
+				}
+			],
+			"repeatable": true
+		},
+		"explorer_generic_mercenary_interact_01": {
+			"pages": [
+				{
+					"key": "explorer_generic_mercenary_interact_01_p1"
+				}
+			],
+			"repeatable": true
+		},
+		"explorer_generic_mercenary_interact_02": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				{
+					"key": "explorer_generic_mercenary_interact_02_p1"
+				}
+			],
+			"repeatable": true
+		},
+		"explorer_generic_mercenary_interact_03": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				{
+					"key": "explorer_generic_mercenary_interact_03_p1"
+				}
+			],
+			"repeatable": false
+		},
+		"explorer_generic_mercenary_meet_01": {
+			"pages": [
+				{
+					"key": "explorer_generic_mercenary_meet_01_p1"
+				}
+			],
+			"repeatable": true
+		},
+		"explorer_generic_scavenger_event_01": {
+			"pages": [
+				{
+					"key": "explorer_generic_scavenger_event_01_p1"
+				}
+			],
+			"repeatable": true
+		},
+		"explorer_generic_scavenger_interact_01": {
+			"pages": [
+				{
+					"key": "explorer_generic_scavenger_interact_01_p1"
+				}
+			],
+			"repeatable": true
+		},
+		"explorer_generic_scavenger_interact_02": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				{
+					"key": "explorer_generic_scavenger_interact_02_p1"
+				}
+			],
+			"repeatable": true
+		},
+		"explorer_generic_scavenger_interact_03": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				{
+					"key": "explorer_generic_scavenger_interact_03_p1"
+				}
+			],
+			"repeatable": true
+		},
+		"explorer_generic_scavenger_meet_01": {
+			"pages": [
+				{
+					"key": "explorer_generic_scavenger_meet_01_p1"
+				}
+			],
+			"repeatable": true
+		},
+		"explorer_generic_scout_event_01": {
+			"pages": [
+				{
+					"key": "explorer_generic_scout_event_01_p1"
+				}
+			],
+			"repeatable": true
+		},
+		"explorer_generic_scout_interact_01": {
+			"pages": [
+				{
+					"key": "explorer_generic_scout_interact_01_p1"
+				}
+			],
+			"repeatable": true
+		},
+		"explorer_generic_scout_interact_02": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				},
+				"featureUnlocked": {
+					"ground": false
+				}
+			},
+			"pages": [
+				{
+					"key": "explorer_generic_scout_interact_02_p1"
+				}
+			],
+			"repeatable": true
+		},
+		"explorer_generic_scout_interact_03": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				{
+					"key": "explorer_generic_scout_interact_03_p1"
+				}
+			],
+			"repeatable": true
+		},
+		"explorer_generic_scout_meet_01": {
+			"pages": [
+				{
+					"key": "explorer_generic_scout_meet_01_p1"
+				}
+			],
+			"repeatable": true
+		},
         "npc_generic_01": {
-            "pages": [
-                {
+			"pages": [
+				{
                     "key": "npc_generic_01_01"
-                }
-            ],
+				}
+			],
             "repeatable": true
-        },
-        "npc_generic_request_water": {
-            "conditions": {
-                "level": {
-                    "population": [
-                        1,
-                        -1
-                    ]
-                }
-            },
-            "pages": [
-                {
-                    "id": "start",
-                    "key": "npc_generic_request_water_01",
-                    "options": [
-                        {
-                            "buttonKey": "npc_request_agree",
-                            "costs": {
-                                "resource_water": 5
-                            },
-                            "response": "agree"
-                        },
-                        {
-                            "buttonKey": "npc_request_reject",
-                            "response": "reject"
-                        }
-                    ]
-                },
-                {
-                    "id": "agree",
-                    "key": "npc_generic_request_water_01_thanks",
-                    "result": {
-                        "gainedRumours": 1
-                    }
-                },
-                {
-                    "id": "reject",
-                    "key": "npc_generic_request_water_01_reject",
-                    "result": {
-                        "gainedPerks": [
-                            "injury"
-                        ]
-                    }
-                }
-            ],
-            "repeatable": true
-        },
-        "refugees_default_event_01": {
-            "pages": [
-                {
-                    "key": "refugees_default_event_01_p1"
-                }
-            ]
-        },
-        "refugees_default_event_02": {
-            "pages": [
-                {
-                    "key": "refugees_default_event_02_p1"
-                }
-            ]
-        }
-    },
-    "sources": {
-        "character_bard_default": {
-            "dialogues": {
-                "event": [
-                    "character_bard_default_event_01",
-                    "character_bard_default_event_02"
-                ],
-                "meet": [
-                    "character_bard_default_meet_01",
-                    "character_bard_default_meet_02",
-                    "character_bard_default_meet_03",
-                    "character_generic_reserved_meet_01",
+		},
+		"explorer_unique_gambler_event_01": {
+			"pages": [
+				"explorer_unique_gambler_event_01_p1"
+			]
+		},
+		"explorer_unique_gambler_interact_01": {
+			"pages": [
+				"explorer_unique_gambler_interact_01_p1"
+			]
+		},
+		"explorer_unique_gambler_meet_01": {
+			"pages": [
+				"explorer_unique_gambler_meet_01_p1"
+			]
+		},
+		"explorer_unique_handler_event_01": {
+			"pages": [
+				"explorer_unique_handler_event_01_p1"
+			]
+		},
+		"explorer_unique_handler_interact_01": {
+			"pages": [
+				"explorer_unique_handler_interact_01_p1"
+			]
+		},
+		"explorer_unique_handler_meet_01": {
+			"pages": [
+				"explorer_unique_handler_meet_01_p1"
+			]
+		},
+		"explorer_unique_hermit_event_01": {
+			"pages": [
+				"explorer_unique_hermit_event_01_p1"
+			]
+		},
+		"explorer_unique_hermit_interact_01": {
+			"pages": [
+				"explorer_unique_hermit_interact_01_p1"
+			]
+		},
+		"explorer_unique_hermit_meet_01": {
+			"pages": [
+				"explorer_unique_hermit_meet_01_p1"
+			]
+		},
+		"explorer_unique_journalist_event_01": {
+			"pages": [
+				"explorer_unique_journalist_event_01_p1"
+			]
+		},
+		"explorer_unique_journalist_interact_01": {
+			"pages": [
+				"explorer_unique_journalist_interact_01_p1"
+			]
+		},
+		"explorer_unique_journalist_meet_01": {
+			"pages": [
+				"explorer_unique_journalist_meet_01_p1"
+			]
+		},
+		"explorer_unique_prospector_event_01": {
+			"pages": [
+				"explorer_unique_prospector_event_01_p1"
+			]
+		},
+		"explorer_unique_prospector_interact_01": {
+			"pages": [
+				"explorer_unique_prospector_interact_01_p1"
+			]
+		},
+		"explorer_unique_prospector_meet_01": {
+			"pages": [
+				"explorer_unique_prospector_meet_01_p1"
+			]
+		},
+		"npc_generic_request_water": {
+			"conditions": {
+				"level": {
+					"population": [
+						1,
+						-1
+					]
+				}
+			},
+			"pages": [
+				{
+					"id": "start",
+					"key": "npc_generic_request_water_01",
+					"options": [
+						{
+							"buttonKey": "npc_request_agree",
+							"costs": {
+								"resource_water": 5
+							},
+							"response": "agree"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "agree",
+					"key": "npc_generic_request_water_01_thanks",
+					"result": {
+						"gainedRumours": 1
+					}
+				},
+				{
+					"id": "reject",
+					"key": "npc_generic_request_water_01_reject",
+					"result": {
+						"gainedPerks": [
+							"injury"
+						]
+					}
+				}
+			],
+			"repeatable": true
+		},
+		"refugees_default_event_01": {
+			"pages": [
+				{
+					"key": "refugees_default_event_01_p1"
+				}
+			]
+		},
+		"refugees_default_event_02": {
+			"pages": [
+				{
+					"key": "refugees_default_event_02_p1"
+				}
+			]
+		}
+	},
+	"sources": {
+		"character_bard_default": {
+			"dialogues": {
+				"event": [
+					"character_bard_default_event_01",
+					"character_bard_default_event_02"
+				],
+				"meet": [
+					"character_bard_default_meet_01",
+					"character_bard_default_meet_02",
+					"character_bard_default_meet_03",
+					"character_generic_reserved_meet_01",
                     "character_generic_helpful_meet_poi_settlement"
-                ]
-            }
-        },
-        "character_crafter_default": {
-            "dialogues": {
-                "event": [
-                    "character_crafter_default_event_01",
-                    "character_crafter_default_event_02"
-                ],
-                "meet": [
-                    "character_crafter_default_meet_01",
-                    "character_crafter_default_meet_02",
-                    "character_crafter_default_meet_upgrade_clothing",
-                    "character_crafter_default_meet_upgrade_weapon",
+				]
+			}
+		},
+		"character_crafter_default": {
+			"dialogues": {
+				"event": [
+					"character_crafter_default_event_01",
+					"character_crafter_default_event_02"
+				],
+				"meet": [
+					"character_crafter_default_meet_01",
+					"character_crafter_default_meet_02",
+					"character_crafter_default_meet_upgrade_clothing",
+					"character_crafter_default_meet_upgrade_weapon",
                     "character_generic_helpful_meet_poi_water"
-                ]
-            }
-        },
-        "character_darkDweller_default": {
-            "dialogues": {
-                "interact": [
-                    "character_darkDweller_default_interact_01",
-                    "character_darkDweller_default_interact_02",
-                    "character_darkDweller_default_interact_03",
+				]
+			}
+		},
+		"character_darkDweller_default": {
+			"dialogues": {
+				"interact": [
+					"character_darkDweller_default_interact_01",
+					"character_darkDweller_default_interact_02",
+					"character_darkDweller_default_interact_03",
                     "character_darkDweller_default_interact_04"
-                ]
-            }
-        },
-        "character_doomsayer_default": {
-            "dialogues": {
-                "event": [
-                    "character_doomsayer_default_event_01",
-                    "character_doomsayer_default_event_02"
-                ],
-                "meet": [
-                    "character_doomsayer_default_meet_01",
+				]
+			}
+		},
+		"character_doomsayer_default": {
+			"dialogues": {
+				"event": [
+					"character_doomsayer_default_event_01",
+					"character_doomsayer_default_event_02"
+				],
+				"meet": [
+					"character_doomsayer_default_meet_01",
                     "character_doomsayer_default_meet_02"
-                ]
-            }
-        },
-        "character_drifter_default": {
-            "dialogues": {
-                "event": [
-                    "character_drifter_default_event_01",
-                    "character_drifter_default_event_02"
-                ],
-                "meet": [
-                    "character_drifer_default_meet_01",
-                    "character_drifer_default_meet_02",
-                    "character_drifer_default_meet_03",
-                    "character_drifer_default_meet_04",
-                    "character_generic_reserved_meet_01",
-                    "character_generic_helpful_meet_poi_water",
+				]
+			}
+		},
+		"character_drifter_default": {
+			"dialogues": {
+				"event": [
+					"character_drifter_default_event_01",
+					"character_drifter_default_event_02"
+				],
+				"meet": [
+					"character_drifer_default_meet_01",
+					"character_drifer_default_meet_02",
+					"character_drifer_default_meet_03",
+					"character_drifer_default_meet_04",
+					"character_generic_reserved_meet_01",
+					"character_generic_helpful_meet_poi_water",
                     "character_generic_stranded_meet_water"
-                ]
-            }
-        },
-        "character_hunter_default": {
-            "dialogues": {
-                "meet": [
-                    "character_hunter_default_meet_01",
-                    "character_hunter_default_meet_02",
-                    "character_generic_reserved_meet_01",
-                    "character_generic_helpful_meet_poi_campable",
-                    "character_generic_helpful_meet_poi_water",
-                    "character_generic_helpful_meet_poi_settlement"
-                ]
-            }
-        },
-        "character_mercenary_default": {
-            "dialogues": {
-                "meet": [
-                    "character_mercenary_default_meet_01",
-                    "character_mercenary_default_meet_02",
-                    "character_generic_reserved_meet_01",
+				]
+			}
+		},
+		"character_hunter_default": {
+			"dialogues": {
+				"meet": [
+					"character_hunter_default_meet_01",
+					"character_hunter_default_meet_02",
+					"character_generic_reserved_meet_01",
+					"character_generic_helpful_meet_poi_campable",
+					"character_generic_helpful_meet_poi_water",
+					"character_generic_helpful_meet_poi_settlement"
+				]
+			}
+		},
+		"character_mercenary_default": {
+			"dialogues": {
+				"meet": [
+					"character_mercenary_default_meet_01",
+					"character_mercenary_default_meet_02",
+					"character_generic_reserved_meet_01",
                     "character_generic_helpful_meet_poi_campable"
-                ]
-            }
-        },
-        "character_messenger_default": {
-            "dialogues": {
-                "meet": [
-                    "character_messenger_default_meet_01",
-                    "character_messenger_default_meet_02",
-                    "character_messenger_default_meet_03",
-                    "character_messenger_default_meet_04",
-                    "character_generic_reserved_meet_01",
-                    "character_generic_helpful_meet_poi_campable",
-                    "character_generic_helpful_meet_poi_water",
-                    "character_generic_helpful_meet_poi_settlement",
-                    "character_generic_stranded_meet_water"
-                ]
-            }
-        },
-        "character_scavenger_default": {
-            "dialogues": {
-                "meet": [
-                    "character_scavenger_default_meet_01",
-                    "character_scavenger_default_meet_02",
-                    "character_generic_helpful_meet_poi_campable",
-                    "character_generic_helpful_meet_poi_settlement",
-                    "character_generic_helpful_meet_poi_water",
-                    "character_generic_reserved_meet_01",
-                    "character_generic_stranded_meet_water",
-                    "character_generic_stranded_meet_directions"
-                ]
-            }
-        },
-        "character_shaman_default": {
-            "dialogues": {
-                "event": [
-                    "character_shaman_default_event_01",
-                    "character_shaman_default_event_02"
-                ],
-                "meet": [
-                    "character_shaman_default_meet_01",
-                    "character_shaman_default_meet_02",
-                    "character_shaman_default_meet_03",
-                    "character_shaman_default_meet_blessing",
-                    "character_generic_stranded_meet_water"
-                ]
-            }
-        },
-        "character_slumRefugee_default": {
-            "dialogues": {
-                "interact": [
-                    "character_slumRefugee_default_interact_01",
-                    "character_slumRefugee_default_interact_02",
+				]
+			}
+		},
+		"character_messenger_default": {
+			"dialogues": {
+				"meet": [
+					"character_messenger_default_meet_01",
+					"character_messenger_default_meet_02",
+					"character_messenger_default_meet_03",
+					"character_messenger_default_meet_04",
+					"character_generic_reserved_meet_01",
+					"character_generic_helpful_meet_poi_campable",
+					"character_generic_helpful_meet_poi_water",
+					"character_generic_helpful_meet_poi_settlement",
+					"character_generic_stranded_meet_water"
+				]
+			}
+		},
+		"character_scavenger_default": {
+			"dialogues": {
+				"meet": [
+					"character_scavenger_default_meet_01",
+					"character_scavenger_default_meet_02",
+					"character_generic_helpful_meet_poi_campable",
+					"character_generic_helpful_meet_poi_settlement",
+					"character_generic_helpful_meet_poi_water",
+					"character_generic_reserved_meet_01",
+					"character_generic_stranded_meet_water",
+					"character_generic_stranded_meet_directions"
+				]
+			}
+		},
+		"character_shaman_default": {
+			"dialogues": {
+				"event": [
+					"character_shaman_default_event_01",
+					"character_shaman_default_event_02"
+				],
+				"meet": [
+					"character_shaman_default_meet_01",
+					"character_shaman_default_meet_02",
+					"character_shaman_default_meet_03",
+					"character_shaman_default_meet_blessing",
+					"character_generic_stranded_meet_water"
+				]
+			}
+		},
+		"character_slumRefugee_default": {
+			"dialogues": {
+				"interact": [
+					"character_slumRefugee_default_interact_01",
+					"character_slumRefugee_default_interact_02",
                     "character_slumRefugee_default_interact_03"
-                ],
-                "meet": [
-                    "character_slumRefugee_default_meet_01",
-                    "character_slumRefugee_default_meet_02",
-                    "character_slumRefugee_default_meet_03",
-                    "character_generic_helpful_meet_poi_settlement",
+				],
+				"meet": [
+					"character_slumRefugee_default_meet_01",
+					"character_slumRefugee_default_meet_02",
+					"character_slumRefugee_default_meet_03",
+					"character_generic_helpful_meet_poi_settlement",
+					"character_generic_helpful_meet_poi_water",
+					"character_generic_stranded_meet_water",
+                    "character_generic_stranded_meet_directions"
+				]
+			}
+		},
+		"character_surfaceRefugee_default": {
+			"dialogues": {
+				"interact": [
+					"character_surfaceRefugee_default_interact_01",
+					"character_surfaceRefugee_default_interact_02",
+					"character_surfaceRefugee_default_interact_03",
+					"character_surfaceRefugee_default_interact_04",
                     "character_generic_helpful_meet_poi_water",
                     "character_generic_stranded_meet_water",
                     "character_generic_stranded_meet_directions"
-                ]
-            }
-        },
-        "character_surfaceRefugee_default": {
-            "dialogues": {
-                "interact": [
-                    "character_surfaceRefugee_default_interact_01",
-                    "character_surfaceRefugee_default_interact_02",
-                    "character_surfaceRefugee_default_interact_03",
-                    "character_surfaceRefugee_default_interact_04",
-                    "character_generic_helpful_meet_poi_water",
-                    "character_generic_stranded_meet_water",
-                    "character_generic_stranded_meet_directions"
-                ],
-                "meet": [
-                    "character_surfaceRefugee_default_meet_01",
+				],
+				"meet": [
+					"character_surfaceRefugee_default_meet_01",
                     "character_surfaceRefugee_default_meet_02"
-                ]
-            }
-        },
-        "character_trader_default": {
-            "dialogues": {
-                "meet": [
-                    "character_trader_default_meet_01",
-                    "character_trader_default_meet_02",
-                    "character_generic_helpful_meet_poi_campable",
-                    "character_generic_helpful_meet_poi_settlement",
-                    "character_generic_helpful_meet_poi_water",
-                    "character_generic_reserved_meet_01"
-                ]
-            }
-        },
-        "character_workerApothecary_default": {
-            "dialogues": {
-                "interact": [
-                    "character_workerApothecary_default_interact_01",
+				]
+			}
+		},
+		"character_trader_default": {
+			"dialogues": {
+				"meet": [
+					"character_trader_default_meet_01",
+					"character_trader_default_meet_02",
+					"character_generic_helpful_meet_poi_campable",
+					"character_generic_helpful_meet_poi_settlement",
+					"character_generic_helpful_meet_poi_water",
+					"character_generic_reserved_meet_01"
+				]
+			}
+		},
+		"character_workerApothecary_default": {
+			"dialogues": {
+				"interact": [
+					"character_workerApothecary_default_interact_01",
                     "character_workerApothecary_default_interact_02"
-                ]
-            }
-        },
-        "character_workerChemist_default": {
-            "dialogues": {
-                "interact": [
-                    "character_workerChemist_default_interact_01",
+				]
+			}
+		},
+		"character_workerChemist_default": {
+			"dialogues": {
+				"interact": [
+					"character_workerChemist_default_interact_01",
                     "character_workerChemist_default_interact_02"
-                ]
-            }
-        },
-        "character_workerCleric_default": {
-            "dialogues": {
-                "interact": [
-                    "character_workerCleric_default_interact_01",
+				]
+			}
+		},
+		"character_workerCleric_default": {
+			"dialogues": {
+				"interact": [
+					"character_workerCleric_default_interact_01",
                     "character_workerCleric_default_interact_02"
-                ]
-            }
-        },
-        "character_workerConcrete_default": {
-            "dialogues": {
-                "interact": [
-                    "character_workerConcrete_default_interact_01",
-                    "character_workerConcrete_default_interact_02",
+				]
+			}
+		},
+		"character_workerConcrete_default": {
+			"dialogues": {
+				"interact": [
+					"character_workerConcrete_default_interact_01",
+					"character_workerConcrete_default_interact_02",
                     "character_workerConcrete_default_interact_03"
-                ]
-            }
-        },
-        "character_workerGardener_default": {
-            "dialogues": {
-                "interact": [
-                    "character_workerGardener_default_interact_01",
+				]
+			}
+		},
+		"character_workerGardener_default": {
+			"dialogues": {
+				"interact": [
+					"character_workerGardener_default_interact_01",
                     "character_workerGardener_default_interact_02"
-                ]
-            }
-        },
-        "character_workerRobotmaker_default": {
-            "dialogues": {
-                "interact": [
-                    "character_workerRobotmaker_default_interact_01",
+				]
+			}
+		},
+		"character_workerRobotmaker_default": {
+			"dialogues": {
+				"interact": [
+					"character_workerRobotmaker_default_interact_01",
                     "character_workerRobotmaker_default_interact_02"
-                ]
-            }
-        },
-        "character_workerRope_default": {
-            "dialogues": {
-                "interact": [
-                    "character_workerRope_default_interact_01",
+				]
+			}
+		},
+		"character_workerRope_default": {
+			"dialogues": {
+				"interact": [
+					"character_workerRope_default_interact_01",
                     "character_workerRope_default_interact_02"
-                ]
-            }
-        },
-        "character_workerRubber_default": {
-            "dialogues": {
-                "interact": [
-                    "character_workerRubber_default_interact_01",
+				]
+			}
+		},
+		"character_workerRubber_default": {
+			"dialogues": {
+				"interact": [
+					"character_workerRubber_default_interact_01",
                     "character_workerRubber_default_interact_02"
-                ]
-            }
-        },
-        "character_workerScavenger_default": {
-            "dialogues": {
-                "interact": [
-                    "character_workerScavenger_default_interact_01",
+				]
+			}
+		},
+		"character_workerScavenger_default": {
+			"dialogues": {
+				"interact": [
+					"character_workerScavenger_default_interact_01",
                     "character_workerScavenger_default_interact_02"
-                ]
-            }
-        },
-        "character_workerScientist_default": {
-            "dialogues": {
-                "interact": [
-                    "character_workerScientist_default_interact_01",
+				]
+			}
+		},
+		"character_workerScientist_default": {
+			"dialogues": {
+				"interact": [
+					"character_workerScientist_default_interact_01",
                     "character_workerScientist_default_interact_02"
-                ]
-            }
-        },
-        "character_workerSoldier_default": {
-            "dialogues": {
-                "interact": [
-                    "character_workerSoldier_default_interact_01",
+				]
+			}
+		},
+		"character_workerSoldier_default": {
+			"dialogues": {
+				"interact": [
+					"character_workerSoldier_default_interact_01",
                     "character_workerSoldier_default_interact_02"
-                ]
-            }
-        },
-        "character_workerToolsmith_default": {
-            "dialogues": {
-                "interact": [
-                    "character_workerToolsmith_default_interact_01",
+				]
+			}
+		},
+		"character_workerToolsmith_default": {
+			"dialogues": {
+				"interact": [
+					"character_workerToolsmith_default_interact_01",
                     "character_workerToolsmith_default_interact_02"
-                ]
-            }
-        },
-        "character_workerTrapper_default": {
-            "dialogues": {
-                "interact": [
-                    "character_workerTrapper_default_interact_01",
+				]
+			}
+		},
+		"character_workerTrapper_default": {
+			"dialogues": {
+				"interact": [
+					"character_workerTrapper_default_interact_01",
                     "character_workerTrapper_default_interact_02"
-                ]
-            }
-        },
-        "character_workerWater_default": {
-            "dialogues": {
-                "interact": [
-                    "character_workerWater_default_interact_01",
+				]
+			}
+		},
+		"character_workerWater_default": {
+			"dialogues": {
+				"interact": [
+					"character_workerWater_default_interact_01",
                     "character_workerWater_default_interact_02"
-                ]
-            }
-        },
-        "explorer_generic": {
-            "dialogues": {
-                "event": [],
-                "interact": [
-                    "explorer_generic_01",
+				]
+			}
+		},
+		"explorer_generic": {
+			"dialogues": {
+				"event": [],
+				"interact": [
+					"explorer_generic_01",
                     "explorer_generic_02"
-                ],
-                "meet": [
-                    "explorer_generic_01",
-                    "explorer_generic_02"
-                ]
-            }
-        },
-        "explorer_generic_animal": {
-            "dialogues": {
-                "event": [
-                    "explorer_generic_animal_event_01"
-                ],
-                "interact": [
-                    "explorer_generic_animal_interact_01",
-                    "explorer_generic_animal_interact_02",
-                    "explorer_generic_animal_interact_03"
-                ],
-                "meet": [
-                    "explorer_generic_animal_meet_01"
-                ]
-            }
-        },
-        "explorer_generic_dog": {
-            "dialogues": {
-                "event": [
-                    "explorer_generic_dog_event_01"
-                ],
-                "interact": [
-                    "explorer_generic_dog_interact_01",
-                    "explorer_generic_dog_interact_02",
-                    "explorer_generic_dog_interact_03"
-                ],
-                "meet": [
-                    "explorer_generic_dog_meet_01"
-                ]
-            }
-        },
-        "explorer_generic_mercenary": {
-            "dialogues": {
-                "event": [
-                    "explorer_generic_mercenary_event_01"
-                ],
-                "interact": [
-                    "explorer_generic_mercenary_interact_01",
-                    "explorer_generic_mercenary_interact_02",
+				],
+				"meet": [
+					"explorer_generic_01",
+					"explorer_generic_02"
+				]
+			}
+		},
+		"explorer_generic_animal": {
+			"dialogues": {
+				"event": [
+					"explorer_generic_animal_event_01"
+				],
+				"interact": [
+					"explorer_generic_animal_interact_01",
+					"explorer_generic_animal_interact_02",
+					"explorer_generic_animal_interact_03"
+				],
+				"meet": [
+					"explorer_generic_animal_meet_01"
+				]
+			}
+		},
+		"explorer_generic_dog": {
+			"dialogues": {
+				"event": [
+					"explorer_generic_dog_event_01"
+				],
+				"interact": [
+					"explorer_generic_dog_interact_01",
+					"explorer_generic_dog_interact_02",
+					"explorer_generic_dog_interact_03"
+				],
+				"meet": [
+					"explorer_generic_dog_meet_01"
+				]
+			}
+		},
+		"explorer_generic_mercenary": {
+			"dialogues": {
+				"event": [
+					"explorer_generic_mercenary_event_01"
+				],
+				"interact": [
+					"explorer_generic_mercenary_interact_01",
+					"explorer_generic_mercenary_interact_02",
                     "explorer_generic_mercenary_interact_03"
-                ],
-                "meet": [
-                    "explorer_generic_mercenary_meet_01"
-                ]
-            }
-        },
-        "explorer_generic_scavenger": {
-            "dialogues": {
-                "event": [
-                    "explorer_generic_scavenger_event_01"
-                ],
-                "interact": [
-                    "explorer_generic_scavenger_interact_01",
-                    "explorer_generic_scavenger_interact_02",
+				],
+				"meet": [
+					"explorer_generic_mercenary_meet_01"
+				]
+			}
+		},
+		"explorer_generic_scavenger": {
+			"dialogues": {
+				"event": [
+					"explorer_generic_scavenger_event_01"
+				],
+				"interact": [
+					"explorer_generic_scavenger_interact_01",
+					"explorer_generic_scavenger_interact_02",
                     "explorer_generic_scavenger_interact_03"
-                ],
-                "meet": [
-                    "explorer_generic_scavenger_meet_01"
-                ]
-            }
-        },
-        "explorer_generic_scout": {
-            "dialogues": {
-                "event": [
-                    "explorer_generic_scout_event_01"
-                ],
-                "interact": [
-                    "explorer_generic_scout_interact_01",
-                    "explorer_generic_scout_interact_02",
+				],
+				"meet": [
+					"explorer_generic_scavenger_meet_01"
+				]
+			}
+		},
+		"explorer_generic_scout": {
+			"dialogues": {
+				"event": [
+					"explorer_generic_scout_event_01"
+				],
+				"interact": [
+					"explorer_generic_scout_interact_01",
+					"explorer_generic_scout_interact_02",
                     "explorer_generic_scout_interact_03"
-                ],
-                "meet": [
-                    "explorer_generic_scout_meet_01"
-                ]
-            }
-        },
+				],
+				"meet": [
+					"explorer_generic_scout_meet_01"
+				]
+			}
+		},
         "npc_generic": {
-            "dialogues": {
-                "event": [
-                    "npc_generic_01"
-                ],
-                "meet": [
-                    "npc_generic_01",
-                    "npc_generic_request_water"
-                ]
-            }
-        },
-        "refugees_default": {
-            "dialogues": {
-                "event": [
-                    "refugees_default_event_01",
-                    "refugees_default_event_02"
-                ]
-            }
-        }
-    }
+		"explorer_unique_gambler": {
+			"dialogues": {
+				"event": [
+					"explorer_unique_gambler_event_01"
+				],
+				"interact": [
+					"explorer_unique_gambler_interact_01"
+				],
+				"meet": [
+					"explorer_unique_gambler_meet_01"
+				]
+			}
+		},
+		"explorer_unique_handler": {
+			"dialogues": {
+				"event": [
+					"explorer_unique_handler_event_01"
+				],
+				"interact": [
+					"explorer_unique_handler_interact_01"
+				],
+				"meet": [
+					"explorer_unique_handler_meet_01"
+				]
+			}
+		},
+		"explorer_unique_hermit": {
+			"dialogues": {
+				"event": [
+					"explorer_unique_hermit_event_01"
+				],
+				"interact": [
+					"explorer_unique_hermit_interact_01"
+				],
+				"meet": [
+					"explorer_unique_hermit_meet_01"
+				]
+			}
+		},
+		"explorer_unique_journalist": {
+			"dialogues": {
+				"event": [
+					"explorer_unique_journalist_event_01"
+				],
+				"interact": [
+					"explorer_unique_journalist_interact_01"
+				],
+				"meet": [
+					"explorer_unique_journalist_meet_01"
+				]
+			}
+		},
+		"explorer_unique_prospector": {
+			"dialogues": {
+				"event": [
+					"explorer_unique_prospector_event_01"
+				],
+				"interact": [
+					"explorer_unique_prospector_interact_01"
+				],
+				"meet": [
+					"explorer_unique_prospector_meet_01"
+				]
+			}
+		},
+		"refugees_default": {
+			"dialogues": {
+				"event": [
+					"refugees_default_event_01",
+					"refugees_default_event_02"
+				]
+			}
+		}
+	}
 }
