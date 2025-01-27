@@ -19,6 +19,8 @@ define(['ash'], function (Ash) {
                 if (segmentVO.segmentID == segmentID) return segmentVO;
             }
 
+            log.w("no such segment found in story: " + this.storyID + "." + segmentID);
+
             return null;
         },
 

@@ -117,7 +117,7 @@ define([
 		startSegment: function (segmentVO) {
 			if (!segmentVO) return;
 			let segmentID = segmentVO.segmentID;
-			log.i("start segment: " + segmentID, this);
+			log.i("start segment: " + segmentVO.storyID + "." + segmentVO.segmentID, this);
 			this.triggerEffects(segmentVO.onStart);
 			let storyID = segmentVO.storyID;
 			GameGlobals.gameState.storyStatus[storyID] = segmentID;
@@ -125,7 +125,7 @@ define([
 
 		completeSegment: function (segmentVO) {
 			if (!segmentVO) return;
-			log.i("complete segment: " + segmentVO.segmentID, this);
+			log.i("complete segment: " +  segmentVO.storyID + "." + segmentVO.segmentID, this);
 			this.triggerEffects(segmentVO.onComplete);
 			let nextSegment = this.getNextSegment(segmentVO);
 
