@@ -776,7 +776,11 @@ define(['ash',
 			if (featuresComponent.campable) {
 				if (!this.nearestCampNodes.head || this.nearestCampNodes.head.position.level != this.playerLocationNodes.head.position.level) {
 					found = true;
-					popupMsg += "<br/>This seems like a good place for a camp.";
+					if (GameGlobals.gameState.numCamps == 0) {
+						popupMsg += "<br/>This seems like a safe spot to build a camp.";
+					} else {
+						popupMsg += "<br/>This seems like a good place for a camp.";
+					}
 				}
 			}
 
@@ -888,6 +892,16 @@ define(['ash',
 				GameGlobals.playerHelper.addPerk(PerkConstants.perkIds.blessed);
 				this.playerStatsNodes.head.stamina.stamina += PlayerStatConstants.STAMINA_GAINED_FROM_GROVE;
 				logMsgSuccess += "The trees seem alive. They whisper, but the words are unintelligible. You have found a source of <span class='hl-functionality'>ancient power</span>.";
+			}
+
+			if (localeVO.type == localeTypes.depot) {
+				this.setStoryFlag(StoryConstants.SEEN_STOREHOUSE, true);
+				logMsgSuccess += "A huge and orderly storeroom, shelf after shelf carefully labelled, all empty. It doesn't look scavenged, but systemically cleared and abandoned. Someone stored huge amounts of supplies here and then took them.";
+			}
+
+			if (localeVO.type == localeTypes.spacefactory) {
+				this.setStoryFlag(StoryConstants.SEEN_SPACEFACTORY, true);
+				logMsgSuccess += "Behind such tight security, an ordinary manufacturing plant. Or not? You realise it was used to build a flying vessel. A spacecraft?";
 			}
 			
 			let luxuryResource = localeVO.luxuryResource;
@@ -2714,6 +2728,11 @@ define(['ash',
 			log.i("locked feature: " + featureID);
 			
 			GameGlobals.gameState.unlockedFeatures[featureSaveKey] = false;
+		},
+
+		setStoryFlag: function (flagID, value) {
+			GameGlobals.gameState.setStoryFlag(flagID, value);
+			GlobalSignals.storyFlagChangedSignal.dispatch(flagID);
 		},
 
 		recordSteps: function (steps) {

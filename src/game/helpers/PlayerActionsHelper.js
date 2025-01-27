@@ -2568,6 +2568,8 @@ define([
 						case localeTypes.tradingPartner:
 						case localeTypes.grove:
 						case localeTypes.greenhouse:
+						case localeTypes.depot:
+						case localeTypes.spacefactory:
 							return 0;
 					}
 					return 1;

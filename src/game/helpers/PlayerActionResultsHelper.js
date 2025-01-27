@@ -338,48 +338,56 @@ define([
 			} else if (localeVO.type == localeTypes.greenhouse) {
 			} else if (localeVO.type == localeTypes.tradingpartner) {
 			} else {
-				rewards.gainedEvidence = ExplorationConstants.getScoutLocaleReward(localeVO.type, campOrdinal);
+				rewards.gainedEvidence = ExplorationConstants.getScoutLocaleEvidenceReward(localeVO.type, campOrdinal);
 			}
 			
 			let explorerID = localeVO.explorerID;
 			if (explorerID) {
 				// hard-coded explorer
 				rewards.gainedExplorers = [ GameGlobals.explorerHelper.getNewPredefinedExplorer(explorerID) ];
+			} else if (localeVO.type == localeTypes.tradingpartner) {
+			} else if (localeVO.type == localeTypes.grove) {
+			} else if (localeVO.type == localeTypes.greenhouse) {
+			} else if (localeVO.type == localeTypes.depot || localeVO.type == localeTypes.spacefactory) {
+				// just items / resources
+				let itemOptions = { rarityKey: "localeRarity", allowNextCampOrdinal: true, tags: itemTags };
+				rewards.gainedResources = this.getRewardResources(1, 5 * localeDifficulty, efficiency, availableResources);
+				rewards.gainedItems = this.getRewardItems(0.5, 0.1, null, itemOptions);
 			} else {
-				if (localeVO.type !== localeTypes.tradingpartner && localeVO.type != localeTypes.grove && localeVO.type != localeTypes.greenhouse) {
-					// population and explorers
-					if (localeCategory !== "u") {
-						rewards.gainedExplorers = this.getRewardExplorers(0.075);
-						if (rewards.gainedExplorers.length == 0 && this.nearestCampNodes.head && campOrdinal > 1) {
-							rewards.gainedPopulation = Math.random() < 0.1 ? 1 : 0;
-						}
+				// default locale rewards
+			
+				// population and explorers
+				if (localeCategory !== "u") {
+					rewards.gainedExplorers = this.getRewardExplorers(0.075);
+					if (rewards.gainedExplorers.length == 0 && this.nearestCampNodes.head && campOrdinal > 1) {
+						rewards.gainedPopulation = Math.random() < 0.1 ? 1 : 0;
 					}
-					
-					// items and resources
-					let itemTags = this.getSectorItemTags().concat(localeVO.getItemTags());
-					if (localeCategory === "u") {
-						let itemOptions = { rarityKey: "localeRarity", allowNextCampOrdinal: true, tags: itemTags };
-						rewards.gainedResources = this.getRewardResources(1, 5 * localeDifficulty, efficiency, availableResources);
-						rewards.gainedItems = this.getRewardItems(0.5, 0.1, null, itemOptions);
-					} else {
-						let itemOptions = { rarityKey: "tradeRarity", allowNextCampOrdinal: true, tags: itemTags };
-						rewards.gainedItems = this.getRewardItems(0.25, 0, null, itemOptions);
-					}
-
-					let currencyModifier = localeVO.getCurrencyFindProbabilityModifier();
-					rewards.gainedCurrency = this.getRewardCurrency(currencyModifier, efficiency, 0);
-
-					let perkProbabilities = {};
-					perkProbabilities[PerkConstants.perkIds.accomplished] = 
-						rewards.gainedBlueprintPiece ? 0.5 : 
-						GameGlobals.levelHelper.isDeadEnd(sector) ? 0.25 :
-						rewards.gainedItems.length > 0 ? 0.1 : 
-						0;
-					perkProbabilities[PerkConstants.perkIds.stressed] = localeVO.getStressedProbability();
-
-					// temporary perks
-					rewards.gainedPerks = this.getGainedPerks(perkProbabilities);
 				}
+				
+				// items and resources
+				let itemTags = this.getSectorItemTags().concat(localeVO.getItemTags());
+				if (localeCategory === "u") {
+					let itemOptions = { rarityKey: "localeRarity", allowNextCampOrdinal: true, tags: itemTags };
+					rewards.gainedResources = this.getRewardResources(1, 5 * localeDifficulty, efficiency, availableResources);
+					rewards.gainedItems = this.getRewardItems(0.5, 0.1, null, itemOptions);
+				} else {
+					let itemOptions = { rarityKey: "tradeRarity", allowNextCampOrdinal: true, tags: itemTags };
+					rewards.gainedItems = this.getRewardItems(0.25, 0, null, itemOptions);
+				}
+
+				let currencyModifier = localeVO.getCurrencyFindProbabilityModifier();
+				rewards.gainedCurrency = this.getRewardCurrency(currencyModifier, efficiency, 0);
+
+				let perkProbabilities = {};
+				perkProbabilities[PerkConstants.perkIds.accomplished] = 
+					rewards.gainedBlueprintPiece ? 0.5 : 
+					GameGlobals.levelHelper.isDeadEnd(sector) ? 0.25 :
+					rewards.gainedItems.length > 0 ? 0.1 : 
+					0;
+				perkProbabilities[PerkConstants.perkIds.stressed] = localeVO.getStressedProbability();
+
+				// temporary perks
+				rewards.gainedPerks = this.getGainedPerks(perkProbabilities);
 			}
 
 			return rewards;

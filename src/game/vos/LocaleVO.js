@@ -30,6 +30,8 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 		// unique
 		grove: 3,
 		greenhouse: "greenhouse",
+		depot: "depot",
+		spacefactory: "spacefactory",
 	};
 	
 	var LocaleVO = Ash.Class.extend({
@@ -52,6 +54,7 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 			this.requirements.vision = [this.getVisionRequirement(), -1];
 			this.costs = {};
 			this.costs.stamina = this.getStaminaRequirement();
+			
 			if (type !== localeTypes.grove && type !== localeTypes.tradingpartner) {
 				 this.costs.item_exploration_1 = 1;
 			}
@@ -83,6 +86,8 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 				case localeTypes.maintenance: difficulty = 1; break;
 				case localeTypes.market: difficulty = 0.15; break;
 				case localeTypes.restaurant: difficulty = 0.25; break;
+				case localeTypes.depot: difficulty = 1; break;
+				case localeTypes.spacefactory: difficulty = 1; break;
 				case localeTypes.sewer: difficulty = 1; break;
 				case localeTypes.store: difficulty = 0.3; break;
 				case localeTypes.tradingpartner: difficulty = 0.15; break;
@@ -107,6 +112,7 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 					if (unlockedResources.medicine) res.addResource(resourceNames.medicine, defaultAmount, "definition");
 					break;
 				case localeTypes.factory:
+				case localeTypes.spacefactory:
 					res.addResource(resourceNames.metal, abundant, "definition");
 					if (unlockedResources.concrete) res.addResource(resourceNames.concrete, abundant, "definition");
 					//if (unlockedResources.robots) res.addResource(resourceNames.robots, defaultAmount, "definition");
@@ -160,6 +166,7 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 					break;
 				case localeTypes.sewer:
 				case localeTypes.warehouse:
+				case localeTypes.depot:
 					res.addResource(resourceNames.metal, abundant, "definition");
 					res.addResource(resourceNames.food, abundant, "definition");
 					if (unlockedResources.concrete) res.addResource(resourceNames.concrete, abundant, "definition");
@@ -181,6 +188,8 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 				case localeTypes.maintenance:
 				case localeTypes.sewer:
 				case localeTypes.warehouse:
+				case localeTypes.depot:
+				case localeTypes.spacefactory:
 					return 0;
 				case localeTypes.camp:
 				case localeTypes.caravan:
@@ -223,6 +232,7 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 				case localeTypes.sewer:
 					return [ "maintenance" ];
 				case localeTypes.warehouse:
+				case localeTypes.depot:
 					return [ "old" ];
 				case localeTypes.camp:
 					return [ "keepsake" ];
@@ -237,6 +247,7 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 				case localeTypes.hut:
 					return [ "keepsake" ];
 				case localeTypes.lab:
+					case localeTypes.spacefactory:
 					return [ "science" ];
 				case localeTypes.restaurant:
 					return [ "perishable" ];

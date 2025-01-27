@@ -1683,7 +1683,7 @@ define([
 				}
 			}
 			
-			// 2) spawn grove
+			// 2) spawn story locales
 			if (levelVO.level == worldVO.bottomLevel) {
 				var options = { excludingFeature: excludedFeatures };
 				var groveSector = WorldCreatorRandom.randomSectors(seed, worldVO, levelVO, 1, 2, options)[0];
@@ -1693,6 +1693,26 @@ define([
 				groveSector.hazards.pollution = 0;
 				this.addLocale(levelVO, groveSector, groveLocale);
 				WorldCreatorLogger.i("add grove at: " + groveSector);
+			}
+
+			let depotLevels = WorldCreatorHelper.getLevelsForCamp(seed, 5);
+			let depotLevel = depotLevels[depotLevels.length - 1];
+			if (levelVO.level == depotLevel) {
+				let options = { excludingFeature: excludedFeatures };
+				let depotSector = WorldCreatorRandom.randomSectors(seed, worldVO, levelVO, 1, 2, options)[0];
+				let depotLocale = new LocaleVO(localeTypes.depot, false, false);
+				this.addLocale(levelVO, depotSector, depotLocale);
+				WorldCreatorLogger.i("add depot at: " + depotSector);
+			}
+
+			let spaceFactoryLevels = WorldCreatorHelper.getLevelsForCamp(seed, 10);
+			let spaceFactoryLevel = spaceFactoryLevels[depotLevels.length - 1];
+			if (levelVO.level == spaceFactoryLevel) {
+				let options = { excludingFeature: excludedFeatures };
+				let factorySector = WorldCreatorRandom.randomSectors(seed, worldVO, levelVO, 1, 2, options)[0];
+				let factoryLocale = new LocaleVO(localeTypes.spacefactory, false, false);
+				this.addLocale(levelVO, factorySector, factoryLocale);
+				WorldCreatorLogger.i("add space factory at: " + factorySector);
 			}
 			
 			// 3) spawn locales with hard-coded explorers

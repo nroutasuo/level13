@@ -285,8 +285,8 @@ define([
 				if (conditions.eventType != triggerParam) return false;
 			}
 
-			if (conditions.locale) {
-				if (conditions.locale != triggerParam) return false;
+			if (conditions.localeType) {
+				if (conditions.localeType != triggerParam) return false;
 			}
 
 			return true;

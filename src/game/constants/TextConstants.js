@@ -1139,9 +1139,15 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					noun = "grove";
 					break;
 				case localeTypes.greenhouse:
-					modified = "abandoned";
+					modifier = "abandoned";
 					noun = "greenhouse";
 					break;
+				case localeTypes.depot:
+					modifier = "locked";
+					noun = "depot";
+				case localeTypes.spacefactory:
+					modifier = "arcane";
+					noun = "facility";
 				case localeTypes.market:
 					noun = sectorFeatures.level > 15 ? "shopping center" : "market";
 					break;
