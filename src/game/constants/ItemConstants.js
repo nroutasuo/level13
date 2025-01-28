@@ -207,6 +207,7 @@ function (Ash, Text, ItemData, Text, PlayerActionConstants, ItemVO) {
 					return ItemConstants.itemCategories.ingredient;
 				case ItemConstants.itemTypes.voucher:
 				case ItemConstants.itemTypes.exploration:
+				case ItemConstants.itemTypes.note:
 					return ItemConstants.itemCategories.consumable;
 			}
 			return ItemConstants.itemCategories.other;
@@ -332,6 +333,7 @@ function (Ash, Text, ItemData, Text, PlayerActionConstants, ItemVO) {
 
 		getItemDisplayNameKey: function (item, short) {
 			if (!item) return "";
+			if (item.type == ItemConstants.itemTypes.note) return "Documents";
 			return this.getItemDisplayNameKeyFromID(item.id, short);
 		},
 
@@ -363,15 +365,16 @@ function (Ash, Text, ItemData, Text, PlayerActionConstants, ItemVO) {
 			return this.itemBonusTypeIcons[itemBonusType] || null;
 		},
 		
-		getBaseItemId: function (itemId) {
-			let parts = itemId.split("_");
+		getBaseItemId: function (itemID) {
+			let parts = itemID.split("_");
+			if (itemID.startsWith("document_")) return "document";
 			if (parts.length > 1) {
 				let postfix = parts[parts.length - 1];
 				if (/^\d+$/.test(postfix)) {
 					return parts.slice(0, -1).join("_");
 				}
 			}
-			return itemId;
+			return itemID;
 		},
 		
 		isMultiplier: function (itemBonusType) {

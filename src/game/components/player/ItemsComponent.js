@@ -100,6 +100,7 @@ function (Ash, ItemVO, ItemConstants) {
 					return this.getStrongestByType(item.type).id !== item.id;
 
 				case ItemConstants.itemTypes.voucher:
+				case ItemConstants.itemTypes.note:
 				case ItemConstants.itemTypes.ingredient:
 				case ItemConstants.itemTypes.uniqueEquipment:
 					return false;

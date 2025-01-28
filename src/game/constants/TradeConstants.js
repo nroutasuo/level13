@@ -217,6 +217,7 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 					return this.getItemValueByRarity(item) || 0;
 					
 				case ItemConstants.itemTypes.voucher:
+				case ItemConstants.itemTypes.note:
 					return this.getItemValueByRarity(item) || 0;
 				
 				case ItemConstants.itemTypes.uniqueEquipment:

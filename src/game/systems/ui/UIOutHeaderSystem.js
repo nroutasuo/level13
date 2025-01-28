@@ -562,6 +562,7 @@ define([
 							
 						case ItemConstants.itemTypes.voucher:
 						case ItemConstants.itemTypes.exploration:
+						case ItemConstants.itemTypes.note:
 							$("ul.list-header-items").append("<li>" + UIConstants.getItemDiv(itemsComponent, item, count, UIConstants.getItemCallout(item, true)) + "</li>");
 							break;
 					}

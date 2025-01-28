@@ -3725,6 +3725,9 @@
         "use_item_cache_evidence": {
             "inCamp": true
         },
+        "use_item_note": {
+            "inCamp": true
+        },
         "use_item_cache_hope": {
             "deity": true,
             "inCamp": true

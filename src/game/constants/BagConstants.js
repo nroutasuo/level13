@@ -63,6 +63,7 @@ define(['ash', 'game/constants/ItemConstants'], function (Ash, ItemConstants) {
 			if (itemVO.type === ItemConstants.itemTypes.uniqueEquipment) return 0;
 			if (itemVO.type === ItemConstants.itemTypes.exploration) return BagConstants.CAPACITY_ITEM_EXPLORATION;
 			if (itemVO.type === ItemConstants.itemTypes.voucher) return BagConstants.CAPACITY_ITEM_VOUCHER;
+			if (itemVO.type === ItemConstants.itemTypes.note) return BagConstants.CAPACITY_ITEM_VOUCHER;
 			if (itemVO.type === ItemConstants.itemTypes.ingredient) return BagConstants.CAPACITY_ITEM_INGREDIENT;
 			if (itemVO.type === ItemConstants.itemTypes.clothing_over) return BagConstants.CAPACITY_ITEM_HEAVY;
 			if (itemVO.type === ItemConstants.itemTypes.clothing_lower) return BagConstants.CAPACITY_ITEM_HEAVY;

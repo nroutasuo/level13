@@ -1971,6 +1971,7 @@ define([
 				// other actions: by item type
 				switch (item.type) {
 					case ItemConstants.itemTypes.voucher:
+					case ItemConstants.itemTypes.note:
 						result = isDespair ? 0.5 : 0.25;
 						break;
 					case ItemConstants.itemTypes.exploration:

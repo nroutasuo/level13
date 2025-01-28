@@ -2407,6 +2407,18 @@ define(['ash',
 					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_RESEARCHPAPER, "Read a research paper. Gained " + insight + " insight.");
 					break;
 				
+				case "document":
+					resultVO.gainedEvidence = ExplorationConstants.getScoutLocaleEvidenceReward(null, 10);
+					let message = Text.t(itemConfig.configData.noteText);
+					GameGlobals.uiFunctions.showInfoPopup(
+						itemName,
+						message,
+						"Continue",
+						resultVO
+					);
+					this.playerStatsNodes.head.evidence.value += resultVO.gainedEvidence;
+					break;
+				
 				case "robot": 
 					let explorerVO = ExplorerConstants.getNewRandomExplorer(ExplorerConstants.explorerSource.CRAFT, foundPositionCampOrdinal, foundPosition.level);
 					

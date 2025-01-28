@@ -220,6 +220,7 @@ define([
 				if (item.type === ItemConstants.itemTypes.trade) continue;
 				if (item.type === ItemConstants.itemTypes.note) continue;
 				if (item.type === ItemConstants.itemTypes.ingredient) continue;
+				if (item.type === ItemConstants.itemTypes.note) continue;
 				if (item.type === ItemConstants.itemTypes.voucher) {
 					let useAction = "use_item_" + baseItemId;
 					let useActionReqs = GameGlobals.playerActionsHelper.getReqs(useAction);

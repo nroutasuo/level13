@@ -2051,6 +2051,41 @@
         "tags": [ "nature" ],
         "type": "artefact"
     },
+    "document_story_launch_schedule": {
+        "campOrdinalRequired": 1,
+        "icon": "img/items/document.png",
+        "id": "document_story_launch_schedule",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "nameShort": "Documents",
+        "rarityLocale": -1,
+        "rarityScavenge": -1,
+        "configData": {
+            "noteText": "Detailed launch schedule for a space craft, part of the Exodus project. The final launch date coincides with The Fall."
+        },
+        "rarityTrade": -1,
+        "type": "note",
+        "isStoryItem": true
+    },
+    "document_story_evacuation": {
+        "campOrdinalRequired": 1,
+        "icon": "img/items/document.png",
+        "id": "document_story_evacuation",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "nameShort": "Documents",
+        "rarityLocale": -1,
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "configData": {
+            "noteText": "Official documents detailing a plan to secretly quarantine and evacuate a fraction of the population of the City.",
+            "storyFlag": "SEEN_EVACUATION"
+        },
+        "type": "note",
+        "isStoryItem": true
+    },
     "trade_1": {
         "campOrdinalRequired": 2,
         "icon": "img/items/pearl.png",
