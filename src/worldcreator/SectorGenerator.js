@@ -734,6 +734,14 @@ define([
 			let bonusStashItems = this.getPossibleBonusStashItems(levelVO);
 			var numItems = Math.min(levelVO.isCampable ? 1 : 3, bonusStashItems.length);
 			addStashes(seed + (l + 151) * 115, "bonus", ItemConstants.STASH_TYPE_ITEM, bonusStashItems, numItems, 1, earlyZonesOnCampableLevels);
+
+			// stashes: story items
+			for (let i = 0; i < StoryConstants.storyStashes.length; i++) {
+				let stashDefinition = StoryConstants.storyStashes[i];
+				if (stashDefinition.campOrdinal != levelVO.campOrdinal) continue;
+				if (levelIndex != maxLevelIndex) continue;
+				addStashes(seed / 2 + 16831, "story", ItemConstants.STASH_TYPE_ITEM, [ stashDefinition.itemID ], 1, 1, earlyZonesOnCampableLevels);
+			}
 		},
 		
 		getPossibleBonusStashItems: function (levelVO) {

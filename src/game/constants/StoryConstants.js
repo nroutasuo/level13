@@ -45,6 +45,18 @@ define([
 					campOrdinal: 15,
 				}
 			},
+
+		],
+
+		storyStashes: [
+			{
+				campOrdinal: 11,
+				itemID: "document_story_launch_schedule"
+			},
+			{
+				campOrdinal: 12,
+				itemID: "document_story_evacuation"
+			}
 		],
 
 		storyStatuses: {
