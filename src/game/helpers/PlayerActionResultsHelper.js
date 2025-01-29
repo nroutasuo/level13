@@ -136,7 +136,7 @@ define([
 				case "scout_locale_i":
 				case "scout_locale_u":
 					// TODO global helper to get locale vo from action?
-					var localei = parseInt(action.split("_")[3]);
+					var localei = parseInt(action.split("_")[3]) || 0;
 					var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
 					var localeVO = sectorLocalesComponent.locales[localei];
 					resultVO = this.getScoutLocaleRewards(localeVO);
@@ -331,7 +331,7 @@ define([
 
 			// blueprints
 			rewards.gainedBlueprintPiece = this.getResultBlueprint(0.35, localeVO);
-			
+
 			let itemTags = this.getSectorItemTags().concat(localeVO.getItemTags());
 			
 			// tribe stats

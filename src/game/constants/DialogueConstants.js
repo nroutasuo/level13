@@ -81,7 +81,8 @@ define([
 			let pageID = pageData.id || i;
 			let pageVO = new DialoguePageVO(pageID);
 			let pageKey = typeof pageData === "string" ? pageData : pageData.key;
-			pageVO.textKey = "story.dialogue." + pageKey;
+			pageVO.textKey = pageKey;
+			if (pageVO.textKey && pageVO.textKey.indexOf(".") < 0) pageVO.textKey = "story.dialogue." + pageKey;
 			
 			pageVO.options = [];
 
@@ -108,6 +109,11 @@ define([
 			if (!data) return null;
 
 			let resultVO = new ResultVO("start_dialogue_page");
+
+			if (data.action) {
+				resultVO.templateAction = data.action;
+				return resultVO;
+			}
 
 			if (data.gainedRumours) resultVO.gainedRumours = parseInt(data.gainedRumours);
 

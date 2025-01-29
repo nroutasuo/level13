@@ -123,7 +123,7 @@ define([
 			log.i("start dialogue page: " + pageID);
 
 			if (pageVO.resultTemplate) {
-				let currentResultVO = pageVO.resultTemplate.clone();
+				let currentResultVO = this.getPageResult(pageVO.resultTemplate);
 				GameGlobals.playerActionResultsHelper.preCollectRewards(currentResultVO);
 				this.dialogueNodes.head.dialogue.currentResultVO = currentResultVO;
 			} else {
@@ -187,7 +187,7 @@ define([
 				explorerVO.pendingDialogue = null;
 			}
 
-			if (dialogueVO && dialogueVO.storyTag) {
+			if (dialogueVO) {
 				GlobalSignals.dialogueCompletedSignal.dispatch(dialogueVO.storyTag);
 			}
 		},
@@ -195,6 +195,14 @@ define([
 		selectNextPage: function () {
 			if (!this.dialogueNodes.head.dialogue || !this.dialogueNodes.head.dialogue.activeDialogue || this.dialogueNodes.head.dialogue.activeDialogue.pages.length == 0) return null;
 			return this.dialogueNodes.head.dialogue.activeDialogue.pages[0].pageID;
+		},
+
+		getPageResult: function (resultTemplate) {
+			if (resultTemplate.templateAction) {
+				return GameGlobals.playerActionResultsHelper.getResultVOByAction(resultTemplate.templateAction);
+			} else {
+				return resultTemplate.clone();
+			}
 		},
 
         onDialogueNodeAdded: function (node) {

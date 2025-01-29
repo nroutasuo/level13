@@ -89,6 +89,8 @@ define([
 			this.refreshPageOptions(pageVO);
 
 			this.shownPageID = pageID;
+
+			GameGlobals.uiFunctions.popupManager.repositionPopups();
 		},
 
 		refreshPageCharacter: function (explorerVO, characterVO) {
@@ -110,12 +112,13 @@ define([
 		refreshPageText: function (dialogueVO, pageVO) {
 			let textKey = pageVO.textKey;
 			let textParams = GameGlobals.dialogueHelper.getDialogueTextParams(dialogueVO, pageVO);
+			if (!textKey && pageVO.resultTemplate) textKey = "Found something";
 			$("#dialogue-module-dialogue p").text(Text.t(textKey, textParams));
 		},
 
 		refreshPageResults: function (pageVO) {
 			let resultVO = this.dialogueNodes.head.dialogue.currentResultVO;
-			let hasResults = pageVO.resultTemplate && !pageVO.resultTemplate.isEmpty() && resultVO != null;
+			let hasResults = resultVO && !resultVO.isEmpty() && resultVO != null;
 
 			$("#dialogue-module-results").empty();
 			GameGlobals.uiFunctions.toggle("#dialogue-module-results", hasResults);
