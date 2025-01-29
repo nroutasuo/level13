@@ -332,6 +332,8 @@ define([
 			// blueprints
 			rewards.gainedBlueprintPiece = this.getResultBlueprint(0.35, localeVO);
 			
+			let itemTags = this.getSectorItemTags().concat(localeVO.getItemTags());
+			
 			// tribe stats
 			if (localeVO.type == localeTypes.grove) {
 				rewards.gainedHope = 2;
@@ -365,7 +367,6 @@ define([
 				}
 				
 				// items and resources
-				let itemTags = this.getSectorItemTags().concat(localeVO.getItemTags());
 				if (localeCategory === "u") {
 					let itemOptions = { rarityKey: "localeRarity", allowNextCampOrdinal: true, tags: itemTags };
 					rewards.gainedResources = this.getRewardResources(1, 5 * localeDifficulty, efficiency, availableResources);
