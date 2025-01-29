@@ -895,13 +895,21 @@ define(['ash',
 			}
 
 			if (localeVO.type == localeTypes.depot) {
-				this.setStoryFlag(StoryConstants.SEEN_STOREHOUSE, true);
-				logMsgSuccess += "A huge and orderly storeroom, shelf after shelf carefully labelled, all empty. It doesn't look scavenged, but systemically cleared and abandoned. Someone stored huge amounts of supplies here and then took them.";
+				this.startSequence([
+					{ type: "dialogue", dialogueID: "locale_story_depot" },
+					{ type: "storyFlag", flagID: StoryConstants.flags.SEEN_STOREHOUSE, value: true },
+					{ type: "log", textKey: "Scouted a depot." }
+				]);
+				return;
 			}
 
 			if (localeVO.type == localeTypes.spacefactory) {
-				this.setStoryFlag(StoryConstants.SEEN_SPACEFACTORY, true);
-				logMsgSuccess += "Behind such tight security, an ordinary manufacturing plant. Or not? You realise it was used to build a flying vessel. A spacecraft?";
+				this.startSequence([
+					{ type: "dialogue", dialogueID: "locale_story_spacefactory" },
+					{ type: "storyFlag", flagID: StoryConstants.flags.SEEN_SPACEFACTORY, value: true },
+					{ type: "log", textKey: "Scouted a manufacturing plant." }
+				]);
+				return;
 			}
 			
 			let luxuryResource = localeVO.luxuryResource;
@@ -2417,6 +2425,9 @@ define(['ash',
 						resultVO
 					);
 					this.playerStatsNodes.head.evidence.value += resultVO.gainedEvidence;
+					if (itemConfig.configData.storyFlag) {
+						this.setStoryFlag(itemConfig.configData.storyFlag, true);
+					}
 					break;
 				
 				case "robot": 
@@ -2701,6 +2712,54 @@ define(['ash',
 					if (callback) callback();
 				}, this);
 			}, this);
+		},
+
+		startSequence: function (steps) {
+			// TODO formalize these kind of sequences into a system similar to Dialogues?
+
+			let i = 0;
+
+			let tryStartNextStep = function () {
+				if (i >= steps.length) return;
+
+				let nextStep = steps[i];
+
+				GameGlobals.playerActionFunctions.startSequenceStep(nextStep, onStepDone);
+			}
+
+			let onStepDone = function () {
+				i++;
+				tryStartNextStep();
+			};
+
+			tryStartNextStep();
+		},
+
+		startSequenceStep: function (step, cb) {
+			let type = step.type;
+
+			switch (type) {
+				case "dialogue":
+					let dialogueID = step.dialogueID;
+					this.startDialogue(dialogueID);
+					GlobalSignals.dialogueCompletedSignal.addOnce(() => { cb(); });
+					break;
+				case "storyFlag":
+					let flagID = step.flagID;
+					let value = step.value;
+					this.setStoryFlag(flagID, value);
+					cb();
+					break;
+				case "log":
+					let textKey = step.textKey;
+					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), textKey);
+					cb();
+					break;
+				default: 
+					log.w("unknown sequence step type: " + type);
+					cb();
+					break;
+			}
 		},
 		
 		// TODO find better fix for overlapping actions
