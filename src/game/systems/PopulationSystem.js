@@ -109,7 +109,7 @@ define([
 
 			if (Math.floor(camp.population) !== Math.floor(oldPopulation)) {
 				this.handlePopulationChanged(node, camp.population > oldPopulation);
-				if (camp.population >= 1) {
+				if (camp.population >= CampConstants.POPULATION_FOR_UNLOCK_MILESTONES) {
 					GameGlobals.playerActionFunctions.unlockFeature("milestones");
 				}
 			}
@@ -319,7 +319,7 @@ define([
 			}
 			
 			GlobalSignals.populationChangedSignal.dispatch(node.entity);
-			this.logChangePopulation(campPosition, isIncrease);
+			this.logChangePopulation(campPosition, isIncrease, node.camp.population);
 			
 			this.updateCampPopulationChange(node);
 			this.updateCampDemographics(node);
@@ -405,13 +405,17 @@ define([
 			return MathUtils.randomElement(possibleTypes);
 		},
 		
-		logChangePopulation: function (campPosition, isIncrease) {
+		logChangePopulation: function (campPosition, isIncrease, population) {
 			let pos = campPosition.getPosition();
 			pos.inCamp = true;
 			if (isIncrease) {
-				GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.MSG_ID_POPULATION_NATURAL, "A stranger showed up.", pos);
+				if (population == 1) {
+					GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.MSG_ID_POPULATION_NATURAL, "A ragged stranger appears from the darkness.", pos);
+				} else {
+					GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.MSG_ID_POPULATION_NATURAL, "A stranger shows up.", pos);
+				}
 			} else {
-				GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.MSG_ID_POPULATION_NATURAL, "An inhabitant packed their belongings and left.", pos);
+				GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.MSG_ID_POPULATION_NATURAL, "An inhabitant packs their belongings and leaves.", pos);
 			}
 		},
 

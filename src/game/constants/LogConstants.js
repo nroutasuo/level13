@@ -261,7 +261,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 			return null;
 		},
 
-		getCantMoveMessage: function (despairType) {		
+		getCantMoveMessage: function (despairType) {
 			if (despairType == MovementConstants.DESPAIR_TYPE_STAMINA) {
 				return "Too tired to go on.";
 			}

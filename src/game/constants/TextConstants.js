@@ -1145,9 +1145,11 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				case localeTypes.depot:
 					modifier = "locked";
 					noun = "depot";
+					break;
 				case localeTypes.spacefactory:
 					modifier = "arcane";
 					noun = "facility";
+					break;
 				case localeTypes.market:
 					noun = sectorFeatures.level > 15 ? "shopping center" : "market";
 					break;

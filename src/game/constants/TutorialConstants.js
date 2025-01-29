@@ -24,7 +24,7 @@ define(['ash'], function (Ash) {
 			TUTORIAL_BUILT_HUT: {
 				triggers: [ "action_build" ],
 				repeats: "NEVER",
-				logMessage: "Built a hut. People will come if they hear about the camp.",
+				logMessage: "Built a hut.",
 				conditions: { improvements: { house: [ 1, 2 ] } }
 			},
 			TUTORIAL_BUILT_BEACON: {
@@ -102,7 +102,7 @@ define(['ash'], function (Ash) {
 			TUTORIAL_BUILT_CAMPFIRE: {
 				triggers: [ "action_build" ],
 				repeats: "NEVER",
-				logMessage: "Built a campfire. Here, ideas are shared and discussed.",
+				logMessage: "Built a campfire. It is a welcome respite from the darkness.",
 				conditions: { improvements: { campfire: [ 1, 2 ] } }
 			},
 			TUTORIAL_BUILT_DARKFARM: {
@@ -347,11 +347,11 @@ define(['ash'], function (Ash) {
 				conditions: { featureUnlocked: { move: true }, playerInventory: { resource_food: [2, -1], resource_water: [2, -1 ], inCamp: false } }
 			},
 			TUTORIAL_FEATURE_UNLOCKED_UPGRADES: {
-				triggers: [ "feature_unlocked", "action_enter_camp" ],
+				triggers: [ "feature_unlocked", "action_enter_camp", "population_changed" ],
 				repeats: "NEVER",
 				delay: 1500,
 				logMessage: "Evidence and rumours can be distilled into knowledge at the Campfire.",
-				conditions: { featureUnlocked: { upgrades: true }, inCamp: true }
+				conditions: { featureUnlocked: { upgrades: true }, inCamp: true, "population": [ 1, -1 ], }
 			},
 			TUTORIAL_FEATURE_UNLOCKED_MILESTONES: {
 				triggers: [ "feature_unlocked", "action_enter_camp" ],

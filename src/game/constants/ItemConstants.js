@@ -319,6 +319,7 @@ function (Ash, Text, ItemData, Text, PlayerActionConstants, ItemVO) {
 			if (item.id.startsWith("cache_hope")) return "Donate";
 			if (item.id.startsWith("cache_robots")) return "Repair";
 			if (item.id.startsWith("robot")) return "Repair";
+			if (item.id.startsWith("document")) return "Read";
 			return "Use";
 		},
 			

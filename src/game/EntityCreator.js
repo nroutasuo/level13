@@ -247,12 +247,6 @@ define([
 			perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.thirst));
 
 			entity.add(new ExcursionComponent());
-
-			let logComponent = entity.get(LogMessagesComponent);
-			let positionComponent = entity.get(PositionComponent);
-			let startMsg = "You are alone in a massive dark corridor, far below sunlight.";
-
-			logComponent.addMessage(LogConstants.MSG_ID_START, startMsg, null, null, positionComponent.getPosition(), LogConstants.MSG_VISIBILITY_DEFAULT, true);
 		},
 		
 		syncPlayer: function (entity) {
