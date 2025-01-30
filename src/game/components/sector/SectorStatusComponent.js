@@ -22,7 +22,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 		weightedNumScavenges: 0,
 		weightedNumHeapScavenges: 0,
 		weightedNumInvestigates: 0,
-		stashesFound: 0,
+		stashesFound: [], // list of indices
 		graffiti: null,
 		isFallbackInvestigateSector: false,
 		
@@ -49,7 +49,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			this.weightedNumScavenges = 0;
 			this.weightedNumHeapScavenges = 0;
 			this.weightedNumInvestigates = 0;
-			this.stashesFound = 0;
+			this.stashesFound = [];
 			this.graffiti = null;
 			this.isFallbackInvestigateSector = false;
 
@@ -201,7 +201,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 				copy.shw = Math.round(this.weightedNumHeapScavenges * 1000)/1000;
 			if (this.weightedNumInvestigates)
 				copy.iw = Math.round(this.weightedNumInvestigates * 1000)/1000;
-			if (this.stashesFound)
+			if (this.stashesFound && this.stashesFound.length > 0)
 				copy.sf = this.stashesFound;
 			if (this.graffiti)
 				copy.g = this.graffiti;
@@ -233,7 +233,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			this.weightedNumScavenges = componentValues.sw ? componentValues.sw : 0;
 			this.weightedNumHeapScavenges = componentValues.shw ? componentValues.shw : 0;
 			this.weightedNumInvestigates = componentValues.iw ? componentValues.iw : 0;
-			this.stashesFound = componentValues.sf ? componentValues.sf : 0;
+			this.stashesFound = componentValues.sf ? componentValues.sf : [];
 			this.graffiti = componentValues.g ? componentValues.g : null;
 			this.isFallbackInvestigateSector = componentValues.fis ? true : false;
 			this.currentCharacters = componentValues.char ? componentValues.char : [];

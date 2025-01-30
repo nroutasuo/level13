@@ -51,11 +51,13 @@ define([
 		storyStashes: [
 			{
 				campOrdinal: 11,
-				itemID: "document_story_launch_schedule"
+				itemID: "document_story_launch_schedule",
+				localeType: "lab",
 			},
 			{
 				campOrdinal: 12,
-				itemID: "document_story_evacuation"
+				itemID: "document_story_evacuation",
+				localeType: "office",
 			}
 		],
 

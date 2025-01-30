@@ -1,16 +1,18 @@
 // Defines a path constraint used by the WorldBuilder
 define(['ash'], function (Ash) {
 
-	var StashVO = Ash.Class.extend({
+	let StashVO = Ash.Class.extend({
 	
 		stashType: null,
 		amount: 0,
 		itemID: null,
+		localeType: null, // optional
 	
-		constructor: function (stashType, amount, itemID) {
+		constructor: function (stashType, amount, itemID, localeType) {
 			this.stashType = stashType;
 			this.amount = amount;
 			this.itemID = itemID;
+			this.localeType = localeType || null;
 		},
 	});
 

@@ -643,13 +643,17 @@ define([
 				return result;
 			};
 
-			let addStash = function (sectorVO, reason, stashType, numItems, itemID) {
-				let stash = new StashVO(stashType, numItems, itemID);
+			let addStash = function (sectorVO, reason, stashType, numItems, itemID, localeType) {
+				let stash = new StashVO(stashType, numItems, itemID, localeType);
 				sectorVO.stashes.push(stash);
-				// WorldCreatorLogger.i("add stash level " + l + " [" + reason + "]: " + itemID + " x" + numItems + " " + sectorVO.position + " " + sectorVO.zone);
+				if (stash.localeType) {
+					let locale = new LocaleVO(localeType, false, false);
+					SectorGenerator.addLocale(levelVO, sectorVO, locale);
+				}
+				WorldCreatorLogger.i("add stash level " + l + " [" + reason + "]: " + itemID + " x" + numItems + " " + sectorVO.position + " " + sectorVO.zone);
 			};
 			
-			let addStashes = function (sectorSeed, reason, stashType, itemIDs, numStashes, numItemsPerStash, excludedZones) {
+			let addStashes = function (sectorSeed, reason, stashType, itemIDs, numStashes, numItemsPerStash, excludedZones, localeType) {
 				numStashes = WorldCreatorRandom.getRandomIntFromRange(sectorSeed / 2 + 222, numStashes);
 				
 				let options = { requireCentral: false, excludingFeature: "isCamp", excludedZones: excludedZones };
@@ -665,7 +669,7 @@ define([
 					let item = WorldCreatorRandom.getRandomItemFromArray(stashSeed, itemIDs);
 					let itemID = item.id ? item.id : item;
 					let numItems = WorldCreatorRandom.getRandomIntFromRange(stashSeed, numItemsPerStash);
-					addStash(stashSectors[i], reason, stashType, numItems, itemID);
+					addStash(stashSectors[i], reason, stashType, numItems, itemID, localeType);
 				}
 			};
 			
@@ -740,7 +744,7 @@ define([
 				let stashDefinition = StoryConstants.storyStashes[i];
 				if (stashDefinition.campOrdinal != levelVO.campOrdinal) continue;
 				if (levelIndex != maxLevelIndex) continue;
-				addStashes(seed / 2 + 16831, "story", ItemConstants.STASH_TYPE_ITEM, [ stashDefinition.itemID ], 1, 1, earlyZonesOnCampableLevels);
+				addStashes(seed / 2 + 16831, "story", ItemConstants.STASH_TYPE_ITEM, [ stashDefinition.itemID ], 1, 1, earlyZonesOnCampableLevels, stashDefinition.localeType);
 			}
 		},
 		
@@ -2193,6 +2197,14 @@ define([
 			if (sectorVO.workshopResource == "rubber") {
 				sectorType = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
 			}
+
+			if (sectorVO.hasStashWithLocaleType(localeTypes.office)) {
+				sectorType = SectorConstants.SECTOR_TYPE_COMMERCIAL;
+			}
+
+			if (sectorVO.hasStashWithLocaleType(localeTypes.lab)) {
+				sectorType = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
+			}
 			
 			return sectorType;
 		},
@@ -2796,6 +2808,8 @@ define([
 					possibleTypes.push(localeTypes.lab);
 					possibleTypes.push(localeTypes.market);
 					possibleTypes.push(localeTypes.market);
+					possibleTypes.push(localeTypes.office);
+					possibleTypes.push(localeTypes.office);
 					possibleTypes.push(localeTypes.restaurant);
 					possibleTypes.push(localeTypes.store);
 					possibleTypes.push(localeTypes.store);
@@ -2818,6 +2832,7 @@ define([
 				case SectorConstants.SECTOR_TYPE_PUBLIC:
 					possibleTypes.push(localeTypes.lab);
 					possibleTypes.push(localeTypes.library);
+					possibleTypes.push(localeTypes.office);
 					possibleTypes.push(localeTypes.transport);
 					break;
 

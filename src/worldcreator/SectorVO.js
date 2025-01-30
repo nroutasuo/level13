@@ -102,6 +102,13 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 		hasWater: function () {
 			return this.hasSpring || this.resourcesScavengable.getResource(resourceNames.water) > 0 || this.resourcesCollectable.getResource(resourceNames.water) > 0;
 		},
+
+		hasStashWithLocaleType: function (localeType) {
+			for (let i = 0; i < this.stashes.length; i++) {
+				if (this.stashes[i].localeType == localeType) return true;
+			}
+			return false;
+		},
 		
 		getCriticalPathPriority: function (pathType) {
 			if (!pathType) return 99;

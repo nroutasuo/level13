@@ -232,7 +232,7 @@ define([
 				rewards.gainedCurrency = this.getRewardCurrency(currencyModifier, efficiency, clearedPercent);
 			}
 			
-			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound);
+			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound, null);
 			
 			if (!isUsingFixedRewards) {			
 				let itemOptions = { rarityKey: "scavengeRarity", tags: itemTags };
@@ -323,17 +323,19 @@ define([
 			let playerPos = this.playerLocationNodes.head.position;
 			let campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
 
-			let availableResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable.clone();
+			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			var sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+
+			let availableResources = sectorFeatures.resourcesScavengable.clone();
 			availableResources.addAll(localeVO.getResourceBonus(GameGlobals.gameState.getUnlockedResources(), campOrdinal), "scout-rewards");
 			availableResources.limitAll(WorldConstants.resourcePrevalence.RARE, WorldConstants.resourcePrevalence.ABUNDANT, "scout-rewards");
 			let efficiency = this.getCurrentScavengeEfficiency();
 			let localeDifficulty = (localeVO.requirements.vision[0] + localeVO.costs.stamina / 10) / 100;
+			let itemTags = this.getSectorItemTags().concat(localeVO.getItemTags());
 
 			// blueprints
 			rewards.gainedBlueprintPiece = this.getResultBlueprint(0.35, localeVO);
 
-			let itemTags = this.getSectorItemTags().concat(localeVO.getItemTags());
-			
 			// tribe stats
 			if (localeVO.type == localeTypes.grove) {
 				rewards.gainedHope = 2;
@@ -390,6 +392,9 @@ define([
 				// temporary perks
 				rewards.gainedPerks = this.getGainedPerks(perkProbabilities);
 			}
+
+			// stashes
+			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound, localeVO.type);
 
 			return rewards;
 		},
@@ -637,7 +642,7 @@ define([
 			
 			if (rewards.foundStashVO) {
 				let sectorStatus = sourceSector.get(SectorStatusComponent);
-				sectorStatus.stashesFound++;
+				sectorStatus.stashesFound.push(rewards.foundStashVO.stashIndex);
 			}
 			
 			let defaultRewardCampNode = this.getDefaultRewardCampNode();
@@ -1771,12 +1776,32 @@ define([
 			rewardsVO.gainedItems = result;
 		},
 
-		addStashes: function (rewardsVO, stashes, stashesFound) {
-			if (!stashes || stashes.length <= stashesFound) return;
-			var stashVO = stashes[stashesFound];
-			if (!GameGlobals.gameState.uiStatus.isHidden)
+		addStashes: function (rewardsVO, stashes, stashesFound, localeType) {
+			if (!stashes || stashes.length <= 0) return;
+
+			// fix for old saves before 0.5.3
+			if (typeof stashesFound === "number") stashesFound = [];
+
+			let stashVO = null;
+			for (let i = 0; i < stashes.length; i++) {
+				if (stashesFound && stashesFound.indexOf(i) >= 0) continue;
+				let possibleStashVO = stashes[i];
+				if (possibleStashVO.localeType != localeType) continue;
+				stashVO = possibleStashVO;
+				stashVO.stashIndex = i;
+				break;
+			}
+
+			if (!stashVO) {
+				return;
+			}
+
+			if (!GameGlobals.gameState.uiStatus.isHidden) {
 				log.i("found stash: " + stashVO.stashType + " " + stashVO.itemID + " " + (stashesFound+1) + "/" + stashes.length);
+			}
+
 			rewardsVO.foundStashVO = stashVO;
+			
 			switch (stashVO.stashType) {
 				case ItemConstants.STASH_TYPE_ITEM:
 					let item = ItemConstants.getItemDefinitionByID(stashVO.itemID);
@@ -2253,21 +2278,22 @@ define([
 		getDefaultUpgradeTypeForLocale: function (localeVO) {
 			switch (localeVO.type) {
 				case localeTypes.bunker: return UpgradeConstants.UPGRADE_TYPE_INSIGHT;
+				case localeTypes.camp: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
+				case localeTypes.caravan: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
 				case localeTypes.clinic: return UpgradeConstants.UPGRADE_TYPE_EVIDENCE;
 				case localeTypes.factory: return UpgradeConstants.UPGRADE_TYPE_EVIDENCE;
 				case localeTypes.farm: return UpgradeConstants.UPGRADE_TYPE_HOPE;
-				case localeTypes.sewer: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
-				case localeTypes.camp: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
-				case localeTypes.caravan: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
-				case localeTypes.hermit: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
-				case localeTypes.tradingpartner: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
 				case localeTypes.grocery: return UpgradeConstants.UPGRADE_TYPE_HOPE;
+				case localeTypes.hermit: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
+				case localeTypes.house: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
 				case localeTypes.hut: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
 				case localeTypes.lab: return UpgradeConstants.UPGRADE_TYPE_EVIDENCE;
-				case localeTypes.restaurant: return UpgradeConstants.UPGRADE_TYPE_HOPE;
-				case localeTypes.house: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
 				case localeTypes.market: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
+				case localeTypes.office: return UpgradeConstants.UPGRADE_TYPE_EVIDENCE;
+				case localeTypes.restaurant: return UpgradeConstants.UPGRADE_TYPE_HOPE;
+				case localeTypes.sewer: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
 				case localeTypes.store: return UpgradeConstants.UPGRADE_TYPE_HOPE;
+				case localeTypes.tradingpartner: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
 			}
 
 			return null;

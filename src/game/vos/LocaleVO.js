@@ -18,6 +18,7 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 		restaurant: 12,
 		grocery: 13,
 		store: 14,
+		office: 15,
 		
 		// inhabited
 		camp: 50,
@@ -85,6 +86,7 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 				case localeTypes.library: difficulty = 0.3; break;
 				case localeTypes.maintenance: difficulty = 1; break;
 				case localeTypes.market: difficulty = 0.15; break;
+				case localeTypes.office: difficulty = 0.25; break;
 				case localeTypes.restaurant: difficulty = 0.25; break;
 				case localeTypes.depot: difficulty = 1; break;
 				case localeTypes.spacefactory: difficulty = 1; break;
@@ -152,6 +154,11 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 					res.addResource(resourceNames.rope, defaultAmount, "definition");
 					if (unlockedResources.tools) res.addResource(resourceNames.tools, defaultAmount, "definition");
 					break;
+				case localeTypes.office:
+					res.addResource(resourceNames.food, defaultAmount, "definition");
+					res.addResource(resourceNames.water, defaultAmount, "definition");
+					res.addResource(resourceNames.rope, defaultAmount, "definition");
+					break;
 				case localeTypes.maintenance:
 				case localeTypes.transport:
 					res.addResource(resourceNames.water, defaultAmount, "definition");
@@ -199,6 +206,7 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 				case localeTypes.grocery:
 				case localeTypes.hut:
 				case localeTypes.lab:
+				case localeTypes.office:
 				case localeTypes.restaurant:
 				case localeTypes.transport:
 					return 0.5;
@@ -244,6 +252,8 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 					return [ "valuable" ];
 				case localeTypes.grocery:
 					return [ "perishable" ];
+				case localeTypes.office:
+					return [ "science", "valuable" ];
 				case localeTypes.hut:
 					return [ "keepsake" ];
 				case localeTypes.lab:
