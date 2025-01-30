@@ -1,10 +1,11 @@
 define([
 	'ash',
+	'text/Text',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/LogConstants',
 	'game/constants/StoryConstants'
-], function (Ash, GameGlobals, GlobalSignals, LogConstants, StoryConstants) {
+], function (Ash, Text, GameGlobals, GlobalSignals, LogConstants, StoryConstants) {
 
 	let StorySystem = Ash.System.extend({
 
@@ -42,6 +43,7 @@ define([
 			GlobalSignals.registerTrigger(GlobalSignals.actionRewardsCollectedSignal, StoryConstants.triggers.action_collect_rewards);
 			GlobalSignals.registerTrigger(GlobalSignals.campEventStartedSignal, StoryConstants.triggers.camp_event);
 			GlobalSignals.registerTrigger(GlobalSignals.dialogueCompletedSignal, StoryConstants.triggers.action_complete_dialogue);
+			GlobalSignals.registerTrigger(GlobalSignals.examineSpotExaminedSignal, StoryConstants.triggers.action_examine);
 			GlobalSignals.registerTrigger(GlobalSignals.featureUnlockedSignal, StoryConstants.triggers.feature_unlocked);
 			GlobalSignals.registerTrigger(GlobalSignals.improvementBuiltSignal, StoryConstants.triggers.action_build);
 			GlobalSignals.registerTrigger(GlobalSignals.inventoryChangedSignal, StoryConstants.triggers.change_inventory);
@@ -49,6 +51,7 @@ define([
 			GlobalSignals.registerTrigger(GlobalSignals.playerEnteredCampSignal, StoryConstants.triggers.action_enter_camp);
 			GlobalSignals.registerTrigger(GlobalSignals.playerLeftCampSignal, StoryConstants.triggers.action_leave_camp);
 			GlobalSignals.registerTrigger(GlobalSignals.playerPositionChangedSignal, StoryConstants.triggers.change_position);
+			GlobalSignals.registerTrigger(GlobalSignals.populationChangedSignal, StoryConstants.triggers.camp_population_changed);
 			GlobalSignals.registerTrigger(GlobalSignals.sectorScavengedSignal, StoryConstants.triggers.action_scavenge);
 			GlobalSignals.registerTrigger(GlobalSignals.sectorScoutedSignal, StoryConstants.triggers.action_scout);
 			GlobalSignals.registerTrigger(GlobalSignals.slowUpdateSignal, StoryConstants.triggers.update);
@@ -145,6 +148,10 @@ define([
 				GlobalSignals.storyFlagChangedSignal.dispatch(flagID);
 			}
 
+			if (effectVO.unlockFeature) {
+				GameGlobals.playerActionFunctions.unlockFeature(effectVO.unlockFeature);
+			}
+
 			if (effectVO.popup) {
 				let title = effectVO.popup.title;
 				let msg = effectVO.popup.text;
@@ -152,8 +159,12 @@ define([
 			}
 
 			if (effectVO.log) {
-				let msg = effectVO.log;
-				GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), msg, LogConstants.MSG_VISIBILITY_GLOBAL);
+				let delay = 300;
+				setTimeout(() => {
+					let msg = Text.t(effectVO.log);
+					let options = { visibility: LogConstants.MSG_VISIBILITY_GLOBAL };
+					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), msg, options);
+				}, delay);
 			}
 
 			if (effectVO.dialogue) {
@@ -170,7 +181,7 @@ define([
 				let status = this.getStoryStatus(storyID);
 				if (status == StoryConstants.storyStatuses.STARTED) {
 					let storyVO = StoryConstants.getStory(storyID);
-					let activeSegmentID = GameGlobals.gameState.storyStatus[storyID];
+					let activeSegmentID = this.getActiveSegmentID(storyVO);
 					let activeSegmentVO = storyVO.getSegment(activeSegmentID);
 					if (activeSegmentVO) {
 						result.push(activeSegmentVO);
@@ -179,6 +190,18 @@ define([
 			}
 
 			return result;
+		},
+
+		getActiveSegmentID: function (storyVO) {
+			let storyID = storyVO.storyID;
+			let status = this.getStoryStatus(storyID);
+			if (status !== StoryConstants.storyStatuses.STARTED) return null;
+
+			let statusFlag = GameGlobals.gameState.storyStatus[storyID];
+			let segmentVO = storyVO.getSegment(statusFlag);
+			if (segmentVO) return segmentVO.segmentID;
+
+			return storyVO.segments[0].segmentID;
 		},
 
 		getPossibleSegmentsToStart: function () {

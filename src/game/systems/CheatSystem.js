@@ -670,7 +670,7 @@ define(['ash',
 				let index = storyVO.getSegmentIndex(activeSegmentID);
 				let displayIndex = index >= 0 ? ((index + 1) + "/" + storyVO.segments.length) : "";
 
-				result += storyID + " " + status + " " + activeSegmentID + " " + displayIndex + "\n";
+				result += "story: " + storyID + " " + status + " " + activeSegmentID + " " + displayIndex + "\n";
             }
 			log.i(result);
 		},
