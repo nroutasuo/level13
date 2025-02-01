@@ -398,6 +398,7 @@ define(['ash',
 			var camp = currentSector.get(CampComponent);
 			if (camp) {
 				camp.addPopulation(amount);
+				GlobalSignals.populationChangedSignal.dispatch(currentSector);
 			} else {
 				log.w("Camp not found.");
 			}
