@@ -1,7 +1,7 @@
 // A system that updates accumulates resources in collectors
 define(['ash', 'game/GameGlobals', 'game/GlobalSignals',], function (Ash, GameGlobals, GlobalSignals) {
 
-	var SlowUpdateSystem = Ash.System.extend({
+	let SlowUpdateSystem = Ash.System.extend({
 
 		updateInterval: 3000,
 		lastUpdateTimeStamp: null,
@@ -19,8 +19,9 @@ define(['ash', 'game/GameGlobals', 'game/GlobalSignals',], function (Ash, GameGl
 		},
 
 		update: function (time) {
-			var timeStamp = new Date().getTime();
-			var delta = timeStamp - this.lastUpdateTimeStamp;
+			if (GameGlobals.gameState.uiStatus.isTransitioning) return;
+			let timeStamp = new Date().getTime();
+			let delta = timeStamp - this.lastUpdateTimeStamp;
 			this.extraUpdateTime += (GameGlobals.gameState.frameExtraUpdateTime || 0);
 			if (delta >= this.updateInterval) {
 				this.doSlowUpdate(delta / 1000 + (this.extraUpdateTime || 0));

@@ -75,6 +75,8 @@ define([
 
 		update: function (time) {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
+			if (GameGlobals.gameState.uiStatus.isTransitioning) return;
+			
 			if (this.elementsVisibilityChanged) {
 				this.updateVisibleButtonsList();
 				this.updateVisibleProgressbarsList();

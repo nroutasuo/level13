@@ -114,6 +114,7 @@
 			
 			if (!this.playerLocationNodes.head) return;
 			if (!this.playerPosNodes.head.position.inCamp) return;
+			if (GameGlobals.gameState.uiStatus.isTransitioning) return;
 
 			this.updateWorkers(isActive);
 			this.updateEvents(isActive);
