@@ -83,6 +83,11 @@ define([
 			var inCamp = node.entity.get(PositionComponent).inCamp;
 			var sunlit = featuresComponent.sunlit;
 			let isAwake = vision.isAwake;
+
+			if (inCamp && !isAwake) {
+				node.vision.isAwake = true;
+				return;
+			}
 			
 			let maxValue = 0;
 			let visionPerSec = 0;
