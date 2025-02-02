@@ -70,7 +70,7 @@ define(['ash',
 			4: { id: "journalist", localeType: localeTypes.library, abilityType: "cost_scout", name: "Yevry", icon: "img/characters/scavenger.png", dialogueSource: "explorer_unique_journalist" },
 			5: { id: "handler", localeType: localeTypes.house, abilityType: "detect_supplies", name: "Jezekiah", icon: "img/characters/scavenger.png", dialogueSource: "explorer_unique_handler" },
 			6: { id: "prospector", localeType: localeTypes.store, abilityType: "scavenge_supplies", name: "Sunita", icon: "img/characters/scavenger.png", dialogueSource: "explorer_unique_prospector" },
-			10: { id: "hermit", localeType: localeTypes.bunker, abilityType: "cost_scout", name: "Eliasco", icon: "img/characters/scavenger.png", dialogueSource: "explorer_unique_hermit" },
+			10: { id: "hermit", localeType: localeTypes.bunker, abilityType: "scavenge_general", name: "Eliasco", icon: "img/characters/scavenger.png", dialogueSource: "explorer_unique_hermit" },
 		},
 
 		icons: [

@@ -449,7 +449,10 @@ define([
 				case OccurrenceConstants.campOccurrenceTypes.refugees:
 					let maxRefugees = MathUtils.clamp(campNode.camp.population / 6, 3, 16);
 					let refugeesNum = MathUtils.randomIntBetween(2, maxRefugees + 1);
-					let dialogueSource = GameGlobals.dialogueHelper.getRandomRefugeeDialogueSource();
+					let dialogueSource = 
+						GameGlobals.gameState.getStoryFlag(StoryConstants.flags.APOCALYPSE_PENDING_REFUGEES) ?
+						"refugees_earthquake" :
+						GameGlobals.dialogueHelper.getRandomRefugeeDialogueSource();
 					campNode.entity.add(new RefugeesComponent(refugeesNum, dialogueSource));
 					logMsg = "A group of refugees from the City has arrived at the camp.";
 					break;
@@ -717,7 +720,7 @@ define([
 					return currentBestTotal < 0.75 * typicalTotal;
 				
 				case OccurrenceConstants.campOccurrenceTypes.disease:
-					return GameGlobals.gameState.getStoryFlag(StoryConstants.flags.PENDING_DISEASE);
+					return GameGlobals.gameState.getStoryFlag(StoryConstants.flags.GREENHOUSE_PENDING_DISEASE);
 						
 				default: return false;
 			}
@@ -774,7 +777,7 @@ define([
 					let storage = GameGlobals.resourcesHelper.getCurrentCampStorage(campNode.entity);
 					let hasHerbs = storage.resources.getResource(resourceNames.herbs) > 0;
 					let hasMedicine = storage.resources.getResource(resourceNames.medicine) > 0;
-					let isPendingDisease = GameGlobals.gameState.getStoryFlag(StoryConstants.flags.PENDING_DISEASE);
+					let isPendingDisease = GameGlobals.gameState.getStoryFlag(StoryConstants.flags.GREENHOUSE_PENDING_DISEASE);
 					let value = 1 - OccurrenceConstants.getDiseaseOutbreakChance(campNode.camp.population, hasHerbs, hasMedicine);
 					if (isPendingDisease) value = value / 2;
 					return value;

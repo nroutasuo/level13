@@ -30,6 +30,10 @@ define(['ash'], function (Ash) {
 			this.source = source;
 			this.dialogueSource = dialogueSource;
 		},
+
+		isUnique: function () {
+			return dialogueSource.indexOf("unique") >= 0;
+		}
 	});
 
 	return ExplorerVO;

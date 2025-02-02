@@ -202,7 +202,6 @@ define(['ash',
 
                 let randomIndex = Math.floor(Math.random() * validSources.length);
                 return validSources[randomIndex];
-
             },
             
             // general

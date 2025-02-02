@@ -707,11 +707,13 @@ define(['ash',
 			let spotID = featuresComponent.examineSpots[0];
 			let spotDef = StoryConstants.getSectorExampineSpot(spotID);
 
+			if (!spotDef) return;
 			
 			let successCallback = function () {
 				let level = GameGlobals.levelHelper.getLevelEntityForSector(sector);
 				let levelStatus = level.get(LevelStatusComponent);
 				levelStatus.examinedSpots.push(spotID);
+				GlobalSignals.examineSpotExaminedSignal.dispatch(spotDef.storyTag);
 			};
 
 			let messages = {
@@ -894,10 +896,20 @@ define(['ash',
 				logMsgSuccess += "The trees seem alive. They whisper, but the words are unintelligible. You have found a source of <span class='hl-functionality'>ancient power</span>.";
 			}
 
+			if (localeVO.type == localeTypes.greenhouse) {
+				if (!GameGlobals.tribeHelper.hasDeity()) {
+					this.startSequence([
+						{ type: "dialogue", dialogueID: "locale_story_greenhouse" },
+						{ type: "log", textKey: "story.stories.greenhouse_greenhouse_found_message" }
+					]);
+					return;
+				}
+			}
+
 			if (localeVO.type == localeTypes.depot) {
 				this.startSequence([
 					{ type: "dialogue", dialogueID: "locale_story_depot" },
-					{ type: "storyFlag", flagID: StoryConstants.flags.SEEN_STOREHOUSE, value: true },
+					{ type: "storyFlag", flagID: StoryConstants.flags.FALL_SEEN_STOREHOUSE, value: true },
 					{ type: "log", textKey: "Scouted a depot." }
 				]);
 				return;
@@ -906,8 +918,16 @@ define(['ash',
 			if (localeVO.type == localeTypes.spacefactory) {
 				this.startSequence([
 					{ type: "dialogue", dialogueID: "locale_story_spacefactory" },
-					{ type: "storyFlag", flagID: StoryConstants.flags.SEEN_SPACEFACTORY, value: true },
+					{ type: "storyFlag", flagID: StoryConstants.flags.FALL_SEEN_SPACEFACTORY, value: true },
 					{ type: "log", textKey: "Scouted a manufacturing plant." }
+				]);
+				return;
+			}
+
+			if (localeVO.type == localeTypes.seedDepot) {
+				this.startSequence([
+					{ type: "dialogue", dialogueID: "locale_story_seeddepot" },
+					{ type: "log", textKey: "Scouted an old seed depot, but the seeds were dead." }
 				]);
 				return;
 			}
@@ -1814,6 +1834,8 @@ define(['ash',
 		buildHouse: function (sectorPos) {
 			let sector = this.getActionSectorOrCurrent(sectorPos);
 			this.buildImprovement("build_in_house", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_house"), sector);
+
+			GameGlobals.playerActionFunctions.unlockFeature("npcs");
 		},
 
 		buildHouse2: function (sectorPos) {
@@ -2752,7 +2774,8 @@ define(['ash',
 					break;
 				case "log":
 					let textKey = step.textKey;
-					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), textKey);
+					let text = Text.t(textKey);
+					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), text);
 					cb();
 					break;
 				default: 

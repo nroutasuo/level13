@@ -45,6 +45,7 @@ define([
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/SectorLocalesComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
+	'game/components/sector/events/DiseaseComponent',
 	'game/components/sector/events/TraderComponent',
 	'game/components/sector/events/RaidComponent',
 	'game/components/common/CampComponent',
@@ -57,7 +58,7 @@ define([
 	PlayerLocationNode, TribeUpgradesNode, NearestCampNode, LevelComponent, PositionComponent, ResourcesComponent,
 	PlayerActionComponent, BagComponent, ExcursionComponent, ItemsComponent, HopeComponent, FightComponent,
 	OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent, SectorControlComponent, SectorFeaturesComponent,
-	SectorStatusComponent, SectorLocalesComponent, SectorImprovementsComponent, TraderComponent, RaidComponent,
+	SectorStatusComponent, SectorLocalesComponent, SectorImprovementsComponent, DiseaseComponent, TraderComponent, RaidComponent,
 	CampComponent, ResourcesVO, ImprovementVO
 ) {
 	var PlayerActionsHelper = Ash.Class.extend({
@@ -947,6 +948,14 @@ define([
 						let requiredValue = requirements.camp.raid;
 						if (requiredValue != currentValue) {
 							return { value: 0, reason: (requiredValue ? "No raid currently" : "There is a raid" ) };
+						}
+					}
+
+					if (typeof requirements.camp.disease !== "unddefined") {
+						let currentValue = this.playerLocationNodes.head.entity.has(DiseaseComponent);
+						let requiredValue = requirements.camp.disease;
+						if (requiredValue != currentValue) {
+							return { value: 0, reason: (requiredValue ? "No disease currently" : "There is a disease ongoing" ) };
 						}
 					}
 
@@ -2570,6 +2579,7 @@ define([
 						case localeTypes.greenhouse:
 						case localeTypes.depot:
 						case localeTypes.spacefactory:
+						case localeTypes.seedDepot:
 							return 0;
 					}
 					return 1;

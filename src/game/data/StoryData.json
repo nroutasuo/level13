@@ -1,28 +1,83 @@
 {
     "stories": {
-        "escape": {
-            "startTrigger": "immediate",
-            "startConditions": {},
-            "onStart": {},
-            "onComplete": {},
+        "apocalypse": {
             "segments": [
                 {
-                    "id": "before_vision",
-                    "completeTrigger": "action_any",
+                    "id": "hints"
+                },
+                {
+                    "completeConditions": {
+                        "eventType": "refugees"
+                    },
+                    "completeTrigger": "camp_event",
+                    "id": "pending_refugees",
+                    "onComplete": {
+                        "storyFlags": {
+                            "APOCALYPSE_PENDING_REFUGEES": false
+                        }
+                    },
+                    "onStart": {
+                        "storyFlags": {
+                            "APOCALYPSE_PENDING_REFUGEES": true
+                        }
+                    },
+                    "startConditions": {
+                        "numCamps": 3,
+                        "tribe": {
+                            "population": [
+                                40,
+                                -1
+                            ]
+                        }
+                    },
+                    "startTrigger": "camp_population_changed"
+                },
+                {
+                    "id": "hints_2"
+                },
+                {
+                    "id": "apocalypse_learned",
+                    "startConditions": {
+                        "storyFlags": {
+                            "APOCALYPSE_KNOWN": true
+                        }
+                    },
+                    "startFromAny": true,
+                    "startTrigger": "story_flag_changed"
+                }
+            ],
+            "startTrigger": "action_enter_camp"
+        },
+        "escape": {
+            "onComplete": {},
+            "onStart": {},
+            "segments": [
+                {
                     "completeConditions": {
                         "action": "get_up"
+                    },
+                    "completeTrigger": "action_any",
+                    "id": "before_vision",
+                    "onStart": {
+                        "log": "story.stories.escape_start_message",
+                        "storyFlags": {
+                            "ESCAPE_SEARCHING_FOR_EXIT": true
+                        }
                     }
                 },
                 {
-                    "id": "before_camp"
+                    "id": "before_camp",
+                    "onStart": {
+                        "log": "story.stories.escape_get_up_message"
+                    }
                 },
                 {
-                    "id": "in_camp",
-                    "startTrigger": "action_enter_camp",
                     "completeTrigger": "action_leave_camp",
+                    "id": "in_camp",
                     "onStart": {
                         "log": "story.stories.escape_camp_start_message"
-                    }
+                    },
+                    "startTrigger": "action_enter_camp"
                 },
                 {
                     "id": "first_exploration",
@@ -32,7 +87,9 @@
                 },
                 {
                     "id": "healed",
-                    "startTrigger": "action_any",
+                    "onStart": {
+                        "popup": "story.stories.escape_healed_start_message"
+                    },
                     "startConditions": {
                         "perkEffects": {
                             "Injury": [
@@ -41,176 +98,373 @@
                             ]
                         }
                     },
-                    "onStart": {
-                        "popup": "story.stories.escape_healed_start_message"
-                    }
+                    "startTrigger": "action_any"
                 },
                 {
                     "id": "passage_search",
+                    "onStart": {
+                        "popup": "story.stories.escape_passage_search_start_message"
+                    },
                     "startTrigger": "action_leave_camp"
                 },
                 {
                     "id": "passage_found",
-                    "startTrigger": "action_scout",
+                    "onStart": {
+                        "log": "story.stories.escape_passage_found_message_2",
+                        "popup": "story.stories.escape_passage_found_message"
+                    },
                     "startConditions": {
                         "sector": {
                             "passageDown": true
                         }
                     },
-                    "onStart": {
-                        "popup": "story.stories.escape_passage_found_message",
-                        "log": "story.stories.escape_passage_found_message_2"
-                    }
+                    "startTrigger": "action_scout"
                 },
                 {
                     "id": "passage_repaired",
-                    "startTrigger": "action_any",
-                    "startFromAny": true,
+                    "onStart": {
+                        "log": "story.stories.escape_passage_repaired_message"
+                    },
                     "startConditions": {
                         "action": "build_out_passage_down_stairs"
                     },
-                    "onStart": {
-                        "log": "story.stories.escape_passage_repaired_message"
-                    }
+                    "startFromAny": true,
+                    "startTrigger": "action_any"
                 },
                 {
                     "id": "passage_used",
-                    "startTrigger": "change_position",
+                    "onStart": {
+                        "log": "story.stories.escape_passage_used_message"
+                    },
                     "startConditions": {
                         "level": 12
                     },
-                    "onStart": {
-                        "log": "story.stories.escape_passage_used_message"
-                    }
+                    "startTrigger": "change_position"
                 },
                 {
-                    "id": "searching_for_ground",
-                    "startTrigger": "action_build",
+                    "id": "ESCAPE_SEARCHING_FOR_GROUND",
+                    "onStart": {
+                        "storyFlags": {
+                            "ESCAPE_SEARCHING_FOR_GROUND": true
+                        }
+                    },
                     "startConditions": {
                         "numCamps": 2
                     },
-                    "onStart": {
-                        "storyFlags": {
-                            "SEARCHING_FOR_GROUND": true
-                        }
-                    }
+                    "startTrigger": "action_build"
                 },
                 {
                     "id": "on_ground",
-                    "startTrigger": "change_position",
+                    "onStart": {
+                        "storyFlags": {
+                            "ESCAPE_SEARCHING_FOR_GROUND": false
+                        }
+                    },
                     "startConditions": {
                         "sector": {
                             "ground": true
                         }
                     },
-                    "onStart": {
-                        "storyFlags": {
-                            "SEARCHING_FOR_GROUND": false
-                        }
-                    }
+                    "startTrigger": "change_position"
                 },
                 {
                     "id": "searching_for_surface",
-                    "startTrigger": "change_position",
+                    "onStart": {
+                        "storyFlags": {
+                            "ESCAPE_SEARCHING_FOR_EXIT": false
+                        }
+                    },
                     "startConditions": {
                         "player": {
                             "position": {
                                 "level": 15
                             }
                         }
-                    }
+                    },
+                    "startTrigger": "change_position"
                 },
                 {
+                    "completeConditions": {
+                        "action": "launch"
+                    },
+                    "completeTrigger": "action_any",
                     "id": "on_surface",
-                    "startTrigger": "change_position",
+                    "onComplete": {
+                        "log": "story.stories.escape_launch_message"
+                    },
                     "startConditions": {
                         "sector": {
                             "surface": true
                         }
                     },
-                    "completeTrigger": "action_any",
-                    "completeConditions": {
-                        "action": "launch"
-                    },
-                    "onComplete": {
-                        "log": "story.stories.escape_launch_message"
-                    }
+                    "startTrigger": "change_position"
                 }
-            ]
+            ],
+            "startConditions": {},
+            "startTrigger": "immediate"
         },
-        "greenhouse": {
-            "startTrigger": "action_build",
-            "startConditions": {
-                "numCamps": 3,
-                "tribe": {
-                    "population": 36
-                }
-            },
+        "fall": {
             "segments": [
                 {
-                    "id": "pending_disease",
-                    "onStart": {
+                    "id": "establish_status"
+                },
+                {
+                    "id": "investigating",
+                    "startConditions": {
                         "storyFlags": {
-                            "PENDING_DISEASE": true
+                            "FALL_INVESTIGATING": true
                         }
                     },
+                    "startTrigger": "story_flag_changed"
+                },
+                {
+                    "id": "seen_preparations",
+                    "onStart": {
+                        "log": "story.stories.fall_found_preparations_message",
+                        "storyFlags": {
+                            "FALL_SEEN_STOREHOUSE": true
+                        }
+                    },
+                    "startConditions": {
+                        "localeType": "depot"
+                    },
+                    "startFromAny": true,
+                    "startTrigger": "locale_scouted"
+                },
+                {
+                    "id": "FALL_SEEN_SPACEFACTORY",
+                    "onStart": {
+                        "storyFlags": {
+                            "FALL_SEEN_SPACEFACTORY": true
+                        }
+                    },
+                    "startConditions": {
+                        "localeType": "spacefactory"
+                    },
+                    "startFromAny": true,
+                    "startTrigger": "locale_scouted"
+                },
+                {
+                    "id": "established_evacuation",
+                    "startConditions": {
+                        "storyFlags": {
+                            "FALL_SEEN_EVACUATION": true
+                        }
+                    },
+                    "startFromAny": true,
+                    "startTrigger": "story_flag_changed"
+                },
+                {
+                    "id": "examined_debris",
+                    "onStart": {
+                        "storyFlags": {
+                            "FALL_SEEN_DEBRIS": true
+                        }
+                    },
+                    "startConditions": {
+                        "examineSpotTag": "spaceDebris"
+                    },
+                    "startTrigger": "action_examine"
+                }
+            ],
+            "startTrigger": "immediate"
+        },
+        "greenhouse": {
+            "segments": [
+                {
+                    "id": "GREENHOUSE_PENDING_DISEASE",
                     "onComplete": {
                         "storyFlags": {
-                            "PENDING_DISEASE": false
+                            "GREENHOUSE_PENDING_DISEASE": false
+                        }
+                    },
+                    "onStart": {
+                        "storyFlags": {
+                            "GREENHOUSE_PENDING_DISEASE": true
                         }
                     }
                 },
                 {
                     "id": "disease_started",
-                    "startTrigger": "camp_event",
                     "startConditions": {
                         "eventType": "disease"
                     },
+                    "startTrigger": "camp_event"
+                },
+                {
+                    "id": "disease_seen",
                     "onStart": {
-                        "log": "story.stories.greenhouse_disease_started_message",
                         "dialogue": {
                             "owner": "explorer",
                             "storyTag": "find_greenhouse"
-                        }
-                    }
+                        },
+                        "log": "story.stories.greenhouse_disease_started_message"
+                    },
+                    "startConditions": {
+                        "camp": {
+                            "disease": true
+                        },
+                        "inCamp": true
+                    },
+                    "startTrigger": "action_any"
                 },
                 {
                     "id": "looking_for_greenhouse",
-                    "startTrigger": "action_complete_dialogue",
+                    "onStart": {
+                        "storyFlags": {
+                            "GREENHOUSE_SEARCHING_FOR_CURE": true
+                        }
+                    },
                     "startConditions": {
                         "dialogue": "find_greenhouse"
                     },
-                    "onStart": {
-                        "storyFlags": {
-                            "SEARCHING_FOR_CURE": true
-                        }
-                    }
+                    "startTrigger": "action_complete_dialogue"
                 },
                 {
                     "id": "greenhouse_found",
-                    "startTrigger": "locale_scouted",
-                    "startConditions": {
-                        "locale": "greenhouse"
-                    },
                     "onStart": {
                         "storyFlags": {
-                        "log": "story.stories.greenhouse_greenhouse_found_message"
+                            "GREENHOUSE_FOUND": true
                         }
-                    }
+                    },
+                    "startConditions": {
+                        "localeType": "greenhouse"
+                    },
+                    "startTrigger": "locale_scouted"
                 },
                 {
+                    "id": "deity_unlocked",
+                    "startConditions": {
+                        "featureUnlocked": {
+                            "deity": true
+                        },
+                        "numCamps": 8
+                    },
+                    "startFromAny": true,
+                    "startTrigger": "feature_unlocked"
+                },
+                {
+                    "completeTrigger": "immediate",
                     "id": "greenhouse_built",
-                    "startTrigger": "action_any",
+                    "onStart": {
+                        "storyFlags": {
+                            "GREENHOUSE_SEARCHING_FOR_CURE": false
+                        }
+                    },
                     "startConditions": {
                         "action": "build_out_greenhouse"
                     },
+                    "startFromAny": true,
+                    "startTrigger": "action_any"
+                }
+            ],
+            "startConditions": {
+                "numCamps": 3,
+                "tribe": {
+                    "population": [
+                        36,
+                        -1
+                    ]
+                }
+            },
+            "startTrigger": "action_build"
+        },
+        "tribe": {
+            "segments": [
+                {
+                    "id": "camp_built"
+                },
+                {
+                    "id": "camp_open",
+                    "onStart": {
+                        "log": "story.stories.tribe_not_alone_message",
+                        "unlockFeature": "housing"
+                    },
+                    "startConditions": {
+                        "featureUnlocked": {
+                            "move": true
+                        },
+                        "improvements": {
+                            "campfire": [
+                                1,
+                                -1
+                            ]
+                        }
+                    },
+                    "startTrigger": "action_enter_camp"
+                },
+                {
+                    "id": "first_worker",
+                    "onStart": {
+                        "log": "story.stories.tribe_first_worker_message"
+                    },
+                    "startConditions": {
+                        "population": [
+                            1,
+                            -1
+                        ]
+                    },
+                    "startFromAny": true,
+                    "startTrigger": "camp_population_changed"
+                },
+                {
+                    "id": "camp_growing",
+                    "onStart": {
+                        "log": "story.stories.tribe_growing_message"
+                    },
+                    "startConditions": {
+                        "action": "unlock_milestone"
+                    },
+                    "startTrigger": "action_any"
+                },
+                {
+                    "id": "two_camps",
+                    "startConditions": {
+                        "numCamps": 2
+                    },
+                    "startFromAny": true,
+                    "startTrigger": "action_build"
+                },
+                {
+                    "id": "many_camps",
+                    "startConditions": {
+                        "numCamps": 3
+                    },
+                    "startFromAny": true,
+                    "startTrigger": "action_build"
+                },
+                {
+                    "id": "crisis",
+                    "onStart": {
+                        "log": "story.stories.tribe_crisis_message"
+                    },
+                    "startConditions": {
+                        "storyFlags": {
+                            "ESCAPE_WORRIED_ABOUT_OUTSIDE": true
+                        }
+                    },
+                    "startFromAny": true,
+                    "startTrigger": "story_flag_changed"
+                },
+                {
+                    "id": "staying",
                     "onStart": {
                         "storyFlags": {
-                            "SEARCHING_FOR_CURE": false
+                            "ESCAPE_WORRIED_ABOUT_OUTSIDE": false
                         }
-                    }
+                    },
+                    "startConditions": {
+                        "player": {
+                            "position": {
+                                "level": 15
+                            }
+                        }
+                    },
+                    "startFromAny": true,
+                    "startTrigger": "change_position"
                 }
-            ]
+            ],
+            "startTrigger": "action_enter_camp"
         }
     }
 }

@@ -113,7 +113,7 @@ define(['ash',], function (Ash) {
 			if (!system.signalBindings)
 				system.signalBindings = [];
 
-			var binding = signal.add(function () {
+			let binding = signal.add(function () {
 				try {
 					listener.apply(system, arguments);
 				} catch (ex) {

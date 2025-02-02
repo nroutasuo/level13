@@ -352,6 +352,7 @@ define([
 			} else if (localeVO.type == localeTypes.tradingpartner) {
 			} else if (localeVO.type == localeTypes.grove) {
 			} else if (localeVO.type == localeTypes.greenhouse) {
+			} else if (localeVO.type == localeTypes.seedDepot) {
 			} else if (localeVO.type == localeTypes.depot || localeVO.type == localeTypes.spacefactory) {
 				// just items / resources
 				let itemOptions = { rarityKey: "localeRarity", allowNextCampOrdinal: true, tags: itemTags };

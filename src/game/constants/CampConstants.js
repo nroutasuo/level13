@@ -9,6 +9,8 @@ define(['ash', 'text/Text', 'game/vos/ResourcesVO'], function (Ash, Text, Resour
 		POOL_RUMOURS_PER_POPULATION: 3,
 		POPULATION_DECREASE_COOLDOWN: 60,
 		POPULATION_DECREASE_COOLDOWN_REFUGEES: 60 * 5,
+
+		POPULATION_FOR_UNLOCK_MILESTONES: 2,
 		
 		// Storage
 		BASE_STORAGE: 50,

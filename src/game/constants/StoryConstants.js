@@ -17,30 +17,49 @@ define([
 
 		sectorExamineSpots: [
 			{
-				id: "test_vehicle",
-				name: "strange vehicle",
-				shortName: "vehicle",
-				popupMsg: "A strange vehicle with the black GIGA logo on it",
-				positionParams: {
-					campOrdinal: 3,
-					sectorType: "industrial"
-				}
-			},
-			{
-				id: "test_monument",
+				id: "monument_dictatorship",
 				name: "monument",
 				shortName: "monument",
-				popupMsg: "A monument to the defeat of an old dictatorship",
+				popupMsg: "A chipped monument celebrating defeat of an old dictatorship",
 				positionParams: {
 					campOrdinal: 4,
 					sectorType: "public"
 				}
 			},
 			{
-				id: "test_wreckage",
+				id: "story_earthquake_pillars",
+				name: "pillars",
+				shortName: "pillars",
+				popupMsg: "These massive pillars look like they were built relatively recently. They seem like reinforcements to help hold the weight of the City above. One of them is already cracked.",
+				positionParams: {
+					campOrdinal: 7
+				}
+			},
+			{
+				id: "story_escape_pod",
+				name: "piece of escape pod",
+				shortName: "debris",
+				popupMsg: "A damaged piece of a spacecraft, built to transport people. Thankfully, the remains have been reduced to skeletons.",
+				positionParams: {
+					campOrdinal: 15,
+				},
+				storyTag: "spaceDebris"
+			},
+			{
+				id: "story_hull_wreckage",
 				name: "burned wreckage",
 				shortName: "wreckage",
-				popupMsg: "Wreckage from the escape shuttle",
+				popupMsg: "Wreckage from the escape shuttle. You recognize the material from the factory, still sleek and polished where it has not fractured.",
+				positionParams: {
+					campOrdinal: 15,
+				},
+				storyTag: "spaceDebris"
+			},
+			{
+				id: "story_sundome_shards",
+				name: "sundome shards",
+				shortName: "shards",
+				popupMsg: "Sharp, glistering, human-sized shards of the sundome that used to cover the Surface.",
 				positionParams: {
 					campOrdinal: 15,
 				}
@@ -56,9 +75,24 @@ define([
 			},
 			{
 				campOrdinal: 12,
-				itemID: "document_story_evacuation",
+				itemID: "document_story_evacuation_schedule",
 				localeType: "office",
-			}
+			},
+			{
+				campOrdinal: 13,
+				itemID: "document_story_evacuation_reason",
+				localeType: "office",
+			},
+			{
+				campOrdinal: 12,
+				itemID: "document_story_earthquakes_severity_01",
+				localeType: "office",
+			},
+			{
+				campOrdinal: 11,
+				itemID: "document_story_earthquakes_cause_01",
+				localeType: "office",
+			},
 		],
 
 		storyStatuses: {
@@ -68,16 +102,18 @@ define([
 		},
 
 		triggers: {
-			immediate: "immediate",
 			action_any: "action_any",
 			action_build: "action_build",
 			action_collect_rewards: "action_collect_rewards",
 			action_complete_dialogue: "action_complete_dialogue",
 			action_enter_camp: "action_enter_camp",
+			action_examine: "action_examine",
 			action_leave_camp: "action_leave_camp",
+			immediate: "immediate",
 			action_scavenge: "action_scavenge",
 			action_scout: "action_scout",
 			camp_event: "camp_event",
+			camp_population_changed: "camp_population_changed",
 			change_inventory: "change_inventory",
 			change_position: "change_position",
 			feature_unlocked: "feature_unlocked",
@@ -87,9 +123,19 @@ define([
 		},
 
 		flags: {
-			SEARCHING_FOR_GROUND: "SEARCHING_FOR_GROUND",
-			PENDING_DISEASE: "PENDING_DISEASE",
-			SEARCHING_FOR_CURE: "SEARCHING_FOR_CURE",
+			APOCALYPSE_PENDING_REFUGEES: "APOCALYPSE_PENDING_REFUGEES",
+			APOCALYPSE_KNOWN: "APOCALYPSE_KNOWN",
+			ESCAPE_SEARCHING_FOR_EXIT: "ESCAPE_SEARCHING_FOR_EXIT",
+			ESCAPE_SEARCHING_FOR_GROUND: "ESCAPE_SEARCHING_FOR_GROUND",
+			ESCAPE_WORRIED_ABOUT_OUTSIDE: "ESCAPE_WORRIED_ABOUT_OUTSIDE",
+			FALL_INVESTIGATING: "FALL_INVESTIGATING",
+			FALL_SEEN_STOREHOUSE: "FALL_SEEN_STOREHOUSE",
+			FALL_SEEN_EVACUATION: "FALL_SEEN_EVACUATION",
+			FALL_SEEN_SPACEFACTORY: "FALL_SEEN_SPACEFACTORY",
+			FALL_SEEN_DEBRIS: "FALL_SEEN_DEBRIS",
+			GREENHOUSE_PENDING_DISEASE: "GREENHOUSE_PENDING_DISEASE",
+			GREENHOUSE_SEARCHING_FOR_CURE: "GREENHOUSE_SEARCHING_FOR_CURE",
+			GREENHOUSE_FOUND: "GREENHOUSE_FOUND",
 		},
 
 		stories: {}, // id -> StoryVO

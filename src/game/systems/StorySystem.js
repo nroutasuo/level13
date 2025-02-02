@@ -124,6 +124,7 @@ define([
 			this.triggerEffects(segmentVO.onStart);
 			let storyID = segmentVO.storyID;
 			GameGlobals.gameState.storyStatus[storyID] = segmentID;
+			this.triggerSegments(StoryConstants.triggers.immediate);
 		},
 
 		completeSegment: function (segmentVO) {

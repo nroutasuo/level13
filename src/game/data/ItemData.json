@@ -2052,7 +2052,6 @@
         "type": "artefact"
     },
     "document_story_launch_schedule": {
-        "campOrdinalRequired": 1,
         "icon": "img/items/document.png",
         "id": "document_story_launch_schedule",
         "isCraftable": false,
@@ -2068,10 +2067,9 @@
         "type": "note",
         "isStoryItem": true
     },
-    "document_story_evacuation": {
-        "campOrdinalRequired": 1,
+    "document_story_evacuation_schedule": {
         "icon": "img/items/document.png",
-        "id": "document_story_evacuation",
+        "id": "document_story_evacuation_schedule",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
@@ -2081,7 +2079,58 @@
         "rarityTrade": -1,
         "configData": {
             "noteText": "Official documents detailing a plan to secretly quarantine and evacuate a fraction of the population of the City.",
-            "storyFlag": "SEEN_EVACUATION"
+            "storyFlag": "FALL_SEEN_EVACUATION"
+        },
+        "type": "note",
+        "isStoryItem": true
+    },
+    "document_story_evacuation_reason": {
+        "icon": "img/items/document.png",
+        "id": " ",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "nameShort": "Documents",
+        "rarityLocale": -1,
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "configData": {
+            "noteText": "Official documents where Goverment experts recommend evacuation as a result of the earthquakes.",
+            "storyFlag": "FALL_SEEN_EVACUATION"
+        },
+        "type": "note",
+        "isStoryItem": true
+    },
+    "document_story_earthquakes_severity_01": {
+        "icon": "img/items/document.png",
+        "id": "document_story_earthquakes_severity_01",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "nameShort": "Documents",
+        "rarityLocale": -1,
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "configData": {
+            "noteText": "Official report regarding increasing earthquakes. According to experts, the City can only withstand them for some years.",
+            "storyFlag": "APOCALYPSE_KNOWN"
+        },
+        "type": "note",
+        "isStoryItem": true
+    },
+    "document_story_earthquakes_cause_01": {
+        "icon": "img/items/document.png",
+        "id": "document_story_earthquakes_cause_01",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "nameShort": "Documents",
+        "rarityLocale": -1,
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "configData": {
+            "noteText": "Official report regarding the earthquakes. According to it, they are caused by mining but the effect is not reversible.",
+            "storyFlag": "APOCALYPSE_KNOWN"
         },
         "type": "note",
         "isStoryItem": true

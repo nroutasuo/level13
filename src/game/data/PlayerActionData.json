@@ -1692,6 +1692,9 @@
                     1,
                     -1
                 ]
+            },
+            "featureUnlocked": {
+                "housing": true
             }
         },
         "build_in_house2": {

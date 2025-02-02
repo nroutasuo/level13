@@ -25,6 +25,11 @@
 			]
 		},
 		"character_bard_default_meet_03": {
+			"conditions": {
+				"storyFlags": {
+					"ESCAPE_SEARCHING_FOR_GROUND": true
+				}
+			},
 			"pages": [
 				"character_bard_default_meet_03_p1"
 			]
@@ -132,6 +137,12 @@
 			]
 		},
 		"character_darkDweller_default_interact_01": {
+			"conditions": {
+				"population": [
+					5,
+					-1
+				]
+			},
 			"pages": [
 				"character_darkDweller_default_interact_01_p1"
 			]
@@ -142,13 +153,27 @@
 			]
 		},
 		"character_darkDweller_default_interact_03": {
+			"conditions": {
+				"numCamps": 2
+			},
 			"pages": [
 				"character_darkDweller_default_interact_03_p1"
 			]
 		},
 		"character_darkDweller_default_interact_04": {
+			"conditions": {
+				"numCamps": 3
+			},
 			"pages": [
 				"character_darkDweller_default_interact_04_p1"
+			]
+		},
+		"character_darkDweller_default_interact_05": {
+			"conditions": {
+				"numCamps": 3
+			},
+			"pages": [
+				"character_darkDweller_default_interact_05_p1"
 			]
 		},
 		"character_doomsayer_default_event_01": {
@@ -175,6 +200,11 @@
 				"character_doomsayer_default_meet_02_p1"
 			]
 		},
+		"character_doomsayer_default_meet_03": {
+			"pages": [
+				"character_doomsayer_default_meet_03_p1"
+			]
+		},
 		"character_drifer_default_meet_01": {
 			"pages": [
 				"character_drifer_default_meet_01_p1"
@@ -192,7 +222,15 @@
 		},
 		"character_drifer_default_meet_04": {
 			"pages": [
-                "character_drifer_default_meet_04_p1"
+				{
+					"id": "warn",
+					"key": "character_drifer_default_meet_04_p1",
+					"result": {
+						"storyFlags": {
+							"ESCAPE_WORRIED_ABOUT_OUTSIDE": true
+						}
+					}
+				}
 			]
 		},
 		"character_generic_helpful_meet_poi_campable": {
@@ -228,6 +266,126 @@
 		"character_generic_reserved_meet_01": {
 			"pages": [
 				"character_generic_reserved_meet_01_p1"
+			]
+		},
+		"character_generic_story_explain_ground_01": {
+			"conditions": {
+				"numCamps": 2,
+				"sector": {
+					"ground": false
+				},
+				"storyFlags": {
+					"ESCAPE_SEARCHING_FOR_GROUND": true
+				}
+			},
+			"pages": [
+				"character_generic_story_explain_ground_01_p1"
+			]
+		},
+		"character_generic_story_explain_ground_02": {
+			"conditions": {
+				"numCamps": 2,
+				"sector": {
+					"ground": false
+				},
+				"storyFlags": {
+					"ESCAPE_SEARCHING_FOR_GROUND": true
+				}
+			},
+			"pages": [
+				"character_generic_story_explain_ground_02_p1"
+			]
+		},
+		"character_generic_story_fall_theory_aliens": {
+			"pages": [
+				"character_generic_story_fall_theory_aliens_p1"
+			]
+		},
+		"character_generic_story_fall_theory_city": {
+			"pages": [
+				"character_generic_story_fall_theory_city_p1"
+			]
+		},
+		"character_generic_story_fall_theory_government": {
+			"pages": [
+				"character_generic_story_fall_theory_government_p1"
+			]
+		},
+		"character_generic_story_fall_theory_hackers": {
+			"pages": [
+				"character_generic_story_fall_theory_hackers_p1"
+			]
+		},
+		"character_generic_story_fall_theory_hurricane": {
+			"pages": [
+				"character_generic_story_fall_theory_hurricane_p1"
+			]
+		},
+		"character_generic_story_fall_theory_spirits": {
+			"pages": [
+				"character_generic_story_fall_theory_spirits_p1"
+			]
+		},
+		"character_generic_story_fall_theory_terrorists": {
+			"pages": [
+				"character_generic_story_fall_theory_terrorists_p1"
+			]
+		},
+		"character_generic_story_government_cult": {
+			"pages": [
+				"character_generic_story_government_cult_p1"
+			]
+		},
+		"character_generic_story_government_neg2pos": {
+			"pages": [
+				"character_generic_story_government_neg2pos_p1"
+			]
+		},
+		"character_generic_story_government_negative": {
+			"pages": [
+				"character_generic_story_government_negative_p1"
+			]
+		},
+		"character_generic_story_government_pos2neg": {
+			"pages": [
+				"character_generic_story_government_pos2neg_p1"
+			]
+		},
+		"character_generic_story_government_positive": {
+			"pages": [
+				"character_generic_story_government_positive_p1"
+			]
+		},
+		"character_generic_story_warn_ground_01": {
+			"conditions": {
+				"numCamps": 3
+			},
+			"pages": [
+				{
+					"id": "warn",
+					"key": "character_generic_story_warn_ground_01_p1",
+					"result": {
+						"storyFlags": {
+							"ESCAPE_WORRIED_ABOUT_OUTSIDE": true
+						}
+					}
+				}
+			]
+		},
+		"character_generic_story_warn_ground_02": {
+			"conditions": {
+				"numCamps": 3
+			},
+			"pages": [
+				{
+					"id": "warn",
+					"key": "character_generic_story_warn_ground_02_p1",
+					"result": {
+						"storyFlags": {
+							"ESCAPE_WORRIED_ABOUT_OUTSIDE": true
+						}
+					}
+				}
 			]
 		},
 		"character_generic_stranded_meet_directions": {
@@ -428,6 +586,11 @@
 				"character_slumRefugee_default_meet_03_p1"
 			]
 		},
+		"character_slumRefugee_default_meet_04": {
+			"pages": [
+				"character_slumRefugee_default_meet_04_p1"
+			]
+		},
 		"character_surfaceRefugee_default_interact_01": {
 			"pages": [
 				"character_surfaceRefugee_default_interact_01_p1"
@@ -448,6 +611,26 @@
 				"character_surfaceRefugee_default_interact_04_p1"
 			]
 		},
+		"character_surfaceRefugee_default_interact_05": {
+			"pages": [
+				"character_surfaceRefugee_default_interact_05_p1"
+			]
+		},
+		"character_surfaceRefugee_default_interact_06": {
+			"pages": [
+				"character_surfaceRefugee_default_interact_06_p1"
+			]
+		},
+		"character_surfaceRefugee_default_interact_07": {
+			"pages": [
+				"character_surfaceRefugee_default_interact_07_p1"
+			]
+		},
+		"character_surfaceRefugee_default_interact_08": {
+			"pages": [
+				"character_surfaceRefugee_default_interact_08_p1"
+			]
+		},
 		"character_surfaceRefugee_default_meet_01": {
 			"pages": [
 				"character_surfaceRefugee_default_meet_01_p1"
@@ -456,6 +639,16 @@
 		"character_surfaceRefugee_default_meet_02": {
 			"pages": [
 				"character_surfaceRefugee_default_meet_02_p1"
+			]
+		},
+		"character_surfaceRefugee_default_meet_03": {
+			"pages": [
+				"character_surfaceRefugee_default_meet_03_p1"
+			]
+		},
+		"character_surfaceRefugee_default_meet_04": {
+			"pages": [
+				"character_surfaceRefugee_default_meet_04_p1"
 			]
 		},
 		"character_trader_default_meet_01": {
@@ -523,6 +716,42 @@
 				"character_workerGardener_default_interact_02_p1"
 			]
 		},
+		"character_workerGeneric_default_interact_01": {
+			"pages": [
+				"character_workerGeneric_default_interact_01_p1"
+			]
+		},
+		"character_workerGeneric_default_interact_02": {
+			"conditions": {
+				"numCamps": 3,
+				"storyFlags": {
+					"ESCAPE_SEARCHING_FOR_EXIT": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_default_interact_02_p1"
+			]
+		},
+		"character_workerGeneric_interact_apocalypse_01": {
+			"conditions": {
+				"storyFlags": {
+					"APOCALYPSE_KNOWN": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_interact_apocalypse_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_apocalypse_02": {
+			"conditions": {
+				"storyFlags": {
+					"APOCALYPSE_KNOWN": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_interact_apocalypse_02_p1"
+			]
+		},
 		"character_workerRobotmaker_default_interact_01": {
 			"pages": [
 				"character_workerRobotmaker_default_interact_01_p1"
@@ -571,6 +800,35 @@
 		"character_workerScientist_default_interact_02": {
 			"pages": [
 				"character_workerScientist_default_interact_02_p1"
+			]
+		},
+		"character_workerScientist_default_interact_03": {
+			"pages": [
+				"character_workerScientist_default_interact_03_p1"
+			]
+		},"character_workerScientist_default_interact_04": {
+			"pages": [
+				"character_workerScientist_default_interact_4_p1"
+			]
+		},
+		"character_workerScientist_default_interact_05": {
+			"conditions": {
+				"storyFlags": {
+					"APOCALYPSE_KNOWN": true
+				}
+			},
+			"pages": [
+				"character_workerScientist_default_interact_05_p1"
+			]
+		},
+		"character_workerScientist_default_interact_06": {
+			"conditions": {
+				"storyFlags": {
+					"APOCALYPSE_KNOWN": true
+				}
+			},
+			"pages": [
+				"character_workerScientist_default_interact_06_p1"
 			]
 		},
 		"character_workerSoldier_default_interact_01": {
@@ -816,13 +1074,42 @@
 			],
 			"repeatable": true
 		},
-        "npc_generic_01": {
+		"explorer_generic_story_find_greenhouse": {
+			"isUrgent": true,
 			"pages": [
 				{
-                    "key": "npc_generic_01_01"
+					"buttonKey": "npc_request_promise",
+					"id": "request",
+					"key": "explorer_generic_story_find_greenhouse_p1"
 				}
 			],
-            "repeatable": true
+			"storyTag": "find_greenhouse"
+		},
+		"explorer_generic_interact_story_apocalypse_01": {
+			"conditions": {
+				"storyFlags": {
+					"APOCALYPSE_KNOWN": true
+				},
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_story_apocalypse_01_p1"
+			]
+		},
+		"explorer_generic_interact_story_apocalypse_02": {
+			"conditions": {
+				"storyFlags": {
+					"APOCALYPSE_KNOWN": true
+				},
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_story_apocalypse_02_p1"
+			]
 		},
 		"explorer_unique_gambler_event_01": {
 			"pages": [
@@ -833,6 +1120,18 @@
 			"pages": [
 				"explorer_unique_gambler_interact_01_p1"
 			]
+		},
+		"explorer_unique_gamler_story_find_greenhouse": {
+			"isUrgent": true,
+			"repeatable": false,
+			"pages": [
+				{
+					"buttonKey": "npc_request_promise",
+					"id": "request",
+					"key": "explorer_unique_gamler_story_find_greenhouse_p1"
+				}
+			],
+			"storyTag": "find_greenhouse"
 		},
 		"explorer_unique_gambler_meet_01": {
 			"pages": [
@@ -879,9 +1178,201 @@
 				"explorer_unique_journalist_interact_01_p1"
 			]
 		},
+		"explorer_unique_journalist_interact_02": {
+			"pages": [
+				"explorer_unique_journalist_interact_02_p1"
+			]
+		},
+		"explorer_unique_journalist_interact_03": {
+			"pages": [
+				"explorer_unique_journalist_interact_03_p1"
+			]
+		},
+		"explorer_unique_journalist_interact_04": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_unique_journalist_interact_04_p1"
+			]
+		},
+		"explorer_unique_journalist_interact_05": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_unique_journalist_interact_05_p1"
+			]
+		},
+		"explorer_unique_journalist_interact_06": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_unique_journalist_interact_06_p1"
+			]
+		},
+		"explorer_unique_journalist_interact_07": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_unique_journalist_interact_07_p1"
+			]
+		},
+		"explorer_unique_journalist_interact_08": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_unique_journalist_interact_08_p1"
+			]
+		},
+		"explorer_unique_journalist_interact_09": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_unique_journalist_interact_09_p1"
+			]
+		},
+		"explorer_unique_journalist_interact_10": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_unique_journalist_interact_10_p1"
+			]
+		},
+		"explorer_unique_journalist_interact_11": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_unique_journalist_interact_11_p1"
+			]
+		},
+		"explorer_unique_journalist_interact_12": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_unique_journalist_interact_12_p1"
+			]
+		},
+		"explorer_unique_journalist_interact_13": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_unique_journalist_interact_13_p1"
+			]
+		},
 		"explorer_unique_journalist_meet_01": {
 			"pages": [
 				"explorer_unique_journalist_meet_01_p1"
+			]
+		},
+		"explorer_unique_journalist_story_debris": {
+			"conditions": {
+				"storyFlags": {
+					"FALL_SEEN_DEBRIS": true
+				}
+			},
+			"isUrgent": true,
+			"pages": [
+				"explorer_unique_journalist_story_debris_p1"
+			]
+		},
+		"explorer_unique_journalist_story_evacuation": {
+			"conditions": {
+				"storyFlags": {
+					"FALL_SEEN_EVACUATION": true
+				}
+			},
+			"isUrgent": true,
+			"pages": [
+				"explorer_unique_journalist_story_evacuation_p1",
+				"explorer_unique_journalist_story_evacuation_p2"
+			]
+		},
+		"explorer_unique_journalist_story_spacecraft": {
+			"conditions": {
+				"storyFlags": {
+					"FALL_SEEN_SPACEFACTORY": true
+				}
+			},
+			"isUrgent": true,
+			"pages": [
+				"explorer_unique_journalist_story_spacecraft_p1"
+			]
+		},
+		"explorer_unique_journalist_story_start": {
+			"isUrgent": true,
+			"pages": [
+				{
+					"buttonKey": "npc_request_listen",
+					"id": "start",
+					"key": "explorer_unique_journalist_story_start_p1",
+					"options": "NEXT"
+				},
+				{
+					"id": "tell",
+					"key": "explorer_unique_journalist_story_start_p2",
+					"options": "NEXT"
+				},
+				{
+					"id": "tell2",
+					"key": "explorer_unique_journalist_story_start_p3",
+					"options": "NEXT"
+				},
+				{
+					"buttonKey": "explorer_request_investigate",
+					"id": "request",
+					"key": "explorer_unique_journalist_story_start_p4",
+					"options": "NEXT",
+					"result": {
+						"storyFlags": {
+							"FALL_INVESTIGATING": true
+						}
+					}
+				},
+				{
+					"id": "closing",
+					"key": "explorer_unique_journalist_story_start_p5"
+				}
+			],
+			"repeatable": false
+		},
+		"explorer_unique_journalist_story_storehouse": {
+			"conditions": {
+				"storyFlags": {
+					"FALL_SEEN_STOREHOUSE": true
+				}
+			},
+			"isUrgent": true,
+			"pages": [
+				"explorer_unique_journalist_story_storehouse_p1"
 			]
 		},
 		"explorer_unique_prospector_event_01": {
@@ -897,6 +1388,62 @@
 		"explorer_unique_prospector_meet_01": {
 			"pages": [
 				"explorer_unique_prospector_meet_01_p1"
+			]
+		},
+		"locale_story_depot": {
+			"pages": [
+				{
+					"id": "intro",
+					"key": "story.stories.fall_locale_depot_p1",
+					"options": "NEXT"
+				},
+				{
+					"id": "description",
+					"key": "story.stories.fall_locale_depot_p2",
+					"options": "NEXT"
+				},
+				{
+					"id": "result",
+					"result": {
+						"action": "scout_locale_u"
+					}
+				}
+			]
+		},
+		"locale_story_spacefactory": {
+			"pages": [
+				{
+					"id": "intro",
+					"key": "story.stories.fall_locale_spacefactory_p1"
+				},
+				{
+					"id": "description",
+					"key": "story.stories.fall_locale_spacefactory_p2"
+				},
+				{
+					"id": "result",
+					"result": {
+						"action": "scout_locale_u"
+					}
+				}
+			]
+		},
+		"locale_story_seeddepot": {
+			"pages": [
+				{
+					"id": "intro",
+					"key": "story.stories.greenhouse_locale_story_seeddepot_p1",
+					"options": "NEXT"
+				},
+				{
+					"id": "description",
+					"key": "story.stories.greenhouse_locale_story_seeddepot_p2"
+				}
+			]
+		},
+		"locale_story_greenhouse": {
+			"pages": [
+				"story.stories.greenhouse_locale_story_greenhouse_p1"
 			]
 		},
 		"npc_generic_request_water": {
@@ -958,6 +1505,13 @@
 					"key": "refugees_default_event_02_p1"
 				}
 			]
+		},
+		"refugees_earthquake_event_01": {
+			"pages": [
+				{
+					"key": "refugees_earthquake_event_01_p1"
+				}
+			]
 		}
 	},
 	"sources": {
@@ -972,7 +1526,10 @@
 					"character_bard_default_meet_02",
 					"character_bard_default_meet_03",
 					"character_generic_reserved_meet_01",
-                    "character_generic_helpful_meet_poi_settlement"
+					"character_generic_helpful_meet_poi_settlement",
+					"character_generic_story_warn_ground_01",
+					"character_generic_story_warn_ground_02",
+					"character_generic_story_fall_theory_hurricane"
 				]
 			}
 		},
@@ -987,7 +1544,11 @@
 					"character_crafter_default_meet_02",
 					"character_crafter_default_meet_upgrade_clothing",
 					"character_crafter_default_meet_upgrade_weapon",
-                    "character_generic_helpful_meet_poi_water"
+					"character_generic_helpful_meet_poi_water",
+					"character_generic_story_explain_ground_01",
+					"character_generic_story_explain_ground_02",
+					"character_generic_story_warn_ground_01",
+					"character_generic_story_fall_theory_terrorists"
 				]
 			}
 		},
@@ -997,7 +1558,11 @@
 					"character_darkDweller_default_interact_01",
 					"character_darkDweller_default_interact_02",
 					"character_darkDweller_default_interact_03",
-                    "character_darkDweller_default_interact_04"
+					"character_darkDweller_default_interact_04",
+					"character_darkDweller_default_interact_05",
+					"character_workerGeneric_default_interact_01",
+					"character_generic_story_fall_theory_government",
+					"character_generic_story_government_negative"
 				]
 			}
 		},
@@ -1009,7 +1574,8 @@
 				],
 				"meet": [
 					"character_doomsayer_default_meet_01",
-                    "character_doomsayer_default_meet_02"
+					"character_doomsayer_default_meet_02",
+					"character_doomsayer_default_meet_03"
 				]
 			}
 		},
@@ -1026,7 +1592,12 @@
 					"character_drifer_default_meet_04",
 					"character_generic_reserved_meet_01",
 					"character_generic_helpful_meet_poi_water",
-                    "character_generic_stranded_meet_water"
+					"character_generic_stranded_meet_water",
+					"character_generic_story_explain_ground_01",
+					"character_generic_story_explain_ground_02",
+					"character_generic_story_warn_ground_01",
+					"character_generic_story_warn_ground_02",
+					"character_generic_story_fall_theory_city"
 				]
 			}
 		},
@@ -1038,7 +1609,8 @@
 					"character_generic_reserved_meet_01",
 					"character_generic_helpful_meet_poi_campable",
 					"character_generic_helpful_meet_poi_water",
-					"character_generic_helpful_meet_poi_settlement"
+					"character_generic_helpful_meet_poi_settlement",
+					"character_generic_story_fall_theory_aliens"
 				]
 			}
 		},
@@ -1048,7 +1620,9 @@
 					"character_mercenary_default_meet_01",
 					"character_mercenary_default_meet_02",
 					"character_generic_reserved_meet_01",
-                    "character_generic_helpful_meet_poi_campable"
+					"character_generic_helpful_meet_poi_campable",
+					"character_generic_story_warn_ground_01",
+					"character_generic_story_fall_theory_hackers"
 				]
 			}
 		},
@@ -1063,7 +1637,8 @@
 					"character_generic_helpful_meet_poi_campable",
 					"character_generic_helpful_meet_poi_water",
 					"character_generic_helpful_meet_poi_settlement",
-					"character_generic_stranded_meet_water"
+					"character_generic_stranded_meet_water",
+					"character_generic_story_fall_theory_spirits"
 				]
 			}
 		},
@@ -1077,7 +1652,8 @@
 					"character_generic_helpful_meet_poi_water",
 					"character_generic_reserved_meet_01",
 					"character_generic_stranded_meet_water",
-					"character_generic_stranded_meet_directions"
+					"character_generic_stranded_meet_directions",
+					"character_generic_story_fall_theory_terrorists"
 				]
 			}
 		},
@@ -1092,7 +1668,8 @@
 					"character_shaman_default_meet_02",
 					"character_shaman_default_meet_03",
 					"character_shaman_default_meet_blessing",
-					"character_generic_stranded_meet_water"
+					"character_generic_stranded_meet_water",
+					"character_generic_story_fall_theory_spirits"
 				]
 			}
 		},
@@ -1101,16 +1678,22 @@
 				"interact": [
 					"character_slumRefugee_default_interact_01",
 					"character_slumRefugee_default_interact_02",
-                    "character_slumRefugee_default_interact_03"
+					"character_slumRefugee_default_interact_03",
+					"character_generic_story_government_negative",
+					"character_generic_story_government_neg2pos"
 				],
 				"meet": [
 					"character_slumRefugee_default_meet_01",
 					"character_slumRefugee_default_meet_02",
 					"character_slumRefugee_default_meet_03",
+					"character_slumRefugee_default_meet_04",
 					"character_generic_helpful_meet_poi_settlement",
 					"character_generic_helpful_meet_poi_water",
 					"character_generic_stranded_meet_water",
-                    "character_generic_stranded_meet_directions"
+					"character_generic_stranded_meet_directions",
+					"character_generic_story_explain_ground_01",
+					"character_generic_story_explain_ground_02",
+					"character_generic_story_fall_theory_hackers"
 				]
 			}
 		},
@@ -1121,13 +1704,24 @@
 					"character_surfaceRefugee_default_interact_02",
 					"character_surfaceRefugee_default_interact_03",
 					"character_surfaceRefugee_default_interact_04",
-                    "character_generic_helpful_meet_poi_water",
-                    "character_generic_stranded_meet_water",
-                    "character_generic_stranded_meet_directions"
+					"character_surfaceRefugee_default_interact_05",
+					"character_surfaceRefugee_default_interact_06",
+					"character_surfaceRefugee_default_interact_07",
+					"character_surfaceRefugee_default_interact_08",
+					"character_generic_story_fall_theory_city",
+					"character_generic_story_government_pos2neg"
 				],
 				"meet": [
 					"character_surfaceRefugee_default_meet_01",
-                    "character_surfaceRefugee_default_meet_02"
+					"character_surfaceRefugee_default_meet_02",
+					"character_surfaceRefugee_default_meet_03",
+					"character_surfaceRefugee_default_meet_04",
+					"character_generic_helpful_meet_poi_water",
+					"character_generic_stranded_meet_water",
+					"character_generic_stranded_meet_directions",
+					"character_generic_story_fall_theory_city",
+					"character_generic_story_government_pos2neg",
+					"character_generic_story_government_cult"
 				]
 			}
 		},
@@ -1139,7 +1733,8 @@
 					"character_generic_helpful_meet_poi_campable",
 					"character_generic_helpful_meet_poi_settlement",
 					"character_generic_helpful_meet_poi_water",
-					"character_generic_reserved_meet_01"
+					"character_generic_reserved_meet_01",
+					"character_generic_story_government_negative"
 				]
 			}
 		},
@@ -1147,7 +1742,10 @@
 			"dialogues": {
 				"interact": [
 					"character_workerApothecary_default_interact_01",
-                    "character_workerApothecary_default_interact_02"
+					"character_workerApothecary_default_interact_02",
+					"character_workerGeneric_interact_apocalypse_01",
+					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_default_interact_01"
 				]
 			}
 		},
@@ -1155,7 +1753,11 @@
 			"dialogues": {
 				"interact": [
 					"character_workerChemist_default_interact_01",
-                    "character_workerChemist_default_interact_02"
+					"character_workerChemist_default_interact_02",
+					"character_workerGeneric_interact_apocalypse_01",
+					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_default_interact_01",
+					"character_workerGeneric_default_interact_02"
 				]
 			}
 		},
@@ -1163,7 +1765,10 @@
 			"dialogues": {
 				"interact": [
 					"character_workerCleric_default_interact_01",
-                    "character_workerCleric_default_interact_02"
+					"character_workerCleric_default_interact_02",
+					"character_workerGeneric_interact_apocalypse_01",
+					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_default_interact_02"
 				]
 			}
 		},
@@ -1172,7 +1777,11 @@
 				"interact": [
 					"character_workerConcrete_default_interact_01",
 					"character_workerConcrete_default_interact_02",
-                    "character_workerConcrete_default_interact_03"
+					"character_workerConcrete_default_interact_03",
+					"character_workerGeneric_interact_apocalypse_01",
+					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_default_interact_01",
+					"character_workerGeneric_default_interact_02"
 				]
 			}
 		},
@@ -1180,7 +1789,11 @@
 			"dialogues": {
 				"interact": [
 					"character_workerGardener_default_interact_01",
-                    "character_workerGardener_default_interact_02"
+					"character_workerGardener_default_interact_02",
+					"character_workerGeneric_interact_apocalypse_01",
+					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_default_interact_01",
+					"character_workerGeneric_default_interact_02"
 				]
 			}
 		},
@@ -1188,7 +1801,11 @@
 			"dialogues": {
 				"interact": [
 					"character_workerRobotmaker_default_interact_01",
-                    "character_workerRobotmaker_default_interact_02"
+					"character_workerRobotmaker_default_interact_02",
+					"character_workerGeneric_interact_apocalypse_01",
+					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_default_interact_01",
+					"character_workerGeneric_default_interact_02"
 				]
 			}
 		},
@@ -1196,7 +1813,10 @@
 			"dialogues": {
 				"interact": [
 					"character_workerRope_default_interact_01",
-                    "character_workerRope_default_interact_02"
+					"character_workerRope_default_interact_02",
+					"character_workerGeneric_interact_apocalypse_01",
+					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_default_interact_02"
 				]
 			}
 		},
@@ -1204,7 +1824,11 @@
 			"dialogues": {
 				"interact": [
 					"character_workerRubber_default_interact_01",
-                    "character_workerRubber_default_interact_02"
+					"character_workerRubber_default_interact_02",
+					"character_workerGeneric_interact_apocalypse_01",
+					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_default_interact_01",
+					"character_workerGeneric_default_interact_02"
 				]
 			}
 		},
@@ -1212,7 +1836,11 @@
 			"dialogues": {
 				"interact": [
 					"character_workerScavenger_default_interact_01",
-                    "character_workerScavenger_default_interact_02"
+					"character_workerScavenger_default_interact_02",
+					"character_workerGeneric_interact_apocalypse_01",
+					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_default_interact_01",
+					"character_workerGeneric_default_interact_02"
 				]
 			}
 		},
@@ -1220,7 +1848,14 @@
 			"dialogues": {
 				"interact": [
 					"character_workerScientist_default_interact_01",
-                    "character_workerScientist_default_interact_02"
+					"character_workerScientist_default_interact_02",
+					"character_workerScientist_default_interact_03",
+					"character_workerScientist_default_interact_04",
+					"character_workerScientist_default_interact_05",
+					"character_workerScientist_default_interact_06",
+					"character_workerScientist_default_interact_07",
+					"character_workerGeneric_default_interact_01",
+					"character_workerGeneric_default_interact_02"
 				]
 			}
 		},
@@ -1228,7 +1863,10 @@
 			"dialogues": {
 				"interact": [
 					"character_workerSoldier_default_interact_01",
-                    "character_workerSoldier_default_interact_02"
+					"character_workerSoldier_default_interact_02",
+					"character_workerGeneric_interact_apocalypse_01",
+					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_default_interact_02"
 				]
 			}
 		},
@@ -1236,7 +1874,10 @@
 			"dialogues": {
 				"interact": [
 					"character_workerToolsmith_default_interact_01",
-                    "character_workerToolsmith_default_interact_02"
+					"character_workerToolsmith_default_interact_02",
+					"character_workerGeneric_interact_apocalypse_01",
+					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_default_interact_02"
 				]
 			}
 		},
@@ -1244,7 +1885,10 @@
 			"dialogues": {
 				"interact": [
 					"character_workerTrapper_default_interact_01",
-                    "character_workerTrapper_default_interact_02"
+					"character_workerTrapper_default_interact_02",
+					"character_workerGeneric_interact_apocalypse_01",
+					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_default_interact_02"
 				]
 			}
 		},
@@ -1252,7 +1896,10 @@
 			"dialogues": {
 				"interact": [
 					"character_workerWater_default_interact_01",
-                    "character_workerWater_default_interact_02"
+					"character_workerWater_default_interact_02",
+					"character_workerGeneric_interact_apocalypse_01",
+					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_default_interact_02"
 				]
 			}
 		},
@@ -1260,12 +1907,15 @@
 			"dialogues": {
 				"event": [],
 				"interact": [
-					"explorer_generic_01",
-                    "explorer_generic_02"
+					"explorer_generic_scavenger_interact_03",
+					"explorer_generic_scout_interact_02",
+					"explorer_generic_mercenary_interact_01",
+					"explorer_generic_interact_story_apocalypse_01",
+					"explorer_generic_interact_story_apocalypse_02"
 				],
 				"meet": [
-					"explorer_generic_01",
-					"explorer_generic_02"
+					"explorer_generic_scavenger_meet_01",
+					"explorer_generic_scout_meet_01"
 				]
 			}
 		},
@@ -1307,7 +1957,10 @@
 				"interact": [
 					"explorer_generic_mercenary_interact_01",
 					"explorer_generic_mercenary_interact_02",
-                    "explorer_generic_mercenary_interact_03"
+					"explorer_generic_mercenary_interact_03",
+					"explorer_generic_story_find_greenhouse",
+					"explorer_generic_interact_story_apocalypse_01",
+					"explorer_generic_interact_story_apocalypse_02"
 				],
 				"meet": [
 					"explorer_generic_mercenary_meet_01"
@@ -1322,7 +1975,10 @@
 				"interact": [
 					"explorer_generic_scavenger_interact_01",
 					"explorer_generic_scavenger_interact_02",
-                    "explorer_generic_scavenger_interact_03"
+					"explorer_generic_scavenger_interact_03",
+					"explorer_generic_story_find_greenhouse",
+					"explorer_generic_interact_story_apocalypse_01",
+					"explorer_generic_interact_story_apocalypse_02"
 				],
 				"meet": [
 					"explorer_generic_scavenger_meet_01"
@@ -1337,21 +1993,25 @@
 				"interact": [
 					"explorer_generic_scout_interact_01",
 					"explorer_generic_scout_interact_02",
-                    "explorer_generic_scout_interact_03"
+					"explorer_generic_scout_interact_03",
+					"explorer_generic_story_find_greenhouse",
+					"character_generic_story_government_positive",
+					"explorer_generic_interact_story_apocalypse_01",
+					"explorer_generic_interact_story_apocalypse_02"
 				],
 				"meet": [
 					"explorer_generic_scout_meet_01"
 				]
 			}
 		},
-        "npc_generic": {
 		"explorer_unique_gambler": {
 			"dialogues": {
 				"event": [
 					"explorer_unique_gambler_event_01"
 				],
 				"interact": [
-					"explorer_unique_gambler_interact_01"
+					"explorer_unique_gambler_interact_01",
+					"explorer_unique_gamler_story_find_greenhouse"
 				],
 				"meet": [
 					"explorer_unique_gambler_meet_01"
@@ -1390,7 +2050,24 @@
 					"explorer_unique_journalist_event_01"
 				],
 				"interact": [
-					"explorer_unique_journalist_interact_01"
+					"explorer_unique_journalist_interact_01",
+					"explorer_unique_journalist_interact_02",
+					"explorer_unique_journalist_interact_03",
+					"explorer_unique_journalist_interact_04",
+					"explorer_unique_journalist_interact_05",
+					"explorer_unique_journalist_interact_06",
+					"explorer_unique_journalist_interact_07",
+					"explorer_unique_journalist_interact_08",
+					"explorer_unique_journalist_interact_09",
+					"explorer_unique_journalist_interact_10",
+					"explorer_unique_journalist_interact_11",
+					"explorer_unique_journalist_interact_12",
+					"explorer_unique_journalist_interact_13",
+					"explorer_unique_journalist_story_start",
+					"explorer_unique_journalist_story_storehouse",
+					"explorer_unique_journalist_story_spacecraft",
+					"explorer_unique_journalist_story_evacuation",
+					"explorer_unique_journalist_story_debris"
 				],
 				"meet": [
 					"explorer_unique_journalist_meet_01"
@@ -1415,6 +2092,13 @@
 				"event": [
 					"refugees_default_event_01",
 					"refugees_default_event_02"
+				]
+			}
+		},
+		"refugees_earthquake": {
+			"dialogues": {
+				"event": [
+					"refugees_earthquake_event_01"
 				]
 			}
 		}

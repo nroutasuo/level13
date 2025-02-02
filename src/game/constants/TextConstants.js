@@ -1146,6 +1146,10 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					modifier = "locked";
 					noun = "depot";
 					break;
+				case localeTypes.seedDepot:
+					modifier = "government";
+					noun = "depot";
+					break;
 				case localeTypes.spacefactory:
 					modifier = "arcane";
 					noun = "facility";
@@ -1230,6 +1234,8 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				case localeTypes.store:
 					noun = "store";
 					break;
+				case localeTypes.office:
+					noun = "office";
 				default:
 					log.w("unknown locale type: " + locale.type);
 					noun = "building";

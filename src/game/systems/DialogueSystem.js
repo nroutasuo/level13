@@ -84,7 +84,13 @@ define([
 
 		tryTriggerPendingExplorerDialogue: function (storyTag) {
 			let explorers = GameGlobals.playerHelper.getExplorers();
-			let sortedExplorers = explorers.sort((a, b) => (a.inParty ? 1 : 0) - (b.inParty ? 1 : 0));
+			let explorerScore = function (explorerVO) {
+				let score = 0;
+				if (explorerVO.inParty) score += 1;
+				if (explorerVO.isUniquer()) score += 3;
+				return score;
+			}
+			let sortedExplorers = explorers.sort((a, b) => explorerScore(b) - explorerScore(a));
 			
 			let setting = DialogueConstants.dialogueSettings.interact;
 
