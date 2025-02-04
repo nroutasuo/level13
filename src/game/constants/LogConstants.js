@@ -135,6 +135,21 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 		mergedMessages: [
 			["SCAVENGE", "SCOUT", "SCOUT"],
 		],
+
+		ambientMessages: {
+			"residential_ghosts": { 
+				triggers: [ "locale_scouted" ],
+				conditions: { sector: { sectorType: "residential", deity: false } },
+				chance: 0.25,
+				message: "Suddenly, the weight of all the people who have lived and died in the City presses down upon you like a heavy blanket"
+			},
+			"darkness_madness_01": {
+				triggers: [ "action_any" ],
+				conditions: { inCamp: false, sunlit: false, vision: [ -1, 50 ] },
+				chance: 0.01,
+				message: "The darkness shifts and twists and presses closer."
+			}
+		},
 		
 		getUniqueID: function () {
 			return "unique-" + Math.floor(Math.random() * 100000);

@@ -1,5 +1,6 @@
 define([
 	'ash', 
+	'text/Text', 
 	'utils/UIList', 
 	'utils/MathUtils',
 	'game/GameGlobals', 
@@ -10,7 +11,7 @@ define([
 	'game/nodes/PlayerPositionNode', 
 	'game/constants/UIConstants', 
 	'game/vos/PositionVO'],
-function (Ash, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants, TextConstants, LogNode, PlayerPositionNode, UIConstants, PositionVO) {
+function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants, TextConstants, LogNode, PlayerPositionNode, UIConstants, PositionVO) {
 
 	let UIOutLogSystem = Ash.System.extend({
 	
@@ -23,8 +24,11 @@ function (Ash, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants, Text
 
 		currentMessages: [],
 
+		ambientMessagesByTrigger: {}, // trigger -> list of ids
+
 		constructor: function () {
 			this.initElements();
+			this.initAmbientMessages();
 		},
 
 		addToEngine: function (engine) {
@@ -35,6 +39,7 @@ function (Ash, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants, Text
 			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, function (position) { this.onPlayerPositionChanged(position); });
 			GlobalSignals.add(this, GlobalSignals.windowResizedSignal, this.onWindowResized);
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onWindowResized);
+			GlobalSignals.add(this, GlobalSignals.triggerSignal, this.onTrigger);
 
 			this.updateMessages();
 		},
@@ -48,6 +53,21 @@ function (Ash, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants, Text
 		initElements: function () {
 			this.logList = UIList.create(this, $("#log ul"), this.createLogListItem, this.updateLogListItem, this.isLogListItemDataEqual);
 			this.logListLatest = UIList.create(this, $("#log-latest ul"), this.createLogListItem, this.updateLogListItem, this.isLogListItemDataEqual);
+		},
+		
+		initAmbientMessages: function () {
+			for (let messageID in LogConstants.ambientMessages) {
+				let def = LogConstants.ambientMessages[messageID];
+				def.id = messageID;
+				let triggers = def.triggers;
+				for (let i = 0; i < triggers.length; i++) {
+					let trigger = triggers[i];
+					if (!this.ambientMessagesByTrigger[trigger]) {
+						this.ambientMessagesByTrigger[trigger] = [];
+					}
+					this.ambientMessagesByTrigger[trigger].push(def.id);
+				}
+			}
 		},
 
 		update: function () {
@@ -240,6 +260,71 @@ function (Ash, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants, Text
 					nodeMessages.splice(index, 1);
 				}
 			}
+		},
+
+		triggerAmbientMessages: function (triggerID) {
+			let messageIDs = this.ambientMessagesByTrigger[triggerID];
+			if (!messageIDs || messageIDs.length == 0) return;
+			
+			for (let i = 0; i < messageIDs.length; i++) {
+				this.triggerAmbientMessage(messageIDs[i]);
+			}
+		},
+		
+		triggerAmbientMessage: function (messageID) {
+			let def = LogConstants.ambientMessages[messageID];
+			if (!def) {
+				log.w("No such ambient log message found: [" + messageID + "]", this);
+				return;
+			}
+
+			debugger
+			
+			if (!this.isAmbientMessageAvailable(messageID)) {
+				return;
+			}
+			
+			let msg = Text.t(def.message);
+			GameGlobals.playerHelper.addLogMessage(messageID, msg);
+		},
+
+		isAmbientMessageAvailable: function (messageID) {
+			let def = LogConstants.ambientMessages[messageID];
+			if (!def) {
+				return false;
+			}
+
+			let chance = def.chance || 1;
+			if (Math.random() > chance) {
+				return false;
+			}
+			
+			if (this.isAmbientMessageShownRecently(messageID)) {
+				return false;
+			}
+			
+			if (!this.isAmbientMessageConditionsMet(def.conditions)) {
+				return false;
+			}
+			
+			return true;
+		},
+
+		isAmbientMessageShownRecently: function (messageID) {
+			if (!this.currentMessages) return false;
+			for (let i  = 0; i < this.currentMessages.length; i++) {
+				if (this.currentMessages[i].logMsgID == messageID) return true;
+			}
+			return false;
+		},
+
+		isAmbientMessageConditionsMet: function (conditions) {
+			let reqsCheck = GameGlobals.playerActionsHelper.checkGeneralRequirementaInternal(conditions);
+			return reqsCheck.value >= 1;
+		},
+		
+		onTrigger: function (triggerID) {
+			this.triggerAmbientMessages(triggerID);
 		},
 
 		onMarkLogMessagesSeen: function () {
