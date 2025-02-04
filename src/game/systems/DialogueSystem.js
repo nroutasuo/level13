@@ -4,19 +4,14 @@ define([
 	'game/GlobalSignals',
 	'game/GameGlobals',
 	'game/constants/DialogueConstants',
+	'game/constants/ExplorerConstants',
     'game/nodes/player/DialogueNode',
 	'game/components/player/DialogueComponent'
-], function (Ash, GlobalSignals, GameGlobals, DialogueConstants, DialogueNode, DialogueComponent) {
+], function (Ash, GlobalSignals, GameGlobals, DialogueConstants, ExplorerConstants, DialogueNode, DialogueComponent) {
 	
 	let DialogueSystem = Ash.System.extend({
 
         dialogueNodes: null,
-
-		pendingDialogues: [],
-		
-		constructor: function () {
-			this.pendingDialogues = [];
-		},
 
 		addToEngine: function (engine) {
 			this.engine = engine;
@@ -35,9 +30,9 @@ define([
 		},
 
 		update: function () {
-			if (this.dialogueNodes.head) {
+			if (this.dialogueNodes && this.dialogueNodes.head) {
 				this.updateActiveDialogue();
-			} else if (this.pendingDialogues.length > 0) {
+			} else {
 				this.updatePendingDialogues();
 			}
 		},
@@ -58,11 +53,12 @@ define([
 			}
 		},
 
-		updatePendingDialogues: function () {
-			for (let i = 0; i < this.pendingDialogues.length; i++) {
-				let pendingDialogue = this.pendingDialogues[i]; 
+		updatePendingDialogues: function () {			
+			let pendingDialogues = GameGlobals.gameState.pendingDialogues;
+			for (let i = 0; i < pendingDialogues.length; i++) {
+				let pendingDialogue = pendingDialogues[i]; 
 				if (this.tryTriggerPendingDialogue(pendingDialogue)) {
-					this.pendingDialogues.splice(i, 1);
+					GameGlobals.gameState.pendingDialogues.splice(i, 1);
 					return;
 				}
 			}
@@ -87,7 +83,7 @@ define([
 			let explorerScore = function (explorerVO) {
 				let score = 0;
 				if (explorerVO.inParty) score += 1;
-				if (explorerVO.isUniquer()) score += 3;
+				if (ExplorerConstants.isUnique(explorerVO)) score += 3;
 				return score;
 			}
 			let sortedExplorers = explorers.sort((a, b) => explorerScore(b) - explorerScore(a));
@@ -216,7 +212,7 @@ define([
         },
 
 		onTriggerDialogue: function (owner, storyTag) {
-			this.pendingDialogues.push({ owner: owner, storyTag: storyTag });
+			GameGlobals.gameState.pendingDialogues.push({ owner: owner, storyTag: storyTag });
 		},
 		
 		

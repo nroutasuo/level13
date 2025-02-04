@@ -13,6 +13,7 @@ define(['ash',
 	'game/constants/MovementConstants',
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
+	'game/constants/StoryConstants',
 	'game/constants/WorldConstants',
 	'game/nodes/PlayerPositionNode',
 	'game/components/type/LevelComponent',
@@ -28,7 +29,7 @@ define(['ash',
 	'game/components/type/SectorComponent',
 	'game/vos/PositionVO'],
 function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
-	GameGlobals, ColorConstants, UIConstants, CanvasConstants, ExplorationConstants, ItemConstants, MovementConstants, PositionConstants, SectorConstants, WorldConstants,
+	GameGlobals, ColorConstants, UIConstants, CanvasConstants, ExplorationConstants, ItemConstants, MovementConstants, PositionConstants, SectorConstants, StoryConstants, WorldConstants,
 	PlayerPositionNode,
 	LevelComponent, CampComponent, PositionComponent, ItemsComponent,
 	SectorStatusComponent, SectorLocalesComponent, SectorFeaturesComponent, PassagesComponent, SectorImprovementsComponent, WorkshopComponent, SectorComponent,
@@ -366,6 +367,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			
 			let isLocationSunlit = $("body").hasClass("sunlit");
 			let useSunlitIcon = isLocationSunlit;
+			let isGround = mapPosition.level == GameGlobals.gameState.getGroundLevel();
 			
 			let levelCamp = GameGlobals.levelHelper.getCampSectorOnLevel(mapPosition.level);
 			if (levelCamp != null) {
@@ -393,6 +395,18 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			let nearestFoodSector = GameGlobals.levelHelper.findNearestKnownFoodSector(mapPosition);
 			if (nearestFoodSector != null) {
 				result.push({ id: "food", color: this.getResourceFill(resourceNames.food), position: nearestFoodSector.get(PositionComponent) });
+			}
+
+			if (isGround && GameGlobals.gameState.getStoryFlag(StoryConstants.flags.SPIRITS_SEARCHING_FOR_SPIRITS)) {
+				let forcedExplorerID = GameGlobals.explorerHelper.getForcedExplorerID();
+				let explorerVO = GameGlobals.playerHelper.getExplorerByID(forcedExplorerID);
+				if (explorerVO && explorerVO.inParty) {
+					let groveSector = GameGlobals.levelHelper.findNearestLocaleSector(mapPosition, localeTypes.grove);
+					if (groveSector) {
+						let questIcon = this.icons["interest" + (useSunlitIcon ? "-sunlit" : "")];
+						result.push({ id: "quest", icon: questIcon, position: groveSector.get(PositionComponent) });
+					}
+				}
 			}
 			
 			return result;

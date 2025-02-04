@@ -57,6 +57,8 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.storyStatus = {}; // storyID -> current segmentID OR status (StoryConstants.storyStatuses)
 			this.storyFlags = {}; // flagID -> true / false
 
+			this.pendingDialogues = [];
+
 			this.uiBagStatus = {
 				itemsOwnedSeen: [],
 				itemsUsableSeen: [],

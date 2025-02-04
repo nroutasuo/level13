@@ -86,6 +86,9 @@ define([
 					def.rarity || 1,
 					def.droppedResources, def.droppedIngredients, def.causedInjuryTypes
 				);
+
+				let tags = def.tags || template.tags || [];
+				enemyVO.tags = tags;
 				
 				enemyVO.enemyClass = enemyClass;
 				enemyVO.curseProbability = def.curseProbability || 0;

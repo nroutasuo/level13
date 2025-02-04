@@ -245,7 +245,6 @@ define([
 			var isScouted = sectorStatus.scouted;
 			let isAwake = this.playerPosNodes.head.entity.get(VisionComponent).isAwake;
 			
-			var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
 			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
 			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			var workshopComponent = this.playerLocationNodes.head.entity.get(WorkshopComponent);
@@ -297,13 +296,37 @@ define([
 				this.elements.btnScavengeHeap.find(".btn-label").text("scavenge " + heapName);
 			}
 
-			GameGlobals.uiFunctions.slideToggleIf("#out-locales", null, isScouted && sectorLocalesComponent.locales.length > 0, 200, 0);
+			GameGlobals.uiFunctions.slideToggleIf("#out-locales", null, this.getVisibleLocales(isScouted).length > 0, 200, 0);
 			GameGlobals.uiFunctions.slideToggleIf("#container-out-actions-movement-related", null, isScouted, 200, 0);
 
 			GameGlobals.uiFunctions.toggle("#table-out-actions-movement", GameGlobals.gameState.isFeatureUnlocked("move"));
 			GameGlobals.uiFunctions.toggle("#container-tab-two-out-actions h3", GameGlobals.gameState.isFeatureUnlocked("move"));
 			GameGlobals.uiFunctions.toggle("#out-improvements", GameGlobals.gameState.unlockedFeatures.vision);
 			GameGlobals.uiFunctions.toggle("#out-improvements table", GameGlobals.gameState.unlockedFeatures.vision);
+		},
+
+		getVisibleLocales: function (isScouted) {
+			if (!isScouted) return [];
+			let sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
+			let result = [];
+			for (let i = 0; i < sectorLocalesComponent.locales.length; i++) {
+				let localeVO = sectorLocalesComponent.locales[i];
+				if (!this.isLocaleVisible(localeVO)) continue;;
+				localeVO.index = i;
+				result.push(localeVO);
+			}
+			return result;
+		},
+
+		isLocaleVisible: function (locale) {
+			if (locale.type == localeTypes.grove) {
+				let forcedExplorerID = GameGlobals.explorerHelper.getForcedExplorerID();
+				if (forcedExplorerID == "gambler") {
+					let explorerVO = GameGlobals.playerHelper.getExplorerByID(forcedExplorerID);
+					return !explorerVO || explorerVO.inParty;
+				}
+			}
+			return true;
 		},
 
 		updateNap: function (isScouted, hasCampHere) {
@@ -354,7 +377,7 @@ define([
 			let delay = 1250;
 			
 			let canMove = GameGlobals.playerHelper.canMove();
-			let showCantMove = !canMove;
+			let showCantMove = !canMove && activeDespairType;
 
 			UIState.refreshStateDelayedFeedback(this, "cant-move", showCantMove, showCantMove ? delay : 0, () => {
 				if (showCantMove) {
@@ -368,6 +391,7 @@ define([
 			UIState.refreshStateDelayedFeedback(this, "despair-button", showDespairButton, showDespairButton ? delay : 0, () => {
 				GameGlobals.uiFunctions.toggle("#out-action-despair", showDespairButton);
 				if (showDespairButton) {
+					log.i("show despair button:" + activeDespairType);
 					let logDespair = activeDespairType == MovementConstants.DESPAIR_TYPE_STAMINA || activeDespairType == MovementConstants.DESPAIR_TYPE_MOVEMENT;
 					if (logDespair) {
 						let msg = LogConstants.getDespairMessage(activeDespairType);
@@ -439,7 +463,8 @@ define([
 			
 			// locales / POIs description
 			for (let i = 0; i < localesComponent.locales.length; i++) {
-				var locale = localesComponent.locales[i];
+				let locale = localesComponent.locales[i];
+				if (!this.isLocaleVisible(locale)) continue;
 				if (sectorStatus.isLocaleScouted(i)) {
 					if (locale.type == localeTypes.tradingpartner) {
 						var partner = TradeConstants.getTradePartner(campOrdinal);
@@ -823,12 +848,17 @@ define([
 			let positionComponent = currentSector.get(PositionComponent);
 			let position = positionComponent.getPosition();
 			let campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
+			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+
+			var isScouted = sectorStatus.scouted;
 			
-			let sectorLocalesComponent = currentSector.get(SectorLocalesComponent);
 			let sectorFeaturesComponent = currentSector.get(SectorFeaturesComponent);
 			let sectorStatusComponent = currentSector.get(SectorStatusComponent);
+
+			let locales = this.getVisibleLocales(isScouted);
 			
-			let data = sectorLocalesComponent.locales.map((locale, index) => {
+			let data = locales.map((locale) => {
+				let index = locale.index;
 				let isScouted = sectorStatusComponent.isLocaleScouted(index);
 				let result = {};
 				result.campOrdinal = campOrdinal;

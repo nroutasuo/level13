@@ -473,6 +473,11 @@ define([
 						return { nameTextKey: springName };
 					}
 					break;
+				case "grove":
+					if (sectorLocales.hasLocale(localeTypes.grove)) {
+						return { nameTextKey: "grove" };
+					}
+					break;
 				default:
 					log.w("no such poi type defined: " + poiType);
 					break;

@@ -290,7 +290,7 @@ define([
 				
 				let indicator = $(this).find(".npc-dialogue-indicator");
 				
-				$(indicator).toggleClass("indicator-new", status == DialogueConstants.STATUS_NEW);
+				$(indicator).toggleClass("indicator-new", GameGlobals.dialogueHelper.isExplorerDialogueNew(explorer, DialogueConstants.dialogueSettings.interact));
 				$(indicator).toggleClass("indicator-urgent", status == DialogueConstants.STATUS_URGENT || status == DialogueConstants.STATUS_FORCED);
 			});
 		},

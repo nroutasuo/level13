@@ -531,6 +531,15 @@ define([
 			return this.playerStatsNodes.head.explorers.getAll();
 		},
 
+		getExplorerByID: function (explorerID) {
+			let explorers = this.getExplorers();
+			for (let i = 0; i < explorers.length; i++) {
+				let explorerVO = explorers[i];
+				if (explorerVO.id == explorerID) return explorerVO;
+			}
+			return null;
+		},
+
 		getVisibleGameStats: function () {
 			let result = [];
 			let currentCateogry = null;

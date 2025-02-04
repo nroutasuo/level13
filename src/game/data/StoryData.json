@@ -369,6 +369,64 @@
             },
             "startTrigger": "action_build"
         },
+        "spirits": {
+            "segments": [
+                {
+                    "id": "hints"
+                },
+                {
+                    "id": "magic_confirmed",
+                    "startConditions": {
+                        "storyFlags": {
+                            "SPIRITS_MAGIC_SEEN": true
+                        }
+                    },
+                    "startTrigger": "story_flag_changed"
+                },
+                {
+                    "id": "ground_found",
+                    "startConditions": {
+                        "sector": {
+                            "ground": true
+                        }
+                    },
+                    "startTrigger": "change_position",
+                    "onStart": {
+                        "dialogue": {
+                            "owner": "explorer",
+                            "storyTag": "find_spirits"
+                        }
+                    },
+                    "completeConditions": {
+                        "dialogue": "find_spirits"
+                    },
+                    "startFromAny": true,
+                    "completeTrigger": "action_complete_dialogue"
+                },
+                {
+                    "id": "searching_for_spirits",
+                    "onStart": {
+                        "storyFlags": {
+                            "SPIRITS_SEARCHING_FOR_SPIRITS": true
+                        }
+                    }
+                },
+                {
+                    "id": "found_grove",
+                    "onStart": {
+                        "storyFlags": {
+                            "SPIRITS_SEARCHING_FOR_SPIRITS": false
+                        }
+                    },
+                    "startConditions": {
+                        "localeType": "grove"
+                    },
+                    "startFromAny": true,
+                    "startTrigger": "locale_scouted"
+                }
+            ],
+            "startTrigger": "immediate"
+        },
         "tribe": {
             "segments": [
                 {

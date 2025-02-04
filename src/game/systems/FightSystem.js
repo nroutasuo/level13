@@ -95,6 +95,10 @@ define([
 			playerStamina.resetShield();
 
 			GameGlobals.gameState.increaseGameStatSimple("numFightsStarted");
+
+			if (enemy.tags.indexOf("magic") >= 0) {
+				GameGlobals.playerActioNFunctions.setStoryFlag("SPIRITS_MAGIC_SEEN", true);
+			}
 			
 			let explorers = this.playerStatsNodes.head.explorers.getParty();
 			for (let i = 0; i < explorers.length; i++) {

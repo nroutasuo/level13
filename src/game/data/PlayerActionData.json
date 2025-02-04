@@ -3028,7 +3028,8 @@
                 "validSelection": true
             },
             "busy": false,
-            "hasForcedDialogue": false
+            "hasForcedDialogue": false,
+            "isForcedExplorerMissingFromParty": false
         },
         "move_camp_global": {
             "busy": false

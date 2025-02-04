@@ -29,7 +29,7 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 		clinic: 55,
 
 		// unique
-		grove: 3,
+		grove: "grove",
 		greenhouse: "greenhouse",
 		depot: "depot",
 		spacefactory: "spacefactory",

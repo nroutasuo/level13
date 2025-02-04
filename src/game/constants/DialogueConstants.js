@@ -15,9 +15,11 @@ define([
 			interact: "interact", // when player chooses to interact with this NPC
 		},
 
-		STATUS_NEW: 1,
-		STATUS_URGENT: 2,
-		STATUS_FORCED: 3,
+		STATUS_NEW: 1, // slightly preferred over others
+		STATUS_PRIORITY: 2, // way to override normal dialogue given conditions
+		STATUS_PRIORITY_NEW: 3,
+		STATUS_URGENT: 4, // highlighted in UI
+		STATUS_FORCED: 5, // can block actions
 
 		dialogueSources: {},
 
@@ -55,7 +57,8 @@ define([
 			vo.conditions = d.conditions || {};
 			vo.storyTag = d.storyTag || null;
 			vo.isRepeatable = d.repeatable === false ? false : true;
-			vo.isUrgent = d.urgent;
+			vo.isUrgent = d.isUrgent;
+			vo.isPriority = d.isPriority;
 
 			for (let i = 0; i < d.pages.length; i++) {
 				let pageData = d.pages[i];

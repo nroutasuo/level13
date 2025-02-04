@@ -1326,6 +1326,21 @@ define([
 			});
 			return result;
 		},
+
+		findNearestLocaleSector: function (pos, localeType) {
+			let result = null;
+			this.forEverySectorFromLocation(pos, (sector) => {
+				let sectorLocalesComponent = sector.get(SectorLocalesComponent);
+				for (let i = 0; i < sectorLocalesComponent.locales.length; i++) {
+					if (sectorLocalesComponent.locales[i].type == localeType) {
+						result = sector;
+						return true;
+					}
+				}
+				return false;
+			}, true);
+			return result;
+		},
 		
 		getAllSectorsWithImprovement: function (level, improvementName) {
 			var sectors = [];

@@ -542,7 +542,22 @@ define(['ash',
 			let explorersComponent = this.playerStatsNodes.head.explorers;
 			let playerPos = this.playerPositionNodes.head.position;
 			let campOrdinal = GameGlobals.gameState.numCamps;
-			let explorer = ExplorerConstants.getNewRandomExplorer(ExplorerConstants.explorerSource.SCOUT, campOrdinal, playerPos.level);
+			
+			let explorer = null;
+
+			for (let i = 0; i < campOrdinal; i++) {
+				if (ExplorerConstants.predefinedExplorers[i]) {
+					let explorerID = ExplorerConstants.predefinedExplorers[i].id;
+					if (!GameGlobals.playerHelper.getExplorerByID(explorerID)) {
+						explorer = GameGlobals.explorerHelper.getNewPredefinedExplorer(explorerID);
+					}
+				}
+			}
+
+			if (!explorer) {
+				explorer = GameGlobals.explorerHelper.getNewRandomExplorer(ExplorerConstants.explorerSource.SCOUT, campOrdinal, playerPos.level);
+			}
+
 			explorersComponent.addExplorer(explorer);
 		},
 
@@ -682,7 +697,7 @@ define(['ash',
 
 		startStorySegment: function (storyID, segmentID) {
             let storyVO = StoryConstants.getStory(storyID);
-			let segmentVO = storyVO.getSegment(segmentVO);
+			let segmentVO = storyVO.getSegment(segmentID);
 			this.engine.getSystem(StorySystem).startSegment(segmentVO);
 		},
 

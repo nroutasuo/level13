@@ -34,6 +34,11 @@
 				"character_bard_default_meet_03_p1"
 			]
 		},
+		"character_bard_default_meet_04": {
+			"pages": [
+				"character_bard_default_meet_04_p1"
+			]
+		},
 		"character_crafter_default_event_01": {
 			"pages": [
 				{
@@ -176,6 +181,11 @@
 				"character_darkDweller_default_interact_05_p1"
 			]
 		},
+		"character_darkDweller_default_interact_06": {
+			"pages": [
+				"character_darkDweller_default_interact_06_p1"
+			]
+		},
 		"character_doomsayer_default_event_01": {
 			"pages": [
 				{
@@ -205,6 +215,11 @@
 				"character_doomsayer_default_meet_03_p1"
 			]
 		},
+		"character_doomsayer_default_meet_04": {
+			"pages": [
+				"character_doomsayer_default_meet_04_p1"
+			]
+		},
 		"character_drifer_default_meet_01": {
 			"pages": [
 				"character_drifer_default_meet_01_p1"
@@ -231,6 +246,11 @@
 						}
 					}
 				}
+			]
+		},
+		"character_drifer_default_meet_05": {
+			"pages": [
+				"character_drifer_default_meet_05_p1"
 			]
 		},
 		"character_generic_helpful_meet_poi_campable": {
@@ -456,6 +476,11 @@
 				"character_hunter_default_meet_02_p1"
 			]
 		},
+		"character_hunter_default_meet_03": {
+			"pages": [
+				"character_hunter_default_meet_03_p1"
+			]
+		},
 		"character_mercenary_default_meet_01": {
 			"pages": [
 				"character_mercenary_default_meet_01_p1"
@@ -464,6 +489,11 @@
 		"character_mercenary_default_meet_02": {
 			"pages": [
 				"character_mercenary_default_meet_02_p1"
+			]
+		},
+		"character_mercenary_default_meet_03": {
+			"pages": [
+				"character_mercenary_default_meet_03_p1"
 			]
 		},
 		"character_messenger_default_meet_01": {
@@ -523,6 +553,11 @@
 		"character_shaman_default_meet_03": {
 			"pages": [
 				"character_shaman_default_meet_03_p1"
+			]
+		},
+		"character_shaman_default_meet_04": {
+			"pages": [
+				"character_shaman_default_meet_04_p1"
 			]
 		},
 		"character_shaman_default_meet_blessing": {
@@ -671,6 +706,11 @@
 				"character_workerApothecary_default_interact_02_p1"
 			]
 		},
+		"character_workerApothecary_default_interact_03": {
+			"pages": [
+				"character_workerApothecary_default_interact_03_p1"
+			]
+		},
 		"character_workerChemist_default_interact_01": {
 			"pages": [
 				"character_workerChemist_default_interact_01_p1"
@@ -689,6 +729,16 @@
 		"character_workerCleric_default_interact_02": {
 			"pages": [
 				"character_workerCleric_default_interact_02_p1"
+			]
+		},
+		"character_workerCleric_default_interact_03": {
+			"pages": [
+				"character_workerCleric_default_interact_03_p1"
+			]
+		},
+		"character_workerCleric_default_interact_04": {
+			"pages": [
+				"character_workerCleric_default_interact_04_p1"
 			]
 		},
 		"character_workerConcrete_default_interact_01": {
@@ -716,6 +766,11 @@
 				"character_workerGardener_default_interact_02_p1"
 			]
 		},
+		"character_workerGardener_default_interact_03": {
+			"pages": [
+				"character_workerGardener_default_interact_03_p1"
+			]
+		},
 		"character_workerGeneric_default_interact_01": {
 			"pages": [
 				"character_workerGeneric_default_interact_01_p1"
@@ -740,6 +795,44 @@
 			},
 			"pages": [
 				"character_workerGeneric_interact_apocalypse_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_spirits_01": {
+			"conditions": {
+				"deity": true,
+				"conditions": {
+					"deity": true,
+					"improvements": {
+						"shrine": [
+							1,
+							-1
+						]
+					}
+				}
+			},
+			"pages": [
+				"character_workerGeneric_interact_apocalypse_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_spirits_02": {
+			"conditions": {
+				"deity": true
+			},
+			"pages": [
+				"character_workerGeneric_interact_apocalypse_02_p1"
+			]
+		},
+		"character_workerGeneric_interact_spirits_03": {
+			"conditions": {
+				"deity": true,
+				"tribe": {
+					"projects": {
+						"greenhouse": 1
+					}
+				}
+			},
+			"pages": [
+				"character_workerGeneric_interact_apocalypse_03_p1"
 			]
 		},
 		"character_workerGeneric_interact_apocalypse_02": {
@@ -831,6 +924,19 @@
 				"character_workerScientist_default_interact_06_p1"
 			]
 		},
+		"character_workerScientist_default_interact_07": {
+			"pages": [
+				"character_workerScientist_default_interact_07_p1"
+			]
+		},
+		"character_workerScientist_default_interact_08": {
+			"conditions": {
+				"deity": true
+			},
+			"pages": [
+				"character_workerScientist_default_interact_08_p1"
+			]
+		},
 		"character_workerSoldier_default_interact_01": {
 			"pages": [
 				"character_workerSoldier_default_interact_01_p1"
@@ -839,6 +945,16 @@
 		"character_workerSoldier_default_interact_02": {
 			"pages": [
 				"character_workerSoldier_default_interact_02_p1"
+			]
+		},
+		"character_workerSoldier_default_interact_03": {
+			"conditions": {
+				"storyFlags": {
+					"SPIRITS_MAGIC_SEEN": true
+				}
+			},
+			"pages": [
+				"character_workerSoldier_default_interact_03_p1"
 			]
 		},
 		"character_workerToolsmith_default_interact_01": {
@@ -1085,6 +1201,48 @@
 			],
 			"storyTag": "find_greenhouse"
 		},
+		"explorer_unique_gambler_story_search_spirits_01": {
+			"isPriority": true,
+			"conditions": {
+				"storyFlags": {
+					"SPIRITS_SEARCHING_FOR_SPIRITS": true
+				},
+				"sector": {
+					"ground": false
+				}
+			},
+			"pages": [
+				"explorer_unique_gambler_story_search_spirits_01_p1"
+			]
+		},
+		"explorer_unique_gambler_story_search_spirits_02": {
+			"isPriority": true,
+			"conditions": {
+				"storyFlags": {
+					"SPIRITS_SEARCHING_FOR_SPIRITS": true
+				},
+				"sector": {
+					"ground": true
+				}
+			},
+			"pages": [
+				"explorer_unique_gambler_story_search_spirits_02_p1"
+			]
+		},
+		"explorer_unique_gambler_story_search_spirits_03": {
+			"isPriority": true,
+			"conditions": {
+				"storyFlags": {
+					"SPIRITS_SEARCHING_FOR_SPIRITS": true
+				},
+				"sector": {
+					"ground": true
+				}
+			},
+			"pages": [
+				"explorer_unique_gambler_story_search_spirits_03_p1"
+			]
+		},
 		"explorer_generic_interact_story_apocalypse_01": {
 			"conditions": {
 				"storyFlags": {
@@ -1121,17 +1279,161 @@
 				"explorer_unique_gambler_interact_01_p1"
 			]
 		},
-		"explorer_unique_gamler_story_find_greenhouse": {
+		"explorer_unique_gambler_interact_02": {
+			"pages": [
+				"explorer_unique_gambler_interact_02_p1"
+			]
+		},
+		"explorer_unique_gambler_interact_03": {
+			"pages": [
+				"explorer_unique_gambler_interact_03_p1"
+			]
+		},
+		"explorer_unique_gambler_interact_04": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_unique_gambler_interact_04_p1"
+			]
+		},
+		"explorer_unique_gambler_interact_05": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_unique_gambler_interact_05_p1"
+			]
+		},
+		"explorer_unique_gambler_interact_06": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_unique_gambler_interact_06_p1"
+			]
+		},
+		"explorer_unique_gambler_interact_07": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_unique_gambler_interact_07_p1"
+			]
+		},
+		"explorer_unique_gambler_interact_08": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_unique_gambler_interact_08_p1"
+			]
+		},
+		"explorer_unique_gambler_interact_09": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_unique_gambler_interact_09_p1"
+			]
+		},
+		"explorer_unique_gambler_interact_10": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_unique_gambler_interact_10_p1"
+			]
+		},
+		"explorer_unique_gambler_interact_11": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_unique_gambler_interact_11_p1"
+			]
+		},
+		"explorer_unique_gambler_interact_12": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				},
+				"deity": true
+			},
+			"pages": [
+				"explorer_unique_gambler_interact_12_p1"
+			]
+		},
+		"explorer_unique_gambler_story_spirits_intro_01": {
+			"pages": [
+				"explorer_unique_gambler_story_spirits_intro_01_p1"
+			]
+		},
+		"explorer_unique_gambler_story_spirits_intro_02": {
+			"pages": [
+				"explorer_unique_gambler_story_spirits_intro_02_p1"
+			]
+		},
+		"explorer_unique_gambler_story_spirits_outro_01": {
+			"conditions": {
+				"deity": true
+			},
+			"pages": [
+				"explorer_unique_gambler_story_spirits_outro_01_p1"
+			]
+		},
+		"explorer_unique_gambler_story_spirits_outro_02": {
+			"conditions": {
+				"deity": true
+			},
+			"pages": [
+				"explorer_unique_gambler_story_spirits_outro_02_p1"
+			]
+		},
+		"explorer_unique_gambler_story_find_greenhouse": {
 			"isUrgent": true,
 			"repeatable": false,
 			"pages": [
 				{
 					"buttonKey": "npc_request_promise",
 					"id": "request",
-					"key": "explorer_unique_gamler_story_find_greenhouse_p1"
+					"key": "explorer_unique_gambler_story_find_greenhouse_p1"
 				}
 			],
 			"storyTag": "find_greenhouse"
+		},
+		"explorer_unique_gambler_story_find_spirits": {
+			"isUrgent": true,
+			"pages": [
+				{
+					"id": "intro",
+					"key": "explorer_unique_gambler_story_find_spirits_p1",
+					"options": "NEXT"
+				},
+				{
+					"id": "request",
+					"buttonKey": "npc_request_promise",
+					"key": "explorer_unique_gambler_story_find_spirits_p2"
+				}
+			],
+			"repeatable": false,
+			"storyTag": "find_spirits"
 		},
 		"explorer_unique_gambler_meet_01": {
 			"pages": [
@@ -1525,6 +1827,7 @@
 					"character_bard_default_meet_01",
 					"character_bard_default_meet_02",
 					"character_bard_default_meet_03",
+					"character_bard_default_meet_04",
 					"character_generic_reserved_meet_01",
 					"character_generic_helpful_meet_poi_settlement",
 					"character_generic_story_warn_ground_01",
@@ -1560,6 +1863,10 @@
 					"character_darkDweller_default_interact_03",
 					"character_darkDweller_default_interact_04",
 					"character_darkDweller_default_interact_05",
+					"character_darkDweller_default_interact_06",
+					"character_workerGeneric_interact_spirits_01",
+					"character_workerGeneric_interact_spirits_02",
+					"character_workerGeneric_interact_spirits_03",
 					"character_workerGeneric_default_interact_01",
 					"character_generic_story_fall_theory_government",
 					"character_generic_story_government_negative"
@@ -1575,7 +1882,8 @@
 				"meet": [
 					"character_doomsayer_default_meet_01",
 					"character_doomsayer_default_meet_02",
-					"character_doomsayer_default_meet_03"
+					"character_doomsayer_default_meet_03",
+					"character_doomsayer_default_meet_04"
 				]
 			}
 		},
@@ -1590,6 +1898,7 @@
 					"character_drifer_default_meet_02",
 					"character_drifer_default_meet_03",
 					"character_drifer_default_meet_04",
+					"character_drifer_default_meet_05",
 					"character_generic_reserved_meet_01",
 					"character_generic_helpful_meet_poi_water",
 					"character_generic_stranded_meet_water",
@@ -1606,6 +1915,7 @@
 				"meet": [
 					"character_hunter_default_meet_01",
 					"character_hunter_default_meet_02",
+					"character_hunter_default_meet_03",
 					"character_generic_reserved_meet_01",
 					"character_generic_helpful_meet_poi_campable",
 					"character_generic_helpful_meet_poi_water",
@@ -1619,6 +1929,7 @@
 				"meet": [
 					"character_mercenary_default_meet_01",
 					"character_mercenary_default_meet_02",
+					"character_mercenary_default_meet_03",
 					"character_generic_reserved_meet_01",
 					"character_generic_helpful_meet_poi_campable",
 					"character_generic_story_warn_ground_01",
@@ -1667,6 +1978,7 @@
 					"character_shaman_default_meet_01",
 					"character_shaman_default_meet_02",
 					"character_shaman_default_meet_03",
+					"character_shaman_default_meet_04",
 					"character_shaman_default_meet_blessing",
 					"character_generic_stranded_meet_water",
 					"character_generic_story_fall_theory_spirits"
@@ -1679,6 +1991,9 @@
 					"character_slumRefugee_default_interact_01",
 					"character_slumRefugee_default_interact_02",
 					"character_slumRefugee_default_interact_03",
+					"character_workerGeneric_interact_spirits_01",
+					"character_workerGeneric_interact_spirits_02",
+					"character_workerGeneric_interact_spirits_03",
 					"character_generic_story_government_negative",
 					"character_generic_story_government_neg2pos"
 				],
@@ -1708,6 +2023,9 @@
 					"character_surfaceRefugee_default_interact_06",
 					"character_surfaceRefugee_default_interact_07",
 					"character_surfaceRefugee_default_interact_08",
+					"character_workerGeneric_interact_spirits_01",
+					"character_workerGeneric_interact_spirits_02",
+					"character_workerGeneric_interact_spirits_03",
 					"character_generic_story_fall_theory_city",
 					"character_generic_story_government_pos2neg"
 				],
@@ -1743,8 +2061,12 @@
 				"interact": [
 					"character_workerApothecary_default_interact_01",
 					"character_workerApothecary_default_interact_02",
+					"character_workerApothecary_default_interact_03",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_interact_spirits_01",
+					"character_workerGeneric_interact_spirits_02",
+					"character_workerGeneric_interact_spirits_03",
 					"character_workerGeneric_default_interact_01"
 				]
 			}
@@ -1766,6 +2088,8 @@
 				"interact": [
 					"character_workerCleric_default_interact_01",
 					"character_workerCleric_default_interact_02",
+					"character_workerCleric_default_interact_03",
+					"character_workerCleric_default_interact_04",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_default_interact_02"
@@ -1790,6 +2114,7 @@
 				"interact": [
 					"character_workerGardener_default_interact_01",
 					"character_workerGardener_default_interact_02",
+					"character_workerGardener_default_interact_03",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_default_interact_01",
@@ -1854,6 +2179,7 @@
 					"character_workerScientist_default_interact_05",
 					"character_workerScientist_default_interact_06",
 					"character_workerScientist_default_interact_07",
+					"character_workerScientist_default_interact_08",
 					"character_workerGeneric_default_interact_01",
 					"character_workerGeneric_default_interact_02"
 				]
@@ -1864,6 +2190,10 @@
 				"interact": [
 					"character_workerSoldier_default_interact_01",
 					"character_workerSoldier_default_interact_02",
+					"character_workerSoldier_default_interact_03",
+					"character_workerGeneric_interact_spirits_01",
+					"character_workerGeneric_interact_spirits_02",
+					"character_workerGeneric_interact_spirits_03",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_default_interact_02"
@@ -2011,7 +2341,26 @@
 				],
 				"interact": [
 					"explorer_unique_gambler_interact_01",
-					"explorer_unique_gamler_story_find_greenhouse"
+					"explorer_unique_gambler_interact_02",
+					"explorer_unique_gambler_interact_03",
+					"explorer_unique_gambler_interact_04",
+					"explorer_unique_gambler_interact_05",
+					"explorer_unique_gambler_interact_06",
+					"explorer_unique_gambler_interact_07",
+					"explorer_unique_gambler_interact_08",
+					"explorer_unique_gambler_interact_09",
+					"explorer_unique_gambler_interact_10",
+					"explorer_unique_gambler_interact_11",
+					"explorer_unique_gambler_interact_12",
+					"explorer_unique_gambler_story_find_greenhouse",
+					"explorer_unique_gambler_story_find_spirits",
+					"explorer_unique_gambler_story_search_spirits_01",
+					"explorer_unique_gambler_story_search_spirits_02",
+					"explorer_unique_gambler_story_search_spirits_03",
+					"explorer_unique_gambler_story_spirits_intro_01",
+					"explorer_unique_gambler_story_spirits_intro_02",
+					"explorer_unique_gambler_story_spirits_outro_01",
+					"explorer_unique_gambler_story_spirits_outro_02"
 				],
 				"meet": [
 					"explorer_unique_gambler_meet_01"

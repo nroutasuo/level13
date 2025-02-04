@@ -543,6 +543,7 @@
 		"droppedResources": [
 			"herbs"
 		],
+        "tags": [ "magic" ],
 		"enemyType": "humanoid",
 		"rarity": 80,
 		"speed": 1.1
@@ -819,7 +820,8 @@
 		"environment": [ "dark", "nogang" ],
 		"healthFactor": 0.9,
 		"rarity": 75,
-		"speed": 0.9
+		"speed": 0.9,
+        "tags": [ "magic" ]
 	},
 	"ghost__vengeful": {
 		"campOrdinal": 7,
@@ -1660,7 +1662,8 @@
 		"enemyType": "apparition",
 		"environment": [ "dark" ],
 		"healthFactor": 0.9,
-		"rarity": 60
+		"rarity": 60,
+        "tags": [ "magic" ]
 	},
 	"shadow__wailing": {
 		"campOrdinal": 12,

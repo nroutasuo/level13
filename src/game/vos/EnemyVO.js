@@ -4,7 +4,8 @@ define(['ash'], function (Ash) {
 	
 		id: "",
 		name: "",
-		environment: [],
+		environment: [], // determines what kind of sectors it can appear on
+		tags: [], // mostly empty but can trigger story flags etc
 		att: 0,
 		def: 0,
 		speed: 0,

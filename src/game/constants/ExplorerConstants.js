@@ -603,6 +603,10 @@ define(['ash',
 			return bonusAtt > 0 || bonusDef > 0;
 		},
 		
+		isUnique: function (explorerVO) {
+			return explorerVO && explorerVO.dialogueSource && explorerVO.dialogueSource.indexOf("unique") >= 0;
+		},
+		
 		isComparableAbilityTypes: function (a, b) {
 			if (a == b) return true;
 			

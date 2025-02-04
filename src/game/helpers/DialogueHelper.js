@@ -3,9 +3,10 @@ define(['ash',
     'game/constants/DialogueConstants', 
     'game/constants/ExplorerConstants',
     'game/constants/PositionConstants',
+    'game/constants/StoryConstants',
     'game/components/common/PositionComponent',
     'game/nodes/player/DialogueNode' 
-], function (Ash, GameGlobals, DialogueConstants, ExplorerConstants, PositionConstants, PositionComponent, DialogueNode) {
+], function (Ash, GameGlobals, DialogueConstants, ExplorerConstants, PositionConstants, StoryConstants, PositionComponent, DialogueNode) {
         
         let DialogueHelper = Ash.Class.extend({
 
@@ -69,6 +70,14 @@ define(['ash',
                     }
                 }
 
+                if (GameGlobals.gameState.getStoryFlag(StoryConstants.flags.SPIRITS_SEARCHING_FOR_SPIRITS)) {
+                    let requiredPOIData = this.findPOIDataForDialogue("grove");
+                    if (requiredPOIData) {
+                        result.direction = requiredPOIData.directionTextKey;
+                        result.name = requiredPOIData.nameTextKey;
+                    }
+                }
+
                 return result;
             },
 
@@ -109,6 +118,22 @@ define(['ash',
                 explorerVO.dialogueSource = ExplorerConstants.getRandomDialogueSource(explorerVO.abilityType);
             },
 
+            isExplorerDialogueNew: function (explorerVO, setting) {
+                if (!explorerVO) return false;
+                if (!setting) setting = DialogueConstants.dialogueSettings.interact;
+
+                let validDialogues = this.getExplorerValidDialogues(explorerVO, setting);
+
+                for (let i = 0; i < validDialogues.length; i++) {
+                    let entry = validDialogues[i];
+                    if (this.isExplorerDialogueNewForEntry(explorerVO, entry)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            },
+
             getExplorerDialogueStatus: function (explorerVO, setting) {
                 let result = 0;
 
@@ -134,15 +159,22 @@ define(['ash',
                 if (explorerVO.pendingDialogue && explorerVO.pendingDialogue == entry.storyTag)  {
                     return DialogueConstants.STATUS_FORCED;
                 }
-                
-                if (explorerVO.seenDialogues && explorerVO.seenDialogues.indexOf(entry.dialogueID) < 0) {
-                    if (entry.isUrgent) {
-                        return DialogueConstants.STATUS_URGENT;
-                    }
-                    return DialogueConstants.STATUS_NEW;
-                }
+
+                let isNew = this.isExplorerDialogueNewForEntry(explorerVO, entry);
+
+                if (isNew && entry.isUrgent) return DialogueConstants.STATUS_URGENT;
+
+                if (isNew && entry.isPriority) return DialogueConstants.STATUS_PRIORITY_NEW;
+
+                if (entry.isPriority) return DialogueConstants.STATUS_PRIORITY;
+
+                if (isNew) return DialogueConstants.STATUS_NEW;
 
                 return 0;
+            },
+
+            isExplorerDialogueNewForEntry: function (explorerVO, entry) {
+                return explorerVO.seenDialogues && explorerVO.seenDialogues.indexOf(entry.dialogueID) < 0
             },
             
             getExplorerDialogueKey: function (explorerVO, setting) {
