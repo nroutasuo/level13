@@ -755,17 +755,17 @@ define([
 			// passages
 			if (levelPassagesComponent.passagesUp[sectorPosition.sectorId()] && !levelPassagesComponent.passagesUpBuilt[sectorPosition.sectorId()]) {
 				switch (levelPassagesComponent.passagesUp[sectorPosition.sectorId()].type) {
-					case 1:
+					case MovementConstants.PASSAGE_TYPE_HOLE:
 						improvementName = improvementNames.passageUpHole;
 						actionName = "build_out_passage_up_hole";
 						actionLabel = "build";
 						break;
-					case 2:
+					case MovementConstants.PASSAGE_TYPE_ELEVATOR:
 						improvementName = improvementNames.passageUpElevator;
 						actionName = "build_out_passage_up_elevator";
 						actionLabel = "repair";
 						break;
-					case 3:
+					case MovementConstants.PASSAGE_TYPE_STAIRWELL:
 						improvementName = improvementNames.passageUpStairs;
 						actionName = "build_out_passage_up_stairs";
 						actionLabel = "repair";
