@@ -59,7 +59,8 @@ function (Ash, ExplorerConstants, ItemConstants) {
 		},
 		
 		removeExplorer: function (explorer) {
-			var index = this.explorers.indexOf(explorer);
+			if (!explorer) return;
+			let index = this.explorers.indexOf(explorer);
 			if (index < 0) {
 				log.w("couldn't find explorer to remove: " + explorer.id);
 				return;

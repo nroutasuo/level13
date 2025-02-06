@@ -144,6 +144,14 @@ define([
 				resultVO.gainedItemUpgrades = data.gainedItemUpgrades;
 			}
 
+			if (data.gainedExplorers) {
+				resultVO.gainedExplorers = data.gainedExplorers;
+			}
+
+			if (data.lostExplorers) {
+				resultVO.lostExplorers = data.lostExplorers;
+			}
+
 			if (data.storyFlags) {
 				for (let flagID in data.storyFlags) {
 					resultVO.storyFlags[flagID] = data.storyFlags[flagID];

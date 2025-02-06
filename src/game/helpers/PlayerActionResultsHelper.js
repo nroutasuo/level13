@@ -608,6 +608,15 @@ define([
 					}
 				}
 			}
+
+			if (rewards.lostExplorers) {
+				for (let i = 0; i < rewards.lostExplorers.length; i++) {
+					let explorer = rewards.lostExplorers[i];
+					if (typeof explorer === "string") {
+						rewards.lostExplorers[i] = GameGlobals.playerHelper.getExplorerByID(explorer);
+					}
+				}
+			}
 		},
 
 		collectRewards: function (isTakeAll, rewards, campSector) {
@@ -711,6 +720,8 @@ define([
 			if (rewards.gainedExplorers && rewards.gainedExplorers.length > 0) {
 				for (let i = 0; i < rewards.gainedExplorers.length; i++) {
 					let explorer = rewards.gainedExplorers[i];
+					if (typeof explorer === "string") explorer = GameGlobals.explorerHelper.getNewPredefinedExplorer(explorerID);
+					if (!explorer) continue;
 					if (this.willGainedExplorerJoinParty(explorer)) {
 						explorersComponent.addExplorer(explorer);
 						explorersComponent.setExplorerInParty(explorer, true);
@@ -749,6 +760,7 @@ define([
 					explorersComponent.removeExplorer(rewards.lostExplorers[i]);
 					GameGlobals.gameState.increaseGameStatSimple("numExplorersLost");
 				}
+				GlobalSignals.explorersChangedSignal.dispatch();
 			}
 
 			if (rewards.discardedItems) {
