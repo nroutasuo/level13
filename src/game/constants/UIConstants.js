@@ -405,7 +405,7 @@ define(['ash',
 			var $li = this.parseElement(li);
 			if (!$li) return;
 			var showAmount = Math.floor(amount);
-			$li.find(".item-count").text(sText.t("ui.common.item_count_field", showAmount));
+			$li.find(".item-count").text(Text.t("ui.common.item_count_field", showAmount));
 			GameGlobals.uiFunctions.toggle($li, showAmount > 0);
 		},
 
