@@ -496,9 +496,10 @@ define([
 		forEverySectorFromLocation: function (pos, func, limitToCurrentLevel) {
 			// TODO go by path distance, not distance in coordinates / make that an option
 
+			let startLevel = pos.level;
+
 			var doLevel = function (level) {
-				if (!this.isLevelUnlocked(level))
-					return false;
+				if (level != startLevel && !this.isLevelUnlocked(level)) return false;
 				let sectors = this.getSectorsByLevel(level).slice(0);
 				sectors.sort(function (a, b) {
 					let posA = a.get(PositionComponent).getPosition();
@@ -515,9 +516,9 @@ define([
 				return false;
 			};
 
-			var currentLevel = pos.level;
-			var isDone;
-			var dlimit = limitToCurrentLevel ? 1 : WorldConstants.LEVEL_NUMBER_MAX;
+			let currentLevel = pos.level;
+			let isDone;
+			let dlimit = limitToCurrentLevel ? 1 : WorldConstants.LEVEL_NUMBER_MAX;
 			for (var ld = 0; ld < dlimit; ld++) {
 				if (ld === 0) {
 					isDone = doLevel.call(this, currentLevel);
