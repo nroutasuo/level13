@@ -1201,6 +1201,17 @@
 			],
 			"storyTag": "find_greenhouse"
 		},
+		"explorer_generic_story_rescue_prospector": {
+			"isUrgent": true,
+			"pages": [
+				{
+					"buttonKey": "npc_request_promise",
+					"id": "request",
+					"key": "explorer_generic_story_rescue_prospector_p1"
+				}
+			],
+			"storyTag": "prospector_rescue"
+		},
 		"explorer_unique_gambler_story_search_spirits_01": {
 			"isPriority": true,
 			"conditions": {
@@ -1687,10 +1698,154 @@
 				"explorer_unique_prospector_interact_01_p1"
 			]
 		},
+		"explorer_unique_prospector_interact_04": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_unique_prospector_interact_04_p1",
+				"explorer_unique_prospector_interact_04_p2"
+			]
+		},
+		"explorer_unique_prospector_interact_05": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_unique_prospector_interact_05_p1"
+			]
+		},
+		"explorer_unique_prospector_story_rescue_passage_built_01": {
+			"conditions": {
+				"storyFlags": {
+					"RESCUE_PASSAGE_UP_BUILT": true
+				}
+			},
+			"pages": [
+				"explorer_unique_prospector_story_rescue_passage_built_01_p1"
+			]
+		},
+		"explorer_unique_prospector_story_rescue_passage_built_02": {
+			"conditions": {
+				"storyFlags": {
+					"RESCUE_PASSAGE_UP_BUILT": true
+				}
+			},
+			"pages": [
+				"explorer_unique_prospector_story_rescue_passage_built_02_p1"
+			]
+		},
+		"explorer_unique_prospector_story_rescue_passage_blocked_01": {
+			"conditions": {
+				"storyFlags": {
+					"when RESCUE_LEVEL_14_HAZARD_FOUND set": true
+				}
+			},
+			"pages": [
+				"explorer_unique_prospector_story_rescue_passage_blocked_01_p1"
+			]
+		},
+		"explorer_unique_prospector_story_rescue_passage_blocked_02": {
+			"conditions": {
+				"storyFlags": {
+					"when RESCUE_LEVEL_14_HAZARD_FOUND set": true
+				}
+			},
+			"pages": [
+				"explorer_unique_prospector_story_rescue_passage_blocked_02_p1"
+			]
+		},
+		"explorer_unique_prospector_story_rescue_impatient_01": {
+			"conditions": {
+				"numCamps": 7,
+				"storyFlags": {
+					"when RESCUE_EXPLORER_LEFT set": false
+				}
+			},
+			"pages": [
+				"explorer_unique_prospector_story_rescue_impatient_01_p1"
+			]
+		},
+		"explorer_unique_prospector_story_rescue_impatient_02": {
+			"conditions": {
+				"numCamps": 7,
+				"storyFlags": {
+					"when RESCUE_EXPLORER_LEFT set": false
+				}
+			},
+			"pages": [
+				"explorer_unique_prospector_story_rescue_impatient_02_p1"
+			]
+		},
+		"explorer_unique_prospector_story_rescue_complete_01": {
+			"conditions": {
+				"numCamps": 9
+			},
+			"pages": [
+				"explorer_unique_prospector_story_rescue_complete_01_p1"
+			]
+		},
+		"explorer_unique_prospector_story_rescue_complete_02": {
+			"conditions": {
+				"numCamps": 9
+			},
+			"pages": [
+				"explorer_unique_prospector_story_rescue_complete_02_p1"
+			]
+		},
+		"explorer_unique_prospector_story_rescue_lvl14_01": {
+			"isPriority": true,
+			"conditions": {
+				"player": {
+					"position": {
+						"level": 14
+					}
+				}
+			},
+			"pages": [
+				"explorer_unique_prospector_story_rescue_lvl14_01_p1"
+			]
+		},
 		"explorer_unique_prospector_meet_01": {
 			"pages": [
 				"explorer_unique_prospector_meet_01_p1"
 			]
+		},
+		"explorer_unique_prospector_story_rescue_intro": {
+			"pages": [
+				{
+					"key": "explorer_unique_prospector_story_rescue_intro_p1",
+					"result": {
+						"storyFlags": {
+							"RESCUE_SISTER_INTRODUCED": true
+						}
+					}
+				}
+			]
+		},
+		"explorer_unique_prospector_story_rescue_leaving": {
+			"isUrgent": true,
+			"pages": [
+				{
+					"key": "explorer_unique_prospector_story_rescue_leaving_p1",
+					"buttonKey": "explorer_request_prospector_leaving_reply",
+					"options": "NEXT"
+				},
+				{
+					"key": "explorer_unique_prospector_story_rescue_leaving_p2",
+					"options": "NEXT"
+				},
+				{
+					"result": {
+						"lostExplorers": [ "prospector" ]
+					}
+				}
+			],
+			"storyTag": "prospector_leaves"
 		},
 		"locale_story_depot": {
 			"pages": [
@@ -1731,6 +1886,24 @@
 			]
 		},
 		"locale_story_seeddepot": {
+			"pages": [
+				{
+					"key": "story.stories.locale_story_shelter_p1",
+					"options": "NEXT"
+				},
+				{
+					"key": "story.stories.locale_story_shelter_p2",
+					"options": "NEXT"
+				},
+				{
+					"result": {
+						"gainedPopulation": 1,
+						"gainedExplorers": [ "prospector" ]
+					}
+				}
+			]
+		},
+		"locale_story_shelter": {
 			"pages": [
 				{
 					"id": "intro",
@@ -1814,6 +1987,12 @@
 					"key": "refugees_earthquake_event_01_p1"
 				}
 			]
+		},
+		"visitor_unique_expedition_01": {
+			"pages": [
+				"visitor_unique_expedition_01_p1"
+			],
+			"storyTag": "expedition_visitors"
 		}
 	},
 	"sources": {
@@ -2241,7 +2420,8 @@
 					"explorer_generic_scout_interact_02",
 					"explorer_generic_mercenary_interact_01",
 					"explorer_generic_interact_story_apocalypse_01",
-					"explorer_generic_interact_story_apocalypse_02"
+					"explorer_generic_interact_story_apocalypse_02",
+					"explorer_generic_story_rescue_prospector"
 				],
 				"meet": [
 					"explorer_generic_scavenger_meet_01",
@@ -2290,7 +2470,8 @@
 					"explorer_generic_mercenary_interact_03",
 					"explorer_generic_story_find_greenhouse",
 					"explorer_generic_interact_story_apocalypse_01",
-					"explorer_generic_interact_story_apocalypse_02"
+					"explorer_generic_interact_story_apocalypse_02",
+					"explorer_generic_story_rescue_prospector"
 				],
 				"meet": [
 					"explorer_generic_mercenary_meet_01"
@@ -2308,7 +2489,8 @@
 					"explorer_generic_scavenger_interact_03",
 					"explorer_generic_story_find_greenhouse",
 					"explorer_generic_interact_story_apocalypse_01",
-					"explorer_generic_interact_story_apocalypse_02"
+					"explorer_generic_interact_story_apocalypse_02",
+					"explorer_generic_story_rescue_prospector"
 				],
 				"meet": [
 					"explorer_generic_scavenger_meet_01"
@@ -2327,7 +2509,8 @@
 					"explorer_generic_story_find_greenhouse",
 					"character_generic_story_government_positive",
 					"explorer_generic_interact_story_apocalypse_01",
-					"explorer_generic_interact_story_apocalypse_02"
+					"explorer_generic_interact_story_apocalypse_02",
+					"explorer_generic_story_rescue_prospector"
 				],
 				"meet": [
 					"explorer_generic_scout_meet_01"
@@ -2360,7 +2543,8 @@
 					"explorer_unique_gambler_story_spirits_intro_01",
 					"explorer_unique_gambler_story_spirits_intro_02",
 					"explorer_unique_gambler_story_spirits_outro_01",
-					"explorer_unique_gambler_story_spirits_outro_02"
+					"explorer_unique_gambler_story_spirits_outro_02",
+					"explorer_generic_story_rescue_prospector"
 				],
 				"meet": [
 					"explorer_unique_gambler_meet_01"
@@ -2416,7 +2600,8 @@
 					"explorer_unique_journalist_story_storehouse",
 					"explorer_unique_journalist_story_spacecraft",
 					"explorer_unique_journalist_story_evacuation",
-					"explorer_unique_journalist_story_debris"
+					"explorer_unique_journalist_story_debris",
+					"explorer_generic_story_rescue_prospector"
 				],
 				"meet": [
 					"explorer_unique_journalist_meet_01"
@@ -2429,7 +2614,20 @@
 					"explorer_unique_prospector_event_01"
 				],
 				"interact": [
-					"explorer_unique_prospector_interact_01"
+					"explorer_unique_prospector_interact_01",
+					"explorer_unique_prospector_interact_04",
+					"explorer_unique_prospector_interact_05",
+					"explorer_unique_prospector_story_rescue_intro",
+					"explorer_unique_prospector_story_rescue_lvl14_01",
+					"explorer_unique_prospector_story_rescue_passage_built_01",
+					"explorer_unique_prospector_story_rescue_passage_built_02",
+					"explorer_unique_prospector_story_rescue_passage_blocked_01",
+					"explorer_unique_prospector_story_rescue_passage_blocked_02",
+					"explorer_unique_prospector_story_rescue_impatient_01",
+					"explorer_unique_prospector_story_rescue_impatient_02",
+					"explorer_unique_prospector_story_rescue_complete_01",
+					"explorer_unique_prospector_story_rescue_complete_02",
+					"explorer_unique_prospector_story_rescue_leaving"
 				],
 				"meet": [
 					"explorer_unique_prospector_meet_01"
@@ -2448,6 +2646,13 @@
 			"dialogues": {
 				"event": [
 					"refugees_earthquake_event_01"
+				]
+			}
+		},
+		"visitor_expedition": {
+			"dialogues": {
+				"event": [
+					"visitor_unique_expedition_01"
 				]
 			}
 		}

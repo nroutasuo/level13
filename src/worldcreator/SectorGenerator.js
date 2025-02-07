@@ -1699,8 +1699,9 @@ define([
 			let storyLocales = [
 				{ type: localeTypes.grove, level: worldVO.bottomLevel, isEasy: true },
 				{ type: localeTypes.depot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 5), isEasy: false },
-				{ type: localeTypes.spacefactory, level: WorldCreatorHelper.getLastLevelForCamp(seed, 10), isEasy: false },
 				{ type: localeTypes.seedDepot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 6), isEasy: false },
+				{ type: localeTypes.spacefactory, level: WorldCreatorHelper.getLastLevelForCamp(seed, 10), isEasy: false },
+				{ type: localeTypes.seedDepot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 12), isEasy: false },
 			];
 
 			for (let i = 0; i < storyLocales.length; i++) {
@@ -1724,7 +1725,7 @@ define([
 				let locale = new LocaleVO(explorer.localeType, true, true);
 				locale.explorerID = explorer.id;
 				this.addLocale(levelVO, sector, locale);
-				// WorldCreatorLogger.i("add explorer locale at " + sector)
+				WorldCreatorLogger.i("add explorer locale at " + sector)
 			}
 			
 			// 4) spawn locales for luxury resources

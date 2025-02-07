@@ -172,7 +172,9 @@ define([
 				result.push({ 
 					id: "visitor", 
 					type: "visitor", 
-					characterType: visitorComponent.visitorType });
+					characterType: visitorComponent.visitorType,
+					dialogueSourceID: visitorComponent.dialogueSource 
+				});
 			}
 
 			let refugeesComponent = this.playerLocationNodes.head.entity.get(RefugeesComponent);

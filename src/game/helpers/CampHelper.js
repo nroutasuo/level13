@@ -12,6 +12,7 @@ define([
 	'game/constants/ImprovementConstants',
 	'game/constants/ItemConstants',
 	'game/constants/OccurrenceConstants',
+	'game/constants/StoryConstants',
 	'game/constants/TradeConstants',
 	'game/constants/WorldConstants',
 	'game/components/common/CampComponent',
@@ -31,7 +32,7 @@ define([
 	'game/vos/ResourcesVO',
 	'game/vos/IncomingCaravanVO'
 ], function (Ash, MathUtils, RandomUtils, GameGlobals, 
-	GameConstants, CampConstants, CharacterConstants, CultureConstants, ExplorerConstants, ImprovementConstants, ItemConstants, OccurrenceConstants, TradeConstants, WorldConstants,
+	GameConstants, CampConstants, CharacterConstants, CultureConstants, ExplorerConstants, ImprovementConstants, ItemConstants, OccurrenceConstants, StoryConstants, TradeConstants, WorldConstants,
 	CampComponent, PositionComponent, 
 	DisasterComponent, DiseaseComponent, RaidComponent, TraderComponent, RecruitComponent, RefugeesComponent, VisitorComponent, 
 	SectorImprovementsComponent, SectorFeaturesComponent, LevelComponent, CampNode, TribeUpgradesNode, ResourcesVO, IncomingCaravanVO) {
@@ -352,6 +353,14 @@ define([
 			let result = [];
 			
 			let position = sector.get(PositionComponent);
+			let campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
+
+			let isForceExpedition = this.isValidCampForExpeditionVisitors(campOrdinal);
+
+			if (isForceExpedition) {
+				result.push(CharacterConstants.characterTypes.scout);
+				return result;
+			}
 
 			result.push(CharacterConstants.characterTypes.drifter);
 			result.push(CharacterConstants.characterTypes.bard);
@@ -365,6 +374,12 @@ define([
 			}
 
 			return result;
+		},
+
+		isValidCampForExpeditionVisitors: function (campOrdinal) {
+			if (!GameGlobals.gameState.getStoryFlag(StoryConstants.flags.EXPEDITION_PENDING_VISITORS)) return false;
+			if (campOrdinal < CampConstants.MIN_CAMP_ORDINAL_FOR_EXPEDITION_VISITORS) return false;
+			return true;
 		},
 
 		getValidCampCharacters: function (campComponent) {

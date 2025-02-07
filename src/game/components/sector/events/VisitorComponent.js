@@ -5,8 +5,9 @@ define(['ash'], function (Ash) {
 		
 		id: "Visitor",
 
-		constructor: function (npcType) {
+		constructor: function (npcType, dialogueSource) {
 			this.visitorType = npcType;
+			this.dialogueSource = dialogueSource;
 		},
 
 		getSaveKey: function () {

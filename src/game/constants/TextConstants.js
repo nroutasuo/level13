@@ -1127,6 +1127,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					noun = sectorFeatures.surface ? "office" : "factory";
 					break;
 				case localeTypes.house:
+				case localeTypes.shelter:
 					if (condition === SectorConstants.SECTOR_CONDITION_DAMAGED) modifier = "destroyed";
 					if (condition === SectorConstants.SECTOR_CONDITION_WORN) modifier = "derelict";
 					noun = "house";

@@ -148,6 +148,12 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 				conditions: { inCamp: false, sunlit: false, vision: [ -1, 50 ] },
 				chance: 0.01,
 				message: "The darkness shifts and twists and presses closer."
+			},
+			"story_rescue_prospector_missing_02": {
+				triggers: [ "change_position" ],
+				conditions: { inCamp: false, storyFlags: {  "RESCUE_EXPLORER_LEFT": true } },
+				chance: 0.01,
+				message: "You wonder if Sunita made it through Level 14 somehow."
 			}
 		},
 		

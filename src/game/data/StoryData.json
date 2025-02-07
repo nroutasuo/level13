@@ -203,6 +203,56 @@
             "startConditions": {},
             "startTrigger": "immediate"
         },
+        "expedition": {
+            "segments": [
+                {
+                    "id": "pending_visitors",
+                    "onStart": {
+                        "storyFlags": {
+                            "EXPEDITION_PENDING_VISITORS": true
+                        }
+                    },
+                    "completeConditions": {
+                        "eventType": "visitor"
+                    },
+                    "completeTrigger": "camp_event"
+                },
+                {
+                    "id": "visitors",
+                    "completeConditions": {
+                        "dialogue": "expedition_visitors"
+                    },
+                    "onComplete": {
+                        "storyFlags": {
+                            "EXPEDITION_START_KNOWN": true,
+                            "EXPEDITION_PENDING_VISITORS": false
+                        }
+                    },
+                    "completeTrigger": "action_complete_dialogue"
+                },
+                {
+                    "id": "fate_unknown"
+                },
+                {
+                    "id": "fate_known",
+                    "onStart": {
+                        "storyFlags": {
+                            "EXPEDITION_FATE_KNOWN": true
+                        }
+                    },
+                    "startConditions": {
+                        "examineSpotTag": "expedition"
+                    },
+                    "startTrigger": "action_examine",
+                    "completeTrigger": "immediate"
+                }
+            ],
+            "startTrigger": "action_enter_camp",
+            "startConditions": {
+                "numCamps": 12,
+                "population": [ 12, -1 ]
+            }
+        },
         "fall": {
             "segments": [
                 {
@@ -368,6 +418,139 @@
                 }
             },
             "startTrigger": "action_build"
+        },
+        "rescue": {
+            "segments": [
+                {
+                    "id": "start"
+                },
+                {
+                    "id": "sister_mentioned",
+                    "startConditions": {
+                        "storyFlags": {
+                            "RESCUE_SISTER_INTRODUCED": true
+                        }
+                    },
+                    "startTrigger": "story_flag_changed"
+                },
+                {
+                    "id": "passage_up_available",
+                    "startTrigger": "upgrade_researched",
+                    "startConditions": {
+                        "upgrades": {
+                            "unlock_building_passage_hole": true
+                        }
+                    },
+                    "startFromAny": true,
+                    "possibleNextSegments": [ "passage_up_built", "prospector_leaves" ]
+                },
+                {
+                    "id": "passage_up_built",
+                    "onStart": {
+                        "storyFlags": {
+                            "RESCUE_PASSAGE_UP_BUILT": true
+                        }
+                    },
+                    "startTrigger": "action_build",
+                    "startConditions": {
+                        "levelUnlocked": 14
+                    },
+                    "possibleNextSegments": [ "level_14", "prospector_leaves" ]
+                },
+                {
+                    "id": "level_14",
+                    "startTrigger": "change_position",
+                    "startConditions": {
+                        "player": {
+                            "position": {
+                                "level": 14
+                            }
+                        }
+                    },
+                    "possibleNextSegments": [ "radiation_found", "prospector_leaves" ]
+                },
+                {
+                    "id": "radiation_found",
+                    "startTrigger": "change_position",
+                    "onStart": {
+                        "storyFlags": {
+                            "RESCUE_LEVEL_14_HAZARD_FOUND": true
+                        }
+                    },
+                    "startConditions": {
+                        "player": {
+                            "position": {
+                                "level": 14
+                            }
+                        },
+                        "perks": {
+                            "hazard-radiation": true
+                        }
+                    }
+                },
+                {
+                    "id": "prospector_leaves",
+                    "startTrigger": "action_enter_camp",
+                    "startConditions": {
+                        "numCamps": 8,
+                        "deity": true,
+                        "improvements": {
+                            "shrine": [
+                                1,
+                                -1
+                            ]
+                        }
+                    },
+                    "onStart": {
+                        "dialogue": {
+                            "owner": "explorer",
+                            "storyTag": "prospector_leaves"
+                        }
+                    },
+                    "completeConditions": {
+                        "dialogue": "prospector_leaves"
+                    },
+                    "onComplete": {
+                        "storyFlags": {
+                            "RESCUE_EXPLORER_LEFT": true
+                        }
+                    },
+                    "completeTrigger": "action_complete_dialogue"
+                },
+                {
+                    "id": "prospector_gone"
+                },
+                {
+                    "id": "start_search",
+                    "startTrigger": "action_enter_camp",
+                    "onStart": {
+                        "dialogue": {
+                            "owner": "explorer",
+                            "storyTag": "prospector_rescue"
+                        }
+                    }
+                },
+                {
+                    "id": "search",
+                    "completeTrigger": "locale_scouted",
+                    "completeConditions": {
+                        "localeType": "shelter"
+                    },
+                    "onComplete": {
+                        "storyFlags": {
+                            "RESCUE_EXPLORER_LEFT": false
+                        }
+                    }
+                }
+            ],
+            "startConditions": {
+                "explorers": {
+                    "recruited": {
+                        "prospector": true
+                    }
+                }
+            },
+            "startTrigger": "explorers_changed"
         },
         "spirits": {
             "segments": [

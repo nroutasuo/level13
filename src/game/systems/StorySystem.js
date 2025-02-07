@@ -44,6 +44,7 @@ define([
 			GlobalSignals.registerTrigger(GlobalSignals.campEventStartedSignal, StoryConstants.triggers.camp_event);
 			GlobalSignals.registerTrigger(GlobalSignals.dialogueCompletedSignal, StoryConstants.triggers.action_complete_dialogue);
 			GlobalSignals.registerTrigger(GlobalSignals.examineSpotExaminedSignal, StoryConstants.triggers.action_examine);
+			GlobalSignals.registerTrigger(GlobalSignals.explorersChangedSignal, StoryConstants.triggers.explorers_changed);
 			GlobalSignals.registerTrigger(GlobalSignals.featureUnlockedSignal, StoryConstants.triggers.feature_unlocked);
 			GlobalSignals.registerTrigger(GlobalSignals.improvementBuiltSignal, StoryConstants.triggers.action_build);
 			GlobalSignals.registerTrigger(GlobalSignals.inventoryChangedSignal, StoryConstants.triggers.change_inventory);
@@ -56,6 +57,7 @@ define([
 			GlobalSignals.registerTrigger(GlobalSignals.sectorScoutedSignal, StoryConstants.triggers.action_scout);
 			GlobalSignals.registerTrigger(GlobalSignals.slowUpdateSignal, StoryConstants.triggers.update);
 			GlobalSignals.registerTrigger(GlobalSignals.storyFlagChangedSignal, StoryConstants.triggers.story_flag_changed);
+			GlobalSignals.registerTrigger(GlobalSignals.upgradeUnlockedSignal, StoryConstants.triggers.upgrade_researched);
 		},
 
 		triggerStories: function (triggerID, param) {

@@ -893,6 +893,7 @@ define(['ash',
 			if (localeVO.type == localeTypes.grove) {
 				GameGlobals.playerHelper.addPerk(PerkConstants.perkIds.blessed);
 				this.playerStatsNodes.head.stamina.stamina += PlayerStatConstants.STAMINA_GAINED_FROM_GROVE;
+				this.playerStatsNodes.head.entity.get(HopeComponent).hasDeity = true;
 				logMsgSuccess += "The trees seem alive. They whisper, but the words are unintelligible. You have found a source of <span class='hl-functionality'>ancient power</span>.";
 			}
 
@@ -928,6 +929,14 @@ define(['ash',
 				this.startSequence([
 					{ type: "dialogue", dialogueID: "locale_story_seeddepot" },
 					{ type: "log", textKey: "Scouted an old seed depot, but the seeds were dead." }
+				]);
+				return;
+			}
+
+			if (localeVO.type == localeTypes.shelter) {
+				this.startSequence([
+					{ type: "dialogue", dialogueID: "locale_story_shelter" },
+					{ type: "storyFlag", flagID: StoryConstants.flags.RESCUE_EXPLORER_FOUND, value: true },
 				]);
 				return;
 			}
@@ -1478,6 +1487,7 @@ define(['ash',
 				explorerVO = recruitComponent.explorer;
 				setting = "event";
 			}
+
 			GameGlobals.dialogueHelper.updateExplorerDialogueSource(explorerVO);
 			let dialogueID = GameGlobals.dialogueHelper.getExplorerDialogueKey(explorerVO, setting);
 

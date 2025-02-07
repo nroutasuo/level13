@@ -7,15 +7,19 @@ define([
 	'game/constants/UpgradeConstants',
 	'game/nodes/player/ItemsNode',
 	'game/nodes/sector/CampNode',
+	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/components/common/PositionComponent',
+	'game/components/sector/SectorStatusComponent',
+	'game/components/sector/SectorLocalesComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
-	'game/vos/ResourcesVO'
-], function (Ash, GameGlobals, GlobalSignals, ItemConstants, UpgradeConstants, ItemsNode, CampNode, TribeUpgradesNode, PositionComponent, SectorImprovementsComponent, ResourcesVO) {
+	'game/vos/PositionVO'
+], function (Ash, GameGlobals, GlobalSignals, ItemConstants, UpgradeConstants, ItemsNode, CampNode, PlayerStatsNode, TribeUpgradesNode, PositionComponent, SectorStatusComponent, SectorLocalesComponent, SectorImprovementsComponent, PositionVO) {
 	var UnlockedFeaturesSystem = Ash.System.extend({
 		
 		gameState: null,
 		campNodes: null,
+		playerStatsNodes: null,
 		tribeUpgradesNodes: null,
 		itemNodes: null,
 	
@@ -24,6 +28,7 @@ define([
 		addToEngine: function (engine) {
 			this.engine = engine;
 			this.campNodes = engine.getNodeList(CampNode);
+			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 			this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
 			this.itemNodes = engine.getNodeList(ItemsNode);
 			
@@ -33,6 +38,8 @@ define([
 
 		removeFromEngine: function (engine) {
 			this.campNodes = null;
+			this.playerStatsNodes = null;
+			this.playerStatsNodes = null;
 			this.engine = null;
 			
 			GlobalSignals.removeAll(this);
@@ -52,7 +59,8 @@ define([
 			// Global improvements
 			for (let node = this.campNodes.head; node; node = node.next) {
 				let improvementsComponent = node.entity.get(SectorImprovementsComponent);
-				if (improvementsComponent.getCount(improvementNames.campfire) > 0) {
+
+				if (node.camp.population >= 2 && improvementsComponent.getCount(improvementNames.campfire) > 0) {
 					GameGlobals.playerActionFunctions.unlockFeature("upgrades");
 				}
 				if (improvementsComponent.getCount(improvementNames.home) < 1) {
@@ -63,6 +71,10 @@ define([
 			
 			if (GameGlobals.gameState.numCamps !== numCamps) {
 				GameGlobals.gameState.numCamps = numCamps;
+			}
+
+			if (numCamps > 1 && !GameGlobals.gameState.isFeatureUnlocked("housing")) {
+				GameGlobals.playerActionFunctions.unlockFeature("housing");
 			}
 			
 			if (!GameGlobals.gameState.unlockedFeatures.projects) {
@@ -102,6 +114,22 @@ define([
 				if (GameGlobals.playerHelper.getExplorers().length > 0) {
 					GameGlobals.playerActionFunctions.unlockFeature("explorers");
 				}
+			}
+
+			let groundLevel = GameGlobals.gameState.getGroundLevel();
+			let position = new PositionVO(groundLevel, 0, 0, false);
+			let groveSector = GameGlobals.levelHelper.findNearestLocaleSector(position, localeTypes.grove);
+			if (groveSector) {
+				let sectorStatusComponent = groveSector.get(SectorStatusComponent);
+				let sectorLocalesComponent = groveSector.get(SectorLocalesComponent);
+				for (let i = 0; i < sectorLocalesComponent.locales.length; i++) {
+					let locale = sectorLocalesComponent.locales[i];
+					let isScouted = sectorStatusComponent.isLocaleScouted(i);
+					if (isScouted && locale.type == localeTypes.grove) {
+						this.playerStatsNodes.head.hope.hasDeity = true;
+					}
+				}
+				return null;
 			}
 		},
 		

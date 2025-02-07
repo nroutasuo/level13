@@ -753,6 +753,15 @@ define([
 						let result = this.checkRequirementsBoolean(requiredValue, currentValue, "Maximum explorers recruited", "Maximum explorers not recruited");
 						if (result) return result;
 					}
+
+					if (requirements.explorers.recruited) {
+						for (let explorerID in requirements.explorers.recruited) {
+							let requiredValue = requirements.explorers.recruited[explorerID];
+							let currentValue = GameGlobals.playerHelper.getExplorerByID(explorerID) != null;
+							let result = this.checkRequirementsBoolean(requiredValue, currentValue);
+							if (result) return result;
+						}
+					}
 				}
 
 				if (typeof requirements.bag !== "undefined") {
@@ -951,7 +960,7 @@ define([
 						}
 					}
 
-					if (typeof requirements.camp.disease !== "unddefined") {
+					if (typeof requirements.camp.disease !== "undefined") {
 						let currentValue = this.playerLocationNodes.head.entity.has(DiseaseComponent);
 						let requiredValue = requirements.camp.disease;
 						if (requiredValue != currentValue) {
@@ -1325,6 +1334,13 @@ define([
 						if (result) {
 							return result;
 						}
+					}
+				}
+
+				if (requirements.levelUnlocked) {
+					let level = requirements.levelUnlocked;
+					if (!GameGlobals.levelHelper.isLevelUnlocked(level)) {
+						return { value: 0 };
 					}
 				}
 				
@@ -2589,6 +2605,7 @@ define([
 						case localeTypes.greenhouse:
 						case localeTypes.depot:
 						case localeTypes.spacefactory:
+						case localeTypes.shelter:
 						case localeTypes.seedDepot:
 							return 0;
 					}

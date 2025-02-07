@@ -6,6 +6,7 @@ define([
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
 	'game/constants/CampConstants',
+	'game/constants/CharacterConstants',
 	'game/constants/ExplorerConstants',
 	'game/constants/ItemConstants',
 	'game/constants/LogConstants',
@@ -32,7 +33,7 @@ define([
 	'game/vos/RaidVO',
 	'text/Text'
 ], function (
-	Ash, MathUtils, GameGlobals, GlobalSignals, GameConstants, CampConstants, ExplorerConstants, ItemConstants, LogConstants, OccurrenceConstants, StoryConstants, TextConstants, UIConstants, WorldConstants,
+	Ash, MathUtils, GameGlobals, GlobalSignals, GameConstants, CampConstants, CharacterConstants, ExplorerConstants, ItemConstants, LogConstants, OccurrenceConstants, StoryConstants, TextConstants, UIConstants, WorldConstants,
 	PlayerResourcesNode, CampNode, TribeUpgradesNode,
 	CampComponent, PositionComponent, ItemsComponent,
 	DisasterComponent, DiseaseComponent, RaidComponent, TraderComponent, RecruitComponent, RefugeesComponent, VisitorComponent,  CampEventTimersComponent,
@@ -222,6 +223,7 @@ define([
 			
 			let improvements = campNode.entity.get(SectorImprovementsComponent);
 			let improvementType = GameGlobals.upgradeEffectsHelper.getImprovementForOccurrence(event);
+			let campOrdinal = GameGlobals.gameState.getCampOrdinal(campNode.position.level);
 			
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.accident:
@@ -247,7 +249,12 @@ define([
 					return improvements.getCount(improvementType) + improvements.getLevel(improvementType);
 
 				case OccurrenceConstants.campOccurrenceTypes.visitor:
-					return improvements.getCount(improvementType) + improvements.getLevel(improvementType);
+					let score = improvements.getCount(improvementType) + improvements.getLevel(improvementType);
+					let isForceExpedition =  GameGlobals.gameState.getStoryFlag(StoryConstants.flags.EXPEDITION_PENDING_VISITORS);
+					if (isForceExpedition && campOrdinal >= CampConstants.MIN_CAMP_ORDINAL_FOR_EXPEDITION_VISITORS) {
+						score += campOrdinal * 5;
+					}
+					return score;
 
 				default: return 1;
 			}
@@ -400,6 +407,7 @@ define([
 			var campTimers = campNode.entity.get(CampEventTimersComponent);
 			var duration = OccurrenceConstants.getDuration(event);
 			var campPos = campNode.entity.get(PositionComponent);
+			let campOrdinal = GameGlobals.gameState.getCampOrdinal(campPos.level);
 
 			var logMsg = null;
 			switch (event) {
@@ -459,7 +467,9 @@ define([
 
 				case OccurrenceConstants.campOccurrenceTypes.visitor:
 					let visitorType = MathUtils.randomElement(GameGlobals.campHelper.getValidVisitorTypes(campNode.entity));
-					campNode.entity.add(new VisitorComponent(visitorType));
+					let isExpedition = GameGlobals.campHelper.isValidCampForExpeditionVisitors(campOrdinal);
+					let visitorDialogueSource = isExpedition ? "visitor_expedition" : CharacterConstants.getDialogueSourceID(visitorType);
+					campNode.entity.add(new VisitorComponent(visitorType, visitorDialogueSource));
 					logMsg = "Visitor";
 					break;
 			}
@@ -721,6 +731,11 @@ define([
 				
 				case OccurrenceConstants.campOccurrenceTypes.disease:
 					return GameGlobals.gameState.getStoryFlag(StoryConstants.flags.GREENHOUSE_PENDING_DISEASE);
+				
+				case OccurrenceConstants.campOccurrenceTypes.visitor:
+					let numCamps = GameGlobals.gameState.numCamps;
+					let hasFlag = GameGlobals.gameState.getStoryFlag(StoryConstants.flags.EXPEDITION_PENDING_VISITORS);
+					return numCamps >= CampConstants.MIN_CAMP_ORDINAL_FOR_EXPEDITION_VISITORS && hasFlag;
 						
 				default: return false;
 			}

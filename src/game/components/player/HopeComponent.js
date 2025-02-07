@@ -3,6 +3,7 @@ define(['ash'], function (Ash) {
 	let HopeComponent = Ash.Class.extend({
 		
 		constructor: function () {
+			this.hasDeity = false;
 			this.deityName = null;
 			this.hope = 0;
 			this.maxHope = 0;
@@ -26,6 +27,7 @@ define(['ash'], function (Ash) {
 		},
 
 		customLoadFromSave: function(componentValues) {
+			this.hasDeity = componentValues.hasDeity || false;
 			this.deityName = componentValues.deityName || componentValues.name || null;
 			this.hope = componentValues.hope || componentValues.favour || 0;
 			this.maxHope = componentValues.maxHope || componentValues.maxFavour || 0;

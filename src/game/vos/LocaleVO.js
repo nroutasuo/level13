@@ -34,6 +34,7 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 		depot: "depot",
 		spacefactory: "spacefactory",
 		seedDepot: "seedDepot",
+		shelter: "shelter",
 	};
 	
 	var LocaleVO = Ash.Class.extend({
@@ -91,6 +92,7 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 				case localeTypes.restaurant: difficulty = 0.25; break;
 				case localeTypes.depot: difficulty = 1; break;
 				case localeTypes.seedDepot: difficulty = 0.5; break;
+				case localeTypes.shelter: difficulty = 0.15; break;
 				case localeTypes.spacefactory: difficulty = 1; break;
 				case localeTypes.sewer: difficulty = 1; break;
 				case localeTypes.store: difficulty = 0.3; break;

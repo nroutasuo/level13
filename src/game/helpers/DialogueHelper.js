@@ -36,7 +36,6 @@ define(['ash',
                 if (!storyTag && explorerVO && explorerVO.pendingDialogue) storyTag = explorerVO.pendingDialogue;
 
                 if (storyTag && dialogueVO.storyTag !== storyTag) return false;
-                if (!storyTag && dialogueVO.storyTag) return false;
 
                 let conditions = dialogueVO.conditions;
                 if (!conditions) return true;
@@ -242,7 +241,7 @@ define(['ash',
                 let validDialogues = this.getCharacterValidDialogues(dialogueSourceID, setting);
 
                 if (validDialogues.length == 0) {
-                    log.w("no valid dialogues found for character with " + dialogueSourceID + "." + setting);
+                    log.w("no valid dialogues found for character with dialogue source " + dialogueSourceID + "." + setting);
                     return null;
                 }
                 

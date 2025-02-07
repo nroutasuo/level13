@@ -60,6 +60,11 @@ define([
 			vo.isUrgent = d.isUrgent;
 			vo.isPriority = d.isPriority;
 
+			if (!d.pages) {
+				log.w("no pages defined for dialogue: " + dialogueID);
+				return vo;
+			}
+
 			for (let i = 0; i < d.pages.length; i++) {
 				let pageData = d.pages[i];
 				let pageVO = this.parsePage(i, pageData);
