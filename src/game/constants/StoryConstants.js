@@ -32,7 +32,8 @@ define([
 				shortName: "pillars",
 				popupMsg: "These massive pillars look like they were built relatively recently. They seem like reinforcements to help hold the weight of the City above. One of them is already cracked.",
 				positionParams: {
-					campOrdinal: 7
+					campOrdinal: 7,
+					levelIndex: 1,
 				}
 			},
 			{
@@ -41,7 +42,7 @@ define([
 				shortName: "debris",
 				popupMsg: "A damaged piece of a spacecraft, built to transport people. Thankfully, the remains have been reduced to skeletons.",
 				positionParams: {
-					campOrdinal: 15,
+					campOrdinal: 15
 				},
 				storyTag: "spaceDebris"
 			},
@@ -51,7 +52,7 @@ define([
 				shortName: "wreckage",
 				popupMsg: "Wreckage from the escape shuttle. You recognize the material from the factory, still sleek and polished where it has not fractured.",
 				positionParams: {
-					campOrdinal: 15,
+					campOrdinal: 15
 				},
 				storyTag: "spaceDebris"
 			},
@@ -61,10 +62,9 @@ define([
 				shortName: "shards",
 				popupMsg: "Sharp, glistering, human-sized shards of the sundome that used to cover the Surface.",
 				positionParams: {
-					campOrdinal: 15,
+					campOrdinal: 15
 				}
-			},
-
+			}
 		],
 
 		storyStashes: [
