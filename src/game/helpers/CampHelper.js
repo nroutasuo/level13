@@ -281,11 +281,12 @@ define([
 		getCampRaidDanger: function (sector) {
 			let improvements = sector.get(SectorImprovementsComponent);
 			let soldiers = sector.get(CampComponent).assignedWorkers.soldier || 0;
+			let population = sector.get(CampComponent).population;
 			let soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
 			var levelComponent = GameGlobals.levelHelper.getLevelEntityForSector(sector).get(LevelComponent);
 			let levelRaidDangerFactor = levelComponent.raidDangerFactor;
 				
-			return OccurrenceConstants.getRaidDanger(improvements, soldiers, soldierLevel, levelRaidDangerFactor);
+			return OccurrenceConstants.getRaidDanger(improvements, population, soldiers, soldierLevel, levelRaidDangerFactor);
 		},
 
 		hasEvent: function (sector, event) {

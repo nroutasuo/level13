@@ -33,8 +33,7 @@ define([
 		},
 
 		hasDeity: function () {
-			var deityName =  this.playerStatsNodes.head.hope.deityName;
-			return deityName != null && deityName.length > 0;
+			return this.playerStatsNodes.head.hope.hasDeity;
 		},
 		
 		hasUpgrade: function (upgradeID) {

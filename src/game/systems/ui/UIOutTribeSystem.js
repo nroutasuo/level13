@@ -387,7 +387,7 @@ define([
 			
 			var soldiers = camp.assignedWorkers.soldier || 0;
 			var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
-			var raidDanger = OccurrenceConstants.getRaidDanger(improvements, soldiers, soldierLevel, levelComponent.raidDangerFactor);
+			var raidDanger = OccurrenceConstants.getRaidDanger(improvements, camp.population, soldiers, soldierLevel, levelComponent.raidDangerFactor);
 			var raidWarning = raidDanger > CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
 			$("#camp-overview tr#" + rowID + " .camp-overview-raid .value").text(UIConstants.roundValue(raidDanger * 100) + "%");
 			$("#camp-overview tr#" + rowID + " .camp-overview-raid .value").toggleClass("warning", raidWarning);

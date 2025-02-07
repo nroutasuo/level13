@@ -132,7 +132,8 @@ define(['ash', 'utils/MathUtils', 'game/constants/CampConstants', 'game/constant
 			return 0.5;
 		},
 		
-		getRaidDanger: function (improvements, soldiers, soldierLevel, levelRaidDangerFactor) {
+		getRaidDanger: function (improvements, population, soldiers, soldierLevel, levelRaidDangerFactor) {
+			if (population < 1) return 0;
 			soldiers = soldiers || 0;
 			let dangerPoints = this.getRaidDangerPoints(improvements, levelRaidDangerFactor);
 			let defencePoints = this.getRaidDefencePoints(improvements, soldiers, soldierLevel);

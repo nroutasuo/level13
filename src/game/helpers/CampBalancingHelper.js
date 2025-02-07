@@ -446,9 +446,10 @@ define([
 				if (ordinal == 1) return true;
 				
 				// check danger
+				let population = 10;
 				var soldiers = CampConstants.workerTypes.soldier.getLimitNum(result);
 				var soldierLevel = 1;
-				var danger = OccurrenceConstants.getRaidDanger(result, soldiers, soldierLevel, levelRaidDangerFactor);
+				var danger = OccurrenceConstants.getRaidDanger(result, population, soldiers, soldierLevel, levelRaidDangerFactor);
 				var defenceLimit = CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
 				var noDefences = danger > defenceLimit;
 				if (noDefences) {
