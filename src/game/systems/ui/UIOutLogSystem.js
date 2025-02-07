@@ -277,8 +277,6 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 				log.w("No such ambient log message found: [" + messageID + "]", this);
 				return;
 			}
-
-			debugger
 			
 			if (!this.isAmbientMessageAvailable(messageID)) {
 				return;
