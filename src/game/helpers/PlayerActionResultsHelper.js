@@ -341,6 +341,7 @@ define([
 				rewards.gainedHope = 2;
 			} else if (localeVO.type == localeTypes.greenhouse) {
 			} else if (localeVO.type == localeTypes.tradingpartner) {
+				rewards.gainedHope = 1;
 			} else {
 				rewards.gainedEvidence = ExplorationConstants.getScoutLocaleEvidenceReward(localeVO.type, campOrdinal);
 			}
