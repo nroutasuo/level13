@@ -1494,7 +1494,7 @@ define([
 			if (Math.random() < probability) {
 				let campOrdinal = GameGlobals.gameState.numCamps;
 				let appearLevel = playerPos.level;
-				let explorer = ExplorerConstants.getNewRandomExplorer(ExplorerConstants.explorerSource.SCOUT, campOrdinal, appearLevel);
+				let explorer = GameGlobals.explorerHelper.getNewRandomExplorer(ExplorerConstants.explorerSource.SCOUT, campOrdinal, appearLevel);
 				explorers.push(explorer);
 			}
 			

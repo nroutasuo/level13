@@ -331,7 +331,7 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 				case "use_in_shrine": return "meditating";
 				case "clear_waste_t": return "clearing waste";
 				case "clear_waste_r": return "clearing waste";
-				case "launch": return "launch";
+				case "launch": return "launch";	
 				default: return baseActionID;
 			}
 		},

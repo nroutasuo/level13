@@ -683,7 +683,7 @@ define([
 			}
 
 			let options = { forcedAbilityType : abilityType }
-			return ExplorerConstants.getNewRandomExplorer(ExplorerConstants.explorerSource.EVENT, campOrdinal, campPos.level, options)
+			return GameGlobals.explorerHelper.getNewRandomExplorer(ExplorerConstants.explorerSource.EVENT, campOrdinal, campPos.level, options)
 		},
 		
 		onGameStarted: function () {

@@ -14,6 +14,7 @@ define(function () {
 		},
 		
 		origins: {
+			UNKNOWN: "unknown",
 			SURFACE: "surface",
 			SLUMS: "slums",
 			DARKLEVELS: "darklevels"
@@ -128,6 +129,7 @@ define(function () {
 			this.names.personalNames.push({name: "Elke", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Eine", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Ilse", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
+			this.names.personalNames.push({name: "Ilma", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Anja", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Johanna", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Astrid", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
@@ -135,7 +137,6 @@ define(function () {
 			this.names.personalNames.push({name: "Marjolein", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Rosalena", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Salome", gender: this.genders.FEMALE, culture: this.cultures.INDUS });
-			this.names.personalNames.push({name: "Sunita", gender: this.genders.FEMALE, culture: this.cultures.INDUS });
 			this.names.personalNames.push({name: "Zahra", gender: this.genders.FEMALE, culture: this.cultures.INDUS });
 			this.names.personalNames.push({name: "Miriam", gender: this.genders.FEMALE, culture: this.cultures.INDUS });
 			this.names.personalNames.push({name: "Zofia", gender: this.genders.FEMALE, culture: this.cultures.KIEVAN })
@@ -193,7 +194,6 @@ define(function () {
 			this.names.personalNames.push({name: "Simon", gender: this.genders.MALE, culture: this.cultures.KIEVAN });
 			this.names.personalNames.push({name: "Pawel", gender: this.genders.MALE, culture: this.cultures.KIEVAN });
 			this.names.personalNames.push({name: "Sergey", gender: this.genders.MALE, culture: this.cultures.KIEVAN });
-			this.names.personalNames.push({name: "Yevry", gender: this.genders.MALE, culture: this.cultures.KIEVAN })
 			this.names.personalNames.push({name: "Akinde", gender: this.genders.MALE, culture: this.cultures.SAHEL })
 			this.names.personalNames.push({name: "Bosede", gender: this.genders.MALE, culture: this.cultures.SAHEL })
 			this.names.personalNames.push({name: "Folake", gender: this.genders.MALE, culture: this.cultures.SAHEL })
@@ -258,10 +258,10 @@ define(function () {
 			return this.origins.SLUMS;
 		},
 		
-		getRandomCultures: function (num, origin) {
+		getRandomCultures: function (num, origin, excludedCultures) {
 			let result = [];
 			for (let i = 0; i < num; i++) {
-				result.push(this.getRandomCulture(origin, result));
+				result.push(this.getRandomCulture(origin, result, excludedCultures));
 			}
 			return result;
 		},
@@ -281,11 +281,15 @@ define(function () {
 		
 		getCultureProbability: function (culture, origin) {
 			switch (culture) {
-				case this.cultures.ETRURIAN: return origin == this.origins.SURFACE ? 0.5 : 0.25;
-				case this.cultures.HANSA: return origin == this.origins.SURFACE ? 0.25 : 0.5;
-				case this.cultures.INDUS: return origin == this.origins.SLUMS ? 0.5 : 1;
-				case this.cultures.KIEVAN: return origin == this.origins.SLUMS ? 0.5 : 1;
-				case this.cultures.YUAN: return origin == this.origins.SURFACE ? 0.25 : 0.5;
+				case this.cultures.ASSURIAN: return 1.5;
+				case this.cultures.INDUS: return 1.5;
+				case this.cultures.KIEVAN: return 1;
+				case this.cultures.ETRURIAN: return origin == this.origins.SURFACE ? 0.5 : 1;
+				case this.cultures.SAHEL: return origin == this.origins.SURFACE ? 1 : 0.5;
+				case this.cultures.YUAN: return 0.75;
+				case this.cultures.HANSA: return origin == this.origins.SLUMS ? 1 : 0.25;
+				case this.cultures.DOMA: return origin == this.origins.DARKLEVELS ? 1 : 0;
+				default: return 1;
 			}
 		},
 		

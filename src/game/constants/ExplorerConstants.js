@@ -41,7 +41,7 @@ define(['ash',
 			SCAVENGE_GENERAL: "scavenge_general",
 			SCAVENGE_INGREDIENTS: "scavenge_ingredients",
 			SCAVENGE_SUPPLIES: "scavenge_supplies",
-			SCAVENGE_CAPACITY: "scavenge_capacity",
+			SCAVENGE_CAPACITY: "scavenge_capacity", // always animal
 		},
 		
 		// in order of rarity
@@ -63,15 +63,37 @@ define(['ash',
 		MAX_ABILITY_LEVEL: 100,
 		MAX_EXPLORERS_BASE: 1,
 		
+		// unique explorers that are spawned in locales across the world and the player is guaranteed to meet (if they explore everything)
 		// camp ordinal -> explorer template
 		predefinedExplorers: {
-			2: { id: "gambler", localeType: localeTypes.maintenance, abilityType: "defence", name: "Yimin", icon: "img/characters/mercenary.png", dialogueSource: "explorer_unique_gambler" },
+			2: { id: "gambler", localeType: localeTypes.maintenance, abilityType: "attack", name: "Yimin", icon: "img/characters/mercenary.png", dialogueSource: "explorer_unique_gambler" },
 			3: { id: "dog", localeType: localeTypes.warehouse, abilityType: "scavenge_capacity", name: "Dog", icon: "img/characters/animal_dog.png", dialogueSource: "explorer_generic_dog" },
 			4: { id: "journalist", localeType: localeTypes.library, abilityType: "cost_scout", name: "Yevry", icon: "img/characters/scavenger.png", dialogueSource: "explorer_unique_journalist" },
 			5: { id: "handler", localeType: localeTypes.house, abilityType: "detect_supplies", name: "Jezekiah", icon: "img/characters/scavenger.png", dialogueSource: "explorer_unique_handler" },
 			6: { id: "prospector", localeType: localeTypes.store, abilityType: "scavenge_supplies", name: "Sunita", icon: "img/characters/scavenger.png", dialogueSource: "explorer_unique_prospector" },
 			10: { id: "hermit", localeType: localeTypes.bunker, abilityType: "scavenge_general", name: "Eliasco", icon: "img/characters/scavenger.png", dialogueSource: "explorer_unique_hermit" },
 		},
+
+		// templates used to generate random explorers
+		// order matters, first is more likely to get picked if valid
+		templateExplorers: [
+			{ id: "template_lover", explorerType: "fighter", origin: "surface", gender: "male", dialogueSource: "explorer_template_lover", },
+			{ id: "template_guard", explorerType: "fighter", origin: "slums", excludedCultures: [ "indus", "assurian" ], dialogueSource: "explorer_template_guard" },
+			{ id: "template_teen", explorerType: "scavenger", dialogueSource: "explorer_template_teen" },
+			{ id: "template_bard", explorerType: "scavenger", origin: "slums", dialogueSource: "explorer_template_bard" },
+			{ id: "template_researcher", explorerType: "scout", origin: "surface", culture: [ "sahel" ], gender: "female", dialogueSource: "explorer_template_researcher" },
+			{ id: "template_amnesiac", origin: "unknown", dialogueSource: "explorer_template_amnesiac" },
+			{ id: "template_architect", explorerType: "scout", origin: "surface", appearLevel: [ 15, 100 ], dialogueSource: "explorer_template_architect" },
+			{ id: "template_hacker", explorerType: "scout", origin: "slums", dialogueSource: "explorer_template_hacker" },
+			{ id: "template_shaman", explorerType: "scavenger", origin: "darklevels", appearLevel: [ -100, 12 ], dialogueSource: "explorer_template_shaman" },
+			{ id: "generic_scout_01", explorerType: "scout", dialogueSource: "explorer_generic_scout_01" },
+			{ id: "generis_scavenger_01", explorerType: "scavenger", dialogueSource: "explorer_generic_scavenger_01" },
+			{ id: "generic_mercenary_01", explorerType: "fighter", dialogueSource: "explorer_generic_mercenary_01" },
+			{ id: "generic_dog_01", isAnimal: true, animalType: "dog", dialogueSource: "explorer_generic_dog_01" },
+			{ id: "generic_animal_01", isAnimal: true, abilityType: "scavenge_capacity", dialogueSource: "explorer_generic_animal_01" },
+			{ id: "generic_servo_01", isRobot: true, dialogueSource: "explorer_generic_servo_01" },
+			{ id: "generic_human_01", dialogueSource: "explorer_generic_01" },
+		],
 
 		icons: [
 			// fighter
@@ -107,49 +129,47 @@ define(['ash',
 		// options:
 		// - forcedAbilityType: specify follower ability type (otherwise random)
 		// - forcedAbilityLevelRandomFactor: replace random variation in ability level for camp ordinal with specified factor
+		// - excludedDialogueSources: list of dialogue sources (ids) not to use (already in use)
 		getNewRandomExplorer: function (source, campOrdinal, appearLevel, options) {
 			campOrdinal = campOrdinal || 1;
 			options = options || {};
 			
-			let id = 100 + Math.floor(Math.random() * 100000);
-			
-			let abilityType = options.forcedAbilityType;
-
+			let forcedAbilityType = options.forcedAbilityType;
+			let excludedDialogueSources = options.excludedDialogueSources || [];
 			let isRobot = source == ExplorerConstants.explorerSource.CRAFT;
 
-			if (!abilityType) {
-				let availableAbilityTypes = this.getAvailableAbilityTypes(source, campOrdinal);
-				abilityType = availableAbilityTypes[Math.floor(Math.random() * availableAbilityTypes.length)];
-			}
-			
+			let template = this.getRandomExplorerTemplate(source, appearLevel, forcedAbilityType, isRobot, excludedDialogueSources);
+
+			let id = template.id + "_" + (10 + Math.floor(Math.random() * 100000));
+
+			let abilityType = forcedAbilityType || template.abilityType || this.getAbilityTypeFromTemplate(source, template, campOrdinal);
 			let abilityLevel = this.getRandomAbilityLevelByCampOrdinal(abilityType, campOrdinal, options.forcedAbilityLevelRandomFactor);
 			
-			let name = "";
-			let icon = "";
+			let gender = null;
+			let name = null;
+			let icon = null;
 			
-			let isAnimal = this.isAnimal(abilityType);
-			let animalType = null;
-			
-			let gender = isRobot ? CultureConstants.genders.OTHER : CultureConstants.getRandomGender();
+			let isAnimal = template.isAnimal || this.isAnimal(abilityType);
 
 			if (isAnimal) {
-				let animalKeys = this.getAvailableAnimalTypes(source, campOrdinal);
-				animalType = ExplorerConstants.animalType[animalKeys[MathUtils.getWeightedRandom(0, animalKeys.length)]];
+				let animalTypes = this.getAvailableAnimalTypes(source, campOrdinal);
+				let animalType = template.animalType || ExplorerConstants.animalType[animalTypes[MathUtils.getWeightedRandom(0, animalTypes.length)]];
+				gender = template.gender || CultureConstants.getRandomGender();
 				name = this.getRandomAnimalName(animalType);
 				icon = this.getRandomAnimalIcon(animalType);
 			} else if (isRobot) {
+				gender = CultureConstants.genders.OTHER;
 				name = this.getRandomRobotName();
 				icon = this.getRandomRobotIcon();
 			} else {
-				let origin = CultureConstants.getRandomOrigin(appearLevel);
-				let culturalHeritage = CultureConstants.getRandomCultures(MathUtils.randomIntBetween(0, 3), origin);
-				name = CultureConstants.getRandomShortName(gender, origin, culturalHeritage);
+				let origin = template.origin || CultureConstants.getRandomOrigin(appearLevel);
+				let cultures = this.getExplorerCulturesFromTemplate(template, origin);
+				gender = template.gender || CultureConstants.getRandomGender();
+				name = CultureConstants.getRandomShortName(gender, origin, cultures);
 				icon = this.getRandomIcon(gender, abilityType);
 			}
-
-			let dialogueSource = this.getRandomDialogueSource(abilityType, animalType);
 			
-			return new ExplorerVO(id, name, abilityType, abilityLevel, icon, gender, source, dialogueSource);
+			return new ExplorerVO(id, name, abilityType, abilityLevel, icon, gender, source, template.dialogueSource);
 		},
 		
 		getNewPredefinedExplorer: function (explorerID) {
@@ -172,6 +192,65 @@ define(['ash',
 			let abilityLevel = this.getRandomAbilityLevelByCampOrdinal(template.abilityType, templateCampOrdinal);
 			
 			return new ExplorerVO(explorerID, template.name, template.abilityType, abilityLevel, template.icon, template.gender, ExplorerConstants.explorerSource.SCOUT, template.dialogueSource);
+		},
+
+		getRandomExplorerTemplate: function (source, appearLevel, forcedAbilityType, isRobot, excludedDialogueSources) {
+			let validTemplates = [];
+			let forcedExplorerType = forcedAbilityType ? this.getExplorerTypeForAbilityType(forcedAbilityType) : null;
+			let forcedAnimal = forcedAbilityType && this.isAnimal(forcedAbilityType);
+			let forcedNotAnimal = forcedAbilityType && !this.isAnimal(forcedAbilityType);
+
+			for (let i = 0; i < this.templateExplorers.length; i++) {
+				let template = this.templateExplorers[i];
+
+				let isTemplateRobot = template.isRobot || false;
+				let isTemplateAnimal = template.isAnimal || false;
+
+				if (excludedDialogueSources && excludedDialogueSources.indexOf(template.dialogueSource) >= 0) continue;
+				if (forcedExplorerType && template.explorerType && template.explorerType != forcedExplorerType) continue;
+				if (forcedAbilityType && template.abilityType && template.abilityType != forcedAbilityType) continue;
+				if (isRobot != isTemplateRobot) continue;
+				if (forcedAnimal && !isTemplateAnimal) continue;
+				if (forcedNotAnimal && isTemplateAnimal) continue;
+				if (template.appearLevel && (appearLevel < template.appearLevel[0] || appearLevel > template.appearLevel[1] )) continue;
+
+				validTemplates.push(template);
+			}
+
+			if (validTemplates.length == 1) {
+				log.w("no valid explorer templates found");
+				return { id: "fallback", dialogueSource: "explorer_generic_01" };
+			}
+
+			let index = MathUtils.getWeightedRandom(0, validTemplates.length);
+			return validTemplates[index];
+		},
+
+		getExplorerCulturesFromTemplate: function (template, origin) {
+			if (template.culture) return [ template.culture ];
+
+			let maxCultures = MathUtils.randomIntBetween(1, 3);
+			let numCultures = MathUtils.randomIntBetween(1, maxCultures + 1);
+			
+			return CultureConstants.getRandomCultures(numCultures, origin, template.excludedCultures);
+		},
+
+		getAbilityTypeFromTemplate: function (source, template, campOrdinal) {
+			if (template.abilityType) return template.abilityType;
+			if (template.isAnimal) return ExplorerConstants.abilityType.SCAVENGE_CAPACITY;
+			
+			let possibleTypes = this.getAvailableAbilityTypes(source, campOrdinal, template.isRobot);
+			
+			if (template.explorerType) {
+				possibleTypes = possibleTypes.filter(t => this.getExplorerTypeForAbilityType(t) == template.explorerType);
+			}
+
+			if (possibleTypes.length == 1) {
+				log.w("no possible ability types found for template " + template.id);
+				return ExplorerConstants.abilityType.COST_SCOUT;
+			}
+			
+			return MathUtils.randomElement[possibleTypes];
 		},
 		
 		getRandomAbilityLevelByCampOrdinal: function (abilityType, campOrdinal, forcedAbilityLevelRandomFactor) {
@@ -220,10 +299,10 @@ define(['ash',
 			return result;
 		},
 		
-		getAvailableAbilityTypes: function (source, campOrdinal) {
+		getAvailableAbilityTypes: function (source, campOrdinal, isRobot) {
 			let result = [];
 
-			let isRobot = source == ExplorerConstants.explorerSource.CRAFT;
+			isRobot = source == ExplorerConstants.explorerSource.CRAFT || isRobot;
 			
 			for (let k in ExplorerConstants.abilityType) {
 				let abilityType = ExplorerConstants.abilityType[k];
@@ -335,51 +414,6 @@ define(['ash',
 				if (this.isValidIcon(iconDef, gender, explorerType)) validIcons.push(iconDef);
 			}
 			return validIcons[Math.floor(Math.random() * validIcons.length)].icon;
-		},
-
-		getRandomDialogueSource: function (abilityType, animalType) {
-			// TODO check that dialogue source containts entries for all settings (meet, event, interact)
-			
-			let isAnimal = this.isAnimal(abilityType);
-
-			let possibleSources = [];
-
-			if (isAnimal) {
-				switch (animalType) {
-					case ExplorerConstants.animalType.DOG:
-						possibleSources.push("explorer_generic_dog");
-						break;
-					default:
-						possibleSources.push("explorer_generic_animal");
-						break;
-				}
-			} else {
-				switch (abilityType) {
-					case ExplorerConstants.abilityType.ATTACK:
-					case ExplorerConstants.abilityType.DEFENCE:
-						possibleSources.push("explorer_generic_mercenary");
-						break;
-					case ExplorerConstants.abilityType.COST_SCOUT:
-					case ExplorerConstants.abilityType.COST_SCAVENGE:
-					case ExplorerConstants.abilityType.DETECT_HAZARDS:
-					case ExplorerConstants.abilityType.DETECT_SUPPLIES:
-					case ExplorerConstants.abilityType.DETECT_INGREDIENTS:
-					case ExplorerConstants.abilityType.COST_MOVEMENT:
-						possibleSources.push("explorer_generic_scout");
-						break;
-					case ExplorerConstants.abilityType.SCAVENGE_INGREDIENTS:
-					case ExplorerConstants.abilityType.SCAVENGE_SUPPLIES:
-					case ExplorerConstants.abilityType.SCAVENGE_CAPACITY:
-					case ExplorerConstants.abilityType.SCAVENGE_GENERAL:
-						possibleSources.push("explorer_generic_scavenger");
-						break;
-					default:
-						log.w("no dialogue sources defined for explorer ability type " + abilityType);
-						break;
-				}
-			}
-
-			return MathUtils.randomElement(possibleSources);
 		},
 		
 		isValidIcon: function (iconDef, gender, explorerType) {
