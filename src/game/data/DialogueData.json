@@ -14,6 +14,201 @@
 				}
 			]
 		},
+		"character_bard_default_event_03": {
+			"pages": [
+				{
+					"id": "intro",
+					"key": "character_bard_default_event_03_p1",
+					"options": [
+						{
+							"buttonKey": "npc_request_agree",
+							"response": "s1"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "s1",
+					"key": "character_bard_default_event_03_p2",
+					"options": "NEXT"
+				},
+				{
+					"id": "s2",
+					"key": "character_bard_default_event_03_p3",
+					"options": "NEXT"
+				},
+				{
+					"id": "s3",
+					"key": "character_bard_default_event_03_p4",
+					"result": {
+						"gainedRumours": 3
+					}
+				},
+				{
+					"id": "reject",
+					"key": "character_generic_barter_reject_01_p1"
+				}
+			]
+		},
+		"character_bard_default_event_04": {
+			"pages": [
+				{
+					"id": "intro",
+					"key": "character_bard_default_event_04_p1",
+					"options": [
+						{
+							"buttonKey": "npc_request_agree",
+							"response": "s1"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "s1",
+					"key": "character_bard_default_event_04_p2",
+					"options": "NEXT"
+				},
+				{
+					"id": "s2",
+					"key": "character_bard_default_event_04_p3",
+					"options": "NEXT"
+				},
+				{
+					"id": "s3",
+					"key": "character_bard_default_event_04_p4",
+					"result": {
+						"gainedRumours": 3
+					}
+				},
+				{
+					"id": "reject",
+					"key": "character_generic_barter_reject_01_p1"
+				}
+			]
+		},
+		"character_bard_default_event_05": {
+			"pages": [
+				{
+					"id": "intro",
+					"key": "character_bard_default_event_05_p1",
+					"options": [
+						{
+							"buttonKey": "npc_request_agree",
+							"response": "s1"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "s1",
+					"key": "character_bard_default_event_05_p2",
+					"options": "NEXT"
+				},
+				{
+					"id": "s2",
+					"key": "character_bard_default_event_05_p3",
+					"options": "NEXT"
+				},
+				{
+					"id": "s3",
+					"key": "character_bard_default_event_05_p4",
+					"result": {
+						"gainedRumours": 3
+					}
+				},
+				{
+					"id": "reject",
+					"key": "character_generic_barter_reject_01_p1"
+				}
+			]
+		},
+		"character_bard_default_event_06": {
+			"pages": [
+				{
+					"id": "intro",
+					"key": "character_bard_default_event_06_p1",
+					"options": [
+						{
+							"buttonKey": "npc_request_agree",
+							"response": "s1"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "s1",
+					"key": "character_bard_default_event_06_p2",
+					"options": "NEXT"
+				},
+				{
+					"id": "s2",
+					"key": "character_bard_default_event_06_p3",
+					"options": "NEXT"
+				},
+				{
+					"id": "s3",
+					"key": "character_bard_default_event_06_p4",
+					"result": {
+						"gainedRumours": 3
+					}
+				},
+				{
+					"id": "reject",
+					"key": "character_generic_barter_reject_01_p1"
+				}
+			]
+		},
+		"character_bard_default_event_07": {
+			"pages": [
+				{
+					"id": "intro",
+					"key": "character_bard_default_event_07_p1",
+					"options": [
+						{
+							"buttonKey": "npc_request_agree",
+							"response": "s1"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "s1",
+					"key": "character_bard_default_event_07_p2",
+					"options": "NEXT"
+				},
+				{
+					"id": "s2",
+					"key": "character_bard_default_event_07_p3",
+					"options": "NEXT"
+				},
+				{
+					"id": "s3",
+					"key": "character_bard_default_event_07_p4",
+					"result": {
+						"gainedRumours": 3
+					}
+				},
+				{
+					"id": "reject",
+					"key": "character_generic_barter_reject_01_p1"
+				}
+			]
+		},
 		"character_bard_default_meet_01": {
 			"pages": [
 				"character_bard_default_meet_01_p1"
@@ -50,6 +245,122 @@
 			"pages": [
 				{
 					"key": "character_crafter_default_event_02_p1"
+				}
+			]
+		},
+		"character_crafter_default_event_03": {
+			"pages": [
+				{
+					"id": "request",
+					"key": "character_crafter_default_event_03_p1",
+					"options": [
+						{
+							"buttonKey": "npc_request_agree",
+							"costs": {
+								"resource_food": 5
+							},
+							"response": "accept"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "accept",
+					"key": "character_crafter_default_event_03_accept",
+					"result": {
+						"gainedItems": [
+							"res_",
+							"res_",
+							"res_",
+							"res_",
+							"res_"
+						]
+					}
+				},
+				{
+					"id": "reject",
+					"key": "character_crafter_default_event_03_refuse"
+				}
+			]
+		},
+		"character_crafter_default_event_04": {
+			"conditions": {
+				"player": {
+					"canHaveItemUpgrade": "weapon_"
+				}
+			},
+			"pages": [
+				{
+					"id": "request",
+					"key": "character_crafter_default_event_04_p1",
+					"options": [
+						{
+							"buttonKey": "npc_request_agree",
+							"costs": {
+								"silver": 1
+							},
+							"response": "accept"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "accept",
+					"key": "character_crafter_default_event_04_accept",
+					"result": {
+						"gainedItemUpgrades": [
+							"weapon_"
+						]
+					}
+				},
+				{
+					"id": "reject",
+					"key": "character_crafter_default_event_04_p1_reject"
+				}
+			]
+		},
+		"character_crafter_default_event_05": {
+			"conditions": {
+				"player": {
+					"canHaveItemUpgrade": "clothing_"
+				}
+			},
+			"pages": [
+				{
+					"id": "request",
+					"key": "character_crafter_default_event_05_p1",
+					"options": [
+						{
+							"buttonKey": "npc_request_agree",
+							"costs": {
+								"silver": 1
+							},
+							"response": "accept"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "accept",
+					"key": "character_generic_barter_accept_01_p1",
+					"result": {
+						"gainedItemUpgrades": [
+							"clothing_"
+						]
+					}
+				},
+				{
+					"id": "reject",
+					"key": "character_generic_barter_reject_01_p1"
 				}
 			]
 		},
@@ -200,6 +511,11 @@
 				}
 			]
 		},
+		"character_doomsayer_default_event_03": {
+			"pages": [
+				"character_doomsayer_default_event_03_p1"
+			]
+		},
 		"character_doomsayer_default_meet_01": {
 			"pages": [
 				"character_doomsayer_default_meet_01_p1"
@@ -220,26 +536,117 @@
 				"character_doomsayer_default_meet_04_p1"
 			]
 		},
-		"character_drifer_default_meet_01": {
+		"character_drifter_default_event_01": {
 			"pages": [
-				"character_drifer_default_meet_01_p1"
+				{
+					"id": "request",
+					"key": "character_drifter_default_event_01_p1",
+					"options": [
+						{
+							"buttonKey": "npc_request_agree",
+							"costs": {
+								"resource_water": 5
+							},
+							"response": "accept"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "accept",
+					"key": "character_drifter_default_event_01_accept",
+					"result": {
+						"gainedItems": [
+							[
+								"artefact_",
+								"trade_"
+							]
+						]
+					}
+				},
+				{
+					"id": "reject",
+					"key": "character_drifter_default_event_01_refuse"
+				}
 			]
 		},
-		"character_drifer_default_meet_02": {
+		"character_drifter_default_event_02": {
 			"pages": [
-				"character_drifer_default_meet_02_p1"
+				{
+					"key": "character_drifter_default_event_02_p1",
+					"result": {
+						"gainedItems": [
+							"cache_evidence"
+						]
+					}
+				}
 			]
 		},
-		"character_drifer_default_meet_03": {
+		"character_drifter_default_event_03": {
+			"conditions": {
+				"storyFlags": {
+					"RESCUE_EXPLORER_FOUND": false,
+					"RESCUE_EXPLORER_LEFT": true
+				}
+			},
 			"pages": [
-				"character_drifer_default_meet_03_p1"
+				"character_drifter_default_event_03_p1"
 			]
 		},
-		"character_drifer_default_meet_04": {
+		"character_drifter_default_event_04": {
+			"pages": [
+				{
+					"key": "character_drifter_default_event_04_p1",
+					"result": {
+						"gainedRumours": 1
+					}
+				}
+			]
+		},
+		"character_drifter_default_event_05": {
+			"conditions": {
+				"storyFlags": {
+					"GREENHOUSE_FOUND": true,
+					"GREENHOUSE_RESTORED": false
+				}
+			},
+			"pages": [
+				{
+					"key": "character_drifter_default_event_05_p1",
+					"result": {
+						"gainedRumours": 1
+					}
+				}
+			]
+		},
+		"character_drifter_default_event_06": {
+			"pages": [
+				"character_drifter_default_event_06_p1"
+			]
+		},
+		"character_drifter_default_meet_01": {
+			"pages": [
+				"character_drifter_default_meet_01_p1"
+			]
+		},
+		"character_drifter_default_meet_02": {
+			"pages": [
+				"character_drifter_default_meet_02_p1"
+			]
+		},
+		"character_drifter_default_meet_03": {
+			"pages": [
+				"character_drifter_default_meet_03_p1"
+			]
+		},
+		"character_drifter_default_meet_04": {
 			"pages": [
 				{
 					"id": "warn",
-					"key": "character_drifer_default_meet_04_p1",
+					"key": "character_drifter_default_meet_04_p1",
 					"result": {
 						"storyFlags": {
 							"ESCAPE_WORRIED_ABOUT_OUTSIDE": true
@@ -248,9 +655,9 @@
 				}
 			]
 		},
-		"character_drifer_default_meet_05": {
+		"character_drifter_default_meet_05": {
 			"pages": [
-				"character_drifer_default_meet_05_p1"
+				"character_drifter_default_meet_05_p1"
 			]
 		},
 		"character_generic_helpful_meet_poi_blocker_debris_01": {
@@ -710,6 +1117,42 @@
 			"pages": [
 				{
 					"key": "character_shaman_default_event_02_p1"
+				}
+			]
+		},
+		"character_shaman_default_event_03": {
+			"conditions": {
+				"storyFlags": {
+					"GREENHOUSE_FOUND": true,
+					"GREENHOUSE_RESTORED": false
+				}
+			},
+			"pages": [
+				{
+					"key": "character_shaman_default_event_03_p1",
+					"result": {
+						"gainedHope": 1
+					}
+				}
+			]
+		},
+		"character_shaman_default_event_04": {
+			"conditions": {
+				"improvements": {
+					"temple": [
+						1,
+						-1
+					]
+				}
+			},
+			"pages": [
+				{
+					"key": "character_shaman_default_event_04_p1",
+					"result": {
+						"gainedItems": [
+							"cache_hope_11"
+						]
+					}
 				}
 			]
 		},
@@ -3857,7 +4300,12 @@
 			"dialogues": {
 				"event": [
 					"character_bard_default_event_01",
-					"character_bard_default_event_02"
+					"character_bard_default_event_02",
+					"character_bard_default_event_03",
+					"character_bard_default_event_04",
+					"character_bard_default_event_05",
+					"character_bard_default_event_06",
+					"character_bard_default_event_07"
 				],
 				"meet": [
 					"character_bard_default_meet_01",
@@ -3893,7 +4341,10 @@
 			"dialogues": {
 				"event": [
 					"character_crafter_default_event_01",
-					"character_crafter_default_event_02"
+					"character_crafter_default_event_02",
+					"character_crafter_default_event_03",
+					"character_crafter_default_event_04",
+					"character_crafter_default_event_05"
 				],
 				"meet": [
 					"character_crafter_default_meet_01",
@@ -3964,14 +4415,18 @@
 			"dialogues": {
 				"event": [
 					"character_drifter_default_event_01",
-					"character_drifter_default_event_02"
+					"character_drifter_default_event_02",
+					"character_drifter_default_event_03",
+					"character_drifter_default_event_04",
+					"character_drifter_default_event_05",
+					"character_drifter_default_event_06"
 				],
 				"meet": [
-					"character_drifer_default_meet_01",
-					"character_drifer_default_meet_02",
-					"character_drifer_default_meet_03",
-					"character_drifer_default_meet_04",
-					"character_drifer_default_meet_05",
+					"character_drifter_default_meet_01",
+					"character_drifter_default_meet_02",
+					"character_drifter_default_meet_03",
+					"character_drifter_default_meet_04",
+					"character_drifter_default_meet_05",
 					"character_generic_reserved_meet_01",
 					"character_generic_helpful_meet_poi_campable_01",
 					"character_generic_helpful_meet_poi_campable_02",
@@ -4132,7 +4587,9 @@
 			"dialogues": {
 				"event": [
 					"character_shaman_default_event_01",
-					"character_shaman_default_event_02"
+					"character_shaman_default_event_02",
+					"character_shaman_default_event_03",
+					"character_shaman_default_event_04"
 				],
 				"meet": [
 					"character_shaman_default_meet_01",

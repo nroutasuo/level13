@@ -579,6 +579,12 @@ define([
 						let itemVO = this.getSpecificRewardItem(1, [ itemID ]);
 						rewards.gainedItems[i] = itemVO;
 					}
+					
+					if (rewards.gainedItems[i] instanceof Array) {
+						let itemIDs = rewards.gainedItems[i];
+						let itemVO = this.getSpecificRewardItem(1, itemIDs);
+						rewards.gainedItems[i] = itemVO;
+					}
 				}
 			}
 
@@ -707,6 +713,7 @@ define([
 			if (rewards.selectedItems) {
 				for (let i = 0; i < rewards.selectedItems.length; i++) {
 					let item = rewards.selectedItems[i];
+					if (!item) continue;
 					GameGlobals.playerHelper.addItem(item, item.level, sourcePos);
 					GameGlobals.gameState.increaseGameStatKeyed("numItemsFoundPerId", item.id);
 					GameGlobals.gameState.increaseGameStatList("uniqueItemsFound", item.id);
@@ -1668,9 +1675,15 @@ define([
 			
 			let index = MathUtils.getWeightedRandom(0, possibleItemIds.length);
 			let itemID = possibleItemIds[index];
-			let item = ItemConstants.getItemDefinitionByID(itemID);
+			let item = ItemConstants.getItemDefinitionByID(itemID, true) || ItemConstants.getRandomItemDefinitionByPartialItemID(itemID);
+
+			if (!item) {
+				log.w("No valid reward items for getSpecificRewardItem");
+				return null;
+			}
+
 			let level = ItemConstants.getRandomItemLevel(ItemConstants.itemSource.exploration, item);
-			return ItemConstants.getNewItemInstanceByID(itemID, level);
+			return ItemConstants.getNewItemInstanceByID(item.id, level);
 		},
 
 		getNecessityItem: function (currentItems, campOrdinal) {

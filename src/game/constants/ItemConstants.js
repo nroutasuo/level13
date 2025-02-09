@@ -1,5 +1,5 @@
-define(['ash', 'text/Text', 'json!game/data/ItemData.json', 'text/Text', 'game/constants/PlayerActionConstants', 'game/vos/ItemVO'],
-function (Ash, Text, ItemData, Text, PlayerActionConstants, ItemVO) {
+define(['ash', 'json!game/data/ItemData.json', 'text/Text', 'utils/MathUtils', 'game/constants/PlayerActionConstants', 'game/vos/ItemVO'],
+function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, ItemVO) {
 
 	let ItemConstants = {
 		
@@ -462,6 +462,26 @@ function (Ash, Text, ItemData, Text, PlayerActionConstants, ItemVO) {
 			}
 			if (!skipWarning) log.w("no such item definition " + id);
 			return null;
+		},
+
+		getRandomItemDefinitionByPartialItemID: function (id, skipWarning) {
+			let possibleItems = [];
+			
+			for (let type in this.itemDefinitions ) {
+				for (let i in this.itemDefinitions[type]) {
+					let item = this.itemDefinitions[type][i];
+					if (item.id.indexOf(id) >= 0) {
+						possibleItems.push(item);
+					}
+				}
+			}
+
+			if (possibleItems.length == 0) {
+				if (!skipWarning) log.w("no such item definition " + id);
+				return null;
+			}
+
+			return MathUtils.randomElement(possibleItems);
 		},
 
 		getDefaultItemLevel: function (itemType) {

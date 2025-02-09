@@ -227,11 +227,11 @@ define([
 			}
 
 			if (sectorFeatures.sectorType == SectorConstants.SECTOR_TYPE_MAINTENANCE) {
-				validTypes.push(CharacterConstants.characterTypes.drifer);
+				validTypes.push(CharacterConstants.characterTypes.drifter);
 			}
 
 			if (sectorFeatures.heapResource) {
-				validTypes.push(CharacterConstants.characterTypes.drifer);
+				validTypes.push(CharacterConstants.characterTypes.drifter);
 			}
 			
 			if (sectorFeatures.sunlit) {
