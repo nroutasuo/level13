@@ -430,6 +430,9 @@ define([
 				if (sectorStatus.graffiti) {
 					description += "There is a graffiti here: " + sectorStatus.graffiti;
 					description += "</p><p>";
+				} else if (featuresComponent.graffiti) {
+					description += "There is a graffiti here: " + featuresComponent.graffiti;
+					description += "</p><p>";
 				}
 			}
 			

@@ -63,6 +63,7 @@ define(
 			this.waymarks = features.waymarks || [];
 			this.heapResource = features.heapResource || null;
 			this.examineSpots = features.examineSpots || [];
+			this.graffiti = features.graffiti || null;
 		},
 		
 		// Secondary attributes

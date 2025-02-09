@@ -82,6 +82,7 @@ define([
 					}
 
 					this.generateTexture(seed, worldVO, levelVO, sectorVO);
+					this.generateGraffiti(seed, worldVO, levelVO, sectorVO);
 					this.generateDifficulty(seed, worldVO, levelVO, sectorVO);
 					this.generateResources(seed, worldVO, levelVO, sectorVO);
 				}
@@ -1068,6 +1069,15 @@ define([
 			
 			var density = (levelDensity + randomDensity) / 2;
 			sectorVO.buildingDensity = MathUtils.clamp(Math.round(density), minDensity, maxDensity);
+		},
+
+		generateGraffiti: function (seed, worldVO, levelVO, sectorVO) {
+			if (sectorVO.hazards.territory > 0) {
+				let neighbours = levelVO.getNeighbourList(sectorVO.position.sectorX, sectorVO.position.sectorY);
+				if (neighbours.every(neighbourVO => neighbourVO.hazards.territory > 0 && neighbourVO.graffiti == null)) {
+					sectorVO.graffiti = "Red Hats";
+				}
+			}
 		},
 		
 		generateDifficulty: function (seed, worldVO, levelVO, sectorVO) {
@@ -2269,6 +2279,7 @@ define([
 		
 		isSunlit: function (seed, worldVO, levelVO, sectorVO) {
 			let isSurfaceLevel = levelVO.level === worldVO.topLevel;
+			
 			if (sectorVO.isCamp && !isSurfaceLevel) return false;
 			
 			let l = sectorVO.position.level;

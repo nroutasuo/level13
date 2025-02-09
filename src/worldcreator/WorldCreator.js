@@ -145,6 +145,7 @@ define([
 			sectorFeatures.waymarks = sectorVO.waymarks || [];
 			sectorFeatures.heapResource = sectorVO.heapResource || null;
 			sectorFeatures.examineSpots = sectorVO.examineSpots || [];
+			sectorFeatures.graffiti = sectorVO.graffiti || null;
 			return sectorFeatures;
 		},
 
