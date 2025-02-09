@@ -787,6 +787,22 @@
 				"character_workerGeneric_default_interact_02_p1"
 			]
 		},
+		"character_workerGeneric_interact_01": {
+			"conditions": {
+				"deity": false
+			},
+			"pages": [
+				"character_workerGeneric_interact_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_02": {
+			"conditions": {
+				"deity": false
+			},
+			"pages": [
+				"character_workerGeneric_interact_02_p1"
+			]
+		},
 		"character_workerGeneric_interact_apocalypse_01": {
 			"conditions": {
 				"storyFlags": {
@@ -845,6 +861,27 @@
 				"character_workerGeneric_interact_apocalypse_03_p1"
 			]
 		},
+		"character_workerGeneric_interact_story_greenhouse_fixed_01": {
+			"conditions": {
+				"storyFlags": {
+					"GREENHOUSE_RESTORED": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_interact_story_greenhouse_fixed_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_story_greenhouse_found_01": {
+			"conditions": {
+				"storyFlags": {
+					"GREENHOUSE_FOUND": true,
+					"GREENHOUSE_RESTORED": false
+				}
+			},
+			"pages": [
+				"character_workerGeneric_interact_story_greenhouse_found_01_p1"
+			]
+		},
 		"character_workerRobotmaker_default_interact_01": {
 			"pages": [
 				"character_workerRobotmaker_default_interact_01_p1"
@@ -883,6 +920,27 @@
 		"character_workerScavenger_default_interact_02": {
 			"pages": [
 				"character_workerScavenger_default_interact_02_p1"
+			]
+		},
+		"character_workerScavenger_default_interact_03": {
+			"conditions": {
+				"deity": false
+			},
+			"pages": [
+				"character_workerScavenger_default_interact_03_p1"
+			]
+		},
+		"character_workerScavenger_default_interact_04": {
+			"conditions": {
+				"deity": false
+			},
+			"pages": [
+				"character_workerScavenger_default_interact_04_p1"
+			]
+		},
+		"character_workerScavenger_default_interact_05": {
+			"pages": [
+				"character_workerScavenger_default_interact_05_p1"
 			]
 		},
 		"character_workerScientist_default_interact_01": {
@@ -978,6 +1036,11 @@
 				"character_workerTrapper_default_interact_02_p1"
 			]
 		},
+		"character_workerTrapper_default_interact_03": {
+			"pages": [
+				"character_workerTrapper_default_interact_03_p1"
+			]
+		},
 		"character_workerWater_default_interact_01": {
 			"pages": [
 				"character_workerWater_default_interact_01_p1"
@@ -986,6 +1049,11 @@
 		"character_workerWater_default_interact_02": {
 			"pages": [
 				"character_workerWater_default_interact_02_p1"
+			]
+		},
+		"character_workerWater_default_interact_03": {
+			"pages": [
+				"character_workerWater_default_interact_03_p1"
 			]
 		},
 		"explorer_generic_animal_event_01": {
@@ -1355,10 +1423,10 @@
 			]
 		},
 		"explorer_generic_story_rescue_prospector": {
-			"isUrgent": true,
 			"conditions": {
 				"inCamp": true
 			},
+			"isUrgent": true,
 			"pages": [
 				{
 					"buttonKey": "npc_request_promise",
@@ -3900,7 +3968,9 @@
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_default_interact_01",
-					"character_workerGeneric_default_interact_02"
+					"character_workerGeneric_default_interact_02",
+					"character_workerGeneric_interact_story_greenhouse_found_01",
+					"character_workerGeneric_interact_story_greenhouse_fixed_01"
 				]
 			}
 		},
@@ -3936,7 +4006,11 @@
 					"character_workerRope_default_interact_02",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
-					"character_workerGeneric_default_interact_02"
+					"character_workerGeneric_interact_01_p1",
+					"character_workerGeneric_interact_01_p2",
+					"character_workerGeneric_default_interact_02",
+					"character_workerGeneric_interact_story_greenhouse_found_01",
+					"character_workerGeneric_interact_story_greenhouse_fixed_01"
 				]
 			}
 		},
@@ -3957,10 +4031,17 @@
 				"interact": [
 					"character_workerScavenger_default_interact_01",
 					"character_workerScavenger_default_interact_02",
+					"character_workerScavenger_default_interact_03",
+					"character_workerScavenger_default_interact_04",
+					"character_workerScavenger_default_interact_05",
+					"character_workerGeneric_interact_01_p1",
+					"character_workerGeneric_interact_01_p2",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_default_interact_01",
-					"character_workerGeneric_default_interact_02"
+					"character_workerGeneric_default_interact_02",
+					"character_workerGeneric_interact_story_greenhouse_found_01",
+					"character_workerGeneric_interact_story_greenhouse_fixed_01"
 				]
 			}
 		},
@@ -3976,7 +4057,8 @@
 					"character_workerScientist_default_interact_07",
 					"character_workerScientist_default_interact_08",
 					"character_workerGeneric_default_interact_01",
-					"character_workerGeneric_default_interact_02"
+					"character_workerGeneric_default_interact_02",
+					"character_workerGeneric_interact_story_greenhouse_found_01"
 				]
 			}
 		},
@@ -4002,7 +4084,8 @@
 					"character_workerToolsmith_default_interact_02",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
-					"character_workerGeneric_default_interact_02"
+					"character_workerGeneric_default_interact_02",
+					"character_workerGeneric_interact_story_greenhouse_found_01"
 				]
 			}
 		},
@@ -4011,9 +4094,14 @@
 				"interact": [
 					"character_workerTrapper_default_interact_01",
 					"character_workerTrapper_default_interact_02",
+					"character_workerTrapper_default_interact_03",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
-					"character_workerGeneric_default_interact_02"
+					"character_workerGeneric_default_interact_02",
+					"character_workerGeneric_interact_01_p1",
+					"character_workerGeneric_interact_01_p2",
+					"character_workerGeneric_interact_story_greenhouse_found_01",
+					"character_workerGeneric_interact_story_greenhouse_fixed_01"
 				]
 			}
 		},
@@ -4022,9 +4110,14 @@
 				"interact": [
 					"character_workerWater_default_interact_01",
 					"character_workerWater_default_interact_02",
+					"character_workerWater_default_interact_03",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
-					"character_workerGeneric_default_interact_02"
+					"character_workerGeneric_default_interact_02",
+					"character_workerGeneric_interact_01_p1",
+					"character_workerGeneric_interact_01_p2",
+					"character_workerGeneric_interact_story_greenhouse_found_01",
+					"character_workerGeneric_interact_story_greenhouse_fixed_01"
 				]
 			}
 		},
@@ -4148,29 +4241,21 @@
 				]
 			}
 		},
-		"explorer_template_lover": {
+		"explorer_generic_servo_01": {
 			"dialogues": {
 				"event": [
-					"explorer_template_lover_event_01"
+					"explorer_template_servo_event_01"
 				],
 				"interact": [
-					"explorer_template_lover_interact_01",
-					"explorer_template_lover_interact_02",
-					"explorer_template_lover_interact_03",
-					"explorer_template_lover_interact_04",
-					"explorer_template_lover_interact_05",
-					"explorer_template_lover_interact_06",
-					"explorer_template_lover_interact_07",
-					"explorer_template_lover_interact_08",
-					"explorer_template_lover_interact_09",
-					"explorer_template_lover_interact_10",
-					"explorer_template_lover_interact_11",
-					"explorer_template_lover_interact_12",
-					"explorer_generic_story_rescue_absence_01",
-					"explorer_generic_story_rescue_prospector"
+					"explorer_template_servo_interact_01",
+					"explorer_template_servo_interact_02",
+					"explorer_template_servo_interact_03",
+					"explorer_template_servo_interact_04",
+					"explorer_template_servo_interact_05",
+					"explorer_template_servo_interact_06"
 				],
 				"meet": [
-					"explorer_template_lover_meet_01"
+					"explorer_template_servo_meet_01"
 				]
 			}
 		},
@@ -4197,87 +4282,6 @@
 				],
 				"meet": [
 					"explorer_template_amnesiac_meet_01"
-				]
-			}
-		},
-		"explorer_template_guard": {
-			"dialogues": {
-				"event": [
-					"explorer_template_guard_event_01"
-				],
-				"interact": [
-					"explorer_template_guard_interact_01",
-					"explorer_template_guard_interact_02",
-					"explorer_template_guard_interact_03",
-					"explorer_template_guard_interact_04",
-					"explorer_template_guard_interact_05",
-					"explorer_template_guard_interact_06",
-					"explorer_template_guard_interact_07",
-					"explorer_template_guard_interact_08",
-					"explorer_template_guard_interact_09",
-					"explorer_template_guard_interact_10",
-					"explorer_template_guard_interact_11",
-					"explorer_template_guard_interact_12",
-					"explorer_generic_story_rescue_absence_01",
-					"explorer_template_guard_story_rescue_absence_01",
-					"explorer_template_guard_story_rescue_found_01",
-					"explorer_template_guard_story_expedition_found_01",
-					"explorer_generic_story_rescue_prospector"
-				],
-				"meet": [
-					"explorer_template_guard_meet_01"
-				]
-			}
-		},
-		"explorer_template_researcher": {
-			"dialogues": {
-				"event": [
-					"explorer_template_researcher_event_01"
-				],
-				"interact": [
-					"explorer_template_researcher_interact_01",
-					"explorer_template_researcher_interact_02",
-					"explorer_template_researcher_interact_03",
-					"explorer_template_researcher_interact_04",
-					"explorer_template_researcher_interact_05",
-					"explorer_template_researcher_interact_06",
-					"explorer_template_researcher_interact_07",
-					"explorer_template_researcher_interact_08",
-					"explorer_template_researcher_interact_09",
-					"explorer_template_researcher_interact_10",
-					"explorer_template_researcher_interact_11",
-					"explorer_template_researcher_interact_12",
-					"explorer_generic_story_rescue_absence_01",
-					"explorer_generic_story_rescue_prospector"
-				],
-				"meet": [
-					"explorer_template_researcher_meet_01"
-				]
-			}
-		},
-		"explorer_template_hacker": {
-			"dialogues": {
-				"event": [
-					"explorer_template_hacker_event_01"
-				],
-				"interact": [
-					"explorer_template_hacker_interact_01",
-					"explorer_template_hacker_interact_02",
-					"explorer_template_hacker_interact_03",
-					"explorer_template_hacker_interact_04",
-					"explorer_template_hacker_interact_05",
-					"explorer_template_hacker_interact_06",
-					"explorer_template_hacker_interact_07",
-					"explorer_template_hacker_interact_08",
-					"explorer_template_hacker_interact_09",
-					"explorer_template_hacker_interact_10",
-					"explorer_template_hacker_interact_11",
-					"explorer_template_hacker_interact_12",
-					"explorer_generic_story_rescue_absence_01",
-					"explorer_generic_story_rescue_prospector"
-				],
-				"meet": [
-					"explorer_template_hacker_meet_01"
 				]
 			}
 		},
@@ -4333,29 +4337,110 @@
 				]
 			}
 		},
-		"explorer_template_teen": {
+		"explorer_template_guard": {
 			"dialogues": {
 				"event": [
-					"explorer_template_teen_event_01"
+					"explorer_template_guard_event_01"
 				],
 				"interact": [
-					"explorer_template_teen_interact_01",
-					"explorer_template_teen_interact_02",
-					"explorer_template_teen_interact_03",
-					"explorer_template_teen_interact_04",
-					"explorer_template_teen_interact_05",
-					"explorer_template_teen_interact_06",
-					"explorer_template_teen_interact_07",
-					"explorer_template_teen_interact_08",
-					"explorer_template_teen_interact_09",
-					"explorer_template_teen_interact_10",
-					"explorer_template_teen_interact_11",
-					"explorer_template_teen_interact_12",
-					"explorer_template_teen_story_rescue_absence_01",
+					"explorer_template_guard_interact_01",
+					"explorer_template_guard_interact_02",
+					"explorer_template_guard_interact_03",
+					"explorer_template_guard_interact_04",
+					"explorer_template_guard_interact_05",
+					"explorer_template_guard_interact_06",
+					"explorer_template_guard_interact_07",
+					"explorer_template_guard_interact_08",
+					"explorer_template_guard_interact_09",
+					"explorer_template_guard_interact_10",
+					"explorer_template_guard_interact_11",
+					"explorer_template_guard_interact_12",
+					"explorer_generic_story_rescue_absence_01",
+					"explorer_template_guard_story_rescue_absence_01",
+					"explorer_template_guard_story_rescue_found_01",
+					"explorer_template_guard_story_expedition_found_01",
 					"explorer_generic_story_rescue_prospector"
 				],
 				"meet": [
-					"explorer_template_teen_meet_01"
+					"explorer_template_guard_meet_01"
+				]
+			}
+		},
+		"explorer_template_hacker": {
+			"dialogues": {
+				"event": [
+					"explorer_template_hacker_event_01"
+				],
+				"interact": [
+					"explorer_template_hacker_interact_01",
+					"explorer_template_hacker_interact_02",
+					"explorer_template_hacker_interact_03",
+					"explorer_template_hacker_interact_04",
+					"explorer_template_hacker_interact_05",
+					"explorer_template_hacker_interact_06",
+					"explorer_template_hacker_interact_07",
+					"explorer_template_hacker_interact_08",
+					"explorer_template_hacker_interact_09",
+					"explorer_template_hacker_interact_10",
+					"explorer_template_hacker_interact_11",
+					"explorer_template_hacker_interact_12",
+					"explorer_generic_story_rescue_absence_01",
+					"explorer_generic_story_rescue_prospector"
+				],
+				"meet": [
+					"explorer_template_hacker_meet_01"
+				]
+			}
+		},
+		"explorer_template_lover": {
+			"dialogues": {
+				"event": [
+					"explorer_template_lover_event_01"
+				],
+				"interact": [
+					"explorer_template_lover_interact_01",
+					"explorer_template_lover_interact_02",
+					"explorer_template_lover_interact_03",
+					"explorer_template_lover_interact_04",
+					"explorer_template_lover_interact_05",
+					"explorer_template_lover_interact_06",
+					"explorer_template_lover_interact_07",
+					"explorer_template_lover_interact_08",
+					"explorer_template_lover_interact_09",
+					"explorer_template_lover_interact_10",
+					"explorer_template_lover_interact_11",
+					"explorer_template_lover_interact_12",
+					"explorer_generic_story_rescue_absence_01",
+					"explorer_generic_story_rescue_prospector"
+				],
+				"meet": [
+					"explorer_template_lover_meet_01"
+				]
+			}
+		},
+		"explorer_template_researcher": {
+			"dialogues": {
+				"event": [
+					"explorer_template_researcher_event_01"
+				],
+				"interact": [
+					"explorer_template_researcher_interact_01",
+					"explorer_template_researcher_interact_02",
+					"explorer_template_researcher_interact_03",
+					"explorer_template_researcher_interact_04",
+					"explorer_template_researcher_interact_05",
+					"explorer_template_researcher_interact_06",
+					"explorer_template_researcher_interact_07",
+					"explorer_template_researcher_interact_08",
+					"explorer_template_researcher_interact_09",
+					"explorer_template_researcher_interact_10",
+					"explorer_template_researcher_interact_11",
+					"explorer_template_researcher_interact_12",
+					"explorer_generic_story_rescue_absence_01",
+					"explorer_generic_story_rescue_prospector"
+				],
+				"meet": [
+					"explorer_template_researcher_meet_01"
 				]
 			}
 		},
@@ -4384,21 +4469,29 @@
 				]
 			}
 		},
-		"explorer_generic_servo_01": {
+		"explorer_template_teen": {
 			"dialogues": {
 				"event": [
-					"explorer_template_servo_event_01"
+					"explorer_template_teen_event_01"
 				],
 				"interact": [
-					"explorer_template_servo_interact_01",
-					"explorer_template_servo_interact_02",
-					"explorer_template_servo_interact_03",
-					"explorer_template_servo_interact_04",
-					"explorer_template_servo_interact_05",
-					"explorer_template_servo_interact_06"
+					"explorer_template_teen_interact_01",
+					"explorer_template_teen_interact_02",
+					"explorer_template_teen_interact_03",
+					"explorer_template_teen_interact_04",
+					"explorer_template_teen_interact_05",
+					"explorer_template_teen_interact_06",
+					"explorer_template_teen_interact_07",
+					"explorer_template_teen_interact_08",
+					"explorer_template_teen_interact_09",
+					"explorer_template_teen_interact_10",
+					"explorer_template_teen_interact_11",
+					"explorer_template_teen_interact_12",
+					"explorer_template_teen_story_rescue_absence_01",
+					"explorer_generic_story_rescue_prospector"
 				],
 				"meet": [
-					"explorer_template_servo_meet_01"
+					"explorer_template_teen_meet_01"
 				]
 			}
 		},
