@@ -8,6 +8,7 @@ define([
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
 	'game/constants/ExplorationConstants',
+	'game/constants/MovementConstants',
 	'game/constants/TextConstants',
 	'game/constants/TradeConstants',
 	'game/nodes/sector/SectorNode',
@@ -16,6 +17,7 @@ define([
 	'game/components/common/PositionComponent',
 	'game/components/common/RevealedComponent',
 	'game/components/common/VisitedComponent',
+	'game/components/sector/PassagesComponent',
 	'game/components/sector/SectorControlComponent',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/SectorFeaturesComponent',
@@ -32,6 +34,7 @@ define([
 	PositionConstants,
 	SectorConstants,
 	ExplorationConstants,
+	MovementConstants,
 	TextConstants,
 	TradeConstants,
 	SectorNode,
@@ -40,6 +43,7 @@ define([
 	PositionComponent,
 	RevealedComponent,
 	VisitedComponent,
+	PassagesComponent,
 	SectorControlComponent,
 	SectorStatusComponent,
 	SectorFeaturesComponent,
@@ -457,9 +461,7 @@ define([
 
 			switch (poiType) {
 				case "campable":
-					if (sectorFeatures.campable) {
-						return {};
-					}
+					if (sectorFeatures.campable) return {};
 					break;
 				case "settlement":
 					if (sectorLocales.hasLocale(localeTypes.tradingpartner)) {
@@ -478,12 +480,66 @@ define([
 						return { nameTextKey: "grove" };
 					}
 					break;
+				case "ingredients": 
+					if (sectorFeatures.itemsScavengeable.length > 0) return {};
+					break;
+				case "hazard_pollution": 
+					if (sectorFeatures.hazards.poison > 0) return {};
+					break;
+				case "hazard_radiation": 
+					if (sectorFeatures.hazards.radiation > 0) return {};
+					break;
+				case "hazard_cold": 
+					if (sectorFeatures.hazards.cold > 0) return {};
+					break;
+				case "hazard_debris": 
+					if (sectorFeatures.hazards.debris > 0) return {};
+					break;
+				case "hazard_flooded": 
+					if (sectorFeatures.hazards.flooded > 0) return {};
+					break;
+				case "hazard_territory": 
+					if (sectorFeatures.hazards.territory > 0) return {};
+					break;
+				case "blocker_debris": 
+					if (this.hasBlockingBlockerInAnyDirection(sector, MovementConstants.BLOCKER_TYPE_DEBRIS)) return {};
+					break;
+				case "blocker_explosives": 
+					if (this.hasBlockingBlockerInAnyDirection(sector, MovementConstants.BLOCKER_TYPE_EXPLOSIVES)) return {};
+					break;
+				case "blocker_gap": 
+					if (this.hasBlockingBlockerInAnyDirection(sector, MovementConstants.BLOCKER_TYPE_GAP)) return {};
+					break;
+				case "blocker_gate": 
+					if (this.hasBlockingBlockerInAnyDirection(sector, MovementConstants.BLOCKER_TYPE_TOLL_GATE)) return {};
+					break;
+				case "blocker_waste": 
+					if (this.hasBlockingBlockerInAnyDirection(sector, MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE)) return {};
+					if (this.hasBlockingBlockerInAnyDirection(sector, MovementConstants.BLOCKER_TYPE_WASTE_TOXIC)) return {};
+					break;
 				default:
 					log.w("no such poi type defined: " + poiType);
 					break;
 			}
 
 			return null;
+		},
+
+		hasBlockingBlockerInAnyDirection: function (sector, blockerType) {
+			let passagesComponent = sector.get(PassagesComponent);
+
+			for (let i in PositionConstants.getLevelDirections()) {
+				let direction = PositionConstants.getLevelDirections()[i];
+				let blocker = passagesComponent.getBlocker(direction);
+
+				if (!blocker) continue;
+				if (blocker.type != blockerType) continue;
+				if (!GameGlobals.movementHelper.isBlocked(sector, direction)) continue;
+
+				return true;
+			}
+
+			return false;
 		},
 		
 		isInDetectionRange: function (sector, itemBonusType) {

@@ -15,6 +15,8 @@ define([
 	
     let CharacterSystem = Ash.System.extend({
 
+		context: "CharacterSystem",
+
 		constructor: function () { },
 
 		lastLevelCharacterUpdate: {}, // level -> timestamp
@@ -125,7 +127,7 @@ define([
 
 			statusComponent.currentCharacters.push(characterVO);
 
-			log.i("added character [" + characterType + "] at [" + sector.get(PositionComponent).toString() + "]");
+			log.i("added character [" + characterType + "] at [" + sector.get(PositionComponent).toString() + "]", this);
 		},
 
 		selectSectorForNewCharacter: function (level) {
@@ -143,6 +145,13 @@ define([
 				
 				let statusComponent = sector.get(SectorStatusComponent);
 				if (statusComponent.currentCharacters.length > 0) return false;
+
+				let neighbours = GameGlobals.levelHelper.getSectorNeighboursList(sector);
+				for (let i = 0; i < neighbours.length; i++) {
+					let neighbour = neighbours[i];
+					let neighbourFeaturesComponent = neighbour.get(SectorFeaturesComponent);
+					if (neighbourFeaturesComponent.campable) return false;
+				}
 
 				return true;
 			};
