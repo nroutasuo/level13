@@ -197,7 +197,12 @@
                             "surface": true
                         }
                     },
-                    "startTrigger": "change_position"
+                    "startTrigger": "change_position",
+                    "onStart": {
+                        "storyFlags": {
+                            "ESCAPE_REACHED_SURFACE": true
+                        }
+                    }
                 }
             ],
             "startConditions": {},
@@ -398,7 +403,8 @@
                     "id": "greenhouse_built",
                     "onStart": {
                         "storyFlags": {
-                            "GREENHOUSE_SEARCHING_FOR_CURE": false
+                            "GREENHOUSE_SEARCHING_FOR_CURE": false,
+                            "GREENHOUSE_RESTORED": true
                         }
                     },
                     "startConditions": {

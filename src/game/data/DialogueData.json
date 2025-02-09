@@ -797,9 +797,18 @@
 				"character_workerGeneric_interact_apocalypse_01_p1"
 			]
 		},
+		"character_workerGeneric_interact_apocalypse_02": {
+			"conditions": {
+				"storyFlags": {
+					"APOCALYPSE_KNOWN": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_interact_apocalypse_02_p1"
+			]
+		},
 		"character_workerGeneric_interact_spirits_01": {
 			"conditions": {
-				"deity": true,
 				"conditions": {
 					"deity": true,
 					"improvements": {
@@ -808,7 +817,8 @@
 							-1
 						]
 					}
-				}
+				},
+				"deity": true
 			},
 			"pages": [
 				"character_workerGeneric_interact_apocalypse_01_p1"
@@ -833,16 +843,6 @@
 			},
 			"pages": [
 				"character_workerGeneric_interact_apocalypse_03_p1"
-			]
-		},
-		"character_workerGeneric_interact_apocalypse_02": {
-			"conditions": {
-				"storyFlags": {
-					"APOCALYPSE_KNOWN": true
-				}
-			},
-			"pages": [
-				"character_workerGeneric_interact_apocalypse_02_p1"
 			]
 		},
 		"character_workerRobotmaker_default_interact_01": {
@@ -899,7 +899,8 @@
 			"pages": [
 				"character_workerScientist_default_interact_03_p1"
 			]
-		},"character_workerScientist_default_interact_04": {
+		},
+		"character_workerScientist_default_interact_04": {
 			"pages": [
 				"character_workerScientist_default_interact_4_p1"
 			]
@@ -1032,9 +1033,50 @@
 				"explorer_generic_dog_interact_03_p1"
 			]
 		},
+		"explorer_generic_dog_interact_04": {
+			"pages": [
+				"explorer_generic_dog_interact_04_p1"
+			]
+		},
+		"explorer_generic_dog_interact_05": {
+			"pages": [
+				"explorer_generic_dog_interact_05_p1"
+			]
+		},
+		"explorer_generic_dog_interact_06": {
+			"pages": [
+				"explorer_generic_dog_interact_06_p1"
+			]
+		},
 		"explorer_generic_dog_meet_01": {
 			"pages": [
 				"explorer_generic_dog_meet_01_p1"
+			]
+		},
+		"explorer_generic_interact_story_apocalypse_01": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				},
+				"storyFlags": {
+					"APOCALYPSE_KNOWN": true
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_story_apocalypse_01_p1"
+			]
+		},
+		"explorer_generic_interact_story_apocalypse_02": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				},
+				"storyFlags": {
+					"APOCALYPSE_KNOWN": true
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_story_apocalypse_02_p1"
 			]
 		},
 		"explorer_generic_mercenary_event_01": {
@@ -1078,6 +1120,36 @@
 				}
 			],
 			"repeatable": false
+		},
+		"explorer_generic_mercenary_interact_04": {
+			"conditions": {
+				"storyFlags": {
+					"SPIRITS_MAGIC_SEEN": false
+				}
+			},
+			"pages": [
+				"explorer_generic_mercenary_interact_04_p1"
+			]
+		},
+		"explorer_generic_mercenary_interact_05": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_generic_mercenary_interact_05_p1"
+			]
+		},
+		"explorer_generic_mercenary_interact_06": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_generic_mercenary_interact_06_p1"
+			]
 		},
 		"explorer_generic_mercenary_meet_01": {
 			"pages": [
@@ -1128,6 +1200,44 @@
 				}
 			],
 			"repeatable": true
+		},
+		"explorer_generic_scavenger_interact_04": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_generic_scavenger_interact_04_p1"
+			]
+		},
+		"explorer_generic_scavenger_interact_05": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				},
+				"player": {
+					"position": {
+						"level": [
+							-1,
+							14
+						]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_scavenger_interact_05_p1"
+			]
+		},
+		"explorer_generic_scavenger_interact_06": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_generic_scavenger_interact_06_p1"
+			]
 		},
 		"explorer_generic_scavenger_meet_01": {
 			"pages": [
@@ -1182,6 +1292,36 @@
 			],
 			"repeatable": true
 		},
+		"explorer_generic_scout_interact_04": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_generic_scout_interact_04_p1"
+			]
+		},
+		"explorer_generic_scout_interact_05": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_generic_scout_interact_05_p1"
+			]
+		},
+		"explorer_generic_scout_interact_06": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_generic_scout_interact_06_p1"
+			]
+		},
 		"explorer_generic_scout_meet_01": {
 			"pages": [
 				{
@@ -1201,8 +1341,24 @@
 			],
 			"storyTag": "find_greenhouse"
 		},
+		"explorer_generic_story_rescue_absence_01": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				},
+				"storyFlags": {
+					"RESCUE_EXPLORER_LEFT": true
+				}
+			},
+			"pages": [
+				"explorer_generic_story_rescue_absence_01_p1"
+			]
+		},
 		"explorer_generic_story_rescue_prospector": {
 			"isUrgent": true,
+			"conditions": {
+				"inCamp": true
+			},
 			"pages": [
 				{
 					"buttonKey": "npc_request_promise",
@@ -1212,72 +1368,1111 @@
 			],
 			"storyTag": "prospector_rescue"
 		},
-		"explorer_unique_gambler_story_search_spirits_01": {
-			"isPriority": true,
-			"conditions": {
-				"storyFlags": {
-					"SPIRITS_SEARCHING_FOR_SPIRITS": true
-				},
-				"sector": {
-					"ground": false
-				}
-			},
+		"explorer_template_amnesiac_event_01": {
 			"pages": [
-				"explorer_unique_gambler_story_search_spirits_01_p1"
+				"explorer_template_amnesiac_event_01_p1"
 			]
 		},
-		"explorer_unique_gambler_story_search_spirits_02": {
-			"isPriority": true,
-			"conditions": {
-				"storyFlags": {
-					"SPIRITS_SEARCHING_FOR_SPIRITS": true
-				},
-				"sector": {
-					"ground": true
-				}
-			},
+		"explorer_template_amnesiac_interact_01": {
 			"pages": [
-				"explorer_unique_gambler_story_search_spirits_02_p1"
+				"explorer_template_amnesiac_interact_01_p1"
 			]
 		},
-		"explorer_unique_gambler_story_search_spirits_03": {
-			"isPriority": true,
-			"conditions": {
-				"storyFlags": {
-					"SPIRITS_SEARCHING_FOR_SPIRITS": true
-				},
-				"sector": {
-					"ground": true
-				}
-			},
+		"explorer_template_amnesiac_interact_02": {
 			"pages": [
-				"explorer_unique_gambler_story_search_spirits_03_p1"
+				"explorer_template_amnesiac_interact_02_p1"
 			]
 		},
-		"explorer_generic_interact_story_apocalypse_01": {
+		"explorer_template_amnesiac_interact_03": {
+			"pages": [
+				"explorer_template_amnesiac_interact_03_p1"
+			]
+		},
+		"explorer_template_amnesiac_interact_04": {
 			"conditions": {
-				"storyFlags": {
-					"APOCALYPSE_KNOWN": true
-				},
 				"explorer": {
 					"trust": 1
 				}
 			},
 			"pages": [
-				"explorer_generic_interact_story_apocalypse_01_p1"
+				"explorer_template_amnesiac_interact_04_p1"
 			]
 		},
-		"explorer_generic_interact_story_apocalypse_02": {
+		"explorer_template_amnesiac_interact_05": {
 			"conditions": {
-				"storyFlags": {
-					"APOCALYPSE_KNOWN": true
-				},
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_amnesiac_interact_05_p1"
+			]
+		},
+		"explorer_template_amnesiac_interact_06": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_amnesiac_interact_06_p1"
+			]
+		},
+		"explorer_template_amnesiac_interact_07": {
+			"conditions": {
 				"explorer": {
 					"trust": 2
 				}
 			},
 			"pages": [
-				"explorer_generic_interact_story_apocalypse_02_p1"
+				"explorer_template_amnesiac_interact_07_p1"
+			]
+		},
+		"explorer_template_amnesiac_interact_08": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_template_amnesiac_interact_08_p1"
+			]
+		},
+		"explorer_template_amnesiac_interact_09": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_template_amnesiac_interact_09_p1"
+			]
+		},
+		"explorer_template_amnesiac_interact_10": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_template_amnesiac_interact_10_p1"
+			]
+		},
+		"explorer_template_amnesiac_interact_11": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_template_amnesiac_interact_11_p1"
+			]
+		},
+		"explorer_template_amnesiac_interact_12": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_template_amnesiac_interact_12_p1"
+			]
+		},
+		"explorer_template_amnesiac_meet_12": {
+			"pages": [
+				"explorer_template_amnesiac_meet_12_p1"
+			]
+		},
+		"explorer_template_architect_event_01": {
+			"pages": [
+				"explorer_template_architect_event_01_p1"
+			]
+		},
+		"explorer_template_architect_interact_01": {
+			"pages": [
+				"explorer_template_architect_interact_01_p1"
+			]
+		},
+		"explorer_template_architect_interact_02": {
+			"pages": [
+				"explorer_template_architect_interact_02_p1"
+			]
+		},
+		"explorer_template_architect_interact_03": {
+			"pages": [
+				"explorer_template_architect_interact_03_p1"
+			]
+		},
+		"explorer_template_architect_interact_04": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_architect_interact_04_p1"
+			]
+		},
+		"explorer_template_architect_interact_05": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_architect_interact_05_p1"
+			]
+		},
+		"explorer_template_architect_interact_06": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_architect_interact_06_p1"
+			]
+		},
+		"explorer_template_architect_interact_07": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_template_architect_interact_07_p1"
+			]
+		},
+		"explorer_template_architect_interact_08": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_template_architect_interact_08_p1"
+			]
+		},
+		"explorer_template_architect_interact_09": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_template_architect_interact_09_p1"
+			]
+		},
+		"explorer_template_architect_interact_10": {
+			"conditions": {
+				"storyFlags": {
+					"ESCAPE_SEARCHING_FOR_GROUND": false
+				}
+			},
+			"pages": [
+				"explorer_template_architect_interact_10_p1"
+			]
+		},
+		"explorer_template_architect_interact_11": {
+			"conditions": {
+				"storyFlags": {
+					"FALL_SEEN_EVACUATION": true
+				}
+			},
+			"pages": [
+				"explorer_template_architect_interact_11_p1"
+			]
+		},
+		"explorer_template_architect_interact_12": {
+			"conditions": {
+				"storyFlags": {
+					"ESCAPE_REACHED_SURFACE": true
+				}
+			},
+			"pages": [
+				"explorer_template_architect_interact_12_p1"
+			]
+		},
+		"explorer_template_architect_meet_01": {
+			"pages": [
+				"explorer_template_architect_meet_01_p1"
+			]
+		},
+		"explorer_template_bard_event_01": {
+			"pages": [
+				"explorer_template_bard_event_01_p1"
+			]
+		},
+		"explorer_template_bard_interact_01": {
+			"pages": [
+				"explorer_template_bard_interact_01_p1"
+			]
+		},
+		"explorer_template_bard_interact_02": {
+			"pages": [
+				"explorer_template_bard_interact_02_p1"
+			]
+		},
+		"explorer_template_bard_interact_03": {
+			"pages": [
+				"explorer_template_bard_interact_03_p1"
+			]
+		},
+		"explorer_template_bard_interact_04": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_bard_interact_04_p1"
+			]
+		},
+		"explorer_template_bard_interact_05": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_bard_interact_05_p1"
+			]
+		},
+		"explorer_template_bard_interact_06": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_bard_interact_06_p1"
+			]
+		},
+		"explorer_template_bard_interact_07": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_template_bard_interact_07_p1"
+			]
+		},
+		"explorer_template_bard_interact_08": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_template_bard_interact_08_p1"
+			]
+		},
+		"explorer_template_bard_interact_09": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_template_bard_interact_09_p1"
+			]
+		},
+		"explorer_template_bard_interact_10": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_template_bard_interact_10_p1"
+			]
+		},
+		"explorer_template_bard_interact_11": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_template_bard_interact_11_p1"
+			]
+		},
+		"explorer_template_bard_interact_12": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_template_bard_interact_12_p1"
+			]
+		},
+		"explorer_template_bard_meet_01": {
+			"pages": [
+				"explorer_template_bard_meet_01_p1"
+			]
+		},
+		"explorer_template_guard_event_01": {
+			"pages": [
+				"explorer_template_guard_event_01_p1"
+			]
+		},
+		"explorer_template_guard_interact_01": {
+			"pages": [
+				"explorer_template_guard_interact_01_p1"
+			]
+		},
+		"explorer_template_guard_interact_02": {
+			"pages": [
+				"explorer_template_guard_interact_02_p1"
+			]
+		},
+		"explorer_template_guard_interact_03": {
+			"pages": [
+				"explorer_template_guard_interact_03_p1"
+			]
+		},
+		"explorer_template_guard_interact_04": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_guard_interact_04_p1"
+			]
+		},
+		"explorer_template_guard_interact_05": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_guard_interact_05_p1"
+			]
+		},
+		"explorer_template_guard_interact_06": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_guard_interact_06_p1"
+			]
+		},
+		"explorer_template_guard_interact_07": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_template_guard_interact_07_p1"
+			]
+		},
+		"explorer_template_guard_interact_08": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_template_guard_interact_08_p1"
+			]
+		},
+		"explorer_template_guard_interact_09": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_template_guard_interact_09_p1"
+			]
+		},
+		"explorer_template_guard_interact_10": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_template_guard_interact_10_p1"
+			]
+		},
+		"explorer_template_guard_interact_11": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_template_guard_interact_11_p1"
+			]
+		},
+		"explorer_template_guard_interact_12": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_template_guard_interact_12_p1"
+			]
+		},
+		"explorer_template_guard_meet_01": {
+			"pages": [
+				"explorer_template_guard_meet_01_p1"
+			]
+		},
+		"explorer_template_guard_story_expedition_found_01": {
+			"conditions": {
+				"conditions": {
+					"storyFlags": {
+						"EXPEDITION_FATE_KNOWN": true
+					}
+				}
+			},
+			"pages": [
+				"explorer_template_guard_story_expedition_found_01_p1"
+			]
+		},
+		"explorer_template_guard_story_rescue_absence_01": {
+			"conditions": {
+				"storyFlags": {
+					"RESCUE_EXPLORER_LEFT": true
+				}
+			},
+			"pages": [
+				"explorer_template_guard_story_rescue_absence_01_p1"
+			]
+		},
+		"explorer_template_guard_story_rescue_found_01": {
+			"conditions": {
+				"storyFlags": {
+					"RESCUE_EXPLORER_FOUND": true
+				}
+			},
+			"pages": [
+				"explorer_template_guard_story_rescue_found_01_p1"
+			]
+		},
+		"explorer_template_hacker_event_01": {
+			"pages": [
+				"explorer_template_hacker_event_01_p1"
+			]
+		},
+		"explorer_template_hacker_interact_01": {
+			"pages": [
+				"explorer_template_hacker_interact_01_p1"
+			]
+		},
+		"explorer_template_hacker_interact_02": {
+			"pages": [
+				"explorer_template_hacker_interact_02_p1"
+			]
+		},
+		"explorer_template_hacker_interact_03": {
+			"pages": [
+				"explorer_template_hacker_interact_03_p1"
+			]
+		},
+		"explorer_template_hacker_interact_04": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_hacker_interact_04_p1"
+			]
+		},
+		"explorer_template_hacker_interact_05": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_hacker_interact_05_p1"
+			]
+		},
+		"explorer_template_hacker_interact_06": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_hacker_interact_06_p1"
+			]
+		},
+		"explorer_template_hacker_interact_07": {
+			"pages": [
+				"explorer_template_hacker_interact_07_p1"
+			]
+		},
+		"explorer_template_hacker_interact_08": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_template_hacker_interact_08_p1"
+			]
+		},
+		"explorer_template_hacker_interact_09": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_template_hacker_interact_09_p1"
+			]
+		},
+		"explorer_template_hacker_interact_10": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_template_hacker_interact_10_p1"
+			]
+		},
+		"explorer_template_hacker_interact_11": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_template_hacker_interact_11_p1"
+			]
+		},
+		"explorer_template_hacker_interact_12": {
+			"conditions": {
+				"storyFlags": {
+					"FALL_SEEN_SPACEFACTORY": true
+				}
+			},
+			"pages": [
+				"explorer_template_hacker_interact_12_p1"
+			]
+		},
+		"explorer_template_hacker_meet_01": {
+			"pages": [
+				"explorer_template_hacker_meet_01_p1"
+			]
+		},
+		"explorer_template_lover_event_01": {
+			"pages": [
+				"explorer_template_lover_event_01_p1"
+			]
+		},
+		"explorer_template_lover_interact_01": {
+			"pages": [
+				"explorer_template_lover_interact_01_p1"
+			]
+		},
+		"explorer_template_lover_interact_02": {
+			"pages": [
+				"explorer_template_lover_interact_02_p1"
+			]
+		},
+		"explorer_template_lover_interact_03": {
+			"pages": [
+				"explorer_template_lover_interact_03_p1"
+			]
+		},
+		"explorer_template_lover_interact_04": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_lover_interact_04_p1"
+			]
+		},
+		"explorer_template_lover_interact_05": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_lover_interact_05_p1"
+			]
+		},
+		"explorer_template_lover_interact_06": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_lover_interact_06_p1"
+			]
+		},
+		"explorer_template_lover_interact_07": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_template_lover_interact_07_p1"
+			]
+		},
+		"explorer_template_lover_interact_08": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_template_lover_interact_08_p1"
+			]
+		},
+		"explorer_template_lover_interact_09": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_template_lover_interact_09_p1"
+			]
+		},
+		"explorer_template_lover_interact_10": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_template_lover_interact_10_p1"
+			]
+		},
+		"explorer_template_lover_interact_11": {
+			"conditions": {
+				"storyFlags": {
+					"ESCAPE_REACHED_SURFACE": false,
+					"ESCAPE_SEARCHING_FOR_GROUND": false
+				}
+			},
+			"pages": [
+				"explorer_template_lover_interact_11_p1"
+			]
+		},
+		"explorer_template_lover_interact_12": {
+			"conditions": {
+				"storyFlags": {
+					"ESCAPE_REACHED_SURFACE": true
+				}
+			},
+			"pages": [
+				"explorer_template_lover_interact_12_p1"
+			]
+		},
+		"explorer_template_lover_meet_01": {
+			"pages": [
+				"explorer_template_lover_meet_01_p1"
+			]
+		},
+		"explorer_template_researcher_event_01": {
+			"pages": [
+				"explorer_template_researcher_event_01_p1"
+			]
+		},
+		"explorer_template_researcher_interact_01": {
+			"pages": [
+				"explorer_template_researcher_interact_01_p1"
+			]
+		},
+		"explorer_template_researcher_interact_02": {
+			"pages": [
+				"explorer_template_researcher_interact_02_p1"
+			]
+		},
+		"explorer_template_researcher_interact_03": {
+			"conditions": {
+				"storyFlags": {
+					"ESCAPE_SEARCHING_FOR_GROUND": true
+				}
+			},
+			"pages": [
+				"explorer_template_researcher_interact_03_p1"
+			]
+		},
+		"explorer_template_researcher_interact_04": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_researcher_interact_04_p1"
+			]
+		},
+		"explorer_template_researcher_interact_05": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_researcher_interact_05_p1"
+			]
+		},
+		"explorer_template_researcher_interact_06": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_researcher_interact_06_p1"
+			]
+		},
+		"explorer_template_researcher_interact_07": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_template_researcher_interact_07_p1"
+			]
+		},
+		"explorer_template_researcher_interact_08": {
+			"conditions": {
+				"storyFlags": {
+					"ESCAPE_SEARCHING_FOR_GROUND": false
+				}
+			},
+			"pages": [
+				"explorer_template_researcher_interact_08_p1"
+			]
+		},
+		"explorer_template_researcher_interact_09": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_template_researcher_interact_09_p1"
+			]
+		},
+		"explorer_template_researcher_interact_10": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_template_researcher_interact_10_p1"
+			]
+		},
+		"explorer_template_researcher_interact_11": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_template_researcher_interact_11_p1"
+			]
+		},
+		"explorer_template_researcher_interact_12": {
+			"conditions": {
+				"storyFlags": {
+					"APOCALYPSE_KNOWN": true
+				}
+			},
+			"pages": [
+				"explorer_template_researcher_interact_12_p1"
+			]
+		},
+		"explorer_template_researcher_meet_01": {
+			"pages": [
+				"explorer_template_researcher_meet_01_p1"
+			]
+		},
+		"explorer_template_servo_interact_01": {
+			"pages": [
+				"explorer_template_servo_interact_01_p1"
+			]
+		},
+		"explorer_template_servo_interact_02": {
+			"pages": [
+				"explorer_template_servo_interact_02_p1"
+			]
+		},
+		"explorer_template_servo_interact_03": {
+			"pages": [
+				"explorer_template_servo_interact_03_p1"
+			]
+		},
+		"explorer_template_servo_interact_04": {
+			"pages": [
+				"explorer_template_servo_interact_04_p1"
+			]
+		},
+		"explorer_template_servo_interact_05": {
+			"pages": [
+				"explorer_template_servo_interact_05_p1"
+			]
+		},
+		"explorer_template_servo_interact_06": {
+			"pages": [
+				"explorer_template_servo_interact_06_p1"
+			]
+		},
+		"explorer_template_shaman_event_01": {
+			"pages": [
+				"explorer_template_shaman_event_01_p1"
+			]
+		},
+		"explorer_template_shaman_interact_01": {
+			"pages": [
+				"explorer_template_shaman_interact_01_p1"
+			]
+		},
+		"explorer_template_shaman_interact_02": {
+			"pages": [
+				"explorer_template_shaman_interact_02_p1"
+			]
+		},
+		"explorer_template_shaman_interact_03": {
+			"pages": [
+				"explorer_template_shaman_interact_03_p1"
+			]
+		},
+		"explorer_template_shaman_interact_04": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_shaman_interact_04_p1"
+			]
+		},
+		"explorer_template_shaman_interact_05": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_shaman_interact_05_p1"
+			]
+		},
+		"explorer_template_shaman_interact_06": {
+			"conditions": {
+				"storyFlags": {
+					"GREENHOUSE_FOUND": true,
+					"GREENHOUSE_RESTORED": false
+				}
+			},
+			"pages": [
+				"explorer_template_shaman_interact_06_p1"
+			]
+		},
+		"explorer_template_shaman_interact_07": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_template_shaman_interact_07_p1"
+			]
+		},
+		"explorer_template_shaman_interact_08": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_template_shaman_interact_08_p1"
+			]
+		},
+		"explorer_template_shaman_interact_09": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"explorer_template_shaman_interact_09_p1"
+			]
+		},
+		"explorer_template_shaman_interact_10": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_template_shaman_interact_10_p1"
+			]
+		},
+		"explorer_template_shaman_interact_11": {
+			"conditions": {
+				"storyFlags": {
+					"FALL_SEEN_EVACUATION": true
+				}
+			},
+			"pages": [
+				"explorer_template_shaman_interact_11_p1"
+			]
+		},
+		"explorer_template_shaman_interact_12": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_template_shaman_interact_12_p1"
+			]
+		},
+		"explorer_template_shaman_meet_01": {
+			"pages": [
+				"explorer_template_shaman_meet_01_p1"
+			]
+		},
+		"explorer_template_teen_event_01": {
+			"pages": [
+				"explorer_template_teen_event_01_p1"
+			]
+		},
+		"explorer_template_teen_interact_01": {
+			"pages": [
+				"explorer_template_teen_interact_01_p1"
+			]
+		},
+		"explorer_template_teen_interact_02": {
+			"pages": [
+				"explorer_template_teen_interact_02_p1"
+			]
+		},
+		"explorer_template_teen_interact_03": {
+			"pages": [
+				"explorer_template_teen_interact_03_p1"
+			]
+		},
+		"explorer_template_teen_interact_04": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_teen_interact_04_p1"
+			]
+		},
+		"explorer_template_teen_interact_05": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_teen_interact_05_p1"
+			]
+		},
+		"explorer_template_teen_interact_06": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_template_teen_interact_06_p1"
+			]
+		},
+		"explorer_template_teen_interact_07": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_template_teen_interact_07_p1"
+			]
+		},
+		"explorer_template_teen_interact_08": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_template_teen_interact_08_p1"
+			]
+		},
+		"explorer_template_teen_interact_09": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_template_teen_interact_09_p1"
+			]
+		},
+		"explorer_template_teen_interact_10": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_template_teen_interact_10_p1"
+			]
+		},
+		"explorer_template_teen_interact_11": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_template_teen_interact_11_p1"
+			]
+		},
+		"explorer_template_teen_interact_12": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_template_teen_interact_12_p1"
+			]
+		},
+		"explorer_template_teen_meet_01": {
+			"pages": [
+				"explorer_template_teen_meet_01_p1"
+			]
+		},
+		"explorer_template_teen_story_rescue_absence_01": {
+			"conditions": {
+				"storyFlags": {
+					"RESCUE_EXPLORER_LEFT": true
+				}
+			},
+			"pages": [
+				"explorer_template_teen_story_rescue_absence_01_p1"
 			]
 		},
 		"explorer_unique_gambler_event_01": {
@@ -1382,13 +2577,101 @@
 		},
 		"explorer_unique_gambler_interact_12": {
 			"conditions": {
+				"deity": true,
 				"explorer": {
 					"trust": 3
-				},
-				"deity": true
+				}
 			},
 			"pages": [
 				"explorer_unique_gambler_interact_12_p1"
+			]
+		},
+		"explorer_unique_gambler_meet_01": {
+			"pages": [
+				"explorer_unique_gambler_meet_01_p1"
+			]
+		},
+		"explorer_unique_gambler_story_find_greenhouse": {
+			"isUrgent": true,
+			"pages": [
+				{
+					"buttonKey": "npc_request_promise",
+					"id": "request",
+					"key": "explorer_unique_gambler_story_find_greenhouse_p1"
+				}
+			],
+			"repeatable": false,
+			"storyTag": "find_greenhouse"
+		},
+		"explorer_unique_gambler_story_find_spirits": {
+			"isUrgent": true,
+			"pages": [
+				{
+					"id": "intro",
+					"key": "explorer_unique_gambler_story_find_spirits_p1",
+					"options": "NEXT"
+				},
+				{
+					"buttonKey": "npc_request_promise",
+					"id": "request",
+					"key": "explorer_unique_gambler_story_find_spirits_p2"
+				}
+			],
+			"repeatable": false,
+			"storyTag": "find_spirits"
+		},
+		"explorer_unique_gambler_story_gangs_compound_01": {
+			"conditions": {
+				"conditions": {
+					"storyFlags": {
+						"GANG_COMPOUND_FOUND": true
+					}
+				}
+			},
+			"pages": [
+				"explorer_unique_gambler_story_gangs_compound_01_p1"
+			]
+		},
+		"explorer_unique_gambler_story_search_spirits_01": {
+			"conditions": {
+				"sector": {
+					"ground": false
+				},
+				"storyFlags": {
+					"SPIRITS_SEARCHING_FOR_SPIRITS": true
+				}
+			},
+			"isPriority": true,
+			"pages": [
+				"explorer_unique_gambler_story_search_spirits_01_p1"
+			]
+		},
+		"explorer_unique_gambler_story_search_spirits_02": {
+			"conditions": {
+				"sector": {
+					"ground": true
+				},
+				"storyFlags": {
+					"SPIRITS_SEARCHING_FOR_SPIRITS": true
+				}
+			},
+			"isPriority": true,
+			"pages": [
+				"explorer_unique_gambler_story_search_spirits_02_p1"
+			]
+		},
+		"explorer_unique_gambler_story_search_spirits_03": {
+			"conditions": {
+				"sector": {
+					"ground": true
+				},
+				"storyFlags": {
+					"SPIRITS_SEARCHING_FOR_SPIRITS": true
+				}
+			},
+			"isPriority": true,
+			"pages": [
+				"explorer_unique_gambler_story_search_spirits_03_p1"
 			]
 		},
 		"explorer_unique_gambler_story_spirits_intro_01": {
@@ -1417,40 +2700,6 @@
 				"explorer_unique_gambler_story_spirits_outro_02_p1"
 			]
 		},
-		"explorer_unique_gambler_story_find_greenhouse": {
-			"isUrgent": true,
-			"repeatable": false,
-			"pages": [
-				{
-					"buttonKey": "npc_request_promise",
-					"id": "request",
-					"key": "explorer_unique_gambler_story_find_greenhouse_p1"
-				}
-			],
-			"storyTag": "find_greenhouse"
-		},
-		"explorer_unique_gambler_story_find_spirits": {
-			"isUrgent": true,
-			"pages": [
-				{
-					"id": "intro",
-					"key": "explorer_unique_gambler_story_find_spirits_p1",
-					"options": "NEXT"
-				},
-				{
-					"id": "request",
-					"buttonKey": "npc_request_promise",
-					"key": "explorer_unique_gambler_story_find_spirits_p2"
-				}
-			],
-			"repeatable": false,
-			"storyTag": "find_spirits"
-		},
-		"explorer_unique_gambler_meet_01": {
-			"pages": [
-				"explorer_unique_gambler_meet_01_p1"
-			]
-		},
 		"explorer_unique_handler_event_01": {
 			"pages": [
 				"explorer_unique_handler_event_01_p1"
@@ -1461,9 +2710,146 @@
 				"explorer_unique_handler_interact_01_p1"
 			]
 		},
+		"explorer_unique_handler_interact_02": {
+			"pages": [
+				"explorer_unique_handler_interact_01_p1",
+				"explorer_unique_handler_interact_02_p1",
+				"explorer_unique_handler_interact_03_p1",
+				"explorer_unique_handler_interact_04_p1",
+				"explorer_unique_handler_interact_05_p1",
+				"explorer_unique_handler_interact_06_p1",
+				"explorer_unique_handler_interact_07_p1",
+				"explorer_unique_handler_interact_08_p1",
+				"explorer_unique_handler_interact_09_p1",
+				"explorer_unique_handler_interact_10_p1",
+				"explorer_unique_handler_interact_11_p1",
+				"explorer_unique_handler_interact_12_p1"
+			]
+		},
+		"explorer_unique_handler_interact_03": {
+			"pages": [
+				"explorer_unique_handler_interact_01_p1",
+				"explorer_unique_handler_interact_02_p1",
+				"explorer_unique_handler_interact_03_p1",
+				"explorer_unique_handler_interact_04_p1",
+				"explorer_unique_handler_interact_05_p1",
+				"explorer_unique_handler_interact_06_p1",
+				"explorer_unique_handler_interact_07_p1",
+				"explorer_unique_handler_interact_08_p1",
+				"explorer_unique_handler_interact_09_p1",
+				"explorer_unique_handler_interact_10_p1",
+				"explorer_unique_handler_interact_11_p1",
+				"explorer_unique_handler_interact_12_p1"
+			]
+		},
+		"explorer_unique_handler_interact_04": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_unique_handler_interact_04_p1"
+			]
+		},
+		"explorer_unique_handler_interact_05": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_unique_handler_interact_05_p1"
+			]
+		},
+		"explorer_unique_handler_interact_06": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_unique_handler_interact_06_p1"
+			]
+		},
+		"explorer_unique_handler_interact_07": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_unique_handler_interact_07_p1"
+			]
+		},
+		"explorer_unique_handler_interact_08": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_unique_handler_interact_08_p1"
+			]
+		},
+		"explorer_unique_handler_interact_09": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_unique_handler_interact_09_p1"
+			]
+		},
+		"explorer_unique_handler_interact_10": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_unique_handler_interact_10_p1"
+			]
+		},
+		"explorer_unique_handler_interact_11": {
+			"conditions": {
+				"camp": {
+					"availableLuxuryResources": {
+						"COFFEE": true
+					}
+				},
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_unique_handler_interact_11_p1"
+			]
+		},
+		"explorer_unique_handler_interact_12": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_unique_handler_interact_12_p1"
+			]
+		},
 		"explorer_unique_handler_meet_01": {
 			"pages": [
 				"explorer_unique_handler_meet_01_p1"
+			]
+		},
+		"explorer_unique_handler_story_rescue_absence_01": {
+			"conditions": {
+				"storyFlags": {
+					"RESCUE_EXPLORER_LEFT": true
+				}
+			},
+			"pages": [
+				"explorer_unique_handler_story_rescue_absence_01_p1"
 			]
 		},
 		"explorer_unique_hermit_event_01": {
@@ -1474,6 +2860,111 @@
 		"explorer_unique_hermit_interact_01": {
 			"pages": [
 				"explorer_unique_hermit_interact_01_p1"
+			]
+		},
+		"explorer_unique_hermit_interact_02": {
+			"pages": [
+				"explorer_unique_hermit_interact_02_p1"
+			]
+		},
+		"explorer_unique_hermit_interact_03": {
+			"pages": [
+				"explorer_unique_hermit_interact_03_p1"
+			]
+		},
+		"explorer_unique_hermit_interact_04": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_unique_hermit_interact_04_p1"
+			]
+		},
+		"explorer_unique_hermit_interact_05": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_unique_hermit_interact_05_p1"
+			]
+		},
+		"explorer_unique_hermit_interact_06": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_unique_hermit_interact_06_p1"
+			]
+		},
+		"explorer_unique_hermit_interact_07": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_unique_hermit_interact_07_p1"
+			]
+		},
+		"explorer_unique_hermit_interact_08": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_unique_hermit_interact_08_p1"
+			]
+		},
+		"explorer_unique_hermit_interact_09": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_unique_hermit_interact_09_p1"
+			]
+		},
+		"explorer_unique_hermit_interact_10": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				},
+				"population": [
+					16,
+					-1
+				]
+			},
+			"pages": [
+				"explorer_unique_hermit_interact_10_p1"
+			]
+		},
+		"explorer_unique_hermit_interact_11": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_unique_hermit_interact_11_p1"
+			]
+		},
+		"explorer_unique_hermit_interact_12": {
+			"conditions": {
+				"deity": true,
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_unique_hermit_interact_12_p1"
 			]
 		},
 		"explorer_unique_hermit_meet_01": {
@@ -1698,6 +3189,16 @@
 				"explorer_unique_prospector_interact_01_p1"
 			]
 		},
+		"explorer_unique_prospector_interact_03": {
+			"conditions": {
+				"storyFlags": {
+					"APOCALYPSE_KNOWN": false
+				}
+			},
+			"pages": [
+				"explorer_unique_prospector_interact_03_p1"
+			]
+		},
 		"explorer_unique_prospector_interact_04": {
 			"conditions": {
 				"explorer": {
@@ -1717,6 +3218,187 @@
 			},
 			"pages": [
 				"explorer_unique_prospector_interact_05_p1"
+			]
+		},
+		"explorer_unique_prospector_interact_06": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_unique_prospector_interact_06_p1"
+			]
+		},
+		"explorer_unique_prospector_interact_07": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_unique_prospector_interact_07_p1"
+			]
+		},
+		"explorer_unique_prospector_interact_08": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
+			"pages": [
+				"explorer_unique_prospector_interact_08_p1"
+			]
+		},
+		"explorer_unique_prospector_interact_09": {
+			"conditions": {
+				"storyFlags": {
+					"APOCALYPSE_KNOWN": true
+				}
+			},
+			"pages": [
+				"explorer_unique_prospector_interact_09_p1"
+			]
+		},
+		"explorer_unique_prospector_interact_10": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_unique_prospector_interact_10_p1"
+			]
+		},
+		"explorer_unique_prospector_interact_11": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
+			"pages": [
+				"explorer_unique_prospector_interact_11_p1"
+			]
+		},
+		"explorer_unique_prospector_interact_12": {
+			"conditions": {
+				"storyFlags": {
+					"APOCALYPSE_KNOWN": true,
+					"FALL_SEEN_EVACUATION": true
+				}
+			},
+			"pages": [
+				"explorer_unique_prospector_interact_12_p1"
+			]
+		},
+		"explorer_unique_prospector_meet_01": {
+			"pages": [
+				"explorer_unique_prospector_meet_01_p1"
+			]
+		},
+		"explorer_unique_prospector_story_rescue_complete_01": {
+			"conditions": {
+				"numCamps": 9
+			},
+			"pages": [
+				"explorer_unique_prospector_story_rescue_complete_01_p1"
+			]
+		},
+		"explorer_unique_prospector_story_rescue_complete_02": {
+			"conditions": {
+				"numCamps": 9
+			},
+			"pages": [
+				"explorer_unique_prospector_story_rescue_complete_02_p1"
+			]
+		},
+		"explorer_unique_prospector_story_rescue_impatient_01": {
+			"conditions": {
+				"numCamps": 7,
+				"storyFlags": {
+					"RESCUE_EXPLORER_LEFT": false
+				}
+			},
+			"pages": [
+				"explorer_unique_prospector_story_rescue_impatient_01_p1"
+			]
+		},
+		"explorer_unique_prospector_story_rescue_impatient_02": {
+			"conditions": {
+				"numCamps": 7,
+				"storyFlags": {
+					"RESCUE_EXPLORER_LEFT": false
+				}
+			},
+			"pages": [
+				"explorer_unique_prospector_story_rescue_impatient_02_p1"
+			]
+		},
+		"explorer_unique_prospector_story_rescue_intro": {
+			"pages": [
+				{
+					"key": "explorer_unique_prospector_story_rescue_intro_p1",
+					"result": {
+						"storyFlags": {
+							"RESCUE_SISTER_INTRODUCED": true
+						}
+					}
+				}
+			]
+		},
+		"explorer_unique_prospector_story_rescue_leaving": {
+			"isUrgent": true,
+			"pages": [
+				{
+					"buttonKey": "explorer_request_prospector_leaving_reply",
+					"key": "explorer_unique_prospector_story_rescue_leaving_p1",
+					"options": "NEXT"
+				},
+				{
+					"key": "explorer_unique_prospector_story_rescue_leaving_p2",
+					"options": "NEXT"
+				},
+				{
+					"result": {
+						"lostExplorers": [
+							"prospector"
+						]
+					}
+				}
+			],
+			"storyTag": "prospector_leaves"
+		},
+		"explorer_unique_prospector_story_rescue_lvl14_01": {
+			"conditions": {
+				"player": {
+					"position": {
+						"level": 14
+					}
+				}
+			},
+			"isPriority": true,
+			"pages": [
+				"explorer_unique_prospector_story_rescue_lvl14_01_p1"
+			]
+		},
+		"explorer_unique_prospector_story_rescue_passage_blocked_01": {
+			"conditions": {
+				"storyFlags": {
+					"RESCUE_LEVEL_14_HAZARD_FOUND": true
+				}
+			},
+			"pages": [
+				"explorer_unique_prospector_story_rescue_passage_blocked_01_p1"
+			]
+		},
+		"explorer_unique_prospector_story_rescue_passage_blocked_02": {
+			"conditions": {
+				"storyFlags": {
+					"RESCUE_LEVEL_14_HAZARD_FOUND": true
+				}
+			},
+			"pages": [
+				"explorer_unique_prospector_story_rescue_passage_blocked_02_p1"
 			]
 		},
 		"explorer_unique_prospector_story_rescue_passage_built_01": {
@@ -1739,131 +3421,101 @@
 				"explorer_unique_prospector_story_rescue_passage_built_02_p1"
 			]
 		},
-		"explorer_unique_prospector_story_rescue_passage_blocked_01": {
-			"conditions": {
-				"storyFlags": {
-					"when RESCUE_LEVEL_14_HAZARD_FOUND set": true
-				}
-			},
-			"pages": [
-				"explorer_unique_prospector_story_rescue_passage_blocked_01_p1"
-			]
-		},
-		"explorer_unique_prospector_story_rescue_passage_blocked_02": {
-			"conditions": {
-				"storyFlags": {
-					"when RESCUE_LEVEL_14_HAZARD_FOUND set": true
-				}
-			},
-			"pages": [
-				"explorer_unique_prospector_story_rescue_passage_blocked_02_p1"
-			]
-		},
-		"explorer_unique_prospector_story_rescue_impatient_01": {
-			"conditions": {
-				"numCamps": 7,
-				"storyFlags": {
-					"when RESCUE_EXPLORER_LEFT set": false
-				}
-			},
-			"pages": [
-				"explorer_unique_prospector_story_rescue_impatient_01_p1"
-			]
-		},
-		"explorer_unique_prospector_story_rescue_impatient_02": {
-			"conditions": {
-				"numCamps": 7,
-				"storyFlags": {
-					"when RESCUE_EXPLORER_LEFT set": false
-				}
-			},
-			"pages": [
-				"explorer_unique_prospector_story_rescue_impatient_02_p1"
-			]
-		},
-		"explorer_unique_prospector_story_rescue_complete_01": {
-			"conditions": {
-				"numCamps": 9
-			},
-			"pages": [
-				"explorer_unique_prospector_story_rescue_complete_01_p1"
-			]
-		},
-		"explorer_unique_prospector_story_rescue_complete_02": {
-			"conditions": {
-				"numCamps": 9
-			},
-			"pages": [
-				"explorer_unique_prospector_story_rescue_complete_02_p1"
-			]
-		},
-		"explorer_unique_prospector_story_rescue_lvl14_01": {
-			"isPriority": true,
-			"conditions": {
-				"player": {
-					"position": {
-						"level": 14
-					}
-				}
-			},
-			"pages": [
-				"explorer_unique_prospector_story_rescue_lvl14_01_p1"
-			]
-		},
-		"explorer_unique_prospector_meet_01": {
-			"pages": [
-				"explorer_unique_prospector_meet_01_p1"
-			]
-		},
-		"explorer_unique_prospector_story_rescue_intro": {
+		"locale_story_compound": {
 			"pages": [
 				{
-					"key": "explorer_unique_prospector_story_rescue_intro_p1",
-					"result": {
-						"storyFlags": {
-							"RESCUE_SISTER_INTRODUCED": true
-						}
-					}
-				}
-			]
-		},
-		"explorer_unique_prospector_story_rescue_leaving": {
-			"isUrgent": true,
-			"pages": [
-				{
-					"key": "explorer_unique_prospector_story_rescue_leaving_p1",
-					"buttonKey": "explorer_request_prospector_leaving_reply",
+					"key": "story.stories.gangs_locale_compound_p1",
 					"options": "NEXT"
 				},
 				{
-					"key": "explorer_unique_prospector_story_rescue_leaving_p2",
+					"key": "story.stories.gangs_compound_p2",
 					"options": "NEXT"
 				},
 				{
+					"key": "story.stories.gangs_compound_p3",
 					"result": {
-						"lostExplorers": [ "prospector" ]
+						"gainedItems": [
+							"cache_food_1",
+							"cache_food_1",
+							"weapon25"
+						]
 					}
 				}
-			],
-			"storyTag": "prospector_leaves"
+			]
 		},
 		"locale_story_depot": {
 			"pages": [
 				{
-					"id": "intro",
 					"key": "story.stories.fall_locale_depot_p1",
 					"options": "NEXT"
 				},
 				{
-					"id": "description",
 					"key": "story.stories.fall_locale_depot_p2",
 					"options": "NEXT"
 				},
 				{
-					"id": "result",
+					"key": "story.stories.fall_locale_depot_p3",
 					"result": {
 						"action": "scout_locale_u"
 					}
+				}
+			]
+		},
+		"locale_story_expedition_camp": {
+			"pages": [
+				{
+					"key": "story.stories.expedition_locale_camp_p1",
+					"options": "NEXT"
+				},
+				{
+					"key": "story.stories.expedition_locale_camp_p2",
+					"options": "NEXT"
+				},
+				{
+					"key": "story.stories.expedition_locale_camp_p3",
+					"result": {
+						"gainedItems": [
+							"cache_food_1"
+						]
+					}
+				}
+			]
+		},
+		"locale_story_greenhouse": {
+			"pages": [
+				"story.stories.greenhouse_locale_story_greenhouse_p1"
+			]
+		},
+		"locale_story_seeddepot": {
+			"pages": [
+				{
+					"key": "story.stories.locale_story_shelter_p1",
+					"options": "NEXT"
+				},
+				{
+					"key": "story.stories.locale_story_shelter_p2",
+					"options": "NEXT"
+				},
+				{
+					"result": {
+						"gainedExplorers": [
+							"prospector"
+						],
+						"gainedPopulation": 1
+					}
+				}
+			]
+		},
+		"locale_story_shelter": {
+			"pages": [
+				{
+					"id": "intro",
+					"key": "story.stories.greenhouse_locale_story_seeddepot_p1",
+					"options": "NEXT"
+				},
+				{
+					"id": "description",
+					"key": "story.stories.greenhouse_locale_story_seeddepot_p2"
 				}
 			]
 		},
@@ -1883,42 +3535,6 @@
 						"action": "scout_locale_u"
 					}
 				}
-			]
-		},
-		"locale_story_seeddepot": {
-			"pages": [
-				{
-					"key": "story.stories.locale_story_shelter_p1",
-					"options": "NEXT"
-				},
-				{
-					"key": "story.stories.locale_story_shelter_p2",
-					"options": "NEXT"
-				},
-				{
-					"result": {
-						"gainedPopulation": 1,
-						"gainedExplorers": [ "prospector" ]
-					}
-				}
-			]
-		},
-		"locale_story_shelter": {
-			"pages": [
-				{
-					"id": "intro",
-					"key": "story.stories.greenhouse_locale_story_seeddepot_p1",
-					"options": "NEXT"
-				},
-				{
-					"id": "description",
-					"key": "story.stories.greenhouse_locale_story_seeddepot_p2"
-				}
-			]
-		},
-		"locale_story_greenhouse": {
-			"pages": [
-				"story.stories.greenhouse_locale_story_greenhouse_p1"
 			]
 		},
 		"npc_generic_request_water": {
@@ -2412,7 +4028,7 @@
 				]
 			}
 		},
-		"explorer_generic": {
+		"explorer_generic_01": {
 			"dialogues": {
 				"event": [],
 				"interact": [
@@ -2429,7 +4045,7 @@
 				]
 			}
 		},
-		"explorer_generic_animal": {
+		"explorer_generic_animal_01": {
 			"dialogues": {
 				"event": [
 					"explorer_generic_animal_event_01"
@@ -2444,7 +4060,7 @@
 				]
 			}
 		},
-		"explorer_generic_dog": {
+		"explorer_generic_dog_01": {
 			"dialogues": {
 				"event": [
 					"explorer_generic_dog_event_01"
@@ -2452,14 +4068,17 @@
 				"interact": [
 					"explorer_generic_dog_interact_01",
 					"explorer_generic_dog_interact_02",
-					"explorer_generic_dog_interact_03"
+					"explorer_generic_dog_interact_03",
+					"explorer_generic_dog_interact_04",
+					"explorer_generic_dog_interact_05",
+					"explorer_generic_dog_interact_06"
 				],
 				"meet": [
 					"explorer_generic_dog_meet_01"
 				]
 			}
 		},
-		"explorer_generic_mercenary": {
+		"explorer_generic_mercenary_01": {
 			"dialogues": {
 				"event": [
 					"explorer_generic_mercenary_event_01"
@@ -2468,9 +4087,13 @@
 					"explorer_generic_mercenary_interact_01",
 					"explorer_generic_mercenary_interact_02",
 					"explorer_generic_mercenary_interact_03",
+					"explorer_generic_mercenary_interact_04",
+					"explorer_generic_mercenary_interact_05",
+					"explorer_generic_mercenary_interact_06",
 					"explorer_generic_story_find_greenhouse",
 					"explorer_generic_interact_story_apocalypse_01",
 					"explorer_generic_interact_story_apocalypse_02",
+					"explorer_generic_story_rescue_absence_01",
 					"explorer_generic_story_rescue_prospector"
 				],
 				"meet": [
@@ -2478,7 +4101,7 @@
 				]
 			}
 		},
-		"explorer_generic_scavenger": {
+		"explorer_generic_scavenger_01": {
 			"dialogues": {
 				"event": [
 					"explorer_generic_scavenger_event_01"
@@ -2487,9 +4110,13 @@
 					"explorer_generic_scavenger_interact_01",
 					"explorer_generic_scavenger_interact_02",
 					"explorer_generic_scavenger_interact_03",
+					"explorer_generic_scavenger_interact_04",
+					"explorer_generic_scavenger_interact_05",
+					"explorer_generic_scavenger_interact_06",
 					"explorer_generic_story_find_greenhouse",
 					"explorer_generic_interact_story_apocalypse_01",
 					"explorer_generic_interact_story_apocalypse_02",
+					"explorer_generic_story_rescue_absence_01",
 					"explorer_generic_story_rescue_prospector"
 				],
 				"meet": [
@@ -2497,7 +4124,7 @@
 				]
 			}
 		},
-		"explorer_generic_scout": {
+		"explorer_generic_scout_01": {
 			"dialogues": {
 				"event": [
 					"explorer_generic_scout_event_01"
@@ -2506,14 +4133,272 @@
 					"explorer_generic_scout_interact_01",
 					"explorer_generic_scout_interact_02",
 					"explorer_generic_scout_interact_03",
+					"explorer_generic_scout_interact_04",
+					"explorer_generic_scout_interact_05",
+					"explorer_generic_scout_interact_06",
 					"explorer_generic_story_find_greenhouse",
 					"character_generic_story_government_positive",
 					"explorer_generic_interact_story_apocalypse_01",
 					"explorer_generic_interact_story_apocalypse_02",
+					"explorer_generic_story_rescue_absence_01",
 					"explorer_generic_story_rescue_prospector"
 				],
 				"meet": [
 					"explorer_generic_scout_meet_01"
+				]
+			}
+		},
+		"explorer_template_lover": {
+			"dialogues": {
+				"event": [
+					"explorer_template_lover_event_01"
+				],
+				"interact": [
+					"explorer_template_lover_interact_01",
+					"explorer_template_lover_interact_02",
+					"explorer_template_lover_interact_03",
+					"explorer_template_lover_interact_04",
+					"explorer_template_lover_interact_05",
+					"explorer_template_lover_interact_06",
+					"explorer_template_lover_interact_07",
+					"explorer_template_lover_interact_08",
+					"explorer_template_lover_interact_09",
+					"explorer_template_lover_interact_10",
+					"explorer_template_lover_interact_11",
+					"explorer_template_lover_interact_12",
+					"explorer_generic_story_rescue_absence_01",
+					"explorer_generic_story_rescue_prospector"
+				],
+				"meet": [
+					"explorer_template_lover_meet_01"
+				]
+			}
+		},
+		"explorer_template_amnesiac": {
+			"dialogues": {
+				"event": [
+					"explorer_template_amnesiac_event_01"
+				],
+				"interact": [
+					"explorer_template_amnesiac_interact_01",
+					"explorer_template_amnesiac_interact_02",
+					"explorer_template_amnesiac_interact_03",
+					"explorer_template_amnesiac_interact_04",
+					"explorer_template_amnesiac_interact_05",
+					"explorer_template_amnesiac_interact_06",
+					"explorer_template_amnesiac_interact_07",
+					"explorer_template_amnesiac_interact_08",
+					"explorer_template_amnesiac_interact_09",
+					"explorer_template_amnesiac_interact_10",
+					"explorer_template_amnesiac_interact_11",
+					"explorer_template_amnesiac_interact_12",
+					"explorer_generic_story_rescue_absence_01",
+					"explorer_generic_story_rescue_prospector"
+				],
+				"meet": [
+					"explorer_template_amnesiac_meet_01"
+				]
+			}
+		},
+		"explorer_template_guard": {
+			"dialogues": {
+				"event": [
+					"explorer_template_guard_event_01"
+				],
+				"interact": [
+					"explorer_template_guard_interact_01",
+					"explorer_template_guard_interact_02",
+					"explorer_template_guard_interact_03",
+					"explorer_template_guard_interact_04",
+					"explorer_template_guard_interact_05",
+					"explorer_template_guard_interact_06",
+					"explorer_template_guard_interact_07",
+					"explorer_template_guard_interact_08",
+					"explorer_template_guard_interact_09",
+					"explorer_template_guard_interact_10",
+					"explorer_template_guard_interact_11",
+					"explorer_template_guard_interact_12",
+					"explorer_generic_story_rescue_absence_01",
+					"explorer_template_guard_story_rescue_absence_01",
+					"explorer_template_guard_story_rescue_found_01",
+					"explorer_template_guard_story_expedition_found_01",
+					"explorer_generic_story_rescue_prospector"
+				],
+				"meet": [
+					"explorer_template_guard_meet_01"
+				]
+			}
+		},
+		"explorer_template_researcher": {
+			"dialogues": {
+				"event": [
+					"explorer_template_researcher_event_01"
+				],
+				"interact": [
+					"explorer_template_researcher_interact_01",
+					"explorer_template_researcher_interact_02",
+					"explorer_template_researcher_interact_03",
+					"explorer_template_researcher_interact_04",
+					"explorer_template_researcher_interact_05",
+					"explorer_template_researcher_interact_06",
+					"explorer_template_researcher_interact_07",
+					"explorer_template_researcher_interact_08",
+					"explorer_template_researcher_interact_09",
+					"explorer_template_researcher_interact_10",
+					"explorer_template_researcher_interact_11",
+					"explorer_template_researcher_interact_12",
+					"explorer_generic_story_rescue_absence_01",
+					"explorer_generic_story_rescue_prospector"
+				],
+				"meet": [
+					"explorer_template_researcher_meet_01"
+				]
+			}
+		},
+		"explorer_template_hacker": {
+			"dialogues": {
+				"event": [
+					"explorer_template_hacker_event_01"
+				],
+				"interact": [
+					"explorer_template_hacker_interact_01",
+					"explorer_template_hacker_interact_02",
+					"explorer_template_hacker_interact_03",
+					"explorer_template_hacker_interact_04",
+					"explorer_template_hacker_interact_05",
+					"explorer_template_hacker_interact_06",
+					"explorer_template_hacker_interact_07",
+					"explorer_template_hacker_interact_08",
+					"explorer_template_hacker_interact_09",
+					"explorer_template_hacker_interact_10",
+					"explorer_template_hacker_interact_11",
+					"explorer_template_hacker_interact_12",
+					"explorer_generic_story_rescue_absence_01",
+					"explorer_generic_story_rescue_prospector"
+				],
+				"meet": [
+					"explorer_template_hacker_meet_01"
+				]
+			}
+		},
+		"explorer_template_architect": {
+			"dialogues": {
+				"event": [
+					"explorer_template_architect_event_01"
+				],
+				"interact": [
+					"explorer_template_architect_interact_01",
+					"explorer_template_architect_interact_02",
+					"explorer_template_architect_interact_03",
+					"explorer_template_architect_interact_04",
+					"explorer_template_architect_interact_05",
+					"explorer_template_architect_interact_06",
+					"explorer_template_architect_interact_07",
+					"explorer_template_architect_interact_08",
+					"explorer_template_architect_interact_09",
+					"explorer_template_architect_interact_10",
+					"explorer_template_architect_interact_11",
+					"explorer_template_architect_interact_12",
+					"explorer_generic_story_rescue_absence_01",
+					"explorer_generic_story_rescue_prospector"
+				],
+				"meet": [
+					"explorer_template_architect_meet_01"
+				]
+			}
+		},
+		"explorer_template_bard": {
+			"dialogues": {
+				"event": [
+					"explorer_template_bard_event_01"
+				],
+				"interact": [
+					"explorer_template_bard_interact_01",
+					"explorer_template_bard_interact_02",
+					"explorer_template_bard_interact_03",
+					"explorer_template_bard_interact_04",
+					"explorer_template_bard_interact_05",
+					"explorer_template_bard_interact_06",
+					"explorer_template_bard_interact_07",
+					"explorer_template_bard_interact_08",
+					"explorer_template_bard_interact_09",
+					"explorer_template_bard_interact_10",
+					"explorer_template_bard_interact_11",
+					"explorer_template_bard_interact_12",
+					"explorer_generic_story_rescue_absence_01",
+					"explorer_generic_story_rescue_prospector"
+				],
+				"meet": [
+					"explorer_template_bard_meet_01"
+				]
+			}
+		},
+		"explorer_template_teen": {
+			"dialogues": {
+				"event": [
+					"explorer_template_teen_event_01"
+				],
+				"interact": [
+					"explorer_template_teen_interact_01",
+					"explorer_template_teen_interact_02",
+					"explorer_template_teen_interact_03",
+					"explorer_template_teen_interact_04",
+					"explorer_template_teen_interact_05",
+					"explorer_template_teen_interact_06",
+					"explorer_template_teen_interact_07",
+					"explorer_template_teen_interact_08",
+					"explorer_template_teen_interact_09",
+					"explorer_template_teen_interact_10",
+					"explorer_template_teen_interact_11",
+					"explorer_template_teen_interact_12",
+					"explorer_template_teen_story_rescue_absence_01",
+					"explorer_generic_story_rescue_prospector"
+				],
+				"meet": [
+					"explorer_template_teen_meet_01"
+				]
+			}
+		},
+		"explorer_template_shaman": {
+			"dialogues": {
+				"event": [
+					"explorer_template_shaman_event_01"
+				],
+				"interact": [
+					"explorer_template_shaman_interact_01",
+					"explorer_template_shaman_interact_02",
+					"explorer_template_shaman_interact_03",
+					"explorer_template_shaman_interact_04",
+					"explorer_template_shaman_interact_05",
+					"explorer_template_shaman_interact_06",
+					"explorer_template_shaman_interact_07",
+					"explorer_template_shaman_interact_08",
+					"explorer_template_shaman_interact_09",
+					"explorer_template_shaman_interact_10",
+					"explorer_template_shaman_interact_11",
+					"explorer_template_shaman_interact_12",
+					"explorer_generic_story_rescue_prospector"
+				],
+				"meet": [
+					"explorer_template_shaman_meet_01"
+				]
+			}
+		},
+		"explorer_generic_servo_01": {
+			"dialogues": {
+				"event": [
+					"explorer_template_servo_event_01"
+				],
+				"interact": [
+					"explorer_template_servo_interact_01",
+					"explorer_template_servo_interact_02",
+					"explorer_template_servo_interact_03",
+					"explorer_template_servo_interact_04",
+					"explorer_template_servo_interact_05",
+					"explorer_template_servo_interact_06"
+				],
+				"meet": [
+					"explorer_template_servo_meet_01"
 				]
 			}
 		},
@@ -2544,6 +4429,7 @@
 					"explorer_unique_gambler_story_spirits_intro_02",
 					"explorer_unique_gambler_story_spirits_outro_01",
 					"explorer_unique_gambler_story_spirits_outro_02",
+					"explorer_unique_gambler_story_gangs_compound_01",
 					"explorer_generic_story_rescue_prospector"
 				],
 				"meet": [
@@ -2557,7 +4443,19 @@
 					"explorer_unique_handler_event_01"
 				],
 				"interact": [
-					"explorer_unique_handler_interact_01"
+					"explorer_unique_handler_interact_01",
+					"explorer_unique_handler_interact_02",
+					"explorer_unique_handler_interact_03",
+					"explorer_unique_handler_interact_04",
+					"explorer_unique_handler_interact_05",
+					"explorer_unique_handler_interact_06",
+					"explorer_unique_handler_interact_07",
+					"explorer_unique_handler_interact_08",
+					"explorer_unique_handler_interact_09",
+					"explorer_unique_handler_interact_10",
+					"explorer_unique_handler_interact_11",
+					"explorer_unique_handler_interact_12",
+					"explorer_unique_handler_story_rescue_absence_01"
 				],
 				"meet": [
 					"explorer_unique_handler_meet_01"
@@ -2570,7 +4468,18 @@
 					"explorer_unique_hermit_event_01"
 				],
 				"interact": [
-					"explorer_unique_hermit_interact_01"
+					"explorer_unique_hermit_interact_01",
+					"explorer_unique_hermit_interact_02",
+					"explorer_unique_hermit_interact_03",
+					"explorer_unique_hermit_interact_04",
+					"explorer_unique_hermit_interact_05",
+					"explorer_unique_hermit_interact_06",
+					"explorer_unique_hermit_interact_07",
+					"explorer_unique_hermit_interact_08",
+					"explorer_unique_hermit_interact_09",
+					"explorer_unique_hermit_interact_10",
+					"explorer_unique_hermit_interact_11",
+					"explorer_unique_hermit_interact_12"
 				],
 				"meet": [
 					"explorer_unique_hermit_meet_01"
@@ -2601,6 +4510,7 @@
 					"explorer_unique_journalist_story_spacecraft",
 					"explorer_unique_journalist_story_evacuation",
 					"explorer_unique_journalist_story_debris",
+					"explorer_generic_story_rescue_absence_01",
 					"explorer_generic_story_rescue_prospector"
 				],
 				"meet": [
@@ -2615,8 +4525,17 @@
 				],
 				"interact": [
 					"explorer_unique_prospector_interact_01",
+					"explorer_unique_prospector_interact_02",
+					"explorer_unique_prospector_interact_03",
 					"explorer_unique_prospector_interact_04",
 					"explorer_unique_prospector_interact_05",
+					"explorer_unique_prospector_interact_06",
+					"explorer_unique_prospector_interact_07",
+					"explorer_unique_prospector_interact_08",
+					"explorer_unique_prospector_interact_09",
+					"explorer_unique_prospector_interact_10",
+					"explorer_unique_prospector_interact_11",
+					"explorer_unique_prospector_interact_12",
 					"explorer_unique_prospector_story_rescue_intro",
 					"explorer_unique_prospector_story_rescue_lvl14_01",
 					"explorer_unique_prospector_story_rescue_passage_built_01",

@@ -868,10 +868,8 @@ define([
 						if (typeof requirements.player.position.level !== "undefined") {
 							let requiredValue = requirements.player.position.level;
 							let currentValue = positionComponent.level;
-							
-							if (requiredValue != currentValue) {
-								return { value: 0, reason: "Wrong level" };
-							}
+							let result = this.checkRequirementsRange(requiredValue, currentValue, "Wrong level");
+							if (result) return result;
 						}
 					}
 
@@ -945,15 +943,21 @@ define([
 				}
 
 				if (requirements.camp) {
+					let campSector = this.nearestCampNodes.head ? this.nearestCampNodes.head.entity : sector;
+
+					if (!campSector) {
+						return { value: 0, reason: "No camp" };
+					}
+
 					if (requirements.camp.isReachableByTribeTraders) {
-						let isCampReachableByTribeTraders = GameGlobals.levelHelper.isCampReachableByTribeTraders(sector);
+						let isCampReachableByTribeTraders = GameGlobals.levelHelper.isCampReachableByTribeTraders(campSector);
 						if (!isCampReachableByTribeTraders) {
 							return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_NOT_REACHABLE_BY_TRADERS };
 						}
 					}
 
 					if (typeof requirements.camp.raid !== "undefined") {
-						let currentValue = this.playerLocationNodes.head.entity.has(RaidComponent);
+						let currentValue = campSector.has(RaidComponent);
 						let requiredValue = requirements.camp.raid;
 						if (requiredValue != currentValue) {
 							return { value: 0, reason: (requiredValue ? "No raid currently" : "There is a raid" ) };
@@ -961,16 +965,22 @@ define([
 					}
 
 					if (typeof requirements.camp.disease !== "undefined") {
-						let currentValue = this.playerLocationNodes.head.entity.has(DiseaseComponent);
+						let currentValue = campSector.has(DiseaseComponent);
 						let requiredValue = requirements.camp.disease;
 						if (requiredValue != currentValue) {
 							return { value: 0, reason: (requiredValue ? "No disease currently" : "There is a disease ongoing" ) };
 						}
 					}
 
+					if (typeof requirements.camp.availableLuxuryResources) {
+						let available = GameGlobals.campHelper.getAvailableLuxuryResources();
+						let result = this.checkRequirementsDictionary(requirements.camp.availableLuxuryResources, (v) => available.indexOf(v) >= 0);
+						if (result) return result;
+					}
+
 					if (requirements.camp.robotStorageAvailable) {
-						let currentRobotStorage = GameGlobals.campHelper.getRobotStorageCapacity(sector);
-						let resources = sector.get(ResourcesComponent);
+						let currentRobotStorage = GameGlobals.campHelper.getRobotStorageCapacity(campSector);
+						let resources = campSector.get(ResourcesComponent);
 						let currentRobots = resources.resources.robots || 0;
 						if (currentRobotStorage - currentRobots <= 0) {
 							return { value: 0, reason: "No storage space for robots in camp" };
@@ -1548,11 +1558,24 @@ define([
 			
 			return { value: lowestFraction, reason: reason };
 		},
+
+		checkRequirementsDictionary: function (requirements, fnGetValue) {
+			for (let requirementKey in requirements) {
+				let requiredValue = requirements[requirementKey];
+				let currentValue = fnGetValue(requirementKey);
+				if (requiredValue != currentValue) {
+					return { value: 0, reason: requirementKey + " is not " + requiredValue };
+				}
+			}
+
+			return null;
+		},
 		
 		checkRequirementsRange: function (range, value, minreason, maxreason, minreason1, maxreason1, minReasonBase, maxReasonBase) {
 			minreason = minreason || "";
 			maxreason = maxreason || "";
 			maxReasonBase = maxReasonBase || minReasonBase;
+			if (typeof range === "number") range = [ range, range + 1 ];
 			let min = range[0];
 			let max = range[1];
 			if (max < 0) max = 9999999;
@@ -2607,6 +2630,7 @@ define([
 						case localeTypes.spacefactory:
 						case localeTypes.shelter:
 						case localeTypes.seedDepot:
+						case localeTypes.compound:
 							return 0;
 					}
 					return 1;
