@@ -27,6 +27,26 @@ define([
 				}
 			},
 			{
+				id: "story_apocalypse_solar_panels_01",
+				name: "solar panels",
+				shortName: "panels",
+				popupMsg: "Massive solar panels, still providing the failing City with power for basic functions. They look a little run-down though.",
+				positionParams: {
+					campOrdinal: 6,
+					sunlit: true
+				}
+			},
+			{
+				id: "story_apocalypse_solar_panels_02",
+				name: "solar panels",
+				shortName: "panels",
+				popupMsg: "If these kind of panels are what's keeping the City's remaining lights on, they won't last many years without maintenance.",
+				positionParams: {
+					campOrdinal: 7,
+					sunlit: true
+				}
+			},
+			{
 				id: "story_earthquake_pillars",
 				name: "pillars",
 				shortName: "pillars",
@@ -47,7 +67,7 @@ define([
 				storyTag: "spaceDebris"
 			},
 			{
-				id: "story_hull_wreckage",
+				id: "story_fall_hull_wreckage",
 				name: "burned wreckage",
 				shortName: "wreckage",
 				popupMsg: "Wreckage from the escape shuttle. You recognize the material from the factory, still sleek and polished where it has not fractured.",
@@ -57,7 +77,7 @@ define([
 				storyTag: "spaceDebris"
 			},
 			{
-				id: "story_sundome_shards",
+				id: "story_fall_sundome_shards",
 				name: "sundome shards",
 				shortName: "shards",
 				popupMsg: "Sharp, glistering, human-sized shards of the sundome that used to cover the Surface.",

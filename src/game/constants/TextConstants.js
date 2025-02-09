@@ -1123,6 +1123,10 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			
 			// nouns and special modifiers
 			switch (locale.type) {
+				case localeTypes.compound:
+					modifier = "mysterious";
+					noun = "compound";
+					break;
 				case localeTypes.factory:
 					noun = sectorFeatures.surface ? "office" : "factory";
 					break;
@@ -1146,6 +1150,10 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				case localeTypes.depot:
 					modifier = "locked";
 					noun = "depot";
+					break;
+				case localeTypes.expedition:
+					modifier = "expedition";
+					noun = "camp";
 					break;
 				case localeTypes.seedDepot:
 					modifier = "government";

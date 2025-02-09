@@ -937,6 +937,25 @@ define(['ash',
 				this.startSequence([
 					{ type: "dialogue", dialogueID: "locale_story_shelter" },
 					{ type: "storyFlag", flagID: StoryConstants.flags.RESCUE_EXPLORER_FOUND, value: true },
+					{ type: "log", textKey: "Scouted the apartment." }
+				]);
+				return;
+			}
+
+			if (localeVO.type == localeTypes.compound) {
+				this.startSequence([
+					{ type: "dialogue", dialogueID: "locale_story_compound" },
+					{ type: "storyFlag", flagID: StoryConstants.flags.GANG_COMPOUND_FOUND, value: true },
+					{ type: "log", textKey: "Scouted a compound." }
+				]);
+				return;
+			}
+
+			if (localeVO.type == localeTypes.expedition) {
+				this.startSequence([
+					{ type: "dialogue", dialogueID: "locale_story_expedition_camp" },
+					{ type: "storyFlag", flagID: StoryConstants.flags.EXPEDITION_FATE_KNOWN, value: true },
+					{ type: "log", textKey: "Scouted the campsite." }
 				]);
 				return;
 			}

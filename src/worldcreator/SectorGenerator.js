@@ -1667,6 +1667,7 @@ define([
 				let filter = function (sectorVO) {
 					if (sectorVO.examineSpots.length > 0) return false;
 					if (spot.positionParams.sectorType && spot.positionParams.sectorType != sectorVO.sectorType) return false;
+					if (spot.positionParams.sunlit && !sectorVO.sunlit) return false;
 					return true;
 				};
 
@@ -1674,6 +1675,10 @@ define([
 				let excludedFeatures = [ "isCamp", "isPassageUp", "isPassageDown", "workshopResource" ];
 				let options = { requireCentral: false, excludingFeature: excludedFeatures, pathConstraints: [], excludedZones: excludedZones, filter: filter };
 				let sectors = WorldCreatorRandom.randomSectorsScored(1000 + i * 66, worldVO, levelVO, 1, 2, options, getExamineSpotSectorScore);
+				if (sectors.length == 0) {
+					WorldCreatorLogger.w("could not find sector for examine spot: " + spot.id);
+					continue;
+				}
 				let sector = sectors[0];
 				sector.examineSpots.push(spotID);
 				WorldCreatorLogger.i("add examine spot " + spotID + " to " + sector.position);
@@ -1708,10 +1713,12 @@ define([
 			// 2) spawn story locales
 			let storyLocales = [
 				{ type: localeTypes.grove, level: worldVO.bottomLevel, isEasy: true },
+				{ type: localeTypes.compound, level: WorldCreatorHelper.getLastLevelForCamp(seed, 4), isEasy: false },
 				{ type: localeTypes.depot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 5), isEasy: false },
 				{ type: localeTypes.seedDepot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 6), isEasy: false },
 				{ type: localeTypes.spacefactory, level: WorldCreatorHelper.getLastLevelForCamp(seed, 10), isEasy: false },
-				{ type: localeTypes.seedDepot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 12), isEasy: false },
+				{ type: localeTypes.shelter, level: WorldCreatorHelper.getLastLevelForCamp(seed, 12), isEasy: false },
+				{ type: localeTypes.expedition, level: WorldCreatorHelper.getLastLevelForCamp(seed, 15), isEasy: false },
 			];
 
 			for (let i = 0; i < storyLocales.length; i++) {

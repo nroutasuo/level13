@@ -35,6 +35,8 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 		spacefactory: "spacefactory",
 		seedDepot: "seedDepot",
 		shelter: "shelter",
+		compound: "compound",
+		expedition: "expedition"
 	};
 	
 	var LocaleVO = Ash.Class.extend({
@@ -76,6 +78,9 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 				case localeTypes.camp: difficulty = 0.15; break;
 				case localeTypes.caravan: difficulty = 0.1; break;
 				case localeTypes.clinic: difficulty = 0.2; break;
+				case localeTypes.depot: difficulty = 1; break;
+				case localeTypes.expedition: difficulty = 0.1; break;
+				case localeTypes.expedition: difficulty = 1; break;
 				case localeTypes.factory: difficulty = 1; break;
 				case localeTypes.farm: difficulty = 0.4; break;
 				case localeTypes.greenhouse: difficulty = 0.2; break;
@@ -90,11 +95,10 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 				case localeTypes.market: difficulty = 0.15; break;
 				case localeTypes.office: difficulty = 0.25; break;
 				case localeTypes.restaurant: difficulty = 0.25; break;
-				case localeTypes.depot: difficulty = 1; break;
 				case localeTypes.seedDepot: difficulty = 0.5; break;
+				case localeTypes.sewer: difficulty = 1; break;
 				case localeTypes.shelter: difficulty = 0.15; break;
 				case localeTypes.spacefactory: difficulty = 1; break;
-				case localeTypes.sewer: difficulty = 1; break;
 				case localeTypes.store: difficulty = 0.3; break;
 				case localeTypes.tradingpartner: difficulty = 0.15; break;
 				case localeTypes.transport: difficulty = 0.5; break;
@@ -199,6 +203,7 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 				case localeTypes.library:
 				case localeTypes.maintenance:
 				case localeTypes.seedDepot:
+				case localeTypes.expedition:
 				case localeTypes.sewer:
 				case localeTypes.spacefactory:
 				case localeTypes.warehouse:
@@ -218,6 +223,7 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 				case localeTypes.house:
 				case localeTypes.market:
 				case localeTypes.store:
+				case localeTypes.compound:
 					return 1;
 			}
 

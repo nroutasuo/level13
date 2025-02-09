@@ -355,6 +355,8 @@ define([
 			} else if (localeVO.type == localeTypes.greenhouse) {
 			} else if (localeVO.type == localeTypes.shelter) {
 			} else if (localeVO.type == localeTypes.seedDepot) {
+			} else if (localeVO.type == localeTypes.compound) {
+			} else if (localeVO.type == localeTypes.expedition) {
 			} else if (localeVO.type == localeTypes.depot || localeVO.type == localeTypes.spacefactory) {
 				// just items / resources
 				let itemOptions = { rarityKey: "localeRarity", allowNextCampOrdinal: true, tags: itemTags };
