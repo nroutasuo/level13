@@ -1692,8 +1692,6 @@ define([
 			
 			let excludedFeatures = [ "isCamp", "isPassageUp", "isPassageDown", "workshopResource" ];
 			let lateZones = [ WorldConstants.ZONE_POI_2, WorldConstants.ZONE_EXTRA_CAMPABLE ];
-
-			// TODO define hard coded locales in story constants or as input rather than hard-coding here
 			
 			// 1) spawn trading partners
 			for (let i = 0; i < TradeConstants.TRADING_PARTNERS.length; i++) {
@@ -1710,15 +1708,18 @@ define([
 				}
 			}
 			
-			// 2) spawn story locales
+			// TODO define hard coded locales in story constants or as input rather than hard-coding here
+			// 2) spawn story and hard-coded locales
 			let storyLocales = [
 				{ type: localeTypes.grove, level: worldVO.bottomLevel, isEasy: true },
-				{ type: localeTypes.compound, level: WorldCreatorHelper.getLastLevelForCamp(seed, 4), isEasy: false },
-				{ type: localeTypes.depot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 5), isEasy: false },
-				{ type: localeTypes.seedDepot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 6), isEasy: false },
-				{ type: localeTypes.spacefactory, level: WorldCreatorHelper.getLastLevelForCamp(seed, 10), isEasy: false },
-				{ type: localeTypes.shelter, level: WorldCreatorHelper.getLastLevelForCamp(seed, 12), isEasy: false },
-				{ type: localeTypes.expedition, level: WorldCreatorHelper.getLastLevelForCamp(seed, 15), isEasy: false },
+				{ type: localeTypes.compound, level: WorldCreatorHelper.getLastLevelForCamp(seed, 4), isEarly: false },
+				{ type: localeTypes.depot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 5), isEarly: false },
+				{ type: localeTypes.seedDepot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 6), isEarly: false },
+				{ type: localeTypes.clinic, level: WorldCreatorHelper.getLastLevelForCamp(seed, 9), isEarly: true },
+				{ type: localeTypes.spacefactory, level: WorldCreatorHelper.getLastLevelForCamp(seed, 10), isEarly: false },
+				{ type: localeTypes.shelter, level: WorldCreatorHelper.getLastLevelForCamp(seed, 12), isEarly: false },
+				{ type: localeTypes.clinic, level: WorldCreatorHelper.getLastLevelForCamp(seed, 13), isEarly: true },
+				{ type: localeTypes.expedition, level: WorldCreatorHelper.getLastLevelForCamp(seed, 15), isEarly: false },
 			];
 
 			for (let i = 0; i < storyLocales.length; i++) {
@@ -1729,9 +1730,9 @@ define([
 				if (def.type == localeTypes.grove) sector.sunlit = 1;
 				sector.hazards.radiation = 0;
 				sector.hazards.pollution = 0;
-				let localeVO = new LocaleVO(def.type, def.isEasy, false);
+				let localeVO = new LocaleVO(def.type, def.isEarly, def.isEarly);
 				this.addLocale(levelVO, sector, localeVO);
-				WorldCreatorLogger.i("add " + def.type +  " at: " + sector);
+				WorldCreatorLogger.i("add locale " + def.type +  " at: " + sector);
 			}
 			
 			// 3) spawn locales with hard-coded explorers
@@ -2766,9 +2767,6 @@ define([
 
 			if (l < 13)
 				possibleTypes.push(localeTypes.caravan);
-
-			if (l > 15)
-				possibleTypes.push(localeTypes.clinic);
 			
 			let isValidForSettlement = distanceToCamp > 3 && levelVO.level !== 13 && levelVO.isCampable;
 				

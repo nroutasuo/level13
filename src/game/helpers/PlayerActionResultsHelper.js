@@ -619,6 +619,29 @@ define([
 				}
 			}
 
+			if (rewards.lostPerks) {
+				let perksComponent = this.playerStatsNodes.head.perks;
+				for (let i = 0; i < rewards.lostPerks.length; i++) {
+					let perkIDOrVO = rewards.lostPerks[i];
+					if (perkIDOrVO == "injury") {
+						let injuries = perksComponent.getPerksByType(PerkConstants.perkTypes.injury);
+						if (injuries.length > 0) {
+							let perkVO = injuries[0];
+							rewards.lostPerks[i] = perkVO;
+						} else {
+							rewards.lostPerks[i] = null;
+						}
+					} else if (typeof perkIDOrVO === 'string') {
+						let perkVO = perksComponent.getPerk(perkIDOrVO);
+						if (perkVO) {
+							rewards.lostPerks[i] = perkVO;
+						} else {
+							rewards.lostPerks[i] = null;
+						}
+					}
+				}
+			}
+
 			if (rewards.lostExplorers) {
 				for (let i = 0; i < rewards.lostExplorers.length; i++) {
 					let explorer = rewards.lostExplorers[i];
@@ -792,7 +815,10 @@ define([
 			if (rewards.lostPerks) {
 				let perksComponent = this.playerStatsNodes.head.perks;
 				for (let i = 0; i < rewards.lostPerks.length; i++) {
-					perksComponent.removePerkById(rewards.lostPerks[i].id);
+					let perkVO = rewards.lostPerks[i];
+					if (perkVO) {
+						perksComponent.removePerkById(perkVO.id);
+					}
 				}
 			}
 
@@ -1212,7 +1238,15 @@ define([
 			}
 
 			if (resultVO.lostPerks.length > 0) {
-				div += "<p class='warning'>You lost " + TextConstants.getListText(resultVO.lostPerks.map(perkVO => perkVO.name)) + ".</p>";
+				let lostNegativePerks = resultVO.lostPerks.filter(p => PerkConstants.isNegative(p));
+				if (lostNegativePerks.length > 0) {
+					div += "<p>Got rid of " + TextConstants.getListText(resultVO.lostPerks.map(perkVO => perkVO.name)) + ".</p>";
+				}
+
+				let lostPositivePerks = resultVO.lostPerks.filter(p => !PerkConstants.isNegative(p));
+				if (lostPositivePerks.length > 0) {
+					div += "<p class='warning'>You lost " + TextConstants.getListText(resultVO.lostPerks.map(perkVO => perkVO.name)) + ".</p>";
+				}
 			}
 
 			if (resultVO.lostCurrency > 0) {

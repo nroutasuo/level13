@@ -1289,6 +1289,10 @@
             "refugees_earthquake_event_01_p1": "Our camp was destroyed in an earthquake.",
             "visitor_unique_expedition_01_p1": "Amanda Ettler is organizing a big expedition to the Surface to find out what happened. I'm travelling to join it."
         },
+        "sequences": {
+            "locale_generic_clinic_intro": "A haphazard clinic set up by a doctor who is defying the post-Fall chaos by helping whoever needs it.",
+            "locale_generic_clinic_treatment": "The doctor cleans and bandages your wouds briskly and urges you to stay out of trouble."
+        },
         "messages": {
             "explorer_level_up_message_01": "{Name} found better equipment and improved their ability",
             "passage_found_elevator_built_message": "There is an elevator here.",

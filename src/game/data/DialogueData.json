@@ -4105,6 +4105,42 @@
 				"explorer_unique_prospector_story_rescue_passage_built_02_p1"
 			]
 		},
+		"locale_generic_clinic": {
+			"pages": [
+				{
+					"id": "intro",
+					"key": "story.sequences.locale_generic_clinic_intro",
+					"options": [
+						{
+							"buttonKey": "Treatment",
+							"response": "treatment",
+							"conditions": {
+								"perkEffects": {
+									"Injury": [
+										0.1,
+										1
+									]
+								}
+							}
+						},
+						{
+							"buttonKey": "Leave",
+							"response": "END"
+						}
+					]
+				},
+				{
+					"id": "treatment",
+					"key": "story.sequences.locale_generic_clinic_treatment",
+					"result": {
+						"lostPerks": [
+							"injury"
+						],
+						"gainedHope": 1
+					}
+				}
+			]
+		},
 		"locale_story_compound": {
 			"pages": [
 				{

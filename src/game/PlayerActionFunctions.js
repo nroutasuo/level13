@@ -959,6 +959,13 @@ define(['ash',
 				]);
 				return;
 			}
+
+			if (localeVO.type == localeTypes.clinic) {
+				this.startSequence([
+					{ type: "dialogue", dialogueID: "locale_generic_clinic" },
+				]);
+				return;
+			}
 			
 			let luxuryResource = localeVO.luxuryResource;
 			if (luxuryResource) {

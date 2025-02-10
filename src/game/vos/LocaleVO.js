@@ -60,7 +60,7 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 			this.costs = {};
 			this.costs.stamina = this.getStaminaRequirement();
 			
-			if (type !== localeTypes.grove && type !== localeTypes.tradingpartner) {
+			if (type !== localeTypes.grove && type !== localeTypes.tradingpartner && type != localeTypes.clinic) {
 				 this.costs.item_exploration_1 = 1;
 			}
 		},
@@ -77,7 +77,7 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 				case localeTypes.bunker: difficulty = 0.6; break;
 				case localeTypes.camp: difficulty = 0.15; break;
 				case localeTypes.caravan: difficulty = 0.1; break;
-				case localeTypes.clinic: difficulty = 0.2; break;
+				case localeTypes.clinic: return 3;
 				case localeTypes.depot: difficulty = 1; break;
 				case localeTypes.expedition: difficulty = 0.1; break;
 				case localeTypes.expedition: difficulty = 1; break;
@@ -301,7 +301,6 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 			switch (this.type) {
 				case localeTypes.house: return 0.1;
 				case localeTypes.bunker: return 0.1;
-				case localeTypes.clinic: return 0.1;
 				case localeTypes.lab: return 0.2;
 				case localeTypes.sewer: return 0.3;
 				default: return 0;

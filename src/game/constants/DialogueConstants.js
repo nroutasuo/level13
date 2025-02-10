@@ -78,7 +78,7 @@ define([
 					let optionVO = vo.pages[i].options[j];
 					if (optionVO.responsePageID === "NEXT") {
 						optionVO.responsePageID = vo.pages[i+1].pageID;
-					} 
+					}
 				}
 			}
 
@@ -123,7 +123,9 @@ define([
 				return resultVO;
 			}
 
+			if (data.gainedEvidence) resultVO.gainedEvidence = parseInt(data.gainedEvidence);
 			if (data.gainedRumours) resultVO.gainedRumours = parseInt(data.gainedRumours);
+			if (data.gainedHope) resultVO.gainedHope = parseInt(data.gainedHope);
 
 			if (data.gainedPopulation) resultVO.gainedPopulation = parseInt(data.gainedPopulation);
 
@@ -142,6 +144,15 @@ define([
 					// TODO check perk exists (or is general injury)
 					let perkID = data.gainedPerks[i];
 					resultVO.gainedPerks.push(perkID);
+				}
+			}
+
+			if (data.lostPerks) {
+				resultVO.lostPerks = [];
+				for (let i in data.lostPerks) {
+					// TODO check perk exists (or is general injury)
+					let perkID = data.lostPerks[i];
+					resultVO.lostPerks.push(perkID);
 				}
 			}
 

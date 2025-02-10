@@ -11,6 +11,13 @@ define(['ash'], function (Ash) {
 		getPassageLocaleId: function (direction) {
 			return this.LOCALE_ID_PASSAGE + "_" + direction;
 		},
+
+		canBeScoutedAgain: function (localeType) {
+			switch (localeType) {
+				case localeTypes.clinic: return true;
+			}
+			return false;
+		}
 	
 	};
 	

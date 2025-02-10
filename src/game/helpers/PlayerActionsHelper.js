@@ -2008,17 +2008,22 @@ define([
 			switch (baseActionID) {
 				case "scout_locale_i":
 				case "scout_locale_u":
-					var localeVO;
+					let localeVO;
 					if (sector) {
-						var localei = parseInt(action.split("_")[3]);
-						var sectorLocalesComponent = sector.get(SectorLocalesComponent);
+						let localei = parseInt(action.split("_")[3]);
+						let sectorLocalesComponent = sector.get(SectorLocalesComponent);
 						localeVO = sectorLocalesComponent.locales[localei];
 					}
 					requirements = localeVO == null ? {} : localeVO.requirements;
 					requirements.sector = {};
 					requirements.sector.scouted = true;
-					requirements.sector.scoutedLocales = {};
-					requirements.sector.scoutedLocales[localei] = false;
+					if (localeVO) {
+						let localeType = localeVO.type;
+						if (!LocaleConstants.canBeScoutedAgain(localeType)) {
+							requirements.sector.scoutedLocales = {};
+							requirements.sector.scoutedLocales[localei] = false;
+						}
+					}
 					return requirements;
 				
 				case "clear_workshop":

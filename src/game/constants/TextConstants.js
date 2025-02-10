@@ -1221,7 +1221,9 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					noun = "hut";
 					break;
 				case localeTypes.clinic:
+					modifier = "provisional";
 					noun = "clinic";
+					break;
 				case localeTypes.library:
 					modifier = "abandoned";
 					if (sectorFeatures.level < 10) modifier = "ancient";

@@ -173,6 +173,12 @@ define([
 			let responsePageID = optionVO.responsePageID;
 
 			this.endPage(); 
+
+			if (responsePageID === "END") {
+				this.endDialogue();
+				return;
+			}
+
 			this.startPage(responsePageID);
 		},
 

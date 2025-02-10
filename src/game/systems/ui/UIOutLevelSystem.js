@@ -901,9 +901,12 @@ define([
 			
 			li.$button.attr("action", "scout_locale_" + locale.getCategory() + "_" + data.index);
 			li.$button.find(".btn-label").html(TextConstants.getLocaleName(locale, data.sectorFeaturesComponent));
+
+			let isScouted = data.isScouted;
+			let canBeScouted = !isScouted || LocaleConstants.canBeScoutedAgain(locale.type);
 			
 			let info = "";
-			if (data.isScouted) {
+			if (!canBeScouted) {
 				if (locale.type == localeTypes.tradingpartner) {
 					let partner = TradeConstants.getTradePartner(data.campOrdinal);
 					if (partner) {
