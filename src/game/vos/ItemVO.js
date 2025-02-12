@@ -99,6 +99,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			delete clone.balancingData;
 			delete clone.configData;
 			delete clone.maximumCampOrdinal;
+			delete clone.weight;
 			
 			if (this.foundPosition == null)
 				delete clone.foundPosition;

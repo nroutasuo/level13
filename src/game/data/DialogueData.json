@@ -4105,6 +4105,14 @@
 				"explorer_unique_prospector_story_rescue_passage_built_02_p1"
 			]
 		},
+		"item_story_expedition_diary": {
+			"pages": [
+				"story.stories.expedition_diary_p1",
+				"story.stories.expedition_diary_p2",
+				"story.stories.expedition_diary_p3",
+				"story.stories.expedition_diary_p4"
+			]
+		},
 		"locale_generic_clinic": {
 			"pages": [
 				{
@@ -4195,7 +4203,8 @@
 					"key": "story.stories.expedition_locale_camp_p3",
 					"result": {
 						"gainedItems": [
-							"cache_food_1"
+							"cache_food_1",
+							"document_story_expedition_diary_01"
 						]
 					}
 				}

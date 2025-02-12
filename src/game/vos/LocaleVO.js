@@ -1,6 +1,6 @@
 // Locale / point of interest: an additional scoutable location in a sector
-define(['ash', 'game/constants/WorldConstants', 'game/vos/ResourcesVO', 'game/constants/LocaleConstants', 'game/constants/PlayerStatConstants'],
-function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants) {
+define(['ash', 'game/constants/WorldConstants', 'game/constants/ItemConstants', 'game/vos/ResourcesVO', 'game/constants/LocaleConstants', 'game/constants/PlayerStatConstants'],
+function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, PlayerStatConstants) {
 
 	localeTypes = {
 		// uninhabited
@@ -233,53 +233,53 @@ function (Ash, WorldConstants, ResourcesVO, LocaleConstants, PlayerStatConstants
 		getItemTags: function () {
 			switch (this.type) {
 				case localeTypes.bunker: 
-					return [ "old" ];
+					return [ ItemConstants.itemTags.old, ItemConstants.itemTags.equipment ];
 				case localeTypes.clinic: 
-					return [ "medical" ];
+					return [ ItemConstants.itemTags.medical, ItemConstants.itemTags.new ];
 				case localeTypes.factory:
-					return [ "industrial" ];
+					return [ ItemConstants.itemTags.industrial, ItemConstants.itemTags.clothing ];
 				case localeTypes.farm:
-					return [ "agriculture" ];
+					return [ ItemConstants.itemTags.nature, ItemConstants.itemTags.old ];
 				case localeTypes.grove:
-					return [ "nature" ];
+					return [ ItemConstants.itemTags.nature ];
 				case localeTypes.greenhouse:
-					return [ "nature" ];
+					return [ ItemConstants.itemTags.nature ];
 				case localeTypes.library:
-					return [ "science" ];
+					return [ ItemConstants.itemTags.science, ItemConstants.itemTags.history, ItemConstants.itemTags.book ];
 				case localeTypes.maintenance:
-					return [ "maintenance" ];
+					return [ ItemConstants.itemTags.maintenance, ItemConstants.itemTags.indutrial ];
 				case localeTypes.sewer:
-					return [ "maintenance" ];
+					return [ ItemConstants.itemTags.maintenance, ItemConstants.itemTags.valuable ];
 				case localeTypes.warehouse:
 				case localeTypes.depot:
-					return [ "old" ];
+					return [ ItemConstants.itemTags.perishable, ItemConstants.itemTags.clothing ];
 				case localeTypes.camp:
-					return [ "keepsake" ];
+					return [ ItemConstants.itemTags.new, ItemConstants.itemTags.equipment ];
 				case localeTypes.caravan:
-					return [ "valuable" ];
+					return [ ItemConstants.itemTags.valuable, ItemConstants.itemTags.equipment ];
 				case localeTypes.hermit:
-					return [ "keepsake" ];
+					return [ ItemConstants.itemTags.maintenance, ItemConstants.itemTags.equipment ];
 				case localeTypes.tradingpartner:
-					return [ "valuable" ];
+					return [ ItemConstants.itemTags.valuable ];
 				case localeTypes.grocery:
-					return [ "perishable" ];
+					return [ ItemConstants.itemTags.perishable, ItemConstants.itemTags.medical ];
 				case localeTypes.office:
-					return [ "science", "valuable" ];
+					return [ ItemConstants.itemTags.science, ItemConstants.itemTags.valuable, ItemConstants.itemTags.community ];
 				case localeTypes.hut:
-					return [ "keepsake" ];
+					return [ ItemConstants.itemTags.maintenance ];
 				case localeTypes.lab:
-					case localeTypes.spacefactory:
-					return [ "science" ];
+				case localeTypes.spacefactory:
+					return [ ItemConstants.itemTags.science, ItemConstants.itemTags.industrial ];
 				case localeTypes.restaurant:
-					return [ "perishable" ];
+					return [ ItemConstants.itemTags.perishabl, ItemConstants.itemTags.communitye ];
 				case localeTypes.transport:
-					return [ "maintenance" ];
+					return [ ItemConstants.itemTags.maintenance, ItemConstants.itemTags.community ];
 				case localeTypes.house:
-					return [ "keepsake" ];
+					return [ ItemConstants.itemTags.valuable, ItemConstants.itemTags.keepsake ];
 				case localeTypes.market:
-					return [ "clothing" ];
+					return [ ItemConstants.itemTags.clothing, ItemConstants.itemTags.community ];
 				case localeTypes.store:
-					return [ "clothing" ];
+					return [ ItemConstants.itemTags.clothing, ItemConstants.itemTags.valuable ];
 				default: return [];
 			}
 		},

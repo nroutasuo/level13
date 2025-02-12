@@ -59,6 +59,7 @@ define(['ash', 'game/constants/ItemConstants'], function (Ash, ItemConstants) {
 		},
 
 		getItemCapacity: function (itemVO) {
+			if (itemVO.weight) return itemVO.weight;
 			if (itemVO.type === ItemConstants.itemTypes.bag) return 0;
 			if (itemVO.type === ItemConstants.itemTypes.uniqueEquipment) return 0;
 			if (itemVO.type === ItemConstants.itemTypes.exploration) return BagConstants.CAPACITY_ITEM_EXPLORATION;

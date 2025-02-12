@@ -2461,6 +2461,12 @@ define([
 			} else if (UpgradeConstants.hasUpgrade[action]) {
 				// upgrade action descriptions are displayed in the list outside of the button
 				return "";
+			} else if (action.indexOf("unequip_") >= 0) {
+				// no need for description
+				return "";
+			} else if (action.indexOf("discard_") >= 0) {
+				// no need for description
+				return "";
 			} else if (action.indexOf("move_sector_") >= 0) {
 				// no need for description
 				return "";

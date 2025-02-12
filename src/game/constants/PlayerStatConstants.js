@@ -1,6 +1,6 @@
 define(['ash', 'game/GameGlobals', 'game/constants/PerkConstants'], function (Ash, GameGlobals, PerkConstants) {
 
-	var PlayerStatConstants = {
+	let PlayerStatConstants = {
 
 		VISION_BASE: 25,
 		VISION_BASE_SUNLIT: 50,
@@ -9,6 +9,7 @@ define(['ash', 'game/GameGlobals', 'game/constants/PerkConstants'], function (As
 		
 		MAX_SCOUT_LOCALE_STAMINA_COST: 500,
 		STAMINA_GAINED_FROM_NAP: 100,
+		STAMINA_GAINED_FROM_NAP_2: 200,
 		STAMINA_GAINED_FROM_GROVE: 200,
 		STAMINA_GAINED_FROM_POTION_1: 500,
 
@@ -17,6 +18,10 @@ define(['ash', 'game/GameGlobals', 'game/constants/PerkConstants'], function (As
 			var staminaCostToMoveOneSector = GameGlobals.playerActionsHelper.getCosts("move_sector_west").stamina;
 			var staminaCostToCamp = GameGlobals.playerActionsHelper.getCosts("move_camp_level").stamina;
 			return Math.min(maxStamina * 0.25, Math.max(staminaCostToCamp + staminaCostToMoveOneSector * 5, staminaCostToMoveOneSector * 10, 50));
+		},
+
+		getStaminaGainedFromNap: function (hasSleepingBag) {
+			return hasSleepingBag ? PlayerStatConstants.STAMINA_GAINED_FROM_NAP_2 : PlayerStatConstants.STAMINA_GAINED_FROM_NAP;
 		},
 		
 		getMaxHealth: function (perksComponent) {

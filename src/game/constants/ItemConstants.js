@@ -94,6 +94,25 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, ItemVO) {
 			medium: "medium",
 			high: "high",
 		},
+
+		itemTags: {
+			book: "book", // books, found in residential areas and libraries, not in flooded sectors
+			clothing: "clothing", // clothing items, found in resdiential and industrial sectors, stores, factories etc
+			community: "community", // items related to news or propaganda or gossip, found in places where people lived and worked relatively recently
+			equipment: "equipment", // equipment related to surviving in the City, found in industrial areas and areas inhabited since the Fall
+			history: "history", // from before the Government, found in public sectors, museums, libraries 
+			industrial: "industrial", // related to industry, found in industrial sectors and factories
+			keepsake: "keepsake", // something with sentimental value, found in residential sectors and locales
+			medical: "medical", // related to healthcare, found in labs and hospitals
+			maintenance: "maintenance", // related to the maintenance and infrastructure of the City, foundin maintenance areas
+			nature: "nature", // nature related, found on the ground, on sunlit sectors, greenhouses etc
+			new: "new", // manufactured after the Fall, found in places inhabited since
+			old: "old", // manufactured before the Fall, found in warehouses and depots and homes
+			perishable: "perishable", // food and other items, found in residential and commercial areas
+			science: "science", // related to science and technology, found in industrial sectors and factories
+			valuable: "valuable", // items that are valuable regardless of era, found in residential and commercial areas
+			weapon: "weapon", // both manufactured and improvised weapons, found in slums and gang territories
+		},
 		
 		itemBonusTypeIcons: {},
 		
@@ -134,9 +153,9 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, ItemVO) {
 					isRepairable = item.isCraftable && item.isEquippable;
 				}
 				let level = item.level || this.getDefaultItemLevel(type);
-				let tags = (item.tags || []).concat(this.getItemDefaultTags(item.type));
+				let tags = this.getItemDefaultTags(item.type).concat(item.tags || []);
 
-				let itemVO = new ItemVO(item.id, type, level, item.campOrdinalRequired, item.campOrdinalMaximum, item.isEquippable, item.isCraftable, isRepairable, item.isUseable, bonuses, item.icon, item.isSpecialEquipment);
+				let itemVO = new ItemVO(itemID, type, level, item.campOrdinalRequired, item.campOrdinalMaximum, item.isEquippable, item.isCraftable, isRepairable, item.isUseable, bonuses, item.icon, item.isSpecialEquipment);
 				itemVO.scavengeRarity = item.rarityScavenge || -1;
 				itemVO.investigateRarity = item.rarityInvestigate || -1;
 				itemVO.localeRarity = item.rarityLocale || -1;
@@ -145,6 +164,7 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, ItemVO) {
 				itemVO.configData = item.configData || {};
 				itemVO.tradePrice = item.tradePrice;
 				itemVO.isStoryItem = item.isStoryItem || false;
+				itemVO.weight = item.weight || null;
 				this.itemDefinitions[type].push(itemVO);
 				this.itemByID[itemID] = itemVO;
 			}
@@ -153,27 +173,29 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, ItemVO) {
 		getItemDefaultTags: function (itemType) {
 			switch (itemType) {
 				case ItemConstants.itemTypes.weapon:
-					return [ "weapon" ];
+					return [ ItemConstants.itemTags.weapon ];
 				case ItemConstants.itemTypes.clothing_over:
 				case ItemConstants.itemTypes.clothing_upper:
 				case ItemConstants.itemTypes.clothing_lower:
 				case ItemConstants.itemTypes.clothing_hands:
 				case ItemConstants.itemTypes.clothing_head:
-					return [ "clothing" ];
+					return [ ItemConstants.itemTags.clothing ];
 				case ItemConstants.itemTypes.light:
-					return [ "equipment", "new" ];
+					return [ ItemConstants.itemTags.equipment, ItemConstants.itemTags.new ];
 				case ItemConstants.itemTypes.bag:
-					return [ "equipment" ];
+					return [ ItemConstants.itemTags.equipment ];
 				case ItemConstants.itemTypes.shoes:
-					return [ "clothing" ];
+					return [ ItemConstants.itemTags.clothing ];
 				case ItemConstants.itemTypes.exploration:
-					return [ "equipment", "new" ];
+					return [ ItemConstants.itemTags.equipment, ItemConstants.itemTags.new ];
 				case ItemConstants.itemTypes.artefact:
-					return [ "keepsake", "old" ];
+					return [ ItemConstants.itemTags.keepsake, ItemConstants.itemTags.old ];
 				case ItemConstants.itemTypes.trade:
-					return [ "old" ];
+					return [ ItemConstants.itemTags.keepsake, ItemConstants.itemTags.valuable, ItemConstants.itemTags.old ];
 				case ItemConstants.itemTypes.uniqueEquipment:
-					return [ "equipment" ];
+					return [ ItemConstants.itemTags.equipment, ItemConstants.itemTags.new  ];
+				case ItemConstants.itemTypes.note:
+					return [ ItemConstants.itemTags.community ];
 				default: return [];
 			}
 		},
@@ -367,8 +389,11 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, ItemVO) {
 		},
 		
 		getBaseItemId: function (itemID) {
-			let parts = itemID.split("_");
 			if (itemID.startsWith("document_")) return "document";
+
+			let id = itemID.replaceAll("_exodus", "").replaceAll("_official", "");
+			let parts = id.split("_");
+
 			if (parts.length > 1) {
 				let postfix = parts[parts.length - 1];
 				if (/^\d+$/.test(postfix)) {

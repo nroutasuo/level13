@@ -67,7 +67,7 @@ define([
 
 			for (let i = 0; i < d.pages.length; i++) {
 				let pageData = d.pages[i];
-				let pageVO = this.parsePage(i, pageData);
+				let pageVO = this.parsePage(i, d.pages.length, pageData);
 
 				vo.pages.push(pageVO);
 				vo.pagesByID[pageVO.pageID] = pageVO;
@@ -85,22 +85,28 @@ define([
 			return vo;
 		},
 
-		parsePage: function (i, pageData) {
+		parsePage: function (i, num, pageData) {
 			let pageID = pageData.id || i;
 			let pageVO = new DialoguePageVO(pageID);
 			let pageKey = typeof pageData === "string" ? pageData : pageData.key;
 			pageVO.textKey = pageKey;
 			if (pageVO.textKey && pageVO.textKey.indexOf(".") < 0) pageVO.textKey = "story.dialogue." + pageKey;
-			
-			pageVO.options = [];
 
-			if (pageData.options === "NEXT") {
-				let buttonKey = pageData.buttonKey;
-				pageData.options = [ { buttonKey: buttonKey, response: "NEXT" } ];
+			let optionsData = pageData.options;
+
+			if (!optionsData && i < num - 1) {
+				optionsData = "NEXT";
 			}
 
-			for (let j in pageData.options) {
-				let optionData = pageData.options[j];
+			if (optionsData === "NEXT") {
+				let buttonKey = pageData.buttonKey;
+				optionsData = [ { buttonKey: buttonKey, response: "NEXT" } ];
+			}
+
+			pageVO.options = [];
+
+			for (let j in optionsData) {
+				let optionData = optionsData[j];
 
 				let optionVO = this.parseDialogueOption(j, optionData);
 

@@ -113,6 +113,14 @@ define([
 				itemID: "document_story_earthquakes_cause_01",
 				localeType: "office",
 			},
+			{
+				campOrdinal: 13,
+				itemID: "document_story_expedition_leaflet_01"
+			},
+			{
+				campOrdinal: 14,
+				itemID: "document_story_expedition_leaflet_01"
+			},
 		],
 
 		storyStatuses: {

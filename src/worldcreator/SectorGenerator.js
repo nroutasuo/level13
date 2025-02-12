@@ -745,7 +745,7 @@ define([
 				let stashDefinition = StoryConstants.storyStashes[i];
 				if (stashDefinition.campOrdinal != levelVO.campOrdinal) continue;
 				if (levelIndex != maxLevelIndex) continue;
-				addStashes(seed / 2 + 16831, "story", ItemConstants.STASH_TYPE_ITEM, [ stashDefinition.itemID ], 1, 1, earlyZonesOnCampableLevels, stashDefinition.localeType);
+				addStashes(seed / 2 + 16831 + i * 312, "story", ItemConstants.STASH_TYPE_ITEM, [ stashDefinition.itemID ], 1, 1, earlyZonesOnCampableLevels, stashDefinition.localeType);
 			}
 		},
 		
@@ -754,6 +754,7 @@ define([
 				"first_aid_kit_1",
 				"first_aid_kit_2",
 				"glowstick_1",
+				"exploration_2",
 				"consumable_weapon_1",
 				"consumable_weapon_bio",
 				"consumable_weapon_mechanical",
@@ -772,7 +773,9 @@ define([
 				"cache_metal_3",
 				"cache_metal_4",
 				"cache_food_1",
+				"cache_food_2",
 				"cache_water_1",
+				"cache_water_2",
 			];
 			return allItems.filter((itemID) => this.itemsHelper.isAvailable(ItemConstants.getItemDefinitionByID(itemID), levelVO.campOrdinal, WorldConstants.CAMP_STEP_END, true, true));
 		},

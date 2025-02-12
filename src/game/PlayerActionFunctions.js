@@ -1148,8 +1148,10 @@ define(['ash',
 		},
 
 		nap: function () {
-			var sys = this;
-			var excursionComponent = sys.playerStatsNodes.head.entity.get(ExcursionComponent);
+			let sys = this;
+			let excursionComponent = sys.playerStatsNodes.head.entity.get(ExcursionComponent);
+			let hasSleepingBag = sys.playerStatsNodes.head.items.getCountById("exploration_2") > 0;
+
 			GameGlobals.uiFunctions.setGameElementsVisibility(false);
 			GameGlobals.uiFunctions.showInfoPopup(
 				"Rest",
@@ -1168,14 +1170,17 @@ define(['ash',
 							let logMsgFail = "Tried to rest but got attacked.";
 							let messages = {
 								id: LogConstants.MSG_ID_NAP,
-								msgSuccess: "Found a bench to sleep on. Barely feel rested.",
+								msgSuccess: hasSleepingBag ? 
+									"Found a bench and rolled up in the sleeping bag, trying to get some rest." :
+									"Found a bench to sleep on. Barely feel rested.",
 								msgFlee: logMsgFail,
 								msgDefeat: logMsgFail,
 								addToLog: true,
 							};
 							sys.handleOutActionResults("nap", messages, false, false,
 								function () {
-									sys.playerStatsNodes.head.stamina.stamina += PlayerStatConstants.STAMINA_GAINED_FROM_NAP;
+									let staminaGained = PlayerStatConstants.getStaminaGainedFromNap(hasSleepingBag);
+									sys.playerStatsNodes.head.stamina.stamina += staminaGained;
 								},
 							);
 						}, 300);
@@ -2354,7 +2359,6 @@ define(['ash',
 			var foundPosition = item.foundPosition || playerPos;
 			var foundPositionCampOrdinal = GameGlobals.gameState.getCampOrdinal(foundPosition.level);
 			let resultVO = new ResultVO("use_item");
-			let message = "";
 			
 			let itemConfig = ItemConstants.getItemDefinitionByID(itemId);
 			let baseItemId = ItemConstants.getBaseItemId(itemId);
@@ -2475,13 +2479,19 @@ define(['ash',
 				
 				case "document":
 					resultVO.gainedEvidence = ExplorationConstants.getScoutLocaleEvidenceReward(null, 10);
-					let message = Text.t(itemConfig.configData.noteText);
-					GameGlobals.uiFunctions.showInfoPopup(
-						itemName,
-						message,
-						"Continue",
-						resultVO
-					);
+					if (itemConfig.configData.noteDialogue) {
+						this.startSequence([
+							{ type: "dialogue", dialogueID: itemConfig.configData.noteDialogue },
+						]);
+					} else {
+						let message = Text.t(itemConfig.configData.noteText);
+						GameGlobals.uiFunctions.showInfoPopup(
+							itemName,
+							message,
+							"Continue",
+							resultVO
+						);
+					}
 					this.playerStatsNodes.head.evidence.value += resultVO.gainedEvidence;
 					if (itemConfig.configData.storyFlag) {
 						this.setStoryFlag(itemConfig.configData.storyFlag, true);

@@ -1659,44 +1659,69 @@ define([
 		getSectorItemTags: function () {
 			let tags = [];
 			let sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+
+			tags.push(ItemConstants.itemTags.old);
 			
 			switch (sectorFeatures.sectorType) {
 				case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
-					tags.push("keepsake");
-					tags.push("book");
-					tags.push("perishable");
-					tags.push("clothing");
+					tags.push(ItemConstants.itemTags.book);
+					tags.push(ItemConstants.itemTags.clothing);
+					tags.push(ItemConstants.itemTags.community);
+					tags.push(ItemConstants.itemTags.keepsake);
+					tags.push(ItemConstants.itemTags.perishable);
+					tags.push(ItemConstants.itemTags.valuable);
 					break;
 				case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
-					tags.push("technology");
-					tags.push("industrial");
-					tags.push("clothing");
-					tags.push("medical");
+					tags.push(ItemConstants.itemTags.clothing);
+					tags.push(ItemConstants.itemTags.community);
+					tags.push(ItemConstants.itemTags.industrial);
+					tags.push(ItemConstants.itemTags.medical);
+					tags.push(ItemConstants.itemTags.science);
 					break;
 				case SectorConstants.SECTOR_TYPE_MAINTENANCE:
-					tags.push("maintenance");
+					tags.push(ItemConstants.itemTags.equipment);
+					tags.push(ItemConstants.itemTags.maintenance);
+					tags.push(ItemConstants.itemTags.weapon);
 					break;
 				case SectorConstants.SECTOR_TYPE_PUBLIC:
-					tags.push("history");
-					tags.push("book");
-					tags.push("medical");
+					tags.push(ItemConstants.itemTags.book);
+					tags.push(ItemConstants.itemTags.community);
+					tags.push(ItemConstants.itemTags.history);
+					tags.push(ItemConstants.itemTags.science);
+					tags.push(ItemConstants.itemTags.medical);
 					break;
 				case SectorConstants.SECTOR_TYPE_COMMERCIAL:
-					tags.push("perishable");
-					tags.push("clothing");
-					tags.push("valuable");
+					tags.push(ItemConstants.itemTags.clothing);
+					tags.push(ItemConstants.itemTags.community);
+					tags.push(ItemConstants.itemTags.perishable);
+					tags.push(ItemConstants.itemTags.valuable);
 					break;
 				case SectorConstants.SECTOR_TYPE_SLUM:
-					tags.push("keepsake");
-					tags.push("perishable");
-					tags.push("weapon");
+					tags.push(ItemConstants.itemTags.community);
+					tags.push(ItemConstants.itemTags.equipment);
+					tags.push(ItemConstants.itemTags.keepsake);
+					tags.push(ItemConstants.itemTags.weapon);
 					break;
 			}
 
-			if (sectorFeatures.wear > 5) tags.push("old");
-			if (sectorFeatures.wear < 5) tags.push("modern");
-			if (sectorFeatures.ground) tags.push("nature");
-			if (sectorFeatures.sunlit) tags.push("nature");
+			if (sectorFeatures.wear > 5) tags.push(ItemConstants.itemTags.history);
+			if (sectorFeatures.ground) tags.push(ItemConstants.itemTags.nature);
+			if (sectorFeatures.sunlit) tags.push(ItemConstants.itemTags.nature);
+			
+			if (sectorFeatures.hazards.territory > 0) tags.push(ItemConstants.itemTags.weapon);
+
+			if (sectorFeatures.hazards.flooded > 0) {
+				tags = tags.filter(t != ItemConstants.itemTags.book);
+				tags = tags.filter(t != ItemConstants.itemTags.perishable);
+			}
+			
+			if (sectorFeatures.hazards.radiation > 0) {
+				tags = tags.filter(t != ItemConstants.itemTags.perishable);
+			}
+			
+			if (sectorFeatures.hazards.poison > 0) {
+				tags = tags.filter(t != ItemConstants.itemTags.perishable);
+			}
 
 			return tags;
 		},

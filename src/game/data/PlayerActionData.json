@@ -3797,7 +3797,27 @@
                 ]
             }
         },
+        "use_item_first_aid_kit_1_official": {
+            "busy": false,
+            "perkEffects": {
+                "Injury": [
+                    0.6,
+                    0.99,
+                    true
+                ]
+            }
+        },
         "use_item_first_aid_kit_2": {
+            "busy": false,
+            "perkEffects": {
+                "Injury": [
+                    0.05,
+                    0.99,
+                    true
+                ]
+            }
+        },
+        "use_item_first_aid_kit_2_exodus": {
             "busy": false,
             "perkEffects": {
                 "Injury": [

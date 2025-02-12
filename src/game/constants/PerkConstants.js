@@ -35,6 +35,7 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 			staminaBonus: "energized",
 			staminaBonusPenalty: "headache",
 			lightBeacon: "beacon",
+			lucky: "lucky",
 		},
 		
 		perkDefinitions: {
@@ -118,6 +119,7 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 			// returns perk ids that block perkID from being added
 			switch (perkID) {
 				case PerkConstants.perkIds.cursed: return [ PerkConstants.perkIds.blessed ];
+				case PerkConstants.perkIds.lucky: return [ PerkConstants.perkIds.cursed ];
 			}
 			return [];
 		},
@@ -217,8 +219,8 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 	};
 	
 	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.healthBonus1, "Healthy", "Health", 1.1, "img/items/health-positive.png"));
-	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.healthBonus2, "Augmented (L1)", "Health", 1.25, "img/items/health-positive.png"));
-	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.healthBonus3, "Augmented (L2)", "Health", 1.5, "img/items/health-positive.png"));
+	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.healthBonus2, "Health Augment (L1)", "Health", 1.25, "img/items/health-positive.png"));
+	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.healthBonus3, "Health Augment (L2)", "Health", 1.5, "img/items/health-positive.png"));
 	
 	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.hunger, "Hunger", "Health", 0.75, "img/items/health-negative.png"));
 	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.thirst, "Thirst", "Health", 0.75, "img/items/health-negative.png"));
@@ -238,6 +240,7 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 	
 	PerkConstants.perkDefinitions.luck.push(new PerkVO(PerkConstants.perkIds.blessed, "Blessed", "Luck", 20, "img/items/perk-blessed.png"));
 	PerkConstants.perkDefinitions.luck.push(new PerkVO(PerkConstants.perkIds.blessedShort, "Blessed", "Luck", 10, "img/items/perk-blessed.png"));
+	PerkConstants.perkDefinitions.luck.push(new PerkVO(PerkConstants.perkIds.lucky, "Lucky", "Luck", 5, "img/items/perk-blessed.png"));
 	PerkConstants.perkDefinitions.luck.push(new PerkVO(PerkConstants.perkIds.cursed, "Cursed", "Luck", -20, "img/items/perk-cursed.png"));
 	PerkConstants.perkDefinitions.luck.push(new PerkVO(PerkConstants.perkIds.restartBonusSmall, "Dreams of past lives", "Luck", 10, "img/items/perk-restart.png"));
 	PerkConstants.perkDefinitions.luck.push(new PerkVO(PerkConstants.perkIds.restartBonusCompletion, "Dreams of escape", "Luck", 30, "img/items/perk-restart.png"));
