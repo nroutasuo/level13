@@ -410,7 +410,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			}
 		},
 		
-		getReadBookMessage: function (itemVO, bookType, campOrdinal) {
+		getReadBookMessage: function (itemVO, bookType, campOrdinal, storyFlags) {
 			let features = {};
 			let itemName = ItemConstants.getItemDisplayName(itemVO);
 			features.bookType = bookType;
@@ -418,7 +418,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			features.bookLevel = itemVO.level || 1;
 			features.campOrdinal = campOrdinal;
 			features.randomSeed = itemVO.itemID;
-			let params = this.getBookTextParams(features);
+			let params = this.getBookTextParams(features, storyFlags);
 			
 			let template = DescriptionMapper.get("book-intro", features) + " " + DescriptionMapper.get("book-description", features);
 			let phrase = TextBuilder.build(template, params);
@@ -426,7 +426,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			return phrase;
 		},
 		
-		getBookTextParams: function (features) {
+		getBookTextParams: function (features, storyFlags) {
 			var result = {};
 			
 			let levels = [];
@@ -435,6 +435,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					levels.push("simple");
 					levels.push("dated");
 					levels.push("simplistic");
+					levels.push("biased");
 					break;
 				case 2:
 					levels.push("basic");
@@ -464,8 +465,10 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					styles.push("scientific");
 					styles.push("formal");
 					styles.push("systematic");
+					styles.push("official");
 					break;
 				case ItemConstants.bookTypes.fiction:
+					styles.push("fantastical");
 					styles.push("inspiring");
 					styles.push("realistic");
 					styles.push("action-packed");
@@ -539,28 +542,38 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					topics.push("the infrastructure of the City");
 					topics.push("the ocean");
 					topics.push("forests");
-					topics.push("ventilation in the City");
+					topics.push("ventilation systems in the City");
 					topics.push("medicine");
 					topics.push("electronics");
 					topics.push("how to protect yourself from the harmful effects of sunlight");
 					topics.push("how raw rubber is processed into many useful forms");
 					topics.push("cancer treatment");
 					topics.push("dna");
+					topics.push("greenhouse agriculture");
 					topics.push("evolution");
 					topics.push("plate tetonics");
 					topics.push("batteries");
 					topics.push("fossils");
+					topics.push("earthquakes");
 					topics.push("fermentation");
 					topics.push("viruses");
 					topics.push("the solar calendar");
+					topics.push("strange agricultural practices involving shamanism");
 					topics.push("radar technology");
 					topics.push("mathematics");
+					topics.push("the ambitious and un-realised plan the Dictatorship government had for expansion of the City");
 					topics.push("ecosystems");
 					topics.push("dentistry");
 					topics.push("computers");
+					topics.push("volcanoes");
+					topics.push("immortality through medical advancements");
+					topics.push("meteorites");
 					topics.push("the printing press");
 					topics.push("optical lenses");
+					topics.push("burning garbage for energy");
 					topics.push("fertilizers");
+					topics.push("water recycling facilities of the City");
+					topics.push("the possibility of eternal life thanks to advanced medicine");
 					
 					if (features.bookLevel == 1) {
 						topics.push("weapons of old");
@@ -578,12 +591,14 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 						topics.push("the planet's atmosphere");
 						topics.push("greenhouse maintenance");
 						topics.push("biochemistry");
+						topics.push("origin of the calendar, the movement of the sun and the moons");
 					}
 					if (features.bookLevel == 3) {
 						topics.push("electromagnetism");
 						topics.push("other planets");
 						topics.push("atomic weapons");
 						topics.push("dark matter");
+						topics.push("condensing and storing memories in a reusable format");
 					}
 					break;
 					
@@ -599,26 +614,39 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					topics.push("ghosts in the uninhabited levels of the City");
 					topics.push("an ancient volcano");
 					topics.push("undersea travel");
+					topics.push("a monster that lives in the core of the planet.");
 					topics.push("a terrifying sea monster");
 					topics.push("the relationship of a boy and his bat");
+					topics.push("a war");
+					topics.push("an asteroid hitting the City");
+					topics.push("a Blue Army soldier and what she did after the collapse of the Dictatorship");
 					break;
 					
 				case ItemConstants.bookTypes.history:
 					topics.push("biological warfare");
 					topics.push("pre-City civilizations");
 					topics.push("the development of agriculture");
+					topics.push("rise of sea levels");
 					topics.push("the history of painting");
 					topics.push("the industrial revolution");
 					topics.push("the digital revolution");
+					topics.push("property rights to ground and mining sites");
+					topics.push("the population decline that was apparent in the City already before the Fall");
 					topics.push("a specific ethnic group");
 					topics.push("a famine soon after the founding of the City");
 					topics.push("a pre-City global legal organization");
 					topics.push("the history of mathematics");
 					topics.push("a great scientific project");
+					topics.push("the city states period");
+					topics.push("the city wars");
+					topics.push("class tensions");
+					topics.push("population crisis");
 					topics.push("shipwrecks");
+					topics.push("architectural styles on differetn Levels");
 					topics.push("slavery");
 					topics.push("the magical beliefs of people living in a specific part of the City");
 					topics.push("a historical dictatorship");
+					topics.push("sacred places in the City");
 					
 					if (features.bookLevel == 1) {
 						topics.push("the early City");
@@ -640,15 +668,24 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					topics.push("an industrial process");
 					topics.push("transistors");
 					topics.push("nuclear reactors");
+					topics.push("nuclear waste containment");
+					topics.push("dead air");
+					topics.push("sundomes");
 					topics.push("radio");
+					topics.push("robotics");
+					topics.push("structures to stabilise the City against earthquakes");
+					topics.push("organ transfers");
 					topics.push("architecture");
 					topics.push("3D printing");
 					topics.push("machine control systems");
+					topics.push("mirror systems to distribute sunlight");
 					topics.push("robot design");
-					topics.push("elevators");
+					topics.push("elevators in the city");
 					topics.push("statistics");
+					topics.push("space flight");
 					topics.push("electronics");
 					topics.push("bridges");
+					topics.push("the Zones, Districts, Sectors and other divisions of the City");
 					
 					if (features.bookLevel == 1) {
 						topics.push("steel production");
@@ -672,6 +709,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			switch (features.bookType) {
 				case ItemConstants.bookTypes.engineering:
 					objects.push("transistors");
+					objects.push("robots");
 					objects.push("machines you don't really understand, but it seems they were used to stabilise the City");
 					objects.push("a level-wide solar screen called the Ceiling");
 					objects.push("an irrigation system in a pre-Fall greenhouse");
@@ -723,6 +761,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					themes.push("the life of a rich but lonely businessman");
 					themes.push("a boy's friendship with a robot");
 					themes.push("a computer program that made people forget who they were");
+					themes.push("forgotten places outside the City");
 					break;
 			}
 			result["c-theme"] = DescriptionMapper.pickRandom(themes, features);
@@ -751,6 +790,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					facts.push("the City was started to be built about 700 years ago");
 					facts.push("there was a time when all religions were banned in the City");
 					facts.push("the last underwater research station closed down decades before the Fall");
+					facts.push("several places in the City seem to be cursed due to a past injustice or horror");
 					break;
 				case ItemConstants.bookTypes.engineering:
 					facts.push("the lower levels of the City have unequal heights");
@@ -759,6 +799,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					facts.push("sunlight used to be reflected deeper into the City with complex mirror systems");
 					facts.push("parts of the City are built into the mountain");
 					facts.push("the Ocean is deeply polluted");
+					facts.push("at its population peak, the City needed a complex cooling system just because of the amount of heat generated by its people");
 					// TODO get general facts like these in features / otherwise
 					// TODO add more and splt by level so these don't get repetitive
 					// facts.push("there are X levels in the City");
@@ -777,6 +818,8 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					events.push("something called the Great Famine which took place a few decades before the book was written");
 					events.push("the establishment of the city-wide Government");
 					events.push("a major gardener uprising");
+					events.push("a scandal related to pollution outside the City");
+					events.push("a famine outside the City and the resulting immigration wave");
 					events.push("a nuclear power plant accident where waste was released to the lower levels of the City");
 					events.push("a major shift in agriculture from the Ground into the Greenhouses");
 					events.push("a series of terror attacks in the City");
@@ -785,6 +828,8 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					events.push("women's suffrage");
 					events.push("a series of experiments on augmenting the human body with implants");
 					events.push("a scandal involving an influential politician");
+					events.push("a doomed attempt by a religious sect to go live outside the City a few decades ago");
+					events.push("building of a small manned space station orbiting the planet");
 					break;
 			}
 			result["c-event"] = DescriptionMapper.pickRandom(events, features);
@@ -846,6 +891,9 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			topics.push("plant life surrounding the settlement");
 			topics.push("the erosion of the City");
 			topics.push("a haunted commercial center");
+			topics.push("various theories about the fate of the Governor");
+			topics.push("various theories about the real cause of the Fall");
+			topics.push("the health effects of moonlight");
 			switch (features.itemLevel) {
 				case 1:
 					topics.push("survival techniques in the Dark Levels");
@@ -864,6 +912,13 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					break;
 			}
 			result["n-topic"] = DescriptionMapper.pickRandom(topics, features);
+
+			let facts = [];
+			facts.push("celebration of the new year was disrupted by flooding")
+			facts.push("a restaurant has opened on Level 17")
+			facts.push("drug trafficking continues on Level 19")
+			facts.push("disease strikes at a major settlement")
+			result["c-fact"] = DescriptionMapper.pickRandom(facts, features);
 			
 			return result;
 		},
@@ -913,9 +968,12 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			topics.push("fuel calculations for a very large spacecraft");
 			topics.push("the number of people that are required for a sustainable settlement");
 			topics.push("a supervolcano");
-			topics.push("air quality");
+			topics.push("air quality in the City");
 			topics.push("the possibility of controlling the weather through singing");
 			topics.push("the effect of flowering plants on dice rolls");
+			topics.push("flooding in the Dark Levels");
+			topics.push("expected duration of emergency power in the City in different scenarios");
+			topics.push("improving the City's ability to withstand extreme weather such as hurricanes");
 			
 			result["n-topic"] = DescriptionMapper.pickRandom(topics, features);
 			
@@ -1692,7 +1750,10 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("book-description", { bookLevel: l_1 }, "It gives you some insights into [n-topic].");
 		DescriptionMapper.add("book-description", { bookLevel: l_2 }, "It seems like a good source on [n-topic].");
 		DescriptionMapper.add("book-description", { bookLevel: l_3 }, "It is not easy to follow, but teaches you a lot about [n-topic].");
+		DescriptionMapper.add("book-description", { bookLevel: l_3 }, "It describes in great detail how [c-fact]");
+		DescriptionMapper.add("book-description", { bookLevel: l_3 }, "It describes in great detail [n-topic]");
 		
+		DescriptionMapper.add("book-description", { bookType: t_S }, "It is a cook book, not much of it relevant to the ingredients available today.");
 		DescriptionMapper.add("book-description", { bookType: t_S }, "It is [a] [a-level] textbook on [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_S }, "It is [a] [a-style] textbook on [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_S }, "It is [a] [a-good] textbook on [n-topic].");
@@ -1703,8 +1764,11 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("book-description", { bookType: t_S }, "It contains a description of [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_S }, "You learn that [c-fact].");
 		DescriptionMapper.add("book-description", { bookType: t_S }, "You find out that [c-fact].");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "It is a grammar book for the Kievan language.");
+		DescriptionMapper.add("book-description", { bookType: t_S }, "It is a grammar book for the Hansa language and its many dialects.");
 		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_1 }, "It is an introductory text on [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_1 }, "It is [a] [a-bad] book on [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_1 }, "It is a scout's handbook.");
 		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_1 }, "It contains some basic information about [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_1 }, "A description of a refining process offers clues to the kind of building materials used commonly before the Fall.");
 		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_1 }, "It contains a catalog of known animal life in the 'Dark Levels'. You recognize several.");
@@ -1712,10 +1776,14 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_2 }, "It contains a detailed description of a sun-based calendar system you are unfamiliar with.");
 		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_2 }, "You find details about [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_2 }, "It contains detailed information about [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_2 }, "It is a survivor's cookbook, and contains a few useful tips.");
+		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_2 }, "It is an old book exploring the possibility of extending the City to cover oceans.");
 		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_3 }, "You are spell-bound by a description of abundant plant-life on the Ground.");
 		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_3 }, "There is a wealth of information about [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_3 }, "It contains a dissertation on [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_3 }, "It contains in-depth information about [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_3 }, "It is an ethical inquiry into lab grown meat versus keeping animals.");
+		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_3 }, "It explores the theoretical possibility of restarting human life outside of the City, and concludes that it would be nearly impossible.");
 		
 		DescriptionMapper.add("book-description", { bookType: t_E }, "It is [a] [a-level] textbook on [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_E }, "It is [a] [a-style] textbook on [n-topic].");
@@ -1734,6 +1802,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("book-description", { bookType: t_E, bookLevel: l_2 }, "It contains detailed information about [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_E, bookLevel: l_3 }, "There are technical drawings of [n-object]");
 		DescriptionMapper.add("book-description", { bookType: t_E, bookLevel: l_3 }, "It contains in-depth information about [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_E, bookLevel: l_3 }, "It is a legal book about the rights and obligations of robots and rules for programming their behaviour.");
 		
 		DescriptionMapper.add("book-description", { bookType: t_H }, "You find details about [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "It describes [n-topic].");
@@ -1744,16 +1813,32 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("book-description", { bookType: t_H }, "You learn that [c-fact].");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "It seems that [c-fact].");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "You learn about [c-event].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "It describes the explosive urbanization that led to the formation of the City.");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "There is [a] [a-style] chapter on [c-event].");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "A section on [c-event] catches your eye.");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "There are several references to [c-event].");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "It is [a] very [a-good] explanation of [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "It is otherwise dull, but there is [a] [a-good] chapter on [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "It is a history of Donbalism, a monotheistic religion that has been popular in the City throughout its history.");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "It is a history of Ugurism, a fairly new religion combining bleak apocalyptic spiritualism and a worship of the City as a sentient entity.");
 		DescriptionMapper.add("book-description", { bookType: t_H }, "A reference to the \"currently uninhabited levels\" of the City offers a perspective on the pre-Fall City.");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "It is an old book predicting a huge population explosion in the City, driven by immigration and medical breakthroughs.");
+		DescriptionMapper.add("book-description", { bookType: t_H }, "It describes the Dictatorship era, how it rose to power from the Utopia, waged war against the Western Government, and finally collapsed to rebellion.");
 		DescriptionMapper.add("book-description", { bookType: t_H, bookLevel: l_1 }, "It is an introductory text on [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_H, bookLevel: l_1 }, "It is the autobiography of a famous athlete.");
 		DescriptionMapper.add("book-description", { bookType: t_H, bookLevel: l_1 }, "It mentions [c-event].");
+		DescriptionMapper.add("book-description", { bookType: t_H, bookLevel: l_1 }, "It discusses [c-event].");
+		DescriptionMapper.add("book-description", { bookType: t_H, bookLevel: l_1 }, "It discusses the utopistic roots of the City and how it was first built and imagined.");
+		DescriptionMapper.add("book-description", { bookType: t_H, bookLevel: l_1 }, "It is a biased exposition of the charitable work of a religious group.");
+		DescriptionMapper.add("book-description", { bookType: t_H, bookLevel: l_1 }, "It is a Government-produced text book in the history of the City, stressing class differences and the importance of unity.");
+		DescriptionMapper.add("book-description", { bookType: t_H, bookLevel: l_1 }, "It is an art book featuring architecture from the earliest levels of the City, all quiant with windows and ventilation and greenery.");
+		DescriptionMapper.add("book-description", { bookType: t_H, bookLevel: l_1 }, "It is an overview of the Karboque architecture which the author believes is unjustly unpopular because of its associations with the Dictatorship era.");
+		DescriptionMapper.add("book-description", { bookType: t_H, bookLevel: l_1 }, "It is an ode to the architecture of the City States.");
 		DescriptionMapper.add("book-description", { bookType: t_H, bookLevel: l_2 }, "There is a long section about [c-event].");
+		DescriptionMapper.add("book-description", { bookType: t_H, bookLevel: l_2 }, "It is a history of the use of nuclear weapons, describing the first use by the City against a civilization outside, and then second use within the City by one City state against another.");
 		DescriptionMapper.add("book-description", { bookType: t_H, bookLevel: l_2 }, "It is a detailed exploration of [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_H, bookLevel: l_2 }, "It discusses the splintering of the original City Government into multiple City States within the City, their flourishing, war and collapse.");
+		DescriptionMapper.add("book-description", { bookType: t_H, bookLevel: l_2 }, "It discusses the gradual depopulation of the planet outside the City, first driven by economy, then pollution, and finally floods.");
 		DescriptionMapper.add("book-description", { bookType: t_H, bookLevel: l_3 }, "You a wealth of information [c-event].");
 		DescriptionMapper.add("book-description", { bookType: t_H, bookLevel: l_3 }, "You a wealth of information [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_H, bookLevel: l_3 }, "You find a detailed timeline of [c-event].");
@@ -1761,6 +1846,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("book-description", { bookType: t_F }, "There is [a] [a-good] story about [c-theme].");
 		DescriptionMapper.add("book-description", { bookType: t_F }, "It is a tale about [c-theme].");
 		DescriptionMapper.add("book-description", { bookType: t_F }, "It is about [c-theme].");
+		DescriptionMapper.add("book-description", { bookType: t_F }, "It is story about [c-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_F }, "A story about [c-theme] stays with you.");
 		DescriptionMapper.add("book-description", { bookType: t_F }, "You are touched by a poem about [c-theme].");
 		DescriptionMapper.add("book-description", { bookType: t_F }, "It contains [a] [a-good] description of [c-theme].");
@@ -1769,10 +1855,13 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("book-description", { bookType: t_F }, "It is a very [a-style] portrayal of [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_F }, "It is [a] [a-style] story about [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_F }, "It a collection of [a-style] short stories about [n-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_F }, "It is [a] [a-style] and [a-good] story about [n-topc].");
 		DescriptionMapper.add("book-description", { bookType: t_F, bookLevel: l_1 }, "It is a children's book featuring [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_F, bookLevel: l_1 }, "It's a simple story about [c-theme].");
+		DescriptionMapper.add("book-description", { bookType: t_F, bookLevel: l_1 }, "It seems to be aimed at school children.");
 		DescriptionMapper.add("book-description", { bookType: t_F, bookLevel: l_2 }, "It is a classic novel about [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_F, bookLevel: l_2 }, "It is a [a-style] novel about [c-theme].");
+		DescriptionMapper.add("book-description", { bookType: t_F, bookLevel: l_2 }, "It is a [a-style] story set in the time of the great Rebellion.");
 		DescriptionMapper.add("book-description", { bookType: t_F, bookLevel: l_3 }, "It is quite a heavy book on [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_F, bookLevel: l_3 }, "It is a [a-good] story about [n-theme].");
 	}
@@ -1788,6 +1877,9 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("newspaper-description", { itemLevel: wildcard }, "There is an opinion piece about [n-topic].");
 		DescriptionMapper.add("newspaper-description", { itemLevel: wildcard }, "There is a big story about [c-event].");
 		DescriptionMapper.add("newspaper-description", { itemLevel: wildcard }, "The issue revolves around [c-event].");
+		DescriptionMapper.add("newspaper-description", { itemLevel: wildcard }, "According to it, [c-fact].");
+		DescriptionMapper.add("newspaper-description", { itemLevel: wildcard }, "Contrary to rumours, [c-fact].");
+		DescriptionMapper.add("newspaper-description", { itemLevel: l_2 }, "It contains supposed stories of survivors who saw the Fall, all very different.");
 		DescriptionMapper.add("newspaper-description", { itemLevel: l_3 }, "There is an investigative story about [n-topic].");
 	}
 	

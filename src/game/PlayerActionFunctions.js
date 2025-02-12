@@ -2423,7 +2423,12 @@ define(['ash',
 					
 				case "cache_evidence":
 					let evidence = itemConfig.configData.evidenceValue || Math.pow(itemConfig.level, 2);
-					message = TextConstants.getReadBookMessage(item, itemConfig.configData.bookType || ItemConstants.bookTypes.science, foundPositionCampOrdinal);
+					message = TextConstants.getReadBookMessage(
+						item, 
+						itemConfig.configData.bookType || ItemConstants.bookTypes.science, 
+						foundPositionCampOrdinal,
+						GameGlobals.gameState.storyFlags
+					);
 					resultVO.gainedEvidence = evidence;
 					GameGlobals.uiFunctions.showInfoPopup(
 						itemName,
