@@ -1604,6 +1604,29 @@ define([
 			return null;
 		},
 
+		checkTriggerParams: function (conditions, triggerParam) {
+			if (conditions.action) {
+				let lastAction = GameGlobals.gameState.lastAction;
+				if (conditions.action != lastAction) {
+					return false;
+				}
+			}
+
+			if (conditions.dialogue) {
+				if (conditions.dialogue != triggerParam) return false;
+			}
+
+			if (conditions.eventType) {
+				if (conditions.eventType != triggerParam) return false;
+			}
+
+			if (conditions.localeType) {
+				if (conditions.localeType != triggerParam) return false;
+			}
+
+			return true;
+		},
+
 		// Check the costs of an action; returns lowest fraction of the cost player can cover; >1 means the action is available
 		checkCosts: function (action, doLog, otherSector) {
 			var costs = this.getCosts(action);
@@ -2009,8 +2032,8 @@ define([
 				case "scout_locale_i":
 				case "scout_locale_u":
 					let localeVO;
+					let localei = parseInt(action.split("_")[3]);
 					if (sector) {
-						let localei = parseInt(action.split("_")[3]);
 						let sectorLocalesComponent = sector.get(SectorLocalesComponent);
 						localeVO = sectorLocalesComponent.locales[localei];
 					}

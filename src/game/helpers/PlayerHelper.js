@@ -241,7 +241,10 @@ define([
 		},
 
 		addLogMessage: function (id, msg, options) {
-			if (!msg || msg.length == 0) return;
+			if (!msg || msg.length == 0) {
+				log.i("No message text defined for log message");
+				return;
+			}
 
 			id = id || LogConstants.getUniqueID();
 			options = options || {};

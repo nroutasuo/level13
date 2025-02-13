@@ -296,24 +296,8 @@ define([
 			let reqsCheck = GameGlobals.playerActionsHelper.checkGeneralRequirementaInternal(conditions);
 			if (reqsCheck.value < 1) return false;
 
-			if (conditions.action) {
-				let lastAction = GameGlobals.gameState.lastAction;
-				if (conditions.action != lastAction) {
-					return false;
-				}
-			}
-
-			if (conditions.dialogue) {
-				if (conditions.dialogue != triggerParam) return false;
-			}
-
-			if (conditions.eventType) {
-				if (conditions.eventType != triggerParam) return false;
-			}
-
-			if (conditions.localeType) {
-				if (conditions.localeType != triggerParam) return false;
-			}
+			let paramsCheck = GameGlobals.playerActionsHelper.checkTriggerParams(conditions, triggerParam);
+			if (!paramsCheck) return false;
 
 			return true;
 		},

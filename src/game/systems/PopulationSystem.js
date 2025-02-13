@@ -408,14 +408,26 @@ define([
 		logChangePopulation: function (campPosition, isIncrease, population) {
 			let pos = campPosition.getPosition();
 			pos.inCamp = true;
+			let message = null;
+
+			let levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(pos.level).get(LevelComponent);
+			
 			if (isIncrease) {
 				if (population == 1) {
-					GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.MSG_ID_POPULATION_NATURAL, "A ragged stranger appears from the darkness.", pos);
+					message = "A ragged stranger appears from the darkness.";
+				} else if (levelComponent.habitability < 1) {
+					message = "A skeletal stranger arrives from the dark, offers to work.";
+				} else if (level > 15) {
+					message = "A grim refugee shows up.";
 				} else {
-					GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.MSG_ID_POPULATION_NATURAL, "A stranger shows up.", pos);
+					message = "A stranger shows up.";
 				}
 			} else {
-				GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.MSG_ID_POPULATION_NATURAL, "An inhabitant packs their belongings and leaves.", pos);
+				message = "An inhabitant packs their belongings and leaves.";
+			}
+
+			if (message) {
+				GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.MSG_ID_POPULATION_NATURAL, message, pos);
 			}
 		},
 

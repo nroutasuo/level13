@@ -154,7 +154,33 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 				conditions: { inCamp: false, storyFlags: {  "RESCUE_EXPLORER_LEFT": true } },
 				chance: 0.01,
 				message: "You wonder if Sunita made it through Level 14 somehow."
-			}
+			},
+			"action_despair": {
+				triggers: [ "action_any" ],
+				conditions: { action: "despair" },
+				chance: 0.5,
+				visibility: "MSG_VISIBILITY_GLOBAL",
+				messages: [ 
+					"Your dreams were filled with vague worries.",
+					"You dreamed of a snapping rope and falling.",
+					"You dreamed of rising water.",
+					"Your dreams were plagued by visions of explosions.",
+					"Your dreams were full of senseless violence.",
+					"In your dreams the City shook and collapsed like a house of cards.",
+					"In your dreams the City was full of regretful ghosts.",
+					"You dreamed of rivers of refugees.",
+					"You dreamed of melting into a mass of people, all hungry and desperate.",
+					"You dreamed of ancient spirits, choking under the weight of the City.",
+					"You dreamed of being alone and exposed on the Surface, the last person left alive in the City.",
+					"You dreamed of being stuck in a network, unable to come back to the physical world.",
+				 ]
+			},
+			"action_move_sunlight": {
+				triggers: [ "change_position" ],
+				conditions: { inCamp: false, sunlit: true, vision: [ -1, 30 ] },
+				chance: 0.1,
+				message: "As your eyes begin to tolerate the sunlight, you see the City sprawl in front of you, and feel small."
+			},
 		},
 		
 		getUniqueID: function () {

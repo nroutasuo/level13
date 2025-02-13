@@ -220,8 +220,7 @@ define([
 						GameGlobals.uiFunctions.showGame(true);
 					}, 750);
 					GameGlobals.playerActionFunctions.passTime(60);
-					sys.teleport(sector);
-					sys.log(msgLog);
+					sys.teleport(sector, msgLog);
 					sys.save();
 				}, 250);
 			};
@@ -240,7 +239,7 @@ define([
 			}
 		},
 		
-		teleport: function (sector) {
+		teleport: function (sector, msgLog) {
 			let sys = this;
 			let playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
 			let sectorPosition = sector.get(PositionComponent);
@@ -260,12 +259,18 @@ define([
 					if (GameGlobals.logWarnings) log.w("Fainting target sector has no CampComponent");
 				}
 				sys.playerStatsNodes.head.stamina.limitStamina(sys.playerStatsNodes.head.maxStamina / 2);
+				sys.log(msgLog);
 			}, 100);
 		},
 	
 		log: function (msg) {
 			if (!msg) return;
-			GameGlobals.playerHelper.addLogMessage(msg);
+			let playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
+			let position = playerPosition.getPosition();
+			position.inCamp = true;
+			let options = { position: position };
+			options.position = position;
+			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), msg, options);
 			this.lastMsgTimeStamp = new Date().getTime();
 		},
 		

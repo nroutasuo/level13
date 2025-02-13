@@ -8,6 +8,7 @@ define([
 	'game/constants/LevelConstants',
 	'game/constants/LogConstants',
 	'game/constants/PositionConstants',
+	'game/constants/StoryConstants',
 	'game/nodes/PlayerPositionNode',
 	'game/nodes/level/LevelNode',
 	'game/nodes/PlayerLocationNode',
@@ -26,7 +27,7 @@ define([
 	'game/components/common/RevealedComponent',
 	'game/components/common/CampComponent',
 	'game/components/type/LevelComponent',
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, LevelConstants, LogConstants, PositionConstants,
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, LevelConstants, LogConstants, PositionConstants, StoryConstants,
 	PlayerPositionNode, LevelNode, PlayerLocationNode, LastVisitedCampNode, SectorNode, CampNode,
 	CurrentPlayerLocationComponent, CurrentNearestCampComponent, LastVisitedCampComponent, SectorFeaturesComponent, SectorStatusComponent, PassagesComponent,
 	LevelStatusComponent, MovementComponent, PositionComponent,
@@ -198,6 +199,8 @@ define([
 			
 			if (!GameGlobals.sectorHelper.isVisited(sector)) {
 				this.handleNewSector(sector, true);
+			} else {
+				this.handleOldSector(sector, this.currentLocation);
 			}
 			
 			this.previousLocation = this.currentLocation;
@@ -291,6 +294,10 @@ define([
 				msg += this.getSurfaceLevelDescription();
 			} else if (levelPos == groundLevel) {
 				msg += this.getGroundLevelDescription();
+			} else if (levelPos == 15) {
+				msg += " Only now you notice the lack of scents here, away from the Ground with its dirt and leaves. It feels barren.";
+			} else if (level % 2 == 1 && GameGlobals.gameState.getStoryFlag(StoryConstants.ESCAPE_SEARCHING_FOR_GROUND)) {
+				msg += "One more level down. One more step towards freedom.";
 			} else {
 				msg += "The streets are indifferent to your presence.";
 			}
@@ -327,15 +334,29 @@ define([
 			}
 			
 			if (isNew && previousSectorEntity != null && previousSectorEntity != sectorEntity && GameGlobals.levelHelper.isLevelCampable(sectorPos.level)) {
-			let featuresComponentPrevious = previousSectorEntity.get(SectorFeaturesComponent);
-			let featuresComponentCurrent = sectorEntity.get(SectorFeaturesComponent);
-			
-			let isPreviousEarlyZone = featuresComponentPrevious.isEarlyZone();
-			let isEarlyZone = featuresComponentCurrent.isEarlyZone();
-			if (isPreviousEarlyZone && !isEarlyZone && !GameGlobals.playerHelper.isAffectedByHazardAt(sectorEntity)) {
-				this.addLogMessage(LogConstants.MSG_ID_ENTER_OUTSKIRTS, "Entering the outskirts.");
+				let featuresComponentPrevious = previousSectorEntity.get(SectorFeaturesComponent);
+				let featuresComponentCurrent = sectorEntity.get(SectorFeaturesComponent);
+				
+				let isPreviousEarlyZone = featuresComponentPrevious.isEarlyZone();
+				let isEarlyZone = featuresComponentCurrent.isEarlyZone();
+				if (isPreviousEarlyZone && !isEarlyZone && !GameGlobals.playerHelper.isAffectedByHazardAt(sectorEntity)) {
+					this.addLogMessage(LogConstants.MSG_ID_ENTER_OUTSKIRTS, "Entering the outskirts.");
+				}
 			}
-		}
+		},
+
+		handleOldSector: function (sector, previousSector) {
+			let logAmbient = Math.random() < 0.01;
+
+			if (previousSector && previousSector.has(CampComponent) && logAmbient) {
+				if (GameGlobals.gameState.getStoryFlag(StoryConstants.GREENHOUSE_SEARCHING_FOR_CURE)) {
+					this.addLogMessage(LogConstants.getUniqueID(), "Out into the City again. Somewhere out there is a cure waiting to be found.");
+				} else if (GameGlobals.gameState.getStoryFlag(StoryConstants.ESCAPE_SEARCHING_FOR_GROUND)) {
+					this.addLogMessage(LogConstants.getUniqueID(), "Out into the City again. The camp is comfortable, but you have a goal.");
+				} else {
+					this.addLogMessage(LogConstants.getUniqueID(), "Out into the City again. The darkness envelops you like water.");
+				}
+			}
 		},
 
 		handleInvalidPosition: function () {

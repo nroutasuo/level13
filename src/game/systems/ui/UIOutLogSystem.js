@@ -262,31 +262,42 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 			}
 		},
 
-		triggerAmbientMessages: function (triggerID) {
+		triggerAmbientMessages: function (triggerID, triggerParam) {
 			let messageIDs = this.ambientMessagesByTrigger[triggerID];
 			if (!messageIDs || messageIDs.length == 0) return;
 			
 			for (let i = 0; i < messageIDs.length; i++) {
-				this.triggerAmbientMessage(messageIDs[i]);
+				this.triggerAmbientMessage(messageIDs[i], triggerParam);
 			}
 		},
 		
-		triggerAmbientMessage: function (messageID) {
+		triggerAmbientMessage: function (messageID, triggerParam) {
 			let def = LogConstants.ambientMessages[messageID];
 			if (!def) {
 				log.w("No such ambient log message found: [" + messageID + "]", this);
 				return;
 			}
 			
-			if (!this.isAmbientMessageAvailable(messageID)) {
+			if (!this.isAmbientMessageAvailable(messageID, triggerParam)) {
 				return;
 			}
+
+			let msgKey = def.message;
+
+			if (def.messages && def.messages.length > 0) {
+				msgKey = MathUtils.randomElement(def.messages);
+			}
 			
-			let msg = Text.t(def.message);
-			GameGlobals.playerHelper.addLogMessage(messageID, msg);
+			let options = {};
+			if (def.visibility) {
+				options.visibility = def.visibility;
+			}
+			
+			let msg = Text.t(msgKey);
+			GameGlobals.playerHelper.addLogMessage(messageID, msg, options);
 		},
 
-		isAmbientMessageAvailable: function (messageID) {
+		isAmbientMessageAvailable: function (messageID, triggerParam) {
 			let def = LogConstants.ambientMessages[messageID];
 			if (!def) {
 				return false;
@@ -301,7 +312,7 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 				return false;
 			}
 			
-			if (!this.isAmbientMessageConditionsMet(def.conditions)) {
+			if (!this.isAmbientMessageConditionsMet(def.conditions, triggerParam)) {
 				return false;
 			}
 			
@@ -316,13 +327,18 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 			return false;
 		},
 
-		isAmbientMessageConditionsMet: function (conditions) {
+		isAmbientMessageConditionsMet: function (conditions, triggerParam) {
 			let reqsCheck = GameGlobals.playerActionsHelper.checkGeneralRequirementaInternal(conditions);
-			return reqsCheck.value >= 1;
+			if (reqsCheck.value < 1) return false;
+
+			let paramsCheck = GameGlobals.playerActionsHelper.checkTriggerParams(conditions, triggerParam);
+			if (!paramsCheck) return false;
+
+			return true;
 		},
 		
-		onTrigger: function (triggerID) {
-			this.triggerAmbientMessages(triggerID);
+		onTrigger: function (triggerID, param) {
+			this.triggerAmbientMessages(triggerID, param);
 		},
 
 		onMarkLogMessagesSeen: function () {

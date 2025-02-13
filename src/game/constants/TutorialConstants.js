@@ -439,6 +439,7 @@ define(['ash'], function (Ash) {
 				triggers: [ "update" ],
 				repeats: "COOLDOWN",
 				logMessage: "Storage is full.",
+				delay: 3000,
 				conditions: { inCamp: true, campInventoryFull: true } 
 			},
 			TUTORIAL_WARNING_FIRST_CAMP_COMPLETED: {
