@@ -463,6 +463,11 @@ define([
 					else desc += "There is no <span class='hl-functionality'>light</span>. ";
 				}
 			}
+
+			// world features
+			if (PositionConstants.isWorldPillarPosition(position)) {
+				desc += "The sector is dominated by a massive concrete pillar, one of the great spines of the City. ";
+			}
 			
 			// locales / POIs description
 			for (let i = 0; i < localesComponent.locales.length; i++) {

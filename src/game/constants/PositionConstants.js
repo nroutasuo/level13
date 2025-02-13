@@ -367,6 +367,10 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 				default:
 					return false;
 			}
+		},
+
+		isWorldPillarPosition: function (pos) {
+			return pos.sectorX == 0 && pos.sectorY == 0;
 		}
 	
 	};

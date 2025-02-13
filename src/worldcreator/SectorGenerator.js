@@ -1066,6 +1066,10 @@ define([
 				minDensity = 2;
 				maxDensity = 8;
 			}
+
+			if (PositionConstants.isWorldPillarPosition(sectorVO.position)) {
+				minDensity = 2;
+			}
 			
 			var randomDensity = WorldCreatorRandom.randomInt(seed * l * x + y + x, minDensity, maxDensity + 1);
 			if (sectorVO.isCamp) randomDensity = 5;
