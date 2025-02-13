@@ -85,7 +85,9 @@ define([
 			let startDelay = isNaN(tutorial.delay) ? 0 : tutorial.delay;
 			
 			setTimeout(() => {
-				this.showTutorialLogMessage(tutorialID, tutorial.logMessage);
+				if (!startDelay || this.isTutorialConditionsMet(tutorial.conditions)) {
+					this.showTutorialLogMessage(tutorialID, tutorial.logMessage);
+				}
 			}, startDelay);
 			
 			this.completeTutorial(tutorialID, tutorial.group);
