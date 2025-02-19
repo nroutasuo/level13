@@ -2920,47 +2920,47 @@
 				"explorer_template_servo_interact_06_p1"
 			]
 		},
-		"explorer_template_shaman_event_01": {
+		"explorer_template_darkdweller_event_01": {
 			"pages": [
-				"explorer_template_shaman_event_01_p1"
+				"explorer_template_darkdweller_event_01_p1"
 			]
 		},
-		"explorer_template_shaman_interact_01": {
+		"explorer_template_darkdweller_interact_01": {
 			"pages": [
-				"explorer_template_shaman_interact_01_p1"
+				"explorer_template_darkdweller_interact_01_p1"
 			]
 		},
-		"explorer_template_shaman_interact_02": {
+		"explorer_template_darkdweller_interact_02": {
 			"pages": [
-				"explorer_template_shaman_interact_02_p1"
+				"explorer_template_darkdweller_interact_02_p1"
 			]
 		},
-		"explorer_template_shaman_interact_03": {
+		"explorer_template_darkdweller_interact_03": {
 			"pages": [
-				"explorer_template_shaman_interact_03_p1"
+				"explorer_template_darkdweller_interact_03_p1"
 			]
 		},
-		"explorer_template_shaman_interact_04": {
+		"explorer_template_darkdweller_interact_04": {
 			"conditions": {
 				"explorer": {
 					"trust": 1
 				}
 			},
 			"pages": [
-				"explorer_template_shaman_interact_04_p1"
+				"explorer_template_darkdweller_interact_04_p1"
 			]
 		},
-		"explorer_template_shaman_interact_05": {
+		"explorer_template_darkdweller_interact_05": {
 			"conditions": {
 				"explorer": {
 					"trust": 1
 				}
 			},
 			"pages": [
-				"explorer_template_shaman_interact_05_p1"
+				"explorer_template_darkdweller_interact_05_p1"
 			]
 		},
-		"explorer_template_shaman_interact_06": {
+		"explorer_template_darkdweller_interact_06": {
 			"conditions": {
 				"storyFlags": {
 					"GREENHOUSE_FOUND": true,
@@ -2968,70 +2968,70 @@
 				}
 			},
 			"pages": [
-				"explorer_template_shaman_interact_06_p1"
+				"explorer_template_darkdweller_interact_06_p1"
 			]
 		},
-		"explorer_template_shaman_interact_07": {
+		"explorer_template_darkdweller_interact_07": {
 			"conditions": {
 				"explorer": {
 					"trust": 2
 				}
 			},
 			"pages": [
-				"explorer_template_shaman_interact_07_p1"
+				"explorer_template_darkdweller_interact_07_p1"
 			]
 		},
-		"explorer_template_shaman_interact_08": {
+		"explorer_template_darkdweller_interact_08": {
 			"conditions": {
 				"explorer": {
 					"trust": 2
 				}
 			},
 			"pages": [
-				"explorer_template_shaman_interact_08_p1"
+				"explorer_template_darkdweller_interact_08_p1"
 			]
 		},
-		"explorer_template_shaman_interact_09": {
+		"explorer_template_darkdweller_interact_09": {
 			"conditions": {
 				"inCamp": true
 			},
 			"pages": [
-				"explorer_template_shaman_interact_09_p1"
+				"explorer_template_darkdweller_interact_09_p1"
 			]
 		},
-		"explorer_template_shaman_interact_10": {
+		"explorer_template_darkdweller_interact_10": {
 			"conditions": {
 				"explorer": {
 					"trust": 3
 				}
 			},
 			"pages": [
-				"explorer_template_shaman_interact_10_p1"
+				"explorer_template_darkdweller_interact_10_p1"
 			]
 		},
-		"explorer_template_shaman_interact_11": {
+		"explorer_template_darkdweller_interact_11": {
 			"conditions": {
 				"storyFlags": {
 					"FALL_SEEN_EVACUATION": true
 				}
 			},
 			"pages": [
-				"explorer_template_shaman_interact_11_p1"
+				"explorer_template_darkdweller_interact_11_p1"
 			]
 		},
-		"explorer_template_shaman_interact_12": {
+		"explorer_template_darkdweller_interact_12": {
 			"conditions": {
 				"explorer": {
 					"trust": 3
 				}
 			},
 			"pages": [
-				"explorer_template_shaman_interact_12_p1"
+				"explorer_template_darkdweller_interact_12_p1"
 			]
 		},
-		"explorer_template_shaman_meet_01": {
+		"explorer_template_darkdweller_meet_01": {
 			"pages": [
-				"explorer_template_shaman_meet_01_p1"
+				"explorer_template_darkdweller_meet_01_p1"
 			]
 		},
 		"explorer_template_teen_event_01": {
@@ -5293,28 +5293,28 @@
 				]
 			}
 		},
-		"explorer_template_shaman": {
+		"explorer_template_darkdweller": {
 			"dialogues": {
 				"event": [
-					"explorer_template_shaman_event_01"
+					"explorer_template_darkdweller_event_01"
 				],
 				"interact": [
-					"explorer_template_shaman_interact_01",
-					"explorer_template_shaman_interact_02",
-					"explorer_template_shaman_interact_03",
-					"explorer_template_shaman_interact_04",
-					"explorer_template_shaman_interact_05",
-					"explorer_template_shaman_interact_06",
-					"explorer_template_shaman_interact_07",
-					"explorer_template_shaman_interact_08",
-					"explorer_template_shaman_interact_09",
-					"explorer_template_shaman_interact_10",
-					"explorer_template_shaman_interact_11",
-					"explorer_template_shaman_interact_12",
+					"explorer_template_darkdweller_interact_01",
+					"explorer_template_darkdweller_interact_02",
+					"explorer_template_darkdweller_interact_03",
+					"explorer_template_darkdweller_interact_04",
+					"explorer_template_darkdweller_interact_05",
+					"explorer_template_darkdweller_interact_06",
+					"explorer_template_darkdweller_interact_07",
+					"explorer_template_darkdweller_interact_08",
+					"explorer_template_darkdweller_interact_09",
+					"explorer_template_darkdweller_interact_10",
+					"explorer_template_darkdweller_interact_11",
+					"explorer_template_darkdweller_interact_12",
 					"explorer_generic_story_rescue_prospector"
 				],
 				"meet": [
-					"explorer_template_shaman_meet_01"
+					"explorer_template_darkdweller_meet_01"
 				]
 			}
 		},
