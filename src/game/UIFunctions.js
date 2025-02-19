@@ -1567,6 +1567,9 @@ define(['ash',
 			},
 
 			showResultPopup: function (title, msg, resultVO, callback, options) {
+				options = {
+					isDismissable: !resultVO || resultVO.isEmpty()
+				};
 				this.popupManager.showPopup(title, msg, "Continue", false, resultVO, callback, null, options);
 			},
 
