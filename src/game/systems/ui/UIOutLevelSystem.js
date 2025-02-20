@@ -947,6 +947,7 @@ define([
 			GameGlobals.uiFunctions.toggle($("#out-characters"), hasCharacters);
 
 			if (!hasCharacters) return;
+			if (!sectorStatus.scouted) return;
 
 			let setting = DialogueConstants.dialogueSettings.meet;
 
