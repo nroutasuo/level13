@@ -1,5 +1,6 @@
 define( function () {
-	var GameConstants = {
+
+	let GameConstants = {
 
 		gameSpeedCamp: 1,
 		gameSpeedExploration: 1,
@@ -20,6 +21,11 @@ define( function () {
 			steps: "steps",
 			level: "level",
 		},
+
+		cheatModeBlueprints: false,
+		cheatModeSupplies: false,
+		cheatModeTakeAll: false,
+		cheatModeCampProduction: false,
 		
 		gameURL: "https://nroutasuo.github.io/level13",
 		

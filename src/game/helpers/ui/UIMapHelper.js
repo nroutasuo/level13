@@ -42,10 +42,12 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 		icons: [],
 
 		isMapRevealed: false,
+		isMapEasyMode: false,
 
 		constructor: function (engine) {
 			this.playerPosNodes = engine.getNodeList(PlayerPositionNode);
 			this.isMapRevealed = false;
+			this.isMapEasyMode = false;
 			this.icons = MapElements.icons;
 		},
 
@@ -164,7 +166,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 		getSectorASCII: function (mapMode, sector) {
 			if (sector == null) return " ";
 			
-			let sectorStatus = GameGlobals.sectorHelper.getSectorStatus(sector);
+			let sectorStatus = this.getSectorStatus(sector);
 			
 			if (sectorStatus == null) return " ";
 			if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE) return " ";
@@ -262,7 +264,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			let beaconSectors = GameGlobals.levelHelper.getAllSectorsWithImprovement(level, improvementNames.beacon);
 			for (let i = 0; i < beaconSectors.length; i++) {
 				sector = beaconSectors[i];
-				let sectorStatus = GameGlobals.sectorHelper.getSectorStatus(sector);
+				let sectorStatus = this.getSectorStatus(sector);
 				sectorPos = sector.get(PositionComponent);
 				if (this.showSectorOnMap(options.centered, sector, sectorStatus)) {
 					sectorXpx = this.getSectorPixelPos(dimensions, options.centered, sectorSize, sectorPos.sectorX, sectorPos.sectorY).x;
@@ -314,7 +316,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			for (var y = dimensions.minVisibleY; y <= dimensions.maxVisibleY; y++) {
 				for (var x = dimensions.minVisibleX; x <= dimensions.maxVisibleX; x++) {
 					let sector = visibleSectors[x + "." + y];
-					let sectorStatus = GameGlobals.sectorHelper.getSectorStatus(sector);
+					let sectorStatus = this.getSectorStatus(sector);
 					if (this.showSectorOnMap(options.centered, sector, sectorStatus)) {
 						let sectorXpx = this.getSectorPixelPos(dimensions, options.centered, sectorSize, x, y).x;
 						let sectorYpx = this.getSectorPixelPos(dimensions, options.centered, sectorSize, x, y).y;
@@ -750,6 +752,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			let isLocationSunlit = $("body").hasClass("sunlit");
 			let isScouted = statusComponent.scouted;
 			let isRevealed = isScouted || this.isMapRevealed;
+			let isPartiallyRevealed = isRevealed || this.isMapEasyMode;
 			let isBigSectorSize = sectorSize >= this.getSectorSize(true);
 			let isInvestigatable = GameGlobals.sectorHelper.canBeInvestigated(sector);
 			
@@ -780,7 +783,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			let iconPosY = Math.round(isBigSectorSize ? sectorYpx : iconPosYCentered);
 			let disabledAlpha = 0.4;
 			
-			if (!isRevealed && !hideUnknownIcon) {
+			if (!isRevealed && !isPartiallyRevealed && !hideUnknownIcon) {
 				ctx.drawImage(this.icons["unknown" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosYCentered);
 				return true;
 			} else if (isInvestigatable) {
@@ -818,6 +821,8 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			} else if (mapModeHasPois && sectorImprovements.getCount(improvementNames.beacon) > 0) {
 				ctx.drawImage(this.icons["beacon" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
 				return true;
+			} else if (isPartiallyRevealed) {
+				// features below not revealed by partial reveal
 			} else if (showIngredientIcons && allItems.length > 0) {
 				if (knownItems.length == 0) {
 					ctx.globalAlpha = disabledAlpha;
@@ -919,14 +924,14 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			let sectorPassages = sector.get(PassagesComponent);
 			let sectorMiddleX = sectorXpx + sectorSize * 0.5;
 			let sectorMiddleY = sectorYpx + sectorSize * 0.5;
-			let sectorStatus = GameGlobals.sectorHelper.getSectorStatus(sector);
+			let sectorStatus = this.getSectorStatus(sector);
 			
 			for (let i in PositionConstants.getLevelDirections()) {
 				var direction = PositionConstants.getLevelDirections()[i];
 				var neighbourPos = PositionConstants.getPositionOnPath(sectorPos, direction, 1);
 				var neighbour = GameGlobals.levelHelper.getSectorByPosition(options.mapPosition.level, neighbourPos.sectorX, neighbourPos.sectorY);
 				if (neighbour) {
-					let neighbourStatus = GameGlobals.sectorHelper.getSectorStatus(neighbour);
+					let neighbourStatus = this.getSectorStatus(neighbour);
 					let blocker = sectorPassages.getBlocker(direction);
 					let isBlocked = blocker != null && GameGlobals.movementHelper.isBlocked(sector, direction);
 					
@@ -963,7 +968,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			for (let y = dimensions.minVisibleY; y <= dimensions.maxVisibleY; y++) {
 				for (let x = dimensions.minVisibleX; x <= dimensions.maxVisibleX; x++) {
 					let sector = visibleSectors[x + "." + y];
-					let sectorStatus = GameGlobals.sectorHelper.getSectorStatus(sector);
+					let sectorStatus = this.getSectorStatus(sector);
 					if (this.showSectorOnMap(centered, sector, sectorStatus)) {
 						let sectorPos = new PositionVO(level, x, y);
 						let sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).x;
@@ -974,8 +979,18 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			}
 		},
 
+		getSectorStatus: function (sector) {
+			let status = GameGlobals.sectorHelper.getSectorStatus(sector);
+			if (this.isMapEasyMode && status == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE) {
+				status = SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE;
+			}
+			return status;
+		},
+
 		showSectorOnMap: function (centered, sector, sectorStatus) {
-			return this.isMapRevealed ? sector : sector && sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE;
+			if (!sector) return false;
+			if (this.isMapRevealed) return true;
+			return sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE;
 		},
 		
 		isInHazardDetectionRange: function (sector) {
@@ -1042,7 +1057,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			for (var y = dimensions.mapMinY; y <= dimensions.mapMaxY; y++) {
 				for (var x = dimensions.mapMinX; x <= dimensions.mapMaxX; x++) {
 					sector = GameGlobals.levelHelper.getSectorByPosition(mapPosition.level, x, y);
-					sectorStatus = GameGlobals.sectorHelper.getSectorStatus(sector);
+					sectorStatus = this.getSectorStatus(sector);
 					if (allSectors && sector) allSectors[x + "." + y] = sector;
 					// if map is centered, make a node for empty sectors too
 					if (centered || this.showSectorOnMap(centered, sector, sectorStatus)) {
@@ -1122,7 +1137,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 
 		getSectorFill: function (mapMode, sector) {
 			let sunlit = $("body").hasClass("sunlit");
-			let sectorStatus = GameGlobals.sectorHelper.getSectorStatus(sector);
+			let sectorStatus = this.getSectorStatus(sector);
 			
 			if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE || sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE) {
 				return ColorConstants.getColor(sunlit, "map_fill_sector_unvisited");
@@ -1238,7 +1253,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 		},
 		
 		showSectorHazards: function (sector) {
-			let sectorStatus = GameGlobals.sectorHelper.getSectorStatus(sector);
+			let sectorStatus = this.getSectorStatus(sector);
 			return SectorConstants.isLBasicInfoVisible(sectorStatus) || this.isMapRevealed || this.isInHazardDetectionRange(sector);
 		},
 

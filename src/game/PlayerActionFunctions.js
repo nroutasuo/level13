@@ -592,8 +592,10 @@ define(['ash',
 				msgDefeat: logMsgDefeat,
 				addToLog: isFirst,
 			};
+
+			let showResultPopup = !GameConstants.cheatModeTakeAll;
 			
-			this.handleOutActionResults("scavenge", messages, true, false, successCallback);
+			this.handleOutActionResults("scavenge", messages, showResultPopup, false, successCallback);
 		},
 
 		scavengeHeap: function () {
@@ -634,8 +636,10 @@ define(['ash',
 				msgDefeat: logMsgDefeat,
 				addToLog: false,
 			};
+
+			let showResultPopup = !GameConstants.cheatModeTakeAll;
 			
-			this.handleOutActionResults("scavenge_heap", messages, true, false, successCallback);
+			this.handleOutActionResults("scavenge_heap", messages, showResultPopup, false, successCallback);
 		},
 
 		getScavengeMessageBase: function (sector) {

@@ -896,23 +896,24 @@ define([
 		},
 
 		updateGameMsg: function () {
-			if (this.engine) {
-				let gameMsgKey = "";
-				let saveSystem = this.engine.getSystem(SaveSystem);
-				let timeStamp = new Date().getTime();
+			if (!this.engine) return;
+			let gameMsgKey = "";
+			let saveSystem = this.engine.getSystem(SaveSystem);
+			let timeStamp = new Date().getTime();
 
-				if (saveSystem && saveSystem.error) {
-					gameMsgKey = saveSystem.error;
-				} else if (saveSystem && saveSystem.lastDefaultSaveTimestamp > 0 && timeStamp - saveSystem.lastDefaultSaveTimestamp < 3 * 1000)
-					gameMsgKey = "ui.meta.game_saved_message";
-				else if (GameGlobals.gameState.isPaused) {
-					gameMsgKey = "ui.meta.game_paused_message";
-				}
+			if (saveSystem && saveSystem.error) {
+				gameMsgKey = saveSystem.error;
+			} else if (saveSystem && saveSystem.lastDefaultSaveTimestamp > 0 && timeStamp - saveSystem.lastDefaultSaveTimestamp < 3 * 1000) {
+				gameMsgKey = "ui.meta.game_saved_message";
+			} else if (GameGlobals.gameState.isPaused) {
+				gameMsgKey = "ui.meta.game_paused_message";
+			} else if (GameConstants.systemMessage) {
+				gameMsgKey = GameConstants.systemMessage;
+			}
 
-				if (this.lastGameMsg !== gameMsgKey) {
-					this.elements.gameMsg.text(Text.t(gameMsgKey));
-					this.lastGameMsg = gameMsgKey;
-				}
+			if (this.lastGameMsg !== gameMsgKey) {
+				this.elements.gameMsg.text(Text.t(gameMsgKey));
+				this.lastGameMsg = gameMsgKey;
 			}
 		},
 

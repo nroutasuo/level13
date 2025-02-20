@@ -129,61 +129,80 @@ define([
 			}
 			return result;
 		},
+
+		getCampProductionMultiplier: function () {
+			let result = GameConstants.gameSpeedCamp;
+			if (GameConstants.cheatModeCampProduction) result *= 2;
+			return result;
+		},
 		
 		getMetalProductionPerSecond: function (workers, improvementsComponent, robots) {
-			return GameGlobals.campBalancingHelper.getMetalProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * GameConstants.gameSpeedCamp;
+			let multiplier = this.getCampProductionMultiplier();
+			return GameGlobals.campBalancingHelper.getMetalProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * multiplier;
 		},
 		
 		getFoodProductionPerSecond: function (workers, improvementsComponent, robots) {
-			return GameGlobals.campBalancingHelper.getFoodProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * GameConstants.gameSpeedCamp;
+			let multiplier = this.getCampProductionMultiplier();
+			return GameGlobals.campBalancingHelper.getFoodProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * multiplier;
 		},
 		
 		getWaterProductionPerSecond: function (workers, improvementsComponent, robots) {
-			return GameGlobals.campBalancingHelper.getWaterProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * GameConstants.gameSpeedCamp;
+			let multiplier = this.getCampProductionMultiplier();
+			return GameGlobals.campBalancingHelper.getWaterProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * multiplier;
 		},
 		
 		getRopeProductionPerSecond: function (workers, improvementsComponent, robots) {
-			return GameGlobals.campBalancingHelper.getRopeProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * GameConstants.gameSpeedCamp;
+			let multiplier = this.getCampProductionMultiplier();
+			return GameGlobals.campBalancingHelper.getRopeProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * multiplier;
 		},
 		
 		getFuelProductionPerSecond: function (workers, improvementsComponent, robots) {
-			return GameGlobals.campBalancingHelper.getFuelProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * GameConstants.gameSpeedCamp;
+			let multiplier = this.getCampProductionMultiplier();
+			return GameGlobals.campBalancingHelper.getFuelProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * multiplier;
 		},
 		
 		getRubberProductionPerSecond: function (workers, improvementsComponent, robots) {
-			return GameGlobals.campBalancingHelper.getRubberProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * GameConstants.gameSpeedCamp;
+			let multiplier = this.getCampProductionMultiplier();
+			return GameGlobals.campBalancingHelper.getRubberProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * multiplier;
 		},
 		
 		getHerbsProductionPerSecond: function (workers, improvementsComponent, robots) {
-			return GameGlobals.campBalancingHelper.getHerbsProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * GameConstants.gameSpeedCamp;
+			let multiplier = this.getCampProductionMultiplier();
+			return GameGlobals.campBalancingHelper.getHerbsProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * multiplier;
 		},
 		
 		getMedicineProductionPerSecond: function (workers, improvementsComponent, robots) {
-			return GameGlobals.campBalancingHelper.getMedicineProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * GameConstants.gameSpeedCamp;
+			let multiplier = this.getCampProductionMultiplier();
+			return GameGlobals.campBalancingHelper.getMedicineProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * multiplier;
 		},
 		
 		getToolsProductionPerSecond: function (workers, improvementsComponent, robots) {
-			return GameGlobals.campBalancingHelper.getToolsProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * GameConstants.gameSpeedCamp;
+			let multiplier = this.getCampProductionMultiplier();
+			return GameGlobals.campBalancingHelper.getToolsProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * multiplier;
 		},
 		
 		getConcreteProductionPerSecond: function (workers, improvementsComponent, robots) {
-			return GameGlobals.campBalancingHelper.getConcreteProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * GameConstants.gameSpeedCamp;
+			let multiplier = this.getCampProductionMultiplier();
+			return GameGlobals.campBalancingHelper.getConcreteProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * multiplier;
 		},
 		
 		getRobotsProductionPerSecond: function (workers, improvementsComponent, robots) {
-			return GameGlobals.campBalancingHelper.getRobotsProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * GameConstants.gameSpeedCamp;
+			let multiplier = this.getCampProductionMultiplier();
+			return GameGlobals.campBalancingHelper.getRobotsProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * multiplier;
 		},
 		
 		getEvidenceProductionPerSecond: function (workers, improvementComponent) {
 			workers = workers || 0;
-			var evidenceUpgradeBonus = this.getUpgradeBonus("scientist");
-			return workers * CampConstants.PRODUCTION_EVIDENCE_PER_WORKER_PER_S * evidenceUpgradeBonus * GameConstants.gameSpeedCamp;
+			let evidenceUpgradeBonus = this.getUpgradeBonus("scientist");
+			let multiplier = this.getCampProductionMultiplier();
+			return workers * CampConstants.PRODUCTION_EVIDENCE_PER_WORKER_PER_S * evidenceUpgradeBonus * multiplier;
 		},
 		
 		getHopeProductionPerSecond: function (workers, improvementComponent) {
 			workers = workers || 0;
-			var upgradeBonus = this.getUpgradeBonus("cleric");
-			return workers * CampConstants.PRODUCTION_HOPE_PER_WORKER_PER_S * upgradeBonus * GameConstants.gameSpeedCamp;
+			let upgradeBonus = this.getUpgradeBonus("cleric");
+			let multiplier = this.getCampProductionMultiplier();
+			return workers * CampConstants.PRODUCTION_HOPE_PER_WORKER_PER_S * upgradeBonus * multiplier;
 		},
 		
 		getWaterConsumptionPerSecond: function (population, useExplorationSpeed) {
@@ -198,74 +217,87 @@ define([
 		
 		getHerbsConsumptionPerSecond: function (workers) {
 			workers = workers || 0;
-			return workers * CampConstants.CONSUMPTION_HERBS_PER_WORKER_PER_S * GameConstants.gameSpeedCamp;
+			let multiplier = this.getCampProductionMultiplier();
+			return workers * CampConstants.CONSUMPTION_HERBS_PER_WORKER_PER_S * multiplier;
 		},
 		
 		getMetalConsumptionPerSecondSmith: function (workers) {
 			workers = workers || 0;
-			return workers * CampConstants.CONSUMPTION_METAL_PER_TOOLSMITH_PER_S * GameConstants.gameSpeedCamp;
+			let multiplier = this.getCampProductionMultiplier();
+			return workers * CampConstants.CONSUMPTION_METAL_PER_TOOLSMITH_PER_S * multiplier;
 		},
 		
 		getMetalConsumptionPerSecondConcrete: function (workers) {
 			workers = workers || 0;
-			return workers * CampConstants.CONSUMPTION_METAL_PER_CONCRETE_PER_S * GameConstants.gameSpeedCamp;
+			let multiplier = this.getCampProductionMultiplier();
+			return workers * CampConstants.CONSUMPTION_METAL_PER_CONCRETE_PER_S * multiplier;
 		},
 		
 		getToolsConsumptionPerSecondRobots: function (workers) {
 			workers = workers || 0;
-			return workers * CampConstants.CONSUMPTION_TOOLS_PER_ROBOT_MAKER_PER_S * GameConstants.gameSpeedCamp;
+			let multiplier = this.getCampProductionMultiplier();
+			return workers * CampConstants.CONSUMPTION_TOOLS_PER_ROBOT_MAKER_PER_S * multiplier;
 		},
 		
 		getDarkFarmProductionPerSecond: function (improvementsComponent) {
 			let count = improvementsComponent.getCountWithModifierForDamaged(improvementNames.darkfarm, 0.5);
 			let level = improvementsComponent.getLevel(improvementNames.darkfarm);
-			return count * (0.01 + level * 0.01);
+			let multiplier = this.getCampProductionMultiplier();
+			return count * (0.01 + level * 0.01) * multiplier;
 		},
 		
 		getAqueductProductionPerSecond: function (improvementsComponent) {
 			let count = improvementsComponent.getCountWithModifierForDamaged(improvementNames.aqueduct, 0.5);
 			let level = improvementsComponent.getLevel(improvementNames.aqueduct);
-			return count * (0.01 + level * 0.01);
+			let multiplier = this.getCampProductionMultiplier();
+			return count * (0.01 + level * 0.01) * multiplier;
 		},
 		
 		getLibraryEvidenceGenerationPerSecond: function (improvementsComponent) {
 			var libraryCount = improvementsComponent.getCountWithModifierForDamaged(improvementNames.library, 0.5);
 			var libraryLevel = improvementsComponent.getLevel(improvementNames.library);
-			return CampConstants.getLibraryEvidenceGenerationPerSecond(libraryCount, libraryLevel) * GameConstants.gameSpeedCamp;
+			let multiplier = this.getCampProductionMultiplier();
+			return CampConstants.getLibraryEvidenceGenerationPerSecond(libraryCount, libraryLevel) * multiplier;
 		},
 		
 		getResearchCenterEvidenceGenerationPerSecond: function (improvementsComponent) {
 			var centerCount = improvementsComponent.getCount(improvementNames.researchcenter);
 			var centerLevel = improvementsComponent.getLevel(improvementNames.researchcenter);
-			return CampConstants.getResearchCenterEvidenceGenerationPerSecond(centerCount, centerLevel) * GameConstants.gameSpeedCamp;
+			let multiplier = this.getCampProductionMultiplier();
+			return CampConstants.getResearchCenterEvidenceGenerationPerSecond(centerCount, centerLevel) * multiplier;
 		},
 		
 		getTempleHopeGenerationPerSecond: function (improvementsComponent) {
 			var templeCount = improvementsComponent.getCount(improvementNames.temple);
 			var templeLevel = improvementsComponent.getLevel(improvementNames.temple);
-			return CampConstants.getTempleHopeGenerationPerSecond(templeCount, templeLevel) * GameConstants.gameSpeedCamp;
+			let multiplier = this.getCampProductionMultiplier();
+			return CampConstants.getTempleHopeGenerationPerSecond(templeCount, templeLevel) * multiplier;
 		},
 
 		getPopulationRumourGenerationPerSecond: function (population) {
-			return CampConstants.RUMOURS_PER_POP_PER_SEC_BASE * Math.floor(population || 0)
+			let multiplier = this.getCampProductionMultiplier();
+			return CampConstants.RUMOURS_PER_POP_PER_SEC_BASE * Math.floor(population || 0) * multiplier;
 		},
 		
 		getCampfireRumourGenerationPerSecond: function (improvementsComponent, accSpeedPopulation) {
 			var campfireCount = improvementsComponent.getCount(improvementNames.campfire);
 			var campfireLevel = improvementsComponent.getLevel(improvementNames.campfire);
-			return CampConstants.getCampfireRumourGenerationPerSecond(campfireCount, campfireLevel, accSpeedPopulation);
+			let multiplier = this.getCampProductionMultiplier();
+			return CampConstants.getCampfireRumourGenerationPerSecond(campfireCount, campfireLevel, accSpeedPopulation) * multiplier;
 		},
 		
 		getMarketRumourGenerationPerSecond: function (improvementsComponent, accSpeedPopulation) {
 			var marketCount = improvementsComponent.getCountWithModifierForDamaged(improvementNames.market, 0.5);
 			var marketLevel = improvementsComponent.getLevel(improvementNames.market);
-			return CampConstants.getMarketRumourGenerationPerSecond(marketCount, marketLevel, accSpeedPopulation);
+			let multiplier = this.getCampProductionMultiplier();
+			return CampConstants.getMarketRumourGenerationPerSecond(marketCount, marketLevel, accSpeedPopulation) * multiplier;
 		},
 		
 		getInnRumourGenerationPerSecond: function (improvementsComponent, accSpeedPopulation) {
 			var innCount = improvementsComponent.getCount(improvementNames.inn);
 			let innLevel = improvementsComponent.getLevel(improvementNames.inn);
-			return CampConstants.getInnRumourGenerationPerSecond(innCount, innLevel, accSpeedPopulation);
+			let multiplier = this.getCampProductionMultiplier();
+			return CampConstants.getInnRumourGenerationPerSecond(innCount, innLevel, accSpeedPopulation) * multiplier;
 		},
 
 		getCampMaxPopulation: function (sector) {

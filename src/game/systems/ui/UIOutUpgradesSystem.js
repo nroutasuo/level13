@@ -189,7 +189,8 @@ define([
 				var actionName = "create_blueprint_" + blueprintVO.upgradeID;
 				var reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(actionName, false);
 				if (reqsCheck.value < 1) continue;
-				if (blueprintVO.currentPieces === blueprintVO.maxPieces) count++;
+				let requiredPieces = GameConstants.cheatModeBlueprints ? 1 : blueprintVO.maxPieces;
+				if (blueprintVO.currentPieces === requiredPieces) count++;
 			}
 			return count;
 		},

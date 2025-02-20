@@ -1,5 +1,5 @@
-define(['ash', 'game/constants/UpgradeConstants', 'game/vos/UpgradeVO', 'game/vos/BlueprintVO'],
-function (Ash, UpgradeConstants, UpgradeVO, BlueprintVO) {
+define(['ash', 'game/constants/GameConstants', 'game/constants/UpgradeConstants', 'game/vos/UpgradeVO', 'game/vos/BlueprintVO'],
+function (Ash, GameConstants, UpgradeConstants, UpgradeVO, BlueprintVO) {
 	var UpgradesComponent = Ash.Class.extend({
 
 		boughtUpgrades: [],
@@ -73,7 +73,8 @@ function (Ash, UpgradeConstants, UpgradeVO, BlueprintVO) {
 		hasAllPieces: function (upgradeID) {
 			var blueprintVO = this.getBlueprint(upgradeID);
 			if (!blueprintVO) return false;
-			return blueprintVO.currentPieces >= blueprintVO.maxPieces;
+			let requiredPieces = GameConstants.cheatModeBlueprints ? 1 : blueprintVO.maxPieces;
+			return blueprintVO.currentPieces >= requiredPieces;
 		},
 
 		hasNewBlueprint: function (upgradeID) {

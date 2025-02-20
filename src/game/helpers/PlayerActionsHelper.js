@@ -6,6 +6,7 @@ define([
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/CampConstants',
+	'game/constants/GameConstants',
 	'game/constants/LocaleConstants',
 	'game/constants/PositionConstants',
 	'game/constants/PlayerActionConstants',
@@ -52,7 +53,8 @@ define([
 	'game/vos/ResourcesVO',
 	'game/vos/ImprovementVO'
 ], function (
-	Ash, Text, ValueCache, GameGlobals, GlobalSignals, CampConstants, LocaleConstants, PositionConstants, PlayerActionConstants, PlayerStatConstants, ExplorerConstants,
+	Ash, Text, ValueCache, GameGlobals, GlobalSignals, 
+	CampConstants, GameConstants, LocaleConstants, PositionConstants, PlayerActionConstants, PlayerStatConstants, ExplorerConstants,
 	ImprovementConstants, ItemConstants, BagConstants, MovementConstants, UpgradeConstants, PerkConstants, TextConstants,
 	TradeConstants, UIConstants, WorldConstants, PlayerActionResultNode, PlayerStatsNode, PlayerResourcesNode,
 	PlayerLocationNode, TribeUpgradesNode, NearestCampNode, LevelComponent, PositionComponent, ResourcesComponent,
@@ -726,7 +728,8 @@ define([
 						reason = "No such blueprint in progress.";
 						return { value: 0, reason: reason };
 					}
-					if (blueprintVO.maxPieces - blueprintVO.currentPieces > 0) {
+					let requiredPieces = GameConstants.cheatModeBlueprints ? 1 : blueprintVO.maxPieces;
+					if (requiredPieces - blueprintVO.currentPieces > 0) {
 						reason = "Missing pieces.";
 						return { value: 0, reason: reason };
 					}
@@ -2382,6 +2385,17 @@ define([
 						result[key] = Math.ceil(buildingCosts[key] / 3);
 					}
 					break;
+			}
+
+			if (GameConstants.cheatModeSupplies) {
+				if (action.startsWith("move_sector_")) {
+					if (this.getCostAmountOwned(sector, "resource_food") <= 1) result.resource_food = 0;
+					if (this.getCostAmountOwned(sector, "resource_water") <= 1) result.resource_water = 0;
+				}
+
+				if (action.startsWith("scout_")) {
+					if (this.getCostAmountOwned(sector, "item_exploration_1") <= 1) result.item_exploration_1 = 0;
+				}
 			}
 		},
 		

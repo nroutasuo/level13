@@ -273,8 +273,8 @@ define([
 
 		initializePlugins: function (plugins) {
 			return new Promise((resolve, reject) => {
-				if (!plugins) resolve();;
-				var game = this;
+				if (!plugins) resolve();
+				let game = this;
 				for (let i = 0; i < plugins.length; i++) {
 					log.i("Add plugin " + (i+1) + "/" + plugins.length + ": " + plugins[i]);
 					require([plugins[i]], function (plugin) {
