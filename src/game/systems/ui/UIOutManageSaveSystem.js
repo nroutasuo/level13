@@ -30,7 +30,7 @@ function (Ash, UIList, FileUtils, GameGlobals, GlobalSignals, GameConstants, Sav
 			this.containerSaveListOptionsExport = $("#save-list-options-export");
 			this.containerImport = $("#save-import-container");
 
-			this.saveSlotList = UIList.create(this, $("#save-list"), this.createSaveSlotListItem, this.updateSaveSlotListItem, this.isSaveSlotListItemDataEqual);
+			this.saveSlotList = UIList.create(this, $("#save-list"), this.createSaveSlotListItem, this.updateSaveSlotListItem, this.isSaveSlotListItemDataSame);
 
 			let system = this;
 			$("#open-import").click(function () {
@@ -186,7 +186,7 @@ function (Ash, UIList, FileUtils, GameGlobals, GlobalSignals, GameConstants, Sav
 			li.$info.toggleClass("dimmed", !hasData);
 		},
 
-		isSaveSlotListItemDataEqual: function (d1, d2) {
+		isSaveSlotListItemDataSame: function (d1, d2) {
 			return d1.slotID == d2.slotID;
 		},
 

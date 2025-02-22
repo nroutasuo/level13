@@ -71,8 +71,8 @@
 		},
 		
 		initElements: function () {
-			this.campActionList = UIList.create(this, $("#in-occurrences-building-container"), this.createCampActionListItem, this.updateCampActionListItem, this.isCampActionListItemDataEqual);
-			this.campOccurrencesList = UIList.create(this, $("#in-occurrences-camp-container"), this.createCampActionListItem, this.updateCampOccurrenceListItem, this.isCampOccurrenceListItemDataEqual);
+			this.campActionList = UIList.create(this, $("#in-occurrences-building-container"), this.createCampActionListItem, this.updateCampActionListItem, this.isCampActionListItemDataSame);
+			this.campOccurrencesList = UIList.create(this, $("#in-occurrences-camp-container"), this.createCampActionListItem, this.updateCampOccurrenceListItem, this.isCampOccurrenceListItemDataSame);
 			this.campMiscEventsList = UIList.create(this, $("#in-occurrences-misc-container"), this.createCampActionListItem, this.updateCampMiscEventListItem);
 			this.characterList = UIList.create(this, $("#in-characters ul"), this.createCharacterListItem, this.updateCharacterListItem);
 		},
@@ -1082,11 +1082,11 @@
 			li.$label.html(displayName);
 		},
 		
-		isCampActionListItemDataEqual: function (d1, d2) {
+		isCampActionListItemDataSame: function (d1, d2) {
 			return d1.action == d2.action;
 		},
 
-		isCampOccurrenceListItemDataEqual: function (d1, d2) {
+		isCampOccurrenceListItemDataSame: function (d1, d2) {
 			return d1.event == d2.event;
 		},
 

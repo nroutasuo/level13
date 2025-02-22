@@ -251,7 +251,7 @@ define([
 			this.themedIcons = themedIcons;
 
 			// perks list
-			this.perksList = UIList.create(this, $(".player-perks-list"), this.createPerkListItem, this.updatePerkListItem, this.isPerkListItemDataEqual);
+			this.perksList = UIList.create(this, $(".player-perks-list"), this.createPerkListItem, this.updatePerkListItem, this.isPerkListItemDataSame, this.isPerkListItemDataUnchanged);
 		},
 
 		generateStatsCallouts: function () {
@@ -667,7 +667,7 @@ define([
 
 			let isSmallLayout = this.elements.body.hasClass("layout-small");
 			let isResting = this.isResting();
-			let now = new Date().getTime();			
+			let now = new Date().getTime();
 			let sunlit = this.elements.body.hasClass("sunlit");
 			let isNegative = PerkConstants.isNegative(perk);
 			let backgroundColor = ColorConstants.getColor(sunlit, "bg_box_1");
@@ -676,6 +676,7 @@ define([
 			let warningPercentage = perk.removeTimer > 0 ? 
 				perk.effectFactor * 100:
 				PerkConstants.getPerkActivePercent(perk) * 100;
+			
 			let backgroundValue = "conic-gradient(" + fillColor + " " + warningPercentage + "%, " + backgroundColor + " 0%)";
 
 			li.$root.toggleClass("li-item-negative", isNegative);
@@ -694,8 +695,15 @@ define([
 			li.$icon.attr("alt", perk.name);
 		},
 		
-		isPerkListItemDataEqual: function (d1, d2) {
+		isPerkListItemDataSame: function (d1, d2) {
 			return d1.id == d2.id;
+		},
+
+		isPerkListItemDataUnchanged: function (d1, d2) {
+			if (d1.startTimer != d2.startTimer) return false;
+			if (d1.removeTimer != d2.removeTimer) return false;
+			if (d1.effectFactor != d2.effectFactor) return false;
+			return true;
 		},
 		
 		getPerkDescription: function (perk, isResting) {

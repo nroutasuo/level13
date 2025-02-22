@@ -29,10 +29,10 @@ define([
 			this.elements.bubble = $("#switch-projects .bubble");
 			this.elements.hiddenImprovementsMsg = $("#in-improvements-hidden-message");
 			
-			this.availableLevelProjectList = UIList.create(this, "#in-improvements-level table", this.createProjectListItem, (li, project) => { this.updateProjectListItem(li, project, true) }, this.isProjectListItemDataEqual);
-			this.availableColonyProjectList = UIList.create(this, "#in-improvements-colony table", this.createProjectListItem, (li, project) => { this.updateProjectListItem(li, project, true) }, this.isProjectListItemDataEqual);
-			this.builtLevelProjectList = UIList.create(this, "#in-improvements-level-built table", this.createProjectListItem, (li, project) => { this.updateProjectListItem(li, project, false) }, this.isProjectListItemDataEqual);
-			this.builtColonyProjectList = UIList.create(this, "#in-improvements-colony-built table", this.createProjectListItem, (li, project) => { this.updateProjectListItem(li, project, false) }, this.isProjectListItemDataEqual);
+			this.availableLevelProjectList = UIList.create(this, "#in-improvements-level table", this.createProjectListItem, (li, project) => { this.updateProjectListItem(li, project, true) }, this.isProjectListItemDataSame);
+			this.availableColonyProjectList = UIList.create(this, "#in-improvements-colony table", this.createProjectListItem, (li, project) => { this.updateProjectListItem(li, project, true) }, this.isProjectListItemDataSame);
+			this.builtLevelProjectList = UIList.create(this, "#in-improvements-level-built table", this.createProjectListItem, (li, project) => { this.updateProjectListItem(li, project, false) }, this.isProjectListItemDataSame);
+			this.builtColonyProjectList = UIList.create(this, "#in-improvements-colony-built table", this.createProjectListItem, (li, project) => { this.updateProjectListItem(li, project, false) }, this.isProjectListItemDataSame);
 			
 			let sys = this;
 			$("#in-improvements-reset-hidden").click(function () {
@@ -280,7 +280,7 @@ define([
 			GameGlobals.uiFunctions.toggle(li.$btnAction, isAvailable && isTabOpen);
 		},
 		
-		isProjectListItemDataEqual: function (project1, project2) {
+		isProjectListItemDataSame: function (project1, project2) {
 			return project1.getID() == project2.getID();
 		},
 		

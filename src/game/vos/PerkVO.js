@@ -27,6 +27,7 @@ define(['ash'], function (Ash) {
 			this.icon = icon;
 			this.addTimestamp = addTimestamp;
 			this.loggedAdd = false;
+			this.effectFactor = 1;
 		},
 		
 		setStartTimer: function (duration) {

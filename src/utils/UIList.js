@@ -2,7 +2,6 @@
 // pass in the data to display and this takes care of creating, deleting and updating html elements as needed
 
 // TODO pooling
-// TODO two definitions of equality (data is the same, no update needed vs data has changed a bit but keep the same element anyway)
 // TODO animations
 
 define(['game/GameGlobals'], function (GameGlobals) {
@@ -13,8 +12,9 @@ define(['game/GameGlobals'], function (GameGlobals) {
 		// container: element inside which list items will be added
 		// fnCreateItem: function () - should return new item that has a member called $root which will be added to container
 		// fnUpdateItem: function (li, data) - should update the given list item with the given data
-		// fnIsDataEqual: function (data1, data2) - optional - defines if a data is the same (no update needed)
-		create: function (owner, container, fnCreateItem, fnUpdateItem, fnIsDataEqual) {
+		// fnIsDataSame: function (data1, data2) - optional - defines if a data is the same item (no new item neede)
+		// fnIsDataUnchanged: function (data1, data2) - optional - defines if data is unchanged (no update call needed) (performance optimization)
+		create: function (owner, container, fnCreateItem, fnUpdateItem, fnIsDataSame, fnIsDataUnchanged) {
 			let list = {};
 			list.owner = owner;
 			list.$container = $(container);
@@ -22,12 +22,13 @@ define(['game/GameGlobals'], function (GameGlobals) {
 			list.items = [];
 			list.fnCreateItem = fnCreateItem;
 			list.fnUpdateItem = fnUpdateItem;
-			list.fnIsDataEqual = fnIsDataEqual || ((d1, d2) => d1.id === d2.id);
+			list.fnIsDataSame = fnIsDataSame || ((d1, d2) => d1.id === d2.id);
+			list.fnIsDataUnchanged = fnIsDataUnchanged || ((d1, d2) => false);
 			return list;
 		},
 		
 		// list: a data structure returned by create
-		// data: an array of data entries that the list's fnUpdateItem and fnIsDataEqual can use
+		// data: an array of data entries that should be mapped to items and those items updated where needed
 		update: function (list, data) {
 			let newIndices = [];
 			let newItems = [];
@@ -51,9 +52,10 @@ define(['game/GameGlobals'], function (GameGlobals) {
 
 			if (keepItems) {
 				for (let i = 0; i < list.items.length; i++) {
-					list.fnUpdateItem.apply(list.owner, [ list.items[i], data[i] ]);
+					this.updateListItem(list, list.items[i], data[i]);
 				}
 			} else {
+				// remove or detach
 				for (let i = 0; i < list.items.length; i++) {
 					li = list.items[i];
 					newIndex = newIndices[i];
@@ -67,23 +69,21 @@ define(['game/GameGlobals'], function (GameGlobals) {
 					}
 				}
 				
-				// go through data and add any missing items
+				// add back or create new one + update
 				for (let i = 0; i < data.length; i++) {
 					let d = data[i]
 					let li = newItems[i];
 					if (li) {
-						list.fnUpdateItem.apply(list.owner, [li, d]);
+						this.updateListItem(list, li, d);
 					} else  {
 						li = list.fnCreateItem.apply(list.owner);
-						list.fnUpdateItem.apply(list.owner, [li, d]);
+						this.updateListItem(list, li, d);
 						newItems[i] = li;
 						createdItems.push(li);
 					}
-					
-					li.data = data[i];
 				}
 				
-				// append and save new items
+				// append to DOM and save new items
 				list.items = newItems;
 				let newRoots = newItems.map(item => item.$root);
 				list.$container.append(newRoots);
@@ -93,6 +93,15 @@ define(['game/GameGlobals'], function (GameGlobals) {
 			}
 
 			return createdItems;
+		},
+
+		updateListItem: function (list, li, data, forced) {
+			let shouldUpdate = forced || !this.isDataUnchanged(list, li, data);
+
+			if (shouldUpdate) {
+				list.fnUpdateItem.apply(list.owner, [li, data]);
+				li.data = Object.assign({}, data);
+			}
 		},
 		
 		initButtonsInCreatedItems: function (list, createdItems) {
@@ -106,27 +115,36 @@ define(['game/GameGlobals'], function (GameGlobals) {
 			
 			for (let i = 0; i < createdItems.length; i++) {
 				let li = createdItems[i];
-				list.fnUpdateItem.apply(list.owner, [ li, li.data ]);
+				this.updateListItem(list, li, li.data, true);
 			}
 		},
 		
 		getItemIndex: function (list, li, data) {
 			for (let i = 0; i < data.length; i++) {
 				let d = data[i]
-				if (this.isDataEqual(list, li.data, d)) {
+				if (this.isDataSame(list, li.data, d)) {
 					return i;
 				}
 			}
 			return -1;
 		},
 		
-		isDataEqual: function (list, d1, d2) {
-			if (list.fnIsDataEqual) {
-				return list.fnIsDataEqual.apply(list.owner, [d1, d2]);
+		isDataSame: function (list, d1, d2) {
+			if (list.fnIsDataSame) {
+				return list.fnIsDataSame.apply(list.owner, [d1, d2]);
 			} else {
 				return d1 === d2;
 			}
 		},
+
+		isDataUnchanged: function (list, li, data) {
+			if (!li.data) return false;
+			if (list.fnIsDataUnchanged) {
+				return list.fnIsDataUnchanged.apply(list.owner, [li.data, data]);
+			} else {
+				return false;
+			}
+		}
 		
 	};
 

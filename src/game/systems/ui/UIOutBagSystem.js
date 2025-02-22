@@ -126,10 +126,10 @@ define([
 				li.$root.find("button.action").attr("action", actionName);
 				li.$root.find("button.action").html(buttonLabel);
 			};
-			let fnIsDataEqual = function (a, b) {
+			let fnIsDataSame = function (a, b) {
 				return a.id == b.id;
 			};
-			this.useItemButtonList = UIList.create(this, container, fnCreateItem, fnUpdateItem, fnIsDataEqual);
+			this.useItemButtonList = UIList.create(this, container, fnCreateItem, fnUpdateItem, fnIsDataSame);
 		},
 		
 		initRepairItemButtons: function () {
@@ -147,10 +147,10 @@ define([
 				$btn.attr("action", actionName);
 				$btn.html(buttonLabel);
 			};
-			let fnIsDataEqual = function (a, b) {
+			let fnIsDataSame = function (a, b) {
 				return a.itemID == b.itemID;
 			};
-			this.repairItemButtonList = UIList.create(this, container, fnCreateItem, fnUpdateItem, fnIsDataEqual);
+			this.repairItemButtonList = UIList.create(this, container, fnCreateItem, fnUpdateItem, fnIsDataSame);
 		},
 
 		update: function (time) {

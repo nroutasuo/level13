@@ -89,7 +89,7 @@ define([
 		},
 		
 		initElements: function () {
-			this.localeList = UIList.create(this, $("#table-out-actions-locales"), this.createLocaleListItem, this.updateLocaleListItem, this.isLocaleListItemDataEqual);
+			this.localeList = UIList.create(this, $("#table-out-actions-locales"), this.createLocaleListItem, this.updateLocaleListItem, this.isLocaleListItemDataSame);
 
 			let makeMovementActionsTD = function (direction) {
 				let normalID = "out-action-move-" + direction;
@@ -897,7 +897,7 @@ define([
 			return li;
 		},
 		
-		isLocaleListItemDataEqual: function (d1, d2) {
+		isLocaleListItemDataSame: function (d1, d2) {
 			return d1.index == d2.index && d1.position.equals(d2.position) && d1.isScouted == d2.isScouted;
 		},
 		

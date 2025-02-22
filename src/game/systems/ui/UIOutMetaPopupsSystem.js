@@ -27,7 +27,7 @@ define([
 		},
 
         initElements: function () {
-            this.settingsPopupHotkeysList = UIList.create(this, $("#hotkeys-list"), this.createHotkeyListItem, this.updateHotkeyListItem, this.isHotkeyListItemDataEqual);
+            this.settingsPopupHotkeysList = UIList.create(this, $("#hotkeys-list"), this.createHotkeyListItem, this.updateHotkeyListItem, this.isHotkeyListItemDataSame);
 
             let sys = this;
 			$("#settings-checkbox-hotkeys-enabled").change(() => sys.onSettingToggled());
@@ -123,7 +123,7 @@ define([
 			li.$value.html(data.value);
         },
 
-        isHotkeyListItemDataEqual: function (d1, d2) {
+        isHotkeyListItemDataSame: function (d1, d2) {
             return d1.displayName == d2.displayName && d1.value == d2.value && d1.isDisabled == d2.isDisabled;
         },
 

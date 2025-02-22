@@ -148,6 +148,7 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 		},
 
 		isNegative: function (perk) {
+			if (!perk) return false;
 			switch (perk.type) {
 				case PerkConstants.perkTypes.injury:
 				case PerkConstants.perkTypes.visualNegative:

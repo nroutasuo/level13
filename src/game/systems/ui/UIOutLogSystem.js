@@ -51,8 +51,8 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 		},
 
 		initElements: function () {
-			this.logList = UIList.create(this, $("#log ul"), this.createLogListItem, this.updateLogListItem, this.isLogListItemDataEqual);
-			this.logListLatest = UIList.create(this, $("#log-latest ul"), this.createLogListItem, this.updateLogListItem, this.isLogListItemDataEqual);
+			this.logList = UIList.create(this, $("#log ul"), this.createLogListItem, this.updateLogListItem, this.isLogListItemDataSame);
+			this.logListLatest = UIList.create(this, $("#log-latest ul"), this.createLogListItem, this.updateLogListItem, this.isLogListItemDataSame);
 		},
 		
 		initAmbientMessages: function () {
@@ -192,7 +192,7 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 			if (hasCount) li.$spanMsgCount.text(' (x ' + (parseInt(data.combined) + 1) + ')');
 		},
 
-		isLogListItemDataEqual: function (d1, d2) {
+		isLogListItemDataSame: function (d1, d2) {
 			return d1.logMsgID == d2.logMsgID && d1.time == d2.time;
 		},
 
