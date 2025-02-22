@@ -1711,16 +1711,16 @@ define([
 			if (sectorFeatures.hazards.territory > 0) tags.push(ItemConstants.itemTags.weapon);
 
 			if (sectorFeatures.hazards.flooded > 0) {
-				tags = tags.filter(t != ItemConstants.itemTags.book);
-				tags = tags.filter(t != ItemConstants.itemTags.perishable);
+				tags = tags.filter(t => t != ItemConstants.itemTags.book);
+				tags = tags.filter(t => t != ItemConstants.itemTags.perishable);
 			}
 			
 			if (sectorFeatures.hazards.radiation > 0) {
-				tags = tags.filter(t != ItemConstants.itemTags.perishable);
+				tags = tags.filter(t => t != ItemConstants.itemTags.perishable);
 			}
 			
 			if (sectorFeatures.hazards.poison > 0) {
-				tags = tags.filter(t != ItemConstants.itemTags.perishable);
+				tags = tags.filter(t => t != ItemConstants.itemTags.perishable);
 			}
 
 			return tags;
