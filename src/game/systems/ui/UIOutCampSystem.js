@@ -75,6 +75,23 @@
 			this.campOccurrencesList = UIList.create(this, $("#in-occurrences-camp-container"), this.createCampActionListItem, this.updateCampOccurrenceListItem, this.isCampOccurrenceListItemDataSame);
 			this.campMiscEventsList = UIList.create(this, $("#in-occurrences-misc-container"), this.createCampActionListItem, this.updateCampMiscEventListItem);
 			this.characterList = UIList.create(this, $("#in-characters ul"), this.createCharacterListItem, this.updateCharacterListItem);
+
+			this.elements.populationAutoassignedLabel = $("#in-population #in-population-autoassigned");
+			this.elements.populationAutoAssignToggle = $(".in-assign-workers-auto-toggle");
+			this.elements.populationDecreaseHint = $("#in-population-decrease-hint");
+			this.elements.populationDetailsContainer = $("#in-population-details");
+			this.elements.populationHeader = $("#in-population h3");
+			this.elements.populationProgressBar = $("#in-population-bar-next");
+			this.elements.populationProgressBarLabel = $("#in-population-bar-next .progress-label");
+			this.elements.populationProgressLabel = $("#in-population-next");
+			this.elements.populationReputationRequirementLabel = $("#in-population-reputation");
+			this.elements.populationRobotsChangeIndicator = $("#robots-change-indicator");
+			this.elements.populationRobotsContainer = $("#in-population #in-population-robots");
+			this.elements.populationRobotsContainer = $("#in-population-robots");
+			this.elements.populationRobotsLabel = $("#in-population #in-population-robots .value");
+			this.elements.populationUnassignedLabel = $("#in-population #in-population-status span");
+			this.elements.unassignedWorkersBubble = $("#unassigned-workers-bubble");
+			this.elements.workersTable = $("#in-assign-workers");
 		},
 
 		addToEngine: function (engine) {
@@ -116,16 +133,18 @@
 			if (!this.playerPosNodes.head.position.inCamp) return;
 			if (GameGlobals.gameState.uiStatus.isTransitioning) return;
 
-			this.updateWorkers(isActive);
 			this.updateEvents(isActive);
+			this.updatePopulationDisplayFast();
 		},
 
 		slowUpdate: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (!this.playerLocationNodes.head) return;
+
 			this.updateImprovements();
 			this.updateBubble();
 			this.updateStats();
+			this.updatePopulationDisplaySlow();
 		},
 
 		refresh: function () {
@@ -150,6 +169,9 @@
 			this.updateImprovements();
 			this.updateStats();
 			this.updateBubble();
+			this.updateCharactersDisplay();
+			this.updatePopulationDisplaySlow();
+			this.updatePopulationDisplayFast();
 		},
 
 		updateBubble: function () {
@@ -172,24 +194,6 @@
 			this.bubbleNumber = newBubbleNumber;
 		},
 
-		updateWorkers: function (isActive) {
-			isActive = isActive && !GameGlobals.gameState.uiStatus.isBlocked;
-			let camp = this.playerLocationNodes.head.entity;
-			let campComponent = camp.get(CampComponent);
-			if (!campComponent) return;
-
-			let resources = camp.get(ResourcesComponent);
-
-			if (!isActive) return;
-			
-			let maxPopulation = this.getCampMaxPopulation();
-			let reputation = camp.get(ReputationComponent).value;
-			let robots = resources.resources.robots || 0;
-			let maxRobots = GameGlobals.campHelper.getRobotStorageCapacity(camp);
-			
-			this.updatePopulationDisplay(campComponent, maxPopulation, reputation, robots, maxRobots);
-		},
-
 		getCampMaxPopulation: function () {
 			if (!this.playerLocationNodes.head) return;
 			return GameGlobals.campHelper.getCampMaxPopulation(this.playerLocationNodes.head.entity);
@@ -209,32 +213,62 @@
 			$(id).parent().siblings(".in-assign-worker-limit").children(".callout-container").children(".info-callout-target").html(showMax ? "<span>/ " + maxWorkers + "</span>" : "");
 		},
 
-		updatePopulationDisplay: function (campComponent, maxPopulation, reputation, robots, maxRobots) {
+		updatePopulationDisplaySlow: function () {
+			let isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.in;
+			if (!isActive) return;
+			if (GameGlobals.gameState.uiStatus.isBlocked) return;
+
+			let camp = this.playerLocationNodes.head.entity;
+			let campComponent = camp.get(CampComponent);
+			if (!campComponent) return;
+
 			let currentPopulation =  Math.floor(campComponent.population);
+			let maxPopulation = this.getCampMaxPopulation();
+			
+			// reputation requirements
+			let reputation = camp.get(ReputationComponent).value;
+			let reqRepCur = CampConstants.getRequiredReputation(Math.floor(campComponent.population));
+			let reqRepNext = CampConstants.getRequiredReputation(Math.floor(campComponent.population) + 1);
+			let isReputationBlocking = reqRepNext < reputation;
+			GameGlobals.uiFunctions.setText(this.elements.populationReputationRequirementLabel, "ui.camp.population_reputation_status_field", { current: reqRepCur, next: reqRepNext });
+
+			// population header
+			GameGlobals.uiFunctions.slideToggleIf(this.elements.populationHeader, null, maxPopulation > 0 || campComponent.population > 0, 200, 200);
+			GameGlobals.uiFunctions.setText(this.elements.populationHeader, "ui.camp.population_header", { current: currentPopulation, max: maxPopulation });
+
+			// unassigned workers
 			let freePopulation = campComponent.getFreePopulation();
+			GameGlobals.uiFunctions.toggle(this.elements.unassignedWorkersBubble, freePopulation > 0);
+			GameGlobals.uiFunctions.setText(this.elements.populationUnassignedLabel, "ui.camp.population_unassigned_workers_field", { value: freePopulation });
+
+			// auto-assigned workers
+			let autoAssignedWorkers = campComponent.getAutoAssignedWorkers();
+			let autoAssignedWorkersNames = autoAssignedWorkers.map(workerType => CampConstants.getWorkerDisplayName(workerType));
+			let autoAssignedWorkersText = TextConstants.getListText(autoAssignedWorkersNames, 3);
+			GameGlobals.uiFunctions.setText(this.elements.populationAutoassignedLabel, "ui.camp.population_auto_assigned_workers_field", { value: autoAssignedWorkersText });
+			GameGlobals.uiFunctions.toggle(this.elements.populationAutoAssignToggle, GameGlobals.gameState.unlockedFeatures.workerAutoAssignment);
+		},
+
+		updatePopulationDisplayFast: function () {
+			let isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.in;
+			if (!isActive) return;
+			if (GameGlobals.gameState.uiStatus.isBlocked) return;
+
+			let camp = this.playerLocationNodes.head.entity;
+			let campComponent = camp.get(CampComponent);
+			if (!campComponent) return;
+			
+			let maxPopulation = this.getCampMaxPopulation();
+
 			let isPopulationMaxed = campComponent.population >= maxPopulation;
 			let populationChangePerSec = campComponent.populationChangePerSec || 0;
 			let populationChangePerSecWithoutCooldown = campComponent.populationChangePerSecWithoutCooldown || 0;
 			
-			let autoAssignedWorkers = campComponent.getAutoAssignedWorkers();
-			let autoAssignedWorkersNames = autoAssignedWorkers.map(workerType => CampConstants.getWorkerDisplayName(workerType));
-			let autoAssignedWorkersText = TextConstants.getListText(autoAssignedWorkersNames, 3);
-
-			let reqRepCur = CampConstants.getRequiredReputation(Math.floor(campComponent.population));
-			let reqRepNext = CampConstants.getRequiredReputation(Math.floor(campComponent.population) + 1);
-			let isReputationBlocking = reqRepNext < reputation;
 			let isOnPopulationDecreaseCooldown = campComponent.populationDecreaseCooldown;
 
 			let populationProgressLabelKey = populationChangePerSec >= 0 && !isOnPopulationDecreaseCooldown ? "ui.camp.population_next_worker_progress_label" : "ui.camp.population_worker_leaving_progress_label";
 
-			GameGlobals.uiFunctions.setText("#in-population-next", populationProgressLabelKey);
-			GameGlobals.uiFunctions.setText("#in-population-reputation", "ui.camp.population_reputation_status_field", { current: reqRepCur, next: reqRepNext });
-			GameGlobals.uiFunctions.setText("#in-population h3", "ui.camp.population_header", { current: currentPopulation, max: maxPopulation });
-			GameGlobals.uiFunctions.setText("#in-population #in-population-status span", "ui.camp.population_unassigned_workers_field", { value: freePopulation });
-			GameGlobals.uiFunctions.setText("#in-population #in-population-autoassigned", "ui.camp.population_auto_assigned_workers_field", { value: autoAssignedWorkersText });
-			GameGlobals.uiFunctions.updateText($("#in-population #in-population-robots .value"), Math.floor(robots) + " / " + maxRobots);
-
-			GameGlobals.uiFunctions.toggle($("#unassigned-workers-bubble"), freePopulation > 0);
+			GameGlobals.uiFunctions.setText(this.elements.populationProgressLabel, populationProgressLabelKey);
 			
 			let isPopulationStill = populationChangePerSecWithoutCooldown === 0 && !isOnPopulationDecreaseCooldown;
 
@@ -251,7 +285,7 @@
 				progress = secondsToChange / secondsToLoseOnePop;
 
 				let hint = this.getPopulationDecreaseHint();
-				if (hint) $("#in-population-decrease-hint").text("People are leaving because of: " + hint);
+				if (hint) this.elements.populationDecreaseHint.text("People are leaving because of: " + hint);
 			}
 
 			let progressLabel = UIConstants.getTimeToNum(secondsToChange);
@@ -259,44 +293,54 @@
 			if (populationChangePerSec === 0) progressLabel = "no change";
 			if (isOnPopulationDecreaseCooldown) progressLabel = "cooldown";
 
-			$("#in-population-bar-next").toggleClass("warning", populationChangePerSec < 0);
-			$("#in-population-bar-next").data("progress-percent", progress * 100);
-			$("#in-population-bar-next .progress-label").text(progressLabel);
-			$("#in-population-bar-next").data("animation-length", 500);
+			this.elements.populationProgressBar.toggleClass("warning", populationChangePerSec < 0);
+			this.elements.populationProgressBar.data("progress-percent", progress * 100);
+			this.elements.populationProgressBar.data("animation-length", 500);
+			this.elements.populationProgressBarLabel.text(progressLabel);
 
-			GameGlobals.uiFunctions.slideToggleIf("#in-population h3", null, maxPopulation > 0 || campComponent.population > 0, 200, 200);
-			GameGlobals.uiFunctions.slideToggleIf("#in-population-reputation", null, (maxPopulation > 0 && !isPopulationMaxed) || populationChangePerSecWithoutCooldown < 0, 200, 200);
-			GameGlobals.uiFunctions.slideToggleIf("#in-population-bar-next", null, campComponent.population > 0 && !isPopulationStill, 200, 200);
-			GameGlobals.uiFunctions.slideToggleIf("#in-population-next", null, campComponent.population > 0 && !isPopulationStill, 200, 200);
-			GameGlobals.uiFunctions.slideToggleIf("#in-population-details", null, campComponent.population >= 1, 200, 200);
-			GameGlobals.uiFunctions.slideToggleIf("#in-population-status", null, campComponent.population >= 1, 200, 200);
-			GameGlobals.uiFunctions.slideToggleIf("#in-population #in-population-autoassigned", null, GameGlobals.gameState.unlockedFeatures.workerAutoAssignment, 200, 200);
-			GameGlobals.uiFunctions.slideToggleIf("#in-population-robots", null, robots > 0, 200, 200);
-			GameGlobals.uiFunctions.slideToggleIf("#in-assign-workers", null, campComponent.population >= 1, 200, 200);
-			GameGlobals.uiFunctions.slideToggleIf($("#in-population-decrease-hint"), null, populationChangePerSecWithoutCooldown < 0);
-
-			GameGlobals.uiFunctions.toggle(".in-assign-workers-auto-toggle", GameGlobals.gameState.unlockedFeatures.workerAutoAssignment);
+			GameGlobals.uiFunctions.slideToggleIf(this.elements.populationReputationRequirementLabel, null, (maxPopulation > 0 && !isPopulationMaxed) || populationChangePerSecWithoutCooldown < 0, 200, 200);
+			GameGlobals.uiFunctions.slideToggleIf(this.elements.populationProgressBar, null, campComponent.population > 0 && !isPopulationStill, 200, 200);
+			GameGlobals.uiFunctions.slideToggleIf(this.elements.populationProgressLabel, null, campComponent.population > 0 && !isPopulationStill, 200, 200);
+			GameGlobals.uiFunctions.slideToggleIf(this.elements.populationDetailsContainer, null, campComponent.population >= 1, 200, 200);
+			GameGlobals.uiFunctions.slideToggleIf(this.elements.populationAutoassignedLabel, null, GameGlobals.gameState.unlockedFeatures.workerAutoAssignment, 200, 200);
+			GameGlobals.uiFunctions.slideToggleIf(this.elements.workersTable, null, campComponent.population >= 1, 200, 200);
+			GameGlobals.uiFunctions.slideToggleIf(this.elements.populationDecreaseHint, null, populationChangePerSecWithoutCooldown < 0);
 			
-			if (robots > 0) {
-				let resources = this.playerLocationNodes.head.entity.get(ResourcesComponent);
-				let campResourceAcc = this.playerLocationNodes.head.entity.get(ResourceAccumulationComponent);
-				let robotBonus = GameGlobals.campBalancingHelper.getWorkerRobotBonus(robots);
-				let robotSources = campResourceAcc.getSources(resourceNames.robots);
-				
-				let robotCalloutContent = "";
-				for (let i in robotSources) {
-					let source = robotSources[i];
-					if (source.amount != 0) {
-						robotCalloutContent += UIConstants.getResourceAccumulationSourceText(source) + "<br/>";
-					}
+			this.updatePopulationDisplayRobots();
+		},
+
+		updatePopulationDisplayRobots: function () {
+			let camp = this.playerLocationNodes.head.entity;
+			let resources = camp.get(ResourcesComponent);
+
+			let robots = resources.resources.robots || 0;
+			let maxRobots = GameGlobals.campHelper.getRobotStorageCapacity(camp);
+
+			GameGlobals.uiFunctions.slideToggleIf(this.elements.populationRobotsContainer, null, robots > 0, 200, 200);
+
+			if (robots <= 0) return;
+
+			GameGlobals.uiFunctions.updateText(this.elements.populationRobotsLabel, Math.floor(robots) + " / " + maxRobots);
+
+			let campResourceAcc = this.playerLocationNodes.head.entity.get(ResourceAccumulationComponent);
+			let robotBonus = GameGlobals.campBalancingHelper.getWorkerRobotBonus(robots);
+			let robotSources = campResourceAcc.getSources(resourceNames.robots);
+			
+			let robotCalloutContent = "";
+
+			for (let i in robotSources) {
+				let source = robotSources[i];
+				if (source.amount != 0) {
+					robotCalloutContent += UIConstants.getResourceAccumulationSourceText(source) + "<br/>";
 				}
-				robotCalloutContent += "<br/>worker resource production: +" + UIConstants.roundValue(robotBonus * 100, true, false) + "%";
-				UIConstants.updateCalloutContent("#in-population #in-population-robots", robotCalloutContent);
-				
-				let robotsAccumulationRaw = campResourceAcc.getChange(resourceNames.robots);
-				let robotsAccumulation = robots <= maxRobots || robotsAccumulationRaw < 0 ? robotsAccumulationRaw : 0;
-				this.updateChangeIndicator($("#robots-change-indicator"), robotsAccumulation);
 			}
+			
+			robotCalloutContent += "<br/>worker resource production: +" + UIConstants.roundValue(robotBonus * 100, true, false) + "%";
+			UIConstants.updateCalloutContent(this.elements.populationRobotsContainer, robotCalloutContent);
+			
+			let robotsAccumulationRaw = campResourceAcc.getChange(resourceNames.robots);
+			let robotsAccumulation = robots <= maxRobots || robotsAccumulationRaw < 0 ? robotsAccumulationRaw : 0;
+			this.updateChangeIndicator(this.elements.populationRobotsChangeIndicator, robotsAccumulation);
 		},
 
 		updateChangeIndicator: function (indicator, accumulation) {
