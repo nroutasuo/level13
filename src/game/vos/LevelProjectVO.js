@@ -18,6 +18,9 @@ define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
 			if (!this.actionLabel) {
 				this.actionLabel = "build";
 			}
+
+			this.projectID = this.getID();
+			this.isColonyProject = this.isColonyProject();
 		},
 		
 		getID: function () {

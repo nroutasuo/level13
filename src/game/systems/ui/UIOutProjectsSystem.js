@@ -122,15 +122,15 @@ define([
 			if (!GameGlobals.gameState.uiStatus.hiddenProjects) GameGlobals.gameState.uiStatus.hiddenProjects = [];
 			
 			let projects = GameGlobals.levelHelper.getAvailableProjectsForCamp(this.playerLocationNodes.head.entity);
-			
+
 			let isHidden = function (project) {
-				let projectID = project.getID();
+				let projectID = project.projectID;
 				return GameGlobals.gameState.uiStatus.hiddenProjects.indexOf(projectID) >= 0;
 			}
 			
 			if (updateTables) {
-				let numCreated1 = UIList.update(this.availableLevelProjectList, projects.filter(project => !project.isColonyProject() && !isHidden(project))).length;
-				let numCreated2 = UIList.update(this.availableColonyProjectList, projects.filter(project => project.isColonyProject())).length;
+				let numCreated1 = UIList.update(this.availableLevelProjectList, projects.filter(project => !project.isColonyProject && !isHidden(project))).length;
+				let numCreated2 = UIList.update(this.availableColonyProjectList, projects.filter(project => project.isColonyProject)).length;
 				
 				if (numCreated1 > 0 || numCreated2 > 0) {
 					GameGlobals.uiFunctions.registerCustomButtonListeners("#in-improvements-level", "navigation", this.onMapLinkButtonClicked);
@@ -140,8 +140,8 @@ define([
 					GameGlobals.uiFunctions.createButtons("#in-improvements-colony");
 					
 					// TODO fix better, now forcing an update after ovelays generated but build into UIList
-					UIList.update(this.availableLevelProjectList, projects.filter(project => !project.isColonyProject() && !isHidden(project)));
-					UIList.update(this.availableColonyProjectList, projects.filter(project => project.isColonyProject()));
+					UIList.update(this.availableLevelProjectList, projects.filter(project => !project.isColonyProject && !isHidden(project)));
+					UIList.update(this.availableColonyProjectList, projects.filter(project => project.isColonyProject));
 				}
 			}
 			
@@ -150,8 +150,8 @@ define([
 				let action = project.action;
 				let sectorEntity = GameGlobals.levelHelper.getSectorByPosition(project.level, project.position.sectorX, project.position.sectorY);
 				let actionAvailable = GameGlobals.playerActionsHelper.checkAvailability(action, false, sectorEntity);
-				let isColonyProject = project.isColonyProject();
-				let projectID = project.getID();
+				let isColonyProject = project.isColonyProject;
+				let projectID = project.projectID;
 				let isHidden = GameGlobals.gameState.uiStatus.hiddenProjects.indexOf(projectID) >= 0;
 				
 				if (isColonyProject) {
@@ -177,8 +177,8 @@ define([
 			projects.sort((a, b) => { return b.level - a.level; });
 			
 			if (updateTables) {
-				let numCreated1 = UIList.update(this.builtLevelProjectList, projects.filter(project => !project.isColonyProject())).length;
-				let numCreated2 = UIList.update(this.builtColonyProjectList, projects.filter(project => project.isColonyProject())).length;
+				let numCreated1 = UIList.update(this.builtLevelProjectList, projects.filter(project => !project.isColonyProject)).length;
+				let numCreated2 = UIList.update(this.builtColonyProjectList, projects.filter(project => project.isColonyProject)).length;
 				
 				if (numCreated1) {
 					GameGlobals.uiFunctions.registerCustomButtonListeners("#in-improvements-level-built", "navigation", this.onMapLinkButtonClicked);
@@ -190,7 +190,7 @@ define([
 			
 			for (let i = 0; i < projects.length; i++) {
 				let project = projects[i];
-				let isColonyProject = project.isColonyProject();
+				let isColonyProject = project.isColonyProject;
 				
 				if (isColonyProject) numProjectsColony++;
 				if (!isColonyProject) numProjectsOther++;
@@ -246,7 +246,7 @@ define([
 		updateProjectListItem: function (li, project, isAvailable) {
 			let isTabOpen = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.projects;
 			let isSmallLayout = $("body").hasClass("layout-small");
-			let projectID = project.getID();
+			let projectID = project.projectID;
 			let sector = project.level + "." + project.sector + "." + project.direction;
 			let name = project.name;
 			let actionLabel = project.actionLabel;
@@ -257,7 +257,7 @@ define([
 			name = name.replace(" Down", "");
 			
 			let info = this.getProjectInfoText(project, isAvailable, isSmallLayout);
-			let showHideButton = isAvailable && !project.isColonyProject() && UIConstants.canHideProject(projectID);
+			let showHideButton = isAvailable && !project.isColonyProject && UIConstants.canHideProject(projectID);
 			
 			li.$tdDescription.attr("colspan", isAvailable ? 1 : 4);
 			li.$btnHide.css("display", showHideButton ? "initial" : "none");
@@ -276,12 +276,12 @@ define([
 			li.$btnAction.find(".btn-label").html(actionLabel);
 			
 			GameGlobals.uiFunctions.toggle(li.$btnHide, showHideButton);
-			GameGlobals.uiFunctions.toggle(li.$btnMap, isAvailable && !project.isColonyProject());
+			GameGlobals.uiFunctions.toggle(li.$btnMap, isAvailable && !project.isColonyProject);
 			GameGlobals.uiFunctions.toggle(li.$btnAction, isAvailable && isTabOpen);
 		},
 		
 		isProjectListItemDataSame: function (project1, project2) {
-			return project1.getID() == project2.getID();
+			return project1.projectID == project2.projectID;
 		},
 		
 		getProjectInfoText: function (project, isAvailable, short) {
