@@ -21,6 +21,8 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 		autoAssignedWorkers: {}, // id => bool
 		
 		campName: "",
+
+		availableLuxuryResources: [],
 		
 		lastRaid: null,
 		
@@ -44,6 +46,9 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 				this.autoAssignedWorkers[worker.id] = false;
 			}
 			this.campName = "";
+
+			this.availableLuxuryResources = [];
+			
 			this.lastRaid = new RaidVO(null);
 			
 			this.pendingPopulation = 0;

@@ -31,6 +31,8 @@ define([
 			this.tribeNodes = engine.getNodeList(TribeResourcesNode);
 
 			GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, this.onInventoryChanged);
+			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.onImprovementBuilt);
+			GlobalSignals.add(this, GlobalSignals.gameStateReadySignal, this.onGameStateReady);
 		},
 
 		removeFromEngine: function (engine) {
@@ -178,10 +180,54 @@ define([
 				}
 			}
 		},
+
+		updateLuxuryResources: function () {
+			for (let node = this.campNodes.head; node; node = node.next) {
+				node.camp.availableLuxuryResources = this.getAvailableLuxuryResourcesForCamp(node);
+			}
+		},
+
+		getAvailableLuxuryResourcesForCamp: function (campNode) {
+			let result = [];
+			
+			let level = campNode.position.level;
+			let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+			let hasAccessToTradeNetwork = GameGlobals.resourcesHelper.hasAccessToTradeNetwork(campNode.entity);
+			
+			let builtProjects = GameGlobals.levelHelper.getBuiltProjects();
+
+			for (let i = 0; i < builtProjects.length; i++) {
+				let project = builtProjects[i];
+				if (project.improvement.name != improvementNames.luxuryOutpost) continue;
+				
+				let projectLevel = project.position.level;
+				let projectCampOrdinal = GameGlobals.gameState.getCampOrdinal(projectLevel);
+				if (hasAccessToTradeNetwork || projectCampOrdinal == campOrdinal) {
+					let levelsForCamp = GameGlobals.gameState.getLevelsForCamp(projectCampOrdinal);
+					for (let i = 0; i < levelsForCamp.length; i++) {
+						let campLevel = levelsForCamp[i];
+						let resource = GameGlobals.levelHelper.getLuxuryResourceOnLevel(campLevel);
+						if (resource) {
+							result.push(resource);
+						}
+					}
+				}
+			}
+
+			return result;
+		},
 		
 		onInventoryChanged: function () {
 			this.updateUnlockedResources();
 		},
+
+		onImprovementBuilt: function () {
+			this.updateLuxuryResources();
+		},
+
+		onGameStateReady: function () {
+			this.updateLuxuryResources();
+		}
 		
 	});
 

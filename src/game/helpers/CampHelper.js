@@ -98,36 +98,26 @@ define([
 		},
 		
 		getAvailableLuxuryResources: function (campEntity) {
+			if (campEntity) return this.getAvailableLuxuryResourcesForCamp(campEntity);
+
 			let result = [];
-			let hasAccessToTradeNetwork = true;
-			let campOrdinal = GameGlobals.gameState.numCamps;
 			
-			if (campEntity) {
-				let position = campEntity.get(PositionComponent);
-				let level = position.level;
-				campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
-				hasAccessToTradeNetwork = GameGlobals.resourcesHelper.hasAccessToTradeNetwork(campEntity);
-			}
-			
-			let builtProjects = GameGlobals.levelHelper.getBuiltProjects();
-			for (let i = 0; i < builtProjects.length; i++) {
-				let project = builtProjects[i];
-				if (project.improvement.name != improvementNames.luxuryOutpost) continue;
-				
-				let projectLevel = project.position.level;
-				let projectCampOrdinal = GameGlobals.gameState.getCampOrdinal(projectLevel);
-				if (hasAccessToTradeNetwork || projectCampOrdinal == campOrdinal) {
-					let levelsForCamp = GameGlobals.gameState.getLevelsForCamp(projectCampOrdinal);
-					for (let i = 0; i < levelsForCamp.length; i++) {
-						let campLevel = levelsForCamp[i];
-						let resource = GameGlobals.levelHelper.getLuxuryResourceOnLevel(campLevel);
-						if (resource) {
-							result.push(resource);
-						}
+			for (let campNode = this.campNodes.head; campNode; campNode = campNode.next) {
+				let campLuxuryResources = this.getAvailableLuxuryResources(campNode.entity);
+				for (let i = 0; i < campLuxuryResources.length; i++) {
+					let res = campLuxuryResources[i];
+					if (result.indexOf(res) < 0) {
+						result.push(res);
 					}
 				}
 			}
+
 			return result;
+		},
+
+		getAvailableLuxuryResourcesForCamp: function (campEntity) {
+			let campComponent = campEntity.get(CampComponent);
+			return campComponent.availableLuxuryResources || [];
 		},
 
 		getCampProductionMultiplier: function () {
