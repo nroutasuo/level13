@@ -116,6 +116,10 @@ define([
 			this.elements.changeIndicatorReputation = $(".header-camp-reputation .change-indicator");
 			this.elements.changeIndicatorPopulation = $(".header-camp-population .change-indicator");
 			
+			this.elements.notificationContainer = $(".notification-player");
+			this.elements.notificationBar = $(".notification-player-bar");
+			this.elements.notificationLabel = $(".notification-player-bar .progress-label");
+			
 			this.updateLayoutMode();
 
 			return this;
@@ -281,11 +285,8 @@ define([
 				return;
 			}
 
-			var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
-			var isInCamp = playerPosition.inCamp;
-
 			this.updateGameMsg();
-			this.updateNotifications(isInCamp);
+			this.updateNotifications();
 			this.updatePerks();
 			
 			if (this.pendingResourceUpdateTime) {
@@ -925,15 +926,15 @@ define([
 			}
 		},
 
-		updateNotifications: function (inCamp) {
+		updateNotifications: function () {
 			if (GameGlobals.gameState.isPaused) return;
 			let busyComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
 			let isBusy = this.playerStatsNodes.head.entity.has(PlayerActionComponent) && busyComponent.isBusy();
 			if (isBusy) {
-				$(".notification-player-bar").data("progress-percent", busyComponent.getBusyPercentage());
-				$(".notification-player-bar .progress-label").text(busyComponent.getBusyDescription());
+				this.elements.notificationBar.data("progress-percent", busyComponent.getBusyPercentage());
+				this.elements.notificationLabel.text(busyComponent.getBusyDescription());
 			}
-			GameGlobals.uiFunctions.toggle(".notification-player", isBusy);
+			GameGlobals.uiFunctions.toggle(this.elements.notificationContainer, isBusy);
 		},
 
 		updateLocation: function () {
