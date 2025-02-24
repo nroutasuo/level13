@@ -278,7 +278,8 @@
 							"res_",
 							"res_"
 						]
-					}
+					},
+					"response": "END"
 				},
 				{
 					"id": "reject",
@@ -317,7 +318,8 @@
 						"gainedItemUpgrades": [
 							"weapon_"
 						]
-					}
+					},
+					"response": "END"
 				},
 				{
 					"id": "reject",
@@ -356,7 +358,8 @@
 						"gainedItemUpgrades": [
 							"clothing_"
 						]
-					}
+					},
+					"response": "END"
 				},
 				{
 					"id": "reject",
@@ -405,7 +408,8 @@
 						"gainedItemUpgrades": [
 							"clothing_"
 						]
-					}
+					},
+					"response": "END"
 				},
 				{
 					"id": "reject",
@@ -444,7 +448,8 @@
 						"gainedItemUpgrades": [
 							"weapon_"
 						]
-					}
+					},
+					"response": "END"
 				},
 				{
 					"id": "reject",
@@ -565,7 +570,8 @@
 								"trade_"
 							]
 						]
-					}
+					},
+					"response": "END"
 				},
 				{
 					"id": "reject",
@@ -974,7 +980,8 @@
 					"key": "character_generic_stranded_meet_directions_accept",
 					"result": {
 						"gainedPopulation": 1
-					}
+					},
+					"response": "END"
 				},
 				{
 					"id": "reject",
@@ -1003,7 +1010,8 @@
 				},
 				{
 					"id": "accept",
-					"key": "character_generic_stranded_meet_water_p1_accept"
+					"key": "character_generic_stranded_meet_water_p1_accept",
+					"response": "END"
 				},
 				{
 					"id": "reject",
@@ -1199,7 +1207,8 @@
 						"gainedPerks": [
 							"blessedShort"
 						]
-					}
+					},
+					"response": "END"
 				},
 				{
 					"id": "reject",
