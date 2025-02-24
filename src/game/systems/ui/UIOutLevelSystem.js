@@ -1060,6 +1060,8 @@ define([
 		rebuildVis: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (!this.playerLocationNodes.head) return;
+			if (GameGlobals.playerHelper.isInCamp()) return;
+
 			this.pendingUpdateMap = false;
 			
 			let mapPosition = this.playerLocationNodes.head.position.getPosition();

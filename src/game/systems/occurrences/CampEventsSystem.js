@@ -68,18 +68,27 @@ define([
 		update: function (time) {
 			if (GameGlobals.gameState.isPaused) return;
 			if (GameGlobals.gameState.isLaunched) return;
+			let isInCamp = GameGlobals.playerHelper.isInCamp();
 			
-			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
-				var campTimers = campNode.entity.get(CampEventTimersComponent);
+			for (let campNode = this.campNodes.head; campNode; campNode = campNode.next) {
+				let campTimers = campNode.entity.get(CampEventTimersComponent);
 				this.updateEventTimers(time, campNode, campTimers);
 				this.updatePendingEvents(campNode, campTimers);
-				this.updateEvents(campNode, campTimers);
+
+				if (isInCamp) this.updateEvents(campNode, campTimers);
 			}
 		},
 		
 		slowUpdate: function () {
 			if (GameGlobals.gameState.isPaused) return;
+			let isInCamp = GameGlobals.playerHelper.isInCamp();
+
 			this.updateBlockingEvents();
+			
+			for (let campNode = this.campNodes.head; campNode; campNode = campNode.next) {
+				let campTimers = campNode.entity.get(CampEventTimersComponent);
+				if (!isInCamp) this.updateEvents(campNode, campTimers);
+			}
 		},
 		
 		updateBlockingEvents: function () {
@@ -120,6 +129,7 @@ define([
 		},
 			
 		updateEvents: function (campNode, campTimers) {
+			// end, schedule, start events
 			for (var key in OccurrenceConstants.campOccurrenceTypes) {
 				let event = OccurrenceConstants.campOccurrenceTypes[key];
 				let isValid = this.isCampValidForEvent(campNode, event);
