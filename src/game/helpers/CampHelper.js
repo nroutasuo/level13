@@ -117,6 +117,7 @@ define([
 
 		getAvailableLuxuryResourcesForCamp: function (campEntity) {
 			let campComponent = campEntity.get(CampComponent);
+			if (!campComponent) return [];
 			return campComponent.availableLuxuryResources || [];
 		},
 
