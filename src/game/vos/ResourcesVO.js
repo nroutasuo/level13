@@ -92,7 +92,8 @@ define(['ash'], function (Ash) {
 				}
 			}
 
-			this.cleanUp();
+			this.cleanUp(res);
+
 			switch(res) {
 				case resourceNames.water: this.water += amount; break;
 				case resourceNames.food: this.food += amount; break;
@@ -117,6 +118,8 @@ define(['ash'], function (Ash) {
 			if (currentValue > 0 && amount <= 0) {
 				log.w("setResource [" + res + "] [" + amount + "] setting previously positive to <= 0 [" + reason + "]", this);
 			}
+
+			this.cleanUp(res);
 
 			switch(res) {
 				case resourceNames.water: this.water = amount; break;
@@ -197,6 +200,8 @@ define(['ash'], function (Ash) {
 			if (allowDecimalOverflow) {
 				max = Math.floor(max) + 0.9999;
 			}
+
+			this.cleanUp(name);
 			
 			let amount = this.getResource(name);
 			if (amount == 0) return;
@@ -206,14 +211,18 @@ define(['ash'], function (Ash) {
 				this.setResource(name, max, "limit-" + reason);
 		},
 	
-		cleanUp: function() {
+		cleanUpAll: function () {
 			for (let key in resourceNames) {
 				let name = resourceNames[key];
-				let amount = this.getResource(name);
-				if (isNaN(amount)) {
-					log.e("resource value was NaN, setting to 0 (" + name + ")", this);
-					this.setResource(name, 0, "cleanup");
-				}
+				this.cleanUp(name);
+			}
+		},
+
+		cleanUp: function (res) {
+			let amount = this.getResource(res);
+			if (isNaN(amount)) {
+				log.e("resource value was NaN, setting to 0 (" + res + ")", this);
+				this.setResource(res, 0, "cleanup");
 			}
 		},
 		
