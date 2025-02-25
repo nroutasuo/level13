@@ -1,15 +1,19 @@
 // A system that updates the player's resource storage capacity based on their currently equipped bag
 define([
 	'ash',
+	'Text/text',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/TutorialConstants',
-	'game/nodes/LogNode'
-], function (Ash, GameGlobals, GlobalSignals, TutorialConstants, LogNode) {
+	'game/nodes/LogNode',
+	'game/nodes/PlayerLocationNode',
+], function (Ash, Text, GameGlobals, GlobalSignals, TutorialConstants, LogNode, PlayerLocationNode) {
 	
 	let TutorialSystem = Ash.System.extend({
 		
 		logNodes: null,
+		playerLocationNodes: null,
+
 		tutorialsByTrigger: {},
 		
 		context: "tutorial",
@@ -20,14 +24,18 @@ define([
 
 		addToEngine: function (engine) {
 			this.engine = engine;
+
 			this.logNodes = engine.getNodeList(LogNode);
+			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			
 			GlobalSignals.add(this, GlobalSignals.triggerSignal, this.onTrigger);
 		},
 
 		removeFromEngine: function (engine) {
 			this.engine = null;
+
 			this.logNodes = null;
+			this.playerLocationNodes = null;
 
 			GlobalSignals.removeAll(this);
 		},
@@ -86,7 +94,7 @@ define([
 			
 			setTimeout(() => {
 				if (!startDelay || this.isTutorialConditionsMet(tutorial.conditions)) {
-					this.showTutorialLogMessage(tutorialID, tutorial.logMessage);
+					this.showTutorialLogMessage(tutorialID, tutorial.logMessage, tutorial.logMessageParams);
 				}
 			}, startDelay);
 			
@@ -179,8 +187,25 @@ define([
 			return GameGlobals.gameState.completedTutorialGroups[tutorialID] || null;
 		},
 		
-		showTutorialLogMessage: function (tutorialID, msg) {
+		showTutorialLogMessage: function (tutorialID, msgID, msgParams) {
+			let p = {};
+			if (msgParams) {
+				for (let key in msgParams) {
+					p[key] = this.getTutorialMessageParam(msgParams[key]);
+				}
+			}
+			let msg = Text.t(msgID, p);
 			GameGlobals.playerHelper.addLogMessage(tutorialID, msg);
+		},
+
+		getTutorialMessageParam: function (paramID) {
+			let sector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
+
+			switch (paramID) {
+				case "RESOURCE_AT_CAPACITY": return GameGlobals.campHelper.getCampInventoryFullResource(sector);
+			}
+			log.w("unknown tutorial message param: " + paramID);
+			return "";
 		},
 		
 	});
