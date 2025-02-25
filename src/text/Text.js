@@ -23,7 +23,12 @@ define(function () {
 
 			if (!hasKey) {
 				log.w("no such text key: [" + key + "]");
-				return wrap(key);
+			}
+
+			let text = key;
+			
+			if (hasKey) {
+				text = this.getText(key);
 			}
 
 			if (typeof (options) !== "object") {
@@ -31,8 +36,7 @@ define(function () {
 				options = {};
 				options[this.TEXT_PARAM_WILDCARD] = p;
 			}
-
-			let text = this.getText(key);
+			
 			let result = this.replaceParameters(key, text, options);
 			result = this.addStyles(result);
 
