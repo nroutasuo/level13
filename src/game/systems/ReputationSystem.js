@@ -123,7 +123,7 @@ define([
 			// improvements
 			var accRadio = sectorImprovements.getCount(improvementNames.radio) * CampConstants.REPUTATION_PER_RADIO_PER_SEC * GameConstants.gameSpeedCamp;
 			var accTargetDiff = reputationComponent.targetValue - reputationComponent.value;
-			if (Math.abs(accTargetDiff) < 0.01) accTargetDiff = 0;
+			if (Math.abs(accTargetDiff) < 0.001) accTargetDiff = 0;
 			if (accTargetDiff > 0) accTargetDiff = Math.min(10, Math.max(1, accTargetDiff));
 			if (accTargetDiff < 0) accTargetDiff = Math.max(-10, Math.min(-1, accTargetDiff));
 			let accTarget = accTargetDiff * 0.01 * GameConstants.gameSpeedCamp;
