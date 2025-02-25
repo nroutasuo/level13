@@ -3,8 +3,10 @@ define(['ash'], function (Ash) {
 
 		log: "", // textKey
 		popup: {}, // title, text
+		dialogue: null, // owner and storyFlag
 		result: {}, // ResultVO
 		storyFlags: {}, // id -> bool
+		unlockFeature: null, // featureID
 	});
 
 	return StoryEffectVO;

@@ -227,6 +227,7 @@ define([
 			result.result = data.result;
 			result.log = data.log;
 			result.dialogue = data.dialogue;
+			result.unlockFeature = data.unlockFeature || null;
 			result.storyFlags = data.storyFlags || {};
 
 			return result;
