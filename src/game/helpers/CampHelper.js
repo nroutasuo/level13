@@ -87,7 +87,6 @@ define([
 		},
 
 		getCampInventoryFullResource: function (sector) {
-			debugger
 			let currentStorage = sector ? GameGlobals.resourcesHelper.getCurrentCampStorage(sector) : GameGlobals.resourcesHelper.getCurrentStorage();
 			return currentStorage.getAtCapacityResource();
 		},

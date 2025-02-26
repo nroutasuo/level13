@@ -979,9 +979,10 @@
 					"id": "accept",
 					"key": "character_generic_stranded_meet_directions_accept",
 					"result": {
-						"gainedPopulation": 1
+						"gainedPopulation": 1,
+						"removeCharacter": true
 					},
-					"response": "END"
+					"options": "END"
 				},
 				{
 					"id": "reject",

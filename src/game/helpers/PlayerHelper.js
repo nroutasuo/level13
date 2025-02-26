@@ -87,6 +87,11 @@ define([
 			if (!this.playerPosNodes.head) return null;
 			return this.playerPosNodes.head.position;
 		},
+
+		getLocation: function () {
+			if (!this.playerLocationNodes.head) return null;
+			return this.playerLocationNodes.head.entity;
+		},
 		
 		isBusy: function () {
 			let player = this.playerStatsNodes.head.entity;

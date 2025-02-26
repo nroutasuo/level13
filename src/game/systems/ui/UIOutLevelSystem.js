@@ -165,7 +165,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.collectorCollectedSignal, this.updateOutImprovementsStatus);
 			GlobalSignals.add(this, GlobalSignals.movementBlockerClearedSignal, this.updateAll);
 			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
-			GlobalSignals.add(this, GlobalSignals.popupClosedSignal, this.updateLocales);
+			GlobalSignals.add(this, GlobalSignals.popupClosedSignal, this.onPopupClosed);
 			GlobalSignals.add(this, GlobalSignals.buttonStateChangedSignal, this.onButtonStateChanged);
 			GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, this.scheduleMapUpdate);
 			GlobalSignals.add(this, GlobalSignals.equipmentChangedSignal, this.scheduleMapUpdate);
@@ -1092,6 +1092,11 @@ define([
 			let $btn = $(e.currentTarget);
 			let direction = $btn.data("direction");
 			this.showTollGatePopup(direction);
+		},
+
+		onPopupClosed: function () {
+			this.updateLocales();
+			this.updateCharacters();
 		},
 		
 		onButtonStateChanged: function (action, isEnabled) {

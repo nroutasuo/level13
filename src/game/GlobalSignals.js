@@ -77,6 +77,7 @@ define(['ash',], function (Ash) {
 		// story and dialogue
 		dialogueCompletedSignal: new Ash.Signals.Signal(),
 		triggerDialogueSignal: new Ash.Signals.Signal(),
+		removeCharacterSignal: new Ash.Signals.Signal(),
 
 		// stats changes
 		visionChangedSignal: new Ash.Signals.Signal(),

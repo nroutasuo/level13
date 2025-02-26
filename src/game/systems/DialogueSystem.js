@@ -137,7 +137,16 @@ define([
 
 		endPage: function () {
 			if (this.dialogueNodes.head.dialogue.currentResultVO) {
-				GameGlobals.playerActionResultsHelper.collectRewards(true, this.dialogueNodes.head.dialogue.currentResultVO);
+				let resultVO = this.dialogueNodes.head.dialogue.currentResultVO;
+				GameGlobals.playerActionResultsHelper.collectRewards(true, resultVO);
+
+				if (resultVO.removeCharacter) {
+					let characterVO = this.dialogueNodes.head.dialogue.characterVO;
+					if (characterVO) {
+						GlobalSignals.removeCharacterSignal.dispatch(characterVO.instanceID);
+					}
+				}
+
 				this.dialogueNodes.head.dialogue.currentResultVO = null;
 			}
 		},

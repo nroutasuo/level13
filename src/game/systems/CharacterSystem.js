@@ -5,32 +5,57 @@ define([
 	'game/GameGlobals', 
 	'game/GlobalSignals', 
 	'game/constants/CharacterConstants', 
+	'game/constants/PositionConstants', 
 	'game/constants/SectorConstants', 
 	'game/constants/TradeConstants', 
 	'game/components/common/PositionComponent',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorStatusComponent',
+	'game/nodes/NearestCampNode',
 	'game/vos/CharacterVO'
-], function (Ash, MathUtils, GameGlobals, GlobalSignals, CharacterConstants , SectorConstants, TradeConstants, PositionComponent, SectorFeaturesComponent, SectorStatusComponent, CharacterVO) {
+], function (
+	Ash, 
+	MathUtils, 
+	GameGlobals, 
+	GlobalSignals, 
+	CharacterConstants, 
+	PositionConstants, 
+	SectorConstants, 
+	TradeConstants, 
+	PositionComponent, 
+	SectorFeaturesComponent, 
+	SectorStatusComponent, 
+	NearestCampNode,
+	CharacterVO
+) {
 	
-    let CharacterSystem = Ash.System.extend({
+	let CharacterSystem = Ash.System.extend({
 
 		context: "CharacterSystem",
 
 		constructor: function () { },
 
 		lastLevelCharacterUpdate: {}, // level -> timestamp
+		
+		nearestCampNodes: null,
 
 		addToEngine: function (engine) {
 			this.engine = engine;
+
+			this.nearestCampNodes = engine.getNodeList(NearestCampNode);
+
 			GlobalSignals.add(this, GlobalSignals.gameStateReadySignal, this.onGameStateReady);
 			GlobalSignals.add(this, GlobalSignals.playerLeftCampSignal, this.onPlayerLeftCamp);
 			GlobalSignals.add(this, GlobalSignals.playerEnteredLevelSignal, this.onPlayerEnteredLevel);
+			GlobalSignals.add(this, GlobalSignals.removeCharacterSignal, this.onRemoveCharacter);
 		},
 
 		removeFromEngine: function (engine) {
+			this.nearestCampNodes = null;
+
 			GlobalSignals.removeAll(this);
-            this.engine = null;
+
+			this.engine = null;
 		},
 
 		updateCurrentLevelCharacters: function () {
@@ -60,6 +85,8 @@ define([
 				for (let j = 0; j < sectorStatus.currentCharacters.length; j++) {
 					let character = sectorStatus.currentCharacters[j];
 
+					numExistingCharacters++;
+
 					if (character.numTimesSeen <= 0) continue;
 
 					let timeActive = character.creationTimestamp - now;
@@ -73,9 +100,7 @@ define([
 
 				for (let j = indicesToRemove.length - 1; j >= 0; j--) {
 					let indexToRemove = indicesToRemove[j];
-					let character = sectorStatus.currentCharacters[indexToRemove];
-					sectorStatus.currentCharacters.splice(indexToRemove, 1);
-					log.i("removed character [" + character.characterType + "] at [" + sectorPosition.toString() + "]");
+					this.removeCharacterByIndex(sector, indexToRemove);
 				}
 			}	
 
@@ -127,7 +152,33 @@ define([
 
 			statusComponent.currentCharacters.push(characterVO);
 
-			log.i("added character [" + characterType + "] at [" + sector.get(PositionComponent).toString() + "]", this);
+			log.i("- added character [" + characterType + "] at [" + sector.get(PositionComponent).toString() + "]", this);
+		},
+
+		removeCharacterByIndex: function (sector, index) {
+			let sectorStatus = sector.get(SectorStatusComponent);
+			let sectorPosition = sector.get(PositionComponent);
+			let character = sectorStatus.currentCharacters[index];
+			sectorStatus.currentCharacters.splice(index, 1);
+			log.i("- removed character [" + character.characterType + "] at [" + sectorPosition.toString() + "]");
+		},
+
+		removeCharacterByID: function (characterID) {
+			let sector = GameGlobals.playerHelper.getLocation();
+			let sectorStatus = sector.get(SectorStatusComponent);
+			let index = -1;
+
+			for (let i = 0; i < sectorStatus.currentCharacters.length; i++) {
+				let sectorCharacterVO = sectorStatus.currentCharacters[i];
+				if (sectorCharacterVO.instanceID == characterID) {
+					index = i;
+					break;
+				}
+			}
+
+			if (index >= 0) {
+				this.removeCharacterByIndex(sector, index);
+			}
 		},
 
 		selectSectorForNewCharacter: function (level) {
@@ -301,16 +352,20 @@ define([
 			return MathUtils.randomElement(validTypes);
 		},
 
-        onGameStateReady: function () {
-            this.updateCurrentLevelCharacters();
-        },
+		onGameStateReady: function () {
+			this.updateCurrentLevelCharacters();
+		},
 
 		onPlayerLeftCamp: function () {
-            this.updateCurrentLevelCharacters();
+			this.updateCurrentLevelCharacters();
 		},
 
 		onPlayerEnteredLevel: function () {
 			this.updateCurrentLevelCharacters();
+		},
+
+		onRemoveCharacter: function (characterID) {
+			this.removeCharacterByID(characterID);
 		},
 		
 	});

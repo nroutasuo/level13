@@ -132,6 +132,7 @@ define([
 			if (data.gainedEvidence) resultVO.gainedEvidence = parseInt(data.gainedEvidence);
 			if (data.gainedRumours) resultVO.gainedRumours = parseInt(data.gainedRumours);
 			if (data.gainedHope) resultVO.gainedHope = parseInt(data.gainedHope);
+			if (data.removeCharacter) resultVO.removeCharacter = true;
 
 			if (data.gainedPopulation) resultVO.gainedPopulation = parseInt(data.gainedPopulation);
 
