@@ -942,12 +942,13 @@ define([
 
 			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			let hasCharacters = sectorStatus.currentCharacters.length > 0;
+			let isScouted = sectorStatus.scouted;
+			let showCharacters = hasCharacters && isScouted;
 
-			GameGlobals.uiFunctions.toggle($("#header-out-characters"), hasCharacters);
-			GameGlobals.uiFunctions.toggle($("#out-characters"), hasCharacters);
+			GameGlobals.uiFunctions.toggle($("#header-out-characters"), showCharacters);
+			GameGlobals.uiFunctions.toggle($("#out-characters"), showCharacters);
 
-			if (!hasCharacters) return;
-			if (!sectorStatus.scouted) return;
+			if (!showCharacters) return;
 
 			let setting = DialogueConstants.dialogueSettings.meet;
 

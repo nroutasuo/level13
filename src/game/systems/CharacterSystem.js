@@ -46,6 +46,7 @@ define([
 
 			GlobalSignals.add(this, GlobalSignals.gameStateReadySignal, this.onGameStateReady);
 			GlobalSignals.add(this, GlobalSignals.playerLeftCampSignal, this.onPlayerLeftCamp);
+			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.onPlayerPositionChanged);
 			GlobalSignals.add(this, GlobalSignals.playerEnteredLevelSignal, this.onPlayerEnteredLevel);
 			GlobalSignals.add(this, GlobalSignals.removeCharacterSignal, this.onRemoveCharacter);
 		},
@@ -65,9 +66,13 @@ define([
 
 			let level = playerPosition.level;
 			let now = new Date().getTime();
-			let updateCooldown = 5 * 60 * 1000;
+			let updateCooldown = 3 * 60 * 1000;
 			let lastUpdate = this.lastLevelCharacterUpdate[level] || 0;
 			if (now - lastUpdate < updateCooldown) return;
+
+			this.lastLevelCharacterUpdate[level] = now;
+
+			log.i("updateCurrentLevelCharacters " + level);
 
 			// update / remove existing ones
 
@@ -89,7 +94,7 @@ define([
 
 					if (character.numTimesSeen <= 0) continue;
 
-					let timeActive = character.creationTimestamp - now;
+					let timeActive = now - character.creationTimestamp;
 
 					if (timeActive < character.minTimeActive) continue; 
 					
@@ -101,6 +106,7 @@ define([
 				for (let j = indicesToRemove.length - 1; j >= 0; j--) {
 					let indexToRemove = indicesToRemove[j];
 					this.removeCharacterByIndex(sector, indexToRemove);
+					numExistingCharacters--;
 				}
 			}	
 
@@ -118,14 +124,14 @@ define([
 		},
 
 		getMaxCharactersForLevel: function (level) {
-			if (level == GameGlobals.gameState.getSurfaceLevel()) return 1;
+			if (level == GameGlobals.gameState.getSurfaceLevel()) return 0;
 			if (level == GameGlobals.gameState.getGroundLevel()) return 1;
 			if (level == 14) return 0;
 
 			let isCampable = GameGlobals.levelHelper.isLevelCampable(level);
 			let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
 
-			let result = 3;
+			let result = 5;
 
 			if (!isCampable) result -= 1;
 			if (level < 14) result -= 1;
@@ -178,6 +184,16 @@ define([
 
 			if (index >= 0) {
 				this.removeCharacterByIndex(sector, index);
+			}
+		},
+
+		markCurrentLocationCharactersAsSeen: function () {
+			let sector = GameGlobals.playerHelper.getLocation();
+			let sectorStatus = sector.get(SectorStatusComponent);
+
+			for (let i = 0; i < sectorStatus.currentCharacters.length; i++) {
+				let sectorCharacterVO = sectorStatus.currentCharacters[i];
+				sectorCharacterVO.numTimesSeen++;
 			}
 		},
 
@@ -252,6 +268,19 @@ define([
 			let level = sectorPosition.level;
 			let isCampable = GameGlobals.levelHelper.isLevelCampable(sectorPosition.level);
 			let condition = sectorFeatures.getCondition();
+
+			let distanceToCamp = 99;
+
+			if (this.nearestCampNodes.head) {
+				let campPosition = this.nearestCampNodes.head.position;
+				distanceToCamp = PositionConstants.getDistanceTo(campPosition, sectorPosition);
+			}
+
+			if (isCampable && distanceToCamp < 5) {
+				validTypes.push(CharacterConstants.characterTypes.workerScavenger);
+				validTypes.push(CharacterConstants.characterTypes.workerTrapper);
+				validTypes.push(CharacterConstants.characterTypes.workerWater);
+			}
 
 			if (isCampable && sectorFeatures.buildingDensity < 5) {
 				validTypes.push(CharacterConstants.characterTypes.bard);
@@ -362,6 +391,10 @@ define([
 
 		onPlayerEnteredLevel: function () {
 			this.updateCurrentLevelCharacters();
+		},
+
+		onPlayerPositionChanged: function () {
+			this.markCurrentLocationCharactersAsSeen();
 		},
 
 		onRemoveCharacter: function (characterID) {
