@@ -279,7 +279,7 @@
 							"res_"
 						]
 					},
-					"response": "END"
+					"options": "END"
 				},
 				{
 					"id": "reject",
@@ -319,7 +319,7 @@
 							"weapon_"
 						]
 					},
-					"response": "END"
+					"options": "END"
 				},
 				{
 					"id": "reject",
@@ -359,7 +359,7 @@
 							"clothing_"
 						]
 					},
-					"response": "END"
+					"options": "END"
 				},
 				{
 					"id": "reject",
@@ -409,7 +409,7 @@
 							"clothing_"
 						]
 					},
-					"response": "END"
+					"options": "END"
 				},
 				{
 					"id": "reject",
@@ -449,7 +449,7 @@
 							"weapon_"
 						]
 					},
-					"response": "END"
+					"options": "END"
 				},
 				{
 					"id": "reject",
@@ -571,7 +571,7 @@
 							]
 						]
 					},
-					"response": "END"
+					"options": "END"
 				},
 				{
 					"id": "reject",
@@ -1012,11 +1012,17 @@
 				{
 					"id": "accept",
 					"key": "character_generic_stranded_meet_water_p1_accept",
-					"response": "END"
+					"result": {
+						"removeCharacter": true
+					},
+					"options": "END"
 				},
 				{
 					"id": "reject",
-					"key": "character_generic_stranded_meet_water_p1_reject"
+					"key": "character_generic_stranded_meet_water_p1_reject",
+					"result": {
+						"removeCharacter": true
+					}
 				}
 			]
 		},
@@ -1209,7 +1215,7 @@
 							"blessedShort"
 						]
 					},
-					"response": "END"
+					"options": "END"
 				},
 				{
 					"id": "reject",
@@ -4307,7 +4313,8 @@
 					"id": "agree",
 					"key": "npc_generic_request_water_01_thanks",
 					"result": {
-						"gainedRumours": 1
+						"gainedRumours": 1,
+						"removeCharacter": true
 					}
 				},
 				{
@@ -4316,7 +4323,8 @@
 					"result": {
 						"gainedPerks": [
 							"injury"
-						]
+						],
+						"removeCharacter": true
 					}
 				}
 			],
@@ -4865,8 +4873,8 @@
 					"character_workerRope_default_interact_02",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
-					"character_workerGeneric_interact_01_p1",
-					"character_workerGeneric_interact_01_p2",
+					"character_workerGeneric_interact_01",
+					"character_workerGeneric_interact_02",
 					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_story_greenhouse_found_01",
 					"character_workerGeneric_interact_story_greenhouse_fixed_01"
@@ -4893,8 +4901,8 @@
 					"character_workerScavenger_default_interact_03",
 					"character_workerScavenger_default_interact_04",
 					"character_workerScavenger_default_interact_05",
-					"character_workerGeneric_interact_01_p1",
-					"character_workerGeneric_interact_01_p2",
+					"character_workerGeneric_interact_01",
+					"character_workerGeneric_interact_02",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_default_interact_01",
@@ -4957,8 +4965,8 @@
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_default_interact_02",
-					"character_workerGeneric_interact_01_p1",
-					"character_workerGeneric_interact_01_p2",
+					"character_workerGeneric_interact_01",
+					"character_workerGeneric_interact_02",
 					"character_workerGeneric_interact_story_greenhouse_found_01",
 					"character_workerGeneric_interact_story_greenhouse_fixed_01"
 				]
@@ -4973,8 +4981,8 @@
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_default_interact_02",
-					"character_workerGeneric_interact_01_p1",
-					"character_workerGeneric_interact_01_p2",
+					"character_workerGeneric_interact_01",
+					"character_workerGeneric_interact_02",
 					"character_workerGeneric_interact_story_greenhouse_found_01",
 					"character_workerGeneric_interact_story_greenhouse_fixed_01"
 				]
