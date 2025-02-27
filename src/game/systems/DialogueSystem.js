@@ -104,7 +104,7 @@ define([
 		},
 
 		startDialogue: function () {
-			let pageID = this.selectNextPage();
+			let pageID = this.selectFirstPage();
 
 			if (!pageID && pageID !== 0) {
 				log.w("no first page found for dialogue");
@@ -209,8 +209,11 @@ define([
 			}
 		},
 
-		selectNextPage: function () {
-			if (!this.dialogueNodes.head.dialogue || !this.dialogueNodes.head.dialogue.activeDialogue || this.dialogueNodes.head.dialogue.activeDialogue.pages.length == 0) return null;
+		selectFirstPage: function () {
+			if (!this.dialogueNodes.head.dialogue) return null;
+			if (!this.dialogueNodes.head.dialogue.activeDialogue) return null;
+			if (!this.dialogueNodes.head.dialogue.activeDialogue.pages) return null;
+			if (this.dialogueNodes.head.dialogue.activeDialogue.pages.length == 0) return null;
 			return this.dialogueNodes.head.dialogue.activeDialogue.pages[0].pageID;
 		},
 
