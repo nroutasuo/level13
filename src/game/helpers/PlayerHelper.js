@@ -148,7 +148,8 @@ define([
 			if (isValidDespairMove) return MovementConstants.DESPAIR_TYPE_MOVEMENT;
 
 			// should have higher prio than food / water
-			let isValidDespairStamina = this.playerStatsNodes.head.stamina.stamina < PlayerActionConstants.costs.move_sector_east.stamina;
+			let moveStaminaCost = this.getCurrentMoveCost().stamina;
+			let isValidDespairStamina = this.playerStatsNodes.head.stamina.stamina < moveStaminaCost;
 			if (isValidDespairStamina) return MovementConstants.DESPAIR_TYPE_STAMINA;
 
 			let isValidDespairThirst = GameGlobals.gameState.unlockedFeatures["resource_water"] && !this.hasAccessToResource(resourceNames.water, false, false);
@@ -310,6 +311,10 @@ define([
 		
 		getCurrentStaminaWarningLimit: function () {
 			return ValueCache.getValue("StaminaWarningLimit", 5, this.playerPosNodes.head.position.positionId(), () => PlayerStatConstants.getStaminaWarningLimit(this.playerStatsNodes.head.stamina));
+		},
+
+		getCurrentMoveCost: function () {
+			return GameGlobals.playerActionsHelper.getCosts("move_sector_west");
 		},
 		
 		getPathToCamp: function () {

@@ -82,10 +82,12 @@ define([
 		
 		despair: function () {
 			if (this.isInCampOrCampSector()) return;
+
+			let moveCost = GameGlobals.playerHelper.getCurrentMoveCost();
 			
 			var hasFood = this.playerResourcesNodes.head.resources.resources.getResource(resourceNames.food) >= 1;
 			var hasWater = this.playerResourcesNodes.head.resources.resources.getResource(resourceNames.water) >= 1;
-			var hasStamina = this.playerStatsNodes.head.stamina.stamina > PlayerActionConstants.costs.move_sector_east.stamina;
+			var hasStamina = this.playerStatsNodes.head.stamina.stamina > moveCost.stamina;
 			var canMove = this.playerLocationNodes.head.entity.get(MovementOptionsComponent).canMove();
 			
 			if (hasFood && hasWater && hasStamina && canMove) {
