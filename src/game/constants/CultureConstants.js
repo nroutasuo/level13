@@ -25,6 +25,12 @@ define(function () {
 			FEMALE: "female",
 			OTHER: "other",
 		},
+
+		skinColors: {
+			LIGHT: "light",
+			MID: "mid",
+			DARK: "dark",
+		},
 		
 		names: {
 			personalNames: [],

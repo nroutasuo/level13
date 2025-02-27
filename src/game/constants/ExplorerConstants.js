@@ -66,12 +66,12 @@ define(['ash',
 		// unique explorers that are spawned in locales across the world and the player is guaranteed to meet (if they explore everything)
 		// camp ordinal -> explorer template
 		predefinedExplorers: {
-			2: { id: "gambler", localeType: localeTypes.maintenance, abilityType: "attack", name: "Yimin", icon: "img/characters/mercenary.png", dialogueSource: "explorer_unique_gambler" },
+			2: { id: "gambler", localeType: localeTypes.maintenance, abilityType: "attack", name: "Yimin", icon: "img/characters/explorer_unique_gambler.png", dialogueSource: "explorer_unique_gambler" },
 			3: { id: "dog", localeType: localeTypes.warehouse, abilityType: "scavenge_capacity", name: "Dog", icon: "img/characters/animal_dog.png", dialogueSource: "explorer_generic_dog" },
-			4: { id: "journalist", localeType: localeTypes.library, abilityType: "cost_scout", name: "Yevry", icon: "img/characters/scavenger.png", dialogueSource: "explorer_unique_journalist" },
-			5: { id: "handler", localeType: localeTypes.house, abilityType: "detect_supplies", name: "Jezekiah", icon: "img/characters/scavenger.png", dialogueSource: "explorer_unique_handler" },
-			6: { id: "prospector", localeType: localeTypes.store, abilityType: "scavenge_supplies", name: "Sunita", icon: "img/characters/scavenger.png", dialogueSource: "explorer_unique_prospector" },
-			10: { id: "hermit", localeType: localeTypes.bunker, abilityType: "scavenge_general", name: "Eliasco", icon: "img/characters/scavenger.png", dialogueSource: "explorer_unique_hermit" },
+			4: { id: "journalist", localeType: localeTypes.library, abilityType: "cost_scout", name: "Yevry", icon: "img/characters/explorer_unique_journalist.png", dialogueSource: "explorer_unique_journalist" },
+			5: { id: "handler", localeType: localeTypes.house, abilityType: "detect_supplies", name: "Jezekiah", icon: "img/characters/explorer_unique_handler.png", dialogueSource: "explorer_unique_handler" },
+			6: { id: "prospector", localeType: localeTypes.store, abilityType: "scavenge_supplies", name: "Sunita", icon: "img/characters/explorer_unique_prospector.png", dialogueSource: "explorer_unique_prospector" },
+			10: { id: "hermit", localeType: localeTypes.bunker, abilityType: "scavenge_general", name: "Eliasco", icon: "img/characters/explorer_unique_hermit.png", dialogueSource: "explorer_unique_hermit" },
 		},
 
 		// templates used to generate random explorers
@@ -83,11 +83,12 @@ define(['ash',
 			{ id: "template_bard", explorerType: "scavenger", origin: "slums", dialogueSource: "explorer_template_bard" },
 			{ id: "template_researcher", explorerType: "scout", origin: "surface", culture: [ "sahel" ], gender: "female", dialogueSource: "explorer_template_researcher" },
 			{ id: "template_amnesiac", origin: "unknown", dialogueSource: "explorer_template_amnesiac" },
-			{ id: "template_architect", explorerType: "scout", origin: "surface", appearLevel: [ 15, 100 ], dialogueSource: "explorer_template_architect" },
+			{ id: "template_architect_scout", explorerType: "scout", origin: "surface", appearLevel: [ 15, 100 ], dialogueSource: "explorer_template_architect" },
+			{ id: "template_architect_scavenger", explorerType: "scavenger", origin: "surface", appearLevel: [ 15, 100 ], dialogueSource: "explorer_template_architect" },
+			{ id: "template_darkdweller", explorerType: "scavenger", origin: "darklevels", appearLevel: [ -100, 14 ], dialogueSource: "explorer_template_darkdweller" },
 			{ id: "template_hacker", explorerType: "scout", origin: "slums", dialogueSource: "explorer_template_hacker" },
-			{ id: "template_shaman", explorerType: "scavenger", origin: "darklevels", appearLevel: [ -100, 12 ], dialogueSource: "explorer_template_shaman" },
 			{ id: "generic_scout_01", explorerType: "scout", dialogueSource: "explorer_generic_scout_01" },
-			{ id: "generis_scavenger_01", explorerType: "scavenger", dialogueSource: "explorer_generic_scavenger_01" },
+			{ id: "generic_scavenger_01", explorerType: "scavenger", dialogueSource: "explorer_generic_scavenger_01" },
 			{ id: "generic_mercenary_01", explorerType: "fighter", dialogueSource: "explorer_generic_mercenary_01" },
 			{ id: "generic_dog_01", isAnimal: true, animalType: "dog", dialogueSource: "explorer_generic_dog_01" },
 			{ id: "generic_animal_01", isAnimal: true, abilityType: "scavenge_capacity", dialogueSource: "explorer_generic_animal_01" },
@@ -96,16 +97,49 @@ define(['ash',
 		],
 
 		icons: [
-			// fighter
-			{ icon: "img/characters/explorer_fighter_f.png", explorerType: "fighter", gender: CultureConstants.genders.FEMALE },
-			{ icon: "img/characters/explorer_fighter.png", explorerType: "fighter" },
-			// scout
-			{ icon: "img/characters/scout.png", explorerType: "scout_f", gender: CultureConstants.genders.FEMALE },
-			{ icon: "img/characters/scout.png", explorerType: "scout" },
-			// scavenger
-			{ icon: "img/characters/scavenger.png", explorerType: "scavenger", gender: CultureConstants.genders.FEMALE },
-			{ icon: "img/characters/explorer_scavenger_m.png", explorerType: "scavenger", gender: CultureConstants.genders.MALE },
+			{ icon: "img/characters/explorer_fighter_01.png", explorerType: "fighter", gender: CultureConstants.genders.FEMALE, skin: CultureConstants.skinColors.LIGHT },
+			{ icon: "img/characters/explorer_fighter_02.png", explorerType: "fighter", gender: CultureConstants.genders.FEMALE, skin: CultureConstants.skinColors.LIGHT },
+			{ icon: "img/characters/explorer_fighter_03.png", explorerType: "fighter", gender: CultureConstants.genders.FEMALE, skin: CultureConstants.skinColors.LIGHT },
+			{ icon: "img/characters/explorer_fighter_04.png", explorerType: "fighter", skin: CultureConstants.skinColors.DARK },
+			{ icon: "img/characters/explorer_fighter_05.png", explorerType: "fighter", skin: CultureConstants.skinColors.LIGHT },
+			{ icon: "img/characters/explorer_fighter_06.png" },
+			{ icon: "img/characters/explorer_scavenger_01.png", explorerType: "scavenger", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/characters/explorer_scavenger_02.png", explorerType: "scavenger", gender: CultureConstants.genders.MALE, skin: CultureConstants.skinColors.LIGHT },
+			{ icon: "img/characters/explorer_scavenger_03.png", explorerType: "scavenger", gender: CultureConstants.genders.MALE, skin: CultureConstants.skinColors.LIGHT },
+			{ icon: "img/characters/explorer_scavenger_04.png", explorerType: "scavenger", gender: CultureConstants.genders.MALE, skin: CultureConstants.skinColors.DARK },
+			{ icon: "img/characters/explorer_scout_01.png", explorerType: "scout", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/characters/explorer_scout_02.png", explorerType: "scout", gender: CultureConstants.genders.MALE, skin: CultureConstants.skinColors.LIGHT },
+			{ icon: "img/characters/explorer_scout_03.png", explorerType: "scout", skin: CultureConstants.skinColors.LIGHT },
+			{ icon: "img/characters/explorer_template_amnesiac_01.png", dialogueSource: "explorer_template_amnesiac", gender: CultureConstants.genders.MALE },
+			{ icon: "img/characters/explorer_template_amnesiac_02.png", dialogueSource: "explorer_template_amnesiac", gender: CultureConstants.genders.MALE, skin: CultureConstants.skinColors.DARK },
+			{ icon: "img/characters/explorer_template_amnesiac_03.png", dialogueSource: "explorer_template_amnesiac", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/characters/explorer_template_architect_01.png", dialogueSource: "explorer_template_architect", gender: CultureConstants.genders.FEMALE, explorerType: "scout" },
+			{ icon: "img/characters/explorer_template_architect_02.png", dialogueSource: "explorer_template_architect", gender: CultureConstants.genders.FEMALE, explorerType: "scavenger" },
+			{ icon: "img/characters/explorer_template_darkdweller_01.png", dialogueSource: "explorer_template_darkdweller", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/characters/explorer_template_darkdweller_02.png", dialogueSource: "explorer_template_darkdweller", gender: CultureConstants.genders.MALE },
+			{ icon: "img/characters/explorer_template_bard_01.png", dialogueSource: "explorer_template_bard", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/characters/explorer_template_guard_01.png", dialogueSource: "explorer_template_guard", gender: CultureConstants.genders.MALE },
+			{ icon: "img/characters/explorer_template_guard_02.png", dialogueSource: "explorer_template_guard", gender: CultureConstants.genders.FEMLAE },
+			{ icon: "img/characters/explorer_template_hacker_01.png", dialogueSource: "explorer_template_hacker", gender: CultureConstants.genders.FEMLAE },
+			{ icon: "img/characters/explorer_template_hacker_02.png", dialogueSource: "explorer_template_hacker", gender: CultureConstants.genders.MALE },
+			{ icon: "img/characters/explorer_template_lover.png", dialogueSource: "explorer_template_lover", gender: CultureConstants.genders.MALE },
+			{ icon: "img/characters/explorer_template_lover.png", dialogueSource: "explorer_template_researcher", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/characters/explorer_template_teen_01.png", dialogueSource: "explorer_template_teen", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/characters/explorer_template_teen_02.png", dialogueSource: "explorer_template_teen", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/characters/explorer_template_teen_03.png", dialogueSource: "explorer_template_teen", gender: CultureConstants.genders.MALE },
 		],
+
+
+		/*
+		if (!iconDef.icon) return false;
+		icon
+		gender
+		origin
+		skin
+		abilityType
+		explorerType
+		dialogueSource
+		*/
 		
 		getMaxExplorersRecruited: function (innMajorLevels) {
 			let result = ExplorerConstants.MAX_EXPLORERS_BASE;
@@ -166,7 +200,7 @@ define(['ash',
 				let cultures = this.getExplorerCulturesFromTemplate(template, origin);
 				gender = template.gender || CultureConstants.getRandomGender();
 				name = CultureConstants.getRandomShortName(gender, origin, cultures);
-				icon = this.getRandomIcon(gender, abilityType);
+				icon = this.getRandomIcon(gender, origin, cultures, abilityType, template.dialogueSource);
 			}
 			
 			return new ExplorerVO(id, name, abilityType, abilityLevel, icon, gender, source, template.dialogueSource);
@@ -250,7 +284,7 @@ define(['ash',
 				return ExplorerConstants.abilityType.COST_SCOUT;
 			}
 			
-			return MathUtils.randomElement[possibleTypes];
+			return MathUtils.randomElement(possibleTypes);
 		},
 		
 		getRandomAbilityLevelByCampOrdinal: function (abilityType, campOrdinal, forcedAbilityLevelRandomFactor) {
@@ -403,23 +437,63 @@ define(['ash',
 		},
 		
 		getRandomRobotIcon: function () {
-			return "img/explorers/follower_robot.png";
+			let robotIcons = [
+				"img/explorers/explorer_robot_01.png",
+				"img/explorers/explorer_robot_02.png",
+			];
+
+			return MathUtils.randomElement(robotIcons);
 		},
 		
-		getRandomIcon: function (gender, abilityType) {
-			var validIcons = [];
+		getRandomIcon: function (gender, origin, cultures, abilityType, dialogueSource) {
+			let validIcons = [];
+			let preferredIcons = [];
 			let explorerType = this.getExplorerTypeForAbilityType(abilityType);
+
 			for (let i = 0; i < this.icons.length; i++) {
 				let iconDef = this.icons[i];
-				if (this.isValidIcon(iconDef, gender, explorerType)) validIcons.push(iconDef);
+				if (this.isValidIcon(iconDef, gender, origin, cultures, abilityType, explorerType, dialogueSource)) {
+					validIcons.push(iconDef);
+					if (iconDef.dialogueSource) preferredIcons.push(iconDef);
+				}
 			}
-			return validIcons[Math.floor(Math.random() * validIcons.length)].icon;
+			
+			if (preferredIcons.length > 0) return MathUtils.randomElement(preferredIcons).icon;
+			if (validIcons.length > 0) return MathUtils.randomElement(validIcons).icon;
+
+			log.w("no icon found for explorer with params: " + gender + ", " + origin + ", " + cultures + "," + abilityType + ", " + dialogueSource);
+
+			return "img/explorers/img/characters/explorer_generic.png";
 		},
 		
-		isValidIcon: function (iconDef, gender, explorerType) {
+		isValidIcon: function (iconDef, gender, origin, cultures, abilityType, explorerType, dialogueSource) {
 			if (!iconDef.icon) return false;
-			if (iconDef.gender && gender && gender != iconDef.gender) return false;
+			if (iconDef.gender && gender && gender != iconDef.gender && gender != CultureConstants.genders.OTHER) return false;
+			if (iconDef.origin && origin && origin != iconDef.origin) return false;
+			if (iconDef.skin && cultures && this.isValidSkinColor(iconDef.skin, cultures)) return false;
+			if (iconDef.abilityType && abilityType && abilityType != iconDef.abilityType) return false;
 			if (iconDef.explorerType && explorerType && explorerType != iconDef.explorerType) return false;
+			if (iconDef.dialogueSource && dialogueSource && dialogueSource != iconDef.dialogueSource) return false;
+
+			return true;
+		},
+
+		isValidSkinColor: function (iconSkinColor, characterCultures) {
+			switch (iconSkinColor) {
+				case CultureConstants.skinColors.LIGHT:
+					if (characterCultures.indexOf(CultureConstants.cultures.SAHEL) >= 0) return false;
+					if (characterCultures.indexOf(CultureConstants.cultures.ETRURIAN) >= 0) return false;
+					if (characterCultures.indexOf(CultureConstants.cultures.YUAN) >= 0) return false;
+					return true;
+				case CultureConstants.skinColors.MID:
+					if (characterCultures.indexOf(CultureConstants.cultures.SAHEL) >= 0) return false;
+					if (characterCultures.indexOf(CultureConstants.cultures.KIEVAN) >= 0) return false;
+					return true;
+				case CultureConstants.skinColors.DARK:
+					if (characterCultures.indexOf(CultureConstants.cultures.HANSA) >= 0) return false;
+					if (characterCultures.indexOf(CultureConstants.cultures.KIEVAN) >= 0) return false;
+					return true;
+			}
 			return true;
 		},
 		

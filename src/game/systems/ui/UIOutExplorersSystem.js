@@ -168,12 +168,16 @@ define([
 			let result = [];
 
 			let visitorComponent = this.playerLocationNodes.head.entity.get(VisitorComponent);
+
+
 			if (visitorComponent) {
+				if (!visitorComponent.randomIndex) visitorComponent.randomIndex = Math.floor(Math.random() * 10);
 				result.push({ 
 					id: "visitor", 
 					type: "visitor", 
 					characterType: visitorComponent.visitorType,
-					dialogueSourceID: visitorComponent.dialogueSource 
+					dialogueSourceID: visitorComponent.dialogueSource,
+					randomIndex: visitorComponent.randomIndex
 				});
 			}
 
@@ -331,7 +335,7 @@ define([
 
 			let talkAction = "start_in_npc_dialogue_" + characterType + "_" + dialogueSourceID + "_" + setting;
 
-			li.$mainContainer.html(UIConstants.getNPCDiv(characterType, setting, talkAction));
+			li.$mainContainer.html(UIConstants.getNPCDiv(characterType, setting, talkAction, data.randomIndex));
 
 			li.$acceptButton.attr("action", acceptAction);
 			li.$dismissButton.attr("action", dismissAction);

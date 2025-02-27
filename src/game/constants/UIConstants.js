@@ -348,7 +348,7 @@ define(['ash',
 			return "<img src='" + explorerVO.icon + "' alt='" + explorerVO.name + "'/>";
 		},
 
-		getNPCDiv: function (characterType, setting, talkActionID, talkActionName) {
+		getNPCDiv: function (characterType, setting, talkActionID, talkActionName, randomIndex) {
 			let classes = "npc-container";
 			let div = "<div class='" + classes + "'>";
 			let calloutContent = "Visitor";
@@ -357,7 +357,7 @@ define(['ash',
 			talkActionName = talkActionName = "talk";
 			
 			div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
-			div += this.getNPCPortrait(characterType);
+			div += this.getNPCPortrait(characterType, randomIndex);
 			div += "</div>";
 
 			div += "<button class='action btn-compact' action='" + talkActionID + "'>" + talkActionName + "</button>";
@@ -367,22 +367,31 @@ define(['ash',
 			return div;
 		},
 
-		updateNPCDiv: function ($div, characterType, setting, talkActionID) {
-			let icon = this.getNPCIcon(characterType);
+		updateNPCDiv: function ($div, characterType, setting, talkActionID, randomIndex) {
+			let icon = this.getNPCIcon(characterType, randomIndex);
 			let action = talkActionID;
 
+			let name = Text.t("game.characters." + characterType + "_name");
+
 			$div.find("img").attr("src", icon);
+			$div.find(".npc-name").text(name);
 			$div.find("button").attr("action", action);
 		},
 
-		getNPCPortrait: function (characterType) {
-			let icon = this.getNPCIcon(characterType);
-			let name = characterType;
-			return "<div class='npc-portrait'><img src='" + icon + "' alt='" + name + "'/></div>";
+		getNPCPortrait: function (characterType, randomIndex) {
+			let icon = this.getNPCIcon(characterType, randomIndex);
+
+			let name = Text.t("game.characters." + characterType + "_name");
+
+			let div = "<div class='npc-portrait'>";
+			div += "<img src='" + icon + "' alt='" + name + "'/>";
+			div += "<span class='npc-name'>" + name + "</span>";
+			div += "</div>";
+			return div;
 		},
 
-		getNPCIcon: function (characterType) {
-			return characterType ? CharacterConstants.getIcon(characterType) : null;
+		getNPCIcon: function (characterType, randomIndex) {
+			return characterType ? CharacterConstants.getIcon(characterType, randomIndex) : null;
 		},
 
 		getResourceLi: function (name, amount, isLost, simple) {

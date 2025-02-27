@@ -28,10 +28,23 @@ Additional icons adapted from the above.
 
 --------------------------------------------------
 
-Items and followers
+Items
 
 Fugue Icons
 (C) 2013 Yusuke Kamiyamane
 see items/FUGURE-README.txt
 
 Additional icons adapted from Fugue Icons.
+
+---------------------------------------------------
+
+Characters
+
+Humans:
+Iconset: User Avatar (https://www.iconfinder.com/iconsets/user-avatar-20)
+Author: Just Icon (https://www.iconfinder.com/justicon)
+License: Creative Commons (Attribution 3.0 Unported) (http://creativecommons.org/licenses/by/3.0/)
+Download date: 2024-12-05
+Additional icons created by adapting icons from this set.
+
+Animals: Various free-to-use icons from different sources.

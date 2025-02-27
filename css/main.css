@@ -569,6 +569,9 @@ body.dark span.hl-functionality {
 body.dark span.text-style-highlight {
   font-weight: bold;
 }
+body.dark span.text-style-nowrap {
+  white-space: nowrap;
+}
 body.dark .p-meta {
   color: rgba(255, 255, 255, 0.5);
 }
@@ -1940,6 +1943,7 @@ body.dark .npc-container {
 body.dark .npc-portrait {
   vertical-align: middle;
   display: inline-flex;
+  flex-direction: column;
   position: relative;
   margin: 2px 0;
   width: 100%;
@@ -3145,6 +3149,9 @@ body.sunlit span.hl-functionality {
 }
 body.sunlit span.text-style-highlight {
   font-weight: bold;
+}
+body.sunlit span.text-style-nowrap {
+  white-space: nowrap;
 }
 body.sunlit .p-meta {
   color: rgba(0, 0, 0, 0.5);
@@ -4517,6 +4524,7 @@ body.sunlit .npc-container {
 body.sunlit .npc-portrait {
   vertical-align: middle;
   display: inline-flex;
+  flex-direction: column;
   position: relative;
   margin: 2px 0;
   width: 100%;
