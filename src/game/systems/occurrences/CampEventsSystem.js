@@ -189,11 +189,14 @@ define([
 		isCampValidForEvent: function (campNode, event) {
 			if (GameGlobals.storyHelper.isReadyForLaunch()) false;
 			if (GameGlobals.gameState.isLaunched) return false;
+			if (this.hasCampEvent(campNode, event)) return false;
+
 			
 			let milestoneIndex = GameGlobals.milestoneEffectsHelper.getMilestoneIndexForOccurrence(event);
 			if (GameGlobals.gameState.numUnlockedMilestones < milestoneIndex) return;
 			
 			let population = campNode.camp.population;
+			let numCamps = GameGlobals.gameState.numCamps;
 			let improvements = campNode.entity.get(SectorImprovementsComponent);
 
 			switch (event) {
@@ -228,8 +231,9 @@ define([
 		},
 		
 		getCampScoreForEvent: function (campNode, event) {
-			if (!this.isCampValidForEvent(campNode, event))
+			if (!this.isCampValidForEvent(campNode, event)) {
 				return 0;
+			}
 			
 			let improvements = campNode.entity.get(SectorImprovementsComponent);
 			let improvementType = GameGlobals.upgradeEffectsHelper.getImprovementForOccurrence(event);
@@ -332,6 +336,7 @@ define([
 				case OccurrenceConstants.campOccurrenceTypes.disease:
 					let diseaseComponent = campNode.entity.get(DiseaseComponent);
 					campNode.entity.remove(DiseaseComponent);
+					campNode.camp.removeAllDisabledPopulationByReason(CampConstants.DISABLED_POPULATION_REASON_DISEASE);
 					logMsg = "The disease outbreak is over.";
 					break;
 

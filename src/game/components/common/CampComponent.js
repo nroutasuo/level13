@@ -57,7 +57,7 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 		
 		// population available for work
 		getFreePopulation: function () {
-			return Math.floor(this.population - this.getAssignedPopulation() - this.getDisabledPopulation());
+			return Math.max(0, Math.floor(this.population - this.getAssignedPopulation() - this.getDisabledPopulation()));
 		},
 		
 		// population assigned to work
@@ -137,6 +137,18 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 					break;
 				}
 			}
+		},
+
+		removeAllDisabledPopulationByReason: function (reason) {
+			let newValue = [];
+
+			for (let i = 0; i < this.disabledPopulation.length; i++) {
+				let pop = this.disabledPopulation[i];
+				if (pop.reason == reason) continue;
+				newValue.push(pop);
+			}
+
+			this.disabledPopulation = newValue;
 		},
 		
 		getType: function () {
