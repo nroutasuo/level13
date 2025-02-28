@@ -89,7 +89,8 @@
 			this.elements.populationRobotsContainer = $("#in-population #in-population-robots");
 			this.elements.populationRobotsContainer = $("#in-population-robots");
 			this.elements.populationRobotsLabel = $("#in-population #in-population-robots .value");
-			this.elements.populationUnassignedLabel = $("#in-population #in-population-status span");
+			this.elements.populationUnassignedLabel = $("#in-population-status-free");
+			this.elements.populationDisabledLabel = $("#in-population-status-disabled");
 			this.elements.unassignedWorkersBubble = $("#unassigned-workers-bubble");
 			this.elements.workersTable = $("#in-assign-workers");
 		},
@@ -224,6 +225,7 @@
 
 			let currentPopulation =  Math.floor(campComponent.population);
 			let maxPopulation = this.getCampMaxPopulation();
+			let disabledPopulation = campComponent.getDisabledPopulation();
 			
 			// reputation requirements
 			let reputation = camp.get(ReputationComponent).value;
@@ -240,6 +242,8 @@
 			let freePopulation = campComponent.getFreePopulation();
 			GameGlobals.uiFunctions.toggle(this.elements.unassignedWorkersBubble, freePopulation > 0);
 			GameGlobals.uiFunctions.setText(this.elements.populationUnassignedLabel, "ui.camp.population_unassigned_workers_field", { value: freePopulation });
+			GameGlobals.uiFunctions.toggle(this.elements.populationDisabledLabel, disabledPopulation > 0);
+			GameGlobals.uiFunctions.setText(this.elements.populationDisabledLabel, "ui.camp.population_disabled_workers_field", { value: disabledPopulation });
 
 			// auto-assigned workers
 			let autoAssignedWorkers = campComponent.getAutoAssignedWorkers();

@@ -1453,6 +1453,7 @@
             "population_header": "Population: {current} / {max}",
             "population_next_worker_progress_label": "Next inhabitant:",
             "population_reputation_status_field": "Reputation required: current: {current}, next: {next}",
+            "population_disabled_workers_field": "Disabled workers: {value}",
             "population_unassigned_workers_field": "Unassigned workers: {value}",
             "population_worker_leaving_progress_label": "Inhabitant leaving:",
             "raid_danger_description": "Risk that a raid against the camp is successful.",

@@ -1940,6 +1940,12 @@ body.dark .npc-container {
   min-height: 50px;
   margin: 2px;
 }
+body.dark .npc-container-mini {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+}
 body.dark .npc-portrait {
   vertical-align: middle;
   display: inline-flex;
@@ -2392,6 +2398,9 @@ body.dark span.improvement-badge.improvement-upgrade-level {
   padding: 0 1px !important;
   font-size: 0.75rem;
   width: 1em;
+}
+body.dark #in-population-status span {
+  display: inline-block;
 }
 body.dark #in-population-details > div {
   width: 100%;
@@ -4521,6 +4530,12 @@ body.sunlit .npc-container {
   min-height: 50px;
   margin: 2px;
 }
+body.sunlit .npc-container-mini {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+}
 body.sunlit .npc-portrait {
   vertical-align: middle;
   display: inline-flex;
@@ -4973,6 +4988,9 @@ body.sunlit span.improvement-badge.improvement-upgrade-level {
   padding: 0 1px !important;
   font-size: 0.75rem;
   width: 1em;
+}
+body.sunlit #in-population-status span {
+  display: inline-block;
 }
 body.sunlit #in-population-details > div {
   width: 100%;
