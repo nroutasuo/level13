@@ -687,8 +687,33 @@ define(['ash',
 				let displayIndex = index >= 0 ? ((index + 1) + "/" + storyVO.segments.length) : "";
 
 				result += "story: " + storyID + " " + status + " " + activeSegmentID + " " + displayIndex + "\n";
+
+				if (status == StoryConstants.storyStatuses.STARTED) {
+					let activeSegmentVO = storyVO.getSegment(activeSegmentID);
+					if (activeSegmentVO.completeTrigger) {
+						let desc = this.getStoryTriggerDescription(activeSegmentVO.completeTrigger, activeSegmentVO.completeConditions);
+						if (desc) result += "\t - " + desc + "\n";
+					}
+
+					let possibleNextSegments = GameGlobals.storyHelper.getPossibleNextSegmentsFromSegment(activeSegmentVO);
+					for (let i = 0; i < possibleNextSegments.length; i++) {
+						let possibleNextSegmentVO = possibleNextSegments[i];
+						let desc = this.getStoryTriggerDescription(possibleNextSegmentVO.startTrigger, possibleNextSegmentVO.startConditions);
+						if (desc) result += "\t - " + desc + "\n";
+					}
+				}
             }
 			log.i(result);
+		},
+
+		getStoryTriggerDescription: function (trigger, conditions) {
+			if (!trigger) return null;
+			if (trigger == "ANY") return null;
+			let result = trigger;
+			if (conditions) {
+				result += ": " + JSON.stringify(conditions);
+			}
+			return result;
 		},
 		
 		startStory: function (id) {
