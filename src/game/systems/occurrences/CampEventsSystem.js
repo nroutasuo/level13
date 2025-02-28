@@ -204,7 +204,7 @@ define([
 					return population > 5;
 
 				case OccurrenceConstants.campOccurrenceTypes.disaster:
-					return true;
+					return population > 12 || numCamps > 1;
 
 				case OccurrenceConstants.campOccurrenceTypes.disease:
 					return population > 10;
@@ -247,7 +247,10 @@ define([
 					return 1;
 
 				case OccurrenceConstants.campOccurrenceTypes.disease:
-					return campNode.camp.population;
+					let storage = GameGlobals.resourcesHelper.getCurrentCampStorage(campNode.entity);
+					let hasHerbs = storage.resources.getResource(resourceNames.herbs) > 0;
+					let hasMedicine = storage.resources.getResource(resourceNames.medicine) > 0;
+					return OccurrenceConstants.getDiseaseOutbreakChance(campNode.camp.population, hasHerbs, hasMedicine);
 
 				case OccurrenceConstants.campOccurrenceTypes.raid:
 					return this.getRaidDanger(campNode.entity);
