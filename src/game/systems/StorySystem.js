@@ -38,6 +38,16 @@ define([
 			}
 		},
 
+		initState: function () {
+			let activeSegments = this.getActiveSegments();
+			for (let i = 0; i < activeSegments.length; i++) {
+				let segmentVO = activeSegments[i];
+				let storyVO = StoryConstants.getStory(segmentVO.storyID);
+				if (storyVO) this.triggerEffects(storyVO.onStart, true);
+				this.triggerEffects(segmentVO.onStart, true);
+			}
+		},
+
 		setupTriggers: function () {
 			GlobalSignals.registerTrigger(GlobalSignals.actionCompletedSignal, StoryConstants.triggers.action_any);
 			GlobalSignals.registerTrigger(GlobalSignals.actionRewardsCollectedSignal, StoryConstants.triggers.action_collect_rewards);
@@ -142,7 +152,7 @@ define([
 			}
 		},
 
-		triggerEffects: function (effectVO) {
+		triggerEffects: function (effectVO, onlyStatus) {
 			if (!effectVO) return;
 
 			for (let flagID in effectVO.storyFlags) {
@@ -154,6 +164,8 @@ define([
 			if (effectVO.unlockFeature) {
 				GameGlobals.playerActionFunctions.unlockFeature(effectVO.unlockFeature);
 			}
+
+			if (onlyStatus) return;
 
 			if (effectVO.popup) {
 				let title = effectVO.popup.title;
@@ -318,6 +330,7 @@ define([
 		},
 
 		onGameStateReady: function () {
+			this.initState();
 			this.triggerStories(StoryConstants.triggers.immediate);
 			this.triggerSegments(StoryConstants.triggers.immediate);
 		},
