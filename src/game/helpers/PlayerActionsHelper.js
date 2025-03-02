@@ -975,7 +975,7 @@ define([
 						}
 					}
 
-					if (typeof requirements.camp.availableLuxuryResources) {
+					if (typeof requirements.camp.availableLuxuryResources !== "undefined") {
 						let available = GameGlobals.campHelper.getAvailableLuxuryResources(campSector);
 						let result = this.checkRequirementsDictionary(requirements.camp.availableLuxuryResources, (v) => available.indexOf(v) >= 0);
 						if (result) return result;
