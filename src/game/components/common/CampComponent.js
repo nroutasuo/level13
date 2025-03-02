@@ -53,6 +53,8 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 			
 			this.pendingPopulation = 0;
 			this.pendingRecruits = [];
+			
+			this.displayedCharacters = [];
 		},
 		
 		// population available for work

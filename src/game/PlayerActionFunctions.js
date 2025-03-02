@@ -290,6 +290,7 @@ define(['ash',
 				case "trade_with_caravan": this.tradeWithCaravan(); break;
 				case "recruit_explorer": this.recruitExplorer(param); break;
 				case "start_explorer_dialogue": this.startExplorerDialogue(param); break;
+				case "start_generic_npc_dialogue": this.startAnonymousNPCDialogue(param); break;
 				case "start_in_npc_dialogue": this.startInNPCDialogue(param); break;
 				case "start_out_npc_dialogue": this.startOutNPCDialogue(param); break;
 				case "dismiss_recruit": this.dismissRecruit(param); break;
@@ -1249,18 +1250,18 @@ define(['ash',
 				playerActionFunctions.handleActionRewards(action, rewards, messages, successCallback, showResultPopup);
 			}, function () {
 				// if fled (either before fight or mid-fight)
-                playerActionFunctions.completeAction(action);
+				playerActionFunctions.completeAction(action);
 				let fleeRewards = GameGlobals.playerActionResultsHelper.getResultVOByAction("flee");
 				let fleeMessages = { addToLog: false, logMsgSuccess: messages.msgFlee };
 				playerActionFunctions.handleActionRewards("flee", fleeRewards, fleeMessages, successCallback, showResultPopup);
-                if (messages.addToLog && messages.msgFlee) GameGlobals.playerHelper.addLogMessage(logMsgId, messages.msgFlee);
-                if (failCallback) failCallback();
-            }, function () {
+				if (messages.addToLog && messages.msgFlee) GameGlobals.playerHelper.addLogMessage(logMsgId, messages.msgFlee);
+				if (failCallback) failCallback();
+			}, function () {
 				// if fight lost
-                playerActionFunctions.completeAction(action);
-                if (messages.addToLog && messages.msgDefeat) GameGlobals.playerHelper.addLogMessage(logMsgId, messages.msgDefeat);
-                if (failCallback) failCallback();
-            });
+				playerActionFunctions.completeAction(action);
+				if (messages.addToLog && messages.msgDefeat) GameGlobals.playerHelper.addLogMessage(logMsgId, messages.msgDefeat);
+				if (failCallback) failCallback();
+			});
 		},
 
 		handleActionRewards: function (action, rewards, messages, callback, showResultPopup) {
@@ -1513,6 +1514,8 @@ define(['ash',
 		},
 
 		startExplorerDialogue: function (explorerID) {
+			// start dialogue with an explorer that has been recruited by ID
+
 			let explorersComponent = this.playerStatsNodes.head.explorers;
 			let explorerVO = explorersComponent.getExplorerByID(explorerID);
 			let setting = "interact";
@@ -1529,7 +1532,9 @@ define(['ash',
 			this.startDialogue(dialogueID, explorerVO);
 		},
 
-		startInNPCDialogue: function (dialogueParams) {
+		startAnonymousNPCDialogue: function (dialogueParams) {
+			// start dialogue without a specific character VO given just character type, dialogue source and setting
+
 			let parts = dialogueParams.split("_");
 
 			let characterType = parts[0];
@@ -1542,7 +1547,26 @@ define(['ash',
 			this.startDialogue(dialogueID, null, characterVO);
 		},
 
+		startInNPCDialogue: function (characterID) {
+			// start dialogue with a camp NPC found in current location by index
+
+			let campSector = this.nearestCampNodes.head.entity;
+			if (!campSector) return;
+			let campComponent = campSector.get(CampComponent);
+
+			let characterVO = campComponent.displayedCharacters.find(v => v.instanceID == characterID);
+			if (!characterVO) return;
+			let dialogueSourceID = characterVO.dialogueSourceID;
+			let setting = DialogueConstants.dialogueSettings.interact;
+
+			let dialogueID = GameGlobals.dialogueHelper.getCharacterDialogueKey(dialogueSourceID, setting);
+
+			this.startDialogue(dialogueID, null, characterVO);
+		},
+
 		startOutNPCDialogue: function (characterID) {
+			// start dialogue with an outside NPC found in current location by ID
+
 			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			let characterVO = null;
 

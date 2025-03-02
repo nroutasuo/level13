@@ -2,8 +2,12 @@ define(['ash'], function (Ash) {
 
 	let CharacterVO = Ash.Class.extend({
 		
-		constructor: function (characterType, dialogueSourceID, minTimeActive) {
+		constructor: function (characterType, dialogueSourceID, minTimeActive, randomIdex) {
+			// unique id for the character
 			this.instanceID = Math.floor(Math.random() * 1000000);
+
+			// defines which icon variation to use
+			this.randomIndex = randomIdex || Math.floor(Math.random() * 100);
 			
 			this.characterType = characterType;
 			this.dialogueSourceID = dialogueSourceID;

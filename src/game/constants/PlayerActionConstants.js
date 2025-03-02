@@ -228,6 +228,7 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 			if (action.indexOf("send_caravan_") >= 0) return "send_caravan";
 			if (action.indexOf("recruit_explorer_") >= 0) return "recruit_explorer";
 			if (action.indexOf("start_explorer_dialogue") >= 0) return "start_explorer_dialogue";
+			if (action.indexOf("start_generic_npc_dialogue") >= 0) return "start_generic_npc_dialogue";
 			if (action.indexOf("start_in_npc_dialogue") >= 0) return "start_in_npc_dialogue";
 			if (action.indexOf("start_out_npc_dialogue") >= 0) return "start_out_npc_dialogue";
 			if (action.indexOf("dismiss_explorer") >= 0) return "dismiss_explorer";

@@ -101,7 +101,8 @@ define([
 				$("#dialogue-module-character").append(portrait);
 				GameGlobals.uiFunctions.toggle("#dialogue-module-character", true);
 			} else if (characterVO) {
-				let portrait = UIConstants.getNPCPortrait(characterVO.characterType);
+				let randomIndex = characterVO.randomIndex || characterVO.instanceID || 0;
+				let portrait = UIConstants.getNPCPortrait(characterVO.characterType, randomIndex);
 				$("#dialogue-module-character").append(portrait);
 				GameGlobals.uiFunctions.toggle("#dialogue-module-character", true);
 			} else {

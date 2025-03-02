@@ -7,6 +7,7 @@
 	'utils/UIAnimations',
 	'game/GameGlobals',
 	'game/GlobalSignals',
+	'game/vos/CharacterVO',
 	'game/constants/CharacterConstants',
 	'game/constants/ImprovementConstants',
 	'game/constants/PlayerActionConstants',
@@ -33,6 +34,7 @@
 	'text/Text'
 ], function (
 	Ash, Text, MathUtils, UIState, UIList, UIAnimations, GameGlobals, GlobalSignals,
+	CharacterVO,
 	CharacterConstants, ImprovementConstants, PlayerActionConstants, UIConstants, UpgradeConstants, OccurrenceConstants, CampConstants, DialogueConstants, TextConstants, TribeConstants,
 	PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, TribeUpgradesNode,
 	PerksComponent, PlayerActionComponent,
@@ -74,7 +76,7 @@
 			this.campActionList = UIList.create(this, $("#in-occurrences-building-container"), this.createCampActionListItem, this.updateCampActionListItem, this.isCampActionListItemDataSame);
 			this.campOccurrencesList = UIList.create(this, $("#in-occurrences-camp-container"), this.createCampActionListItem, this.updateCampOccurrenceListItem, this.isCampOccurrenceListItemDataSame);
 			this.campMiscEventsList = UIList.create(this, $("#in-occurrences-misc-container"), this.createCampActionListItem, this.updateCampMiscEventListItem);
-			this.characterList = UIList.create(this, $("#in-characters ul"), this.createCharacterListItem, this.updateCharacterListItem);
+			this.characterList = UIList.create(this, $("#in-characters ul"), this.createCharacterListItem, this.updateCharacterListItem, (d1, d2) => d1.instanceID == d2.instanceID);
 
 			this.elements.populationAutoassignedLabel = $("#in-population #in-population-autoassigned");
 			this.elements.populationAutoAssignToggle = $(".in-assign-workers-auto-toggle");
@@ -415,19 +417,19 @@
 
 			for (let i = 0; i < currentCharacters.length; i++) {
 				let currentCharacter = currentCharacters[i];
-				if (validCharacters.indexOf(currentCharacter) < 0) {
+				if (validCharacters.indexOf(currentCharacter.characterType) < 0) {
 					isCurrentSelectionValid = false;
 					break;
 				}
 			}
 
 			let maxNumCharacters = 1;
-			if (population > 4) maxNumCharacters = 2;
+			if (population > 6) maxNumCharacters = 2;
 			if (population > 16) maxNumCharacters = 3;
 			if (population > 32) maxNumCharacters = 4;
 			if (population > 60) maxNumCharacters = 5;
 			maxNumCharacters = Math.min(maxNumCharacters, validCharacters.length);
-			let minCharacters = Math.max(1, Math.floor(maxNumCharacters / 2));
+			let minCharacters = Math.floor(maxNumCharacters / 2);
 
 			if (currentCharacters.length < minCharacters || currentCharacters.length > maxNumCharacters) isCurrentSelectionValid = false;
 
@@ -450,7 +452,9 @@
 				if (charactersToKeep[i] && validCharacters.indexOf(charactersToKeep[i]) >= 0) {
 					character = charactersToKeep[i];
 				} else {
-					character = MathUtils.randomElement(validCharacters);
+					let characterType = MathUtils.randomElement(validCharacters);
+					let dialogueSourceID = CharacterConstants.getDialogueSourceID(characterType);
+					character = new CharacterVO(characterType, dialogueSourceID);
 				}
 
 				validCharactersRemaining.splice(validCharactersRemaining.indexOf(character), 1);
@@ -469,24 +473,29 @@
 			if (!campComponent) return;
 
 			let characterData = campComponent.displayedCharacters || [];
+			log.i("updateCharactersDisplay: ");
+			for (let i = 0; i < characterData.length; i++) {
+				console.log(characterData[i]);
+			}
+			GameGlobals.uiFunctions.toggle("#in-characters", characterData.length > 0);
 			UIList.update(this.characterList, characterData);
-				GameGlobals.uiFunctions.createButtons("#in-characters");
+			GameGlobals.uiFunctions.createButtons("#in-characters");
 		},
 
 		createCharacterListItem: function () {
 			let li = {};
-			let $root = $("<li>" + UIConstants.getNPCDiv(null, null, null) + "</li>");
+			let $root = $("<li>" + UIConstants.createNPCDiv() + "</li>");
 			li.$root = $root;
 			li.$container = $root.find("div.npc-container");
 			return li;
 		},
 
 		updateCharacterListItem: function (li, data) {
-			let characterType = data;
-			let setting = DialogueConstants.dialogueSettings.interact;
-			let dialogueSource = CharacterConstants.getDialogueSource(characterType);
-			let talkActionID = "start_in_npc_dialogue_" + characterType + "_" + dialogueSource.id + "_" + setting;
-			UIConstants.updateNPCDiv(li.$container, characterType, setting, talkActionID);
+			let characterVO = data;
+			let characterType = characterVO.characterType;
+			let randomIndex = characterVO.randomIndex;
+			let talkActionID = "start_in_npc_dialogue_" + characterVO.instanceID;
+			UIConstants.updateNPCDiv(li.$container, characterType, talkActionID, randomIndex);
 		},
 
 		initImprovements: function () {

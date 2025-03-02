@@ -333,9 +333,9 @@ define([
 			li.$typeLabel.html(data.type);
 			li.$numLabel.html(data.num || "");
 
-			let talkAction = "start_in_npc_dialogue_" + characterType + "_" + dialogueSourceID + "_" + setting;
+			let talkAction = "start_generic_npc_dialogue_" + characterType + "_" + dialogueSourceID + "_" + setting;
 
-			li.$mainContainer.html(UIConstants.getNPCDiv(characterType, setting, talkAction, data.randomIndex));
+			li.$mainContainer.html(UIConstants.getNPCDiv(characterType, talkAction, data.randomIndex));
 
 			li.$acceptButton.attr("action", acceptAction);
 			li.$dismissButton.attr("action", dismissAction);

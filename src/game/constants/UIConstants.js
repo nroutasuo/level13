@@ -258,12 +258,15 @@ define(['ash',
 		},
 		
 		getExplorerDivSimple: function (explorer, isRecruited, isInCamp, hideComparisonIndicator) {
-			let classes = "item";
+			let classes = "npc-container npc-container-mini";
 			let div = "<div class='" + classes + "' data-explorerid='" + explorer.id + "'>";
 			let calloutContent = this.getExplorerCallout(explorer, isRecruited, isInCamp);
 			
 			div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
+
+			div += "<div class='npc-portrait'>";
 			div += UIConstants.getExplorerPortrait(explorer);
+			div += "</div>";
 			
 			if (!hideComparisonIndicator) {
 				div += "<div class='item-comparison-badge'><div class='item-comparison-indicator indicator-even'/></div>";
@@ -348,46 +351,65 @@ define(['ash',
 			return "<img src='" + explorerVO.icon + "' alt='" + explorerVO.name + "'/>";
 		},
 
-		getNPCDiv: function (characterType, setting, talkActionID, talkActionName, randomIndex) {
-			let classes = "npc-container";
-			let div = "<div class='" + classes + "'>";
-			let calloutContent = "Visitor";
+		getNPCDiv: function (characterType, talkActionID, randomIndex, options) {
+			options = options || {};
 
-			talkActionID = talkActionID || "";
-			talkActionName = talkActionName = "talk";
+			let $div = $(this.createNPCDiv());
+			this.updateNPCDiv($div, characterType, talkActionID, randomIndex, options);
+			return $div;
+		},
+
+		createNPCDiv: function () {
+			let div = "<div class='npc-container'>";
+			let calloutContent = "Visitor";
 			
 			div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
-			div += this.getNPCPortrait(characterType, randomIndex);
+			div += this.createNPCPortrait();
 			div += "</div>";
 
-			div += "<button class='action btn-compact' action='" + talkActionID + "'>" + talkActionName + "</button>";
+			div += "<button class='action btn-compact' action=''>Talk</button>";
 			
 			div += "</div>"
 			
 			return div;
 		},
 
-		updateNPCDiv: function ($div, characterType, setting, talkActionID, randomIndex) {
+		updateNPCDiv: function ($div, characterType, talkActionID, randomIndex, options) {
 			let icon = this.getNPCIcon(characterType, randomIndex);
 			let action = talkActionID;
 
-			let name = Text.t("game.characters." + characterType + "_name");
+			options = options || {};
 
+			let showName = options.showName || false;
+
+			let name = showName ? Text.t("game.characters." + characterType + "_name") : "";
+
+			$div.attr("data-characterType", characterType);
 			$div.find("img").attr("src", icon);
 			$div.find(".npc-name").text(name);
 			$div.find("button").attr("action", action);
 		},
 
 		getNPCPortrait: function (characterType, randomIndex) {
-			let icon = this.getNPCIcon(characterType, randomIndex);
+			let $portrait = $(this.createNPCPortrait());
+			this.updateNPCPortrait($portrait, characterType, randomIndex);
+			return $portrait;
+		},
 
-			let name = Text.t("game.characters." + characterType + "_name");
-
+		createNPCPortrait: function () {
 			let div = "<div class='npc-portrait'>";
-			div += "<img src='" + icon + "' alt='" + name + "'/>";
-			div += "<span class='npc-name'>" + name + "</span>";
+			div += "<img src=''/>";
+			div += "<span class='npc-name'></span>";
 			div += "</div>";
 			return div;
+		},
+
+		updateNPCPortrait: function ($div, characterType, randomIndex) {
+			let icon = this.getNPCIcon(characterType, randomIndex);
+			let name = Text.t("game.characters." + characterType + "_name");
+
+			$div.find("img").attr("src", icon);
+			$div.find(".npc-name").text(name);
 		},
 
 		getNPCIcon: function (characterType, randomIndex) {
