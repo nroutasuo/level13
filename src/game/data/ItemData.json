@@ -1981,8 +1981,7 @@
     },
     "shoe_2": {
         "bonuses": {
-            "movement": 0.75,
-            "res_water": 1
+            "movement": 0.75
         },
         "campOrdinalRequired": 2,
         "icon": "img/items/shoe-2.png",
