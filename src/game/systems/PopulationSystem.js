@@ -126,7 +126,10 @@ define([
 		},
 
 		updateCampDisease: function (node, time) {
-			if (!node.entity.has(DiseaseComponent)) return;
+			if (!node.entity.has(DiseaseComponent)) {
+				node.camp.removeAllDisabledPopulationByReason(CampConstants.DISABLED_POPULATION_REASON_DISEASE);
+				return;
+			}
 
 			let camp = node.camp;
 			let campPosition = node.entity.get(PositionComponent);
