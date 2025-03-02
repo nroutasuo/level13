@@ -99,8 +99,10 @@ define(['game/GameGlobals'], function (GameGlobals) {
 			let shouldUpdate = forced || !this.isDataUnchanged(list, li, data);
 
 			if (shouldUpdate) {
-				list.fnUpdateItem.apply(list.owner, [li, data]);
-				li.data = Object.assign({}, data);
+				let newData = data;
+				if (typeof data === "object") newData = Object.assign({}, data);
+				list.fnUpdateItem.apply(list.owner, [li, newData]);
+				li.data = newData;
 			}
 		},
 		
