@@ -168,8 +168,8 @@ define([
 			if (onlyStatus) return;
 
 			if (effectVO.popup) {
-				let title = effectVO.popup.title;
-				let msg = effectVO.popup.text;
+				let title = Text.t(effectVO.popup.title || "story.stories.default_popup_title");
+				let msg = Text.t(effectVO.popup.text);
 				GameGlobals.uiFunctions.showInfoPopup(title, msg);
 			}
 
@@ -228,7 +228,7 @@ define([
 				let activeSegmentVO = activeSegments[i];
 
 				// next segments from active segments
-				let possibleNextSegments = this.getPossibleNextSegmentsFromSegment(activeSegmentVO);
+				let possibleNextSegments = GameGlobals.storyHelper.getPossibleNextSegmentsFromSegment(activeSegmentVO);
 				if (possibleNextSegments) {
 					for (let j = 0; j < possibleNextSegments.length; j++) {
 						result.push(possibleNextSegments[j]);
@@ -250,38 +250,10 @@ define([
 			return result;
 		},
 
-		getPossibleNextSegmentsFromSegment: function (segmentVO) {
-			if (!segmentVO) return [];
-			let storyVO = StoryConstants.getStory(segmentVO.storyID);
-			if (!storyVO) return [];
-
-			let possibleNextSegments = segmentVO.possibleNextSegments;
-
-			if (possibleNextSegments == null) {
-				// default: next segment
-				let index = storyVO.segments.indexOf(segmentVO);
-				let nextSegmentIndex = index + 1;
-				if (storyVO.segments.length > nextSegmentIndex) {
-					return [ storyVO.segments[nextSegmentIndex] ];
-				}
-			} else if (possibleNextSegments.length == 0) {
-				// none: end of story
-				return [];
-			} else {
-				// specific segments: find by id
-				let result = [];
-				for (let i = 0; i < possibleNextSegments.length; i++) {
-					let nextSegmentID = possibleNextSegments[i];
-					result.push(storyVO.getSegment(nextSegmentID));
-				}
-				return result;
-			}
-		},
-
 		getNextSegment: function (segmentVO) {
 			if (!segmentVO) return null;
 
-			let possibleNextSegments = this.getPossibleNextSegmentsFromSegment(segmentVO);
+			let possibleNextSegments = GameGlobals.storyHelper.getPossibleNextSegmentsFromSegment(segmentVO);
 
 			for (let i = 0; i < possibleNextSegments.length; i++) {
 				let nextSegmentVO = possibleNextSegments[i];
