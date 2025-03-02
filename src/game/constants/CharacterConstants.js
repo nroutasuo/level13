@@ -175,6 +175,10 @@ define(['ash', 'game/constants/DialogueConstants'], function (Ash, DialogueConst
                     possibleIcons.push("worker_water_01");
                     possibleIcons.push("worker_water_02");
                     break;
+                case CharacterConstants.characterTypes.settlementRefugee:
+                    possibleIcons.push("refugee_01");
+                    possibleIcons.push("refugee_02");
+                    break;
                 default:
                     log.w("no icons mapped for character type: " + characterType);
                     break;
