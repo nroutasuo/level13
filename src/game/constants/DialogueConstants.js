@@ -88,9 +88,15 @@ define([
 		parsePage: function (i, num, pageData) {
 			let pageID = pageData.id || i;
 			let pageVO = new DialoguePageVO(pageID);
+			
 			let pageKey = typeof pageData === "string" ? pageData : pageData.key;
 			pageVO.textKey = pageKey;
 			if (pageVO.textKey && pageVO.textKey.indexOf(".") < 0) pageVO.textKey = "story.dialogue." + pageKey;
+			
+			if (pageData.metaKey) {
+				pageVO.metaTextKey = pageData.metaKey;
+				if (pageVO.metaTextKey && pageVO.metaTextKey.indexOf(".") < 0) pageVO.metaTextKey = "story.dialogue." + pageData.metaKey;
+			}
 
 			let optionsData = pageData.options;
 
@@ -101,6 +107,11 @@ define([
 			if (optionsData === "NEXT") {
 				let buttonKey = pageData.buttonKey;
 				optionsData = [ { buttonKey: buttonKey, response: "NEXT" } ];
+			}
+
+			if (optionsData === "END") {
+				let buttonKey = pageData.buttonKey;
+				optionsData = [ { buttonKey: buttonKey, response: "END" } ];
 			}
 
 			pageVO.options = [];
@@ -194,6 +205,10 @@ define([
 				optionVO.buttonTextKey = optionData.buttonKey || null;
 				optionVO.costs = optionData.costs || {};
 				optionVO.responsePageID = optionData.response || null;
+			}
+
+			if (optionVO.buttonTextKey && optionVO.buttonTextKey.indexOf(".") < 0) {
+				optionVO.buttonTextKey = "story.dialogue." + optionVO.buttonTextKey;
 			}
 
 			return optionVO;

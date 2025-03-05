@@ -111,10 +111,20 @@ define([
 		},
 
 		refreshPageText: function (dialogueVO, pageVO) {
+			let staticTextParams = this.dialogueNodes.head.dialogue.textParams;
+			let textParams = GameGlobals.dialogueHelper.getDialogueTextParams(dialogueVO, pageVO, staticTextParams);
+			
 			let textKey = pageVO.textKey;
-			let textParams = GameGlobals.dialogueHelper.getDialogueTextParams(dialogueVO, pageVO);
 			if (!textKey && pageVO.resultTemplate) textKey = "Found something";
 			$("#dialogue-module-dialogue p").text(Text.t(textKey, textParams));
+
+			let metaTextKey = pageVO.metaTextKey;
+			if (metaTextKey) {
+				$("#dialogue-module-meta p").text(Text.t(metaTextKey, textParams));
+				GameGlobals.uiFunctions.toggle("#dialogue-module-meta", true);
+			} else {
+				GameGlobals.uiFunctions.toggle("#dialogue-module-meta", false);
+			}
 		},
 
 		refreshPageResults: function (pageVO) {
