@@ -774,191 +774,195 @@
 	</div><!-- sticky footer -->
 	
 	<!-- popups -->
+
+	<div id="popup-overlay" style="display: none;">
 	
-	<div id="fight-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display:none" aria-labelledby="fight-title">
-		<h3 id="fight-title"></h3>
-		<p id="fight-desc"></p>
-		<div class="infobox" id="fight-popup-enemy-info">
-			<div class="container-relative">
-				<p id="fight-popup-enemy-name" class="nomargin">Enemy name & strength</p>
-				<div id="fight-damage-indictor-enemy" class="fight-damage-indicator">-5</div>
-				<div id="fight-status-indictor-enemy" class="fight-status-indicator">dodge</div>
-			</div>
-			<p id="fight-popup-enemy-stats" class="nomargin">Enemy strength</p>
-			<p id="fight-popup-enemy-difficulty" class="nomargin">Enemy difficulty</p>
-		</div>
-		<div id="fight-popup-bars">
-			<div class="progress-multibar-container progress centered">
-				<div id="fight-bar-enemy" class="progress-wrap progress">
-					<div class="progress-bar progress"></div>
-					<div class="progress-bar-change progress"></div>
+		<div id="fight-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display:none" aria-labelledby="fight-title">
+			<h3 id="fight-title"></h3>
+			<p id="fight-desc"></p>
+			<div class="infobox" id="fight-popup-enemy-info">
+				<div class="container-relative">
+					<p id="fight-popup-enemy-name" class="nomargin">Enemy name & strength</p>
+					<div id="fight-damage-indictor-enemy" class="fight-damage-indicator">-5</div>
+					<div id="fight-status-indictor-enemy" class="fight-status-indicator">dodge</div>
 				</div>
-				<div id="fight-bar-enemy-shield" class="progress-wrap progress-wrap-science progress">
-					<div class="progress-bar progress"></div>
-					<div class="progress-bar-change progress"></div>
+				<p id="fight-popup-enemy-stats" class="nomargin">Enemy strength</p>
+				<p id="fight-popup-enemy-difficulty" class="nomargin">Enemy difficulty</p>
+			</div>
+			<div id="fight-popup-bars">
+				<div class="progress-multibar-container progress centered">
+					<div id="fight-bar-enemy" class="progress-wrap progress">
+						<div class="progress-bar progress"></div>
+						<div class="progress-bar-change progress"></div>
+					</div>
+					<div id="fight-bar-enemy-shield" class="progress-wrap progress-wrap-science progress">
+						<div class="progress-bar progress"></div>
+						<div class="progress-bar-change progress"></div>
+					</div>
+				</div>
+				<div class="progress-multibar-container progress centered">
+					<div id="fight-bar-self" class="progress-wrap progress">
+						<div class="progress-bar progress"></div>
+						<div class="progress-bar-change progress"></div>
+					</div>
+					<div id="fight-bar-self-shield" class="progress-wrap progress-wrap-science progress">
+						<div class="progress-bar progress"></div>
+						<div class="progress-bar-change progress"></div>
+					</div>
 				</div>
 			</div>
-			<div class="progress-multibar-container progress centered">
-				<div id="fight-bar-self" class="progress-wrap progress">
-					<div class="progress-bar progress"></div>
-					<div class="progress-bar-change progress"></div>
+			<div class="infobox" id="fight-popup-self-info">
+				<div class="container-relative">
+					<p id="fight-popup-self-name" class="nomargin">Player name</p>
+					<div id="fight-damage-indictor-self" class="fight-damage-indicator">-5</div>
+					<div id="fight-status-indictor-self" class="fight-status-indicator">dodge</div>
 				</div>
-				<div id="fight-bar-self-shield" class="progress-wrap progress-wrap-science progress">
-					<div class="progress-bar progress"></div>
-					<div class="progress-bar-change progress"></div>
+				<p id="fight-popup-self-stats" class="nomargin">Player strength</p>
+				<span id="fight-popup-self-equipment"></span>
+			</div>
+			<div class="container-nomargin" id="fight-popup-items">
+				<ul class="itemlist" id="list-fight-items" style="margin-top: -10px;"></ul>
+				<span id="fight-popup-itemlist-separator">|</span>
+				<ul class="itemlist" id="list-fight-explorers" style="margin-top: -10px;"></ul>
+			</div>
+			<div class="buttonbox" id="fight-buttons-infightactions"></div>
+			<div id="fight-popup-results"></div>
+			<div class="buttonbox" id="fight-buttons-main">
+				<button id="out-action-fight-cancel" class="action action-manual-trigger" action="flee">Flee</button>
+				<button id="out-action-fight-confirm" class="action" action="fight">Fight</button>
+				<button id="out-action-fight-close">Leave</button>
+				<button id="out-action-fight-continue">Continue</button>
+				<button id="out-action-fight-takeselected" class="action inventory-selection-ok" action="accept_inventory">Continue</button>
+				<button id="out-action-fight-takeall" class='action inventory-selection-takeall' action='take_all'>Take all</button>
+			</div>
+		</div>
+		
+		<div id="incoming-caravan-popup" role="dialog" class="popup popup-wide fill-on-mobiles hidden-by-default popup-ingame" style="display:none" aria-labelledby="trade-header">
+			<h3 id="trade-header">Trader</h3>
+			<p id="incoming-caravan-popup-markup"></p>
+			<div class="inventorybox" style="display:flex">
+				<div id="inventorylist-incoming-caravan-camp-inventory" class="inventorydivision" style="width: 170px">
+					<p class="inventorybox-header">Camp inventory</p>
+					<ul></ul>
+					<p class="msg-empty">(empty)</p>
+				</div>
+				<div id="inventorylist-incoming-caravan-camp-offer" class="inventorydivision inventorydivision-with-footer highlightbox" style="width: 130px">
+					<p class="inventorybox-header">Camp offer</p>
+					<ul></ul>
+					<p class="msg-empty">(empty)</p>
+					<p class="value inventorybox-footer">0</span>
+				</div>
+				<div id="inventorylist-incoming-caravan-trader-offer" class="inventorydivision inventorydivision-with-footer highlightbox" style="width: 130px">
+					<p class="inventorybox-header">Trader offer</p>
+					<ul></ul>
+					<p class="msg-empty">(empty)</p>
+					<p class="value inventorybox-footer">0</span>
+				</div>
+				<div id="inventorylist-incoming-caravan-trader-inventory" class="inventorydivision" style="width: 170px">
+					<p class="inventorybox-header">Trader inventory</p>
+					<ul></ul>
+					<p class="msg-empty">(empty)</p>
 				</div>
 			</div>
-		</div>
-		<div class="infobox" id="fight-popup-self-info">
-			<div class="container-relative">
-				<p id="fight-popup-self-name" class="nomargin">Player name</p>
-				<div id="fight-damage-indictor-self" class="fight-damage-indicator">-5</div>
-				<div id="fight-status-indictor-self" class="fight-status-indicator">dodge</div>
-			</div>
-			<p id="fight-popup-self-stats" class="nomargin">Player strength</p>
-			<span id="fight-popup-self-equipment"></span>
-		</div>
-		<div class="container-nomargin" id="fight-popup-items">
-			<ul class="itemlist" id="list-fight-items" style="margin-top: -10px;"></ul>
-			<span id="fight-popup-itemlist-separator">|</span>
-			<ul class="itemlist" id="list-fight-explorers" style="margin-top: -10px;"></ul>
-		</div>
-		<div class="buttonbox" id="fight-buttons-infightactions"></div>
-		<div id="fight-popup-results"></div>
-		<div class="buttonbox" id="fight-buttons-main">
-			<button id="out-action-fight-cancel" class="action action-manual-trigger" action="flee">Flee</button>
-			<button id="out-action-fight-confirm" class="action" action="fight">Fight</button>
-			<button id="out-action-fight-close">Leave</button>
-			<button id="out-action-fight-continue">Continue</button>
-			<button id="out-action-fight-takeselected" class="action inventory-selection-ok" action="accept_inventory">Continue</button>
-			<button id="out-action-fight-takeall" class='action inventory-selection-takeall' action='take_all'>Take all</button>
-		</div>
-	</div>
-	
-	<div id="incoming-caravan-popup" role="dialog" class="popup popup-wide fill-on-mobiles hidden-by-default popup-ingame" style="display:none" aria-labelledby="trade-header">
-		<h3 id="trade-header">Trader</h3>
-		<p id="incoming-caravan-popup-markup"></p>
-		<div class="inventorybox" style="display:flex">
-			<div id="inventorylist-incoming-caravan-camp-inventory" class="inventorydivision" style="width: 170px">
-				<p class="inventorybox-header">Camp inventory</p>
-				<ul></ul>
-				<p class="msg-empty">(empty)</p>
-			</div>
-			<div id="inventorylist-incoming-caravan-camp-offer" class="inventorydivision inventorydivision-with-footer highlightbox" style="width: 130px">
-				<p class="inventorybox-header">Camp offer</p>
-				<ul></ul>
-				<p class="msg-empty">(empty)</p>
-				<p class="value inventorybox-footer">0</span>
-			</div>
-			<div id="inventorylist-incoming-caravan-trader-offer" class="inventorydivision inventorydivision-with-footer highlightbox" style="width: 130px">
-				<p class="inventorybox-header">Trader offer</p>
-				<ul></ul>
-				<p class="msg-empty">(empty)</p>
-				<p class="value inventorybox-footer">0</span>
-			</div>
-			<div id="inventorylist-incoming-caravan-trader-inventory" class="inventorydivision" style="width: 170px">
-				<p class="inventorybox-header">Trader inventory</p>
-				<ul></ul>
-				<p class="msg-empty">(empty)</p>
+			<div id="incoming-caravan-popup-multiplier"></div>
+			<div class="buttonbox" id="incoming-caravan-buttons-main">
+				<button id="incoming-caravan-popup-cancel">Cancel</button>
+				<button id="incoming-caravan-popup-reset">Reset</button>
+				<button id="incoming-caravan-popup-confirm" class="action" action="trade_with_caravan">Trade</button>
 			</div>
 		</div>
-		<div id="incoming-caravan-popup-multiplier"></div>
-		<div class="buttonbox" id="incoming-caravan-buttons-main">
-			<button id="incoming-caravan-popup-cancel">Cancel</button>
-			<button id="incoming-caravan-popup-reset">Reset</button>
-			<button id="incoming-caravan-popup-confirm" class="action" action="trade_with_caravan">Trade</button>
-		</div>
-	</div>
-	
-	<div id="manage-save-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display:none" aria-labelledby="manage-save-popup-header">
-		<h3 id="manage-save-popup-header">Manage saves</h3>
-		<p id="manage-save-info">Note that the game is still in alpha and updates can break old saves.</p>
+		
+		<div id="manage-save-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display:none" aria-labelledby="manage-save-popup-header">
+			<h3 id="manage-save-popup-header">Manage saves</h3>
+			<p id="manage-save-info">Note that the game is still in alpha and updates can break old saves.</p>
 
-		<div class="columns-container" id="save-list-container">
-			<div id="save-list" class="columns-child">
-			</div>
-			<div id="save-list-options" class="columns-child columns-child-small">
-				<div id="save-list-options-empty">
-					<p id="save-list-options-empty-text" class="dimmed">Select a save slot from the list</p>
+			<div class="columns-container" id="save-list-container">
+				<div id="save-list" class="columns-child">
 				</div>
-				<div id="save-list-options-selected">
-					<p id="save-list-options-info">Info</p>
-					<button id="btn-save-list-options-save">Save</button>
-					<button id="btn-save-list-options-load">Load</button>
-					<button id="btn-save-list-options-export">Export</button>
+				<div id="save-list-options" class="columns-child columns-child-small">
+					<div id="save-list-options-empty">
+						<p id="save-list-options-empty-text" class="dimmed">Select a save slot from the list</p>
+					</div>
+					<div id="save-list-options-selected">
+						<p id="save-list-options-info">Info</p>
+						<button id="btn-save-list-options-save">Save</button>
+						<button id="btn-save-list-options-load">Load</button>
+						<button id="btn-save-list-options-export">Export</button>
+					</div>
+					<div id="save-list-options-export">
+						<p>Export</p>
+						<textarea id="textarea-export-save" rows="4"></textarea>
+						<p id="save-export-info"></p>
+						<button id="btn-copy-export">Copy</button>
+						<button id="btn-download-export">Download</button>
+						<button id="btn-back-from-export">Back</button>
+					</div>
 				</div>
-				<div id="save-list-options-export">
-					<p>Export</p>
-					<textarea id="textarea-export-save" rows="4"></textarea>
-					<p id="save-export-info"></p>
-					<button id="btn-copy-export">Copy</button>
-					<button id="btn-download-export">Download</button>
-					<button id="btn-back-from-export">Back</button>
+			</div>
+
+			<div id="save-import-container">
+				<textarea id="textarea-import-save" rows="5" cols="60"></textarea>
+				<div>
+				<p id="import-save-warning" class="warning"></p>
+				<p id="import-save-msg"></p>
+				<button id="paste-import">Paste</button>
+				<button id="load-import">Load</button>
 				</div>
+			</div>
+
+			<div class="buttonbox">
+				<button id="open-import">Import</button>
+				<button id="open-save-list">Back to list</button>
+				<button id="close-manage-save-popup" class="button-popup-default">Close</button>
 			</div>
 		</div>
 
-		<div id="save-import-container">
-			<textarea id="textarea-import-save" rows="5" cols="60"></textarea>
-			<div>
-			<p id="import-save-warning" class="warning"></p>
-			<p id="import-save-msg"></p>
-			<button id="paste-import">Paste</button>
-			<button id="load-import">Load</button>
+		<div id="game-stats-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display: none" aria-labelledby="game-stats-popup-header">
+			<h3 id="game-stats-popup-header">Game Stats</h3>
+			<div id="game-stats-container" class="scrollable-container"></div>
+			<div class="buttonbox">
+				<button id="game-stats-popup-close" class="button-popup-default">Close</button>
 			</div>
 		</div>
 
-		<div class="buttonbox">
-			<button id="open-import">Import</button>
-			<button id="open-save-list">Back to list</button>
-			<button id="close-manage-save-popup" class="button-popup-default">Close</button>
+		<div id="settings-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display: none" settings-popup-header">
+			<h3 id="settings-popup-header">Settings</h3>
+			<span class="settings-entry">
+				<input type="checkbox" class="checkbox" id="settings-checkbox-hotkeys-enabled" /><p class="checkbox-label">Enable hotkeys</p>
+			</span>
+			<span class="settings-entry">
+				<input type="checkbox" class="checkbox" id="settings-checkbox-hotkeys-numpad" /><p class="checkbox-label">Use Numpad for movement</p>
+			</span>
+			<div id="hotkeys-list" class="scrollable-container"></div>
+			<div id="language-selection" class="hidden-by-default">
+				<select id="language-dropdown"></select>
+			</div>
+			<div class="buttonbox">
+				<button id="settings-popup-close" class="button-popup-default">Close</button>
+			</div>
 		</div>
-	</div>
 
-	<div id="game-stats-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display: none" aria-labelledby="game-stats-popup-header">
-		<h3 id="game-stats-popup-header">Game Stats</h3>
-		<div id="game-stats-container" class="scrollable-container"></div>
-		<div class="buttonbox">
-			<button id="game-stats-popup-close" class="button-popup-default">Close</button>
+		<div id="dialogue-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display: none" aria-label="Dialogue">
+			<div class="dialogue-module" id="dialogue-module-character">
+				
+			</div>
+			<div class="dialogue-module" id="dialogue-module-dialogue">
+				<p></p>
+			</div>
+			<div class="dialogue-module" id="dialogue-module-results">
+				
+			</div>
+			<div class="buttonbox"></div>
 		</div>
-	</div>
+		
+		<div id="common-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display:none" aria-labelledby="common-popup-header">
+			<h3 id="common-popup-header"></h3>
+			<p id="common-popup-desc"></p>
+			<p id="common-popup-input-container"><input class="text" autocomplete="false" autofocus="true"/></p>
+			<div id="info-results"></div>
+			<div class="buttonbox"></div>
+		</div>
 
-	<div id="settings-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display: none" settings-popup-header">
-		<h3 id="settings-popup-header">Settings</h3>
-		<span class="settings-entry">
-			<input type="checkbox" class="checkbox" id="settings-checkbox-hotkeys-enabled" /><p class="checkbox-label">Enable hotkeys</p>
-		</span>
-		<span class="settings-entry">
-			<input type="checkbox" class="checkbox" id="settings-checkbox-hotkeys-numpad" /><p class="checkbox-label">Use Numpad for movement</p>
-		</span>
-		<div id="hotkeys-list" class="scrollable-container"></div>
-		<div id="language-selection" class="hidden-by-default">
-			<select id="language-dropdown"></select>
-		</div>
-		<div class="buttonbox">
-			<button id="settings-popup-close" class="button-popup-default">Close</button>
-		</div>
-	</div>
-
-	<div id="dialogue-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display: none" aria-label="Dialogue">
-		<div class="dialogue-module" id="dialogue-module-character">
-			
-		</div>
-		<div class="dialogue-module" id="dialogue-module-dialogue">
-			<p></p>
-		</div>
-		<div class="dialogue-module" id="dialogue-module-results">
-			
-		</div>
-		<div class="buttonbox"></div>
-	</div>
-	
-	<div id="common-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display:none" aria-labelledby="common-popup-header">
-		<h3 id="common-popup-header"></h3>
-		<p id="common-popup-desc"></p>
-		<p id="common-popup-input-container"><input class="text" autocomplete="false" autofocus="true"/></p>
-		<div id="info-results"></div>
-		<div class="buttonbox"></div>
 	</div>
 	
 	<!-- whole page overlays -->

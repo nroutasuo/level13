@@ -59,6 +59,7 @@ define([
 			}
 
 			winCallback();
+			GameGlobals.uiFunctions.showFight();
 		},
 
 		hasEnemiesCurrentLocation: function (action) {
@@ -96,7 +97,6 @@ define([
 				return;
 			}
 			sector.add(new FightEncounterComponent(enemy, action, this.pendingEnemies, this.totalEnemies, gangComponent));
-			GameGlobals.uiFunctions.showFight();
 		},
 
 		startFight: function () {

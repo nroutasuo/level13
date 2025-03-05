@@ -6,13 +6,23 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 
 		popupQueue: null,
 		hiddenQueue: null,
+
+		elements: {},
+
+		showOverlayCounter: 0,
 		
 		constructor: function () {
 			this.popupQueue = [];
 			this.hiddenQueue = [];
+
+			this.elements.overlay = $("#popup-overlay");
 			
 			GlobalSignals.add(this, GlobalSignals.windowResizedSignal, this.onWindowResized);
 			GlobalSignals.add(this, GlobalSignals.popupResizedSignal, this.onPopupResized);
+
+			this.elements.overlay.click(ExceptionHandler.wrapClick(function (e) {
+				GameGlobals.uiFunctions.popupManager.dismissPopups();
+			}));
 		},
 		
 		// options:
@@ -51,7 +61,6 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 			// use the same popup container for all popups
 			let popUpManager = this;
 			let $popup = $("#common-popup");
-			if ($popup.parent().hasClass("popup-overlay")) $popup.unwrap();
 			
 			// text
 			GameGlobals.uiFunctions.toggle("#common-popup-input-container", false);
@@ -122,49 +131,64 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 			}
 			
 			// overlay
-			let overlayClass = isMeta ? "popup-overlay-meta" : "popup-overlay-ingame";
 			$popup.toggleClass("popup-meta", isMeta);
 			$popup.toggleClass("popup-ingame", !isMeta);
-			$popup.wrap("<div class='popup-overlay " + overlayClass + "' style='display:none'></div>");
-			GameGlobals.uiFunctions.toggle(".popup-overlay", true);
-			popUpManager.repositionPopup($popup);
-			
-			let slideTime = GameGlobals.gameState.uiStatus.isInitialized ? UIConstants.POPUP_FADE_IN_DURATION : 0;
-			
-			GameGlobals.uiFunctions.slideToggleIf($popup, null, true, slideTime, slideTime, () => {
-				log.i("showed popup", "ui");
+
+			this.showOverlay(() => {
 				popUpManager.repositionPopup($popup);
-				GlobalSignals.popupShownSignal.dispatch("common-popup");
+				
+				let slideTime = GameGlobals.gameState.uiStatus.isInitialized ? UIConstants.POPUP_FADE_IN_DURATION : 0;
+				
+				GameGlobals.uiFunctions.slideToggleIf($popup, null, true, slideTime, slideTime, () => {
+					log.i("showed popup", "ui");
+					popUpManager.repositionPopup($popup);
+					GlobalSignals.popupShownSignal.dispatch("common-popup");
+				});
+
+				GlobalSignals.popupOpenedSignal.dispatch("common-popup");
+				
+				gtag('event', 'screen_view', { 'screen_name': "popup-common" });
+				
+				GameGlobals.uiFunctions.createButtons("#common-popup .buttonbox");
+				
+				this.setDismissable($popup, isDismissable);
+			
+				if ($defaultButton) {
+					$defaultButton.focus()
+				}
+				
+				
+				this.updatePause();
+
+				setTimeout(() => {
+					GameGlobals.gameState.uiStatus.isBusyCounter--;
+				}, 500);
 			});
+		},
 
-			GlobalSignals.popupOpenedSignal.dispatch("common-popup");
-			
-			gtag('event', 'screen_view', { 'screen_name': "popup-common" });
-			
-			GameGlobals.uiFunctions.createButtons("#common-popup .buttonbox");
-			
-			this.setDismissable($popup, isDismissable);
-		
-			if ($defaultButton) {
-				$defaultButton.focus()
+		showOverlay: function (cb) {
+			this.showOverlayCounter++;
+
+			if (this.showOverlayCounter > 1) {
+				cb();
+				return;
 			}
-			
-			this.updatePause();
 
-			setTimeout(() => {
-				GameGlobals.gameState.uiStatus.isBusyCounter--;
-			}, 500);
+			this.elements.overlay.stop().fadeIn(UIConstants.POPUP_OVERLAY_FADE_IN_DURATION, cb);
+		},
+
+		hideOverlay: function () {
+			this.showOverlayCounter--;
+
+			if (this.showOverlayCounter > 0) return;
+			if (this.showOverlayCounter < 0) this.showOverlayCounter = 0;
+
+			this.elements.overlay.stop().fadeOut(UIConstants.POPUP_OVERLAY_FADE_OUT_DURATION);
 		},
 
 		setDismissable: function ($popup, isDismissable) {
 			$popup.attr("data-dismissable", isDismissable);
 			$popup.attr("data-dismissed", "false");
-			if (isDismissable) {
-				$(".popup-overlay").click(ExceptionHandler.wrapClick(function (e) {
-					if (e.target !== e.currentTarget) return;
-					GameGlobals.uiFunctions.popupManager.dismissPopups();
-				}));
-			}
 		},
 
 		updatePause: function () {
@@ -193,14 +217,13 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 				GlobalSignals.popupClosingSignal.dispatch(id);
 				$("#" + id).data("fading", true);
 				GameGlobals.uiFunctions.slideToggleIf($("#" + id), null, false, UIConstants.POPUP_FADE_OUT_DURATION, UIConstants.POPUP_FADE_OUT_DURATION, function () {
-					GameGlobals.uiFunctions.toggle(".popup-overlay", false);
-					$("#" + id).unwrap();
 					$("#" + id).data("fading", false);
 					$("#" + id).data("closing", false);
 					$("#" + id + "p#common-popup-desc").html("");
 					GlobalSignals.popupClosedSignal.dispatch(id);
 					popupManager.showQueuedPopup();
 					popupManager.updatePause();
+					popupManager.hideOverlay();
 				});
 			} else {
 				$("#" + id).data("fading", false);
@@ -209,6 +232,7 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 				GlobalSignals.popupClosedSignal.dispatch(id);
 				popupManager.showQueuedPopup();
 				popupManager.updatePause();
+				popupManager.hideOverlay();
 			}
 		},
 		

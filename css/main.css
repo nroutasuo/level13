@@ -1254,7 +1254,7 @@ body.dark div.popup-ingame {
 body.dark div.popup-meta {
   z-index: 26;
 }
-body.dark div.popup-overlay {
+body.dark div#popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -1939,6 +1939,7 @@ body.dark .npc-container {
   min-width: 50px;
   min-height: 50px;
   margin: 2px;
+  background-color: #2f322f;
 }
 body.dark .npc-container-mini {
   width: 36px;
@@ -3844,7 +3845,7 @@ body.sunlit div.popup-ingame {
 body.sunlit div.popup-meta {
   z-index: 26;
 }
-body.sunlit div.popup-overlay {
+body.sunlit div#popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -4529,6 +4530,7 @@ body.sunlit .npc-container {
   min-width: 50px;
   min-height: 50px;
   margin: 2px;
+  background-color: #e6e6e6;
 }
 body.sunlit .npc-container-mini {
   width: 36px;

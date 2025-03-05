@@ -1527,14 +1527,11 @@ define(['ash',
 			},
 
 			showSpecialPopup: function (popupID, options) {
+				debugger
 				options = options || {};
 				
 				log.i("[ui] showSpecialPopup " + popupID);
 				let $popup = $("#" + popupID);
-				if ($popup.is(":visible")) return;
-				
-				if ($popup.parent().hasClass("popup-overlay")) $popup.unwrap();
-				$popup.wrap("<div class='popup-overlay popup-overlay-ingame' style='display:none'></div>");
 
 				if (options.setupCallback) {
 					options.setupCallback();
@@ -1543,17 +1540,19 @@ define(['ash',
 				GameGlobals.uiFunctions.popupManager.setDismissable($popup, options.isDismissable);
 				
 				let uiFunctions = this;
-				$(".popup-overlay").fadeIn(UIConstants.POPUP_OVERLAY_FADE_IN_DURATION, function () {
+
+				this.popupManager.showOverlay(function () {
 					uiFunctions.popupManager.repositionPopup($popup);
 					GlobalSignals.popupOpenedSignal.dispatch(popupID);
 					GameGlobals.gameState.isPaused = true;
-					$("#" + popupID).fadeIn(UIConstants.POPUP_FADE_IN_DURATION, function () {
+					$popup.stop().fadeIn(UIConstants.POPUP_FADE_IN_DURATION, function () {
 						uiFunctions.toggle("#" + popupID, true);
 						uiFunctions.popupManager.repositionPopup($popup);
 						GlobalSignals.popupShownSignal.dispatch("common-popup");
 					});
 					GlobalSignals.elementToggledSignal.dispatch(("#" + popupID), true);
 				});
+				
 				this.generateInfoCallouts("#" + popupID);
 			},
 
