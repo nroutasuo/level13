@@ -423,6 +423,9 @@ define([
 		
 		getTitleByContext: function (encounterComponent) {
 			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(encounterComponent.context);
+			if (!baseActionID) {
+				return "Fight";
+			}
 			if (baseActionID === "fight_gang") {
 				return "Fight " + (encounterComponent.totalEnemies - encounterComponent.pendingEnemies + 1) + " / " + encounterComponent.totalEnemies;
 			}

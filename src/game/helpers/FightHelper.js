@@ -39,26 +39,50 @@ define([
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 		},
 
+		handleFight: function (numEnemies, action, winCallback, fleeCallback, loseCallback) {
+			if (numEnemies === 0) {
+				winCallback();
+				return;
+			}
+
+			numEnemies = numEnemies || 1;
+
+			this.initFightSequence(action, numEnemies, winCallback, fleeCallback, loseCallback);
+		},
+
 		handleRandomEncounter: function (action, winCallback, fleeCallback, loseCallback) {
 			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			var hasEnemies = this.hasEnemiesCurrentLocation(action);
-			if (hasEnemies && GameGlobals.gameState.unlockedFeatures.camp) {
-				var vision = this.playerStatsNodes.head.vision.value;
-				var encounterFactor = GameGlobals.playerActionsHelper.getEncounterFactor(action);
-				var sectorFactor = GameGlobals.sectorHelper.getDangerFactor(this.playerLocationNodes.head.entity);
-				var encounterProbability = PlayerActionConstants.getRandomEncounterProbability(baseActionID, vision, sectorFactor, encounterFactor);
-				if (Math.random() < encounterProbability) {
-					this.pendingEnemies = this.getEnemyCount(action);
-					this.totalEnemies = this.pendingEnemies;
-					this.pendingWinCallback = winCallback;
-					this.pendingFleeCallback = fleeCallback;
-					this.pendingLoseCallback = loseCallback;
-					this.initFight(action);
-					return;
-				}
+			
+			if (!hasEnemies) {
+				winCallback();
+				return;
+			}
+			
+			if (!GameGlobals.gameState.unlockedFeatures.camps) {
+				winCallback();
+				return;
 			}
 
-			winCallback();
+			var vision = this.playerStatsNodes.head.vision.value;
+			var encounterFactor = GameGlobals.playerActionsHelper.getEncounterFactor(action);
+			var sectorFactor = GameGlobals.sectorHelper.getDangerFactor(this.playerLocationNodes.head.entity);
+			var encounterProbability = PlayerActionConstants.getRandomEncounterProbability(baseActionID, vision, sectorFactor, encounterFactor);
+			if (Math.random() < encounterProbability) {
+				let numEnemies = this.getEnemyCount(action);
+				this.initFightSequence(action, numEnemies, winCallback, fleeCallback, loseCallback);
+			}
+		},
+
+		initFightSequence: function (action, numEnemies, winCallback, fleeCallback, loseCallback) {
+			this.pendingEnemies = numEnemies;
+			this.totalEnemies = this.pendingEnemies;
+			this.pendingWinCallback = winCallback;
+			this.pendingFleeCallback = fleeCallback;
+			this.pendingLoseCallback = loseCallback;
+
+			this.initFight(action);
+			
 			GameGlobals.uiFunctions.showFight();
 		},
 
@@ -69,7 +93,6 @@ define([
 			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			switch (baseActionID) {
 				case "fight_gang":
-				case "clear_workshop":
 					return true;
 				default:
 					return false;
@@ -81,9 +104,10 @@ define([
 			sector.remove(FightComponent);
 			var enemiesComponent = sector.get(EnemiesComponent);
 			enemiesComponent.selectNextEnemy();
-			if (GameGlobals.gameFlowLogger.isEnabled) log.i("init fight: " + action);
+
 			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			var gangComponent = null;
+
 			if (baseActionID == "fight_gang") {
 				var direction = parseInt(action.split("_")[2]);
 				var position = this.playerLocationNodes.head.position;
@@ -91,11 +115,13 @@ define([
 				gangComponent = gangEntity.get(GangComponent);
 				log.i("gang enemy: " + gangComponent.enemyIDs.join(",") + ", previous attempts: " + gangComponent.numAttempts);
 			}
+
 			var enemy = this.getEnemy(enemiesComponent, gangComponent);
 			if (!enemy) {
 				log.w("couldn't start fight because there is no valid enemy for location");
 				return;
 			}
+
 			sector.add(new FightEncounterComponent(enemy, action, this.pendingEnemies, this.totalEnemies, gangComponent));
 		},
 
@@ -140,6 +166,7 @@ define([
 			}
 
 			GameGlobals.uiFunctions.popupManager.closePopup("fight-popup");
+			
 			sector.remove(FightComponent);
 			this.pendingWinCallback = null;
 			this.pendingFleeCallback = null;
@@ -150,12 +177,8 @@ define([
 
 		getEnemyCount: function (action) {
 			var position = this.playerLocationNodes.head.position.getPosition();
-			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
 			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
-			var localeId = FightConstants.getEnemyLocaleId(baseActionID, action);
 			switch (baseActionID) {
-				case "clear_workshop":
-					return sectorControlComponent.getCurrentEnemies(localeId);
 				case "fight_gang":
 					var direction = parseInt(action.split("_")[2]);
 					var gangEntity = GameGlobals.levelHelper.getGang(position, direction);

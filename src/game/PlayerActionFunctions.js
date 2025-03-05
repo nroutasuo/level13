@@ -2816,52 +2816,7 @@ define(['ash',
 		},
 
 		startSequence: function (steps) {
-			// TODO formalize these kind of sequences into a system similar to Dialogues?
-
-			let i = 0;
-
-			let tryStartNextStep = function () {
-				if (i >= steps.length) return;
-
-				let nextStep = steps[i];
-
-				GameGlobals.playerActionFunctions.startSequenceStep(nextStep, onStepDone);
-			}
-
-			let onStepDone = function () {
-				i++;
-				tryStartNextStep();
-			};
-
-			tryStartNextStep();
-		},
-
-		startSequenceStep: function (step, cb) {
-			let type = step.type;
-
-			switch (type) {
-				case "dialogue":
-					let dialogueID = step.dialogueID;
-					this.startDialogue(dialogueID);
-					GlobalSignals.dialogueCompletedSignal.addOnce(() => { cb(); });
-					break;
-				case "storyFlag":
-					let flagID = step.flagID;
-					let value = step.value;
-					this.setStoryFlag(flagID, value);
-					cb();
-					break;
-				case "log":
-					let textKey = step.textKey;
-					let text = Text.t(textKey);
-					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), text);
-					cb();
-					break;
-				default: 
-					log.w("unknown sequence step type: " + type);
-					cb();
-					break;
-			}
+			this.sequenceHelper.startSequence(steps);
 		},
 		
 		// TODO find better fix for overlapping actions

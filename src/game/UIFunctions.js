@@ -1527,7 +1527,6 @@ define(['ash',
 			},
 
 			showSpecialPopup: function (popupID, options) {
-				debugger
 				options = options || {};
 				
 				log.i("[ui] showSpecialPopup " + popupID);
