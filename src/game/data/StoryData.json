@@ -103,7 +103,7 @@
                 {
                     "id": "passage_search",
                     "onStart": {
-                        "popup": "story.stories.escape_passage_search_start_message"
+                        "log": "story.stories.escape_passage_search_start_message"
                     },
                     "startTrigger": "action_leave_camp"
                 },
@@ -192,17 +192,17 @@
                     "onComplete": {
                         "log": "story.stories.escape_launch_message"
                     },
+                    "onStart": {
+                        "storyFlags": {
+                            "ESCAPE_REACHED_SURFACE": true
+                        }
+                    },
                     "startConditions": {
                         "sector": {
                             "surface": true
                         }
                     },
-                    "startTrigger": "change_position",
-                    "onStart": {
-                        "storyFlags": {
-                            "ESCAPE_REACHED_SURFACE": true
-                        }
-                    }
+                    "startTrigger": "change_position"
                 }
             ],
             "startConditions": {},
@@ -211,34 +211,35 @@
         "expedition": {
             "segments": [
                 {
+                    "completeConditions": {
+                        "eventType": "visitor"
+                    },
+                    "completeTrigger": "camp_event",
                     "id": "pending_visitors",
                     "onStart": {
                         "storyFlags": {
                             "EXPEDITION_PENDING_VISITORS": true
                         }
-                    },
-                    "completeConditions": {
-                        "eventType": "visitor"
-                    },
-                    "completeTrigger": "camp_event"
+                    }
                 },
                 {
-                    "id": "visitors",
                     "completeConditions": {
                         "dialogue": "expedition_visitors"
                     },
+                    "completeTrigger": "action_complete_dialogue",
+                    "id": "visitors",
                     "onComplete": {
                         "storyFlags": {
-                            "EXPEDITION_START_KNOWN": true,
-                            "EXPEDITION_PENDING_VISITORS": false
+                            "EXPEDITION_PENDING_VISITORS": false,
+                            "EXPEDITION_START_KNOWN": true
                         }
-                    },
-                    "completeTrigger": "action_complete_dialogue"
+                    }
                 },
                 {
                     "id": "fate_unknown"
                 },
                 {
+                    "completeTrigger": "immediate",
                     "id": "fate_known",
                     "onStart": {
                         "storyFlags": {
@@ -248,15 +249,17 @@
                     "startConditions": {
                         "examineSpotTag": "expedition"
                     },
-                    "startTrigger": "action_examine",
-                    "completeTrigger": "immediate"
+                    "startTrigger": "action_examine"
                 }
             ],
-            "startTrigger": "action_enter_camp",
             "startConditions": {
                 "numCamps": 12,
-                "population": [ 12, -1 ]
-            }
+                "population": [
+                    12,
+                    -1
+                ]
+            },
+            "startTrigger": "action_enter_camp"
         },
         "fall": {
             "segments": [
@@ -353,7 +356,11 @@
                             "owner": "explorer",
                             "storyTag": "find_greenhouse"
                         },
-                        "log": "story.stories.greenhouse_disease_started_message"
+                        "log": "story.stories.greenhouse_disease_started_message",
+                        "storyFlags": {
+                            "GREENHOUSE_PENDING_DISEASE": false,
+                            "GREENHOUSE_DISEASE_SEEN": true
+                        }
                     },
                     "startConditions": {
                         "camp": {
@@ -361,12 +368,13 @@
                         },
                         "inCamp": true
                     },
-                    "startTrigger": "action_any"
+                    "startTrigger": "change_position"
                 },
                 {
                     "id": "looking_for_greenhouse",
                     "onStart": {
                         "storyFlags": {
+                            "GREENHOUSE_PENDING_DISEASE": false,
                             "GREENHOUSE_SEARCHING_FOR_CURE": true
                         }
                     },
@@ -403,8 +411,8 @@
                     "id": "greenhouse_built",
                     "onStart": {
                         "storyFlags": {
-                            "GREENHOUSE_SEARCHING_FOR_CURE": false,
-                            "GREENHOUSE_RESTORED": true
+                            "GREENHOUSE_RESTORED": true,
+                            "GREENHOUSE_SEARCHING_FOR_CURE": false
                         }
                     },
                     "startConditions": {
@@ -418,7 +426,7 @@
                 "numCamps": 3,
                 "tribe": {
                     "population": [
-                        36,
+                        42,
                         -1
                     ]
                 }
@@ -441,14 +449,17 @@
                 },
                 {
                     "id": "passage_up_available",
-                    "startTrigger": "upgrade_researched",
+                    "possibleNextSegments": [
+                        "passage_up_built",
+                        "prospector_leaves"
+                    ],
                     "startConditions": {
                         "upgrades": {
                             "unlock_building_passage_hole": true
                         }
                     },
                     "startFromAny": true,
-                    "possibleNextSegments": [ "passage_up_built", "prospector_leaves" ]
+                    "startTrigger": "upgrade_researched"
                 },
                 {
                     "id": "passage_up_built",
@@ -457,15 +468,21 @@
                             "RESCUE_PASSAGE_UP_BUILT": true
                         }
                     },
-                    "startTrigger": "action_build",
+                    "possibleNextSegments": [
+                        "level_14",
+                        "prospector_leaves"
+                    ],
                     "startConditions": {
                         "levelUnlocked": 14
                     },
-                    "possibleNextSegments": [ "level_14", "prospector_leaves" ]
+                    "startTrigger": "action_build"
                 },
                 {
                     "id": "level_14",
-                    "startTrigger": "change_position",
+                    "possibleNextSegments": [
+                        "radiation_found",
+                        "prospector_leaves"
+                    ],
                     "startConditions": {
                         "player": {
                             "position": {
@@ -473,38 +490,36 @@
                             }
                         }
                     },
-                    "possibleNextSegments": [ "radiation_found", "prospector_leaves" ]
+                    "startTrigger": "change_position"
                 },
                 {
                     "id": "radiation_found",
-                    "startTrigger": "change_position",
                     "onStart": {
                         "storyFlags": {
                             "RESCUE_LEVEL_14_HAZARD_FOUND": true
                         }
                     },
                     "startConditions": {
+                        "perks": {
+                            "hazard-radiation": true
+                        },
                         "player": {
                             "position": {
                                 "level": 14
                             }
-                        },
-                        "perks": {
-                            "hazard-radiation": true
                         }
-                    }
+                    },
+                    "startTrigger": "change_position"
                 },
                 {
+                    "completeConditions": {
+                        "dialogue": "prospector_leaves"
+                    },
+                    "completeTrigger": "action_complete_dialogue",
                     "id": "prospector_leaves",
-                    "startTrigger": "action_enter_camp",
-                    "startConditions": {
-                        "numCamps": 8,
-                        "deity": true,
-                        "improvements": {
-                            "shrine": [
-                                1,
-                                -1
-                            ]
+                    "onComplete": {
+                        "storyFlags": {
+                            "RESCUE_EXPLORER_LEFT": true
                         }
                     },
                     "onStart": {
@@ -513,35 +528,37 @@
                             "storyTag": "prospector_leaves"
                         }
                     },
-                    "completeConditions": {
-                        "dialogue": "prospector_leaves"
+                    "startConditions": {
+                        "deity": true,
+                        "improvements": {
+                            "shrine": [
+                                1,
+                                -1
+                            ]
+                        },
+                        "numCamps": 8
                     },
-                    "onComplete": {
-                        "storyFlags": {
-                            "RESCUE_EXPLORER_LEFT": true
-                        }
-                    },
-                    "completeTrigger": "action_complete_dialogue"
+                    "startTrigger": "action_enter_camp"
                 },
                 {
                     "id": "prospector_gone"
                 },
                 {
                     "id": "start_search",
-                    "startTrigger": "action_enter_camp",
                     "onStart": {
                         "dialogue": {
                             "owner": "explorer",
                             "storyTag": "prospector_rescue"
                         }
-                    }
+                    },
+                    "startTrigger": "action_enter_camp"
                 },
                 {
-                    "id": "search",
-                    "completeTrigger": "locale_scouted",
                     "completeConditions": {
                         "localeType": "shelter"
                     },
+                    "completeTrigger": "locale_scouted",
+                    "id": "search",
                     "onComplete": {
                         "storyFlags": {
                             "RESCUE_EXPLORER_LEFT": false
@@ -573,24 +590,24 @@
                     "startTrigger": "story_flag_changed"
                 },
                 {
-                    "id": "ground_found",
-                    "startConditions": {
-                        "sector": {
-                            "ground": true
-                        }
+                    "completeConditions": {
+                        "dialogue": "find_spirits"
                     },
-                    "startTrigger": "change_position",
+                    "completeTrigger": "action_complete_dialogue",
+                    "id": "ground_found",
                     "onStart": {
                         "dialogue": {
                             "owner": "explorer",
                             "storyTag": "find_spirits"
                         }
                     },
-                    "completeConditions": {
-                        "dialogue": "find_spirits"
+                    "startConditions": {
+                        "sector": {
+                            "ground": true
+                        }
                     },
                     "startFromAny": true,
-                    "completeTrigger": "action_complete_dialogue"
+                    "startTrigger": "change_position"
                 },
                 {
                     "id": "searching_for_spirits",
