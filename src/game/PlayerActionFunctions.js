@@ -1000,8 +1000,9 @@ define(['ash',
 					}
 				}
 				
-				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 				playerActionFunctions.save();
+
+				GlobalSignals.localeScoutedSignal.dispatch(localeVO.type);
 			};
 
 			let hasCustomReward = tradingPartner != null || luxuryResource != null;
@@ -1013,10 +1014,8 @@ define(['ash',
 				msgDefeat: logMsgDefeat,
 				addToLog: true,
 			};
-			
-			this.handleOutActionResults(action, messages, true, hasCustomReward, successCallback);
 
-			GlobalSignals.localeScoutedSignal.dispatch(localeVO.type);
+            this.handleOutActionResults(action, messages, true, hasCustomReward, successCallback);
 		},
 
 		useSpring: function () {
