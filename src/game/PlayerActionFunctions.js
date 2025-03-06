@@ -51,6 +51,7 @@ define(['ash',
 	'game/components/sector/improvements/SectorCollectorsComponent',
 	'game/components/sector/improvements/WorkshopComponent',
 	'game/components/sector/ReputationComponent',
+	'game/components/sector/SectorControlComponent',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorLocalesComponent',
 	'game/components/sector/SectorStatusComponent',
@@ -60,6 +61,7 @@ define(['ash',
 	'game/components/sector/events/RefugeesComponent',
 	'game/components/sector/events/TraderComponent',
 	'game/components/level/LevelStatusComponent',
+	'game/helpers/SequenceHelper',
 	'game/systems/ui/UIOutHeaderSystem',
 	'game/systems/ui/UIOutTabBarSystem',
 	'game/systems/ui/UIOutLevelSystem',
@@ -75,8 +77,9 @@ define(['ash',
 	PositionComponent, ResourcesComponent,
 	BagComponent, DialogueComponent, ExcursionComponent, ItemsComponent, HopeComponent, PlayerActionComponent, PlayerActionResultComponent,
 	CampComponent, CurrencyComponent, LevelComponent, BeaconComponent, SectorImprovementsComponent, SectorCollectorsComponent, WorkshopComponent,
-	ReputationComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent,
+	ReputationComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent,
 	PassagesComponent, OutgoingCaravansComponent, CampEventTimersComponent, RefugeesComponent, TraderComponent, LevelStatusComponent,
+	SequenceHelper,
 	UIOutHeaderSystem, UIOutTabBarSystem, UIOutLevelSystem, FaintingSystem, PlayerPositionSystem,
 	Text, StringUtils
 ) {
@@ -95,6 +98,7 @@ define(['ash',
 
 		constructor: function (engine) {
 			this.engine = engine;
+
 			this.playerPositionNodes = engine.getNodeList(PlayerPositionNode);
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			this.nearestCampNodes = engine.getNodeList(NearestCampNode);
@@ -103,6 +107,8 @@ define(['ash',
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 			this.playerResourcesNodes = engine.getNodeList(PlayerResourcesNode);
 			this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
+
+			this.sequenceHelper = new SequenceHelper();
 		},
 
 		addLogMessage: function (msgID, msg, replacements, values, actionPosition, visibility) {
@@ -1034,35 +1040,38 @@ define(['ash',
 		clearWorkshop: function () {
 			let playerPosition = this.playerPositionNodes.head.position;
 			let workshopComponent = this.playerLocationNodes.head.entity.get(WorkshopComponent);
+			let resourceName = workshopComponent.resource;
 			
 			let currentLevel = playerPosition.level;
 			let campOrdinal = GameGlobals.gameState.getCampOrdinal(currentLevel);
 			let campLevel = GameGlobals.gameState.getLevelForCamp(campOrdinal);
 			
-			let name = TextConstants.getWorkshopName(workshopComponent.resource);
 			let action = "clear_workshop";
 
-			if (campLevel != currentLevel) {
-				logMsgSuccess = "Workshop cleared. Workers on level " + campLevel + " can now use it.";
-			}
+			let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+			let localeId = FightConstants.getEnemyLocaleId(baseActionID, action);
+			let sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
+			let numEnemies = sectorControlComponent.getCurrentEnemies(localeId);
 
 			let playerActionFunctions = this;
-			let successCallback = function () {
-				GameGlobals.playerActionFunctions.unlockFeature("resource_" + workshopComponent.resource);
+			let successCallback = function (cb) {
+				GameGlobals.playerActionFunctions.unlockFeature("resource_" + resourceName);
 				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
+				cb();
 				GlobalSignals.workshopClearedSignal.dispatch();
 			};
-			
-			let messages = {
-				id: LogConstants.MSG_ID_WORKSHOP_CLEARED,
-				msgSuccess: "Workshop cleared. Workers can now use it.",
-				msgFlee: "Fled the " + name + ".",
-				msgDefeat: "Got driven out of the " + name + ".",
-				addToLog: true,
-				logVisibility: LogConstants.MGS_VISIBILITY_LEVEL,
-			};
 
-			this.handleOutActionResults(action, messages, true, true, successCallback);
+			let introDialogueID = "locale_workshop_" + resourceName + "_intro";
+			let outroDialogueID = "locale_workshop_" + resourceName + "_outro";
+			let successLogMsgKey = "ui.actions.clear_workshop_" + resourceName + "_completed_message";
+			
+			this.startSequence([
+				{ id: "intro", type: "dialogue", dialogueID: introDialogueID },
+				{ id: "fight", type: "fight", numEnemies: numEnemies, action: action, branches: { "WIN": "outro", "LOSE": "END", "FLEE": "END" } },
+				{ id: "outro", type: "dialogue", dialogueID: outroDialogueID, textParams: { campLevel: campLevel } },
+				{ id: "log", type: "log", textKey: successLogMsgKey, textParams: { campLevel: campLevel} },
+				{ id: "results", type: "custom", f: successCallback },
+			]);
 		},
 
 		clearWaste: function (action, direction) {

@@ -1350,6 +1350,12 @@
             "refugees_default_event_01_p1": "We had a little settlement but it was destroyed",
             "refugees_default_event_02_p1": "The City is unpredictable and dangerous.",
             "refugees_earthquake_event_01_p1": "Our camp was destroyed in an earthquake.",
+            "locale_workshop_fuel_intro_p1": "A fuel refinery stands hollow and quiet.",
+            "locale_workshop_fuel_outro_p1": "The refinery is cleared.",
+            "locale_workshop_fuel_outro_p1_meta": "Workers on level {campLevel} can now be assigned to work here.",
+            "locale_workshop_rubber_intro_p1": "A rubber plantation stands withered and silent.",
+            "locale_workshop_rubber_outro_p1": "The plantation is ready to be used again.",
+            "locale_workshop_rubber_outro_p1_meta": "Workers on level {campLevel} can now be assigned to work here.",
             "visitor_unique_expedition_01_p1": "Amanda Ettler is organizing a big expedition to the Surface to find out what happened. I'm travelling to join it."
         },
         "messages": {
