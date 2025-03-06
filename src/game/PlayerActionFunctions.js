@@ -357,7 +357,7 @@ define(['ash',
 			GlobalSignals.actionCompletedSignal.dispatch(action);
 		},
 
-		startDialogue: function (id, explorerVO, characterVO) {
+		startDialogue: function (id, explorerVO, characterVO, textParams) {
 			let dialogueVO = DialogueConstants.getDialogue(id);
 			
 			if (!dialogueVO) {
@@ -371,7 +371,8 @@ define(['ash',
 			}
 
 			GameGlobals.gameFlowLogger.log("start dialogue: " + id);
-			this.playerStatsNodes.head.entity.add(new DialogueComponent(dialogueVO, explorerVO, characterVO));
+
+			this.playerStatsNodes.head.entity.add(new DialogueComponent(dialogueVO, explorerVO, characterVO, textParams));
 		},
 
 		endDialogue: function () {

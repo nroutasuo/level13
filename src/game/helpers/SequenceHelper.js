@@ -92,13 +92,15 @@ define([
 		startSequenceStep: function (step, cb) {
 			let type = step.type;
 
+			let textParams = step.textParams || {};
+
 			switch (type) {
 				case "custom":
 					step.f(cb);
 					break;
 				case "dialogue":
 					let dialogueID = step.dialogueID;
-					GameGlobals.playerActionFunctions.startDialogue(dialogueID);
+					GameGlobals.playerActionFunctions.startDialogue(dialogueID, null, null, textParams);
 					GlobalSignals.dialogueCompletedSignal.addOnce(() => { cb(); });
 					break;
 				case "fight":
@@ -108,7 +110,6 @@ define([
 					break;
 				case "log":
 					let textKey = step.textKey;
-					let textParams = step.textParams || {};
 					let text = Text.t(textKey, textParams);
 					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), text);
 					cb();

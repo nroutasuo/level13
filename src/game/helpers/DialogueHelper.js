@@ -57,8 +57,8 @@ define(['ash',
                 return true;
             },
 
-            getDialogueTextParams: function (dialogueVO, pageVO) {
-                let result = {};
+            getDialogueTextParams: function (dialogueVO, pageVO, staticTextParams) {
+                let result = staticTextParams || {};
 
                 if (dialogueVO.conditions.vicinity) {
                     let requiredPOIType = dialogueVO.conditions.vicinity;
