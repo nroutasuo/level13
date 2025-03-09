@@ -348,7 +348,7 @@ define(['ash',
 		},
 
 		getExplorerPortrait: function (explorerVO) {
-			return "<img src='" + explorerVO.icon + "' alt='" + explorerVO.name + "'/>";
+			return "<img src='" + explorerVO.icon + "' alt='" + explorerVO.name + "' class='portrait' />";
 		},
 
 		getNPCDiv: function (characterType, talkActionID, randomIndex, options) {

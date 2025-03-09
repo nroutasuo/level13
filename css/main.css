@@ -1261,8 +1261,6 @@ body.dark div#popup-overlay {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.85);
-}
-body.dark div.popup-overlay-ingame {
   z-index: 15;
 }
 body.dark div.popup-overlay-meta {
@@ -1965,6 +1963,10 @@ body.dark .npc-portrait img {
   height: 32px;
   width: 32px;
   padding: 1px;
+}
+body.dark img.portrait {
+  height: 32px;
+  width: 32px;
 }
 body.dark .npc-container span {
   text-align: center;
@@ -3852,8 +3854,6 @@ body.sunlit div#popup-overlay {
   width: 100%;
   height: 100%;
   background-color: rgba(215, 215, 215, 0.85);
-}
-body.sunlit div.popup-overlay-ingame {
   z-index: 15;
 }
 body.sunlit div.popup-overlay-meta {
@@ -4556,6 +4556,10 @@ body.sunlit .npc-portrait img {
   height: 32px;
   width: 32px;
   padding: 1px;
+}
+body.sunlit img.portrait {
+  height: 32px;
+  width: 32px;
 }
 body.sunlit .npc-container span {
   text-align: center;
