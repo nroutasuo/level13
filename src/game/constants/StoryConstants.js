@@ -137,7 +137,6 @@ define([
 			action_enter_camp: "action_enter_camp",
 			action_examine: "action_examine",
 			action_leave_camp: "action_leave_camp",
-			action_scavenge: "action_scavenge",
 			action_scout: "action_scout",
 			camp_event: "camp_event",
 			camp_population_changed: "camp_population_changed",

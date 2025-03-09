@@ -63,7 +63,6 @@ define([
 			GlobalSignals.registerTrigger(GlobalSignals.playerLeftCampSignal, StoryConstants.triggers.action_leave_camp);
 			GlobalSignals.registerTrigger(GlobalSignals.playerPositionChangedSignal, StoryConstants.triggers.change_position);
 			GlobalSignals.registerTrigger(GlobalSignals.populationChangedSignal, StoryConstants.triggers.camp_population_changed);
-			GlobalSignals.registerTrigger(GlobalSignals.sectorScavengedSignal, StoryConstants.triggers.action_scavenge);
 			GlobalSignals.registerTrigger(GlobalSignals.sectorScoutedSignal, StoryConstants.triggers.action_scout);
 			GlobalSignals.registerTrigger(GlobalSignals.slowUpdateSignal, StoryConstants.triggers.update);
 			GlobalSignals.registerTrigger(GlobalSignals.storyFlagChangedSignal, StoryConstants.triggers.story_flag_changed);

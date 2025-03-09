@@ -148,9 +148,6 @@ define([
 			GlobalSignals.sectorScoutedSignal.add(function () {
 				sys.updateAll();
 			});
-			GlobalSignals.sectorScavengedSignal.add(function () {
-				sys.updateSectorDescription();
-			});
 			GlobalSignals.actionCompletedSignal.add(function () {
 				sys.updateSectorDescription();
 				sys.updateMovementActions();
