@@ -946,16 +946,13 @@ define([
 
 			if (!showCharacters) return;
 
-			let setting = DialogueConstants.dialogueSettings.meet;
-
 			for (let i = 0; i < sectorStatus.currentCharacters.length; i++) {
 				let character = sectorStatus.currentCharacters[i];
 
-				if (!character.instanceID) character.instanceID = Math.floor(Math.random() * 1000000);
-
 				let talkAction = "start_out_npc_dialogue_" + character.instanceID;
 
-				let div = UIConstants.getNPCDiv(character.characterType, setting, talkAction);
+				let randomIndex = character.randomIndex || character.instanceID || 0;
+				let div = UIConstants.getNPCDiv(character.characterType, talkAction, randomIndex);
 				$("#out-characters").append(div);
 			}
 
