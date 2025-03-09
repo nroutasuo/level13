@@ -197,12 +197,20 @@ define([
 			
 			this.endPage();
 
-			this.dialogueNodes.head.entity.remove(DialogueComponent);
-
 			if (explorerVO && explorerVO.pendingDialogue == dialogueVO.storyTag) {
 				log.i("complete pending dialogue: " + dialogueVO.storyTag, this);
 				explorerVO.pendingDialogue = null;
 			}
+
+			if (explorerVO) {
+				let dialogueID = dialogueVO.dialogueID;
+				if (!explorerVO.seenDialogues) explorerVO.seenDialogues = [];
+				if (explorerVO.seenDialogues.indexOf(dialogueID) < 0) {
+					explorerVO.seenDialogues.push(dialogueID);
+				}
+			}
+
+			this.dialogueNodes.head.entity.remove(DialogueComponent);
 
 			if (dialogueVO) {
 				GlobalSignals.dialogueCompletedSignal.dispatch(dialogueVO.storyTag);

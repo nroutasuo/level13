@@ -927,6 +927,28 @@
 				"character_generic_story_government_positive_p1"
 			]
 		},
+		"character_generic_story_searching_for_greenhouse_01": {
+			"conditions": {
+				"storyFlags": {
+					"GREENHOUSE_FOUND": false,
+					"GREENHOUSE_SEARCHING_FOR_CURE": true
+				}
+			},
+			"pages": [
+				"character_generic_story_searching_for_greenhouse_01_p1"
+			]
+		},
+		"character_generic_story_searching_for_greenhouse_02": {
+			"conditions": {
+				"storyFlags": {
+					"GREENHOUSE_FOUND": false,
+					"GREENHOUSE_SEARCHING_FOR_CURE": true
+				}
+			},
+			"pages": [
+				"character_generic_story_searching_for_greenhouse_02_p1"
+			]
+		},
 		"character_generic_story_warn_ground_01": {
 			"conditions": {
 				"numCamps": 3
@@ -1453,6 +1475,28 @@
 			},
 			"pages": [
 				"character_workerGeneric_interact_apocalypse_02_p1"
+			]
+		},
+		"character_workerGeneric_interact_searching_for_greenhouse_01": {
+			"conditions": {
+				"storyFlags": {
+					"GREENHOUSE_FOUND": false,
+					"GREENHOUSE_SEARCHING_FOR_CURE": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_interact_searching_for_greenhouse_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_searching_for_greenhouse_02": {
+			"conditions": {
+				"storyFlags": {
+					"GREENHOUSE_FOUND": false,
+					"GREENHOUSE_SEARCHING_FOR_CURE": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_interact_searching_for_greenhouse_02_p1"
 			]
 		},
 		"character_workerGeneric_interact_spirits_01": {
@@ -2110,6 +2154,28 @@
 				}
 			],
 			"storyTag": "prospector_rescue"
+		},
+		"explorer_generic_story_searching_for_greenhouse_01": {
+			"conditions": {
+				"storyFlags": {
+					"GREENHOUSE_FOUND": false,
+					"GREENHOUSE_SEARCHING_FOR_CURE": true
+				}
+			},
+			"pages": [
+				"explorer_generic_story_searching_for_greenhouse_01_p1"
+			]
+		},
+		"explorer_generic_story_searching_for_greenhouse_02": {
+			"conditions": {
+				"storyFlags": {
+					"GREENHOUSE_FOUND": false,
+					"GREENHOUSE_SEARCHING_FOR_CURE": true
+				}
+			},
+			"pages": [
+				"explorer_generic_story_searching_for_greenhouse_02_p1"
+			]
 		},
 		"explorer_template_amnesiac_event_01": {
 			"pages": [
@@ -4672,6 +4738,8 @@
 					"character_generic_helpful_meet_poi_hazard_flooded_01",
 					"character_generic_helpful_meet_poi_hazard_territory_01",
 					"character_generic_helpful_meet_poi_blocker_gap_01",
+					"character_generic_story_searching_for_greenhouse_01",
+					"character_generic_story_searching_for_greenhouse_02",
 					"character_generic_helpful_meet_poi_blocker_waste_01",
 					"character_generic_helpful_meet_poi_blocker_debris_01",
 					"character_generic_helpful_meet_poi_blocker_explosives_01",
@@ -4707,6 +4775,8 @@
 					"character_generic_helpful_meet_poi_hazard_cold_01",
 					"character_generic_helpful_meet_poi_hazard_debris_01",
 					"character_generic_helpful_meet_poi_hazard_flooded_01",
+					"character_generic_story_searching_for_greenhouse_01",
+					"character_generic_story_searching_for_greenhouse_02",
 					"character_generic_helpful_meet_poi_hazard_territory_01",
 					"character_generic_helpful_meet_poi_blocker_gap_01",
 					"character_generic_helpful_meet_poi_blocker_waste_01",
@@ -4778,6 +4848,7 @@
 					"character_generic_helpful_meet_poi_settlement",
 					"character_generic_helpful_meet_poi_water_01",
 					"character_generic_helpful_meet_poi_water_02",
+					"character_generic_story_searching_for_greenhouse_02",
 					"character_generic_helpful_meet_poi_hazard_pollution_01",
 					"character_generic_helpful_meet_poi_hazard_radiation_01",
 					"character_generic_helpful_meet_poi_hazard_cold_01",
@@ -4816,6 +4887,8 @@
 					"character_generic_helpful_meet_poi_hazard_pollution_01",
 					"character_generic_helpful_meet_poi_hazard_radiation_01",
 					"character_generic_helpful_meet_poi_hazard_cold_01",
+					"character_generic_story_searching_for_greenhouse_01",
+					"character_generic_story_searching_for_greenhouse_02",
 					"character_generic_helpful_meet_poi_hazard_debris_01",
 					"character_generic_helpful_meet_poi_hazard_flooded_01",
 					"character_generic_helpful_meet_poi_hazard_territory_01",
@@ -4843,6 +4916,8 @@
 					"character_generic_helpful_meet_poi_settlement",
 					"character_generic_helpful_meet_poi_water_01",
 					"character_generic_helpful_meet_poi_water_02",
+					"character_generic_story_searching_for_greenhouse_01",
+					"character_generic_story_searching_for_greenhouse_02",
 					"character_generic_helpful_meet_poi_hazard_pollution_01",
 					"character_generic_helpful_meet_poi_hazard_radiation_01",
 					"character_generic_helpful_meet_poi_hazard_cold_01",
@@ -4877,6 +4952,8 @@
 					"character_generic_helpful_meet_poi_hazard_pollution_01",
 					"character_generic_helpful_meet_poi_hazard_radiation_01",
 					"character_generic_helpful_meet_poi_hazard_cold_01",
+					"character_generic_story_searching_for_greenhouse_01",
+					"character_generic_story_searching_for_greenhouse_02",
 					"character_generic_helpful_meet_poi_hazard_debris_01",
 					"character_generic_helpful_meet_poi_hazard_flooded_01",
 					"character_generic_helpful_meet_poi_hazard_territory_01",
@@ -4905,6 +4982,8 @@
 					"character_generic_helpful_meet_poi_hazard_pollution_01",
 					"character_generic_helpful_meet_poi_hazard_radiation_01",
 					"character_generic_helpful_meet_poi_hazard_cold_01",
+					"character_generic_story_searching_for_greenhouse_01",
+					"character_generic_story_searching_for_greenhouse_02",
 					"character_generic_helpful_meet_poi_hazard_debris_01",
 					"character_generic_helpful_meet_poi_hazard_flooded_01",
 					"character_generic_helpful_meet_poi_hazard_territory_01",
@@ -4940,6 +5019,7 @@
 					"character_generic_helpful_meet_poi_water_02",
 					"character_generic_helpful_meet_poi_hazard_pollution_01",
 					"character_generic_helpful_meet_poi_hazard_radiation_01",
+					"character_generic_story_searching_for_greenhouse_02",
 					"character_generic_helpful_meet_poi_hazard_cold_01",
 					"character_generic_helpful_meet_poi_hazard_debris_01",
 					"character_generic_helpful_meet_poi_hazard_flooded_01",
@@ -4975,6 +5055,8 @@
 					"character_generic_helpful_meet_poi_settlement",
 					"character_generic_helpful_meet_poi_water_01",
 					"character_generic_helpful_meet_poi_water_02",
+					"character_generic_story_searching_for_greenhouse_01",
+					"character_generic_story_searching_for_greenhouse_02",
 					"character_generic_helpful_meet_poi_hazard_pollution_01",
 					"character_generic_helpful_meet_poi_hazard_radiation_01",
 					"character_generic_helpful_meet_poi_hazard_cold_01",
@@ -5023,6 +5105,8 @@
 					"character_generic_story_explain_ground_04",
 					"character_generic_helpful_meet_poi_water_01",
 					"character_generic_helpful_meet_poi_water_02",
+					"character_generic_story_searching_for_greenhouse_01",
+					"character_generic_story_searching_for_greenhouse_02",
 					"character_generic_helpful_meet_poi_hazard_pollution_01",
 					"character_generic_helpful_meet_poi_hazard_radiation_01",
 					"character_generic_helpful_meet_poi_hazard_cold_01",
@@ -5071,6 +5155,8 @@
 					"character_workerApothecary_default_interact_03",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_interact_searching_for_greenhouse_01",
+					"character_workerGeneric_interact_searching_for_greenhouse_02",
 					"character_workerGeneric_interact_spirits_01",
 					"character_workerGeneric_interact_spirits_02",
 					"character_workerGeneric_interact_spirits_03",
@@ -5085,6 +5171,8 @@
 					"character_workerChemist_default_interact_02",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_interact_searching_for_greenhouse_01",
+					"character_workerGeneric_interact_searching_for_greenhouse_02",
 					"character_workerGeneric_default_interact_01",
 					"character_workerGeneric_default_interact_02"
 				]
@@ -5153,6 +5241,8 @@
 					"character_workerGeneric_interact_01",
 					"character_workerGeneric_interact_02",
 					"character_workerGeneric_default_interact_02",
+					"character_workerGeneric_interact_searching_for_greenhouse_01",
+					"character_workerGeneric_interact_searching_for_greenhouse_02",
 					"character_workerGeneric_interact_story_greenhouse_found_01",
 					"character_workerGeneric_interact_story_greenhouse_fixed_01"
 				]
@@ -5180,6 +5270,8 @@
 					"character_workerScavenger_default_interact_05",
 					"character_workerGeneric_interact_01",
 					"character_workerGeneric_interact_02",
+					"character_workerGeneric_interact_searching_for_greenhouse_01",
+					"character_workerGeneric_interact_searching_for_greenhouse_02",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_default_interact_01",
@@ -5221,6 +5313,8 @@
 					"character_workerGeneric_interact_spirits_01",
 					"character_workerGeneric_interact_spirits_02",
 					"character_workerGeneric_interact_spirits_03",
+					"character_workerGeneric_interact_searching_for_greenhouse_01",
+					"character_workerGeneric_interact_searching_for_greenhouse_02",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_default_interact_02"
@@ -5250,6 +5344,8 @@
 					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_01",
 					"character_workerGeneric_interact_02",
+					"character_workerGeneric_interact_searching_for_greenhouse_01",
+					"character_workerGeneric_interact_searching_for_greenhouse_02",
 					"character_workerGeneric_interact_story_greenhouse_found_01",
 					"character_workerGeneric_interact_story_greenhouse_fixed_01"
 				],
@@ -5272,6 +5368,8 @@
 					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_01",
 					"character_workerGeneric_interact_02",
+					"character_workerGeneric_interact_searching_for_greenhouse_01",
+					"character_workerGeneric_interact_searching_for_greenhouse_02",
 					"character_workerGeneric_interact_story_greenhouse_found_01",
 					"character_workerGeneric_interact_story_greenhouse_fixed_01"
 				],
@@ -5292,6 +5390,8 @@
 					"explorer_generic_mercenary_interact_01",
 					"explorer_generic_interact_story_apocalypse_01",
 					"explorer_generic_interact_story_apocalypse_02",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_generic_story_rescue_prospector"
 				],
 				"meet": [
@@ -5345,6 +5445,8 @@
 					"explorer_generic_mercenary_interact_04",
 					"explorer_generic_mercenary_interact_05",
 					"explorer_generic_mercenary_interact_06",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_generic_story_find_greenhouse",
 					"explorer_generic_interact_story_apocalypse_01",
 					"explorer_generic_interact_story_apocalypse_02",
@@ -5368,6 +5470,8 @@
 					"explorer_generic_scavenger_interact_04",
 					"explorer_generic_scavenger_interact_05",
 					"explorer_generic_scavenger_interact_06",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_generic_story_find_greenhouse",
 					"explorer_generic_interact_story_apocalypse_01",
 					"explorer_generic_interact_story_apocalypse_02",
@@ -5391,6 +5495,8 @@
 					"explorer_generic_scout_interact_04",
 					"explorer_generic_scout_interact_05",
 					"explorer_generic_scout_interact_06",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_generic_story_find_greenhouse",
 					"character_generic_story_government_positive",
 					"explorer_generic_interact_story_apocalypse_01",
@@ -5465,6 +5571,8 @@
 					"explorer_template_architect_interact_10",
 					"explorer_template_architect_interact_11",
 					"explorer_template_architect_interact_12",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_generic_story_rescue_absence_01",
 					"explorer_generic_story_rescue_prospector"
 				],
@@ -5491,6 +5599,8 @@
 					"explorer_template_bard_interact_10",
 					"explorer_template_bard_interact_11",
 					"explorer_template_bard_interact_12",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_generic_story_rescue_absence_01",
 					"explorer_generic_story_rescue_prospector"
 				],
@@ -5517,6 +5627,8 @@
 					"explorer_template_darkdweller_interact_10",
 					"explorer_template_darkdweller_interact_11",
 					"explorer_template_darkdweller_interact_12",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_generic_story_rescue_prospector"
 				],
 				"meet": [
@@ -5542,6 +5654,8 @@
 					"explorer_template_guard_interact_10",
 					"explorer_template_guard_interact_11",
 					"explorer_template_guard_interact_12",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_generic_story_rescue_absence_01",
 					"explorer_template_guard_story_rescue_absence_01",
 					"explorer_template_guard_story_rescue_found_01",
@@ -5571,6 +5685,8 @@
 					"explorer_template_hacker_interact_10",
 					"explorer_template_hacker_interact_11",
 					"explorer_template_hacker_interact_12",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_generic_story_rescue_absence_01",
 					"explorer_generic_story_rescue_prospector"
 				],
@@ -5597,6 +5713,8 @@
 					"explorer_template_lover_interact_10",
 					"explorer_template_lover_interact_11",
 					"explorer_template_lover_interact_12",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_generic_story_rescue_absence_01",
 					"explorer_generic_story_rescue_prospector"
 				],
@@ -5624,6 +5742,8 @@
 					"explorer_template_researcher_interact_11",
 					"explorer_template_researcher_interact_12",
 					"explorer_generic_story_rescue_absence_01",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_generic_story_rescue_prospector"
 				],
 				"meet": [
@@ -5649,6 +5769,8 @@
 					"explorer_template_teen_interact_10",
 					"explorer_template_teen_interact_11",
 					"explorer_template_teen_interact_12",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_template_teen_story_rescue_absence_01",
 					"explorer_generic_story_rescue_prospector"
 				],
@@ -5675,6 +5797,8 @@
 					"explorer_unique_gambler_interact_10",
 					"explorer_unique_gambler_interact_11",
 					"explorer_unique_gambler_interact_12",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_unique_gambler_story_find_greenhouse",
 					"explorer_unique_gambler_story_find_spirits",
 					"explorer_unique_gambler_story_search_spirits_01",
@@ -5710,6 +5834,8 @@
 					"explorer_unique_handler_interact_10",
 					"explorer_unique_handler_interact_11",
 					"explorer_unique_handler_interact_12",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_unique_handler_story_rescue_absence_01"
 				],
 				"meet": [
@@ -5760,6 +5886,8 @@
 					"explorer_unique_journalist_interact_11",
 					"explorer_unique_journalist_interact_12",
 					"explorer_unique_journalist_interact_13",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_unique_journalist_story_start",
 					"explorer_unique_journalist_story_storehouse",
 					"explorer_unique_journalist_story_spacecraft",
@@ -5791,6 +5919,8 @@
 					"explorer_unique_prospector_interact_10",
 					"explorer_unique_prospector_interact_11",
 					"explorer_unique_prospector_interact_12",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_unique_prospector_story_rescue_intro",
 					"explorer_unique_prospector_story_rescue_lvl14_01",
 					"explorer_unique_prospector_story_rescue_passage_built_01",

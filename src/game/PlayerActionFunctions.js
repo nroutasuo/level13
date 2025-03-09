@@ -388,17 +388,7 @@ define(['ash',
 			if (!dialogueComponent) return;
 			
 			dialogueComponent.isEnded = true;
-
-			let explorerVO = dialogueComponent.explorerVO;
-
-			if (explorerVO) {
-				let dialogueID = dialogueComponent.activeDialogue.dialogueID;
-				if (!explorerVO.seenDialogues) explorerVO.seenDialogues = [];
-				if (explorerVO.seenDialogues.indexOf(dialogueID) < 0) {
-					explorerVO.seenDialogues.push(dialogueID);
-				}
-			}
-
+			
 			GlobalSignals.actionCompletedSignal.dispatch();
 		},
 
