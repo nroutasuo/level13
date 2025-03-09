@@ -22,12 +22,16 @@ define([
 			this.itemNodes = engine.getNodeList(ItemsNode);
 			this.playerActionResultNodes = engine.getNodeList(PlayerActionResultNode);
 			this.playerActionResultNodes.nodeAdded.add(this.onNodeAdded, this);
+
+			GlobalSignals.add(this, GlobalSignals.popupShownSignal, this.onPopupShown);
 		},
 
 		removeFromEngine: function (engine) {
 			this.playerActionResultNodes.nodeAdded.remove(this.onNodeAdded, this);
 			this.playerActionResultNodes = null;
 			this.itemNodes = null;
+
+			GlobalSignals.removeAll(this);
 		},
 
 		onNodeAdded: function (node) {
@@ -286,6 +290,10 @@ define([
 					$("#resultlist-inventorymanagement-found ul").append(UIConstants.getResourceLi(name, amountFound));
 				}
 			}
+		},
+
+		onPopupShown: function () {
+			this.pendingListUpdate = true;
 		},
 
 	});
