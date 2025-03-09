@@ -422,13 +422,15 @@ define([
 		},
 		
 		getTitleByContext: function (encounterComponent) {
-			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(encounterComponent.context);
-			if (!baseActionID) {
-				return "Fight";
-			}
+			let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(encounterComponent.context);
 			if (baseActionID === "fight_gang") {
 				return "Fight " + (encounterComponent.totalEnemies - encounterComponent.pendingEnemies + 1) + " / " + encounterComponent.totalEnemies;
 			}
+
+			if (GameGlobals.gameState.uiStatus.sequenceTitleKey) return Text.t(GameGlobals.gameState.uiStatus.sequenceTitleKey);
+
+			if (!baseActionID) return "Fight";
+
 			return baseActionID.replace(/_/g, " ");
 		},
 		

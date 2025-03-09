@@ -39,20 +39,25 @@ define([
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 		},
 
-		handleFight: function (numEnemies, action, winCallback, fleeCallback, loseCallback) {
+		handleFight: function (numEnemies, chance, action, winCallback, fleeCallback, loseCallback) {
 			if (numEnemies === 0) {
 				winCallback();
 				return;
 			}
-
+			
+			chance = chance || 0;
 			numEnemies = numEnemies || 1;
+
+			if (Math.random() > chance) {
+				winCallback();
+				return;
+			}
 
 			this.initFightSequence(action, numEnemies, winCallback, fleeCallback, loseCallback);
 		},
 
 		handleRandomEncounter: function (action, winCallback, fleeCallback, loseCallback) {
-			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
-			var hasEnemies = this.hasEnemiesCurrentLocation(action);
+			let hasEnemies = this.hasEnemiesCurrentLocation(action);
 			
 			if (!hasEnemies) {
 				winCallback();
@@ -64,14 +69,23 @@ define([
 				return;
 			}
 
-			var vision = this.playerStatsNodes.head.vision.value;
-			var encounterFactor = GameGlobals.playerActionsHelper.getEncounterFactor(action);
-			var sectorFactor = GameGlobals.sectorHelper.getDangerFactor(this.playerLocationNodes.head.entity);
-			var encounterProbability = PlayerActionConstants.getRandomEncounterProbability(baseActionID, vision, sectorFactor, encounterFactor);
-			if (Math.random() < encounterProbability) {
-				let numEnemies = this.getEnemyCount(action);
-				this.initFightSequence(action, numEnemies, winCallback, fleeCallback, loseCallback);
-			}
+			let encounterProbability = this.getRandomEncounterProbability(action);
+
+			if (Math.random() > encounterProbability) return;
+
+			let numEnemies = this.getEnemyCount(action);
+			this.initFightSequence(action, numEnemies, winCallback, fleeCallback, loseCallback);
+		},
+
+		getRandomEncounterProbability: function (action) {
+			let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+
+			let vision = this.playerStatsNodes.head.vision.value;
+			let sectorFactor = GameGlobals.sectorHelper.getDangerFactor(this.playerLocationNodes.head.entity);
+			let encounterFactor = GameGlobals.playerActionsHelper.getEncounterFactor(action);
+
+			let encounterProbability = PlayerActionConstants.getRandomEncounterProbability(baseActionID, vision, sectorFactor, encounterFactor);
+			return encounterProbability;
 		},
 
 		initFightSequence: function (action, numEnemies, winCallback, fleeCallback, loseCallback) {

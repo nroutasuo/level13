@@ -113,6 +113,14 @@ define([
 		refreshPageText: function (dialogueVO, pageVO) {
 			let staticTextParams = this.dialogueNodes.head.dialogue.textParams;
 			let textParams = GameGlobals.dialogueHelper.getDialogueTextParams(dialogueVO, pageVO, staticTextParams);
+
+			let titleTextKey = dialogueVO.titleTextKey || pageVO.titleTextKey || GameGlobals.gameState.uiStatus.sequenceTitleKey;
+			if (titleTextKey) {
+				$("#dialogue-module-title h3").text(Text.t(titleTextKey, textParams));
+				GameGlobals.uiFunctions.toggle("#dialogue-module-title", true);
+			} else {
+				GameGlobals.uiFunctions.toggle("#dialogue-module-title", false);
+			}
 			
 			let textKey = pageVO.textKey;
 			if (!textKey && pageVO.resultTemplate) textKey = "Found something";
@@ -159,8 +167,8 @@ define([
 					$("#dialogue-popup .buttonbox").append("<button class='action dialogue-option' action='" + action + "'>" + label + "</button>");
 				}
 			} else {
-				let defaultLabel = Text.t(defaultLabelKey);
-				$("#dialogue-popup .buttonbox").append("<button class='action dialogue-option' action='end_dialogue'>" + defaultLabel + "</button>");
+				let label = pageVO.Text.t(defaultLabelKey);
+				$("#dialogue-popup .buttonbox").append("<button class='action dialogue-option' action='end_dialogue'>" + label + "</button>");
 			}
 			
 			GameGlobals.uiFunctions.createButtons("#dialogue-popup .buttonbox");

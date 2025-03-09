@@ -223,8 +223,12 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 					GlobalSignals.popupClosedSignal.dispatch(id);
 					popupManager.showQueuedPopup();
 					popupManager.updatePause();
-					popupManager.hideOverlay();
 				});
+
+				// ensure hideOverlay is called even if animation is stopped by another popup opening
+				setTimeout(() => {
+					popupManager.hideOverlay();
+				}, UIConstants.POPUP_FADE_OUT_DURATION);
 			} else {
 				$("#" + id).data("fading", false);
 				$("#" + id).data("closing", false);

@@ -3,6 +3,7 @@ define(['ash'], function (Ash) {
 	let DialogueVO = Ash.Class.extend({
 
 		dialogueID: "",
+		titleTextKey: null,
 		pages: [],
 		pagesByID: {},
 		conditions: {},

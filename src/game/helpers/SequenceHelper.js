@@ -16,9 +16,13 @@ define([
 		// - should have a type and any params required by that type (see startSequenceStep)
 		// - can have an id (otherwise index is used as id)
 		// - can have a dictionary of branches (step result id => next step id or "END" which finishes the sequence)
-		startSequence: function (steps) {
+		startSequence: function (steps, popupTitleKey) {
 
 			log.i("start sequence with " + steps.length + " steps");
+
+			if (popupTitleKey) {
+				GameGlobals.gameState.uiStatus.sequenceTitleKey = popupTitleKey;
+			}
 
 			let helper = this;
 			let stepIDToIndexMap = {};
@@ -78,10 +82,12 @@ define([
 			};
 
 			let onSequenceDone = function () {
+				GameGlobals.gameState.uiStatus.sequenceTitleKey = null;
 				log.i("finish sequence");
 			};
 
 			let onStepDone = function (result) {
+				log.i("complete sequence step [" + i + "] " + currentStep.id);
 				moveToNextStep(result);
 				tryStartNextStep();
 			};
@@ -92,6 +98,7 @@ define([
 		startSequenceStep: function (step, cb) {
 			let type = step.type;
 
+			let textKey = step.textKey;
 			let textParams = step.textParams || {};
 
 			switch (type) {
@@ -104,15 +111,22 @@ define([
 					GlobalSignals.dialogueCompletedSignal.addOnce(() => { cb(); });
 					break;
 				case "fight":
+					let chance = step.chance === 0 ? 0 : step.chance || 1;
 					let numEnemies = step.numEnemies;
 					let action = step.action;
-					GameGlobals.fightHelper.handleFight(numEnemies, action, () => cb("WIN"), () => cb("FLEE"), () => cb("LOSE"));
+					GameGlobals.fightHelper.handleFight(numEnemies, chance, action, () => cb("WIN"), () => cb("FLEE"), () => cb("LOSE"));
 					break;
 				case "log":
-					let textKey = step.textKey;
 					let text = Text.t(textKey, textParams);
 					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), text);
 					cb();
+					break;
+				case "result":
+					let resultVO = step.result;
+					let customRewardTexts = step.customRewardTexts || [];
+					let popupTitle = step.titleTextKey || GameGlobals.gameState.uiStatus.sequenceTitleKey;
+					let popupMsg = (step.textKey || "Result from sequence. ") + customRewardTexts.join("<br/>");
+					GameGlobals.playerActionFunctions.handleRewards(resultVO, cb, true, popupTitle, popupMsg);
 					break;
 				case "storyFlag":
 					let flagID = step.flagID;

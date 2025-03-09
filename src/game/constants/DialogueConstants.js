@@ -54,6 +54,7 @@ define([
 		parseDialogue: function (dialogueID, d) {
 			let vo = new DialogueVO(dialogueID);
 
+			vo.titleTextKey = this.parseTextKey(d.titleKey);
 			vo.conditions = d.conditions || {};
 			vo.storyTag = d.storyTag || null;
 			vo.isRepeatable = d.repeatable === false ? false : true;
@@ -90,18 +91,20 @@ define([
 			let pageVO = new DialoguePageVO(pageID);
 			
 			let pageKey = typeof pageData === "string" ? pageData : pageData.key;
-			pageVO.textKey = pageKey;
-			if (pageVO.textKey && pageVO.textKey.indexOf(".") < 0) pageVO.textKey = "story.dialogue." + pageKey;
+			pageVO.textKey = this.parseTextKey(pageKey);
+
+			if (pageData.titleKey) {
+				pageVO.titleTextKey = this.parseTextKey(pageData.titleKey);
+			}
 			
 			if (pageData.metaKey) {
-				pageVO.metaTextKey = pageData.metaKey;
-				if (pageVO.metaTextKey && pageVO.metaTextKey.indexOf(".") < 0) pageVO.metaTextKey = "story.dialogue." + pageData.metaKey;
+				pageVO.metaTextKey = this.parseTextKey(pageData.metaKey);
 			}
 
 			let optionsData = pageData.options;
 
-			if (!optionsData && i < num - 1) {
-				optionsData = "NEXT";
+			if (!optionsData) {
+				optionsData = i < num - 1 ? "NEXT" : "END";
 			}
 
 			if (optionsData === "NEXT") {
@@ -128,6 +131,16 @@ define([
 			pageVO.resultTemplate = this.parsePageResult(pageData.result);
 
 			return pageVO;
+		},
+
+		parseTextKey: function (key) {
+			if (!key) return null;
+
+			let result = key;
+
+			if (result.indexOf(".") < 0) result = "story.dialogue." + result;
+
+			return result;
 		},
 
 		parsePageResult: function (data) {
@@ -202,13 +215,9 @@ define([
 			if (typeof optionData === "string") {
 				optionVO.responsePageID = optionData;
 			} else {
-				optionVO.buttonTextKey = optionData.buttonKey || null;
+				optionVO.buttonTextKey = this.parseTextKey(optionData.buttonKey);
 				optionVO.costs = optionData.costs || {};
 				optionVO.responsePageID = optionData.response || null;
-			}
-
-			if (optionVO.buttonTextKey && optionVO.buttonTextKey.indexOf(".") < 0) {
-				optionVO.buttonTextKey = "story.dialogue." + optionVO.buttonTextKey;
 			}
 
 			return optionVO;

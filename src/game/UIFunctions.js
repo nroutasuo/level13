@@ -1530,6 +1530,7 @@ define(['ash',
 				options = options || {};
 				
 				log.i("[ui] showSpecialPopup " + popupID);
+				
 				let $popup = $("#" + popupID);
 
 				if (options.setupCallback) {
@@ -1545,6 +1546,7 @@ define(['ash',
 					GlobalSignals.popupOpenedSignal.dispatch(popupID);
 					GameGlobals.gameState.isPaused = true;
 					$popup.stop().fadeIn(UIConstants.POPUP_FADE_IN_DURATION, function () {
+						$popup.attr("data-toggling", false);
 						uiFunctions.toggle("#" + popupID, true);
 						uiFunctions.popupManager.repositionPopup($popup);
 						GlobalSignals.popupShownSignal.dispatch("common-popup");

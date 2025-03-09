@@ -37,6 +37,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 				isTransitioning: false,
 				isInitialized: false,
 				isInCamp: false,
+				sequenceTitleKey: null,
 				hiddenProjects: [],
 				leaveCampRes: {},
 				leaveCampItems: {},
@@ -158,6 +159,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			
 			// reset ui state
 			this.uiStatus.isBusyCounter = 0;
+			this.uiStatus.sequenceTitleKey = null;
 			if (!this.uiStatus.lastSelection) this.uiStatus.lastSelection = {};
 
 			// init stats in case new ones added
