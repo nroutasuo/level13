@@ -122,6 +122,8 @@ define([
 			if (!GameGlobals.gameState.uiStatus.hiddenProjects) GameGlobals.gameState.uiStatus.hiddenProjects = [];
 			
 			let projects = GameGlobals.levelHelper.getAvailableProjectsForCamp(this.playerLocationNodes.head.entity);
+			
+			projects = projects.sort((a, b) => { return b.level - a.level; });
 
 			let isHidden = function (project) {
 				let projectID = project.projectID;
@@ -174,7 +176,7 @@ define([
 			if (!this.playerLocationNodes.head) return;
 			let projects = GameGlobals.levelHelper.getBuiltProjectsForCamp(this.playerLocationNodes.head.entity);
 			
-			projects.sort((a, b) => { return b.level - a.level; });
+			projects = projects.sort((a, b) => { return b.level - a.level; });
 			
 			if (updateTables) {
 				let numCreated1 = UIList.update(this.builtLevelProjectList, projects.filter(project => !project.isColonyProject)).length;
