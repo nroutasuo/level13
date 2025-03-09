@@ -2368,7 +2368,6 @@ define([
 			switch (localeVO.type) {
 				case localeTypes.bunker: return UpgradeConstants.UPGRADE_TYPE_INSIGHT;
 				case localeTypes.camp: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
-				case localeTypes.caravan: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
 				case localeTypes.clinic: return UpgradeConstants.UPGRADE_TYPE_EVIDENCE;
 				case localeTypes.factory: return UpgradeConstants.UPGRADE_TYPE_EVIDENCE;
 				case localeTypes.farm: return UpgradeConstants.UPGRADE_TYPE_HOPE;

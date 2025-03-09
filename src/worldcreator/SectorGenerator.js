@@ -2771,9 +2771,6 @@ define([
 			
 			if (l == 14)
 				possibleTypes.push(localeTypes.factory);
-
-			if (l < 13)
-				possibleTypes.push(localeTypes.caravan);
 			
 			let isValidForSettlement = distanceToCamp > 3 && levelVO.level !== 13 && levelVO.isCampable;
 				

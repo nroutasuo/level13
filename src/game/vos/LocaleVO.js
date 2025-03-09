@@ -24,7 +24,6 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 		camp: "camp",
 		hut: "hut",
 		hermit: "hermit",
-		caravan: "caravan",
 		tradingpartner: "tradingpartner",
 		clinic: "clinic",
 
@@ -76,7 +75,6 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 			switch (this.type) {
 				case localeTypes.bunker: difficulty = 0.6; break;
 				case localeTypes.camp: difficulty = 0.15; break;
-				case localeTypes.caravan: difficulty = 0.1; break;
 				case localeTypes.clinic: return 3;
 				case localeTypes.depot: difficulty = 1; break;
 				case localeTypes.expedition: difficulty = 0.1; break;
@@ -209,7 +207,6 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 				case localeTypes.warehouse:
 					return 0;
 				case localeTypes.camp:
-				case localeTypes.caravan:
 				case localeTypes.hermit:
 				case localeTypes.tradingpartner:
 					return 0;
@@ -255,8 +252,6 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 					return [ ItemConstants.itemTags.perishable, ItemConstants.itemTags.clothing ];
 				case localeTypes.camp:
 					return [ ItemConstants.itemTags.new, ItemConstants.itemTags.equipment ];
-				case localeTypes.caravan:
-					return [ ItemConstants.itemTags.valuable, ItemConstants.itemTags.equipment ];
 				case localeTypes.hermit:
 					return [ ItemConstants.itemTags.maintenance, ItemConstants.itemTags.equipment ];
 				case localeTypes.tradingpartner:
