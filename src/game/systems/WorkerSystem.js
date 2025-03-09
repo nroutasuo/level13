@@ -1,5 +1,6 @@
 define([
 	'ash',
+	'Text/text',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
@@ -17,7 +18,7 @@ define([
 	'game/components/player/PerksComponent',
 	'game/components/common/CampComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent'
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, PlayerActionConstants, PerkConstants, CampConstants,
+], function (Ash, Text, GameGlobals, GlobalSignals, GameConstants, LogConstants, PlayerActionConstants, PerkConstants, CampConstants,
 	CampNode, PlayerPositionNode, PlayerLocationNode, NearestCampNode,
 	ResourcesComponent,
 	PositionComponent,
@@ -481,17 +482,18 @@ define([
 			if (log) {
 				let isThirsty = this.isPlayerThirsty();
 				let isHungry = this.isPlayerHungry();
-				let msg = null;
+				let msgID = null;
 				
 				if (!inCampSector && isThirsty && Math.random() < 0.25) {
-					msg = "Your throat is dry.";
+					msgID = "ui.log.player_hungry_message";
 				}
 				
-				if (!inCampSector && msg === null && isHungry && Math.random() < 0.25) {
-					msg = "Your stomach is grumbling.";
+				if (!inCampSector && msgID === null && isHungry && Math.random() < 0.25) {
+					msgID = "ui.log.player_thirsty_message";
 				}
 				
-				if (msg != null) {
+				if (msgID != null) {
+					let msg = Text.t(msgID)
 					this.log(LogConstants.MSG_ID_AMBIENT_PLAYER, msg);
 				}
 			}
