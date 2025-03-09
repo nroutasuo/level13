@@ -990,7 +990,7 @@ define([
 						}
 					}
 
-					if (requirements.camp.campfireStarted !== "undefined") {
+					if (typeof requirements.camp.campfireStarted !== "undefined") {
 						let requiredValue = requirements.camp.campfireStarted;
 						let currentValue = campComponent && campComponent.campFireStarted;
 						let result = this.checkRequirementsBoolean(requiredValue, currentValue);
