@@ -164,6 +164,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
 			GlobalSignals.add(this, GlobalSignals.popupClosedSignal, this.onPopupClosed);
 			GlobalSignals.add(this, GlobalSignals.buttonStateChangedSignal, this.onButtonStateChanged);
+			GlobalSignals.add(this, GlobalSignals.localeScoutedSignal, this.scheduleMapUpdate);
 			GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, this.scheduleMapUpdate);
 			GlobalSignals.add(this, GlobalSignals.equipmentChangedSignal, this.scheduleMapUpdate);
 			GlobalSignals.add(this, GlobalSignals.sectorRevealedSignal, this.scheduleMapUpdate);
@@ -208,6 +209,7 @@ define([
 			this.updateOutImprovementsStatus();
 			this.updateMovementActions();
 			this.updateCharacters();
+			this.updateDespair();
 		},
 		
 		scheduleMapUpdate: function () {
@@ -365,9 +367,6 @@ define([
 		},
 
 		updateDespair: function () {
-			if (GameGlobals.playerHelper.isInCamp()) return;
-			if (GameGlobals.playerHelper.isBusy()) return;
-			if (!GameGlobals.playerHelper.isAwake()) return;
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 
 			let activeDespairType = GameGlobals.playerHelper.getActiveDespairType();

@@ -139,6 +139,7 @@ define([
 			if (!GameGlobals.gameState.isFeatureUnlocked("camp")) return null;
 			if (!GameGlobals.gameState.isFeatureUnlocked("move")) return null;
 			if (!GameGlobals.gameState.isFeatureUnlocked("sectors")) return null;
+			if (GameGlobals.playerHelper.isInCamp()) return null;
 			if (!GameGlobals.playerHelper.isAwake()) return null;
 			if (this.playerLocationNodes.head.entity.has(CampComponent)) return null;
 
