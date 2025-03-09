@@ -2495,7 +2495,9 @@ define([
 		getAvailableResourcesForEnemy: function (enemyVO) {
 			let result = new ResourcesVO(storageTypes.DEFINITION);
 			for (let i = 0; i < enemyVO.droppedResources.length; i++) {
-				result.setResource(enemyVO.droppedResources[i], WorldConstants.resourcePrevalence.COMMON, "definition");
+				let name = enemyVO.droppedResources[i];
+				if (!GameGlobals.gameState.isFeatureUnlocked("resource_" + name)) continue;
+				result.setResource(name, WorldConstants.resourcePrevalence.COMMON, "definition");
 			}
 			return result;
 		},
