@@ -89,6 +89,7 @@ define([
 		slowUpdate: function () {
 			this.logAmbientPlayer();
 			for (let node = this.campNodes.head; node; node = node.next) {
+				this.updateCampfire(node);
 				this.logAmbientCamp(node);
 			}
 		},
@@ -387,6 +388,13 @@ define([
 			}
 			
 			return null;
+		},
+
+		updateCampfire: function (node) {
+			if (node.camp.population >= 1) return;
+			if (playerPos.getPosition().equals(node.position.getPosition())) return;
+
+			node.camp.campFireStarted = false;
 		},
 		
 		isPlayerThirsty: function () {

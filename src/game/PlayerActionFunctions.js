@@ -254,6 +254,7 @@ define(['ash',
 				case "build_in_researchcenter": this.buildResearchCenter(param); break;
 				case "use_in_home": this.useHome(param); break;
 				case "use_in_campfire": this.useCampfire(param); break;
+				case "use_in_campfire_2": this.startCampfire(param); break;
 				case "use_in_market": this.useMarket(param); break;
 				case "use_in_hospital": this.useHospital(param); break;
 				case "use_in_hospital_2": this.useHospital2(param); break;
@@ -2292,6 +2293,18 @@ define(['ash',
 			GameGlobals.playerActionFunctions.unlockFeature("rumours");
 			
 			GlobalSignals.tribeStatsChangedSignal.dispatch();
+		},
+		
+		startCampfire: function () {
+			var campSector = this.nearestCampNodes.head.entity;
+			var campComponent = campSector.get(CampComponent);
+
+			campComponent.campFireStarted = true;
+
+			let msg = Text.t("ui.camp.campfire_started_message")
+			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), msg);
+
+			this.completeAction("use_in_campfire_2");
 		},
 		
 		useMarket: function () {

@@ -9,6 +9,7 @@ define([
 	'game/constants/LogConstants',
 	'game/nodes/player/VisionNode',
 	'game/nodes/PlayerLocationNode',
+	'game/components/common/CampComponent',
 	'game/components/common/PositionComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/SectorFeaturesComponent',
@@ -24,6 +25,7 @@ define([
 	LogConstants,
 	VisionNode,
 	PlayerLocationNode,
+	CampComponent,
 	PositionComponent,
 	SectorImprovementsComponent,
 	SectorFeaturesComponent,
@@ -80,6 +82,7 @@ define([
 			var itemsComponent = node.items;
 			var perksComponent = node.perks;
 			var improvements = this.locationNodes.head.entity.get(SectorImprovementsComponent);
+			let campComponent = this.locationNodes.head.entity.get(CampComponent);
 			var inCamp = node.entity.get(PositionComponent).inCamp;
 			var sunlit = featuresComponent.sunlit;
 			let isAwake = vision.isAwake;
@@ -113,8 +116,10 @@ define([
 				if (inCamp) {
 					if (!sunlit) {
 						if (improvements.getCount(improvementNames.campfire) > 0) {
-							maxValue = Math.max(maxValue, 70);
-							addAccumulation("Campfire", 70 / maxValueBase * 2);
+							if (campComponent && campComponent.campFireStarted) {
+								maxValue = Math.max(maxValue, 70);
+								addAccumulation("Campfire", 70 / maxValueBase * 2);
+							}
 						}
 						if (improvements.getCount(improvementNames.lights) > 0) {
 							maxValue = Math.max(maxValue, 100);

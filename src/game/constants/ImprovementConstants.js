@@ -16,6 +16,7 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 			campfire: {
 				displayNames: [ "campfire_name_default", "campfire_name_l2", "campfire_name_l3" ],
 				useActionName: "Sit down",
+				useActionName2: "Light",
 				improvementLevelsPerTechLevel: 5,
 				improvementLevelsPerMajorLevel: 5,
 				logMsgImproved: "Made the campfire a bit cozier",

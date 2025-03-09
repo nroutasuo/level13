@@ -4,8 +4,8 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 	let CampComponent = Ash.Class.extend({
 		
 		id: "",
-		population: 0,
 
+		population: 0,
 		disabledPopulation: [], // population not available for work, { num: int, reason: string, timer: int (seconds), initialTimer: int (seconds) }
 		maxPopulation: 0, // maximum population ever reached in this camp
 		populationByOrigin: {}, // origin: number
@@ -38,6 +38,7 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 			
 			this.rumourpool = 0;
 			this.rumourpoolchecked = false;
+			this.campFireStarted = false;
 
 			this.assignedWorkers = {};
 			this.autoAssignedWorkers = {};
@@ -184,6 +185,7 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 			copy.autoAssignedWorkers = this.autoAssignedWorkers;
 			copy.rumourpool = this.rumourpool;
 			copy.rumourpoolchecked = this.rumourpoolchecked;
+			copy.campFireStarted = this.campFireStarted;
 			
 			copy.populationDecreaseCooldown = this.populationDecreaseCooldown;
 			

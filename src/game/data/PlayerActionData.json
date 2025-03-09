@@ -1367,6 +1367,7 @@
         "launch": 3,
         "send_caravan": 600,
         "use_in_campfire": 5,
+        "use_in_campfire_2": 5,
         "use_in_home": 60,
         "use_in_hospital": 180,
         "use_in_hospital_2": 120,
@@ -3617,7 +3618,8 @@
         "use_in_campfire": {
             "busy": false,
             "camp": {
-                "raid": false
+                "raid": false,
+                "campfireStarted": true
             },
             "inCamp": true,
             "population": [
@@ -3628,6 +3630,14 @@
             "tribe": {
                 "rumoursFull": false
             }
+        },
+        "use_in_campfire_2": {
+            "busy": false,
+            "camp": {
+                "raid": false,
+                "campfireStarted": false
+            },
+            "inCamp": true
         },
         "use_in_home": {
             "busy": false,

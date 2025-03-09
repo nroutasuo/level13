@@ -411,9 +411,10 @@ define([
 		logChangePopulation: function (campPosition, isIncrease, population) {
 			let pos = campPosition.getPosition();
 			pos.inCamp = true;
+			let level = pos.level;
 			let message = null;
 
-			let levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(pos.level).get(LevelComponent);
+			let levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
 			
 			if (isIncrease) {
 				if (population == 1) {
