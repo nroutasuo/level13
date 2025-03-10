@@ -97,6 +97,8 @@ define([
 			
 			var features = Object.assign({}, featuresComponent);
 			features.level = position.level;
+			features.sectorX = position.sectorX;
+			features.sectorY = position.sectorY;
 			features.levelOrdinal = levelOrdinal;
 			features.campOrdinal = campOrdinal;
 			features.condition = featuresComponent.getCondition();

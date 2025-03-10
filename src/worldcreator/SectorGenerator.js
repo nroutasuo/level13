@@ -993,6 +993,7 @@ define([
 			var levelWear = MathUtils.clamp((worldVO.topLevel - l) / (worldVO.topLevel - 5) * 8, 0, 10);
 			var wear = levelWear + WorldCreatorRandom.randomInt(seed * l + (x + 100) * 82 + (y + 100) * 82, -3, 3);
 			if (sectorVO.isCamp) wear = Math.min(3, wear);
+			if (sectorVO.sectorType == SectorConstants.SECTOR_TYPE_SLUM) wear = Math.max(3, wear);
 			sectorVO.wear = MathUtils.clamp(Math.round(wear), 0, 10);
 
 			// damage
