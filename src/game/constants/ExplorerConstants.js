@@ -61,13 +61,13 @@ define(['ash',
 		},
 		
 		MAX_ABILITY_LEVEL: 100,
-		MAX_EXPLORERS_BASE: 1,
+		MAX_EXPLORERS_BASE: 3,
 		
 		// unique explorers that are spawned in locales across the world and the player is guaranteed to meet (if they explore everything)
 		// camp ordinal -> explorer template
 		predefinedExplorers: {
 			2: { id: "gambler", localeType: localeTypes.maintenance, abilityType: "attack", name: "Yimin", icon: "img/characters/explorer_unique_gambler.png", dialogueSource: "explorer_unique_gambler" },
-			3: { id: "dog", localeType: localeTypes.warehouse, abilityType: "scavenge_capacity", name: "Dog", icon: "img/characters/animal_dog.png", dialogueSource: "explorer_generic_dog" },
+			3: { id: "dog", localeType: localeTypes.warehouse, abilityType: "scavenge_capacity", name: "Dog", icon: "img/characters/animal_dog.png", dialogueSource: "explorer_generic_dog_01" },
 			4: { id: "journalist", localeType: localeTypes.library, abilityType: "cost_scout", name: "Yevry", icon: "img/characters/explorer_unique_journalist.png", dialogueSource: "explorer_unique_journalist" },
 			5: { id: "handler", localeType: localeTypes.house, abilityType: "detect_supplies", name: "Jezekiah", icon: "img/characters/explorer_unique_handler.png", dialogueSource: "explorer_unique_handler" },
 			6: { id: "prospector", localeType: localeTypes.store, abilityType: "scavenge_supplies", name: "Sunita", icon: "img/characters/explorer_unique_prospector.png", dialogueSource: "explorer_unique_prospector" },
@@ -129,18 +129,6 @@ define(['ash',
 			{ icon: "img/characters/explorer_template_teen_03.png", dialogueSource: "explorer_template_teen", gender: CultureConstants.genders.MALE },
 		],
 
-
-		/*
-		if (!iconDef.icon) return false;
-		icon
-		gender
-		origin
-		skin
-		abilityType
-		explorerType
-		dialogueSource
-		*/
-		
 		getMaxExplorersRecruited: function (innMajorLevels) {
 			let result = ExplorerConstants.MAX_EXPLORERS_BASE;
 			for (let i = 0; i < innMajorLevels.length; i++) {
@@ -495,6 +483,16 @@ define(['ash',
 					return true;
 			}
 			return true;
+		},
+
+		getRandomDialogueSource: function (abilityType) {
+			if (this.isAnimal(abilityType)) return "explorer_generic_animal_01";
+			let explorerType = this.getExplorerTypeForAbilityType(abilityType);
+			switch (explorerType) {
+				case this.explorerType.FIGHTER: return "explorer_generic_mercenary_01";
+				case this.explorerType.SCOUT: return "explorer_generic_scout_01";
+				case this.explorerType.SCAVENGER: return "explorer_generic_scavenger_01";
+			}
 		},
 		
 		getExplorerTypeForAbilityType: function (abilityType) {
