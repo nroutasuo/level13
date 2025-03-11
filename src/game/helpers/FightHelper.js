@@ -64,14 +64,17 @@ define([
 				return;
 			}
 			
-			if (!GameGlobals.gameState.unlockedFeatures.camps) {
+			if (!GameGlobals.gameState.unlockedFeatures.camp) {
 				winCallback();
 				return;
 			}
 
 			let encounterProbability = this.getRandomEncounterProbability(action);
 
-			if (Math.random() > encounterProbability) return;
+			if (Math.random() > encounterProbability) {
+				winCallback();
+				return;
+			}
 
 			let numEnemies = this.getEnemyCount(action);
 			this.initFightSequence(action, numEnemies, winCallback, fleeCallback, loseCallback);
