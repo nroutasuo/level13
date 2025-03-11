@@ -21,7 +21,9 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 			GlobalSignals.add(this, GlobalSignals.popupResizedSignal, this.onPopupResized);
 
 			this.elements.overlay.click(ExceptionHandler.wrapClick(function (e) {
-				GameGlobals.uiFunctions.popupManager.dismissPopups();
+				if (e.target == e.currentTarget) {
+					GameGlobals.uiFunctions.popupManager.dismissPopups();
+				}
 			}));
 		},
 		
