@@ -1850,6 +1850,27 @@
 		"size": 0.8,
 		"speed": 0.95
 	},
+	"tenrec__template": {
+		"attackRatio": 0.8,
+		"difficulty": 5,
+		"enemyType": "small_animal",
+		"environment": [ "dark", "noflood" ],
+		"rarity": 70,
+		"size": 0.6,
+		"speed": 1
+	},
+	"tenrec__rat": {
+		"campOrdinal": 2,
+		"name": "rat tenrec"
+	},
+	"tenrec__common": {
+		"campOrdinal": 6,
+		"name": "common tenrec"
+	},
+	"tenrec__elephant": {
+		"campOrdinal": 9,
+		"name": "elephant tenrec"
+	},
 	"tentacle_sundew__basic": {
 		"campOrdinal": 2,
 		"name": "Tentacle sundew"
