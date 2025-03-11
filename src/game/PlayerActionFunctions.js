@@ -388,7 +388,7 @@ define(['ash',
 			if (!dialogueComponent) return;
 			
 			dialogueComponent.isEnded = true;
-			
+
 			GlobalSignals.actionCompletedSignal.dispatch();
 		},
 
@@ -874,7 +874,7 @@ define(['ash',
 			let localeType = localeVO.type;
 
 			let localeName = TextConstants.getLocaleName(localeVO, sectorFeaturesComponent);
-			localeName = localeName.split(" ")[localeName.split(" ").length - 1];
+			let localeNameShort = localeName.split(" ")[localeName.split(" ").length - 1];;
 
 			let customRewardTexts = [];
 			
@@ -976,7 +976,7 @@ define(['ash',
 			}
 
 			let playerActionFunctions = this;
-			let successCallback = function () {
+			let successCallback = function (cb) {
 				sectorStatus.localesScouted[i] = true;
 				
 				if (tradingPartner) {
@@ -991,6 +991,8 @@ define(['ash',
 						GameGlobals.gameState.foundLuxuryResources.push(luxuryResource);
 					}
 				}
+
+				cb();
 				
 				playerActionFunctions.save();
 
@@ -1011,7 +1013,7 @@ define(['ash',
 			let explorers = this.playerStatsNodes.head.explorers.getParty();
 			let explorerName = explorers.length > 0 ? MathUtils.randomElement(explorers).name : "";
 
-			sequenceSteps.push({ id: "intro", type: "dialogue", dialogueID: "locale_generic_" + localeType + "_intro", textParams: { name: localeName } });
+			sequenceSteps.push({ id: "intro", type: "dialogue", dialogueID: "locale_generic_" + localeType + "_intro", textParams: { name: localeNameShort } });
 			if (obstacleDialogueID) 
 				sequenceSteps.push({ id: "obstacle", type: "dialogue", dialogueID: obstacleDialogueID, textParams: { name: explorerName } });
 			if (fightChance > 0) 
@@ -1579,6 +1581,8 @@ define(['ash',
 			let explorersComponent = this.playerStatsNodes.head.explorers;
 			let explorerVO = explorersComponent.getExplorerByID(explorerID);
 			let setting = "interact";
+
+			debugger
 
 			if (!explorerVO) {
 				let recruitComponent = GameGlobals.campHelper.findRecruitComponentWithExplorerId(explorerID);
