@@ -180,11 +180,19 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 				positionText += ")"
 			}
 
+			let message = "";
+			
+			if (data.text) message = data.text; // backwards compatibility
+			
+			if (data.messageTextVO) message = Text.compose(data.messageTextVO);
+
+			message = TextConstants.sentencify(message);
+
 			li.$root.toggleClass("log-loaded", (data.loadedFromSave || data.markedAsSeen == true));
 			li.$root.attr("data-loadedFromSave", data.loadedFromSave);
 			li.$root.attr("data-hasBeenShown", data.hasBeenShown);
 			li.$root.attr("data-markedAsSeen", data.markedAsSeen);
-			li.$spanMsg.text(TextConstants.sentencify(data.text));
+			li.$spanMsg.text(message);
 			li.$spanTime.text(UIConstants.getTimeSinceText(data.time) + " ago");
 			li.$spanLevel.toggle(hasPosition);
 			if (hasPosition) li.$spanLevel.text(positionText);

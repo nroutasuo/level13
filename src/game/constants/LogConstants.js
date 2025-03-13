@@ -230,22 +230,11 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 			return null;
 		},
 
-		getMergedMsgText: function (mergedId) {
-			switch (mergedId) {
-				case "SCAVENGE-SCOUT-SCOUT":
-					return "Continued exploring.";
-
-				default:
-					log.w("text not defined for merged log message: " + mergedId);
-					return String(mergedId);
-			}
-		},
-
 		getLostItemMessage: function (resultVO) {
-			var template = TextConstants.getLogItemsText(resultVO.lostItems);
-			template.msg = "Lost " + template.msg + ". ";
+			let textVO = TextConstants.getItemsTextVO(resultVO.lostItems);
+			let itemsMessage = Text.compose(textVO);
 
-			var intros = [];
+			let intros = [];
 			switch (resultVO.action) {
 				default:
 					intros.push("Nearly fell into an unexpected crack in the street");
@@ -256,18 +245,24 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 					intros.push("Got spooked of the shadows and ran, leaving some items behind");
 					break;
 			}
-			var intro = intros[Math.floor(Math.random() * intros.length)];
-			intro = intro + ". ";
-			template.msg = intro + template.msg;
 
-			return { msg: template.msg, replacements: template.replacements, values: template.values };
+			let intro = intros[Math.floor(Math.random() * intros.length)];
+
+			let fragments = [];
+
+			fragments.push({ textKey: intro });
+			fragments.push({ textKey: ". " });
+			fragments.push({ textKey: "Lost " });
+			fragments = fragments.concat(itemsMessage.textFragments);
+			
+			return { textFragments: fragments };
 		},
 
 		getBrokeItemMessage: function (resultVO) {
-			var template = TextConstants.getLogItemsText(resultVO.brokenItems);
-			template.msg = "Broke " + template.msg + ". ";
+			let textVO = TextConstants.getItemsTextVO(resultVO.brokenItems);
+			let itemsMessage = Text.compose(textVO);
 
-			var intros = [];
+			let intros = [];
 			switch (resultVO.action) {
 				default:
 					intros.push("Nearly fell into an unexpected crack in the street");
@@ -277,11 +272,17 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 					intros.push("Fell while climbing");
 					break;
 			}
-			var intro = intros[Math.floor(Math.random() * intros.length)];
-			intro = intro + ". ";
-			template.msg = intro + template.msg;
 
-			return { msg: template.msg, replacements: template.replacements, values: template.values };
+			let intro = intros[Math.floor(Math.random() * intros.length)];
+
+			let fragments = [];
+
+			fragments.push({ textKey: intro });
+			fragments.push({ textKey: ". " });
+			fragments.push({ textKey: "Broke " });
+			fragments = fragments.concat(itemsMessage.textFragments);
+			
+			return { textFragments: fragments };
 		},
 
 		getLostPerksMessage: function (resultVO) {

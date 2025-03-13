@@ -865,155 +865,40 @@ define([
 			return true;
 		},
 
-		getRewardsMessageText: function (rewards, baseMsg, format) {
-			let msg = this.getRewardsMessage(rewards, baseMsg, format);
-			return TextConstants.createTextFromLogMessage(msg.msg, msg.replacements, msg.values);
+		getRewardsMessageText: function (rewards, format) {
+			let textVO = this.getRewardsTextVO(rewards, format);
+			return Text.compose(textVO);
 		},
 
-		getRewardsMessage: function (rewards, baseMsg, format) {
+		getRewardsTextVO: function (rewards, format) {
 			if (!rewards) return null;
 
-			baseMsg = baseMsg || "";
-			format = format || this.RESULT_MGS_FORMAT_LOG;
+			let fragments = [];
 
-			let msg = baseMsg;
-			let replacements = [];
-			let values = [];
+			format = format || this.RESULT_MGS_FORMAT_LOG;
+			
 			let foundSomething = rewards.gainedResources.getTotal() > 0;
 
-			if (baseMsg.length > 0) baseMsg += " ";
-
-
 			if (rewards.gainedResources.getTotal() > 0) {
-				let resourceTemplate = TextConstants.getLogResourceText(rewards.gainedResources);
+				if (format == this.RESULT_MGS_FORMAT_LOG) fragments.push({ textKey: "Gained " });
+				if (format == this.RESULT_MGS_FORMAT_LOG) fragments.push({ textKey: "+" });
 
-				if (format == this.RESULT_MGS_FORMAT_LOG) msg += "Gained ";
-				if (format == this.RESULT_MSG_FORMAT_PREVIW) msg += "+";
-
-				msg += resourceTemplate.msg;
-				replacements = replacements.concat(resourceTemplate.replacements);
-				values = values.concat(resourceTemplate.values);
+				let resourcesTextVO = TextConstants.getResourcesTextVO(rewards.gainedResources);
+				fragments = fragments.concat(resourcesTextVO.textFragments);
 			}
 
 			if (rewards.gainedCurrency) {
-				msg += ", ";
-				foundSomething = true;
-				msg += "$" + replacements.length + ", ";
-				replacements.push("#" + replacements.length + " currency");
-				values.push(rewards.gainedCurrency);
+				fragments.push({ textKey: "ui.common.value_and_name", textParams: { value: rewards.gainedCurrency, name: "currency" } });
 			}
 
 			if (rewards.selectedItems && rewards.selectedItems.length > 0) {
-				msg += ", ";
-				foundSomething = true;
-
-				var loggedItems = {};
-				for (let i = 0; i < rewards.selectedItems.length; i++) {
-					var item = rewards.selectedItems[i];
-					if (typeof loggedItems[item.id] === 'undefined') {
-						msg += "$" + replacements.length + ", ";
-						let itemName = ItemConstants.getItemDisplayName(item);
-						replacements.push("#" + replacements.length + " " + itemName.toLowerCase());
-						values.push(1);
-						loggedItems[item.id] = replacements.length - 1;
-					} else {
-						values[loggedItems[item.id]]++;
-					}
-				}
+				let itemsTextVO = TextConstants.getItemsTextVO(rewards.selectedItems);
+				fragments = fragments.concat(itemsTextVO.textFragments);
 			}
 
-			if (rewards.gainedExplorers && rewards.gainedExplorers.length > 0) {
-				msg += ", ";
-				foundSomething = true;
-				for (let i = 0; i < rewards.gainedExplorers.length; i++) {
-					var explorer = rewards.gainedExplorers[i];
-					msg += "$" + replacements.length + ", ";
-					replacements.push("#" + replacements.length + " " + explorer.name.toLowerCase());
-					values.push(1);
-				}
-			}
+			// TODO support more reward types in getRewardsTextVO
 
-			if (rewards.gainedEvidence) {
-				msg += ", ";
-				foundSomething = true;
-				msg += "$" + replacements.length + ", ";
-				replacements.push("#" + replacements.length + " evidence");
-				values.push(rewards.gainedEvidence);
-			}
-			
-			if (rewards.gainedInsight) {
-				msg += ", ";
-				foundSomething = true;
-				msg += "$" + replacements.length + ", ";
-				replacements.push("#" + replacements.length + " insight");
-				values.push(rewards.gainedInsight);
-			}
-
-			if (rewards.gainedRumours) {
-				msg += ", ";
-				foundSomething = true;
-				msg += "$" + replacements.length + ", ";
-				replacements.push("#" + replacements.length + " rumours");
-				values.push(rewards.gainedRumours);
-			}
-
-			if (rewards.gainedHope) {
-				msg += ", ";
-				foundSomething = true;
-				msg += "$" + replacements.length + ", ";
-				replacements.push("#" + replacements.length + " hope");
-				values.push(rewards.gainedHope);
-			}
-
-			if (rewards.gainedBlueprintPiece) {
-				msg += ", ";
-				foundSomething = true;
-				msg += "$" + replacements.length + ", ";
-				replacements.push("#" + replacements.length + " piece of forgotten technology");
-				values.push(1);
-			}
-
-			if (rewards.gainedPopulation) {
-				msg += ", ";
-				foundSomething = true;
-				msg += "$" + replacements.length + ", ";
-				replacements.push("#" + replacements.length + " population");
-				values.push(rewards.gainedPopulation);
-			}
-			
-			if (rewards.gainedItemUpgrades) {
-				msg += ", ";
-				foundSomething = true;
-				msg += "$" + replacements.length + ", ";
-				replacements.push("#" + replacements.length + " item upgrades");
-				values.push(rewards.gainedItemUpgrades.length);
-			}
-
-			if (foundSomething) {
-				if (format == this.RESULT_MGS_FORMAT_LOG) {
-					msg = TextConstants.sentencify(msg);
-				} else {
-					msg = msg.trim();
-				}
-			} else {
-				msg = "Didn't find anything.";
-			}
-
-			// TODO more (varied?) messages for getting injured
-
-			if (rewards.getGainedInjuries().length > 0) {
-				msg += " Got injured.";
-			}
-
-			if (rewards.getGainedCurses().length > 0) {
-				msg += " Got cursed.";
-			}
-			
-			if (rewards.lostPerks.length > 0) {
-				msg += " Lost" + TextConstants.getListText(rewards.lostPerks.map(perkVO => perkVO.name));
-			}
-
-			return { msg: msg, replacements: replacements, values: values };
+			return { textFragments: fragments };
 		},
 
 		// options:
@@ -1314,14 +1199,12 @@ define([
 	
 			if (resultVO.lostItems && resultVO.lostItems.length > 0) {
 				let messageTemplate = LogConstants.getLostItemMessage(resultVO);
-				let text = TextConstants.createTextFromLogMessage(messageTemplate.msg, messageTemplate.replacements, messageTemplate.values);
-				messages.push({ id: LogConstants.MSG_ID_LOST_ITEM, text: text, addToPopup: true, addToLog: true });
+				messages.push({ id: LogConstants.MSG_ID_LOST_ITEM, text: messageTemplate, addToPopup: true, addToLog: true });
 			}
 	
 			if (resultVO.brokenItems && resultVO.brokenItems.length > 0) {
 				let messageTemplate = LogConstants.getBrokeItemMessage(resultVO);
-				let text = TextConstants.createTextFromLogMessage(messageTemplate.msg, messageTemplate.replacements, messageTemplate.values);
-				messages.push({ id: LogConstants.MSG_ID_BROKE_ITEM, text: text, addToPopup: true, addToLog: true });
+				messages.push({ id: LogConstants.MSG_ID_BROKE_ITEM, text: messageTemplate, addToPopup: true, addToLog: true });
 			}
 				
 			if (resultVO.lostExplorers && resultVO.lostExplorers.length > 0) {

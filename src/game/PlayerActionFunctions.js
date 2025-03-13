@@ -112,15 +112,13 @@ define(['ash',
 			this.sequenceHelper = new SequenceHelper();
 		},
 
-		addLogMessage: function (msgID, msg, replacements, values, actionPosition, visibility) {
+		addLogMessage: function (msgID, msg, actionPosition, visibility) {
 			let playerPosition = this.playerPositionNodes.head.position;
 			
 			actionPosition = actionPosition || playerPosition;
 			visibility = visibility || LogConstants.MSG_VISIBILITY_DEFAULT;
 
 			let options = {
-				replacements: replacements,
-				values: values,
 				position: actionPosition,
 				visibility: visibility || LogConstants.MSG_VISIBILITY_DEFAULT
 			};
@@ -1410,7 +1408,7 @@ define(['ash',
 			for (let i = 0; i < messages.length; i++) {
 				let message = messages[i];
 				if (message.addToLog) {
-					this.addLogMessage(message.id, message.text, null, null, null, message.visibility);
+					this.addLogMessage(message.id, message.text, null, message.visibility);
 				}
 			}
 		},
@@ -1454,7 +1452,8 @@ define(['ash',
 			}
 			
 			let result = TradeConstants.makeResultVO(caravan);
-			let logMsg = GameGlobals.playerActionResultsHelper.getRewardsMessage(result, "A trade caravan returned from " + tradePartner.name + ". ");
+			let resultMessageVO = GameGlobals.playerActionResultsHelper.getRewardsTextVO(result);
+			let logMessage = "A trade caravan returned from " + tradePartner.name + ". " + Text.compose(resultMessageVO);
 			let pendingPosition = campSector.get(PositionComponent).clone();
 			pendingPosition.inCamp = true;
 
@@ -1480,7 +1479,7 @@ define(['ash',
 			GameGlobals.resourcesHelper.moveCurrencyFromBagToCamp(campSector);
 			this.completeAction("send_caravan");
 			
-			this.addLogMessage(LogConstants.MSG_ID_FINISH_SEND_CAMP, logMsg.msg, logMsg.replacements, logMsg.values, pendingPosition);
+			this.addLogMessage(LogConstants.MSG_ID_FINISH_SEND_CAMP, logMsg.msg, pendingPosition);
 			GlobalSignals.inventoryChangedSignal.dispatch();
 		},
 
@@ -2273,10 +2272,10 @@ define(['ash',
 					campComponent.rumourpool--;
 					var campfireLevel = improvementsComponent.getLevel(improvementNames.campfire);
 					this.playerStatsNodes.head.rumours.value += GameGlobals.campBalancingHelper.getRumoursPerVisitCampfire(campfireLevel);
-					let msg = Text.t("ui.camp.use_campfire_message");
+					let msg = Text.t("ui.actions.use_campfire_message");
 					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_CAMPFIRE_SUCC, msg);
 				} else {
-					let msg = Text.t("ui.camp.use_campfire_failed_message")
+					let msg = Text.t("ui.actions.use_campfire_failed_message")
 					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_CAMPFIRE_FAIL, msg);
 					campComponent.rumourpoolchecked = true;
 				}
@@ -2303,13 +2302,12 @@ define(['ash',
 		
 		useMarket: function () {
 			var campSector = this.nearestCampNodes.head.entity;
-			var campComponent = campSector.get(CampComponent);
 			var improvementsComponent = campSector.get(SectorImprovementsComponent);
 			// TODO move this check to startAction
 			if (campSector) {
 				var marketLevel = improvementsComponent.getLevel(improvementNames.market);
 				this.playerStatsNodes.head.rumours.value += GameGlobals.campBalancingHelper.getRumoursPerVisitMarket(marketLevel);
-				GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_MARKET, "Visited the market and listened to the latest gossip.");
+				GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_MARKET, "ui.actions.use_in_market_completed_message");
 			} else {
 				log.w("No camp sector found.");
 			}

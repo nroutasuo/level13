@@ -916,11 +916,11 @@
 				let resourcesLost = campComponent.lastRaid.resourcesLost;
 				let defendersLost = campComponent.lastRaid.defendersLost;
 				if (resourcesLost && resourcesLost.getTotal() > 0) {
-					var resLog = TextConstants.getLogResourceText(resourcesLost);
-					var resS = TextConstants.createTextFromLogMessage(resLog.msg, resLog.replacements, resLog.values);
-					result = "Camp attacked, lost: " + resS + ".";
+					let resourcesTextVO = TextConstants.getResourcesTextVO(resourcesLost);
+					let resourcesText = Text.compose(resourcesTextVO);
+					result = Text.t("ui.camp.last_raid_lost_message", resourcesText);
 				} else {
-					result = "Camp attacked, nothing left to steal.";
+					result = Text.t("ui.camp.last_raid_lost_no_resources_message");
 				}
 				
 				if (defendersLost > 0) {

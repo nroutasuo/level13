@@ -12,8 +12,34 @@ define(function () {
 
 		TEXT_PARAM_WILDCARD: "wildcard",
 
+		compose: function (textVO) {
+			if (!textVO) {
+				debugger
+				log.w("no TextVO provided for Text.compose");
+				return "";
+			}
+
+			if (!textVO.textFragments) {
+				debugger
+				log.w("invalid TextVO provided for Text.compose");
+				return "";
+			}
+			
+			let result = "";
+
+			for (let i = 0; i < textVO.textFragments.length; i++) {
+				let fragment = textVO.textFragments[i];
+				result += this.t(fragment.textKey, fragment.textParams);
+			}
+
+			return result;
+		},
+
 		t: function (key, options) {
-			if (!key) return "";
+			if (!key) {
+				log.w("no key provided for Text.t");
+				return "";
+			}
 
 			let isDebugMode = this.isDebugMode;
 
@@ -130,6 +156,10 @@ define(function () {
 				} else {
 					log.w("no parameter value [" + p + "] provided for key [" + key + "]");
 					return value;
+				}
+
+				if (typeof value === "object") {
+					value = Text.t(value.textKey, value.textParams);
 				}
 
 				if (Text.hasKey(value)) {

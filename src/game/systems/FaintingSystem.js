@@ -22,7 +22,6 @@ define([
 	'game/components/sector/MovementOptionsComponent',
 	'game/components/player/HopeComponent',
 	'game/components/player/PlayerActionResultComponent',
-	'game/components/common/LogMessagesComponent',
 	'game/systems/PlayerPositionSystem'
 ], function (Ash,
 	MathUtils,
@@ -46,7 +45,6 @@ define([
 	MovementOptionsComponent,
 	HopeComponent,
 	PlayerActionResultComponent,
-	LogMessagesComponent,
 	PlayerPositionSystem
 ) {
 	var FaintingSystem = Ash.System.extend({

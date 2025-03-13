@@ -1076,79 +1076,43 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			}
 			return "resource heap (" + resourceName + ")";
 		},
-		
-		getLogResourceText: function (resourcesVO) {
-			var msg = "";
-			var replacements = [];
-			var values = [];
+
+		getResourcesTextVO: function (resourcesVO) {
+			let list = [];
+
 			for (let key in resourceNames) {
 				let name = resourceNames[key];
 				let amount = resourcesVO.getResource(name);
 				if (amount > 0) {
-					msg += "$" + replacements.length + ", ";
-					replacements.push("#" + replacements.length + " " + name);
-					values.push(Math.round(amount));
+					let listFragment = { textKey: "ui.common.value_and_name", textParams: { value: Math.round(amount), name: name } };
+					list.push(listFragment);
 				}
 			}
-			msg = msg.slice(0, -2);
-			return { msg: msg, replacements: replacements, values: values };
+
+			return this.getListTextVO(list);
 		},
-		
-		getLogItemsText: function (items) {
-			var msg = "";
-			var replacements = [];
-			var values = [];
-			var loggedItems = {};
+
+		getItemsTextVO: function (items) {
+			let itemCounts = {};
+
 			for (let i = 0; i < items.length; i++) {
-				var item = items[i];
-				if (typeof loggedItems[item.id] === 'undefined') {
-					msg += "$" + replacements.length + ", ";
-					let itemName = ItemConstants.getItemDisplayName(item);
-					replacements.push("#" + replacements.length + " " + itemName.toLowerCase());
-					values.push(1);
-					loggedItems[item.id] = replacements.length - 1;
-				} else {
-					values[loggedItems[item.id]]++;
-				}
+				let item = items[i];
+				let itemID = item.id;
+				if (!itemCounts[itemID]) itemCounts[itemID] = 0;
+				itemCounts[itemID]++;
 			}
-			msg = msg.slice(0, -2);
-			if (Object.keys(loggedItems).length > 1) {
-				var lastCommaIndex = msg.lastIndexOf(",");
-				msg = msg.substring(0, lastCommaIndex) + " and" + msg.substring(lastCommaIndex + 1);
+
+			let list = [];
+
+			for (let itemID in itemCounts) {
+				let count = itemCounts[itemID];
+				if (count == 0) continue;
+				let itemName = ItemConstants.getItemDisplayNameKey(item);
+				let listFragment = { textKey: "ui.common.value_and_name", textParams: { value: count, name: itemName } };
+				list.push(listFragment);
 			}
-			return {msg: msg, replacements: replacements, values: values};
-		},
-		
-		createTextFromLogMessage: function (msg, replacements, values, includePeriod) {
-			var text = msg;
-			var value = 0;
-			var useValues = values.length > 0;
-			for (let i = 0; i < replacements.length; i++) {
-				if (useValues) {
-					value = values[i];
-				}
-				if (value > 0 || value.length > 0 || !useValues) {
-					text = text.replace("$" + i, replacements[i]);
-				} else {
-					text = text.replace("$" + i, "");
-				}
-				
-				if (useValues) {
-					text = text.replace("#" + i, values[i]);
-				}
-			}
-			
-			text = text.trim();
-			text = text.replace(/ ,/g, "");
-			text = text.replace(/^,/g, "");
-			text = text.replace(/,$/g, "");
-			text = text.replace(/\, \./g, ".");
-			if (includePeriod && text.substr(text.length - 1) !== "." && text.substr(text.length - 1) !== "!")
-				text += ".";
-			text = text.trim();
-			text = TextConstants.sentencify(text);
-			
-			return text;
+
+			return this.getListTextVO(list);
 		},
 		
 		getFightChancesText: function (probability) {
@@ -1548,27 +1512,41 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		},
 		
 		getListText: function (list, max) {
+			let textPieceVO = this.getListTextVO(list, max);
+			return Text.compose(textPieceVO);
+		},
+
+		getListTextVO: function (list, max) {
+			let fragments = [];
+
 			if (!list || list.length == 0) {
-				return Text.t("ui.common.list_template_zero");
+				fragments.push( { textKey: "ui.common.list_template_zero", textParams: {} } );
 			} else if (list.length == 1) {
-				return Text.t("ui.common.list_template_one", { value: list[0] });
+				fragments.push( { textKey: "ui.common.list_template_one", textParams: { value: list[0] } } );
 			} else if (list.length == 2) {
-				return Text.t("ui.common.list_template_two", { value1: list[0], value2: list[1] });
+				fragments.push( { textKey: "ui.common.list_template_two", textParams: { value1: list[0], value2: list[1] }});
 			} else if (max && list.length > max) {
+				// cropped list
 				let displayedList = list.slice(0, max);
 				let numHiddenItems = list.length - displayedList.length;
-				let start = Text.t("ui.common.list_template_cropped_start");
-				let items = displayedList.join(Text.t("ui.common.list_template_cropped_delimiter"));
-				let end = Text.t("ui.common.list_template_cropped_end", { numCropped: numHiddenItems });
-				return start + items + end;
+				fragments.push( { textKey: "ui.common.list_template_cropped_start" });
+				for (let i = 0; i < displayedList.length; i++) {
+					if (i > 0) fragments.push( { textKey: "ui.common.list_template_cropped_delimiter" } );
+					fragments.push( { textKey: "ui.common.value_simple_template", textParams: { value: displayedList[i] } } );
+				}
+				fragments.push( { textKey: "ui.common.list_template_cropped_end", textParams: { numCropped: numHiddenItems } })
 			} else {
-				let start = Text.t("ui.common.list_template_many_start");
-				let items = list.join(Text.t("ui.common.list_template_many_delimiter"));
-				let end = Text.t("ui.common.list_template_many_end");
-				return start + items + end;
+				// regular list
+				fragments.push( { textKey: "ui.common.list_template_many_start" });
+				for (let i = 0; i < list.length; i++) {
+					if (i > 0) fragments.push( { textKey: "ui.common.list_template_many_delimiter" } );
+					fragments.push( { textKey: "ui.common.value_simple_template", textParams: { value: list[i] } } );
+				}
+				fragments.push( { textKey: "ui.common.list_template_many_end" });
 			}
-		},
-		
+
+			return { textFragments: fragments };
+		}
 	};
 		
 	function initSectorTexts() {

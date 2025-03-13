@@ -8,13 +8,12 @@ define([
 	'game/constants/ItemConstants',
 	'game/constants/PerkConstants',
 	'game/components/common/PositionComponent',
-	'game/components/common/LogMessagesComponent',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/player/PlayerActionComponent',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/PlayerLocationNode',
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, ItemConstants, PerkConstants, PositionComponent, LogMessagesComponent, SectorFeaturesComponent, SectorStatusComponent, PlayerActionComponent, PlayerStatsNode, PlayerLocationNode) {
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, ItemConstants, PerkConstants, PositionComponent, SectorFeaturesComponent, SectorStatusComponent, PlayerActionComponent, PlayerStatsNode, PlayerLocationNode) {
 	
 	let PerkSystem = Ash.System.extend({
 		
@@ -197,7 +196,6 @@ define([
 		},
 		
 		addPerkDeactivatedMessage: function (perkID) {
-			let logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
 			let playerPos = this.playerNodes.head.entity.get(PositionComponent);
 			
 			// TODO different message depending on if perk was deactivated due to moving or by changing equipment

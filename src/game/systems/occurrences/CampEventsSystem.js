@@ -315,8 +315,6 @@ define([
 			this.scheduleEvent(campNode, event);
 
 			let logMsg;
-			let replacements = [];
-			let values = [];
 			let visibility = LogConstants.MSG_VISIBILITY_DEFAULT;
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.accident:
@@ -370,10 +368,7 @@ define([
 					} else {
 						logMsg = "Raid over.";
 						if (lostResources.getTotal() > 0) {
-							var lostResTxt = TextConstants.getLogResourceText(lostResources);
-							logMsg += " We lost " + lostResTxt.msg + ".";
-							replacements = replacements.concat(lostResTxt.replacements);
-							values = values.concat(lostResTxt.values);
+							logMsg += " We lost some resources.";
 						} else {
 							logMsg += " There was nothing left to steal.";
 						}
@@ -415,7 +410,7 @@ define([
 					break;
 			}
 
-			this.addLogMessage(logMsg, replacements, values, campNode, visibility);
+			this.addLogMessage(logMsg, campNode, visibility);
 			
 			GlobalSignals.campEventEndedSignal.dispatch(campNode.entity);
 			GlobalSignals.saveGameSignal.dispatch(GameConstants.SAVE_SLOT_DEFAULT, false);
@@ -501,7 +496,7 @@ define([
 			GameGlobals.gameState.increaseGameStatKeyed("numCampEventsByType", event);
 			GlobalSignals.campEventStartedSignal.dispatch(event);
 
-			if (logMsg) this.addLogMessage(logMsg, null, null, campNode);
+			if (logMsg) this.addLogMessage(logMsg, campNode);
 
 			if (duration == 0) {
 				this.endEvent(campNode, event);
@@ -824,17 +819,15 @@ define([
 			return GameGlobals.campHelper.getCampRaidDanger(campSector);
 		},
 		
-		addLogMessage: function (msg, replacements, values, camp, visibility) {
+		addLogMessage: function (msg, camp, visibility) {
 			let campPos = camp.entity.get(PositionComponent).getPositionInCamp();
 
 			let options = {
-				replacements: replacements,
-				values: values,
 				position: campPos,
 				visibility: visibility
 			};
 
-			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_CAMP_EVEN, msg, options);
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_CAMP_EVENT, msg, options);
 		}
 
 	});

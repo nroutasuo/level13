@@ -2,12 +2,11 @@ define(['ash', 'game/constants/LogConstants', 'game/constants/TextConstants'], f
 	
 	let LogMessageVO = Ash.Class.extend({
 		
-		constructor: function (logMsgID, message, replacements, values, position, visibility, timeOffset) {
+		constructor: function (logMsgID, messageTextVO, position, visibility, timeOffset) {
 			timeOffset = timeOffset || 0;
+
 			this.logMsgID = logMsgID;
-			this.message = message;
-			this.replacements = replacements ? replacements : [];
-			this.values = values ? values : [];
+			this.messageTextVO = messageTextVO;
 
 			this.position = position ? position.getPosition().clone() : null;
 			this.visibility = visibility || LogConstants.MSG_VISIBILITY_DEFAULT;
@@ -19,19 +18,6 @@ define(['ash', 'game/constants/LogConstants', 'game/constants/TextConstants'], f
 
 			this.loadedFromSave = false;
 			this.combined = 0;
-			this.text = this.createText();
-		},
-		
-		createText: function () {
-			this.text = TextConstants.createTextFromLogMessage(this.message, this.replacements, this.values, true);
-			return this.text;
-		},
-		
-		getText: function () {
-			if (!this.text) {
-				this.createText();
-			}
-			return this.text;
 		},
 	
 	});

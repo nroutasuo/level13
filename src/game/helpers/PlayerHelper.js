@@ -238,19 +238,26 @@ define([
 
 			return false;
 		},
-
-		addLogMessageWithParams: function (id, msg, replacements, values) {
-			this.addLogMessage(id, msg, { replacements: replacements, values: values });
-		},
 		
 		addLogMessageWithPosition: function (id, msg, position) {
 			this.addLogMessage(id, msg, { position: position });
 		},
 
+		// msg can be string, TextFragmentVO, or TextVO
 		addLogMessage: function (id, msg, options) {
-			if (!msg || msg.length == 0) {
+			if (!msg) {
 				log.i("No message text defined for log message");
 				return;
+			}
+
+			let messageTextVO = msg;
+
+			if (typeof msg === "string") {
+				messageTextVO = { textFragments: [ { textKey: msg } ] };
+			}
+
+			if (msg.textKey) {
+				messageTextVO = { textFragments: [ msg ] };
 			}
 
 			id = id || LogConstants.getUniqueID();
@@ -269,13 +276,11 @@ define([
 				this.lastLogMessageByID[id] = now;
 			}
 
-			let replacements = options.replacements || null;
-			let values = options.values || null;
 			let position = options.position || this.playerPosNodes.head.position.getPosition();
 			let visibility = options.visibility || LogConstants.MSG_VISIBILITY_DEFAULT;
 
 			let logComponent = this.playerPosNodes.head.entity.get(LogMessagesComponent);
-			logComponent.addMessage(id, msg, replacements, values, position, visibility);
+			logComponent.addMessage(id, messageTextVO, position, visibility);
 		},
 		
 		isReadyForExploration: function () {

@@ -5,13 +5,11 @@ define([
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/TutorialConstants',
-	'game/nodes/LogNode',
 	'game/nodes/PlayerLocationNode',
-], function (Ash, Text, GameGlobals, GlobalSignals, TutorialConstants, LogNode, PlayerLocationNode) {
+], function (Ash, Text, GameGlobals, GlobalSignals, TutorialConstants, PlayerLocationNode) {
 	
 	let TutorialSystem = Ash.System.extend({
 		
-		logNodes: null,
 		playerLocationNodes: null,
 
 		tutorialsByTrigger: {},
@@ -25,7 +23,6 @@ define([
 		addToEngine: function (engine) {
 			this.engine = engine;
 
-			this.logNodes = engine.getNodeList(LogNode);
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			
 			GlobalSignals.add(this, GlobalSignals.triggerSignal, this.onTrigger);
@@ -34,7 +31,6 @@ define([
 		removeFromEngine: function (engine) {
 			this.engine = null;
 
-			this.logNodes = null;
 			this.playerLocationNodes = null;
 
 			GlobalSignals.removeAll(this);

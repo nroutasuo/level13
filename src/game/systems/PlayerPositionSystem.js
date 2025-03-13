@@ -406,8 +406,8 @@ define([
 			return "There is no ceiling here, the whole level is open to the elements. Sun glares down from an impossibly wide blue sky all above.";
 		},
 
-		addLogMessage: function (msgID, msg, replacements, values) {
-			GameGlobals.playerHelper.addLogMessageWithParams(msgID, msg, replacements, values);
+		addLogMessage: function (msgID, msg) {
+			GameGlobals.playerHelper.addLogMessage(msgID, msg);
 		},
 
 	});
