@@ -190,8 +190,7 @@ define([
 					p[key] = this.getTutorialMessageParam(msgParams[key]);
 				}
 			}
-			let msg = Text.t(msgID, p);
-			GameGlobals.playerHelper.addLogMessage(tutorialID, msg);
+			GameGlobals.playerHelper.addLogMessage(tutorialID, { textKey: msgID, textParams: p });
 		},
 
 		getTutorialMessageParam: function (paramID) {

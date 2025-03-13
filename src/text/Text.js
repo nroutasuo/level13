@@ -42,10 +42,9 @@ define(function () {
 			}
 
 			let isDebugMode = this.isDebugMode;
-
-			let wrap = function (text) { return isDebugMode ? ("|" + text + "|") : text };
-
 			let hasKey = this.hasKey(key);
+
+			let wrap = function (text) { return isDebugMode && hasKey ? ("|" + text + "|") : text };
 
 			if (!hasKey) {
 				log.w("no such text key: [" + key + "]");
