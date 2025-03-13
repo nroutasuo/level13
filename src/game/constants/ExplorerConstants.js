@@ -239,7 +239,7 @@ define(['ash',
 				validTemplates.push(template);
 			}
 
-			if (validTemplates.length == 1) {
+			if (validTemplates.length == 0) {
 				log.w("no valid explorer templates found");
 				return { id: "fallback", dialogueSource: "explorer_generic_01" };
 			}
@@ -267,7 +267,7 @@ define(['ash',
 				possibleTypes = possibleTypes.filter(t => this.getExplorerTypeForAbilityType(t) == template.explorerType);
 			}
 
-			if (possibleTypes.length == 1) {
+			if (possibleTypes.length == 0) {
 				log.w("no possible ability types found for template " + template.id);
 				return ExplorerConstants.abilityType.COST_SCOUT;
 			}
