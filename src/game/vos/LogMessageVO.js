@@ -1,4 +1,4 @@
-define(['ash', 'game/constants/LogConstants', 'game/constants/TextConstants'], function (Ash, LogConstants, TextConstants) {
+define(['ash', 'game/constants/LogConstants'], function (Ash, LogConstants) {
 	
 	let LogMessageVO = Ash.Class.extend({
 		
@@ -10,11 +10,8 @@ define(['ash', 'game/constants/LogConstants', 'game/constants/TextConstants'], f
 
 			this.position = position ? position.getPosition().clone() : null;
 			this.visibility = visibility || LogConstants.MSG_VISIBILITY_DEFAULT;
-			
-			this.time = new Date();
-			if (timeOffset != 0) {
-				this.time.setSeconds(this.time.getSeconds() - timeOffset);
-			}
+
+			this.timestamp = new Date().getTime();
 
 			this.loadedFromSave = false;
 			this.combined = 0;

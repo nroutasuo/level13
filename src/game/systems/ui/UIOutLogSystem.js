@@ -188,12 +188,16 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 
 			message = TextConstants.sentencify(message);
 
+			let timestamp = data.timestamp;
+
+			if (!timestamp && data.time) timestamp = data.time; // backwards compatibility
+
 			li.$root.toggleClass("log-loaded", (data.loadedFromSave || data.markedAsSeen == true));
 			li.$root.attr("data-loadedFromSave", data.loadedFromSave);
 			li.$root.attr("data-hasBeenShown", data.hasBeenShown);
 			li.$root.attr("data-markedAsSeen", data.markedAsSeen);
 			li.$spanMsg.text(message);
-			li.$spanTime.text(UIConstants.getTimeSinceText(data.time) + " ago");
+			li.$spanTime.text(UIConstants.getTimeSinceText(timestamp) + " ago");
 			li.$spanLevel.toggle(hasPosition);
 			if (hasPosition) li.$spanLevel.text(positionText);
 			li.$spanMsgCount.toggle(hasCount);
@@ -201,7 +205,7 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 		},
 
 		isLogListItemDataSame: function (d1, d2) {
-			return d1.logMsgID == d2.logMsgID && d1.time == d2.time;
+			return d1.logMsgID == d2.logMsgID && (d1.timeStamp == d2.timeStamp || d1.time == d2.time);
 		},
 
 		markLogMessagesSeen: function () {

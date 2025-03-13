@@ -37,6 +37,35 @@ function (Ash, GameGlobals, LogConstants, TextConstants, LogMessageVO) {
 			return copy;
 		},
 
+		customLoadFromSave: function (componentValues) {
+			this.hasNewMessages = componentValues.hasNewMessages;
+			this.messages = [];
+
+			debugger
+
+			for (let i = 0; i < componentValues.messages.length; i++) {
+				let messageData = componentValues.messages[i];
+				
+				let messageVO = new LogMessageVO(messageData.logMsgID, messageData.messageTextVO, null, messageData.visibility);
+
+				let timestamp = messageData.timestamp;
+
+				// backwards compatibility (used to save a Date object called time but switched to a timestamp)
+				if (messageData.time) {
+					timestamp = Date.parse(messageData.time);
+				}
+				
+				if (messageData.text) messageVO.text = messageData.text;
+				messageVO.hasBeenShown = messageData.hasBeenShown || false;
+				messageVO.markedAsSeen = messageData.markedAsSeen || false;
+				messageVO.timestamp = timestamp;
+				messageVO.position = messageData.position;
+
+				this.messages.push(messageVO);
+			}
+		}
+
+
 	});
 
 	return LogMessagesComponent;
