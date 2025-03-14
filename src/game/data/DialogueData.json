@@ -666,6 +666,11 @@
 				"character_drifter_default_meet_05_p1"
 			]
 		},
+		"character_drifter_default_meet_06": {
+			"pages": [
+				"character_drifter_default_meet_06_p1"
+			]
+		},
 		"character_generic_helpful_meet_poi_blocker_debris_01": {
 			"conditions": {
 				"vicinity": "blocker_debris"
@@ -817,6 +822,11 @@
 		"character_generic_reserved_meet_01": {
 			"pages": [
 				"character_generic_reserved_meet_01_p1"
+			]
+		},
+		"character_generic_reserved_meet_02": {
+			"pages": [
+				"character_generic_reserved_meet_02_p1"
 			]
 		},
 		"character_generic_story_explain_ground_01": {
@@ -1073,6 +1083,11 @@
 				"character_hunter_default_meet_04_p1"
 			]
 		},
+		"character_hunter_default_meet_05": {
+			"pages": [
+				"character_hunter_default_meet_5_p1"
+			]
+		},
 		"character_mercenary_default_meet_01": {
 			"pages": [
 				"character_mercenary_default_meet_01_p1"
@@ -1213,6 +1228,11 @@
 				"character_shaman_default_meet_04_p1"
 			]
 		},
+		"character_shaman_default_meet_05": {
+			"pages": [
+				"character_shaman_default_meet_05_p1"
+			]
+		},
 		"character_shaman_default_meet_blessing": {
 			"pages": [
 				{
@@ -1318,6 +1338,11 @@
 		"character_surfaceRefugee_default_interact_08": {
 			"pages": [
 				"character_surfaceRefugee_default_interact_08_p1"
+			]
+		},
+		"character_surfaceRefugee_default_interact_09": {
+			"pages": [
+				"character_surfaceRefugee_default_interact_09_p1"
 			]
 		},
 		"character_surfaceRefugee_default_meet_01": {
@@ -3945,6 +3970,9 @@
 		},
 		"explorer_unique_journalist_story_start": {
 			"isUrgent": true,
+			"conditions": {
+				"inCamp": true
+			},
 			"pages": [
 				{
 					"buttonKey": "npc_request_listen",
@@ -4837,7 +4865,9 @@
 					"character_drifter_default_meet_03",
 					"character_drifter_default_meet_04",
 					"character_drifter_default_meet_05",
+					"character_drifter_default_meet_06",
 					"character_generic_reserved_meet_01",
+					"character_generic_reserved_meet_02",
 					"character_generic_helpful_meet_poi_campable_01",
 					"character_generic_helpful_meet_poi_campable_02",
 					"character_generic_helpful_meet_poi_settlement",
@@ -4873,7 +4903,9 @@
 					"character_hunter_default_meet_02",
 					"character_hunter_default_meet_03",
 					"character_hunter_default_meet_04",
+					"character_hunter_default_meet_05",
 					"character_generic_reserved_meet_01",
+					"character_generic_reserved_meet_02",
 					"character_generic_helpful_meet_poi_campable_01",
 					"character_generic_helpful_meet_poi_campable_02",
 					"character_generic_helpful_meet_poi_settlement",
@@ -4904,6 +4936,7 @@
 					"character_mercenary_default_meet_02",
 					"character_mercenary_default_meet_03",
 					"character_generic_reserved_meet_01",
+					"character_generic_reserved_meet_02",
 					"character_generic_story_explain_ground_03",
 					"character_generic_story_explain_ground_04",
 					"character_generic_helpful_meet_poi_campable_01",
@@ -4939,6 +4972,7 @@
 					"character_messenger_default_meet_04",
 					"character_messenger_default_meet_05",
 					"character_generic_reserved_meet_01",
+					"character_generic_reserved_meet_02",
 					"character_generic_helpful_meet_poi_campable_01",
 					"character_generic_helpful_meet_poi_campable_02",
 					"character_generic_helpful_meet_poi_settlement",
@@ -4991,6 +5025,7 @@
 					"character_generic_story_explain_ground_03",
 					"character_generic_story_explain_ground_04",
 					"character_generic_reserved_meet_01",
+					"character_generic_reserved_meet_02",
 					"character_generic_stranded_meet_water",
 					"character_generic_stranded_meet_directions",
 					"character_generic_story_fall_theory_terrorists"
@@ -5010,6 +5045,7 @@
 					"character_shaman_default_meet_02",
 					"character_shaman_default_meet_03",
 					"character_shaman_default_meet_04",
+					"character_shaman_default_meet_05",
 					"character_generic_helpful_meet_poi_water_01",
 					"character_generic_helpful_meet_poi_water_02",
 					"character_generic_helpful_meet_poi_hazard_pollution_01",
@@ -5085,6 +5121,7 @@
 					"character_surfaceRefugee_default_interact_06",
 					"character_surfaceRefugee_default_interact_07",
 					"character_surfaceRefugee_default_interact_08",
+					"character_surfaceRefugee_default_interact_09",
 					"character_workerGeneric_interact_spirits_01",
 					"character_workerGeneric_interact_spirits_02",
 					"character_workerGeneric_interact_spirits_03",
