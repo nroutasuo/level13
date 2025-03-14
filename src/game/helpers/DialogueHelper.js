@@ -175,6 +175,8 @@ define(['ash',
             },
 
             isExplorerDialogueNewForEntry: function (explorerVO, entry) {
+                let isAnimal = ExplorerConstants.isAnimal(explorerVO.abilityType);
+                if (isAnimal) return false;
                 return explorerVO.seenDialogues && explorerVO.seenDialogues.indexOf(entry.dialogueID) < 0
             },
             
