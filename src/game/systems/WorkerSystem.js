@@ -392,6 +392,7 @@ define([
 
 		updateCampfire: function (node) {
 			if (node.camp.population >= 1) return;
+			let playerPos = this.playerNodes.head.position;
 			if (playerPos.getPosition().equals(node.position.getPosition())) return;
 
 			node.camp.campFireStarted = false;
