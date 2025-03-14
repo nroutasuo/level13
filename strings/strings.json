@@ -1616,6 +1616,12 @@
             "sector_status_passage_stairwell_built_description": "There is a <style='highlight'>staircase</style> here, and it has been repaired.",
             "sector_status_passage_stairwell_default_description": "There is a <style='highlight'>staircase</style> here, but it needs repair.",
             "sector_status_resources_found_field": "Resources found: {list}",
+            "enter_level_message_intro": "Entered Level {level}.",
+            "enter_level_surface_message": "There is no ceiling here, the whole level is open to the elements. The sun glares down from an impossibly wide blue sky above.",
+            "enter_level_ground_message": "The floor here is different - uneven, organic, continuous. There seems to be no way further down. There are plants, mud, stone and signs of animal life.",
+            "enter_level_15_message": "Only now you notice the lack of scents here, away from the Ground with its dirt and leaves. It feels barren.",
+            "enter_level_escape_message": "One more level down. One more step towards freedom.",
+            "enter_level_default_message": "The streets are indifferent to your presence.",
             "sector_status_scavenged_percent_field": "Scavenged: {value}%"
         },
         "inventory": {
@@ -1712,7 +1718,10 @@
             "tutorial_produced_robot_message": "Our first worker robot is ready. it will help inhabitants with their tasks.",
             "tutorial_used_hospital_message": "Healed all injuries.",
             "tutorial_warning_first_camp_completed_message": "There is nothing more we can build here now, with our current abilities. best to explore the city more.",
-            "tutorial_warning_storage_full_message": "Storage of {resource} is full."
+            "tutorial_warning_storage_full_message": "Storage of {resource} is full.",
+            "send_caravan_start_message": "A trade caravan heads out into the City.",
+            "use_library_message": "Spent some time studying knowledge of old at the library.",
+            "use_temple_message": "Donated to the temple."
         },
         "main": {
             "location_header_in_default": "{name} (Level {level})",

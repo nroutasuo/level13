@@ -183,7 +183,7 @@ define(['ash',
 						caravansComponent.pendingCaravan.returnDuration = duration;
 						caravansComponent.outgoingCaravans.push(caravansComponent.pendingCaravan);
 						caravansComponent.pendingCaravan = null;
-						GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_START_SEND_CAMP, "A trade caravan heads out into the City.");
+						GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_START_SEND_CAMP, "ui.log.send_caravan_start_message");
 						GlobalSignals.caravanSentSignal.dispatch();
 						GameGlobals.gameState.increaseGameStatSimple("numCaravansSent");
 						break;
@@ -1581,8 +1581,6 @@ define(['ash',
 			let explorerVO = explorersComponent.getExplorerByID(explorerID);
 			let setting = "interact";
 
-			debugger
-
 			if (!explorerVO) {
 				let recruitComponent = GameGlobals.campHelper.findRecruitComponentWithExplorerId(explorerID);
 				explorerVO = recruitComponent.explorer;
@@ -2272,10 +2270,10 @@ define(['ash',
 					campComponent.rumourpool--;
 					var campfireLevel = improvementsComponent.getLevel(improvementNames.campfire);
 					this.playerStatsNodes.head.rumours.value += GameGlobals.campBalancingHelper.getRumoursPerVisitCampfire(campfireLevel);
-					let msg = Text.t("ui.actions.use_campfire_message");
+					let msg = "ui.actions.use_campfire_message";
 					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_CAMPFIRE_SUCC, msg);
 				} else {
-					let msg = Text.t("ui.actions.use_campfire_failed_message")
+					let msg = "ui.actions.use_campfire_failed_message";
 					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_CAMPFIRE_FAIL, msg);
 					campComponent.rumourpoolchecked = true;
 				}
@@ -2350,7 +2348,7 @@ define(['ash',
 			
 			let libraryLevel = improvementsComponent.getLevel(improvementNames.library);
 			this.playerStatsNodes.head.evidence.value += GameGlobals.campBalancingHelper.getEvidencePerUseLibrary(libraryLevel);
-			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_LIBRARY, "Spent some time studying knowledge of old the library.");
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_LIBRARY, "ui.log.use_library_message");
 
 			this.completeAction("use_in_library");
 		},
@@ -2358,7 +2356,7 @@ define(['ash',
 		useTemple: function () {
 			this.playerStatsNodes.head.entity.get(HopeComponent).hope += CampConstants.HOPE_PER_DONATION;
 			this.completeAction("use_in_temple");
-			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_TEMPLE, "Donated to the temple.");
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_TEMPLE, "ui.log.use_temple_message");
 			GlobalSignals.inventoryChangedSignal.dispatch();
 			this.forceStatsBarUpdate();
 		},

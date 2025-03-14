@@ -278,31 +278,29 @@ define([
 			}
 		},
 
-		getRegularLevelMessage: function (levelNode, levelPos) {
-			let levelEntity = levelNode.entity;
-			let levelComponent = levelEntity.get(LevelComponent);
-			let level = levelPos.level;
-			
+		getRegularLevelMessage: function (levelNode, levelPos) {			
 			let surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
 			let groundLevel = GameGlobals.gameState.getGroundLevel();
 			
 			let playerPos = this.playerPositionNodes.head.position;
 			if (playerPos.inCamp) return;
+
+			let msgVO = { textFragments: [], delimiter: "ui.common.sentence_separator" };
+			msgVO.textFragments.push({ textKey: "ui.exploration.enter_level_message_intro", textParams: { level: levelPos} });
 			
-			let msg = "Entered Level " + levelPos + ". ";
 			if (levelPos == surfaceLevel) {
-				msg += this.getSurfaceLevelDescription();
+				msgVO.textFragments.push({ textKey: "ui.exploration.enter_level_surface_message" });
 			} else if (levelPos == groundLevel) {
-				msg += this.getGroundLevelDescription();
+				msgVO.textFragments.push({ textKey: "ui.exploration.enter_level_ground_message" });
 			} else if (levelPos == 15) {
-				msg += " Only now you notice the lack of scents here, away from the Ground with its dirt and leaves. It feels barren.";
-			} else if (level % 2 == 1 && GameGlobals.gameState.getStoryFlag(StoryConstants.ESCAPE_SEARCHING_FOR_GROUND)) {
-				msg += "One more level down. One more step towards freedom.";
+				msgVO.textFragments.push({ textKey: "ui.exploration.enter_level_15_message" });
+			} else if (levelPos % 2 == 1 && GameGlobals.gameState.getStoryFlag(StoryConstants.ESCAPE_SEARCHING_FOR_GROUND)) {
+				msgVO.textFragments.push({ textKey: "ui.exploration.enter_level_escape_message" });
 			} else {
-				msg += "The streets are indifferent to your presence.";
+				msgVO.textFragments.push({ textKey: "ui.exploration.enter_level_default_message" });
 			}
 			
-			return msg;
+			return msgVO;
 		},
 
 		handleNewSector: function (sectorEntity, isNew) {
@@ -391,19 +389,11 @@ define([
 		},
 
 		getGroundMessage: function () {
-			return this.getGroundLevelDescription();
+			return Text.t("ui.exploration.enter_level_ground_message");
 		},
 
 		getSurfaceMessage: function () {
-			return this.getSurfaceLevelDescription();
-		},
-		
-		getGroundLevelDescription: function () {
-			return "The floor here is different - uneven, organic, continuous. There seems to be no way further down. There are plants, mud, stone and signs of animal life.";
-		},
-		
-		getSurfaceLevelDescription: function () {
-			return "There is no ceiling here, the whole level is open to the elements. Sun glares down from an impossibly wide blue sky all above.";
+			return Text.t("ui.exploration.enter_level_surface_message");
 		},
 
 		addLogMessage: function (msgID, msg) {

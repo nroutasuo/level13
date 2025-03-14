@@ -28,6 +28,7 @@ define(function () {
 			let result = "";
 
 			for (let i = 0; i < textVO.textFragments.length; i++) {
+				if (i > 0 && textVO.delimiter) result += this.t(textVO.delimiter);
 				let fragment = textVO.textFragments[i];
 				result += this.t(fragment.textKey, fragment.textParams);
 			}
