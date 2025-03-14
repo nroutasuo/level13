@@ -41,8 +41,6 @@ function (Ash, GameGlobals, LogConstants, TextConstants, LogMessageVO) {
 			this.hasNewMessages = componentValues.hasNewMessages;
 			this.messages = [];
 
-			debugger
-
 			for (let i = 0; i < componentValues.messages.length; i++) {
 				let messageData = componentValues.messages[i];
 				
