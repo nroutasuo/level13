@@ -137,7 +137,7 @@ define([
 
 		refreshPageResults: function (pageVO) {
 			let resultVO = this.dialogueNodes.head.dialogue.currentResultVO;
-			let hasResults = resultVO && !resultVO.isEmpty() && resultVO != null;
+			let hasResults = resultVO && !resultVO.isVisuallyEmpty();
 
 			$("#dialogue-module-results").empty();
 			GameGlobals.uiFunctions.toggle("#dialogue-module-results", hasResults);

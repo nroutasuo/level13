@@ -667,7 +667,7 @@ define([
 			if (rewards && rewards.action == "scavenge") {
 				var excursionComponent = this.playerResourcesNodes.head.entity.get(ExcursionComponent);
 				if (excursionComponent) {
-					if (this.isSomethingUsefulResult(rewards)) {
+					if (rewards.isSomethingUseful()) {
 						excursionComponent.numConsecutiveScavengeUseless = 0;
 						excursionComponent.numConsecutiveScavengeUselessSameLocation = 0;
 					} else {
@@ -1826,21 +1826,6 @@ define([
 					rewards.gainedItems.push(bonusItems[i]);
 				}
 			}
-		},
-		
-		isSomethingUsefulResult: function (result) {
-			return this.isSomethingUsefulResources(result.gainedResources)
-				|| result.gainedItems.length > 0
-				|| result.gainedCurrency > 0
-				|| result.gainedExplorers.length > 0
-				|| result.gainedBlueprintPiece
-				|| result.gainedEvidence > 0
-				|| result.gainedRumours > 0
-				|| result.gainedHope > 0
-				|| result.gainedInsight > 0
-				|| result.gainedReputation > 0
-				|| result.gainedPopulation > 0
-				|| result.gainedItemUpgrades > 0;
 		},
 		
 		isSomethingUsefulResources: function (resources) {

@@ -292,7 +292,7 @@ define([
 		},
 
 		canTakeAllRewards: function (resultVO) {
-			if (!resultVO || resultVO.isEmpty()) return true;
+			if (!resultVO || resultVO.isVisuallyEmpty()) return true;
 
 			let bagComponent = this.playerResourcesNodes.head.bag;
 			let inCamp = this.isInCamp();

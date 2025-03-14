@@ -126,8 +126,47 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 				&& this.gainedReputation == 0
 				&& this.gainedItemUpgrades.length == 0
 				&& this.discardedItems.length == 0
-				&& Object.keys(this.storyFlags).length == 0
+				&& this.discardedResources.getTotal() == 0
+				&& Object.keys(this.storyFlags).length == 0;
+		},
+		
+		isVisuallyEmpty: function () {
+			return this.gainedResources.getTotal() == 0
+				&& this.gainedCurrency == 0
+				&& this.lostResources.getTotal() == 0
+				&& this.lostCurrency == 0
+				&& this.gainedItems.length == 0
+				&& this.gainedExplorers.length == 0
+				&& this.lostItems.length == 0
+				&& this.brokenItems.length == 0
+				&& this.lostExplorers.length == 0
+				&& this.lostPerks.length == 0
+				&& this.gainedPerks.length == 0
+				&& this.gainedBlueprintPiece == null
+				&& this.gainedPopulation == 0
+				&& this.gainedEvidence == 0
+				&& this.gainedRumours == 0
+				&& this.gainedHope == 0
+				&& this.gainedInsight == 0
+				&& this.gainedReputation == 0
+				&& this.gainedItemUpgrades.length == 0
+				&& this.discardedItems.length == 0
 				&& this.discardedResources.getTotal() == 0;
+		},
+
+		isSomethingUseful: function () {
+			return this.gainedResources.getTotal() > 0
+				|| this.gainedItems.length > 0
+				|| this.gainedCurrency > 0
+				|| this.gainedExplorers.length > 0
+				|| this.gainedBlueprintPiece
+				|| this.gainedEvidence > 0
+				|| this.gainedRumours > 0
+				|| this.gainedHope > 0
+				|| this.gainedInsight > 0
+				|| this.gainedReputation > 0
+				|| this.gainedPopulation > 0
+				|| this.gainedItemUpgrades > 0;
 		},
 		
 		clone: function () {
