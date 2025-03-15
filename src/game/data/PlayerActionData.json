@@ -3341,7 +3341,6 @@
         },
         "unlock_building_inn": {
             "blueprint": 3,
-            "deity": true,
             "upgrades": {
                 "unlock_building_market": true
             }

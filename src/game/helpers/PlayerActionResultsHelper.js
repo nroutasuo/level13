@@ -845,6 +845,7 @@ define([
 			if (rewards.gainedHope) {
 				this.playerStatsNodes.head.entity.get(HopeComponent).hope += rewards.gainedHope;
 				GameGlobals.gameState.increaseGameStatKeyed("amountPlayerStatsFoundPerId", "hope", rewards.gainedHope);
+				GameGlobals.playerActionFunctions.unlockFeature("hope");
 			}
 
 			if (rewards.gainedInsight) {

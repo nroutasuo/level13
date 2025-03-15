@@ -357,21 +357,14 @@ define([
 			
 			let showEvidence = GameGlobals.gameState.unlockedFeatures.evidence;
 			let showRumours = playerStatsNode.rumours.value > 0 || playerStatsNode.rumours.isAccumulating;
+			let showHope = playerStatsNode.hope.hope > 0 || GameGlobals.gameState.unlockedFeatures.hope;
 			let hasDeity = GameGlobals.tribeHelper.hasDeity();
 			let hasInsight = playerStatsNode.insight.value > 0;
 			
 			this.updatePlayerStat("rumours", playerStatsNode.rumours, showRumours, playerStatsNode.rumours.value, playerStatsNode.rumours.maxValue, false, this.elements.valRumours, this.elements.changeIndicatorRumours);
 			this.updatePlayerStat("evidence", playerStatsNode.evidence, showEvidence, playerStatsNode.evidence.value, playerStatsNode.evidence.maxValue, false, this.elements.valEvidence, this.elements.changeIndicatorEvidence);
-			if (hasDeity) {
-				this.updatePlayerStat("hope", this.deityNodes.head.deity, hasDeity, this.deityNodes.head.deity.hope, this.deityNodes.head.deity.maxHope, false, this.elements.valHope, this.elements.changeIndicatorHope);
-			} else {
-				this.updatePlayerStat("hope", null, hasDeity, 0, this.elements.valHope, 0, false, this.elements.changeIndicatorHope);
-			}
-			if (hasInsight) {
-				this.updatePlayerStat("insight", playerStatsNode.insight, hasInsight, playerStatsNode.insight.value, playerStatsNode.insight.maxValue, false, this.elements.valInsight, this.elements.changeIndicatorInsight);
-			} else {
-				this.updatePlayerStat("insight", null, hasInsight, 0, this.elements.valInsight, 0, false, this.elements.changeIndicatorInsight);
-			}
+			this.updatePlayerStat("hope", playerStatsNode.hope, showHope, playerStatsNode.hope.hope, playerStatsNode.hope.maxHope, false, this.elements.valHope, this.elements.changeIndicatorHope);
+			this.updatePlayerStat("insight", playerStatsNode.insight, hasInsight, playerStatsNode.insight.value, playerStatsNode.insight.maxValue, false, this.elements.valInsight, this.elements.changeIndicatorInsight);
 
 			GameGlobals.uiFunctions.toggle($(".statsbar-tribe-stats"), showEvidence || showRumours || hasDeity || hasInsight);
 
