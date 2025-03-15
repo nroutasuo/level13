@@ -205,7 +205,15 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 		},
 
 		isLogListItemDataSame: function (d1, d2) {
-			return d1.logMsgID == d2.logMsgID && (d1.timeStamp == d2.timeStamp || d1.time == d2.time);
+			if (d1.logMsgID != d2.logMsgID) return false;
+			if (d1.timestamp != d2.timestamp) return false;
+			if (d1.time != d2.time) return false;
+			if (d1.messageTextVO.textFragments.length != d2.messageTextVO.textFragments.length) return false;
+			for (let i = 0; i < d1.messageTextVO.textFragments.length; i++) {
+				if (d1.messageTextVO.textFragments[i].textKey != d2.messageTextVO.textFragments[i].textKey) return false;
+			}
+
+			return true;
 		},
 
 		markLogMessagesSeen: function () {
