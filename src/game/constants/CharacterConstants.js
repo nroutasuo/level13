@@ -70,9 +70,9 @@ define(['ash', 'game/constants/DialogueConstants'], function (Ash, DialogueConst
                     possibleIcons.push("character_doomsayer_03");
                     break;
                 case CharacterConstants.characterTypes.drifter:
-                    possibleIcons.push("character_drifer_01");
-                    possibleIcons.push("character_drifer_02");
-                    possibleIcons.push("character_drifer_03");
+                    possibleIcons.push("character_drifter_01");
+                    possibleIcons.push("character_drifter_02");
+                    possibleIcons.push("character_drifter_03");
                     break;
                 case CharacterConstants.characterTypes.hunter:
                     possibleIcons.push("character_hunter_01");
