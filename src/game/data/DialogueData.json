@@ -44,8 +44,10 @@
 					"id": "s3",
 					"key": "character_bard_default_event_03_p4",
 					"result": {
-						"gainedRumours": 3
-					}
+						"gainedRumours": 3,
+						"replaceDialogue": true
+					},
+					"options": "END"
 				},
 				{
 					"id": "reject",
@@ -83,8 +85,10 @@
 					"id": "s3",
 					"key": "character_bard_default_event_04_p4",
 					"result": {
-						"gainedRumours": 3
-					}
+						"gainedRumours": 3,
+						"replaceDialogue": true
+					},
+					"options": "END"
 				},
 				{
 					"id": "reject",
@@ -122,8 +126,10 @@
 					"id": "s3",
 					"key": "character_bard_default_event_05_p4",
 					"result": {
-						"gainedRumours": 3
-					}
+						"gainedRumours": 3,
+						"replaceDialogue": true
+					},
+					"options": "END"
 				},
 				{
 					"id": "reject",
@@ -161,8 +167,10 @@
 					"id": "s3",
 					"key": "character_bard_default_event_06_p4",
 					"result": {
-						"gainedRumours": 3
-					}
+						"gainedRumours": 3,
+						"replaceDialogue": true
+					},
+					"options": "END"
 				},
 				{
 					"id": "reject",
@@ -200,8 +208,10 @@
 					"id": "s3",
 					"key": "character_bard_default_event_07_p4",
 					"result": {
-						"gainedRumours": 3
-					}
+						"gainedRumours": 3,
+						"replaceDialogue": true
+					},
+					"options": "END"
 				},
 				{
 					"id": "reject",
@@ -278,7 +288,8 @@
 							"res_",
 							"res_",
 							"res_"
-						]
+						],
+						"replaceDialogue": true
 					}
 				},
 				{
@@ -318,7 +329,8 @@
 					"result": {
 						"gainedItemUpgrades": [
 							"weapon_"
-						]
+						],
+						"replaceDialogue": true
 					}
 				},
 				{
@@ -358,7 +370,8 @@
 					"result": {
 						"gainedItemUpgrades": [
 							"clothing_"
-						]
+						],
+						"replaceDialogue": true
 					}
 				},
 				{
@@ -408,7 +421,8 @@
 					"result": {
 						"gainedItemUpgrades": [
 							"clothing_"
-						]
+						],
+						"replaceDialogue": true
 					}
 				},
 				{
@@ -448,7 +462,8 @@
 					"result": {
 						"gainedItemUpgrades": [
 							"weapon_"
-						]
+						],
+						"replaceDialogue": true
 					}
 				},
 				{
@@ -570,7 +585,8 @@
 								"artefact_",
 								"trade_"
 							]
-						]
+						],
+						"replaceDialogue": true
 					}
 				},
 				{
@@ -586,7 +602,8 @@
 					"result": {
 						"gainedItems": [
 							"cache_evidence"
-						]
+						],
+						"replaceDialogue": true
 					}
 				}
 			]
@@ -607,7 +624,8 @@
 				{
 					"key": "character_drifter_default_event_04_p1",
 					"result": {
-						"gainedRumours": 1
+						"gainedRumours": 1,
+						"replaceDialogue": true
 					}
 				}
 			]
@@ -623,7 +641,8 @@
 				{
 					"key": "character_drifter_default_event_05_p1",
 					"result": {
-						"gainedRumours": 1
+						"gainedRumours": 1,
+						"replaceDialogue": true
 					}
 				}
 			]
@@ -1203,7 +1222,8 @@
 					"result": {
 						"gainedItems": [
 							"cache_hope_11"
-						]
+						],
+						"replaceDialogue": true
 					}
 				}
 			]
@@ -3825,6 +3845,9 @@
 			]
 		},
 		"explorer_unique_journalist_interact_03": {
+			"conditions": {
+				"inCamp": true
+			},
 			"pages": [
 				"explorer_unique_journalist_interact_03_p1"
 			]
@@ -4578,7 +4601,7 @@
 				"story.stories.greenhouse_locale_story_greenhouse_p1"
 			]
 		},
-		"locale_story_seeddepot": {
+		"locale_story_shelter": {
 			"pages": [
 				{
 					"key": "story.stories.locale_story_shelter_p1",
@@ -4598,7 +4621,7 @@
 				}
 			]
 		},
-		"locale_story_shelter": {
+		"locale_story_seeddepot": {
 			"pages": [
 				{
 					"id": "intro",

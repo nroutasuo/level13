@@ -241,16 +241,49 @@ define(['ash',
             
             // general
 
-            getCharacterDialogueKey: function (dialogueSourceID, setting) {
+            getNextCharacterDialogueID: function (characterVO, setting, minDialogueRepeatMins) {
+                let dialogueID = null;
+                let lastShownDialogueID = characterVO.lastShownDialogue;
+
+                minDialogueRepeatMins = minDialogueRepeatMins || 3;
+                let minDialogueRepeatTime = 1000 * 60 * minDialogueRepeatMins;
+
+                // pick previously shown if one saved and it's not been long
+                if (lastShownDialogueID && characterVO.lastShownDialogueTimestamp) {
+                    let now = new Date().getTime();
+                    if (now - characterVO.lastShownDialogueTimestamp < minDialogueRepeatTime) {
+                        let lastShownDialogueVO = DialogueConstants.getDialogue(lastShownDialogueID);
+                        if (GameGlobals.dialogueHelper.isDialogueValid(lastShownDialogueVO)) {
+                            dialogueID = lastShownDialogueID;
+                        }
+                    }
+                }
+
+                // if previously shown not found / no longer valid, pick new
+                if (!dialogueID) {
+                    dialogueID = GameGlobals.dialogueHelper.getRandomValidCharacterDialogueID(characterVO, setting);
+                }
+
+                return dialogueID;
+            },
+
+            getRandomValidCharacterDialogueID: function (characterVO, setting) {
+                let dialogueSourceID = characterVO.dialogueSourceID;
                 let validDialogues = this.getCharacterValidDialogues(dialogueSourceID, setting);
 
                 if (validDialogues.length == 0) {
                     log.w("no valid dialogues found for character with dialogue source " + dialogueSourceID + "." + setting);
                     return null;
                 }
+
+                let validDialoguesWithoutCompleted = validDialogues.filter(d => characterVO.completedDialogues.indexOf(d.dialogueID) < 0);
+
+                debugger
+
+                let candidates = validDialoguesWithoutCompleted.length > 0 ? validDialoguesWithoutCompleted : validDialogues;
                 
-                let randomIndex = Math.floor(Math.random() * validDialogues.length);
-                return validDialogues[randomIndex].dialogueID;
+                let randomIndex = Math.floor(Math.random() * candidates.length);
+                return candidates[randomIndex].dialogueID;
             },
 
             getCharacterValidDialogues: function (dialogueSourceID, setting) {

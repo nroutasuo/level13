@@ -136,6 +136,8 @@ define([
 		},
 
 		endPage: function () {
+			let dialogueID = this.dialogueNodes.head.dialogue.activeDialogue.dialogueID;
+			
 			if (this.dialogueNodes.head.dialogue.currentResultVO) {
 				let resultVO = this.dialogueNodes.head.dialogue.currentResultVO;
 				GameGlobals.playerActionResultsHelper.collectRewards(true, resultVO);
@@ -144,6 +146,14 @@ define([
 					let characterVO = this.dialogueNodes.head.dialogue.characterVO;
 					if (characterVO) {
 						GlobalSignals.removeCharacterSignal.dispatch(characterVO.instanceID);
+					}
+				}
+
+				if (resultVO.replaceDialogue) {
+					let characterVO = this.dialogueNodes.head.dialogue.characterVO;
+					if (characterVO) {
+						characterVO.completedDialogues.push(dialogueID);
+						characterVO.lastShownDialogue = null;
 					}
 				}
 

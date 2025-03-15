@@ -31,6 +31,7 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 		// neutral results
 		storyFlags: {}, // flagID -> new value
 		removeCharacter: false,
+		replaceDialogue: false,
 		
 		// additional info for UI
 		foundStashVO: null,
@@ -70,6 +71,7 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 
 			this.storyFlags = {};
 			this.removeCharacter = false;
+			this.replaceDialogue = false;
 			
 			this.selectedItems = [];
 			this.selectedResources = new ResourcesVO(storageTypes.RESULT);
@@ -192,6 +194,7 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 			result.gainedReputation = this.gainedReputation;
 			result.storyFlags = this.storyFlags;
 			result.removeCharacter = this.removeCharacter;
+			result.replaceDialogue = this.replaceDialogue;
 			return result;
 		},
 		
