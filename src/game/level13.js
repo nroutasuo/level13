@@ -398,8 +398,6 @@ define([
 			);
 			
 			GameGlobals.gameState.numExceptions++;
-
-			debugger
 			
 			throw ex;
 		},
