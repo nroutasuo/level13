@@ -270,7 +270,7 @@ define([
 			GameGlobals.uiFunctions.toggle("#out-action-investigate", isAwake && this.showInvestigate());
 
 			// examine spots
-			let showExamine = featuresComponent.examineSpots.length > 0;
+			let showExamine = featuresComponent.examineSpots.length > 0 && isScouted;
 			GameGlobals.uiFunctions.toggle("#out-action-examine", showExamine);
 			if (showExamine) {
 				let spotID = featuresComponent.examineSpots[0];
