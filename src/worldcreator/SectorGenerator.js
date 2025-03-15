@@ -651,7 +651,7 @@ define([
 					let locale = new LocaleVO(localeType, false, false);
 					SectorGenerator.addLocale(levelVO, sectorVO, locale);
 				}
-				WorldCreatorLogger.i("add stash level " + l + " [" + reason + "]: " + itemID + " x" + numItems + " " + sectorVO.position + " " + sectorVO.zone);
+				// WorldCreatorLogger.i("add stash level " + l + " [" + reason + "]: " + itemID + " x" + numItems + " " + sectorVO.position + " " + sectorVO.zone);
 			};
 			
 			let addStashes = function (sectorSeed, reason, stashType, itemIDs, numStashes, numItemsPerStash, excludedZones, localeType) {
