@@ -1850,6 +1850,7 @@ body.dark .res img {
 }
 body.dark .item div.item-count,
 body.dark .res div.item-count {
+  background: transparent;
   border-width: 1px;
   color: #bbb;
   font-size: 0.75rem;
@@ -1857,6 +1858,7 @@ body.dark .res div.item-count {
   bottom: -0.9em;
   left: -2px;
   min-width: 100%;
+  max-height: 1em;
   padding: 0 1px;
   line-height: 1em;
   text-align: center;
@@ -1938,6 +1940,10 @@ body.dark .npc-container {
   min-height: 50px;
   margin: 2px;
   background-color: #2f322f;
+  position: relative;
+}
+body.dark .npc-visitor {
+  background-color: #444;
 }
 body.dark .npc-container-mini {
   width: 36px;
@@ -1956,6 +1962,17 @@ body.dark .npc-portrait {
 body.dark .npc-container .item-comparison-badge {
   top: 1px;
   right: 5px;
+}
+body.dark .npc-type-indicator {
+  position: absolute;
+  top: 1px;
+  left: 2px;
+  right: 5px;
+  width: 12px;
+  height: 12px;
+}
+body.dark .npc-type-indicator img {
+  width: 100%;
 }
 body.dark .npc-portrait img {
   margin: auto;
@@ -4443,6 +4460,7 @@ body.sunlit .res img {
 }
 body.sunlit .item div.item-count,
 body.sunlit .res div.item-count {
+  background: transparent;
   border-width: 1px;
   color: #777;
   font-size: 0.75rem;
@@ -4450,6 +4468,7 @@ body.sunlit .res div.item-count {
   bottom: -0.9em;
   left: -2px;
   min-width: 100%;
+  max-height: 1em;
   padding: 0 1px;
   line-height: 1em;
   text-align: center;
@@ -4531,6 +4550,10 @@ body.sunlit .npc-container {
   min-height: 50px;
   margin: 2px;
   background-color: #e6e6e6;
+  position: relative;
+}
+body.sunlit .npc-visitor {
+  background-color: #ddd;
 }
 body.sunlit .npc-container-mini {
   width: 36px;
@@ -4549,6 +4572,17 @@ body.sunlit .npc-portrait {
 body.sunlit .npc-container .item-comparison-badge {
   top: 1px;
   right: 5px;
+}
+body.sunlit .npc-type-indicator {
+  position: absolute;
+  top: 1px;
+  left: 2px;
+  right: 5px;
+  width: 12px;
+  height: 12px;
+}
+body.sunlit .npc-type-indicator img {
+  width: 100%;
 }
 body.sunlit .npc-portrait img {
   margin: auto;

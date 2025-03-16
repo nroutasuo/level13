@@ -136,6 +136,7 @@ define([
 		},
 
 		endPage: function () {
+			let currentPageVO = GameGlobals.dialogueHelper.getCurrentPageVO();
 			let dialogueID = this.dialogueNodes.head.dialogue.activeDialogue.dialogueID;
 			
 			if (this.dialogueNodes.head.dialogue.currentResultVO) {
@@ -158,6 +159,10 @@ define([
 				}
 
 				this.dialogueNodes.head.dialogue.currentResultVO = null;
+			}
+
+			if (currentPageVO && currentPageVO.action) {
+				GameGlobals.playerActionFunctions.startAction(currentPageVO.action);
 			}
 		},
 

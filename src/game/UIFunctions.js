@@ -1084,6 +1084,7 @@ define(['ash',
 						$(element).attr("data-toggling", "false");
 						if (cb) cb();
 					});
+					return;
 				} else if (!show && (visible == true || visible == null) && !toggling) {
 					$(element).attr("data-toggling", "true");
 					$(element).stop().slideToggle(durationOut, function () {
@@ -1092,7 +1093,10 @@ define(['ash',
 						$(element).attr("data-toggling", "false");
 						if (cb) cb();
 					});
+					return;
 				}
+
+				if (cb) cb();
 			},
 
 			toggleCollapsibleContainer: function (element, show) {
@@ -1161,6 +1165,7 @@ define(['ash',
 			},
 			
 			toggleInternal: function ($element, show, signalParams) {
+				show = show == true;
 				$element.attr("data-visible", show);
 				$element.toggle(show);
 				// NOTE: For some reason the element isn't immediately :visible for checks in UIOutElementsSystem without the timeout
@@ -1239,7 +1244,12 @@ define(['ash',
 			updateTexts: function () {
 				for (let selector in this.texts) {
 					let saved = this.texts[selector];
-					this.updateText($(selector), Text.t(saved.key, saved.options));
+					try {
+						this.updateText($(selector), Text.t(saved.key, saved.options));
+					} catch (error) {
+						debugger
+					}
+					  
 				}
 			},
 
@@ -1568,7 +1578,7 @@ define(['ash',
 
 			showResultPopup: function (title, msg, resultVO, callback, options) {
 				options = {
-					isDismissable: !resultVO || resultVO.isEmpty()
+					isDismissable: !resultVO || resultVO.isVisuallyEmpty()
 				};
 				this.popupManager.showPopup(title, msg, "Continue", false, resultVO, callback, null, options);
 			},

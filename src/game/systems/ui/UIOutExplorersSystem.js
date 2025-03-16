@@ -8,11 +8,9 @@ define([
 	'game/constants/DialogueConstants',
 	'game/constants/ExplorerConstants',
 	'game/components/sector/events/RecruitComponent',
-	'game/components/sector/events/RefugeesComponent',
-	'game/components/sector/events/VisitorComponent',
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/PlayerStatsNode',
-], function (Ash, UIState, UIList, GameGlobals, GlobalSignals, UIConstants, DialogueConstants, ExplorerConstants, RecruitComponent, RefugeesComponent, VisitorComponent, PlayerLocationNode, PlayerStatsNode) {
+], function (Ash, UIState, UIList, GameGlobals, GlobalSignals, UIConstants, DialogueConstants, ExplorerConstants, RecruitComponent, PlayerLocationNode, PlayerStatsNode) {
 
 	let UIOutExplorersSystem = Ash.System.extend({
 		
@@ -70,8 +68,6 @@ define([
 				this.explorerSlotElementsByType[explorerType].slot = $slot;
 				this.explorerSlotElementsByType[explorerType].container = $slot.find(".explorer-slot-container");
 			}
-
-			this.visitorList = UIList.create(this, $("#visitors-container table"), this.createVisitorListItem, this.updateVisitorListItem);
 		},
 
 		update: function (time) {
@@ -93,17 +89,15 @@ define([
 			$("#tab-header h2").text("Exploration party");
 			
 			GameGlobals.uiFunctions.toggle($("#tab-explorers-section-recruits"), inCamp && showRecruits);
-			GameGlobals.uiFunctions.toggle($("#tab-explorers-section-visitors"), inCamp);
 			GameGlobals.uiFunctions.toggle($("#tab-explorers-section-unselected"), inCamp);
 			
 			this.updateExplorers();
 			this.refreshRecruits();
-			this.refreshVisitors();
 		},
 		
 		updateBubble: function () {
 			let inCamp = GameGlobals.playerHelper.isInCamp();
-			let bubbleNumber = inCamp ? this.getNumRecruits() + this.getNumVisitors() + this.getNumRefugees() + this.getNumUrgentDialogues() : 0;
+			let bubbleNumber = inCamp ? this.getNumRecruits() + this.getNumUrgentDialogues() : 0;
 			let isStatIncreaseAvailable = this.getIsStatIncreaseAvailable();
 			
 			let state = bubbleNumber + (isStatIncreaseAvailable ? 1000 : 0);
@@ -148,53 +142,6 @@ define([
 
 			GameGlobals.uiFunctions.createButtons("#recruits-container table");
 			GameGlobals.uiFunctions.generateInfoCallouts("#recruits-container table");
-		},
-
-		refreshVisitors: function () {
-			if (GameGlobals.gameState.uiStatus.isHidden) return;
-			
-			let visitorData = this.getCampVisitorData();
-			let numNewListItems = UIList.update(this.visitorList, visitorData);
-
-			GameGlobals.uiFunctions.toggle($("#visitors-empty-message"), visitorData.length == 0);
-
-			if (numNewListItems.length > 0) {
-				GameGlobals.uiFunctions.createButtons("#visitors-container table");
-				GlobalSignals.elementCreatedSignal.dispatch();
-			}
-		},
-
-		getCampVisitorData: function () {
-			let result = [];
-
-			let visitorComponent = this.playerLocationNodes.head.entity.get(VisitorComponent);
-
-
-			if (visitorComponent) {
-				if (!visitorComponent.randomIndex) visitorComponent.randomIndex = Math.floor(Math.random() * 10);
-				result.push({ 
-					id: "visitor", 
-					type: "visitor", 
-					characterType: visitorComponent.visitorType,
-					dialogueSourceID: visitorComponent.dialogueSource,
-					randomIndex: visitorComponent.randomIndex
-				});
-			}
-
-			let refugeesComponent = this.playerLocationNodes.head.entity.get(RefugeesComponent);
-			if (refugeesComponent) {
-				result.push({ 
-					id: "refugees", 
-					type: "refugees", 
-					characterType: "settlementRefugee", 
-					dialogueSourceID: refugeesComponent.dialogueSource,
-					num: refugeesComponent.num, 
-					acceptAction: "accept_refugees", 
-					dismissAction: "dismiss_refugees"
-				});
-			}
-
-			return result;
 		},
 
 		updateExplorers: function () {
@@ -275,7 +222,7 @@ define([
 				let id = $(this).attr("data-explorerid");
 				let explorer = explorersComponent.getExplorerByID(id);
 				let comparison = explorersComponent.getExplorerComparison(explorer);
-				let isSelected = explorer.inParty == true;
+				let isSelected = explorer && explorer.inParty == true;
 				
 				let indicator = $(this).find(".item-comparison-indicator");
 				
@@ -301,51 +248,6 @@ define([
 			});
 		},
 		
-		createVisitorListItem: function () {
-			let li = {};
-
-			let tr = "<tr>";
-			tr += "<td class='visitor-type'></td>";
-			tr += "<td class='npc-td'></td>";
-			tr += "<td class='list-ordinal'></td>";
-			tr += "<td class='minwidth'><button class='action visitor-accept'>Accept</button></td>";
-			tr += "<td class='minwidth'><button class='action visitor-dismiss btn-secondary'>Dismiss</button></td>";
-			tr += "</tr>";
-
-			li.$root = $(tr);
-			li.$typeLabel = li.$root.find(".visitor-type");
-			li.$mainContainer = li.$root.find(".npc-td");
-			li.$numLabel = li.$root.find(".list-ordinal");
-			li.$acceptButton = li.$root.find(".visitor-accept");
-			li.$dismissButton = li.$root.find(".visitor-dismiss");
-
-			return li;
-		},
-		
-		updateVisitorListItem: function (li, data) {
-			let acceptAction = data.acceptAction || null;
-			let dismissAction = data.dismissAction || null;
-
-			let characterType = data.characterType;
-			let dialogueSourceID = data.dialogueSourceID;
-			let setting = DialogueConstants.dialogueSettings.event;
-
-			li.$typeLabel.html(data.type);
-			li.$numLabel.html(data.num || "");
-
-			let talkAction = "start_generic_npc_dialogue_" + characterType + "_" + dialogueSourceID + "_" + setting;
-
-			li.$mainContainer.html(UIConstants.getNPCDiv(characterType, talkAction, data.randomIndex));
-
-			li.$acceptButton.attr("action", acceptAction);
-			li.$dismissButton.attr("action", dismissAction);
-
-			GameGlobals.uiFunctions.toggle(li.$acceptButton, acceptAction != null);
-			GameGlobals.uiFunctions.toggle(li.$dismissButton, dismissAction != null);
-
-			GameGlobals.uiFunctions.createButtons(li.$root);
-		},
-		
 		getFoundRecruitIcon: function () {
 			var sunlit = $("body").hasClass("sunlit");
 			var img = "<img src='img/eldorado/" + (sunlit ? "icon-star.png" : "icon-star-dark.png") + "' class='icon-ui-generic' alt='reward' />";
@@ -355,18 +257,6 @@ define([
 		getNumRecruits: function () {
 			var recruitComponent = this.playerLocationNodes.head.entity.get(RecruitComponent);
 			if (recruitComponent) return 1;
-			return 0;
-		},
-		
-		getNumVisitors: function () {
-			let visitorComponent = this.playerLocationNodes.head.entity.get(VisitorComponent);
-			if (visitorComponent) return 1;
-			return 0;
-		},
-		
-		getNumRefugees: function () {
-			let refugeesComponent = this.playerLocationNodes.head.entity.get(RefugeesComponent);
-			if (refugeesComponent) return 1;
 			return 0;
 		},
 		
@@ -425,12 +315,10 @@ define([
 		
 		onCampEventStarted: function () {
 			this.refreshRecruits();
-			this.refreshVisitors();
 		},
 		
 		onCampEventEnded: function () {
 			this.refreshRecruits();
-			this.refreshVisitors();
 		},
 		
 		onTabChanged: function () {

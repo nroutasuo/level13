@@ -4729,21 +4729,116 @@
 		"refugees_default_event_01": {
 			"pages": [
 				{
-					"key": "refugees_default_event_01_p1"
+					"id": "request",
+					"key": "refugees_default_event_01_p1",
+					"options": [
+						{
+							"buttonKey": "npc_request_agree",
+							"response": "accept"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "accept",
+					"key": "refugees_default_event_01_accept",
+					"options": "END",
+					"action": "accept_refugees"
+				},
+				{
+					"id": "reject",
+					"key": "refugees_default_event_01_reject",
+					"action": "dismiss_refugees"
 				}
 			]
 		},
 		"refugees_default_event_02": {
 			"pages": [
 				{
-					"key": "refugees_default_event_02_p1"
+					"id": "request",
+					"key": "refugees_default_event_02_p1",
+					"options": [
+						{
+							"buttonKey": "npc_request_agree",
+							"response": "accept"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "accept",
+					"key": "refugees_default_event_02_accept",
+					"options": "END",
+					"action": "accept_refugees"
+				},
+				{
+					"id": "reject",
+					"key": "refugees_default_event_02_reject",
+					"action": "dismiss_refugees"
+				}
+			]
+		},
+		"refugees_default_event_03": {
+			"pages": [
+				{
+					"id": "request",
+					"key": "refugees_default_event_03_p1",
+					"options": [
+						{
+							"buttonKey": "npc_request_agree",
+							"response": "accept"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "accept",
+					"key": "refugees_default_event_03_accept",
+					"options": "END",
+					"action": "accept_refugees"
+				},
+				{
+					"id": "reject",
+					"key": "refugees_default_event_03_reject",
+					"action": "dismiss_refugees"
 				}
 			]
 		},
 		"refugees_earthquake_event_01": {
 			"pages": [
 				{
-					"key": "refugees_earthquake_event_01_p1"
+					"id": "request",
+					"key": "refugees_earthquake_event_01_p1",
+					"options": [
+						{
+							"buttonKey": "npc_request_agree",
+							"response": "accept"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "accept",
+					"key": "refugees_earthquake_event_01_accept",
+					"options": "END",
+					"action": "accept_refugees"
+				},
+				{
+					"id": "reject",
+					"key": "refugees_earthquake_event_01_reject",
+					"action": "dismiss_refugees"
 				}
 			]
 		},
@@ -5997,7 +6092,8 @@
 			"dialogues": {
 				"event": [
 					"refugees_default_event_01",
-					"refugees_default_event_02"
+					"refugees_default_event_02",
+					"refugees_default_event_03"
 				]
 			}
 		},

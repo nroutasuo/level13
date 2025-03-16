@@ -31,6 +31,8 @@
 	'game/components/sector/ReputationComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/events/CampEventTimersComponent',
+	'game/components/sector/events/RefugeesComponent',
+	'game/components/sector/events/VisitorComponent',
 	'text/Text'
 ], function (
 	Ash, Text, MathUtils, UIState, UIList, UIAnimations, GameGlobals, GlobalSignals,
@@ -38,7 +40,7 @@
 	CharacterConstants, ImprovementConstants, PlayerActionConstants, UIConstants, UpgradeConstants, OccurrenceConstants, CampConstants, DialogueConstants, TextConstants, TribeConstants,
 	PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, TribeUpgradesNode,
 	PerksComponent, PlayerActionComponent,
-	CampComponent, ResourcesComponent, ResourceAccumulationComponent, OutgoingCaravansComponent, ReputationComponent, SectorImprovementsComponent, CampEventTimersComponent,
+	CampComponent, ResourcesComponent, ResourceAccumulationComponent, OutgoingCaravansComponent, ReputationComponent, SectorImprovementsComponent, CampEventTimersComponent, RefugeesComponent, VisitorComponent,
 	Text
 ) {
 	let UIOutCampSystem = Ash.System.extend({
@@ -110,6 +112,7 @@
 			GlobalSignals.add(this, GlobalSignals.playerLocationChangedSignal, this.onPlayerPositionChanged);
 			GlobalSignals.add(this, GlobalSignals.campRenamedSignal, this.onCampRenamed);
 			GlobalSignals.add(this, GlobalSignals.populationChangedSignal, this.onPopulationChanged);
+			GlobalSignals.add(this, GlobalSignals.campEventStartedSignal, this.onCampEventStarted);
 			GlobalSignals.add(this, GlobalSignals.campEventEndedSignal, this.onCampEventEnded);
 			GlobalSignals.add(this, GlobalSignals.workersAssignedSignal, this.onWorkersAssigned);
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onGameShown);
@@ -269,6 +272,7 @@
 			let isPopulationMaxed = campComponent.population >= maxPopulation;
 			let populationChangePerSec = campComponent.populationChangePerSec || 0;
 			let populationChangePerSecWithoutCooldown = campComponent.populationChangePerSecWithoutCooldown || 0;
+			let showReputationRequirement = maxPopulation > 0 && !isPopulationMaxed;
 			
 			let isOnPopulationDecreaseCooldown = campComponent.populationDecreaseCooldown;
 
@@ -304,7 +308,7 @@
 			this.elements.populationProgressBar.data("animation-length", 500);
 			this.elements.populationProgressBarLabel.text(progressLabel);
 
-			GameGlobals.uiFunctions.slideToggleIf(this.elements.populationReputationRequirementLabel, null, (maxPopulation > 0 && !isPopulationMaxed) || populationChangePerSecWithoutCooldown < 0, 200, 200);
+			GameGlobals.uiFunctions.slideToggleIf(this.elements.populationReputationRequirementLabel, null, showReputationRequirement, 200, 200);
 			GameGlobals.uiFunctions.slideToggleIf(this.elements.populationProgressBar, null, campComponent.population > 0 && !isPopulationStill, 200, 200);
 			GameGlobals.uiFunctions.slideToggleIf(this.elements.populationProgressLabel, null, campComponent.population > 0 && !isPopulationStill, 200, 200);
 			GameGlobals.uiFunctions.slideToggleIf(this.elements.populationDetailsContainer, null, campComponent.population >= 1, 200, 200);
@@ -377,8 +381,8 @@
 		updateWorkerMaxDescriptions: function () {
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var posComponent = this.playerPosNodes.head.position;
-            var campOrdinal = GameGlobals.gameState.getCampOrdinal(posComponent.level);
-            var workshops = GameGlobals.levelHelper.getWorkshopsByResourceForCamp(campOrdinal);
+			var campOrdinal = GameGlobals.gameState.getCampOrdinal(posComponent.level);
+			var workshops = GameGlobals.levelHelper.getWorkshopsByResourceForCamp(campOrdinal);
 			
 			for (var key in CampConstants.workerTypes) {
 				var def = CampConstants.workerTypes[key];
@@ -468,15 +472,9 @@
 
 		updateCharactersDisplay: function () {
 			if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.in) return;
-			let sector = this.playerLocationNodes.head.entity;
-			let campComponent = sector.get(CampComponent);
-			if (!campComponent) return;
 
-			let characterData = campComponent.displayedCharacters || [];
-			log.i("updateCharactersDisplay: ");
-			for (let i = 0; i < characterData.length; i++) {
-				console.log(characterData[i]);
-			}
+			let characterData = this.getDisplayedCharacterData();
+			
 			GameGlobals.uiFunctions.toggle("#in-characters", characterData.length > 0);
 			UIList.update(this.characterList, characterData);
 			GameGlobals.uiFunctions.createButtons("#in-characters");
@@ -491,11 +489,73 @@
 		},
 
 		updateCharacterListItem: function (li, data) {
-			let characterVO = data;
+			let type = data.type;
+			let characterVO = data.characterVO;
 			let characterType = characterVO.characterType;
-			let randomIndex = characterVO.randomIndex;
-			let talkActionID = "start_in_npc_dialogue_" + characterVO.instanceID;
-			UIConstants.updateNPCDiv(li.$container, characterType, talkActionID, randomIndex);
+			let randomIndex = characterVO.randomIndex || characterVO.instanceID || 0;
+			let isTemporary = false;
+
+			let talkActionID = "";
+
+			switch (type) {
+				case "visitor":
+					talkActionID = "start_visitor_dialogue";
+					isTemporary = true;
+					break;
+				case "refugees":
+					talkActionID = "start_refugee_dialogue";
+					isTemporary = true;
+					break;
+				default:
+					talkActionID = "start_in_npc_dialogue_" + characterVO.instanceID;
+					break;
+			}
+
+			let options = { isTemporary: isTemporary };
+			UIConstants.updateNPCDiv(li.$container, characterType, talkActionID, randomIndex, options);
+		},
+
+		getDisplayedCharacterData: function () {
+			let data = [];
+
+			let sector = this.playerLocationNodes.head.entity;
+			if (!sector) return data;
+
+			let campComponent = sector.get(CampComponent);
+			if (campComponent && campComponent.displayedCharacters) {
+				for (let i = 0; i < campComponent.displayedCharacters.length; i++) {
+					let characterVO = campComponent.displayedCharacters[i];
+					data.push({ type: "inhabitant", characterVO: characterVO });
+				}
+			}
+
+			let visitorComponent = sector.get(VisitorComponent);
+			if (visitorComponent) {
+				let characterVO = visitorComponent.characterVO;
+
+				// TODO create characterVO already on event start
+				if (!characterVO) {
+					characterVO = new CharacterVO(visitorComponent.visitorType, visitorComponent.dialogueSource);
+					visitorComponent.characterVO = characterVO;
+				}
+
+				data.push({ type: "visitor", characterVO: characterVO });
+			}
+
+			let refugeesComponent = sector.get(RefugeesComponent);
+			if (refugeesComponent) {
+				let characterVO = refugeesComponent.characterVO;
+
+				// TODO create characterVO already on event start?
+				if (!characterVO) {
+					characterVO = new CharacterVO("settlementRefugee", refugeesComponent.dialogueSource);
+					refugeesComponent.characterVO = characterVO;
+				}
+
+				data.push({ type: "refugees", characterVO: characterVO, num: refugeesComponent.num });
+			}
+
+			return data;
 		},
 
 		initImprovements: function () {
@@ -1180,6 +1240,11 @@
 				this.refresh();
 				this.updateCharacters();
 			}
+		},
+
+		onCampEventStarted: function () {
+			if (!this.playerLocationNodes.head) return;
+			this.refresh();
 		},
 
 		onCampEventEnded: function () {

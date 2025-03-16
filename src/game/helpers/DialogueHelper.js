@@ -227,17 +227,6 @@ define(['ash',
 
                 return result;
             },
-
-            // refugee dialogue
-
-            getRandomRefugeeDialogueSource: function () {
-                let validSources = [];
-
-                validSources.push("refugees_default");
-
-                let randomIndex = Math.floor(Math.random() * validSources.length);
-                return validSources[randomIndex];
-            },
             
             // general
 
@@ -277,8 +266,6 @@ define(['ash',
                 }
 
                 let validDialoguesWithoutCompleted = validDialogues.filter(d => characterVO.completedDialogues.indexOf(d.dialogueID) < 0);
-
-                debugger
 
                 let candidates = validDialoguesWithoutCompleted.length > 0 ? validDialoguesWithoutCompleted : validDialogues;
                 

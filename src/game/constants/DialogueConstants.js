@@ -129,6 +129,7 @@ define([
 			}
 
 			pageVO.resultTemplate = this.parsePageResult(pageData.result);
+			pageVO.action = pageData.action || null;
 
 			return pageVO;
 		},
@@ -157,6 +158,7 @@ define([
 			if (data.gainedRumours) resultVO.gainedRumours = parseInt(data.gainedRumours);
 			if (data.gainedHope) resultVO.gainedHope = parseInt(data.gainedHope);
 			if (data.removeCharacter) resultVO.removeCharacter = true;
+			if (data.replaceDialogue) resultVO.replaceDialogue = true;
 
 			if (data.gainedPopulation) resultVO.gainedPopulation = parseInt(data.gainedPopulation);
 

@@ -59,6 +59,7 @@ define(['ash',
 	'game/components/sector/OutgoingCaravansComponent',
 	'game/components/sector/events/CampEventTimersComponent',
 	'game/components/sector/events/RefugeesComponent',
+	'game/components/sector/events/VisitorComponent',
 	'game/components/sector/events/TraderComponent',
 	'game/components/level/LevelStatusComponent',
 	'game/helpers/SequenceHelper',
@@ -79,7 +80,7 @@ define(['ash',
 	BagComponent, DialogueComponent, ExcursionComponent, ItemsComponent, HopeComponent, PlayerActionComponent, PlayerActionResultComponent,
 	CampComponent, CurrencyComponent, LevelComponent, BeaconComponent, SectorImprovementsComponent, SectorCollectorsComponent, WorkshopComponent,
 	ReputationComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent,
-	PassagesComponent, OutgoingCaravansComponent, CampEventTimersComponent, RefugeesComponent, TraderComponent, LevelStatusComponent,
+	PassagesComponent, OutgoingCaravansComponent, CampEventTimersComponent, RefugeesComponent, VisitorComponent, TraderComponent, LevelStatusComponent,
 	SequenceHelper,
 	UIOutHeaderSystem, UIOutTabBarSystem, UIOutLevelSystem, FaintingSystem, PlayerPositionSystem,
 	Text, MathUtils, StringUtils
@@ -296,9 +297,10 @@ define(['ash',
 				case "trade_with_caravan": this.tradeWithCaravan(); break;
 				case "recruit_explorer": this.recruitExplorer(param); break;
 				case "start_explorer_dialogue": this.startExplorerDialogue(param); break;
-				case "start_generic_npc_dialogue": this.startAnonymousNPCDialogue(param); break;
 				case "start_in_npc_dialogue": this.startInNPCDialogue(param); break;
 				case "start_out_npc_dialogue": this.startOutNPCDialogue(param); break;
+				case "start_visitor_dialogue": this.startVisitorDialogue(param); break;
+				case "start_refugee_dialogue": this.startRefugeeDialogue(param); break;
 				case "dismiss_recruit": this.dismissRecruit(param); break;
 				case "dismiss_explorer": this.dismissExplorer(param); break;
 				case "accept_refugees": this.acceptRefugees(param); break;
@@ -1479,7 +1481,7 @@ define(['ash',
 			GameGlobals.resourcesHelper.moveCurrencyFromBagToCamp(campSector);
 			this.completeAction("send_caravan");
 			
-			this.addLogMessage(LogConstants.MSG_ID_FINISH_SEND_CAMP, logMsg.msg, pendingPosition);
+			this.addLogMessage(LogConstants.MSG_ID_FINISH_SEND_CAMP, logMessage, pendingPosition);
 			GlobalSignals.inventoryChangedSignal.dispatch();
 		},
 
@@ -1593,19 +1595,38 @@ define(['ash',
 			this.startDialogue(dialogueID, explorerVO);
 		},
 
-		startAnonymousNPCDialogue: function (dialogueParams) {
-			// start dialogue without a specific character VO given just character type, dialogue source and setting
+		startVisitorDialogue: function () {
+			let campSector = this.nearestCampNodes.head.entity;
+			if (!campSector) return;
+			let visitorComponent = campSector.get(VisitorComponent);
 
-			let parts = dialogueParams.split("_");
+			let characterVO = visitorComponent.characterVO;
+			if (!characterVO) return;
 
-			let characterType = parts[0];
-			let setting = parts[parts.length - 1];
-			let dialogueSourceID = dialogueParams.replace("_" + setting, "").replace(characterType + "_", "");
+			let setting = DialogueConstants.dialogueSettings.event;
+			let dialogueID = GameGlobals.dialogueHelper.getNextCharacterDialogueID(characterVO, setting, 30);
 
-			let dialogueID = GameGlobals.dialogueHelper.getCharacterDialogueKey(dialogueSourceID, setting);
-			let characterVO = new CharacterVO(characterType, dialogueSourceID);
+			let now = new Date().getTime();
+			characterVO.lastShownDialogue = dialogueID;
+			characterVO.lastShownDialogueTimestamp = now;
 
 			this.startDialogue(dialogueID, null, characterVO);
+		},
+
+		startRefugeeDialogue: function () {
+			let campSector = this.nearestCampNodes.head.entity;
+			if (!campSector) return;
+			let refugeesComponent = campSector.get(RefugeesComponent);
+
+			let characterVO = refugeesComponent.characterVO;
+			if (!characterVO) return;
+
+			let setting = DialogueConstants.dialogueSettings.event;
+			let dialogueID = GameGlobals.dialogueHelper.getRandomValidCharacterDialogueID(characterVO, setting);
+
+			let textParams = { num: refugeesComponent.num };
+
+			this.startDialogue(dialogueID, null, characterVO, textParams);
 		},
 
 		startInNPCDialogue: function (characterID) {
@@ -1617,10 +1638,9 @@ define(['ash',
 
 			let characterVO = campComponent.displayedCharacters.find(v => v.instanceID == characterID);
 			if (!characterVO) return;
-			let dialogueSourceID = characterVO.dialogueSourceID;
-			let setting = DialogueConstants.dialogueSettings.interact;
 
-			let dialogueID = GameGlobals.dialogueHelper.getCharacterDialogueKey(dialogueSourceID, setting);
+			let setting = DialogueConstants.dialogueSettings.interact;
+			let dialogueID = GameGlobals.dialogueHelper.getRandomValidCharacterDialogueID(characterVO, setting);
 
 			this.startDialogue(dialogueID, null, characterVO);
 		},
@@ -1644,26 +1664,10 @@ define(['ash',
 				return;
 			}
 
-			let dialogueID = null;
-			let lastShownDialogueID = characterVO.lastShownDialogue;
+			let setting = DialogueConstants.dialogueSettings.meet;
+			let dialogueID = GameGlobals.dialogueHelper.getNextCharacterDialogueID(characterVO, setting);
+
 			let now = new Date().getTime();
-
-			// pick previously shown if one saved and it's not been long
-			if (lastShownDialogueID && characterVO.lastShownDialogueTimestamp) {
-				if (now - characterVO.lastShownDialogueTimestamp < 1000 * 60 * 3) {
-					let lastShownDialogueVO = DialogueConstants.getDialogue(lastShownDialogueID);
-					if (GameGlobals.dialogueHelper.isDialogueValid(lastShownDialogueVO)) {
-						dialogueID = lastShownDialogueID;
-					}
-				}
-			}
-
-			// if previously shown not found / valid, pick new
-			if (!dialogueID) {
-				let setting = DialogueConstants.dialogueSettings.meet;
-				dialogueID = GameGlobals.dialogueHelper.getCharacterDialogueKey(characterVO.dialogueSourceID, setting);
-			}
-
 			characterVO.lastShownDialogue = dialogueID;
 			characterVO.lastShownDialogueTimestamp = now;
 

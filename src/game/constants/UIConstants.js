@@ -363,6 +363,7 @@ define(['ash',
 			let div = "<div class='npc-container'>";
 			let calloutContent = "Visitor";
 			
+			div += "<div class='npc-type-indicator'><img src='img/eldorado/icon_time-dark.png'/></div>";
 			div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
 			div += this.createNPCPortrait();
 			div += "</div>";
@@ -384,10 +385,13 @@ define(['ash',
 
 			let name = showName ? Text.t("game.characters." + characterType + "_name") : "";
 
+			$div.toggleClass("npc-visitor", options.isTemporary);
 			$div.attr("data-characterType", characterType);
-			$div.find("img").attr("src", icon);
+			$div.find(".npc-portrait").find("img").attr("src", icon);
 			$div.find(".npc-name").text(name);
 			$div.find("button").attr("action", action);
+			
+			$div.find(".npc-type-indicator").toggleClass("hidden", !options.isTemporary);
 		},
 
 		getNPCPortrait: function (characterType, randomIndex) {

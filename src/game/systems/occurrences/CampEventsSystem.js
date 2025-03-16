@@ -395,9 +395,10 @@ define([
 
 				case OccurrenceConstants.campOccurrenceTypes.refugees:
 					let refugeesComponent = campNode.entity.get(RefugeesComponent);
+					let numRefugees = refugeesComponent.num;
 					campNode.entity.remove(RefugeesComponent);
 					if (refugeesComponent.isAccepted) {
-						logMsg = "Refugees joined the camp.";
+						logMsg = "Refugees (" + numRefugees + ") joined the camp.";
 					} else {
 						logMsg = "Refugees left.";
 					}
@@ -470,10 +471,8 @@ define([
 				case OccurrenceConstants.campOccurrenceTypes.refugees:
 					let maxRefugees = MathUtils.clamp(campNode.camp.population / 6, 3, 16);
 					let refugeesNum = MathUtils.randomIntBetween(2, maxRefugees + 1);
-					let dialogueSource = 
-						GameGlobals.gameState.getStoryFlag(StoryConstants.flags.APOCALYPSE_PENDING_REFUGEES) ?
-						"refugees_earthquake" :
-						GameGlobals.dialogueHelper.getRandomRefugeeDialogueSource();
+					let isStoryRefugees = GameGlobals.gameState.getStoryFlag(StoryConstants.flags.APOCALYPSE_PENDING_REFUGEES);
+					let dialogueSource = isStoryRefugees ? "refugees_earthquake" : "refugees_default";
 					campNode.entity.add(new RefugeesComponent(refugeesNum, dialogueSource));
 					logMsg = "A group of refugees from the City has arrived at the camp.";
 					break;
@@ -483,7 +482,7 @@ define([
 					let isExpedition = GameGlobals.campHelper.isValidCampForExpeditionVisitors(campOrdinal);
 					let visitorDialogueSource = isExpedition ? "visitor_expedition" : CharacterConstants.getDialogueSourceID(visitorType);
 					campNode.entity.add(new VisitorComponent(visitorType, visitorDialogueSource));
-					logMsg = "Visitor";
+					logMsg = "A visitor arrives.";
 					break;
 			}
 			
