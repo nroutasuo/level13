@@ -905,76 +905,6 @@ define(['ash',
 				logMsgSuccess += "The trees seem alive. They whisper, but the words are unintelligible. You have found a source of <span class='hl-functionality'>ancient power</span>.";
 			}
 
-			if (localeVO.type == localeTypes.greenhouse) {
-				if (!GameGlobals.tribeHelper.hasDeity()) {
-					this.startSequence([
-						{ type: "dialogue", dialogueID: "locale_story_greenhouse" },
-						{ type: "log", textKey: "story.stories.greenhouse_greenhouse_found_message" }
-					]);
-					return;
-				}
-			}
-
-			if (localeVO.type == localeTypes.depot) {
-				this.startSequence([
-					{ type: "dialogue", dialogueID: "locale_story_depot" },
-					{ type: "storyFlag", flagID: StoryConstants.flags.FALL_SEEN_STOREHOUSE, value: true },
-					{ type: "log", textKey: "Scouted a depot." }
-				]);
-				return;
-			}
-
-			if (localeVO.type == localeTypes.spacefactory) {
-				this.startSequence([
-					{ type: "dialogue", dialogueID: "locale_story_spacefactory" },
-					{ type: "storyFlag", flagID: StoryConstants.flags.FALL_SEEN_SPACEFACTORY, value: true },
-					{ type: "log", textKey: "Scouted a manufacturing plant." }
-				]);
-				return;
-			}
-
-			if (localeVO.type == localeTypes.seedDepot) {
-				this.startSequence([
-					{ type: "dialogue", dialogueID: "locale_story_seeddepot" },
-					{ type: "log", textKey: "Scouted an old seed depot, but the seeds were dead." }
-				]);
-				return;
-			}
-
-			if (localeVO.type == localeTypes.shelter) {
-				this.startSequence([
-					{ type: "dialogue", dialogueID: "locale_story_shelter" },
-					{ type: "storyFlag", flagID: StoryConstants.flags.RESCUE_EXPLORER_FOUND, value: true },
-					{ type: "log", textKey: "Scouted the apartment." }
-				]);
-				return;
-			}
-
-			if (localeVO.type == localeTypes.compound) {
-				this.startSequence([
-					{ type: "dialogue", dialogueID: "locale_story_compound" },
-					{ type: "storyFlag", flagID: StoryConstants.flags.GANG_COMPOUND_FOUND, value: true },
-					{ type: "log", textKey: "Scouted a compound." }
-				]);
-				return;
-			}
-
-			if (localeVO.type == localeTypes.expedition) {
-				this.startSequence([
-					{ type: "dialogue", dialogueID: "locale_story_expedition_camp" },
-					{ type: "storyFlag", flagID: StoryConstants.flags.EXPEDITION_FATE_KNOWN, value: true },
-					{ type: "log", textKey: "Scouted the campsite." }
-				]);
-				return;
-			}
-
-			if (localeVO.type == localeTypes.clinic) {
-				this.startSequence([
-					{ type: "dialogue", dialogueID: "locale_generic_clinic" },
-				]);
-				return;
-			}
-
 			let playerActionFunctions = this;
 			let successCallback = function (cb) {
 				sectorStatus.localesScouted[i] = true;
@@ -998,6 +928,84 @@ define(['ash',
 
 				GlobalSignals.localeScoutedSignal.dispatch(localeVO.type);
 			};
+
+			if (localeVO.type == localeTypes.greenhouse) {
+				if (!GameGlobals.tribeHelper.hasDeity()) {
+					this.startSequence([
+						{ type: "dialogue", dialogueID: "locale_story_greenhouse" },
+						{ type: "custom", f: successCallback },
+						{ type: "log", textKey: "story.stories.greenhouse_greenhouse_found_message" }
+					]);
+					return;
+				}
+			}
+
+			if (localeVO.type == localeTypes.depot) {
+				this.startSequence([
+					{ type: "dialogue", dialogueID: "locale_story_depot" },
+					{ type: "storyFlag", flagID: StoryConstants.flags.FALL_SEEN_STOREHOUSE, value: true },
+					{ type: "custom", f: successCallback },
+					{ type: "log", textKey: "Scouted a depot." }
+				]);
+				return;
+			}
+
+			if (localeVO.type == localeTypes.spacefactory) {
+				this.startSequence([
+					{ type: "dialogue", dialogueID: "locale_story_spacefactory" },
+					{ type: "storyFlag", flagID: StoryConstants.flags.FALL_SEEN_SPACEFACTORY, value: true },
+					{ type: "custom", f: successCallback },
+					{ type: "log", textKey: "Scouted a manufacturing plant." }
+				]);
+				return;
+			}
+
+			if (localeVO.type == localeTypes.seedDepot) {
+				this.startSequence([
+					{ type: "dialogue", dialogueID: "locale_story_seeddepot" },
+					{ type: "custom", f: successCallback },
+					{ type: "log", textKey: "Scouted an old seed depot, but the seeds were dead." }
+				]);
+				return;
+			}
+
+			if (localeVO.type == localeTypes.shelter) {
+				this.startSequence([
+					{ type: "dialogue", dialogueID: "locale_story_shelter" },
+					{ type: "storyFlag", flagID: StoryConstants.flags.RESCUE_EXPLORER_FOUND, value: true },
+					{ type: "custom", f: successCallback },
+					{ type: "log", textKey: "Scouted the apartment." }
+				]);
+				return;
+			}
+
+			if (localeVO.type == localeTypes.compound) {
+				this.startSequence([
+					{ type: "dialogue", dialogueID: "locale_story_compound" },
+					{ type: "storyFlag", flagID: StoryConstants.flags.GANG_COMPOUND_FOUND, value: true },
+					{ type: "custom", f: successCallback },
+					{ type: "log", textKey: "Scouted a compound." }
+				]);
+				return;
+			}
+
+			if (localeVO.type == localeTypes.expedition) {
+				this.startSequence([
+					{ type: "dialogue", dialogueID: "locale_story_expedition_camp" },
+					{ type: "storyFlag", flagID: StoryConstants.flags.EXPEDITION_FATE_KNOWN, value: true },
+					{ type: "custom", f: successCallback },
+					{ type: "log", textKey: "Scouted the campsite." }
+				]);
+				return;
+			}
+
+			if (localeVO.type == localeTypes.clinic) {
+				this.startSequence([
+					{ type: "dialogue", dialogueID: "locale_generic_clinic" },
+					{ type: "custom", f: successCallback },
+				]);
+				return;
+			}
 
 			let hasCustomReward = customRewardTexts.length > 0;
 
