@@ -2161,6 +2161,11 @@
 		},
 		"explorer_generic_story_find_greenhouse": {
 			"isUrgent": true,
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
 			"pages": [
 				{
 					"buttonKey": "npc_request_promise",
@@ -3569,34 +3574,12 @@
 		},
 		"explorer_unique_handler_interact_02": {
 			"pages": [
-				"explorer_unique_handler_interact_01_p1",
-				"explorer_unique_handler_interact_02_p1",
-				"explorer_unique_handler_interact_03_p1",
-				"explorer_unique_handler_interact_04_p1",
-				"explorer_unique_handler_interact_05_p1",
-				"explorer_unique_handler_interact_06_p1",
-				"explorer_unique_handler_interact_07_p1",
-				"explorer_unique_handler_interact_08_p1",
-				"explorer_unique_handler_interact_09_p1",
-				"explorer_unique_handler_interact_10_p1",
-				"explorer_unique_handler_interact_11_p1",
-				"explorer_unique_handler_interact_12_p1"
+				"explorer_unique_handler_interact_02_p1"
 			]
 		},
 		"explorer_unique_handler_interact_03": {
 			"pages": [
-				"explorer_unique_handler_interact_01_p1",
-				"explorer_unique_handler_interact_02_p1",
-				"explorer_unique_handler_interact_03_p1",
-				"explorer_unique_handler_interact_04_p1",
-				"explorer_unique_handler_interact_05_p1",
-				"explorer_unique_handler_interact_06_p1",
-				"explorer_unique_handler_interact_07_p1",
-				"explorer_unique_handler_interact_08_p1",
-				"explorer_unique_handler_interact_09_p1",
-				"explorer_unique_handler_interact_10_p1",
-				"explorer_unique_handler_interact_11_p1",
-				"explorer_unique_handler_interact_12_p1"
+				"explorer_unique_handler_interact_03_p1"
 			]
 		},
 		"explorer_unique_handler_interact_04": {
@@ -4542,11 +4525,11 @@
 					"options": "NEXT"
 				},
 				{
-					"key": "story.stories.gangs_compound_p2",
+					"key": "story.stories.gangs_locale_compound_p2",
 					"options": "NEXT"
 				},
 				{
-					"key": "story.stories.gangs_compound_p3",
+					"key": "story.stories.gangs_locale_compound_p3",
 					"result": {
 						"gainedItems": [
 							"cache_food_1",
