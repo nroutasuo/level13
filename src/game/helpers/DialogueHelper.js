@@ -102,6 +102,16 @@ define(['ash',
                 return result;
             },
 
+            hasResults: function (dialogueVO) {
+                for (let i = 0; i < dialogueVO.pages.length; i++) {
+                    let pageVO = dialogueVO.pages[i];
+                    if (pageVO.resultTemplate) {
+                        return true;
+                    }
+                }
+                return false;
+            },
+
             // explorer dialogue
 
             isValidExplorerDialogueSource: function (dialogueSourceID) {
@@ -258,22 +268,22 @@ define(['ash',
 
             getRandomValidCharacterDialogueID: function (characterVO, setting) {
                 let dialogueSourceID = characterVO.dialogueSourceID;
-                let validDialogues = this.getCharacterValidDialogues(dialogueSourceID, setting);
+
+                if (!characterVO.completedDialogues) characterVO.completedDialogues = [];
+                
+                let validDialogues = this.getCharacterValidDialogues(characterVO, setting);
 
                 if (validDialogues.length == 0) {
                     log.w("no valid dialogues found for character with dialogue source " + dialogueSourceID + "." + setting);
                     return null;
                 }
-
-                let validDialoguesWithoutCompleted = validDialogues.filter(d => characterVO.completedDialogues.indexOf(d.dialogueID) < 0);
-
-                let candidates = validDialoguesWithoutCompleted.length > 0 ? validDialoguesWithoutCompleted : validDialogues;
                 
-                let randomIndex = Math.floor(Math.random() * candidates.length);
-                return candidates[randomIndex].dialogueID;
+                let randomIndex = Math.floor(Math.random() * validDialogues.length);
+                return validDialogues[randomIndex].dialogueID;
             },
 
-            getCharacterValidDialogues: function (dialogueSourceID, setting) {
+            getCharacterValidDialogues: function (characterVO, setting) {
+                let dialogueSourceID = characterVO.dialogueSourceID;
                 let entries = DialogueConstants.getDialogueEntries(dialogueSourceID, setting);
 
                 let result = [];
@@ -287,6 +297,16 @@ define(['ash',
                     if (!this.isDialogueValid(entry)) continue;
 
                     result.push(entry);
+                }
+
+                if (characterVO.completedDialogues.length > 0) {
+                    // filter out completed
+                    let resultWithoutCompleted = result.filter(d => characterVO.completedDialogues.indexOf(d.dialogueID) < 0);
+                    if (resultWithoutCompleted.length > 0) result = resultWithoutCompleted;
+
+                    // filter out dialogues with results (second after completing one shouldn't give results)
+                    let resultWithoutResults = result.filter(d => !GameGlobals.dialogueHelper.hasResults(d));
+                    if (resultWithoutResults.length > 0) result = resultWithoutResults;
                 }
 
                 return result;
