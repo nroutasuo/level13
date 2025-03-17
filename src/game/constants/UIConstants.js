@@ -380,6 +380,7 @@ define(['ash',
 			let action = talkActionID;
 
 			options = options || {};
+			options.isTemporary = options.isTemporary || false;
 
 			let showName = options.showName || false;
 
