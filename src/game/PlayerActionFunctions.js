@@ -1618,6 +1618,8 @@ define(['ash',
 			characterVO.lastShownDialogue = dialogueID;
 			characterVO.lastShownDialogueTimestamp = now;
 
+			visitorComponent.hasInteracted = true;
+
 			this.startDialogue(dialogueID, null, characterVO);
 		},
 

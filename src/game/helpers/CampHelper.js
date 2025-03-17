@@ -349,6 +349,17 @@ define([
 			}
 		},
 
+		hasNewEvent: function (sector, event) {
+			switch (event) {
+				case OccurrenceConstants.campOccurrenceTypes.visitor:
+					let visitorComponent = sector.get(VisitorComponent);
+					return visitorComponent && !visitorComponent.hasInteracted;
+
+				default:
+					return this.hasEvent(sector, event);
+			}
+		},
+
 		getEventUpgradeLevel: function (event) {
 			var upgradeLevel = 1;
 			var eventUpgrades = GameGlobals.upgradeEffectsHelper.getImprovingUpgradeIdsForOccurrence(event);

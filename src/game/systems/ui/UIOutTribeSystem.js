@@ -204,7 +204,7 @@ define([
 
 			let hasTrader = GameGlobals.campHelper.hasEvent(node.entity, OccurrenceConstants.campOccurrenceTypes.trader);
 			let hasRecruit = GameGlobals.campHelper.hasEvent(node.entity, OccurrenceConstants.campOccurrenceTypes.recruit);
-			let hasVisitor = GameGlobals.campHelper.hasEvent(node.entity, OccurrenceConstants.campOccurrenceTypes.visitor);
+			let hasNewVisitor = GameGlobals.campHelper.hasNewEvent(node.entity, OccurrenceConstants.campOccurrenceTypes.visitor);
 			let hasRefugees = GameGlobals.campHelper.hasEvent(node.entity, OccurrenceConstants.campOccurrenceTypes.refugees);
 			let hasDisease = GameGlobals.campHelper.hasEvent(node.entity, OccurrenceConstants.campOccurrenceTypes.disease);
 			let hasRaid = GameGlobals.campHelper.hasEvent(node.entity, OccurrenceConstants.campOccurrenceTypes.raid);
@@ -230,7 +230,7 @@ define([
 					this.alerts[level].push(this.campNotificationTypes.EVENT_RECRUIT);
 					this.notifications[level].push(this.campNotificationTypes.EVENT_RECRUIT);
 				}
-				if (hasVisitor) {
+				if (hasNewVisitor) {
 					this.alerts[level].push(this.campNotificationTypes.EVENT_VISITOR);
 					this.notifications[level].push(this.campNotificationTypes.EVENT_VISITOR);
 				}

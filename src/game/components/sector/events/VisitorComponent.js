@@ -8,6 +8,7 @@ define(['ash'], function (Ash) {
 		constructor: function (npcType, dialogueSource) {
 			this.visitorType = npcType;
 			this.dialogueSource = dialogueSource;
+			this.hasInteracted = false;
 		},
 
 		getSaveKey: function () {

@@ -181,7 +181,8 @@
 		},
 
 		updateBubble: function () {
-			let campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
+			let sector =  this.playerLocationNodes.head.entity;
+			let campComponent = sector.get(CampComponent);
 			if (!campComponent) return;
 			let campCount = GameGlobals.gameState.numCamps;
 			
@@ -191,10 +192,11 @@
 			}
 			
 			let eventNum = this.currentEvents - this.lastShownEvents;
+			let visitorNum = GameGlobals.campHelper.hasNewEvent(sector, OccurrenceConstants.campOccurrenceTypes.visitor) ? 1 : 0;
 
 			let freePopulation = campComponent.getFreePopulation();
 
-			let newBubbleNumber = buildingNum + eventNum + freePopulation;
+			let newBubbleNumber = buildingNum + eventNum + visitorNum + freePopulation;
 			
 			GameGlobals.uiFunctions.updateBubble("#switch-in .bubble", this.bubbleNumber, newBubbleNumber);
 			this.bubbleNumber = newBubbleNumber;
