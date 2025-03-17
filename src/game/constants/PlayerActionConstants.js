@@ -1,10 +1,11 @@
 define(['ash',
 	'json!game/data/PlayerActionData.json',
+	'utils/ObjectUtils',
 	'game/constants/GameConstants',
 	'game/constants/CampConstants',
 	'game/constants/ImprovementConstants',
 ],
-function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConstants) {
+function (Ash, PlayerActionData, ObjectUtils, GameConstants, CampConstants, ImprovementConstants) {
 	
 	var PlayerActionConstants = {
 		
@@ -29,6 +30,7 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 		DISABLED_REASON_EXPOSED: "DISABLED_REASON_EXPOSED",
 		DISABLED_REASON_VISION: "DISABLED_REASON_VISION",
 		DISABLED_REASON_NOT_AWAKE: "DISABLED_REASON_NOT_AWAKE",
+		DISABLED_REASON_RAID: "There is a raid",
 		
 		loadData: function (data) {
 			Object.assign(this, data);
@@ -58,7 +60,9 @@ function (Ash, PlayerActionData, GameConstants, CampConstants, ImprovementConsta
 					let action = actionsToApply[i];
 
 					let oldReqs = data.requirements[action] || {};
-					let newReqs = Object.assign({}, templateReqs, oldReqs);
+					let newReqs = Object.assign({}, oldReqs);
+					ObjectUtils.assignValues(newReqs, templateReqs);
+					
 					this.requirements[action] = newReqs;
 
 					let oldCosts = data.costs[action] || {};

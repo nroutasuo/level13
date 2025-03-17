@@ -963,7 +963,7 @@ define([
 						let currentValue = campSector.has(RaidComponent);
 						let requiredValue = requirements.camp.raid;
 						if (requiredValue != currentValue) {
-							return { value: 0, reason: (requiredValue ? "No raid currently" : "There is a raid" ) };
+							return { value: 0, reason: (requiredValue ? "No raid currently" : PlayerActionConstants.DISABLEd_REASON_RAID ) };
 						}
 					}
 

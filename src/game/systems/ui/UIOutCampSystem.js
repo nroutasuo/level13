@@ -695,6 +695,7 @@
 						case PlayerActionConstants.DISABLED_REASON_NOT_REACHABLE_BY_TRADERS:
 						case PlayerActionConstants.DISABLED_REASON_IN_PROGRESS:
 						case PlayerActionConstants.DISABLED_REASON_EXPOSED:
+						case PlayerActionConstants.DISABLEd_REASON_RAID:
 							showActionDisabledReason = true;
 					}
 				}

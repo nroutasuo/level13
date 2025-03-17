@@ -1495,6 +1495,11 @@
                 "unlock_building_bridge": true
             }
         },
+        "build_in__": {
+            "camp": {
+                "raid": false
+            }
+        },
         "build_in_apothecary": {
             "improvements": {
                 "apothecary": [
