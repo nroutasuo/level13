@@ -26,6 +26,7 @@ define( function () {
 		cheatModeSupplies: false,
 		cheatModeTakeAll: false,
 		cheatModeCampProduction: false,
+		cheatModeHazards: false,
 		
 		gameURL: "https://nroutasuo.github.io/level13",
 		

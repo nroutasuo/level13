@@ -2,6 +2,7 @@
 define([
 	'ash',
 	'game/GameGlobals',
+	'game/constants/GameConstants',
 	'game/constants/ItemConstants',
 	'game/constants/LocaleConstants',
 	'game/constants/PerkConstants',
@@ -28,6 +29,7 @@ define([
 ], function (
 	Ash,
 	GameGlobals,
+	GameConstants,
 	ItemConstants,
 	LocaleConstants,
 	PerkConstants,
@@ -168,6 +170,7 @@ define([
 		},
 		
 		getHazardDisabledReason: function (featuresComponent, statusComponent, itemsComponent) {
+			if (GameConstants.cheatModeHazards) return null;
 			var hazards = this.getEffectiveHazards(featuresComponent, statusComponent);
 			if (hazards.radiation > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_radiation))
 				return "area too radioactive";
