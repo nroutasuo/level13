@@ -1009,11 +1009,12 @@ define(['ash',
 
 			let hasCustomReward = customRewardTexts.length > 0;
 
+			let introDialogueID = this.getLocaleIntroDialogueID(localeVO);
 			let obstacleDialogueID = this.getScoutLocaleObstacleDialogueID(localeVO);
 			let fightChance = GameGlobals.fightHelper.getRandomEncounterProbability(action);
 			let rewardVO = GameGlobals.playerActionResultsHelper.getResultVOByAction(action, hasCustomReward);
 
-			let rewardTextKey = "Found something.";
+			let rewardTextKey = this.getLocaleRewardTextKey(localeVO);
 			let outroLogKey = "Scouted a " + localeName + ". ";
 
 			let sequenceSteps = [];
@@ -1021,9 +1022,9 @@ define(['ash',
 			let explorers = this.playerStatsNodes.head.explorers.getParty();
 			let explorerName = explorers.length > 0 ? MathUtils.randomElement(explorers).name : "";
 
-			sequenceSteps.push({ id: "intro", type: "dialogue", dialogueID: "locale_generic_" + localeType + "_intro", textParams: { name: localeNameShort } });
+			sequenceSteps.push({ id: "intro", type: "dialogue", dialogueID: introDialogueID, textParams: { name: localeNameShort } });
 			if (obstacleDialogueID) 
-				sequenceSteps.push({ id: "obstacle", type: "dialogue", dialogueID: obstacleDialogueID, textParams: { name: explorerName } });
+				sequenceSteps.push({ id: "obstacle", type: "dialogue", dialogueID: obstacleDialogueID, textParams: { explorerName: explorerName }, localeName: localeNameShort });
 			if (fightChance > 0) 
 				sequenceSteps.push({ id: "fight", type: "fight", chance: fightChance, numEnemies: 1, action: action, branches: { "WIN": "outro", "LOSE": "END", "FLEE": "END" } });
 			sequenceSteps.push({ id: "outro", type: "result", result: rewardVO, textKey: rewardTextKey, customRewardTexts: customRewardTexts });
@@ -1031,6 +1032,37 @@ define(['ash',
 			sequenceSteps.push({ id: "log", type: "log", textKey: outroLogKey });
 
 			this.startSequence(sequenceSteps, localeName);
+		},
+
+		getLocaleIntroDialogueID: function (localeVO) {
+			let localeType = localeVO.type;
+			let randomIndex = MathUtils.randomIntBetween(1, 3);
+			return "locale_generic_" + localeType + "_intro_0" + randomIndex;
+		},
+
+		getLocaleRewardTextKey: function (localeVO) {
+			let possibleKeys = [];
+
+			possibleKeys.push("ui.exploration.action_rewards_generic_message_01");
+			possibleKeys.push("ui.exploration.action_rewards_message_locale_generic_01");
+			possibleKeys.push("ui.exploration.action_rewards_message_locale_generic_02");
+			possibleKeys.push("ui.exploration.action_rewards_message_locale_generic_03");
+			possibleKeys.push("ui.exploration.action_rewards_message_locale_generic_04");
+
+			switch (localeVO.type) {
+				case localeTypes.bunker:
+				case localeTypes.office:
+				case localeTypes.store:
+				case localeTypes.grocery:
+				case localeTypes.restaurant:
+				case localeTypes.lab:
+					possibleKeys.push("ui.exploration.action_rewards_message_locale_storeroom_01");
+					break;
+				 case localeTypes.camp:
+					possibleKeys.push("ui.exploration.action_rewards_message_locale_inhabited_01")
+			}
+
+			return MathUtils.randomElement(possibleKeys);
 		},
 
 		getScoutLocaleObstacleDialogueID: function (localeVO) {
@@ -1045,20 +1077,30 @@ define(['ash',
 			}
 
 			let allObstacles = [
-				{ dialogueID: "locale_generic_obstacle_guards", category: "i", allowedTypes: [ localeTypes.camp, localeTypes.tradingPartner, localeTypes.clinic ] },
-				{ dialogueID: "locale_generic_obstacle_inhabitants", category: "i", allowedTypes: [ localeTypes.camp ] },
-				{ dialogueID: "locale_generic_obstacle_pillar", category: "u", disallowedTypes: [ localeTypes.lab, localeTypes.office] },
-				{ dialogueID: "locale_generic_obstacle_door", category: "u" },
-				{ dialogueID: "locale_generic_obstacle_rubble", category: "u" },
-				{ dialogueID: "locale_generic_obstacle_remains", category: "u", disallowedTypes: [ localeTypes.warehouse ] },
-				{ dialogueID: "locale_generic_obstacle_draft", category: "u" },
-				{ dialogueID: "locale_generic_obstacle_explorer_nervous", category: "u", requiresExplorers: true },
-				{ dialogueID: "locale_generic_obstacle_explorer_lost", category: "u", requiresExplorers: true },
+				{ dialogueID: "locale_generic_obstacle_dialect", category: "i" },
+				{ dialogueID: "locale_generic_obstacle_guards", category: "i" },
+				{ dialogueID: "locale_generic_obstacle_inhabitants", category: "i" },
+				{ dialogueID: "locale_generic_obstacle_claustrophobia", category: "u", allowedTypes: [ localeTypes.factory, localeTypes.maintenance, localeTypes.hospital, localeTypes.bunker ] },
+				{ dialogueID: "locale_generic_obstacle_darkness", category: "u", allowedTypes: [ localeTypes.warehouse, localeTypes.library ] },
+				{ dialogueID: "locale_generic_obstacle_draft", category: "u", allowedTypes: [ localeTypes.house, localeTypes.warehouse] },
 				{ dialogueID: "locale_generic_obstacle_explorer_curious", category: "u", requiresExplorers: true },
-				{ dialogueID: "locale_generic_obstacle_spoiled", category: "u", allowedTypes: [ localeTypes.restaurant, localeTypes.grocery, localeTypes.warehouse ] },
-				{ dialogueID: "locale_generic_obstacle_flooded", category: "u" },
+				{ dialogueID: "locale_generic_obstacle_explorer_lost", category: "u", requiresExplorers: true },
+				{ dialogueID: "locale_generic_obstacle_explorer_nervous", category: "u", requiresExplorers: true },
+				{ dialogueID: "locale_generic_obstacle_flooded", category: "u", disallowedTypes: [ localeTypes.junkyard, localeTypes.farm ] },
+				{ dialogueID: "locale_generic_obstacle_glass", category: "u" },
+				{ dialogueID: "locale_generic_obstacle_identical", category: "u", allowedTypes: [ localeTypes.office, localeTypes.hospital ] },
+				{ dialogueID: "locale_generic_obstacle_ladder", category: "u", allowedTypes: [ localeTypes.farm, localeTypes.warehouse ] },
+				{ dialogueID: "locale_generic_obstacle_lost", category: "u", allowedTypes: [ localeTypes.office, localeTypes.market, localeTypes.hospital ] },
+				{ dialogueID: "locale_generic_obstacle_pillar", category: "u", disallowedTypes: [ localeTypes.lab, localeTypes.office, localeTypes.maintenance ] },
+				{ dialogueID: "locale_generic_obstacle_remains", category: "u", disallowedTypes: [ localeTypes.warehouse, localeTypes.maintenance ] },
+				{ dialogueID: "locale_generic_obstacle_rot", category: "u", allowedTypes: [ localeTypes.restaurant ] },
+				{ dialogueID: "locale_generic_obstacle_rubble", category: "u" },
+				{ dialogueID: "locale_generic_obstacle_shelves", category: "u", disallowedTypes: [ localeTypes.junkyard ] },
+				{ dialogueID: "locale_generic_obstacle_spoiled", category: "u", allowedTypes: [ localeTypes.restaurant, localeTypes.grocery, localeTypes.warehouse, localeTypes.hospital ] },
 				{ dialogueID: "locale_generic_obstacle_stair", category: "u" },
-				{ dialogueID: "locale_generic_obstacle_claustrophobia", category: "u", allowedTypes: [ localeTypes.factory, localeTypes.maintenance, localeTypes.sewer ] },
+				{ dialogueID: "locale_generic_obstacle_tight", category: "u", allowedTypes: [ localeTypes.maintenance ] },
+				{ dialogueID: "locale_generic_obstacle_wall", category: "u", allowedTypes: [ localeTypes.farm, localeTypes.factory ] },
+				{ dialogueID: "locale_generic_obstacle_watcher", category: "u", allowedTypes: [ localeTypes.bunker, localeTypes.library ] },
 			];
 
 			let localeType = localeVO.type;

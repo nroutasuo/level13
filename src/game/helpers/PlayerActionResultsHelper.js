@@ -2241,14 +2241,13 @@ define([
 				case localeTypes.factory: return UpgradeConstants.UPGRADE_TYPE_EVIDENCE;
 				case localeTypes.farm: return UpgradeConstants.UPGRADE_TYPE_HOPE;
 				case localeTypes.grocery: return UpgradeConstants.UPGRADE_TYPE_HOPE;
-				case localeTypes.hermit: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
 				case localeTypes.house: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
-				case localeTypes.hut: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
 				case localeTypes.lab: return UpgradeConstants.UPGRADE_TYPE_EVIDENCE;
 				case localeTypes.market: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
 				case localeTypes.office: return UpgradeConstants.UPGRADE_TYPE_EVIDENCE;
 				case localeTypes.restaurant: return UpgradeConstants.UPGRADE_TYPE_HOPE;
-				case localeTypes.sewer: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
+				case localeTypes.hospital: return UpgradeConstants.UPGRADE_TYPE_EVIDENCE;
+				case localeTypes.junkyard: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
 				case localeTypes.store: return UpgradeConstants.UPGRADE_TYPE_HOPE;
 				case localeTypes.tradingpartner: return UpgradeConstants.UPGRADE_TYPE_RUMOURS;
 			}

@@ -1244,10 +1244,10 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					if (condition === SectorConstants.SECTOR_CONDITION_RECENT) modifier = "cable car";
 					if (condition === SectorConstants.SECTOR_CONDITION_MAINTAINED) modifier = "train";
 					break;
-				case localeTypes.sewer:
+				case localeTypes.junkyard:
 					if (condition === SectorConstants.SECTOR_CONDITION_RECENT) modifier = "quiet";
 					if (condition === SectorConstants.SECTOR_CONDITION_MAINTAINED) modifier = "quiet";
-					noun = "sewer";
+					noun = "junkyard";
 					break;
 				case localeTypes.warehouse:
 					if (condition === SectorConstants.SECTOR_CONDITION_RECENT) modifier = "sturdy";
@@ -1258,12 +1258,6 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				case localeTypes.tradingpartner:
 					modifier = "foreign";
 					noun = "camp";
-					break;
-				case localeTypes.hut:
-				case localeTypes.hermit:
-					if (condition === SectorConstants.SECTOR_CONDITION_RECENT) modifier = "recently built";
-					if (condition === SectorConstants.SECTOR_CONDITION_MAINTAINED) modifier = "well-kept";
-					noun = "hut";
 					break;
 				case localeTypes.clinic:
 					modifier = "provisional";
@@ -1285,6 +1279,9 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					break;
 				case localeTypes.restaurant:
 					noun = "restaurant";
+					break;
+				case localeTypes.hospital:
+					noun = "hospital";
 					break;
 				case localeTypes.grocery:
 				case localeTypes.store:

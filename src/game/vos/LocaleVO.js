@@ -10,7 +10,7 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 		market: "market",
 		maintenance: "maintenance",
 		transport: "transport",
-		sewer: "sewer",
+		junkyard: "junkyard",
 		warehouse: "warehouse",
 		library: "library",
 		farm: "farm",
@@ -19,11 +19,10 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 		grocery: "grocery",
 		store: "store",
 		office: "office",
+		hospital: "hospital",
 		
 		// inhabited
 		camp: "camp",
-		hut: "hut",
-		hermit: "hermit",
 		tradingpartner: "tradingpartner",
 		clinic: "clinic",
 
@@ -59,8 +58,15 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 			this.costs = {};
 			this.costs.stamina = this.getStaminaRequirement();
 			
-			if (type !== localeTypes.grove && type !== localeTypes.tradingpartner && type != localeTypes.clinic) {
-				 this.costs.item_exploration_1 = 1;
+			switch (type) {
+				case localeTypes.grove:
+				case localeTypes.tradingpartner:
+				case localeTypes.clinic:
+				case localeTypes.camp:
+					break;
+				default:
+					this.costs.item_exploration_1 = 1;
+					break;
 			}
 		},
 		
@@ -84,9 +90,8 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 				case localeTypes.greenhouse: difficulty = 0.2; break;
 				case localeTypes.grocery: difficulty = 0.4; break;
 				case localeTypes.grove: difficulty = 0; break;
-				case localeTypes.hermit: difficulty = 0.5; break;
+				case localeTypes.hospital: difficulty = 0.25; break;
 				case localeTypes.house: difficulty = 0.15; break;
-				case localeTypes.hut: difficulty = 0.35; break;
 				case localeTypes.lab: difficulty = 0.85; break;
 				case localeTypes.library: difficulty = 0.3; break;
 				case localeTypes.maintenance: difficulty = 1; break;
@@ -94,7 +99,7 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 				case localeTypes.office: difficulty = 0.25; break;
 				case localeTypes.restaurant: difficulty = 0.25; break;
 				case localeTypes.seedDepot: difficulty = 0.5; break;
-				case localeTypes.sewer: difficulty = 1; break;
+				case localeTypes.junkyard: difficulty = 1; break;
 				case localeTypes.shelter: difficulty = 0.15; break;
 				case localeTypes.spacefactory: difficulty = 1; break;
 				case localeTypes.store: difficulty = 0.3; break;
@@ -137,6 +142,7 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 					res.addResource(resourceNames.water, abundant, "definition");
 					if (campOrdinal > 3) res.addResource(resourceNames.medicine, defaultAmount, "definition");
 					break;
+				case localeTypes.hospital:
 				case localeTypes.lab:
 					res.addResource(resourceNames.water, defaultAmount, "definition");
 					if (campOrdinal > 3) res.addResource(resourceNames.medicine, abundant, "definition");
@@ -177,7 +183,7 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 					res.addResource(resourceNames.food, defaultAmount, "definition");
 					res.addResource(resourceNames.water, defaultAmount, "definition");
 					break;
-				case localeTypes.sewer:
+				case localeTypes.junkyard:
 				case localeTypes.warehouse:
 				case localeTypes.depot:
 					res.addResource(resourceNames.metal, abundant, "definition");
@@ -202,16 +208,15 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 				case localeTypes.maintenance:
 				case localeTypes.seedDepot:
 				case localeTypes.expedition:
-				case localeTypes.sewer:
+				case localeTypes.junkyard:
 				case localeTypes.spacefactory:
 				case localeTypes.warehouse:
+				case localeTypes.hospital:
 					return 0;
 				case localeTypes.camp:
-				case localeTypes.hermit:
 				case localeTypes.tradingpartner:
 					return 0;
 				case localeTypes.grocery:
-				case localeTypes.hut:
 				case localeTypes.lab:
 				case localeTypes.office:
 				case localeTypes.restaurant:
@@ -245,28 +250,26 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 					return [ ItemConstants.itemTags.science, ItemConstants.itemTags.history, ItemConstants.itemTags.book ];
 				case localeTypes.maintenance:
 					return [ ItemConstants.itemTags.maintenance, ItemConstants.itemTags.indutrial ];
-				case localeTypes.sewer:
+				case localeTypes.junkyard:
 					return [ ItemConstants.itemTags.maintenance, ItemConstants.itemTags.valuable ];
 				case localeTypes.warehouse:
 				case localeTypes.depot:
 					return [ ItemConstants.itemTags.perishable, ItemConstants.itemTags.clothing ];
 				case localeTypes.camp:
 					return [ ItemConstants.itemTags.new, ItemConstants.itemTags.equipment ];
-				case localeTypes.hermit:
-					return [ ItemConstants.itemTags.maintenance, ItemConstants.itemTags.equipment ];
 				case localeTypes.tradingpartner:
 					return [ ItemConstants.itemTags.valuable ];
 				case localeTypes.grocery:
 					return [ ItemConstants.itemTags.perishable, ItemConstants.itemTags.medical ];
 				case localeTypes.office:
 					return [ ItemConstants.itemTags.science, ItemConstants.itemTags.valuable, ItemConstants.itemTags.community ];
-				case localeTypes.hut:
-					return [ ItemConstants.itemTags.maintenance ];
 				case localeTypes.lab:
 				case localeTypes.spacefactory:
 					return [ ItemConstants.itemTags.science, ItemConstants.itemTags.industrial ];
+				case localeTypes.hospital:
+					return [ ItemConstants.itemTags.medical, ItemConstants.itemTags.science ];
 				case localeTypes.restaurant:
-					return [ ItemConstants.itemTags.perishabl, ItemConstants.itemTags.communitye ];
+					return [ ItemConstants.itemTags.perishabl, ItemConstants.itemTags.community ];
 				case localeTypes.transport:
 					return [ ItemConstants.itemTags.maintenance, ItemConstants.itemTags.community ];
 				case localeTypes.house:
@@ -282,8 +285,6 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 		getCategory: function () {
 			switch (this.type) {
 				case localeTypes.camp:
-				case localeTypes.hut:
-				case localeTypes.hermit:
 				case localeTypes.tradingpartner:
 					return "i";
 				
@@ -297,7 +298,7 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 				case localeTypes.house: return 0.1;
 				case localeTypes.bunker: return 0.1;
 				case localeTypes.lab: return 0.2;
-				case localeTypes.sewer: return 0.3;
+				case localeTypes.junkyard: return 0.3;
 				default: return 0;
 			}
 		},

@@ -43,11 +43,11 @@
 				{
 					"id": "s3",
 					"key": "character_bard_default_event_03_p4",
+					"options": "END",
 					"result": {
 						"gainedRumours": 3,
 						"replaceDialogue": true
-					},
-					"options": "END"
+					}
 				},
 				{
 					"id": "reject",
@@ -84,11 +84,11 @@
 				{
 					"id": "s3",
 					"key": "character_bard_default_event_04_p4",
+					"options": "END",
 					"result": {
 						"gainedRumours": 3,
 						"replaceDialogue": true
-					},
-					"options": "END"
+					}
 				},
 				{
 					"id": "reject",
@@ -125,11 +125,11 @@
 				{
 					"id": "s3",
 					"key": "character_bard_default_event_05_p4",
+					"options": "END",
 					"result": {
 						"gainedRumours": 3,
 						"replaceDialogue": true
-					},
-					"options": "END"
+					}
 				},
 				{
 					"id": "reject",
@@ -166,11 +166,11 @@
 				{
 					"id": "s3",
 					"key": "character_bard_default_event_06_p4",
+					"options": "END",
 					"result": {
 						"gainedRumours": 3,
 						"replaceDialogue": true
-					},
-					"options": "END"
+					}
 				},
 				{
 					"id": "reject",
@@ -207,11 +207,11 @@
 				{
 					"id": "s3",
 					"key": "character_bard_default_event_07_p4",
+					"options": "END",
 					"result": {
 						"gainedRumours": 3,
 						"replaceDialogue": true
-					},
-					"options": "END"
+					}
 				},
 				{
 					"id": "reject",
@@ -650,6 +650,26 @@
 		"character_drifter_default_event_06": {
 			"pages": [
 				"character_drifter_default_event_06_p1"
+			]
+		},
+		"character_drifter_default_event_07": {
+			"conditions": {
+				"storyFlags": {
+					"ESCAPE_SEARCHING_FOR_EXIT": true
+				}
+			},
+			"pages": [
+				"character_drifter_default_event_07_p1"
+			]
+		},
+		"character_drifter_default_event_08": {
+			"pages": [
+				"character_drifter_default_event_08_p1"
+			]
+		},
+		"character_drifter_default_event_09": {
+			"pages": [
+				"character_drifter_default_event_09_p1"
 			]
 		},
 		"character_drifter_default_meet_01": {
@@ -1479,7 +1499,7 @@
 			"conditions": {
 				"numCamps": 5,
 				"storyFlags": {
-					"ESCAPE_SEARCHING_FOR_EXIT": true
+					"ESCAPE_SEARCHING_FOR_EXIT": false
 				}
 			},
 			"pages": [
@@ -2160,12 +2180,12 @@
 			"repeatable": true
 		},
 		"explorer_generic_story_find_greenhouse": {
-			"isUrgent": true,
 			"conditions": {
 				"explorer": {
 					"trust": 1
 				}
 			},
+			"isUrgent": true,
 			"pages": [
 				{
 					"buttonKey": "npc_request_promise",
@@ -3975,10 +3995,10 @@
 			]
 		},
 		"explorer_unique_journalist_story_start": {
-			"isUrgent": true,
 			"conditions": {
 				"inCamp": true
 			},
+			"isUrgent": true,
 			"pages": [
 				{
 					"buttonKey": "npc_request_listen",
@@ -4275,14 +4295,24 @@
 				"story.stories.expedition_diary_p4"
 			]
 		},
-		"locale_generic_bunker_intro": {
+		"locale_generic_bunker_intro_01": {
 			"pages": [
-				"locale_generic_bunker_intro_p1"
+				"locale_generic_bunker_intro_01_p1"
 			]
 		},
-		"locale_generic_camp_intro": {
+		"locale_generic_bunker_intro_02": {
 			"pages": [
-				"locale_generic_camp_intro_p1"
+				"locale_generic_bunker_intro_02_p1"
+			]
+		},
+		"locale_generic_camp_intro_01": {
+			"pages": [
+				"locale_generic_camp_intro_01_p1"
+			]
+		},
+		"locale_generic_camp_intro_02": {
+			"pages": [
+				"locale_generic_camp_intro_02_p1"
 			]
 		},
 		"locale_generic_clinic": {
@@ -4321,54 +4351,104 @@
 				}
 			]
 		},
-		"locale_generic_factory_intro": {
+		"locale_generic_factory_intro_01": {
 			"pages": [
-				"locale_generic_factory_intro_p1"
+				"locale_generic_factory_intro_01_p1"
 			]
 		},
-		"locale_generic_farm_intro": {
+		"locale_generic_factory_intro_02": {
 			"pages": [
-				"locale_generic_farm_intro_p1"
+				"locale_generic_factory_intro_02_p1"
 			]
 		},
-		"locale_generic_grocery_intro": {
+		"locale_generic_farm_intro_01": {
 			"pages": [
-				"locale_generic_grocery_intro_p1"
+				"locale_generic_farm_intro_01_p1"
 			]
 		},
-		"locale_generic_hermit_intro": {
+		"locale_generic_farm_intro_02": {
 			"pages": [
-				"locale_generic_hermit_intro_p1"
+				"locale_generic_farm_intro_02_p1"
 			]
 		},
-		"locale_generic_house_intro": {
+		"locale_generic_grocery_intro_01": {
 			"pages": [
-				"locale_generic_house_intro_p1"
+				"locale_generic_grocery_intro_01_p1"
 			]
 		},
-		"locale_generic_hut_intro": {
+		"locale_generic_grocery_intro_02": {
 			"pages": [
-				"locale_generic_hut_intro_p1"
+				"locale_generic_grocery_intro_02_p1"
 			]
 		},
-		"locale_generic_lab_intro": {
+		"locale_generic_hospital_intro_01": {
 			"pages": [
-				"locale_generic_lab_intro_p1"
+				"locale_generic_hospital_intro_01_p1"
 			]
 		},
-		"locale_generic_library_intro": {
+		"locale_generic_hospital_intro_02": {
 			"pages": [
-				"locale_generic_library_intro_p1"
+				"locale_generic_hospital_intro_02_p1"
 			]
 		},
-		"locale_generic_maintenance_intro": {
+		"locale_generic_house_intro_01": {
 			"pages": [
-				"locale_generic_maintenance_intro_p1"
+				"locale_generic_house_intro_01_p1"
 			]
 		},
-		"locale_generic_market_intro": {
+		"locale_generic_house_intro_02": {
 			"pages": [
-				"locale_generic_market_intro_p1"
+				"locale_generic_house_intro_02_p1"
+			]
+		},
+		"locale_generic_junkyard_intro_01": {
+			"pages": [
+				"locale_generic_junkyard_intro_01_p1"
+			]
+		},
+		"locale_generic_junkyard_intro_02": {
+			"pages": [
+				"locale_generic_junkyard_intro_02_p1"
+			]
+		},
+		"locale_generic_lab_intro_01": {
+			"pages": [
+				"locale_generic_lab_intro_01_p1"
+			]
+		},
+		"locale_generic_lab_intro_02": {
+			"pages": [
+				"locale_generic_lab_intro_02_p1"
+			]
+		},
+		"locale_generic_library_intro_01": {
+			"pages": [
+				"locale_generic_library_intro_01_p1"
+			]
+		},
+		"locale_generic_library_intro_02": {
+			"pages": [
+				"locale_generic_library_intro_02_p1"
+			]
+		},
+		"locale_generic_maintenance_intro_01": {
+			"pages": [
+				"locale_generic_maintenance_intro_01_p1"
+			]
+		},
+		"locale_generic_maintenance_intro_02": {
+			"pages": [
+				"locale_generic_maintenance_intro_02_p1"
+			]
+		},
+		"locale_generic_market_intro_01": {
+			"pages": [
+				"locale_generic_market_intro_01_p1"
+			]
+		},
+		"locale_generic_market_intro_02": {
+			"pages": [
+				"locale_generic_market_intro_02_p1"
 			]
 		},
 		"locale_generic_obstacle_claustrophobia": {
@@ -4379,11 +4459,19 @@
 				}
 			]
 		},
-		"locale_generic_obstacle_door": {
+		"locale_generic_obstacle_darkness": {
 			"pages": [
 				{
-					"buttonKey": "locale_interaction_crawl",
-					"key": "locale_generic_obstacle_door_p1"
+					"buttonKey": "locale_interaction_breathe",
+					"key": "locale_generic_obstacle_darkness_p1"
+				}
+			]
+		},
+		"locale_generic_obstacle_dialect": {
+			"pages": [
+				{
+					"buttonKey": "continue_button_label",
+					"key": "locale_generic_obstacle_darkness_p1"
 				}
 			]
 		},
@@ -4427,6 +4515,14 @@
 				}
 			]
 		},
+		"locale_generic_obstacle_glass": {
+			"pages": [
+				{
+					"buttonKey": "locale_interaction_step",
+					"key": "locale_generic_obstacle_glass_p1"
+				}
+			]
+		},
 		"locale_generic_obstacle_guards": {
 			"pages": [
 				{
@@ -4435,11 +4531,35 @@
 				}
 			]
 		},
+		"locale_generic_obstacle_identical": {
+			"pages": [
+				{
+					"buttonKey": "locale_interaction_keep_going",
+					"key": "locale_generic_obstacle_identical_p1"
+				}
+			]
+		},
 		"locale_generic_obstacle_inhabitants": {
 			"pages": [
 				{
 					"buttonKey": "locale_interaction_negotiate",
 					"key": "locale_generic_obstacle_inhabitants_p1"
+				}
+			]
+		},
+		"locale_generic_obstacle_ladder": {
+			"pages": [
+				{
+					"buttonKey": "locale_interaction_climb",
+					"key": "locale_generic_obstacle_ladder_p1"
+				}
+			]
+		},
+		"locale_generic_obstacle_lost": {
+			"pages": [
+				{
+					"buttonKey": "locale_interaction_follow",
+					"key": "locale_generic_obstacle_lost_p1"
 				}
 			]
 		},
@@ -4459,11 +4579,27 @@
 				}
 			]
 		},
+		"locale_generic_obstacle_rot": {
+			"pages": [
+				{
+					"buttonKey": "locale_interaction_keep_going",
+					"key": "locale_generic_obstacle_rot_p1"
+				}
+			]
+		},
 		"locale_generic_obstacle_rubble": {
 			"pages": [
 				{
 					"buttonKey": "locale_interaction_climb",
 					"key": "locale_generic_obstacle_rubble_p1"
+				}
+			]
+		},
+		"locale_generic_obstacle_shelves": {
+			"pages": [
+				{
+					"buttonKey": "locale_interaction_squeeze",
+					"key": "locale_generic_obstacle_shelves_p1"
 				}
 			]
 		},
@@ -4483,39 +4619,88 @@
 				}
 			]
 		},
-		"locale_generic_office_intro": {
+		"locale_generic_obstacle_tight": {
 			"pages": [
-				"locale_generic_office_intro_p1"
+				{
+					"buttonKey": "locale_interaction_hold",
+					"key": "locale_generic_obstacle_tight_p1"
+				}
 			]
 		},
-		"locale_generic_restaurant_intro": {
+		"locale_generic_obstacle_wall": {
 			"pages": [
-				"locale_generic_restaurant_intro_p1"
+				{
+					"buttonKey": "locale_interaction_climb",
+					"key": "locale_generic_obstacle_wall_p1"
+				}
 			]
 		},
-		"locale_generic_sewer_intro": {
+		"locale_generic_obstacle_watcher": {
 			"pages": [
-				"locale_generic_sewer_intro_p1"
+				{
+					"buttonKey": "locale_interaction_climb",
+					"key": "locale_generic_obstacle_watcher_p1"
+				}
 			]
 		},
-		"locale_generic_store_intro": {
+		"locale_generic_office_intro_01": {
 			"pages": [
-				"locale_generic_store_intro_p1"
+				"locale_generic_office_intro_01_p1"
 			]
 		},
-		"locale_generic_tradingpartner_intro": {
+		"locale_generic_office_intro_02": {
 			"pages": [
-				"locale_generic_tradingpartner_intro_p1"
+				"locale_generic_office_intro_02_p1"
 			]
 		},
-		"locale_generic_transport_intro": {
+		"locale_generic_restaurant_intro_01": {
 			"pages": [
-				"locale_generic_transport_intro_p1"
+				"locale_generic_restaurant_intro_01_p1"
 			]
 		},
-		"locale_generic_warehouse_intro": {
+		"locale_generic_restaurant_intro_02": {
 			"pages": [
-				"locale_generic_warehouse_intro_p1"
+				"locale_generic_restaurant_intro_02_p1"
+			]
+		},
+		"locale_generic_store_intro_01": {
+			"pages": [
+				"locale_generic_store_intro_01_p1"
+			]
+		},
+		"locale_generic_store_intro_02": {
+			"pages": [
+				"locale_generic_store_intro_02_p1"
+			]
+		},
+		"locale_generic_tradingpartner_intro_01": {
+			"pages": [
+				"locale_generic_tradingpartner_intro_01_p1"
+			]
+		},
+		"locale_generic_tradingpartner_intro_02": {
+			"pages": [
+				"locale_generic_tradingpartner_intro_02_p1"
+			]
+		},
+		"locale_generic_transport_intro_01": {
+			"pages": [
+				"locale_generic_transport_intro_01_p1"
+			]
+		},
+		"locale_generic_transport_intro_02": {
+			"pages": [
+				"locale_generic_transport_intro_02_p1"
+			]
+		},
+		"locale_generic_warehouse_intro_01": {
+			"pages": [
+				"locale_generic_warehouse_intro_01_p1"
+			]
+		},
+		"locale_generic_warehouse_intro_02": {
+			"pages": [
+				"locale_generic_warehouse_intro_02_p1"
 			]
 		},
 		"locale_story_compound": {
@@ -4584,6 +4769,19 @@
 				"story.stories.greenhouse_locale_story_greenhouse_p1"
 			]
 		},
+		"locale_story_seeddepot": {
+			"pages": [
+				{
+					"id": "intro",
+					"key": "story.stories.greenhouse_locale_story_seeddepot_p1",
+					"options": "NEXT"
+				},
+				{
+					"id": "description",
+					"key": "story.stories.greenhouse_locale_story_seeddepot_p2"
+				}
+			]
+		},
 		"locale_story_shelter": {
 			"pages": [
 				{
@@ -4601,19 +4799,6 @@
 						],
 						"gainedPopulation": 1
 					}
-				}
-			]
-		},
-		"locale_story_seeddepot": {
-			"pages": [
-				{
-					"id": "intro",
-					"key": "story.stories.greenhouse_locale_story_seeddepot_p1",
-					"options": "NEXT"
-				},
-				{
-					"id": "description",
-					"key": "story.stories.greenhouse_locale_story_seeddepot_p2"
 				}
 			]
 		},
@@ -4726,15 +4911,15 @@
 					]
 				},
 				{
+					"action": "accept_refugees",
 					"id": "accept",
 					"key": "refugees_default_event_01_accept",
-					"options": "END",
-					"action": "accept_refugees"
+					"options": "END"
 				},
 				{
+					"action": "dismiss_refugees",
 					"id": "reject",
-					"key": "refugees_default_event_01_reject",
-					"action": "dismiss_refugees"
+					"key": "refugees_default_event_01_reject"
 				}
 			]
 		},
@@ -4755,15 +4940,15 @@
 					]
 				},
 				{
+					"action": "accept_refugees",
 					"id": "accept",
 					"key": "refugees_default_event_02_accept",
-					"options": "END",
-					"action": "accept_refugees"
+					"options": "END"
 				},
 				{
+					"action": "dismiss_refugees",
 					"id": "reject",
-					"key": "refugees_default_event_02_reject",
-					"action": "dismiss_refugees"
+					"key": "refugees_default_event_02_reject"
 				}
 			]
 		},
@@ -4784,15 +4969,15 @@
 					]
 				},
 				{
+					"action": "accept_refugees",
 					"id": "accept",
 					"key": "refugees_default_event_03_accept",
-					"options": "END",
-					"action": "accept_refugees"
+					"options": "END"
 				},
 				{
+					"action": "dismiss_refugees",
 					"id": "reject",
-					"key": "refugees_default_event_03_reject",
-					"action": "dismiss_refugees"
+					"key": "refugees_default_event_03_reject"
 				}
 			]
 		},
@@ -4813,15 +4998,15 @@
 					]
 				},
 				{
+					"action": "accept_refugees",
 					"id": "accept",
 					"key": "refugees_earthquake_event_01_accept",
-					"options": "END",
-					"action": "accept_refugees"
+					"options": "END"
 				},
 				{
+					"action": "dismiss_refugees",
 					"id": "reject",
-					"key": "refugees_earthquake_event_01_reject",
-					"action": "dismiss_refugees"
+					"key": "refugees_earthquake_event_01_reject"
 				}
 			]
 		},
@@ -4958,7 +5143,10 @@
 					"character_drifter_default_event_03",
 					"character_drifter_default_event_04",
 					"character_drifter_default_event_05",
-					"character_drifter_default_event_06"
+					"character_drifter_default_event_06",
+					"character_drifter_default_event_07",
+					"character_drifter_default_event_08",
+					"character_drifter_default_event_09"
 				],
 				"meet": [
 					"character_drifter_default_meet_01",
