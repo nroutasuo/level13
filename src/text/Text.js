@@ -114,8 +114,9 @@ define(function () {
 			let hasLanguage = this.hasCurrentLanguage();
 			skipFallback = skipFallback && hasLanguage;
 			
-			if (this.currentTexts[key]) return true;
-			if (!skipFallback && this.defaultTexts[key]) return true;
+			if (key in this.currentTexts) return true;
+			if (!skipFallback && key in this.defaultTexts) return true;
+
 			return false;
 		},
 
@@ -124,11 +125,11 @@ define(function () {
 			skipFallback = skipFallback && hasLanguage;
 
 			if (hasLanguage) {
-				if (this.currentTexts[key]) return this.currentTexts[key];
+				if (key in this.currentTexts) return this.currentTexts[key];
 				log.w("no text found for key [" + key + "] in current texts");
 			}
 			if (!skipFallback) {
-				if (this.defaultTexts[key]) return this.defaultTexts[key];
+				if (key in this.defaultTexts) return this.defaultTexts[key];
 				log.w("no text found for key [" + key + "] in default texts");
 			}
 
@@ -137,6 +138,8 @@ define(function () {
 
 		replaceParameters: function (key, text, options) {
 			let result = text;
+
+			if (!result) return result;
 
 			options = options || {};
 
@@ -174,6 +177,8 @@ define(function () {
 
 		addStyles: function (text) {
 			let result = text;
+
+			if (!result) return result;
 
 			let regex = /<style='(.*?)'>(.*?)<\/style>/g;
 			

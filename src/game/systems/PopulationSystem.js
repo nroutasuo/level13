@@ -418,13 +418,13 @@ define([
 			
 			if (isIncrease) {
 				if (population == 1) {
-					message = "A ragged stranger appears from the darkness.";
+					message = "ui.camp.population_increase_first_message"
 				} else if (levelComponent.habitability < 1) {
-					message = "A skeletal stranger arrives from the dark, offers to work.";
+					message = "ui.camp.population_increase_outpost_message";
 				} else if (level > 15) {
-					message = "A grim refugee shows up.";
+					message = "ui.camp.population_increase_refugee_message";
 				} else {
-					message = "A stranger shows up.";
+					message = "ui.camp.population_increase_default_message";
 				}
 			} else {
 				message = "An inhabitant packs their belongings and leaves.";

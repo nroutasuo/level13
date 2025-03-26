@@ -315,13 +315,16 @@ define([
 			this.scheduleEvent(campNode, event);
 
 			let logMsg;
+			let logMsgParams = {};
 			let visibility = LogConstants.MSG_VISIBILITY_DEFAULT;
+
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.accident:
 					let num = 1;
 					let workerType = this.getInjuredWorkerType(campNode);
 					GameGlobals.campHelper.addDisabledPopulation(campNode.entity, num, workerType, CampConstants.DISABLED_POPULATION_REASON_ACCIDENT, 60 * 10);
-					logMsg = "There has been an accident. " + num + " worker (" + workerType + ") got injured.";
+					logMsgParams.workerType = workerType;
+					logMsg = "ui.tribe.event_ended_accident_message";
 					break;
 
 				case OccurrenceConstants.campOccurrenceTypes.disaster:
@@ -331,29 +334,32 @@ define([
 					let damagedBuilding = this.addDamagedBuilding(campNode.entity, 1);
 
 					campNode.entity.remove(DisasterComponent);
-					logMsg = disasterType + " ended. A building was damaged.";
+					logMsgParams.disasterType = disasterType;
+					logMsg = "ui.tribe.event_ended_disaster_message";
 					break;
 
 				case OccurrenceConstants.campOccurrenceTypes.disease:
 					let diseaseComponent = campNode.entity.get(DiseaseComponent);
 					campNode.entity.remove(DiseaseComponent);
 					campNode.camp.removeAllDisabledPopulationByReason(CampConstants.DISABLED_POPULATION_REASON_DISEASE);
-					logMsg = "The disease outbreak is over.";
+					logMsg = "ui.tribe.event_ended_disease_message";
 					break;
 
 				case OccurrenceConstants.campOccurrenceTypes.trader:
 					let traderComponent = campNode.entity.get(TraderComponent);
 					let isDismissed = traderComponent && traderComponent.isDismissed;
 					campNode.entity.remove(TraderComponent);
-					logMsg = "Trader leaves.";
+					logMsg = "ui.tribe.event_ended_trader_message";
 					break;
 					
 				case OccurrenceConstants.campOccurrenceTypes.recruit:
 					let recruitComponent = campNode.entity.get(RecruitComponent);
 					let wasRecruited = recruitComponent.isRecruited;
+					let name = recruitComponent.explorer.name;
 					campNode.entity.remove(RecruitComponent);
 					if (!wasRecruited) {
-						logMsg = "Visitor leaves.";
+						logMsgParams.name = name;
+						logMsg = "ui.tribe.event_ended_recruit_message";
 					}
 					break;
 
@@ -396,22 +402,25 @@ define([
 				case OccurrenceConstants.campOccurrenceTypes.refugees:
 					let refugeesComponent = campNode.entity.get(RefugeesComponent);
 					let numRefugees = refugeesComponent.num;
+					logMsgParams.num = numRefugees;
 					campNode.entity.remove(RefugeesComponent);
+
 					if (refugeesComponent.isAccepted) {
-						logMsg = "Refugees (" + numRefugees + ") joined the camp.";
+						logMsg = "ui.tribe.event_refugees_accepted_message";
 					} else {
-						logMsg = "Refugees left.";
+						logMsg = "ui.tribe.event_refugees_dismissed_message";
 					}
 					break;
 
 				case OccurrenceConstants.campOccurrenceTypes.visitor:
 					let visitorComponent = campNode.entity.get(VisitorComponent);
 					campNode.entity.remove(VisitorComponent);
-					logMsg = "Visitor left.";
+					logMsgParams.name = UIConstants.getNPCDisplayNameKey(visitorComponent.visitorType);
+					logMsg = "ui.tribe.event_ended_visitor_message";
 					break;
 			}
 
-			this.addLogMessage(logMsg, campNode, visibility);
+			this.addLogMessage({ textKey: logMsg, textParams: logMsgParams }, campNode, visibility);
 			
 			GlobalSignals.campEventEndedSignal.dispatch(campNode.entity);
 			GlobalSignals.saveGameSignal.dispatch(GameConstants.SAVE_SLOT_DEFAULT, false);

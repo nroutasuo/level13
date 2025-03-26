@@ -384,7 +384,7 @@ define(['ash',
 
 			let showName = options.showName || false;
 
-			let name = showName ? Text.t("game.characters." + characterType + "_name") : "";
+			let name = showName ? Text.t(this.getNPCDisplayNameKey(characterType)) : "";
 
 			$div.toggleClass("npc-visitor", options.isTemporary);
 			$div.attr("data-characterType", characterType);
@@ -411,10 +411,14 @@ define(['ash',
 
 		updateNPCPortrait: function ($div, characterType, randomIndex) {
 			let icon = this.getNPCIcon(characterType, randomIndex);
-			let name = Text.t("game.characters." + characterType + "_name");
+			let name = Text.t(this.getNPCDisplayNameKey(characterType));
 
 			$div.find("img").attr("src", icon);
 			$div.find(".npc-name").text(name);
+		},
+
+		getNPCDisplayNameKey: function (characterType) {
+			return "game.characters." + characterType + "_name";
 		},
 
 		getNPCIcon: function (characterType, randomIndex) {
@@ -1059,6 +1063,10 @@ define(['ash',
 			}
 			
 			return result;
+		},
+
+		highlight: function (text) {
+			return "<span class='hl-functionality'>" + text + "</span>";
 		},
 
 		getDisplayValue: function (value) {

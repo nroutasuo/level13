@@ -1676,7 +1676,13 @@
             "sector_status_passage_stairwell_built_description": "There is a <style='highlight'>staircase</style> here, and it has been repaired.",
             "sector_status_passage_stairwell_default_description": "There is a <style='highlight'>staircase</style> here, but it needs repair.",
             "sector_status_resources_found_field": "Resources found: {list}",
-            "sector_status_scavenged_percent_field": "Scavenged: {value}%"
+            "sector_status_scavenged_percent_field": "Scavenged: {value}%",
+            "supplies_got_food_message": "No longer hungry",
+            "supplies_got_supplies_message": "No longer hungry or thirsty",
+            "supplies_got_water_message": "No longer thirsty",
+            "supplies_no_food_message": "Out of food!",
+            "supplies_no_supplies_message": "Out of food and water!",
+            "supplies_no_water_message": "Out of water!"
         },
         "inventory": {
             "_equipment_slot_bag_name": "Bag",
@@ -1873,6 +1879,14 @@
         "tribe": {
             "current_reputatiion_description": "Attracts more people to the camp.",
             "current_reputation_label": "Reputation",
+            "event_ended_accident_message": "There has been an accident. A worker ({workerType}) got injured.",
+            "event_ended_disaster_message": "{disasterType} ended. A building was damaged.",
+            "event_ended_disease_message": "Disease outbreak is over.",
+            "event_ended_recruit_message": "Visitor ({name}) leaves.",
+            "event_ended_trader_message": "Trader leaves.",
+            "event_ended_visitor_message": "Visitor ({name}) leaves.",
+            "event_refugees_accepted_message": "Refugees ({num}) join the camp.",
+            "event_refugees_dismissed_message": "Refugees leave.",
             "messages_header": "Messages",
             "overview_header": "Camp overview",
             "status_damaged_buildings_message": "Damaged building(s) on level {level}.",

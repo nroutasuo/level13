@@ -340,7 +340,6 @@ define([
 			if (addedPerks.length == 0 && removedPerks.length == 0) return null;
 
 			let inCamp = this.playerNodes.head.position.inCamp;
-			let hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
 
 			if (inCamp) return null;
 			
@@ -362,29 +361,29 @@ define([
 			if (logAddHunger && logAddThirst) {
 				addedHungerPerk.loggedAdd = true;
 				addedThirstPerk.loggedAdd = true;
-				return "Out of food and water!";
+				return "ui.exploration.supplies_no_supplies_message";
 			}
 			
 			if (logAddThirst) {
 				addedThirstPerk.loggedAdd = true;
-				return "Out of water!";
+				return "ui.exploration.supplies_no_water_message";
 			}
 			
 			if (logAddHunger) {
 				addedHungerPerk.loggedAdd = true;
-				return "Out of food!";
+				return "ui.exploration.supplies_no_food_message";
 			}
 			
 			if (logRemovedHunger && logRemovedThirst) {
-				return "No longer hungry or thirsty";
+				return "ui.exploration.supplies_got_supplies_message";
 			}
 			
 			if (logRemovedThirst) {
-				return "No longer thirsty";
+				return "ui.exploration.supplies_got_water_message";
 			}
 			
 			if (logRemovedHunger) {
-				return "No longer hungry";
+				return "ui.exploration.supplies_got_food_message";
 			}
 			
 			return null;
