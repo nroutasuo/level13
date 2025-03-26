@@ -13,3 +13,4 @@ balancing.html
 *.bat
 worldcreator.html
 .vscode/
+*_unused_*
