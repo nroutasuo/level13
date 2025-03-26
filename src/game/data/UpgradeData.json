@@ -817,7 +817,7 @@
         "blueprintPieces": 3,
         "campOrdinal": "5",
         "effects": {
-            "improvesWorker": "weaver"
+            "improvesWorker": "ropemaker"
         },
         "id": "unlock_item_clothing4h",
         "name": "Advanced Textiles"
@@ -1050,7 +1050,7 @@
     "unlock_worker_rope": {
         "campOrdinal": "1",
         "effects": {
-            "unlocksWorker": "weaver"
+            "unlocksWorker": "ropemaker"
         },
         "id": "unlock_worker_rope",
         "name": "Rope-making"

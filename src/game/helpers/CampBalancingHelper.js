@@ -197,7 +197,7 @@ define([
 			if (numAvailableLuxuryResources > 0) {
 				addValue(numAvailableLuxuryResources, CampConstants.REPUTATION_SOURCE_LUXURY_RESOURCES, false);
 			}
-			
+
 			// building happiness values
 			let allImprovements = improvementsComponent.getAll(improvementTypes.camp);
 			for (let i in allImprovements) {
@@ -865,7 +865,7 @@ define([
 		getRopeProductionPerSecond: function (workers, improvementsComponent, upgrades, robots) {
 			workers = workers || 0;
 			robots = robots || 0;
-			var ropeUpgradeBonus = this.getWorkerUpgradeBonus("weaver", upgrades);
+			var ropeUpgradeBonus = this.getWorkerUpgradeBonus("ropemaker", upgrades);
 			var robotFactor = this.getWorkerRobotFactor(robots);
 			return workers * CampConstants.PRODUCTION_ROPE_PER_WORKER_PER_S * ropeUpgradeBonus * robotFactor;
 		},
