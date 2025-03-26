@@ -746,7 +746,7 @@ define(['ash',
 							} else if (EnemyConstants.getEnemy(stat.entry)) {
 								entryDisplay = EnemyConstants.getEnemy(stat.entry).name;
 							} else if(ItemConstants.getItemDefinitionByID(stat.entry, true)) {
-								entryDisplay = ItemConstants.getItemDefinitionByID(stat.entry).name;
+								entryDisplay = ItemConstants.getItemDisplayNameFromID(stat.entry);
 							} else if (stat.entry.hasOwnProperty("timestamp")) {
 								entryDisplay = UIConstants.getTimeSinceText(stat.entry.timestamp);
 							} else if (stat.entryUnit == GameConstants.gameStatUnits.level) {
