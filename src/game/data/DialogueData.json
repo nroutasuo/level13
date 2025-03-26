@@ -3983,6 +3983,17 @@
 				"explorer_unique_journalist_story_evacuation_p2"
 			]
 		},
+		"explorer_unique_journalist_story_greenhouse": {
+			"conditions": {
+				"storyFlags": {
+					"deity": false,
+					"GREENHOUSE_FOUND": true
+				}
+			},
+			"pages": [
+				"explorer_unique_journalist_story_greenhouse_p1"
+			]
+		},
 		"explorer_unique_journalist_story_spacecraft": {
 			"conditions": {
 				"storyFlags": {
@@ -4766,7 +4777,8 @@
 		},
 		"locale_story_greenhouse": {
 			"pages": [
-				"story.stories.greenhouse_locale_story_greenhouse_p1"
+				"story.stories.greenhouse_locale_story_greenhouse_p1",
+				"story.stories.greenhouse_locale_story_greenhouse_p2"
 			]
 		},
 		"locale_story_seeddepot": {
@@ -6212,6 +6224,7 @@
 					"explorer_unique_journalist_story_start",
 					"explorer_unique_journalist_story_storehouse",
 					"explorer_unique_journalist_story_spacecraft",
+					"explorer_unique_journalist_story_greenhouse",
 					"explorer_unique_journalist_story_evacuation",
 					"explorer_unique_journalist_story_debris",
 					"explorer_generic_story_rescue_absence_01",
