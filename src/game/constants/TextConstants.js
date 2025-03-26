@@ -1094,12 +1094,14 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 
 		getItemsTextVO: function (items) {
 			let itemCounts = {};
+			let itemsByID = {};
 
 			for (let i = 0; i < items.length; i++) {
 				let item = items[i];
 				let itemID = item.id;
 				if (!itemCounts[itemID]) itemCounts[itemID] = 0;
 				itemCounts[itemID]++;
+				itemitemsByIDsById[itemID] = item;
 			}
 
 			let list = [];
@@ -1107,6 +1109,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			for (let itemID in itemCounts) {
 				let count = itemCounts[itemID];
 				if (count == 0) continue;
+				let item = itemsByID[itemID];
 				let itemName = ItemConstants.getItemDisplayNameKey(item);
 				let listFragment = { textKey: "ui.common.value_and_name", textParams: { value: count, name: itemName } };
 				list.push(listFragment);
