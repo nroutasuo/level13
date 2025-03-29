@@ -761,7 +761,7 @@ define([
 					let elemIDCamp = isSmallLayout ? "#resources-camp-mobile-" + name : "#resources-camp-regular-" + name;
 					UIConstants.updateResourceIndicator(
 						elemIDCamp,
-						Math.floor(currentAmount),
+						currentAmount,
 						showResourceAcc == null ? 0 : Math.round(currentAccumulation * 10000) / 10000,
 						storageCap,
 						true,
@@ -779,7 +779,7 @@ define([
 					let elemIDBag = isSmallLayout ? "#resources-bag-mobile-" + name : "#resources-bag-regular-" + name;
 					UIConstants.updateResourceIndicator(
 						elemIDBag,
-						Math.floor(currentAmount),
+						currentAmount,
 						showResourceAcc == null ? 0 : Math.round(showResourceAcc.resourceChange.getResource(name) * 10000) / 10000,
 						storageCap,
 						false,
