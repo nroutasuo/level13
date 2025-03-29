@@ -937,9 +937,11 @@
 				let storage = GameGlobals.resourcesHelper.getCurrentCampStorage(sector);
 				let hasHerbs = storage.resources.getResource(resourceNames.herbs) > 0;
 				let hasMedicine = storage.resources.getResource(resourceNames.medicine) > 0;
-				let diseaseChance = OccurrenceConstants.getDiseaseOutbreakChance(campComponent.population, hasHerbs, hasMedicine) * 100;
+				let diseaseChance = OccurrenceConstants.getDiseaseOutbreakChance(campComponent.population, hasHerbs, hasMedicine);
+				let showDiseaseWarning = diseaseChance > CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD; // not related to defences but matching raid warning value
 				UIConstants.updateCalloutContent("#in-demographics-disease-chance", this.getDiseaseChanceCalloutContent());
-				UIAnimations.animateOrSetNumber($("#in-demographics-disease-chance .value"), true, diseaseChance, "%", false, Math.round);
+				UIAnimations.animateOrSetNumber($("#in-demographics-disease-chance .value"), true, Math.round(diseaseChance * 100), "%", false, Math.round);
+				$("#in-demographics-disease-chance .value").toggleClass("warning", showDiseaseWarning);
 			}
 			GameGlobals.uiFunctions.toggle("#in-demographics-disease", showDisease);
 
