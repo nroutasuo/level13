@@ -294,7 +294,7 @@ define([
 				msgVO.textFragments.push({ textKey: "ui.exploration.enter_level_ground_message" });
 			} else if (levelPos == 15) {
 				msgVO.textFragments.push({ textKey: "ui.exploration.enter_level_15_message" });
-			} else if (levelPos % 2 == 1 && GameGlobals.gameState.getStoryFlag(StoryConstants.ESCAPE_SEARCHING_FOR_GROUND)) {
+			} else if (levelPos % 2 == 1 && GameGlobals.gameState.getStoryFlag(StoryConstants.flags.ESCAPE_SEARCHING_FOR_GROUND)) {
 				msgVO.textFragments.push({ textKey: "ui.exploration.enter_level_escape_message" });
 			} else {
 				msgVO.textFragments.push({ textKey: "ui.exploration.enter_level_default_message" });
@@ -347,9 +347,9 @@ define([
 			let logAmbient = Math.random() < 0.01;
 
 			if (previousSector && previousSector.has(CampComponent) && logAmbient) {
-				if (GameGlobals.gameState.getStoryFlag(StoryConstants.GREENHOUSE_SEARCHING_FOR_CURE)) {
+				if (GameGlobals.gameState.getStoryFlag(StoryConstants.flags.GREENHOUSE_SEARCHING_FOR_CURE)) {
 					this.addLogMessage(LogConstants.getUniqueID(), "Out into the City again. Somewhere out there is a cure waiting to be found.");
-				} else if (GameGlobals.gameState.getStoryFlag(StoryConstants.ESCAPE_SEARCHING_FOR_GROUND)) {
+				} else if (GameGlobals.gameState.getStoryFlag(StoryConstants.flags.ESCAPE_SEARCHING_FOR_GROUND)) {
 					this.addLogMessage(LogConstants.getUniqueID(), "Out into the City again. The camp is comfortable, but you have a goal.");
 				} else {
 					this.addLogMessage(LogConstants.getUniqueID(), "Out into the City again. The darkness envelops you like water.");
