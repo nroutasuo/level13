@@ -1792,8 +1792,7 @@ define([
 				for (let i = 0; i < count; i++) {
 					var localePos = WorldCreatorRandom.randomSectors(sseed + i + i * 72 * sseed + i * l + i, worldVO, levelVO, 1, 2, options);
 					var sectorVO = localePos[0];
-					var s1 = sseed + sectorVO.position.sectorX * 871 + sectorVO.position.sectorY * 659;
-					var r1 = WorldCreatorRandom.random(s1);
+					var s1 = sseed + sectorVO.position.sectorX * 871 + sectorVO.position.sectorY * 659 + i * 212;
 					var localeType = generator.getLocaleType(worldVO, levelVO, sectorVO, s1, isEarly);
 					var isEasy = i <= countEasy;
 					var locale = new LocaleVO(localeType, isEasy, isEarly);
@@ -2782,20 +2781,17 @@ define([
 					possibleTypes.push(localeTypes.grocery);
 					possibleTypes.push(localeTypes.house);
 					possibleTypes.push(localeTypes.house);
-					possibleTypes.push(localeTypes.hut);
-					possibleTypes.push(localeTypes.sewer);
 					possibleTypes.push(localeTypes.transport);
 					possibleTypes.push(localeTypes.warehouse);
 					if (isValidForSettlement) {
 						possibleTypes.push(localeTypes.camp);
-						possibleTypes.push(localeTypes.hermit);
 					}
 					break;
 
 				case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
 					possibleTypes.push(localeTypes.factory);
 					possibleTypes.push(localeTypes.factory);
-					possibleTypes.push(localeTypes.sewer);
+					possibleTypes.push(localeTypes.junkyard);
 					possibleTypes.push(localeTypes.transport);
 					possibleTypes.push(localeTypes.warehouse);
 					possibleTypes.push(localeTypes.warehouse);
@@ -2803,10 +2799,9 @@ define([
 
 				case SectorConstants.SECTOR_TYPE_MAINTENANCE:
 					possibleTypes.push(localeTypes.bunker);
-					possibleTypes.push(localeTypes.hermit);
 					possibleTypes.push(localeTypes.maintenance);
 					possibleTypes.push(localeTypes.maintenance);
-					possibleTypes.push(localeTypes.sewer);
+					possibleTypes.push(localeTypes.junkyard);
 					possibleTypes.push(localeTypes.transport);
 					break;
 
@@ -2814,8 +2809,6 @@ define([
 					possibleTypes.push(localeTypes.farm);
 					possibleTypes.push(localeTypes.grocery);
 					possibleTypes.push(localeTypes.grocery);
-					possibleTypes.push(localeTypes.hermit);
-					possibleTypes.push(localeTypes.hut);
 					possibleTypes.push(localeTypes.lab);
 					possibleTypes.push(localeTypes.market);
 					possibleTypes.push(localeTypes.market);
@@ -2830,11 +2823,10 @@ define([
 					break;
 
 				case SectorConstants.SECTOR_TYPE_SLUM:
-					possibleTypes.push(localeTypes.hermit);
-					possibleTypes.push(localeTypes.hut);
-					possibleTypes.push(localeTypes.hut);
-					possibleTypes.push(localeTypes.sewer);
-					possibleTypes.push(localeTypes.sewer);
+					possibleTypes.push(localeTypes.store);
+					possibleTypes.push(localeTypes.house);
+					possibleTypes.push(localeTypes.junkyard);
+					possibleTypes.push(localeTypes.junkyard);
 					if (isValidForSettlement) {
 						possibleTypes.push(localeTypes.camp);
 					}
@@ -2845,6 +2837,7 @@ define([
 					possibleTypes.push(localeTypes.library);
 					possibleTypes.push(localeTypes.office);
 					possibleTypes.push(localeTypes.transport);
+					possibleTypes.push(localeTypes.hospital);
 					break;
 
 				default:
