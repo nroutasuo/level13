@@ -420,7 +420,9 @@ define([
 					break;
 			}
 
-			this.addLogMessage({ textKey: logMsg, textParams: logMsgParams }, campNode, visibility);
+			if (logMsg) {
+				this.addLogMessage({ textKey: logMsg, textParams: logMsgParams }, campNode, visibility);
+			}
 			
 			GlobalSignals.campEventEndedSignal.dispatch(campNode.entity);
 			GlobalSignals.saveGameSignal.dispatch(GameConstants.SAVE_SLOT_DEFAULT, false);
