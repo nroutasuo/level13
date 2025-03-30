@@ -19,7 +19,7 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 				useActionName2: "Light",
 				improvementLevelsPerTechLevel: 5,
 				improvementLevelsPerMajorLevel: 5,
-				logMsgImproved: "Made the campfire a bit cozier",
+				logMsgImproved: "ui.log.improved_campfire_message",
 				canBeDismantled: false,
 			},
 			house: {
@@ -62,7 +62,7 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 				canBeDismantled: true,
 				useActionName: "Study",
 				improvementLevelsPerTechLevel: 5,
-				logMsgImproved: "Upgraded the library",
+				logMsgImproved: "ui.log.improved_library_message",
 			},
 			darkfarm: {
 				canBeDismantled: true,
@@ -127,7 +127,7 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 			robotFactory: {
 				canBeDismantled: true,
 				improvementLevelsPerTechLevel: 1,
-				logMsgImproved: "Modernized the robot factory"
+				logMsgImproved: "ui.log.improved_robot_factory_message"
 			},
 			lights: {
 				canBeDismantled: true,
@@ -143,7 +143,7 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 			generator: {
 				canBeDismantled: true,
 				improvementLevelsPerTechLevel: 10,
-				logMsgImproved: "Fixed up the generator",
+				logMsgImproved: "ui.log.improved_generator_message",
 			},
 			collector_water: {
 				improvementLevelsPerTechLevel: 1,
@@ -319,9 +319,11 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 			return improvementLevel - 1;
 		},
 		
-		getImprovedLogMessage: function (improvementID, level) {
+		getImprovedLogMessageTextVO: function (improvementID, level) {
 			let def = this.getDef(improvementID);
-			return def && def.logMsgImproved ? def.logMsgImproved : "Improved the " + this.getImprovementDisplayName(improvementID, level);
+			let displayName = this.getImprovementDisplayName(improvementID, level);
+			let msg = def && def.logMsgImproved ? def.logMsgImproved : "ui.log.improved_building_message";
+			return { textKey: msg, textParams: { name: displayName } };
 		}
 
 	};

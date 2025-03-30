@@ -1167,13 +1167,13 @@ define([
 					let blueprintMessage = { addToPopup: true, addToLog: true, visibility: LogConstants.MSG_VISIBILITY_GLOBAL };
 					if (blueprintVO.currentPieces === 1) {
 						blueprintMessage.id = LogConstants.MSG_ID_FOUND_BLUEPRINT_FIRST;
-						blueprintMessage.text = "Found a piece of a forgotten technology.";
+						blueprintMessage.text = "ui.exploration.blueprint_found_message_first";
 					} else if (blueprintVO.currentPieces == blueprintVO.maxPieces) {
 						blueprintMessage.id = LogConstants.MSG_ID_FOUND_BLUEPRINT_LAST;
-						blueprintMessage.text = "Found the last piece of a blueprint";
+						blueprintMessage.text = "ui.exploration.blueprint_found_message_last";
 					} else {
 						blueprintMessage.id = LogConstants.MSG_ID_FOUND_BLUEPRINT_CONSECUTIVE;
-						blueprintMessage.text = "Found another piece of a blueprint";
+						blueprintMessage.text = "ui.exploration.blueprint_found_message_middle";
 					}
 					messages.push(blueprintMessage);
 				}
@@ -1195,7 +1195,7 @@ define([
 			}
 				
 			if (resultVO.gainedExplorers && resultVO.gainedExplorers.length > 0) {
-				messages.push({ id: LogConstants.getUniqueID(), text: "Met a new explorer.", addToPopup: true, addToLog: true });
+				messages.push({ id: LogConstants.getUniqueID(), text: "ui.exploration.explorer_found_message", addToPopup: true, addToLog: true });
 			}
 	
 			if (resultVO.lostItems && resultVO.lostItems.length > 0) {

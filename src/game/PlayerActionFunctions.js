@@ -2559,8 +2559,9 @@ define(['ash',
 				case "cache_metal":
 					let baseValue = itemConfig.configData.metalValue || 10;
 					let value = baseValue + Math.round(Math.random() * 10);
+					let logMsg = { textKey: "ui.actions.use_cache_metal_message", textParams: { name: Text.addArticle(itemShortName), value: value } };
 					currentStorage.resources.addResource(resourceNames.metal, value, "cache_metal");
-					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, "Took apart " + Text.addArticle(itemShortName) + ". Gained " + value + " metal.");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, logMsg);
 					break;
 					
 				case "cache_food":
