@@ -201,20 +201,30 @@ define([
 			return workers * CampConstants.PRODUCTION_HOPE_PER_WORKER_PER_S * upgradeBonus * multiplier;
 		},
 		
-		getWaterConsumptionPerSecond: function (population, useExplorationSpeed) {
-			var speed = useExplorationSpeed ? GameConstants.gameSpeedExploration : GameConstants.gameSpeedCamp;
+		getWaterConsumptionPerSecond: function (population) {
+			let speed = GameConstants.gameSpeedCamp;
 			return CampConstants.CONSUMPTION_WATER_PER_WORKER_PER_S * Math.floor(population) * speed;
 		},
 		
-		getFoodConsumptionPerSecond: function (population, useExplorationSpeed) {
-			var speed = useExplorationSpeed ? GameConstants.gameSpeedExploration : GameConstants.gameSpeedCamp;
+		getFoodConsumptionPerSecond: function (population) {
+			let speed = GameConstants.gameSpeedCamp;
 			return CampConstants.CONSUMPTION_FOOD_PER_WORKER_PER_S * Math.floor(population) * speed;
 		},
+
+		getPopulationHerbsConsumptionPerSecond: function (population, hasMedicine) {
+			let speed = GameConstants.gameSpeedCamp;
+			return hasMedicine ? 0 : CampConstants.CONSUMPTION_HERBS_PER_REGULAR_WORKER_PER_S * Math.floor(population) * speed;
+		},
+
+		getMedicineConsumptionPerSecond: function (population) {
+			let speed = GameConstants.gameSpeedCamp;
+			return CampConstants.CONSUMPTION_MEDICINE_PER_WORKER_PER_S * Math.floor(population) * speed;
+		},
 		
-		getHerbsConsumptionPerSecond: function (workers) {
+		getWorkerHerbsConsumptionPerSecond: function (workers) {
 			workers = workers || 0;
 			let multiplier = this.getCampProductionMultiplier();
-			return workers * CampConstants.CONSUMPTION_HERBS_PER_WORKER_PER_S * multiplier;
+			return workers * CampConstants.CONSUMPTION_HERBS_PER_MEDICINE_WORKER_PER_S * multiplier;
 		},
 		
 		getMetalConsumptionPerSecondSmith: function (workers) {

@@ -198,6 +198,18 @@ define([
 				addValue(numAvailableLuxuryResources, CampConstants.REPUTATION_SOURCE_LUXURY_RESOURCES, false);
 			}
 
+			// herbs and medicine
+			if (population >= 1) {
+				let hasHerbs = resourcesVO && resourcesVO.getResource(resourceNames.herbs) > 0;
+				let hasMedicine = resourcesVO && resourcesVO.getResource(resourceNames.medicine) > 0;
+
+				if (hasMedicine) {
+					addValue(CampConstants.REPUTATION_FROM_HERBS, "Medicine", false);
+				} else if (hasHerbs) {
+					addValue(CampConstants.REPUTATION_FROM_MEDICINE, "Herbs", false);
+				}
+			}
+			
 			// building happiness values
 			let allImprovements = improvementsComponent.getAll(improvementTypes.camp);
 			for (let i in allImprovements) {
@@ -810,7 +822,7 @@ define([
 		getRequiredResourcesByWorkerID: function (workerID) {
 			switch (workerID) {
 				case "apothecary":
-					return [ { name: resourceNames.herbs, consumption: CampConstants.CONSUMPTION_HERBS_PER_WORKER_PER_S } ];
+					return [ { name: resourceNames.herbs, consumption: CampConstants.CONSUMPTION_HERBS_PER_MEDICINE_WORKER_PER_S } ];
 				case "toolsmith":
 					return [ { name: resourceNames.metal, consumption: CampConstants.CONSUMPTION_METAL_PER_TOOLSMITH_PER_S } ];
 				case "robotmaker":

@@ -267,7 +267,7 @@ define([
 			camp.concreteProductionPerSecond = GameGlobals.campHelper.getConcreteProductionPerSecond(camp.assignedWorkers.concrete, improvementsComponent, robots) || 0;
 			camp.robotsProductionPerSecond = GameGlobals.campHelper.getRobotsProductionPerSecond(camp.assignedWorkers.robotmaker, improvementsComponent, robots) || 0;
 			
-			camp.herbConsumptionPerSecond = GameGlobals.campHelper.getHerbsConsumptionPerSecond(camp.assignedWorkers.apothecary) || 0;
+			camp.herbConsumptionPerSecond = GameGlobals.campHelper.getWorkerHerbsConsumptionPerSecond(camp.assignedWorkers.apothecary) || 0;
 			camp.metalConsumptionPerSecondConcrete = GameGlobals.campHelper.getMetalConsumptionPerSecondConcrete(camp.assignedWorkers.concrete) || 0;
 			camp.metalConsumptionPerSecondSmith = GameGlobals.campHelper.getMetalConsumptionPerSecondSmith(camp.assignedWorkers.toolsmith) || 0;
 			camp.toolsConsumptionPerSecondRobots = GameGlobals.campHelper.getToolsConsumptionPerSecondRobots(camp.assignedWorkers.robotmaker) || 0;
@@ -275,11 +275,9 @@ define([
 		
 		updateWorkerHunger: function (node, time) {
 			if (GameGlobals.gameState.isLaunched) return;
-			
-			var campResources = node.entity.get(ResourcesComponent);
-			var campResourceAcc = node.entity.get(ResourceAccumulationComponent);
-			this.deductHunger(time, campResources.resources, node.camp.getAssignedPopulation(), false, false);
-			this.deductHunger(time, campResourceAcc.resourceChange, node.camp.getAssignedPopulation(), false, true, campResourceAcc, "Workers");
+
+			this.deductHunger(time, node, false);
+			this.deductHunger(time, node, true);
 		},
 		
 		updateRobotWear: function (node, time) {
@@ -412,6 +410,16 @@ define([
 		isThirsty: function (waterSource, waterAccumulation) {
 			return waterSource.resources.water < 1 && waterAccumulation.resourceChange.water <= 0;
 		},
+
+		hasCampResource: function (name, campNode) {
+			let resSource = GameGlobals.resourcesHelper.getCurrentCampStorage(campNode.entity);
+			let resAccumulation = GameGlobals.resourcesHelper.getCampStorageAccumulation(campNode.entity);
+			return this.hasResource(resSource, resAccumulation, name);
+		},
+
+		hasResource: function (resSource, resAccumulation, resourceName) {
+			return resSource.resources.getResource(resourceName) > 0 || resAccumulation.resourceChange.getResource(resourceName) > 0;
+		},
 		
 		isPlayerHungry: function () {
 			let playerFoodSource = GameGlobals.resourcesHelper.getCurrentStorage();
@@ -459,16 +467,34 @@ define([
 			GameGlobals.gameState.increaseGameStatKeyed("amountResourcesProducedInCampsPerName", resourceNames.water, aqueductWater);
 		},
 		
-		deductHunger: function (time, resourceVO, population, isExplorationMode, accumulation, accComponent, sourceName) {
-			var timeMod = accumulation ? 1 : time;
-			var waterChange = timeMod * GameGlobals.campHelper.getWaterConsumptionPerSecond(population, isExplorationMode);
-			var foodChange = timeMod * GameGlobals.campHelper.getFoodConsumptionPerSecond(population, isExplorationMode);
-			if (!accumulation) {
+		deductHunger: function (time, node, isAccumulation) {
+			let campResources = node.entity.get(ResourcesComponent);
+
+			let resourceVO = campResources.resources;
+			let population =  node.camp.getAssignedPopulation();
+
+			let timeMod = isAccumulation ? 1 : time;
+
+			let hasHerbs = this.hasCampResource(resourceNames.herbs, node);
+			let hasMedicine = this.hasCampResource(resourceNames.medicine, node);
+
+			let waterChange = timeMod * GameGlobals.campHelper.getWaterConsumptionPerSecond(population);
+			let foodChange = timeMod * GameGlobals.campHelper.getFoodConsumptionPerSecond(population);
+			let herbsChange = hasHerbs ? timeMod * GameGlobals.campHelper.getPopulationHerbsConsumptionPerSecond(population, hasMedicine) : 0;
+			let medicineChange = hasMedicine ? timeMod * GameGlobals.campHelper.getMedicineConsumptionPerSecond(population) : 0;
+			
+			if (!isAccumulation) {
 				resourceVO.water -= waterChange;
 				resourceVO.food -= foodChange;
+				resourceVO.herbs -= herbsChange;
+				resourceVO.medicine -= medicineChange;
 			} else {
-				accComponent.addChange(resourceNames.water, -waterChange, sourceName, population);
-				accComponent.addChange(resourceNames.food, -foodChange, sourceName, population);
+				let sourceName = "Workers";
+				let campResourceAcc = node.entity.get(ResourceAccumulationComponent);
+				campResourceAcc.addChange(resourceNames.water, -waterChange, sourceName, population);
+				campResourceAcc.addChange(resourceNames.food, -foodChange, sourceName, population);
+				campResourceAcc.addChange(resourceNames.herbs, -herbsChange, sourceName, population);
+				campResourceAcc.addChange(resourceNames.medicine, -medicineChange, sourceName, population);
 			}
 		},
 		
