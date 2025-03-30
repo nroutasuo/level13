@@ -809,10 +809,14 @@ define(['ash',
 			if (sectorLocalesComponent.locales.length > 0) {
 				found = true;
 				let locale = sectorLocalesComponent.locales[0];
-				if (sectorLocalesComponent.locales.length > 1)
+				if (sectorLocalesComponent.locales.length > 1) {
 					popupMsg += "<br/>There are some interesting buildings here.";
-				else
-					popupMsg += "<br/>There is a " + TextConstants.getLocaleName(locale, featuresComponent, true).toLowerCase() + " here that seems worth scouting.";
+				} else if (locale.type == localeTypes.greenhouse) {
+					popupMsg += "<br/>There is an abandoned " + UIConstants.highlight(TextConstants.getLocaleName(locale, featuresComponent, true).toLowerCase()) + " here.";
+					logMsg += "Found a greenhouse.";
+				} else {
+					popupMsg += "<br/>There is a " + UIConstants.highlight(TextConstants.getLocaleName(locale, featuresComponent, true).toLowerCase()) + " here that seems worth scouting.";
+				}
 			}
 			
 			if (featuresComponent.waymarks.length > 0) {
@@ -1460,7 +1464,7 @@ define(['ash',
 			for (let i = 0; i < messages.length; i++) {
 				let message = messages[i];
 				if (message.addToLog) {
-					this.addLogMessage(message.id, message.text, null, message.visibility);
+					this.addLogMessage(message.id, message.text || message.textVO, null, message.visibility);
 				}
 			}
 		},
@@ -2201,7 +2205,7 @@ define(['ash',
 			GameGlobals.gameState.increaseGameStatKeyed("numBuildingImprovementsPerId", improvementID);
 			this.save();
 			
-			let msg = ImprovementConstants.getImprovedLogMessage(improvementID, level);
+			let msg = ImprovementConstants.getImprovedLogMessageTextVO(improvementID, level);
 			GameGlobals.playerHelper.addLogMessage("MSG_ID_IMPROVE_" + improvementName, msg, { position: sector.get(PositionComponent).getPositionInCamp() });
 		},
 		

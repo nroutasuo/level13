@@ -180,9 +180,9 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					addOptions("n-street", [ "plaza", "courtyard" ]);
 				addOptions("a-street", [ "wide", "spacious", "enormous" ]);
 			} else if (features.buildingDensity < 6) {
-				addOptions("n-street", [ "square", "area", "hall", "arcade" ]);
+				addOptions("n-street", [ "square", "area", "hall" ]);
 				if (features.sectorType == SectorConstants.SECTOR_TYPE_RESIDENTIAL || features.sectorType == SectorConstants.SECTOR_TYPE_COMMERCIAL)
-					addOptions("n-street", [ "boulevard", "avenue" ]);
+					addOptions("n-street", [ "boulevard", "avenue", "arcade" ]);
 				if (features.sectorType != SectorConstants.SECTOR_TYPE_SLUM)
 					addOptions("n-street", [ "throughfare" ]);
 				addOptions("a-street", [ "wide", "spacious" ]);
@@ -395,8 +395,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		getPassageDescription: function (passageVO, direction, isBuilt, isShort) {
 			let passageType = passageVO.type;
 			let passageTypeName = passageType;
-			let directionName = (direction === PositionConstants.DIRECTION_UP ? " up" : " down");
-			let directionKeyName = (direction === PositionConstants.DIRECTION_UP ? " up" : " down");
+			let directionName = (direction === PositionConstants.DIRECTION_UP ? "up" : "down");
 
 			let result = "";
 
@@ -411,7 +410,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					}
 
 					if (!isBuilt && passageType == MovementConstants.PASSAGE_TYPE_HOLE) {
-						textKey = "ui.exploration.sector_status_passage_hole_" + directionKeyName + "_default_description";
+						textKey = "ui.exploration.sector_status_passage_hole_" + directionName + "_default_description";
 					}
 
 					result = Text.t(textKey, { direction: directionName });

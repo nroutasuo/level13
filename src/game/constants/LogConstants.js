@@ -140,7 +140,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 			"residential_ghosts": { 
 				triggers: [ "locale_scouted" ],
 				conditions: { sector: { sectorType: "residential", deity: false } },
-				chance: 0.25,
+				chance: 0.1,
 				message: "Suddenly, the weight of all the people who have lived and died in the City presses down upon you like a heavy blanket"
 			},
 			"darkness_madness_01": {

@@ -859,6 +859,9 @@
 			]
 		},
 		"character_generic_reserved_meet_01": {
+			"conditions": {
+
+			},
 			"pages": [
 				"character_generic_reserved_meet_01_p1"
 			]
@@ -1223,7 +1226,8 @@
 					"key": "character_shaman_default_event_03_p1",
 					"result": {
 						"gainedHope": 1
-					}
+					},
+					"replaceDialogue": true
 				}
 			]
 		},
@@ -4066,6 +4070,11 @@
 				"explorer_unique_prospector_interact_01_p1"
 			]
 		},
+		"explorer_unique_prospector_interact_02": {
+			"pages": [
+				"explorer_unique_prospector_interact_02_p1"
+			]
+		},
 		"explorer_unique_prospector_interact_03": {
 			"conditions": {
 				"storyFlags": {
@@ -4083,8 +4092,7 @@
 				}
 			},
 			"pages": [
-				"explorer_unique_prospector_interact_04_p1",
-				"explorer_unique_prospector_interact_04_p2"
+				"explorer_unique_prospector_interact_04_p1"
 			]
 		},
 		"explorer_unique_prospector_interact_05": {
@@ -4225,6 +4233,12 @@
 		},
 		"explorer_unique_prospector_story_rescue_leaving": {
 			"isUrgent": true,
+			"conditions": {
+				"deity": true,
+				"storyFlags": {
+					"GREENHOUSE_RESTORED": true
+				}
+			},
 			"pages": [
 				{
 					"buttonKey": "explorer_request_prospector_leaving_reply",
@@ -5349,8 +5363,6 @@
 					"character_shaman_default_meet_05",
 					"character_generic_helpful_meet_poi_water_01",
 					"character_generic_helpful_meet_poi_water_02",
-					"character_generic_helpful_meet_poi_hazard_pollution_01",
-					"character_generic_helpful_meet_poi_hazard_radiation_01",
 					"character_generic_story_searching_for_greenhouse_02",
 					"character_generic_helpful_meet_poi_hazard_cold_01",
 					"character_generic_helpful_meet_poi_hazard_debris_01",
