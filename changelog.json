@@ -36,7 +36,7 @@
 				},
 				{
 					"type": "Dev",
-					"summary": "Add story and dialogue systems"
+					"summary": "Add story and dialogue systems along with initial story structure and dialogues"
 				},
 				{
 					"type": "UI",
@@ -69,6 +69,10 @@
 				{
 					"type": "GD",
 					"summary": "Add varying quality to equipment items"
+				},
+				{
+					"type": "GD",
+					"summary": "Add more items to support story and world-building"
 				},
 				{
 					"type": "GD",
