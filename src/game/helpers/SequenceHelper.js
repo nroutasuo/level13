@@ -123,9 +123,11 @@ define([
 					break;
 				case "result":
 					let resultVO = step.result;
-					let customRewardTexts = step.customRewardTexts || [];
+					let rewardTexts = [];
+					rewardTexts.push(Text.t(step.textKey));
+					rewardTexts = rewardTexts.concat(step.customRewardTexts);
 					let popupTitle = step.titleTextKey || GameGlobals.gameState.uiStatus.sequenceTitleKey;
-					let popupMsg = (Text.t(step.textKey) || "Result from sequence. ") + customRewardTexts.join("<br/>");
+					let popupMsg = rewardTexts.join("<br/>");
 					GameGlobals.playerActionFunctions.handleRewards(resultVO, cb, true, popupTitle, popupMsg);
 					break;
 				case "storyFlag":
