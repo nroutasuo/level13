@@ -1783,13 +1783,7 @@ define(['ash',
 			let eventComponent = sector.get(RefugeesComponent);
 			
 			if (!eventComponent) return;
-			
-			GameGlobals.uiFunctions.showConfirmation(
-				"Are you sure you want to dismiss the refugees?",
-				function () {
 					eventComponent.isDismissed = true;
-				}
-			);
 		},
 		
 		selectExplorer: function (explorerID) {
