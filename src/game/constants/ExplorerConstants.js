@@ -3,7 +3,6 @@ define(['ash',
 	'game/vos/ExplorerVO',
 	'game/vos/LocaleVO',
 	'game/constants/CultureConstants',
-	'game/constants/DialogueConstants',
 	'game/constants/ItemConstants',
 	'game/constants/WorldConstants'
 ], function (Ash,
@@ -11,7 +10,6 @@ define(['ash',
 	ExplorerVO,
 	LocaleVO,
 	CultureConstants,
-	DialogueConstants,
 	ItemConstants,
 	WorldConstants
 ) {
@@ -129,12 +127,8 @@ define(['ash',
 			{ icon: "img/characters/explorer_template_teen_03.png", dialogueSource: "explorer_template_teen", gender: CultureConstants.genders.MALE },
 		],
 
-		getMaxExplorersRecruited: function (innMajorLevels) {
-			let result = ExplorerConstants.MAX_EXPLORERS_BASE;
-			for (let i = 0; i < innMajorLevels.length; i++) {
-				result += Math.max(0, innMajorLevels[i]);
-			}
-			return result;
+		getMaxExplorersRecruited: function () {
+			return 99;
 		},
 		
 		getMaxExplorersInParty: function () {

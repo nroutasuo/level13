@@ -2382,9 +2382,6 @@ define([
 			let explorerType = ExplorerConstants.getExplorerTypeForAbilityType(explorer.abilityType);
 			let existingInParty = explorersComponent.getExplorerInPartyByType(explorerType);
 			if (existingInParty) return false;
-			let existingRecruited = explorersComponent.getAll();
-			let maxExplorers = GameGlobals.campHelper.getCurrentMaxExplorersRecruited();
-			if (existingRecruited.length >= maxExplorers) return false;
 			return true;
 		},
 

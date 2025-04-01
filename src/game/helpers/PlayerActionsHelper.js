@@ -2610,7 +2610,7 @@ define([
 				case "improve_in_shrine":
 					return isNextLevelMajor ? "Increase reputation bonus and meditation success chance" : "Increase reputation bonus";
 				case "improve_in_inn":
-					return isNextLevelMajor ? "Increase rumour generation and maximum explorers" : "Increase rumour generation";
+					return isNextLevelMajor ? "Increase rumour generation and attract more visitors" : "Increase rumour generation";
 			}
 			
 			return "Improve " + improvementName;

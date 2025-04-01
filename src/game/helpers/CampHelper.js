@@ -869,16 +869,7 @@ define([
 		},
 		
 		getCurrentMaxExplorersRecruited: function () {
-			let innMajorLevels = [];
-			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
-				let improvements = campNode.entity.get(SectorImprovementsComponent);
-				let count = improvements.getCount(improvementNames.inn);
-				if (count < 1) continue;
-				let level = improvements.getLevel(improvementNames.inn);
-				let majorLevel = ImprovementConstants.getMajorLevel("inn", level);
-				innMajorLevels.push(majorLevel);
-			}
-			return ExplorerConstants.getMaxExplorersRecruited(innMajorLevels);
+			return ExplorerConstants.getMaxExplorersRecruited();
 		},
 		
 		findRecruitComponentWithExplorerId: function (explorerId) {

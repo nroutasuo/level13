@@ -20,8 +20,9 @@ define([
 		
 		constructor: function () {
 			this.improvementsByOccurrence[OccurrenceConstants.campOccurrenceTypes.trader] = improvementNames.market;
-			this.improvementsByOccurrence[OccurrenceConstants.campOccurrenceTypes.visitor] = improvementNames.inn;
 			this.improvementsByOccurrence[OccurrenceConstants.campOccurrenceTypes.recruit] = improvementNames.inn;
+			this.improvementsByOccurrence[OccurrenceConstants.campOccurrenceTypes.refugees] = improvementNames.inn;
+			this.improvementsByOccurrence[OccurrenceConstants.campOccurrenceTypes.visitor] = improvementNames.inn;
 		},
 		
 		getEffectDescription: function (upgradeID, showMultiline) {

@@ -105,7 +105,8 @@
     "improve_building_inn": {
         "campOrdinal": "9",
         "effects": {
-            "improvesBuildings": "inn"
+            "improvesBuildings": "inn",
+            "improvesOccurrence": "visitor"
         },
         "id": "improve_building_inn",
         "name": "Music"
