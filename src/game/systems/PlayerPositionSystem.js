@@ -2,6 +2,7 @@
 // and handles updating sector components related to the player's position
 define([
 	'ash',
+	'text/Text',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
@@ -27,7 +28,7 @@ define([
 	'game/components/common/RevealedComponent',
 	'game/components/common/CampComponent',
 	'game/components/type/LevelComponent',
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, LevelConstants, LogConstants, PositionConstants, StoryConstants,
+], function (Ash, Text, GameGlobals, GlobalSignals, GameConstants, LevelConstants, LogConstants, PositionConstants, StoryConstants,
 	PlayerPositionNode, LevelNode, PlayerLocationNode, LastVisitedCampNode, SectorNode, CampNode,
 	CurrentPlayerLocationComponent, CurrentNearestCampComponent, LastVisitedCampComponent, SectorFeaturesComponent, SectorStatusComponent, PassagesComponent,
 	LevelStatusComponent, MovementComponent, PositionComponent,

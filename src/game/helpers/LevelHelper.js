@@ -784,7 +784,7 @@ define([
 					case MovementConstants.PASSAGE_TYPE_HOLE:
 						improvementName = improvementNames.passageDownHole;
 						actionName = GameGlobals.movementHelper.getBuildActionForPassageType(passageType);
-						actionLabel = "repair";
+						actionLabel = "build";
 						break;
 					case MovementConstants.PASSAGE_TYPE_ELEVATOR:
 						improvementName = improvementNames.passageDownElevator;

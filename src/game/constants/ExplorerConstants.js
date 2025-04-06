@@ -65,7 +65,7 @@ define(['ash',
 		// camp ordinal -> explorer template
 		predefinedExplorers: {
 			2: { id: "gambler", localeType: localeTypes.maintenance, abilityType: "attack", name: "Yimin", icon: "img/characters/explorer_unique_gambler.png", dialogueSource: "explorer_unique_gambler" },
-			3: { id: "dog", localeType: localeTypes.warehouse, abilityType: "scavenge_capacity", name: "Dog", icon: "img/characters/animal_dog.png", dialogueSource: "explorer_generic_dog_01" },
+			3: { id: "dog", localeType: localeTypes.warehouse, abilityType: "scavenge_capacity", name: "Dog", icon: "img/characters/animal_dog.png", dialogueSource: "explorer_generic_dog_01", animalType: "dog" },
 			4: { id: "journalist", localeType: localeTypes.library, abilityType: "cost_scout", name: "Yevry", icon: "img/characters/explorer_unique_journalist.png", dialogueSource: "explorer_unique_journalist" },
 			5: { id: "handler", localeType: localeTypes.house, abilityType: "detect_supplies", name: "Jezekiah", icon: "img/characters/explorer_unique_handler.png", dialogueSource: "explorer_unique_handler" },
 			6: { id: "prospector", localeType: localeTypes.store, abilityType: "scavenge_supplies", name: "Sunita", icon: "img/characters/explorer_unique_prospector.png", dialogueSource: "explorer_unique_prospector" },
@@ -166,10 +166,11 @@ define(['ash',
 			let icon = null;
 			
 			let isAnimal = template.isAnimal || this.isAnimal(abilityType);
+			let animalType = null;
 
 			if (isAnimal) {
 				let animalTypes = this.getAvailableAnimalTypes(source, campOrdinal);
-				let animalType = template.animalType || ExplorerConstants.animalType[animalTypes[MathUtils.getWeightedRandom(0, animalTypes.length)]];
+				animalType = template.animalType || ExplorerConstants.animalType[animalTypes[MathUtils.getWeightedRandom(0, animalTypes.length)]];
 				gender = template.gender || CultureConstants.getRandomGender();
 				name = this.getRandomAnimalName(animalType);
 				icon = this.getRandomAnimalIcon(animalType);
@@ -185,7 +186,9 @@ define(['ash',
 				icon = this.getRandomIcon(gender, origin, cultures, abilityType, template.dialogueSource);
 			}
 			
-			return new ExplorerVO(id, name, abilityType, abilityLevel, icon, gender, source, template.dialogueSource);
+			let result = new ExplorerVO(id, name, abilityType, abilityLevel, icon, gender, source, template.dialogueSource);
+			result.animalType = animalType;
+			return result;
 		},
 		
 		getNewPredefinedExplorer: function (explorerID) {
@@ -207,7 +210,9 @@ define(['ash',
 			
 			let abilityLevel = this.getRandomAbilityLevelByCampOrdinal(template.abilityType, templateCampOrdinal);
 			
-			return new ExplorerVO(explorerID, template.name, template.abilityType, abilityLevel, template.icon, template.gender, ExplorerConstants.explorerSource.SCOUT, template.dialogueSource);
+			let result = new ExplorerVO(explorerID, template.name, template.abilityType, abilityLevel, template.icon, template.gender, ExplorerConstants.explorerSource.SCOUT, template.dialogueSource);
+			result.animalType = template.animalType;
+			return result;
 		},
 
 		getRandomExplorerTemplate: function (source, appearLevel, forcedAbilityType, isRobot, excludedDialogueSources) {

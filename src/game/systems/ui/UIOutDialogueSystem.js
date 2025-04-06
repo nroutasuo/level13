@@ -84,7 +84,7 @@ define([
 			let characterVO = this.dialogueNodes.head.dialogue.characterVO;
 
 			this.refreshPageCharacter(explorerVO, characterVO);
-			this.refreshPageText(dialogueVO, pageVO);
+			this.refreshPageText(dialogueVO, pageVO, explorerVO);
 			this.refreshPageResults(pageVO);
 			this.refreshPageOptions(pageVO);
 
@@ -110,9 +110,13 @@ define([
 			}
 		},
 
-		refreshPageText: function (dialogueVO, pageVO) {
+		refreshPageText: function (dialogueVO, pageVO, explorerVO) {
 			let staticTextParams = this.dialogueNodes.head.dialogue.textParams;
 			let textParams = GameGlobals.dialogueHelper.getDialogueTextParams(dialogueVO, pageVO, staticTextParams);
+
+			if (explorerVO) {
+				textParams.animalType = explorerVO.animalType || explorerVO.name; 
+			}
 
 			let titleTextKey = dialogueVO.titleTextKey || pageVO.titleTextKey || GameGlobals.gameState.uiStatus.sequenceTitleKey;
 			if (titleTextKey) {

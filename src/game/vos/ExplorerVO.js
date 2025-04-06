@@ -8,6 +8,7 @@ define(['ash'], function (Ash) {
 		abilityLevel: 0,
 		icon: "",
 		gender: null,
+		animalType: null,
 		source: null,
 		dialogueSource: null,
 		

@@ -1233,7 +1233,7 @@ define([
 					if (typeof requirements.sector.passageUpAvailable != 'undefined') {
 						let currentValue = GameGlobals.levelHelper.isPassageUpAvailable(level);
 						let requiredValue = requirements.sector.passageUpAvailable;
-						let result = this.checkRequirementsBoolean(requiredValue, currentValue, "Passage up not clear", "Passage up clear");
+						let result = this.checkRequirementsBoolean(requiredValue, currentValue, "Passage up clear", "Passage up not clear");
 						if (result) return result;
 					}
 
@@ -1256,7 +1256,7 @@ define([
 					if (typeof requirements.sector.passageDownAvailable != 'undefined') {
 						let currentValue = GameGlobals.levelHelper.isPassageDownAvailable(level);
 						let requiredValue = requirements.sector.passageDownAvailable;
-						let result = this.checkRequirementsBoolean(requiredValue, currentValue, "Passage down not clear", "Passage down clear");
+						let result = this.checkRequirementsBoolean(requiredValue, currentValue, "Passage down clear", "Passage down not clear");
 						if (result) return result;
 					}
 

@@ -485,7 +485,7 @@ define([
 					let isStoryRefugees = GameGlobals.gameState.getStoryFlag(StoryConstants.flags.APOCALYPSE_PENDING_REFUGEES);
 					let dialogueSource = isStoryRefugees ? "refugees_earthquake" : "refugees_default";
 					campNode.entity.add(new RefugeesComponent(refugeesNum, dialogueSource));
-					logMsg = "A group of refugees from the City has arrived at the camp.";
+					logMsg = "A group of refugees from the City arrives at the camp.";
 					break;
 
 				case OccurrenceConstants.campOccurrenceTypes.visitor:
