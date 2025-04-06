@@ -186,7 +186,7 @@ define([
 		getUseItemRewards: function (itemID) {
 			let rewards = new ResultVO("use_item");
 			
-			let baseItemId = ItemConstants.getBaseItemId(itemID);
+			let baseItemId = ItemConstants.getBaseItemID(itemID);
 			let itemConfig = ItemConstants.getItemDefinitionByID(itemID);
 
 			switch (baseItemId) {
@@ -1463,7 +1463,7 @@ define([
 				if (itemDefinition.type == ItemConstants.itemTypes.exploration) return false;
 				if (itemDefinition.type == ItemConstants.itemTypes.trade) return false;
 				if (itemDefinition.type == ItemConstants.itemTypes.artefact) return false;
-				let numOwned = itemsComponent.getCountByBaseId(ItemConstants.getBaseItemId(itemDefinition.id), true);
+				let numOwned = itemsComponent.getCountByBaseId(ItemConstants.getBaseItemID(itemDefinition.id), true);
 				return numOwned >= 5;
 			}
 			

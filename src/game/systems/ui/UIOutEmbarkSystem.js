@@ -214,7 +214,7 @@ define([
 			for (let i = 0; i < uniqueItems.length; i++) {
 				let item = uniqueItems[i];
 				let itemName = ItemConstants.getItemDisplayName(item);
-				let baseItemId = ItemConstants.getBaseItemId(item.id);
+				let baseItemId = ItemConstants.getBaseItemID(item.id);
 				if (item.type === ItemConstants.itemTypes.uniqueEquipment) continue;
 				if (item.type === ItemConstants.itemTypes.artefact) continue;
 				if (item.type === ItemConstants.itemTypes.trade) continue;

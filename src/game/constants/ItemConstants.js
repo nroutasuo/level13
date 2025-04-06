@@ -332,6 +332,30 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, ItemVO) {
 			let actionVerb = ItemConstants.getUseItemVerb(item);
 			return actionVerb + " " + ItemConstants.getItemDisplayName(item, true);
 		},
+
+		getUseItemActionDisplayNameByBaseID: function (items) {
+			if (items.length == 1) {
+				return this.getUseItemActionDisplaName(items[0]);
+			}
+
+			let uniqueIDs = [];
+			let defaultItem = items[0];
+
+			for (let i = 0; i < items.length; i++) {
+				let item = items[i];
+				let baseItemID = this.getBaseItemID(item.id);
+				if (uniqueIDs.indexOf(baseItemID) < 0) uniqueIDs.push(baseItemID);
+			}
+
+			let actionVerb = ItemConstants.getUseItemVerb(defaultItem);
+
+			if (uniqueIDs.length > 1) {
+				log.w("trying to get use action display name for a group of items that don't share base id")
+				return actionVerb + " item";
+			}
+
+			return actionVerb + " " + ItemConstants.getBaseItemDisplayName(uniqueIDs[0]);
+		},
 		
 		getUseItemVerb: function (item) {
 			if (item.id.startsWith("cache_metal")) return "Disassemble";
@@ -383,12 +407,20 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, ItemVO) {
 			if (!item) return "";
 			return "game.items." + item.id + "_description";
 		},
+
+		getBaseItemDisplayName: function (baseItemID) {
+			return Text.t(ItemConstants.getBaseItemDisplayNameKey(baseItemID));
+		},
+
+		getBaseItemDisplayNameKey: function (baseItemID) {
+			return "game.items." + baseItemID + "_name";
+		},
 		
 		getItemBonusIcons: function (itemBonusType) {
 			return this.itemBonusTypeIcons[itemBonusType] || null;
 		},
 		
-		getBaseItemId: function (itemID) {
+		getBaseItemID: function (itemID) {
 			if (itemID.startsWith("document_")) return "document";
 
 			let id = itemID.replaceAll("_exodus", "").replaceAll("_official", "");
@@ -819,7 +851,7 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, ItemVO) {
 		},
 
 		isUnselectable: function (item) {
-			let baseItemId = ItemConstants.getBaseItemId(item.id);
+			let baseItemId = ItemConstants.getBaseItemID(item.id);
 			if (item.type == ItemConstants.itemTypes.uniqueEquipment) return false;
 			if (item.isStoryItem) return false;
 			if (baseItemId == "cache_insight") return false;

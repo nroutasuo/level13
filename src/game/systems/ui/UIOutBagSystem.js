@@ -119,9 +119,13 @@ define([
 			};
 			let fnUpdateItem = function (li, data) {
 				let item = data.items[0];
-				let actionName = "use_item_" + data.id;
+				let actionName = "use_item_" + item.id;
 				let buttonLabel = ItemConstants.getUseItemActionDisplaName(item);
-				if (data.items.length > 1) buttonLabel += " (" + (data.items.length) + ")";
+
+				if (data.items.length > 1) {
+					buttonLabel = ItemConstants.getUseItemActionDisplayNameByBaseID(data.items);
+					buttonLabel += " (" + (data.items.length) + ")";
+				}
 
 				li.$root.find("button.action").attr("action", actionName);
 				li.$root.find("button.action").html(buttonLabel);
@@ -298,15 +302,16 @@ define([
 			items = items.sort(UIConstants.sortItemsByType);
 			items = items.filter(item => this.isUsable(item));
 
-			let itemsById = {};
+			let itemsByBaseID = {};
 
 			for (let i = 0; i < items.length; i++) {
 				let item = items[i];
-				if (!itemsById[item.id]) itemsById[item.id] = { id: item.id, items: [] };
-				itemsById[item.id].items.push(item);
+				let itemBaseID = ItemConstants.getBaseItemID(item.id);
+				if (!itemsByBaseID[itemBaseID]) itemsByBaseID[itemBaseID] = { baseID: itemBaseID, items: [] };
+				itemsByBaseID[itemBaseID].items.push(item);
 			}
 
-			let numNewItems = UIList.update(this.useItemButtonList, Object.values(itemsById)).length;
+			let numNewItems = UIList.update(this.useItemButtonList, Object.values(itemsByBaseID)).length;
 			
 			GameGlobals.uiFunctions.toggle("#header-self-use-items", items.length > 0);
 

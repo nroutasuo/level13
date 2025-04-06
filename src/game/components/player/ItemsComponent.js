@@ -352,7 +352,7 @@ function (Ash, ItemVO, ItemConstants) {
 				for (let i = 0; i < this.items[key].length; i++) {
 					var item = this.items[key][i];
 					if (!includeNotCarried && !item.carried) continue;
-					let baseID = ItemConstants.getBaseItemId(item.id);
+					let baseID = ItemConstants.getBaseItemID(item.id);
 					if (baseID == itemBaseId) {
 						result++;
 					}

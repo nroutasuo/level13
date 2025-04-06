@@ -2517,7 +2517,7 @@ define(['ash',
 			let resultVO = new ResultVO("use_item");
 			
 			let itemConfig = ItemConstants.getItemDefinitionByID(itemId);
-			let baseItemId = ItemConstants.getBaseItemId(itemId);
+			let baseItemId = ItemConstants.getBaseItemID(itemId);
 			let itemShortName = ItemConstants.getItemDisplayName(item, true);
 			let currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
 			

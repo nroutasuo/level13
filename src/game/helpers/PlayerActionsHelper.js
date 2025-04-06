@@ -146,7 +146,7 @@ define([
 					result.resources[costNameParts[1]] = costAmount;
 				} else if (costNameParts[0] === "item") {
 					let itemID = costName.replace(costNameParts[0] + "_", "");
-					let baseItemID = ItemConstants.getBaseItemId(itemID);
+					let baseItemID = ItemConstants.getBaseItemID(itemID);
 					result.items = result.items || [];
 					for (let i = 0; i < costAmount; i++) {
 						var item = itemsComponent.getItem(itemID, null, inCamp, false) || itemsComponent.getItem(itemID, null, inCamp, true);
@@ -2116,7 +2116,7 @@ define([
 					return requirements;
 				
 				case "use_item":
-					let baseItemID = ItemConstants.getBaseItemId(actionIDParam);
+					let baseItemID = ItemConstants.getBaseItemID(actionIDParam);
 					let actionID = baseActionID + "_" + baseItemID;
 					// some items define reqs per item (bag_1, first_aid_kit_1) some by base item (stamina_potion)
 					return PlayerActionConstants.requirements[actionID] || PlayerActionConstants.requirements[action];
