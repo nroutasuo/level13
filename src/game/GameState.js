@@ -98,7 +98,6 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.initGameStatSimple("numItemsLost");
 			this.initGameStatSimple("numRaidsLost");
 			this.initGameStatSimple("numStepsTaken");
-			this.initGameStatSimple("numTimesBlindedBySunlight");
 			this.initGameStatSimple("numTimesRestedOutside");
 			this.initGameStatSimple("numTimesScavenged");
 			this.initGameStatSimple("numTimesScouted");
@@ -264,7 +263,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 				return;
 			}
 
-			if (!key || key.length == 0) {
+			if (!this.isValidKey(key)) {
 				log.w("[GameStats] can't increase keyed player stat [" + name + "]: no key provided");
 				return;
 			}
@@ -274,6 +273,12 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 
 			if (!this.stats[name][key]) this.stats[name][key] = 0;
 			this.stats[name][key] += value;
+		},
+
+		isValidKey: function (key) {
+			if (key === 0) return true;
+			if (key.length == 0) return false;
+			return key;
 		},
 
 		getGameStatKeyed: function (name, key) {
