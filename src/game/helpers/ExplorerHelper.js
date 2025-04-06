@@ -1,11 +1,13 @@
 define([
 	'ash',
 	'game/GameGlobals',
+	'game/constants/DialogueConstants',
 	'game/constants/ExplorerConstants',
 	'game/constants/StoryConstants',
 ], function (
 	Ash,
 	GameGlobals,
+	DialogueConstants,
 	ExplorerConstants,
 	StoryConstants,
 ) {
@@ -35,19 +37,25 @@ define([
 		},
 
 		isDismissable: function (explorerVO) {
-			if (this.isStoryCriticalExplorer(explorerVO)) return false;
-			return true;
+			return this.getIsNotDismissableReason(explorerVO) == null;
 		},
 
-		isStoryCriticalExplorer: function (explorerVO) {
-			if (explorerVO.pendingDialogue) return true;
+		getIsNotDismissableReason: function (explorerVO) {
+			if (!explorerVO) return "ui.actions.unavailable_reason_invalid_message";
 
-			// TODO consider upcoming dialogue tags
+			let quest = GameGlobals.storyHelper.getExplorerQuestStory(explorerVO);
+			if (quest) return "ui.actions.unavailable_reason_quest_message";
 
 			let forcedExplorerID = this.getForcedExplorerID();
-			if (forcedExplorerID && explorerVO.id == forcedExplorerID) return true;
+			if (forcedExplorerID && explorerVO.id == forcedExplorerID) return "ui.actions.unavailable_reason_quest_message";
 
-			return false;
+			if (explorerVO.pendingDialogue) return "ui.actions.unavailable_reason_pending_dialogue_message";
+
+			let dialogueStatus = GameGlobals.dialogueHelper.getExplorerDialogueStatus(explorerVO);
+			if (dialogueStatus == DialogueConstants.STATUS_FORCED) return "ui.actions.unavailable_reason_pending_dialogue_message";
+			if (dialogueStatus == DialogueConstants.STATUS_URGENT) return "ui.actions.unavailable_reason_pending_dialogue_message";
+
+			return null;
 		},
 
 		getForcedExplorerID: function () {

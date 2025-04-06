@@ -80,10 +80,13 @@ define([
 
 		tryTriggerPendingExplorerDialogue: function (storyTag) {
 			let explorers = GameGlobals.playerHelper.getExplorers();
+
 			let explorerScore = function (explorerVO) {
-				let score = 0;
-				if (explorerVO.inParty) score += 1;
-				if (ExplorerConstants.isUnique(explorerVO)) score += 3;
+				let score = explorerVO.trust;
+
+				if (explorerVO.inParty) score += 5;
+				if (ExplorerConstants.isUnique(explorerVO)) score += 10;
+
 				return score;
 			}
 			let sortedExplorers = explorers.sort((a, b) => explorerScore(b) - explorerScore(a));
@@ -140,18 +143,20 @@ define([
 			let dialogueID = this.dialogueNodes.head.dialogue.activeDialogue.dialogueID;
 			
 			if (this.dialogueNodes.head.dialogue.currentResultVO) {
+				let explorerVO = this.dialogueNodes.head.dialogue.explorerVO;
+				let characterVO = this.dialogueNodes.head.dialogue.characterVO;
+
 				let resultVO = this.dialogueNodes.head.dialogue.currentResultVO;
-				GameGlobals.playerActionResultsHelper.collectRewards(true, resultVO);
+				let resultContext = { explorerVO: explorerVO };
+				GameGlobals.playerActionResultsHelper.collectRewards(true, resultVO, resultContext);
 
 				if (resultVO.removeCharacter) {
-					let characterVO = this.dialogueNodes.head.dialogue.characterVO;
 					if (characterVO) {
 						GlobalSignals.removeCharacterSignal.dispatch(characterVO.instanceID);
 					}
 				}
 
 				if (resultVO.replaceDialogue) {
-					let characterVO = this.dialogueNodes.head.dialogue.characterVO;
 					if (characterVO) {
 						characterVO.completedDialogues.push(dialogueID);
 						characterVO.lastShownDialogue = null;

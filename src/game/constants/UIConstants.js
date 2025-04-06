@@ -4,7 +4,6 @@ define(['ash',
 	'game/GameGlobals',
 	'game/constants/CharacterConstants',
 	'game/constants/ColorConstants',
-	'game/constants/DialogueConstants',
 	'game/constants/StoryConstants',
 	'game/constants/ExplorerConstants',
 	'game/constants/ItemConstants',
@@ -15,7 +14,7 @@ define(['ash',
 	'game/constants/TextConstants',
 	'utils/UIAnimations'
 ], function (Ash, Text, GameGlobals,
-	CharacterConstants, ColorConstants, DialogueConstants, StoryConstants, ExplorerConstants, ItemConstants, BagConstants, PerkConstants, UpgradeConstants, PlayerActionConstants, TextConstants,
+	CharacterConstants, ColorConstants, StoryConstants, ExplorerConstants, ItemConstants, BagConstants, PerkConstants, UpgradeConstants, PlayerActionConstants, TextConstants,
 	UIAnimations) {
 
 	var UIConstants = {
@@ -211,13 +210,13 @@ define(['ash',
 			return html;
 		},
 
-		getExplorerDivWithOptions: function (explorerVO, isRecruited, isInCamp) {
+		getExplorerDivWithOptions: function (explorerVO, isRecruited, isInCamp, questTextKey) {
 			let classes = "npc-container";
 			let div = "<div class='" + classes + "' data-explorerid='" + explorerVO.id + "'>";
 			let isAnimal = ExplorerConstants.isAnimal(explorerVO.abilityType);
 			
 			// portrait
-			let calloutContent = this.getExplorerCallout(explorerVO, isRecruited, isInCamp, true);
+			let calloutContent = this.getExplorerCallout(explorerVO, isRecruited, isInCamp, true, questTextKey);
 
 			let hideComparisonIndicator = explorerVO.inParty;
 			
@@ -229,6 +228,10 @@ define(['ash',
 			}
 
 			div += "<div class='npc-dialogue-badge'><div class='npc-dialogue-indicator'></div></div>"
+
+			if (questTextKey) {
+				div += "<div class='npc-quest-badge'><div class='npc-quest-indicator'></div></div>";
+			}
 			
 			div += "</div>";
 
@@ -236,20 +239,18 @@ define(['ash',
 			div += "<span>" + explorerVO.name + "</span>";
 
 			// interaction options
+			let talkLabel = (isAnimal ? "pet" : "talk");
+			let talkAction = "start_explorer_dialogue_" + explorerVO.id;
+			let switchLabel = "⇵";
+			let switchAction = explorerVO.inParty ? "deselect_explorer_" + explorerVO.id : "select_explorer_" + explorerVO.id;
+			let dismissLabel = "×";
+			let dismissAction = "dismiss_explorer_" + explorerVO.id;
 			div += "<div class='interaction-options'>";
-			let actions = [];
-			actions.push({ label: isAnimal ? "pet" : "talk", action: "start_explorer_dialogue_" + explorerVO.id});
-			if (explorerVO.inParty) {
-				actions.push({ label: "switch out", action: "deselect_explorer_" + explorerVO.id });
-			} else {
-				actions.push({ label: "switch in", action: "select_explorer_" + explorerVO.id });
-			}
-			actions.push({ label: "dismiss", action: "dismiss_explorer_" + explorerVO.id });
-
-			for (let i = 0; i < actions.length; i++) {
-				let entry = actions[i];
-				div += "<button class='action btn-narrow' action='" + entry.action + "'>" + entry.label + "</button>";
-			}
+			div += "<button class='action btn-narrow' action='" + talkAction + "'>" + talkLabel + "</button>";
+			div += "<table class='button-row-2'><tr>";
+			div += "<td><button class='action btn-mini' action='" + switchAction + "'>" + switchLabel + "</button></td>";
+			div += "<td><button class='action btn-mini' action='" + dismissAction + "'>" + dismissLabel + "</button></td>";
+			div += "</tr></table>";
 			div += "</div>";
 
 			div += "</div>";
@@ -257,10 +258,10 @@ define(['ash',
 			return div;
 		},
 		
-		getExplorerDivSimple: function (explorer, isRecruited, isInCamp, hideComparisonIndicator) {
+		getExplorerDivSimple: function (explorer, isRecruited, isInCamp, hideComparisonIndicator, questTextKey) {
 			let classes = "npc-container npc-container-mini";
 			let div = "<div class='" + classes + "' data-explorerid='" + explorer.id + "'>";
-			let calloutContent = this.getExplorerCallout(explorer, isRecruited, isInCamp);
+			let calloutContent = this.getExplorerCallout(explorer, isRecruited, isInCamp, false, questTextKey);
 			
 			div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
 
@@ -278,7 +279,7 @@ define(['ash',
 			return div;
 		},
 		
-		getExplorerCallout: function (explorer, isRecruited, isInCamp, hideButtons) {
+		getExplorerCallout: function (explorer, isRecruited, isInCamp, hideButtons, questTextKey) {
 			let explorerType = ExplorerConstants.getExplorerTypeForAbilityType(explorer.abilityType);
 			let result = "<b>" + explorer.name + "</b>";
 			if (isRecruited) {
@@ -287,6 +288,10 @@ define(['ash',
 			result += "<br/>Type: " + ExplorerConstants.getExplorerTypeDisplayName(explorerType);
 			result += "<br/>Ability: " + ExplorerConstants.getAbilityTypeDisplayName(explorer.abilityType)
 				+ " (" + UIConstants.getExplorerAbilityDescription(explorer) + ")";
+
+			if (questTextKey) {
+				result += "<br/>Quest: " + Text.t(questTextKey);
+			}
 			
 			if (isRecruited && isInCamp && !hideButtons) {
 				var makeButton = function (action, name) {

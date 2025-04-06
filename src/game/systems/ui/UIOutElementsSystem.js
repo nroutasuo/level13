@@ -1,5 +1,6 @@
 define([
 	'ash',
+	'text/Text',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
@@ -10,6 +11,7 @@ define([
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/PlayerStatsNode',
 ], function (Ash,
+	Text,
 	GameGlobals,
 	GlobalSignals,
 	GameConstants,
@@ -172,7 +174,7 @@ define([
 				if (lastReason !== displayReason) {
 					GameGlobals.uiFunctions.toggle($enabledContent, false, this.buttonCalloutSignalParams);
 					GameGlobals.uiFunctions.toggle($disabledContent, true, this.buttonCalloutSignalParams);
-					buttonElements.calloutSpanDisabledReason.html(displayReason);
+					buttonElements.calloutSpanDisabledReason.html(Text.t(displayReason));
 					buttonStatus.disabledReason = displayReason;
 				}
 			}

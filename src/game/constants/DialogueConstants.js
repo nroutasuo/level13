@@ -207,6 +207,14 @@ define([
 				}
 			}
 
+			if (data.startQuest) {
+				resultVO.startQuest = data.startQuest;
+			}
+
+			if (data.endQuest) {
+				resultVO.endQuest = data.endQuest;
+			}
+
 			return resultVO;
 		},
 

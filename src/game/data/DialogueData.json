@@ -859,9 +859,7 @@
 			]
 		},
 		"character_generic_reserved_meet_01": {
-			"conditions": {
-
-			},
+			"conditions": {},
 			"pages": [
 				"character_generic_reserved_meet_01_p1"
 			]
@@ -1224,10 +1222,10 @@
 			"pages": [
 				{
 					"key": "character_shaman_default_event_03_p1",
+					"replaceDialogue": true,
 					"result": {
 						"gainedHope": 1
-					},
-					"replaceDialogue": true
+					}
 				}
 			]
 		},
@@ -1544,6 +1542,26 @@
 			},
 			"pages": [
 				"character_workerGeneric_interact_apocalypse_02_p1"
+			]
+		},
+		"character_workerGeneric_interact_disease_01": {
+			"conditions": {
+				"camp": {
+					"disease": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_interact_disease_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_disease_02": {
+			"conditions": {
+				"camp": {
+					"disease": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_interact_disease_02_p1"
 			]
 		},
 		"character_workerGeneric_interact_searching_for_greenhouse_01": {
@@ -2224,7 +2242,10 @@
 				{
 					"buttonKey": "npc_request_promise",
 					"id": "request",
-					"key": "explorer_generic_story_rescue_prospector_p1"
+					"key": "explorer_generic_story_rescue_prospector_p1",
+					"result": {
+						"startQuest": "rescue"
+					}
 				}
 			],
 			"storyTag": "prospector_rescue"
@@ -3518,6 +3539,29 @@
 				"explorer_unique_gambler_story_gangs_compound_01_p1"
 			]
 		},
+		"explorer_unique_gambler_story_greenhouse_intro_01": {
+			"conditions": {
+				"inCamp": true,
+				"storyFlags": {
+					"GREENHOUSE_FOUND": true
+				}
+			},
+			"isUrgent": true,
+			"pages": [
+				{
+					"key": "explorer_unique_gambler_story_greenhouse_intro_01_p1",
+					"options": "NEXT"
+				},
+				{
+					"buttonKey": "explorer_request_start_quest",
+					"key": "explorer_unique_gambler_story_greenhouse_intro_01_p2",
+					"result": {
+						"startQuest": "greenhouse"
+					}
+				}
+			],
+			"repeatable": false
+		},
 		"explorer_unique_gambler_story_search_spirits_01": {
 			"conditions": {
 				"sector": {
@@ -3561,14 +3605,29 @@
 			]
 		},
 		"explorer_unique_gambler_story_spirits_intro_01": {
+			"conditions": {
+				"inCamp": true,
+				"numCamps": 3
+			},
+			"isPriority": true,
 			"pages": [
-				"explorer_unique_gambler_story_spirits_intro_01_p1"
-			]
-		},
-		"explorer_unique_gambler_story_spirits_intro_02": {
-			"pages": [
-				"explorer_unique_gambler_story_spirits_intro_02_p1"
-			]
+				{
+					"key": "explorer_unique_gambler_story_spirits_intro_01_p1",
+					"options": "NEXT"
+				},
+				{
+					"key": "explorer_unique_gambler_story_spirits_intro_01_p2",
+					"options": "NEXT"
+				},
+				{
+					"buttonKey": "explorer_request_start_quest",
+					"key": "explorer_unique_gambler_story_spirits_intro_01_p3",
+					"result": {
+						"startQuest": "spirits"
+					}
+				}
+			],
+			"repeatable": false
 		},
 		"explorer_unique_gambler_story_spirits_outro_01": {
 			"conditions": {
@@ -3705,6 +3764,47 @@
 			"pages": [
 				"explorer_unique_handler_meet_01_p1"
 			]
+		},
+		"explorer_unique_handler_story_escape_intro_01": {
+			"conditions": {
+				"inCamp": true,
+				"storyFlags": {
+					"ESCAPE_SEARCHING_FOR_GROUND": true
+				}
+			},
+			"isUrgent": true,
+			"pages": [
+				{
+					"buttonKey": "explorer_request_start_quest",
+					"key": "explorer_unique_handler_story_escape_intro_01_p1",
+					"result": {
+						"startQuest": "escape"
+					}
+				}
+			],
+			"repeatable": false
+		},
+		"explorer_unique_handler_story_escape_outro_01": {
+			"conditions": {
+				"numCamps": 8,
+				"storyFlags": {
+					"ESCAPE_SEARCHING_FOR_GROUND": false
+				}
+			},
+			"isUrgent": true,
+			"pages": [
+				{
+					"buttonKey": "explorer_unique_handler_story_escape_outro_reply",
+					"key": "explorer_unique_handler_story_escape_outro_01_p1",
+					"result": {
+						"endQuest": "escape"
+					}
+				},
+				{
+					"key": "explorer_unique_handler_story_escape_outro_01_p2"
+				}
+			],
+			"repeatable": false
 		},
 		"explorer_unique_handler_story_rescue_absence_01": {
 			"conditions": {
@@ -4037,6 +4137,7 @@
 					"key": "explorer_unique_journalist_story_start_p4",
 					"options": "NEXT",
 					"result": {
+						"startQuest": "fall",
 						"storyFlags": {
 							"FALL_INVESTIGATING": true
 						}
@@ -4181,6 +4282,25 @@
 				"explorer_unique_prospector_meet_01_p1"
 			]
 		},
+		"explorer_unique_prospector_story_greenhouse_intro_01": {
+			"conditions": {
+				"inCamp": true,
+				"storyFlags": {
+					"GREENHOUSE_SEARCHING_FOR_CURE": true
+				}
+			},
+			"isUrgent": true,
+			"pages": [
+				{
+					"buttonKey": "explorer_request_start_quest",
+					"key": "explorer_unique_prospector_story_greenhouse_intro_01_p1",
+					"result": {
+						"startQuest": "greenhouse"
+					}
+				}
+			],
+			"repeatable": false
+		},
 		"explorer_unique_prospector_story_rescue_complete_01": {
 			"conditions": {
 				"numCamps": 9
@@ -4232,13 +4352,13 @@
 			]
 		},
 		"explorer_unique_prospector_story_rescue_leaving": {
-			"isUrgent": true,
 			"conditions": {
 				"deity": true,
 				"storyFlags": {
 					"GREENHOUSE_RESTORED": true
 				}
 			},
+			"isUrgent": true,
 			"pages": [
 				{
 					"buttonKey": "explorer_request_prospector_leaving_reply",
@@ -4298,6 +4418,7 @@
 					"RESCUE_PASSAGE_UP_BUILT": true
 				}
 			},
+			"isUrgent": true,
 			"pages": [
 				"explorer_unique_prospector_story_rescue_passage_built_01_p1"
 			]
@@ -4310,6 +4431,21 @@
 			},
 			"pages": [
 				"explorer_unique_prospector_story_rescue_passage_built_02_p1"
+			]
+		},
+		"explorer_unique_handler_story_escape_near_01": {
+			"conditions": {
+				"player": {
+					"position": {
+						"level": [
+							-1,
+							3
+						]
+					}
+				}
+			},
+			"pages": [
+				"explorer_unique_handler_story_escape_near_01_p1"
 			]
 		},
 		"item_story_expedition_diary": {
@@ -5498,6 +5634,8 @@
 					"character_workerApothecary_default_interact_01",
 					"character_workerApothecary_default_interact_02",
 					"character_workerApothecary_default_interact_03",
+					"character_workerGeneric_interact_disease_01",
+					"character_workerGeneric_interact_disease_02",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_searching_for_greenhouse_01",
@@ -5516,6 +5654,8 @@
 					"character_workerChemist_default_interact_02",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_interact_disease_01",
+					"character_workerGeneric_interact_disease_02",
 					"character_workerGeneric_interact_searching_for_greenhouse_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_02",
 					"character_workerGeneric_default_interact_01",
@@ -5530,6 +5670,8 @@
 					"character_workerCleric_default_interact_02",
 					"character_workerCleric_default_interact_03",
 					"character_workerCleric_default_interact_04",
+					"character_workerGeneric_interact_disease_01",
+					"character_workerGeneric_interact_disease_02",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_default_interact_02"
@@ -5546,6 +5688,8 @@
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_default_interact_01",
 					"character_workerGeneric_default_interact_02",
+					"character_workerGeneric_interact_disease_01",
+					"character_workerGeneric_interact_disease_02",
 					"character_workerGeneric_interact_story_greenhouse_found_01",
 					"character_workerGeneric_interact_story_greenhouse_fixed_01"
 				]
@@ -5559,6 +5703,8 @@
 					"character_workerGardener_default_interact_03",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_interact_disease_01",
+					"character_workerGeneric_interact_disease_02",
 					"character_workerGeneric_default_interact_01",
 					"character_workerGeneric_default_interact_02"
 				]
@@ -5571,6 +5717,8 @@
 					"character_workerRobotmaker_default_interact_02",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_interact_disease_01",
+					"character_workerGeneric_interact_disease_02",
 					"character_workerGeneric_default_interact_01",
 					"character_workerGeneric_default_interact_02"
 				]
@@ -5585,6 +5733,8 @@
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_01",
 					"character_workerGeneric_interact_02",
+					"character_workerGeneric_interact_disease_01",
+					"character_workerGeneric_interact_disease_02",
 					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_searching_for_greenhouse_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_02",
@@ -5600,6 +5750,8 @@
 					"character_workerRubber_default_interact_02",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_interact_disease_01",
+					"character_workerGeneric_interact_disease_02",
 					"character_workerGeneric_default_interact_01",
 					"character_workerGeneric_default_interact_02"
 				]
@@ -5615,6 +5767,8 @@
 					"character_workerScavenger_default_interact_05",
 					"character_workerGeneric_interact_01",
 					"character_workerGeneric_interact_02",
+					"character_workerGeneric_interact_disease_01",
+					"character_workerGeneric_interact_disease_02",
 					"character_workerGeneric_interact_searching_for_greenhouse_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_02",
 					"character_workerGeneric_interact_apocalypse_01",
@@ -5643,6 +5797,8 @@
 					"character_workerScientist_default_interact_06",
 					"character_workerScientist_default_interact_07",
 					"character_workerScientist_default_interact_08",
+					"character_workerGeneric_interact_disease_01",
+					"character_workerGeneric_interact_disease_02",
 					"character_workerGeneric_default_interact_01",
 					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_story_greenhouse_found_01"
@@ -5658,6 +5814,8 @@
 					"character_workerGeneric_interact_spirits_01",
 					"character_workerGeneric_interact_spirits_02",
 					"character_workerGeneric_interact_spirits_03",
+					"character_workerGeneric_interact_disease_01",
+					"character_workerGeneric_interact_disease_02",
 					"character_workerGeneric_interact_searching_for_greenhouse_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_02",
 					"character_workerGeneric_interact_apocalypse_01",
@@ -5673,6 +5831,8 @@
 					"character_workerToolsmith_default_interact_02",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_interact_disease_01",
+					"character_workerGeneric_interact_disease_02",
 					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_story_greenhouse_found_01"
 				]
@@ -5689,6 +5849,8 @@
 					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_01",
 					"character_workerGeneric_interact_02",
+					"character_workerGeneric_interact_disease_01",
+					"character_workerGeneric_interact_disease_02",
 					"character_workerGeneric_interact_searching_for_greenhouse_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_02",
 					"character_workerGeneric_interact_story_greenhouse_found_01",
@@ -5713,6 +5875,8 @@
 					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_01",
 					"character_workerGeneric_interact_02",
+					"character_workerGeneric_interact_disease_01",
+					"character_workerGeneric_interact_disease_02",
 					"character_workerGeneric_interact_searching_for_greenhouse_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_02",
 					"character_workerGeneric_interact_story_greenhouse_found_01",
@@ -6146,11 +6310,11 @@
 					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_unique_gambler_story_find_greenhouse",
 					"explorer_unique_gambler_story_find_spirits",
+					"explorer_unique_gambler_story_greenhouse_intro_01",
 					"explorer_unique_gambler_story_search_spirits_01",
 					"explorer_unique_gambler_story_search_spirits_02",
 					"explorer_unique_gambler_story_search_spirits_03",
 					"explorer_unique_gambler_story_spirits_intro_01",
-					"explorer_unique_gambler_story_spirits_intro_02",
 					"explorer_unique_gambler_story_spirits_outro_01",
 					"explorer_unique_gambler_story_spirits_outro_02",
 					"explorer_unique_gambler_story_gangs_compound_01",
@@ -6179,6 +6343,9 @@
 					"explorer_unique_handler_interact_10",
 					"explorer_unique_handler_interact_11",
 					"explorer_unique_handler_interact_12",
+					"explorer_unique_handler_story_escape_intro_01",
+					"explorer_unique_handler_story_escape_near_01",
+					"explorer_unique_handler_story_escape_outro_01",
 					"explorer_generic_story_searching_for_greenhouse_01",
 					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_unique_handler_story_rescue_absence_01"
@@ -6267,6 +6434,7 @@
 					"explorer_unique_prospector_interact_12",
 					"explorer_generic_story_searching_for_greenhouse_01",
 					"explorer_generic_story_searching_for_greenhouse_02",
+					"explorer_unique_prospector_story_greenhouse_intro_01",
 					"explorer_unique_prospector_story_rescue_intro",
 					"explorer_unique_prospector_story_rescue_lvl14_01",
 					"explorer_unique_prospector_story_rescue_passage_built_01",

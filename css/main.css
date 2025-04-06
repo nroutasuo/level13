@@ -1932,6 +1932,23 @@ body.dark .npc-dialogue-badge .indicator-new {
 body.dark .npc-dialogue-badge .indicator-urgent {
   border: 1px solid red;
 }
+body.dark .npc-quest-indicator {
+  background-size: 100%;
+  background-image: url('../img/eldorado/icon-quest-dark.png');
+  width: 10px;
+  height: 10px;
+}
+body.dark .npc-quest-badge {
+  top: 1px;
+  left: 5px;
+  position: absolute;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #555;
+  padding: 2px;
+  border-radius: 3px;
+  background: "inherit";
+}
 body.dark .npc-container {
   display: inline-flex;
   flex-direction: column;
@@ -1987,6 +2004,9 @@ body.dark img.portrait {
 }
 body.dark .npc-container span {
   text-align: center;
+}
+body.dark .npc-container .button-row-2 button {
+  width: 48px !important;
 }
 body.dark .interaction-options {
   display: flex;
@@ -2668,6 +2688,9 @@ body.dark .event-starting {
 body.dark .event-ending {
   animation: event-end 1.3s step-end infinite;
   animation-timing-function: ease-in-out;
+}
+body.dark .event-no-timer .progress-bar {
+  opacity: 0.5 !important;
 }
 @keyframes event-end {
   0% {
@@ -4542,6 +4565,23 @@ body.sunlit .npc-dialogue-badge .indicator-new {
 body.sunlit .npc-dialogue-badge .indicator-urgent {
   border: 1px solid red;
 }
+body.sunlit .npc-quest-indicator {
+  background-size: 100%;
+  background-image: url('../img/eldorado/icon-quest.png');
+  width: 10px;
+  height: 10px;
+}
+body.sunlit .npc-quest-badge {
+  top: 1px;
+  left: 5px;
+  position: absolute;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #999;
+  padding: 2px;
+  border-radius: 3px;
+  background: "inherit";
+}
 body.sunlit .npc-container {
   display: inline-flex;
   flex-direction: column;
@@ -4597,6 +4637,9 @@ body.sunlit img.portrait {
 }
 body.sunlit .npc-container span {
   text-align: center;
+}
+body.sunlit .npc-container .button-row-2 button {
+  width: 48px !important;
 }
 body.sunlit .interaction-options {
   display: flex;
@@ -5278,6 +5321,9 @@ body.sunlit .event-starting {
 body.sunlit .event-ending {
   animation: event-end 1.3s step-end infinite;
   animation-timing-function: ease-in-out;
+}
+body.sunlit .event-no-timer .progress-bar {
+  opacity: 0.5 !important;
 }
 @keyframes event-end {
   0% {

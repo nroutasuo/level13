@@ -4,9 +4,11 @@ function (Ash, ExplorerConstants, ItemConstants) {
 	let ExplorersComponent = Ash.Class.extend({
 
 		explorers: [], // ExplorerVO
+		quests: {}, // storyID -> list of explorerID
 
 		constructor: function () {
 			this.explorers = [];
+			this.quests = [];
 		},
 		
 		getAll: function () {
@@ -108,11 +110,13 @@ function (Ash, ExplorerConstants, ItemConstants) {
 		getCustomSaveObject: function () {
 			var copy = {};
 			copy.explorers = this.explorers;
+			copy.quests = this.quests;
 			return copy;
 		},
 
 		customLoadFromSave: function (componentValues) {
 			this.explorers = componentValues.explorers || componentValues.followers || [];
+			this.quests = componentValues.quests || {};
 		},
 	});
 

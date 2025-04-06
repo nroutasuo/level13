@@ -32,6 +32,8 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 		storyFlags: {}, // flagID -> new value
 		removeCharacter: false,
 		replaceDialogue: false,
+		startQuest: null,
+		endQuest: null,
 		
 		// additional info for UI
 		foundStashVO: null,
@@ -72,6 +74,8 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 			this.storyFlags = {};
 			this.removeCharacter = false;
 			this.replaceDialogue = false;
+			this.startQuest = null;
+			this.endQuest = null;
 			
 			this.selectedItems = [];
 			this.selectedResources = new ResourcesVO(storageTypes.RESULT);
@@ -108,28 +112,10 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 		},
 		
 		isEmpty: function () {
-			return this.gainedResources.getTotal() == 0
-				&& this.gainedCurrency == 0
-				&& this.lostResources.getTotal() == 0
-				&& this.lostCurrency == 0
-				&& this.gainedItems.length == 0
-				&& this.gainedExplorers.length == 0
-				&& this.lostItems.length == 0
-				&& this.brokenItems.length == 0
-				&& this.lostExplorers.length == 0
-				&& this.lostPerks.length == 0
-				&& this.gainedPerks.length == 0
-				&& this.gainedBlueprintPiece == null
-				&& this.gainedPopulation == 0
-				&& this.gainedEvidence == 0
-				&& this.gainedRumours == 0
-				&& this.gainedHope == 0
-				&& this.gainedInsight == 0
-				&& this.gainedReputation == 0
-				&& this.gainedItemUpgrades.length == 0
-				&& this.discardedItems.length == 0
-				&& this.discardedResources.getTotal() == 0
-				&& Object.keys(this.storyFlags).length == 0;
+			return this.isVisuallyEmpty()
+				&& Object.keys(this.storyFlags).length == 0
+				&& this.startQuest == null
+				&& this.endQuest == null;
 		},
 		
 		isVisuallyEmpty: function () {
@@ -195,6 +181,8 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 			result.storyFlags = this.storyFlags;
 			result.removeCharacter = this.removeCharacter;
 			result.replaceDialogue = this.replaceDialogue;
+			result.startQuest = this.startQuest;
+			result.endQuest = this.endQuest;
 			return result;
 		},
 		

@@ -1531,7 +1531,7 @@ define(['ash',
 
 			campOutgoingCaravansComponent.outgoingCaravans.splice(caravanI, 1);
 
-			GameGlobals.playerActionResultsHelper.collectRewards(true, result, campSector);
+			GameGlobals.playerActionResultsHelper.collectRewards(true, result, { campSector: campSector });
 			GameGlobals.resourcesHelper.moveCurrencyFromBagToCamp(campSector);
 			this.completeAction("send_caravan");
 			
@@ -1738,6 +1738,13 @@ define(['ash',
 				log.w("no recruit found: " + explorerId);
 				return;
 			}
+
+			let explorer = recruitComponent.explorer;
+
+			if (!GameGlobals.explorerHelper.isDismissable(explorer)) {
+				log.w("not allowed to dismiss explorer " + explorer.id);
+				return;
+			}
 			
 			recruitComponent.isDismissed = true;
 		},
@@ -1787,7 +1794,7 @@ define(['ash',
 			let eventComponent = sector.get(RefugeesComponent);
 			
 			if (!eventComponent) return;
-					eventComponent.isDismissed = true;
+			eventComponent.isDismissed = true;
 		},
 		
 		selectExplorer: function (explorerID) {

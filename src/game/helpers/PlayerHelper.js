@@ -78,6 +78,10 @@ define([
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 		},
 		
+		getPlayerEntity: function () {
+			return this.playerStatsNodes.head.entity;
+		},
+		
 		isInCamp: function () {
 			if (!this.playerPosNodes.head) return false;
 			return this.playerPosNodes.head.position.inCamp;
@@ -258,6 +262,13 @@ define([
 
 			if (msg.textKey) {
 				messageTextVO = { textFragments: [ msg ] };
+			}
+
+			if (!messageTextVO.textFragments) {
+				debugger
+				log.i("addLogMessage: unknown format");
+				console.log(msg);
+				return;
 			}
 
 			id = id || LogConstants.getUniqueID();

@@ -126,6 +126,7 @@ define([
 			log.i("complete story: " + storyID, this);
 			this.triggerEffects(storyVO.onComplete);
 			GameGlobals.gameState.storyStatus[storyID] = StoryConstants.storyStatuses.COMPLETED;
+			GameGlobals.storyHelper.endQuests(storyID);
 		},
 
 		startSegment: function (segmentVO) {

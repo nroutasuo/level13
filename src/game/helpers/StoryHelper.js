@@ -1,5 +1,11 @@
-define(['ash', 'utils/ValueCache', 'game/GameGlobals', 'game/constants/StoryConstants', 'game/constants/WorldConstants', 'game/constants/PlayerActionConstants'],
-	function (Ash, ValueCache, GameGlobals, StoryConstants, WorldConstants, PlayerActionConstants) {
+define(['ash', 
+	'utils/ValueCache', 
+	'game/GameGlobals', 
+	'game/constants/StoryConstants', 
+	'game/constants/WorldConstants', 
+	'game/constants/PlayerActionConstants',
+	'game/components/player/ExplorersComponent',
+], function (Ash, ValueCache, GameGlobals, StoryConstants, WorldConstants, PlayerActionConstants, ExplorersComponent) {
 		
 		let StoryHelper = Ash.Class.extend({
 			
@@ -60,6 +66,77 @@ define(['ash', 'utils/ValueCache', 'game/GameGlobals', 'game/constants/StoryCons
 					}
 					return result;
 				}
+			},
+
+			getExplorerQuestStory: function (explorerVO) {
+				let explorersComponent = GameGlobals.playerHelper.getPlayerEntity().get(ExplorersComponent);
+				let storyIDs = [];
+
+				for (let storyID in explorersComponent.quests) {
+					let explorerIDs = explorersComponent.quests[storyID]
+					if (explorerIDs.indexOf(explorerVO.id) >= 0) {
+						storyIDs.push(storyID);
+					}
+				}
+
+				if (storyIDs.length == 0) return null;
+
+				// more urgent stories take precedence in case there's more than one
+				if (storyIDs.indexOf("rescue") >= 0) return "rescue";
+				if (storyIDs.indexOf("greenhouse") >= 0) return "greenhouse";
+
+				return storyIDs[0];
+			},
+
+			startQuest: function (storyID, explorerVO) {
+				if (!storyID) {
+					log.w("no storyID defined for startQuest");
+					return;
+				}
+				
+				if (!explorerVO) {
+					log.w("no explorer defined for startQuest");
+					return;
+				}
+
+				let explorersComponent = GameGlobals.playerHelper.getPlayerEntity().get(ExplorersComponent);
+				let explorerID = explorerVO.id;
+				if (!explorersComponent.quests[storyID]) explorersComponent.quests[storyID] = [];
+				explorersComponent.quests[storyID].push(explorerID);
+			},
+
+			endQuest: function(storyID, explorerVO) {
+				if (!storyID) {
+					log.w("no storyID defined for endQuest");
+					return;
+				}
+
+				if (!explorerVO) {
+					log.w("no explorer defined for endQuest");
+					return;
+				}
+
+				let explorersComponent = GameGlobals.playerHelper.getPlayerEntity().get(ExplorersComponent);
+				let explorerID = explorerVO.id;
+				if (!explorersComponent.quests[storyID]) return;
+
+				let explorerIDs = explorersComponent.quests[storyID];
+				let index = explorerIDs.indexOf(explorerID);
+
+				if (index >= 0) {
+					explorerIDs.splice(index, 1);
+					explorersComponent.quests[storyID] = explorerIDs;
+				}
+			},
+
+			endQuests: function (storyID) {
+				if (!storyID) {
+					log.w("no storyID defined for endQuests");
+					return;
+				}
+
+				let explorersComponent = GameGlobals.playerHelper.getPlayerEntity().get(ExplorersComponent);
+				delete explorersComponent.quests[storyID];
 			},
 			
 		});

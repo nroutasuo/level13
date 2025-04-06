@@ -652,13 +652,21 @@ define([
 			}
 		},
 
-		collectRewards: function (isTakeAll, rewards, campSector) {
+		// context:
+		// - campSector: sector to send rewards to (mainly for caravans which add results to camp different from player's current position)
+		// - explorerVO: explorer associated with these rewards (mainly for start/endQuest)
+		collectRewards: function (isTakeAll, rewards, context) {
 			if (!rewards) return;
 			
 			if (rewards.collected) {
 				log.w("trying to collect rewards twice: " + rewards.action);
 				return false;
 			}
+
+			context = context || {};
+
+			let campSector = context.campSector || null;
+			let explorerVO = context.explorerVO || null;
 
 			let actionCampSector = campSector || GameGlobals.playerActionsHelper.getActionCampSector();
 
@@ -859,6 +867,14 @@ define([
 					GameGlobals.gameState.setStoryFlag(flagID, rewards.storyFlags[flagID]);
 					GlobalSignals.storyFlagChangedSignal.dispatch(flagID);
 				}
+			}
+
+			if (rewards.startQuest) {
+				GameGlobals.storyHelper.startQuest(rewards.startQuest, explorerVO);
+			}
+
+			if (rewards.endQuest) {
+				GameGlobals.storyHelper.endQuest(rewards.endQuest, explorerVO);
 			}
 
 			GlobalSignals.inventoryChangedSignal.dispatch();
@@ -2014,7 +2030,8 @@ define([
 			let isValidLostExplorer = function (explorerVO) {
 				let explorerType = ExplorerConstants.getExplorerTypeForAbilityType(explorerVO.abilityType);
 				if (fightExplorers.length == 1 && explorerType == ExplorerConstants.explorerType.FIGHTER) return false;
-				if (GameGlobals.explorerHelper.isDismissable(explorerVO)) return false;
+				if (!GameGlobals.explorerHelper.isDismissable(explorerVO)) return false;
+				if (!ExplorerConstants.isUnique(explorerVO)) return false;
 				return true;
 			};
 

@@ -135,7 +135,11 @@ define([
 				tr += "<td class='list-ordinal'>" + (recruitComponent.isFoundAsReward ? this.getFoundRecruitIcon() : "") + "</td>";
 				tr += "<td class='minwidth'><button class='action recruit-select' action='" + recruitAction + "'>Recruit</button></td>";
 				tr += "<td class='minwidth'><button class='action recruit-select' action='" + talkAction + "'>Talk</button></td>";
-				tr += "<td class='minwidth'><button class='action recruit-dismiss btn-secondary' action='dismiss_recruit_" + explorer.id + "'>Dismiss</button></td>";
+				tr += "<td class='minwidth'>";
+				if (GameGlobals.explorerHelper.isDismissable(explorer)) {
+					tr += "<button class='action recruit-dismiss btn-secondary' action='dismiss_recruit_" + explorer.id + "'>Dismiss</button>";
+				}
+				tr += "</td>";
 				tr += "</tr>";
 				$table.append(tr);
 			}
@@ -150,10 +154,7 @@ define([
 			let explorersComponent = this.playerStatsNodes.head.explorers;
 			let explorers = explorersComponent.getAll();
 			let party = explorersComponent.getParty();
-			let maxRecruited = GameGlobals.campHelper.getCurrentMaxExplorersRecruited();
 			let inCamp = GameGlobals.playerHelper.isInCamp();
-			
-			$("#explorers-max").text("Total explorers: " + explorers.length + "/" + maxRecruited);
 			
 			// slots
 			let selectedExplorers = [];
@@ -170,7 +171,8 @@ define([
 			for (let i = 0; i < explorers.length; i++) {
 				var explorer = explorers[i];
 				if (selectedExplorers.indexOf(explorer) >= 0) continue;
-				var li = "<li>" + UIConstants.getExplorerDivWithOptions(explorer, true, inCamp) + "</li>";
+				let questTextKey = this.getQuestTextKey(explorer);
+				var li = "<li>" + UIConstants.getExplorerDivWithOptions(explorer, true, inCamp, questTextKey) + "</li>";
 				$("#list-explorers").append(li);
 			}
 			
@@ -211,7 +213,8 @@ define([
 			$container.empty();
 			
 			if (explorer) {
-				$container.append(UIConstants.getExplorerDivWithOptions(explorer, true, inCamp, true));
+				let questTextKey = this.getQuestTextKey(explorer);
+				$container.append(UIConstants.getExplorerDivWithOptions(explorer, true, inCamp, questTextKey));
 			}
 		},
 		
@@ -311,6 +314,12 @@ define([
 					$(this).toggleClass("highlighted", false);
 				}
 			});
+		},
+
+		getQuestTextKey: function (explorerVO) {
+			let storyID = GameGlobals.storyHelper.getExplorerQuestStory(explorerVO);
+			if (!storyID) return null;
+			return "story.stories." + storyID + "_quest_description";
 		},
 		
 		onCampEventStarted: function () {
