@@ -888,7 +888,7 @@ define(['ash',
 			}
 			
 			let tradingPartner = null;
-			if (localeVO.type === localeTypes.tradingpartner) {
+			if (localeType === localeTypes.tradingpartner) {
 				let playerPos = this.playerPositionNodes.head.position;
 				let level = playerPos.level;
 				let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
@@ -900,13 +900,6 @@ define(['ash',
 						tradingPartner = campOrdinal;
 					}
 				}
-			}
-			
-			if (localeVO.type == localeTypes.grove) {
-				GameGlobals.playerHelper.addPerk(PerkConstants.perkIds.blessed);
-				this.playerStatsNodes.head.stamina.stamina += PlayerStatConstants.STAMINA_GAINED_FROM_GROVE;
-				this.playerStatsNodes.head.entity.get(HopeComponent).hasDeity = true;
-				logMsgSuccess += "The trees seem alive. They whisper, but the words are unintelligible. You have found a source of <span class='hl-functionality'>ancient power</span>.";
 			}
 
 			let playerActionFunctions = this;
@@ -932,6 +925,22 @@ define(['ash',
 
 				GlobalSignals.localeScoutedSignal.dispatch(localeVO.type);
 			};
+			
+			if (localeType == localeTypes.grove) {
+				let groveSuccessCallback = function (cb) {
+					GameGlobals.playerHelper.addPerk(PerkConstants.perkIds.blessed);
+					playerActionFunctions.playerStatsNodes.head.stamina.stamina += PlayerStatConstants.STAMINA_GAINED_FROM_GROVE;
+					playerActionFunctions.playerStatsNodes.head.entity.get(HopeComponent).hasDeity = true;
+					cb();
+				};
+				this.startSequence([
+					{ type: "dialogue", dialogueID: "locale_story_grove" },
+					{ type: "custom", f: groveSuccessCallback },
+					{ type: "custom", f: successCallback },
+					{ type: "log", textKey: "story.stories.greenhouse_grove_scouted_message" }
+				]);
+				return;
+			}
 
 			if (localeVO.type == localeTypes.greenhouse) {
 				if (!GameGlobals.tribeHelper.hasDeity()) {

@@ -33,9 +33,21 @@ define(['ash',
             isDialogueValid: function (dialogueVO, explorerVO, storyTag) {
                 if (!dialogueVO) return false;
 
+                // story tag checks
+
+                // - if explorer has pending dialogue, it becomes the default requested storyTag
                 if (!storyTag && explorerVO && explorerVO.pendingDialogue) storyTag = explorerVO.pendingDialogue;
 
+                // - if requesting specific story tag, dialogue must match
                 if (storyTag && dialogueVO.storyTag !== storyTag) return false;
+
+                // - if explorer has no pending dialogue, it can't use a dialogue with storyTag that is pending for someone else
+                if (explorerVO && !explorerVO.pendingDialogue) {
+                    let allPendingExplorerDialogues = this.getAllPendingExplorerDialogues();
+                    if (allPendingExplorerDialogues.indexOf(dialogueVO.storyTag) >= 0) return false;
+                }
+
+                // conditions checks
 
                 let conditions = dialogueVO.conditions;
                 if (!conditions) return true;
@@ -52,6 +64,11 @@ define(['ash',
                     let requiredPOIType = dialogueVO.conditions.vicinity;
                     let requiredPOIData = this.findPOIDataForDialogue(requiredPOIType);
                     if (!requiredPOIData) return false;
+                }
+
+                // some dialogues can ONLY be triggered when they are marked as pending dialogues from story (or requested for triggering one)
+                if (conditions.pendingDialogue && !storyTag) {
+                    if (!explorerVO || explorerVO.pendingDialogue != dialogueVO.storyTag) return false;
                 }
 
                 return true;
@@ -217,7 +234,7 @@ define(['ash',
                     let dialogueID = entries[i];
                     let entry = DialogueConstants.getDialogue(dialogueID);
 
-                    if (!entry.isRepeatable && explorerVO.seenDialogues && explorerVO.seenDialogues.indexOf(entry.dialogueID) >= 0) {
+                    if (!storyTag && !entry.isRepeatable && explorerVO.seenDialogues && explorerVO.seenDialogues.indexOf(entry.dialogueID) >= 0) {
                         continue;
                     }
 
@@ -235,6 +252,19 @@ define(['ash',
                     result.push(entry);
                 }
 
+                return result;
+            },
+
+            getAllPendingExplorerDialogues: function () {
+                let result = [];
+                let explorers = GameGlobals.playerHelper.getExplorers();
+                for (let i = 0; i < explorers.length; i++) {
+                    let explorerVO = explorers[i];
+                    let pendingDialogue = explorerVO.pendingDialogue;
+                    if (pendingDialogue) {
+                        result.push(pendingDialogue);
+                    }
+                }
                 return result;
             },
             

@@ -2230,25 +2230,50 @@
 				"explorer_generic_story_rescue_absence_01_p1"
 			]
 		},
-		"explorer_generic_story_rescue_prospector": {
+		"explorer_generic_story_rescue_prospector_intro": {
 			"conditions": {
 				"inCamp": true,
 				"storyFlags": {
 					"RESCUE_EXPLORER_LEFT": true
-				}
+				},
+				"pendingDialogue": true
 			},
 			"isUrgent": true,
 			"pages": [
 				{
 					"buttonKey": "npc_request_promise",
 					"id": "request",
-					"key": "explorer_generic_story_rescue_prospector_p1",
+					"key": "explorer_generic_story_rescue_prospector_intro_p1",
 					"result": {
 						"startQuest": "rescue"
 					}
 				}
 			],
 			"storyTag": "prospector_rescue"
+		},
+		"explorer_generic_story_rescue_prospector_hint_01": {
+			"conditions": {
+				"maxNumCamps": 8,
+				"storyFlags": {
+					"RESCUE_EXPLORER_LEFT": true,
+					"RESCUE_EXPLORER_FOUND": false
+				}
+			},
+			"pages": [
+				"explorer_generic_story_rescue_prospector_hint_01_p1"
+			]
+		},
+		"explorer_generic_story_rescue_prospector_hint_02": {
+			"conditions": {
+				"levelUnlocked": 15,
+				"storyFlags": {
+					"RESCUE_EXPLORER_LEFT": true,
+					"RESCUE_EXPLORER_FOUND": false
+				}
+			},
+			"pages": [
+				"explorer_generic_story_rescue_prospector_hint_02_p1"
+			]
 		},
 		"explorer_generic_story_searching_for_greenhouse_01": {
 			"conditions": {
@@ -3390,6 +3415,9 @@
 			]
 		},
 		"explorer_unique_gambler_interact_02": {
+			"conditions": {
+				"deity": false
+			},
 			"pages": [
 				"explorer_unique_gambler_interact_02_p1"
 			]
@@ -3523,7 +3551,10 @@
 				{
 					"buttonKey": "npc_request_promise",
 					"id": "request",
-					"key": "explorer_unique_gambler_story_find_spirits_p2"
+					"key": "explorer_unique_gambler_story_find_spirits_p2",
+					"result": {
+						"startQuest": "spirits"
+					}
 				}
 			],
 			"repeatable": false,
@@ -3581,6 +3612,7 @@
 				"sector": {
 					"ground": true
 				},
+				"vicinity": "grove",
 				"storyFlags": {
 					"SPIRITS_SEARCHING_FOR_SPIRITS": true
 				}
@@ -3595,6 +3627,7 @@
 				"sector": {
 					"ground": true
 				},
+				"vicinity": "grove",
 				"storyFlags": {
 					"SPIRITS_SEARCHING_FOR_SPIRITS": true
 				}
@@ -4087,15 +4120,25 @@
 				"explorer_unique_journalist_story_evacuation_p2"
 			]
 		},
-		"explorer_unique_journalist_story_greenhouse": {
+		"explorer_unique_journalist_story_greenhouse_01": {
 			"conditions": {
+				"deity": false,
 				"storyFlags": {
-					"deity": false,
 					"GREENHOUSE_FOUND": true
 				}
 			},
 			"pages": [
-				"explorer_unique_journalist_story_greenhouse_p1"
+				"explorer_unique_journalist_story_greenhouse_01_p1"
+			]
+		},
+		"explorer_unique_journalist_story_greenhouse_02": {
+			"conditions": {
+				"storyFlags": {
+					"deity": true
+				}
+			},
+			"pages": [
+				"explorer_unique_journalist_story_greenhouse_02_p1"
 			]
 		},
 		"explorer_unique_journalist_story_spacecraft": {
@@ -4884,6 +4927,12 @@
 						]
 					}
 				}
+			]
+		},
+		"locale_story_grove": {
+			"pages": [
+				"story.stories.locale_story_grove_p1",
+				"story.stories.locale_story_grove_p2"
 			]
 		},
 		"locale_story_depot": {
@@ -5901,7 +5950,9 @@
 					"explorer_generic_interact_story_apocalypse_02",
 					"explorer_generic_story_searching_for_greenhouse_01",
 					"explorer_generic_story_searching_for_greenhouse_02",
-					"explorer_generic_story_rescue_prospector"
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02"
 				],
 				"meet": [
 					"explorer_generic_scavenger_meet_01",
@@ -5960,7 +6011,9 @@
 					"explorer_generic_interact_story_apocalypse_01",
 					"explorer_generic_interact_story_apocalypse_02",
 					"explorer_generic_story_rescue_absence_01",
-					"explorer_generic_story_rescue_prospector"
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02"
 				],
 				"meet": [
 					"explorer_generic_mercenary_meet_01"
@@ -5985,7 +6038,9 @@
 					"explorer_generic_interact_story_apocalypse_01",
 					"explorer_generic_interact_story_apocalypse_02",
 					"explorer_generic_story_rescue_absence_01",
-					"explorer_generic_story_rescue_prospector"
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02"
 				],
 				"meet": [
 					"explorer_generic_scavenger_meet_01"
@@ -6011,7 +6066,9 @@
 					"explorer_generic_interact_story_apocalypse_01",
 					"explorer_generic_interact_story_apocalypse_02",
 					"explorer_generic_story_rescue_absence_01",
-					"explorer_generic_story_rescue_prospector"
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02"
 				],
 				"meet": [
 					"explorer_generic_scout_meet_01"
@@ -6055,7 +6112,9 @@
 					"explorer_template_amnesiac_interact_11",
 					"explorer_template_amnesiac_interact_12",
 					"explorer_generic_story_rescue_absence_01",
-					"explorer_generic_story_rescue_prospector"
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02"
 				],
 				"meet": [
 					"explorer_template_amnesiac_meet_01"
@@ -6083,7 +6142,9 @@
 					"explorer_generic_story_searching_for_greenhouse_01",
 					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_generic_story_rescue_absence_01",
-					"explorer_generic_story_rescue_prospector"
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02"
 				],
 				"meet": [
 					"explorer_template_architect_meet_01"
@@ -6111,7 +6172,9 @@
 					"explorer_generic_story_searching_for_greenhouse_01",
 					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_generic_story_rescue_absence_01",
-					"explorer_generic_story_rescue_prospector"
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02"
 				],
 				"meet": [
 					"explorer_template_bard_meet_01"
@@ -6138,7 +6201,9 @@
 					"explorer_template_darkdweller_interact_12",
 					"explorer_generic_story_searching_for_greenhouse_01",
 					"explorer_generic_story_searching_for_greenhouse_02",
-					"explorer_generic_story_rescue_prospector"
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02"
 				],
 				"meet": [
 					"explorer_template_darkdweller_meet_01"
@@ -6169,7 +6234,9 @@
 					"explorer_template_guard_story_rescue_absence_01",
 					"explorer_template_guard_story_rescue_found_01",
 					"explorer_template_guard_story_expedition_found_01",
-					"explorer_generic_story_rescue_prospector"
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02"
 				],
 				"meet": [
 					"explorer_template_guard_meet_01"
@@ -6197,7 +6264,9 @@
 					"explorer_generic_story_searching_for_greenhouse_01",
 					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_generic_story_rescue_absence_01",
-					"explorer_generic_story_rescue_prospector"
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02"
 				],
 				"meet": [
 					"explorer_template_hacker_meet_01"
@@ -6225,7 +6294,9 @@
 					"explorer_generic_story_searching_for_greenhouse_01",
 					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_generic_story_rescue_absence_01",
-					"explorer_generic_story_rescue_prospector"
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02"
 				],
 				"meet": [
 					"explorer_template_lover_meet_01"
@@ -6253,7 +6324,9 @@
 					"explorer_generic_story_rescue_absence_01",
 					"explorer_generic_story_searching_for_greenhouse_01",
 					"explorer_generic_story_searching_for_greenhouse_02",
-					"explorer_generic_story_rescue_prospector"
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02"
 				],
 				"meet": [
 					"explorer_template_researcher_meet_01"
@@ -6281,7 +6354,9 @@
 					"explorer_generic_story_searching_for_greenhouse_01",
 					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_template_teen_story_rescue_absence_01",
-					"explorer_generic_story_rescue_prospector"
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02"
 				],
 				"meet": [
 					"explorer_template_teen_meet_01"
@@ -6318,7 +6393,9 @@
 					"explorer_unique_gambler_story_spirits_outro_01",
 					"explorer_unique_gambler_story_spirits_outro_02",
 					"explorer_unique_gambler_story_gangs_compound_01",
-					"explorer_generic_story_rescue_prospector"
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02"
 				],
 				"meet": [
 					"explorer_unique_gambler_meet_01"
@@ -6403,11 +6480,14 @@
 					"explorer_unique_journalist_story_start",
 					"explorer_unique_journalist_story_storehouse",
 					"explorer_unique_journalist_story_spacecraft",
-					"explorer_unique_journalist_story_greenhouse",
+					"explorer_unique_journalist_story_greenhouse_01",
+					"explorer_unique_journalist_story_greenhouse_02",
 					"explorer_unique_journalist_story_evacuation",
 					"explorer_unique_journalist_story_debris",
 					"explorer_generic_story_rescue_absence_01",
-					"explorer_generic_story_rescue_prospector"
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02"
 				],
 				"meet": [
 					"explorer_unique_journalist_meet_01"

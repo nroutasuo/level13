@@ -536,6 +536,14 @@ define([
 					}
 				}
 
+				if (requirements.maxNumCamps) {
+					var currentCamps = GameGlobals.gameState.numCamps;
+					if (requirements.numCamps < currentCamps) {
+						reason = "less than " + requirements.numCamps + " camps required.";
+						return { value: 0, reason: reason };
+					}
+				}
+
 				if (typeof requirements.inCamp !== "undefined") {
 					var required = requirements.inCamp;
 					var current = inCamp;
@@ -1026,14 +1034,14 @@ define([
 				}
 
 				if (requirements.sector) {
-					if (requirements.sector.ground) {
+					if (typeof requirements.sector.ground != "undefined") {
 						let requiredValue = requirements.sector.ground;
 						let currentValue = positionComponent.level == GameGlobals.gameState.getGroundLevel();
 						let result = this.checkRequirementsBoolean(requiredValue, currentValue);
 						if (result) return result;
 					}
 
-					if (requirements.sector.surface) {
+					if (typeof requirements.sector.surface != "undefined") {
 						let requiredValue = requirements.sector.surface;
 						let currentValue = positionComponent.level == GameGlobals.gameState.getSurfaceLevel();
 						let result = this.checkRequirementsBoolean(requiredValue, currentValue);

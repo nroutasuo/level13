@@ -398,13 +398,11 @@
                 {
                     "id": "deity_unlocked",
                     "startConditions": {
-                        "featureUnlocked": {
-                            "deity": true
-                        },
+                        "deity": true,
                         "numCamps": 8
                     },
                     "startFromAny": true,
-                    "startTrigger": "feature_unlocked"
+                    "startTrigger": "locale_scouted"
                 },
                 {
                     "completeTrigger": "immediate",
@@ -628,7 +626,18 @@
                         "localeType": "grove"
                     },
                     "startFromAny": true,
-                    "startTrigger": "locale_scouted"
+                    "startTrigger": "locale_scouted",
+                    "completeTrigger": "action_build",
+                    "completeConditions": {
+                        "tribe": {
+                            "improvements": {
+                                "shrine": [
+                                    1,
+                                    -1
+                                ]
+                            }
+                        }
+                    }
                 }
             ],
             "startTrigger": "immediate"

@@ -85,6 +85,7 @@ define(['ash',
 
 				// more urgent stories take precedence in case there's more than one
 				if (storyIDs.indexOf("rescue") >= 0) return "rescue";
+				if (storyIDs.indexOf("spirits") >= 0) return "spirits";
 				if (storyIDs.indexOf("greenhouse") >= 0) return "greenhouse";
 
 				return storyIDs[0];
