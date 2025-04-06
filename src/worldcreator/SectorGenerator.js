@@ -836,6 +836,8 @@ define([
 			let getHeapSectorScore = function (sectorVO) {
 				let score = sectorVO.resourcesScavengable.getResource(heapResource);
 				score -= WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO);
+				score -= sectorVO.locales.length;
+				if (sectorVO.hasLocaleOfType(localeTypes.grove)) score -= 100;
 				if (sectorVO.hazards.radiation > 0) score -= 5;
 				if (sectorVO.hazards.poison > 0) score -= 5;
 				if (sectorVO.hazards.flooded > 0) score -= 1;
@@ -1737,7 +1739,7 @@ define([
 				let sector = WorldCreatorRandom.randomSectors(seed, worldVO, levelVO, 1, 2, options)[0];
 				if (def.type == localeTypes.grove) sector.sunlit = 1;
 				sector.hazards.radiation = 0;
-				sector.hazards.pollution = 0;
+				sector.hazards.poison = 0;
 				let localeVO = new LocaleVO(def.type, def.isEarly, def.isEarly);
 				this.addLocale(levelVO, sector, localeVO);
 				WorldCreatorLogger.i("add locale " + def.type +  " at: " + sector);
@@ -2649,6 +2651,7 @@ define([
 			if (sectorVO.isCamp) return 0;
 			if (sectorVO.requiredResources.water) return 0;
 			if (sectorVO.workshopResource != null) return 0;
+			if (sectorVO.hasLocaleOfType(localeTypes.grove)) return 0;
 			if (zone == WorldConstants.ZONE_PASSAGE_TO_CAMP) return 0;
 			
 			let isDebris = hazardType == "debris";
