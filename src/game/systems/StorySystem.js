@@ -255,13 +255,19 @@ define([
 
 			let possibleNextSegments = GameGlobals.storyHelper.getPossibleNextSegmentsFromSegment(segmentVO);
 
-			for (let i = 0; i < possibleNextSegments.length; i++) {
-				let nextSegmentVO = possibleNextSegments[i];
-				if (this.isConditionsMet(nextSegmentVO.startConditions)) {
-					return nextSegmentVO;
+			// none at all defined - end of story
+			if (possibleNextSegments.length == 0) return null;
+
+			if (possibleNextSegments) {
+				for (let i = 0; i < possibleNextSegments.length; i++) {
+					let nextSegmentVO = possibleNextSegments[i];
+					if (this.isConditionsMet(nextSegmentVO.startConditions)) {
+						return nextSegmentVO;
+					}
 				}
 			}
 
+			// some defined but none are valid - log warning
 			log.w("no next segment found for story after " + segmentVO.storyID + "." + segmentVO.segmentID, this);
 			return null;
 		},

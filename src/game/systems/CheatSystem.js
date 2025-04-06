@@ -696,10 +696,12 @@ define(['ash',
 					}
 
 					let possibleNextSegments = GameGlobals.storyHelper.getPossibleNextSegmentsFromSegment(activeSegmentVO);
-					for (let i = 0; i < possibleNextSegments.length; i++) {
-						let possibleNextSegmentVO = possibleNextSegments[i];
-						let desc = this.getStoryTriggerDescription(possibleNextSegmentVO.startTrigger, possibleNextSegmentVO.startConditions);
-						if (desc) result += "\t - " + desc + "\n";
+					if (possibleNextSegments) {
+						for (let i = 0; i < possibleNextSegments.length; i++) {
+							let possibleNextSegmentVO = possibleNextSegments[i];
+							let desc = this.getStoryTriggerDescription(possibleNextSegmentVO.startTrigger, possibleNextSegmentVO.startConditions);
+							if (desc) result += "\t - " + desc + "\n";
+						}
 					}
 				}
             }

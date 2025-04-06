@@ -53,6 +53,8 @@ define(['ash',
 					let nextSegmentIndex = index + 1;
 					if (storyVO.segments.length > nextSegmentIndex) {
 						return [ storyVO.segments[nextSegmentIndex] ];
+					} else {
+						return [];
 					}
 				} else if (possibleNextSegments.length == 0) {
 					// none: end of story
