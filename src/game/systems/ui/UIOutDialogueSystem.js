@@ -128,11 +128,11 @@ define([
 			
 			let textKey = pageVO.textKey;
 			if (!textKey && pageVO.resultTemplate) textKey = "Found something";
-			$("#dialogue-module-dialogue p").text(Text.t(textKey, textParams));
+			$("#dialogue-module-dialogue p").html(Text.t(textKey, textParams));
 
 			let metaTextKey = pageVO.metaTextKey;
 			if (metaTextKey) {
-				$("#dialogue-module-meta p").text(Text.t(metaTextKey, textParams));
+				$("#dialogue-module-meta p").html(Text.t(metaTextKey, textParams));
 				GameGlobals.uiFunctions.toggle("#dialogue-module-meta", true);
 			} else {
 				GameGlobals.uiFunctions.toggle("#dialogue-module-meta", false);
