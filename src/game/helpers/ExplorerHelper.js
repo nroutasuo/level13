@@ -58,6 +58,18 @@ define([
 			return null;
 		},
 
+		isSelectable: function (explorerVO) {
+			return this.getIsNotSelectableReason(explorerVO) == null;
+		},
+
+		getIsNotSelectableReason: function (explorerVO) {
+			if (!explorerVO) return "ui.actions.unavailable_reason_invalid_message";
+
+			if (explorerVO.injuredTimer >= 0) return "Explorer injured";
+
+			return null;
+		},
+
 		getForcedExplorerID: function () {
 			if (GameGlobals.gameState.getStoryFlag(StoryConstants.flags.SPIRITS_SEARCHING_FOR_SPIRITS)) {
 				return "gambler";

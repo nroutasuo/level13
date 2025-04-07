@@ -20,6 +20,7 @@ define(['ash'], function (Ash) {
 		numExcursions: 0,
 		seenDialogues: [],
 		trust: 0, // 0-3
+		injuredTimer: -1,
 
 		constructor: function (id, name, abilityType, abilityLevel, icon, gender, source, dialogueSource) {
 			this.id = id;
@@ -30,6 +31,7 @@ define(['ash'], function (Ash) {
 			this.gender = gender;
 			this.source = source;
 			this.dialogueSource = dialogueSource;
+			this.injuredTimer = -1;
 		},
 	});
 

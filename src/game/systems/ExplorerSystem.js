@@ -8,7 +8,8 @@ define([
 	'game/constants/ExplorerConstants',
 	'game/constants/LogConstants',
 	'game/nodes/player/PlayerStatsNode',
-], function (Ash, Text, MathUtils, GameGlobals, GlobalSignals, GameConstants, ExplorerConstants, LogConstants, PlayerStatsNode) {
+	'game/components/common/PositionComponent',
+], function (Ash, Text, MathUtils, GameGlobals, GlobalSignals, GameConstants, ExplorerConstants, LogConstants, PlayerStatsNode, PositionComponent) {
 
 	let ExplorerSystem = Ash.System.extend({
 
@@ -28,6 +29,35 @@ define([
 			this.playerStatsNodes = null;
 
 			GlobalSignals.removeAll(this);
+		},
+
+		update: function (time) {
+			this.updateExplorerInjuries(time);
+		},
+
+		updateExplorerInjuries: function (time) {
+			let explorers = this.playerStatsNodes.head.explorers.getAll();
+			if (explorers.length == 0) return;
+
+			for (let i = 0; i < explorers.length; i++) {
+				let explorerVO = explorers[i];
+				if (explorerVO.inParty) continue;
+				if (explorerVO.injuredTimer >= 0) {
+					explorerVO.injuredTimer -= time;
+					if (explorerVO.injuredTimer <= 0) {
+						this.handleExplorerInjuryHealed(explorerVO);
+					}
+				}
+			}
+		},
+
+		handleExplorerInjuryHealed: function (explorerVO) {
+			let sector = GameGlobals.playerActionsHelper.getActionCampSector();
+			let position = sector.get(PositionComponent).getPosition();
+			position.inCamp = true;
+			let msg = { textKey: "ui.log.explorer_healed_message", textParams: { name: explorerVO.name } };
+			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), msg, { visibility: LogConstants.MSG_VISIBILITY_PRIORITY, position: position });
+			GlobalSignals.explorersChangedSignal.dispatch();
 		},
 
 		updateExplorersAbility: function () {

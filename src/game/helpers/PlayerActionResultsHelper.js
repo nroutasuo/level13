@@ -173,8 +173,11 @@ define([
 			let loseInventoryProbability = PlayerActionConstants.getLoseInventoryProbability(action, playerVision, playerLuck);
 			this.addLostAndBrokenItems(resultVO, action, loseInventoryProbability, true);
 			
-			let gainedInjuries =  this.getResultInjuries(PlayerActionConstants.getInjuryProbability(action, playerVision, playerLuck), action);
+			let injuryProbability = PlayerActionConstants.getInjuryProbability(action, playerVision, playerLuck);
+			let gainedInjuries =  this.getResultInjuries(injuryProbability, action);
 			resultVO.gainedPerks = resultVO.gainedPerks.concat(gainedInjuries);
+			let gainedExplorerInjuries = this.getResultInjuriesExplorer(injuryProbability, action)
+			resultVO.gainedExplorerInjuries = resultVO.gainedExplorerInjuries.concat(gainedExplorerInjuries);
 
 			resultVO.hasCustomReward = hasCustomReward;
 
@@ -465,6 +468,7 @@ define([
 			
 			let finalInjuryProbability = resultVO.lostPerks.length > 0 ? injuryProbability / 2 : injuryProbability;
 			resultVO.gainedPerks = this.getResultInjuries(finalInjuryProbability, sourceAction, enemyVO);
+			resultVO.gainedExplorerInjuries = this.getResultInjuriesExplorer(finalInjuryProbability, sourceAction, enemyVO);
 
 			return resultVO;
 		},
@@ -830,6 +834,18 @@ define([
 				}
 			}
 
+			if (rewards.gainedExplorerInjuries) {
+				for (let i = 0; i < rewards.gainedExplorerInjuries.length; i++) {
+					let explorerID = rewards.gainedExplorerInjuries[i];
+					let explorerVO = GameGlobals.playerHelper.getExplorerByID(explorerID);
+					if (explorerVO) {
+						explorerVO.injuredTimer = ExplorerConstants.DEFAULT_INJURY_TIMER;
+					}
+				}
+
+				GameGlobals.gameState.increaseGameStatSimple("numExplorerInjuriesReceived", rewards.gainedExplorerInjuries.length);
+			}
+
 			if (rewards.gainedPopulation > 0) {
 				if (defaultRewardCampNode) {
 					defaultRewardCampNode.camp.pendingPopulation += 1;
@@ -1051,6 +1067,7 @@ define([
 				resultVO.brokenItems > 0 || 
 				resultVO.lostExplorers.length > 0 || 
 				resultVO.gainedPerks.length > 0 || 
+				resultVO.gainedExplorerInjuries.length > 0 ||
 				resultVO.lostPerks.length > 0;
 
 			if (hasLostInventoryStuff) {
@@ -1133,6 +1150,14 @@ define([
 
 			if (resultVO.getGainedInjuries().length > 0) {
 				div += "<p class='warning'>You got injured.</p>";
+			}
+
+			if (resultVO.gainedExplorerInjuries.length > 0) {
+				for (let i = 0; i < resultVO.gainedExplorerInjuries.length; i++) {
+					let explorerID = resultVO.gainedExplorerInjuries[i];
+					let explorerVO = GameGlobals.playerHelper.getExplorerByID(explorerID);
+					div += "<p class='warning'>" + explorerVO.name + " got injured.</p>";
+				}
 			}
 
 			if (resultVO.getGainedCurses().length > 0) {
@@ -2089,6 +2114,35 @@ define([
 				result.push(injury.clone());
 			}
 			
+			return result;
+		},
+
+		getResultInjuriesExplorer: function (injuryProbability, action, enemyVO) {
+			let result = [];
+
+			if (injuryProbability < Math.random()) return result;
+
+			let allExplorers = GameGlobals.playerHelper.getExplorers();
+			let validExplorers = [];
+
+			for (let i = 0; i < allExplorers.length; i++) {
+				let explorerVO = allExplorers[i];
+
+				if (explorerVO.injuredTimer >= 0) continue;
+				if (!explorerVO.inParty) continue;
+				
+				// if enemyVo specified, only fighters can get injured
+				let explorerType = ExplorerConstants.getExplorerTypeForAbilityType(explorerVO.abilityType);
+				if (enemyVO && explorerType !== ExplorerConstants.explorerType.FIGHTER) continue;
+
+				validExplorers.push(explorerVO);
+			}
+
+			if (validExplorers.length == 0) return result;
+
+			let injuredExplorer = MathUtils.randomElement(validExplorers);
+			result.push(injuredExplorer.id);
+
 			return result;
 		},
 		

@@ -92,6 +92,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.initGameStatSimple("numExplorersDismissed");
 			this.initGameStatSimple("numGraffitiMade");
 			this.initGameStatSimple("numInjuriesReceived");
+			this.initGameStatSimple("numExplorerInjuriesReceived");
 			this.initGameStatSimple("numItemsCrafted");
 			this.initGameStatSimple("numItemsBroken");
 			this.initGameStatSimple("numItemsRepaired");

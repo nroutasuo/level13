@@ -17,6 +17,8 @@ define(['ash',
 	let ExplorerConstants = {
 		
 		FIRST_EXPLORER_CAMP_ORDINAL: 2,
+
+		DEFAULT_INJURY_TIMER: 180,
 		
 		explorerType: {
 			FIGHTER: "fighter",

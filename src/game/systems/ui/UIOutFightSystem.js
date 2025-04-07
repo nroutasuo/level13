@@ -317,14 +317,14 @@ define([
 			// explorers
 			$("ul#list-fight-explorers").empty();
 			this.numExplorers = 0;
-			var explorers = this.playerStatsNodes.head.explorers.getParty();
+			let explorers = this.playerStatsNodes.head.explorers.getParty();
 			for (let i = 0; i < explorers.length; i++) {
 				let explorer = explorers[i];
 				let isFighter = ExplorerConstants.isFighter(explorer);
-				if (isFighter) {
-					this.numExplorers++;
-					$("ul#list-fight-explorers").append("<li>" + UIConstants.getExplorerDivSimple(explorer, true, false, true) + "</li>");
-				}
+				if (!isFighter) continue;
+				if (explorer.injuredTimer >= 0) continue;
+				this.numExplorers++;
+				$("ul#list-fight-explorers").append("<li>" + UIConstants.getExplorerDivSimple(explorer, true, false, true) + "</li>");
 			}
 			GameGlobals.uiFunctions.generateInfoCallouts("ul#list-fight-explorers");
 			

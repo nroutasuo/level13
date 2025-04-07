@@ -75,15 +75,15 @@ function (Ash, ExplorerConstants, ItemConstants) {
 			var bonus = isMultiplier ? 1 : 0;
 			for (let i = 0; i < this.explorers.length; i++) {
 				var explorer = this.explorers[i];
-				if (explorer.inParty) {
-					let explorerBonus = ExplorerConstants.getExplorerItemBonus(explorer, itemBonusType);
-					if (isMultiplier) {
-						if (explorerBonus != 0) {
-							bonus *= explorerBonus;
-						}
-					} else {
-						bonus += explorerBonus;
+				if (!explorer.inParty) continue;
+				if (explorer.injuredTimer >= 0) continue;
+				let explorerBonus = ExplorerConstants.getExplorerItemBonus(explorer, itemBonusType);
+				if (isMultiplier) {
+					if (explorerBonus != 0) {
+						bonus *= explorerBonus;
 					}
+				} else {
+					bonus += explorerBonus;
 				}
 			}
 			return bonus;

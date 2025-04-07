@@ -636,6 +636,7 @@ define([
 			addStat("Furthest away from camp", this.getGameStatHighScore("mostDistantSectorFromCampVisited"), GameGlobals.gameState.isFeatureUnlocked("camp"), GameConstants.gameStatUnits.steps);
 			addStat("Lowest stamina when returning to camp", this.getGameStatHighScore("lowestStaminaReturnedToCampWith"), GameGlobals.gameState.isFeatureUnlocked("camp"));
 			addStat("Injuries received", this.getGameStatSimple("numInjuriesReceived"));
+			addStat("Explorer injuries received", this.getGameStatSimple("numExplorerInjuriesReceived"));
 			addStat("Times rested outside", this.getGameStatSimple("numTimesRestedOutside"));
 			addStat("Times despaired", this.getGameStatKeyedSum("numTimesDespairedPerLevel"));
 			addStat("Most despairs on level", this.getGameStatHighScore("numTimesDespairedPerLevel"), GameGlobals.gameState.isFeatureUnlocked("levels"));

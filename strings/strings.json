@@ -1757,6 +1757,7 @@
             "player_hungry_message": "Your stomach is grumbling.",
             "player_thirsty_message": "Your throat is dry.",
             "send_caravan_start_message": "A trade caravan heads out into the City.",
+            "explorer_healed_message": "{name}'s injuries are healed.",
             "tutorial_built_apothecary_message": "Built an apothecary.",
             "tutorial_built_aqueduct_message": "Built an aqueduct.",
             "tutorial_built_barracks_message": "Built a barracks. we can now recruit soldiers to defend the camp.",

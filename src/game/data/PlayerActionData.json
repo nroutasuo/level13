@@ -3031,7 +3031,10 @@
             },
             "busy": false,
             "hasForcedDialogue": false,
-            "isForcedExplorerMissingFromParty": false
+            "party": {
+                "isMissingForcedExplorer": false,
+                "hasInjuredExplorer": false
+            }
         },
         "move_camp_global": {
             "busy": false

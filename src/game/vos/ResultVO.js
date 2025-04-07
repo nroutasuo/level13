@@ -25,6 +25,9 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 		lostItems: [],
 		brokenItems: [],
 		lostExplorers: [],
+		gainedExplorerInjuries: [], // explorerID
+
+		// perks (can be positive or negative)
 		lostPerks: [],
 		gainedPerks: [],
 
@@ -130,6 +133,7 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 				&& this.lostExplorers.length == 0
 				&& this.lostPerks.length == 0
 				&& this.gainedPerks.length == 0
+				&& this.gainedExplorerInjuries.length == 0
 				&& this.gainedBlueprintPiece == null
 				&& this.gainedPopulation == 0
 				&& this.gainedEvidence == 0
@@ -170,6 +174,7 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 			result.lostExplorers = this.lostExplorers.concat();
 			result.lostPerks = this.lostPerks.concat();
 			result.gainedPerks = this.gainedPerks.concat();
+			result.gainedExplorerInjuries = this.gainedExplorerInjuries.concat();
 			result.gainedBlueprintPiece = this.gainedBlueprintPiece;
 			result.gainedPopulation = this.gainedPopulation;
 			result.gainedItemUpgrades = this.gainedItemUpgrades;

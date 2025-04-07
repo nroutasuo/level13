@@ -340,6 +340,14 @@ define([
 				}
 			}
 
+			if (baseActionID == "select_explorer") {
+				let explorerVO = this.playerStatsNodes.head.explorers.getExplorerByID(actionIDParam);
+				if (explorerVO && !GameGlobals.explorerHelper.isSelectable(explorerVO)) {
+					let reason = GameGlobals.explorerHelper.getIsNotSelectableReason(explorerVO);
+					return { value: 0, reason: reason };
+				}
+			}
+
 			if (costs) {
 				if (costs.stamina > 0) {
 					if (!requirements) requirements = {};
@@ -1538,14 +1546,28 @@ define([
 					if (result) return result;
 				}
 
-				if (typeof requirements.isForcedExplorerMissingFromParty !== "undefined") {
-					let forcedExplorerID = GameGlobals.explorerHelper.getForcedExplorerID();
-					let forcedExplorerVO = GameGlobals.playerHelper.getExplorerByID(forcedExplorerID);
-					let explorerName = forcedExplorerVO ? forcedExplorerVO.name : "";
-					let requiredValue = requirements.isForcedExplorerMissingFromParty;
-					let currentValue = forcedExplorerID != null && forcedExplorerVO != null && !forcedExplorerVO.inParty; 
-					let result = this.checkRequirementsBoolean(requiredValue, currentValue, explorerName + " wants to go with you.", "");
-					if (result) return result;
+				if (requirements.party) {
+					if (typeof requirements.party.hasInjuredExplorer !== "undefined") {
+						let requiredValue = requirements.party.hasInjuredExplorer;
+						let currentValue = false;
+						let party = this.playerStatsNodes.head.explorers.getParty();
+						for (let i = 0; i < party.length; i++) {
+							let explorerVO = party[i];
+							if (explorerVO.injuredTimer >= 0) currentValue = true;
+						}
+						let result = this.checkRequirementsBoolean(requiredValue, currentValue, "an explorer is injured.", "required an injured explorer");
+						if (result) return result;
+					}
+
+					if (typeof requirements.party.isMissingForcedExplorer !== "undefined") {
+						let forcedExplorerID = GameGlobals.explorerHelper.getForcedExplorerID();
+						let forcedExplorerVO = GameGlobals.playerHelper.getExplorerByID(forcedExplorerID);
+						let explorerName = forcedExplorerVO ? forcedExplorerVO.name : "";
+						let requiredValue = requirements.party.isMissingForcedExplorer;
+						let currentValue = forcedExplorerID != null && forcedExplorerVO != null && !forcedExplorerVO.inParty; 
+						let result = this.checkRequirementsBoolean(requiredValue, currentValue, explorerName + " wants to go with you.", "");
+						if (result) return result;
+					}
 				}
 
 				if (requirements.busyAction) {

@@ -236,7 +236,7 @@ define(['ash',
 			div += "</div>";
 
 			// name
-			div += "<span>" + explorerVO.name + "</span>";
+			div += "<span>" + this.warning(explorerVO.name, explorerVO.injuredTimer >= 0) + "</span>";
 
 			// interaction options
 			let talkLabel = (isAnimal ? "pet" : "talk");
@@ -291,6 +291,10 @@ define(['ash',
 
 			if (questTextKey) {
 				result += "<br/>Quest: " + Text.t(questTextKey);
+			}
+
+			if (explorer.injuredTimer >= 0) {
+				result += "<br/>Status: " + this.warning("Injured");
 			}
 			
 			if (isRecruited && isInCamp && !hideButtons) {
@@ -1072,6 +1076,12 @@ define(['ash',
 
 		highlight: function (text) {
 			return "<span class='hl-functionality'>" + text + "</span>";
+		},
+
+		warning: function (text, isActive) {
+			if (typeof isActive === "undefined") isActive = true;
+			if (!isActive) return text;
+			return "<span class='warning'>" + text + "</span>";
 		},
 
 		getDisplayValue: function (value) {
