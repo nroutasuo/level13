@@ -204,9 +204,9 @@ define([
 				let hasMedicine = resourcesVO && resourcesVO.getResource(resourceNames.medicine) > 0;
 
 				if (hasMedicine) {
-					addValue(CampConstants.REPUTATION_FROM_HERBS, "Medicine", false);
+					addValue(CampConstants.REPUTATION_FROM_MEDICINE, "Medicine", false);
 				} else if (hasHerbs) {
-					addValue(CampConstants.REPUTATION_FROM_MEDICINE, "Herbs", false);
+					addValue(CampConstants.REPUTATION_FROM_HERBS, "Herbs", false);
 				}
 			}
 			
