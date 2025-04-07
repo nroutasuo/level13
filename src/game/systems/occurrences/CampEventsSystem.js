@@ -698,14 +698,14 @@ define([
 		getRandomExplorer: function (campNode, forceFighterProbability) {
 			let campPos = campNode.entity.get(PositionComponent);
 			let campOrdinal = GameGlobals.campHelper.getCurrentCampOrdinal();
-			let abilityType = null;
+			let explorerType = null;
 
 			// sometimes we want to prefer fighters to keep fight balancing reasonable
 			if (forceFighterProbability >= 1 || Math.random() < forceFighterProbability) {
-				abilityType = ExplorerConstants.abilityType.ATTACK;
+				explorerType = ExplorerConstants.explorerType.FIGHTER;
 			}
 
-			let options = { forcedAbilityType : abilityType }
+			let options = { forcedExplorerType : explorerType }
 			return GameGlobals.explorerHelper.getNewRandomExplorer(ExplorerConstants.explorerSource.EVENT, campOrdinal, campPos.level, options)
 		},
 		
@@ -750,7 +750,7 @@ define([
 					let typicalFighter = ExplorerConstants.getTypicalFighter(campOrdinal, campStep);
 					let currentBestTotal = getExplorerFightTotal(currentBestFighter);
 					let typicalTotal = getExplorerFightTotal(typicalFighter);
-					return currentBestTotal < 0.75 * typicalTotal;
+					return currentBestTotal < 0.5 * typicalTotal;
 				
 				case OccurrenceConstants.campOccurrenceTypes.disease:
 					return GameGlobals.gameState.getStoryFlag(StoryConstants.flags.GREENHOUSE_PENDING_DISEASE);
@@ -803,6 +803,8 @@ define([
 		getEventSkipProbability: function (campNode, event) {
 			let skipProbability = 0;
 
+			if (this.isEventBlockingProgress(event)) return 0;
+
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.raid:
 					let danger = this.getRaidDanger(campNode.entity);
@@ -819,6 +821,12 @@ define([
 					let value = 1 - OccurrenceConstants.getDiseaseOutbreakChance(campNode.camp.population, hasHerbs, hasMedicine);
 					if (isPendingDisease) value = value / 2;
 					return value;
+				
+				case OccurrenceConstants.campOccurrenceTypes.recruit:
+					let explorerStats = GameGlobals.playerHelper.getExplorerStats();
+					if (explorerStats.minExplorersByType > 1) return 0.5;
+					if (explorerStats.minExplorersByType > 0) return 0.25;
+					break;
 			}
 
 

@@ -129,6 +129,8 @@ define(['ash',
 			{ icon: "img/characters/explorer_template_teen_03.png", dialogueSource: "explorer_template_teen", gender: CultureConstants.genders.MALE },
 		],
 
+		typicalFighterCache: {},
+
 		getMaxExplorersRecruited: function () {
 			return 99;
 		},
@@ -138,29 +140,37 @@ define(['ash',
 		},
 		
 		getTypicalFighter: function (campOrdinal, step) {
+			if (this.typicalFighterCache[campOrdinal]) return this.typicalFighterCache[campOrdinal];
+			
 			let source = ExplorerConstants.explorerSource.SYSTEM;
-			let abilityType = ExplorerConstants.abilityType.ATTACK;
-			let options = { forcedAbilityType : abilityType, forcedAbilityLevelRandomFactor: 0.5 }
-			return ExplorerConstants.getNewRandomExplorer(source, campOrdinal, campOrdinal, options);
+			let explorerType = ExplorerConstants.explorerType.FIGHTER;
+			let options = { forcedExplorerType : explorerType, forcedAbilityLevelRandomFactor: 0.5 }
+			let result = ExplorerConstants.getNewRandomExplorer(source, campOrdinal, campOrdinal, options);
+
+			this.typicalFighterCache[campOrdinal] = result;
+			return result;
 		},
 		
 		// options:
-		// - forcedAbilityType: specify follower ability type (otherwise random)
+		// - forcedExplorerType: specify explorer type (otherwise random)
+		// - forcedAbilityType: specify explorer ability type (otherwise random)
 		// - forcedAbilityLevelRandomFactor: replace random variation in ability level for camp ordinal with specified factor
 		// - excludedDialogueSources: list of dialogue sources (ids) not to use (already in use)
+		// - explorerStats: stats about current player explorers, used to skew results towards types the player doesn't have
 		getNewRandomExplorer: function (source, campOrdinal, appearLevel, options) {
 			campOrdinal = campOrdinal || 1;
 			options = options || {};
 			
+			let forcedExplorerType = options.forcedExplorerType;
 			let forcedAbilityType = options.forcedAbilityType;
 			let excludedDialogueSources = options.excludedDialogueSources || [];
 			let isRobot = source == ExplorerConstants.explorerSource.CRAFT;
 
-			let template = this.getRandomExplorerTemplate(source, appearLevel, forcedAbilityType, isRobot, excludedDialogueSources);
+			let template = this.getRandomExplorerTemplate(source, appearLevel, forcedExplorerType, forcedAbilityType, isRobot, excludedDialogueSources);
 
 			let id = template.id + "_" + (10 + Math.floor(Math.random() * 100000));
 
-			let abilityType = forcedAbilityType || template.abilityType || this.getAbilityTypeFromTemplate(source, template, campOrdinal);
+			let abilityType = forcedAbilityType || template.abilityType || this.getAbilityTypeFromTemplate(source, template, campOrdinal, forcedExplorerType, options.explorerStats);
 			let abilityLevel = this.getRandomAbilityLevelByCampOrdinal(abilityType, campOrdinal, options.forcedAbilityLevelRandomFactor);
 			
 			let gender = null;
@@ -217,9 +227,10 @@ define(['ash',
 			return result;
 		},
 
-		getRandomExplorerTemplate: function (source, appearLevel, forcedAbilityType, isRobot, excludedDialogueSources) {
+		getRandomExplorerTemplate: function (source, appearLevel, forcedExplorerType, forcedAbilityType, isRobot, excludedDialogueSources) {
 			let validTemplates = [];
-			let forcedExplorerType = forcedAbilityType ? this.getExplorerTypeForAbilityType(forcedAbilityType) : null;
+
+			forcedExplorerType = forcedExplorerType ? forcedExplorerType : forcedAbilityType ? this.getExplorerTypeForAbilityType(forcedAbilityType) : null;
 			let forcedAnimal = forcedAbilityType && this.isAnimal(forcedAbilityType);
 			let forcedNotAnimal = forcedAbilityType && !this.isAnimal(forcedAbilityType);
 
@@ -258,20 +269,44 @@ define(['ash',
 			return CultureConstants.getRandomCultures(numCultures, origin, template.excludedCultures);
 		},
 
-		getAbilityTypeFromTemplate: function (source, template, campOrdinal) {
+		getAbilityTypeFromTemplate: function (source, template, campOrdinal, forcedExplorerType, explorerStats) {
 			if (template.abilityType) return template.abilityType;
 			if (template.isAnimal) return ExplorerConstants.abilityType.SCAVENGE_CAPACITY;
 			
+			// template takes precedence over forcedExplorerType at this stage (should have already picked a template with the forced type)
+			forcedExplorerType = template.explorerType ? template.explorerType : forcedExplorerType;
+
 			let possibleTypes = this.getAvailableAbilityTypes(source, campOrdinal, template.isRobot);
 			
-			if (template.explorerType) {
-				possibleTypes = possibleTypes.filter(t => this.getExplorerTypeForAbilityType(t) == template.explorerType);
+			if (forcedExplorerType) {
+				possibleTypes = possibleTypes.filter(t => this.getExplorerTypeForAbilityType(t) == forcedExplorerType);
 			}
 
 			if (possibleTypes.length == 0) {
 				log.w("no possible ability types found for template " + template.id);
 				return ExplorerConstants.abilityType.COST_SCOUT;
 			}
+
+			// sometimes but not always prefer types player doesn't have (if possible, given selected template)
+			if (explorerStats && Math.random() < 0.5) {
+				let preferredTypes = [];
+				for (let i = 0; i < possibleTypes.length; i++) {
+					let possibleType = possibleTypes[i];
+					let possibleTypeExplorerType = this.getExplorerTypeForAbilityType(possibleType);
+					
+					if (explorerStats.numExplorersByType[possibleTypeExplorerType] <= 1) {
+						preferredTypes.push(possibleType);
+					}
+
+					if (!explorerStats.numExplorersByAbilityType[possibleType]) {
+						preferredTypes.push(possibleType);
+					}
+				}
+
+				if (preferredTypes.length > 0) {
+					return MathUtils.randomElement(preferredTypes);
+				}
+			} 
 			
 			return MathUtils.randomElement(possibleTypes);
 		},
@@ -356,32 +391,13 @@ define(['ash',
 			let firstExplorerCampOrdinal = ExplorerConstants.FIRST_EXPLORER_CAMP_ORDINAL;
 			
 			switch (abilityType) {
-				// fighter
-				case ExplorerConstants.abilityType.ATTACK:
-				case ExplorerConstants.abilityType.DEFENCE:
-					return firstExplorerCampOrdinal;
-				// scout
-				case ExplorerConstants.abilityType.COST_SCOUT:
-					return firstExplorerCampOrdinal + 1;
 				case ExplorerConstants.abilityType.COST_SCAVENGE:
-					return firstExplorerCampOrdinal + 2;
-				case ExplorerConstants.abilityType.DETECT_HAZARDS:
 				case ExplorerConstants.abilityType.DETECT_SUPPLIES:
-				case ExplorerConstants.abilityType.DETECT_INGREDIENTS:
-					return firstExplorerCampOrdinal + 3;
 				case ExplorerConstants.abilityType.COST_MOVEMENT:
-					return WorldConstants.CAMP_ORDINAL_GROUND + 4;
-				// scavenger
 				case ExplorerConstants.abilityType.SCAVENGE_INGREDIENTS:
-					return firstExplorerCampOrdinal + 4;
-				case ExplorerConstants.abilityType.SCAVENGE_SUPPLIES:
-					return WorldConstants.CAMP_ORDINAL_GROUND;
-				case ExplorerConstants.abilityType.SCAVENGE_CAPACITY:
-					return WorldConstants.CAMP_ORDINAL_GROUND + 2;
 				case ExplorerConstants.abilityType.SCAVENGE_GENERAL:
-					return WorldConstants.CAMP_ORDINAL_GROUND + 3;
+					return WorldConstants.CAMP_ORDINAL_GROUND;
 				default:
-				 	log.w("no unlock camp ordinal defined for Explorer ability type: " + abilityType);
 					return 1;
 			}
 		},

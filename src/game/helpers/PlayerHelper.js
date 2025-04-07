@@ -570,6 +570,34 @@ define([
 			return null;
 		},
 
+		getExplorerStats: function () {
+			let result = {}
+
+			let playerExplorers = this.getExplorers();
+			let playerFighters = this.playerStatsNodes.head.explorers.getExplorersByType(ExplorerConstants.explorerType.FIGHTER);
+			let playerScouts = this.playerStatsNodes.head.explorers.getExplorersByType(ExplorerConstants.explorerType.SCOUT);
+			let playerScavengers = this.playerStatsNodes.head.explorers.getExplorersByType(ExplorerConstants.explorerType.SCAVENGER);
+
+			result.numTotalExplorers = playerExplorers.length;
+			result.numExplorersByType = {};
+			result.numExplorersByType[ExplorerConstants.explorerType.FIGHTER] = playerFighters.length;
+			result.numExplorersByType[ExplorerConstants.explorerType.SCOUT] = playerScouts.length;
+			result.numExplorersByType[ExplorerConstants.explorerType.SCAVENGER] = playerScavengers.length;
+
+			result.numExplorersByAbilityType = {};
+			for (let i = 0; i < playerExplorers.length; i++) {
+				let abilityType = playerExplorers[i].abilityType;
+				if (!result.numExplorersByAbilityType[abilityType]) result.numExplorersByAbilityType[abilityType] = 0;
+				result.numExplorersByAbilityType[abilityType] += 1;
+			}
+
+			result.minExplorersByType = Math.min(playerFighters.length, playerScouts.length, playerScavengers.length);
+
+			result.hasAllTypes = playerFighters.length > 0 && playerScouts.length > 0 && playerScavengers.length > 0;
+
+			return result;
+		},
+
 		getVisibleGameStats: function () {
 			let result = [];
 			let currentCateogry = null;

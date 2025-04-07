@@ -247,8 +247,6 @@ define([
 				if (rewards.foundStashVO == null && rewards.gainedCurrency == 0) {
 					this.addExplorerBonuses(rewards, sectorResources, sectorIngredients, itemOptions);
 				}
-	
-				rewards.gainedExplorers = this.getFallbackExplorers(0.1);
 			}
 
 			return rewards;
@@ -326,8 +324,8 @@ define([
 			let playerPos = this.playerLocationNodes.head.position;
 			let campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
 
-			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-			var sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			let sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 
 			let availableResources = sectorFeatures.resourcesScavengable.clone();
 			availableResources.addAll(localeVO.getResourceBonus(GameGlobals.gameState.getUnlockedResources(), campOrdinal), "scout-rewards");
@@ -336,47 +334,51 @@ define([
 			let localeDifficulty = (localeVO.requirements.vision[0] + localeVO.costs.stamina / 10) / 100;
 			let itemTags = this.getSectorItemTags().concat(localeVO.getItemTags());
 
-			// blueprints
-			rewards.gainedBlueprintPiece = this.getResultBlueprint(0.35, localeVO);
-
-			// tribe stats
+			// tribe stats (always)
 			if (localeVO.type == localeTypes.grove) {
 				rewards.gainedHope = 2;
-			} else if (localeVO.type == localeTypes.greenhouse) {
 			} else if (localeVO.type == localeTypes.tradingpartner) {
 				rewards.gainedHope = 1;
 			} else {
 				rewards.gainedEvidence = ExplorationConstants.getScoutLocaleEvidenceReward(localeVO.type, campOrdinal);
 			}
+
+			// stashes (always)
+			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound, localeVO.type);
+
+			// blueprints (check for locale type inside function)
+			rewards.gainedBlueprintPiece = this.getResultBlueprint(0.35, localeVO);
+
+			let hasMaterialRewards = true;
+			let hasMiscRewards = true;
+
+			switch (localeVO.type) {
+				case localeTypes.tradingpartner:
+				case localeTypes.grove:
+				case localeTypes.greenhouse:
+				case localeTypes.shelter:
+				case localeTypes.seedDepot:
+				case localeTypes.compound:
+				case localeTypes.expedition:
+					hasMaterialRewards = false;
+					hasMiscRewards = false;
+					break;
+				case localeTypes.depot:
+				case localeTypes.spacefactory:
+					hasMiscRewards = false;
+					break;
+			}
 			
+			// explorer 
 			let explorerID = localeVO.explorerID;
 			if (explorerID) {
-				// hard-coded explorer
 				rewards.gainedExplorers = [ GameGlobals.explorerHelper.getNewPredefinedExplorer(explorerID) ];
-			} else if (localeVO.type == localeTypes.tradingpartner) {
-			} else if (localeVO.type == localeTypes.grove) {
-			} else if (localeVO.type == localeTypes.greenhouse) {
-			} else if (localeVO.type == localeTypes.shelter) {
-			} else if (localeVO.type == localeTypes.seedDepot) {
-			} else if (localeVO.type == localeTypes.compound) {
-			} else if (localeVO.type == localeTypes.expedition) {
-			} else if (localeVO.type == localeTypes.depot || localeVO.type == localeTypes.spacefactory) {
-				// just items / resources
-				let itemOptions = { rarityKey: "localeRarity", allowNextCampOrdinal: true, tags: itemTags };
-				rewards.gainedResources = this.getRewardResources(1, 5 * localeDifficulty, efficiency, availableResources);
-				rewards.gainedItems = this.getRewardItems(0.5, 0.1, null, itemOptions);
-			} else {
-				// default locale rewards
-			
-				// population and explorers
-				if (localeCategory !== "u") {
-					rewards.gainedExplorers = this.getRewardExplorers(0.075);
-					if (rewards.gainedExplorers.length == 0 && this.nearestCampNodes.head && campOrdinal > 1) {
-						rewards.gainedPopulation = Math.random() < 0.1 ? 1 : 0;
-					}
-				}
-				
-				// items and resources
+			} else if (hasMiscRewards) {
+				rewards.gainedExplorers = this.getRewardExplorers(0.075);
+			}
+
+			// items and resources
+			if (hasMaterialRewards) {
 				if (localeCategory === "u") {
 					let itemOptions = { rarityKey: "localeRarity", allowNextCampOrdinal: true, tags: itemTags };
 					rewards.gainedResources = this.getRewardResources(1, 5 * localeDifficulty, efficiency, availableResources);
@@ -385,10 +387,23 @@ define([
 					let itemOptions = { rarityKey: "tradeRarity", allowNextCampOrdinal: true, tags: itemTags };
 					rewards.gainedItems = this.getRewardItems(0.25, 0, null, itemOptions);
 				}
+			}
 
+			// currency
+			if (hasMaterialRewards) {
 				let currencyModifier = localeVO.getCurrencyFindProbabilityModifier();
 				rewards.gainedCurrency = this.getRewardCurrency(currencyModifier, efficiency, 0);
+			}
 
+			// population 
+			if (hasMiscRewards && localeCategory !== "u") {
+				if (rewards.gainedExplorers.length == 0 && this.nearestCampNodes.head && campOrdinal > 1) {
+					rewards.gainedPopulation = Math.random() < 0.1 ? 1 : 0;
+				}
+			}
+
+			// temporary perks
+			if (hasMiscRewards) {
 				let perkProbabilities = {};
 				perkProbabilities[PerkConstants.perkIds.accomplished] = 
 					rewards.gainedBlueprintPiece ? 0.5 : 
@@ -396,13 +411,8 @@ define([
 					rewards.gainedItems.length > 0 ? 0.1 : 
 					0;
 				perkProbabilities[PerkConstants.perkIds.stressed] = localeVO.getStressedProbability();
-
-				// temporary perks
 				rewards.gainedPerks = this.getGainedPerks(perkProbabilities);
 			}
-
-			// stashes
-			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound, localeVO.type);
 
 			return rewards;
 		},
@@ -1450,21 +1460,38 @@ define([
 		},
 
 		getRewardExplorers: function (probability) {
-			var explorers = [];
+			let result = [];
 			
-			var playerPos = this.playerLocationNodes.head.position;
+			let playerPos = this.playerLocationNodes.head.position;
 			let campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
-			if (campOrdinal <= ExplorerConstants.FIRST_EXPLORER_CAMP_ORDINAL)
-				return explorers;
+			if (campOrdinal <= ExplorerConstants.FIRST_EXPLORER_CAMP_ORDINAL) return result;
+
+			let fallback = this.getFallbackExplorer();
+
+			if (fallback) return [ fallback ];
+
+			let explorerStats = GameGlobals.playerHelper.getExplorerStats();
+
+			if (explorerStats.numTotalExplorers > 6) {
+				probability = probability / 2;
+			}
+
+			if (explorerStats.numTotalExplorers > 9) {
+				probability = probability / 2;
+			}
+
+			if (explorerStats.hasAllTypes) {
+				probability = probability / 2;
+			}
 			
 			if (Math.random() < probability) {
 				let campOrdinal = GameGlobals.gameState.numCamps;
 				let appearLevel = playerPos.level;
-				let explorer = GameGlobals.explorerHelper.getNewRandomExplorer(ExplorerConstants.explorerSource.SCOUT, campOrdinal, appearLevel);
-				explorers.push(explorer);
+				let explorerVO = GameGlobals.explorerHelper.getNewRandomExplorer(ExplorerConstants.explorerSource.SCOUT, campOrdinal, appearLevel);
+				result.push(explorerVO);
 			}
 			
-			return explorers;
+			return result;
 		},
 
 		// options
@@ -2326,34 +2353,31 @@ define([
 			return null;
 		},
 		
-		getFallbackExplorers: function (probability) {
-			let result = [];
+		getFallbackExplorer: function () {
+			// TODO extend to all predefined explorers (now first one only)
 			
 			let playerPos = this.playerLocationNodes.head.position;
 			let campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
-			if (campOrdinal < ExplorerConstants.FIRST_EXPLORER_CAMP_ORDINAL) return result;
+			if (campOrdinal < ExplorerConstants.FIRST_EXPLORER_CAMP_ORDINAL) return null;
 			
 			let upgradeID = GameGlobals.upgradeEffectsHelper.getUpgradeToUnlockBuilding(improvementNames.inn);
-			if (GameGlobals.tribeHelper.hasUpgrade(upgradeID)) return result;
+			if (GameGlobals.tribeHelper.hasUpgrade(upgradeID)) return null;
 			
 			let fightExplorers = this.playerStatsNodes.head.explorers.getExplorersByType(ExplorerConstants.explorerType.FIGHTER);
-			if (fightExplorers.length > 0) return result;
+			if (fightExplorers.length > 0) return null;
 				
 			let nearestCampNode = this.nearestCampNodes.head;
-			if (nearestCampNode == null) return result;
-			if (nearestCampNode.camp.pendingRecruits.length > 0) return result;
+			if (nearestCampNode == null) return null;
+			if (nearestCampNode.camp.pendingRecruits.length > 0) return null;
 			
 			let level = GameGlobals.gameState.getLevelForCamp(ExplorerConstants.FIRST_EXPLORER_CAMP_ORDINAL);
 			let unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(level, false, LocaleConstants.LOCALE_BRACKET_EARLY, null, false).length;
-			if (unscoutedLocales > 0) return result;
+			if (unscoutedLocales > 0) return null;
 			
-			if (Math.random() < probability) {
-				let explorerTemplate = ExplorerConstants.predefinedExplorers[ExplorerConstants.FIRST_EXPLORER_CAMP_ORDINAL];
-				let explorer = GameGlobals.explorerHelper.getNewPredefinedExplorer(explorerTemplate.id);
-				result.push(explorer);
-			}
+			let explorerTemplate = ExplorerConstants.predefinedExplorers[ExplorerConstants.FIRST_EXPLORER_CAMP_ORDINAL];
+			let explorer = GameGlobals.explorerHelper.getNewPredefinedExplorer(explorerTemplate.id);
 			
-			return result;
+			return explorer;
 		},
 		
 		getMissedBlueprints: function () {

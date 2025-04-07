@@ -33,6 +33,8 @@ define([
 				}
 			}
 
+			options.explorerStats = GameGlobals.playerHelper.getExplorerStats();
+
 			return ExplorerConstants.getNewRandomExplorer(source, campOrdinal, appearLevel, options);
 		},
 
