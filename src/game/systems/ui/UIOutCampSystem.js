@@ -885,7 +885,8 @@
 					let label = "disabled workers (" + pop.num + ")";
 					if (pop.reason == CampConstants.DISABLED_POPULATION_REASON_DISEASE) label = "disease (" + pop.num + ")";
 					let isNegative = true;
-					result.push({ id: "disabled-worker-" + i, label: label, percent: percent, isNegative: isNegative });
+					let hasTimer = pop.initialTimer != null;
+					result.push({ id: "disabled-worker-" + i, label: label, percent: percent, isNegative: isNegative, hasTimer: hasTimer });
 				}
 			}
 			return result;
@@ -1201,6 +1202,7 @@
 			let displayName = data.label;
 			li.$root.data("progress-percent", data.percent);
 			li.$root.toggleClass("warning", data.isNegative);
+			li.$root.toggleClass("event-no-timer", !data.hasTimer);
 			li.$label.html(displayName);
 		},
 		
