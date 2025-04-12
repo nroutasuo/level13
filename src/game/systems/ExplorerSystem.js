@@ -61,7 +61,7 @@ define([
 		},
 
 		updateExplorersAbility: function () {
-			let explorers = this.playerStatsNodes.head.explorers.getParty();
+			let explorers = this.playerStatsNodes.head.explorers.getAll();
 			if (explorers.length == 0) return;
 
 			// only one can level up at a time
@@ -82,8 +82,17 @@ define([
 		},
 
 		updateExplorerAbility: function (explorerVO) {
-			if (!explorerVO.trust) return;
 			if (!ExplorerConstants.isValidAbilityTypeForLevelUp(explorerVO.abilityType)) return;
+
+			let levelUpChance = 0.01;
+
+			if (explorerVO.trust > 2) levelUpChance *= 2;
+			if (explorerVO.trust > 5) levelUpChance *= 2
+			if (explorerVO.trust > 7) levelUpChance *= 2;
+			if (explorerVO.inParty) levelUpChance *= 2;
+			if (ExplorerConstants.isUnique(explorerVO)) levelUpChance *= 10;
+
+			if (Math.random() > levelUpChance) return;
 
 			let campOrdinal = GameGlobals.gameState.numCamps;
 			let abilityLevel = explorerVO.abilityLevel;
