@@ -6,6 +6,7 @@ define(['ash',
 	'utils/MathUtils',
 	'game/GameGlobals',
 	'game/constants/ColorConstants',
+	'game/constants/ExplorerConstants',
 	'game/constants/UIConstants',
 	'game/constants/CanvasConstants',
 	'game/constants/ExplorationConstants',
@@ -26,13 +27,12 @@ define(['ash',
 	'game/components/sector/PassagesComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/improvements/WorkshopComponent',
-	'game/components/type/SectorComponent',
 	'game/vos/PositionVO'],
 function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
-	GameGlobals, ColorConstants, UIConstants, CanvasConstants, ExplorationConstants, ItemConstants, MovementConstants, PositionConstants, SectorConstants, StoryConstants, WorldConstants,
+	GameGlobals, ColorConstants, ExplorerConstants, UIConstants, CanvasConstants, ExplorationConstants, ItemConstants, MovementConstants, PositionConstants, SectorConstants, StoryConstants, WorldConstants,
 	PlayerPositionNode,
 	LevelComponent, CampComponent, PositionComponent, ItemsComponent,
-	SectorStatusComponent, SectorLocalesComponent, SectorFeaturesComponent, PassagesComponent, SectorImprovementsComponent, WorkshopComponent, SectorComponent,
+	SectorStatusComponent, SectorLocalesComponent, SectorFeaturesComponent, PassagesComponent, SectorImprovementsComponent, WorkshopComponent,
 	PositionVO) {
 
 	var UIMapHelper = Ash.Class.extend({
@@ -757,6 +757,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			let isInvestigatable = GameGlobals.sectorHelper.canBeInvestigated(sector);
 			
 			let mapModeHasPois = MapUtils.showPOIsInMapMode(options.mapMode);
+			let locationShowPOIs = isPartiallyRevealed || GameGlobals.playerHelper.getPartyAbilityLevel(ExplorerConstants.abilityType.DETECT_POI) > 0;
 			
 			let useSunlitIcon = isLocationSunlit;
 			
@@ -783,46 +784,41 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			let iconPosY = Math.round(isBigSectorSize ? sectorYpx : iconPosYCentered);
 			let disabledAlpha = 0.4;
 			
-			if (!isRevealed && !isPartiallyRevealed && !hideUnknownIcon) {
-				ctx.drawImage(this.icons["unknown" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosYCentered);
-				return true;
-			} else if (isInvestigatable) {
+			if (mapModeHasPois && locationShowPOIs && isInvestigatable) {
 				ctx.drawImage(this.icons["investigate" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosYCentered);
 				return true;
-			} else if (mapModeHasPois && sector.has(WorkshopComponent) && sector.get(WorkshopComponent).isClearable) {
+			} else if (mapModeHasPois && locationShowPOIs && sector.has(WorkshopComponent) && sector.get(WorkshopComponent).isClearable) {
 				ctx.drawImage(this.icons["workshop" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
 				return true;
-			} else if (mapModeHasPois && sectorImprovements.getCount(improvementNames.greenhouse) > 0) {
+			} else if (mapModeHasPois && locationShowPOIs && sectorImprovements.getCount(improvementNames.greenhouse) > 0) {
 				ctx.drawImage(this.icons["workshop" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
 				return true;
-			} else if (mapModeHasPois && hasCampOnSector) {
+			} else if (mapModeHasPois && locationShowPOIs && hasCampOnSector) {
 				ctx.drawImage(this.icons["camp" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
 				return true;
-			} else if (mapModeHasPois && !hasCampOnLevel && sectorFeatures.canHaveCamp()) {
+			} else if (mapModeHasPois && locationShowPOIs && !hasCampOnLevel && sectorFeatures.canHaveCamp()) {
 				ctx.drawImage(this.icons["campable" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
 				return true;
-			} else if (mapModeHasPois && (numUnscoutedLocales > 0 || numUnexaminedSpots > 0)) {
+			} else if (mapModeHasPois && locationShowPOIs && (numUnscoutedLocales > 0 || numUnexaminedSpots > 0)) {
 				ctx.drawImage(this.icons["interest" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
 				return true;
-			} else if (mapModeHasPois && sectorPassages.passageUp) {
+			} else if (mapModeHasPois && locationShowPOIs && sectorPassages.passageUp) {
 				if (GameGlobals.movementHelper.isPassageTypeAvailable(sector, PositionConstants.DIRECTION_UP)) {
 					ctx.drawImage(this.icons["passage-up" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
 				} else {
 					ctx.drawImage(this.icons["passage-up-disabled" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
 				}
 				return true;
-			} else if (mapModeHasPois && sectorPassages.passageDown) {
+			} else if (mapModeHasPois && locationShowPOIs && sectorPassages.passageDown) {
 				if (!GameGlobals.movementHelper.isPassageTypeAvailable(sector, PositionConstants.DIRECTION_DOWN)) {
 					ctx.globalAlpha = disabledAlpha;
 				}
 				ctx.drawImage(this.icons["passage-down" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
 				ctx.globalAlpha = 1;
 				return true;
-			} else if (mapModeHasPois && sectorImprovements.getCount(improvementNames.beacon) > 0) {
+			} else if (mapModeHasPois && locationShowPOIs && sectorImprovements.getCount(improvementNames.beacon) > 0) {
 				ctx.drawImage(this.icons["beacon" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
 				return true;
-			} else if (isPartiallyRevealed) {
-				// features below not revealed by partial reveal
 			} else if (showIngredientIcons && allItems.length > 0) {
 				if (knownItems.length == 0) {
 					ctx.globalAlpha = disabledAlpha;
@@ -830,8 +826,11 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 				ctx.drawImage(this.icons["ingredient" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
 				ctx.globalAlpha = 1;
 				return true;
-			} else if (statusComponent.graffiti) {
+			} else if (isRevealed && statusComponent.graffiti) {
 				ctx.drawImage(this.icons["graffiti" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
+				return true;
+			} else if (!isRevealed && !isPartiallyRevealed && !hideUnknownIcon) {
+				ctx.drawImage(this.icons["unknown" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosYCentered);
 				return true;
 			}
 			

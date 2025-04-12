@@ -1185,6 +1185,10 @@ body.dark span.action-cost-blocker-storage {
 body.dark span.action-cost-blocker {
   color: #666;
 }
+body.dark span.action-cost-negated {
+  text-decoration: line-through;
+  color: #666;
+}
 body.dark .action-separator {
   display: block;
   width: 10px;
@@ -3816,6 +3820,10 @@ body.sunlit span.action-cost-blocker-storage {
   text-decoration: line-through;
 }
 body.sunlit span.action-cost-blocker {
+  color: #999;
+}
+body.sunlit span.action-cost-negated {
+  text-decoration: line-through;
   color: #999;
 }
 body.sunlit .action-separator {

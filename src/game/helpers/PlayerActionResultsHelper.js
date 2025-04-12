@@ -167,13 +167,10 @@ define([
 					return null;
 			}
 
-			let playerVision = this.playerStatsNodes.head.vision.value;
-			let perksComponent = this.playerStatsNodes.head.perks;
-			let playerLuck = perksComponent.getTotalEffect(PerkConstants.perkTypes.luck);
-			let loseInventoryProbability = PlayerActionConstants.getLoseInventoryProbability(action, playerVision, playerLuck);
+			let loseInventoryProbability = GameGlobals.playerActionsHelper.getLoseInventoryProbability(action);
 			this.addLostAndBrokenItems(resultVO, action, loseInventoryProbability, true);
 			
-			let injuryProbability = PlayerActionConstants.getInjuryProbability(action, playerVision, playerLuck);
+			let injuryProbability = GameGlobals.playerActionsHelper.getInjuryProbability(action);
 			let gainedInjuries =  this.getResultInjuries(injuryProbability, action);
 			resultVO.gainedPerks = resultVO.gainedPerks.concat(gainedInjuries);
 			let gainedExplorerInjuries = this.getResultInjuriesExplorer(injuryProbability, action)
@@ -292,7 +289,7 @@ define([
 				let itemTags = this.getSectorItemTags();
 				let itemOptions = { rarityKey: "investigateRarity", allowNextCampOrdinal: isCompletion, tags: itemTags };
 	 			rewards.gainedItems = this.getRewardItems(0.25, 0, [], itemOptions);
-				rewards.gainedEvidence = 1;
+				this.addCovertibleTribeStatRewards(rewards, "evidence", 1);
 			}
 			
 			return rewards;
@@ -304,15 +301,29 @@ define([
 			if (GameGlobals.gameState.isFeatureUnlocked("insight")) {
 				rewards.gainedInsight = 1;
 			} else {
-				rewards.gainedEvidence = 1;
+				this.addCovertibleTribeStatRewards(rewards, "evidence", 1);
 			}
 			
 			return rewards;
 		},
 
 		getScoutRewards: function () {
-			var rewards = new ResultVO("scout");
-			rewards.gainedEvidence = 1;
+			let rewards = new ResultVO("scout");
+
+			this.addCovertibleTribeStatRewards(rewards, "evidence", 1);
+
+			let hasMapping = GameGlobals.playerHelper.getPartyAbilityLevel(ExplorerConstants.abilityType.MAPPING) > 0;
+			let excursionComponent = this.playerResourcesNodes.head.entity.get(ExcursionComponent);
+			if (hasMapping && excursionComponent.numConsecutiveScoutItemsFound === 0) {
+				let mapProbability = 0.15;
+				let map = this.getSpecificRewardItem(mapProbability, [ "consumable_map_explorer" ]);
+				if (map) {
+					rewards.gainedItemsFromExplorers.push(map);
+					rewards.gainedItems.push(map);
+				}
+				
+			}
+
 			return rewards;
 		},
 

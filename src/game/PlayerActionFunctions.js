@@ -270,6 +270,7 @@ define(['ash',
 				case "discard": this.discardItem(param); break;
 				case "use_item": this.useItem(param, deductedCosts); break;
 				case "use_item_fight": this.useItemFight(param); break;
+				case "use_explorer_fight": this.useExplorerFight(param); break;
 				case "repair_item": this.repairItem(param); break;
 				// Dialogue actions
 				case "start_dialogue": this.startDialogue(param); break;
@@ -2762,6 +2763,7 @@ define(['ash',
 					break;
 				case "flee_1":
 					fightComponent.itemEffects.fled = true;
+					fightComponent.itemEffects.fledSource = itemId;
 					break;
 				default:
 					log.w("Item not mapped for useItemFight: " + itemId);
@@ -2769,6 +2771,24 @@ define(['ash',
 			}
 			fightComponent.addItemUsed(itemId);
 			log.i("used item added");
+		},
+
+		useExplorerFight: function (action) {
+			let fightComponent = this.fightNodes.head.fight;
+			if (!fightComponent) {
+				log.w("can't use explorer in fight, no fight in progress");
+				return;
+			}
+
+			let explorersComponent = this.playerStatsNodes.head.explorers;
+
+			switch (action) {
+				case "flee":
+					let explorer = explorersComponent.getExplorerInPartyByType(ExplorerConstants.explorerType.FIGHTER);
+					fightComponent.itemEffects.fled = true;
+					fightComponent.itemEffects.fledSource = explorer.id;
+					break;
+			}
 		},
 
 		createBlueprint: function (upgradeID) {
@@ -2970,6 +2990,7 @@ define(['ash',
 			switch (baseActionID) {
 				case "fight": return true;
 				case "use_item_fight": return true;
+				case "use_explorer_fight": return true;
 				default: return false;
 			}
 		},

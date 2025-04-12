@@ -41,6 +41,11 @@ define(function () {
 				log.w("no key provided for Text.t");
 				return "";
 			}
+			
+			if (key.textKey) {
+				options = key.textParams;
+				key = key.textKey;
+			}
 
 			let isDebugMode = this.isDebugMode;
 			let hasKey = this.hasKey(key);
@@ -207,6 +212,7 @@ define(function () {
 		},
 		
 		isPlural: function (s) {
+			if (!s) return false;
 			if (s[s.length - 1] === "s") {
 				if (s[s.length - 1] === "e") return true;
 				// can't tell

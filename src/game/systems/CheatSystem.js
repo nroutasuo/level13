@@ -183,8 +183,8 @@ define(['ash',
 			this.registerCheat(CheatConstants.CHEAT_NAME_ITEM, "Add the given item to inventory.", ["item id"], function (params) {
 				this.addItem(params[0]);
 			});
-			this.registerCheat(CheatConstants.CHEAT_NAME_EXPLORER, "Add a random explorer.", [], function (params) {
-				this.addExplorer();
+			this.registerCheat(CheatConstants.CHEAT_NAME_EXPLORER, "Add a random explorer.", ["ability type"], function (params) {
+				this.addExplorer(params[0]);
 			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_EQUIP_BEST, "Auto-equip best items available.", [], function (params) {
 				this.equipBest();
@@ -538,24 +538,29 @@ define(['ash',
 			}
 		},
 		
-		addExplorer: function () {
+		addExplorer: function (abilityType) {
 			let explorersComponent = this.playerStatsNodes.head.explorers;
 			let playerPos = this.playerPositionNodes.head.position;
 			let campOrdinal = GameGlobals.gameState.numCamps;
 			
 			let explorer = null;
 
-			for (let i = 0; i < campOrdinal; i++) {
-				if (ExplorerConstants.predefinedExplorers[i]) {
-					let explorerID = ExplorerConstants.predefinedExplorers[i].id;
-					if (!GameGlobals.playerHelper.getExplorerByID(explorerID)) {
-						explorer = GameGlobals.explorerHelper.getNewPredefinedExplorer(explorerID);
+			let forcedAbilityType = abilityType && abilityType != "any" ? abilityType : null;
+
+			if (!forcedAbilityType) {
+				for (let i = 0; i < campOrdinal; i++) {
+					if (ExplorerConstants.predefinedExplorers[i]) {
+						let explorerID = ExplorerConstants.predefinedExplorers[i].id;
+						if (!GameGlobals.playerHelper.getExplorerByID(explorerID)) {
+							explorer = GameGlobals.explorerHelper.getNewPredefinedExplorer(explorerID);
+						}
 					}
 				}
 			}
 
 			if (!explorer) {
-				explorer = GameGlobals.explorerHelper.getNewRandomExplorer(ExplorerConstants.explorerSource.SCOUT, campOrdinal, playerPos.level);
+				let options = { forcedAbilityType: forcedAbilityType };
+				explorer = GameGlobals.explorerHelper.getNewRandomExplorer(ExplorerConstants.explorerSource.SCOUT, campOrdinal, playerPos.level, options);
 			}
 
 			explorersComponent.addExplorer(explorer);

@@ -413,7 +413,7 @@ define([
 			let explorers = this.playerStatsNodes.head.explorers.getParty();
 			for (let i = 0; i < explorers.length; i++) {
 				let explorer = explorers[i];
-				let explorerBonus = ExplorerConstants.getExplorerItemBonus(explorer, itemBonusType);
+				let explorerBonus = ExplorerConstants.getExplorerItemBonus(explorer, explorers, itemBonusType);
 				if (explorerBonus > 0) {
 					if (result.length > 0) result += "<br/>";
 					result += explorer.name + ": " + Math.round(explorerBonus*10)/10;
@@ -443,6 +443,18 @@ define([
 			}
 			
 			return result;
+		},
+
+		getPartyAbilityLevel: function (explorerAbilityType) {
+			if (!this.playerStatsNodes.head) return 0;
+			
+			let explorers = this.playerStatsNodes.head.explorers.getParty();
+			for (let i = 0; i < explorers.length; i++) {
+				let explorer = explorers[i];
+				let ability = explorer.abilityType;
+				if (ability == explorerAbilityType) return explorer.abilityLevel;
+			}
+			return 0;
 		},
 		
 		addItem: function (itemDef, level, sourcePosition) {

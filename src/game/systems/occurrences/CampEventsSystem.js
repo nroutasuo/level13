@@ -742,8 +742,8 @@ define([
 					
 					let getExplorerFightTotal = function (explorer) {
 						if (!explorer) return 0;
-						return ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.fight_att)
-							+ ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.fight_def);
+						return ExplorerConstants.getExplorerItemBonus(explorer, [], ItemConstants.itemBonusTypes.fight_att)
+							+ ExplorerConstants.getExplorerItemBonus(explorer, [], ItemConstants.itemBonusTypes.fight_def);
 					}
 					
 					let currentBestFighter = GameGlobals.playerHelper.getBestAvailableExplorer(ExplorerConstants.explorerType.FIGHTER);

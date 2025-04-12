@@ -147,20 +147,33 @@ define([
 			// update action buttons
 			// TODO remove hard-coding of items usable in fight, instead have fight effect desc in ItemVO (damage, heal, defend, stun)
 			// TODO show fight effect of items in fight ui
-			var itemsToShow = [];
-			if (itemsComponent.getCountById("glowstick_1") > 0) itemsToShow.push(itemsComponent.getItem("glowstick_1", null, false));
-			if (itemsComponent.getCountById("consumable_weapon_1") > 0) itemsToShow.push(itemsComponent.getItem("consumable_weapon_1", null, false));
-			if (itemsComponent.getCountById("consumable_weapon_mechanical") > 0) itemsToShow.push(itemsComponent.getItem("consumable_weapon_mechanical", null, false));
-			if (itemsComponent.getCountById("consumable_weapon_bio") > 0) itemsToShow.push(itemsComponent.getItem("consumable_weapon_bio", null, false));
-			if (itemsComponent.getCountById("flee_1") > 0) itemsToShow.push(itemsComponent.getItem("flee_1", null, false));
-			var numItemsShown = $("#fight-buttons-infightactions button").length;
-			if (numItemsShown !== itemsToShow.length) {
+			let actionsToShow = [];
+
+			let addActionFromItem = function (itemID) {
+				if (itemsComponent.getCountById(itemID) > 0) {
+					let itemVO = itemsComponent.getItem(itemID, null, false);
+					let itemName = ItemConstants.getItemDisplayName(itemVO);
+					actionsToShow.push({ action: "use_item_fight_" + itemID, actionLabel: itemName });
+				}
+			};
+
+			addActionFromItem("glowstick_1");
+			addActionFromItem("consumable_weapon_1");
+			addActionFromItem("consumable_weapon_mechanical");
+			addActionFromItem("consumable_weapon_bio");
+			addActionFromItem("flee_1");
+
+			let hasFleeExplorer = GameGlobals.playerHelper.getPartyAbilityLevel(ExplorerConstants.abilityType.FLEE) > 0;
+			if (hasFleeExplorer) {
+				actionsToShow.push({ action: "use_explorer_fight_flee", actionLabel: "flee" });
+			}
+
+			let numActionsShown = $("#fight-buttons-infightactions button").length;
+			if (numActionsShown !== actionsToShow.length) {
 				$("#fight-buttons-infightactions").empty();
-				for(let i = 0; i < itemsToShow.length; i++) {
-					var item = itemsToShow[i];
-					let itemName = ItemConstants.getItemDisplayName(item);
-					var action = "use_item_fight_" + item.id;
-					$("#fight-buttons-infightactions").append("<button class='action' action='" + action + "'>" + itemName + "</button>");
+				for(let i = 0; i < actionsToShow.length; i++) {
+					let actionDef = actionsToShow[i];
+					$("#fight-buttons-infightactions").append("<button class='action' action='" + actionDef.action + "'>" + actionDef.actionLabel + "</button>");
 				}
 				
 				GameGlobals.uiFunctions.createButtons("#fight-buttons-infightactions");
@@ -357,7 +370,18 @@ define([
 		},
 		
 		refreshFightFled: function () {
-			$("#fight-desc").text("Distracted the enemy and fled");
+			let fledSource = this.fightNodes.head.fight.itemEffects.fledSource;
+			let explorersComponent = this.playerStatsNodes.head.explorers;
+			let explorerVO = null;
+			if (fledSource) {
+				explorerVO = explorersComponent.getExplorerByID(fledSource);
+			}
+
+			if (explorerVO) {
+				$("#fight-desc").text(Text.t("ui.fight.result_fled_message_explorer", explorerVO.name));
+			} else {
+				$("#fight-desc").text(Text.t("ui.fight.result_fled_message_default"));
+			}
 		},
 	
 		refreshEnemyText: function () {

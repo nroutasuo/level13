@@ -286,8 +286,8 @@ define(['ash',
 				result += "<br/>In party: " + (explorer.inParty ? "yes" : "no");
 			}
 			result += "<br/>Type: " + ExplorerConstants.getExplorerTypeDisplayName(explorerType);
-			result += "<br/>Ability: " + ExplorerConstants.getAbilityTypeDisplayName(explorer.abilityType)
-				+ " (" + UIConstants.getExplorerAbilityDescription(explorer) + ")";
+			result += "<br/>Ability: " + Text.t(ExplorerConstants.getAbilityTypeDisplayNameKey(explorer.abilityType))
+				+ " (" + Text.t(UIConstants.getExplorerAbilityDescriptionTextVO(explorer, [])) + ")";
 
 			if (questTextKey) {
 				result += "<br/>Quest: " + Text.t(questTextKey);
@@ -316,44 +316,51 @@ define(['ash',
 			return result;
 		},
 		
-		getExplorerAbilityDescription: function (explorer) {
+		getExplorerAbilityDescriptionTextVO: function (explorer, explorers) {
+			let textParams = {};
+
 			switch (explorer.abilityType) {
 				case ExplorerConstants.abilityType.ATTACK:
+					textParams.value = ExplorerConstants.getExplorerItemBonus(explorer, explorers, ItemConstants.itemBonusTypes.fight_att);
+					break;
 				case ExplorerConstants.abilityType.DEFENCE:
-					let att = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.fight_att);
-					let def = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.fight_def);
-					return "attack +" + att + ", defence +" + def;
+					textParams.value = ExplorerConstants.getExplorerItemBonus(explorer, explorers, ItemConstants.itemBonusTypes.fight_def);
+					break;
 				case ExplorerConstants.abilityType.COST_MOVEMENT:
-					let movementCostReduction = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.movement);
-					return "movement cost -" + UIConstants.getMultiplierBonusDisplayValue(movementCostReduction);
+					let movementCostReduction = ExplorerConstants.getExplorerItemBonus(explorer, explorers, ItemConstants.itemBonusTypes.movement);
+					textParams.value = UIConstants.getMultiplierBonusDisplayValue(movementCostReduction);
+					break;
 				case ExplorerConstants.abilityType.COST_SCAVENGE:
-					let scavengeCostReduction = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.scavenge_cost);
-					return "scavenge cost -" + UIConstants.getMultiplierBonusDisplayValue(scavengeCostReduction);
+					let scavengeCostReduction = ExplorerConstants.getExplorerItemBonus(explorer, explorers, ItemConstants.itemBonusTypes.scavenge_cost);
+					textParams.value = UIConstants.getMultiplierBonusDisplayValue(scavengeCostReduction);
+					break;
 				case ExplorerConstants.abilityType.COST_SCOUT:
-					let scoutCostReduction = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.scout_cost);
-					return "scout cost -" + UIConstants.getMultiplierBonusDisplayValue(scoutCostReduction);
-				case ExplorerConstants.abilityType.DETECT_HAZARDS:
-					return "foresee hazards in unvisited sectors";
-				case ExplorerConstants.abilityType.DETECT_SUPPLIES:
-					return "foresee supplies found in current and neighbouring sectors";
-				case ExplorerConstants.abilityType.DETECT_INGREDIENTS:
-					return "foresee crafting ingredients found in current and neighbouring sectors";
+					let scoutCostReduction = ExplorerConstants.getExplorerItemBonus(explorer, explorers, ItemConstants.itemBonusTypes.scout_cost);
+					textParams.value = UIConstants.getMultiplierBonusDisplayValue(scoutCostReduction);
+					break;
 				case ExplorerConstants.abilityType.SCAVENGE_GENERAL:
-					let scaBonus = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.scavenge_general);
-					return "+" + UIConstants.getMultiplierBonusDisplayValue(scaBonus) + " chance for extra loot when scavenging";
+					let scaBonus = ExplorerConstants.getExplorerItemBonus(explorer, explorers, ItemConstants.itemBonusTypes.scavenge_general);
+					textParams.value = UIConstants.getMultiplierBonusDisplayValue(scaBonus);
+					break;
 				case ExplorerConstants.abilityType.SCAVENGE_INGREDIENTS:
-					let ingredientBonus = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.scavenge_ingredients);
-					return "+" + UIConstants.getMultiplierBonusDisplayValue(ingredientBonus) + " chance to find ingredients when scavenging";
+					let ingredientBonus = ExplorerConstants.getExplorerItemBonus(explorer, explorers, ItemConstants.itemBonusTypes.scavenge_ingredients);
+					textParams.value = UIConstants.getMultiplierBonusDisplayValue(ingredientBonus);
+					break;
 				case ExplorerConstants.abilityType.SCAVENGE_SUPPLIES:
-					let suppliesBonus = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.scavenge_supplies);
-					return "+" + UIConstants.getMultiplierBonusDisplayValue(suppliesBonus) + " chance to find more supplies when scavenging";
+					let suppliesBonus = ExplorerConstants.getExplorerItemBonus(explorer, explorers, ItemConstants.itemBonusTypes.scavenge_supplies);
+					textParams.value = UIConstants.getMultiplierBonusDisplayValue(suppliesBonus);
+					break;
+				case ExplorerConstants.abilityType.SCAVENGE_VALUABLES:
+					let valuablesBonus = ExplorerConstants.getExplorerItemBonus(explorer, explorers, ItemConstants.itemBonusTypes.scavenge_valuables);
+					textParams.value = UIConstants.getMultiplierBonusDisplayValue(valuablesBonus);
+					break;
 				case ExplorerConstants.abilityType.SCAVENGE_CAPACITY:
-					let capacityBonus = ExplorerConstants.getExplorerItemBonus(explorer, ItemConstants.itemBonusTypes.bag);
-					return "+" + capacityBonus + " carry capacity";
-				default:
-					log.w("no display name defined for abilityType: " + explorer.abilityType);
-					return explorer.abilityType;
+					let capacityBonus = ExplorerConstants.getExplorerItemBonus(explorer, explorers, ItemConstants.itemBonusTypes.bag);
+					textParams.value = capacityBonus;
+					break;
 			}
+
+			return { textKey: "ui.characters.explorer_ability_type_" + explorer.abilityType + "_description", textParams: textParams };
 		},
 
 		getExplorerPortrait: function (explorerVO) {
@@ -539,7 +546,10 @@ define(['ash',
 				case ItemConstants.itemBonusTypes.scavenge_general: return "scavenge bonus";
 				case ItemConstants.itemBonusTypes.scavenge_supplies: return "scavenge bonus";
 				case ItemConstants.itemBonusTypes.scavenge_ingredients: return "scavenge bonus";
+				case ItemConstants.itemBonusTypes.scavenge_blueprints: return "scavenge bonus";
+				case ItemConstants.itemBonusTypes.scavenge_valuables: return "scavenge bonus";
 				case ItemConstants.itemBonusTypes.scout_cost: return "scouting cost";
+				case ItemConstants.itemBonusTypes.collector_cost: return "trap/bucket cost";
 				case ItemConstants.itemBonusTypes.bag: return "bag size";
 				case ItemConstants.itemBonusTypes.res_cold: return "warmth";
 				case ItemConstants.itemBonusTypes.res_radiation: return short ? "radiation prot" : "radiation protection";
@@ -549,6 +559,7 @@ define(['ash',
 				case ItemConstants.itemBonusTypes.detect_hazards: return short ? "hazards" : "surveying (hazards)";
 				case ItemConstants.itemBonusTypes.detect_supplies: return short ? "supplies" : "surveying (supplies)";
 				case ItemConstants.itemBonusTypes.detect_ingredients: return short ? "ingredients" : "surveying (ingredients)";
+				case ItemConstants.itemBonusTypes.detect_poi: return short ? "poi" : "surveying (poi)";
 				default:
 					log.w("no display name defined for item bonus type: " + bonusType);
 					return "";

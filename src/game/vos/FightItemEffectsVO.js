@@ -8,12 +8,14 @@ define(['ash'], function (Ash) {
 		playerStunnedSeconds: 0,
 		damage: 0,
 		fled: false,
+		fledSource: null,
 		
 		constructor: function () {
 			this.enemyStunnedSeconds = 0;
 			this.playerStunnedSeconds = 0;
 			this.damage = 0;
 			this.fled = false;
+			this.fledSource = null;
 		}
 		
 	});

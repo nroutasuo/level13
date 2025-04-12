@@ -28,20 +28,31 @@ define(['ash',
 		
 		abilityType: {
 			// fighter
-			ATTACK: "attack",
-			DEFENCE: "defence",
+			ATTACK: "attack", // attack stat
+			DEFENCE: "defence", // defence stat
+			FLEE: "flee", // free flee from fights
 			// scout
-			COST_MOVEMENT: "cost_movement",
-			COST_SCAVENGE: "cost_scavenge",
-			COST_SCOUT: "cost_scout",
-			DETECT_SUPPLIES: "detect_supplies",
-			DETECT_INGREDIENTS: "detect_ingredients",
-			DETECT_HAZARDS: "detect_hazards",
+			COST_MOVEMENT: "cost_movement", // decrease movement cost
+			COST_SCAVENGE: "cost_scavenge", // decrease scavenge cost
+			COST_SCOUT: "cost_scout", // decrease scout cost
+			COST_LOCKPICK: "cost_lockpick", // negate lockpick costs
+			DETECT_SUPPLIES: "detect_supplies", // detect supplies in current and adjacdent sectors
+			DETECT_INGREDIENTS: "detect_ingredients", // detect ingredients in current and adjacdent sectors
+			DETECT_HAZARDS: "detect_hazards", // detect hazards in adjacent sectors 
+			DETECT_POI: "detect_poi", // detect POI such as locales and passages in adjacent sectors
+			MAPPING: "mapping", // find more map pieces
+			STAT_EVIDENCE: "stat_evidence", // find more evidence 
+			STAT_RUMOURS: "stat_rumours", // find more rumours
+			STAT_HOPE: "stat_hope", // find more hope
+			SCAVENGE_HANDLER: "scavenge_handler", // increase effect of pack animal & meet more animals
 			// scavenger
-			SCAVENGE_GENERAL: "scavenge_general",
-			SCAVENGE_INGREDIENTS: "scavenge_ingredients",
-			SCAVENGE_SUPPLIES: "scavenge_supplies",
+			SCAVENGE_GENERAL: "scavenge_general", // find more stuff in general
+			SCAVENGE_INGREDIENTS: "scavenge_ingredients", // find more ingredients
+			SCAVENGE_SUPPLIES: "scavenge_supplies", // find more supplies
+			SCAVENGE_VALUABLES: "scavenge_valuables", // find more trade items, artefacts etc
+			SCAVENGE_BLUEPRINTS: "scavenge_blueprints", // find more blueprints
 			SCAVENGE_CAPACITY: "scavenge_capacity", // always animal
+			COST_COLLECTORS: "cost_collectors", // decrease cost of building collectors
 		},
 		
 		// in order of rarity
@@ -68,29 +79,30 @@ define(['ash',
 		predefinedExplorers: {
 			2: { id: "gambler", localeType: localeTypes.maintenance, abilityType: "attack", name: "Yimin", icon: "img/characters/explorer_unique_gambler.png", dialogueSource: "explorer_unique_gambler" },
 			3: { id: "dog", localeType: localeTypes.warehouse, abilityType: "scavenge_capacity", name: "Dog", icon: "img/characters/animal_dog.png", dialogueSource: "explorer_generic_dog_01", animalType: "dog" },
-			4: { id: "journalist", localeType: localeTypes.library, abilityType: "cost_scout", name: "Yevry", icon: "img/characters/explorer_unique_journalist.png", dialogueSource: "explorer_unique_journalist" },
-			5: { id: "handler", localeType: localeTypes.house, abilityType: "detect_supplies", name: "Jezekiah", icon: "img/characters/explorer_unique_handler.png", dialogueSource: "explorer_unique_handler" },
-			6: { id: "prospector", localeType: localeTypes.store, abilityType: "scavenge_supplies", name: "Sunita", icon: "img/characters/explorer_unique_prospector.png", dialogueSource: "explorer_unique_prospector" },
-			10: { id: "hermit", localeType: localeTypes.bunker, abilityType: "scavenge_general", name: "Eliasco", icon: "img/characters/explorer_unique_hermit.png", dialogueSource: "explorer_unique_hermit" },
+			4: { id: "journalist", localeType: localeTypes.library, abilityType: "stat_evidence", name: "Yevry", icon: "img/characters/explorer_unique_journalist.png", dialogueSource: "explorer_unique_journalist" },
+			5: { id: "handler", localeType: localeTypes.house, abilityType: "scavenge_handler", name: "Jezekiah", icon: "img/characters/explorer_unique_handler.png", dialogueSource: "explorer_unique_handler" },
+			6: { id: "prospector", localeType: localeTypes.store, abilityType: "scavenge_blueprints", name: "Sunita", icon: "img/characters/explorer_unique_prospector.png", dialogueSource: "explorer_unique_prospector" },
+			10: { id: "hermit", localeType: localeTypes.bunker, abilityType: "cost_collectors", name: "Eliasco", icon: "img/characters/explorer_unique_hermit.png", dialogueSource: "explorer_unique_hermit" },
 		},
 
 		// templates used to generate random explorers
 		// order matters, first is more likely to get picked if valid
 		templateExplorers: [
 			{ id: "template_lover", explorerType: "fighter", origin: "surface", gender: "male", dialogueSource: "explorer_template_lover", },
-			{ id: "template_guard", explorerType: "fighter", origin: "slums", excludedCultures: [ "indus", "assurian" ], dialogueSource: "explorer_template_guard" },
+			{ id: "template_guard", abilityType: "defence", origin: "slums", excludedCultures: [ "indus", "assurian" ], dialogueSource: "explorer_template_guard" },
 			{ id: "template_teen", explorerType: "scavenger", dialogueSource: "explorer_template_teen" },
 			{ id: "template_bard", explorerType: "scavenger", origin: "slums", dialogueSource: "explorer_template_bard" },
 			{ id: "template_researcher", explorerType: "scout", origin: "surface", culture: [ "sahel" ], gender: "female", dialogueSource: "explorer_template_researcher" },
-			{ id: "template_amnesiac", origin: "unknown", dialogueSource: "explorer_template_amnesiac" },
-			{ id: "template_architect_scout", explorerType: "scout", origin: "surface", appearLevel: [ 15, 100 ], dialogueSource: "explorer_template_architect" },
-			{ id: "template_architect_scavenger", explorerType: "scavenger", origin: "surface", appearLevel: [ 15, 100 ], dialogueSource: "explorer_template_architect" },
+			{ id: "template_amnesiac", origin: "unknown", explorerType: "fighter", dialogueSource: "explorer_template_amnesiac" },
+			{ id: "template_architect_1", abilityType: "mapping", origin: "surface", appearLevel: [ 15, 100 ], dialogueSource: "explorer_template_architect" },
+			{ id: "template_architect_2", abilityType: "detect_poi", origin: "surface", appearLevel: [ 15, 100 ], dialogueSource: "explorer_template_architect" },
 			{ id: "template_darkdweller", explorerType: "scavenger", origin: "darklevels", appearLevel: [ -100, 14 ], dialogueSource: "explorer_template_darkdweller" },
-			{ id: "template_hacker", explorerType: "scout", origin: "slums", dialogueSource: "explorer_template_hacker" },
+			{ id: "template_hacker", abilityType: "cost_lockpick", origin: "slums", dialogueSource: "explorer_template_hacker" },
 			{ id: "generic_scout_01", explorerType: "scout", dialogueSource: "explorer_generic_scout_01" },
 			{ id: "generic_scavenger_01", explorerType: "scavenger", dialogueSource: "explorer_generic_scavenger_01" },
 			{ id: "generic_mercenary_01", explorerType: "fighter", dialogueSource: "explorer_generic_mercenary_01" },
 			{ id: "generic_dog_01", isAnimal: true, animalType: "dog", dialogueSource: "explorer_generic_dog_01" },
+			{ id: "generic_bat_01", isAnimal: true, animalType: "bat", dialogueSource: "explorer_generic_bat_01" },
 			{ id: "generic_animal_01", isAnimal: true, abilityType: "scavenge_capacity", dialogueSource: "explorer_generic_animal_01" },
 			{ id: "generic_servo_01", isRobot: true, dialogueSource: "explorer_generic_servo_01" },
 			{ id: "generic_human_01", dialogueSource: "explorer_generic_01" },
@@ -102,7 +114,7 @@ define(['ash',
 			{ icon: "img/characters/explorer_fighter_03.png", explorerType: "fighter", gender: CultureConstants.genders.FEMALE, skin: CultureConstants.skinColors.LIGHT },
 			{ icon: "img/characters/explorer_fighter_04.png", explorerType: "fighter", skin: CultureConstants.skinColors.DARK },
 			{ icon: "img/characters/explorer_fighter_05.png", explorerType: "fighter", skin: CultureConstants.skinColors.LIGHT },
-			{ icon: "img/characters/explorer_fighter_06.png" },
+			{ icon: "img/characters/explorer_fighter_06.png", explorerType: "fighter" },
 			{ icon: "img/characters/explorer_scavenger_01.png", explorerType: "scavenger", gender: CultureConstants.genders.FEMALE },
 			{ icon: "img/characters/explorer_scavenger_02.png", explorerType: "scavenger", gender: CultureConstants.genders.MALE, skin: CultureConstants.skinColors.LIGHT },
 			{ icon: "img/characters/explorer_scavenger_03.png", explorerType: "scavenger", gender: CultureConstants.genders.MALE, skin: CultureConstants.skinColors.LIGHT },
@@ -123,7 +135,7 @@ define(['ash',
 			{ icon: "img/characters/explorer_template_hacker_01.png", dialogueSource: "explorer_template_hacker", gender: CultureConstants.genders.FEMLAE },
 			{ icon: "img/characters/explorer_template_hacker_02.png", dialogueSource: "explorer_template_hacker", gender: CultureConstants.genders.MALE },
 			{ icon: "img/characters/explorer_template_lover.png", dialogueSource: "explorer_template_lover", gender: CultureConstants.genders.MALE },
-			{ icon: "img/characters/explorer_template_lover.png", dialogueSource: "explorer_template_researcher", gender: CultureConstants.genders.FEMALE },
+			{ icon: "img/characters/explorer_template_researcher.png", dialogueSource: "explorer_template_researcher", gender: CultureConstants.genders.FEMALE },
 			{ icon: "img/characters/explorer_template_teen_01.png", dialogueSource: "explorer_template_teen", gender: CultureConstants.genders.FEMALE },
 			{ icon: "img/characters/explorer_template_teen_02.png", dialogueSource: "explorer_template_teen", gender: CultureConstants.genders.FEMALE },
 			{ icon: "img/characters/explorer_template_teen_03.png", dialogueSource: "explorer_template_teen", gender: CultureConstants.genders.MALE },
@@ -361,7 +373,6 @@ define(['ash',
 			let result = [];
 
 			isRobot = source == ExplorerConstants.explorerSource.CRAFT || isRobot;
-			
 			for (let k in ExplorerConstants.abilityType) {
 				let abilityType = ExplorerConstants.abilityType[k];
 				let unlockCampOrdinal = this.getUnlockCampOrdinal(abilityType);
@@ -389,17 +400,40 @@ define(['ash',
 		
 		getUnlockCampOrdinal: function (abilityType) {
 			let firstExplorerCampOrdinal = ExplorerConstants.FIRST_EXPLORER_CAMP_ORDINAL;
+
+			let result = 1;
 			
 			switch (abilityType) {
-				case ExplorerConstants.abilityType.COST_SCAVENGE:
+				case ExplorerConstants.abilityType.STAT_EVIDENCE:
+				case ExplorerConstants.abilityType.STAT_RUMOURS:
+					// make sure player can generate evidence from libraries before replacing finite supply with other stats
+					result = 4;
+					break;
 				case ExplorerConstants.abilityType.DETECT_SUPPLIES:
-				case ExplorerConstants.abilityType.COST_MOVEMENT:
+				case ExplorerConstants.abilityType.DETECT_HAZARDS:
 				case ExplorerConstants.abilityType.SCAVENGE_INGREDIENTS:
 				case ExplorerConstants.abilityType.SCAVENGE_GENERAL:
-					return WorldConstants.CAMP_ORDINAL_GROUND;
-				default:
-					return 1;
+				case ExplorerConstants.abilityType.SCAVENGE_VALUABLES:
+				case ExplorerConstants.abilityType.COST_COLLECTORS:
+				case ExplorerConstants.abilityType.COST_LOCKPICK:
+					// unlock a few types later just to make sure no player can see all types early
+					result = WorldConstants.CAMP_ORDINAL_GROUND;
+					break;
+				case ExplorerConstants.abilityType.STAT_HOPE:
+					// make sure player doesn't accumulate tons of hope before they can spend it
+					result = WorldConstants.CAMP_ORDINAL_GROUND;
+					break;
 			}
+
+			// make sure abilities of unique explorers don't appear before that explorer (should be cool and unique when met)
+			for (let campOrdinal in this.predefinedExplorers) {
+				let template = this.predefinedExplorers[campOrdinal];
+				if (template.abilityType == abilityType) {
+					result = Math.max(result, campOrdinal);
+				}
+			}
+
+			return result;
 		},
 		
 		getRandomAnimalName: function (animalType) {
@@ -420,21 +454,34 @@ define(['ash',
 		},
 		
 		getRandomAnimalIcon: function (animalType) {
+			let icons = [];
 			switch (animalType) {
 				case ExplorerConstants.animalType.DOG:
-					return "img/characters/animal_dog.png";
+					icons.push("img/characters/animal_dog.png");
+					icons.push("img/characters/animal_dog_02.png");
+					icons.push("img/characters/animal_dog_03.png");
+					break;
 				case ExplorerConstants.animalType.RAVEN:
-					return "img/characters/animal_bird.png";
+					icons.push("img/characters/animal_bird.png");
+					icons.push("img/characters/animal_bird_02.png");
+					break;
 				case ExplorerConstants.animalType.BAT:
-					return "img/characters/animal_bat.png";
+					icons.push("img/characters/animal_bat.png");
+					break;
 				case ExplorerConstants.animalType.MULE:
-					return "img/characters/animal_mule.png";
+					icons.push("img/characters/animal_mule.png");
+					icons.push("img/characters/animal_mule_02.png");
+					break;
 				case ExplorerConstants.animalType.OLM:
-					return "img/characters/animal_olm.png";
+					icons.push("img/characters/animal_olm.png");
+					icons.push("img/characters/animal_olm_02.png");
+					break;
 				default:
 					log.w("no icon defined for animal type: " + animalType);
 					return "img/characters/animal_dog.png";
 			}
+
+			return MathUtils.randomElement(icons);
 		},
 
 		getRandomRobotName: function () {
@@ -516,40 +563,38 @@ define(['ash',
 			switch (abilityType) {
 				case this.abilityType.ATTACK: return this.explorerType.FIGHTER;
 				case this.abilityType.DEFENCE: return this.explorerType.FIGHTER;
+				case this.abilityType.FLEE: return this.explorerType.FIGHTER;
+
 				case this.abilityType.COST_MOVEMENT: return this.explorerType.SCOUT;
 				case this.abilityType.COST_SCAVENGE: return this.explorerType.SCOUT;
 				case this.abilityType.COST_SCOUT: return this.explorerType.SCOUT;
+				case this.abilityType.COST_LOCKPICK: return this.explorerType.SCOUT;
 				case this.abilityType.DETECT_SUPPLIES: return this.explorerType.SCOUT;
 				case this.abilityType.DETECT_INGREDIENTS: return this.explorerType.SCOUT;
 				case this.abilityType.DETECT_HAZARDS: return this.explorerType.SCOUT;
+				case this.abilityType.DETECT_POI: return this.explorerType.SCOUT;
+				case this.abilityType.MAPPING: return this.explorerType.SCOUT;
+				case this.abilityType.STAT_EVIDENCE: return this.explorerType.SCOUT;
+				case this.abilityType.STAT_RUMOURS: return this.explorerType.SCOUT;
+				case this.abilityType.STAT_HOPE: return this.explorerType.SCOUT;
+				case this.abilityType.SCAVENGE_HANDLER: return this.explorerType.SCOUT;
+				
 				case this.abilityType.SCAVENGE_GENERAL: return this.explorerType.SCAVENGER;
 				case this.abilityType.SCAVENGE_INGREDIENTS: return this.explorerType.SCAVENGER;
 				case this.abilityType.SCAVENGE_SUPPLIES: return this.explorerType.SCAVENGER;
+				case this.abilityType.SCAVENGE_VALUABLES: return this.explorerType.SCAVENGER;
+				case this.abilityType.SCAVENGE_BLUEPRINTS: return this.explorerType.SCAVENGER;
 				case this.abilityType.SCAVENGE_CAPACITY: return this.explorerType.SCAVENGER;
+				case this.abilityType.COST_COLLECTORS: return this.explorerType.SCAVENGER;
+
 				default:
 					log.w("no explorerType defined for abilityType: " + abilityType);
 					return this.explorerType.SCOUT;
 			}
 		},
 		
-		getAbilityTypeDisplayName: function (abilityType) {
-			switch (abilityType) {
-				case this.abilityType.ATTACK: return "attack";
-				case this.abilityType.DEFENCE: return "defence";
-				case this.abilityType.COST_MOVEMENT: return "trekking";
-				case this.abilityType.COST_SCAVENGE: return "scouring";
-				case this.abilityType.COST_SCOUT: return "scouting";
-				case this.abilityType.DETECT_HAZARDS: return "surveying (hazards)";
-				case this.abilityType.DETECT_SUPPLIES: return "surveying (supplies)";
-				case this.abilityType.DETECT_INGREDIENTS: return "surveying (ingredients)";
-				case this.abilityType.SCAVENGE_GENERAL: return "scavenging (general)";
-				case this.abilityType.SCAVENGE_INGREDIENTS: return "scavenging (ingredients)";
-				case this.abilityType.SCAVENGE_SUPPLIES: return "scavenging (supplies)";
-				case this.abilityType.SCAVENGE_CAPACITY: return "pack animal";
-				default:
-					log.w("no display name defined for abilityType: " + abilityType);
-					return abilityType;
-			}
+		getAbilityTypeDisplayNameKey: function (abilityType) {
+			return "ui.characters.explorer_ability_type_" + abilityType + "_name";
 		},
 		
 		getExplorerTypeDisplayName: function (explorerType) {
@@ -563,11 +608,11 @@ define(['ash',
 			}
 		},
 		
-		getTotalItemBonus: function (explorer) {
+		getTotalItemBonus: function (explorer, explorers) {
 			let total = 0;
 			for (let bonusKey in ItemConstants.itemBonusTypes) {
 				let bonusType = ItemConstants.itemBonusTypes[bonusKey];
-				let value = this.getExplorerItemBonus(explorer, bonusType);
+				let value = this.getExplorerItemBonus(explorer, explorers, bonusType);
 				if (ItemConstants.isIncreasing(bonusType)) {
 					total += value;
 				} else {
@@ -577,9 +622,10 @@ define(['ash',
 			return total;
 		},
 		
-		getExplorerItemBonus: function (explorer, itemBonusType) {
+		getExplorerItemBonus: function (explorer, explorers, itemBonusType) {
 			let roundingStep = 1;
 			let abilityLevel = 0;
+			let modifierAbilityLevel = 0;
 			let minBonus = 0;
 			let maxBonus = 0;
 			
@@ -604,60 +650,76 @@ define(['ash',
 					break;
 				case ItemConstants.itemBonusTypes.movement:
 					abilityLevel = ExplorerConstants.getAbilityLevel(explorer, ExplorerConstants.abilityType.COST_MOVEMENT);
-					minBonus = 0.9;
-					maxBonus = 0.7;
-					roundingStep = 0.1;
+					minBonus = 0.8;
+					maxBonus = 0.8;
 					break;
 				case ItemConstants.itemBonusTypes.scavenge_cost:
 					abilityLevel = ExplorerConstants.getAbilityLevel(explorer, ExplorerConstants.abilityType.COST_SCAVENGE);
-					minBonus = 0.6;
-					maxBonus = 0.3;
-					roundingStep = 0.3;
+					minBonus = 0.8;
+					maxBonus = 0.8;
 					break;
 				case ItemConstants.itemBonusTypes.scout_cost:
 					abilityLevel = ExplorerConstants.getAbilityLevel(explorer, ExplorerConstants.abilityType.COST_SCOUT);
-					minBonus = 0.9;
-					maxBonus = 0.6;
-					roundingStep = 0.15;
+					minBonus = 0.8;
+					maxBonus = 0.8;
+					break;
+				case ItemConstants.itemBonusTypes.collector_cost:
+					abilityLevel = ExplorerConstants.getAbilityLevel(explorer, ExplorerConstants.abilityType.COST_COLLECTORS);
+					minBonus = 0.8;
+					maxBonus = 0.8;
 					break;
 				case ItemConstants.itemBonusTypes.detect_hazards:
 					abilityLevel = ExplorerConstants.getAbilityLevel(explorer, ExplorerConstants.abilityType.DETECT_HAZARDS);
 					minBonus = 1;
 					maxBonus = 1;
-					roundingStep = 1;
 					break;
 				case ItemConstants.itemBonusTypes.detect_supplies:
 					abilityLevel = ExplorerConstants.getAbilityLevel(explorer, ExplorerConstants.abilityType.DETECT_SUPPLIES);
 					minBonus = 1;
 					maxBonus = 1;
-					roundingStep = 1;
 					break;
 				case ItemConstants.itemBonusTypes.detect_ingredients:
 					abilityLevel = ExplorerConstants.getAbilityLevel(explorer, ExplorerConstants.abilityType.DETECT_INGREDIENTS);
 					minBonus = 1;
 					maxBonus = 1;
-					roundingStep = 1;
+					break;
+				case ItemConstants.itemBonusTypes.detect_poi:
+					abilityLevel = ExplorerConstants.getAbilityLevel(explorer, ExplorerConstants.abilityType.DETECT_POI);
+					minBonus = 1;
+					maxBonus = 1;
 					break;
 				case ItemConstants.itemBonusTypes.scavenge_general:
 					abilityLevel = ExplorerConstants.getAbilityLevel(explorer, ExplorerConstants.abilityType.SCAVENGE_GENERAL);
-					minBonus = 1.025;
+					minBonus = 1.02;
 					maxBonus = 1.2;
-					roundingStep = 0.025;
+					roundingStep = 0.01;
 					break;
 				case ItemConstants.itemBonusTypes.scavenge_ingredients:
 					abilityLevel = ExplorerConstants.getAbilityLevel(explorer, ExplorerConstants.abilityType.SCAVENGE_INGREDIENTS);
-					minBonus = 1.05;
-					maxBonus = 1.35;
-					roundingStep = 0.05;
+					minBonus = 1.02;
+					maxBonus = 1.2;
+					roundingStep = 0.01;
 					break;
 				case ItemConstants.itemBonusTypes.scavenge_supplies:
 					abilityLevel = ExplorerConstants.getAbilityLevel(explorer, ExplorerConstants.abilityType.SCAVENGE_SUPPLIES);
-					minBonus = 1.05;
-					maxBonus = 1.35;
-					roundingStep = 0.05;
+					minBonus = 1.02;
+					maxBonus = 1.2;
+					roundingStep = 0.01;
+					break;
+				case ItemConstants.itemBonusTypes.scavenge_valuables:
+					abilityLevel = ExplorerConstants.getAbilityLevel(explorer, ExplorerConstants.abilityType.SCAVENGE_VALUABLES);
+					minBonus = 1.02;
+					maxBonus = 1.2;
+					roundingStep = 0.01;
+					break;
+				case ItemConstants.itemBonusTypes.scavenge_blueprints:
+					abilityLevel = ExplorerConstants.getAbilityLevel(explorer, ExplorerConstants.abilityType.SCAVENGE_BLUEPRINTS);
+					minBonus = 1;
+					maxBonus = 1;
 					break;
 				case ItemConstants.itemBonusTypes.bag:
 					abilityLevel = ExplorerConstants.getAbilityLevel(explorer, ExplorerConstants.abilityType.SCAVENGE_CAPACITY);
+					modifierAbilityLevel = ExplorerConstants.getMaxAbilityLevel(explorers, ExplorerConstants.abilityType.SCAVENGE_HANDLER);
 					minBonus = 5;
 					maxBonus = 20;
 					roundingStep = 5;
@@ -679,8 +741,13 @@ define(['ash',
 			}
 			
 			if (abilityLevel == 0) return 0;
+			if (minBonus === maxBonus) return minBonus;
 			
 			let rawValue = MathUtils.map(abilityLevel, 1, 100, minBonus, maxBonus);
+
+			if (modifierAbilityLevel > 0) {
+				rawValue = rawValue * 2;
+			}
 			
 			return MathUtils.roundToMultiple(rawValue, roundingStep);
 		},
@@ -688,20 +755,24 @@ define(['ash',
 		isSignificantAbilityLevelDifference: function (explorer, oldLevel, newLevel) {
 			let currentLevel = explorer.abilityLevel;
 			explorer.abilityLevel = oldLevel;
-			let oldValue = this.getTotalItemBonus(explorer);
+			let oldValue = this.getTotalItemBonus(explorer, []);
 			explorer.abilityLevel = newLevel;
-			let newValue = this.getTotalItemBonus(explorer);
+			let newValue = this.getTotalItemBonus(explorer, []);
 			explorer.abilityLevel = currentLevel;
 			return newValue > oldValue;
 		},
 
 		isValidAbilityTypeForLevelUp: function (abilityType) {
 			switch (abilityType) {
-				case ExplorerConstants.abilityType.DETECT_SUPPLIES: return false;
-				case ExplorerConstants.abilityType.DETECT_INGREDIENTS: return false;
-				case ExplorerConstants.abilityType.DETECT_HAZARDS: return false;
-				case ExplorerConstants.abilityType.SCAVENGE_CAPACITY: return false;
-				default: return true;
+				case ExplorerConstants.abilityType.ATTACK: 
+				case ExplorerConstants.abilityType.DEFENCE: 
+				case ExplorerConstants.abilityType.SCAVENGE_INGREDIENTS: 
+				case ExplorerConstants.abilityType.SCAVENGE_VALUABLES: 
+				case ExplorerConstants.abilityType.SCAVENGE_SUPPLIES: 
+				case ExplorerConstants.abilityType.SCAVENGE_GENERAL: 
+					return true;
+				default: 
+					return false;
 			}
 		},
 		
@@ -711,9 +782,11 @@ define(['ash',
 
 		isValidRobotAbility: function (abilityType) {
 			switch (abilityType) {
+				case ExplorerConstants.abilityType.FLEE:
 				case ExplorerConstants.abilityType.DETECT_HAZARDS:
 				case ExplorerConstants.abilityType.DETECT_SUPPLIES:
 				case ExplorerConstants.abilityType.DETECT_INGREDIENTS:
+				case ExplorerConstants.abilityType.SCAVENGE_GENERAL:
 					return true;
 			}
 
@@ -721,8 +794,8 @@ define(['ash',
 		},
 
 		isFighter: function (explorerVO) {
-			let bonusAtt = ExplorerConstants.getExplorerItemBonus(explorerVO, ItemConstants.itemBonusTypes.fight_att) > 0;
-			let bonusDef = ExplorerConstants.getExplorerItemBonus(explorerVO, ItemConstants.itemBonusTypes.fight_def) > 0;
+			let bonusAtt = ExplorerConstants.getExplorerItemBonus(explorerVO, [], ItemConstants.itemBonusTypes.fight_att) > 0;
+			let bonusDef = ExplorerConstants.getExplorerItemBonus(explorerVO, [], ItemConstants.itemBonusTypes.fight_def) > 0;
 			return bonusAtt > 0 || bonusDef > 0;
 		},
 		
@@ -753,6 +826,15 @@ define(['ash',
 			}
 			
 			return 0;
+		},
+
+		getMaxAbilityLevel: function (explorers, abilityType) {
+			let max = 0;
+			for (let i = 0; i < explorers.length; i++) {
+				max = Math.max(max, this.getAbilityLevel(explorers[i], abilityType));
+			}
+			
+			return max;
 		}
 	};
 	

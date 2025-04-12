@@ -1337,12 +1337,16 @@ define(['ash',
 				let maxInsight = GameGlobals.playerActionFunctions.playerStatsNodes.head.insight.maxValue;
 				let showStorage = GameGlobals.resourcesHelper.getCurrentStorageCap();
 
+				let costsWithoutBonuses = GameGlobals.playerActionsHelper.getCostsWithoutBonuses(action);
+
 				let maxCostCountdown = -1;
 				let hasNonAccumulatingCost = false;
 				
 				// costs themselves
 				for (let key in costs) {
 					let value = costs[key];
+					let valueWithoutBonuses = costsWithoutBonuses[key];
+					let isNegatedByBonus = value === 0 && valueWithoutBonuses !== 0;
 					let isAccumulatingCost = GameGlobals.playerActionsHelper.isAccumulatingCost(key, false);
 
 					if (isAccumulatingCost && !hasNonAccumulatingCost) {
@@ -1382,12 +1386,18 @@ define(['ash',
 					}
 					$costSpan.toggleClass("action-cost-blocker", costFraction < 1);
 					$costSpan.toggleClass("action-cost-blocker-storage", isFullCostBlocker);
+
+					let displayValue = UIConstants.getDisplayValue(value);
+					if (isNegatedByBonus) {
+						displayValue = "<span class='action-cost-negated'>" + UIConstants.getDisplayValue(valueWithoutBonuses) + "</span> " + displayValue;
+					}
 	
-					if (value !== displayedCosts[key]) {
+					if (displayValue !== displayedCosts[key]) {
 						let $costSpanValue = elements.costSpanValues[key];
-						$costSpanValue.html(UIConstants.getDisplayValue(value));
-						GameGlobals.uiFunctions.toggle($costSpan, value > 0, signalParams);
-						displayedCosts[key] = value;
+						let showCostSpan = displayValue > 0 || isNegatedByBonus;
+						$costSpanValue.html(displayValue);
+						GameGlobals.uiFunctions.toggle($costSpan, showCostSpan, signalParams);
+						displayedCosts[key] = displayValue;
 					}
 				}
 

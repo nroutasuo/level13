@@ -218,6 +218,7 @@ function (Ash, PlayerActionData, ObjectUtils, GameConstants, CampConstants, Impr
 			if (action.indexOf("unequip_") >= 0) return "unequip";
 			if (action.indexOf("equip_") >= 0) return "equip";
 			if (action.indexOf("use_item_fight") >= 0) return "use_item_fight";
+			if (action.indexOf("use_explorer_fight") >= 0) return "use_explorer_fight";
 			if (action.indexOf("use_item") >= 0) return "use_item";
 			if (action.indexOf("repair_item") >= 0) return "repair_item";
 			if (action.indexOf("repair_in") >= 0) return "repair_in";

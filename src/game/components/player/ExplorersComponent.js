@@ -71,13 +71,14 @@ function (Ash, ExplorerConstants, ItemConstants) {
 		},
 		
 		getCurrentBonus: function (itemBonusType) {
-			var isMultiplier = ItemConstants.isMultiplier(itemBonusType);
-			var bonus = isMultiplier ? 1 : 0;
+			let isMultiplier = ItemConstants.isMultiplier(itemBonusType);
+			let bonus = isMultiplier ? 1 : 0;
+			let party = this.getParty();
 			for (let i = 0; i < this.explorers.length; i++) {
 				var explorer = this.explorers[i];
 				if (!explorer.inParty) continue;
 				if (explorer.injuredTimer >= 0) continue;
-				let explorerBonus = ExplorerConstants.getExplorerItemBonus(explorer, itemBonusType);
+				let explorerBonus = ExplorerConstants.getExplorerItemBonus(explorer, party, itemBonusType);
 				if (isMultiplier) {
 					if (explorerBonus != 0) {
 						bonus *= explorerBonus;
@@ -96,7 +97,7 @@ function (Ash, ExplorerConstants, ItemConstants) {
 			if (selectedExplorer == null) return 1;
 			if (!ExplorerConstants.isComparableAbilityTypes(selectedExplorer.abilityType, explorer.abilityType)) return 0;
 			
-			return ExplorerConstants.getTotalItemBonus(explorer) - ExplorerConstants.getTotalItemBonus(selectedExplorer);
+			return ExplorerConstants.getTotalItemBonus(explorer, []) - ExplorerConstants.getTotalItemBonus(selectedExplorer, []);
 		},
 
 		getSaveKey: function () {

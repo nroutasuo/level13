@@ -86,6 +86,7 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 			this.discardedResources = new ResourcesVO(storageTypes.RESULT);
 			
 			this.gainedResourcesFromExplorers = new ResourcesVO(storageTypes.RESULT);
+			this.gainedItemsFromExplorers = [];
 		},
 		
 		hasSelectable: function () {

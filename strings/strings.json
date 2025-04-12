@@ -455,6 +455,9 @@
             "consumable_map_2_description": "A piece of paper that seems to be part of a bigger map",
             "consumable_map_2_name": "Map piece",
             "consumable_map_2_name_short": "Map piece",
+            "consumable_map_explorer_name": "Map sketch",
+            "consumable_map_explorer_name_short": "Map sketch",
+            "consumable_map_explorer_description": "Map sketched by an explorer based on their knowledge of the City.",
             "consumable_weapon_1_description": "One-use weapon that deals some damage to any enemy.",
             "consumable_weapon_1_name": "Shuriken",
             "consumable_weapon_bio_description": "One-use weapon that slows down an organic enemy.",
@@ -1723,6 +1726,10 @@
             "supplies_no_food_message": "Out of food!",
             "supplies_no_supplies_message": "Out of food and water!",
             "supplies_no_water_message": "Out of water!"
+        },
+        "fight": {
+            "result_fled_message_default": "Distracted the enemy and fled",
+            "result_fled_message_explorer": "{name} distracted the enemy and allowed us to flee"
         },
         "inventory": {
             "_equipment_slot_bag_name": "Bag",

@@ -54,26 +54,32 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, ItemVO) {
 		},
 		
 		itemBonusTypes: {
+			// items
 			light: "light",
 			fight_att: "att",
 			fight_def: "def",
 			fight_speed: "spd",
 			fight_shield: "shield",
 			movement: "movement",
-			scavenge_cost: "scavenge_cost",
-			scavenge_general: "scavenge_general",
-			scavenge_ingredients: "scavenge_ingredients",
-			scavenge_supplies: "scavenge_supplies",
-			scout_cost: "scout_cost",
 			bag: "bag",
 			res_cold: "warmth",
 			res_radiation: "res_rad",
 			res_poison: "res_poison",
 			res_water: "res_water",
 			shade: "shade",
+			// only explorers
 			detect_hazards: "detect_hazards",
-			detect_supplies: "detect_supplies",
 			detect_ingredients: "detect_ingredients",
+			detect_poi: "detect_poi",
+			detect_supplies: "detect_supplies",
+			scavenge_blueprints: "scavenge_blueprints",
+			scavenge_general: "scavenge_general",
+			scavenge_ingredients: "scavenge_ingredients",
+			scavenge_supplies: "scavenge_supplies",
+			scavenge_valuables: "scavenge_valuables",
+			collector_cost: "collector_cost",
+			scavenge_cost: "scavenge_cost",
+			scout_cost: "scout_cost",
 		},
 		
 		bookTypes: {
@@ -443,7 +449,10 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, ItemVO) {
 				case this.itemBonusTypes.scavenge_general:
 				case this.itemBonusTypes.scavenge_supplies:
 				case this.itemBonusTypes.scavenge_ingredients:
+				case this.itemBonusTypes.scavenge_blueprints:
+				case this.itemBonusTypes.scavenge_valuables:
 				case this.itemBonusTypes.scout_cost:
+				case this.itemBonusTypes.collector_cost:
 					return true;
 			}
 			return false;
@@ -462,6 +471,7 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, ItemVO) {
 				case this.itemBonusTypes.movement:
 				case this.itemBonusTypes.scavenge_cost:
 				case this.itemBonusTypes.scout_cost:
+				case this.itemBonusTypes.collector_cost:
 					return false;
 			}
 			return true;

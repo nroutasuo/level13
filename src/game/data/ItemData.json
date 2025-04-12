@@ -1684,9 +1684,19 @@
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
-        "nameShort": "Map piece",
         "rarityInvestigate": 5,
         "rarityLocale": 5,
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "type": "voucher"
+    },
+    "consumable_map_explorer": {
+        "icon": "img/items/exploration-map.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "rarityInvestigate": -1,
+        "rarityLocale": -1,
         "rarityScavenge": -1,
         "rarityTrade": -1,
         "type": "voucher"

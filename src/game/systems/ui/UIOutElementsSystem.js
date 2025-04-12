@@ -212,29 +212,25 @@ define([
 		updateButtonCalloutRisks: function ($button, action, buttonElements) {
 			var sectorEntity = GameGlobals.buttonHelper.getButtonSectorEntity($button) || this.playerLocationNodes.head.entity;
 			var playerVision = this.playerStatsNodes.head.vision.value;
-			let perksComponent = this.playerStatsNodes.head.perks;
-			let playerLuck = perksComponent.getTotalEffect(PerkConstants.perkTypes.luck);
 			var hasEnemies = GameGlobals.fightHelper.hasEnemiesCurrentLocation(action);
 			var baseActionId = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			var encounterFactor = GameGlobals.playerActionsHelper.getEncounterFactor(action);
 			var sectorDangerFactor = GameGlobals.sectorHelper.getDangerFactor(sectorEntity);
 
-			var injuryRisk = PlayerActionConstants.getInjuryProbability(action, playerVision, playerLuck);
-			var injuryRiskBase = injuryRisk > 0 ? PlayerActionConstants.getInjuryProbability(action) : 0;
-			var injuryRiskVision = injuryRisk - injuryRiskBase;
-			var inventoryRisk = PlayerActionConstants.getLoseInventoryProbability(action, playerVision, playerLuck);
-			var inventoryRiskBase = inventoryRisk > 0 ? PlayerActionConstants.getLoseInventoryProbability(action) : 0;
-			var inventoryRiskVision = inventoryRisk - inventoryRiskBase;
+			let injuryRisk = GameGlobals.playerActionsHelper.getInjuryProbability(action);
+			let inventoryRisk = GameGlobals.playerActionsHelper.getLoseInventoryProbability(action);
+			
 			var fightRisk = hasEnemies ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision, sectorDangerFactor, encounterFactor) : 0;
 			var fightRiskBase = fightRisk > 0 ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision, sectorDangerFactor, encounterFactor) : 0;
 			var fightRiskVision = fightRisk - fightRiskBase;
+			
 			GameGlobals.uiFunctions.toggle(buttonElements.calloutRiskInjury, injuryRisk > 0, this.buttonCalloutSignalParams);
 			if (injuryRisk > 0)
-				buttonElements.calloutRiskInjuryValue.text(UIConstants.roundValue((injuryRiskBase + injuryRiskVision) * 100, true, true));
+				buttonElements.calloutRiskInjuryValue.text(UIConstants.roundValue(injuryRisk * 100, true, true));
 
 			GameGlobals.uiFunctions.toggle(buttonElements.calloutRiskInventory, inventoryRisk > 0, this.buttonCalloutSignalParams);
 			if (inventoryRisk > 0)
-				buttonElements.calloutRiskInventoryValue.text(UIConstants.roundValue((inventoryRiskBase + inventoryRiskVision) * 100, true, true));
+				buttonElements.calloutRiskInventoryValue.text(UIConstants.roundValue(inventoryRisk * 100, true, true));
 
 			GameGlobals.uiFunctions.toggle(buttonElements.calloutRiskFight, fightRisk > 0, this.buttonCalloutSignalParams);
 			if (fightRisk > 0)

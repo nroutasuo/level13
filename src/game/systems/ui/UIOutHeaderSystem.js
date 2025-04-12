@@ -402,7 +402,7 @@ define([
 			}
 			
 			let isOnLevelPage = GameGlobals.gameState.uiStatus.currentTab == GameGlobals.uiFunctions.elementIDs.tabs.out;
-			let showScavangeAbility = GameGlobals.gameState.unlockedFeatures.scavenge && !isInCamp && isOnLevelPage;
+			let showScavangeAbility = false;//GameGlobals.gameState.unlockedFeatures.scavenge && !isInCamp && isOnLevelPage;
 			this.updateScavengeBonus(showScavangeAbility);
 		},
 		
@@ -440,7 +440,7 @@ define([
 					let party = this.playerStatsNodes.head.explorers.getParty();
 					for (let j = 0; j < party.length; j++) {
 						let explorer = party[j];
-						let explorerContribution = ExplorerConstants.getExplorerItemBonus(explorer, bonus.itemBonusType);
+						let explorerContribution = ExplorerConstants.getExplorerItemBonus(explorer, party, bonus.itemBonusType);
 						if (explorerContribution > 0) {
 							scavengeBonusCallout += explorer.name + ": +" + Math.round(explorerContribution * 100 - 100) + "%";
 						}
@@ -621,6 +621,10 @@ define([
 			
 			if (GameGlobals.playerHelper.getCurrentBonus(ItemConstants.itemBonusTypes.detect_ingredients) > 0) {
 				statuses.push({ name: "Ingredients detection", icon: "img/status-ingredients-prediction.png", isNegative: false });
+			}
+			
+			if (GameGlobals.playerHelper.getCurrentBonus(ItemConstants.itemBonusTypes.detect_poi) > 0) {
+				statuses.push({ name: "POI detection", icon: "img/status-poi-prediction.png", isNegative: false });
 			}
 			
 			for (let i = 0; i < statuses.length; i++) {
@@ -1251,9 +1255,15 @@ define([
 			if (bonusType == ItemConstants.itemBonusTypes.detect_ingredients) return false;
 			if (bonusType == ItemConstants.itemBonusTypes.detect_supplies) return false;
 			if (bonusType == ItemConstants.itemBonusTypes.detect_hazards) return false;
+			if (bonusType == ItemConstants.itemBonusTypes.detect_poi) return false;
 			if (bonusType == ItemConstants.itemBonusTypes.scavenge_general) return false;
+			if (bonusType == ItemConstants.itemBonusTypes.scavenge_blueprints) return false;
 			if (bonusType == ItemConstants.itemBonusTypes.scavenge_ingredients) return false;
 			if (bonusType == ItemConstants.itemBonusTypes.scavenge_supplies) return false;
+			if (bonusType == ItemConstants.itemBonusTypes.scavenge_valuables) return false;
+			if (bonusType == ItemConstants.itemBonusTypes.collector_cost) return false;
+			if (bonusType == ItemConstants.itemBonusTypes.scavenge_cost) return false;
+			if (bonusType == ItemConstants.itemBonusTypes.scout_cost) return false;
 			return true;
 		},
 		

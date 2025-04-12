@@ -1995,6 +1995,7 @@ define([
 					break;
 				
 				case "scavenge":
+				case "scavenge_heap":
 					if (cost == "stamina") {
 						factor *= getExplorerBonus(ItemConstants.itemBonusTypes.scavenge_cost);
 					}
@@ -2216,7 +2217,7 @@ define([
 		// NOTE: this should always return all possible costs as keys (even if value currently is 0)
 		// NOTE: if you change this mess, keep GDD up to date
 		// multiplier: simple multiplier applied to ALL of the costs
-		getCosts: function (action, multiplier, otherSector, actionOrdinal) {
+		getCosts: function (action, multiplier, otherSector, actionOrdinal, ignoreModifiers) {
 			if (!action) return null;
 			if (!multiplier) multiplier = 1;
 
@@ -2226,10 +2227,14 @@ define([
 			var ordinal = actionOrdinal || this.getActionOrdinal(action, sector);
 			var isOutpost = levelComponent ? levelComponent.habitability < 1 : false;
 			
-			return this.getCostsByOrdinal(action, multiplier, ordinal, isOutpost, sector);
+			return this.getCostsByOrdinal(action, multiplier, ordinal, isOutpost, sector, ignoreModifiers);
+		},
+
+		getCostsWithoutBonuses: function (action) {
+			return this.getCosts(action, 1, null, null, true);
 		},
 		
-		getCostsByOrdinal: function (action, multiplier, ordinal, isOutpost, sector) {
+		getCostsByOrdinal: function (action, multiplier, ordinal, isOutpost, sector, ignoreModifiers) {
 			let result = {};
 
 			let baseActionID = this.getBaseActionID(action);
@@ -2243,6 +2248,10 @@ define([
 			}
 			
 			this.addDynamicCosts(action, multiplier, ordinal, isOutpost, sector, result);
+
+			if (!ignoreModifiers) {
+				this.addCostModifiers(action, multiplier, ordinal, isOutpost, sector, result);
+			}
 
 			// round all costs, big ones to 5 and the rest to int
 			var skipRounding = this.isExactCostAction(baseActionID);
@@ -2316,6 +2325,8 @@ define([
 		},
 		
 		addDynamicCosts: function (action, multiplier, ordinal, isOutpost, sector, result) {
+			// costs that are dynamic but should be now shown as buffs/modifiers in UI
+
 			if (action.startsWith("move_sector_grit_")) {
 				let defaultMovementCost = this.getCosts("move_sector_west");
 				let playerFood = this.playerResourcesNodes.head ? this.playerResourcesNodes.head.resources.getResource("food") : 1;
@@ -2424,6 +2435,27 @@ define([
 					}
 					break;
 			}
+		},
+
+		addCostModifiers: function (action, multiplier, ordinal, isOutpost, sector, result) {
+			// dynamic costs that should be shown as buffs/modifiers in UI (along with cost without them)
+
+			let baseActionID = this.getBaseActionID(action);
+			switch (baseActionID) {
+				case "build_out_collector_food":
+				case "build_out_collector_water":
+					if (this.getPartyAbilityLevel(ExplorerConstants.abilityType.COST_COLLECTORS) > 0) {
+						let baseCost = result.resource_metal;
+						result.resource_metal = baseCost * 0.5
+					}
+					break;
+				
+				case "flee":
+					if (this.getPartyAbilityLevel(ExplorerConstants.abilityType.FLEE) > 0) {
+						result.stamina = 0;
+					}
+					break;
+			}
 
 			if (GameConstants.cheatModeSupplies) {
 				if (action.startsWith("move_sector_")) {
@@ -2435,6 +2467,15 @@ define([
 					if (this.getCostAmountOwned(sector, "item_exploration_1") <= 1) result.item_exploration_1 = 0;
 				}
 			}
+
+			if (this.getPartyAbilityLevel(ExplorerConstants.abilityType.COST_LOCKPICK) > 0) {
+				if (result.item_exploration_1) result.item_exploration_1 = 0;
+			}
+		},
+
+		getPartyAbilityLevel: function (abilityType) {
+			if (!GameGlobals || !GameGlobals.playerHelper) return 0;
+			return GameGlobals.playerHelper.getPartyAbilityLevel(abilityType);
 		},
 		
 		getCraftItemCosts: function (itemVO) {
@@ -2947,6 +2988,30 @@ define([
 			var locationKey = GameGlobals.gameState.getActionLocationKey(isLocationAction, playerPos);
 			var cooldownTotal = PlayerActionConstants.getCooldown(action);
 			return GameGlobals.gameState.getActionCooldown(action, locationKey, cooldownTotal);
+		},
+
+		getInjuryProbability: function (action) {
+			let playerVision = this.playerStatsNodes.head.vision.value;
+			let perksComponent = this.playerStatsNodes.head.perks;
+			let playerLuck = perksComponent.getTotalEffect(PerkConstants.perkTypes.luck);
+
+			let injuryProbability = PlayerActionConstants.getInjuryProbability(action, playerVision, playerLuck);
+
+			if (action == "flee" && GameGlobals.playerHelper.getPartyAbilityLevel(ExplorerConstants.abilityType.FLEE) > 0) return 0;
+
+			return injuryProbability;
+		},
+
+		getLoseInventoryProbability: function (action) {
+			let playerVision = this.playerStatsNodes.head.vision.value;
+			let perksComponent = this.playerStatsNodes.head.perks;
+			let playerLuck = perksComponent.getTotalEffect(PerkConstants.perkTypes.luck);
+
+			let loseInventoryProbability = PlayerActionConstants.getLoseInventoryProbability(action, playerVision, playerLuck);
+
+			if (action == "flee" && GameGlobals.playerHelper.getPartyAbilityLevel(ExplorerConstants.abilityType.FLEE) > 0) return 0;
+
+			return loseInventoryProbability;
 		}
 
 	});
