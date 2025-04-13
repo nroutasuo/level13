@@ -49,8 +49,10 @@ define([
 		},
 		
 		initElements: function () {
-			for (let key in resourceNames) {
-				let name = resourceNames[key];
+			let resNames = Object.assign({}, resourceNames);
+			resNames["currency"] = "currency";
+			for (let key in resNames) {
+				let name = resNames[key];
 				let indicatorEmbark = UIConstants.createResourceIndicator(name, true, "embark-resources-" + name, true, false, false, false);
 				$("#embark-resources").append(
 					"<tr id='embark-assign-" + name + "'>" +
@@ -110,6 +112,7 @@ define([
 		updateSteppers: function () {
 			var campResources = GameGlobals.resourcesHelper.getCurrentStorage();
 			var campResourcesAcc = GameGlobals.resourcesHelper.getCurrentStorageAccumulation(false);
+			let campCurrency = GameGlobals.resourcesHelper.getCurrentCurrency();
 			var bagComponent = this.playerPosNodes.head.entity.get(BagComponent);
 			var selectedCapacity = 0;
 			var selectedAmount;
@@ -119,10 +122,11 @@ define([
 			
 			// Resource steppers
 			$.each($("#embark-resources tr"), function () {
-				var resourceName = $(this).attr("id").split("-")[2];
-				var campVal = campResources.resources.getResource(resourceName);
-				var visible = campVal > 0;
-				var inputMax = Math.min(Math.floor(campVal));
+				let resourceName = $(this).attr("id").split("-")[2];
+				let isCurrency = resourceName == "currency";
+				let campVal = isCurrency ? campCurrency.currency : campResources.resources.getResource(resourceName);
+				let visible = campVal > 0;
+				let inputMax = Math.min(Math.floor(campVal));
 				GameGlobals.uiFunctions.toggle($(this), visible);
 				if (visible) {
 					var stepper = $(this).children("td").children(".stepper");
@@ -130,7 +134,7 @@ define([
 					var val = $(this).children("td").children(".stepper").children("input").val();
 					GameGlobals.uiFunctions.updateStepper("#" + $(stepper).attr("id"), val, inputMin, inputMax)
 					selectedAmount = Math.max(0, val);
-					selectedCapacity += selectedAmount * BagConstants.getResourceCapacity(resourceName);
+					if (!isCurrency) selectedCapacity += selectedAmount * BagConstants.getResourceCapacity(resourceName);
 					
 					$(this).toggleClass("container-dimmed", val <= 0 || inputMax <= 0);
 					

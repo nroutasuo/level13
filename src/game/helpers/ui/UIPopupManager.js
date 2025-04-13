@@ -104,7 +104,8 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 			}
 
 			if (action) {
-				let actionName = Text.t(action + "_name");
+				let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+				let actionName = Text.t("game.actions." + baseActionID + "_name");
 				$("#common-popup .buttonbox").append("<button id='info-action' class='action' action='" + action + "'>" + actionName + "</button>");
 				$("#info-action").click(ExceptionHandler.wrapClick(function (e) {
 					popUpManager.handleOkButton(true, okCallback);

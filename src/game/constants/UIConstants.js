@@ -1096,6 +1096,7 @@ define(['ash',
 		},
 
 		getDisplayValue: function (value) {
+			if (!value) return 0;
 			return value.toLocaleString();
 		},
 

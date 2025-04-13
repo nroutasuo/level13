@@ -968,10 +968,16 @@ define(['ash',
 					gameState.uiStatus.leaveCampRes = {};
 
 					let selectedResVO = new ResourcesVO(storageTypes.RESULT);
+					let selectedCurrency = 0;
 					$.each($("#embark-resources tr"), function () {
-						var resourceName = $(this).attr("id").split("-")[2];
-						var selectedVal = parseInt($(this).children("td").children(".stepper").children("input").val());
-						selectedResVO.setResource(resourceName, selectedVal, "leave_camp");
+						let resourceName = $(this).attr("id").split("-")[2];
+						let selectedVal = parseInt($(this).children("td").children(".stepper").children("input").val());
+						let isCurrency = resourceName == "currency";
+						if (isCurrency) {
+							selectedCurrency = selectedVal;
+						} else {
+							selectedResVO.setResource(resourceName, selectedVal, "leave_camp");
+						}
 					});
 
 					var selectedItems = {};
@@ -983,6 +989,7 @@ define(['ash',
 
 					GameGlobals.playerActionFunctions.updateCarriedItems(selectedItems);
 					GameGlobals.resourcesHelper.moveResFromCampToBag(selectedResVO);
+					GameGlobals.resourcesHelper.moveCurrencyFromCampToBag(selectedCurrency);
 					GameGlobals.playerActionFunctions.leaveCamp();
 				} else {
 					if ($btn.hasClass("action-manual-trigger")) {
@@ -1600,7 +1607,8 @@ define(['ash',
 					action: action,
 				};
 
-				let actionName = Text.t(action + "_name");
+				let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+				let actionName = Text.t("game.actions." + baseActionID + "_name");
 
 				title = title || actionName;
 				

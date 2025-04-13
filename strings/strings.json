@@ -13,6 +13,7 @@
             "claim_milestone_description": "Unlock new milestone and new undertakings.",
             "clear_debris_description": "Clear the debris blocking the way.",
             "clear_explosives_description": "Clear the old explosives blocking the way.",
+            "clear_gate_name": "Pay",
             "clear_gate_description": "Pay the toll",
             "clear_waste_r_description": "Clear the radiactive waste.",
             "clear_waste_t_description": "Clear the pollution.",

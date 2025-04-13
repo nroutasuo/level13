@@ -210,6 +210,16 @@ define([
 			}
 		},
 
+		moveCurrencyFromCampToBag: function (value) {
+			let playerCurrency = this.playerResourcesNodes.head.entity.get(CurrencyComponent);
+			let playerLevelCamp = this.nearestCampNodes.head !== null ? this.nearestCampNodes.head.entity : null;
+			if (playerLevelCamp) {
+				let campCurrency = playerLevelCamp.get(CurrencyComponent);
+				campCurrency.currency -= value;
+				playerCurrency.currency += value;
+			}
+		},
+
 		moveResourcesFromVOToVO: function (amountsVO, fromResVO, toResVO) {
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
