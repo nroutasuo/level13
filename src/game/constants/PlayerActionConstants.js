@@ -330,7 +330,7 @@ function (Ash, PlayerActionData, ObjectUtils, GameConstants, CampConstants, Impr
 			switch (baseActionID) {
 				case "use_in_home": return "resting";
 				case "use_in_campfire": return "discussing";
-				case "use_in_campfire": return "lighting";
+				case "use_in_campfire_2": return "lighting";
 				case "use_in_hospital": return "recovering";
 				case "use_in_hospital_2": return "augmenting";
 				case "use_in_market": return "visiting";
