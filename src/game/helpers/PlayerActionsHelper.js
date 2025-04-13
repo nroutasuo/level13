@@ -2159,6 +2159,15 @@ define([
 					this.addReqs(requirements, this.getReqs("craft_" + itemVO.id));	
 					return requirements;
 					
+				case "select_dialogue_option":
+					let optionID = this.getActionIDParam(action);
+					let currentPageVO = GameGlobals.dialogueHelper.getCurrentPageVO();
+					if (currentPageVO) {
+						let optionVO = currentPageVO.optionsByID[optionID];
+						if (optionVO && optionVO.conditions) return optionVO.conditions;
+					}
+					break;
+					
 				case "build_out_passage_up_stairs":
 				case "build_out_passage_up_elevator":
 				case "build_out_passage_up_hole":

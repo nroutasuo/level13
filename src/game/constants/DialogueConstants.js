@@ -227,6 +227,7 @@ define([
 			} else {
 				optionVO.buttonTextKey = this.parseTextKey(optionData.buttonKey);
 				optionVO.costs = optionData.costs || {};
+				optionVO.conditions = optionData.conditions || {};
 				optionVO.responsePageID = optionData.response || null;
 			}
 

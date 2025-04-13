@@ -7,6 +7,7 @@ define(['ash'], function (Ash) {
         responsePageID: null,
 		buttonTextKey: "",
 		costs: {},
+		conditions: {},
 
 		constructor: function (optionID) {
             this.optionID = optionID;
