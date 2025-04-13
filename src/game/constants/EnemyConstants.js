@@ -8,6 +8,12 @@ function (Ash, EnemyVO, PerkConstants) {
 		enemyUsage: {}, // usage in current world, just for debug
 		
 		enemyTexts: {
+			apparition: {
+				nouns: [ "apparition", "entity" ],
+				groupNouns: [ "cloud", "group", "gathering" ],
+				verbsActive: [ "occupied by", "haunted by"],
+				verbsDefeated: [ "driven away", "defeated", "cleared"],
+			},
 			bandit: {
 				nouns: [ "bandit", "thug" ],
 				groupNouns: [ "mob", "gang"],
