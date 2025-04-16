@@ -1401,7 +1401,7 @@ define(['ash',
 	
 					if (displayValue !== displayedCosts[key]) {
 						let $costSpanValue = elements.costSpanValues[key];
-						let showCostSpan = displayValue > 0 || isNegatedByBonus;
+						let showCostSpan = valueWithoutBonuses > 0;
 						$costSpanValue.html(displayValue);
 						GameGlobals.uiFunctions.toggle($costSpan, showCostSpan, signalParams);
 						displayedCosts[key] = displayValue;
