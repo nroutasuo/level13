@@ -1389,6 +1389,9 @@ body.dark .indicator-equipped {
   background-image: url('../img/eldorado/icon-checkmark-dark.png');
   opacity: 0.5;
 }
+body.dark .indicator-unique {
+  background-image: url('../img/eldorado/icon-unique-dark.png');
+}
 body.dark .collapsible-container {
   margin: 5px 0px;
 }
@@ -4025,6 +4028,9 @@ body.sunlit .indicator-fastincrease {
 body.sunlit .indicator-equipped {
   background-image: url('../img/eldorado/icon-checkmark.png');
   opacity: 0.5;
+}
+body.sunlit .indicator-unique {
+  background-image: url('../img/eldorado/icon-unique.png');
 }
 body.sunlit .collapsible-container {
   margin: 5px 0px;

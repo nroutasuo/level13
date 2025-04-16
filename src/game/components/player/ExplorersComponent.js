@@ -91,11 +91,11 @@ function (Ash, ExplorerConstants, ItemConstants) {
 		},
 		
 		getExplorerComparison: function (explorer) {
-			if (explorer == null) return 0;
+			if (explorer == null) return null;
 			let type = ExplorerConstants.getExplorerTypeForAbilityType(explorer.abilityType);
 			let selectedExplorer = this.getExplorerInPartyByType(type);
-			if (selectedExplorer == null) return 1;
-			if (!ExplorerConstants.isComparableAbilityTypes(selectedExplorer.abilityType, explorer.abilityType)) return 0;
+			if (selectedExplorer == null) return null;
+			if (!ExplorerConstants.isComparableAbilityTypes(selectedExplorer.abilityType, explorer.abilityType)) return null;
 			
 			return ExplorerConstants.getTotalItemBonus(explorer, []) - ExplorerConstants.getTotalItemBonus(selectedExplorer, []);
 		},

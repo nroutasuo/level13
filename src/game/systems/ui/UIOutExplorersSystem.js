@@ -228,13 +228,15 @@ define([
 				let explorer = explorersComponent.getExplorerByID(id);
 				let comparison = explorersComponent.getExplorerComparison(explorer);
 				let isSelected = explorer && explorer.inParty == true;
+				let isValidComparison = comparison != null;
 				
 				let indicator = $(this).find(".item-comparison-indicator");
 				
 				$(indicator).toggleClass("indicator-equipped", isSelected);
-				$(indicator).toggleClass("indicator-increase", !isSelected && comparison > 0);
-				$(indicator).toggleClass("indicator-even", !isSelected && comparison == 0);
-				$(indicator).toggleClass("indicator-decrease", !isSelected && comparison < 0);
+				$(indicator).toggleClass("indicator-increase", !isSelected && isValidComparison && comparison > 0);
+				$(indicator).toggleClass("indicator-even", !isSelected && isValidComparison && comparison == 0);
+				$(indicator).toggleClass("indicator-decrease", !isSelected && isValidComparison && comparison < 0);
+				$(indicator).toggleClass("indicator-unique", !isSelected && !isValidComparison);
 			});
 		},
 
