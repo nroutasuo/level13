@@ -868,7 +868,7 @@ define([
 				if (improvementsComponent.getCount(improvementNames.greenhouse) <= 0) {
 					let workshopComponent = sectorEntity.get(WorkshopComponent);
 					if (workshopComponent && workshopComponent.resource == resourceNames.herbs) {
-						projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.greenhouse), "build_out_greenhouse", sectorPosition));
+						projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.greenhouse), "build_out_greenhouse", sectorPosition, null, null, "repair"));
 					}
 				}
 			}
