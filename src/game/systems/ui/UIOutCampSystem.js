@@ -274,7 +274,7 @@
 			let isPopulationMaxed = campComponent.population >= maxPopulation;
 			let populationChangePerSec = campComponent.populationChangePerSec || 0;
 			let populationChangePerSecWithoutCooldown = campComponent.populationChangePerSecWithoutCooldown || 0;
-			let showReputationRequirement = maxPopulation > 0 && !isPopulationMaxed;
+			let showReputationRequirement = maxPopulation > 0;
 			
 			let isOnPopulationDecreaseCooldown = campComponent.populationDecreaseCooldown;
 
