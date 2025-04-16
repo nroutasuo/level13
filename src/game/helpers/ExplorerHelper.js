@@ -77,8 +77,10 @@ define([
 				return "gambler";
 			}
 			if (GameGlobals.gameState.getStoryFlag(StoryConstants.flags.RESCUE_PASSAGE_UP_BUILT)) {
-				if (!GameGlobals.gameState.getStoryFlag(StoryConstants.RESCUE_LEVEL_14_HAZARD_FOUND)) {
-					return "prospector";
+				if (!GameGlobals.gameState.getStoryFlag(StoryConstants.flags.RESCUE_LEVEL_14_HAZARD_FOUND)) {
+					if (!GameGlobals.gameState.getStoryFlag(StoryConstants.flags.RESCUE_EXPLORER_FOUND)) {
+						return "prospector";
+					}
 				}
 			}
 			return null;
