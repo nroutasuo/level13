@@ -490,8 +490,8 @@ define(['ash',
 		
 		getRandomRobotIcon: function () {
 			let robotIcons = [
-				"img/explorers/explorer_robot_01.png",
-				"img/explorers/explorer_robot_02.png",
+				"img/characters/explorer_robot_01.png",
+				"img/characters/explorer_robot_02.png",
 			];
 
 			return MathUtils.randomElement(robotIcons);
@@ -515,7 +515,7 @@ define(['ash',
 
 			log.w("no icon found for explorer with params: " + gender + ", " + origin + ", " + cultures + "," + abilityType + ", " + dialogueSource);
 
-			return "img/explorers/img/characters/explorer_generic.png";
+			return "img/explorers/explorer_generic.png";
 		},
 		
 		isValidIcon: function (iconDef, gender, origin, cultures, abilityType, explorerType, dialogueSource) {
