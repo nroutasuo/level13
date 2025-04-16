@@ -84,12 +84,15 @@ define([
 		updateExplorerAbility: function (explorerVO) {
 			if (!ExplorerConstants.isValidAbilityTypeForLevelUp(explorerVO.abilityType)) return;
 
+			let explorerType = ExplorerConstants.getExplorerTypeForAbilityType(explorerVO.abilityType);
+
 			let levelUpChance = 0.01;
 
 			if (explorerVO.trust > 2) levelUpChance *= 2;
 			if (explorerVO.trust > 5) levelUpChance *= 2
 			if (explorerVO.trust > 7) levelUpChance *= 2;
 			if (explorerVO.inParty) levelUpChance *= 2;
+			if (explorerType == ExplorerConstants.explorerType.FIGHTER) levelUpChance *= 2;
 			if (ExplorerConstants.isUnique(explorerVO)) levelUpChance *= 10;
 
 			if (Math.random() > levelUpChance) return;
