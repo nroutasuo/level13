@@ -1100,7 +1100,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				let itemID = item.id;
 				if (!itemCounts[itemID]) itemCounts[itemID] = 0;
 				itemCounts[itemID]++;
-				itemitemsByIDsById[itemID] = item;
+				itemsByID[itemID] = item;
 			}
 
 			let list = [];
