@@ -41,15 +41,24 @@ function (Ash, PlayerActionData, ObjectUtils, GameConstants, CampConstants, Impr
 		applyTemplates: function (data) {
 			let templateActions = [];
 
-			for (let templateAction in data.requirements) {
+			let allActions = [];
+			allActions = allActions.concat(Object.keys(this.requirements));
+			allActions = allActions.concat(Object.keys(this.costs));
+
+			for (let i in allActions) {
+				let templateAction = allActions[i];
 				if (!this.isTemplateAction(templateAction)) continue;
 				
 				let templatePrefix = templateAction.replace("__", "");
+
 				let templateReqs = data.requirements[templateAction] || {};
 				let templateCosts = data.costs[templateAction] || {};
+				let templateDuration = data.durations[templateAction] || null;
+
 				let actionsToApply = [];
 
-				for (let action in this.requirements) {
+				for (let j in allActions) {
+					let action = allActions[j];
 					if (this.isTemplateAction(action)) continue;
 					if (action.startsWith(templatePrefix)) {
 						actionsToApply.push(action);
@@ -68,6 +77,8 @@ function (Ash, PlayerActionData, ObjectUtils, GameConstants, CampConstants, Impr
 					let oldCosts = data.costs[action] || {};
 					let newCosts = Object.assign({}, templateCosts, oldCosts);
 					this.costs[action] = newCosts;
+
+					if (templateDuration && !this.durations[action]) this.durations[action] = templateDuration;
 				}
 
 				templateActions.push(templateAction);
@@ -77,6 +88,7 @@ function (Ash, PlayerActionData, ObjectUtils, GameConstants, CampConstants, Impr
 				let templateAction = templateActions[i];
 				delete this.requirements[templateAction];
 				delete this.costs[templateAction];
+				delete this.durations[templateAction];
 			}
 		},
 

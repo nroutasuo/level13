@@ -1222,6 +1222,26 @@
         "unlock_item_bag_4": {
             "hope": 212
         },
+        "unlock_item_clothing_body_13": {
+            "hope": 184,
+            "rumours": 3099
+        },
+        "unlock_item_clothing_body_15": {
+            "hope": 212,
+            "rumours": 3447
+        },
+        "unlock_item_clothing_hands_25": {
+            "rumours": 306
+        },
+        "unlock_item_clothing_head_27": {
+            "rumours": 248
+        },
+        "unlock_item_clothing_head_5": {
+            "hope": 138
+        },
+        "unlock_item_clothing_over_15": {
+            "rumours": 4755
+        },
         "unlock_item_clothing2": {
             "rumours": 13
         },
@@ -1248,26 +1268,6 @@
         },
         "unlock_item_clothing6": {
             "rumours": 1055
-        },
-        "unlock_item_clothing_body_13": {
-            "hope": 184,
-            "rumours": 3099
-        },
-        "unlock_item_clothing_body_15": {
-            "hope": 212,
-            "rumours": 3447
-        },
-        "unlock_item_clothing_hands_25": {
-            "rumours": 306
-        },
-        "unlock_item_clothing_head_27": {
-            "rumours": 248
-        },
-        "unlock_item_clothing_head_5": {
-            "hope": 138
-        },
-        "unlock_item_clothing_over_15": {
-            "rumours": 4755
         },
         "unlock_item_clothingl14": {
             "hope": 55,
@@ -1327,11 +1327,6 @@
         "unlock_worker_rope": {
             "rumours": 11
         },
-        "use_item_robot_1": {
-            "item_res_bands": 3,
-            "resource_metal": 50,
-            "resource_tools": 30
-        },
         "use_in_hospital": {
             "resource_food": 50,
             "resource_water": 30
@@ -1343,6 +1338,11 @@
         },
         "use_in_temple": {
             "silver": 1
+        },
+        "use_item_robot_1": {
+            "item_res_bands": 3,
+            "resource_metal": 50,
+            "resource_tools": 30
         },
         "use_spring": {
             "stamina": 1
@@ -1363,6 +1363,7 @@
         "craft_first_aid_kit_2": 1,
         "craft_flee_1": 1,
         "craft_glowstick_1": 1,
+        "improve_in__": 3,
         "investigate": 3,
         "launch": 3,
         "send_caravan": 600,
@@ -1371,7 +1372,7 @@
         "use_in_home": 60,
         "use_in_hospital": 180,
         "use_in_hospital_2": 120,
-        "use_in_library": 30,
+        "use_in_library": 10,
         "use_in_market": 10,
         "use_in_shrine": 10,
         "use_in_temple": 5
@@ -1685,6 +1686,9 @@
             }
         },
         "build_in_house": {
+            "featureUnlocked": {
+                "housing": true
+            },
             "improvements": {
                 "camp": [
                     1,
@@ -1694,9 +1698,6 @@
                     1,
                     -1
                 ]
-            },
-            "featureUnlocked": {
-                "housing": true
             }
         },
         "build_in_house2": {
@@ -2859,6 +2860,7 @@
                 "improve_building_temple2": true
             }
         },
+        "improve_in__": {},
         "improve_in_campfire": {
             "population": [
                 1,
@@ -3032,8 +3034,8 @@
             "busy": false,
             "hasForcedDialogue": false,
             "party": {
-                "isMissingForcedExplorer": false,
-                "hasInjuredExplorer": false
+                "hasInjuredExplorer": false,
+                "isMissingForcedExplorer": false
             }
         },
         "move_camp_global": {
@@ -3456,6 +3458,38 @@
                 "unlock_item_bag_3": true
             }
         },
+        "unlock_item_clothing_body_13": {
+            "blueprint": 13,
+            "upgrades": {
+                "unlock_item_scavenger_gear": true
+            }
+        },
+        "unlock_item_clothing_body_15": {
+            "upgrades": {
+                "unlock_item_clothing_body_13": true
+            }
+        },
+        "unlock_item_clothing_hands_25": {
+            "upgrades": {
+                "unlock_item_bag_2": true
+            }
+        },
+        "unlock_item_clothing_head_27": {
+            "upgrades": {
+                "unlock_item_bag_1": true
+            }
+        },
+        "unlock_item_clothing_head_5": {
+            "upgrades": {
+                "unlock_item_clothing_body_13": true
+            }
+        },
+        "unlock_item_clothing_over_15": {
+            "blueprint": 15,
+            "upgrades": {
+                "unlock_item_scavenger_gear": true
+            }
+        },
         "unlock_item_clothing2": {
             "upgrades": {
                 "unlock_item_shoe1": true
@@ -3500,38 +3534,6 @@
             "blueprint": 11,
             "upgrades": {
                 "unlock_item_clothing4h": true
-            }
-        },
-        "unlock_item_clothing_body_13": {
-            "blueprint": 13,
-            "upgrades": {
-                "unlock_item_scavenger_gear": true
-            }
-        },
-        "unlock_item_clothing_body_15": {
-            "upgrades": {
-                "unlock_item_clothing_body_13": true
-            }
-        },
-        "unlock_item_clothing_hands_25": {
-            "upgrades": {
-                "unlock_item_bag_2": true
-            }
-        },
-        "unlock_item_clothing_head_27": {
-            "upgrades": {
-                "unlock_item_bag_1": true
-            }
-        },
-        "unlock_item_clothing_head_5": {
-            "upgrades": {
-                "unlock_item_clothing_body_13": true
-            }
-        },
-        "unlock_item_clothing_over_15": {
-            "blueprint": 15,
-            "upgrades": {
-                "unlock_item_scavenger_gear": true
             }
         },
         "unlock_item_clothingl14": {
@@ -3625,8 +3627,8 @@
         "use_in_campfire": {
             "busy": false,
             "camp": {
-                "raid": false,
-                "campfireStarted": true
+                "campfireStarted": true,
+                "raid": false
             },
             "inCamp": true,
             "population": [
@@ -3641,8 +3643,8 @@
         "use_in_campfire_2": {
             "busy": false,
             "camp": {
-                "raid": false,
-                "campfireStarted": false
+                "campfireStarted": false,
+                "raid": false
             },
             "inCamp": true
         },
@@ -3740,9 +3742,6 @@
             ]
         },
         "use_item_cache_evidence": {
-            "inCamp": true
-        },
-        "use_item_note": {
             "inCamp": true
         },
         "use_item_cache_hope": {
@@ -3846,6 +3845,9 @@
                 0,
                 30
             ]
+        },
+        "use_item_note": {
+            "inCamp": true
         },
         "use_item_robot_1": {
             "busy": false,
