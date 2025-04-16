@@ -162,6 +162,7 @@ define([
 			
 			let levelIndex = WorldCreatorHelper.getLevelIndexForCamp(seed, campOrdinal, level);
 			let maxLevelIndex = WorldCreatorHelper.getMaxLevelIndexForCamp(seed, campOrdinal, level);
+			maxLevelIndex = Math.min(maxLevelIndex, 1); // don't allow luxury resources on level 14
 			
 			let luxuryResourceLevelIndex = WorldCreatorRandom.randomInt(1000 + seed + campOrdinal * 752, 0, maxLevelIndex + 1);
 			let isLuxuryResourceFoundOnThisLevel = levelIndex == luxuryResourceLevelIndex;
