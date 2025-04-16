@@ -786,7 +786,10 @@ define([
 		},
 		
 		getFastTrackTimeToNext: function (campNode, event) {
-			return 300;
+			switch (event) {
+				case OccurrenceConstants.campOccurrenceTypes.recruit: return 10;
+				default: return 300;
+			}
 		},
 
 		getTimeToNextDelta: function (campNode, event, dt) {
