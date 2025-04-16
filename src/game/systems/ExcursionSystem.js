@@ -25,6 +25,7 @@ define([
 			this.sectorNodes = engine.getNodeList(SectorNode);
 				
 			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.onPlayerPositionChanged);
+			GlobalSignals.add(this, GlobalSignals.playerEnteredCampSignal, this.onPlayerEnteredCamp);
 			GlobalSignals.add(this, GlobalSignals.playerLeftCampSignal, this.onPlayerLeftCamp);
 		},
 
@@ -35,7 +36,7 @@ define([
 			GlobalSignals.removeAll(this);
 		},
 
-		prepareExcursion: function () {
+		resetWorldBetweenExcursions: function () {
 			for (let node = this.sectorNodes.head; node; node = node.next) {
 				for (let i in PositionConstants.getLevelDirections()) {
 					let direction = PositionConstants.getLevelDirections()[i];
@@ -71,7 +72,11 @@ define([
 		},
 
 		onPlayerLeftCamp: function () {
-			this.prepareExcursion();
+			this.resetWorldBetweenExcursions();
+		},
+
+		onPlayerEnteredCamp: function () {
+			this.resetWorldBetweenExcursions();
 		}
 		
 	});
