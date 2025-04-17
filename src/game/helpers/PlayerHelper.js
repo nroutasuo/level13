@@ -561,13 +561,14 @@ define([
 			}
 		},
 		
-		getBestAvailableExplorer: function (explorerType) {
+		getBestAvailableExplorer: function (explorerType, exlucingAbilityType) {
 			let explorersComponent = this.playerStatsNodes.head.explorers;
 			let explorers = explorersComponent.getExplorersByType(explorerType, false);
 			let result = null;
 			let resultLevel = 0;
 			for (let i = 0; i < explorers.length; i++) {
 				let explorer = explorers[i];
+				if (exlucingAbilityType && explorer.abilityType == exlucingAbilityType) continue;
 				if (explorer.abilityLevel > resultLevel) {
 					result = explorer;
 					resultLevel = explorer.abilityLevel;
