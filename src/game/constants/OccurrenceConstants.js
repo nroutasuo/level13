@@ -30,14 +30,14 @@ define(['ash', 'utils/MathUtils', 'game/constants/CampConstants', 'game/constant
 		},
 
 		campOccurrenceCooldowns: {
-			accident: 60 * 30,
-			disaster: 60 * 60,
-			disease: 60 * 30,
+			accident: 60 * 90,
+			disaster: 60 * 50,
+			disease: 60 * 10,
 			raid: 60 * 20,
 			recruit: 60 * 25,
-			refugees: 60 * 60,
-			trader: 60 * 20,
-			visitor: 60 * 10,
+			refugees: 60 * 120,
+			trader: 60 * 15,
+			visitor: 60 * 20,
 		},
 
 		campOccurrenceCooldownsNew: {
@@ -46,7 +46,7 @@ define(['ash', 'utils/MathUtils', 'game/constants/CampConstants', 'game/constant
 		
 		campOccurrenceCooldownsVariations: {
 			accident: 5,
-			disaster: 5,
+			disaster: 4,
 			disease: 3,
 			raid: 3,
 			recruit: 3,
@@ -81,9 +81,11 @@ define(['ash', 'utils/MathUtils', 'game/constants/CampConstants', 'game/constant
 			}
 
 			switch (occurrenceType) {
+				case this.campOccurrenceTypes.accident:
 				case this.campOccurrenceTypes.disaster:
-				case this.campOccurrenceTypes.trader:
 				case this.campOccurrenceTypes.recruit:
+				case this.campOccurrenceTypes.refugees:
+				case this.campOccurrenceTypes.trader:
 				case this.campOccurrenceTypes.visitor:
 					numCampsFactor = numCamps;
 					break;
@@ -112,7 +114,7 @@ define(['ash', 'utils/MathUtils', 'game/constants/CampConstants', 'game/constant
 		},
 
 		getDiseaseOutbreakChance: function (population, hasHerbs, hasMedicine) {
-			let rawChance = population / (population + 80);
+			let rawChance = population / (population + 100);
 			let baseChance = Math.min(0.5, rawChance);
 			
 			if (hasMedicine) {
@@ -125,7 +127,7 @@ define(['ash', 'utils/MathUtils', 'game/constants/CampConstants', 'game/constant
 		},
 
 		getDiseaseMedicineFactor: function () {
-			return 0.2;
+			return 0.1;
 		},
 
 		getDiseaseHerbsFactor: function () {
