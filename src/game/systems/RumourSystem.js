@@ -71,7 +71,7 @@ define([
 					rumoursComponent.addChange("Campfires", accSpeedCampfire);
 					if (accSpeedMarket > 0) rumoursComponent.addChange("Markets", accSpeedMarket);
 					if (accSpeedInn > 0) rumoursComponent.addChange("Inns", accSpeedInn);
-					rumoursComponent.accumulation += accSpeed;
+					rumoursComponent.accumulation += accSpeedCamp;
 					rumoursComponent.accumulationPerCamp[campNode.position.level] = accSpeedCamp;
 				}
 				

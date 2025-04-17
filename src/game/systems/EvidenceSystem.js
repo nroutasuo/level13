@@ -73,7 +73,7 @@ define([
 					evidenceComponent.addChange("Libraries", accLibrary, campNode.position.level);
 					evidenceComponent.addChange("Scientists", accScientists, campNode.position.level);
 					evidenceComponent.addChange("Research Center", accResearchCenter, campNode.position.level);
-					evidenceComponent.accumulation += accSpeed;
+					evidenceComponent.accumulation += accSpeedCamp;
 					evidenceComponent.accumulationPerCamp[campNode.position.level] = accSpeedCamp;
 				}
 				
