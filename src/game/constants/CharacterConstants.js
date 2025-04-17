@@ -154,7 +154,6 @@ define(['ash', 'game/constants/DialogueConstants'], function (Ash, DialogueConst
                     possibleIcons.push("worker_scavenger_02");
                     break;
                 case CharacterConstants.characterTypes.workerScientist:
-                    possibleIcons.push("worker_scientist_01");
                     possibleIcons.push("worker_scientist_02");
                     possibleIcons.push("worker_scientist_03");
                     break;
