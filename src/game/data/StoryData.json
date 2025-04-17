@@ -294,7 +294,8 @@
                     "onStart": {
                         "storyFlags": {
                             "FALL_SEEN_SPACEFACTORY": true
-                        }
+                        },
+                        "log": "story.stories.fall_found_spacefactory_message"
                     },
                     "startConditions": {
                         "localeType": "spacefactory"
@@ -358,8 +359,8 @@
                         },
                         "log": "story.stories.greenhouse_disease_started_message",
                         "storyFlags": {
-                            "GREENHOUSE_PENDING_DISEASE": false,
-                            "GREENHOUSE_DISEASE_SEEN": true
+                            "GREENHOUSE_DISEASE_SEEN": true,
+                            "GREENHOUSE_PENDING_DISEASE": false
                         }
                     },
                     "startConditions": {
@@ -560,8 +561,17 @@
                     "onComplete": {
                         "storyFlags": {
                             "RESCUE_EXPLORER_LEFT": false
+                        },
+                        "log": "story.stories.rescue_completed_message"
+                    },
+                    "startConditions": {
+                        "player": {
+                            "position": {
+                                "level": 15
+                            }
                         }
-                    }
+                    },
+                    "startTrigger": "change_position"
                 }
             ],
             "startConditions": {
@@ -616,6 +626,17 @@
                     }
                 },
                 {
+                    "completeConditions": {
+                        "tribe": {
+                            "improvements": {
+                                "shrine": [
+                                    1,
+                                    -1
+                                ]
+                            }
+                        }
+                    },
+                    "completeTrigger": "action_build",
                     "id": "found_grove",
                     "onStart": {
                         "storyFlags": {
@@ -626,18 +647,7 @@
                         "localeType": "grove"
                     },
                     "startFromAny": true,
-                    "startTrigger": "locale_scouted",
-                    "completeTrigger": "action_build",
-                    "completeConditions": {
-                        "tribe": {
-                            "improvements": {
-                                "shrine": [
-                                    1,
-                                    -1
-                                ]
-                            }
-                        }
-                    }
+                    "startTrigger": "locale_scouted"
                 }
             ],
             "startTrigger": "immediate"
@@ -735,6 +745,18 @@
                     },
                     "startFromAny": true,
                     "startTrigger": "change_position"
+                },
+                {
+                    "id": "accepted_staying",
+                    "onStart": {
+                        "log": "story.stories.tribe_accepted_staying_message"
+                    },
+                    "startConditions": {
+                        "numCamps": 10,
+                        "inCamp": false
+                    },
+                    "startTrigger": "change_position",
+                    "completeTrigger": "immediate"
                 }
             ],
             "startTrigger": "action_enter_camp"
