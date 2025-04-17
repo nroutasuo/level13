@@ -863,7 +863,8 @@
 				if (duration <= 0) continue;
 				let hasEvent = GameGlobals.campHelper.hasEvent(sector, event);
 				if (!hasEvent) continue;
-				let isEventEnding = duration <= 10 || eventTimers.getEventTimeLeft(event) < 5;
+				let timeLeft = eventTimers.getEventTimeLeft(event);
+				let isEventEnding = (duration <= 10 || timeLeft < 5) && timeLeft != OccurrenceConstants.EVENT_DURATION_INFINITE;
 
 				let percent = eventTimers.getEventTimePercentage(event);
 				if (percent < 100) {
