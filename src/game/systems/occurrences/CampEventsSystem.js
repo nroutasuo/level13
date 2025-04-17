@@ -282,8 +282,22 @@ define([
 		},
 
 		isScheduled: function (campNode, event) {
-			var campTimers = campNode.entity.get(CampEventTimersComponent);
+			let campTimers = campNode.entity.get(CampEventTimersComponent);
 			return campTimers.isEventScheduled(event);
+		},
+
+		isScheduledSoon: function (campNode, event) {
+			let fastTrackTimeToNext = this.getFastTrackTimeToNext(campNode, event);
+			let campTimers = campNode.entity.get(CampEventTimersComponent);
+			let timeLeft = campTimers.getEventStartTimeLeft(event);
+			return timeLeft <= fastTrackTimeToNext;
+		},
+
+		isScheduledSoonSomewhere: function (event) {
+			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
+				if (this.isScheduledSoon(campNode, event)) return true;
+			}
+			return false;
 		},
 		
 		isNew: function (event) {
@@ -467,7 +481,7 @@ define([
 					let explorer = hasPendingExplorer ? campNode.camp.pendingRecruits.shift() : this.getRandomExplorer(campNode, 0.2);
 					let isFoundAsReward = hasPendingExplorer && explorer.source != ExplorerConstants.explorerSource.EVENT;
 					campNode.entity.add(new RecruitComponent(explorer, isFoundAsReward));
-					logMsg = hasPendingExplorer ? "Explorer met when exploring is waiting at the inn." : "A visitor arrives at the Inn. ";
+					logMsg = isFoundAsReward ? "Explorer met when exploring is waiting at the inn." : "A visitor arrives at the Inn. ";
 					GameGlobals.playerActionFunctions.unlockFeature("explorers");
 					if (hasPendingExplorer) {
 						duration = OccurrenceConstants.EVENT_DURATION_INFINITE;
@@ -524,6 +538,8 @@ define([
 		fastTrackEvent: function (event) {
 			let campNode = this.getBestCampForEvent(event);
 			if (!campNode) return;
+			let hasEvent = this.hasCampEvent(campNode, event);
+			if (hasEvent) return;
 			
 			let campTimers = campNode.entity.get(CampEventTimersComponent);
 			let fastTrackTimeToNext = this.getFastTrackTimeToNext(campNode, event);
@@ -735,6 +751,8 @@ define([
 		},
 
 		isEventBlockingProgress: function (event) {
+			if (this.isScheduledSoonSomewhere(event)) return false;
+
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.recruit:
 					let campOrdinal = GameGlobals.campHelper.getCurrentCampOrdinal();
@@ -746,7 +764,7 @@ define([
 							+ ExplorerConstants.getExplorerItemBonus(explorer, [], ItemConstants.itemBonusTypes.fight_def);
 					}
 					
-					let currentBestFighter = GameGlobals.playerHelper.getBestAvailableExplorer(ExplorerConstants.explorerType.FIGHTER);
+					let currentBestFighter = GameGlobals.playerHelper.getBestAvailableExplorer(ExplorerConstants.explorerType.FIGHTER, ExplorerConstants.abilityType.FLEE);
 					let typicalFighter = ExplorerConstants.getTypicalFighter(campOrdinal, campStep);
 					let currentBestTotal = getExplorerFightTotal(currentBestFighter);
 					let typicalTotal = getExplorerFightTotal(typicalFighter);
@@ -832,6 +850,8 @@ define([
 					break;
 			}
 
+			if (skipProbability > 0.95) skipProbability = 1;
+			if (skipProbability < 0.05) skipProbability = 0;
 
 			return skipProbability;
 		},
