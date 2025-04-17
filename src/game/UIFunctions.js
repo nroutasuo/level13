@@ -1688,7 +1688,11 @@ define(['ash',
 				$("#game-options-extended").toggle(show);
 				$("#btn-more").text(show ? Text.t("ui.meta.more_options_button_label") : Text.t("ui.meta.more_options_button_label"));
 				GlobalSignals.elementToggledSignal.dispatch($("#game-options-extended"), show);
-			}
+			},
+
+			showResultFlyout: function (resultVO) {
+				
+			},
 		});
 
 		return UIFunctions;
