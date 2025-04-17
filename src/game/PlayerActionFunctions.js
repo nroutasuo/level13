@@ -594,7 +594,7 @@ define(['ash',
 				addToLog: isFirst,
 			};
 
-			let showResultPopup = !GameConstants.cheatModeTakeAll;
+			let showResultPopup = !GameConstants.uiModeMinimialExplorationPopups;
 			
 			this.handleOutActionResults("scavenge", messages, showResultPopup, false, successCallback);
 		},
@@ -638,7 +638,7 @@ define(['ash',
 				addToLog: false,
 			};
 
-			let showResultPopup = !GameConstants.cheatModeTakeAll;
+			let showResultPopup = !GameConstants.uiModeMinimialExplorationPopups;
 			
 			this.handleOutActionResults("scavenge_heap", messages, showResultPopup, false, successCallback);
 		},
@@ -755,15 +755,18 @@ define(['ash',
 			let popupMsg = "Scouted the area.";
 			let logMsg = "";
 			let found = false;
+			let showResultPopup = !GameConstants.uiModeMinimialExplorationPopups;
 			let sunlit = featuresComponent.sunlit;
 			
 			if (featuresComponent.hasSpring) {
 				found = true;
+				showResultPopup = true;
 				popupMsg += "<br/>Found " + Text.addArticle(TextConstants.getSpringName(featuresComponent)) + ".";
 			}
 			
 			if (featuresComponent.hasTradeConnectorSpot && !GameGlobals.levelHelper.getFirstScoutedSectorWithFeatureOnLevel(level, "hasTradeConnectorSpot")) {
 				found = true;
+				showResultPopup = true;
 				popupMsg += "<br/>Found a good place for a bigger building project.";
 				logMsg += "Found a good place for a bigger building project.";
 			}
@@ -771,18 +774,21 @@ define(['ash',
 			let workshopComponent = sector.get(WorkshopComponent);
 			if (workshopComponent && workshopComponent.isClearable) {
 				found = true;
+				showResultPopup = true;
 				popupMsg += "<br/>Found " + Text.addArticle(TextConstants.getWorkshopName(workshopComponent.resource));
 				logMsg += "Found " + Text.addArticle(TextConstants.getWorkshopName(workshopComponent.resource));
 			}
 
 			if (featuresComponent.examineSpots.length > 0) {
 				found = true;
+				showResultPopup = true;
 				popupMsg += "<br/>Found some interesting objects.";
 			}
 			
 			if (featuresComponent.campable) {
 				if (!this.nearestCampNodes.head || this.nearestCampNodes.head.position.level != this.playerLocationNodes.head.position.level) {
 					found = true;
+					showResultPopup = true;
 					if (GameGlobals.gameState.numCamps == 0) {
 						popupMsg += "<br/>This seems like a safe spot to build a camp.";
 					} else {
@@ -795,12 +801,14 @@ define(['ash',
 				let passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
 				if (passagesComponent.passageUp && !GameGlobals.levelHelper.isPassageUpBuilt(level)) {
 					found = true;
+					showResultPopup = true;
 					popupMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageUp, PositionConstants.DIRECTION_UP, sunlit) + " ";
 					logMsg += level == 13 ? "Found a hole in the ceiling leading to the passage above, but it's far too high to reach." : "Found a passage to the level above.";
 				}
 
 				if (passagesComponent.passageDown && !GameGlobals.levelHelper.isPassageDownBuilt(level)) {
 					found = true;
+					showResultPopup = true;
 					popupMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageDown, PositionConstants.DIRECTION_DOWN, sunlit) + " ";
 					logMsg += "Found a passage to the level below.";
 				}
@@ -809,6 +817,7 @@ define(['ash',
 			let sectorLocalesComponent = sector.get(SectorLocalesComponent);
 			if (sectorLocalesComponent.locales.length > 0) {
 				found = true;
+				showResultPopup = true;
 				let locale = sectorLocalesComponent.locales[0];
 				if (sectorLocalesComponent.locales.length > 1) {
 					popupMsg += "<br/>There are some interesting buildings here.";
@@ -823,16 +832,19 @@ define(['ash',
 			if (featuresComponent.waymarks.length > 0) {
 				let sectorFeatures = GameGlobals.sectorHelper.getTextFeatures(sector);
 				for (let i = 0; i < featuresComponent.waymarks.length; i++) {
+					showResultPopup = true;
 					popupMsg += "<br/>" + TextConstants.getWaymarkText(featuresComponent.waymarks[i], sectorFeatures);
 				}
 			}
 
 			if (featuresComponent.heapResource) {
+				showResultPopup = true;
 				let heapDisplayName = TextConstants.getHeapDisplayName(featuresComponent.heapResource, featuresComponent);
 				popupMsg += "<br/>There is " + Text.addArticle(heapDisplayName) + " which can be scavenged for " + featuresComponent.heapResource + ".";
 			}
 			
 			if (GameGlobals.sectorHelper.canBeInvestigated(sector, true)) {
+				showResultPopup = true;
 				popupMsg += "<br/>Something happened here just before the Fall. This sector can be <span class='hl-functionality'>investigated</span>.";
 				logMsg += "This sector can be investigated.";
 			}
@@ -859,7 +871,7 @@ define(['ash',
 				addToLog: isFirst,
 			};
 			
-			this.handleOutActionResults("scout", messages, true, found, successCallback);
+			this.handleOutActionResults("scout", messages, showResultPopup, found, successCallback);
 		},
 
 		scoutLocale: function (i) {
@@ -908,14 +920,12 @@ define(['ash',
 				sectorStatus.localesScouted[i] = true;
 				
 				if (tradingPartner) {
-					debugger
 					GameGlobals.gameState.foundTradingPartners.push(tradingPartner);
 					GameGlobals.playerActionFunctions.unlockFeature("trade");
 				}
 				
 				if (luxuryResource) {
 					if (GameGlobals.gameState.foundLuxuryResources.indexOf(luxuryResource) < 0) {
-						debugger
 						GameGlobals.gameState.foundLuxuryResources.push(luxuryResource);
 					}
 				}
@@ -1073,7 +1083,7 @@ define(['ash',
 					possibleKeys.push("ui.exploration.action_rewards_message_locale_storeroom_01");
 					break;
 				 case localeTypes.camp:
-					possibleKeys.push("ui.exploration.action_rewards_message_locale_inhabited_01")
+					possibleKeys = [ "ui.exploration.action_rewards_message_locale_inhabited_01" ];
 			}
 
 			return MathUtils.randomElement(possibleKeys);
@@ -1417,6 +1427,7 @@ define(['ash',
 			}
 
 			showResultPopup = showResultPopup || !GameGlobals.playerHelper.canTakeAllRewards(rewards);
+			showResultPopup = showResultPopup || GameGlobals.playerHelper.hasRewardsThatRequireResultPopup(rewards);
 			showResultPopup = showResultPopup && !GameGlobals.gameState.uiStatus.isHidden;
 			
 			for (let i = 0; i < messages1.length; i++) {
@@ -1447,6 +1458,7 @@ define(['ash',
 			if (showResultPopup) {
 				GameGlobals.uiFunctions.showResultPopup(popupTitle, popupMsg, rewards, resultPopupCallback);
 			} else {
+				GameGlobals.uiFunctions.showResultFlyout(rewards);
 				resultPopupCallback(true);
 			}
 		},
@@ -1778,7 +1790,11 @@ define(['ash',
 				function () {
 					explorersComponent.removeExplorer(explorer);
 					GameGlobals.gameState.increaseGameStatSimple("numExplorersDismissed");
-					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), explorer.name + " leaves.");
+					if (explorer.animalType != null) {
+						GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), explorer.name + " leaves.");
+					} else {
+						GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "You let " + explorer.name + " go.");
+					}
 					GlobalSignals.explorersChangedSignal.dispatch();
 				}
 			);

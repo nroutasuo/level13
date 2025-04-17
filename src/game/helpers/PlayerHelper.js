@@ -314,6 +314,23 @@ define([
 
 			return true;
 		},
+
+		hasRewardsThatRequireResultPopup: function (resultVO) {
+			if (!resultVO) return false;
+			// in these cases the result popup is shown, even if by default not shown by test mode etc
+			// it can be skipped for resources and player stats
+			if (resultVO.gainedItems.length > 0) return true;
+			if (resultVO.lostItems.length > 0) return true;
+			if (resultVO.brokenItems.length > 0) return true;
+			if (resultVO.gainedExplorers.length > 0) return true;
+			if (resultVO.lostExplorers.length > 0) return true;
+			if (resultVO.gainedExplorerInjuries.length > 0) return true;
+			if (resultVO.lostPerks.length > 0) return true;
+			if (resultVO.gainedPerks.length > 0) return true;
+			if (resultVO.gainedItemUpgrades.length > 0) return true;
+			if (resultVO.gainedBlueprintPiece != null) return true;
+			return false;
+		},
 		
 		hasRestedThisExcursion: function () {
 			if (this.isInCamp()) return false;

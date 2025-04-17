@@ -6,6 +6,7 @@ define(['ash',
 	'utils/MathUtils',
 	'game/GameGlobals',
 	'game/constants/ColorConstants',
+	'game/constants/GameConstants',
 	'game/constants/ExplorerConstants',
 	'game/constants/UIConstants',
 	'game/constants/CanvasConstants',
@@ -29,7 +30,7 @@ define(['ash',
 	'game/components/sector/improvements/WorkshopComponent',
 	'game/vos/PositionVO'],
 function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
-	GameGlobals, ColorConstants, ExplorerConstants, UIConstants, CanvasConstants, ExplorationConstants, ItemConstants, MovementConstants, PositionConstants, SectorConstants, StoryConstants, WorldConstants,
+	GameGlobals, ColorConstants, GameConstants, ExplorerConstants, UIConstants, CanvasConstants, ExplorationConstants, ItemConstants, MovementConstants, PositionConstants, SectorConstants, StoryConstants, WorldConstants,
 	PlayerPositionNode,
 	LevelComponent, CampComponent, PositionComponent, ItemsComponent,
 	SectorStatusComponent, SectorLocalesComponent, SectorFeaturesComponent, PassagesComponent, SectorImprovementsComponent, WorkshopComponent,
@@ -762,6 +763,9 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			let useSunlitIcon = isLocationSunlit;
 			
 			let iconSize = 10;
+
+			let showStashes = this.isMapEasyMode;
+			let hasStashOnSector = sectorFeatures.stashes.length > 0 && sectorFeatures.stashes.length > statusComponent.stashesFound.length;
 			
 			if (options.mapMode == MapUtils.MAP_MODE_HAZARDS) {
 				if (this.showSectorHazards(sector)) {
@@ -800,6 +804,9 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 				ctx.drawImage(this.icons["campable" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
 				return true;
 			} else if (mapModeHasPois && locationShowPOIs && (numUnscoutedLocales > 0 || numUnexaminedSpots > 0)) {
+				ctx.drawImage(this.icons["interest" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
+				return true;
+			} else if (mapModeHasPois && locationShowPOIs && showStashes && hasStashOnSector) {
 				ctx.drawImage(this.icons["interest" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
 				return true;
 			} else if (mapModeHasPois && locationShowPOIs && sectorPassages.passageUp) {

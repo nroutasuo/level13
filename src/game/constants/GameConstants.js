@@ -4,9 +4,17 @@ define( function () {
 
 		gameSpeedCamp: 1,
 		gameSpeedExploration: 1,
+		
 		isDebugVersion: false,
 		isCheatsEnabled: false,
 		isAutosaveEnabled: true,
+
+		uiModeMinimialExplorationPopups: false,
+
+		cheatModeBlueprints: false,
+		cheatModeSupplies: false,
+		cheatModeCampProduction: false,
+		cheatModeHazards: false,
 
 		SAVE_SLOT_DEFAULT: "default",
 		SAVE_SLOT_BACKUP: "backup",
@@ -21,12 +29,6 @@ define( function () {
 			steps: "steps",
 			level: "level",
 		},
-
-		cheatModeBlueprints: false,
-		cheatModeSupplies: false,
-		cheatModeTakeAll: false,
-		cheatModeCampProduction: false,
-		cheatModeHazards: false,
 		
 		gameURL: "https://nroutasuo.github.io/level13",
 		
