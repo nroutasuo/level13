@@ -677,7 +677,7 @@
         "campOrdinalMaximum": 11,
         "campOrdinalRequired": 2,
         "configData": {
-            "metalValue": 20
+            "metalValue": 15
         },
         "icon": "img/items/cache-metal.png",
         "isCraftable": false,
@@ -691,7 +691,7 @@
     "cache_metal_3": {
         "campOrdinalRequired": 9,
         "configData": {
-            "metalValue": 30
+            "metalValue": 20
         },
         "icon": "img/items/cache-metal-plus.png",
         "isCraftable": false,
@@ -705,7 +705,7 @@
     "cache_metal_4": {
         "campOrdinalRequired": 10,
         "configData": {
-            "metalValue": 40
+            "metalValue": 25
         },
         "icon": "img/items/cache-metal-plus.png",
         "isCraftable": false,
