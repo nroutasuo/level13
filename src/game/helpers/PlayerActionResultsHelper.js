@@ -345,13 +345,17 @@ define([
 			let localeDifficulty = (localeVO.requirements.vision[0] + localeVO.costs.stamina / 10) / 100;
 			let itemTags = this.getSectorItemTags().concat(localeVO.getItemTags());
 
+			let evidenceAmount = ExplorationConstants.getScoutLocaleEvidenceReward(localeVO.type, campOrdinal);
+
 			// tribe stats (always)
 			if (localeVO.type == localeTypes.grove) {
 				rewards.gainedHope = 2;
 			} else if (localeVO.type == localeTypes.tradingpartner) {
 				rewards.gainedHope = 1;
+			} else if (localeVO.type == localeTypes.depot || localeVO.type == localeTypes.spacefactory) {
+				rewards.gainedEvidence = evidenceAmount;
 			} else {
-				rewards.gainedEvidence = ExplorationConstants.getScoutLocaleEvidenceReward(localeVO.type, campOrdinal);
+				this.addCovertibleTribeStatRewards(rewards, "evidence", evidenceAmount);
 			}
 
 			// stashes (always)
@@ -463,10 +467,7 @@ define([
 				let currencyModifier = EnemyConstants.getDropsCurrency(enemyVO) ? 1 : 0;
 				rewards.gainedCurrency = this.getRewardCurrency(currencyModifier, efficiency, 0);
 
-				let playerVision = this.playerStatsNodes.head.vision.value;
-				let perksComponent = this.playerStatsNodes.head.perks;
-				let playerLuck = perksComponent.getTotalEffect(PerkConstants.perkTypes.luck);
-				let loseInventoryProbability = PlayerActionConstants.getLoseInventoryProbability("fight", playerVision, playerLuck);
+				let loseInventoryProbability = GameGlobals.playerActionsHelper.getLoseInventoryProbability("fight");
 				this.addLostAndBrokenItems(rewards, "fight", loseInventoryProbability, true);
 			} else {
 				rewards = this.getFadeOutResults("fight", 0.5, 1, 0.75, 0.5, enemyVO);
@@ -675,6 +676,15 @@ define([
 					}
 				}
 			}
+
+			if (rewards.gainedExplorers) {
+				for (let i = 0; i < rewards.gainedExplorers.length; i++) {
+					let explorer = rewards.gainedExplorers[i];
+					if (typeof explorer === "string") {
+						rewards.gainedExplorers[i] = ExplorerConstants.getNewPredefinedExplorer(explorer);
+					}
+				}
+			}
 		},
 
 		// context:
@@ -694,18 +704,26 @@ define([
 			let explorerVO = context.explorerVO || null;
 
 			let actionCampSector = campSector || GameGlobals.playerActionsHelper.getActionCampSector();
+			let excursionComponent = this.playerResourcesNodes.head.entity.get(ExcursionComponent);
 
 			rewards.collected = true;
 
-			if (rewards && rewards.action == "scavenge") {
-				var excursionComponent = this.playerResourcesNodes.head.entity.get(ExcursionComponent);
-				if (excursionComponent) {
+			if (excursionComponent) {
+				if (rewards.action == "scavenge") {
 					if (rewards.isSomethingUseful()) {
 						excursionComponent.numConsecutiveScavengeUseless = 0;
 						excursionComponent.numConsecutiveScavengeUselessSameLocation = 0;
 					} else {
 						excursionComponent.numConsecutiveScavengeUseless++;
 						excursionComponent.numConsecutiveScavengeUselessSameLocation++;
+					}
+				}
+
+				if (rewards.action == "scout") {
+					if (rewards.gainedItems.length == 0) {
+						excursionComponent.numConsecutiveScoutItemsFound = 0;
+					} else {
+						excursionComponent.numConsecutiveScoutItemsFound++;
 					}
 				}
 			}
@@ -981,61 +999,27 @@ define([
 
 			let div = "<div id='reward-div'>";
 			
-			if (resultVO.gainedResourcesFromExplorers.getTotal() > 0 || resultVO.gainedItemsFromExplorers.length > 0) {
-				// assuming only explorers of certain type find items
-				let explorer = explorersComponent.getExplorerInPartyByType(ExplorerConstants.explorerType.SCAVENGER);
-				let displayName = explorer ? "<span class='hl-functionality'>" + explorer.name + "</span>" : "Explorers";
-				
-				let displayFinds = "";
-				let totalResources = resultVO.gainedResourcesFromExplorers.getTotal();
-				let totalItems = resultVO.gainedItemsFromExplorers.length;
-				if (totalResources > 0 && totalItems == 0) {
-					if (resultVO.gainedResourcesFromExplorers.isOnlySupplies()) {
-						displayFinds = "some supplies";
-					} else if (resultVO.gainedResourcesFromExplorers.isOneResource()) {
-						displayFinds = "some " + resultVO.gainedResourcesFromExplorers.getNames()[0];
-					} else {
-						displayFinds = "some resources";
-					}
-				} else if (totalItems == 1 && totalResources == 0) {
-					displayFinds = Text.addArticle(resultVO.gainedItemsFromExplorers[0].name);
-				} else if (totalItems > 1 && totalResources == 0) {
-					let uniqueNames = [];
-					let uniqueTypes = [];
-					for (let i = 0; i < resultVO.gainedItemsFromExplorers.length; i++) {
-						let item = resultVO.gainedItemsFromExplorers[i];
-						let itemName = ItemConstants.getItemDisplayName(item);
-						if (uniqueNames.indexOf(itemName) < 0) uniqueNames.push(itemName);
-						if (uniqueTypes.indexOf(item.type) < 0) uniqueTypes.push(item.type);
-					}
-					if (uniqueNames.length == 1) {
-						displayFinds = totalItems + " " + Text.pluralify(uniqueNames[0]);
-					} else if (uniqueTypes.length == 1) {
-						displayFinds = "some " + ItemConstants.getItemTypeDisplayName(uniqueTypes[0]);
-					} else {
-						displayFinds = "some items";
-					}
-				} else {
-					displayFinds = "some things";
-				}
-				
-				div += "<div>";
-				div += displayName + " found " + displayFinds;
-				div += "</div>";
-			}
+			div += this.addExplorerBonusesToRewardDiv(resultVO);
 			
 			if (resultVO.gainedExplorers && resultVO.gainedExplorers.length > 0) {
 				for (let i = 0; i < resultVO.gainedExplorers.length; i++) {
-					let explorer = resultVO.gainedExplorers[i];
-					let explorerType = ExplorerConstants.getExplorerTypeForAbilityType(explorer.abilityType);
-					let willJoin = this.willGainedExplorerJoinParty(explorer);
+					let explorerVO = resultVO.gainedExplorers[i];
+					let explorerType = ExplorerConstants.getExplorerTypeForAbilityType(explorerVO.abilityType);
+					let willJoin = this.willGainedExplorerJoinParty(explorerVO);
 					let explorerCamp = this.getDefaultRewardCampNode();
-					let pronoun = ExplorerConstants.getPronoun(explorer);
+					let pronoun = ExplorerConstants.getPronoun(explorerVO);
 					let explorerTypeName = ExplorerConstants.getExplorerTypeDisplayName(explorerType);
+
+					let isAnimal = ExplorerConstants.isAnimal(explorerVO.abilityType);
+
 					div += "<div>"
-					div += UIConstants.getExplorerDivSimple(explorer, false, false, true);
+					div += UIConstants.getExplorerDivSimple(explorerVO, false, false, true);
 					div += "<br/>";
-					div += "Met <span class='hl-functionality'>" + Text.addArticle(explorerTypeName) + "</span> called " + explorer.name + ". ";
+					if (isAnimal) {
+						div += "Found a stray <span class='hl-functionality'>" + Text.addArticle(explorerVO.name) + "</span>. ";
+					} else {
+						div += "Met <span class='hl-functionality'>" + Text.addArticle(explorerTypeName) + "</span> called " + explorerVO.name + ". ";
+					}
 					
 					if (willJoin) {
 						div += Text.capitalize(pronoun) + " joined the party.";
@@ -1186,14 +1170,14 @@ define([
 			}
 
 			if (resultVO.lostPerks.length > 0) {
-				let lostNegativePerks = resultVO.lostPerks.filter(p => PerkConstants.isNegative(p));
+				let lostNegativePerks = resultVO.lostPerks.filter(p => p && PerkConstants.isNegative(p));
 				if (lostNegativePerks.length > 0) {
-					div += "<p>Got rid of " + TextConstants.getListText(resultVO.lostPerks.map(perkVO => perkVO.name)) + ".</p>";
+					div += "<p>Got rid of " + TextConstants.getListText(lostNegativePerks.map(perkVO => perkVO.name)) + ".</p>";
 				}
 
-				let lostPositivePerks = resultVO.lostPerks.filter(p => !PerkConstants.isNegative(p));
+				let lostPositivePerks = resultVO.lostPerks.filter(p => p && !PerkConstants.isNegative(p));
 				if (lostPositivePerks.length > 0) {
-					div += "<p class='warning'>You lost " + TextConstants.getListText(resultVO.lostPerks.map(perkVO => perkVO.name)) + ".</p>";
+					div += "<p class='warning'>You lost " + TextConstants.getListText(lostPositivePerks.map(perkVO => perkVO.name)) + ".</p>";
 				}
 			}
 
@@ -1202,6 +1186,77 @@ define([
 			}
 
 			div += "</div>";
+			return div;
+		},
+
+		addExplorerBonusesToRewardDiv: function (resultVO) {
+			let div = "";
+
+			let explorersComponent = this.playerStatsNodes.head.explorers;
+
+			// TODO save which explorer found what instead of guessing from found things and type
+
+			if (resultVO.gainedResourcesFromExplorers.getTotal() > 0 || resultVO.gainedItemsFromExplorers.length > 0) {
+
+				let explorer = explorersComponent.getExplorerInPartyByType(ExplorerConstants.explorerType.SCAVENGER);
+				if (resultVO.gainedItemsFromExplorers.length == 1 && resultVO.gainedItemsFromExplorers[0].id.indexOf("consumable_map_explorer") >= 0) {
+					explorer = explorersComponent.getExplorerInPartyByType(ExplorerConstants.explorerType.SCOUT);
+				}
+
+				let displayName = explorer ? "<span class='hl-functionality'>" + explorer.name + "</span>" : "Explorers";
+				
+				let displayFinds = "";
+				let totalResources = resultVO.gainedResourcesFromExplorers.getTotal();
+				let totalItems = resultVO.gainedItemsFromExplorers.length;
+				if (totalResources > 0 && totalItems == 0) {
+					if (resultVO.gainedResourcesFromExplorers.isOnlySupplies()) {
+						displayFinds = "some supplies";
+					} else if (resultVO.gainedResourcesFromExplorers.isOneResource()) {
+						displayFinds = "some " + resultVO.gainedResourcesFromExplorers.getNames()[0];
+					} else {
+						displayFinds = "some resources";
+					}
+				} else if (totalItems == 1 && totalResources == 0) {
+					let itemName = ItemConstants.getItemDisplayName(resultVO.gainedItemsFromExplorers[0]);
+					displayFinds = Text.addArticle(itemName);
+				} else if (totalItems > 1 && totalResources == 0) {
+					let uniqueNames = [];
+					let uniqueTypes = [];
+					for (let i = 0; i < resultVO.gainedItemsFromExplorers.length; i++) {
+						let item = resultVO.gainedItemsFromExplorers[i];
+						let itemName = ItemConstants.getItemDisplayName(item);
+						if (uniqueNames.indexOf(itemName) < 0) uniqueNames.push(itemName);
+						if (uniqueTypes.indexOf(item.type) < 0) uniqueTypes.push(item.type);
+					}
+					if (uniqueNames.length == 1) {
+						displayFinds = totalItems + " " + Text.pluralify(uniqueNames[0]);
+					} else if (uniqueTypes.length == 1) {
+						displayFinds = "some " + ItemConstants.getItemTypeDisplayName(uniqueTypes[0]);
+					} else {
+						displayFinds = "some items";
+					}
+				} else {
+					displayFinds = "some things";
+				}
+				
+				div += "<div>";
+				div += displayName + " found " + displayFinds;
+				div += "</div>";
+			}
+			
+			if (GameGlobals.playerHelper.getPartyAbilityLevel(ExplorerConstants.abilityType.SCAVENGE_BLUEPRINTS) > 0) {
+				let explorer = explorersComponent.getExplorerInPartyByType(ExplorerConstants.explorerType.SCAVENGER);
+
+				let displayName = explorer ? "<span class='hl-functionality'>" + explorer.name + "</span>" : "Explorers";
+				let displayFinds = " a blueprint";
+
+				if (resultVO.gainedBlueprintPiece) {
+					div += "<div>";
+					div += displayName + " found " + displayFinds;
+					div += "</div>";
+				}
+			}
+
 			return div;
 		},
 
@@ -1481,7 +1536,17 @@ define([
 
 			if (fallback) return [ fallback ];
 
+			let hasHandler = GameGlobals.playerHelper.getPartyAbilityLevel(ExplorerConstants.abilityType.SCAVENGE_HANDLER) > 0;
+
 			let explorerStats = GameGlobals.playerHelper.getExplorerStats();
+
+			if (hasHandler) {
+				probability = probability * 4;
+			}
+
+			if (explorerStats.hasAllTypes) {
+				probability = probability / 2;
+			}
 
 			if (explorerStats.numTotalExplorers > 6) {
 				probability = probability / 2;
@@ -1490,15 +1555,15 @@ define([
 			if (explorerStats.numTotalExplorers > 9) {
 				probability = probability / 2;
 			}
-
-			if (explorerStats.hasAllTypes) {
-				probability = probability / 2;
-			}
 			
 			if (Math.random() < probability) {
+				let options = {};
 				let campOrdinal = GameGlobals.gameState.numCamps;
 				let appearLevel = playerPos.level;
-				let explorerVO = GameGlobals.explorerHelper.getNewRandomExplorer(ExplorerConstants.explorerSource.SCOUT, campOrdinal, appearLevel);
+				if (hasHandler) {
+					options.forcedAbilityType = ExplorerConstants.abilityType.SCAVENGE_CAPACITY;
+				}
+				let explorerVO = GameGlobals.explorerHelper.getNewRandomExplorer(ExplorerConstants.explorerSource.SCOUT, campOrdinal, appearLevel, options);
 				result.push(explorerVO);
 			}
 			
@@ -1507,6 +1572,7 @@ define([
 
 		// options
 		// - rarityKey: context-specific key used to determine item rarity (scavengeRarity/localeRarity/tradeRarity/investigateRarity)
+		// - itemTypes: list of allowed item types (if empty all types allowed)
 		// - allowNextCampOrdinal: include items that require next camp ordinal in the valid items (for high value rewards)
 		// - tags: context tags that increase chances of items with those tags
 		getRewardItem: function (campOrdinal, step, options) {
@@ -1551,6 +1617,7 @@ define([
 			let itemScores = {};
 			for (var type in ItemConstants.itemDefinitions) {
 				if (type == ItemConstants.itemTypes.ingredient) continue;
+				if (options.itemTypes && options.itemTypes.indexOf(type) < 0) continue;
 				let isObsoletable = ItemConstants.isObsoletable(type);
 				let itemList = ItemConstants.itemDefinitions[type];
 				for (let i in itemList) {
@@ -1694,6 +1761,8 @@ define([
 				log.w("No valid reward items for getSpecificRewardItem");
 				return null;
 			}
+
+			if (Math.random() > itemProbability) return null;
 			
 			let index = MathUtils.getWeightedRandom(0, possibleItemIds.length);
 			let itemID = possibleItemIds[index];
@@ -1876,35 +1945,80 @@ define([
 			let generalBonus = GameGlobals.playerHelper.getCurrentBonus(ItemConstants.itemBonusTypes.scavenge_general);
 			let suppliesBonus = GameGlobals.playerHelper.getCurrentBonus(ItemConstants.itemBonusTypes.scavenge_supplies);
 			let ingredientsBonus = GameGlobals.playerHelper.getCurrentBonus(ItemConstants.itemBonusTypes.scavenge_ingredients);
+			let valuablesBonus = GameGlobals.playerHelper.getCurrentBonus(ItemConstants.itemBonusTypes.scavenge_valuables);
 			
-			// general (resources)
-			let bonusResourceProb = generalBonus - 1;
-			let bonusResources = this.getRewardResources(bonusResourceProb, 1, efficiency, sectorResources);
-			rewards.gainedResourcesFromExplorers = bonusResources;
-			rewards.gainedResources.addAll(bonusResources, "reward-explorer-bonus");
-			
-			if (bonusResources.getTotal() > 0) {
-				generalBonus = 0;
+			// general
+			if (generalBonus > 1) {
+				let bonusResourceProb = generalBonus - 1;
+				let bonusResources = this.getRewardResources(bonusResourceProb, 1, efficiency, sectorResources);
+				rewards.gainedResourcesFromExplorers = bonusResources;
+				rewards.gainedResources.addAll(bonusResources, "reward-explorer-bonus");
+
+				let bonusItemProb = bonusResources.getTotal() > 0 ? 0 : generalBonus - 1;
+				let bonusIngredientProb = bonusResources.getTotal() > 0 ? 0 : generalBonus - 1;
+				let bonusItems = this.getRewardItems(bonusItemProb, bonusIngredientProb , sectorIngredients, itemOptions);
+				for (let i = 0; i < bonusItems.length; i++) {
+					rewards.gainedItems.push(bonusItems[i]);
+					rewards.gainedItemsFromExplorers.push(bonusItems[i])
+				}
 			}
 			
 			// supplies
-			let bonusSuppliesProb = suppliesBonus - 1;
-			let sectorSupplies = new ResourcesVO(storageTypes.RESULT);
-			sectorSupplies.setResource(resourceNames.food, sectorResources.getResource(resourceNames.food), "reward-explorer-bonus");
-			sectorSupplies.setResource(resourceNames.water, sectorResources.getResource(resourceNames.water), "reward-explorer-bonus");
-			let bonusSupplies = this.getRewardResources(bonusSuppliesProb, 1, efficiency, sectorSupplies);
-			rewards.gainedResourcesFromExplorers.addAll(bonusSupplies, "reward-explorer-bonus");
-			rewards.gainedResources.addAll(bonusSupplies, "reward-explorer-bonus");
+			if (suppliesBonus > 1) {
+				let bonusSuppliesProb = suppliesBonus - 1;
+				let sectorSupplies = new ResourcesVO(storageTypes.RESULT);
+				sectorSupplies.setResource(resourceNames.food, sectorResources.getResource(resourceNames.food), "reward-explorer-bonus");
+				sectorSupplies.setResource(resourceNames.water, sectorResources.getResource(resourceNames.water), "reward-explorer-bonus");
+				let bonusSupplies = this.getRewardResources(bonusSuppliesProb, 1, efficiency, sectorSupplies);
+				rewards.gainedResourcesFromExplorers.addAll(bonusSupplies, "reward-explorer-bonus");
+				rewards.gainedResources.addAll(bonusSupplies, "reward-explorer-bonus");
+			}
 			
 			// ingredients
-			if (rewards.gainedItems.length == 0) {
-				let bonusItemProb = generalBonus - 1;
-				let bonusIngredientProb = generalBonus - 1 + ingredientsBonus - 1;
-				let bonusItems = this.getRewardItems(bonusItemProb, bonusIngredientProb, sectorIngredients, itemOptions);
+			if (ingredientsBonus > 1) {
+				let bonusIngredientProb = ingredientsBonus - 1;
+				let bonusItems = this.getRewardItems(0, bonusIngredientProb, sectorIngredients, itemOptions);
+				for (let i = 0; i < bonusItems.length; i++) {
+					rewards.gainedItems.push(bonusItems[i]);
+					rewards.gainedItemsFromExplorers.push(bonusItems[i])
+				}
+			}
+
+			// valuables
+			if (valuablesBonus > 1) {
+				let bonusItemProb = valuablesBonus - 1;
+				let valuablesItemOptions = Object.assign({}, itemOptions);
+				valuablesItemOptions.allowNextCampOrdinal = true;
+				valuablesItemOptions.itemTypes = [ ItemConstants.itemTypes.artefact, ItemConstants.itemTypes.trade ];
+				valuablesItemOptions.tags = itemOptions.tags || {};
+				valuablesItemOptions.tags.push(ItemConstants.itemTags.valuable);
+				valuablesItemOptions.rarityKey = "localeRarity"; // trade items not as rare
+				let bonusItems = this.getRewardItems(bonusItemProb, 0, sectorIngredients, valuablesItemOptions);
 				rewards.gainedItemsFromExplorers = bonusItems;
 				for (let i = 0; i < bonusItems.length; i++) {
 					rewards.gainedItems.push(bonusItems[i]);
 				}
+			}
+		},
+
+		addCovertibleTribeStatRewards: function (resultVO, statType, baseAmount) {
+			let hasEvidenceBonus = GameGlobals.playerHelper.getPartyAbilityLevel(ExplorerConstants.abilityType.STAT_EVIDENCE) > 0;
+			let hasRumoursBonus = GameGlobals.playerHelper.getPartyAbilityLevel(ExplorerConstants.abilityType.STAT_RUMOURS) > 0;
+			let hasHopeBonus = GameGlobals.playerHelper.getPartyAbilityLevel(ExplorerConstants.abilityType.STAT_HOPE) > 0;
+
+			let bonusAmount = baseAmount + Math.max(1, Math.floor(baseAmount / 2));
+
+			if (hasEvidenceBonus) {
+				resultVO.gainedEvidence = bonusAmount;
+			} else if (hasRumoursBonus) {
+				resultVO.gainedRumours = bonusAmount;
+			} else if (hasHopeBonus) {
+				resultVO.gainedHope = bonusAmount;
+			} else {
+				if (statType == "evidence") resultVO.gainedEvidence = baseAmount;
+				if (statType == "rumours") resultVO.gainedRumours = baseAmount;
+				if (statType == "hope") resultVO.gainedHope = baseAmount;
+				if (statType == "insight") resultVO.gainedInsight = baseAmount;
 			}
 		},
 		
@@ -2094,7 +2208,7 @@ define([
 				let explorerType = ExplorerConstants.getExplorerTypeForAbilityType(explorerVO.abilityType);
 				if (fightExplorers.length == 1 && explorerType == ExplorerConstants.explorerType.FIGHTER) return false;
 				if (!GameGlobals.explorerHelper.isDismissable(explorerVO)) return false;
-				if (!ExplorerConstants.isUnique(explorerVO)) return false;
+				if (ExplorerConstants.isUnique(explorerVO)) return false;
 				return true;
 			};
 
@@ -2158,7 +2272,7 @@ define([
 		getResultInjuriesExplorer: function (injuryProbability, action, enemyVO) {
 			let result = [];
 
-			if (injuryProbability < Math.random()) return result;
+			if (Math.random() > injuryProbability) return result;
 
 			let allExplorers = GameGlobals.playerHelper.getExplorers();
 			let validExplorers = [];
@@ -2253,6 +2367,10 @@ define([
 
 			let blueprintType = localeVO.isEarly ? UpgradeConstants.BLUEPRINT_BRACKET_EARLY : UpgradeConstants.BLUEPRINT_BRACKET_LATE;
 			let levelBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(campOrdinal, blueprintType, levelIndex, maxLevelIndex);
+
+			if (GameGlobals.playerHelper.getPartyAbilityLevel(ExplorerConstants.abilityType.SCAVENGE_BLUEPRINTS) > 0) {
+				minBlueprintProbability *= 2;
+			}
 
 			// find blueprints available to discover
 
