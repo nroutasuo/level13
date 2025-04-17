@@ -237,6 +237,7 @@ define([
 
 				let sectorPosition = sector.get(PositionComponent);
 				let sectorFeaturesComponent = sector.get(SectorFeaturesComponent);
+				let neighbours = GameGlobals.levelHelper.getSectorNeighboursList(sector);
 
 				score -= Math.abs(Math.floor(sectorPosition.sectorX / 5)) * weightX;
 				score -= Math.abs(Math.floor(sectorPosition.sectorY / 5)) * weightY;
@@ -248,6 +249,7 @@ define([
 				if (sectorFeaturesComponent.hasSpring) score += 3 * weightSpring;
 				if (sectorFeaturesComponent.examineSpots.length > 1) score -= 1;
 				if (sectorFeaturesComponent.heapResource) score -= 1;
+				if (neighbours.count < 2) score -= 1;
 
 				return score;
 			};
@@ -268,6 +270,7 @@ define([
 			let level = sectorPosition.level;
 			let isCampable = GameGlobals.levelHelper.isLevelCampable(sectorPosition.level);
 			let condition = sectorFeatures.getCondition();
+			let isEarlyZone = sectorFeatures.isEarlyZone();
 
 			let distanceToCamp = 99;
 
@@ -370,7 +373,7 @@ define([
 				validTypes.push(CharacterConstants.characterTypes.surfaceRefugee);
 			}
 			
-			if (isCampable && sectorFeatures.sectorType == SectorConstants.SECTOR_TYPE_COMMERCIAL) {
+			if (isCampable && sectorFeatures.sectorType == SectorConstants.SECTOR_TYPE_COMMERCIAL && isEarlyZone) {
 				validTypes.push(CharacterConstants.characterTypes.trader);
 			}
 			
