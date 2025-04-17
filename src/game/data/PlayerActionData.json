@@ -2860,7 +2860,11 @@
                 "improve_building_temple2": true
             }
         },
-        "improve_in__": {},
+        "improve_in__": {
+            "camp": {
+                "raid": false
+            }
+        },
         "improve_in_campfire": {
             "population": [
                 1,
