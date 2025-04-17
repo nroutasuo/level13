@@ -473,6 +473,7 @@ function (Ash, PlayerActionData, ObjectUtils, GameConstants, CampConstants, Impr
 		// defines if the action (with duration) marks the player as "busy" or if it can happen in the background
 		isBusyAction: function (baseActionID) {
 			if (baseActionID.indexOf('build_in') === 0) return false;
+			if (baseActionID.indexOf('improve_in') === 0) return false;
 			if (baseActionID.indexOf('build_out') === 0) {
 				let improvementName = this.getImprovementNameForAction(baseActionID);
 				let improvementID = ImprovementConstants.getImprovementID(improvementName);
