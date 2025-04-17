@@ -351,7 +351,7 @@ define([
 			$("#camp-overview tr#" + rowID + " .camp-overview-level-container").text(level);
 			$("#camp-overview tr#" + rowID + " .camp-overview-level-container").toggleClass("lvl-container-camp-normal", levelComponent.habitability == 1);
 			$("#camp-overview tr#" + rowID + " .camp-overview-level-container").toggleClass("lvl-container-camp-outpost", levelComponent.habitability < 1);
-			$("#camp-overview tr#" + rowID + " .camp-overview-level-container").toggleClass("lvl-container-camp-capital", levelComponent.habitability > 1);
+			$("#camp-overview tr#" + rowID + " .camp-overview-level-container").toggleClass("lvl-container-camp-normal", levelComponent.habitability > 1);
 
 			var alertDesc = "";
 			for (let i = 0; i < alerts.length; i++) {
@@ -531,9 +531,9 @@ define([
 				case this.campNotificationTypes.BUILDING_DAMAGED: return 4;
 				case this.campNotificationTypes.EVENT_TRADER: return 5;
 				case this.campNotificationTypes.EVENT_RECRUIT: return 6;
-				case this.campNotificationTypes.EVENT_VISITOR: return 7;
-				case this.campNotificationTypes.POP_UNASSIGNED: return 8;
-				case this.campNotificationTypes.EVENT_DISEASE: return 9;
+				case this.campNotificationTypes.POP_UNASSIGNED: return 7;
+				case this.campNotificationTypes.EVENT_DISEASE: return 8;
+				case this.campNotificationTypes.EVENT_VISITOR: return 9;
 				case this.campNotificationTypes.EVENT_REFUGEES: return 10;
 				case this.campNotificationTypes.STATUS_NON_REACHABLE_BY_TRADERS: return 11;
 				case this.campNotificationTypes.SUNLIT: return 12;
