@@ -732,7 +732,7 @@ define([
 			var currencyComponent = GameGlobals.resourcesHelper.getCurrentCurrency();
 			var inventoryUnlocked = false;
 			let now = GameGlobals.gameState.gameTime;
-			let changedInOut = inCamp != this.lastResourceUpdateInCamp;
+			let changedPosition = inCamp != this.lastResourceUpdateInCamp || this.lastResourceUpdateLevel != playerPosition.level;
 
 			let showStorageNameKey = GameGlobals.resourcesHelper.getCurrentStorageNameKey(isSmallLayout);
 
@@ -761,7 +761,7 @@ define([
 				if (inCamp) {
 					let isVisible = resourceUnlocked && !(currentAmount <= 0 && currentAccumulation <= 0 && this.canHideResource(name));
 					let previousAmount = this.previousShownCampResAmount[name] || 0;
-					let animate = !changedInOut && UIAnimations.shouldAnimateChange(previousAmount, currentAmount, this.lastCampResourceUpdate, now, currentAccumulation);
+					let animate = !changedPosition && UIAnimations.shouldAnimateChange(previousAmount, currentAmount, this.lastCampResourceUpdate, now, currentAccumulation);
 					let elemIDCamp = isSmallLayout ? "#resources-camp-mobile-" + name : "#resources-camp-regular-" + name;
 					UIConstants.updateResourceIndicator(
 						elemIDCamp,
@@ -791,7 +791,7 @@ define([
 						false,
 						name === resourceNames.food || name === resourceNames.water,
 						resourceUnlocked && (name === "water" || name === "food" || showResources.getResource(name) > 0),
-						!changedInOut
+						!changedPosition
 					);
 
 					let bagComponent = this.playerStatsNodes.head.entity.get(BagComponent);
@@ -804,7 +804,9 @@ define([
 			if (inCamp) {
 				this.lastCampResourceUpdate = now;
 			}
+
 			this.lastResourceUpdateInCamp = inCamp;
+			this.lastResourceUpdateLevel = playerPosition.level;
 		},
 		
 		canHideResource: function (name) {
@@ -1286,6 +1288,7 @@ define([
 			this.updatePlayerStats();
 			this.updateLocation();
 			this.updateLayout();
+			this.updatePageBackgroundColor();
 		},
 		
 		onPlayerLocationChanged: function () {

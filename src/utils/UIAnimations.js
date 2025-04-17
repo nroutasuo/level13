@@ -15,16 +15,23 @@ define([
 			if (!previousTime) {
 				return false;
 			}
+
 			let change = (currentValue - previousValue);
 			if (change == 0) {
 				return false;
 			}
+			if (Math.abs(change) < 0.01) return false;
+
 			if (accumulationPerSec == 0) {
 				return true;
 			}
+
+			if (Math.abs(change) < accumulationPerSec) return false;
+
 			let secondsPassed = currentTime - previousTime;
+
 			let changePerSec = change / secondsPassed;
-			return Math.abs(changePerSec - accumulationPerSec) > 0.5;
+			return Math.abs(changePerSec / accumulationPerSec) > 2;
 		},
 		
 		animateOrSetNumber: function ($elem, animate, targetValue, suffix, flipNegative, roundingFunc) {
