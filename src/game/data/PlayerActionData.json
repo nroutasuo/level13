@@ -3011,7 +3011,7 @@
                 "unlock_building_researchcenter": true
             },
             "vision": [
-                70,
+                60,
                 -1
             ]
         },
