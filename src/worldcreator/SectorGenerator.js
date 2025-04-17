@@ -438,8 +438,8 @@ define([
 			var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
 			var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
 			
-			var blockerTypesEarly = this.getLevelBlockerTypes(levelVO, WorldConstants.CAMP_STAGE_EARLY);
-			var blockerTypesLate = this.getLevelBlockerTypes(levelVO, WorldConstants.CAMP_STAGE_LATE);
+			var blockerTypesEarly = this.getLevelBlockerTypes(worldVO, levelVO, WorldConstants.CAMP_STAGE_EARLY);
+			var blockerTypesLate = this.getLevelBlockerTypes(worldVO, levelVO, WorldConstants.CAMP_STAGE_LATE);
 			if (blockerTypesLate.length < 1) return;
 			
 			var creator = this;
@@ -2709,9 +2709,10 @@ define([
 			}
 		},
 		
-		getLevelBlockerTypes: function (levelVO, campStage) {
+		getLevelBlockerTypes: function (worldVO, levelVO, campStage) {
 			var levelOrdinal = levelVO.levelOrdinal;
 			var campOrdinal = levelVO.campOrdinal;
+			let isSurfaceLevel = levelVO.level === worldVO.topLevel;
 			var isPollutedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
 			var isRadiatedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
 
@@ -2751,7 +2752,7 @@ define([
 				}
 			}
 
-			if (levelVO.isCampable && campOrdinal > WorldConstants.CAMPS_BEFORE_GROUND) {
+			if (levelVO.isCampable && campOrdinal > WorldConstants.CAMPS_BEFORE_GROUND && !isSurfaceLevel) {
 				blockerTypes.push(MovementConstants.BLOCKER_TYPE_TOLL_GATE);
 
 				if (levelVO.habitability >= 1) {
