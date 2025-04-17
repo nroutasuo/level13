@@ -358,9 +358,6 @@ define([
 				this.addCovertibleTribeStatRewards(rewards, "evidence", evidenceAmount);
 			}
 
-			// stashes (always)
-			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound, localeVO.type);
-
 			// blueprints (check for locale type inside function)
 			rewards.gainedBlueprintPiece = this.getResultBlueprint(0.35, localeVO);
 
@@ -428,6 +425,9 @@ define([
 				perkProbabilities[PerkConstants.perkIds.stressed] = localeVO.getStressedProbability();
 				rewards.gainedPerks = this.getGainedPerks(perkProbabilities);
 			}
+
+			// stashes (always) (make sure this is last / after gainedItems is set by anything else)
+			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound, localeVO.type);
 
 			return rewards;
 		},
