@@ -68,6 +68,7 @@ define(function () {
 				bg_page_vision_level_1: "#fdfdfd",
 				bg_page_vision_level_2: "#fdfdfd",
 				bg_page_vision_level_3: "#fdfdfd",
+				bg_page_vision_level_4: "#fdfdfd",
 				bg_box_1: "#efefef",
 				bg_element_1: "#e6e6e6",
 				bg_warning: "#fa000026",
