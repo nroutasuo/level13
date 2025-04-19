@@ -4,6 +4,7 @@ define(['ash',
 	'game/GameGlobals',
 	'game/constants/CharacterConstants',
 	'game/constants/ColorConstants',
+	'game/constants/GameConstants',
 	'game/constants/StoryConstants',
 	'game/constants/ExplorerConstants',
 	'game/constants/ItemConstants',
@@ -14,7 +15,7 @@ define(['ash',
 	'game/constants/TextConstants',
 	'utils/UIAnimations'
 ], function (Ash, Text, GameGlobals,
-	CharacterConstants, ColorConstants, StoryConstants, ExplorerConstants, ItemConstants, BagConstants, PerkConstants, UpgradeConstants, PlayerActionConstants, TextConstants,
+	CharacterConstants, ColorConstants, GameConstants, StoryConstants, ExplorerConstants, ItemConstants, BagConstants, PerkConstants, UpgradeConstants, PlayerActionConstants, TextConstants,
 	UIAnimations) {
 
 	var UIConstants = {
@@ -295,6 +296,10 @@ define(['ash',
 
 			if (explorer.injuredTimer >= 0) {
 				result += "<br/>Status: " + this.warning("Injured");
+			}
+
+			if (GameConstants.isCheatsEnabled) {
+				result += "<br/>" + this.meta("Trust: " + explorer.trust);
 			}
 			
 			if (isRecruited && isInCamp && !hideButtons) {
@@ -1093,6 +1098,10 @@ define(['ash',
 			if (typeof isActive === "undefined") isActive = true;
 			if (!isActive) return text;
 			return "<span class='warning'>" + text + "</span>";
+		},
+
+		meta: function (text) {
+			return "<span class='p-meta'>" + text + "</span>";
 		},
 
 		getDisplayValue: function (value) {

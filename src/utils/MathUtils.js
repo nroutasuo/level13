@@ -17,6 +17,10 @@ define(function () {
 			if (min1 == max1) return min2;
 			return (val - min1) * (max2 - min2) / (max1 - min1) + min2;
 		},
+
+		average: function (arr) {
+			return arr.length > 0 ? arr.reduce((acc, v) => acc + v, 0) / arr.length : 0;
+		},
 		
 		project: function (p, a, b) {
 			// project point p to the line between points a and b

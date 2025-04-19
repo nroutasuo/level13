@@ -379,6 +379,12 @@ define(['ash',
 				return;
 			}
 
+			if (explorerVO) {
+				if (!explorerVO.numDialogues) explorerVO.numDialogues = 0;
+				explorerVO.numDialogues++;
+				GameGlobals.gameState.increaseGameStatHighScore("mostDialoguesWithExplorer", explorerVO, explorerVO.numDialogues);
+			}
+
 			GameGlobals.gameFlowLogger.log("start dialogue: " + id);
 
 			this.playerStatsNodes.head.entity.add(new DialogueComponent(dialogueVO, explorerVO, characterVO, textParams));

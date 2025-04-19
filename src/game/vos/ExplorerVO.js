@@ -19,8 +19,9 @@ define(['ash'], function (Ash) {
 		numFights: 0,
 		numSteps: 0,
 		numExcursions: 0,
+		numDialogues: 0,
 		seenDialogues: [],
-		trust: 0, // 0-3
+		trust: 0, // 0-10, derived from other stats
 		injuredTimer: -1,
 
 		constructor: function (id, name, abilityType, abilityLevel, icon, gender, source, dialogueSource) {
@@ -32,7 +33,9 @@ define(['ash'], function (Ash) {
 			this.gender = gender;
 			this.source = source;
 			this.dialogueSource = dialogueSource;
+			
 			this.injuredTimer = -1;
+			this.trust = 0;
 		},
 	});
 

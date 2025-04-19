@@ -2078,7 +2078,7 @@
 		"explorer_generic_interact_story_apocalypse_01": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 2
 				},
 				"storyFlags": {
 					"APOCALYPSE_KNOWN": true
@@ -2091,7 +2091,7 @@
 		"explorer_generic_interact_story_apocalypse_02": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 6
 				},
 				"storyFlags": {
 					"APOCALYPSE_KNOWN": true
@@ -2120,7 +2120,7 @@
 		"explorer_generic_mercenary_interact_02": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 2
 				}
 			},
 			"pages": [
@@ -2133,7 +2133,7 @@
 		"explorer_generic_mercenary_interact_03": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 6
 				}
 			},
 			"pages": [
@@ -2156,7 +2156,7 @@
 		"explorer_generic_mercenary_interact_05": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 2
 				}
 			},
 			"pages": [
@@ -2166,7 +2166,7 @@
 		"explorer_generic_mercenary_interact_06": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -2290,7 +2290,7 @@
 		"explorer_generic_scavenger_interact_02": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 2
 				}
 			},
 			"pages": [
@@ -2303,7 +2303,7 @@
 		"explorer_generic_scavenger_interact_03": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 6
 				}
 			},
 			"pages": [
@@ -2316,7 +2316,7 @@
 		"explorer_generic_scavenger_interact_04": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -2326,7 +2326,7 @@
 		"explorer_generic_scavenger_interact_05": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 4
 				},
 				"player": {
 					"position": {
@@ -2344,7 +2344,7 @@
 		"explorer_generic_scavenger_interact_06": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -2378,7 +2378,7 @@
 		"explorer_generic_scout_interact_02": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				},
 				"featureUnlocked": {
 					"ground": false
@@ -2394,7 +2394,7 @@
 		"explorer_generic_scout_interact_03": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 6
 				}
 			},
 			"pages": [
@@ -2407,7 +2407,7 @@
 		"explorer_generic_scout_interact_04": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -2417,7 +2417,7 @@
 		"explorer_generic_scout_interact_05": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -2427,7 +2427,7 @@
 		"explorer_generic_scout_interact_06": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -2465,7 +2465,7 @@
 		"explorer_generic_story_find_greenhouse": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"isUrgent": true,
@@ -2481,7 +2481,7 @@
 		"explorer_generic_story_rescue_absence_01": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 6
 				},
 				"storyFlags": {
 					"RESCUE_EXPLORER_LEFT": true
@@ -2581,7 +2581,7 @@
 		"explorer_template_amnesiac_interact_04": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 2
 				}
 			},
 			"pages": [
@@ -2591,7 +2591,7 @@
 		"explorer_template_amnesiac_interact_05": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -2601,7 +2601,7 @@
 		"explorer_template_amnesiac_interact_06": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -2611,7 +2611,7 @@
 		"explorer_template_amnesiac_interact_07": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -2621,7 +2621,7 @@
 		"explorer_template_amnesiac_interact_08": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -2631,7 +2631,7 @@
 		"explorer_template_amnesiac_interact_09": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 6
 				}
 			},
 			"pages": [
@@ -2641,7 +2641,7 @@
 		"explorer_template_amnesiac_interact_10": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 8
 				}
 			},
 			"pages": [
@@ -2651,7 +2651,7 @@
 		"explorer_template_amnesiac_interact_11": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 8
 				}
 			},
 			"pages": [
@@ -2661,7 +2661,7 @@
 		"explorer_template_amnesiac_interact_12": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 8
 				}
 			},
 			"pages": [
@@ -2706,7 +2706,7 @@
 		"explorer_template_architect_interact_04": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 2
 				}
 			},
 			"pages": [
@@ -2716,7 +2716,7 @@
 		"explorer_template_architect_interact_05": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -2726,7 +2726,7 @@
 		"explorer_template_architect_interact_06": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -2736,7 +2736,7 @@
 		"explorer_template_architect_interact_07": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -2746,7 +2746,7 @@
 		"explorer_template_architect_interact_08": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -2756,7 +2756,7 @@
 		"explorer_template_architect_interact_09": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 6
 				}
 			},
 			"pages": [
@@ -2831,7 +2831,7 @@
 		"explorer_template_bard_interact_04": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -2841,7 +2841,7 @@
 		"explorer_template_bard_interact_05": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -2851,7 +2851,7 @@
 		"explorer_template_bard_interact_06": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -2861,7 +2861,7 @@
 		"explorer_template_bard_interact_07": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -2871,7 +2871,7 @@
 		"explorer_template_bard_interact_08": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -2881,7 +2881,7 @@
 		"explorer_template_bard_interact_09": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 6
 				}
 			},
 			"pages": [
@@ -2891,7 +2891,7 @@
 		"explorer_template_bard_interact_10": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 8
 				}
 			},
 			"pages": [
@@ -2901,7 +2901,7 @@
 		"explorer_template_bard_interact_11": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 8
 				}
 			},
 			"pages": [
@@ -2911,7 +2911,7 @@
 		"explorer_template_bard_interact_12": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 8
 				}
 			},
 			"pages": [
@@ -2956,7 +2956,7 @@
 		"explorer_template_darkdweller_interact_04": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -2966,7 +2966,7 @@
 		"explorer_template_darkdweller_interact_05": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 2
 				}
 			},
 			"pages": [
@@ -2987,7 +2987,7 @@
 		"explorer_template_darkdweller_interact_07": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -2997,7 +2997,7 @@
 		"explorer_template_darkdweller_interact_08": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -3015,7 +3015,7 @@
 		"explorer_template_darkdweller_interact_10": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 8
 				}
 			},
 			"pages": [
@@ -3035,7 +3035,7 @@
 		"explorer_template_darkdweller_interact_12": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 8
 				}
 			},
 			"pages": [
@@ -3080,7 +3080,7 @@
 		"explorer_template_guard_interact_04": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 2
 				}
 			},
 			"pages": [
@@ -3090,7 +3090,7 @@
 		"explorer_template_guard_interact_05": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -3100,7 +3100,7 @@
 		"explorer_template_guard_interact_06": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -3110,7 +3110,7 @@
 		"explorer_template_guard_interact_07": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -3120,7 +3120,7 @@
 		"explorer_template_guard_interact_08": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -3130,7 +3130,7 @@
 		"explorer_template_guard_interact_09": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 6
 				}
 			},
 			"pages": [
@@ -3140,7 +3140,7 @@
 		"explorer_template_guard_interact_10": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 8
 				}
 			},
 			"pages": [
@@ -3150,7 +3150,7 @@
 		"explorer_template_guard_interact_11": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 8
 				}
 			},
 			"pages": [
@@ -3160,7 +3160,7 @@
 		"explorer_template_guard_interact_12": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 9
 				}
 			},
 			"pages": [
@@ -3227,7 +3227,7 @@
 		"explorer_template_hacker_interact_04": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 2
 				}
 			},
 			"pages": [
@@ -3237,7 +3237,7 @@
 		"explorer_template_hacker_interact_05": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -3247,7 +3247,7 @@
 		"explorer_template_hacker_interact_06": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -3262,7 +3262,7 @@
 		"explorer_template_hacker_interact_08": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -3272,7 +3272,7 @@
 		"explorer_template_hacker_interact_09": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 6
 				}
 			},
 			"pages": [
@@ -3282,7 +3282,7 @@
 		"explorer_template_hacker_interact_10": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 8
 				}
 			},
 			"pages": [
@@ -3292,7 +3292,7 @@
 		"explorer_template_hacker_interact_11": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 9
 				}
 			},
 			"pages": [
@@ -3347,7 +3347,7 @@
 		"explorer_template_lover_interact_04": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -3357,7 +3357,7 @@
 		"explorer_template_lover_interact_05": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -3367,7 +3367,7 @@
 		"explorer_template_lover_interact_06": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -3377,7 +3377,7 @@
 		"explorer_template_lover_interact_07": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -3387,7 +3387,7 @@
 		"explorer_template_lover_interact_08": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -3397,7 +3397,7 @@
 		"explorer_template_lover_interact_09": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 6
 				}
 			},
 			"pages": [
@@ -3407,7 +3407,7 @@
 		"explorer_template_lover_interact_10": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 8
 				}
 			},
 			"pages": [
@@ -3484,7 +3484,7 @@
 		"explorer_template_researcher_interact_04": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 2
 				}
 			},
 			"pages": [
@@ -3494,7 +3494,7 @@
 		"explorer_template_researcher_interact_05": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -3504,7 +3504,7 @@
 		"explorer_template_researcher_interact_06": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -3514,7 +3514,7 @@
 		"explorer_template_researcher_interact_07": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -3534,7 +3534,7 @@
 		"explorer_template_researcher_interact_09": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -3544,7 +3544,7 @@
 		"explorer_template_researcher_interact_10": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 8
 				}
 			},
 			"pages": [
@@ -3554,7 +3554,7 @@
 		"explorer_template_researcher_interact_11": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 9
 				}
 			},
 			"pages": [
@@ -3639,7 +3639,7 @@
 		"explorer_template_teen_interact_04": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 2
 				}
 			},
 			"pages": [
@@ -3649,7 +3649,7 @@
 		"explorer_template_teen_interact_05": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -3659,7 +3659,7 @@
 		"explorer_template_teen_interact_06": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -3669,7 +3669,7 @@
 		"explorer_template_teen_interact_07": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -3679,7 +3679,7 @@
 		"explorer_template_teen_interact_08": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -3689,7 +3689,7 @@
 		"explorer_template_teen_interact_09": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 6
 				}
 			},
 			"pages": [
@@ -3699,7 +3699,7 @@
 		"explorer_template_teen_interact_10": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 8
 				}
 			},
 			"pages": [
@@ -3709,7 +3709,7 @@
 		"explorer_template_teen_interact_11": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 8
 				}
 			},
 			"pages": [
@@ -3719,7 +3719,7 @@
 		"explorer_template_teen_interact_12": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 9
 				}
 			},
 			"pages": [
@@ -3734,7 +3734,7 @@
 		"explorer_template_teen_story_rescue_absence_01": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 6
 				},
 				"storyFlags": {
 					"RESCUE_EXPLORER_LEFT": true
@@ -3780,7 +3780,7 @@
 		"explorer_unique_gambler_interact_04": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 2
 				}
 			},
 			"pages": [
@@ -3790,7 +3790,7 @@
 		"explorer_unique_gambler_interact_05": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 2
 				}
 			},
 			"pages": [
@@ -3800,7 +3800,7 @@
 		"explorer_unique_gambler_interact_06": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -3810,7 +3810,7 @@
 		"explorer_unique_gambler_interact_07": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 4
 				}
 			},
 			"pages": [
@@ -3820,7 +3820,7 @@
 		"explorer_unique_gambler_interact_08": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 4
 				}
 			},
 			"pages": [
@@ -3830,7 +3830,7 @@
 		"explorer_unique_gambler_interact_09": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -3840,7 +3840,7 @@
 		"explorer_unique_gambler_interact_10": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -3850,7 +3850,7 @@
 		"explorer_unique_gambler_interact_11": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 6
 				}
 			},
 			"pages": [
@@ -3861,7 +3861,7 @@
 			"conditions": {
 				"deity": true,
 				"explorer": {
-					"trust": 3
+					"trust": 7
 				}
 			},
 			"pages": [
@@ -4106,7 +4106,7 @@
 		"explorer_unique_handler_interact_04": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 2
 				}
 			},
 			"pages": [
@@ -4116,7 +4116,7 @@
 		"explorer_unique_handler_interact_05": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -4126,7 +4126,7 @@
 		"explorer_unique_handler_interact_06": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -4136,7 +4136,7 @@
 		"explorer_unique_handler_interact_07": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 7
 				}
 			},
 			"pages": [
@@ -4146,7 +4146,7 @@
 		"explorer_unique_handler_interact_08": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 7
 				}
 			},
 			"pages": [
@@ -4156,7 +4156,7 @@
 		"explorer_unique_handler_interact_09": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 6
 				}
 			},
 			"pages": [
@@ -4166,7 +4166,7 @@
 		"explorer_unique_handler_interact_10": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 8
 				}
 			},
 			"pages": [
@@ -4181,7 +4181,7 @@
 					}
 				},
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -4191,7 +4191,7 @@
 		"explorer_unique_handler_interact_12": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 9
 				}
 			},
 			"pages": [
@@ -4327,7 +4327,7 @@
 		"explorer_unique_hermit_interact_04": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -4337,7 +4337,7 @@
 		"explorer_unique_hermit_interact_05": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -4347,7 +4347,7 @@
 		"explorer_unique_hermit_interact_06": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -4357,7 +4357,7 @@
 		"explorer_unique_hermit_interact_07": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -4367,7 +4367,7 @@
 		"explorer_unique_hermit_interact_08": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -4377,7 +4377,7 @@
 		"explorer_unique_hermit_interact_09": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 6
 				}
 			},
 			"pages": [
@@ -4387,7 +4387,7 @@
 		"explorer_unique_hermit_interact_10": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				},
 				"population": [
 					16,
@@ -4401,7 +4401,7 @@
 		"explorer_unique_hermit_interact_11": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 9
 				}
 			},
 			"pages": [
@@ -4412,7 +4412,7 @@
 			"conditions": {
 				"deity": true,
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -4475,7 +4475,7 @@
 		"explorer_unique_journalist_interact_04": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -4485,7 +4485,7 @@
 		"explorer_unique_journalist_interact_05": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -4495,7 +4495,7 @@
 		"explorer_unique_journalist_interact_06": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -4505,7 +4505,7 @@
 		"explorer_unique_journalist_interact_07": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -4515,7 +4515,7 @@
 		"explorer_unique_journalist_interact_08": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -4525,7 +4525,7 @@
 		"explorer_unique_journalist_interact_09": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 7
 				}
 			},
 			"pages": [
@@ -4535,7 +4535,7 @@
 		"explorer_unique_journalist_interact_10": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 7
 				}
 			},
 			"pages": [
@@ -4545,7 +4545,7 @@
 		"explorer_unique_journalist_interact_11": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 8
 				}
 			},
 			"pages": [
@@ -4555,7 +4555,7 @@
 		"explorer_unique_journalist_interact_12": {
 			"conditions": {
 				"explorer": {
-					"trust": 3
+					"trust": 9
 				}
 			},
 			"pages": [
@@ -4565,7 +4565,7 @@
 		"explorer_unique_journalist_interact_13": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -4768,7 +4768,7 @@
 		"explorer_unique_prospector_interact_04": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -4778,7 +4778,7 @@
 		"explorer_unique_prospector_interact_05": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				},
 				"storyFlags": {
 					"RESCUE_EXPLORER_FOUND": false
@@ -4791,7 +4791,7 @@
 		"explorer_unique_prospector_interact_06": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -4801,7 +4801,7 @@
 		"explorer_unique_prospector_interact_07": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -4811,7 +4811,7 @@
 		"explorer_unique_prospector_interact_08": {
 			"conditions": {
 				"explorer": {
-					"trust": 2
+					"trust": 5
 				}
 			},
 			"pages": [
@@ -4831,7 +4831,7 @@
 		"explorer_unique_prospector_interact_10": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [
@@ -4841,7 +4841,7 @@
 		"explorer_unique_prospector_interact_11": {
 			"conditions": {
 				"explorer": {
-					"trust": 1
+					"trust": 3
 				}
 			},
 			"pages": [

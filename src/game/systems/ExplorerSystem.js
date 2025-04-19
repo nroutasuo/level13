@@ -22,6 +22,8 @@ define([
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 
 			GlobalSignals.add(this, GlobalSignals.playerEnteredCampSignal, this.onEnterCamp);
+			GlobalSignals.add(this, GlobalSignals.gameStateReadySignal, this.onGameStateReady);
+			GlobalSignals.add(this, GlobalSignals.dialogueCompletedSignal, this.onDialogueCompleted);
 		},
 
 		removeFromEngine: function (engine) {
@@ -112,7 +114,7 @@ define([
 		},
 
 		updateExplorersTrust: function () {
-			let explorers = this.playerStatsNodes.head.explorers.getParty();
+			let explorers = this.playerStatsNodes.head.explorers.getAll();
 			if (explorers.length == 0) return;
 
 			for (let i = 0; i < explorers.length; i++) {
@@ -122,23 +124,45 @@ define([
 		},
 
 		updateExplorerTrust: function (explorerVO) {
-			let isFighter = ExplorerConstants.isFighter(explorerVO);
+			let trust = this.getExplorerTrust(explorerVO);
 
-			let fightThresholds = isFighter ? [ 0, 1, 10, 50 ] : [ 0, 0, 0, 0 ]
-			let stepThresholds = [ 0, 30, 100, 500 ];
-			let excursionTresholds = [ 0, 2, 10, 50 ];
-
-			for (let i = 1; i <= 3; i++) {
-				if (explorerVO.numFights < fightThresholds[i]) break;
-				if (explorerVO.numSteps < stepThresholds[i]) break;
-				if (explorerVO.numExcursions < excursionTresholds[i]) break;
-				explorerVO.trust = i;
+			if (trust != explorerVO.trust) {
+				log.i("update explorer trust: " + explorerVO.id + " -> " + trust);
+				explorerVO.trust = trust;
 			}
+		},
+
+		getExplorerTrust: function (explorerVO) {
+			let maxTrust = 10;
+
+			let getTrustFactor = function (value, maxValue) {
+				return MathUtils.map(value || 0, 0, maxValue, 0, maxTrust);
+			};
+
+			let fightValue = getTrustFactor(explorerVO.numFights, 100);
+			let stepValue = getTrustFactor(explorerVO.numSteps, 1000);
+			let excursionValue = getTrustFactor(explorerVO.numExcursions, 100);
+			let dialogueValue = getTrustFactor(explorerVO.numDialogues, 100);
+
+			debugger
+
+			// don't let excursion count alone because it's so easy to spam, but count short excursions for something
+			let explorationValue = MathUtils.average([ stepValue, excursionValue ]);
+
+			return Math.floor(Math.max(dialogueValue, explorationValue, fightValue));
 		},
 
 		onEnterCamp: function () {
 			this.updateExplorersTrust();
 			this.updateExplorersAbility();
+		},
+
+		onGameStateReady: function () {
+			this.updateExplorersTrust();
+		},
+
+		onDialogueCompleted: function () {
+			this.updateExplorersTrust();
 		},
 
 	});

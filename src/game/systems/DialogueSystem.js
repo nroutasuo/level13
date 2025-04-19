@@ -84,8 +84,8 @@ define([
 			let explorerScore = function (explorerVO) {
 				let score = explorerVO.trust;
 
-				if (explorerVO.inParty) score += 5;
-				if (ExplorerConstants.isUnique(explorerVO)) score += 10;
+				if (explorerVO.inParty) score *= 2;
+				if (ExplorerConstants.isUnique(explorerVO)) score *= 3;
 
 				return score;
 			}
