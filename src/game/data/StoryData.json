@@ -292,10 +292,10 @@
                 {
                     "id": "FALL_SEEN_SPACEFACTORY",
                     "onStart": {
+                        "log": "story.stories.fall_found_spacefactory_message",
                         "storyFlags": {
                             "FALL_SEEN_SPACEFACTORY": true
-                        },
-                        "log": "story.stories.fall_found_spacefactory_message"
+                        }
                     },
                     "startConditions": {
                         "localeType": "spacefactory"
@@ -559,10 +559,10 @@
                     "completeTrigger": "locale_scouted",
                     "id": "search",
                     "onComplete": {
+                        "log": "story.stories.rescue_completed_message",
                         "storyFlags": {
                             "RESCUE_EXPLORER_LEFT": false
-                        },
-                        "log": "story.stories.rescue_completed_message"
+                        }
                     },
                     "startConditions": {
                         "player": {
@@ -747,16 +747,16 @@
                     "startTrigger": "change_position"
                 },
                 {
+                    "completeTrigger": "immediate",
                     "id": "accepted_staying",
                     "onStart": {
                         "log": "story.stories.tribe_accepted_staying_message"
                     },
                     "startConditions": {
-                        "numCamps": 10,
-                        "inCamp": false
+                        "inCamp": false,
+                        "numCamps": 10
                     },
-                    "startTrigger": "change_position",
-                    "completeTrigger": "immediate"
+                    "startTrigger": "change_position"
                 }
             ],
             "startTrigger": "action_enter_camp"

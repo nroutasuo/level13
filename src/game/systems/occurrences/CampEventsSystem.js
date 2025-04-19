@@ -479,6 +479,7 @@ define([
 				case OccurrenceConstants.campOccurrenceTypes.recruit:
 					let hasPendingExplorer = campNode.camp.pendingRecruits.length > 0;
 					let explorer = hasPendingExplorer ? campNode.camp.pendingRecruits.shift() : this.getRandomExplorer(campNode, 0.2);
+					explorer.meetCampOrdinal = GameGlobals.gameState.numCamps;
 					let isFoundAsReward = hasPendingExplorer && explorer.source != ExplorerConstants.explorerSource.EVENT;
 					campNode.entity.add(new RecruitComponent(explorer, isFoundAsReward));
 					logMsg = isFoundAsReward ? "Explorer met when exploring is waiting at the inn." : "A visitor arrives at the Inn. ";

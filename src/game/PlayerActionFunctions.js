@@ -2695,6 +2695,7 @@ define(['ash',
 				
 				case "robot": 
 					let explorerVO = ExplorerConstants.getNewRandomExplorer(ExplorerConstants.explorerSource.CRAFT, foundPositionCampOrdinal, foundPosition.level);
+					explorerVO.meetCampOrdinal = GameGlobals.gameState.numCamps;
 					
 					this.playerStatsNodes.head.explorers.addExplorer(explorerVO);
 					

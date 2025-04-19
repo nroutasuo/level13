@@ -1,4 +1,5 @@
 define(['ash', 
+    'text/Text', 
     'game/GameGlobals', 
     'game/constants/DialogueConstants', 
     'game/constants/ExplorerConstants',
@@ -6,7 +7,7 @@ define(['ash',
     'game/constants/StoryConstants',
     'game/components/common/PositionComponent',
     'game/nodes/player/DialogueNode' 
-], function (Ash, GameGlobals, DialogueConstants, ExplorerConstants, PositionConstants, StoryConstants, PositionComponent, DialogueNode) {
+], function (Ash, Text, GameGlobals, DialogueConstants, ExplorerConstants, PositionConstants, StoryConstants, PositionComponent, DialogueNode) {
         
         let DialogueHelper = Ash.Class.extend({
 
@@ -15,6 +16,89 @@ define(['ash',
             constructor: function (engine) {
                 if (engine) {
                     this.dialogueNodes = engine.getNodeList(DialogueNode);
+                }
+            },
+
+            checkDialogueData: function () {
+                // NOTE: should be only called after Texts are loaded
+
+                let numErrors = 0;
+
+                // check that all strings in story.dialogue are used in dialogues
+                for (let textKey in Text.defaultTexts) {
+                    if (textKey.indexOf("story.dialogue.") != 0) continue;
+                    let textKeyShort = textKey.replace("story.dialogue.", "");
+                    let foundTextKey = false;
+
+                    let textKeyMatches = s => s == textKey || s == textKeyShort;
+
+                    for (let dialogueID in DialogueConstants.dialogues) {
+                        let dialogueVO = DialogueConstants.getDialogue(dialogueID);
+                        for (let i = 0; i< dialogueVO.pages.length; i++) {
+                            let pageVO = dialogueVO.pages[i];
+                            if (textKeyMatches(pageVO.textKey) || textKeyMatches(pageVO.textKeyMeta)) {
+                                foundTextKey = true;
+                                break;
+                            }
+
+                            for (let j = 0; j < pageVO.options.length; j++) {
+                                let optionVO = pageVO.options[j];
+                                if (textKeyMatches(optionVO.buttonTextKey)) {
+                                    foundTextKey = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (foundTextKey) break;
+                    }
+
+                    if (!foundTextKey) {
+                        numErrors++;
+                        log.w("text key " + textKey + " doesn't seem to be used in any dialogue");
+                    }
+                }
+
+                // check that all dialogues are listed in some source
+                for (let dialogueID in DialogueConstants.dialogues) {
+                    if (dialogueID.indexOf("locale_") == 0 || dialogueID.indexOf("item_") == 0) continue;
+                    let foundDialogueSource = false;
+
+                    for (let dialogueSourceID in DialogueConstants.dialogueSources) {
+                        let dialogueSource = DialogueConstants.getDialogueSource(dialogueSourceID);
+                        for (let context in dialogueSource.dialogues) {
+                            let dialogueIDs = dialogueSource.dialogues[context];
+                            if (dialogueIDs.indexOf(dialogueID) >= 0) {
+                                foundDialogueSource = true;
+                                break;
+                            }
+                        }
+                        if (foundDialogueSource) break;
+                    }
+
+                    if (!foundDialogueSource) {
+                        numErrors++;
+                        log.w("dialogue " + dialogueID + " doesn't seem to be used in any dialogue source");
+                    }
+                }
+
+                // check that all dialogues listed in dialogue sources exist
+
+                for (let dialogueSourceID in DialogueConstants.dialogueSources) {
+                    let dialogueSource = DialogueConstants.getDialogueSource(dialogueSourceID);
+                    for (let context in dialogueSource.dialogues) {
+                        let dialogueIDs = dialogueSource.dialogues[context];
+                        for (i = 0; i < dialogueIDs.length; i++) {
+                            let dialogueID = dialogueIDs[i];
+                            if (!DialogueConstants.getDialogue(dialogueID)) {
+                                // assuming getDialogue logs error
+                                numErrors++;
+                            }
+                        }
+                    }
+                }
+
+                if (numErrors > 0) {
+                    log.w("TOTAL DIALOGUE DATA ERRORS: " + numErrors)
                 }
             },
 
@@ -58,6 +142,9 @@ define(['ash',
                 if (conditions.explorer) {
                     if (!explorerVO) return false;
                     if (conditions.explorer.trust && conditions.explorer.trust > explorerVO.trust) return false;
+                    if (conditions.explorer.injured && explorerVO.injuredTimer <= 0) return false;
+                    if (conditions.explorer.meetCampOrdinal 
+                        && GameGlobals.playerActionsHelper.checkRequirementsRange(conditions.explorer.meetCampOrdinal, explorerVO.meetCampOrdinal)) return false;
                 }
 
                 if (conditions.vicinity) {

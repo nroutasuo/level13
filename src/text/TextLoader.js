@@ -66,7 +66,7 @@ define(['ash', 'text/Text', 'game/GameGlobals', 'game/GlobalSignals', 'game/cons
                     log.i("Loading texts: " + url);
                     if (GameConstants.isDebugVersion) $.ajaxSetup({ cache: false });
                     $.getJSON(url, function (json) {
-                        Text.updateTexts(source.language, json);
+                        Text.setTexts(source.language, json);
                         resolve();
                     })
                     .fail(function (jqxhr, textStatus, error) {

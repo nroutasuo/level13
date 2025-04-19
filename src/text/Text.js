@@ -37,6 +37,8 @@ define(function () {
 			return result;
 		},
 
+		// key: string or TextVO
+		// options: (optional) Object with textParams, or single wildcard textParam value
 		t: function (key, options) {
 			if (!key) {
 				log.w("no key provided for Text.t");
@@ -75,7 +77,7 @@ define(function () {
 			return wrap(result);
 		},
 
-		updateTexts: function (language, json) {
+		setTexts: function (language, json) {
 			if (language == "default") {
 				this.setDefaultTexts(json);
 			} else {

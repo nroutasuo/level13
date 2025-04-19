@@ -807,6 +807,7 @@ define([
 					let explorer = rewards.gainedExplorers[i];
 					if (typeof explorer === "string") explorer = GameGlobals.explorerHelper.getNewPredefinedExplorer(explorerID);
 					if (!explorer) continue;
+					explorer.meetCampOrdinal = GameGlobals.gameState.numCamps;
 					if (this.willGainedExplorerJoinParty(explorer)) {
 						explorersComponent.addExplorer(explorer);
 						explorersComponent.setExplorerInParty(explorer, true);

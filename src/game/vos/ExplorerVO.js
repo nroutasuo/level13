@@ -12,6 +12,7 @@ define(['ash'], function (Ash) {
 		source: null,
 		dialogueSource: null,
 		
+		meetCampOrdinal: -1, // camp ordinal (player progression) when met
 		inParty: false,
 		pendingAbilityLevel: 0,
 		pendingDialogue: null, // storyTag
