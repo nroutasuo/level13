@@ -2696,6 +2696,36 @@ define([
 			
 			return "Improve " + improvementName;
 		},
+
+		getActionDisplayNameLong: function (action) {
+			let textKey = this.getActionDisplayNameKey(action) + "_long";
+			let textParams = {};
+
+			let improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(action, true);
+				
+			if (improvementName) {
+				textParams.improvementName = improvementName;
+			}
+
+			return { textKey: textKey, textParams: textParams };
+		},
+
+		getActionDisplayNameKey: function (action) {
+			let baseActionID = PlayerActionConstants.getBaseActionID(action);
+
+			let actionKey = action;
+
+			switch (baseActionID) {
+				case "improve_in":
+					actionKey = baseActionID;
+					break;
+			}
+
+			if (action.indexOf("build_in") >= 0) actionKey = "build_in";
+			if (action.indexOf("build_out") >= 0) actionKey = "build_out";
+
+			return "game.actions." + actionKey + "_name";
+		},
 		
 		getImprovementLevel: function (improvementID, sector) {
 			if (!sector) return 1;

@@ -844,9 +844,12 @@
 				
 				let isProject = improvementName && ImprovementConstants.isProject(improvementName);
 				let percent = playerActionComponent.getActionCompletionPercentage(action, actionVO.level);
-				if (percent < 100) {
-					result.push({ action: action, improvementName: improvementName, percent: percent });
-				}
+
+				if (percent >= 100) continue;
+
+				let displayNameTextVO = GameGlobals.playerActionsHelper.getActionDisplayNameLong(action);
+				
+				result.push({ action: action, improvementName: improvementName, percent: percent, displayName: displayNameTextVO });
 			}
 			return result;
 		},
@@ -1174,14 +1177,7 @@
 		},
 		
 		updateCampActionListItem: function (li, data) {
-			let action = data.action;
-			let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
-			
-			let displayName = baseActionID.replaceAll("_", " ");
-			
-			if (data.improvementName) {
-				displayName = "Build " + ImprovementConstants.getImprovementDisplayName(data.improvementName);
-			}
+			let displayName = Text.t(data.displayName);
 			
 			li.$root.data("progress-percent", data.percent);
 			li.$label.html(displayName);
