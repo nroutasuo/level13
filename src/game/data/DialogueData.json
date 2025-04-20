@@ -3811,7 +3811,8 @@
 			"conditions": {
 				"explorer": {
 					"trust": 4
-				}
+				},
+				"deity": false
 			},
 			"pages": [
 				"explorer_unique_gambler_interact_07_p1"
@@ -3821,7 +3822,8 @@
 			"conditions": {
 				"explorer": {
 					"trust": 4
-				}
+				},
+				"deity": false
 			},
 			"pages": [
 				"explorer_unique_gambler_interact_08_p1"
@@ -3962,7 +3964,7 @@
 					"GREENHOUSE_FOUND": true
 				}
 			},
-			"isUrgent": true,
+			"isForced": true,
 			"pages": [
 				{
 					"key": "explorer_unique_gambler_story_greenhouse_intro_01_p1",
@@ -4460,6 +4462,11 @@
 			]
 		},
 		"explorer_unique_journalist_interact_02": {
+			"conditions": {
+				"explorer": {
+					"maxTrust": 5
+				}
+			},
 			"pages": [
 				"explorer_unique_journalist_interact_02_p1"
 			]
@@ -4619,6 +4626,7 @@
 			]
 		},
 		"explorer_unique_journalist_story_escape_stay_01": {
+			"isUrgent": true,
 			"conditions": {
 				"storyFlags": {
 					"ESCAPE_SEARCHING_FOR_EXIT": false
@@ -4644,6 +4652,7 @@
 			"conditions": {
 				"featureUnlocked": "investigate"
 			},
+			"isForced": true,
 			"pages": [
 				"explorer_unique_journalist_story_fall_investigate_01_p1"
 			]

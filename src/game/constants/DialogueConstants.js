@@ -15,11 +15,12 @@ define([
 			interact: "interact", // when player chooses to interact with this NPC
 		},
 
-		STATUS_NEW: 1, // slightly preferred over others
-		STATUS_PRIORITY: 2, // way to override normal dialogue given conditions
-		STATUS_PRIORITY_NEW: 3,
-		STATUS_URGENT: 4, // highlighted in UI
-		STATUS_FORCED: 5, // can block actions
+		STATUS_DEFAULT: 0,
+		STATUS_NEW: 1,
+		STATUS_PRIORITY: 2, // used to override default dialouge pool given a condition (like being injured)
+		STATUS_PRIORITY_NEW: 3, // same as new but for priority dialogue
+		STATUS_URGENT: 4, // highlighted in UI, can block explorer dismiss
+		STATUS_FORCED: 5, // highlighted in UI, can block various actions
 
 		dialogueSources: {},
 
@@ -58,8 +59,9 @@ define([
 			vo.conditions = d.conditions || {};
 			vo.storyTag = d.storyTag || null;
 			vo.isRepeatable = d.repeatable === false ? false : true;
-			vo.isUrgent = d.isUrgent;
 			vo.isPriority = d.isPriority;
+			vo.isUrgent = d.isUrgent;
+			vo.isForced = d.isForced;
 
 			if (!d.pages) {
 				log.w("no pages defined for dialogue: " + dialogueID);

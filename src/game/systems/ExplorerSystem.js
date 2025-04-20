@@ -144,8 +144,6 @@ define([
 			let excursionValue = getTrustFactor(explorerVO.numExcursions, 100);
 			let dialogueValue = getTrustFactor(explorerVO.numDialogues, 100);
 
-			debugger
-
 			// don't let excursion count alone because it's so easy to spam, but count short excursions for something
 			let explorationValue = MathUtils.average([ stepValue, excursionValue ]);
 

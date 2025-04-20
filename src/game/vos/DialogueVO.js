@@ -8,9 +8,11 @@ define(['ash'], function (Ash) {
 		pagesByID: {},
 		conditions: {},
 		storyTag: null,
+
 		isRepeatable: true,
-		isUrgent: false,
 		isPriority: false,
+		isUrgent: false,
+		isForced: false,
 	
 		constructor: function (dialogueID) {
 			this.dialogueID = dialogueID;

@@ -277,6 +277,8 @@ define(['ash',
 
                 let isNew = this.isExplorerDialogueNewForEntry(explorerVO, entry);
 
+                if (isNew && entry.isForced) DialogueConstants.STATUS_FORCED;
+
                 if (isNew && entry.isUrgent) return DialogueConstants.STATUS_URGENT;
 
                 if (isNew && entry.isPriority) return DialogueConstants.STATUS_PRIORITY_NEW;
@@ -285,7 +287,7 @@ define(['ash',
 
                 if (isNew) return DialogueConstants.STATUS_NEW;
 
-                return 0;
+                return DialogueConstants.STATUS_DEFAULT;
             },
 
             isExplorerDialogueNewForEntry: function (explorerVO, entry) {
