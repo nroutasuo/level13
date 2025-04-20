@@ -498,10 +498,11 @@ define([
 					}
 				}
 
-				if (requirements.deity) {
-					if (!GameGlobals.tribeHelper.hasDeity()) {
-						return { value: 0, reason: "Deity required." };
-					}
+				if (typeof requirements.deity !== "undefined") {
+					let requiredValue = requirements.deity;
+					let currentValue = GameGlobals.tribeHelper.hasDeity();
+					let result = this.checkRequirementsBoolean(requiredValue, currentValue, "Deity required", "No deity allowed");
+					if (result) return result;
 				}
 
 				if (requirements.population && !shouldSkipCheck(PlayerActionConstants.DISABLED_REASON_POPULATION)) {
