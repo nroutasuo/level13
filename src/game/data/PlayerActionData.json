@@ -906,7 +906,7 @@
             "cost_factor_expBase": 1.3,
             "resource_herbs": {
                 "constantCost": 30,
-                "expCost": 15
+                "expCost": 16
             },
             "resource_metal": {
                 "constantCost": 30,
@@ -1718,6 +1718,9 @@
             }
         },
         "build_in_inn": {
+            "camp": {
+                "exposed": false
+            },
             "improvements": {
                 "inn": [
                     0,
@@ -1735,6 +1738,9 @@
             }
         },
         "build_in_library": {
+            "camp": {
+                "exposed": false
+            },
             "improvements": {
                 "house": [
                     1,
@@ -1766,6 +1772,9 @@
             }
         },
         "build_in_market": {
+            "camp": {
+                "exposed": false
+            },
             "improvements": {
                 "market": [
                     0,
