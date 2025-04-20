@@ -174,6 +174,7 @@ define([
 				var explorer = explorers[i];
 				if (selectedExplorers.indexOf(explorer) >= 0) continue;
 				let questTextKey = this.getQuestTextKey(explorer);
+				explorer.hasUrgentDialogue = this.hasExplorerUrgentDialogue(explorer);
 				var li = "<li>" + UIConstants.getExplorerDivWithOptions(explorer, true, inCamp, questTextKey) + "</li>";
 				$("#list-explorers").append(li);
 			}
@@ -202,6 +203,8 @@ define([
 			GameGlobals.uiFunctions.generateInfoCallouts("#container-party-slots");
 			GameGlobals.uiFunctions.createButtons("#list-explorers");
 			GameGlobals.uiFunctions.createButtons("#container-party-slots");
+
+			GlobalSignals.elementCreatedSignal.dispatch();
 		},
 		
 		updateSelectedExplorerSlot: function (explorerType, explorer, inCamp) {
@@ -216,6 +219,7 @@ define([
 			
 			if (explorer) {
 				let questTextKey = this.getQuestTextKey(explorer);
+				explorer.hasUrgentDialogue = this.hasExplorerUrgentDialogue(explorer);
 				$container.append(UIConstants.getExplorerDivWithOptions(explorer, true, inCamp, questTextKey));
 			}
 		},
@@ -242,17 +246,25 @@ define([
 
 		updateDialogueIndicators: function () {
 			let explorersComponent = this.playerStatsNodes.head.explorers;
+			let sys = this;
 			
 			$("#container-tab-two-explorers .npc-container").each(function () {
 				let id = $(this).attr("data-explorerid");
 				let explorer = explorersComponent.getExplorerByID(id);
-				let status = GameGlobals.dialogueHelper.getExplorerDialogueStatus(explorer, DialogueConstants.dialogueSettings.interact);
 				
 				let indicator = $(this).find(".npc-dialogue-indicator");
+
+				let isUrgent = sys.hasExplorerUrgentDialogue(explorer);
 				
-				$(indicator).toggleClass("indicator-new", GameGlobals.dialogueHelper.isExplorerDialogueNew(explorer, DialogueConstants.dialogueSettings.interact));
-				$(indicator).toggleClass("indicator-urgent", status == DialogueConstants.STATUS_URGENT || status == DialogueConstants.STATUS_FORCED);
+				$(indicator).toggleClass("indicator-disabled", !isUrgent);
+				$(indicator).toggleClass("indicator-urgent", isUrgent);
 			});
+		},
+
+		
+		hasExplorerUrgentDialogue: function (explorerVO) {
+			let status = GameGlobals.dialogueHelper.getExplorerDialogueStatus(explorerVO, DialogueConstants.dialogueSettings.interact);
+			return status == DialogueConstants.STATUS_URGENT || status == DialogueConstants.STATUS_FORCED;
 		},
 		
 		getFoundRecruitIcon: function () {
@@ -314,7 +326,7 @@ define([
 		
 		highlightExplorerType: function (explorerType) {
 			let explorersComponent = this.playerStatsNodes.head.explorers;
-			$("#list-explorers .item").each(function () {
+			$("#list-explorers .npc-container").each(function () {
 				let id = $(this).attr("data-explorerid");
 				let explorer = explorersComponent.getExplorerByID(id);
 				let type = ExplorerConstants.getExplorerTypeForAbilityType(explorer.abilityType);

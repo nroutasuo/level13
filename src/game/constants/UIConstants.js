@@ -224,20 +224,29 @@ define(['ash',
 			div += "<div class='npc-portrait info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
 			div += UIConstants.getExplorerPortrait(explorerVO);
 
-			if (!hideComparisonIndicator) {
-				div += "<div class='item-comparison-badge'><div class='item-comparison-indicator indicator-even'></div></div>";
-			}
-
-			div += "<div class='npc-dialogue-badge'><div class='npc-dialogue-indicator'></div></div>"
-
-			if (questTextKey) {
-				div += "<div class='npc-quest-badge'><div class='npc-quest-indicator'></div></div>";
-			}
-			
 			div += "</div>";
 
 			// name
 			div += "<span>" + this.warning(explorerVO.name, explorerVO.injuredTimer >= 0) + "</span>";
+
+			// status icons
+			div += "<span class='explorer-icons'>";
+
+			let explorerType = ExplorerConstants.getExplorerTypeForAbilityType(explorerVO.abilityType);
+			let explorerTypeIconDefault = "img/eldorado/icon_explorer_type_" + explorerType + "-dark.png";
+			let explorerTypeIconSunlit = "img/eldorado/icon_explorer_type_" + explorerType + ".png";
+			div += "<img class='stat-icon img-themed' src='" + explorerTypeIconDefault + "' data-src-sunlit='" + explorerTypeIconSunlit + "' alt='" + explorerType + "'/>";
+
+			if (!hideComparisonIndicator) {
+				div += "<div class='item-comparison-indicator indicator-even'></div>";
+			}
+			div += "<div class='npc-dialogue-indicator'></div>";
+
+			if (questTextKey) {
+				div += "<div class='npc-quest-indicator'></div>";
+			}
+			
+			div += "</span>";
 
 			// interaction options
 			let talkLabel = (isAnimal ? "pet" : "talk");
@@ -296,6 +305,8 @@ define(['ash',
 
 			if (explorer.injuredTimer >= 0) {
 				result += "<br/>Status: " + this.warning("Injured");
+			} else if (explorer.hasUrgentDialogue) {
+				result += "<br/>Status: Wants to talk";
 			}
 
 			if (GameConstants.isCheatsEnabled) {

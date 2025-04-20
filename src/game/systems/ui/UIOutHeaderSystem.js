@@ -145,6 +145,7 @@ define([
 			GlobalSignals.equipmentChangedSignal.add(function () { sys.onEquipmentChanged(); });
 			GlobalSignals.explorersChangedSignal.add(function () { sys.onExplorersChanged(); });
 			GlobalSignals.actionCompletedSignal.add(function () { sys.onPlayerActionCompleted(); });
+			GlobalSignals.elementCreatedSignal.add(function () { sys.onElementCreated(); });
 			GlobalSignals.slowUpdateSignal.add(function () { sys.slowUpdate(); });
 			GlobalSignals.changelogLoadedSignal.add(function () { sys.updateGameVersion(); });
 			GlobalSignals.add(this, GlobalSignals.playerMoveStartedSignal, this.onPlayerMoveStarted);
@@ -243,6 +244,13 @@ define([
 			}
 			
 			// themed icons (dark/light)
+			this.updateThemedIconsCache();
+
+			// perks list
+			this.perksList = UIList.create(this, $(".player-perks-list"), this.createPerkListItem, this.updatePerkListItem, this.isPerkListItemDataSame, this.isPerkListItemDataUnchanged);
+		},
+
+		updateThemedIconsCache: function () {
 			let themedIcons = [];
 			$.each($("img.img-themed"), function () {
 				themedIcons.push({
@@ -253,9 +261,6 @@ define([
 			});
 			
 			this.themedIcons = themedIcons;
-
-			// perks list
-			this.perksList = UIList.create(this, $(".player-perks-list"), this.createPerkListItem, this.updatePerkListItem, this.isPerkListItemDataSame, this.isPerkListItemDataUnchanged);
 		},
 
 		generateStatsCallouts: function () {
@@ -1360,6 +1365,11 @@ define([
 			this.updateHeaderTexts();
 			this.updatePlayerStats();
 			this.updateLayout();
+		},
+
+		onElementCreated: function () {
+			this.updateThemedIconsCache();
+			this.updateThemedIcons();
 		},
 		
 		onPerksChanged: function () {

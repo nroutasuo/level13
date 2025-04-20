@@ -727,6 +727,13 @@ body.dark td.text-overflow {
   overflow: hidden;
   white-space: nowrap;
 }
+body.dark td.text-overflow-wide {
+  font-size: 0.75rem;
+  width: 10em;
+  max-width: 10em;
+  overflow: hidden;
+  white-space: nowrap;
+}
 body.dark th.th-number {
   text-align: center;
 }
@@ -1915,29 +1922,29 @@ body.dark .item-comparison-badge {
   background: #282a28;
 }
 body.dark .npc-dialogue-indicator {
+  background-image: url('../img/eldorado/icon-dialogue-dark.png');
   background-size: 100%;
   border: none;
   background-repeat: no-repeat;
   background-position: center;
-  width: 10px;
-  height: 10px;
 }
-body.dark .npc-dialogue-badge {
-  top: 1px;
-  right: 5px;
-  position: absolute;
-  border-width: 1px;
-  border-style: solid;
-  border-color: #555;
-  padding: 2px;
-  border-radius: 6px;
-  background: "inherit";
+body.dark .indicator-disabled {
+  display: none;
 }
-body.dark .npc-dialogue-badge .indicator-new {
-  border: 1px solid green;
+body.dark .indicator-urgent {
+  display: block;
 }
-body.dark .npc-dialogue-badge .indicator-urgent {
-  border: 1px solid red;
+body.dark .explorer-icons {
+  display: flex;
+  justify-content: center;
+  height: 1em;
+  gap: 1px;
+}
+body.dark .explorer-icons img,
+body.dark .explorer-icons div {
+  height: 1em;
+  width: 1em;
+  position: initial;
 }
 body.dark .npc-quest-indicator {
   background-size: 100%;
@@ -1965,6 +1972,10 @@ body.dark .npc-container {
   margin: 2px;
   background-color: #2f322f;
   position: relative;
+}
+body.dark .npc-container.highlighted {
+  border-color: #7b7b7b;
+  color: #ffffff;
 }
 body.dark .npc-visitor {
   background-color: #444;
@@ -3361,6 +3372,13 @@ body.sunlit td.text-overflow {
   overflow: hidden;
   white-space: nowrap;
 }
+body.sunlit td.text-overflow-wide {
+  font-size: 0.75rem;
+  width: 10em;
+  max-width: 10em;
+  overflow: hidden;
+  white-space: nowrap;
+}
 body.sunlit th.th-number {
   text-align: center;
 }
@@ -4549,29 +4567,29 @@ body.sunlit .item-comparison-badge {
   background: #fff;
 }
 body.sunlit .npc-dialogue-indicator {
+  background-image: url('../img/eldorado/icon-dialogue.png');
   background-size: 100%;
   border: none;
   background-repeat: no-repeat;
   background-position: center;
-  width: 10px;
-  height: 10px;
 }
-body.sunlit .npc-dialogue-badge {
-  top: 1px;
-  right: 5px;
-  position: absolute;
-  border-width: 1px;
-  border-style: solid;
-  border-color: #999;
-  padding: 2px;
-  border-radius: 6px;
-  background: "inherit";
+body.sunlit .indicator-disabled {
+  display: none;
 }
-body.sunlit .npc-dialogue-badge .indicator-new {
-  border: 1px solid green;
+body.sunlit .indicator-urgent {
+  display: block;
 }
-body.sunlit .npc-dialogue-badge .indicator-urgent {
-  border: 1px solid red;
+body.sunlit .explorer-icons {
+  display: flex;
+  justify-content: center;
+  height: 1em;
+  gap: 1px;
+}
+body.sunlit .explorer-icons img,
+body.sunlit .explorer-icons div {
+  height: 1em;
+  width: 1em;
+  position: initial;
 }
 body.sunlit .npc-quest-indicator {
   background-size: 100%;
@@ -4599,6 +4617,10 @@ body.sunlit .npc-container {
   margin: 2px;
   background-color: #e6e6e6;
   position: relative;
+}
+body.sunlit .npc-container.highlighted {
+  border-color: #bfbfbf;
+  color: #454945;
 }
 body.sunlit .npc-visitor {
   background-color: #ddd;

@@ -1054,35 +1054,35 @@ hr.warning {
 // DIALOGUE INDICATOR
 
 .npc-dialogue-indicator {
+	background-image: @img-indicator-dialogue;
 	background-size: 100%;
 	border: none;
 	background-repeat: no-repeat;
 	background-position: center;
-	width: 10px;
-	height: 10px;
 }
 
-.npc-dialogue-badge {
-	top: 1px;
-	right: 5px;
-	position: absolute;
-	border-width: 1px;
-	border-style: solid;
-	border-color: @color-border-strong;
-	padding: 2px;
-	border-radius: 6px;
-	background: @color-bg-box-2;
+.indicator-disabled {
+	display: none;
 }
 
-.npc-dialogue-badge .indicator-new {
-	border: 1px solid green;
+.indicator-urgent {
+	display: block;
 }
 
-.npc-dialogue-badge .indicator-urgent {
-	border: 1px solid red;
+// EXPLORER ICONS AND QUEST INDICATOR
+
+.explorer-icons {
+	display: flex;
+	justify-content: center;
+	height: 1em;
+	gap: 1px;
 }
 
-// EXPLORER QUEST INDICATOR
+.explorer-icons img, .explorer-icons div {
+	height: 1em;
+	width: 1em;
+	position: initial;
+}
 
 .npc-quest-indicator {
 	background-size: 100%;
@@ -1114,6 +1114,11 @@ hr.warning {
 	margin: 2px;
 	background-color: @color-bg-element-1;
 	position: relative;
+}
+
+.npc-container.highlighted {
+	border-color: lighten(@color-border-strong, 15%);
+	color: lighten(@color-text-default, 15%);
 }
 
 .npc-visitor {
