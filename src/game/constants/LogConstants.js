@@ -149,11 +149,65 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 				chance: 0.01,
 				message: "The darkness shifts and twists and presses closer."
 			},
-			"story_rescue_prospector_missing_02": {
+			"story_rescue_prospector_missing_01": {
 				triggers: [ "change_position" ],
 				conditions: { inCamp: false, storyFlags: {  "RESCUE_EXPLORER_LEFT": true } },
 				chance: 0.01,
 				message: "You wonder if Sunita made it through Level 14 somehow."
+			},
+			"story_escape_need_to_find_passage_01": {
+				triggers: [ "change_position" ],
+				conditions: { inCamp: false, distanceToCamp: [ 2, -1 ], level: { nextPassageFound: false }, storyFlags: {  "ESCAPE_SEARCHING_FOR_GROUND": true } },
+				chance: 0.01,
+				message: "You need to find a passage down from this level."
+			},
+			"story_apocalypse_need_tp_find_cause_01": {
+				triggers: [ "change_position" ],
+				conditions: { inCamp: false, distanceToCamp: [ 3, -1 ], storyFlags: {  "APOCALYPSE_KNOWN": false, "FALL_SEEN_STOREHOUSE": true } },
+				chance: 0.01,
+				message: "You need to find out what the Government was preparing emergency supplies for."
+			},
+			"story_apocalypse_need_tp_find_cause_01": {
+				triggers: [ "change_position" ],
+				conditions: { inCamp: false, distanceToCamp: [ 3, -1 ], storyFlags: {  "FALL_SEEN_SPACEFACTORY": true, "FALL_SEEN_EVACUATION": false } },
+				chance: 0.01,
+				message: "You need to find out what that space ship was being built for."
+			},
+			"story_apocalypse_need_to_find_solution_01": {
+				triggers: [ "change_position" ],
+				conditions: { inCamp: false, distanceToCamp: [ 3, -1 ], storyFlags: {  "APOCALYPSE_KNOWN": true, "APOCALYPSE_PLAN_READY": false } },
+				chance: 0.01,
+				message: "You need to find some way to stop the earthquakes."
+			},
+			"story_greenhouse_need_to_find_greenhouse_01": {
+				triggers: [ "change_position" ],
+				conditions: { inCamp: false, distanceToCamp: [ 2, -1 ], storyFlags: {  "GREENHOUSE_SEARCHING_FOR_CURE": true, "GREENHOUSE_FOUND": false } },
+				chance: 0.01,
+				message: "You need to find a Greenhouse."
+			},
+			"story_greenhouse_need_to_find_seeds_01": {
+				triggers: [ "change_position" ],
+				conditions: { inCamp: false, distanceToCamp: [ 2, -1 ], storyFlags: {  "GREENHOUSE_FOUND": true, "GREENHOUSE_RESTORED": false } },
+				chance: 0.01,
+				message: "You need to find a way to restore the Greenhouses."
+			},
+			"story_spirits_suspicion_01": {
+				triggers: [ "change_position" ],
+				conditions: { inCamp: false, distanceToCamp: [ 3, -1 ], deity: false, storyFlags: {  "SPIRITS_MAGIC_SEEN": false} },
+				chance: 0.01,
+				message: "You wonder if there really are ghosts in the City."
+			},
+			"story_tribe_double_guess_escape_01": {
+				triggers: [ "change_position" ],
+				conditions: { inCamp: false, storyFlags: {  "ESCAPE_SEARCHING_FOR_GROUND": true } },
+				chance: 0.01,
+				message: "You wonder if you can convince someone to leave the City with you."
+			},
+			"story_tribe_double_guess_escape_01": {
+				triggers: [ "change_position" ],
+				conditions: { inCamp: false, numCamps: 3, storyFlags: {  "ESCAPE_SEARCHING_FOR_GROUND": true } },
+				chance: 0.01,
+				message: "You wonder how the camps will develop after you've left the City."
 			},
 			"action_despair": {
 				triggers: [ "action_any" ],

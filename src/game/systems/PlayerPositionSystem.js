@@ -288,6 +288,10 @@ define([
 
 			let msgVO = { textFragments: [], delimiter: "ui.common.sentence_separator" };
 			msgVO.textFragments.push({ textKey: "ui.exploration.enter_level_message_intro", textParams: { level: levelPos} });
+
+			let isOddLevel = levelPos % 2 == 1;
+			let isRescueActive = GameGlobals.gameState.getStoryFlag(StoryConstants.flags.StoryConstants.flags.RESCUE_EXPLORER_LEFT) && !GameGlobals.gameState.getStoryFlag(StoryConstants.flags.StoryConstants.flags.RESCUE_EXPLORER_FOUND);
+			let isLookingForGroundEscapeActive = GameGlobals.gameState.getStoryFlag(StoryConstants.flags.ESCAPE_SEARCHING_FOR_GROUND);
 			
 			if (levelPos == surfaceLevel) {
 				msgVO.textFragments.push({ textKey: "ui.exploration.enter_level_surface_message" });
@@ -295,8 +299,12 @@ define([
 				msgVO.textFragments.push({ textKey: "ui.exploration.enter_level_ground_message" });
 			} else if (levelPos == 15) {
 				msgVO.textFragments.push({ textKey: "ui.exploration.enter_level_15_message" });
-			} else if (levelPos % 2 == 1 && GameGlobals.gameState.getStoryFlag(StoryConstants.flags.ESCAPE_SEARCHING_FOR_GROUND)) {
+			} else if (!isOddLevel && isRescueActive) {
+				msgVO.textFragments.push({ textKey: "ui.exploration.enter_level_rescue_message" });
+			} else if (isOddLevel && isLookingForGroundEscapeActive) {
 				msgVO.textFragments.push({ textKey: "ui.exploration.enter_level_escape_message" });
+			} else if (isOddLevel && isInvestigatingFall && levelPos > 15) {
+				msgVO.textFragments.push({ textKey: "ui.exploration.enter_level_fall_message" });
 			} else {
 				msgVO.textFragments.push({ textKey: "ui.exploration.enter_level_default_message" });
 			}

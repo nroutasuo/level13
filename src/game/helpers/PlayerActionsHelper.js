@@ -572,6 +572,13 @@ define([
 					}
 				}
 
+				if (typeof requirements.distanceToCamp !== "undefined") {
+					let range = requirements.distanceToCamp;
+					let current = this.getDistanceToNearestCamp(sector);
+					let result = this.checkRequirementsRange(range, current, "too close to camp", "too far from camp");
+					if (result) return result;
+				}
+
 				if (requirements.improvements) {
 					for (var improvementID in requirements.improvements) {
 						var amount = this.getCurrentImprovementCount(improvementComponent, campComponent, improvementID);
@@ -1379,6 +1386,14 @@ define([
 						if (result) {
 							return result;
 						}
+					}
+
+					if (typeof requirements.level.nextPassageFound !== "undefined") {
+						debugger
+						let requiredValue = requirements.level.nextPassageFound;
+						let currentValue = GameGlobals.levelHelper.isNextPassageFound(level);
+						let result = this.checkRequirementsBoolean(requiredValue, currentValue, "An explorer wants to talk to you.", "Requires pending dialogue.");
+						if (result) return result;
 					}
 				}
 

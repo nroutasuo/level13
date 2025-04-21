@@ -1178,6 +1178,42 @@ define([
 			return false;
 		},
 
+		isPassageUpFound: function (level) {
+			let levelEntity = this.getLevelEntityForPosition(level);
+			let levelPassagesComponent = levelEntity.get(LevelPassagesComponent);
+			let passageSectors = Object.keys(levelPassagesComponent.passagesUp);
+			for (let iu = 0; iu < passageSectors.length; iu++) {
+				let sectorID = passageSectors[iu];
+				let sector = this.getSectorBySectorId(level, sectorID);
+				let sectorStatus = sector.get(SectorStatusComponent);
+				if (sectorStatus.scouted) return true;
+			}
+			return false;
+		},
+
+		isPassageDownFound: function (level) {
+			let levelEntity = this.getLevelEntityForPosition(level);
+			let levelPassagesComponent = levelEntity.get(LevelPassagesComponent);
+			let passageSectors = Object.keys(levelPassagesComponent.passagesDown);
+			for (let iu = 0; iu < passageSectors.length; iu++) {
+				let sectorID = passageSectors[iu];
+				let sector = this.getSectorBySectorId(level, sectorID);
+				let sectorStatus = sector.get(SectorStatusComponent);
+				if (sectorStatus.scouted) return true;
+			}
+			return false;
+		},
+
+		isNextPassageFound: function (level) {
+			if (level == GameGlobals.gameState.getGroundLevel()) {
+				return this.isPassageUpFound(13);
+			} else if (level >= 14) {
+				return this.isPassageUpFound(level);
+			} else {
+				return this.isPassageDownFound(level);
+			}
+		},
+
 		isSectorReachable: function (startSector, goalSector) {
 			var settings = { skipUnvisited: false, skipBlockers: true, omitWarnings: false };
 			var path = this.findPathTo(startSector, goalSector, settings);
