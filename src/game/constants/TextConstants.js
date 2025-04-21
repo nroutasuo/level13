@@ -1202,6 +1202,10 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					modifier = "expedition";
 					noun = "camp";
 					break;
+				case localeTypes.isolationCenter:
+					modifier = "haughty";
+					noun = "facility";
+					break;
 				case localeTypes.seedDepot:
 					modifier = "government";
 					noun = "depot";

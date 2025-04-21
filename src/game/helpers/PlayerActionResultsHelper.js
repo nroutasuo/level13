@@ -372,6 +372,7 @@ define([
 				case localeTypes.seedDepot:
 				case localeTypes.compound:
 				case localeTypes.expedition:
+				case localeTypes.isolationCenter:
 					hasMaterialRewards = false;
 					hasMiscRewards = false;
 					break;

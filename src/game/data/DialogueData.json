@@ -5898,6 +5898,27 @@
 				}
 			]
 		},
+		"locale_story_isolation_center": {
+			"pages": [
+				{
+					"key": "story.stories.locale_story_isolation_center_p1",
+					"options": "NEXT"
+				},
+				{
+					"key": "story.stories.locale_story_isolation_center_p2",
+					"options": "NEXT"
+				},
+				{
+					"key": "story.stories.locale_story_isolation_center_p3",
+					"result": {
+						"gainedItems": [
+							"document_story_fall_diary_01",
+							"document_story_fall_evacuation_03"
+						]
+					}
+				}
+			]
+		},
 		"locale_story_expedition_camp": {
 			"pages": [
 				{

@@ -28,13 +28,14 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 
 		// unique
 		grove: "grove",
-		greenhouse: "greenhouse",
-		depot: "depot",
+		greenhouse: "greenhouse", // x2
+		depot: "depot", // x2
 		spacefactory: "spacefactory",
 		seedDepot: "seedDepot",
 		shelter: "shelter",
 		compound: "compound",
-		expedition: "expedition"
+		expedition: "expedition",
+		isolationCenter: "isolationCenter"
 	};
 	
 	var LocaleVO = Ash.Class.extend({
@@ -84,7 +85,7 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 				case localeTypes.clinic: return 3;
 				case localeTypes.depot: difficulty = 1; break;
 				case localeTypes.expedition: difficulty = 0.1; break;
-				case localeTypes.expedition: difficulty = 1; break;
+				case localeTypes.isolationCenter: difficulty = 1; break;
 				case localeTypes.factory: difficulty = 1; break;
 				case localeTypes.farm: difficulty = 0.4; break;
 				case localeTypes.greenhouse: difficulty = 0.2; break;
@@ -200,18 +201,19 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 				case localeTypes.bunker:
 				case localeTypes.clinic:
 				case localeTypes.depot:
+				case localeTypes.expedition:
 				case localeTypes.factory:
 				case localeTypes.farm:
 				case localeTypes.greenhouse:
 				case localeTypes.grove:
+				case localeTypes.hospital:
+				case localeTypes.isolationCenter:
+				case localeTypes.junkyard:
 				case localeTypes.library:
 				case localeTypes.maintenance:
 				case localeTypes.seedDepot:
-				case localeTypes.expedition:
-				case localeTypes.junkyard:
 				case localeTypes.spacefactory:
 				case localeTypes.warehouse:
-				case localeTypes.hospital:
 					return 0;
 				case localeTypes.camp:
 				case localeTypes.tradingpartner:

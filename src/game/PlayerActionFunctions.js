@@ -1000,9 +1000,17 @@ define(['ash',
 			}
 
 			if (localeVO.type == localeTypes.shelter) {
+				let shelterSuccessCallback = function (cb) {
+					let itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
+					let item = itemsComponent.getItem("artefact_rescue_1", null, true, true);
+					if (item) itemsComponent.discardItem(item, false);
+					cb();
+				};
+
 				this.startSequence([
 					{ type: "dialogue", dialogueID: "locale_story_shelter" },
 					{ type: "storyFlag", flagID: StoryConstants.flags.RESCUE_EXPLORER_FOUND, value: true },
+					{ type: "custom", f: shelterSuccessCallback },
 					{ type: "custom", f: successCallback },
 					{ type: "log", textKey: "Scouted the apartment." }
 				]);
@@ -1025,6 +1033,15 @@ define(['ash',
 					{ type: "storyFlag", flagID: StoryConstants.flags.EXPEDITION_FATE_KNOWN, value: true },
 					{ type: "custom", f: successCallback },
 					{ type: "log", textKey: "Scouted the campsite." }
+				]);
+				return;
+			}
+
+			if (localeVO.type == localeTypes.isolationCenter) {
+				this.startSequence([
+					{ type: "dialogue", dialogueID: "locale_story_isolation_center" },
+					{ type: "custom", f: successCallback },
+					{ type: "log", textKey: "Scouted the facility." }
 				]);
 				return;
 			}
