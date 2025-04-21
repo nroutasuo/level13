@@ -554,13 +554,20 @@ define([
 				}
 
 				if (typeof requirements.inCamp !== "undefined") {
-					var required = requirements.inCamp;
-					var current = inCamp;
-					if (required !== current) {
-						if (required) {
-							return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_NOT_IN_CAMP };
-						} else {
-							return { value: 0, reason: "Must be outside." };
+					if (typeof requirements.inCamp == "number") {
+						let requiredValue = requirements.inCamp;
+						let positionCampOrdinal = GameGlobals.gameState.getCampOrdinal(positionComponent.level);
+						let currentValue = inCamp ? positionCampOrdinal : false;
+						if (requiredValue != currentValue) return { value: 0, reason: "Must be in camp " + requiredValue };
+					} else {
+						var required = requirements.inCamp;
+						var current = inCamp;
+						if (required !== current) {
+							if (required) {
+								return { value: 0, reason: PlayerActionConstants.DISABLED_REASON_NOT_IN_CAMP };
+							} else {
+								return { value: 0, reason: "Must be outside." };
+							}
 						}
 					}
 				}

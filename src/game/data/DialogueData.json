@@ -219,6 +219,194 @@
 				}
 			]
 		},
+		"character_bard_default_event_08": {
+			"conditions": {
+				"numCamps": 3
+			},
+			"pages": [
+				"character_bard_default_event_08_p1"
+			]
+		},
+		"character_bard_default_event_09": {
+			"pages": [
+				"character_bard_default_event_09_p1"
+			]
+		},
+		"character_bard_default_event_10": {
+			"conditions": {
+				"numCamps": 9,
+				"player": {
+					"position": {
+						"level": [
+							15,
+							-1
+						]
+					}
+				}
+			},
+			"pages": [
+				{
+					"id": "intro",
+					"key": "character_bard_default_event_10_p1",
+					"options": [
+						{
+							"buttonKey": "npc_request_agree",
+							"response": "s1"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "s1",
+					"key": "character_bard_default_event_10_p2",
+					"options": "NEXT"
+				},
+				{
+					"id": "s2",
+					"key": "character_bard_default_event_10_p3",
+					"options": "NEXT"
+				},
+				{
+					"id": "s3",
+					"key": "character_bard_default_event_10_p4",
+					"options": "END",
+					"result": {
+						"gainedRumours": 3,
+						"replaceDialogue": true
+					}
+				},
+				{
+					"id": "reject",
+					"key": "character_generic_barter_reject_01_p1"
+				}
+			]
+		},
+		"character_bard_default_event_11": {
+			"pages": [
+				{
+					"id": "intro",
+					"key": "character_bard_default_event_11_p1",
+					"options": [
+						{
+							"buttonKey": "npc_request_agree",
+							"response": "s1"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "s1",
+					"key": "character_bard_default_event_11_p2",
+					"options": "NEXT"
+				},
+				{
+					"id": "s2",
+					"key": "character_bard_default_event_11_p3",
+					"options": "NEXT"
+				},
+				{
+					"id": "s3",
+					"key": "character_bard_default_event_11_p4",
+					"options": "END",
+					"result": {
+						"gainedRumours": 3,
+						"replaceDialogue": true
+					}
+				},
+				{
+					"id": "reject",
+					"key": "character_generic_barter_reject_01_p1"
+				}
+			]
+		},
+		"character_bard_default_event_12": {
+			"pages": [
+				{
+					"id": "intro",
+					"key": "character_bard_default_event_12_p1",
+					"options": [
+						{
+							"buttonKey": "npc_request_agree",
+							"response": "s1"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "s1",
+					"key": "character_bard_default_event_12_p2",
+					"options": "NEXT"
+				},
+				{
+					"id": "s2",
+					"key": "character_bard_default_event_12_p3",
+					"options": "NEXT"
+				},
+				{
+					"id": "s3",
+					"key": "character_bard_default_event_12_p4",
+					"options": "END",
+					"result": {
+						"gainedRumours": 3,
+						"replaceDialogue": true
+					}
+				},
+				{
+					"id": "reject",
+					"key": "character_generic_barter_reject_01_p1"
+				}
+			]
+		},
+		"character_bard_default_event_13": {
+			"pages": [
+				{
+					"id": "intro",
+					"key": "character_bard_default_event_13_p1",
+					"options": [
+						{
+							"buttonKey": "npc_request_agree",
+							"response": "s1"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "s1",
+					"key": "character_bard_default_event_13_p2",
+					"options": "NEXT"
+				},
+				{
+					"id": "s2",
+					"key": "character_bard_default_event_13_p3",
+					"options": "NEXT"
+				},
+				{
+					"id": "s3",
+					"key": "character_bard_default_event_13_p4",
+					"options": "END",
+					"result": {
+						"gainedRumours": 3,
+						"replaceDialogue": true
+					}
+				},
+				{
+					"id": "reject",
+					"key": "character_generic_barter_reject_01_p1"
+				}
+			]
+		},
 		"character_bard_default_meet_01": {
 			"pages": [
 				"character_bard_default_meet_01_p1"
@@ -917,6 +1105,56 @@
 				"character_generic_story_explain_ground_04_p1"
 			]
 		},
+		"character_generic_story_fall_dunno_01": {
+			"conditions": {
+				"storyFlags": {
+					"FALL_INVESTIGATING": true
+				}
+			},
+			"pages": [
+				"character_generic_story_fall_dunno_01_p1"
+			]
+		},
+		"character_generic_story_fall_dunno_02": {
+			"conditions": {
+				"storyFlags": {
+					"FALL_INVESTIGATING": true
+				}
+			},
+			"pages": [
+				"character_generic_story_fall_dunno_02_p1"
+			]
+		},
+		"character_generic_story_fall_dunno_03": {
+			"conditions": {
+				"storyFlags": {
+					"FALL_INVESTIGATING": true
+				}
+			},
+			"pages": [
+				"character_generic_story_fall_dunno_03_p1"
+			]
+		},
+		"character_generic_story_fall_encourage_01": {
+			"conditions": {
+				"storyFlags": {
+					"FALL_INVESTIGATING": true
+				}
+			},
+			"pages": [
+				"character_generic_story_fall_encourage_01_p1"
+			]
+		},
+		"character_generic_story_fall_encourage_02": {
+			"conditions": {
+				"storyFlags": {
+					"FALL_INVESTIGATING": true
+				}
+			},
+			"pages": [
+				"character_generic_story_fall_encourage_02_p1"
+			]
+		},
 		"character_generic_story_fall_theory_aliens": {
 			"pages": [
 				"character_generic_story_fall_theory_aliens_p1"
@@ -1447,6 +1685,11 @@
 				"character_trader_default_meet_02_p1"
 			]
 		},
+		"character_trader_default_meet_03": {
+			"pages": [
+				"character_trader_default_meet_03_p1"
+			]
+		},
 		"character_workerApothecary_default_interact_01": {
 			"pages": [
 				"character_workerApothecary_default_interact_01_p1"
@@ -1962,6 +2205,11 @@
 				"explorer_generic_animal_meet_01_p1"
 			]
 		},
+		"explorer_generic_bat_event_01": {
+			"pages": [
+				"explorer_generic_bat_event_01_p1"
+			]
+		},
 		"explorer_generic_bat_interact_01": {
 			"pages": [
 				"explorer_generic_bat_interact_01_p1"
@@ -1980,11 +2228,6 @@
 		"explorer_generic_bat_interact_04": {
 			"pages": [
 				"explorer_generic_bat_interact_04_p1"
-			]
-		},
-		"explorer_generic_bat_event_01": {
-			"pages": [
-				"explorer_generic_bat_event_01_p1"
 			]
 		},
 		"explorer_generic_bat_meet_01": {
@@ -2099,6 +2342,136 @@
 			},
 			"pages": [
 				"explorer_generic_interact_story_apocalypse_02_p1"
+			]
+		},
+		"explorer_generic_intract_new_camp_10_01": {
+			"conditions": {
+				"inCamp": 10,
+				"maxNumCamps": 10,
+				"numCamps": 10
+			},
+			"pages": [
+				"explorer_generic_intract_new_camp_10_01_p1"
+			]
+		},
+		"explorer_generic_intract_new_camp_11_01": {
+			"conditions": {
+				"inCamp": 11,
+				"maxNumCamps": 11,
+				"numCamps": 11
+			},
+			"pages": [
+				"explorer_generic_intract_new_camp_11_01_p1"
+			]
+		},
+		"explorer_generic_intract_new_camp_12_01": {
+			"conditions": {
+				"inCamp": 12,
+				"maxNumCamps": 12,
+				"numCamps": 12
+			},
+			"pages": [
+				"explorer_generic_intract_new_camp_12_01_p1"
+			]
+		},
+		"explorer_generic_intract_new_camp_13_01": {
+			"conditions": {
+				"inCamp": 13,
+				"maxNumCamps": 13,
+				"numCamps": 13
+			},
+			"pages": [
+				"explorer_generic_intract_new_camp_13_01_p1"
+			]
+		},
+		"explorer_generic_intract_new_camp_14_01": {
+			"conditions": {
+				"inCamp": 14,
+				"maxNumCamps": 14,
+				"numCamps": 14
+			},
+			"pages": [
+				"explorer_generic_intract_new_camp_14_01_p1"
+			]
+		},
+		"explorer_generic_intract_new_camp_15_01": {
+			"conditions": {
+				"inCamp": 15,
+				"maxNumCamps": 15,
+				"numCamps": 15
+			},
+			"pages": [
+				"explorer_generic_intract_new_camp_15_01_p1"
+			]
+		},
+		"explorer_generic_intract_new_camp_3_01": {
+			"conditions": {
+				"inCamp": 3,
+				"maxNumCamps": 3,
+				"numCamps": 3
+			},
+			"pages": [
+				"explorer_generic_intract_new_camp_3_01_p1"
+			]
+		},
+		"explorer_generic_intract_new_camp_4_01": {
+			"conditions": {
+				"inCamp": 4,
+				"maxNumCamps": 4,
+				"numCamps": 4
+			},
+			"pages": [
+				"explorer_generic_intract_new_camp_4_01_p1"
+			]
+		},
+		"explorer_generic_intract_new_camp_5_01": {
+			"conditions": {
+				"inCamp": 5,
+				"maxNumCamps": 5,
+				"numCamps": 5
+			},
+			"pages": [
+				"explorer_generic_intract_new_camp_5_01_p1"
+			]
+		},
+		"explorer_generic_intract_new_camp_6_01": {
+			"conditions": {
+				"inCamp": 6,
+				"maxNumCamps": 6,
+				"numCamps": 6
+			},
+			"pages": [
+				"explorer_generic_intract_new_camp_6_01_p1"
+			]
+		},
+		"explorer_generic_intract_new_camp_7_01": {
+			"conditions": {
+				"inCamp": 7,
+				"maxNumCamps": 7,
+				"numCamps": 7
+			},
+			"pages": [
+				"explorer_generic_intract_new_camp_7_01_p1"
+			]
+		},
+		"explorer_generic_intract_new_camp_8_01": {
+			"conditions": {
+				"inCamp": 8,
+				"maxNumCamps": 8,
+				"numCamps": 8
+			},
+			"pages": [
+				"explorer_generic_intract_new_camp_8_01_p1"
+			]
+		},
+		"explorer_generic_intract_new_camp_9_01": {
+			"conditions": {
+				"inCamp": 9,
+				"maxNumCamps": 9,
+				"numCamps": 9
+			},
+			"pages": [
+				"explorer_generic_intract_new_camp_9_01_p1"
 			]
 		},
 		"explorer_generic_mercenary_event_01": {
@@ -3744,16 +4117,6 @@
 				"explorer_template_teen_story_rescue_absence_01_p1"
 			]
 		},
-		"explorer_unique_gambler_story_apocalypse_plan_ready_01": {
-			"conditions": {
-				"storyFlags": {
-					"APOCALYPSE_PLAN_READY": true
-				}
-			},
-			"pages": [
-				"explorer_unique_gambler_story_apocalypse_plan_ready_01_p1"
-			]
-		},
 		"explorer_unique_gambler_event_01": {
 			"pages": [
 				"explorer_unique_gambler_event_01_p1"
@@ -3809,10 +4172,10 @@
 		},
 		"explorer_unique_gambler_interact_07": {
 			"conditions": {
+				"deity": false,
 				"explorer": {
 					"trust": 4
-				},
-				"deity": false
+				}
 			},
 			"pages": [
 				"explorer_unique_gambler_interact_07_p1"
@@ -3820,10 +4183,10 @@
 		},
 		"explorer_unique_gambler_interact_08": {
 			"conditions": {
+				"deity": false,
 				"explorer": {
 					"trust": 4
-				},
-				"deity": false
+				}
 			},
 			"pages": [
 				"explorer_unique_gambler_interact_08_p1"
@@ -3898,6 +4261,16 @@
 		"explorer_unique_gambler_meet_01": {
 			"pages": [
 				"explorer_unique_gambler_meet_01_p1"
+			]
+		},
+		"explorer_unique_gambler_story_apocalypse_plan_ready_01": {
+			"conditions": {
+				"storyFlags": {
+					"APOCALYPSE_PLAN_READY": true
+				}
+			},
+			"pages": [
+				"explorer_unique_gambler_story_apocalypse_plan_ready_01_p1"
 			]
 		},
 		"explorer_unique_gambler_story_escape_stay_01": {
@@ -4626,7 +4999,6 @@
 			]
 		},
 		"explorer_unique_journalist_story_escape_stay_01": {
-			"isUrgent": true,
 			"conditions": {
 				"storyFlags": {
 					"ESCAPE_SEARCHING_FOR_EXIT": false
@@ -6582,18 +6954,28 @@
 					"explorer_generic_interact_01",
 					"explorer_generic_interact_02",
 					"explorer_generic_interact_injured_01",
-					"explorer_generic_scavenger_interact_03",
-					"explorer_generic_scout_interact_02",
-					"explorer_generic_mercenary_interact_01",
 					"explorer_generic_interact_story_apocalypse_01",
 					"explorer_generic_interact_story_apocalypse_02",
-					"explorer_generic_story_searching_for_greenhouse_01",
-					"explorer_generic_story_searching_for_greenhouse_02",
-					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_intract_new_camp_6_01",
+					"explorer_generic_intract_new_camp_7_01",
+					"explorer_generic_intract_new_camp_8_01",
+					"explorer_generic_intract_new_camp_9_01",
+					"explorer_generic_intract_new_camp_10_01",
+					"explorer_generic_intract_new_camp_11_01",
+					"explorer_generic_intract_new_camp_12_01",
+					"explorer_generic_intract_new_camp_13_01",
+					"explorer_generic_intract_new_camp_14_01",
+					"explorer_generic_intract_new_camp_15_01",
+					"explorer_generic_mercenary_interact_01",
+					"explorer_generic_scavenger_interact_03",
+					"explorer_generic_scout_interact_02",
 					"explorer_generic_story_apocalypse_plan_ready_01",
 					"explorer_generic_story_apocalypse_plan_ready_02",
 					"explorer_generic_story_rescue_prospector_hint_01",
-					"explorer_generic_story_rescue_prospector_hint_02"
+					"explorer_generic_story_rescue_prospector_hint_02",
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02"
 				],
 				"meet": [
 					"explorer_generic_scavenger_meet_01",
@@ -6656,25 +7038,35 @@
 					"explorer_generic_mercenary_event_01"
 				],
 				"interact": [
+					"explorer_generic_interact_injured_01",
+					"explorer_generic_interact_injured_02",
+					"explorer_generic_interact_story_apocalypse_01",
+					"explorer_generic_interact_story_apocalypse_02",
+					"explorer_generic_intract_new_camp_6_01",
+					"explorer_generic_intract_new_camp_7_01",
+					"explorer_generic_intract_new_camp_8_01",
+					"explorer_generic_intract_new_camp_9_01",
+					"explorer_generic_intract_new_camp_10_01",
+					"explorer_generic_intract_new_camp_11_01",
+					"explorer_generic_intract_new_camp_12_01",
+					"explorer_generic_intract_new_camp_13_01",
+					"explorer_generic_intract_new_camp_14_01",
+					"explorer_generic_intract_new_camp_15_01",
 					"explorer_generic_mercenary_interact_01",
 					"explorer_generic_mercenary_interact_02",
 					"explorer_generic_mercenary_interact_03",
 					"explorer_generic_mercenary_interact_04",
 					"explorer_generic_mercenary_interact_05",
 					"explorer_generic_mercenary_interact_06",
-					"explorer_generic_interact_injured_01",
-					"explorer_generic_interact_injured_02",
-					"explorer_generic_story_searching_for_greenhouse_01",
-					"explorer_generic_story_searching_for_greenhouse_02",
-					"explorer_generic_story_find_greenhouse",
-					"explorer_generic_interact_story_apocalypse_01",
-					"explorer_generic_interact_story_apocalypse_02",
 					"explorer_generic_story_apocalypse_plan_ready_01",
 					"explorer_generic_story_apocalypse_plan_ready_02",
+					"explorer_generic_story_find_greenhouse",
 					"explorer_generic_story_rescue_absence_01",
-					"explorer_generic_story_rescue_prospector_intro",
 					"explorer_generic_story_rescue_prospector_hint_01",
-					"explorer_generic_story_rescue_prospector_hint_02"
+					"explorer_generic_story_rescue_prospector_hint_02",
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02"
 				],
 				"meet": [
 					"explorer_generic_mercenary_meet_01"
@@ -6735,26 +7127,36 @@
 					"explorer_generic_scavenger_event_01"
 				],
 				"interact": [
+					"explorer_generic_interact_injured_01",
+					"explorer_generic_interact_injured_02",
+					"explorer_generic_interact_injured_03",
+					"explorer_generic_interact_story_apocalypse_01",
+					"explorer_generic_interact_story_apocalypse_02",
+					"explorer_generic_intract_new_camp_6_01",
+					"explorer_generic_intract_new_camp_7_01",
+					"explorer_generic_intract_new_camp_8_01",
+					"explorer_generic_intract_new_camp_9_01",
+					"explorer_generic_intract_new_camp_10_01",
+					"explorer_generic_intract_new_camp_11_01",
+					"explorer_generic_intract_new_camp_12_01",
+					"explorer_generic_intract_new_camp_13_01",
+					"explorer_generic_intract_new_camp_14_01",
+					"explorer_generic_intract_new_camp_15_01",
 					"explorer_generic_scavenger_interact_01",
 					"explorer_generic_scavenger_interact_02",
 					"explorer_generic_scavenger_interact_03",
 					"explorer_generic_scavenger_interact_04",
 					"explorer_generic_scavenger_interact_05",
 					"explorer_generic_scavenger_interact_06",
-					"explorer_generic_interact_injured_01",
-					"explorer_generic_interact_injured_02",
-					"explorer_generic_interact_injured_03",
 					"explorer_generic_story_apocalypse_plan_ready_01",
 					"explorer_generic_story_apocalypse_plan_ready_02",
-					"explorer_generic_story_searching_for_greenhouse_01",
-					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_generic_story_find_greenhouse",
-					"explorer_generic_interact_story_apocalypse_01",
-					"explorer_generic_interact_story_apocalypse_02",
 					"explorer_generic_story_rescue_absence_01",
-					"explorer_generic_story_rescue_prospector_intro",
 					"explorer_generic_story_rescue_prospector_hint_01",
-					"explorer_generic_story_rescue_prospector_hint_02"
+					"explorer_generic_story_rescue_prospector_hint_02",
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02"
 				],
 				"meet": [
 					"explorer_generic_scavenger_meet_01"
@@ -6767,6 +7169,21 @@
 					"explorer_generic_scout_event_01"
 				],
 				"interact": [
+					"character_generic_story_government_positive",
+					"explorer_generic_interact_injured_01",
+					"explorer_generic_interact_injured_02",
+					"explorer_generic_interact_story_apocalypse_01",
+					"explorer_generic_interact_story_apocalypse_02",
+					"explorer_generic_intract_new_camp_6_01",
+					"explorer_generic_intract_new_camp_7_01",
+					"explorer_generic_intract_new_camp_8_01",
+					"explorer_generic_intract_new_camp_9_01",
+					"explorer_generic_intract_new_camp_10_01",
+					"explorer_generic_intract_new_camp_11_01",
+					"explorer_generic_intract_new_camp_12_01",
+					"explorer_generic_intract_new_camp_13_01",
+					"explorer_generic_intract_new_camp_14_01",
+					"explorer_generic_intract_new_camp_15_01",
 					"explorer_generic_scout_interact_01",
 					"explorer_generic_scout_interact_02",
 					"explorer_generic_scout_interact_03",
@@ -6775,18 +7192,13 @@
 					"explorer_generic_scout_interact_06",
 					"explorer_generic_story_apocalypse_plan_ready_01",
 					"explorer_generic_story_apocalypse_plan_ready_02",
-					"explorer_generic_interact_injured_01",
-					"explorer_generic_interact_injured_02",
-					"explorer_generic_story_searching_for_greenhouse_01",
-					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_generic_story_find_greenhouse",
-					"character_generic_story_government_positive",
-					"explorer_generic_interact_story_apocalypse_01",
-					"explorer_generic_interact_story_apocalypse_02",
 					"explorer_generic_story_rescue_absence_01",
-					"explorer_generic_story_rescue_prospector_intro",
 					"explorer_generic_story_rescue_prospector_hint_01",
-					"explorer_generic_story_rescue_prospector_hint_02"
+					"explorer_generic_story_rescue_prospector_hint_02",
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02"
 				],
 				"meet": [
 					"explorer_generic_scout_meet_01"
@@ -6817,6 +7229,11 @@
 					"explorer_template_amnesiac_event_01"
 				],
 				"interact": [
+					"explorer_generic_intract_new_camp_7_01",
+					"explorer_generic_intract_new_camp_8_01",
+					"explorer_generic_intract_new_camp_10_01",
+					"explorer_generic_intract_new_camp_12_01",
+					"explorer_generic_intract_new_camp_14_01",
 					"explorer_template_amnesiac_interact_01",
 					"explorer_template_amnesiac_interact_02",
 					"explorer_template_amnesiac_interact_03",
@@ -6847,6 +7264,22 @@
 					"explorer_template_architect_event_01"
 				],
 				"interact": [
+					"explorer_generic_interact_injured_01",
+					"explorer_generic_interact_injured_03",
+					"explorer_generic_intract_new_camp_6_01",
+					"explorer_generic_intract_new_camp_7_01",
+					"explorer_generic_intract_new_camp_8_01",
+					"explorer_generic_intract_new_camp_9_01",
+					"explorer_generic_intract_new_camp_10_01",
+					"explorer_generic_intract_new_camp_13_01",
+					"explorer_generic_intract_new_camp_14_01",
+					"explorer_generic_intract_new_camp_15_01",
+					"explorer_generic_story_rescue_absence_01",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02",
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_template_architect_interact_01",
 					"explorer_template_architect_interact_02",
 					"explorer_template_architect_interact_03",
@@ -6854,20 +7287,12 @@
 					"explorer_template_architect_interact_05",
 					"explorer_template_architect_interact_06",
 					"explorer_template_architect_interact_07",
-					"explorer_template_architect_story_apocalypse_plan_ready_01",
 					"explorer_template_architect_interact_08",
 					"explorer_template_architect_interact_09",
 					"explorer_template_architect_interact_10",
 					"explorer_template_architect_interact_11",
 					"explorer_template_architect_interact_12",
-					"explorer_generic_interact_injured_01",
-					"explorer_generic_interact_injured_03",
-					"explorer_generic_story_searching_for_greenhouse_01",
-					"explorer_generic_story_searching_for_greenhouse_02",
-					"explorer_generic_story_rescue_absence_01",
-					"explorer_generic_story_rescue_prospector_intro",
-					"explorer_generic_story_rescue_prospector_hint_01",
-					"explorer_generic_story_rescue_prospector_hint_02"
+					"explorer_template_architect_story_apocalypse_plan_ready_01"
 				],
 				"meet": [
 					"explorer_template_architect_meet_01"
@@ -6880,6 +7305,19 @@
 					"explorer_template_bard_event_01"
 				],
 				"interact": [
+					"explorer_generic_interact_injured_03",
+					"explorer_generic_intract_new_camp_6_01",
+					"explorer_generic_intract_new_camp_7_01",
+					"explorer_generic_intract_new_camp_9_01",
+					"explorer_generic_intract_new_camp_10_01",
+					"explorer_generic_intract_new_camp_14_01",
+					"explorer_generic_intract_new_camp_15_01",
+					"explorer_generic_story_rescue_absence_01",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02",
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_template_bard_interact_01",
 					"explorer_template_bard_interact_02",
 					"explorer_template_bard_interact_03",
@@ -6892,14 +7330,7 @@
 					"explorer_template_bard_interact_10",
 					"explorer_template_bard_interact_11",
 					"explorer_template_bard_interact_12",
-					"explorer_template_bard_story_apocalypse_plan_ready_01",
-					"explorer_generic_interact_injured_03",
-					"explorer_generic_story_searching_for_greenhouse_01",
-					"explorer_generic_story_searching_for_greenhouse_02",
-					"explorer_generic_story_rescue_absence_01",
-					"explorer_generic_story_rescue_prospector_intro",
-					"explorer_generic_story_rescue_prospector_hint_01",
-					"explorer_generic_story_rescue_prospector_hint_02"
+					"explorer_template_bard_story_apocalypse_plan_ready_01"
 				],
 				"meet": [
 					"explorer_template_bard_meet_01"
@@ -6912,6 +7343,16 @@
 					"explorer_template_darkdweller_event_01"
 				],
 				"interact": [
+					"explorer_generic_interact_injured_03",
+					"explorer_generic_intract_new_camp_6_01",
+					"explorer_generic_intract_new_camp_7_01",
+					"explorer_generic_intract_new_camp_12_01",
+					"explorer_generic_intract_new_camp_14_01",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02",
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_template_darkdweller_interact_01",
 					"explorer_template_darkdweller_interact_02",
 					"explorer_template_darkdweller_interact_03",
@@ -6923,14 +7364,8 @@
 					"explorer_template_darkdweller_interact_09",
 					"explorer_template_darkdweller_interact_10",
 					"explorer_template_darkdweller_interact_11",
-					"explorer_template_darkdweller_story_apocalypse_plan_ready_01",
 					"explorer_template_darkdweller_interact_12",
-					"explorer_generic_interact_injured_03",
-					"explorer_generic_story_searching_for_greenhouse_01",
-					"explorer_generic_story_searching_for_greenhouse_02",
-					"explorer_generic_story_rescue_prospector_intro",
-					"explorer_generic_story_rescue_prospector_hint_01",
-					"explorer_generic_story_rescue_prospector_hint_02"
+					"explorer_template_darkdweller_story_apocalypse_plan_ready_01"
 				],
 				"meet": [
 					"explorer_template_darkdweller_meet_01"
@@ -6943,6 +7378,19 @@
 					"explorer_template_guard_event_01"
 				],
 				"interact": [
+					"explorer_generic_interact_injured_01",
+					"explorer_generic_intract_new_camp_6_01",
+					"explorer_generic_intract_new_camp_9_01",
+					"explorer_generic_intract_new_camp_10_01",
+					"explorer_generic_intract_new_camp_13_01",
+					"explorer_generic_intract_new_camp_14_01",
+					"explorer_generic_story_apocalypse_plan_ready_01",
+					"explorer_generic_story_rescue_absence_01",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02",
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_template_guard_interact_01",
 					"explorer_template_guard_interact_02",
 					"explorer_template_guard_interact_03",
@@ -6955,17 +7403,9 @@
 					"explorer_template_guard_interact_10",
 					"explorer_template_guard_interact_11",
 					"explorer_template_guard_interact_12",
-					"explorer_generic_interact_injured_01",
-					"explorer_generic_story_searching_for_greenhouse_01",
-					"explorer_generic_story_searching_for_greenhouse_02",
-					"explorer_generic_story_rescue_absence_01",
-					"explorer_template_guard_story_rescue_absence_01",
-					"explorer_template_guard_story_rescue_found_01",
-					"explorer_generic_story_apocalypse_plan_ready_01",
 					"explorer_template_guard_story_expedition_found_01",
-					"explorer_generic_story_rescue_prospector_intro",
-					"explorer_generic_story_rescue_prospector_hint_01",
-					"explorer_generic_story_rescue_prospector_hint_02"
+					"explorer_template_guard_story_rescue_absence_01",
+					"explorer_template_guard_story_rescue_found_01"
 				],
 				"meet": [
 					"explorer_template_guard_meet_01"
@@ -6978,6 +7418,15 @@
 					"explorer_template_hacker_event_01"
 				],
 				"interact": [
+					"explorer_generic_interact_injured_01",
+					"explorer_generic_intract_new_camp_9_01",
+					"explorer_generic_intract_new_camp_11_01",
+					"explorer_generic_story_rescue_absence_01",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02",
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_template_hacker_interact_01",
 					"explorer_template_hacker_interact_02",
 					"explorer_template_hacker_interact_03",
@@ -6987,17 +7436,10 @@
 					"explorer_template_hacker_interact_07",
 					"explorer_template_hacker_interact_08",
 					"explorer_template_hacker_interact_09",
-					"explorer_template_hacker_story_apocalypse_plan_ready_01",
 					"explorer_template_hacker_interact_10",
 					"explorer_template_hacker_interact_11",
 					"explorer_template_hacker_interact_12",
-					"explorer_generic_interact_injured_01",
-					"explorer_generic_story_searching_for_greenhouse_01",
-					"explorer_generic_story_searching_for_greenhouse_02",
-					"explorer_generic_story_rescue_absence_01",
-					"explorer_generic_story_rescue_prospector_intro",
-					"explorer_generic_story_rescue_prospector_hint_01",
-					"explorer_generic_story_rescue_prospector_hint_02"
+					"explorer_template_hacker_story_apocalypse_plan_ready_01"
 				],
 				"meet": [
 					"explorer_template_hacker_meet_01"
@@ -7010,6 +7452,21 @@
 					"explorer_template_lover_event_01"
 				],
 				"interact": [
+					"explorer_generic_interact_injured_03",
+					"explorer_generic_intract_new_camp_7_01",
+					"explorer_generic_intract_new_camp_8_01",
+					"explorer_generic_intract_new_camp_9_01",
+					"explorer_generic_intract_new_camp_10_01",
+					"explorer_generic_intract_new_camp_13_01",
+					"explorer_generic_intract_new_camp_14_01",
+					"explorer_generic_intract_new_camp_15_01",
+					"explorer_generic_story_apocalypse_plan_ready_02",
+					"explorer_generic_story_rescue_absence_01",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02",
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_template_lover_interact_01",
 					"explorer_template_lover_interact_02",
 					"explorer_template_lover_interact_03",
@@ -7022,15 +7479,7 @@
 					"explorer_template_lover_interact_10",
 					"explorer_template_lover_interact_11",
 					"explorer_template_lover_interact_12",
-					"explorer_generic_story_apocalypse_plan_ready_02",
-					"explorer_template_lover_story_escape_stay_01",
-					"explorer_generic_interact_injured_03",
-					"explorer_generic_story_searching_for_greenhouse_01",
-					"explorer_generic_story_searching_for_greenhouse_02",
-					"explorer_generic_story_rescue_absence_01",
-					"explorer_generic_story_rescue_prospector_intro",
-					"explorer_generic_story_rescue_prospector_hint_01",
-					"explorer_generic_story_rescue_prospector_hint_02"
+					"explorer_template_lover_story_escape_stay_01"
 				],
 				"meet": [
 					"explorer_template_lover_meet_01"
@@ -7043,6 +7492,21 @@
 					"explorer_template_researcher_event_01"
 				],
 				"interact": [
+					"explorer_generic_interact_injured_01",
+					"explorer_generic_intract_new_camp_6_01",
+					"explorer_generic_intract_new_camp_7_01",
+					"explorer_generic_intract_new_camp_8_01",
+					"explorer_generic_intract_new_camp_9_01",
+					"explorer_generic_intract_new_camp_10_01",
+					"explorer_generic_intract_new_camp_13_01",
+					"explorer_generic_intract_new_camp_14_01",
+					"explorer_generic_intract_new_camp_15_01",
+					"explorer_generic_story_rescue_absence_01",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02",
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_template_researcher_interact_01",
 					"explorer_template_researcher_interact_02",
 					"explorer_template_researcher_interact_03",
@@ -7055,14 +7519,7 @@
 					"explorer_template_researcher_interact_10",
 					"explorer_template_researcher_interact_11",
 					"explorer_template_researcher_interact_12",
-					"explorer_generic_story_rescue_absence_01",
-					"explorer_template_researcher_story_apocalypse_plan_ready_01",
-					"explorer_generic_interact_injured_01",
-					"explorer_generic_story_searching_for_greenhouse_01",
-					"explorer_generic_story_searching_for_greenhouse_02",
-					"explorer_generic_story_rescue_prospector_intro",
-					"explorer_generic_story_rescue_prospector_hint_01",
-					"explorer_generic_story_rescue_prospector_hint_02"
+					"explorer_template_researcher_story_apocalypse_plan_ready_01"
 				],
 				"meet": [
 					"explorer_template_researcher_meet_01"
@@ -7075,6 +7532,17 @@
 					"explorer_template_teen_event_01"
 				],
 				"interact": [
+					"explorer_generic_interact_injured_02",
+					"explorer_generic_intract_new_camp_8_01",
+					"explorer_generic_intract_new_camp_10_01",
+					"explorer_generic_intract_new_camp_12_01",
+					"explorer_generic_intract_new_camp_14_01",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02",
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
+					"explorer_template_researcher_story_apocalypse_plan_ready_01",
 					"explorer_template_teen_interact_01",
 					"explorer_template_teen_interact_02",
 					"explorer_template_teen_interact_03",
@@ -7087,14 +7555,7 @@
 					"explorer_template_teen_interact_10",
 					"explorer_template_teen_interact_11",
 					"explorer_template_teen_interact_12",
-					"explorer_template_researcher_story_apocalypse_plan_ready_01",
-					"explorer_generic_interact_injured_02",
-					"explorer_generic_story_searching_for_greenhouse_01",
-					"explorer_generic_story_searching_for_greenhouse_02",
-					"explorer_template_teen_story_rescue_absence_01",
-					"explorer_generic_story_rescue_prospector_intro",
-					"explorer_generic_story_rescue_prospector_hint_01",
-					"explorer_generic_story_rescue_prospector_hint_02"
+					"explorer_template_teen_story_rescue_absence_01"
 				],
 				"meet": [
 					"explorer_template_teen_meet_01"
@@ -7107,13 +7568,28 @@
 					"explorer_unique_gambler_event_01"
 				],
 				"interact": [
-					"explorer_unique_gambler_story_seen_storehouse_01",
+					"explorer_generic_interact_injured_03",
+					"explorer_generic_intract_new_camp_3_01",
+					"explorer_generic_intract_new_camp_4_01",
+					"explorer_generic_intract_new_camp_6_01",
+					"explorer_generic_intract_new_camp_7_01",
+					"explorer_generic_intract_new_camp_8_01",
+					"explorer_generic_intract_new_camp_9_01",
+					"explorer_generic_intract_new_camp_10_01",
+					"explorer_generic_intract_new_camp_11_01",
+					"explorer_generic_intract_new_camp_12_01",
+					"explorer_generic_intract_new_camp_13_01",
+					"explorer_generic_intract_new_camp_15_01",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02",
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_unique_gambler_interact_01",
 					"explorer_unique_gambler_interact_02",
 					"explorer_unique_gambler_interact_03",
 					"explorer_unique_gambler_interact_04",
 					"explorer_unique_gambler_interact_05",
-					"explorer_unique_gambler_story_escape_stay_01",
 					"explorer_unique_gambler_interact_06",
 					"explorer_unique_gambler_interact_07",
 					"explorer_unique_gambler_interact_08",
@@ -7121,26 +7597,22 @@
 					"explorer_unique_gambler_interact_10",
 					"explorer_unique_gambler_interact_11",
 					"explorer_unique_gambler_interact_12",
-					"explorer_unique_gambler_story_apocalypse_plan_ready_01",
 					"explorer_unique_gambler_interact_13",
 					"explorer_unique_gambler_interact_14",
 					"explorer_unique_gambler_interact_15",
-					"explorer_generic_interact_injured_03",
-					"explorer_generic_story_searching_for_greenhouse_01",
-					"explorer_generic_story_searching_for_greenhouse_02",
+					"explorer_unique_gambler_story_apocalypse_plan_ready_01",
+					"explorer_unique_gambler_story_escape_stay_01",
 					"explorer_unique_gambler_story_find_greenhouse",
 					"explorer_unique_gambler_story_find_spirits",
+					"explorer_unique_gambler_story_gangs_compound_01",
 					"explorer_unique_gambler_story_greenhouse_intro_01",
 					"explorer_unique_gambler_story_search_spirits_01",
 					"explorer_unique_gambler_story_search_spirits_02",
 					"explorer_unique_gambler_story_search_spirits_03",
+					"explorer_unique_gambler_story_seen_storehouse_01",
 					"explorer_unique_gambler_story_spirits_intro_01",
 					"explorer_unique_gambler_story_spirits_outro_01",
-					"explorer_unique_gambler_story_spirits_outro_02",
-					"explorer_unique_gambler_story_gangs_compound_01",
-					"explorer_generic_story_rescue_prospector_intro",
-					"explorer_generic_story_rescue_prospector_hint_01",
-					"explorer_generic_story_rescue_prospector_hint_02"
+					"explorer_unique_gambler_story_spirits_outro_02"
 				],
 				"meet": [
 					"explorer_unique_gambler_meet_01"
@@ -7153,10 +7625,16 @@
 					"explorer_unique_handler_event_01"
 				],
 				"interact": [
+					"explorer_generic_interact_injured_03",
+					"explorer_generic_intract_new_camp_6_01",
+					"explorer_generic_intract_new_camp_9_01",
+					"explorer_generic_intract_new_camp_12_01",
+					"explorer_generic_intract_new_camp_15_01",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_unique_handler_interact_01",
 					"explorer_unique_handler_interact_02",
 					"explorer_unique_handler_interact_03",
-					"explorer_unique_handler_story_apocalypse_plan_ready_01",
 					"explorer_unique_handler_interact_04",
 					"explorer_unique_handler_interact_05",
 					"explorer_unique_handler_interact_06",
@@ -7168,15 +7646,13 @@
 					"explorer_unique_handler_interact_12",
 					"explorer_unique_handler_interact_13",
 					"explorer_unique_handler_interact_14",
-					"explorer_unique_handler_story_seen_storehouse_01",
 					"explorer_unique_handler_interact_15",
-					"explorer_generic_interact_injured_03",
+					"explorer_unique_handler_story_apocalypse_plan_ready_01",
 					"explorer_unique_handler_story_escape_intro_01",
 					"explorer_unique_handler_story_escape_near_01",
 					"explorer_unique_handler_story_escape_outro_01",
-					"explorer_generic_story_searching_for_greenhouse_01",
-					"explorer_generic_story_searching_for_greenhouse_02",
-					"explorer_unique_handler_story_rescue_absence_01"
+					"explorer_unique_handler_story_rescue_absence_01",
+					"explorer_unique_handler_story_seen_storehouse_01"
 				],
 				"meet": [
 					"explorer_unique_handler_meet_01"
@@ -7189,6 +7665,9 @@
 					"explorer_unique_hermit_event_01"
 				],
 				"interact": [
+					"explorer_generic_interact_injured_01",
+					"explorer_generic_intract_new_camp_13_01",
+					"explorer_generic_intract_new_camp_14_01",
 					"explorer_unique_hermit_interact_01",
 					"explorer_unique_hermit_interact_02",
 					"explorer_unique_hermit_interact_03",
@@ -7203,9 +7682,8 @@
 					"explorer_unique_hermit_interact_12",
 					"explorer_unique_hermit_interact_13",
 					"explorer_unique_hermit_interact_14",
-					"explorer_unique_hermit_story_apocalypse_plan_ready_01",
 					"explorer_unique_hermit_interact_15",
-					"explorer_generic_interact_injured_01"
+					"explorer_unique_hermit_story_apocalypse_plan_ready_01"
 				],
 				"meet": [
 					"explorer_unique_hermit_meet_01"
@@ -7218,6 +7696,20 @@
 					"explorer_unique_journalist_event_01"
 				],
 				"interact": [
+					"explorer_generic_interact_injured_01",
+					"explorer_generic_intract_new_camp_5_01",
+					"explorer_generic_intract_new_camp_6_01",
+					"explorer_generic_intract_new_camp_7_01",
+					"explorer_generic_intract_new_camp_8_01",
+					"explorer_generic_intract_new_camp_9_01",
+					"explorer_generic_intract_new_camp_10_01",
+					"explorer_generic_intract_new_camp_15_01",
+					"explorer_generic_story_rescue_absence_01",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02",
+					"explorer_generic_story_rescue_prospector_intro",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_unique_journalist_interact_01",
 					"explorer_unique_journalist_interact_02",
 					"explorer_unique_journalist_interact_03",
@@ -7226,9 +7718,6 @@
 					"explorer_unique_journalist_interact_06",
 					"explorer_unique_journalist_interact_07",
 					"explorer_unique_journalist_interact_08",
-					"explorer_unique_journalist_story_spirits_found_01",
-					"explorer_unique_journalist_story_debris_02",
-					"explorer_unique_journalist_story_apocalypse_plan_ready_01",
 					"explorer_unique_journalist_interact_09",
 					"explorer_unique_journalist_interact_10",
 					"explorer_unique_journalist_interact_11",
@@ -7236,22 +7725,18 @@
 					"explorer_unique_journalist_interact_13",
 					"explorer_unique_journalist_interact_14",
 					"explorer_unique_journalist_interact_15",
-					"explorer_generic_interact_injured_01",
-					"explorer_generic_story_searching_for_greenhouse_01",
-					"explorer_generic_story_searching_for_greenhouse_02",
-					"explorer_unique_journalist_story_fall_investigate_01",
-					"explorer_unique_journalist_story_start",
+					"explorer_unique_journalist_story_apocalypse_plan_ready_01",
+					"explorer_unique_journalist_story_debris_01",
+					"explorer_unique_journalist_story_debris_02",
 					"explorer_unique_journalist_story_escape_stay_01",
-					"explorer_unique_journalist_story_storehouse",
-					"explorer_unique_journalist_story_spacecraft",
+					"explorer_unique_journalist_story_evacuation",
+					"explorer_unique_journalist_story_fall_investigate_01",
 					"explorer_unique_journalist_story_greenhouse_01",
 					"explorer_unique_journalist_story_greenhouse_02",
-					"explorer_unique_journalist_story_evacuation",
-					"explorer_unique_journalist_story_debris_01",
-					"explorer_generic_story_rescue_absence_01",
-					"explorer_generic_story_rescue_prospector_intro",
-					"explorer_generic_story_rescue_prospector_hint_01",
-					"explorer_generic_story_rescue_prospector_hint_02"
+					"explorer_unique_journalist_story_spacecraft",
+					"explorer_unique_journalist_story_spirits_found_01",
+					"explorer_unique_journalist_story_start",
+					"explorer_unique_journalist_story_storehouse"
 				],
 				"meet": [
 					"explorer_unique_journalist_meet_01"
@@ -7264,6 +7749,15 @@
 					"explorer_unique_prospector_event_01"
 				],
 				"interact": [
+					"explorer_generic_interact_injured_01",
+					"explorer_generic_intract_new_camp_7_01",
+					"explorer_generic_intract_new_camp_8_01",
+					"explorer_generic_intract_new_camp_12_01",
+					"explorer_generic_intract_new_camp_13_01",
+					"explorer_generic_intract_new_camp_14_01",
+					"explorer_generic_intract_new_camp_15_01",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_unique_prospector_interact_01",
 					"explorer_unique_prospector_interact_02",
 					"explorer_unique_prospector_interact_03",
@@ -7273,29 +7767,26 @@
 					"explorer_unique_prospector_interact_07",
 					"explorer_unique_prospector_interact_08",
 					"explorer_unique_prospector_interact_09",
-					"explorer_unique_prospector_story_apocalypse_plan_ready_01",
 					"explorer_unique_prospector_interact_10",
 					"explorer_unique_prospector_interact_11",
 					"explorer_unique_prospector_interact_12",
 					"explorer_unique_prospector_interact_13",
 					"explorer_unique_prospector_interact_14",
 					"explorer_unique_prospector_interact_15",
-					"explorer_unique_prospector_story_seen_storehouse_01",
-					"explorer_generic_interact_injured_01",
-					"explorer_generic_story_searching_for_greenhouse_01",
-					"explorer_generic_story_searching_for_greenhouse_02",
+					"explorer_unique_prospector_story_apocalypse_plan_ready_01",
 					"explorer_unique_prospector_story_greenhouse_intro_01",
-					"explorer_unique_prospector_story_rescue_intro",
-					"explorer_unique_prospector_story_rescue_lvl14_01",
-					"explorer_unique_prospector_story_rescue_passage_built_01",
-					"explorer_unique_prospector_story_rescue_passage_built_02",
-					"explorer_unique_prospector_story_rescue_passage_blocked_01",
-					"explorer_unique_prospector_story_rescue_passage_blocked_02",
-					"explorer_unique_prospector_story_rescue_impatient_01",
-					"explorer_unique_prospector_story_rescue_impatient_02",
 					"explorer_unique_prospector_story_rescue_complete_01",
 					"explorer_unique_prospector_story_rescue_complete_02",
-					"explorer_unique_prospector_story_rescue_leaving"
+					"explorer_unique_prospector_story_rescue_impatient_01",
+					"explorer_unique_prospector_story_rescue_impatient_02",
+					"explorer_unique_prospector_story_rescue_intro",
+					"explorer_unique_prospector_story_rescue_leaving",
+					"explorer_unique_prospector_story_rescue_lvl14_01",
+					"explorer_unique_prospector_story_rescue_passage_blocked_01",
+					"explorer_unique_prospector_story_rescue_passage_blocked_02",
+					"explorer_unique_prospector_story_rescue_passage_built_01",
+					"explorer_unique_prospector_story_rescue_passage_built_02",
+					"explorer_unique_prospector_story_seen_storehouse_01"
 				],
 				"meet": [
 					"explorer_unique_prospector_meet_01"
