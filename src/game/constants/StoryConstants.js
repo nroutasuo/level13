@@ -17,50 +17,99 @@ define([
 
 		sectorExamineSpots: [
 			{
-				id: "monument_dictatorship",
-				name: "monument",
-				shortName: "monument",
-				popupMsg: "A chipped monument celebrating defeat of an old dictatorship",
+				id: "story_apocalypse_cracks",
+				positionParams: {
+					campOrdinal: 2
+				}
+			},
+			{
+				id: "world_monument_dictatorship",
 				positionParams: {
 					campOrdinal: 4,
 					sectorType: "public"
 				}
 			},
 			{
+				id: "story_apocalypse_settlement",
+				positionParams: {
+					campOrdinal: 5,
+				}
+			},
+			{
+				id: "story_spirits_shrine_01",
+				positionParams: {
+					campOrdinal: 5,
+					sectorType: "industrial"
+				}
+			},
+			{
 				id: "story_apocalypse_solar_panels_01",
-				name: "solar panels",
-				shortName: "panels",
-				popupMsg: "Massive solar panels, still providing the failing City with power for basic functions. They look a little run-down though.",
 				positionParams: {
 					campOrdinal: 6,
 					sunlit: true
 				}
 			},
 			{
+				id: "story_earthquake_pillars_01",
+				positionParams: {
+					campOrdinal: 6,
+					levelIndex: 0,
+				}
+			},
+			{
 				id: "story_apocalypse_solar_panels_02",
-				name: "solar panels",
-				shortName: "panels",
-				popupMsg: "If these kind of panels are what's keeping the City's remaining lights on, they won't last many years without maintenance.",
 				positionParams: {
 					campOrdinal: 7,
 					sunlit: true
 				}
 			},
 			{
-				id: "story_earthquake_pillars",
-				name: "pillars",
-				shortName: "pillars",
-				popupMsg: "These massive pillars look like they were built relatively recently. They seem like reinforcements to help hold the weight of the City above. One of them is already cracked.",
+				id: "story_earthquake_pillars_02",
 				positionParams: {
 					campOrdinal: 7,
 					levelIndex: 1,
 				}
 			},
 			{
-				id: "story_escape_pod",
-				name: "piece of escape pod",
-				shortName: "debris",
-				popupMsg: "A damaged piece of a spacecraft, built to transport people. Thankfully, the remains have been reduced to skeletons.",
+				id: "story_spirits_shrine_02",
+				positionParams: {
+					campOrdinal: 7
+				}
+			},
+			{
+				id: "story_apocalypse_measuring_station",
+				positionParams: {
+					campOrdinal: 8,
+					levelIndex: 0
+				}
+			},
+			{
+				id: "story_apocalypse_cracks",
+				positionParams: {
+					campOrdinal: 9
+				}
+			},
+			{
+				id: "story_spirits_shrine_03",
+				positionParams: {
+					campOrdinal: 11,
+					sectorType: "slum"
+				}
+			},
+			{
+				id: "world_fall_tent_village",
+				positionParams: {
+					campOrdinal: 13
+				}
+			},
+			{
+				id: "world_fall_supply_truck",
+				positionParams: {
+					campOrdinal: 14
+				}
+			},
+			{
+				id: "story_fall_escape_pod",
 				positionParams: {
 					campOrdinal: 15
 				},
@@ -68,19 +117,19 @@ define([
 			},
 			{
 				id: "story_fall_hull_wreckage",
-				name: "burned wreckage",
-				shortName: "wreckage",
-				popupMsg: "Wreckage from the escape shuttle. You recognize the material from the factory, still sleek and polished where it has not fractured.",
 				positionParams: {
 					campOrdinal: 15
 				},
 				storyTag: "spaceDebris"
 			},
 			{
-				id: "story_fall_sundome_shards",
-				name: "sundome shards",
-				shortName: "shards",
-				popupMsg: "Sharp, glistering, human-sized shards of the sundome that used to cover the Surface.",
+				id: "story_fall_sundome_shards_01",
+				positionParams: {
+					campOrdinal: 15
+				}
+			},
+			{
+				id: "story_fall_sundome_shards_02",
 				positionParams: {
 					campOrdinal: 15
 				}
@@ -109,7 +158,7 @@ define([
 				localeType: "office",
 			},
 			{
-				campOrdinal: 11,
+				campOrdinal: 9,
 				itemID: "document_story_earthquakes_cause_01",
 				localeType: "office",
 			},
@@ -258,7 +307,11 @@ define([
 		getSectorExampineSpot: function (id) {
 			for (let i = 0; i < this.sectorExamineSpots.length; i++) {
 				if (this.sectorExamineSpots[i].id == id) {
-					return this.sectorExamineSpots[i];
+					let spotVO =  this.sectorExamineSpots[i];
+					spotVO.nameKey = spotVO.nameKey || "story.spots." + id + "_name";
+					spotVO.shortNameKey = spotVO.shortNameKey || "story.spots." + id + "_name_short";
+					spotVO.descriptionKey = spotVO.descriptionKey || "story.spots." + id + "_message";
+					return spotVO;
 				}
 			}
 			return null;

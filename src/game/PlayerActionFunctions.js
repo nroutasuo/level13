@@ -729,7 +729,7 @@ define(['ash',
 
 			let messages = {
 				id: LogConstants.getUniqueID(),
-				msgSuccess: spotDef.popupMsg,
+				msgSuccess: Text.t(spotDef.descriptionKey),
 				addToLog: false,
 			};
 

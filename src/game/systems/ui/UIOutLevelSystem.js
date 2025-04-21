@@ -275,8 +275,7 @@ define([
 			if (showExamine) {
 				let spotID = featuresComponent.examineSpots[0];
 				let spotDef = StoryConstants.getSectorExampineSpot(spotID);
-				let examineSpotName = spotDef.shortName;
-				$("#out-action-examine").find(".btn-label").text("examine " + examineSpotName);
+				$("#out-action-examine").find(".btn-label").text("examine " + Text.t(spotDef.shortNameKey));
 			}
 
 			// workshop
@@ -542,7 +541,7 @@ define([
 					let spotID = featuresComponent.examineSpots[i];
 					let spotDef = StoryConstants.getSectorExampineSpot(spotID);
 					if (!spotDef) continue;
-					description += "There is a " + spotDef.name + " here. ";
+					description += "There is a " + Text.t(spotDef.nameKey) + " here. ";
 				}
 			}
 
