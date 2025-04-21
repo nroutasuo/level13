@@ -267,6 +267,7 @@ define([
 				changePerSecWithoutCooldown = Math.min(changePerSec, 0);
 			}
 			
+			camp.populationDecreaseCooldown = populationDecreaseCooldown;
 			camp.populationChangePerSecRaw = changePerSec;
 			camp.populationChangePerSecWithoutCooldown = changePerSecWithoutCooldown;
 		},
