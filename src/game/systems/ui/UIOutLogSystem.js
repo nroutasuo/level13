@@ -210,7 +210,7 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 			if (d1.time != d2.time) return false;
 			if (d1.messageTextVO.textFragments.length != d2.messageTextVO.textFragments.length) return false;
 			for (let i = 0; i < d1.messageTextVO.textFragments.length; i++) {
-				if (d1.messageTextVO.textFragments[i] || d2.messageTextVO.textFragments[i]) continue;
+				if (!d1.messageTextVO.textFragments[i] || !d2.messageTextVO.textFragments[i]) continue;
 				if (d1.messageTextVO.textFragments[i].textKey != d2.messageTextVO.textFragments[i].textKey) return false;
 			}
 
@@ -288,7 +288,9 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 			if (!messageIDs || messageIDs.length == 0) return;
 			
 			for (let i = 0; i < messageIDs.length; i++) {
-				this.triggerAmbientMessage(messageIDs[i], triggerParam);
+				if (this.triggerAmbientMessage(messageIDs[i], triggerParam)) {
+					return;
+				}
 			}
 		},
 		
@@ -296,11 +298,11 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 			let def = LogConstants.ambientMessages[messageID];
 			if (!def) {
 				log.w("No such ambient log message found: [" + messageID + "]", this);
-				return;
+				return false;
 			}
 			
 			if (!this.isAmbientMessageAvailable(messageID, triggerParam)) {
-				return;
+				return false;
 			}
 
 			let msgKey = def.message;
@@ -316,6 +318,7 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 			
 			let msg = Text.t(msgKey);
 			GameGlobals.playerHelper.addLogMessage(messageID, msg, options);
+			return true;
 		},
 
 		isAmbientMessageAvailable: function (messageID, triggerParam) {
