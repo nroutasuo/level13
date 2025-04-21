@@ -138,33 +138,52 @@ define([
 
 		storyStashes: [
 			{
+				campOrdinal: 9,
+				itemID: "artefact_rescue_1",
+			},
+			{
+				campOrdinal: 9,
+				itemID: "document_story_apocalypse_cause_01",
+				localeType: "office",
+			},
+			{
+				campOrdinal: 10,
+				itemID: "document_story_apocalypse_cause_02",
+				localeType: "office",
+			},
+			{
 				campOrdinal: 11,
-				itemID: "document_story_launch_schedule",
+				itemID: "document_story_fall_launch_schedule_01",
 				localeType: "lab",
 			},
 			{
 				campOrdinal: 12,
-				itemID: "document_story_evacuation_schedule",
-				localeType: "office",
-			},
-			{
-				campOrdinal: 13,
-				itemID: "document_story_evacuation_reason",
+				itemID: "document_story_fall_evacuation_01",
 				localeType: "office",
 			},
 			{
 				campOrdinal: 12,
-				itemID: "document_story_earthquakes_severity_01",
+				itemID: "document_story_apocalypse_severity_01",
 				localeType: "office",
 			},
 			{
-				campOrdinal: 9,
-				itemID: "document_story_earthquakes_cause_01",
+				campOrdinal: 12,
+				itemID: "document_story_fall_evacuation_02",
+				localeType: "office",
+			},
+			{
+				campOrdinal: 13,
+				itemID: "document_story_apocalypse_evacuation_01",
 				localeType: "office",
 			},
 			{
 				campOrdinal: 13,
 				itemID: "document_story_expedition_leaflet_01"
+			},
+			{
+				campOrdinal: 14,
+				itemID: "document_story_fall_warning_01",
+				localeType: "office"
 			},
 			{
 				campOrdinal: 14,

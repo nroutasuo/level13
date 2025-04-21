@@ -1,4 +1,16 @@
 {
+    "artefact_darklevels_1": {
+        "campOrdinalRequired": 1,
+        "icon": "img/items/artefact-test.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "rarityInvestigate": 7,
+        "rarityLocale": 5,
+        "rarityScavenge": 8,
+        "rarityTrade": 5,
+        "type": "artefact"
+    },
     "artefact_doom_1": {
         "campOrdinalRequired": 4,
         "icon": "img/items/artefact-test.png",
@@ -73,6 +85,20 @@
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "tags": [ "history" ],
+        "type": "artefact"
+    },
+    "artefact_fall_1": {
+        "campOrdinalRequired": 1,
+        "icon": "img/items/leaflet.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "nameShort": "Leaflet",
+        "rarityLocale": 9,
+        "rarityScavenge": 2,
+        "rarityTrade": -1,
+        "tags": [ "community", "new", "perishable" ],
+        "tradePrice": 0,
         "type": "artefact"
     },
     "artefact_ground_1": {
@@ -178,7 +204,7 @@
         "rarityScavenge": 8,
         "type": "artefact"
     },
-    "artifact_history_5": {
+    "artefact_history_5": {
         "campOrdinalRequired": 10,
         "icon": "img/items/leaflet.png",
         "isCraftable": false,
@@ -189,7 +215,21 @@
         "rarityScavenge": 6,
         "rarityTrade": -1,
         "tags": [ "medical", "old", "community" ],
-        "type": "artifact"
+        "type": "artefact"
+    },
+    "artefact_rescue_1": {
+        "campOrdinalRequired": 8,
+        "icon": "img/items/leaflet.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "nameShort": "Backpack",
+        "rarityLocale": -1,
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "tags": [ "community", "new", "perishable" ],
+        "tradePrice": 0,
+        "type": "artefact"
     },
     "artefact_surface_1": {
         "campOrdinalRequired": 15,
@@ -213,7 +253,7 @@
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 5,
-        "tags": [ "maintenance" ], 
+        "tags": [ "maintenance" ],
         "type": "artefact"
     },
     "artefact_surface_3": {
@@ -273,18 +313,6 @@
         "isUseable": false,
         "rarityLocale": 5,
         "rarityScavenge": 8,
-        "type": "artefact"
-    },
-    "artefact_darklevels_1": {
-        "campOrdinalRequired": 1,
-        "icon": "img/items/artefact-test.png",
-        "isCraftable": false,
-        "isEquippable": false,
-        "isUseable": false,
-        "rarityInvestigate": 7,
-        "rarityLocale": 5,
-        "rarityScavenge": 8,
-        "rarityTrade": 5,
         "type": "artefact"
     },
     "bag_0": {
@@ -568,36 +596,6 @@
         "tags": [ "book" ],
         "type": "voucher"
     },
-    "cache_hope_11": {
-        "campOrdinalRequired": 8,
-        "icon": "img/items/seed.png",
-        "isCraftable": false,
-        "isEquippable": false,
-        "isUseable": true,
-        "level": 1,
-        "rarityInvestigate": -1,
-        "rarityLocale": 5,
-        "rarityScavenge": -1,
-        "rarityTrade": 8,
-        "tradePrice": 2,
-        "tags": [ "nature" ],
-        "type": "voucher"
-    },
-    "cache_hope_12": {
-        "campOrdinalRequired": 12,
-        "icon": "img/items/seed.png",
-        "isCraftable": false,
-        "isEquippable": false,
-        "isUseable": true,
-        "level": 2,
-        "rarityInvestigate": -1,
-        "rarityLocale": 5,
-        "rarityScavenge": -1,
-        "rarityTrade": 8,
-        "tradePrice": 3,
-        "tags": [ "nature" ],
-        "type": "voucher"
-    },
     "cache_food_1": {
         "campOrdinalMaximum": 14,
         "campOrdinalRequired": 1,
@@ -610,8 +608,8 @@
         "isUseable": true,
         "rarityLocale": 4,
         "rarityScavenge": 9,
-        "tradePrice": 1,
         "tags": [ "perishable" ],
+        "tradePrice": 1,
         "type": "voucher"
     },
     "cache_food_2": {
@@ -626,8 +624,38 @@
         "isUseable": true,
         "rarityLocale": 4,
         "rarityScavenge": -1,
-        "tradePrice": 1,
         "tags": [ "perishable", "exodus" ],
+        "tradePrice": 1,
+        "type": "voucher"
+    },
+    "cache_hope_11": {
+        "campOrdinalRequired": 8,
+        "icon": "img/items/seed.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "level": 1,
+        "rarityInvestigate": -1,
+        "rarityLocale": 5,
+        "rarityScavenge": -1,
+        "rarityTrade": 8,
+        "tags": [ "nature" ],
+        "tradePrice": 2,
+        "type": "voucher"
+    },
+    "cache_hope_12": {
+        "campOrdinalRequired": 12,
+        "icon": "img/items/seed.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "level": 2,
+        "rarityInvestigate": -1,
+        "rarityLocale": 5,
+        "rarityScavenge": -1,
+        "rarityTrade": 8,
+        "tags": [ "nature" ],
+        "tradePrice": 3,
         "type": "voucher"
     },
     "cache_insight_11": {
@@ -742,8 +770,8 @@
         "rarityLocale": 8,
         "rarityScavenge": -1,
         "rarityTrade": 5,
-        "tradePrice": 2,
         "tags": [ "book", "new", "comunity" ],
+        "tradePrice": 2,
         "type": "voucher"
     },
     "cache_rumours_12": {
@@ -758,8 +786,8 @@
         "rarityLocale": 8,
         "rarityScavenge": -1,
         "rarityTrade": 5,
-        "tradePrice": 3,
         "tags": [ "book", "new", "comunity" ],
+        "tradePrice": 3,
         "type": "voucher"
     },
     "cache_rumours_22": {
@@ -774,8 +802,8 @@
         "rarityLocale": 8,
         "rarityScavenge": -1,
         "rarityTrade": 5,
-        "tradePrice": 3,
         "tags": [ "book", "new", "comunity" ],
+        "tradePrice": 3,
         "type": "voucher"
     },
     "cache_rumours_23": {
@@ -790,8 +818,8 @@
         "rarityLocale": 8,
         "rarityScavenge": -1,
         "rarityTrade": 5,
-        "tradePrice": 4,
         "tags": [ "book", "new", "comunity" ],
+        "tradePrice": 4,
         "type": "voucher"
     },
     "cache_water_1": {
@@ -807,8 +835,8 @@
         "nameShort": "Juice boxes",
         "rarityLocale": 5,
         "rarityScavenge": 9,
-        "tradePrice": 1,
         "tags": [ "perishable" ],
+        "tradePrice": 1,
         "type": "voucher"
     },
     "cache_water_2": {
@@ -824,8 +852,8 @@
         "nameShort": "Water rations",
         "rarityLocale": 5,
         "rarityScavenge": -1,
-        "tradePrice": 1,
         "tags": [ "perishable", "exodus" ],
+        "tradePrice": 1,
         "type": "voucher"
     },
     "clothing_hands_1": {
@@ -1114,9 +1142,9 @@
             "def": 15,
             "res_poison": 15,
             "res_rad": 20,
+            "res_water": 1,
             "shade": 50,
             "shield": 20,
-            "res_water": 1,
             "warmth": 15
         },
         "campOrdinalRequired": 13,
@@ -1735,6 +1763,192 @@
         "rarityTrade": 4,
         "type": "exploration"
     },
+    "document_story_apocalypse_cause_01": {
+        "configData": {
+            "noteText": "Official report regarding the earthquakes. According to it, they are caused by mining, and the effect is not reversible.",
+            "storyFlag": "APOCALYPSE_KNOWN"
+        },
+        "icon": "img/items/document.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isStoryItem": true,
+        "isUseable": true,
+        "nameShort": "Documents",
+        "rarityLocale": -1,
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "type": "note"
+    },
+    "document_story_apocalypse_cause_02": {
+        "configData": {
+            "noteText": "Official report regarding the earthquakes. According to it, they will likely increase in severity and frequency in the coming years.",
+            "storyFlag": "APOCALYPSE_KNOWN"
+        },
+        "icon": "img/items/document.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isStoryItem": true,
+        "isUseable": true,
+        "nameShort": "Documents",
+        "rarityLocale": -1,
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "type": "note"
+    },
+    "document_story_apocalypse_evacuation_01": {
+        "configData": {
+            "noteText": "Official documents where Goverment experts recommend evacuation as a result of the earthquakes.",
+            "storyFlag": "FALL_SEEN_EVACUATION"
+        },
+        "icon": "img/items/document.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isStoryItem": true,
+        "isUseable": true,
+        "nameShort": "Documents",
+        "rarityLocale": -1,
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "type": "note"
+    },
+    "document_story_apocalypse_severity_01": {
+        "configData": {
+            "noteText": "Official report regarding increasing earthquakes. According to experts, the City can only withstand them for some years.",
+            "storyFlag": "APOCALYPSE_KNOWN"
+        },
+        "icon": "img/items/document.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isStoryItem": true,
+        "isUseable": true,
+        "nameShort": "Documents",
+        "rarityLocale": -1,
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "type": "note"
+    },
+    "document_story_expedition_diary_01": {
+        "configData": {
+            "noteDialogue": "item_story_expedition_diary"
+        },
+        "icon": "img/items/book.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isStoryItem": true,
+        "isUseable": true,
+        "nameShort": "Diary",
+        "rarityTrade": -1,
+        "type": "note"
+    },
+    "document_story_expedition_leaflet_01": {
+        "campOrdinalRequired": 10,
+        "configData": {
+            "noteText": "Leaflet calling for volunteers for an expedition to the Surface, to investigate what happened there, led by the famous explorer Amanda Ettler. Participants are asked gather at former <style='nowrap'>District 31</style> elevator station by the end of N21."
+        },
+        "icon": "img/items/leaflet.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "nameShort": "Leaflet",
+        "rarityLocale": 9,
+        "rarityScavenge": 6,
+        "rarityTrade": -1,
+        "type": "note"
+    },
+    "document_story_fall_diary_01": {
+        "configData": {
+            "noteText": "Diary of someone who wos selected for evacuation and confined to the secret isolation facility. Their family member worked on the Exodus project, but they did not know the details. They were confident that everything would work out and looking forward to their new life in a space colony, only sorry for those who would stay behind.",
+            "storyFlag": "APOCALYPSE_KNOWN"
+        },
+        "icon": "img/items/book.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isStoryItem": true,
+        "isUseable": true,
+        "nameShort": "Diary",
+        "rarityLocale": -1,
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "type": "note"
+    },
+    "document_story_fall_evacuation_01": {
+        "configData": {
+            "noteText": "Official documents detailing a plan to secretly quarantine and evacuate a fraction of the population of the City.",
+            "storyFlag": "FALL_SEEN_EVACUATION"
+        },
+        "icon": "img/items/document.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isStoryItem": true,
+        "isUseable": true,
+        "nameShort": "Documents",
+        "rarityLocale": -1,
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "type": "note"
+    },
+    "document_story_fall_evacuation_02": {
+        "configData": {
+            "noteText": "Detailed freight manifests containing everything the Exodus project shuttle would need to carry to enable the evacuees to establish a self-sustaining colony on a moon.",
+            "storyFlag": "FALL_SEEN_EVACUATION"
+        },
+        "icon": "img/items/document.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isStoryItem": true,
+        "isUseable": true,
+        "nameShort": "Documents",
+        "rarityLocale": -1,
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "type": "note"
+    },
+    "document_story_fall_evacuation_03": {
+        "configData": {
+            "noteText": "An official list of people to be evacuated from the City by the Exodus project. It is about half prominent people important to the Government, and half people by skill needed in the new colony. People working on the Exodus project and their families are also included. The Governor is not.",
+            "storyFlag": "FALL_SEEN_EVACUATION"
+        },
+        "icon": "img/items/document.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isStoryItem": true,
+        "isUseable": true,
+        "nameShort": "Documents",
+        "rarityLocale": -1,
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "type": "note"
+    },
+    "document_story_fall_launch_schedule_01": {
+        "configData": {
+            "noteText": "Detailed launch schedule for a space craft, part of the so called Exodus project. The final launch date coincides with The Fall."
+        },
+        "icon": "img/items/document.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isStoryItem": true,
+        "isUseable": true,
+        "nameShort": "Documents",
+        "rarityLocale": -1,
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "type": "note"
+    },
+    "document_story_fall_warning_01": {
+        "configData": {
+            "noteText": "Official Exodus project documents warning about a potential disaster in case the shuttle launch fails and damages the Sundome."
+        },
+        "icon": "img/items/document.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isStoryItem": true,
+        "isUseable": true,
+        "nameShort": "Documents",
+        "rarityLocale": -1,
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "type": "note"
+    },
     "equipment_map": {
         "campOrdinalRequired": 0,
         "icon": "img/items/exploration-map.png",
@@ -1790,18 +2004,6 @@
         "rarityTrade": 8,
         "type": "exploration",
         "weight": 0.1
-    },
-    "robot_1": {
-        "campOrdinalRequired": 10,
-        "icon": "img/items/robot.png",
-        "isCraftable": false,
-        "isEquippable": false,
-        "isUseable": true,
-        "rarityLocale": -1,
-        "rarityScavenge": -1,
-        "rarityTrade": -1,
-        "tags": [ "industrial" ],
-        "type": "voucher"
     },
     "first_aid_kit_1": {
         "campOrdinalRequired": 3,
@@ -1974,6 +2176,18 @@
         "isUseable": false,
         "type": "ingredient"
     },
+    "robot_1": {
+        "campOrdinalRequired": 10,
+        "icon": "img/items/robot.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "rarityLocale": -1,
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "tags": [ "industrial" ],
+        "type": "voucher"
+    },
     "shoe_1": {
         "bonuses": {
             "movement": 0.85
@@ -2067,122 +2281,6 @@
         "rarityTrade": 2,
         "tradePrice": 5,
         "type": "exploration"
-    },
-    "story_drum": {
-        "icon": "img/items/artefact-test.png",
-        "isCraftable": false,
-        "isEquippable": false,
-        "isUseable": false,
-        "isStoryItem": true,
-        "tags": [ "nature" ],
-        "type": "artefact"
-    },
-    "document_story_launch_schedule": {
-        "icon": "img/items/document.png",
-        "isCraftable": false,
-        "isEquippable": false,
-        "isUseable": true,
-        "nameShort": "Documents",
-        "rarityLocale": -1,
-        "rarityScavenge": -1,
-        "configData": {
-            "noteText": "Detailed launch schedule for a space craft, part of the Exodus project. The final launch date coincides with The Fall."
-        },
-        "rarityTrade": -1,
-        "type": "note",
-        "isStoryItem": true
-    },
-    "document_story_evacuation_schedule": {
-        "icon": "img/items/document.png",
-        "isCraftable": false,
-        "isEquippable": false,
-        "isUseable": true,
-        "nameShort": "Documents",
-        "rarityLocale": -1,
-        "rarityScavenge": -1,
-        "rarityTrade": -1,
-        "configData": {
-            "noteText": "Official documents detailing a plan to secretly quarantine and evacuate a fraction of the population of the City.",
-            "storyFlag": "FALL_SEEN_EVACUATION"
-        },
-        "type": "note",
-        "isStoryItem": true
-    },
-    "document_story_evacuation_reason": {
-        "icon": "img/items/document.png",
-        "isCraftable": false,
-        "isEquippable": false,
-        "isUseable": true,
-        "nameShort": "Documents",
-        "rarityLocale": -1,
-        "rarityScavenge": -1,
-        "rarityTrade": -1,
-        "configData": {
-            "noteText": "Official documents where Goverment experts recommend evacuation as a result of the earthquakes.",
-            "storyFlag": "FALL_SEEN_EVACUATION"
-        },
-        "type": "note",
-        "isStoryItem": true
-    },
-    "document_story_earthquakes_severity_01": {
-        "icon": "img/items/document.png",
-        "isCraftable": false,
-        "isEquippable": false,
-        "isUseable": true,
-        "nameShort": "Documents",
-        "rarityLocale": -1,
-        "rarityScavenge": -1,
-        "rarityTrade": -1,
-        "configData": {
-            "noteText": "Official report regarding increasing earthquakes. According to experts, the City can only withstand them for some years.",
-            "storyFlag": "APOCALYPSE_KNOWN"
-        },
-        "type": "note",
-        "isStoryItem": true
-    },
-    "document_story_earthquakes_cause_01": {
-        "icon": "img/items/document.png",
-        "isCraftable": false,
-        "isEquippable": false,
-        "isUseable": true,
-        "nameShort": "Documents",
-        "rarityLocale": -1,
-        "rarityScavenge": -1,
-        "rarityTrade": -1,
-        "configData": {
-            "noteText": "Official report regarding the earthquakes. According to it, they are caused by mining but the effect is not reversible.",
-            "storyFlag": "APOCALYPSE_KNOWN"
-        },
-        "type": "note",
-        "isStoryItem": true
-    },
-    "document_story_expedition_diary_01": {
-        "icon": "img/items/book.png",
-        "isCraftable": false,
-        "isEquippable": false,
-        "isUseable": true,
-        "nameShort": "Diary",
-        "configData": {
-            "noteDialogue": "item_story_expedition_diary"
-        },
-        "rarityTrade": -1,
-        "type": "note",
-        "isStoryItem": true
-    },
-    "document_story_expedition_leaflet_01": {
-        "campOrdinalRequired": 10,
-        "icon": "img/items/leaflet.png",
-        "isCraftable": false,
-        "isEquippable": false,
-        "isUseable": true,
-        "nameShort": "Leaflet",
-        "rarityLocale": 9,
-        "rarityScavenge": 6,
-        "configData": {
-            "noteText": "Leaflet calling for volunteers for an expedition to the Surface, to investigate what happened there, led by the famous explorer Amanda Ettler. Participants are asked gather at former <style='nowrap'>District 31</style> elevator station by the end of N21."
-        },
-        "rarityTrade": -1,
-        "type": "note"
     },
     "trade_1": {
         "campOrdinalRequired": 2,
@@ -2289,15 +2387,15 @@
         "rarityLocale": 3,
         "rarityScavenge": 8,
         "rarityTrade": 3,
-        "tags": [ "new" ],
         "source": "equipment",
+        "tags": [ "new" ],
         "type": "weapon"
     },
     "weapon13": {
         "bonuses": {
             "att": 2,
-            "spd": 1,
-            "movement": 0.9
+            "movement": 0.9,
+            "spd": 1
         },
         "campOrdinalRequired": 1,
         "icon": "img/items/weapon-shiv.png",
