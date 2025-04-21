@@ -178,7 +178,9 @@ define([
 					case CampConstants.DISEASE_UPDATE_TYPE_END:
 						let numLastCured = pop.num;
 						pop.num = 0;
+						if (numLastCured > 0) {
 						GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.getUniqueID(), numLastCured + " people recovered from the disease.", pos);
+						}
 						break;
 				}
 
