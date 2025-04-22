@@ -589,13 +589,31 @@
                     "id": "hints"
                 },
                 {
+                    "id": "magic_pending",
+                    "startTrigger": "action_build",
+                    "startConditions": {
+                        "numCamps": 5
+                    },
+                    "onComplete": {
+                        "storyFlags": {
+                            "SPIRITS_MAGIC_PENDING": false
+                        }
+                    },
+                    "onStart": {
+                        "storyFlags": {
+                            "SPIRITS_MAGIC_PENDING": true
+                        }
+                    }
+                },
+                {
                     "id": "magic_confirmed",
                     "startConditions": {
                         "storyFlags": {
                             "SPIRITS_MAGIC_SEEN": true
                         }
                     },
-                    "startTrigger": "story_flag_changed"
+                    "startTrigger": "story_flag_changed",
+                    "startFromAny": true
                 },
                 {
                     "completeConditions": {
@@ -626,17 +644,6 @@
                     }
                 },
                 {
-                    "completeConditions": {
-                        "tribe": {
-                            "improvements": {
-                                "shrine": [
-                                    1,
-                                    -1
-                                ]
-                            }
-                        }
-                    },
-                    "completeTrigger": "action_build",
                     "id": "found_grove",
                     "onStart": {
                         "storyFlags": {
@@ -648,6 +655,22 @@
                     },
                     "startFromAny": true,
                     "startTrigger": "locale_scouted"
+                },
+                {
+                    "id": "completed",
+                    "startTrigger": "action_build",
+                    "startConditions": {
+                        "tribe": {
+                            "improvements": {
+                                "shrine": [
+                                    1,
+                                    -1
+                                ]
+                            }
+                        }
+                    },
+                    "startFromAny": true,
+                    "completeTrigger": "immediate"
                 }
             ],
             "startTrigger": "immediate"
@@ -704,6 +727,9 @@
                     "id": "two_camps",
                     "startConditions": {
                         "numCamps": 2
+                    },
+                    "onStart": {
+                        "popup": "story.stories.tribe_two_camps_start_message"
                     },
                     "startFromAny": true,
                     "startTrigger": "action_build"

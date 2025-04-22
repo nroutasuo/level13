@@ -6,8 +6,9 @@ define([
 	'game/constants/GameConstants',
 	'game/constants/EnemyConstants',
 	'game/constants/PlayerActionConstants',
-	'game/constants/LocaleConstants',
 	'game/constants/FightConstants',
+	'game/constants/StoryConstants',
+	'game/constants/WorldConstants',
 	'game/components/sector/EnemiesComponent',
 	'game/components/sector/SectorControlComponent',
 	'game/components/sector/FightComponent',
@@ -15,14 +16,15 @@ define([
 	'game/components/type/GangComponent',
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/PlayerStatsNode',
-	'game/systems/FaintingSystem'
+	'game/systems/FaintingSystem',
+	'worldcreator/EnemyCreator',
 ], function (
-	Ash, GameGlobals, GlobalSignals, GameConstants, EnemyConstants, PlayerActionConstants, LocaleConstants, FightConstants,
+	Ash, GameGlobals, GlobalSignals, GameConstants, EnemyConstants, PlayerActionConstants, FightConstants, StoryConstants, WorldConstants,
 	EnemiesComponent, SectorControlComponent, FightComponent, FightEncounterComponent, GangComponent,
 	PlayerLocationNode, PlayerStatsNode,
-	FaintingSystem
+	FaintingSystem, EnemyCreator
 ) {
-	var FightHelper = Ash.Class.extend({
+	let FightHelper = Ash.Class.extend({
 
 		playerLocationNodes: null,
 		playerStatsNodes: null,
@@ -37,6 +39,8 @@ define([
 			this.engine = engine;
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
+			this.enemyCreator = new EnemyCreator();
+			this.enemyCreator.createEnemies();
 		},
 
 		handleFight: function (numEnemies, chance, action, winCallback, fleeCallback, loseCallback) {
@@ -45,7 +49,7 @@ define([
 				return;
 			}
 			
-			chance = chance || 0;
+			chance = this.getFightChance(chance || 0);
 			numEnemies = numEnemies || 1;
 
 			if (Math.random() > chance) {
@@ -88,7 +92,17 @@ define([
 			let encounterFactor = GameGlobals.playerActionsHelper.getEncounterFactor(action);
 
 			let encounterProbability = PlayerActionConstants.getRandomEncounterProbability(baseActionID, vision, sectorFactor, encounterFactor);
-			return encounterProbability;
+			return this.getFightChance(encounterProbability);
+		},
+
+		getFightChance: function (chance) {
+			let result = chance;
+
+			if (GameGlobals.gameState.getStoryFlag(StoryConstants.flags.SPIRITS_MAGIC_PENDING)) {
+				result *= 3;
+			}
+
+			return result;
 		},
 
 		initFightSequence: function (action, numEnemies, winCallback, fleeCallback, loseCallback) {
@@ -119,6 +133,7 @@ define([
 		initFight: function (action) {
 			var sector = this.playerLocationNodes.head.entity;
 			sector.remove(FightComponent);
+			
 			var enemiesComponent = sector.get(EnemiesComponent);
 			enemiesComponent.selectNextEnemy();
 
@@ -207,12 +222,34 @@ define([
 		
 		getEnemy: function (enemiesComponent, gangComponent) {
 			if (gangComponent) {
-				var gangEnemy = EnemyConstants.getEnemy(gangComponent.getNextEnemyID());
-				if (gangEnemy) {
-					return gangEnemy;
-				}
+				let gangEnemy = EnemyConstants.getEnemy(gangComponent.getNextEnemyID());
+				if (gangEnemy) return gangEnemy;
 			}
+
+			if (GameGlobals.gameState.getStoryFlag(StoryConstants.flags.SPIRITS_MAGIC_PENDING)) {
+				let magicEnemy = this.getValidEnemyWithTag("magic");
+				if (magicEnemy) return magicEnemy;
+			}
+
 			return enemiesComponent.getNextEnemy()
+		},
+
+		getValidEnemyWithTag: function (tag) {
+			debugger
+			let position = this.playerLocationNodes.head.position;
+
+			let campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
+			let campStep = WorldConstants.CAMP_STEP_POI_2;
+			let environmentTags = null;
+			let enemyDifficulty = this.enemyCreator.getDifficulty(campOrdinal, campStep);
+			let possibleEnemies = this.enemyCreator.getEnemies(enemyDifficulty, environmentTags, 1);
+
+			possibleEnemies = possibleEnemies.filter(e => e.tags.indexOf(tag) >= 0);
+
+			if (possibleEnemies.length == 0) return null;
+
+			let index = Math.floor(Math.random() * possibleEnemies.length);
+			return possibleEnemies[index].clone();
 		},
 
 		save: function () {

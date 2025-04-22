@@ -97,6 +97,7 @@ define([
 			GameGlobals.gameState.increaseGameStatSimple("numFightsStarted");
 
 			if (enemy.tags.indexOf("magic") >= 0) {
+				GameGlobals.playerActionFunctions.setStoryFlag("SPIRITS_MAGIC_PENDING", false);
 				GameGlobals.playerActionFunctions.setStoryFlag("SPIRITS_MAGIC_SEEN", true);
 			}
 			

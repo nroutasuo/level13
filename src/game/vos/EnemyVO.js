@@ -108,6 +108,7 @@ define(['ash'], function (Ash) {
 			let clone = new EnemyVO(this.id, this.name, this.environment, this.nouns, this.groupN, this.activeV, this.defeatedV, this.size, this.att, this.def, this.maxHP, this.maxShield, this.speed, this.rarity, this.droppedResources, this.droppedIngredients, this.causedInjuryTypes);
 			clone.enemyClass = this.enemyClass;
 			clone.curseProbability = this.curseProbability;
+			clone.tags = this.tags;
 			return clone;
 		},
 		
