@@ -317,7 +317,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 
 		initHighScoreStat: function (name, isInverted) {
 			if (this.isHighScoreStat(name)) {
-				this.stats[name].isInverted = isInverted;
+				this.stats[name].isInverted = isInverted || false;
 				return;
 			}
 			this.stats[name] = { value: 0, entry: null, isInverted: isInverted || false };
