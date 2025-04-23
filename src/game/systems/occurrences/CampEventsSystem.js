@@ -733,12 +733,12 @@ define([
 					var event = OccurrenceConstants.campOccurrenceTypes[key];
 					if (campTimers.eventStartTimers[event]) {
 						campTimers.eventStartTimers[event] = Math.max(campTimers.eventStartTimers[event], 15);
-						log.i("camp " + campNode.position.level + ": next " + event + " in " + Math.round(campTimers.eventStartTimers[event]) + "s");
+						//log.i("camp " + campNode.position.level + ": next " + event + " in " + Math.round(campTimers.eventStartTimers[event]) + "s");
 					}
 					var minEndTime = Math.min(OccurrenceConstants.getDuration(event), 15);
 					if (campTimers.eventEndTimers[event] && campTimers.eventEndTimers[event] != OccurrenceConstants.EVENT_DURATION_INFINITE) {
 						campTimers.eventEndTimers[event] = Math.max(campTimers.eventEndTimers[event], minEndTime);
-						log.i("camp " + campNode.position.level + ": " + event + " ends in " + Math.round(campTimers.eventEndTimers[event]) + "s");
+						//log.i("camp " + campNode.position.level + ": " + event + " ends in " + Math.round(campTimers.eventEndTimers[event]) + "s");
 					}
 				}
 			}

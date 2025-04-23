@@ -9,6 +9,7 @@
 	'game/GlobalSignals',
 	'game/vos/CharacterVO',
 	'game/constants/CharacterConstants',
+	'game/constants/GameConstants',
 	'game/constants/ImprovementConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/UIConstants',
@@ -37,7 +38,7 @@
 ], function (
 	Ash, Text, MathUtils, UIState, UIList, UIAnimations, GameGlobals, GlobalSignals,
 	CharacterVO,
-	CharacterConstants, ImprovementConstants, PlayerActionConstants, UIConstants, UpgradeConstants, OccurrenceConstants, CampConstants, DialogueConstants, TextConstants, TribeConstants,
+	CharacterConstants, GameConstants, ImprovementConstants, PlayerActionConstants, UIConstants, UpgradeConstants, OccurrenceConstants, CampConstants, DialogueConstants, TextConstants, TribeConstants,
 	PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, TribeUpgradesNode,
 	PerksComponent, PlayerActionComponent,
 	CampComponent, ResourcesComponent, ResourceAccumulationComponent, OutgoingCaravansComponent, ReputationComponent, SectorImprovementsComponent, CampEventTimersComponent, RefugeesComponent, VisitorComponent,
@@ -966,6 +967,21 @@
 
 			GameGlobals.uiFunctions.toggle("#in-demographics-level", showLevelStats);
 			GameGlobals.uiFunctions.toggle("#in-demographics", showCalendar || showRaid || showLevelStats);
+
+			if (GameConstants.isDebugVersion) {
+				let debugInfoText = "";
+				let campTimers = sector.get(CampEventTimersComponent);
+				for (let key in OccurrenceConstants.campOccurrenceTypes) {
+					let event = OccurrenceConstants.campOccurrenceTypes[key];
+					if (campTimers.eventStartTimers[event]) {
+						debugInfoText += "next " + event + " in " + UIConstants.getTimeToNum(campTimers.eventStartTimers[event]) + "<br/>";
+					}
+					if (campTimers.eventEndTimers[event] && campTimers.eventEndTimers[event] != OccurrenceConstants.EVENT_DURATION_INFINITE) {
+						debugInfoText += event + " ends in " + UIConstants.getTimeToNum(campTimers.eventEndTimers[event]) + "<br/>";
+					}
+				}
+				$("#in-demographics-debug-general").html(debugInfoText);
+			}
 		},
 		
 		saveAutoAssignSettings: function () {
