@@ -223,6 +223,7 @@ define([
 			APOCALYPSE_PENDING_REFUGEES: "APOCALYPSE_PENDING_REFUGEES",
 			APOCALYPSE_KNOWN: "APOCALYPSE_KNOWN",
 			APOCALYPSE_PLAN_READY: "APOCALYPSE_PLAN_READY",
+			APOCALYPSE_TECH_READY: "APOCALYPSE_TECH_READY",
 			ESCAPE_SEARCHING_FOR_EXIT: "ESCAPE_SEARCHING_FOR_EXIT",
 			ESCAPE_SEARCHING_FOR_GROUND: "ESCAPE_SEARCHING_FOR_GROUND",
 			ESCAPE_WORRIED_ABOUT_OUTSIDE: "ESCAPE_WORRIED_ABOUT_OUTSIDE",
@@ -336,6 +337,13 @@ define([
 			}
 			return null;
 		},
+
+		getPreferredExplorersForStoryTag: function (storyTag) {
+			if (storyTag.indexOf("apocalypse") >= 0) {
+				return [ "prospector", "journalist", "architect", "guard", "lover" ];
+			}
+			return [];
+		}
 		
 	};
 

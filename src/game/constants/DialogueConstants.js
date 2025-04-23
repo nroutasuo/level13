@@ -59,6 +59,7 @@ define([
 			vo.conditions = d.conditions || {};
 			vo.storyTag = d.storyTag || null;
 			vo.isRepeatable = d.repeatable === false ? false : true;
+			vo.isUnique = d.isUnique;
 			vo.isPriority = d.isPriority;
 			vo.isUrgent = d.isUrgent;
 			vo.isForced = d.isForced;

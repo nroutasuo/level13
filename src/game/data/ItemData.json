@@ -1781,7 +1781,7 @@
     },
     "document_story_apocalypse_cause_02": {
         "configData": {
-            "noteText": "Official report regarding the earthquakes. According to it, they will likely increase in severity and frequency in the coming years.",
+            "noteText": "Official report regarding the earthquakes. According to it, they will likely increase in severity and frequency in the coming years until the City can no longer withstand them.",
             "storyFlag": "APOCALYPSE_KNOWN"
         },
         "icon": "img/items/document.png",
@@ -1813,7 +1813,7 @@
     },
     "document_story_apocalypse_severity_01": {
         "configData": {
-            "noteText": "Official report regarding increasing earthquakes. According to experts, the City can only withstand them for some years.",
+            "noteText": "Official report regarding increasing earthquakes. According to experts, the City can only withstand them for some years. They sey urgent actions are needed.",
             "storyFlag": "APOCALYPSE_KNOWN"
         },
         "icon": "img/items/document.png",
@@ -1857,8 +1857,7 @@
     },
     "document_story_fall_diary_01": {
         "configData": {
-            "noteText": "Diary of someone who wos selected for evacuation and confined to the secret isolation facility. Their family member worked on the Exodus project, but they did not know the details. They were confident that everything would work out and looking forward to their new life in a space colony, only sorry for those who would stay behind.",
-            "storyFlag": "APOCALYPSE_KNOWN"
+            "noteText": "Diary of someone who wos selected for evacuation and confined to the secret isolation facility. Their family member worked on the Exodus project, but they did not know the details. They were confident that everything would work out and looking forward to their new life in a space colony, only sorry for those who would stay behind."
         },
         "icon": "img/items/book.png",
         "isCraftable": false,

@@ -9,7 +9,8 @@ define(['ash'], function (Ash) {
 		conditions: {},
 		storyTag: null,
 
-		isRepeatable: true,
+		isRepeatable: true, // can be repeated by the same character
+		isUnique: false, // can be only seen once by the player across different characters
 		isPriority: false,
 		isUrgent: false,
 		isForced: false,

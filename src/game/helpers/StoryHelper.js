@@ -71,6 +71,19 @@ define(['ash',
 			},
 
 			getExplorerQuestStory: function (explorerVO) {
+				let storyIDs = this.getExplorerQuestStories(explorerVO);
+
+				if (storyIDs.length == 0) return null;
+
+				// more urgent / shorter stories take precedence in case there's more than one
+				if (storyIDs.indexOf("rescue") >= 0) return "rescue";
+				if (storyIDs.indexOf("spirits") >= 0) return "spirits";
+				if (storyIDs.indexOf("greenhouse") >= 0) return "greenhouse";
+
+				return storyIDs[0];
+			},
+
+			getExplorerQuestStories: function (explorerVO) {
 				let explorersComponent = GameGlobals.playerHelper.getPlayerEntity().get(ExplorersComponent);
 				let storyIDs = [];
 
@@ -81,14 +94,7 @@ define(['ash',
 					}
 				}
 
-				if (storyIDs.length == 0) return null;
-
-				// more urgent stories take precedence in case there's more than one
-				if (storyIDs.indexOf("rescue") >= 0) return "rescue";
-				if (storyIDs.indexOf("spirits") >= 0) return "spirits";
-				if (storyIDs.indexOf("greenhouse") >= 0) return "greenhouse";
-
-				return storyIDs[0];
+				return storyIDs;
 			},
 
 			startQuest: function (storyID, explorerVO) {

@@ -5,9 +5,10 @@ define([
 	'game/GameGlobals',
 	'game/constants/DialogueConstants',
 	'game/constants/ExplorerConstants',
+	'game/constants/StoryConstants',
     'game/nodes/player/DialogueNode',
 	'game/components/player/DialogueComponent'
-], function (Ash, GlobalSignals, GameGlobals, DialogueConstants, ExplorerConstants, DialogueNode, DialogueComponent) {
+], function (Ash, GlobalSignals, GameGlobals, DialogueConstants, ExplorerConstants, StoryConstants, DialogueNode, DialogueComponent) {
 	
 	let DialogueSystem = Ash.System.extend({
 
@@ -81,10 +82,19 @@ define([
 		tryTriggerPendingExplorerDialogue: function (storyTag) {
 			let explorers = GameGlobals.playerHelper.getExplorers();
 
-			let explorerScore = function (explorerVO) {
-				let score = explorerVO.trust;
+			let preferredExplorers = StoryConstants.getPreferredExplorersForStoryTag(storyTag);
 
+			let explorerScore = function (explorerVO) {
+				for (let i = 0; i < preferredExplorers.length; i++) {
+					let preferredExplorerID = preferredExplorers[i];
+					if (explorerVO.id.indexOf(preferredExplorerID) >= 0) {
+						return 1000 - i;
+					}
+				}
+
+				let score = explorerVO.trust;
 				if (explorerVO.inParty) score *= 2;
+				if (ExplorerConstants.isTemplate(explorerVO)) score *= 2;
 				if (ExplorerConstants.isUnique(explorerVO)) score *= 3;
 
 				return score;
@@ -214,6 +224,7 @@ define([
 		endDialogue: function () {
 			let dialogueVO = this.dialogueNodes.head.dialogue.activeDialogue;
 			let explorerVO = this.dialogueNodes.head.dialogue.explorerVO;
+			let dialogueID = dialogueVO.dialogueID;
 			
 			this.endPage();
 
@@ -223,11 +234,14 @@ define([
 			}
 
 			if (explorerVO) {
-				let dialogueID = dialogueVO.dialogueID;
 				if (!explorerVO.seenDialogues) explorerVO.seenDialogues = [];
 				if (explorerVO.seenDialogues.indexOf(dialogueID) < 0) {
 					explorerVO.seenDialogues.push(dialogueID);
 				}
+			}
+
+			if (GameGlobals.gameState.seenDialogues.indexOf(dialogueID) < 0) {
+				GameGlobals.gameState.seenDialogues.push(dialogueID);
 			}
 
 			this.dialogueNodes.head.entity.remove(DialogueComponent);

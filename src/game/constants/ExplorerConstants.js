@@ -803,7 +803,15 @@ define(['ash',
 		},
 		
 		isUnique: function (explorerVO) {
-			return explorerVO && explorerVO.dialogueSource && explorerVO.dialogueSource.indexOf("unique") >= 0;
+			return explorerVO && explorerVO.dialogueSource && explorerVO.dialogueSource.indexOf("unique_") >= 0;
+		},
+		
+		isTemplate: function (explorerVO) {
+			return explorerVO && explorerVO.dialogueSource && explorerVO.dialogueSource.indexOf("template_") >= 0;
+		},
+		
+		isGeneric: function (explorerVO) {
+			return explorerVO && explorerVO.dialogueSource && explorerVO.dialogueSource.indexOf("generic_") >= 0;
 		},
 		
 		isComparableAbilityTypes: function (a, b) {

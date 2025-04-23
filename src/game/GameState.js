@@ -67,6 +67,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 				itemsCraftableAvailableSeen: []
 			},
 
+			this.seenDialogues = [];
 			this.foundTradingPartners = []; // camp ordinals
 			this.foundLuxuryResources = [];
 

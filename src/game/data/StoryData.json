@@ -42,6 +42,44 @@
                             "APOCALYPSE_KNOWN": true
                         }
                     },
+                    "onStart": {
+                        "log": "story.stories.apocalypse_known_message",
+                        "dialogue": {
+                            "owner": "explorer",
+                            "storyTag": "apocalypse_quest_start"
+                        }
+                    },
+                    "startFromAny": true,
+                    "startTrigger": "story_flag_changed"
+                },
+                {
+                    "id": "apocalypse_solution_decided",
+                    "startConditions": {
+                        "storyFlags": {
+                            "APOCALYPSE_PLAN_READY": true
+                        }
+                    },
+                    "onStart": {
+                        "log": "story.stories.apocalypse_solution_known_message"
+                    },
+                    "startFromAny": true,
+                    "startTrigger": "story_flag_changed"
+                },
+                {
+                    "id": "apocalypse_tech_ready",
+                    "startConditions": {
+                        "upgrades": {
+                            "unlock_building_spaceship1": true,
+                            "unlock_building_spaceship2": true,
+                            "unlock_building_spaceship3": true
+                        }
+                    },
+                    "onStart": {
+                        "log": "story.stories.apocalypse_tech_ready_message",
+                        "storyFlags": {
+                            "APOCALYPSE_TECH_READY": true
+                        }
+                    },
                     "startFromAny": true,
                     "startTrigger": "story_flag_changed"
                 }
@@ -142,7 +180,7 @@
                     "startTrigger": "change_position"
                 },
                 {
-                    "id": "ESCAPE_SEARCHING_FOR_GROUND",
+                    "id": "searching_for_ground",
                     "onStart": {
                         "storyFlags": {
                             "ESCAPE_SEARCHING_FOR_GROUND": true
@@ -168,6 +206,21 @@
                     "startTrigger": "change_position"
                 },
                 {
+                    "id": "going_up",
+                    "startConditions": {
+                        "player": {
+                            "position": {
+                                "level": 14
+                            }
+                        },
+                        "deity": true
+                    },
+                    "onStart": {
+                        "log": "Sory.stories.escape_going_up_message"
+                    },
+                    "startTrigger": "change_position"
+                },
+                {
                     "id": "searching_for_surface",
                     "onStart": {
                         "storyFlags": {
@@ -181,6 +234,7 @@
                             }
                         }
                     },
+                    "startFromAny": true,
                     "startTrigger": "change_position"
                 },
                 {
@@ -202,7 +256,12 @@
                             "surface": true
                         }
                     },
+                    "startFromAny": true,
                     "startTrigger": "change_position"
+                },
+                {
+                    "id": "completed",
+                    "completeTrigger": "immediate"
                 }
             ],
             "startConditions": {},

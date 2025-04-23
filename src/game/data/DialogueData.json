@@ -1493,6 +1493,14 @@
 				}
 			]
 		},
+		"character_shaman_default_event_05": {
+			"conditions": {
+				"storyFlags": {
+					"APOCALYPSE_KNOWN": true
+				}
+			},
+			"pages": [ "character_shaman_default_event_05_p1" ]
+		},
 		"character_shaman_default_meet_01": {
 			"pages": [
 				"character_shaman_default_meet_01_p1"
@@ -4302,6 +4310,9 @@
 		},
 		"explorer_unique_gambler_story_find_spirits": {
 			"isUrgent": true,
+			"conditions": {
+				"deity": false
+			},
 			"pages": [
 				{
 					"id": "intro",
@@ -5227,6 +5238,90 @@
 			},
 			"pages": [
 				"explorer_unique_prospector_interact_11_p1"
+			]
+		},
+		"explorer_generic_story_apocalypse_quest_start": {
+			"isUnique": true,
+			"conditions": {
+				"storyFlags": {
+					"APOCALYPSE_KNOWN": true,
+					"APOCALYPSE_PLAN_READY": false
+				}
+			},
+			"pages": [
+				{
+					"key": "explorer_generic_story_apocalypse_quest_start_p1"
+				},
+				{
+					"buttonKey": "explorer_request_start_quest",
+					"result": {
+						"startQuest": "apocalypse"
+					},
+					"key": "explorer_generic_story_apocalypse_quest_start_p2"
+				}
+			],
+			"storyTag": "apocalypse_quest_start"
+		},
+		"explorer_generic_story_apocalypse_evacuation_known": {
+			"conditions": {
+				"storyFlags": {
+					"APOCALYPSE_KNOWN": true,
+					"FALL_SEEN_EVACUATION": true
+				},
+				"explorer": {
+					"quest": "apocalypse"
+				}
+			},
+			"pages": [
+				{
+					"key": "explorer_generic_story_apocalypse_evacuation_known_p1"
+				},
+				{
+					"key": "explorer_generic_story_apocalypse_evacuation_known_p2"
+				},
+				{
+					"result": {
+						"storyFlags": {
+							"APOCALYPSE_PLAN_READY": true
+						}
+					},
+					"key": "explorer_generic_story_apocalypse_evacuation_known_p3"
+				}
+			]
+		},
+		"explorer_generic_story_apocalypse_space_ship_ready": {
+			"conditions": {
+				"storyFlags": {
+					"APOCALYPSE_KNOWN": true,
+					"FALL_SEEN_EVACUATION": true
+				},
+				"explorer": {
+					"quest": "apocalypse"
+				},
+				"tribe": {
+					"improvements": {
+						"spaceship1": [
+							1,
+							-1
+						],
+						"spaceship2": [
+							1,
+							-1
+						],
+						"spaceship3": [
+							1,
+							-1
+						]
+					}
+				}
+			},
+			"pages": [
+				{
+					"key": "explorer_generic_story_apocalypse_space_ship_ready_p1",
+					"result": {
+						"endQuest": "apocalypse"
+					}
+				}
 			]
 		},
 		"explorer_unique_prospector_interact_12": {
@@ -6514,7 +6609,8 @@
 					"character_shaman_default_event_01",
 					"character_shaman_default_event_02",
 					"character_shaman_default_event_03",
-					"character_shaman_default_event_04"
+					"character_shaman_default_event_04",
+					"character_shaman_default_event_05"
 				],
 				"meet": [
 					"character_shaman_default_meet_01",
@@ -6977,21 +7073,24 @@
 					"explorer_generic_interact_injured_01",
 					"explorer_generic_interact_story_apocalypse_01",
 					"explorer_generic_interact_story_apocalypse_02",
-					"explorer_generic_intract_new_camp_6_01",
-					"explorer_generic_intract_new_camp_7_01",
-					"explorer_generic_intract_new_camp_8_01",
-					"explorer_generic_intract_new_camp_9_01",
 					"explorer_generic_intract_new_camp_10_01",
 					"explorer_generic_intract_new_camp_11_01",
 					"explorer_generic_intract_new_camp_12_01",
 					"explorer_generic_intract_new_camp_13_01",
 					"explorer_generic_intract_new_camp_14_01",
 					"explorer_generic_intract_new_camp_15_01",
+					"explorer_generic_intract_new_camp_6_01",
+					"explorer_generic_intract_new_camp_7_01",
+					"explorer_generic_intract_new_camp_8_01",
+					"explorer_generic_intract_new_camp_9_01",
 					"explorer_generic_mercenary_interact_01",
 					"explorer_generic_scavenger_interact_03",
 					"explorer_generic_scout_interact_02",
+					"explorer_generic_story_apocalypse_evacuation_known",
 					"explorer_generic_story_apocalypse_plan_ready_01",
 					"explorer_generic_story_apocalypse_plan_ready_02",
+					"explorer_generic_story_apocalypse_quest_start",
+					"explorer_generic_story_apocalypse_space_ship_ready",
 					"explorer_generic_story_rescue_prospector_hint_01",
 					"explorer_generic_story_rescue_prospector_hint_02",
 					"explorer_generic_story_rescue_prospector_intro",
@@ -7063,24 +7162,27 @@
 					"explorer_generic_interact_injured_02",
 					"explorer_generic_interact_story_apocalypse_01",
 					"explorer_generic_interact_story_apocalypse_02",
-					"explorer_generic_intract_new_camp_6_01",
-					"explorer_generic_intract_new_camp_7_01",
-					"explorer_generic_intract_new_camp_8_01",
-					"explorer_generic_intract_new_camp_9_01",
 					"explorer_generic_intract_new_camp_10_01",
 					"explorer_generic_intract_new_camp_11_01",
 					"explorer_generic_intract_new_camp_12_01",
 					"explorer_generic_intract_new_camp_13_01",
 					"explorer_generic_intract_new_camp_14_01",
 					"explorer_generic_intract_new_camp_15_01",
+					"explorer_generic_intract_new_camp_6_01",
+					"explorer_generic_intract_new_camp_7_01",
+					"explorer_generic_intract_new_camp_8_01",
+					"explorer_generic_intract_new_camp_9_01",
 					"explorer_generic_mercenary_interact_01",
 					"explorer_generic_mercenary_interact_02",
 					"explorer_generic_mercenary_interact_03",
 					"explorer_generic_mercenary_interact_04",
 					"explorer_generic_mercenary_interact_05",
 					"explorer_generic_mercenary_interact_06",
+					"explorer_generic_story_apocalypse_evacuation_known",
 					"explorer_generic_story_apocalypse_plan_ready_01",
 					"explorer_generic_story_apocalypse_plan_ready_02",
+					"explorer_generic_story_apocalypse_quest_start",
+					"explorer_generic_story_apocalypse_space_ship_ready",
 					"explorer_generic_story_find_greenhouse",
 					"explorer_generic_story_rescue_absence_01",
 					"explorer_generic_story_rescue_prospector_hint_01",
@@ -7153,24 +7255,27 @@
 					"explorer_generic_interact_injured_03",
 					"explorer_generic_interact_story_apocalypse_01",
 					"explorer_generic_interact_story_apocalypse_02",
-					"explorer_generic_intract_new_camp_6_01",
-					"explorer_generic_intract_new_camp_7_01",
-					"explorer_generic_intract_new_camp_8_01",
-					"explorer_generic_intract_new_camp_9_01",
 					"explorer_generic_intract_new_camp_10_01",
 					"explorer_generic_intract_new_camp_11_01",
 					"explorer_generic_intract_new_camp_12_01",
 					"explorer_generic_intract_new_camp_13_01",
 					"explorer_generic_intract_new_camp_14_01",
 					"explorer_generic_intract_new_camp_15_01",
+					"explorer_generic_intract_new_camp_6_01",
+					"explorer_generic_intract_new_camp_7_01",
+					"explorer_generic_intract_new_camp_8_01",
+					"explorer_generic_intract_new_camp_9_01",
 					"explorer_generic_scavenger_interact_01",
 					"explorer_generic_scavenger_interact_02",
 					"explorer_generic_scavenger_interact_03",
 					"explorer_generic_scavenger_interact_04",
 					"explorer_generic_scavenger_interact_05",
 					"explorer_generic_scavenger_interact_06",
+					"explorer_generic_story_apocalypse_evacuation_known",
 					"explorer_generic_story_apocalypse_plan_ready_01",
 					"explorer_generic_story_apocalypse_plan_ready_02",
+					"explorer_generic_story_apocalypse_quest_start",
+					"explorer_generic_story_apocalypse_space_ship_ready",
 					"explorer_generic_story_find_greenhouse",
 					"explorer_generic_story_rescue_absence_01",
 					"explorer_generic_story_rescue_prospector_hint_01",
@@ -7195,24 +7300,27 @@
 					"explorer_generic_interact_injured_02",
 					"explorer_generic_interact_story_apocalypse_01",
 					"explorer_generic_interact_story_apocalypse_02",
-					"explorer_generic_intract_new_camp_6_01",
-					"explorer_generic_intract_new_camp_7_01",
-					"explorer_generic_intract_new_camp_8_01",
-					"explorer_generic_intract_new_camp_9_01",
 					"explorer_generic_intract_new_camp_10_01",
 					"explorer_generic_intract_new_camp_11_01",
 					"explorer_generic_intract_new_camp_12_01",
 					"explorer_generic_intract_new_camp_13_01",
 					"explorer_generic_intract_new_camp_14_01",
 					"explorer_generic_intract_new_camp_15_01",
+					"explorer_generic_intract_new_camp_6_01",
+					"explorer_generic_intract_new_camp_7_01",
+					"explorer_generic_intract_new_camp_8_01",
+					"explorer_generic_intract_new_camp_9_01",
 					"explorer_generic_scout_interact_01",
 					"explorer_generic_scout_interact_02",
 					"explorer_generic_scout_interact_03",
 					"explorer_generic_scout_interact_04",
 					"explorer_generic_scout_interact_05",
 					"explorer_generic_scout_interact_06",
+					"explorer_generic_story_apocalypse_evacuation_known",
 					"explorer_generic_story_apocalypse_plan_ready_01",
 					"explorer_generic_story_apocalypse_plan_ready_02",
+					"explorer_generic_story_apocalypse_quest_start",
+					"explorer_generic_story_apocalypse_space_ship_ready",
 					"explorer_generic_story_find_greenhouse",
 					"explorer_generic_story_rescue_absence_01",
 					"explorer_generic_story_rescue_prospector_hint_01",
@@ -7287,14 +7395,17 @@
 				"interact": [
 					"explorer_generic_interact_injured_01",
 					"explorer_generic_interact_injured_03",
-					"explorer_generic_intract_new_camp_6_01",
-					"explorer_generic_intract_new_camp_7_01",
-					"explorer_generic_intract_new_camp_8_01",
-					"explorer_generic_intract_new_camp_9_01",
 					"explorer_generic_intract_new_camp_10_01",
 					"explorer_generic_intract_new_camp_13_01",
 					"explorer_generic_intract_new_camp_14_01",
 					"explorer_generic_intract_new_camp_15_01",
+					"explorer_generic_intract_new_camp_6_01",
+					"explorer_generic_intract_new_camp_7_01",
+					"explorer_generic_intract_new_camp_8_01",
+					"explorer_generic_intract_new_camp_9_01",
+					"explorer_generic_story_apocalypse_evacuation_known",
+					"explorer_generic_story_apocalypse_quest_start",
+					"explorer_generic_story_apocalypse_space_ship_ready",
 					"explorer_generic_story_rescue_absence_01",
 					"explorer_generic_story_rescue_prospector_hint_01",
 					"explorer_generic_story_rescue_prospector_hint_02",
@@ -7400,12 +7511,15 @@
 				],
 				"interact": [
 					"explorer_generic_interact_injured_01",
-					"explorer_generic_intract_new_camp_6_01",
-					"explorer_generic_intract_new_camp_9_01",
 					"explorer_generic_intract_new_camp_10_01",
 					"explorer_generic_intract_new_camp_13_01",
 					"explorer_generic_intract_new_camp_14_01",
+					"explorer_generic_intract_new_camp_6_01",
+					"explorer_generic_intract_new_camp_9_01",
+					"explorer_generic_story_apocalypse_evacuation_known",
 					"explorer_generic_story_apocalypse_plan_ready_01",
+					"explorer_generic_story_apocalypse_quest_start",
+					"explorer_generic_story_apocalypse_space_ship_ready",
 					"explorer_generic_story_rescue_absence_01",
 					"explorer_generic_story_rescue_prospector_hint_01",
 					"explorer_generic_story_rescue_prospector_hint_02",
@@ -7474,14 +7588,17 @@
 				],
 				"interact": [
 					"explorer_generic_interact_injured_03",
-					"explorer_generic_intract_new_camp_7_01",
-					"explorer_generic_intract_new_camp_8_01",
-					"explorer_generic_intract_new_camp_9_01",
 					"explorer_generic_intract_new_camp_10_01",
 					"explorer_generic_intract_new_camp_13_01",
 					"explorer_generic_intract_new_camp_14_01",
 					"explorer_generic_intract_new_camp_15_01",
+					"explorer_generic_intract_new_camp_7_01",
+					"explorer_generic_intract_new_camp_8_01",
+					"explorer_generic_intract_new_camp_9_01",
+					"explorer_generic_story_apocalypse_evacuation_known",
 					"explorer_generic_story_apocalypse_plan_ready_02",
+					"explorer_generic_story_apocalypse_quest_start",
+					"explorer_generic_story_apocalypse_space_ship_ready",
 					"explorer_generic_story_rescue_absence_01",
 					"explorer_generic_story_rescue_prospector_hint_01",
 					"explorer_generic_story_rescue_prospector_hint_02",
@@ -7718,13 +7835,16 @@
 				],
 				"interact": [
 					"explorer_generic_interact_injured_01",
+					"explorer_generic_intract_new_camp_10_01",
+					"explorer_generic_intract_new_camp_15_01",
 					"explorer_generic_intract_new_camp_5_01",
 					"explorer_generic_intract_new_camp_6_01",
 					"explorer_generic_intract_new_camp_7_01",
 					"explorer_generic_intract_new_camp_8_01",
 					"explorer_generic_intract_new_camp_9_01",
-					"explorer_generic_intract_new_camp_10_01",
-					"explorer_generic_intract_new_camp_15_01",
+					"explorer_generic_story_apocalypse_evacuation_known",
+					"explorer_generic_story_apocalypse_quest_start",
+					"explorer_generic_story_apocalypse_space_ship_ready",
 					"explorer_generic_story_rescue_absence_01",
 					"explorer_generic_story_rescue_prospector_hint_01",
 					"explorer_generic_story_rescue_prospector_hint_02",
@@ -7771,12 +7891,15 @@
 				],
 				"interact": [
 					"explorer_generic_interact_injured_01",
-					"explorer_generic_intract_new_camp_7_01",
-					"explorer_generic_intract_new_camp_8_01",
 					"explorer_generic_intract_new_camp_12_01",
 					"explorer_generic_intract_new_camp_13_01",
 					"explorer_generic_intract_new_camp_14_01",
 					"explorer_generic_intract_new_camp_15_01",
+					"explorer_generic_intract_new_camp_7_01",
+					"explorer_generic_intract_new_camp_8_01",
+					"explorer_generic_story_apocalypse_evacuation_known",
+					"explorer_generic_story_apocalypse_quest_start",
+					"explorer_generic_story_apocalypse_space_ship_ready",
 					"explorer_generic_story_searching_for_greenhouse_01",
 					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_unique_prospector_interact_01",

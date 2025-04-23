@@ -144,6 +144,7 @@ define(['ash',
                     if (conditions.explorer.trust && conditions.explorer.trust > explorerVO.trust) return false;
                     if (conditions.explorer.maxTrust && conditions.explorer.maxTrust < explorerVO.trust) return false;
                     if (conditions.explorer.injured && explorerVO.injuredTimer <= 0) return false;
+                    if (conditions.explorer.quest && GameGlobals.storyHelper.getExplorerQuestStories(explorerVO).indexOf(conditions.explorer.quest) <0) return false;
                     if (conditions.explorer.meetCampOrdinal 
                         && GameGlobals.playerActionsHelper.checkRequirementsRange(conditions.explorer.meetCampOrdinal, explorerVO.meetCampOrdinal)) return false;
                 }
@@ -325,6 +326,10 @@ define(['ash',
                     let entry = DialogueConstants.getDialogue(dialogueID);
 
                     if (!storyTag && !entry.isRepeatable && explorerVO.seenDialogues && explorerVO.seenDialogues.indexOf(entry.dialogueID) >= 0) {
+                        continue;
+                    }
+
+                    if (!storyTag && entry.isUnique && GameGlobals.gameState.seenDialogues && GameGlobals.gameState.seenDialogues.indexOf(entry.dialogueID) >= 0) {
                         continue;
                     }
 
