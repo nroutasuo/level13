@@ -31,7 +31,8 @@ define(function () {
 				if (i > 0 && textVO.delimiter) result += this.t(textVO.delimiter);
 				let fragment = textVO.textFragments[i];
 				if (!fragment) continue;
-				result += this.t(fragment.textKey, fragment.textParams);
+				if (fragment.rawText) result += fragment.rawText;
+				if (fragment.textKey) result += this.t(fragment.textKey, fragment.textParams);
 			}
 
 			return result;
