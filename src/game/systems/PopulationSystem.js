@@ -164,8 +164,10 @@ define([
 
 					case CampConstants.DISEASE_UPDATE_TYPE_WANE:
 						let numCured = MathUtils.randomIntBetween(1, pop.num);
+						if (numCured > 0) {
 						pop.num -= numCured;
 						GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.getUniqueID(), numCured + " people recovered from the disease.", pos);
+						}
 						break;
 
 					case CampConstants.DISEASE_UPDATE_TYPE_KILL:
