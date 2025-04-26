@@ -64,6 +64,7 @@ define(['ash',], function (Ash) {
 		explorersChangedSignal: new Ash.Signals.Signal(),
 		fightEndedSignal: new Ash.Signals.Signal(),
 		workersAssignedSignal: new Ash.Signals.Signal(),
+		featureUsedSignal: new Ash.Signals.Signal(),
 		featureUnlockedSignal: new Ash.Signals.Signal(),
 		storyFlagChangedSignal: new Ash.Signals.Signal(),
 		campRenamedSignal: new Ash.Signals.Signal(),

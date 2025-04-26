@@ -83,6 +83,13 @@ define([
 					}
 				}
 			}
+
+			if (GameGlobals.gameState.isFeatureUnlocked("investigate")) {
+				if (!GameGlobals.gameState.isFeatureUsed("investigate")) {
+					return "journalist";
+				}
+			}
+
 			return null;
 		},
 		

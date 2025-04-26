@@ -107,6 +107,8 @@ define([
 			if (upgradeID) {
 				if (!GameGlobals.tribeHelper.hasUpgrade(upgradeID)) {
 					GameGlobals.playerActionFunctions.lockFeature("investigate")
+				} else {
+					GameGlobals.playerActionFunctions.unlockFeature("investigate")
 				}
 			}
 

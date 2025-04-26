@@ -669,8 +669,8 @@ define(['ash',
 			let efficiency = GameGlobals.playerActionResultsHelper.getCurrentScavengeEfficiency();
 			
 			let isFirst = false;
-			if (!GameGlobals.gameState.unlockedFeatures.investigate) {
-				GameGlobals.playerActionFunctions.unlockFeature("investigate");
+			if (!GameGlobals.gameState.usedFeatures.investigate) {
+				GameGlobals.playerActionFunctions.useFeature("investigate");
 				isFirst = true;
 			}
 			
@@ -2844,7 +2844,6 @@ define(['ash',
 		buyUpgrade: function (upgradeID, automatic) {
 			if (!automatic && !GameGlobals.playerActionsHelper.checkAvailability(upgradeID, true)) return;
 			
-			let upgradeDefinition = UpgradeConstants.upgradeDefinitions[upgradeID];
 			GameGlobals.playerActionsHelper.deductCosts(upgradeID);
 			let name = Text.t(UpgradeConstants.getDisplayNameTextKey(upgradeID));
 			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "Researched " + name, { visibility: LogConstants.MSG_VISIBILITY_PRIORITY });
@@ -3062,6 +3061,18 @@ define(['ash',
 			log.i("locked feature: " + featureID);
 			
 			GameGlobals.gameState.unlockedFeatures[featureSaveKey] = false;
+		},
+
+		useFeature: function (featureID) {
+			let featureSaveKey = featureID;
+						
+			if (GameGlobals.gameState.usedFeatures[featureSaveKey]) return;
+			
+			log.i("used feature: " + featureID);
+			gtag('event', 'use_feature', { event_category: 'progression', event_label: featureID });
+			
+			GameGlobals.gameState.usedFeatures[featureSaveKey] = true;
+			GlobalSignals.featureUsedSignal.dispatch(featureID);
 		},
 
 		setStoryFlag: function (flagID, value) {

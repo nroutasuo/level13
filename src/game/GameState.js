@@ -26,6 +26,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.playedVersions = [];
 
 			this.unlockedFeatures = {};
+			this.usedFeatures = {};
 
 			this.uiStatus = {
 				mouseDown: false,
@@ -140,6 +141,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.initHighScoreStat("mostResourcesLostInRaid");
 			this.initHighScoreStat("mostFightsWithExplorer");
 			this.initHighScoreStat("mostStepsWithExplorer");
+			this.initHighScoreStat("mostDialoguesWithExplorer");
 
 			// list: list of unique ids (string) where value is length
 			this.initListStat("uniqueItemsCrafted");
@@ -177,6 +179,10 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 		
 		isFeatureUnlocked: function (featureID) {
 			return this.unlockedFeatures[featureID] || false;
+		},
+
+		isFeatureUsed: function (featureID) {
+			return this.usedFeatures[featureID] || false;
 		},
 		
 		getUnlockedResources: function () {
