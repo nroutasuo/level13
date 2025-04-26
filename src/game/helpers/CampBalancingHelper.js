@@ -77,7 +77,7 @@ define([
 				case CampConstants.workerTypes.trapper.id:
 					return -1;
 				case CampConstants.workerTypes.ropemaker.id:
-					var hasUnlockedRopers = GameGlobals.upgradeEffectsHelper.getWorkerLevel("weaver", upgrades) > 0;
+					var hasUnlockedRopers = GameGlobals.upgradeEffectsHelper.getWorkerLevel("ropemaker", upgrades) > 0;
 					return hasUnlockedRopers ? -1 : 0;
 				case CampConstants.workerTypes.chemist.id:
 					return def.getLimitNum(improvements, workshops) * CampConstants.CHEMISTS_PER_WORKSHOP;

@@ -90,6 +90,7 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 			apothecary: {
 				canBeDismantled: true,
 				improvementLevelsPerTechLevel: 5,
+				improvementLevelsPerMajorLevel: 5,
 				sortScore: 50,
 			},
 			smithy: {

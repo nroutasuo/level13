@@ -62,6 +62,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			this.count = 0;
 			this.level = 1;
 			this.numDamaged = 0;
+			this.damagedSource = null;
 			
 			this.initStorage();
 		},
@@ -130,6 +131,9 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			if (this.numDamaged > 0) {
 				copy.numDamaged = this.numDamaged;
 			}
+			if (this.damagedSource) {
+				copy.damagedSource = this.damagedSource;
+			}
 			if (this.storedResources) copy.storedResources = this.storedResources.getCustomSaveObject();
 			if (this.storageCapacity) copy.storageCapacity = this.storageCapacity.getCustomSaveObject();
 			return copy;
@@ -143,6 +147,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			this.count = componentValues.count === 0 ? 0 : componentValues.count ? componentValues.count : 1;
 			this.level = componentValues.level ? componentValues.level : 1;
 			this.numDamaged = componentValues.numDamaged ? componentValues.numDamaged : 0;
+			this.damagedSource = componentValues.damagedSource ? componentValues.damagedSource : null;
 			
 			if (this.storedResources) this.storedResources.customLoadFromSave(componentValues.storedResources);
 			if (this.storageCapacity) this.storageCapacity.customLoadFromSave(componentValues.storageCapacity);

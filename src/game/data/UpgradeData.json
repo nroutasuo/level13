@@ -167,14 +167,6 @@
         "id": "improve_building_market3",
         "name": "Network"
     },
-    "improve_building_radiotower": {
-        "campOrdinal": "14",
-        "effects": {
-            "improvesBuildings": "radiotower"
-        },
-        "id": "improve_building_radiotower",
-        "name": "Shortwave Radio"
-    },
     "improve_building_robots": {
         "blueprintCampOrdinal": 15,
         "blueprintIsCampless": true,
@@ -251,6 +243,18 @@
         },
         "id": "improve_building_temple3",
         "name": "Temple Gardens"
+    },
+    "improve_event_disaster_1": {
+        "blueprintCampOrdinal": 13,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 3,
+        "campOrdinal": "13",
+        "effects": {
+            "improvesOccurrence": "disaster"
+        },
+        "id": "improve_event_disaster_1",
+        "name": "Structural Reinforcement"
     },
     "improve_worker_chemist_2": {
         "campOrdinal": "6",

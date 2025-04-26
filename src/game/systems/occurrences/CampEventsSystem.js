@@ -9,6 +9,7 @@ define([
 	'game/constants/CharacterConstants',
 	'game/constants/ExplorerConstants',
 	'game/constants/ItemConstants',
+	'game/constants/ImprovementConstants',
 	'game/constants/LogConstants',
 	'game/constants/OccurrenceConstants',
 	'game/constants/StoryConstants',
@@ -33,7 +34,7 @@ define([
 	'game/vos/EventVO',
 	'text/Text'
 ], function (
-	Ash, MathUtils, GameGlobals, GlobalSignals, GameConstants, CampConstants, CharacterConstants, ExplorerConstants, ItemConstants, LogConstants, OccurrenceConstants, StoryConstants, TextConstants, UIConstants, WorldConstants,
+	Ash, MathUtils, GameGlobals, GlobalSignals, GameConstants, CampConstants, CharacterConstants, ExplorerConstants, ItemConstants, ImprovementConstants, LogConstants, OccurrenceConstants, StoryConstants, TextConstants, UIConstants, WorldConstants,
 	PlayerResourcesNode, CampNode, TribeUpgradesNode,
 	CampComponent, PositionComponent, ItemsComponent,
 	DisasterComponent, DiseaseComponent, RaidComponent, TraderComponent, RecruitComponent, RefugeesComponent, VisitorComponent,  CampEventTimersComponent,
@@ -250,7 +251,8 @@ define([
 					let storage = GameGlobals.resourcesHelper.getCurrentCampStorage(campNode.entity);
 					let hasHerbs = storage.resources.getResource(resourceNames.herbs) > 0;
 					let hasMedicine = storage.resources.getResource(resourceNames.medicine) > 0;
-					return OccurrenceConstants.getDiseaseOutbreakChance(campNode.camp.population, hasHerbs, hasMedicine);
+					let apothecaryLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("apothecary", this.tribeUpgradesNodes.head.upgrades);
+					return OccurrenceConstants.getDiseaseOutbreakChance(campNode.camp.population, hasHerbs, hasMedicine, apothecaryLevel);
 
 				case OccurrenceConstants.campOccurrenceTypes.raid:
 					return this.getRaidDanger(campNode.entity);
@@ -333,6 +335,7 @@ define([
 			let visibility = LogConstants.MSG_VISIBILITY_DEFAULT;
 
 			let eventVO = new EventVO(event);
+			let eventLevel = GameGlobals.campHelper.getEventUpgradeLevel(event);
 
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.accident:
@@ -349,12 +352,17 @@ define([
 					// TODO make damaged buildings disaster type dependent
 					let disasterComponent = campNode.entity.get(DisasterComponent);
 					let disasterType = disasterComponent.disasterType;
-					let damagedBuilding = this.addDamagedBuilding(campNode.entity, 1, null, disasterType);
+					let damageBuildingProbability = eventLevel > 1 ? 0.5 : 1;
+					let damagedBuilding = this.addDamagedBuilding(campNode.entity, damageBuildingProbability, null, disasterType);
 
 					campNode.entity.remove(DisasterComponent);
 					logMsgParams.disasterType = disasterType;
 					logMsgParams.damagedBuilding = damagedBuilding;
-					logMsg = "ui.tribe.event_ended_disaster_message";
+					if (damagedBuilding) {
+						logMsg = "ui.tribe.event_ended_disaster_message";
+					} else {
+						logMsg = "ui.tribe.event_ended_disaster_negated_message";
+					}
 					
 					eventVO.eventSubType = disasterType;
 					eventVO.damagedBuilding = damagedBuilding;
@@ -821,6 +829,13 @@ define([
 			let isNew = this.isNew(event);
 			let numCamps = GameGlobals.gameState.numCamps;
 			let upgradeLevel = GameGlobals.campHelper.getEventUpgradeLevel(event);
+
+			// event upgrades are supposed to "improve" them so for negative ones they should not make them more frequent
+			switch (event) {
+				case OccurrenceConstants.campOccurrenceTypes.disaster:
+				upgradeLevel = 1;
+			}
+
 			let reputationComponent = campNode.reputation;
 			return OccurrenceConstants.getTimeToNext(event, isNew, upgradeLevel, reputationComponent.value, numCamps);
 		},
@@ -860,8 +875,9 @@ define([
 					let storage = GameGlobals.resourcesHelper.getCurrentCampStorage(campNode.entity);
 					let hasHerbs = storage.resources.getResource(resourceNames.herbs) > 0;
 					let hasMedicine = storage.resources.getResource(resourceNames.medicine) > 0;
+					let apothecaryLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("apothecary", this.tribeUpgradesNodes.head.upgrades);
 					let isPendingDisease = GameGlobals.gameState.getStoryFlag(StoryConstants.flags.GREENHOUSE_PENDING_DISEASE);
-					let value = 1 - OccurrenceConstants.getDiseaseOutbreakChance(campNode.camp.population, hasHerbs, hasMedicine);
+					let value = 1 - OccurrenceConstants.getDiseaseOutbreakChance(campNode.camp.population, hasHerbs, hasMedicine, apothecaryLevel);
 					if (isPendingDisease) value = value / 2;
 					return value;
 				

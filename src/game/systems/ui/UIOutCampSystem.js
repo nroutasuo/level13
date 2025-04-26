@@ -943,7 +943,8 @@
 				let storage = GameGlobals.resourcesHelper.getCurrentCampStorage(sector);
 				let hasHerbs = storage.resources.getResource(resourceNames.herbs) > 0;
 				let hasMedicine = storage.resources.getResource(resourceNames.medicine) > 0;
-				let diseaseChance = OccurrenceConstants.getDiseaseOutbreakChance(campComponent.population, hasHerbs, hasMedicine);
+				let apothecaryLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("apothecary", this.tribeUpgradesNodes.head.upgrades);
+				let diseaseChance = OccurrenceConstants.getDiseaseOutbreakChance(campComponent.population, hasHerbs, hasMedicine, apothecaryLevel);
 				let showDiseaseWarning = diseaseChance > CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD; // not related to defences but matching raid warning value
 				UIConstants.updateCalloutContent("#in-demographics-disease-chance", this.getDiseaseChanceCalloutContent());
 				UIAnimations.animateOrSetNumber($("#in-demographics-disease-chance .value"), true, Math.round(diseaseChance * 100), "%", false, Math.round);
@@ -1055,7 +1056,14 @@
 		getLastEventDescription: function (sector, campComponent, eventVO) {
 			let textFragments = [];
 
-			textFragments.push({ textKey: "ui.camp.last_event_" + eventVO.eventType + "_message_start", textParams: { type: eventVO.eventSubType } });
+			let isNegated = false;
+			if (OccurrenceConstants.campOccurrenceTypes.disaster && eventVO.damagedBuilding == null) isNegated = true;
+
+			if (isNegated) {
+				textFragments.push({ textKey: "ui.camp.last_event_" + eventVO.eventType + "_message_negated_start", textParams: { type: eventVO.eventSubType } });
+			} else {
+				textFragments.push({ textKey: "ui.camp.last_event_" + eventVO.eventType + "_message_start", textParams: { type: eventVO.eventSubType } });
+			}
 
 			if (eventVO.damagedBuilding != null) {
 				textFragments.push(this.getDamagedBuildingDescriptionTextVO(sector, eventVO.damagedBuilding));
@@ -1196,13 +1204,14 @@
 			let storage = GameGlobals.resourcesHelper.getCurrentCampStorage(sector);
 			let hasHerbs = storage.resources.getResource(resourceNames.herbs) > 0;
 			let hasMedicine = storage.resources.getResource(resourceNames.medicine) > 0;
+			let apothecaryLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("apothecary", this.tribeUpgradesNodes.head.upgrades);
 
 			let result = "Risk that a disease occurring in the camp turns into an outbreak";
 			result += "<hr/>";
-			result += "Population: " + Math.round(OccurrenceConstants.getDiseaseOutbreakChance(campComponent.population, false, false) * 100) + "%<br/>";
+			result += "Population: " + Math.round(OccurrenceConstants.getDiseaseOutbreakChance(campComponent.population, false, false, 0) * 100) + "%<br/>";
 
 			if (hasMedicine) {
-				result += "Medicine: -" + ((1 - OccurrenceConstants.getDiseaseMedicineFactor()) * 100) + "%<br/>";
+				result += "Medicine: -" + ((1 - OccurrenceConstants.getDiseaseMedicineFactor(apothecaryLevel)) * 100) + "%<br/>";
 			} else if (hasHerbs) {
 				result += "Herbs: -" + ((1 - OccurrenceConstants.getDiseaseHerbsFactor()) * 100) + "%<br/>";
 			}
