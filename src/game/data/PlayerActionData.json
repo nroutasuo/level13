@@ -1502,6 +1502,9 @@
             }
         },
         "build_in_apothecary": {
+            "camp": {
+                "exposed": false
+            },
             "improvements": {
                 "apothecary": [
                     -1,
@@ -1563,6 +1566,9 @@
             }
         },
         "build_in_cementmill": {
+            "camp": {
+                "exposed": false
+            },
             "improvements": {
                 "cementmill": [
                     -1,
@@ -1701,6 +1707,9 @@
             }
         },
         "build_in_house2": {
+            "camp": {
+                "exposed": false
+            },
             "improvements": {
                 "house": [
                     3,
@@ -1733,6 +1742,10 @@
                     -1
                 ]
             },
+            "population": [
+                8,
+                -1
+            ],
             "upgrades": {
                 "unlock_building_inn": true
             }
@@ -1785,6 +1798,10 @@
                     -1
                 ]
             },
+            "population": [
+                8,
+                -1
+            ],
             "level": {
                 "population": [
                     1,
@@ -1847,9 +1864,6 @@
             }
         },
         "build_in_shrine": {
-            "camp": {
-                "exposed": false
-            },
             "deity": true,
             "improvements": {
                 "house": [
@@ -1863,6 +1877,9 @@
             }
         },
         "build_in_smithy": {
+            "camp": {
+                "exposed": false
+            },
             "improvements": {
                 "house": [
                     2,
