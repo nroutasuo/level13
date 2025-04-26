@@ -175,6 +175,7 @@
 			this.updateWorkerMaxDescriptions();
 			this.updateImprovements();
 			this.updateStats();
+			this.updateNews();
 			this.updateBubble();
 			this.updateCharactersDisplay();
 			this.updatePopulationDisplaySlow();
@@ -748,7 +749,11 @@
 					// TODO explain effect (reduced defences / production)
 					let numBuilt = improvements.getCount(improvementName);
 					let numDamaged = improvements.getNumDamaged(improvementName);
+					let damagedSource = improvements.getVO(improvementName).damagedSource;
 					let damageDescription = "Building damaged";
+					if (damagedSource) {
+						damageDescription += " by " + damagedSource;
+					}
 					if (numBuilt > 1) {
 						damageDescription += " (" + numDamaged + "/" + numBuilt + ")";
 					}
@@ -930,11 +935,6 @@
 				UIAnimations.animateOrSetNumber($("#in-demographics-raid-defence .value"), true, raidDefence, "", false, Math.round);
 				UIConstants.updateCalloutContent("#in-demographics-raid-danger", this.getRaidDangerCalloutContent());
 				UIConstants.updateCalloutContent("#in-demographics-raid-defence", defenceS);
-				var hasLastRaid = campComponent.lastRaid && campComponent.lastRaid.isValid();
-				if (hasLastRaid) {
-					$("#in-demographics-raid-last .value").text(this.getLastRaidDescription(sector, campComponent, campComponent.lastRaid));
-				}
-				GameGlobals.uiFunctions.toggle("#in-demographics-raid-last", hasLastRaid);
 			}
 			GameGlobals.uiFunctions.toggle("#in-demographics-raid", showRaid);
 
@@ -983,6 +983,31 @@
 				$("#in-demographics-debug-general").html(debugInfoText);
 			}
 		},
+
+		updateNews: function () {
+			let sector = this.playerLocationNodes.head.entity;
+			let campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
+			if (!campComponent) return;
+
+			let lastEventDescription = null;
+
+			if (campComponent.lastRaid && campComponent.lastRaid.isValid()) {
+				lastEventDescription = this.getLastRaidDescription(sector, campComponent, campComponent.lastRaid);
+			}
+
+			if (campComponent.lastEvent && campComponent.lastEvent.isValid()) {
+				if (!campComponent.lastRaid || campComponent.lastEvent.timestamp > campComponent.lastRaid.timestamp) {
+					lastEventDescription = this.getLastEventDescription(sector, campComponent, campComponent.lastEvent);
+				}
+			}
+
+			let hasLastEvent = lastEventDescription != null;
+			lastEventDescription = lastEventDescription || "(none)";
+
+			$("#in-demographics-raid-last .value").text(lastEventDescription);
+
+			GameGlobals.uiFunctions.toggle("#in-demographics-raid-last", hasLastEvent);
+		},
 		
 		saveAutoAssignSettings: function () {
 			if (!GameGlobals.gameState.unlockedFeatures.workerAutoAssignment) return;
@@ -994,42 +1019,69 @@
 			}
 		},
 		
-		getLastRaidDescription: function (sector, campComponent, raidVO) {
-			let result = "(none)";
+		getLastRaidDescription: function (sector, campComponent, eventVO) {
+			let textFragments = [];
+
+			textFragments.push({ textKey: "ui.camp.last_event_raid_message_start" });
+
 			if (campComponent.lastRaid.wasVictory) {
-				result = "Camp defended.";
+				textFragments.push({ textKey: "ui.camp.last_event_raid_message_victory" });
 			} else {
 				let resourcesLost = campComponent.lastRaid.resourcesLost;
-				let defendersLost = campComponent.lastRaid.defendersLost;
 				if (resourcesLost && resourcesLost.getTotal() > 0) {
 					let resourcesTextVO = TextConstants.getResourcesTextVO(resourcesLost);
 					let resourcesText = Text.compose(resourcesTextVO);
-					result = Text.t("ui.camp.last_raid_lost_message", resourcesText);
+					textFragments.push({ textKey: "ui.camp.last_raid_lost_message", textParams: { resources: resourcesText } });
 				} else {
-					result = Text.t("ui.camp.last_raid_lost_no_resources_message");
-				}
-				
-				if (defendersLost > 0) {
-					result += ". " + defendersLost + " defenders were killed.";
+					textFragments.push({ textKey: "ui.camp.last_raid_lost_no_resources_message" });
 				}
 			}
 			
-			if (raidVO.damagedBuilding != null) {
-				let improvements = sector.get(SectorImprovementsComponent);
-				let improvementID = ImprovementConstants.getImprovementID(raidVO.damagedBuilding);
-				let displayName = ImprovementConstants.getImprovementDisplayName(improvementID, improvements.getLevel(raidVO.damagedBuilding));
-				if (raidVO.damagedBuilding == improvementNames.fortification) {
-					result += " Fortifications were damaged.";
-				} else if (improvements.getCount(raidVO.damagedBuilding) == 1) {
-					result += " The " + displayName + " was damaged.";
-				} else {
-					result += " " + Text.addArticle(displayName) + " was damaged.";
-				}
+			let defendersLost = campComponent.lastRaid.defendersLost;
+			if (defendersLost > 0) {
+				textFragments.push({ textKey: "ui.camp.last_event_lost_defenders_message", textParams: { num: defendersLost } });
 			}
+
+			if (eventVO.damagedBuilding != null) {
+				textFragments.push(this.getDamagedBuildingDescriptionTextVO(sector, eventVO.damagedBuilding));
+			}
+
+			textFragments.push({ rawText: " (" + UIConstants.getTimeSinceText(campComponent.lastRaid.timestamp) + " ago)" });
 			
-			result += " (" + UIConstants.getTimeSinceText(campComponent.lastRaid.timestamp) + " ago)";
+			let textVO = { textFragments: textFragments, delimiter: "ui.common.sentence_separator" };
+			return Text.compose(textVO);
+		},
+		
+		getLastEventDescription: function (sector, campComponent, eventVO) {
+			let textFragments = [];
+
+			textFragments.push({ textKey: "ui.camp.last_event_" + eventVO.eventType + "_message_start", textParams: { type: eventVO.eventSubType } });
+
+			if (eventVO.damagedBuilding != null) {
+				textFragments.push(this.getDamagedBuildingDescriptionTextVO(sector, eventVO.damagedBuilding));
+			}
+
+			if (eventVO.workersDisabled > 0) {
+				textFragments.push({ textKey: "ui.camp.last_event_disabled_workers_message", textParams: { num: eventVO.workersDisabled } });
+			}
+
+			textFragments.push({ rawText: " (" + UIConstants.getTimeSinceText(campComponent.lastRaid.timestamp) + " ago)" });
 			
-			return result;
+			let textVO = { textFragments: textFragments, delimiter: "ui.common.sentence_separator" };
+			return Text.compose(textVO);
+		},
+
+		getDamagedBuildingDescriptionTextVO: function (sector, damagedBuilding) {
+			let improvements = sector.get(SectorImprovementsComponent);
+			let improvementID = ImprovementConstants.getImprovementID(damagedBuilding);
+			let displayName = ImprovementConstants.getImprovementDisplayName(improvementID, improvements.getLevel(damagedBuilding));
+			if (damagedBuilding == improvementNames.fortification) {
+				return { textKey: "ui.camp.last_event_damaged_fortifications_message" };
+			} else if (improvements.getCount(damagedBuilding) == 1) {
+				return { textKey: "ui.camp.last_event_damaged_improvement_only_message", textParams: { improvementName: displayName }};
+			} else {
+				return { textKey: "ui.camp.last_event_damaged_improvement_one_message", textParams: { improvementName: displayName }};
+			}
 		},
 
 		getWorkerDescription: function (def) {

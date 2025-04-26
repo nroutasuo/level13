@@ -392,6 +392,7 @@ define([
 
 			result.push(CampConstants.DISASTER_TYPE_COLLAPSE);
 			result.push(CampConstants.DISASTER_TYPE_EARTHQUAKE);
+			result.push(CampConstants.DISASTER_TYPE_EARTHQUAKE);
 			if (features.sunlit) result.push(CampConstants.DISASTER_TYPE_STORM);
 			if (position.level != surfaceLevel && position.level != groundLevel) result.push(CampConstants.DISASTER_TYPE_FLOOD);
 

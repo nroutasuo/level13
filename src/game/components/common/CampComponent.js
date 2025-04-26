@@ -1,5 +1,5 @@
 // Marks that given entity (should be a Sector) contains a Camp
-define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash, CampConstants, RaidVO) {
+define(['ash', 'game/constants/CampConstants', 'game/vos/EventVO'], function (Ash, CampConstants, EventVO) {
 	
 	let CampComponent = Ash.Class.extend({
 		
@@ -25,6 +25,7 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 		availableLuxuryResources: [],
 		
 		lastRaid: null,
+		lastEvent: null,
 		
 		pendingPopulation: 0,
 		pendingRecruits: [],
@@ -50,7 +51,8 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 
 			this.availableLuxuryResources = [];
 			
-			this.lastRaid = new RaidVO(null);
+			this.lastRaid = new EventVO(null);
+			this.lastEvent = new EventVO(null);
 			
 			this.pendingPopulation = 0;
 			this.pendingRecruits = [];
@@ -181,6 +183,7 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
 			copy.populationByOrigin = this.populationByOrigin || {};
 			copy.foundedTimeStamp = this.foundedTimeStamp;
 			copy.lastRaid = this.lastRaid;
+			copy.lastEvent = this.lastEvent;
 			copy.assignedWorkers = this.assignedWorkers;
 			copy.autoAssignedWorkers = this.autoAssignedWorkers;
 			copy.rumourpool = this.rumourpool;

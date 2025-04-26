@@ -30,14 +30,14 @@ define([
 	'game/components/sector/events/VisitorComponent',
 	'game/components/sector/events/CampEventTimersComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
-	'game/vos/RaidVO',
+	'game/vos/EventVO',
 	'text/Text'
 ], function (
 	Ash, MathUtils, GameGlobals, GlobalSignals, GameConstants, CampConstants, CharacterConstants, ExplorerConstants, ItemConstants, LogConstants, OccurrenceConstants, StoryConstants, TextConstants, UIConstants, WorldConstants,
 	PlayerResourcesNode, CampNode, TribeUpgradesNode,
 	CampComponent, PositionComponent, ItemsComponent,
 	DisasterComponent, DiseaseComponent, RaidComponent, TraderComponent, RecruitComponent, RefugeesComponent, VisitorComponent,  CampEventTimersComponent,
-	SectorImprovementsComponent, RaidVO, Text) {
+	SectorImprovementsComponent, EventVO, Text) {
 
 	var CampEventsSystem = Ash.System.extend({
 
@@ -332,6 +332,8 @@ define([
 			let logMsgParams = {};
 			let visibility = LogConstants.MSG_VISIBILITY_DEFAULT;
 
+			let eventVO = new EventVO(event);
+
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.accident:
 					let num = 1;
@@ -339,24 +341,33 @@ define([
 					GameGlobals.campHelper.addDisabledPopulation(campNode.entity, num, workerType, CampConstants.DISABLED_POPULATION_REASON_ACCIDENT, 60 * 10);
 					logMsgParams.workerType = workerType;
 					logMsg = "ui.tribe.event_ended_accident_message";
+					eventVO.workersDisabled = num;
+					campNode.camp.lastEvent = eventVO;
 					break;
 
 				case OccurrenceConstants.campOccurrenceTypes.disaster:
 					// TODO make damaged buildings disaster type dependent
 					let disasterComponent = campNode.entity.get(DisasterComponent);
 					let disasterType = disasterComponent.disasterType;
-					let damagedBuilding = this.addDamagedBuilding(campNode.entity, 1);
+					let damagedBuilding = this.addDamagedBuilding(campNode.entity, 1, null, disasterType);
 
 					campNode.entity.remove(DisasterComponent);
 					logMsgParams.disasterType = disasterType;
+					logMsgParams.damagedBuilding = damagedBuilding;
 					logMsg = "ui.tribe.event_ended_disaster_message";
+					
+					eventVO.eventSubType = disasterType;
+					eventVO.damagedBuilding = damagedBuilding;
+					campNode.camp.lastEvent = eventVO;
 					break;
 
 				case OccurrenceConstants.campOccurrenceTypes.disease:
 					let diseaseComponent = campNode.entity.get(DiseaseComponent);
+					eventVO.eventSubType = diseaseComponent.diseaseType;
 					campNode.entity.remove(DiseaseComponent);
 					campNode.camp.removeAllDisabledPopulationByReason(CampConstants.DISABLED_POPULATION_REASON_DISEASE);
 					logMsg = "ui.tribe.event_ended_disease_message";
+					campNode.camp.lastEvent = eventVO;
 					break;
 
 				case OccurrenceConstants.campOccurrenceTypes.trader:
@@ -381,12 +392,11 @@ define([
 					this.endRaid(campNode.entity);
 					let raidComponent = campNode.entity.get(RaidComponent);
 					let lostResources = raidComponent.resourcesLost;
-					let raidVO = new RaidVO(raidComponent);
 
 					if (raidComponent.victory) {
-						logMsg = "Raid over. We drove the attackers away.";
+						logMsg = "There has been a raid. We drove the attackers away.";
 					} else {
-						logMsg = "Raid over.";
+						logMsg = "There has been a raid.";
 						if (lostResources.getTotal() > 0) {
 							logMsg += " We lost some resources.";
 						} else {
@@ -406,11 +416,17 @@ define([
 						logMsg += " A building was damaged.";
 					}
 
-					let raidEntry = { level: campNode.position.level, timeStamp: raidVO.timeStamp };
+					let raidEntry = { level: campNode.position.level, timeStamp: eventVO.timeStamp };
 					GameGlobals.gameState.increaseGameStatHighScore("mostResourcesLostInRaid", raidEntry, lostResources.getTotal());
+
+					eventVO.resourcesLost = raidComponent.resourcesLost;
+					eventVO.defendersLost = raidComponent.defendersLost;
+					eventVO.damagedBuilding = raidComponent.damagedBuilding;
+			
+					this.wasVictory = raidComponent ? raidComponent.victory : false;
 					
 					campNode.entity.remove(RaidComponent);
-					campNode.camp.lastRaid = raidVO;
+					campNode.camp.lastRaid = eventVO;
 					break;
 
 				case OccurrenceConstants.campOccurrenceTypes.refugees:
@@ -448,12 +464,14 @@ define([
 			var campPos = campNode.entity.get(PositionComponent);
 			let campOrdinal = GameGlobals.gameState.getCampOrdinal(campPos.level);
 
-			var logMsg = null;
+			let logMsg = null;
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.disaster:
 					let disasterType = MathUtils.randomElement(GameGlobals.campHelper.getValidDisasterTypes(campNode.entity));
 					campNode.entity.add(new DisasterComponent(disasterType));
-					logMsg = "A " + disasterType + "!";
+					if (this.isPlayerInCamp(campNode)) {
+						logMsg = "A " + disasterType + "!";
+					}
 					break;
 
 				case OccurrenceConstants.campOccurrenceTypes.disease:
@@ -491,7 +509,9 @@ define([
 
 				case OccurrenceConstants.campOccurrenceTypes.raid:
 					campNode.entity.add(new RaidComponent());
-					logMsg = "A raid! The camp is under attack.";
+					if (this.isPlayerInCamp(campNode)) {
+						logMsg = "A raid! The camp is under attack.";
+					}
 					break;
 
 				case OccurrenceConstants.campOccurrenceTypes.refugees:
@@ -653,7 +673,7 @@ define([
 		},
 		
 		addRaidDamagedBuildings: function (sectorEntity, probability, allowedTypes) {
-			let damagedBuilding = this.addDamagedBuilding(sectorEntity, probability, allowedTypes);
+			let damagedBuilding = this.addDamagedBuilding(sectorEntity, probability, allowedTypes, OccurrenceConstants.campOccurrenceTypes.raid);
 			
 			if (damagedBuilding) {
 				let raidComponent = sectorEntity.get(RaidComponent);
@@ -661,7 +681,7 @@ define([
 			}
 		},
 
-		addDamagedBuilding: function (sectorEntity, probability, allowedTypes) {
+		addDamagedBuilding: function (sectorEntity, probability, allowedTypes, source) {
 			if (Math.random() > probability) return null;
 
 			let improvements = sectorEntity.get(SectorImprovementsComponent);
@@ -697,6 +717,7 @@ define([
 			if (vo.numDamaged >= vo.count) return null;
 			
 			vo.numDamaged++;
+			vo.damagedSource = source;
 
 			return selectedType;
 		},
