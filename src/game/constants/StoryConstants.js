@@ -17,7 +17,7 @@ define([
 
 		sectorExamineSpots: [
 			{
-				id: "story_apocalypse_cracks",
+				id: "story_apocalypse_cracks_01",
 				positionParams: {
 					campOrdinal: 2
 				}
@@ -84,7 +84,7 @@ define([
 				}
 			},
 			{
-				id: "story_apocalypse_cracks",
+				id: "story_apocalypse_cracks_02",
 				positionParams: {
 					campOrdinal: 9
 				}
