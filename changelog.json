@@ -84,6 +84,10 @@
 				},
 				{
 					"type": "GD",
+					"summary": "Make it possible for population to grow by more than 1 at once"
+				},
+				{
+					"type": "GD",
 					"summary": "Add rare prebuilt passages between levels"
 				},
 				{

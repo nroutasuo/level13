@@ -13,7 +13,8 @@ define([
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/common/PositionComponent',
 ], function (Ash, MathUtils, GameGlobals, GlobalSignals, GameConstants, LogConstants, CampConstants, CampNode, PlayerStatsNode, LevelComponent, DiseaseComponent, SectorImprovementsComponent, PositionComponent) {
-	var PopulationSystem = Ash.System.extend({
+	
+	let PopulationSystem = Ash.System.extend({
 	
 		campNodes: null,
 		playerNodes: null,
@@ -100,15 +101,31 @@ define([
 			}
 			
 			camp.populationChangePerSec = changePerSec;
+
+			let addedPendingPopulation = false;
 			
 			if (camp.pendingPopulation > 0) {
 				change += camp.pendingPopulation;
 				camp.pendingPopulation = 0;
+				addedPendingPopulation = true;
 			}
+
 			camp.addPopulation(change);
 
-			if (Math.floor(camp.population) !== Math.floor(oldPopulation)) {
-				this.handlePopulationChanged(node, camp.population > oldPopulation);
+			let isPopulationChange = Math.floor(camp.population) !== Math.floor(oldPopulation);
+			let isPopulationIncrease = Math.floor(camp.population) > Math.floor(oldPopulation);
+			
+			if (isPopulationIncrease && !addedPendingPopulation) {
+				// sometimes increase population by more than 1 at once to speed up camp growth and not have to assign new workers one by one
+				let bonusPopulationChance = this.getBonusPopulationChance(node);
+				let bonusPopulationAmount = this.getBonusPopulationAmount(node);
+				if (Math.random() < bonusPopulationChance) {
+					camp.addPopulation(bonusPopulationAmount);
+				}
+			}
+
+			if (isPopulationChange) {
+				this.handlePopulationChanged(node, oldPopulation);
 				if (camp.population >= CampConstants.POPULATION_FOR_UNLOCK_MILESTONES) {
 					GameGlobals.playerActionFunctions.unlockFeature("milestones");
 				}
@@ -165,8 +182,8 @@ define([
 					case CampConstants.DISEASE_UPDATE_TYPE_WANE:
 						let numCured = MathUtils.randomIntBetween(1, pop.num);
 						if (numCured > 0) {
-						pop.num -= numCured;
-						GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.getUniqueID(), numCured + " people recovered from the disease.", pos);
+							pop.num -= numCured;
+							GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.getUniqueID(), numCured + " people recovered from the disease.", pos);
 						}
 						break;
 
@@ -181,7 +198,7 @@ define([
 						let numLastCured = pop.num;
 						pop.num = 0;
 						if (numLastCured > 0) {
-						GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.getUniqueID(), numLastCured + " people recovered from the disease.", pos);
+							GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.getUniqueID(), numLastCured + " people recovered from the disease.", pos);
 						}
 						break;
 				}
@@ -313,8 +330,11 @@ define([
 			node.camp.populationByOrigin = populationByOrigin;
 		},
 		
-		handlePopulationChanged: function (node, isIncrease) {
+		handlePopulationChanged: function (node, oldPopulation) {
 			let campPosition = node.entity.get(PositionComponent);
+
+			let change = Math.floor(node.camp.population) - Math.floor(oldPopulation);
+			let isIncrease = change > 0;
 			
 			node.camp.populationDecreaseCooldown = null;
 			
@@ -327,7 +347,7 @@ define([
 			}
 			
 			GlobalSignals.populationChangedSignal.dispatch(node.entity);
-			this.logChangePopulation(campPosition, isIncrease, node.camp.population);
+			this.logChangePopulation(campPosition, change, node.camp.population);
 			
 			this.updateCampPopulationChange(node);
 			this.updateCampDemographics(node);
@@ -343,6 +363,7 @@ define([
 			reservedWorkers[CampConstants.workerTypes.scavenger.id] = 1;
 			reservedWorkers[CampConstants.workerTypes.trapper.id] = Math.ceil(foodConsumption / foodProduction);
 			reservedWorkers[CampConstants.workerTypes.water.id] = Math.ceil(waterConsumption / waterProduction);
+			
 			var prioritizedWorkers = [];
 			for (var key in node.camp.assignedWorkers) {
 				prioritizedWorkers.push({ name: key, min: reservedWorkers[key] || 0});
@@ -351,7 +372,9 @@ define([
 				prioritizedWorkers.push({ name: key, min: 0});
 			}
 
-			while (node.camp.getFreePopulation() < 0) {
+			let tries = 0;
+
+			while (node.camp.getFreePopulation() < 0 && node.camp.getAssignedPopulation() > 0 && tries < 100) {
 				for (let i = 0; i < prioritizedWorkers.length; i++) {
 					var workerCheck = prioritizedWorkers[i];
 					var count = node.camp.assignedWorkers[workerCheck.name];
@@ -361,7 +384,13 @@ define([
 						break;
 					}
 				}
+				tries++;
 			}
+
+			if (tries > 50) {
+				debugger
+			}
+
 			GlobalSignals.workersAssignedSignal.dispatch(node.entity);
 		},
 		
@@ -386,6 +415,46 @@ define([
 					GameGlobals.playerActionFunctions.assignWorkers(node.entity, newAssignment);
 				}
 			}
+		},
+		
+		getBonusPopulationChance: function (node) {
+			let camp = node.camp;
+
+			let currentPopulation = Math.floor(camp.population);
+			let maxPopulation = this.getMaxOrganicPopulation(node);
+			let populationDeficit = maxPopulation - currentPopulation;
+
+			if (populationDeficit <= 1) return 0;
+
+			let campOrdinal = GameGlobals.gameState.getCampOrdinal(node.position.level);
+			let habitability = GameGlobals.campBalancingHelper.getHabitability(campOrdinal);
+			
+			let probability = MathUtils.map(populationDeficit, 1, 10, 0.05, 0.5);
+			if (habitability < 1) probability /= 2;
+			if (habitability > 1) probability * 1.25;
+
+			return probability;
+		},
+
+		getBonusPopulationAmount: function (node) {
+			let currentPopulation = Math.floor(node.camp.population);
+			let maxPopulation = this.getMaxOrganicPopulation(node);
+			let populationDeficit = maxPopulation - currentPopulation;
+
+			if (populationDeficit <= 1) return 0;
+
+			let maxBonusPopulationAmount = Math.min(3, populationDeficit);
+			
+			return MathUtils.randomIntBetween(1, maxBonusPopulationAmount);
+		},
+
+		getMaxOrganicPopulation: function (node) {			
+			let reputation = node.reputation.value || 0;
+			let improvements = node.improvements;
+
+			let maxPopulationByReputation = CampConstants.getMaxPopulation(reputation);
+			let maxPopulationByHousing = CampConstants.getHousingCap(improvements);
+			return Math.min(maxPopulationByReputation, maxPopulationByHousing);
 		},
 
 		getNextDisaseUpdateType: function (updateIndex, maxUpdateIndex, numDiseased, numTotal) {
@@ -413,7 +482,7 @@ define([
 			return MathUtils.randomElement(possibleTypes);
 		},
 		
-		logChangePopulation: function (campPosition, isIncrease, population) {
+		logChangePopulation: function (campPosition, change, population) {
 			let pos = campPosition.getPosition();
 			pos.inCamp = true;
 			let level = pos.level;
@@ -421,9 +490,11 @@ define([
 
 			let levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
 			
-			if (isIncrease) {
+			if (change > 0) {
 				if (population == 1) {
-					message = "ui.camp.population_increase_first_message"
+					message = "ui.camp.population_increase_first_message";
+				} else if (change > 1) {
+					message = "ui.camp.population_increase_many_message";
 				} else if (levelComponent.habitability < 1) {
 					message = "ui.camp.population_increase_outpost_message";
 				} else if (level > 15) {
@@ -432,11 +503,12 @@ define([
 					message = "ui.camp.population_increase_default_message";
 				}
 			} else {
-				message = "An inhabitant packs their belongings and leaves.";
+				message = "ui.camp.population_decrease_default_message";
 			}
 
 			if (message) {
-				GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.MSG_ID_POPULATION_NATURAL, message, pos);
+				let textFragmentVO = { textKey: message, textParams: { num: change } };
+				GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.MSG_ID_POPULATION_NATURAL, textFragmentVO, pos);
 			}
 		},
 

@@ -1389,7 +1389,6 @@ define([
 					}
 
 					if (typeof requirements.level.nextPassageFound !== "undefined") {
-						debugger
 						let requiredValue = requirements.level.nextPassageFound;
 						let currentValue = GameGlobals.levelHelper.isNextPassageFound(level);
 						let result = this.checkRequirementsBoolean(requiredValue, currentValue, "An explorer wants to talk to you.", "Requires pending dialogue.");
