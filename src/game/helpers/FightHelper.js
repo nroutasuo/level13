@@ -99,7 +99,10 @@ define([
 			let result = chance;
 
 			if (GameGlobals.gameState.getStoryFlag(StoryConstants.flags.SPIRITS_MAGIC_PENDING)) {
-				result *= 3;
+				let magicEnemy = this.getValidEnemyWithTag("magic");
+				if (magicEnemy) {
+					result *= 3;
+				}
 			}
 
 			return result;
@@ -235,14 +238,17 @@ define([
 		},
 
 		getValidEnemyWithTag: function (tag) {
-			debugger
 			let position = this.playerLocationNodes.head.position;
 
 			let campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
 			let campStep = WorldConstants.CAMP_STEP_POI_2;
 			let environmentTags = null;
 			let enemyDifficulty = this.enemyCreator.getDifficulty(campOrdinal, campStep);
+
 			let possibleEnemies = this.enemyCreator.getEnemies(enemyDifficulty, environmentTags, 1);
+			possibleEnemies = possibleEnemies.concat(this.enemyCreator.getEnemies(enemyDifficulty - 1, environmentTags));
+			possibleEnemies = possibleEnemies.concat(this.enemyCreator.getEnemies(enemyDifficulty + 1, environmentTags));
+			possibleEnemies = possibleEnemies.concat(this.enemyCreator.getEnemies(enemyDifficulty + 2, environmentTags));
 
 			possibleEnemies = possibleEnemies.filter(e => e.tags.indexOf(tag) >= 0);
 
