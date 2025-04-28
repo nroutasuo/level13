@@ -12,6 +12,9 @@ define([
 
 		saveNodes:null,
 
+		isPendingAutosave: false,
+		isPendingManualSave: false,
+
 		lastSaveTimeStamp: 0,
 		saveFrequency: 1000 * 60 * 2,
 
@@ -23,7 +26,7 @@ define([
 			this.engine = engine;
 			this.saveNodes = engine.getNodeList(SaveNode);
 			this.lastSaveTimeStamp = new Date().getTime();
-			GlobalSignals.add(this, GlobalSignals.saveGameSignal, this.save);
+			GlobalSignals.add(this, GlobalSignals.saveGameSignal, this.onSaveGameSignal);
 			GlobalSignals.add(this, GlobalSignals.restartGameSignal, this.onRestart);
 		},
 
@@ -36,10 +39,22 @@ define([
 		update: function () {
 			if (this.paused) return;
 			if (GameGlobals.gameState.isLaunched) return;
+
+			if (this.isPendingManualSave) {
+				this.save(true);
+				return;
+			}
+
 			if (!GameConstants.isAutosaveEnabled) return;
-			var timeStamp = new Date().getTime();
+			if (this.isPendingAutosave) {
+				this.save();
+				return;
+			}
+			
+			let timeStamp = new Date().getTime();
 			if (timeStamp - this.lastSaveTimeStamp > this.saveFrequency) {
 				this.save();
+				return;
 			}
 		},
 
@@ -52,9 +67,14 @@ define([
 		},
 
 		save: function (isPlayerInitiated) {
+			// NOTE: only call this from update() so that save is never written while some other system is in the middle of updating and data might be wonky
+
 			if (this.paused) return;
 			if (!isPlayerInitiated && !GameConstants.isAutosaveEnabled) return;
 			if (GameGlobals.gameState.isLaunchStarted || GameGlobals.gameState.isLaunched || GameGlobals.gameState.isLaunchCompleted || GameGlobals.gameState.isFinished) return;
+			this.isPendingAutosave = false;
+			this.isPendingManualSave = false;
+
 			this.error = null;
 			if (typeof(Storage) !== "undefined") {
 				try {
@@ -140,6 +160,14 @@ define([
 			var compressed = LZString.compressToBase64(json);
 			log.i("compressed: " + compressed.length);
 			return compressed;
+		},
+
+		onSaveGameSignal: function (isPlayerInitiated) {
+			if (isPlayerInitiated) {
+				this.isPendingManualSave = true;
+			} else {
+				this.isPendingAutosave = true;
+			}
 		},
 
 		onRestart: function (resetSave) {

@@ -1,6 +1,19 @@
 {
 	"versions": [
 		{
+			"version": "0.5.3",
+			"requiredVersion": "0.5.1",
+			"released": "2025-04-29",
+			"phase": "alpha",
+			"final": true,
+			"changes": [
+				{
+					"type": "Dev",
+					"summary": "Fix a bug where camp resources sometimes got reset"
+				}
+			]
+		},
+		{
 			"version": "0.5.2",
 			"requiredVersion": "0.5.1",
 			"released": "2023-07-18",
