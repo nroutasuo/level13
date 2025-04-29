@@ -60,6 +60,7 @@ define([
             for (let i = 0; i < this.metaMessages.length; i++) {
                 let message = this.metaMessages[i];
                 let id = message.id;
+                if (!id) continue;
                 if (GameGlobals.gameState.seenMetaMessages.indexOf(id) >= 0) continue;
 
                 this.showMetaMessage(message);
