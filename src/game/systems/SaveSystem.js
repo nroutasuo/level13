@@ -12,6 +12,9 @@ define([
 
 		saveNodes: null,
 
+		isPendingAutosave: false,
+		isPendingManualSave: false,
+
 		lastDefaultSaveTimestamp: 0,
 		autoSaveFrequency: 1000 * 60 * 2,
 
@@ -23,7 +26,7 @@ define([
 			this.engine = engine;
 			this.saveNodes = engine.getNodeList(SaveNode);
 			this.lastDefaultSaveTimestamp = new Date().getTime();
-			GlobalSignals.add(this, GlobalSignals.saveGameSignal, this.save);
+			GlobalSignals.add(this, GlobalSignals.saveGameSignal, this.onSaveGameSignal);
 			GlobalSignals.add(this, GlobalSignals.restartGameSignal, this.onRestart);
 		},
 
@@ -36,11 +39,25 @@ define([
 		update: function () {
 			if (this.paused) return;
 			if (GameGlobals.gameState.isLaunched) return;
+
+			if (this.isPendingManualSave) {
+				this.save(GameConstants.SAVE_SLOT_DEFAULT, true);
+				return;
+			}
+
 			if (!GameConstants.isAutosaveEnabled) return;
+
+			if (this.isPendingAutosave) {
+				this.save(GameConstants.SAVE_SLOT_DEFAULT, false);
+				return;
+			}
+
 			var timeStamp = new Date().getTime();
 			if (timeStamp - this.lastDefaultSaveTimestamp > this.autoSaveFrequency) {
 				this.save(GameConstants.SAVE_SLOT_DEFAULT, false);
+				return;
 			}
+			
 		},
 
 		pause: function () {
@@ -52,6 +69,8 @@ define([
 		},
 
 		save: function (slotID, isPlayerInitiated) {
+			// NOTE: only call this from update() so that save is never written while some other system is in the middle of updating and data might be wonky
+
 			slotID = slotID || GameConstants.SAVE_SLOT_DEFAULT;
 			isPlayerInitiated = isPlayerInitiated || false;
 			let isDefaultSlot = slotID == GameConstants.SAVE_SLOT_DEFAULT;
@@ -61,6 +80,9 @@ define([
 				if (isDefaultSlot && !GameConstants.isAutosaveEnabled) return;
 				if (GameGlobals.gameState.isLaunchStarted || GameGlobals.gameState.isLaunched || GameGlobals.gameState.isLaunchCompleted || GameGlobals.gameState.isFinished) return;
 			}
+
+			this.isPendingAutosave = false;
+			this.isPendingManualSave = false;
 
 			let data = this.getCompressedSaveJSON();
 			let success = this.saveDataToSlot(slotID, data);
@@ -229,6 +251,14 @@ define([
 				result.push("save");
 			}
 			return result;
+		},
+
+		onSaveGameSignal: function (isPlayerInitiated) {
+			if (isPlayerInitiated) {
+				this.isPendingManualSave = true;
+			} else {
+				this.isPendingAutosave = true;
+			}
 		},
 
 		onRestart: function (resetSave) {
