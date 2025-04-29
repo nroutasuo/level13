@@ -1,21 +1,22 @@
 // Defines the resources stored by an entity (player / (sector(camp) / tribe)
 define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 	
-	var ResourcesComponent = Ash.Class.extend({
+	let ResourcesComponent = Ash.Class.extend({
 		
-		name: null,
 		resources: null,
 		storageCapacity: 0,
+		isOptionalForSave: false,
 		
-		constructor: function (name, capacity) {
-			this.name = name;
+		constructor: function (capacity, isOptionalForSave) {
 			this.resources = new ResourcesVO(storageTypes.STORAGE);
 			this.storageCapacity = capacity;
-			this.resetStorage("new");
+			this.isOptionalForSave = isOptionalForSave || false;
+
+			this.resetStorage();
 		},
 		
-		resetStorage: function (reason) {
-			this.resources.reset(reason);
+		resetStorage: function () {
+			this.resources.reset();
 		},
 		
 		limitToStorage: function (fixNegatives) {
@@ -95,17 +96,16 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		},
 		
 		getCustomSaveObject: function () {
-			// resources component needs to be saved only if there is storage (player/camp), otherwise the resources are defined by the WorldCreator
-			if (this.storageCapacity <= 0) return null;
+			// optimization to not save resources on sectors without camp or collectors
+			if (this.isOptionalForSave && this.storageCapacity <= 0) return null;
+
 			var copy = {};
-			copy.n = this.name;
 			copy.r = this.resources.getCustomSaveObject();
 			copy.c = this.storageCapacity;
 			return copy;
 		},
 
 		customLoadFromSave: function (componentValues) {
-			this.name = componentValues.n || "unknown";
 			this.resources.customLoadFromSave(componentValues.r);
 			this.storageCapacity = componentValues.c || 0;
 		}
