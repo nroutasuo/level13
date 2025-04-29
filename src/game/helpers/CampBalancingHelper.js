@@ -673,7 +673,7 @@ define([
 			// default worker assignment
 			let workersByCamp = {};
 			let totalWorkers = {};
-			let totalProduction = new ResourcesVO(storageTypes.RESULT);
+			let totalProduction = new ResourcesVO();
 			for (let campOrdinal = 1; campOrdinal <= maxCampOrdinal; campOrdinal++) {
 				let maxPopulation = this.getMaxPopulation(campOrdinal, maxCampOrdinal);
 				let storage = this.getMaxTotalStorage(maxCampOrdinal);
@@ -692,7 +692,7 @@ define([
 					if (!totalWorkers[workerID]) totalWorkers[workerID] = 0;
 					totalWorkers[workerID] += numWorkers;
 					
-					totalProduction.addResource(producedResource, production, "calculation");
+					totalProduction.addResource(producedResource, production);
 				}
 			}
 			
@@ -712,14 +712,14 @@ define([
 			// production per worker
 			// TODO take correct improvements (per camp) into account here too (affects only a few resources)
 			let emptyImprovements = new SectorImprovementsComponent();
-			let result = new ResourcesVO(storageTypes.RESULT);
+			let result = new ResourcesVO();
 			for (var workerID in totalWorkers) {
 				let workerDef = CampConstants.workerTypes[workerID];
 				let producedResource = workerDef.resourceProduced;
 				if (!producedResource) continue;
 				let numWorkers = totalWorkers[workerID];
 				let production = numWorkers * this.getProductionPerWorkerPerSec(workerID, emptyImprovements, upgrades);
-				result.addResource(producedResource, production, "calculation");
+				result.addResource(producedResource, production);
 			}
 			
 			// TODO add dark farm Production

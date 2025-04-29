@@ -95,7 +95,7 @@ define(['ash',
 			this.registerCheat(CheatConstants.CHEAT_NAME_RES, "Set a resource to a given value.", ["resource name", "amount"], function (params) {
 				var name = params[0];
 				var amount = parseInt(params[1]);
-				this.setResource(name, amount, "cheat");
+				this.setResource(name, amount);
 			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_SILVER, "Set currency to a given value", ["amount"], function (params) {
 				var amount = parseInt(params[0]);

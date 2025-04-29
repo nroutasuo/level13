@@ -967,7 +967,7 @@ define(['ash',
 					gameState.uiStatus.leaveCampItems = {};
 					gameState.uiStatus.leaveCampRes = {};
 
-					let selectedResVO = new ResourcesVO(storageTypes.RESULT);
+					let selectedResVO = new ResourcesVO();
 					let selectedCurrency = 0;
 					$.each($("#embark-resources tr"), function () {
 						let resourceName = $(this).attr("id").split("-")[2];
@@ -976,7 +976,7 @@ define(['ash',
 						if (isCurrency) {
 							selectedCurrency = selectedVal;
 						} else {
-							selectedResVO.setResource(resourceName, selectedVal, "leave_camp");
+							selectedResVO.setResource(resourceName, selectedVal);
 						}
 					});
 

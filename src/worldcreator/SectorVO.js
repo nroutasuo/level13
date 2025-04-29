@@ -16,7 +16,7 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			this.isPassageUp = false;
 			this.isPassageDown = false;
 			
-			this.requiredResources = new ResourcesVO(storageTypes.DEFINITION);
+			this.requiredResources = new ResourcesVO();
 			this.criticalPaths = [];
 			this.criticalPathTypes = [];
 			this.criticalPathIndices = [];
@@ -32,8 +32,8 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			this.hasTradeConnectorSpot = false;
 			this.isInvestigatable = false;
 			this.scavengeDifficulty = 5;
-			this.resourcesScavengable = new ResourcesVO(storageTypes.DEFINITION);
-			this.resourcesCollectable = new ResourcesVO(storageTypes.DEFINITION);
+			this.resourcesScavengable = new ResourcesVO();
+			this.resourcesCollectable = new ResourcesVO();
 			this.itemsScavengeable = [];
 			this.numLocaleEnemies = {};
 			this.possibleEnemies = [];

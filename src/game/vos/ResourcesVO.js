@@ -17,24 +17,15 @@ define(['ash'], function (Ash) {
 		concrete: "concrete",
 		robots: "robots",
 	};
-
-	storageTypes = {
-		STORAGE: "S",
-		ACCUMULATION: "A",
-		CAPACITY: "C",
-		DEFINITION: "D",
-		RESULT: "R",
-	};
 	
 	isResource = function (name) {
 		return typeof resourceNames[name] != "undefined";
 	};
 	
-	var ResourcesVO = Ash.Class.extend({
+	let ResourcesVO = Ash.Class.extend({
 
 		// For debug
 		context: "ResourcesVO",
-		type: "",
 	
 		// Basic
 		water: 0,
@@ -52,16 +43,11 @@ define(['ash'], function (Ash) {
 		medicine: 0,
 		concrete: 0,
 	
-		constructor: function (type) {
-			this.type = type;
-			this.reset("new");
+		constructor: function () {
+			this.reset();
 		},
 			
-		reset: function (reason) {
-			if (reason !== "new" && this.type != storageTypes.ACCUMULATION) {
-				log.i("reset [" + this.type + "] [" + reason + "]", this);
-			}
-
+		reset: function () {
 			// Basic
 			this.water = 0;
 			this.food = 0;
@@ -80,17 +66,9 @@ define(['ash'], function (Ash) {
 			this.robots = 0;
 		},
 		
-		addResource: function (res, amount, reason) {
+		addResource: function (res, amount) {
 			if (isNaN(amount)) return;
 			if (amount == 0) return;
-
-			let currentValue = this.getResource(res);
-
-			if (amount < 0 && currentValue >= 0 && currentValue + amount < 0) {
-				if (this.type != storageTypes.ACCUMULATION && reason != "update-worker-production" && res != "food" && res != "water") {
-					log.w("addResource [" + res + "] [" + amount + "] taking total to negative [" + reason + "]", this);
-				}
-			}
 
 			this.cleanUp(res);
 
@@ -111,13 +89,8 @@ define(['ash'], function (Ash) {
 			}
 		},
 		
-		setResource: function(res, amount, reason) {
+		setResource: function(res, amount) {
 			if (isNaN(amount)) return;
-
-			let currentValue = this.getResource(res);
-			if (currentValue > 0 && amount <= 0) {
-				log.w("setResource [" + res + "] [" + amount + "] setting previously positive to <= 0 [" + reason + "]", this);
-			}
 
 			this.cleanUp(res);
 
@@ -182,21 +155,21 @@ define(['ash'], function (Ash) {
 			return result;
 		},
 		
-		addAll: function (resourceVO, reason) {
+		addAll: function (resourceVO) {
 			for (let key in resourceNames) {
 				var name = resourceNames[key];
-				this.addResource(name, resourceVO.getResource(name), "add-all-" + reason);
+				this.addResource(name, resourceVO.getResource(name));
 			}
 		},
 		
-		limitAll: function (min, max, reason) {
+		limitAll: function (min, max) {
 			for (let key in resourceNames) {
 				let name = resourceNames[key];
-				this.limit(name, min, max, false, reason);
+				this.limit(name, min, max, false);
 			}
 		},
 		
-		limit: function (name, min, max, allowDecimalOverflow, reason) {
+		limit: function (name, min, max, allowDecimalOverflow) {
 			if (allowDecimalOverflow) {
 				max = Math.floor(max) + 0.9999;
 			}
@@ -206,9 +179,9 @@ define(['ash'], function (Ash) {
 			let amount = this.getResource(name);
 			if (amount == 0) return;
 			if (amount < min)
-				this.setResource(name, min, "limit-" + reason);
+				this.setResource(name, min);
 			if (amount > max)
-				this.setResource(name, max, "limit-" + reason);
+				this.setResource(name, max);
 		},
 	
 		cleanUpAll: function () {
@@ -222,7 +195,7 @@ define(['ash'], function (Ash) {
 			let amount = this.getResource(res);
 			if (isNaN(amount)) {
 				log.e("resource value was NaN, setting to 0 (" + res + ")", this);
-				this.setResource(res, 0, "cleanup");
+				this.setResource(res, 0);
 			}
 		},
 		
@@ -257,7 +230,6 @@ define(['ash'], function (Ash) {
 		
 		getCustomSaveObject: function () {
 			let copy = {};
-			copy.tt = this.type;
 			if (this.water !== 0) copy.w = this.water;
 			if (this.food !== 0) copy.f = this.food;
 			if (this.metal !== 0) copy.m = this.metal;
@@ -274,8 +246,6 @@ define(['ash'], function (Ash) {
 
 		customLoadFromSave: function (componentValues) {
 			if (!componentValues) return;
-			
-			if (componentValues.tt) this.type = componentValues.tt;
 			
 			if (componentValues.water) this.water = componentValues.water;
 			if (componentValues.food) this.food = componentValues.food;
@@ -303,10 +273,10 @@ define(['ash'], function (Ash) {
 		},
 		
 		clone: function() {
-			var c = new ResourcesVO(this.type);
+			var c = new ResourcesVO();
 			for (let key in resourceNames) {
 				var name = resourceNames[key];
-				c.setResource(name, this.getResource(name), "clone");
+				c.setResource(name, this.getResource(name));
 			}
 			return c;
 		}

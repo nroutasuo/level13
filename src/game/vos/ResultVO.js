@@ -53,7 +53,7 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 		constructor: function (action) {
 			this.action = action;
 			
-			this.gainedResources = new ResourcesVO(storageTypes.RESULT);
+			this.gainedResources = new ResourcesVO();
 			this.gainedCurrency = 0;
 			this.gainedItems = [];
 			this.gainedExplorers = [];
@@ -66,7 +66,7 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 			this.gainedPopulation = 0;
 			this.gainedItemUpgrades = [];
 			
-			this.lostResources = new ResourcesVO(storageTypes.RESULT);
+			this.lostResources = new ResourcesVO();
 			this.lostCurrency = 0;
 			this.lostItems = [];
 			this.brokenItems = [];
@@ -81,11 +81,11 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 			this.endQuest = null;
 			
 			this.selectedItems = [];
-			this.selectedResources = new ResourcesVO(storageTypes.RESULT);
+			this.selectedResources = new ResourcesVO();
 			this.discardedItems = [];
-			this.discardedResources = new ResourcesVO(storageTypes.RESULT);
+			this.discardedResources = new ResourcesVO();
 			
-			this.gainedResourcesFromExplorers = new ResourcesVO(storageTypes.RESULT);
+			this.gainedResourcesFromExplorers = new ResourcesVO();
 			this.gainedItemsFromExplorers = [];
 		},
 		

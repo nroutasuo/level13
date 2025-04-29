@@ -28,7 +28,7 @@ define(['ash', 'game/vos/ResourcesVO', 'game/constants/ItemConstants'], function
 		constructor: function (name, sellItems, sellResources, buyItemTypes, buyResources, usesCurrency, currency) {
 			this.name = name;
 			this.sellItems = sellItems ? sellItems : [];
-			this.sellResources = sellResources ? sellResources : new ResourcesVO(storageTypes.DEFINITION);
+			this.sellResources = sellResources ? sellResources : new ResourcesVO();
 			this.buyItemTypes = buyItemTypes ? buyItemTypes : [];
 			this.buyResources = buyResources ? buyResources : [];
 			this.usesCurrency = usesCurrency ? usesCurrency : false;
@@ -41,10 +41,10 @@ define(['ash', 'game/vos/ResourcesVO', 'game/constants/ItemConstants'], function
 
 		clearSelection: function () {
 			this.traderSelectedItems = [];
-			this.traderSelectedResources = new ResourcesVO(storageTypes.RESULT);
+			this.traderSelectedResources = new ResourcesVO();
 			this.traderSelectedCurrency = 0;
 			this.campSelectedItems = [];
-			this.campSelectedResources = new ResourcesVO(storageTypes.RESULT);
+			this.campSelectedResources = new ResourcesVO();
 			this.campSelectedCurrency = 0;
 		},
 		
@@ -76,7 +76,7 @@ define(['ash', 'game/vos/ResourcesVO', 'game/constants/ItemConstants'], function
 				let item = definition.clone(savedItem);
 				this.sellItems.push(item);
 			}
-			this.sellResources = new ResourcesVO(storageTypes.DEFINITION);
+			this.sellResources = new ResourcesVO();
 			this.sellResources.customLoadFromSave(componentValues.sellResources);
 			this.buyItemTypes = componentValues.buyItemTypes ? componentValues.buyItemTypes : [];
 			this.buyResources = componentValues.buyResources ? componentValues.buyResources : [];

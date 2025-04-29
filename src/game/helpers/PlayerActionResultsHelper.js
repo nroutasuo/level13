@@ -259,7 +259,7 @@ define([
 
 			if (!heapResource) return rewards;
 
-			let heapResources = new ResourcesVO(storageTypes.DEFINITION);
+			let heapResources = new ResourcesVO();
 			heapResources.addResource(heapResource, WorldConstants.resourcePrevalence.HEAP);
 
 			rewards.gainedResources = this.getRewardResources(1, 1, efficiency, heapResources);
@@ -339,8 +339,8 @@ define([
 			let sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 
 			let availableResources = sectorFeatures.resourcesScavengable.clone();
-			availableResources.addAll(localeVO.getResourceBonus(GameGlobals.gameState.getUnlockedResources(), campOrdinal), "scout-rewards");
-			availableResources.limitAll(WorldConstants.resourcePrevalence.RARE, WorldConstants.resourcePrevalence.ABUNDANT, "scout-rewards");
+			availableResources.addAll(localeVO.getResourceBonus(GameGlobals.gameState.getUnlockedResources(), campOrdinal));
+			availableResources.limitAll(WorldConstants.resourcePrevalence.RARE, WorldConstants.resourcePrevalence.ABUNDANT);
 			let efficiency = this.getCurrentScavengeEfficiency();
 			let localeDifficulty = (localeVO.requirements.vision[0] + localeVO.costs.stamina / 10) / 100;
 			let itemTags = this.getSectorItemTags().concat(localeVO.getItemTags());
@@ -437,7 +437,7 @@ define([
 			var rewards = new ResultVO("use_spring");
 			var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
 			var water = Math.floor(Math.min(bagComponent.totalCapacity - bagComponent.usedCapacity, 30));
-			rewards.gainedResources = new ResourcesVO(storageTypes.RESULT);
+			rewards.gainedResources = new ResourcesVO();
 			rewards.gainedResources.water = water;
 			return rewards;
 		},
@@ -751,7 +751,7 @@ define([
 				rewards.selectedItems = rewards.gainedItems;
 				rewards.selectedResources = rewards.gainedResources;
 				rewards.discardedItems = [];
-				rewards.discardedResources = new ResourcesVO(storageTypes.RESULT);
+				rewards.discardedResources = new ResourcesVO();
 			}
 
 			let gainedRobots = rewards.selectedResources.getResource(resourceNames.robots);
@@ -1368,7 +1368,7 @@ define([
 			amountFactor = amountFactor || 1;
 			efficiency = efficiency || this.getCurrentScavengeEfficiency();
 			
-			var results = new ResourcesVO(storageTypes.RESULT);
+			var results = new ResourcesVO();
 			
 			if (probabilityFactor == 0) return results;
 			if (Math.random() > probabilityFactor) return results;
@@ -1387,7 +1387,7 @@ define([
 				let baseAmount = this.getBaseResourceFindAmount(name, availableAmount);
 				let resultAmount = this.getFinalResourceFindAmount(name, baseAmount, efficiency, Math.random());
 				
-				results.setResource(name, resultAmount, "reward");
+				results.setResource(name, resultAmount);
 			}
 			
 			// consolation prize: if found nothing (useful) at this point, add 1 resource every few tries
@@ -1399,7 +1399,7 @@ define([
 						let resourceName = highestResources[Math.floor(Math.random() * highestResources.length)];
 						let resourceAmount = availableResources.getResource(resourceName);
 						if (resourceAmount > WorldConstants.resourcePrevalence.RARE) {
-							results.setResource(resourceName, 1, "reward-consolation");
+							results.setResource(resourceName, 1);
 						}
 					}
 				}
@@ -1866,7 +1866,7 @@ define([
 		},
 		
 		addFixedRewardsResources: function (rewardsVO, fixedRewards, efficiency, availableResources) {
-			let results = new ResourcesVO(storageTypes.RESULT);
+			let results = new ResourcesVO();
 			for (let key in fixedRewards.resources) {
 				let name = resourceNames[key];
 				let availableAmount = availableResources.getResource(name);
@@ -1876,7 +1876,7 @@ define([
 				let baseAmount = this.getBaseResourceFindAmount(name, availableAmount);
 				let resultAmount = this.getFinalResourceFindAmount(name, baseAmount, efficiency, randomVal);
 				
-				results.setResource(name, resultAmount, "reward-fixed");
+				results.setResource(name, resultAmount);
 			}
 			
 			rewardsVO.gainedResources = results;
@@ -1954,7 +1954,7 @@ define([
 				let bonusResourceProb = generalBonus - 1;
 				let bonusResources = this.getRewardResources(bonusResourceProb, 1, efficiency, sectorResources);
 				rewards.gainedResourcesFromExplorers = bonusResources;
-				rewards.gainedResources.addAll(bonusResources, "reward-explorer-bonus");
+				rewards.gainedResources.addAll(bonusResources);
 
 				let bonusItemProb = bonusResources.getTotal() > 0 ? 0 : generalBonus - 1;
 				let bonusIngredientProb = bonusResources.getTotal() > 0 ? 0 : generalBonus - 1;
@@ -1968,12 +1968,12 @@ define([
 			// supplies
 			if (suppliesBonus > 1) {
 				let bonusSuppliesProb = suppliesBonus - 1;
-				let sectorSupplies = new ResourcesVO(storageTypes.RESULT);
-				sectorSupplies.setResource(resourceNames.food, sectorResources.getResource(resourceNames.food), "reward-explorer-bonus");
-				sectorSupplies.setResource(resourceNames.water, sectorResources.getResource(resourceNames.water), "reward-explorer-bonus");
+				let sectorSupplies = new ResourcesVO();
+				sectorSupplies.setResource(resourceNames.food, sectorResources.getResource(resourceNames.food));
+				sectorSupplies.setResource(resourceNames.water, sectorResources.getResource(resourceNames.water));
 				let bonusSupplies = this.getRewardResources(bonusSuppliesProb, 1, efficiency, sectorSupplies);
-				rewards.gainedResourcesFromExplorers.addAll(bonusSupplies, "reward-explorer-bonus");
-				rewards.gainedResources.addAll(bonusSupplies, "reward-explorer-bonus");
+				rewards.gainedResourcesFromExplorers.addAll(bonusSupplies);
+				rewards.gainedResources.addAll(bonusSupplies);
 			}
 			
 			// ingredients
@@ -2586,11 +2586,11 @@ define([
 		},
 
 		getAvailableResourcesForEnemy: function (enemyVO) {
-			let result = new ResourcesVO(storageTypes.DEFINITION);
+			let result = new ResourcesVO();
 			for (let i = 0; i < enemyVO.droppedResources.length; i++) {
 				let name = enemyVO.droppedResources[i];
 				if (!GameGlobals.gameState.isFeatureUnlocked("resource_" + name)) continue;
-				result.setResource(name, WorldConstants.resourcePrevalence.COMMON, "definition");
+				result.setResource(name, WorldConstants.resourcePrevalence.COMMON);
 			}
 			return result;
 		},

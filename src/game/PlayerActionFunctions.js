@@ -1624,14 +1624,14 @@ define(['ash',
 				var name = resourceNames[key];
 				var traderSelectedAmount = caravan.traderSelectedResources.getResource(name);
 				if (traderSelectedAmount > 0) {
-					caravan.sellResources.addResource(name, -traderSelectedAmount, "trade");
-					campStorage.resources.addResource(name, traderSelectedAmount, "trade");
+					caravan.sellResources.addResource(name, -traderSelectedAmount);
+					campStorage.resources.addResource(name, traderSelectedAmount);
 					GameGlobals.gameState.increaseGameStatKeyed("amountResourcesSoldPerName", name, traderSelectedAmount);
 				}
 				var campSelectedAmount = caravan.campSelectedResources.getResource(name);
 				if (campSelectedAmount > 0) {
-					caravan.sellResources.addResource(name, campSelectedAmount, "trade");
-					campStorage.resources.addResource(name, -campSelectedAmount, "trade");
+					caravan.sellResources.addResource(name, campSelectedAmount);
+					campStorage.resources.addResource(name, -campSelectedAmount);
 					GameGlobals.gameState.increaseGameStatKeyed("amountResourcesBoughtPerName", name, campSelectedAmount);
 				}
 			}
@@ -2314,7 +2314,7 @@ define(['ash',
 					let valueLast = Math.max(buildingCostsLast[key], 0);
 					let value = Math.round((valueFirst + valueLast) / 2 / 2);
 					if (value > 0) {
-						campStorage.resources.addResource(resource, value, "dismantle");
+						campStorage.resources.addResource(resource, value);
 					}
 				}
 				
@@ -2616,7 +2616,7 @@ define(['ash',
 					let baseValue = itemConfig.configData.metalValue || 10;
 					let value = baseValue + Math.round(Math.random() * 10);
 					let logMsg = { textKey: "ui.actions.use_cache_metal_message", textParams: { name: Text.addArticle(itemShortName), value: value } };
-					currentStorage.resources.addResource(resourceNames.metal, value, "cache_metal");
+					currentStorage.resources.addResource(resourceNames.metal, value);
 					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, logMsg);
 					break;
 					
@@ -2926,8 +2926,8 @@ define(['ash',
 				var improvementAmount = Math.floor(resourcesVO.getResource(name))
 				if (improvementAmount >= 1) {
 					var toCollect = Math.min(improvementAmount, maxToCollect - totalCollected);
-					currentStorage.resources.addResource(name, toCollect, "collect");
-					resourcesVO.addResource(name, -toCollect, "collect");
+					currentStorage.resources.addResource(name, toCollect);
+					resourcesVO.addResource(name, -toCollect);
 					totalCollected += toCollect;
 					GameGlobals.gameState.increaseGameStatKeyed("amountResourcesCollectedFromCollectorsPerName", name, toCollect);
 				}

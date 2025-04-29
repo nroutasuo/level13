@@ -8,7 +8,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		isOptionalForSave: false,
 		
 		constructor: function (capacity, isOptionalForSave) {
-			this.resources = new ResourcesVO(storageTypes.STORAGE);
+			this.resources = new ResourcesVO();
 			this.storageCapacity = capacity;
 			this.isOptionalForSave = isOptionalForSave || false;
 
@@ -20,25 +20,25 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		},
 		
 		limitToStorage: function (fixNegatives) {
-			var spilledResources = new ResourcesVO(storageTypes.RESULT);
+			var spilledResources = new ResourcesVO();
 			if (this.storageCapacity >= 0) {
 				for (var key in resourceNames) {
 					var name = resourceNames[key];
 					if (this.resources.getResource(name) > this.storageCapacity) {
-						spilledResources.addResource(name, this.resources.getResource(name) - this.storageCapacity, "limit");
-						this.resources.setResource(name, this.storageCapacity, "limit");
+						spilledResources.addResource(name, this.resources.getResource(name) - this.storageCapacity);
+						this.resources.setResource(name, this.storageCapacity);
 					}
 					if (fixNegatives && this.resources.getResource(name) < 0) {
-						spilledResources.addResource(name, -this.resources.getResource(name), "fix negatives");
-						this.resources.setResource(name, 0, "limit");
+						spilledResources.addResource(name, -this.resources.getResource(name));
+						this.resources.setResource(name, 0);
 					}
 				}
 			}
 			return spilledResources;
 		},
 		
-		addResource: function (resourceName, amount, reason) {
-			return this.resources.addResource(resourceName, amount, reason);
+		addResource: function (resourceName, amount) {
+			return this.resources.addResource(resourceName, amount);
 		},
 		
 		getResource: function (resourceName) {

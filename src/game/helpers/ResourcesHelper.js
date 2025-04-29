@@ -225,8 +225,8 @@ define([
 				var name = resourceNames[key];
 				var amount = Math.min(amountsVO.getResource(name), fromResVO.getResource(name));
 				if (amount > 0) {
-					toResVO.addResource(name, amount, "move-res");
-					fromResVO.addResource(name, -amount, "move-res");
+					toResVO.addResource(name, amount);
+					fromResVO.addResource(name, -amount);
 				}
 			}
 		},

@@ -1868,7 +1868,7 @@ define([
 		
 		getCostResourcesVO: function (action) {
 			var costs = this.getCosts(action);
-			var resourcesVO = new ResourcesVO(storageTypes.DEFINITION);
+			var resourcesVO = new ResourcesVO();
 			if (costs) {
 				for (var key in costs) {
 					var costNameParts = key.split("_");

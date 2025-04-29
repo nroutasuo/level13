@@ -53,10 +53,10 @@ define([
 			
 			if (oldValue == totalStorage) return;
 			
-			collector.storedResources.addResource(resource, time * 0.05 * GameConstants.gameSpeedExploration, "update-collector");
+			collector.storedResources.addResource(resource, time * 0.05 * GameConstants.gameSpeedExploration);
 			
 			if (collector.storedResources.getResource(resource) > totalStorage) {
-				collector.storedResources.setResource(resource, totalStorage, "limit-collector");
+				collector.storedResources.setResource(resource, totalStorage);
 			}
 			
 			var newValue = collector.storedResources.getResource(resource);

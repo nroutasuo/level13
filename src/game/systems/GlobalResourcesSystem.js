@@ -73,8 +73,8 @@ define([
 			
 			var updateSectorResource = function (node, name) {
 				var amount = node.resources.resources.getResource(name);
-				globalResources.addResource(name, amount, "update-sector-to-tribe");
-				node.resources.resources.addResource(name, -amount, "update-sector-to-tribe");
+				globalResources.addResource(name, amount);
+				node.resources.resources.addResource(name, -amount);
 			};
 			
 			var updateSectorResAcc = function (node, name) {
@@ -168,7 +168,7 @@ define([
 		
 		updateCampSpecialStorage: function (node) {
 			let maxRobots = GameGlobals.campHelper.getRobotStorageCapacity(node.entity);
-			node.resources.resources.limit(resourceNames.robots, 0, maxRobots, true, "max-robots");
+			node.resources.resources.limit(resourceNames.robots, 0, maxRobots, true);
 		},
 
 		updateSpilledResources: function (spilledResources) {
