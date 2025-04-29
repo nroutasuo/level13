@@ -1902,7 +1902,7 @@ define([
 		addStashes: function (rewardsVO, stashes, stashesFound, localeType) {
 			if (!stashes || stashes.length <= 0) return;
 
-			// fix for old saves before 0.5.3
+			// fix for old saves before 0.6.1
 			if (typeof stashesFound === "number") stashesFound = [];
 
 			let stashVO = null;
