@@ -1629,6 +1629,13 @@
 			]
 		},
 		"character_surfaceRefugee_default_interact_03": {
+			"conditions": {
+				"camp": {
+					"availableLuxuryResources": {
+						"CHOCOLATE": false
+					}
+				}
+			},
 			"pages": [
 				"character_surfaceRefugee_default_interact_03_p1"
 			]
@@ -1781,6 +1788,7 @@
 		"character_workerGeneric_default_interact_02": {
 			"conditions": {
 				"numCamps": 5,
+				"maxNumCamps": 14,
 				"storyFlags": {
 					"ESCAPE_SEARCHING_FOR_EXIT": false
 				}
