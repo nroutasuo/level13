@@ -1422,10 +1422,10 @@ define([
 							let result = this.checkRequirementsRange(
 								range,
 								amount,
-								"{min}x " + displayName + " required",
-								"max " + displayName + " built",
-								displayName + " required",
-								displayName + " already built",
+								"{min}x " + requiredImprovementDisplayName + " required",
+								"max " + requiredImprovementDisplayName + " built",
+								requiredImprovementDisplayName + " required",
+								requiredImprovementDisplayName + " already built",
 								PlayerActionConstants.DISABLED_REASON_MIN_IMPROVEMENTS,
 								PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENTS
 							);
