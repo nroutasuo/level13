@@ -313,7 +313,7 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 
 			if (!key) return null;
 
-			let result = "ui.map.direction_" + key + "_name_short";
+			let result = "ui.map.direction_" + key + "_name";
 			if (short) result += "_short";
 			return result;
 		},
