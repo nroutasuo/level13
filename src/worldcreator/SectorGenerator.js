@@ -348,11 +348,7 @@ define([
 							value = maxHazardCold;
 						if (!isFullLevel && coldEdgeDist == 1)
 							value = value / 2;
-						if (value > 10) {
-							value = Math.floor(value / 5) * 5;
-						} else {
-							value = Math.floor(value);
-						}
+						value = this.getHazardValue(value, maxHazardCold);
 						sectorVO.hazards.cold = value;
 					}
 				}
@@ -420,7 +416,8 @@ define([
 					var minHazardValue = Math.floor(maxHazardValue / 2);
 					if (levelVO.isHard) minHazardValue = maxHazardValue;
 					var hazardValueRand = WorldCreatorRandom.random(levelOrdinal * (i + 11) / seed * 55 + seed / (i + 99) - i * i);
-					var hazardValue = Math.ceil((minHazardValue + hazardValueRand * (maxHazardValue - minHazardValue)) / 5) * 5;
+					var hazardValue = minHazardValue + hazardValueRand * (maxHazardValue - minHazardValue);
+					hazardValue = this.getHazardValue(hazardValue, maxHazardValue);
 					if (hazardValue > maxHazardValue) hazardValue = maxHazardValue;
 					if (isPollutedLevel) {
 						sectorVO.hazards.poison = hazardValue;
@@ -1719,6 +1716,7 @@ define([
 			}
 			
 			// TODO define hard coded locales in story constants or as input rather than hard-coding here
+			// NOTE: keep texts referring to fall story facilities up to date if changing levels here
 			// 2) spawn story and hard-coded locales
 			let storyLocales = [
 				{ type: localeTypes.grove, level: worldVO.bottomLevel, isEasy: true },
@@ -2117,8 +2115,7 @@ define([
 			if (isClusterEdge) {
 				hazardValue = hazardValue / 2;
 			}
-			hazardValue = Math.ceil(hazardValue / 5) * 5;
-			if (hazardValue > maxHazardValue) hazardValue = maxHazardValue;
+			hazardValue = this.getHazardValue(hazardValue, maxHazardValue);
 			
 			sectorVO.hazards[hazardType] = hazardValue;
 
@@ -2144,6 +2141,20 @@ define([
 					}
 				}
 			}
+		},
+
+		getHazardValue: function (value, maxValue) {
+			let result = value;
+
+			if (result < 10) {
+				result = Math.floor(result);
+			} else {
+				result = Math.ceil(result / 5) * 5;
+			}
+
+			if (result > maxValue) result = maxValue;
+
+			return result;
 		},
 		
 		getSectorType: function (seed, worldVO, levelVO, sectorVO) {
