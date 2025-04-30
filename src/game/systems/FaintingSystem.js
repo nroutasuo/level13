@@ -212,7 +212,6 @@ define([
 			var sys = this;
 			
 			var finalStep = function () {
-				log.i("hide game", this)
 				GameGlobals.uiFunctions.hideGame(false, false);
 				setTimeout(function () {
 					setTimeout(function () {

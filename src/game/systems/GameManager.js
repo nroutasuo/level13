@@ -515,14 +515,18 @@ define([
 				"Restart",
 				"Continue",
 				function () {
+					GameGlobals.uiFunctions.showGame();
 					GameGlobals.uiFunctions.restart();
 				},
-				function () {},
+				function () {
+					GameGlobals.uiFunctions.showGame();
+				},
 				true
 			);
 		},
 		
 		showVersionWarning: function (saveVersion, continueCallback) {
+			GameGlobals.uiFunctions.hideGame();
 			var currentVersion = GameGlobals.changeLogHelper.getCurrentVersionNumber();
 			var changelogLink = "<a href='changelog.html' target='changelog'>changelog</a>";
 			var message = "";
@@ -537,9 +541,11 @@ define([
 				"Restart",
 				"Continue",
 				function () {
+					GameGlobals.uiFunctions.showGame();
 					GameGlobals.uiFunctions.restart();
 				},
 				function () {
+					GameGlobals.uiFunctions.showGame();
 					continueCallback();
 				},
 				true
