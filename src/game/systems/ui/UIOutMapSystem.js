@@ -535,6 +535,7 @@ define([
 			var localesComponent = sector.get(SectorLocalesComponent);
 			var improvements = sector.get(SectorImprovementsComponent);
 			var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
+			let numUnexaminedSpots = GameGlobals.sectorHelper.getNumUnexaminedSpots(sector);
 			
 			let result = [];
 			if (sector.has(CampComponent)) result.push("camp");
@@ -565,6 +566,7 @@ define([
 				result.push(TextConstants.getPassageDescription(sectorPassages.passageDown, PositionConstants.DIRECTION_DOWN, passageDownBuilt, true));
 			}
 			if (unScoutedLocales > 0) result.push("unscouted locales");
+			if (numUnexaminedSpots > 0) result.push("unexamined features");
 			if (sectorFeatures.hasSpring) result.push(TextConstants.getSpringName(sectorFeatures));
 			
 			for (let i = 0; i < localesComponent.locales.length; i++) {
