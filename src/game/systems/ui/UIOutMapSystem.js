@@ -203,7 +203,9 @@ define([
 			
 			let mapPosition = this.getCurrentMapPosition();
 			
-			var levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(mapPosition.level);
+			let levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(mapPosition.level);
+			if (!levelEntity) return;
+
 			var hasCampOnLevel = levelEntity.get(CampComponent) !== null;
 			GameGlobals.uiFunctions.toggle($("#btn-mainmap-sector-details-camp"), hasCampOnLevel);
 			
@@ -401,9 +403,12 @@ define([
 		getCurrentMapPosition: function () {
 			let mapPosition = this.playerPositionNodes.head.position.getPosition();
 			if (this.selectedLevel || this.selectedLevel == 0) {
-				mapPosition.level = this.selectedLevel;
-				mapPosition.sectorX = 0;
-				mapPosition.sectorY = 0;
+				let levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(this.selectedLevel);
+				if (levelEntity) {
+					mapPosition.level = this.selectedLevel;
+					mapPosition.sectorX = 0;
+					mapPosition.sectorY = 0;
+				}
 			}
 			return mapPosition;
 		},
