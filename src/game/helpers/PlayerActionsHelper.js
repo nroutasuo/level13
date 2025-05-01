@@ -1898,7 +1898,7 @@ define([
 			if (action.indexOf("build_in") >= 0) {
 				var improvementName = this.getImprovementNameForAction(action);
 				var improvementsComponent = sector.get(SectorImprovementsComponent);
-				let result = improvementsComponent.getCount(improvementName) + 1 + modifier;
+				let result = improvementsComponent.getCount(improvementName) + 1;
 				if (action === "build_in_house" && result === 1) result = isOutpost ? 0.85 : 0.5;
 				return result + modifier;
 			}
@@ -2239,6 +2239,7 @@ define([
 		},
 		
 		getCost: function (constantCost, linearCost, expCost, expBase, ordinal, statusFactor) {
+			if (ordinal <= 0) ordinal = 1;
 			var constantPart = constantCost;
 			var linearPart = linearCost * ordinal;
 			var expPart = expCost * Math.pow(expBase, ordinal-1);
