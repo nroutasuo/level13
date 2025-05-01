@@ -1633,10 +1633,12 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("sector-vision", { sectorType: t_I, buildingDensity: b23 }, "[a] [n-street] between two blocks of what looks like [a-building] control rooms and offices");
 		DescriptionMapper.add("sector-vision", { sectorType: t_M }, "[a] [a-street] [n-street] behind [a] [n-building], the low ceiling criss-crossed by old wires and ducts");
 		DescriptionMapper.add("sector-vision", { sectorType: t_M, buildingDensity: b22 }, "A dusty, anonymous corridor between the some places in the City");
+		DescriptionMapper.add("sector-vision", { sectorType: t_M, buildingDensity: b22, damage:b22 }, "A damaged maintenance corridor flanked by broken cables like metal viscera");
 		DescriptionMapper.add("sector-vision", { sectorType: t_M }, "A desolate [n-street] criss-crossed with the remains of broken cable systems and maintenance ducts");
 		DescriptionMapper.add("sector-vision", { sectorType: t_M, isSurfaceLevel: false }, "A flooded passage underneath a massive bridge with [a-building] buildings looming in the distance");
 		DescriptionMapper.add("sector-vision", { sectorType: t_M }, "A forgotten space among machine-run City facilities, smooth surfaces broken only by ducts and pipes");
 		DescriptionMapper.add("sector-vision", { sectorType: t_M, level: lold, buildingDensity: b13 }, "A spacious square with a control room in the middle and old cable system lines disappearing in every direction");
+		DescriptionMapper.add("sector-vision", { sectorType: t_M, buildingDensity: b33 }, "An infestation of pipes and conduits hidden between the spaces meant for humans.");
 		DescriptionMapper.add("sector-vision", { sectorType: t_C }, "[a] [a-street] shopping street with the remains of various shops and cafés");
 		DescriptionMapper.add("sector-vision", { sectorType: t_C }, "A [n-street] between some commercial buildings, their [a-building] walls covered in a patchwork of dead screens");
 		DescriptionMapper.add("sector-vision", { sectorType: t_C }, "a commercial street with many small shops which seem to have been recently plundered");
@@ -1889,7 +1891,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("book-description", { bookType: t_F, bookLevel: l_2 }, "It is a [a-style] novel about [c-theme].");
 		DescriptionMapper.add("book-description", { bookType: t_F, bookLevel: l_2 }, "It is a [a-style] story set in the time of the great Rebellion.");
 		DescriptionMapper.add("book-description", { bookType: t_F, bookLevel: l_3 }, "It is quite a heavy book on [n-topic].");
-		DescriptionMapper.add("book-description", { bookType: t_F, bookLevel: l_3 }, "It is a [a-good] story about [n-theme].");
+		DescriptionMapper.add("book-description", { bookType: t_F, bookLevel: l_3 }, "It is a [a-good] story about [c-theme].");
 	}
 	
 	function initNewspaperTexts() {
