@@ -323,7 +323,7 @@ define([
 		},
 		
 		selectCampSector: function () {
-			let level = this.selectedLevel || 13;
+			let level = this.getValidSelectedLevel();
 			let campNode = GameGlobals.campHelper.getCampNodeForLevel(level);
 			if (!campNode) return;
 			let pos = campNode.position;
@@ -376,7 +376,7 @@ define([
 		},
 		
 		getNextSelectableSector: function (offset, filter) {
-			let level = this.selectedLevel || 13;
+			let level = this.getValidSelectedLevel();
 			let sectors = GameGlobals.levelHelper.getSectorsByLevel(level);
 			let currentIndex = sectors.indexOf(this.selectedSector);
 			let startIndex = currentIndex >= 0 ? currentIndex : 0;
@@ -755,6 +755,12 @@ define([
 			var path = this.findPathTo(sector);
 			var len = path ? path.length : "?";
 			return len + " blocks";
+		},
+
+		getValidSelectedLevel: function () {
+			if (this.selectedLevel) return this.selectedLevel;
+			if (this.selectedLevel === 0) return this.selectedLevel;
+			return 13;
 		},
 		
 		findPathTo: function (sector) {
