@@ -133,9 +133,9 @@ define([
 			if (!segmentVO) return;
 			let segmentID = segmentVO.segmentID;
 			log.i("start segment: " + segmentVO.storyID + "." + segmentVO.segmentID, this);
-			this.triggerEffects(segmentVO.onStart);
 			let storyID = segmentVO.storyID;
 			GameGlobals.gameState.storyStatus[storyID] = segmentID;
+			this.triggerEffects(segmentVO.onStart);
 			this.triggerSegments(StoryConstants.triggers.immediate);
 		},
 
