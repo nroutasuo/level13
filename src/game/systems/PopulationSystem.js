@@ -165,7 +165,7 @@ define([
 				let updateIndex = diseaseComponent.numUpdatesCompleted;
 				let maxUpdateIndex = diseaseComponent.numUpdatesTotal - 1;
 				let numDiseased = pop.num;
-				let numTotal = camp.population;
+				let numTotal = Math.floor(camp.population);
 				let updateType = this.getNextDisaseUpdateType(updateIndex, maxUpdateIndex, numDiseased, numTotal);
 
 				log.i("disease update (" + (updateIndex + 1) + "/" + (maxUpdateIndex + 1) + "): " + updateType);
@@ -354,21 +354,23 @@ define([
 		},
 		
 		reassignWorkers: function (node) {
-			var improvements = node.entity.get(SectorImprovementsComponent);
-			var reservedWorkers = {};
-			var foodConsumption = GameGlobals.campHelper.getFoodConsumptionPerSecond(node.camp.population);
-			var foodProduction = GameGlobals.campHelper.getFoodProductionPerSecond(1, improvements);
-			var waterConsumption = GameGlobals.campHelper.getWaterConsumptionPerSecond(node.camp.population);
-			var waterProduction = GameGlobals.campHelper.getWaterProductionPerSecond(1, improvements);
+			let improvements = node.entity.get(SectorImprovementsComponent);
+
+			let reservedWorkers = {};
+			let foodConsumption = GameGlobals.campHelper.getFoodConsumptionPerSecond(node.camp.population);
+			let foodProduction = GameGlobals.campHelper.getFoodProductionPerSecond(1, improvements);
+			let waterConsumption = GameGlobals.campHelper.getWaterConsumptionPerSecond(node.camp.population);
+			let waterProduction = GameGlobals.campHelper.getWaterProductionPerSecond(1, improvements);
 			reservedWorkers[CampConstants.workerTypes.scavenger.id] = 1;
 			reservedWorkers[CampConstants.workerTypes.trapper.id] = Math.ceil(foodConsumption / foodProduction);
 			reservedWorkers[CampConstants.workerTypes.water.id] = Math.ceil(waterConsumption / waterProduction);
 			
-			var prioritizedWorkers = [];
-			for (var key in node.camp.assignedWorkers) {
+			let prioritizedWorkers = [];
+			for (let key in node.camp.assignedWorkers) {
 				prioritizedWorkers.push({ name: key, min: reservedWorkers[key] || 0});
 			}
-			for (var key in reservedWorkers) {
+
+			for (let key in reservedWorkers) {
 				prioritizedWorkers.push({ name: key, min: 0});
 			}
 
@@ -380,7 +382,7 @@ define([
 					var count = node.camp.assignedWorkers[workerCheck.name];
 					if (count > workerCheck.min) {
 						node.camp.assignedWorkers[workerCheck.name]--;
-						log.i("Unassigned a worker: " + workerCheck.name);
+						log.i("Unassigned a worker: " + workerCheck.name + " on level " + node.position.level);
 						break;
 					}
 				}

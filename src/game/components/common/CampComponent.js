@@ -62,7 +62,7 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/EventVO'], function (As
 		
 		// population available for work
 		getFreePopulation: function () {
-			return Math.max(0, Math.floor(this.population - this.getAssignedPopulation() - this.getDisabledPopulation()));
+			return Math.floor(this.population) - this.getAssignedPopulation() - this.getDisabledPopulation();
 		},
 		
 		// population assigned to work

@@ -196,7 +196,7 @@
 			let eventNum = this.currentEvents - this.lastShownEvents;
 			let visitorNum = GameGlobals.campHelper.hasNewEvent(sector, OccurrenceConstants.campOccurrenceTypes.visitor) ? 1 : 0;
 
-			let freePopulation = campComponent.getFreePopulation();
+			let freePopulation = Math.max(0, campComponent.getFreePopulation());
 
 			let newBubbleNumber = buildingNum + eventNum + visitorNum + freePopulation;
 			
@@ -212,7 +212,7 @@
 		updateWorkerStepper: function (campComponent, id, workerType, maxWorkers, showMax, isAutoAssigned) {
 			GameGlobals.uiFunctions.toggle($(id).closest("tr"), maxWorkers > 0);
 
-			var freePopulation = campComponent.getFreePopulation() || 0;
+			var freePopulation = Math.max(0, campComponent.getFreePopulation()) || 0;
 			var assignedWorkers = Math.max(0, campComponent.assignedWorkers[workerType]) || 0;
 			var maxAssigned = Math.min(assignedWorkers + freePopulation, maxWorkers);
 			GameGlobals.uiFunctions.updateStepper(id, assignedWorkers, 0, maxAssigned);
