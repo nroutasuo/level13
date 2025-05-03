@@ -150,6 +150,7 @@ define([
 
 		endPage: function () {
 			let currentPageVO = GameGlobals.dialogueHelper.getCurrentPageVO();
+			if (!currentPageVO) return;
 			let dialogueID = this.dialogueNodes.head.dialogue.activeDialogue.dialogueID;
 			
 			if (this.dialogueNodes.head.dialogue.currentResultVO) {
@@ -175,6 +176,8 @@ define([
 
 				this.dialogueNodes.head.dialogue.currentResultVO = null;
 			}
+
+			this.dialogueNodes.head.dialogue.currentPageID = null;
 
 			if (currentPageVO && currentPageVO.action) {
 				GameGlobals.playerActionFunctions.startAction(currentPageVO.action);

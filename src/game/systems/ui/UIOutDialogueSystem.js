@@ -163,7 +163,6 @@ define([
 			if (hasOptions) {
 				for (let i in pageVO.options) {
 					// TODO check conditions
-					// TODO show costs
 					let optionVO = pageVO.options[i];
 					let buttonKey = optionVO.buttonTextKey || defaultLabelKey;
 					let label = Text.t(buttonKey);

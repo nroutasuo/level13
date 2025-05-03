@@ -1828,11 +1828,12 @@ define(['ash',
 			let eventComponent = sector.get(RefugeesComponent);
 			
 			if (!eventComponent) return;
+			if (eventComponent.isAccepted) return;
 
 			let campComponent = sector.get(CampComponent);
 			let numRefugees =  eventComponent.num || 1;
 
-			campComponent.population += numRefugees;
+			campComponent.addPopulation(numRefugees);
 			campComponent.populationDecreaseCooldown = CampConstants.POPULATION_DECREASE_COOLDOWN_REFUGEES;
 
 			eventComponent.isAccepted = true;
