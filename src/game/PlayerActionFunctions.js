@@ -3091,7 +3091,7 @@ define(['ash',
 				let explorerVO = explorers[i];
 				if (!explorerVO.numSteps) explorerVO.numSteps = 0;
 				explorerVO.numSteps++;
-				GameGlobals.gameState.increaseGameStatHighScore("mostStepsWithExplorer", explorerVO, steps);
+				GameGlobals.gameState.increaseGameStatHighScore("mostStepsWithExplorer", explorerVO.id, explorerVO.numSteps);
 			}
 		},
 
