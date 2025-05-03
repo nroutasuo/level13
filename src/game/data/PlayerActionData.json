@@ -3050,13 +3050,15 @@
         "launch": {
             "busy": false,
             "inCamp": true,
-            "sunlit": true,
             "tribe": {
                 "projects": {
                     "spaceship1": 1,
                     "spaceship2": 1,
                     "spaceship3": 1
                 }
+            },
+            "sector": {
+                "surface": true
             }
         },
         "leave_camp": {

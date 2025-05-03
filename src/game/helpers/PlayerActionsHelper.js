@@ -1030,6 +1030,14 @@ define([
 						if (result) return result;
 					}
 
+					if (typeof requirements.camp.overcrowded !== "undefined") {
+						let requiredValue = requirements.camp.overcrowded;
+						let housingCap = CampConstants.getHousingCap(improvementComponent);
+						let currentValue = currentPopulation > housingCap;
+						let result = this.checkRequirementsBoolean(requiredValue, currentValue);
+						if (result) return result;
+					}
+
 					if (requirements.camp.isExpansionBlockedByStorage) {
 						let canBuildSomething = false;
 						for (let key in improvementNames) {
