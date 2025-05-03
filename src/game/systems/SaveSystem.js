@@ -11,9 +11,10 @@ define([
 		engine: null,
 
 		saveNodes: null,
-
-		isPendingAutosave: false,
-		isPendingManualSave: false,
+ 		
+		// list of slotIDs
+		pendingManualSaves: [],
+		pendingAutosaves: [],
 
 		lastDefaultSaveTimestamp: 0,
 		autoSaveFrequency: 1000 * 60 * 2,
@@ -40,15 +41,23 @@ define([
 			if (this.paused) return;
 			if (GameGlobals.gameState.isLaunched) return;
 
-			if (this.isPendingManualSave) {
-				this.save(GameConstants.SAVE_SLOT_DEFAULT, true);
+			if (this.pendingManualSaves.length > 0) {
+				for (let i = 0; i < this.pendingManualSaves.length; i++) {
+					let slotID = this.pendingManualSaves[i];
+					this.save(slotID, true);
+				}
+				this.pendingManualSaves = [];
 				return;
 			}
 
 			if (!GameConstants.isAutosaveEnabled) return;
 
-			if (this.isPendingAutosave) {
-				this.save(GameConstants.SAVE_SLOT_DEFAULT, false);
+			if (this.pendingAutosaves.length > 0) {
+				for (let i = 0; i < this.pendingAutosaves.length; i++) {
+					let slotID = this.pendingAutosaves[i];
+					this.save(slotID, false);
+				}
+				this.pendingAutosaves = [];
 				return;
 			}
 
@@ -80,9 +89,6 @@ define([
 				if (isDefaultSlot && !GameConstants.isAutosaveEnabled) return;
 				if (GameGlobals.gameState.isLaunchStarted || GameGlobals.gameState.isLaunched || GameGlobals.gameState.isLaunchCompleted || GameGlobals.gameState.isFinished) return;
 			}
-
-			this.isPendingAutosave = false;
-			this.isPendingManualSave = false;
 
 			let data = this.getCompressedSaveJSON();
 			let success = this.saveDataToSlot(slotID, data);
@@ -253,11 +259,15 @@ define([
 			return result;
 		},
 
-		onSaveGameSignal: function (isPlayerInitiated) {
-			if (isPlayerInitiated) {
-				this.isPendingManualSave = true;
-			} else {
-				this.isPendingAutosave = true;
+		onSaveGameSignal: function (slotID, isPlayerInitiated) {
+			slotID = slotID || GameConstants.SAVE_SLOT_DEFAULT;
+
+			if (isPlayerInitiated && this.pendingManualSaves.indexOf(slotID) < 0) {
+				this.pendingManualSaves.push(slotID);
+			}
+
+			if (!isPlayerInitiated && this.pendingAutosaves.indexOf(slotID) < 0) {
+				this.pendingAutosaves.push(slotID);
 			}
 		},
 

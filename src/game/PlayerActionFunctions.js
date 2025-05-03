@@ -3129,6 +3129,7 @@ define(['ash',
 		},
 
 		save: function (slotID) {
+			slotID = slotID || GameConstants.SAVE_SLOT_DEFAULT;
 			GlobalSignals.saveGameSignal.dispatch(slotID, false);
 		},
 
