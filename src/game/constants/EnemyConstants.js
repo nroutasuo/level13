@@ -128,13 +128,19 @@ function (Ash, EnemyVO, PerkConstants) {
 		enemyDifficulties: {},
 		
 		getEnemy: function (enemyID) {
+			let enemyVO = this.tryGetEnemy(enemyID);
+			if (enemyVO) return enemyVO;
+			log.w("no such enemy found: " + enemyID);
+			return null;
+		},
+
+		tryGetEnemy: function (enemyID) {
 			for (let i in this.enemyDefinitions) {
 				let enemy = this.enemyDefinitions[i];
 				if (enemy.id == enemyID) {
 					return enemy;
 				}
 			}
-			log.w("no such enemy found: " + enemyID);
 			return null;
 		},
 		

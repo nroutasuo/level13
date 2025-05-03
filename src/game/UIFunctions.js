@@ -743,7 +743,7 @@ define(['ash',
 								entryDisplay = new PositionVO(stat.entry.level, stat.entry.sectorX, stat.entry.sectorY).getInGameFormat(true);
 							} else if (stat.entry.hasOwnProperty("name")) {
 								entryDisplay = stat.entry.name;
-							} else if (EnemyConstants.getEnemy(stat.entry)) {
+							} else if (EnemyConstants.tryGetEnemy(stat.entry)) {
 								entryDisplay = EnemyConstants.getEnemy(stat.entry).name;
 							} else if(ItemConstants.getItemDefinitionByID(stat.entry, true)) {
 								entryDisplay = ItemConstants.getItemDisplayNameFromID(stat.entry);
