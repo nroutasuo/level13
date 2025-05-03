@@ -431,7 +431,7 @@ define([
 					eventVO.defendersLost = raidComponent.defendersLost;
 					eventVO.damagedBuilding = raidComponent.damagedBuilding;
 			
-					this.wasVictory = raidComponent ? raidComponent.victory : false;
+					eventVO.wasVictory = raidComponent ? raidComponent.victory : false;
 					
 					campNode.entity.remove(RaidComponent);
 					campNode.camp.lastRaid = eventVO;
