@@ -208,6 +208,7 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 			if (d1.logMsgID != d2.logMsgID) return false;
 			if (d1.timestamp != d2.timestamp) return false;
 			if (d1.time != d2.time) return false;
+			if (!d1.messageTextVO || !d2.messageTextVO) return false;
 			if (d1.messageTextVO.textFragments.length != d2.messageTextVO.textFragments.length) return false;
 			for (let i = 0; i < d1.messageTextVO.textFragments.length; i++) {
 				if (!d1.messageTextVO.textFragments[i] || !d2.messageTextVO.textFragments[i]) continue;
