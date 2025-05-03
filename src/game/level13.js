@@ -368,9 +368,15 @@ define([
 		},
 
 		handleException: function (ex) {
+			if (this.numExceptionsInRow > 0) return;
+
 			let desc = StringUtils.getExceptionDescription(ex);
 			let gadesc = desc.title + " | " + desc.shortstack;
-			log.i("logging exception to gtag");
+
+			GameGlobals.gameState.numExceptions++;
+			GameGlobals.gameState.numExceptionsInRow++;
+
+			log.i("logging exception to gtag: " + desc.title);
 			gtag('event', 'exception', {
 				'description': gadesc,
 				'fatal': true,
@@ -401,8 +407,8 @@ define([
 				() => { GameGlobals.uiFunctions.onRestartButton(); },
 				true
 			);
-			
-			GameGlobals.gameState.numExceptions++;
+
+			this.numExceptionsInRow = 0;
 			
 			throw ex;
 		},
