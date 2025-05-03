@@ -685,7 +685,7 @@ define([
 				name = "crafting trader";
 				let ingredientProbability = 0.25;
 				let num = 5 + campOrdinal * 3;
-				while (sellItems.length < num && ingredientProbability < 1) {
+				while (sellItems.length < num && ingredientProbability <= 1) {
 					addSellItemsFromCategories([ "ingredient"], ingredientProbability, num / 3, num, true);
 					ingredientProbability += 0.05;
 				}
