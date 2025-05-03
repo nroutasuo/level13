@@ -8,6 +8,7 @@ define([
 	'game/nodes/level/LevelNode',
 	'game/nodes/sector/SectorNode',
 	'game/nodes/PlayerLocationNode',
+	'game/components/common/CampComponent',
 	'game/components/common/PositionComponent',
 	'game/components/level/LevelPassagesComponent',
 	'game/components/level/LevelStatusComponent',
@@ -26,6 +27,7 @@ define([
 		LevelNode,
 		SectorNode,
 		PlayerLocationNode,
+		CampComponent,
 		PositionComponent,
 		LevelPassagesComponent,
 		LevelStatusComponent,
@@ -56,7 +58,7 @@ define([
 			
 			GlobalSignals.add(this, GlobalSignals.gameStateReadySignal, this.updateAll);
 			GlobalSignals.add(this, GlobalSignals.sectorScoutedSignal, this.onSectorScouted);
-			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.updateAllPassages);
+			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.updateAll);
 			GlobalSignals.add(this, GlobalSignals.campBuiltSignal, this.updateAllLevels);
 			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.onPlayerPositionChanged);
 			GlobalSignals.add(this, GlobalSignals.workshopClearedSignal, this.updateAllLevels);
@@ -85,6 +87,7 @@ define([
 				}
 
 				node.levelStatus.clearedWorkshops = this.getLevelClearedWorkshops(level);
+				node.levelStatus.improvementCounts = this.getLevelImprovementCounts(level);
 			}
 
 			this.updateFirstScoutedSectorsForOldSaves();
@@ -196,6 +199,22 @@ define([
 					if (!result[resource]) result[resource] = 0;
 					result[resource]++;
 				}
+			}
+			return result;
+		},
+
+		getLevelImprovementCounts: function (level) {
+			let result = {};
+			for (let improvementID in improvementNames) {
+				let count = 0;
+				let sectors = GameGlobals.levelHelper.getSectorsByLevel(level);
+				for (let i = 0; i < sectors.length; i++) {
+					let sector = sectors[i];
+					let improvements = sector.get(SectorImprovementsComponent);
+					let campComponent = sector.get(CampComponent);
+					count += GameGlobals.playerActionsHelper.getCurrentImprovementCount(improvements, campComponent, improvementID);
+				}
+				result[improvementID] = count;
 			}
 			return result;
 		},

@@ -976,25 +976,20 @@ define([
 			return count;
 		},
 
-		getCampBuiltOutImprovementsCount: function (campOrdinal, improvement) {
+		getCampBuiltOutImprovementsCount: function (campOrdinal, improvementName) {
 			var levels = GameGlobals.gameState.getLevelsForCamp(campOrdinal);
 			let result = 0;
 			for (let i = 0; i < levels.length; i++) {
-				result += this.getLevelBuiltOutImprovementsCount(levels[i], improvement);
+				result += this.getLevelBuiltOutImprovementsCount(levels[i], improvementName);
 			}
 			return result;
 		},
 		
-		getLevelBuiltOutImprovementsCount: function (level, improvement) {
-			var count = 0;
-			var improvementsComponent;
-			this.saveSectorsForLevel(level);
-			for (let i = 0; i < this.sectorEntitiesByLevel[level].length; i++) {
-				var sectorEntity = this.sectorEntitiesByLevel[level][i];
-				improvementsComponent = sectorEntity.get(SectorImprovementsComponent);
-				count += improvementsComponent.getCount(improvement);
-			}
-			return count;
+		getLevelBuiltOutImprovementsCount: function (level, improvementName) {
+			let levelEntity = this.getLevelEntityForPosition(level);
+			let levelStatus = levelEntity.get(LevelStatusComponent);
+			let improvementID = ImprovementConstants.getImprovementID(improvementName);
+			return levelStatus.improvementCounts[improvementID] || 0;
 		},
 
 		getAllInvestigateableSectors: function () {

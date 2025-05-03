@@ -5,15 +5,20 @@ define(['ash'], function (Ash) {
 		isVisited: false,
 		isLevelTypeRevealed: false,
 		firstScoutedSectorByFeature: {},
-		clearedWorkshops: {}, // resourceName -> count
 		examinedSpots: [], // ids
+
+		// cached derived values, not saved
+		clearedWorkshops: {}, // resourceName -> count
+		improvementCounts: {}, // improvementID -> count
 		
 		constructor: function () {
 			this.isVisited = false;
 			this.isLevelTypeRevealed = false;
 			this.firstScoutedSectorByFeature = {};
-			this.clearedWorkshops = {};
 			this.examinedSpots = [];
+
+			this.clearedWorkshops = {};
+			this.improvementCounts = {};
 		},
 
 		getSaveKey: function () {
@@ -35,6 +40,7 @@ define(['ash'], function (Ash) {
 			this.firstScoutedSectorByFeature = componentValues.firstScoutedSectorByFeature || {};
 			this.examinedSpots = componentValues.examinedSpots || [];
 			this.clearedWorkshops = {};
+			this.improvementCounts = {};
 		}
 	});
 

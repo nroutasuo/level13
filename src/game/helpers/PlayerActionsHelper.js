@@ -49,6 +49,7 @@ define([
 	'game/components/sector/events/DiseaseComponent',
 	'game/components/sector/events/TraderComponent',
 	'game/components/sector/events/RaidComponent',
+	'game/components/level/LevelStatusComponent',
 	'game/components/common/CampComponent',
 	'game/vos/ResourcesVO',
 	'game/vos/ImprovementVO'
@@ -60,7 +61,7 @@ define([
 	PlayerLocationNode, TribeUpgradesNode, NearestCampNode, LevelComponent, PositionComponent, ResourcesComponent,
 	PlayerActionComponent, BagComponent, ExcursionComponent, ItemsComponent, HopeComponent, FightComponent,
 	OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent, SectorControlComponent, SectorFeaturesComponent,
-	SectorStatusComponent, SectorLocalesComponent, SectorImprovementsComponent, DiseaseComponent, TraderComponent, RaidComponent,
+	SectorStatusComponent, SectorLocalesComponent, SectorImprovementsComponent, DiseaseComponent, TraderComponent, RaidComponent, LevelStatusComponent,
 	CampComponent, ResourcesVO, ImprovementVO
 ) {
 	var PlayerActionsHelper = Ash.Class.extend({
@@ -2982,16 +2983,11 @@ define([
 		},
 		
 		getCurrentImprovementCountOnLevel: function (level, improvementID) {
-			// TODO cache result for performance?
-			let result = 0;
-			let sectors = GameGlobals.levelHelper.getSectorsByLevel(level);
-			for (let i = 0; i < sectors.length; i++) {
-				let sector = sectors[i];
-				let improvements = sector.get(SectorImprovementsComponent);
-				let campComponent = sector.get(CampComponent);
-				result += this.getCurrentImprovementCount(improvements, campComponent, improvementID);
-			}
-			return result;
+			let entity = GameGlobals.levelHelper.getLevelEntityForPosition(level);
+			if (!entity) return;
+			let levelStatus = entity.get(LevelStatusComponent);
+
+			return levelStatus.improvementCounts[improvementID] || 0;
 		},
 		
 		getCurrentImprovementCountTotal: function (improvementID) {
