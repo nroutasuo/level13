@@ -68,6 +68,8 @@ define([
 		
 		currentThemeTransitionID: null,
 		currentThemeTransitionTargetValue: null,
+
+		pendingResourceUpdateTime: null, // if not null, a resource update has been queued (can be used to trigger update immediately or after a delay)
 		
 		SCAVENGE_BONUS_TYPES: [
 			{ itemBonusType: ItemConstants.itemBonusTypes.scavenge_general, displayName: "general", containerID: "scavenge-bonus-general" },
@@ -119,6 +121,8 @@ define([
 			this.elements.notificationContainer = $(".notification-player");
 			this.elements.notificationBar = $(".notification-player-bar");
 			this.elements.notificationLabel = $(".notification-player-bar .progress-label");
+
+			this.pendingResourceUpdateTime = null;
 			
 			this.updateLayoutMode();
 
@@ -147,6 +151,7 @@ define([
 			GlobalSignals.actionCompletedSignal.add(function () { sys.onPlayerActionCompleted(); });
 			GlobalSignals.elementCreatedSignal.add(function () { sys.onElementCreated(); });
 			GlobalSignals.slowUpdateSignal.add(function () { sys.slowUpdate(); });
+			GlobalSignals.visualUpdateSignal.add(function () { sys.visualUpdate(); });
 			GlobalSignals.changelogLoadedSignal.add(function () { sys.updateGameVersion(); });
 			GlobalSignals.add(this, GlobalSignals.playerMoveStartedSignal, this.onPlayerMoveStarted);
 			GlobalSignals.add(this, GlobalSignals.playerLocationChangedSignal, this.onPlayerLocationChanged);
@@ -155,9 +160,10 @@ define([
 			GlobalSignals.add(this, GlobalSignals.perksChangedSignal, this.onPerksChanged);
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onGameShown);
 			GlobalSignals.add(this, GlobalSignals.levelTypeRevealedSignal, this.onLevelTypeRevealed);
-			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.updateResourcesIfNotPending);
-			GlobalSignals.add(this, GlobalSignals.workersAssignedSignal, this.updateResourcesIfNotPending);
+			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.onImprovementBuilt);
+			GlobalSignals.add(this, GlobalSignals.workersAssignedSignal, this.queueResourceUpdate);
 			GlobalSignals.add(this, GlobalSignals.launchCompletedSignal, this.onLaunchCompleted);
+			GlobalSignals.add(this, GlobalSignals.popupClosedSignal, this.onPopupClosed);
 			GlobalSignals.add(this, GlobalSignals.windowResizedSignal, this.onWindowResized);
 
 			this.generateStatsCallouts();
@@ -293,12 +299,13 @@ define([
 			this.updateGameMsg();
 			this.updateNotifications();
 			this.updatePerks();
-			
-			if (this.pendingResourceUpdateTime) {
+
+			// resource update outside of the regular visual update loop (when something needs feedback immediately or after a delay)
+			if (this.pendingResourceUpdateTime != null) {
 				this.pendingResourceUpdateTime -= time;
 				if (this.pendingResourceUpdateTime <= 0) {
 					this.updateResources();
-					this.pendingResourceUpdateTime = 0;
+					this.pendingResourceUpdateTime = null;
 				}
 			}
 		},
@@ -309,13 +316,16 @@ define([
 
 			var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
 			var isInCamp = playerPosition.inCamp;
-			this.updatePlayerStats();
 			this.updateDeity();
 			this.updateItems(false, isInCamp);
-			this.updateResourcesIfNotPending();
 			this.updateItemStats();
 			
 			GameGlobals.uiFunctions.updateInfoCallouts("ul.player-perks-list");
+		},
+
+		visualUpdate: function () {
+			this.updateResources();
+			this.updatePlayerStats();
 		},
 		
 		updateGameVersion: function () {
@@ -325,6 +335,7 @@ define([
 		updatePlayerStats: function () {
 			if (GameGlobals.uiFunctions.popupManager.hasOpenPopup()) return;
 			if (!this.currentLocationNodes.head) return;
+			
 			let isSmallLayout = this.elements.body.hasClass("layout-small");
 			var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
 			var isInCamp = playerPosition.inCamp;
@@ -472,12 +483,16 @@ define([
 			let suffix = isSmallLayout ? "" : " / " + currentLimit;
 		
 			$container.children(".value").toggleClass("warning", isAtLimit);
-			let animate = UIAnimations.shouldAnimateChange(previousValue, displayValue, previousUpdate, now, component.accumulation);
+
+			let isAnimating = UIAnimations.isActivelyAnimating(valueElement, previousUpdate, now);
+			if (isAnimating) return;
+
+			let animate = UIAnimations.shouldAnimateChange(previousValue, currentValue, previousUpdate, now, component.accumulation);
 			UIAnimations.animateOrSetNumber(valueElement, animate, displayValue, suffix, flipNegative, (v) => { return Math.floor(v); });
 			
 			this.updateStatsCallout("", $container, component.accSources);
 			this.updateChangeIndicator(changeIndicatorElement, component.accumulation, isVisible && !isAtLimit);
-			this.previousStats[stat] = displayValue;
+			this.previousStats[stat] = currentValue;
 			this.previousStatsUpdates[stat] = now;
 		},
 
@@ -716,46 +731,81 @@ define([
 			return desc;
 		},
 		
-		updateResourcesIfNotPending: function () {
-			if (!this.pendingResourceUpdateTime) {
-				this.pendingResourceUpdateTime = 0.01;
+		queueResourceUpdate: function (delay) {
+			delay = delay || 0;
+
+			if (this.pendingResourceUpdateTime == null) {
+				this.pendingResourceUpdateTime = delay;
 			} else {
-				this.pendingResourceUpdateTime = Math.max(this.pendingResourceUpdateTime, 0.01);
+				this.pendingResourceUpdateTime = Math.max(this.pendingResourceUpdateTime, delay);
 			}
 		},
 
-		updateResources: function () {
+		// update visibility of various containers and other less often changing elements in the resources bar but not the resources amounts themselves
+		updateResourcesBar: function () {
+			let playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
+			let inCamp = playerPosition.inCamp;
+			let isSmallLayout = this.elements.body.hasClass("layout-small");
+
+			let itemsComponent = this.playerStatsNodes.head.items;
+			
+			let showHeader = GameGlobals.gameState.unlockedFeatures.bag || itemsComponent.getAll().length == 0 || showResources.getTotal() === 0;
+			$("#grid-main-header").toggleClass("hidden", !showHeader);
+			
+			// camp
+			GameGlobals.uiFunctions.toggle(".header-camp-storage", inCamp);
+			GameGlobals.uiFunctions.toggle(".statsbar-resources", inCamp);
+			if (inCamp) {
+				let storageCap = GameGlobals.resourcesHelper.getCurrentStorageCap();
+				$(".header-camp-storage .value").text(storageCap);
+
+				let showStorageNameKey = GameGlobals.resourcesHelper.getCurrentStorageNameKey(isSmallLayout);
+				UIConstants.updateCalloutContent(".header-camp-storage", "Amount of each resource that can be stored");
+				GameGlobals.uiFunctions.setText(".header-camp-storage .label", showStorageNameKey);
+			}
+
+			// out
+			GameGlobals.uiFunctions.toggle(".header-bag-storage", !inCamp && GameGlobals.gameState.unlockedFeatures.bag);
+			GameGlobals.uiFunctions.toggle(".bag-resources", !inCamp);
+
+			if (!inCamp) {
+				let bagComponent = this.playerStatsNodes.head.entity.get(BagComponent);
+				let bagCapacityDisplayValue = UIConstants.getBagCapacityDisplayValue(bagComponent, true);
+				$(".header-bag-storage .value").text(Math.floor(bagComponent.usedCapacity * 10) / 10);
+				UIAnimations.animateOrSetNumber($(".header-bag-storage .value-total"), true, bagCapacityDisplayValue);
+			}
+		},
+
+		updateCurrency: function () {
+			let inCamp = GameGlobals.playerHelper.isInCamp();
+			let currencyComponent = GameGlobals.resourcesHelper.getCurrentCurrency();
+
+			let currentCurrency = currencyComponent.currency || 0;
+			
+			GameGlobals.uiFunctions.toggle(".header-camp-currency", inCamp && currentCurrency > 0);
+			GameGlobals.uiFunctions.toggle(".header-bag-currency", !inCamp && currentCurrency > 0);
+
+			let $valueLabel = inCamp ? $(".header-camp-currency .value") : $(".header-bag-currency .value");
+			UIAnimations.animateOrSetNumber($valueLabel, true, currentCurrency || 0);
+		},
+
+		// update resource amounts in the resources bar
+		// - forced: update even if update currently paused by pendingResourceUpdateTime and do not animate
+		updateResources: function (forced) {
 			if (!this.playerStatsNodes || !this.playerStatsNodes.head) return;
+			if (!forced && this.pendingResourceUpdateTime > 0) return;
+			if (!forced && GameGlobals.gameState.isPaused) return;
+
 			let isSmallLayout = this.elements.body.hasClass("layout-small");
 
 			var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
 			var inCamp = playerPosition.inCamp;
-			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			var showResources = this.getShowResources();
 			var showResourceAcc = this.getShowResourceAcc();
 			var storageCap = GameGlobals.resourcesHelper.getCurrentStorageCap();
-			var currencyComponent = GameGlobals.resourcesHelper.getCurrentCurrency();
 			var inventoryUnlocked = false;
 			let now = GameGlobals.gameState.gameTime;
 			let changedPosition = inCamp != this.lastResourceUpdateInCamp || this.lastResourceUpdateLevel != playerPosition.level;
-
-			let showStorageNameKey = GameGlobals.resourcesHelper.getCurrentStorageNameKey(isSmallLayout);
-
-			GameGlobals.uiFunctions.toggle(".header-camp-storage", inCamp);
-			GameGlobals.uiFunctions.toggle(".header-camp-currency", inCamp && currencyComponent.currency > 0);
-			GameGlobals.uiFunctions.toggle(".statsbar-resources", inCamp);
-			GameGlobals.uiFunctions.toggle(".header-bag-storage", !inCamp && GameGlobals.gameState.unlockedFeatures.bag);
-			GameGlobals.uiFunctions.toggle(".header-bag-currency", !inCamp && currencyComponent.currency > 0);
-			GameGlobals.uiFunctions.toggle(".bag-resources", !inCamp);
-			
-			$("#grid-main-header").toggleClass("hidden", !GameGlobals.gameState.unlockedFeatures.bag && itemsComponent.getAll().length == 0 && showResources.getTotal() === 0);
-
-			$(".header-camp-currency .value").text(currencyComponent ? currencyComponent.currency : "??");
-			$(".header-bag-currency .value").text(currencyComponent ? currencyComponent.currency : "??");
-			
-			UIConstants.updateCalloutContent(".header-camp-storage", "Amount of each resource that can be stored");
-			GameGlobals.uiFunctions.setText(".header-camp-storage .label", showStorageNameKey);
-			$(".header-camp-storage .value").text(storageCap);
 
 			for (let key in resourceNames) {
 				let name = resourceNames[key];
@@ -763,11 +813,13 @@ define([
 				let currentAccumulation = showResourceAcc.resourceChange.getResource(name);
 				let resourceUnlocked = GameGlobals.gameState.unlockedFeatures["resource_" + name] === true || currentAmount > 0;
 				inventoryUnlocked = inventoryUnlocked || resourceUnlocked;
+
 				if (inCamp) {
 					let isVisible = resourceUnlocked && !(currentAmount <= 0 && currentAccumulation <= 0 && this.canHideResource(name));
 					let previousAmount = this.previousShownCampResAmount[name] || 0;
-					let animate = !changedPosition && UIAnimations.shouldAnimateChange(previousAmount, currentAmount, this.lastCampResourceUpdate, now, currentAccumulation);
+					let animate = !forced && !changedPosition && UIAnimations.shouldAnimateChange(previousAmount, currentAmount, this.lastCampResourceUpdate, now, currentAccumulation);
 					let elemIDCamp = isSmallLayout ? "#resources-camp-mobile-" + name : "#resources-camp-regular-" + name;
+
 					UIConstants.updateResourceIndicator(
 						elemIDCamp,
 						currentAmount,
@@ -778,7 +830,9 @@ define([
 						!isSmallLayout,
 						name === resourceNames.food || name === resourceNames.water,
 						isVisible,
-						animate
+						animate,
+						this.lastCampResourceUpdate,
+						now
 					);
 					if (showResourceAcc) {
 						UIConstants.updateResourceIndicatorCallout(elemIDCamp, showResourceAcc.getSources(name));
@@ -786,6 +840,7 @@ define([
 					this.previousShownCampResAmount[name] = currentAmount;
 				} else {
 					let elemIDBag = isSmallLayout ? "#resources-bag-mobile-" + name : "#resources-bag-regular-" + name;
+					let animate = !forced && !changedPosition;
 					UIConstants.updateResourceIndicator(
 						elemIDBag,
 						currentAmount,
@@ -796,13 +851,8 @@ define([
 						false,
 						name === resourceNames.food || name === resourceNames.water,
 						resourceUnlocked && (name === "water" || name === "food" || showResources.getResource(name) > 0),
-						!changedPosition
+						animate
 					);
-
-					let bagComponent = this.playerStatsNodes.head.entity.get(BagComponent);
-					let bagCapacityDisplayValue = UIConstants.getBagCapacityDisplayValue(bagComponent, true);
-					$(".header-bag-storage .value").text(Math.floor(bagComponent.usedCapacity * 10) / 10);
-					UIAnimations.animateOrSetNumber($(".header-bag-storage .value-total"), true, bagCapacityDisplayValue);
 				}
 			}
 			
@@ -986,7 +1036,7 @@ define([
 			this.elements.body.toggleClass("layout-small", isSmallLayout);
 			this.elements.body.toggleClass("layout-regular", !isSmallLayout);
 			if (wasSmallLayout == isSmallLayout) return;
-			this.updateResources();
+			this.updateResources(true);
 		},
 
 		updateLayout: function () {
@@ -1174,7 +1224,7 @@ define([
 				sys.updatePageBackgroundColor();
 				sys.updateVisionStatus();
 				sys.updateThemedIcons();
-				sys.updateResources(); // resource fill progress bar color
+				sys.updateResources(true); // resource fill progress bar color
 				
 				GlobalSignals.themeToggledSignal.dispatch();
 				
@@ -1280,13 +1330,16 @@ define([
 		},
 
 		onPlayerPositionChanged: function () {
-			if (GameGlobals.gameState.uiStatus.isHidden) return;
+			// update these just for setting the right visibility on containers while the player is moving already
+			this.updateResourcesBar();
+			this.updatePlayerStats();
 			this.updateTabVisibility();
+
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			this.updateStaminaWarningLimit();
 			this.updateLocation();
 			this.updateHeaderTexts();
-			this.updateResourcesIfNotPending();
-			this.updatePlayerStats();
+			this.queueResourceUpdate();
 		},
 		
 		onPlayerMoveCompleted: function () {
@@ -1305,12 +1358,16 @@ define([
 		},
 		
 		onPlayerEnteredCamp: function () {
-			this.pendingResourceUpdateTime = 0.25;
+			this.updateResourcesBar();
+			this.updateCurrency();
+			this.queueResourceUpdate(0.25);
 			this.updateExplorers();
 			GameGlobals.uiFunctions.scrollToTabTop();
 		},
 		
 		onPlayerLeftCamp: function () {
+			this.updateResourcesBar();
+			this.updateCurrency();
 			this.updateItems();
 			this.updateExplorers();
 			GameGlobals.uiFunctions.scrollToTabTop();
@@ -1329,13 +1386,15 @@ define([
 
 		onInventoryChanged: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
-			this.updateResourcesIfNotPending();
+			this.queueResourceUpdate();
+			this.updateCurrency();
 			this.updatePlayerStats();
 			this.updateItems(true);
 		},
 		
 		onEquipmentChanged: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
+			this.updateResourcesBar();
 			this.updatePlayerStats();
 			this.updateItemStats();
 			this.refreshPerks();
@@ -1382,18 +1441,23 @@ define([
 				this.updateLevelIcon(true);
 			}
 		},
+
+		onImprovementBuilt: function () {
+			this.updateResourcesBar();
+			this.queueResourceUpdate();
+		},
 		
 		onLaunchCompleted: function () {
-			log.i("onLaunchCompleted", this);
 			this.updateTheme();
 		},
 		
 		onGameShown: function () {
 			this.updateTabVisibility();
+			this.updateResourcesBar();
 			this.updateStaminaWarningLimit();
 			this.updateLocation();
 			this.updateHeaderTexts();
-			this.updateResourcesIfNotPending();
+			this.queueResourceUpdate();
 			this.updateVisionStatus();
 			this.updatePlayerStats();
 			this.refreshPerks();
@@ -1402,6 +1466,11 @@ define([
 			this.updateExplorers();
 			this.updateLayout();
 			this.updatePageBackgroundColor();
+		},
+
+		onPopupClosed: function () {
+			// update evidence etc immediately after scout popup
+			this.updatePlayerStats();
 		},
 
 		onWindowResized: function () {

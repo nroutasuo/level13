@@ -5,9 +5,7 @@ define([
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
 	'game/constants/UIConstants',
-	'game/constants/PlayerStatConstants',
 	'game/constants/PlayerActionConstants',
-	'game/constants/PerkConstants',
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/PlayerStatsNode',
 ], function (Ash,
@@ -16,9 +14,7 @@ define([
 	GlobalSignals,
 	GameConstants,
 	UIConstants,
-	PlayerStatConstants,
 	PlayerActionConstants,
-	PerkConstants,
 	PlayerLocationNode,
 	PlayerStatsNode
 ) {
@@ -55,9 +51,9 @@ define([
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onElementsVisibilityChanged);
 			GlobalSignals.add(this, GlobalSignals.elementCreatedSignal, this.onElementsVisibilityChanged);
 			GlobalSignals.add(this, GlobalSignals.actionButtonClickedSignal, this.onElementsVisibilityChanged);
-			GlobalSignals.add(this, GlobalSignals.elementToggledSignal, this.onElementsVisibilityChanged);
 			GlobalSignals.add(this, GlobalSignals.popupOpenedSignal, this.onElementsVisibilityChanged);
 			
+			GlobalSignals.add(this, GlobalSignals.elementToggledSignal, this.onElementToggled);
 			GlobalSignals.add(this, GlobalSignals.updateButtonsSignal, this.onButtonStatusChanged);
 			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.onButtonStatusChanged);
 			GlobalSignals.add(this, GlobalSignals.actionStartedSignal, this.onButtonStatusChanged);
@@ -302,23 +298,28 @@ define([
 		},
 
 		updateInfoCallouts: function () {
+			let sys = this;
 			$.each(this.elementsCalloutContainers, function () {
-				let targets = $(this).children(".info-callout-target");
-				if (targets.length > 0) {
-					var visible = true;
-					$.each(targets, function() {
-						visible = visible && $(this).css("display") !== "none";
-					});
-					$.each(targets.children(), function () {
-						visible = visible && $(this).css("display") !== "none";
-					});
-					GameGlobals.uiFunctions.toggle($(this), visible, this.buttonCalloutSignalParams);
-				}
-				let sideTargets = $(this).children(".info-callout-target-side");
-				if (sideTargets.length > 0) {
-					$(this).children(".info-callout").css("left", $(this).width() + "px")
-				}
+				sys.updateInfoCallout($(this));
 			});
+		},
+
+		updateInfoCallout: function ($elem) {
+			let targets = $elem.children(".info-callout-target");
+			if (targets.length > 0) {
+				var visible = true;
+				$.each(targets, function() {
+					visible = visible && $elem.css("display") !== "none";
+				});
+				$.each(targets.children(), function () {
+					visible = visible && $elem.css("display") !== "none";
+				});
+				GameGlobals.uiFunctions.toggle($elem, visible, this.buttonCalloutSignalParams);
+			}
+			let sideTargets = $elem.children(".info-callout-target-side");
+			if (sideTargets.length > 0) {
+				$elem.children(".info-callout").css("left", $elem.width() + "px")
+			}
 		},
 
 		// TODO performance
@@ -390,6 +391,15 @@ define([
 					$progressbar.data("animation-counter", 0);
 				}
 			});
+		},
+
+		onElementToggled: function ($elem, show, params) {
+			this.onElementsVisibilityChanged($elem, show, params);
+
+			// if an info callout target was toggled, toggle its parent container asap instead of waiting for general update
+			if ($elem && $elem.hasClass("info-callout-target")) {
+				this.updateInfoCallout($elem.parent(".callout-container"))
+			}
 		},
 		
 		onElementsVisibilityChanged: function (elements, show, params) {

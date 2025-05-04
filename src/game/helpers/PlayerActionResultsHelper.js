@@ -895,28 +895,34 @@ define([
 				}
 			}
 
+			let gainedStats = false;
+
 			// TODO assign reputation to nearest camp
 
 			if (rewards.gainedEvidence) {
 				this.playerStatsNodes.head.evidence.value += rewards.gainedEvidence;
 				GameGlobals.gameState.increaseGameStatKeyed("amountPlayerStatsFoundPerId", "evidence", rewards.gainedEvidence);
+				gainedStats = true;
 			}
 
 			if (rewards.gainedRumours) {
 				this.playerStatsNodes.head.rumours.value += rewards.gainedRumours;
 				GameGlobals.gameState.increaseGameStatKeyed("amountPlayerStatsFoundPerId", "rumours", rewards.gainedRumours);
+				gainedStats = true;
 			}
 
 			if (rewards.gainedHope) {
 				this.playerStatsNodes.head.entity.get(HopeComponent).hope += rewards.gainedHope;
 				GameGlobals.gameState.increaseGameStatKeyed("amountPlayerStatsFoundPerId", "hope", rewards.gainedHope);
 				GameGlobals.playerActionFunctions.unlockFeature("hope");
+				gainedStats = true;
 			}
 
 			if (rewards.gainedInsight) {
 				this.playerStatsNodes.head.insight.value += rewards.gainedInsight;
 				GameGlobals.gameState.increaseGameStatKeyed("amountPlayerStatsFoundPerId", "insight", rewards.gainedInsight);
 				GameGlobals.playerActionFunctions.unlockFeature("insight");
+				gainedStats = true;
 			}
 
 			if (rewards.storyFlags) {
@@ -935,6 +941,10 @@ define([
 			}
 
 			GlobalSignals.inventoryChangedSignal.dispatch();
+
+			if (gainedStats) {
+				GlobalSignals.tribeStatsChangedSignal.dispatch();
+			}
 
 			return true;
 		},

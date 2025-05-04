@@ -38,6 +38,11 @@ define([
 			if (animate) {
 				UIAnimations.animateNumber($elem, targetValue, suffix, flipNegative, roundingFunc);
 			} else {
+				let animType = "number-anim";
+				let currentAnimId = UIAnimations.getCurrentId($elem, animType);
+				if (currentAnimId) {
+					UIAnimations.endAnimation($elem, animType, currentAnimId);
+				}
 				UIAnimations.setNumber($elem, targetValue, roundingFunc, suffix);
 			}
 		},
@@ -95,7 +100,7 @@ define([
 				roundingFunc: roundingFunc,
 				suffix: suffix,
 			};
-			let animId = UIAnimations.startNumberAnimation($elem, animType, isNegative, targetValue, stepDuration, data, function () {
+			let animId = UIAnimations.startNumberAnimation($elem, animType, isNegative, roundedTargetValue, stepDuration, data, function () {
 				step++;
 				let currentValue = startValue + step * stepValue;
 				if (step == numValueSteps) {
@@ -192,6 +197,11 @@ define([
 			$elem.toggleClass("ui-anim-negative", false);
 			$elem.toggleClass("ui-anim-positive", false);
 			delete UIAnimations.animData[animId];
+		},
+
+		isActivelyAnimating: function ($elem, previousTime, currentTime) {
+			if (currentTime && previousTime && currentTime - previousTime > this.LONG_ANIM_DURATION * 2) return false;
+			return this.isAnimating($elem);
 		},
 		
 		isAnimating: function ($elem) {

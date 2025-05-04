@@ -223,9 +223,9 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 					$("#" + id).data("fading", false);
 					$("#" + id).data("closing", false);
 					$("#" + id + "p#common-popup-desc").html("");
-					GlobalSignals.popupClosedSignal.dispatch(id);
 					popupManager.showQueuedPopup();
 					popupManager.updatePause();
+					setTimeout(() => { GlobalSignals.popupClosedSignal.dispatch(id); });
 				});
 
 				// ensure hideOverlay is called even if animation is stopped by another popup opening
@@ -236,10 +236,10 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 				$("#" + id).data("fading", false);
 				$("#" + id).data("closing", false);
 				GameGlobals.uiFunctions.toggle("#" + id, false);
-				GlobalSignals.popupClosedSignal.dispatch(id);
 				popupManager.showQueuedPopup();
 				popupManager.updatePause();
 				popupManager.hideOverlay();
+				setTimeout(() => { GlobalSignals.popupClosedSignal.dispatch(id); });
 			}
 		},
 		

@@ -35,7 +35,7 @@ define([
 			this.resetTribeResources();
 		},
 
-		resetPlayerResources: function () {			
+		resetPlayerResources: function () {
 			this.playerNodes.head.resourcesAcc.reset("global-resources-acc-reset");
 		},
 
@@ -46,7 +46,6 @@ define([
 		},
 
 		resetTribeResources: function () {
-
 			this.tribeNodes.head.resources.storageCapacity = 0;
 			this.tribeNodes.head.resourceAccumulation.reset("global-resources-acc-reset");
 		}

@@ -788,13 +788,22 @@ define(['ash',
 			UIAnimations.animateNumberEnd($valueElement);
 		},
 
-		updateResourceIndicator: function (id, value, change, storage, showChangeIcon, showChange, showDetails, showWarning, visible, animate) {
+		updateResourceIndicator: function (id, value, change, storage, showChangeIcon, showChange, showDetails, showWarning, visible, animate, previousTime, currentTime) {
 			let $indicator = $(id);
 			GameGlobals.uiFunctions.toggle($indicator, visible);
 			GameGlobals.uiFunctions.toggle($indicator.parent(), visible);
+
 			if (visible) {
 				let $valueElement = $indicator.children(".value");
+
+				let isAnimating = UIAnimations.isActivelyAnimating($valueElement, previousTime, currentTime);
+				if (isAnimating) {
+					log.w("skipping resource indicator update because it's still animating a previous one: #" + id);
+					return;
+				}
+				
 				animate = animate || UIAnimations.isAnimating($valueElement);
+
 				UIAnimations.animateOrSetNumber($valueElement, animate, value, "", false, (v) => { return UIConstants.roundValue(v, true, false); });
 				$indicator.children(".value").toggleClass("warning", showWarning && value < 5);
 				$indicator.children(".change").toggleClass("warning", change < 0);

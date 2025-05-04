@@ -38,7 +38,7 @@ define(['ash', 'game/GameGlobals', 'game/GlobalSignals',], function (Ash, GameGl
 				this.extraUpdateTime = 0;
 			}
 
-			// visual update: (approx) every interval, tries to hit exactly each second, no frameExtraUpdateTime
+			// visual update: (approx) every interval, no frameExtraUpdateTime
 			let visualUpdateDelta = timeStamp - this.lastVisualUpdateTimeStamp;
 			let numVisualUpdatesAtLast = Math.floor(this.lastVisualUpdateTimeStamp / this.visualUpdateInterval);
 			let numVisualUpdatesNow = Math.floor(timeStamp / this.visualUpdateInterval);
