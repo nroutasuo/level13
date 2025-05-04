@@ -35,7 +35,7 @@ define([
 	'game/systems/ui/UIOutTextSystem',
 	'game/systems/CheatSystem',
 	'game/systems/DialogueSystem',
-	'game/systems/SlowUpdateSystem',
+	'game/systems/SpecialUpdateSystem',
 	'game/systems/VisionSystem',
 	'game/systems/StaminaSystem',
 	'game/systems/PlayerPositionSystem',
@@ -106,7 +106,7 @@ define([
 	UIOutTextSystem,
 	CheatSystem,
 	DialogueSystem,
-	SlowUpdateSystem,
+	SpecialUpdateSystem,
 	VisionSystem,
 	StaminaSystem,
 	PlayerPositionSystem,
@@ -327,7 +327,7 @@ define([
 			this.engine.addSystem(new TutorialSystem(), SystemPriorities.update);
 			this.engine.addSystem(new EndingSystem(), SystemPriorities.update);
 
-			this.engine.addSystem(new SlowUpdateSystem(), SystemPriorities.postUpdate);
+			this.engine.addSystem(new SpecialUpdateSystem(), SystemPriorities.postUpdate);
 
 			if (GameConstants.isCheatsEnabled) {
 				this.engine.addSystem(new CheatSystem(), SystemPriorities.update);
