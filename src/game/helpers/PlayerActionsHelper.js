@@ -1076,7 +1076,7 @@ define([
 					if (typeof requirements.sector.surface != "undefined") {
 						let requiredValue = requirements.sector.surface;
 						let currentValue = positionComponent.level == GameGlobals.gameState.getSurfaceLevel();
-						let result = this.checkRequirementsBoolean(requiredValue, currentValue);
+						let result = this.checkRequirementsBoolean(requiredValue, currentValue, "Must not be on Surface", "Must be on the Surface");
 						if (result) return result;
 					}
 
