@@ -396,6 +396,8 @@ define([
 		onElementToggled: function ($elem, show, params) {
 			this.onElementsVisibilityChanged($elem, show, params);
 
+			$elem = $($elem);
+
 			// if an info callout target was toggled, toggle its parent container asap instead of waiting for general update
 			if ($elem && $elem.hasClass("info-callout-target")) {
 				this.updateInfoCallout($elem.parent(".callout-container"))
