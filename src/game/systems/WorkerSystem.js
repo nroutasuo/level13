@@ -71,7 +71,6 @@ define([
 			if (GameGlobals.gameState.isLaunched) return;
 			
 			for (var node = this.campNodes.head; node; node = node.next) {
-				this.updateWorkerAutoAssignment(node);
 				if (this.isPendingProductionRateUpdate) {
 					this.updateWorkerProductionRate(node);
 				}
@@ -89,6 +88,7 @@ define([
 		slowUpdate: function () {
 			this.logAmbientPlayer();
 			for (let node = this.campNodes.head; node; node = node.next) {
+				this.updateWorkerAutoAssignment(node);
 				this.updateCampfire(node);
 				this.logAmbientCamp(node);
 			}
@@ -123,15 +123,19 @@ define([
 			};
 			
 			let numToAssign = freePopulation;
+			let numAssigned = 0;
 			while (numToAssign > 0) {
 				let assignType = getAssignType();
 				if (assignType == null) break;
 				node.camp.assignedWorkers[assignType] = (node.camp.assignedWorkers[assignType] || 0) + 1;
+				numAssigned++;
 				numToAssign--;
 				this.log(LogConstants.getUniqueID(), "A previously unassigned worker has started working as " + CampConstants.getWorkerDisplayName(assignType), node);
 			}
 			
-			GlobalSignals.workersAssignedSignal.dispatch(node.entity);
+			if (numAssigned > 0) {
+				GlobalSignals.workersAssignedSignal.dispatch(node.entity);
+			}
 		},
 		
 		updateWorkerProduction: function (node, time) {
