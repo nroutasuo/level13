@@ -1642,6 +1642,7 @@ body.dark .inventorydivision .inventorybox-header {
 }
 body.dark .inventorydivision:first-child .inventorybox-header {
   border-radius: 10px 0 0 0;
+  text-wrap: nowrap;
 }
 body.dark .inventorydivision:last-child .inventorybox-header {
   border-radius: 0 10px 0 0;
@@ -2888,7 +2889,8 @@ body.dark #mobile-overlay {
   height: 100%;
   background: #202220;
 }
-body.dark #mobile-overlay p {
+body.dark #mobile-overlay p,
+body.dark #mobile-overlay h2 {
   margin: 1em;
 }
 body.dark .loading-content,
@@ -4287,6 +4289,7 @@ body.sunlit .inventorydivision .inventorybox-header {
 }
 body.sunlit .inventorydivision:first-child .inventorybox-header {
   border-radius: 10px 0 0 0;
+  text-wrap: nowrap;
 }
 body.sunlit .inventorydivision:last-child .inventorybox-header {
   border-radius: 0 10px 0 0;
@@ -5533,7 +5536,8 @@ body.sunlit #mobile-overlay {
   height: 100%;
   background: #fbfbfb;
 }
-body.sunlit #mobile-overlay p {
+body.sunlit #mobile-overlay p,
+body.sunlit #mobile-overlay h2 {
   margin: 1em;
 }
 body.sunlit .loading-content,

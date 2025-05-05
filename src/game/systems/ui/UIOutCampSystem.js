@@ -119,6 +119,7 @@
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onGameShown);
 			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
 			GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.refresh);
+			GlobalSignals.add(this, GlobalSignals.layoutChangedSignal, this.updateLayout);
 
 			this.refresh();
 		},
@@ -161,6 +162,8 @@
 
 			let campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
 			if (!campComponent) return;
+
+			this.updateLayout();
 
 			let position = this.playerPosNodes.head.position.getPosition();
 			let campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
@@ -1008,6 +1011,13 @@
 			$("#in-demographics-raid-last .value").text(lastEventDescription);
 
 			GameGlobals.uiFunctions.toggle("#in-demographics-raid-last", hasLastEvent);
+		},
+
+		updateLayout: function () {
+			let isSmallLayout = $("body").hasClass("layout-small");
+			
+			$("#in-improvements .action-use").toggleClass("btn-narrow", !isSmallLayout);
+			$("#in-improvements .action-use").toggleClass("btn-compact", isSmallLayout);
 		},
 		
 		saveAutoAssignSettings: function () {

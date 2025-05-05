@@ -131,10 +131,6 @@
 		right: -10em !important;
 		width: 9em !important;
 	}
-
-    .popup .inventorybox ul {
-        width: 370px !important; /* 8 * 46px (li width) + padding */
-    }
 }
 
 @media screen and (max-width: 568px) {

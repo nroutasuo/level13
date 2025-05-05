@@ -305,7 +305,7 @@ define([
 			var btnID = "out-action-move-camp-" + campOrdinal;
 			var btnAction = "move_camp_global_" + campOrdinal;
 			rowHTML += "<td class='camp-overview-level'><div class='camp-overview-level-container lvl13-box-1'></div></td>";
-			rowHTML += "<td class='camp-overview-name'><span class='label info-callout-target info-callout-target-side'></span></td>";
+			rowHTML += "<td class='camp-overview-name hide-in-small-layout'><span class='label info-callout-target info-callout-target-side'></span></td>";
 			rowHTML += "<td class='camp-overview-population list-amount hide-in-small-layout nowrap'><span class='value'></span><span class='change-indicator'></span></td>";
 			rowHTML += "<td class='camp-overview-robots list-amount hide-in-small-layout nowrap'><span class='value'></span><span class='change-indicator'></span></td>";
 			rowHTML += "<td class='camp-overview-reputation list-amount hide-in-small-layout nowrap'><span class='value'></span><span class='change-indicator'></span></td>";

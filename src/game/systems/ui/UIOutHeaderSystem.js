@@ -253,7 +253,8 @@ define([
 			this.updateThemedIconsCache();
 
 			// perks list
-			this.perksList = UIList.create(this, $(".player-perks-list"), this.createPerkListItem, this.updatePerkListItem, this.isPerkListItemDataSame, this.isPerkListItemDataUnchanged);
+			this.perksListDefault = UIList.create(this, $("#player-perks-list-regular"), this.createPerkListItem, this.updatePerkListItem, this.isPerkListItemDataSame, this.isPerkListItemDataUnchanged);
+			this.perksListMobile = UIList.create(this, $("#player-perks-list-mobile"), this.createPerkListItem, this.updatePerkListItem, this.isPerkListItemDataSame, this.isPerkListItemDataUnchanged);
 		},
 
 		updateThemedIconsCache: function () {
@@ -609,9 +610,12 @@ define([
 			if (!this.playerStatsNodes.head) return;
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 
+			let isSmallLayout = this.elements.body.hasClass("layout-small");
+
 			let perksComponent = this.playerStatsNodes.head.perks;
 			let perks = perksComponent.getAll();
-			let newItems = UIList.update(this.perksList, perks);
+			let perksList = isSmallLayout ? this.perksListMobile : this.perksListDefault;
+			let newItems = UIList.update(perksList, perks);
 
 			for (let i = 0; i < newItems.length; i++) {
 				newItems[i].$root.toggle(false);
@@ -666,9 +670,13 @@ define([
 		updatePerks: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 
+			let isSmallLayout = this.elements.body.hasClass("layout-small");
+
 			let perksComponent = this.playerStatsNodes.head.perks;
 			let perks = perksComponent.getAll();
-			UIList.update(this.perksList, perks);
+
+			let perksList = isSmallLayout ? this.perksListMobile : this.perksListDefault;
+			UIList.update(perksList, perks);
 		},
 		
 		createPerkListItem: function () {
@@ -1036,6 +1044,7 @@ define([
 			this.elements.body.toggleClass("layout-small", isSmallLayout);
 			this.elements.body.toggleClass("layout-regular", !isSmallLayout);
 			if (wasSmallLayout == isSmallLayout) return;
+			GlobalSignals.layoutChangedSignal.dispatch();
 			this.updateResources(true);
 		},
 
@@ -1047,6 +1056,7 @@ define([
 			GameGlobals.uiFunctions.toggle("#mobile-header-camp-res", isSmallLayout && isInCamp);
 			let padding = isSmallLayout ? Math.ceil($("#mobile-header").height()) + 20 : 15;
 			$("#unit-main").css("padding-top", padding + "px");
+			$("#log-container").css("padding-top", (padding + 10) + "px");
 		},
 
 		updateTabVisibility: function () {

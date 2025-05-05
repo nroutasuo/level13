@@ -24,6 +24,7 @@ define(['ash',], function (Ash) {
 		buttonStateChangedSignal: new Ash.Signals.Signal(),
 		windowResizedSignal: new Ash.Signals.Signal(),
 		popupResizedSignal: new Ash.Signals.Signal(),
+		layoutChangedSignal: new Ash.Signals.Signal(),
 		updateButtonsSignal: new Ash.Signals.Signal(),
 		clearBubblesSignal: new Ash.Signals.Signal(),
 		markLogMessagesSeenSignal: new Ash.Signals.Signal(),
