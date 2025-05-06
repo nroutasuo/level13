@@ -2037,6 +2037,10 @@ body.dark .interaction-options {
 body.dark .debug-info {
   color: #bbb;
   background: #22992299;
+  font-size: 0.85rem;
+}
+body.dark p.debug-info {
+  margin: 0;
 }
 body.dark .dev-hud {
   opacity: 0.75;
@@ -2793,13 +2797,13 @@ body.dark #save-list-container {
   border: 1px solid #555;
 }
 body.dark #save-list {
-  flex: 0.7;
+  flex: 0.65;
   display: flex;
   flex-direction: column;
   gap: 3px;
 }
 body.dark #save-list-options {
-  flex: 0.3;
+  flex: 0.35;
   border: 1px solid #3a3a3a;
 }
 body.dark #save-list-options.selected {
@@ -2843,7 +2847,6 @@ body.dark .li-save-slot div {
 body.dark .save-slot-date {
   float: right;
   color: #bbb;
-  font-size: 0.85rem;
 }
 body.dark #game-stats-container {
   max-height: 70vh;
@@ -4687,6 +4690,10 @@ body.sunlit .interaction-options {
 body.sunlit .debug-info {
   color: #777;
   background: #22992299;
+  font-size: 0.85rem;
+}
+body.sunlit p.debug-info {
+  margin: 0;
 }
 body.sunlit .dev-hud {
   opacity: 0.75;
@@ -5443,13 +5450,13 @@ body.sunlit #save-list-container {
   border: 1px solid #999;
 }
 body.sunlit #save-list {
-  flex: 0.7;
+  flex: 0.65;
   display: flex;
   flex-direction: column;
   gap: 3px;
 }
 body.sunlit #save-list-options {
-  flex: 0.3;
+  flex: 0.35;
   border: 1px solid #aaa;
 }
 body.sunlit #save-list-options.selected {
@@ -5493,7 +5500,6 @@ body.sunlit .li-save-slot div {
 body.sunlit .save-slot-date {
   float: right;
   color: #777;
-  font-size: 0.85rem;
 }
 body.sunlit #game-stats-container {
   max-height: 70vh;

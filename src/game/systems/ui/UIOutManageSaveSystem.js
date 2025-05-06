@@ -90,6 +90,7 @@ function (Ash, UIList, FileUtils, GameGlobals, GlobalSignals, GameConstants, Sav
 		updateHeader: function () {
 			$("#manage-save-popup-header").text(this.showImport ? "Import save" : "Manage saves");
 			$("#manage-save-info").text(this.showImport ? "Paste an exported save below to load it." : "Note that the game is still in alpha and updates can break old saves.");
+			$("#manage-save-info").toggleClass("p-meta", !this.showImport);
 		},
 
 		updateContainers: function () {
@@ -235,7 +236,7 @@ function (Ash, UIList, FileUtils, GameGlobals, GlobalSignals, GameConstants, Sav
 			let showVersionWarning = this.showSaveVersionWarning(saveObject);
 
 			result += "Save version: <span" + (showVersionWarning ? " class='warning'" : "") + ">" + saveObject.version + "</span><br/>";
-			result += "Save timestamp: " + this.getDateDisplayString(saveObject.timeStamp) + "<br/>";
+			result += "Save timestamp: " + this.getDateDisplayStringFromDateString(saveObject.timeStamp) + "<br/>";
 			result += "Save world seed: " + saveObject.gameState.worldSeed;
 
 			if (showVersionWarning) {
@@ -267,6 +268,10 @@ function (Ash, UIList, FileUtils, GameGlobals, GlobalSignals, GameConstants, Sav
 				case GameConstants.SAVE_SLOT_USER_3: return "Custom #3";
 			}
 			return "This slot can't be manually overwritten.";
+		},
+
+		getDateDisplayStringFromDateString: function (s) {
+			return this.getDateDisplayString(new Date(Date.parse(s)));
 		},
 
 		getDateDisplayString: function (date) {
@@ -311,7 +316,6 @@ function (Ash, UIList, FileUtils, GameGlobals, GlobalSignals, GameConstants, Sav
 			this.updateContainers();
 
 			GameGlobals.uiFunctions.toggle("#textarea-import-save", true);
-			GameGlobals.uiFunctions.toggle("#import-save-warning", false);
 			GameGlobals.uiFunctions.toggle("#import-save-msg", false);
 		},
 		
@@ -354,6 +358,7 @@ function (Ash, UIList, FileUtils, GameGlobals, GlobalSignals, GameConstants, Sav
 			} else {
 				let msg = "That doesn't appear to be a valid save.";
 				$("#import-save-msg").text(msg);
+				$("#import-save-msg").toggleClass("warning", true);
 				GameGlobals.uiFunctions.toggle("#import-save-msg", true);
 			}
 		},
@@ -367,7 +372,7 @@ function (Ash, UIList, FileUtils, GameGlobals, GlobalSignals, GameConstants, Sav
 			GameGlobals.uiFunctions.hideGame(true);
 			
 			GlobalSignals.restartGameSignal.dispatch(false);
-			GameGlobals.uiFunctions.showGame(true);
+			GameGlobals.uiFunctions.showGame();
 		},
 		
 		downloadExport: function () {
