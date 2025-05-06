@@ -30,8 +30,8 @@ define([
 			
 			let addGroup = function (title, items, getItemDisplayName) {
 				if (items.length == 0) return
-				if  (title && title.length > 0) effects += title + ": ";
-				if (showMultiline) effects += "<br/>";
+				if (title && title.length > 0) effects += title + ": ";
+				if (title && showMultiline) effects += "<br/>";
 				for (let i = 0; i < items.length; i++) {
 					if (i > 0) effects += Text.t("ui.common.list_template_many_delimiter");
 					effects += getItemDisplayName(items[i]).toLowerCase();
@@ -66,7 +66,7 @@ define([
 			addGroup("new events", unlockedOccurrences, (e) => e);
 
 			let improvedOccurrences = GameGlobals.upgradeEffectsHelper.getImprovedOccurrences(upgradeID);
-			addGroup("", improvedOccurrences, (e) => "improved " + e);
+			addGroup("", improvedOccurrences, (e) => GameGlobals.upgradeEffectsHelper.getImproveOccurrenceText(e));
 
 			let unlockedActions = GameGlobals.upgradeEffectsHelper.getUnlockedGeneralActions(upgradeID);
 			addGroup("new actions", unlockedActions, (action) => {
@@ -82,6 +82,14 @@ define([
 			return effects;
 		},
 
+		getImproveOccurrenceText: function (event) {
+			switch (event) {
+				case OccurrenceConstants.campOccurrenceTypes.disaster: 
+					return "migitated " + event;
+			}
+			return "improved " + event;
+		},
+
 		getUnlockedResearchIDs: function (upgradeID) {
 			return  UpgradeConstants.getUnlockedTech(upgradeID);
 		},
@@ -90,6 +98,7 @@ define([
 			let result = "";
 			let unlockedActions = this.getUnlockedActions(upgradeID);
 			let unlockedProjects = GameGlobals.upgradeEffectsHelper.getUnlockedProjects(upgradeID);
+			let improvedOccurrences = GameGlobals.upgradeEffectsHelper.getImprovedOccurrences(upgradeID);
 			
 			if (unlockedActions.indexOf("clear_waste_t") >= 0) {
 				result += "Workers cannot clear toxic waste. You must go to the sector yourself. ";
@@ -101,6 +110,10 @@ define([
 			
 			if (unlockedProjects.indexOf(improvementNames.greenhouse) >= 0) {
 				result += "Greenhouses can only be built at certain locations with good conditions. If you've found those locations they will appear in the projects tab. ";
+			}
+
+			if (improvedOccurrences.indexOf(OccurrenceConstants.campOccurrenceTypes.disaster) >= 0) {
+				result += "Disasters like earthquakes and floods are now less like to damage buildings. ";
 			}
 			
 			return result;
