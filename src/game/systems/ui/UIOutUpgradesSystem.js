@@ -252,9 +252,14 @@ define([
 					var blueprintVO = this.tribeNodes.head.upgrades.getBlueprint(upgradeDefinition.id);
 					blueprintTD = "<td style='text-align:left'>";
 					for (let j = 0; j < blueprintVO.maxPieces; j++) {
-						var icon = j < blueprintVO.currentPieces ? UIConstants.getBlueprintPieceIcon(blueprintVO.upgradeID) : "";
-						classes = "blueprint-piece-box" + (j < blueprintVO.currentPieces ? " blueprint-piece-box-found" : " blueprint-piece-box-missing");
-						blueprintTD += "<div class='" + classes + "'>" + icon + "</div>";
+						let icon = j < blueprintVO.currentPieces ? UIConstants.getBlueprintPieceIcon(blueprintVO.upgradeID) : "";
+						let isFilled = j < blueprintVO.currentPieces;
+						let blueprintLevel = this.getBlueprintLevel(upgradeDefinition.id);
+						classes = "blueprint-piece-box" + (isFilled ? " blueprint-piece-box-found info-callout-target info-callout-target-side" : " blueprint-piece-box-missing");
+						let blueprintPieceDescription = isFilled ? 
+							Text.t("ui.upgrades.blueprint_piece_found_level_hint", blueprintLevel) :
+							Text.t("ui.upgrades.blueprint_piece_missing_hint");
+						blueprintTD += "<div class='" + classes + "' description='" + blueprintPieceDescription + "'>" + icon + "</div>";
 					}
 					blueprintTD += "</td>";
 					showDescription = false;
@@ -276,6 +281,17 @@ define([
 				let descriptionTD = "<td class='maxwidth'>" + description + "</td>";
 				return "<tr data-upgrade-id='" + upgradeDefinition.id + "' data-status='" + status + "'>" + nameTD + "" + (showDescription ? descriptionTD : "") + ""+ blueprintTD + "" + iconTD + "" + buttonTD + "</tr>";
 			}
+		},
+
+		getBlueprintLevel: function (upgradeID) {
+			let campOrdinal = UpgradeConstants.getBlueprintCampOrdinal(upgradeID);
+			let levelIndex = UpgradeConstants.getBlueprintLevelIndex(upgradeID);
+
+			let levelsForCamp = GameGlobals.gameState.getLevelsForCamp(campOrdinal);
+			if (levelsForCamp.length == 1) return levelsForCamp[0];
+			if (levelIndex == 0) return levelsForCamp[0];
+
+			return levelsForCamp[1];
 		},
 
 		getEffectDescription: function (upgradeID, status) {

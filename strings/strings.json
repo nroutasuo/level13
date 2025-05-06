@@ -2219,6 +2219,8 @@
             "_upgrade_status_researched_name": "Researched",
             "all_upgrades_header": "All upgrades",
             "available_upgrades_header": "Available upgrades",
+            "blueprint_piece_found_level_hint": "found on level {level}",
+            "blueprint_piece_missing_hint": "missing piece",
             "blueprints_header": "Blueprints",
             "reseached_upgrades_field": "Upgrades researched: {num}",
             "upgrade_details_header": "Upgrade details",

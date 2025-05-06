@@ -1177,6 +1177,9 @@ body.dark div.callout-arrow-left {
 body.dark .item div.callout-arrow-up {
   margin: 0 0 0 2px;
 }
+body.dark .info-callout-target-small + div.info-callout .callout-arrow-up {
+  margin: 0 0 0 5px !important;
+}
 body.dark span.action-effect-description {
   display: block;
 }
@@ -3823,6 +3826,9 @@ body.sunlit div.callout-arrow-left {
 }
 body.sunlit .item div.callout-arrow-up {
   margin: 0 0 0 2px;
+}
+body.sunlit .info-callout-target-small + div.info-callout .callout-arrow-up {
+  margin: 0 0 0 5px !important;
 }
 body.sunlit span.action-effect-description {
   display: block;

@@ -133,6 +133,14 @@ function (Ash, UpgradeData, PlayerActionConstants, WorldConstants, UpgradeVO) {
 			return null;
 		},
 		
+		getBlueprintLevelIndex: function (upgradeID) {
+			var ordinal = this.getBlueprintCampOrdinal(upgradeID);
+			if (this.blueprintsByCampOrdinal[ordinal][0].indexOf(upgradeID) >= 0) return 0;
+			if (this.blueprintsByCampOrdinal[ordinal][1].indexOf(upgradeID) >= 0) return 0;
+			if (this.blueprintsByCampOrdinal[ordinal][2].indexOf(upgradeID) >= 0) return 1;
+			return null;
+		},
+		
 		getUpgradeType: function (upgradeID) {
 			let costs = PlayerActionConstants.costs[upgradeID] || {};
 			let type = UpgradeConstants.UPGRADE_TYPE_RUMOURS;
