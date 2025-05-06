@@ -355,7 +355,7 @@ define([
 		handleOldSector: function (sector, previousSector) {
 			let logAmbient = Math.random() < 0.01;
 
-			if (previousSector && previousSector.has(CampComponent) && logAmbient) {
+			if (sector && !sector.has(CampComponent) && previousSector && previousSector.has(CampComponent) && logAmbient) {
 				if (GameGlobals.gameState.getStoryFlag(StoryConstants.flags.GREENHOUSE_SEARCHING_FOR_CURE)) {
 					this.addLogMessage(LogConstants.getUniqueID(), "Out into the City again. Somewhere out there is a cure waiting to be found.");
 				} else if (GameGlobals.gameState.getStoryFlag(StoryConstants.flags.ESCAPE_SEARCHING_FOR_GROUND)) {
