@@ -1067,7 +1067,7 @@
 			let textFragments = [];
 
 			let isNegated = false;
-			if (OccurrenceConstants.campOccurrenceTypes.disaster && eventVO.damagedBuilding == null) isNegated = true;
+			if (eventVO.eventType == OccurrenceConstants.campOccurrenceTypes.disaster && eventVO.damagedBuilding == null) isNegated = true;
 
 			if (isNegated) {
 				textFragments.push({ textKey: "ui.camp.last_event_" + eventVO.eventType + "_message_negated_start", textParams: { type: eventVO.eventSubType } });
