@@ -325,6 +325,13 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 			let displayName = this.getImprovementDisplayName(improvementID, level);
 			let msg = def && def.logMsgImproved ? def.logMsgImproved : "ui.log.improved_building_message";
 			return { textKey: msg, textParams: { name: displayName } };
+		},
+		
+		getBuiltLogMessageTextVO: function (improvementID, level) {
+			let def = this.getDef(improvementID);
+			let displayName = this.getImprovementDisplayName(improvementID, level);
+			let msg = def && def.logMsgBuilt ? def.logMsgBuilt : "ui.log.built_building_message";
+			return { textKey: msg, textParams: { name: displayName } };
 		}
 
 	};

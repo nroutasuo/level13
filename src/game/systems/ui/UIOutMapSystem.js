@@ -684,7 +684,7 @@ define([
 				if (blocker) {
 					let gangComponent = GameGlobals.levelHelper.getGangComponent(position, direction);
 					let enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
-					let blockerName = TextConstants.getMovementBlockerName(blocker, enemiesComponent, gangComponent).toLowerCase();
+					let blockerName = TextConstants.getMovementBlockerName(blocker, gangComponent).toLowerCase();
 					if (GameGlobals.movementHelper.isBlocked(sector, direction)) {
 						let blockerType = blocker.type;
 						let isGang = blockerType === MovementConstants.BLOCKER_TYPE_GANG;

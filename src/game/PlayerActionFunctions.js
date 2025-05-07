@@ -724,6 +724,7 @@ define(['ash',
 				let level = GameGlobals.levelHelper.getLevelEntityForSector(sector);
 				let levelStatus = level.get(LevelStatusComponent);
 				levelStatus.examinedSpots.push(spotID);
+				if (spotDef.logMessageKey) GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), spotDef.logMessageKey);
 				GlobalSignals.examineSpotExaminedSignal.dispatch(spotDef.storyTag);
 			};
 
@@ -1286,6 +1287,7 @@ define(['ash',
 
 			var sectorPos = positionComponent.level + "." + positionComponent.sectorId() + "." + direction;
 			this.clearBlocker("clear_gate", MovementConstants.BLOCKER_TYPE_TOLL_GATE, sectorPos);
+			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "Paid for passage.");
 		},
 		
 		clearBlocker: function (action, blockerType, sectorPos) {
@@ -2959,6 +2961,12 @@ define(['ash',
 
 			improvementsComponent.add(improvementName);
 			GameGlobals.gameState.increaseGameStatKeyed("numBuildingsBuiltPerId", improvementID);
+
+			let level = improvementsComponent.getLevel(improvementName);
+			
+			let msg = ImprovementConstants.getBuiltLogMessageTextVO(improvementID, level);
+			GameGlobals.playerHelper.addLogMessage("MSG_BUILD_" + improvementName, msg, { position: sector.get(PositionComponent).getPositionInCamp() });
+
 			GlobalSignals.improvementBuiltSignal.dispatch();
 			
 			this.completeAction(actionName);

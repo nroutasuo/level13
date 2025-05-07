@@ -332,6 +332,7 @@ define([
 					spotVO.nameKey = spotVO.nameKey || "story.spots." + id + "_name";
 					spotVO.shortNameKey = spotVO.shortNameKey || "story.spots." + id + "_name_short";
 					spotVO.descriptionKey = spotVO.descriptionKey || "story.spots." + id + "_message";
+					spotVO.logMessageKey = spotVO.logMessageKey || "story.spots." + id + "_log_message";
 					return spotVO;
 				}
 			}

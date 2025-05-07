@@ -678,9 +678,8 @@ define([
 				var blocker = passagesComponent.getBlocker(direction);
 
 				if (blocker) {
-					var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
 					var gangComponent = GameGlobals.levelHelper.getGangComponent(position, direction);
-					var blockerName = TextConstants.getMovementBlockerName(blocker, enemiesComponent, gangComponent).toLowerCase();
+					var blockerName = TextConstants.getMovementBlockerName(blocker, gangComponent).toLowerCase();
 					if (GameGlobals.movementHelper.isBlocked(entity, direction)) {
 						switch (blocker.type) {
 							case MovementConstants.BLOCKER_TYPE_DEBRIS:

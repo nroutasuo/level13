@@ -5,8 +5,10 @@ define([
 	'game/GlobalSignals',
 	'game/constants/FightConstants',
 	'game/constants/ExplorerConstants',
-	'game/constants/ItemConstants',
 	'game/constants/EnemyConstants',
+	'game/constants/LogConstants',
+	'game/constants/MovementConstants',
+	'game/constants/TextConstants',
 	'game/nodes/FightNode',
 	'game/nodes/player/PlayerStatsNode',
 	'game/components/common/PositionComponent',
@@ -14,7 +16,7 @@ define([
 	'game/components/sector/SectorControlComponent',
 	'game/components/player/ItemsComponent',
 	'game/components/player/PlayerActionResultComponent',
-], function (Ash, GameGlobals, GlobalSignals, FightConstants, ExplorerConstants, ItemConstants, EnemyConstants,
+], function (Ash, GameGlobals, GlobalSignals, FightConstants, ExplorerConstants, EnemyConstants, LogConstants, MovementConstants, TextConstants,
 	FightNode, PlayerStatsNode,
 	PositionComponent,
 	FightEncounterComponent, SectorControlComponent,
@@ -245,6 +247,12 @@ define([
 					// gang
 					encounterComponent.gangComponent.addAttempt();
 					if (won) encounterComponent.gangComponent.addWin();
+					if (encounterComponent.gangComponent.isDefeated()) {
+						let blockeVO = { type: MovementConstants.BLOCKER_TYPE_GANG };
+						let blockerName = TextConstants.getMovementBlockerName(blockeVO, encounterComponent.gangComponent).toLowerCase();
+						let blockerVerb = TextConstants.getUnblockedVerb(blockeVO.type);
+						GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), blockerName + " " + blockerVerb);
+					}
 				} else {
 					// random encounter
 					if (won) {

@@ -1345,6 +1345,14 @@ define([
 				messages.push({ id: LogConstants.MSG_ID_GOT_INJURED, text: "Got injured.", addToPopup: true, addToLog: true });
 			}
 
+			if (resultVO.gainedExplorerInjuries.length > 0) {
+				for (let i = 0; i < resultVO.gainedExplorerInjuries.length; i++) {
+					let explorerID = resultVO.gainedExplorerInjuries[i];
+					let explorerVO = GameGlobals.playerHelper.getExplorerByID(explorerID);
+					messages.push({ id: LogConstants.getUniqueID(), text: explorerVO.name + " got injured.", addToPopup: true, addToLog: true });
+				}
+			}
+
 			if (resultVO.getGainedCurses().length > 0) {
 				messages.push({ id: LogConstants.MSG_ID_GOT_INJURED, text: "Got cursed.", addToPopup: true, addToLog: true });
 			}

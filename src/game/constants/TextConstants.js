@@ -1405,7 +1405,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			return validItems.join(", ");
 		},
 		
-		getMovementBlockerName: function (blockerVO, enemiesComponent, gangComponent) {
+		getMovementBlockerName: function (blockerVO, gangComponent) {
 			switch (blockerVO.type) {
 				case MovementConstants.BLOCKER_TYPE_GANG:
 					let enemies = this.getAllEnemies(null, gangComponent);
