@@ -696,15 +696,19 @@ define(['ash',
 			},
 
 			updateGameStatsPopup: function () {
-				let html = "";
 				let stats = GameGlobals.playerHelper.getVisibleGameStats();
+
+				let html = "<table class='fullwidth'>";
 				for (let i in stats) {
 					let category = stats[i];
 					let isCategoryDebugVisible = !category.isVisible && GameConstants.isDebugVersion;
 					let isCategoryVisible = category.isVisible || isCategoryDebugVisible;
 					if (!isCategoryVisible) continue;
-					html += "<div class='game-stat-category" + (isCategoryDebugVisible ? " debug-info" : "") + "'>";
-					html += "<h4>" + category.displayName + "</h4>";
+
+					html += "<th colspan=2 class='game-stat-category" + (isCategoryDebugVisible ? " debug-info" : "") + "'>";
+					html += category.displayName;
+					html += "</th>";
+
 					for (let j in category.stats) {
 						let stat = category.stats[j];
 
@@ -718,7 +722,7 @@ define(['ash',
 
 						if (stat.isSubCategory) {
 							divClasses.push("game-stat-sub-category");
-							html += "<div class='" + divClasses.join(" ") + "'>" + stat.displayName + "</div>";
+							html += "<tr><td colspan=2 class='" + divClasses.join(" ") + "'>" + stat.displayName + "</td></tr>";
 							continue;
 						}
 
@@ -731,16 +735,24 @@ define(['ash',
 							} else if (stat.unit == GameConstants.gameStatUnits.steps) {
 								displayValue = UIConstants.roundValue(stat.value) + " steps";
 							} else {
-								displayValue = UIConstants.roundValue(stat.value);
+								displayValue = UIConstants.getDisplayValue(UIConstants.roundValue(stat.value));
 							}
 						}
-						html += "<div class='" + divClasses.join(" ") + "'>";
+						
+						html += "<tr>";
+						html += "<td class='" + divClasses.join(" ") + "'>";
 						html += "<span class='game-stat-span game-stat-name'>" + Text.capitalize(stat.displayName) + "</span>";
-						html += "<span class='game-stat-span game-stat-value'>" + displayValue + "</span>";
+						html += "</td>";
+
+						html += "<td>"
+						html += "<span class='game-stat-span game-stat-value'>" + displayValue + "</span> ";
+
 						if (stat.entry) {
 							let entryDisplay = stat.entry;
 							if (stat.entry.hasOwnProperty("sectorX")) {
 								entryDisplay = new PositionVO(stat.entry.level, stat.entry.sectorX, stat.entry.sectorY).getInGameFormat(true);
+							} else if (stat.entry.hasOwnProperty("level")) {
+								entryDisplay = "on level " + stat.entry.level;
 							} else if (stat.entry.hasOwnProperty("name")) {
 								entryDisplay = stat.entry.name;
 							} else if (EnemyConstants.tryGetEnemy(stat.entry)) {
@@ -754,12 +766,16 @@ define(['ash',
 							}
 							html += "<span class='game-stat-span game-stat-highscore-entry'>(" + entryDisplay + ")</span>";
 						}
-						html += "</div>";
+						html += "</td>";
+
+
+						html += "</tr>";
 					}
-					html += "</div>";
 				}
+				html += "</table>";
 				
 				$("#game-stats-container").html(html);
+				$("#game-stats-container").animate({ scrollTop: 0 });
 			},
 
 			getGameInfoDiv: function () {
@@ -1571,11 +1587,11 @@ define(['ash',
 				this.popupManager.showOverlay(function () {
 					uiFunctions.popupManager.repositionPopup($popup);
 					GlobalSignals.popupOpenedSignal.dispatch(popupID);
-					GameGlobals.gameState.isPaused = true;
 					$popup.stop().fadeIn(UIConstants.POPUP_FADE_IN_DURATION, function () {
 						$popup.attr("data-toggling", false);
 						uiFunctions.toggle("#" + popupID, true);
 						uiFunctions.popupManager.repositionPopup($popup);
+						uiFunctions.popupManager.updatePause();
 						GlobalSignals.popupShownSignal.dispatch("common-popup");
 					});
 					GlobalSignals.elementToggledSignal.dispatch(("#" + popupID), true);

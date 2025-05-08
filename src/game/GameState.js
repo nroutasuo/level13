@@ -87,20 +87,21 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.initGameStatSimple("numCaravansSent");
 			this.initGameStatSimple("numExcursionsStarted");
 			this.initGameStatSimple("numExcursionsSurvived");
+			this.initGameStatSimple("numExplorerInjuriesReceived");
+			this.initGameStatSimple("numExplorersDismissed");
+			this.initGameStatSimple("numExplorersLost");
+			this.initGameStatSimple("numExplorersRecruited");
 			this.initGameStatSimple("numFightsFled");
 			this.initGameStatSimple("numFightsStarted");
 			this.initGameStatSimple("numFightsWon");
-			this.initGameStatSimple("numExplorersRecruited");
-			this.initGameStatSimple("numExplorersLost");
-			this.initGameStatSimple("numExplorersDismissed");
 			this.initGameStatSimple("numGraffitiMade");
 			this.initGameStatSimple("numInjuriesReceived");
-			this.initGameStatSimple("numExplorerInjuriesReceived");
-			this.initGameStatSimple("numItemsCrafted");
 			this.initGameStatSimple("numItemsBroken");
-			this.initGameStatSimple("numItemsRepaired");
+			this.initGameStatSimple("numItemsCrafted");
 			this.initGameStatSimple("numItemsLost");
+			this.initGameStatSimple("numItemsRepaired");
 			this.initGameStatSimple("numRaidsLost");
+			this.initGameStatSimple("numRefugeesAccepted");
 			this.initGameStatSimple("numStepsTaken");
 			this.initGameStatSimple("numTimesRestedOutside");
 			this.initGameStatSimple("numTimesScavenged");
@@ -149,6 +150,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.initListStat("uniqueItemsEquipped");
 			this.initListStat("uniqueItemsFound");
 			this.initListStat("uniqueEnemiesDefeated");
+			this.initListStat("uniqueOutNPCsMet");
 		},
 
 		syncData: function () {

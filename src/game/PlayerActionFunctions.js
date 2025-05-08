@@ -385,6 +385,12 @@ define(['ash',
 				GameGlobals.gameState.increaseGameStatHighScore("mostDialoguesWithExplorer", explorerVO, explorerVO.numDialogues);
 			}
 
+			if (characterVO) {
+				if (!GameGlobals.playerHelper.isInCamp()) {
+					GameGlobals.gameState.increaseGameStatList("uniqueOutNPCsMet", characterVO.instanceID);
+				}
+			}
+
 			GameGlobals.gameFlowLogger.log("start dialogue: " + id);
 
 			this.playerStatsNodes.head.entity.add(new DialogueComponent(dialogueVO, explorerVO, characterVO, textParams));

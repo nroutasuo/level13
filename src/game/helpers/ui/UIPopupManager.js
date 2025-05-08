@@ -197,6 +197,7 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 		updatePause: function () {
 			let hasOpenPopup = this.hasOpenPopup();
 			GameGlobals.gameState.isPaused = hasOpenPopup;
+			$("body").css("overflow", hasOpenPopup ? "hidden" : "initial");
 			$(".hidden-by-popups").attr("aria-hidden", hasOpenPopup);
 		},
 		

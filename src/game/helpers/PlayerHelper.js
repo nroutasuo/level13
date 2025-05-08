@@ -679,7 +679,6 @@ define([
 			endCategory();
 
 			// Exploration
-			let levelStats = GameGlobals.levelHelper.getLevelStatsGlobal();
 			startCategory("Exploration", true);
 			addStat("Steps taken", this.getGameStatSimple("numStepsTaken"));
 			addStat("Sectors visited", this.getGameStatSimple("numVisitedSectors"));
@@ -688,17 +687,17 @@ define([
 			addStat("Most steps on level", this.getGameStatHighScore("numStepsPerLevel"), GameGlobals.gameState.isFeatureUnlocked("levels"), GameConstants.gameStatUnits.steps, GameConstants.gameStatUnits.level);
 			addStat("Expeditions started", this.getGameStatSimple("numExcursionsStarted"), GameGlobals.gameState.isFeatureUnlocked("camp"));
 			addStat("Expeditions survived", this.getStatPercentage("numExcursionsSurvived", "numExcursionsStarted"), GameGlobals.gameState.isFeatureUnlocked("camp"));
-			addStat("Longest survived", this.getGameStatHighScore("longestSurvivedExcrusion"), GameGlobals.gameState.isFeatureUnlocked("camp"), GameConstants.gameStatUnits.steps);
+			addStat("Longest survived", this.getGameStatHighScore("longestSurvivedExcrusion"), GameGlobals.gameState.isFeatureUnlocked("camp"), GameConstants.gameStatUnits.steps, GameConstants.gameStatUnits.level);
 			endSubCategory();
 			// addStat("Highest coordinates visited", this.getGameStatHighScore("mostDistantSectorFromCenterVisited"), GameGlobals.playerHelper.hasItem("equipment_map"));
-			addStat("Furthest away from camp", this.getGameStatHighScore("mostDistantSectorFromCampVisited"), GameGlobals.gameState.isFeatureUnlocked("camp"), GameConstants.gameStatUnits.steps);
-			addStat("Lowest stamina when returning to camp", this.getGameStatHighScore("lowestStaminaReturnedToCampWith"), GameGlobals.gameState.isFeatureUnlocked("camp"));
+			// addStat("Furthest away from camp", this.getGameStatHighScore("mostDistantSectorFromCampVisited"), GameGlobals.gameState.isFeatureUnlocked("camp"), GameConstants.gameStatUnits.steps);
+			// addStat("Lowest stamina when returning to camp", this.getGameStatHighScore("lowestStaminaReturnedToCampWith"), GameGlobals.gameState.isFeatureUnlocked("camp"));
 			addStat("Injuries received", this.getGameStatSimple("numInjuriesReceived"));
 			addStat("Explorer injuries received", this.getGameStatSimple("numExplorerInjuriesReceived"));
 			addStat("Times rested outside", this.getGameStatSimple("numTimesRestedOutside"));
 			addStat("Times despaired", this.getGameStatKeyedSum("numTimesDespairedPerLevel"));
 			addStat("Most despairs on level", this.getGameStatHighScore("numTimesDespairedPerLevel"), GameGlobals.gameState.isFeatureUnlocked("levels"));
-			addStat("Times blinded by sunlight", this.getGameStatSimple("numTimesBlindedBySunlight"), GameGlobals.gameState.isFeatureUnlocked("sunlight"));
+			addStat("People met outside", this.getGameStatList("uniqueOutNPCsMet"), visibleIfValueGreaterThanZero);
 			addStat("Graffiti made", this.getGameStatSimple("numGraffitiMade"), visibleIfValueGreaterThanZero);
 			endCategory();
 
@@ -707,6 +706,7 @@ define([
 			addStat("Buildings built", this.getGameStatKeyedSum("numBuildingsBuiltPerId", id => getImprovementType(improvementNames[id]) == improvementTypes.camp));
 			addStat("Buildings dismantled", this.getGameStatKeyedSum("numBuildingsDismantledPerId"));
 			addStat("Building improvements", this.getGameStatKeyedSum("numBuildingImprovementsPerId"));
+			/*
 			for (let improvementID in improvementNames) {
 				let improvementName = improvementNames[improvementID];
 				let useAction = "use_in_" + improvementID;
@@ -717,39 +717,40 @@ define([
 					addStat("Total time: " + actionName, this.getGameStatKeyed("timeUsingCampBuildingPerId", improvementID), isImprovementVisible, GameConstants.gameStatUnits.seconds);
 				}
 			}
-			addStat("Raids", this.getGameStatKeyed("numCampEventsByType", "raid"));
+			*/
+			addStat("Raids sustained", this.getGameStatKeyed("numCampEventsByType", "raid"));
 			addStat("Raids lost", this.getGameStatSimple("numRaidsLost"));
 			addStat("Most resources lost in a raid", this.getGameStatHighScore("mostResourcesLostInRaid"));
+			addStat("Disease outbreaks", this.getGameStatKeyed("numCampEventsByType", "disease"));
+			addStat("Natural disasters", this.getGameStatKeyed("numCampEventsByType", "disaster"));
+			addStat("Refugees accepted", this.getGameStatSimple("numRefugeesAccepted"), visibleIfValueGreaterThanZero);
 
 			let playerStats = [ "rumours", "evidence", "hope", "insight"];
 			let playerStatsAllSources = [ "amountPlayerStatsFoundPerId", "amountPlayerStatsProducedInCampsPerId" ];
 			for (let i = 0; i < playerStats.length; i++) {
 				let stat = playerStats[i];
 				let isStatVisible = GameGlobals.gameState.isFeatureUnlocked(stat);
-				startSubCategory(stat, isStatVisible);
-				addStat("Produced in camp", this.getGameStatKeyed("amountPlayerStatsProducedInCampsPerId", stat), isStatVisible && GameGlobals.gameState.isFeatureUnlocked("camp"));
-				addStat("Found exploring", this.getGameStatKeyed("amountPlayerStatsFoundPerId", stat), isStatVisible);
+				addStat(stat + ": Produced in camp", this.getGameStatKeyed("amountPlayerStatsProducedInCampsPerId", stat), isStatVisible && GameGlobals.gameState.isFeatureUnlocked("camp"));
+				addStat(stat + ": Found exploring", this.getGameStatKeyed("amountPlayerStatsFoundPerId", stat), isStatVisible);
 				// addStat("% produced in camp", this.getStatPercentageFromKeyedSum("amountPlayerStatsProducedInCampsPerId", playerStatsAllSources, stat), isStatVisible && GameGlobals.gameState.isFeatureUnlocked("camp"));
 				// addStat("% found exploring", this.getStatPercentageFromKeyedSum("amountPlayerStatsFoundPerId", playerStatsAllSources, stat), isStatVisible && GameGlobals.gameState.isFeatureUnlocked("camp"));
-				endSubCategory();
 			}
 			endCategory();
 
 			// Resources
 			startCategory("Resources", true);
 			let resStatsAllSources = [ "amountResourcesProducedInCampsPerName", "amountResourcesFoundPerName" ];
-			addStat("Resources produced in camp", this.getGameStatKeyedSum("amountResourcesProducedInCampsPerName"), GameGlobals.gameState.isFeatureUnlocked("camp"));
-			addStat("Resources found", this.getGameStatKeyedSum("amountResourcesFoundPerName"));
+			//addStat("Resources produced in camp", this.getGameStatKeyedSum("amountResourcesProducedInCampsPerName"), GameGlobals.gameState.isFeatureUnlocked("camp"));
+			//addStat("Resources found", this.getGameStatKeyedSum("amountResourcesFoundPerName"));
 
 			for (let key in resourceNames) {
 				let name = resourceNames[key];
 				let isVisible = GameGlobals.gameState.isFeatureUnlocked("resource_" + name);
-				startSubCategory(name, isVisible);
-				addStat("Produced in camp", this.getGameStatKeyed("amountResourcesProducedInCampsPerName", name), GameGlobals.gameState.isFeatureUnlocked("camp"));
-				addStat("Found", this.getGameStatKeyed("amountResourcesFoundPerName", name));
+				let isCampVisible = GameGlobals.gameState.isFeatureUnlocked("camp");
+				addStat(name + ": Produced in camp", this.getGameStatKeyed("amountResourcesProducedInCampsPerName", name), isVisible && isCampVisible);
+				addStat(name + ": Found", this.getGameStatKeyed("amountResourcesFoundPerName", name), isVisible);
 				//addStat("% produced in camp", this.getStatPercentageFromKeyedSum("amountResourcesProducedInCampsPerName", resStatsAllSources, name), GameGlobals.gameState.isFeatureUnlocked("camp"));
 				//addStat("% found", this.getStatPercentageFromKeyedSum("amountResourcesFoundPerName", resStatsAllSources, name), GameGlobals.gameState.isFeatureUnlocked("camp"));
-				endSubCategory();
 			}
 			
 			addStat("Resources overflown due to storage", this.getGameStatKeyedSum("amountResourcesOverflownPerName"), GameGlobals.gameState.isFeatureUnlocked("camp"));
@@ -780,13 +781,11 @@ define([
 			startCategory("Fight", GameGlobals.gameState.isFeatureUnlocked("fight"));
 			addStat("Fights started", this.getGameStatSimple("numFightsStarted"));
 			addStat("Fights won", this.getGameStatSimple("numFightsWon"));
-			addStat("Fights fled", this.getGameStatSimple("numFightsFled"));
+			// addStat("Fights fled", this.getGameStatSimple("numFightsFled")); 
 			// addStat("% of fights won", this.getStatPercentage("numFightsWon", "numFightsStarted"));
-			startSubCategory("Enemy");
-			addStat("Most defeated", this.getGameStatHighScore("numTimesKilledEnemy"));
-			addStat("Most defated by", this.getGameStatHighScore("numTimesKilledByEnemy"));
-			endSubCategory();
-			addStat("Unique enemy types defeated", this.getGameStatList("uniqueEnemiesDefeated"));
+			addStat("Enemy: Most defeated", this.getGameStatHighScore("numTimesKilledEnemy"));
+			addStat("Enemy: Most defated by", this.getGameStatHighScore("numTimesKilledByEnemy"));
+			//addStat("Unique enemy types defeated", this.getGameStatList("uniqueEnemiesDefeated"));
 			endCategory();
 
 			// Items
@@ -800,8 +799,8 @@ define([
 			addStat("Items broken", this.getGameStatSimple("numItemsBroken"));
 			addStat("Items repaired", this.getGameStatSimple("numItemsRepaired"));
 			addStat("Lock picks used", this.getGameStatKeyedSum("numItemsUsedPerId", (id) => id == "exploration_1"));
-			addStat("Ingredients found", this.getGameStatKeyedSum("numItemsFoundPerId", (id) => ItemConstants.getItemType(id) == ItemConstants.itemTypes.ingredient));
-			addStat("Ingredients used", this.getGameStatKeyedSum("numItemsUsedPerId", (id) => ItemConstants.getItemType(id) == ItemConstants.itemTypes.ingredient));
+			//addStat("Ingredients found", this.getGameStatKeyedSum("numItemsFoundPerId", (id) => ItemConstants.getItemType(id) == ItemConstants.itemTypes.ingredient));
+			//addStat("Ingredients used", this.getGameStatKeyedSum("numItemsUsedPerId", (id) => ItemConstants.getItemType(id) == ItemConstants.itemTypes.ingredient));
 			endCategory();
 
 			// Explorers
@@ -811,6 +810,7 @@ define([
 			addStat("Explorers dismissed", this.getGameStatSimple("numExplorersDismissed"));
 			addStat("Most steps together", this.getGameStatHighScore("mostStepsWithExplorer"));
 			addStat("Most fights together", this.getGameStatHighScore("mostFightsWithExplorer"));
+			addStat("Most chats", this.getGameStatHighScore("mostDialoguesWithExplorer"));
 			endCategory();
 
 			return result;
