@@ -29,7 +29,8 @@ define(['game/GameGlobals'], function (GameGlobals) {
 		
 		// list: a data structure returned by create
 		// data: an array of data entries that should be mapped to items and those items updated where needed
-		update: function (list, data) {
+		// forceUpdate: force all items to update even if data hasn't changed
+		update: function (list, data, forceUpdate) {
 			let newIndices = [];
 			let newItems = [];
 			let createdItems = [];
@@ -52,7 +53,7 @@ define(['game/GameGlobals'], function (GameGlobals) {
 
 			if (keepItems) {
 				for (let i = 0; i < list.items.length; i++) {
-					this.updateListItem(list, list.items[i], data[i]);
+					this.updateListItem(list, list.items[i], data[i], forceUpdate);
 				}
 			} else {
 				// remove or detach
@@ -74,10 +75,10 @@ define(['game/GameGlobals'], function (GameGlobals) {
 					let d = data[i]
 					let li = newItems[i];
 					if (li) {
-						this.updateListItem(list, li, d);
+						this.updateListItem(list, li, d, forceUpdate);
 					} else  {
 						li = list.fnCreateItem.apply(list.owner);
-						this.updateListItem(list, li, d);
+						this.updateListItem(list, li, d, forceUpdate);
 						newItems[i] = li;
 						createdItems.push(li);
 					}

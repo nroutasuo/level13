@@ -260,10 +260,12 @@ define([
 		updateThemedIconsCache: function () {
 			let themedIcons = [];
 			$.each($("img.img-themed"), function () {
+				let pathSunlit =  $(this).attr("data-src-sunlit");
+				let pathDark = $(this).attr("data-src-dark") || $(this).attr("src");
 				themedIcons.push({
 					$elem: $(this),
-					pathSunlit: $(this).attr("data-src-sunlit"),
-					pathDark: $(this).attr("src"),
+					pathSunlit: pathSunlit,
+					pathDark: pathDark,
 				});
 			});
 			
@@ -676,7 +678,10 @@ define([
 			let perks = perksComponent.getAll();
 
 			let perksList = isSmallLayout ? this.perksListMobile : this.perksListDefault;
-			UIList.update(perksList, perks);
+			let sunlit = this.elements.body.hasClass("sunlit");
+			let themeChanged = sunlit != this.lastPerkUpdateSunlit;
+			UIList.update(perksList, perks, themeChanged);
+			this.lastPerkUpdateSunlit = sunlit;
 		},
 		
 		createPerkListItem: function () {
@@ -708,7 +713,7 @@ define([
 			li.$root.toggleClass("li-item-negative", isNegative);
 			li.$root.toggleClass("li-item-positive", !isNegative);
 			li.$root.attr("data-percentage", warningPercentage);
-			li.$root.css("background", backgroundValue);
+			li.$root.css("background", warningPercentage > 0 ? backgroundValue : "initial");
 
 			let desc = this.getPerkDescription(perk, isResting);
 			li.$calloutTarget.attr("description", desc);
@@ -1146,6 +1151,9 @@ define([
 				let icon = this.themedIcons[i];
 				let path = sunlit ? icon.pathSunlit : icon.pathDark;
 				if (path) {
+					// save paths before overriding src
+					icon.$elem.attr("data-src-sunlit", icon.pathSunlit);
+					icon.$elem.attr("data-src-dark", icon.pathDark);
 					icon.$elem.attr("src", path);
 				} else {
 					log.w("no path defined for themed icon " + icon.$elem.attr("id"));
