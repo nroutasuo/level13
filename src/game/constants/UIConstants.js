@@ -242,6 +242,12 @@ define(['ash',
 			}
 			div += "<div class='npc-dialogue-indicator'></div>";
 
+			if (!explorerVO.inParty && explorerVO.injuredTimer >= 0) {
+				let healIconDefault = "img/eldorado/icon_heal-dark.png";
+				let healIconSunlit = "img/eldorado/icon_heal.png";
+				div += "<img class='stat-icon img-themed' src='" + healIconDefault + "' data-src-sunlit='" + healIconSunlit + "' alt='healing'/>";
+			}
+
 			if (questTextKey) {
 				div += "<div class='npc-quest-indicator'></div>";
 			}
