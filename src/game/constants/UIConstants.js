@@ -251,6 +251,8 @@ define(['ash',
 			if (questTextKey) {
 				div += "<div class='npc-quest-indicator'></div>";
 			}
+
+			div += "<div class='bubble hidden'>!</div>";
 			
 			div += "</span>";
 
@@ -310,7 +312,11 @@ define(['ash',
 			}
 
 			if (explorer.injuredTimer >= 0) {
-				result += "<br/>Status: " + this.warning("Injured");
+				if (explorer.inParty) {
+					result += "<br/>Status: " + this.warning("Injured");
+				} else {
+					result += "<br/>Status: " + this.warning("Injured (recovering)");
+				}
 			} else if (explorer.hasUrgentDialogue) {
 				result += "<br/>Status: Wants to talk";
 			}

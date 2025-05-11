@@ -103,7 +103,10 @@ define([
 			let state = bubbleNumber + (isStatIncreaseAvailable ? 1000 : 0);
 
 			UIState.refreshState(this, "bubble-num", state, function () {
-				if (isStatIncreaseAvailable) {
+				if (bubbleNumber > 0) {
+					$("#switch-explorers .bubble").text(bubbleNumber);
+					$("#switch-explorers .bubble").toggleClass("bubble-increase", false);
+				} else if (isStatIncreaseAvailable) {
 					$("#switch-explorers .bubble").text("");
 					$("#switch-explorers .bubble").toggleClass("bubble-increase", true);
 				} else {
@@ -261,7 +264,25 @@ define([
 			});
 		},
 
-		
+		updataExplorersBubble: function () {
+			let explorersComponent = this.playerStatsNodes.head.explorers;
+			let sys = this;
+			
+			$("#container-tab-two-explorers .npc-container").each(function () {
+				let id = $(this).attr("data-explorerid");
+				let explorer = explorersComponent.getExplorerByID(id);
+
+				let hasUrgentDialogue = sys.hasExplorerUrgentDialogue(explorer);
+				let isInjuredInParty = explorer.injuredTimer >= 0 && explorer.inParty;
+
+				let hasBubble = hasUrgentDialogue || isInjuredInParty;
+				
+				let indicator = $(this).find(".bubble");
+				
+				$(indicator).toggleClass("hidden", !hasBubble);
+			});
+		},
+
 		hasExplorerUrgentDialogue: function (explorerVO) {
 			let status = GameGlobals.dialogueHelper.getExplorerDialogueStatus(explorerVO, DialogueConstants.dialogueSettings.interact);
 			return status == DialogueConstants.STATUS_URGENT || status == DialogueConstants.STATUS_FORCED;
@@ -284,8 +305,7 @@ define([
 			let explorers = GameGlobals.playerHelper.getExplorers();
 			for (let i = 0; i < explorers.length; i++) {
 				let explorerVO = explorers[i];
-				let status = GameGlobals.dialogueHelper.getExplorerDialogueStatus(explorerVO);
-				if (status == DialogueConstants.STATUS_URGENT || status == DialogueConstants.STATUS_FORCED) {
+				if (this.hasExplorerUrgentDialogue(explorerVO)) {
 					result++;
 				}
 			}
@@ -365,21 +385,26 @@ define([
 				this.refresh();
 				this.updateComparisonIndicators();
 				this.updateDialogueIndicators();
+				this.updataExplorersBubble();
 			}
 		},
 		
 		onExplorersChanged: function () {
 			this.updateExplorers();
 			this.updateComparisonIndicators();
+			this.updateDialogueIndicators();
+			this.updataExplorersBubble();
 			this.highlightExplorerType(null);
 		},
 
 		onActionCompleted: function () {
 			this.updateDialogueIndicators();
+			this.updataExplorersBubble();
 		},
 
 		onDialogueCompleted: function () {
 			this.updateDialogueIndicators();
+			this.updataExplorersBubble();
 		}
 	
 	});
