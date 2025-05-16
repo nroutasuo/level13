@@ -266,8 +266,8 @@ define(['ash',
 			div += "<div class='interaction-options'>";
 			div += "<button class='action btn-narrow' action='" + talkAction + "'>" + talkLabel + "</button>";
 			div += "<table class='button-row-2'><tr>";
-			div += "<td><button class='action btn-mini' action='" + switchAction + "'>" + switchLabel + "</button></td>";
-			div += "<td><button class='action btn-mini' action='" + dismissAction + "'>" + dismissLabel + "</button></td>";
+			div += "<td><button class='action btn-mini' action='" + switchAction + "' aria-label='switch'>" + switchLabel + "</button></td>";
+			div += "<td><button class='action btn-mini' action='" + dismissAction + "' aria-label='dismiss'>" + dismissLabel + "</button></td>";
 			div += "</tr></table>";
 			div += "</div>";
 

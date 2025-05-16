@@ -1109,6 +1109,8 @@ define([
 			if (showInventoryManagement) {
 				var baghtml = "<div id='resultlist-inventorymanagement' class='unselectable'>";
 
+				baghtml += "<h3 class='hide-from-visual-layout'>Inventory management</h3>";
+
 				baghtml += "<div id='resultlist-inventorymanagement-found' class='infobox inventorybox'>";
 				baghtml += "<h4 class='hide-from-visual-layout'>Found</h4>";
 				baghtml += "<ul></ul>";
