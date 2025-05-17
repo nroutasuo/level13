@@ -1680,7 +1680,7 @@ define(['ash',
 			GameGlobals.gameState.increaseGameStatSimple("numExplorersRecruited");
 			GlobalSignals.explorersChangedSignal.dispatch();
 			
-			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_RECRUIT, "Recruited a new explorer.");
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_RECRUIT, "Recruited a new explorer.", { visibility: LogConstants.MSG_VISIBILITY_CAMP });
 		},
 
 		startExplorerDialogue: function (explorerID) {
@@ -1840,6 +1840,8 @@ define(['ash',
 
 			let campComponent = sector.get(CampComponent);
 			let numRefugees =  eventComponent.num || 1;
+
+			GameGlobals.gameState.increaseGameStatSimple("numRefugeesAccepted", numRefugees);
 
 			campComponent.addPopulation(numRefugees);
 			campComponent.populationDecreaseCooldown = CampConstants.POPULATION_DECREASE_COOLDOWN_REFUGEES;
@@ -2018,7 +2020,7 @@ define(['ash',
 			
 			this.buildImprovement(action, improvementNames.greenhouse, sector);
 			GameGlobals.playerActionFunctions.unlockFeature("herbs");
-			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), msg, { position: position, visibility: LogConstants.MSG_VISIBILITY_GLOBAL });
+			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), msg, { position: position, visibility: LogConstants.MSG_VISIBILITY_CAMP });
 		},
 		
 		buildLuxuryResourceOutpost: function (sectorPos) {
@@ -2035,7 +2037,7 @@ define(['ash',
 			let msg = "Resource outpost is ready. " + Text.capitalize(resourceName) + " is now available in all camps.";
 
 			this.buildImprovement(action, improvementNames.luxuryOutpost, sector);
-			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), msg, { position: position, visibility: LogConstants.MSG_VISIBILITY_GLOBAL });
+			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), msg, { position: position, visibility: LogConstants.MSG_VISIBILITY_CAMP });
 		},
 		
 		buildTradeConnector: function (sectorPos) {
@@ -2043,7 +2045,7 @@ define(['ash',
 			var position = this.getPositionVO(sectorPos);
 			var sector = this.getActionSector(action, sectorPos);
 			this.buildImprovement(action, improvementNames.tradepost_connector, sector);
-			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "Great Elevator is ready.", { position: position, visibility: LogConstants.MSG_VISIBILITY_GLOBAL });
+			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "Great Elevator is ready.", { position: position, visibility: LogConstants.MSG_VISIBILITY_CAMP });
 		},
 		
 		buildSundome: function (sectorPos) {
@@ -2051,7 +2053,7 @@ define(['ash',
 			let position = this.getPositionVO(sectorPos).getPositionInCamp();
 			var sector = this.getActionSector(action, sectorPos);
 			this.buildImprovement(action, improvementNames.sundome, sector);
-			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "Sundome is completed.", { position: position, visibility: LogConstants.MSG_VISIBILITY_GLOBAL });
+			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "Sundome is completed.", { position: position, visibility: LogConstants.MSG_VISIBILITY_CAMP });
 		},
 		
 		improveOutImprovement: function (param) {
@@ -2271,7 +2273,10 @@ define(['ash',
 			this.save();
 			
 			let msg = ImprovementConstants.getImprovedLogMessageTextVO(improvementID, level);
-			GameGlobals.playerHelper.addLogMessage("MSG_ID_IMPROVE_" + improvementName, msg, { position: sector.get(PositionComponent).getPositionInCamp() });
+			let messagePosition = sector.get(PositionComponent);
+			let isProject = ImprovementConstants.isProject(improvementName);
+			messagePosition.inCamp = getImprovementType(improvementName) === improvementTypes.camp || isProject;
+			GameGlobals.playerHelper.addLogMessage("MSG_ID_IMPROVE_" + improvementName, msg, { position: messagePosition });
 		},
 		
 		repairBuilding: function (param) {
@@ -2855,7 +2860,7 @@ define(['ash',
 			
 			GameGlobals.playerActionsHelper.deductCosts(upgradeID);
 			let name = Text.t(UpgradeConstants.getDisplayNameTextKey(upgradeID));
-			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "Researched " + name, { visibility: LogConstants.MSG_VISIBILITY_PRIORITY });
+			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "Researched " + name, { visibility: LogConstants.MSG_VISIBILITY_CAMP });
 			this.tribeUpgradesNodes.head.upgrades.addUpgrade(upgradeID);
 			GlobalSignals.upgradeUnlockedSignal.dispatch(upgradeID);
 			this.save();
@@ -2908,7 +2913,7 @@ define(['ash',
 			popupMsg += "<p>" + UIConstants.getMilestoneUnlocksDescriptionHTML(newMilestone, oldMilestone, true, true, hasDeity, hasInsight) + "<p>";
 			GameGlobals.uiFunctions.showInfoPopup("Milestone", popupMsg, "Continue", null, null, false, false);
 
-			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), baseMsg, { visibility: LogConstants.MSG_VISIBILITY_PRIORITY });
+			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), baseMsg, { visibility: LogConstants.MSG_VISIBILITY_CAMP });
 			
 			GlobalSignals.milestoneUnlockedSignal.dispatch();
 		},

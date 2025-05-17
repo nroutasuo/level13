@@ -173,16 +173,24 @@ define([
 			var hadPenalty = this.lastUpdatePenalties[campID][penaltyType];
 			if (hasPenalty === hadPenalty) return;
 			
+			let playerPosition = this.playerNodes.head.position;
+			if (!playerPosition.inCamp) return false;
+			
 			if (hasPenalty && !hadPenalty) {
-				var playerPosition = this.playerNodes.head.position;
-				var campPosition = campNode.position;
+				let campPosition = campNode.position;
+				let messagePosition = campPosition.getPosition();
+				messagePosition.inCamp = true;
+				
 				if (playerPosition.level === campNode.position.level && playerPosition.sectorId() === campPosition.sectorId()) {
+					let msg = "";
 					switch (penaltyType) {
 						case CampConstants.REPUTATION_PENALTY_TYPE_DEFENCES:
-							GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_REPUTATION_PENALTY_DEFENCES, "People are anxious. They say the camp needs better defences.");
+							msg = "People are anxious. They say the camp needs better defences.";
+							GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.MSG_ID_REPUTATION_PENALTY_DEFENCES, msg, messagePosition);
 							break;
 						case CampConstants.REPUTATION_PENALTY_TYPE_HOUSING:
-							GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_REPUTATION_PENALTY_HOUSING, "People are unhappy because the camp is over-crowded.");
+							msg = "People are unhappy because the camp is over-crowded.";
+							GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.MSG_ID_REPUTATION_PENALTY_HOUSING, msg, messagePosition);
 							break;
 					}
 				}

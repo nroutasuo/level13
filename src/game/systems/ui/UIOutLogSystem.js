@@ -116,19 +116,19 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 					return true;
 				}
 
-				if (message.visibility == LogConstants.MSG_VISIBILITY_PRIORITY) {
-					return message.position.inCamp == playerPosition.inCamp;
+				if (message.visibility == LogConstants.MSG_VISIBILITY_CAMP) {
+					return playerPosition.inCamp;
 				}
 
 				if (message.visibility == LogConstants.MGS_VISIBILITY_LEVEL) {
 					return message.position.level == playerPosition.level;
 				}
 
-				// default priority:
-				if (playerPosition.inCamp) {
+				// default priority: depending on message position, either in specific camp or anywhere outside
+				if (message.position.inCamp) {
 					return message.position.inCamp == playerPosition.inCamp && message.position.level == playerPosition.level;
 				} else {
-					return message.position.inCamp == playerPosition.inCamp;
+					return message.position.inCamp == playerPosition.inCamp
 				}
 			};
 
@@ -167,9 +167,16 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 		updateLogListItem: function (li, data) {
 			let hasPosition = data.position != null;
 			let hasCount = data.combined > 0;
+			let visibility = data.visibility;
 
 			let positionText = "";
-			if (hasPosition) {
+			if (visibility == LogConstants.MSG_VISIBILITY_GLOBAL) {
+				positionText = "";
+			} else if (visibility == LogConstants.MGS_VISIBILITY_LEVEL) {
+				positionText = "(level " + data.position.level + ")";
+			} else if (visibility == LogConstants.MSG_VISIBILITY_CAMP) {
+				positionText += "";
+			} else if (hasPosition) {
 				positionText += " (";
 				let campNode = GameGlobals.campHelper.getCampNodeForLevel(data.position.level);
 				if (data.position.inCamp && campNode) {

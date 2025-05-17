@@ -58,7 +58,7 @@ define([
 			let position = sector.get(PositionComponent).getPosition();
 			position.inCamp = true;
 			let msg = { textKey: "ui.log.explorer_healed_message", textParams: { name: explorerVO.name } };
-			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), msg, { visibility: LogConstants.MSG_VISIBILITY_PRIORITY, position: position });
+			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), msg, { visibility: LogConstants.MSG_VISIBILITY_CAMP, position: position });
 			GlobalSignals.explorersChangedSignal.dispatch();
 		},
 
@@ -77,7 +77,7 @@ define([
 				explorer.pendingAbilityLevel = -1;
 
 				let msg = Text.t("story.messages.explorer_level_up_message_01", explorer.name);
-				GameGlobals.playerHelper.addLogMessage(LogConstants.MDS_ID_EXPLORER_LEVEL_UP, msg, { visibility: LogConstants.MSG_VISIBILITY_GLOBAL });
+				GameGlobals.playerHelper.addLogMessage(LogConstants.MDS_ID_EXPLORER_LEVEL_UP, msg, { visibility: LogConstants.MSG_VISIBILITY_CAMP });
 
 				GlobalSignals.explorersChangedSignal.dispatch();
 			}

@@ -417,7 +417,7 @@ define([
 
 						GameGlobals.gameState.increaseGameStatSimple("numRaidsLost");
 
-						visibility = LogConstants.MSG_VISIBILITY_PRIORITY;
+						visibility = LogConstants.MSG_VISIBILITY_CAMP;
 					}
 					
 					if (raidComponent.damagedBuilding != null) {

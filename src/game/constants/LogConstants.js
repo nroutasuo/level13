@@ -2,10 +2,10 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 
 	let LogConstants = {
 
-		MSG_VISIBILITY_DEFAULT: "MSG_VISIBILITY_DEFAULT",
-		MGS_VISIBILITY_LEVEL: "MGS_VISIBILITY_LEVEL",
-		MSG_VISIBILITY_PRIORITY: "MSG_VISIBILITY_PRIORITY",
-		MSG_VISIBILITY_GLOBAL: "MSG_VISIBILITY_GLOBAL",
+		MSG_VISIBILITY_DEFAULT: "MSG_VISIBILITY_DEFAULT", // visible either outside in general or in a specific camp
+		MGS_VISIBILITY_LEVEL: "MGS_VISIBILITY_LEVEL", // visible on same level as it happened both in and outside
+		MSG_VISIBILITY_CAMP: "MSG_VISIBILITY_CAMP", // visible when in any camp
+		MSG_VISIBILITY_GLOBAL: "MSG_VISIBILITY_GLOBAL", // visible everywhere
 
 		// story
 		MSG_ID_START: "START",
@@ -213,7 +213,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 				triggers: [ "action_any" ],
 				conditions: { action: "despair" },
 				chance: 0.5,
-				visibility: "MSG_VISIBILITY_GLOBAL",
+				visibility: "MSG_VISIBILITY_CAMP",
 				messages: [ 
 					"Your dreams were filled with vague worries.",
 					"You dreamed of a snapping rope and falling.",

@@ -1295,7 +1295,7 @@ define([
 			if (resultVO.gainedBlueprintPiece) {
 				if (!this.tribeUpgradesNodes.head.upgrades.hasUpgrade(resultVO.gainedBlueprintPiece)) {
 					let blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(resultVO.gainedBlueprintPiece);
-					let blueprintMessage = { addToPopup: true, addToLog: true, visibility: LogConstants.MSG_VISIBILITY_GLOBAL };
+					let blueprintMessage = { addToPopup: true, addToLog: true, visibility: LogConstants.MSG_VISIBILITY_CAMP };
 					if (blueprintVO.currentPieces === 1) {
 						blueprintMessage.id = LogConstants.MSG_ID_FOUND_BLUEPRINT_FIRST;
 						blueprintMessage.text = "ui.exploration.blueprint_found_message_first";
