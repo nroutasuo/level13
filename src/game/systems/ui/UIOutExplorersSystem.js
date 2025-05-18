@@ -97,7 +97,10 @@ define([
 		
 		updateBubble: function () {
 			let inCamp = GameGlobals.playerHelper.isInCamp();
-			let bubbleNumber = inCamp ? this.getNumRecruits() + this.getNumUrgentDialogues() + this.getNumInjuredExplorersInParty() : 0;
+			let bubbleNumber = 0;
+			if (inCamp) { 
+				bubbleNumber = this.getNumRecruits() + this.getNumUrgentDialogues() + this.getNumInjuredExplorersInParty() + this.getNumForcedExplorersNotInParty()
+			}
 			let isStatIncreaseAvailable = this.getIsStatIncreaseAvailable();
 			
 			let state = bubbleNumber + (isStatIncreaseAvailable ? 1000 : 0);
@@ -267,6 +270,8 @@ define([
 		updataExplorersBubble: function () {
 			let explorersComponent = this.playerStatsNodes.head.explorers;
 			let sys = this;
+
+			let forcedExplorerID = GameGlobals.explorerHelper.getForcedExplorerID();
 			
 			$("#container-tab-two-explorers .npc-container").each(function () {
 				let id = $(this).attr("data-explorerid");
@@ -274,8 +279,9 @@ define([
 
 				let hasUrgentDialogue = sys.hasExplorerUrgentDialogue(explorer);
 				let isInjuredInParty = explorer.injuredTimer >= 0 && explorer.inParty;
+				let isForced = explorer.id == forcedExplorerID && !explorer.inParty;
 
-				let hasBubble = hasUrgentDialogue || isInjuredInParty;
+				let hasBubble = hasUrgentDialogue || isInjuredInParty || isForced;
 				
 				let indicator = $(this).find(".bubble");
 				
@@ -324,6 +330,16 @@ define([
 			}
 			return result;
 		},
+
+		getForcedExplorerVO: function () {
+			let forcedExplorerID = GameGlobals.explorerHelper.getForcedExplorerID();
+			return GameGlobals.playerHelper.getExplorerByID(forcedExplorerID);
+		},
+
+		getNumForcedExplorersNotInParty: function () {
+			let forcedExplorerVO = this.getForcedExplorerVO();
+			return forcedExplorerVO ? !forcedExplorerVO.inParty : 0;
+		},
 		
 		getIsStatIncreaseAvailable: function () {
 			let inCamp = GameGlobals.playerHelper.isInCamp();
@@ -332,10 +348,16 @@ define([
 			let explorersComponent = this.playerStatsNodes.head.explorers;
 			let explorers = explorersComponent.getAll();
 			
+			let forcedExplorerVO = this.getForcedExplorerVO();
+			let forcedExplorerType = forcedExplorerVO ? ExplorerConstants.getExplorerTypeForAbilityType(forcedExplorerVO.abilityType) : null;
+			
 			for (let i = 0; i < explorers.length; i++) {
 				let explorer = explorers[i];
 				if (explorer.inParty) continue;
 				if (explorer.injuredTimer >= 0) continue;
+
+				let type = ExplorerConstants.getExplorerTypeForAbilityType(explorer.abilityType);
+				if (forcedExplorerType && forcedExplorerType == type) continue;				
 				
 				let comparison = explorersComponent.getExplorerComparison(explorer);
 				if (comparison > 0) return true;
