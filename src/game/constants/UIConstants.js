@@ -1136,6 +1136,34 @@ define(['ash',
 			return "<span class='p-meta'>" + text + "</span>";
 		},
 
+		getElementName: function ($e) {
+			if (!$e) return "[none]";
+			let id = $e.attr("id");
+			if (id) return "#" + id;
+			let classes = $e.attr("class");
+			if (classes) return "." + classes;
+			return "[unknown]";
+		},
+
+		isFocusable: function (element) {
+			if (!(element instanceof HTMLElement)) {
+				return false;
+			}
+			const knownFocusableElements =
+				'a[href],area[href],button:not([disabled]),details,iframe,object,input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[contentEditable="true"],[tabindex]:not([tabindex^="-"])';
+			if (element.matches(knownFocusableElements)) {
+				return true;
+			}
+
+			const isDisabledCustomElement =
+				element.localName.includes('-') && element.matches('[disabled], [aria-disabled="true"]');
+			if (isDisabledCustomElement) {
+				return false;
+			}
+
+			return element.shadowRoot?.delegatesFocus ?? false;
+		},
+
 		getDisplayValue: function (value) {
 			if (!value) return 0;
 			return value.toLocaleString();

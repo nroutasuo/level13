@@ -69,13 +69,15 @@ define(['ash',
 				$(window).resize(this.onResize);
 
 				// Switch tabs
-				var onTabClicked = this.onTabClicked;
+				let onTabClickedInternal = function (e) {
+					let target = e.currentTarget;
+					if (!($(target).hasClass("disabled"))) {
+						uiFunctions.onTabClicked(target.id);
+					}
+				};
 				$.each($("#switch-tabs li"), function () {
-					$(this).click(function () {
-						if (!($(this).hasClass("disabled"))) {
-							onTabClicked(this.id);
-						}
-					});
+					$(this).click(onTabClickedInternal);
+					$(this).keydown((e) => uiFunctions.onButtonLikeElementKeyDown(e, onTabClickedInternal));
 				});
 
 				// Collapsible divs
@@ -1072,6 +1074,15 @@ define(['ash',
 				value = StringUtils.cleanUpInput(value, $(e.target).data("max-input-length"), '_');
 				$(e.target).val(value);
 				e.originalEvent.isTextInput = true;
+			},
+
+			onButtonLikeElementKeyDown: function (e, cb) {
+				switch (e.keyCode) {
+					case 13:
+					case 32:
+						cb(e);
+						return;
+				}
 			},
 
 			onPlayerPositionChanged: function () {
