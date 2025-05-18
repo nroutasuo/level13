@@ -65,6 +65,7 @@ define([
 
 		setupDialogue: function () {
 			this.refreshPage();
+			GameGlobals.uiFunctions.focus($("#dialogue-popup .buttonbox button"));
 		},
 
 		refreshPage: function () {
@@ -90,7 +91,9 @@ define([
 
 			this.shownPageID = pageID;
 
-			GameGlobals.uiFunctions.popupManager.repositionPopups();
+			setTimeout(function () {
+				GameGlobals.uiFunctions.popupManager.repositionPopups();
+			});
 		},
 
 		refreshPageCharacter: function (explorerVO, characterVO) {

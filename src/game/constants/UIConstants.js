@@ -447,7 +447,7 @@ define(['ash',
 
 		createNPCPortrait: function () {
 			let div = "<div class='npc-portrait'>";
-			div += "<img src=''/>";
+			div += "<img src='' alt='npc-portrait' />";
 			div += "<span class='npc-name'></span>";
 			div += "</div>";
 			return div;
