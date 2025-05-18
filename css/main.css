@@ -837,6 +837,9 @@ body.dark button:hover {
   border-color: #777;
   background-color: #2f322f;
 }
+body.dark button:focus-visible {
+  outline: 2px solid #777;
+}
 body.dark button.btn-disabled:hover {
   background-color: #202220 !important;
 }
@@ -3483,6 +3486,9 @@ body.sunlit button:hover {
   color: #000 !important;
   border-color: #4a4a4a;
   background-color: #e6e6e6;
+}
+body.sunlit button:focus-visible {
+  outline: 2px solid #4a4a4a;
 }
 body.sunlit button.btn-disabled:hover {
   background-color: #fbfbfb !important;
