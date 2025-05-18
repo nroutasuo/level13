@@ -1546,6 +1546,31 @@ define(['ash',
 				});
 			},
 
+			focus: function ($element, numTries) {
+				if (!$element || $element.length == 0) {
+					log.w("could not find element to focus on");
+					return;
+				}
+
+				let name = UIConstants.getElementName($element);
+
+				if (numTries > 10) {
+					log.w("could not focus on element (not focusable): " + name);
+					return;
+				}
+
+				let e = $element[0];
+				let isFocusable = UIConstants.isFocusable(e);
+
+				if (!isFocusable) {
+					setTimeout(() => { GameGlobals.uiFunctions.focus($element, numTries + 1); }, 100);
+					return;
+				}
+
+				log.i("focus on " + name);
+				e.focus();
+			},
+
 			showPreviousTab: function () {
 				let visibleTabElements = $("#switch-tabs li").filter("[data-visible=true]");
 				let currentTabElement = $("#switch-tabs li.selected")[0];
@@ -1604,6 +1629,7 @@ define(['ash',
 						uiFunctions.popupManager.repositionPopup($popup);
 						uiFunctions.popupManager.updatePause();
 						GlobalSignals.popupShownSignal.dispatch("common-popup");
+						if (options.$defaultButton) GameGlobals.uiFunctions.focus(options.$defaultButton);
 					});
 					GlobalSignals.elementToggledSignal.dispatch(("#" + popupID), true);
 				});

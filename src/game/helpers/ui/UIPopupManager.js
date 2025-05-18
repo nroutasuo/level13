@@ -155,12 +155,7 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 				GameGlobals.uiFunctions.createButtons("#common-popup .buttonbox");
 				
 				this.setDismissable($popup, isDismissable);
-			
-				if ($defaultButton) {
-					$defaultButton.focus()
-				}
-				
-				
+				GameGlobals.uiFunctions.focus($defaultButton);
 				this.updatePause();
 
 				setTimeout(() => {
@@ -197,6 +192,7 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 		updatePause: function () {
 			let hasOpenPopup = this.hasOpenPopup();
 			GameGlobals.gameState.isPaused = hasOpenPopup;
+			
 			$("body").css("overflow", hasOpenPopup ? "hidden" : "initial");
 			$(".hidden-by-popups").attr("aria-hidden", hasOpenPopup);
 

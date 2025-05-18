@@ -1138,6 +1138,7 @@ define(['ash',
 
 		getElementName: function ($e) {
 			if (!$e) return "[none]";
+			if (typeof $e === "string") $e = $($e)
 			let id = $e.attr("id");
 			if (id) return "#" + id;
 			let classes = $e.attr("class");
