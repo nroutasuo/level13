@@ -199,6 +199,12 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 			GameGlobals.gameState.isPaused = hasOpenPopup;
 			$("body").css("overflow", hasOpenPopup ? "hidden" : "initial");
 			$(".hidden-by-popups").attr("aria-hidden", hasOpenPopup);
+
+			if (hasOpenPopup) {
+				$(".hidden-by-popups").attr("inert", hasOpenPopup);
+			} else {
+				$(".hidden-by-popups").removeAttr("inert");
+			}
 		},
 		
 		handleOkButton: function (isTakeAll, okCallback) {

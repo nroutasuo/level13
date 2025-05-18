@@ -29,7 +29,7 @@
 <body class="wrap wider dark" style="height:100%">
 	
 	<div class="sticky-footer-wrapper game-opacity-controller">
-		<div class="grid" id="grid-main">
+		<div class="grid hidden-by-popups" id="grid-main">
 			<div class="unit four-fifths" id="unit-main" style="display: none">
 				
 				<h1 class="hide-from-visual-layout">Header</h1>
@@ -771,9 +771,9 @@
 	
 	<!-- popups -->
 
-	<div id="popup-overlay" style="display: none;">
+	<div id="popup-overlay" style="display: none;" aria-hidden="false">
 	
-		<div id="fight-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display:none" aria-labelledby="fight-title">
+		<div id="fight-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display:none" aria-labelledby="fight-title" aria-modal="true">
 			<h3 id="fight-title"></h3>
 			<p id="fight-desc"></p>
 			<div class="infobox" id="fight-popup-enemy-info">
@@ -833,7 +833,7 @@
 			</div>
 		</div>
 		
-		<div id="incoming-caravan-popup" role="dialog" class="popup popup-wide fill-on-mobiles hidden-by-default popup-ingame" style="display:none" aria-labelledby="trade-header">
+		<div id="incoming-caravan-popup" role="dialog" class="popup popup-wide fill-on-mobiles hidden-by-default popup-ingame" style="display:none" aria-labelledby="trade-header" aria-modal="true">
 			<h3 id="trade-header">Trader</h3>
 			<p id="incoming-caravan-popup-markup"></p>
 			<div class="inventorybox" style="display:flex">
@@ -868,7 +868,7 @@
 			</div>
 		</div>
 		
-		<div id="manage-save-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display:none" aria-labelledby="manage-save-popup-header">
+		<div id="manage-save-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display:none" aria-labelledby="manage-save-popup-header" aria-modal="true">
 			<h3 id="manage-save-popup-header">Manage saves</h3>
 			<p id="manage-save-info">Note that the game is still in alpha and updates can break old saves.</p>
 
@@ -912,7 +912,7 @@
 			</div>
 		</div>
 
-		<div id="game-stats-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display: none" aria-labelledby="game-stats-popup-header">
+		<div id="game-stats-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display: none" aria-labelledby="game-stats-popup-header" aria-modal="true">
 			<h3 id="game-stats-popup-header">Game Stats</h3>
 			<div id="game-stats-container" class="scrollable-container"></div>
 			<div class="buttonbox">
@@ -920,7 +920,7 @@
 			</div>
 		</div>
 
-		<div id="settings-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display: none" settings-popup-header">
+		<div id="settings-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display: none" aria-labelledby="settings-popup-header" aria-modal="true">
 			<h3 id="settings-popup-header">Settings</h3>
 			<span class="settings-entry">
 				<input type="checkbox" class="checkbox" id="settings-checkbox-hotkeys-enabled" /><p class="checkbox-label">Enable hotkeys</p>
@@ -937,7 +937,9 @@
 			</div>
 		</div>
 
-		<div id="dialogue-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display: none" aria-label="Dialogue">
+		<div id="dialogue-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display: none" aria-labelledby="dialogue-popup-header" aria-modal="true">
+			<h2 id="dialogue-popup-header" class="hide-from-visual-layout">Dialogue</h2>
+
 			<div class="dialogue-module" id="dialogue-module-title"><h3></h3></div>
 			
 			<div class="dialogue-module" id="dialogue-module-character"></div>
@@ -951,7 +953,7 @@
 			<div class="buttonbox"></div>
 		</div>
 		
-		<div id="common-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display:none" aria-labelledby="common-popup-header">
+		<div id="common-popup" role="dialog" class="popup fill-on-mobiles hidden-by-default popup-ingame" style="display:none" aria-labelledby="common-popup-header" aria-modal="true">
 			<h3 id="common-popup-header"></h3>
 			<p id="common-popup-desc"></p>
 			<p id="common-popup-input-container"><input class="text" autocomplete="false" autofocus="true"/></p>
