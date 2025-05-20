@@ -49,6 +49,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.settings = {
 				hotkeysEnabled: false,
 				hotkeysNumpad: false,
+				sfxEnabled: true,
 			};
 			
 			this.stats = {};

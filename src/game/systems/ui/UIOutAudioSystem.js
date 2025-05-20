@@ -57,6 +57,12 @@ define([
 				log.w("triggered sound but audio element not found: " + soundTriggerID);
 				return;
 			}
+			
+			let sfxEnabled = GameGlobals.gameState.settings.sfxEnabled;
+			if (!sfxEnabled) {
+				log.i("triggered sound but sfx are disabled: " + soundTriggerID);
+				return;
+			}
 
 			delay = delay || 0;
 			

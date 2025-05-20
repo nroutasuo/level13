@@ -30,6 +30,7 @@ define([
             this.settingsPopupHotkeysList = UIList.create(this, $("#hotkeys-list"), this.createHotkeyListItem, this.updateHotkeyListItem, this.isHotkeyListItemDataSame);
 
             let sys = this;
+			$("#settings-checkbox-sfx-enabled").change(() => sys.onSettingToggled());
 			$("#settings-checkbox-hotkeys-enabled").change(() => sys.onSettingToggled());
 			$("#settings-checkbox-hotkeys-numpad").change(() => sys.onSettingToggled());
 
@@ -81,6 +82,7 @@ define([
         },
 
         updateSettingsValues: function () {
+            $("#settings-checkbox-sfx-enabled").prop("checked", GameGlobals.gameState.settings.sfxEnabled);
             $("#settings-checkbox-hotkeys-enabled").prop("checked", GameGlobals.gameState.settings.hotkeysEnabled);
             $("#settings-checkbox-hotkeys-numpad").prop("checked", GameGlobals.gameState.settings.hotkeysNumpad);
 
@@ -101,9 +103,10 @@ define([
                     let hotkeyValue = "";
                     if (modifier) hotkeyValue += modifier + " + ";
                     hotkeyValue += hotkey.displayKey;
+                    let isDev = hotkey.isDev;
                     let displayName = hotkey.description;
                     let isDisabled = !GameGlobals.gameState.settings.hotkeysEnabled;
-                    hotkeyEntries.push({ displayName: displayName, value: hotkeyValue, isDisabled: isDisabled });
+                    hotkeyEntries.push({ displayName: displayName, value: hotkeyValue, isDisabled: isDisabled, isDev: isDev });
                 }
             }
 			UIList.update(this.settingsPopupHotkeysList, hotkeyEntries);
@@ -120,6 +123,7 @@ define([
 
         updateHotkeyListItem: function (li, data) {
             li.$root.toggleClass("dimmed", data.isDisabled);
+            li.$root.toggleClass("debug-info", data.isDev);
 			li.$label.html(data.displayName);
 			li.$value.html(data.value);
         },
@@ -129,6 +133,7 @@ define([
         },
 
         saveSettings: function () {
+            GameGlobals.gameState.settings.sfxEnabled = $("#settings-checkbox-sfx-enabled").is(':checked');
             GameGlobals.gameState.settings.hotkeysEnabled = $("#settings-checkbox-hotkeys-enabled").is(':checked');
             GameGlobals.gameState.settings.hotkeysNumpad = $("#settings-checkbox-hotkeys-numpad").is(':checked');
         
