@@ -36,6 +36,7 @@ define([
 			
 			let sys = this;
 			$("#in-improvements-reset-hidden").click(function () {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				sys.resetHidden();
 			});
 		},
@@ -353,6 +354,7 @@ define([
 			let projectID = $(this).data("project");
 			if (!projectID) return;
 			if (!UIConstants.canHideProject(projectID)) return;
+			GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 			GameGlobals.gameState.uiStatus.hiddenProjects.push(projectID);
 			GlobalSignals.projectHiddenSignal.dispatch();
 		},
@@ -360,6 +362,7 @@ define([
 		onMapLinkButtonClicked: function () {
 			let sector = $(this).data("sector");
 			if (!sector) return;
+			GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 			let position = StringUtils.getPosition(sector);
 			GameGlobals.uiFunctions.scrollToTabTop();
 			GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.map, position);

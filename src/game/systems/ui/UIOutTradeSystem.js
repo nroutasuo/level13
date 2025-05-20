@@ -197,6 +197,7 @@ define([
 			// TODO animate transitions
 			var sys = this;
 			$(".btn-trade-caravans-outgoing-toggle").click(function () {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				var ordinal = $(this).attr("id").split("_")[3];
 				var tr = $("#trade-caravans-outgoing-plan-" + ordinal);
 				var wasVisible = $(tr).is(":visible");
@@ -212,6 +213,7 @@ define([
 			});
 
 			$(".btn-trade-caravans-outgoing-send").click(function () {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				var ordinal = $(this).attr("action").split("_")[2];
 				sys.confirmPendingCaravan();
 			});
@@ -334,9 +336,11 @@ define([
 
 				var uiFunctions = GameGlobals.uiFunctions;
 				$(".trade-caravans-incoming-trade").click(function () {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 					uiFunctions.showIncomingCaravanPopup();
 				});
 				$(".trade-caravans-incoming-dismiss").click(function () {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 					traderComponent.isDismissed = true;
 				});
 

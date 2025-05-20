@@ -78,9 +78,11 @@ define([
 		initElements: function () {
 			var sys = this;
 			$("#btn-cheat-teleport").click(function () {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				sys.teleport();
 			});
 			$("#btn-download-map").click(function () {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				sys.downloadASCIIMap();
 			});
 			$("#btn-mainmap-sector-details-next").click($.proxy(this.selectNextSector, this));
@@ -309,6 +311,7 @@ define([
 		selectNextSector: function () {
 			let newSector = this.getNextSelectableSector(1);
 			if (!newSector) return null;
+			GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 			let pos = newSector.get(PositionComponent);
 			this.selectSector(pos.level, pos.sectorX, pos.sectorY);
 			this.centerMap(pos, true);
@@ -317,6 +320,7 @@ define([
 		selectPreviousSector: function () {
 			let newSector = this.getNextSelectableSector(-1);
 			if (!newSector) return null;
+			GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 			let pos = newSector.get(PositionComponent);
 			this.selectSector(pos.level, pos.sectorX, pos.sectorY);
 			this.centerMap(pos, true);
@@ -326,6 +330,7 @@ define([
 			let level = this.getValidSelectedLevel();
 			let campNode = GameGlobals.campHelper.getCampNodeForLevel(level);
 			if (!campNode) return;
+			GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 			let pos = campNode.position;
 			this.selectSector(pos.level, pos.sectorX, pos.sectorY);
 			this.centerMap(pos, true);
@@ -337,6 +342,7 @@ define([
 				return sectorStatus == SectorConstants.MAP_SECTOR_STATUS_REVEALED_BY_MAP || sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE || sectorStatus == SectorConstants.MAP_SECTOR_STATUS_VISITED_UNSCOUTED;
 			});
 			if (!newSector) return null;
+			GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 			let pos = newSector.get(PositionComponent);
 			this.selectSector(pos.level, pos.sectorX, pos.sectorY);
 			this.centerMap(pos, true);
@@ -348,6 +354,7 @@ define([
 				return sectorStatus == SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED;
 			});
 			if (!newSector) return null;
+			GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 			let pos = newSector.get(PositionComponent);
 			this.selectSector(pos.level, pos.sectorX, pos.sectorY);
 			this.centerMap(pos, true);
@@ -359,6 +366,7 @@ define([
 				return GameGlobals.sectorHelper.hasSectorVisibleIngredients(sector);
 			});
 			if (!newSector) return null;
+			GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 			let pos = newSector.get(PositionComponent);
 			this.selectSector(pos.level, pos.sectorX, pos.sectorY);
 			this.centerMap(pos, true);
@@ -370,6 +378,7 @@ define([
 				return GameGlobals.sectorHelper.canBeInvestigated(sector);
 			});
 			if (!newSector) return null;
+			GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 			let pos = newSector.get(PositionComponent);
 			this.selectSector(pos.level, pos.sectorX, pos.sectorY);
 			this.centerMap(pos, true);
@@ -422,6 +431,8 @@ define([
 			let startPosition = this.playerLocationNodes.head.position.getPosition();
 			let includeLevel = position.level != startPosition.level;
 			let title = "Directions from " + startPosition.getInGameFormat(includeLevel) + " to " + position.getInGameFormat(includeLevel);
+			
+			GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 			
 			let stretches = [];
 			let previousPos = startPosition;

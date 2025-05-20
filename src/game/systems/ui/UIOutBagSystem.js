@@ -631,12 +631,14 @@ define([
 		},
 
 		showInventoryManageemntPopup: function () {
+			GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 			GameGlobals.playerActionFunctions.startInventoryManagement();
 		},
 		
 		autoEquip: function () {
 			let itemBonusType = $("#select-bag-autoequip-type").val();
 			if (!itemBonusType) return;
+			GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 			log.i("auto equip best " + itemBonusType);
 			let inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
 			this.itemNodes.head.items.autoEquipByBonusType(itemBonusType, inCamp);

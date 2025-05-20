@@ -139,11 +139,18 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 			
 			UIList.update(this.logListLatest, latestMessages);
 
+			let hasNewMessages = false;
+
 			for (let i = 0; i < shownMessages.length; i++) {
 				if (!shownMessages[i].hasBeenShown) {
 					log.i("mark as shown: " + shownMessages[i].message);
 					shownMessages[i].hasBeenShown = true;
+					hasNewMessages = true;
 				}
+			}
+
+			if (hasNewMessages) {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.logMessage, 300);
 			}
 
 			for (let i = 0; i < newItems.length; i++) {

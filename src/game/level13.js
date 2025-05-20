@@ -10,6 +10,7 @@ define([
 	'game/constants/SystemPriorities',
 	'game/systems/GameManager',
 	'game/systems/SaveSystem',
+	'game/systems/ui/UIOutAudioSystem',
 	'game/systems/ui/UIOutHeaderSystem',
 	'game/systems/ui/UIOutElementsSystem',
 	'game/systems/ui/UIOutLevelSystem',
@@ -81,6 +82,7 @@ define([
 	SystemPriorities,
 	GameManager,
 	SaveSystem,
+	UIOutAudioSystem,
 	UIOutHeaderSystem,
 	UIOutElementsSystem,
 	UIOutLevelSystem,
@@ -337,6 +339,7 @@ define([
 		addUISystems: function () {
 			log.i("START " + GameConstants.STARTTimeNow() + "\t initializing ui systems");
 
+			this.engine.addSystem(new UIOutAudioSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutTextSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutHeaderSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutElementsSystem(), SystemPriorities.render);

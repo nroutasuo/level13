@@ -32,6 +32,7 @@ define(['ash',], function (Ash) {
 		themeToggledSignal: new Ash.Signals.Signal(),
 		transitionStartedSignal: new Ash.Signals.Signal(),
 		transitionCompletedSignal: new Ash.Signals.Signal(),
+		triggerSoundSignal: new Ash.Signals.Signal(),
 		
 		// player move
 		playerMoveStartedSignal: new Ash.Signals.Signal(),

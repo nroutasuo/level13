@@ -1081,6 +1081,7 @@ define([
 		},
 
 		onApproachTollGateButtonClicked: function (e) {
+			GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 			let $btn = $(e.currentTarget);
 			let direction = $btn.data("direction");
 			this.showTollGatePopup(direction);

@@ -45,10 +45,12 @@ define([
 		initElements: function () {
 			var sys = this;
 			$("#incoming-caravan-popup-reset").click(function (e) {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				sys.clearSelection();
 				sys.updateLists();
 			});
 			$("#incoming-caravan-popup-cancel").click(function (e) {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				GameGlobals.uiFunctions.popupManager.closePopup("incoming-caravan-popup");
 			});
 			this.multiplierSelect = HorizontalSelect.init("incoming-caravan-popup-multiplier", "Selection");
@@ -248,6 +250,7 @@ define([
 			};
 
 			var onLiClicked = function (e) {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				moveItem($(this), "click");
 			};
 

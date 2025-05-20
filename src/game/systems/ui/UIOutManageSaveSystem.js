@@ -1,5 +1,12 @@
-define(['ash', 'utils/UIList', 'utils/FileUtils', 'game/GameGlobals', 'game/GlobalSignals', 'game/constants/GameConstants', 'game/systems/SaveSystem',],
-function (Ash, UIList, FileUtils, GameGlobals, GlobalSignals, GameConstants, SaveSystem) {
+define(['ash', 
+	'utils/UIList', 
+	'utils/FileUtils', 
+	'game/GameGlobals', 
+	'game/GlobalSignals', 
+	'game/constants/GameConstants', 
+	'game/constants/UIConstants', 
+	'game/systems/SaveSystem',],
+function (Ash, UIList, FileUtils, GameGlobals, GlobalSignals, GameConstants, UIConstants, SaveSystem) {
 
 	let UIOutManageSaveSystem = Ash.System.extend({
 
@@ -34,37 +41,48 @@ function (Ash, UIList, FileUtils, GameGlobals, GlobalSignals, GameConstants, Sav
 
 			let system = this;
 			$("#open-import").click(function () {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				system.openImport();
 			});
 			$("#open-save-list").click(function () {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				system.closeImport();
 			});
 			$("#paste-import").click(function () {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				system.pasteImport();
 			});
 			$("#load-import").click(function () {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				system.loadImport();
 			});
 			$("#btn-download-export").click(function () {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				system.downloadExport();
 			});
 			$("#btn-copy-export").click(function () {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				navigator.clipboard.writeText($("#textarea-export-save").val());
 			});
 			$("#btn-back-from-export").click(function () {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				system.closeExport();
 			});
 			$("#close-manage-save-popup").click(function (e) {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				system.resetElements();
 				GameGlobals.uiFunctions.popupManager.closePopup("manage-save-popup");
 			});
 			$("#btn-save-list-options-save").click(function (e) {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				system.saveToSelectedSlot();
 			});
 			$("#btn-save-list-options-load").click(function (e) {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				system.loadFromSelectedSlot();
 			});
 			$("#btn-save-list-options-export").click(function (e) {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				system.openExport();
 			});
 		},
@@ -165,6 +183,7 @@ function (Ash, UIList, FileUtils, GameGlobals, GlobalSignals, GameConstants, Sav
 
 			let sys = GameGlobals.engine.getSystem(UIOutManageSaveSystem);
 			li.$root.click(function (e) {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				let $target = $(e.currentTarget);
 				let slotID = $target.data("slotID");
 				$(".li-save-slot").toggleClass("selected", false);

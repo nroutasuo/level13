@@ -139,6 +139,7 @@ define([
 
 			$.each($("#upgrades-list button.action"), function () {
 				$(this).click(function () {
+					GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 					GameGlobals.playerActionFunctions.buyUpgrade($(this).attr("action"));
 				})
 			});

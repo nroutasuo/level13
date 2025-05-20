@@ -326,6 +326,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 						var $div = $("<div class='canvas-overlay-cell map-overlay-cell' style='top: " + sectorYpx + "px; left: " + sectorXpx + "px' " + data +"></div>");
 						if (sectorSelectedCallback) {
 							$div.click(function (e) {
+								GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 								$.each($(".map-overlay-cell"), function () {
 									$(this).toggleClass("selected", false);
 								});

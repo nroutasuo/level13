@@ -106,6 +106,8 @@ define([
 				var resourceName = $(divRes).attr("data-resourcename");
 				var itemId = $(divItem).attr("data-itemid");
 
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
+
 				var isInKeptList = $(this).parents("#resultlist-inventorymanagement-kept").length > 0;
 
 				if (resourceName) {

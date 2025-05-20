@@ -107,6 +107,12 @@ define([
 			playerPositionComponent.level = position.level;
 			playerPositionComponent.sectorX = position.sectorX;
 			playerPositionComponent.sectorY = position.sectorY;
+
+			if (isCampTransition) {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.moveTransition);
+			} else {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.moveNormal);
+			}
 				
 			if (isCampTransition) {
 				playerPositionComponent.inCamp = position.inCamp;

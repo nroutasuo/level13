@@ -222,6 +222,7 @@ function (Ash, Text, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, 
 			var $div = $("<div class='canvas-overlay-cell upgrades-overlay-cell' style='top: " + ypx + "px; left: " + xpx + "px' " + data +"><p>" + text +"</p></div>");
 			var helper = this;
 			$div.click(function (e) {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				log.i("tech selected: " + node.definition.id);
 				vis.selectedID = node.definition.id;
 				vis.selectioncb();

@@ -72,6 +72,7 @@ define(['ash',
 				let onTabClickedInternal = function (e) {
 					let target = e.currentTarget;
 					if (!($(target).hasClass("disabled"))) {
+						GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 						uiFunctions.onTabClicked(target.id);
 					}
 				};
@@ -88,22 +89,27 @@ define(['ash',
 
 				// Meta/non-action buttons
 				$("#btn-save").click(function (e) {
+					GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 					GlobalSignals.saveGameSignal.dispatch(GameConstants.SAVE_SLOT_DEFAULT, true);
 				});
 				$("#btn-restart").click(function (e) {
+					GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 					uiFunctions.onRestartButton();
 				});
 				$("#btn-more").click(function (e) {
+					GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 					let wasVisible = $("#game-options-extended").is(":visible");
 					uiFunctions.showGameOptions(!wasVisible);
 				});
 				$("#btn-importexport").click(function (e) {
+					GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 					gtag('event', 'screen_view', {
 						'screen_name': "popup-manage-save"
 					});
 					uiFunctions.showManageSave();
 				});
 				$("#btn-stats").click(function (e) {
+					GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 					let options = { isMeta: true, isDismissable: true };
 					gtag('event', 'screen_view', {
 						'screen_name': "popup-stats"
@@ -112,9 +118,11 @@ define(['ash',
 					uiFunctions.showSpecialPopup("game-stats-popup", options);
 				});
 				$("#game-stats-popup-close").click(function (e) {
+					GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 					uiFunctions.popupManager.closePopup("game-stats-popup");
 				});
 				$("#btn-settings").click(function (e) {
+					GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 					let options = { isMeta: true, isDismissable: true };
 					gtag('event', 'screen_view', {
 						'screen_name': "popup-settings"
@@ -122,9 +130,11 @@ define(['ash',
 					uiFunctions.showSpecialPopup("settings-popup", options);
 				});
 				$("#settings-popup-close").click(function (e) {
+					GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 					uiFunctions.popupManager.closePopup("settings-popup");
 				});
 				$("#btn-info").click(function (e) {
+					GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 					gtag('event', 'screen_view', {
 						'screen_name': "popup-game-info"
 					});
@@ -143,6 +153,7 @@ define(['ash',
 
 				// Buttons: In: Other
 				$("#btn-header-rename").click(function (e) {
+					GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 					var prevCampName = GameGlobals.playerActionFunctions.getNearestCampName();
 					uiFunctions.showInput(
 						"Rename Camp",
@@ -299,10 +310,12 @@ define(['ash',
 			registerCollapsibleContainerListeners: function (scope) {
 				var sys = this;
 				$(scope + " .collapsible-header").click(function () {
+					GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 					var wasVisible = $(this).next(".collapsible-content").is(":visible");
 					sys.toggleCollapsibleContainer($(this), !wasVisible);
 				});
 				$.each($(scope + " .collapsible-header"), function () {
+					GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 					sys.toggleCollapsibleContainer($(this), false);
 				});
 			},
@@ -310,6 +323,7 @@ define(['ash',
 			registerStepperListeners: function (scope) {
 				var sys = this;
 				$(scope + " .stepper button").click(function (e) {
+					GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 					sys.onStepperButtonClicked(this, e);
 				});
 				$(scope + ' .stepper input.amount').change(function () {
@@ -953,6 +967,8 @@ define(['ash',
 			onMetaButtonClicked: function (e) {
 				let $btn = $(e.currentTarget);
 				let id = $btn.attr("id");
+				
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 
 				if (id == "out-action-fight-close") {
 					GameGlobals.fightHelper.endFight(false, false);

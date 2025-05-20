@@ -2533,6 +2533,7 @@ define(['ash',
 			var item = itemsComponent.getItem(null, itemInstanceId, playerPos.inCamp, false, item => item.equippable);
 			GameGlobals.gameState.increaseGameStatList("uniqueItemsEquipped", item.id);
 			itemsComponent.equip(item);
+			this.completeAction("equip");
 			GlobalSignals.equipmentChangedSignal.dispatch();
 		},
 
@@ -2541,6 +2542,7 @@ define(['ash',
 			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
 			var item = itemsComponent.getItem(itemID, null, playerPos.inCamp, true);
 			itemsComponent.unequip(item);
+			this.completeAction("unequip");
 			GlobalSignals.equipmentChangedSignal.dispatch();
 		},
 
@@ -2951,6 +2953,7 @@ define(['ash',
 				GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_COLLECTOR_FAIL, "Nothing to collect yet.");
 			}
 
+			this.completeAction(actionName);
 			GlobalSignals.inventoryChangedSignal.dispatch();
 			GlobalSignals.collectorCollectedSignal.dispatch();
 		},
