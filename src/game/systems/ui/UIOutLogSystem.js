@@ -266,11 +266,13 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 		},
 		
 		pruneMessages: function () {
-			let maxMessagesByKey = 20;
+			let maxMessagesByKey = 30;
+
 			let getVisibilityKey = function (message) {
-				if (!message.position || message.visibility == LogConstants.MSG_VISIBILITY_GLOBAL) return "global";
-				if (!message.position.inCamp) return "out";
-				return message.position.level;
+				if (!message.position || !message.visibility || message.visibility == LogConstants.MSG_VISIBILITY_GLOBAL) return "global";
+				if (message.visibility == LogConstants.MSG_VISIBILITY_CAMP) return "camp";
+				if (message.visibility == LogConstants.MGS_VISIBILITY_LEVEL) return "level-" + message.position.level;
+				return (message.position.inCamp ? "in-" : "out-") + message.position.level;
 			}
 
 			for (let node = this.logNodes.head; node; node = node.next) {
