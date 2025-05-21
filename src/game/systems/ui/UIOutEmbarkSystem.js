@@ -49,8 +49,7 @@ define([
 		},
 		
 		initElements: function () {
-			let resNames = Object.assign({}, resourceNames);
-			resNames["currency"] = "currency";
+			let resNames = this.getResNamesWithCurrency();
 			for (let key in resNames) {
 				let name = resNames[key];
 				let indicatorEmbark = UIConstants.createResourceIndicator(name, true, "embark-resources-" + name, true, false, false, false);
@@ -69,13 +68,13 @@ define([
 		
 		initLeaveCampRes: function () {
 			if (!GameGlobals.gameState.uiStatus.leaveCampRes) return;
-			var campResources = GameGlobals.resourcesHelper.getCurrentStorage();
-			for (var key in resourceNames) {
-				var name = resourceNames[key];
-				var oldVal = GameGlobals.gameState.uiStatus.leaveCampRes[name];
-				var campVal = campResources.resources.getResource(name);
+			let resNames = this.getResNamesWithCurrency();
+			for (let key in resNames) {
+				let name = resNames[key];
+				let oldVal = GameGlobals.gameState.uiStatus.leaveCampRes[name];
+				let campVal = this.getCampValue(name);
 				if (oldVal && oldVal > 0) {
-					var value = Math.floor(Math.min(oldVal, campVal));
+					let value = Math.floor(Math.min(oldVal, campVal));
 					$("#stepper-embark-" + name + " input").val(value);
 				}
 			}
@@ -112,19 +111,20 @@ define([
 		updateSteppers: function () {
 			var campResources = GameGlobals.resourcesHelper.getCurrentStorage();
 			var campResourcesAcc = GameGlobals.resourcesHelper.getCurrentStorageAccumulation(false);
-			let campCurrency = GameGlobals.resourcesHelper.getCurrentCurrency();
 			var bagComponent = this.playerPosNodes.head.entity.get(BagComponent);
 			var selectedCapacity = 0;
 			var selectedAmount;
 			
 			var selectedWater = 0;
 			var selectedFood = 0;
+
+			let sys = this;
 			
 			// Resource steppers
 			$.each($("#embark-resources tr"), function () {
 				let resourceName = $(this).attr("id").split("-")[2];
 				let isCurrency = resourceName == "currency";
-				let campVal = isCurrency ? campCurrency.currency : campResources.resources.getResource(resourceName);
+				let campVal = sys.getCampValue(resourceName);
 				let visible = campVal > 0;
 				let inputMax = Math.min(Math.floor(campVal));
 				GameGlobals.uiFunctions.toggle($(this), visible);
@@ -268,6 +268,19 @@ define([
 				let val = GameGlobals.gameState.uiStatus.leaveCampItems[item.id] || 0;
 				GameGlobals.gameState.uiStatus.leaveCampItems[item.id] = val + 1;
 			}
+		},
+
+		getCampValue: function (resourceName) {
+			let campResources = GameGlobals.resourcesHelper.getCurrentStorage();
+			let campCurrency = GameGlobals.resourcesHelper.getCurrentCurrency();
+			let isCurrency = resourceName == "currency";
+			return isCurrency ? campCurrency.currency : campResources.resources.getResource(resourceName);
+		},
+
+		getResNamesWithCurrency: function () {
+			let resNames = Object.assign({}, resourceNames);
+			resNames["currency"] = "currency";
+			return resNames;
 		},
 		
 		registerStepperListeners: function (scope) {
