@@ -163,6 +163,8 @@ define([
 			let explorers = explorersComponent.getAll();
 			let party = explorersComponent.getParty();
 			let inCamp = GameGlobals.playerHelper.isInCamp();
+
+			let forcedExplorerID = GameGlobals.explorerHelper.getForcedExplorerID();
 			
 			// slots
 			let selectedExplorers = [];
@@ -180,8 +182,9 @@ define([
 				var explorer = explorers[i];
 				if (selectedExplorers.indexOf(explorer) >= 0) continue;
 				let questTextKey = this.getQuestTextKey(explorer);
+				let isForced = explorer.id == forcedExplorerID;
 				explorer.hasUrgentDialogue = this.hasExplorerUrgentDialogue(explorer);
-				var li = "<li>" + UIConstants.getExplorerDivWithOptions(explorer, true, inCamp, questTextKey) + "</li>";
+				var li = "<li>" + UIConstants.getExplorerDivWithOptions(explorer, true, inCamp, questTextKey, isForced) + "</li>";
 				$("#list-explorers").append(li);
 			}
 			
@@ -217,6 +220,8 @@ define([
 			let elements = this.explorerSlotElementsByType[explorerType];
 			let $slot = elements.slot;
 			let $container = elements.container;
+
+			let forcedExplorerID = GameGlobals.explorerHelper.getForcedExplorerID();
 			
 			GameGlobals.uiFunctions.toggle($slot.find(".explorer-slot-type-empty"), explorer == null);
 			GameGlobals.uiFunctions.toggle($slot.find(".explorer-slot-type-selected"), explorer != null);
@@ -225,8 +230,9 @@ define([
 			
 			if (explorer) {
 				let questTextKey = this.getQuestTextKey(explorer);
+				let isForced = explorer.id == forcedExplorerID;
 				explorer.hasUrgentDialogue = this.hasExplorerUrgentDialogue(explorer);
-				$container.append(UIConstants.getExplorerDivWithOptions(explorer, true, inCamp, questTextKey));
+				$container.append(UIConstants.getExplorerDivWithOptions(explorer, true, inCamp, questTextKey, isForced));
 			}
 		},
 		
