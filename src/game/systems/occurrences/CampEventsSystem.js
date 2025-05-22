@@ -879,7 +879,8 @@ define([
 					let isPendingDisease = GameGlobals.gameState.getStoryFlag(StoryConstants.flags.GREENHOUSE_PENDING_DISEASE);
 					let value = 1 - OccurrenceConstants.getDiseaseOutbreakChance(campNode.camp.population, hasHerbs, hasMedicine, apothecaryLevel);
 					if (isPendingDisease) value = value / 2;
-					return value;
+					skipProbability = value;
+					break;
 				
 				case OccurrenceConstants.campOccurrenceTypes.recruit:
 					let explorerStats = GameGlobals.playerHelper.getExplorerStats();
@@ -888,8 +889,10 @@ define([
 					break;
 			}
 
-			if (skipProbability > 0.95) skipProbability = 1;
-			if (skipProbability < 0.05) skipProbability = 0;
+			if (skipProbability >= 1) skipProbability = 1;
+			else if (skipProbability > 0.95) skipProbability = 0.9999;
+			else if (skipProbability <= 0) skipProbability = 0;
+			else if (skipProbability < 0.05) skipProbability = 0.0001;
 
 			return skipProbability;
 		},
