@@ -555,7 +555,7 @@ define([
 			let buyItemTypes = [];
 			let buyResources = [];
 			let usesCurrency = false;
-				
+
 			// TODO adjust resource amounts based on resource rarity / value (plenty of metal, less herbs)
 			let minResAmount = 40 + campOrdinal * 10;
 			let randResAmount = 450 + campOrdinal * 50;
@@ -596,6 +596,20 @@ define([
 			
 			// TODO fix probability of ending up with some items depending on number of matching items
 			let addSellItemsFromCategories = function (categories, probability, maxAmount, maxDifferentItems, includeCommon, filter) {
+				let matchesFilter = function (itemDefinition) {
+					if (!filter) return true;
+					if (typeof filter == "string") {
+						return itemDefinition.id.indexOf(filter) >= 0;
+					}
+
+					for (let i in filter) {
+						let id = filter[i];
+						if (itemDefinition.id.indexOf(id) >= 0) return true;
+					}
+
+					return false;
+				};
+
 				let numDifferentItemsAdded = 0;
 				for (let j in categories) {
 					var category = categories[j];
@@ -603,7 +617,7 @@ define([
 					var itemList = ItemConstants.itemDefinitions[category];
 					for (let i in itemList) {
 						let itemDefinition = itemList[i];
-						if (filter && itemDefinition.id.indexOf(filter) !== 0)
+						if (!matchesFilter(itemDefinition))
 							continue;
 						if (!includeCommon && isObsoletable && itemDefinition.craftable && itemDefinition.requiredCampOrdinal < campOrdinal)
 							continue;
@@ -615,16 +629,24 @@ define([
 					}
 				}
 			}
+
+			let addSellItemsByIDs = function (ids, probability, maxAmount, maxDifferentItems, includeCommon) {
+				let allCategories = Object.keys(ItemConstants.itemTypes);
+				addSellItemsFromCategories(allCategories, probability, maxAmount, maxDifferentItems, includeCommon, ids);
+			}
 			
 			let rand = Math.random();
 			let rand2 = Math.random();
 			
 			if (traderType == TradeConstants.traderType.EQUIPMENT) {
 				// 1) equipment trader: sells (equipment caterogy), buys equipment, uses currency
-				var categories = [];
+				let categories = [];
+				let ids = [];
+
 				if (rand2 <= 0.33) {
 					name = "weapons trader";
 					categories.push("weapon");
+					ids.push("consumable_weapon");
 				} else if (rand2 <= 0.66) {
 					name = "clothing trader";
 					categories.push("clothing_over");
@@ -638,10 +660,14 @@ define([
 					categories.push("light");
 					categories.push("bag");
 					categories.push("exploration");
+					ids.push("cache_water");
+					ids.push("cache_food");
 				}
-				var prob = 0.75;
+				
+				let prob = 0.75;
 				while (sellItems.length < 4 && prob <= 1) {
 					addSellItemsFromCategories(categories, prob, 1, 4, true);
+					addSellItemsByIDs(ids, prob, 2, 1, true);
 					prob += 0.05;
 				}
 				if (neededIngredient) {
@@ -653,7 +679,7 @@ define([
 			} else if (traderType == TradeConstants.traderType.GENERAL) {
 				// 2) misc trader: sells ingredients, random items, buys all items, uses currency
 				name = "general trader";
-				var categories = [];
+				let categories = [];
 				while (categories.length < 3) {
 					if (Math.random() <= 0.2) categories.push("light");
 					if (Math.random() <= 0.5) categories.push("weapon");
@@ -666,7 +692,7 @@ define([
 					if (Math.random() <= 0.2) categories.push("bag");
 					if (Math.random() <= 0.7) categories.push("exploration");
 				}
-				var prob = 0.05;
+				let prob = 0.05;
 				while (sellItems.length < 5 && prob < 1) {
 					addSellItemsFromCategories(categories, prob, 1, 5, true);
 					prob += 0.05;
@@ -677,6 +703,8 @@ define([
 					addSellItemsFromCategories([ "voucher" ], 0.5, 1, 1, true, "cache_rumours");
 				} else if (Math.random() < 0.1 * traderLevel) {
 					addSellItemsFromCategories([ "voucher" ], 0.2, 1, 1, true, "cache_evidence");
+				} else {
+					addSellItemsByIDs([ "cache_water", "cache_food" ], 0.2, 2, 2, true);
 				}
 				buyItemTypes = Object.keys(ItemConstants.itemTypes);
 				usesCurrency = traderLevel > 1;
