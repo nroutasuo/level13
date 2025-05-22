@@ -103,14 +103,8 @@ define([
 		},
 
 		getLevelEntityForSector: function (sectorEntity) {
-			var levelPosition;
-			var sectorPosition = sectorEntity.get(PositionComponent);
-			for (var node = this.levelNodes.head; node; node = node.next) {
-				levelPosition = node.entity.get(PositionComponent);
-				if (levelPosition.level === sectorPosition.level) return node.entity;
-			}
-			log.w("No level entity found for sector with position " + sectorPosition);
-			return null;
+			let sectorPosition = sectorEntity.get(PositionComponent);
+			return this.getLevelEntityForPosition(sectorPosition.level);
 		},
 
 		getLevelEntityForPosition: function (level) {

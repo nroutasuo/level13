@@ -191,7 +191,7 @@ define([
 
 			if (!currentPageVO) {
 				debugger
-				log.w("no page found for id " + pageID);
+				log.w("no page found");
 				this.endDialogue();
 				return;
 			}

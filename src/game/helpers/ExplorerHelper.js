@@ -73,9 +73,10 @@ define([
 		},
 
 		getForcedExplorerID: function () {
-			if (GameGlobals.gameState.getStoryFlag(StoryConstants.flags.SPIRITS_SEARCHING_FOR_SPIRITS)) {
+			if (GameGlobals.gameState.getStoryFlag(StoryConstants.flags.SPIRITS_SEARCHING_FOR_SPIRITS) && !GameGlobals.tribeHelper.hasDeity()) {
 				return "gambler";
 			}
+
 			if (GameGlobals.gameState.getStoryFlag(StoryConstants.flags.RESCUE_PASSAGE_UP_BUILT)) {
 				if (!GameGlobals.gameState.getStoryFlag(StoryConstants.flags.RESCUE_LEVEL_14_HAZARD_FOUND)) {
 					if (!GameGlobals.gameState.getStoryFlag(StoryConstants.flags.RESCUE_EXPLORER_FOUND)) {

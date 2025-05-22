@@ -72,8 +72,6 @@ define([
 
 			this.lastLevelCharacterUpdate[level] = now;
 
-			log.i("updateCurrentLevelCharacters " + level);
-
 			// update / remove existing ones
 
 			let numExistingCharacters = 0;

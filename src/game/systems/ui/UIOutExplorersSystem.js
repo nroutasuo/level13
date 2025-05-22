@@ -282,6 +282,7 @@ define([
 			$("#container-tab-two-explorers .npc-container").each(function () {
 				let id = $(this).attr("data-explorerid");
 				let explorer = explorersComponent.getExplorerByID(id);
+				if (!explorer) return;
 
 				let hasUrgentDialogue = sys.hasExplorerUrgentDialogue(explorer);
 				let isInjuredInParty = explorer.injuredTimer >= 0 && explorer.inParty;

@@ -2977,9 +2977,13 @@ define(['ash',
 			GameGlobals.gameState.increaseGameStatKeyed("numBuildingsBuiltPerId", improvementID);
 
 			let level = improvementsComponent.getLevel(improvementName);
+			let isProject = ImprovementConstants.isProject(improvementName);
 			
 			let msg = ImprovementConstants.getBuiltLogMessageTextVO(improvementID, level);
-			GameGlobals.playerHelper.addLogMessage("MSG_BUILD_" + improvementName, msg, { position: sector.get(PositionComponent).getPositionInCamp() });
+			let messagePosition = sector.get(PositionComponent).getPosition();
+			messagePosition.inCamp = getImprovementType(improvementName) === improvementTypes.camp || isProject;			
+
+			GameGlobals.playerHelper.addLogMessage("MSG_BUILD_" + improvementName, msg, { position: messagePosition });
 
 			GlobalSignals.improvementBuiltSignal.dispatch();
 			

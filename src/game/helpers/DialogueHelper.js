@@ -109,7 +109,7 @@ define(['ash',
 
                 let currentPageID = dialogueComponent.currentPageID;
 
-                if (!currentPageID) return null;
+                if (!currentPageID && currentPageID !== 0) return null;
 
                 let currentPageVO = this.dialogueNodes.head.dialogue.activeDialogue.pagesByID[currentPageID];
 
