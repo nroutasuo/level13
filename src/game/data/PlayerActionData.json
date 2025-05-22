@@ -3788,6 +3788,9 @@
         "use_item_cache_metal": {
             "inCamp": true
         },
+        "use_item_document": {
+            "inCamp": true
+        },
         "use_item_cache_robots": {
             "camp": {
                 "robotStorageAvailable": true
