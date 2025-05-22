@@ -28,8 +28,9 @@ function (Ash, GameGlobals, LogConstants, TextConstants, LogMessageVO) {
 		},
 
 		getCustomSaveObject: function () {
-			var copy = {};
-			copy.messages = this.messages.slice(-30);
+			let copy = {};
+			// just in case prune some messages here if way too big but normal purning is done in systems
+			copy.messages = this.messages.slice(-500);
 			for (let i = 0; i < copy.messages.length; i++) {
 				delete copy.messages[i].loadedFromSave;
 			}
