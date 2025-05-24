@@ -938,7 +938,7 @@ define([
 						value *= GameGlobals.sectorHelper.getBeaconMovementBonus(this.currentLocationNodes.head.entity, this.playerStatsNodes.head.perks);
 						value *= GameGlobals.sectorHelper.getHazardsMovementMalus(this.currentLocationNodes.head.entity);
 						value = Math.round(value * 10) / 10;
-						isVisible = GameGlobals.gameState.unlockedFeatures.camp && value != 1;
+						isVisible = GameGlobals.gameState.unlockedFeatures.camp;
 						flipNegative = true;
 						break;
 					
@@ -1364,6 +1364,7 @@ define([
 			this.updatePlayerStats();
 			this.updateLocation();
 			this.updateLayout();
+			this.updateItemStats();
 			this.updatePageBackgroundColor();
 		},
 		
