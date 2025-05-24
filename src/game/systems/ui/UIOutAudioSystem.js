@@ -73,9 +73,13 @@ define([
 			}
 
 			setTimeout(() => {
+				if (GameGlobals.gameState.uiStatus.isHidden) return;
 				let audio = new Audio(this.paths[soundTriggerID]);
-				//$soundElement[0].play();
-				audio.play();
+				try {
+					audio.play();
+				} catch (e) {
+					log.e("failed to play audio: " + soundTriggerID + " | " + e);
+				}
 				this.previousSoundElement = audio;
 			}, delay);
 		},
