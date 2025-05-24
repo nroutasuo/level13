@@ -227,7 +227,7 @@ define([
 						addValue(improvementVO.count * defaultBonus, "Radio", false);
 						break;
 					case improvementNames.shrine:
-						let levelBonus = 1 + (level - 1) * 0.25;
+						let levelBonus = 1 + (level - 1) * 0.5;
 						addValue(improvementVO.count * defaultBonus * levelBonus, "Shrine", false);
 						break;
 					case improvementNames.sundome:
