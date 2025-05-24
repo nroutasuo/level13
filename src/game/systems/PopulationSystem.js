@@ -114,8 +114,9 @@ define([
 
 			let isPopulationChange = Math.floor(camp.population) !== Math.floor(oldPopulation);
 			let isPopulationIncrease = Math.floor(camp.population) > Math.floor(oldPopulation);
+			let isEarlyFirstCamp = node.position.level == 13 && camp.maxPopulation < 5;
 			
-			if (isPopulationIncrease && !addedPendingPopulation) {
+			if (isPopulationIncrease && !addedPendingPopulation && !isEarlyFirstCamp) {
 				// sometimes increase population by more than 1 at once to speed up camp growth and not have to assign new workers one by one
 				let bonusPopulationChance = this.getBonusPopulationChance(node);
 				let bonusPopulationAmount = this.getBonusPopulationAmount(node);
