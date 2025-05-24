@@ -216,7 +216,7 @@ define([
 		},
 
 		getHazardsMovementMalus: function (sector) {
-			return this.getDebrisMovementMalus(sector) + this.getFloodedMovementMalus(sector);
+			return this.getDebrisMovementMalus(sector) * this.getFloodedMovementMalus(sector);
 		},
 		
 		getDebrisMovementMalus: function (sector) {
