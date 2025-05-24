@@ -1179,8 +1179,11 @@ define([
 				}
 			}
 
-			if (resultVO.getGainedCurses().length > 0) {
-				div += "<p class='warning'>You got cursed.</p>";
+			if (resultVO.getGainedCurses().length > 0 ) {
+				let curse = resultVO.getGainedCurses()[0];
+				if (!GameGlobals.playerHelper.isPerkBlocked(curse.id)) {
+					div += "<p class='warning'>You got cursed.</p>";
+				}
 			}
 
 			if (resultVO.lostPerks.length > 0) {

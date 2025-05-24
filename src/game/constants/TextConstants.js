@@ -1005,7 +1005,13 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		getFoundStashMessage: function (stashVO) {
 			switch (stashVO.stashType) {
 				case ItemConstants.STASH_TYPE_ITEM:
-					return "Found an item stash.";
+					let itemID = stashVO.itemID;
+					let item = ItemConstants.getItemDefinitionByID(itemID);
+					if (item.type == ItemConstants.itemTypes.note) {
+						return "Found some interesting documents.";
+					} else { 
+						return "Found an item stash.";
+					}
 				case ItemConstants.STASH_TYPE_SILVER:
 					return "Found some coins.";
 				default:
@@ -1295,6 +1301,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					break;
 				case localeTypes.office:
 					noun = "office";
+					break;
 				default:
 					log.w("unknown locale type: " + locale.type);
 					noun = "building";

@@ -956,7 +956,7 @@
 		],
 		"enemyType": "bird",
 		"environment": [ "sparse" ],
-		"name": "a group of seagulls",
+		"name": "a colony of seagulls",
 		"rarity": 20,
 		"speed": 1.1
 	},
@@ -1533,6 +1533,7 @@
 		"attackRatio": 0.65,
 		"enemyType": "robot",
 		"shieldRatio": 1,
+		"rarity": 5,
 		"size": 0.5
 	},
 	"scorpion__fire": {

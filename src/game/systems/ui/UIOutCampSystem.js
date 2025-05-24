@@ -172,7 +172,7 @@
 			let isOutpost = GameGlobals.campBalancingHelper.isOutpost(campOrdinal);
 			let headerTextKey = "ui.camp.page_header_default";
 			if (isOutpost) headerTextKey = "ui.camp.page_header_outpost";
-			GameGlobals.uiFunctions.setText("#tab-header h2", headerTextKey);
+			GameGlobals.uiFunctions.setText("#tab-header h2", headerTextKey, position.level);
 
 			this.updateAssignedWorkers();
 			this.updateWorkerMaxDescriptions();
@@ -352,7 +352,10 @@
 				}
 			}
 			
-			robotCalloutContent += "<br/>worker resource production: +" + UIConstants.roundValue(robotBonus * 100, true, false) + "%";
+			if (robots >= 1) {
+				robotCalloutContent += "<br/>worker resource production: +" + UIConstants.roundValue(robotBonus * 100, true, false) + "%";
+			}
+			
 			UIConstants.updateCalloutContent(this.elements.populationRobotsContainer, robotCalloutContent);
 			
 			let robotsAccumulationRaw = campResourceAcc.getChange(resourceNames.robots);
