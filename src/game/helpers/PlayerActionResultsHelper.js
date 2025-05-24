@@ -1928,11 +1928,20 @@ define([
 			// fix for old saves before 0.6.1
 			if (typeof stashesFound === "number") stashesFound = [];
 
+			let itemsComponent = this.playerStatsNodes.head.items;
+
 			let stashVO = null;
 			for (let i = 0; i < stashes.length; i++) {
 				if (stashesFound && stashesFound.indexOf(i) >= 0) continue;
 				let possibleStashVO = stashes[i];
 				if (possibleStashVO.localeType != localeType) continue;
+
+				if (possibleStashVO.stashType == ItemConstants.STASH_TYPE_ITEM) {
+					let itemID = possibleStashVO.itemID;
+					let numOwned = itemsComponent.getCountByBaseId(ItemConstants.getBaseItemID(itemID), true);
+					if (numOwned >= 5) continue;
+				}
+				
 				stashVO = possibleStashVO;
 				stashVO.stashIndex = i;
 				break;
