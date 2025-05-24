@@ -17,7 +17,7 @@ define(['ash', 'game/GameGlobals', 'game/constants/PerkConstants'], function (As
 			var maxStamina = staminaComponent.maxStamina;
 			var staminaCostToMoveOneSector = GameGlobals.playerActionsHelper.getCosts("move_sector_west").stamina;
 			var staminaCostToCamp = GameGlobals.playerActionsHelper.getCosts("move_camp_level").stamina;
-			return Math.min(maxStamina * 0.25, Math.max(staminaCostToCamp + staminaCostToMoveOneSector * 5, staminaCostToMoveOneSector * 10, 50));
+			return Math.min(maxStamina * 0.5, Math.max(staminaCostToCamp + staminaCostToMoveOneSector * 5, staminaCostToMoveOneSector * 10, 50));
 		},
 
 		getStaminaGainedFromNap: function (hasSleepingBag) {
