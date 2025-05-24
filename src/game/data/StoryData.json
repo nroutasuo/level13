@@ -81,7 +81,7 @@
                         }
                     },
                     "startFromAny": true,
-                    "startTrigger": "story_flag_changed"
+                    "startTrigger": "upgrade_researched"
                 }
             ],
             "startTrigger": "action_enter_camp"
@@ -748,6 +748,12 @@
                     "startConditions": {
                         "featureUnlocked": {
                             "move": true
+                        },
+                        "tribe": {
+                            "population": [
+                                -1,
+                                1
+                            ]
                         },
                         "improvements": {
                             "campfire": [

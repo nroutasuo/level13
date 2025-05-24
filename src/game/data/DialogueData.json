@@ -2469,6 +2469,7 @@
 			]
 		},
 		"explorer_generic_intract_new_camp_15_01": {
+			"isUnique": true,
 			"conditions": {
 				"inCamp": 15,
 				"maxNumCamps": 15,
@@ -2938,6 +2939,7 @@
 			"repeatable": true
 		},
 		"explorer_generic_story_apocalypse_evacuation_known": {
+			"repeatable": false,
 			"conditions": {
 				"explorer": {
 					"quest": "apocalypse"
