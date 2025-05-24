@@ -205,7 +205,8 @@ define(function () {
 		},
 		
 		irregularPlurals: {
-			wildlife: "wildlife"
+			wildlife: "wildlife",
+			fungi: "fungi",
 		},
 		
 		capitalize: function (string) {

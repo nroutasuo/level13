@@ -502,12 +502,9 @@ define([
 			if (!perksComponent) return;
 			if (perksComponent.hasPerk(perkID)) return;
 
-			let blockingPerks = PerkConstants.getBlockingPerks(perkID);
-			for (let i = 0; i < blockingPerks.length; i++) {
-				if (perksComponent.hasPerk(blockingPerks[i])) {
-					log.i("addPerk " + perkID + " blocked by existing perk " + blockingPerks[i]);
-					return;
-				}
+			if (this.isPerkBlocked(perkID)) {
+				log.i("addPerk " + perkID + " blocked by existing perk");
+				return;
 			}
 
 			let perkVO = PerkConstants.getPerk(perkID, startTimer, endTimer);
@@ -517,6 +514,18 @@ define([
 			}
 
 			perksComponent.addPerk(perkVO);
+		},
+
+		isPerkBlocked: function (perkID) {
+			let perksComponent = this.playerStatsNodes.head.perks;
+			let blockingPerks = PerkConstants.getBlockingPerks(perkID);
+			for (let i = 0; i < blockingPerks.length; i++) {
+				if (perksComponent.hasPerk(blockingPerks[i])) {
+					return true;
+				}
+			}
+
+			return false;
 		},
 
 		selectItemForItemUpgrade: function (itemFilter) {

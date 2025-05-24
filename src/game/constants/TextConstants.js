@@ -1666,7 +1666,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("sector-vision", { sectorType: t_P }, "A stretch of abandoned highway with some smaller buildings on the side" );
 		DescriptionMapper.add("sector-vision", { sectorType: t_P, level: lold, buildingDensity: b12 }, "A round communal square with a defunct fountain and what must once have been a pleasant garden" );
 		DescriptionMapper.add("sector-vision", { sectorType: t_P, level: lmodern, buildingDensity: b12 }, "A public square where recently a temporary camp seems to have been set up and then abandoned" );
-		DescriptionMapper.add("sector-vision", { sectorType: t_P, level: lmodern }, "A standard government office quarter with clear signs and big doors and reception areas, somehow welcoming and dehumanizing at the same time." );
+		DescriptionMapper.add("sector-vision", { sectorType: t_P, level: lmodern, damage: b12 }, "A standard government office quarter with clear signs and big doors and reception areas, somehow welcoming and dehumanizing at the same time." );
 		DescriptionMapper.add("sector-vision", { sectorType: t_P, buildingDensity: b12 }, "[a] [a-street] [n-street] dominated a row of solemn statues" );
 		DescriptionMapper.add("sector-vision", { sectorType: t_P, buildingDensity: b12, wear: b22 }, "An ornamental hall which seems to have once been a big station, with a domed roof, massive chandelier and small booths on the sides" );
 		DescriptionMapper.add("sector-vision", { sectorType: t_P, buildingDensity: b13 }, "An open space that looks like it might have once been dedicated to a sport of some kind");
@@ -1886,7 +1886,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("book-description", { bookType: t_F }, "There is [a] [a-good] story about [c-theme].");
 		DescriptionMapper.add("book-description", { bookType: t_F }, "It is a tale about [c-theme].");
 		DescriptionMapper.add("book-description", { bookType: t_F }, "It is about [c-theme].");
-		DescriptionMapper.add("book-description", { bookType: t_F }, "It is story about [c-topic].");
+		DescriptionMapper.add("book-description", { bookType: t_F }, "It is story about [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_F }, "A story about [c-theme] stays with you.");
 		DescriptionMapper.add("book-description", { bookType: t_F }, "You are touched by a poem about [c-theme].");
 		DescriptionMapper.add("book-description", { bookType: t_F }, "It contains [a] [a-good] description of [c-theme].");
@@ -1919,6 +1919,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("newspaper-description", { itemLevel: wildcard }, "The issue revolves around [c-event].");
 		DescriptionMapper.add("newspaper-description", { itemLevel: wildcard }, "According to it, [c-fact].");
 		DescriptionMapper.add("newspaper-description", { itemLevel: wildcard }, "Contrary to rumours, [c-fact].");
+		DescriptionMapper.add("newspaper-description", { itemLevel: wildcard }, "It is a story about a settlement plagued by swarms of mechanical locusts, destroying all its stores including building materials whenever they appeared.");
 		DescriptionMapper.add("newspaper-description", { itemLevel: l_2 }, "It contains supposed stories of survivors who saw the Fall, all very different.");
 		DescriptionMapper.add("newspaper-description", { itemLevel: l_3 }, "There is an investigative story about [n-topic].");
 	}

@@ -803,7 +803,7 @@ define(['ash',
 					found = true;
 					showResultPopup = true;
 					if (GameGlobals.gameState.numCamps == 0) {
-						popupMsg += "<br/>This seems like a safe spot to build a camp.";
+						popupMsg += "<br/>This seems like a safe spot to build a shelter.";
 					} else {
 						popupMsg += "<br/>This seems like a good place for a camp.";
 					}
@@ -859,7 +859,7 @@ define(['ash',
 			if (GameGlobals.sectorHelper.canBeInvestigated(sector, true)) {
 				showResultPopup = true;
 				popupMsg += "<br/>Something happened here just before the Fall. This sector can be <span class='hl-functionality'>investigated</span>.";
-				logMsg += "This sector can be investigated.";
+				logMsg += "Found a sector that can be investigated.";
 			}
 			
 			let successCallback = function () {

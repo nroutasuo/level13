@@ -180,7 +180,7 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 			if (visibility == LogConstants.MSG_VISIBILITY_GLOBAL) {
 				positionText = "";
 			} else if (visibility == LogConstants.MGS_VISIBILITY_LEVEL) {
-				positionText = "(level " + data.position.level + ")";
+				positionText = " (level " + data.position.level + ")";
 			} else if (visibility == LogConstants.MSG_VISIBILITY_CAMP) {
 				positionText += "";
 			} else if (hasPosition) {
