@@ -249,14 +249,14 @@ define([
 			let count = improvementsComponent.getCountWithModifierForDamaged(improvementNames.darkfarm, 0.5);
 			let level = improvementsComponent.getLevel(improvementNames.darkfarm);
 			let multiplier = this.getCampProductionMultiplier();
-			return count * (0.01 + level * 0.01) * multiplier;
+			return count * (0.02 + level * 0.01) * multiplier;
 		},
 		
 		getAqueductProductionPerSecond: function (improvementsComponent) {
 			let count = improvementsComponent.getCountWithModifierForDamaged(improvementNames.aqueduct, 0.5);
 			let level = improvementsComponent.getLevel(improvementNames.aqueduct);
 			let multiplier = this.getCampProductionMultiplier();
-			return count * (0.01 + level * 0.01) * multiplier;
+			return count * (0.02 + level * 0.01) * multiplier;
 		},
 		
 		getLibraryEvidenceGenerationPerSecond: function (improvementsComponent) {
