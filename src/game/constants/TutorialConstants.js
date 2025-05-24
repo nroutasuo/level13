@@ -9,6 +9,7 @@ define(['ash'], function (Ash) {
 		TUTORIAL_COOLDOWN_DURATION: 1000 * 60 * 10,
 		
 		tutorials: {
+			/*
 			TUTORIAL_BUILT_TRAP: {
 				triggers: [ "action_build" ],
 				repeats: "NEVER",
@@ -27,6 +28,7 @@ define(['ash'], function (Ash) {
 				logMessage: "ui.log.tutorial_built_hut_message",
 				conditions: { improvements: { house: [ 1, 2 ] } }
 			},
+			*/
 			TUTORIAL_BUILT_BEACON: {
 				triggers: [ "action_build" ],
 				repeats: "NEVER",
@@ -45,6 +47,7 @@ define(['ash'], function (Ash) {
 				logMessage: "ui.log.tutorial_built_generator_message",
 				conditions: { improvements: { generator: [ 1, 2 ] } }
 			},
+			/*
 			TUTORIAL_BUILT_STORAGE: {
 				triggers: [ "action_build" ],
 				repeats: "NEVER",
@@ -57,6 +60,7 @@ define(['ash'], function (Ash) {
 				logMessage: "ui.log.tutorial_built_aqueduct_message",
 				conditions: { improvements: { aqueduct: [ 1, 2 ] } }
 			},
+			*/
 			TUTORIAL_BUILT_STABLE: {
 				triggers: [ "action_build" ],
 				repeats: "NEVER",
@@ -69,6 +73,7 @@ define(['ash'], function (Ash) {
 				logMessage: "ui.log.tutorial_built_barracks_message",
 				conditions: { improvements: { barracks: [ 1, 2 ] } }
 			},
+			/*
 			TUTORIAL_BUILT_SMITHY: {
 				triggers: [ "action_build" ],
 				repeats: "NEVER",
@@ -87,36 +92,42 @@ define(['ash'], function (Ash) {
 				logMessage: "ui.log.tutorial_built_cement_mill_message",
 				conditions: { improvements: { cementmill: [ 1, 2 ] } }
 			},
+			*/
 			TUTORIAL_BUILT_ROBOT_FACTORY: {
 				triggers: [ "action_build" ],
 				repeats: "NEVER",
 				logMessage: "ui.log.tutorial_built_robot_factory_message",
 				conditions: { improvements: { robotfactory: [ 1, 2 ] } }
 			},
+			/*
 			TUTORIAL_BUILT_ROBOT_RADIO: {
 				triggers: [ "action_build" ],
 				repeats: "NEVER",
 				logMessage: "ui.log.tutorial_built_robot_radio_message",
 				conditions: { improvements: { radiotower: [ 1, 2 ] } }
 			},
+			*/
 			TUTORIAL_BUILT_CAMPFIRE: {
 				triggers: [ "action_build" ],
 				repeats: "NEVER",
 				logMessage: "ui.log.tutorial_built_campfire_message",
 				conditions: { improvements: { campfire: [ 1, 2 ] } }
 			},
+			/*
 			TUTORIAL_BUILT_DARKFARM: {
 				triggers: [ "action_build" ],
 				repeats: "NEVER",
 				logMessage: "ui.log.tutorial_built_darkfarm_message",
 				conditions: { improvements: { darkfarm: [ 1, 2 ] } }
 			},
+			*/
 			TUTORIAL_BUILT_HOSPITAL: {
 				triggers: [ "action_build" ],
 				repeats: "NEVER",
 				logMessage: "ui.log.tutorial_built_hospital_message",
 				conditions: { improvements: { hospital: [ 1, 2 ] } }
 			},
+			/*
 			TUTORIAL_BUILT_LIBRARY: {
 				triggers: [ "action_build" ],
 				repeats: "NEVER",
@@ -129,18 +140,21 @@ define(['ash'], function (Ash) {
 				logMessage: "ui.log.tutorial_built_market_message",
 				conditions: { improvements: { market: [ 1, 2 ] } }
 			},
+			*/
 			TUTORIAL_BUILT_INN: {
 				triggers: [ "action_build" ],
 				repeats: "NEVER",
 				logMessage: "ui.log.tutorial_built_inn_message",
 				conditions: { improvements: { inn: [ 1, 2 ] } }
 			},
+			/*
 			TUTORIAL_BUILT_SQUARE: {
 				triggers: [ "action_build" ],
 				repeats: "NEVER",
 				logMessage: "ui.log.tutorial_built_square_message",
 				conditions: { improvements: { square: [ 1, 2 ] } }
 			},
+			*/
 			TUTORIAL_BUILT_SHRINE: {
 				triggers: [ "action_build" ],
 				repeats: "NEVER",
@@ -177,6 +191,7 @@ define(['ash'], function (Ash) {
 				logMessage: "ui.log.tutorial_built_tradepost_2_message",
 				conditions: { tribe: { improvements: { tradepost: [ 2, 3 ] } } }
 			},
+			/*
 			TUTORIAL_USED_HOSPITAL: {
 				triggers: [ "action_any" ],
 				repeats: "NEVER",
@@ -184,6 +199,7 @@ define(['ash'], function (Ash) {
 				logMessage: "ui.log.tutorial_used_hospital_message",
 				conditions: { perkEffects: { "injury": [ -1, 0 ] } }
 			},
+			*/
 			TUTORIAL_PRODUCED_ROBOT: {
 				triggers: [ "feature_unlocked", "action_any" ],
 				repeats: "NEVER",
