@@ -200,6 +200,7 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 			
 			if (data.messageTextVO) message = Text.compose(data.messageTextVO);
 
+			message = LogConstants.cleanupMessage(message);
 			message = TextConstants.sentencify(message);
 
 			let timestamp = data.timestamp;

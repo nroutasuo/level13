@@ -271,6 +271,11 @@ define([
 				return;
 			}
 
+			for (let i = 0; i < messageTextVO.textFragments.length; i++) {
+				let fragment = messageTextVO.textFragments[i];
+				fragment.textKey = LogConstants.cleanupMessage(fragment.textKey);
+			}
+
 			id = id || LogConstants.getUniqueID();
 			options = options || {};
 

@@ -245,6 +245,12 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 			return id.indexOf("unique-") == 0;
 		},
 
+		cleanupMessage: function (s) {
+			s = s.replaceAll("<br>", " ");
+			s = s.replaceAll("<br/>", " ");
+			return s;
+		},
+
 		getCooldown: function (id) {
 			let seconds = 0;
 			let minutes = 0;
