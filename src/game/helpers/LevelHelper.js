@@ -113,6 +113,7 @@ define([
 				return null;
 			}
 
+			// TODO: cache? (performance)
 			level = parseInt(level);
 			let levelPosition;
 			for (let node = this.levelNodes.head; node; node = node.next) {
@@ -639,6 +640,7 @@ define([
 			levelStats.countRevealedSectors = 0;
 			levelStats.countVisitedSectors = 0;
 			levelStats.countKnownIngredientSectors = 0;
+			levelStats.countUnscoutedLocaleSectors = 0;
 			levelStats.countInvestigatableSectors = 0;
 			levelStats.hasCamp = false;
 			
@@ -651,6 +653,7 @@ define([
 				let statusComponent = node.entity.get(SectorStatusComponent);
 				let featuresComponent = node.entity.get(SectorFeaturesComponent);
 				let isVisited = GameGlobals.sectorHelper.isVisited(node.entity);
+				let hasUnscoutedLocales = GameGlobals.sectorHelper.getNumVisibleUnscoutedLocales(node.entity) > 0;
 				
 				if (sectorStatus === SectorConstants.MAP_SECTOR_STATUS_VISITED_CLEARED) levelStats.countClearedSectors++;
 				if (statusComponent.scouted) levelStats.countScoutedSectors++;
@@ -659,6 +662,7 @@ define([
 				if (isVisited) levelStats.countVisitedSectors++;
 				if (node.entity.has(RevealedComponent) || isVisited) levelStats.countRevealedSectors++;
 				if (GameGlobals.sectorHelper.hasSectorVisibleIngredients(node.entity)) levelStats.countKnownIngredientSectors++;
+				if (hasUnscoutedLocales) levelStats.countUnscoutedLocaleSectors++;
 				if (GameGlobals.sectorHelper.canBeInvestigated(node.entity)) levelStats.countInvestigatableSectors++;
 				if (node.entity.has(CampComponent)) levelStats.hasCamp = true;
 			}

@@ -317,14 +317,8 @@ define([
 		},
 
 		isLocaleVisible: function (locale) {
-			if (locale.type == localeTypes.grove) {
-				let forcedExplorerID = GameGlobals.explorerHelper.getForcedExplorerID();
-				if (forcedExplorerID == "gambler") {
-					let explorerVO = GameGlobals.playerHelper.getExplorerByID(forcedExplorerID);
-					return !explorerVO || explorerVO.inParty;
-				}
-			}
-			return true;
+			if (!locale) return false;
+			return GameGlobals.sectorHelper.isLocaleVisible(this.playerLocationNodes.head.entity, locale);
 		},
 
 		updateNap: function (isScouted, hasCampHere) {

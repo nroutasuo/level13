@@ -203,6 +203,7 @@ define([
 			
 			let sys = this;
 			
+			let sector = this.playerLocationNodes.head.entity;
 			let mapPosition = this.getCurrentMapPosition();
 			
 			let levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(mapPosition.level);
@@ -213,7 +214,7 @@ define([
 			
 			let mapStatus = GameGlobals.levelHelper.getLevelStats(this.selectedLevel);
 			let hasUnknownSectors = mapStatus.percentVisitedSectors < 1 || mapStatus.countVisitedSectors > mapStatus.countScoutedSectors;
-			let hasUnscoutedLocaleSectors = mapStatus.countClearedSectors != mapStatus.countScoutedSectors;
+			let hasUnscoutedLocaleSectors = mapStatus.countUnscoutedLocaleSectors > 0;
 			let hasIngredientSectors = mapStatus.countKnownIngredientSectors > 0;
 			let hasInvestigateSectors = mapStatus.countInvestigatableSectors > 0;
 			
@@ -350,8 +351,8 @@ define([
 		
 		selectUnscoutedLocaleSector: function () {
 			let newSector = this.getNextSelectableSector(1, (sector) => {
-				let sectorStatus = GameGlobals.sectorHelper.getSectorStatus(sector);
-				return sectorStatus == SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED;
+				let num = GameGlobals.sectorHelper.getNumVisibleUnscoutedLocales(sector);
+				return num > 0;
 			});
 			if (!newSector) return null;
 			GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);

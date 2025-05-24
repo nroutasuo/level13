@@ -232,6 +232,25 @@ define([
 		canHaveBeacon: function (sector) {
 			return GameGlobals.playerActionsHelper.isRequirementsMet("build_out_beacon", sector);
 		},
+
+		getNumVisibleUnscoutedLocales: function (sector) {
+			if (!sector) return 0;
+			let statusComponent = sector.get(SectorStatusComponent);
+			if (!statusComponent.scouted) return 0;
+			let localesComponent = sector.get(SectorLocalesComponent);
+			return localesComponent.locales.length - statusComponent.getNumLocalesScouted();
+		},
+
+		isLocaleVisible: function (sector, localeVO) {
+			if (localeVO.type == localeTypes.grove) {
+				let forcedExplorerID = GameGlobals.explorerHelper.getForcedExplorerID();
+				if (forcedExplorerID == "gambler") {
+					let explorerVO = GameGlobals.playerHelper.getExplorerByID(forcedExplorerID);
+					return !explorerVO || explorerVO.inParty;
+				}
+			}
+			return true;
+		},
 				
 		hasSectorKnownResource: function (sector, resourceName, min) {
 			min = min || 1;

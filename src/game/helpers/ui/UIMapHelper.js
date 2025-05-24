@@ -210,9 +210,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			if (sectorPassages.passageUp) return "U";
 			if (sectorPassages.passageDown) return "D";
 			
-			let statusComponent = sector.get(SectorStatusComponent);
-			let localesComponent = sector.get(SectorLocalesComponent);
-			let numUnscoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
+			let numUnscoutedLocales = GameGlobals.sectorHelper.getNumVisibleUnscoutedLocales(sector);
 			
 			if (numUnscoutedLocales > 0) return "!";
 			
