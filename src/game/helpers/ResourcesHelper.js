@@ -75,6 +75,14 @@ define([
 			return currentCurrencys;
 		},
 
+		getCurrentCampCurrency: function (campEntity) {
+			if (this.hasAccessToTradeNetwork(campEntity)) {
+				return this.globalResourcesNodes.head.currency;
+			}
+
+			return campEntity.get(CurrencyComponent);
+		},
+
 		getCurrentStorageCap: function () {
 			var playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
 			var showStorage = this.playerResourcesNodes.head.entity.get(ResourcesComponent).storageCapacity;

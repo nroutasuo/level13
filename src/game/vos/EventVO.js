@@ -9,6 +9,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 
 		// optional
 		resourcesLost: null, // ResourcesVO
+		currencyLost: 0,
 		defendersLost: 0, 
 		workersDisabled: 0,
 		damagedBuilding: null, // improvementType
@@ -21,6 +22,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			this.eventSubType = eventSubType;
 			this.timestamp = eventType ? new Date().getTime() : -1;
 			this.resourcesLost = new ResourcesVO();
+			this.currencyLost = 0;
 		},
 		
 		isValid: function() {

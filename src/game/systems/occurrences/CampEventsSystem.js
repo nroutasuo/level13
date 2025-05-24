@@ -400,6 +400,7 @@ define([
 					this.endRaid(campNode.entity);
 					let raidComponent = campNode.entity.get(RaidComponent);
 					let lostResources = raidComponent.resourcesLost;
+					let lostCurrency = raidComponent.currencyLost;
 
 					if (raidComponent.victory) {
 						logMsg = "There has been a raid. We drove the attackers away.";
@@ -407,6 +408,8 @@ define([
 						logMsg = "There has been a raid.";
 						if (lostResources.getTotal() > 0) {
 							logMsg += " We lost some resources.";
+						} else if (currencyLost > 0) {
+							logMsg += " They stole some silver.";
 						} else {
 							logMsg += " There was nothing left to steal.";
 						}
@@ -425,10 +428,11 @@ define([
 					}
 
 					let raidEntry = { level: campNode.position.level, timeStamp: eventVO.timeStamp };
-					GameGlobals.gameState.increaseGameStatHighScore("mostResourcesLostInRaid", raidEntry, lostResources.getTotal());
+					GameGlobals.gameState.increaseGameStatHighScore("mostResourcesLostInRaid", raidEntry, lostResources.getTotal() + lostCurrency);
 
 					eventVO.resourcesLost = raidComponent.resourcesLost;
 					eventVO.defendersLost = raidComponent.defendersLost;
+					eventVO.currencyLost = raidComponent.currencyLost;
 					eventVO.damagedBuilding = raidComponent.damagedBuilding;
 			
 					eventVO.wasVictory = raidComponent ? raidComponent.victory : false;
@@ -612,10 +616,10 @@ define([
 		
 		addRaidResourcesLost: function (sectorEntity) {
 			let raidComponent = sectorEntity.get(RaidComponent);
+
 			let storageMax = GameGlobals.resourcesHelper.getCurrentCampStorage(sectorEntity).storageCapacity;
 			let storageResources = GameGlobals.resourcesHelper.getCurrentCampStorage(sectorEntity).resources;
 			let storageProduction = GameGlobals.resourcesHelper.getCurrentStorageAccumulation(false).resourceChange;
-			let campResources = GameGlobals.resourcesHelper.getCampStorage(sectorEntity).resources;
 			let campProduction = GameGlobals.resourcesHelper.getCampStorageAccumulation(sectorEntity).resourceChange;
 
 			// select resources (names)
@@ -640,6 +644,12 @@ define([
 			if (maxSelectedResources <= 0) return;
 			let selectedResources = resourceCandidates.slice(0, maxSelectedResources);
 
+			let getLostAmount = function (lostAmountRaw) {
+				if (lostAmountRaw < 10) return lostAmountRaw;
+				let rounding = lostAmountRaw > 1000 ? 100 : lostAmountRaw > 100 ? 10 : 5;
+				return Math.floor(lostAmountRaw / rounding) * rounding;
+			}
+
 			// select amounts
 			let globalAmountFactor = 1 / (GameGlobals.resourcesHelper.getNumCampsInTradeNetwork(sectorEntity) || 1);
 			for (let i in selectedResources) {
@@ -654,14 +664,24 @@ define([
 				let campShareFactor = Math.max(globalAmountFactor, campProductionFactor);
 				
 				let lostAmountRaw = maxLostAmount * campShareFactor * randomFactor;
-				let rounding = lostAmountRaw > 1000 ? 100 : lostAmountRaw > 100 ? 10 : 5;
-				let lostAmount = Math.floor(lostAmountRaw / rounding) * rounding;
+				let lostAmount = getLostAmount(lostAmountRaw);
 				
 				if (lostAmount >= 5) {
 					let amount = storageAmount - lostAmount;
 					storageResources.setResource(name, amount);
 					raidComponent.resourcesLost.addResource(name, lostAmount);
 				}
+			}
+
+			// currency
+			let campCurrency = GameGlobals.resourcesHelper.getCurrentCampCurrency(sectorEntity);
+			if (campCurrency.currency > 3 && Math.random() > 0.5) {
+				let maxLostAmount = campCurrency.currency / 2;
+				let minLostAmount = Math.max(2, campCurrency.currency / 20);
+				let lostAmountRaw = MathUtils.randomIntBetween(minLostAmount, maxLostAmount + 1);
+				let lostAmount = getLostAmount(lostAmountRaw);
+				raidComponent.currencyLost = lostAmount;
+				campCurrency.currency -= lostAmount;
 			}
 		},
 		

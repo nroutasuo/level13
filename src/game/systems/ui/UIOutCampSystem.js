@@ -1042,8 +1042,9 @@
 				textFragments.push({ textKey: "ui.camp.last_event_raid_message_victory" });
 			} else {
 				let resourcesLost = campComponent.lastRaid.resourcesLost;
-				if (resourcesLost && resourcesLost.getTotal() > 0) {
-					let resourcesTextVO = TextConstants.getResourcesTextVO(resourcesLost);
+				let currencyLost = campComponent.lastRaid.currencyLost;
+				if (resourcesLost && resourcesLost.getTotal() > 0 || currencyLost > 0) {
+					let resourcesTextVO = TextConstants.getResourcesTextVO(resourcesLost, currencyLost);
 					let resourcesText = Text.compose(resourcesTextVO);
 					textFragments.push({ textKey: "ui.camp.last_raid_lost_message", textParams: { resources: resourcesText } });
 				} else {

@@ -329,6 +329,7 @@ define([
 		visualUpdate: function () {
 			this.updateResources();
 			this.updatePlayerStats();
+			this.updateCurrency();
 		},
 		
 		updateGameVersion: function () {

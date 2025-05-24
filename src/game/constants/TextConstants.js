@@ -1082,7 +1082,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			return "resource heap (" + resourceName + ")";
 		},
 
-		getResourcesTextVO: function (resourcesVO) {
+		getResourcesTextVO: function (resourcesVO, currency) {
 			let list = [];
 
 			for (let key in resourceNames) {
@@ -1092,6 +1092,11 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					let listFragment = { textKey: "ui.common.value_and_name", textParams: { value: Math.round(amount), name: name } };
 					list.push(listFragment);
 				}
+			}
+
+			if (currency > 0) {
+				let listFragment = { textKey: "ui.common.value_and_name", textParams: { value: Math.round(currency), name: "game.resources.currency_name" } };
+				list.push(listFragment);
 			}
 
 			return this.getListTextVO(list);
