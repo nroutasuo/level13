@@ -87,7 +87,19 @@
         "tags": [ "history" ],
         "type": "artefact"
     },
+    "artefact_doom_7": {
+        "campOrdinalRequired": 3,
+        "icon": "img/items/artefact-test.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "rarityLocale": 9,
+        "rarityScavenge": 7,
+        "tags": [ "history", "community" ],
+        "type": "artefact"
+    },
     "artefact_fall_1": {
+        "campOrdinalMaximum": 14,
         "campOrdinalRequired": 1,
         "icon": "img/items/leaflet.png",
         "isCraftable": false,
@@ -608,6 +620,7 @@
         "isUseable": true,
         "rarityLocale": 4,
         "rarityScavenge": 9,
+        "rarityTrade": 5,
         "tags": [ "perishable" ],
         "tradePrice": 1,
         "type": "voucher"
@@ -835,6 +848,7 @@
         "nameShort": "Juice boxes",
         "rarityLocale": 5,
         "rarityScavenge": 9,
+        "rarityTrade": 5,
         "tags": [ "perishable" ],
         "tradePrice": 1,
         "type": "voucher"
