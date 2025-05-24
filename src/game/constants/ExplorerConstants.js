@@ -518,7 +518,7 @@ define(['ash',
 
 			log.w("no icon found for explorer with params: " + gender + ", " + origin + ", " + cultures + "," + abilityType + ", " + dialogueSource);
 
-			return "img/explorers/explorer_generic.png";
+			return "img/characters/explorer_generic.png";
 		},
 		
 		isValidIcon: function (iconDef, gender, origin, cultures, abilityType, explorerType, dialogueSource) {
