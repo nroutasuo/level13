@@ -104,8 +104,6 @@ function (Ash, ItemVO, ItemConstants) {
 				case ItemConstants.itemTypes.ingredient:
 				case ItemConstants.itemTypes.uniqueEquipment:
 					return false;
-
-				default: return this.getCount(item, true) > 1;
 			}
 
 			return true;
