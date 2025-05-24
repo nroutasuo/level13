@@ -222,13 +222,13 @@ define(['ash',
 			return html;
 		},
 
-		getExplorerDivWithOptions: function (explorerVO, isRecruited, isInCamp, questTextKey) {
+		getExplorerDivWithOptions: function (explorerVO, isRecruited, isInCamp, questTextKey, isForced) {
 			let classes = "npc-container";
 			let div = "<div class='" + classes + "' data-explorerid='" + explorerVO.id + "'>";
 			let isAnimal = ExplorerConstants.isAnimal(explorerVO.abilityType);
 			
 			// portrait
-			let calloutContent = this.getExplorerCallout(explorerVO, isRecruited, isInCamp, true, questTextKey);
+			let calloutContent = this.getExplorerCallout(explorerVO, isRecruited, isInCamp, true, questTextKey, isForced);
 
 			let hideComparisonIndicator = explorerVO.inParty;
 			
@@ -287,10 +287,10 @@ define(['ash',
 			return div;
 		},
 		
-		getExplorerDivSimple: function (explorer, isRecruited, isInCamp, hideComparisonIndicator, questTextKey) {
+		getExplorerDivSimple: function (explorer, isRecruited, isInCamp, hideComparisonIndicator, questTextKey, isForced) {
 			let classes = "npc-container npc-container-mini";
 			let div = "<div class='" + classes + "' data-explorerid='" + explorer.id + "'>";
-			let calloutContent = this.getExplorerCallout(explorer, isRecruited, isInCamp, false, questTextKey);
+			let calloutContent = this.getExplorerCallout(explorer, isRecruited, isInCamp, false, questTextKey, isForced);
 			
 			div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
 
@@ -308,7 +308,7 @@ define(['ash',
 			return div;
 		},
 		
-		getExplorerCallout: function (explorer, isRecruited, isInCamp, hideButtons, questTextKey) {
+		getExplorerCallout: function (explorer, isRecruited, isInCamp, hideButtons, questTextKey, isForced) {
 			let explorerType = ExplorerConstants.getExplorerTypeForAbilityType(explorer.abilityType);
 			let result = "<b>" + explorer.name + "</b>";
 			if (isRecruited) {
@@ -330,6 +330,8 @@ define(['ash',
 				}
 			} else if (explorer.hasUrgentDialogue) {
 				result += "<br/>Status: Wants to talk";
+			} else if (isForced) {
+				result += "<br/>Status: Wants to go exploring";
 			}
 
 			if (GameConstants.isCheatsEnabled) {
