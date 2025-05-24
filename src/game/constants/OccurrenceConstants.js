@@ -32,7 +32,7 @@ define(['ash', 'utils/MathUtils', 'game/constants/CampConstants', 'game/constant
 		campOccurrenceCooldowns: {
 			accident: 60 * 90,
 			disaster: 60 * 50,
-			disease: 60 * 10,
+			disease: 60 * 15,
 			raid: 60 * 20,
 			recruit: 60 * 25,
 			refugees: 60 * 120,
