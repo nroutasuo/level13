@@ -61,6 +61,17 @@ define(['ash',
 				insight: "insight",
 			}
 		},
+
+		soundTriggerIDs: {
+			actionStarted: "actionStarted",
+			actionCompleted: "actionCompleted",
+			buttonClicked: "buttonClicked",
+			moveTransition: "moveTransition",
+			moveNormal: "moveNormal",
+			logMessage: "logMessage",
+			openPopup: "openPopup",
+			closePopup: "closePopup",
+		},
 		
 		getIconOrFallback: function (icon) {
 			if (icon) return icon;
