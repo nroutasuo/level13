@@ -167,6 +167,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			// reset ui state
 			this.uiStatus.isBusyCounter = 0;
 			this.uiStatus.sequenceTitleKey = null;
+			this.uiStatus.isTransitioning = false;
 			if (!this.uiStatus.lastSelection) this.uiStatus.lastSelection = {};
 
 			// init stats in case new ones added
