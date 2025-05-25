@@ -477,7 +477,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 				return { p1: { x: min, y: min }, p2: { x: max, y: min } };
 			} else if (mapHint.position.sectorY > mapPosition.sectorY && yDist > xDist) {
 				// bottom
-				return { p1: { x: min, y: 233 }, p2: { x: max, y: max } };
+				return { p1: { x: min, y: max }, p2: { x: max, y: max } };
 			}
 			
 			return null;
