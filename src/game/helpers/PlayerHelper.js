@@ -273,7 +273,12 @@ define([
 
 			for (let i = 0; i < messageTextVO.textFragments.length; i++) {
 				let fragment = messageTextVO.textFragments[i];
-				fragment.textKey = LogConstants.cleanupMessage(fragment.textKey);
+				if (fragment) {
+					fragment.textKey = LogConstants.cleanupMessage(fragment.textKey);
+				} else {
+					debugger
+					log.w("invalid messageTextVO in addLogMessage");
+				}
 			}
 
 			id = id || LogConstants.getUniqueID();

@@ -291,8 +291,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 		},
 
 		getLostItemMessage: function (resultVO) {
-			let textVO = TextConstants.getItemsTextVO(resultVO.lostItems);
-			let itemsMessage = Text.compose(textVO);
+			let itemsTextVO = TextConstants.getItemsTextVO(resultVO.lostItems);
 
 			let intros = [];
 			switch (resultVO.action) {
@@ -313,14 +312,13 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 			fragments.push({ textKey: intro });
 			fragments.push({ textKey: ". " });
 			fragments.push({ textKey: "Lost " });
-			fragments = fragments.concat(itemsMessage.textFragments);
+			fragments = fragments.concat(itemsTextVO.textFragments);
 			
 			return { textFragments: fragments };
 		},
 
 		getBrokeItemMessage: function (resultVO) {
-			let textVO = TextConstants.getItemsTextVO(resultVO.brokenItems);
-			let itemsMessage = Text.compose(textVO);
+			let itemsTextVO = TextConstants.getItemsTextVO(resultVO.brokenItems);
 
 			let intros = [];
 			switch (resultVO.action) {
@@ -340,7 +338,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 			fragments.push({ textKey: intro });
 			fragments.push({ textKey: ". " });
 			fragments.push({ textKey: "Broke " });
-			fragments = fragments.concat(itemsMessage.textFragments);
+			fragments = fragments.concat(itemsTextVO.textFragments);
 			
 			return { textFragments: fragments };
 		},
