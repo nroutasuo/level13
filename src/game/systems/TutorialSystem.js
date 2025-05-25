@@ -1,7 +1,7 @@
 // A system that updates the player's resource storage capacity based on their currently equipped bag
 define([
 	'ash',
-	'Text/text',
+	'text/Text',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/TutorialConstants',

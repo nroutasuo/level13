@@ -1,6 +1,6 @@
 define([
 	'ash',
-	'Text/text',
+	'text/Text',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
