@@ -3,12 +3,14 @@ define(['ash',
 	'text/Text',
 	'utils/CanvasUtils',
 	'game/GameGlobals',
+	'game/GlobalSignals',
 	'game/constants/CanvasConstants',
 	'game/constants/ColorConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/UpgradeConstants',
+	'game/constants/UIConstants',
 	'game/nodes/tribe/TribeUpgradesNode'],
-function (Ash, Text, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, PlayerActionConstants, UpgradeConstants, TribeUpgradesNode) {
+function (Ash, Text, CanvasUtils, GameGlobals, GlobalSignals, CanvasConstants, ColorConstants, PlayerActionConstants, UpgradeConstants, UIConstants, TribeUpgradesNode) {
 	
 	var UITechTreeNode = Ash.Class.extend({
 		
