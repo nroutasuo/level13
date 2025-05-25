@@ -1410,6 +1410,7 @@ define([
 			this.queueResourceUpdate();
 			this.updateCurrency();
 			this.updatePlayerStats();
+			this.updateResourcesBar();
 			this.updateItems(true);
 		},
 		
@@ -1432,6 +1433,7 @@ define([
 		onPlayerActionCompleted: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			this.updatePlayerStats();
+			this.updateResourcesBar();
 		},
 
 		onVisionChanged: function () {
