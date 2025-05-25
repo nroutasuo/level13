@@ -213,6 +213,7 @@ define([
 		updateContainers: function () {
 			let visibleColonyProjects = this.tabCounts.current.visible.colony + (this.numBuiltColonyProjects || 0);
 				
+			GameGlobals.uiFunctions.toggle("#in-improvements-colony-empty-message", this.tabCounts.lastShown.visible.colony <= 0);
 			GameGlobals.uiFunctions.toggle("#in-improvements-level-empty-message", this.tabCounts.lastShown.visible.regular <= 0);
 			GameGlobals.uiFunctions.toggle("#container-in-improvements-colony", visibleColonyProjects > 0 || GameGlobals.storyHelper.isReadyForLaunch() || GameGlobals.gameState.isLaunched);
 		},
