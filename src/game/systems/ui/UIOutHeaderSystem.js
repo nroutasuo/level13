@@ -1049,6 +1049,7 @@ define([
 			let isSmallLayout =  $(window).width() <= UIConstants.SMALL_LAYOUT_THRESHOLD;
 			this.elements.body.toggleClass("layout-small", isSmallLayout);
 			this.elements.body.toggleClass("layout-regular", !isSmallLayout);
+			GameGlobals.uiFunctions.toggle(".debug-info", GameConstants.isDebugVersion);
 			if (wasSmallLayout == isSmallLayout) return;
 			GlobalSignals.layoutChangedSignal.dispatch();
 			this.updateResources(true);
