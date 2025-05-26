@@ -2235,15 +2235,11 @@ define(['ash',
 		buildSpaceShip: function (sectorPos, action) {
 			var sectorPosVO = this.getPositionVO(sectorPos);
 			var sector = this.getActionSector(action, sectorPos);
-			var playerPos = this.playerPositionNodes.head.position;
 
 			if (sector) {
-				let msgOptions = { position: sectorPosVO.getPositionInCamp() };
-				var msg = "Colony construction project ready at " + sectorPosVO.getInGameFormat(playerPos.level === sectorPosVO.level);
 				this.buildImprovement(action, GameGlobals.playerActionsHelper.getImprovementNameForAction(action), sector);
-
-				GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_BUILT_SPACESHIP, msg, msgOptions);
 				if (GameGlobals.storyHelper.isReadyForLaunch(true)) {
+					let msgOptions = { position: sectorPosVO.getPositionInCamp() };
 					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "The colony ship is ready to launch.", msgOptions);
 				}
 			} else {

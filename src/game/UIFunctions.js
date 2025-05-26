@@ -109,13 +109,7 @@ define(['ash',
 					uiFunctions.showManageSave();
 				});
 				$("#btn-stats").click(function (e) {
-					GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
-					let options = { isMeta: true, isDismissable: true };
-					gtag('event', 'screen_view', {
-						'screen_name': "popup-stats"
-					});
-					uiFunctions.updateGameStatsPopup();
-					uiFunctions.showSpecialPopup("game-stats-popup", options);
+					uiFunctions.showStatsPopup();
 				});
 				$("#game-stats-popup-close").click(function (e) {
 					GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
@@ -434,6 +428,8 @@ define(['ash',
 			},
 
 			transitionElementsOut: function (transitionElements, fadeOutDuration, transitionDuration, fadeInDuration) {
+				log.i("transition elements out");
+
 				if (transitionElements.$fadeInOut) {
 					transitionElements.$fadeInOut.toggleClass("ui-transition-element", true);
 					transitionElements.$fadeInOut.stop(true).animate({ opacity: 1 }, fadeOutDuration).delay(transitionDuration).animate({ opacity: 0 }, fadeInDuration);
@@ -458,6 +454,8 @@ define(['ash',
 			},
 
 			transitionElementsIn: function (transitionElements, fadeOutDuration, transitionDuration, fadeInDuration) {
+				log.i("transition elements in");
+
 				if (transitionElements.$fadeIn) {
 					transitionElements.$fadeIn.toggleClass("ui-transition-element", true);
 					transitionElements.$fadeIn.stop(true).animate({ opacity: 1 }, fadeInDuration);
@@ -477,6 +475,8 @@ define(['ash',
 			},
 
 			transitionElementsComplete: function (transitionElements) {
+				log.i("transition elements complete");
+
 				if (!transitionElements) return;
 
 				if (transitionElements.$fadeInOut) {
@@ -1619,6 +1619,16 @@ define(['ash',
 			showManageSave: function () {
 				let options = { isMeta: true, isDismissable: true };
 				this.showSpecialPopup("manage-save-popup", options);
+			},
+
+			showStatsPopup: function () {
+				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
+				let options = { isMeta: true, isDismissable: true };
+				gtag('event', 'screen_view', {
+					'screen_name': "popup-stats"
+				});
+				this.updateGameStatsPopup();
+				this.showSpecialPopup("game-stats-popup", options);
 			},
 
 			showSpecialPopup: function (popupID, options) {
