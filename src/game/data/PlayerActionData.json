@@ -100,7 +100,7 @@
             "cost_factor_expBase": 1.25,
             "resource_concrete": 100,
             "resource_metal": {
-                "expCost": 480,
+                "expCost": 380,
                 "linearCost": 1300
             },
             "resource_rope": 350
@@ -125,8 +125,8 @@
             "resource_rope": 100
         },
         "build_in_radiotower": {
-            "resource_concrete": 200,
-            "resource_metal": 5000,
+            "resource_concrete": 1200,
+            "resource_metal": 2000,
             "resource_rope": 1200
         },
         "build_in_researchcenter": {
@@ -135,9 +135,9 @@
             "resource_tools": 300
         },
         "build_in_robotFactory": {
-            "resource_concrete": 100,
-            "resource_fuel": 700,
-            "resource_rope": 100
+            "resource_concrete": 2000,
+            "resource_fuel": 800,
+            "resource_tools": 500
         },
         "build_in_shrine": {
             "resource_food": 200,
@@ -271,10 +271,10 @@
             "resource_rope": 50
         },
         "build_out_spaceship1": {
-            "resource_concrete": 3000,
-            "resource_metal": 10000,
+            "resource_concrete": 3500,
+            "resource_metal": 12500,
             "resource_rope": 3000,
-            "resource_tools": 500
+            "resource_tools": 1500
         },
         "build_out_spaceship2": {
             "resource_concrete": 1000,
@@ -291,7 +291,7 @@
             "resource_water": 10000
         },
         "build_out_sundome": {
-            "resource_concrete": 800,
+            "resource_concrete": 2000,
             "resource_metal": 10000,
             "resource_rope": 1000,
             "resource_tools": 1000
@@ -317,7 +317,7 @@
             "resource_rope": 120
         },
         "clear_gate": {
-            "silver": 1
+            "silver": 2
         },
         "clear_waste_r": {
             "stamina": 50
