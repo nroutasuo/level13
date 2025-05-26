@@ -1087,7 +1087,7 @@
 				textFragments.push({ textKey: "ui.camp.last_event_disabled_workers_message", textParams: { num: eventVO.workersDisabled } });
 			}
 
-			textFragments.push({ rawText: " (" + UIConstants.getTimeSinceText(campComponent.lastRaid.timestamp) + " ago)" });
+			textFragments.push({ rawText: " (" + UIConstants.getTimeSinceText(eventVO.timestamp) + " ago)" });
 			
 			let textVO = { textFragments: textFragments, delimiter: "ui.common.sentence_separator" };
 			return Text.compose(textVO);
