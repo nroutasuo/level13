@@ -213,9 +213,15 @@ define([
 			// building happiness values
 			let allImprovements = improvementsComponent.getAll(improvementTypes.camp);
 			for (let i in allImprovements) {
-				var improvementVO = allImprovements[i];
-				var level = improvementVO.level || 1;
-				var defaultBonus = improvementVO.getReputationBonus();
+				let improvementVO = allImprovements[i];
+				let id = ImprovementConstants.getImprovementID(improvementVO.name);
+				let level = improvementVO.level || 1;
+				let majorLevel = ImprovementConstants.getMajorLevel(id, level);
+				let defaultBonus = ImprovementConstants.getDefaultReputationBonus(improvementVO.name);
+
+				let levelBonusStep = majorLevel / 10;
+				let levelBonus = 1 + (level - 1) * levelBonusStep;
+				
 				switch (improvementVO.name) {
 					case improvementNames.generator:
 						var numHouses = improvementsComponent.getCount(improvementNames.house) + improvementsComponent.getCount(improvementNames.house2);
@@ -224,14 +230,15 @@ define([
 						addValue(generatorBonus, "Generator", false);
 						break;
 					case improvementNames.radiotower:
-						addValue(improvementVO.count * defaultBonus, "Radio", false);
+						addValue(improvementVO.count * defaultBonus * levelBonus, "Radio", false);
 						break;
 					case improvementNames.shrine:
-						let levelBonus = 1 + (level - 1) * 0.5;
+						levelBonus = 1 + (level - 1) * 0.5;
 						addValue(improvementVO.count * defaultBonus * levelBonus, "Shrine", false);
 						break;
 					case improvementNames.sundome:
 						addValue(improvementVO.count * defaultBonus, "Sun Dome", false);
+						break;
 					default:
 						addValue(improvementVO.count * defaultBonus, "Buildings", false);
 						break;

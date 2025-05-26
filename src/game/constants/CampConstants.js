@@ -315,9 +315,10 @@ define(['ash', 'text/Text', 'game/vos/ResourcesVO'], function (Ash, Text, Resour
 			return 0.0015 * libraryCount * libraryLevelFactor;
 		},
 		
-		getResearchCenterEvidenceGenerationPerSecond: function (centerCount, centerLevel) {
-			var levelFactor = (1 + centerLevel * CampConstants.EVIDENCE_BONUS_PER_RESEARCH_CENTER_LEVEL);
-			return 0.0025 * centerCount * levelFactor;
+		getResearchCenterEvidenceGenerationPerSecond: function (centerCount, centerLevel, majorLevel) {
+			let majorLevelFactor = 1 + (majorLevel - 1) * 0.2;
+			let levelFactor = (1 + centerLevel * CampConstants.EVIDENCE_BONUS_PER_RESEARCH_CENTER_LEVEL);
+			return 0.0025 * centerCount * levelFactor * majorLevelFactor;
 		},
 		
 		getTempleHopeGenerationPerSecond: function (templeCount, templeLevel) {

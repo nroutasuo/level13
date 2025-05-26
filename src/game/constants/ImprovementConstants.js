@@ -115,6 +115,7 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 			researchcenter: {
 				canBeDismantled: true,
 				improvementLevelsPerTechLevel: 5,
+				improvementLevelsPerMajorLevel: 5,
 			},
 			tradepost: {
 				canBeDismantled: false,
@@ -124,6 +125,7 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 			radiotower: {
 				canBeDismantled: true,
 				improvementLevelsPerTechLevel: 5,
+				improvementLevelsPerMajorLevel: 5,
 			},
 			robotFactory: {
 				canBeDismantled: true,
@@ -187,12 +189,15 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 			},
 			spaceship1: {
 				isProject: true,
+				logMsgBuilt: "ui.log.built_spaceship_part_message"
 			},
 			spaceship2: {
 				isProject: true,
+				logMsgBuilt: "ui.log.built_spaceship_part_message"
 			},
 			spaceship3: {
 				isProject: true,
+				logMsgBuilt: "ui.log.built_spaceship_part_message"
 			},
 			sundome: {
 				isProject: true,
@@ -332,7 +337,47 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 			let displayName = this.getImprovementDisplayName(improvementID, level);
 			let msg = def && def.logMsgBuilt ? def.logMsgBuilt : "ui.log.built_building_message";
 			return { textKey: msg, textParams: { name: displayName } };
-		}
+		},
+	
+		getDefaultReputationBonus: function (name) {
+			if (getImprovementType(name) == improvementTypes.level) return 0;
+			switch (name) {
+				case improvementNames.home:
+				case improvementNames.apothecary:
+				case improvementNames.smithy:
+				case improvementNames.cementmill:
+				case improvementNames.barracks:
+				case improvementNames.fortification:
+				case improvementNames.storage:
+				case improvementNames.stable:
+					return 0;
+				case improvementNames.house:
+				case improvementNames.house2:
+				case improvementNames.darkfarm:
+				case improvementNames.library:
+				case improvementNames.lights:
+				case improvementNames.generator:
+				case improvementNames.shrine:
+					return 0.5;
+				case improvementNames.inn:
+				case improvementNames.market:
+				case improvementNames.tradepost:
+					return 1;
+				case improvementNames.campfire:
+				case improvementNames.hospital:
+				case improvementNames.sundome:
+					return 2;
+				case improvementNames.temple:
+					return 3;
+				case improvementNames.square:
+				case improvementNames.garden:
+					return 2;
+				case improvementNames.radiotower:
+					return 2;
+				default:
+					return 1;
+			}
+		},
 
 	};
 	return ImprovementConstants;

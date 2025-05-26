@@ -2663,7 +2663,7 @@ define([
 
 			if (baseAction.indexOf("build_in_") == 0) {
 				let improvementName = this.getImprovementNameForAction(action, true);
-				let reputation = getImprovementReputationBonus(improvementName);
+				let reputation = ImprovementConstants.getDefaultReputationBonus(improvementName);
 				if (reputation > 0) entries.push("Reputation: +" + reputation);
 			}
 

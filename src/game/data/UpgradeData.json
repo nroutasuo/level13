@@ -111,6 +111,14 @@
         "id": "improve_building_inn",
         "name": "Music"
     },
+    "improve_building_inn_2": {
+        "campOrdinal": "16",
+        "effects": {
+            "improvesBuildings": "inn market"
+        },
+        "id": "improve_building_inn_2",
+        "name": "Tourism"
+    },
     "improve_building_library": {
         "blueprintCampOrdinal": 5,
         "blueprintIsCampless": false,
@@ -166,6 +174,22 @@
         },
         "id": "improve_building_market3",
         "name": "Network"
+    },
+    "improve_building_radio_1": {
+        "campOrdinal": "16",
+        "effects": {
+            "improvesBuildings": "radiotower"
+        },
+        "id": "improve_building_radio_1",
+        "name": "Propaganda"
+    },
+    "improve_building_researchcenter_1": {
+        "campOrdinal": "16",
+        "effects": {
+            "improvesBuildings": "researchcenter"
+        },
+        "id": "improve_building_researchcenter_1",
+        "name": "Research Center II"
     },
     "improve_building_robots": {
         "blueprintCampOrdinal": 15,
@@ -243,6 +267,14 @@
         },
         "id": "improve_building_temple3",
         "name": "Temple Gardens"
+    },
+    "improve_building_temple_4": {
+        "campOrdinal": "16",
+        "effects": {
+            "improvesBuildings": "temple"
+        },
+        "id": "improve_building_temple_4",
+        "name": "Official Religion"
     },
     "improve_event_disaster_1": {
         "blueprintCampOrdinal": 13,
@@ -359,6 +391,14 @@
         },
         "id": "improve_worker_scavenger_4",
         "name": "Exotic Metals"
+    },
+    "improve_worker_scavenger_5": {
+        "campOrdinal": "16",
+        "effects": {
+            "improvesWorker": "scavenger"
+        },
+        "id": "improve_worker_scavenger_5",
+        "name": "Advanced Metal Recycling"
     },
     "improve_worker_scientist": {
         "campOrdinal": "15",

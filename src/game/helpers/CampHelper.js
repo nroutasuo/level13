@@ -269,8 +269,9 @@ define([
 		getResearchCenterEvidenceGenerationPerSecond: function (improvementsComponent) {
 			var centerCount = improvementsComponent.getCount(improvementNames.researchcenter);
 			var centerLevel = improvementsComponent.getLevel(improvementNames.researchcenter);
+			let centerMajorLevel = ImprovementConstants.getMajorLevel(improvementNames.researchcenter, centerLevel);
 			let multiplier = this.getCampProductionMultiplier();
-			return CampConstants.getResearchCenterEvidenceGenerationPerSecond(centerCount, centerLevel) * multiplier;
+			return CampConstants.getResearchCenterEvidenceGenerationPerSecond(centerCount, centerLevel, centerMajorLevel) * multiplier;
 		},
 		
 		getTempleHopeGenerationPerSecond: function (improvementsComponent) {
