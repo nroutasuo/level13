@@ -2012,6 +2012,11 @@
 				"character_workerRobotmaker_default_interact_02_p1"
 			]
 		},
+		"character_workerRobotmaker_default_interact_03": {
+			"pages": [
+				"character_workerRobotmaker_default_interact_03_p1"
+			]
+		},
 		"character_workerRope_default_interact_01": {
 			"pages": [
 				"character_workerRope_default_interact_01_p1"
@@ -2964,6 +2969,16 @@
 						}
 					}
 				}
+			]
+		},
+		"explorer_generic_story_apocalypse_investiage_01": {
+			"conditions": {
+				"explorer": {
+					"quest": "apocalypse"
+				}
+			},
+			"pages": [
+				"explorer_generic_story_apocalypse_investiage_01_p1"
 			]
 		},
 		"explorer_generic_story_apocalypse_plan_ready_01": {
@@ -5244,6 +5259,17 @@
 				"explorer_unique_journalist_story_fall_investigate_01_p1"
 			]
 		},
+		"explorer_unique_journalist_story_fall_investigate_02": {
+			"conditions": {
+				"featureUnlocked": "investigate",
+				"upgrades": {
+					"unlock_building_spaceship1": false
+				}
+			},
+			"pages": [
+				"explorer_unique_journalist_story_fall_investigate_02_p1"
+			]
+		},
 		"explorer_unique_journalist_story_greenhouse_01": {
 			"conditions": {
 				"deity": false,
@@ -5605,6 +5631,7 @@
 		},
 		"explorer_unique_prospector_story_rescue_passage_blocked_01": {
 			"conditions": {
+				"maxNumCamps": 8,
 				"storyFlags": {
 					"RESCUE_EXPLORER_FOUND": false,
 					"RESCUE_LEVEL_14_HAZARD_FOUND": true
@@ -5616,7 +5643,9 @@
 		},
 		"explorer_unique_prospector_story_rescue_passage_blocked_02": {
 			"conditions": {
+				"maxNumCamps": 8,
 				"storyFlags": {
+					"RESCUE_EXPLORER_FOUND": false,
 					"RESCUE_LEVEL_14_HAZARD_FOUND": true
 				}
 			},
@@ -6978,6 +7007,7 @@
 				"interact": [
 					"character_workerRobotmaker_default_interact_01",
 					"character_workerRobotmaker_default_interact_02",
+					"character_workerRobotmaker_default_interact_03",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_disease_01",
@@ -7216,6 +7246,7 @@
 					"explorer_generic_scavenger_interact_03",
 					"explorer_generic_scout_interact_02",
 					"explorer_generic_story_apocalypse_evacuation_known",
+					"explorer_generic_story_apocalypse_investiage_01",
 					"explorer_generic_story_apocalypse_plan_ready_01",
 					"explorer_generic_story_apocalypse_plan_ready_02",
 					"explorer_generic_story_apocalypse_quest_start",
@@ -7308,6 +7339,7 @@
 					"explorer_generic_mercenary_interact_05",
 					"explorer_generic_mercenary_interact_06",
 					"explorer_generic_story_apocalypse_evacuation_known",
+					"explorer_generic_story_apocalypse_investiage_01",
 					"explorer_generic_story_apocalypse_plan_ready_01",
 					"explorer_generic_story_apocalypse_plan_ready_02",
 					"explorer_generic_story_apocalypse_quest_start",
@@ -7401,6 +7433,7 @@
 					"explorer_generic_scavenger_interact_05",
 					"explorer_generic_scavenger_interact_06",
 					"explorer_generic_story_apocalypse_evacuation_known",
+					"explorer_generic_story_apocalypse_investiage_01",
 					"explorer_generic_story_apocalypse_plan_ready_01",
 					"explorer_generic_story_apocalypse_plan_ready_02",
 					"explorer_generic_story_apocalypse_quest_start",
@@ -7446,6 +7479,7 @@
 					"explorer_generic_scout_interact_05",
 					"explorer_generic_scout_interact_06",
 					"explorer_generic_story_apocalypse_evacuation_known",
+					"explorer_generic_story_apocalypse_investiage_01",
 					"explorer_generic_story_apocalypse_plan_ready_01",
 					"explorer_generic_story_apocalypse_plan_ready_02",
 					"explorer_generic_story_apocalypse_quest_start",
@@ -7646,6 +7680,7 @@
 					"explorer_generic_intract_new_camp_6_01",
 					"explorer_generic_intract_new_camp_9_01",
 					"explorer_generic_story_apocalypse_evacuation_known",
+					"explorer_generic_story_apocalypse_investiage_01",
 					"explorer_generic_story_apocalypse_plan_ready_01",
 					"explorer_generic_story_apocalypse_quest_start",
 					"explorer_generic_story_apocalypse_space_ship_ready",
@@ -8001,6 +8036,7 @@
 					"explorer_unique_journalist_story_escape_stay_01",
 					"explorer_unique_journalist_story_evacuation",
 					"explorer_unique_journalist_story_fall_investigate_01",
+					"explorer_unique_journalist_story_fall_investigate_02",
 					"explorer_unique_journalist_story_greenhouse_01",
 					"explorer_unique_journalist_story_greenhouse_02",
 					"explorer_unique_journalist_story_spacecraft",

@@ -138,7 +138,7 @@
 		"campOrdinal": 15,
 		"difficulty": 4,
 		"environment": [ "sunlit" ],
-		"name": "burned bandit"
+		"name": "sunburnt bandit"
 	},
 	"bandit__tanned": {
 		"campOrdinal": 12,

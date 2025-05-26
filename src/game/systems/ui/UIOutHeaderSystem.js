@@ -1178,6 +1178,7 @@ define([
 			let visionStep = Math.round(visionFactor / 10);
 			
 			UIState.refreshState(this, "vision-step", visionStep, function () {
+				log.i("update vision step: " + visionStep);
 				for (let i = 0; i <= 10; i++) {
 					this.elements.body.toggleClass("vision-step-" + i, i == visionStep);
 				}
@@ -1191,6 +1192,7 @@ define([
 			this.visionLevel = visionLevel;
 
 			UIState.refreshState(this, "vision-level", visionLevel, function () {
+				log.i("update vision level: " + visionLevel);
 				this.updatePageBackgroundColor();
 				for (let i = 1; i <= 4; i++) {
 					this.elements.body.toggleClass("vision-level-" + i, i == visionLevel);
@@ -1202,10 +1204,12 @@ define([
 			let visionLevel = this.visionLevel;
 			let sunlit = this.elements.body.hasClass("sunlit");
 			let backgroundColor = ColorConstants.getColor(sunlit, "bg_page_vision_level_" + visionLevel);
+			log.i("update page background color: " + sunlit);
 			$("body").css("background", backgroundColor);
 		},
 		
 		updateEndingView: function () {
+			log.i("updateEndingView");
 			if (GameGlobals.gameState.isFinished) {
 				$(".game-opacity-controller").css("opacity", 0);
 				$("#container-tab-vis-in").css("display", "none");

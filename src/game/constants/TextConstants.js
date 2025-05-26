@@ -225,7 +225,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 
 			// - sunlight
 			if (features.sunlit) {
-				addOptions("a-street", [ "sunlit", "sun-swathed", "dazzling", "bright", "windy", "" ]);
+				addOptions("a-street", [ "sunlit", "sun-swathed", "dazzling", "bright", "windy" ]);
 				if (features.wear < 5 && features.damage < 5)
 					addOptions("a-street", [ "gleaming", "glistening" ]);
 				if (features.wear > 5)

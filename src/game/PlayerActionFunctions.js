@@ -1824,7 +1824,7 @@ define(['ash',
 					if (explorer.animalType != null) {
 						GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), explorer.name + " leaves.");
 					} else {
-						GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "You let " + explorer.name + " go.");
+						GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), explorer.name + " leaves.");
 					}
 					GlobalSignals.explorersChangedSignal.dispatch();
 				}
@@ -2858,7 +2858,8 @@ define(['ash',
 			
 			GameGlobals.playerActionsHelper.deductCosts(upgradeID);
 			let name = Text.t(UpgradeConstants.getDisplayNameTextKey(upgradeID));
-			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "Researched " + name, { visibility: LogConstants.MSG_VISIBILITY_CAMP });
+			let textFragment = { textKey: "ui.log.upgrade_researched_message", textParams: { name: name } };
+			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), textFragment, { visibility: LogConstants.MSG_VISIBILITY_CAMP });
 			this.tribeUpgradesNodes.head.upgrades.addUpgrade(upgradeID);
 			GlobalSignals.upgradeUnlockedSignal.dispatch(upgradeID);
 			this.save();
