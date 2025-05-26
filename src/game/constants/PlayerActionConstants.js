@@ -10,16 +10,15 @@ function (Ash, PlayerActionData, ObjectUtils, GameConstants, CampConstants, Impr
 	var PlayerActionConstants = {
 		
 		DISABLED_REASON_INVALID_PARAMS: "DISABLED_REASON_INVALID_PARAMS",
-		DISABLED_REASON_IN_PROGRESS: "DISABLED_REASON_IN_PROGRESS",
+		DISABLED_REASON_IN_PROGRESS: "ui.actions.disabled_reason_action_in_progress",
 		DISABLED_REASON_LOCKED_RESOURCES: 'Requires undiscovered resources.',
-		DISABLED_REASON_BAG_FULL: 'Bag full.',
-		DISABLED_REASON_NOT_IN_CAMP: 'Must be in camp.',
+		DISABLED_REASON_BAG_FULL: "ui.actions.disabled_reason_bag_full",
+		DISABLED_REASON_NOT_IN_CAMP: "ui.actions.disabled_reason_not_in_camp",
 		DISABLED_REASON_POPULATION: "DISABLED_REASON_POPULATION",
-		DISABLED_REASON_NOT_ENOUGH_LEVEL_POP: 'Not enough people on this level.',
 		DISABLED_REASON_NOT_REACHABLE_BY_TRADERS: "Camp not reachable by traders.",
-		DISABLED_REASON_BUSY: 'Busy',
+		DISABLED_REASON_BUSY: "ui.actions.disabled_reason_busy",
 		DISABLED_REASON_LAUNCHED: "Leaving the planet behind",
-		DISABLED_REASON_MAX_IMPROVEMENT_LEVEL: 'Max level',
+		DISABLED_REASON_MAX_IMPROVEMENT_LEVEL: "ui.actions.disabled_reason_max_improvement_level",
 		DISABLED_REASON_MIN_IMPROVEMENTS: 'DISABLED_REASON_MIN_IMPROVEMENTS',
 		DISABLED_REASON_MAX_IMPROVEMENTS: 'DISABLED_REASON_MAX_IMPROVEMENTS',
 		DISABLED_REASON_SCOUTED: 'DISABLED_REASON_SCOUTED',
@@ -30,7 +29,7 @@ function (Ash, PlayerActionData, ObjectUtils, GameConstants, CampConstants, Impr
 		DISABLED_REASON_EXPOSED: "DISABLED_REASON_EXPOSED",
 		DISABLED_REASON_VISION: "DISABLED_REASON_VISION",
 		DISABLED_REASON_NOT_AWAKE: "DISABLED_REASON_NOT_AWAKE",
-		DISABLED_REASON_RAID: "There is a raid",
+		DISABLED_REASON_RAID: "ui.actions.disabled_reason_raid",
 		
 		loadData: function (data) {
 			Object.assign(this, data);

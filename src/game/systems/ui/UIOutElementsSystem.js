@@ -148,7 +148,7 @@ define([
 			let disabledReason = GameGlobals.playerActionsHelper.checkRequirements(action, false, sectorEntity).reason;
 			let hasCooldown = GameGlobals.buttonHelper.hasButtonCooldown($button);
 			let isDisabledOnlyForCooldown = !disabledReason && hasCooldown;
-			let showDescription = disabledReason != PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENT_LEVEL;
+			let showDescription = disabledReason.baseReason != PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENT_LEVEL;
 			
 			this.updateButtonCalloutDescription($button, action, buttonStatus, buttonElements, showDescription);
 			
@@ -163,14 +163,14 @@ define([
 				this.updateButtonSpecialReqs($button, action, buttonElements);
 			} else {
 				let lastReason = buttonStatus.disabledReason;
-				let displayReason = disabledReason;
+				let displayReason = Text.t(disabledReason);
 				if (isDisabledOnlyForCooldown) {
 					displayReason = "Cooldown " + PlayerActionConstants.getCooldown(action) + "s";
 				}
 				if (lastReason !== displayReason) {
 					GameGlobals.uiFunctions.toggle($enabledContent, false, this.buttonCalloutSignalParams);
 					GameGlobals.uiFunctions.toggle($disabledContent, true, this.buttonCalloutSignalParams);
-					buttonElements.calloutSpanDisabledReason.html(Text.t(displayReason));
+					buttonElements.calloutSpanDisabledReason.html(displayReason);
 					buttonStatus.disabledReason = displayReason;
 				}
 			}

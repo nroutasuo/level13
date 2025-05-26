@@ -19,7 +19,7 @@ define(['ash',
 				
 				return ValueCache.getValue("IsReadyForLaunch", 5, invalidateCache ? true : false, () => {
 					let reqsCheck = GameGlobals.playerActionsHelper.checkRequirements("launch", false);
-					return reqsCheck.value >= 1 || reqsCheck.baseReason == PlayerActionConstants.DISABLED_REASON_BUSY;
+					return reqsCheck.value >= 1 || reqsCheck.reason.baseReason == PlayerActionConstants.DISABLED_REASON_BUSY;
 				});
 			},
 			
