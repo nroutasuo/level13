@@ -1193,14 +1193,17 @@ define(['ash',
 
 			toggle: function (element, show, signalParams, delay) {
 				let $element = typeof (element) === "string" ? $(element) : element;
+
 				if (($element).length === 0)
 					return;
+
 				if (typeof (show) === "undefined")
 					show = false;
 				if (show === null)
 					show = false;
 				if (!show)
 					show = false;
+
 				if (this.isElementToggled($element) === show)
 					return;
 					
@@ -1218,10 +1221,28 @@ define(['ash',
 				show = show == true;
 				$element.attr("data-visible", show);
 				$element.toggle(show);
+
+				// if parent callout container exists and it has only one non-hover child (element being toggled), toggle parent too
+				this.toggleParentCalloutContainer($element, ".info-callout-target", show);
+				this.toggleParentCalloutContainer($element, ".callout-container", show);
+
 				// NOTE: For some reason the element isn't immediately :visible for checks in UIOutElementsSystem without the timeout
 				setTimeout(function () {
 					GlobalSignals.elementToggledSignal.dispatch($element, show, signalParams);
 				}, 1);
+			},
+
+			toggleParentCalloutContainer: function ($element, parentSelector, show) {
+				let $parent = $element.parent(parentSelector);
+
+				if ($parent.length === 0) return;
+				
+				let $children = $parent.children();
+				let $countedChildren = $children.not(".info-callout");
+
+				if ($countedChildren.length === 1) {
+					this.toggle($parent, show);
+				}
 			},
 			
 			cancelDelayedToggle: function ($element) {
