@@ -1,6 +1,7 @@
 define([
 	'ash',
 	'text/Text',
+	'utils/MathUtils',
 	'utils/UIList',
 	'game/GameGlobals',
 	'game/GlobalSignals',
@@ -34,6 +35,7 @@ define([
 	'utils/UIAnimations'
 ], function (Ash,
 	Text,
+	MathUtils,
 	UIList, 
 	GameGlobals, GlobalSignals, 
 	ColorConstants, GameConstants, CampConstants, LevelConstants, UIConstants, ExplorerConstants, ItemConstants, FightConstants, PerkConstants, UpgradeConstants, PlayerStatConstants,
@@ -252,6 +254,9 @@ define([
 			// themed icons (dark/light)
 			this.updateThemedIconsCache();
 
+			// vision-based dynamic background items
+			this.initDynamicBackgroundItems();
+
 			// perks list
 			this.perksListDefault = UIList.create(this, $("#player-perks-list-regular"), this.createPerkListItem, this.updatePerkListItem, this.isPerkListItemDataSame, this.isPerkListItemDataUnchanged);
 			this.perksListMobile = UIList.create(this, $("#player-perks-list-mobile"), this.createPerkListItem, this.updatePerkListItem, this.isPerkListItemDataSame, this.isPerkListItemDataUnchanged);
@@ -270,6 +275,22 @@ define([
 			});
 			
 			this.themedIcons = themedIcons;
+		},
+
+		initDynamicBackgroundItems: function () {
+			let dynamicBackgroundItems = [];
+			let init = function () {
+				let background =  $(this).css("background");
+				dynamicBackgroundItems.push({
+					$elem: $(this),
+					originalBackground: background,
+				});
+			};
+			$.each($(".vision-background"), init);
+			$.each($(".lvl13-box-1"), init);
+			$.each($(".lvl13-box-2"), init);
+
+			this.dynamicBackgroundItems = dynamicBackgroundItems;
 		},
 
 		generateStatsCallouts: function () {
@@ -760,11 +781,6 @@ define([
 			let playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
 			let inCamp = playerPosition.inCamp;
 			let isSmallLayout = this.elements.body.hasClass("layout-small");
-
-			let itemsComponent = this.playerStatsNodes.head.items;
-			
-			let showHeader = GameGlobals.gameState.unlockedFeatures.bag || itemsComponent.getAll().length == 0 || showResources.getTotal() === 0;
-			$("#grid-main-header").toggleClass("hidden", !showHeader);
 			
 			// camp
 			GameGlobals.uiFunctions.toggle(".header-camp-storage", inCamp);
@@ -825,7 +841,8 @@ define([
 				let name = resourceNames[key];
 				let currentAmount = showResources.getResource(name);
 				let currentAccumulation = showResourceAcc.resourceChange.getResource(name);
-				let resourceUnlocked = GameGlobals.gameState.unlockedFeatures["resource_" + name] === true || currentAmount > 0;
+				let isSupplies = name === resourceNames.food || name === resourceNames.water;
+				let resourceUnlocked = GameGlobals.gameState.unlockedFeatures["resource_" + name] === true || currentAmount > 0 || isSupplies;
 				inventoryUnlocked = inventoryUnlocked || resourceUnlocked;
 
 				if (inCamp) {
@@ -842,7 +859,7 @@ define([
 						true,
 						!isSmallLayout,
 						!isSmallLayout,
-						name === resourceNames.food || name === resourceNames.water,
+						isSupplies,
 						isVisible,
 						animate,
 						this.lastCampResourceUpdate,
@@ -863,7 +880,7 @@ define([
 						false,
 						false,
 						false,
-						name === resourceNames.food || name === resourceNames.water,
+						isSupplies,
 						resourceUnlocked && (name === "water" || name === "food" || showResources.getResource(name) > 0),
 						animate
 					);
@@ -963,7 +980,7 @@ define([
 					UIAnimations.animateIcon($("#" + indicatorClass + " img"));
 				}
 				let toggleDelay = wasElementVisible && animating ? UIAnimations.DEFAULT_ANIM_DURATION + 300 : 0;
-				GameGlobals.uiFunctions.toggle("." + indicatorClass, isElementVisible > 0, null, toggleDelay);
+				GameGlobals.uiFunctions.toggle("." + indicatorClass, isElementVisible, null, toggleDelay);
 				UIConstants.updateCalloutContent("." + indicatorClass, bonusName + "<hr/>" + detail);
 
 				if (isVisible && value > 0) visibleStats++;
@@ -1164,8 +1181,8 @@ define([
 		},
 		
 		updateVisionLevel: function () {
-			let visionValue = 100;
-			let visionMaxValue = 100;
+			let visionValue = 0;
+			let visionMaxValue = 0;
 			
 			if (this.playerStatsNodes.head) {
 				visionValue = this.playerStatsNodes.head.vision.value;
@@ -1197,6 +1214,7 @@ define([
 				for (let i = 1; i <= 4; i++) {
 					this.elements.body.toggleClass("vision-level-" + i, i == visionLevel);
 				}
+				$(".hidden-when-down").css("opacity", visionLevel > 0 ? 1 : 0);
 			});
 		},
 
@@ -1204,8 +1222,24 @@ define([
 			let visionLevel = this.visionLevel;
 			let sunlit = this.elements.body.hasClass("sunlit");
 			let backgroundColor = ColorConstants.getColor(sunlit, "bg_page_vision_level_" + visionLevel);
-			log.i("update page background color: " + sunlit);
+
+			log.i("update page background color: sunlit:" + sunlit + " | visionLevel:" + visionLevel);
+			
 			$("body").css("background", backgroundColor);
+			
+			for (let i = 0; i < this.dynamicBackgroundItems.length; i++) {
+				let item = this.dynamicBackgroundItems[i];
+				let originalBackground = item.originalBackground;
+				let newBackground = this.getDynamicBackgroundColor(originalBackground, visionLevel);
+				item.$elem.css("background", newBackground);
+			}
+		},
+
+		getDynamicBackgroundColor: function (originalBackground, visionLevel) {
+			let alpha = 1;
+			if (visionLevel == 0) alpha = 0.6;
+			if (visionLevel == 1) alpha = 0.8;
+			return ColorConstants.getColorWithAlpha(originalBackground, alpha);
 		},
 		
 		updateEndingView: function () {

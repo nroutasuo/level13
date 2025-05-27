@@ -7,6 +7,7 @@ define(function () {
 		colors: {
 			dark: {
 				bg_page: "#202220",
+				bg_page_vision_level_0: "#121312",
 				bg_page_vision_level_1: "#121312",
 				bg_page_vision_level_2: "#161816",
 				bg_page_vision_level_3: "#1b1d1b",
@@ -65,6 +66,7 @@ define(function () {
 			sunlit: {
 				// f4f2ea
 				bg_page: "#fdfdfd",
+				bg_page_vision_level_0: "#fdfdfd",
 				bg_page_vision_level_1: "#fdfdfd",
 				bg_page_vision_level_2: "#fdfdfd",
 				bg_page_vision_level_3: "#fdfdfd",
@@ -148,6 +150,24 @@ define(function () {
 				return "#000";
 			}
 			return color;
+		},
+
+		getColorWithAlpha: function (colorString, opacity) {
+			// Match rgb or rgba
+			const rgbaRegex = /^rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})(?:\s*,\s*[\d.]+)?\s*\)$/;
+			const match = colorString.match(rgbaRegex);
+
+			if (!match) {
+				log.w("Invalid RGB(A) format. Expected format: rgb(r, g, b) or rgba(r, g, b, a)");
+				return colorString;
+			}
+
+			const [, r, g, b] = match;
+
+			// Clamp opacity between 0 and 1
+			const alpha = Math.max(0, Math.min(1, opacity));
+
+			return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 		}
 		
 	};

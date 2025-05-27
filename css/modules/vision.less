@@ -1,10 +1,10 @@
 
 .opacity-transition() {
-	-webkit-transition: opacity 1.5s ease-in-out;
-	-moz-transition: opacity 1.5s ease-in-out;
-	-ms-transition: opacity 1.5s ease-in-out;
-	-o-transition: opacity 1.5s ease-in-out;
-	transition: opacity 1.5s ease-in-out;
+	-webkit-transition: opacity 1s ease-in-out;
+	-moz-transition: opacity 1s ease-in-out;
+	-ms-transition: opacity 1s ease-in-out;
+	-o-transition: opacity 1s ease-in-out;
+	transition: opacity 1s ease-in-out;
 }
 
 .opacity-transition-reset() {
@@ -15,8 +15,20 @@
 	transition: none;
 }
 
+.background-transition() {
+	-webkit-transition: background 1s ease-in-out;
+	-moz-transition: background 1s ease-in-out;
+	-ms-transition: background 1s ease-in-out;
+	-o-transition: background 1s ease-in-out;
+	transition: background 1s ease-in-out;
+}
+
 img, p, span, h1, h2, h3, div, span, canvas {
 	.opacity-transition();
+}
+
+.vision-background {
+	.background-transition();
 }
 
 .ui-transition-element {
@@ -29,8 +41,7 @@ img, p, span, h1, h2, h3, div, span, canvas {
 		@is-low-vision: @counter < 3;
 		@is-high-vision: @counter > 9;
 		
-		#grid-main {
-			
+		#grid-main {			
 			// all game elements
 			opacity: min(1, 0.5 + @counter * 0.09);
 			
