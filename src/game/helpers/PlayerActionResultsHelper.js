@@ -1442,7 +1442,7 @@ define([
 			if (efficiency < 0.25) return 0;
 			if (sectorFeatures.campable)  return 0;
 
-			let findProbability = 0.035 * contextModifier
+			let findProbability = 0.030 * contextModifier;
 
 			if (clearedPercent > 50) {
 				findProbability = findProbability / 2;
@@ -1452,9 +1452,10 @@ define([
 				return 0;
 			}
 			
-			let max = 1 + Math.round(campCount / 3);
+			let minAmount = 1 + Math.floor(campCount / 8);
+			let maxAmount = 2 + Math.floor(campCount / 4);
 
-			return Math.ceil(Math.random() * max);
+			return MathUtils.randomIntBetween(minAmount, maxAmount)
 		},
 
 		getSectorCurrencyFindProbabilityModifier: function () {
