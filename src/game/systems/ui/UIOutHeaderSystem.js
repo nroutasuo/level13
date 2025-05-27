@@ -434,7 +434,7 @@ define([
 				var populationCalloutContent = "Required reputation:<br/>";
 				populationCalloutContent += "current: " + reqReputationCurrent + "<br/>";
 				populationCalloutContent += "next: " + reqReputationNext;
-				UIConstants.updateCalloutContent($("#header-camp-population"), populationCalloutContent);
+				UIConstants.updateCalloutContent($(".header-camp-population"), populationCalloutContent);
 				GameGlobals.uiFunctions.toggle(".header-camp-population", true);
 				GameGlobals.uiFunctions.toggle(".header-camp-reputation", true);
 			} else {
