@@ -1694,9 +1694,8 @@ define(['ash',
 			},
 
 			showResultPopup: function (title, msg, resultVO, callback, options) {
-				options = {
-					isDismissable: !resultVO || resultVO.isVisuallyEmpty()
-				};
+				options = options || {};
+				options.isDismissable = !resultVO || resultVO.isVisuallyEmpty();
 				this.popupManager.showPopup(title, msg, "Continue", false, resultVO, callback, null, options);
 			},
 

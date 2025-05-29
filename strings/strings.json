@@ -2054,13 +2054,6 @@
             "result_fled_message_explorer": "{name} distracted the enemy and allowed us to flee"
         },
         "inventory": {
-            "_equipment_slot_bag_name": "Bag",
-            "_equipment_slot_light_name": "Light",
-            "_equipment_slot_lower_name_long": "Lower body",
-            "_equipment_slot_lower_name_short": "Lower",
-            "_item_stat_field_template": "{name}: +{value}",
-            "_show_obsolete_checkbox_label": "Show obsolete",
-            "_tooltip_equipment_label": "equipment",
             "craft_item_header": "Craft",
             "equipment_header": "Equipment",
             "fight_consumable_only_one_per_fight_hint": "(Only one per fight.)",
@@ -2072,9 +2065,11 @@
             "use_item_header": "Use"
         },
         "inventory_management": {
-            "_take_all_button_label": "Take all",
-            "_take_none_button_label": "Leave",
-            "_unequip_button_label": "Unequip",
+            "found_box_empty_default_message": "(nothing left here)",
+            "found_box_empty_fight_message": "(nothing left of the opponent)",
+            "found_box_empty_no_drops_message": "(nothing found)",
+            "kept_box_empty_no_bag_message": "(empty pockets)",
+            "kept_box_empty_no_bkept_box_empty_default_message": "(empty bag)",
             "result_nothing_found_description": "Didn't find anything useful"
         },
         "log": {
