@@ -139,7 +139,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 		ambientMessages: {
 			"residential_ghosts": { 
 				triggers: [ "locale_scouted" ],
-				conditions: { sector: { sectorType: "residential", deity: false } },
+				conditions: { sector: { sectorType: "residential", deity: false, numCamps: 2 } },
 				chance: 0.1,
 				message: "Suddenly, the weight of all the people who have lived and died in the City presses down upon you like a heavy blanket"
 			},

@@ -1218,6 +1218,21 @@
 				"character_generic_story_government_positive_p1"
 			]
 		},
+		"character_generic_story_l14_01": {
+			"conditions": {
+				"player": {
+					"position": {
+						"level": [
+							2,
+							14
+						]
+					}
+				}
+			},
+			"pages": [
+				"character_generic_story_l14_01_p1"
+			]
+		},
 		"character_generic_story_searching_for_greenhouse_01": {
 			"conditions": {
 				"storyFlags": {
@@ -1982,6 +1997,35 @@
 				"character_workerGeneric_story_apocalypse_plan_ready_02_p1"
 			]
 		},
+		"character_workerGeneric_story_escape_build_passage_01": {
+			"conditions": {
+				"storyFlags": {
+					"ESCAPE_PASSAGE_DOWN_FOUND": true,
+					"ESCAPE_PASSAGE_DOWN_BUILT": false
+				},
+				"upgrades": {
+					"unlock_building_passage_staircase": false
+				}
+			},
+			"pages": [
+				"character_workerGeneric_story_escape_build_passage_01_p1"
+			]
+		},
+		"character_workerGeneric_story_escape_build_passage_02": {
+			"conditions": {
+				"storyFlags": {
+					"ESCAPE_PASSAGE_DOWN_FOUND": true,
+					"ESCAPE_PASSAGE_DOWN_BUILT": false
+				},
+				"upgrades": {
+					"unlock_building_passage_staircase": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_story_escape_build_passage_02_p1"
+			]
+
+		},
 		"character_workerGeneric_story_apocalypse_plan_ready_03": {
 			"conditions": {
 				"storyFlags": {
@@ -2474,12 +2518,12 @@
 			]
 		},
 		"explorer_generic_intract_new_camp_15_01": {
-			"isUnique": true,
 			"conditions": {
 				"inCamp": 15,
 				"maxNumCamps": 15,
 				"numCamps": 15
 			},
+			"isUnique": true,
 			"pages": [
 				"explorer_generic_intract_new_camp_15_01_p1"
 			]
@@ -2944,7 +2988,6 @@
 			"repeatable": true
 		},
 		"explorer_generic_story_apocalypse_evacuation_known": {
-			"repeatable": false,
 			"conditions": {
 				"explorer": {
 					"quest": "apocalypse"
@@ -2969,7 +3012,8 @@
 						}
 					}
 				}
-			]
+			],
+			"repeatable": false
 		},
 		"explorer_generic_story_apocalypse_investiage_01": {
 			"conditions": {
@@ -4584,10 +4628,10 @@
 		},
 		"explorer_unique_gambler_story_search_spirits_01": {
 			"conditions": {
+				"deity": false,
 				"sector": {
 					"ground": false
 				},
-				"deity": false,
 				"storyFlags": {
 					"SPIRITS_SEARCHING_FOR_SPIRITS": true
 				}
@@ -6463,26 +6507,27 @@
 					"character_bard_default_meet_02",
 					"character_bard_default_meet_03",
 					"character_bard_default_meet_04",
-					"character_generic_reserved_meet_01",
+					"character_generic_helpful_meet_poi_blocker_debris_01",
+					"character_generic_helpful_meet_poi_blocker_explosives_01",
+					"character_generic_helpful_meet_poi_blocker_gap_01",
+					"character_generic_helpful_meet_poi_blocker_gate_01",
+					"character_generic_helpful_meet_poi_blocker_waste_01",
 					"character_generic_helpful_meet_poi_campable_01",
 					"character_generic_helpful_meet_poi_campable_02",
-					"character_generic_helpful_meet_poi_settlement",
-					"character_generic_helpful_meet_poi_water_01",
-					"character_generic_helpful_meet_poi_water_02",
-					"character_generic_helpful_meet_poi_hazard_pollution_01",
-					"character_generic_helpful_meet_poi_hazard_radiation_01",
 					"character_generic_helpful_meet_poi_hazard_cold_01",
 					"character_generic_helpful_meet_poi_hazard_debris_01",
 					"character_generic_helpful_meet_poi_hazard_flooded_01",
+					"character_generic_helpful_meet_poi_hazard_pollution_01",
+					"character_generic_helpful_meet_poi_hazard_radiation_01",
 					"character_generic_helpful_meet_poi_hazard_territory_01",
-					"character_generic_helpful_meet_poi_blocker_gap_01",
+					"character_generic_helpful_meet_poi_ingredients_01",
+					"character_generic_helpful_meet_poi_settlement",
+					"character_generic_helpful_meet_poi_water_01",
+					"character_generic_helpful_meet_poi_water_02",
+					"character_generic_reserved_meet_01",
+					"character_generic_story_l14_01",
 					"character_generic_story_searching_for_greenhouse_01",
 					"character_generic_story_searching_for_greenhouse_02",
-					"character_generic_helpful_meet_poi_blocker_waste_01",
-					"character_generic_helpful_meet_poi_blocker_debris_01",
-					"character_generic_helpful_meet_poi_blocker_explosives_01",
-					"character_generic_helpful_meet_poi_blocker_gate_01",
-					"character_generic_helpful_meet_poi_ingredients_01",
 					"character_generic_story_warn_ground_01",
 					"character_generic_story_warn_ground_02",
 					"character_generic_story_fall_theory_hurricane"
@@ -6503,29 +6548,30 @@
 					"character_crafter_default_meet_02",
 					"character_crafter_default_meet_upgrade_clothing",
 					"character_crafter_default_meet_upgrade_weapon",
+					"character_generic_helpful_meet_poi_blocker_debris_01",
+					"character_generic_helpful_meet_poi_blocker_explosives_01",
+					"character_generic_helpful_meet_poi_blocker_gap_01",
+					"character_generic_helpful_meet_poi_blocker_gate_01",
+					"character_generic_helpful_meet_poi_blocker_waste_01",
 					"character_generic_helpful_meet_poi_campable_01",
 					"character_generic_helpful_meet_poi_campable_02",
-					"character_generic_helpful_meet_poi_settlement",
-					"character_generic_helpful_meet_poi_water_01",
-					"character_generic_helpful_meet_poi_water_02",
-					"character_generic_helpful_meet_poi_hazard_pollution_01",
-					"character_generic_helpful_meet_poi_hazard_radiation_01",
 					"character_generic_helpful_meet_poi_hazard_cold_01",
 					"character_generic_helpful_meet_poi_hazard_debris_01",
 					"character_generic_helpful_meet_poi_hazard_flooded_01",
-					"character_generic_story_searching_for_greenhouse_01",
-					"character_generic_story_searching_for_greenhouse_02",
+					"character_generic_helpful_meet_poi_hazard_pollution_01",
+					"character_generic_helpful_meet_poi_hazard_radiation_01",
 					"character_generic_helpful_meet_poi_hazard_territory_01",
-					"character_generic_helpful_meet_poi_blocker_gap_01",
-					"character_generic_helpful_meet_poi_blocker_waste_01",
-					"character_generic_helpful_meet_poi_blocker_debris_01",
-					"character_generic_helpful_meet_poi_blocker_explosives_01",
-					"character_generic_helpful_meet_poi_blocker_gate_01",
 					"character_generic_helpful_meet_poi_ingredients_01",
+					"character_generic_helpful_meet_poi_settlement",
+					"character_generic_helpful_meet_poi_water_01",
+					"character_generic_helpful_meet_poi_water_02",
 					"character_generic_story_explain_ground_01",
 					"character_generic_story_explain_ground_02",
 					"character_generic_story_explain_ground_03",
 					"character_generic_story_explain_ground_04",
+					"character_generic_story_l14_01",
+					"character_generic_story_searching_for_greenhouse_01",
+					"character_generic_story_searching_for_greenhouse_02",
 					"character_generic_story_warn_ground_01",
 					"character_generic_story_fall_theory_terrorists"
 				]
@@ -6543,6 +6589,7 @@
 					"character_generic_story_explain_ground_03",
 					"character_generic_story_fall_theory_government",
 					"character_generic_story_government_negative",
+					"character_generic_story_l14_01",
 					"character_workerGeneric_default_interact_01",
 					"character_workerGeneric_interact_overcrowded_01",
 					"character_workerGeneric_interact_spirits_01",
@@ -6722,33 +6769,34 @@
 			"dialogues": {
 				"meet": [
 					"character_scavenger_default_meet_01",
-					"character_scavenger_default_meet_02",
-					"character_scavenger_default_meet_03",
+					"character_generic_helpful_meet_poi_blocker_debris_01",
+					"character_generic_helpful_meet_poi_blocker_explosives_01",
+					"character_generic_helpful_meet_poi_blocker_gap_01",
+					"character_generic_helpful_meet_poi_blocker_gate_01",
+					"character_generic_helpful_meet_poi_blocker_waste_01",
 					"character_generic_helpful_meet_poi_campable_01",
 					"character_generic_helpful_meet_poi_campable_02",
+					"character_generic_helpful_meet_poi_hazard_cold_01",
+					"character_generic_helpful_meet_poi_hazard_debris_01",
+					"character_generic_helpful_meet_poi_hazard_flooded_01",
+					"character_generic_helpful_meet_poi_hazard_pollution_01",
+					"character_generic_helpful_meet_poi_hazard_radiation_01",
+					"character_generic_helpful_meet_poi_hazard_territory_01",
+					"character_generic_helpful_meet_poi_ingredients_01",
 					"character_generic_helpful_meet_poi_settlement",
 					"character_generic_helpful_meet_poi_water_01",
 					"character_generic_helpful_meet_poi_water_02",
-					"character_generic_helpful_meet_poi_hazard_pollution_01",
-					"character_generic_helpful_meet_poi_hazard_radiation_01",
-					"character_generic_helpful_meet_poi_hazard_cold_01",
-					"character_generic_story_searching_for_greenhouse_01",
-					"character_generic_story_searching_for_greenhouse_02",
-					"character_generic_helpful_meet_poi_hazard_debris_01",
-					"character_generic_helpful_meet_poi_hazard_flooded_01",
-					"character_generic_helpful_meet_poi_hazard_territory_01",
-					"character_generic_helpful_meet_poi_blocker_gap_01",
-					"character_generic_helpful_meet_poi_blocker_waste_01",
-					"character_generic_helpful_meet_poi_blocker_debris_01",
-					"character_generic_helpful_meet_poi_blocker_explosives_01",
-					"character_generic_helpful_meet_poi_blocker_gate_01",
-					"character_generic_helpful_meet_poi_ingredients_01",
-					"character_generic_story_explain_ground_03",
-					"character_generic_story_explain_ground_04",
 					"character_generic_reserved_meet_01",
 					"character_generic_reserved_meet_02",
-					"character_generic_stranded_meet_water",
+					"character_generic_story_explain_ground_03",
+					"character_generic_story_explain_ground_04",
+					"character_generic_story_l14_01",
+					"character_generic_story_searching_for_greenhouse_01",
+					"character_generic_story_searching_for_greenhouse_02",
 					"character_generic_stranded_meet_directions",
+					"character_generic_stranded_meet_water",
+					"character_scavenger_default_meet_02",
+					"character_scavenger_default_meet_03",
 					"character_generic_story_fall_theory_terrorists"
 				]
 			}

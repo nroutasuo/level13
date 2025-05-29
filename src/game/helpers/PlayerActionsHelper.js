@@ -1102,7 +1102,7 @@ define([
 					if (typeof requirements.sector.scouted != "undefined") {
 						if (statusComponent.scouted != requirements.sector.scouted) {
 							if (statusComponent.scouted) {
-								return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_already_completed", null, PlayerActionConstants.DISABLED_REASON_SCOUTED, "Area already scouted") };
+								return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_already_scouted", null, PlayerActionConstants.DISABLED_REASON_SCOUTED, "Area already scouted") };
 							} else {
 								return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_not_scouted", null, PlayerActionConstants.DISABLED_REASON_SCOUTED) };
 							}

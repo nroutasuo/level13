@@ -1114,13 +1114,13 @@ define([
 				baghtml += "<div id='resultlist-inventorymanagement-found' class='infobox inventorybox'>";
 				baghtml += "<h4 class='hide-from-visual-layout'>Found</h4>";
 				baghtml += "<ul></ul>";
-				baghtml += "<p class='msg-empty p-meta'>" + (isFight ? "Nothing left of the opponent." : "Nothing left here.") + "</p>";
+				baghtml += "<p class='msg-empty p-meta'></p>";
 				baghtml += "</div>"
 
 				baghtml += "<div id='resultlist-inventorymanagement-kept' class='infobox inventorybox'>";
 				baghtml += "<h4 class='hide-from-visual-layout'>Bag</h4>";
 				baghtml += "<ul></ul>";
-				baghtml += "<p class='msg-empty p-meta'>Your " + (hasBag ? "bag is" : "pockets are") + " empty.</p>";
+				baghtml += "<p class='msg-empty p-meta'></p>";
 				baghtml += "</div>"
 
 				baghtml += "<div id='inventory-popup-bar' class='progress-wrap progress centered' style='margin-top: 10px'><div class='progress-bar progress'></div><span class='progress-label progress'>?/?</span></div>";
@@ -1298,7 +1298,7 @@ define([
 			if (resultVO.gainedBlueprintPiece) {
 				if (!this.tribeUpgradesNodes.head.upgrades.hasUpgrade(resultVO.gainedBlueprintPiece)) {
 					let blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(resultVO.gainedBlueprintPiece);
-					let blueprintMessage = { addToPopup: true, addToLog: true, visibility: LogConstants.MSG_VISIBILITY_CAMP };
+					let blueprintMessage = { addToPopup: true, addToLog: true, visibility: LogConstants.MSG_VISIBILITY_DEFAULT };
 					if (blueprintVO.currentPieces === 1) {
 						blueprintMessage.id = LogConstants.MSG_ID_FOUND_BLUEPRINT_FIRST;
 						blueprintMessage.text = "ui.exploration.blueprint_found_message_first";
@@ -1500,7 +1500,7 @@ define([
 				// - Neccessity items (map, bag) that the player should find quickly if missing
 				let minNecessityItemProbability = hasCamp ? 0.15 : 0.35;
 				let necessityItemProbability = MathUtils.clamp(itemProbability * 5, minNecessityItemProbability, 0.35);
-				if (Math.random() < necessityItemProbability) {
+				if (Math.random() < necessityItemProbability || true) {
 					var necessityItem = this.getNecessityItem(currentItems, campOrdinal);
 					if (necessityItem) result.push(necessityItem);
 				}

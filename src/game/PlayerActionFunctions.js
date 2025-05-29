@@ -824,6 +824,7 @@ define(['ash',
 					showResultPopup = true;
 					popupMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageDown, PositionConstants.DIRECTION_DOWN, sunlit) + " ";
 					logMsg += "Found a passage to the level below.";
+					GameGlobals.gameState.setStoryFlag(StoryConstants.ESCAPE_PASSAGE_DOWN_FOUND, true);
 				}
 			}
 
@@ -1964,6 +1965,7 @@ define(['ash',
 
 		buildPassageDownStairs: function (sectorPos) {
 			this.buildPassage(sectorPos, false, MovementConstants.PASSAGE_TYPE_STAIRWELL, "build_out_passage_down_stairs", "build_out_passage_up_stairs");
+			GameGlobals.gameState.setStoryFlag(StoryConstants.ESCAPE_PASSAGE_DOWN_BUILT, true);
 		},
 
 		buildPassageUpElevator: function (sectorPos) {
