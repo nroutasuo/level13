@@ -51,6 +51,7 @@ define([
 			}
 
 			if (this.pendingListUpdate) {
+				GameGlobals.uiFunctions.toggle($("#resultlist-positive"), $("#resultlist-positive li").length > 0);
 				this.updateLists();
 			}
 		},
@@ -64,6 +65,8 @@ define([
 				$(".inventory-selection-ok .btn-label").text(hasPickedSomething ? "Take selected" : canPickSomething ? "Leave" : "Continue");
 				$(".inventory-selection-ok").toggleClass("btn-secondary", !hasPickedSomething && canPickSomething);
 				this.pendingButtonsUpdate = false;
+
+				GlobalSignals.updateButtonsSignal.dispatch();
 			}
 		},
 

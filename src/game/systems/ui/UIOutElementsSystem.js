@@ -151,6 +151,10 @@ define([
 			let showDescription = disabledReason.baseReason != PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENT_LEVEL;
 			
 			this.updateButtonCalloutDescription($button, action, buttonStatus, buttonElements, showDescription);
+
+			// override empty callout for buttons that normally don't have callout but show disabled reason when disabled (such as "take all")
+			let showReason = isHardDisabled || isDisabledOnlyForCooldown;
+			buttonElements.container.parent().toggleClass("container-btn-action-disabled-reason", showReason);
 			
 			if (!isHardDisabled && !isDisabledOnlyForCooldown) {
 				GameGlobals.uiFunctions.toggle($enabledContent, true, this.buttonCalloutSignalParams);

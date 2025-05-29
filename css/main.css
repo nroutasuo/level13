@@ -1094,6 +1094,9 @@ body.dark div.info-callout {
 body.dark .btn-callout-empty {
   visibility: hidden;
 }
+body.dark .container-btn-action-disabled-reason .btn-callout-empty {
+  visibility: visible !important;
+}
 body.dark .info-callout-side + div.info-callout {
   max-width: unset;
 }
@@ -3743,6 +3746,9 @@ body.sunlit div.info-callout {
 }
 body.sunlit .btn-callout-empty {
   visibility: hidden;
+}
+body.sunlit .container-btn-action-disabled-reason .btn-callout-empty {
+  visibility: visible !important;
 }
 body.sunlit .info-callout-side + div.info-callout {
   max-width: unset;

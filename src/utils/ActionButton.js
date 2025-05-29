@@ -85,7 +85,7 @@ define([
 
         createCallout: function ($btn, $container, action) {
             if (!action) return;
-            if (action === "take_all" || action === "accept_inventory" || action === "fight") return;
+            if (action === "fight") return;
             let content = this.getCalloutContent(action);
             if (!content.content) return;
 
