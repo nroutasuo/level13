@@ -114,7 +114,9 @@ define(['ash', 'utils/MathUtils', 'game/constants/CampConstants', 'game/constant
 		},
 
 		getDiseaseOutbreakChance: function (population, hasHerbs, hasMedicine, apothecaryLevel) {
-			let rawChance = population / (population + 100);
+			if (population < 2) return 0;
+
+			let rawChance = (population - 2) / (population + 100);
 			let baseChance = Math.min(0.5, rawChance);
 			
 			if (hasMedicine) {
