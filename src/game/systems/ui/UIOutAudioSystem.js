@@ -33,7 +33,7 @@ define([
 			this.elements[UIConstants.soundTriggerIDs.actionStarted] = $("#audio-action-started");
 			this.elements[UIConstants.soundTriggerIDs.actionCompleted] = $("#audio-action-completed");
 			this.elements[UIConstants.soundTriggerIDs.buttonClicked] = $("#audio-button-clicked");
-			this.elements[UIConstants.soundTriggerIDs.moveTransition] = $("#audio-moved");
+			this.elements[UIConstants.soundTriggerIDs.moveTransition] = $("#audio-moved-camp");
 			this.elements[UIConstants.soundTriggerIDs.moveNormal] = $("#audio-moved");
 			this.elements[UIConstants.soundTriggerIDs.logMessage] = $("#audio-notification");
 			this.elements[UIConstants.soundTriggerIDs.openPopup] = $("#audio-popup-opened");
