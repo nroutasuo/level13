@@ -159,10 +159,8 @@ define([
 
 		update: function (time) {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
-			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.bag;
+			let isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.bag;
 			
-			this.updateSeenItems(isActive);
-
 			if (!isActive) {
 				this.craftableItemDefinitions = null;
 				this.craftableItemDefinitionsList = null;
@@ -174,7 +172,9 @@ define([
 
 		slowUpdate: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
+			let isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.bag;
 			this.updateCrafting();
+			this.updateSeenItems(isActive);
 			this.updateBubble();
 		},
 
@@ -204,6 +204,7 @@ define([
 			this.updateUseItems();
 			this.updateRepairItems();
 			this.updateCrafting();
+			this.updateSeenItems(true);
 		},
 
 		updateBubble: function () {

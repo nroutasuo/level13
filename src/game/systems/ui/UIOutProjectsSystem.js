@@ -74,6 +74,7 @@ define([
 		},
 		
 		slowUpdate: function () {
+			if (!GameGlobals.playerHelper.isInCamp()) return;
 			if (GameGlobals.gameState.isLaunchStarted) return;
 			this.updateAvailableProjects(false);
 			this.updateContainers();

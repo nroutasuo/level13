@@ -349,18 +349,22 @@ define(['ash',
 		},
 		
 		completeAction: function (action) {
-			let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+			if (action) {
+				let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
 
-			if (this.currentAction == action)
-				this.currentAction = null;
+				if (this.currentAction == action)
+					this.currentAction = null;
 
-			if (action.indexOf("use_in_") >= 0) {
-				let improvementID = GameGlobals.playerActionsHelper.getImprovementIDForAction(action);
-				let duration = PlayerActionConstants.getDuration(action);
-				GameGlobals.gameState.increaseGameStatKeyed("timeUsingCampBuildingPerId", improvementID, duration);
+				if (action.indexOf("use_in_") >= 0) {
+					let improvementID = GameGlobals.playerActionsHelper.getImprovementIDForAction(action);
+					let duration = PlayerActionConstants.getDuration(action);
+					GameGlobals.gameState.increaseGameStatKeyed("timeUsingCampBuildingPerId", improvementID, duration);
+				}
+
+				GameGlobals.gameState.lastAction = baseActionID;
 			}
 
-			GameGlobals.gameState.lastAction = baseActionID;
+			GameGlobals.gameState.lastActionTimestamp = new Date().getTime();
 			
 			GameGlobals.uiFunctions.completeAction(action);
 			GlobalSignals.actionCompletedSignal.dispatch(action);
@@ -402,7 +406,7 @@ define(['ash',
 			
 			dialogueComponent.isEnded = true;
 
-			GlobalSignals.actionCompletedSignal.dispatch();
+			this.completeAction();
 		},
 
 		selectDialogueOption: function (selectionID) {

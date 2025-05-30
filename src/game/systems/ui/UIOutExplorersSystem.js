@@ -2,6 +2,7 @@ define([
 	'ash',
 	'utils/UIState',
 	'utils/UIList',
+	'utils/ValueCache',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/UIConstants',
@@ -10,7 +11,7 @@ define([
 	'game/components/sector/events/RecruitComponent',
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/PlayerStatsNode',
-], function (Ash, UIState, UIList, GameGlobals, GlobalSignals, UIConstants, DialogueConstants, ExplorerConstants, RecruitComponent, PlayerLocationNode, PlayerStatsNode) {
+], function (Ash, UIState, UIList, ValueCache, GameGlobals, GlobalSignals, UIConstants, DialogueConstants, ExplorerConstants, RecruitComponent, PlayerLocationNode, PlayerStatsNode) {
 
 	let UIOutExplorersSystem = Ash.System.extend({
 		
@@ -297,8 +298,13 @@ define([
 		},
 
 		hasExplorerUrgentDialogue: function (explorerVO) {
-			let status = GameGlobals.dialogueHelper.getExplorerDialogueStatus(explorerVO, DialogueConstants.dialogueSettings.interact);
-			return status == DialogueConstants.STATUS_URGENT || status == DialogueConstants.STATUS_FORCED;
+			if (!explorerVO) {
+				return false;
+			}
+			return ValueCache.getValue("ExplorerHasUrgentDialogue-" + explorerVO.id, 10, GameGlobals.gameState.lastActionTimestamp, () => {
+				let status = GameGlobals.dialogueHelper.getExplorerDialogueStatus(explorerVO, DialogueConstants.dialogueSettings.interact);
+				return status == DialogueConstants.STATUS_URGENT || status == DialogueConstants.STATUS_FORCED;
+			});
 		},
 		
 		getFoundRecruitIcon: function () {

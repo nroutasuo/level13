@@ -74,6 +74,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.foundTradingPartners = []; // camp ordinals
 			this.foundLuxuryResources = [];
 
+			this.lastActionTimestamp = null
 			this.actionCooldownEndTimestamps = {};
 			this.actionDurationEndTimestamps = {};
 			
