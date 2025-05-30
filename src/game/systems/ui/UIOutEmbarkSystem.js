@@ -174,7 +174,7 @@ define([
 			GlobalSignals.updateButtonsSignal.dispatch();
 			
 			bagComponent.selectedCapacity = selectedCapacity;
-			$("#embark-bag .value").text(UIConstants.roundValue(bagComponent.selectedCapacity), true, true);
+			$("#embark-bag .value").text(UIConstants.roundValue(bagComponent.selectedCapacity * 10) / 10, true, true);
 			$("#embark-bag .value-total").text(UIConstants.getBagCapacityDisplayValue(bagComponent));
 			
 			this.updateWarning(campResourcesAcc, campResources, selectedWater, selectedFood);
