@@ -54,6 +54,7 @@ define(['ash', 'game/GameGlobals', 'game/GlobalSignals',], function (Ash, GameGl
 		},
 
 		doVisualUpdate: function (time) {
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			let now = new Date().getTime();
 			GlobalSignals.visualUpdateSignal.dispatch(time || 0);
 			this.lastVisualUpdateTimeStamp = now;

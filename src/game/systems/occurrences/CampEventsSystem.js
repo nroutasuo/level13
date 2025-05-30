@@ -133,6 +133,7 @@ define([
 			// end, schedule, start events
 			for (var key in OccurrenceConstants.campOccurrenceTypes) {
 				let event = OccurrenceConstants.campOccurrenceTypes[key];
+				let isScheduled = this.isScheduled(campNode, event);
 				let isValid = this.isCampValidForEvent(campNode, event);
 				let hasEvent = this.hasCampEvent(campNode, event);
 				
@@ -141,7 +142,7 @@ define([
 						this.endEvent(campNode, event);
 					}
 				} else if (isValid) {
-					if (!this.isScheduled(campNode, event)) {
+					if (!isScheduled) {
 						this.scheduleEvent(campNode, event);
 					} else if (campTimers.isTimeToStart(event)) {
 						var skipProbability = this.getEventSkipProbability(campNode, event);

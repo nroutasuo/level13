@@ -72,6 +72,7 @@ define([
 		},
 
 		update: function (time) {
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			this.updateBubble();
 		},
 		

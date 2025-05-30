@@ -831,7 +831,7 @@
 				}
 			}
 
-			GameGlobals.uiFunctions.toggle("#in-occurrences-empty", showEvents && !hasEvents && !hasOther);
+			GameGlobals.uiFunctions.toggle("#in-occurrences-empty", showEvents && !hasEvents && !hasOther && isActive);
 			
 			this.currentEvents = campOccurrences.length;
 			if (isActive) this.lastShownEvents = this.currentEvents;

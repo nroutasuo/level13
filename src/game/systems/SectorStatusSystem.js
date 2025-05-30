@@ -17,7 +17,6 @@ define([
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorControlComponent',
-	'game/components/sector/improvements/SectorImprovementsComponent',
 ], function (Ash,
 	GameGlobals,
 	GlobalSignals,
@@ -34,8 +33,7 @@ define([
 	PassagesComponent,
 	SectorStatusComponent,
 	SectorFeaturesComponent,
-	SectorControlComponent,
-	SectorImprovementsComponent) {
+	SectorControlComponent) {
 	
 	var SectorStatusSystem = Ash.System.extend({
 		
@@ -63,7 +61,7 @@ define([
 			GlobalSignals.gameShownSignal.add(function () {
 				sys.updateCurrentLocation();
 			});
-			GlobalSignals.gameStateReadySignal.add(function () {
+			GlobalSignals.gameStateRefreshSignal.add(function () {
 				sys.updateAllSectors();
 			});
 			GlobalSignals.sectorScoutedSignal.add(function () {
@@ -120,7 +118,10 @@ define([
 
 			entity.remove(VisitedComponent);
 			
-			this.updateGangs(entity);
+			if (isVisited) {
+				this.updateGangs(entity);
+			}
+
 			this.updateMovementOptions(entity);
 			this.updateHazardReduction(entity);
 			
@@ -131,19 +132,21 @@ define([
 		
 		updateGangs: function (entity) {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
-			var sectorControlComponent = entity.get(SectorControlComponent);
-			var positionComponent = entity.get(PositionComponent);
+			let sectorControlComponent = entity.get(SectorControlComponent);
+			let positionComponent = entity.get(PositionComponent);
+
+			// TODO performance / page load time (findNeighbours)
 			
-			var sectorKey = this.getSectorKey(positionComponent);
-			if (!this.neighboursDict[sectorKey]) this.findNeighbours(entity);
-			var sys = this;
+			let sectorKey = this.getSectorKey(positionComponent);
+			let sys = this;
 			
 			function checkNeighbour(direction) {
-				var localeId = LocaleConstants.getPassageLocaleId(direction);
-				var currentEnemies = sectorControlComponent.getCurrentEnemies(localeId);
+				let localeId = LocaleConstants.getPassageLocaleId(direction);
+				let currentEnemies = sectorControlComponent.getCurrentEnemies(localeId);
 				if (currentEnemies <= 0) return;
 				
-				var neighbour = sys.getNeighbour(sectorKey, direction);
+				if (!sys.neighboursDict[sectorKey]) sys.findNeighbours(entity);
+				let neighbour = sys.getNeighbour(sectorKey, direction);
 				
 				if (neighbour) {
 					var neighbourSectorControlComponent = neighbour.get(SectorControlComponent);
@@ -159,7 +162,7 @@ define([
 			}
 			
 			for (let i in PositionConstants.getLevelDirections()) {
-				var direction = PositionConstants.getLevelDirections()[i];
+				let direction = PositionConstants.getLevelDirections()[i];
 				checkNeighbour(direction);
 			}
 		},

@@ -177,6 +177,10 @@ define([
 				setTimeout(function () {
 					GameGlobals.gameState.uiStatus.isInitialized = true;
 					GameGlobals.uiFunctions.showGame();
+					setTimeout(function () {
+						// updates to game state that should be done at start but can wait until the player is unblocked
+						GlobalSignals.gameStateRefreshSignal.dispatch();
+					}, 1);
 				}, 1);
 			}, 250);
 		},
