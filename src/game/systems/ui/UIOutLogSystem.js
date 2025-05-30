@@ -167,13 +167,11 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 			li.$spanTime = li.$root.find(".time");
 			li.$spanLevel = li.$root.find(".msg-camp-level");
 			li.$spanMsg = li.$root.find(".msg");
-			li.$spanMsgCount = li.$root.find(".msg-count");
 			return li;
 		},
 
 		updateLogListItem: function (li, data) {
 			let hasPosition = data.position != null;
-			let hasCount = data.combined > 0;
 			let visibility = data.visibility;
 
 			let positionText = "";
@@ -215,8 +213,6 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 			li.$spanTime.text(UIConstants.getTimeSinceText(timestamp) + " ago");
 			li.$spanLevel.toggle(hasPosition);
 			if (hasPosition) li.$spanLevel.text(positionText);
-			li.$spanMsgCount.toggle(hasCount);
-			if (hasCount) li.$spanMsgCount.text(' (x ' + (parseInt(data.combined) + 1) + ')');
 		},
 
 		isLogListItemDataSame: function (d1, d2) {

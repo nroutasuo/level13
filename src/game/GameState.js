@@ -172,6 +172,20 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 
 			// init stats in case new ones added
 			this.initStats();
+
+			// prune old action end time stamps
+			let keysToDelete = [];
+			for (let key in this.actionDurationEndTimestamps) {
+				let timestamp = this.actionDurationEndTimestamps[key];
+				let now = new Date().getTime();
+				if (timestamp < now) {
+					keysToDelete.push(key); 
+				}
+			}
+			for (let i in keysToDelete) {
+				let key = keysToDelete[i];
+				delete this.actionDurationEndTimestamps[key];
+			}
 			
 			// complete ending if launch started
 			if (this.isLaunchStarted || this.isLaunched || this.isLaunchCompleted || this.isFinished) {

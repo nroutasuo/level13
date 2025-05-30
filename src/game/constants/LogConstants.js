@@ -7,6 +7,11 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 		MSG_VISIBILITY_CAMP: "MSG_VISIBILITY_CAMP", // visible when in any camp
 		MSG_VISIBILITY_GLOBAL: "MSG_VISIBILITY_GLOBAL", // visible everywhere
 
+		MSG_VISIBILITY_DEFAULT_SHORT: "def",
+		MGS_VISIBILITY_LEVEL_SHORT: "lvl",
+		MSG_VISIBILITY_CAMP_SHORT: "camp",
+		MSG_VISIBILITY_GLOBAL_SHORT: "g",
+
 		// story
 		MSG_ID_START: "START",
 

@@ -51,6 +51,25 @@ define(['ash'], function (Ash) {
 		toString: function () {
 			return this.level + "." + this.sectorX + "." + this.sectorY + (this.inCamp ? " (in camp)" : "");
 		},
+
+		getCustomSaveObject: function () {
+			return this.level + "." + this.sectorX + "." + this.sectorY + "." + (this.inCamp ? 1 : 0);
+		},
+
+		customLoadFromSave: function (componentValues) {
+			if (typeof componentValues === "string") {
+				let parts = componentValues.split(".");
+				this.level = parseInt(parts[0]);
+				this.sectorX = parseInt(parts[1]);
+				this.sectorY = parseInt(parts[2]);
+				this.inCamp = parts[3] == 1 || false;
+			} else if (typeof componentValues === "object") {
+				this.level = parseInt(componentValues.level);
+				this.sectorX = parseInt(componentValues.sectorX);
+				this.sectorY = parseInt(componentValues.sectorY);
+				this.inCamp = componentValues.inCamp || false;
+			}
+		},
 		
 		clone: function () {
 			return new PositionVO(this.level, this.sectorX, this.sectorY, this.inCamp);

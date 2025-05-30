@@ -29,10 +29,12 @@ function (Ash, GameGlobals, LogConstants, TextConstants, LogMessageVO) {
 
 		getCustomSaveObject: function () {
 			let copy = {};
+			copy.messages = [];
+
 			// just in case prune some messages here if way too big but normal purning is done in systems
-			copy.messages = this.messages.slice(-500);
-			for (let i = 0; i < copy.messages.length; i++) {
-				delete copy.messages[i].loadedFromSave;
+			let max = Math.min(this.messages.length, 500);
+			for (let i = 0; i < max; i++) {
+				copy.messages[i] = this.messages[i].getCustomSaveObject();
 			}
 			copy.hasNewMessages = this.hasNewMessages;
 			return copy;
@@ -45,20 +47,8 @@ function (Ash, GameGlobals, LogConstants, TextConstants, LogMessageVO) {
 			for (let i = 0; i < componentValues.messages.length; i++) {
 				let messageData = componentValues.messages[i];
 				
-				let messageVO = new LogMessageVO(messageData.logMsgID, messageData.messageTextVO, null, messageData.visibility);
-
-				let timestamp = messageData.timestamp;
-
-				// backwards compatibility (used to save a Date object called time but switched to a timestamp)
-				if (messageData.time) {
-					timestamp = Date.parse(messageData.time);
-				}
-				
-				if (messageData.text) messageVO.text = messageData.text;
-				messageVO.hasBeenShown = messageData.hasBeenShown || false;
-				messageVO.markedAsSeen = messageData.markedAsSeen || false;
-				messageVO.timestamp = timestamp;
-				messageVO.position = messageData.position;
+				let messageVO = new LogMessageVO(messageData.logMsgID);
+				messageVO.customLoadFromSave(messageData);
 
 				this.messages.push(messageVO);
 			}
