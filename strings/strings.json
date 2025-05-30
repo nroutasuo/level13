@@ -14,6 +14,7 @@
             "build_out_tradepost_connector_description": "Allows traders and inhabitants to cross the level safely.",
             "claim_milestone_description": "Unlock new milestone and new undertakings.",
             "clear_debris_description": "Clear the debris blocking the way.",
+            "clear_debris_name_long": "Clear debris",
             "clear_explosives_description": "Clear the old explosives blocking the way.",
             "clear_gate_description": "Pay the toll",
             "clear_gate_name": "Pay",

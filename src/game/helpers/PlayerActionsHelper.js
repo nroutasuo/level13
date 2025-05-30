@@ -2753,6 +2753,7 @@ define([
 
 			if (action.indexOf("build_in") >= 0) actionKey = "build_in";
 			if (action.indexOf("build_out") >= 0) actionKey = "build_out";
+			if (action.indexOf("clear_debris_") >= 0) actionKey = "clear_debris";
 
 			return "game.actions." + actionKey + "_name";
 		},
