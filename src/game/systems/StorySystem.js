@@ -172,9 +172,12 @@ define([
 			if (onlyStatus) return;
 
 			if (effectVO.popup) {
-				let title = Text.t(effectVO.popup.title || "story.stories.default_popup_title");
-				let msg = Text.t(effectVO.popup.text);
-				GameGlobals.uiFunctions.showInfoPopup(title, msg);
+				let delay = 100;
+				setTimeout(() => {
+					let title = Text.t(effectVO.popup.title || "story.stories.default_popup_title");
+					let msg = Text.t(effectVO.popup.text);
+					GameGlobals.uiFunctions.showInfoPopup(title, msg);
+				}, delay);
 			}
 
 			if (effectVO.log) {
