@@ -2981,12 +2981,16 @@ define(['ash',
 
 			let level = improvementsComponent.getLevel(improvementName);
 			let isProject = ImprovementConstants.isProject(improvementName);
+			let isPassage = improvementsComponent.getVO(improvementName).isPassage();
 			
-			let msg = ImprovementConstants.getBuiltLogMessageTextVO(improvementID, level);
-			let messagePosition = sector.get(PositionComponent).getPosition();
-			messagePosition.inCamp = getImprovementType(improvementName) === improvementTypes.camp || isProject;			
+			if (!isPassage) {
+				// passages have a dedicated message
+				let msg = ImprovementConstants.getBuiltLogMessageTextVO(improvementID, level);
+				let messagePosition = sector.get(PositionComponent).getPosition();
+				messagePosition.inCamp = getImprovementType(improvementName) === improvementTypes.camp || isProject;			
 
-			GameGlobals.playerHelper.addLogMessage("MSG_BUILD_" + improvementName, msg, { position: messagePosition });
+				GameGlobals.playerHelper.addLogMessage("MSG_BUILD_" + improvementName, msg, { position: messagePosition });
+			}
 
 			GlobalSignals.improvementBuiltSignal.dispatch();
 			
