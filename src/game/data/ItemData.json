@@ -100,14 +100,14 @@
     },
     "artefact_fall_1": {
         "campOrdinalMaximum": 14,
-        "campOrdinalRequired": 1,
+        "campOrdinalRequired": 9,
         "icon": "img/items/leaflet.png",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": false,
         "nameShort": "Leaflet",
         "rarityLocale": 9,
-        "rarityScavenge": 2,
+        "rarityScavenge": 3,
         "rarityTrade": -1,
         "tags": [ "community", "new", "perishable" ],
         "tradePrice": 0,
@@ -226,6 +226,7 @@
         "rarityLocale": 9,
         "rarityScavenge": 6,
         "rarityTrade": -1,
+        "tradePrice": 0,
         "tags": [ "medical", "old", "community" ],
         "type": "artefact"
     },
@@ -622,7 +623,7 @@
         "rarityScavenge": 9,
         "rarityTrade": 5,
         "tags": [ "perishable" ],
-        "tradePrice": 1,
+        "tradePrice": 2,
         "type": "voucher"
     },
     "cache_food_2": {
@@ -638,7 +639,7 @@
         "rarityLocale": 4,
         "rarityScavenge": -1,
         "tags": [ "perishable", "exodus" ],
-        "tradePrice": 1,
+        "tradePrice": 2,
         "type": "voucher"
     },
     "cache_hope_11": {
@@ -850,7 +851,7 @@
         "rarityScavenge": 9,
         "rarityTrade": 5,
         "tags": [ "perishable" ],
-        "tradePrice": 1,
+        "tradePrice": 2,
         "type": "voucher"
     },
     "cache_water_2": {
@@ -867,7 +868,7 @@
         "rarityLocale": 5,
         "rarityScavenge": -1,
         "tags": [ "perishable", "exodus" ],
-        "tradePrice": 1,
+        "tradePrice": 2,
         "type": "voucher"
     },
     "clothing_hands_1": {

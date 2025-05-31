@@ -24,7 +24,7 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 			new TradingPartnerVO(6, "Old Waterworks", [resourceNames.fuel], [], true, false, [], [ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
 			new TradingPartnerVO(7, "Mill Road Academy", [resourceNames.water, resourceNames.food], [resourceNames.metal], true, false, [], [ "weapon", "artefact" ]),
 			new TradingPartnerVO(10, "Pinewood", [resourceNames.medicine, resourceNames.herbs, resourceNames.rubber], [], true, false, [], [ "artefact", "exploration" ]),
-			new TradingPartnerVO(12, "Highgate", [resourceNames.tools], [resourceNames.metal], true, false, [], [ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
+			new TradingPartnerVO(12, "Highgate", [resourceNames.tools], [resourceNames.rope], true, false, [], [ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
 			new TradingPartnerVO(14, "Factory 32", [resourceNames.concrete], [resourceNames.metal], true, false, [], [ "exploration" ]),
 		],
 		
@@ -134,19 +134,20 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 				case resourceNames.water: value = 0.01; break;
 				case resourceNames.food: value = 0.01; break;
 				case resourceNames.metal: value = 0.01; break;
-				
 				case resourceNames.rope: value = 0.015; break;
+
 				case resourceNames.fuel: value = 0.02; break;
 				
-				case resourceNames.rubber: value = 0.03; break;
-				case resourceNames.herbs: value = 0.03; break;
+				case resourceNames.rubber: value = 0.02; break;
+				case resourceNames.herbs: value = 0.02; break;
 
-				case resourceNames.medicine: value = 0.04; break;
-				case resourceNames.tools: value = 0.04; break;
-				case resourceNames.concrete: value = 0.04; break;
+				case resourceNames.medicine: value = 0.03; break;
+				case resourceNames.tools: value = 0.03; break;
+				case resourceNames.concrete: value = 0.03; break;
 				
 				case resourceNames.robots: value = 0.1; break;
 			}
+			
 			if (isTrader)
 				value = value + value * TradeConstants.VALUE_MARKUP_INCOMING_CARAVANS;
 				
@@ -254,7 +255,7 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 				case ItemConstants.itemTypes.shoes:
 					let shoeBonus = 1 - ItemConstants.getDefaultBonus(item, ItemConstants.itemBonusTypes.movement);
 					let otherBonus = ItemConstants.getDefaultTotalBonus(item) - shoeBonus;
-					return Math.pow(((shoeBonus) * 5), 2) + otherBonus / 10;
+					return Math.pow(((shoeBonus) * 6), 2) + otherBonus / 10;
 					
 				case ItemConstants.itemTypes.bag:
 					return Math.pow(((ItemConstants.getDefaultTotalBonus(item) - 25) / 15), 1.75);
