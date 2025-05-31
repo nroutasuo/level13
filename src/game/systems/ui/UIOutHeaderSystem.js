@@ -160,6 +160,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.onPlayerPositionChanged);
 			GlobalSignals.add(this, GlobalSignals.playerMoveCompletedSignal, this.onPlayerMoveCompleted);
 			GlobalSignals.add(this, GlobalSignals.perksChangedSignal, this.onPerksChanged);
+			GlobalSignals.add(this, GlobalSignals.gameResetSignal, this.onGameReset);
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onGameShown);
 			GlobalSignals.add(this, GlobalSignals.levelTypeRevealedSignal, this.onLevelTypeRevealed);
 			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.onImprovementBuilt);
@@ -278,12 +279,19 @@ define([
 		},
 
 		initDynamicBackgroundItems: function () {
+			let isSunlit = $("body").hasClass("sunlit");
+			if (isSunlit) {
+				log.w("can't init dynamic background items while sunlit theme is active");
+				return;
+			}
+
 			let dynamicBackgroundItems = [];
 			let init = function () {
 				let background =  $(this).css("background");
+				if (!background || background === "none") return;
 				dynamicBackgroundItems.push({
 					$elem: $(this),
-					originalBackground: background,
+					originalBackgroundDark: background
 				});
 			};
 			$.each($(".vision-background"), init);
@@ -1229,9 +1237,13 @@ define([
 			
 			for (let i = 0; i < this.dynamicBackgroundItems.length; i++) {
 				let item = this.dynamicBackgroundItems[i];
-				let originalBackground = item.originalBackground;
-				let newBackground = this.getDynamicBackgroundColor(originalBackground, visionLevel);
-				item.$elem.css("background", newBackground);
+				if (sunlit) {
+					item.$elem.css("background", "");
+				} else {
+					let originalBackground = item.originalBackgroundDark;
+					let newBackground = this.getDynamicBackgroundColor(originalBackground, visionLevel);
+					item.$elem.stop().animate({ "background-color": newBackground });
+				}
 			}
 		},
 
@@ -1268,9 +1280,16 @@ define([
 			$("body").toggleClass("theme-transition", true);
 			
 			let sys = this;
-			let fadeOutDuration = UIConstants.THEME_TRANSITION_DURATION * 0.4;
-			let transitionDuration = UIConstants.THEME_TRANSITION_DURATION * 0.2;
-			let fadeInDuration = UIConstants.THEME_TRANSITION_DURATION * 0.4;
+
+			let duration = UIConstants.THEME_TRANSITION_DURATION;
+			if (!this.playerStatsNodes.head) {
+				// game not started or restarting
+				duration /= 3;
+			}
+
+			let fadeOutDuration = duration * 0.4;
+			let transitionDuration = duration * 0.2;
+			let fadeInDuration = duration * 0.4;
 			
 			$("#theme-transition-overlay").css("display", "block");
 			$("#theme-transition-overlay").stop(true).animate({ opacity: 1 }, fadeOutDuration).delay(transitionDuration).animate({ opacity: 0 }, fadeInDuration);
@@ -1526,6 +1545,11 @@ define([
 			this.updateItemStats();
 			this.updateExplorers();
 			this.updateLayout();
+			this.updatePageBackgroundColor();
+		},
+
+		onGameReset: function () {
+			this.updateTheme();
 			this.updatePageBackgroundColor();
 		},
 

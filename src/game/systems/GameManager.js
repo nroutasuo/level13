@@ -197,6 +197,7 @@ define([
 				sys.engine.removeAllEntities();
 				GameGlobals.levelHelper.reset();
 				GameGlobals.gameState.reset();
+				log.i("game state reset");
 				GlobalSignals.gameResetSignal.dispatch();
 				sys.setupGame();
 				GlobalSignals.gameStateReadySignal.addOnce(function () {
