@@ -296,13 +296,17 @@
 			if (populationChangePerSecWithoutCooldown > 0) {
 				progress = populationOverflow;
 				secondsToChange = (1 - populationOverflow) / populationChangePerSec;
-			} else if(populationChangePerSec < 0 || isOnPopulationDecreaseCooldown) {
+			} else if (populationChangePerSec < 0 || isOnPopulationDecreaseCooldown) {
 				let secondsToLoseOnePop = 1 / -populationChangePerSecWithoutCooldown + CampConstants.POPULATION_DECREASE_COOLDOWN;
 				secondsToChange = (campComponent.populationDecreaseCooldown || 0) + (populationOverflow / -populationChangePerSecWithoutCooldown);
 				progress = secondsToChange / secondsToLoseOnePop;
 
 				let hint = this.getPopulationDecreaseHint();
-				if (hint) this.elements.populationDecreaseHint.text("People are leaving because of: " + hint);
+				if (hint) {
+					this.elements.populationDecreaseHint.text("People are leaving because of: " + hint);
+				} else {
+					this.elements.populationDecreaseHint.text("People are leaving because of: low reputation");
+				}
 			}
 
 			let progressLabel = UIConstants.getTimeToNum(secondsToChange);
