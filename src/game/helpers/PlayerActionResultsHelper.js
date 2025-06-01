@@ -1496,11 +1496,10 @@ define([
 			
 			// Regular items
 			if (itemProbability > 0) {
-				
 				// - Neccessity items (map, bag) that the player should find quickly if missing
 				let minNecessityItemProbability = hasCamp ? 0.15 : 0.35;
 				let necessityItemProbability = MathUtils.clamp(itemProbability * 5, minNecessityItemProbability, 0.35);
-				if (Math.random() < necessityItemProbability || true) {
+				if (Math.random() < necessityItemProbability) {
 					var necessityItem = this.getNecessityItem(currentItems, campOrdinal);
 					if (necessityItem) result.push(necessityItem);
 				}
@@ -1830,7 +1829,7 @@ define([
 			// non-craftable level clothing
 			var clothing = GameGlobals.itemsHelper.getScavengeNecessityClothing(campOrdinal, 1);
 			for (let i = 0; i < clothing.length; i++) {
-				if (currentItems.getCountById(clothing[i].id, true) <= 0) {
+				if (currentItems.getEquipmentComparison(clothing[i]) > 0) {
 					return clothing[i];
 				}
 			}
