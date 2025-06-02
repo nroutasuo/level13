@@ -8,7 +8,13 @@ define([
 	
     let UIOutAudioSystem = Ash.System.extend({
 
+		context: "audio",
+
 		elements: {},
+
+		previousSound: null,
+
+		soundTimestamps: {}, // triggerID -> timestamp
 
 		constructor: function () {
 			return this;
@@ -41,6 +47,7 @@ define([
 
 			this.audios = {};
 			this.paths = {};
+
 			for (let key in this.elements) {
 				let path = this.elements[key].find("source").attr("src");
 				this.paths[key] = path;
@@ -48,39 +55,51 @@ define([
 			}
 		},
 
-		previousSoundElement: null,
-
 		triggerSound: function (soundTriggerID, delay) {
 			let $soundElement = this.getSoundElement(soundTriggerID);
 
 			if (!$soundElement || $soundElement.length === 0) {
-				log.w("triggered sound but audio element not found: " + soundTriggerID);
+				log.w("triggered sound but audio element not found: " + soundTriggerID, this);
 				return;
 			}
 			
 			let sfxEnabled = GameGlobals.gameState.settings.sfxEnabled;
 			if (!sfxEnabled) {
-				log.i("triggered sound but sfx are disabled: " + soundTriggerID);
+				log.i("triggered sound but sfx are disabled: " + soundTriggerID, this);
 				return;
 			}
 
 			delay = delay || 0;
 			
-			log.i("play sound: " + soundTriggerID + ", delay: " + delay);
+			log.i("play sound: " + soundTriggerID + ", delay: " + delay, this);
 
-			if (this.previousSoundElement) {
-				this.previousSoundElement.pause();
+			if (this.previousSound) {
+				this.previousSound.pause();
 			}
 
 			setTimeout(() => {
-				if (GameGlobals.gameState.uiStatus.isHidden) return;
+				if (GameGlobals.gameState.uiStatus.isHidden) {
+					log.w("skip sound because game is hidden", this);
+					return;
+				}
+				
+				let playTimestamp = new Date().getTime();
+				let previousPlayTimestamp = this.soundTimestamps[soundTriggerID] || 0;
+				if (playTimestamp - previousPlayTimestamp < 300) {
+					log.w("skip sound due to repetition: " + soundTriggerID, this);
+					return;
+				}
+
 				let audio = new Audio(this.paths[soundTriggerID]);
+
 				try {
 					audio.play();
 				} catch (e) {
-					log.e("failed to play audio: " + soundTriggerID + " | " + e);
+					log.e("failed to play audio: " + soundTriggerID + " | " + e, this);
 				}
-				this.previousSoundElement = audio;
+
+				this.previousSound = audio;
+				this.soundTimestamps[soundTriggerID] = playTimestamp;
 			}, delay);
 		},
 

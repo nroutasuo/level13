@@ -309,7 +309,6 @@ define(['ash',
 					sys.toggleCollapsibleContainer($(this), !wasVisible);
 				});
 				$.each($(scope + " .collapsible-header"), function () {
-					GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 					sys.toggleCollapsibleContainer($(this), false);
 				});
 			},
