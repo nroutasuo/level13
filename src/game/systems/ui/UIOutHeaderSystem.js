@@ -650,12 +650,7 @@ define([
 			let perksList = isSmallLayout ? this.perksListMobile : this.perksListDefault;
 			let newItems = UIList.update(perksList, perks);
 
-			for (let i = 0; i < newItems.length; i++) {
-				newItems[i].$root.toggle(false);
-				newItems[i].$root.fadeIn(500);
-			}
-
-			GameGlobals.uiFunctions.generateInfoCallouts(".player-perks-list");
+			this.handleNewPerks(newItems);
 		},
 		
 		refreshStatuses: function () {
@@ -711,8 +706,22 @@ define([
 			let perksList = isSmallLayout ? this.perksListMobile : this.perksListDefault;
 			let sunlit = this.elements.body.hasClass("sunlit");
 			let themeChanged = sunlit != this.lastPerkUpdateSunlit;
-			UIList.update(perksList, perks, themeChanged);
+			let newItems = UIList.update(perksList, perks, themeChanged);
+
+			this.handleNewPerks(newItems);
+
 			this.lastPerkUpdateSunlit = sunlit;
+		},
+
+		handleNewPerks: function (newItems) {
+			for (let i = 0; i < newItems.length; i++) {
+				newItems[i].$root.toggle(false);
+				newItems[i].$root.fadeIn(500);
+			}
+
+			if (newItems.length > 0) {
+				GameGlobals.uiFunctions.generateInfoCallouts(".player-perks-list");
+			}
 		},
 		
 		createPerkListItem: function () {
@@ -1498,6 +1507,7 @@ define([
 		onVisionChanged: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			this.updateVisionStatus();
+			this.refreshPerks();
 		},
 
 		onTabChanged: function () {
