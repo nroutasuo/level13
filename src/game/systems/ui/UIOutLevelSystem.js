@@ -1029,10 +1029,11 @@ define([
 			let hasCampOnLevel = GameGlobals.levelHelper.getLevelEntityForSector(this.playerLocationNodes.head.entity).has(CampComponent);
 			let pathToCamp = GameGlobals.playerHelper.getPathToCamp();
 			let pathToCampLen = pathToCamp ? pathToCamp.length : "?";
+			let canMove = GameGlobals.gameState.isFeatureUnlocked("move");
 			
 			$("#out-action-move-camp-details").text("(" + pathToCampLen + " blocks)");
 			
-			let showDistanceIndicator = hasFirstCamp;
+			let showDistanceIndicator = hasFirstCamp && canMove;
 			GameGlobals.uiFunctions.toggle($("#out-distance-indicator"), showDistanceIndicator);
 			if (showDistanceIndicator) {
 				if (hasCampOnLevel) {
