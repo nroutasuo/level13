@@ -5,6 +5,8 @@ define(function () {
 	var English = {
 
 		getIndefiniteArticle: function (word) {
+			word = word.replaceAll("|", "");
+			
 			var l_word = word.toLowerCase();
 			
 			// Specific start of words that should be preceeded by 'an'

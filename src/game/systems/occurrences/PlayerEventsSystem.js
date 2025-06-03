@@ -33,7 +33,7 @@ define([
 		
 		showIntroPopup: function () {
 			// TODO make this part of the story (just need to make sure to trigger at the right time relative to loading)
-			let intro = "You wake up alone in the darkness, far below sunlight. You are injured and you remember very little. Is this how your journey ends?";
+			let intro = Text.t("story.messages.game_intro_message");
 			GameGlobals.uiFunctions.showInfoPopup("Darkness", intro, "Continue", null, null, true, false);
 		},
 		
