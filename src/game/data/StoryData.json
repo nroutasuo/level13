@@ -172,7 +172,10 @@
                 {
                     "id": "passage_used",
                     "onStart": {
-                        "log": "story.stories.escape_passage_used_message"
+                        "log": {
+                            "textKey": "story.stories.escape_passage_used_message",
+                            "visibility": "MGS_VISIBILITY_LEVEL"
+                        }
                     },
                     "startConditions": {
                         "level": 12
@@ -767,7 +770,10 @@
                 {
                     "id": "first_worker",
                     "onStart": {
-                        "log": "story.stories.tribe_first_worker_message"
+                        "log": {
+                            "textKey": "story.stories.tribe_first_worker_message",
+                            "visibility": "MSG_VISIBILITY_CAMP"
+                        }
                     },
                     "startConditions": {
                         "population": [

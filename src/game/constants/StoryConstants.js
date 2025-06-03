@@ -295,10 +295,16 @@ define([
 				result.popup.text = data.popup;
 			}
 
+			result.log = data.log;
+
+			if (typeof data.log === "string") {
+				result.log = {};
+				result.log.textKey = data.log;
+			}
+
 			// TODO check dialogue definition parts in more detail
 
 			result.result = data.result;
-			result.log = data.log;
 			result.dialogue = data.dialogue;
 			result.unlockFeature = data.unlockFeature || null;
 			result.storyFlags = data.storyFlags || {};

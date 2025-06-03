@@ -183,8 +183,8 @@ define([
 			if (effectVO.log) {
 				let delay = 300;
 				setTimeout(() => {
-					let msg = Text.t(effectVO.log);
-					let options = { visibility: LogConstants.MSG_VISIBILITY_GLOBAL };
+					let msg = Text.t(effectVO.log.textKey);
+					let options = { visibility: effectVO.log.visibility || LogConstants.MSG_VISIBILITY_GLOBAL };
 					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), msg, options);
 				}, delay);
 			}
