@@ -336,6 +336,7 @@
         "icon": "img/items/bag-0.png",
         "isCraftable": true,
         "isEquippable": true,
+        "isRepairable": false,
         "isUseable": false,
         "rarityLocale": 5,
         "rarityScavenge": 2,
