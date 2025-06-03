@@ -457,7 +457,7 @@ define([
 				let equipped = itemsComponent.getEquipped(item.type);
 				let isEquipped = equipped && equipped.length > 0 && equipped[0].id == item.id && equipped[0].broken == item.broken;
 				let count = itemsComponent.getCount(item, inCamp);
-				let canDiscard = itemsComponent.isItemDiscardable(item);
+				let canDiscard = itemsComponent.isItemDiscardable(item, inCamp);
 				let canRepair = this.isRepairable(item);
 				let options = { canEquip: false, isEquipped: item.equipped, canUnequip: false, canDiscard: canDiscard, canUse: item.useable, canRepair: canRepair };
 

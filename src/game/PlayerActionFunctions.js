@@ -321,6 +321,7 @@ define(['ash',
 				case "fight": break;
 				case "auto_equip": break;
 				case "accept_inventory": break;
+				case "take_all": break;
 				// Movement
 				case "move_level_up": this.moveTo(PositionConstants.DIRECTION_UP, action); break;
 				case "move_level_down": this.moveTo(PositionConstants.DIRECTION_DOWN, action); break;
@@ -1015,7 +1016,7 @@ define(['ash',
 				let shelterSuccessCallback = function (cb) {
 					let itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
 					let item = itemsComponent.getItem("artefact_rescue_1", null, true, true);
-					if (item) itemsComponent.discardItem(item, false);
+					if (item) itemsComponent.discardItem(item, false, false);
 					cb();
 				};
 
@@ -2555,7 +2556,7 @@ define(['ash',
 			GameGlobals.uiFunctions.showConfirmation(
 				"Are you sure you want to discard this item?",
 				function () {
-					itemsComponent.discardItem(item, false);
+					itemsComponent.discardItem(item, playerPos.inCamp, false);
 					GlobalSignals.equipmentChangedSignal.dispatch();
 				}
 			);
@@ -3125,7 +3126,7 @@ define(['ash',
 				let explorerVO = explorers[i];
 				if (!explorerVO.numSteps) explorerVO.numSteps = 0;
 				explorerVO.numSteps++;
-				GameGlobals.gameState.increaseGameStatHighScore("mostStepsWithExplorer", explorerVO.id, explorerVO.numSteps);
+				GameGlobals.gameState.increaseGameStatHighScore("mostStepsWithExplorer", explorerVO, explorerVO.numSteps);
 			}
 		},
 

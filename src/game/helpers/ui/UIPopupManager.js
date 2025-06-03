@@ -172,7 +172,7 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 				return;
 			}
 			
-			GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.openPopup);
+			GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.openPopup, 100);
 
 			this.elements.overlay.stop().fadeIn(UIConstants.POPUP_OVERLAY_FADE_IN_DURATION, cb);
 		},
@@ -183,7 +183,7 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 			if (this.showOverlayCounter > 0) return;
 			if (this.showOverlayCounter < 0) this.showOverlayCounter = 0;
 			
-			GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.closePopup);
+			GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.closePopup, 100);
 
 			this.elements.overlay.stop().fadeOut(UIConstants.POPUP_OVERLAY_FADE_OUT_DURATION);
 		},

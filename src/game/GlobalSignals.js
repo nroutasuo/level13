@@ -64,6 +64,7 @@ define(['ash',], function (Ash) {
 		inventoryChangedSignal: new Ash.Signals.Signal(),
 		equipmentChangedSignal: new Ash.Signals.Signal(),
 		explorersChangedSignal: new Ash.Signals.Signal(),
+		storageCapacityChangedSignal: new Ash.Signals.Signal(),
 		fightEndedSignal: new Ash.Signals.Signal(),
 		workersAssignedSignal: new Ash.Signals.Signal(),
 		featureUsedSignal: new Ash.Signals.Signal(),

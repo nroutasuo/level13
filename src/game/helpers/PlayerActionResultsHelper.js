@@ -852,7 +852,7 @@ define([
 
 			if (rewards.discardedItems) {
 				for (let i = 0; i < rewards.discardedItems.length; i++) {
-					itemsComponent.discardItem(rewards.discardedItems[i], false);
+					itemsComponent.discardItem(rewards.discardedItems[i], GameGlobals.playerHelper.isInCamp(), false);
 				}
 			}
 
