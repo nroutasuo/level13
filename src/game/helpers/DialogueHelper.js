@@ -197,6 +197,7 @@ define(['ash',
                     let sectorPosition = sector.get(PositionComponent);
                     let distance = PositionConstants.getDistanceTo(playerPosition, sectorPosition);
                     if (distance == 0) return false;
+                    if (distance > 8) return false;
                     let poiData = GameGlobals.sectorHelper.getPOIData(sector, poiType);
                     if (poiData) {
                         let direction = PositionConstants.getDirectionFrom(playerPosition, sectorPosition);
