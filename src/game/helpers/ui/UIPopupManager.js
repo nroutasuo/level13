@@ -67,7 +67,7 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 			// text
 			GameGlobals.uiFunctions.toggle("#common-popup-input-container", false);
 			$("#common-popup h3").text(title);
-			$("#common-popup p#common-popup-desc").html(msg);
+			$("#common-popup p#common-popup-desc").html(msg || "");
 			
 			// results and rewards
 			GameGlobals.uiFunctions.toggle("#info-results", showInventoryManagement);
