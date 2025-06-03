@@ -131,7 +131,7 @@ define([
 
 			let result = 5;
 
-			if (!isCampable) result -= 1;
+			if (!isCampable) result -= 2;
 			if (level < 14) result -= 1;
 
 			if (isCampable && TradeConstants.getTradePartner(campOrdinal) != null) result += 1;
