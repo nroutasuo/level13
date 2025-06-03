@@ -160,6 +160,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.onPlayerPositionChanged);
 			GlobalSignals.add(this, GlobalSignals.playerMoveCompletedSignal, this.onPlayerMoveCompleted);
 			GlobalSignals.add(this, GlobalSignals.perksChangedSignal, this.onPerksChanged);
+			GlobalSignals.add(this, GlobalSignals.storageCapacityChangedSignal, this.onStorageCapacityChanged);
 			GlobalSignals.add(this, GlobalSignals.gameResetSignal, this.onGameReset);
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onGameShown);
 			GlobalSignals.add(this, GlobalSignals.levelTypeRevealedSignal, this.onLevelTypeRevealed);
@@ -803,13 +804,15 @@ define([
 			}
 
 			// out
+			
 			GameGlobals.uiFunctions.toggle(".header-bag-storage", !inCamp && GameGlobals.gameState.unlockedFeatures.bag);
 			GameGlobals.uiFunctions.toggle(".bag-resources", !inCamp);
 
 			if (!inCamp) {
 				let bagComponent = this.playerStatsNodes.head.entity.get(BagComponent);
+				let bagUsedCapacityDisplayValue = Math.floor(bagComponent.usedCapacity * 10) / 10;
 				let bagCapacityDisplayValue = UIConstants.getBagCapacityDisplayValue(bagComponent, true);
-				$(".header-bag-storage .value").text(Math.floor(bagComponent.usedCapacity * 10) / 10);
+				$(".header-bag-storage .value").text(bagUsedCapacityDisplayValue);
 				UIAnimations.animateOrSetNumber($(".header-bag-storage .value-total"), true, bagCapacityDisplayValue);
 			}
 		},
@@ -981,7 +984,7 @@ define([
 				}
 				
 				let indicatorClass = "stats-equipment-" + bonusKey;
-				let isElementVisible = isVisible && value;
+				let isElementVisible = isVisible && value != 0;
 				let wasElementVisible = GameGlobals.uiFunctions.isElementToggled("." + indicatorClass);
 				let animating = UIAnimations.animateNumber($("." + indicatorClass + " .value"), value, "", flipNegative, (v) => { return UIConstants.roundValue(v, true, true); });
 				if (animating) {
@@ -1039,7 +1042,6 @@ define([
 			this.elements.body.toggleClass("location-outside", !inCamp);
 
 			let featuresComponent = this.currentLocationNodes.head.entity.get(SectorFeaturesComponent);
-			let sunlit = featuresComponent.sunlit;
 
 			let hasMap = GameGlobals.playerHelper.hasItem("equipment_map");
 			let positionText = "??";
@@ -1513,6 +1515,10 @@ define([
 		
 		onPerksChanged: function () {
 			this.refreshPerks();
+		},
+		
+		onStorageCapacityChanged: function () {
+			this.updateResourcesBar();
 		},
 		
 		onLevelTypeRevealed: function (level) {

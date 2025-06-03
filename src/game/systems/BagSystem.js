@@ -2,6 +2,7 @@
 define([
 	'ash',
 	'game/GameGlobals',
+	'game/GlobalSignals',
 	'game/constants/ItemConstants',
 	'game/constants/BagConstants',
 	'game/constants/PerkConstants',
@@ -11,9 +12,9 @@ define([
 	'game/components/player/BagComponent',
 	'game/components/player/PerksComponent',
 	'game/vos/ResourcesVO'
-], function (Ash, GameGlobals, ItemConstants, BagConstants, PerkConstants, PlayerResourcesNode, ItemsComponent, ExplorersComponent, BagComponent, PerksComponent, ResourcesVO) {
+], function (Ash, GameGlobals, GlobalSignals, ItemConstants, BagConstants, PerkConstants, PlayerResourcesNode, ItemsComponent, ExplorersComponent, BagComponent, PerksComponent, ResourcesVO) {
 	
-	var BagSystem = Ash.System.extend({
+	let BagSystem = Ash.System.extend({
 		
 		playerNodes: null,
 	
@@ -62,14 +63,19 @@ define([
 		},
 		
 		updateUsedCapacity: function (playerBag, playerResources, playerItems) {
-			var usedCapacity = 0;
-			var carriedItems = playerItems.getAll(false);
+			let oldUsedCapacity = playerBag.usedCapacity;
+			let usedCapacity = 0;
+			let carriedItems = playerItems.getAll(false);
 			usedCapacity += BagConstants.getResourcesCapacity(playerResources.resources);
 			for (let i = 0; i < carriedItems.length; i++) {
 				if (carriedItems[i].equipped) continue;
 				 usedCapacity += BagConstants.getItemCapacity(carriedItems[i]);
 			}
 			playerBag.usedCapacity = usedCapacity;
+
+			if (usedCapacity != oldUsedCapacity) {
+				GlobalSignals.storageCapacityChangedSignal.dispatch();
+			}
 		},
 		
 	});
