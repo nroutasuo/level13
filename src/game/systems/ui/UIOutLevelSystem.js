@@ -432,6 +432,8 @@ define([
 
 		getTextureDescription: function (hasVision, sector, position, featuresComponent, sectorStatus, localesComponent) {
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
+			let hasGlowStickLight = sectorStatus.glowStickSeconds > 0;
+			let hasLight = hasVision || featuresComponent.sunlit || hasGlowStickLight;
 			
 			// sector static description
 			var features = GameGlobals.sectorHelper.getTextFeatures(sector);
@@ -454,7 +456,7 @@ define([
 			}
 
 			// world features
-			if (PositionConstants.isWorldPillarPosition(position)) {
+			if (hasLight && PositionConstants.isWorldPillarPosition(position)) {
 				desc += "The area is dominated by a massive concrete pillar, one of the great spines of the City. ";
 			}
 			
