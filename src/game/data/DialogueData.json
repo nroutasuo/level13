@@ -908,6 +908,27 @@
 				"character_drifter_default_meet_7_p1"
 			]
 		},
+		"character_drifter_default_meet_08": {
+			"conditions": {
+				"playerInventory": {
+					"resource_water": [
+						-1,
+						4
+					]
+				}
+			},
+			"pages": [
+				{
+					"key": "character_drifter_default_meet_08_p1",
+					"replaceDialogue": true,
+					"result": {
+						"gainedResources": {
+							"water": 5
+						}
+					}
+				}
+			]
+		},
 		"character_generic_helpful_meet_poi_blocker_debris_01": {
 			"conditions": {
 				"vicinity": "blocker_debris"
@@ -1417,6 +1438,27 @@
 		"character_hunter_default_meet_05": {
 			"pages": [
 				"character_hunter_default_meet_05_p1"
+			]
+		},
+		"character_hunter_default_meet_06": {
+			"conditions": {
+				"playerInventory": {
+					"resource_food": [
+						-1,
+						4
+					]
+				}
+			},
+			"pages": [
+				{
+					"key": "character_hunter_default_meet_06_p1",
+					"replaceDialogue": true,
+					"result": {
+						"gainedResources": {
+							"food": 5
+						}
+					}
+				}
 			]
 		},
 		"character_mercenary_default_meet_01": {
@@ -2284,6 +2326,27 @@
 				"character_workerTrapper_default_meet_02_p1"
 			]
 		},
+		"character_workerTrapper_default_meet_03": {
+			"conditions": {
+				"playerInventory": {
+					"resource_food": [
+						-1,
+						4
+					]
+				}
+			},
+			"pages": [
+				{
+					"key": "character_workerTrapper_default_meet_03_p1",
+					"replaceDialogue": true,
+					"result": {
+						"gainedResources": {
+							"food": 5
+						}
+					}
+				}
+			]
+		},
 		"character_workerWater_default_interact_01": {
 			"pages": [
 				"character_workerWater_default_interact_01_p1"
@@ -2307,6 +2370,27 @@
 		"character_workerWater_default_meet_02": {
 			"pages": [
 				"character_workerWater_default_meet_02_p1"
+			]
+		},
+		"character_workerWater_default_meet_03": {
+			"conditions": {
+				"playerInventory": {
+					"resource_water": [
+						-1,
+						4
+					]
+				}
+			},
+			"pages": [
+				{
+					"key": "character_workerWater_default_meet_03",
+					"replaceDialogue": true,
+					"result": {
+						"gainedResources": {
+							"water": 5
+						}
+					}
+				}
 			]
 		},
 		"explorer_generic_animal_event_01": {
@@ -4625,11 +4709,11 @@
 		},
 		"explorer_unique_gambler_story_escape_01": {
 			"conditions": {
-				"storyFlags": {
-					"ESCAPE_SEARCHING_FOR_GROUND": true
-				},
 				"explorer": {
 					"trust": 2
+				},
+				"storyFlags": {
+					"ESCAPE_SEARCHING_FOR_GROUND": true
 				}
 			},
 			"pages": [
@@ -4638,11 +4722,11 @@
 		},
 		"explorer_unique_gambler_story_escape_02": {
 			"conditions": {
-				"storyFlags": {
-					"ESCAPE_SEARCHING_FOR_GROUND": true
-				},
 				"explorer": {
 					"trust": 1
+				},
+				"storyFlags": {
+					"ESCAPE_SEARCHING_FOR_GROUND": true
 				}
 			},
 			"pages": [
@@ -4678,6 +4762,7 @@
 		},
 		"explorer_unique_gambler_story_find_spirits": {
 			"conditions": {
+				"deity": false,
 				"explorer": {
 					"trust": 1
 				},
@@ -4688,8 +4773,7 @@
 							8
 						]
 					}
-				},
-				"deity": false
+				}
 			},
 			"isUrgent": true,
 			"pages": [
@@ -6754,6 +6838,7 @@
 					"character_drifter_default_meet_05",
 					"character_drifter_default_meet_06",
 					"character_drifter_default_meet_07",
+					"character_drifter_default_meet_08",
 					"character_generic_helpful_meet_poi_blocker_debris_01",
 					"character_generic_helpful_meet_poi_blocker_explosives_01",
 					"character_generic_helpful_meet_poi_blocker_gap_01",
@@ -6793,6 +6878,7 @@
 					"character_hunter_default_meet_03",
 					"character_hunter_default_meet_04",
 					"character_hunter_default_meet_05",
+					"character_hunter_default_meet_06",
 					"character_generic_reserved_meet_01",
 					"character_generic_reserved_meet_02",
 					"character_generic_helpful_meet_poi_campable_01",
@@ -7361,6 +7447,7 @@
 				"meet": [
 					"character_workerTrapper_default_meet_01",
 					"character_workerTrapper_default_meet_02",
+					"character_workerTrapper_default_meet_03",
 					"character_workerGeneric_meet_01",
 					"character_workerGeneric_meet_02"
 				]
@@ -7392,6 +7479,7 @@
 				"meet": [
 					"character_workerWater_default_meet_01",
 					"character_workerWater_default_meet_02",
+					"character_workerWater_default_meet_03",
 					"character_workerGeneric_meet_01",
 					"character_workerGeneric_meet_02"
 				]

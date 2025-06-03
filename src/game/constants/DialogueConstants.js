@@ -174,6 +174,12 @@ define([
 				}
 			}
 
+			if (data.gainedResources) {
+				for (let key in data.gainedResources) {
+					resultVO.gainedResources.addResource(key, data.gainedResources[key]);
+				}
+			}
+
 			if (data.gainedPerks) {
 				resultVO.gainedPerks = [];
 				for (let i in data.gainedPerks) {
