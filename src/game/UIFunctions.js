@@ -1168,28 +1168,6 @@ define(['ash',
 				GlobalSignals.elementToggledSignal.dispatch($element, show);
 			},
 
-			tabToggleIf: function (element, replacement, show, durationIn, durationOut) {
-				var visible = $(element).is(":visible");
-				var toggling = ($(element).attr("data-toggling") == "true");
-				var sys = this;
-
-				if (show && !visible && !toggling) {
-					if (replacement) sys.toggle(replacement, false);
-					$(element).attr("data-toggling", "true");
-					$(element).fadeToggle(durationIn, function () {
-						sys.toggle(element, true);
-						$(element).attr("data-toggling", "false");
-					});
-				} else if (!show && visible && !toggling) {
-					$(element).attr("data-toggling", "true");
-					$(element).fadeToggle(durationOut, function () {
-						if (replacement) sys.toggle(replacement, true);
-						sys.toggle(element, false);
-						$(element).attr("data-toggling", "false");
-					});
-				}
-			},
-
 			toggle: function (element, show, signalParams, delay) {
 				let $element = typeof (element) === "string" ? $(element) : element;
 
