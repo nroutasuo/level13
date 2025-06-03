@@ -99,6 +99,8 @@ define([
 		
 		updateBubble: function () {
 			let inCamp = GameGlobals.playerHelper.isInCamp();
+			let hasSeenTab = GameGlobals.gameState.hasSeenTab(GameGlobals.uiFunctions.elementIDs.tabs.explorers);
+
 			let bubbleNumber = 0;
 			if (inCamp) { 
 				bubbleNumber = this.getNumRecruits() + this.getNumUrgentDialogues() + this.getNumInjuredExplorersInParty() + this.getNumForcedExplorersNotInParty()
@@ -106,6 +108,8 @@ define([
 			let isStatIncreaseAvailable = this.getIsStatIncreaseAvailable();
 			
 			let state = bubbleNumber + (isStatIncreaseAvailable ? 1000 : 0);
+			
+			if (!hasSeenTab) state = "!";
 
 			UIState.refreshState(this, "bubble-num", state, function () {
 				if (bubbleNumber > 0) {
@@ -119,7 +123,7 @@ define([
 					$("#switch-explorers .bubble").toggleClass("bubble-increase", false);
 				}
 
-				GameGlobals.uiFunctions.toggle("#switch-explorers .bubble", bubbleNumber > 0 || isStatIncreaseAvailable);
+				GameGlobals.uiFunctions.toggle("#switch-explorers .bubble", bubbleNumber > 0 || isStatIncreaseAvailable || !hasSeenTab);
 			});
 		},
 		
@@ -300,6 +304,7 @@ define([
 
 		hasExplorerUrgentDialogue: function (explorerVO) {
 			if (!explorerVO) {
+				debugger 
 				return false;
 			}
 			return ValueCache.getValue("ExplorerHasUrgentDialogue-" + explorerVO.id, 10, GameGlobals.gameState.lastActionTimestamp, () => {

@@ -214,8 +214,15 @@ define([
 			let numCraftableAvailableUnseen = this.getMatchingUnseenItemCount(this.getCraftableItemDefinitionsList(), this.isCraftableAvailable, GameGlobals.gameState.uiBagStatus.itemsCraftableAvailableSeen);
 			let numImmedatelyUsableUnseen = this.getMatchingUnseenItemCount(this.getCarriedItems(), this.isCurrentlyUseable, GameGlobals.gameState.uiBagStatus.itemsUsableSeen);
 			
-			var bubbleNumber = Math.max(0, numCraftableUnlockedUnseen + numCraftableAvailableUnseen + numImmedatelyUsableUnseen);
-			var state = bubbleNumber + (isStatIncreaseAvailable ? 1000 : 0);
+			let bubbleNumber = Math.max(0, numCraftableUnlockedUnseen + numCraftableAvailableUnseen + numImmedatelyUsableUnseen);
+
+			if (this.itemNodes.head.items.getEquipped().length > 0) {
+				GameGlobals.gameState.markSeenTab(GameGlobals.uiFunctions.elementIDs.tabs.bag);
+			}
+			
+			if (!GameGlobals.gameState.hasSeenTab(GameGlobals.uiFunctions.elementIDs.tabs.bag)) bubbleNumber = "!";
+
+			let state = bubbleNumber + (isStatIncreaseAvailable ? 1000 : 0);
 			UIState.refreshState(this, "bubble-num", state, function () {
 				if (isStatIncreaseAvailable) {
 					$("#switch-bag .bubble").text("");
@@ -224,7 +231,7 @@ define([
 					$("#switch-bag .bubble").text(bubbleNumber);
 					$("#switch-bag .bubble").toggleClass("bubble-increase", false);
 				}
-				GameGlobals.uiFunctions.toggle("#switch-bag .bubble", bubbleNumber > 0 || isStatIncreaseAvailable);
+				GameGlobals.uiFunctions.toggle("#switch-bag .bubble", bubbleNumber !== 0 || isStatIncreaseAvailable);
 			});
 		},
 		

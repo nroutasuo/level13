@@ -32,7 +32,6 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.uiStatus = {
 				mouseDown: false,
 				currentTab: null,
-				mapVisited: false,
 				isBusyCounter: 0,
 				isHidden: false,
 				isBlocked: false,
@@ -40,6 +39,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 				isInitialized: false,
 				isInCamp: false,
 				sequenceTitleKey: null,
+				seenTabs: [],
 				hiddenProjects: [],
 				leaveCampRes: {},
 				leaveCampItems: {},
@@ -170,6 +170,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			this.uiStatus.sequenceTitleKey = null;
 			this.uiStatus.isTransitioning = false;
 			if (!this.uiStatus.lastSelection) this.uiStatus.lastSelection = {};
+			if (!this.uiStatus.seenTabs) this.uiStatus.seenTabs = [];
 
 			// init stats in case new ones added
 			this.initStats();
@@ -223,6 +224,16 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			if (this.storyFlags[flagID] === value) return;
 			log.i("set story flag: " + flagID + ":" + value);
 			this.storyFlags[flagID] = value;
+		},
+
+		markSeenTab: function (tabID) {
+			if (!this.hasSeenTab(tabID)) {
+				this.uiStatus.seenTabs.push(tabID);
+			}
+		},
+
+		hasSeenTab: function (tabID) {
+			return this.uiStatus.seenTabs.indexOf(tabID) >= 0;
 		},
 
 		passTime: function (seconds) {

@@ -70,11 +70,14 @@ define([
 		refresh: function () {
 			$("#tab-header h2").text(Text.t("ui.main.tab_milestones_header"));
 			this.updateMilestones();
+			this.updateBubble();
 		},
 
 		updateBubble: function () {
 			let bubbleNumber = 0;
 			if (this.canClaimMilestone()) bubbleNumber++;
+
+			if (!GameGlobals.gameState.hasSeenTab(GameGlobals.uiFunctions.elementIDs.tabs.milestones)) bubbleNumber = "!";
 			
 			GameGlobals.uiFunctions.updateBubble("#switch-milestones .bubble", this.bubbleNumber, bubbleNumber);
 			

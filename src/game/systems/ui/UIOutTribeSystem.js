@@ -133,8 +133,10 @@ define([
 		},
 
 		updateBubble: function () {
-			GameGlobals.uiFunctions.updateBubble("#switch-world .bubble", this.bubbleNumber, this.campsWithAlert);
-			this.bubbleNumber = this.campsWithAlert;
+			let bubbleNumber = this.campsWithAlert;
+			if (!GameGlobals.gameState.hasSeenTab(GameGlobals.uiFunctions.elementIDs.tabs.world)) bubbleNumber = "!";
+			GameGlobals.uiFunctions.updateBubble("#switch-world .bubble", this.bubbleNumber, bubbleNumber);
+			this.bubbleNumber = bubbleNumber;
 		},
 
 		updateMessages: function () {

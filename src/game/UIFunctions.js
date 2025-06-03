@@ -873,6 +873,8 @@ define(['ash',
 				$.each($(".tabbutton"), function () {
 					GameGlobals.uiFunctions.toggle($(this), $(this).attr("data-tab") === tabID);
 				});
+
+				GameGlobals.gameState.markSeenTab(tabID);
 				
 				log.i("tabChanged: " + tabID, "ui");
 
@@ -1511,7 +1513,7 @@ define(['ash',
 				var $element = typeof (element) === "string" ? $(element) : element;
 				
 				$element.text(bubbleNumber);
-				GameGlobals.uiFunctions.toggle($element, bubbleNumber > 0);
+				GameGlobals.uiFunctions.toggle($element, bubbleNumber !== 0);
 			},
 
 			registerLongTap: function (element, callback) {

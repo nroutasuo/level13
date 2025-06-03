@@ -63,6 +63,7 @@ define([
 			this.refreshUpgradesLists();
 			this.refreshTechTree(true);
 			this.refreshTechDetails();
+			this.updateBubble();
 			GameGlobals.uiFunctions.toggle("#world-blueprints", $("#blueprints-list tr").length > 0);
 			GameGlobals.uiFunctions.toggle("#world-upgrades-count", this.lastUpdateUpgradeCount > 0);
 			$("#world-upgrades-count").text(Text.t("ui.upgrades.reseached_upgrades_field", { num: this.lastUpdateUpgradeCount }));
@@ -72,9 +73,13 @@ define([
 			var completedBlueprintsNum = Math.max(0, this.getCurrentCompletableCount());
 			var newBlueprintsNum = this.numCurrentNewBlueprints;
 			var upgradesNum = this.numCurrentResearchableUpgrades - this.numShownResearchableUpgrades;
-			var newBubbleNumber = completedBlueprintsNum + newBlueprintsNum + upgradesNum;
-			if (this.bubbleNumber === newBubbleNumber)
-				return;
+
+			if (this.tribeNodes.head.upgrades.boughtUpgrades.length > 0) {
+				GameGlobals.gameState.markSeenTab(GameGlobals.uiFunctions.elementIDs.tabs.upgrades);
+			}
+
+			let newBubbleNumber = completedBlueprintsNum + newBlueprintsNum + upgradesNum;
+			if (!GameGlobals.gameState.hasSeenTab(GameGlobals.uiFunctions.elementIDs.tabs.upgrades)) newBubbleNumber = "!";
 			
 			GameGlobals.uiFunctions.updateBubble("#switch-upgrades .bubble", this.bubbleNumber, newBubbleNumber);
 			this.bubbleNumber = newBubbleNumber;

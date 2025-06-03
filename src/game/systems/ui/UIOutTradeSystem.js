@@ -84,12 +84,11 @@ define([
 
 		updateBubble: function () {
 			if (GameGlobals.gameState.uiStatus.isBlocked) return;
-			var newBubbleNumber = this.availableTradingPartnersCount - this.lastShownTradingPartnersCount;
-			if (this.lastShownTradingPartnersCount === -1)
-				newBubbleNumber = 0;
+
+			let newBubbleNumber = this.availableTradingPartnersCount - this.lastShownTradingPartnersCount;
+			if (this.lastShownTradingPartnersCount === -1) newBubbleNumber = 0;
 			newBubbleNumber += this.currentIncomingTraders;
-			if (this.bubbleNumber === newBubbleNumber)
-				return;
+			if (!GameGlobals.gameState.hasSeenTab(GameGlobals.uiFunctions.elementIDs.tabs.trade)) newBubbleNumber = "!";
 			
 			GameGlobals.uiFunctions.updateBubble("#switch-trade .bubble", this.bubbleNumber, newBubbleNumber);
 			this.bubbleNumber = newBubbleNumber;

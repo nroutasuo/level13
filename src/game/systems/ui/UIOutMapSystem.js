@@ -98,9 +98,14 @@ define([
 
 		update: function (time) {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
-			GameGlobals.uiFunctions.toggle("#switch-map .bubble", !GameGlobals.gameState.uiStatus.mapVisited);
-			if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.map) return;
-			GameGlobals.gameState.uiStatus.mapVisited = true;
+			this.updateBubble();
+		},
+
+		updateBubble: function () {
+			let bubbleNumber = 0;
+			if (!GameGlobals.gameState.hasSeenTab(GameGlobals.uiFunctions.elementIDs.tabs.map)) bubbleNumber = "!";
+			GameGlobals.uiFunctions.updateBubble("#switch-map .bubble", this.bubbleNumber, bubbleNumber);
+			this.bubbleNumber = bubbleNumber;
 		},
 		
 		updateHeight: function () {
@@ -815,6 +820,7 @@ define([
 		onTabChanged: function (tabID, tabProps) {
 			if (tabID !== GameGlobals.uiFunctions.elementIDs.tabs.map) return;
 			
+			this.updateBubble();
 			this.updateHeader();
 			
 			$("#select-header-mapmode").toggle(this.isMapModesVisible());
@@ -861,10 +867,6 @@ define([
 			if (this.selectedMapStyle === mapStyle) return;
 			this.selectMapStyle(mapStyle);
 		},
-
-		clearBubble: function () {
-			GameGlobals.gameState.uiStatus.mapVisited = true;
-		}
 
 	});
 

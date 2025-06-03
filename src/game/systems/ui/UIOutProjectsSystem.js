@@ -95,15 +95,15 @@ define([
 		},
 		
 		updateBubble: function () {
-			var newBubbleNumber =
+			let newBubbleNumber = Math.max(0,
 				(this.tabCounts.current.available.regular - this.tabCounts.lastShown.available.regular) +
 				(this.tabCounts.current.visible.regular - this.tabCounts.lastShown.visible.regular) +
 				(this.tabCounts.current.available.colony - this.tabCounts.lastShown.available.colony) +
-				(this.tabCounts.current.visible.colony - this.tabCounts.lastShown.visible.colony);
-			if (GameGlobals.storyHelper.isReadyForLaunch())
-				newBubbleNumber = 1;
-			if (this.bubbleNumber === newBubbleNumber)
-				return;
+				(this.tabCounts.current.visible.colony - this.tabCounts.lastShown.visible.colony)
+			);
+			
+			if (!GameGlobals.gameState.hasSeenTab(GameGlobals.uiFunctions.elementIDs.tabs.projects)) newBubbleNumber = "!";
+			if (GameGlobals.storyHelper.isReadyForLaunch()) newBubbleNumber = 1;
 			
 			GameGlobals.uiFunctions.updateBubble("#switch-projects .bubble", this.bubbleNumber, newBubbleNumber);
 			this.bubbleNumber = newBubbleNumber;
