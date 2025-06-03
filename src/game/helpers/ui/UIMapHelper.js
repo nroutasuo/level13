@@ -390,12 +390,12 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 				result.push({ id: "passage-up", icon: passageDownIcon, position: passageDown.get(PositionComponent) });
 			}
 			
-			let nearestWaterSector = GameGlobals.levelHelper.findNearestKnownWaterSector(mapPosition);
+			let nearestWaterSector = GameGlobals.levelHelper.findNearestKnownWaterSector(mapPosition, true);
 			if (nearestWaterSector != null) {
 				result.push({ id: "water", color: this.getResourceFill(resourceNames.water), position: nearestWaterSector.get(PositionComponent) });
 			}
 			
-			let nearestFoodSector = GameGlobals.levelHelper.findNearestKnownFoodSector(mapPosition);
+			let nearestFoodSector = GameGlobals.levelHelper.findNearestKnownFoodSector(mapPosition, true);
 			if (nearestFoodSector != null) {
 				result.push({ id: "food", color: this.getResourceFill(resourceNames.food), position: nearestFoodSector.get(PositionComponent) });
 			}
