@@ -1997,35 +1997,6 @@
 				"character_workerGeneric_story_apocalypse_plan_ready_02_p1"
 			]
 		},
-		"character_workerGeneric_story_escape_build_passage_01": {
-			"conditions": {
-				"storyFlags": {
-					"ESCAPE_PASSAGE_DOWN_FOUND": true,
-					"ESCAPE_PASSAGE_DOWN_BUILT": false
-				},
-				"upgrades": {
-					"unlock_building_passage_staircase": false
-				}
-			},
-			"pages": [
-				"character_workerGeneric_story_escape_build_passage_01_p1"
-			]
-		},
-		"character_workerGeneric_story_escape_build_passage_02": {
-			"conditions": {
-				"storyFlags": {
-					"ESCAPE_PASSAGE_DOWN_FOUND": true,
-					"ESCAPE_PASSAGE_DOWN_BUILT": false
-				},
-				"upgrades": {
-					"unlock_building_passage_staircase": true
-				}
-			},
-			"pages": [
-				"character_workerGeneric_story_escape_build_passage_02_p1"
-			]
-
-		},
 		"character_workerGeneric_story_apocalypse_plan_ready_03": {
 			"conditions": {
 				"storyFlags": {
@@ -2044,6 +2015,34 @@
 			},
 			"pages": [
 				"character_workerGeneric_story_apocalypse_plan_ready_04_p1"
+			]
+		},
+		"character_workerGeneric_story_escape_build_passage_01": {
+			"conditions": {
+				"storyFlags": {
+					"ESCAPE_PASSAGE_DOWN_BUILT": false,
+					"ESCAPE_PASSAGE_DOWN_FOUND": true
+				},
+				"upgrades": {
+					"unlock_building_passage_staircase": false
+				}
+			},
+			"pages": [
+				"character_workerGeneric_story_escape_build_passage_01_p1"
+			]
+		},
+		"character_workerGeneric_story_escape_build_passage_02": {
+			"conditions": {
+				"storyFlags": {
+					"ESCAPE_PASSAGE_DOWN_BUILT": false,
+					"ESCAPE_PASSAGE_DOWN_FOUND": true
+				},
+				"upgrades": {
+					"unlock_building_passage_staircase": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_story_escape_build_passage_02_p1"
 			]
 		},
 		"character_workerRobotmaker_default_interact_01": {
@@ -2211,6 +2210,16 @@
 			]
 		},
 		"character_workerTrapper_default_interact_01": {
+			"conditions": {
+				"player": {
+					"position": {
+						"level": [
+							14,
+							-1
+						]
+					}
+				}
+			},
 			"pages": [
 				"character_workerTrapper_default_interact_01_p1"
 			]
@@ -4524,6 +4533,14 @@
 			]
 		},
 		"explorer_unique_gambler_interact_15": {
+			"conditions": {
+				"improvements": {
+					"temple": [
+						1,
+						-1
+					]
+				}
+			},
 			"pages": [
 				"explorer_unique_gambler_interact_15_p1"
 			]
@@ -4572,6 +4589,17 @@
 		},
 		"explorer_unique_gambler_story_find_spirits": {
 			"conditions": {
+				"explorer": {
+					"trust": 1
+				},
+				"player": {
+					"position": {
+						"level": [
+							-1,
+							8
+						]
+					}
+				},
 				"deity": false
 			},
 			"isUrgent": true,
