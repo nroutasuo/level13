@@ -101,7 +101,7 @@ define([
 				let result = "";
 				result += "<td>";
 				result += "<button class='action btn-icon action-move text-key movement-action-normal' id='" + normalID + "' action='" + normalAction + "' data-text-key='" + textKey + "'></button>";
-				result += "<button class='action btn-icon action-move text-key movement-action-grit' id='" + gritID + "' action='" + gritAction + "' data-text-key='" + textKey + "'></button>";
+				result += "<button class='action btn-icon action-move text-key movement-action-grit btn-warning' id='" + gritID + "' action='" + gritAction + "' data-text-key='" + textKey + "'></button>";
 				result += "</td>";
 				return result;
 			};

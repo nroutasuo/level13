@@ -1895,7 +1895,8 @@ body.dark li.item-with-count {
 body.dark .warning,
 body.dark .warning span,
 body.dark li.li-item-negative,
-body.dark .item-slot-lost .item-count {
+body.dark .item-slot-lost .item-count,
+body.dark .btn-warning {
   color: #e64646 !important;
 }
 body.dark hr.warning {
@@ -4548,7 +4549,8 @@ body.sunlit li.item-with-count {
 body.sunlit .warning,
 body.sunlit .warning span,
 body.sunlit li.li-item-negative,
-body.sunlit .item-slot-lost .item-count {
+body.sunlit .item-slot-lost .item-count,
+body.sunlit .btn-warning {
   color: #e64646 !important;
 }
 body.sunlit hr.warning {
