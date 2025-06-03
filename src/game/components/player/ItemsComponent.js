@@ -73,13 +73,13 @@ function (Ash, ItemVO, ItemConstants) {
 			log.w("Item to remove not found.");
 		},
 
-		discardItem: function (item, autoEquip) {
+		discardItem: function (item, isInCamp, autoEquip) {
 			if (!item) {
 				log.w("Trying to discard null item.");
 				return;
 			}
 			
-			if (!this.isItemDiscardable(item)) {
+			if (!this.isItemDiscardable(item, isInCamp)) {
 				log.w("Trying to discard un-discardable item.");
 				return;
 			}
@@ -92,12 +92,13 @@ function (Ash, ItemVO, ItemConstants) {
 			this.removeItem(item, autoEquip);
 		},
 
-		isItemDiscardable: function (item) {
+		isItemDiscardable: function (item, isInCamp) {
 			if (!item) return false;
 			if (!ItemConstants.isUnselectable(item)) return false;
 			switch (item.type) {
 				case ItemConstants.itemTypes.bag:
-					return this.getStrongestByType(item.type).id !== item.id;
+					if (this.getStrongestByType(item.type).id === item.id && this.getCountById(item.id, isInCamp) === 1) return false;
+					return true;
 
 				case ItemConstants.itemTypes.voucher:
 				case ItemConstants.itemTypes.note:
