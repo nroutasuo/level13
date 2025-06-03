@@ -324,6 +324,12 @@ define(['ash'], function (Ash) {
 				logMessage: "ui.log.tutorial_encounter_spring_message",
 				conditions: { sector: { spring: true } },
 			},
+			TUTORIAL_ENCOUNTER_SUNLIGHT: {
+				triggers: [ "change_position" ],
+				repeats: "NEVER",
+				logMessage: "ui.log.tutorial_encounter_sunlight_message",
+				conditions: { sunlit: true },
+			},
 			TUTORIAL_ENCOUNTER_INGREDIENT_SECTOR: {
 				triggers: [ "action_scout" ],
 				repeats: "NEVER",

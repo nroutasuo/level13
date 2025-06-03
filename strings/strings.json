@@ -2139,7 +2139,7 @@
             "tutorial_encounter_outpost_message": "There are few people living on this level. the camp will grow slower.",
             "tutorial_encounter_sector_enemies_message": "There are some hostile creatures here. scavenging is more risky.",
             "tutorial_encounter_spring_message": "There is a reliable source of water here.",
-            "tutorial_encounter_sunlight_message": "It takes some time for your eyes to adjust to the light.",
+            "tutorial_encounter_sunlight_message": "It takes some time for your eyes to adjust to the brightness.",
             "tutorial_feature_unlocked_bag_message": "Found a bag that allows carrying more stuff.",
             "tutorial_feature_unlocked_milestones_message": "The camp is small now, but it will grow. Milestones keep track of our achievements.",
             "tutorial_feature_unlocked_move_message": "Might be worthwhile to explore the surroundings.",
