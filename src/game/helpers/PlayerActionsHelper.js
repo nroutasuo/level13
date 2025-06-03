@@ -1574,8 +1574,8 @@ define([
 						if (requiredValue != currentValue) {
 							let busyDescription = PlayerActionConstants.getActionBusyDescription(action);
 							if (requiredValue) reason = "Not " + busyDescription;
-							else reason = "Busy " + busyDescription;
-							return { value: 0, reason: this.getDisabledReasonVO(reason, null, PlayerActionConstants.DISABLED_REASON_UPGRADE) };
+							else reason = "ui.actions.disabled_reason_busy";
+							return { value: 0, reason: this.getDisabledReasonVO(reason, busyDescription, PlayerActionConstants.DISABLED_REASON_UPGRADE) };
 						}
 					}
 				}
@@ -2625,6 +2625,12 @@ define([
 			} else if (action.indexOf("discard_") >= 0) {
 				// no need for description
 				return "";
+			} else if (action.indexOf("repair_") >= 0) {
+				// no need for description
+				return "";
+			} else if (action.indexOf("equip_") >= 0) {
+				// no need for description
+				return "";
 			} else if (action.indexOf("move_sector_") >= 0) {
 				// no need for description
 				return "";
@@ -2748,15 +2754,12 @@ define([
 
 			let actionKey = action;
 
-			switch (baseActionID) {
-				case "improve_in":
-					actionKey = baseActionID;
-					break;
-			}
-
-			if (action.indexOf("build_in") >= 0) actionKey = "build_in";
-			if (action.indexOf("build_out") >= 0) actionKey = "build_out";
-			if (action.indexOf("clear_debris_") >= 0) actionKey = "clear_debris";
+			if (action.indexOf("build_in") >= 0) 
+				actionKey = "build_in";
+			else if (action.indexOf("build_out") >= 0) 
+				actionKey = "build_out";
+			else 
+				actionKey = baseActionID;
 
 			return "game.actions." + actionKey + "_name";
 		},
