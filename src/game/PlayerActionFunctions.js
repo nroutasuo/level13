@@ -821,7 +821,7 @@ define(['ash',
 					found = true;
 					showResultPopup = true;
 					popupMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageUp, PositionConstants.DIRECTION_UP, sunlit) + " ";
-					logMsg += level == 13 ? "Found a hole in the ceiling leading to the passage above, but it's far too high to reach." : "Found a passage to the level above.";
+					logMsg += level == 13 ? "Found a hole in the ceiling leading to the level above, but it's far too high to reach." : "Found a passage to the level above.";
 				}
 
 				if (passagesComponent.passageDown && !GameGlobals.levelHelper.isPassageDownBuilt(level)) {
@@ -1950,7 +1950,7 @@ define(['ash',
 			gtag('event', 'build_camp_time', { event_category: 'game_time', event_label: campOrdinal, value: GameGlobals.gameState.playTime });
 			gtag('set', { 'max_camp': GameGlobals.gameState.numCamps });
 
-			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP, "Built a camp.", { visibility: LogConstants.MGS_VISIBILITY_LEVEL });
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP, "ui.log.built_camp_message", { visibility: LogConstants.MGS_VISIBILITY_LEVEL });
 			if (position.level == 15) {
 				GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "It will be difficult to trade resources with camps from below Level 14 from here.");
 			}
@@ -2004,7 +2004,7 @@ define(['ash',
 				var msg = TextConstants.getPassageRepairedMessage(passageType, direction, sectorPosVO, GameGlobals.gameState.numCamps);
 				this.buildImprovement(action, GameGlobals.playerActionsHelper.getImprovementNameForAction(action), sector);
 				this.buildImprovement(neighbourAction, GameGlobals.playerActionsHelper.getImprovementNameForAction(neighbourAction), neighbour, true);
-				GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_BUILT_PASSAGE, msg, { position: position, visibility: LogConstants.MGS_VISIBILITY_LEVEL });
+				GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_BUILT_PASSAGE, msg, { position: position, visibility: LogConstants.MSG_VISIBILITY_GLOBAL });
 			} else {
 				log.w("Couldn't find sectors for building passage.");
 				log.i(sector);
