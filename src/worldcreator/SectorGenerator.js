@@ -1763,6 +1763,7 @@ define([
 				let filter = sectorVO => this.filterSectorForLuxuryLocationType(sectorVO, locationType);
 				let options = { excludingFeature: excludedFeatures, excludedZones: lateZones, excludedZones: [ WorldConstants.ZONE_PASSAGE_TO_CAMP ], filter: filter };
 				let sector = WorldCreatorRandom.randomSectors(seed  + 773 + levelVO.level * 24 + i * 992, worldVO, levelVO, 1, 2, options)[0];
+				if (!sector) continue;
 				let localeType = this.getLocaleTypeForLuxuryResourceOnSector(seed, locationType, sector);
 				let locale = new LocaleVO(localeType, false, false);
 				locale.luxuryResource = resource;
@@ -2239,10 +2240,7 @@ define([
 			return sectorType;
 		},
 
-		filterSectorForLuxuryLocationType: function (sectorVO, luxuryLocationType) {
-			if (sectorVO.sectorType == SectorConstants.SECTOR_TYPE_SLUM) return false;
-			if (sectorVO.sectorType == SectorConstants.SECTOR_TYPE_PUBLIC) return false;
-			
+		filterSectorForLuxuryLocationType: function (sectorVO, luxuryLocationType) {			
 			switch (luxuryLocationType) {
 				case this.LUXURY_RESOURCE_LOCATION_TYPE_FARMABLE:
 					return !sectorVO.hazards.hasHazards();
