@@ -303,6 +303,47 @@ define([
 			let logComponent = this.playerPosNodes.head.entity.get(LogMessagesComponent);
 			logComponent.addMessage(id, messageTextVO, position, visibility);
 		},
+
+		isLogMessageVisible: function (messageVO) {
+			let playerPosition = this.playerPosNodes.head.position;
+			if (!playerPosition) return false;
+
+			if (!messageVO.position) return true;
+
+			if (messageVO.visibility == LogConstants.MSG_VISIBILITY_GLOBAL) {
+				return true;
+			}
+
+			if (messageVO.visibility == LogConstants.MSG_VISIBILITY_CAMP) {
+				return playerPosition.inCamp;
+			}
+
+			if (messageVO.visibility == LogConstants.MGS_VISIBILITY_LEVEL) {
+				return messageVO.position.level == playerPosition.level;
+			}
+
+			// default priority: depending on message position, either in specific camp or anywhere outside
+			if (messageVO.position.inCamp) {
+				return messageVO.position.inCamp == playerPosition.inCamp && messageVO.position.level == playerPosition.level;
+			} else {
+				return messageVO.position.inCamp == playerPosition.inCamp
+			}
+		},
+
+		getLastVisibileLogMessageTimestamp: function () {
+			let logComponent = this.playerPosNodes.head.entity.get(LogMessagesComponent);
+			let messages = [];
+			messages = messages.concat(logComponent.messages);
+
+			for (let i = messages.length - 1; i >= 0; i--) {
+				let messageVO = messages[i];
+				if (this.isLogMessageVisible(messageVO)) {
+					return messageVO.timestamp;
+				}
+			}
+
+			return 0;
+		},
 		
 		isReadyForExploration: function () {
 			if (this.getCurrentStamina() <= this.getCurrentStaminaWarningLimit()) {
@@ -712,7 +753,7 @@ define([
 			// addStat("Furthest away from camp", this.getGameStatHighScore("mostDistantSectorFromCampVisited"), GameGlobals.gameState.isFeatureUnlocked("camp"), GameConstants.gameStatUnits.steps);
 			// addStat("Lowest stamina when returning to camp", this.getGameStatHighScore("lowestStaminaReturnedToCampWith"), GameGlobals.gameState.isFeatureUnlocked("camp"));
 			addStat("Injuries received", this.getGameStatSimple("numInjuriesReceived"));
-			addStat("Explorer injuries received", this.getGameStatSimple("numExplorerInjuriesReceived"));
+			addStat("Explorer injuries received", this.getGameStatSimple("numExplorerInjuriesReceived"), GameGlobals.gameState.isFeatureUnlocked("explorers"));
 			addStat("Times rested outside", this.getGameStatSimple("numTimesRestedOutside"));
 			addStat("Times despaired", this.getGameStatKeyedSum("numTimesDespairedPerLevel"));
 			addStat("Most despairs on level", this.getGameStatHighScore("numTimesDespairedPerLevel"), GameGlobals.gameState.isFeatureUnlocked("levels"));

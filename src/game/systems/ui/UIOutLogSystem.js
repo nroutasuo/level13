@@ -109,30 +109,7 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 
 			if (!playerPosition) return;
 
-			let showMessage = function (message) {
-				if (!message.position) return true;
-
-				if (message.visibility == LogConstants.MSG_VISIBILITY_GLOBAL) {
-					return true;
-				}
-
-				if (message.visibility == LogConstants.MSG_VISIBILITY_CAMP) {
-					return playerPosition.inCamp;
-				}
-
-				if (message.visibility == LogConstants.MGS_VISIBILITY_LEVEL) {
-					return message.position.level == playerPosition.level;
-				}
-
-				// default priority: depending on message position, either in specific camp or anywhere outside
-				if (message.position.inCamp) {
-					return message.position.inCamp == playerPosition.inCamp && message.position.level == playerPosition.level;
-				} else {
-					return message.position.inCamp == playerPosition.inCamp
-				}
-			};
-
-			let shownMessages = messages.filter(m => showMessage(m));
+			let shownMessages = messages.filter(m => GameGlobals.playerHelper.isLogMessageVisible(m));
 
 			let newItems = UIList.update(this.logList, shownMessages);
 			let latestMessages = newItems.map(li => li.data).filter(m => !m.markedAsSeen && !m.loadedFromSave);

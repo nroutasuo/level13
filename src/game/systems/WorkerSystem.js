@@ -511,11 +511,14 @@ define([
 			if (!this.playerLocationNodes.head || !this.playerLocationNodes.head.position) return;
 			if (!GameGlobals.playerHelper.isAwake()) return;
 			if (GameGlobals.playerHelper.isInCamp()) return;
+
+			let timeStamp = new Date().getTime();
+
+			if (timeStamp - GameGlobals.playerHelper.getLastVisibileLogMessageTimestamp() < 3000) return;
 			
 			let playerLevelCamp = this.nearestCampNodes.head !== null ? this.nearestCampNodes.head.entity : null;
 			let inCampSector = playerLevelCamp !== null && playerLevelCamp.get(PositionComponent).sector === this.playerLocationNodes.head.position.sector;
 			
-			let timeStamp = new Date().getTime();
 			let log = timeStamp - this.lastPerksChangedTimestamp > this.msgFrequency;
 			if (log) {
 				let isThirsty = this.isPlayerThirsty();
@@ -541,6 +544,10 @@ define([
 			let hasPopulation = campNode.camp.population >= 1;
 
 			if (!hasPopulation) return;
+
+			let timeStamp = new Date().getTime();
+
+			if (timeStamp - GameGlobals.playerHelper.getLastVisibileLogMessageTimestamp() < 3000) return;
 
 			let isThirsty = this.isCampThirsty(campNode);
 			let isHungry = this.isCampHungry(campNode);
