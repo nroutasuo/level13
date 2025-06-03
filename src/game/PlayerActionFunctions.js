@@ -2633,7 +2633,8 @@ define(['ash',
 					
 				case "cache_metal":
 					let baseValue = itemConfig.configData.metalValue || 10;
-					let value = baseValue + Math.round(Math.random() * 10);
+					let variation = Math.min(baseValue / 4, 5);
+					let value = baseValue + MathUtils.randomIntBetween(-variation, variation);
 					let logMsg = { textKey: "ui.actions.use_cache_metal_message", textParams: { name: Text.addArticle(itemShortName), value: value } };
 					currentStorage.resources.addResource(resourceNames.metal, value);
 					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, logMsg);
