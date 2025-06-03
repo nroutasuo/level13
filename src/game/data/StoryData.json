@@ -97,16 +97,26 @@
                     "completeTrigger": "action_any",
                     "id": "before_vision",
                     "onStart": {
-                        "log": "story.stories.escape_start_message",
-                        "storyFlags": {
-                            "ESCAPE_SEARCHING_FOR_EXIT": true
-                        }
+                        "log": "story.stories.escape_start_message"
                     }
                 },
                 {
-                    "id": "before_camp",
+                    "id": "got_up",
                     "onStart": {
                         "log": "story.stories.escape_get_up_message"
+                    }
+                },
+                {
+                    "id": "determination",
+                    "startTrigger": "action_any",
+                    "startConditions": { 
+                        "vision": [ 30, -1 ]
+                    },
+                    "onStart": {
+                        "popup": "story.stories.escape_determination_start_message",
+                        "storyFlags": {
+                            "ESCAPE_SEARCHING_FOR_EXIT": true
+                        }
                     }
                 },
                 {
@@ -115,6 +125,7 @@
                     "onStart": {
                         "log": "story.stories.escape_camp_start_message"
                     },
+                    "startFromAny": true,
                     "startTrigger": "action_enter_camp"
                 },
                 {
@@ -156,6 +167,7 @@
                             "passageDown": true
                         }
                     },
+                    "startFromAny": true,
                     "startTrigger": "action_scout"
                 },
                 {
