@@ -1421,7 +1421,7 @@ define(['ash',
 				// if fled (either before fight or mid-fight)
 				playerActionFunctions.completeAction(action);
 				let fleeRewards = GameGlobals.playerActionResultsHelper.getResultVOByAction("flee");
-				let fleeMessages = { addToLog: false, logMsgSuccess: messages.msgFlee };
+				let fleeMessages = { addToLog: false, msgSuccess: messages.msgFlee };
 				playerActionFunctions.handleActionRewards("flee", fleeRewards, fleeMessages, successCallback, showResultPopup);
 				if (messages.addToLog && messages.msgFlee) GameGlobals.playerHelper.addLogMessage(logMsgId, messages.msgFlee);
 				if (failCallback) failCallback();
