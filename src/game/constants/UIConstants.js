@@ -869,8 +869,8 @@ define(['ash',
 			}
 		},
 
-		updateResourceIndicatorCallout: function (id, changeSources) {
-			var content = "";
+		updateResourceIndicatorCallout: function (id, name, changeSources) {
+			let content = "";
 			var source;
 			for (let i in changeSources) {
 				source = changeSources[i];
@@ -879,11 +879,15 @@ define(['ash',
 				}
 			}
 
+			let displayName = TextConstants.getResourceDisplayName(name);
+
 			if (content.length <= 0) {
-				content = "(no change)";
+				content = displayName + " (no change)";
+			} else {
+				content = displayName + "<br/>" + content;
 			}
 
-			this.updateCalloutContent(id, content);
+			this.updateCalloutContent(id,  content);
 		},
 		
 		getResourceAccumulationSourceText: function (source) {

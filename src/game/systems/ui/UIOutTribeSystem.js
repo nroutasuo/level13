@@ -438,7 +438,7 @@ define([
 					Math.abs(change) > 0.001,
 					false
 				);
-				UIConstants.updateResourceIndicatorCallout("#" + rowID + "-" + name, resourceAcc.getSources(name));
+				UIConstants.updateResourceIndicatorCallout("#" + rowID + "-" + name, name, resourceAcc.getSources(name));
 			}
 		},
 		

@@ -886,7 +886,7 @@ define([
 						now
 					);
 					if (showResourceAcc) {
-						UIConstants.updateResourceIndicatorCallout(elemIDCamp, showResourceAcc.getSources(name));
+						UIConstants.updateResourceIndicatorCallout(elemIDCamp, name, showResourceAcc.getSources(name));
 					}
 					this.previousShownCampResAmount[name] = currentAmount;
 				} else {
