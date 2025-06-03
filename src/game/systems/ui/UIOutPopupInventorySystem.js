@@ -202,7 +202,7 @@ define([
 			BagConstants.updateCapacity(bagComponent, rewards, resultNode.resources, playerAllItems);
 
 			var selectedCapacityPercent = bagComponent.selectedCapacity / bagComponent.totalCapacity * 100;
-			$("#inventory-popup-bar").data("progress-percent", selectedCapacityPercent);
+			$("#inventory-popup-bar").attr("data-progress-percent", selectedCapacityPercent);
 			$("#inventory-popup-bar .progress-label").text((Math.ceil( bagComponent.selectedCapacity * 10) / 10) + " / " + bagComponent.totalCapacity);
 
 			GameGlobals.uiFunctions.toggle(".inventory-selection-takeall", bagComponent.selectableCapacity > bagComponent.selectionStartCapacity);
