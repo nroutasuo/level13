@@ -1167,10 +1167,6 @@ define([
 				}
 			}
 
-			if (resultVO.getGainedInjuries().length > 0) {
-				div += "<p class='warning'>You got injured.</p>";
-			}
-
 			if (resultVO.gainedExplorerInjuries.length > 0) {
 				for (let i = 0; i < resultVO.gainedExplorerInjuries.length; i++) {
 					let explorerID = resultVO.gainedExplorerInjuries[i];
@@ -1179,10 +1175,23 @@ define([
 				}
 			}
 
-			if (resultVO.getGainedCurses().length > 0 ) {
-				let curse = resultVO.getGainedCurses()[0];
-				if (!GameGlobals.playerHelper.isPerkBlocked(curse.id)) {
+			for (let i = 0; i < resultVO.gainedPerks.length; i++) {
+				let perkVO = resultVO.gainedPerks[i];
+
+				if (perkVO.type == PerkConstants.perkTypes.injury) {
+					div += "<p class='warning'>You got injured.</p>";
+				}
+
+				if (perkVO.id == PerkConstants.perkIds.cursed) {
 					div += "<p class='warning'>You got cursed.</p>";
+				}
+
+				if (perkVO.id == PerkConstants.perkIds.stressed) {
+					div += "<p class='warning'>You got stressed.</p>";
+				}
+
+				if (perkVO.id == PerkConstants.perkIds.accomplished) {
+					div += "<p>You feel accomplished.</p>";
 				}
 			}
 
@@ -1346,8 +1355,24 @@ define([
 				messages.push({ id: LogConstants.MSG_ID_LOST_EXPLORER, text: "Lost " + resultVO.lostExplorers.length + " explorers.", addToPopup: true, addToLog: true });
 			}
 
-			if (resultVO.getGainedInjuries().length > 0) {
-				messages.push({ id: LogConstants.MSG_ID_GOT_INJURED, text: "Got injured.", addToPopup: true, addToLog: true });
+			for (let i = 0; i < resultVO.gainedPerks.length; i++) {
+				let perkVO = resultVO.gainedPerks[i];
+
+				if (perkVO.type == PerkConstants.perkTypes.injury) {
+					messages.push({ id: LogConstants.MSG_ID_GOT_INJURED, text: "Got injured.", addToPopup: true, addToLog: true });
+				}
+
+				if (perkVO.id == PerkConstants.perkIds.cursed) {
+					messages.push({ id: LogConstants.getUniqueID(), text: "Got cursed.", addToPopup: true, addToLog: true });
+				}
+
+				if (perkVO.id == PerkConstants.perkIds.stressed) {
+					messages.push({ id: LogConstants.getUniqueID(), text: "Got stressed.", addToPopup: true, addToLog: true });
+				}
+
+				if (perkVO.id == PerkConstants.perkIds.accomplished) {
+					messages.push({ id: LogConstants.getUniqueID(), text: "Feeling accomplished.", addToPopup: true, addToLog: true });
+				}
 			}
 
 			if (resultVO.gainedExplorerInjuries.length > 0) {
@@ -1356,10 +1381,6 @@ define([
 					let explorerVO = GameGlobals.playerHelper.getExplorerByID(explorerID);
 					messages.push({ id: LogConstants.getUniqueID(), text: explorerVO.name + " got injured.", addToPopup: true, addToLog: true });
 				}
-			}
-
-			if (resultVO.getGainedCurses().length > 0) {
-				messages.push({ id: LogConstants.MSG_ID_GOT_INJURED, text: "Got cursed.", addToPopup: true, addToLog: true });
 			}
 
 			if (resultVO.lostPerks.length > 0) {
