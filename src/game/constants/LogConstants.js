@@ -184,12 +184,6 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 				chance: 0.01,
 				message: "You need to find some way to stop the earthquakes."
 			},
-			"story_greenhouse_need_to_find_greenhouse_01": {
-				triggers: [ "change_position" ],
-				conditions: { inCamp: false, distanceToCamp: [ 2, -1 ], storyFlags: {  "GREENHOUSE_SEARCHING_FOR_CURE": true, "GREENHOUSE_FOUND": false } },
-				chance: 0.01,
-				message: "You need to find a Greenhouse."
-			},
 			"story_greenhouse_need_to_find_seeds_01": {
 				triggers: [ "change_position" ],
 				conditions: { inCamp: false, distanceToCamp: [ 2, -1 ], storyFlags: {  "GREENHOUSE_FOUND": true, "GREENHOUSE_RESTORED": false } },
