@@ -291,7 +291,7 @@ define(['ash',
 			// template takes precedence over forcedExplorerType at this stage (should have already picked a template with the forced type)
 			forcedExplorerType = template.explorerType ? template.explorerType : forcedExplorerType;
 
-			let possibleTypes = this.getAvailableAbilityTypes(source, campOrdinal, template.isRobot);
+			let possibleTypes = this.getAvailableAbilityTypes(source, campOrdinal, template.isRobot, template.isAnimal);
 			
 			if (forcedExplorerType) {
 				possibleTypes = possibleTypes.filter(t => this.getExplorerTypeForAbilityType(t) == forcedExplorerType);
@@ -372,14 +372,18 @@ define(['ash',
 			return result;
 		},
 		
-		getAvailableAbilityTypes: function (source, campOrdinal, isRobot) {
+		getAvailableAbilityTypes: function (source, campOrdinal, isRobot, isAnimal) {
+			if (isAnimal) return ExplorerConstants.abilityType.SCAVENGE_CAPACITY;
+
 			let result = [];
 
 			isRobot = source == ExplorerConstants.explorerSource.CRAFT || isRobot;
+			
 			for (let k in ExplorerConstants.abilityType) {
 				let abilityType = ExplorerConstants.abilityType[k];
 				let unlockCampOrdinal = this.getUnlockCampOrdinal(abilityType);
 				if (unlockCampOrdinal > campOrdinal) continue;
+				if (this.isAnimal(abilityType)) continue;
 				if (isRobot && !this.isValidRobotAbility(abilityType)) continue;
 				result.push(abilityType);
 			}
