@@ -72,6 +72,7 @@ define([
 		currentThemeTransitionTargetValue: null,
 
 		pendingResourceUpdateTime: null, // if not null, a resource update has been queued (can be used to trigger update immediately or after a delay)
+		pendingResourceBarUpdateTime: null, 
 		
 		SCAVENGE_BONUS_TYPES: [
 			{ itemBonusType: ItemConstants.itemBonusTypes.scavenge_general, displayName: "general", containerID: "scavenge-bonus-general" },
@@ -125,6 +126,7 @@ define([
 			this.elements.notificationLabel = $(".notification-player-bar .progress-label");
 
 			this.pendingResourceUpdateTime = null;
+			this.pendingResourceBarUpdateTime = null;
 			
 			this.updateLayoutMode();
 
@@ -339,6 +341,14 @@ define([
 				if (this.pendingResourceUpdateTime <= 0) {
 					this.updateResources();
 					this.pendingResourceUpdateTime = null;
+				}
+			}
+			
+			if (this.pendingResourceBarUpdateTime != null) {
+				this.pendingResourceBarUpdateTime -= time;
+				if (this.pendingResourceBarUpdateTime <= 0) {
+					this.updateResourcesBar();
+					this.pendingResourceBarUpdateTime = null;
 				}
 			}
 		},
@@ -792,6 +802,11 @@ define([
 			} else {
 				this.pendingResourceUpdateTime = Math.max(this.pendingResourceUpdateTime, delay);
 			}
+		},
+
+		
+		queueResourceBarUpdate: function () {
+			this.pendingResourceBarUpdateTime = 0;
 		},
 
 		// update visibility of various containers and other less often changing elements in the resources bar but not the resources amounts themselves
@@ -1419,7 +1434,7 @@ define([
 
 		onPlayerPositionChanged: function () {
 			// update these just for setting the right visibility on containers while the player is moving already
-			this.updateResourcesBar();
+			this.queueResourceBarUpdate();
 			this.updatePlayerStats();
 			this.updateTabVisibility();
 
@@ -1447,7 +1462,7 @@ define([
 		},
 		
 		onPlayerEnteredCamp: function () {
-			this.updateResourcesBar();
+			this.queueResourceBarUpdate();
 			this.updateCurrency();
 			this.queueResourceUpdate(0.25);
 			this.updateExplorers();
@@ -1455,7 +1470,7 @@ define([
 		},
 		
 		onPlayerLeftCamp: function () {
-			this.updateResourcesBar();
+			this.queueResourceBarUpdate();
 			this.updateCurrency();
 			this.updateItems();
 			this.updateExplorers();
@@ -1476,15 +1491,15 @@ define([
 		onInventoryChanged: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			this.queueResourceUpdate();
+			this.queueResourceBarUpdate();
 			this.updateCurrency();
 			this.updatePlayerStats();
-			this.updateResourcesBar();
 			this.updateItems(true);
 		},
 		
 		onEquipmentChanged: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
-			this.updateResourcesBar();
+			this.queueResourceBarUpdate();
 			this.updatePlayerStats();
 			this.updateItemStats();
 			this.refreshPerks();
@@ -1501,7 +1516,7 @@ define([
 		onPlayerActionCompleted: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			this.updatePlayerStats();
-			this.updateResourcesBar();
+			this.queueResourceBarUpdate();
 		},
 
 		onVisionChanged: function () {
@@ -1528,7 +1543,7 @@ define([
 		},
 		
 		onStorageCapacityChanged: function () {
-			this.updateResourcesBar();
+			this.queueResourceBarUpdate();
 		},
 		
 		onLevelTypeRevealed: function (level) {
@@ -1539,7 +1554,7 @@ define([
 		},
 
 		onImprovementBuilt: function () {
-			this.updateResourcesBar();
+			this.queueResourceBarUpdate();
 			this.queueResourceUpdate();
 		},
 		
@@ -1549,7 +1564,7 @@ define([
 		
 		onGameShown: function () {
 			this.updateTabVisibility();
-			this.updateResourcesBar();
+			this.queueResourceBarUpdate();
 			this.updateStaminaWarningLimit();
 			this.updateLocation();
 			this.updateHeaderTexts();
