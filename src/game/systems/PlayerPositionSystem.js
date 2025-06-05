@@ -231,7 +231,6 @@ define([
 			if (this.lastVisitedCampNodes.head && this.lastVisitedCampNodes.head.entity == entity) return;
 			if (this.lastVisitedCampNodes.head) this.lastVisitedCampNodes.head.entity.remove(LastVisitedCampComponent);
 			entity.add(new LastVisitedCampComponent());
-			log.i("updateLastVisitedCamp: " + entity.get(PositionComponent));
 		},
 
 		revealVisitedSectorsNeighbours: function () {
@@ -313,14 +312,12 @@ define([
 		},
 
 		handleNewSector: function (sectorEntity, isNew) {
-			let previousSectorEntity = this.previousLocation;
 			let statusComponent = sectorEntity.get(SectorStatusComponent);
 			
 			sectorEntity.remove(RevealedComponent);
 			statusComponent.visited = true;
 
 			let sectorPos = sectorEntity.get(PositionComponent);
-			let levelCampOrdinal = GameGlobals.gameState.getCampOrdinal(sectorPos.level);
 			let isGround = this.isGroundLevel(sectorPos.level);
 
 			this.visitedSectorsPendingRevealNeighbours.push(sectorEntity);
@@ -329,26 +326,48 @@ define([
 				GameGlobals.gameState.numVisitedSectors++;
 				GameGlobals.playerActionFunctions.unlockFeature("sectors");
 				if (isGround) GameGlobals.playerActionFunctions.unlockFeature("ground");
+				this.logNewSector(sectorEntity);
 				GlobalSignals.sectorVisitedSignal.dispatch();
 			}
+		},
 
-			if (isNew && !GameGlobals.levelHelper.isLevelCampable(sectorPos.level) && levelCampOrdinal < 6) {
+		logNewSector: function (sectorEntity) {
+			let sectorPos = sectorEntity.get(PositionComponent);
+			let featuresComponentCurrent = sectorEntity.get(SectorFeaturesComponent);
+
+			let previousSectorEntity = this.previousLocation;
+
+			let levelCampOrdinal = GameGlobals.gameState.getCampOrdinal(sectorPos.level);
+			let isLevelCampable = GameGlobals.levelHelper.isLevelCampable(sectorPos.level);
+
+			let isEarlyZone = featuresComponentCurrent.isEarlyZone();
+			
+			let isSearchingForGreenHouse = 
+				GameGlobals.gameState.getStoryFlag(StoryConstants.flags.GREENHOUSE_SEARCHING_FOR_CURE) 
+				&& !GameGlobals.gameState.getStoryFlag(StoryConstants.flags.GREENHOUSE_FOUND);
+
+			if (!isLevelCampable && levelCampOrdinal < 6) {
 				let levelSectors = GameGlobals.levelHelper.getSectorsByLevel(sectorPos.level);
 				let levelVisitedSectors = levelSectors.filter(s => GameGlobals.sectorHelper.isVisited(s));
 				if (levelVisitedSectors.length == 15) {
 					this.addLogMessage(LogConstants.getUniqueID(), "Another inhospitable street. There won't be a place for a camp on this level.");
+					return;
 				}
 			}
 			
-			if (isNew && previousSectorEntity != null && previousSectorEntity != sectorEntity && GameGlobals.levelHelper.isLevelCampable(sectorPos.level)) {
+			if (previousSectorEntity != null && previousSectorEntity != sectorEntity && isLevelCampable) {
 				let featuresComponentPrevious = previousSectorEntity.get(SectorFeaturesComponent);
-				let featuresComponentCurrent = sectorEntity.get(SectorFeaturesComponent);
 				
 				let isPreviousEarlyZone = featuresComponentPrevious.isEarlyZone();
-				let isEarlyZone = featuresComponentCurrent.isEarlyZone();
 				if (isPreviousEarlyZone && !isEarlyZone && !GameGlobals.playerHelper.isAffectedByHazardAt(sectorEntity)) {
 					this.addLogMessage(LogConstants.MSG_ID_ENTER_OUTSKIRTS, "Entering the outskirts.");
+					return;
 				}
+			}
+			
+			if (!isEarlyZone && isSearchingForGreenHouse && Math.random() < 0.01) {
+				this.addLogMessage(LogConstants.getUniqueID(), "Need to find a Greenhouse.");
+				return;
 			}
 		},
 
