@@ -368,9 +368,13 @@ define([
 			if (!itemVO.equippable) return false;
 
 			// if the player already has one, equipped or not -> obsolete
-			var owned = itemsComponent.getUnique(inCamp);
+			let owned = itemsComponent.getUniqueByIDAndState(inCamp);
 			for (let j = 0; j < owned.length; j++) {
-				if (!owned[j].broken && owned[j].id === itemVO.id) return true;
+				let ownedItem = owned[j];
+				if (ownedItem.broken) continue;
+				let ownedQuality = ItemConstants.getItemQuality(ownedItem);
+				if (ownedQuality == ItemConstants.itemQuality.low) continue;
+				if (ownedItem.id === itemVO.id) return true;
 			}
 			
 			// if the player has a better item of same type -> obsolete

@@ -301,7 +301,15 @@ function (Ash, ItemVO, ItemConstants) {
 			return all.sort(this.itemSortFunction);
 		},
 
-		getUnique: function (includeNotCarried) {
+		getUniqueByID: function (includeNotCarried) {
+			return this.getUnique(includeNotCarried, itemVO => itemVO.id);
+		},
+
+		getUniqueByIDAndState: function (includeNotCarried) {
+			return this.getUnique(includeNotCarried, itemVO => itemVO.id + (itemVO.broken ? "_b" : "") + ItemConstants.getItemQuality(itemVO));
+		},
+
+		getUnique: function (includeNotCarried, getID) {
 			let result = [];
 			let resultMap = {};
 
@@ -309,7 +317,7 @@ function (Ash, ItemVO, ItemConstants) {
 				for( let i = 0; i < this.items[key].length; i++) {
 					let item = this.items[key][i];
 					if (includeNotCarried || item.carried) {
-						var itemKey = item.id + (item.broken ? "_b" : "");
+						var itemKey = getID(item);	
 						if (resultMap[itemKey]) {
 							resultMap[itemKey] = resultMap[itemKey] + 1;
 						} else {

@@ -17,7 +17,6 @@ define([
 		itemNodes: null,
 
 		craftableItemDefinitions: null,
-		inventoryItemsBag: [],
 
 		constructor: function () {
 			this.elements = {};
@@ -243,7 +242,8 @@ define([
 		},
 
 		updateItems: function () {
-			this.updateItemLists();
+			this.updateItemSlots();
+			this.updateItemList();
 			this.updateItemComparisonIndicators();
 		},
 
@@ -432,66 +432,49 @@ define([
 			});
 		},
 
-		updateItemLists: function () {
-			var itemsComponent = this.itemNodes.head.items;
-			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
-			var items = itemsComponent.getUnique(inCamp);
+		updateItemList: function () {
+			let itemsComponent = this.itemNodes.head.items;
+			let inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
 
-			this.updateItemSlot(ItemConstants.itemTypes.light, null);
-			this.updateItemSlot(ItemConstants.itemTypes.weapon, null);
-			this.updateItemSlot(ItemConstants.itemTypes.clothing_over, null);
-			this.updateItemSlot(ItemConstants.itemTypes.clothing_upper, null);
-			this.updateItemSlot(ItemConstants.itemTypes.clothing_lower, null);
-			this.updateItemSlot(ItemConstants.itemTypes.clothing_head, null);
-			this.updateItemSlot(ItemConstants.itemTypes.clothing_hands, null);
-			this.updateItemSlot(ItemConstants.itemTypes.shoes, null);
-			this.updateItemSlot(ItemConstants.itemTypes.bag, null);
+			let items = itemsComponent.getAll(inCamp);
 
-			items.sort(UIConstants.sortItemsByType);
-			this.inventoryItemsBag = [];
+			let getDisplayItemID = (itemVO) => itemVO.id + "_" + (itemVO.broken ? 1 : 0) + "_" + ItemConstants.getItemQuality(itemVO);
+
+			let displayItems = [];
+			let displayItemCounts = {}; // display id, count
 
 			$("#bag-items").empty();
+
 			for (let i = 0; i < items.length; i++) {
-				let item = items[i];
-				// TODO less hacky fix for the fact that getUnique doesn't prefer equipped items (could return unequipped instance even when an equipped one exists)
-				let equipped = itemsComponent.getEquipped(item.type);
-				let isEquipped = equipped && equipped.length > 0 && equipped[0].id == item.id && equipped[0].broken == item.broken;
-				let count = itemsComponent.getCount(item, inCamp);
-				let canDiscard = itemsComponent.isItemDiscardable(item, inCamp);
-				let canRepair = this.isRepairable(item);
-				let options = { canEquip: false, isEquipped: item.equipped, canUnequip: false, canDiscard: canDiscard, canUse: item.useable, canRepair: canRepair };
+				let itemVO = items[i];
+				if (itemVO.equipped) continue;
+				let displayID = getDisplayItemID(itemVO);
+				if (displayItemCounts[displayID]) {
+					displayItemCounts[displayID]++;
+				} else {
+					displayItemCounts[displayID] = 1;
+					displayItems.push(itemVO);
+				}
+			}
 
-				switch (item.type) {
-					case ItemConstants.itemTypes.light:
-					case ItemConstants.itemTypes.weapon:
-					case ItemConstants.itemTypes.clothing_over:
-					case ItemConstants.itemTypes.clothing_upper:
-					case ItemConstants.itemTypes.clothing_lower:
-					case ItemConstants.itemTypes.clothing_head:
-					case ItemConstants.itemTypes.clothing_hands:
-					case ItemConstants.itemTypes.shoes:
-					case ItemConstants.itemTypes.bag:
-						let showCount = count;
-						let canEquip = !isEquipped;
-						if (isEquipped) {
-							this.updateItemSlot(item.type, item);
-							showCount = count - 1;
-						}
-						if (showCount > 0) {
-							options.canEquip = canEquip;
-							var smallSlot = UIConstants.getItemSlot(itemsComponent, item, showCount, false, false, true, options, "switch-bag");
-							$("#bag-items").append(smallSlot);
-							this.inventoryItemsBag.push(item);
-						}
-						break;
+			displayItems.sort(UIConstants.sortItemsByType);
 
+			for (let i = 0; i < displayItems.length; i++) {
+				let itemVO = displayItems[i];
+				let displayID = getDisplayItemID(itemVO);
+				let count = displayItemCounts[displayID];
+
+				let canDiscard = itemsComponent.isItemDiscardable(itemVO, inCamp);
+				let canRepair = this.isRepairable(itemVO);
+				let options = { canEquip: false, isEquipped: false, canUnequip: false, canDiscard: canDiscard, canUse: itemVO.useable, canRepair: canRepair };
+
+				switch (itemVO.type) {
 					case ItemConstants.itemTypes.uniqueEquipment:
 						break;
-
 					default:
-						var smallSlot = UIConstants.getItemSlot(itemsComponent, item, count, false, false, true, options, "switch-bag");
+						options.canEquip = itemVO.equippable;
+						let smallSlot = UIConstants.getItemSlot(itemsComponent, itemVO, count, false, false, true, options, "switch-bag");
 						$("#bag-items").append(smallSlot);
-						this.inventoryItemsBag.push(item);
 						break;
 				}
 			}
@@ -509,12 +492,26 @@ define([
 				});
 			});
 
-			GameGlobals.uiFunctions.toggle($("#bag-items-empty"), this.inventoryItemsBag.length === 0);
+			GameGlobals.uiFunctions.toggle($("#bag-items-empty"), displayItems.length === 0);
 
 			GameGlobals.uiFunctions.generateInfoCallouts("#bag-items");
 			GameGlobals.uiFunctions.generateInfoCallouts("#container-equipment-slots");
 			GameGlobals.uiFunctions.createButtons("#bag-items");
 			GameGlobals.uiFunctions.createButtons("#container-equipment-slots");
+		},
+
+		updateItemSlots: function () {
+			let itemsComponent = this.itemNodes.head.items;
+
+			this.updateItemSlot(ItemConstants.itemTypes.light, itemsComponent.getEquipped(ItemConstants.itemTypes.light)[0] || null);
+			this.updateItemSlot(ItemConstants.itemTypes.weapon, itemsComponent.getEquipped(ItemConstants.itemTypes.weapon)[0] || null);
+			this.updateItemSlot(ItemConstants.itemTypes.clothing_over, itemsComponent.getEquipped(ItemConstants.itemTypes.clothing_over)[0] || null);
+			this.updateItemSlot(ItemConstants.itemTypes.clothing_upper, itemsComponent.getEquipped(ItemConstants.itemTypes.clothing_upper)[0] || null);
+			this.updateItemSlot(ItemConstants.itemTypes.clothing_lower, itemsComponent.getEquipped(ItemConstants.itemTypes.clothing_lower)[0] || null);
+			this.updateItemSlot(ItemConstants.itemTypes.clothing_head, itemsComponent.getEquipped(ItemConstants.itemTypes.clothing_head)[0] || null);
+			this.updateItemSlot(ItemConstants.itemTypes.clothing_hands, itemsComponent.getEquipped(ItemConstants.itemTypes.clothing_hands)[0] || null);
+			this.updateItemSlot(ItemConstants.itemTypes.shoes, itemsComponent.getEquipped(ItemConstants.itemTypes.shoes)[0] || null);
+			this.updateItemSlot(ItemConstants.itemTypes.bag, itemsComponent.getEquipped(ItemConstants.itemTypes.bag)[0] || null);
 		},
 
 		updateItemSlot: function (itemType, itemVO) {
@@ -774,9 +771,9 @@ define([
 		},
 		
 		isStatIncreaseAvailable: function () {
-			var itemsComponent = this.itemNodes.head.items;
-			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
-			var items = itemsComponent.getUnique(inCamp);
+			let itemsComponent = this.itemNodes.head.items;
+			let inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
+			let items = itemsComponent.getUniqueByIDAndState(inCamp);
 			for (let i = 0; i < items.length; i++) {
 				var item = items[i];
 				if (item.equipped) continue;
@@ -820,7 +817,7 @@ define([
 		getCarriedItems: function () {
 			let itemsComponent = this.itemNodes.head.items;
 			let inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
-			return itemsComponent.getUnique(inCamp);
+			return itemsComponent.getUniqueByIDAndState(inCamp);
 		},
 		
 		getCraftableItemDefinitionsList: function () {

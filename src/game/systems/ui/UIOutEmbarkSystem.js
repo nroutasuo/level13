@@ -212,9 +212,10 @@ define([
 		regenrateEmbarkItems: function () {
 			$("#embark-items").empty();
 			let itemsComponent = this.playerPosNodes.head.entity.get(ItemsComponent);
-			let uniqueItems = itemsComponent.getUnique(true);
+			let uniqueItems = itemsComponent.getUniqueByID(true);
 			uniqueItems = uniqueItems.sort(UIConstants.sortItemsByType);
 			uniqueItems = uniqueItems.filter(item => !item.broken);
+
 			for (let i = 0; i < uniqueItems.length; i++) {
 				let item = uniqueItems[i];
 				let itemName = ItemConstants.getItemDisplayName(item);

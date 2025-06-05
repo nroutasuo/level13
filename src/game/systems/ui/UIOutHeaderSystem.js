@@ -599,7 +599,7 @@ define([
 			if (inCamp) return;
 
 			let itemsComponent = this.playerStatsNodes.head.items;
-			let items = itemsComponent.getUnique(inCamp);
+			let items = itemsComponent.getUniqueByID(inCamp);
 			
 			if (forced || items.length !== this.lastItemsUpdateItemCount) {
 				$("ul.list-header-items").empty();

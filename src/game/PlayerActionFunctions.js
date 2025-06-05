@@ -529,8 +529,8 @@ define(['ash',
 		},
 
 		updateCarriedItems: function (selectedItems) {
-			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-			var allItems = itemsComponent.getAll(true);
+			let itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
+			let allItems = itemsComponent.getAll(true);
 			for (let i = 0; i < allItems.length; i++) {
 				var item = allItems[i];
 				if (item.equipped) {
