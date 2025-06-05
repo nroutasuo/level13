@@ -72,7 +72,7 @@ define([
 		updateBubble: function () {
 			var completedBlueprintsNum = Math.max(0, this.getCurrentCompletableCount());
 			var newBlueprintsNum = this.numCurrentNewBlueprints;
-			var upgradesNum = this.numCurrentResearchableUpgrades - this.numShownResearchableUpgrades;
+			var upgradesNum = Math.max(0, this.numCurrentResearchableUpgrades - this.numShownResearchableUpgrades);
 
 			if (this.tribeNodes.head.upgrades.boughtUpgrades.length > 0) {
 				GameGlobals.gameState.markSeenTab(GameGlobals.uiFunctions.elementIDs.tabs.upgrades);

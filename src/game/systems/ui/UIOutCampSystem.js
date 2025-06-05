@@ -196,7 +196,7 @@
 				buildingNum = this.availableBuildingCount - this.lastShownAvailableBuildingCount;
 			}
 			
-			let eventNum = this.currentEvents - this.lastShownEvents;
+			let eventNum = Math.max(0, this.currentEvents - this.lastShownEvents);
 			let visitorNum = GameGlobals.campHelper.hasNewEvent(sector, OccurrenceConstants.campOccurrenceTypes.visitor) ? 1 : 0;
 
 			let freePopulation = Math.max(0, campComponent.getFreePopulation());
