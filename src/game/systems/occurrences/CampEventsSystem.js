@@ -509,11 +509,14 @@ define([
 					
 				case OccurrenceConstants.campOccurrenceTypes.recruit:
 					let hasPendingExplorer = campNode.camp.pendingRecruits.length > 0;
+					let hasInn = campNode.improvements.getCount(improvementNames.inn) > 0;
 					let explorer = hasPendingExplorer ? campNode.camp.pendingRecruits.shift() : this.getRandomExplorer(campNode, 0.2);
 					explorer.meetCampOrdinal = GameGlobals.gameState.numCamps;
 					let isFoundAsReward = hasPendingExplorer && explorer.source != ExplorerConstants.explorerSource.EVENT;
 					campNode.entity.add(new RecruitComponent(explorer, isFoundAsReward));
-					logMsg = isFoundAsReward ? "Explorer met when exploring is waiting at the inn." : "A visitor arrives at the Inn. ";
+					
+					let building = hasInn ? "the inn" : "the camp";
+					logMsg = isFoundAsReward ? "Explorer met when exploring is waiting at " + building + "." : "A visitor arrives at " + building + ".";
 					GameGlobals.playerActionFunctions.unlockFeature("explorers");
 					if (hasPendingExplorer) {
 						duration = OccurrenceConstants.EVENT_DURATION_INFINITE;
