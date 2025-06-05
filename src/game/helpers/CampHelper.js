@@ -740,8 +740,10 @@ define([
 					sellResources.addResource(resourceNames.herbs, minResAmount + Math.random() * randResAmount);
 					buyResources.push(resourceNames.herbs);
 					if (unlockedResources.medicine && Math.random() < 0.75) {
-						name = "medicine trader";
-						sellResources.addResource(resourceNames.medicine, minResAmount + Math.random() * randResAmount);
+						if (campOrdinal > 8) {
+							name = "medicine trader";
+							sellResources.addResource(resourceNames.medicine, minResAmount + Math.random() * randResAmount);
+						}
 						buyResources.push(resourceNames.medicine);
 					}
 					if (traderLevel > 1 && Math.random() < 0.1 * traderLevel) {
