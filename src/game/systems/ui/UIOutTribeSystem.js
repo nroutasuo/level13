@@ -312,6 +312,7 @@ define([
 			rowHTML += "<td class='camp-overview-robots list-amount hide-in-small-layout nowrap'><span class='value'></span><span class='change-indicator'></span></td>";
 			rowHTML += "<td class='camp-overview-reputation list-amount hide-in-small-layout nowrap'><span class='value'></span><span class='change-indicator'></span></td>";
 			rowHTML += "<td class='camp-overview-raid list-amount hide-in-small-layout'><span class='value'></span></span></td>";
+			rowHTML += "<td class='camp-overview-disease list-amount hide-in-small-layout'><span class='value'></span></span></td>";
 			rowHTML += "<td class='camp-overview-storage list-amount'></td>";
 			rowHTML += "<td class='camp-overview-production'>";
 			for(let key in resourceNames) {
@@ -406,6 +407,15 @@ define([
 			var raidWarning = raidDanger > CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
 			$("#camp-overview tr#" + rowID + " .camp-overview-raid .value").text(UIConstants.roundValue(raidDanger * 100) + "%");
 			$("#camp-overview tr#" + rowID + " .camp-overview-raid .value").toggleClass("warning", raidWarning);
+
+			let storage = GameGlobals.resourcesHelper.getCurrentCampStorage(node.entity);
+			let hasHerbs = storage.resources.getResource(resourceNames.herbs) > 0;
+			let hasMedicine = storage.resources.getResource(resourceNames.medicine) > 0;
+			let apothecaryLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("apothecary", this.tribeUpgradesNodes.head.upgrades);
+			let diseaseChance = OccurrenceConstants.getDiseaseOutbreakChance(camp.population, hasHerbs, hasMedicine, apothecaryLevel);
+			let diseaseWarning = diseaseChance > CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
+			$("#camp-overview tr#" + rowID + " .camp-overview-disease .value").text(UIConstants.roundValue(diseaseChance * 100) + "%");
+			$("#camp-overview tr#" + rowID + " .camp-overview-disease .value").toggleClass("warning", diseaseWarning);
 			
 			var hasTradePost = improvements.getCount(improvementNames.tradepost) > 0;
 			var storageText = resources.storageCapacity;
