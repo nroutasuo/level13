@@ -20,6 +20,8 @@ define([
 		
 		explorerSlotElementsByType: {},
 
+		isPendingExplorerStatusUpdate: false,
+
 		constructor: function () {
 			this.initElements();
 			return this;
@@ -74,6 +76,10 @@ define([
 		update: function (time) {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			this.updateBubble();
+			if (this.isPendingExplorerStatusUpdate) {
+				this.updateExplorersStatus();
+				this.isPendingExplorerStatusUpdate = false;
+			}
 		},
 		
 		refresh: function () {
@@ -94,6 +100,7 @@ define([
 			GameGlobals.uiFunctions.toggle($("#tab-explorers-section-unselected"), inCamp);
 			
 			this.updateExplorers();
+			this.updateExplorersStatus();
 			this.refreshRecruits();
 		},
 		
@@ -241,73 +248,65 @@ define([
 				$container.append(UIConstants.getExplorerDivWithOptions(explorer, true, inCamp, questTextKey, isForced));
 			}
 		},
-		
-		updateComparisonIndicators: function () {
-			let explorersComponent = this.playerStatsNodes.head.explorers;
-			
-			$("#list-explorers .npc-container").each(function () {
-				let id = $(this).attr("data-explorerid");
-				let explorer = explorersComponent.getExplorerByID(id);
-				let comparison = explorersComponent.getExplorerComparison(explorer);
-				let isSelected = explorer && explorer.inParty == true;
-				let isValidComparison = comparison != null;
-				
-				let indicator = $(this).find(".item-comparison-indicator");
-				
-				$(indicator).toggleClass("indicator-equipped", isSelected);
-				$(indicator).toggleClass("indicator-increase", !isSelected && isValidComparison && comparison > 0);
-				$(indicator).toggleClass("indicator-even", !isSelected && isValidComparison && comparison == 0);
-				$(indicator).toggleClass("indicator-decrease", !isSelected && isValidComparison && comparison < 0);
-				$(indicator).toggleClass("indicator-unique", !isSelected && !isValidComparison);
-			});
-		},
 
-		updateDialogueIndicators: function () {
-			let explorersComponent = this.playerStatsNodes.head.explorers;
-			let sys = this;
-			
-			$("#container-tab-two-explorers .npc-container").each(function () {
-				let id = $(this).attr("data-explorerid");
-				let explorer = explorersComponent.getExplorerByID(id);
-				
-				let indicator = $(this).find(".npc-dialogue-indicator");
-
-				let isUrgent = sys.hasExplorerUrgentDialogue(explorer);
-				
-				$(indicator).toggleClass("indicator-disabled", !isUrgent);
-				$(indicator).toggleClass("indicator-urgent", isUrgent);
-			});
-		},
-
-		updataExplorersBubble: function () {
+		updateExplorersStatus: function () {
+			let inCamp = GameGlobals.playerHelper.isInCamp();
 			let explorersComponent = this.playerStatsNodes.head.explorers;
 			let sys = this;
 
 			let forcedExplorerID = GameGlobals.explorerHelper.getForcedExplorerID();
 			
+			// all explorers
 			$("#container-tab-two-explorers .npc-container").each(function () {
 				let id = $(this).attr("data-explorerid");
-				let explorer = explorersComponent.getExplorerByID(id);
-				if (!explorer) return;
+				let explorerVO = explorersComponent.getExplorerByID(id);
 
-				let hasUrgentDialogue = sys.hasExplorerUrgentDialogue(explorer);
-				let isInjuredInParty = explorer.injuredTimer >= 0 && explorer.inParty;
-				let isForced = explorer.id == forcedExplorerID && !explorer.inParty;
+				if (!explorerVO) return;
 
+				let isSelected = explorerVO && explorerVO.inParty == true;
+				let questTextKey = sys.getQuestTextKey(explorerVO);
+				let isForced = explorerVO.id == forcedExplorerID;
+				let isInjuredInParty = explorerVO.injuredTimer >= 0 && explorerVO.inParty;
+
+				let hasUrgentDialogue = sys.hasExplorerUrgentDialogue(explorerVO, true);
+
+				explorerVO.hasUrgentDialogue = hasUrgentDialogue;
+				
+				// comparison
+				let comparison = explorersComponent.getExplorerComparison(explorerVO);
+				let isValidComparison = comparison != null;
+				let comparisonIndicator = $(this).find(".item-comparison-indicator");				
+				$(comparisonIndicator).toggleClass("indicator-equipped", isSelected);
+				$(comparisonIndicator).toggleClass("indicator-increase", !isSelected && isValidComparison && comparison > 0);
+				$(comparisonIndicator).toggleClass("indicator-even", !isSelected && isValidComparison && comparison == 0);
+				$(comparisonIndicator).toggleClass("indicator-decrease", !isSelected && isValidComparison && comparison < 0);
+				$(comparisonIndicator).toggleClass("indicator-unique", !isSelected && !isValidComparison);
+				
+				// dialogue
+				let dialogueIndicator = $(this).find(".npc-dialogue-indicator");	
+				$(dialogueIndicator).toggleClass("indicator-disabled", !hasUrgentDialogue);
+				$(dialogueIndicator).toggleClass("indicator-urgent", hasUrgentDialogue);
+
+				// quest
+				let questIndicator = $(this).find(".npc-quest-indicator");
+				$(questIndicator).toggleClass("hidden", questTextKey == null);
+
+				// callout
+				let calloutContent = UIConstants.getExplorerCallout(explorerVO, true, inCamp, questTextKey, isForced);
+				UIConstants.updateCalloutContent($(this), calloutContent)
+
+				// bubble
 				let hasBubble = hasUrgentDialogue || isInjuredInParty || isForced;
-				
-				let indicator = $(this).find(".bubble");
-				
-				$(indicator).toggleClass("hidden", !hasBubble);
+				let bubble = $(this).find(".bubble");
+				$(bubble).toggleClass("hidden", !hasBubble);
 			});
 		},
 
-		hasExplorerUrgentDialogue: function (explorerVO) {
-			if (!explorerVO) {
-				debugger 
-				return false;
-			}
-			return ValueCache.getValue("ExplorerHasUrgentDialogue-" + explorerVO.id, 10, GameGlobals.gameState.lastActionTimestamp, () => {
+		hasExplorerUrgentDialogue: function (explorerVO, skipCache) {
+			if (!explorerVO) return false;
+			let timestamp = GameGlobals.gameState.lastActionTimestamp;
+			if (skipCache) timestamp = new Date().getTime();
+			return ValueCache.getValue("ExplorerHasUrgentDialogue-" + explorerVO.id, 10, timestamp, () => {
 				let status = GameGlobals.dialogueHelper.getExplorerDialogueStatus(explorerVO, DialogueConstants.dialogueSettings.interact);
 				return status == DialogueConstants.STATUS_URGENT || status == DialogueConstants.STATUS_FORCED;
 			});
@@ -408,6 +407,7 @@ define([
 		},
 
 		getQuestTextKey: function (explorerVO) {
+			if (!explorerVO) return null;
 			let storyID = GameGlobals.storyHelper.getExplorerQuestStory(explorerVO);
 			if (!storyID) return null;
 			return "story.stories." + storyID + "_quest_description";
@@ -424,28 +424,22 @@ define([
 		onTabChanged: function () {
 			if (GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.explorers) {
 				this.refresh();
-				this.updateComparisonIndicators();
-				this.updateDialogueIndicators();
-				this.updataExplorersBubble();
 			}
 		},
 		
 		onExplorersChanged: function () {
 			this.updateExplorers();
-			this.updateComparisonIndicators();
-			this.updateDialogueIndicators();
-			this.updataExplorersBubble();
 			this.highlightExplorerType(null);
+
+			this.isPendingExplorerStatusUpdate = true;
 		},
 
 		onActionCompleted: function () {
-			this.updateDialogueIndicators();
-			this.updataExplorersBubble();
+			this.isPendingExplorerStatusUpdate = true;
 		},
 
 		onDialogueCompleted: function () {
-			this.updateDialogueIndicators();
-			this.updataExplorersBubble();
+			this.isPendingExplorerStatusUpdate = true;
 		}
 	
 	});

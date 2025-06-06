@@ -259,9 +259,7 @@ define(['ash',
 				div += "<img class='stat-icon img-themed' src='" + healIconDefault + "' data-src-sunlit='" + healIconSunlit + "' alt='healing'/>";
 			}
 
-			if (questTextKey) {
-				div += "<div class='npc-quest-indicator'></div>";
-			}
+			div += "<div class='npc-quest-indicator hidden'></div>";
 
 			div += "<div class='bubble hidden'>!</div>";
 			

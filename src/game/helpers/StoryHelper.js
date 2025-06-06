@@ -1,11 +1,12 @@
 define(['ash', 
 	'utils/ValueCache', 
 	'game/GameGlobals', 
+	'game/constants/LogConstants', 
 	'game/constants/StoryConstants', 
 	'game/constants/WorldConstants', 
 	'game/constants/PlayerActionConstants',
 	'game/components/player/ExplorersComponent',
-], function (Ash, ValueCache, GameGlobals, StoryConstants, WorldConstants, PlayerActionConstants, ExplorersComponent) {
+], function (Ash, ValueCache, GameGlobals, LogConstants, StoryConstants, WorldConstants, PlayerActionConstants, ExplorersComponent) {
 		
 		let StoryHelper = Ash.Class.extend({
 			
@@ -71,6 +72,8 @@ define(['ash',
 			},
 
 			getExplorerQuestStory: function (explorerVO) {
+				if (!explorerVO) return null;
+				
 				let storyIDs = this.getExplorerQuestStories(explorerVO);
 
 				if (storyIDs.length == 0) return null;
@@ -84,6 +87,7 @@ define(['ash',
 			},
 
 			getExplorerQuestStories: function (explorerVO) {
+				if (!explorerVO) return [];
 				let explorersComponent = GameGlobals.playerHelper.getPlayerEntity().get(ExplorersComponent);
 				let storyIDs = [];
 
@@ -112,6 +116,14 @@ define(['ash',
 				let explorerID = explorerVO.id;
 				if (!explorersComponent.quests[storyID]) explorersComponent.quests[storyID] = [];
 				explorersComponent.quests[storyID].push(explorerID);
+
+				log.i("started quest: " + storyID + " " + explorerID);
+				
+				let msg = {
+					textKey: "story.messages.quest_" + storyID + "_started_message",
+					textParams: { "explorerName": explorerVO.name }
+				}
+				GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), msg, { visibility: LogConstants.MSG_VISIBILITY_GLOBAL });
 			},
 
 			endQuest: function(storyID, explorerVO) {
