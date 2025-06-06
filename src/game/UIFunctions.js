@@ -1318,23 +1318,32 @@ define(['ash',
 			},
 			
 			updateButtonCooldown: function (button, action) {
-				var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
-				var locationKey = this.getLocationKey(action);
+				let baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
+				let locationKey = this.getLocationKey(action);
+
 				cooldownTotal = PlayerActionConstants.getCooldown(baseId);
 				cooldownLeft = Math.min(cooldownTotal, GameGlobals.gameState.getActionCooldown(action, locationKey, cooldownTotal));
 				durationTotal = PlayerActionConstants.getDuration(action, baseId);
 				durationLeft = Math.min(durationTotal, GameGlobals.gameState.getActionDuration(action, locationKey, durationTotal));
+
 				if (cooldownLeft > 0) this.startButtonCooldown(button, cooldownTotal, cooldownLeft);
 				else this.stopButtonCooldown(button);
+
 				if (durationLeft > 0) this.startButtonDuration(button, durationTotal, durationLeft);
 				else this.stopButtonDuration(button);
 			},
 
 			startButtonCooldown: function (button, cooldown, cooldownLeft) {
 				if (GameGlobals.gameState.uiStatus.isHidden) return;
+
 				let action = $(button).attr("action");
 				let isAvailable = GameGlobals.playerActionsHelper.isRequirementsMet(action, null, [ PlayerActionConstants.DISABLED_REASON_BUSY ]);
-				if (!isAvailable) return;
+
+				if (!isAvailable) {
+					this.stopButtonCooldown(button);
+					return;
+				}
+
 				if (!cooldownLeft) cooldownLeft = cooldown;
 				var uiFunctions = this;
 				var startingWidth = (cooldownLeft / cooldown * 100);

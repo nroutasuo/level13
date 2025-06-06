@@ -1415,22 +1415,22 @@ define(['ash',
 			let playerActionFunctions = this;
 			GameGlobals.fightHelper.handleRandomEncounter(action, function () {
 				// if no fight or fight won
-				playerActionFunctions.completeAction(action);
 				let rewards = GameGlobals.playerActionResultsHelper.getResultVOByAction(action, hasCustomReward);
 				playerActionFunctions.handleActionRewards(action, rewards, messages, successCallback, showResultPopup);
+				playerActionFunctions.completeAction(action);
 			}, function () {
 				// if fled (either before fight or mid-fight)
-				playerActionFunctions.completeAction(action);
 				let fleeRewards = GameGlobals.playerActionResultsHelper.getResultVOByAction("flee");
 				let fleeMessages = { addToLog: false, msgSuccess: messages.msgFlee };
 				playerActionFunctions.handleActionRewards("flee", fleeRewards, fleeMessages, successCallback, showResultPopup);
 				if (messages.addToLog && messages.msgFlee) GameGlobals.playerHelper.addLogMessage(logMsgId, messages.msgFlee);
 				if (failCallback) failCallback();
+				playerActionFunctions.completeAction(action);
 			}, function () {
 				// if fight lost
-				playerActionFunctions.completeAction(action);
 				if (messages.addToLog && messages.msgDefeat) GameGlobals.playerHelper.addLogMessage(logMsgId, messages.msgDefeat);
 				if (failCallback) failCallback();
+				playerActionFunctions.completeAction(action);
 			});
 		},
 
