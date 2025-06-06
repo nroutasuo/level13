@@ -90,6 +90,8 @@ define([
 			this.refreshPageOptions(pageVO);
 
 			this.shownPageID = pageID;
+			
+			GameGlobals.uiFunctions.generateInfoCallouts("#dialogue-popup");
 
 			setTimeout(function () {
 				GameGlobals.uiFunctions.popupManager.repositionPopups();

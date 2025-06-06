@@ -1131,7 +1131,7 @@ define([
 				div += baghtml;
 			} else if (hasGainedBagStuff) {
 				var baghtml = "<div id='resultlist-static-inventory' class='unselectable'>";
-				baghtml += "<ul>"
+				baghtml += "<ul class='resultlist'>"
 
 				for (let i = 0; i < resultVO.gainedItems.length; i++) {
 					let item = resultVO.gainedItems[i];
