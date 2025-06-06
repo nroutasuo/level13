@@ -231,7 +231,7 @@
                         "deity": true
                     },
                     "onStart": {
-                        "log": "Sory.stories.escape_going_up_message"
+                        "log": "story.stories.escape_going_up_message"
                     },
                     "startTrigger": "change_position"
                 },
