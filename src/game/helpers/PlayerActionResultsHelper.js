@@ -2266,6 +2266,7 @@ define([
 				let explorerType = ExplorerConstants.getExplorerTypeForAbilityType(explorerVO.abilityType);
 				if (fightExplorers.length == 1 && explorerType == ExplorerConstants.explorerType.FIGHTER) return false;
 				if (!GameGlobals.explorerHelper.isDismissable(explorerVO)) return false;
+				if (explorerVO.animalType == ExplorerConstants.animalType.DOG) return false;
 				if (ExplorerConstants.isUnique(explorerVO)) return false;
 				return true;
 			};
