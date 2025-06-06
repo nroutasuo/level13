@@ -1395,7 +1395,7 @@ define(['ash',
 								addToLog: false,
 							};
 							sys.handleOutActionResults("wait", messages, false, false);
-						}, 300);
+						}, 720);
 					});
 				}
 			);
