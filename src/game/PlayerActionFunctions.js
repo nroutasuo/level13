@@ -1640,13 +1640,13 @@ define(['ash',
 				if (traderSelectedAmount > 0) {
 					caravan.sellResources.addResource(name, -traderSelectedAmount);
 					campStorage.resources.addResource(name, traderSelectedAmount);
-					GameGlobals.gameState.increaseGameStatKeyed("amountResourcesSoldPerName", name, traderSelectedAmount);
+					GameGlobals.gameState.increaseGameStatKeyed("amountResourcesBoughtPerName", name, traderSelectedAmount);
 				}
 				var campSelectedAmount = caravan.campSelectedResources.getResource(name);
 				if (campSelectedAmount > 0) {
 					caravan.sellResources.addResource(name, campSelectedAmount);
 					campStorage.resources.addResource(name, -campSelectedAmount);
-					GameGlobals.gameState.increaseGameStatKeyed("amountResourcesBoughtPerName", name, campSelectedAmount);
+					GameGlobals.gameState.increaseGameStatKeyed("amountResourcesSoldPerName", name, campSelectedAmount);
 				}
 			}
 
