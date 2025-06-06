@@ -173,6 +173,9 @@ define([
 			let injuryProbability = GameGlobals.playerActionsHelper.getInjuryProbability(action);
 			let gainedInjuries =  this.getResultInjuries(injuryProbability, action);
 			resultVO.gainedPerks = resultVO.gainedPerks.concat(gainedInjuries);
+
+			if (gainedInjuries.length > 0) injuryProbability /= 2;
+
 			let gainedExplorerInjuries = this.getResultInjuriesExplorer(injuryProbability, action)
 			resultVO.gainedExplorerInjuries = resultVO.gainedExplorerInjuries.concat(gainedExplorerInjuries);
 
@@ -491,7 +494,7 @@ define([
 			
 			let finalInjuryProbability = resultVO.lostPerks.length > 0 ? injuryProbability / 2 : injuryProbability;
 			resultVO.gainedPerks = this.getResultInjuries(finalInjuryProbability, sourceAction, enemyVO);
-			resultVO.gainedExplorerInjuries = this.getResultInjuriesExplorer(finalInjuryProbability, sourceAction, enemyVO);
+			resultVO.gainedExplorerInjuries = this.getResultInjuriesExplorer(finalInjuryProbability, sourceAction, enemyVO, resultVO.lostExplorers);
 
 			return resultVO;
 		},
@@ -2324,8 +2327,10 @@ define([
 			return result;
 		},
 
-		getResultInjuriesExplorer: function (injuryProbability, action, enemyVO) {
+		getResultInjuriesExplorer: function (injuryProbability, action, enemyVO, lostExplorers) {
 			let result = [];
+
+			lostExplorers = lostExplorers || [];
 
 			if (Math.random() > injuryProbability) return result;
 
@@ -2337,6 +2342,7 @@ define([
 
 				if (explorerVO.injuredTimer >= 0) continue;
 				if (!explorerVO.inParty) continue;
+				if (lostExplorers.indexOf(explorerVO) >= 0) continue;
 				
 				// if enemyVo specified, only fighters can get injured
 				let explorerType = ExplorerConstants.getExplorerTypeForAbilityType(explorerVO.abilityType);
