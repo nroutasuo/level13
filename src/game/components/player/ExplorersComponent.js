@@ -8,7 +8,7 @@ function (Ash, ExplorerConstants, ItemConstants) {
 
 		constructor: function () {
 			this.explorers = [];
-			this.quests = [];
+			this.quests = {};
 		},
 		
 		getAll: function () {
@@ -111,7 +111,10 @@ function (Ash, ExplorerConstants, ItemConstants) {
 		getCustomSaveObject: function () {
 			var copy = {};
 			copy.explorers = this.explorers;
-			copy.quests = this.quests;
+			copy.quests = {};
+			for (let key in this.quests) {
+				copy.quests[key] = this.quests[key];
+			}
 			return copy;
 		},
 
