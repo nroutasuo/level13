@@ -1229,7 +1229,7 @@
 			result += "Population: " + Math.round(OccurrenceConstants.getDiseaseOutbreakChance(campComponent.population, false, false, 0) * 100) + "%<br/>";
 
 			if (hasMedicine) {
-				result += "Medicine: -" + ((1 - OccurrenceConstants.getDiseaseMedicineFactor(apothecaryLevel)) * 100) + "%<br/>";
+				result += "Medicine: -" + ((1 - OccurrenceConstants.getDiseaseMedicineFactor(hasMedicine, apothecaryLevel)) * 100) + "%<br/>";
 			} else if (hasHerbs) {
 				result += "Herbs: -" + ((1 - OccurrenceConstants.getDiseaseHerbsFactor()) * 100) + "%<br/>";
 			}

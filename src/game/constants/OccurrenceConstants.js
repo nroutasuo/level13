@@ -114,13 +114,15 @@ define(['ash', 'utils/MathUtils', 'game/constants/CampConstants', 'game/constant
 		},
 
 		getDiseaseOutbreakChance: function (population, hasHerbs, hasMedicine, apothecaryLevel) {
-			if (population < 2) return 0;
+			let minPopulation = 6;
 
-			let rawChance = (population - 2) / (population + 100);
+			if (population <= minPopulation) return 0;
+
+			let rawChance = (population - minPopulation) / (population + 100);
 			let baseChance = Math.min(0.5, rawChance);
 			
 			if (hasMedicine) {
-				return baseChance * this.getDiseaseMedicineFactor(apothecaryLevel);
+				return baseChance * this.getDiseaseMedicineFactor(hasMedicine, apothecaryLevel);
 			} else if (hasHerbs) {
 				return baseChance * this.getDiseaseHerbsFactor();
 			} else {
@@ -128,10 +130,10 @@ define(['ash', 'utils/MathUtils', 'game/constants/CampConstants', 'game/constant
 			}
 		},
 
-		getDiseaseMedicineFactor: function (apothecaryLevel) {
-			if (apothecaryLevel == 1) return 0.2;
+		getDiseaseMedicineFactor: function (hasMedicine, apothecaryLevel) {
+			if (!hasMedicine) return 1;
 			if (apothecaryLevel > 1) return 0.05;
-			return 1;
+			return 0.2;
 		},
 
 		getDiseaseHerbsFactor: function () {
