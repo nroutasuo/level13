@@ -242,6 +242,8 @@ define([
 			let levelComponent = GameGlobals.levelHelper.getLevelEntityForSector(node.entity).get(LevelComponent);
 			let reqRepCurPop = CampConstants.getRequiredReputation(Math.floor(population));
 			let reqRepNextPop = CampConstants.getRequiredReputation(Math.floor(population) + 1);
+
+			let hasDisease = node.entity.has(DiseaseComponent);
 			
 			let changePerSec = 0;
 			let changePerSecWithoutCooldown = 0;
@@ -472,6 +474,7 @@ define([
 			if (percentDiseased < 0.5) {
 				possibleTypes.push(CampConstants.DISEASE_UPDATE_TYPE_SPREAD);
 				possibleTypes.push(CampConstants.DISEASE_UPDATE_TYPE_SPREAD);
+				possibleTypes.push(CampConstants.DISEASE_UPDATE_TYPE_SPREAD);
 			}
 			
 			if (numDiseased > 1) {
@@ -479,6 +482,7 @@ define([
 			}
 
 			if (numDiseased > 1) {
+				possibleTypes.push(CampConstants.DISEASE_UPDATE_TYPE_WANE);
 				possibleTypes.push(CampConstants.DISEASE_UPDATE_TYPE_WANE);
 			}
 
