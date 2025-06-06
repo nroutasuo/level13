@@ -140,7 +140,7 @@ define([
 			};
 
 			let fightValue = getTrustFactor(explorerVO.numFights, 100);
-			let stepValue = getTrustFactor(explorerVO.numSteps, 1000);
+			let stepValue = getTrustFactor(explorerVO.numSteps, 3000);
 			let excursionValue = getTrustFactor(explorerVO.numExcursions, 100);
 			let dialogueValue = getTrustFactor(explorerVO.numDialogues, 100);
 
