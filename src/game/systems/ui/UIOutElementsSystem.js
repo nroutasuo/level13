@@ -52,6 +52,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.elementCreatedSignal, this.onElementsVisibilityChanged);
 			GlobalSignals.add(this, GlobalSignals.actionButtonClickedSignal, this.onElementsVisibilityChanged);
 			GlobalSignals.add(this, GlobalSignals.popupOpenedSignal, this.onElementsVisibilityChanged);
+			GlobalSignals.add(this, GlobalSignals.popupClosedSignal, this.onPopupClosed);
 			
 			GlobalSignals.add(this, GlobalSignals.elementToggledSignal, this.onElementToggled);
 			GlobalSignals.add(this, GlobalSignals.updateButtonsSignal, this.onButtonStatusChanged);
@@ -417,6 +418,11 @@ define([
 		
 		onButtonStatusChanged: function () {
 			this.buttonStatusChanged = true;
+		},
+
+		onPopupClosed: function () {
+			this.elementsVisibilityChanged = true;
+			GameGlobals.uiFunctions.updateButtonCooldowns();
 		}
 		
 	});
