@@ -7,7 +7,7 @@ define([
 	'game/constants/DialogueConstants',
 	'game/constants/GameConstants',
 	'game/constants/ExplorerConstants',
-	'game/constants/ImprovementConstants',
+	'game/constants/PositionConstants',
 	'game/constants/ItemConstants',
 	'game/constants/LogConstants',
 	'game/constants/MovementConstants',
@@ -37,7 +37,7 @@ define([
 	DialogueConstants,
 	GameConstants,
 	ExplorerConstants,
-	ImprovementConstants,
+	PositionConstants,
 	ItemConstants,
 	LogConstants,
 	MovementConstants,
@@ -407,6 +407,13 @@ define([
 			let campSector = this.nearestCampNodes.head.entity;
 			let path = GameGlobals.levelHelper.findPathTo(this.playerLocationNodes.head.entity, campSector, { skipBlockers: true, skipUnvisited: true });
 			return path;
+		},
+
+		getDistanceToCamp: function () {
+			if (!this.nearestCampNodes.head) return 999;
+			let playerPosition = this.playerPosNodes.head.position.getPosition();
+			let campPosition = this.nearestCampNodes.head.position;
+			return PositionConstants.getDistanceTo(campPosition, playerPosition);
 		},
 		
 		getPathToPassage: function () {

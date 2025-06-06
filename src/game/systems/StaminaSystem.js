@@ -128,8 +128,9 @@ define([
 		
 		updateStaminaWarning: function (node, time) {
 			if (GameGlobals.gameState.uiStatus.isTransitioning) return;
-			var staminaComponent = node.stamina;
-			var isWarning = staminaComponent.stamina <= this.warningLimit;
+			if (GameGlobals.playerHelper.getDistanceToCamp() < 1) return;
+			let staminaComponent = node.stamina;
+			let isWarning = staminaComponent.stamina <= this.warningLimit;
 			if (isWarning && !this.isWarning) {
 				let hasCamp = GameGlobals.gameState.unlockedFeatures.camp;
 				let canMove = GameGlobals.playerHelper.canMove();
