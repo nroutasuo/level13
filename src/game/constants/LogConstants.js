@@ -145,7 +145,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 			"residential_ghosts": { 
 				triggers: [ "locale_scouted" ],
 				conditions: { sector: { sectorType: "residential" }, deity: false, numCamps: 2 },
-				chance: 0.1,
+				chance: 0.02,
 				message: "Suddenly, the weight of all the people who have lived and died in the City presses down upon you like a heavy blanket"
 			},
 			"darkness_madness_01": {
@@ -205,7 +205,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 			"story_tribe_double_guess_escape_01": {
 				triggers: [ "change_position" ],
 				conditions: { inCamp: false, numCamps: 3, storyFlags: {  "ESCAPE_SEARCHING_FOR_GROUND": true } },
-				chance: 0.01,
+				chance: 0.005,
 				message: "You wonder how the camps will develop after you've left the City."
 			},
 			"action_despair": {
