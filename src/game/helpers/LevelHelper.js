@@ -403,7 +403,7 @@ define([
 			var makePathSectorVO = function (entity) {
 				if (!entity) return null;
 				return {
-					position: entity.get(PositionComponent).getPosition(),
+					position: entity.get(PositionComponent).getPositionOutside(),
 					isVisited: GameGlobals.sectorHelper.isVisited(entity),
 					result: entity
 				};
