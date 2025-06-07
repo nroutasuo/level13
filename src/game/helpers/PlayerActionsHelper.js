@@ -1357,7 +1357,17 @@ define([
 				}
 
 				if (requirements.level) {
-					var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
+					let levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(level);
+					let levelComponent = levelEntity.get(LevelComponent);
+
+					if (typeof requirements.level.hasCamp !== "undefined") {
+						let value = levelEntity.has(CampComponent);
+						let requiredValue = requirements.level.hasCamp;
+						if (value !== requiredValue) {
+							reason = requiredValue ? "No camp on this level." : "There is already a camp on this level";
+							return { value: 0, reason: this.getDisabledReasonVO(reason) };
+						}
+					}
 
 					if (requirements.level.population) {
 						var range = requirements.level.population;
