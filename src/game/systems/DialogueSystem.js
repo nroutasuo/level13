@@ -169,6 +169,7 @@ define([
 
 				if (resultVO.replaceDialogue) {
 					if (characterVO) {
+						if (!characterVO.completedDialogues) characterVO.completedDialogues = [];
 						characterVO.completedDialogues.push(dialogueID);
 						characterVO.lastShownDialogue = null;
 					}
