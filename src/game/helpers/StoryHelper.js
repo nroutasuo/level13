@@ -118,9 +118,12 @@ define(['ash',
 				explorersComponent.quests[storyID].push(explorerID);
 
 				log.i("started quest: " + storyID + " " + explorerID);
+
+				let questTextID = this.getQuestTextID(storyID);
+				let textKey = "story.messages.quest_" + questTextID + "_started_message";
 				
 				let msg = {
-					textKey: "story.messages.quest_" + storyID + "_started_message",
+					textKey: textKey,
 					textParams: { "explorerName": explorerVO.name }
 				}
 				GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), msg, { visibility: LogConstants.MSG_VISIBILITY_GLOBAL });
@@ -159,6 +162,13 @@ define(['ash',
 				let explorersComponent = GameGlobals.playerHelper.getPlayerEntity().get(ExplorersComponent);
 				delete explorersComponent.quests[storyID];
 			},
+
+			getQuestTextID: function (storyID) {
+				if (storyID === "greenhouse" && GameGlobals.gameState.getStoryFlag(StoryConstants.flags.GREENHOUSE_FOUND)) {
+					return "greenhouse_fix";
+				}
+				return storyID;
+			}
 			
 		});
 	

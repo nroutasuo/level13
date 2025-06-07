@@ -1751,7 +1751,14 @@
             "passage_found_hole_up_sunlit_message": "Far above in the ceiling there is a hole leading to the level above.",
             "passage_found_prebuilt_message": "There is a maintenance staircase here that is in good repair.",
             "passage_found_stairwell_built_message": "There is a staircase here.",
-            "passage_found_stairwell_message": "There used to be a staircase here."
+            "passage_found_stairwell_message": "There used to be a staircase here.",
+            "quest_apocalypse_started_message": "Agreed to look for a solution to the earthquakes",
+            "quest_rescue_started_message": "Agreed to go looking for Sunita with {explorerName}",
+            "quest_spirits_started_message": "Promised {explorerName} to keep an eye out for ghosts",
+            "quest_greenhouse_started_message": "Promised to find a Greenhouse",
+            "quest_greenhouse_fix_started_message": "{explorerName} offered to help figure out how to fix the Greenhouse",
+            "quest_escape_started_message": "{explorerName} offered to help find a way to the Ground",
+            "quest_fall_started_message": "Promised to help {explorerName} to investigate the Fall"
         },
         "sequences": {
             "locale_generic_clinic_intro": "A haphazard clinic set up by a doctor who is defying the post-Fall chaos by helping whoever needs it.",
