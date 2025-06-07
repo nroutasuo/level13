@@ -310,7 +310,7 @@ define([
 			if (noHousing) {
 				let overflowRatio = (populationFullPeople - housingCap) / populationFullPeople;
 				let housingPenaltyRatio = Math.round(overflowRatio * 20) / 20 / 2;
-				let housingPenalty = Math.ceil(result * housingPenaltyRatio);
+				let housingPenalty = Math.ceil(result * housingPenaltyRatio * 100) / 100;
 				addValue(-housingPenalty, "Overcrowding", false, true, housingPenaltyRatio * 100);
 			}
 			addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_HOUSING, noHousing);
