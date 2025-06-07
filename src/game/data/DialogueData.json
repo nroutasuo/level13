@@ -1560,9 +1560,9 @@
 			"pages": [
 				{
 					"key": "character_shaman_default_event_03_p1",
-					"replaceDialogue": true,
 					"result": {
-						"gainedHope": 1
+						"gainedHope": 1,
+						"replaceDialogue": true
 					}
 				}
 			]
@@ -1646,7 +1646,8 @@
 					"result": {
 						"gainedPerks": [
 							"blessedShort"
-						]
+						],
+						"removeCharacter": true
 					}
 				},
 				{
@@ -2395,10 +2396,10 @@
 		},
 		"explorer_generic_ability_cost_blueprints_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "cost_collectors"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_cost_blueprints_outside_01_p1"
@@ -2406,10 +2407,10 @@
 		},
 		"explorer_generic_ability_cost_lockpick_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "cost_lockpick"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_cost_lockpick_outside_01_p1"
@@ -2417,10 +2418,10 @@
 		},
 		"explorer_generic_ability_cost_movement_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "cost_movement"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_cost_movement_outside_01_p1"
@@ -2428,10 +2429,10 @@
 		},
 		"explorer_generic_ability_cost_scout_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "cost_scout"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_cost_scout_outside_01_p1"
@@ -2439,10 +2440,10 @@
 		},
 		"explorer_generic_ability_detect_hazards_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "detect_hazards"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_detect_hazards_outside_01_p1"
@@ -2450,10 +2451,10 @@
 		},
 		"explorer_generic_ability_detect_ingredients_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "detect_ingredients"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_detect_ingredients_outside_01_p1"
@@ -2461,10 +2462,10 @@
 		},
 		"explorer_generic_ability_detect_poi_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "detect_poi"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_detect_poi_outside_01_p1"
@@ -2472,10 +2473,10 @@
 		},
 		"explorer_generic_ability_detect_supplies_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "detect_supplies"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_detect_supplies_outside_01_p1"
@@ -2491,10 +2492,10 @@
 		},
 		"explorer_generic_ability_flee_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "flee"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_flee_outside_01_p1"
@@ -2502,10 +2503,10 @@
 		},
 		"explorer_generic_ability_handler_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "scavenge_handler"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_handler_outside_01_p1"
@@ -2513,10 +2514,10 @@
 		},
 		"explorer_generic_ability_handler_outside_02": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "scavenge_handler"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_handler_outside_02_p1"
@@ -2524,10 +2525,10 @@
 		},
 		"explorer_generic_ability_mapping_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "mapping"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_mapping_outside_01_p1"
@@ -2535,10 +2536,10 @@
 		},
 		"explorer_generic_ability_mapping_outside_02": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "mapping"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_mapping_outside_02_p1"
@@ -2546,10 +2547,10 @@
 		},
 		"explorer_generic_ability_scavenge_blueprints_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "scavenge_blueprints"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_scavenge_blueprints_outside_01_p1"
@@ -2557,10 +2558,10 @@
 		},
 		"explorer_generic_ability_scavenge_blueprints_outside_02": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "scavenge_blueprints"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_scavenge_blueprints_outside_02_p1"
@@ -2568,10 +2569,10 @@
 		},
 		"explorer_generic_ability_scavenge_general_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "scavenge_general"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_scavenge_general_outside_01_p1"
@@ -2579,10 +2580,10 @@
 		},
 		"explorer_generic_ability_scavenge_ingredients_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "scavenge_ingredients"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_scavenge_ingredients_outside_01_p1"
@@ -2590,10 +2591,10 @@
 		},
 		"explorer_generic_ability_scavenge_supplies_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "scavenge_supplies"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_scavenge_supplies_outside_01_p1"
@@ -2601,10 +2602,10 @@
 		},
 		"explorer_generic_ability_scavenge_supplies_outside_02": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "scavenge_supplies"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_scavenge_supplies_outside_02_p1"
@@ -2612,10 +2613,10 @@
 		},
 		"explorer_generic_ability_scavenge_valuables_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "scavenge_valuables"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_scavenge_valuables_outside_01_p1"
@@ -2623,10 +2624,10 @@
 		},
 		"explorer_generic_ability_scavenge_valuables_outside_02": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "scavenge_valuables"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_scavenge_valuables_outside_02_p1"
@@ -2634,10 +2635,10 @@
 		},
 		"explorer_generic_ability_stat_evidence_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "stat_evidence"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_stat_evidence_outside_01_p1"
@@ -2645,10 +2646,10 @@
 		},
 		"explorer_generic_ability_stat_evidence_outside_02": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "stat_evidence"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_stat_evidence_outside_02_p1"
@@ -2656,10 +2657,10 @@
 		},
 		"explorer_generic_ability_stat_hope_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "stat_hope"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_stat_hope_outside_01_p1"
@@ -2667,10 +2668,10 @@
 		},
 		"explorer_generic_ability_stat_hope_outside_02": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "stat_hope"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_stat_hope_outside_02_p1"
@@ -2678,10 +2679,10 @@
 		},
 		"explorer_generic_ability_stat_rumours_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "stat_rumours"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_stat_rumours_outside_01_p1"
@@ -2689,10 +2690,10 @@
 		},
 		"explorer_generic_ability_stat_rumours_outside_02": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"abilityType": "stat_rumours"
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_ability_stat_rumours_outside_02_p1"
@@ -3040,6 +3041,9 @@
 		},
 		"explorer_generic_intract_new_camp_11_01": {
 			"conditions": {
+				"explorer": {
+					"trust": 2
+				},
 				"inCamp": 11,
 				"maxNumCamps": 11,
 				"numCamps": 11
@@ -3050,6 +3054,9 @@
 		},
 		"explorer_generic_intract_new_camp_12_01": {
 			"conditions": {
+				"explorer": {
+					"trust": 2
+				},
 				"inCamp": 12,
 				"maxNumCamps": 12,
 				"numCamps": 12
@@ -3060,6 +3067,9 @@
 		},
 		"explorer_generic_intract_new_camp_13_01": {
 			"conditions": {
+				"explorer": {
+					"trust": 2
+				},
 				"inCamp": 13,
 				"maxNumCamps": 13,
 				"numCamps": 13
@@ -3070,6 +3080,9 @@
 		},
 		"explorer_generic_intract_new_camp_14_01": {
 			"conditions": {
+				"explorer": {
+					"trust": 2
+				},
 				"inCamp": 14,
 				"maxNumCamps": 14,
 				"numCamps": 14
@@ -3080,6 +3093,9 @@
 		},
 		"explorer_generic_intract_new_camp_15_01": {
 			"conditions": {
+				"explorer": {
+					"trust": 2
+				},
 				"inCamp": 15,
 				"maxNumCamps": 15,
 				"numCamps": 15
@@ -3091,6 +3107,9 @@
 		},
 		"explorer_generic_intract_new_camp_3_01": {
 			"conditions": {
+				"explorer": {
+					"trust": 2
+				},
 				"inCamp": 3,
 				"maxNumCamps": 3,
 				"numCamps": 3
@@ -3101,6 +3120,9 @@
 		},
 		"explorer_generic_intract_new_camp_4_01": {
 			"conditions": {
+				"explorer": {
+					"trust": 2
+				},
 				"inCamp": 4,
 				"maxNumCamps": 4,
 				"numCamps": 4
@@ -3111,6 +3133,9 @@
 		},
 		"explorer_generic_intract_new_camp_5_01": {
 			"conditions": {
+				"explorer": {
+					"trust": 2
+				},
 				"inCamp": 5,
 				"maxNumCamps": 5,
 				"numCamps": 5
@@ -3121,6 +3146,9 @@
 		},
 		"explorer_generic_intract_new_camp_6_01": {
 			"conditions": {
+				"explorer": {
+					"trust": 2
+				},
 				"inCamp": 6,
 				"maxNumCamps": 6,
 				"numCamps": 6
@@ -3131,6 +3159,9 @@
 		},
 		"explorer_generic_intract_new_camp_7_01": {
 			"conditions": {
+				"explorer": {
+					"trust": 2
+				},
 				"inCamp": 7,
 				"maxNumCamps": 7,
 				"numCamps": 7
@@ -3141,6 +3172,9 @@
 		},
 		"explorer_generic_intract_new_camp_8_01": {
 			"conditions": {
+				"explorer": {
+					"trust": 2
+				},
 				"inCamp": 8,
 				"maxNumCamps": 8,
 				"numCamps": 8
@@ -3151,6 +3185,9 @@
 		},
 		"explorer_generic_intract_new_camp_9_01": {
 			"conditions": {
+				"explorer": {
+					"trust": 2
+				},
 				"inCamp": 9,
 				"maxNumCamps": 9,
 				"numCamps": 9
@@ -3786,6 +3823,9 @@
 		},
 		"explorer_generic_story_searching_for_greenhouse_01": {
 			"conditions": {
+				"explorer": {
+					"trust": 1
+				},
 				"storyFlags": {
 					"GREENHOUSE_FOUND": false,
 					"GREENHOUSE_SEARCHING_FOR_CURE": true
@@ -3797,12 +3837,12 @@
 		},
 		"explorer_generic_story_searching_for_greenhouse_02": {
 			"conditions": {
+				"explorer": {
+					"trust": 2
+				},
 				"storyFlags": {
 					"GREENHOUSE_FOUND": false,
 					"GREENHOUSE_SEARCHING_FOR_CURE": true
-				},
-				"explorer": {
-					"trust": 2
 				}
 			},
 			"pages": [
@@ -3930,10 +3970,10 @@
 		},
 		"explorer_template_amnesiac_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"trust": 2
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_template_amnesiac_outside_01_p1"
@@ -3941,11 +3981,11 @@
 		},
 		"explorer_template_amnesiac_outside_02": {
 			"conditions": {
-				"inCamp": false,
-				"sunlit": false,
 				"explorer": {
 					"trust": 3
-				}
+				},
+				"inCamp": false,
+				"sunlit": false
 			},
 			"pages": [
 				"explorer_template_amnesiac_outside_02_p1"
@@ -3953,10 +3993,10 @@
 		},
 		"explorer_template_amnesiac_outside_03": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"trust": 5
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_template_amnesiac_outside_03_p1"
@@ -4093,10 +4133,10 @@
 		},
 		"explorer_template_architect_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"trust": 2
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_template_architect_outside_01_p1"
@@ -4104,10 +4144,10 @@
 		},
 		"explorer_template_architect_outside_02": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"trust": 2
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_template_architect_outside_02_p1"
@@ -4259,10 +4299,10 @@
 		},
 		"explorer_template_bard_outside_02": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"trust": 1
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_template_bard_outside_02_p1"
@@ -4395,10 +4435,10 @@
 		},
 		"explorer_template_darkdweller_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"trust": 2
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_template_darkdweller_outside_01_p1"
@@ -4547,10 +4587,10 @@
 		},
 		"explorer_template_guard_outside_02": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"trust": 2
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_template_guard_outside_02_p1"
@@ -4701,10 +4741,10 @@
 		},
 		"explorer_template_hacker_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"trust": 2
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_template_hacker_outside_01_p1"
@@ -4850,10 +4890,10 @@
 		},
 		"explorer_template_lover_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"trust": 5
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_template_lover_outside_01_p1"
@@ -4861,10 +4901,10 @@
 		},
 		"explorer_template_lover_outside_02": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"trust": 1
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_template_lover_outside_02_p1"
@@ -5024,10 +5064,10 @@
 		},
 		"explorer_template_researcher_outside_03": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"trust": 1
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_template_researcher_outside_03_p1"
@@ -5035,10 +5075,10 @@
 		},
 		"explorer_template_researcher_outside_04": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"trust": 2
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_template_researcher_outside_04_p1"
@@ -5202,10 +5242,10 @@
 		},
 		"explorer_template_teen_outside_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"trust": 1
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_template_teen_outside_01_p1"
@@ -5213,10 +5253,10 @@
 		},
 		"explorer_template_teen_outside_02": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"trust": 2
-				}
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_template_teen_outside_02_p1"
@@ -6609,6 +6649,9 @@
 		},
 		"explorer_unique_prospector_story_greenhouse_intro_01": {
 			"conditions": {
+				"explorer": {
+					"trust": 1
+				},
 				"inCamp": true,
 				"storyFlags": {
 					"GREENHOUSE_SEARCHING_FOR_CURE": true
@@ -8963,7 +9006,6 @@
 					"explorer_template_lover_event_01"
 				],
 				"interact": [
-					
 					"explorer_generic_ability_fight_outside_01",
 					"explorer_generic_ability_flee_outside_01",
 					"explorer_generic_fighter_outside_01",
