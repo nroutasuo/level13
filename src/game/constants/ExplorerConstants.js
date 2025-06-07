@@ -807,7 +807,9 @@ define(['ash',
 		},
 		
 		isUnique: function (explorerVO) {
-			return explorerVO && explorerVO.dialogueSource && explorerVO.dialogueSource.indexOf("unique_") >= 0;
+			if (!explorerVO) return false;
+			if (explorerVO.dialogueSource && explorerVO.dialogueSource.indexOf("unique_") >= 0) return true;
+			return false;
 		},
 		
 		isTemplate: function (explorerVO) {

@@ -233,6 +233,12 @@ define([
 			return GameGlobals.playerActionsHelper.isRequirementsMet("build_out_beacon", sector);
 		},
 
+		getNumUnscoutedLocales: function (sector) {
+			let statusComponent = sector.get(SectorStatusComponent);
+			let localesComponent = sector.get(SectorLocalesComponent);
+			return localesComponent.locales.length - statusComponent.getNumLocalesScouted();
+		},
+
 		getNumVisibleUnscoutedLocales: function (sector) {
 			if (!sector) return 0;
 			let statusComponent = sector.get(SectorStatusComponent);
@@ -384,9 +390,8 @@ define([
 			var statusComponent = sector.get(SectorStatusComponent);
 			
 			if (statusComponent.scouted) {
-				var localesComponent = sector.get(SectorLocalesComponent);
 				var workshopComponent = sector.get(WorkshopComponent);
-				var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
+				var unScoutedLocales = this.getNumUnscoutedLocales(sector);
 				var sectorControlComponent = sector.get(SectorControlComponent);
 				var hasUnclearedWorkshop = workshopComponent != null && workshopComponent.isClearable && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP);
 				let canBeInvestigated = this.canBeInvestigated(sector);
@@ -480,6 +485,7 @@ define([
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
 			let sectorStatus = sector.get(SectorStatusComponent);
 			let sectorLocales = sector.get(SectorLocalesComponent);
+			let passagesComponent = sector.get(PassagesComponent);
 			
 			let campOrdinal = GameGlobals.gameState.getCampOrdinal(sectorPosition.level);
 
@@ -540,6 +546,14 @@ define([
 				case "blocker_waste": 
 					if (this.hasBlockingBlockerInAnyDirection(sector, MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE)) return {};
 					if (this.hasBlockingBlockerInAnyDirection(sector, MovementConstants.BLOCKER_TYPE_WASTE_TOXIC)) return {};
+					break;
+				case "center":
+					if (sectorPosition.sectorX === 0 && sectorPosition.sectorY === 0) return {};
+					break;
+				case "poi":
+					if (this.getNumUnscoutedLocales(sector) > 0) return {};
+					if (this.getNumUnexaminedSpots(sector) > 0) return {};
+					if (!sectorStatus.scouted && passagesComponent.hasLevelPassage()) return {};
 					break;
 				default:
 					log.w("no such poi type defined: " + poiType);
