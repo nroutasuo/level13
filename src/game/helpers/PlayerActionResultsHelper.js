@@ -392,7 +392,7 @@ define([
 			if (explorerID) {
 				rewards.gainedExplorers = [ GameGlobals.explorerHelper.getNewPredefinedExplorer(explorerID) ];
 			} else if (hasMiscRewards) {
-				rewards.gainedExplorers = this.getRewardExplorers(0.075);
+				rewards.gainedExplorers = this.getRewardExplorers(0.025);
 			}
 
 			// items and resources
