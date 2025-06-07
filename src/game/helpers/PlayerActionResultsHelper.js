@@ -247,6 +247,8 @@ define([
 				if (rewards.foundStashVO == null && rewards.gainedCurrency == 0) {
 					this.addExplorerBonuses(rewards, sectorResources, sectorIngredients, itemOptions);
 				}
+
+				rewards.gainedBlueprintPiece = this.getResultFallbackBlueprint(0.1);
 			}
 
 			return rewards;
@@ -2501,6 +2503,22 @@ define([
 			return blueprintsToFind[0];
 		},
 
+		getResultFallbackBlueprint: function (probability) {
+			if (Math.random() > probability) {
+				return null;
+			}
+
+			let missedBlueprints = this.getMissedBlueprints();
+
+			if (missedBlueprints.length == 0) return null;
+
+			let blueprintID = missedBlueprints[0];
+
+			log.w("adding a fallback blueprint piece to result: " + blueprintID);
+
+			return blueprintID;
+		},
+
 		getDefaultUpgradeTypeForSector: function () {
 			let sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 
@@ -2576,7 +2594,8 @@ define([
 			let playerPos = this.playerLocationNodes.head.position;
 			let upgradesComponent = this.tribeUpgradesNodes.head.upgrades;
 			let levelOrdinal = GameGlobals.gameState.getLevelOrdinal(playerPos.level);
-			for (let i = 1; i < levelOrdinal; i++) {
+
+			for (let i = 1; i <= levelOrdinal; i++) {
 				let level = GameGlobals.gameState.getLevelForOrdinal(i);
 				let allLocales = GameGlobals.levelHelper.getLevelLocales(level, true, null, true).length;
 				let unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(level, false, null, true).length;
