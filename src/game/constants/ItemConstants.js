@@ -576,7 +576,7 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, ItemVO) {
 
 			// trade: varies a bit
 			if (itemSource == ItemConstants.itemSource.trade) {
-				return Math.ceil(20 + Math.random() * 60);
+				return Math.ceil(15 + Math.random() * 70);
 			}
 
 			// exploration: varies a lot
