@@ -1987,16 +1987,13 @@
 		},
 		"character_workerGeneric_interact_spirits_01": {
 			"conditions": {
-				"conditions": {
-					"deity": true,
-					"improvements": {
-						"shrine": [
-							1,
-							-1
-						]
-					}
-				},
-				"deity": true
+				"deity": true,
+				"improvements": {
+					"shrine": [
+						1,
+						-1
+					]
+				}
 			},
 			"pages": [
 				"character_workerGeneric_interact_spirits_01_p1"
@@ -2965,6 +2962,7 @@
 			]
 		},
 		"explorer_generic_interact_directions_01": {
+			"isPriority": true,
 			"conditions": {
 				"inCamp": false,
 				"vicinity": "poi"
@@ -2983,6 +2981,7 @@
 			]
 		},
 		"explorer_generic_interact_directions_explore_01": {
+			"isPriority": true,
 			"conditions": {
 				"inCamp": false,
 				"vicinity": "poi"
@@ -3001,6 +3000,7 @@
 			"text": "I have no idea which way we should go."
 		},
 		"explorer_generic_interact_directions_safety_01": {
+			"isPriority": true,
 			"conditions": {
 				"inCamp": false,
 				"level": {
@@ -3200,6 +3200,7 @@
 			]
 		},
 		"explorer_generic_intract_new_camp_7_01": {
+			"isUnique": true,
 			"conditions": {
 				"explorer": {
 					"trust": 2
@@ -4471,6 +4472,7 @@
 			]
 		},
 		"explorer_template_darkdweller_interact_directions_safety_01": {
+			"isPriority": true,
 			"conditions": {
 				"inCamp": false,
 				"level": {
@@ -4532,6 +4534,11 @@
 			]
 		},
 		"explorer_template_guard_interact_03": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
 			"pages": [
 				"explorer_template_guard_interact_03_p1"
 			]
@@ -4652,10 +4659,8 @@
 		},
 		"explorer_template_guard_story_expedition_found_01": {
 			"conditions": {
-				"conditions": {
-					"storyFlags": {
-						"EXPEDITION_FATE_KNOWN": true
-					}
+				"storyFlags": {
+					"EXPEDITION_FATE_KNOWN": true
 				}
 			},
 			"pages": [
@@ -6441,9 +6446,7 @@
 		},
 		"explorer_unique_journalist_story_greenhouse_02": {
 			"conditions": {
-				"storyFlags": {
-					"deity": true
-				}
+				"deity": true
 			},
 			"pages": [
 				"explorer_unique_journalist_story_greenhouse_02_p1"
