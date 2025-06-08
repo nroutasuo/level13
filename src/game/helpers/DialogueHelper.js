@@ -193,12 +193,15 @@ define(['ash',
                 let playerPosition = GameGlobals.playerHelper.getPosition();
 
                 let result = null;
+                let minDistance = this.getPOIMinDistance(poiType);
+                let maxDistance = this.getPOIMaxDistance(poiType);
                 
                 GameGlobals.levelHelper.forEverySectorFromLocation(playerPosition, (sector) => {
                     let sectorPosition = sector.get(PositionComponent);
                     let distance = PositionConstants.getDistanceTo(playerPosition, sectorPosition);
                     if (distance == 0) return false;
-                    if (distance > 8) return false;
+                    if (minDistance > 0 && distance < minDistance) return false;
+                    if (maxDistance > 0 && distance > maxDistance) return false;
                     let poiData = GameGlobals.sectorHelper.getPOIData(sector, poiType);
                     if (poiData) {
                         let direction = PositionConstants.getDirectionFrom(playerPosition, sectorPosition);
@@ -210,6 +213,22 @@ define(['ash',
                 }, true);
 
                 return result;
+            },
+
+            getPOIMinDistance: function (poiType) {
+                switch (poiType) {
+                    case "center": return 3;
+                }
+                return -1;
+            },
+
+            getPOIMaxDistance: function (poiType) {
+                switch (poiType) {
+                    case "campable": return -1;
+                    case "grove": return -1;
+                    case "center": return -1;
+                }
+                return 8;
             },
 
             hasResults: function (dialogueVO) {

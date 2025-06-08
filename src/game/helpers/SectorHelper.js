@@ -548,7 +548,7 @@ define([
 					if (this.hasBlockingBlockerInAnyDirection(sector, MovementConstants.BLOCKER_TYPE_WASTE_TOXIC)) return {};
 					break;
 				case "center":
-					if (sectorPosition.sectorX === 0 && sectorPosition.sectorY === 0) return {};
+					if (Math.abs(sectorPosition.sectorX) <= 1 && Math.abs(sectorPosition.sectorY) <= 1) return {};
 					break;
 				case "poi":
 					if (this.getNumUnscoutedLocales(sector) > 0) return {};
