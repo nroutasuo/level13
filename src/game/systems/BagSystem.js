@@ -65,8 +65,9 @@ define([
 		updateUsedCapacity: function (playerBag, playerResources, playerItems) {
 			let oldUsedCapacity = playerBag.usedCapacity;
 			let usedCapacity = 0;
-			let carriedItems = playerItems.getAll(false);
+			let carriedItems = playerItems.getAll(false, true);
 			usedCapacity += BagConstants.getResourcesCapacity(playerResources.resources);
+
 			for (let i = 0; i < carriedItems.length; i++) {
 				if (carriedItems[i].equipped) continue;
 				 usedCapacity += BagConstants.getItemCapacity(carriedItems[i]);

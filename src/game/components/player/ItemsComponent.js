@@ -278,7 +278,7 @@ function (Ash, ItemVO, ItemConstants) {
 			return bonus;
 		},
 
-		getAll: function (includeNotCarried) {
+		getAll: function (includeNotCarried, skipSort) {
 			var all = [];
 			var item;
 			for (var key in this.items) {
@@ -287,6 +287,9 @@ function (Ash, ItemVO, ItemConstants) {
 					if (includeNotCarried || item.carried) all.push(item);
 				}
 			}
+
+			if (skipSort) return all;
+
 			return all.sort(this.itemSortFunction);
 		},
 
