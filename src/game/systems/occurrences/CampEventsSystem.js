@@ -292,7 +292,7 @@ define([
 			let fastTrackTimeToNext = this.getFastTrackTimeToNext(campNode, event);
 			let campTimers = campNode.entity.get(CampEventTimersComponent);
 			let timeLeft = campTimers.getEventStartTimeLeft(event);
-			return timeLeft <= fastTrackTimeToNext;
+			return timeLeft != null && timeLeft <= fastTrackTimeToNext;
 		},
 
 		isScheduledSoonSomewhere: function (event) {
@@ -774,7 +774,8 @@ define([
 				explorerType = ExplorerConstants.explorerType.FIGHTER;
 			}
 
-			let options = { forcedExplorerType : explorerType }
+			let options = { forcedExplorerType : explorerType };
+
 			return GameGlobals.explorerHelper.getNewRandomExplorer(ExplorerConstants.explorerSource.EVENT, campOrdinal, campPos.level, options)
 		},
 		
