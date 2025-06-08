@@ -249,9 +249,8 @@ define([
 					return 1;
 
 				case OccurrenceConstants.campOccurrenceTypes.disease:
-					let storage = GameGlobals.resourcesHelper.getCurrentCampStorage(campNode.entity);
-					let hasHerbs = storage.resources.getResource(resourceNames.herbs) > 0;
-					let hasMedicine = storage.resources.getResource(resourceNames.medicine) > 0;
+					let hasHerbs = GameGlobals.campHelper.hasHerbs(campNode.entity);
+					let hasMedicine = GameGlobals.campHelper.hasMedicine(campNode.entity);
 					let apothecaryLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("apothecary", this.tribeUpgradesNodes.head.upgrades);
 					return OccurrenceConstants.getDiseaseOutbreakChance(campNode.camp.population, hasHerbs, hasMedicine, apothecaryLevel);
 
@@ -883,9 +882,8 @@ define([
 					break;
 				
 				case OccurrenceConstants.campOccurrenceTypes.disease:
-					let storage = GameGlobals.resourcesHelper.getCurrentCampStorage(campNode.entity);
-					let hasHerbs = storage.resources.getResource(resourceNames.herbs) > 0;
-					let hasMedicine = storage.resources.getResource(resourceNames.medicine) > 0;
+					let hasHerbs = GameGlobals.campHelper.hasHerbs(campNode.entity);
+					let hasMedicine = GameGlobals.campHelper.hasMedicine(campNode.entity);
 					let apothecaryLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("apothecary", this.tribeUpgradesNodes.head.upgrades);
 					let isPendingDisease = GameGlobals.gameState.getStoryFlag(StoryConstants.flags.GREENHOUSE_PENDING_DISEASE);
 					let value = 1 - OccurrenceConstants.getDiseaseOutbreakChance(campNode.camp.population, hasHerbs, hasMedicine, apothecaryLevel);

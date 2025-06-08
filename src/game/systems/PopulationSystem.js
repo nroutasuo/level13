@@ -167,7 +167,7 @@ define([
 				let maxUpdateIndex = diseaseComponent.numUpdatesTotal - 1;
 				let numDiseased = pop.num;
 				let numTotal = Math.floor(camp.population);
-				let updateType = this.getNextDisaseUpdateType(updateIndex, maxUpdateIndex, numDiseased, numTotal);
+				let updateType = this.getNextDisaseUpdateType(node.entity, updateIndex, maxUpdateIndex, numDiseased, numTotal);
 
 				log.i("disease update (" + (updateIndex + 1) + "/" + (maxUpdateIndex + 1) + "): " + updateType);
 
@@ -462,10 +462,13 @@ define([
 			return Math.min(maxPopulationByReputation, maxPopulationByHousing);
 		},
 
-		getNextDisaseUpdateType: function (updateIndex, maxUpdateIndex, numDiseased, numTotal) {
+		getNextDisaseUpdateType: function (sector, updateIndex, maxUpdateIndex, numDiseased, numTotal) {
 			if (updateIndex == 0) return CampConstants.DISEASE_UPDATE_TYPE_SPREAD;
 			if (updateIndex >= maxUpdateIndex) return CampConstants.DISEASE_UPDATE_TYPE_END;
 			if (updateIndex == maxUpdateIndex - 1 && numDiseased > 2) return CampConstants.DISEASE_UPDATE_TYPE_WANE;
+
+			let hasHerbs = GameGlobals.campHelper.hasHerbs(sector);
+			let hasMedicine = GameGlobals.campHelper.hasMedicine(sector);
 
 			let possibleTypes = [];
 
@@ -484,6 +487,8 @@ define([
 			if (numDiseased > 1) {
 				possibleTypes.push(CampConstants.DISEASE_UPDATE_TYPE_WANE);
 				possibleTypes.push(CampConstants.DISEASE_UPDATE_TYPE_WANE);
+				if (hasMedicine || hasHerbs) possibleTypes.push(CampConstants.DISEASE_UPDATE_TYPE_WANE);
+				if (hasMedicine) possibleTypes.push(CampConstants.DISEASE_UPDATE_TYPE_WANE);
 			}
 
 			return MathUtils.randomElement(possibleTypes);

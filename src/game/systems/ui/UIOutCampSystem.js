@@ -950,9 +950,8 @@
 
 			let showDisease = campComponent.population > 1;
 			if (showDisease) {
-				let storage = GameGlobals.resourcesHelper.getCurrentCampStorage(sector);
-				let hasHerbs = storage.resources.getResource(resourceNames.herbs) > 0;
-				let hasMedicine = storage.resources.getResource(resourceNames.medicine) > 0;
+				let hasHerbs = GameGlobals.campHelper.hasHerbs(sector);
+				let hasMedicine = GameGlobals.campHelper.hasMedicine(sector);
 				let apothecaryLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("apothecary", this.tribeUpgradesNodes.head.upgrades);
 				let diseaseChance = OccurrenceConstants.getDiseaseOutbreakChance(campComponent.population, hasHerbs, hasMedicine, apothecaryLevel);
 				let showDiseaseWarning = diseaseChance > CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD; // not related to defences but matching raid warning value
@@ -1219,9 +1218,8 @@
 			let sector = this.playerLocationNodes.head.entity;
 			let campComponent = sector.get(CampComponent);
 
-			let storage = GameGlobals.resourcesHelper.getCurrentCampStorage(sector);
-			let hasHerbs = storage.resources.getResource(resourceNames.herbs) > 0;
-			let hasMedicine = storage.resources.getResource(resourceNames.medicine) > 0;
+			let hasHerbs = GameGlobals.campHelper.hasHerbs(sector);
+			let hasMedicine = GameGlobals.campHelper.hasMedicine(sector);
 			let apothecaryLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("apothecary", this.tribeUpgradesNodes.head.upgrades);
 
 			let result = "Risk that a disease occurring in the camp turns into an outbreak";

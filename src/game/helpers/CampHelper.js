@@ -870,6 +870,16 @@ define([
 			}
 			return false;
 		},
+
+		hasMedicine: function (sector) {
+			let storage = GameGlobals.resourcesHelper.getCurrentCampStorage(sector);
+			return storage && storage.resources.getResource(resourceNames.medicine) > 0;
+		},
+
+		hasHerbs: function (sector) {
+			let storage = GameGlobals.resourcesHelper.getCurrentCampStorage(sector);
+			return storage && storage.resources.getResource(resourceNames.herbs) > 0;
+		},
 		
 		getRobotStorageCapacity: function (camp) {
 			let improvements = camp.get(SectorImprovementsComponent);

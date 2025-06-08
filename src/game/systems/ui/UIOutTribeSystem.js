@@ -408,9 +408,8 @@ define([
 			$("#camp-overview tr#" + rowID + " .camp-overview-raid .value").text(UIConstants.roundValue(raidDanger * 100) + "%");
 			$("#camp-overview tr#" + rowID + " .camp-overview-raid .value").toggleClass("warning", raidWarning);
 
-			let storage = GameGlobals.resourcesHelper.getCurrentCampStorage(node.entity);
-			let hasHerbs = storage.resources.getResource(resourceNames.herbs) > 0;
-			let hasMedicine = storage.resources.getResource(resourceNames.medicine) > 0;
+			let hasHerbs = GameGlobals.campHelper.hasHerbs(node.entity);
+			let hasMedicine = GameGlobals.campHelper.hasMedicine(node.entity);
 			let apothecaryLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("apothecary", this.tribeUpgradesNodes.head.upgrades);
 			let diseaseChance = OccurrenceConstants.getDiseaseOutbreakChance(camp.population, hasHerbs, hasMedicine, apothecaryLevel);
 			let diseaseWarning = diseaseChance > CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
