@@ -232,7 +232,7 @@ define([
 				rewards.gainedResources = this.getRewardResources(1, 1, efficiency, sectorResources);
 
 				let currencyModifier = this.getSectorCurrencyFindProbabilityModifier();
-				rewards.gainedCurrency = this.getRewardCurrency(currencyModifier, efficiency, clearedPercent);
+				rewards.gainedCurrency = this.getRewardCurrency(currencyModifier / 2, efficiency, clearedPercent);
 			}
 			
 			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound, null);
@@ -1478,8 +1478,8 @@ define([
 				return 0;
 			}
 			
-			let minAmount = 1 + Math.floor(campCount / 8);
-			let maxAmount = 2 + Math.floor(campCount / 4);
+			let minAmount = 1;
+			let maxAmount = 2 + Math.floor(campCount / 5);
 
 			return MathUtils.randomIntBetween(minAmount, maxAmount)
 		},
