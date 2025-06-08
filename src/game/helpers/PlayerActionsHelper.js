@@ -933,7 +933,7 @@ define([
 							let currentValue = caravan.traderOfferValue > 0 && caravan.traderOfferValue <= caravan.campOfferValue;
 							if (requiredValue != currentValue) {
 								if (requiredValue) {
-									return {value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_no_available_caravans")};
+									return {value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_invalid_trade_selection")};
 								} else {
 									return {value: 0, reason: this.getDisabledReasonVO(null, null, null, "valid selection")};
 								}
