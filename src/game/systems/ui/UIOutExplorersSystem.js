@@ -75,6 +75,7 @@ define([
 
 		update: function (time) {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
+			if (GameGlobals.gameState.uiStatus.isTransitioning) return;
 			this.updateBubble();
 			if (this.isPendingExplorerStatusUpdate) {
 				this.updateExplorersStatus();

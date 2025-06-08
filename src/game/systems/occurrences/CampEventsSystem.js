@@ -69,6 +69,7 @@ define([
 		update: function (time) {
 			if (GameGlobals.gameState.isPaused) return;
 			if (GameGlobals.gameState.isLaunched) return;
+			if (GameGlobals.gameState.uiStatus.isTransitioning) return;
 			let isInCamp = GameGlobals.playerHelper.isInCamp();
 			
 			for (let campNode = this.campNodes.head; campNode; campNode = campNode.next) {
