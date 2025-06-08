@@ -10,7 +10,6 @@ define([
 	'game/constants/StoryConstants',
 	'game/constants/WorldConstants',
 	'game/components/sector/EnemiesComponent',
-	'game/components/sector/SectorControlComponent',
 	'game/components/sector/FightComponent',
 	'game/components/sector/FightEncounterComponent',
 	'game/components/type/GangComponent',
@@ -20,7 +19,7 @@ define([
 	'worldcreator/EnemyCreator',
 ], function (
 	Ash, GameGlobals, GlobalSignals, GameConstants, EnemyConstants, PlayerActionConstants, FightConstants, StoryConstants, WorldConstants,
-	EnemiesComponent, SectorControlComponent, FightComponent, FightEncounterComponent, GangComponent,
+	EnemiesComponent, FightComponent, FightEncounterComponent, GangComponent,
 	PlayerLocationNode, PlayerStatsNode,
 	FaintingSystem, EnemyCreator
 ) {

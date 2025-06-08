@@ -1230,6 +1230,35 @@ define([
 			}
 			return true;
 		},
+
+		isExplorationBlockedByGang: function () {
+			for (let node = this.gangNodes.head; node; node = node.next) {
+				let gangPosition = node.entity.get(PositionComponent);
+
+				// already defeated
+				if (node.gang.isDefeated()) {
+					continue;
+				}
+
+				let sectors = this.getSectorsForGang(gangPosition);
+				let numScouted = 0;
+				for (let i = 0; i < sectors.length; i++) {
+					let statusComponent = sectors[i].get(SectorStatusComponent);
+					if (statusComponent.scouted) numScouted++;
+				}
+
+				// player not seen gang
+				if (numScouted == 0) continue;
+
+				// player been able to go around gang
+				if (numScouted == sectors.length) continue;
+
+				debugger
+				return true;
+			}
+
+			return false;
+		},
 		
 		isScoutedSectorWithFeature: function (sector, feature) {
 			let statusComponent = sector.get(SectorStatusComponent);

@@ -95,6 +95,7 @@ define([
 			if (explorerVO.trust > 7) levelUpChance *= 2;
 			if (explorerVO.inParty) levelUpChance *= 2;
 			if (explorerType == ExplorerConstants.explorerType.FIGHTER) levelUpChance *= 2;
+			if (explorerType == ExplorerConstants.explorerType.FIGHTER && !GameGlobals.playerHelper.hasAdequateFighter()) levelUpChance *= 2;
 			if (ExplorerConstants.isUnique(explorerVO)) levelUpChance *= 10;
 
 			if (Math.random() > levelUpChance) return;

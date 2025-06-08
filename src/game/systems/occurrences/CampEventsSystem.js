@@ -809,20 +809,7 @@ define([
 
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.recruit:
-					let campOrdinal = GameGlobals.campHelper.getCurrentCampOrdinal();
-					let campStep = GameGlobals.campHelper.getCurrentCampStep();
-					
-					let getExplorerFightTotal = function (explorer) {
-						if (!explorer) return 0;
-						return ExplorerConstants.getExplorerItemBonus(explorer, [], ItemConstants.itemBonusTypes.fight_att)
-							+ ExplorerConstants.getExplorerItemBonus(explorer, [], ItemConstants.itemBonusTypes.fight_def);
-					}
-					
-					let currentBestFighter = GameGlobals.playerHelper.getBestAvailableExplorer(ExplorerConstants.explorerType.FIGHTER, ExplorerConstants.abilityType.FLEE);
-					let typicalFighter = ExplorerConstants.getTypicalFighter(campOrdinal, campStep);
-					let currentBestTotal = getExplorerFightTotal(currentBestFighter);
-					let typicalTotal = getExplorerFightTotal(typicalFighter);
-					return currentBestTotal < 0.5 * typicalTotal;
+					return !GameGlobals.playerHelper.hasAdequateFighter() && GameGlobals.levelHelper.isExplorationBlockedByGang();
 				
 				case OccurrenceConstants.campOccurrenceTypes.disease:
 					return GameGlobals.gameState.getStoryFlag(StoryConstants.flags.GREENHOUSE_PENDING_DISEASE);
