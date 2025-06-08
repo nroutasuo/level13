@@ -249,6 +249,10 @@ define(['ash',
 			let forcedAnimal = forcedAbilityType && this.isAnimal(forcedAbilityType);
 			let forcedNotAnimal = forcedAbilityType && !this.isAnimal(forcedAbilityType);
 
+			if (source == ExplorerConstants.explorerSource.EVENT && Math.random() < 0.9) {
+				forcedNotAnimal = true;
+			}
+
 			for (let i = 0; i < this.templateExplorers.length; i++) {
 				let template = this.templateExplorers[i];
 
