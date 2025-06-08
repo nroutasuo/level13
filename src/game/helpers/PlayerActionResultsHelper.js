@@ -241,7 +241,7 @@ define([
 				let itemOptions = { rarityKey: "scavengeRarity", tags: itemTags };
 
 				if (rewards.gainedItems.length == 0) {
-					rewards.gainedItems = this.getRewardItems(0.02, 0.5, sectorIngredients, itemOptions);
+					rewards.gainedItems = this.getRewardItems(0.02, 0.55, sectorIngredients, itemOptions);
 				}
 			
 				if (rewards.foundStashVO == null && rewards.gainedCurrency == 0) {
@@ -1281,7 +1281,7 @@ define([
 				let displayName = explorer ? "<span class='hl-functionality'>" + explorer.name + "</span>" : "Explorers";
 				let displayFinds = " a blueprint";
 
-				if (resultVO.gainedBlueprintPiece) {
+				if (resultVO.gainedBlueprintPiece && Math.random() < 0.75) {
 					div += "<div>";
 					div += displayName + " found " + displayFinds;
 					div += "</div>";
