@@ -279,6 +279,8 @@ define([
 
 			let name = Text.t(UpgradeConstants.getDisplayNameTextKey(upgradeDefinition.id));
 
+			if (GameConstants.isDebugVersion) name += " <span class='debug-info'>" + upgradeDefinition.campOrdinal  + "</span>";
+
 			if (isSmallLayout) {
 				let nameAndDescriptionTD = "<td class='item-name'>" + name + (showDescription ? ("<br/>" + description) : "") + "</td>";
 				return "<tr data-upgrade-id='" + upgradeDefinition.id + "' data-status='" + status + "'>" + nameAndDescriptionTD + "" + blueprintTD + "" + iconTD + "" + buttonTD + "</tr>";
