@@ -2297,7 +2297,10 @@ define(['ash',
 			GlobalSignals.improvementBuiltSignal.dispatch();
 			this.save();
 
-			let msg = "Repaired " + Text.addArticle(displayName);
+			let msg = {
+				textKey: "ui.log.repaired_building_message",
+				textParams: { name: displayName },
+			};
 			GameGlobals.playerHelper.addLogMessage("MSG_ID_REPAIR_" + improvementName, msg, { position: sector.get(PositionComponent).getPositionInCamp() });
 		},
 
