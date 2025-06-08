@@ -59,7 +59,7 @@
         "rarityInvestigate": 4,
         "rarityLocale": 3,
         "rarityScavenge": 5,
-        "rarityTrade": 5,
+        "rarityTrade": 4,
         "tags": [ "community" ],
         "type": "artefact"
     },
@@ -226,8 +226,8 @@
         "rarityLocale": 9,
         "rarityScavenge": 6,
         "rarityTrade": -1,
-        "tradePrice": 0,
         "tags": [ "medical", "old", "community" ],
+        "tradePrice": 0,
         "type": "artefact"
     },
     "artefact_rescue_1": {
@@ -621,7 +621,7 @@
         "isEquippable": false,
         "isUseable": true,
         "rarityLocale": 4,
-        "rarityScavenge": 9,
+        "rarityScavenge": 8,
         "rarityTrade": 5,
         "tags": [ "perishable" ],
         "tradePrice": 2,
@@ -849,7 +849,7 @@
         "isUseable": true,
         "nameShort": "Juice boxes",
         "rarityLocale": 5,
-        "rarityScavenge": 9,
+        "rarityScavenge": 8,
         "rarityTrade": 5,
         "tags": [ "perishable" ],
         "tradePrice": 2,
@@ -2006,6 +2006,7 @@
         "rarityLocale": 5,
         "rarityScavenge": 3,
         "rarityTrade": 2,
+        "tradePrice": 1,
         "type": "exploration"
     },
     "exploration_3": {
