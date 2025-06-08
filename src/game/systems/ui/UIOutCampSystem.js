@@ -201,7 +201,7 @@
 
 			let freePopulation = Math.max(0, campComponent.getFreePopulation());
 
-			let newBubbleNumber = buildingNum + eventNum + visitorNum + freePopulation;
+			let newBubbleNumber = Math.max(0, buildingNum + eventNum + visitorNum + freePopulation);
 			
 			GameGlobals.uiFunctions.updateBubble("#switch-in .bubble", this.bubbleNumber, newBubbleNumber);
 			this.bubbleNumber = newBubbleNumber;
