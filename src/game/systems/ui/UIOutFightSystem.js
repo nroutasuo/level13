@@ -475,6 +475,8 @@ define([
 					return "workshop " + enemyActiveV + " " + Text.pluralify(enemyNoun);
 				case "fight_gang":
 					return Text.addArticle(enemyNoun) + " is blocking passage";
+				case "wait":
+					return "surprised by " + Text.addArticle(enemyNoun);
 				default:
 					return Text.addArticle(enemyNoun) + " approaches";
 			}
