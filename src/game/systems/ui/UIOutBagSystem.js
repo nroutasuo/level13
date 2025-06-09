@@ -79,26 +79,29 @@ define([
 
 		initCraftingButtons: function () {
 			var itemDefinitions = this.getCraftableItemDefinitionsByType();
-			var itemList;
-			var itemDefinition;
-			var div = "<div class='collapsible-container-group'>";
+			let div = "<div class='collapsible-container-group'>";
+
             for (let type in itemDefinitions) {
-				itemList = itemDefinitions[type];
+				let itemList = itemDefinitions[type];
 				if (itemList.length === 0) continue;
-				var tbl = "<table id='self-craft-" + type + "' class='fullwidth'>";
+
+				itemList = itemList.sort(UIConstants.sortItemsByRelevance);
+
+				let tbl = "<table id='self-craft-" + type + "' class='fullwidth'>";
 				for (let i in itemList) {
-					itemDefinition = itemList[i];
-					var trID = this.getItemCraftTRID(itemDefinition);
+					let itemDefinition = itemList[i];
+					let trID = this.getItemCraftTRID(itemDefinition);
 					tbl += "<tr id='" + trID + "'><td class='list-main'> " + this.makeCraftingButton(itemDefinition) + " </td></tr>";
 				}
 				tbl += "</table>";
 				let itemTypeName = ItemConstants.getItemTypeDisplayName(ItemConstants.itemTypes[type], true);
-				var header = "<p class='collapsible-header'>" + itemTypeName + "<span class='header-count'>0</span></p>"
-				var content = "<div class='collapsible-content'>" + tbl + "</div>"
-				var containerID = this.getItemCraftContainerID(type);
-				var container = "<div class='collapsible-container' id='" + containerID + "'>" + header + content + "</div>";
+				let header = "<p class='collapsible-header'>" + itemTypeName + "<span class='header-count'>0</span></p>"
+				let content = "<div class='collapsible-content'>" + tbl + "</div>"
+				let containerID = this.getItemCraftContainerID(type);
+				let container = "<div class='collapsible-container' id='" + containerID + "'>" + header + content + "</div>";
 				div = div + container;
 			}
+
 			div = div + "</div>";
 			$("#self-craft").append(div);
 		},
@@ -256,7 +259,6 @@ define([
 			this.craftableItems = 0;
 			this.numCraftableUnlockedUnseen = 0;
 
-			var itemsComponent = this.itemNodes.head.items;
 			var itemDefinitions = this.getCraftableItemDefinitionsByType();
 			var countObsolete = 0;
 
@@ -280,7 +282,6 @@ define([
 					var tr = $("#" + trID);
 					var isUnlocked = this.isItemUnlocked(itemDefinition);
 					var isObsolete = this.isObsolete(itemDefinition);
-					var isAvailable = isUnlocked && GameGlobals.playerActionsHelper.checkAvailability(actionName, false);
 					var isVisible = isUnlocked && (!isObsolete || showObsolete);
 
 					if (isUnlocked && isObsolete) countObsolete++;
