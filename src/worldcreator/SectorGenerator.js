@@ -1740,6 +1740,8 @@ define([
 				let options = { excludingFeature: excludedFeatures };
 				let sector = WorldCreatorRandom.randomSectors(seed, worldVO, levelVO, 1, 2, options)[0];
 				if (def.type == localeTypes.grove) sector.sunlit = 1;
+				if (def.type == localeTypes.grove) sector.resourcesScavengable.food = Math.max(sector.resourcesScavengable.food, 3);
+				if (def.type == localeTypes.grove) sector.resourcesScavengable.water = Math.max(sector.resourcesScavengable.water, 3);
 				sector.hazards.radiation = 0;
 				sector.hazards.poison = 0;
 				let localeVO = new LocaleVO(def.type, def.isEarly, def.isEarly);
