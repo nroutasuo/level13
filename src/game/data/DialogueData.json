@@ -1337,6 +1337,19 @@
 				}
 			]
 		},
+		"character_generic_story_warn_ground_03": {
+			"conditions": {
+				"sector": {
+					"ground": true
+				}
+			},
+			"pages": [
+				{
+					"id": "warn",
+					"key": "character_generic_story_warn_ground_03_p1"
+				}
+			]
+		},
 		"character_generic_stranded_meet_directions": {
 			"pages": [
 				{
@@ -2962,11 +2975,11 @@
 			]
 		},
 		"explorer_generic_interact_directions_01": {
-			"isPriority": true,
 			"conditions": {
 				"inCamp": false,
 				"vicinity": "poi"
 			},
+			"isPriority": true,
 			"pages": [
 				"explorer_generic_interact_directions_01_p1"
 			]
@@ -2981,11 +2994,11 @@
 			]
 		},
 		"explorer_generic_interact_directions_explore_01": {
-			"isPriority": true,
 			"conditions": {
 				"inCamp": false,
 				"vicinity": "poi"
 			},
+			"isPriority": true,
 			"pages": [
 				"explorer_generic_interact_directions_explore_01_p1"
 			]
@@ -3000,7 +3013,6 @@
 			"text": "I have no idea which way we should go."
 		},
 		"explorer_generic_interact_directions_safety_01": {
-			"isPriority": true,
 			"conditions": {
 				"inCamp": false,
 				"level": {
@@ -3008,6 +3020,7 @@
 				},
 				"vicinity": "campable"
 			},
+			"isPriority": true,
 			"pages": [
 				"explorer_generic_interact_directions_safety_01_p1"
 			]
@@ -3200,7 +3213,6 @@
 			]
 		},
 		"explorer_generic_intract_new_camp_7_01": {
-			"isUnique": true,
 			"conditions": {
 				"explorer": {
 					"trust": 2
@@ -3209,6 +3221,7 @@
 				"maxNumCamps": 7,
 				"numCamps": 7
 			},
+			"isUnique": true,
 			"pages": [
 				"explorer_generic_intract_new_camp_7_01_p1"
 			]
@@ -4472,7 +4485,6 @@
 			]
 		},
 		"explorer_template_darkdweller_interact_directions_safety_01": {
-			"isPriority": true,
 			"conditions": {
 				"inCamp": false,
 				"level": {
@@ -4480,6 +4492,7 @@
 				},
 				"vicinity": "campable"
 			},
+			"isPriority": true,
 			"pages": [
 				"explorer_template_darkdweller_interact_directions_safety_01_p1"
 			]
@@ -5052,6 +5065,10 @@
 		},
 		"explorer_template_researcher_interact_08": {
 			"conditions": {
+				"explorer": {
+					"trust": 3
+				},
+				"numCamps": 9,
 				"storyFlags": {
 					"ESCAPE_SEARCHING_FOR_GROUND": false
 				}
@@ -5151,6 +5168,34 @@
 			},
 			"pages": [
 				"explorer_template_researcher_story_apocalypse_plan_ready_01_p1"
+			]
+		},
+		"explorer_template_researcher_story_ground_01": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				},
+				"numCamps": 8,
+				"storyFlags": {
+					"ESCAPE_SEARCHING_FOR_GROUND": false
+				}
+			},
+			"pages": [
+				"explorer_template_researcher_story_ground_01_p1"
+			]
+		},
+		"explorer_template_researcher_story_ground_02": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				},
+				"numCamps": 8,
+				"storyFlags": {
+					"ESCAPE_SEARCHING_FOR_GROUND": false
+				}
+			},
+			"pages": [
+				"explorer_template_researcher_story_ground_02_p1"
 			]
 		},
 		"explorer_template_servo_interact_01": {
@@ -5735,6 +5780,19 @@
 			},
 			"pages": [
 				"explorer_unique_gambler_story_spirits_outro_01_p1"
+			]
+		},
+		"explorer_unique_gambler_story_spirits_found_01": {
+			"isPriority": true,
+			"conditions": {
+				"numCamps": 8,
+				"storyFlags": {
+					"SPIRITS_SEARCHING_FOR_SPIRITS": false
+				}
+			},
+			"repeatable": false,
+			"pages": [
+				"explorer_unique_gambler_story_spirits_found_01_p1"
 			]
 		},
 		"explorer_unique_gambler_story_spirits_outro_02": {
@@ -7365,6 +7423,7 @@
 			]
 		},
 		"locale_story_grove": {
+			"titleKey": "story.stories.locale_story_grove_title",
 			"pages": [
 				"story.stories.locale_story_grove_p1",
 				"story.stories.locale_story_grove_p2"
@@ -7682,7 +7741,8 @@
 					"character_generic_story_searching_for_greenhouse_01",
 					"character_generic_story_searching_for_greenhouse_02",
 					"character_generic_story_warn_ground_01",
-					"character_generic_story_warn_ground_02"
+					"character_generic_story_warn_ground_02",
+					"character_generic_story_warn_ground_03"
 				]
 			}
 		},
@@ -7721,11 +7781,12 @@
 					"character_generic_story_explain_ground_02",
 					"character_generic_story_explain_ground_03",
 					"character_generic_story_explain_ground_04",
+					"character_generic_story_fall_theory_terrorists",
 					"character_generic_story_l14_01",
 					"character_generic_story_searching_for_greenhouse_01",
 					"character_generic_story_searching_for_greenhouse_02",
 					"character_generic_story_warn_ground_01",
-					"character_generic_story_fall_theory_terrorists"
+					"character_generic_story_warn_ground_03"
 				]
 			}
 		},
@@ -7742,6 +7803,7 @@
 					"character_generic_story_fall_theory_government",
 					"character_generic_story_government_negative",
 					"character_generic_story_l14_01",
+					"character_generic_story_warn_ground_03",
 					"character_workerGeneric_default_interact_01",
 					"character_workerGeneric_interact_overcrowded_01",
 					"character_workerGeneric_interact_spirits_01",
@@ -7815,6 +7877,7 @@
 					"character_generic_story_searching_for_greenhouse_02",
 					"character_generic_story_warn_ground_01",
 					"character_generic_story_warn_ground_02",
+					"character_generic_story_warn_ground_03",
 					"character_generic_stranded_meet_water"
 				]
 			}
@@ -7829,27 +7892,28 @@
 					"character_hunter_default_meet_05",
 					"character_hunter_default_meet_06",
 					"character_generic_reserved_meet_01",
-					"character_generic_reserved_meet_02",
+					"character_generic_helpful_meet_poi_blocker_debris_01",
+					"character_generic_helpful_meet_poi_blocker_explosives_01",
+					"character_generic_helpful_meet_poi_blocker_gap_01",
+					"character_generic_helpful_meet_poi_blocker_gate_01",
+					"character_generic_helpful_meet_poi_blocker_waste_01",
 					"character_generic_helpful_meet_poi_campable_01",
 					"character_generic_helpful_meet_poi_campable_02",
+					"character_generic_helpful_meet_poi_hazard_cold_01",
+					"character_generic_helpful_meet_poi_hazard_debris_01",
+					"character_generic_helpful_meet_poi_hazard_flooded_01",
+					"character_generic_helpful_meet_poi_hazard_pollution_01",
+					"character_generic_helpful_meet_poi_hazard_radiation_01",
+					"character_generic_helpful_meet_poi_hazard_territory_01",
+					"character_generic_helpful_meet_poi_ingredients_01",
 					"character_generic_helpful_meet_poi_settlement",
 					"character_generic_helpful_meet_poi_water_01",
 					"character_generic_helpful_meet_poi_water_02",
-					"character_generic_helpful_meet_poi_hazard_pollution_01",
-					"character_generic_helpful_meet_poi_hazard_radiation_01",
-					"character_generic_helpful_meet_poi_hazard_cold_01",
+					"character_generic_reserved_meet_02",
+					"character_generic_story_fall_theory_aliens",
 					"character_generic_story_searching_for_greenhouse_01",
 					"character_generic_story_searching_for_greenhouse_02",
-					"character_generic_helpful_meet_poi_hazard_debris_01",
-					"character_generic_helpful_meet_poi_hazard_flooded_01",
-					"character_generic_helpful_meet_poi_hazard_territory_01",
-					"character_generic_helpful_meet_poi_blocker_gap_01",
-					"character_generic_helpful_meet_poi_blocker_waste_01",
-					"character_generic_helpful_meet_poi_blocker_debris_01",
-					"character_generic_helpful_meet_poi_blocker_explosives_01",
-					"character_generic_helpful_meet_poi_blocker_gate_01",
-					"character_generic_helpful_meet_poi_ingredients_01",
-					"character_generic_story_fall_theory_aliens"
+					"character_generic_story_warn_ground_03"
 				]
 			}
 		},
@@ -7882,6 +7946,7 @@
 					"character_generic_story_searching_for_greenhouse_01",
 					"character_generic_story_searching_for_greenhouse_02",
 					"character_generic_story_warn_ground_01",
+					"character_generic_story_warn_ground_03",
 					"character_mercenary_default_meet_01",
 					"character_mercenary_default_meet_02",
 					"character_mercenary_default_meet_03",
@@ -7899,27 +7964,28 @@
 					"character_messenger_default_meet_05",
 					"character_generic_reserved_meet_01",
 					"character_generic_reserved_meet_02",
+					"character_generic_helpful_meet_poi_blocker_debris_01",
+					"character_generic_helpful_meet_poi_blocker_explosives_01",
+					"character_generic_helpful_meet_poi_blocker_gap_01",
+					"character_generic_helpful_meet_poi_blocker_gate_01",
+					"character_generic_helpful_meet_poi_blocker_waste_01",
 					"character_generic_helpful_meet_poi_campable_01",
 					"character_generic_helpful_meet_poi_campable_02",
+					"character_generic_helpful_meet_poi_hazard_cold_01",
+					"character_generic_helpful_meet_poi_hazard_debris_01",
+					"character_generic_helpful_meet_poi_hazard_flooded_01",
+					"character_generic_helpful_meet_poi_hazard_pollution_01",
+					"character_generic_helpful_meet_poi_hazard_radiation_01",
+					"character_generic_helpful_meet_poi_hazard_territory_01",
+					"character_generic_helpful_meet_poi_ingredients_01",
 					"character_generic_helpful_meet_poi_settlement",
 					"character_generic_helpful_meet_poi_water_01",
 					"character_generic_helpful_meet_poi_water_02",
-					"character_generic_helpful_meet_poi_hazard_pollution_01",
-					"character_generic_helpful_meet_poi_hazard_radiation_01",
-					"character_generic_helpful_meet_poi_hazard_cold_01",
+					"character_generic_story_fall_theory_spirits",
 					"character_generic_story_searching_for_greenhouse_01",
 					"character_generic_story_searching_for_greenhouse_02",
-					"character_generic_helpful_meet_poi_hazard_debris_01",
-					"character_generic_helpful_meet_poi_hazard_flooded_01",
-					"character_generic_helpful_meet_poi_hazard_territory_01",
-					"character_generic_helpful_meet_poi_blocker_gap_01",
-					"character_generic_helpful_meet_poi_blocker_waste_01",
-					"character_generic_helpful_meet_poi_blocker_debris_01",
-					"character_generic_helpful_meet_poi_blocker_explosives_01",
-					"character_generic_helpful_meet_poi_blocker_gate_01",
-					"character_generic_helpful_meet_poi_ingredients_01",
-					"character_generic_stranded_meet_water",
-					"character_generic_story_fall_theory_spirits"
+					"character_generic_story_warn_ground_03",
+					"character_generic_stranded_meet_water"
 				]
 			}
 		},
@@ -7951,6 +8017,7 @@
 					"character_generic_story_l14_01",
 					"character_generic_story_searching_for_greenhouse_01",
 					"character_generic_story_searching_for_greenhouse_02",
+					"character_generic_story_warn_ground_03",
 					"character_generic_stranded_meet_directions",
 					"character_generic_stranded_meet_water",
 					"character_scavenger_default_meet_02",
@@ -8000,41 +8067,42 @@
 					"character_workerGeneric_interact_spirits_01",
 					"character_workerGeneric_interact_spirits_02",
 					"character_workerGeneric_interact_spirits_03",
-					"character_generic_story_government_negative",
-					"character_generic_story_government_neg2pos"
+					"character_generic_story_government_negative"
 				],
 				"meet": [
-					"character_slumRefugee_default_meet_01",
-					"character_slumRefugee_default_meet_02",
-					"character_slumRefugee_default_meet_03",
-					"character_slumRefugee_default_meet_04",
-					"character_slumRefugee_default_meet_05",
-					"character_generic_helpful_meet_poi_campable_01",
-					"character_generic_helpful_meet_poi_campable_02",
-					"character_generic_helpful_meet_poi_settlement",
-					"character_generic_helpful_meet_poi_water_01",
-					"character_generic_helpful_meet_poi_water_02",
-					"character_generic_story_searching_for_greenhouse_01",
-					"character_generic_story_searching_for_greenhouse_02",
-					"character_generic_helpful_meet_poi_hazard_pollution_01",
-					"character_generic_helpful_meet_poi_hazard_radiation_01",
-					"character_generic_helpful_meet_poi_hazard_cold_01",
-					"character_generic_helpful_meet_poi_hazard_debris_01",
-					"character_generic_helpful_meet_poi_hazard_flooded_01",
-					"character_generic_helpful_meet_poi_hazard_territory_01",
 					"character_generic_helpful_meet_poi_blocker_gap_01",
-					"character_generic_helpful_meet_poi_blocker_waste_01",
 					"character_generic_helpful_meet_poi_blocker_debris_01",
 					"character_generic_helpful_meet_poi_blocker_explosives_01",
 					"character_generic_helpful_meet_poi_blocker_gate_01",
+					"character_generic_helpful_meet_poi_blocker_waste_01",
+					"character_generic_helpful_meet_poi_campable_01",
+					"character_generic_helpful_meet_poi_campable_02",
+					"character_generic_helpful_meet_poi_hazard_cold_01",
+					"character_generic_helpful_meet_poi_hazard_debris_01",
+					"character_generic_helpful_meet_poi_hazard_flooded_01",
+					"character_generic_helpful_meet_poi_hazard_pollution_01",
+					"character_generic_helpful_meet_poi_hazard_radiation_01",
+					"character_generic_helpful_meet_poi_hazard_territory_01",
 					"character_generic_helpful_meet_poi_ingredients_01",
-					"character_generic_stranded_meet_water",
-					"character_generic_stranded_meet_directions",
+					"character_generic_helpful_meet_poi_settlement",
+					"character_generic_helpful_meet_poi_water_01",
+					"character_generic_helpful_meet_poi_water_02",
 					"character_generic_story_explain_ground_01",
 					"character_generic_story_explain_ground_02",
 					"character_generic_story_explain_ground_03",
 					"character_generic_story_explain_ground_04",
-					"character_generic_story_fall_theory_hackers"
+					"character_generic_story_fall_theory_hackers",
+					"character_generic_story_government_neg2pos",
+					"character_generic_story_searching_for_greenhouse_01",
+					"character_generic_story_searching_for_greenhouse_02",
+					"character_generic_story_warn_ground_03",
+					"character_generic_stranded_meet_directions",
+					"character_generic_stranded_meet_water",
+					"character_slumRefugee_default_meet_01",
+					"character_slumRefugee_default_meet_02",
+					"character_slumRefugee_default_meet_03",
+					"character_slumRefugee_default_meet_04",
+					"character_slumRefugee_default_meet_05"
 				]
 			}
 		},
@@ -8074,6 +8142,7 @@
 					"character_generic_story_government_pos2neg",
 					"character_generic_story_searching_for_greenhouse_01",
 					"character_generic_story_searching_for_greenhouse_02",
+					"character_generic_story_warn_ground_03",
 					"character_generic_stranded_meet_directions",
 					"character_generic_stranded_meet_water",
 					"character_surfaceRefugee_default_meet_01",
@@ -8103,6 +8172,7 @@
 					"character_generic_helpful_meet_poi_water_01",
 					"character_generic_helpful_meet_poi_water_02",
 					"character_generic_reserved_meet_01",
+					"character_generic_story_government_neg2pos",
 					"character_generic_story_government_negative",
 					"character_trader_default_meet_01",
 					"character_trader_default_meet_02"
@@ -8113,19 +8183,20 @@
 			"dialogues": {
 				"interact": [
 					"character_workerApothecary_default_interact_01",
+					"character_generic_story_government_neg2pos",
 					"character_workerApothecary_default_interact_02",
 					"character_workerApothecary_default_interact_03",
-					"character_workerGeneric_interact_overcrowded_01",
-					"character_workerGeneric_interact_disease_01",
-					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_default_interact_01",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_interact_disease_01",
+					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_overcrowded_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_02",
 					"character_workerGeneric_interact_spirits_01",
 					"character_workerGeneric_interact_spirits_02",
 					"character_workerGeneric_interact_spirits_03",
-					"character_workerGeneric_default_interact_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_03",
@@ -8136,16 +8207,17 @@
 		"character_workerChemist_default": {
 			"dialogues": {
 				"interact": [
+					"character_generic_story_government_neg2pos",
 					"character_workerChemist_default_interact_01",
 					"character_workerChemist_default_interact_02",
+					"character_workerGeneric_default_interact_01",
+					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
 					"character_workerGeneric_interact_searching_for_greenhouse_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_02",
-					"character_workerGeneric_default_interact_01",
-					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_03",
@@ -8213,9 +8285,8 @@
 		"character_workerRobotmaker_default": {
 			"dialogues": {
 				"interact": [
-					"character_workerRobotmaker_default_interact_01",
-					"character_workerRobotmaker_default_interact_02",
-					"character_workerRobotmaker_default_interact_03",
+					"character_generic_story_government_neg2pos",
+					"character_workerGeneric_default_interact_01",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_disease_01",
@@ -8223,7 +8294,9 @@
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_04",
-					"character_workerGeneric_default_interact_01",
+					"character_workerRobotmaker_default_interact_01",
+					"character_workerRobotmaker_default_interact_02",
+					"character_workerRobotmaker_default_interact_03",
 					"character_workerGeneric_default_interact_02"
 				]
 			}
@@ -9162,6 +9235,8 @@
 					"explorer_template_researcher_interact_01",
 					"explorer_template_researcher_interact_02",
 					"explorer_template_researcher_interact_03",
+					"explorer_template_researcher_story_ground_01",
+					"explorer_template_researcher_story_ground_02",
 					"explorer_template_researcher_interact_04",
 					"explorer_template_researcher_interact_05",
 					"explorer_template_researcher_interact_06",
@@ -9279,6 +9354,7 @@
 					"explorer_unique_gambler_story_search_spirits_02",
 					"explorer_unique_gambler_story_search_spirits_03",
 					"explorer_unique_gambler_story_seen_storehouse_01",
+					"explorer_unique_gambler_story_spirits_found_01",
 					"explorer_unique_gambler_story_spirits_intro_01",
 					"explorer_unique_gambler_story_spirits_outro_01",
 					"explorer_unique_gambler_story_spirits_outro_02"

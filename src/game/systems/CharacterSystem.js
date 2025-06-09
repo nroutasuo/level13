@@ -269,6 +269,7 @@ define([
 			let isCampable = GameGlobals.levelHelper.isLevelCampable(sectorPosition.level);
 			let condition = sectorFeatures.getCondition();
 			let isEarlyZone = sectorFeatures.isEarlyZone();
+			let isGround = sectorPosition.level == GameGlobals.gameState.getGroundLevel();
 
 			let distanceToCamp = 99;
 
@@ -318,6 +319,11 @@ define([
 			if (sectorFeatures.sunlit) {
 				validTypes.push(CharacterConstants.characterTypes.hunter);
 			}
+
+			if (isGround) {
+				validTypes.push(CharacterConstants.characterTypes.hunter);
+				validTypes.push(CharacterConstants.characterTypes.shaman);
+			}
 			
 			if (sectorFeatures.resourcesCollectable.food > 0) {
 				validTypes.push(CharacterConstants.characterTypes.hunter);
@@ -331,7 +337,7 @@ define([
 				validTypes.push(CharacterConstants.characterTypes.mercenary);
 			}
 
-			if (sectorFeatures.sectorType == SectorConstants.SECTOR_TYPE_MAINTENANCE) {
+			if (!isGround && sectorFeatures.sectorType == SectorConstants.SECTOR_TYPE_MAINTENANCE) {
 				validTypes.push(CharacterConstants.characterTypes.messenger);
 			}
 
@@ -363,7 +369,7 @@ define([
 				validTypes.push(CharacterConstants.characterTypes.slumRefugee);
 			}
 
-			if (condition == SectorConstants.SECTOR_CONDITION_MAINTAINED || condition == SectorConstants.SECTOR_CONDITION_RECENT) {
+			if (sectorPosition.level > 3 && condition == SectorConstants.SECTOR_CONDITION_MAINTAINED || condition == SectorConstants.SECTOR_CONDITION_RECENT) {
 				validTypes.push(CharacterConstants.characterTypes.surfaceRefugee);
 			}
 			

@@ -1340,6 +1340,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			if (featuresComponent.wear > 6 || featuresComponent.damage > 3) {
 				return "leaking water pipe";
 			}
+			
 			return "water tower";
 		},
 		

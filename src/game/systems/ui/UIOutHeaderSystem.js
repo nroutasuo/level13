@@ -1136,6 +1136,8 @@ define([
 			let playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
 			let campComponent = this.currentLocationNodes.head.entity.get(CampComponent);
 			let isInCamp = playerPosition.inCamp;
+			let isGround = playerPosition.level == GameGlobals.gameState.getGroundLevel();
+			let isSurface = playerPosition.level == GameGlobals.gameState.getSurfaceLevel();
 
 			let headerText; 
 			if (isInCamp && campComponent) { 
@@ -1145,6 +1147,10 @@ define([
 				} else {
 					headerText = Text.t("ui.main.location_header_in_default", { name: campComponent.getName(), level: playerPosition.level });
 				}
+			} else if (isGround) {
+				headerText = Text.t("ui.main.location_header_out_ground", playerPosition.level);
+			} else if (isSurface) {
+				headerText = Text.t("ui.main.location_header_out_surface", playerPosition.level);
 			} else {
 				headerText = Text.t("ui.main.location_header_out", playerPosition.level);
 			}

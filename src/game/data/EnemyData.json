@@ -12,6 +12,7 @@
 	},
 	"albino_salamander__basic": {
 		"campOrdinal": 4,
+		"environment": [ "dark "],
 		"name": "albino salamander"
 	},
 	"albino_salamander__deformed": {

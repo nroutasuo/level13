@@ -154,6 +154,18 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 				chance: 0.01,
 				message: "The darkness shifts and twists and presses closer."
 			},
+			"ground_wonder_01": {
+				triggers: [ "change_position" ],
+				conditions: { sector: { ground: true }, sunlit: false },
+				chance: 0.03,
+				message: "There is an almost constant rustle all around you, even though you can't see anything."
+			},
+			"ground_wonder_02": {
+				triggers: [ "change_position" ],
+				conditions: { sector: { ground: true }, sunlit: true },
+				chance: 0.03,
+				message: "Somewhere not far away, several birds are chirping."
+			},
 			"story_rescue_prospector_missing_01": {
 				triggers: [ "change_position" ],
 				conditions: { inCamp: false, storyFlags: {  "RESCUE_EXPLORER_LEFT": true } },
