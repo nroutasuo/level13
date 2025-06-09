@@ -1188,6 +1188,7 @@ define(['ash',
 			let logMsgFailBase = "Approached the " + springName + ", but got attacked. ";
 			
 			let messages = {
+				popupTitle: springName,
 				id: LogConstants.MSG_ID_USE_SPRING,
 				msgSuccess: "Refilled water at the " + springName + ".",
 				msgFlee: logMsgFailBase + "Fled empty-handed.",
@@ -1437,7 +1438,7 @@ define(['ash',
 		handleActionRewards: function (action, rewards, messages, callback, showResultPopup) {
 			let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
 
-			let popupTitle = TextConstants.getActionName(baseActionID);
+			let popupTitle = messages.popupTitle || TextConstants.getActionName(baseActionID);
 			let popupMsg = messages.msgSuccess;
 
 			let logMsg = messages.msgSuccess;
