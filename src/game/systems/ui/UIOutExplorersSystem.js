@@ -293,7 +293,7 @@ define([
 				$(questIndicator).toggleClass("hidden", questTextKey == null);
 
 				// callout
-				let calloutContent = UIConstants.getExplorerCallout(explorerVO, true, inCamp, questTextKey, isForced);
+				let calloutContent = UIConstants.getExplorerCallout(explorerVO, true, inCamp, false, questTextKey, isForced);
 				UIConstants.updateCalloutContent($(this), calloutContent)
 
 				// bubble
