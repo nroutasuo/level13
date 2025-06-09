@@ -26,7 +26,7 @@ define(['ash', 'utils/MathUtils', 'game/constants/CampConstants', 'game/constant
 			recruit: 60 * 5,
 			refugees: 60 * 10,
 			trader: 60 * 10,
-			visitor: 60 * 5,
+			visitor: 60 * 10,
 		},
 
 		campOccurrenceCooldowns: {
