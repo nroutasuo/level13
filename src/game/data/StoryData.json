@@ -614,7 +614,10 @@
                     "startTrigger": "action_enter_camp"
                 },
                 {
-                    "id": "prospector_gone"
+                    "id": "prospector_gone",
+                    "onStart": {
+                        "log": "stroy.stories.rescue_explorer_left_message"
+                    }
                 },
                 {
                     "id": "start_search",
