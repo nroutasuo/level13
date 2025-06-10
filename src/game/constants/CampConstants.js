@@ -351,7 +351,7 @@ define(['ash', 'text/Text', 'game/vos/ResourcesVO'], function (Ash, Text, Resour
 		getMeditationSuccessRate: function (shrineLevel, majorLevel) {
 			shrineLevel = shrineLevel || 1;
 			majorLevel = majorLevel || 1;
-			return 0.5 + (majorLevel - 1) * 0.2;
+			return 0.55 + (majorLevel - 1) * 0.2;
 		},
 
 		getNextDiseaseUpdateTimer: function () {
