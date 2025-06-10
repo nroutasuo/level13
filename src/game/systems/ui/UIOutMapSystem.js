@@ -119,7 +119,8 @@ define([
 			var surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
 			var groundLevel = GameGlobals.gameState.getGroundLevel();
 			for (let i = surfaceLevel; i >= groundLevel; i--) {
-				html += "<option value='" + i + "' id='map-level-selector-level-" + i + "'>Level " + i + "</option>"
+				let label = this.getLevelSelectorOptionLabel(i);
+				html += "<option value='" + i + "' id='map-level-selector-level-" + i + "'>" + label + "</option>"
 			}
 			$("#select-header-level").append(html);
 		},
@@ -152,11 +153,26 @@ define([
 				let isCleared = levelStats.percentClearedSectors >= 1;
 				GameGlobals.uiFunctions.toggle($elem, isVisible);
 				if (isVisible) {
-					$elem.text("Level " + i + " " + (isCleared ? "(x)" : "(-)"));
+					$elem.text(this.getLevelSelectorOptionLabel(i, isCleared));
 					countVisible++;
 				}
 			}
 			GameGlobals.uiFunctions.toggle($("#select-header-level"), countVisible > 1);
+		},
+
+		getLevelSelectorOptionLabel: function (level, isCleared) {
+				let surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
+				let groundLevel = GameGlobals.gameState.getGroundLevel();
+
+				let result = "Level " + level;
+				
+				if (level == surfaceLevel) result = "Surface";
+				if (level == groundLevel) result = "Ground";
+
+				if (isCleared) result += " (x)";
+				else result += " (-)";
+
+				return result;
 		},
 
 		selectLevel: function (level) {
