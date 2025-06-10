@@ -145,6 +145,7 @@ define(['ash',
                     if (!explorerVO) return false;
                     if (conditions.explorer.trust && conditions.explorer.trust > explorerVO.trust) return false;
                     if (conditions.explorer.maxTrust && conditions.explorer.maxTrust < explorerVO.trust) return false;
+                    if (typeof conditions.explorer.inParty !== "undefined" && conditions.explorer.inParty != explorerVO.inParty) return false;
                     if (conditions.explorer.injured && explorerVO.injuredTimer <= 0) return false;
                     if (conditions.explorer.abilityType && explorerVO.abilityType != conditions.explorer.abilityType) return false;
                     if (conditions.explorer.quest && GameGlobals.storyHelper.getExplorerQuestStories(explorerVO).indexOf(conditions.explorer.quest) <0) return false;

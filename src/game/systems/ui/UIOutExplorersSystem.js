@@ -267,7 +267,7 @@ define([
 				let isSelected = explorerVO && explorerVO.inParty == true;
 				let questTextKey = sys.getQuestTextKey(explorerVO);
 				let isForced = explorerVO.id == forcedExplorerID;
-				let isInjuredInParty = explorerVO.injuredTimer >= 0 && explorerVO.inParty;
+				let isForcedNotInParty = isForced && !explorerVO.inParty;
 
 				let hasUrgentDialogue = sys.hasExplorerUrgentDialogue(explorerVO, true);
 
@@ -297,7 +297,7 @@ define([
 				UIConstants.updateCalloutContent($(this), calloutContent)
 
 				// bubble
-				let hasBubble = hasUrgentDialogue || isInjuredInParty || isForced;
+				let hasBubble = hasUrgentDialogue || isForcedNotInParty;
 				let bubble = $(this).find(".bubble");
 				$(bubble).toggleClass("hidden", !hasBubble);
 			});

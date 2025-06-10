@@ -3025,37 +3025,168 @@
 				"explorer_generic_interact_directions_safety_01_p1"
 			]
 		},
-		"explorer_generic_interact_injured_01": {
+		"explorer_generic_interact_injured_outside_01": {
 			"conditions": {
 				"explorer": {
 					"injured": true
-				}
+				},
+				"inCamp": false
 			},
 			"isPriority": true,
 			"pages": [
-				"explorer_generic_interact_injured_01_p1"
+				"explorer_generic_interact_injured_outside_01_p1"
 			]
 		},
-		"explorer_generic_interact_injured_02": {
+		"explorer_generic_interact_injured_outside_02": {
 			"conditions": {
 				"explorer": {
 					"injured": true
-				}
+				},
+				"inCamp": false
 			},
 			"isPriority": true,
 			"pages": [
-				"explorer_generic_interact_injured_02_p1"
+				"explorer_generic_interact_injured_outside_02_p1"
 			]
 		},
-		"explorer_generic_interact_injured_03": {
+		"explorer_generic_interact_injured_outside_03": {
 			"conditions": {
 				"explorer": {
 					"injured": true
-				}
+				},
+				"inCamp": false
 			},
 			"isPriority": true,
 			"pages": [
-				"explorer_generic_interact_injured_03_p1"
+				"explorer_generic_interact_injured_outside_03_p1"
+			]
+		},
+		"explorer_generic_interact_injured_outside_04": {
+			"conditions": {
+				"explorer": {
+					"injured": true
+				},
+				"inCamp": false
+			},
+			"isPriority": true,
+			"pages": [
+				"explorer_generic_interact_injured_outside_04_p1"
+			]
+		},
+		"explorer_generic_interact_injured_party_01": {
+			"conditions": {
+				"explorer": {
+					"injured": true,
+					"inParty": true
+				},
+				"inCamp": true
+			},
+			"isPriority": true,
+			"pages": [
+				{
+					"key": "explorer_generic_interact_injured_party_01_p1",
+					"metaKey": "ui.characters.explorer_injured_in_party_hint"
+				}
+			]
+		},
+		"explorer_generic_interact_injured_party_02": {
+			"conditions": {
+				"explorer": {
+					"injured": true,
+					"inParty": true
+				},
+				"inCamp": true
+			},
+			"isPriority": true,
+			"pages": [
+				{
+					"key": "explorer_generic_interact_injured_party_02_p1",
+					"metaKey": "ui.characters.explorer_injured_in_party_hint"
+				}
+			]
+		},
+		"explorer_generic_interact_injured_party_03": {
+			"conditions": {
+				"explorer": {
+					"injured": true,
+					"inParty": true
+				},
+				"inCamp": true
+			},
+			"isPriority": true,
+			"pages": [
+				{
+					"key": "explorer_generic_interact_injured_party_03_p1",
+					"metaKey": "ui.characters.explorer_injured_in_party_hint"
+				}
+			]
+		},
+		"explorer_generic_interact_injured_party_04": {
+			"conditions": {
+				"explorer": {
+					"injured": true,
+					"inParty": true
+				},
+				"inCamp": true
+			},
+			"isPriority": true,
+			"pages": [
+				{
+					"key": "explorer_generic_interact_injured_party_04_p1",
+					"metaKey": "ui.characters.explorer_injured_in_party_hint"
+				}
+			]
+		},
+		"explorer_generic_interact_injured_recovering_01": {
+			"conditions": {
+				"explorer": {
+					"injured": true,
+					"inParty": false
+				},
+				"inCamp": true
+			},
+			"isPriority": true,
+			"pages": [
+				"explorer_generic_interact_injured_recovering_01_p1"
+			]
+		},
+		"explorer_generic_interact_injured_recovering_02": {
+			"conditions": {
+				"explorer": {
+					"injured": true,
+					"inParty": false
+				},
+				"inCamp": true
+			},
+			"isPriority": true,
+			"pages": [
+				"explorer_generic_interact_injured_recovering_02_p1"
+			]
+		},
+		"explorer_generic_interact_injured_recovering_03": {
+			"conditions": {
+				"explorer": {
+					"injured": true,
+					"inParty": false
+				},
+				"inCamp": true
+			},
+			"isPriority": true,
+			"pages": [
+				"explorer_generic_interact_injured_recovering_03_p1"
+			]
+		},
+		"explorer_generic_interact_injured_recovering_04": {
+			"conditions": {
+				"explorer": {
+					"injured": true,
+					"inParty": false
+				},
+				"inCamp": true
+			},
+			"isPriority": true,
+			"pages": [
+				"explorer_generic_interact_injured_recovering_04_p1"
 			]
 		},
 		"explorer_generic_interact_story_apocalypse_01": {
@@ -8517,7 +8648,9 @@
 					"explorer_generic_human_outside_05",
 					"explorer_generic_interact_01",
 					"explorer_generic_interact_02",
-					"explorer_generic_interact_injured_01",
+					"explorer_generic_interact_injured_outside_01",
+					"explorer_generic_interact_injured_party_01",
+					"explorer_generic_interact_injured_recovering_01",
 					"explorer_generic_interact_story_apocalypse_01",
 					"explorer_generic_interact_story_apocalypse_02",
 					"explorer_generic_intract_new_camp_10_01",
@@ -8632,8 +8765,9 @@
 					"explorer_generic_human_outside_04",
 					"explorer_generic_human_outside_05",
 					"explorer_generic_interact_directions_safety_01",
-					"explorer_generic_interact_injured_01",
-					"explorer_generic_interact_injured_02",
+					"explorer_generic_interact_injured_outside_02",
+					"explorer_generic_interact_injured_party_02",
+					"explorer_generic_interact_injured_recovering_02",
 					"explorer_generic_interact_story_apocalypse_01",
 					"explorer_generic_interact_story_apocalypse_02",
 					"explorer_generic_intract_new_camp_10_01",
@@ -8746,9 +8880,9 @@
 					"explorer_generic_human_outside_05",
 					"explorer_generic_interact_directions_center_01",
 					"explorer_generic_interact_directions_safety_01",
-					"explorer_generic_interact_injured_01",
-					"explorer_generic_interact_injured_02",
-					"explorer_generic_interact_injured_03",
+					"explorer_generic_interact_injured_outside_01",
+					"explorer_generic_interact_injured_party_01",
+					"explorer_generic_interact_injured_recovering_01",
 					"explorer_generic_interact_story_apocalypse_01",
 					"explorer_generic_interact_story_apocalypse_02",
 					"explorer_generic_intract_new_camp_10_01",
@@ -8812,8 +8946,9 @@
 					"explorer_generic_interact_directions_01",
 					"explorer_generic_interact_directions_explore_01",
 					"explorer_generic_interact_directions_safety_01",
-					"explorer_generic_interact_injured_01",
-					"explorer_generic_interact_injured_02",
+					"explorer_generic_interact_injured_outside_04",
+					"explorer_generic_interact_injured_party_04",
+					"explorer_generic_interact_injured_recovering_04",
 					"explorer_generic_interact_story_apocalypse_01",
 					"explorer_generic_interact_story_apocalypse_02",
 					"explorer_generic_intract_new_camp_10_01",
@@ -8883,7 +9018,9 @@
 					"explorer_generic_human_outside_03",
 					"explorer_generic_interact_directions_none_01",
 					"explorer_generic_interact_directions_safety_01",
-					"explorer_generic_interact_injured_01",
+					"explorer_generic_interact_injured_outside_04",
+					"explorer_generic_interact_injured_party_04",
+					"explorer_generic_interact_injured_recovering_04",
 					"explorer_generic_intract_new_camp_10_01",
 					"explorer_generic_intract_new_camp_12_01",
 					"explorer_generic_intract_new_camp_14_01",
@@ -8927,8 +9064,9 @@
 					"explorer_generic_interact_directions_center_01",
 					"explorer_generic_interact_directions_explore_01",
 					"explorer_generic_interact_directions_safety_01",
-					"explorer_generic_interact_injured_01",
-					"explorer_generic_interact_injured_03",
+					"explorer_generic_interact_injured_outside_02",
+					"explorer_generic_interact_injured_party_02",
+					"explorer_generic_interact_injured_recovering_02",
 					"explorer_generic_intract_new_camp_10_01",
 					"explorer_generic_intract_new_camp_13_01",
 					"explorer_generic_intract_new_camp_14_01",
@@ -8981,7 +9119,9 @@
 					"explorer_generic_human_outside_04",
 					"explorer_generic_human_outside_05",
 					"explorer_generic_interact_directions_01",
-					"explorer_generic_interact_injured_03",
+					"explorer_generic_interact_injured_outside_02",
+					"explorer_generic_interact_injured_party_02",
+					"explorer_generic_interact_injured_recovering_02",
 					"explorer_generic_intract_new_camp_10_01",
 					"explorer_generic_intract_new_camp_14_01",
 					"explorer_generic_intract_new_camp_15_01",
@@ -9022,8 +9162,10 @@
 					"explorer_template_darkdweller_event_01"
 				],
 				"interact": [
-					"explorer_generic_interact_injured_03",
 					"explorer_generic_interact_directions_01",
+					"explorer_generic_interact_injured_outside_04",
+					"explorer_generic_interact_injured_party_04",
+					"explorer_generic_interact_injured_recovering_04",
 					"explorer_generic_intract_new_camp_12_01",
 					"explorer_generic_intract_new_camp_14_01",
 					"explorer_generic_intract_new_camp_6_01",
@@ -9069,7 +9211,9 @@
 					"explorer_generic_human_outside_04",
 					"explorer_generic_human_outside_05",
 					"explorer_generic_interact_directions_none_01",
-					"explorer_generic_interact_injured_01",
+					"explorer_generic_interact_injured_outside_02",
+					"explorer_generic_interact_injured_party_02",
+					"explorer_generic_interact_injured_recovering_02",
 					"explorer_generic_intract_new_camp_10_01",
 					"explorer_generic_intract_new_camp_13_01",
 					"explorer_generic_intract_new_camp_14_01",
@@ -9120,7 +9264,9 @@
 					"explorer_generic_human_outside_02",
 					"explorer_generic_human_outside_05",
 					"explorer_generic_interact_directions_safety_01",
-					"explorer_generic_interact_injured_01",
+					"explorer_generic_interact_injured_outside_04",
+					"explorer_generic_interact_injured_party_04",
+					"explorer_generic_interact_injured_recovering_04",
 					"explorer_generic_intract_new_camp_11_01",
 					"explorer_generic_intract_new_camp_9_01",
 					"explorer_generic_story_rescue_absence_01",
@@ -9165,7 +9311,9 @@
 					"explorer_generic_human_outside_03",
 					"explorer_generic_human_outside_05",
 					"explorer_generic_interact_directions_center_01",
-					"explorer_generic_interact_injured_03",
+					"explorer_generic_interact_injured_outside_02",
+					"explorer_generic_interact_injured_party_02",
+					"explorer_generic_interact_injured_recovering_02",
 					"explorer_generic_intract_new_camp_10_01",
 					"explorer_generic_intract_new_camp_13_01",
 					"explorer_generic_intract_new_camp_14_01",
@@ -9217,7 +9365,9 @@
 					"explorer_generic_human_outside_03",
 					"explorer_generic_human_outside_05",
 					"explorer_generic_interact_directions_01",
-					"explorer_generic_interact_injured_01",
+					"explorer_generic_interact_injured_outside_03",
+					"explorer_generic_interact_injured_party_03",
+					"explorer_generic_interact_injured_recovering_03",
 					"explorer_generic_intract_new_camp_10_01",
 					"explorer_generic_intract_new_camp_13_01",
 					"explorer_generic_intract_new_camp_14_01",
@@ -9266,7 +9416,9 @@
 					"explorer_generic_human_outside_01",
 					"explorer_generic_human_outside_03",
 					"explorer_generic_interact_directions_none_01",
-					"explorer_generic_interact_injured_02",
+					"explorer_generic_interact_injured_outside_03",
+					"explorer_generic_interact_injured_party_03",
+					"explorer_generic_interact_injured_recovering_03",
 					"explorer_generic_intract_new_camp_10_01",
 					"explorer_generic_intract_new_camp_12_01",
 					"explorer_generic_intract_new_camp_14_01",
@@ -9307,7 +9459,9 @@
 				"interact": [
 					"explorer_generic_interact_directions_01",
 					"explorer_generic_interact_directions_safety_01",
-					"explorer_generic_interact_injured_03",
+					"explorer_generic_interact_injured_outside_02",
+					"explorer_generic_interact_injured_party_02",
+					"explorer_generic_interact_injured_recovering_02",
 					"explorer_generic_intract_new_camp_10_01",
 					"explorer_generic_intract_new_camp_11_01",
 					"explorer_generic_intract_new_camp_12_01",
@@ -9370,9 +9524,11 @@
 					"explorer_unique_handler_event_01"
 				],
 				"interact": [
-					"explorer_generic_interact_injured_03",
 					"explorer_generic_ability_handler_outside_01",
 					"explorer_generic_ability_handler_outside_02",
+					"explorer_generic_interact_injured_outside_04",
+					"explorer_generic_interact_injured_party_04",
+					"explorer_generic_interact_injured_recovering_04",
 					"explorer_generic_intract_new_camp_12_01",
 					"explorer_generic_intract_new_camp_15_01",
 					"explorer_generic_intract_new_camp_6_01",
@@ -9417,7 +9573,9 @@
 				],
 				"interact": [
 					"explorer_generic_interact_directions_center_01",
-					"explorer_generic_interact_injured_01",
+					"explorer_generic_interact_injured_outside_01",
+					"explorer_generic_interact_injured_party_01",
+					"explorer_generic_interact_injured_recovering_01",
 					"explorer_generic_intract_new_camp_13_01",
 					"explorer_generic_intract_new_camp_14_01",
 					"explorer_template_darkdweller_interact_directions_safety_01",
@@ -9458,7 +9616,9 @@
 					"explorer_generic_interact_directions_01",
 					"explorer_generic_interact_directions_explore_01",
 					"explorer_generic_interact_directions_safety_01",
-					"explorer_generic_interact_injured_01",
+					"explorer_generic_interact_injured_outside_01",
+					"explorer_generic_interact_injured_party_01",
+					"explorer_generic_interact_injured_recovering_01",
 					"explorer_generic_intract_new_camp_10_01",
 					"explorer_generic_intract_new_camp_15_01",
 					"explorer_generic_intract_new_camp_5_01",
@@ -9526,7 +9686,9 @@
 					"explorer_generic_interact_directions_01",
 					"explorer_generic_interact_directions_center_01",
 					"explorer_generic_interact_directions_safety_01",
-					"explorer_generic_interact_injured_01",
+					"explorer_generic_interact_injured_outside_01",
+					"explorer_generic_interact_injured_party_01",
+					"explorer_generic_interact_injured_recovering_01",
 					"explorer_generic_intract_new_camp_12_01",
 					"explorer_generic_intract_new_camp_13_01",
 					"explorer_generic_intract_new_camp_14_01",
