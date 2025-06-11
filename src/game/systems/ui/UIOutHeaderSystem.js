@@ -936,6 +936,8 @@ define([
 				case resourceNames.water:
 				case resourceNames.metal:
 				case resourceNames.rope:
+				case resourceNames.herbs:
+				case resourceNames.medicine:
 					return false;
 			}
 			return true;
