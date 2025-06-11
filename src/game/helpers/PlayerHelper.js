@@ -376,6 +376,7 @@ define([
 			if (resultVO.gainedExplorers.length > 0) return true;
 			if (resultVO.lostExplorers.length > 0) return true;
 			if (resultVO.gainedExplorerInjuries.length > 0) return true;
+			if (resultVO.lostExplorerInjuries.length > 0) return true;
 			if (resultVO.lostPerks.length > 0) return true;
 			if (resultVO.gainedPerks.length > 0) return true;
 			if (resultVO.gainedItemUpgrades.length > 0) return true;
@@ -642,6 +643,20 @@ define([
 				}
 			}
 			return result;
+		},
+
+		getExplorerToHeal: function () {
+			let explorersComponent = this.playerStatsNodes.head.explorers;
+			return this.getExplorerToHealFromList(explorersComponent.getParty()) || this.getExplorerToHealFromList(explorersComponent.getAll());
+		},
+
+		getExplorerToHealFromList: function (explorers) {
+			for (let i = 0; i < explorers.length; i++) {
+				let explorerVO = explorers[i];
+				if (explorerVO.injuredTimer > 0) return explorerVO;
+			}
+
+			return null;
 		},
 
 		hasAdequateFighter: function () {

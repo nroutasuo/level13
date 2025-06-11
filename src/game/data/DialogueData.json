@@ -7099,13 +7099,14 @@
 			]
 		},
 		"locale_generic_clinic": {
+			"titleKey": "story.sequences.locale_generic_clinic_title",
 			"pages": [
 				{
 					"id": "intro",
 					"key": "story.sequences.locale_generic_clinic_intro",
 					"options": [
 						{
-							"buttonKey": "Treatment",
+							"buttonKey": "locale_interaction_treatment",
 							"conditions": {
 								"perkEffects": {
 									"Injury": [
@@ -7115,6 +7116,13 @@
 								}
 							},
 							"response": "treatment"
+						},
+						{
+							"buttonKey": "locale_interaction_treatment_explorer",
+							"conditions": {
+								"hasInjuredExplorer": true
+							},
+							"response": "explorer_treatment"
 						},
 						{
 							"buttonKey": "locale_interaction_leave",
@@ -7130,6 +7138,14 @@
 						"lostPerks": [
 							"injury"
 						]
+					}
+				},
+				{
+					"id": "explorer_treatment",
+					"key": "story.sequences.locale_generic_clinic_explorer_treatment",
+					"result": {
+						"gainedHope": 1,
+						"lostExplorerInjuries": [ "any" ]
 					}
 				}
 			]

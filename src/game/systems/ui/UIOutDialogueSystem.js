@@ -117,7 +117,9 @@ define([
 
 		refreshPageText: function (dialogueVO, pageVO, explorerVO) {
 			let staticTextParams = this.dialogueNodes.head.dialogue.textParams;
-			let textParams = GameGlobals.dialogueHelper.getDialogueTextParams(dialogueVO, pageVO, staticTextParams);
+			let resultVO = this.dialogueNodes.head.dialogue.currentResultVO;
+			
+			let textParams = GameGlobals.dialogueHelper.getDialogueTextParams(dialogueVO, pageVO, resultVO, explorerVO != null, staticTextParams);
 
 			if (explorerVO) {
 				textParams.animalType = explorerVO.animalType || explorerVO.name; 

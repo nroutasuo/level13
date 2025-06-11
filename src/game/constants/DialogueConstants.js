@@ -210,6 +210,10 @@ define([
 				resultVO.lostExplorers = data.lostExplorers;
 			}
 
+			if (data.lostExplorerInjuries) {
+				resultVO.lostExplorerInjuries = data.lostExplorerInjuries;
+			}
+
 			if (data.storyFlags) {
 				for (let flagID in data.storyFlags) {
 					resultVO.storyFlags[flagID] = data.storyFlags[flagID];

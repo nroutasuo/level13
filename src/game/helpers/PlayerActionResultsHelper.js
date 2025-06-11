@@ -691,6 +691,15 @@ define([
 					}
 				}
 			}
+
+			if (rewards.lostExplorerInjuries) {
+				for (let i = 0; i < rewards.lostExplorerInjuries.length; i++) {
+					let explorerID = rewards.lostExplorerInjuries[i];
+					if (explorerID == "any") {
+						rewards.lostExplorerInjuries[i] = GameGlobals.playerHelper.getExplorerToHeal().id;
+					}
+				}
+			}
 		},
 
 		// context:
@@ -890,6 +899,16 @@ define([
 				}
 
 				GameGlobals.gameState.increaseGameStatSimple("numExplorerInjuriesReceived", rewards.gainedExplorerInjuries.length);
+			}
+
+			if (rewards.lostExplorerInjuries) {
+				for (let i = 0; i < rewards.lostExplorerInjuries.length; i++) {
+					let explorerID = rewards.lostExplorerInjuries[i];
+					let explorerVO = GameGlobals.playerHelper.getExplorerByID(explorerID);
+					if (explorerVO) {
+						explorerVO.injuredTimer = -1;
+					}
+				}
 			}
 
 			if (rewards.gainedPopulation > 0) {
@@ -1180,6 +1199,14 @@ define([
 				}
 			}
 
+			if (resultVO.lostExplorerInjuries.length > 0) {
+				for (let i = 0; i < resultVO.lostExplorerInjuries.length; i++) {
+					let explorerID = resultVO.lostExplorerInjuries[i];
+					let explorerVO = GameGlobals.playerHelper.getExplorerByID(explorerID);
+					div += "<p>" + explorerVO.name + " got healed.</p>";
+				}
+			}
+
 			for (let i = 0; i < resultVO.gainedPerks.length; i++) {
 				let perkVO = resultVO.gainedPerks[i];
 
@@ -1385,6 +1412,14 @@ define([
 					let explorerID = resultVO.gainedExplorerInjuries[i];
 					let explorerVO = GameGlobals.playerHelper.getExplorerByID(explorerID);
 					messages.push({ id: LogConstants.getUniqueID(), text: explorerVO.name + " got injured.", addToPopup: true, addToLog: true });
+				}
+			}
+
+			if (resultVO.lostExplorerInjuries.length > 0) {
+				for (let i = 0; i < resultVO.lostExplorerInjuries.length; i++) {
+					let explorerID = resultVO.lostExplorerInjuries[i];
+					let explorerVO = GameGlobals.playerHelper.getExplorerByID(explorerID);
+					messages.push({ id: LogConstants.getUniqueID(), text: explorerVO.name + " got healed.", addToPopup: true, addToLog: true });
 				}
 			}
 

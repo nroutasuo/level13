@@ -18,6 +18,7 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 		gainedReputation: 0,
 		gainedPopulation: 0,
 		gainedItemUpgrades: [],
+		lostExplorerInjuries: [], // explorerID
 		
 		// penalties
 		lostResources: null,
@@ -135,6 +136,7 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 				&& this.lostPerks.length == 0
 				&& this.gainedPerks.length == 0
 				&& this.gainedExplorerInjuries.length == 0
+				&& this.lostExplorerInjuries.length == 0
 				&& this.gainedBlueprintPiece == null
 				&& this.gainedPopulation == 0
 				&& this.gainedEvidence == 0
@@ -152,6 +154,7 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 				|| this.gainedItems.length > 0
 				|| this.gainedCurrency > 0
 				|| this.gainedExplorers.length > 0
+				|| this.lostExplorerInjuries.length > 0
 				|| this.gainedBlueprintPiece
 				|| this.gainedEvidence > 0
 				|| this.gainedRumours > 0
@@ -176,6 +179,7 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 			result.lostPerks = this.lostPerks.concat();
 			result.gainedPerks = this.gainedPerks.concat();
 			result.gainedExplorerInjuries = this.gainedExplorerInjuries.concat();
+			result.lostExplorerInjuries = this.lostExplorerInjuries.concat();
 			result.gainedBlueprintPiece = this.gainedBlueprintPiece;
 			result.gainedPopulation = this.gainedPopulation;
 			result.gainedItemUpgrades = this.gainedItemUpgrades;

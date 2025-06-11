@@ -1731,6 +1731,8 @@
             "locale_interaction_squeeze": "Squeeze",
             "locale_interaction_step": "Step",
             "locale_interaction_surrender": "Surrender",
+            "locale_interaction_treatment": "Treatment",
+            "locale_interaction_treatment_explorer": "Explorer",
             "locale_interaction_wade": "Wade",
             "locale_workshop_fuel_intro_p1": "A fuel refinery stands hollow and quiet.",
             "locale_workshop_fuel_outro_p1": "The refinery is cleared.",
@@ -1780,7 +1782,9 @@
         },
         "sequences": {
             "locale_generic_clinic_intro": "A haphazard clinic set up by a doctor who is defying the post-Fall chaos by helping whoever needs it.",
-            "locale_generic_clinic_treatment": "The doctor cleans and bandages your wouds briskly and urges you to stay out of trouble."
+            "locale_generic_clinic_title": "Clinic",
+            "locale_generic_clinic_explorer_treatment": "{explorerName} follows the doctor to another room. They return bandaged and relieved.",
+            "locale_generic_clinic_treatment": "The doctor cleans and bandages your wounds briskly and urges you to stay out of trouble."
         },
         "spots": {
             "story_apocalypse_cracks_01_message": "There are visible cracks in the level floor itself here. Could they have been caused by The Fall, this deep? Or is the City just in a bad shape in general?",
