@@ -105,7 +105,7 @@ define(['ash',
 			{ id: "generic_bat_01", isAnimal: true, animalType: "bat", dialogueSource: "explorer_generic_bat_01" },
 			{ id: "generic_mule_01", isAnimal: true, animalType: "mule", dialogueSource: "explorer_generic_mule_01" },
 			{ id: "generic_raven_01", isAnimal: true, animalType: "raven", dialogueSource: "explorer_generic_raven_01" },
-			{ id: "generic_olm_01", isAnimal: true, animalType: "olm", dialogueSource: "explorer_generic_olm_01" },
+			{ id: "generic_olm_01", isAnimal: true, animalType: "olm", dialogueSource: "explorer_generic_olm_01", appearLevel: [ -100, 14 ] },
 			{ id: "generic_animal_01", isAnimal: true, abilityType: "scavenge_capacity", dialogueSource: "explorer_generic_animal_01" },
 			{ id: "generic_servo_01", isRobot: true, dialogueSource: "explorer_generic_servo_01" },
 			{ id: "generic_human_01", dialogueSource: "explorer_generic_01" },
@@ -181,7 +181,7 @@ define(['ash',
 			let excludedDialogueSources = options.excludedDialogueSources || [];
 			let isRobot = source == ExplorerConstants.explorerSource.CRAFT;
 
-			let template = this.getRandomExplorerTemplate(source, appearLevel, forcedExplorerType, forcedAbilityType, isRobot, excludedDialogueSources);
+			let template = this.getRandomExplorerTemplate(source, campOrdinal, appearLevel, forcedExplorerType, forcedAbilityType, isRobot, excludedDialogueSources);
 
 			let id = template.id + "_" + (10 + Math.floor(Math.random() * 100000));
 
@@ -242,7 +242,7 @@ define(['ash',
 			return result;
 		},
 
-		getRandomExplorerTemplate: function (source, appearLevel, forcedExplorerType, forcedAbilityType, isRobot, excludedDialogueSources) {
+		getRandomExplorerTemplate: function (source, campOrdinal, appearLevel, forcedExplorerType, forcedAbilityType, isRobot, excludedDialogueSources) {
 			let validTemplates = [];
 
 			forcedExplorerType = forcedExplorerType ? forcedExplorerType : forcedAbilityType ? this.getExplorerTypeForAbilityType(forcedAbilityType) : null;
@@ -259,6 +259,7 @@ define(['ash',
 				let isTemplateRobot = template.isRobot || false;
 				let isTemplateAnimal = template.isAnimal || false;
 
+				if (template.abilityType && this.getUnlockCampOrdinal(template.abilityType) >= campOrdinal) continue;
 				if (excludedDialogueSources && excludedDialogueSources.indexOf(template.dialogueSource) >= 0) continue;
 				if (forcedExplorerType && template.explorerType && template.explorerType != forcedExplorerType) continue;
 				if (forcedAbilityType && template.abilityType && template.abilityType != forcedAbilityType) continue;
