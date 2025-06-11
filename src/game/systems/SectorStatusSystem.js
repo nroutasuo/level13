@@ -35,13 +35,15 @@ define([
 	SectorFeaturesComponent,
 	SectorControlComponent) {
 	
-	var SectorStatusSystem = Ash.System.extend({
+	let SectorStatusSystem = Ash.System.extend({
 		
 		sectorNodes: null,
 		playerLocationNodes: null,
 		itemsNodes: null,
 		
 		neighboursDict: {},
+
+		contest: "SectorStatusSystem",
 		
 		constructor: function () {
 		},
@@ -60,6 +62,9 @@ define([
 			});
 			GlobalSignals.gameShownSignal.add(function () {
 				sys.updateCurrentLocation();
+			});
+			GlobalSignals.gameStateReadySignal.add(function () {
+				sys.queueFindAllNeighbours();
 			});
 			GlobalSignals.gameStateRefreshSignal.add(function () {
 				sys.updateAllSectors();
@@ -82,19 +87,30 @@ define([
 		},
 	
 		removeFromEngine: function (engine) {
+			this.sectorsPendingFindNeighbours = null;
 			this.sectorNodes = null;
 		},
 	
 		updateCurrentLocation: function () {
 			if (!this.playerLocationNodes.head) return;
+			if (!this.playerLocationNodes.head.entity) return;
+			
+			log.i("update current location", this);
+			this.findNeighboursIfNotAlready(this.playerLocationNodes.head.entity);
 			this.updateSector(this.playerLocationNodes.head.entity);
+		},
+
+		update: function () {
+			this.findNeigbhoursForQueued();
 		},
 		
 		reset: function () {
+			this.sectorsPendingFindNeighbours = null;
 			this.neighboursDict = {};
 		},
 
 		updateAllSectors: function () {
+			log.i("update all sectors | " + Object.keys(this.neighboursDict).length, this);
 			for (let sectorNode = this.sectorNodes.head; sectorNode; sectorNode = sectorNode.next) {
 				this.updateSector(sectorNode.entity);
 			}
@@ -134,10 +150,11 @@ define([
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			let sectorControlComponent = entity.get(SectorControlComponent);
 			let positionComponent = entity.get(PositionComponent);
-
-			// TODO performance / page load time (findNeighbours)
 			
 			let sectorKey = this.getSectorKey(positionComponent);
+
+			if (!this.neighboursDict[sectorKey]) return;
+
 			let sys = this;
 			
 			function checkNeighbour(direction) {
@@ -145,7 +162,6 @@ define([
 				let currentEnemies = sectorControlComponent.getCurrentEnemies(localeId);
 				if (currentEnemies <= 0) return;
 				
-				if (!sys.neighboursDict[sectorKey]) sys.findNeighbours(entity);
 				let neighbour = sys.getNeighbour(sectorKey, direction);
 				
 				if (neighbour) {
@@ -176,7 +192,8 @@ define([
 			var statusComponent = entity.get(SectorStatusComponent);
 			
 			var sectorKey = this.getSectorKey(positionComponent);
-			if (!this.neighboursDict[sectorKey]) this.findNeighbours(entity);
+
+			if (!this.neighboursDict[sectorKey]) return;
 			
 			var isAffectedByHazard = GameGlobals.sectorHelper.isAffectedByHazard(featuresComponent, statusComponent, this.itemsNodes.head.items);
 			
@@ -209,6 +226,8 @@ define([
 			var passagesComponent = entity.get(PassagesComponent);
 			var positionComponent = entity.get(PositionComponent);
 			var sectorKey = this.getSectorKey(positionComponent);
+
+			if (!this.neighboursDict[sectorKey]) return;
 			
 			statusComponent.hazardReduction = { radiation: 0, poison: 0 };
 			
@@ -263,6 +282,37 @@ define([
 				default:
 					return null;
 			}
+		},
+
+		queueFindAllNeighbours: function () {
+			let queue = this.sectorsPendingFindNeighbours || [];
+
+			for (let sectorNode = this.sectorNodes.head; sectorNode; sectorNode = sectorNode.next) {
+				queue.push(sectorNode.entity);
+			}
+
+			this.sectorsPendingFindNeighbours = queue;
+		},
+
+		findNeigbhoursForQueued: function () {
+			if (!this.sectorsPendingFindNeighbours) return;
+
+			let sector = this.sectorsPendingFindNeighbours.pop();
+
+			if (!sector) return;
+
+			this.findNeighboursIfNotAlready(sector);
+
+			if (this.sectorsPendingFindNeighbours.length == 0) {
+				// queue cleared, update all
+				this.updateAllSectors();
+			}
+		},
+
+		findNeighboursIfNotAlready: function (entity) {
+			let positionComponent = entity.get(PositionComponent);
+			let sectorKey = this.getSectorKey(positionComponent);
+			if (!this.neighboursDict[sectorKey]) this.findNeighbours(entity);
 		},
 		
 		findNeighbours: function (entity) {
