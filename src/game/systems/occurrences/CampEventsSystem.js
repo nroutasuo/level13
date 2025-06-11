@@ -608,10 +608,11 @@ define([
 			raidComponent.victory = raidRoll > danger;
 			log.i("end raid: danger: " + danger + ", raidRoll: " + UIConstants.roundValue(raidRoll) + " -> victory: " + raidComponent.victory);
 
-			// raiders won, deduct resources etc
 			if (raidComponent.victory) {
-				this.addRaidDamagedBuildings(sectorEntity, 0.25, [ improvementNames.fortification ]);
+				// raiders lost, only sometimes damage building
+				this.addRaidDamagedBuildings(sectorEntity, 0.1, [ improvementNames.fortification ]);
 			} else {
+				// raiders won, deduct resources etc
 				this.addRaidResourcesLost(sectorEntity);
 				this.addRaidKilledDefenders(sectorEntity, 0.5);
 				this.addRaidDamagedBuildings(sectorEntity, 0.5, null);
