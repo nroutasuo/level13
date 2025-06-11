@@ -531,12 +531,13 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, ItemVO) {
 			return null;
 		},
 
-		getRandomItemDefinitionByPartialItemID: function (id, skipWarning) {
+		getRandomItemDefinitionByPartialItemID: function (id, filter, skipWarning) {
 			let possibleItems = [];
 			
 			for (let type in this.itemDefinitions ) {
 				for (let i in this.itemDefinitions[type]) {
 					let item = this.itemDefinitions[type][i];
+					if (filter && !filter(item)) continue;
 					if (item.id.indexOf(id) >= 0) {
 						possibleItems.push(item);
 					}

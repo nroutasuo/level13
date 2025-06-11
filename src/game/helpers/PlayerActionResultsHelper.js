@@ -1852,7 +1852,8 @@ define([
 			
 			let index = MathUtils.getWeightedRandom(0, possibleItemIds.length);
 			let itemID = possibleItemIds[index];
-			let item = ItemConstants.getItemDefinitionByID(itemID, true) || ItemConstants.getRandomItemDefinitionByPartialItemID(itemID);
+			let itemFilter = item => item.scavengeRarity > 0 || item.localeRarity > 0 || item.tradeRarity > 0; // filter out unique and super rare items like sunita's backpack
+			let item = ItemConstants.getItemDefinitionByID(itemID, true) || ItemConstants.getRandomItemDefinitionByPartialItemID(itemID, itemFilter);
 
 			if (!item) {
 				log.w("No valid reward items for getSpecificRewardItem");
