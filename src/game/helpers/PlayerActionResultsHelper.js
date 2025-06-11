@@ -2637,7 +2637,7 @@ define([
 				if (allLocales > 0 && unscoutedLocales === 0) {
 					let c = GameGlobals.gameState.getCampOrdinal(level);
 					let levelIndex = GameGlobals.gameState.getLevelIndex(level);
-					let maxLevelIndex = GameGlobals.gameState.getMaxLevelIndex(playerPos.level);
+					let maxLevelIndex = GameGlobals.gameState.getMaxLevelIndex(level);
 					let levelBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(c, null, levelIndex, maxLevelIndex);
 					for (let j = 0; j < levelBlueprints.length; j++) {
 						var blueprintID = levelBlueprints[j];
