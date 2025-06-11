@@ -291,6 +291,7 @@ define([
 			let isOddLevel = levelPos % 2 == 1;
 			let isRescueActive = GameGlobals.gameState.getStoryFlag(StoryConstants.flags.RESCUE_EXPLORER_LEFT) && !GameGlobals.gameState.getStoryFlag(StoryConstants.flags.RESCUE_EXPLORER_FOUND);
 			let isLookingForGroundEscapeActive = GameGlobals.gameState.getStoryFlag(StoryConstants.flags.ESCAPE_SEARCHING_FOR_GROUND);
+			let isInvestigatingFall = GameGlobals.gameState.getStoryFlag(StoryConstants.flags.FALL_INVESTIGATING);
 			
 			if (levelPos == surfaceLevel) {
 				msgVO.textFragments.push({ textKey: "ui.exploration.enter_level_surface_message" });
