@@ -1075,7 +1075,7 @@ define(['ash',
 			let rewardVO = GameGlobals.playerActionResultsHelper.getResultVOByAction(action, hasCustomReward);
 
 			let rewardTextKey = this.getLocaleRewardTextKey(localeVO);
-			let outroLogKey = "Scouted a " + localeName + ". ";
+			let outroLogKey = "Scouted " +  Text.addArticle(localeName);
 
 			let sequenceSteps = [];
 
