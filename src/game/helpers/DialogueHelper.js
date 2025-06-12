@@ -155,7 +155,8 @@ define(['ash',
 
                 if (conditions.vicinity) {
                     let requiredPOIType = dialogueVO.conditions.vicinity;
-                    let requiredPOIData = this.findPOIDataForDialogue(requiredPOIType);
+                    let requiredPOIScouted = dialogueVO.conditions.vicinityScouted;
+                    let requiredPOIData = this.findPOIDataForDialogue(requiredPOIType, requiredPOIScouted);
                     if (!requiredPOIData) return false;
                 }
 
@@ -167,12 +168,14 @@ define(['ash',
                 return true;
             },
 
-            getDialogueTextParams: function (dialogueVO, pageVO, staticTextParams) {
+            getDialogueTextParams: function (dialogueVO, pageVO, resultVO, isExplorer, staticTextParams) {
                 let result = staticTextParams || {};
+
 
                 if (dialogueVO.conditions.vicinity) {
                     let requiredPOIType = dialogueVO.conditions.vicinity;
-                    let requiredPOIData = this.findPOIDataForDialogue(requiredPOIType);
+                    let requiredPOIScouted = dialogueVO.conditions.vicinityScouted;
+                    let requiredPOIData = this.findPOIDataForDialogue(requiredPOIType, requiredPOIScouted);
                     if (requiredPOIData) {
                         result.direction = requiredPOIData.directionTextKey;
                         result.name = requiredPOIData.nameTextKey;
@@ -216,7 +219,7 @@ define(['ash',
                     if (distance == 0) return false;
                     if (minDistance > 0 && distance < minDistance) return false;
                     if (maxDistance > 0 && distance > maxDistance) return false;
-                    let poiData = GameGlobals.sectorHelper.getPOIData(sector, poiType);
+                    let poiData = GameGlobals.sectorHelper.getPOIData(sector, poiType, isScouted);
                     if (poiData) {
                         let direction = PositionConstants.getDirectionFrom(playerPosition, sectorPosition);
                         result = poiData;
@@ -249,6 +252,16 @@ define(['ash',
                 for (let i = 0; i < dialogueVO.pages.length; i++) {
                     let pageVO = dialogueVO.pages[i];
                     if (pageVO.resultTemplate) {
+                        return true;
+                    }
+                }
+                return false;
+            },
+
+            hasOptionWithReplaceDialoge: function (dialogueVO) {
+                for (let i = 0; i < dialogueVO.pages.length; i++) {
+                    let pageVO = dialogueVO.pages[i];
+                    if (pageVO.resultTemplate && pageVO.resultTemplate.replaceDialogue) {
                         return true;
                     }
                 }
@@ -349,9 +362,10 @@ define(['ash',
 
             getExplorerValidDialogues: function (explorerVO, setting, storyTag) {
                 if (!explorerVO) return [];
-                if (!explorerVO.dialogueSource) return [];
+
+                let dialogueSource = explorerVO.dialogueSource || "explorer_generic_01";
                 
-                let entries = DialogueConstants.getDialogueEntries(explorerVO.dialogueSource, setting);
+                let entries = DialogueConstants.getDialogueEntries(dialogueSource, setting);
 
                 if (!storyTag && explorerVO.pendingDialogue) storyTag = explorerVO.pendingDialogue;
 
@@ -362,18 +376,22 @@ define(['ash',
                     let dialogueID = entries[i];
                     let entry = DialogueConstants.getDialogue(dialogueID);
 
+                    // skip if not repeatable and already seen from this explorer
                     if (!storyTag && !entry.isRepeatable && explorerVO.seenDialogues && explorerVO.seenDialogues.indexOf(entry.dialogueID) >= 0) {
                         continue;
                     }
 
+                    // skip if unique and already seen from any explorer
                     if (!storyTag && entry.isUnique && GameGlobals.gameState.seenDialogues && GameGlobals.gameState.seenDialogues.indexOf(entry.dialogueID) >= 0) {
                         continue;
                     }
 
+                    // skip if not valid due to dialogue conditions
                     if (!this.isDialogueValid(entry, explorerVO, storyTag)) continue;
 
                     let status = this.getExplorerDialogueStatusForEntry(explorerVO, entry);
 
+                    // skip if not highest status
                     if (status < highestStatus) continue;
 
                     if (status > highestStatus) {
@@ -469,6 +487,10 @@ define(['ash',
                     // filter out dialogues with results (second after completing one shouldn't give results)
                     let resultWithoutResults = result.filter(d => !GameGlobals.dialogueHelper.hasResults(d));
                     if (resultWithoutResults.length > 0) result = resultWithoutResults;
+
+                    // filter out dialogues which replace dialogue (probably meant to see only one of these)
+                    let resultWithoutReplaceDialogue = result.filter(d => !GameGlobals.dialogueHelper.hasOptionWithReplaceDialoge(d));
+                    if (resultWithoutReplaceDialogue.length > 0) result = resultWithoutReplaceDialogue;
                 }
 
                 return result;

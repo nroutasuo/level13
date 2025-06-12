@@ -480,12 +480,17 @@ define([
 			return sectorFeatures.itemsScavengeable;
 		},
 
-		getPOIData: function (sector, poiType) {
+		getPOIData: function (sector, poiType, isScouted) {
 			let sectorPosition = sector.get(PositionComponent);
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
 			let sectorStatus = sector.get(SectorStatusComponent);
 			let sectorLocales = sector.get(SectorLocalesComponent);
 			let passagesComponent = sector.get(PassagesComponent);
+
+			if (isScouted !== null && typeof isScouted !== "undefined") {
+				if (isScouted && !sectorStatus.scouted) return null;
+				if (!isScouted && sectorStatus.scouted) return null;
+			}
 			
 			let campOrdinal = GameGlobals.gameState.getCampOrdinal(sectorPosition.level);
 
@@ -547,13 +552,16 @@ define([
 					if (this.hasBlockingBlockerInAnyDirection(sector, MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE)) return {};
 					if (this.hasBlockingBlockerInAnyDirection(sector, MovementConstants.BLOCKER_TYPE_WASTE_TOXIC)) return {};
 					break;
+				case "passage":
+					if (passagesComponent.hasLevelPassage()) return {};
+					break;
 				case "center":
 					if (Math.abs(sectorPosition.sectorX) <= 1 && Math.abs(sectorPosition.sectorY) <= 1) return {};
 					break;
 				case "poi":
 					if (this.getNumUnscoutedLocales(sector) > 0) return {};
 					if (this.getNumUnexaminedSpots(sector) > 0) return {};
-					if (!sectorStatus.scouted && passagesComponent.hasLevelPassage()) return {};
+					if (passagesComponent.hasLevelPassage()) return {};
 					break;
 				default:
 					log.w("no such poi type defined: " + poiType);
