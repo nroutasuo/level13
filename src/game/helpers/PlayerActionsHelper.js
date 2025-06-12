@@ -2625,13 +2625,13 @@ define([
 				let buildingKey = baseAction.replace("build_in_", "");
 				let improvementLevel = this.getImprovementLevel(buildingKey, sector);
 				return ImprovementConstants.getImprovementDescription(buildingKey, improvementLevel);
-			} else if (baseAction.indexOf("build_out") == 0) {
-				// optional description, especially projects have their description on the page
-				return "";		
 			} else if (Text.hasKey("game.actions." + action + "_description")) {
 				return Text.t("game.actions." + action + "_description");
 			} else if (Text.hasKey("game.actions." + baseAction + "_description")) {
 				return Text.t("game.actions." + baseAction + "_description");
+			} else if (baseAction.indexOf("build_out") == 0) {
+				// optional description, especially projects have their description on the page
+				return "";
 			} else if (UpgradeConstants.hasUpgrade[action]) {
 				// upgrade action descriptions are displayed in the list outside of the button
 				return "";
