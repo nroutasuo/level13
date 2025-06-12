@@ -2144,6 +2144,9 @@
                     1
                 ]
             },
+            "camp": {
+                "isReachableByTribeTraders": true
+            },
             "level": {
                 "luxuryResource": [
                     1,

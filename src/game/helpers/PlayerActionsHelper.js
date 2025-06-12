@@ -956,6 +956,12 @@ define([
 
 				if (requirements.camp) {
 					let campSector = this.nearestCampNodes.head ? this.nearestCampNodes.head.entity : sector;
+					
+					if (action && action.indexOf("build_out") >= 0) {
+						let campOrdinal = GameGlobals.gameState.getCampOrdinal(positionComponent.level);
+						let campLevel = GameGlobals.gameState.getLevelForCamp(campOrdinal);
+						campSector = GameGlobals.levelHelper.getCampSectorOnLevel(campLevel);
+					}
 
 					if (!campSector) {
 						return { value: 0, reason: this.getDisabledReasonVO(null, null, null, "No camp") };
