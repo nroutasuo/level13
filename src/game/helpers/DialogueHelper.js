@@ -187,10 +187,23 @@ define(['ash',
                     }
                 }
 
+                if (resultVO && resultVO.lostExplorerInjuries) {
+                    for (let i = 0; i < resultVO.lostExplorerInjuries.length; i++) {
+                        let explorerID = resultVO.lostExplorerInjuries[i];
+					    let explorerVO = GameGlobals.playerHelper.getExplorerByID(explorerID);
+                        if (explorerVO) {
+                            result.explorerName = explorerVO.name;
+                            break;
+                        }
+                    }
+                }
+
+                result.surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
+
                 return result;
             },
 
-            findPOIDataForDialogue: function (poiType) {
+            findPOIDataForDialogue: function (poiType, isScouted) {
                 let playerPosition = GameGlobals.playerHelper.getPosition();
 
                 let result = null;

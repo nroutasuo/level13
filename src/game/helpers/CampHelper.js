@@ -413,14 +413,19 @@ define([
 				return result;
 			}
 
-			result.push(CharacterConstants.characterTypes.drifter);
 			result.push(CharacterConstants.characterTypes.bard);
+			result.push(CharacterConstants.characterTypes.crafter);
+			result.push(CharacterConstants.characterTypes.drifter);
+			result.push(CharacterConstants.characterTypes.fortuneTeller);
 
-			if (position.level < 14)
+			if (position.level < 14) {
+				result.push(CharacterConstants.characterTypes.drifter);
 				result.push(CharacterConstants.characterTypes.shaman);
+			}
 			
 			if (position.level > 14) {
 				result.push(CharacterConstants.characterTypes.crafter);
+				result.push(CharacterConstants.characterTypes.bard);
 				result.push(CharacterConstants.characterTypes.doomsayer);
 			}
 

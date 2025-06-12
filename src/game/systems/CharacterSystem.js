@@ -74,7 +74,7 @@ define([
 
 			// update / remove existing ones
 
-			let numExistingCharacters = 0;
+			let existingCharacters = [];
 
 			let allSectors = GameGlobals.levelHelper.getSectorsByLevel(level);
 			for (let i = 0; i < allSectors.length; i++) {
@@ -88,8 +88,6 @@ define([
 				for (let j = 0; j < sectorStatus.currentCharacters.length; j++) {
 					let character = sectorStatus.currentCharacters[j];
 
-					numExistingCharacters++;
-
 					if (character.numTimesSeen <= 0) continue;
 
 					let timeActive = now - character.creationTimestamp;
@@ -99,25 +97,27 @@ define([
 					if (Math.random() > 0.5) {
 						indicesToRemove.push(j);
 					}
+
+					existingCharacters.push(character);
 				}
 
 				for (let j = indicesToRemove.length - 1; j >= 0; j--) {
 					let indexToRemove = indicesToRemove[j];
 					this.removeCharacterByIndex(sector, indexToRemove);
-					numExistingCharacters--;
 				}
 			}	
 
 			// add new ones
 
 			let maxCharacters = this.getMaxCharactersForLevel(level);
-			let maxCharactersToAdd = maxCharacters - numExistingCharacters;
+			let maxCharactersToAdd = maxCharacters - existingCharacters.length;
 
 			if (maxCharactersToAdd <= 0) return;
 			let numCharactersToAdd = MathUtils.randomIntBetween(1, maxCharactersToAdd + 1);
 			
 			for (let i = 0; i < numCharactersToAdd; i++) {
-				this.addCharacter(level);
+				let character = this.addCharacter(level, existingCharacters);
+				existingCharacters.push(character);
 			}
 		},
 
@@ -135,15 +135,16 @@ define([
 			if (level < 14) result -= 1;
 
 			if (isCampable && TradeConstants.getTradePartner(campOrdinal) != null) result += 1;
+			if (level > 14) result++;
 
 			return result;
 		},
 
-		addCharacter: function (level) {
+		addCharacter: function (level, existingCharacters) {
 			let sector = this.selectSectorForNewCharacter(level);
 			if (!sector) return;
 
-			let characterType = this.selectTypeForNewCharacter(sector);
+			let characterType = this.selectTypeForNewCharacter(sector, existingCharacters);
 			let dialogueSource = CharacterConstants.getDialogueSource(characterType);
 			if (!dialogueSource) return;
 			let dialogueSourceID = dialogueSource.id;
@@ -157,6 +158,8 @@ define([
 			statusComponent.currentCharacters.push(characterVO);
 
 			log.i("- added character [" + characterType + "] at [" + sector.get(PositionComponent).toString() + "]", this);
+
+			return characterVO;
 		},
 
 		removeCharacterByIndex: function (sector, index) {
@@ -259,17 +262,21 @@ define([
 			return validSectors[index];
 		},
 
-		selectTypeForNewCharacter: function (sector) {
+		selectTypeForNewCharacter: function (sector, existingCharacters) {
 			let validTypes = [];
 
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
 			let sectorPosition = sector.get(PositionComponent);
 
 			let level = sectorPosition.level;
+			let levelOrdinal = GameGlobals.gameState.getLevelOrdinal(level);
 			let isCampable = GameGlobals.levelHelper.isLevelCampable(sectorPosition.level);
 			let condition = sectorFeatures.getCondition();
 			let isEarlyZone = sectorFeatures.isEarlyZone();
 			let isGround = sectorPosition.level == GameGlobals.gameState.getGroundLevel();
+			let hasHazards = sectorFeatures.hasHazards();
+
+			let existingTypes = existingCharacters.map(characterVO => characterVO.characterType);
 
 			let distanceToCamp = 99;
 
@@ -284,12 +291,16 @@ define([
 				validTypes.push(CharacterConstants.characterTypes.workerWater);
 			}
 
-			if (isCampable && sectorFeatures.buildingDensity < 5) {
+			if (isCampable && sectorFeatures.buildingDensity < 5 && levelOrdinal > 1) {
 				validTypes.push(CharacterConstants.characterTypes.bard);
 			}
 
 			if (isCampable && sectorFeatures.sectorType == SectorConstants.SECTOR_TYPE_PUBLIC) {
 				validTypes.push(CharacterConstants.characterTypes.bard);
+			}
+
+			if (level > 14) {
+				validTypes.push(CharacterConstants.characterTypes.beggar);
 			}
 
 			if (sectorFeatures.sectorType == SectorConstants.SECTOR_TYPE_INDUSTRIAL) {
@@ -300,11 +311,11 @@ define([
 				validTypes.push(CharacterConstants.characterTypes.crafter);
 			}
 			
-			if (condition == SectorConstants.SECTOR_CONDITION_RUINED) {
+			if (condition == SectorConstants.SECTOR_CONDITION_RUINED && levelOrdinal > 2) {
 				validTypes.push(CharacterConstants.characterTypes.doomsayer);
 			}
 
-			if (isCampable && sectorFeatures.sectorType == SectorConstants.SECTOR_TYPE_RESIDENTIAL) {
+			if (isCampable && sectorFeatures.sectorType == SectorConstants.SECTOR_TYPE_RESIDENTIAL && levelOrdinal > 2) {
 				validTypes.push(CharacterConstants.characterTypes.doomsayer);
 			}
 
@@ -314,6 +325,16 @@ define([
 
 			if (sectorFeatures.heapResource) {
 				validTypes.push(CharacterConstants.characterTypes.drifter);
+			}
+
+			if (distanceToCamp > 5 && !hasHazards && levelOrdinal > 2 && Math.random() < 0.1) {
+				if (existingTypes.indexOf(CharacterConstants.characterTypes.fortuneTeller) < 0) {
+					validTypes.push(CharacterConstants.characterTypes.fortuneTeller);
+				}
+			}
+			
+			if (level > 14 && sectorFeatures.damage < 3 && sectorFeatures.wear < 7) {
+				validTypes.push(CharacterConstants.characterTypes.guard);
 			}
 			
 			if (sectorFeatures.sunlit) {
@@ -342,6 +363,10 @@ define([
 			}
 
 			if (isCampable && sectorFeatures.waymarks.length > 0) {
+				validTypes.push(CharacterConstants.characterTypes.messenger);
+			}
+
+			if (level > 15) {
 				validTypes.push(CharacterConstants.characterTypes.messenger);
 			}
 

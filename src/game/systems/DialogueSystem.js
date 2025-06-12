@@ -271,9 +271,9 @@ define([
 			}
 		},
 
-        onDialogueNodeAdded: function (node) {
-            this.startDialogue();
-        },
+		onDialogueNodeAdded: function (node) {
+			this.startDialogue();
+		},
 
 		onTriggerDialogue: function (owner, storyTag) {
 			GameGlobals.gameState.pendingDialogues.push({ owner: owner, storyTag: storyTag });
