@@ -6,7 +6,7 @@ define(['ash'], function (Ash) {
 		position: 13,
 		isCampable: false,
 		notCampableReason: null,
-		habitability: 1,
+		habitability: 1, // 0 for no camp, 0.5 outpost, 1 normal, >1 capital
 		raidDangerFactor: 1,
 		minX: 0,
 		maxX: 0,
