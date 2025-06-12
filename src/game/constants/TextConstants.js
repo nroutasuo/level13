@@ -807,7 +807,6 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					facts.push("ancient civilizations based their calendars on four seasons");
 					facts.push("the City was originally built on swamp land");
 					facts.push("the City was inhabited by people from several old civilizations");
-					facts.push("there was something called the City Govermment");
 					facts.push("the City has experienced several famines during its history");
 					facts.push("the City was started to be built about 700 years ago");
 					facts.push("there was a time when all religions were banned in the City");
