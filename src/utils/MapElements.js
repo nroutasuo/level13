@@ -1,6 +1,12 @@
-define(['game/constants/ColorConstants', 'game/constants/SectorConstants'], function (ColorConstants, SectorConstants) {
+define([
+	'game/constants/ColorConstants',
+	'game/constants/MovementConstants',
+	'game/constants/SectorConstants'
+], function (
+	ColorConstants, MovementConstants, SectorConstants
+) {
 	
-	var MapElements = {
+	let MapElements = {
 		
 		icons: [],
 		
@@ -11,8 +17,8 @@ define(['game/constants/ColorConstants', 'game/constants/SectorConstants'], func
 			this.icons[key + "-sunlit"].src = "img/map/" + name + "-sunlit.png";
 		},
 
-		drawMovementBlocker: function (ctx, sunlit, sectorSize, x, y, isGang, isBlocked) {
-			if (isGang) {
+		drawMovementBlocker: function (ctx, sunlit, sectorSize, x, y, blockerType, isBlocked) {
+			if (blockerType === MovementConstants.BLOCKER_TYPE_GANG) {
 				if (isBlocked) {
 					ctx.strokeStyle = ColorConstants.getColor(sunlit, "map_stroke_gang");
 					ctx.lineWidth = Math.ceil(sectorSize / 9);
@@ -20,8 +26,13 @@ define(['game/constants/ColorConstants', 'game/constants/SectorConstants'], func
 					ctx.arc(x, y, sectorSize * 0.2, 0, 2 * Math.PI);
 					ctx.stroke();
 				}
+			} else if (blockerType === MovementConstants.BLOCKER_TYPE_TOLL_GATE) {
+				let squareSize = Math.max(sectorSize / 5, 4);
+				ctx.strokeStyle = isBlocked ? ColorConstants.getColor(sunlit, "map_stroke_blocker") : ColorConstants.getColor(sunlit, "map_fill_sector_unscouted");
+				ctx.lineWidth = 2;
+				ctx.strokeRect(x - squareSize / 2, y - squareSize / 2, squareSize, squareSize);
 			} else {
-				var crossSize = Math.max(sectorSize / 5, 3);
+				let crossSize = Math.max(sectorSize / 5, 3);
 				ctx.strokeStyle = isBlocked ? ColorConstants.getColor(sunlit, "map_stroke_blocker") : ColorConstants.getColor(sunlit, "map_fill_sector_unscouted");
 				ctx.lineWidth = Math.ceil(sectorSize / 9);
 				ctx.beginPath();

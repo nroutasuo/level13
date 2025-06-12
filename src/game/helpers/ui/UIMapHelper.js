@@ -957,13 +957,12 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 
 					if (blocker) {
 						var blockerType = blocker.type;
-						var isGang = blockerType === MovementConstants.BLOCKER_TYPE_GANG;
 						var blockerX = sectorMiddleX + sectorSize * (1 + sectorPadding)/2 * distX;
 						var blockerY = sectorMiddleY + sectorSize * (1 + sectorPadding)/2 * distY;
 						
 						if (!isBlocked && !MapUtils.showClearedBlockersInMapMode(options.mapMode)) continue;
 						
-						MapElements.drawMovementBlocker(ctx, sunlit, sectorSize, blockerX, blockerY, isGang, isBlocked);
+						MapElements.drawMovementBlocker(ctx, sunlit, sectorSize, blockerX, blockerY, blockerType, isBlocked);
 					}
 				}
 			}
