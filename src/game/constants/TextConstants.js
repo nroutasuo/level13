@@ -1895,7 +1895,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("book-description", { bookType: t_F }, "It is a very [a-style] portrayal of [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_F }, "It is [a] [a-style] story about [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_F }, "It a collection of [a-style] short stories about [n-topic].");
-		DescriptionMapper.add("book-description", { bookType: t_F }, "It is [a] [a-style] and [a-good] story about [n-topc].");
+		DescriptionMapper.add("book-description", { bookType: t_F }, "It is [a] [a-style] and [a-good] story about [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_F, bookLevel: l_1 }, "It is a children's book featuring [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_F, bookLevel: l_1 }, "It's a simple story about [c-theme].");
 		DescriptionMapper.add("book-description", { bookType: t_F, bookLevel: l_1 }, "It seems to be aimed at school children.");
