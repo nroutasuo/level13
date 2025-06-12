@@ -653,6 +653,7 @@ define([
 					name = "weapons trader";
 					categories.push("weapon");
 					ids.push("consumable_weapon");
+					ids.push("stamina_potion_1");
 				} else if (rand2 <= 0.66) {
 					name = "clothing trader";
 					categories.push("clothing_over");
@@ -720,12 +721,11 @@ define([
 				let ingredientProbability = 0.25;
 				let num = 5 + campOrdinal * 3;
 				while (sellItems.length < num && ingredientProbability <= 1) {
-					addSellItemsFromCategories([ "ingredient"], ingredientProbability, num / 3, num, true);
+					addSellItemsFromCategories([ "ingredient"], ingredientProbability, num, 3, true);
 					ingredientProbability += 0.05;
 				}
 				addSellItemsFromCategories([ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head", "shoes", "bag" ], 0.05, 1, num, false);
 				addSellItemsFromCategories([ "exploration" ], 0.1, 1, 2, true);
-				
 				buyItemTypes.push("ingredient");
 				buyItemTypes.push("trade");
 				usesCurrency = false;
@@ -830,7 +830,7 @@ define([
 				return null;
 			}
 			
-			var currency = usesCurrency ? traderLevel * 2 + Math.floor(Math.random() * levelOrdinal) : 0;
+			let currency = usesCurrency ? traderLevel * 2 + Math.floor(Math.random() * levelOrdinal) * 0.5 : 0;
 			return new IncomingCaravanVO(name, sellItems, sellResources, buyItemTypes, buyResources, usesCurrency, currency);
 		},
 		
