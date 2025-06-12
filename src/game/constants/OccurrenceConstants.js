@@ -132,8 +132,8 @@ define(['ash', 'utils/MathUtils', 'game/constants/CampConstants', 'game/constant
 
 		getDiseaseMedicineFactor: function (hasMedicine, apothecaryLevel) {
 			if (!hasMedicine) return 1;
-			if (apothecaryLevel > 1) return 0.05;
-			return 0.2;
+			if (apothecaryLevel > 1) return 0.01;
+			return 0.1;
 		},
 
 		getDiseaseHerbsFactor: function () {
