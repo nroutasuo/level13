@@ -411,7 +411,12 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, ItemVO) {
 
 		getItemDescriptionKey: function (item) {
 			if (!item) return "";
-			return "game.items." + item.id + "_description";
+			let defaultKey = "game.items." + item.id + "_description";
+			if (Text.hasKey(defaultKey)) return defaultKey;
+			let baseItemID = ItemConstants.getBaseItemID(item.id);
+			let baseItemKey = "game.items." + baseItemID + "_description";
+			if (Text.hasKey(baseItemKey)) return baseItemKey;
+			return "game_items." + item.type + "_description";
 		},
 
 		getBaseItemDisplayName: function (baseItemID) {

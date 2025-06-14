@@ -476,6 +476,7 @@
             "consumable_weapon_bio_name": "Poison dart",
             "consumable_weapon_mechanical_description": "One-use weapon that stuns a mechanical enemy.",
             "consumable_weapon_mechanical_name": "Stun switch",
+            "document_description": "Some interesting documents found while exploring",
             "document_name": "documents",
             "document_story_expedition_diary_01_description": "Amanda Ettler's diary from the failed Surface Expedition",
             "document_story_expedition_diary_01_name": "Expedition Diary",
