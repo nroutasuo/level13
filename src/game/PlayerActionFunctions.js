@@ -2813,14 +2813,14 @@ define(['ash',
 					break;
 				case "consumable_weapon_bio":
 					if (!fightComponent.enemy.isMechanical()) {
-						var stunTime = 3;
+						var stunTime = 4;
 						log.i("stun enemy for " + Math.round(stunTime * 100)/100 + "s")
 						fightComponent.itemEffects.enemyStunnedSeconds = stunTime;
 					}
 					break;
 				case "consumable_weapon_mechanical":
 					if (fightComponent.enemy.isMechanical()) {
-						var stunTime = 3;
+						var stunTime = 4;
 						log.i("stun enemy for " + Math.round(stunTime * 100)/100 + "s")
 						fightComponent.itemEffects.enemyStunnedSeconds = stunTime;
 					}
