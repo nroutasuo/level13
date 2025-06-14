@@ -597,11 +597,13 @@ define([
 					
 					// neighbouring movement blockers
 					if (existingProject.action == project.action && project.direction && project.direction !== undefined) {
-						var dist = PositionConstants.getDistanceTo(existingProject.position, project.position);
-						if (dist < 2) {
-							if (PositionConstants.getOppositeDirection(project.direction) == existingProject.direction) {
-								projectExists = true;
-								break;
+						if (existingProject.level === project.level) {
+							let dist = PositionConstants.getDistanceTo(existingProject.position, project.position);
+							if (dist < 2) {
+								if (PositionConstants.getOppositeDirection(project.direction) == existingProject.direction) {
+									projectExists = true;
+									break;
+								}
 							}
 						}
 					}
