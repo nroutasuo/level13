@@ -2876,7 +2876,7 @@
 					"position": {
 						"level": [
 							-1,
-							-14
+							14
 						]
 					}
 				}
@@ -4814,6 +4814,7 @@
 		},
 		"explorer_generic_story_apocalypse_plan_ready_01": {
 			"conditions": {
+				"numCamps": 15,
 				"storyFlags": {
 					"APOCALYPSE_PLAN_READY": true
 				}
@@ -5471,6 +5472,7 @@
 		},
 		"explorer_template_bard_story_apocalypse_plan_ready_01": {
 			"conditions": {
+				"numCamps": 14,
 				"storyFlags": {
 					"APOCALYPSE_PLAN_READY": true
 				}
@@ -5797,6 +5799,9 @@
 		},
 		"explorer_template_guard_story_rescue_found_01": {
 			"conditions": {
+				"explorer": {
+					"trust": 3
+				},
 				"storyFlags": {
 					"RESCUE_EXPLORER_FOUND": true
 				}
@@ -5937,6 +5942,7 @@
 		},
 		"explorer_template_hacker_story_apocalypse_plan_ready_01": {
 			"conditions": {
+				"numCamps": 14,
 				"storyFlags": {
 					"APOCALYPSE_PLAN_READY": true
 				}
@@ -6253,7 +6259,8 @@
 				"explorer": {
 					"trust": 1
 				},
-				"inCamp": false
+				"inCamp": false,
+				"maxNumCamps": 9
 			},
 			"pages": [
 				"explorer_template_researcher_outside_03_p1"
@@ -7112,8 +7119,14 @@
 		},
 		"explorer_unique_handler_story_apocalypse_plan_ready_01": {
 			"conditions": {
+				"explorer": {
+					"trust": 5
+				},
 				"storyFlags": {
 					"APOCALYPSE_PLAN_READY": true
+				},
+				"upgrades": {
+					"unlock_building_spaceship1": true
 				}
 			},
 			"pages": [
@@ -7591,6 +7604,7 @@
 		},
 		"explorer_unique_journalist_story_apocalypse_plan_ready_01": {
 			"conditions": {
+				"numCamps": 15,
 				"storyFlags": {
 					"APOCALYPSE_PLAN_READY": true
 				}
@@ -7655,7 +7669,9 @@
 		},
 		"explorer_unique_journalist_story_fall_investigate_01": {
 			"conditions": {
-				"featureUnlocked": "investigate"
+				"featureUnlocked": {
+					"investigate": true
+				}
 			},
 			"isForced": true,
 			"pages": [
@@ -7664,7 +7680,9 @@
 		},
 		"explorer_unique_journalist_story_fall_investigate_02": {
 			"conditions": {
-				"featureUnlocked": "investigate",
+				"featureUnlocked": {
+					"investigate": true
+				},
 				"upgrades": {
 					"unlock_building_spaceship1": false
 				}
