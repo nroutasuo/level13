@@ -18,7 +18,7 @@ define(['ash',
 		
 		FIRST_EXPLORER_CAMP_ORDINAL: 2,
 
-		DEFAULT_INJURY_TIMER: 240,
+		DEFAULT_INJURY_TIMER: 480,
 		
 		explorerType: {
 			FIGHTER: "fighter",
