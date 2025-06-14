@@ -142,8 +142,8 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 				case resourceNames.herbs: value = 0.02; break;
 
 				case resourceNames.medicine: value = 0.03; break;
-				case resourceNames.tools: value = 0.03; break;
-				case resourceNames.concrete: value = 0.03; break;
+				case resourceNames.tools: value = 0.02; break;
+				case resourceNames.concrete: value = 0.02; break;
 				
 				case resourceNames.robots: value = 0.1; break;
 			}
