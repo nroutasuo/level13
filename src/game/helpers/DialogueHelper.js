@@ -208,8 +208,13 @@ define(['ash',
 
             findPOIDataForDialogue: function (poiType, isScouted) {
                 let playerPosition = GameGlobals.playerHelper.getPosition();
+                let playerLocation = GameGlobals.playerHelper.getLocation(); 
 
                 let result = null;
+            
+                // no need to give directions if current sector has relevant poi
+                if (GameGlobals.sectorHelper.getPOIData(playerLocation, poiType)) return result;
+
                 let minDistance = this.getPOIMinDistance(poiType);
                 let maxDistance = this.getPOIMaxDistance(poiType);
                 
