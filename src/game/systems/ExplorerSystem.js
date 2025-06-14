@@ -148,7 +148,14 @@ define([
 			// don't let excursion count alone because it's so easy to spam, but count short excursions for something
 			let explorationValue = MathUtils.average([ stepValue, excursionValue ]);
 
-			return Math.floor(Math.max(dialogueValue, explorationValue, fightValue));
+			let result = Math.floor(Math.max(dialogueValue, explorationValue, fightValue));
+
+			if (explorerVO.id == "prospector" && GameGlobals.gameState.numCamps > 8) {
+				// hack to not completely reset prospector trust after finding her again
+				result = Math.max(result, 3);
+			}
+
+			return result;
 		},
 
 		onEnterCamp: function () {
