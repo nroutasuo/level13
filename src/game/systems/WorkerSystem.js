@@ -442,7 +442,8 @@ define([
 		},
 		
 		isInOrOutsideCampWithProduction: function (resourceName) {
-			if (!this.playerNodes.head.position.equals(this.nearestCampNodes.head.position, true)) return;
+			if (!this.nearestCampNodes.head) return false;
+			if (!this.playerNodes.head.position.equals(this.nearestCampNodes.head.position, true)) return false;
 			
 			let resourceAccComponent = this.nearestCampNodes.head.entity.get(ResourceAccumulationComponent);
 			
