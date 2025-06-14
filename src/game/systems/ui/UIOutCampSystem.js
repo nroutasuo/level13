@@ -595,24 +595,24 @@
 				let dismantleAction = "dismantle_in_" + key;
 				let canBeDismantled = def.canBeDismantled || false;
 				
-				let buildButton = "<button class='action action-build action-location' action='" + buildAction +"'>" + "" + "</button>";
+				let buildButton = "<button class='action action-build action-location' data-tab='switch-in' action='" + buildAction +"'>" + "" + "</button>";
 				var useButton = "";
 				if (hasUseAction) {
-					useButton = "<button class='action action-use action-location btn-narrow' action='" + useAction + "'>" + def.useActionName + "</button>";
+					useButton = "<button class='action action-use action-location btn-narrow' data-tab='switch-in' action='" + useAction + "'>" + def.useActionName + "</button>";
 				}
 				let useButton2 = "";
 				if (hasUseActionExtra) {
-					useButton2 = "<button class='action action-use2 action-location btn-narrow' action='" + useActionExtra + "'>" + def.useActionName2 + "</button>";
+					useButton2 = "<button class='action action-use2 action-location btn-narrow' data-tab='switch-in' action='" + useActionExtra + "'>" + def.useActionName2 + "</button>";
 				}
 				let improveButton = "";
 				if (hasImproveAction) {
-					improveButton = "<button class='action action-improve btn-glyph-big' action='" + improveAction + "'></button>";
+					improveButton = "<button class='action action-improve btn-glyph-big' data-tab='switch-in' action='" + improveAction + "'></button>";
 				}
 				let dismantleButton = "";
 				if (canBeDismantled) {
-					dismantleButton = "<button class='action action-dismantle btn-glyph-big' action='" + dismantleAction + "'>×</button>";
+					dismantleButton = "<button class='action action-dismantle btn-glyph-big' data-tab='switch-in' action='" + dismantleAction + "'>×</button>";
 				}
-				let repairButton = "<button class='action action-repair btn-narrow' action='repair_in_" + key + "'>Repair</button>";
+				let repairButton = "<button class='action action-repair btn-narrow' data-tab='switch-in' action='repair_in_" + key + "'>Repair</button>";
 				let damagedIcon = "<img src='img/eldorado/icon-gear-warning.png' class='icon-damaged icon-ui-generic icon-centered' alt='Building damaged' title='Building damaged' />"
 				
 				tds += "<td>" + buildButton + "</td>";

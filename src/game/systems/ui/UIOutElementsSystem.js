@@ -343,10 +343,18 @@ define([
 			var buttonActions = [];
 			var sys = this;
 
+			let currentTab = GameGlobals.gameState.uiStatus.currentTab;
+
 			$.each($("button.action"), function () {
-				var $button = $(this);
-				var action = $button.attr("action");
-				var isVisible = GameGlobals.uiFunctions.isElementToggled($button) === true || GameGlobals.uiFunctions.isElementVisible($button);
+				let $button = $(this);
+
+				let buttonTab = $button.data("tab");
+				if (buttonTab && buttonTab !== currentTab) return;
+
+				let action = $button.attr("action");
+
+				let isVisible = GameGlobals.uiFunctions.isElementToggled($button) === true || GameGlobals.uiFunctions.isElementVisible($button);
+
 				sys.updateButtonContainer($button, isVisible);
 				if (isVisible) {
 					sys.elementsVisibleButtons.push($button);
