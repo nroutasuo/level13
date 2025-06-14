@@ -182,6 +182,7 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/EventVO'], function (As
 			copy.maxPopulation = this.maxPopulation || 0;
 			copy.populationByOrigin = this.populationByOrigin || {};
 			copy.foundedTimeStamp = this.foundedTimeStamp;
+			copy.foundedTimeStampGameTime = this.foundedTimeStampGameTime;
 			copy.lastRaid = this.lastRaid;
 			copy.lastEvent = this.lastEvent;
 			copy.assignedWorkers = this.assignedWorkers;

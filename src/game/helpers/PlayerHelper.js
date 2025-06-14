@@ -310,6 +310,13 @@ define([
 
 			if (!messageVO.position) return true;
 
+			if (playerPosition.inCamp) {
+				let campSector = GameGlobals.levelHelper.getCampSectorOnLevel(playerPosition.level);
+				let campFoundedTimestamp = campSector.get(CampComponent).foundedTimeStamp;
+				let campFoundedDate = new Date(campFoundedTimestamp);
+				if (campFoundedDate && messageVO.timestamp && messageVO.timestamp < campFoundedTimestamp - 1000) return false;
+			}
+
 			if (messageVO.visibility == LogConstants.MSG_VISIBILITY_GLOBAL) {
 				return true;
 			}

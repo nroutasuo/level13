@@ -1933,7 +1933,8 @@ define(['ash',
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
 			if (GameGlobals.gameFlowLogger.isEnabled) log.i("Build camp " + position + " ordinal " + campOrdinal);
 			var campComponent = new CampComponent(position.toString());
-			campComponent.foundedTimeStamp = GameGlobals.gameState.gameTime;
+			campComponent.foundedTimeStamp = new Date().getTime();
+			campComponent.foundedTimeStampGameTime = GameGlobals.gameState.gameTime;
 			sector.add(campComponent);
 			sector.add(new CampEventTimersComponent());
 			sector.add(new OutgoingCaravansComponent());

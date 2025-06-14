@@ -925,7 +925,7 @@
 			var raidDanger = GameGlobals.campHelper.getCampRaidDanger(sector);
 			var raidDefence = OccurrenceConstants.getRaidDefencePoints(improvements, soldiers, soldierLevel);
 
-			let inGameFoundingDate = UIConstants.getInGameDate(campComponent.foundedTimeStamp);
+			let inGameFoundingDate = UIConstants.getInGameDate(campComponent.foundedTimeStampGameTime);
 			let showCalendar = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(GameGlobals.upgradeEffectsHelper.getUpgradeIdForUIEffect(UpgradeConstants.upgradeUIEffects.calendar));
 			$("#in-demographics-general-age .value").text(inGameFoundingDate);
 			GameGlobals.uiFunctions.toggle("#in-demographics-general-age", showCalendar);
