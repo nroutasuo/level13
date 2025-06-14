@@ -1014,7 +1014,7 @@ define(['ash',
 
 			if (localeVO.type == localeTypes.shelter) {
 				let shelterSuccessCallback = function (cb) {
-					let itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
+					let itemsComponent = playerActionFunctions.playerPositionNodes.head.entity.get(ItemsComponent);
 					let item = itemsComponent.getItem("artefact_rescue_1", null, true, true);
 					if (item) itemsComponent.discardItem(item, false, false);
 					cb();
@@ -1023,8 +1023,8 @@ define(['ash',
 				this.startSequence([
 					{ type: "dialogue", dialogueID: "locale_story_shelter" },
 					{ type: "storyFlag", flagID: StoryConstants.flags.RESCUE_EXPLORER_FOUND, value: true },
-					{ type: "custom", f: shelterSuccessCallback },
 					{ type: "custom", f: successCallback },
+					{ type: "custom", f: shelterSuccessCallback },
 					{ type: "log", textKey: "Scouted the apartment." }
 				]);
 				return;
@@ -1479,14 +1479,16 @@ define(['ash',
 				let collected = GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, rewards);
 				
 				if (collected) {
-					let messages2 = GameGlobals.playerActionResultsHelper.getResultMessagesAfterSelection(rewards);
 					playerActionFunctions.logResultMessages(messages1);
-					playerActionFunctions.logResultMessages(messages2);
-					playerActionFunctions.forceTabUpdate();
 				}
 				
 				player.remove(PlayerActionResultComponent);
 				if (callback) callback();
+				if (collected) {
+					let messages2 = GameGlobals.playerActionResultsHelper.getResultMessagesAfterSelection(rewards);
+					playerActionFunctions.logResultMessages(messages2);
+					playerActionFunctions.forceTabUpdate();
+				}
 				GlobalSignals.inventoryChangedSignal.dispatch();
 				GlobalSignals.actionRewardsCollectedSignal.dispatch();
 			};
