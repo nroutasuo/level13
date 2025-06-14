@@ -21,11 +21,12 @@ define([
 	'game/components/sector/events/RecruitComponent',
 	'game/components/sector/events/TraderComponent',
 	'game/components/sector/events/RaidComponent',
+	'game/components/sector/events/VisitorComponent',
 	'game/components/sector/OutgoingCaravansComponent'
 ], function (
 	Ash, Text, GameGlobals, GlobalSignals, UIConstants, CampConstants, OccurrenceConstants, WorldConstants,
 	CampNode, PlayerPositionNode, PlayerStatsNode, TribeUpgradesNode,
-	PositionComponent, ResourcesComponent, ResourceAccumulationComponent, HopeComponent, LevelComponent, SectorFeaturesComponent, SectorImprovementsComponent, RecruitComponent, TraderComponent, RaidComponent, OutgoingCaravansComponent
+	PositionComponent, ResourcesComponent, ResourceAccumulationComponent, HopeComponent, LevelComponent, SectorFeaturesComponent, SectorImprovementsComponent, RecruitComponent, TraderComponent, RaidComponent, VisitorComponent, OutgoingCaravansComponent
 ) {
 	var UIOutTribeSystem = Ash.System.extend({
 
@@ -525,6 +526,8 @@ define([
 				case this.campNotificationTypes.EVENT_RECRUIT: 
 					return { key: "ui.tribe.status_recruit_message", options: options };
 				case this.campNotificationTypes.EVENT_VISITOR: 
+					let visitorComponent = campNode.entity.get(VisitorComponent);
+					options.characterType = visitorComponent.visitorType;
 					return { key: "ui.tribe.status_visitor_message", options: options };
 				case this.campNotificationTypes.EVENT_REFUGEES: 
 					return { key: "ui.tribe.status_refugees_message", options: options };
