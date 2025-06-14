@@ -179,7 +179,7 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 		},
 		
 		getItemBaseValue: function (item, isTrader) {
-			if (item.tradePrice) return item.tradePrice;
+			if (item.tradePrice || item.tradePrice === 0) return item.tradePrice;
 			switch (item.type) {
 				case ItemConstants.itemTypes.light:
 				case ItemConstants.itemTypes.weapon:
