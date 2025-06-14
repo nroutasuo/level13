@@ -2495,16 +2495,20 @@ define([
 		addCostModifiers: function (action, multiplier, ordinal, isOutpost, sector, result) {
 			// dynamic costs that should be shown as buffs/modifiers in UI (along with cost without them)
 
-			let baseActionID = this.getBaseActionID(action);
-			switch (baseActionID) {
+			switch (action) {
 				case "build_out_collector_food":
 				case "build_out_collector_water":
+				case "improve_out_collector_food":
+				case "improve_out_collector_water":
 					if (this.getPartyAbilityLevel(ExplorerConstants.abilityType.COST_COLLECTORS) > 0) {
 						let baseCost = result.resource_metal;
 						result.resource_metal = baseCost * 0.5
 					}
 					break;
-				
+			}
+
+			let baseActionID = this.getBaseActionID(action);
+			switch (baseActionID) {
 				case "flee":
 					if (this.getPartyAbilityLevel(ExplorerConstants.abilityType.FLEE) > 0) {
 						result.stamina = 0;
