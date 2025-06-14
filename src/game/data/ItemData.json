@@ -232,7 +232,7 @@
     },
     "artefact_rescue_1": {
         "campOrdinalRequired": 8,
-        "icon": "img/items/leaflet.png",
+        "icon": "img/items/bag-1.png",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": false,
@@ -423,7 +423,7 @@
         "configData": {
             "bookType": "science"
         },
-        "icon": "img/items/book.png",
+        "icon": "img/items/book-blue.png",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
@@ -439,7 +439,7 @@
         "configData": {
             "bookType": "science"
         },
-        "icon": "img/items/book.png",
+        "icon": "img/items/book-blue.png",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
@@ -455,7 +455,7 @@
         "configData": {
             "bookType": "science"
         },
-        "icon": "img/items/book.png",
+        "icon": "img/items/book-blue.png",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
@@ -471,7 +471,7 @@
         "configData": {
             "bookType": "fiction"
         },
-        "icon": "img/items/book.png",
+        "icon": "img/items/book-blue.png",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
@@ -487,7 +487,7 @@
         "configData": {
             "bookType": "fiction"
         },
-        "icon": "img/items/book.png",
+        "icon": "img/items/book-blue.png",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
@@ -503,7 +503,7 @@
         "configData": {
             "bookType": "fiction"
         },
-        "icon": "img/items/book.png",
+        "icon": "img/items/book-blue.png",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
@@ -519,7 +519,7 @@
         "configData": {
             "bookType": "history"
         },
-        "icon": "img/items/book.png",
+        "icon": "img/items/book-blue.png",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
@@ -535,7 +535,7 @@
         "configData": {
             "bookType": "history"
         },
-        "icon": "img/items/book.png",
+        "icon": "img/items/book-blue.png",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
@@ -551,7 +551,7 @@
         "configData": {
             "bookType": "history"
         },
-        "icon": "img/items/book.png",
+        "icon": "img/items/book-blue.png",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
@@ -567,7 +567,7 @@
         "configData": {
             "bookType": "engineering"
         },
-        "icon": "img/items/book.png",
+        "icon": "img/items/book-blue.png",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
@@ -583,7 +583,7 @@
         "configData": {
             "bookType": "engineering"
         },
-        "icon": "img/items/book.png",
+        "icon": "img/items/book-blue.png",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
@@ -599,7 +599,7 @@
         "configData": {
             "bookType": "engineering"
         },
-        "icon": "img/items/book.png",
+        "icon": "img/items/book-blue.png",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
@@ -1019,7 +1019,7 @@
             "shade": 30
         },
         "campOrdinalRequired": 2,
-        "icon": "img/items/clothing-hat-1.png",
+        "icon": "img/items/spectacle-sunglass.png",
         "isCraftable": false,
         "isEquippable": true,
         "isUseable": false,
@@ -1164,7 +1164,7 @@
             "warmth": 15
         },
         "campOrdinalRequired": 13,
-        "icon": "img/items/clothing-hat-3.png",
+        "icon": "img/items/hard-hat-mine.png",
         "isCraftable": true,
         "isEquippable": true,
         "isUseable": false,
@@ -1527,7 +1527,7 @@
             "warmth": 5
         },
         "campOrdinalRequired": 8,
-        "icon": "img/items/clothing-2.png",
+        "icon": "img/items/clothing-warning.png",
         "isCraftable": true,
         "isEquippable": true,
         "isSpecialEquipment": true,
@@ -1633,7 +1633,7 @@
             "warmth": 12
         },
         "campOrdinalRequired": 9,
-        "icon": "img/items/clothing-2.png",
+        "icon": "img/items/clothing-tie-warm.png",
         "isCraftable": false,
         "isEquippable": true,
         "isUseable": false,
@@ -1670,7 +1670,7 @@
             "warmth": 15
         },
         "campOrdinalRequired": 13,
-        "icon": "img/items/clothing-3.png",
+        "icon": "img/items/clothing-shirt-alt.png",
         "isCraftable": true,
         "isEquippable": true,
         "isUseable": false,
@@ -1712,7 +1712,7 @@
     },
     "consumable_map_1": {
         "campOrdinalRequired": 2,
-        "icon": "img/items/exploration-map.png",
+        "icon": "img/items/map-pin.png",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
@@ -1724,7 +1724,7 @@
     },
     "consumable_map_2": {
         "campOrdinalRequired": 2,
-        "icon": "img/items/exploration-map.png",
+        "icon": "img/items/map-pin.png",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
@@ -1735,7 +1735,7 @@
         "type": "voucher"
     },
     "consumable_map_explorer": {
-        "icon": "img/items/exploration-map.png",
+        "icon": "img/items/map-pin.png",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
@@ -1978,7 +1978,7 @@
     },
     "equipment_map_2": {
         "campOrdinalRequired": 2,
-        "icon": "img/items/exploration-map.png",
+        "icon": "img/items/exploration-map-plus.png",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": false,
@@ -2112,7 +2112,7 @@
             "light": 40
         },
         "campOrdinalRequired": 5,
-        "icon": "img/items/light-electric.png",
+        "icon": "img/items/flashlight.png",
         "isCraftable": true,
         "isEquippable": true,
         "isUseable": false,
@@ -2372,7 +2372,7 @@
             "spd": 1
         },
         "campOrdinalRequired": 1,
-        "icon": "img/items/weapon-shiv.png",
+        "icon": "img/items/weapon-minus.png",
         "isCraftable": true,
         "isEquippable": true,
         "isUseable": false,
@@ -2455,7 +2455,7 @@
             "spd": 0.9
         },
         "campOrdinalRequired": 4,
-        "icon": "img/items/weapon-shiv.png",
+        "icon": "img/items/weapon-shiv-plus.png",
         "isCraftable": true,
         "isEquippable": true,
         "isUseable": false,
@@ -2471,7 +2471,7 @@
             "spd": 0.75
         },
         "campOrdinalRequired": 5,
-        "icon": "img/items/weapon-shiv.png",
+        "icon": "img/items/hammer.png",
         "isCraftable": true,
         "isEquippable": true,
         "isUseable": false,
@@ -2551,7 +2551,7 @@
             "spd": 0.8
         },
         "campOrdinalRequired": 11,
-        "icon": "img/items/weapon-shiv.png",
+        "icon": "img/items/hammer.png",
         "isCraftable": true,
         "isEquippable": true,
         "isUseable": false,
@@ -2599,7 +2599,7 @@
             "spd": 0.9
         },
         "campOrdinalRequired": 14,
-        "icon": "img/items/weapon-shiv.png",
+        "icon": "img/items/weapon-rocket.png",
         "isCraftable": true,
         "isEquippable": true,
         "isUseable": false,
