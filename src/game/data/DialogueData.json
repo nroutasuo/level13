@@ -8178,7 +8178,9 @@
 						{
 							"buttonKey": "locale_interaction_treatment_explorer",
 							"conditions": {
-								"hasInjuredExplorer": true
+								"party": {
+									"hasInjuredExplorer": true
+								}
 							},
 							"response": "explorer_treatment"
 						},

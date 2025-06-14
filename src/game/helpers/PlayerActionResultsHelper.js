@@ -696,7 +696,8 @@ define([
 				for (let i = 0; i < rewards.lostExplorerInjuries.length; i++) {
 					let explorerID = rewards.lostExplorerInjuries[i];
 					if (explorerID == "any") {
-						rewards.lostExplorerInjuries[i] = GameGlobals.playerHelper.getExplorerToHeal().id;
+						let explorerVO = GameGlobals.playerHelper.getExplorerToHeal();
+						if (explorerVO)	rewards.lostExplorerInjuries[i] = explorerVO.id;
 					}
 				}
 			}
@@ -1203,7 +1204,9 @@ define([
 				for (let i = 0; i < resultVO.lostExplorerInjuries.length; i++) {
 					let explorerID = resultVO.lostExplorerInjuries[i];
 					let explorerVO = GameGlobals.playerHelper.getExplorerByID(explorerID);
-					div += "<p>" + explorerVO.name + " got healed.</p>";
+					if (explorerVO) {
+						div += "<p>" + explorerVO.name + " got healed.</p>";
+					}
 				}
 			}
 
