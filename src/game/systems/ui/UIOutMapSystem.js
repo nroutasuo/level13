@@ -517,44 +517,52 @@ define([
 		updateMapCompletionHint: function () {
 			let level = this.selectedLevel;
 			
-			let levelTypeText = "";
+			let levelTypeTextVO = {};
+			
 			let levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
 			let surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
 			let groundLevel = GameGlobals.gameState.getGroundLevel();
 			let isTypeRevealed = GameGlobals.levelHelper.isLevelTypeRevealed(level);
 			
 			if (level == surfaceLevel) {
-				levelTypeText = "This level is on the surface of the City. "
+				levelTypeTextVO.textKey = "ui.map.level_type_description_surface";
 			} else if (level == groundLevel) {
-				levelTypeText = "This level is on the Ground. ";
+				levelTypeTextVO.textKey = "ui.map.level_type_description_ground";
 			} else if (isTypeRevealed && !levelComponent.isCampable) {
 				switch (levelComponent.notCampableReason) {
 					case LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION:
+						levelTypeTextVO.textKey = "ui.map.level_type_description_radiation";
+						break;
 					case LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION:
-						levelTypeText = "This level is polluted. ";
+						levelTypeTextVO.textKey = "ui.map.level_type_description_poison";
 						break;
 					default:
-						levelTypeText = "This level is uninhabited. ";
+						levelTypeTextVO.textKey = "ui.map.level_type_description_uncampable";
 						break;
 				}
-			} else {
+			} else if (isTypeRevealed && levelComponent.isCampable) {
+				levelTypeTextVO.textKey = "ui.map.level_type_description_campable";
 			}
 			
-			let levelPronoun = levelTypeText.length > 0 ? "It" : "This level";
-			let levelLocation = levelTypeText.length > 0 ? "" : " on this level";
+			let mapStatusTextVO = {};
+
+			mapStatusTextVO.textKey = "ui.map.level_status_many_unvisited_description";
 			
 			let mapStatus = GameGlobals.levelHelper.getLevelStats(level);
-			let mapStatusText = "There are still many unvisited streets" + levelLocation + ".";
-			if (mapStatus.percentClearedSectors >= 1)
-				mapStatusText = levelPronoun + " has been thoroughly explored.";
-			else if (mapStatus.percentScoutedSectors >= 1)
-				mapStatusText =  levelPronoun + " has been mapped, but there are unexplored locations left.";
+			if (mapStatus.countSeenClearedWorkshops > 0) 
+				mapStatusTextVO.textKey = "ui.map.level_status_uncleared_workshop_description";
+			else if (mapStatus.percentClearedSectors >= 1)
+				mapStatusTextVO.textKey = "ui.map.level_status_fully_explored_description";
+			else if (mapStatus.percentScoutedSectors >= 1) 
+				mapStatusTextVO.textKey = "ui.map.level_status_all_sectors_scouted_description";
 			else if (mapStatus.percentRevealedSectors >= 1)
-				mapStatusText = "There are still unscouted streets" + levelLocation + ".";
+				mapStatusTextVO.textKey = "ui.map.level_status_all_sectors_revealed_description";
 			else if (mapStatus.percentRevealedSectors >= 0.5)
-				mapStatusText = "There are still some unvisited streets" + levelLocation + ".";
+				mapStatusTextVO.textKey = "ui.map.level_status_some_unvisited_description";
 
-			$("#map-completion-hint").text(levelTypeText + "" + mapStatusText);
+			let hint = { textFragments: [ levelTypeTextVO, mapStatusTextVO ], delimiter: "ui.common.sentence_separator" };
+
+			$("#map-completion-hint").text(Text.compose(hint));
 		},
 		
 		getDistrictText: function (sector) {

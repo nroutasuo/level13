@@ -642,6 +642,7 @@ define([
 			levelStats.countKnownIngredientSectors = 0;
 			levelStats.countUnscoutedLocaleSectors = 0;
 			levelStats.countInvestigatableSectors = 0;
+			levelStats.countSeenClearedWorkshops = 0;
 			levelStats.hasCamp = false;
 			
 			for (let node = this.sectorNodes.head; node; node = node.next) {
@@ -652,6 +653,8 @@ define([
 
 				let statusComponent = node.entity.get(SectorStatusComponent);
 				let featuresComponent = node.entity.get(SectorFeaturesComponent);
+				let workshopComponent = node.entity.get(WorkshopComponent);
+				let sectorControlComponent = node.entity.get(SectorControlComponent);
 				let isVisited = GameGlobals.sectorHelper.isVisited(node.entity);
 				let hasUnscoutedLocales = GameGlobals.sectorHelper.getNumVisibleUnscoutedLocales(node.entity) > 0;
 				
@@ -660,6 +663,7 @@ define([
 				if (statusComponent.scavenged) levelStats.countScavengedSectors++;
 				if (statusComponent.getScavengedPercent() >= 100) levelStats.countFullyScavengedSectors++;
 				if (isVisited) levelStats.countVisitedSectors++;
+				if (workshopComponent && workshopComponent.isClearable && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP)) levelStats.countSeenClearedWorkshops++;
 				if (node.entity.has(RevealedComponent) || isVisited) levelStats.countRevealedSectors++;
 				if (GameGlobals.sectorHelper.hasSectorVisibleIngredients(node.entity)) levelStats.countKnownIngredientSectors++;
 				if (hasUnscoutedLocales) levelStats.countUnscoutedLocaleSectors++;
