@@ -1936,7 +1936,8 @@
     },
     "document_story_fall_launch_schedule_01": {
         "configData": {
-            "noteText": "Detailed launch schedule for a space craft, part of the so called Exodus project. The final launch date coincides with The Fall."
+            "noteText": "Detailed launch schedule for a space craft, part of the so called Exodus project. The final launch date coincides with The Fall.",
+            "storyFlag": "FALL_LINKED_EXODUS_TO_FALL"
         },
         "icon": "img/items/document.png",
         "isCraftable": false,

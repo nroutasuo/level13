@@ -432,24 +432,6 @@
 				"character_bard_default_meet_04_p1"
 			]
 		},
-		"character_generic_story_surface_01": {
-			"conditions": {
-				"sector": {
-					"surface": false
-				},
-				"player": {
-					"position": {
-						"level": [
-							14,
-							-1
-						]
-					}
-				}
-			},
-			"pages": [
-				"character_generic_story_surface_01_p1"
-			]
-		},
 		"character_beggar_default_meet_01": {
 			"pages": [
 				{
@@ -998,8 +980,8 @@
 		"character_fortuneTeller_default_event_01": {
 			"conditions": {
 				"storyFlags": {
-					"RESCUE_EXPLORER_LEFT": false,
-					"RESCUE_EXPLORER_FOUND": false
+					"RESCUE_EXPLORER_FOUND": false,
+					"RESCUE_EXPLORER_LEFT": false
 				}
 			},
 			"pages": [
@@ -1383,8 +1365,8 @@
 		"character_fortuneTeller_default_meet_01": {
 			"conditions": {
 				"storyFlags": {
-					"RESCUE_EXPLORER_LEFT": false,
-					"RESCUE_EXPLORER_FOUND": false
+					"RESCUE_EXPLORER_FOUND": false,
+					"RESCUE_EXPLORER_LEFT": false
 				}
 			},
 			"pages": [
@@ -1885,20 +1867,20 @@
 				"character_generic_helpful_meet_poi_hazard_territory_01_p1"
 			]
 		},
-		"character_generic_helpful_meet_poi_passage_01": {
-			"conditions": {
-				"vicinity": "passage"
-			},
-			"pages": [
-				"character_generic_helpful_meet_poi_passage_01_p1"
-			]
-		},
 		"character_generic_helpful_meet_poi_ingredients_01": {
 			"conditions": {
 				"vicinity": "ingredients"
 			},
 			"pages": [
 				"character_generic_helpful_meet_poi_ingredients_01_p1"
+			]
+		},
+		"character_generic_helpful_meet_poi_passage_01": {
+			"conditions": {
+				"vicinity": "passage"
+			},
+			"pages": [
+				"character_generic_helpful_meet_poi_passage_01_p1"
 			]
 		},
 		"character_generic_helpful_meet_poi_settlement": {
@@ -2167,6 +2149,24 @@
 			},
 			"pages": [
 				"character_generic_story_searching_for_greenhouse_02_p1"
+			]
+		},
+		"character_generic_story_surface_01": {
+			"conditions": {
+				"player": {
+					"position": {
+						"level": [
+							14,
+							-1
+						]
+					}
+				},
+				"sector": {
+					"surface": false
+				}
+			},
+			"pages": [
+				"character_generic_story_surface_01_p1"
 			]
 		},
 		"character_generic_story_warn_ground_01": {
@@ -2756,6 +2756,11 @@
 		"character_workerCleric_default_interact_04": {
 			"pages": [
 				"character_workerCleric_default_interact_04_p1"
+			]
+		},
+		"character_workerCleric_default_interact_05": {
+			"pages": [
+				"character_workerCleric_default_interact_05_p1"
 			]
 		},
 		"character_workerConcrete_default_interact_01": {
@@ -3917,6 +3922,17 @@
 			],
 			"text": "I have no idea which way we should go."
 		},
+		"explorer_generic_interact_directions_passage_01": {
+			"conditions": {
+				"inCamp": false,
+				"vicinity": "passage",
+				"vicinityScouted": false
+			},
+			"isPriority": true,
+			"pages": [
+				"explorer_generic_interact_directions_passage_01_p1"
+			]
+		},
 		"explorer_generic_interact_directions_safety_01": {
 			"conditions": {
 				"inCamp": false,
@@ -3929,16 +3945,6 @@
 			"isPriority": true,
 			"pages": [
 				"explorer_generic_interact_directions_safety_01_p1"
-			]
-		},
-		"explorer_generic_interact_directions_passage_01": {
-			"conditions": {
-				"vicinity": "passage",
-				"vicinityScouted": false
-			},
-			"isPriority": true,
-			"pages": [
-				"explorer_generic_interact_directions_passage_01_p1"
 			]
 		},
 		"explorer_generic_interact_directions_safety_02": {
@@ -4882,6 +4888,16 @@
 						"endQuest": "apocalypse"
 					}
 				}
+			]
+		},
+		"explorer_generic_story_fall_exodus_01": {
+			"conditions": {
+				"storyFlags": {
+					"FALL_LINKED_EXODUS_TO_FALL": true
+				}
+			},
+			"pages": [
+				"explorer_generic_story_fall_exodus_01_p1"
 			]
 		},
 		"explorer_generic_story_find_greenhouse": {
@@ -7385,6 +7401,16 @@
 				"explorer_unique_hermit_story_apocalypse_plan_ready_01_p1"
 			]
 		},
+		"explorer_unique_hermit_story_fall_exodus_01": {
+			"conditions": {
+				"storyFlags": {
+					"FALL_LINKED_EXODUS_TO_FALL": true
+				}
+			},
+			"pages": [
+				"explorer_unique_hermit_story_fall_exodus_01_p1"
+			]
+		},
 		"explorer_unique_journalist_event_01": {
 			"pages": [
 				"explorer_unique_journalist_event_01_p1"
@@ -7614,6 +7640,17 @@
 			"pages": [
 				"explorer_unique_journalist_story_evacuation_p1",
 				"explorer_unique_journalist_story_evacuation_p2"
+			]
+		},
+		"explorer_unique_journalist_story_fall_exodus_01": {
+			"conditions": {
+				"storyFlags": {
+					"FALL_LINKED_EXODUS_TO_FALL": true
+				}
+			},
+			"isUrgent": true,
+			"pages": [
+				"explorer_unique_journalist_story_fall_exodus_01_p1"
 			]
 		},
 		"explorer_unique_journalist_story_fall_investigate_01": {
@@ -8925,7 +8962,6 @@
 					"character_beggar_default_meet_02",
 					"character_beggar_default_meet_03",
 					"character_beggar_default_meet_04",
-					"character_beggar_default_meet_05",
 					"character_generic_story_surface_01"
 				]
 			}
@@ -9068,6 +9104,42 @@
 					"character_generic_story_warn_ground_02",
 					"character_generic_story_warn_ground_03",
 					"character_generic_stranded_meet_water"
+				]
+			}
+		},
+		"character_fortuneTeller_default": {
+			"dialogues": {
+				"event": [
+					"character_fortuneTeller_default_event_01",
+					"character_fortuneTeller_default_event_02",
+					"character_fortuneTeller_default_event_03",
+					"character_fortuneTeller_default_event_04",
+					"character_fortuneTeller_default_event_05",
+					"character_fortuneTeller_default_event_06",
+					"character_fortuneTeller_default_event_07",
+					"character_fortuneTeller_default_event_08",
+					"character_fortuneTeller_default_event_09",
+					"character_fortuneTeller_default_event_10",
+					"character_fortuneTeller_default_event_11",
+					"character_fortuneTeller_default_event_done_01",
+					"character_fortuneTeller_default_event_done_02"
+				],
+				"meet": [
+					"character_fortuneTeller_default_meet_01",
+					"character_fortuneTeller_default_meet_02",
+					"character_fortuneTeller_default_meet_03",
+					"character_fortuneTeller_default_meet_04",
+					"character_fortuneTeller_default_meet_05",
+					"character_fortuneTeller_default_meet_06",
+					"character_fortuneTeller_default_meet_07",
+					"character_fortuneTeller_default_meet_08",
+					"character_fortuneTeller_default_meet_09",
+					"character_fortuneTeller_default_meet_10",
+					"character_fortuneTeller_default_meet_11",
+					"character_fortuneTeller_default_meet_done_01",
+					"character_fortuneTeller_default_meet_done_02",
+					"character_fortuneTeller_default_meet_done_03",
+					"character_fortuneTeller_default_meet_done_04"
 				]
 			}
 		},
@@ -9440,6 +9512,7 @@
 					"character_workerCleric_default_interact_02",
 					"character_workerCleric_default_interact_03",
 					"character_workerCleric_default_interact_04",
+					"character_workerCleric_default_interact_05",
 					"character_workerGeneric_interact_overcrowded_01",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
@@ -10058,6 +10131,7 @@
 					"explorer_generic_story_apocalypse_plan_ready_02",
 					"explorer_generic_story_apocalypse_quest_start",
 					"explorer_generic_story_apocalypse_space_ship_ready",
+					"explorer_generic_story_fall_exodus_01",
 					"explorer_generic_story_find_greenhouse",
 					"explorer_generic_story_rescue_absence_01",
 					"explorer_generic_story_rescue_prospector_hint_01",
@@ -10246,42 +10320,6 @@
 				]
 			}
 		},
-		"character_fortuneTeller_default": {
-			"dialogues": {
-				"event": [
-					"character_fortuneTeller_default_event_01",
-					"character_fortuneTeller_default_event_02",
-					"character_fortuneTeller_default_event_03",
-					"character_fortuneTeller_default_event_04",
-					"character_fortuneTeller_default_event_05",
-					"character_fortuneTeller_default_event_06",
-					"character_fortuneTeller_default_event_07",
-					"character_fortuneTeller_default_event_08",
-					"character_fortuneTeller_default_event_09",
-					"character_fortuneTeller_default_event_10",
-					"character_fortuneTeller_default_event_11",
-					"character_fortuneTeller_default_event_done_01",
-					"character_fortuneTeller_default_event_done_02"
-				],
-				"meet": [
-					"character_fortuneTeller_default_meet_01",
-					"character_fortuneTeller_default_meet_02",
-					"character_fortuneTeller_default_meet_03",
-					"character_fortuneTeller_default_meet_04",
-					"character_fortuneTeller_default_meet_05",
-					"character_fortuneTeller_default_meet_06",
-					"character_fortuneTeller_default_meet_07",
-					"character_fortuneTeller_default_meet_08",
-					"character_fortuneTeller_default_meet_09",
-					"character_fortuneTeller_default_meet_10",
-					"character_fortuneTeller_default_meet_11",
-					"character_fortuneTeller_default_meet_done_01",
-					"character_fortuneTeller_default_meet_done_02",
-					"character_fortuneTeller_default_meet_done_03",
-					"character_fortuneTeller_default_meet_done_04"
-				]
-			}
-		},
 		"explorer_template_darkdweller": {
 			"dialogues": {
 				"event": [
@@ -10297,6 +10335,7 @@
 					"explorer_generic_intract_new_camp_14_01",
 					"explorer_generic_intract_new_camp_6_01",
 					"explorer_generic_intract_new_camp_7_01",
+					"explorer_generic_story_fall_exodus_01",
 					"explorer_generic_story_rescue_prospector_hint_01",
 					"explorer_generic_story_rescue_prospector_hint_02",
 					"explorer_generic_story_rescue_prospector_intro",
@@ -10353,6 +10392,7 @@
 					"explorer_generic_story_apocalypse_plan_ready_01",
 					"explorer_generic_story_apocalypse_quest_start",
 					"explorer_generic_story_apocalypse_space_ship_ready",
+					"explorer_generic_story_fall_exodus_01",
 					"explorer_generic_story_rescue_absence_01",
 					"explorer_generic_story_rescue_prospector_hint_01",
 					"explorer_generic_story_rescue_prospector_hint_02",
@@ -10401,6 +10441,7 @@
 					"explorer_generic_interact_injured_recovering_04",
 					"explorer_generic_intract_new_camp_11_01",
 					"explorer_generic_intract_new_camp_9_01",
+					"explorer_generic_story_fall_exodus_01",
 					"explorer_generic_story_rescue_absence_01",
 					"explorer_generic_story_rescue_prospector_hint_01",
 					"explorer_generic_story_rescue_prospector_hint_02",
@@ -10509,6 +10550,7 @@
 					"explorer_generic_intract_new_camp_7_01",
 					"explorer_generic_intract_new_camp_8_01",
 					"explorer_generic_intract_new_camp_9_01",
+					"explorer_generic_story_fall_exodus_01",
 					"explorer_generic_story_rescue_absence_01",
 					"explorer_generic_story_rescue_prospector_hint_01",
 					"explorer_generic_story_rescue_prospector_hint_02",
@@ -10518,8 +10560,6 @@
 					"explorer_template_researcher_interact_01",
 					"explorer_template_researcher_interact_02",
 					"explorer_template_researcher_interact_03",
-					"explorer_template_researcher_story_ground_01",
-					"explorer_template_researcher_story_ground_02",
 					"explorer_template_researcher_interact_04",
 					"explorer_template_researcher_interact_05",
 					"explorer_template_researcher_interact_06",
@@ -10528,6 +10568,8 @@
 					"explorer_template_researcher_interact_09",
 					"explorer_template_researcher_interact_10",
 					"explorer_template_researcher_interact_11",
+					"explorer_template_researcher_story_ground_01",
+					"explorer_template_researcher_story_ground_02",
 					"explorer_template_researcher_interact_12",
 					"explorer_template_researcher_outside_01",
 					"explorer_template_researcher_outside_02",
@@ -10733,7 +10775,8 @@
 					"explorer_unique_hermit_interact_14",
 					"explorer_unique_hermit_interact_15",
 					"explorer_unique_hermit_outside_01",
-					"explorer_unique_hermit_story_apocalypse_plan_ready_01"
+					"explorer_unique_hermit_story_apocalypse_plan_ready_01",
+					"explorer_unique_hermit_story_fall_exodus_01"
 				],
 				"meet": [
 					"explorer_unique_hermit_meet_01"
@@ -10780,6 +10823,7 @@
 					"explorer_unique_journalist_interact_02",
 					"explorer_unique_journalist_interact_03",
 					"explorer_unique_journalist_interact_04",
+					"explorer_unique_journalist_story_fall_exodus_01",
 					"explorer_unique_journalist_interact_05",
 					"explorer_unique_journalist_interact_06",
 					"explorer_unique_journalist_interact_07",
@@ -10843,6 +10887,7 @@
 					"explorer_generic_story_apocalypse_evacuation_known",
 					"explorer_generic_story_apocalypse_quest_start",
 					"explorer_generic_story_apocalypse_space_ship_ready",
+					"explorer_generic_story_fall_exodus_01",
 					"explorer_generic_story_searching_for_greenhouse_01",
 					"explorer_generic_story_searching_for_greenhouse_02",
 					"explorer_unique_prospector_interact_01",
