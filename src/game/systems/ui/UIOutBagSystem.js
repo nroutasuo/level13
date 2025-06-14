@@ -133,7 +133,7 @@ define([
 				li.$root.find("button.action").html(buttonLabel);
 			};
 			let fnIsDataSame = function (a, b) {
-				return a.id == b.id;
+				return a.baseID == b.baseID;
 			};
 			this.useItemButtonList = UIList.create(this, container, fnCreateItem, fnUpdateItem, fnIsDataSame);
 		},
