@@ -218,8 +218,10 @@ define([
 			var encounterFactor = GameGlobals.playerActionsHelper.getEncounterFactor(action);
 			var sectorDangerFactor = GameGlobals.sectorHelper.getDangerFactor(sectorEntity);
 
-			let injuryRisk = GameGlobals.playerActionsHelper.getInjuryProbability(action);
-			let inventoryRisk = GameGlobals.playerActionsHelper.getLoseInventoryProbability(action);
+			let inCamp = GameGlobals.playerHelper.isInCamp();
+
+			let injuryRisk = inCamp ? 0 : GameGlobals.playerActionsHelper.getInjuryProbability(action);
+			let inventoryRisk = inCamp ? 0 : GameGlobals.playerActionsHelper.getLoseInventoryProbability(action);
 			
 			var fightRisk = hasEnemies ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision, sectorDangerFactor, encounterFactor) : 0;
 			var fightRiskBase = fightRisk > 0 ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision, sectorDangerFactor, encounterFactor) : 0;
