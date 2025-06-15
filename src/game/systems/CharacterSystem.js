@@ -327,7 +327,7 @@ define([
 				validTypes.push(CharacterConstants.characterTypes.drifter);
 			}
 
-			if (distanceToCamp > 5 && !hasHazards && levelOrdinal > 2 && Math.random() < 0.1) {
+			if (distanceToCamp > 5 && !hasHazards && levelOrdinal > 2 && Math.random() < 0.01) {
 				if (existingTypes.indexOf(CharacterConstants.characterTypes.fortuneTeller) < 0) {
 					validTypes.push(CharacterConstants.characterTypes.fortuneTeller);
 				}
