@@ -108,13 +108,21 @@ define([
 			$("#blueprints-list").empty();
 			$("#upgrades-list").empty();
 
-			let upgradeDefinition;
-			let status;
 			let numUnResearched = 0;
+
+			let upgradeDefinitions = [];
 			
 			for (let id in UpgradeConstants.upgradeDefinitions) {
-				upgradeDefinition = UpgradeConstants.upgradeDefinitions[id];
-				status = GameGlobals.tribeHelper.getUpgradeStatus(id);
+				let upgradeDefinition = UpgradeConstants.upgradeDefinitions[id];
+				upgradeDefinitions.push(upgradeDefinition);
+			}
+
+			upgradeDefinitions.sort((a, b) => a.campOrdinal - b.campOrdinal);
+
+			for (let i = 0; i < upgradeDefinitions.length; i++) {
+				let upgradeDefinition = upgradeDefinitions[i];
+				let id = upgradeDefinition.id;
+				let status = GameGlobals.tribeHelper.getUpgradeStatus(id);
 				
 				if (status != UpgradeConstants.upgradeStatus.UNLOCKED)
 					numUnResearched++;
