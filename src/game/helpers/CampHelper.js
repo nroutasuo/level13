@@ -541,8 +541,8 @@ define([
 			let traderTypeRelativeProbabilities = {};
 			traderTypeRelativeProbabilities[TradeConstants.traderType.EQUIPMENT] = 1;
 			traderTypeRelativeProbabilities[TradeConstants.traderType.GENERAL] = 1;
-			traderTypeRelativeProbabilities[TradeConstants.traderType.CRAFTING] = 1 - (traderLevel - 1) * 0.1;
-			traderTypeRelativeProbabilities[TradeConstants.traderType.RESOURCES] = 1 + traderLevel * 0.1;
+			traderTypeRelativeProbabilities[TradeConstants.traderType.CRAFTING] = 0.75 - (traderLevel - 1) * 0.1;
+			traderTypeRelativeProbabilities[TradeConstants.traderType.RESOURCES] = 1.5 + traderLevel * 0.1;
 			traderTypeRelativeProbabilities[TradeConstants.traderType.PARTNER] = 1.1;
 			traderTypeRelativeProbabilities[TradeConstants.traderType.VALUABLES] = (traderLevel - 1) * 0.2;
 			
