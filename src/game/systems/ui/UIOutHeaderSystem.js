@@ -402,7 +402,7 @@ define([
 
 			GameGlobals.uiFunctions.toggle(this.elements.statIndicatorHealth, !isSmallLayout);
 			this.elements.valHealth.text(Math.round(playerStatsNode.stamina.health));
-			this.updateStatsCallout("Determines maximum stamina", this.elements.statIndicatorHealth, playerStatsNode.stamina.healthAccSources, true);
+			this.updateHealthStatCallout("Determines maximum stamina", this.elements.statIndicatorHealth);
 			let healthAccumulation = playerStatsNode.stamina.healthAccumulation;
 			this.updateChangeIndicator(this.elements.changeIndicatorHealth, healthAccumulation, healthAccumulation != 0, false);
 
@@ -552,6 +552,26 @@ define([
 			}
 		},
 
+		updateHealthStatCallout: function (description, $indicatorElem) {
+			let perksComponent = this.playerStatsNodes.head.perks;
+			let modifiers = "";
+			
+			let perks = perksComponent.getAll();
+			for (let i = 0; i < perks.length; i++) {
+				let perkVO = perks[i];
+				switch (perkVO.type) {
+					case PerkConstants.perkTypes.injury:
+					case PerkConstants.perkTypes.health:
+						modifiers += this.getPerkDescription(perkVO) + "<br/>";
+						break;
+				}
+			}
+			
+			let content = description + (description && modifiers ? "<hr/>" : "") + modifiers;
+			
+			UIConstants.updateCalloutContent($indicatorElem, content);
+		},
+
 		updateStatsCallout: function (description, $indicatorElem, changeSources, hideNumbers) {
 			var sources = "";
 			var source;
@@ -621,7 +641,7 @@ define([
 						case ItemConstants.itemTypes.voucher:
 						case ItemConstants.itemTypes.exploration:
 						case ItemConstants.itemTypes.note:
-							$("ul.list-header-items").append("<li>" + UIConstants.getItemDiv(itemsComponent, item, count, UIConstants.getItemCallout(item, true)) + "</li>");
+							$("ul.list-header-items").append("<li>" + UIConstants.getItemDiv(itemsComponent, item, null, UIConstants.getItemCallout(item, true)) + "</li>");
 							break;
 					}
 				}
@@ -851,7 +871,7 @@ define([
 			GameGlobals.uiFunctions.toggle(".header-bag-currency", !inCamp && currentCurrency > 0);
 
 			let $valueLabel = inCamp ? $(".header-camp-currency .value") : $(".header-bag-currency .value");
-			UIAnimations.animateOrSetNumber($valueLabel, true, currentCurrency || 0);
+			UIAnimations.animateOrSetNumber($valueLabel, true, Math.round(currentCurrency || 0));
 		},
 
 		// update resource amounts in the resources bar
