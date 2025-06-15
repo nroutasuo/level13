@@ -968,7 +968,7 @@ define(['ash',
 					{ type: "custom", f: groveSuccessCallback },
 					{ type: "custom", f: successCallback },
 					{ type: "log", textKey: "story.stories.greenhouse_grove_scouted_message" }
-				]);
+				], localeName);
 				return;
 			}
 
@@ -978,7 +978,7 @@ define(['ash',
 						{ type: "dialogue", dialogueID: "locale_story_greenhouse" },
 						{ type: "custom", f: successCallback },
 						{ type: "log", textKey: "story.stories.greenhouse_greenhouse_found_message" }
-					]);
+					], localeName);
 					return;
 				}
 			}
@@ -989,7 +989,7 @@ define(['ash',
 					{ type: "storyFlag", flagID: StoryConstants.flags.FALL_SEEN_STOREHOUSE, value: true },
 					{ type: "custom", f: successCallback },
 					{ type: "log", textKey: "Scouted a depot." }
-				]);
+				], localeName);
 				return;
 			}
 
@@ -1008,7 +1008,7 @@ define(['ash',
 					{ type: "dialogue", dialogueID: "locale_story_seeddepot" },
 					{ type: "custom", f: successCallback },
 					{ type: "log", textKey: "Scouted an old seed depot, but the seeds were dead." }
-				]);
+				], localeName);
 				return;
 			}
 
@@ -1026,7 +1026,7 @@ define(['ash',
 					{ type: "custom", f: successCallback },
 					{ type: "custom", f: shelterSuccessCallback },
 					{ type: "log", textKey: "Scouted the apartment." }
-				]);
+				], localeName);
 				return;
 			}
 
@@ -1036,7 +1036,7 @@ define(['ash',
 					{ type: "storyFlag", flagID: StoryConstants.flags.GANG_COMPOUND_FOUND, value: true },
 					{ type: "custom", f: successCallback },
 					{ type: "log", textKey: "Scouted a compound." }
-				]);
+				], localeName);
 				return;
 			}
 
@@ -1046,7 +1046,7 @@ define(['ash',
 					{ type: "storyFlag", flagID: StoryConstants.flags.EXPEDITION_FATE_KNOWN, value: true },
 					{ type: "custom", f: successCallback },
 					{ type: "log", textKey: "Scouted the campsite." }
-				]);
+				], localeName);
 				return;
 			}
 
@@ -1055,7 +1055,7 @@ define(['ash',
 					{ type: "dialogue", dialogueID: "locale_story_isolation_center" },
 					{ type: "custom", f: successCallback },
 					{ type: "log", textKey: "Scouted the facility." }
-				]);
+				], localeName);
 				return;
 			}
 
@@ -1063,7 +1063,7 @@ define(['ash',
 				this.startSequence([
 					{ type: "dialogue", dialogueID: "locale_generic_clinic" },
 					{ type: "custom", f: successCallback },
-				]);
+				], localeName);
 				return;
 			}
 
