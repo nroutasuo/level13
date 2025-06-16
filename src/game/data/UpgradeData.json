@@ -981,7 +981,7 @@
         "blueprintCampOrdinal": 10,
         "blueprintIsCampless": false,
         "blueprintIsEarly": true,
-        "blueprintPieces": 5,
+        "blueprintPieces": 3,
         "campOrdinal": "10",
         "effects": {
             "improvesBuildings": "barracks",
