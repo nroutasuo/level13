@@ -53,7 +53,7 @@ define([
 			
 			if (oldValue == totalStorage) return;
 			
-			collector.storedResources.addResource(resource, time * 0.05 * GameConstants.gameSpeedExploration);
+			collector.storedResources.addResource(resource, time * 0.06 * GameConstants.gameSpeedExploration);
 			
 			if (collector.storedResources.getResource(resource) > totalStorage) {
 				collector.storedResources.setResource(resource, totalStorage);
