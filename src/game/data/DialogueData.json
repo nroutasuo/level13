@@ -2011,6 +2011,21 @@
 				"character_generic_story_fall_dunno_02_p1"
 			]
 		},
+		"character_generic_world_level_numbers_01": {
+			"conditions": {
+				"player": {
+					"position": {
+						"level": [
+							15,
+							-1
+						]
+					}
+				}
+			},
+			"pages": [
+				"character_generic_world_level_numbers_01_p1"
+			]
+		},
 		"character_generic_story_fall_dunno_03": {
 			"conditions": {
 				"storyFlags": {
@@ -2997,7 +3012,8 @@
 			"conditions": {
 				"storyFlags": {
 					"APOCALYPSE_PLAN_READY": true
-				}
+				},
+				"numCamps": 15
 			},
 			"pages": [
 				"character_workerGeneric_story_apocalypse_plan_ready_02_p1"
@@ -3015,6 +3031,7 @@
 		},
 		"character_workerGeneric_story_apocalypse_plan_ready_04": {
 			"conditions": {
+				"numCamps": 15,
 				"storyFlags": {
 					"APOCALYPSE_PLAN_READY": true
 				}
@@ -7391,6 +7408,20 @@
 				"explorer_unique_hermit_interact_15_p1"
 			]
 		},
+		"explorer_unique_hermit_interact_directions_passage_01": {
+			"conditions": {
+				"position": {
+					"level": [
+						15,
+						-1
+					]
+				},
+				"vicinity": "passage"
+			},
+			"pages": [
+				"explorer_unique_hermit_interact_directions_passage_01_p1"
+			]
+		},
 		"explorer_unique_hermit_meet_01": {
 			"pages": [
 				"explorer_unique_hermit_meet_01_p1"
@@ -8938,7 +8969,12 @@
 					"character_bard_default_event_04",
 					"character_bard_default_event_05",
 					"character_bard_default_event_06",
-					"character_bard_default_event_07"
+					"character_bard_default_event_07",
+					"character_bard_default_event_09",
+					"character_bard_default_event_10",
+					"character_bard_default_event_11",
+					"character_bard_default_event_12",
+					"character_bard_default_event_13"
 				],
 				"meet": [
 					"character_bard_default_meet_01",
@@ -8982,6 +9018,7 @@
 					"character_beggar_default_meet_02",
 					"character_beggar_default_meet_03",
 					"character_beggar_default_meet_04",
+					"character_generic_story_fall_dunno_01",
 					"character_generic_story_surface_01"
 				]
 			}
@@ -9105,9 +9142,9 @@
 					"character_generic_helpful_meet_poi_hazard_flooded_01",
 					"character_generic_helpful_meet_poi_hazard_pollution_01",
 					"character_generic_helpful_meet_poi_hazard_radiation_01",
-					"character_generic_helpful_meet_poi_passage_01",
 					"character_generic_helpful_meet_poi_hazard_territory_01",
 					"character_generic_helpful_meet_poi_ingredients_01",
+					"character_generic_helpful_meet_poi_passage_01",
 					"character_generic_helpful_meet_poi_settlement",
 					"character_generic_helpful_meet_poi_water_01",
 					"character_generic_helpful_meet_poi_water_02",
@@ -9117,6 +9154,8 @@
 					"character_generic_story_explain_ground_02",
 					"character_generic_story_explain_ground_03",
 					"character_generic_story_explain_ground_05",
+					"character_generic_story_fall_dunno_02",
+					"character_generic_story_fall_dunno_03",
 					"character_generic_story_fall_theory_city",
 					"character_generic_story_searching_for_greenhouse_02",
 					"character_generic_story_surface_01",
@@ -9166,12 +9205,14 @@
 		"character_guard_default": {
 			"dialogues": {
 				"meet": [
+					"character_generic_story_fall_encourage_01",
+					"character_generic_story_fall_encourage_02",
+					"character_generic_story_surface_01",
 					"character_guard_default_meet_01",
 					"character_guard_default_meet_02",
 					"character_guard_default_meet_03",
 					"character_guard_default_meet_04",
-					"character_guard_default_meet_05",
-					"character_generic_story_surface_01"
+					"character_guard_default_meet_05"
 				]
 			}
 		},
@@ -9273,12 +9314,14 @@
 					"character_generic_helpful_meet_poi_water_02",
 					"character_generic_reserved_meet_01",
 					"character_generic_reserved_meet_02",
+					"character_generic_story_fall_dunno_01",
 					"character_generic_story_fall_theory_spirits",
 					"character_generic_story_searching_for_greenhouse_01",
 					"character_generic_story_searching_for_greenhouse_02",
 					"character_generic_story_surface_01",
 					"character_generic_story_warn_ground_03",
 					"character_generic_stranded_meet_water",
+					"character_generic_world_level_numbers_01",
 					"character_messenger_default_meet_01",
 					"character_messenger_default_meet_02",
 					"character_messenger_default_meet_03",
@@ -9391,6 +9434,7 @@
 					"character_generic_story_explain_ground_02",
 					"character_generic_story_explain_ground_03",
 					"character_generic_story_explain_ground_04",
+					"character_generic_story_fall_dunno_01",
 					"character_generic_story_fall_theory_hackers",
 					"character_generic_story_government_neg2pos",
 					"character_generic_story_searching_for_greenhouse_01",
@@ -9398,6 +9442,7 @@
 					"character_generic_story_warn_ground_03",
 					"character_generic_stranded_meet_directions",
 					"character_generic_stranded_meet_water",
+					"character_generic_world_level_numbers_01",
 					"character_slumRefugee_default_meet_01",
 					"character_slumRefugee_default_meet_02",
 					"character_slumRefugee_default_meet_03",
@@ -9437,6 +9482,9 @@
 					"character_generic_story_explain_ground_03",
 					"character_generic_story_explain_ground_04",
 					"character_generic_story_explain_ground_06",
+					"character_generic_story_fall_dunno_03",
+					"character_generic_story_fall_encourage_01",
+					"character_generic_story_fall_encourage_02",
 					"character_generic_story_fall_theory_city",
 					"character_generic_story_government_cult",
 					"character_generic_story_government_pos2neg",
@@ -9472,10 +9520,12 @@
 					"character_generic_helpful_meet_poi_water_01",
 					"character_generic_helpful_meet_poi_water_02",
 					"character_generic_reserved_meet_01",
+					"character_generic_story_fall_dunno_03",
 					"character_generic_story_government_neg2pos",
 					"character_generic_story_government_negative",
 					"character_trader_default_meet_01",
-					"character_trader_default_meet_02"
+					"character_trader_default_meet_02",
+					"character_trader_default_meet_03"
 				]
 			}
 		},
@@ -9648,28 +9698,30 @@
 			"dialogues": {
 				"interact": [
 					"character_workerScavenger_default_interact_01",
-					"character_workerScavenger_default_interact_02",
-					"character_workerScavenger_default_interact_03",
-					"character_workerScavenger_default_interact_04",
-					"character_workerScavenger_default_interact_05",
-					"character_workerScavenger_default_interact_06",
+					"character_workerGeneric_default_interact_01",
+					"character_workerGeneric_default_interact_02",
+					"character_workerGeneric_interact_01",
+					"character_workerGeneric_interact_02",
+					"character_workerGeneric_interact_apocalypse_01",
+					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_interact_disease_01",
+					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_overcrowded_01",
+					"character_workerGeneric_interact_searching_for_greenhouse_01",
+					"character_workerGeneric_interact_searching_for_greenhouse_02",
+					"character_workerGeneric_interact_story_greenhouse_fixed_01",
+					"character_workerGeneric_interact_story_greenhouse_found_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_03",
 					"character_workerGeneric_story_apocalypse_plan_ready_04",
-					"character_workerGeneric_interact_01",
-					"character_workerGeneric_interact_02",
-					"character_workerGeneric_interact_overcrowded_01",
-					"character_workerGeneric_interact_disease_01",
-					"character_workerGeneric_interact_disease_02",
-					"character_workerGeneric_interact_searching_for_greenhouse_01",
-					"character_workerGeneric_interact_searching_for_greenhouse_02",
-					"character_workerGeneric_interact_apocalypse_01",
-					"character_workerGeneric_interact_apocalypse_02",
-					"character_workerGeneric_default_interact_01",
-					"character_workerGeneric_default_interact_02",
-					"character_workerGeneric_interact_story_greenhouse_found_01",
-					"character_workerGeneric_interact_story_greenhouse_fixed_01"
+					"character_workerGeneric_story_escape_build_passage_01",
+					"character_workerGeneric_story_escape_build_passage_02",
+					"character_workerScavenger_default_interact_02",
+					"character_workerScavenger_default_interact_03",
+					"character_workerScavenger_default_interact_04",
+					"character_workerScavenger_default_interact_05",
+					"character_workerScavenger_default_interact_06"
 				],
 				"meet": [
 					"character_workerScavenger_default_meet_01",
@@ -9747,24 +9799,26 @@
 			"dialogues": {
 				"interact": [
 					"character_workerTrapper_default_interact_01",
-					"character_workerTrapper_default_interact_02",
-					"character_workerTrapper_default_interact_03",
-					"character_workerGeneric_interact_apocalypse_01",
-					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_01",
 					"character_workerGeneric_interact_02",
-					"character_workerGeneric_interact_overcrowded_01",
+					"character_workerGeneric_interact_apocalypse_01",
+					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_overcrowded_01",
+					"character_workerGeneric_interact_searching_for_greenhouse_01",
+					"character_workerGeneric_interact_searching_for_greenhouse_02",
+					"character_workerGeneric_interact_story_greenhouse_fixed_01",
+					"character_workerGeneric_interact_story_greenhouse_found_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_03",
 					"character_workerGeneric_story_apocalypse_plan_ready_04",
-					"character_workerGeneric_interact_searching_for_greenhouse_01",
-					"character_workerGeneric_interact_searching_for_greenhouse_02",
-					"character_workerGeneric_interact_story_greenhouse_found_01",
-					"character_workerGeneric_interact_story_greenhouse_fixed_01"
+					"character_workerGeneric_story_escape_build_passage_01",
+					"character_workerGeneric_story_escape_build_passage_02",
+					"character_workerTrapper_default_interact_02",
+					"character_workerTrapper_default_interact_03"
 				],
 				"meet": [
 					"character_workerTrapper_default_meet_01",
@@ -9778,24 +9832,26 @@
 		"character_workerWater_default": {
 			"dialogues": {
 				"interact": [
-					"character_workerWater_default_interact_01",
-					"character_workerWater_default_interact_02",
-					"character_workerWater_default_interact_03",
-					"character_workerGeneric_interact_apocalypse_01",
-					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_01",
 					"character_workerGeneric_interact_02",
+					"character_workerGeneric_interact_apocalypse_01",
+					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_interact_disease_01",
+					"character_workerGeneric_interact_disease_02",
 					"character_workerGeneric_interact_overcrowded_01",
+					"character_workerGeneric_interact_searching_for_greenhouse_01",
+					"character_workerGeneric_interact_searching_for_greenhouse_02",
+					"character_workerGeneric_interact_story_greenhouse_found_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_03",
 					"character_workerGeneric_story_apocalypse_plan_ready_04",
-					"character_workerGeneric_interact_disease_01",
-					"character_workerGeneric_interact_disease_02",
-					"character_workerGeneric_interact_searching_for_greenhouse_01",
-					"character_workerGeneric_interact_searching_for_greenhouse_02",
-					"character_workerGeneric_interact_story_greenhouse_found_01",
+					"character_workerGeneric_story_escape_build_passage_01",
+					"character_workerGeneric_story_escape_build_passage_02",
+					"character_workerWater_default_interact_01",
+					"character_workerWater_default_interact_02",
+					"character_workerWater_default_interact_03",
 					"character_workerGeneric_interact_story_greenhouse_fixed_01"
 				],
 				"meet": [
@@ -10105,6 +10161,7 @@
 					"explorer_generic_ability_cost_movement_outside_01",
 					"explorer_generic_ability_cost_scout_outside_01",
 					"explorer_generic_ability_detect_hazards_outside_01",
+					"explorer_generic_ability_detect_ingredients_outside_01",
 					"explorer_generic_ability_detect_poi_outside_01",
 					"explorer_generic_ability_detect_supplies_outside_01",
 					"explorer_generic_ability_handler_outside_01",
@@ -10554,6 +10611,7 @@
 				"interact": [
 					"explorer_generic_ability_cost_movement_outside_01",
 					"explorer_generic_ability_cost_scout_outside_01",
+					"explorer_generic_ability_detect_ingredients_outside_01",
 					"explorer_generic_human_outside_02",
 					"explorer_generic_human_outside_03",
 					"explorer_generic_human_outside_05",
@@ -10794,6 +10852,7 @@
 					"explorer_unique_hermit_interact_13",
 					"explorer_unique_hermit_interact_14",
 					"explorer_unique_hermit_interact_15",
+					"explorer_unique_hermit_interact_directions_passage_01",
 					"explorer_unique_hermit_outside_01",
 					"explorer_unique_hermit_story_apocalypse_plan_ready_01",
 					"explorer_unique_hermit_story_fall_exodus_01"
