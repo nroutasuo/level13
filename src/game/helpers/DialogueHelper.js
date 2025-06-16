@@ -202,6 +202,7 @@ define(['ash',
                 }
 
                 result.surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
+                result.surfaceLevelMinus1 = GameGlobals.gameState.getSurfaceLevel() - 1;
 
                 return result;
             },
