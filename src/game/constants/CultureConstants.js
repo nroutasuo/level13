@@ -41,15 +41,12 @@ define(function () {
 			// common names
 			this.names.personalNames.push({name: "Adya" });
 			this.names.personalNames.push({name: "Idris" });
-			this.names.personalNames.push({name: "Jaro" });
-			this.names.personalNames.push({name: "Nat" });
 			this.names.personalNames.push({name: "Noa" });
 			
 			this.names.personalNames.push({name: "Amanda", gender: this.genders.FEMALE });
 			this.names.personalNames.push({name: "Hana", gender: this.genders.FEMALE });
 			this.names.personalNames.push({name: "Julia", gender: this.genders.FEMALE });
 			this.names.personalNames.push({name: "Lena", gender: this.genders.FEMALE });
-			this.names.personalNames.push({name: "Natalia", gender: this.genders.FEMALE });
 			this.names.personalNames.push({name: "Olga", gender: this.genders.FEMALE });
 			this.names.personalNames.push({name: "Ulla", gender: this.genders.FEMALE });
 			this.names.personalNames.push({name: "Wanda", gender: this.genders.FEMALE });
@@ -69,6 +66,7 @@ define(function () {
 			this.names.personalNames.push({name: "Sin Noa", origin: this.origins.SURFACE });
 			this.names.personalNames.push({name: "Jan Bani", origin: this.origins.SURFACE });
 			this.names.personalNames.push({name: "Jan Naser", origin: this.origins.SURFACE });
+			this.names.personalNames.push({name: "Nat", origin: this.origins.SURFACE });
 
 			this.names.personalNames.push({name: "Lucy", origin: this.origins.SURFACE, gender: this.genders.FEMALE });
 			this.names.personalNames.push({name: "Liz", origin: this.origins.SURFACE, gender: this.genders.FEMALE });
@@ -79,6 +77,7 @@ define(function () {
 
 			this.names.personalNames.push({name: "Jorric", origin: this.origins.SLUMS, gender: this.genders.MALE });
 			this.names.personalNames.push({name: "Jerred", origin: this.origins.SLUMS, gender: this.genders.MALE });
+			this.names.personalNames.push({name: "Jaro", origin: this.origins.SLUMS, gender: this.genders.MALE });
 			this.names.personalNames.push({name: "Katryn", origin: this.origins.SLUMS, gender: this.genders.FEMALE });
 
 			this.names.personalNames.push({name: "Abi", origin: this.origins.DARKLEVELS });
@@ -119,6 +118,7 @@ define(function () {
 			this.names.personalNames.push({name: "Mimra", gender: this.genders.FEMALE, culture: this.cultures.ASSURIAN });
 			this.names.personalNames.push({name: "Veronica", gender: this.genders.FEMALE, culture: this.cultures.ASSURIAN });
 			this.names.personalNames.push({name: "Minoo", gender: this.genders.FEMALE, culture: this.cultures.ASSURIAN });
+			this.names.personalNames.push({name: "Anahita", gender: this.genders.FEMALE, culture: this.cultures.ASSURIAN });
 			this.names.personalNames.push({name: "Amberley", gender: this.genders.FEMALE, culture: this.cultures.DOMA });
 			this.names.personalNames.push({name: "Deana", gender: this.genders.FEMALE, culture: this.cultures.DOMA });
 			this.names.personalNames.push({name: "Jessamy", gender: this.genders.FEMALE, culture: this.cultures.DOMA });
@@ -138,6 +138,7 @@ define(function () {
 			this.names.personalNames.push({name: "Ilse", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Ilma", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Anja", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
+			this.names.personalNames.push({name: "Ruth", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Johanna", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Astrid", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
 			this.names.personalNames.push({name: "Ebba", gender: this.genders.FEMALE, culture: this.cultures.HANSA });
@@ -147,10 +148,13 @@ define(function () {
 			this.names.personalNames.push({name: "Salome", gender: this.genders.FEMALE, culture: this.cultures.INDUS });
 			this.names.personalNames.push({name: "Zahra", gender: this.genders.FEMALE, culture: this.cultures.INDUS });
 			this.names.personalNames.push({name: "Miriam", gender: this.genders.FEMALE, culture: this.cultures.INDUS });
+			this.names.personalNames.push({name: "Tara", gender: this.genders.FEMALE, culture: this.cultures.INDUS });
+			this.names.personalNames.push({name: "Meera", gender: this.genders.FEMALE, culture: this.cultures.INDUS });
 			this.names.personalNames.push({name: "Zofia", gender: this.genders.FEMALE, culture: this.cultures.KIEVAN })
 			this.names.personalNames.push({name: "Magda", gender: this.genders.FEMALE, culture: this.cultures.KIEVAN })
 			this.names.personalNames.push({name: "Nadia", gender: this.genders.FEMALE, culture: this.cultures.KIEVAN })
 			this.names.personalNames.push({name: "Yevra", gender: this.genders.FEMALE, culture: this.cultures.KIEVAN })
+			this.names.personalNames.push({name: "Natalia", gender: this.genders.FEMALE, culture: this.cultures.KIEVAN })
 			this.names.personalNames.push({name: "Maja Amelia", gender: this.genders.FEMALE, culture: this.cultures.KIEVAN, origin: this.origins.SURFACE })
 			this.names.personalNames.push({name: "Adannaya", gender: this.genders.FEMALE, culture: this.cultures.SAHEL })
 			this.names.personalNames.push({name: "Ajoke", gender: this.genders.FEMALE, culture: this.cultures.SAHEL })
@@ -169,6 +173,7 @@ define(function () {
 			this.names.personalNames.push({name: "Narsai", gender: this.genders.MALE, culture: this.cultures.ASSURIAN });
 			this.names.personalNames.push({name: "Sargon", gender: this.genders.MALE, culture: this.cultures.ASSURIAN });
 			this.names.personalNames.push({name: "Sharru", gender: this.genders.MALE, culture: this.cultures.ASSURIAN });
+			this.names.personalNames.push({name: "Kaveh", gender: this.genders.MALE, culture: this.cultures.ASSURIAN });
 			this.names.personalNames.push({name: "Baius", gender: this.genders.MALE, culture: this.cultures.DOMA });
 			this.names.personalNames.push({name: "Camlo", gender: this.genders.MALE, culture: this.cultures.DOMA });
 			this.names.personalNames.push({name: "Bui", gender: this.genders.MALE, culture: this.cultures.DOMA });
@@ -199,6 +204,7 @@ define(function () {
 			this.names.personalNames.push({name: "Mehdi", gender: this.genders.MALE, culture: this.cultures.INDUS });
 			this.names.personalNames.push({name: "Medad", gender: this.genders.MALE, culture: this.cultures.INDUS });
 			this.names.personalNames.push({name: "Omar", gender: this.genders.MALE, culture: this.cultures.INDUS });
+			this.names.personalNames.push({name: "Vivaan", gender: this.genders.MALE, culture: this.cultures.INDUS });
 			this.names.personalNames.push({name: "Jurij", gender: this.genders.MALE, culture: this.cultures.KIEVAN });
 			this.names.personalNames.push({name: "Simon", gender: this.genders.MALE, culture: this.cultures.KIEVAN });
 			this.names.personalNames.push({name: "Pawel", gender: this.genders.MALE, culture: this.cultures.KIEVAN });
@@ -230,6 +236,8 @@ define(function () {
 			this.names.nickNames.push({name: "Spike", origin: this.origins.SLUMS });
 			this.names.nickNames.push({name: "Sly", origin: this.origins.SLUMS });
 			this.names.nickNames.push({name: "Bandana", origin: this.origins.SLUMS });
+			this.names.nickNames.push({name: "Node", origin: this.origins.SLUMS });
+			this.names.nickNames.push({name: "Axion", origin: this.origins.SLUMS });
 
 			this.names.nickNames.push({name: "Benny", origin: this.origins.SLUMS, gender: this.genders.MALE });
 			this.names.nickNames.push({name: "Vulture", origin: this.origins.SLUMS, gender: this.genders.MALE });
@@ -246,6 +254,10 @@ define(function () {
 			this.names.nickNames.push({name: "Compass", origin: this.origins.DARKLEVELS });
 			this.names.nickNames.push({name: "River", origin: this.origins.DARKLEVELS });
 			this.names.nickNames.push({name: "Soot", origin: this.origins.DARKLEVELS });
+			this.names.nickNames.push({name: "Shade", origin: this.origins.DARKLEVELS });
+			this.names.nickNames.push({name: "Veil", origin: this.origins.DARKLEVELS });
+			this.names.nickNames.push({name: "Root", origin: this.origins.DARKLEVELS });
+			this.names.nickNames.push({name: "Omen", origin: this.origins.DARKLEVELS });
 		},
 		
 		getRandomGender: function () {
