@@ -64,6 +64,8 @@ define([
 			let playerPosition = GameGlobals.playerHelper.getPosition();
 			if (!playerPosition) return;
 
+			debugger
+
 			let level = playerPosition.level;
 			let now = new Date().getTime();
 			let updateCooldown = 3 * 60 * 1000;
@@ -71,6 +73,8 @@ define([
 			if (now - lastUpdate < updateCooldown) return;
 
 			this.lastLevelCharacterUpdate[level] = now;
+
+			let maxCharacters = this.getMaxCharactersForLevel(level);
 
 			// update / remove existing ones
 
@@ -87,18 +91,19 @@ define([
 
 				for (let j = 0; j < sectorStatus.currentCharacters.length; j++) {
 					let character = sectorStatus.currentCharacters[j];
-
-					if (character.numTimesSeen <= 0) continue;
-
 					let timeActive = now - character.creationTimestamp;
 
-					if (timeActive < character.minTimeActive) continue; 
-					
-					if (Math.random() > 0.5) {
+					if (existingCharacters.length > maxCharacters * 2) {
+						indicesToRemove.push(j);
+					} else if (character.numTimesSeen <= 0) {
+						existingCharacters.push(character);
+					} else if (timeActive < character.minTimeActive) {
+						existingCharacters.push(character);
+					} else if (Math.random() < 0.5) {
+						existingCharacters.push(character);
+					} else {					
 						indicesToRemove.push(j);
 					}
-
-					existingCharacters.push(character);
 				}
 
 				for (let j = indicesToRemove.length - 1; j >= 0; j--) {
@@ -109,7 +114,6 @@ define([
 
 			// add new ones
 
-			let maxCharacters = this.getMaxCharactersForLevel(level);
 			let maxCharactersToAdd = maxCharacters - existingCharacters.length;
 
 			if (maxCharactersToAdd <= 0) return;
