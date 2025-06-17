@@ -49,13 +49,14 @@ define([
 		update: function (time) {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (!GameGlobals.gameState.uiStatus.isInCamp) return;
-
-			this.updateBubble();
+			let isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.upgrades;
+			if (isActive) this.updateBubble();
 		},
 
 		slowUpdate: function (time) {
 			let isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.upgrades;
 			this.updateUpgradeCounts(isActive);
+			this.updateBubble();
 		},
 		
 		refresh: function () {
