@@ -516,7 +516,7 @@ define([
 					campNode.entity.add(new RecruitComponent(explorer, isFoundAsReward));
 					
 					let building = hasInn ? "the inn" : "the camp";
-					logMsg = isFoundAsReward ? "Explorer met when exploring is waiting at " + building + "." : "A visitor arrives at " + building + ".";
+					logMsg = isFoundAsReward ? "Explorer met when exploring is waiting at " + building + "." : "An explorer arrives at " + building + ".";
 					GameGlobals.playerActionFunctions.unlockFeature("explorers");
 					if (hasPendingExplorer) {
 						duration = OccurrenceConstants.EVENT_DURATION_INFINITE;

@@ -973,7 +973,6 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			facts.push("there was a research group investigating returning to live on the Surface before the Fall");
 			facts.push("the air outside of the City is dangerous to breathe");
 			facts.push("there was a top secret research group just before the Fall");
-			facts.push("the Fall involved a large explosion near the Surface of the City");
 			facts.push("the Government before the Fall was investing heavily in space research");
 			facts.push("prisoners were used in secret experiments related to space travel");
 			facts.push("the Government was compiling a classified list of priority individuals that would be evacuated in case of emergency");
