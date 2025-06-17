@@ -64,8 +64,6 @@ define([
 			let playerPosition = GameGlobals.playerHelper.getPosition();
 			if (!playerPosition) return;
 
-			debugger
-
 			let level = playerPosition.level;
 			let now = new Date().getTime();
 			let updateCooldown = 3 * 60 * 1000;
