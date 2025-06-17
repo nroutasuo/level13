@@ -1,6 +1,6 @@
-define(['jquery/jquery-3.7.1.min'], function (jQuery) {
+define(['jquery/jquery-3.7.1.min', 'game/GlobalSignals', 'game/constants/UIConstants'], function (jQuery, GlobalSignals, UIConstants) {
 	
-	var MetaUIUtils = {
+	let MetaUIUtils = {
 		
 		init: function () {
 			this.registerCollapsibleContainerListeners();
@@ -9,12 +9,12 @@ define(['jquery/jquery-3.7.1.min'], function (jQuery) {
 		registerCollapsibleContainerListeners: function () {
 			var sys = this;
 			$(".collapsible-header").click(function () {
-				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
+				if(GlobalSignals) GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				var wasVisible = $(this).next(".collapsible-content").is(":visible");
 				sys.toggleCollapsibleContainer($(this), !wasVisible);
 			});
 			$.each($(".collapsible-header"), function () {
-				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
+				if (GlobalSignals) GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				sys.toggleCollapsibleContainer($(this), false, true);
 			});
 		},

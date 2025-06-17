@@ -3,40 +3,100 @@
 		{
 			"version": "0.6.1",
 			"requiredVersion": "0.6.1",
-			"phase": "alpha",
+			"phase": "beta",
 			"final": false,
 			"changes": [
 				{
-					"type": "GD",
-					"summary": "Make it possible to talk to your explorers"
+					"type": "Dev",
+					"summary": "Add story and dialogue systems along with initial story structure and lots of dialogues"
 				},
 				{
 					"type": "GD",
-					"summary": "Add NPCs you can talk to on levels and in camp"
+					"summary": "Add NPCs in camp and outside"
 				},
 				{
 					"type": "GD",
-					"summary": "Add several new camp events"
+					"summary": "Add new explorer abilities"
 				},
 				{
 					"type": "GD",
-					"summary": "Add a new movement blockers and hazards (flooding, old explosives)"
+					"summary": "Add explorer injuries"
 				},
 				{
 					"type": "GD",
-					"summary": "Add new temporary perks which can be gained while out exploring"
+					"summary": "Improve explorer generation"
+				},
+				{
+					"type": "GD",
+					"summary": "Make explorers sometimes improve their abilities"
+				},
+				{
+					"type": "QoL",
+					"summary": "Ensure certain explorers (including dogs) never leave unless dismissed"
+				},
+				{
+					"type": "GD",
+					"summary": "Add new movement blockers and hazards (flooding, old explosives, gang territroy, toll gates)"
+				},
+				{
+					"type": "GD",
+					"summary": "Add several new camp events (disease, earthquake, accident, refugees, visitor)"
+				},
+				{
+					"type": "GD",
+					"summary": "Add examine spots with a little lore in some sectors"
+				},
+				{
+					"type": "GD",
+					"summary": "Add new perks (stressed, cursed, accomplished, lucky, restart bonus)"
 				},
 				{
 					"type": "Text",
 					"summary": "Rename 'favour' to 'hope', 'follower' to 'explorer', and adjust a few other terms"
 				},
 				{
-					"type": "Dev",
+					"type": "GD",
+					"summary": "Add more items, enemy types and locale types to support story and world-building"
+				},
+				{
+					"type": "GD",
+					"summary": "Add varying quality to equipment items"
+				},
+				{
+					"type": "GD",
+					"summary": "Make medicine and herbs more useful"
+				},
+				{
+					"type": "UI",
 					"summary": "Add better save management"
 				},
 				{
-					"type": "Dev",
-					"summary": "Add story and dialogue systems along with initial story structure and dialogues"
+					"type": "UI",
+					"summary": "Add a popup with some game stats"
+				},
+				{
+					"type": "UI",
+					"summary": "Add a settings menu and make hotkeys more visible and configurable"
+				},
+				{
+					"type": "QoL",
+					"summary": "Make it possible for population to grow by more than 1 at once"
+				},
+				{
+					"type": "QoL",
+					"summary": "Add dedicated metal scavenging spots (heaps)"
+				},
+				{
+					"type": "QoL",
+					"summary": "Add option to move a few more steps when out of food or water"
+				},
+				{
+					"type": "UI",
+					"summary": "Add basic UI sounds"
+				},
+				{
+					"type": "UI",
+					"summary": "Change the log to only show messages relevant for current location"
 				},
 				{
 					"type": "UI",
@@ -47,56 +107,16 @@
 					"summary": "Improve page structure for screen readers"
 				},
 				{
-					"type": "UI",
-					"summary": "Make hotkeys more visible and add settings to turn them on / off"
-				},
-				{
-					"type": "UI",
-					"summary": "Change the log to only show messages relevant for current location"
-				},
-				{
-					"type": "UI",
-					"summary": "Add a popup with some game stats"
-				},
-				{
-					"type": "GD",
-					"summary": "Add a small perk when restarting game"
-				},
-				{
-					"type": "GD",
-					"summary": "Add dedicated metal scavenging spots (heaps)"
-				},
-				{
-					"type": "GD",
-					"summary": "Add varying quality to equipment items"
-				},
-				{
-					"type": "GD",
-					"summary": "Add more items to support story and world-building"
-				},
-				{
-					"type": "GD",
-					"summary": "Add a few more building upgrade levels (trading post, caravan stable)"
-				},
-				{
-					"type": "GD",
-					"summary": "Add option to move a few more steps when out of food or water"
-				},
-				{
-					"type": "GD",
-					"summary": "Make it possible for population to grow by more than 1 at once"
-				},
-				{
 					"type": "GD",
 					"summary": "Add rare prebuilt passages between levels"
 				},
 				{
 					"type": "Dev",
-					"summary": "Other UI and text improvements"
+					"summary": "Lay some groundwork for translations by moving most (but not all) strings to a separate file"
 				},
 				{
 					"type": "Dev",
-					"summary": "Bugfixes and balancing"
+					"summary": "Lots of bugfixes, balancing adjustments, UI improvements and text polish"
 				}
 			]
 		},

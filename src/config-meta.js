@@ -5,7 +5,9 @@ require.config({
 	baseUrl: 'src',
 
 	paths: {
-		jquery: "../lib/jquery/"
+		ash: "../lib/ash/ash.min",
+		jquery: "../lib/jquery",
+        json: "../lib/requirejs/json",
 	},
 	
 	urlArgs: "v=1",
