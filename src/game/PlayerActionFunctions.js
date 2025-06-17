@@ -262,7 +262,7 @@ define(['ash',
 				case "use_in_shrine": this.useShrine(param); break;
 				case "improve_in": this.improveBuilding(param); break;
 				case "repair_in": this.repairBuilding(param); break;
-				case "dismantle_in": this.dismantleBuilding(param); break;
+				case "dismantle": this.dismantleBuilding(param); break;
 				// Item actions
 				case "craft": this.craftItem(param); break;
 				case "equip": this.equipItem(param); break;
@@ -2312,7 +2312,7 @@ define(['ash',
 			// TODO define action sector so that the action can have a duration
 			let sector = this.playerLocationNodes.head.entity;
 			let improvementsComponent = sector.get(SectorImprovementsComponent);
-			let improvementID = param;
+			let improvementID = GameGlobals.playerActionsHelper.getImprovementIDForAction("dismantle_" + param);
 			let improvementName = improvementNames[improvementID];
 			let level = improvementsComponent.getLevel(improvementName);
 			let displayName = ImprovementConstants.getImprovementDisplayName(improvementID, level);

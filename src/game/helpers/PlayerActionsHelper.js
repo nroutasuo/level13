@@ -2185,7 +2185,7 @@ define([
 					requirements.perkEffects["Health"] = [ -1, maxHealth ];
 					return requirements;
 
-				case "dismantle_in":
+				case "dismantle":
 					let improvementID = this.getImprovementIDForAction(action);
 					this.addReqs(requirements, PlayerActionConstants.requirements[action]);	
 					requirements.busyAction = {};
@@ -2669,7 +2669,7 @@ define([
 						return itemDescription;
 					case "improve_in":
 						return this.getImproveActionDescription(action);
-					case "dismantle_in": return "Dismantle building";
+					case "dismantle": return "Dismantle building";
 				}
 			}
 			

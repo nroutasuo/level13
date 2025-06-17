@@ -3,7 +3,9 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 	var ImprovementConstants = {
 
 		improvements: {
-			beacon: { },
+			beacon: {
+				canBeDismantled: true,
+			},
 			camp: {
 				canBeDismantled: false,
 			},

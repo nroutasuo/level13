@@ -220,7 +220,8 @@ function (Ash, PlayerActionData, ObjectUtils, GameConstants, CampConstants, Impr
 			if (action.indexOf("build_in_") >= 0) return action;
 			if (action.indexOf("claim_milestone_") >= 0) return "claim_milestone";
 			if (action.indexOf("improve_in_") >= 0) return "improve_in";
-			if (action.indexOf("dismantle_in_") >= 0) return "dismantle_in";
+			if (action.indexOf("dismantle_") >= 0) return "dismantle";
+			if (action.indexOf("dismantle_out_") >= 0) return "dismantle_out";
 			if (action.indexOf("improve_out") >= 0) return "improve_out";
 			if (action.indexOf("scout_locale_i") >= 0) return "scout_locale_i";
 			if (action.indexOf("scout_locale_u") >= 0) return "scout_locale_u";
@@ -366,8 +367,11 @@ function (Ash, PlayerActionData, ObjectUtils, GameConstants, CampConstants, Impr
 			if (this.isRepairBuildingAction(baseId)) {
 				return actionName.replace("repair_in_", "").replace("repar_out_", "");
 			}
-			if (baseId == "dismantle_in") {
-				return actionName.replace("dismantle_in_", "");
+			if (baseId == "dismantle") {
+				let result = actionName;
+				result = result.replace("dismantle_in_", "");
+				result = result.replace("dismantle_out_", "");
+				return result;
 			}
 			let improvementName = this.getImprovementNameForAction(actionName);
 			return ImprovementConstants.getImprovementID(improvementName);

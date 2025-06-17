@@ -837,6 +837,9 @@ define([
 				
 			GameGlobals.uiFunctions.toggle("#out-action-improve-bucket", collectorWaterCapacity > 0 && bucketMaxLevel > 1);
 			GameGlobals.uiFunctions.toggle("#out-action-improve-trap", collectorFoodCapacity > 0 && trapMaxLevel > 1);
+			
+			let hasBeacon = improvements.getCount(improvementNames.beacon);
+			GameGlobals.uiFunctions.toggle("#out-action-dismantle-beacon", hasBeacon);
 		},
 
 		updateLocales: function () {
