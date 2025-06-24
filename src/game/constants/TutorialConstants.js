@@ -465,6 +465,13 @@ define(['ash'], function (Ash) {
 				delay: 3000,
 				conditions: { inCamp: true, campInventoryFull: true } 
 			},
+			TUTORIAL_WARNING_SUNDOME_MISSING: {
+				triggers: [ "action_enter_camp" ],
+				repeats: "COOLDOWN",
+				logMessage: "ui.log.tutorial_warning_sundome_missing_message",
+				delay: 3000,
+				conditions: { inCamp: true, sunlit: true, improvements: { sundome: [ -1, 1 ] } } 
+			},
 			TUTORIAL_WARNING_FIRST_CAMP_COMPLETED: {
 				triggers: [ "action_build" ],
 				repeats: "NEVER",
