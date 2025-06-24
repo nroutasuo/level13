@@ -110,6 +110,9 @@ define([
 
 		refresh: function () {
 			$("#tab-header h2").text(Text.t("ui.main.tab_tribe_header"));
+			
+			GameGlobals.uiFunctions.toggle($("#camp-overview tr.camp-overview-camp"), false);
+			
 			this.updateNodes(true);
 			this.updateMessages();
 			
@@ -121,8 +124,6 @@ define([
 			this.alerts = {};
 			this.notifications = {};
 			this.campsWithAlert = 0;
-			
-			GameGlobals.uiFunctions.toggle($("#camp-overview tr.camp-overview-camp"), false);
 			
 			for (let i = 0; i < this.sortedCampNodes.length; i++) {
 				this.updateNode(this.sortedCampNodes[i], isActive);
