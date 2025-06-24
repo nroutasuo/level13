@@ -23,7 +23,7 @@ define(['ash', 'utils/MathUtils', 'game/constants/CampConstants', 'game/constant
 			disaster: 10,
 			disease: -999,
 			raid: 10,
-			recruit: 60 * 5,
+			recruit: 60 * 10,
 			refugees: 60 * 10,
 			trader: 60 * 10,
 			visitor: 60 * 10,
@@ -31,13 +31,13 @@ define(['ash', 'utils/MathUtils', 'game/constants/CampConstants', 'game/constant
 
 		campOccurrenceCooldowns: {
 			accident: 60 * 90,
-			disaster: 60 * 50,
+			disaster: 60 * 60,
 			disease: 60 * 20,
 			raid: 60 * 20,
 			recruit: 60 * 25,
 			refugees: 60 * 120,
 			trader: 60 * 15,
-			visitor: 60 * 20,
+			visitor: 60 * 25,
 		},
 
 		campOccurrenceCooldownsNew: {
@@ -52,7 +52,7 @@ define(['ash', 'utils/MathUtils', 'game/constants/CampConstants', 'game/constant
 			recruit: 3,
 			refugees: 3,
 			trader: 1.5,
-			visitor: 2,
+			visitor: 3,
 		},
 
 		RAID_RANGER_FACTOR: 1 / 25,
