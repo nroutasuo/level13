@@ -698,6 +698,10 @@ define([
 			return this.playerStatsNodes.head.explorers.getAll();
 		},
 
+		getParty: function () {
+			return this.playerStatsNodes.head.explorers.getParty();
+		},
+
 		getExplorerByID: function (explorerID) {
 			let explorers = this.getExplorers();
 			for (let i = 0; i < explorers.length; i++) {

@@ -11,7 +11,7 @@
         "scout_locale_u": 60,
         "send_caravan": 600,
         "use_in_campfire": 60,
-        "use_in_home": 180,
+        "use_in_home": 120,
         "use_in_library": 360,
         "use_in_market": 360,
         "use_in_shrine": 600,
@@ -28,9 +28,9 @@
             "cost_factor_expBase": 1.4,
             "resource_herbs": {
                 "expCost": 25,
-                "linearCost": 25
+                "linearCost": 35
             },
-            "resource_metal": 450,
+            "resource_metal": 400,
             "resource_rope": 300
         },
         "build_in_aqueduct": {
@@ -98,9 +98,9 @@
         },
         "build_in_house2": {
             "cost_factor_expBase": 1.25,
-            "resource_concrete": 100,
+            "resource_concrete": 120,
             "resource_metal": {
-                "expCost": 380,
+                "expCost": 340,
                 "linearCost": 1300
             },
             "resource_rope": 350
@@ -733,16 +733,16 @@
             "evidence": 204,
             "rumours": 2398
         },
+        "improve_building_temple_4": {
+            "evidence": 636,
+            "rumours": 9083
+        },
         "improve_building_temple2": {
             "hope": 61,
             "rumours": 1005
         },
         "improve_building_temple3": {
             "hope": 197
-        },
-        "improve_building_temple_4": {
-            "evidence": 636,
-            "rumours": 9083
         },
         "improve_event_disaster_1": {
             "evidence": 272
@@ -838,7 +838,7 @@
             "resource_rope": 50,
             "resource_rubber": {
                 "constantCost": 10,
-                "expCost": 10,
+                "expCost": 8,
                 "requiredOrdinal": 5
             }
         },
@@ -1243,6 +1243,26 @@
         "unlock_item_bag_4": {
             "hope": 189
         },
+        "unlock_item_clothing_body_13": {
+            "hope": 166,
+            "rumours": 2672
+        },
+        "unlock_item_clothing_body_15": {
+            "hope": 189,
+            "rumours": 3206
+        },
+        "unlock_item_clothing_hands_25": {
+            "rumours": 280
+        },
+        "unlock_item_clothing_head_27": {
+            "rumours": 244
+        },
+        "unlock_item_clothing_head_5": {
+            "hope": 125
+        },
+        "unlock_item_clothing_over_15": {
+            "rumours": 3823
+        },
         "unlock_item_clothing2": {
             "rumours": 13
         },
@@ -1269,26 +1289,6 @@
         },
         "unlock_item_clothing6": {
             "rumours": 884
-        },
-        "unlock_item_clothing_body_13": {
-            "hope": 166,
-            "rumours": 2672
-        },
-        "unlock_item_clothing_body_15": {
-            "hope": 189,
-            "rumours": 3206
-        },
-        "unlock_item_clothing_hands_25": {
-            "rumours": 280
-        },
-        "unlock_item_clothing_head_27": {
-            "rumours": 244
-        },
-        "unlock_item_clothing_head_5": {
-            "hope": 125
-        },
-        "unlock_item_clothing_over_15": {
-            "rumours": 3823
         },
         "unlock_item_clothingl14": {
             "hope": 55,
@@ -2907,6 +2907,11 @@
                 "improve_building_storage1": true
             }
         },
+        "improve_building_temple_4": {
+            "upgrades": {
+                "improve_building_temple3": true
+            }
+        },
         "improve_building_temple2": {
             "deity": true,
             "upgrades": {
@@ -2918,11 +2923,6 @@
             "milestone": 6,
             "upgrades": {
                 "improve_building_temple2": true
-            }
-        },
-        "improve_building_temple_4": {
-            "upgrades": {
-                "improve_building_temple3": true
             }
         },
         "improve_event_disaster_1": {
@@ -3539,6 +3539,38 @@
                 "unlock_item_bag_3": true
             }
         },
+        "unlock_item_clothing_body_13": {
+            "blueprint": 13,
+            "upgrades": {
+                "unlock_item_scavenger_gear": true
+            }
+        },
+        "unlock_item_clothing_body_15": {
+            "upgrades": {
+                "unlock_item_clothing_body_13": true
+            }
+        },
+        "unlock_item_clothing_hands_25": {
+            "upgrades": {
+                "unlock_item_bag_2": true
+            }
+        },
+        "unlock_item_clothing_head_27": {
+            "upgrades": {
+                "unlock_item_bag_1": true
+            }
+        },
+        "unlock_item_clothing_head_5": {
+            "upgrades": {
+                "unlock_item_clothing_body_13": true
+            }
+        },
+        "unlock_item_clothing_over_15": {
+            "blueprint": 15,
+            "upgrades": {
+                "unlock_item_scavenger_gear": true
+            }
+        },
         "unlock_item_clothing2": {
             "upgrades": {
                 "unlock_item_shoe1": true
@@ -3583,38 +3615,6 @@
             "blueprint": 11,
             "upgrades": {
                 "unlock_item_clothing4h": true
-            }
-        },
-        "unlock_item_clothing_body_13": {
-            "blueprint": 13,
-            "upgrades": {
-                "unlock_item_scavenger_gear": true
-            }
-        },
-        "unlock_item_clothing_body_15": {
-            "upgrades": {
-                "unlock_item_clothing_body_13": true
-            }
-        },
-        "unlock_item_clothing_hands_25": {
-            "upgrades": {
-                "unlock_item_bag_2": true
-            }
-        },
-        "unlock_item_clothing_head_27": {
-            "upgrades": {
-                "unlock_item_bag_1": true
-            }
-        },
-        "unlock_item_clothing_head_5": {
-            "upgrades": {
-                "unlock_item_clothing_body_13": true
-            }
-        },
-        "unlock_item_clothing_over_15": {
-            "blueprint": 15,
-            "upgrades": {
-                "unlock_item_scavenger_gear": true
             }
         },
         "unlock_item_clothingl14": {

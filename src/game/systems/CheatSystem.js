@@ -186,6 +186,9 @@ define(['ash',
 			this.registerCheat(CheatConstants.CHEAT_NAME_EXPLORER, "Add a random explorer.", ["ability type"], function (params) {
 				this.addExplorer(params[0]);
 			});
+			this.registerCheat(CheatConstants.CHEAT_NAME_EXPLORER_INJURY, "Add a random explorer injury.", [], function (params) {
+				this.addExplorerInjury();
+			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_EQUIP_BEST, "Auto-equip best items available.", [], function (params) {
 				this.equipBest();
 			});
@@ -564,6 +567,18 @@ define(['ash',
 			}
 
 			explorersComponent.addExplorer(explorer);
+		},
+
+		addExplorerInjury: function () {
+			let inCamp = GameGlobals.playerHelper.isInCamp();
+			let explorers = inCamp ? GameGlobals.playerHelper.getExplorers() :  GameGlobals.playerHelper.getParty();
+			
+			for (let i = 0; i < explorers.length; i++) {
+				let explorerVO = explorers[i];
+				if (explorerVO.injuredTimer > 0) continue;
+				explorerVO.injuredTimer = ExplorerConstants.DEFAULT_INJURY_TIMER;
+				return;
+			}
 		},
 
 		equipBest: function () {

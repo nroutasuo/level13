@@ -14,6 +14,7 @@ define(function () {
 		CHEAT_NAME_EQUIP_BEST: "equipBest",
 		CHEAT_NAME_EVIDENCE: "evidence",
 		CHEAT_NAME_EXPLORER: "explorer",
+		CHEAT_NAME_EXPLORER_INJURY: "explorerInjury",
 		CHEAT_NAME_HEAL: "heal",
 		CHEAT_NAME_HOPE: "hope",
 		CHEAT_NAME_INJURY: "injury",

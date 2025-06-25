@@ -272,12 +272,17 @@ define(['ash',
 			let switchAction = explorerVO.inParty ? "deselect_explorer_" + explorerVO.id : "select_explorer_" + explorerVO.id;
 			let dismissLabel = "×";
 			let dismissAction = "dismiss_explorer_" + explorerVO.id;
+			let healAction = "heal_explorer_" + explorerVO.id;
 			div += "<div class='interaction-options'>";
 			div += "<button class='action btn-narrow' action='" + talkAction + "'>" + talkLabel + "</button>";
 			div += "<table class='button-row-2'><tr>";
 			div += "<td><button class='action btn-mini' action='" + switchAction + "' aria-label='switch'>" + switchLabel + "</button></td>";
 			div += "<td><button class='action btn-mini' action='" + dismissAction + "' aria-label='dismiss'>" + dismissLabel + "</button></td>";
 			div += "</tr></table>";
+
+			// hack to avoid temporary empty space in layout when changing to explorers tab
+			// this assumes an explorer never gets injured while this div is active (explorers tab open)
+			if (!isInCamp && explorerVO.injuredTimer > 0) div += "<button class='action btn-narrow btn-heal-explorer' action='" + healAction + "' style='display:none'>heal</button>";
 			div += "</div>";
 
 			div += "</div>";

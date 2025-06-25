@@ -340,6 +340,13 @@ define([
 				}
 			}
 
+			if (baseActionID == "heal_explorer") {
+				let explorerVO = this.playerStatsNodes.head.explorers.getExplorerByID(actionIDParam);
+				if (explorerVO && explorerVO.injuredTimer <= 0) {
+					return { value: 0, reason: this.getDisabledReasonVO() };
+				}
+			}
+
 			if (baseActionID == "select_explorer") {
 				let explorerVO = this.playerStatsNodes.head.explorers.getExplorerByID(actionIDParam);
 				if (explorerVO && !GameGlobals.explorerHelper.isSelectable(explorerVO)) {
@@ -2400,7 +2407,7 @@ define([
 				}
 			}
 
-			var baseActionID = this.getBaseActionID(action);
+			let baseActionID = this.getBaseActionID(action);
 			switch (baseActionID) {
 				case "move_camp_level":
 					let defaultMovementCost = this.getCosts("move_sector_west");
@@ -2438,8 +2445,13 @@ define([
 
 				case "use_item":
 				case "use_item_fight":
-					var itemName = action.replace(baseActionID + "_", "item_");
+					let itemName = action.replace(baseActionID + "_", "item_");
 					result[itemName] = 1;
+					break;
+
+				case "heal_explorer":
+					let healItemName = this.getAvailableHealItem().id;
+					result["item_" + healItemName] = 1;
 					break;
 				
 				case "repair_item":
@@ -2530,6 +2542,19 @@ define([
 			if (this.getPartyAbilityLevel(ExplorerConstants.abilityType.COST_LOCKPICK) > 0) {
 				if (result.item_exploration_1) result.item_exploration_1 = 0;
 			}
+		},
+
+		getAvailableHealItem: function () {
+			let itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+			let inCamp = GameGlobals.playerHelper.isInCamp();
+			let items = itemsComponent.getAllByType(ItemConstants.itemTypes.exploration, inCamp);
+
+			for (let i = 0; i < items.length; i++) {
+				let itemVO = items[i];
+				if (itemVO.id.indexOf("first_aid_kit") >= 0) return itemVO;
+			}
+
+			return ItemConstants.getItemDefinitionByID("first_aid_kit_1");
 		},
 
 		getPartyAbilityLevel: function (abilityType) {

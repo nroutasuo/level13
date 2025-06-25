@@ -250,6 +250,7 @@ function (Ash, PlayerActionData, ObjectUtils, GameConstants, CampConstants, Impr
 			if (action.indexOf("start_in_npc_dialogue") >= 0) return "start_in_npc_dialogue";
 			if (action.indexOf("start_out_npc_dialogue") >= 0) return "start_out_npc_dialogue";
 			if (action.indexOf("dismiss_explorer") >= 0) return "dismiss_explorer";
+			if (action.indexOf("heal_explorer_") == 0) return "heal_explorer";
 			if (action.indexOf("deselect_explorer") >= 0) return "deselect_explorer";
 			if (action.indexOf("select_explorer") >= 0) return "select_explorer";
 			if (action.indexOf("dismiss_recruit_") >= 0) return "dismiss_recruit";

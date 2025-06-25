@@ -304,6 +304,7 @@ define(['ash',
 				case "start_refugee_dialogue": this.startRefugeeDialogue(param); break;
 				case "dismiss_recruit": this.dismissRecruit(param); break;
 				case "dismiss_explorer": this.dismissExplorer(param); break;
+				case "heal_explorer": this.healExplorer(param); break;
 				case "accept_refugees": this.acceptRefugees(param); break;
 				case "dismiss_refugees": this.dismissRefugees(param); break;
 				case "select_explorer": this.selectExplorer(param); break;
@@ -1838,6 +1839,20 @@ define(['ash',
 					GlobalSignals.explorersChangedSignal.dispatch();
 				}
 			);
+		},
+
+		healExplorer: function (explorerID) {
+			let explorersComponent = this.playerStatsNodes.head.explorers;
+			let explorerVO = explorersComponent.getExplorerByID(explorerID);
+			
+			if (!explorerVO) {
+				log.w("no such explorer: " + explorerID);
+				return;
+			}
+			
+			explorerVO.injuredTimer = -1;
+			
+			GlobalSignals.explorersChangedSignal.dispatch();
 		},
 
 		acceptRefugees: function (sectorPos) {

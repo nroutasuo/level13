@@ -282,6 +282,10 @@ define([
 				$(comparisonIndicator).toggleClass("indicator-even", !isSelected && isValidComparison && comparison == 0);
 				$(comparisonIndicator).toggleClass("indicator-decrease", !isSelected && isValidComparison && comparison < 0);
 				$(comparisonIndicator).toggleClass("indicator-unique", !isSelected && !isValidComparison);
+
+				// heal button
+				let healButton = $(this).find(".btn-heal-explorer");
+				GameGlobals.uiFunctions.toggle(healButton, !inCamp && explorerVO.injuredTimer > 0);
 				
 				// dialogue
 				let dialogueIndicator = $(this).find(".npc-dialogue-indicator");	
