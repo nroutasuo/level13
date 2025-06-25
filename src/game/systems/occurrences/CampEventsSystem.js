@@ -510,7 +510,8 @@ define([
 				case OccurrenceConstants.campOccurrenceTypes.recruit:
 					let hasPendingExplorer = campNode.camp.pendingRecruits.length > 0;
 					let hasInn = campNode.improvements.getCount(improvementNames.inn) > 0;
-					let explorer = hasPendingExplorer ? campNode.camp.pendingRecruits.shift() : this.getRandomExplorer(campNode, 0.2);
+					let forceFighterProbability = GameGlobals.playerHelper.hasAdequateFighter() ? 0 : 0.25;
+					let explorer = hasPendingExplorer ? campNode.camp.pendingRecruits.shift() : this.getRandomExplorer(campNode, forceFighterProbability);
 					explorer.meetCampOrdinal = GameGlobals.gameState.numCamps;
 					let isFoundAsReward = hasPendingExplorer && explorer.source != ExplorerConstants.explorerSource.EVENT;
 					campNode.entity.add(new RecruitComponent(explorer, isFoundAsReward));
