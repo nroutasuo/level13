@@ -158,8 +158,8 @@ define(['ash',
 			if (this.typicalFighterCache[campOrdinal]) return this.typicalFighterCache[campOrdinal];
 			
 			let source = ExplorerConstants.explorerSource.SYSTEM;
-			let explorerType = ExplorerConstants.explorerType.FIGHTER;
-			let options = { forcedExplorerType : explorerType, forcedAbilityLevelRandomFactor: 0.5 }
+			let abilityType = ExplorerConstants.abilityType.ATTACK;
+			let options = { forcedAbilityType: abilityType, forcedAbilityLevelRandomFactor: 0.5 }
 			let result = ExplorerConstants.getNewRandomExplorer(source, campOrdinal, campOrdinal, options);
 
 			this.typicalFighterCache[campOrdinal] = result;
@@ -262,6 +262,7 @@ define(['ash',
 				if (template.abilityType && this.getUnlockCampOrdinal(template.abilityType) >= campOrdinal) continue;
 				if (excludedDialogueSources && excludedDialogueSources.indexOf(template.dialogueSource) >= 0) continue;
 				if (forcedExplorerType && template.explorerType && template.explorerType != forcedExplorerType) continue;
+				if (forcedExplorerType && template.abilityType && this.getExplorerTypeForAbilityType(template.abilityType) != forcedExplorerType) continue;
 				if (forcedAbilityType && template.abilityType && template.abilityType != forcedAbilityType) continue;
 				if (isRobot != isTemplateRobot) continue;
 				if (forcedAnimal && !isTemplateAnimal) continue;
