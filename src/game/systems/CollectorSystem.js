@@ -1,25 +1,46 @@
 // A system that updates accumulates resources in collectors
 define([
-	'ash', 'game/GameGlobals', 'game/GlobalSignals', 'game/constants/GameConstants', 'game/nodes/sector/SectorCollectorsNode', 'game/vos/ResourcesVO'
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, SectorCollectorsNode, ResourcesVO) {
-	var CollectorSystem = Ash.System.extend({
+	'ash', 
+	'game/GameGlobals', 
+	'game/GlobalSignals',
+	'game/constants/GameConstants', 
+	'game/components/sector/improvements/SectorImprovementsComponent',
+	'game/nodes/sector/SectorCollectorsNode', 
+	'game/nodes/PlayerLocationNode',
+	'game/vos/ResourcesVO'
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, SectorImprovementsComponent, SectorCollectorsNode, PlayerLocationNode, ResourcesVO) {
+
+	let CollectorSystem = Ash.System.extend({
 
 		collectorNodes: null,
+		playerLocationNodes: null,
 
 		constructor: function () { },
 
 		addToEngine: function (engine) {
-			this.engine = engine;
 			this.collectorNodes = engine.getNodeList(SectorCollectorsNode);
+			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
+
 			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.onImprovementBuilt);
+			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
 		},
 
 		removeFromEngine: function (engine) {
 			GlobalSignals.removeAll(this);
+
 			this.collectorNodes = null;
+			this.playerLocationNodes = null;
 		},
 
 		update: function (time) {
+			if (GameGlobals.gameState.isPaused) return;
+			if (GameGlobals.gameState.isLaunched) return;
+
+			let sectorImprovements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+			this.updateSector(time, sectorImprovements);
+		},
+
+		slowUpdate: function (time) {
 			if (GameGlobals.gameState.isPaused) return;
 			if (GameGlobals.gameState.isLaunched) return;
 			this.updateNodes(time);
@@ -27,13 +48,16 @@ define([
 		
 		updateNodes: function (time) {
 			for (var node = this.collectorNodes.head; node; node = node.next) {
+				if ( this.playerLocationNodes.head && node.entity == this.playerLocationNodes.head.entity) continue;
 				this.updateNode(time, node);
 			}
 		},
 	
 		updateNode: function (time, node) {
-			var sectorImprovements = node.improvements;
-			
+			this.updateSector(time, node.improvements);
+		},
+
+		updateSector: function (time, sectorImprovements) {
 			if (sectorImprovements.getCount(improvementNames.collector_food) > 0) {
 				this.updateCollector(time, sectorImprovements.getVO(improvementNames.collector_food), resourceNames.food );
 			}
