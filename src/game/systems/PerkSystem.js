@@ -162,6 +162,7 @@ define([
 		
 		addPerkAddedLogMessage: function (perkID) {
 			let playerPos = this.playerNodes.head.entity.get(PositionComponent);
+			if (playerPos.inCamp) return;
 			
 			let msg = "";
 			switch (perkID) {
@@ -178,7 +179,7 @@ define([
 					break;
 					
 				case PerkConstants.perkIds.lightBeacon:
-					msg = playerPos.inCamp ? "" : "Nearby beacon lights the way";
+					msg =  "Nearby beacon lights the way";
 					break;
 					
 				default:
@@ -187,6 +188,8 @@ define([
 			}
 			
 			if (!msg) return;
+
+			log.i("add perk added message: " + perkID);
 			
 			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_ADD_HAZARD_PERK, msg);
 		},
@@ -197,6 +200,7 @@ define([
 		
 		addPerkDeactivatedMessage: function (perkID) {
 			let playerPos = this.playerNodes.head.entity.get(PositionComponent);
+			if (playerPos.inCamp) return;
 			
 			// TODO different message depending on if perk was deactivated due to moving or by changing equipment
 			
@@ -227,11 +231,16 @@ define([
 			}
 			
 			if (!msg) return;
+
+			log.i("add perk deactivated message: " + perkID);
 			
 			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_TIME_HAZARD_PERK, msg);
 		},
 		
 		addPerkRemovedLogMessage: function (perkID) {
+			let playerPos = this.playerNodes.head.entity.get(PositionComponent);
+			if (playerPos.inCamp) return;
+			
 			var msg = "";
 			switch (perkID) {
 				case PerkConstants.perkIds.hazardCold:
@@ -262,6 +271,8 @@ define([
 			}
 			
 			if (!msg) return;
+
+			log.i("add perk removed message: " + perkID);
 			
 			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_REMOVE_HAZARD_PERK, msg);
 		},
