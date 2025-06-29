@@ -481,6 +481,9 @@
 			]
 		},
 		"character_crafter_default_event_01": {
+			"conditions": {
+				"maxNumCamps": 9
+			},
 			"pages": [
 				{
 					"key": "character_crafter_default_event_01_p1"
@@ -2011,21 +2014,6 @@
 				"character_generic_story_fall_dunno_02_p1"
 			]
 		},
-		"character_generic_world_level_numbers_01": {
-			"conditions": {
-				"player": {
-					"position": {
-						"level": [
-							15,
-							-1
-						]
-					}
-				}
-			},
-			"pages": [
-				"character_generic_world_level_numbers_01_p1"
-			]
-		},
 		"character_generic_story_fall_dunno_03": {
 			"conditions": {
 				"storyFlags": {
@@ -2294,6 +2282,21 @@
 						"removeCharacter": true
 					}
 				}
+			]
+		},
+		"character_generic_world_level_numbers_01": {
+			"conditions": {
+				"player": {
+					"position": {
+						"level": [
+							15,
+							-1
+						]
+					}
+				}
+			},
+			"pages": [
+				"character_generic_world_level_numbers_01_p1"
 			]
 		},
 		"character_guard_default_meet_01": {
@@ -2589,6 +2592,11 @@
 			]
 		},
 		"character_slumRefugee_default_interact_02": {
+			"conditions": {
+				"storyFlags": {
+					"FALL_LINKED_EXODUS_TO_FALL": false
+				}
+			},
 			"pages": [
 				"character_slumRefugee_default_interact_02_p1"
 			]
@@ -2844,7 +2852,8 @@
 		"character_workerGeneric_interact_apocalypse_01": {
 			"conditions": {
 				"storyFlags": {
-					"APOCALYPSE_KNOWN": true
+					"APOCALYPSE_KNOWN": true,
+					"FALL_LINKED_EXODUS_TO_FALL": false
 				}
 			},
 			"pages": [
@@ -3021,10 +3030,10 @@
 		},
 		"character_workerGeneric_story_apocalypse_plan_ready_02": {
 			"conditions": {
+				"numCamps": 15,
 				"storyFlags": {
 					"APOCALYPSE_PLAN_READY": true
-				},
-				"numCamps": 15
+				}
 			},
 			"pages": [
 				"character_workerGeneric_story_apocalypse_plan_ready_02_p1"
@@ -3043,6 +3052,9 @@
 		"character_workerGeneric_story_apocalypse_plan_ready_04": {
 			"conditions": {
 				"numCamps": 15,
+				"upgrades": {
+					"unlock_building_spaceship1": true
+				},
 				"storyFlags": {
 					"APOCALYPSE_PLAN_READY": true
 				}
@@ -3213,6 +3225,16 @@
 				"character_workerScientist_default_interact_08_p1"
 			]
 		},
+		"character_workerScientist_default_interact_09": {
+			"conditions": {
+				"storyFlags": {
+					"APOCALYPSE_PLAN_READY": true
+				}
+			},
+			"pages": [
+				"character_workerScientist_default_interact_09_p1"
+			]
+		},
 		"character_workerSoldier_default_interact_01": {
 			"pages": [
 				"character_workerSoldier_default_interact_01_p1"
@@ -3310,6 +3332,9 @@
 			]
 		},
 		"character_workerWater_default_interact_03": {
+			"conditions": {
+				"maxNumCamps": 10
+			},
 			"pages": [
 				"character_workerWater_default_interact_03_p1"
 			]
@@ -5213,6 +5238,16 @@
 			]
 		},
 		"explorer_template_architect_interact_02": {
+			"conditions": {
+				"player": {
+					"position": {
+						"level": [
+							-1,
+							20
+						]
+					}
+				}
+			},
 			"pages": [
 				"explorer_template_architect_interact_02_p1"
 			]
@@ -5288,6 +5323,9 @@
 		},
 		"explorer_template_architect_interact_10": {
 			"conditions": {
+				"explorer": {
+					"trust": 6
+				},
 				"storyFlags": {
 					"ESCAPE_SEARCHING_FOR_GROUND": false
 				}
@@ -5298,6 +5336,9 @@
 		},
 		"explorer_template_architect_interact_11": {
 			"conditions": {
+				"explorer": {
+					"trust": 7
+				},
 				"storyFlags": {
 					"FALL_SEEN_EVACUATION": true
 				}
@@ -5308,6 +5349,9 @@
 		},
 		"explorer_template_architect_interact_12": {
 			"conditions": {
+				"explorer": {
+					"trust": 8
+				},
 				"storyFlags": {
 					"ESCAPE_REACHED_SURFACE": true
 				}
@@ -9759,6 +9803,7 @@
 					"character_workerScientist_default_interact_06",
 					"character_workerScientist_default_interact_07",
 					"character_workerScientist_default_interact_08",
+					"character_workerScientist_default_interact_09",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_04",

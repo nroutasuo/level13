@@ -602,8 +602,6 @@
             "water_name": "water"
         },
         "stats": {
-            "_health_maximum_name": "Max vision",
-            "_vision_description": "Makes exploration safer and scavenging more effective",
             "evidence_name": "Evidence",
             "health_name": "Health",
             "hope_name": "Hope",
@@ -615,9 +613,6 @@
             "vision_name": "Vision"
         },
         "upgrades": {
-            "_crafting_name": "Crafting",
-            "_square_description": "Build a space just for relaxation and socializing.",
-            "_square_name": "Square",
             "improve_building_apothecary_description": "Rediscovered modern technology for disease prevention and treatment.",
             "improve_building_apothecary_name": "Antibiotics",
             "improve_building_barracks_3_description": "Establish more roles within the barracks to keep things running efficiently",
@@ -1051,13 +1046,13 @@
             "character_generic_story_warn_ground_01_p1": "I doubt it is possible to live outside the City.",
             "character_generic_story_warn_ground_02_p1": "I came to the City as a child as a refugee from the outside. I don't remember much, except constant boiling of water and over-cooked food.",
             "character_generic_story_warn_ground_03_p1": "I've been exploring the Ground for awhile but I haven't found an end to the City. I don't know where an exit would be.",
-            "character_generic_world_level_numbers_01_p1": "The levels are numbered from the Surface down, so the Surface is Level {surfaceLevel}, the level below it is Level {surfaceLevelMinus1} and so on. The Ground is uneven, so it is at different levels in different parts of the City.",
             "character_generic_stranded_meet_directions_accept": "Thank you. I will go there and try to make myself useful.",
             "character_generic_stranded_meet_directions_p1": "Where is your settlement? Can I join you?",
             "character_generic_stranded_meet_directions_reject": "Oh. I understand. I will find another place.",
             "character_generic_stranded_meet_water_p1": "I've ran out of water. Can you spare some?",
             "character_generic_stranded_meet_water_p1_accept": "Thank you, stranger. I am sure your good deed will come around.",
             "character_generic_stranded_meet_water_p1_reject": "The Fall has made wolves of us all.",
+            "character_generic_world_level_numbers_01_p1": "The levels are numbered from the Surface down, so the Surface is Level {surfaceLevel}, the level below it is Level {surfaceLevelMinus1} and so on. The Ground is uneven, so it is at different levels in different parts of the City.",
             "character_guard_default_meet_01_p1": "This building is none of your business.",
             "character_guard_default_meet_02_p1": "I'm paid to make sure nobody enters the maglev tracks and that's what I do.",
             "character_guard_default_meet_03_p1": "I'm worried the Fall was the end and now we're just living on borrowed time.",
@@ -1184,6 +1179,7 @@
             "character_workerScientist_default_interact_06_p1": "We are trying to figure out if there is some way to reinforce the city or stop the earthquakes, but I am not optimistic.",
             "character_workerScientist_default_interact_07_p1": "It is unlikely that life outside the City is possible at this point.",
             "character_workerScientist_default_interact_08_p1": "I don't believe in the spirits, but if believing in them makes people happier then that's good.",
+            "character_workerScientist_default_interact_09_p1": "We need to find a way to build a space shuttle of our own before the earthquakes get too violent.",
             "character_workerSoldier_default_interact_01_p1": "There's a lot of hungry people out there that are jealous of everything we have.",
             "character_workerSoldier_default_interact_02_p1": "I am prepared to defend this community with my life.",
             "character_workerSoldier_default_interact_03_p1": "First robbers and now ghosts? What are we supposed to do about that?",
@@ -2008,6 +2004,8 @@
             "disabled_reason_status_required": "Status required: {name}",
             "disabled_reason_tribe_population_too_low": "Required: {pop} total population",
             "disabled_reason_upgrade_missing": "Upgrade required: {name}",
+            "start_dialogue_default_label": "talk",
+            "start_dialogue_pet_label": "pet",
             "unavailable_reason_invalid_message": "Invalid action (internal error)",
             "unavailable_reason_pending_dialogue_message": "Explorer has something to say.",
             "unavailable_reason_quest_message": "On a quest.",
@@ -2297,8 +2295,11 @@
             "tutorial_used_hospital_message": "Healed all injuries.",
             "tutorial_warning_first_camp_completed_message": "There is not much more we can build here now, with our current abilities. best to explore the city more.",
             "tutorial_warning_storage_full_message": "Storage of {resource} is full.",
+            "tutorial_warning_sundome_missing_message": "This camp is exposed to direct sunlight. Many people will not want to live here.",
             "upgrade_researched_message": "Researched {name}",
             "use_library_message": "Spent some time studying knowledge of old at the library.",
+            "use_shrine_fail_message": "Tried to meditate, but found no peace.",
+            "use_shrine_success_message": "Spent some time listening to the spirits.",
             "use_temple_message": "Donated to the temple."
         },
         "main": {
@@ -2375,13 +2376,6 @@
             "sector_details_header": "Sector details"
         },
         "meta": {
-            "_enable_hotkeys_checkbox_label": "Enable hotkeys",
-            "_game_info_faq_link": "FAQ",
-            "_game_info_feedback_github_link": "github",
-            "_game_info_feedback_header": "Feedback",
-            "_game_info_wip_description": "Note that this game is still in development and many features are incomplete and unbalanced. Updates might break saves. Feedback and bug reports are appreciated!",
-            "_hotkey_move_north_label": "Move N",
-            "_version_number_indicator_field": "v. {major}.{minor}.{patch} ({type})",
             "game_data_button_label": "Data",
             "game_info_button_label": "Info",
             "game_paused_message": "Game paused",
@@ -2394,16 +2388,15 @@
             "settings_button_label": "Settings"
         },
         "milestones": {
-            "_effect_base_reputation_label": "Base reputation",
-            "_effect_new_events_template": "New events: {list}",
             "population_progress_label": "Population: {current} / {max}"
         },
-        "perks": {
-            "_injury_effect_description": "Health -{value}%"
-        },
         "projects": {
+            "available_projects_header": "Available projects",
+            "built_projects_header": "Built projects",
+            "hidden_projects_header": "Hidden projects",
             "no_available_colony_projects_description": "There are no colony projects available currently.",
-            "no_available_projects_description": "There are no building projects available currently. Explore the map to find some."
+            "no_available_projects_description": "There are no building projects available currently. Explore the map to find some.",
+            "page_header": "Building projects"
         },
         "tribe": {
             "current_reputatiion_description": "Attracts more people to the camp.",

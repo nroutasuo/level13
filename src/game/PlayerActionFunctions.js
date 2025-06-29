@@ -1472,7 +1472,7 @@ define(['ash',
 			
 			for (let i = 0; i < messages1.length; i++) {
 				if (messages1[i].addToPopup) {
-					popupMsg += TextConstants.sentencify(messages1[i].text);
+					popupMsg += " " + TextConstants.sentencify(messages1[i].text);
 				}
 			}
 			
@@ -2523,9 +2523,9 @@ define(['ash',
 				log.i("meditation success chance: " + successChance)
 				if (Math.random() < successChance) {
 					hopeComponent.hope += 1;
-					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_SHRINE, "Spent some time listening to the spirits.");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_SHRINE, "ui.log.use_shrine_success_message");
 				} else {
-					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_SHRINE, "Tried to meditate, but found no peace.");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_SHRINE, "ui.log.use_shrine_fail_message");
 				}
 			}
 			

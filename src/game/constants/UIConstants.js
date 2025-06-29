@@ -266,7 +266,7 @@ define(['ash',
 			div += "</span>";
 
 			// interaction options
-			let talkLabel = (isAnimal ? "pet" : "talk");
+			let talkLabel = Text.t(isAnimal ? "ui.actions.start_dialogue_pet_label" : "ui.actions.start_dialogue_default_label");
 			let talkAction = "start_explorer_dialogue_" + explorerVO.id;
 			let switchLabel = "⇵";
 			let switchAction = explorerVO.inParty ? "deselect_explorer_" + explorerVO.id : "select_explorer_" + explorerVO.id;
@@ -428,7 +428,8 @@ define(['ash',
 			div += this.createNPCPortrait();
 			div += "</div>";
 
-			div += "<button class='action btn-compact' action=''>Talk</button>";
+			let talkLabel = Text.t("ui.actions.start_dialogue_default_label");
+			div += "<button class='action btn-compact' action=''>" + talkLabel + "</button>";
 			
 			div += "</div>"
 			

@@ -1,5 +1,6 @@
 define([
 	'ash',
+	'text/Text',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/UIConstants',
@@ -8,7 +9,7 @@ define([
 	'game/vos/TabCountsVO',
 	'utils/StringUtils',
 	'utils/UIList',
-], function (Ash, GameGlobals, GlobalSignals, UIConstants, PositionConstants, PlayerLocationNode, TabCountsVO, StringUtils, UIList) {
+], function (Ash, Text, GameGlobals, GlobalSignals, UIConstants, PositionConstants, PlayerLocationNode, TabCountsVO, StringUtils, UIList) {
 	
 	let UIOutProjectsSystem = Ash.System.extend({
 		
@@ -85,7 +86,7 @@ define([
 			let isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.projects;
 			
 			if (isActive) {
-				this.elements.tabHeader.text("Building projects");
+				this.elements.tabHeader.text(Text.t("ui.projects.page_header"));
 			}
 			
 			this.updateAvailableProjects(isActive);
