@@ -650,10 +650,10 @@
             "hope": 166
         },
         "improve_building_barracks_3": {
-            "rumours": 4008
+            "rumours": 3836
         },
         "improve_building_campfire_1": {
-            "rumours": 48
+            "rumours": 39
         },
         "improve_building_campfire_2": {
             "rumours": 1376
@@ -665,17 +665,17 @@
             "evidence": 165
         },
         "improve_building_collector_water_2": {
-            "rumours": 359
+            "rumours": 321
         },
         "improve_building_hospital": {
-            "rumours": 835
+            "rumours": 832
         },
         "improve_building_hospital_3": {
-            "rumours": 2672
+            "rumours": 2558
         },
         "improve_building_house2": {
             "evidence": 215,
-            "rumours": 1865
+            "rumours": 1688
         },
         "improve_building_inn": {
             "hope": 80,
@@ -686,15 +686,15 @@
             "hope": 519
         },
         "improve_building_library": {
-            "rumours": 204
+            "rumours": 193
         },
         "improve_building_library2": {
-            "evidence": 212,
+            "evidence": 210,
             "hope": 112,
-            "rumours": 885
+            "rumours": 841
         },
         "improve_building_market": {
-            "rumours": 155
+            "rumours": 146
         },
         "improve_building_market2": {
             "evidence": 209,
@@ -702,7 +702,7 @@
         },
         "improve_building_market3": {
             "hope": 197,
-            "rumours": 3340
+            "rumours": 3197
         },
         "improve_building_radio_1": {
             "evidence": 867,
@@ -710,39 +710,39 @@
         },
         "improve_building_researchcenter_1": {
             "hope": 346,
-            "rumours": 10092
+            "rumours": 9917
         },
         "improve_building_robots": {
             "evidence": 630
         },
         "improve_building_shrine": {
             "hope": 164,
-            "rumours": 1865
+            "rumours": 1688
         },
         "improve_building_stable_2": {
-            "rumours": 300
+            "rumours": 267
         },
         "improve_building_stable_3": {
             "evidence": 200,
-            "rumours": 786
+            "rumours": 783
         },
         "improve_building_storage1": {
             "evidence": 383
         },
         "improve_building_storage2": {
             "evidence": 204,
-            "rumours": 2398
-        },
-        "improve_building_temple_4": {
-            "evidence": 636,
-            "rumours": 9083
+            "rumours": 2170
         },
         "improve_building_temple2": {
             "hope": 61,
-            "rumours": 1005
+            "rumours": 955
         },
         "improve_building_temple3": {
             "hope": 197
+        },
+        "improve_building_temple_4": {
+            "evidence": 636,
+            "rumours": 8925
         },
         "improve_event_disaster_1": {
             "evidence": 272
@@ -963,14 +963,14 @@
         },
         "improve_worker_cleric_3": {
             "hope": 158,
-            "rumours": 2672
+            "rumours": 2558
         },
         "improve_worker_gardener_2": {
             "evidence": 268,
             "hope": 205
         },
         "improve_worker_gardener_3": {
-            "evidence": 241,
+            "evidence": 239,
             "hope": 76
         },
         "improve_worker_rubber_2": {
@@ -981,23 +981,23 @@
         },
         "improve_worker_scavenger_2": {
             "evidence": 128,
-            "rumours": 305
+            "rumours": 289
         },
         "improve_worker_scavenger_3": {
-            "rumours": 1865
+            "rumours": 1688
         },
         "improve_worker_scavenger_4": {
             "evidence": 603,
-            "rumours": 2672
+            "rumours": 2558
         },
         "improve_worker_scavenger_5": {
             "evidence": 607,
-            "rumours": 9756
+            "rumours": 9586
         },
         "improve_worker_scientist": {
             "evidence": {},
             "hope": 135,
-            "rumours": 3058
+            "rumours": 3005
         },
         "improve_worker_smith_2": {
             "evidence": 208
@@ -1007,7 +1007,7 @@
         },
         "improve_worker_smith_4": {
             "hope": 202,
-            "rumours": 4587
+            "rumours": 4508
         },
         "improve_worker_trapper_2": {
             "evidence": 292,
@@ -1017,11 +1017,11 @@
             "hope": 134
         },
         "improve_worker_water_2": {
-            "rumours": 499
+            "rumours": 445
         },
         "improve_worker_water_3": {
             "evidence": 215,
-            "rumours": 2043
+            "rumours": 1848
         },
         "investigate": {
             "stamina": 100
@@ -1118,15 +1118,15 @@
             "evidence": 63
         },
         "unlock_building_apothecary": {
-            "rumours": 925
+            "rumours": 879
         },
         "unlock_building_aqueduct": {
             "hope": 122,
-            "rumours": 925
+            "rumours": 879
         },
         "unlock_building_barracks": {
             "evidence": 183,
-            "rumours": 399
+            "rumours": 356
         },
         "unlock_building_beacon": {
             "evidence": 172
@@ -1139,47 +1139,47 @@
         },
         "unlock_building_darkfarm": {
             "evidence": 91,
-            "rumours": 75
+            "rumours": 61
         },
         "unlock_building_fortifications": {
             "evidence": 115,
-            "rumours": 82
+            "rumours": 71
         },
         "unlock_building_fortifications2": {
             "evidence": 276,
-            "rumours": 1081
+            "rumours": 1076
         },
         "unlock_building_generator": {
-            "rumours": 379
+            "rumours": 338
         },
         "unlock_building_greenhouse": {
             "hope": 21,
-            "rumours": 484
+            "rumours": 454
         },
         "unlock_building_hospital": {
             "evidence": 17
         },
         "unlock_building_house2": {
             "evidence": 397,
-            "rumours": 320
+            "rumours": 285
         },
         "unlock_building_inn": {
             "evidence": 79,
-            "rumours": 126
+            "rumours": 110
         },
         "unlock_building_library": {
             "evidence": 63
         },
         "unlock_building_lights": {
             "evidence": 244,
-            "rumours": 196
+            "rumours": 185
         },
         "unlock_building_market": {
-            "rumours": 110
+            "rumours": 95
         },
         "unlock_building_passage_elevator": {
             "evidence": 139,
-            "rumours": 163
+            "rumours": 154
         },
         "unlock_building_passage_hole": {
             "evidence": 206
@@ -1189,27 +1189,27 @@
         },
         "unlock_building_radio": {
             "evidence": 287,
-            "rumours": 3073
+            "rumours": 2941
         },
         "unlock_building_researchcenter": {
             "evidence": 362
         },
         "unlock_building_robots": {
             "evidence": 603,
-            "rumours": 2939
+            "rumours": 2814
         },
         "unlock_building_smithy": {
             "evidence": 199
         },
         "unlock_building_spaceship1": {
-            "evidence": 525,
+            "evidence": 336,
             "insight": 10,
-            "rumours": 3823
+            "rumours": 2404
         },
         "unlock_building_spaceship2": {
-            "hope": 168,
+            "hope": 141,
             "insight": 15,
-            "rumours": 3670
+            "rumours": 3155
         },
         "unlock_building_spaceship3": {
             "evidence": 546,
@@ -1217,96 +1217,96 @@
             "insight": 15
         },
         "unlock_building_square": {
-            "rumours": 54
+            "rumours": 44
         },
         "unlock_building_stable": {
-            "rumours": 269
+            "rumours": 254
         },
         "unlock_building_tradingpost": {
             "evidence": 73
         },
         "unlock_clothing_basic": {
-            "rumours": 38
+            "rumours": 39
         },
         "unlock_clothing_warm": {
-            "rumours": 60
+            "rumours": 49
         },
         "unlock_item_bag_1": {
-            "rumours": 99
+            "rumours": 86
         },
         "unlock_item_bag_2": {
             "evidence": 159
         },
         "unlock_item_bag_3": {
-            "rumours": 643
+            "rumours": 611
         },
         "unlock_item_bag_4": {
             "hope": 189
         },
+        "unlock_item_clothing2": {
+            "rumours": 10
+        },
+        "unlock_item_clothing3": {
+            "rumours": 484
+        },
+        "unlock_item_clothing3h": {
+            "hope": 134,
+            "rumours": 881
+        },
+        "unlock_item_clothing4": {
+            "evidence": 172
+        },
+        "unlock_item_clothing4h": {
+            "evidence": 131,
+            "rumours": 116
+        },
+        "unlock_item_clothing4he": {
+            "rumours": 267
+        },
+        "unlock_item_clothing5": {
+            "evidence": 208,
+            "rumours": 514
+        },
+        "unlock_item_clothing6": {
+            "rumours": 881
+        },
         "unlock_item_clothing_body_13": {
             "hope": 166,
-            "rumours": 2672
+            "rumours": 2558
         },
         "unlock_item_clothing_body_15": {
             "hope": 189,
-            "rumours": 3206
+            "rumours": 3069
         },
         "unlock_item_clothing_hands_25": {
-            "rumours": 280
+            "rumours": 249
         },
         "unlock_item_clothing_head_27": {
-            "rumours": 244
+            "rumours": 231
         },
         "unlock_item_clothing_head_5": {
             "hope": 125
         },
         "unlock_item_clothing_over_15": {
-            "rumours": 3823
-        },
-        "unlock_item_clothing2": {
-            "rumours": 13
-        },
-        "unlock_item_clothing3": {
-            "rumours": 516
-        },
-        "unlock_item_clothing3h": {
-            "hope": 134,
-            "rumours": 884
-        },
-        "unlock_item_clothing4": {
-            "evidence": 173
-        },
-        "unlock_item_clothing4h": {
-            "evidence": 131,
-            "rumours": 122
-        },
-        "unlock_item_clothing4he": {
-            "rumours": 299
-        },
-        "unlock_item_clothing5": {
-            "evidence": 208,
-            "rumours": 548
-        },
-        "unlock_item_clothing6": {
-            "rumours": 884
+            "rumours": 3756
         },
         "unlock_item_clothingl14": {
             "hope": 55,
-            "rumours": 645
+            "rumours": 605
         },
         "unlock_item_firstaid": {
-            "rumours": 359
+            "rumours": 320
         },
         "unlock_item_scavenger_gear": {
-            "rumours": 1777
+            "rumours": 1607
         },
         "unlock_item_shoe1": {
             "evidence": 26,
-            "rumours": 13
+            "rumours": 10
         },
         "unlock_item_weapon_10": {
-            "evidence": 241,
-            "rumours": 804
+            "evidence": 239,
+            "rumours": 764
         },
         "unlock_item_weapon_11": {
             "evidence": 251,
@@ -1320,7 +1320,7 @@
         },
         "unlock_item_weapon_14": {
             "evidence": 724,
-            "rumours": 4008
+            "rumours": 3837
         },
         "unlock_item_weapon_15": {
             "evidence": 504,
@@ -1331,22 +1331,22 @@
         },
         "unlock_item_weapon_4": {
             "evidence": 102,
-            "rumours": 195
+            "rumours": 185
         },
         "unlock_item_weapon_5": {
-            "rumours": 163
+            "rumours": 154
         },
         "unlock_item_weapon_6": {
-            "rumours": 399
+            "rumours": 356
         },
         "unlock_item_weapon_8": {
             "evidence": 417
         },
         "unlock_project_tradingpost_connector": {
-            "evidence": 221
+            "evidence": 220
         },
         "unlock_worker_rope": {
-            "rumours": 11
+            "rumours": 8
         },
         "use_in_hospital": {
             "resource_food": 50,
@@ -2346,7 +2346,7 @@
         },
         "claim_milestone_7": {
             "tribe": {
-                "population": 800,
+                "population": 750,
                 "projects": {
                     "sundome": 1
                 }
@@ -2907,11 +2907,6 @@
                 "improve_building_storage1": true
             }
         },
-        "improve_building_temple_4": {
-            "upgrades": {
-                "improve_building_temple3": true
-            }
-        },
         "improve_building_temple2": {
             "deity": true,
             "upgrades": {
@@ -2923,6 +2918,11 @@
             "milestone": 6,
             "upgrades": {
                 "improve_building_temple2": true
+            }
+        },
+        "improve_building_temple_4": {
+            "upgrades": {
+                "improve_building_temple3": true
             }
         },
         "improve_event_disaster_1": {
@@ -3539,38 +3539,6 @@
                 "unlock_item_bag_3": true
             }
         },
-        "unlock_item_clothing_body_13": {
-            "blueprint": 13,
-            "upgrades": {
-                "unlock_item_scavenger_gear": true
-            }
-        },
-        "unlock_item_clothing_body_15": {
-            "upgrades": {
-                "unlock_item_clothing_body_13": true
-            }
-        },
-        "unlock_item_clothing_hands_25": {
-            "upgrades": {
-                "unlock_item_bag_2": true
-            }
-        },
-        "unlock_item_clothing_head_27": {
-            "upgrades": {
-                "unlock_item_bag_1": true
-            }
-        },
-        "unlock_item_clothing_head_5": {
-            "upgrades": {
-                "unlock_item_clothing_body_13": true
-            }
-        },
-        "unlock_item_clothing_over_15": {
-            "blueprint": 15,
-            "upgrades": {
-                "unlock_item_scavenger_gear": true
-            }
-        },
         "unlock_item_clothing2": {
             "upgrades": {
                 "unlock_item_shoe1": true
@@ -3615,6 +3583,38 @@
             "blueprint": 11,
             "upgrades": {
                 "unlock_item_clothing4h": true
+            }
+        },
+        "unlock_item_clothing_body_13": {
+            "blueprint": 13,
+            "upgrades": {
+                "unlock_item_scavenger_gear": true
+            }
+        },
+        "unlock_item_clothing_body_15": {
+            "upgrades": {
+                "unlock_item_clothing_body_13": true
+            }
+        },
+        "unlock_item_clothing_hands_25": {
+            "upgrades": {
+                "unlock_item_bag_2": true
+            }
+        },
+        "unlock_item_clothing_head_27": {
+            "upgrades": {
+                "unlock_item_bag_1": true
+            }
+        },
+        "unlock_item_clothing_head_5": {
+            "upgrades": {
+                "unlock_item_clothing_body_13": true
+            }
+        },
+        "unlock_item_clothing_over_15": {
+            "blueprint": 15,
+            "upgrades": {
+                "unlock_item_scavenger_gear": true
             }
         },
         "unlock_item_clothingl14": {
