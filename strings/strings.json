@@ -18,6 +18,7 @@
             "clear_explosives_description": "Clear the old explosives blocking the way.",
             "clear_explosives_name_long": "Clear explosives",
             "clear_gate_description": "Pay the toll",
+            "bridge_gap_name_long": "Bridge gap",
             "clear_gate_name": "Pay",
             "clear_waste_r_description": "Clear the radiactive waste.",
             "clear_waste_t_description": "Clear the pollution.",
