@@ -2093,14 +2093,19 @@ define(['ash',
 		buildTrap: function () {
 			if (!this.playerLocationNodes.head.entity.has(SectorCollectorsComponent))
 				this.playerLocationNodes.head.entity.add(new SectorCollectorsComponent());
+
 			this.buildImprovement("build_out_collector_food", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_collector_food"));
+			
 			GlobalSignals.improvementBuiltSignal.dispatch();
 		},
 
 		buildBucket: function () {
 			if (!this.playerLocationNodes.head.entity.has(SectorCollectorsComponent))
 				this.playerLocationNodes.head.entity.add(new SectorCollectorsComponent());
+
 			this.buildImprovement("build_out_collector_water", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_collector_water"));
+
+			GlobalSignals.improvementBuiltSignal.dispatch();
 		},
 		
 		buildBeacon: function () {
@@ -2112,7 +2117,6 @@ define(['ash',
 		buildHouse: function (sectorPos) {
 			let sector = this.getActionSectorOrCurrent(sectorPos);
 			this.buildImprovement("build_in_house", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_house"), sector);
-
 			GameGlobals.playerActionFunctions.unlockFeature("npcs");
 		},
 
