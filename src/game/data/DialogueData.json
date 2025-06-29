@@ -737,7 +737,8 @@
 		},
 		"character_darkDweller_default_interact_04": {
 			"conditions": {
-				"numCamps": 3
+				"numCamps": 3,
+				"maxNumCamps": 14
 			},
 			"pages": [
 				"character_darkDweller_default_interact_04_p1"
@@ -2991,6 +2992,14 @@
 			"conditions": {
 				"storyFlags": {
 					"GREENHOUSE_RESTORED": true
+				},
+				"player": {
+					"position": {
+						"level": [
+							-1,
+							16
+						]
+					}
 				}
 			},
 			"pages": [
