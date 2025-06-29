@@ -294,6 +294,11 @@ define([
 			let requirements = this.getReqs(action, sector);
 			let costs = this.getCosts(action);
 
+			let shouldSkipCheck = function (reason) {
+				if (!checksToSkip) return false;
+				return checksToSkip.indexOf(reason) >= 0;
+			};
+
 			let baseActionID = this.getBaseActionID(action);
 			let actionIDParam = this.getActionIDParam(action);
 			let ordinal = this.getActionOrdinal(action, sector);
@@ -323,8 +328,8 @@ define([
 				}
 			}
 			
-			if (PlayerActionConstants.isProjectAction(baseActionID) && this.isProjectInProgress()) {
-				return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_project_in_progress", null, null, PlayerActionConstants.DISABLED_REASON_IN_PROGRESS) };
+			if (PlayerActionConstants.isProjectAction(baseActionID) && this.isProjectInProgress() && !shouldSkipCheck(PlayerActionConstants.DISABLED_REASON_PROJECT_IN_PROGRESS)) {
+				return { value: 0, reason: this.getDisabledReasonVO(PlayerActionConstants.DISABLED_REASON_PROJECT_IN_PROGRESS, null, null, PlayerActionConstants.DISABLED_REASON_IN_PROGRESS) };
 			}
 				
 			let statusComponent = sector.get(SectorStatusComponent);

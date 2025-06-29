@@ -841,7 +841,8 @@ define([
 				if (camp) {
 					var actions = [ "build_out_spaceship1", "build_out_spaceship2", "build_out_spaceship3", "build_out_sundome"];
 					for (let i = 0; i < actions.length; i++) {
-						if (GameGlobals.playerActionsHelper.isRequirementsMet(actions[i]) || GameGlobals.playerActionsHelper.isInProgress(actions[i])) {
+						let isReqsMet = GameGlobals.playerActionsHelper.isRequirementsMet(actions[i], null, [ PlayerActionConstants.DISABLED_REASON_PROJECT_IN_PROGRESS ]);
+						if (isReqsMet || GameGlobals.playerActionsHelper.isInProgress(actions[i])) {
 							var improvement = GameGlobals.playerActionsHelper.getImprovementNameForAction(actions[i]);
 							if (improvementsComponent.getCount(improvement) <= 0) {
 								projects.push(new LevelProjectVO(new ImprovementVO(improvement), actions[i], sectorPosition));
