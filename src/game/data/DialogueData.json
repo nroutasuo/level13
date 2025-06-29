@@ -8195,7 +8195,8 @@
 				"story.stories.expedition_diary_p2",
 				"story.stories.expedition_diary_p3",
 				"story.stories.expedition_diary_p4"
-			]
+			],
+			"titleKey": "game.items.diary_name"
 		},
 		"locale_generic_bunker_intro_01": {
 			"pages": [

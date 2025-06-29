@@ -386,7 +386,7 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, ItemVO) {
 
 		getItemDisplayNameKey: function (item, short) {
 			if (!item) return "";
-			if (item.type == ItemConstants.itemTypes.note) return "Documents";
+			if (item.type == ItemConstants.itemTypes.note) return "game.items.documents_name";
 			return this.getItemDisplayNameKeyFromID(item.id, short);
 		},
 

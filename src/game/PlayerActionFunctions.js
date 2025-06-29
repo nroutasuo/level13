@@ -1210,6 +1210,7 @@ define(['ash',
 			let campLevel = GameGlobals.gameState.getLevelForCamp(campOrdinal);
 			
 			let action = "clear_workshop";
+			let workshopName = TextConstants.getWorkshopName(workshopComponent.resource);
 
 			let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			let localeId = FightConstants.getEnemyLocaleId(baseActionID, action);
@@ -1234,7 +1235,7 @@ define(['ash',
 				{ id: "outro", type: "dialogue", dialogueID: outroDialogueID, textParams: { campLevel: campLevel } },
 				{ id: "log", type: "log", textKey: successLogMsgKey, textParams: { campLevel: campLevel} },
 				{ id: "results", type: "custom", f: successCallback },
-			]);
+			], workshopName);
 		},
 
 		clearWaste: function (action, direction) {
@@ -2742,7 +2743,7 @@ define(['ash',
 					if (itemConfig.configData.noteDialogue) {
 						this.startSequence([
 							{ type: "dialogue", dialogueID: itemConfig.configData.noteDialogue },
-						]);
+						], ItemConstants.getItemDisplayNameKey(itemConfig));
 					} else {
 						let message = Text.t(itemConfig.configData.noteText);
 						GameGlobals.uiFunctions.showInfoPopup(
