@@ -135,7 +135,7 @@
             "resource_tools": 300
         },
         "build_in_robotFactory": {
-            "resource_concrete": 2000,
+            "resource_concrete": 600,
             "resource_fuel": 800,
             "resource_tools": 500
         },
