@@ -283,7 +283,7 @@ define([
 
 			if (!this.cache.reqs[reqsID]) {
 				let result = this.checkActionRequirementsInternal.apply(this, [action, sector, checksToSkip]);
-				if (result.reason && doLog) log.w(this.getDisabledReasonStringWithDebugInfo(result.reason));
+				if (result.reason && result.value < 1 && doLog) log.w("action disabled: " + this.getDisabledReasonStringWithDebugInfo(result.reason));
 				this.cache.reqs[reqsID] = result;
 			}
 
@@ -2703,7 +2703,7 @@ define([
 				}
 			}
 			
-			log.w("no description defined for action: " + action)
+			if (GameConstants.isDebugVersion) log.w("no description defined for action: " + action)
 			return "";
 		},
 

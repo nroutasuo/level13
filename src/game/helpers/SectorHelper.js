@@ -73,6 +73,11 @@ define([
 			return null;
 		},
 
+		getCurrentActionPosition: function (sector) {
+			sector = this.getCurrentActionSector(sector);
+			return sector ? sector.get(PositionComponent) : null;
+		},
+
 		isVisited: function (sector) {
 			if (!sector) return false;
 			let statusComponent = sector.get(SectorStatusComponent);

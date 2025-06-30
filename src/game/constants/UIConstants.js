@@ -846,7 +846,7 @@ define(['ash',
 
 				let isAnimating = UIAnimations.isActivelyAnimating($valueElement, previousTime, currentTime);
 				if (isAnimating) {
-					log.w("skipping resource indicator update because it's still animating a previous one: #" + id);
+					if (GameConstants.isDebugVersion) log.w("skipping resource indicator update because it's still animating a previous one: #" + id);
 					return;
 				}
 				
@@ -1136,6 +1136,10 @@ define(['ash',
 
 			if (name == "stamina") {
 				return Text.t("game.stats.stamina_name");
+			}
+
+			if (name == "silver") {
+				return Text.t("game.resources.currency_name");
 			}
 
 			log.w("no cost display name defined for cost [" + name + "]");

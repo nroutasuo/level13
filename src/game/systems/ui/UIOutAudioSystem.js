@@ -79,14 +79,14 @@ define([
 
 			setTimeout(() => {
 				if (GameGlobals.gameState.uiStatus.isHidden) {
-					log.w("skip sound because game is hidden", this);
+					if (GameConstants.isDebugVersion) log.w("skip sound because game is hidden", this);
 					return;
 				}
 				
 				let playTimestamp = new Date().getTime();
 				let previousPlayTimestamp = this.soundTimestamps[soundTriggerID] || 0;
 				if (playTimestamp - previousPlayTimestamp < 300) {
-					log.w("skip sound due to repetition: " + soundTriggerID, this);
+					if (GameConstants.isDebugVersion) log.w("skip sound due to repetition: " + soundTriggerID, this);
 					return;
 				}
 

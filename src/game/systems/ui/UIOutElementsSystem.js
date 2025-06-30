@@ -94,7 +94,7 @@ define([
 			}
 
 			if (this.elementsVisibilityChangedFrames > 5) {
-				log.w("element visibility updated too often");
+				if (GameConstants.isDebugVersion) log.w("element visibility updated too often");
 			}
 
 			this.updateProgressbars();

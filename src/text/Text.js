@@ -42,7 +42,7 @@ define(function () {
 		// options: (optional) Object with textParams, or single wildcard textParam value
 		t: function (key, options) {
 			if (!key) {
-				log.w("no key provided for Text.t");
+				if (this.isDebugMode) log.w("no key provided for Text.t");
 				return "";
 			}
 			
@@ -63,7 +63,7 @@ define(function () {
 			let wrap = function (text) { return isDebugMode && hasKey ? ("|" + text + "|") : text };
 
 			if (!hasKey) {
-				log.w("no such text key: [" + key + "]");
+				if (this.isDebugMode) log.w("no such text key: [" + key + "]");
 			}
 
 			let text = key;
@@ -172,7 +172,7 @@ define(function () {
 				} else if (isValidValue(options[wildcard])) {
 					value = options[wildcard];
 				} else {
-					log.w("no parameter value [" + p + "] provided for key [" + key + "]");
+					if (this.isDebugMode) log.w("no parameter value [" + p + "] provided for key [" + key + "]");
 					return value;
 				}
 

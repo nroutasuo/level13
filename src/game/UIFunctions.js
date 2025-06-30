@@ -538,7 +538,7 @@ define(['ash',
 			},
 
 			getSpecialReqsText: function (action) {
-				var position = GameGlobals.playerActionFunctions.playerPositionNodes.head ? GameGlobals.playerActionFunctions.playerPositionNodes.head.position : {};
+				let position = GameGlobals.sectorHelper.getCurrentActionPosition();
 				let s = "";
 				let specialReqs = GameGlobals.playerActionsHelper.getSpecialReqs(action);
 				if (specialReqs) {
@@ -549,7 +549,7 @@ define(['ash',
 								if (actionImprovementName != improvementNames.camp) {
 									for (let improvementID in specialReqs[key]) {
 										let range = specialReqs[key][improvementID];
-										let count = GameGlobals.playerActionsHelper.getCurrentImprovementCountOnLevel(position.level, improvementID);
+										let count = position ? GameGlobals.playerActionsHelper.getCurrentImprovementCountOnLevel(position.level, improvementID) : 0;
 										let rangeText = UIConstants.getRangeText(range);
 										let displayName = GameGlobals.playerActionsHelper.getImprovementDisplayName(improvementID);
 										if (actionImprovementName == displayName) {

@@ -270,9 +270,7 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		},
 		
 		isPerpendicular: function (direction1, direction2) {
-			return
-				this.getNextClockWise(this.getNextClockWise(direction1, true), true) == direction2 ||
-				this.getNextClockWise(this.getNextCounterClockWise(direction1, true), true) == direction2;
+			return this.getNextClockWise(this.getNextClockWise(direction1, true), true) == direction2 || this.getNextClockWise(this.getNextCounterClockWise(direction1, true), true) == direction2;
 		},
 		
 		isNeighbouringDirection: function (direction1, direction2, includeDiagonals) {
