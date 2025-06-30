@@ -227,13 +227,16 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 		},
 
 		markSeenTab: function (tabID) {
+			if (!this.uiStatus) this.uiStatus = {};
+			if (!this.uiStatus.seenTabs) this.uiStatus.seenTabs = [];
+
 			if (!this.hasSeenTab(tabID)) {
 				this.uiStatus.seenTabs.push(tabID);
 			}
 		},
 
 		hasSeenTab: function (tabID) {
-			return this.uiStatus.seenTabs.indexOf(tabID) >= 0;
+			return this.uiStatus && this.uiStatus.seenTabs && this.uiStatus.seenTabs.indexOf(tabID) >= 0;
 		},
 
 		passTime: function (seconds) {

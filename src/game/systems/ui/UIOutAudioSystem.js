@@ -1,10 +1,11 @@
 define([
 	'ash',
 	'game/GameGlobals',
+	'game/constants/GameConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/UIConstants',
 	'game/GlobalSignals'
-], function (Ash, GameGlobals, PlayerActionConstants, UIConstants, GlobalSignals) {
+], function (Ash, GameGlobals, GameConstants, PlayerActionConstants, UIConstants, GlobalSignals) {
 	
     let UIOutAudioSystem = Ash.System.extend({
 
