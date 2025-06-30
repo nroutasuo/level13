@@ -3,8 +3,9 @@
 		{
 			"version": "0.6.1",
 			"requiredVersion": "0.6.1",
+			"released": "2025-06-30",
 			"phase": "beta",
-			"final": false,
+			"final": true,
 			"changes": [
 				{
 					"type": "Dev",
