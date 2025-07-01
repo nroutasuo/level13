@@ -243,7 +243,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			if (features.hazards.radiation > 0) {
 				addOptions("a-street", [ "desolate" ]);
 				addOptions("n-building", [ "nuclear power plant", "nuclear waste depot", "nuclear waste processing unit" ]);
-				addOptions("a-building", [ "abadoned" ]);
+				addOptions("a-building", [ "abandoned" ]);
 				addOptions("na-items", [ "discarded safety equipment" ]);
 			}
 			if (features.hazards.poison > 0) {
