@@ -1,6 +1,18 @@
 {
 	"versions": [
 		{
+			"version": "0.6.2",
+			"requiredVersion": "0.6.1",
+			"phase": "beta",
+			"final": false,
+			"changes": [
+				{
+					"type": "DEV",
+					"summary": "Bugfixes and text corrections"
+				}
+			]
+		},
+		{
 			"version": "0.6.1",
 			"requiredVersion": "0.6.1",
 			"released": "2025-06-30",
