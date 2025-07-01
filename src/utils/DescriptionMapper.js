@@ -81,7 +81,7 @@ define(function () {
 			for (var [key, value] of Object.entries(props)) {
 				let t = typeof value;
 				if (t == "number") {
-					result += value;
+					result += Math.abs(value);
 				} else {
 					if (value) result++;
 				}
