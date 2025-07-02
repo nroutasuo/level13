@@ -136,6 +136,7 @@ define([
 			GlobalSignals.inventoryChangedSignal.add(function () {
 				sys.updateSectorDescription();
 				sys.updateOutImprovementsList();
+				sys.updateMovementActions();
 				sys.updateDespair();
 			});
 			GlobalSignals.featureUnlockedSignal.add(function () {
