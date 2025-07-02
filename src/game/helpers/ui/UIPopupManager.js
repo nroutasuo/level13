@@ -160,7 +160,7 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 
 				setTimeout(() => {
 					GameGlobals.gameState.uiStatus.isBusyCounter--;
-				}, 500);
+				}, 200);
 			});
 		},
 
