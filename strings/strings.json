@@ -2,6 +2,7 @@
     "game": {
         "actions": {
             "bridge_gap_description": "Build a bridge to cross the gap",
+            "bridge_gap_name_long": "Bridge gap",
             "build_in_name_long": "Build {improvementName}",
             "build_out_beacon_description": "Makes exploration in surrounding sectors easier",
             "build_out_camp_description": "A place to rest.",
@@ -18,7 +19,6 @@
             "clear_explosives_description": "Clear the old explosives blocking the way.",
             "clear_explosives_name_long": "Clear explosives",
             "clear_gate_description": "Pay the toll",
-            "bridge_gap_name_long": "Bridge gap",
             "clear_gate_name": "Pay",
             "clear_waste_r_description": "Clear the radiactive waste.",
             "clear_waste_t_description": "Clear the pollution.",
@@ -472,6 +472,7 @@
             "consumable_map_explorer_description": "Map sketched by an explorer based on their knowledge of the City.",
             "consumable_map_explorer_name": "Map sketch",
             "consumable_map_explorer_name_short": "Map sketch",
+            "consumable_map_name": "Map piece",
             "consumable_weapon_1_description": "One-use weapon that deals some damage to any enemy.",
             "consumable_weapon_1_name": "Shuriken",
             "consumable_weapon_bio_description": "One-use weapon that slows down an organic enemy.",
@@ -1535,7 +1536,7 @@
             "explorer_unique_gambler_event_01_p1": "You look like someone who could use a bodyguard.",
             "explorer_unique_gambler_interact_00_p1": "It's best not to travel alone. It's pretty lawless out here since the Fall.",
             "explorer_unique_gambler_interact_01_p1": "Everyone is just trying to get by the best they can.",
-            "explorer_unique_gambler_interact_02_p1": "Weird quesiton, do you believe in ghosts?",
+            "explorer_unique_gambler_interact_02_p1": "Weird question, do you believe in ghosts?",
             "explorer_unique_gambler_interact_03_p1": "Before the Fall? Oh, you know. I did some odd jobs. All over the place, really.",
             "explorer_unique_gambler_interact_04_p1": "I don't like being alone in the Dark Levels. I keep seeing things there in the shadows.",
             "explorer_unique_gambler_interact_05_p1": "I learned to fight in the slums. And on the way down, after. I've always had to look out for myself.",
@@ -1584,7 +1585,7 @@
             "explorer_unique_handler_interact_09_p1": "I hope your Government didn't doom us all with whatever they did up there.",
             "explorer_unique_handler_interact_10_p1": "Do you think you will ever return to the Surface?",
             "explorer_unique_handler_interact_11_p1": "Nothing quite like a good cup of strong coffee before heading out.",
-            "explorer_unique_handler_interact_12_p1": "I never knew what I signed up when I joined you, but I'm very glad I did!",
+            "explorer_unique_handler_interact_12_p1": "I never knew what I signed up for when I joined you, but I'm very glad I did!",
             "explorer_unique_handler_interact_13_p1": "Before the Fall, my people, the Doma, were the only nomads in the City. Now, everyone is one.",
             "explorer_unique_handler_interact_14_p1": "Some of my people would consider me a traitor for joining up with you. But I say strange times call for strange measures.",
             "explorer_unique_handler_interact_15_p1": "You should avoid spending too much time in direct sunlight, it's dangerous.",
@@ -2209,8 +2210,8 @@
             "found_box_empty_default_message": "(nothing left here)",
             "found_box_empty_fight_message": "(nothing left of the opponent)",
             "found_box_empty_no_drops_message": "(nothing found)",
-            "kept_box_empty_no_bag_message": "(empty pockets)",
             "kept_box_empty_default_message": "(empty bag)",
+            "kept_box_empty_no_bag_message": "(empty pockets)",
             "result_nothing_found_description": "Didn't find anything useful"
         },
         "log": {

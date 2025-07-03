@@ -616,7 +616,7 @@
                 {
                     "id": "prospector_gone",
                     "onStart": {
-                        "log": "stroy.stories.rescue_explorer_left_message"
+                        "log": "story.stories.rescue_explorer_left_message"
                     }
                 },
                 {
