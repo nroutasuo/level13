@@ -220,7 +220,7 @@ define([
 					return improvements.getCount(GameGlobals.upgradeEffectsHelper.getImprovementForOccurrence(event)) > 0;
 
 				case OccurrenceConstants.campOccurrenceTypes.refugees:
-					return campNode.reputation.value > CampConstants.getRequiredReputation(12);
+					return improvements.getCount(GameGlobals.upgradeEffectsHelper.getImprovementForOccurrence(event)) > 0;
 
 				case OccurrenceConstants.campOccurrenceTypes.trader:
 					return improvements.getCount(GameGlobals.upgradeEffectsHelper.getImprovementForOccurrence(event)) > 0;
