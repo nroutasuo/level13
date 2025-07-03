@@ -830,7 +830,7 @@ define([
 				return null;
 			}
 			
-			let currency = usesCurrency ? traderLevel * 2 + Math.floor(Math.random() * levelOrdinal) * 0.5 : 0;
+			let currency = usesCurrency ? Math.floor(traderLevel * 2 + Math.floor(Math.random() * levelOrdinal) * 0.5) : 0;
 			return new IncomingCaravanVO(name, sellItems, sellResources, buyItemTypes, buyResources, usesCurrency, currency);
 		},
 		

@@ -32,7 +32,7 @@ define(['ash', 'game/vos/ResourcesVO', 'game/constants/ItemConstants'], function
 			this.buyItemTypes = buyItemTypes ? buyItemTypes : [];
 			this.buyResources = buyResources ? buyResources : [];
 			this.usesCurrency = usesCurrency ? usesCurrency : false;
-			this.currency = currency ? currency : 0;
+			this.currency = Math.floor(currency ? currency : 0);
 
 			this.tradesMade = 0;
 

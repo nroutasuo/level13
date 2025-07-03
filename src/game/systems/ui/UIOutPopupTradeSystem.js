@@ -208,8 +208,8 @@ define([
 					} else if (isCampOffer) {
 						caravan.campSelectedCurrency -= amount;
 					}
-					caravan.traderSelectedCurrency = MathUtils.clamp(caravan.traderSelectedCurrency, 0, caravan.currency);
-					caravan.campSelectedCurrency = MathUtils.clamp(caravan.campSelectedCurrency, 0, currencyComponent.currency);
+					caravan.traderSelectedCurrency = Math.floor(MathUtils.clamp(caravan.traderSelectedCurrency, 0, caravan.currency));
+					caravan.campSelectedCurrency = Math.floor(MathUtils.clamp(caravan.campSelectedCurrency, 0, currencyComponent.currency));
 				} else if (resourceName) {
 					if (isTraderInventory) {
 						caravan.traderSelectedResources.addResource(resourceName, amount);
