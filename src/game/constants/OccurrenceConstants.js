@@ -126,7 +126,7 @@ define(['ash', 'utils/MathUtils', 'game/constants/CampConstants', 'game/constant
 			if (hasMedicine) {
 				chance = baseChance * this.getDiseaseMedicineFactor(hasMedicine, apothecaryLevel);
 			} else if (hasHerbs) {
-				chance * this.getDiseaseHerbsFactor();
+				chance = chance * this.getDiseaseHerbsFactor();
 			}
 
 			if (chance < 0.01) return 0;
