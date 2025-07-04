@@ -312,7 +312,7 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 			let majorLevel = this.getMajorLevel(improvementID, level);
 
 			if (improvementID == "house") return CampConstants.POPULATION_PER_HOUSE;
-			if (improvementID == "house2") return majorLevel == 1 ? CampConstants.POPULATION_PER_HOUSE2 : CampConstants.POPULATION_PER_HOUSE2_LEVEL_2;
+			if (improvementID == "house2") return majorLevel <= 1 ? CampConstants.POPULATION_PER_HOUSE2 : CampConstants.POPULATION_PER_HOUSE2_LEVEL_2;
 			if (improvementID == "generator") return CampConstants.REPUTATION_PER_HOUSE_FROM_GENERATOR;
 			return null;
 		},
