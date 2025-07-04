@@ -601,7 +601,7 @@ define([
 			let description = "";
 
 			if (isScouted && GameGlobals.gameState.unlockedFeatures.scavenge) {
-				description += Text.t("ui.exploration.sector_status_scavenged_percent_field", UIConstants.roundValue(statusComponent.getScavengedPercent()));
+				description += Text.t("ui.exploration.sector_status_scavenged_percent_field", UIConstants.roundValue(Math.floor(statusComponent.getScavengedPercent())));
 				description += "<br />";
 			}
 
