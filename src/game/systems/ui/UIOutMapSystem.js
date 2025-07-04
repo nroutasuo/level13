@@ -806,7 +806,7 @@ define([
 		
 		findPathTo: function (sector) {
 			if (!sector) return null;
-			return GameGlobals.levelHelper.findPathTo(this.playerLocationNodes.head.entity, sector, { skipBlockers: true, skipUnvisited: true });
+			return GameGlobals.levelHelper.findPathTo(this.playerLocationNodes.head.entity, sector, { skipBlockers: true, skipUnrevealed: true });
 		},
 		
 		downloadASCIIMap: function () {

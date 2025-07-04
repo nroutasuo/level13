@@ -3089,7 +3089,7 @@ define([
 			if (Math.abs(campLevel - sectorLevel) > 2) return null;
 			
 			return ValueCache.getValue("PathToNearestCamp", 5, sectorPosition.positionId(), () =>
-				GameGlobals.levelHelper.findPathTo(sector, campSector, { skipBlockers: true, skipUnvisited: true, omitWarnings: true })
+				GameGlobals.levelHelper.findPathTo(sector, campSector, { skipBlockers: true, skipUnrevealed: true, omitWarnings: true })
 			);
 		},
 

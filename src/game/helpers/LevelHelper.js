@@ -404,7 +404,7 @@ define([
 				if (!entity) return null;
 				return {
 					position: entity.get(PositionComponent).getPositionOutside(),
-					isVisited: GameGlobals.sectorHelper.isVisited(entity),
+					isRevealed: GameGlobals.sectorHelper.isRevealed(entity),
 					result: entity
 				};
 			};
@@ -1215,7 +1215,7 @@ define([
 		},
 
 		isSectorReachable: function (startSector, goalSector) {
-			var settings = { skipUnvisited: false, skipBlockers: true, omitWarnings: false };
+			var settings = { skipUnrevealed: false, skipBlockers: true, omitWarnings: false };
 			var path = this.findPathTo(startSector, goalSector, settings);
 			return path && path.length >= 0;
 		},

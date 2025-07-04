@@ -413,7 +413,7 @@ define([
 		getPathToCamp: function () {
 			if (!this.nearestCampNodes.head) return null;
 			let campSector = this.nearestCampNodes.head.entity;
-			let path = GameGlobals.levelHelper.findPathTo(this.playerLocationNodes.head.entity, campSector, { skipBlockers: true, skipUnvisited: true });
+			let path = GameGlobals.levelHelper.findPathTo(this.playerLocationNodes.head.entity, campSector, { skipBlockers: true, skipUnrevealed: true });
 			return path;
 		},
 
@@ -434,7 +434,7 @@ define([
 			let result = null;
 			
 			if (passageUp) {
-				let pathUp = GameGlobals.levelHelper.findPathTo(this.playerLocationNodes.head.entity, passageUp, { skipBlockers: true, skipUnvisited: true });
+				let pathUp = GameGlobals.levelHelper.findPathTo(this.playerLocationNodes.head.entity, passageUp, { skipBlockers: true, skipUnrevealed: true });
 				if (pathUp) {
 					if (result == null || result.length > pathUp.length) {
 						result = pathUp;
@@ -443,7 +443,7 @@ define([
 			}
 			
 			if (passageDown) {
-				let pathDown = GameGlobals.levelHelper.findPathTo(this.playerLocationNodes.head.entity, passageDown, { skipBlockers: true, skipUnvisited: true });
+				let pathDown = GameGlobals.levelHelper.findPathTo(this.playerLocationNodes.head.entity, passageDown, { skipBlockers: true, skipUnrevealed: true });
 				if (pathDown) {
 					if (result == null || result.length > pathDown.length) {
 						result = pathDown;

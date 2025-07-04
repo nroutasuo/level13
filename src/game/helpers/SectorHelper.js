@@ -83,6 +83,12 @@ define([
 			let statusComponent = sector.get(SectorStatusComponent);
 			return statusComponent.visited || sector.has(VisitedComponent);
 		},
+
+		isRevealed: function (sector) {
+			if (!sector) return false;
+			let status = this.getSectorStatus(sector);
+			return status !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE;
+		},
 		
 		getTextFeatures: function (sector) {
 			var position = sector.get(PositionComponent).getPosition();

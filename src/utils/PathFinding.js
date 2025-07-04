@@ -3,7 +3,7 @@ define(function () {
 
 		// startVO and goalVO must contain:
 		// - position (PositionVO)
-		// - isVisited (bool)
+		// - isRevealed (bool)
 		// - result (object you want to be contained in the result if this sector is contained such as SectorVO or entity)
 		// utilities must contain:
 		// - findPassageDown (function (level, includeUnBuiltPassages))
@@ -13,7 +13,7 @@ define(function () {
 		// - isBlocked (function (pathSectorVO, direction))
 		// settings can contain:
 		// - includeUnbuiltPassages (bool)
-		// - skipUnvisited (bool)
+		// - skipUnrevealed (bool) (requires isRevealed to be set on sectors to pass through them but not to start or end on them)
 		// - skipBlockers (bool)
 		// - omitWarnings (bool)
 		// - maxLength (int)
@@ -97,12 +97,13 @@ define(function () {
 			var neighbours;
 			var next;
 
-			var isValid = function (sector, startSector, direction) {
-				if (settings && settings.skipUnvisited && !sector.isVisited)
+			let isValid = function (sector, startSector, direction) {
+				if (settings && settings.skipBlockers && utilities.isBlocked(startSector, direction))
 					return false;
-				if (settings && settings.skipBlockers && utilities.isBlocked(startSector, direction)) {
+				if (sector.position.equals(goalVO.position) || sector.position.equals(startVO.position)) 
+					return true;
+				if (settings && settings.skipUnrevealed && !sector.isRevealed)
 					return false;
-				}
 				return true;
 			};
 			

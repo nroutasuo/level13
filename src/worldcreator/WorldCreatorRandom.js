@@ -467,7 +467,7 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Ga
 					return false;
 				}
 			};
-			var settings = { includeUnbuiltPassages: true, skipUnvisited: false, skipBlockers: blockByBlockers, omitWarnings: omitWarnings, maxLength: maxLength };
+			var settings = { includeUnbuiltPassages: true, skipUnrevealed: false, skipBlockers: blockByBlockers, omitWarnings: omitWarnings, maxLength: maxLength };
 			
 			let result = PathFinding.findPath(startVO, goalVO, utilities, settings);
 			
