@@ -190,7 +190,7 @@ define(['ash',
 				this.registerHotkey("Move W", "KeyA", defaultModifier, tabs.out, false, false, "move_sector_west");
 				this.registerHotkey("Move W", "Numpad4", defaultModifier, tabs.out, false, false, "move_sector_west");
 				this.registerHotkey("Move S", "KeyS", defaultModifier, tabs.out, false, false, "move_sector_south");
-				this.registerHotkey("Move S", "Numpad0", defaultModifier, tabs.out, false, false, "move_sector_south");
+				this.registerHotkey("Move S", "Numpad2", defaultModifier, tabs.out, false, false, "move_sector_south");
 				this.registerHotkey("Move E", "KeyD", defaultModifier, tabs.out, false, false, "move_sector_east");
 				this.registerHotkey("Move E", "Numpad6", defaultModifier, tabs.out, false, false, "move_sector_east");
 				this.registerHotkey("Move NW", "KeyQ", defaultModifier, tabs.out, false, false, "move_sector_nw");
