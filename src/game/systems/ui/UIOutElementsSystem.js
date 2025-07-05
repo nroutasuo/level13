@@ -336,7 +336,6 @@ define([
 			if (container) {
 				let buttonDisplay = $(button).css("display");
 				let isContainerHidden = buttonDisplay === "none" && !isVisible;
-				log.i("updateButtonContainer: " + button.attr("action") + ": " +  buttonDisplay + " -> " + isContainerHidden);
 				$(container).css("display", isContainerHidden ? "none" : "inline-block");
 			}
 		},
@@ -397,9 +396,7 @@ define([
 				}
 			});
 
-			let scavengeButton = $("#out-action-sca");
-			log.i("update visible buttons:" + this.elementsVisibleButtons.length + ":" + buttonActions.join(","));
-			log.i("scavenge: " + GameGlobals.uiFunctions.isElementToggled(scavengeButton) + " || " + GameGlobals.uiFunctions.isElementVisible(scavengeButton));
+			// log.i("update visible buttons:" + this.elementsVisibleButtons.length + ":" + buttonActions.join(","));
 		},
 
 		updateVisibleProgressbarsList: function () {
