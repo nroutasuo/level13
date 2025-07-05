@@ -334,7 +334,10 @@ define([
 			$(button).siblings(".cooldown-reqs").css("display", isVisible ? "block" : "none");
 			let container = $(button).parent().parent(".callout-container");
 			if (container) {
-				$(container).css("display", $(button).css("display"));
+				let buttonDisplay = $(button).css("display");
+				let isHidden = buttonDisplay === "none";
+				log.i("updateButtonContainer: " + button.attr("action") + ": " +  buttonDisplay + " -> " + isHidden);
+				$(container).css("display", isHidden ? "none" : "inline-block");
 			}
 		},
 
@@ -358,6 +361,7 @@ define([
 				let isVisible = GameGlobals.uiFunctions.isElementToggled($button) === true || GameGlobals.uiFunctions.isElementVisible($button);
 
 				sys.updateButtonContainer($button, isVisible);
+
 				if (isVisible) {
 					sys.elementsVisibleButtons.push($button);
 					sys.buttonStatuses.push({});
@@ -392,7 +396,10 @@ define([
 					buttonActions.push(action);
 				}
 			});
-			// log.i("update visible buttons:" + this.elementsVisibleButtons.length + ":" + buttonActions.join(","));
+
+			let scavengeButton = $("#out-action-sca");
+			log.i("update visible buttons:" + this.elementsVisibleButtons.length + ":" + buttonActions.join(","));
+			log.i("scavenge: " + GameGlobals.uiFunctions.isElementToggled(scavengeButton) + " || " + GameGlobals.uiFunctions.isElementVisible(scavengeButton));
 		},
 
 		updateVisibleProgressbarsList: function () {
