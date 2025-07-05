@@ -337,7 +337,7 @@ define([
 				let buttonDisplay = $(button).css("display");
 				let isHidden = buttonDisplay === "none";
 				log.i("updateButtonContainer: " + button.attr("action") + ": " +  buttonDisplay + " -> " + isHidden);
-				$(container).css("display", isHidden ? "none" : "inline-block");
+				//$(container).css("display", isHidden ? "none" : "inline-block");
 			}
 		},
 
