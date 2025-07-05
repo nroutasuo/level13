@@ -2037,7 +2037,7 @@
             "last_event_disabled_workers_message": "Workers injured {num}",
             "last_event_disaster_message_negated_start": "{type} (no damage)",
             "last_event_disaster_message_start": "{type}.",
-            "last_event_disease_message_start": "Disease {type}.",
+            "last_event_disease_message_start": "Disease",
             "last_event_lost_defenders_message": "{num} defenders were killed",
             "last_event_raid_message_start": "Raid.",
             "last_event_raid_message_victory": "Camp defended.",
