@@ -335,9 +335,9 @@ define([
 			let container = $(button).parent().parent(".callout-container");
 			if (container) {
 				let buttonDisplay = $(button).css("display");
-				let isHidden = buttonDisplay === "none";
-				log.i("updateButtonContainer: " + button.attr("action") + ": " +  buttonDisplay + " -> " + isHidden);
-				//$(container).css("display", isHidden ? "none" : "inline-block");
+				let isContainerHidden = buttonDisplay === "none" && !isVisible;
+				log.i("updateButtonContainer: " + button.attr("action") + ": " +  buttonDisplay + " -> " + isContainerHidden);
+				$(container).css("display", isContainerHidden ? "none" : "inline-block");
 			}
 		},
 
