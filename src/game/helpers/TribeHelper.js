@@ -94,6 +94,28 @@ define([
 			let revealingMilestoneIndex = GameGlobals.milestoneEffectsHelper.getMilestoneRevealingUpgrade(upgradeID);
 			return revealingMilestoneIndex >= 0 && revealingMilestoneIndex <= currentMilestone.index;
 		},
+
+		hasMissedUpgrade: function (type) {
+			return this.getMissedUpgrades(type).length > 0;
+		},
+
+		getMissedUpgrades: function (type) {
+			let result = [];
+			let currentCampOrdinal = GameGlobals.gameState.numCamps;
+
+			for (let upgradeID in UpgradeConstants.upgradeDefinitions) {
+				if (this.hasUpgrade(upgradeID)) continue;
+				let def = UpgradeConstants.upgradeDefinitions[upgradeID];	
+				let upgradeCampOrdinal = def.campOrdinal;
+				if (upgradeCampOrdinal > currentCampOrdinal) continue;
+				let upgradeType = UpgradeConstants.getUpgradeType(upgradeID);
+				if (type && type != upgradeType) continue;
+				if (!GameGlobals.playerActionsHelper.isVisible(upgradeID)) continue;
+				result.push(upgradeID)
+			}
+
+			return result;
+		},
 		
 		getTotalPopulation: function () {
 			let result = 0;

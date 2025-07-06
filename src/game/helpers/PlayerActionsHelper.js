@@ -452,6 +452,15 @@ define([
 					}
 				}
 				
+				if (requirements.actionsVisible) {
+					let requiredActions = requirements.actionsVisible;
+					for (let i = 0; i < requiredActions.length; i++) {
+						if (!this.isVisible(requiredActions[i], sector)) {
+							return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_action_unavailable", requiredActions[i]) };
+						}
+					}
+				}
+				
 				if (requirements.featureUnlocked) {
 					for (let featureID in requirements.featureUnlocked) {
 						let requiredValue = requirements.featureUnlocked[featureID];
@@ -729,6 +738,13 @@ define([
 						let falseReason = this.getDisabledReasonVO("ui.actions.disabled_reason_upgrade_missing", name, PlayerActionConstants.DISABLED_REASON_UPGRADE);
 						let result = this.checkRequirementsBoolean(requiredValue, currentValue, trueReason, falseReason);
 						if (result) return result;
+					}
+				}
+
+				if (requirements.missedUpgrade) {
+					let type = requirements.missedUpgrade; // evidende, rumours, hope
+					if (!GameGlobals.tribeHelper.hasMissedUpgrade(type)) {
+						return { value: 0, reason: this.getDisabledReasonVO() };
 					}
 				}
 				

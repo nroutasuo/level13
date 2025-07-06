@@ -2981,6 +2981,134 @@
 				"character_workerGeneric_interact_disease_02_p1"
 			]
 		},
+		"character_workerGeneric_interact_hint_upgrade_generic_evidence_01": {
+			"conditions": {
+				"missedUpgrade": "evidence"
+			},
+			"pages": [
+				"character_workerGeneric_interact_hint_upgrade_generic_evidence_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_hint_upgrade_generic_hope_01": {
+			"conditions": {
+				"missedUpgrade": "hope"
+			},
+			"pages": [
+				"character_workerGeneric_interact_hint_upgrade_generic_hope_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_hint_upgrade_generic_rumours_01": {
+			"conditions": {
+				"missedUpgrade": "rumours"
+			},
+			"pages": [
+				"character_workerGeneric_interact_hint_upgrade_generic_rumours_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01": {
+			"conditions": {
+				"actionsVisible": {
+					"improve_worker_cleric_2": true
+				},
+				"upgrades": {
+					"improve_worker_cleric_2": false
+				}
+			},
+			"pages": [
+				"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_hint_upgrade_improve_worker_smith_3_01": {
+			"conditions": {
+				"actionsVisible": {
+					"upgrade_improve_worker_smith_3": true
+				},
+				"upgrades": {
+					"upgrade_improve_worker_smith_3": false
+				}
+			},
+			"pages": [
+				"character_workerGeneric_interact_hint_upgrade_improve_worker_smith_3_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_hint_upgrade_unlock_building_apothecary_01": {
+			"conditions": {
+				"actionsVisible": {
+					"unlock_building_apothecary": true
+				},
+				"upgrades": {
+					"unlock_building_apothecary": false
+				}
+			},
+			"pages": [
+				"character_workerGeneric_interact_hint_upgrade_unlock_building_apothecary_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_hint_upgrade_unlock_building_darkfarm_01": {
+			"conditions": {
+				"actionsVisible": {
+					"unlock_building_darkfarm": true
+				},
+				"upgrades": {
+					"unlock_building_darkfarm": false
+				}
+			},
+			"pages": [
+				"character_workerGeneric_interact_hint_upgrade_unlock_building_darkfarm_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_hint_upgrade_unlock_building_fortifications_01": {
+			"conditions": {
+				"actionsVisible": {
+					"unlock_building_fortifications": true
+				},
+				"upgrades": {
+					"unlock_building_fortifications": false
+				}
+			},
+			"pages": [
+				"character_workerGeneric_interact_hint_upgrade_unlock_building_fortifications_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_hint_upgrade_unlock_building_library_01": {
+			"conditions": {
+				"actionsVisible": {
+					"unlock_building_library": true
+				},
+				"upgrades": {
+					"unlock_building_library": false
+				}
+			},
+			"pages": [
+				"character_workerGeneric_interact_hint_upgrade_unlock_building_library_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_hint_upgrade_unlock_building_robots_01": {
+			"conditions": {
+				"actionsVisible": {
+					"unlock_building_robot": true
+				},
+				"upgrades": {
+					"unlock_building_robot": false
+				}
+			},
+			"pages": [
+				"character_workerGeneric_interact_hint_upgrade_unlock_building_robots_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_hint_upgrade_unlock_building_tradingpost_01": {
+			"conditions": {
+				"actionsVisible": {
+					"unlock_building_tradingpost": true
+				},
+				"upgrades": {
+					"unlock_building_tradingpost": false
+				}
+			},
+			"pages": [
+				"character_workerGeneric_interact_hint_upgrade_unlock_building_tradingpost_01_p1"
+			]
+		},
 		"character_workerGeneric_interact_l15_01": {
 			"conditions": {
 				"numCamps": 9,
@@ -9270,6 +9398,11 @@
 					"character_generic_story_l14_01",
 					"character_generic_story_warn_ground_03",
 					"character_workerGeneric_default_interact_01",
+					"character_workerGeneric_interact_hint_upgrade_generic_hope_01",
+					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_fortifications_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_library_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_tradingpost_01",
 					"character_workerGeneric_interact_l15_01",
 					"character_workerGeneric_interact_overcrowded_01",
 					"character_workerGeneric_interact_spirits_01",
@@ -9595,6 +9728,11 @@
 					"character_slumRefugee_default_interact_04",
 					"character_slumRefugee_default_interact_05",
 					"character_slumRefugee_default_interact_06",
+					"character_workerGeneric_interact_hint_upgrade_generic_rumours_01",
+					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_apothecary_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_fortifications_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_tradingpost_01",
 					"character_workerGeneric_interact_spirits_01",
 					"character_workerGeneric_interact_spirits_02",
 					"character_workerGeneric_interact_spirits_03",
@@ -9654,6 +9792,12 @@
 					"character_surfaceRefugee_default_interact_09",
 					"character_surfaceRefugee_default_interact_10",
 					"character_surfaceRefugee_default_interact_11",
+					"character_workerGeneric_interact_hint_upgrade_generic_evidence_01",
+					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_apothecary_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_fortifications_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_library_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_tradingpost_01",
 					"character_workerGeneric_interact_overcrowded_01",
 					"character_workerGeneric_interact_spirits_01",
 					"character_workerGeneric_interact_spirits_02",
@@ -9760,6 +9904,8 @@
 					"character_workerGeneric_interact_apocalypse_03",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_hint_upgrade_generic_evidence_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_robots_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
@@ -9783,6 +9929,8 @@
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_hint_upgrade_generic_hope_01",
+					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
 					"character_workerGeneric_interact_overcrowded_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_02"
 				]
@@ -9802,6 +9950,8 @@
 					"character_workerGeneric_interact_apocalypse_03",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_hint_upgrade_generic_evidence_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_robots_01",
 					"character_workerGeneric_interact_story_greenhouse_fixed_01",
 					"character_workerGeneric_interact_story_greenhouse_found_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
@@ -9824,6 +9974,7 @@
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_03",
@@ -9841,6 +9992,7 @@
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_hint_upgrade_generic_evidence_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_04",
@@ -9854,19 +10006,23 @@
 		"character_workerRope_default": {
 			"dialogues": {
 				"interact": [
-					"character_workerRope_default_interact_01",
-					"character_workerRope_default_interact_02",
-					"character_workerGeneric_interact_apocalypse_01",
-					"character_workerGeneric_interact_apocalypse_02",
-					"character_workerGeneric_interact_apocalypse_03",
 					"character_workerGeneric_interact_01",
 					"character_workerGeneric_interact_02",
 					"character_workerGeneric_interact_03",
 					"character_workerGeneric_interact_04",
-					"character_workerGeneric_interact_overcrowded_01",
+					"character_workerGeneric_interact_apocalypse_01",
+					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_interact_apocalypse_03",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_hint_upgrade_generic_rumours_01",
+					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_robots_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_tradingpost_01",
+					"character_workerGeneric_interact_overcrowded_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
+					"character_workerRope_default_interact_01",
+					"character_workerRope_default_interact_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_03",
 					"character_workerGeneric_story_apocalypse_plan_ready_04",
@@ -9882,12 +10038,14 @@
 			"dialogues": {
 				"interact": [
 					"character_workerRubber_default_interact_01",
-					"character_workerRubber_default_interact_02",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_apocalypse_03",
 					"character_workerGeneric_interact_disease_01",
+					"character_workerGeneric_interact_hint_upgrade_generic_evidence_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_robots_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
+					"character_workerRubber_default_interact_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_03",
 					"character_workerGeneric_story_apocalypse_plan_ready_04",
@@ -9900,7 +10058,6 @@
 		"character_workerScavenger_default": {
 			"dialogues": {
 				"interact": [
-					"character_workerScavenger_default_interact_01",
 					"character_workerGeneric_default_interact_01",
 					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_01",
@@ -9912,6 +10069,12 @@
 					"character_workerGeneric_interact_apocalypse_03",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_hint_upgrade_generic_rumours_01",
+					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_darkfarm_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_library_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_robots_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_tradingpost_01",
 					"character_workerGeneric_interact_overcrowded_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_02",
@@ -9923,6 +10086,7 @@
 					"character_workerGeneric_story_apocalypse_plan_ready_04",
 					"character_workerGeneric_story_escape_build_passage_01",
 					"character_workerGeneric_story_escape_build_passage_02",
+					"character_workerScavenger_default_interact_01",
 					"character_workerScavenger_default_interact_02",
 					"character_workerScavenger_default_interact_03",
 					"character_workerScavenger_default_interact_04",
@@ -9941,14 +10105,19 @@
 		"character_workerScientist_default": {
 			"dialogues": {
 				"interact": [
-					"character_workerScientist_default_interact_01",
 					"character_workerGeneric_default_interact_01",
 					"character_workerGeneric_interact_04",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_hint_upgrade_generic_evidence_01",
+					"character_workerGeneric_interact_hint_upgrade_generic_hope_01",
+					"character_workerGeneric_interact_hint_upgrade_generic_rumours_01",
+					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
+					"character_workerGeneric_interact_hint_upgrade_improve_worker_smith_3_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_04",
+					"character_workerScientist_default_interact_01",
 					"character_workerScientist_default_interact_02",
 					"character_workerScientist_default_interact_03",
 					"character_workerScientist_default_interact_04",
@@ -9971,6 +10140,8 @@
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_fortifications_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_fortifications_01",
 					"character_workerGeneric_interact_overcrowded_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_02",
@@ -9998,6 +10169,9 @@
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_hint_upgrade_generic_evidence_01",
+					"character_workerGeneric_interact_hint_upgrade_improve_worker_smith_3_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_robots_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_03",
@@ -10010,7 +10184,6 @@
 		"character_workerTrapper_default": {
 			"dialogues": {
 				"interact": [
-					"character_workerTrapper_default_interact_01",
 					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_01",
 					"character_workerGeneric_interact_02",
@@ -10021,6 +10194,11 @@
 					"character_workerGeneric_interact_apocalypse_03",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_hint_upgrade_generic_rumours_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_darkfarm_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_fortifications_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_robots_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_tradingpost_01",
 					"character_workerGeneric_interact_overcrowded_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_02",
@@ -10028,6 +10206,7 @@
 					"character_workerGeneric_interact_story_greenhouse_found_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
+					"character_workerTrapper_default_interact_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_03",
 					"character_workerGeneric_story_apocalypse_plan_ready_04",
 					"character_workerGeneric_story_escape_build_passage_01",
@@ -10057,6 +10236,10 @@
 					"character_workerGeneric_interact_apocalypse_03",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_hint_upgrade_generic_rumours_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_fortifications_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_robots_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_tradingpost_01",
 					"character_workerGeneric_interact_overcrowded_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_02",
@@ -10313,6 +10496,7 @@
 					"explorer_generic_scavenger_event_01"
 				],
 				"interact": [
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_apothecary_01",
 					"explorer_generic_ability_cost_blueprints_outside_01",
 					"explorer_generic_ability_scavenge_blueprints_outside_01",
 					"explorer_generic_ability_scavenge_blueprints_outside_02",
@@ -10512,6 +10696,8 @@
 					"explorer_template_architect_event_01"
 				],
 				"interact": [
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_apothecary_01",
+					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
 					"explorer_generic_ability_detect_poi_outside_01",
 					"explorer_generic_ability_mapping_outside_01",
 					"explorer_generic_ability_mapping_outside_02",
@@ -10576,6 +10762,7 @@
 					"explorer_template_bard_event_01"
 				],
 				"interact": [
+					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
 					"explorer_generic_human_outside_04",
 					"explorer_generic_human_outside_05",
 					"explorer_generic_interact_directions_scouted_01",
@@ -10830,6 +11017,8 @@
 					"explorer_template_researcher_event_01"
 				],
 				"interact": [
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_apothecary_01",
+					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
 					"explorer_generic_ability_cost_movement_outside_01",
 					"explorer_generic_ability_cost_scout_outside_01",
 					"explorer_generic_ability_detect_ingredients_outside_01",
@@ -10931,6 +11120,7 @@
 					"explorer_unique_gambler_event_01"
 				],
 				"interact": [
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_apothecary_01",
 					"explorer_generic_interact_directions_passage_01",
 					"explorer_generic_interact_directions_safety_01",
 					"explorer_generic_interact_directions_safety_02",
@@ -11090,6 +11280,8 @@
 					"explorer_unique_journalist_event_01"
 				],
 				"interact": [
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_apothecary_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_library_01",
 					"explorer_generic_ability_stat_evidence_outside_01",
 					"explorer_generic_ability_stat_evidence_outside_02",
 					"explorer_generic_human_outside_03",
@@ -11165,6 +11357,8 @@
 					"explorer_unique_prospector_event_01"
 				],
 				"interact": [
+					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_apothecary_01",
 					"explorer_generic_ability_scavenge_blueprints_outside_01",
 					"explorer_generic_ability_scavenge_blueprints_outside_02",
 					"explorer_generic_human_outside_03",

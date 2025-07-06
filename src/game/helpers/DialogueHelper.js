@@ -171,7 +171,6 @@ define(['ash',
             getDialogueTextParams: function (dialogueVO, pageVO, resultVO, isExplorer, staticTextParams) {
                 let result = staticTextParams || {};
 
-
                 if (dialogueVO.conditions.vicinity) {
                     let requiredPOIType = dialogueVO.conditions.vicinity;
                     let requiredPOIScouted = dialogueVO.conditions.vicinityScouted;
@@ -179,6 +178,21 @@ define(['ash',
                     if (requiredPOIData) {
                         result.direction = requiredPOIData.directionTextKey;
                         result.name = requiredPOIData.nameTextKey;
+                    }
+                }
+
+                if (dialogueVO.conditions.missedUpgrade) {
+                    let type = dialogueVO.conditions.missedUpgrade;
+                    let upgradeIDs = GameGlobals.tribeHelper.getMissedUpgrades(type);
+                    let upgradeID = upgradeIDs.length > 0 ? upgradeIDs[0] : "?";
+                    result.upgradeName = Text.t("game.upgrades." + upgradeID + "_name");
+                }
+
+                if (dialogueVO.conditions.upgrades) {
+                    let upgradeIDs = Object.keys(dialogueVO.conditions.upgrades);
+                    if (upgradeIDs.length > 0) {
+                        let upgradeID = upgradeIDs[0];
+                        result.upgradeName = Text.t("game.upgrades." + upgradeID + "_name");
                     }
                 }
 
