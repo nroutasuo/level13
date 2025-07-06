@@ -758,11 +758,14 @@ define(['ash',
 			
 			let rawValue = MathUtils.map(abilityLevel, 1, 100, minBonus, maxBonus);
 
+			let result = MathUtils.roundToMultiple(rawValue, roundingStep);
+
+			// round before applying multiplier so that multiplied value is exactly a multiple of the value visibled to player and not of the hidden raw value
 			if (modifierAbilityLevel > 0) {
-				rawValue = rawValue * 2;
+				result = result * 2;
 			}
 			
-			return MathUtils.roundToMultiple(rawValue, roundingStep);
+			return result;
 		},
 
 		isSignificantAbilityLevelDifference: function (explorer, oldLevel, newLevel) {
