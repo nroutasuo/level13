@@ -1260,7 +1260,6 @@ define([
 				// player been able to go around gang
 				if (numScouted == sectors.length) continue;
 
-				debugger
 				return true;
 			}
 
