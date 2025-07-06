@@ -560,7 +560,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			let topics = [];
 			switch (features.bookType) {
 				case ItemConstants.bookTypes.science:
-					topics.push("a species of slug that thrives in radiactive environments");
+					topics.push("a species of slug that thrives in radioactive environments");
 					topics.push("the infrastructure of the City");
 					topics.push("the ocean");
 					topics.push("forests");

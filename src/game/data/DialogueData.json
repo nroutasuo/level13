@@ -2393,6 +2393,9 @@
 			]
 		},
 		"character_mercenary_default_meet_03": {
+			"conditions": {
+				"numCamps": 3
+			},
 			"pages": [
 				"character_mercenary_default_meet_03_p1"
 			]
