@@ -281,6 +281,12 @@ define([
 			}
 			return result;
 		},
+
+		getUnlockedUpgrades: function (upgradeID) {
+			return this.getUnlockedActions(upgradeID, function (action) {
+				return UpgradeConstants.hasUpgrade(action)
+			});
+		},
 		
 		getUpgradeIdForWorker: function (worker) {
 			return UpgradeConstants.unlockingUpgradesByWorker[worker];
