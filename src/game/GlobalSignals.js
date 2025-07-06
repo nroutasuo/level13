@@ -72,6 +72,7 @@ define(['ash',], function (Ash) {
 		storyFlagChangedSignal: new Ash.Signals.Signal(),
 		campRenamedSignal: new Ash.Signals.Signal(),
 		caravanSentSignal: new Ash.Signals.Signal(),
+		caravanReturnedSignal: new Ash.Signals.Signal(),
 		mapPieceUsedSignal: new Ash.Signals.Signal(),
 		workshopClearedSignal: new Ash.Signals.Signal(),
 		launchedSignal: new Ash.Signals.Signal(),

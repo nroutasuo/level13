@@ -1016,7 +1016,7 @@ define(['ash',
 			return html;
 		},
 
-		getTimeToNum: function (seconds) {
+		getTimeToNum: function (seconds, hideSeconds) {
 			seconds = Math.ceil(Math.abs(seconds));
 
 			var minutes = seconds / 60;
@@ -1029,6 +1029,8 @@ define(['ash',
 				return Math.floor(hours) + "h";
 			} else if (minutes > 2) {
 				return Math.floor(minutes) + "min";
+			} else if (hideSeconds) {
+				return "very soon";
 			} else {
 				return Math.round(seconds) + "s";
 			}

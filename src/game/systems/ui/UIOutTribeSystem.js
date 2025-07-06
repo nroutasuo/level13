@@ -521,7 +521,7 @@ define([
 					let caravan = caravansComponent.outgoingCaravans[0];
 					let duration = caravan.returnDuration * 1000;
 					let timeLeft = (caravan.returnTimeStamp - new Date().getTime()) / 1000;
-					options.timeUntil = timeLeft < 30 ? "very soon" : timeLeft < 60 ? "less than a minute" : UIConstants.getTimeToNum(timeLeft);
+					options.timeUntil = UIConstants.getTimeToNum(timeLeft, true);
 					return { key: "ui.tribe.status_outgoing_caravan_message", options: options };
 					
 				case this.campNotificationTypes.EVENT_RECRUIT: 

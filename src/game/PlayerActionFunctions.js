@@ -1601,6 +1601,7 @@ define(['ash',
 			
 			this.addLogMessage(LogConstants.MSG_ID_FINISH_SEND_CAMP, logMessage, pendingPosition);
 			GlobalSignals.inventoryChangedSignal.dispatch();
+			GlobalSignals.caravanReturnedSignal.dispatch();
 		},
 
 		tradeWithCaravan: function () {

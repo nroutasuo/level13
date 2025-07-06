@@ -38,6 +38,7 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
 		},
 				
 		getTradePartner: function (campOrdinal) {
+			campOrdinal = parseInt(campOrdinal);
 			for (let i = 0; i < this.TRADING_PARTNERS.length; i++) {
 				if (this.TRADING_PARTNERS[i].campOrdinal === campOrdinal)
 					return this.TRADING_PARTNERS[i];

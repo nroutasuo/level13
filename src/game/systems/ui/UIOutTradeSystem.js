@@ -38,8 +38,10 @@ define([
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
 			this.itemNodes = engine.getNodeList(ItemsNode);
+			
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
 			GlobalSignals.add(this, GlobalSignals.caravanSentSignal, this.refresh);
+			GlobalSignals.add(this, GlobalSignals.caravanReturnedSignal, this.refresh);
 			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, this.refresh);
 		},
 
@@ -73,8 +75,8 @@ define([
 		refresh: function () {
 			if (!this.playerLocationNodes.head) return;
 			if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.trade) return;
-			this.updateOutgoingCaravansList();
-			this.updateOutgoingCaravansHints();
+			this.updateOutgoingCaravansSendList();
+			this.updateOutgoingCaravansCurrent();
 		},
 
 		onTabChanged: function () {
@@ -94,7 +96,7 @@ define([
 			this.bubbleNumber = newBubbleNumber;
 		},
 
-		updateOutgoingCaravansList: function (isActive) {
+		updateOutgoingCaravansSendList: function (isActive) {
 			let level = this.playerLocationNodes.head.entity.get(PositionComponent).level;
 			let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
 			let totalCaravans = this.getNumOutgoingCaravansTotal();
@@ -220,16 +222,23 @@ define([
 			GameGlobals.uiFunctions.createButtons("#trade-caravans-outgoing-container table");
 		},
 		
-		updateOutgoingCaravansHints: function () {
-			GameGlobals.uiFunctions.toggle("#trade-caravans-outgoing-empty-message", this.availableTradingPartnersCount === 0);
+		updateOutgoingCaravansCurrent: function () {
+			let totalCaravans = this.getNumOutgoingCaravansTotal();
+			let numAvailableCaravans = this.getNumOutgoingCaravansAvailable();
+			let numBusyCaravas = totalCaravans - numAvailableCaravans;
+
+			GameGlobals.uiFunctions.toggle("#trade-caravans-partners-empty-message", this.availableTradingPartnersCount === 0);
+			GameGlobals.uiFunctions.toggle("#trade-caravans-outgoing-empty-message", numBusyCaravas === 0);
 			GameGlobals.uiFunctions.toggle("#trade-caravans-outgoing-num", this.availableTradingPartnersCount > 0);
+			GameGlobals.uiFunctions.toggle("#trade-caravans-outgoing-list", totalCaravans > 0);
 			
 			if (this.availableTradingPartnersCount > 0) {
-				var totalCaravans = this.getNumOutgoingCaravansTotal();
+				let caravansComponent = this.playerLocationNodes.head.entity.get(OutgoingCaravansComponent);
+
+				// caravans summary
 				if (totalCaravans > 0) {
-					var availableCaravans = this.getNumOutgoingCaravansAvailable();
 					$("#trade-caravans-outgoing-num").html(
-						"Available caravans: <span class='hl-functionality'>" + availableCaravans + "/" + totalCaravans + "</span>. " +
+						"Available caravans: <span class='hl-functionality'>" + numAvailableCaravans + "/" + totalCaravans + "</span>. " +
 						"Capacity: <span class='hl-functionality'>" + this.getCaravanCapacity() + "</span> per caravan.");
 				} else {
 					var stableUnlocked = GameGlobals.playerActionsHelper.isRequirementsMet("build_in_stable");
@@ -238,6 +247,28 @@ define([
 					} else {
 						$("#trade-caravans-outgoing-num").html("");
 					}
+				}
+
+				// caravans list
+				let busyCaravans = caravansComponent.outgoingCaravans;
+				$("#trade-caravans-outgoing-list").empty();
+				for (let i = 0; i < busyCaravans.length; i++) {
+					let caravan = busyCaravans[i];
+					let partner = TradeConstants.getTradePartner(caravan.tradePartnerOrdinal);
+					if (!partner) continue;
+					let timeLeft = (caravan.returnTimeStamp - new Date().getTime()) / 1000;
+					let timeUntilString = UIConstants.getTimeToNum(timeLeft, true);
+
+					let buyAmount = this.getTradeAmountReceivedForOutgoingCaravan(caravan.buyGood, caravan.sellGood, caravan.sellAmount);
+
+					let li = "<li class='trade-caravan-outgoing-item'>";
+					li += "<span class='name'>" + partner.name + "</span>";
+					li += " - ";
+					li += "<span class='sell'>Sell: " + caravan.sellGood + " x" + caravan.sellAmount + "</span>";
+					li += "<span class='buy'>Get: " + caravan.buyGood + " x" + buyAmount + "</span>";
+					li += "<span class='return-time'>Returns in: " + timeUntilString + "</span>";
+					li += "</li>";
+					$("#trade-caravans-outgoing-list").append(li);
 				}
 			}
 		},
@@ -387,7 +418,8 @@ define([
 
 			// set get amount
 			let amountGetRaw = TradeConstants.getAmountTraded(selectedBuy, selectedSell, amountSell);
-			var amountGet = Math.min(amountGetRaw, this.getCaravanCapacity());
+			let amountGet = this.getTradeAmountReceivedForOutgoingCaravan(selectedBuy, selectedSell, amountSell);
+
 			if (hasEnoughSellRes) {
 				let showAmountGetWarning = (amountGet > ownedStorage.storageCapacity) || (amountGetRaw > amountGet);
 				$(trID + " .trade-caravans-outgoing-buy").toggle(true);
@@ -443,6 +475,11 @@ define([
 			if (!caravansComponent) return 0;
 			var busyCaravans = caravansComponent.outgoingCaravans.length;
 			return totalCaravans - busyCaravans;
+		},
+
+		getTradeAmountReceivedForOutgoingCaravan: function (buyGood, sellGood, sellAmount) {
+			let amountGetRaw = TradeConstants.getAmountTraded(buyGood, sellGood, sellAmount);
+			return Math.min(amountGetRaw, this.getCaravanCapacity());
 		},
 		
 		getCaravanCapacity: function () {

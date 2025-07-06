@@ -2582,6 +2582,14 @@ body.dark .row-detail-indicator {
 body.dark .row-detail-indicator {
   color: #bbb;
 }
+body.dark #trade-caravans-outgoing-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+body.dark .trade-caravan-outgoing-item span {
+	padding-right: 5px;
+}
 body.dark #mainmap-ascii-legend {
   padding: 5px;
 }
@@ -5236,6 +5244,14 @@ body.sunlit .row-detail-indicator {
 }
 body.sunlit .row-detail-indicator {
   color: #777;
+}
+body.sunlit #trade-caravans-outgoing-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+body.sunlit .trade-caravan-outgoing-item span {
+	padding-right: 5px;
 }
 body.sunlit #mainmap-ascii-legend {
   padding: 5px;
