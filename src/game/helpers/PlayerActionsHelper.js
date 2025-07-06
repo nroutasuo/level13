@@ -2971,6 +2971,30 @@ define([
 			
 			return result;
 		},
+
+		getExpectedCampAndStep: function (action) {
+			let minimum = this.getMinimumCampAndStep(action);
+			let result = minimum;
+			
+			var addRequirement = function (campOrdinal, step, source) {
+				if (campOrdinal > result.campOrdinal || (campOrdinal == result.campOrdinal && step > result.step)) {
+					result = { campOrdinal: campOrdinal, step: step };
+				}
+			};
+			
+			// upgrades
+			// using expected camp ordinal even if some upgrades that are not gated by blueprints etc can be unlocked earlier
+			let reqs = this.getReqs(action);
+			if (reqs && reqs.upgrades) {
+				let requiredTech = Object.keys(reqs.upgrades);
+				for (let k = 0; k < requiredTech.length; k++) {
+					let expected = GameGlobals.upgradeEffectsHelper.getExpectedCampAndStepForUpgrade(requiredTech[k]);
+					addRequirement(expected.campOrdinal, expected.step, requiredTech[k]);
+				}
+			}
+
+			return result;
+		},
 		
 		isActionIndependentOfHazards: function (action) {
 			var improvement = this.getImprovementNameForAction(action, true);

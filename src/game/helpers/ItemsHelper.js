@@ -258,7 +258,7 @@ define([
 			let result = { campOrdinal: 0, step: 0 };
 			if (!item.craftable) return cacheAndReturn(result);
 			
-			result = GameGlobals.playerActionsHelper.getMinimumCampAndStep("craft_" + item.id);
+			result = GameGlobals.playerActionsHelper.getExpectedCampAndStep("craft_" + item.id);
 			
 			return cacheAndReturn(result);
 		},
