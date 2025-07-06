@@ -9,6 +9,14 @@
 				{
 					"type": "DEV",
 					"summary": "Bugfixes and text corrections"
+				},
+				{
+					"type": "Text",
+					"summary": "Add a few more dialogues to add more variety to common NPCs"
+				},
+				{
+					"type": "UI",
+					"summary": "Add a list of active outgoing trade caravans to the trade tab"
 				}
 			]
 		},

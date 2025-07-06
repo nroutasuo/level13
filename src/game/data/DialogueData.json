@@ -432,6 +432,11 @@
 				"character_bard_default_meet_04_p1"
 			]
 		},
+		"character_bard_default_meet_05": {
+			"pages": [
+				"character_bard_default_meet_05_p1"
+			]
+		},
 		"character_beggar_default_meet_01": {
 			"pages": [
 				{
@@ -737,8 +742,8 @@
 		},
 		"character_darkDweller_default_interact_04": {
 			"conditions": {
-				"numCamps": 3,
-				"maxNumCamps": 14
+				"maxNumCamps": 14,
+				"numCamps": 3
 			},
 			"pages": [
 				"character_darkDweller_default_interact_04_p1"
@@ -978,6 +983,21 @@
 							"water": 5
 						}
 					}
+				}
+			]
+		},
+		"character_drifter_default_meet_09": {
+			"conditions": {
+				"level": {
+					"population": [
+						0.5,
+						-1
+					]
+				}
+			},
+			"pages": [
+				{
+					"key": "character_drifter_default_meet_09_p1"
 				}
 			]
 		},
@@ -2547,6 +2567,11 @@
 				"character_shaman_default_meet_05_p1"
 			]
 		},
+		"character_shaman_default_meet_06": {
+			"pages": [
+				"character_shaman_default_meet_06_p1"
+			]
+		},
 		"character_shaman_default_meet_blessing": {
 			"pages": [
 				{
@@ -2613,6 +2638,22 @@
 		"character_slumRefugee_default_interact_04": {
 			"pages": [
 				"character_slumRefugee_default_interact_04_p1"
+			]
+		},
+		"character_slumRefugee_default_interact_05": {
+			"pages": [
+				"character_slumRefugee_default_interact_05_p1"
+			]
+		},
+		"character_slumRefugee_default_interact_06": {
+			"conditions": {
+				"numCamp": 15,
+				"storyFlags": {
+					"APOCALYPSE_PLAN_READY": true
+				}
+			},
+			"pages": [
+				"character_slumRefugee_default_interact_06_p1"
 			]
 		},
 		"character_slumRefugee_default_meet_01": {
@@ -2703,6 +2744,22 @@
 		"character_surfaceRefugee_default_interact_09": {
 			"pages": [
 				"character_surfaceRefugee_default_interact_09_p1"
+			]
+		},
+		"character_surfaceRefugee_default_interact_10": {
+			"pages": [
+				"character_surfaceRefugee_default_interact_10_p1"
+			]
+		},
+		"character_surfaceRefugee_default_interact_11": {
+			"conditions": {
+				"numCamp": 15,
+				"storyFlags": {
+					"APOCALYPSE_PLAN_READY": true
+				}
+			},
+			"pages": [
+				"character_surfaceRefugee_default_interact_11_p1"
 			]
 		},
 		"character_surfaceRefugee_default_meet_01": {
@@ -2853,6 +2910,22 @@
 				"character_workerGeneric_interact_02_p1"
 			]
 		},
+		"character_workerGeneric_interact_03": {
+			"conditions": {
+				"numCamps": 2
+			},
+			"pages": [
+				"character_workerGeneric_interact_03_p1"
+			]
+		},
+		"character_workerGeneric_interact_04": {
+			"conditions": {
+				"numCamps": 2
+			},
+			"pages": [
+				"character_workerGeneric_interact_04_p1"
+			]
+		},
 		"character_workerGeneric_interact_apocalypse_01": {
 			"conditions": {
 				"storyFlags": {
@@ -2993,9 +3066,6 @@
 		},
 		"character_workerGeneric_interact_story_greenhouse_fixed_01": {
 			"conditions": {
-				"storyFlags": {
-					"GREENHOUSE_RESTORED": true
-				},
 				"player": {
 					"position": {
 						"level": [
@@ -3003,6 +3073,9 @@
 							16
 						]
 					}
+				},
+				"storyFlags": {
+					"GREENHOUSE_RESTORED": true
 				}
 			},
 			"pages": [
@@ -3064,11 +3137,11 @@
 		"character_workerGeneric_story_apocalypse_plan_ready_04": {
 			"conditions": {
 				"numCamps": 15,
-				"upgrades": {
-					"unlock_building_spaceship1": true
-				},
 				"storyFlags": {
 					"APOCALYPSE_PLAN_READY": true
+				},
+				"upgrades": {
+					"unlock_building_spaceship1": true
 				}
 			},
 			"pages": [
@@ -3182,6 +3255,11 @@
 		"character_workerScavenger_default_meet_02": {
 			"pages": [
 				"character_workerScavenger_default_meet_02_p1"
+			]
+		},
+		"character_workerScavenger_default_meet_03": {
+			"pages": [
+				"character_workerScavenger_default_meet_03_p1"
 			]
 		},
 		"character_workerScientist_default_interact_01": {
@@ -3349,6 +3427,14 @@
 			},
 			"pages": [
 				"character_workerWater_default_interact_03_p1"
+			]
+		},
+		"character_workerWater_default_interact_04": {
+			"conditions": {
+				"maxNumCamps": 10
+			},
+			"pages": [
+				"character_workerWater_default_interact_04_p1"
 			]
 		},
 		"character_workerWater_default_meet_01": {
@@ -4475,6 +4561,16 @@
 			},
 			"pages": [
 				"explorer_generic_mercenary_interact_06_p1"
+			]
+		},
+		"explorer_generic_mercenary_interact_07": {
+			"conditions": {
+				"explorer": {
+					"trust": 5
+				}
+			},
+			"pages": [
+				"explorer_generic_mercenary_interact_07_p1"
 			]
 		},
 		"explorer_generic_mercenary_meet_01": {
@@ -5673,6 +5769,16 @@
 			},
 			"pages": [
 				"explorer_template_darkdweller_interact_12_p1"
+			]
+		},
+		"explorer_template_darkdweller_interact_13": {
+			"conditions": {
+				"explorer": {
+					"trust": 4
+				}
+			},
+			"pages": [
+				"explorer_template_darkdweller_interact_13_p1"
 			]
 		},
 		"explorer_template_darkdweller_interact_directions_safety_01": {
@@ -7170,6 +7276,16 @@
 			},
 			"pages": [
 				"explorer_unique_handler_interact_15_p1"
+			]
+		},
+		"explorer_unique_handler_interact_16": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
+			"pages": [
+				"explorer_unique_handler_interact_16_p1"
 			]
 		},
 		"explorer_unique_handler_meet_01": {
@@ -9038,6 +9154,7 @@
 					"character_bard_default_event_05",
 					"character_bard_default_event_06",
 					"character_bard_default_event_07",
+					"character_bard_default_event_08",
 					"character_bard_default_event_09",
 					"character_bard_default_event_10",
 					"character_bard_default_event_11",
@@ -9049,6 +9166,7 @@
 					"character_bard_default_meet_02",
 					"character_bard_default_meet_03",
 					"character_bard_default_meet_04",
+					"character_bard_default_meet_05",
 					"character_generic_helpful_meet_poi_blocker_debris_01",
 					"character_generic_helpful_meet_poi_blocker_explosives_01",
 					"character_generic_helpful_meet_poi_blocker_gap_01",
@@ -9451,6 +9569,7 @@
 					"character_shaman_default_meet_03",
 					"character_shaman_default_meet_04",
 					"character_shaman_default_meet_05",
+					"character_shaman_default_meet_06",
 					"character_generic_helpful_meet_poi_water_01",
 					"character_generic_helpful_meet_poi_water_02",
 					"character_generic_story_searching_for_greenhouse_02",
@@ -9474,6 +9593,8 @@
 					"character_slumRefugee_default_interact_02",
 					"character_slumRefugee_default_interact_03",
 					"character_slumRefugee_default_interact_04",
+					"character_slumRefugee_default_interact_05",
+					"character_slumRefugee_default_interact_06",
 					"character_workerGeneric_interact_spirits_01",
 					"character_workerGeneric_interact_spirits_02",
 					"character_workerGeneric_interact_spirits_03",
@@ -9531,6 +9652,8 @@
 					"character_surfaceRefugee_default_interact_07",
 					"character_surfaceRefugee_default_interact_08",
 					"character_surfaceRefugee_default_interact_09",
+					"character_surfaceRefugee_default_interact_10",
+					"character_surfaceRefugee_default_interact_11",
 					"character_workerGeneric_interact_overcrowded_01",
 					"character_workerGeneric_interact_spirits_01",
 					"character_workerGeneric_interact_spirits_02",
@@ -9615,6 +9738,8 @@
 					"character_workerGeneric_interact_spirits_01",
 					"character_workerGeneric_interact_spirits_02",
 					"character_workerGeneric_interact_spirits_03",
+					"character_workerGeneric_interact_03",
+					"character_workerGeneric_interact_04",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_03",
@@ -9652,12 +9777,13 @@
 					"character_workerCleric_default_interact_03",
 					"character_workerCleric_default_interact_04",
 					"character_workerCleric_default_interact_05",
-					"character_workerGeneric_interact_overcrowded_01",
-					"character_workerGeneric_interact_disease_01",
-					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_default_interact_02",
+					"character_workerGeneric_interact_04",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
-					"character_workerGeneric_default_interact_02",
+					"character_workerGeneric_interact_disease_01",
+					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_overcrowded_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_02"
 				]
 			}
@@ -9668,15 +9794,16 @@
 					"character_workerConcrete_default_interact_01",
 					"character_workerConcrete_default_interact_02",
 					"character_workerConcrete_default_interact_03",
+					"character_workerGeneric_default_interact_01",
+					"character_workerGeneric_default_interact_02",
+					"character_workerGeneric_interact_03",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_apocalypse_03",
-					"character_workerGeneric_default_interact_01",
-					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
-					"character_workerGeneric_interact_story_greenhouse_found_01",
 					"character_workerGeneric_interact_story_greenhouse_fixed_01",
+					"character_workerGeneric_interact_story_greenhouse_found_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_03",
@@ -9690,16 +9817,17 @@
 					"character_workerGardener_default_interact_01",
 					"character_workerGardener_default_interact_02",
 					"character_workerGardener_default_interact_03",
+					"character_workerGeneric_default_interact_01",
+					"character_workerGeneric_default_interact_02",
+					"character_workerGeneric_interact_03",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_disease_01",
+					"character_workerGeneric_interact_disease_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_03",
-					"character_workerGeneric_story_apocalypse_plan_ready_04",
-					"character_workerGeneric_interact_disease_02",
-					"character_workerGeneric_default_interact_01",
-					"character_workerGeneric_default_interact_02"
+					"character_workerGeneric_story_apocalypse_plan_ready_04"
 				]
 			}
 		},
@@ -9708,6 +9836,7 @@
 				"interact": [
 					"character_generic_story_government_neg2pos",
 					"character_workerGeneric_default_interact_01",
+					"character_workerGeneric_interact_03",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_disease_01",
@@ -9732,6 +9861,8 @@
 					"character_workerGeneric_interact_apocalypse_03",
 					"character_workerGeneric_interact_01",
 					"character_workerGeneric_interact_02",
+					"character_workerGeneric_interact_03",
+					"character_workerGeneric_interact_04",
 					"character_workerGeneric_interact_overcrowded_01",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
@@ -9774,6 +9905,8 @@
 					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_01",
 					"character_workerGeneric_interact_02",
+					"character_workerGeneric_interact_03",
+					"character_workerGeneric_interact_04",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_apocalypse_03",
@@ -9799,6 +9932,7 @@
 				"meet": [
 					"character_workerScavenger_default_meet_01",
 					"character_workerScavenger_default_meet_02",
+					"character_workerScavenger_default_meet_03",
 					"character_workerGeneric_meet_01",
 					"character_workerGeneric_meet_02"
 				]
@@ -9808,6 +9942,13 @@
 			"dialogues": {
 				"interact": [
 					"character_workerScientist_default_interact_01",
+					"character_workerGeneric_default_interact_01",
+					"character_workerGeneric_interact_04",
+					"character_workerGeneric_interact_disease_01",
+					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_story_apocalypse_plan_ready_01",
+					"character_workerGeneric_story_apocalypse_plan_ready_02",
+					"character_workerGeneric_story_apocalypse_plan_ready_04",
 					"character_workerScientist_default_interact_02",
 					"character_workerScientist_default_interact_03",
 					"character_workerScientist_default_interact_04",
@@ -9816,12 +9957,6 @@
 					"character_workerScientist_default_interact_07",
 					"character_workerScientist_default_interact_08",
 					"character_workerScientist_default_interact_09",
-					"character_workerGeneric_story_apocalypse_plan_ready_01",
-					"character_workerGeneric_story_apocalypse_plan_ready_02",
-					"character_workerGeneric_story_apocalypse_plan_ready_04",
-					"character_workerGeneric_interact_disease_01",
-					"character_workerGeneric_interact_disease_02",
-					"character_workerGeneric_default_interact_01",
 					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_story_greenhouse_found_01"
 				]
@@ -9830,24 +9965,25 @@
 		"character_workerSoldier_default": {
 			"dialogues": {
 				"interact": [
-					"character_workerSoldier_default_interact_01",
-					"character_workerSoldier_default_interact_02",
-					"character_workerSoldier_default_interact_03",
-					"character_workerGeneric_interact_spirits_01",
-					"character_workerGeneric_interact_spirits_02",
-					"character_workerGeneric_interact_spirits_03",
+					"character_workerGeneric_default_interact_02",
+					"character_workerGeneric_interact_03",
+					"character_workerGeneric_interact_apocalypse_01",
+					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
 					"character_workerGeneric_interact_overcrowded_01",
+					"character_workerGeneric_interact_searching_for_greenhouse_01",
+					"character_workerGeneric_interact_searching_for_greenhouse_02",
+					"character_workerGeneric_interact_spirits_01",
+					"character_workerGeneric_interact_spirits_02",
+					"character_workerGeneric_interact_spirits_03",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_03",
 					"character_workerGeneric_story_apocalypse_plan_ready_04",
-					"character_workerGeneric_interact_searching_for_greenhouse_01",
-					"character_workerGeneric_interact_searching_for_greenhouse_02",
-					"character_workerGeneric_interact_apocalypse_01",
-					"character_workerGeneric_interact_apocalypse_02",
-					"character_workerGeneric_default_interact_02"
+					"character_workerSoldier_default_interact_01",
+					"character_workerSoldier_default_interact_02",
+					"character_workerSoldier_default_interact_03"
 				]
 			}
 		},
@@ -9855,15 +9991,17 @@
 			"dialogues": {
 				"interact": [
 					"character_workerToolsmith_default_interact_01",
-					"character_workerToolsmith_default_interact_02",
+					"character_workerGeneric_default_interact_02",
+					"character_workerGeneric_interact_03",
+					"character_workerGeneric_interact_04",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
-					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_03",
+					"character_workerToolsmith_default_interact_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_04",
 					"character_workerGeneric_interact_story_greenhouse_found_01"
 				]
@@ -9876,6 +10014,8 @@
 					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_01",
 					"character_workerGeneric_interact_02",
+					"character_workerGeneric_interact_03",
+					"character_workerGeneric_interact_04",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_apocalypse_03",
@@ -9910,6 +10050,8 @@
 					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_01",
 					"character_workerGeneric_interact_02",
+					"character_workerGeneric_interact_03",
+					"character_workerGeneric_interact_04",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_apocalypse_03",
@@ -9928,6 +10070,7 @@
 					"character_workerWater_default_interact_01",
 					"character_workerWater_default_interact_02",
 					"character_workerWater_default_interact_03",
+					"character_workerWater_default_interact_04",
 					"character_workerGeneric_interact_story_greenhouse_fixed_01"
 				],
 				"meet": [
@@ -10091,6 +10234,7 @@
 					"explorer_generic_mercenary_interact_04",
 					"explorer_generic_mercenary_interact_05",
 					"explorer_generic_mercenary_interact_06",
+					"explorer_generic_mercenary_interact_07",
 					"explorer_generic_story_apocalypse_evacuation_known",
 					"explorer_generic_story_apocalypse_investiage_01",
 					"explorer_generic_story_apocalypse_plan_ready_01",
@@ -10507,6 +10651,7 @@
 					"explorer_template_darkdweller_interact_10",
 					"explorer_template_darkdweller_interact_11",
 					"explorer_template_darkdweller_interact_12",
+					"explorer_template_darkdweller_interact_13",
 					"explorer_template_darkdweller_interact_directions_safety_01",
 					"explorer_template_darkdweller_outside_01",
 					"explorer_template_darkdweller_outside_02",
@@ -10882,6 +11027,7 @@
 					"explorer_unique_handler_interact_13",
 					"explorer_unique_handler_interact_14",
 					"explorer_unique_handler_interact_15",
+					"explorer_unique_handler_interact_16",
 					"explorer_unique_handler_outside_01",
 					"explorer_unique_handler_outside_02",
 					"explorer_unique_handler_outside_03",
