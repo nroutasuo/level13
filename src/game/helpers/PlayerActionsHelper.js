@@ -454,10 +454,12 @@ define([
 				
 				if (requirements.actionsVisible) {
 					let requiredActions = requirements.actionsVisible;
-					for (let i = 0; i < requiredActions.length; i++) {
-						if (!this.isVisible(requiredActions[i], sector)) {
-							return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_action_unavailable", requiredActions[i]) };
-						}
+					for (let key in requiredActions) {
+						let action = key;
+						let requiredValue = requiredActions[key];
+						let currentValue = this.isVisible(action, sector);
+						let result = this.checkRequirementsBoolean(requiredValue, currentValue);
+						if (result) return result;
 					}
 				}
 				

@@ -2981,6 +2981,11 @@
 				"character_workerGeneric_interact_disease_02_p1"
 			]
 		},
+		"character_workerGeneric_interact_hint_rumours_01": {
+			"pages": [
+				"character_workerGeneric_interact_hint_rumours_01_p1"
+			]
+		},
 		"character_workerGeneric_interact_hint_upgrade_generic_evidence_01": {
 			"conditions": {
 				"missedUpgrade": "evidence"
@@ -3086,10 +3091,10 @@
 		"character_workerGeneric_interact_hint_upgrade_unlock_building_robots_01": {
 			"conditions": {
 				"actionsVisible": {
-					"unlock_building_robot": true
+					"unlock_building_robots": true
 				},
 				"upgrades": {
-					"unlock_building_robot": false
+					"unlock_building_robots": false
 				}
 			},
 			"pages": [
@@ -9728,6 +9733,7 @@
 					"character_slumRefugee_default_interact_04",
 					"character_slumRefugee_default_interact_05",
 					"character_slumRefugee_default_interact_06",
+					"character_workerGeneric_interact_hint_rumours_01",
 					"character_workerGeneric_interact_hint_upgrade_generic_rumours_01",
 					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_apothecary_01",
@@ -10109,6 +10115,7 @@
 					"character_workerGeneric_interact_04",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_hint_rumours_01",
 					"character_workerGeneric_interact_hint_upgrade_generic_evidence_01",
 					"character_workerGeneric_interact_hint_upgrade_generic_hope_01",
 					"character_workerGeneric_interact_hint_upgrade_generic_rumours_01",
