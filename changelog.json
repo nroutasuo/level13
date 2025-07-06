@@ -4,15 +4,20 @@
 			"version": "0.6.2",
 			"requiredVersion": "0.6.1",
 			"phase": "beta",
-			"final": false,
+			"final": true,
+			"released": "2025-07-06",
 			"changes": [
 				{
 					"type": "DEV",
-					"summary": "Bugfixes and text corrections"
+					"summary": "Bugfixes and text polish"
+				},
+				{
+					"type": "GB",
+					"summary": "Balancing adjustements to upgrade costs (rumours) and hazard values (when certain equipment is expected)"
 				},
 				{
 					"type": "Text",
-					"summary": "Add a few more dialogues to add more variety to common NPCs"
+					"summary": "Add a few more dialogues for variety and hints"
 				},
 				{
 					"type": "UI",
