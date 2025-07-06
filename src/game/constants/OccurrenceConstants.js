@@ -118,7 +118,9 @@ define(['ash', 'utils/MathUtils', 'game/constants/CampConstants', 'game/constant
 
 			if (population <= minPopulation) return 0;
 
-			let rawChance = Math.pow((population - minPopulation)/50, 2);
+			let pop = Math.floor(population);
+
+			let rawChance = Math.pow((pop - minPopulation)/50, 2);
 			let baseChance = Math.min(0.5, rawChance);
 
 			let chance = baseChance;
