@@ -80,10 +80,12 @@ define([
 			if (!reqs.upgrades) return false;
 			if (reqs.blueprint) return false;
 			if (reqs.milestone) return false;
-			if (reqs.deity) return false;
+			if (reqs.deity && !this.hasDeity()) return false;
 
 			for (let requiredUpgradeID in reqs.upgrades) {
-				if (requiredUpgradeID != upgradeID) return false;
+				let requiredUpgradeStatus = this.getUpgradeStatus(requiredUpgradeID);
+				if (requiredUpgradeStatus === UpgradeConstants.upgradeStatus.HIDDEN) return false;
+				if (requiredUpgradeStatus === UpgradeConstants.upgradeStatus.VISIBLE_HINT) return false;
 			}
 			
 			return true;
