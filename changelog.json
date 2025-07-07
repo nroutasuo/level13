@@ -1,6 +1,15 @@
 {
 	"versions": [
 		{
+			"version": "0.6.3",
+			"requiredVersion": "0.6.1",
+			"phase": "beta",
+			"final": false,
+			"changes": [
+
+			]
+		},
+		{
 			"version": "0.6.2",
 			"requiredVersion": "0.6.1",
 			"phase": "beta",
