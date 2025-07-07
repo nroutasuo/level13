@@ -19,7 +19,7 @@ define([
 		addToEngine: function (engine) {
 			GlobalSignals.add(this, GlobalSignals.popupOpenedSignal, this.onPopupOpened);
 			GlobalSignals.add(this, GlobalSignals.popupClosedSignal, this.onPopupClosed);
-			GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
+			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onGameShown);
 		},
 
 		removeFromEngine: function (engine) {
@@ -56,16 +56,27 @@ define([
         },
 
         showUnseenMetaMessages: function () {
-            GameGlobals.gameState.seenMetaMessages = GameGlobals.gameState.seenMetaMessages || [];
+            GameGlobals.metaState.seenMetaMessages = GameGlobals.metaState.seenMetaMessages || [];
+
+            let maxCampOrdinalReached = GameGlobals.metaState.maxCampOrdinalReached || 0;
             
             for (let i = 0; i < this.metaMessages.length; i++) {
                 let message = this.metaMessages[i];
                 let id = message.id;
                 if (!id) continue;
-                if (GameGlobals.gameState.seenMetaMessages.indexOf(id) >= 0) continue;
+                if (GameGlobals.metaState.seenMetaMessages.indexOf(id) >= 0) continue;
+
+                if (message.conditions) {
+                    if (message.conditions.campOrdinalReached && maxCampOrdinalReached < message.conditions.campOrdinalReached) continue;
+                }
+
+                if (message.expires) {
+                    let expires = new Date(message.expires).getTime();
+                    if (expires < Date.now()) continue;
+                }
 
                 this.showMetaMessage(message);
-                GameGlobals.gameState.seenMetaMessages.push(id);
+                GameGlobals.metaState.seenMetaMessages.push(id);
                 return;
             }
         },
@@ -169,7 +180,7 @@ define([
 			}
         },
 
-        onGameStarted: function () {
+        onGameShown: function () {
             this.loadMetaMessages();
         },
 

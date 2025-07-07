@@ -1,6 +1,10 @@
 {
     "messages": [
         {
+            "conditions": {
+                "campOrdinalReached": 1
+            },
+            "expires": "2025-07-06",
             "id": "update-062",
             "text": "A small bugfix update was released on 2025-07-06. See the changelog for details."
         }
