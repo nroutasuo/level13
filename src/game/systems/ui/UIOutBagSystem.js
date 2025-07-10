@@ -465,8 +465,10 @@ define([
 				let displayID = getDisplayItemID(itemVO);
 				let count = displayItemCounts[displayID];
 
-				let canDiscard = itemsComponent.isItemDiscardable(itemVO, inCamp);
+				// ingredients can generally be discarded, but there is no point in showing the discard button for them since discarding them one by one is not useful
+				let canDiscard = itemsComponent.isItemDiscardable(itemVO, inCamp) && itemVO.type !== ItemConstants.itemTypes.ingredient;
 				let canRepair = this.isRepairable(itemVO);
+
 				let options = { canEquip: false, isEquipped: false, canUnequip: false, canDiscard: canDiscard, canUse: itemVO.useable, canRepair: canRepair };
 
 				switch (itemVO.type) {
