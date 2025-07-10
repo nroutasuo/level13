@@ -38,6 +38,7 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 			GlobalSignals.add(this, GlobalSignals.markLogMessagesSeenSignal, this.onMarkLogMessagesSeen);
 			GlobalSignals.add(this, GlobalSignals.playerPositionChangedSignal, function (position) { this.onPlayerPositionChanged(position); });
 			GlobalSignals.add(this, GlobalSignals.windowResizedSignal, this.onWindowResized);
+			GlobalSignals.add(this, GlobalSignals.gameResetSignal, this.onGameReset);
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onWindowResized);
 			GlobalSignals.add(this, GlobalSignals.triggerSignal, this.onTrigger);
 
@@ -356,6 +357,10 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 		
 		onTrigger: function (triggerID, param) {
 			this.triggerAmbientMessages(triggerID, param);
+		},
+
+		onGameReset: function () {
+			this.lastUpdateTimeStamp = 0;
 		},
 
 		onMarkLogMessagesSeen: function () {
