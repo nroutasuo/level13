@@ -533,7 +533,6 @@ body.dark .container-dimmed .dimmable {
 body.dark .info-icon {
   width: 1em;
   height: 1em;
-  background: url(../img/eldorado/icon-detail.png);
 }
 body.dark .info-icon img {
   height: 1em;
