@@ -135,8 +135,9 @@ define(['ash',
 				return;
 			}
 			
-			var otherSector = this.getActionSector(action, param);
-			if (!GameGlobals.playerActionsHelper.checkAvailability(action, true, otherSector)) {
+			let sector = this.getActionSectorOrCurrent(action, param);
+
+			if (!GameGlobals.playerActionsHelper.checkAvailability(action, true, sector)) {
 				log.w("Tried to start action but it's not available: " + action);
 				return false;
 			}
@@ -146,29 +147,30 @@ define(['ash',
 			}
 			
 			GlobalSignals.actionStartingSignal.dispatch(action, param);
-			var deductedCosts = GameGlobals.playerActionsHelper.deductCosts(action);
+			let deductedCosts = GameGlobals.playerActionsHelper.deductCosts(action);
 
-			var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
-			var duration = PlayerActionConstants.getDuration(action, baseId);
+			let baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
+			let duration = PlayerActionConstants.getDuration(action, baseId);
+
 			if (duration > 0) {
-				this.startBusy(action, param, deductedCosts);
+				this.startBusy(action, param, sector, deductedCosts);
 			} else {
-				this.performAction(action, param, deductedCosts);
+				this.performAction(action, param, sector, deductedCosts);
 			}
 			GlobalSignals.actionStartedSignal.dispatch(action, param);
 			return true;
 		},
 
-		startBusy: function (action, param, deductedCosts) {
+		startBusy: function (action, param, sector, deductedCosts) {
 			let baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			let duration = PlayerActionConstants.getDuration(action, baseId);
+
 			if (duration > 0) {
-				let playerPos = this.playerPositionNodes.head.position;
 				let isBusy = PlayerActionConstants.isBusyAction(baseId);
-				let sector = this.getActionSectorOrCurrent(param);
 				let sectorPos = sector.get(PositionComponent);
 				
-				let endTimeStamp = this.playerStatsNodes.head.entity.get(PlayerActionComponent).addAction(action, duration, sectorPos.level, param, deductedCosts, isBusy);
+				let actionComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
+				let endTimeStamp = actionComponent.addAction(action, duration, sector, sectorPos.level, param, deductedCosts, isBusy);
 
 				switch (baseId) {
 					case "send_caravan":
@@ -194,12 +196,14 @@ define(['ash',
 						this.handlePerksOnStartRest();
 						break;
 				}
+			} else {
+				log.w("could not start busy action: " + action + " (duration was 0)");
 			}
 		},
 
-		performAction: function (action, param, deductedCosts) {
-			var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
-			
+		performAction: function (action, param, sector, deductedCosts) {
+			let baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
+
 			switch (baseId) {
 				// Out improvements
 				case "build_out_collector_water": this.buildBucket(param); break;
@@ -260,7 +264,7 @@ define(['ash',
 				case "use_in_library": this.useLibrary(param); break;
 				case "use_in_temple": this.useTemple(param); break;
 				case "use_in_shrine": this.useShrine(param); break;
-				case "improve_in": this.improveBuilding(param); break;
+				case "improve_in": this.improveBuilding(param, sector); break;
 				case "repair_in": this.repairBuilding(param); break;
 				case "dismantle": this.dismantleBuilding(param); break;
 				// Item actions
@@ -436,7 +440,6 @@ define(['ash',
 		
 		getActionSectorOrCurrent: function (sectorPos) {
 			let current = this.playerLocationNodes.head.entity;
-			let position = this.getPositionVO(sectorPos);
 			return this.getActionSector("", sectorPos) || current;
 		},
 
@@ -2281,17 +2284,17 @@ define(['ash',
 			}
 		},
 		
-		improveBuilding: function (param) {
+		improveBuilding: function (param, sector) {
 			// TODO define sector so that the action can have a duration
 			let actionName = "improve_in_" + param;
-			let improvementID = param;
 			let improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(actionName);
 			
-			this.improveImprovement(actionName, improvementName);
+			this.improveImprovement(actionName, improvementName, sector);
 		},
 		
-		improveImprovement: function (actionName, improvementName, otherSector) {
-			let sector = otherSector ? otherSector : this.playerLocationNodes.head.entity;
+		improveImprovement: function (actionName, improvementName, sector) {
+			sector = sector || this.playerLocationNodes.head.entity;
+			
 			let improvementsComponent = sector.get(SectorImprovementsComponent);
 			let improvementID = ImprovementConstants.getImprovementID(improvementName);
 			improvementsComponent.improve(improvementName);

@@ -43,18 +43,15 @@ define([
 				node.playerActions.applyExtraTime(extraUpdateTime);
 			}
 			
-			let timeStamp;
-			let action;
 			for (let i = 0; i < node.playerActions.endTimeStampList.length; i++) {
-				timeStamp = node.playerActions.endTimeStampList[i];
-				action = node.playerActions.endTimeStampToActionDict[timeStamp];
-				if (!action)
-					continue;
+				let timeStamp = node.playerActions.endTimeStampList[i];
+				let actionVO = node.playerActions.endTimeStampToActionDict[timeStamp];
+				if (!actionVO) continue;
 				if (timeStamp > now) {
-					newDict[timeStamp] = action;
+					newDict[timeStamp] = actionVO;
 					newList.push(timeStamp);
 				} else {
-					actionsToPerform.push(action);
+					actionsToPerform.push(actionVO);
 				}
 			}
 			
@@ -62,9 +59,9 @@ define([
 			node.playerActions.endTimeStampList = newList;
 			
 			for (let i = 0; i < actionsToPerform.length; i++) {
-				let action = actionsToPerform[i];
-				if (action.action) {
-					this.playerActionFunctions.performAction(action.action, action.param, action.deductedCosts);
+				let actionVO = actionsToPerform[i];
+				if (actionVO.action) {
+					this.playerActionFunctions.performAction(actionVO.action, actionVO.param, actionVO.sector, actionVO.deductedCosts);
 				}
 			}
 		},
