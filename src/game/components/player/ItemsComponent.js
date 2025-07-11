@@ -237,9 +237,17 @@ function (Ash, ItemVO, ItemConstants) {
 		},
 
 		unequip: function (item) {
-			if (this.isItemUnequippable(item)) {
-				item.equipped = false;
+			if (!item) {
+				log.w("trying to unequip null item");
+				return;
 			}
+
+			if (!this.isItemUnequippable(item)) {
+				log.w("trying to unequip an unequippable item");
+				return;	
+			}
+
+			item.equipped = false;
 		},
 
 		getEquipped: function (type) {
