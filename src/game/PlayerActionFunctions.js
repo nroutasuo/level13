@@ -2580,10 +2580,10 @@ define(['ash',
 			GlobalSignals.equipmentChangedSignal.dispatch();
 		},
 
-		discardItem: function (itemID) {
-			var playerPos = this.playerPositionNodes.head.position;
-			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-			var item = itemsComponent.getItem(itemID, null, playerPos.inCamp, false) || itemsComponent.getItem(itemID, null, playerPos.inCamp, true);
+		discardItem: function (itemInstanceId) {
+			let playerPos = this.playerPositionNodes.head.position;
+			let itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
+			let item = itemsComponent.getItem(null, itemInstanceId, playerPos.inCamp, false);
 			GameGlobals.uiFunctions.showConfirmation(
 				"Are you sure you want to discard this item?",
 				function () {

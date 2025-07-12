@@ -190,7 +190,7 @@ define(['ash',
 				}
 
 				if (bagOptions.canDiscard) {
-					var action = "discard_" + item.id;
+					var action = "discard_" + item.itemID;
 					options += makeButton(action, "Discard");
 				}
 
