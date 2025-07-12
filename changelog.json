@@ -6,7 +6,10 @@
 			"phase": "beta",
 			"final": false,
 			"changes": [
-
+				{
+					"type": "DEV",
+					"summary": "Bugfixes and text polish"
+				}
 			]
 		},
 		{

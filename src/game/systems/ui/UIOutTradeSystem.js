@@ -290,14 +290,14 @@ define([
 		updateIncomingCaravan: function (isActive) {
 			this.currentIncomingTraders = 0;
 
-			var traderComponent = this.playerLocationNodes.head.entity.get(TraderComponent);
+			let traderComponent = this.playerLocationNodes.head.entity.get(TraderComponent);
 			if (traderComponent) this.currentIncomingTraders++;
 
 			if (!isActive)
 				return;
 
-			var caravan = traderComponent ? traderComponent.caravan : null;
-			var tradesMade = caravan ? caravan.tradesMade : null;
+			let caravan = traderComponent ? traderComponent.caravan : null;
+			let tradesMade = caravan ? caravan.tradesMade : null;
 
 			if (this.lastShownIncomingCaravan === caravan && this.lastShownIncomingCaravanTrades === tradesMade) {
 				return;
@@ -311,21 +311,21 @@ define([
 			$("#trade-caravans-incoming-container table").empty();
 			if (caravan) {
 				let traderLevel = GameGlobals.campHelper.getEventUpgradeLevel(OccurrenceConstants.campOccurrenceTypes.trader);
-				var nameTD = "<td class='item-name'>" + caravan.name + " <span class='p-meta'>level " + traderLevel + "</span></td>";
+				let nameTD = "<td class='item-name'>" + caravan.name + " <span class='p-meta'>level " + traderLevel + "</span></td>";
 
-				var inventoryUL = "<ul class='ul-horizontal'>";
-				var numLis = 0;
-				var skippedLis = 0;
+				let inventoryUL = "<ul class='ul-horizontal'>";
+				let numLis = 0;
+				let skippedLis = 0;
 
-				var itemCounts = {};
+				let itemCounts = {};
 				for (let i = 0; i < caravan.sellItems.length; i++) {
-					if (!itemCounts[caravan.sellItems[i].id])
-						itemCounts[caravan.sellItems[i].id] = 0;
-					itemCounts[caravan.sellItems[i].id]++;
+					let id = ItemConstants.getLongItemID(caravan.sellItems[i]);
+					if (!itemCounts[id]) itemCounts[id] = 0;
+					itemCounts[id]++;
 				}
 
-				for (var itemID in itemCounts) {
-					var item = ItemConstants.getNewItemInstanceByID(itemID);
+				for (let longID in itemCounts) {
+					let item = ItemConstants.getNewItemInstanceByLongID(longID);
 					if (item && numLis < 6) {
 						inventoryUL += UIConstants.getItemSlot(itemsComponent, item, null, false, true);
 						numLis++;

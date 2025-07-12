@@ -521,6 +521,15 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, ItemVO) {
 			return this.getNewItemInstanceByDefinition(definition, level);
 		},
 
+		getNewItemInstanceByLongID: function (longID, skipWarning) {
+			if (!longID) return null;
+			let id = this.getItemIDFromLongID(longID);
+			let definition = this.getItemDefinitionByID(id, skipWarning);
+			let quality = this.getItemQualityFromLongID(longID);
+			let level = this.getItemLevelFromQuality(quality);
+			return this.getNewItemInstanceByDefinition(definition, level);
+		},
+
 		getNewItemInstanceByDefinition: function (definition, level) {
 			if (!definition) return null;
 			let instance = definition.clone();
@@ -572,6 +581,12 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, ItemVO) {
 				default:
 					return 1;
 			}
+		},
+
+		getItemLevelFromQuality: function (quality) {
+			if (quality == ItemConstants.itemQuality.high) return 85;
+			if (quality == ItemConstants.itemQuality.low) return 15;
+			return 50;
 		},
 
 		getRandomItemLevel: function (itemSource, itemDefinition) {
