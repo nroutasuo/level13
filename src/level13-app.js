@@ -25,6 +25,11 @@ define([
 			
 			if (!config.isAnalyticsEnabled) {
 				window.gtag = function () { };
+			} else {
+				Sentry.init({
+					dsn: "https://d29c47d03c8a4b17b9fd914320b105ea@app.glitchtip.com/12081",
+					tracesSampleRate: 0.01,
+				});
 			}
 			
 			Text.isDebugMode = config.isDebugVersion;
