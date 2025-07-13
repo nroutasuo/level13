@@ -58,6 +58,13 @@ define([
 			this.playerStatsNodes = null;
 			this.fightNodes = null;
 		},
+		
+		refresh: function () {
+			this.lastDamageToPlayer = 0;
+			this.lastDamageToEnemy = 0;
+			this.initShownInFightActions();
+			$("#fight-popup-enemy-stats").css("opacity", 0);
+		},
 
 		update: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
@@ -145,8 +152,27 @@ define([
 			$("#fight-popup-self-stats").text(this.getStatsText(playerAtt, playerDef, playerSpeed, playerHP, playerShield));
 			
 			// update action buttons
-			// TODO remove hard-coding of items usable in fight, instead have fight effect desc in ItemVO (damage, heal, defend, stun)
 			// TODO show fight effect of items in fight ui
+
+			let actionsToShow = this.visibleInFightActions;
+			let numActionsShown = $("#fight-buttons-infightactions button").length;
+			if (numActionsShown !== actionsToShow.length) {
+				$("#fight-buttons-infightactions").empty();
+				for(let i = 0; i < actionsToShow.length; i++) {
+					let actionDef = actionsToShow[i];
+					$("#fight-buttons-infightactions").append("<button class='action' action='" + actionDef.action + "'>" + actionDef.actionLabel + "</button>");
+				}
+				
+				GameGlobals.uiFunctions.createButtons("#fight-buttons-infightactions");
+				GlobalSignals.elementCreatedSignal.dispatch();
+			}
+		},
+
+		// init in-fight actions and show same buttons throughout the fight even if some are spent so the layout doesn't change
+		initShownInFightActions: function () {
+			let itemsComponent = this.playerStatsNodes.head.items;
+
+			// TODO remove hard-coding of items usable in fight, instead have fight effect desc in ItemVO (damage, heal, defend, stun)
 			let actionsToShow = [];
 
 			let addActionFromItem = function (itemID) {
@@ -168,17 +194,7 @@ define([
 				actionsToShow.push({ action: "use_explorer_fight_flee", actionLabel: "flee" });
 			}
 
-			let numActionsShown = $("#fight-buttons-infightactions button").length;
-			if (numActionsShown !== actionsToShow.length) {
-				$("#fight-buttons-infightactions").empty();
-				for(let i = 0; i < actionsToShow.length; i++) {
-					let actionDef = actionsToShow[i];
-					$("#fight-buttons-infightactions").append("<button class='action' action='" + actionDef.action + "'>" + actionDef.actionLabel + "</button>");
-				}
-				
-				GameGlobals.uiFunctions.createButtons("#fight-buttons-infightactions");
-				GlobalSignals.elementCreatedSignal.dispatch();
-			}
+			this.visibleInFightActions = actionsToShow;
 		},
 		
 		updateDamageToPlayer: function (damage) {
@@ -213,12 +229,6 @@ define([
 			$("#fight-popup-enemy-name").toggleClass("fight-status-stunned", status == FightConstants.STATUS_STUNNED);
 		},
 		
-		refresh: function () {
-			this.lastDamageToPlayer = 0;
-			this.lastDamageToEnemy = 0;
-			$("#fight-popup-enemy-stats").css("opacity", 0);
-		},
-		
 		refreshState: function () {
 			if (this.state == FightPopupStateEnum.CLOSED || this.state == FightPopupStateEnum.CLOSING) return;
 			
@@ -226,7 +236,6 @@ define([
 			var encounterComponent = sector.get(FightEncounterComponent);
 			var fightWon = this.state == FightPopupStateEnum.FIGHT_FINISHED && this.fightNodes.head.fight.won;
 			var fightLost = this.state == FightPopupStateEnum.FIGHT_FINISHED && !this.fightNodes.head.fight.won;
-			var hasNext = encounterComponent.pendingEnemies > 1;
 			
 			// visibility: buttons
 			GameGlobals.uiFunctions.toggle("#out-action-fight-confirm", this.state == FightPopupStateEnum.FIGHT_PENDING);
@@ -259,6 +268,7 @@ define([
 			$("#fight-popup-enemy-info").toggleClass("strike-through", fightWon);
 			this.refreshEnemyText();
 			
+			// state specific init
 			switch (this.state) {
 				case FightPopupStateEnum.FIGHT_PENDING:
 					this.refreshFightPending();
