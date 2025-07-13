@@ -1829,7 +1829,7 @@
     },
     "document_story_apocalypse_severity_01": {
         "configData": {
-            "noteText": "Official report regarding increasing earthquakes. According to experts, the City can only withstand them for some years. They sey urgent actions are needed.",
+            "noteText": "Official report regarding increasing earthquakes. According to experts, the City can only withstand them for some years. They say urgent actions are needed.",
             "storyFlag": "APOCALYPSE_KNOWN"
         },
         "icon": "img/items/document.png",

@@ -3026,10 +3026,10 @@
 		"character_workerGeneric_interact_hint_upgrade_improve_worker_smith_3_01": {
 			"conditions": {
 				"actionsVisible": {
-					"upgrade_improve_worker_smith_3": true
+					"improve_worker_smith_3": true
 				},
 				"upgrades": {
-					"upgrade_improve_worker_smith_3": false
+					"improve_worker_smith_3": false
 				}
 			},
 			"pages": [
