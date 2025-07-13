@@ -446,7 +446,7 @@ define([
 					false,
 					false,
 					name === resourceNames.food || name === resourceNames.water,
-					Math.abs(change) > 0.001,
+					Math.abs(change) > 0.0001,
 					false
 				);
 				UIConstants.updateResourceIndicatorCallout("#" + rowID + "-" + name, name, resourceAcc.getSources(name));
