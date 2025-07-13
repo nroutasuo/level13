@@ -1,5 +1,11 @@
 // Reusable, non-context specific elements such as callouts and progress bars
 
+// SHARED VARS
+
+@item-slot-big-width: 55px;
+@item-slot-big-height: 70px;
+@item-div-size: 18px;
+
 // CALLOUTS
 
 @callout-arrow-size: 7px;
@@ -129,7 +135,7 @@ div.callout-arrow-up, div.callout-arrow-left {
 	height: 0;
 	z-index: 10;
 	position: relative;
-	margin: 0 0 0 @callout-arrow-size/2;
+	margin: 0 0 0 calc(@callout-arrow-size/2);
 	margin: 0px auto;
 }
 
@@ -795,10 +801,6 @@ ul.buttonlist {
 
 // ITEM AND EXPLORER SLOTS
 
-@item-slot-big-width: 55px;
-@item-slot-big-height: 70px;
-@item-div-size: 18px;
-
 .item-slot {
 	background: inherit !important;
 	margin: 0px 2px 2px 0px;
@@ -879,8 +881,8 @@ ul.buttonlist {
 }
 
 .item-slot-big .item-slot-image {
-	left: @item-slot-big-width / 2 - @item-div-size;
-	top: @item-slot-big-height / 2 - @item-div-size + 10px;
+	left: calc(@item-slot-big-width / 2 - @item-div-size);
+	top: calc(@item-slot-big-height / 2 - @item-div-size + 10px);
 }
 
 .item-slot-name, .item-slot-type-equipped, .explorer-slot-type-selected {

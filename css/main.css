@@ -1162,7 +1162,7 @@ body.dark div.callout-arrow-left {
   height: 0;
   z-index: 10;
   position: relative;
-  margin: 0 0 0 3.5px;
+  margin: 0 0 0 calc(7px/2);
   margin: 0px auto;
 }
 body.dark div.callout-arrow-up {
@@ -1766,8 +1766,8 @@ body.dark .item-slot-type-equipped {
   line-height: 70px;
 }
 body.dark .item-slot-big .item-slot-image {
-  left: 9.5px;
-  top: 27px;
+  left: calc(55px / 2 - 18px);
+  top: calc(70px / 2 - 18px + 10px);
 }
 body.dark .item-slot-name,
 body.dark .item-slot-type-equipped,
@@ -2582,12 +2582,12 @@ body.dark .row-detail-indicator {
   color: #bbb;
 }
 body.dark #trade-caravans-outgoing-list {
-	list-style: none;
-	padding: 0;
-	margin: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 body.dark .trade-caravan-outgoing-item span {
-	padding-right: 5px;
+  padding-right: 5px;
 }
 body.dark #mainmap-ascii-legend {
   padding: 5px;
@@ -3000,7 +3000,7 @@ body.dark div ::-webkit-scrollbar-button {
 }
 body.dark div ::-webkit-scrollbar-thumb {
   background: #666;
-  border-radius: 5.5px;
+  border-radius: calc(11px / 2);
 }
 body.dark div ::-webkit-scrollbar-thumb:hover {
   background: #888;
@@ -3195,7 +3195,6 @@ body.sunlit .container-dimmed .dimmable {
 body.sunlit .info-icon {
   width: 1em;
   height: 1em;
-  background: url(../img/eldorado/icon-detail.png);
 }
 body.sunlit .info-icon img {
   height: 1em;
@@ -3825,7 +3824,7 @@ body.sunlit div.callout-arrow-left {
   height: 0;
   z-index: 10;
   position: relative;
-  margin: 0 0 0 3.5px;
+  margin: 0 0 0 calc(7px/2);
   margin: 0px auto;
 }
 body.sunlit div.callout-arrow-up {
@@ -4429,8 +4428,8 @@ body.sunlit .item-slot-type-equipped {
   line-height: 70px;
 }
 body.sunlit .item-slot-big .item-slot-image {
-  left: 9.5px;
-  top: 27px;
+  left: calc(55px / 2 - 18px);
+  top: calc(70px / 2 - 18px + 10px);
 }
 body.sunlit .item-slot-name,
 body.sunlit .item-slot-type-equipped,
@@ -5245,12 +5244,12 @@ body.sunlit .row-detail-indicator {
   color: #777;
 }
 body.sunlit #trade-caravans-outgoing-list {
-	list-style: none;
-	padding: 0;
-	margin: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 body.sunlit .trade-caravan-outgoing-item span {
-	padding-right: 5px;
+  padding-right: 5px;
 }
 body.sunlit #mainmap-ascii-legend {
   padding: 5px;
@@ -5663,7 +5662,7 @@ body.sunlit div ::-webkit-scrollbar-button {
 }
 body.sunlit div ::-webkit-scrollbar-thumb {
   background: #999;
-  border-radius: 5.5px;
+  border-radius: calc(11px / 2);
 }
 body.sunlit div ::-webkit-scrollbar-thumb:hover {
   background: #888;
