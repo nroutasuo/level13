@@ -26,10 +26,14 @@ define([
 			if (!config.isAnalyticsEnabled) {
 				window.gtag = function () { };
 			} else {
-				Sentry.init({
-					dsn: "https://d29c47d03c8a4b17b9fd914320b105ea@app.glitchtip.com/12081",
-					tracesSampleRate: 0.01,
-				});
+				try {
+					Sentry.init({
+						dsn: "https://d29c47d03c8a4b17b9fd914320b105ea@app.glitchtip.com/12081",
+						tracesSampleRate: 0.01,
+					});
+				} catch (e) {
+					log.w("error tracking not initialized");
+				}
 			}
 			
 			Text.isDebugMode = config.isDebugVersion;
