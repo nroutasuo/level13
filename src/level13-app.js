@@ -27,9 +27,11 @@ define([
 				window.gtag = function () { };
 			} else {
 				try {
+					// init GlitchTip for error tracking
 					Sentry.init({
 						dsn: "https://d29c47d03c8a4b17b9fd914320b105ea@app.glitchtip.com/12081",
 						tracesSampleRate: 0.01,
+						environment: config.isDebugVersion ? "development" : "production",
 					});
 				} catch (e) {
 					log.w("error tracking not initialized");
