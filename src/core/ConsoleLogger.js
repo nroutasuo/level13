@@ -63,9 +63,15 @@ define(function () {
 				m = "[" + context + "] " + m;
 			}
 			console.error(m);
+
 			if (typeof(msg) == "object" && typeof(m) != "object") {
 				console.error(msg);
 			}
+
+			// send to GlitchTip if available
+			try {
+				Sentry.captureMessage("log.e: " + m, "error");
+			} catch (e) {}
 		},
 		
 		parseContext: function (c) {
