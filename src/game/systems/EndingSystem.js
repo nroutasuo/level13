@@ -45,7 +45,6 @@ define([
 			
 			setTimeout(function () {
 				log.i("game finished", this);
-				gtag('event', 'game_complete', { event_category: 'progression' });
 				GameGlobals.gameState.isFinished = true;
 				GlobalSignals.gameEndedSignal.dispatch();
 			}, duration + delay);

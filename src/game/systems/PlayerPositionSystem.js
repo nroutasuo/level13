@@ -260,9 +260,6 @@ define([
 			let levelOrdinal = GameGlobals.gameState.getLevelOrdinal(levelPos);
 			let campOrdinal = GameGlobals.gameState.getCampOrdinal(levelPos);
 			GameGlobals.gameState.level = Math.max(GameGlobals.gameState.level, levelOrdinal);
-			gtag('set', { 'max_level': levelOrdinal });
-			gtag('event', 'reach_new_level', { event_category: 'progression', value: levelOrdinal});
-			gtag('event', 'reach_new_level_time', { event_category: 'game_time', event_label: levelOrdinal, value: GameGlobals.gameState.playTime });
 			if (levelPos !== 13) GameGlobals.playerActionFunctions.unlockFeature("levels");
 			
 			if (this.isGroundLevel(levelPos)) {

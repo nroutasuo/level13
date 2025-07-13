@@ -16,7 +16,6 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants) {
 				helper.versions = json.versions;
 				var version = helper.getCurrentVersionNumber();
 				log.i("Loaded version: " + version);
-				gtag('set', { 'app_version': version });
 				GlobalSignals.changelogLoadedSignal.dispatch(true);
 				helper.displayVersionWarnings();
 			})
@@ -28,7 +27,6 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants) {
 				if (jqxhr && jqxhr.status) err += "[" + jqxhr.status + "] ";
 				err += textStatus;
 				if (error) err += ", " + error;
-				gtag('set', { 'app_version': 'unknown' });
 				GlobalSignals.changelogLoadedSignal.dispatch(false);
 				if (!GameConstants.isMobileOverlayShown) {
 					helper.displayVersionWarnings();

@@ -1969,10 +1969,6 @@ define(['ash',
 			improvementsComponent.add(improvementNames.home);
 
 			GameGlobals.playerActionFunctions.unlockFeature("camp");
-			
-			gtag('event', 'build_camp', { event_category: 'progression', event_label: campOrdinal });
-			gtag('event', 'build_camp_time', { event_category: 'game_time', event_label: campOrdinal, value: GameGlobals.gameState.playTime });
-			gtag('set', { 'max_camp': GameGlobals.gameState.numCamps });
 
 			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP, "ui.log.built_camp_message", { visibility: LogConstants.MGS_VISIBILITY_LEVEL });
 			if (position.level == 15) {
@@ -2902,7 +2898,6 @@ define(['ash',
 			this.tribeUpgradesNodes.head.upgrades.addUpgrade(upgradeID);
 			GlobalSignals.upgradeUnlockedSignal.dispatch(upgradeID);
 			this.save();
-			gtag('event', 'upgrade_bought', { event_category: 'progression', event_label: upgradeID });
 
 			let unlockedResearchIDs = GameGlobals.upgradeEffectsHelper.getUnlockedResearchIDs(upgradeID);
 			
@@ -3114,7 +3109,6 @@ define(['ash',
 			if (GameGlobals.gameState.unlockedFeatures[featureSaveKey]) return;
 			
 			log.i("unlocked feature: " + featureID);
-			gtag('event', 'unlock_feature', { event_category: 'progression', event_label: featureID });
 			
 			GameGlobals.gameState.unlockedFeatures[featureSaveKey] = true;
 			GlobalSignals.featureUnlockedSignal.dispatch(featureID);
@@ -3136,7 +3130,6 @@ define(['ash',
 			if (GameGlobals.gameState.usedFeatures[featureSaveKey]) return;
 			
 			log.i("used feature: " + featureID);
-			gtag('event', 'use_feature', { event_category: 'progression', event_label: featureID });
 			
 			GameGlobals.gameState.usedFeatures[featureSaveKey] = true;
 			GlobalSignals.featureUsedSignal.dispatch(featureID);

@@ -150,8 +150,6 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 
 				GlobalSignals.popupOpenedSignal.dispatch("common-popup");
 				
-				gtag('event', 'screen_view', { 'screen_name': "popup-common" });
-				
 				GameGlobals.uiFunctions.createButtons("#common-popup .buttonbox");
 				
 				this.setDismissable($popup, isDismissable);

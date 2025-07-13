@@ -378,12 +378,6 @@ define([
 
 			GameGlobals.gameState.numExceptions++;
 			GameGlobals.gameState.numExceptionsInRow++;
-
-			log.i("logging exception to gtag: " + desc.title);
-			gtag('event', 'exception', {
-				'description': gadesc,
-				'fatal': true,
-			});
 			
 			this.gameManager.pauseGame();
 			GameGlobals.uiFunctions.hideGame(false);

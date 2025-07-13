@@ -298,7 +298,6 @@ define(['ash',
 			if (!GameConstants.isCheatsEnabled) return;
 			if (!GameGlobals.gameState.hasCheated) {
 				GameGlobals.gameState.hasCheated = true;
-				gtag('set', { 'has_cheated': true });
 			}
 			fn();
 		},

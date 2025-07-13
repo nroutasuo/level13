@@ -187,7 +187,6 @@ define([
 
 		restartGame: function () {
 			log.i("Restarting game..");
-			gtag('event', 'game_restart', { event_category: 'game_data' });
 			this.pauseGame();
 			GameGlobals.uiFunctions.hideGame(true);
 			var sys = this;
@@ -218,7 +217,6 @@ define([
 
 		// Called if there is no save to load
 		setupNewGame: function () {
-			gtag('event', 'game_start_new', { event_category: 'game_data' });
 			GameGlobals.gameState.gameStartTimeStamp = new Date().getTime();
 			this.creator.initPlayer(this.player, GameGlobals.metaState);
 		},
@@ -254,8 +252,6 @@ define([
 				GameGlobals.gameState.pendingUpdateTime = 0;
 				GameGlobals.gameState.savePlayedVersion(GameGlobals.changeLogHelper.getCurrentVersionNumber());
 				GameGlobals.gameState.isPaused = false;
-				gtag('set', { 'max_level': GameGlobals.gameState.level });
-				gtag('set', { 'max_camp': GameGlobals.gameState.numCamps });
 				resolve(save);
 			});
 		},
@@ -276,7 +272,6 @@ define([
 					.then(worldVO => {
 						log.i("START " + GameConstants.STARTTimeNow() + "\t world created (seed: " + worldVO.seed + ")");
 						GameGlobals.gameState.worldSeed = worldVO.seed;
-						gtag('set', { 'world_seed': worldVO.seed });
 						resolve(worldVO);
 					})
 					.catch(error => {
@@ -494,7 +489,6 @@ define([
 
 		// Clean up a loaded game state, mostly used to ensure backwards compatibility
 		syncLoadedGameState: function () {
-			gtag('event', 'game_load_save', { event_category: 'game_data' });
 			GameGlobals.gameState.syncData();
 			this.creator.syncPlayer(this.engine.getNodeList(PlayerStatsNode).head.entity);
 			var sectorNodes = this.engine.getNodeList(SectorNode);
@@ -559,12 +553,6 @@ define([
 
 		logFailedWorldSeed: function (seed, reason) {
 			log.e("geneating world failed! seed: " + seed + ", reason: " + reason);
-			var gadesc = "generating world with seed " + seed + " failed | " + reason;
-			log.i("logging exception to gtag");
-			gtag('event', 'exception', {
-				'description': gadesc,
-				'fatal': false,
-			});
 		},
 
 		onRestart: function (resetSave) {

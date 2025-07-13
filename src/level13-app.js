@@ -23,9 +23,7 @@ define([
 			GameConstants.isAutosaveEnabled = config.isAutosaveEnabled;
 			ConsoleLogger.logInfo = config.isDebugOutputEnabled;
 			
-			if (!config.isAnalyticsEnabled) {
-				window.gtag = function () { };
-			} else {
+			if (config.isTrackingEnabled) {
 				try {
 					// init GlitchTip for error tracking
 					Sentry.init({

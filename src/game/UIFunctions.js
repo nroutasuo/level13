@@ -103,9 +103,6 @@ define(['ash',
 				});
 				$("#btn-importexport").click(function (e) {
 					GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
-					gtag('event', 'screen_view', {
-						'screen_name': "popup-manage-save"
-					});
 					uiFunctions.showManageSave();
 				});
 				$("#btn-stats").click(function (e) {
@@ -118,9 +115,6 @@ define(['ash',
 				$("#btn-settings").click(function (e) {
 					GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 					let options = { isMeta: true, isDismissable: true };
-					gtag('event', 'screen_view', {
-						'screen_name': "popup-settings"
-					});
 					uiFunctions.showSpecialPopup("settings-popup", options);
 				});
 				$("#settings-popup-close").click(function (e) {
@@ -129,9 +123,6 @@ define(['ash',
 				});
 				$("#btn-info").click(function (e) {
 					GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
-					gtag('event', 'screen_view', {
-						'screen_name': "popup-game-info"
-					});
 					uiFunctions.showInfoPopup("Level 13", uiFunctions.getGameInfoDiv(), null, null, null, true, true);
 				});
 				$("#out-action-fight-close").click(this.onMetaButtonClicked);
@@ -855,10 +846,6 @@ define(['ash',
 				$("#switch-tabs li").removeClass("selected");
 				$("#switch-tabs li#" + tabID).addClass("selected");
 				$("#tab-header h2").text(tabID);
-
-				gtag('event', 'screen_view', {
-					'screen_name': tabID
-				});
 
 				GameGlobals.gameState.uiStatus.currentTab = tabID;
 
@@ -1633,9 +1620,6 @@ define(['ash',
 			showStatsPopup: function () {
 				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
 				let options = { isMeta: true, isDismissable: true };
-				gtag('event', 'screen_view', {
-					'screen_name': "popup-stats"
-				});
 				this.updateGameStatsPopup();
 				this.showSpecialPopup("game-stats-popup", options);
 			},

@@ -13,7 +13,7 @@ require.config({
 		lzstring: "../lib/lzstring",
         json: "../lib/requirejs/json",
 		utils: "utils",
-		game: "game"
+		game: "game",
 	},
 
 	config: {
@@ -23,7 +23,7 @@ require.config({
 			'isCheatsEnabled': false,
 			'isDebugOutputEnabled': false,
 			'isAutosaveEnabled': true,
-			'isAnalyticsEnabled': true,
+			'isTrackingEnabled': true,
 		}
 	},
 	

@@ -133,7 +133,6 @@ define([
 			if (!segmentVO) return;
 			let segmentID = segmentVO.segmentID;
 			let fullID = segmentVO.storyID + "." + segmentVO.segmentID;
-			gtag('event', 'story_segment_started', { event_category: 'progression', event_label: fullID });
 			log.i("start segment: " + fullID, this);
 			let storyID = segmentVO.storyID;
 			GameGlobals.gameState.storyStatus[storyID] = segmentID;
@@ -144,7 +143,6 @@ define([
 		completeSegment: function (segmentVO) {
 			if (!segmentVO) return;
 			let fullID = segmentVO.storyID + "." + segmentVO.segmentID;
-			gtag('event', 'story_segment_completed', { event_category: 'progression', event_label: fullID });
 			log.i("complete segment: " + fullID, this);
 			this.triggerEffects(segmentVO.onComplete);
 			let nextSegment = this.getNextSegment(segmentVO);
