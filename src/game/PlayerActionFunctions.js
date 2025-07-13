@@ -167,10 +167,10 @@ define(['ash',
 
 			if (duration > 0) {
 				let isBusy = PlayerActionConstants.isBusyAction(baseId);
-				let sectorPos = sector.get(PositionComponent);
+				let sectorPos = sector.get(PositionComponent).getPosition();
 				
 				let actionComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
-				let endTimeStamp = actionComponent.addAction(action, duration, sector, sectorPos.level, param, deductedCosts, isBusy);
+				let endTimeStamp = actionComponent.addAction(action, duration,sectorPos, param, deductedCosts, isBusy);
 
 				switch (baseId) {
 					case "send_caravan":

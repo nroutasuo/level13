@@ -1,19 +1,19 @@
 define(['ash'], function (Ash) {
 	
-	var PlayerActionVO = Ash.Class.extend({
+	let PlayerActionVO = Ash.Class.extend({
 	
 		action: "",
+		position: null, // PositionVO
 		level: 13,
-		sector: null,
 		param: "",
 		deductedCosts: {},
 		startTime: null,
 		isBusy: false,
 	
-		constructor: function (action, sector, level, param, deductCosts, startTime, isBusy) {
+		constructor: function (action, position, param, deductCosts, startTime, isBusy) {
 			this.action = action;
-			this.sector = sector;
-			this.level = level;
+			this.position = position;
+			this.level = position.level;
 			this.param = param;
 			this.deductedCosts = deductCosts;
 			this.startTime = startTime;

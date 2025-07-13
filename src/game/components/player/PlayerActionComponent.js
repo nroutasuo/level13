@@ -12,14 +12,14 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/PlayerActionVO'
 			this.busyStartTime = -1;
 		},
 
-		addAction: function (action, duration, sector, level, param, deductedCosts, isBusyAction) {
+		addAction: function (action, duration, position, param, deductedCosts, isBusyAction) {
 			let startTime = new Date().getTime();
 
 			if (!this.isBusy() && isBusyAction) {
 				this.busyStartTime = startTime;
 			}
 
-			let actionVO = new PlayerActionVO(action, sector, level, param, deductedCosts, startTime, isBusyAction);
+			let actionVO = new PlayerActionVO(action, position, param, deductedCosts, startTime, isBusyAction);
 
 			let endTimeStamp = new Date().getTime() + duration * 1000;
 			this.endTimeStampToActionDict[endTimeStamp] = actionVO;

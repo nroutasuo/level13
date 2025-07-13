@@ -180,15 +180,25 @@ define([
 				}
 			}
 
-			var save = {};
+			let save = {};
 			save.entitiesObject = entitiesObject;
 			save.gameState = GameGlobals.gameState;
 			save.timeStamp = new Date();
 			save.version = version;
 
-			let result = JSON.stringify(save);
+			let result = this.getSaveJSONForObject(save, "save");
 			// log.i("Total save size: " + result.length + ", " + nodes + " nodes");
 			return result;
+		},
+
+		getSaveJSONForObject: function (saveObject, objectName) {
+			try {
+				let result = JSON.stringify(saveObject);
+				return result;
+			} catch (e) {
+				log.e("Error stringifying save object [" + objectName + "]: " + e);
+				return null;
+			}
 		},
 
 		getEntitySaveObject: function (node) {
@@ -211,7 +221,8 @@ define([
 						entityObject[componentKey] = saveObject;
 					}
 
-					var size = JSON.stringify(saveObject).length;
+					let saveString = this.getSaveJSONForObject(saveObject, "component:" + componentKey) || "{}";
+					let size = saveString.length;
 					if (size > biggestComponentSize) {
 						biggestComponent = saveObject;
 						biggestComponentSize = size;
@@ -240,7 +251,7 @@ define([
 
 		getMetaStateJSON: function () {
 			let data = GameGlobals.metaState;
-			let result = JSON.stringify(data);
+			let result = this.getSaveJSONForObject(data, "meta-state");
 			return result;
 		},
 

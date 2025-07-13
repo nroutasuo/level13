@@ -152,6 +152,11 @@ define([
 			return result;
 		},
 
+		getSectorByPositionVO: function (positionVO) {
+			if (!positionVO) return null;
+			return this.getSectorByPosition(positionVO.level, positionVO.sectorX, positionVO.sectorY);
+		},
+
 		getSectorByPosition: function (level, sectorX, sectorY) {
 			level = parseInt(level);
 			sectorX = parseInt(sectorX);
