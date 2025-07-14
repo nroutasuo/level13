@@ -645,7 +645,7 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 			
 			let knownResources = GameGlobals.sectorHelper.getLocationKnownResources(sector);
 			let knownItems = GameGlobals.sectorHelper.getLocationKnownItems(sector);
-			let allItems = GameGlobals.sectorHelper.getLocationScavengeableItems(sector);
+			let allItems = GameGlobals.sectorHelper.getLocationScavengeableItems(sector, true);
 			
 			let drawSectorShape = function (color, size) {
 				ctx.fillStyle = color;

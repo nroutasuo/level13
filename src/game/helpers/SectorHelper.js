@@ -383,13 +383,13 @@ define([
 			return 0;
 		},
 		
-		hasSectorVisibleIngredients: function (sector) {
+		hasSectorVisibleIngredients: function (sector, skipFullyScavenged) {
 			sector = sector ? sector : this.playerLocationNodes.head.entity;
-		 	if (this.getLocationKnownItems(sector).length > 0) {
+		 	if (this.getLocationKnownItems(sector, skipFullyScavenged).length > 0) {
 				return true;
 			}
 			let sectorStatus = sector.get(SectorStatusComponent);
-			if (sectorStatus.scouted && this.getLocationScavengeableItems(sector).length > 0) {
+			if (sectorStatus.scouted && this.getLocationScavengeableItems(sector, skipFullyScavenged).length > 0) {
 				return true;
 			}
 			return false;
@@ -452,10 +452,14 @@ define([
 			return result;
 		},
 		
-		getLocationDiscoveredItems: function (sector) {
+		getLocationDiscoveredItems: function (sector, skipFullyScavenged) {
 			var items = [];
 			sector = sector ? sector : this.playerLocationNodes.head.entity;
 			var sectorStatus = sector.get(SectorStatusComponent);
+
+			let scavengedPercent = sectorStatus.getScavengedPercent();
+			if (skipFullyScavenged && scavengedPercent >= 100) return [];
+
 			var sectorFeatures = sector.get(SectorFeaturesComponent);
 			var missingItems = [];
 			
@@ -476,17 +480,22 @@ define([
 			return items;
 		},
 		
-		getLocationKnownItems: function (sector) {
+		getLocationKnownItems: function (sector, skipFullyScavenged) {
 			sector = sector ? sector : this.playerLocationNodes.head.entity;
 			if (this.isInDetectionRange(sector, ItemConstants.itemBonusTypes.detect_ingredients)) {
-				return this.getLocationScavengeableItems(sector);
+				return this.getLocationScavengeableItems(sector, skipFullyScavenged);
 			} else {
-				return this.getLocationDiscoveredItems(sector);
+				return this.getLocationDiscoveredItems(sector, skipFullyScavenged);
 			}
 		},
 		
-		getLocationScavengeableItems: function (sector) {
+		getLocationScavengeableItems: function (sector, skipFullyScavenged) {
 			sector = sector ? sector : this.playerLocationNodes.head.entity;
+
+			let sectorStatus = sector.get(SectorStatusComponent);
+			let scavengedPercent = sectorStatus.getScavengedPercent();
+			if (skipFullyScavenged && scavengedPercent >= 100) return [];
+			
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
 			return sectorFeatures.itemsScavengeable;
 		},

@@ -384,8 +384,7 @@ define([
 		
 		selectIngredientSector: function () {
 			let newSector = this.getNextSelectableSector(1, (sector) => {
-				let sectorFeatures = sector.get(SectorFeaturesComponent);
-				return GameGlobals.sectorHelper.hasSectorVisibleIngredients(sector);
+				return GameGlobals.sectorHelper.hasSectorVisibleIngredients(sector, true);
 			});
 			if (!newSector) return null;
 			GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
@@ -648,6 +647,7 @@ define([
 			let knownItems = GameGlobals.sectorHelper.getLocationKnownItems(sector);
 			
 			let showIngredients = GameGlobals.sectorHelper.hasSectorVisibleIngredients(sector);
+
 			if (resources.length < 1 && !showIngredients) {
 				result = "-";
 			} else {
