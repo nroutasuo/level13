@@ -103,6 +103,7 @@ define([
 					this.traderTotalItems[id] = [];
 				this.traderTotalItems[id].push(caravan.sellItems[i])
 				this.allItems[caravan.sellItems[i].itemID] = caravan.sellItems[i];
+				highestAmount = Math.max(highestAmount, this.traderTotalItems[id].length);
 			}
 
 			// trader items: create
