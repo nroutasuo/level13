@@ -484,7 +484,14 @@ define([
 				}
 				
 				if (requirements.maxVision) {
-					let result = this.checkRequirementsRange(requirements.maxVision, playerMaxVision, "{min} vision needed", "{max} vision max");
+					let result = this.checkRequirementsRange(
+						requirements.maxVision, playerMaxVision, 
+						"{min} vision needed", 
+						"{max} vision max", 
+						null, 
+						null, 
+						PlayerActionConstants.DISABLED_REASON_VISION
+					);
 					if (result) {
 						return result;
 					}
@@ -1578,7 +1585,15 @@ define([
 				}
 				
 				if (requirements.vision) {
-					let result = this.checkRequirementsRange(requirements.vision, playerVision, "{min} vision needed", "{max} vision max", null, null, PlayerActionConstants.DISABLED_REASON_VISION);
+					let result = this.checkRequirementsRange(
+						requirements.vision, 
+						playerVision, 
+						"{min} vision needed", 
+						"{max} vision max", 
+						null, 
+						null, 
+						PlayerActionConstants.DISABLED_REASON_VISION
+					);
 					if (result) return result;
 				}
 
@@ -1659,7 +1674,8 @@ define([
 		// maxreason: reason if rejected ebcause the value is too big
 		// minreason1: reason if rejected because the value is too small and required min is 1 (need at least 1)
 		// maxreason1: reason if rejected because the value is too big and the required max is 1 (should not have any)
-		checkRequirementsRange: function (range, value, minreason, maxreason, minreason1, maxreason1) {
+		// baseReason: generic reason with no values that can be used for checks
+		checkRequirementsRange: function (range, value, minreason, maxreason, minreason1, maxreason1, baseReason) {
 			if (typeof range === "number") range = [ range, range + 1 ];
 			let min = range[0];
 			let max = range[1];
@@ -1667,16 +1683,16 @@ define([
 			
 			if (value < min) {
 				if (min == 1 && minreason1) {
-					return { value: 0, reason: this.updateReason(minreason1) };
+					return { value: 0, reason: this.updateReason(minreason1, null, baseReason) };
 				} else {
-					return { value: (value === 0 ? 0 : value / min), reason: this.updateReason(minreason, { min: min }) };
+					return { value: (value === 0 ? 0 : value / min), reason: this.updateReason(minreason, { min: min }, baseReason) };
 				}
 			}
 			if (value >= max) {
 				if (max == 1 && maxreason1) {
-					return { value: 0, reason: this.updateReason(maxreason1) };
+					return { value: 0, reason: this.updateReason(maxreason1, null, baseReason) };
 				} else {
-					return { value: 0, reason: this.updateReason(maxreason, { max: max }) };
+					return { value: 0, reason: this.updateReason(maxreason, { max: max }, baseReason) };
 				}
 			}
 			return null;
@@ -1694,14 +1710,16 @@ define([
 
 		// clean up disabled reason when it could be a proper vo or an old style string (fallback)
 		// add params to existing reason if valid
-		updateReason: function (reason, textParams) {
-			if (!reason || typeof reason === "string") reason = this.getDisabledReasonVO(reason, null);
+		updateReason: function (reason, textParams, baseReason) {
+			if (!reason || typeof reason === "string") reason = this.getDisabledReasonVO(reason, null, baseReason);
+
 			if (textParams) {
 				if (!reason.textParams) reason.textParams = {};
 				for (let key in textParams) {
 					reason.textParams[key] = textParams[key];
 				}
 			}
+			
 			return reason;
 		},
 
