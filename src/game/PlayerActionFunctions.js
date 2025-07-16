@@ -2786,6 +2786,7 @@ define(['ash',
 					break;
 					
 				case "consumable_map":
+				case "consumable_map_explorer":
 					let sectorsToReveal = GameGlobals.playerActionResultsHelper.getSectorsRevealedByMap(foundPosition);
 					let revealedSomething = false;
 					for (let i = 0; i < sectorsToReveal.length; i++) {
@@ -2808,7 +2809,7 @@ define(['ash',
 					break;
 
 				default:
-					log.w("Item not mapped for useItem: " + itemId);
+					log.e("Item not mapped for useItem: " + itemId);
 					break;
 			}
 			
