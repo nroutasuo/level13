@@ -663,9 +663,9 @@ define([
 
 			if (isScouted) {
 				if (passagesComponent.passageUp)
-					description += TextConstants.getPassageDescription(passagesComponent.passageUp, PositionConstants.DIRECTION_UP, passageUpBuilt);
+					description += TextConstants.getPassageDescription(passagesComponent.passageUp, PositionConstants.DIRECTION_UP, passageUpBuilt) + " ";
 				if (passagesComponent.passageDown)
-					description += TextConstants.getPassageDescription(passagesComponent.passageDown, PositionConstants.DIRECTION_DOWN, passageDownBuilt);
+					description += TextConstants.getPassageDescription(passagesComponent.passageDown, PositionConstants.DIRECTION_DOWN, passageDownBuilt) + " ";
 			}
 
 			// Blockers n/s/w/e

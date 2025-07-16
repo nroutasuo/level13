@@ -2902,7 +2902,7 @@ define(['ash',
 
 			let unlockedResearchIDs = GameGlobals.upgradeEffectsHelper.getUnlockedResearchIDs(upgradeID);
 			
-			let title = "Researched complete ";
+			let title = "Research complete";
 			let upgradeName = Text.t(UpgradeConstants.getDisplayNameTextKey(upgradeID));
 			let message = "<p>You've researched <span class='hl-functionality'>" + upgradeName + "</span>.</p>";
 			message += "<p class='p-meta'>" + GameGlobals.upgradeEffectsHelper.getEffectDescription(upgradeID, true) + "</p>";

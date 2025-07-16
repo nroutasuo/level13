@@ -530,7 +530,7 @@ define([
 				if (typeof requirements.sunlit !== "undefined") {
 					var currentValue = featuresComponent.sunlit;
 					var requiredValue = requirements.sunlit;
-					let result = this.checkRequirementsBoolean(requiredValue, currentValue, "Sunlight required", "Sunlight not allowed");
+					let result = this.checkRequirementsBoolean(requiredValue, currentValue, "Not available in sunlit sectors", "Sunlight required");
 					if (result) return result;
 				}
 

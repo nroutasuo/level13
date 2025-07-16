@@ -113,7 +113,7 @@ define([
 			}
 
 			if (improvedOccurrences.indexOf(OccurrenceConstants.campOccurrenceTypes.disaster) >= 0) {
-				result += "Disasters like earthquakes and floods are now less like to damage buildings. ";
+				result += "Disasters like earthquakes and floods are now less likely to damage buildings. ";
 			}
 			
 			return result;
