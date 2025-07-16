@@ -170,19 +170,17 @@ define(['ash',
 				let sectorPos = sector.get(PositionComponent).getPosition();
 				
 				let actionComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
-				let endTimeStamp = actionComponent.addAction(action, duration,sectorPos, param, deductedCosts, isBusy);
+				
+				actionComponent.addAction(action, duration, sectorPos, param, deductedCosts, isBusy);
 
 				switch (baseId) {
 					case "send_caravan":
-						var tradePartnerOrdinal = parseInt(param);
-						var caravansComponent = this.playerLocationNodes.head.entity.get(OutgoingCaravansComponent);
+						let caravansComponent = this.playerLocationNodes.head.entity.get(OutgoingCaravansComponent);
 						if (!caravansComponent.pendingCaravan) {
 							log.w("Can't start caravan. No valid pending caravan found.");
 							return;
 						}
 						
-						// TODO fix the time so it responds to time cheat
-						caravansComponent.pendingCaravan.returnTimeStamp = endTimeStamp;
 						caravansComponent.pendingCaravan.returnDuration = duration;
 						caravansComponent.outgoingCaravans.push(caravansComponent.pendingCaravan);
 						caravansComponent.pendingCaravan = null;
@@ -2725,7 +2723,7 @@ define(['ash',
 						resultVO
 					);
 					this.playerStatsNodes.head.entity.get(HopeComponent).hope += hope;
-					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_SEED, "Donated seeds. Gained " + hope + " favour.");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_SEED, "Donated seeds. Gained " + hope + " hope.");
 					break;
 				
 				case "cache_insight":

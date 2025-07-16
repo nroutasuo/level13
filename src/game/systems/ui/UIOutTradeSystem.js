@@ -256,8 +256,8 @@ define([
 					let caravan = busyCaravans[i];
 					let partner = TradeConstants.getTradePartner(caravan.tradePartnerOrdinal);
 					if (!partner) continue;
-					let timeLeft = (caravan.returnTimeStamp - new Date().getTime()) / 1000;
-					let timeUntilString = UIConstants.getTimeToNum(timeLeft, true);
+					let timeLeft = GameGlobals.tribeHelper.getTimeLeftForOutgoingCaravan(caravan);
+					let timeUntilString = UIConstants.getTimeToNum(timeLeft);//, true);
 
 					let buyAmount = this.getTradeAmountReceivedForOutgoingCaravan(caravan.buyGood, caravan.sellGood, caravan.sellAmount);
 

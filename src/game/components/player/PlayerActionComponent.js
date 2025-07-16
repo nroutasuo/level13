@@ -25,8 +25,6 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/PlayerActionVO'
 			this.endTimeStampToActionDict[endTimeStamp] = actionVO;
 			this.endTimeStampList.push(endTimeStamp);
 			this.sortTimeStamps();
-
-			return endTimeStamp;
 		},
 
 		getLastAction: function (requireBusy) {
@@ -79,12 +77,15 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/PlayerActionVO'
 		
 		getAction: function (action, level) {
 			let result = null;
+			let ignoreLevel = typeof level === "undefined";
+
 			for (let i = this.endTimeStampList.length - 1; i >= 0; i--) {
 				let timestampAction = this.endTimeStampToActionDict[this.endTimeStampList[i]];
-				if (timestampAction.action == action && timestampAction.level == level) {
+				if (timestampAction.action == action && (!ignoreLevel || timestampAction.level == level)) {
 					return timestampAction;
 				}
 			}
+			
 			return result;
 		},
 
@@ -152,6 +153,15 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/PlayerActionVO'
 			let totalTime = timestamp - actionVO.startTime;
 			let timePassed = new Date().getTime() - actionVO.startTime;
 			return timePassed / totalTime * 100;
+		},
+
+		getActionTimeLeft: function (action, level) {
+			let actionVO = this.getAction(action, level);
+			if (!actionVO) return 0;
+			let timestamp = this.getActionTimestamp(action, level);
+			if (!timestamp) return 0;
+			
+			return (timestamp - new Date().getTime()) / 1000;
 		},
 
 		getSaveKey: function () {

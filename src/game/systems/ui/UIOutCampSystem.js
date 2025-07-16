@@ -810,7 +810,7 @@
 			if (campMisc.length > 0) hasEvents = true;
 			
 			// Outgoing caravans
-			var numCaravans = caravansComponent.outgoingCaravans.length;
+			let numCaravans = caravansComponent.outgoingCaravans.length;
 			hasOther = hasOther || numCaravans > 0;
 			if (isActive && showEvents) {
 				GameGlobals.uiFunctions.toggle("#in-occurrences-outgoing-caravans-container", numCaravans > 0);
@@ -827,10 +827,9 @@
 					GlobalSignals.elementCreatedSignal.dispatch();
 				});
 				for (let i = 0; i < numCaravans; i++) {
-					var caravan = caravansComponent.outgoingCaravans[i];
-					// TODO fix to use game time (and check other usages)
-					var duration = caravan.returnDuration * 1000;
-					var timeLeft = caravan.returnTimeStamp - new Date().getTime();
+					let caravan = caravansComponent.outgoingCaravans[i];
+					let duration = caravan.returnDuration;
+					let timeLeft = GameGlobals.tribeHelper.getTimeLeftForOutgoingCaravan(caravan);
 					$("#in-occurrences-outgoing-caravans-" + i).data("progress-percent", (1 - timeLeft / duration) * 100);
 				}
 			}

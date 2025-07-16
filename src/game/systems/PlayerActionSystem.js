@@ -33,6 +33,8 @@ define([
 		},
 
 		updateNode: function (node, extraUpdateTime) {
+			// TODO handle actions that completed while offline better (correct timestamp for log message, add resources from caravans etc silently)
+
 			extraUpdateTime = extraUpdateTime || 0;
 			let now = new Date().getTime();
 			let newDict = {};

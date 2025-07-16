@@ -6,8 +6,8 @@ define([
 	'game/constants/UpgradeConstants',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/sector/CampNode',
-	'game/components/player/HopeComponent',
-	'game/nodes/tribe/TribeUpgradesNode'
+	'game/nodes/tribe/TribeUpgradesNode',
+	'game/components/player/PlayerActionComponent',
 ], function (
 	Ash,
 	GameGlobals,
@@ -16,8 +16,8 @@ define([
 	UpgradeConstants,
 	PlayerStatsNode,
 	CampNode,
-	HopeComponent,
-	TribeUpgradesNode
+	TribeUpgradesNode,
+	PlayerActionComponent,
 ) {
 	
 	let TribeHelper = Ash.Class.extend({
@@ -160,7 +160,15 @@ define([
 		getCurrentReputationBaseValue: function () {
 			let milestone = this.getCurrentMilestone();
 			return GameGlobals.tribeBalancingHelper.getReputationBaseValue(milestone.index);
-		}
+		},
+
+		getTimeLeftForOutgoingCaravan: function (caravanVO) {
+			if (!caravanVO) return 0;
+			let playerActionComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
+			let action = "send_caravan_" + caravanVO.tradePartnerOrdinal;
+			let level = GameGlobals.gameState.getLevelForCamp(caravanVO.campOrdinal);
+			return playerActionComponent.getActionTimeLeft(action, level);
+		},
 		
 	});
 
