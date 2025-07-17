@@ -422,9 +422,9 @@
 			let population = campComponent.population;
 			let hasCampfire = improvements.getCount(improvementNames.campfire);
 
-			let validCharacters = GameGlobals.campHelper.getValidCampCharacters(campComponent);
+			let validCharacterTypes = GameGlobals.campHelper.getValidCampCharacters(campComponent);
 
-			if (!hasCampfire || population < 1 || validCharacters.length < 1) {
+			if (!hasCampfire || population < 1 || validCharacterTypes.length < 1) {
 				campComponent.displayedCharacters = [];
 				return;
 			}
@@ -435,7 +435,7 @@
 
 			for (let i = 0; i < currentCharacters.length; i++) {
 				let currentCharacter = currentCharacters[i];
-				if (validCharacters.indexOf(currentCharacter.characterType) < 0) {
+				if (validCharacterTypes.indexOf(currentCharacter.characterType) < 0) {
 					isCurrentSelectionValid = false;
 					break;
 				}
@@ -446,7 +446,7 @@
 			if (population > 16) maxNumCharacters = 3;
 			if (population > 32) maxNumCharacters = 4;
 			if (population > 60) maxNumCharacters = 5;
-			maxNumCharacters = Math.min(maxNumCharacters, validCharacters.length);
+			maxNumCharacters = Math.min(maxNumCharacters, validCharacterTypes.length);
 			let minCharacters = Math.floor(maxNumCharacters / 2);
 
 			if (currentCharacters.length < minCharacters || currentCharacters.length > maxNumCharacters) isCurrentSelectionValid = false;
@@ -462,24 +462,35 @@
 			let keepNumCharacters = Math.max(0, Math.min(currentNumCharacters - 1, numCharacters - 1));
 
 			let characters = [];
-			let validCharactersRemaining = validCharacters.slice();
+			let charactersByType = {}; // type -> num
+
+			let canAddCharacterWithType = function (characterType) {
+				if (validCharacterTypes.indexOf(characterType) < 0) return false;
+				let max = GameGlobals.campHelper.getMaxCampCharacters(campComponent, characterType);
+				if (charactersByType[characterType] && charactersByType[characterType] >= max) return false;
+				return true;
+			};
+
 			let charactersToKeep = MathUtils.randomElements(currentCharacters, keepNumCharacters);
 
 			for (let i = 0; i < numCharacters; i++) {
-				let character;
-				if (charactersToKeep[i] && validCharacters.indexOf(charactersToKeep[i]) >= 0) {
-					character = charactersToKeep[i];
+				let characterVO;
+				if (charactersToKeep[i] && canAddCharacterWithType(charactersToKeep[i].characterType)) {
+					characterVO = charactersToKeep[i];
 				} else {
-					let characterType = MathUtils.randomElement(validCharacters);
+					let currentlyValidCharacterTypes = validCharacterTypes.filter(type => canAddCharacterWithType(type));
+					let characterType = MathUtils.randomElement(currentlyValidCharacterTypes);
 					let dialogueSourceID = CharacterConstants.getDialogueSourceID(characterType);
-					character = new CharacterVO(characterType, dialogueSourceID);
+					characterVO = new CharacterVO(characterType, dialogueSourceID);
 				}
 
-				validCharactersRemaining.splice(validCharactersRemaining.indexOf(character), 1);
-				characters.push(character);
+				characters.push(characterVO);
+				if (!charactersByType[characterVO.characterType]) charactersByType[characterVO.characterType] = 0;
+				charactersByType[characterVO.characterType]++;
 			}
 
 			campComponent.displayedCharacters = characters;
+			campComponent.displayedCharactersRefreshTimestamp = timestamp;
 
 			log.i("selected displayed characters: " + characters.join(","));
 		},

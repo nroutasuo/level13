@@ -456,7 +456,6 @@ define([
 						break;
 				}
 			}
-
 			
 			for(let key in campComponent.assignedWorkers) {
 				let num = campComponent.assignedWorkers[key] || 0;
@@ -507,8 +506,43 @@ define([
 				}
 			}
 
-
 			return result;
+		},
+
+		getMaxCampCharacters: function (campComponent, characterType) {
+			switch (characterType) {
+				case CharacterConstants.characterTypes.workerApothecary:
+					return campComponent.assignedWorkers[CampConstants.workerTypes.apothecary.id];
+				case CharacterConstants.characterTypes.workerChemist:
+					return campComponent.assignedWorkers[CampConstants.workerTypes.chemist.id];
+				case CharacterConstants.characterTypes.workerCleric:
+					return campComponent.assignedWorkers[CampConstants.workerTypes.cleric.id];
+				case CharacterConstants.characterTypes.workerConcrete:
+					return campComponent.assignedWorkers[CampConstants.workerTypes.concrete.id];
+				case CharacterConstants.characterTypes.workerGardener:
+					return campComponent.assignedWorkers[CampConstants.workerTypes.gardener.id];
+				case CharacterConstants.characterTypes.workerRobotmaker:
+					return campComponent.assignedWorkers[CampConstants.workerTypes.robotmaker.id];
+				case CharacterConstants.characterTypes.workerRope:
+					return campComponent.assignedWorkers[CampConstants.workerTypes.ropemaker.id];
+				case CharacterConstants.characterTypes.workerRubber:
+					return campComponent.assignedWorkers[CampConstants.workerTypes.rubbermaker.id];
+				case CharacterConstants.characterTypes.workerScavenger:
+					return campComponent.assignedWorkers[CampConstants.workerTypes.scavenger.id];
+				case CharacterConstants.characterTypes.workerScientist:
+					return campComponent.assignedWorkers[CampConstants.workerTypes.scientist.id];
+				case CharacterConstants.characterTypes.workerSoldier:
+					return campComponent.assignedWorkers[CampConstants.workerTypes.soldier.id];
+				case CharacterConstants.characterTypes.workerToolsmith:
+					return campComponent.assignedWorkers[CampConstants.workerTypes.toolsmith.id];
+				case CharacterConstants.characterTypes.workerTrapper:
+					return campComponent.assignedWorkers[CampConstants.workerTypes.trapper.id];
+				case CharacterConstants.characterTypes.workerWater:
+					return campComponent.assignedWorkers[CampConstants.workerTypes.water.id];
+				default:
+					let validTypes = this.getValidCampCharacters(campComponent);
+					return validTypes.indexOf(characterType) >= 0 ? campComponent.population : 0;
+			}
 		},
 
 		getRandomOrigin: function (sector) {
@@ -895,7 +929,7 @@ define([
 		},
 		
 		getCurrentMaxImprovementLevel: function (improvementName) {
-            let techLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementName, this.tribeUpgradesNodes.head.upgrades);
+			let techLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementName, this.tribeUpgradesNodes.head.upgrades);
 			return GameGlobals.campBalancingHelper.getMaxImprovementLevel(improvementName, techLevel);
 		},
 		
