@@ -213,6 +213,7 @@ define([
 			if (reqsCheck.reason.baseReason == PlayerActionConstants.DISABLED_REASON_BUSY) return true;
 			if (reqsCheck.reason.baseReason == PlayerActionConstants.DISABLED_REASON_LAUNCHED) return true;
 			if (reqsCheck.reason.baseReason == PlayerActionConstants.DISABLED_REASON_IN_PROGRESS) return true;
+			if (reqsCheck.reason.baseReason == PlayerActionConstants.DISABLED_REASON_PROJECT_IN_PROGRESS) return true;
 			
 			// options
 			if (visibleReasons && visibleReasons.indexOf(reqsCheck.reason.baseReason) >= 0) return true;
