@@ -4132,11 +4132,13 @@
 		"explorer_generic_human_outside_02": {
 			"conditions": {
 				"inCamp": false,
-				"position": {
-					"level": [
-						-1,
-						14
-					]
+				"player": {
+					"position": {
+						"level": [
+							-1,
+							14
+						]
+					}
 				}
 			},
 			"pages": [
@@ -7547,11 +7549,13 @@
 				"explorer": {
 					"trust": 1
 				},
-				"position": {
-					"level": [
-						15,
-						-1
-					]
+				"player": {
+					"position": {
+						"level": [
+							15,
+							-1
+						]
+					}
 				}
 			},
 			"pages": [
@@ -7563,11 +7567,13 @@
 				"explorer": {
 					"trust": 2
 				},
-				"position": {
-					"level": [
-						15,
-						-1
-					]
+				"player": {
+					"position": {
+						"level": [
+							15,
+							-1
+						]
+					}
 				}
 			},
 			"pages": [
@@ -7726,11 +7732,13 @@
 		},
 		"explorer_unique_hermit_interact_directions_passage_01": {
 			"conditions": {
-				"position": {
-					"level": [
-						15,
-						-1
-					]
+				"player": {
+					"position": {
+						"level": [
+							15,
+							-1
+						]
+					}
 				},
 				"vicinity": "passage"
 			},
