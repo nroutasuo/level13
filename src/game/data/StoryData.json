@@ -185,12 +185,17 @@
                     "id": "passage_used",
                     "onStart": {
                         "log": {
+                            "delay": 800,
                             "textKey": "story.stories.escape_passage_used_message",
                             "visibility": "MGS_VISIBILITY_LEVEL"
                         }
                     },
                     "startConditions": {
-                        "level": 12
+                        "player": {
+                            "position": {
+                                "level": 12
+                            }
+                        }
                     },
                     "startTrigger": "change_position"
                 },
