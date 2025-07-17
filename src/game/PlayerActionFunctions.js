@@ -135,7 +135,7 @@ define(['ash',
 				return;
 			}
 			
-			let sector = this.getActionSectorOrCurrent(action, param);
+			let sector = this.getActionSectorOrCurrent(param);
 
 			if (!GameGlobals.playerActionsHelper.checkAvailability(action, true, sector)) {
 				log.w("Tried to start action but it's not available: " + action);
