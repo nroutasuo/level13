@@ -2538,7 +2538,9 @@ define([
 				
 				case "repair_in":
 					let improvementID = this.getImprovementIDForAction(action);
-					let buildingCosts = this.getCosts("build_in_" + improvementID);
+					let buildAction = "build_in_" + improvementID;
+					let buildActionOrdinal = this.getActionOrdinal(buildAction, sector) - 1;
+					let buildingCosts = this.getCosts(buildAction, 1, sector, buildActionOrdinal);
 					for (let key in buildingCosts) {
 						result[key] = Math.ceil(buildingCosts[key] / 3);
 					}
