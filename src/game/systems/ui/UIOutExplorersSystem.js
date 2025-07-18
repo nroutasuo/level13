@@ -127,7 +127,7 @@ define([
 					$("#switch-explorers .bubble").text("");
 					$("#switch-explorers .bubble").toggleClass("bubble-increase", true);
 				} else {
-					$("#switch-explorers .bubble").text(bubbleNumber);
+					$("#switch-explorers .bubble").text(state);
 					$("#switch-explorers .bubble").toggleClass("bubble-increase", false);
 				}
 
