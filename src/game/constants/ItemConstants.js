@@ -344,23 +344,29 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, ItemVO) {
 				return this.getUseItemActionDisplaName(items[0]);
 			}
 
+			let uniqueBaseIDs = [];
 			let uniqueIDs = [];
 			let defaultItem = items[0];
 
 			for (let i = 0; i < items.length; i++) {
 				let item = items[i];
 				let baseItemID = this.getBaseItemID(item.id);
-				if (uniqueIDs.indexOf(baseItemID) < 0) uniqueIDs.push(baseItemID);
+				if (uniqueBaseIDs.indexOf(baseItemID) < 0) uniqueBaseIDs.push(baseItemID);
+				if (uniqueIDs.indexOf(item.id) < 0) uniqueIDs.push(item.id);
+			}
+
+			if (uniqueIDs.length == 1) {
+				return this.getUseItemActionDisplaName(items[0]);
 			}
 
 			let actionVerb = ItemConstants.getUseItemVerb(defaultItem);
 
-			if (uniqueIDs.length > 1) {
+			if (uniqueBaseIDs.length > 1) {
 				log.w("trying to get use action display name for a group of items that don't share base id")
 				return actionVerb + " item";
 			}
 
-			return actionVerb + " " + ItemConstants.getBaseItemDisplayName(uniqueIDs[0]);
+			return actionVerb + " " + ItemConstants.getBaseItemDisplayName(defaultItem);
 		},
 		
 		getUseItemVerb: function (item) {
@@ -419,12 +425,15 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, ItemVO) {
 			return "game_items." + item.type + "_description";
 		},
 
-		getBaseItemDisplayName: function (baseItemID) {
-			return Text.t(ItemConstants.getBaseItemDisplayNameKey(baseItemID));
+		getBaseItemDisplayName: function (item) {
+			return Text.t(ItemConstants.getBaseItemDisplayNameKey(item));
 		},
 
-		getBaseItemDisplayNameKey: function (baseItemID) {
-			return "game.items." + baseItemID + "_name";
+		getBaseItemDisplayNameKey: function (item) {
+			let baseItemID = ItemConstants.getBaseItemID(item.id);
+			let baseItemKey =  "game.items." + baseItemID + "_name";
+			if (Text.hasKey(baseItemKey)) return baseItemKey;
+			return this.getItemDisplayNameKey(item);
 		},
 		
 		getItemBonusIcons: function (itemBonusType) {
