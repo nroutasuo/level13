@@ -192,6 +192,9 @@ define(['ash',
 			this.registerCheat(CheatConstants.CHEAT_NAME_EQUIP_BEST, "Auto-equip best items available.", [], function (params) {
 				this.equipBest();
 			});
+			this.registerCheat(CheatConstants.CHEAT_NAME_BREAK_BUILDING, "Damage a building with given type.", ["improvementID"], function (params) {
+				this.breakBuilding(params[0]);
+			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_BREAK_ITEM, "Break a random item.", [], function () {
 				this.breakItem();
 			});
@@ -583,6 +586,14 @@ define(['ash',
 		equipBest: function () {
 			let itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
 			itemsComponent.autoEquipAll();
+		},
+
+		breakBuilding: function (improvementID) {
+			let improvementType = improvementNames[improvementID];
+			let currentSector = this.playerLocationNodes.head.entity;
+			let improvementsComponent = currentSector.get(SectorImprovementsComponent);
+			let improvementVO = improvementsComponent.getVO(improvementType);
+			improvementVO.numDamaged++;
 		},
 		
 		breakItem: function () {

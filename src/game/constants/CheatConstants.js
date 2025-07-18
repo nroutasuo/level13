@@ -6,6 +6,7 @@ define(function () {
 		CHEAT_NAME_ACCIDENT: "accident",
 		CHEAT_NAME_BLUEPRINT: "blueprint",
 		CHEAT_NAME_BLUEPRINTS: "blueprints",
+		CHEAT_NAME_BREAK_BUILDING: "breakBuilding",
 		CHEAT_NAME_BREAK_ITEM: "breakItem",
 		CHEAT_NAME_BUILDING: "building",
 		CHEAT_NAME_DEBUG_MAP: "debugMap",
