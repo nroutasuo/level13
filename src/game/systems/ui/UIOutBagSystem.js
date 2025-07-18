@@ -424,7 +424,11 @@ define([
 				
 				let equippedItems = itemsComponent.getEquipped(item.type);
 				let comparison = itemsComponent.getEquipmentComparison(item);
-				let isEquipped = equippedItems.length > 0 && equippedItems[0].id == item.id && equippedItems[0].broken == item.broken;
+				let isEquipped = 
+					equippedItems.length > 0 && 
+					equippedItems[0].id == item.id && 
+					equippedItems[0].broken == item.broken && 
+					ItemConstants.getItemQuality(equippedItems[0]) == ItemConstants.getItemQuality(item);
 				
 				$(indicator).toggleClass("indicator-equipped", isEquipped);
 				$(indicator).toggleClass("indicator-increase", !isEquipped && comparison > 0);
