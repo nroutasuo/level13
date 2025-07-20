@@ -1621,11 +1621,13 @@ define([
 					if (typeof requirements.party.isMissingForcedExplorer !== "undefined") {
 						let forcedExplorerID = GameGlobals.explorerHelper.getForcedExplorerID();
 						let forcedExplorerVO = GameGlobals.playerHelper.getExplorerByID(forcedExplorerID);
-						let explorerName = forcedExplorerVO ? forcedExplorerVO.name : "";
-						let requiredValue = requirements.party.isMissingForcedExplorer;
-						let currentValue = forcedExplorerID != null && forcedExplorerVO != null && !forcedExplorerVO.inParty; 
-						let result = this.checkRequirementsBoolean(requiredValue, currentValue, explorerName + " wants to go with you.", "");
-						if (result) return result;
+						if (forcedExplorerVO.injuredTimer <= 0) {
+							let explorerName = forcedExplorerVO ? forcedExplorerVO.name : "";
+							let requiredValue = requirements.party.isMissingForcedExplorer;
+							let currentValue = forcedExplorerID != null && forcedExplorerVO != null && !forcedExplorerVO.inParty; 
+							let result = this.checkRequirementsBoolean(requiredValue, currentValue, explorerName + " wants to go with you.", "");
+							if (result) return result;
+						}
 					}
 				}
 
