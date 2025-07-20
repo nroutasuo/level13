@@ -51,7 +51,7 @@ define([
 			let forcedExplorerID = this.getForcedExplorerID();
 			if (forcedExplorerID && explorerVO.id == forcedExplorerID) return "ui.actions.unavailable_reason_quest_message";
 
-			if (explorerVO.pendingDialogue) return "ui.actions.unavailable_reason_pending_dialogue_message";
+			if (GameGlobals.dialogueHelper.hasValidPendingDialogue(explorerVO)) return "ui.actions.unavailable_reason_pending_dialogue_message";
 
 			let dialogueStatus = GameGlobals.dialogueHelper.getExplorerDialogueStatus(explorerVO);
 			if (dialogueStatus == DialogueConstants.STATUS_FORCED) return "ui.actions.unavailable_reason_pending_dialogue_message";

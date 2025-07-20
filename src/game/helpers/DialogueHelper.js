@@ -121,8 +121,8 @@ define(['ash',
 
                 // story tag checks
 
-                // - if explorer has pending dialogue, it becomes the default requested storyTag
-                if (!storyTag && explorerVO && explorerVO.pendingDialogue) storyTag = explorerVO.pendingDialogue;
+                // - if explorer has a valid pending dialogue, it becomes the default requested storyTag
+                if (!storyTag && explorerVO && this.hasValidPendingDialogue(explorerVO)) storyTag = explorerVO.pendingDialogue;
 
                 // - if requesting specific story tag, dialogue must match
                 if (storyTag && dialogueVO.storyTag !== storyTag) return false;
@@ -343,7 +343,7 @@ define(['ash',
             },
 
             getExplorerDialogueStatusForEntry: function (explorerVO, entry) {
-                if (explorerVO.pendingDialogue && explorerVO.pendingDialogue == entry.storyTag)  {
+                if (this.hasValidPendingDialogue(explorerVO) && explorerVO.pendingDialogue == entry.storyTag)  {
                     return DialogueConstants.STATUS_FORCED;
                 }
 
@@ -387,7 +387,7 @@ define(['ash',
                 
                 let entries = DialogueConstants.getDialogueEntries(dialogueSource, setting);
 
-                if (!storyTag && explorerVO.pendingDialogue) storyTag = explorerVO.pendingDialogue;
+                if (!storyTag && this.hasValidPendingDialogue(explorerVO)) storyTag = explorerVO.pendingDialogue;
 
                 let result = [];
                 let highestStatus = 0;
@@ -423,6 +423,13 @@ define(['ash',
                 }
 
                 return result;
+            },
+            
+            hasValidPendingDialogue: function (explorerVO) {
+                if (!explorerVO) return false;
+                if (!explorerVO.pendingDialogue) return false;
+                if (this.getExplorerValidDialogues(explorerVO, "interact", explorerVO.pendingDialogue).length == 0) return false;
+                return true;
             },
 
             getAllPendingExplorerDialogues: function () {
