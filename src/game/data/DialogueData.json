@@ -3391,6 +3391,11 @@
 			]
 		},
 		"character_workerScavenger_default_meet_03": {
+			"conditions": {
+				"upgrades": {
+					"unlock_building_beacon": true
+				}
+			},
 			"pages": [
 				"character_workerScavenger_default_meet_03_p1"
 			]
@@ -7081,6 +7086,7 @@
 		},
 		"explorer_unique_gambler_story_escape_01": {
 			"conditions": {
+				"inCamp": true,
 				"explorer": {
 					"trust": 2
 				},
