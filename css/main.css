@@ -1129,6 +1129,9 @@ body.dark .info-callout-target-side + div.info-callout {
   top: 0;
   white-space: nowrap;
 }
+body.dark .btn-callout-content {
+  white-space: normal;
+}
 body.dark div.callout-container {
   position: relative;
   display: inline-block;
@@ -3790,6 +3793,9 @@ body.sunlit .info-callout-target-side + div.info-callout {
   height: 100%;
   top: 0;
   white-space: nowrap;
+}
+body.sunlit .btn-callout-content {
+  white-space: normal;
 }
 body.sunlit div.callout-container {
   position: relative;
