@@ -1621,7 +1621,7 @@ define([
 					if (typeof requirements.party.isMissingForcedExplorer !== "undefined") {
 						let forcedExplorerID = GameGlobals.explorerHelper.getForcedExplorerID();
 						let forcedExplorerVO = GameGlobals.playerHelper.getExplorerByID(forcedExplorerID);
-						if (forcedExplorerVO.injuredTimer <= 0) {
+						if (forcedExplorerVO && forcedExplorerVO.injuredTimer <= 0) {
 							let explorerName = forcedExplorerVO ? forcedExplorerVO.name : "";
 							let requiredValue = requirements.party.isMissingForcedExplorer;
 							let currentValue = forcedExplorerID != null && forcedExplorerVO != null && !forcedExplorerVO.inParty; 
