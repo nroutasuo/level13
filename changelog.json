@@ -4,7 +4,8 @@
 			"version": "0.6.3",
 			"requiredVersion": "0.6.1",
 			"phase": "beta",
-			"final": false,
+			"final": true,
+			"released": "2025-07-20",
 			"changes": [
 				{
 					"type": "DEV",

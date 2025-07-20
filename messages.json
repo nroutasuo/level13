@@ -4,9 +4,9 @@
             "conditions": {
                 "campOrdinalReached": 1
             },
-            "expires": "2025-07-06",
-            "id": "update-062",
-            "text": "A small bugfix update was released on 2025-07-06. See the changelog for details."
+            "expires": "2025-07-27",
+            "id": "update-063",
+            "text": "A small bugfix update was released on 2025-07-20. See the changelog for details."
         }
     ]
 }

@@ -18,7 +18,7 @@ require.config({
 
 	config: {
 		'level13-app': {
-			'version': "1.6.3",
+			'version': "0.6.3",
 			'isDebugVersion': false,
 			'isCheatsEnabled': false,
 			'isDebugOutputEnabled': false,
