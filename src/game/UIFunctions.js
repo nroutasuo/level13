@@ -1274,6 +1274,11 @@ define(['ash',
 			},
 
 			setText: function (selector, key, options) {
+				if (!selector) {
+					log.w("invalid selector for automatic text update");
+					return;
+				}
+
 				this.texts[selector] = { key: key, options: options };
 				this.updateText($(selector), Text.t(key, options));
 			},
@@ -1281,12 +1286,8 @@ define(['ash',
 			updateTexts: function () {
 				for (let selector in this.texts) {
 					let saved = this.texts[selector];
-					try {
-						this.updateText($(selector), Text.t(saved.key, saved.options));
-					} catch (error) {
-						debugger
-					}
-					  
+					let $elem = typeof selector === "string" ? $(selector) : selector;
+					this.updateText($elem, Text.t(saved.key, saved.options));
 				}
 			},
 
