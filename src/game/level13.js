@@ -374,7 +374,7 @@ define([
 			if (this.numExceptionsInRow > 0) return;
 
 			let desc = StringUtils.getExceptionDescription(ex);
-			let gadesc = desc.title + " | " + desc.shortstack;
+			let stackTrace = desc.stack.substring(0, 1000) + "...";
 
 			GameGlobals.gameState.numExceptions++;
 			GameGlobals.gameState.numExceptionsInRow++;
@@ -386,8 +386,8 @@ define([
 			let pos = GameGlobals.playerActionFunctions.playerPositionNodes.head ? GameGlobals.playerActionFunctions.playerPositionNodes.head.position : "(unknown)";
 			let bugTitle = StringUtils.encodeURI("[JS Error] " + desc.title);
 			let bugBody = StringUtils.encodeURI(
-			   "Details:\n[Fill in any details here that you think will help tracking down this bug, such as what you did in the game just before it happened.]" +
-			   "\n\nSeed: " + GameGlobals.gameState.worldSeed + "\nPosition: " + pos + "\nStacktrace:\n" + desc.stack);
+			   "Details:\n[Fill in any details here that you think will help tracking down this bug]" +
+			   "\n\nSeed: " + GameGlobals.gameState.worldSeed + "\nPosition: " + pos + "\nStacktrace:\n" + stackTrace);
 			let url = "https://github.com/nroutasuo/level13/issues/new?title=" + bugTitle + "&body=" + bugBody + "&labels=exception";
 			
 			GameGlobals.uiFunctions.popupManager.closeAllPopups();
