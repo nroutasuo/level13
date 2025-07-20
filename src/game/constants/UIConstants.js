@@ -338,7 +338,7 @@ define(['ash',
 			}
 
 			if (GameConstants.isCheatsEnabled) {
-				result += "<br/>" + this.meta("Trust: " + explorer.trust);
+				result += "<br/>" + "<span class='debug-info'>" + this.meta("Trust: " + explorer.trust) + "</span>";;
 			}
 			
 			if (isRecruited && isInCamp && !hideButtons) {
