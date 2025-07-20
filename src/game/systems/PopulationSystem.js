@@ -393,7 +393,7 @@ define([
 			}
 
 			if (tries > 50) {
-				debugger
+				if (GameConstants.isDebugVersion) debugger
 			}
 
 			GlobalSignals.workersAssignedSignal.dispatch(node.entity);

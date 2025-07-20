@@ -265,7 +265,7 @@ define([
 			}
 
 			if (!messageTextVO.textFragments) {
-				debugger
+				if (GameConstants.isDebugVersion) debugger
 				log.i("addLogMessage: unknown format");
 				console.log(msg);
 				return;
@@ -276,7 +276,7 @@ define([
 				if (fragment) {
 					fragment.textKey = LogConstants.cleanupMessage(fragment.textKey);
 				} else {
-					debugger
+					if (GameConstants.isDebugVersion) debugger
 					log.w("invalid messageTextVO in addLogMessage");
 				}
 			}

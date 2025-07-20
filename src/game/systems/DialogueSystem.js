@@ -121,7 +121,7 @@ define([
 
 			if (!pageID && pageID !== 0) {
 				log.w("no first page found for dialogue");
-				debugger
+				if (GameConstants.isDebugVersion) debugger
 				return;
 			}
 			
@@ -191,7 +191,7 @@ define([
 			let currentPageVO = GameGlobals.dialogueHelper.getCurrentPageVO();
 
 			if (!currentPageVO) {
-				debugger
+				if (GameConstants.isDebugVersion) debugger
 				log.w("no page found");
 				this.endDialogue();
 				return;
@@ -204,7 +204,7 @@ define([
 			let optionVO = currentPageVO.optionsByID[optionID];
 
 			if (!optionVO) {
-				debugger
+				if (GameConstants.isDebugVersion) debugger
 				log.w("no option for id " + optionID);
 				this.endDialogue();
 				return;

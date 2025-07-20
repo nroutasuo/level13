@@ -14,13 +14,13 @@ define(function () {
 
 		compose: function (textVO) {
 			if (!textVO) {
-				debugger
+				if (GameConstants.isDebugVersion) debugger
 				log.w("no TextVO provided for Text.compose");
 				return "";
 			}
 
 			if (!textVO.textFragments) {
-				debugger
+				if (GameConstants.isDebugVersion) debugger
 				log.w("invalid TextVO provided for Text.compose");
 				return "";
 			}
