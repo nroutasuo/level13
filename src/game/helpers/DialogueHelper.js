@@ -343,9 +343,7 @@ define(['ash',
             },
 
             getExplorerDialogueStatusForEntry: function (explorerVO, entry) {
-                if (this.hasValidPendingDialogue(explorerVO) && explorerVO.pendingDialogue == entry.storyTag)  {
-                    return DialogueConstants.STATUS_FORCED;
-                }
+                if (explorerVO.pendingDialogue && explorerVO.pendingDialogue == entry.storyTag) return DialogueConstants.STATUS_FORCED;
 
                 let isNew = this.isExplorerDialogueNewForEntry(explorerVO, entry);
 
