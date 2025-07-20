@@ -389,7 +389,7 @@ define([
 				case OccurrenceConstants.campOccurrenceTypes.recruit:
 					let recruitComponent = campNode.entity.get(RecruitComponent);
 					let wasRecruited = recruitComponent.isRecruited;
-					if (recruitComponent.explorer) return;
+					if (!recruitComponent.explorer) return;
 					let name = recruitComponent.explorer.name;
 					campNode.entity.remove(RecruitComponent);
 					if (!wasRecruited) {
