@@ -1144,6 +1144,14 @@ define(['ash',
 				return Text.t("game.resources.currency_name");
 			}
 
+			if (name == "rumours") {
+				return Text.t("game.stats.rumours_name");
+			}
+
+			if (name == "evidence") {
+				return Text.t("game.stats.evidence_name");
+			}
+
 			log.w("no cost display name defined for cost [" + name + "]");
 			return name;
 		},

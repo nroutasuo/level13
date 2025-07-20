@@ -971,7 +971,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			facts.push("the Ocean currents were changing direction before the Fall");
 			facts.push("some researchers were worried about volcanic activity years before the Fall");
 			facts.push("there was a research group investigating returning to live on the Surface before the Fall");
-			facts.push("the air outside of the City is dangerous to breathe");
+			facts.push("the air outside the City is dangerous to breathe");
 			facts.push("there was a top secret research group just before the Fall");
 			facts.push("the Government before the Fall was investing heavily in space research");
 			facts.push("prisoners were used in secret experiments related to space travel");
@@ -1602,7 +1602,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("sector-vision", { sectorType: wildcard }, "[a] [a-sectortype] [n-street] with some [an-decos] and [a-building] [n-buildings]");
 		DescriptionMapper.add("sector-vision", { sectorType: wildcard }, "[a] [a-street] [n-street] between some [n-buildings]");
 		DescriptionMapper.add("sector-vision", { sectorType: wildcard }, "[a] [a-sectortype] [n-street] which must have once been quite [a-street-past]");
-		DescriptionMapper.add("sector-vision", { sectorType: wildcard, level: lold }, "[a] [a-street] [n-street], seemingly untouched since before The Fall");
+		DescriptionMapper.add("sector-vision", { sectorType: wildcard, level: lold }, "[a] [a-street] [n-street], seemingly untouched since before the Fall");
 		DescriptionMapper.add("sector-vision", { isSurfaceLevel: false }, "[a] [n-street] at the base of an enormous pillar supporting the level above");
 		DescriptionMapper.add("sector-vision", { isSurfaceLevel: false, wear: b12, sunlit: false, debris: b0, campable: false }, "[a] [a-street] [n-street] with long-abandoned buildings covered in strange moss");
 		DescriptionMapper.add("sector-vision", { buildingDensity: b0, isGroundLevel: false }, "A system of bridges and passages connecting several buildings around a dizzying opening to the level below");
@@ -1822,7 +1822,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_3 }, "It contains a dissertation on [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_3 }, "It contains in-depth information about [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_3 }, "It is an ethical inquiry into lab grown meat versus keeping animals.");
-		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_3 }, "It explores the theoretical possibility of restarting human life outside of the City, and concludes that it would be nearly impossible.");
+		DescriptionMapper.add("book-description", { bookType: t_S, bookLevel: l_3 }, "It explores the theoretical possibility of restarting human life outside the City, and concludes that it would be nearly impossible.");
 		
 		DescriptionMapper.add("book-description", { bookType: t_E }, "It is [a] [a-level] textbook on [n-topic].");
 		DescriptionMapper.add("book-description", { bookType: t_E }, "It is [a] [a-style] textbook on [n-topic].");

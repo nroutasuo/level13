@@ -11,8 +11,12 @@
 					"summary": "Bugfixes and text polish"
 				},
 				{
+					"type": "GB",
+					"summary": "Small balancing adjustments (building repair costs, damaged building reputation penalty, disease frequency)"
+				},
+				{
 					"type": "DEV",
-					"summary": "Add better visitor and error tracking and a note in the FAQ about what is being tracked"
+					"summary": "Better visitor and error tracking and a note in the FAQ about what is being tracked"
 				}
 			]
 		},
