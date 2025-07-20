@@ -93,11 +93,9 @@ define([
 
 				let audio = new Audio(this.paths[soundTriggerID]);
 
-				try {
-					audio.play();
-				} catch (e) {
-					log.e("failed to play audio: " + soundTriggerID + " | " + e, this);
-				}
+				audio.play().catch(e => {
+					log.w("failed to play audio: " + soundTriggerID + " | " + e, this);
+				});
 
 				this.previousSound = audio;
 				this.soundTimestamps[soundTriggerID] = playTimestamp;
