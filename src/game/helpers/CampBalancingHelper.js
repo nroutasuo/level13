@@ -297,7 +297,7 @@ define([
 			// penalties: damaged buildings
 			var hasDamagedBuildings = improvementsComponent.hasDamagedBuildings();
 			if (hasDamagedBuildings) {
-				let penaltyRatio = 0.25;
+				let penaltyRatio = 0.20;
 				let penaltyValue = result * penaltyRatio;
 				addValue(-penaltyValue, "Damaged buildings", false, true, -penaltyRatio * 100);
 			}
