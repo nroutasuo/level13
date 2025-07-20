@@ -1,11 +1,12 @@
 define([
 	'ash', 
 	'json!game/data/DialogueData.json', 
+	'game/constants/PlayerActionConstants',
 	'game/vos/DialogueVO', 
 	'game/vos/DialoguePageVO', 
 	'game/vos/DialogueOptionVO', 
 	'game/vos/ResultVO'
-], function (Ash, DialogueData, DialogueVO, DialoguePageVO, DialogueOptionVO, ResultVO) {
+], function (Ash, DialogueData, PlayerActionConstants, DialogueVO, DialoguePageVO, DialogueOptionVO, ResultVO) {
 	
 	let DialogueConstants = {
 
@@ -56,7 +57,7 @@ define([
 			let vo = new DialogueVO(dialogueID);
 
 			vo.titleTextKey = this.parseTextKey(d.titleKey);
-			vo.conditions = d.conditions || {};
+			vo.conditions = PlayerActionConstants.getRequirementsFromRaw(d.conditions);
 			vo.storyTag = d.storyTag || null;
 			vo.isRepeatable = d.repeatable === false ? false : true;
 			vo.isUnique = d.isUnique;
@@ -240,7 +241,7 @@ define([
 			} else {
 				optionVO.buttonTextKey = this.parseTextKey(optionData.buttonKey);
 				optionVO.costs = optionData.costs || {};
-				optionVO.conditions = optionData.conditions || {};
+				optionVO.conditions = PlayerActionConstants.getRequirementsFromRaw(optionData.conditions);
 				optionVO.responsePageID = optionData.response || null;
 			}
 

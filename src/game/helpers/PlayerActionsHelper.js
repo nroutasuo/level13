@@ -2279,7 +2279,7 @@ define([
 				case "deselect_explorer":
 				case "repair_item":
 				default:
-					return PlayerActionConstants.requirements[action] || PlayerActionConstants.requirements[baseActionID];
+					return PlayerActionConstants.getRequirements(action, baseActionID);
 			}
 		},
 		

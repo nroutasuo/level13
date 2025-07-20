@@ -273,6 +273,24 @@ function (Ash, PlayerActionData, ObjectUtils, GameConstants, CampConstants, Impr
 			if (remainder && remainder !== action) return remainder;
 			return "";
 		},
+
+		getRequirements: function (action, baseActionID) {
+			baseActionID = baseActionID || this.getBaseActionID(action);
+			return this.getRequirementsFromRaw(PlayerActionConstants.requirements[action] || PlayerActionConstants.requirements[baseActionID]);
+		},
+
+		getRequirementsFromRaw: function (reqs) {
+			reqs = reqs || {};
+
+			if (reqs.playerCanExplore) {
+				reqs.playerInventory = reqs.playerInventory || {};
+				reqs.playerInventory.resource_water = [ 3, -1 ];
+				reqs.playerInventory.resource_food = [ 3, -1 ];
+				reqs.stamina = [ 200, -1 ];
+			}
+
+			return reqs;
+		},
 		
 		getImprovementNameForAction: function (action, disableWarnings) {
 			let baseId = this.getBaseActionID(action);
