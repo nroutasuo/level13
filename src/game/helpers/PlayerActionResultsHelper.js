@@ -2364,7 +2364,7 @@ define([
 				let allowedTypes = this.getAllowedInjuryTypes(action, enemyVO, sectorFeatures);
 				
 				let injury = PerkConstants.getRandomInjury(allowedTypes);
-				result.push(injury.clone());
+				if (injury) result.push(injury.clone());
 			}
 			
 			return result;

@@ -87,7 +87,7 @@ define([
 			let explorerScore = function (explorerVO) {
 				for (let i = 0; i < preferredExplorers.length; i++) {
 					let preferredExplorerID = preferredExplorers[i];
-					if (explorerVO.id.indexOf(preferredExplorerID) >= 0) {
+					if (explorerVO && explorerVO.id && explorerVO.id.indexOf(preferredExplorerID) >= 0) {
 						return 1000 - i;
 					}
 				}

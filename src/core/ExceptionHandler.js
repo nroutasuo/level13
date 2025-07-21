@@ -25,7 +25,8 @@ define(function () {
 		},
 		
 		handleException: function (ex, msg) {
-			ex.message = ex.message || msg;
+			ex.message = ex ? ex.message || msg : msg;
+			
 			if (ExceptionHandler.exceptionCallback) {
 				ExceptionHandler.exceptionCallback(ex);
 			} else {
