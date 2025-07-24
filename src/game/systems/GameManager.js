@@ -36,6 +36,8 @@ define([
 			this.creator = new EntityCreator(this.engine);
 			GlobalSignals.add(this, GlobalSignals.restartGameSignal, this.onRestart);
 			GlobalSignals.add(this, GlobalSignals.gameEndedSignal, this.onGameEnd);
+			GlobalSignals.add(this, GlobalSignals.gameStateReadySignal, this.updateTrackingTags);
+			GlobalSignals.add(this, GlobalSignals.campBuiltSignal, this.updateTrackingTags);
 		},
 		
 		update: function (time) {
@@ -553,6 +555,13 @@ define([
 
 		logFailedWorldSeed: function (seed, reason) {
 			log.e("geneating world failed! seed: " + seed + ", reason: " + reason);
+		},
+
+		updateTrackingTags: function () {
+			try {
+				Sentry.setTag("numCamps", GameGlobals.gameState.numCamps);
+				Sentry.setTag("worldSeed", GameGlobals.gameState.worldSeed);
+			} catch (e) {}
 		},
 
 		onRestart: function (resetSave) {
