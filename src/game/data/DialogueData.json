@@ -4245,6 +4245,9 @@
 		"explorer_generic_interact_directions_passage_01": {
 			"conditions": {
 				"inCamp": false,
+				"explorer": {
+					"isFamiliarLevel": true
+				},
 				"vicinity": "passage",
 				"vicinityScouted": false,
 				"playerCanExplore": true
@@ -5986,6 +5989,9 @@
 				"inCamp": false,
 				"level": {
 					"hasCamp": false
+				},
+				"explorer": {
+					"isFamiliarLevel": true
 				},
 				"vicinity": "campable"
 			},
@@ -7807,6 +7813,9 @@
 							-1
 						]
 					}
+				},
+				"explorer": {
+					"isFamiliarLevel": true
 				},
 				"vicinity": "passage"
 			},

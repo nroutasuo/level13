@@ -24,13 +24,14 @@ define(['ash'], function (Ash) {
 		trust: 0, // 0-10, derived from other stats
 		injuredTimer: -1,
 
-		constructor: function (id, name, abilityType, abilityLevel, icon, gender, source, dialogueSource) {
+		constructor: function (id, name, abilityType, abilityLevel, icon, gender, origin, source, dialogueSource) {
 			this.id = id;
 			this.name = name;
 			this.abilityType = abilityType;
 			this.abilityLevel = abilityLevel;
 			this.icon = icon;
 			this.gender = gender;
+			this.origin = origin;
 			this.source = source;
 			this.dialogueSource = dialogueSource;
 			

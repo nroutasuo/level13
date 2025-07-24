@@ -92,6 +92,11 @@ define([
 			return this.playerPosNodes.head.position;
 		},
 
+		getLevel: function () {
+			if (!this.playerPosNodes.head) return 13;
+			return this.playerPosNodes.head.position.level;
+		},
+
 		getLocation: function () {
 			if (!this.playerLocationNodes.head) return null;
 			return this.playerLocationNodes.head.entity;

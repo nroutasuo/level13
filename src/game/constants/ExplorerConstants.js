@@ -77,12 +77,12 @@ define(['ash',
 		// unique explorers that are spawned in locales across the world and the player is guaranteed to meet (if they explore everything)
 		// camp ordinal -> explorer template
 		predefinedExplorers: {
-			2: { id: "gambler", localeType: localeTypes.maintenance, abilityType: "attack", name: "Yimin", icon: "img/characters/explorer_unique_gambler.png", dialogueSource: "explorer_unique_gambler" },
-			3: { id: "dog", localeType: localeTypes.warehouse, abilityType: "scavenge_capacity", name: "Dog", icon: "img/characters/animal_dog.png", dialogueSource: "explorer_generic_dog_01", animalType: "dog" },
-			4: { id: "journalist", localeType: localeTypes.library, abilityType: "stat_evidence", name: "Yevry", icon: "img/characters/explorer_unique_journalist.png", dialogueSource: "explorer_unique_journalist" },
-			5: { id: "handler", localeType: localeTypes.house, abilityType: "scavenge_handler", name: "Jezekiah", icon: "img/characters/explorer_unique_handler.png", dialogueSource: "explorer_unique_handler" },
-			6: { id: "prospector", localeType: localeTypes.store, abilityType: "scavenge_blueprints", name: "Sunita", icon: "img/characters/explorer_unique_prospector.png", dialogueSource: "explorer_unique_prospector" },
-			10: { id: "hermit", localeType: localeTypes.bunker, abilityType: "cost_collectors", name: "Eliasco", icon: "img/characters/explorer_unique_hermit.png", dialogueSource: "explorer_unique_hermit" },
+			2: { id: "gambler", localeType: localeTypes.maintenance, abilityType: "attack", name: "Yimin", icon: "img/characters/explorer_unique_gambler.png", origin: "slums", dialogueSource: "explorer_unique_gambler" },
+			3: { id: "dog", localeType: localeTypes.warehouse, abilityType: "scavenge_capacity", name: "Dog", icon: "img/characters/animal_dog.png", origin: "unknown", dialogueSource: "explorer_generic_dog_01", animalType: "dog" },
+			4: { id: "journalist", localeType: localeTypes.library, abilityType: "stat_evidence", name: "Yevry", icon: "img/characters/explorer_unique_journalist.png", origin: "surface", dialogueSource: "explorer_unique_journalist" },
+			5: { id: "handler", localeType: localeTypes.house, abilityType: "scavenge_handler", name: "Jezekiah", icon: "img/characters/explorer_unique_handler.png", origin: "darklevels", dialogueSource: "explorer_unique_handler" },
+			6: { id: "prospector", localeType: localeTypes.store, abilityType: "scavenge_blueprints", name: "Sunita", icon: "img/characters/explorer_unique_prospector.png", origin: "surface", dialogueSource: "explorer_unique_prospector" },
+			10: { id: "hermit", localeType: localeTypes.bunker, abilityType: "cost_collectors", name: "Eliasco", icon: "img/characters/explorer_unique_hermit.png", origin: "slums", dialogueSource: "explorer_unique_hermit" },
 		},
 
 		// templates used to generate random explorers
@@ -213,7 +213,7 @@ define(['ash',
 				icon = this.getRandomIcon(gender, origin, cultures, abilityType, template.dialogueSource);
 			}
 			
-			let result = new ExplorerVO(id, name, abilityType, abilityLevel, icon, gender, source, template.dialogueSource);
+			let result = new ExplorerVO(id, name, abilityType, abilityLevel, icon, gender, origin, source, template.dialogueSource);
 			result.animalType = animalType;
 			return result;
 		},
@@ -237,7 +237,7 @@ define(['ash',
 			
 			let abilityLevel = this.getRandomAbilityLevelByCampOrdinal(template.abilityType, templateCampOrdinal);
 			
-			let result = new ExplorerVO(explorerID, template.name, template.abilityType, abilityLevel, template.icon, template.gender, ExplorerConstants.explorerSource.SCOUT, template.dialogueSource);
+			let result = new ExplorerVO(explorerID, template.name, template.abilityType, abilityLevel, template.icon, template.origin, template.gender, ExplorerConstants.explorerSource.SCOUT, template.dialogueSource);
 			result.animalType = template.animalType;
 			return result;
 		},

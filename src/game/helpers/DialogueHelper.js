@@ -149,6 +149,7 @@ define(['ash',
                     if (conditions.explorer.injured && explorerVO.injuredTimer <= 0) return false;
                     if (conditions.explorer.abilityType && explorerVO.abilityType != conditions.explorer.abilityType) return false;
                     if (conditions.explorer.quest && GameGlobals.storyHelper.getExplorerQuestStories(explorerVO).indexOf(conditions.explorer.quest) <0) return false;
+                    if (typeof conditions.explorer.isFamiliarLevel !== "undefined" && conditions.explorer.isFamiliarLevel != GameGlobals.explorerHelper.isFamiliarWithCurrentLevel(explorerVO)) return false;
                     if (conditions.explorer.meetCampOrdinal 
                         && GameGlobals.playerActionsHelper.checkRequirementsRange(conditions.explorer.meetCampOrdinal, explorerVO.meetCampOrdinal)) return false;
                 }
