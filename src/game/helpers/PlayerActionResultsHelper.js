@@ -1214,19 +1214,19 @@ define([
 				let perkVO = resultVO.gainedPerks[i];
 
 				if (perkVO.type == PerkConstants.perkTypes.injury) {
-					div += "<p class='warning'>You got injured.</p>";
+					div += "<p class='warning'>" + Text.t("ui.exploration.action_result_perk_injured_message") + "</p>";
 				}
 
 				if (perkVO.id == PerkConstants.perkIds.cursed) {
-					div += "<p class='warning'>You got cursed.</p>";
+					div += "<p class='warning'>" + Text.t("ui.exploration.action_result_perk_cursed_message") + "</p>";
 				}
 
 				if (perkVO.id == PerkConstants.perkIds.stressed) {
-					div += "<p class='warning'>You got stressed.</p>";
+					div += "<p class='warning'>" + Text.t("ui.exploration.action_result_perk_stressed_message") + "</p>";
 				}
 
 				if (perkVO.id == PerkConstants.perkIds.accomplished) {
-					div += "<p>You feel accomplished.</p>";
+					div += "<p>" + Text.t("ui.exploration.action_result_perk_accomplished_message") + "</p>";
 				}
 			}
 

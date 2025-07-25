@@ -2797,9 +2797,9 @@ define(['ash',
 					}
 					
 					if (revealedSomething) {
-						GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_MAP_PIECE, "Recorded any useful information from the map.");
+						GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_MAP_PIECE, Text.t("ui.actions.use_consumable_map_message_default"));
 					} else {
-						GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_MAP_PIECE, "Checked the map, but there was nothing interesting there.");
+						GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_MAP_PIECE, Text.t("ui.actions.use_consumable_map_message_empty"));
 					}
 					
 					GlobalSignals.mapPieceUsedSignal.dispatch();

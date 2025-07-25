@@ -635,7 +635,10 @@
 				tds += "<td>" + useButton + "" + useButton2 + "" + repairButton + "</td>";
 				trs += "<tr id='in-improvements-" + key + "'>" + tds + "</tr>";
 			}
-			let ths = "<tr class='header-mini'><th></th><th>count</th><th>lvl</th><th></th><th></th><th></th></tr>"
+
+			let countText = Text.t("ui.camp.improvement_count_header");
+			let levelText = Text.t("ui.camp.improvement_level_header");
+			let ths = "<tr class='header-mini'><th></th><th>" + countText + "</th><th>" + levelText + "</th><th></th><th></th><th></th></tr>"
 			$table.append(ths);
 			$table.append(trs);
 			
