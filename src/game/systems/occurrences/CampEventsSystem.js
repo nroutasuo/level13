@@ -898,6 +898,7 @@ define([
 				
 				case OccurrenceConstants.campOccurrenceTypes.recruit:
 					let explorerStats = GameGlobals.playerHelper.getExplorerStats();
+					if (explorerStats.minExplorersByType > 5) return 0.9;
 					if (explorerStats.minExplorersByType > 1) return 0.5;
 					if (explorerStats.minExplorersByType > 0) return 0.25;
 					break;
