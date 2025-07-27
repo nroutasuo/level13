@@ -18,7 +18,7 @@ require.config({
 
 	config: {
 		'level13-app': {
-			'version': "0.6.3",
+			'version': "0.6.4",
 			'isDebugVersion': false,
 			'isCheatsEnabled': false,
 			'isDebugOutputEnabled': false,
@@ -27,6 +27,6 @@ require.config({
 		}
 	},
 	
-	urlArgs: "v=0.6.3",
+	urlArgs: "v=0.6.4",
 
 });
