@@ -4244,13 +4244,13 @@
 		},
 		"explorer_generic_interact_directions_passage_01": {
 			"conditions": {
-				"inCamp": false,
 				"explorer": {
 					"isFamiliarLevel": true
 				},
+				"inCamp": false,
+				"playerCanExplore": true,
 				"vicinity": "passage",
-				"vicinityScouted": false,
-				"playerCanExplore": true
+				"vicinityScouted": false
 			},
 			"isPriority": true,
 			"pages": [
@@ -4304,6 +4304,18 @@
 			},
 			"pages": [
 				"explorer_generic_interact_directions_unscouted_01_p1"
+			]
+		},
+		"explorer_generic_interact_forced_01": {
+			"conditions": {
+				"inCamp": true,
+				"explorer": {
+					"isForced": true
+				}
+			},
+			"isPriority": true,
+			"pages": [
+				"explorer_generic_interact_forced_01_p1"
 			]
 		},
 		"explorer_generic_interact_injured_outside_01": {
@@ -5986,12 +5998,12 @@
 		},
 		"explorer_template_darkdweller_interact_directions_safety_01": {
 			"conditions": {
+				"explorer": {
+					"isFamiliarLevel": true
+				},
 				"inCamp": false,
 				"level": {
 					"hasCamp": false
-				},
-				"explorer": {
-					"isFamiliarLevel": true
 				},
 				"vicinity": "campable"
 			},
@@ -7092,10 +7104,10 @@
 		},
 		"explorer_unique_gambler_story_escape_01": {
 			"conditions": {
-				"inCamp": true,
 				"explorer": {
 					"trust": 2
 				},
+				"inCamp": true,
 				"storyFlags": {
 					"ESCAPE_SEARCHING_FOR_GROUND": true
 				}
@@ -7806,6 +7818,9 @@
 		},
 		"explorer_unique_hermit_interact_directions_passage_01": {
 			"conditions": {
+				"explorer": {
+					"isFamiliarLevel": true
+				},
 				"player": {
 					"position": {
 						"level": [
@@ -7813,9 +7828,6 @@
 							-1
 						]
 					}
-				},
-				"explorer": {
-					"isFamiliarLevel": true
 				},
 				"vicinity": "passage"
 			},
@@ -8003,6 +8015,17 @@
 			},
 			"pages": [
 				"explorer_unique_journalist_interact_15_p1"
+			]
+		},
+		"explorer_unique_journalist_interact_forced_investigate_01": {
+			"conditions": {
+				"explorer": {
+					"isForced": true
+				}
+			},
+			"isUrgent": true,
+			"pages": [
+				"explorer_unique_journalist_interact_forced_investigate_01_p1"
 			]
 		},
 		"explorer_unique_journalist_meet_01": {
@@ -11251,6 +11274,7 @@
 					"explorer_generic_interact_directions_safety_01",
 					"explorer_generic_interact_directions_safety_02",
 					"explorer_generic_interact_directions_unscouted_01",
+					"explorer_generic_interact_forced_01",
 					"explorer_generic_interact_injured_outside_02",
 					"explorer_generic_interact_injured_party_02",
 					"explorer_generic_interact_injured_recovering_02",
@@ -11452,7 +11476,6 @@
 					"explorer_unique_journalist_interact_02",
 					"explorer_unique_journalist_interact_03",
 					"explorer_unique_journalist_interact_04",
-					"explorer_unique_journalist_story_fall_exodus_01",
 					"explorer_unique_journalist_interact_05",
 					"explorer_unique_journalist_interact_06",
 					"explorer_unique_journalist_interact_07",
@@ -11464,8 +11487,8 @@
 					"explorer_unique_journalist_interact_13",
 					"explorer_unique_journalist_interact_14",
 					"explorer_unique_journalist_interact_15",
+					"explorer_unique_journalist_interact_forced_investigate_01",
 					"explorer_unique_journalist_outside_01",
-					"explorer_unique_journalist_story_l14_01",
 					"explorer_unique_journalist_outside_02",
 					"explorer_unique_journalist_outside_03",
 					"explorer_unique_journalist_story_apocalypse_plan_ready_01",
@@ -11473,10 +11496,12 @@
 					"explorer_unique_journalist_story_debris_02",
 					"explorer_unique_journalist_story_escape_stay_01",
 					"explorer_unique_journalist_story_evacuation",
+					"explorer_unique_journalist_story_fall_exodus_01",
 					"explorer_unique_journalist_story_fall_investigate_01",
 					"explorer_unique_journalist_story_fall_investigate_02",
 					"explorer_unique_journalist_story_greenhouse_01",
 					"explorer_unique_journalist_story_greenhouse_02",
+					"explorer_unique_journalist_story_l14_01",
 					"explorer_unique_journalist_story_spacecraft",
 					"explorer_unique_journalist_story_spirits_found_01",
 					"explorer_unique_journalist_story_start",
@@ -11507,6 +11532,7 @@
 					"explorer_generic_interact_directions_safety_02",
 					"explorer_generic_interact_directions_scouted_01",
 					"explorer_generic_interact_directions_unscouted_01",
+					"explorer_generic_interact_forced_01",
 					"explorer_generic_interact_injured_outside_01",
 					"explorer_generic_interact_injured_party_01",
 					"explorer_generic_interact_injured_recovering_01",

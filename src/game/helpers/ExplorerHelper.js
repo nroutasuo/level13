@@ -75,6 +75,8 @@ define([
 		},
 
 		getForcedExplorerID: function () {
+			// NOTE: make sure there's corresponding dialogues, it's weird if an explorer is forced but doesn't explain why when you talk to them
+			
 			if (GameGlobals.gameState.getStoryFlag(StoryConstants.flags.SPIRITS_SEARCHING_FOR_SPIRITS) && !GameGlobals.tribeHelper.hasDeity()) {
 				return "gambler";
 			}
