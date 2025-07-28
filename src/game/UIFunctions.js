@@ -1273,6 +1273,15 @@ define(['ash',
 				return (($element).is(":visible"));
 			},
 
+			shouldIgnoreClick: function (e) {
+				if (e && e.target) {
+					// clicking on callouts that are part of clickable elements shouldn't trigger those elements
+					if ($(e.target).hasClass("info-callout-content")) return true;
+				}
+				
+				return false;
+			},
+
 			setText: function (selector, key, options) {
 				if (!selector) {
 					log.w("invalid selector for automatic text update");
@@ -1529,14 +1538,14 @@ define(['ash',
 					$(this).attr("data-long-tap-timeout", 0);
 				};
 				$element.on('mousedown', function (e) {
-					var target = e.target;
-					var $target = $(this);
+					let target = e.target;
+					let $target = $(this);
 					cancelLongTap()
-					var timer = setTimeout(function () {
+					let timer = setTimeout(function () {
 						cancelLongTap()
 						var interval = setInterval(function () {
 							if (GameGlobals.gameState.uiStatus.mouseDown && GameGlobals.gameState.uiStatus.mouseDownElement == target) {
-								callback.apply($target, e);
+								callback.apply($target, [ e ]);
 							} else {
 								cancelLongTap();
 							}
