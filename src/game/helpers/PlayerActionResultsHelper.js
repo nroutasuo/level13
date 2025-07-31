@@ -1359,8 +1359,9 @@ define([
 	
 			if (resultVO.selectedItems) {
 				for (let i = 0; i < resultVO.selectedItems.length; i++) {
-					var item = resultVO.selectedItems[i];
-					var isInteresting = 
+					let item = resultVO.selectedItems[i];
+					if (!item) continue;
+					let isInteresting = 
 						itemsComponent.getCountById(item.id, true) === 1 &&
 						!(item.equippable && !item.equipped) &&
 						item.type !== ItemConstants.itemTypes.artefact &&
