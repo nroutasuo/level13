@@ -2005,7 +2005,10 @@ define([
 				if (possibleStashVO.stashType == ItemConstants.STASH_TYPE_ITEM) {
 					let itemID = possibleStashVO.itemID;
 					let numOwned = itemsComponent.getCountByBaseId(ItemConstants.getBaseItemID(itemID), true);
-					if (numOwned >= 5) continue;
+					let maxOwned = 5;
+					let itemVO = ItemConstants.getItemDefinitionByID(itemID);
+					if (itemVO.type == ItemConstants.itemTypes.uniqueEquipment) maxOwned = 1;
+					if (numOwned >= maxOwned) continue;
 				}
 				
 				stashVO = possibleStashVO;
