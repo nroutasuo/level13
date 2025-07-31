@@ -605,15 +605,18 @@
 				let hasUseActionExtra = PlayerActionConstants.hasAction(useActionExtra);
 				let dismantleAction = "dismantle_in_" + key;
 				let canBeDismantled = def.canBeDismantled || false;
+
 				
 				let buildButton = "<button class='action action-build action-location' data-tab='switch-in' action='" + buildAction +"'>" + "" + "</button>";
 				var useButton = "";
 				if (hasUseAction) {
-					useButton = "<button class='action action-use action-location btn-narrow' data-tab='switch-in' action='" + useAction + "'>" + def.useActionName + "</button>";
+					let useActionLabel = Text.t(def.useActionNameKey);
+					useButton = "<button class='action action-use action-location btn-narrow' data-tab='switch-in' action='" + useAction + "'>" + useActionLabel + "</button>";
 				}
 				let useButton2 = "";
 				if (hasUseActionExtra) {
-					useButton2 = "<button class='action action-use2 action-location btn-narrow' data-tab='switch-in' action='" + useActionExtra + "'>" + def.useActionName2 + "</button>";
+					let useActionLabel2 = Text.t(def.useActionName2Key);
+					useButton2 = "<button class='action action-use2 action-location btn-narrow' data-tab='switch-in' action='" + useActionExtra + "'>" + useActionLabel2 + "</button>";
 				}
 				let improveButton = "";
 				if (hasImproveAction) {

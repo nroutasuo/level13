@@ -1335,9 +1335,9 @@ define(['ash',
 
 			GameGlobals.uiFunctions.setGameElementsVisibility(false);
 			GameGlobals.uiFunctions.showInfoPopup(
-				"Rest",
-				"Found a bench to sleep on and tried to regain some energy.",
-				"Continue",
+				Text.t("game.actions.nap_name"),
+				Text.t("ui.actions.nap_start_message"),
+				Text.t("ui.common.continue_button_label"),
 				null,
 				() => {
 					GameGlobals.uiFunctions.hideGame(false);
@@ -1348,12 +1348,12 @@ define(['ash',
 							if (excursionComponent) excursionComponent.numNaps++;
 							GameGlobals.gameState.increaseGameStatSimple("numTimesRestedOutside");
 							sys.playerStatsNodes.head.vision.value = Math.min(sys.playerStatsNodes.head.vision.value, PlayerStatConstants.VISION_BASE);
-							let logMsgFail = "Tried to rest but got attacked.";
+							let logMsgFail = Text.t("ui.actions.nap_fail_message");
 							let messages = {
 								id: LogConstants.MSG_ID_NAP,
 								msgSuccess: hasSleepingBag ? 
-									"Found a bench and rolled up in the sleeping bag, trying to get some rest." :
-									"Found a bench to sleep on. Barely feel rested.",
+									Text.t("ui.actions.nap_success_message_equipment") :
+									Text.t("ui.actions.nap_success_message_default"),
 								msgFlee: logMsgFail,
 								msgDefeat: logMsgFail,
 								addToLog: true,

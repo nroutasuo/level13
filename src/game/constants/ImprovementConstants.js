@@ -1,6 +1,6 @@
 define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConstants) {
 	
-	var ImprovementConstants = {
+	let ImprovementConstants = {
 
 		improvements: {
 			beacon: {
@@ -10,15 +10,15 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 				canBeDismantled: false,
 			},
 			home: {
-				useActionName: "Rest",
+				useActionNameKey: "game.actions.use_home_name",
 				improvementLevelsPerTechLevel: 0,
 				sortScore: 10000,
 				canBeDismantled: false,
 			},
 			campfire: {
 				displayNames: [ "campfire_name_default", "campfire_name_l2", "campfire_name_l3" ],
-				useActionName: "Sit down",
-				useActionName2: "Light",
+				useActionNameKey: "game.actions.use_campfire_name",
+				useActionName2Key: "use_campfire_2_name",
 				improvementLevelsPerTechLevel: 5,
 				improvementLevelsPerMajorLevel: 5,
 				logMsgImproved: "ui.log.improved_campfire_message",
@@ -44,14 +44,14 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 			hospital: {
 				canBeDismantled: true,
 				displayNames: [ "hospital_name_l1", "hospital_name_default", "hospital_name_l3" ],
-				useActionName: "Treatment",
-				useActionName2: "Augment",
+				useActionNameKey: "game.actions.use_hospital_name",
+				useActionName2Key: "game.actions.use_hospital_2_name",
 				improvementLevelsPerTechLevel: 1,
 				improvementLevelsPerMajorLevel: 1,
 			},
 			market: {
 				canBeDismantled: true,
-				useActionName: "Visit",
+				useActionNameKey: "game.actions.use_market_name",
 				improvementLevelsPerTechLevel: 5,
 				improvementLevelsPerMajorLevel: 5,
 			},
@@ -62,7 +62,7 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 			},
 			library: {
 				canBeDismantled: true,
-				useActionName: "Study",
+				useActionNameKey: "game.actions.use_library_name",
 				improvementLevelsPerTechLevel: 5,
 				logMsgImproved: "ui.log.improved_library_message",
 			},
@@ -76,12 +76,12 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 			},
 			temple: {
 				canBeDismantled: true,
-				useActionName: "Donate",
+				useActionNameKey: "game.actions.use_temple_name",
 				improvementLevelsPerTechLevel: 5,
 			},
 			shrine: {
 				canBeDismantled: true,
-				useActionName: "Meditate",
+				useActionNameKey: "game.actions.use_shrine_name",
 				improvementLevelsPerTechLevel: 5,
 				improvementLevelsPerMajorLevel: 5,
 			},

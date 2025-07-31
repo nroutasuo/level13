@@ -251,7 +251,7 @@
 						</div>
 						<div class="unit unit golden-small">
 							<div id="in-population" class="infobox">
-								<h3>Population</h3>
+								<h3 id="in-population-header">Population</h3>
 								<div id="in-population-details" class="infobox" style='display:none'>
 									<div id="in-population-status">
 										<span id="in-population-status-free"></span>
@@ -466,7 +466,7 @@
 								<div id="item-slot-shoes" class="item-slot item-slot-big lvl13-box-1"></div>
 							</div>
 							<div class="select-container" id="bag-autoequip-container">
-								<span class="label">Equip best:</span>
+								<span class="label text-key" data-text-key="ui.inventory.equip_best_label">Equip best:</span>
 								<select id="select-bag-autoequip-type"></select>
 								<button id="btn-bag-autoequip" class="action btn-mini" action="auto_equip">Equip</button>
 							</div>
@@ -499,7 +499,8 @@
 							<div class="subheader">
 								<h3 class="text-key" data-text-key="ui.inventory.craft_item_header"></h3>
 							</div>
-							<input type="checkbox" class="checkbox" id="checkbox-crafting-show-obsolete" /><p class="checkbox-label" id="label-crafting-show-obsolete">Show obsolete</p>
+							<input type="checkbox" class="checkbox" id="checkbox-crafting-show-obsolete" />
+							<p class="checkbox-label text-key" id="label-crafting-show-obsolete" data-text-key="ui.inventory.crafting_show_obsolete_label">Show obsolete</p>
 							<div id="self-craft" class="actionbox">
 							</div>
 						</div>
