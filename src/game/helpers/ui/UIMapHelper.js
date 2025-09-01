@@ -1,5 +1,6 @@
 // Creates and updates maps (mini-map and main)
 define(['ash',
+	'text/Text',
 	'utils/CanvasUtils',
 	'utils/MapElements',
 	'utils/MapUtils',
@@ -30,7 +31,7 @@ define(['ash',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/improvements/WorkshopComponent',
 	'game/vos/PositionVO'],
-function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
+function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 	GameGlobals, GlobalSignals, ColorConstants, GameConstants, ExplorerConstants, UIConstants, CanvasConstants, ExplorationConstants, ItemConstants, MovementConstants, PositionConstants, SectorConstants, StoryConstants, WorldConstants,
 	PlayerPositionNode,
 	LevelComponent, CampComponent, PositionComponent, ItemsComponent,
@@ -167,71 +168,99 @@ function (Ash, CanvasUtils, MapElements, MapUtils, MathUtils,
 		
 		getSectorASCII: function (mapMode, sector) {
 			if (sector == null) return " ";
+
+			let playerPos = this.playerPosNodes.head.position.getPosition();			
+			let sectorPos = sector.get(PositionComponent);
+
+			if (playerPos.equals(sectorPos)) return UIConstants.ASCII_MAP_SYMBOL_PLAYER;				
+			if (sector.has(CampComponent)) return UIConstants.ASCII_MAP_SYMBOL_CAMP;
 			
 			let sectorStatus = this.getSectorStatus(sector);
 			
 			if (sectorStatus == null) return " ";
 			if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE) return " ";
-			if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE) return "?";
+			if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE) return UIConstants.ASCII_MAP_SYMBOL_UNVISITED;
+				
+			let sectorPassages = sector.get(PassagesComponent);
+			if (sectorPassages.passageUp) return UIConstants.ASCII_MAP_SYMBOL_PASSAGE_UP;
+			if (sectorPassages.passageDown) return UIConstants.ASCII_MAP_SYMBOL_PASSAGE_DOWN;
 			
 			if (mapMode == MapUtils.MAP_MODE_HAZARDS) {
+				// hazards map mode
 				if (this.hasHazard(sector)) {
 					if (this.isAffectedByHazard(sector)) {
-						return "H";
+						return UIConstants.ASCII_MAP_SYMBOL_HAZARD_AFFECTED;
 					} else {
-						return "h";
+						return UIConstants.ASCII_MAP_SYMBOL_HAZARD_LOW;
 					}
 				}
-				return "x";
-			}
-			
-			if (mapMode == MapUtils.MAP_MODE_SCAVENGING) {
+				return UIConstants.ASCII_MAP_SYMBOL_GENERIC_SECTOR;
+
+			} else if (mapMode == MapUtils.MAP_MODE_SCAVENGING) {
+				// scavenging map mode
+				if (GameGlobals.sectorHelper.hasSectorVisibleIngredients(sector)) {
+					return UIConstants.ASCII_MAP_SYMBOL_RES_INGREDIENT;
+				}
 				if (GameGlobals.sectorHelper.hasSectorKnownResource(sector, resourceNames.water)) {
-					return "W";
+					return UIConstants.ASCII_MAP_SYMBOL_RES_WATER;
 				}
 				if (GameGlobals.sectorHelper.hasSectorKnownResource(sector, resourceNames.food)) {
-					return "F";
+					return UIConstants.ASCII_MAP_SYMBOL_RES_FOOD;
 				}
 				if (GameGlobals.sectorHelper.hasSectorKnownResource(sector, resourceNames.metal, WorldConstants.resourcePrevalence.COMMON)) {
-					return "M";
+					return UIConstants.ASCII_MAP_SYMBOL_RES_METAL;
 				}
-				if (GameGlobals.sectorHelper.hasSectorVisibleIngredients(sector)) {
-					return "I";
-				}
-				return "x";
+				return UIConstants.ASCII_MAP_SYMBOL_GENERIC_SECTOR;
+
+			} else {
+				// default map mode
+				
+				if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_VISITED_UNSCOUTED) return UIConstants.ASCII_MAP_SYMBOL_VISITED;
+				if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_REVEALED_BY_MAP) return UIConstants.ASCII_MAP_SYMBOL_UNVISITED;
+
+				let numUnscoutedLocales = GameGlobals.sectorHelper.getNumVisibleUnscoutedLocales(sector);
+				
+				if (numUnscoutedLocales > 0) return UIConstants.ASCII_MAP_SYMBOL_POINT_OF_INTEREST;
+				
+				if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED) return UIConstants.ASCII_MAP_SYMBOL_VISITED;
+				if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_VISITED_CLEARED) return UIConstants.ASCII_MAP_SYMBOL_CLEARED;
+						
+				return UIConstants.ASCII_MAP_SYMBOL_UNVISITED;
 			}
-			
-			if (sector.has(CampComponent)) return "C";
-			
-			if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_VISITED_UNSCOUTED) return "0";
-			if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_REVEALED_BY_MAP) return "0";
-			
-			var sectorPassages = sector.get(PassagesComponent);
-			if (sectorPassages.passageUp) return "U";
-			if (sectorPassages.passageDown) return "D";
-			
-			let numUnscoutedLocales = GameGlobals.sectorHelper.getNumVisibleUnscoutedLocales(sector);
-			
-			if (numUnscoutedLocales > 0) return "!";
-			
-			if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED) return "0";
-			if (sectorStatus == SectorConstants.MAP_SECTOR_STATUS_VISITED_CLEARED) return "X";
-					
-			return "?";
 		},
 		
 		getASCIILegend: function (mapMode) {
+			let parts = [];
+
+			parts.push(Text.t("ui.map.ascii_legend_piece_template", { symbol: UIConstants.ASCII_MAP_SYMBOL_PLAYER, description: "ui.map.ascii_legend_player" }));
+			parts.push(Text.t("ui.map.ascii_legend_piece_template", { symbol: UIConstants.ASCII_MAP_SYMBOL_CAMP, description: "ui.map.ascii_legend_camp" }));
+			parts.push(Text.t("ui.map.ascii_legend_piece_template", { symbol: UIConstants.ASCII_MAP_SYMBOL_UNVISITED, description: "ui.map.ascii_legend_sector_unvisited" }));
+			parts.push(Text.t("ui.map.ascii_legend_piece_template", { symbol: UIConstants.ASCII_MAP_SYMBOL_PASSAGE_UP, description: "ui.map.ascii_legend_passage_up" }));
+			parts.push(Text.t("ui.map.ascii_legend_piece_template", { symbol: UIConstants.ASCII_MAP_SYMBOL_PASSAGE_DOWN, description: "ui.map.ascii_legend_passage_down" }));
+
 			switch (mapMode) {
-				case MapUtils.MAP_MODE_DEFAULT:
-					return "? = unvisited, 0 = visited, X = cleared, C = camp, U = passage up, D = passage down, ! = point of interest";
 				case MapUtils.MAP_MODE_HAZARDS:
-					return "? = unvisited, x = default, H = hazard (high), h = hazard (low)";
+					parts.push(Text.t("ui.map.ascii_legend_piece_template", { symbol: UIConstants.ASCII_MAP_SYMBOL_GENERIC_SECTOR, description: "ui.map.ascii_legend_sector_default" }));
+					parts.push(Text.t("ui.map.ascii_legend_piece_template", { symbol: UIConstants.ASCII_MAP_SYMBOL_HAZARD_AFFECTED, description: "ui.map.ascii_legend_hazard_high" }));
+					parts.push(Text.t("ui.map.ascii_legend_piece_template", { symbol: UIConstants.ASCII_MAP_SYMBOL_HAZARD_LOW, description: "ui.map.ascii_legend_hazard_low" }));
+					break;
 				case MapUtils.MAP_MODE_SCAVENGING:
-					return "? = unvisited, x = default, I = crafting ingredients, W = water, F = food, M = metal";
+					parts.push(Text.t("ui.map.ascii_legend_piece_template", { symbol: UIConstants.ASCII_MAP_SYMBOL_GENERIC_SECTOR, description: "ui.map.ascii_legend_sector_default" }));
+					parts.push(Text.t("ui.map.ascii_legend_piece_template", { symbol: UIConstants.ASCII_MAP_SYMBOL_RES_WATER, description: "ui.map.ascii_legend_res_water" }));
+					parts.push(Text.t("ui.map.ascii_legend_piece_template", { symbol: UIConstants.ASCII_MAP_SYMBOL_RES_FOOD, description: "ui.map.ascii_legend_res_food" }));
+					parts.push(Text.t("ui.map.ascii_legend_piece_template", { symbol: UIConstants.ASCII_MAP_SYMBOL_RES_METAL, description: "ui.map.ascii_legend_res_metal" }));
+					parts.push(Text.t("ui.map.ascii_legend_piece_template", { symbol: UIConstants.ASCII_MAP_SYMBOL_RES_INGREDIENT, description: "ui.map.ascii_legend_res_ingredient" }));
+					break;
+				case MapUtils.MAP_MODE_DEFAULT:
+					parts.push(Text.t("ui.map.ascii_legend_piece_template", { symbol: UIConstants.ASCII_MAP_SYMBOL_VISITED, description: "ui.map.ascii_legend_sector_visited" }));
+					parts.push(Text.t("ui.map.ascii_legend_piece_template", { symbol: UIConstants.ASCII_MAP_SYMBOL_CLEARED, description: "ui.map.ascii_legend_sector_cleared" }));
+					parts.push(Text.t("ui.map.ascii_legend_piece_template", { symbol: UIConstants.ASCII_MAP_SYMBOL_POINT_OF_INTEREST, description: "ui.map.ascii_legend_sector_poi" }));
+					break;
 				default:
-					log.w("no ASCII map legend defined for map mode: " + mapMode);
-					return "";
+					log.e("no ASCII map legend defined for map mode: " + mapMode);
 			}
+
+			return parts.join(", ");
 		},
 
 		rebuildMapWithCanvas: function (canvas, ctx, options, visibleSectors, allSectors, dimensions) {
