@@ -579,7 +579,7 @@
 				},
 				{
 					"id": "reject",
-					"key": "character_crafter_default_event_04_p1_reject"
+					"key": "character_crafter_default_event_03_refuse"
 				}
 			]
 		},
@@ -2121,6 +2121,9 @@
 			]
 		},
 		"character_generic_story_government_negative": {
+			"conditions": {
+				"numCamps": 3
+			},
 			"pages": [
 				"character_generic_story_government_negative_p1"
 			]
