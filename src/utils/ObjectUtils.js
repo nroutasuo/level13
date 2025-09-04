@@ -19,6 +19,19 @@ define([], function () {
 			}
 			return o1;
 		},
+
+		keysMatch: function (o1, o2, keys) {
+			if (o1 == null || o2 == null) return false;
+
+			var keysToCheck = Array.isArray(keys) ? keys : [ keys ];
+
+			for (var key of keysToCheck) {
+				if (!(key in o1) || !(key in o2)) return false;
+				if (o1[key] !== o2[key]) return false;
+			}
+
+			return true;
+}
 		
 	};
 
