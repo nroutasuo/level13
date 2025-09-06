@@ -102,6 +102,12 @@ define(['ash',
                 }
             },
 
+            getCurrentDialogeID: function () {
+                if (!this.dialogueNodes.head.dialogue) return "(none)";
+                if (!this.dialogueNodes.head.dialogue.activeDialogue) return "(none)";
+                return this.dialogueNodes.head.dialogue.activeDialogue.dialogueID;
+            },
+
             getCurrentPageVO: function () {
                 if (!this.dialogueNodes.head) return null;
 

@@ -12,6 +12,8 @@ define([
 	
 	let DialogueSystem = Ash.System.extend({
 
+		context: "DialogueSystem",
+
         dialogueNodes: null,
 
 		addToEngine: function (engine) {
@@ -120,8 +122,7 @@ define([
 			let pageID = this.selectFirstPage();
 
 			if (!pageID && pageID !== 0) {
-				log.w("no first page found for dialogue");
-				if (GameConstants.isDebugVersion) debugger
+				log.e("no first page found for dialogue " + GameGlobals.dialogueHelper.getCurrentDialogeID(), this);
 				return;
 			}
 			
@@ -191,8 +192,7 @@ define([
 			let currentPageVO = GameGlobals.dialogueHelper.getCurrentPageVO();
 
 			if (!currentPageVO) {
-				if (GameConstants.isDebugVersion) debugger
-				log.w("no page found");
+				log.e("no current page found for dialogue " + GameGlobals.dialogueHelper.getCurrentDialogeID(), this);
 				this.endDialogue();
 				return;
 			}
@@ -204,14 +204,12 @@ define([
 			let optionVO = currentPageVO.optionsByID[optionID];
 
 			if (!optionVO) {
-				if (GameConstants.isDebugVersion) debugger
-				log.w("no option for id " + optionID);
+				log.e("no option '" + optionID + "' found for dialogue " + GameGlobals.dialogueHelper.getCurrentDialogeID(), this);
 				this.endDialogue();
 				return;
 			}
 
 			// TODO check conditions
-			// TODO DEDUCT COSTS
 
 			let responsePageID = optionVO.responsePageID;
 
