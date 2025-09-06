@@ -1360,7 +1360,10 @@ define([
 			if (resultVO.selectedItems) {
 				for (let i = 0; i < resultVO.selectedItems.length; i++) {
 					let item = resultVO.selectedItems[i];
-					if (!item) continue;
+					if (!item) {
+						log.e("null item in resultVO.selectedItems (action:" + resultVO.action + ")");
+						continue;
+					}
 					let isInteresting = 
 						itemsComponent.getCountById(item.id, true) === 1 &&
 						!(item.equippable && !item.equipped) &&
