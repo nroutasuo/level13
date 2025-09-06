@@ -43,7 +43,11 @@ define( function () {
 			result += " | ";
 			result += "<a href='mailto:" + a.join("@") + "' rel='noopener noreferrer'>email</a>";
 			return result;
-		}
+		},
+
+		isOfficialVersion: function () {
+			return window.location.hostname === "nroutasuo.github.io";
+		},
 
 	};
 	return GameConstants;

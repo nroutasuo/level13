@@ -22,8 +22,12 @@ define([
 			GameConstants.isCheatsEnabled = config.isCheatsEnabled;
 			GameConstants.isAutosaveEnabled = config.isAutosaveEnabled;
 			ConsoleLogger.logInfo = config.isDebugOutputEnabled;
+
+			let isOfficialVersion = GameConstants.isOfficialVersion();
+			let errorCount = 0;
+			let errorLimit = 10;
 			
-			if (config.isTrackingEnabled) {
+			if (config.isTrackingEnabled && isOfficialVersion) {
 				try {
 					// init GlitchTip for error tracking
 					Sentry.init({
@@ -31,6 +35,11 @@ define([
 						tracesSampleRate: 0.01,
 						environment: config.isDebugVersion ? "development" : "production",
   						release: "l13-" + config.version,
+						beforeSend: function (event, hint) {
+							errorCount++;
+							if (errorCount > errorLimit) return null;
+							return event;
+						}
 					});
 				} catch (e) {
 					log.w("error tracking not initialized");
