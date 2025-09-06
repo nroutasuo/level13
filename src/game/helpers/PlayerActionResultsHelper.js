@@ -496,7 +496,9 @@ define([
 			
 			let finalInjuryProbability = resultVO.lostPerks.length > 0 ? injuryProbability / 2 : injuryProbability;
 			resultVO.gainedPerks = this.getResultInjuries(finalInjuryProbability, sourceAction, enemyVO);
-			resultVO.gainedExplorerInjuries = this.getResultInjuriesExplorer(finalInjuryProbability, sourceAction, enemyVO, resultVO.lostExplorers);
+
+			let explorerInjuryProbability = (injuryProbability + loseExplorerProbability) / 2;
+			resultVO.gainedExplorerInjuries = this.getResultInjuriesExplorer(injuryProbability, sourceAction, enemyVO, resultVO.lostExplorers);
 
 			return resultVO;
 		},
