@@ -2,7 +2,7 @@
 // A world (WorldVO) consists of LevelVOs which in turn consist of SectorVOs.
 define([
 	'ash',
-	'utils/MathUtils',
+	'utils/FlowUtils',
 	'game/constants/WorldConstants',
 	'worldcreator/WorldCreatorHelper',
 	'worldcreator/WorldCreatorRandom',
@@ -17,9 +17,9 @@ define([
 	'worldcreator/StructureGenerator',
 	'worldcreator/SectorGenerator',
 ], function (
-	Ash, MathUtils, WorldConstants,
 	WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug, WorldCreatorLogger, EnemyCreator,
 	WorldVO, LevelVO, SectorVO, WorldGenerator, LevelGenerator, StructureGenerator, SectorGenerator,
+	Ash, FlowUtils, WorldConstants,
 ) {
 	var context = "WorldCreator";
 
@@ -74,28 +74,6 @@ define([
 				});
 				
 			}.bind(this));
-		},
-		
-		// TODO put this (executeTasksInSteps + executeTaskInSteps) to some utils
-		
-		executeTasksInSteps: function (tasks, cb, errorcb) {
-			this.executeTaskInSteps(tasks, 0, cb, errorcb);
-		},
-		
-		executeTaskInSteps: function (tasks, i, cb, errorcb) {
-			if (tasks.length == 0 || i >= tasks.length) {
-				cb();
-				return;
-			}
-			
-			setTimeout(() => {
-				try {
-					tasks[i]();
-					this.executeTaskInSteps(tasks, i + 1, cb, errorcb);
-				} catch (ex) {
-					errorcb(ex);
-				}
-			}, 1);
 		},
 
 		discardWorld: function () {
