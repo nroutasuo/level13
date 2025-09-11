@@ -3,17 +3,17 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 
 	var LevelVO = Ash.Class.extend({
 	
-		constructor: function (level, levelOrdinal, campOrdinal, isCampable, isHard, notCampableReason, habitability, raidDangerFactor, numSectors) {
+		constructor: function (level) {
 			this.level = level;
-			this.levelOrdinal = levelOrdinal;
-			this.campOrdinal = campOrdinal;
-			this.isCampable = isCampable;
-			this.isHard = isHard;
-			this.notCampableReason = notCampableReason;
-			this.habitability = habitability;
-			this.raidDangerFactor = raidDangerFactor;
-			this.numSectors = numSectors;
-			this.maxSectors = numSectors + WorldCreatorConstants.getMaxSectorOverflow(levelOrdinal);
+			this.levelOrdinal = 1;
+			this.campOrdinal = 1;
+			this.isCampable = false;
+			this.isHard = false;
+			this.notCampableReason = null;
+			this.habitability = 1;
+			this.raidDangerFactor = 1;
+			this.numSectors = 0;
+			this.maxSectors = 1;;
 			this.numSectorsByStage = {};
 			
 			this.campPosition = null;
@@ -21,7 +21,6 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			this.passageUpPosition = null;
 			this.passageDownPosition = null;
 			this.stageCenterPositions = {};
-			this.zones = [];
 			
 			this.sectors = [];
 			this.sectorsByStage = {};

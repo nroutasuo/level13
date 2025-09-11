@@ -55,7 +55,7 @@ function (Ash, ConsoleLogger, WorldConstants, WorldCreatorHelper, WorldCreatorLo
 				var levelVO = worldVO.levels[l];
 				var stages = worldVO.getStages(l);
 				var stagess = stages.map(stage => stage.stage).join(",");
-				WorldCreatorLogger.i("Level " + levelVO.level + ", camp ordinal: " + levelVO.campOrdinal + ", stages: " + stagess + ", sectors: " + levelVO.numSectors + ", zones: " + levelVO.zones.length);
+				WorldCreatorLogger.i("Level " + levelVO.level + ", camp ordinal: " + levelVO.campOrdinal + ", stages: " + stagess + ", sectors: " + levelVO.numSectors);
 				WorldCreatorLogger.i("- passage positions: up: " + levelVO.passageUpPosition + ", down: " + levelVO.passageDownPosition);
 				WorldCreatorLogger.i("- camp position: " + levelVO.campPosition);
 				WorldCreatorLogger.i("- excursion start position: " + levelVO.excursionStartPosition);
@@ -79,7 +79,6 @@ function (Ash, ConsoleLogger, WorldConstants, WorldCreatorHelper, WorldCreatorLo
 			for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
 				var levelVO = worldVO.getLevel(l);
 				this.printLevel(worldVO, levelVO, function (sectorVO) {
-					var criticalPath = sectorVO.getCriticalPathC();
 					var zone = sectorVO.getZoneC();
 					return { char: zone, color: null }
 				});

@@ -1,6 +1,7 @@
+// result of world generation, used to create level and sector entities
 define(['ash'], function (Ash) {
 
-	var WorldVO = Ash.Class.extend({
+	let WorldVO = Ash.Class.extend({
 	
 		constructor: function (seed, topLevel, bottomLevel) {
 			this.seed = seed;
@@ -22,10 +23,6 @@ define(['ash'], function (Ash) {
 				levelVO.clear();
 			}
 			this.levels = [];
-		},
-		
-		addLevel: function (l) {
-			this.levels[l.level] = l;
 		},
 		
 		getLevel: function (l) {

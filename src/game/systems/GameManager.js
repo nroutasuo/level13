@@ -446,7 +446,7 @@ define([
 				log.i("START " + GameConstants.STARTTimeNow() + "\t generating world, try " + tryNumber + "/" + maxTries);
 				let s = seed + (tryNumber - 1) * 111;
 				
-				WorldCreator.prepareWorld(s, GameGlobals.itemsHelper).then(worldVO => {
+				WorldCreator.createWorld(s, GameGlobals.itemsHelper).then(worldVO => {
 					log.i("START " + GameConstants.STARTTimeNow() + "\t validating world");
 					let validationResult = WorldValidator.validateWorld(worldVO);
 					resolve({ worldVO: worldVO, validationResult: validationResult });

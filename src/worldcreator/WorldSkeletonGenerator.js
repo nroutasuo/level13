@@ -1,4 +1,4 @@
-// Handles the first step of world generation, the abstract world template itself;
+// generates an overall stucture for the world, independent of specific levels or sectors, first step in world gen
 define([
 	'ash',
 	'worldcreator/WorldCreatorConstants',
@@ -11,19 +11,17 @@ define([
 	'game/vos/PositionVO',
 	'game/constants/SectorConstants',
 	'game/constants/PositionConstants',
-	'game/constants/StoryConstants',
 	'game/constants/WorldConstants',
-], function (Ash, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorLogger, WorldFeatureVO, StageVO, DistrictVO, PositionVO, SectorConstants, PositionConstants, StoryConstants, WorldConstants) {
+], function (Ash, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorLogger, WorldFeatureVO, StageVO, DistrictVO, PositionVO, SectorConstants, PositionConstants, WorldConstants) {
 	
-	let WorldGenerator = {
-		
-		prepareWorld: function (seed, worldVO) {
+	let WorldSkeletonGenerator = {
+
+		generate: function (seed, worldVO) {
 			worldVO.features = worldVO.features.concat(this.generateHoles(seed));
 			worldVO.stages = this.generateStages(seed);
 			worldVO.campPositions = this.generateCampPositions(seed, worldVO.features);
 			worldVO.passagePositions = this.generatePassagePositions(seed, worldVO.features, worldVO.campPositions);
 			worldVO.districts = this.generateDistricts(seed, worldVO.features);
-			worldVO.examineSpotsPerLevel = this.generateExamineSpotsPerLevel(seed);
 		},
 		
 		generateHoles: function (seed) {
@@ -91,7 +89,7 @@ define([
 					if (l == 13) {
 						position = new PositionVO(l, 0, 0);
 					} else {
-						var isValid = function (pos) { return WorldGenerator.isValidCampPos(seed, pos, positionsByLevel, features); };
+						var isValid = function (pos) { return WorldSkeletonGenerator.isValidCampPos(seed, pos, positionsByLevel, features); };
 						position = WorldCreatorRandom.randomSectorPositionWithCheck(seed % 10 + (l+10) * 55, "camp pos", l, maxCenterDist, center, 0, isValid);
 					}
 				}
@@ -111,23 +109,6 @@ define([
 				var up = previousDown ? new PositionVO(l, previousDown.sectorX, previousDown.sectorY) : null;
 				var down = l == bottomLevel ? null : this.getPassageDownPosition(seed, l, features, up, campThisUp, campPosDown);
 				result[l] = { up: up, down: down };
-			}
-			return result;
-		},
-
-		generateExamineSpotsPerLevel: function (seed) {
-			let result = {}; // level => [ id ] 
-			let spotDefinitions = StoryConstants.sectorExamineSpots;
-			for (let i = 0; i < spotDefinitions.length; i++) {
-				let def = spotDefinitions[i];
-				let campOrdinal = def.positionParams.campOrdinal;
-				let levels = WorldCreatorHelper.getLevelsForCamp(seed, campOrdinal);
-				let levelIndex = def.positionParams.levelIndex;
-				let level = typeof levelIndex === "undefined" ?
-					WorldCreatorRandom.getRandomItemFromArray(seed, levels) :
-					levels[Math.min(levelIndex, levels.length - 1)];
-				if (!result[level]) result[level] = [];
-				result[level].push(def.id);
 			}
 			return result;
 		},
@@ -199,7 +180,7 @@ define([
 				var rseed = seed % (1000 - i * 99) + 7 + (level + 13) * 101;
 				var candidate = WorldCreatorRandom.randomSectorPositionWithCheck(
 					rseed, "passage down pos " + level, level, maxDiff, averagePos, minDiff,
-					(pos) => WorldGenerator.isValidPassageDownPos(seed, pos, features, passageUp, campPos1, campPos2)
+					(pos) => WorldSkeletonGenerator.isValidPassageDownPos(seed, pos, features, passageUp, campPos1, campPos2)
 				);
 				let score = PositionConstants.getDistanceTo(candidate, averagePos);
 				candidates.push({ result: candidate, score: score });
@@ -322,5 +303,5 @@ define([
 
 	};
 	
-	return WorldGenerator;
+	return WorldSkeletonGenerator;
 });
