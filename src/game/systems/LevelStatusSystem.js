@@ -57,6 +57,7 @@ define([
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			
 			GlobalSignals.add(this, GlobalSignals.gameStateReadySignal, this.updateAll);
+			GlobalSignals.add(this, GlobalSignals.levelStateReadySignal, this.onLevelStateReady);
 			GlobalSignals.add(this, GlobalSignals.sectorScoutedSignal, this.onSectorScouted);
 			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.updateAll);
 			GlobalSignals.add(this, GlobalSignals.campBuiltSignal, this.updateAllLevels);
@@ -104,10 +105,11 @@ define([
 			let passageUp = passagesComponent.passageUp;
 			let passageDown = passagesComponent.passageDown;
 			if (passageUp == null && passageDown == null) return;
-
+			
 			let positionComponent = entity.get(PositionComponent);
 			let improvementsComponent = entity.get(SectorImprovementsComponent);
 			let s = positionComponent.sectorId();
+
 			let passageUpBuilt =
 				improvementsComponent.getCount(improvementNames.passageUpStairs) > 0 ||
 				improvementsComponent.getCount(improvementNames.passageUpHole) > 0 ||
@@ -116,8 +118,8 @@ define([
 				improvementsComponent.getCount(improvementNames.passageDownStairs) > 0 ||
 				improvementsComponent.getCount(improvementNames.passageDownHole) > 0 ||
 				improvementsComponent.getCount(improvementNames.passageDownElevator) > 0;
-			let levelEntity = GameGlobals.levelHelper.getLevelEntityForSector(entity);
 			
+			let levelEntity = GameGlobals.levelHelper.getLevelEntityForSector(entity);
 			this.updateLevelPassagesComponent(levelEntity, s, passageUp, passageUpBuilt, passageDown, passageDownBuilt);
 		},
 
@@ -267,6 +269,10 @@ define([
 					return;
 				}
 			}
+		},
+
+		onLevelStateReady: function (level) {
+			this.updateAllPassages();
 		},
 		
 		getLevelPreviousLevelsMaxHazard: function (level, hazardType) {

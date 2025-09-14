@@ -337,15 +337,15 @@ define([
 					var entitiesObject = save.entitiesObject;
 					var failedComponents = 0;
 					var saveWarningShown = false;
-
+					
 					failedComponents += GameGlobals.saveHelper.loadEntity(entitiesObject, GameGlobals.saveHelper.saveKeys.player, this.player);
 					failedComponents += GameGlobals.saveHelper.loadEntity(entitiesObject, GameGlobals.saveHelper.saveKeys.tribe, this.tribe);
-
+					
 					if (!saveWarningShown && failedComponents > 0) {
 						saveWarningShown = true;
 						this.showSaveWarning(save.version);
 					}
-
+					
 					var sectorNodes = this.engine.getNodeList(SectorNode);
 					let positionComponent;
 					var saveKey;
@@ -353,19 +353,19 @@ define([
 						positionComponent = sectorNode.entity.get(PositionComponent);
 						saveKey = GameGlobals.saveHelper.saveKeys.sector + positionComponent.level + "." + positionComponent.sectorX + "." + positionComponent.sectorY;
 						failedComponents += GameGlobals.saveHelper.loadEntity(entitiesObject, saveKey, sectorNode.entity);
-
+						
 						if (!saveWarningShown && failedComponents > 0) {
 							saveWarningShown = true;
 							this.showSaveWarning(save.version);
 						}
 					}
-
+					
 					var levelNodes = this.engine.getNodeList(LevelNode);
 					for (var levelNode = levelNodes.head; levelNode; levelNode = levelNode.next) {
 						positionComponent = levelNode.entity.get(PositionComponent);
 						saveKey = GameGlobals.saveHelper.saveKeys.level + positionComponent.level;
 						failedComponents += GameGlobals.saveHelper.loadEntity(entitiesObject, saveKey, levelNode.entity);
-
+						
 						if (!saveWarningShown && failedComponents > 0) {
 							saveWarningShown = true;
 							this.showSaveWarning(save.version);
@@ -382,9 +382,9 @@ define([
 							this.showSaveWarning(save.version);
 						}
 					}
-
+					
 					log.i("Loaded from " + save.timeStamp + ", save version: " + save.version);
-
+					
 					if (failedComponents > 0) {
 						log.w(failedComponents + " components failed to load.");
 					}
@@ -400,13 +400,25 @@ define([
 			})
 		},
 
-		generateLevel: function (level, cb) {
-			GameGlobals.worldHelper.generateLevel(level)
-			.then((worldVO) => this.createWorldEntities(worldVO, [ level ]))
-			.then(() => { 
-				GlobalSignals.levelGeneratedSignal.dispatch(level);
-			 })
-			.then(() => cb());
+		generateLevel: function (level) {
+			return new Promise((resolve, reject) => {
+				if (GameGlobals.worldHelper.isLevelGenerated(level)) {
+					resolve();
+				} else {
+					log.i("world: generate level: " + level, this);
+
+					GameGlobals.worldHelper.generateLevel(level)
+					.then((worldVO) => this.createWorldEntities(worldVO, [ level ]))
+					.then(() => { 
+						GlobalSignals.levelGeneratedSignal.dispatch(level);
+					})
+					.then(() => { 
+						GlobalSignals.levelStateReadySignal.dispatch(level);
+					})
+					.then(() => resolve())
+					.catch(ex => { ExceptionHandler.handleException(ex); });
+				}
+			})
 		},
 		
 		getSaveObject: function () {
@@ -423,7 +435,7 @@ define([
 			}
 			return null;
 		},
-
+		
 		getMetaStateObject: function () {
 			let saveSystem = this.engine.getSystem(SaveSystem);
 			try {

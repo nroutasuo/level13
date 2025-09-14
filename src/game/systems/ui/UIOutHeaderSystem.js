@@ -1211,7 +1211,8 @@ define([
 			if (GameGlobals.gameState.uiStatus.forceSunlit) sunlit = true;
 			if (GameGlobals.gameState.uiStatus.forceDark) sunlit = false;
 
-			if (GameGlobals.gameState.uiStatus.isHidden) return;
+			// nice if theme transition can happen while loading new level when moving to a new level
+			// if (GameGlobals.gameState.uiStatus.isHidden) return;
 			
 			this.updateThemeTo(sunlit);
 		},
@@ -1222,7 +1223,7 @@ define([
 				return;
 			}
 			
-			log.w("[ui] update theme to: " + (sunlit ? "sunlit" : "dark"));
+			log.i("[ui] update theme to: " + (sunlit ? "sunlit" : "dark"));
 			this.transitionTheme(wasSunlit, sunlit);
 		},
 		

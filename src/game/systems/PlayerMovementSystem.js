@@ -10,11 +10,12 @@ define([
 	'game/nodes/player/PlayerMovementNode',
 	'game/nodes/PlayerPositionNode',
 	'game/components/common/CampComponent',
+	'game/components/common/PositionComponent',
 	'game/components/common/MovementComponent',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/player/ExcursionComponent',
 	'game/vos/PositionVO',
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, PositionConstants, UIConstants, PlayerMovementNode, PlayerPositionNode, CampComponent, MovementComponent, SectorFeaturesComponent, ExcursionComponent, PositionVO) {
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, PositionConstants, UIConstants, PlayerMovementNode, PlayerPositionNode, CampComponent, PositionComponent, MovementComponent, SectorFeaturesComponent, ExcursionComponent, PositionVO) {
 
 	let PlayerMovementSystem = Ash.System.extend({
 		
@@ -49,54 +50,72 @@ define([
 		startPendingMovement: function () {
 			if (this.currentMovementTarget != null) return;
 			if (this.pendingMovementTarget == null) return;
+
 			let position = this.pendingMovementTarget;
 			let action = this.pendingMovementAction;
 			this.movePlayer(position, false, action);
+
 			this.pendingMovementTarget = null;
 			this.pendingMovementAction = null;
 		},
 		
 		movePlayer: function (position, isInstant, action) {
-			let playerPositionComponent = this.playerPositionNodes.head.position;
-			let oldPosition = playerPositionComponent.getPosition();
+			let oldPosition = this.playerPositionNodes.head.position.getPosition();
+			let oldSector = GameGlobals.levelHelper.getSectorByPosition(oldPosition.level, oldPosition.sectorX, oldPosition.sectorY);
+
 			let isCampTransition = oldPosition.inCamp != position.inCamp;
 			let isCampToCampTransition = oldPosition.level != position.level && oldPosition.inCamp && position.inCamp;
+
+			this.initPlayerMovement(oldPosition, position, isCampTransition, isCampToCampTransition, () => {
+				let newSector = GameGlobals.levelHelper.getSectorByPosition(position.level, position.sectorX, position.sectorY);
+				let moveDuration = this.getMoveDuration(oldSector, newSector);
+				
+				this.startPlayerMovement(oldPosition, position);
+
+				if (isInstant) {
+					this.setPlayerPosition(oldPosition, position, isCampTransition, isCampToCampTransition, action);
+					this.updateStatsAfterMove(position, oldSector, newSector);
+					this.completePlayerMovement(position, isCampTransition);
+					return;
+				}
+
+				let sys = this;
+				
+				setTimeout(() => {
+					this.setPlayerPosition(oldPosition, position, isCampTransition, isCampToCampTransition, action);
+					this.updateStatsAfterMove(position, oldSector, newSector);
+					
+					setTimeout(() => {
+						sys.completePlayerMovement(position, isCampTransition);
+					}, moveDuration / 2);
+				}, moveDuration / 2);
+			});
+		},
+
+		initPlayerMovement: function (oldPosition, position, isCampTransition, isCampToCampTransition, cb) {
+			log.i("init player movement from [" + oldPosition + "] to: [" + position + "]", this);
+
+			this.currentMovementTarget = position;
+
+			GameGlobals.gameState.uiStatus.isTransitioning = true;
 
 			if (isCampTransition || isCampToCampTransition) {
 				GlobalSignals.markLogMessagesSeenSignal.dispatch();
 			}
 			
-			let oldSector = GameGlobals.levelHelper.getSectorByPosition(oldPosition.level, oldPosition.sectorX, oldPosition.sectorY);
-			let newSector = GameGlobals.levelHelper.getSectorByPosition(position.level, position.sectorX, position.sectorY);
-			let isThemeTransition = oldSector.get(SectorFeaturesComponent).sunlit != newSector.get(SectorFeaturesComponent).sunlit;
-			let moveDuration = isThemeTransition ? UIConstants.THEME_TRANSITION_DURATION : 50;
-			let blockUI = moveDuration > 100;
-			
-			this.startPlayerMovement(oldPosition, position, blockUI);
-
-			if (isInstant) {
-				this.setPlayerPosition(oldPosition, position, isCampTransition, isCampToCampTransition, action);
-				this.updateStatsAfterMove(position, oldSector, newSector);
-				this.completePlayerMovement(position, blockUI, isCampTransition);
-				return;
+			let isLevelGenerated = GameGlobals.worldHelper.isLevelGenerated(position.level);
+			if (isLevelGenerated) {
+				this.currentMovementTargetHidGame = false;
+				cb();
+			} else {
+				this.currentMovementTargetHidGame = true;
+				GameGlobals.uiFunctions.hideGame(true, false);
+				GameGlobals.gameManager.generateLevel(position.level).then(() => cb());
 			}
-
-			let sys = this;
-			
-			setTimeout(() => {
-				this.setPlayerPosition(oldPosition, position, isCampTransition, isCampToCampTransition, action);
-				this.updateStatsAfterMove(position, oldSector, newSector);
-				
-				setTimeout(() => {
-					sys.completePlayerMovement(position, blockUI, isCampTransition);
-				}, moveDuration / 2);
-			}, moveDuration / 2);
 		},
 
-		startPlayerMovement: function (oldPosition, position, blockUI) {
+		startPlayerMovement: function (oldPosition, position) {
 			log.i("start player movement from [" + oldPosition + "] to: [" + position + "]", this);
-			this.currentMovementTarget = position;
-			if (blockUI) GameGlobals.gameState.uiStatus.isTransitioning = true;
 			GlobalSignals.playerMoveStartedSignal.dispatch(position);
 		},
 
@@ -140,14 +159,18 @@ define([
 			if (newSector.get(SectorFeaturesComponent).sunlit) GameGlobals.playerActionFunctions.unlockFeature("sunlight");
 		},
 
-		completePlayerMovement: function (position, blockUI, isCampTransition) {
+		completePlayerMovement: function (position, isCampTransition) {
 			let player = this.playerPositionNodes.head.entity;
+			let showGame = this.currentMovementTargetHidGame;
 
 			log.i("finish player movement to: [" + position + "]", this);
 			player.remove(MovementComponent);
 			this.currentMovementTarget = null;
+			this.currentMovementTargetHidGame = false;
 
-			if (blockUI) GameGlobals.gameState.uiStatus.isTransitioning = false;
+			GameGlobals.gameState.uiStatus.isTransitioning = false;
+			if (showGame) GameGlobals.uiFunctions.showGame();
+
 			GlobalSignals.playerMoveCompletedSignal.dispatch(position);
 			if (isCampTransition) GlobalSignals.saveGameSignal.dispatch(GameConstants.SAVE_SLOT_DEFAULT, false);
 		},
@@ -174,6 +197,14 @@ define([
 			
 			GlobalSignals.playerLeftCampSignal.dispatch();
 		},
+
+		getMoveDuration: function (oldSector, newSector) {
+			let isThemeTransition = oldSector.get(SectorFeaturesComponent).sunlit != newSector.get(SectorFeaturesComponent).sunlit;
+			if (isThemeTransition) return UIConstants.THEME_TRANSITION_DURATION;
+			let isLevelTransition = oldSector.get(PositionComponent).level != newSector.get(PositionComponent).level;
+			if (isLevelTransition) return 200;
+			return 50;
+		},
 		
 		isValidPosition: function (position) {
 		 	let sector = GameGlobals.levelHelper.getSectorByPosition(position.level, position.sectorX, position.sectorY);
@@ -186,13 +217,15 @@ define([
 			let position = node.movement.getPosition();
 			let action = node.movement.action || null;
 			
-			log.i("player movement node added: " + position, this);
+			let isLevelGenerated = GameGlobals.worldHelper.isLevelGenerated(position.level);
 			
-			if (!this.isValidPosition(position)) {
-				log.w("tried to move to an invalid position: " + position);
-				node.entity.remove(MovementComponent);
-				return;
-			}
+			log.i("player movement node added: " + position + ", level generated: " + isLevelGenerated, this);
+
+			if (isLevelGenerated && !this.isValidPosition(position)) {
+                log.w("tried to move to an invalid position: " + position);
+                node.entity.remove(MovementComponent);
+                return;
+            }
 			
 			if (this.pendingMovementTarget != null) {
 				log.w("tried to move while a move was already pending: " + position);
@@ -205,6 +238,12 @@ define([
 			}
 
 			let isInstant = node.movement.isInstant;
+
+			if (!isLevelGenerated) {
+				log.w("tried to instant move to a level that is not generated yet");
+				isInstant = false;
+			}
+
 			if (isInstant) {
 				this.movePlayer(position, true, action);
 				return;

@@ -17,14 +17,6 @@ define(['ash'], function (Ash) {
 			this.levels = [];
 		},
 		
-		clear: function () {
-			for (var l = this.topLevel; l >= this.bottomLevel; l--) {
-				var levelVO = this.levels[l];
-				levelVO.clear();
-			}
-			this.levels = [];
-		},
-		
 		getLevel: function (l) {
 			return this.levels[l];
 		},

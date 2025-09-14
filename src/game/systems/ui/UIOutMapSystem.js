@@ -143,9 +143,9 @@ define([
 		},
 
 		updateLevelSelector: function () {
-			var surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
-			var groundLevel = GameGlobals.gameState.getGroundLevel();
-			var countVisible = 0;
+			let surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
+			let groundLevel = GameGlobals.gameState.getGroundLevel();
+			let countVisible = 0;
 			for (let i = surfaceLevel; i >= groundLevel; i--) {
 				let isVisible = GameGlobals.uiMapHelper.isMapRevealed || GameGlobals.levelHelper.isVisited(i);
 				let $elem = $("#map-level-selector-level-" + i);
@@ -179,9 +179,12 @@ define([
 			$("#select-header-level").val(level);
 			this.selectedLevel = level;
 			this.selectedSector = null;
-			this.updateMap();
-			this.updateSector();
-			this.centerMap();
+
+			GameGlobals.gameManager.generateLevel(level).then(() => {
+				this.updateMap();
+				this.updateSector();
+				this.centerMap();
+			});
 		},
 
 		selectSector: function (level, x, y) {

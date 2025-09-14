@@ -47,7 +47,7 @@ define([
 	'game/systems/TutorialSystem',
 	'game/systems/LevelStatusSystem',
 	'game/systems/CharacterSystem',
-	'game/systems/CollectorSystem',
+	'game/systems/ImprovementsSystem',
 	'game/systems/FightSystem',
 	'game/systems/PopulationSystem',
 	'game/systems/PerkSystem',
@@ -119,7 +119,7 @@ define([
 	TutorialSystem,
 	LevelStatusSystem,
 	CharacterSystem,
-	CollectorSystem,
+	ImprovementsSystem,
 	FightSystem,
 	PopulationSystem,
 	PerkSystem,
@@ -156,7 +156,7 @@ define([
 			this.tickProvider = new TickProvider(null, function (ex) { game.handleException(ex) });
 			this.gameManager = new GameManager(this.tickProvider, this.engine);
 
-			GameGlobalsInitializer.init(this.engine);
+			GameGlobalsInitializer.init(this.engine, this.gameManager);
 
 			this.setup(plugins);
 		},
@@ -304,7 +304,7 @@ define([
 			this.engine.addSystem(new StaminaSystem(), SystemPriorities.update);
 			this.engine.addSystem(new BagSystem(), SystemPriorities.update);
 			this.engine.addSystem(new CharacterSystem(), SystemPriorities.update);
-			this.engine.addSystem(new CollectorSystem(), SystemPriorities.update);
+			this.engine.addSystem(new ImprovementsSystem(), SystemPriorities.update);
 			this.engine.addSystem(new DialogueSystem(), SystemPriorities.update);
 			this.engine.addSystem(new FightSystem(true), SystemPriorities.update);
 			this.engine.addSystem(new PopulationSystem(), SystemPriorities.update);

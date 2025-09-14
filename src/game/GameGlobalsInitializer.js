@@ -67,10 +67,12 @@ define([
 	UIMapHelper,
 	UITechTreeHelper,
 ) {
-	var GameGlobalsInitializer = {
+	let GameGlobalsInitializer = {
 		
-		init: function (engine) {
+		init: function (engine, gameManager) {
 			GameGlobals.engine = engine;
+			GameGlobals.gameManager = gameManager;
+
 			GameGlobals.gameState = new GameState();
 			GameGlobals.metaState = new MetaState();
 			GameGlobals.worldState = new WorldState();
