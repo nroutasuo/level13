@@ -209,6 +209,7 @@ define([
 				GameGlobals.metaState.maxCampOrdinalReached = Math.max(GameGlobals.metaState.maxCampOrdinalReached, GameGlobals.gameState.numCamps);
 				sys.engine.removeAllEntities();
 				GameGlobals.levelHelper.reset();
+				GameGlobals.worldState.reset();
 				GameGlobals.gameState.reset();
 				log.i("game state reset");
 				GlobalSignals.gameResetSignal.dispatch();

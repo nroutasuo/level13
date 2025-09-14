@@ -1,14 +1,14 @@
 // persistent data related to the current playthrough
 
 define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHelper) {
-	var GameState = Ash.Class.extend({
+	let GameState = Ash.Class.extend({
 
 		constructor: function () {
 			this.reset();
 		},
 
 		reset: function () {
-			this.level = 0;
+			this.level = 0; // highest level ordinal visited
 			this.worldSeed = 0;
 			this.gameStartTimeStamp = 0;
 			this.gameTime = 0; // total tick time passed
@@ -46,6 +46,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 				lastSelection: {},
 			};
 			
+			// TODO move to meta state
 			this.settings = {
 				hotkeysEnabled: false,
 				hotkeysNumpad: false,

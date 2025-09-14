@@ -144,9 +144,8 @@ define([
 		updateLevelEntities: function (updateAll) {
 			let playerPos = this.playerPositionNodes.head.position;
 			let startPos = playerPos.getPosition();
-			let levelpos;
 			for (let levelNode = this.levelNodes.head; levelNode; levelNode = levelNode.next) {
-				levelpos = levelNode.level.position;
+				let levelpos = levelNode.level.position;
 				if (levelpos == playerPos.level && !levelNode.entity.has(CurrentPlayerLocationComponent)) {
 					levelNode.entity.add(new CurrentPlayerLocationComponent());
 					if (!GameGlobals.levelHelper.isVisited(levelNode.entity)) {
@@ -195,6 +194,10 @@ define([
 			if (this.playerLocationNodes.head) {
 				this.playerLocationNodes.head.entity.remove(CurrentPlayerLocationComponent);
 			}
+
+			let position = sector.get(PositionComponent);
+			
+			GameGlobals.worldState.addRevealedLevel(position.level);
 			
 			sector.add(new CurrentPlayerLocationComponent());
 			
@@ -260,6 +263,7 @@ define([
 			let levelOrdinal = GameGlobals.gameState.getLevelOrdinal(levelPos);
 			let campOrdinal = GameGlobals.gameState.getCampOrdinal(levelPos);
 			GameGlobals.gameState.level = Math.max(GameGlobals.gameState.level, levelOrdinal);
+
 			if (levelPos !== 13) GameGlobals.playerActionFunctions.unlockFeature("levels");
 			
 			if (this.isGroundLevel(levelPos)) {

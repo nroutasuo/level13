@@ -56,7 +56,7 @@ define([
 
 		parseSave: function (save) {
 			let hasSave = save != null;
-				
+			
 			let worldSeed = 0;
 			let savedWorldTemplateVO = null;
 			let levels = null;
@@ -65,12 +65,22 @@ define([
 				let loadedGameState = save.gameState;
 				worldSeed = parseInt(loadedGameState.worldSeed);
 
+				if (save.worldState.revealedLevels) 
+					log.i("save.worldState.revealedLevels: " + save.worldState.revealedLevels.join(","))
+				else
+					log.w("no revealedLevels found!")
+
 				if (save.worldState) {
 					savedWorldTemplateVO = save.worldState.worldTemplateVO;
-					levels = save.worldState.revealedLevels || [ save.entitiesObject.player.Position.level ];
+					levels = save.worldState.revealedLevels || [];
 				} else {
 					levels = [];
 				}
+
+				if (levels.indexOf(13) < 0) levels.push(13);
+
+				let playerPositionLevel = save.entitiesObject.player.Position.level;
+				if (levels.indexOf(playerPositionLevel) < 0) levels.push(playerPositionLevel);
 
 				if (save.gameState.numCamps) {
 					let lastCampLevelOrdinal = WorldCreatorHelper.getLevelOrdinalForCampOrdinal(worldSeed, save.gameState.numCamps);

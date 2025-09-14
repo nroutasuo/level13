@@ -4,6 +4,7 @@ define([
 	'game/GameState',
 	'game/GameFlowLogger',
 	'game/MetaState',
+	'game/WorldState',
 	'game/PlayerActionFunctions',
 	'game/UIFunctions',
 	'game/helpers/CampHelper',
@@ -37,6 +38,7 @@ define([
 	GameState,
 	GameFlowLogger,
 	MetaState,
+	WorldState,
 	PlayerActionFunctions,
 	UIFunctions,
 	CampHelper,
@@ -71,6 +73,8 @@ define([
 			GameGlobals.engine = engine;
 			GameGlobals.gameState = new GameState();
 			GameGlobals.metaState = new MetaState();
+			GameGlobals.worldState = new WorldState();
+			
 			GameGlobals.playerActionsHelper = new PlayerActionsHelper(engine);
 
 			if (engine) {
