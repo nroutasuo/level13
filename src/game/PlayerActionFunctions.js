@@ -505,7 +505,7 @@ define(['ash',
 					break;
 			}
 			
-			GameGlobals.playerHelper.moveTo(newPos.level, newPos.sectorX, newPos.sectorY, newPos.inCamp, action);
+			GameGlobals.playerHelper.moveTo(newPos.level, newPos.sectorX, newPos.sectorY, newPos.inCamp, action, false);
 		},
 
 		moveToCamp: function (param) {
@@ -1983,50 +1983,48 @@ define(['ash',
 		},
 
 		buildPassageUpStairs: function (sectorPos) {
-			this.buildPassage(sectorPos, true, MovementConstants.PASSAGE_TYPE_STAIRWELL, "build_out_passage_up_stairs", "build_out_passage_down_stairs");
+			this.buildPassage(sectorPos, true, MovementConstants.PASSAGE_TYPE_STAIRWELL, "build_out_passage_up_stairs");
 		},
 
 		buildPassageDownStairs: function (sectorPos) {
-			this.buildPassage(sectorPos, false, MovementConstants.PASSAGE_TYPE_STAIRWELL, "build_out_passage_down_stairs", "build_out_passage_up_stairs");
+			this.buildPassage(sectorPos, false, MovementConstants.PASSAGE_TYPE_STAIRWELL, "build_out_passage_down_stairs");
 			GameGlobals.gameState.setStoryFlag(StoryConstants.ESCAPE_PASSAGE_DOWN_BUILT, true);
 		},
 
 		buildPassageUpElevator: function (sectorPos) {
-			this.buildPassage(sectorPos, true, MovementConstants.PASSAGE_TYPE_ELEVATOR, "build_out_passage_up_elevator", "build_out_passage_down_elevator");
+			this.buildPassage(sectorPos, true, MovementConstants.PASSAGE_TYPE_ELEVATOR, "build_out_passage_up_elevator");
 		},
 
 		buildPassageDownElevator: function (sectorPos) {
-			this.buildPassage(sectorPos, false, MovementConstants.PASSAGE_TYPE_ELEVATOR, "build_out_passage_down_elevator", "build_out_passage_up_elevator");
+			this.buildPassage(sectorPos, false, MovementConstants.PASSAGE_TYPE_ELEVATOR, "build_out_passage_down_elevator");
 		},
 
 		buildPassageUpHole: function (sectorPos) {
-			this.buildPassage(sectorPos, true, MovementConstants.PASSAGE_TYPE_HOLE, "build_out_passage_up_hole", "build_out_passage_down_hole");
+			this.buildPassage(sectorPos, true, MovementConstants.PASSAGE_TYPE_HOLE, "build_out_passage_up_hole");
 		},
 
 		buildPassageDownHole: function (sectorPos) {
-			this.buildPassage(sectorPos, false, MovementConstants.PASSAGE_TYPE_HOLE, "build_out_passage_down_hole", "build_out_passage_up_hole");
+			this.buildPassage(sectorPos, false, MovementConstants.PASSAGE_TYPE_HOLE, "build_out_passage_down_hole");
 		},
 
-		buildPassage: function (sectorPos, up, passageType, action, neighbourAction) {
+		buildPassage: function (sectorPos, up, passageType, action) {
 			var position = this.getPositionVO(sectorPos);
 			var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(position.level);
 			action = action + "_" + levelOrdinal;
 			var sector = this.getActionSector(action, sectorPos);
-			neighbourAction = neighbourAction + "_" + levelOrdinal;
 
 			var sectorPosVO = StringUtils.getPosition(sectorPos);
-			var neighbour = GameGlobals.levelHelper.getSectorByPosition(up ? position.level + 1 : position.level - 1, position.sectorX, position.sectorY);
 
-			if (sector && neighbour) {
+			// NOTE: ImprovementsSystem will build corresponding passage in sector above / below, either now if level exists or later when it's generated
+
+			if (sector) {
 				var direction = up ? PositionConstants.DIRECTION_UP : PositionConstants.DIRECTION_DOWN;
 				var msg = TextConstants.getPassageRepairedMessage(passageType, direction, sectorPosVO, GameGlobals.gameState.numCamps);
 				this.buildImprovement(action, GameGlobals.playerActionsHelper.getImprovementNameForAction(action), sector);
-				this.buildImprovement(neighbourAction, GameGlobals.playerActionsHelper.getImprovementNameForAction(neighbourAction), neighbour, true);
 				GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_BUILT_PASSAGE, msg, { position: position, visibility: LogConstants.MSG_VISIBILITY_GLOBAL });
 			} else {
 				log.w("Couldn't find sectors for building passage.");
 				log.i(sector);
-				log.i(neighbour);
 				log.i(sectorPos);
 			}
 		},
@@ -2988,13 +2986,16 @@ define(['ash',
 			GlobalSignals.collectorCollectedSignal.dispatch();
 		},
 
+		// actionName: can be null if improvement is built automatically (for example passage corresponding to a built one)
 		buildImprovement: function (actionName, improvementName, otherSector) {
 			let sector = otherSector ? otherSector : this.playerLocationNodes.head.entity;
 			let improvementsComponent = sector.get(SectorImprovementsComponent);
+
 			if (!improvementsComponent) {
-				log.w("trying to build an improvement but there is no SectorImprovementsComponent " + actionName, this);
+				log.w("trying to build an improvement but there is no SectorImprovementsComponent", this);
 				return;
 			}
+
 			let improvementID = ImprovementConstants.getImprovementID(improvementName);
 			let currentAmount = improvementsComponent.getCount(improvementName);
 
@@ -3003,14 +3004,17 @@ define(['ash',
 				return;
 			}
 
+			log.i("build improvement " + improvementName + " at " + sector.get(PositionComponent).positionId());
+
 			improvementsComponent.add(improvementName);
+			
 			GameGlobals.gameState.increaseGameStatKeyed("numBuildingsBuiltPerId", improvementID);
 
 			let level = improvementsComponent.getLevel(improvementName);
 			let isProject = ImprovementConstants.isProject(improvementName);
 			let isPassage = improvementsComponent.getVO(improvementName).isPassage();
 			
-			if (!isPassage) {
+			if (actionName && !isPassage) {
 				// passages have a dedicated message
 				let msg = ImprovementConstants.getBuiltLogMessageTextVO(improvementID, level);
 				let messagePosition = sector.get(PositionComponent).getPosition();
@@ -3021,7 +3025,7 @@ define(['ash',
 
 			GlobalSignals.improvementBuiltSignal.dispatch();
 			
-			this.completeAction(actionName);
+			if (actionName)	this.completeAction(actionName);
 			
 			this.save();
 		},
