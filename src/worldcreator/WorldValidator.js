@@ -10,14 +10,15 @@ define([
 ) {
 	var context = "WorldValidator";
 
-	var WorldValidator = {
+	let WorldValidator = {
 		
 		// TODO check that there's at least a few (useful?) beacon spots per level
 
+		// validates overall world structure, not levels or sectors
 		validateWorld: function (worldVO) {
 			worldVO.resetPaths();
 		
-			var worldChecks = [ this.checkSeed ];
+			let worldChecks = [ this.checkSeed, this.checkCampPositions, this.checkPassages ];
 			for (let i = 0; i < worldChecks.length; i++) {
 				var checkResult = worldChecks[i](worldVO);
 				if (!checkResult.isValid) {
@@ -25,38 +26,51 @@ define([
 				}
 			}
 			
-			var levelChecks = [ this.checkCriticalPaths, this.checkContinuousEarlyStage, this.checkCampsAndPassages, this.checkNumberOfSectors ];
-			for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
-				var levelVO = worldVO.levels[l];
-				for (let i = 0; i < levelChecks.length; i++) {
-					var checkResult = levelChecks[i](worldVO, levelVO);
-					if (!checkResult.isValid) {
-						return { isValid: false, reason: checkResult.reason };
-					}
-				}
-			}
-			
-			var campChecks = [ this.checkNumberOfLocales ];
-			for (let i = 0; i < WorldConstants.CAMPS_TOTAL; i++) {
-				var levels = WorldCreatorHelper.getLevelsForCamp(worldVO.seed, i);
-				var levelVOs = levels.map(level => worldVO.getLevel(level));
-				for (let j = 0; j < campChecks.length; j++) {
-					var checkResult = campChecks[j](worldVO, i, levelVOs);
-					if (!checkResult.isValid) {
-						return { isValid: false, reason: checkResult.reason };
-					}
+			return { isValid: true };
+		},
+
+		// validate a given level, structure, sectors
+		validateLevel: function (worldVO, levelVO) {			
+			worldVO.resetPaths();
+
+			let levelChecks = [ this.checkCriticalPaths, this.checkContinuousEarlyStage, this.checkCampsAndPassages, this.checkNumberOfSectors, this.checkNumberOfLocales ];
+			for (let i = 0; i < levelChecks.length; i++) {
+				var checkResult = levelChecks[i](worldVO, levelVO);
+				if (!checkResult.isValid) {
+					return { isValid: false, reason: checkResult.reason };
 				}
 			}
 			
 			return { isValid: true };
 		},
-		
+
 		checkSeed: function (worldVO) {
+			if (!worldVO.seed) return { isValid: false, reason: "no seed" };
+			if (worldVO.seed < 0) return { isValid: false, reason: "negative seed" };
+			return { isValid: true };
+		},
+
+		checkCampPositions: function (worldVO) {
+			let numCampPositions = Object.keys(worldVO.campPositions);
+
+			if (numCampPositions < 15) return { isValid: false, reason: "too few camp positions (" + numCampPositions + ")" };
+			if (numCampPositions > 15) return { isValid: false, reason: "too many camp positions (" + numCampPositions + ")" };
+
+			return { isValid: true };
+		},
+
+		checkPassages: function (worldVO) {
+			for (let l = worldVO.bottomLevel; l <= worldVO.topLevel; l++) {
+				if (!worldVO.passagePositions[l]) return { isValid: false, reason: "no passage positions defined for level " + l };
+				if (!worldVO.passageTypes[l]) return { isValid: false, reason: "no passage types defined for level " + l };
+			}
+
 			return { isValid: true };
 		},
 		
 		checkCriticalPaths: function (worldVO, levelVO) {
-			var requiredPaths = WorldCreatorHelper.getRequiredPaths(worldVO, levelVO);
+			let requiredPaths = WorldCreatorHelper.getRequiredPaths(worldVO, levelVO);
+
 			for (let i = 0; i < requiredPaths.length; i++) {
 				var path = requiredPaths[i];
 				var startPos = path.start.clone();
@@ -86,7 +100,7 @@ define([
 				var stage = stages[i];
 				var numSectorsCreated = levelVO.getNumSectorsByStage(stage);
 				var numSectorsPlanned = levelVO.numSectorsByStage[stage];
-				if (numSectorsCreated < numSectorsPlanned) {
+				if (numSectorsCreated < numSectorsPlanned * 1.5) {
 					return { isValid: false, reason: "too few sectors on level " + levelVO.level + " stage " + stage };
 				}
 				if (numSectorsCreated > numSectorsPlanned * 1.1) {
@@ -96,35 +110,35 @@ define([
 			return { isValid: true };
 		},
 		
-		checkNumberOfLocales: function (worldVO, campOrdinal, levelVOs) {
-			for (let i = 0; i < levelVOs.length; i++) {
-				var levelVO = levelVOs[i];
-				var numEarlyLocales = 0;
-				var numLateLocales = 0;
-				for (var s = 0; s < levelVO.sectors.length; s++) {
-					var sectorVO = levelVO.sectors[s];
-					if (sectorVO.locales.length > 0) {
-						for (var l = 0; l < sectorVO.locales.length; l++) {
-							var isEarly = sectorVO.locales[l].isEarly;
-							if (isEarly) {
-								numEarlyLocales++;
-							} else {
-								numLateLocales++;
-							}
+		checkNumberOfLocales: function (worldVO, levelVO) {
+			let campOrdinal = levelVO.campOrdinal;
+
+			var numEarlyLocales = 0;
+			var numLateLocales = 0;
+			for (var s = 0; s < levelVO.sectors.length; s++) {
+				var sectorVO = levelVO.sectors[s];
+				if (sectorVO.locales.length > 0) {
+					for (var l = 0; l < sectorVO.locales.length; l++) {
+						var isEarly = sectorVO.locales[l].isEarly;
+						if (isEarly) {
+							numEarlyLocales++;
+						} else {
+							numLateLocales++;
 						}
 					}
 				}
-				let levelIndex = WorldCreatorHelper.getLevelIndexForCamp(worldVO.seed, campOrdinal, levelVO.level);
-				let maxLevelIndex = WorldCreatorHelper.getMaxLevelIndexForCamp(worldVO.seed, campOrdinal, levelVO.level);
-				var numEarlyBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_EARLY, levelIndex, maxLevelIndex);
-				if (numEarlyLocales < numEarlyBlueprints) {
-					return { isValid: false, reason: "too few early locales for level " + levelVO.level + ", camp ordinal " + campOrdinal + " " + numEarlyLocales + "/" + numEarlyBlueprints };
-				}
-				var numLateBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_LATE, levelIndex, maxLevelIndex);
-				if (numLateLocales < numLateBlueprints) {
-					return { isValid: false, reason: "too few late locales for level " + levelVO.level + ", camp ordinal " + campOrdinal + " " + numLateLocales + "/" + numLateBlueprints };
-				}
 			}
+			let levelIndex = WorldCreatorHelper.getLevelIndexForCamp(worldVO.seed, campOrdinal, levelVO.level);
+			let maxLevelIndex = WorldCreatorHelper.getMaxLevelIndexForCamp(worldVO.seed, campOrdinal, levelVO.level);
+			var numEarlyBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_EARLY, levelIndex, maxLevelIndex);
+			if (numEarlyLocales < numEarlyBlueprints) {
+				return { isValid: false, reason: "too few early locales for level " + levelVO.level + ", camp ordinal " + campOrdinal + " " + numEarlyLocales + "/" + numEarlyBlueprints };
+			}
+			var numLateBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_LATE, levelIndex, maxLevelIndex);
+			if (numLateLocales < numLateBlueprints) {
+				return { isValid: false, reason: "too few late locales for level " + levelVO.level + ", camp ordinal " + campOrdinal + " " + numLateLocales + "/" + numLateBlueprints };
+			}
+
 			return { isValid: true };
 		},
 		

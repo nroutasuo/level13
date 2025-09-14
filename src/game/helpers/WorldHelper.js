@@ -37,15 +37,17 @@ define([
 				let worldSeed = saveData.hasSave ? saveData.worldSeed : WorldCreatorRandom.getNewSeed();
 				let levels = saveData.levels || [ 13 ];
 				
-				this.createWorldVO(worldSeed, saveData.hasSave)
-				.then(worldVO => this.fillWorldVO(worldVO, levels))
+				this.generateWorld(worldSeed, saveData.hasSave)
 				.then(worldVO => {
-					log.i("START " + GameConstants.STARTTimeNow() + "\t world created (seed: " + worldVO.seed + ")");
-					let worldTemplateVO = new WorldTemplateVO(worldVO);
-					GameGlobals.gameState.worldSeed = worldVO.seed;
-					GameGlobals.worldState.worldTemplateVO = worldTemplateVO;
 					this.worldVO = worldVO;
-					resolve(worldVO);
+					GameGlobals.gameState.worldSeed = worldVO.seed;
+				})
+				.then(() => this.generateLevels(levels))
+				.then(() => {
+					log.i("START " + GameConstants.STARTTimeNow() + "\t world created (seed: " + this.worldVO.seed + ")");
+					let worldTemplateVO = new WorldTemplateVO(this.worldVO);
+					GameGlobals.worldState.worldTemplateVO = worldTemplateVO;
+					resolve(this.worldVO);
 				})
 				.catch(error => {
 					this.showWorldGenerationFailedWarning();
@@ -102,46 +104,44 @@ define([
 			return result;
 		},
 		
-		createWorldVO: function (seed, hasSave, tryNumber) {
+		generateWorld: function (seed, hasSave, tryNumber) {
 			return new Promise(function(resolve, reject) {
 				let maxTries = GameConstants.isDebugVersion ? 1 : 10;
 				tryNumber = tryNumber || 1;
 				
 				setTimeout(() => {
-					this.tryGenerateWorldVO(seed, tryNumber, maxTries).then(result => {
-						if (!result.validationResult.isValid) {
-							this.logFailedWorldSeed(seed, result.validationResult.reason);
-						}
-						
+					this.tryGenerateWorld(seed, tryNumber, maxTries).then(result => {						
 						if (result.validationResult.isValid) {
 							resolve(result.worldVO);
 							return;
 						}
+
+						log.e("generateWorld: world is not valid! seed: " + result.worldVO.seed + ", reason: " + result.validationResult.reason);
 						
 						if (hasSave && result.worldVO != null) {
-							log.i("using broken world because old save exists");
+							log.i("generateWorld: using broken world because old save exists", this);
 							resolve(result.worldVO);
 							return;
 						}
 						
 						if (tryNumber >= maxTries) {
-							log.e("ran out of tries to generate world");
+							log.e("generateWorld: ran out of tries to generate world", this);
 							reject(new Error("ran out of tries to generate world"));
 							return;
 						}
 						
-						log.i("trying another seed");
-						resolve(this.createWorldVO(seed, hasSave, tryNumber + 1));
+						log.i("generateWorld: trying another seed", this);
+						resolve(this.generateWorld(seed, hasSave, tryNumber + 1));
 					});
 				}, 1);
 			}.bind(this));
 		},
 		
-		tryGenerateWorldVO: function (seed, tryNumber, maxTries) {
+		tryGenerateWorld: function (seed, tryNumber, maxTries) {
 			return new Promise(function(resolve, reject) {
 				log.i("START " + GameConstants.STARTTimeNow() + "\t generating world, try " + tryNumber + "/" + maxTries);
 				let s = seed + (tryNumber - 1) * 111;
-				
+
 				WorldCreator.createWorld(s, GameGlobals.itemsHelper).then(worldVO => {
 					log.i("START " + GameConstants.STARTTimeNow() + "\t validating world");
 					let validationResult = WorldValidator.validateWorld(worldVO);
@@ -154,16 +154,6 @@ define([
 					resolve({ worldVO: null, validationResult: exceptionDescription });
 				});
 			}.bind(this));
-		},
-
-		fillWorldVO: function (worldVO, levels) {
-			return new Promise(function(resolve, reject) {
-				log.i("START " + GameConstants.STARTTimeNow() + "\t generating levels: " + levels.join(","));
-				WorldCreator.generateLevels(worldVO.seed, worldVO, levels, GameGlobals.itemsHelper).then(worldVO => {
-					log.i("START " + GameConstants.STARTTimeNow() + "\t levels generated");
-					resolve(worldVO);
-				});
-			});
 		},
 
 		generateLevel: function (level, cb) {
@@ -185,6 +175,10 @@ define([
 
 				WorldCreator.generateLevels(this.worldVO.seed, this.worldVO, levels, GameGlobals.itemsHelper)
 				.then(worldVO => {
+					this.validateLevels(levels);
+					resolve(worldVO);
+				})
+				.then(worldVO => {
 					this.isBusy = false;
 					resolve(worldVO);
 				})
@@ -194,6 +188,18 @@ define([
 					reject(error);
 				});
 			});
+		},
+
+		validateLevels: function (levels) {
+			for (let i = 0; i < levels.length; i++) {
+				let l = levels[i];
+				let levelVO = this.worldVO.levels[l];
+				let validationResult = WorldValidator.validateLevel(this.worldVO, levelVO);
+				if (validationResult.isValid) continue;
+
+				// log errors
+				log.e("validateLevels: level " + l +  " is not valid! seed: " + this.worldVO.seed + ", reason: " + validationResult.reason);
+			}
 		},
 
 		getGeneratedLevels: function () {
@@ -272,10 +278,6 @@ define([
 		},
 
 		// internal helpers
-		
-		logFailedWorldSeed: function (seed, reason) {
-			log.e("geneating world failed! seed: " + seed + ", reason: " + reason);
-		},
 
 		logWorldNotGenerated: function (context) {
 			log.e(context + ": world skeleton is not generated");
