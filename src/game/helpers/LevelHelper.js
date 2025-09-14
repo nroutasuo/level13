@@ -126,8 +126,10 @@ define([
 		},
 
 		isVisited: function (entity) {
-			if (typeof(entity) == "number") 
+			if (typeof(entity) == "number") {
+				if (!GameGlobals.worldHelper.isLevelGenerated(entity)) return false;
 				entity = this.getLevelEntityForPosition(entity);
+			}
 			if (!entity) return false;
 			let levelStatus = entity.get(LevelStatusComponent);
 			return levelStatus.isVisited || entity.has(VisitedComponent) || false;

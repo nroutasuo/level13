@@ -49,7 +49,9 @@ define([
 			
 			levelVO.campPosition = worldVO.campPositions[l];
 			levelVO.passageUpPosition = worldVO.passagePositions[l].up;
+			levelVO.passageUpType = worldVO.passageTypes[l].up;
 			levelVO.passageDownPosition = worldVO.passagePositions[l].down;
+			levelVO.passageDownType = worldVO.passageTypes[l].down;
 			levelVO.passagePositions = [];
 			if (levelVO.passageUpPosition) levelVO.passagePositions.push(levelVO.passageUpPosition);
 			if (levelVO.passageDownPosition) levelVO.passagePositions.push(levelVO.passageDownPosition);

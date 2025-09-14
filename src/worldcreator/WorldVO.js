@@ -104,6 +104,18 @@ define(['ash'], function (Ash) {
 				return pos2;
 			}
 		},
+
+		getPassageUp: function (level, sectorX, sectorY) {
+			var sectorVO = this.getLevel(level).getSector(sectorX, sectorY);
+			if (sectorVO.passageUpType) return sectorVO.passageUpType;
+			return null;
+		},
+
+		getPassageDown: function (level, sectorX, sectorY) {
+			var sectorVO = this.getLevel(level).getSector(sectorX, sectorY);
+			if (sectorVO.passageDownType) return sectorVO.passageDownType;
+			return null;
+		},
 		
 	});
 

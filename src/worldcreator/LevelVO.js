@@ -232,9 +232,17 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 		isPassageUpPosition: function (pos) {
 			return this.passageUpPosition && this.passageUpPosition.equals(pos);
 		},
+
+		getPassageUpType: function (pos) {
+			return this.isPassageUpPosition(pos) ? this.passageUpType : null;
+		},
 		
 		isPassageDownPosition: function (pos) {
 			return this.passageDownPosition && this.passageDownPosition.equals(pos);
+		},
+
+		getPassageDownType: function (pos) {
+			return this.isPassageDownPosition(pos) ? this.passageDownType : null;
 		},
 		
 		getEntrancePassagePosition: function () {

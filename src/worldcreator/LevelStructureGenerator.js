@@ -16,10 +16,11 @@ define([
 		
 		debugLevel: 0,
 		
-		generate: function (seed, worldVO) {
+		generate: function (seed, worldVO, levels) {
 			this.currentFeatures = worldVO.features;
 
-			for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
+			for (let i = 0; i < levels.length; i++) {
+				let l = levels[i];
 				let levelVO = worldVO.levels[l];
 				this.createLevelStructure(seed, worldVO, levelVO);
 			}
@@ -1080,7 +1081,9 @@ define([
 				vo.stage = stage;
 				vo.isCamp = levelVO.isCampPosition(sectorPos);
 				vo.isPassageUp = levelVO.isPassageUpPosition(sectorPos);
+				vo.passageUpType = levelVO.getPassageUpType(sectorPos);
 				vo.isPassageDown = levelVO.isPassageDownPosition(sectorPos);
+				vo.passageDownType = levelVO.getPassageDownType(sectorPos);
 				var criticalPath = options.criticalPath;
 				if (criticalPath) {
 					vo.addToCriticalPath(criticalPath);

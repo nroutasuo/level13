@@ -25,10 +25,11 @@ define([
 	
 	let SectorContentGenerator = {
 
-		generate: function (seed, worldVO, enemyCreator) {			
+		generate: function (seed, worldVO, levels, enemyCreator) {			
 			this.generateExamineSpotsPerLevel(seed, worldVO);
 
-			for (let l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
+			for (let i = 0; i < levels.length; i++) {
+				let l = levels[i];
 				let levelVO = worldVO.levels[l];
 
 				this.generateEnemies(seed, worldVO, levelVO, enemyCreator);

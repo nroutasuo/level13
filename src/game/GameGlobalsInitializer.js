@@ -27,6 +27,7 @@ define([
 	'game/helpers/TribeHelper',
 	'game/helpers/UpgradeEffectsHelper',
 	'game/helpers/ButtonHelper',
+	'game/helpers/WorldHelper',
 	'game/helpers/ui/ChangeLogHelper',
 	'game/helpers/ui/UIMapHelper',
 	'game/helpers/ui/UITechTreeHelper',
@@ -59,6 +60,7 @@ define([
 	TribeHelper,
 	UpgradeEffectsHelper,
 	ButtonHelper,
+	WorldHelper,
 	ChangeLogHelper,
 	UIMapHelper,
 	UITechTreeHelper,
@@ -81,6 +83,7 @@ define([
 			GameGlobals.campHelper = new CampHelper(engine);
 			GameGlobals.campBalancingHelper = new CampBalancingHelper();
 			GameGlobals.dialogueHelper = new DialogueHelper(engine);
+			GameGlobals.worldHelper = new WorldHelper();
 			GameGlobals.tribeBalancingHelper = new TribeBalancingHelper();
 			GameGlobals.textLoader = new TextLoader();
 			
