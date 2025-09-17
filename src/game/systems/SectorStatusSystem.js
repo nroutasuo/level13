@@ -298,7 +298,7 @@ define([
 		},
 
 		findNeigbhoursForQueued: function () {
-			if (!this.sectorsPendingFindNeighbours) return;
+			if (!this.sectorsPendingFindNeighbours || this.sectorsPendingFindNeighbours.length == 0) return;
 
 			let sector = this.sectorsPendingFindNeighbours.pop();
 
