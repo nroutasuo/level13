@@ -392,16 +392,26 @@ define([
 			
 			let playerPos = this.playerPositionNodes.head.position;
 			log.w("Player location could not be found (" + playerPos.level + "." + playerPos.sectorId() + ").");
+
 			if (this.lastValidPosition) {
 				log.w("Moving to a known valid position " + this.lastValidPosition);
 				GameGlobals.playerHelper.moveTo(this.lastValidPosition.level, this.lastValidPosition.sectorX, this.lastValidPosition.sectorY, this.lastValidPosition.inCamp, "system", false);
 			} else {
-				let sectors = GameGlobals.levelHelper.getSectorsByLevel(playerPos.level);
-				let newPos = sectors[0].get(PositionComponent);
-				log.w("Moving to random position " + newPos);
+				let newPos = this.getFallbackPosition();
+				log.w("Moving to a fallback position " + newPos);
 				GameGlobals.playerHelper.moveTo(newPos.level, newPos.sectorX, newPos.sectorY, false, "system", false);
 			}
+
 			this.lastUpdatePosition = null;
+		},
+
+		getFallbackPosition: function () {
+			let playerPos = this.playerPositionNodes.head.position;
+			let levelSectors = GameGlobals.levelHelper.getSectorsByLevel(playerPos.level);
+			if (levelSectors.length > 0) return sectors[0].get(PositionComponent);
+			let startSector = GameGlobals.levelHelper.getCampSectorOnLevel(13);
+			if (startSector) return startSector.get(PositionComponent);
+			log.e("can't find any sector for fallback position")
 		},
 		
 		showLevelPopup: function (title, msg) {

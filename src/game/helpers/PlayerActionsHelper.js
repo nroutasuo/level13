@@ -3111,6 +3111,7 @@ define([
 		},
 		
 		getCurrentImprovementCountOnLevel: function (level, improvementID) {
+			if (!GameGlobals.worldHelper.isLevelGenerated(level)) return 0;
 			let entity = GameGlobals.levelHelper.getLevelEntityForPosition(level);
 			if (!entity) return;
 			let levelStatus = entity.get(LevelStatusComponent);
