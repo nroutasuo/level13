@@ -8,13 +8,37 @@ define(['ash'], function (Ash) {
 			this.topLevel = topLevel;
 			this.bottomLevel = bottomLevel;
 			
-			this.features = [];
-			this.stages = [];
-			this.campPositions = [];
-			this.passagePositions = [];
-			this.districts = [];
+			this.campPositions = {}; // level -> position
+			this.districts = []; // level -> list of DistrictVO
+			this.examineSpotsPerLevel = {}; // level -> list of ids
+			this.features = []; // list of WorldFeatureVO
+			this.passagePositions = []; // level -> { up: PositionVO, down: PositionVO }
+			this.passageTypes = []; // level -> { up: string, down: string }
+			this.stages = []; // list of StageVO
 			
-			this.levels = [];
+			this.levels = []; // level -> levelVO
+
+			this.resetCaches();
+		},
+
+		resetPaths: function () {
+			this.pathsAny = {};
+			this.pathsLatest = {};
+
+			for (let l = this.topLevel; l >= this.bottomLevel; l--) {
+				let levelVO = this.levels[l];
+				if (levelVO) levelVO.resetPaths();
+			}
+		},
+
+		resetCaches: function () {
+			this.pathsAny = {};
+			this.pathsLatest = {};
+
+			for (let l = this.topLevel; l >= this.bottomLevel; l--) {
+				let levelVO = this.levels[l];
+				if (levelVO) levelVO.resetCaches();
+			}
 		},
 		
 		getLevel: function (l) {
@@ -65,14 +89,6 @@ define(['ash'], function (Ash) {
 			if (!this.pathsLatest) this.pathsLatest = {};
 			this.pathsAny[key] = path;
 			this.pathsLatest[key] = path;
-		},
-		
-		resetPaths: function () {
-			this.pathsLatest = {};
-			for (var l = this.topLevel; l >= this.bottomLevel; l--) {
-				var levelVO = this.levels[l];
-				levelVO.resetPaths();
-			}
 		},
 		
 		getPathKey: function (pos1, pos2, blockedByBlockers, stage) {

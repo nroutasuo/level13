@@ -1,52 +1,65 @@
 define(['ash', 'utils/VOCache', 'worldcreator/WorldCreatorConstants', 'worldcreator/WorldCreatorLogger', 'game/constants/PositionConstants', 'game/vos/PositionVO'],
 function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConstants, PositionVO) {
 
-	var LevelVO = Ash.Class.extend({
+	let LevelVO = Ash.Class.extend({
 	
 		constructor: function (level) {
 			this.level = level;
 			this.levelOrdinal = 1;
 			this.campOrdinal = 1;
+
+			this.additionalCampPositions = [];
+			this.campPosition = null; // PositionVO
+			this.gangs = []; // list of GangVO
+			this.habitability = 1;
 			this.isCampable = false;
 			this.isHard = false;
-			this.notCampableReason = null;
-			this.habitability = 1;
-			this.raidDangerFactor = 1;
-			this.numSectors = 0;
-			this.maxSectors = 1;;
-			this.numSectorsByStage = {};
-			
-			this.campPosition = null;
-			this.additionalCampPositions = [];
-			this.passageUpPosition = null;
-			this.passageDownPosition = null;
-			this.stageCenterPositions = {};
-			
-			this.sectors = [];
-			this.sectorsByStage = {};
-			this.sectorsByPos = [];
-			this.minX = 0;
+			this.levelCenterPosition = null; // PositionVO
+			this.luxuryResources = []; // list of string
+			this.maxSectors = 1;
 			this.maxX = 0;
-			this.minY = 0;
 			this.maxY = 0;
-			this.invalidPositions = [];
+			this.minX = 0;
+			this.minY = 0;
+			this.notCampableReason = null;
+			this.numInvestigateSectors = 0;
+			this.numSectors = 0;
+			this.numSectorsByStage = {}; // e/l -> int
+			this.passageDownPosition = null;
+			this.passageDownType = null;
+			this.passagePositions = [];
+			this.passageUpPosition = null;
+			this.passageUpType = null;
+			this.raidDangerFactor = 1;
+			this.seaPadding = 0;
+			this.stageCenterPositions = {}; // e/l -> list of PositionVO
+
+			this.sectors = [];
 			
-			this.pendingConnectionPointsByStage = {};
-			
-			this.localeSectors = [];
-			this.numLocales = 0;
-			this.gangs = [];
-			
+			// caches for data used during generation
 			this.neighboursCacheContext = "LevelVO-" + this.level;
 			VOCache.create(this.neighboursCacheContext, 500);
+			
+			this.resetCaches();
 		},
-		
-		clear: function () {
-			VOCache.delete(this.neighboursCacheContext);
-		},
-		
+
 		resetPaths: function () {
 			VOCache.clear(this.neighboursCacheContext);
+		},
+		
+		resetCaches: function () {
+			VOCache.clear(this.neighboursCacheContext);
+
+			this.invalidPositions = [];
+			this.localeSectors = [];
+			this.pendingConnectionPointsByStage = [];
+			this.sectorsByPos = [];
+			this.sectorsByStage = [];
+
+			for (let i = 0; i < this.sectors.length; i++) {
+				let sectorVO = this.sectors[i];
+				sectorVO.resetCaches();
+			}
 		},
 		
 		addSector: function (sectorVO) {
@@ -90,6 +103,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 					}
 				}
 			}
+			
 			return false;
 		},
 		
@@ -182,6 +196,16 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			}
 			return result;
 		},
+
+		getExcursionStartPosition: function () {
+			if (this.isCampable) {
+				return this.campPosition;
+			}
+			if (this.level < 13) {
+				return this.passageUpPosition;
+			}
+			return this.passageDownPosition;
+		},
 		
 		addPendingConnectionPoint: function (point) {
 			var sector = this.getSector(point.position.sectorX, point.position.sectorY);
@@ -238,7 +262,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 		},
 		
 		isPassageDownPosition: function (pos) {
-			return this.passageDownPosition && this.passageDownPosition.equals(pos);
+			return this.passageDownPosition && this.passageDownPosition.equals(pos) ? true : false;
 		},
 
 		getPassageDownType: function (pos) {
@@ -270,10 +294,6 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			if (position.x < this.minX) return false;
 			if (position.x > this.maxX) return false;
 			return true;
-		},
-		
-		addGang: function (gangVO) {
-			this.gangs.push(gangVO);
 		},
 		
 		

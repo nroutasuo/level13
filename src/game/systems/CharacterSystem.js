@@ -352,7 +352,7 @@ define([
 				validTypes.push(CharacterConstants.characterTypes.hunter);
 			}
 
-			if (sectorFeatures.isOnCriticalPath()) {
+			if (sectorFeatures.isOnCriticalPath) {
 				validTypes.push(CharacterConstants.characterTypes.mercenary);
 			}
 
@@ -408,7 +408,7 @@ define([
 				validTypes.push(CharacterConstants.characterTypes.trader);
 			}
 			
-			if (isCampable && sectorFeatures.isOnCriticalPath()) {
+			if (isCampable && sectorFeatures.isOnCriticalPath) {
 				validTypes.push(CharacterConstants.characterTypes.trader);
 			}
 

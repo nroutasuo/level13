@@ -71,7 +71,7 @@ define([
 
 					sectorVO.requiredFeatures = this.getRequiredFeatures(seed, worldVO, levelVO, sectorVO);
 					sectorVO.sectorType = this.getSectorType(seed, worldVO, levelVO, sectorVO);
-					sectorVO.sunlit = this.isSunlit(seed, worldVO, levelVO, sectorVO);
+					sectorVO.sunlit = this.isSunlit(seed, worldVO, levelVO, sectorVO) || 0;
 
 					this.generateTexture(seed, worldVO, levelVO, sectorVO);
 					this.generateDifficulty(seed, worldVO, levelVO, sectorVO);
@@ -88,7 +88,7 @@ define([
 				// sector features 2
 				for (var s = 0; s < levelVO.sectors.length; s++) {
 					var sectorVO = levelVO.sectors[s];
-					sectorVO.sunlit = sectorVO.sunlit || this.isSunlitByNeighbours(worldVO, levelVO, sectorVO);
+					sectorVO.sunlit = sectorVO.sunlit || this.isSunlitByNeighbours(worldVO, levelVO, sectorVO) || 0;
 				}
 			}
 			
@@ -166,7 +166,6 @@ define([
 			
 			for (let i = 0; i < numPositions; i++) {
 				if (!validSectors[i]) break;
-				validSectors[i].isCampAdditional = true;
 				validSectors[i].isCamp = true;
 				result.push(validSectors[i].position)
 			}
@@ -390,7 +389,7 @@ define([
 				
 				// - clusters on border sectors (to guide player to camp)
 				var borderSectors = WorldCreatorHelper.getBorderSectorsForZone(levelVO, WorldConstants.ZONE_PASSAGE_TO_CAMP, true);
-				var startPos = levelVO.excursionStartPosition;
+				var startPos = levelVO.getExcursionStartPosition();
 				borderSectors.sort(function (a, b) { return PositionConstants.getDistanceTo(startPos, b.sector.position) - PositionConstants.getDistanceTo(startPos, a.sector.position) });
 				for (let i = 0; i < borderSectors.length; i++) {
 					var pair = borderSectors[i];
@@ -598,7 +597,7 @@ define([
 				}
 				result.push(traverse);
 			}
-			var startPos = levelVO.excursionStartPosition;
+			var startPos = levelVO.getExcursionStartPosition();
 			traverseSectors(startPos, levelVO.getSectorsByStage(WorldConstants.CAMP_STAGE_EARLY), WorldConstants.CAMP_STAGE_EARLY);
 			traverseSectors(startPos, levelVO.getSectorsByStage(WorldConstants.CAMP_STAGE_LATE), null);
 			return result;
@@ -1416,7 +1415,7 @@ define([
 			
 			let getInvestigateSectorScore = function (sectorVO) {
 				let score = 0;
-				score -= sectorVO.criticalPaths.length;
+				score -= sectorVO.criticalPathTypes.length;
 				score -= sectorVO.locales.length;
 				score -= sectorVO.waymarks.length;
 				switch (sectorVO.sectorType) {
@@ -1432,7 +1431,7 @@ define([
 			
 			let l = levelVO.level;
 			let campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, levelVO.level);
-			let startPos = levelVO.excursionStartPosition;
+			let startPos = levelVO.getExcursionStartPosition();
 			
 			let excludedZones = [ WorldConstants.ZONE_ENTRANCE ];
 			let excludedFeatures = [ "isCamp", "isPassageUp", "isPassageDown", "workshopResource" ];
@@ -1597,7 +1596,6 @@ define([
 		addLocale: function (levelVO, sectorVO, localeVO) {
 			sectorVO.locales.push(localeVO);
 			levelVO.localeSectors.push(sectorVO);
-			levelVO.numLocales++;
 
 			// WorldCreatorLogger.i("add locale " + sectorVO.position + ": " + localeVO.type);
 		},

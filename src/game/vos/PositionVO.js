@@ -60,13 +60,17 @@ define(['ash'], function (Ash) {
 			return this.level + "." + this.sectorX + "." + this.sectorY + "." + (this.inCamp ? 1 : 0);
 		},
 
+		getCustomSaveObjectWithoutCamp: function () {
+			return this.level + "." + this.sectorX + "." + this.sectorY;
+		},
+
 		customLoadFromSave: function (componentValues) {
 			if (typeof componentValues === "string") {
 				let parts = componentValues.split(".");
 				this.level = parseInt(parts[0]);
 				this.sectorX = parseInt(parts[1]);
 				this.sectorY = parseInt(parts[2]);
-				this.inCamp = parts[3] == 1 || false;
+				this.inCamp = parts.length > 3 ? parts[3] == 1 || false : false;
 			} else if (typeof componentValues === "object") {
 				this.level = parseInt(componentValues.level);
 				this.sectorX = parseInt(componentValues.sectorX);

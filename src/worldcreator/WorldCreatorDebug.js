@@ -58,7 +58,7 @@ function (Ash, ConsoleLogger, WorldConstants, WorldCreatorHelper, WorldCreatorLo
 				WorldCreatorLogger.i("Level " + levelVO.level + ", camp ordinal: " + levelVO.campOrdinal + ", stages: " + stagess + ", sectors: " + levelVO.numSectors);
 				WorldCreatorLogger.i("- passage positions: up: " + levelVO.passageUpPosition + ", down: " + levelVO.passageDownPosition);
 				WorldCreatorLogger.i("- camp position: " + levelVO.campPosition);
-				WorldCreatorLogger.i("- excursion start position: " + levelVO.excursionStartPosition);
+				WorldCreatorLogger.i("- excursion start position: " + levelVO.getExcursionStartPosition());
 				for (let i = 0; i < stages.length; i++) {
 					var stageVO = stages[i];
 					WorldCreatorLogger.i("- stage center positions [" + stageVO.stage + "]: " + levelVO.stageCenterPositions[stageVO.stage].join(","));

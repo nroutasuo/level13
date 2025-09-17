@@ -954,7 +954,7 @@ define([
 		},
 		
 		connectLevelSectors: function (worldVO, levelVO, sectors, stage, errorOnFail) {
-			var center = levelVO.campPosition != null ? levelVO.campPosition : levelVO.excursionStartPosition;
+			var center = levelVO.campPosition != null ? levelVO.campPosition : levelVO.getExcursionStartPosition();
 			var getConnectedSectors = function () {
 				let res = LevelStructureGenerator.getConnectedSectors(worldVO, center, sectors, stage, 0);
 				return res;
@@ -1077,7 +1077,7 @@ define([
 			var check = this.canCreateSector(levelVO, sectorPos, options);
 			var sectorVO = check.vo;
 			if (check.result) {
-				var vo = new SectorVO(sectorPos, levelVO.isCampable, levelVO.notCampableReason);
+				var vo = new SectorVO(sectorPos);
 				vo.stage = stage;
 				vo.isCamp = levelVO.isCampPosition(sectorPos);
 				vo.isPassageUp = levelVO.isPassageUpPosition(sectorPos);
@@ -1103,7 +1103,7 @@ define([
 			if (!levelVO.hasSector(pos.sectorX, pos.sectorY)) return;
 			
 			var maxdist = this.getMaxExcursionDistance(levelVO) - 5;
-			var dist = PositionConstants.getDistanceTo(pos, levelVO.excursionStartPosition);
+			var dist = PositionConstants.getDistanceTo(pos, levelVO.getExcursionStartPosition());
 			if (dist > maxdist) return;
 			
 			levelVO.addPendingConnectionPoint(point);
@@ -1219,7 +1219,7 @@ define([
 			
 			// too far from entrance
 			var maxdist = this.getMaxExcursionDistance(levelVO);
-			var dist = PositionConstants.getDistanceTo(sectorPos, levelVO.excursionStartPosition);
+			var dist = PositionConstants.getDistanceTo(sectorPos, levelVO.getExcursionStartPosition());
 			if (dist > maxdist) return { isValid: false, isBlocked: false, reason: "excursion length " + dist + "/" + maxdist };
 			
 			return { isValid: true, isBlocked: false };
@@ -1243,7 +1243,7 @@ define([
 				}
 				
 				// non-preferred: certain critical paths that shouldn't branch too much
-				if (sectorVO.isOnCriticalPath(WorldConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP)) {
+				if (sectorVO.isOnCriticalPath(WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP)) {
 					return false;
 				}
 			}

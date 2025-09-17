@@ -47,7 +47,29 @@ define(['ash'], function (Ash) {
 			result.flooded = this.flooded;
 			result.territory = this.territory;
 			return result;
-		}
+		},
+		
+		getCustomSaveObject: function () {
+			let copy = {};
+			if (this.radiation !== 0) copy.r = this.radiation;
+			if (this.poison !== 0) copy.p = this.poison;
+			if (this.cold !== 0) copy.c = this.cold;
+			if (this.debris !== 0) copy.d = this.debris;
+			if (this.flooded !== 0) copy.f = this.flooded;
+			if (this.territory !== 0) copy.t = this.territory;
+			return copy;
+		},
+
+		customLoadFromSave: function (componentValues) {
+			if (!componentValues) return;
+			
+			if (componentValues.r) this.radiation = componentValues.r;
+			if (componentValues.p) this.poison = componentValues.p;
+			if (componentValues.c) this.cold = componentValues.c;
+			if (componentValues.d) this.debris = componentValues.d;
+			if (componentValues.f) this.flooded = componentValues.f;
+			if (componentValues.t) this.territory = componentValues.t;
+		},
 		
 	});
 

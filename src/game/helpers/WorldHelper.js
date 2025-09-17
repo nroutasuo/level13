@@ -43,10 +43,9 @@ define([
 					GameGlobals.gameState.worldSeed = worldVO.seed;
 				})
 				.then(() => this.generateLevels(levels))
+				.then(() => this.saveWorld())
 				.then(() => {
 					log.i("START " + GameConstants.STARTTimeNow() + "\t world created (seed: " + this.worldVO.seed + ")");
-					let worldTemplateVO = new WorldTemplateVO(this.worldVO);
-					GameGlobals.worldState.worldTemplateVO = worldTemplateVO;
 					resolve(this.worldVO);
 				})
 				.catch(error => {
@@ -73,7 +72,8 @@ define([
 					log.w("no revealedLevels found!")
 
 				if (save.worldState) {
-					savedWorldTemplateVO = save.worldState.worldTemplateVO;
+					savedWorldTemplateVO = new WorldTemplateVO();
+					savedWorldTemplateVO.customLoadFromSave(save.worldState.worldTemplateVO);
 					levels = save.worldState.revealedLevels || [];
 				} else {
 					levels = [];
@@ -178,6 +178,7 @@ define([
 					this.validateLevels(levels);
 					resolve(worldVO);
 				})
+				.then(() => this.saveWorld())
 				.then(worldVO => {
 					this.isBusy = false;
 					resolve(worldVO);
@@ -200,6 +201,80 @@ define([
 				// log errors
 				log.e("validateLevels: level " + l +  " is not valid! seed: " + this.worldVO.seed + ", reason: " + validationResult.reason);
 			}
+		},
+
+		saveWorld: function () {
+			let worldTemplateVO = new WorldTemplateVO(this.worldVO);
+			this.validateWorldTemplateVO(this.worldVO, worldTemplateVO);
+			GameGlobals.worldState.worldTemplateVO = worldTemplateVO;
+		},
+
+		validateWorldTemplateVO: function (worldVO, worldTemplateVO) {
+			log.i("validating worldTemplateVO");
+			let numIssues = 0;
+			// TODO move world template vo validation somewhere else? WorldValidator? Dedicated TemplateValidator?
+
+			let notSavedKeysWorld = [ "districts", "features", "stages", "pathsAny", "pathsLatest", "examineSpotsPerLevel" ];
+			let notSavedKeysLevel = [ "maxSectors", "neighboursCacheContext", "pendingConnectionPointsByStage", "invalidPositions", "paths", "requiredPaths", "sectorsByStage", "sectorsByPos", "predefinedExplorers", "levelCenterPosition", "localeSectors" ];
+			let notSavedKeysSector = [ "id", "distanceToCamp", "requiredFeatures", "requiredResources", "resourcesAll", "pathID", "waymarks", "possibleEnemies", "isConnectionPoint", "criticalPaths", "resourcesScavengable", "criticalPathIndices", "criticalPath", "campPosScore", "isFill" ];
+
+			// check worldTemplateVO matches worldVO
+			let properties = Object.keys(worldVO);
+			for (let i in properties) {
+				let key = properties[i];
+				let worldVOValue = worldVO[key];
+				let templateVOValue = worldTemplateVO[key];
+				if (notSavedKeysWorld.indexOf(key) >= 0 && !templateVOValue) continue;
+				if (worldVOValue === templateVOValue) continue;
+				if (key === "levels") {
+					for (let level in worldVOValue) {
+						let levelVO = worldVOValue[level];
+						let levelTemplateVO = templateVOValue[level];
+						let levelProperties = Object.keys(levelVO);
+						for (let j in levelProperties) {
+							let key2 = levelProperties[j];
+							let levelVOValue = levelVO[key2];
+							let levelTemplateVOValue = levelTemplateVO[key2];
+							if (notSavedKeysLevel.indexOf(key2) >= 0 && !levelTemplateVOValue) continue;
+							if (levelVOValue == levelTemplateVOValue) continue;
+							if (key2 === "sectors") {
+								for (let s in levelVOValue) {
+									let sectorVO = levelVOValue[s];
+									let sectorTemplateVO = levelTemplateVOValue[s];
+									let sectorProperties = Object.keys(sectorVO);
+									for (let k in sectorProperties) {
+										let key3 = sectorProperties[k];
+										let sectorVOValue = sectorVO[key3];
+										let sectorTemplateVOValue = sectorTemplateVO[key3];
+										if (notSavedKeysSector.indexOf(key3) >= 0 && !sectorTemplateVOValue) continue;
+										if (sectorVOValue == sectorTemplateVOValue) continue;
+										numIssues++;
+										log.e("SectorVO->SectorTemplateVO mismatch: " + key3);
+									}
+								}
+								continue;
+							}
+							numIssues++;
+							log.e("LevelVO->LevelTemplateVO mismatch: " + key2)
+						}
+					}
+					continue;
+				}
+				numIssues++;
+				log.e("WorldVO->worldTemplateVO mismatch: " + key);
+			}
+
+			// check worldTemplateVO saves and loads correctly
+			let saveObject = worldTemplateVO.getCustomSaveObject();
+			let loadResult = new WorldTemplateVO();
+			loadResult.customLoadFromSave(saveObject);
+			let diff = ObjectUtils.diff(worldTemplateVO, loadResult);
+			if (diff.total > 0) {
+				numIssues += diff.total;
+				log.e("worldTemplateVO did not save/load correctly: " + diff.total + ", keys: " + Object.keys(diff.byKey).join(","));
+			}
+
+			if (numIssues == 0) log.i("worldTemplateVO validation OK")
 		},
 
 		getGeneratedLevels: function () {
@@ -227,7 +302,7 @@ define([
 		getSectorFeatures: function (worldVO, level, sectorX, sectorY) {
 			var sectorVO = worldVO.getLevel(level).getSector(sectorX, sectorY);
 			var sectorFeatures = {};
-			sectorFeatures.criticalPaths = sectorVO.criticalPathTypes || [];
+			sectorFeatures.isOnCriticalPath = sectorVO.isOnCriticalPath();
 			sectorFeatures.zone = sectorVO.zone;
 			sectorFeatures.buildingDensity = sectorVO.buildingDensity;
 			sectorFeatures.wear = sectorVO.wear;
@@ -248,7 +323,6 @@ define([
 			sectorFeatures.hasBuildableWorkshop = sectorVO.hasBuildableWorkshop;
 			sectorFeatures.isCamp = sectorVO.isCamp;
 			sectorFeatures.isInvestigatable = sectorVO.isInvestigatable;
-			sectorFeatures.notCampableReason = sectorVO.notCampableReason;
 			sectorFeatures.stashes = sectorVO.stashes || null;
 			sectorFeatures.waymarks = sectorVO.waymarks || [];
 			sectorFeatures.heapResource = sectorVO.heapResource || null;
@@ -259,10 +333,6 @@ define([
 
 		getLocales: function (worldVO, level, sectorX, sectorY) {
 			return worldVO.getLevel(level).getSector(sectorX, sectorY).locales;
-		},
-
-		getCriticalPaths: function (worldVO, level, sectorX, sectorY) {
-			return worldVO.getLevel(level).getSector(sectorX, sectorY).criticalPathTypes;
 		},
 
 		getSectorEnemies: function (worldVO, level, sectorX, sectorY) {

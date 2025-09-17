@@ -630,11 +630,11 @@ define([
 			);
 			if (distanceToCamp <= 1) return false;
 			
-			for (let i = 0; i < sectorVO1.criticalPaths.length; i++) {
-				var pathType = sectorVO1.criticalPaths[i].type;
+			for (let i = 0; i < sectorVO1.criticalPathTypes.length; i++) {
+				var pathType = sectorVO1.criticalPathTypes[i];
 				if (allowedCriticalPaths && allowedCriticalPaths.indexOf(pathType) >= 0) continue;
-				for (let j = 0; j < sectorVO2.criticalPaths.length; j++) {
-					if (pathType === sectorVO2.criticalPaths[j].type) {
+				for (let j = 0; j < sectorVO2.criticalPathTypes.length; j++) {
+					if (pathType === sectorVO2.criticalPathTypes[j]) {
 						return false;
 					}
 				}

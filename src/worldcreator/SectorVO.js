@@ -1,54 +1,70 @@
 define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorConstants', 'worldcreator/WorldCreatorLogger', 'game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO'],
 function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, ResourcesVO, EnvironmentalHazardsVO) {
 
-	var SectorVO = Ash.Class.extend({
+	let SectorVO = Ash.Class.extend({
 	
-		constructor: function (position, isCampableLevel, notCampableReason) {
+		constructor: function (position) {
 			this.id = Math.floor(Math.random() * 100000);
 			this.position = position;
 			this.level = position.level;
-			this.campableLevel = isCampableLevel;
-			this.notCampableReason = notCampableReason;
 
-			this.sectorType = null;
-			
-			this.isCamp = false;
-			this.isPassageUp = false;
-			this.isPassageDown = false;
-			
-			this.requiredResources = new ResourcesVO();
-			this.criticalPaths = [];
+			this.buildingDensity = 0;
 			this.criticalPathTypes = [];
-			this.criticalPathIndices = [];
+			this.damage = 0;
+			this.examineSpots = [];
+			this.graffiti = 0;
+			this.hasClearableWorkshop = false;
+			this.hasBuildableWorkshop = false;
+			this.hasHeap = false;
+			this.hasRegularEnemies = false;
+			this.hasSpring = false;
+			this.hasTradeConnectorSpot = false;
+			this.hasWorkshop = false;
+			this.hazards = new EnvironmentalHazardsVO();
+			this.heapResource = null;
+			this.isCamp = false;
+			this.isInvestigatable = false;
+			this.isPassageDown = false;
+			this.isPassageUp = false;
+			this.itemsScavengeable = [];
 			this.locales = [];
 			this.movementBlockers = {};
-			this.passageUpType = null;
+			this.numLocaleEnemies = {}; // localeID -> int
 			this.passageDownType = null;
-			this.sunlit = false;
-			this.hazards = new EnvironmentalHazardsVO();
-			this.hasSpring = false;
-			this.hasWorkshop = false;
-			this.hasHeap = false;
-			this.hasTradeConnectorSpot = false;
-			this.isInvestigatable = false;
-			this.scavengeDifficulty = 5;
-			this.resourcesScavengable = new ResourcesVO();
-			this.resourcesCollectable = new ResourcesVO();
-			this.itemsScavengeable = [];
-			this.numLocaleEnemies = {};
+			this.passageUpType = null;
 			this.possibleEnemies = [];
+			this.resourcesCollectable = new ResourcesVO();
+			this.resourcesScavengable = new ResourcesVO();
+			this.scavengeDifficulty = 5;
+			this.sectorType = null;
+			this.stage = null;
 			this.stashes = [];
+			this.sunlit = 0;
 			this.waymarks = [];
-			this.examineSpots = [];
-
+			this.wear = 0;
 			this.workshopResource = null;
-			this.heapResource = null;
+			this.zone = null;
 			
+			this.resetCaches();
+		},
+
+		resetCaches: function () {
+			this.criticalPathIndices = [];
+			this.criticalPaths = [];
 			this.distanceToCamp = -1;
+			this.isConnectionPoint = false;
+			this.pathID = 0;
+			this.requiredFeatures = {};
+			this.requiredResources = new ResourcesVO();
+			this.resourcesAll = {};
 		},
 		
 		isOnCriticalPath: function (type) {
-			return this.criticalPathTypes.indexOf(type) >= 0;
+			if (type) {
+				return this.criticalPathTypes.indexOf(type) >= 0;
+			} else{
+				return this.criticalPathTypes.length > 0;
+			}
 		},
 		
 		isOnEarlyCriticalPath: function () {
@@ -79,7 +95,7 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			if (this.criticalPaths.indexOf(path) >= 0) return;
 			let index = path.length;
 			this.criticalPaths.push(path);
-			this.criticalPathTypes.push(path.type);
+			if (this.criticalPathTypes.indexOf(path.type) < 0) this.criticalPathTypes.push(path.type);
 			this.criticalPathIndices.push(index);
 			path.length++;
 			this.updateCriticalPath();

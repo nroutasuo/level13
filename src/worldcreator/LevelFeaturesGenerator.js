@@ -59,7 +59,6 @@ define([
 			levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_LATE] = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO.seed, levelVO.campOrdinal, levelVO.level, WorldConstants.CAMP_STAGE_LATE);
 			levelVO.stageCenterPositions = this.getStageCenterPositions(worldVO, levelVO);
 			levelVO.levelCenterPosition = this.getLevelCenterPosition(worldVO, levelVO);
-			levelVO.excursionStartPosition = this.getExcursionStartPosition(worldVO, levelVO);
 			levelVO.seaPadding = this.getSeaPadding(seed, levelVO);
 
 			// stuff that might need to be adjusted on worlds from old saves
@@ -123,16 +122,6 @@ define([
 			}
 			let result = PositionConstants.getMiddlePoint(pois, true);
 			return result;
-		},
-		
-		getExcursionStartPosition: function (worldVO, levelVO) {
-			if (levelVO.isCampable) {
-				return levelVO.campPosition;
-			}
-			if (levelVO.level < 13) {
-				return levelVO.passageUpPosition;
-			}
-			return levelVO.passageDownPosition;
 		},
 		
 		getNumInvestigateSectors: function (seed, level) {

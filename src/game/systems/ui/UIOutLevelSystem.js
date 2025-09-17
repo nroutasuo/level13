@@ -32,6 +32,7 @@ define([
 	'game/components/sector/MovementOptionsComponent',
 	'game/components/common/PositionComponent',
 	'game/components/common/CampComponent',
+	'game/components/type/LevelComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/improvements/WorkshopComponent',
 	'game/components/sector/SectorStatusComponent',
@@ -42,7 +43,7 @@ define([
 	LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, StoryConstants, TradeConstants,
 	TribeConstants, PlayerPositionNode, PlayerLocationNode, NearestCampNode, VisionComponent, StaminaComponent,
 	PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
-	MovementOptionsComponent, PositionComponent, CampComponent, SectorImprovementsComponent,
+	MovementOptionsComponent, PositionComponent, CampComponent, LevelComponent, SectorImprovementsComponent,
 	WorkshopComponent, SectorStatusComponent, EnemiesComponent
 ) {
 	var UIOutLevelSystem = Ash.System.extend({
@@ -716,6 +717,9 @@ define([
 			let enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
 			let hasEnemies = enemiesComponent.hasEnemies;
 
+			let levelEntity = GameGlobals.levelHelper.getLevelEntityForSector(this.playerLocationNodes.head.entity);
+			let levelComponent = levelEntity.get(LevelComponent);
+
 			let enemyDesc = "";
 
 			if (hasEnemies) {
@@ -731,7 +735,7 @@ define([
 			if (isScouted) {
 				if (!featuresComponent.campable) {
 					var inhabited = featuresComponent.level > 10;
-					switch (featuresComponent.notCampableReason) {
+					switch (levelComponent.notCampableReason) {
 						case LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION:
 							if (inhabited && featuresComponent.wear < 6)
 								notCampableDesc = "Many entrances have big yellow warning signs on them, with the text 'KEEP OUT' and a <span class='hl-functionality'>radiation</span> sign. ";

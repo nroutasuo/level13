@@ -92,10 +92,10 @@ define([
 						s.numLocaleEnemies[LocaleConstants.getPassageLocaleId(direction)] = 3;
 					}, function () {
 						let enemyIDs = selectEnemyIDsForGang(sectorVO, neighbourVO);
-						var pos1 = sectorVO.position;
-						var pos2 = neighbourVO.position;
-						var gang = new GangVO(pos1, pos2, enemyIDs);
-						levelVO.addGang(gang);
+						let pos1 = sectorVO.position;
+						let pos2 = neighbourVO.position;
+						let gangVO = new GangVO(pos1, pos2, enemyIDs);
+						levelVO.gangs.push(gangVO);
 					});
 					return true;
 				} else {
@@ -490,7 +490,6 @@ define([
 			let enemyDifficulty = enemyCreator.getDifficulty(campOrdinal, step);
 			if (sectorVO.isOnEarlyCriticalPath()) enemyDifficulty -= 2;
 			enemyDifficulty = Math.max(enemyDifficulty, 1);
-			sectorVO.enemyDifficulty = enemyDifficulty;
 
 			let enemies = [];
 			

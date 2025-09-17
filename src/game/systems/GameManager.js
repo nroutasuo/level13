@@ -302,7 +302,6 @@ define([
 								blockers,
 								GameGlobals.worldHelper.getSectorFeatures(worldVO, i, x, y),
 								GameGlobals.worldHelper.getLocales(worldVO, i, x, y),
-								GameGlobals.worldHelper.getCriticalPaths(worldVO, i, x, y),
 								GameGlobals.worldHelper.getSectorEnemies(worldVO, i, x, y),
 								GameGlobals.worldHelper.getHasSectorRegularEnemies(worldVO, i, x, y),
 								GameGlobals.worldHelper.getSectorLocaleEnemyCount(worldVO, i, x, y)
@@ -323,6 +322,7 @@ define([
 						);
 					}
 				}
+				worldVO.resetCaches();
 				resolve();
 			});
 		},

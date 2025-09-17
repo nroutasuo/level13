@@ -90,12 +90,12 @@ define([
 			}
 
 			var allowedForGangs = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
-			for (let i = 0; i < sectorVO.criticalPaths.length; i++) {
-				var pathType = sectorVO.criticalPaths[i].type;
+			for (let i = 0; i < sectorVO.criticalPathTypes.length; i++) {
+				var pathType = sectorVO.criticalPathTypes[i];
 				if (options.allowedCriticalPaths && options.allowedCriticalPaths.indexOf(pathType) >= 0) continue;
 				if (blockerType === MovementConstants.BLOCKER_TYPE_GANG && allowedForGangs.indexOf(pathType) >= 0) continue;
-				for (let j = 0; j < neighbourVO.criticalPaths.length; j++) {
-					if (pathType === neighbourVO.criticalPaths[j].type) {
+				for (let j = 0; j < neighbourVO.criticalPathTypes.length; j++) {
+					if (pathType === neighbourVO.criticalPathTypes[j]) {
 						if (!options.skipWarnings) WorldCreatorLogger.w("skipping movement blocker on critical path: " + pathType + " (type: " + blockerType + ")");
 						return false;
 					}
