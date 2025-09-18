@@ -6,7 +6,10 @@
 			"phase": "beta",
 			"final": false,
 			"changes": [
-
+				{
+					"type": "DEV",
+					"summary": "Refactor world generation to be faster and more backwards compatible"
+				}
 			]
 		},
 		{
