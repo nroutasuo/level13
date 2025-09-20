@@ -2,6 +2,7 @@
 // parses necessary information from a save, loads/generates the world, keeps track of world state and generates more levels as needed
 define([
 	'ash',
+	'utils/ObjectUtils',
 	'game/GameGlobals',
 	'game/constants/GameConstants',
 	'worldcreator/WorldCreator',
@@ -11,6 +12,7 @@ define([
 	'worldcreator/WorldTemplateVO',
 ], function (
 	Ash,
+	ObjectUtils,
 	GameGlobals,
 	GameConstants,
 	WorldCreator,
@@ -177,6 +179,7 @@ define([
 					resolve(worldVO);
 				})
 				.then(() => this.saveWorld())
+				.then(() => this.logChanges(worldTemplateVO, levels))
 				.then(worldVO => {
 					this.isBusy = false;
 					resolve(worldVO);
@@ -205,6 +208,55 @@ define([
 			let worldTemplateVO = new WorldTemplateVO(this.worldVO);
 			WorldValidator.validateWorldTemplateVO(this.worldVO, worldTemplateVO);
 			GameGlobals.worldState.worldTemplateVO = worldTemplateVO;
+		},
+
+		logChanges: function (worldTemplateVO, levels) {
+			// detect and log changes in the world if there was an existing template, to be later shown to the player
+
+			// TODO format better and return as result to be shown to the player somehow
+
+			if (!worldTemplateVO) return;
+			for (let i = 0; i < levels.length; i++) {
+				let level = levels[i];
+				let levelVO = this.worldVO.levels[level];
+				let levelTemplateVO = worldTemplateVO.levels[level];
+				this.logLevelChanges(levelVO, levelTemplateVO);
+			}
+		},
+
+		logLevelChanges: function (levelVO, levelTemplateVO) {
+			if (!levelTemplateVO) return;
+
+			for (let s = 0; s < levelVO.sectors.length; s++) {
+				let sectorVO = levelVO.sectors[s];
+				let sectorTemplateVO = levelTemplateVO.sectors[s];
+				this.logSectorChanges(sectorVO, sectorTemplateVO);
+			}
+		},
+
+		logSectorChanges: function (sectorVO, sectorTemplateVO) {
+			// TODO add more checks
+
+			let sectorLocales = sectorVO.locales.concat();
+			let sectorTemplateLocales = sectorTemplateVO.locales.concat();
+
+			let notFoundLocales = sectorTemplateLocales.concat();
+			let extraLocales = [];
+			for (let i = 0; i < sectorLocales.length; i++) {
+				let localeVO = sectorLocales[i];
+				let matchingVOs = notFoundLocales.filter(sectorTemplateLocaleVO => ObjectUtils.diff(localeVO, sectorTemplateLocaleVO).total == 0);
+				let matchingVO = matchingVOs.length > 0 ? matchingVOs[0] : null;
+
+				if (matchingVO) {
+					let matchingVOIndex = notFoundLocales.indexOf(matchingVO);
+					notFoundLocales.splice(matchingVOIndex, 1);
+				} else {
+					extraLocales.push(localeVO);
+				}
+			}
+
+			if (extraLocales.length > 0) log.i("world changes: added " + extraLocales.length + " locales at sector " + sectorVO.position);
+			if (notFoundLocales.length > 0) log.i("world changes: removed " + notFoundLocales.length + " locales at sector " + sectorVO.position);
 		},
 
 		getGeneratedLevels: function () {
