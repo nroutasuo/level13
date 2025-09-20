@@ -1,6 +1,6 @@
 // subset of WorldVO that is saved after generation and can be used as input to world generation 
 // represents the data about a world that should not change even between versions
-define(['ash', 'worldcreator/LevelTemplateVO'], function (Ash, LevelTemplateVO) {
+define(['ash', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO'], function (Ash, LevelTemplateVO, PositionVO) {
 
 	let WorldTemplateVO = Ash.Class.extend({
 	
@@ -47,8 +47,32 @@ define(['ash', 'worldcreator/LevelTemplateVO'], function (Ash, LevelTemplateVO) 
 			this.topLevel = saveObject.topLevel;
 			this.bottomLevel = saveObject.bottomLevel;
 			
-			this.campPositions = saveObject.campPositions;
-			this.passagePositions = saveObject.passagePositions;
+			this.campPositions = [];
+			for (let i in saveObject.campPositions) {
+				let saveObjectCampPosition = saveObject.campPositions[i];
+				if (saveObjectCampPosition) {
+					this.campPositions[i] = new PositionVO();
+					this.campPositions[i].customLoadFromSave(saveObjectCampPosition);
+				} else {
+					this.campPositions[i] = null;
+				}
+			}
+
+			this.passagePositions = {};
+			for (let i in saveObject.passagePositions) {
+				let saveObjectPassagePositions = saveObject.passagePositions[i];
+				let passagePositions = {};
+				if (saveObjectPassagePositions.up) {
+					passagePositions.up = new PositionVO();
+					passagePositions.up.customLoadFromSave(saveObjectPassagePositions.up);
+				}
+				if (saveObjectPassagePositions.down) {
+					passagePositions.down = new PositionVO();
+					passagePositions.down.customLoadFromSave(saveObjectPassagePositions.down);
+				}
+				this.passagePositions[i] = passagePositions;
+			}
+
 			this.passageTypes = saveObject.passageTypes;
 			
 			this.levels = [];

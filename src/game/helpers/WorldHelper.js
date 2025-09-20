@@ -2,7 +2,6 @@
 // parses necessary information from a save, loads/generates the world, keeps track of world state and generates more levels as needed
 define([
 	'ash',
-	'utils/ObjectUtils',
 	'game/GameGlobals',
 	'game/constants/GameConstants',
 	'worldcreator/WorldCreator',
@@ -12,7 +11,6 @@ define([
 	'worldcreator/WorldTemplateVO',
 ], function (
 	Ash,
-	ObjectUtils, 
 	GameGlobals,
 	GameConstants,
 	WorldCreator,
@@ -37,12 +35,12 @@ define([
 				let worldSeed = saveData.hasSave ? saveData.worldSeed : WorldCreatorRandom.getNewSeed();
 				let levels = saveData.levels || [ 13 ];
 				
-				this.generateWorld(worldSeed, saveData.hasSave)
+				this.generateWorld(worldSeed, saveData.worldTemplateVO, saveData.hasSave)
 				.then(worldVO => {
 					this.worldVO = worldVO;
 					GameGlobals.gameState.worldSeed = worldVO.seed;
 				})
-				.then(() => this.generateLevels(levels))
+				.then(() => this.generateLevels(levels, saveData.worldTemplateVO))
 				.then(() => this.saveWorld())
 				.then(() => {
 					log.i("START " + GameConstants.STARTTimeNow() + "\t world created (seed: " + this.worldVO.seed + ")");
@@ -98,19 +96,19 @@ define([
 			let result = {};
 			result.hasSave = hasSave;
 			result.worldSeed = worldSeed;
-			result.savedWorldTemplateVO = savedWorldTemplateVO;
+			result.worldTemplateVO = savedWorldTemplateVO;
 			result.levels = levels;
 
 			return result;
 		},
 		
-		generateWorld: function (seed, hasSave, tryNumber) {
+		generateWorld: function (seed, worldTemplateVO, hasSave, tryNumber) {
 			return new Promise(function(resolve, reject) {
 				let maxTries = GameConstants.isDebugVersion ? 1 : 10;
 				tryNumber = tryNumber || 1;
 				
 				setTimeout(() => {
-					this.tryGenerateWorld(seed, tryNumber, maxTries).then(result => {						
+					this.tryGenerateWorld(seed, worldTemplateVO, tryNumber, maxTries).then(result => {						
 						if (result.validationResult.isValid) {
 							resolve(result.worldVO);
 							return;
@@ -137,14 +135,14 @@ define([
 			}.bind(this));
 		},
 		
-		tryGenerateWorld: function (seed, tryNumber, maxTries) {
+		tryGenerateWorld: function (seed, worldTemplateVO, tryNumber, maxTries) {
 			return new Promise(function(resolve, reject) {
 				log.i("START " + GameConstants.STARTTimeNow() + "\t generating world, try " + tryNumber + "/" + maxTries);
 				let s = seed + (tryNumber - 1) * 111;
 
-				WorldCreator.createWorld(s, GameGlobals.itemsHelper).then(worldVO => {
+				WorldCreator.createWorld(s, worldTemplateVO, GameGlobals.itemsHelper).then(worldVO => {
 					log.i("START " + GameConstants.STARTTimeNow() + "\t validating world");
-					let validationResult = WorldValidator.validateWorld(worldVO);
+					let validationResult = WorldValidator.validateWorld(worldVO, worldTemplateVO);
 					resolve({ worldVO: worldVO, validationResult: validationResult });
 				}).catch(ex => {
 					if (GameConstants.isDebugVersion) {
@@ -160,7 +158,7 @@ define([
 			return this.generateLevels([ level ], cb);
 		},
 
-		generateLevels: function (levels) {
+		generateLevels: function (levels, worldTemplateVO) {
 			return new Promise((resolve, reject) => {
 				if (!this.isWorldGenerated()) {
 					this.logWorldNotGenerated("generateLevels");
@@ -173,9 +171,9 @@ define([
 
 				this.isBusy = true;
 
-				WorldCreator.generateLevels(this.worldVO.seed, this.worldVO, levels, GameGlobals.itemsHelper)
+				WorldCreator.generateLevels(this.worldVO.seed, this.worldVO, worldTemplateVO, levels, GameGlobals.itemsHelper)
 				.then(worldVO => {
-					this.validateLevels(levels);
+					this.validateLevels(levels, worldTemplateVO);
 					resolve(worldVO);
 				})
 				.then(() => this.saveWorld())
@@ -191,11 +189,11 @@ define([
 			});
 		},
 
-		validateLevels: function (levels) {
+		validateLevels: function (levels, worldTemplateVO) {
 			for (let i = 0; i < levels.length; i++) {
 				let l = levels[i];
 				let levelVO = this.worldVO.levels[l];
-				let validationResult = WorldValidator.validateLevel(this.worldVO, levelVO);
+				let validationResult = WorldValidator.validateLevel(this.worldVO, worldTemplateVO, levelVO);
 				if (validationResult.isValid) continue;
 
 				// log errors
@@ -205,76 +203,8 @@ define([
 
 		saveWorld: function () {
 			let worldTemplateVO = new WorldTemplateVO(this.worldVO);
-			this.validateWorldTemplateVO(this.worldVO, worldTemplateVO);
+			WorldValidator.validateWorldTemplateVO(this.worldVO, worldTemplateVO);
 			GameGlobals.worldState.worldTemplateVO = worldTemplateVO;
-		},
-
-		validateWorldTemplateVO: function (worldVO, worldTemplateVO) {
-			log.i("validating worldTemplateVO");
-			let numIssues = 0;
-			// TODO move world template vo validation somewhere else? WorldValidator? Dedicated TemplateValidator?
-
-			let notSavedKeysWorld = [ "districts", "features", "stages", "pathsAny", "pathsLatest", "examineSpotsPerLevel" ];
-			let notSavedKeysLevel = [ "maxSectors", "neighboursCacheContext", "pendingConnectionPointsByStage", "invalidPositions", "paths", "requiredPaths", "sectorsByStage", "sectorsByPos", "predefinedExplorers", "levelCenterPosition", "localeSectors" ];
-			let notSavedKeysSector = [ "id", "distanceToCamp", "requiredFeatures", "requiredResources", "resourcesAll", "pathID", "waymarks", "possibleEnemies", "isConnectionPoint", "criticalPaths", "resourcesScavengable", "criticalPathIndices", "criticalPath", "campPosScore", "isFill" ];
-
-			// check worldTemplateVO matches worldVO
-			let properties = Object.keys(worldVO);
-			for (let i in properties) {
-				let key = properties[i];
-				let worldVOValue = worldVO[key];
-				let templateVOValue = worldTemplateVO[key];
-				if (notSavedKeysWorld.indexOf(key) >= 0 && !templateVOValue) continue;
-				if (worldVOValue === templateVOValue) continue;
-				if (key === "levels") {
-					for (let level in worldVOValue) {
-						let levelVO = worldVOValue[level];
-						let levelTemplateVO = templateVOValue[level];
-						let levelProperties = Object.keys(levelVO);
-						for (let j in levelProperties) {
-							let key2 = levelProperties[j];
-							let levelVOValue = levelVO[key2];
-							let levelTemplateVOValue = levelTemplateVO[key2];
-							if (notSavedKeysLevel.indexOf(key2) >= 0 && !levelTemplateVOValue) continue;
-							if (levelVOValue == levelTemplateVOValue) continue;
-							if (key2 === "sectors") {
-								for (let s in levelVOValue) {
-									let sectorVO = levelVOValue[s];
-									let sectorTemplateVO = levelTemplateVOValue[s];
-									let sectorProperties = Object.keys(sectorVO);
-									for (let k in sectorProperties) {
-										let key3 = sectorProperties[k];
-										let sectorVOValue = sectorVO[key3];
-										let sectorTemplateVOValue = sectorTemplateVO[key3];
-										if (notSavedKeysSector.indexOf(key3) >= 0 && !sectorTemplateVOValue) continue;
-										if (sectorVOValue == sectorTemplateVOValue) continue;
-										numIssues++;
-										log.e("SectorVO->SectorTemplateVO mismatch: " + key3);
-									}
-								}
-								continue;
-							}
-							numIssues++;
-							log.e("LevelVO->LevelTemplateVO mismatch: " + key2)
-						}
-					}
-					continue;
-				}
-				numIssues++;
-				log.e("WorldVO->worldTemplateVO mismatch: " + key);
-			}
-
-			// check worldTemplateVO saves and loads correctly
-			let saveObject = worldTemplateVO.getCustomSaveObject();
-			let loadResult = new WorldTemplateVO();
-			loadResult.customLoadFromSave(saveObject);
-			let diff = ObjectUtils.diff(worldTemplateVO, loadResult);
-			if (diff.total > 0) {
-				numIssues += diff.total;
-				log.e("worldTemplateVO did not save/load correctly: " + diff.total + ", keys: " + Object.keys(diff.byKey).join(","));
-			}
-
-			if (numIssues == 0) log.i("worldTemplateVO validation OK")
 		},
 
 		getGeneratedLevels: function () {

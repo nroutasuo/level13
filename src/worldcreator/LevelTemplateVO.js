@@ -1,5 +1,5 @@
-define(['ash', 'worldcreator/SectorTemplateVO'],
-function (Ash, SectorTemplateVO) {
+define(['ash', 'worldcreator/SectorTemplateVO', 'game/vos/PositionVO'],
+function (Ash, SectorTemplateVO, PositionVO) {
 
 	let LevelTemplateVO = Ash.Class.extend({
 	
@@ -30,9 +30,9 @@ function (Ash, SectorTemplateVO) {
 			this.passagePositions = levelVO.passagePositions;
 			this.passageUpPosition = levelVO.passageUpPosition;
 			this.passageUpType = levelVO.passageUpType;
-			this.raidDangerFactor = levelVO.raidDangerFactor;
 			this.seaPadding = levelVO.seaPadding;
-			this.stageCenterPositions = levelVO.stageCenterPositions;
+			this.workshopPositions = levelVO.workshopPositions;
+			this.workshopResource = levelVO.workshopResource;
 			
 			this.sectors = [];
 
@@ -49,7 +49,7 @@ function (Ash, SectorTemplateVO) {
 			copy.campOrdinal = this.campOrdinal;
 
 			copy.additionalCampPositions = this.additionalCampPositions;
-			copy.campPosition = this.campPosition;
+			if (this.campPosition) copy.campPosition = this.campPosition.getCustomSaveObject();
 			copy.gangs = this.gangs;
 			copy.habitability = this.habitability;
 			copy.isCampable = this.isCampable;
@@ -68,9 +68,9 @@ function (Ash, SectorTemplateVO) {
 			copy.passagePositions = this.passagePositions;
 			copy.passageUpPosition = this.passageUpPosition;
 			copy.passageUpType = this.passageUpType;
-			copy.raidDangerFactor = this.raidDangerFactor;
 			copy.seaPadding = this.seaPadding;
-			copy.stageCenterPositions = this.stageCenterPositions;
+			if (this.workshopResource) copy.workshopResource = this.workshopResource;
+			if (this.workshopPositions) copy.workshopPositions = this.workshopPositions;
 
 			copy.sectors = [];
 
@@ -87,7 +87,8 @@ function (Ash, SectorTemplateVO) {
 			this.campOrdinal = saveObject.campOrdinal;
 
 			this.additionalCampPositions = saveObject.additionalCampPositions;
-			this.campPosition = saveObject.campPosition;
+			this.campPosition = saveObject.campPosition ? new PositionVO() : null;
+			if (saveObject.campPosition) this.campPosition.customLoadFromSave(saveObject.campPosition);
 			this.gangs = saveObject.gangs;
 			this.habitability = saveObject.habitability;
 			this.isCampable = saveObject.isCampable;
@@ -106,9 +107,9 @@ function (Ash, SectorTemplateVO) {
 			this.passagePositions = saveObject.passagePositions;
 			this.passageUpPosition = saveObject.passageUpPosition;
 			this.passageUpType = saveObject.passageUpType;
-			this.raidDangerFactor = saveObject.raidDangerFactor;
 			this.seaPadding = saveObject.seaPadding;
-			this.stageCenterPositions = saveObject.stageCenterPositions;
+			this.workshopResource = saveObject.workshopResource || null;
+			this.workshopPositions = saveObject.workshopPositions || null;
 			
 			this.sectors = [];
 

@@ -1,6 +1,7 @@
 // generates the structure of levels and creates (mostly empty) SectorVOs
 define([
 	'ash',
+	'utils/ObjectUtils',
 	'game/constants/PositionConstants',
 	'game/constants/WorldConstants',
 	'game/vos/PositionVO',
@@ -10,22 +11,43 @@ define([
 	'worldcreator/WorldCreatorLogger',
 	'worldcreator/SectorVO',
 	'worldcreator/CriticalPathVO',
-], function (Ash, PositionConstants, WorldConstants, PositionVO, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorLogger, SectorVO, CriticalPathVO) {
+], function (Ash, ObjectUtils, PositionConstants, WorldConstants, PositionVO, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorLogger, SectorVO, CriticalPathVO) {
 	
 	let LevelStructureGenerator = {
 		
 		debugLevel: 0,
 		
-		generate: function (seed, worldVO, levels) {
+		generate: function (seed, worldVO, worldTemplateVO, levels) {
 			this.currentFeatures = worldVO.features;
 
 			for (let i = 0; i < levels.length; i++) {
 				let l = levels[i];
 				let levelVO = worldVO.levels[l];
-				this.createLevelStructure(seed, worldVO, levelVO);
+				let levelTemplateVO = worldTemplateVO.levels[l] || {};
+
+				if (levelTemplateVO && levelTemplateVO.sectors && levelTemplateVO.sectors.length > 0) {
+					this.replicateLevelStructure(seed, worldVO, levelTemplateVO, levelVO);
+				} else {
+					this.createLevelStructure(seed, worldVO, levelVO);
+				}
 			}
 			
 			this.currentFeatures = null;
+		},
+
+		replicateLevelStructure: function (seed, worldVO, levelTemplateVO, levelVO) {
+			levelVO.minX = levelTemplateVO.minX;
+			levelVO.maxX = levelTemplateVO.maxX;
+			levelVO.minY = levelTemplateVO.minY;
+			levelVO.maxY = levelTemplateVO.maxY;
+			
+			for (let i = 0; i < levelTemplateVO.sectors.length; i++) {
+				let sectorTemplateVO = levelTemplateVO.sectors[i];
+				let sectorPos = sectorTemplateVO.position;
+				let stage = sectorTemplateVO.stage;
+				let sectorVO = this.makeSector(levelVO, sectorPos, stage);
+				levelVO.addSector(sectorVO);
+			}
 		},
 		
 		createLevelStructure: function(seed, worldVO, levelVO) {
@@ -1077,13 +1099,7 @@ define([
 			var check = this.canCreateSector(levelVO, sectorPos, options);
 			var sectorVO = check.vo;
 			if (check.result) {
-				var vo = new SectorVO(sectorPos);
-				vo.stage = stage;
-				vo.isCamp = levelVO.isCampPosition(sectorPos);
-				vo.isPassageUp = levelVO.isPassageUpPosition(sectorPos);
-				vo.passageUpType = levelVO.getPassageUpType(sectorPos);
-				vo.isPassageDown = levelVO.isPassageDownPosition(sectorPos);
-				vo.passageDownType = levelVO.getPassageDownType(sectorPos);
+				let vo = this.makeSector(levelVO, sectorPos, stage);
 				var criticalPath = options.criticalPath;
 				if (criticalPath) {
 					vo.addToCriticalPath(criticalPath);
@@ -1096,6 +1112,17 @@ define([
 			}
 			
 			return { isNew: created, vo: sectorVO };
+		},
+
+		makeSector: function (levelVO, sectorPos, stage) {
+			let vo = new SectorVO(sectorPos);
+			vo.stage = stage;
+			vo.isCamp = levelVO.isCampPosition(sectorPos);
+			vo.isPassageUp = levelVO.isPassageUpPosition(sectorPos);
+			vo.passageUpType = levelVO.getPassageUpType(sectorPos);
+			vo.isPassageDown = levelVO.isPassageDownPosition(sectorPos);
+			vo.passageDownType = levelVO.getPassageDownType(sectorPos);
+			return vo;
 		},
 		
 		addConnectionPoint: function (levelVO, pos, point) {

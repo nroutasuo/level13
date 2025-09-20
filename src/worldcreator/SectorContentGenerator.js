@@ -25,7 +25,7 @@ define([
 	
 	let SectorContentGenerator = {
 
-		generate: function (seed, worldVO, levels, enemyCreator) {			
+		generate: function (seed, worldVO, worldTemplateVO, levels, enemyCreator) {			
 			this.generateExamineSpotsPerLevel(seed, worldVO);
 
 			for (let i = 0; i < levels.length; i++) {

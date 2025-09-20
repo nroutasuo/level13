@@ -415,16 +415,19 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Ga
 				return [];
 			}
 			
-			var cachedPath = this.getCachedPath(worldVO, startPos, endPos, blockByBlockers, stage, anyPath);
+			let cachedPath = this.getCachedPath(worldVO, startPos, endPos, blockByBlockers, stage, anyPath);
 			if (cachedPath) {
 				//log.i("got cached path " + startPos + " to " + endPos);
 				return cachedPath;
 			}
 			
-			var makePathSectorVO = function (position) {
+			let makePathSectorVO = function (position) {
 				if (!position) return null;
-				var levelVO = worldVO.getLevel(position.level);
-				if (!levelVO.hasSector(position.sectorX, position.sectorY)) return null;
+				let levelVO = worldVO.getLevel(position.level);
+				if (!levelVO.hasSector(position.sectorX, position.sectorY)) {
+					debugger;
+					return null;
+				}
 				return {
 					position: position,
 					isVisited: false,
@@ -432,10 +435,10 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Ga
 				};
 			};
 			
-			var startVO = makePathSectorVO(startPos);
-			var goalVO = makePathSectorVO(endPos);
+			let startVO = makePathSectorVO(startPos);
+			let goalVO = makePathSectorVO(endPos);
 			
-			var utilities = {
+			let utilities = {
 				findPassageDown: function (level) {
 					var levelVO = worldVO.getLevel(level);
 					let result = levelVO.findPassageDown();
@@ -447,7 +450,6 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Ga
 					return result ? makePathSectorVO(result.position) : null;
 				},
 				getSectorByPosition: function (level, sectorX, sectorY) {
-					var levelVO = worldVO.getLevel(level);
 					return makePathSectorVO(new PositionVO(level, sectorX, sectorY));
 				},
 				getSectorNeighboursMap: function (pathSectorVO) {

@@ -33,6 +33,8 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			this.raidDangerFactor = 1;
 			this.seaPadding = 0;
 			this.stageCenterPositions = {}; // e/l -> list of PositionVO
+			this.workshopPositions = [];
+			this.workshopResource = null;
 
 			this.sectors = [];
 			

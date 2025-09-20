@@ -3,10 +3,10 @@ define(['ash'], function (Ash) {
 
 	let WorldVO = Ash.Class.extend({
 	
-		constructor: function (seed, topLevel, bottomLevel) {
+		constructor: function (seed) {
 			this.seed = seed;
-			this.topLevel = topLevel;
-			this.bottomLevel = bottomLevel;
+			this.topLevel = 1;
+			this.bottomLevel = 0;
 			
 			this.campPositions = {}; // level -> position
 			this.districts = []; // level -> list of DistrictVO

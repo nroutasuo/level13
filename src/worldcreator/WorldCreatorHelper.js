@@ -8,14 +8,35 @@ define([
 	'game/constants/LevelConstants',
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
-	'game/constants/UpgradeConstants',
 	'game/constants/WorldConstants',
-], function (Ash, GameGlobals, ResourcesVO, WorldCreatorRandom, WorldCreatorConstants, LevelConstants, PositionConstants, SectorConstants, UpgradeConstants, WorldConstants) {
+], function (Ash, GameGlobals, ResourcesVO, WorldCreatorRandom, WorldCreatorConstants, LevelConstants, PositionConstants, SectorConstants, WorldConstants) {
 
-	var WorldCreatorHelper = {
+	let WorldCreatorHelper = {
 		
 		camplessLevelOrdinals: {},
 		hardLevelOrdinals: {},
+
+		copyValueForAllSectors: function (levelTemplateVO, levelVO, key) {
+			for (let i = 0; i < levelTemplateVO.sectors.length; i++) {
+				let sectorTemplateVO = levelTemplateVO.sectors[i];
+				if (sectorTemplateVO && sectorTemplateVO[key]) {
+					let sectorVO = levelVO.getSectorByPos(sectorTemplateVO.position);
+					if (sectorVO) sectorVO[key] = sectorTemplateVO[key];
+				}
+			}
+		},
+
+		getSectorsByTemplateFeature: function (levelTemplateVO, levelVO, feature) {
+			let result = [];
+			for (let i = 0; i < levelTemplateVO.sectors.length; i++) {
+				let sectorTemplateVO = levelTemplateVO.sectors[i];
+				if (sectorTemplateVO && sectorTemplateVO[feature]) {
+					let sectorVO = levelVO.getSectorByPos(sectorTemplateVO.position);
+					if (sectorVO) result.push(sectorVO);
+				}
+			}
+			return result;
+		},
 		
 		addCriticalPath: function (worldVO, criticalPathVO) {
 			var path = WorldCreatorRandom.findPath(worldVO, criticalPathVO.startPos, criticalPathVO.endPos);

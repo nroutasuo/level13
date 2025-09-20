@@ -22,13 +22,24 @@ define([
 	
 	let WorldSkeletonGenerator = {
 
-		generate: function (seed, worldVO) {
+		generate: function (seed, worldVO, worldTemplateVO) {
+			worldVO.topLevel = this.getTopLevel(seed, worldTemplateVO);
+			worldVO.bottomLevel = this.getBottomLevel(seed, worldTemplateVO);
+
 			worldVO.features = worldVO.features.concat(this.generateHoles(seed));
 			worldVO.stages = this.generateStages(seed);
-			worldVO.campPositions = this.generateCampPositions(seed, worldVO.features);
-			worldVO.passagePositions = this.generatePassagePositions(seed, worldVO.features, worldVO.campPositions);
-			worldVO.passageTypes = this.generatePassageTypes(seed, worldVO);
+			worldVO.campPositions = worldTemplateVO.campPositions || this.generateCampPositions(seed, worldVO.features);
+			worldVO.passagePositions = worldTemplateVO.passagePositions || this.generatePassagePositions(seed, worldVO.features, worldVO.campPositions);
+			worldVO.passageTypes = worldTemplateVO.passageTypes || this.generatePassageTypes(seed, worldVO);
 			worldVO.districts = this.generateDistricts(seed, worldVO.features);
+		},
+
+		getTopLevel: function (seed, worldTemplateVO) {
+			return worldTemplateVO.topLevel || WorldCreatorHelper.getHighestLevel(seed);
+		},
+
+		getBottomLevel: function (seed, worldTemplateVO) {
+			return worldTemplateVO.bottomLevel || worldTemplateVO.bottomLevel === 0 ? worldTemplateVO.bottomLevel : WorldCreatorHelper.getBottomLevel(seed);
 		},
 		
 		generateHoles: function (seed) {
