@@ -110,13 +110,11 @@ define([
 				tryNumber = tryNumber || 1;
 				
 				setTimeout(() => {
-					this.tryGenerateWorld(seed, worldTemplateVO, tryNumber, maxTries).then(result => {						
+					this.tryGenerateWorld(seed, worldTemplateVO, tryNumber, maxTries).then(result => {
 						if (result.validationResult.isValid) {
 							resolve(result.worldVO);
 							return;
 						}
-
-						log.e("generateWorld: world is not valid! seed: " + result.worldVO.seed + ", reason: " + result.validationResult.reason);
 						
 						if (hasSave && result.worldVO != null) {
 							log.i("generateWorld: using broken world because old save exists", this);
@@ -145,6 +143,7 @@ define([
 				WorldCreator.createWorld(s, worldTemplateVO, GameGlobals.itemsHelper).then(worldVO => {
 					log.i("START " + GameConstants.STARTTimeNow() + "\t validating world");
 					let validationResult = WorldValidator.validateWorld(worldVO, worldTemplateVO);
+					WorldValidator.logSummary(validationResult);
 					resolve({ worldVO: worldVO, validationResult: validationResult });
 				}).catch(ex => {
 					if (GameConstants.isDebugVersion) {
@@ -197,16 +196,14 @@ define([
 				let l = levels[i];
 				let levelVO = this.worldVO.levels[l];
 				let validationResult = WorldValidator.validateLevel(this.worldVO, worldTemplateVO, levelVO);
-				if (validationResult.isValid) continue;
-
-				// log errors
-				log.e("validateLevels: level " + l +  " is not valid! seed: " + this.worldVO.seed + ", reason: " + validationResult.reason);
+				WorldValidator.logSummary(validationResult);
 			}
 		},
 
 		saveWorld: function () {
 			let worldTemplateVO = new WorldTemplateVO(this.worldVO);
-			WorldValidator.validateWorldTemplateVO(this.worldVO, worldTemplateVO);
+			let validationResult = WorldValidator.validateWorldTemplateVO(this.worldVO, worldTemplateVO);
+			WorldValidator.logSummary(validationResult);
 			GameGlobals.worldState.worldTemplateVO = worldTemplateVO;
 		},
 

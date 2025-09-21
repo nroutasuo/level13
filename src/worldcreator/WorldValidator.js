@@ -13,6 +13,11 @@ define([
 	let context = "WorldValidator";
 
 	let WorldValidator = {
+
+		SEVERITY_CRITICAL: 0, // world / template is broken
+		SEVERITY_MAJOR: 1, // world is not well balanced
+		SEVERITY_COMPABILITY: 11, // world differs from template in a way that should not happen
+		SEVERITY_CONTINUITY: 12, // world differs from template in a way that might be acceptable if the template is from an older version but needs to be handled properly in game logic
 		
 		// TODO check that there's at least a few (useful?) beacon spots per level
 
@@ -20,6 +25,8 @@ define([
 		// checks that the world is valid in itself, and also that it follows the template given
 		validateWorld: function (worldVO, worldTemplateVO) {
 			worldVO.resetPaths();
+
+			let issues = [];
 		
 			let worldChecks = [
 				this.checkSeed, 
@@ -30,12 +37,10 @@ define([
 
 			for (let i = 0; i < worldChecks.length; i++) {
 				let checkResult = worldChecks[i](worldVO, worldTemplateVO);
-				if (!checkResult.isValid) {
-					return { isValid: false, reason: checkResult.reason };
-				}
+				if (!checkResult.isValid) issues = issues.concat(checkResult.issues);
 			}
 			
-			return { isValid: true };
+			return { check: "validateWorld", target: "worldVO", seed: worldVO.seed, isValid: issues.length === 0, issues: issues };
 		},
 
 		// validates a given level, structure, sectors, features
@@ -43,7 +48,9 @@ define([
 		validateLevel: function (worldVO, worldTemplateVO, levelVO) {
 			worldVO.resetPaths();
 
-			let levelTemplateVO = worldTemplateVO ? worldTemplateVO.levels[levelVO.level] : {};
+			let issues = [];
+
+			let levelTemplateVO = worldTemplateVO ? worldTemplateVO.levels[levelVO.level] : null;
 
 			let levelChecks = [ 
 				this.checkCriticalPaths, 
@@ -56,23 +63,19 @@ define([
 
 			for (let i = 0; i < levelChecks.length; i++) {
 				let checkResult = levelChecks[i](worldVO, levelVO, levelTemplateVO);
-				if (!checkResult.isValid) {
-					return { isValid: false, reason: checkResult.reason };
-				}
+				if (!checkResult.isValid) issues = issues.concat(checkResult.issues);
 			}
 			
-			return { isValid: true };
+			return { check: "validateLevel", target: "levelVO:" + levelVO.level, seed: worldVO.seed, isValid: issues.length === 0, issues: issues };
 		},
 
 		// validates that a WorldTemplateVO matches the WorldVO it was created from, contains all necessary data, and saves/loads correctly
 		validateWorldTemplateVO: function (worldVO, worldTemplateVO) {
-			log.i("validating worldTemplateVO");
-			let numIssues = 0;
-			// TODO move world template vo validation somewhere else? WorldValidator? Dedicated TemplateValidator?
+			let issues = [];
 
 			let notSavedKeysWorld = [ "districts", "features", "stages", "pathsAny", "pathsLatest", "examineSpotsPerLevel" ];
-			let notSavedKeysLevel = [ "maxSectors", "neighboursCacheContext", "pendingConnectionPointsByStage", "invalidPositions", "paths", "requiredPaths", "sectorsByStage", "sectorsByPos", "predefinedExplorers", "levelCenterPosition", "localeSectors", "raidDangerFactor", "stageCenterPositions" ];
-			let notSavedKeysSector = [ "id", "distanceToCamp", "requiredFeatures", "requiredResources", "resourcesAll", "pathID", "waymarks", "possibleEnemies", "isConnectionPoint", "criticalPaths", "resourcesScavengable", "criticalPathIndices", "criticalPath", "campPosScore", "isFill" ];
+			let notSavedKeysLevel = [ "maxSectors", "neighboursCacheContext", "pendingConnectionPointsByStage", "invalidPositions", "paths", "requiredPaths", "sectorsByStage", "sectorsByPos", "levelCenterPosition", "localeSectors", "raidDangerFactor", "stageCenterPositions" ];
+			let notSavedKeysSector = [ "id", "distanceToCamp", "requiredFeatures", "requiredResources", "resourcesAll", "pathID", "waymarks", "possibleEnemies", "hasRegularEnemies", "isConnectionPoint", "criticalPaths", "resourcesScavengable", "criticalPathIndices", "criticalPath", "campPosScore", "isFill", "criticalPathTypes" ];
 
 			// check worldTemplateVO matches worldVO
 			let properties = Object.keys(worldVO);
@@ -104,20 +107,26 @@ define([
 										let sectorTemplateVOValue = sectorTemplateVO[key3];
 										if (notSavedKeysSector.indexOf(key3) >= 0 && !sectorTemplateVOValue) continue;
 										if (sectorVOValue == sectorTemplateVOValue) continue;
-										numIssues++;
-										log.e("SectorVO->SectorTemplateVO mismatch: " + key3 + " [" + sectorVOValue + "] [" +  sectorTemplateVOValue + "]");
+										issues.push({ 
+											severity: WorldValidator.SEVERITY_CRITICAL, 
+											desc: "SectorVO->SectorTemplateVO mismatch: " + key3 + " [" + sectorVOValue + "] [" +  sectorTemplateVOValue + "]"
+										});
 									}
 								}
 								continue;
 							}
-							numIssues++;
-							log.e("LevelVO->LevelTemplateVO mismatch: " + key2 + " [" + levelVOValue + "] [" +  levelTemplateVOValue + "]");
+							issues.push({ 
+								severity: WorldValidator.SEVERITY_CRITICAL, 
+								desc: "LevelVO->LevelTemplateVO mismatch: " + key2 + " [" + levelVOValue + "] [" +  levelTemplateVOValue + "]"
+							});
 						}
 					}
 					continue;
 				}
-				numIssues++;
-				log.e("WorldVO->worldTemplateVO mismatch: " + key + " [" + worldVOValue + "] [" +  templateVOValue + "]");
+				issues.push({ 
+					severity: WorldValidator.SEVERITY_CRITICAL, 
+					desc: "WorldVO->WorldTemplateVO mismatch: " + key + " [" + worldVOValue + "] [" +  templateVOValue + "]"
+				});
 			}
 
 			// check worldTemplateVO saves and loads correctly
@@ -126,85 +135,127 @@ define([
 			loadResult.customLoadFromSave(saveObject);
 			let diff = ObjectUtils.diff(worldTemplateVO, loadResult);
 			if (diff.total > 0) {
-				numIssues += diff.total;
-				debugger
-				log.e("worldTemplateVO did not save/load correctly: " + diff.total + ", keys: " + Object.keys(diff.byKey).join(","));
+				issues.push({ 
+					severity: WorldValidator.SEVERITY_CRITICAL, 
+					desc: "worldTemplateVO did not save/load correctly: " + diff.total + ", keys: " + Object.keys(diff.byKey).join(",")
+				});
 			}
+			
+			return { check: "validateWorldTemplateVO", target: "worldTemplateVO", seed: worldVO.seed, isValid: issues.length === 0, issues: issues };
+		},
 
-			if (numIssues == 0) log.i("worldTemplateVO validation OK")
+		logSummary: function (validationResult) {
+			if (validationResult.isValid) {
+				log.i("WorldValidator." + validationResult.check + ": " + validationResult.target + " (seed " + validationResult.seed + ") is VALID");
+			} else {
+				let issues = validationResult.issues;
+				let issuesBySeverity = {};
+				let severities = [ WorldValidator.SEVERITY_CRITICAL, WorldValidator.SEVERITY_MAJOR, WorldValidator.SEVERITY_COMPABILITY, WorldValidator.SEVERITY_CONTINUITY ];
+				for (let i = 0; i < severities.length; i++) {
+					let severity = severities[i];
+					issuesBySeverity[severity] = issues.filter(issue => issue.severity === severity);
+				}
+				log.e("WorldValidator." + validationResult.check + ": " + validationResult.target + " (seed " + validationResult.seed + ") is INVALID! Issues: " + issues.length);
+				for (let i = 0; i < issues.length; i++) {
+					log.e("- " + issues[i].desc);
+				}
+			}
 		},
 
 		checkSeed: function (worldVO) {
-			if (!worldVO.seed) return { isValid: false, reason: "no seed" };
-			if (worldVO.seed < 0) return { isValid: false, reason: "negative seed" };
-			return { isValid: true };
+			let issues = [];
+
+			if (!worldVO.seed) issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "no seed" });
+			if (worldVO.seed < 0) issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "negative seed" });
+
+			return { isValid: issues.length === 0, issues: issues };
 		},
 
 		checkCampPositions: function (worldVO) {
+			let issues = [];
+
 			let numCampPositions = Object.keys(worldVO.campPositions);
+			if (numCampPositions < 15) issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "too few camp positions (" + numCampPositions + ")" });
+			if (numCampPositions > 15) issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "too many camp positions (" + numCampPositions + ")" });
 
-			if (numCampPositions < 15) return { isValid: false, reason: "too few camp positions (" + numCampPositions + ")" };
-			if (numCampPositions > 15) return { isValid: false, reason: "too many camp positions (" + numCampPositions + ")" };
-
-			return { isValid: true };
+			return { isValid: issues.length === 0, issues: issues };
 		},
 
 		checkPassages: function (worldVO) {
+			let issues = [];
+
 			for (let l = worldVO.bottomLevel; l <= worldVO.topLevel; l++) {
-				if (!worldVO.passagePositions[l]) return { isValid: false, reason: "no passage positions defined for level " + l };
-				if (!worldVO.passageTypes[l]) return { isValid: false, reason: "no passage types defined for level " + l };
+				if (!worldVO.passagePositions[l]) issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "no passage positions defined for level " + l });
+				if (!worldVO.passageTypes[l]) issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "no passage types defined for level " + l });
 			}
 
-			return { isValid: true };
+			return { isValid: issues.length === 0, issues: issues };
 		},
 		
 		checkCriticalPaths: function (worldVO, levelVO) {
+			let issues = [];
+
 			let requiredPaths = WorldCreatorHelper.getRequiredPaths(worldVO, levelVO);
 
 			for (let i = 0; i < requiredPaths.length; i++) {
-				var path = requiredPaths[i];
-				var startPos = path.start.clone();
-				var endPos = path.end.clone();
+				let path = requiredPaths[i];
+				let startPos = path.start.clone();
+				let endPos = path.end.clone();
 				if (startPos.equals(endPos)) continue;
-				var sectorPath = WorldCreatorRandom.findPath(worldVO, startPos, endPos, false, true, path.stage);
+				let sectorPath = WorldCreatorRandom.findPath(worldVO, startPos, endPos, false, true, path.stage);
 				if (!sectorPath || sectorPath.length < 1) {
-					return { isValid: false, reason: "required path " + path.type + " on level " + levelVO.level + " is missing" };
+					issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "required path " + path.type + " on level " + levelVO.level + " is missing" });
 				}
 				if (path.maxlen > 0 && sectorPath.length > path.maxlen) {
-					return { isValid: false, reason: "required path " + path.type + " on level " + levelVO.level + " is too long (" + sectorPath.length + "/" + path.maxlen + ")" };
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "required path " + path.type + " on level " + levelVO.level + " is too long (" + sectorPath.length + "/" + path.maxlen + ")" });
+				}
+
+				for (let s = 0; s < sectorPath.length; s++) {
+					let pathPosition = sectorPath[i];
+					let pathSectorVO = levelVO.getSectorByPos(pathPosition);
+					if (pathSectorVO.criticalPathTypes.indexOf(path.type) < 0) {
+						issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "critical path " + path.type + " not marked on sector " + pathSectorVO.position });
+					}
 				}
 			}
-			return { isValid: true };
+			
+			return { isValid: issues.length === 0, issues: issues };
 		},
 		
 		checkNumberOfSectors: function (worldVO, levelVO) {
+			let issues = [];
+
 			// NOTE: sectors per stage is a minimum used for evidence balancing etc, a bit of overshoot is ok
 			if (levelVO.sectors.length < levelVO.numSectors) {
-				return { isValid: false, reason: "too few sectors on level " + levelVO.level + ": " + levelVO.sectors.length + "/" + levelVO.numSectors };
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too few sectors on level " + levelVO.level + ": " + levelVO.sectors.length + "/" + levelVO.numSectors });
 			}
 			if (levelVO.sectors.length > levelVO.maxSectors) {
-				return { isValid: false, reason: "too many sectors on level " + levelVO.level + ": " + levelVO.sectors.length + "/" + levelVO.maxSectors };
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too many sectors on level " + levelVO.level + ": " + levelVO.sectors.length + "/" + levelVO.maxSectors });
 			}
-			var stages = [ WorldConstants.CAMP_STAGE_EARLY, WorldConstants.CAMP_STAGE_LATE ];
+
+			let stages = [ WorldConstants.CAMP_STAGE_EARLY, WorldConstants.CAMP_STAGE_LATE ];
 			for (let i = 0; i < stages.length; i++) {
-				var stage = stages[i];
-				var numSectorsCreated = levelVO.getNumSectorsByStage(stage);
-				var numSectorsPlanned = levelVO.numSectorsByStage[stage];
+				let stage = stages[i];
+				let numSectorsCreated = levelVO.getNumSectorsByStage(stage);
+				let numSectorsPlanned = levelVO.numSectorsByStage[stage];
 				if (numSectorsCreated < numSectorsPlanned) {
-					return { isValid: false, reason: "too few sectors on level " + levelVO.level + " stage " + stage + ": " + numSectorsCreated + "/" + numSectorsPlanned };
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too few sectors on level " + levelVO.level + " stage " + stage + ": " + numSectorsCreated + "/" + numSectorsPlanned });
 				}
 				if (numSectorsCreated > numSectorsPlanned * 1.1) {
-					return { isValid: false, reason: "too many sectors on level " + levelVO.level + " stage " + stage + ": " + numSectorsCreated + "/" + numSectorsPlanned };
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too many sectors on level " + levelVO.level + " stage " + stage + ": " + numSectorsCreated + "/" + numSectorsPlanned });
 				}
 			}
-			return { isValid: true };
+
+			return { isValid: issues.length === 0, issues: issues };
 		},
 		
 		checkNumberOfLocales: function (worldVO, levelVO) {
+			let issues = [];
+
 			let campOrdinal = levelVO.campOrdinal;
 
-			var numEarlyLocales = 0;
-			var numLateLocales = 0;
+			let numEarlyLocales = 0;
+			let numLateLocales = 0;
 			for (var s = 0; s < levelVO.sectors.length; s++) {
 				var sectorVO = levelVO.sectors[s];
 				if (sectorVO.locales.length > 0) {
@@ -218,44 +269,50 @@ define([
 					}
 				}
 			}
+
 			let levelIndex = WorldCreatorHelper.getLevelIndexForCamp(worldVO.seed, campOrdinal, levelVO.level);
 			let maxLevelIndex = WorldCreatorHelper.getMaxLevelIndexForCamp(worldVO.seed, campOrdinal, levelVO.level);
-			var numEarlyBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_EARLY, levelIndex, maxLevelIndex);
+			let numEarlyBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_EARLY, levelIndex, maxLevelIndex);
 			if (numEarlyLocales < numEarlyBlueprints) {
-				return { isValid: false, reason: "too few early locales for level " + levelVO.level + ", camp ordinal " + campOrdinal + " " + numEarlyLocales + "/" + numEarlyBlueprints };
+				issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "too few early locales for level " + levelVO.level + ", camp ordinal " + campOrdinal + " " + numEarlyLocales + "/" + numEarlyBlueprints });
 			}
-			var numLateBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_LATE, levelIndex, maxLevelIndex);
+			let numLateBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_LATE, levelIndex, maxLevelIndex);
 			if (numLateLocales < numLateBlueprints) {
-				return { isValid: false, reason: "too few late locales for level " + levelVO.level + ", camp ordinal " + campOrdinal + " " + numLateLocales + "/" + numLateBlueprints };
+				issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "too few late locales for level " + levelVO.level + ", camp ordinal " + campOrdinal + " " + numLateLocales + "/" + numLateBlueprints });
 			}
 
-			return { isValid: true };
+			return { isValid: issues.length === 0, issues: issues };
 		},
 		
 		checkContinuousEarlyStage: function (worldVO, levelVO) {
-			var earlySectors = levelVO.sectorsByStage[WorldConstants.CAMP_STAGE_EARLY];
+			let issues = [];
+
+			let earlySectors = levelVO.sectorsByStage[WorldConstants.CAMP_STAGE_EARLY];
 			if (earlySectors && earlySectors.length > 1) {
 				for (let j = 1; j < earlySectors.length; j++) {
 					var sectorPath = WorldCreatorRandom.findPath(worldVO, earlySectors[0].position, earlySectors[j].position, false, true, WorldConstants.CAMP_STAGE_EARLY, true);
 					if (!sectorPath || sectorPath.length < 1) {
-						return { isValid: false, reason: "early stage is not continuous on level " + levelVO.level };
+						issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "early stage is not continuous on level " + levelVO.level });
 					}
 				}
 			}
-			return { isValid: true };
+
+			return { isValid: issues.length === 0, issues: issues };
 		},
 		
 		checkCampsAndPassages: function (worldVO, levelVO) {
-			var pois = [];
+			let issues = [];
+
+			let pois = [];
 			
 			// passages up
 			if (levelVO.level != worldVO.topLevel) {
 				if (!levelVO.passageUpPosition) {
-					return { isValid: false, reason: "level " + levelVO.level + " missing passage up position" };
+					issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "level " + levelVO.level + " missing passage up position" });
 				}
-				var sector = levelVO.getSector(levelVO.passageUpPosition.sectorX, levelVO.passageUpPosition.sectorY);
+				let sector = levelVO.getSector(levelVO.passageUpPosition.sectorX, levelVO.passageUpPosition.sectorY);
 				if (!sector) {
-					return { isValid: false, reason: "level " + levelVO.level + " missing passage up sector" };
+					issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "level " + levelVO.level + " missing passage up sector" });
 				}
 				pois.push(levelVO.passageUpPosition);
 			}
@@ -263,28 +320,28 @@ define([
 			// camps
 			if (levelVO.isCampable) {
 				if (levelVO.campPosition == null) {
-					return { isValid: false, reason: "campable level " + levelVO.level + " missing camp positions" };
+					issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "campable level " + levelVO.level + " missing camp positions" });
 				}
 				var pos = levelVO.campPosition;
 				var sector = levelVO.getSector(pos.sectorX, pos.sectorY);
 				if (!sector) {
-					return { isValid: false, reason: "camp position " + pos + " has no sector" };
+					issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "camp position " + pos + " has no sector" });
 				}
 				pois.push(pos);
 			} else {
 				if (levelVO.campPosition) {
-					return { isValid: false, reason: "non-campable level " + levelVO.level + " has camp positions" };
+					issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "non-campable level " + levelVO.level + " has camp positions" });
 				}
 			}
 			
 			// passages down
 			if (levelVO.level != worldVO.bottomLevel) {
 				if (!levelVO.passageDownPosition) {
-					return { isValid: false, reason: "level " + levelVO.level + " missing passage down position" };
+					issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "level " + levelVO.level + " missing passage down position" });
 				}
 				var sector = levelVO.getSector(levelVO.passageDownPosition.sectorX, levelVO.passageDownPosition.sectorY);
 				if (!sector) {
-					return { isValid: false, reason: "level " + levelVO.level + " missing passage down sector" };
+					issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "level " + levelVO.level + " missing passage down sector" });
 				}
 				pois.push(levelVO.passageDownPosition);
 			}
@@ -295,29 +352,33 @@ define([
 					if (pois[i].equals(pois[i + 1])) continue;
 					var sectorPath = WorldCreatorRandom.findPath(worldVO, pois[i], pois[i + 1], false, true, null);
 					if (!sectorPath || sectorPath.length < 1) {
-						return { isValid: false, reason: "level " + levelVO.level + " pois not connected: " + pois[i] + " " + pois[i + 1] };
+						issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "level " + levelVO.level + " pois not connected: " + pois[i] + " " + pois[i + 1] });
 					}
 				}
 			}
-			
-			return { isValid: true };
+
+			return { isValid: issues.length === 0, issues: issues };
 		},
 
 		checkWorldMatchesTemplate: function (worldVO, worldTemplateVO) {
-			if (worldVO.seed != worldTemplateVO.seed) return { isValid: false, reason: "seed doesn't match template" };
-			if (worldVO.topLevel != worldTemplateVO.topLevel) return { isValid: false, reason: "topLevel doesn't match template" };
-			if (worldVO.bottomLevel != worldTemplateVO.bottomLevel) return { isValid: false, reason: "bottomLevel doesn't match template" };
+			let issues = [];
+
+			if (!worldTemplateVO) return { isValid: true, issues: issues };
+
+			if (worldVO.seed != worldTemplateVO.seed) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "seed doesn't match template" });
+			if (worldVO.topLevel != worldTemplateVO.topLevel) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "topLevel doesn't match template" });
+			if (worldVO.bottomLevel != worldTemplateVO.bottomLevel) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "bottomLevel doesn't match template" });
 
 			let campPositionResult = WorldValidator.checkListMatches(worldTemplateVO, worldTemplateVO, "campPositions", "camp position");
-			if (!campPositionResult.isValid) return campPositionResult;
+			if (!campPositionResult.isValid) issues = issues.concat(campPositionResult.issues);
 
 			for (let l in worldVO.passagePositions) {
 				let worldValue = worldVO.passagePositions[l];
 				let templateValue = worldTemplateVO.passagePositions[l];
 
 				if (!worldValue && !templateValue) continue;
-				if (worldValue.up != templateValue.up) return { isValid: false, reason: "different passage up position on level " + l };
-				if (worldValue.down != templateValue.down) return { isValid: false, reason: "different passage down position on level " + l };
+				if (worldValue.up != templateValue.up) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "different passage up position on level " + l });
+				if (worldValue.down != templateValue.down) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "different passage down position on level " + l });
 			}
 
 			for (let l in worldVO.passageTypes) {
@@ -325,93 +386,101 @@ define([
 				let templateValue = worldTemplateVO.passageTypes[l];
 
 				if (!worldValue && !templateValue) continue;
-				if (worldValue.up != templateValue.up) return { isValid: false, reason: "different passage up type on level " + l };
-				if (worldValue.down != templateValue.down) return { isValid: false, reason: "different passage down type on level " + l };
+				if (worldValue.up != templateValue.up) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "different passage up type on level " + l });
+				if (worldValue.down != templateValue.down) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "different passage down type on level " + l });
 			}
-			
-			return { isValid: true };
+
+			return { isValid: issues.length === 0, issues: issues };
 		},
 
 		checkLevelMatchesTemplate: function (worldVO, levelVO, levelTemplateVO) {
-			if (levelVO.levelOrdinal != levelTemplateVO.levelOrdinal) return { isValid: false, reason: "levelOrdinal doesn't match template" };
-			if (levelVO.isCampable != levelTemplateVO.isCampable) return { isValid: false, reason: "isCampable doesn't match template" };
-			if (levelVO.campOrdinal != levelTemplateVO.campOrdinal) return { isValid: false, reason: "campOrdinal doesn't match template" };
-			if (levelVO.notCampableReason != levelTemplateVO.notCampableReason) return { isValid: false, reason: "notCampableReason doesn't match template" };
-			if (levelVO.habitability != levelTemplateVO.habitability) return { isValid: false, reason: "habitability doesn't match template" };
+			let issues = [];
+
+			if (!levelTemplateVO) return { isValid: true, issues: issues };
+
+			if (levelVO.levelOrdinal != levelTemplateVO.levelOrdinal) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "levelOrdinal doesn't match template" });
+			if (levelVO.isCampable != levelTemplateVO.isCampable) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "isCampable doesn't match template" });
+			if (levelVO.campOrdinal != levelTemplateVO.campOrdinal) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "campOrdinal doesn't match template" });
+			if (levelVO.notCampableReason != levelTemplateVO.notCampableReason)  issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "notCampableReason doesn't match template" });
+			if (levelVO.habitability != levelTemplateVO.habitability) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "habitability doesn't match template" });
 
 			let additionalCampPositionsResult = WorldValidator.checkListMatches(levelVO, levelTemplateVO, "additionalCampPositions", "additional camp position");
-			if (!additionalCampPositionsResult.isValid) return additionalCampPositionsResult;
+			if (!additionalCampPositionsResult.isValid) return issues = issues.concat(additionalCampPositionsResult.issues);
 
-			if (levelVO.campPosition && !levelVO.campPosition.equals(levelTemplateVO.campPosition)) return { isValid: false, reason: "campPosition doesn't match template" };
-			if (levelVO.passageDownPosition && !levelVO.passageDownPosition.equals(levelTemplateVO.passageDownPosition)) return { isValid: false, reason: "passageDownPosition doesn't match template" };
-			if (levelVO.passageUpPosition && !levelVO.passageUpPosition.equals(levelTemplateVO.passageUpPosition)) return { isValid: false, reason: "passageUpPosition doesn't match template" };
-			if (levelVO.passageDownType != levelTemplateVO.passageDownType) return { isValid: false, reason: "passageDownType doesn't match template" };
-			if (levelVO.passageUpType != levelTemplateVO.passageUpType) return { isValid: false, reason: "passageUpType doesn't match template" };
+			if (levelVO.campPosition && !levelVO.campPosition.equals(levelTemplateVO.campPosition))  issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "campPosition doesn't match template" });
+			if (levelVO.passageDownPosition && !levelVO.passageDownPosition.equals(levelTemplateVO.passageDownPosition))  issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "passageDownPosition doesn't match template" });
+			if (levelVO.passageUpPosition && !levelVO.passageUpPosition.equals(levelTemplateVO.passageUpPosition))  issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "passageUpPosition doesn't match template" });
+			if (levelVO.passageDownType != levelTemplateVO.passageDownType) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "passageDownType doesn't match template" });
+			if (levelVO.passageUpType != levelTemplateVO.passageUpType) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "passageUpType doesn't match template" });
 
 			let luxuryResourcesResult = WorldValidator.checkListMatches(levelVO, levelTemplateVO, "luxuryResources");
-			if (!luxuryResourcesResult.isValid) return { isValid: false, reason: "luxuryResources doesn't match template" };
+			if (!luxuryResourcesResult.isValid) issues = issues.concat(luxuryResourcesResult.issues);
 
-			if (levelVO.workshopResource != levelTemplateVO.workshopResource) return { isValid: false, reason: "workshopResource doesn't match template" };
+			if (levelVO.workshopResource != levelTemplateVO.workshopResource) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "workshopResource doesn't match template" });
 
 			let workshopPositionsResult = WorldValidator.checkListMatches(levelVO, levelTemplateVO, "workshopPositions");
-			if (!workshopPositionsResult.isValid) return workshopPositionsResult;
+			if (!workshopPositionsResult.isValid) issues = issues.concat(workshopPositionsResult.issues);
 			
-			if (levelVO.sectors.length != levelTemplateVO.sectors.length) return { isValid: false, reason: "number of sectors doesn't match template" };
+			if (levelVO.sectors.length != levelTemplateVO.sectors.length) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "number of sectors doesn't match template" });
 
 			for (let i = 0; i < levelVO.sectors.length; i++) {
 				let sectorVO = levelVO.sectors[i];
 				let sectorTemplateVO = levelTemplateVO.sectors[i];
 				let sectorResult = WorldValidator.checkSectorMatchesTemplate(worldVO, levelVO, sectorVO, sectorTemplateVO);
-				if (!sectorResult.isValid) return sectorResult;
+				if (!sectorResult.isValid) issues = issues.concat(sectorResult.issues);
 			}
 
-			return { isValid: true };
+			return { isValid: issues.length === 0, issues: issues };
 		},
 
 		checkSectorMatchesTemplate: function (worldVO, levelVO, sectorVO, sectorTemplateVO) {
-			if (!sectorVO.position.equals(sectorTemplateVO.position)) return { isValid: false, reason: "sector position doesn't match template" };
+			let issues = [];
 
-			if (sectorVO.hasTradeConnectorSpot != sectorTemplateVO.hasTradeConnectorSpot) return { isValid: false, reason: "sector.hasTradeConnectorSpot doesn't match template" };
-			if (sectorVO.hasWorkshop != sectorTemplateVO.hasWorkshop) return { isValid: false, reason: "sector.hasWorkshop doesn't match template" };
-			if (sectorVO.workshopResource != sectorTemplateVO.workshopResource) return { isValid: false, reason: "sector.workshopResource doesn't match template" };
-			if (sectorVO.isCamp != sectorTemplateVO.isCamp) return { isValid: false, reason: "sector.isCamp doesn't match template" };
-			if (sectorVO.isPassageDown != sectorTemplateVO.isPassageDown) return { isValid: false, reason: "sector.isPassageDown doesn't match template" };
-			if (sectorVO.isPassageUp != sectorTemplateVO.isPassageUp) return { isValid: false, reason: "sector.isPassageUp doesn't match template" };
-			if (sectorVO.passageDownType != sectorTemplateVO.passageDownType) return { isValid: false, reason: "sector.passageDownType doesn't match template" };
-			if (sectorVO.passageUpType != sectorTemplateVO.passageUpType) return { isValid: false, reason: "sector.passageUpType doesn't match template" };
-			if (sectorVO.sectorType != sectorTemplateVO.sectorType) return { isValid: false, reason: "sector.sectorType doesn't match template" };
-			if (sectorVO.stage != sectorTemplateVO.stage) return { isValid: false, reason: "sector.stage doesn't match template" };
-			if (sectorVO.zone != sectorTemplateVO.zone) return { isValid: false, reason: "sector.zone doesn't match template" };
-			if (sectorVO.sunlit != sectorTemplateVO.sunlit) return { isValid: false, reason: "sector.sunlit doesn't match template" };
+			if (!sectorVO.position.equals(sectorTemplateVO.position)) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "sector position doesn't match template" });
+
+			if (sectorVO.hasTradeConnectorSpot != sectorTemplateVO.hasTradeConnectorSpot) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "sector.hasTradeConnectorSpot doesn't match template" });
+			if (sectorVO.hasWorkshop != sectorTemplateVO.hasWorkshop) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "sector.hasWorkshop doesn't match template" });
+			if (sectorVO.workshopResource != sectorTemplateVO.workshopResource) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "sector.workshopResource doesn't match template" });
+			if (sectorVO.isCamp != sectorTemplateVO.isCamp) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "sector.isCamp doesn't match template" });
+			if (sectorVO.isPassageDown != sectorTemplateVO.isPassageDown) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "sector.isPassageDown doesn't match template" });
+			if (sectorVO.isPassageUp != sectorTemplateVO.isPassageUp) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "sector.isPassageUp doesn't match template" });
+			if (sectorVO.passageDownType != sectorTemplateVO.passageDownType) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "sector.passageDownType doesn't match template" });
+			if (sectorVO.passageUpType != sectorTemplateVO.passageUpType) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "sector.passageUpType doesn't match template" });
+			if (sectorVO.sectorType != sectorTemplateVO.sectorType) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "sector.sectorType doesn't match template" });
+			if (sectorVO.stage != sectorTemplateVO.stage) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "sector.stage doesn't match template" });
+			if (sectorVO.zone != sectorTemplateVO.zone) issues.push({ severity: WorldValidator.SEVERITY_CONTINUITY, desc: "sector.zone doesn't match template" });
+			if (sectorVO.sunlit != sectorTemplateVO.sunlit) issues.push({ severity: WorldValidator.SEVERITY_CONTINUITY, desc: "sector.sunlit doesn't match template" });
 
 			// hazards: exact values can vary by version, but location should stay the same
 			for (let hazard in sectorVO.hazards) {
 				let sectorHasHazard = sectorVO.hazards[hazard] > 0;
 				let templateHasHazard = sectorTemplateVO.hazards[hazard] > 0;
-				if (sectorHasHazard != templateHasHazard) return { isValid: false, reason: "sector hazards differ (" + hazard + ")" };
+				if (sectorHasHazard != templateHasHazard) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "sector hazards differ (" + hazard + ")" });
 			}
 
 			let movementBlockerResult = WorldValidator.checkListMatches(sectorVO, sectorTemplateVO, "movementBlockers");
 			if (!movementBlockerResult.isValid) return movementBlockerResult;
 
-			return { isValid: true };
+			return { isValid: issues.length === 0, issues: issues };
 
 		},
 
 		checkListMatches: function (vo, template, key, name) {
+			let issues = [];
+
 			name = name || key;
 			for (let i in vo[key]) {
 				let voValue = vo[key][i];
 				let templateValue = template[key][i];
 				if (!voValue && !templateValue) continue;
-				if (!voValue) return { isValid: false, reason: "missing " + name + " at index " + i };
-				if (!templateValue) return { isValid: false, reason: "extra " + name + " at index " + i };
+				if (!voValue) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "missing " + name + " at index " + i });
+				if (!templateValue) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "extra " + name + " at index " + i });
 				if (voValue == templateValue) continue;
 				if (voValue.equals && voValue.equals(templateValue)) continue;
-				return { isValid: false, reason: "different " + name + " at index " + i };
+				 issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "different " + name + " at index " + i });
 			}
 			
-			return { isValid: true };
+			return { isValid: issues.length === 0, issues: issues };
 		}
 
 	};
