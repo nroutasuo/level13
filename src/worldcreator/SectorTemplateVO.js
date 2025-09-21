@@ -1,9 +1,10 @@
-define(['ash', 'game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO', 'game/vos/PositionVO'],
-function (Ash, ResourcesVO, EnvironmentalHazardsVO, PositionVO) {
+define(['ash', 'game/constants/WorldConstants', 'game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO', 'game/vos/PositionVO'],
+function (Ash, WorldConstants, ResourcesVO, EnvironmentalHazardsVO, PositionVO) {
 
 	let SectorTemplateVO = Ash.Class.extend({
 
 		DEFAULT_TEXTURE_VALUE: 5,
+		DEFAULT_STAGE: WorldConstants.CAMP_STAGE_LATE,
 	
 		constructor: function (sectorVO) {
 			if (!sectorVO) return;
@@ -18,7 +19,6 @@ function (Ash, ResourcesVO, EnvironmentalHazardsVO, PositionVO) {
 			this.hasClearableWorkshop = sectorVO.hasClearableWorkshop;
 			this.hasBuildableWorkshop = sectorVO.hasBuildableWorkshop;
 			this.hasHeap = sectorVO.hasHeap;
-			this.hasRegularEnemies = sectorVO.hasRegularEnemies;
 			this.hasSpring = sectorVO.hasSpring;
 			this.hasTradeConnectorSpot = sectorVO.hasTradeConnectorSpot;
 			this.hasWorkshop = sectorVO.hasWorkshop;
@@ -57,7 +57,6 @@ function (Ash, ResourcesVO, EnvironmentalHazardsVO, PositionVO) {
 			if (this.hasClearableWorkshop) copy.hasClearableWorkshop = this.hasClearableWorkshop;
 			if (this.hasBuildableWorkshop) copy.hasBuildableWorkshop = this.hasBuildableWorkshop;
 			if (this.hasHeap) copy.hasHeap = this.hasHeap;
-			if (this.hasRegularEnemies) copy.hasRegularEnemies = this.hasRegularEnemies;
 			if (this.hasSpring) copy.hasSpring = this.hasSpring;
 			if (this.hasTradeConnectorSpot) copy.hasTradeConnectorSpot = this.hasTradeConnectorSpot;
 			if (this.hasWorkshop) copy.hasWorkshop = this.hasWorkshop;
@@ -76,7 +75,7 @@ function (Ash, ResourcesVO, EnvironmentalHazardsVO, PositionVO) {
 			if (this.resourcesCollectable.getTotal() > 0) copy.rc = this.resourcesCollectable.getCustomSaveObject();
 			copy.sd = this.scavengeDifficulty;
 			copy.t = this.sectorType;
-			copy.stage = this.stage;
+			if (this.stage != this.DEFAULT_STAGE) copy.stage = this.stage;
 			if (this.stashes.length > 0) copy.stashes = this.stashes;
 			if (this.sunlit) copy.sunlit = this.sunlit;
 			if (this.wear) copy.wear = this.wear;
@@ -98,7 +97,6 @@ function (Ash, ResourcesVO, EnvironmentalHazardsVO, PositionVO) {
 			this.hasBuildableWorkshop = saveObject.hasBuildableWorkshop || false;
 			this.hasClearableWorkshop = saveObject.hasClearableWorkshop || false;
 			this.hasHeap = saveObject.hasHeap ? true : false;
-			this.hasRegularEnemies = saveObject.hasRegularEnemies || false;
 			this.hasSpring = saveObject.hasSpring || false;
 			this.hasTradeConnectorSpot = saveObject.hasTradeConnectorSpot || false;
 			this.hasWorkshop = saveObject.hasWorkshop || false;
@@ -119,7 +117,7 @@ function (Ash, ResourcesVO, EnvironmentalHazardsVO, PositionVO) {
 			this.resourcesCollectable.customLoadFromSave(saveObject.rc);
 			this.scavengeDifficulty = saveObject.sd || 0;
 			this.sectorType = saveObject.t;
-			this.stage = saveObject.stage;
+			this.stage = saveObject.stage || this.DEFAULT_STAGE;
 			this.stashes = saveObject.stashes || [];
 			this.sunlit = saveObject.sunlit ? saveObject.sunlit : 0;
 			this.wear = saveObject.wear || 0;

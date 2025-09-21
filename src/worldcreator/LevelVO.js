@@ -30,6 +30,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			this.passagePositions = [];
 			this.passageUpPosition = null;
 			this.passageUpType = null;
+			this.predefinedExplorers = []; // list of id
 			this.raidDangerFactor = 1;
 			this.seaPadding = 0;
 			this.stageCenterPositions = {}; // e/l -> list of PositionVO

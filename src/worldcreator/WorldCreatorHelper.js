@@ -17,6 +17,8 @@ define([
 		hardLevelOrdinals: {},
 
 		copyValueForAllSectors: function (levelTemplateVO, levelVO, key) {
+			if (!levelTemplateVO || !levelTemplateVO.sectors) return;
+
 			for (let i = 0; i < levelTemplateVO.sectors.length; i++) {
 				let sectorTemplateVO = levelTemplateVO.sectors[i];
 				if (sectorTemplateVO && sectorTemplateVO[key]) {

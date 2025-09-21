@@ -43,7 +43,7 @@ define([
 		validateLevel: function (worldVO, worldTemplateVO, levelVO) {
 			worldVO.resetPaths();
 
-			let levelTemplateVO = worldTemplateVO.levels[levelVO.level];
+			let levelTemplateVO = worldTemplateVO ? worldTemplateVO.levels[levelVO.level] : {};
 
 			let levelChecks = [ 
 				this.checkCriticalPaths, 
@@ -337,6 +337,7 @@ define([
 			if (levelVO.isCampable != levelTemplateVO.isCampable) return { isValid: false, reason: "isCampable doesn't match template" };
 			if (levelVO.campOrdinal != levelTemplateVO.campOrdinal) return { isValid: false, reason: "campOrdinal doesn't match template" };
 			if (levelVO.notCampableReason != levelTemplateVO.notCampableReason) return { isValid: false, reason: "notCampableReason doesn't match template" };
+			if (levelVO.habitability != levelTemplateVO.habitability) return { isValid: false, reason: "habitability doesn't match template" };
 
 			let additionalCampPositionsResult = WorldValidator.checkListMatches(levelVO, levelTemplateVO, "additionalCampPositions", "additional camp position");
 			if (!additionalCampPositionsResult.isValid) return additionalCampPositionsResult;

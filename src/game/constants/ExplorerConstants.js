@@ -219,27 +219,31 @@ define(['ash',
 		},
 		
 		getNewPredefinedExplorer: function (explorerID) {
-			let template = null;
-			let templateCampOrdinal = 1;
-			for (let campOrdinal in this.predefinedExplorers) {
-				let t = this.predefinedExplorers[campOrdinal];
-				if (t.id == explorerID) {
-					template = t;
-					templateCampOrdinal = campOrdinal;
-					break;
-				}
-			}
+			let template = this.getPredefinedExplorerTemplate(explorerID);
 			
 			if (!template) {
 				log.w("couldn't find template for predefined explorer id:" + explorerID);
 				return null;
 			}
 			
+			let templateCampOrdinal = template.campOrdinal;
 			let abilityLevel = this.getRandomAbilityLevelByCampOrdinal(template.abilityType, templateCampOrdinal);
 			
 			let result = new ExplorerVO(explorerID, template.name, template.abilityType, abilityLevel, template.icon, template.origin, template.gender, ExplorerConstants.explorerSource.SCOUT, template.dialogueSource);
 			result.animalType = template.animalType;
 			return result;
+		},
+
+		getPredefinedExplorerTemplate: function (explorerID) {
+			for (let campOrdinal in this.predefinedExplorers) {
+				let t = this.predefinedExplorers[campOrdinal];
+				if (t.id == explorerID) {
+					t.campOrdinal = campOrdinal;
+					return t;
+				}
+			}
+
+			return null;
 		},
 
 		getRandomExplorerTemplate: function (source, campOrdinal, appearLevel, forcedExplorerType, forcedAbilityType, isRobot, excludedDialogueSources) {

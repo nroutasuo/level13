@@ -1,5 +1,4 @@
-// subset of WorldVO that is saved after generation and can be used as input to world generation 
-// represents the data about a world that should not change even between versions
+// subset of WorldVO that is saved after generation and can be used as input to world generation to ensure backwards compability and world consistency across versions
 define(['ash', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO'], function (Ash, LevelTemplateVO, PositionVO) {
 
 	let WorldTemplateVO = Ash.Class.extend({
@@ -62,14 +61,21 @@ define(['ash', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO'], function 
 			for (let i in saveObject.passagePositions) {
 				let saveObjectPassagePositions = saveObject.passagePositions[i];
 				let passagePositions = {};
+				
 				if (saveObjectPassagePositions.up) {
 					passagePositions.up = new PositionVO();
 					passagePositions.up.customLoadFromSave(saveObjectPassagePositions.up);
+				} else {
+					passagePositions.up = null;
 				}
+
 				if (saveObjectPassagePositions.down) {
 					passagePositions.down = new PositionVO();
 					passagePositions.down.customLoadFromSave(saveObjectPassagePositions.down);
+				} else {
+					passagePositions.down = null;
 				}
+
 				this.passagePositions[i] = passagePositions;
 			}
 

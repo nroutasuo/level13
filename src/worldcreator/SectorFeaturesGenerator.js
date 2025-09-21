@@ -47,14 +47,13 @@ define([
 			for (let i = 0; i < levels.length; i++) {
 				let l = levels[i];
 				let levelVO = worldVO.levels[l];
-				let levelTemplateVO = worldTemplateVO.levels[l];
+				let levelTemplateVO = worldTemplateVO.levels[l] || { sectors: [] };
 				
 				this.generateLevel(seed, worldVO, levelTemplateVO, levelVO);
 			}
 			
 			// debug
 			// WorldCreatorDebug.printWorld(worldVO, [ "isCampAdditional"], "red" );
-			// WorldCreatorDebug.printWorld(worldVO, [ "hasRegularEnemies"], "red" );
 			// WorldCreatorDebug.printWorld(worldVO, [ "possibleEnemies.length" ]);
 			// WorldCreatorDebug.printWorld(worldVO, [ "enemyDifficulty" ]);
 			// WorldCreatorDebug.printWorld(worldVO, [ "hazards.radiation" ], "red");
@@ -85,7 +84,7 @@ define([
 			// sector features
 			for (let s = 0; s < levelVO.sectors.length; s++) {
 				let sectorVO = levelVO.sectors[s];
-				let sectorTemplateVO = levelTemplateVO.sectors[s];
+				let sectorTemplateVO = levelTemplateVO.sectors[s] || {};
 
 				sectorVO.requiredFeatures = this.getRequiredFeatures(seed, worldVO, levelVO, sectorVO);
 				sectorVO.sectorType = this.getSectorType(seed, worldVO, levelVO, sectorTemplateVO, sectorVO);
@@ -118,7 +117,7 @@ define([
 			let campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, level);
 			let explorer = ExplorerConstants.predefinedExplorers[campOrdinal];
 			if (!explorer) return [];
-			return [ explorer ];
+			return [ explorer.id ];
 		},
 		
 		generateHazards: function (seed, worldVO, levelTemplateVO, levelVO) {
@@ -139,7 +138,7 @@ define([
 					// - block for certain sectors
 					let sectorVO = levelVO.sectors[s];
 					if (sectorVO.isCamp) continue;
-					let sectorTemplateVO = levelTemplateVO.sectors[s];
+					let sectorTemplateVO = levelTemplateVO.sectors[s] || {};
 					if (sectorVO.isOnCriticalPath(WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP)) continue;
 					var x = sectorVO.position.sectorX;
 					var y = sectorVO.position.sectorY;
@@ -1329,11 +1328,12 @@ define([
 			
 			// 3) spawn locales with hard-coded explorers
 			for (let i = 0; i < levelVO.predefinedExplorers.length; i++) {
-				let explorer = levelVO.predefinedExplorers[i];
+				let explorerID = levelVO.predefinedExplorers[i];
+				let explorerTemplate = ExplorerConstants.getPredefinedExplorerTemplate(explorerID);
 				let options = { excludingFeature: excludedFeatures, excludedZones: lateZones };
 				let sector = WorldCreatorRandom.randomSectors(1000 + seed * 2, worldVO, levelVO, 1, 2, options)[0];
-				let locale = new LocaleVO(explorer.localeType, true, true);
-				locale.explorerID = explorer.id;
+				let locale = new LocaleVO(explorerTemplate.localeType, true, true);
+				locale.explorerID = explorerID;
 				this.addLocale(levelVO, sector, locale);
 				WorldCreatorLogger.i("add explorer locale at " + sector)
 			}

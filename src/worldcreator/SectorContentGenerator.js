@@ -41,6 +41,8 @@ define([
 					sectorVO.graffiti = this.generateGraffiti(seed, worldVO, levelVO, sectorVO);
 				}
 			}
+			
+			// WorldCreatorDebug.printWorld(worldVO, [ "hasRegularEnemies"], "red" );
 		},
 
 		generateEnemies: function (seed, worldVO, levelVO, enemyCreator) {
