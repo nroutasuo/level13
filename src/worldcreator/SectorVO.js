@@ -49,8 +49,6 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 		},
 
 		resetCaches: function () {
-			this.criticalPathIndices = [];
-			this.criticalPaths = [];
 			this.distanceToCamp = -1;
 			this.isConnectionPoint = false;
 			this.pathID = 0;
@@ -81,24 +79,8 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			return false;
 		},
 		
-		updateCriticalPath: function () {
-			this.criticalPath = "-";
-			for (let i = 0; i < this.criticalPathTypes.length; i++) {
-				if (this.getCriticalPathPriority(this.criticalPathTypes[i] < this.getCriticalPathPriority(this.criticalPath))) {
-					var split = this.criticalPathTypes[i].split("_");
-					this.criticalPath = split[split.length - 1][0];
-				}
-			}
-		},
-		
 		addToCriticalPath: function (path) {
-			if (this.criticalPaths.indexOf(path) >= 0) return;
-			let index = path.length;
-			this.criticalPaths.push(path);
 			if (this.criticalPathTypes.indexOf(path.type) < 0) this.criticalPathTypes.push(path.type);
-			this.criticalPathIndices.push(index);
-			path.length++;
-			this.updateCriticalPath();
 		},
 		
 		addBlocker: function (direction, blockerType, canOverride) {

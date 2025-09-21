@@ -118,9 +118,9 @@ define([
 		
 		generatePassagePositions: function (seed, features, campPositions) {
 			let result = [];
-			var topLevel = WorldCreatorHelper.getHighestLevel(seed);
-			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
-			for (var l = topLevel; l >= bottomLevel; l--) {
+			let topLevel = WorldCreatorHelper.getHighestLevel(seed);
+			let bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
+			for (let l = topLevel; l >= bottomLevel; l--) {
 				var campThisUp = this.getNextCampPosUp(seed, campPositions, l, true);
 				var campPosDown = this.getNextCampPosDown(seed, campPositions, l, false);
 				var previousDown = l == topLevel ? null : result[l+1].down;

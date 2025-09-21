@@ -13,7 +13,6 @@ function (Ash, WorldConstants, ResourcesVO, EnvironmentalHazardsVO, PositionVO) 
 			this.level = sectorVO.level;
 
 			this.buildingDensity = sectorVO.buildingDensity;
-			this.criticalPathTypes = sectorVO.criticalPathTypes;
 			this.damage = sectorVO.damage;
 			this.examineSpots = sectorVO.examineSpots;
 			this.hasClearableWorkshop = sectorVO.hasClearableWorkshop;
@@ -51,7 +50,6 @@ function (Ash, WorldConstants, ResourcesVO, EnvironmentalHazardsVO, PositionVO) 
 			copy.pos = this.position.getCustomSaveObjectWithoutCamp();
 
 			if (this.buildingDensity !== this.DEFAULT_TEXTURE_VALUE) copy.t_bd = this.buildingDensity;
-			if (this.criticalPathTypes.length > 0) copy.criticalPathTypes = this.criticalPathTypes;
 			if (this.damage) copy.damage = this.damage;
 			if (this.examineSpots.length > 0) copy.examineSpots = this.examineSpots;
 			if (this.hasClearableWorkshop) copy.hasClearableWorkshop = this.hasClearableWorkshop;
@@ -91,7 +89,6 @@ function (Ash, WorldConstants, ResourcesVO, EnvironmentalHazardsVO, PositionVO) 
 			this.level = this.position.level;
 
 			this.buildingDensity = saveObject.t_bd || this.DEFAULT_TEXTURE_VALUE;
-			this.criticalPathTypes = saveObject.criticalPathTypes || [];
 			this.damage = saveObject.damage || 0;
 			this.examineSpots = saveObject.examineSpots || [];
 			this.hasBuildableWorkshop = saveObject.hasBuildableWorkshop || false;

@@ -60,8 +60,9 @@ define(['ash', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO'], function 
 			this.passagePositions = {};
 			for (let i in saveObject.passagePositions) {
 				let saveObjectPassagePositions = saveObject.passagePositions[i];
+				if (!saveObjectPassagePositions) continue;
 				let passagePositions = {};
-				
+
 				if (saveObjectPassagePositions.up) {
 					passagePositions.up = new PositionVO();
 					passagePositions.up.customLoadFromSave(saveObjectPassagePositions.up);

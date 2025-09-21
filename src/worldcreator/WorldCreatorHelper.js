@@ -41,9 +41,9 @@ define([
 		},
 		
 		addCriticalPath: function (worldVO, criticalPathVO) {
-			var path = WorldCreatorRandom.findPath(worldVO, criticalPathVO.startPos, criticalPathVO.endPos);
+			let path = WorldCreatorRandom.findPath(worldVO, criticalPathVO.startPos, criticalPathVO.endPos);
 			for (let j = 0; j < path.length; j++) {
-				var levelVO = worldVO.getLevel(path[j].level);
+				let levelVO = worldVO.getLevel(path[j].level);
 				levelVO.getSector(path[j].sectorX, path[j].sectorY).addToCriticalPath(criticalPathVO);
 			}
 		},
@@ -646,7 +646,7 @@ define([
 			return true;
 		},
 		
-		canHaveBlocker: function (levelVO, sectorVO1, sectorVO2, allowedCriticalPaths) {
+		canHaveBlocker: function (levelVO, sectorVO1, sectorVO2, allowedCriticalPathTypes) {
 			var distanceToCamp = Math.min(
 				WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO1),
 				WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO2)
@@ -655,7 +655,7 @@ define([
 			
 			for (let i = 0; i < sectorVO1.criticalPathTypes.length; i++) {
 				var pathType = sectorVO1.criticalPathTypes[i];
-				if (allowedCriticalPaths && allowedCriticalPaths.indexOf(pathType) >= 0) continue;
+				if (allowedCriticalPathTypes && allowedCriticalPathTypes.indexOf(pathType) >= 0) continue;
 				for (let j = 0; j < sectorVO2.criticalPathTypes.length; j++) {
 					if (pathType === sectorVO2.criticalPathTypes[j]) {
 						return false;

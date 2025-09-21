@@ -75,7 +75,7 @@ define([
 
 			let notSavedKeysWorld = [ "districts", "features", "stages", "pathsAny", "pathsLatest", "examineSpotsPerLevel" ];
 			let notSavedKeysLevel = [ "maxSectors", "neighboursCacheContext", "pendingConnectionPointsByStage", "invalidPositions", "paths", "requiredPaths", "sectorsByStage", "sectorsByPos", "levelCenterPosition", "localeSectors", "raidDangerFactor", "stageCenterPositions" ];
-			let notSavedKeysSector = [ "id", "distanceToCamp", "requiredFeatures", "requiredResources", "resourcesAll", "pathID", "waymarks", "possibleEnemies", "hasRegularEnemies", "isConnectionPoint", "criticalPaths", "resourcesScavengable", "criticalPathIndices", "criticalPath", "campPosScore", "isFill", "criticalPathTypes" ];
+			let notSavedKeysSector = [ "id", "distanceToCamp", "requiredFeatures", "requiredResources", "resourcesAll", "pathID", "waymarks", "possibleEnemies", "hasRegularEnemies", "isConnectionPoint", "resourcesScavengable", "campPosScore", "isFill", "criticalPathTypes" ];
 
 			// check worldTemplateVO matches worldVO
 			let properties = Object.keys(worldVO);
@@ -195,6 +195,7 @@ define([
 		checkCriticalPaths: function (worldVO, levelVO) {
 			let issues = [];
 
+			// required paths (between camp and passages)
 			let requiredPaths = WorldCreatorHelper.getRequiredPaths(worldVO, levelVO);
 
 			for (let i = 0; i < requiredPaths.length; i++) {
@@ -218,7 +219,7 @@ define([
 					}
 				}
 			}
-			
+
 			return { isValid: issues.length === 0, issues: issues };
 		},
 		

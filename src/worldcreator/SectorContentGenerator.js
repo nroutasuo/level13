@@ -17,11 +17,12 @@ define([
 	'worldcreator/WorldCreatorHelper',
 	'worldcreator/WorldCreatorLogger',
 	'worldcreator/WorldCreatorRandom',
+	'worldcreator/WorldCreatorDebug',
 	'worldcreator/SectorGeneratorHelper',
 ], function (Ash, MathUtils,
 	EnemyConstants, PositionConstants, LevelConstants, LocaleConstants, MovementConstants, SectorConstants, StoryConstants, WorldConstants, 
 	GangVO, PositionVO, WaymarkVO, 
-	WorldCreatorConstants, WorldCreatorHelper, WorldCreatorLogger, WorldCreatorRandom, SectorGeneratorHelper) {
+	WorldCreatorConstants, WorldCreatorHelper, WorldCreatorLogger, WorldCreatorRandom, WorldCreatorDebug, SectorGeneratorHelper) {
 	
 	let SectorContentGenerator = {
 
@@ -41,8 +42,9 @@ define([
 					sectorVO.graffiti = this.generateGraffiti(seed, worldVO, levelVO, sectorVO);
 				}
 			}
-			
+
 			// WorldCreatorDebug.printWorld(worldVO, [ "hasRegularEnemies"], "red" );
+			// WorldCreatorDebug.printWorld(worldVO, [ "criticalPathTypes.length"], "red" );
 		},
 
 		generateEnemies: function (seed, worldVO, levelVO, enemyCreator) {

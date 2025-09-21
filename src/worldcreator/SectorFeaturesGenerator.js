@@ -62,7 +62,7 @@ define([
 			// WorldCreatorDebug.printWorld(worldVO, [ "resourcesScavengable.food" ], "#ee8822");
 			// WorldCreatorDebug.printWorld(worldVO, [ "resourcesScavengable.metal" ], "#000");
 			// WorldCreatorDebug.printWorld(worldVO, [ "workshopResource" ]);
-			// WorldCreatorDebug.printWorld(worldVO, [ "criticalPaths.length" ], "red" );
+			// WorldCreatorDebug.printWorld(worldVO, [ "criticalPathTypes.length" ], "red" );
 			// WorldCreatorDebug.printWorld(worldVO, [ "requiredResources.food" ], "red" );
 			// WorldCreatorDebug.printWorld(worldVO, [ "requiredResources.water" ], "blue" );
 			// WorldCreatorDebug.printWorld(worldVO, [ "scavengeDifficulty" ] );
@@ -287,17 +287,17 @@ define([
 				return blockerTypes[typeix];
 			};
 			
-			var addBlocker = function (seed, sectorVO, neighbourVO, type, addDiagonals, allowedCriticalPaths) {
+			var addBlocker = function (seed, sectorVO, neighbourVO, type, addDiagonals, allowedCriticalPathTypes) {
 				neighbourVO = neighbourVO || WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, true);
 				var blockerType = type || getBlockerType(seed, sectorVO);
-				var options = { addDiagonals: addDiagonals, allowedCriticalPaths: allowedCriticalPaths };
+				var options = { addDiagonals: addDiagonals, allowedCriticalPathTypes: allowedCriticalPathTypes };
 				var sectorcb = function (s) {
 					
 				};
 				SectorGeneratorHelper.addMovementBlocker(worldVO, levelVO, sectorVO, neighbourVO, blockerType, options, sectorcb);
 			};
 
-			var addBlockersBetween = function (seed, levelVO, pointA, pointB, type, maxPaths, allowedCriticalPaths) {
+			var addBlockersBetween = function (seed, levelVO, pointA, pointB, type, maxPaths, allowedCriticalPathTypes) {
 				var path;
 				var index;
 				for (let i = 0; i < maxPaths; i++) {
@@ -320,7 +320,7 @@ define([
 						if (!WorldCreatorHelper.canPairHaveGang(levelVO, sectorVO, neighbourVO)) {
 							continue;
 						} else {
-							addBlocker(finalSeed, sectorVO, neighbourVO, type, true, allowedCriticalPaths);
+							addBlocker(finalSeed, sectorVO, neighbourVO, type, true, allowedCriticalPathTypes);
 							break;
 						}
 					}
@@ -332,12 +332,12 @@ define([
 			if (l === 14) numBetweenPassages = 5;
 			if (!levelVO.isCampable && campOrdinal == 7) numBetweenPassages = 3;
 			if (numBetweenPassages > 0) {
-				var allowedCriticalPaths = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE ];
+				var allowedCriticalPathTypes = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE ];
 				for (let i = 0; i < levelVO.passagePositions.length; i++) {
 					for (let j = i + 1; j < levelVO.passagePositions.length; j++) {
 						var rand = Math.round(2222 + seed + (i+21) * 41 + (j + 2) * 33);
 						var type = l == 14 ? MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE : null;
-						addBlockersBetween(rand, levelVO, levelVO.passagePositions[i], levelVO.passagePositions[j], type, numBetweenPassages, allowedCriticalPaths);
+						addBlockersBetween(rand, levelVO, levelVO.passagePositions[i], levelVO.passagePositions[j], type, numBetweenPassages, allowedCriticalPathTypes);
 					}
 				}
 			}
@@ -346,14 +346,14 @@ define([
 			if (levelOrdinal > 1 && levelVO.isCampable) {
 				var freq = 0.75;
 				// - from ZONE_PASSAGE_TO_CAMP to other (to lead player towards camp)
-				var allowedCriticalPaths = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
+				var allowedCriticalPathTypes = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
 				var borderSectors1 = WorldCreatorHelper.getBorderSectorsForZone(levelVO, WorldConstants.ZONE_PASSAGE_TO_CAMP, true);
 				for (let i = 0; i < borderSectors1.length; i++) {
 					var pair = borderSectors1[i];
-					if (WorldCreatorHelper.canHaveBlocker(levelVO, pair.sector, pair.neighbour, allowedCriticalPaths)) {
+					if (WorldCreatorHelper.canHaveBlocker(levelVO, pair.sector, pair.neighbour, allowedCriticalPathTypes)) {
 						var s = seed % 26 * 3331 + 100 + (i + 5) * 654;
 						if (WorldCreatorRandom.random(s) < freq) {
-							addBlocker(s * 2, pair.sector, pair.neighbour, null, true, allowedCriticalPaths);
+							addBlocker(s * 2, pair.sector, pair.neighbour, null, true, allowedCriticalPathTypes);
 						}
 					}
 				}
@@ -367,8 +367,8 @@ define([
 				let i = WorldCreatorRandom.randomInt(rand, 0, localeSectors.length);
 				var poiSector = localeSectors[i];
 				var campPos = levelVO.campPosition;
-				var allowedCriticalPaths = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
-				addBlockersBetween(rand, levelVO, campPos, poiSector.position, null, 3, allowedCriticalPaths);
+				var allowedCriticalPathTypes = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
+				addBlockersBetween(rand, levelVO, campPos, poiSector.position, null, 3, allowedCriticalPathTypes);
 			}
 			
 			// random ones
@@ -784,21 +784,8 @@ define([
 		
 		getRequiredFeatures: function (seed, worldVO, levelVO, sectorVO) {
 			let requiredFeatures = {};
-			
-			// middle of paths to passages: require features allowing a beacon
-			for (let i = 0; i < sectorVO.criticalPaths.length; i++) {
-				let pathVO = sectorVO.criticalPaths[i];
-				let pathType = pathVO.type;
-				let isBeaconPath =
-					(levelVO.isCampable && pathType == WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE) ||
-					(!levelVO.isCampable && WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE);
-				if (isBeaconPath && pathVO.length > 4) {
-					let index = sectorVO.criticalPathIndices[i];
-					if (index == Math.round(pathVO.length / 2)) {
-						requiredFeatures.beacon = true;
-					}
-				}
-			}
+
+			// TODO set requiredFeatures.beacon again (deleted due to using too complex critical path logic)
 			
 			return requiredFeatures;
 		},

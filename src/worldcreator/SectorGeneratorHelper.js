@@ -92,7 +92,7 @@ define([
 			var allowedForGangs = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
 			for (let i = 0; i < sectorVO.criticalPathTypes.length; i++) {
 				var pathType = sectorVO.criticalPathTypes[i];
-				if (options.allowedCriticalPaths && options.allowedCriticalPaths.indexOf(pathType) >= 0) continue;
+				if (options.allowedCriticalPathTypes && options.allowedCriticalPathTypes.indexOf(pathType) >= 0) continue;
 				if (blockerType === MovementConstants.BLOCKER_TYPE_GANG && allowedForGangs.indexOf(pathType) >= 0) continue;
 				for (let j = 0; j < neighbourVO.criticalPathTypes.length; j++) {
 					if (pathType === neighbourVO.criticalPathTypes[j]) {

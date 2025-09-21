@@ -30,6 +30,8 @@ define([
 				} else {
 					this.createLevelStructure(seed, worldVO, levelVO);
 				}
+				
+				this.markRequiredPaths(seed, worldVO, levelVO);
 			}
 			
 			this.currentFeatures = null;
@@ -48,6 +50,22 @@ define([
 				let sectorVO = this.makeSector(levelVO, sectorPos, stage);
 				levelVO.addSector(sectorVO);
 			}
+		},
+
+		markRequiredPaths: function (seed, worldVO, levelVO) {
+			let requiredPaths = WorldCreatorHelper.getRequiredPaths(worldVO, levelVO);
+			
+			for (let i = 0; i < requiredPaths.length; i++) {
+				let path = requiredPaths[i];
+				let startPos = path.start.clone();
+				let endPos = path.end.clone();
+				let sectorPath = WorldCreatorRandom.findPath(worldVO, startPos, endPos, false, true, path.stage);
+				for (let j = 0; j < sectorPath.length; j++) {
+					let sectorVO = levelVO.getSectorByPos(sectorPath[j]);
+					sectorVO.addToCriticalPath(path);
+				}
+			}
+
 		},
 		
 		createLevelStructure: function(seed, worldVO, levelVO) {
@@ -517,12 +535,7 @@ define([
 					WorldCreatorLogger.i(pathResult);
 					throw new Error("failed to creare required path on level " + levelVO.level);
 				}
-				var stage = options.stage == WorldConstants.CAMP_STAGE_EARLY ? options.stage : null;
-				var sectorPath = WorldCreatorRandom.findPath(worldVO, startPos, endPos, false, true, stage);
-				for (let j = 0; j < sectorPath.length; j++) {
-					var sector = levelVO.getSectorByPos(sectorPath[j]);
-					sector.addToCriticalPath(criticalPathVO);
-				}
+				
 				this.connectNewPath(worldVO, levelVO, existingSectors, pathResult.path);
 			}
 		},
@@ -1100,10 +1113,6 @@ define([
 			var sectorVO = check.vo;
 			if (check.result) {
 				let vo = this.makeSector(levelVO, sectorPos, stage);
-				var criticalPath = options.criticalPath;
-				if (criticalPath) {
-					vo.addToCriticalPath(criticalPath);
-				}
 				created = levelVO.addSector(vo);
 				if (created) {
 					sectorVO = vo;
@@ -1267,11 +1276,6 @@ define([
 					if (distanceToEntrance < distanceToEntranceThreshold && distanceToCamp < distanceToCampThreshold) {
 						return false;
 					}
-				}
-				
-				// non-preferred: certain critical paths that shouldn't branch too much
-				if (sectorVO.isOnCriticalPath(WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP)) {
-					return false;
 				}
 			}
 			
