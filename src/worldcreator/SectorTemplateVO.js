@@ -1,5 +1,5 @@
-define(['ash', 'game/constants/WorldConstants', 'game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO', 'game/vos/PositionVO'],
-function (Ash, WorldConstants, ResourcesVO, EnvironmentalHazardsVO, PositionVO) {
+define(['ash', 'game/constants/WorldConstants', 'game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO', 'game/vos/LocaleVO', 'game/vos/PositionVO'],
+function (Ash, WorldConstants, ResourcesVO, EnvironmentalHazardsVO, LocaleVO, PositionVO) {
 
 	let SectorTemplateVO = Ash.Class.extend({
 
@@ -65,7 +65,12 @@ function (Ash, WorldConstants, ResourcesVO, EnvironmentalHazardsVO, PositionVO) 
 			if (this.isPassageDown) copy.isPassageDown = this.isPassageDown ? 1 : 0;
 			if (this.isPassageUp) copy.isPassageUp = this.isPassageUp ? 1 : 0;
 			if (this.itemsScavengeable.length > 0) copy.itemsScavengeable = this.itemsScavengeable;
-			if (this.locales.length > 0) copy.locales = this.locales;
+			if (this.locales.length > 0) {
+				copy.locales = [];
+				for (let i = 0; i < this.locales.length; i++) {
+					copy.locales.push(this.locales[i].getCustomSaveObject());
+				}
+			}
 			if (Object.keys(this.movementBlockers).length > 0) copy.movementBlockers = this.movementBlockers;
 			if (Object.keys(this.numLocaleEnemies).length > 0)copy.numLocaleEnemies = this.numLocaleEnemies;
 			if (this.passageDownType) copy.passageDownType = this.passageDownType;
@@ -105,7 +110,14 @@ function (Ash, WorldConstants, ResourcesVO, EnvironmentalHazardsVO, PositionVO) 
 			this.isPassageDown = saveObject.isPassageDown ? true : false;
 			this.isPassageUp = saveObject.isPassageUp ? true : false;
 			this.itemsScavengeable = saveObject.itemsScavengeable || [];
-			this.locales = saveObject.locales || [];
+			this.locales = [];
+			if (saveObject.locales) {
+				for (let i = 0; i < saveObject.locales.length; i++) {
+					let localeVO = new LocaleVO();
+					localeVO.customLoadFromSave(saveObject.locales[i]);
+					this.locales.push(localeVO);
+				}
+			}
 			this.movementBlockers = saveObject.movementBlockers || {};
 			this.numLocaleEnemies = saveObject.numLocaleEnemies || {};
 			this.passageDownType = saveObject.passageDownType || null;

@@ -38,7 +38,7 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 		isolationCenter: "isolationCenter"
 	};
 	
-	var LocaleVO = Ash.Class.extend({
+	let LocaleVO = Ash.Class.extend({
 		
 		type: -1,
 		isEasy: false,
@@ -55,11 +55,16 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 			this.isEasy = isEasy;
 			this.isEarly = isEarly;
 			
+			this.updateCostsAndRequirements();
+		},
+
+		updateCostsAndRequirements: function () {
+			this.requirements = {};
 			this.requirements.vision = [this.getVisionRequirement(), -1];
 			this.costs = {};
 			this.costs.stamina = this.getStaminaRequirement();
 			
-			switch (type) {
+			switch (this.type) {
 				case localeTypes.grove:
 				case localeTypes.tradingpartner:
 				case localeTypes.clinic:
@@ -313,7 +318,31 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 			var value = this.type;
 			var key = Object.keys(localeTypes).filter(function(key) {return localeTypes[key] === value})[0];
 			return key;
-		}
+		},
+
+		getCustomSaveObject: function () {
+			let copy = {};
+			copy.type = this.type;
+			copy.isEasy = this.isEasy ? 1 : 0;
+			copy.isEarly = this.isEarly ? 1 : 0;
+
+			if (this.explorerID) copy.explorerID = this.explorerID;
+			copy.hasBlueprints = this.hasBlueprints ? 1 : 0;
+			if (this.luxuryResource) copy.luxuryResource = this.luxuryResource;
+			return copy;
+		},
+
+		customLoadFromSave: function (saveObject) {
+			this.type = saveObject.type;
+			this.isEasy = saveObject.isEasy ? true : false;
+			this.isEarly = saveObject.isEarly ? true : false;
+
+			this.explorerID = saveObject.explorerID || null;
+			this.hasBlueprints = saveObject.hasBlueprints ? true : false;
+			this.luxuryResource = saveObject.luxuryResource || null;
+
+			this.updateCostsAndRequirements();
+		},
 		
 	});
 

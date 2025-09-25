@@ -64,10 +64,9 @@ function (Ash, SectorTemplateVO, PositionVO) {
 			copy.numInvestigateSectors = this.numInvestigateSectors;
 			copy.numSectors = this.numSectors;
 			copy.numSectorsByStage = this.numSectorsByStage;
-			copy.passageDownPosition = this.passageDownPosition;
+			if (this.passageDownPosition) copy.passageDownPosition = this.passageDownPosition.getCustomSaveObjectWithoutCamp();
 			copy.passageDownType = this.passageDownType;
-			copy.passagePositions = this.passagePositions;
-			copy.passageUpPosition = this.passageUpPosition;
+			if (this.passageUpPosition) copy.passageUpPosition = this.passageUpPosition.getCustomSaveObjectWithoutCamp();
 			copy.passageUpType = this.passageUpType;
 			if (this.predefinedExplorers.length > 0) copy.predefinedExplorers = this.predefinedExplorers;
 			copy.seaPadding = this.seaPadding;
@@ -104,11 +103,21 @@ function (Ash, SectorTemplateVO, PositionVO) {
 			this.numInvestigateSectors = saveObject.numInvestigateSectors;
 			this.numSectors = saveObject.numSectors;
 			this.numSectorsByStage = saveObject.numSectorsByStage;
-			this.passageDownPosition = saveObject.passageDownPosition;
+
+			this.passageDownPosition = null;
+			if (saveObject.passageDownPosition) {
+				this.passageDownPosition = new PositionVO();
+				this.passageDownPosition.customLoadFromSave(saveObject.passageDownPosition);
+			}
 			this.passageDownType = saveObject.passageDownType;
-			this.passagePositions = saveObject.passagePositions;
-			this.passageUpPosition = saveObject.passageUpPosition;
+
+			this.passageUpPosition = null;
+			if (saveObject.passageUpPosition) {
+				this.passageUpPosition = new PositionVO();
+				this.passageUpPosition.customLoadFromSave(saveObject.passageUpPosition);
+			}
 			this.passageUpType = saveObject.passageUpType;
+
 			this.predefinedExplorers = saveObject.predefinedExplorers || [];
 			this.seaPadding = saveObject.seaPadding;
 			this.workshopResource = saveObject.workshopResource || null;
@@ -120,6 +129,10 @@ function (Ash, SectorTemplateVO, PositionVO) {
 				this.sectors[s] = new SectorTemplateVO();
 				this.sectors[s].customLoadFromSave(saveObject.sectors[s]);
 			}
+
+			this.passagePositions = [];
+			if (this.passageUpPosition) this.passagePositions.push(this.passageUpPosition);
+			if (this.passageDownPosition) this.passagePositions.push(this.passageDownPosition);
 		},		
 		
 	});
