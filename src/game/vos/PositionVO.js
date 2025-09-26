@@ -49,6 +49,7 @@ define(['ash'], function (Ash) {
 		},
 		
 		equals: function (positionVO) {
+			if (!positionVO) return false;
 			return this.level === positionVO.level && this.sectorX === positionVO.sectorX && this.sectorY === positionVO.sectorY;
 		},
 		

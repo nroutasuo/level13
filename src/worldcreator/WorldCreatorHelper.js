@@ -39,6 +39,43 @@ define([
 			}
 			return result;
 		},
+
+		getLocaleDataFromTemplate: function (levelTemplateVO, levelVO, localeType, filter) {
+			let result = [];
+			for (let i = 0; i < levelTemplateVO.sectors.length; i++) {
+				let sectorTemplateVO = levelTemplateVO.sectors[i];
+				if (sectorTemplateVO && sectorTemplateVO.locales) {
+					for (let j = 0; j < sectorTemplateVO.locales.length; j++) {
+						let localeVO = sectorTemplateVO.locales[j];
+						if (localeType && localeVO.type != localeType) continue;
+						if (filter && !filter(localeVO)) continue;
+						let sectorVO = levelVO.getSectorByPos(sectorTemplateVO.position);
+						if (sectorVO) {
+							result.push({ sectorVO: sectorVO, sectorTemplateVO: sectorTemplateVO, localeVO: localeVO });
+						}
+						break;
+					}
+				}
+			}
+			return result;
+		},
+
+		getStashDataFromTemplate: function (levelTemplateVO, levelVO) {
+			let result = [];
+			for (let i = 0; i < levelTemplateVO.sectors.length; i++) {
+				let sectorTemplateVO = levelTemplateVO.sectors[i];
+				if (sectorTemplateVO && sectorTemplateVO.stashes && sectorTemplateVO.stashes.length > 0) {
+					let sectorVO = levelVO.getSectorByPos(sectorTemplateVO.position);
+					if (!sectorVO) continue;
+					for (let j = 0; j < sectorTemplateVO.stashes.length; j++) {
+						let stashVO = sectorTemplateVO.stashes[j];
+						result.push({ sectorVO: sectorVO, sectorTemplateVO: sectorTemplateVO, stashVO: stashVO });
+						break;
+					}
+				}
+			}
+			return result;
+		},
 		
 		addCriticalPath: function (worldVO, criticalPathVO) {
 			let path = WorldCreatorRandom.findPath(worldVO, criticalPathVO.startPos, criticalPathVO.endPos);

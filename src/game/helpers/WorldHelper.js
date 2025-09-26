@@ -66,7 +66,7 @@ define([
 				let loadedGameState = save.gameState;
 				worldSeed = parseInt(loadedGameState.worldSeed);
 
-				if (save.worldState.revealedLevels) 
+				if (save.worldState && save.worldState.revealedLevels) 
 					log.i("save.worldState.revealedLevels: " + save.worldState.revealedLevels.join(","))
 				else
 					log.w("no revealedLevels found!")
@@ -98,10 +98,23 @@ define([
 			let result = {};
 			result.hasSave = hasSave;
 			result.worldSeed = worldSeed;
-			result.worldTemplateVO = savedWorldTemplateVO;
+			result.worldTemplateVO = this.getValidWorldTemplate(savedWorldTemplateVO);
 			result.levels = levels;
 
 			return result;
+		},
+
+		getValidWorldTemplate: function (worldTemplateVO) {
+			if (!worldTemplateVO) return null;
+
+			let validationResult = WorldValidator.validateLoadedWorldTemplateVO(worldTemplateVO);
+			if (validationResult.isValid) {
+				return worldTemplateVO;
+			} else {
+				log.e("loaded world template was invalid, generating from scratch");
+				WorldValidator.logSummary(validationResult);
+				return null;
+			}
 		},
 		
 		generateWorld: function (seed, worldTemplateVO, hasSave, tryNumber) {

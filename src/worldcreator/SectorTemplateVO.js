@@ -90,7 +90,7 @@ function (Ash, WorldConstants, ResourcesVO, EnvironmentalHazardsVO, LocaleVO, Po
 
 		customLoadFromSave: function (saveObject) {
 			this.position = new PositionVO();
-			this.position.customLoadFromSave(saveObject.pos);
+			this.position.customLoadFromSave(saveObject.pos || saveObject.position);
 			this.level = this.position.level;
 
 			this.buildingDensity = saveObject.t_bd || this.DEFAULT_TEXTURE_VALUE;

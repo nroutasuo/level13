@@ -75,7 +75,7 @@ define([
 
 			let notSavedKeysWorld = [ "districts", "features", "stages", "pathsAny", "pathsLatest", "examineSpotsPerLevel" ];
 			let notSavedKeysLevel = [ "maxSectors", "neighboursCacheContext", "pendingConnectionPointsByStage", "invalidPositions", "paths", "requiredPaths", "sectorsByStage", "sectorsByPos", "levelCenterPosition", "localeSectors", "raidDangerFactor", "stageCenterPositions" ];
-			let notSavedKeysSector = [ "id", "distanceToCamp", "requiredFeatures", "requiredResources", "resourcesAll", "pathID", "waymarks", "possibleEnemies", "hasRegularEnemies", "isConnectionPoint", "resourcesScavengable", "campPosScore", "isFill", "criticalPathTypes" ];
+			let notSavedKeysSector = [ "id", "distanceToCamp", "requiredFeatures", "requiredResources", "resourcesAll", "waymarks", "possibleEnemies", "hasRegularEnemies", "isConnectionPoint", "resourcesScavengable", "campPosScore", "isFill", "criticalPathTypes" ];
 
 			// check worldTemplateVO matches worldVO
 			let properties = Object.keys(worldVO);
@@ -144,6 +144,22 @@ define([
 			return { check: "validateWorldTemplateVO", target: "worldTemplateVO", seed: worldVO.seed, isValid: issues.length === 0, issues: issues };
 		},
 
+		// validates that a WorldTemplateVO loaded from save can be used as input to world generation 
+		validateLoadedWorldTemplateVO: function (worldTemplateVO) {
+			let issues = [];
+
+			for (let l in worldTemplateVO.levels) {
+				let levelTemplateVO = worldTemplateVO.levels[l];
+				let isCampable = levelTemplateVO.isCampable;
+				if (isCampable && levelTemplateVO.sectors.length > 0) {
+					let numEarlySectors = levelTemplateVO.sectors.filter(s => s.stage == WorldConstants.CAMP_STAGE_EARLY).length;
+					if (numEarlySectors == 0) issues.push("no early sectors on campable level");
+				}
+			}
+
+			return { check: "validateLoadedWorldTemplateVO", target: "worldTemplateVO", seed: worldTemplateVO.seed, isValid: issues.length === 0, issues: issues };
+		},
+
 		logSummary: function (validationResult) {
 			if (validationResult.isValid) {
 				log.i("WorldValidator." + validationResult.check + ": " + validationResult.target + " (seed " + validationResult.seed + ") is VALID");
@@ -153,11 +169,12 @@ define([
 				let severities = [ WorldValidator.SEVERITY_CRITICAL, WorldValidator.SEVERITY_MAJOR, WorldValidator.SEVERITY_COMPABILITY, WorldValidator.SEVERITY_CONTINUITY ];
 				for (let i = 0; i < severities.length; i++) {
 					let severity = severities[i];
-					issuesBySeverity[severity] = issues.filter(issue => issue.severity === severity);
+					issuesBySeverity[severity] = issues.filter(issue => (issue.severity || WorldValidator.SEVERITY_CRITICAL) === severity);
 				}
 				log.e("WorldValidator." + validationResult.check + ": " + validationResult.target + " (seed " + validationResult.seed + ") is INVALID! Issues: " + issues.length);
 				for (let i = 0; i < issues.length; i++) {
-					log.e("- " + issues[i].desc);
+					let desc = issues[i].desc || issues[i];
+					log.e("- " + desc);
 				}
 			}
 		},
@@ -382,6 +399,7 @@ define([
 				if (worldValue.down != templateValue.down) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "different passage down position on level " + l });
 			}
 
+			if (worldTemplateVO.passageTypes) {
 			for (let l in worldVO.passageTypes) {
 				let worldValue = worldVO.passageTypes[l];
 				let templateValue = worldTemplateVO.passageTypes[l];
@@ -389,6 +407,7 @@ define([
 				if (!worldValue && !templateValue) continue;
 				if (worldValue.up != templateValue.up) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "different passage up type on level " + l });
 				if (worldValue.down != templateValue.down) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "different passage down type on level " + l });
+			}
 			}
 
 			return { isValid: issues.length === 0, issues: issues };
@@ -460,13 +479,31 @@ define([
 			}
 
 			let movementBlockerResult = WorldValidator.checkListMatches(sectorVO, sectorTemplateVO, "movementBlockers");
-			if (!movementBlockerResult.isValid) return movementBlockerResult;
+			if (!movementBlockerResult.isValid) issues = issues.concat(movementBlockerResult.issues);
+
+			let localesResult = WorldValidator.checkListMatches(sectorVO, sectorTemplateVO, "locales", "locales", (l1, l2) => {
+				if (l1.type !== l2.type) return false;
+				if (l1.isEasy !== l2.isEasy) return false;
+				if (l1.isEarly !== l2.isEarly) return false;
+				if (l1.hasBlueprints !== l2.hasBlueprints) return false;
+				if (l1.explorerID !== l2.explorerID) return false;
+				if (l1.luxuryResource !== l2.luxuryResource) return false;
+				return true;
+			});
+			if (!localesResult.isValid) issues = issues.concat(localesResult.issues);
+
+			let stashesResult = WorldValidator.checkListMatches(sectorVO, sectorTemplateVO, "stashes", "stashes", (s1, s2) => {
+				if (s1.stashType !== s2.stashType) return false;
+				if (s1.itemID !== s2.itemID) return false;
+				return true;
+			});
+			if (!stashesResult.isValid) issues = issues.concat(stashesResult.issues);
 
 			return { isValid: issues.length === 0, issues: issues };
 
 		},
 
-		checkListMatches: function (vo, template, key, name) {
+		checkListMatches: function (vo, template, key, name, customEqualsCheck) {
 			let issues = [];
 
 			name = name || key;
@@ -474,10 +511,17 @@ define([
 				let voValue = vo[key][i];
 				let templateValue = template[key][i];
 				if (!voValue && !templateValue) continue;
-				if (!voValue) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "missing " + name + " at index " + i });
-				if (!templateValue) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "extra " + name + " at index " + i });
+				if (!voValue) {
+					issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "missing " + name + " at index " + i });
+					continue;
+				}
+				if (!templateValue) {
+					issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "extra " + name + " at index " + i });
+					continue;
+				}
 				if (voValue == templateValue) continue;
 				if (voValue.equals && voValue.equals(templateValue)) continue;
+				if (customEqualsCheck && customEqualsCheck(voValue, templateValue)) continue;
 				 issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "different " + name + " at index " + i });
 			}
 			

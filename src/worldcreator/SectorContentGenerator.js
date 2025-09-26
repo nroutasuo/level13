@@ -3,6 +3,7 @@ define([
 	'ash',
 	'utils/MathUtils',
 	'game/constants/EnemyConstants',
+	'game/constants/ExplorerConstants',
 	'game/constants/PositionConstants',
 	'game/constants/LevelConstants',
 	'game/constants/LocaleConstants',
@@ -11,6 +12,7 @@ define([
 	'game/constants/StoryConstants',
 	'game/constants/WorldConstants',
 	'game/vos/GangVO',
+	'game/vos/LocaleVO',
 	'game/vos/PositionVO',
 	'game/vos/WaymarkVO',
 	'worldcreator/WorldCreatorConstants',
@@ -20,8 +22,8 @@ define([
 	'worldcreator/WorldCreatorDebug',
 	'worldcreator/SectorGeneratorHelper',
 ], function (Ash, MathUtils,
-	EnemyConstants, PositionConstants, LevelConstants, LocaleConstants, MovementConstants, SectorConstants, StoryConstants, WorldConstants, 
-	GangVO, PositionVO, WaymarkVO, 
+	EnemyConstants, ExplorerConstants, PositionConstants, LevelConstants, LocaleConstants, MovementConstants, SectorConstants, StoryConstants, WorldConstants, 
+	GangVO, LocaleVO, PositionVO, WaymarkVO, 
 	WorldCreatorConstants, WorldCreatorHelper, WorldCreatorLogger, WorldCreatorRandom, WorldCreatorDebug, SectorGeneratorHelper) {
 	
 	let SectorContentGenerator = {
@@ -33,6 +35,8 @@ define([
 				let l = levels[i];
 				let levelVO = worldVO.levels[l];
 
+				this.generateLocalesForExplorers(seed, worldVO, levelVO);
+				this.generateLocalesForStory(seed, worldVO, levelVO);
 				this.generateEnemies(seed, worldVO, levelVO, enemyCreator);
 				this.generateWaymarks(seed, worldVO, levelVO);
 				this.generateSectorExamineSpots(seed, worldVO, levelVO);
@@ -45,6 +49,56 @@ define([
 
 			// WorldCreatorDebug.printWorld(worldVO, [ "hasRegularEnemies"], "red" );
 			// WorldCreatorDebug.printWorld(worldVO, [ "criticalPathTypes.length"], "red" );
+		},
+
+		generateLocalesForExplorers: function (seed, worldVO, levelVO) {
+			let excludedFeatures = [ "isCamp", "isPassageUp", "isPassageDown", "workshopResource" ];
+			let lateZones = [ WorldConstants.ZONE_POI_2, WorldConstants.ZONE_EXTRA_CAMPABLE ];
+
+			for (let i = 0; i < levelVO.predefinedExplorers.length; i++) {
+				let explorerID = levelVO.predefinedExplorers[i];
+				let explorerTemplate = ExplorerConstants.getPredefinedExplorerTemplate(explorerID);
+				let options = { excludingFeature: excludedFeatures, excludedZones: lateZones };
+				let sector = WorldCreatorRandom.randomSectors(1000 + seed * 2, worldVO, levelVO, 1, 2, options)[0];
+				let locale = new LocaleVO(explorerTemplate.localeType, true, true);
+				locale.explorerID = explorerID;
+				SectorGeneratorHelper.addLocale(levelVO, sector, locale);
+			}
+		},
+
+		generateLocalesForStory: function (seed, worldVO, levelVO) {
+			let excludedFeatures = [ "isCamp", "isPassageUp", "isPassageDown", "workshopResource" ];
+
+			// TODO define hard coded locales in story constants or as input rather than hard-coding here
+			// NOTE: keep texts referring to fall story facilities up to date if changing levels here
+
+			let storyLocales = [
+				{ type: localeTypes.grove, level: worldVO.bottomLevel, isEasy: true },
+				{ type: localeTypes.compound, level: WorldCreatorHelper.getLastLevelForCamp(seed, 4), isEarly: false },
+				{ type: localeTypes.depot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 5), isEarly: false },
+				{ type: localeTypes.seedDepot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 6), isEarly: false },
+				{ type: localeTypes.depot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 7), isEarly: false },
+				{ type: localeTypes.clinic, level: WorldCreatorHelper.getLastLevelForCamp(seed, 9), isEarly: true },
+				{ type: localeTypes.spacefactory, level: WorldCreatorHelper.getLastLevelForCamp(seed, 10), isEarly: false },
+				{ type: localeTypes.shelter, level: WorldCreatorHelper.getLastLevelForCamp(seed, 12), isEarly: false },
+				{ type: localeTypes.clinic, level: WorldCreatorHelper.getLastLevelForCamp(seed, 13), isEarly: true },
+				{ type: localeTypes.isolationCenter, level: WorldCreatorHelper.getLastLevelForCamp(seed, 14), isEarly: false },
+				{ type: localeTypes.expedition, level: WorldCreatorHelper.getLastLevelForCamp(seed, 15), isEarly: false },
+			];
+
+			for (let i = 0; i < storyLocales.length; i++) {
+				let def = storyLocales[i];
+				if (levelVO.level != def.level) continue;
+				let options = { excludingFeature: excludedFeatures };
+				let sector = WorldCreatorRandom.randomSectors(seed, worldVO, levelVO, 1, 2, options)[0];
+				if (def.type == localeTypes.grove) sector.sunlit = 1;
+				if (def.type == localeTypes.grove) sector.resourcesScavengable.food = Math.max(sector.resourcesScavengable.food, 3);
+				if (def.type == localeTypes.grove) sector.resourcesScavengable.water = Math.max(sector.resourcesScavengable.water, 3);
+				sector.hazards.radiation = 0;
+				sector.hazards.poison = 0;
+				let localeVO = new LocaleVO(def.type, def.isEarly, def.isEarly);
+				SectorGeneratorHelper.addLocale(levelVO, sector, localeVO);
+			}
 		},
 
 		generateEnemies: function (seed, worldVO, levelVO, enemyCreator) {

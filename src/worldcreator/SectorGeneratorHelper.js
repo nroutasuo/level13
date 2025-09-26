@@ -12,6 +12,13 @@ define([
 ], function (Ash, GameGlobals, WorldCreatorConstants, LevelConstants, MovementConstants, PositionConstants, SectorConstants, WorldConstants, WorldCreatorLogger) {
 
 	let SectorGeneratorHelper = {
+
+		addLocale: function (levelVO, sectorVO, localeVO) {
+			sectorVO.locales.push(localeVO);
+			levelVO.localeSectors.push(sectorVO);
+
+			// WorldCreatorLogger.i("add locale " + sectorVO.position + ": " + localeVO.type);
+		},
 		
 		getLevelBlockerTypes: function (worldVO, levelVO, campStage) {
 			var levelOrdinal = levelVO.levelOrdinal;

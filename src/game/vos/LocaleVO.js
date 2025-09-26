@@ -52,8 +52,8 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 	
 		constructor: function (type, isEasy, isEarly) {
 			this.type = type;
-			this.isEasy = isEasy;
-			this.isEarly = isEarly;
+			this.isEasy = isEasy || false;
+			this.isEarly = isEarly || false;
 			
 			this.updateCostsAndRequirements();
 		},
