@@ -93,6 +93,8 @@ define([
 				this.generateTexture(seed, worldVO, levelVO, sectorTemplateVO, sectorVO);
 				this.generateDifficulty(seed, worldVO, levelVO, sectorVO);
 				this.generateResources(seed, worldVO, levelVO, sectorTemplateVO, sectorVO);
+
+				sectorVO.pathID = undefined;
 			}
 			
 			// level-wide features 2
