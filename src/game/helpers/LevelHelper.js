@@ -121,6 +121,8 @@ define([
 				if (levelPosition.level === level) return node.entity;
 			}
 
+			debugger
+
 			log.w("getLevelEntityForPosition: could not find level entity for position: [" + level + "]")
 			return null;
 		},
@@ -163,6 +165,13 @@ define([
 			level = parseInt(level);
 			sectorX = parseInt(sectorX);
 			sectorY = parseInt(sectorY);
+
+			let isGenerated = GameGlobals.worldHelper.isLevelGenerated(level);
+
+			if (!isGenerated) {
+				debugger
+				return null;
+			}
 
 			// TODO check if saving uses up too much memory / this is the neatest way, speeds up fps a lot (esp for map)
 			if (!this.sectorEntitiesByPosition[level]) this.sectorEntitiesByPosition[level] = {};
@@ -968,8 +977,10 @@ define([
 		},
 
 		getLevelClearedWorkshopCount: function (level, resourceName) {
-			let entity = this.getLevelEntityForPosition(level);
-			let levelStatus = entity.get(LevelStatusComponent);
+			if (!GameGlobals.worldHelper.isLevelGenerated(level)) return 0;
+			let levelEntity = this.getLevelEntityForPosition(level);
+			if (!levelEntity) return;
+			let levelStatus = levelEntity.get(LevelStatusComponent);
 			return levelStatus.clearedWorkshops[resourceName] || 0;
 		},
 
@@ -998,7 +1009,9 @@ define([
 		},
 		
 		getLevelBuiltOutImprovementsCount: function (level, improvementName) {
+			if (!GameGlobals.worldHelper.isLevelGenerated(level)) return 0;
 			let levelEntity = this.getLevelEntityForPosition(level);
+			if (!levelEntity) return;
 			let levelStatus = levelEntity.get(LevelStatusComponent);
 			let improvementID = ImprovementConstants.getImprovementID(improvementName);
 			return levelStatus.improvementCounts[improvementID] || 0;
