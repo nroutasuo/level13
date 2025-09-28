@@ -14,7 +14,7 @@ define(['ash', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO'], function 
 			this.passagePositions = worldVO.passagePositions;
 			this.passageTypes = worldVO.passageTypes;
 
-			this.levels = [];
+			this.levels = {};
 			
 			for (let l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
 				this.levels[l] = new LevelTemplateVO(worldVO.levels[l]);
@@ -32,7 +32,7 @@ define(['ash', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO'], function 
 			copy.passagePositions = this.passagePositions;
 			copy.passageTypes = this.passageTypes;
 
-			copy.levels = [];
+			copy.levels = {};
 			
 			for (let l = this.topLevel; l >= this.bottomLevel; l--) {
 				copy.levels[l] = this.levels[l].getCustomSaveObject();
@@ -82,10 +82,11 @@ define(['ash', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO'], function 
 
 			this.passageTypes = saveObject.passageTypes;
 			
-			this.levels = [];
+			this.levels = {};
 			for (let l = this.topLevel; l >= this.bottomLevel; l--) {
+				let levelData = saveObject.levels[l];
 				this.levels[l] = new LevelTemplateVO();
-				this.levels[l].customLoadFromSave(saveObject.levels[l]);
+				this.levels[l].customLoadFromSave(levelData);
 			}
 		},
 		

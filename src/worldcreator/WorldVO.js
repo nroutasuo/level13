@@ -9,14 +9,14 @@ define(['ash'], function (Ash) {
 			this.bottomLevel = 0;
 			
 			this.campPositions = {}; // level -> position
-			this.districts = []; // level -> list of DistrictVO
+			this.districts = {}; // level -> list of DistrictVO
 			this.examineSpotsPerLevel = {}; // level -> list of ids
 			this.features = []; // list of WorldFeatureVO
-			this.passagePositions = []; // level -> { up: PositionVO, down: PositionVO }
-			this.passageTypes = []; // level -> { up: string, down: string }
+			this.passagePositions = {}; // level -> { up: PositionVO, down: PositionVO }
+			this.passageTypes = {}; // level -> { up: string, down: string }
 			this.stages = []; // list of StageVO
 			
-			this.levels = []; // level -> levelVO
+			this.levels = {}; // level -> levelVO
 
 			this.resetCaches();
 		},

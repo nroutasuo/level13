@@ -83,6 +83,8 @@ function (Ash, SectorTemplateVO, PositionVO) {
 		},
 
 		customLoadFromSave: function (saveObject) {
+			if (!saveObject) return;
+			
 			this.level = saveObject.level;
 			this.levelOrdinal = saveObject.levelOrdinal;
 			this.campOrdinal = saveObject.campOrdinal;

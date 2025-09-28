@@ -131,17 +131,30 @@ define([
 
 			// check worldTemplateVO saves and loads correctly
 			let saveObject = worldTemplateVO.getCustomSaveObject();
+			let saveJSON = JSON.stringify(saveObject);
+			let parsedSaveObject = JSON.parse(saveJSON);
 			let loadResult = new WorldTemplateVO();
-			loadResult.customLoadFromSave(saveObject);
+			loadResult.customLoadFromSave(parsedSaveObject);
 			let diff = ObjectUtils.diff(worldTemplateVO, loadResult);
 			if (diff.total > 0) {
 				issues.push({ 
 					severity: WorldValidator.SEVERITY_CRITICAL, 
-					desc: "worldTemplateVO did not save/load correctly: " + diff.total + ", keys: " + Object.keys(diff.byKey).join(",")
+					desc: "worldTemplateVO did not save/load correctly: " + diff.total + ", keys: " + Object.keys(diff.byKey).join(", ")
 				});
 			}
+
+			// check old and new WorldTemplateVO match (world gen did not change template)
+			if (sourceWorldTemplateVO) {
+				let diff = ObjectUtils.diff(worldTemplateVO, sourceWorldTemplateVO);
+				if (diff.total > 0) {
+					issues.push({ 
+						severity: WorldValidator.SEVERITY_CRITICAL, 
+						desc: "source and result world templates differ: " + diff.total + ", keys: " + Object.keys(diff.byKey).join(", ")
+					});
+				}
+			}
 			
-			return { check: "validateWorldTemplateVO", target: "worldTemplateVO", seed: worldVO.seed, isValid: issues.length === 0, issues: issues };
+			return { check: "validateResultWorldTemplateVO", target: "worldTemplateVO", seed: worldVO.seed, isValid: issues.length === 0, issues: issues };
 		},
 
 		// validates that a WorldTemplateVO loaded from save can be used as input to world generation 

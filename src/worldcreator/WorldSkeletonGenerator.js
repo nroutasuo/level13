@@ -117,7 +117,7 @@ define([
 		},
 		
 		generatePassagePositions: function (seed, features, campPositions) {
-			let result = [];
+			let result = {};
 			let topLevel = WorldCreatorHelper.getHighestLevel(seed);
 			let bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
 			for (let l = topLevel; l >= bottomLevel; l--) {
@@ -132,7 +132,7 @@ define([
 		},
 
 		generatePassageTypes: function (seed, worldVO) {
-			let result = [];
+			let result = {};
 			let topLevel = WorldCreatorHelper.getHighestLevel(seed);
 			let bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
 			for (let l = topLevel; l >= bottomLevel; l--) {
@@ -144,12 +144,12 @@ define([
 		},
 		
 		generateDistricts: function (seed, features) {
-			let result = [];
-			var topLevel = WorldCreatorHelper.getHighestLevel(seed);
-			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
+			let result = {};
+			let topLevel = WorldCreatorHelper.getHighestLevel(seed);
+			let bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
 			
 			// districts on specific levels
-			for (var l = topLevel; l >= bottomLevel; l--) {
+			for (let l = topLevel; l >= bottomLevel; l--) {
 				result[l] = [];
 				if (l == 14) {
 					this.generateDistrict(seed, result, SectorConstants.SECTOR_TYPE_INDUSTRIAL, l, 0, 0, 8, 8);
@@ -158,7 +158,7 @@ define([
 			
 			// districts around features
 			for (let i = 0; i < features.length; i++) {
-				var feature = features[i];
+				let feature = features[i];
 				switch (feature.type) {
 					case WorldCreatorConstants.FEATURE_HOLE_SEA:
 						this.generateDistrictAround(seed, result, feature, SectorConstants.SECTOR_TYPE_RESIDENTIAL, 3, bottomLevel, 20);
