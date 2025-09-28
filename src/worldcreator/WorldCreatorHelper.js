@@ -53,7 +53,6 @@ define([
 						if (sectorVO) {
 							result.push({ sectorVO: sectorVO, sectorTemplateVO: sectorTemplateVO, localeVO: localeVO });
 						}
-						break;
 					}
 				}
 			}

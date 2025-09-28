@@ -17,7 +17,12 @@ define([
 			sectorVO.locales.push(localeVO);
 			levelVO.localeSectors.push(sectorVO);
 
-			// WorldCreatorLogger.i("add locale " + sectorVO.position + ": " + localeVO.type);
+			// let localeFeatures = [];
+			// if (localeVO.hasBlueprints) localeFeatures.push("blueprints");
+			// if (localeVO.explorerID) localeFeatures.push("explorer:" + localeVO.explorerID);
+			// if (localeVO.luxuryResource) localeFeatures.push("resource:" + localeVO.luxuryResource);
+
+			// WorldCreatorLogger.i("add locale " + sectorVO.position + ": " + localeVO.type + " (" + localeFeatures.join(",") +")");
 		},
 		
 		getLevelBlockerTypes: function (worldVO, levelVO, campStage) {

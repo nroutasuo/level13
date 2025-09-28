@@ -75,6 +75,7 @@ define([
 			
 			// level path features
 			levelVO.paths = this.generatePaths(seed, worldVO, levelVO);
+
 			for (var p = 0; p < levelVO.paths.length; p++) {
 				this.generateRequiredResources(seed, worldVO, levelVO, levelVO.paths[p]);
 			}
@@ -394,44 +395,46 @@ define([
 		
 		generatePaths: function (seed, worldVO, levelVO) {
 			let result = [];
-			var unvisitedSectors = [];
-			var visitSector = function (pos, pathID) {
-				var posSector = levelVO.getSectorByPos(pos);
+			let unvisitedSectors = [];
+			let visitSector = function (pos, pathID) {
+				let posSector = levelVO.getSectorByPos(pos);
 				if (!posSector) return;
 				if (posSector.pathID && pos.pathID != 0) return;
-				var index = unvisitedSectors.indexOf(posSector);
+				let index = unvisitedSectors.indexOf(posSector);
 				if (index < 0) return;
 				posSector.pathID = pathID;
 				unvisitedSectors.splice(index, 1);
 			};
-			var traverseSectors = function (startPos, sectors, pathStage) {
-				var traverse = [];
+			let traverseSectors = function (startPos, sectors, pathStage) {
+				let positions = [];
 				if (sectors.length <= 0) return;
 				unvisitedSectors = sectors.concat();
-				var currentPos = startPos;
-				var pathID = 0;
+				let currentPos = startPos;
+				let pathID = 0;
 				while (unvisitedSectors.length > 0) {
 					visitSector(currentPos, pathID);
-					var sectorsByDistance = unvisitedSectors.slice(0).sort(WorldCreatorHelper.sortSectorsByDistanceTo(currentPos));
-					var nextSector = sectorsByDistance[0];
+					let sectorsByDistance = unvisitedSectors.slice(0).sort(WorldCreatorHelper.sortSectorsByDistanceTo(currentPos));
+					let nextSector = sectorsByDistance[0];
 					if (!nextSector) break;
-					var path = WorldCreatorRandom.findPath(worldVO, currentPos, nextSector.position, false, true, pathStage);
+					let path = WorldCreatorRandom.findPath(worldVO, currentPos, nextSector.position, false, true, pathStage);
 					if (!path) {
 						throw new Error("couldn't find level path " + currentPos + " " + nextSector.position);
 					}
 					pathID = result.length;
 					for (let j = 0; j < path.length; j++) {
-						var pathPos = path[j];
+						let pathPos = path[j];
 						visitSector(pathPos, pathID);
-						traverse.push(pathPos);
+						positions.push(pathPos);
 					}
 					currentPos = nextSector.position;
 				}
-				result.push(traverse);
+				result.push(positions);
 			}
-			var startPos = levelVO.getExcursionStartPosition();
-			traverseSectors(startPos, levelVO.getSectorsByStage(WorldConstants.CAMP_STAGE_EARLY), WorldConstants.CAMP_STAGE_EARLY);
-			traverseSectors(startPos, levelVO.getSectorsByStage(WorldConstants.CAMP_STAGE_LATE), null);
+			let startPos = levelVO.getExcursionStartPosition();
+			let earlySectors = levelVO.getSectorsByStage(WorldConstants.CAMP_STAGE_EARLY);
+			let lateSectors = levelVO.getSectorsByStage(WorldConstants.CAMP_STAGE_LATE);
+			traverseSectors(startPos, earlySectors, WorldConstants.CAMP_STAGE_EARLY);
+			traverseSectors(startPos, lateSectors, null);
 			return result;
 		},
 		
@@ -910,7 +913,7 @@ define([
 		generateDifficulty: function (seed, worldVO, levelVO, sectorVO) {
 			// scavenge difficulty: how much stuff there is (left), how good shape it's in (rot, pollution) and how easy it's to find get to (locked doors, general debris, easy to navigate storages)l
 			let scavengeDifficultyScore = 0.5;
-			
+
 			// - most important factor: increase toward end-game
 			scavengeDifficultyScore *= MathUtils.map(levelVO.campOrdinal, 1, 15, 0.25, 2);
 			
@@ -920,6 +923,7 @@ define([
 			if (randomSeed > 0.9) scavengeDifficultyScore *= 4;
 			
 			// - variety from sector types
+			// TODO fix this doesn't actually do anything
 			switch (sectorVO.sectorType) {
 				case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
 					scavengeDifficultyScore * 0.5;
@@ -982,7 +986,6 @@ define([
 			var sectorType = sectorVO.sectorType;
 			var campOrdinal = levelVO.campOrdinal;
 			var isStartPosition = l == 13 && sectorVO.isCamp;
-			var scavengeDifficulty = sectorVO.scavengeDifficulty;
 			
 			// scavengeable resources (not saved to template)
 			var r1 = WorldCreatorRandom.random(5000 + seed / (l+10) + x + x * y * 63 + sectorVO.buildingDensity * 3 + x % 3 * 123 + y % 4 * 81);
@@ -1328,13 +1331,7 @@ define([
 			let campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, levelVO.level);
 			let generator = this;
 
-			// use sectors that have matching locales in template if possible
-			let existingLocaleData = WorldCreatorHelper.getLocaleDataFromTemplate(levelTemplateVO, levelVO, null, (localeVO) => localeVO.hasBlueprints);
-			let unusedExistingLocaleData = existingLocaleData.concat();
-			
-			let excludedFeatures = [ "isCamp", "isPassageUp", "isPassageDown", "workshopResource" ];
-
-			let createLocales = function (worldVO, levelVO, campOrdinal, isEarly, count, countEasy) {
+			let getPathConstraints = function (isEarly) {
 				let pathConstraints = [];
 
 				if (levelVO.campPosition) {
@@ -1349,9 +1346,27 @@ define([
 					}
 					pathConstraints.push(new PathConstraintVO(pos, length, pathType));
 				}
+
+				return pathConstraints;
+			}
+
+			let createLocale = function (sectorVO, localeVO) {
+				let pathConstraints = getPathConstraints(localeVO.isEarly);
+				SectorGeneratorHelper.addLocale(levelVO, sectorVO, localeVO);
+				for (let j = 0; j < pathConstraints.length; j++) {
+					let criticalPathVO = new CriticalPathVO(pathConstraints[j].pathType, sectorVO.position, pathConstraints[j].startPosition);
+					WorldCreatorHelper.addCriticalPath(worldVO, criticalPathVO);
+				}
+			};
+
+			let createLocales = function (worldVO, levelVO, isEarly, count, countEasy) {
+				let pathConstraints = getPathConstraints(isEarly);
+
+				let excludedFeatures = [ "isCamp", "isPassageUp", "isPassageDown", "workshopResource" ];
 				let excludedZones = isEarly ?
 					[ WorldConstants.ZONE_POI_2, WorldConstants.ZONE_CAMP_TO_PASSAGE, WorldConstants.ZONE_EXTRA_CAMPABLE ] :
 					[ WorldConstants.ZONE_ENTRANCE, WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_POI_1, WorldConstants.ZONE_EXTRA_CAMPABLE ];
+				
 				let options = { requireCentral: false, excludingFeature: excludedFeatures, pathConstraints: pathConstraints, excludedZones: excludedZones, numDuplicates: 2 };
 				let l = levelVO.level;
 				let sseed = Math.abs(seed - (isEarly ? 5555 : 0) + (l + 50) * 2);
@@ -1359,37 +1374,29 @@ define([
 				for (let i = 0; i < count; i++) {
 					let isEasy = i <= countEasy;
 
-					let existingLocaleData = unusedExistingLocaleData.filter(data => {
-						if (data.localeVO.isEarly != isEarly) return false;
-						if (data.localeVO.isEasy != isEasy) return false;
-						return true;
-					})[0];
+					let sectorVO = WorldCreatorRandom.randomSectors(sseed + i + i * 72 * sseed + i * l + i, worldVO, levelVO, 1, 2, options)[0];
 
-					let sectorVO;
-					let localeType;
-
-					if (existingLocaleData) {
-						let existingLocaleIndex = unusedExistingLocaleData.indexOf(existingLocaleData);
-						unusedExistingLocaleData.splice(existingLocaleIndex, 1);
-						sectorVO = existingLocaleData.sectorVO;
-						localeType = existingLocaleData.localeVO.type;
-					} else {
-						sectorVO = WorldCreatorRandom.randomSectors(sseed + i + i * 72 * sseed + i * l + i, worldVO, levelVO, 1, 2, options)[0];
-						let s1 = sseed + sectorVO.position.sectorX * 871 + sectorVO.position.sectorY * 659 + i * 212;
-						localeType = generator.getLocaleType(worldVO, levelVO, sectorVO, s1, isEarly);
-					}
+					let s1 = sseed + sectorVO.position.sectorX * 871 + sectorVO.position.sectorY * 659 + i * 212;
+					let localeType = generator.getLocaleType(worldVO, levelVO, sectorVO, s1, isEarly);
 
 					let localeVO = new LocaleVO(localeType, isEasy, isEarly);
 					localeVO.hasBlueprints = true;
 
-					SectorGeneratorHelper.addLocale(levelVO, sectorVO, localeVO);
-					// WorldCreatorLogger.i(sectorVO.position + " added locale: isEarly:" + isEarly + ", distance to camp: " + WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO) + ", zone: " + sectorVO.zone);
-					for (let j = 0; j < pathConstraints.length; j++) {
-						let criticalPathVO = new CriticalPathVO(pathConstraints[j].pathType, sectorVO.position, pathConstraints[j].startPosition);
-						WorldCreatorHelper.addCriticalPath(worldVO, criticalPathVO);
-					}
+					createLocale(sectorVO, localeVO);
 				}
 			};
+
+			// use sectors that have matching locales in template if possible
+			let existingLocaleData = WorldCreatorHelper.getLocaleDataFromTemplate(levelTemplateVO, levelVO, null, (localeVO) => localeVO.hasBlueprints);
+			let numExistingEarly = 0;
+			let numExistingLate = 0;
+			for (let i = 0; i < existingLocaleData.length; i++) {
+				let data = existingLocaleData[i];
+				let isEarly = data.localeVO.isEarly;
+				createLocale(data.sectorVO, data.localeVO);
+				if (isEarly) numExistingEarly++;
+				else numExistingLate++;
+			}
 			
 			// min number of (easy) locales ensures that player can get all upgrades intended for that level
 			// two brackets of locales for critical paths, those on path 2 can require tech from path 1 to reach but not the other way around
@@ -1400,7 +1407,7 @@ define([
 				let minEarly = WorldCreatorConstants.getMinLocales(numEarlyBlueprints);
 				let maxEarly = WorldCreatorConstants.getMaxLocales(numEarlyBlueprints);
 				let countEarly = WorldCreatorRandom.randomInt((seed % 84) * l * l * l + 1, minEarly, maxEarly + 1);
-				createLocales(worldVO, levelVO, campOrdinal, true, countEarly, minEarly);
+				createLocales(worldVO, levelVO, true, countEarly - numExistingEarly, minEarly - numExistingEarly);
 			}
 
 			let numLateBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_LATE, levelIndex, maxLevelIndex);
@@ -1408,7 +1415,7 @@ define([
 				let minLate = WorldCreatorConstants.getMinLocales(numLateBlueprints);
 				let maxLate = WorldCreatorConstants.getMaxLocales(numLateBlueprints);
 				let countLate = WorldCreatorRandom.randomInt((seed % 84) * l * l * l + 1, minLate, maxLate + 1);
-				createLocales(worldVO, levelVO, campOrdinal, false, countLate, minLate);
+				createLocales(worldVO, levelVO, false, countLate - numExistingLate, minLate - numExistingLate);
 			}
 		},
 		
