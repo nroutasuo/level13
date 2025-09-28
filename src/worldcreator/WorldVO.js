@@ -22,9 +22,6 @@ define(['ash'], function (Ash) {
 		},
 
 		resetPaths: function () {
-			this.pathsAny = {};
-			this.pathsLatest = {};
-
 			for (let l = this.topLevel; l >= this.bottomLevel; l--) {
 				let levelVO = this.levels[l];
 				if (levelVO) levelVO.resetPaths();
@@ -32,9 +29,6 @@ define(['ash'], function (Ash) {
 		},
 
 		resetCaches: function () {
-			this.pathsAny = {};
-			this.pathsLatest = {};
-
 			for (let l = this.topLevel; l >= this.bottomLevel; l--) {
 				let levelVO = this.levels[l];
 				if (levelVO) levelVO.resetCaches();
@@ -74,27 +68,6 @@ define(['ash'], function (Ash) {
 				}
 			}
 			return result;
-		},
-		
-		getPath: function (pos1, pos2, blockedByBlockers, stage, anyPath) {
-			let map = anyPath ? this.pathsAny : this.pathsLatest;
-			if (!map) return null;
-			var key = this.getPathKey(pos1, pos2, blockedByBlockers, stage);
-			return map[key];
-		},
-		
-		addPath: function (pos1, pos2, blockedByBlockers, stage, path) {
-			var key = this.getPathKey(pos1, pos2, blockedByBlockers, stage);
-			if (!this.pathsAny) this.pathsAny = {};
-			if (!this.pathsLatest) this.pathsLatest = {};
-			this.pathsAny[key] = path;
-			this.pathsLatest[key] = path;
-		},
-		
-		getPathKey: function (pos1, pos2, blockedByBlockers, stage) {
-			var start = this.getPathStart(pos1, pos2);
-			var end = this.getPathEnd(pos1, pos2);
-			return start.toString() + "-" + end.toString() + (blockedByBlockers ? "-1" : "-0") + (stage ? stage : "-");
 		},
 		
 		getPathStart: function (pos1, pos2) {

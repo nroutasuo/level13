@@ -415,12 +415,6 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Ga
 				return [];
 			}
 			
-			let cachedPath = this.getCachedPath(worldVO, startPos, endPos, blockByBlockers, stage, anyPath);
-			if (cachedPath) {
-				//log.i("got cached path " + startPos + " to " + endPos);
-				return cachedPath;
-			}
-			
 			let makePathSectorVO = function (position) {
 				if (!position) return null;
 				let levelVO = worldVO.getLevel(position.level);
@@ -473,33 +467,7 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Ga
 			
 			let result = PathFinding.findPath(startVO, goalVO, utilities, settings);
 			
-			this.addCachedPath(worldVO, startPos, endPos, blockByBlockers, stage, result);
-			
 			return result;
-		},
-		
-		getCachedPath: function (worldVO, startPos, endPos, blockByBlockers, stage, anyPath) {
-			let res = worldVO.getPath(startPos, endPos, blockByBlockers, stage, anyPath);
-			if (res) return res;
-			if (!stage) {
-				res = worldVO.getPath(startPos, endPos, blockByBlockers, WorldConstants.CAMP_STAGE_EARLY, anyPath)
-					|| worldVO.getPath(startPos, endPos, blockByBlockers, WorldConstants.CAMP_STAGE_LATE, anyPath);
-			}
-			return res;
-		},
-		
-		addCachedPath: function (worldVO, startPos, endPos, blockByBlockers, stage, path) {
-			if (path) {
-				// cache path and subpaths
-				for (var p = path.length; p > 0; p--) {
-					let subPath = path.slice(0, p);
-					let subPathEndPos = subPath[subPath.length - 1];
-					worldVO.addPath(startPos, subPathEndPos, blockByBlockers, stage, subPath);
-				}
-			} else {
-				// only cache the fact that there is no path
-				worldVO.addPath(startPos, endPos, blockByBlockers, stage, path);
-			}
 		},
 		
 	};
