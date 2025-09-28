@@ -60,7 +60,7 @@ define([
 			levelVO.stageCenterPositions = this.getStageCenterPositions(worldVO, levelVO);
 			levelVO.levelCenterPosition = this.getLevelCenterPosition(worldVO, levelVO);
 			levelVO.seaPadding = this.getSeaPadding(seed, levelVO);
-			levelVO.workshopResource = levelTemplateVO.workshopResource || this.getWorkshopResource(seed, worldVO, levelTemplateVO, levelVO);
+			levelVO.workshopResource = this.getWorkshopResource(seed, worldVO, levelTemplateVO, levelVO);
 
 			// stuff that might need to be adjusted on worlds from old saves
 			levelVO.numInvestigateSectors = this.getNumInvestigateSectors(seed, l);
@@ -130,7 +130,9 @@ define([
 			return WorldConstants.getNumInvestigateSectors(level, topLevel);
 		},
 
-		getWorkshopResource: function (seed, worldVO, levelVO) {
+		getWorkshopResource: function (seed, worldVO, levelTemplateVO, levelVO) {
+			if (levelTemplateVO && levelTemplateVO.workshopResource) return levelTemplateVO.workshopResource;
+
 			let campOrdinal = levelVO.campOrdinal;
 			let levelIndex = WorldCreatorHelper.getLevelIndexForCamp(seed, campOrdinal, levelVO.level);
 			let maxLevelIndex = WorldCreatorHelper.getMaxLevelIndexForCamp(seed, campOrdinal, levelVO.level);
