@@ -22,7 +22,7 @@ define([
 		// TODO check that there's at least a few (useful?) beacon spots per level
 
 		// validates overall world skeleton, not levels or sectors
-		// checks that the world is valid in itself, and also that it follows the template given
+		// checks that the world is valid in itself, and also that it follows the template if one given
 		validateWorld: function (worldVO, worldTemplateVO) {
 			worldVO.resetPaths();
 
@@ -44,7 +44,7 @@ define([
 		},
 
 		// validates a given level, structure, sectors, features
-		// checks that the level is valid in itself, and also that it follows the template
+		// checks that the level is valid in itself, and also that it follows the template if one given
 		validateLevel: function (worldVO, worldTemplateVO, levelVO) {
 			worldVO.resetPaths();
 
@@ -69,13 +69,17 @@ define([
 			return { check: "validateLevel", target: "levelVO:" + levelVO.level, seed: worldVO.seed, isValid: issues.length === 0, issues: issues };
 		},
 
-		// validates that a WorldTemplateVO matches the WorldVO it was created from, contains all necessary data, and saves/loads correctly
-		validateWorldTemplateVO: function (worldVO, worldTemplateVO) {
+		// validates that a WorldTemplateVO 
+		// - reasonably matches the WorldVO it was created from
+		// - exactly matches the source template the world was created from if there was one
+		// - contains all necessary data
+		// - and saves/loads correctly
+		validateResultWorldTemplateVO: function (worldVO, worldTemplateVO, sourceWorldTemplateVO) {
 			let issues = [];
 
 			let notSavedKeysWorld = [ "districts", "features", "stages", "examineSpotsPerLevel" ];
 			let notSavedKeysLevel = [ "maxSectors", "neighboursCacheContext", "pendingConnectionPointsByStage", "invalidPositions", "paths", "requiredPaths", "sectorsByStage", "sectorsByPos", "levelCenterPosition", "localeSectors", "raidDangerFactor", "stageCenterPositions" ];
-			let notSavedKeysSector = [ "id", "distanceToCamp", "requiredFeatures", "requiredResources", "resourcesAll", "waymarks", "possibleEnemies", "hasRegularEnemies", "isConnectionPoint", "resourcesScavengable", "campPosScore", "isFill", "criticalPathTypes" ];
+			let notSavedKeysSector = [ "id", "distanceToCamp", "requiredFeatures", "requiredResources", "resourcesAll", "waymarks", "pathID", "possibleEnemies", "hasRegularEnemies", "isConnectionPoint", "resourcesScavengable", "campPosScore", "isFill", "criticalPathTypes" ];
 
 			// check worldTemplateVO matches worldVO
 			let properties = Object.keys(worldVO);

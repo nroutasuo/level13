@@ -43,7 +43,7 @@ define([
 					GameGlobals.gameState.worldSeed = worldVO.seed;
 				})
 				.then(() => this.generateLevels(levels, saveData.worldTemplateVO))
-				.then(() => this.saveWorld())
+				.then(() => this.saveWorld(saveData.worldTemplateVO))
 				.then(() => {
 					log.i("START " + GameConstants.STARTTimeNow() + "\t world created (seed: " + this.worldVO.seed + ")");
 					resolve(this.worldVO);
@@ -190,7 +190,7 @@ define([
 					this.validateLevels(levels, worldTemplateVO);
 					resolve(worldVO);
 				})
-				.then(() => this.saveWorld())
+				.then(() => this.saveWorld(worldTemplateVO))
 				.then(() => this.logChanges(worldTemplateVO, levels))
 				.then(worldVO => {
 					this.isBusy = false;
@@ -213,9 +213,9 @@ define([
 			}
 		},
 
-		saveWorld: function () {
+		saveWorld: function (sourceWorldTemplateVO) {
 			let worldTemplateVO = new WorldTemplateVO(this.worldVO);
-			let validationResult = WorldValidator.validateWorldTemplateVO(this.worldVO, worldTemplateVO);
+			let validationResult = WorldValidator.validateResultWorldTemplateVO(this.worldVO, worldTemplateVO, sourceWorldTemplateVO);
 			WorldValidator.logSummary(validationResult);
 			GameGlobals.worldState.worldTemplateVO = worldTemplateVO;
 		},

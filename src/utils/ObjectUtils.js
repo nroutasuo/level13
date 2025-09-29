@@ -36,15 +36,17 @@ define([], function () {
 		diff: function (obj1, obj2) {
 			const summary = { total: 0, byKey: {}, examples: {} };
 
-			function recordDiff(key, val1, val2) {
+			function recordDiff(key, val1, val2, context) {
+				let fullKey = context ? context : key;
 				summary.total += 1;
-				summary.byKey[key] = (summary.byKey[key] || 0) + 1;
-				if (!summary.examples[key]) {
-					summary.examples[key] = { value1: val1, value2: val2 };
+				summary.byKey[fullKey] = (summary.byKey[fullKey] || 0) + 1;
+				if (!summary.examples[fullKey]) {
+					summary.examples[fullKey] = { value1: val1, value2: val2 };
 				}
 			}
 
-			function recurse(o1, o2, parentKey = null) {
+			function recurse(o1, o2, parentKey = null, context = null) {
+
 				// If both are arrays → compare element by element
 				if (Array.isArray(o1) && Array.isArray(o2)) {
 					const len = Math.max(o1.length, o2.length);
@@ -55,9 +57,9 @@ define([], function () {
 							typeof v1 === "object" && v1 !== null &&
 							typeof v2 === "object" && v2 !== null
 						) {
-							recurse(v1, v2, parentKey); // keep attribution to parent key
+							recurse(v1, v2, parentKey, context); // keep attribution to parent key
 						} else if (v1 !== v2) {
-							recordDiff(parentKey || "array", v1, v2);
+							recordDiff(parentKey || "array", v1, v2, context);
 						}
 					}
 					return;
@@ -70,14 +72,14 @@ define([], function () {
 				) {
 					const keys = new Set([...Object.keys(o1), ...Object.keys(o2)]);
 					for (let key of keys) {
-						recurse(o1[key], o2[key], key);
+						recurse(o1[key], o2[key], key, (context ? context + "." : "") + key);
 					}
 					return;
 				}
 
 				// Base case: primitive values
 				if (o1 !== o2) {
-					recordDiff(parentKey || "root", o1, o2);
+					recordDiff(parentKey || "root", o1, o2, context);
 				}
 			}
 
