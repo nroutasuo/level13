@@ -93,8 +93,8 @@ define([
 		getTextFeatures: function (sector) {
 			var position = sector.get(PositionComponent).getPosition();
 			var featuresComponent = sector.get(SectorFeaturesComponent);
-			var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(position.level);
-			var campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
+			var levelOrdinal = GameGlobals.worldState.getLevelOrdinal(position.level);
+			var campOrdinal = GameGlobals.worldState.getCampOrdinal(position.level);
 			var levelEntity = GameGlobals.levelHelper.getLevelEntityForSector(sector);
 			var levelComponent = levelEntity.get(LevelComponent);
 			var hasCamp = sector.has(CampComponent);
@@ -117,8 +117,8 @@ define([
 			features.condition = featuresComponent.getCondition();
 			features.habitability = levelComponent.habitability;
 			features.raidDangerFactor = levelComponent.raidDangerFactor;
-			features.isSurfaceLevel = position.level == GameGlobals.gameState.getSurfaceLevel();
-			features.isGroundLevel = position.level == GameGlobals.gameState.getGroundLevel();
+			features.isSurfaceLevel = position.level == GameGlobals.worldState.getSurfaceLevel();
+			features.isGroundLevel = position.level == GameGlobals.worldState.getGroundLevel();
 			features.hasCamp = hasCamp;
 			features.hasGrove = hasGrove;
 			features.radiation = featuresComponent.hazards.radiation;
@@ -156,7 +156,7 @@ define([
 		
 		hasSeriousHazards: function (level, sectorFeatures, sectorStatus) {
 			let hazards = this.getEffectiveHazards(sectorFeatures, sectorStatus);
-			let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+			let campOrdinal = GameGlobals.worldState.getCampOrdinal(level);
 			let campOrdianl2 = campOrdinal - 1;
 			
 			if (hazards.radiation > 0 && hazards.radiation > GameGlobals.itemsHelper.getMaxHazardRadiationForLevel(campOrdianl2, 0, false)) return true;
@@ -512,7 +512,7 @@ define([
 				if (!isScouted && sectorStatus.scouted) return null;
 			}
 			
-			let campOrdinal = GameGlobals.gameState.getCampOrdinal(sectorPosition.level);
+			let campOrdinal = GameGlobals.worldState.getCampOrdinal(sectorPosition.level);
 
 			switch (poiType) {
 				case "campable":

@@ -166,7 +166,7 @@
 			this.updateLayout();
 
 			let position = this.playerPosNodes.head.position.getPosition();
-			let campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
+			let campOrdinal = GameGlobals.worldState.getCampOrdinal(position.level);
 
 			// Header
 			let isOutpost = GameGlobals.campBalancingHelper.isOutpost(campOrdinal);
@@ -395,7 +395,7 @@
 		updateWorkerMaxDescriptions: function () {
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var posComponent = this.playerPosNodes.head.position;
-			var campOrdinal = GameGlobals.gameState.getCampOrdinal(posComponent.level);
+			var campOrdinal = GameGlobals.worldState.getCampOrdinal(posComponent.level);
 			var workshops = GameGlobals.levelHelper.getWorkshopsByResourceForCamp(campOrdinal);
 			
 			for (var key in CampConstants.workerTypes) {

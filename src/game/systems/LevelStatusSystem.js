@@ -276,11 +276,11 @@ define([
 		},
 		
 		getLevelPreviousLevelsMaxHazard: function (level, hazardType) {
-			let levelOrdinal = GameGlobals.gameState.getLevelOrdinal(level);
+			let levelOrdinal = GameGlobals.worldState.getLevelOrdinal(level);
 			if (levelOrdinal == 1) return 0;
 			let result = 0;
 			for (let i = 1; i < levelOrdinal; i++) {
-				let previousLevel = GameGlobals.gameState.getLevelForOrdinal(i);
+				let previousLevel = GameGlobals.worldState.getLevelForOrdinal(i);
 				result = Math.max(result, GameGlobals.levelHelper.getLevelMaxHazard(previousLevel, hazardType));
 			}
 			return result;

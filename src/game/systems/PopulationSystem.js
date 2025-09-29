@@ -431,7 +431,7 @@ define([
 
 			if (populationDeficit <= 1) return 0;
 
-			let campOrdinal = GameGlobals.gameState.getCampOrdinal(node.position.level);
+			let campOrdinal = GameGlobals.worldState.getCampOrdinal(node.position.level);
 			let habitability = GameGlobals.campBalancingHelper.getHabitability(campOrdinal);
 			
 			let probability = MathUtils.map(populationDeficit, 1, 10, 0.05, 0.5);

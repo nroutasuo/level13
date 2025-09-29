@@ -78,7 +78,7 @@ define([
 		
 		refreshSettings: function () {
 			var level = this.playerLocationNodes.head.position.level;
-			var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+			var campOrdinal = GameGlobals.worldState.getCampOrdinal(level);
 			var levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(level);
 			var levelComponent = levelEntity.get(LevelComponent);
 			// TODO add more detail depending on world structure (what kind of sector/level the camp is actually located on)
@@ -111,7 +111,7 @@ define([
 		refreshBuildings: function () {
 			if (!this.playerLocationNodes.head) return;
 			var level = this.playerLocationNodes.head.position.level;
-			var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+			var campOrdinal = GameGlobals.worldState.getCampOrdinal(level);
 			var reset = this.buildingsLevel !== level;
 			
 			// update divs

@@ -319,8 +319,8 @@ define([
 			
 			if (!short && project.improvement && project.improvement.name == improvementNames.greenhouse && !isAvailable) {
 				let level = position.level;
-				let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
-				let campLevel = GameGlobals.gameState.getLevelForCamp(campOrdinal);
+				let campOrdinal = GameGlobals.worldState.getCampOrdinal(level);
+				let campLevel = GameGlobals.worldState.getLevelForCamp(campOrdinal);
 				let campNode = GameGlobals.campHelper.getCampNodeForLevel(campLevel);
 				let numWorkers = campNode.camp.assignedWorkers.gardener || 0;
 				info += " (used by " + numWorkers + " Gardeners at camp on level " + campLevel + ")";

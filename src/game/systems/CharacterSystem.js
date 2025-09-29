@@ -124,12 +124,12 @@ define([
 		},
 
 		getMaxCharactersForLevel: function (level) {
-			if (level == GameGlobals.gameState.getSurfaceLevel()) return 0;
-			if (level == GameGlobals.gameState.getGroundLevel()) return 1;
+			if (level == GameGlobals.worldState.getSurfaceLevel()) return 0;
+			if (level == GameGlobals.worldState.getGroundLevel()) return 1;
 			if (level == 14) return 0;
 
 			let isCampable = GameGlobals.levelHelper.isLevelCampable(level);
-			let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+			let campOrdinal = GameGlobals.worldState.getCampOrdinal(level);
 
 			let result = 5;
 
@@ -271,11 +271,11 @@ define([
 			let sectorPosition = sector.get(PositionComponent);
 
 			let level = sectorPosition.level;
-			let levelOrdinal = GameGlobals.gameState.getLevelOrdinal(level);
+			let levelOrdinal = GameGlobals.worldState.getLevelOrdinal(level);
 			let isCampable = GameGlobals.levelHelper.isLevelCampable(sectorPosition.level);
 			let condition = sectorFeatures.getCondition();
 			let isEarlyZone = sectorFeatures.isEarlyZone();
-			let isGround = sectorPosition.level == GameGlobals.gameState.getGroundLevel();
+			let isGround = sectorPosition.level == GameGlobals.worldState.getGroundLevel();
 			let hasHazards = sectorFeatures.hasHazards();
 
 			let existingTypes = existingCharacters.map(characterVO => characterVO.characterType);

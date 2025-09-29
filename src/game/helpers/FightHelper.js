@@ -239,7 +239,7 @@ define([
 		getValidEnemyWithTag: function (tag) {
 			let position = this.playerLocationNodes.head.position;
 
-			let campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
+			let campOrdinal = GameGlobals.worldState.getCampOrdinal(position.level);
 			let campStep = WorldConstants.CAMP_STEP_POI_2;
 			let environmentTags = null;
 			let enemyDifficulty = this.enemyCreator.getDifficulty(campOrdinal, campStep);

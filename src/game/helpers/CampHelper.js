@@ -52,7 +52,7 @@ define([
 		
 		getCurrentCampStep: function () {
 			let campOrdinal = this.getCurrentCampOrdinal();
-			let level = GameGlobals.gameState.getLevelForCamp(campOrdinal);
+			let level = GameGlobals.worldState.getLevelForCamp(campOrdinal);
 			let levelStats = GameGlobals.levelHelper.getLevelStats(level);
 			let scoutedPercent = levelStats.percentClearedSectors;
 			if (scoutedPercent < 0.25)
@@ -388,8 +388,8 @@ define([
 			let position = sector.get(PositionComponent);
 			let features = sector.get(SectorFeaturesComponent);
 
-			let surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
-			let groundLevel = GameGlobals.gameState.getGroundLevel();
+			let surfaceLevel = GameGlobals.worldState.getSurfaceLevel();
+			let groundLevel = GameGlobals.worldState.getGroundLevel();
 
 			result.push(CampConstants.DISASTER_TYPE_COLLAPSE);
 			result.push(CampConstants.DISASTER_TYPE_EARTHQUAKE);
@@ -404,7 +404,7 @@ define([
 			let result = [];
 			
 			let position = sector.get(PositionComponent);
-			let campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
+			let campOrdinal = GameGlobals.worldState.getCampOrdinal(position.level);
 
 			let isForceExpedition = this.isValidCampForExpeditionVisitors(campOrdinal);
 
@@ -871,7 +871,7 @@ define([
 		getMaxWorkers: function (sector, workerID) {
 			var position = sector.get(PositionComponent);
 			var level = position.level;
-			var campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
+			var campOrdinal = GameGlobals.worldState.getCampOrdinal(position.level);
 			
 			var improvements = sector.get(SectorImprovementsComponent);
 			var upgrades = this.tribeUpgradesNodes.head.upgrades;

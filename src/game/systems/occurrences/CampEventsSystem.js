@@ -240,7 +240,7 @@ define([
 			
 			let improvements = campNode.entity.get(SectorImprovementsComponent);
 			let improvementType = GameGlobals.upgradeEffectsHelper.getImprovementForOccurrence(event);
-			let campOrdinal = GameGlobals.gameState.getCampOrdinal(campNode.position.level);
+			let campOrdinal = GameGlobals.worldState.getCampOrdinal(campNode.position.level);
 			
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.accident:
@@ -476,7 +476,7 @@ define([
 			var campTimers = campNode.entity.get(CampEventTimersComponent);
 			var duration = OccurrenceConstants.getDuration(event);
 			var campPos = campNode.entity.get(PositionComponent);
-			let campOrdinal = GameGlobals.gameState.getCampOrdinal(campPos.level);
+			let campOrdinal = GameGlobals.worldState.getCampOrdinal(campPos.level);
 
 			let logMsg = null;
 			switch (event) {

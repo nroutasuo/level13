@@ -1158,8 +1158,8 @@ define([
 			let playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
 			let campComponent = this.currentLocationNodes.head.entity.get(CampComponent);
 			let isInCamp = playerPosition.inCamp;
-			let isGround = playerPosition.level == GameGlobals.gameState.getGroundLevel();
-			let isSurface = playerPosition.level == GameGlobals.gameState.getSurfaceLevel();
+			let isGround = playerPosition.level == GameGlobals.worldState.getGroundLevel();
+			let isSurface = playerPosition.level == GameGlobals.worldState.getSurfaceLevel();
 
 			let headerText; 
 			if (isInCamp && campComponent) { 
@@ -1393,8 +1393,8 @@ define([
 				base = "ui-level-unknown";
 				desc = "outside | unknown level";
 			} else {
-				var surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
-				var groundLevel = GameGlobals.gameState.getGroundLevel();
+				var surfaceLevel = GameGlobals.worldState.getSurfaceLevel();
+				var groundLevel = GameGlobals.worldState.getGroundLevel();
 				if (position.level == surfaceLevel) {
 					base = "ui-level-sun";
 					desc = "outside | surface";

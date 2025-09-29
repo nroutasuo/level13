@@ -217,6 +217,7 @@ define([
 			let worldTemplateVO = new WorldTemplateVO(this.worldVO);
 			let validationResult = WorldValidator.validateResultWorldTemplateVO(this.worldVO, worldTemplateVO, sourceWorldTemplateVO);
 			WorldValidator.logSummary(validationResult);
+			GameGlobals.worldState.worldSeed = this.worldVO.seed;
 			GameGlobals.worldState.worldTemplateVO = worldTemplateVO;
 		},
 

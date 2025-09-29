@@ -515,7 +515,7 @@ define(['ash',
 			let campSector = null;
 			for (var node = this.campNodes.head; node; node = node.next) {
 				let nodePosition = node.position;
-				let foundCampOrdinal = GameGlobals.gameState.getCampOrdinal(nodePosition.level);
+				let foundCampOrdinal = GameGlobals.worldState.getCampOrdinal(nodePosition.level);
 				if (foundCampOrdinal == campOrdinal) {
 					campSector = node.entity;
 					break;
@@ -927,7 +927,7 @@ define(['ash',
 			if (localeType === localeTypes.tradingpartner) {
 				let playerPos = this.playerPositionNodes.head.position;
 				let level = playerPos.level;
-				let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+				let campOrdinal = GameGlobals.worldState.getCampOrdinal(level);
 				if (GameGlobals.gameState.foundTradingPartners.indexOf(campOrdinal) < 0) {
 					let partner = TradeConstants.getTradePartner(campOrdinal);
 					if (partner) {
@@ -1209,8 +1209,8 @@ define(['ash',
 			let resourceName = workshopComponent.resource;
 			
 			let currentLevel = playerPosition.level;
-			let campOrdinal = GameGlobals.gameState.getCampOrdinal(currentLevel);
-			let campLevel = GameGlobals.gameState.getLevelForCamp(campOrdinal);
+			let campOrdinal = GameGlobals.worldState.getCampOrdinal(currentLevel);
+			let campLevel = GameGlobals.worldState.getLevelForCamp(campOrdinal);
 			
 			let action = "clear_workshop";
 			let workshopName = TextConstants.getWorkshopName(workshopComponent.resource);
@@ -1952,7 +1952,7 @@ define(['ash',
 			var sector = this.playerLocationNodes.head.entity;
 			var level = GameGlobals.levelHelper.getLevelEntityForSector(sector);
 			var position = sector.get(PositionComponent).getPosition();
-			var campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
+			var campOrdinal = GameGlobals.worldState.getCampOrdinal(position.level);
 			if (GameGlobals.gameFlowLogger.isEnabled) log.i("Build camp " + position + " ordinal " + campOrdinal);
 			var campComponent = new CampComponent(position.toString());
 			campComponent.foundedTimeStamp = new Date().getTime();
@@ -2011,7 +2011,7 @@ define(['ash',
 
 		buildPassage: function (sectorPos, up, passageType, action) {
 			var position = this.getPositionVO(sectorPos);
-			var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(position.level);
+			var levelOrdinal = GameGlobals.worldState.getLevelOrdinal(position.level);
 			action = action + "_" + levelOrdinal;
 			var sector = this.getActionSector(action, sectorPos);
 
@@ -2036,8 +2036,8 @@ define(['ash',
 			let position = this.getPositionVO(sectorPos);
 			let sector = this.getActionSector(action, sectorPos);
 			let level = position.level;
-			let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
-			let campLevel = GameGlobals.gameState.getLevelForCamp(campOrdinal);
+			let campOrdinal = GameGlobals.worldState.getCampOrdinal(level);
+			let campLevel = GameGlobals.worldState.getLevelForCamp(campOrdinal);
 			
 			// TODO use camp name in message if defined
 
@@ -2613,7 +2613,7 @@ define(['ash',
 			let itemName = ItemConstants.getItemDisplayName(item);
 
 			var foundPosition = item.foundPosition || playerPos;
-			var foundPositionCampOrdinal = GameGlobals.gameState.getCampOrdinal(foundPosition.level);
+			var foundPositionCampOrdinal = GameGlobals.worldState.getCampOrdinal(foundPosition.level);
 			let resultVO = new ResultVO("use_item");
 			
 			let itemConfig = ItemConstants.getItemDefinitionByID(itemId);

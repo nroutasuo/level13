@@ -171,7 +171,7 @@ define([
 			
 			var camp = node.camp;
 			var level = node.entity.get(PositionComponent).level;
-			var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+			var campOrdinal = GameGlobals.worldState.getCampOrdinal(level);
 			
 			this.updateCampNotifications(node);
 

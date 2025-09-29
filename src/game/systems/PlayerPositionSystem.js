@@ -260,8 +260,8 @@ define([
 		handleNewLevel: function (levelNode, levelPos) {
 			let levelStatus = levelNode.entity.get(LevelStatusComponent);
 			levelStatus.isVisited = true;
-			let levelOrdinal = GameGlobals.gameState.getLevelOrdinal(levelPos);
-			let campOrdinal = GameGlobals.gameState.getCampOrdinal(levelPos);
+			let levelOrdinal = GameGlobals.worldState.getLevelOrdinal(levelPos);
+			let campOrdinal = GameGlobals.worldState.getCampOrdinal(levelPos);
 			GameGlobals.gameState.level = Math.max(GameGlobals.gameState.level, levelOrdinal);
 
 			if (levelPos !== 13) GameGlobals.playerActionFunctions.unlockFeature("levels");
@@ -280,8 +280,8 @@ define([
 		},
 
 		getRegularLevelMessage: function (levelNode, levelPos) {			
-			let surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
-			let groundLevel = GameGlobals.gameState.getGroundLevel();
+			let surfaceLevel = GameGlobals.worldState.getSurfaceLevel();
+			let groundLevel = GameGlobals.worldState.getGroundLevel();
 			
 			let playerPos = this.playerPositionNodes.head.position;
 			if (playerPos.inCamp) return;
@@ -339,7 +339,7 @@ define([
 
 			let previousSectorEntity = this.previousLocation;
 
-			let levelCampOrdinal = GameGlobals.gameState.getCampOrdinal(sectorPos.level);
+			let levelCampOrdinal = GameGlobals.worldState.getCampOrdinal(sectorPos.level);
 			let isLevelCampable = GameGlobals.levelHelper.isLevelCampable(sectorPos.level);
 
 			let isEarlyZone = featuresComponentCurrent.isEarlyZone();
@@ -421,11 +421,11 @@ define([
 		},
 
 		isGroundLevel: function (level) {
-			return level == GameGlobals.gameState.getGroundLevel();
+			return level == GameGlobals.worldState.getGroundLevel();
 		},
 
 		isSurfaceLevel: function (level) {
-			return level == GameGlobals.gameState.getSurfaceLevel();
+			return level == GameGlobals.worldState.getSurfaceLevel();
 		},
 
 		getGroundMessage: function () {

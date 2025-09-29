@@ -116,8 +116,8 @@ define([
 		initLevelSelector: function () {
 			$("#select-header-level").empty();
 			var html = "";
-			var surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
-			var groundLevel = GameGlobals.gameState.getGroundLevel();
+			var surfaceLevel = GameGlobals.worldState.getSurfaceLevel();
+			var groundLevel = GameGlobals.worldState.getGroundLevel();
 			for (let i = surfaceLevel; i >= groundLevel; i--) {
 				let label = this.getLevelSelectorOptionLabel(i);
 				html += "<option value='" + i + "' id='map-level-selector-level-" + i + "'>" + label + "</option>"
@@ -143,8 +143,8 @@ define([
 		},
 
 		updateLevelSelector: function () {
-			let surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
-			let groundLevel = GameGlobals.gameState.getGroundLevel();
+			let surfaceLevel = GameGlobals.worldState.getSurfaceLevel();
+			let groundLevel = GameGlobals.worldState.getGroundLevel();
 			let countVisible = 0;
 			for (let i = surfaceLevel; i >= groundLevel; i--) {
 				let isVisible = GameGlobals.uiMapHelper.isMapRevealed || GameGlobals.levelHelper.isVisited(i);
@@ -161,8 +161,8 @@ define([
 		},
 
 		getLevelSelectorOptionLabel: function (level, isCleared) {
-				let surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
-				let groundLevel = GameGlobals.gameState.getGroundLevel();
+				let surfaceLevel = GameGlobals.worldState.getSurfaceLevel();
+				let groundLevel = GameGlobals.worldState.getGroundLevel();
 
 				let result = "Level " + level;
 				
@@ -522,8 +522,8 @@ define([
 			let levelTypeTextVO = {};
 			
 			let levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
-			let surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
-			let groundLevel = GameGlobals.gameState.getGroundLevel();
+			let surfaceLevel = GameGlobals.worldState.getSurfaceLevel();
+			let groundLevel = GameGlobals.worldState.getGroundLevel();
 			let isTypeRevealed = GameGlobals.levelHelper.isLevelTypeRevealed(level);
 			
 			if (level == surfaceLevel) {
@@ -621,7 +621,7 @@ define([
 				var locale = localesComponent.locales[i];
 				if (statusComponent.isLocaleScouted(i)) {
 					if (locale.type == localeTypes.tradingpartner) {
-						var campOrdinal = GameGlobals.gameState.getCampOrdinal(sector.get(PositionComponent).level);
+						var campOrdinal = GameGlobals.worldState.getCampOrdinal(sector.get(PositionComponent).level);
 						var partner = TradeConstants.getTradePartner(campOrdinal);
 						if (partner) {
 							result.push(partner.name + " (trade partner)");

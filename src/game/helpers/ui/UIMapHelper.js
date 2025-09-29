@@ -399,7 +399,7 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 			
 			let isLocationSunlit = $("body").hasClass("sunlit");
 			let useSunlitIcon = isLocationSunlit;
-			let isGround = mapPosition.level == GameGlobals.gameState.getGroundLevel();
+			let isGround = mapPosition.level == GameGlobals.worldState.getGroundLevel();
 			
 			let levelCamp = GameGlobals.levelHelper.getCampSectorOnLevel(mapPosition.level);
 			if (levelCamp != null) {
@@ -707,7 +707,7 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 			};
 
 			// border(s) for sectors with hazards or sunlight
-			let isLevelSunlit = level == GameGlobals.gameState.getSurfaceLevel();
+			let isLevelSunlit = level == GameGlobals.worldState.getSurfaceLevel();
 			let isSectorSunlit = sectorFeatures.sunlit;
 			let showBorderForSunlit = (!isLevelSunlit || !isLocationSunlit) && MapUtils.showSunlightInMapMode(options.mapMode);
 			let hasSunlitBorder = isSectorSunlit && showBorderForSunlit;
@@ -1133,7 +1133,7 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 		},
 		
 		getBackgroundColor: function (level, sunlit) {
-			let isLevelSunlit = level == GameGlobals.gameState.getSurfaceLevel();
+			let isLevelSunlit = level == GameGlobals.worldState.getSurfaceLevel();
 			if (isLevelSunlit) {
 				return ColorConstants.getColor(sunlit, "map_background_surface");
 			} else {
@@ -1142,8 +1142,8 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 		},
 		
 		getVisibleAreaBackgroundColor: function (level, sunlit) {
-			let isLevelSunlit = level == GameGlobals.gameState.getSurfaceLevel();
-			let isGround = level == GameGlobals.gameState.getGroundLevel();
+			let isLevelSunlit = level == GameGlobals.worldState.getSurfaceLevel();
+			let isGround = level == GameGlobals.worldState.getGroundLevel();
 			if (isLevelSunlit) {
 				return ColorConstants.getColor(sunlit, "map_background_2_surface");
 			} else if (isGround) {

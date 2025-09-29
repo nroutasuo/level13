@@ -433,7 +433,7 @@ define([
 		},
 
 		getTextureDescription: function (hasVision, sector, position, featuresComponent, sectorStatus, localesComponent) {
-			var campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
+			var campOrdinal = GameGlobals.worldState.getCampOrdinal(position.level);
 			let hasGlowStickLight = sectorStatus.glowStickSeconds > 0;
 			let hasLight = hasVision || featuresComponent.sunlit || hasGlowStickLight;
 			
@@ -526,7 +526,7 @@ define([
 			}
 
 			if (hasCampHere) {
-				let campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
+				let campOrdinal = GameGlobals.worldState.getCampOrdinal(position.level);
 				let isOutpost = GameGlobals.campBalancingHelper.isOutpost(campOrdinal);
 				let campTerm = "camp";
 				if (isOutpost) campTerm = "small camp";
@@ -853,7 +853,7 @@ define([
 			let currentSector = this.playerLocationNodes.head.entity;
 			let positionComponent = currentSector.get(PositionComponent);
 			let position = positionComponent.getPosition();
-			let campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
+			let campOrdinal = GameGlobals.worldState.getCampOrdinal(position.level);
 			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 
 			var isScouted = sectorStatus.scouted;

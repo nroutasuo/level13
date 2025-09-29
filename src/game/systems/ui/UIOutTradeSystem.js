@@ -98,7 +98,7 @@ define([
 
 		updateOutgoingCaravansSendList: function (isActive) {
 			let level = this.playerLocationNodes.head.entity.get(PositionComponent).level;
-			let campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+			let campOrdinal = GameGlobals.worldState.getCampOrdinal(level);
 			let totalCaravans = this.getNumOutgoingCaravansTotal();
 			let availableCaravans = this.getNumOutgoingCaravansAvailable();
 			
@@ -454,7 +454,7 @@ define([
 		initPendingCaravan: function (tradePartnerOrdinal) {
 			var level = this.playerLocationNodes.head.entity.get(PositionComponent).level;
 			var caravansComponent = this.playerLocationNodes.head.entity.get(OutgoingCaravansComponent);
-			var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+			var campOrdinal = GameGlobals.worldState.getCampOrdinal(level);
 			var capacity = this.getCaravanCapacity();
 			caravansComponent.pendingCaravan = new OutgoingCaravanVO(campOrdinal, tradePartnerOrdinal, capacity);
 		},

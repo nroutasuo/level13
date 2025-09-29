@@ -304,7 +304,7 @@ define([
 			let campOrdinal = UpgradeConstants.getBlueprintCampOrdinal(upgradeID);
 			let levelIndex = UpgradeConstants.getBlueprintLevelIndex(upgradeID);
 
-			let levelsForCamp = GameGlobals.gameState.getLevelsForCamp(campOrdinal);
+			let levelsForCamp = GameGlobals.worldState.getLevelsForCamp(campOrdinal);
 			if (levelsForCamp.length == 1) return levelsForCamp[0];
 			if (levelIndex == 0) return levelsForCamp[0];
 

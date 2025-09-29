@@ -166,7 +166,7 @@ define([
 			if (!caravanVO) return 0;
 			let playerActionComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
 			let action = "send_caravan_" + caravanVO.tradePartnerOrdinal;
-			let level = GameGlobals.gameState.getLevelForCamp(caravanVO.campOrdinal);
+			let level = GameGlobals.worldState.getLevelForCamp(caravanVO.campOrdinal);
 			return playerActionComponent.getActionTimeLeft(action, level);
 		},
 		
