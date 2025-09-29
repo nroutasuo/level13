@@ -569,7 +569,7 @@ define([
 		skipEvent: function (campNode, event) {
 			var campTimers = campNode.entity.get(CampEventTimersComponent);
 			campTimers.onEventSkipped(event);
-			log.i("Skip " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ") (skip probability: " + this.getEventSkipProbability(campNode, event) + ")");
+			log.i("Skip " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ") (skip probability: " + this.getEventSkipProbability(campNode, event) + ")"), "camp events";
 			this.scheduleEvent(campNode, event);
 			GlobalSignals.saveGameSignal.dispatch(GameConstants.SAVE_SLOT_DEFAULT, false);
 		},

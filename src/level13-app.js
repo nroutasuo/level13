@@ -13,6 +13,11 @@ define([
 	function Level13App() {
 
 		this.initialise = function (config) {
+			GameConstants.startTime = new Date().getTime();
+			GameConstants.getTimeSinceStart = function () {
+				return new Date().getTime() - this.startTime;
+			}
+
 			let isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent);
 
 			GameConstants.isMobile = isMobileDevice;
@@ -51,12 +56,7 @@ define([
 			TextBuilder.isDebugMode = config.isDebugVersion;
 			TextBuilder.language = LangEnglish;
 
-			GameConstants.STARTTimeStart = new Date().getTime();
-			GameConstants.STARTTimeNow = function () {
-				return new Date().getTime() - this.STARTTimeStart;
-			}
-
-			var level13 = new Level13(config.plugins);
+			let level13 = new Level13(config.plugins);
 
 			if (GameConstants.isCheatsEnabled) {
 				window.app = level13;

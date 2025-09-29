@@ -99,7 +99,6 @@ define([
 			if (!this.playerLocationNodes.head) return;
 			if (!this.playerLocationNodes.head.entity) return;
 			
-			log.i("update current location", this);
 			this.findNeighboursIfNotAlready(this.playerLocationNodes.head.entity);
 			this.updateSector(this.playerLocationNodes.head.entity);
 		},

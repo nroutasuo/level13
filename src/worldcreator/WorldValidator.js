@@ -179,7 +179,7 @@ define([
 
 		logSummary: function (validationResult) {
 			if (validationResult.isValid) {
-				log.i("WorldValidator." + validationResult.check + ": " + validationResult.target + " (seed " + validationResult.seed + ") is VALID");
+				log.i("WorldValidator." + validationResult.check + ": " + validationResult.target + " (seed " + validationResult.seed + ") is VALID", "world");
 			} else {
 				let issues = validationResult.issues;
 				let issuesBySeverity = {};
@@ -188,10 +188,10 @@ define([
 					let severity = severities[i];
 					issuesBySeverity[severity] = issues.filter(issue => (issue.severity || WorldValidator.SEVERITY_CRITICAL) === severity);
 				}
-				log.e("WorldValidator." + validationResult.check + ": " + validationResult.target + " (seed " + validationResult.seed + ") is INVALID! Issues: " + issues.length);
+				log.e("WorldValidator." + validationResult.check + ": " + validationResult.target + " (seed " + validationResult.seed + ") is INVALID! Issues: " + issues.length, "world");
 				for (let i = 0; i < issues.length; i++) {
 					let desc = issues[i].desc || issues[i];
-					log.e("- " + desc);
+					log.e("- " + desc, "world");
 				}
 			}
 		},

@@ -1,6 +1,6 @@
 define(function () {
 	
-	var ConsoleLogger = {
+	let ConsoleLogger = {
 		logInfo: true,
 		logWarnings: true,
 		logErrors: true,

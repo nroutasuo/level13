@@ -127,7 +127,7 @@ define([
 		
 		// Called on page load or on restart
 		setupGame: function () {
-			log.i("START " + GameConstants.STARTTimeNow() + "\t loading and setting up game");
+			log.i("loading and setting up game (" + GameConstants.getTimeSinceStart() + ")", "start");
 			GameGlobals.gameState.uiStatus.isInitialized = false;
 			GameConstants.gameSpeedCamp = 1;
 			GameConstants.gameSpeedExploration = 1;
@@ -141,7 +141,7 @@ define([
 			this.loadGameState()
 			.then(s => {
 				save = s;
-				log.i("START " + GameConstants.STARTTimeNow() + "\t game state loaded " + (save == null ? "(empty)" : "") + "");
+				log.i("game state loaded " + (save == null ? "(empty)" : "") + " (" + GameConstants.getTimeSinceStart() + ")", "start");
 				GlobalSignals.gameStateLoadedSignal.dispatch(s != null);
 				return s;
 			})
@@ -149,7 +149,7 @@ define([
 			.then(s => this.prepareWorld(save))
 			.then(w => {
 				worldVO = w;
-				log.i("START " + GameConstants.STARTTimeNow() + "\t world loaded");
+				log.i("world loaded (" + GameConstants.getTimeSinceStart() + ")", "start");
 				return w;
 			})
 			// create entities that depend on world structure (levels, sectors, gangs)
@@ -163,7 +163,7 @@ define([
 					this.setupNewGame();
 				}
 				
-				log.i("START " + GameConstants.STARTTimeNow() + "\t game state ready");
+				log.i("game state ready (" + GameConstants.getTimeSinceStart() + ")", "start");
 				GlobalSignals.gameStateReadySignal.dispatch();
 			})
 			.catch(ex => {
@@ -173,9 +173,8 @@ define([
 		
 		// Called after all other systems are ready (have ahad time to react to gameStateReadySignal)
 		startGame: function () {
-			log.i("START " + GameConstants.STARTTimeNow() + "\t starting game");
+			log.i("starting tick (" + GameConstants.getTimeSinceStart() + ")", "start");
 			
-			log.i("start tick")
 			this.tickProvider.start();
 			this.tickProvider.add(this.update, this);
 			
@@ -191,6 +190,7 @@ define([
 				setTimeout(function () {
 					GameGlobals.gameState.uiStatus.isInitialized = true;
 					GameGlobals.uiFunctions.showGame();
+					log.i("game shown (" + GameConstants.getTimeSinceStart() + ")", "start");
 					setTimeout(function () {
 						// updates to game state that should be done at start but can wait until the player is unblocked
 						GlobalSignals.gameStateRefreshSignal.dispatch();
@@ -241,7 +241,7 @@ define([
 				let data = this.getMetaStateObject();
 				let hasData = data != null;
 				
-				log.i("START " + GameConstants.STARTTimeNow() + "\t meta state loaded (hasData: " + hasData + ")");
+				log.i("meta state loaded (hasData: " + hasData + ") (" + GameConstants.getTimeSinceStart() + ")", "start");
 				
 				if (hasData) {
 					let loadedMetaState = data;
@@ -276,14 +276,13 @@ define([
 		},
 		
 		createWorldEntities: function (worldVO, levels) {
-			log.i("create world entities: " + levels.join(","), this);
+			log.i("create world entities: levels: " + levels.join(","), this);
 
 			return new Promise((resolve, reject) => {
 				let seed = worldVO.seed;
 				for (let i = worldVO.bottomLevel; i <= worldVO.topLevel; i++) {
 					if (levels.indexOf(i) < 0) continue;
 					let levelVO = worldVO.getLevel(i);
-					log.i("create level entities: " + i, this);
 					this.creator.createLevel(GameGlobals.saveHelper.saveKeys.level + i, i, levelVO);
 					for (let y = levelVO.minY; y <= levelVO.maxY; y++) {
 						for (let x = levelVO.minX; x <= levelVO.maxX; x++) {
@@ -389,7 +388,7 @@ define([
 						log.w(failedComponents + " components failed to load.");
 					}
 					
-					log.i("START " + GameConstants.STARTTimeNow() + "\t entity state loaded");
+					log.i("entity state loaded (" + GameConstants.getTimeSinceStart() + ")", "start");
 					
 					if (!saveWarningShown && GameGlobals.changeLogHelper.isOldVersion(save.version)) {
 						this.showVersionWarning(save.version, () => { resolve(); });

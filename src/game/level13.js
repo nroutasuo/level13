@@ -143,7 +143,7 @@ define([
 	StringUtils,
 	TickProvider
 ) {
-	var Level13 = Ash.Class.extend({
+	let Level13 = Ash.Class.extend({
 
 		engine: null,
 		gameManager: null,
@@ -205,11 +205,10 @@ define([
 		},
 
 		setupEngine: function () {
+			log.i("setting up engine (" + GameConstants.getTimeSinceStart() + ")", "start");
 			let game = this;
 			
 			return new Promise((resolve, reject) => {
-				log.i("START " + GameConstants.STARTTimeNow() + "\t setting up engine");
-				
 				ExceptionHandler.exceptionCallback = function (ex) { game.handleException(ex) };
 				GlobalSignals.exceptionCallback = function (ex) { game.handleException(ex) };
 				
@@ -220,7 +219,7 @@ define([
 
 		setupPage: function () {
 			return new Promise((resolve, reject) => {
-				log.i("START " + GameConstants.STARTTimeNow() + "\t setting up page");
+				log.i("setting up page (" + GameConstants.getTimeSinceStart() + ")", "start");
 				this.addUISystems();
 				GameGlobals.uiFunctions.init();
 				GameGlobals.uiFunctions.hideGame();
@@ -230,13 +229,13 @@ define([
 		},
 
 		loadTexts: function () {
-			log.i("START " + GameConstants.STARTTimeNow() + "\t loading texts");
+			log.i("loading texts (" + GameConstants.getTimeSinceStart() + ")", "start");
 			return GameGlobals.textLoader.loadTexts();
 		},
 
 		loadVersion: function () {
 			return new Promise((resolve, reject) => {
-				log.i("START " + GameConstants.STARTTimeNow() + "\t loading versions");
+				log.i("loading versions (" + GameConstants.getTimeSinceStart() + ")", "start");
 				GlobalSignals.changelogLoadedSignal.addOnce(function () {
 					ExceptionHandler.wrapCall(this, function () {
 						resolve();
@@ -275,6 +274,7 @@ define([
 		},
 
 		initializePlugins: function (plugins) {
+			log.i("initializing plugins (" + GameConstants.getTimeSinceStart() + ")", "start");
 			return new Promise((resolve, reject) => {
 				if (!plugins) resolve();
 				let game = this;
@@ -293,7 +293,7 @@ define([
 		},
 
 		addLogicSystems: function () {
-			log.i("START " + GameConstants.STARTTimeNow() + "\t initializing logic systems");
+			log.i("initializing logic systems (" + GameConstants.getTimeSinceStart() + ")", "start");
 
 			this.engine.addSystem(new SaveSystem(), SystemPriorities.preUpdate);
 			this.engine.addSystem(new LevelStatusSystem(), SystemPriorities.preUpdate);
@@ -337,7 +337,7 @@ define([
 		},
 
 		addUISystems: function () {
-			log.i("START " + GameConstants.STARTTimeNow() + "\t initializing ui systems");
+			log.i("initializing ui systems (" + GameConstants.getTimeSinceStart() + ")", "start");
 
 			this.engine.addSystem(new UIOutAudioSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutTextSystem(), SystemPriorities.render);
@@ -366,7 +366,6 @@ define([
 		},
 
 		start: function () {
-			log.i("START " + GameConstants.STARTTimeNow() + "\t start tick");
 			this.gameManager.startGame();
 		},
 

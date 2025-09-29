@@ -1258,7 +1258,7 @@ define([
 			let visionStep = Math.round(visionFactor / 10);
 			
 			UIState.refreshState(this, "vision-step", visionStep, function () {
-				log.i("update vision step: " + visionStep);
+				log.i("update vision step: " + visionStep, "ui");
 				for (let i = 0; i <= 10; i++) {
 					this.elements.body.toggleClass("vision-step-" + i, i == visionStep);
 				}
@@ -1272,7 +1272,7 @@ define([
 			this.visionLevel = visionLevel;
 
 			UIState.refreshState(this, "vision-level", visionLevel, function () {
-				log.i("update vision level: " + visionLevel);
+				log.i("update vision level: " + visionLevel, "ui");
 				this.updatePageBackgroundColor();
 				for (let i = 1; i <= 4; i++) {
 					this.elements.body.toggleClass("vision-level-" + i, i == visionLevel);
@@ -1286,7 +1286,7 @@ define([
 			let sunlit = this.elements.body.hasClass("sunlit");
 			let backgroundColor = ColorConstants.getColor(sunlit, "bg_page_vision_level_" + visionLevel);
 
-			log.i("update page background color: sunlit:" + sunlit + " | visionLevel:" + visionLevel);
+			log.i("update page background color: sunlit:" + sunlit + " | visionLevel:" + visionLevel, "ui");
 			
 			$("body").css("background", backgroundColor);
 			

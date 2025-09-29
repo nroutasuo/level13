@@ -121,7 +121,7 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 
 			for (let i = 0; i < shownMessages.length; i++) {
 				if (!shownMessages[i].hasBeenShown) {
-					log.i("mark as shown: " + shownMessages[i].message);
+					log.i("mark as shown: " + shownMessages[i].message, "log");
 					shownMessages[i].hasBeenShown = true;
 					hasNewMessages = true;
 				}

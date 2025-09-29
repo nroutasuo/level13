@@ -63,7 +63,7 @@ define(['ash', 'text/Text', 'game/GameGlobals', 'game/GlobalSignals', 'game/cons
             loadTextsFile: function (source) {
                 return new Promise((resolve, reject) => {
                     var url = source.source;
-                    log.i("Loading texts: " + url);
+                    log.i("Loading texts: " + url, "text");
                     if (GameConstants.isDebugVersion) $.ajaxSetup({ cache: false });
                     $.getJSON(url, function (json) {
                         Text.setTexts(source.language, json);

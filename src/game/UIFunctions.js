@@ -607,7 +607,6 @@ define(['ash',
 			},
 
 			startGame: function () {
-				log.i("Starting game..");
 				var startTab = this.elementIDs.tabs.out;
 				var playerPos = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
 				if (playerPos.inCamp) startTab = this.elementIDs.tabs.in;

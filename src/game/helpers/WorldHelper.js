@@ -31,7 +31,7 @@ define([
 
 		prepareWorld: function (save) {
 			return new Promise((resolve, reject) => {
-				log.i("START " + GameConstants.STARTTimeNow() + "\t preparing world");
+				log.i("preparing world (" + GameConstants.getTimeSinceStart() + ")", "start");
 
 				let saveData = this.parseSave(save);
 				let worldSeed = saveData.hasSave ? saveData.worldSeed : WorldCreatorRandom.getNewSeed();
@@ -45,7 +45,7 @@ define([
 				.then(() => this.generateLevels(levels, saveData.worldTemplateVO))
 				.then(() => this.saveWorld(saveData.worldTemplateVO))
 				.then(() => {
-					log.i("START " + GameConstants.STARTTimeNow() + "\t world created (seed: " + this.worldVO.seed + ")");
+					log.i("world created (seed: " + this.worldVO.seed + ") (" + GameConstants.getTimeSinceStart() + ")", "start");
 					resolve(this.worldVO);
 				})
 				.catch(error => {
@@ -150,11 +150,11 @@ define([
 		
 		tryGenerateWorld: function (seed, worldTemplateVO, tryNumber, maxTries) {
 			return new Promise(function(resolve, reject) {
-				log.i("START " + GameConstants.STARTTimeNow() + "\t generating world, try " + tryNumber + "/" + maxTries);
+				log.i("generating world, try " + tryNumber + "/" + maxTries, "world");
 				let s = seed + (tryNumber - 1) * 111;
 
 				WorldCreator.createWorld(s, worldTemplateVO, GameGlobals.itemsHelper).then(worldVO => {
-					log.i("START " + GameConstants.STARTTimeNow() + "\t validating world");
+					log.i("validating world (" + GameConstants.getTimeSinceStart() + ")", "start");
 					let validationResult = WorldValidator.validateWorld(worldVO, worldTemplateVO);
 					WorldValidator.logSummary(validationResult);
 					resolve({ worldVO: worldVO, validationResult: validationResult });
