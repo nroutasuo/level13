@@ -23,56 +23,60 @@ define([
 		},
 
 		generateLevel: function (seed, worldVO, levelTemplateVO, levelVO) {
-			levelVO.additionalCampPositions = levelTemplateVO.additionalCampPositions || this.getAdditionalCampPositions(seed, worldVO, levelVO);
+			levelVO.additionalCampPositions = this.getAdditionalCampPositions(seed, worldVO, levelTemplateVO, levelVO);
 
 			this.generateZones(seed, worldVO, levelTemplateVO, levelVO);
 			this.generateBuildingProjectSpots(seed, worldVO, levelTemplateVO, levelVO);
 		},
 		
-		getAdditionalCampPositions: function (seed, worldVO, levelVO) {
+		getAdditionalCampPositions: function (seed, worldVO, levelTemplateVO, levelVO) {
 			let result = [];
 
 			if (levelVO.level == 13) return result;
 			if (!levelVO.isCampable) return result;
 			
-			result = [];
-			
-			let isSurfaceLevel = levelVO.level === worldVO.topLevel;
-			let campOrdinal = levelVO.campOrdinal;
-			let minPathlenC2P = 3;
-			let maxPathLenC2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
-			
-			let numPositions = 3;
-			
-			let isValidAdditionalCampPosition = function (sectorVO) {
-				if (sectorVO.isCamp) return false;
-				if (sectorVO.isPassageUp || sectorVO.isPassageDown) return false;
-				if (sectorVO.stage != WorldConstants.CAMP_STAGE_EARLY) return false;
-				if (sectorVO.sunlit && !isSurfaceLevel) return false;
-				if (WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO, WorldCreatorConstants.MAX_CAMP_POS_DISTANCE) > WorldCreatorConstants.MAX_CAMP_POS_DISTANCE) return false;
-				
-				for (let i = 0; i < levelVO.passagePositions.length; i++) {
-					let passagePos = levelVO.passagePositions[i];
-					let stage = null; // WorldConstants.CAMP_STAGE_EARLY
-					let path = WorldCreatorRandom.findPath(worldVO, sectorVO.position, passagePos, false, true, stage);
-					if (!path) return false;
-					if (path.length > maxPathLenC2P) return false;
-					if (path.length < minPathlenC2P) return false;
-				}
-				return true;
-			};
-			
 			let validSectors = [];
-			for (var s = 0; s < levelVO.sectors.length; s++) {
-				var sectorVO = levelVO.sectors[s];
-				if (!isValidAdditionalCampPosition(sectorVO)) continue;
-				validSectors.push(sectorVO);
-				let distanceToCamp = WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO);
-				let numNeighboursWeighted = levelVO.getNeighbourCountWeighted(sectorVO.position.sectorX, sectorVO.position.sectorY);
-				sectorVO.campPosScore = numNeighboursWeighted * 3 - distanceToCamp;
-			}
+			let numPositions = 3;
+
+			if (levelTemplateVO.additionalCampPositions) {
+				validSectors = levelTemplateVO.additionalCampPositions.map(pos => levelVO.getSectorByPos(pos));
+				numPositions = levelTemplateVO.additionalCampPositions.length;
+			} else {
 			
-			validSectors.sort(function (a, b) { return b.campPosScore - a.campPosScore });
+				let isSurfaceLevel = levelVO.level === worldVO.topLevel;
+				let campOrdinal = levelVO.campOrdinal;
+				let minPathlenC2P = 3;
+				let maxPathLenC2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
+				
+				let isValidAdditionalCampPosition = function (sectorVO) {
+					if (sectorVO.isCamp) return false;
+					if (sectorVO.isPassageUp || sectorVO.isPassageDown) return false;
+					if (sectorVO.stage != WorldConstants.CAMP_STAGE_EARLY) return false;
+					if (sectorVO.sunlit && !isSurfaceLevel) return false;
+					if (WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO, WorldCreatorConstants.MAX_CAMP_POS_DISTANCE) > WorldCreatorConstants.MAX_CAMP_POS_DISTANCE) return false;
+					
+					for (let i = 0; i < levelVO.passagePositions.length; i++) {
+						let passagePos = levelVO.passagePositions[i];
+						let stage = null; // WorldConstants.CAMP_STAGE_EARLY
+						let path = WorldCreatorRandom.findPath(worldVO, sectorVO.position, passagePos, false, true, stage);
+						if (!path) return false;
+						if (path.length > maxPathLenC2P) return false;
+						if (path.length < minPathlenC2P) return false;
+					}
+					return true;
+				};
+				
+				for (var s = 0; s < levelVO.sectors.length; s++) {
+					var sectorVO = levelVO.sectors[s];
+					if (!isValidAdditionalCampPosition(sectorVO)) continue;
+					validSectors.push(sectorVO);
+					let distanceToCamp = WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO);
+					let numNeighboursWeighted = levelVO.getNeighbourCountWeighted(sectorVO.position.sectorX, sectorVO.position.sectorY);
+					sectorVO.campPosScore = numNeighboursWeighted * 3 - distanceToCamp;
+				}
+				
+				validSectors.sort(function (a, b) { return b.campPosScore - a.campPosScore });
+			}
 			
 			for (let i = 0; i < numPositions; i++) {
 				if (!validSectors[i]) break;

@@ -47,13 +47,13 @@ define(['ash', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO'], function 
 			this.bottomLevel = saveObject.bottomLevel;
 			
 			this.campPositions = [];
-			for (let i in saveObject.campPositions) {
-				let saveObjectCampPosition = saveObject.campPositions[i];
+			for (let l = this.topLevel; l >= this.bottomLevel; l--) {
+				let saveObjectCampPosition = saveObject.campPositions[l];
 				if (saveObjectCampPosition) {
-					this.campPositions[i] = new PositionVO();
-					this.campPositions[i].customLoadFromSave(saveObjectCampPosition);
+					this.campPositions[l] = new PositionVO();
+					this.campPositions[l].customLoadFromSave(saveObjectCampPosition);
 				} else {
-					this.campPositions[i] = null;
+					this.campPositions[l] = null;
 				}
 			}
 

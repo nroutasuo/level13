@@ -754,7 +754,7 @@ define([
 			
 			if (rewards.foundStashVO) {
 				let sectorStatus = sourceSector.get(SectorStatusComponent);
-				sectorStatus.stashesFound.push(rewards.foundStashVO.stashIndex);
+				sectorStatus.stashesFound.push(rewards.foundStashVO.getStashID());
 			}
 			
 			let defaultRewardCampNode = this.getDefaultRewardCampNode();
@@ -2003,8 +2003,9 @@ define([
 
 			let stashVO = null;
 			for (let i = 0; i < stashes.length; i++) {
-				if (stashesFound && stashesFound.indexOf(i) >= 0) continue;
 				let possibleStashVO = stashes[i];
+				let stashID = possibleStashVO.getStashID();
+				if (stashesFound && stashesFound.indexOf(stashID) >= 0) continue;
 				if (possibleStashVO.localeType != localeType) continue;
 
 				if (possibleStashVO.stashType == ItemConstants.STASH_TYPE_ITEM) {
@@ -2017,7 +2018,6 @@ define([
 				}
 				
 				stashVO = possibleStashVO;
-				stashVO.stashIndex = i;
 				break;
 			}
 

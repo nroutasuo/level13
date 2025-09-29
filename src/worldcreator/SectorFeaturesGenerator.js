@@ -94,8 +94,6 @@ define([
 				this.generateTexture(seed, worldVO, levelVO, sectorTemplateVO, sectorVO);
 				this.generateDifficulty(seed, worldVO, levelVO, sectorVO);
 				this.generateResources(seed, worldVO, levelVO, sectorTemplateVO, sectorVO);
-
-				sectorVO.pathID = undefined;
 			}
 			
 			// level-wide features 2
@@ -970,7 +968,7 @@ define([
 				scavengeDifficultyScore *= 0.25;
 			}
 			
-			sectorVO.scavengeDifficulty = Math.round(MathUtils.map(scavengeDifficultyScore, 0, 1, 0, 10));
+						sectorVO.scavengeDifficulty = Math.round(MathUtils.map(scavengeDifficultyScore, 0, 1, 0, 10));
 			
 			var isStartPosition = levelVO.level == 13 && sectorVO.isCamp;
 			if (isStartPosition) {
@@ -1652,7 +1650,7 @@ define([
 			if (sectorVO.isCamp && !isSurfaceLevel) return false;
 			
 			let l = sectorVO.position.level;
-			let savedValue = sectorTemplateVO.sunlit;
+			let savedValue = sectorTemplateVO.sunlit || 0;
 			
 			let isHole = function (pos) {
 				var features = worldVO.getFeaturesByPos(pos);

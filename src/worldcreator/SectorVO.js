@@ -51,7 +51,7 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 		resetCaches: function () {
 			this.distanceToCamp = -1;
 			this.isConnectionPoint = false;
-			this.pathID = 0;
+			delete this.pathID;
 			this.requiredFeatures = {};
 			this.requiredResources = new ResourcesVO();
 			this.resourcesAll = {};

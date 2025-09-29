@@ -471,6 +471,10 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 		getLevelsForCamp: function (campOrdinal) {
 			return WorldCreatorHelper.getLevelsForCamp(this.worldSeed, campOrdinal);
 		},
+
+		isCampable: function (level) {
+			return WorldCreatorHelper.isCampableLevel(this.worldSeed, level);
+		},
 		
 		getLevelForCamp: function (campOrdinal) {
 			let levelOrdinal = this.getLevelOrdinalForCampOrdinal(campOrdinal);

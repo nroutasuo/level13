@@ -14,6 +14,14 @@ define(['ash'], function (Ash) {
 			this.itemID = itemID;
 			this.localeType = localeType || null;
 		},
+
+		getStashID: function () {
+			let result = "stash";
+			result += "-" + this.stashType;
+			if (this.itemID) result += "-" + this.itemID;
+			if (this.localeType) result += "-" + this.localeType;
+			return result;
+		}
 	});
 
 	return StashVO;

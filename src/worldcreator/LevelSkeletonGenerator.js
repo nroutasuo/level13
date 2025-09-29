@@ -47,7 +47,7 @@ define([
 			levelVO.numSectors = numSectors;
 			levelVO.maxSectors = numSectors + WorldCreatorConstants.getMaxSectorOverflow(levelOrdinal);
 			
-			levelVO.campPosition = worldVO.campPositions[l];
+			levelVO.campPosition = worldVO.campPositions[l] || null;
 			levelVO.passageUpPosition = worldVO.passagePositions[l].up;
 			levelVO.passageUpType = worldVO.passageTypes[l].up;
 			levelVO.passageDownPosition = worldVO.passagePositions[l].down;

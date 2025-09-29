@@ -103,7 +103,6 @@ define([
 
 		generateEnemies: function (seed, worldVO, levelVO, enemyCreator) {
 			var l = levelVO.level;
-			var creator = this;
 			var randomGangFreq = 45;
 				
 			var blockerType = MovementConstants.BLOCKER_TYPE_GANG;
