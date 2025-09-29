@@ -18,7 +18,7 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 			campfire: {
 				displayNames: [ "campfire_name_default", "campfire_name_l2", "campfire_name_l3" ],
 				useActionNameKey: "game.actions.use_campfire_name",
-				useActionName2Key: "use_campfire_2_name",
+				useActionName2Key: "game.actions.use_campfire_2_name",
 				improvementLevelsPerTechLevel: 5,
 				improvementLevelsPerMajorLevel: 5,
 				logMsgImproved: "ui.log.improved_campfire_message",
