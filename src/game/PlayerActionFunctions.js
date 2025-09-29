@@ -423,9 +423,11 @@ define(['ash',
 		getPositionVO: function (sectorPos) {
 			if (!sectorPos) return null;
 			if (!sectorPos.split) return null;
-			var l = parseInt(sectorPos.split(".")[0]);
-			var sX = parseInt(sectorPos.split(".")[1]);
-			var sY = parseInt(sectorPos.split(".")[2]);
+			let parts = sectorPos.split(".");
+			if (parts.length < 3) return null;
+			let l = parseInt(parts[0]);
+			let sX = parseInt(parts[1]);
+			let sY = parseInt(parts[2]);
 			return new PositionVO(l, sX, sY);
 		},
 
