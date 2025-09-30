@@ -181,7 +181,7 @@ define([
 			if (effectVO.log) {
 				let delay = typeof effectVO.log.delay === "number" ? effectVO.log.delay : 300;
 				setTimeout(() => {
-					let msg = Text.t(effectVO.log.textKey);
+					let msg = effectVO.log.textKey;
 					let options = { visibility: effectVO.log.visibility || LogConstants.MSG_VISIBILITY_GLOBAL };
 					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), msg, options);
 				}, delay);
