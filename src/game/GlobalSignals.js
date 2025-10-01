@@ -115,6 +115,7 @@ define(['ash',], function (Ash) {
 		triggerSignal: new Ash.Signals.Signal(),
 		settingsChangedSignal: new Ash.Signals.Signal(),
 		changelogLoadedSignal: new Ash.Signals.Signal(),
+		errorLoggedSignal: new Ash.Signals.Signal(),
 
 		add: function (system, signal, listener, priority) {
 			priority = priority || GlobalSignals.PRIORITY_DEFAULT;

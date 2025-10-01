@@ -1,4 +1,4 @@
-define(function () {
+define(['game/GlobalSignals'], function (GlobalSignals) {
 	
 	let ConsoleLogger = {
 		logInfo: true,
@@ -57,8 +57,8 @@ define(function () {
 			
 		e: function (msg, context) {
 			if (!ConsoleLogger.logErrors) return;
-			var context = this.parseContext(context);
-			var m = msg;
+			context = this.parseContext(context);
+			let m = msg;
 			if (context) {
 				m = "[" + context + "] " + m;
 			}
@@ -67,6 +67,8 @@ define(function () {
 			if (typeof(msg) == "object" && typeof(m) != "object") {
 				console.error(msg);
 			}
+
+			GlobalSignals.errorLoggedSignal.dispatch(msg);
 
 			// send to GlitchTip if available
 			try {

@@ -171,6 +171,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.launchCompletedSignal, this.onLaunchCompleted);
 			GlobalSignals.add(this, GlobalSignals.popupClosedSignal, this.onPopupClosed);
 			GlobalSignals.add(this, GlobalSignals.windowResizedSignal, this.onWindowResized);
+			GlobalSignals.add(this, GlobalSignals.errorLoggedSignal, this.onErrorLogged);
 
 			this.generateStatsCallouts();
 			this.updateGameVersion();
@@ -1048,13 +1049,22 @@ define([
 
 		updateGameMsg: function () {
 			if (!this.engine) return;
-			let gameMsgKey = "";
+
 			let saveSystem = this.engine.getSystem(SaveSystem);
 			let timeStamp = new Date().getTime();
+			let showErrorSeconds = 10;
+			let showSaveMessageSeconds = 3;
+			
+			let gameMsgKey = "";
+			let isError = false;
 
-			if (saveSystem && saveSystem.error) {
+			if (GameConstants.isDebugVersion && this.lastError && timeStamp - this.lastErrorTimestamp < showErrorSeconds * 1000) {
+				gameMsgKey = this.lastError;
+				isError = true;
+			} else if (saveSystem && saveSystem.error) {
 				gameMsgKey = saveSystem.error;
-			} else if (saveSystem && saveSystem.lastDefaultSaveTimestamp > 0 && timeStamp - saveSystem.lastDefaultSaveTimestamp < 3 * 1000) {
+				isError = true;
+			} else if (saveSystem && saveSystem.lastDefaultSaveTimestamp > 0 && timeStamp - saveSystem.lastDefaultSaveTimestamp < showSaveMessageSeconds * 1000) {
 				gameMsgKey = "ui.meta.game_saved_message";
 			} else if (GameGlobals.gameState.isPaused) {
 				gameMsgKey = "ui.meta.game_paused_message";
@@ -1064,6 +1074,7 @@ define([
 
 			if (this.lastGameMsg !== gameMsgKey) {
 				this.elements.gameMsg.text(Text.t(gameMsgKey));
+				this.elements.gameMsg.toggleClass("warning", isError);
 				this.lastGameMsg = gameMsgKey;
 			}
 		},
@@ -1621,7 +1632,12 @@ define([
 		onWindowResized: function () {
 			this.updateLayoutMode();
 			this.updateLayout();
-		}
+		},
+
+		onErrorLogged: function (msg) {
+			this.lastError = msg;
+			this.lastErrorTimestamp = new Date().getTime();
+		},
 	});
 
 	return UIOutHeaderSystem;
