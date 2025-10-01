@@ -400,10 +400,13 @@ define([
 				"reload",
 				"clear data",
 				() => { location.reload(); },
-				() => { GameGlobals.uiFunctions.onRestartButton(); },
+				() => { 
+					GameGlobals.uiFunctions.onRestartButton(true); 
+				},
 				true
 			);
 
+			GameGlobals.gameState.uiStatus.isBusyCounter -= 100;
 			this.numExceptionsInRow = 0;
 			
 			throw ex;

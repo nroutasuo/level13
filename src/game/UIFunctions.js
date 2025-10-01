@@ -94,7 +94,7 @@ define(['ash',
 				});
 				$("#btn-restart").click(function (e) {
 					GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
-					uiFunctions.onRestartButton();
+					uiFunctions.onRestartButton(false);
 				});
 				$("#btn-more").click(function (e) {
 					GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
@@ -630,9 +630,10 @@ define(['ash',
 
 			showGame: function () {
 				this.hideGameCounter = this.hideGameCounter || 1;
+				log.i("[ui] show game " + this.hideGameCounter);
 				this.hideGameCounter--;
 				if (this.hideGameCounter > 0) return;
-				log.i("[ui] show game ");
+				log.i("[ui] show game true");
 				this.setGameOverlay(false, false);
 				this.setGameElementsVisibility(true);
 				this.updateButtonCooldowns();
@@ -646,7 +647,7 @@ define(['ash',
 			hideGame: function (showLoading, showThinking) {
 				this.hideGameCounter = this.hideGameCounter || 0;
 				this.hideGameCounter++;
-				log.i("[ui] hide game (showLoading: " + showLoading + ", showThinking: " + showThinking + ")");
+				log.i("[ui] hide game (showLoading: " + showLoading + ", showThinking: " + showThinking + ", counter: " + this.hideGameCounter + ")");
 				showThinking = showThinking && !showLoading;
 				this.setGameOverlay(showLoading, showThinking);
 				this.setGameElementsVisibility(showThinking);
@@ -1097,12 +1098,15 @@ define(['ash',
 				}
 			},
 			
-			onRestartButton: function () {
-				var sys = this;
+			onRestartButton: function (showGame) {
+				let sys = this;
 				this.showConfirmation(
 					"Do you want to restart the game? Your progress will be lost.",
 					function () {
 						sys.restart();
+
+						// show game because it's been hidden by an exception
+						if (showGame) GameGlobals.uiFunctions.showGame();
 					},
 					true
 				);
@@ -1729,7 +1733,6 @@ define(['ash',
 					callbackOK();
 				};
 				let cancelCallback = function () {
-					uiFunctions.popupManager.closePopup("common-popup");
 					if (callbackNo) callbackNo();
 				};
 				let options = {
