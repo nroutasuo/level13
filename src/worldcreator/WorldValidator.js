@@ -196,6 +196,15 @@ define([
 			}
 		},
 
+		getSummary: function (validationResult) {
+			if (validationResult.isValid) {
+				return "valid";
+			} else {
+				let issues = validationResult.issues;
+				return "invalid with " + issues.length + " issues (example: " + (issues[0].desc || issues[0]) + ")";
+			}
+		},
+
 		checkSeed: function (worldVO) {
 			let issues = [];
 
