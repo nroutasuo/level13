@@ -49,6 +49,16 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 		resetPaths: function () {
 			VOCache.clear(this.neighboursCacheContext);
 		},
+		// called at the end of a world creation call
+		resetInternalData: function () {
+			this.localeSectors = [];
+			this.paths = [];
+			
+			for (let i = 0; i < this.sectors.length; i++) {
+				let sectorVO = this.sectors[i];
+				sectorVO.resetInternalData();
+			}
+		},
 		
 		resetCaches: function () {
 			VOCache.clear(this.neighboursCacheContext);
@@ -257,7 +267,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 		},
 		
 		isPassageUpPosition: function (pos) {
-			return this.passageUpPosition && this.passageUpPosition.equals(pos);
+			return this.passageUpPosition ? this.passageUpPosition.equals(pos) : false;
 		},
 
 		getPassageUpType: function (pos) {

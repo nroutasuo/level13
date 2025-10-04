@@ -47,6 +47,10 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			
 			this.resetCaches();
 		},
+		
+		resetInternalData: function () {
+			this.id = 0;
+		},
 
 		resetCaches: function () {
 			this.distanceToCamp = -1;

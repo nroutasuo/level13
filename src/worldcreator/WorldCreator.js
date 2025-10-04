@@ -36,6 +36,7 @@ define([
 				let tasks = [];
 				tasks.push(() => WorldCreator.generateWorldSkeleton(seed, worldVO, worldTemplateVO));
 				tasks.push(() => WorldCreator.generateLevelSkeletons(seed, worldVO, worldTemplateVO));
+				tasks.push(() => WorldCreator.resetInternalData(seed, worldVO));
 				
 				WorldCreatorLogger.start(seed);
 					
@@ -65,6 +66,7 @@ define([
 				tasks.push(() => WorldCreator.generateLevelFeatures(seed, worldVO, worldTemplateVO, levels));
 				tasks.push(() => WorldCreator.generateSectorFeatures(seed, worldVO, worldTemplateVO, levels, itemsHelper));
 				tasks.push(() => WorldCreator.generateSectorContent(seed, worldVO, worldTemplateVO, levels, enemyCreator));
+				tasks.push(() => WorldCreator.resetInternalData(seed, worldVO));
 				
 				WorldCreatorLogger.start(seed);
 					
@@ -121,6 +123,10 @@ define([
 			WorldCreatorLogger.i("Step 6: Sector content", this.context);
 
 			SectorContentGenerator.generate(seed, worldVO, worldTemplateVO, levels, enemyCreator);
+		},
+
+		resetInternalData: function (seed, worldVO) {
+			worldVO.resetInternalData();
 		},
 
 	};

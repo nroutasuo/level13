@@ -491,6 +491,7 @@ define([
 			};
 
 			let addStash = function (sectorVO, reason, stashType, numItems, itemID, localeType) {
+				numItems = numItems || 1;
 				let stash = new StashVO(stashType, numItems, itemID, localeType);
 				sectorVO.stashes.push(stash);
 				if (stash.localeType) {
@@ -565,8 +566,8 @@ define([
 				if (numCurrencyStashes > 0) {
 					let requiredEquipment = this.itemsHelper.getRequiredEquipment(levelVO.campOrdinal, WorldConstants.CAMP_STEP_END, levelVO.isHard);
 					let itemValues = requiredEquipment.map(item => Math.round(TradeConstants.getItemValue(item, false, false))).sort();
-					let minItemValue = Math.ceil(itemValues[0]);
-					let maxItemValue = Math.ceil(itemValues[itemValues.length - 1] * 1.5);
+					let minItemValue = itemValues.length > 0 ? Math.ceil(itemValues[0]) : 1;
+					let maxItemValue = itemValues.length > 1 ? Math.ceil(itemValues[itemValues.length - 1] * 1.5) : minItemValue + 1;
 					let excludedZones = levelVO.isCampable ? earlyZones : earlyZonesEntrance;
 					addStashes(500 + seed / 5 + (l + 5) * 2541, "currency", ItemConstants.STASH_TYPE_SILVER, [""], numCurrencyStashes, [minItemValue, maxItemValue + 1], excludedZones);
 				}

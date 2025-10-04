@@ -21,6 +21,7 @@ define(['ash'], function (Ash) {
 			this.resetCaches();
 		},
 
+		// called at the end of a world creation step
 		resetPaths: function () {
 			for (let l = this.topLevel; l >= this.bottomLevel; l--) {
 				let levelVO = this.levels[l];
@@ -28,6 +29,15 @@ define(['ash'], function (Ash) {
 			}
 		},
 
+		// called at the end of a world creation call
+		resetInternalData: function () {
+			for (let l = this.topLevel; l >= this.bottomLevel; l--) {
+				let levelVO = this.levels[l];
+				if (levelVO) levelVO.resetInternalData();
+			}
+		},
+
+		// called after entities have been generated
 		resetCaches: function () {
 			for (let l = this.topLevel; l >= this.bottomLevel; l--) {
 				let levelVO = this.levels[l];
