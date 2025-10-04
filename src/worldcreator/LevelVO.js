@@ -5,6 +5,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 	
 		constructor: function (level) {
 			this.level = level;
+			this.version = null;
 			this.levelOrdinal = 1;
 			this.campOrdinal = 1;
 

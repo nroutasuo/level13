@@ -7,6 +7,7 @@ define(['ash', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO'], function 
 			if (!worldVO) return;
 			
 			this.seed = worldVO.seed;
+			this.version = worldVO.version;
 			this.topLevel = worldVO.topLevel;
 			this.bottomLevel = worldVO.bottomLevel;
 
@@ -25,6 +26,7 @@ define(['ash', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO'], function 
 			let copy = {};
 
 			copy.seed = this.seed;
+			copy.version = this.version;
 			copy.topLevel = this.topLevel;
 			copy.bottomLevel = this.bottomLevel;
 			
@@ -43,6 +45,7 @@ define(['ash', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO'], function 
 
 		customLoadFromSave: function (saveObject) {
 			this.seed = saveObject.seed;
+			this.version = saveObject.version;
 			this.topLevel = saveObject.topLevel;
 			this.bottomLevel = saveObject.bottomLevel;
 			

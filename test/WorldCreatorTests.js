@@ -1,10 +1,11 @@
 define([
 	'test/TestUtils',
 	'worldcreator/WorldCreator', 
+	'game/constants/WorldConstants', 
 	'worldcreator/WorldCreatorRandom', 
 	'worldcreator/WorldValidator',
 	'worldcreator/WorldTemplateVO',
-], function (TestUtils, WorldCreator, WorldCreatorRandom, WorldValidator, WorldTemplateVO) {
+], function (TestUtils, WorldCreator, WorldConstants, WorldCreatorRandom, WorldValidator, WorldTemplateVO) {
 
 	let seeds = [ 24, 7534, WorldCreatorRandom.getNewSeed() ];
 
@@ -171,6 +172,83 @@ define([
 			let worldTemplateVO = new WorldTemplateVO(worldVO);
 			let validationResult = WorldValidator.validateResultWorldTemplateVO(worldVO, worldTemplateVO, null);
 			assert.true(validationResult.isValid, WorldValidator.getSummary(validationResult));
+		});
+	});
+
+	QUnit.module("world/compatibility", function (hooks) {
+		let mockItemsHelper = TestUtils.getMockItemsHelper();
+
+		hooks.before(function () {
+			// once for all tests
+		});
+
+		hooks.beforeEach(function () {
+			let output = document.querySelector("#qunit-test-output-" + QUnit.config.current.testId);
+			output.appendChild(document.createTextNode("seed:" + QUnit.config.current.data));
+		});
+
+		hooks.afterEach(function () {
+			// after every test
+		});
+
+		hooks.after(function () {
+			// once after all tests are done
+		});
+
+		QUnit.test.each("world contains version", seeds, async function (assert, seed) {
+			let worldVO = await WorldCreator.createWorld(seed);
+			assert.equal(worldVO.version, WorldConstants.version);
+		});
+
+		QUnit.test.each("levels contains version when generated", seeds, async function (assert, seed) {
+			let worldVO = await WorldCreator.createWorld(seed);
+			let levels = [ 13, 12, 11, 10 ];
+			await WorldCreator.generateLevels(seed, worldVO, null, levels, mockItemsHelper);
+			for (let l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
+				let isGenerated = levels.indexOf(l) >= 0;
+				let levelVO = worldVO.levels[l];
+				if (isGenerated) {
+					assert.equal(levelVO.version, WorldConstants.version, "generated level has version");
+				} else {
+					assert.equal(levelVO.version, null, "not generated level has no version");
+				}
+			}
+		});
+
+		QUnit.test.each("world keeps original version from template", seeds, async function (assert, seed) {
+			let version = "0.6.3";
+			let worldVO1 = await WorldCreator.createWorld(seed);
+			let worldTemplateVO = new WorldTemplateVO(worldVO1);
+			worldTemplateVO.version = version;
+			let worldVO2 = await WorldCreator.createWorld(seed, worldTemplateVO);
+			assert.equal(worldVO2.version, version);
+		});
+
+		QUnit.test.each("levels keep version from template if generated before", seeds, async function (assert, seed) {
+			let version = "0.6.3";
+			let currentVersion = WorldConstants.version;
+			WorldConstants.version = version;
+			let worldVO1 = await WorldCreator.createWorld(seed);
+			let levels1 = [ 13, 12, 11, 10 ];
+			await WorldCreator.generateLevels(seed, worldVO1, null, levels1, mockItemsHelper);
+
+			let worldTemplateVO = new WorldTemplateVO(worldVO1);
+			WorldConstants.version = currentVersion;
+			let worldVO2 = await WorldCreator.createWorld(seed, worldTemplateVO);
+			let levels2 = [ 13, 12, 11, 10, 9, 8 ];
+			await WorldCreator.generateLevels(seed, worldVO2, worldTemplateVO, levels2, mockItemsHelper);
+			for (let l = worldVO1.topLevel; l >= worldVO1.bottomLevel; l--) {
+				let isGeneratedBefore = levels1.indexOf(l) >= 0;
+				let isGeneratedNow = levels2.indexOf(l) >= 0;
+				let levelVO = worldVO2.levels[l];
+				if (isGeneratedBefore) {
+					assert.equal(levelVO.version, version, "level generated on old version keeps old version");
+				} else if (isGeneratedNow) {
+					assert.equal(levelVO.version, WorldConstants.version, "level generated on new version has current version");
+				} else {
+					assert.equal(levelVO.version, null, "not generated level has no version");
+				}
+			}
 		});
 	});
 

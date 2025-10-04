@@ -26,8 +26,10 @@ define([
 				let levelTemplateVO = worldTemplateVO.levels[l] || {};
 
 				if (levelTemplateVO && levelTemplateVO.sectors && levelTemplateVO.sectors.length > 0) {
+					levelVO.version = levelTemplateVO.version;
 					this.replicateLevelStructure(seed, worldVO, levelTemplateVO, levelVO);
 				} else {
+					levelVO.version = WorldConstants.version;
 					this.createLevelStructure(seed, worldVO, levelVO);
 				}
 				

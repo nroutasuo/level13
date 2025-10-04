@@ -7,6 +7,7 @@ function (Ash, SectorTemplateVO, PositionVO) {
 			if (!levelVO) return;
 
 			this.level = levelVO.level;
+			this.version = levelVO.version;
 			this.levelOrdinal = levelVO.levelOrdinal;
 			this.campOrdinal = levelVO.campOrdinal;
 
@@ -46,6 +47,7 @@ function (Ash, SectorTemplateVO, PositionVO) {
 			let copy = {};
 
 			copy.level = this.level;
+			copy.version = this.version;
 			copy.levelOrdinal = this.levelOrdinal;
 			copy.campOrdinal = this.campOrdinal;
 
@@ -86,6 +88,7 @@ function (Ash, SectorTemplateVO, PositionVO) {
 			if (!saveObject) return;
 			
 			this.level = saveObject.level;
+			this.version = saveObject.version;
 			this.levelOrdinal = saveObject.levelOrdinal;
 			this.campOrdinal = saveObject.campOrdinal;
 

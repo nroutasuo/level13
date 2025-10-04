@@ -29,9 +29,12 @@ define([
 			return new Promise(function(resolve, reject) {
 				worldTemplateVO = worldTemplateVO || { levels: [] };
 
-				if (worldTemplateVO.seed) seed = worldTemplateVO.seed;
+				let version = WorldConstants.version;
 
-				let worldVO = new WorldVO(seed);
+				if (worldTemplateVO.seed) seed = worldTemplateVO.seed;
+				if( worldTemplateVO.version) version = worldTemplateVO.version;
+
+				let worldVO = new WorldVO(seed, version);
 
 				let tasks = [];
 				tasks.push(() => WorldCreator.generateWorldSkeleton(seed, worldVO, worldTemplateVO));

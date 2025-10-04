@@ -3,8 +3,9 @@ define(['ash'], function (Ash) {
 
 	let WorldVO = Ash.Class.extend({
 	
-		constructor: function (seed) {
+		constructor: function (seed, version) {
 			this.seed = seed;
+			this.version = version; // version originally generated in
 			this.topLevel = 1;
 			this.bottomLevel = 0;
 			
