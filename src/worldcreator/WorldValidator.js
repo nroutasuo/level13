@@ -2,13 +2,14 @@ define([
 	'ash',
 	'utils/MathUtils',
 	'utils/ObjectUtils',
+	'game/helpers/ItemsHelper',
 	'game/constants/WorldConstants',
 	'game/constants/UpgradeConstants',
 	'worldcreator/WorldCreatorHelper',
 	'worldcreator/WorldCreatorRandom',
 	'worldcreator/WorldTemplateVO',
 ], function (
-	Ash, MathUtils, ObjectUtils, WorldConstants, UpgradeConstants, WorldCreatorHelper, WorldCreatorRandom, WorldTemplateVO
+	Ash, MathUtils, ObjectUtils, ItemsHelper, WorldConstants, UpgradeConstants, WorldCreatorHelper, WorldCreatorRandom, WorldTemplateVO
 ) {
 	let context = "WorldValidator";
 
@@ -29,9 +30,9 @@ define([
 			let issues = [];
 		
 			let worldChecks = [
-				this.checkSeed, 
-				this.checkCampPositions, 
-				this.checkPassages,
+				this.checkWorldSeed, 
+				this.checkWorldCampPositions, 
+				this.checkWorldPassages,
 				this.checkWorldMatchesTemplate,
 			];
 
@@ -53,17 +54,34 @@ define([
 			let levelTemplateVO = worldTemplateVO ? worldTemplateVO.levels[levelVO.level] : null;
 
 			let levelChecks = [ 
-				this.checkCriticalPaths, 
-				this.checkContinuousEarlyStage, 
-				this.checkCampsAndPassages, 
-				this.checkNumberOfSectors, 
-				this.checkNumberOfLocales,
+				this.checkLevelCriticalPaths, 
+				this.checkLevelContinuousEarlyStage, 
+				this.checkLevelCampsAndPassages, 
+				this.checkLevelNumberOfSectors, 
+				this.checkLevelNumberOfLocales,
 				this.checkLevelMatchesTemplate,
 			];
 
 			for (let i = 0; i < levelChecks.length; i++) {
 				let checkResult = levelChecks[i](worldVO, levelVO, levelTemplateVO);
 				if (!checkResult.isValid) issues = issues.concat(checkResult.issues);
+			}
+
+			let sectorChecks = [
+				this.checkSectorResources,
+				this.checkSectorStashes,
+				this.checkSectorHazards,
+				this.checkSectorMatchesTemplate,
+			];
+
+			for (let s = 0; s < levelVO.sectors.length; s++) {
+				let sectorVO = levelVO.sectors[s];
+				let sectorTemplateVO = levelTemplateVO ? levelTemplateVO.sectors[s] : null;
+
+				for (let i = 0; i < sectorChecks.length; i++) {
+					let checkResult = sectorChecks[i](worldVO, levelVO, sectorVO, sectorTemplateVO);
+					if (!checkResult.isValid) issues = issues.concat(checkResult.issues);
+				}
 			}
 			
 			return { check: "validateLevel", target: "levelVO:" + levelVO.level, seed: worldVO.seed, isValid: issues.length === 0, issues: issues };
@@ -205,7 +223,7 @@ define([
 			}
 		},
 
-		checkSeed: function (worldVO) {
+		checkWorldSeed: function (worldVO) {
 			let issues = [];
 
 			if (!worldVO.seed) issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "no seed" });
@@ -214,7 +232,7 @@ define([
 			return { isValid: issues.length === 0, issues: issues };
 		},
 
-		checkCampPositions: function (worldVO) {
+		checkWorldCampPositions: function (worldVO) {
 			let issues = [];
 
 			let numCampPositions = Object.keys(worldVO.campPositions);
@@ -224,7 +242,7 @@ define([
 			return { isValid: issues.length === 0, issues: issues };
 		},
 
-		checkPassages: function (worldVO) {
+		checkWorldPassages: function (worldVO) {
 			let issues = [];
 
 			for (let l = worldVO.bottomLevel; l <= worldVO.topLevel; l++) {
@@ -235,7 +253,7 @@ define([
 			return { isValid: issues.length === 0, issues: issues };
 		},
 		
-		checkCriticalPaths: function (worldVO, levelVO) {
+		checkLevelCriticalPaths: function (worldVO, levelVO) {
 			let issues = [];
 
 			// required paths (between camp and passages)
@@ -266,7 +284,7 @@ define([
 			return { isValid: issues.length === 0, issues: issues };
 		},
 		
-		checkNumberOfSectors: function (worldVO, levelVO) {
+		checkLevelNumberOfSectors: function (worldVO, levelVO) {
 			let issues = [];
 
 			// NOTE: sectors per stage is a minimum used for evidence balancing etc, a bit of overshoot is ok
@@ -293,7 +311,7 @@ define([
 			return { isValid: issues.length === 0, issues: issues };
 		},
 		
-		checkNumberOfLocales: function (worldVO, levelVO) {
+		checkLevelNumberOfLocales: function (worldVO, levelVO) {
 			let issues = [];
 
 			let campOrdinal = levelVO.campOrdinal;
@@ -328,7 +346,7 @@ define([
 			return { isValid: issues.length === 0, issues: issues };
 		},
 		
-		checkContinuousEarlyStage: function (worldVO, levelVO) {
+		checkLevelContinuousEarlyStage: function (worldVO, levelVO) {
 			let issues = [];
 
 			let earlySectors = levelVO.sectorsByStage[WorldConstants.CAMP_STAGE_EARLY];
@@ -344,7 +362,7 @@ define([
 			return { isValid: issues.length === 0, issues: issues };
 		},
 		
-		checkCampsAndPassages: function (worldVO, levelVO) {
+		checkLevelCampsAndPassages: function (worldVO, levelVO) {
 			let issues = [];
 
 			let pois = [];
@@ -469,18 +487,13 @@ define([
 			
 			if (levelVO.sectors.length != levelTemplateVO.sectors.length) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "number of sectors doesn't match template" });
 
-			for (let i = 0; i < levelVO.sectors.length; i++) {
-				let sectorVO = levelVO.sectors[i];
-				let sectorTemplateVO = levelTemplateVO.sectors[i];
-				let sectorResult = WorldValidator.checkSectorMatchesTemplate(worldVO, levelVO, sectorVO, sectorTemplateVO);
-				if (!sectorResult.isValid) issues = issues.concat(sectorResult.issues);
-			}
-
 			return { isValid: issues.length === 0, issues: issues };
 		},
 
 		checkSectorMatchesTemplate: function (worldVO, levelVO, sectorVO, sectorTemplateVO) {
 			let issues = [];
+
+			if (!sectorTemplateVO) return { isValid: issues.length === 0, issues: issues };
 
 			if (!sectorVO.position.equals(sectorTemplateVO.position)) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "sector position doesn't match template" });
 
@@ -527,6 +540,57 @@ define([
 
 			return { isValid: issues.length === 0, issues: issues };
 
+		},
+
+		checkSectorResources: function (worldVO, levelVO, sectorVO, sectorTemplateVO) {
+			let issues = [];
+
+			let hasWater = sectorVO.resourcesCollectable.water > 0 || sectorVO.resourcesScavengable.water > 0;
+			let hasFood = sectorVO.resourcesCollectable.food > 0 || sectorVO.resourcesScavengable.food > 0;
+			
+			//if (hasFood && sectorVO.hazards.radiation > 0) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " has radioactivity and food" });
+			if (hasWater && sectorVO.hazards.radiation > 0) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " has radioactivity and water" });
+
+			return { isValid: issues.length === 0, issues: issues };
+		},
+
+		checkSectorStashes: function (worldVO, levelVO, sectorVO, sectorTemplateVO) {
+			let issues = [];
+
+			for (let i = 0; i < sectorVO.stashes.length; i++) {
+				let stashVO = sectorVO.stashes[i];
+				if (stashVO.localeType && sectorVO.locales.filter(localeVO => localeVO.type == stashVO.localeType).length < 1)
+					issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: sectorVO.toString() + " has stash without matching locale" });
+			}
+
+			return { isValid: issues.length === 0, issues: issues };
+		},
+
+		checkSectorHazards: function (worldVO, levelVO, sectorVO, sectorTemplateVO) {
+			let issues = [];
+
+			let itemsHelper = new ItemsHelper();
+
+			let zone = sectorVO.zone;
+			let isHardLevel = levelVO.isHard;
+			let campOrdinal = levelVO.campOrdinal;
+			let step = WorldConstants.getCampStep(zone);
+
+			let maxCold = itemsHelper.getMaxHazardColdForLevel(campOrdinal, step, isHardLevel);
+			let maxRadiation = itemsHelper.getMaxHazardRadiationForLevel(campOrdinal, step, isHardLevel);
+			let maxPoison = itemsHelper.getMaxHazardPoisonForLevel(campOrdinal, step, isHardLevel);
+			let maxFlooded = itemsHelper.getMaxHazardFloodedForLevel(campOrdinal, step, isHardLevel);
+
+			if (sectorVO.hazards.cold > maxCold) 
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " cold hazard (" + sectorVO.hazards.cold + ") is higher than max (" + maxCold + ")" });
+			if (sectorVO.hazards.radiation > maxRadiation)
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " radiation hazard (" + sectorVO.hazards.radiation + ") is higher than max (" + maxRadiation + ")" });
+			if (sectorVO.hazards.poison > maxPoison)
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " poison hazard (" + sectorVO.hazards.poison + ") is higher than max (" + maxPoison + ")" });
+			if (sectorVO.hazards.flooded > maxFlooded)
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " flooded hazard (" + sectorVO.hazards.flooded + ") is higher than max (" + maxFlooded + ")" });
+
+			return { isValid: issues.length === 0, issues: issues };
 		},
 
 		checkListMatches: function (vo, template, key, name, customEqualsCheck) {

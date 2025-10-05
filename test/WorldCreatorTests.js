@@ -5,7 +5,8 @@ define([
 	'worldcreator/WorldCreatorRandom', 
 	'worldcreator/WorldValidator',
 	'worldcreator/WorldTemplateVO',
-], function (TestUtils, WorldCreator, WorldConstants, WorldCreatorRandom, WorldValidator, WorldTemplateVO) {
+	'game/helpers/ItemsHelper',
+], function (TestUtils, WorldCreator, WorldConstants, WorldCreatorRandom, WorldValidator, WorldTemplateVO, ItemsHelper) {
 
 	let seeds = [ 24, 7534, WorldCreatorRandom.getNewSeed() ];
 
@@ -129,7 +130,7 @@ define([
 	});
 
 	QUnit.module("world/validation", function (hooks) {
-		let mockItemsHelper = TestUtils.getMockItemsHelper();
+		let itemsHelper = new ItemsHelper();
 
 		hooks.before(function () {
 			// once for all tests
@@ -157,7 +158,7 @@ define([
 		QUnit.test.each("levels are valid", seeds, async function (assert, seed) {
 			let worldVO = await WorldCreator.createWorld(seed);
 			let levels = getAllLevels(worldVO);
-			await WorldCreator.generateLevels(seed, worldVO, null, levels, mockItemsHelper);
+			await WorldCreator.generateLevels(seed, worldVO, null, levels, itemsHelper);
 			for (let i = 0; i < levels.length; i++) {
 				let level = levels[i];
 				let validationResult = WorldValidator.validateLevel(worldVO, null, worldVO.levels[level]);
@@ -168,7 +169,7 @@ define([
 		QUnit.test.each("world template vo is valid", seeds, async function (assert, seed) {
 			let worldVO = await WorldCreator.createWorld(seed);
 			let levels = getAllLevels(worldVO);
-			await WorldCreator.generateLevels(seed, worldVO, null, levels, mockItemsHelper);
+			await WorldCreator.generateLevels(seed, worldVO, null, levels, itemsHelper);
 			let worldTemplateVO = new WorldTemplateVO(worldVO);
 			let validationResult = WorldValidator.validateResultWorldTemplateVO(worldVO, worldTemplateVO, null);
 			assert.true(validationResult.isValid, WorldValidator.getSummary(validationResult));
