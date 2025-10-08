@@ -126,9 +126,17 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 		},
 		
 		getSector: function (sectorX, sectorY) {
-			var colList = this.sectorsByPos[sectorX];
-			if (!colList) return null;
-			return this.sectorsByPos[sectorX][sectorY];
+			if (this.sectorsByPos) {
+				var colList = this.sectorsByPos[sectorX];
+				if (!colList) return null;
+				return this.sectorsByPos[sectorX][sectorY];
+			} else {
+				for (let i = 0; i < this.sectors.length; i++) {
+					let sectorVO = this.sectors[i];
+					if (sectorVO.position.sectorX === sectorX && sectorVO.position.sectorY == sectorY) return sectorVO;
+				}
+				return null;
+			}
 		},
 		
 		getSectorByPos: function (pos) {

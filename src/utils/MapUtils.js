@@ -1,6 +1,6 @@
 define(['game/constants/ColorConstants', 'game/constants/SectorConstants'], function (ColorConstants, SectorConstants) {
 	
-	var MapUtils = {
+	let MapUtils = {
 		
 		MAP_ZOOM_DEFAULT: "default",
 		MAP_ZOOM_MINIMAP: "mini",
@@ -50,6 +50,24 @@ define(['game/constants/ColorConstants', 'game/constants/SectorConstants'], func
 			}
 			
 			return ColorConstants.getColor(sunlit, "map_fill_sector_unvisited");
+		},
+
+		getSectorHazardBorderColor: function (mainHazard, sunlit) {
+			if (mainHazard == "cold") {
+				return ColorConstants.getColor(sunlit, "map_stroke_sector_cold");
+			} else if (mainHazard == "debris") {
+				return ColorConstants.getColor(sunlit, "map_stroke_sector_debris");
+			} else if (mainHazard == "radiation") {
+				return ColorConstants.getColor(sunlit, "map_stroke_sector_radiation");
+			} else if (mainHazard == "poison") {
+				return ColorConstants.getColor(sunlit, "map_stroke_sector_poison");
+			} else if (mainHazard == "flooded") {
+				return ColorConstants.getColor(sunlit, "map_stroke_sector_flooded");
+			} else if (mainHazard == "territory") {
+				return ColorConstants.getColor(sunlit, "map_stroke_sector_territory");
+			} else {
+				return ColorConstants.getColor(sunlit, "map_stroke_sector_hazard");
+			}
 		},
 		
 		showResourcesInMapMode: function (mapMode) {

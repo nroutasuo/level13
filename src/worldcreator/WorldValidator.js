@@ -44,6 +44,19 @@ define([
 			return { check: "validateWorld", target: "worldVO", seed: worldVO.seed, isValid: issues.length === 0, issues: issues };
 		},
 
+		validateLevels: function (worldVO, worldTemplateVO, levels) {
+			let issues = [];
+
+			for (let i = 0; i < levels.length; i++) {
+				let l = levels[i];
+				let levelVO = worldVO.levels[l];
+				let validationResult = this.validateLevel(worldVO, worldTemplateVO, levelVO);
+				if (!validationResult.isValid) issues = issues.concat(validationResult.issues);
+			}
+			
+			return { check: "validateLevels", target: "worldVO", seed: worldVO.seed, isValid: issues.length === 0, issues: issues };
+		},
+
 		// validates a given level, structure, sectors, features
 		// checks that the level is valid in itself, and also that it follows the template if one given
 		validateLevel: function (worldVO, worldTemplateVO, levelVO) {
