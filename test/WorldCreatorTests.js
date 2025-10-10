@@ -8,7 +8,7 @@ define([
 	'game/helpers/ItemsHelper',
 ], function (TestUtils, WorldCreator, WorldConstants, WorldCreatorRandom, WorldValidator, WorldTemplateVO, ItemsHelper) {
 
-	let seeds = [ 24, 7534, WorldCreatorRandom.getNewSeed() ];
+	let worldSeeds = [ 24, 7534, WorldCreatorRandom.getNewSeed() ];
 
 	let getAllLevels = function (worldVO) {
 		let levels = [];
@@ -59,8 +59,7 @@ define([
 		});
 
 		hooks.beforeEach(function () {
-			let output = document.querySelector("#qunit-test-output-" + QUnit.config.current.testId);
-			output.appendChild(document.createTextNode("seed:" + QUnit.config.current.data));
+			TestUtils.addDetailToOutput("seed:" + QUnit.config.current.data);
 		});
 
 		hooks.afterEach(function () {
@@ -71,20 +70,20 @@ define([
 			// once after all tests are done
 		});
 
-		QUnit.test.each("two empty worlds from same seed are equal", seeds, async function (assert, seed) {
+		QUnit.test.each("two empty worlds from same seed are equal", worldSeeds, async function (assert, seed) {
 			let worldVO1 = await WorldCreator.createWorld(seed);
 			let worldVO2 = await WorldCreator.createWorld(seed);
 			assert.propEqual(worldVO1, worldVO2);
 		});
 
-		QUnit.test.each("world created from template equals world created from seed", seeds, async function (assert, seed) {
+		QUnit.test.each("world created from template equals world created from seed", worldSeeds, async function (assert, seed) {
 			let worldVO1 = await WorldCreator.createWorld(seed);
 			let worldVO1Template = new WorldTemplateVO(worldVO1);
 			let worldVO2 = await WorldCreator.createWorld(seed, worldVO1Template);
 			assert.propEqual(worldVO1, worldVO2);
 		});
 
-		QUnit.test.each("two worlds with levels are equal", seeds, async function (assert, seed) {
+		QUnit.test.each("two worlds with levels are equal", worldSeeds, async function (assert, seed) {
 			let worldVO1 = await WorldCreator.createWorld(seed);
 			let levels1 = [];
 			for (let l = worldVO1.topLevel; l >= worldVO1.bottomLevel; l--) levels1.push(l);
@@ -98,7 +97,7 @@ define([
 			assertWorldVOsEqual(assert, worldVO1, worldVO2);
 		});
 
-		QUnit.test.each("world created from template equals world created from seed with levels", seeds, async function (assert, seed) {
+		QUnit.test.each("world created from template equals world created from seed with levels", worldSeeds, async function (assert, seed) {
 			let worldVO1 = await WorldCreator.createWorld(seed);
 			let levels1 = getAllLevels(worldVO1);
 			await WorldCreator.generateLevels(seed, worldVO1, null, levels1, mockItemsHelper);
@@ -112,7 +111,7 @@ define([
 			assertWorldVOsEqual(assert, worldVO1, worldVO2);
 		});
 
-		QUnit.test.each("two worlds equal when levels generated in different order", seeds, async function (assert, seed) {
+		QUnit.test.each("two worlds equal when levels generated in different order", worldSeeds, async function (assert, seed) {
 			let worldVO1 = await WorldCreator.createWorld(seed);
 			let levels1 = [];
 			for (let l = 13; l >= worldVO1.bottomLevel; l--) levels1.push(l);
@@ -137,8 +136,7 @@ define([
 		});
 
 		hooks.beforeEach(function () {
-			let output = document.querySelector("#qunit-test-output-" + QUnit.config.current.testId);
-			output.appendChild(document.createTextNode("seed:" + QUnit.config.current.data));
+			TestUtils.addDetailToOutput("seed:" + QUnit.config.current.data);
 		});
 
 		hooks.afterEach(function () {
@@ -149,13 +147,13 @@ define([
 			// once after all tests are done
 		});
 
-		QUnit.test.each("world from seed is valid", seeds, async function (assert, seed) {
+		QUnit.test.each("world from seed is valid", worldSeeds, async function (assert, seed) {
 			let worldVO = await WorldCreator.createWorld(seed);
 			let validationResult = WorldValidator.validateWorld(worldVO);
 			assert.true(validationResult.isValid, WorldValidator.getSummary(validationResult));
 		});
 		
-		QUnit.test.each("levels are valid", seeds, async function (assert, seed) {
+		QUnit.test.each("levels are valid", worldSeeds, async function (assert, seed) {
 			let worldVO = await WorldCreator.createWorld(seed);
 			let levels = getAllLevels(worldVO);
 			await WorldCreator.generateLevels(seed, worldVO, null, levels, itemsHelper);
@@ -166,7 +164,7 @@ define([
 			}
 		});
 		
-		QUnit.test.each("world template vo is valid", seeds, async function (assert, seed) {
+		QUnit.test.each("world template vo is valid", worldSeeds, async function (assert, seed) {
 			let worldVO = await WorldCreator.createWorld(seed);
 			let levels = getAllLevels(worldVO);
 			await WorldCreator.generateLevels(seed, worldVO, null, levels, itemsHelper);
@@ -184,8 +182,7 @@ define([
 		});
 
 		hooks.beforeEach(function () {
-			let output = document.querySelector("#qunit-test-output-" + QUnit.config.current.testId);
-			output.appendChild(document.createTextNode("seed:" + QUnit.config.current.data));
+			TestUtils.addDetailToOutput("seed:" + QUnit.config.current.data);
 		});
 
 		hooks.afterEach(function () {
@@ -196,12 +193,12 @@ define([
 			// once after all tests are done
 		});
 
-		QUnit.test.each("world contains version", seeds, async function (assert, seed) {
+		QUnit.test.each("world contains version", worldSeeds, async function (assert, seed) {
 			let worldVO = await WorldCreator.createWorld(seed);
 			assert.equal(worldVO.version, WorldConstants.version);
 		});
 
-		QUnit.test.each("levels contains version when generated", seeds, async function (assert, seed) {
+		QUnit.test.each("levels contains version when generated", worldSeeds, async function (assert, seed) {
 			let worldVO = await WorldCreator.createWorld(seed);
 			let levels = [ 13, 12, 11, 10 ];
 			await WorldCreator.generateLevels(seed, worldVO, null, levels, mockItemsHelper);
@@ -216,7 +213,7 @@ define([
 			}
 		});
 
-		QUnit.test.each("world keeps original version from template", seeds, async function (assert, seed) {
+		QUnit.test.each("world keeps original version from template", worldSeeds, async function (assert, seed) {
 			let version = "0.6.3";
 			let worldVO1 = await WorldCreator.createWorld(seed);
 			let worldTemplateVO = new WorldTemplateVO(worldVO1);
@@ -225,7 +222,7 @@ define([
 			assert.equal(worldVO2.version, version);
 		});
 
-		QUnit.test.each("levels keep version from template if generated before", seeds, async function (assert, seed) {
+		QUnit.test.each("levels keep version from template if generated before", worldSeeds, async function (assert, seed) {
 			let version = "0.6.3";
 			let currentVersion = WorldConstants.version;
 			WorldConstants.version = version;
@@ -248,6 +245,243 @@ define([
 					assert.equal(levelVO.version, WorldConstants.version, "level generated on new version has current version");
 				} else {
 					assert.equal(levelVO.version, null, "not generated level has no version");
+				}
+			}
+		});
+	});
+
+	QUnit.module("world/random", function (hooks) {
+		// test cases
+
+		// - typical inputs to random are world seed, sector coordinates, and list indices
+		let randomSeeds = [ 0, 1, 13, -8, 24, 1111, 7000, 9821, 1204, 61356 ];
+		// - typical ranges for random int are list indices, hazard values, item counts
+		let randomIntRanges = [ [0, 10], [1, 4], [0, 135], [53, 77] ];
+		let randomIntCases = [];
+
+		for (let s = 0; s < randomSeeds.length; s++) {
+			for (let r = 0; r < randomIntRanges.length; r++) {
+				let range = randomIntRanges[r];
+				randomIntCases.push({ randomSeed: randomSeeds[s], range: range, min: range[0], max: range[1] });
+			}
+		}
+
+		// utils
+
+		let formatSeedAndResult = (seed, result) => seed + " -> " + result;
+		let formatSeedRangeAndResult = (testCase, result) => testCase.randomSeed + " [" + testCase.min + "," + testCase.max + "] -> " + result;
+
+		// basics
+
+		QUnit.test("random int is int", function (assert) {
+			TestUtils.each(randomSeeds, (randomSeed) => {
+				let r = WorldCreatorRandom.randomInt(randomSeed);
+				assert.true(Number.isInteger(r), "random number from seed " + formatSeedAndResult(randomSeed, r));
+			});
+		});
+
+		QUnit.test("random int respects range", function (assert) {
+			TestUtils.each(randomIntCases, (testCase) => {
+				let r = WorldCreatorRandom.randomInt(testCase.randomSeed, testCase.min, testCase.max);
+				assert.true(r >= testCase.min, "random number from seed " + formatSeedRangeAndResult(testCase, r));
+				assert.true(r < testCase.max, "random number from seed " + formatSeedRangeAndResult(testCase, r));
+			});
+		});
+
+		// determinism
+
+		QUnit.test("same seed results in same random number", function (assert) {
+			TestUtils.each(randomSeeds, (randomSeed) => {
+				let r1 = WorldCreatorRandom.random(randomSeed);
+				let r2 = WorldCreatorRandom.random(randomSeed);
+				assert.equal(r1, r2, "random number from seed " + formatSeedAndResult(randomSeed, r1));
+			});
+		});
+
+		QUnit.test("same seed results in same random int", function (assert) {
+			TestUtils.each(randomSeeds, (randomSeed) => {
+				let r1 = WorldCreatorRandom.randomInt(randomSeed);
+				let r2 = WorldCreatorRandom.randomInt(randomSeed);
+				assert.equal(r1, r2, "random int from seed " + formatSeedAndResult(randomSeed, r1));
+			});
+		});
+
+		QUnit.test("same seed results in same random boolean", function (assert) {
+			TestUtils.each(randomSeeds, (randomSeed) => {
+				let r1 = WorldCreatorRandom.randomBool(randomSeed);
+				let r2 = WorldCreatorRandom.randomBool(randomSeed);
+				assert.equal(r1, r2, "random bool from seed " + formatSeedAndResult(randomSeed, r1));
+			});
+		});
+
+		// variability (different seeds result different output)
+
+		QUnit.test("different seed results in different random number", function (assert) {
+			TestUtils.each(randomSeeds, (randomSeed) => {
+				let r1 = WorldCreatorRandom.random(randomSeed);
+				let r2 = WorldCreatorRandom.random(randomSeed + 1);
+				assert.notEqual(r1, r2, "random number from seed " + formatSeedAndResult(randomSeed, r2) + " and " + formatSeedAndResult(randomSeed + 1, r2));
+			});
+		});
+
+		QUnit.test("different seed results in different random int", function (assert) {
+			TestUtils.each(randomSeeds, (randomSeed) => {
+				let r1 = WorldCreatorRandom.randomInt(randomSeed);
+				let r2 = WorldCreatorRandom.randomInt(randomSeed + 1);
+				assert.notEqual(r1, r2, "random int from seed " + formatSeedAndResult(randomSeed, r2) + " and " + formatSeedAndResult(randomSeed + 1, r2));
+			});
+		});
+
+		QUnit.test("different seed results in different bool", function (assert) {
+			TestUtils.each(randomSeeds, (randomSeed) => {
+				let hasReturnedTrue = false;
+				let hasReturnedFalse = false;
+				for (let i = 0; i < 300; i++) {
+					let r = WorldCreatorRandom.randomBool(randomSeed + i);
+					if (r) hasReturnedTrue = true;
+					if (!r) hasReturnedFalse = true;
+				}
+
+				assert.true(hasReturnedTrue, "random bool from seed " + randomSeed + "+100 produced 'true' at least once");
+				assert.true(hasReturnedFalse, "random bool from seed " + randomSeed + "+100 produced 'false' at least once");
+			});
+		});
+
+		// variance (different seeds result in significantly different output)
+
+		QUnit.test("similar seed can result in very different random number", function (assert) {
+			TestUtils.each(randomSeeds, (randomSeed) => {
+				let maxDiff = 0;
+				let seeds = [];
+				for (let i = 0; i < 100; i++) seeds.push(randomSeed + i);
+				let numbers = [];
+				for (let i = 0; i < seeds.length; i++) {
+					let seed = seeds[i];
+					let randomNumber = WorldCreatorRandom.random(seed);
+					numbers.push(randomNumber);
+					if (i > 0) {
+						let previousNumber = numbers[i-1];
+						maxDiff = Math.max(maxDiff, Math.abs(previousNumber - randomNumber));
+					}
+				}
+				let threshold = 0.1;
+				assert.true(maxDiff > threshold, "maximum difference (" + maxDiff + ") between random numbers from seeds " + randomSeed + "+100 is greated than " + threshold);
+			});
+		});
+
+		QUnit.test("similar seed can result in very different random int", function (assert) {
+			TestUtils.each(randomSeeds, (randomSeed) => {
+				let maxDiff = 0;
+				let seeds = [];
+				for (let i = 0; i < 100; i++) seeds.push(randomSeed + i);
+				let numbers = [];
+				for (let i = 0; i < seeds.length; i++) {
+					let seed = seeds[i];
+					let randomNumber = WorldCreatorRandom.randomInt(seed);
+					numbers.push(randomNumber);
+					if (i > 0) {
+						let previousNumber = numbers[i-1];
+						maxDiff = Math.max(maxDiff, Math.abs(previousNumber - randomNumber));
+					}
+				}
+				let threshold = 10;
+				assert.true(maxDiff > threshold, "maximum difference (" + maxDiff + ") between random numbers from seeds " + randomSeed + "+100 is greated than " + threshold);
+			});
+		});
+
+		// distribution (output doesn't prefer some values)
+
+		QUnit.test("random number has decent distribution", function (assert) {
+			TestUtils.each(randomSeeds, (randomSeed) => {
+				let iterations = 50000;
+				let diffPercentThreshold = 30;
+
+				let counts = [];
+				for (let i = 0; i < 10; i++) counts[i] = 0;
+				for (let i = 0; i < iterations; i++) {
+					let r = WorldCreatorRandom.random(randomSeed + i);
+					let roundedValue = Math.floor(r * 10);
+					counts[roundedValue]++;
+				}
+
+				let expectedCount = iterations / 10;
+
+				for (let i = 0; i < counts.length; i++) {
+					let roundedValue = i;
+					let count = counts[i];
+					let diff = count - expectedCount;
+					let diffPercent = Math.abs((diff / expectedCount) * 100);
+
+					assert.ok(diffPercent < diffPercentThreshold, "value rounding down to " + (roundedValue/10) + " was produced " + count + " times");
+				};
+			});
+		});
+
+		QUnit.test("random int has decent distribution", function (assert) {
+			TestUtils.each(randomIntCases, (testCase) => {
+				let min = testCase.min;
+				let max = testCase.max;
+				let iterations = 50000;
+				let rangeSize = max - min;
+				let diffPercentThreshold = 35;
+
+				let counts = [];
+				for (let i = 0; i < max; i++) counts[i] = 0;
+				for (let i = 0; i < iterations; i++) {
+					let r = WorldCreatorRandom.randomInt(testCase.randomSeed + i, min, max);
+					if (r < min || r >= max) {
+						assert.ok(false, "Value ${n} out of range");
+						return;
+					}
+					if (!counts[r]) counts[r] = 0;
+					counts[r]++;
+				}
+
+				let expectedCount = Math.round(iterations / rangeSize);
+
+				for (let i = 0; i < counts.length; i++) {
+					let value = i;
+					if (value < min || value >= max) continue;
+					let count = counts[i];
+					let diff = count - expectedCount;
+					let diffPercent = Math.abs((diff / expectedCount) * 100);
+
+					assert.ok(diffPercent < diffPercentThreshold, "value " + value + " was produced " + count + " times for range [" + min + "," + max + "] (expected around " + expectedCount + ")");
+				};
+			});
+		});
+
+		// practice (random results in actual worlds)
+		
+		QUnit.test("different worlds have different random features", async function (assert) {
+			let worldSeeds = [ 24, 2456, 5001, 8210 ];
+			let worldVOs = {};
+			for (let i = 0; i < worldSeeds.length; i++) {
+				let seed = worldSeeds[i];
+				let worldVO = await WorldCreator.createWorld(seed);
+				worldVOs[i] = worldVO;
+			}
+
+			let luxuryResources = {};
+			for (let i = 0; i < worldSeeds.length; i++) {
+				let seed = worldSeeds[i];
+				let worldVO = await WorldCreator.createWorld(seed);
+				let worldLuxuryResources = [];
+				for (let l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
+					let levelVO = worldVO.levels[l];
+					for (let j = 0; j < levelVO.luxuryResources.length; j++) {
+						worldLuxuryResources.push(levelVO.luxuryResources[j]);
+					}
+				}
+
+				luxuryResources[i] = worldLuxuryResources;
+			}
+
+			for (let i = 0; i < worldSeeds.length; i++) {
+				let s1 = worldSeeds[i];
+				for (let j = i + 1; j < worldSeeds.length; j++) {
+					let s2 = worldSeeds[j];
+					assert.notPropEqual(luxuryResources[i], luxuryResources[j], "luxury resources are different in world seeds (" + s1 + " vs " + s2 + ")")
 				}
 			}
 		});

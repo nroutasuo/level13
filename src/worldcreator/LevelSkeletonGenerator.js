@@ -175,7 +175,7 @@ define([
 				validLuxuries = Object.values(TribeConstants.luxuryType);
 			}
 			
-			let selectedLuxury = WorldCreatorRandom.getRandomItemFromArray(seed / 2 + 100 + campOrdinal * 77, validLuxuries);
+			let selectedLuxury = WorldCreatorRandom.randomItemFromArray(seed, validLuxuries);
 			
 			return [ selectedLuxury ];
 		},

@@ -5,12 +5,9 @@ define([
 	'utils/PathFinding',
 	'worldcreator/WorldCreatorLogger',
 	'game/constants/PositionConstants',
-	'game/constants/GameConstants',
-	'game/constants/MovementConstants',
-	'game/constants/WorldConstants',
 	'game/vos/PositionVO',
 	'game/vos/PathConstraintVO'],
-function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants, MovementConstants, WorldConstants, PositionVO, PathConstraintVO) {
+function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, PositionVO, PathConstraintVO) {
 
 	var WorldCreatorRandom = {
 		
@@ -363,12 +360,12 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Ga
 			return result;
 		},
 		
-		getRandomItemFromArray: function (seed, array) {
+		randomItemFromArray: function (seed, array) {
 			let index = this.randomInt(seed, 0, array.length);
 			return array[index];
 		},
 		
-		getRandomIntFromRange: function (seed, range) {
+		randomIntFromRange: function (seed, range) {
 			let isRange = typeof(range) !== "number";
 			if (!isRange) return range;
 			let min = Math.round(range[0])
@@ -378,10 +375,10 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Ga
 		
 		// Pseudo-random int between min (inclusive) and max (exclusive)
 		randomInt: function (seed, min, max) {
-			if (!isFinite(seed) || isNaN(seed)) {
-				throw new Error("Invalid seed for WorldCreatorRandom.randomInt: " + seed);
-			}
-			return Math.floor(Math.min(max - 1, Math.floor(this.random(seed) * (max - min + 1)) + min));
+			if (min === undefined) min = 0;
+			if (max === undefined) max = 10000;
+
+			return Math.floor(this.random(seed) * (max - min) + min);
 		},
 		
 		randomBool: function (seed, probability) {
@@ -390,9 +387,19 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Ga
 		},
 		
 		// Pseudo-random number based on the seed, evenly distributed between 0-1
+		// with additional adjustment that consecutive numbers are not similar (even and odd are very different)
 		random: function (seed) {
-			var mod1 = 7247;
-			var mod2 = 7823;
+			if (!isFinite(seed) || isNaN(seed)) {
+				log.e("invalid seed for WorldCreatorRandom.random: " + seed);
+				seed = 0;
+			}
+
+			if (seed % 4 === 0) seed = seed - 2222;
+			if (seed % 2 === 0) seed = seed + 1111;
+
+			let mod1 = 172;
+			let mod2 = 7823;
+
 			let result = (seed*seed) % (mod1*mod2);
 			return result/(mod1*mod2);
 		},

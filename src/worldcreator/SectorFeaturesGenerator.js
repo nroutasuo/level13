@@ -502,7 +502,7 @@ define([
 			};
 			
 			let addStashes = function (sectorSeed, reason, stashType, itemIDs, numStashes, numItemsPerStash, excludedZones, localeType) {
-				numStashes = WorldCreatorRandom.getRandomIntFromRange(sectorSeed / 2 + 222, numStashes);
+				numStashes = WorldCreatorRandom.randomIntFromRange(sectorSeed / 2 + 222, numStashes);
 				
 				let options = { requireCentral: false, excludingFeature: "isCamp", excludedZones: excludedZones };
 				let numCandidates = numStashes * 2;
@@ -514,9 +514,9 @@ define([
 				
 				for (let i = 0; i < stashSectors.length; i++) {
 					let stashSeed = sectorSeed * 2 + i * 3121;
-					let item = WorldCreatorRandom.getRandomItemFromArray(stashSeed, itemIDs);
+					let item = WorldCreatorRandom.randomItemFromArray(stashSeed, itemIDs);
 					let itemID = item.id ? item.id : item;
-					let numItems = WorldCreatorRandom.getRandomIntFromRange(stashSeed, numItemsPerStash);
+					let numItems = WorldCreatorRandom.randomIntFromRange(stashSeed, numItemsPerStash);
 					addStash(stashSectors[i], reason, stashType, numItems, itemID, localeType);
 				}
 			};
@@ -525,7 +525,7 @@ define([
 			if (l == 13) {
 				let campPosition = levelVO.campPosition;
 				let campNeighbours = levelVO.getNeighbourList(campPosition.sectorX, campPosition.sectorY);
-				let firstCacheSector = WorldCreatorRandom.getRandomItemFromArray(seed, campNeighbours);
+				let firstCacheSector = WorldCreatorRandom.randomItemFromArray(seed, campNeighbours);
 				addStash(firstCacheSector, "first-cache", ItemConstants.STASH_TYPE_ITEM, 1, "cache_metal_1");
 				addStashes(seed / 2 * 401 + l * 801, "guaranteed-early", ItemConstants.STASH_TYPE_ITEM, ["cache_water_1"], 3, 1, lateZones);
 				addStashes(seed / 4 * 278 + l * 151, "guaranteed-early", ItemConstants.STASH_TYPE_ITEM, ["cache_food_1"], 3, 1, lateZones);
@@ -990,7 +990,7 @@ define([
 			var r1 = WorldCreatorRandom.random(5000 + seed / (l+10) + x + x * y * 63 + sectorVO.buildingDensity * 3 + x % 3 * 123 + y % 4 * 81);
 			var r2 = WorldCreatorRandom.random(seed + l * x / y * 44 + 6);
 			var r3 = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66);
-			var r4 = WorldCreatorRandom.random(seed / x * ll + x * y * 16);
+
 			var sca = new ResourcesVO();
 			let metalThresholds = { "ABUNDANT": 0.95, "COMMON": 0.8, "DEFAULT": Math.ceil(campOrdinal / 3) * 0.02 };
 			let foodThresholds = { "ABUNDANT": 0.98, "COMMON": 0.95, "DEFAULT": 0.75 };
@@ -1611,7 +1611,7 @@ define([
 					break;
 			}
 			
-			return WorldCreatorRandom.getRandomItemFromArray(seed, options);
+			return WorldCreatorRandom.randomItemFromArray(seed, options);
 		},
 		
 		getLuxuryResourceLocationType: function (luxuryType) {

@@ -6,6 +6,11 @@ define([], function () {
 			return QUnit.config.current.assertions.filter((a) => !a.result).length > 0;
 		},
 
+		addDetailToOutput: function (s) {
+			let output = document.querySelector("#qunit-test-output-" + QUnit.config.current.testId);
+			output.appendChild(document.createTextNode(s));
+		},
+
 		getMockItemsHelper: function () {
 			let result = {};
 			result.getNewEquipment = (campOrdinal) => [];
@@ -19,6 +24,14 @@ define([], function () {
 			return result;
 		},
 
+		// do the same test with different outputs, assert in test callback, different from QUnit.test.each in that everything gets summarized under one test
+		each: async function (cases, test) {
+			for (let i = 0; i < cases.length; i++) {
+				test(cases[i]);
+			}
+		},
+
+		// do the exact same thing x times, expect no execptios or assert failures
 		repeat: async function (assert, times, test) {
 			for (let i = 0; i < times; i++) {
 				try {

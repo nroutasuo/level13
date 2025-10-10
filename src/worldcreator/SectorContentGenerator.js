@@ -307,7 +307,7 @@ define([
 				let levels = WorldCreatorHelper.getLevelsForCamp(seed, campOrdinal);
 				let levelIndex = def.positionParams.levelIndex;
 				let level = typeof levelIndex === "undefined" ?
-					WorldCreatorRandom.getRandomItemFromArray(seed, levels) :
+					WorldCreatorRandom.randomItemFromArray(seed, levels) :
 					levels[Math.min(levelIndex, levels.length - 1)];
 				if (!result[level]) result[level] = [];
 				result[level].push(def.id);

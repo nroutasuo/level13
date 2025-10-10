@@ -84,6 +84,7 @@ define([
 				this.checkSectorResources,
 				this.checkSectorStashes,
 				this.checkSectorHazards,
+				this.checkSectorLocales,
 				this.checkSectorMatchesTemplate,
 			];
 
@@ -574,6 +575,16 @@ define([
 				let stashVO = sectorVO.stashes[i];
 				if (stashVO.localeType && sectorVO.locales.filter(localeVO => localeVO.type == stashVO.localeType).length < 1)
 					issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: sectorVO.toString() + " has stash without matching locale" });
+			}
+
+			return { isValid: issues.length === 0, issues: issues };
+		},
+
+		checkSectorLocales: function (worldVO, levelVO, sectorVO, sectorTemplateVO) {
+			let issues = [];
+
+			if (sectorVO.locales.length > 3) {
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " has too many locales (" + sectorVO.locales.length + ")" });
 			}
 
 			return { isValid: issues.length === 0, issues: issues };
