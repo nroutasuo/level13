@@ -126,6 +126,20 @@ define([
 
 			assertWorldVOsEqual(assert, worldVO1, worldVO2);
 		});
+
+		QUnit.test.each("two worlds equal when levels generated one by one or in one go", worldSeeds, async function (assert, seed) {
+			let worldVO1 = await WorldCreator.createWorld(seed);
+			let levels = getAllLevels(worldVO1);
+			await WorldCreator.generateLevels(seed, worldVO1, null, levels, mockItemsHelper);
+
+			let worldVO2 = await WorldCreator.createWorld(seed);
+			for (let l = 0; l < levels.length; l++) {
+				let level = levels[l];
+				await WorldCreator.generateLevels(seed, worldVO2, null, [ level ], mockItemsHelper);
+			}
+
+			assertWorldVOsEqual(assert, worldVO1, worldVO2);
+		});
 	});
 
 	QUnit.module("world/validation", function (hooks) {
