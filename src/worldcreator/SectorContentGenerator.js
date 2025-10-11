@@ -415,8 +415,8 @@ define([
 					if (candidate.poi.zone == WorldConstants.ZONE_ENTRANCE || candidate.poi.zone == WorldConstants.ZONE_PASSAGE_TO_CAMP) playerStartPosition = entrancePassagePosition;
 				}
 					
-				let poiDistanceToStart = WorldCreatorRandom.findPath(worldVO, candidate.poi.position, playerStartPosition, false, true, null, false).length;//PositionConstants.getDistanceTo(candidate.poi.position, playerStartPosition);
-				let waymarkDistanceToStart = WorldCreatorRandom.findPath(worldVO, candidate.waymark.position, playerStartPosition, false, true, null, false).length;
+				let poiDistanceToStart = PositionConstants.getDistanceTo(candidate.poi.position, playerStartPosition);
+				let waymarkDistanceToStart = PositionConstants.getDistanceTo(candidate.waymark.position, playerStartPosition);
 				if (waymarkDistanceToStart > poiDistanceToStart) return false;
 				
 				return true;

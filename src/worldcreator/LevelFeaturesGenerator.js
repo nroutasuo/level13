@@ -55,14 +55,6 @@ define([
 					if (sectorVO.sunlit && !isSurfaceLevel) return false;
 					if (WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO, WorldCreatorConstants.MAX_CAMP_POS_DISTANCE) > WorldCreatorConstants.MAX_CAMP_POS_DISTANCE) return false;
 					
-					for (let i = 0; i < levelVO.passagePositions.length; i++) {
-						let passagePos = levelVO.passagePositions[i];
-						let stage = null; // WorldConstants.CAMP_STAGE_EARLY
-						let path = WorldCreatorRandom.findPath(worldVO, sectorVO.position, passagePos, false, true, stage);
-						if (!path) return false;
-						if (path.length > maxPathLenC2P) return false;
-						if (path.length < minPathlenC2P) return false;
-					}
 					return true;
 				};
 				
