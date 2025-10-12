@@ -3,12 +3,13 @@ define([
 	'ash',
 	'game/GlobalSignals',
 	'game/GameGlobals',
+	'game/constants/GameConstants',
 	'game/constants/DialogueConstants',
 	'game/constants/ExplorerConstants',
 	'game/constants/StoryConstants',
     'game/nodes/player/DialogueNode',
 	'game/components/player/DialogueComponent'
-], function (Ash, GlobalSignals, GameGlobals, DialogueConstants, ExplorerConstants, StoryConstants, DialogueNode, DialogueComponent) {
+], function (Ash, GlobalSignals, GameGlobals, GameConstants, DialogueConstants, ExplorerConstants, StoryConstants, DialogueNode, DialogueComponent) {
 	
 	let DialogueSystem = Ash.System.extend({
 
@@ -123,6 +124,7 @@ define([
 
 			if (!pageID && pageID !== 0) {
 				log.e("no first page found for dialogue " + GameGlobals.dialogueHelper.getCurrentDialogeID(), this);
+				if (GameConstants.isDebugVersion) debugger
 				return;
 			}
 			

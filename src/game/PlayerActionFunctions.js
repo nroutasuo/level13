@@ -377,7 +377,7 @@ define(['ash',
 		startDialogue: function (id, explorerVO, characterVO, textParams) {
 			let dialogueVO = DialogueConstants.getDialogue(id);
 			
-			if (!dialogueVO) {
+			if (!dialogueVO || !dialogueVO.dialogueID) {
 				log.w("not able to start dialogue - no such dialogue found: " + id);
 				return;
 			}
@@ -982,6 +982,13 @@ define(['ash',
 						{ type: "dialogue", dialogueID: "locale_story_greenhouse" },
 						{ type: "custom", f: successCallback },
 						{ type: "log", textKey: "story.stories.greenhouse_greenhouse_found_message" }
+					], localeName);
+					return;
+				} else {
+					this.startSequence([
+						{ type: "dialogue", dialogueID: "locale_generic_greenhouse_intro_01" },
+						{ type: "custom", f: successCallback },
+						{ type: "log", textKey: "Scouted a Greenhouse." }
 					], localeName);
 					return;
 				}

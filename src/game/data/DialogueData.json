@@ -8740,6 +8740,11 @@
 				"locale_generic_house_intro_02_p1"
 			]
 		},
+		"locale_generic_greenhouse_intro_01": {
+			"pages": [
+				"locale_generic_greenhouse_intro_01_p1"
+			]
+		},
 		"locale_generic_junkyard_intro_01": {
 			"pages": [
 				"locale_generic_junkyard_intro_01_p1"
