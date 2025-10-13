@@ -78,6 +78,12 @@ define([
 			
 			return blockerTypes;
 		},
+
+		getSectorDistanceToLevelEdge: function (levelVO, sectorVO) {
+			let x = sectorVO.position.sectorX;
+			let y = sectorVO.position.sectorY;
+			return Math.min(Math.abs(y - levelVO.minY), Math.abs(y - levelVO.maxY), Math.abs(x - levelVO.minX), Math.abs(x - levelVO.maxX));
+		},
 		
 		addMovementBlocker: function (worldVO, levelVO, sectorVO, neighbourVO, blockerType, options, sectorcb, cb) {
 			var direction = PositionConstants.getDirectionFrom(sectorVO.position, neighbourVO.position);

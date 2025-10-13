@@ -8,12 +8,15 @@ define(
 		
 		// primary attributes
 		level: 0,
-		sectorType: 0,
 		
 		// description / atmosphere
-		buildingDensity: 0,
-		wear: 0,
-		damage: 0,
+		sectorType: 0, // SectorConstants
+		sectorStyle: null, // SectorConstants
+		activity: 0, // 0-10
+		buildingDensity: 0, // 0-10
+		wealth: 0, // 0-3 where 1 is poorest, 0 is N/A
+		wear: 0, // 0-10
+		damage: 0, // 0-10
 		sunlit: false,
 		ground: false,
 		surface: false,
@@ -41,10 +44,13 @@ define(
 		constructor: function (level, features) {
 			this.level = level;
 			this.zone = features.zone;
+			this.activity = features.activity;
 			this.buildingDensity = features.buildingDensity;
+			this.wealth = features.wealth;
 			this.wear = features.wear;
 			this.damage = features.damage;
 			this.sectorType = features.sectorType;
+			this.sectorStyle = features.sectorStyle;
 			this.sunlit = features.sunlit || false;
 			this.ground = features.ground || false;
 			this.surface = features.surface || false;

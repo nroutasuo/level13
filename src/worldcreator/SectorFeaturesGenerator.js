@@ -89,6 +89,7 @@ define([
 
 				sectorVO.requiredFeatures = this.getRequiredFeatures(seed, worldVO, levelVO, sectorVO);
 				sectorVO.sectorType = this.getSectorType(seed, worldVO, levelVO, sectorTemplateVO, sectorVO);
+				sectorVO.sectorStyle = this.getSectorStyle(seed, worldVO, levelVO, sectorTemplateVO, sectorVO);
 				sectorVO.sunlit = this.isSunlit(seed, worldVO, levelVO, sectorTemplateVO, sectorVO) || 0;
 
 				this.generateTexture(seed, worldVO, levelVO, sectorTemplateVO, sectorVO);
@@ -152,7 +153,7 @@ define([
 						
 					// - determine value range
 					var step = WorldConstants.getCampStep(sectorVO.zone);
-					var distanceToEdge = Math.min(Math.abs(y - levelVO.minY), Math.abs(y - levelVO.maxY), Math.abs(x - levelVO.minX), Math.abs(x - levelVO.maxX));
+					var distanceToEdge = SectorGeneratorHelper.getSectorDistanceToLevelEdge(levelVO, sectorVO);
 					
 					var maxHazardCold = Math.min(100, this.itemsHelper.getMaxHazardColdForLevel(campOrdinal, step, levelVO.isHard));
 					var minHazardCold = this.itemsHelper.getMinHazardColdForLevel(campOrdinal, step, levelVO.isHard);
@@ -818,6 +819,12 @@ define([
 			let y = sectorVO.position.sectorY;
 			let features = worldVO.getFeaturesByPos(sectorVO.position);
 			let surroundingFeatures = WorldCreatorHelper.getFeaturesSurrounding(worldVO, levelVO, sectorVO.position);
+			let neighbours = levelVO.getNeighbourList(sectorVO.position.sectorX, sectorVO.position.sectorY);
+			let neighboursCount = neighbours.length;
+
+			let distanceToCenter = PositionConstants.getDistanceTo(sectorVO.position, new PositionVO(l, 0, 0));
+			let distanceToEdge = SectorGeneratorHelper.getSectorDistanceToLevelEdge(levelVO, sectorVO);
+			let distanceToSurface = worldVO.topLevel - l;
 
 			// wear
 			let levelWear = MathUtils.clamp((worldVO.topLevel - l) / (worldVO.topLevel - 5) * 8, 0, 10);
@@ -846,6 +853,8 @@ define([
 			if (sectorVO.isCamp) damage = Math.min(3, damage);
 			if (sectorVO.hazards.debris > 0) damage = Math.max(3, damage);
 			if (l == 14) damage = Math.max(3, damage);
+			if (l == worldVO.topLevel) damage = Math.max(2, damage);
+			if (l == worldVO.bottomLevel) damage = Math.max(1, damage);
 			sectorVO.damage = MathUtils.clamp(Math.round(damage), 0, 10);
 
 			// building density
@@ -907,6 +916,36 @@ define([
 			
 			let density = sectorTemplateVO.buildingDensity || (levelDensity + randomDensity) / 2;
 			sectorVO.buildingDensity = MathUtils.clamp(Math.round(density), minDensity, maxDensity);
+
+			// activity (since the fall)
+			let minActivity = 0;
+			let maxActivity = 10;
+			if (distanceToCenter > 10) maxActivity = 7;
+			if (sectorVO.sectorType === SectorConstants.SECTOR_TYPE_COMMERCIAL) maxActivity++;
+			if (sectorVO.sectorType === SectorConstants.SECTOR_TYPE_RESIDENTIAL) maxActivity++;
+			if (l < 14) maxActivity = 5;
+			if (distanceToSurface == 1) maxActivity = 8;
+			if (sectorVO.sectorType === SectorConstants.SECTOR_TYPE_PUBLIC) maxActivity--;
+			if (neighboursCount > 2) maxActivity++;
+			if (neighboursCount == 1) minActivity--;
+			if (distanceToSurface == 0) maxActivity = 1;
+			if (sectorVO.sectorType === SectorConstants.SECTOR_TYPE_MAINTENANCE) maxActivity = 1;
+			sectorVO.activity = MathUtils.clamp(sectorTemplateVO.activity || WorldCreatorRandom.randomInt(seed + x + y, minActivity, maxActivity + 1), 0, 10);
+
+			// wealth
+			if (sectorVO.sectorType == SectorConstants.SECTOR_TYPE_MAINTENANCE) {
+				sectorVO.wealth = 0;
+			} else if (sectorVO.sectorType == SectorConstants.SECTOR_TYPE_SLUM) {
+				sectorVO.wealth = 1;
+			} else {
+				let minWealth = 1;
+				let maxWealth = 3;
+				if (distanceToSurface < 2) minWealth = 2;
+				if (l > 4 && l < 12) maxWealth = 2;
+				if (distanceToCenter > 5 && distanceToEdge > 5) maxWealth = 2;
+				if (sectorVO.sectorType == SectorConstants.SECTOR_TYPE_INDUSTRIAL) maxWealth = 2;
+				sectorVO.wealth = MathUtils.clamp(sectorTemplateVO.wealth || WorldCreatorRandom.randomInt(seed + l + Math.abs(x + y), minWealth, maxWealth + 1), 0, 3);
+			}
 		},
 		
 		generateDifficulty: function (seed, worldVO, levelVO, sectorVO) {
@@ -1499,7 +1538,7 @@ define([
 			let r1 = 9000 + seed % 2000 + (levelVO.level + 5) * 11 + sectorVO.position.sectorX * 141 + sectorVO.position.sectorY * 153;
 			let rand = WorldCreatorRandom.random(r1);
 
-			let savedType = sectorTemplateVO.sectorTYpe;
+			let savedType = sectorTemplateVO.sectorType;
 			
 			let sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
 			if (level == worldVO.topLevel) {
@@ -1578,6 +1617,58 @@ define([
 			}
 			
 			return sectorType;
+		},
+
+		getSectorStyle: function (seed, worldVO, levelVO, sectorTemplateVO, sectorVO) {
+			let level = levelVO.level;
+			let isGroundLevel = level == worldVO.bottomLevel;
+			let sectorType = sectorVO.sectorType;
+			let distance = PositionConstants.getDistanceTo(sectorVO.position, new PositionVO(level, 0, 0));
+
+			let options = [];
+
+			if (sectorType === SectorConstants.SECTOR_TYPE_SLUM) {
+				// slum: mostly slum styles but can be built mostly on top of a distinctive style as well
+				options.push(SectorConstants.STYLE_SLUM_GENERAL);
+				options.push(SectorConstants.STYLE_SLUM_GENERAL);
+				if (sectorVO.position.sectorX < 0) options.push(SectorConstants.STYLE_SLUM_HUN);
+				if (distance > 5) options.push(SectorConstants.STYLE_INDUSTRIAL);
+				if (level > 15) options.push(SectorConstants.STYLE_HUMANIST);
+				if (level < 8) options.push(SectorConstants.STYLE_KARBOQUE);
+			} else if (sectorType === SectorConstants.SECTOR_TYPE_MAINTENANCE) {
+				// maintenance: mostly industrial
+				options.push(SectorConstants.STYLE_INDUSTRIAL);
+				if (level < 8) options.push(SectorConstants.STYLE_KARBOQUE);
+			} else if (sectorType === SectorConstants.STYLE_INDUSTRIAL) {
+				// industrial: mostly industrial
+				options.push(SectorConstants.STYLE_INDUSTRIAL);
+				options.push(SectorConstants.STYLE_INDUSTRIAL);
+				options.push(SectorConstants.STYLE_INDUSTRIAL);
+				if (level > 12) options.push(SectorConstants.STYLE_HUMANIST);
+				if (level < 8) options.push(SectorConstants.STYLE_KARBOQUE);
+				if (level > 16) options.push(SectorConstants.STYLE_MODERN);
+			} else {
+				// others (residential, commercial, public): varied
+				if (level <= 4) options.push(SectorConstants.STYLE_WESTERN);
+				if (level <= 4 && distance < 10) options.push(SectorConstants.STYLE_WESTERN);
+				if (level > 17 && distance < 10) options.push(SectorConstants.STYLE_MODERN);
+				if (level > 20) options.push(SectorConstants.STYLE_MODERN);
+				if (level > 17) options.push(SectorConstants.STYLE_NEOWESTERN);
+				if (level > 12) options.push(SectorConstants.STYLE_HUMANIST);
+				if (level > 12 && level < 20) options.push(SectorConstants.STYLE_HUMANIST);
+				if (level < 16) options.push(SectorConstants.STYLE_INDUSTRIAL);
+				if (level < 8 && !isGroundLevel) options.push(SectorConstants.STYLE_KARBOQUE);
+				if (level < 8 && level > 4) options.push(SectorConstants.STYLE_KARBOQUE);
+			}
+
+			let s = level + sectorVO.position.sectorX + sectorVO.position.sectorY;
+			let result = WorldCreatorRandom.randomItemFromArray(s, options);
+
+			if (sectorTemplateVO && sectorTemplateVO.sectorStyle) {
+				result = sectorTemplateVO.sectorStyle;
+			}
+
+			return result;
 		},
 
 		filterSectorForLuxuryLocationType: function (sectorVO, luxuryLocationType) {			

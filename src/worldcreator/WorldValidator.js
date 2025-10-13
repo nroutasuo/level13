@@ -520,6 +520,7 @@ define([
 			if (sectorVO.passageDownType != sectorTemplateVO.passageDownType) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "sector.passageDownType doesn't match template" });
 			if (sectorVO.passageUpType != sectorTemplateVO.passageUpType) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "sector.passageUpType doesn't match template" });
 			if (sectorVO.sectorType != sectorTemplateVO.sectorType) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "sector.sectorType doesn't match template" });
+			if (sectorVO.sectorStyle != sectorTemplateVO.sectorStyle) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "sector.sectorStyle doesn't match template" });
 			if (sectorVO.stage != sectorTemplateVO.stage) issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "sector.stage doesn't match template" });
 			if (sectorVO.zone != sectorTemplateVO.zone) issues.push({ severity: WorldValidator.SEVERITY_CONTINUITY, desc: "sector.zone doesn't match template" });
 			if (sectorVO.sunlit != sectorTemplateVO.sunlit) issues.push({ severity: WorldValidator.SEVERITY_CONTINUITY, desc: "sector.sunlit doesn't match template" });

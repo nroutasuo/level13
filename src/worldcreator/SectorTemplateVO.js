@@ -12,6 +12,7 @@ function (Ash, WorldConstants, ResourcesVO, EnvironmentalHazardsVO, LocaleVO, Po
 			this.position = sectorVO.position;
 			this.level = sectorVO.level;
 
+			this.activity = sectorVO.activity;
 			this.buildingDensity = sectorVO.buildingDensity;
 			this.damage = sectorVO.damage;
 			this.examineSpots = sectorVO.examineSpots;
@@ -36,9 +37,11 @@ function (Ash, WorldConstants, ResourcesVO, EnvironmentalHazardsVO, LocaleVO, Po
 			this.resourcesCollectable = sectorVO.resourcesCollectable;
 			this.scavengeDifficulty = sectorVO.scavengeDifficulty;
 			this.sectorType = sectorVO.sectorType;
+			this.sectorStyle = sectorVO.sectorStyle;
 			this.stage = sectorVO.stage;
 			this.stashes = sectorVO.stashes;
 			this.sunlit = sectorVO.sunlit;
+			this.wealth = sectorVO.wealth;
 			this.wear = sectorVO.wear;
 			this.workshopResource = sectorVO.workshopResource;
 			this.zone = sectorVO.zone;
@@ -49,6 +52,7 @@ function (Ash, WorldConstants, ResourcesVO, EnvironmentalHazardsVO, LocaleVO, Po
 
 			copy.pos = this.position.getCustomSaveObjectWithoutCamp();
 
+			if (this.activity !== this.DEFAULT_TEXTURE_VALUE) copy.t_a = this.activity;
 			if (this.buildingDensity !== this.DEFAULT_TEXTURE_VALUE) copy.t_bd = this.buildingDensity;
 			if (this.damage) copy.damage = this.damage;
 			if (this.examineSpots.length > 0) copy.examineSpots = this.examineSpots;
@@ -78,9 +82,11 @@ function (Ash, WorldConstants, ResourcesVO, EnvironmentalHazardsVO, LocaleVO, Po
 			if (this.resourcesCollectable.getTotal() > 0) copy.rc = this.resourcesCollectable.getCustomSaveObject();
 			copy.sd = this.scavengeDifficulty;
 			copy.t = this.sectorType;
+			copy.s = this.sectorStyle;
 			if (this.stage != this.DEFAULT_STAGE) copy.stage = this.stage;
 			if (this.stashes.length > 0) copy.stashes = this.stashes;
 			if (this.sunlit) copy.sunlit = this.sunlit;
+			if (this.wealth > 0) copy.wealth = this.wealth;
 			if (this.wear) copy.wear = this.wear;
 			if (this.workshopResource) copy.workshopResource = this.workshopResource;
 			copy.zone = this.zone;
@@ -93,6 +99,8 @@ function (Ash, WorldConstants, ResourcesVO, EnvironmentalHazardsVO, LocaleVO, Po
 			this.position.customLoadFromSave(saveObject.pos || saveObject.position);
 			this.level = this.position.level;
 
+			this.activity = saveObject.t_a;
+			if (this.activity === undefined) this.activity = this.DEFAULT_TEXTURE_VALUE;
 			this.buildingDensity = saveObject.t_bd || this.DEFAULT_TEXTURE_VALUE;
 			this.damage = saveObject.damage || 0;
 			this.examineSpots = saveObject.examineSpots || [];
@@ -126,9 +134,11 @@ function (Ash, WorldConstants, ResourcesVO, EnvironmentalHazardsVO, LocaleVO, Po
 			this.resourcesCollectable.customLoadFromSave(saveObject.rc);
 			this.scavengeDifficulty = saveObject.sd || 0;
 			this.sectorType = saveObject.t;
+			this.sectorStyle = saveObject.s;
 			this.stage = saveObject.stage || this.DEFAULT_STAGE;
 			this.stashes = saveObject.stashes || [];
 			this.sunlit = saveObject.sunlit ? saveObject.sunlit : 0;
+			this.wealth = saveObject.wealth || 0;
 			this.wear = saveObject.wear || 0;
 			this.workshopResource = saveObject.workshopResource || null;
 			this.zone = saveObject.zone;

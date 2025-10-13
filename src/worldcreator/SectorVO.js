@@ -8,13 +8,14 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			this.position = position;
 			this.level = position.level;
 
-			this.buildingDensity = 0;
+			this.activity = 0; // 0-10
+			this.buildingDensity = 0; // 0-10
 			this.criticalPathTypes = [];
 			this.damage = 0;
 			this.examineSpots = [];
 			this.graffiti = 0;
-			this.hasClearableWorkshop = false;
 			this.hasBuildableWorkshop = false;
+			this.hasClearableWorkshop = false;
 			this.hasHeap = false;
 			this.hasRegularEnemies = false;
 			this.hasSpring = false;
@@ -36,12 +37,14 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			this.resourcesCollectable = new ResourcesVO();
 			this.resourcesScavengable = new ResourcesVO();
 			this.scavengeDifficulty = 5;
+			this.sectorStyle = null;
 			this.sectorType = null;
 			this.stage = null;
 			this.stashes = [];
 			this.sunlit = 0;
 			this.waymarks = [];
-			this.wear = 0;
+			this.wealth = 0; // 0-3
+			this.wear = 0; // 0-10
 			this.workshopResource = null;
 			this.zone = null;
 			

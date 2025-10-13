@@ -623,6 +623,10 @@ define([
 			if (!sectorVO.sunlit) tags.push("dark");
 			if (sectorVO.buildingDensity > 5) tags.push("dense");
 			if (sectorVO.buildingDensity < 5) tags.push("sparse");
+			if (sectorVO.activity < 4) tags.push("quiet");
+			if (sectorVO.activity > 6) tags.push("busy");
+			if (sectorVO.wealth == 3) tags.push("rich");
+			if (sectorVO.wealth == 1) tags.push("poor");
 			if (levelVO.habitability > 0) tags.push("inhabited");
 			if (levelVO.habitability <= 0) tags.push("uninhabited");
 			if (sectorVO.hazards.flooded > 0) tags.push("flooded");

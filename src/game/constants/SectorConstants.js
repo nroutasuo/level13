@@ -1,6 +1,6 @@
 define(['ash'], function (Ash) {
 	
-	var SectorConstants = {
+	let SectorConstants = {
 		
 		MAP_SECTOR_STATUS_UNVISITED_INVISIBLE: "unvisited-invisible",
 		MAP_SECTOR_STATUS_UNVISITED_VISIBLE: "unvisited-seen",
@@ -22,6 +22,17 @@ define(['ash'], function (Ash) {
 		SECTOR_CONDITION_ABANDONED: 3,  // already abandoned pre-Fall
 		SECTOR_CONDITION_DAMAGED: 4,    // not worn out but actually damaged by something
 		SECTOR_CONDITION_RUINED: 5,     // so damaged or worn it's hard to say which
+
+		STYLE_CITTADINIAN: "cittadinian",
+		STYLE_HUMANIST: "humanist",
+		STYLE_INDUSTRIAL: "industrial",
+		STYLE_KARBOQUE: "karboque",
+		STYLE_KIEVAN: "kievan",
+		STYLE_MODERN: "modern",
+		STYLE_NEOWESTERN: "neo-western",
+		STYLE_SLUM_GENERAL: "slum-general",
+		STYLE_SLUM_HUN: "slum-hun",	
+		STYLE_WESTERN: "western",
 		
 		// TODO add locales?
 		WAYMARK_TYPE_SPRING: "spring",

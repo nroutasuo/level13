@@ -297,7 +297,9 @@ define([
 			var sectorFeatures = {};
 			sectorFeatures.isOnCriticalPath = sectorVO.isOnCriticalPath();
 			sectorFeatures.zone = sectorVO.zone;
+			sectorFeatures.activity = sectorVO.activity;
 			sectorFeatures.buildingDensity = sectorVO.buildingDensity;
+			sectorFeatures.wealth = sectorVO.wealth;
 			sectorFeatures.wear = sectorVO.wear;
 			sectorFeatures.damage = sectorVO.damage;
 			sectorFeatures.sunlit = sectorVO.sunlit > 0;
@@ -305,6 +307,7 @@ define([
 			sectorFeatures.surface = level == worldVO.topLevel;
 			sectorFeatures.hazards = sectorVO.hazards;
 			sectorFeatures.sectorType = sectorVO.sectorType;
+			sectorFeatures.sectorStyle = sectorVO.sectorStyle;
 			sectorFeatures.hasSpring = sectorVO.hasSpring;
 			sectorFeatures.hasTradeConnectorSpot = sectorVO.hasTradeConnectorSpot;
 			sectorFeatures.resourcesScavengable = sectorVO.resourcesScavengable;
