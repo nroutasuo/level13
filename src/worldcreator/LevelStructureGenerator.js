@@ -238,7 +238,6 @@ define([
 			var numy = WorldCreatorRandom.randomInt(s2, 1, 3);
 			
 			// choose length and direction
-			var isDiagonal = WorldCreatorRandom.random(s3) < 0.9;
 			let maxlen = Math.round(levelVO.numSectors / (numx + numy) / 1.75 / 2) * 2;
 			var xlen = Math.min(9 + WorldCreatorRandom.randomInt(s2, 0, 7) * 2, maxlen);
 			var xdist = l == 13 ? WorldCreatorConstants.START_RECT_SIZE - 1 : 2 + WorldCreatorRandom.randomInt(s1, 0, 6);
@@ -316,21 +315,22 @@ define([
 		},
 		
 		createCentralRectanglesNested: function (s1, s2, s3, worldVO, levelVO, position, pois) {
-			var l = levelVO.level;
-			var isDiagonal = WorldCreatorRandom.random(s1) < 0.15;
-			var minDiff = 4;
-			var minSize = 3;
-			var maxSize = Math.min(levelVO.numSectors / 12, 19);
-			var outerS = WorldCreatorRandom.randomInt(s2, minSize + minDiff, maxSize + 1);
+			let isDiagonal = WorldCreatorRandom.random(s1) < 0.2 && levelVO.numSectors > 100;
+
+			let minDiff = 4;
+			let minSize = 3;
+			let maxSize = Math.min(levelVO.numSectors / 12, 19);
+			let outerS = WorldCreatorRandom.randomInt(s2, minSize + minDiff, maxSize + 1);
 			if (outerS % 2 == 0) outerS--;
-			var innerS = WorldCreatorRandom.randomInt(s1, minSize, outerS - minDiff + 1);
+			let innerS = WorldCreatorRandom.randomInt(s1, minSize, outerS - minDiff + 1);
 			if (innerS % 2 == 0) innerS--;
 			if (innerS > outerS - minDiff || innerS < minSize) innerS = outerS;
-			var minConnections = 2;
-			var maxConnections = outerS > 7 ? 5 : 2;
-			var numConnections = WorldCreatorRandom.randomInt(s3, minConnections, maxConnections + 1);
+			let minConnections = 2;
+			if (isDiagonal) minConnections = 3;
+			let maxConnections = outerS > 7 ? 5 : 2;
+			let numConnections = WorldCreatorRandom.randomInt(s3, minConnections, maxConnections + 1);
 
-			var getPaths = function (ox, oy) {
+			let getPaths = function (ox, oy) {
 				let result = [];
 				var pos = new PositionVO(position.level, position.sectorX + ox, position.sectorY + oy);
 				pos.normalize();
@@ -363,9 +363,14 @@ define([
 		},
 		
 		createCentralRectanglesSimple: function (s1, s2, s3, worldVO, levelVO, position, pois) {
-			var isDiagonal = WorldCreatorRandom.random(s1) < 0.25;
-			var maxSize = Math.round(levelVO.numSectors / 7);
-			var size = Math.min(maxSize, 6 + WorldCreatorRandom.randomInt(s2, 0, 5) * 2);
+			let isDiagonal = WorldCreatorRandom.random(s1) < 0.5;
+
+			let minSize = isDiagonal ? 4 : 7;
+			let maxSize = Math.min(Math.round(levelVO.numSectors / 9), 20);
+			if (isDiagonal) maxSize = Math.min(maxSize, 12);
+
+			let size = WorldCreatorRandom.randomInt(s1, minSize, maxSize + 1);
+
 			var getPaths = function (ox, oy) {
 				var pos = new PositionVO(position.level, position.sectorX + ox, position.sectorY + oy)
 				var connectionPointType = WorldCreatorConstants.CONNECTION_POINTS_RECT_ALL;
@@ -1324,19 +1329,25 @@ define([
 		},
 		
 		getPathDirection: function (s1, s2, startPoint) {
-			var possibleDirections = [];
+			let possibleDirections = [];
+			
 			if (startPoint.dirs) {
 				possibleDirections = startPoint.dirs.concat();
-				var includeSecondary = WorldCreatorRandom.random(s2) < 0.2;
+
+				let isPrimaryConnectionPointDiagonal = PositionConstants.isDiagonal(startPoint.dirs[0]);
+				let secondaryProbability = isPrimaryConnectionPointDiagonal ? 0.5 : 0.2;
+				let includeSecondary = WorldCreatorRandom.random(s2) < secondaryProbability;
 				if (includeSecondary) {
 					possibleDirections = startPoint.dirs2.concat();
 				}
 			} else {
-				var isDiagonal = WorldCreatorRandom.random(s2) < WorldCreatorConstants.DIAGONAL_PATH_PROBABILITY;
+				let isDiagonal = WorldCreatorRandom.random(s2) < WorldCreatorConstants.DIAGONAL_PATH_PROBABILITY;
 				possibleDirections = PositionConstants.getLevelDirections(!isDiagonal);
 			}
-			var dirI = WorldCreatorRandom.randomInt(s1, 0, possibleDirections.length);
-			return possibleDirections[dirI];
+			let dirI = WorldCreatorRandom.randomInt(s1, 0, possibleDirections.length);
+			let result = possibleDirections[dirI];
+
+			return result;
 		},
 		
 		getConnectionPoint: function (type, pathi, pathlen, sectorPos, pathdir) {
