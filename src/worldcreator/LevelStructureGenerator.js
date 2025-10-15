@@ -115,25 +115,26 @@ define([
 			if (levelVO.passageDownPosition) pois.push(levelVO.passageDownPosition);
 			if (l == 13) pois.push(levelVO.campPosition);
 			
-			var validShapes = [];
+			var validShapes = [ ];
 			if (l == 13) {
-				validShapes = [ this.createCentralParallels, this.createCentralCrossings, this.createCentralRectanglesSide, this.createCentralRectanglesNested, this.createCentralRectanglesSimple ];
+				validShapes = [ this.createCentralParallels, this.createCentralCrossings, this.createCentralRectanglesSide, this.createCentralRectanglesSimple, this.createCentralAvenue ];
 			} else if (l == 14) {
 				validShapes = [];
 			} else if (l == worldVO.topLevel) {
-				validShapes = [ this.createCentralRectanglesNested, this.centralGrid ];
+				validShapes = [ this.createCentralRectanglesNested, this.centralGrid, this.createCentralAvenue ];
 			} else if (l == worldVO.bottomLevel) {
 				validShapes = [ this.createCentralRectanglesSide ];
 			} else if (levelVO.isCampable) {
-				validShapes = [ this.createCentralParallels, this.createCentralCrossings, this.createCentralPlaza, this.createCentralRectanglesSide, this.createCentralRectanglesNested, this.createCentralRectanglesSimple, this.centralGrid ];
+				validShapes = [ this.createCentralParallels, this.createCentralCrossings, this.createCentralPlaza, this.createCentralRectanglesSide, this.createCentralRectanglesNested, this.createCentralRectanglesSimple, this.centralGrid, this.createCentralAvenue ];
 			} else {
-				validShapes = [ this.createCentralParallels, this.createCentralCrossings, this.createCentralRectanglesSide, this.createCentralRectanglesNested, this.createCentralRectanglesSimple ];
+				validShapes = [ this.createCentralParallels, this.createCentralCrossings, this.createCentralRectanglesSide, this.createCentralAvenue, this.createCentralRectanglesSimple ];
 			}
 			if (validShapes.length == 0) {
 				return;
 			}
-			var index = WorldCreatorRandom.randomInt(s4, 0, validShapes.length);
-			var shape = validShapes[index];
+
+			let index = WorldCreatorRandom.randomInt(s4, 0, validShapes.length);
+			let shape = validShapes[index];
 			shape.apply(this, [s1, s2, s3, worldVO, levelVO, position, pois]);
 		},
 		
@@ -214,6 +215,71 @@ define([
 					var offset1 = WorldCreatorRandom.randomInt(s1, -len/3, len/3);
 					var connectionPoint1 = PositionConstants.getPositionOnPath(street1Center, oppositeDir, offset1);
 					result.push({ startPos: connectionPoint1, dir: perpendicularDir, len: dist * (num-1) + 1 });
+				}
+				return result;
+			};
+			
+			// check for offset to align to poi
+			var offset = this.getStructureOffset(levelVO, pois, getPaths);
+			
+			// create sectors
+			var paths = getPaths(offset.x, offset.y);
+			for (let i = 0; i < paths.length; i++) {
+				var path = paths[i];
+				var options = this.getDefaultOptions();
+				this.createPath(levelVO, path.startPos, path.dir, path.len, true, options, WorldCreatorConstants.CONNECTION_POINTS_PATH_ENDS);
+			}
+		},
+
+		createCentralAvenue: function (s1, s2, s3, worldVO, levelVO, position, pois) {
+			// settings
+			let allowDiagonal = true;
+			let num = 2;
+			
+			// choose length
+			let minlen = Math.min(Math.round(levelVO.numSectors / 3), 9);
+			let maxlen = Math.min(Math.round(levelVO.numSectors / 9), 30);
+			let len = Math.floor(WorldCreatorRandom.randomInt(s1, minlen, maxlen + 1)) / 2 * 2 + 1;
+			
+			// choose direction
+			let dir = WorldCreatorRandom.randomDirections(s2, 1, allowDiagonal)[0];
+			let oppositeDir = PositionConstants.getOppositeDirection(dir);
+			let perpendicularDir = PositionConstants.getNextClockWise(PositionConstants.getNextClockWise(dir, true), true);
+			let isDiagonal = PositionConstants.isDiagonal(dir);
+			
+			// choose distance between streets
+			let minDist = isDiagonal ? 1 : 2;
+			let maxDist = 3;
+			let dist = WorldCreatorRandom.randomInt(s3, minDist, maxDist + 1);
+			
+			// define paths
+			let getStreetCenter = function (i, ox, oy) {
+				let streetDist = dist/2 + i*dist;
+				let base = PositionConstants.getPositionOnPath(position, perpendicularDir, streetDist, true);
+				return new PositionVO(base.level, base.sectorX + ox, base.sectorY + oy);
+			};
+			let getPaths = function (ox, oy) {
+				let result = [];
+				// two streets
+				for (let i = 0; i < num; i++) {
+					let streetCenter = getStreetCenter(i, ox, oy);
+					let startPos = PositionConstants.getPositionOnPath(streetCenter, oppositeDir, Math.floor(len / 2));
+					result.push({ startPos: startPos, dir: dir, len: len});
+				}
+				// connections
+				if (dist > 1) {
+					let connectionOffsets = [];
+					if (len >= 10) connectionOffsets.push(0);
+					let trailingEnds = len > 12 && WorldCreatorRandom.randomBool(s1);
+					let endsOffset = trailingEnds ? len/2 - 3 : len/2;
+					connectionOffsets.push(Math.floor(-endsOffset));
+					connectionOffsets.push(Math.floor(endsOffset + 1));
+					for (let i = 0; i < connectionOffsets.length; i++) {
+						let street1Center = getStreetCenter(0, ox, oy);
+						let offset1 = connectionOffsets[i];
+						let connectionPoint1 = PositionConstants.getPositionOnPath(street1Center, oppositeDir, offset1);
+						result.push({ startPos: connectionPoint1, dir: perpendicularDir, len: dist * (num-1) + 1 });
+					}
 				}
 				return result;
 			};
@@ -870,7 +936,7 @@ define([
 			var completed = true;
 			var isValid = true;
 			var reason = "";
-			
+
 			let isShapeEnd = !shapeLength || shapeIndex === 0 || shapeIndex === shapeLength - 1;
 			
 			for (var si = 0; si < len; si++) {
