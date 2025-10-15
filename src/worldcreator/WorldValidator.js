@@ -111,7 +111,7 @@ define([
 
 			let notSavedKeysWorld = [ "districts", "features", "stages", "examineSpotsPerLevel" ];
 			let notSavedKeysLevel = [ "maxSectors", "neighboursCacheContext", "pendingConnectionPointsByStage", "invalidPositions", "paths", "requiredPaths", "sectorsByStage", "sectorsByPos", "levelCenterPosition", "localeSectors", "raidDangerFactor", "stageCenterPositions" ];
-			let notSavedKeysSector = [ "id", "distanceToCamp", "requiredFeatures", "requiredResources", "resourcesAll", "waymarks", "pathID", "possibleEnemies", "hasRegularEnemies", "isConnectionPoint", "resourcesScavengable", "campPosScore", "isFill", "criticalPathTypes" ];
+			let notSavedKeysSector = [ "id", "distanceToCamp", "requiredFeatures", "requiredResources", "resourcesAll", "waymarks", "pathID", "possibleEnemies", "hasRegularEnemies", "isConnectionPoint", "resourcesScavengable", "campPosScore", "isFill", "criticalPathTypes", "graffiti" ];
 
 			// check worldTemplateVO matches worldVO
 			let properties = Object.keys(worldVO);
