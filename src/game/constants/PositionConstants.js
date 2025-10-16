@@ -44,12 +44,23 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		
 		isOnPath: function (pos, pathStartPos, pathDirection, len) {
 			for (let i = 0; i < len; i++) {
-				var posOnPath = this.getPositionOnPath(pathStartPos, pathDirection, i);
+				let posOnPath = this.getPositionOnPath(pathStartPos, pathDirection, i);
 				if (posOnPath.equals(pos)) {
 					return true;
 				}
 			}
 			return false;
+		},
+
+		getIndexOnPath: function (pos, pathStartPos, pathDirection, len) {
+			let searchOffset = 30;
+			for (let i = -searchOffset; i < len + searchOffset; i++) {
+				let posOnPath = this.getPositionOnPath(pathStartPos, pathDirection, i);
+				if (posOnPath.equals(pos)) {
+					return i;
+				}
+			}
+			return undefined;
 		},
 		
 		isBetween: function (pos1, pos2, testPos) {
