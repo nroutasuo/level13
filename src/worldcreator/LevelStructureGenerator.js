@@ -148,30 +148,40 @@ define([
 			if (levelVO.campPosition == null) return;
 
 			let pos = levelVO.campPosition;
-			let pois = [ pos ];
-
-			let l = levelVO.level;
-
-			let s1 = (seed % 8 + 1) * 16 + (l + 11) * 76;
-			let s2 = (seed % 11 + 1) * 12 + (l + 4) * 199;
-			let s3 = (seed % 15 + 1) * 8 + (l + 7) * 444;
 
 			let hasExistingCampSector = levelVO.hasSector(pos.sectorX, pos.sectorY);
 			let existingCampSectorNeighbourCount = levelVO.getNeighbourCount(pos.sectorX, pos.sectorY);
 
 			if (hasExistingCampSector && existingCampSectorNeighbourCount > 1) return;
 
-			let getPaths = function (ox, oy) {
-				let w = l == 13 ? WorldCreatorConstants.START_RECT_SIZE : 5 + WorldCreatorRandom.randomInt(s2, 0, 3);
-				let h = l == 13 ? WorldCreatorConstants.START_RECT_SIZE : 5 + WorldCreatorRandom.randomInt(s3, 0, 3);
+			let closest = WorldCreatorHelper.getClosestSector(levelVO.sectors, pos);
+			let distance = PositionConstants.getDistanceTo(pos, closest.position);
+
+			if (distance < 2) {
+				this.createPathBetween(worldVO, levelVO, pos, closest.position);
+				return;
+			}
+
+			let pois = [ pos ];
+			let l = levelVO.level;
+
+			let s1 = (seed % 8 + 1) * 16 + (l + 11) * 76;
+			let s2 = (seed % 11 + 1) * 12 + (l + 4) * 199;
+			let s3 = (seed % 15 + 1) * 8 + (l + 7) * 444;
+				
+			let w = l == 13 ? WorldCreatorConstants.START_RECT_SIZE : 5 + WorldCreatorRandom.randomInt(s2, 0, 3);
+			let h = l == 13 ? WorldCreatorConstants.START_RECT_SIZE : 5 + WorldCreatorRandom.randomInt(s3, 0, 3);
+
+			let getPaths = function (ox, oy, params) {
+				let isDiagonal = params.isDiagonal;
 				let center = new PositionVO(pos.level, pos.sectorX + ox, pos.sectorY + oy);
-				return LevelStructureGenerator.getRectangleFromCenter(levelVO, 0, center, w, h, true, false, WorldCreatorConstants.CONNECTION_POINTS_RECT_CORNERS);
+				return LevelStructureGenerator.getRectangleFromCenter(levelVO, 0, center, params.w, params.h, true, isDiagonal, WorldCreatorConstants.CONNECTION_POINTS_RECT_CORNERS);
 			};
 
 			let existingSectors = levelVO.sectors.concat();
 			
-			let offset = this.getStructureOffset(levelVO, pois, getPaths);
-			let paths = getPaths(offset.x, offset.y);
+			let offset = this.getStructureOffset(levelVO, pois, { isDiagonal: [ true, false ], w: [ w - 1, w, w + 1 ], h: [ h - 1, h, h + 1 ] }, getPaths);
+			let paths = getPaths(offset.x, offset.y, offset.params );
 			let result = this.createPaths(levelVO, paths, true, null, WorldCreatorConstants.CONNECTION_POINTS_PATH_ENDS);
 
 			this.connectNewPath(worldVO, levelVO, existingSectors, result);
@@ -218,7 +228,7 @@ define([
 			};
 			
 			// check for offset to align to poi
-			let offset = this.getStructureOffset(levelVO, pois, getPaths);
+			let offset = this.getStructureOffset(levelVO, pois, {}, getPaths);
 			
 			// create sectors
 			let paths = getPaths(offset.x, offset.y);
@@ -279,7 +289,7 @@ define([
 			};
 			
 			// check for offset to align to poi
-			var offset = this.getStructureOffset(levelVO, pois, getPaths);
+			var offset = this.getStructureOffset(levelVO, pois, {}, getPaths);
 			
 			// create sectors
 			let paths = getPaths(offset.x, offset.y);
@@ -321,7 +331,7 @@ define([
 			};
 			
 			// check for offset to align to poi
-			let offset = this.getStructureOffset(levelVO, pois, getPaths);
+			let offset = this.getStructureOffset(levelVO, pois, {}, getPaths);
 			
 			// create sectors
 			let paths = getPaths(offset.x, offset.y);
@@ -359,7 +369,7 @@ define([
 				return result;
 			};
 			
-			let offset = this.getStructureOffset(levelVO, pois, getPaths);
+			let offset = this.getStructureOffset(levelVO, pois, {}, getPaths);
 			let paths = getPaths(offset.x, offset.y);
 			this.createPaths(levelVO, paths, true);
 		},
@@ -403,7 +413,7 @@ define([
 				return result;
 			};
 			
-			let offset = this.getStructureOffset(levelVO, pois, getPaths);
+			let offset = this.getStructureOffset(levelVO, pois, {}, getPaths);
 			let paths = getPaths(offset.x, offset.y);
 			this.createPaths(levelVO, paths, true);
 		},
@@ -424,7 +434,7 @@ define([
 				return result;
 			};
 			
-			let offset = this.getStructureOffset(levelVO, pois, getPaths);
+			let offset = this.getStructureOffset(levelVO, pois, {}, getPaths);
 			let paths = getPaths(offset.x, offset.y);
 			this.createPaths(levelVO, paths, true);
 		},
@@ -459,7 +469,7 @@ define([
 				return result;
 			};
 			
-			let offset = this.getStructureOffset(levelVO, pois, getPaths);
+			let offset = this.getStructureOffset(levelVO, pois, {}, getPaths);
 			let paths = getPaths(offset.x, offset.y);
 			this.createPaths(levelVO, paths, true);
 		},
@@ -499,7 +509,7 @@ define([
 				return result;
 			};
 
-			let offset = this.getStructureOffset(levelVO, pois, getPaths);
+			let offset = this.getStructureOffset(levelVO, pois, {}, getPaths);
 			let paths = getPaths(offset.x, offset.y);
 			this.createPaths(levelVO, paths, true);
 		},
@@ -541,7 +551,7 @@ define([
 				return result;
 			};
 
-			let offset = this.getStructureOffset(levelVO, pois, getPaths);
+			let offset = this.getStructureOffset(levelVO, pois, {}, getPaths);
 			let paths = getPaths(offset.x, offset.y);
 			this.createPaths(levelVO, paths, true);
 		},
@@ -577,7 +587,7 @@ define([
 				return result;
 			}
 
-			let offset = this.getStructureOffset(levelVO, pois, getPaths);
+			let offset = this.getStructureOffset(levelVO, pois, {}, getPaths);
 			let paths = getPaths(offset.x, offset.y);
 			this.createPaths(levelVO, paths, true);
 		},
@@ -734,6 +744,8 @@ define([
 		},
 		
 		createRectangle: function (levelVO, i, startPos, w, h, startDirection, options, forceComplete, connectionPointsType) {
+			options = options || {};
+
 			var paths = this.getRectangle(levelVO, i, startPos, w, h, startDirection, options, forceComplete, connectionPointsType);
 			for (let i = 0; i < paths.length; i++) {
 				var pathResult = this.createPath(levelVO, paths[i].startPos, paths[i].dir, paths[i].len, forceComplete, options, paths[i].connectionPointType, i, paths.length);
@@ -744,6 +756,8 @@ define([
 		},
 		
 		createPathBetween: function (worldVO, levelVO, startPos, endPos, maxlen, options, connectionPointType) {
+			options = options || {};
+
 			let dist = Math.ceil(PositionConstants.getDistanceTo(startPos, endPos));
 			let result = { path: [], isComplete: true };
 			
@@ -1587,93 +1601,194 @@ define([
 			}
 		},
 		
-		getStructureOffset: function (levelVO, pois, getPathsFunc) {
+		getStructureOffset: function (levelVO, pois, params, getPathsFunc) {
 			let maxoffset = 10;
-
-			let offsetx = 0;
-			let offsety = 0;
 
 			pois = pois || [];
 
-			let scoreOffset = function (x, y) {
-				let score = 0;
-				let paths = getPathsFunc(x, y);
+			params = params || {};
+			
+			let paramNames = Object.keys(params);
 
-				// POIs on paths (max 1 point per POI even if on multiple paths)
+			let countPoisOnPaths = function (paths) {
+				let count = 0;
 				for (let p = 0; p < pois.length; p++) {
 					let poi = pois[p];
+					
 					let maxPOIScore = 0;
 					for (let i = 0; i < paths.length; i++) {
 						let path = paths[i];
 						if (PositionConstants.isOnPath(poi, path.startPos, path.dir, path.len)) {
+							// in on path, count one
 							maxPOIScore = Math.max(maxPOIScore, 1);
 						} else if (PositionConstants.getIndexOnPath(poi, path.startPos, path.dir, path.len) !== undefined) {
+							// if on extended path, count half
 							maxPOIScore = Math.max(maxPOIScore, 0.5);
 						}
 					}
 
-					score += maxPOIScore;
+					count += maxPOIScore;
 				}
 
-				// score per position on path (blocking features, existing sectors)
+				return count;
+			};
+
+			let scoreSectorPositionAwkwardness = function (pos) {
+				let neighbourCount = WorldCreatorHelper.getNeighbourCount(levelVO, pos);
+				if (neighbourCount < 2) return 0;
+
+				let neighbours = WorldCreatorHelper.getNeighbours(levelVO, pos);
+				let mainDirections = PositionConstants.getLevelDirections(true);
+
+				for (let d in mainDirections) {
+					let direction = mainDirections[d];
+					let previous = PositionConstants.getNextCounterClockWise(direction);
+					let next = PositionConstants.getNextClockWise(direction);
+					let opposite = PositionConstants.getOppositeDirection(direction);
+
+					// 3 neighbours all 90 degrees from another
+					if (neighbourCount == 3 && neighbours[direction] && neighbours[previous] && neighbours[next]) return 2;
+				}
+
+				return 0;
+			};
+
+			let scorePaths = function (paths) {
+				let score = 0;
+
 				let totalDistance = 0;
-				let totalPositions = 0;
+				let numExistingSectors = 0;
+				let numAlignedSectors = 0;
+				let numPositions = 0;
+
 				for (let i = 0; i < paths.length; i++) {
 					let path = paths[i];
+
+					let continuousOverlap = 0;
+					let maxContinuousOverlap = 0;
+
+					let numExistingSectorsOnExtendedPath  = 0;
+
 					for (let j = 0; j < path.len; j++) {
 						let pos = PositionConstants.getPositionOnPath(path.startPos, path.dir, j);
 
-						// - blocking features
-						if (WorldCreatorHelper.containsBlockingFeature(pos, LevelStructureGenerator.currentFeatures, true)) {
-							score--;
+						// - position features
+						score -= WorldCreatorHelper.containsBlockingFeature(pos, LevelStructureGenerator.currentFeatures, true) ? 1 : 0;
+
+						// - pois not on path but aligned so it would be easy to connect them (if trying to align to multiple poi, otherwise the one needs to be on the path period)
+						if (pois.length > 1) {
+							for (let p = 0; p < pois.length; p++) {
+								let poi = pois[p];
+								
+								score += PositionConstants.getPositionAlignment(pos, poi);
+							}
 						}
+
+						let hasSector = levelVO.hasSector(pos.sectorX, pos.sectorY);
 						
-						// - existing neighbours
-						let neighbourCount = levelVO.getNeighbourCount(pos.sectorX, pos.sectorY);
-						if (levelVO.hasSector(pos.sectorX, pos.sectorY)) {
-							score += 0.1;
-						} else if (neighbourCount > 2) {
-							score -= 0.5 * neighbourCount;
+						if (hasSector) {
+							numExistingSectors++;
+							continuousOverlap++;
+							if (continuousOverlap > maxContinuousOverlap) maxContinuousOverlap = continuousOverlap;
+						} else {
+							score -= scoreSectorPositionAwkwardness(pos);
 						}
 
-						// - position from which it's easy to draw a path to poi
-						for (let p = 0; p < pois.length; p++) {
-							let poi = pois[p];
-							let diffX = Math.abs(poi.sectorX - pos.sectorX);
-							let diffY = Math.abs(poi.sectorY - pos.sectorY);
-							let isPathableStraight = (diffX === 0 && diffY > 1) || (diffY === 0 && diffX > 1);
-							if (isPathableStraight) score += 0.001;
-
-							let isPathableDiagonal = diffX === diffY && diffY > 2;
-							if (isPathableDiagonal) score += 0.0005;
+						let existingConnectionPoints = levelVO.getPendingConnectionPoints();
+						for (let c = 0; c < existingConnectionPoints.length; c++) {
+							if (PositionConstants.getPositionAlignment(pos, existingConnectionPoints[c].position)) {
+								numAlignedSectors++;
+								break;
+							}
 						}
 
-						// - save distance for later
 						let distance = PositionConstants.getDistanceTo(pos, levelVO.levelCenterPosition);
 						totalDistance += distance;
-						totalPositions++;
+						numPositions++;
 					}
+
+					for (let j = -20; j < path.len + 20; j++) {
+						if (j >= 0 && j < path.len) continue;
+						let pos = PositionConstants.getPositionOnPath(path.startPos, path.dir, j);
+						let hasSector = levelVO.hasSector(pos.sectorX, pos.sectorY);
+						if (hasSector) numExistingSectorsOnExtendedPath++;
+					}
+
+					// - continuous path overlap with existing sectors
+					if (maxContinuousOverlap > 2) score += maxContinuousOverlap;
+
+					// - existing sectors aligned with path
+					if (numExistingSectorsOnExtendedPath > 1) score++;
+					if (numExistingSectorsOnExtendedPath > 6) score++;
 				}
 
+				// - connects or easy to connect to something existing
+				if (numExistingSectors > 0 || numAlignedSectors) score++;
+				if (numAlignedSectors > 1) score++;
+
 				// all else being equal center on level center pos
-				let averageDistance = Math.round(totalDistance / totalPositions);
-				score -= averageDistance / 100;
+				let averageDistance = Math.round(totalDistance / numPositions);
+				score -= averageDistance / 1000;
+
+				return score || 0;
+			};
+
+			let scoreOffset = function (x, y, p) {
+				let score = 0;
+				let paths = getPathsFunc(x, y, p);
+
+				// - primary: number of POIs on paths
+				let poiw = (pois.length > 1 ? 100 : 1000);
+				score += countPoisOnPaths(paths) * poiw;
+
+				if (pois.length > 0  && score <= 0) return score;
+
+				// - secondary: how paths align to existing structure in general
+				score += scorePaths(paths);
 
 				return score;
 			};
 
+			let positions = PositionConstants.getAllPositionsInArea(null, maxoffset);
+
+			let paramCombinations = [ {} ];
+
+			for (let paramName of paramNames) {
+				let newResult = [];
+				for (let paramCombination of paramCombinations) {
+					for (let value of params[paramName]) {
+						let newCombination = { ...paramCombination, [paramName]: value };
+						newResult.push(newCombination);
+					}
+				}
+
+				paramCombinations = newResult; 
+			}
+
+			let candidates = [];
+
+			for (let i = 0; i < positions.length; i++) {
+				let pos = positions[i];
+				for (let j = 0; j < paramCombinations.length; j++) {
+					candidates.push({ sectorX: pos.sectorX, sectorY: pos.sectorY, params: paramCombinations[j] })
+				}
+			}
+
 			let bestScore = -99;
-			let candidates = PositionConstants.getAllPositionsInArea(null, maxoffset);
+			let result = { x: 0, y: 0, params: {} };
 
 			for (let i = 0; i < candidates.length; i++) {
-				var score = scoreOffset(candidates[i].sectorX, candidates[i].sectorY);
+				let candidate = candidates[i];
+				let score = scoreOffset(candidate.sectorX, candidate.sectorY, candidate.params);
 				if (score > bestScore) {
-					offsetx = candidates[i].sectorX;
-					offsety = candidates[i].sectorY;
+					result.x = candidate.sectorX;
+					result.y = candidate.sectorY;
+					result.params = candidate.params;
 					bestScore = score;
 				}
 			}
-			return { x: offsetx, y: offsety };
+
+			return result;
 		},
 		
 		getPathStartPositions: function (s1, s2, levelVO, options) {

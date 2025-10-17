@@ -89,6 +89,19 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 			}
 			return result;
 		},
+
+		getPositionAlignment: function (pos1, pos2) {
+			let diffX = Math.abs(pos1.sectorX - pos2.sectorX);
+			let diffY = Math.abs(pos1.sectorY - pos2.sectorY);
+
+			let isPathableStraight = (diffX === 0 && diffY > 1) || (diffY === 0 && diffX > 1);
+			if (isPathableStraight) return 1;
+
+			let isPathableDiagonal = diffX === diffY && diffY > 2;
+			if (isPathableDiagonal) return 0.5;
+
+			return 0;
+		},
 		
 		getYDirectionFrom: function (sectorPosFrom, sectorPosTo) {
 			if (sectorPosFrom.sectorY < sectorPosTo.sectorY) return this.DIRECTION_SOUTH;
