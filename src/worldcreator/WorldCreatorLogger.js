@@ -25,6 +25,11 @@ define(['core/ConsoleLogger'], function (ConsoleLogger) {
 			log.i("WARN: " + msg, WorldCreatorLogger.context, WorldCreatorLogger.warningStyle)
 		},
 		
+		e: function (msg) {
+			if (!ConsoleLogger.logInfo) return;
+			log.e(msg, WorldCreatorLogger.context, WorldCreatorLogger.warningStyle)
+		},
+		
 		s: function (msg, ...style) {
 			if (!ConsoleLogger.logInfo) return;
 			log.i(msg, WorldCreatorLogger.context, ...style)

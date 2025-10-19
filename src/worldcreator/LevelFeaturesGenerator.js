@@ -130,6 +130,7 @@ define([
 			};
 			
 			let setPathZone = function (path, zone, areaMin, areaMax, forceArea) {
+				if (!path) return;
 				for (let i = 0; i < path.length; i++) {
 					var pos = path[i];
 					var sector = levelVO.getSector(pos.sectorX, pos.sectorY);
@@ -160,7 +161,7 @@ define([
 					setPathZone(pathToCamp, WorldConstants.ZONE_CAMP_TO_PASSAGE, 1, 2);
 				}
 				// - rest ZONE_POI_1, ZONE_POI_2, ZONE_EXTRA_CAMPABLE depending on stage and vornoi points
-				var points = WorldCreatorHelper.getVornoiPoints(seed, worldVO, levelVO);
+				var points = WorldCreatorHelper.getZoneVornoiPoints(seed, worldVO, levelVO);
 				for (let i = 0; i < levelVO.sectors.length; i++) {
 					var sector = levelVO.sectors[i];
 					var closestPoint = null;

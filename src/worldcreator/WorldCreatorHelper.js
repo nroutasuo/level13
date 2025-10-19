@@ -209,7 +209,7 @@ define([
 			return result;
 		},
 		
-		getVornoiPoints: function (seed, worldVO, levelVO) {
+		getZoneVornoiPoints: function (seed, worldVO, levelVO) {
 			var level = levelVO.level;
 			var points = [];
 			var addPoint = function (position, zone, minDistance) {

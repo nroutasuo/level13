@@ -152,6 +152,16 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 			}
 			return result;
 		},
+
+		getAngleBetween: function (d1, d2) {
+			if (d1 == d2) return 0;
+			if (this.getOppositeDirection(d1) == d2) return 180;
+			if (this.getNextClockWise(d1) == d2) return 90;
+			if (this.getNextCounterClockWise(d1) == d2) return 90;
+			if (this.getNextClockWise(d1, true) == d2) return 45;
+			if (this.getNextCounterClockWise(d1, true) == d2) return 45;
+			return 270;
+		},
 		
 		getDistanceTo: function (sectorPosFrom, sectorPosTo) {
 			var xs = sectorPosFrom.sectorX - sectorPosTo.sectorX;

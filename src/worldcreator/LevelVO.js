@@ -66,7 +66,8 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 
 			this.invalidPositions = [];
 			this.localeSectors = [];
-			this.pendingConnectionPointsByStage = [];
+			this.pendingConnectionPointsByStage = {};
+			this.allConnectionPoints = [];
 			this.sectorsByPos = [];
 			this.sectorsByStage = [];
 
@@ -200,6 +201,19 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			return result;
 		},
 		
+		getNeighbourDirections: function (sectorX, sectorY, stage, excludeStage, excludeDiagonals) {
+			let result = [];
+			let startingPos = new PositionVO(this.level, sectorX, sectorY);
+			for (let i in PositionConstants.getLevelDirections()) {
+				let direction = PositionConstants.getLevelDirections(excludeDiagonals)[i];
+				let neighbourPos = PositionConstants.getNeighbourPosition(startingPos, direction);
+				if (this.hasSector(neighbourPos.sectorX, neighbourPos.sectorY, stage, excludeStage)) {
+					result.push(direction);
+				}
+			}
+			return result;
+		},
+		
 		getNeighbourCountWeighted: function (sectorX, sectorY, stage, excludeStage) {
 			let numNeighboursWithoutDiagonals = this.getNeighbourCount(sectorX, sectorY, stage, excludeStage, false);
 			let numNeighboursWithDiagonals = this.getNeighbourCount(sectorX, sectorY, stage, excludeStage, true);
@@ -230,12 +244,13 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 		},
 		
 		addPendingConnectionPoint: function (point) {
-			var sector = this.getSector(point.position.sectorX, point.position.sectorY);
+			let sector = this.getSector(point.position.sectorX, point.position.sectorY);
 			if (!sector) return;
 			sector.isConnectionPoint = true;
-			var stage = sector.stage;
+			let stage = sector.stage;
 			if (!this.pendingConnectionPointsByStage[stage]) this.pendingConnectionPointsByStage[stage] = [];
 			this.pendingConnectionPointsByStage[stage].push(point);
+			this.allConnectionPoints.push(point);
 		},
 		
 		getPendingConnectionPoints: function (stage) {
@@ -308,6 +323,33 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 				}
 			}
 			return false;
+		},
+
+		getAreaDensity: function (sectorX, sectorY, d) {
+			let filled = 0;
+			let total = 0;
+			for (let x = sectorX - d; x <= sectorX + d; x++) {
+				for (let y = sectorY - d; y <= sectorY + d; y++) {
+					total++;
+					if (this.hasSector(x, y)) filled++;
+				}
+			}
+
+			return filled / total;
+		},
+
+		isCrossing: function (sectorX, sectorY) {
+			let neighbourCount = this.getNeighbourCount(sectorX, sectorY);
+			if (neighbourCount > 3) return true;
+			if (neighbourCount < 3) return false;
+
+			let neighbourDirections = this.getNeighbourDirections(sectorX, sectorY);
+			
+			if (PositionConstants.getAngleBetween(neighbourDirections[0], neighbourDirections[1]) < 90) return false;
+			if (PositionConstants.getAngleBetween(neighbourDirections[0], neighbourDirections[2]) < 90) return false;
+			if (PositionConstants.getAngleBetween(neighbourDirections[1], neighbourDirections[2]) < 90) return false;
+
+			return true;
 		},
 		
 		containsPosition: function (position) {
