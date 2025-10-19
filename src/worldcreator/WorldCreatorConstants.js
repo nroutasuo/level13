@@ -36,6 +36,8 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 		CONNECTION_POINTS_PATH_MIDDLE2: "p-middle2",
 		CONNECTION_POINTS_PATH_CW: "p-cw",
 		CONNECTION_POINTS_PATH_CCW: "p-ccw",
+		CONNECTION_POINTS_PATH_T: "p-t",
+		CONNECTION_POINTS_PATH_CONTINUE: "p-cont",
 		CONNECTION_POINTS_PATH_ALL: "p-all",
 		CONNECTION_POINTS_PATH_EXTRA: "p-extra",
 		CONNECTION_POINTS_PATH_NONE: "p-none",
