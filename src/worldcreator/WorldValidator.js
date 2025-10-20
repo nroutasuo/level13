@@ -6,11 +6,12 @@ define([
 	'game/constants/PositionConstants',
 	'game/constants/WorldConstants',
 	'game/constants/UpgradeConstants',
+	'worldcreator/WorldCreatorConstants',
 	'worldcreator/WorldCreatorHelper',
 	'worldcreator/WorldCreatorRandom',
 	'worldcreator/WorldTemplateVO',
 ], function (
-	Ash, MathUtils, ObjectUtils, ItemsHelper, PositionConstants, WorldConstants, UpgradeConstants, WorldCreatorHelper, WorldCreatorRandom, WorldTemplateVO
+	Ash, MathUtils, ObjectUtils, ItemsHelper, PositionConstants, WorldConstants, UpgradeConstants, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldTemplateVO
 ) {
 	let context = "WorldValidator";
 
@@ -286,7 +287,20 @@ define([
 			let issues = [];
 
 			// required paths (between camp and passages)
+			let excursionStartPosition = levelVO.getExcursionStartPosition();
+			let excursionLen = WorldCreatorConstants.getMaxPathLength(levelVO.campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2);
 			let requiredPaths = WorldCreatorHelper.getRequiredPaths(worldVO, levelVO);
+
+			for (let i = 0; i < levelVO.sectors.length; i++) {
+				let sectorVO = levelVO.sectors[i];
+				let pathType = null;
+				if (sectorVO.locales.length > 0) pathType = "locale";
+				if (sectorVO.hasWorkshop) pathType = "workshop";
+				if (sectorVO.hasTradeConnectorSpot) pathType = "hasTradeConnectorSpot";
+				if (pathType) {
+					requiredPaths.push({ start: excursionStartPosition, end: sectorVO.position, maxlen: excursionLen, isValidationOnly: true, type: pathType });
+				}
+			}
 
 			for (let i = 0; i < requiredPaths.length; i++) {
 				let path = requiredPaths[i];
@@ -294,19 +308,23 @@ define([
 				let endPos = path.end.clone();
 				if (startPos.equals(endPos)) continue;
 				let sectorPath = WorldCreatorRandom.findPath(worldVO, startPos, endPos, false, true, path.stage);
+
 				if (!sectorPath || sectorPath.length < 1) {
 					issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "required path " + path.type + " on level " + levelVO.level + " is missing" });
 					continue;
 				} 
+
 				if (path.maxlen > 0 && sectorPath.length > path.maxlen) {
 					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "required path " + path.type + " on level " + levelVO.level + " is too long (" + sectorPath.length + "/" + path.maxlen + ")" });
 				}
 
-				for (let s = 0; s < sectorPath.length; s++) {
-					let pathPosition = sectorPath[i];
-					let pathSectorVO = levelVO.getSectorByPos(pathPosition);
-					if (pathSectorVO.criticalPathTypes.indexOf(path.type) < 0) {
-						issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "critical path " + path.type + " not marked on sector " + pathSectorVO.position });
+				if (!path.isValidationOnly) {
+					for (let s = 0; s < sectorPath.length; s++) {
+						let pathPosition = sectorPath[i];
+						let pathSectorVO = levelVO.getSectorByPos(pathPosition);
+						if (pathSectorVO.criticalPathTypes.indexOf(path.type) < 0) {
+							issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "critical path " + path.type + " not marked on sector " + pathSectorVO.position });
+						}
 					}
 				}
 			}
@@ -577,14 +595,11 @@ define([
 			let issues = [];
 
 			let distanceToOrigo = Math.round(PositionConstants.getDistanceTo(sectorVO.position, { sectorX: 0, sectorY: 0 }));
-			if (distanceToOrigo > 40) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " is too far " + distanceToOrigo + " from origo" });
-
-			let distanceToLevelCenter = Math.round(PositionConstants.getDistanceTo(sectorVO.position, levelVO.getExcursionStartPosition()));
-			if (distanceToLevelCenter > 30) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " is too far " + distanceToLevelCenter + " from level excursion start position" });
+			if (distanceToOrigo > 40) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " is too far (" + distanceToOrigo + ") from origo" });
 
 			let pathToCrossing = WorldValidator.getShortestPathToMatchingSector(worldVO, levelVO, sectorVO, s => levelVO.isCrossing(s.position.sectorX, s.position.sectorY));
 			let distanceToCrossing = pathToCrossing ? pathToCrossing.length : 999;
-			if (distanceToCrossing > 14) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " is too far " + distanceToCrossing + " from nearest crossing" });
+			if (distanceToCrossing > 14) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " is too far (" + distanceToCrossing + ") from nearest crossing" });
 
 			return { isValid: issues.length === 0, issues: issues };
 		},
