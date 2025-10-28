@@ -179,7 +179,7 @@ define([
 			let getPaths = function (ox, oy, params) {
 				let isDiagonal = params.isDiagonal;
 				let center = new PositionVO(pos.level, pos.sectorX + ox, pos.sectorY + oy);
-				return LevelStructureGenerator.getRectangleFromCenter(levelVO, 0, center, params.w, params.h, true, isDiagonal, WorldCreatorConstants.CONNECTION_POINTS_RECT_CORNERS);
+				return LevelStructureGenerator.getRectangleFromCenter(levelVO, center, params.w, params.h, true, isDiagonal, WorldCreatorConstants.CONNECTION_POINTS_RECT_CORNERS);
 			};
 
 			let existingSectors = levelVO.sectors.concat();
@@ -193,11 +193,11 @@ define([
 		
 		createCentralParallels: function (s1, s2, s3, worldVO, levelVO, position, pois) {
 			// choose number of streets 2-4 (fewer on levels with few sectors overall)
-			let max = Math.min(4, Math.round(levelVO.numSectors/25));
+			let max = Math.min(4, Math.round(levelVO.numSectors/24));
 			let num = WorldCreatorRandom.randomInt(s1, 2, max + 1);
 			
 			// choose length
-			let minlen = Math.min(7 + (max - num) * 2, levelVO.numSectors / 10);
+			let minlen = Math.min(7 + (max - num) * 2, Math.round(levelVO.numSectors / 10));
 			let maxlenstep = Math.min(5, Math.round(levelVO.numSectors / 20));
 			let len = minlen + WorldCreatorRandom.randomInt(s2, 0, maxlenstep) * 2;
 			
@@ -207,36 +207,37 @@ define([
 			let perpendicularDir = PositionConstants.getNextClockWise(PositionConstants.getNextClockWise(dir, true), true);
 			
 			// choose distance between streets
-			let dist = 3 + WorldCreatorRandom.randomInt(s1, 0, 4);
+			let maxDistance = Math.min(7, Math.round(levelVO.numSectors/15));
+			let dist = 3 + WorldCreatorRandom.randomInt(s1, 0, maxDistance - 3 + 1);
 			
 			// define paths
-			let getStreetCenter = function (i, ox, oy) {
-				let streetDist = -(num-1)*dist/2 + i*dist;
+			let getStreetCenter = function (i, ox, oy, d) {
+				let streetDist = -(num-1)*d/2 + i*d;
 				let base = PositionConstants.getPositionOnPath(position, perpendicularDir, streetDist, true);
 				return new PositionVO(base.level, base.sectorX + ox, base.sectorY + oy);
 			};
-			let getPaths = function (ox, oy) {
+			let getPaths = function (ox, oy, params) {
+				let d = params.d;
 				let result = [];
 				for (let i = 0; i < num; i++) {
-					var streetCenter = getStreetCenter(i, ox, oy);
-					var startPos = PositionConstants.getPositionOnPath(streetCenter, oppositeDir, Math.floor(len / 2));
-					result.push({ startPos: startPos, dir: dir, len: len});
+					let streetCenter = getStreetCenter(i, ox, oy, d);
+					let startPos = PositionConstants.getPositionOnPath(streetCenter, oppositeDir, Math.floor(len / 2));
+					result.push({ startPos: startPos, dir: dir, len: len, connectionPointType: WorldCreatorConstants.CONNECTION_POINTS_PATH_EXTRA });
 				}
 				if (num > 1) {
-					var street1Center = getStreetCenter(0, ox, oy);
-					var offset1 = WorldCreatorRandom.randomInt(s1, -len/3, len/3);
-					var connectionPoint1 = PositionConstants.getPositionOnPath(street1Center, oppositeDir, offset1);
-					result.push({ startPos: connectionPoint1, dir: perpendicularDir, len: dist * (num-1) + 1 });
+					let street1Center = getStreetCenter(0, ox, oy, d);
+					let connectionPoint1 = PositionConstants.getPositionOnPath(street1Center, oppositeDir, 0);
+					result.push({ startPos: connectionPoint1, dir: perpendicularDir, len: d * (num-1) + 1 });
 				}
 				return result;
 			};
 			
 			// check for offset to align to poi
-			let offset = this.getStructureOffset(levelVO, pois, {}, getPaths);
+			let offset = this.getStructureOffset(levelVO, pois, { d: [ dist - 1, dist, dist + 1 ] }, getPaths);
 			
 			// create sectors
-			let paths = getPaths(offset.x, offset.y);
-			this.createPaths(levelVO, paths, true, null, WorldCreatorConstants.CONNECTION_POINTS_PATH_ENDS);
+			let paths = getPaths(offset.x, offset.y, offset.params);
+			this.createPaths(levelVO, paths, true, null, WorldCreatorConstants.CONNECTION_POINTS_PATH_ALL);
 		},
 
 		createCentralAvenue: function (s1, s2, s3, worldVO, levelVO, position, pois) {
@@ -245,9 +246,9 @@ define([
 			let num = 2;
 			
 			// choose length
-			let minlen = Math.min(Math.round(levelVO.numSectors / 3), 9);
+			let minlen = Math.min(Math.round(levelVO.numSectors / 3), 11);
 			let maxlen = Math.min(Math.round(levelVO.numSectors / 9), 30);
-			let len = Math.floor(WorldCreatorRandom.randomInt(s1, minlen, maxlen + 1)) / 2 * 2 + 1;
+			let len = Math.floor(WorldCreatorRandom.randomInt(s1, minlen, maxlen + 1) / 2) * 2 + 1;
 			
 			// choose direction
 			let dir = WorldCreatorRandom.randomDirections(s2, 1, allowDiagonal)[0];
@@ -266,6 +267,7 @@ define([
 				let base = PositionConstants.getPositionOnPath(position, perpendicularDir, streetDist, true);
 				return new PositionVO(base.level, base.sectorX + ox, base.sectorY + oy);
 			};
+
 			let getPaths = function (ox, oy) {
 				let result = [];
 				// two streets
@@ -281,7 +283,7 @@ define([
 					let trailingEnds = len > 12 && WorldCreatorRandom.randomBool(s1);
 					let endsOffset = Math.floor(trailingEnds ? len/2 - 3 : len/2);
 					connectionOffsets.push(Math.floor(-endsOffset));
-					connectionOffsets.push(Math.floor(endsOffset + 1));
+					connectionOffsets.push(Math.floor(endsOffset));
 					for (let i = 0; i < connectionOffsets.length; i++) {
 						let street1Center = getStreetCenter(0, ox, oy);
 						let offset1 = connectionOffsets[i];
@@ -347,9 +349,10 @@ define([
 			var sizeFactor = Math.round(levelVO.numSectors / 50);
 			var connected = WorldCreatorRandom.randomBool(s1);
 			var horizontal = WorldCreatorRandom.randomBool(s2);
-			var size = 5 + WorldCreatorRandom.randomInt(s2, 0, sizeFactor) * 2;
-			var mindist = Math.floor(size / 2);
+			var size = 5 + WorldCreatorRandom.randomInt(s2, 0, Math.min(sizeFactor, 5)) * 2;
+			var mindist = Math.max(3, Math.floor(size / 3));
 			var dist = mindist + (connected ? 0 : WorldCreatorRandom.randomInt(s2, 1, sizeFactor) * 2);
+			if (dist > size) dist = size;
 			var x = horizontal ? dist : 0;
 			var y = horizontal ? 0 : dist;
 			
@@ -357,8 +360,8 @@ define([
 				let result = [];
 				var pos = new PositionVO(position.level, position.sectorX + ox, position.sectorY + oy)
 				var connectionPointType = size <= 5 ? WorldCreatorConstants.CONNECTION_POINTS_RECT_CORNERS : WorldCreatorConstants.CONNECTION_POINTS_RECT_OUTER;
-				result = result.concat(LevelStructureGenerator.getRectangleFromCenter(levelVO, 0, new PositionVO(l, pos.sectorX+x, pos.sectorY+y), size, size, true, false, connectionPointType));
-				result = result.concat(LevelStructureGenerator.getRectangleFromCenter(levelVO, 0, new PositionVO(l, pos.sectorX-x, pos.sectorY-y), size, size, true, false, connectionPointType));
+				result = result.concat(LevelStructureGenerator.getRectangleFromCenter(levelVO, new PositionVO(l, pos.sectorX+x, pos.sectorY+y), size, size, true, false, connectionPointType));
+				result = result.concat(LevelStructureGenerator.getRectangleFromCenter(levelVO, new PositionVO(l, pos.sectorX-x, pos.sectorY-y), size, size, true, false, connectionPointType));
 				
 				if (!connected) {
 					var pathpos = WorldCreatorRandom.randomInt(s1, Math.ceil(-dist/2), Math.floor(dist/2));
@@ -399,9 +402,9 @@ define([
 				var pos = new PositionVO(position.level, position.sectorX + ox, position.sectorY + oy);
 				pos.normalize();
 				if (innerS != outerS) {
-					result = result.concat(LevelStructureGenerator.getRectangleFromCenter(levelVO, 0, pos, innerS, innerS, false, isDiagonal, WorldCreatorConstants.CONNECTION_POINTS_RECT_OUTER));
+					result = result.concat(LevelStructureGenerator.getRectangleFromCenter(levelVO, pos, innerS, innerS, false, isDiagonal, WorldCreatorConstants.CONNECTION_POINTS_RECT_OUTER));
 				}
-				result = result.concat(LevelStructureGenerator.getRectangleFromCenter(levelVO, 0, pos, outerS, outerS, false, isDiagonal, WorldCreatorConstants.CONNECTION_POINTS_RECT_OUTER));
+				result = result.concat(LevelStructureGenerator.getRectangleFromCenter(levelVO, pos, outerS, outerS, false, isDiagonal, WorldCreatorConstants.CONNECTION_POINTS_RECT_OUTER));
 				
 				var includeDiagonals = outerS - innerS > 4;
 				var connectionDirs = WorldCreatorRandom.randomDirections(s3 + 1001, numConnections, includeDiagonals);
@@ -423,10 +426,10 @@ define([
 		},
 		
 		createCentralRectanglesSimple: function (s1, s2, s3, worldVO, levelVO, position, pois) {
-			let isDiagonal = WorldCreatorRandom.random(s1) < 0.5;
+			let isDiagonal = WorldCreatorRandom.random(s1) < 0.4;
 
-			let minSize = isDiagonal ? 4 : 7;
-			let maxSize = Math.min(Math.round(levelVO.numSectors / 9), 20);
+			let minSize = isDiagonal ? 4 : 8;
+			let maxSize = Math.min(Math.round(levelVO.numSectors / 9), 30);
 			if (isDiagonal) maxSize = Math.min(maxSize, 12);
 
 			let size = WorldCreatorRandom.randomInt(s1, minSize, maxSize + 1);
@@ -434,7 +437,7 @@ define([
 			let getPaths = function (ox, oy) {
 				let pos = new PositionVO(position.level, position.sectorX + ox, position.sectorY + oy)
 				let connectionPointType = WorldCreatorConstants.CONNECTION_POINTS_RECT_ALL;
-				let result = LevelStructureGenerator.getRectangleFromCenter(levelVO, 0, pos, size, size, true, isDiagonal, connectionPointType);
+				let result = LevelStructureGenerator.getRectangleFromCenter(levelVO, pos, size, size, true, isDiagonal, connectionPointType);
 				return result;
 			};
 			
@@ -447,6 +450,7 @@ define([
 			let l = levelVO.level;
 			
 			let maxEdgeLen = MathUtils.clamp(Math.floor(levelVO.numSectors / 20), 5, 11);
+			let maxDiagonalEdgeLen = MathUtils.clamp(Math.floor(levelVO.numSectors / 20), 3, 11);
 
 			let straightEdgeLength = 1 + WorldCreatorRandom.randomInt(s1, 1, 5) * 2;
 			let diagonalEdgeLength = 1 + WorldCreatorRandom.randomInt(s2, 1, 4) * 2;
@@ -461,7 +465,7 @@ define([
 
 			let getPaths = function (ox, oy, params) {
 				let straightLen = MathUtils.clamp(params.len1, 3, maxEdgeLen);
-				let diagonalLen = MathUtils.clamp(params.len2, 3, maxEdgeLen);
+				let diagonalLen = MathUtils.clamp(params.len2, 3, maxDiagonalEdgeLen);
 
 				let centerX = position.sectorX + ox;
 				let centerY = position.sectorY + oy;
@@ -532,7 +536,7 @@ define([
 			let diagonalDirection = WorldCreatorRandom.randomItemFromArray(levelVO.level, diagonalDirections);
 
 			let diagonalLength = 1 + WorldCreatorRandom.randomInt(s1, 3, 6) * 2;
-			if (levelVO.numSectors > 100) diagonalLength += 2;
+			if (levelVO.numSectors > 100) diagonalLength += 1;
 			
 			let hasBottomOvershoot = WorldCreatorRandom.randomBool(s3, 0.75);
 			let bottomOvershoot = 3 + WorldCreatorRandom.randomInt(s2, 0, 4);
@@ -590,7 +594,7 @@ define([
 
 				let center = new PositionVO(position.level, position.sectorX + ox, position.sectorY + oy)
 
-				result = result.concat(LevelStructureGenerator.getRectangleFromCenter(levelVO, 0, center, size, size, true));
+				result = result.concat(LevelStructureGenerator.getRectangleFromCenter(levelVO, center, size, size, true));
 
 				if (isDiagonal) {
 					result = result.concat(getCorner(center, PositionConstants.DIRECTION_NE));
@@ -613,11 +617,11 @@ define([
 		},
 		
 		createCentralGrid: function (s1, s2, s3, worldVO, levelVO, position, pois) {
-			let numMax = MathUtils.clamp(Math.round(levelVO.numSectors / 26), 2, 4);
+			let numMax = MathUtils.clamp(Math.round(levelVO.numSectors / 30), 2, 4);
 			let isSymmetricalCount = WorldCreatorRandom.randomBool(s1);
 			let numX = WorldCreatorRandom.randomInt(s2 / 2, 2, numMax + 1);
 			let numY = isSymmetricalCount ? numX : WorldCreatorRandom.randomInt(s3 / 2, 2, numMax + 1);
-			let isSymmetricalSmallRects = WorldCreatorRandom.randomBool(s2);
+			let isSymmetricalSmallRects = WorldCreatorRandom.randomBool(s2, 0.3);
 			let maxSize = numX > 2 || numY > 2 ? 5 : 7;
 			let w = WorldCreatorRandom.randomInt(s1 * 2, 4, maxSize + 1);
 			let h = isSymmetricalSmallRects ? w : WorldCreatorRandom.randomInt(s3 * 2, 4, maxSize + 1);
@@ -628,7 +632,7 @@ define([
 			let startX = Math.round(position.sectorX + w/2 - totalWidth / 2);
 			let startY = Math.round(position.sectorY + h/2 - totalHeight / 2);
 
-			let forceSkipSomeEdges = numX === numMax && numY === numMax;
+			let forceSkipSomeEdges = numX > 2 && numY > 2;
 			let skipSomeEdgesProbability = (numX + numY) / 10;
 			let skipSomeEdges = forceSkipSomeEdges || WorldCreatorRandom.randomBool(worldVO.seed, skipSomeEdgesProbability);
 
@@ -646,12 +650,12 @@ define([
 							skipEdgeProbability = MathUtils.clamp(skipEdgeProbability - 0.1, 0, 1);
 							continue;
 						} else {
-							skipEdgeProbability = MathUtils.clamp(skipEdgeProbability + 0.05, 0, 1);
+							skipEdgeProbability = MathUtils.clamp(skipEdgeProbability + (forceSkipSomeEdges ? 0.1 : 0.05), 0, 1);
 						}
 
 						let connectionPointType = WorldCreatorConstants.CONNECTION_POINTS_RECT_CORNERS;
 						let pos = new PositionVO(position.level, startX + x*w - x + ox, startY + y*h - y + oy)
-						let pathResult = LevelStructureGenerator.getRectangleFromCenter(levelVO, 0, pos, w, h, true, false, connectionPointType);
+						let pathResult = LevelStructureGenerator.getRectangleFromCenter(levelVO, pos, w, h, true, false, connectionPointType);
 						result = result.concat(pathResult);
 					}
 				}
@@ -687,7 +691,7 @@ define([
 				for (let i = 0; i < num; i++) {
 					let x = startX + i * s + i * d;
 					let pos = new PositionVO(l, x, center.sectorY);
-					let pathResult = LevelStructureGenerator.getRectangleFromCenter(levelVO, 0, pos, s, s, true, false, WorldCreatorConstants.CONNECTION_POINTS_RECT_CORNERS);
+					let pathResult = LevelStructureGenerator.getRectangleFromCenter(levelVO, pos, s, s, true, false, WorldCreatorConstants.CONNECTION_POINTS_RECT_CORNERS);
 					result = result.concat(pathResult);
 				}
 
@@ -745,9 +749,9 @@ define([
 					this.createRandomPaths(seed, attempts, levelVO, options, numRemaining + numPadding);
 				}
 				numCurrent = levelVO.getNumSectorsByStage(stage);
-				var numAfter = numCurrent;
-				var numCreated = numAfter - numBefore;
-				var isSuccess = numCreated > 1;
+				let numAfter = numCurrent;
+				let numCreated = numAfter - numBefore;
+				let isSuccess = numCreated > 1;
 				if (isSuccess) {
 					failures = 0;
 				} else {
@@ -800,81 +804,82 @@ define([
 			let stage = levelVO.getSector(pathStartPos.sectorX, pathStartPos.sectorY).stage;
 			if (!options.stage) options.stage = pathStartPos.stage || stage;
 
-			let startDirection = this.getPathDirection(s1, s2, pathStartPoint);
+			let possibleDirections = this.getPossiblePathDirections(s1, s2, pathStartPoint, 0.2);
 									
 			let maxRectangleSizeFromSideLen = Math.floor(WorldCreatorConstants.SECTOR_PATH_LENGTH_MAX * 0.75);
-			let maxRectangleSizeFromLevelPropotions = Math.ceil(levelVO.numSectors) / 11;
-			let maxRectangleSizeFromMaxLen = maxlen/4;
+			let maxRectangleSizeFromLevelPropotions = Math.ceil(levelVO.numSectors / 11);
+			let maxRectangleSizeFromMaxLen = Math.ceil(maxlen/5);
 			let minRectangleSize = 4;
 			let maxRectangleSize = Math.min(maxRectangleSizeFromSideLen, maxRectangleSizeFromLevelPropotions, maxRectangleSizeFromMaxLen);
 			
-			let w = WorldCreatorRandom.randomInt(seed + pathRandomSeed / pathSeed + pathSeed * l, minRectangleSize, maxRectangleSize);
-			let h = WorldCreatorRandom.randomInt(seed + pathRandomSeed * l + pathSeed - pathSeed * l, minRectangleSize, maxRectangleSize);
-			
+			let w = WorldCreatorRandom.randomInt(seed + pathRandomSeed / pathSeed + pathSeed * l, minRectangleSize, maxRectangleSize + 1);
+			let h = WorldCreatorRandom.randomInt(seed + pathRandomSeed * l + pathSeed - pathSeed * l, minRectangleSize, maxRectangleSize + 1);
+
 			let connectionPointsType = WorldCreatorConstants.CONNECTION_POINTS_RECT_ALL;
 			if (w < 6 || h < 6) {
 				connectionPointsType = WorldCreatorConstants.CONNECTION_POINTS_RECT_CORNERS;
 				options.allowNoOverlaps = true;
 			}
 
+			let canDuplicate = w < maxRectangleSize * 0.7 && h < maxRectangleSize * 0.7;
+
 			let getPaths = function (params) {
 				let width = MathUtils.clamp(params.w, minRectangleSize, maxRectangleSize);
 				let height = MathUtils.clamp(params.h, minRectangleSize, maxRectangleSize);
-				return LevelStructureGenerator.getRectangle(levelVO, 0, pathStartPos, width, height, startDirection, options, false, connectionPointsType);
+				let duplicate = canDuplicate && params.duplicate;
+				let startDirection = params.dir;
+				let isDiagonal = PositionConstants.isDiagonal(startDirection);
+			
+				let result = [];
+
+				options.isCounterClockwise = false;
+				let rectangle1 = LevelStructureGenerator.getRectangle(levelVO, pathStartPos, width, height, startDirection, options, false, connectionPointsType);
+				result = result.concat(rectangle1);
+
+				if (duplicate) {
+					options.isCounterClockwise = true;
+					let otherStartDirection = PositionConstants.getOppositeDirection(startDirection);
+					let rectangle2 = LevelStructureGenerator.getRectangle(levelVO, pathStartPos, width, height, otherStartDirection, options, false, connectionPointsType);
+					result = result.concat(rectangle2);
+				}
+
+				return result;
 			};
 
-			let offset = this.getPathsOffset(levelVO, { w: [ w, w - 1, w + 1 ], h: [ h, h - 1, h + 1 ] }, getPaths);
+			let offset = this.getRandomPathsOffset(levelVO, { w: [ w, w - 1, w + 1 ], h: [ h, h - 1, h + 1 ], dir: possibleDirections, duplicate: [ true, false ] }, getPaths, options);
 			let paths = getPaths(offset);
 
 			this.createPaths(levelVO, paths, false, options);
 		},
 
-		getRectangleFromCenter: function (levelVO, i, center, w, h, forceComplete, isDiagonal, connectionPointsType) {
+		getRectangleFromCenter: function (levelVO, center, w, h, forceComplete, isDiagonal, connectionPointsType) {
 			if (isDiagonal) {
 				var corner = new PositionVO(center.level, center.sectorX, center.sectorY - h + 1);
-				return this.getRectangle(levelVO, i, corner, w, h, PositionConstants.DIRECTION_SE, null, forceComplete, connectionPointsType);
+				return this.getRectangle(levelVO, corner, w, h, PositionConstants.DIRECTION_SE, null, forceComplete, connectionPointsType);
 			} else {
 				var corner = new PositionVO(center.level, Math.round(center.sectorX - w / 2), Math.round(center.sectorY - h / 2));
-				return this.getRectangle(levelVO, i, corner, w, h, PositionConstants.DIRECTION_EAST, null, forceComplete, connectionPointsType);
+				return this.getRectangle(levelVO, corner, w, h, PositionConstants.DIRECTION_EAST, null, forceComplete, connectionPointsType);
 			}
 		},
 		
-		createRectangleFromCenter: function (levelVO, i, center, w, h, forceComplete, isDiagonal, connectionPointsType) {
-			let result = [];
-			var paths = this.getRectangleFromCenter(levelVO, i, center, w, h, forceComplete, isDiagonal, connectionPointsType);
-			for (let i = 0; i < paths.length; i++) {
-				var pathResult = this.createPath(levelVO, paths[i].startPos, paths[i].dir, paths[i].len, forceComplete, null, connectionPointsType, i, paths.length);
-				result = result.concat(pathResult.path);
-			}
-			return result;
-		},
-		
-		getRectangle: function (levelVO, i, startPos, w, h, startDirection, options, forceComplete, connectionPointsType) {
-			startDirection = startDirection || WorldCreatorRandom.randomDirections(i, 1, true)[0];
-			let result = [];
-			var sideStartPos = startPos;
-			var currentDirection = startDirection;
-			for (let j = 0; j < 4; j++) {
-				var sideLength = PositionConstants.isHorizontalDirection(currentDirection) ? w : h;
-				var connectionPointType = this.getPathConnectionPointType(connectionPointsType);
-				var path = this.getPathVO(levelVO, sideStartPos, currentDirection, sideLength, false, options, connectionPointType);
-				result.push(path);
-				sideStartPos = PositionConstants.getPositionOnPath(sideStartPos, currentDirection, sideLength - 1);
-				currentDirection = PositionConstants.getNextClockWise(currentDirection, false);
-			}
-			return result;
-		},
-		
-		createRectangle: function (levelVO, i, startPos, w, h, startDirection, options, forceComplete, connectionPointsType) {
+		getRectangle: function (levelVO, startPos, w, h, startDirection, options, forceComplete, connectionPointsType) {
 			options = options || {};
+			let result = [];
+			let sideStartPos = startPos;
+			let currentDirection = startDirection;
+			for (let j = 0; j < 4; j++) {
+				let sideLength = PositionConstants.isHorizontalDirection(currentDirection) ? w : h;
+				let connectionPointType = this.getPathConnectionPointType(connectionPointsType);
+				let path = this.getPathVO(levelVO, sideStartPos, currentDirection, sideLength, forceComplete, options, connectionPointType);
+				
+				result.push(path);
 
-			var paths = this.getRectangle(levelVO, i, startPos, w, h, startDirection, options, forceComplete, connectionPointsType);
-			for (let i = 0; i < paths.length; i++) {
-				var pathResult = this.createPath(levelVO, paths[i].startPos, paths[i].dir, paths[i].len, forceComplete, options, paths[i].connectionPointType, i, paths.length);
-				if (!pathResult.completed) {
-					break;
-				}
+				sideStartPos = PositionConstants.getPositionOnPath(sideStartPos, currentDirection, sideLength - 1);
+				currentDirection = options.isCounterClockwise ? 
+					PositionConstants.getNextCounterClockWise(currentDirection, false) :
+					PositionConstants.getNextClockWise(currentDirection, false);
 			}
+			return result;
 		},
 		
 		createPathBetween: function (worldVO, levelVO, startPos, endPos, maxlen, options, connectionPointType) {
@@ -1108,21 +1113,23 @@ define([
 
 			let getPath = function (params) {
 				let len = MathUtils.clamp(params.len, WorldCreatorConstants.SECTOR_PATH_LENGTH_MIN, maxLength);
-				return LevelStructureGenerator.getPath(levelVO, pathStartPos, startDirection, len, false, options, connectionPointType);
+				return LevelStructureGenerator.getPathVO(levelVO, pathStartPos, startDirection, len, false, options, connectionPointType);
 			};
 
 			let getPaths = function (params) {
-				return [ getPath(params).path ];
+				return [ getPath(params) ];
 			};
 
-			let params = this.getPathsOffset(levelVO, { len: [ pathLength, pathLength - 1, pathLength + 1 ] }, getPaths);
+			// if (pathStartPos.sectorX === 8 && pathStartPos.sectorY === 5) debugger
+
+			let params = this.getRandomPathsOffset(levelVO, { len: [ pathLength, pathLength - 1, pathLength + 1, pathLength + 2 ] }, getPaths, options);
 			let path = getPath(params);
 			
-			return this.createPathFromPath(levelVO, path, options, connectionPointType);
+			return this.createPath(levelVO, path.startPos, path.dir, path.len, false, options, connectionPointType, 0, 1);
 		},
 		
 		getPathVO: function (levelVO, startPos, direction, len, forceComplete, options, connectionPointType) {
-			return { startPos: startPos, dir: direction, len: len, completed: true, connectionPointType: connectionPointType };
+			return { startPos: startPos, dir: direction, len: len, forceComplete: forceComplete, connectionPointType: connectionPointType };
 		},
 		
 		getPathVOPositions: function (pathVO) {
@@ -1181,7 +1188,7 @@ define([
 						return { path: result, completed: false, isValid: false, reason: "existing sector has wrong stage" };
 					}
 
-					if (completedLen < 3 || completedPercent < 0.5) {
+					if (completedLen < 4 || completedPercent < 0.6) {
 						return { path: result, completed: false, isValid: false, reason: "existing sector interrupts path too early" };
 					}
 					
@@ -1230,6 +1237,7 @@ define([
 			options = options || this.getDefaultOptions();
 
 			if (len != Math.round(len)) {
+				debugger
 				WorldCreatorLogger.w("non-integer length for path");
 			}
 
@@ -1242,7 +1250,7 @@ define([
 			return this.createPathFromPath(levelVO, path, options, connectionPointType);
 		},
 
-		createPathFromPath: function (levelVO, path, options, connectionPointType) {			
+		createPathFromPath: function (levelVO, path, options, connectionPointType) {
 			if (!path.isValid) {
 				return { path: [], completed: false, reason: "get path: " + path.reason };
 			}
@@ -1440,7 +1448,6 @@ define([
 		},
 
 		makeSector: function (levelVO, sectorPos, stage) {
-			//if (sectorPos.sectorX == -8 && sectorPos.sectorY == -19) debugger
 			let vo = new SectorVO(sectorPos);
 			vo.stage = stage;
 			vo.isCamp = levelVO.isCampPosition(sectorPos);
@@ -1455,6 +1462,7 @@ define([
 			if (!point) return;
 			if (!levelVO.hasSector(pos.sectorX, pos.sectorY)) return;
 
+			// remove directions away from level middle if already too far
 			let excursionStartPosition = levelVO.getExcursionStartPosition();
 			let maxdist = Math.min(this.getMaxExcursionDistance(levelVO) - 5, 20);
 			let dist = PositionConstants.getDistanceTo(pos, excursionStartPosition);
@@ -1481,16 +1489,33 @@ define([
 					}
 				}
 			}
+
+			if (point.dirs.length == 0 && point.dirs2.length == 0) return;
+
+			// skip if neighbours have connection points
+			for (let i = 0; i < levelVO.allConnectionPoints.length; i++) {
+				let existingPoint = levelVO.allConnectionPoints[i];
+				if (PositionConstants.getDistanceTo(pos, existingPoint.position) < 2) return;
+			}
 			
 			levelVO.addPendingConnectionPoint(point);
 		},
+
+		isValidPaths: function (levelVO, paths, stage, options) {
+			for (let i = 0; i < paths.length; i++) {
+				if (!this.isValidPath(levelVO, paths[i], stage, options)) return false;
+			}
+			return true;
+		},
 		
 		isValidPath: function (levelVO, path, stage, options) {
+			options = options || {};
+
 			var startPos = path.startPos;
 			var direction = path.dir;
 			var pathPositions = this.getPathVOPositions(path);
 			for (var si = 0; si < path.len; si++) {
-				sectorPos = PositionConstants.getPositionOnPath(startPos, direction, si);
+				let sectorPos = PositionConstants.getPositionOnPath(startPos, direction, si);
 				sectorPos.level = levelVO.level;
 				if (levelVO.hasSector(sectorPos.sectorX, sectorPos.sectorY)) {
 					var sector = levelVO.getSector(sectorPos.sectorX, sectorPos.sectorY);
@@ -1671,15 +1696,28 @@ define([
 			return this.getCurrentSectorDistance(worldVO, pos1, pos2) >= 0;
 		},
 		
-		getPathDirection: function (s1, s2, startPoint) {
+		getPathDirection: function (s1, s2, startPoint, secondaryModifier) {
+			let possibleDirections = this.getPossiblePathDirections(s1, s2, startPoint, secondaryModifier);
+
+			let dirI = WorldCreatorRandom.randomInt(s1, 0, possibleDirections.length);
+			let result = possibleDirections[dirI];
+
+			return result;
+		},
+
+		getPossiblePathDirections: function (s1, s2, startPoint, secondaryModifier) {
 			let possibleDirections = [];
+
+			secondaryModifier = secondaryModifier || 1;
 			
 			if (startPoint.dirs) {
 				possibleDirections = startPoint.dirs.concat();
 
 				let isPrimaryConnectionPointDiagonal = PositionConstants.isDiagonal(startPoint.dirs[0]);
 				let secondaryProbability = isPrimaryConnectionPointDiagonal ? 0.5 : 0.2;
-				let includeSecondary = WorldCreatorRandom.random(s2) < secondaryProbability;
+				secondaryProbability *= secondaryModifier;
+				let includeSecondary = WorldCreatorRandom.randomBool(s2, secondaryProbability) || possibleDirections.length == 0;
+
 				if (includeSecondary) {
 					possibleDirections = startPoint.dirs2.concat();
 				}
@@ -1687,10 +1725,8 @@ define([
 				let isDiagonal = WorldCreatorRandom.random(s2) < WorldCreatorConstants.DIAGONAL_PATH_PROBABILITY;
 				possibleDirections = PositionConstants.getLevelDirections(!isDiagonal);
 			}
-			let dirI = WorldCreatorRandom.randomInt(s1, 0, possibleDirections.length);
-			let result = possibleDirections[dirI];
 
-			return result;
+			return possibleDirections;
 		},
 		
 		getConnectionPoint: function (type, pathi, pathlen, sectorPos, pathdir) {
@@ -1882,18 +1918,18 @@ define([
 			return result;
 		},
 
-		getPathsOffset: function (levelVO, params, getPathsFunc) {
+		// options:
+		// - stage
+		getRandomPathsOffset: function (levelVO, params, getPathsFunc, options) {
 			let candidates = this.getParamCombinations(params);
-
-			let scoreOptions = {};
 
 			let scoreCandidate = function (params) {
 				let paths = getPathsFunc(params);
-				return LevelStructureGenerator.getRandomPathsScore(levelVO, paths, scoreOptions);
+				return LevelStructureGenerator.getRandomPathsScore(levelVO, paths, options);
 			};
 
 			let bestScore = -99;
-			let result = {};
+			let result = candidates[0];
 
 			for (let i = 0; i < candidates.length; i++) {
 				let candidate = candidates[i];
@@ -1903,6 +1939,8 @@ define([
 					bestScore = score;
 				}
 			}
+
+			result.score = bestScore;
 
 			return result;
 		},
@@ -2105,6 +2143,7 @@ define([
 			return score;
 		},
 
+		// paths: array of PathVO
 		getRandomPathsScore: function (levelVO, paths, options) {
 			let score = 0;
 
@@ -2154,26 +2193,61 @@ define([
 						let pos = PositionConstants.getPositionOnPath(path.startPos, path.dir, j);
 
 						score -= LevelStructureGenerator.getPositionAwkwardnessScore(levelVO, pos);
+
+						let plannedStage = options.stage || path.stage;
+						let defaultStage = LevelStructureGenerator.getDefaultStage(levelVO, pos);
+						if (plannedStage && plannedStage != defaultStage) score -= 1;
+
+						let distanceToCenter = PositionConstants.getDistanceTo(pos, levelVO.levelCenterPosition);
+						if (distanceToCenter > 20) score -= 1;
+						if (distanceToCenter > 30) score -= 1;
+						if (distanceToCenter > 40) score -= 1;
 					}
 				}
 
 				return score;
 			};
+
+			let getPathsScore = function () {
+				let score = 0;
+
+				for (let i = 0; i < paths.length; i++) {
+					let path = paths[i];
+					let pathDetailed = LevelStructureGenerator.getPath(levelVO, path.startPos, path.dir, path.len, false, options, null, i, paths.length);
+					if (pathDetailed.completed) score += 1;
+					if (pathDetailed.isValid) score += 1;
+
+					if (path.len <= 3) score -= 1;
+					if (path.len <= 4) score -= 1;
+
+					if (pathDetailed.path.length == 0) continue;
+					
+					if (paths.length > 1) continue;
+
+					// scoring for single paths only
+					let endPos = pathDetailed.path[pathDetailed.path.length - 1];
+					let endPosExists = levelVO.hasSector(endPos.sectorX, endPos.sectorY);
+					if (endPosExists) score += 1;
+					let endPosHasConnectionPoint = endPosExists && levelVO.getPendingConnectionPoints().filter(p => p.position.equals(endPos)).length > 0;
+					if (endPosHasConnectionPoint) score += 2;
+				}
+
+				return score || 0;
+			}
 
 			let getSectorCountScore = function () {
 				// all else being equal prefer bigger structures to avoid super dense levels
 				let score = 0;
 				for (let i = 0; i < paths.length; i++) {
 					let path = paths[i];
-					for (let j = 0; j < path.legnth; j++) {
-						score += 0.01;
-					}
+					score += path.len;
 				}
 				return score;
 			};
 
 			score += getConnectionPointsScore();
 			score += getSectorPositionScore();
+			score += getPathsScore();
 			score += getSectorCountScore();
 
 			return score;
