@@ -192,6 +192,10 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Po
 			let result = sectorVO[excludingFeature];
 			return result;
 		},
+
+		randomDirection: function (seed, includeDiagonals) {
+			return this.randomDirections(seed, 1, includeDiagonals)[0];
+		},
 		
 		randomDirections: function (seed, num, includeDiagonals) {
 			var directions = [];

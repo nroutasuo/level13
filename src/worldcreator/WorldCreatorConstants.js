@@ -37,6 +37,8 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 		CONNECTION_POINTS_PATH_CW: "p-cw",
 		CONNECTION_POINTS_PATH_CCW: "p-ccw",
 		CONNECTION_POINTS_PATH_T: "p-t",
+		CONNECTION_POINTS_PATH_Y: "p-y",
+		CONNECTION_POINTS_PATH_X: "p-x",
 		CONNECTION_POINTS_PATH_CONTINUE: "p-cont",
 		CONNECTION_POINTS_PATH_ALL: "p-all",
 		CONNECTION_POINTS_PATH_EXTRA: "p-extra",
@@ -47,6 +49,7 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 		CONNECTION_POINTS_RECT_OUTER: "r-outer",
 		CONNECTION_POINTS_RECT_INNER: "r-inner",
 		CONNECTION_POINTS_RECT_ALL: "r-all",
+		CONNECTION_POINTS_RECT_DIAGONAL: "r-diagonal",
 		
 		FEATURE_HOLE_WELL: "well",
 		FEATURE_HOLE_COLLAPSE: "collapse",
