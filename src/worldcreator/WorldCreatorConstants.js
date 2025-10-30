@@ -9,14 +9,10 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 		CRITICAL_PATH_TYPE_CAMP_TO_POI_1: "camp_to_poi_1",
 		CRITICAL_PATH_TYPE_CAMP_TO_POI_2: "camp_to_poi_2",
 		
-		DIAGONAL_PATH_PROBABILITY: 0.1,
-		
 		TOWER_RADIUS: 20,
 		AREA_SIZE_CENTRAL: 20,
 		AREA_SIZE_MEDIUM: 30,
 		AREA_SIZE_OUTSKIRTS: 40,
-		SECTOR_PATH_LENGTH_MIN: 5,
-		SECTOR_PATH_LENGTH_MAX: 15,
 		SECTOR_RECT_EDGE_LENGTH_MAX: 20,
 		START_RECT_SIZE: 5,
 		MAX_SECTOR_COUNT_OVERFLOW: 10,
@@ -49,6 +45,7 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 		CONNECTION_POINTS_RECT_OUTER: "r-outer",
 		CONNECTION_POINTS_RECT_INNER: "r-inner",
 		CONNECTION_POINTS_RECT_ALL: "r-all",
+		CONNECTION_POINTS_RECT_EXTRA: "r-extra",
 		CONNECTION_POINTS_RECT_DIAGONAL: "r-diagonal",
 		
 		FEATURE_HOLE_WELL: "well",

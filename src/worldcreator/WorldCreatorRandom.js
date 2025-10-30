@@ -386,6 +386,8 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Po
 		},
 		
 		randomBool: function (seed, probability) {
+			if (probability <= 0) return false;
+			if (probability >= 1) return true;
 			probability = probability || 0.5;
 			return this.random(seed) < probability;
 		},
