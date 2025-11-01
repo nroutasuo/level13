@@ -1625,32 +1625,34 @@ define([
 			let sectorType = sectorVO.sectorType;
 			let distance = PositionConstants.getDistanceTo(sectorVO.position, new PositionVO(level, 0, 0));
 
+			let levelStyle = levelVO.levelStyle;
+
 			let options = [];
+
+			options.push(levelStyle);
 
 			if (sectorType === SectorConstants.SECTOR_TYPE_SLUM) {
 				// slum: mostly slum styles but can be built mostly on top of a distinctive style as well
+				options.push(levelStyle);
 				options.push(SectorConstants.STYLE_SLUM_GENERAL);
 				options.push(SectorConstants.STYLE_SLUM_GENERAL);
 				if (sectorVO.position.sectorX < 0) options.push(SectorConstants.STYLE_SLUM_HUN);
 				if (distance > 5) options.push(SectorConstants.STYLE_INDUSTRIAL);
-				if (level > 15) options.push(SectorConstants.STYLE_HUMANIST);
-				if (level < 8) options.push(SectorConstants.STYLE_KARBOQUE);
 			} else if (sectorType === SectorConstants.SECTOR_TYPE_MAINTENANCE) {
 				// maintenance: mostly industrial
 				options.push(SectorConstants.STYLE_INDUSTRIAL);
 				if (level < 8) options.push(SectorConstants.STYLE_KARBOQUE);
 			} else if (sectorType === SectorConstants.STYLE_INDUSTRIAL) {
 				// industrial: mostly industrial
+				options.push(levelStyle);
 				options.push(SectorConstants.STYLE_INDUSTRIAL);
 				options.push(SectorConstants.STYLE_INDUSTRIAL);
 				options.push(SectorConstants.STYLE_INDUSTRIAL);
-				if (level > 12) options.push(SectorConstants.STYLE_HUMANIST);
-				if (level < 8) options.push(SectorConstants.STYLE_KARBOQUE);
-				if (level > 16) options.push(SectorConstants.STYLE_MODERN);
 			} else {
 				// others (residential, commercial, public): varied
-				if (level <= 4) options.push(SectorConstants.STYLE_WESTERN);
-				if (level <= 4 && distance < 10) options.push(SectorConstants.STYLE_WESTERN);
+				options.push(levelStyle);
+				options.push(levelStyle);
+				options.push(levelStyle);
 				if (level > 17 && distance < 10) options.push(SectorConstants.STYLE_MODERN);
 				if (level > 20) options.push(SectorConstants.STYLE_MODERN);
 				if (level > 17) options.push(SectorConstants.STYLE_NEOWESTERN);

@@ -16,6 +16,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			this.isCampable = false;
 			this.isHard = false;
 			this.levelCenterPosition = null; // PositionVO
+			this.levelStyle = null; // SectorConstants.STYLE_
 			this.luxuryResources = []; // list of string
 			this.maxSectors = 1;
 			this.maxX = 0;

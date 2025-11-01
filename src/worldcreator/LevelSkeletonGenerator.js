@@ -1,7 +1,9 @@
 // creates LevelVOs and any details about them that do not require structure and sectors
 define([
 	'ash',
+	'game/constants/LevelConstants',
 	'game/constants/PositionConstants',
+	'game/constants/SectorConstants',
 	'game/constants/TribeConstants',
 	'game/constants/WorldConstants',
 	'game/vos/PositionVO',
@@ -10,7 +12,7 @@ define([
 	'worldcreator/WorldCreatorLogger',
 	'worldcreator/WorldCreatorRandom',
 	'worldcreator/LevelVO',
-], function (Ash, PositionConstants, TribeConstants, WorldConstants, PositionVO, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorLogger, WorldCreatorRandom, LevelVO) {
+], function (Ash, LevelConstants, PositionConstants, SectorConstants, TribeConstants, WorldConstants, PositionVO, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorLogger, WorldCreatorRandom, LevelVO) {
 	
 	let LevelSkeletonGenerator = {
 
@@ -59,8 +61,11 @@ define([
 			levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_LATE] = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO.seed, levelVO.campOrdinal, levelVO.level, WorldConstants.CAMP_STAGE_LATE);
 			levelVO.stageCenterPositions = this.getStageCenterPositions(worldVO, levelVO);
 			levelVO.levelCenterPosition = this.getLevelCenterPosition(worldVO, levelVO);
-			levelVO.seaPadding = this.getSeaPadding(seed, levelVO);
 			levelVO.workshopResource = this.getWorkshopResource(seed, worldVO, levelTemplateVO, levelVO);
+
+			// story stuff 
+			levelVO.levelStyle = levelTemplateVO.levelStyle || this.getLevelArchitecturalStyle(seed, levelVO);
+			levelVO.seaPadding = this.getSeaPadding(seed, levelVO);
 
 			// stuff that might need to be adjusted on worlds from old saves
 			levelVO.numInvestigateSectors = this.getNumInvestigateSectors(seed, l);
@@ -191,7 +196,34 @@ define([
 			let max = Math.max(min + 3, 3);
 			let result = WorldCreatorRandom.randomInt(s1, min, max);
 			return result;
-		}
+		},
+
+		getLevelArchitecturalStyle: function (seed, levelVO) {
+			let topLevel = WorldCreatorHelper.getHighestLevel(seed);
+
+			if (levelVO.level < 3) return SectorConstants.STYLE_WESTERN;
+			if (levelVO.level == 14) return SectorConstants.STYLE_INDUSTRIAL;
+			if (levelVO.level == 13) return SectorConstants.STYLE_HUMANIST;
+			if (levelVO.level == topLevel) return SectorConstants.STYLE_MODERN;
+
+			let possibleTypes = [];
+
+			if (levelVO.notCampableReason == LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION) possibleTypes.push(SectorConstants.STYLE_INDUSTRIAL);
+			if (levelVO.notCampableReason == LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION) possibleTypes.push(SectorConstants.STYLE_INDUSTRIAL);
+
+			if (levelVO.level >= 12) {
+				possibleTypes.push(SectorConstants.STYLE_HUMANIST);
+				possibleTypes.push(SectorConstants.STYLE_HUMANIST);
+			}
+			
+			if (levelVO.level <= 12) possibleTypes.push(SectorConstants.STYLE_KARBOQUE);
+			if (levelVO.level <= 8) possibleTypes.push(SectorConstants.STYLE_KARBOQUE);
+
+			if (levelVO.level >= 18) possibleTypes.push(SectorConstants.STYLE_MODERN);
+			if (levelVO.level >= 14 && levelVO.isCampable) possibleTypes.push(SectorConstants.STYLE_NEOWESTERN);
+			
+			return WorldCreatorRandom.randomItemFromArray(seed + levelVO.level, possibleTypes);
+		},
 		
 	};
 	

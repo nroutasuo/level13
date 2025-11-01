@@ -17,6 +17,7 @@ function (Ash, SectorTemplateVO, PositionVO) {
 			this.habitability = levelVO.habitability;
 			this.isCampable = levelVO.isCampable;
 			this.isHard = levelVO.isHard;
+			this.levelStyle = levelVO.levelStyle;
 			this.luxuryResources = levelVO.luxuryResources;
 			this.maxX = levelVO.maxX;
 			this.maxY = levelVO.maxY;
@@ -57,6 +58,7 @@ function (Ash, SectorTemplateVO, PositionVO) {
 			copy.habitability = this.habitability;
 			copy.isCampable = this.isCampable;
 			copy.isHard = this.isHard;
+			copy.levelStyle = this.levelStyle;
 			copy.luxuryResources = this.luxuryResources;
 			copy.maxX = this.maxX;
 			copy.maxY = this.maxY;
@@ -99,6 +101,7 @@ function (Ash, SectorTemplateVO, PositionVO) {
 			this.habitability = saveObject.habitability;
 			this.isCampable = saveObject.isCampable;
 			this.isHard = saveObject.isHard;
+			this.levelStyle = saveObject.levelStyle;
 			this.luxuryResources = saveObject.luxuryResources;
 			this.maxX = saveObject.maxX;
 			this.maxY = saveObject.maxY;

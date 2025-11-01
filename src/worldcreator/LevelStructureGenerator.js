@@ -3,6 +3,7 @@ define([
 	'ash',
 	'utils/ObjectUtils',
 	'utils/MathUtils',
+	'game/constants/SectorConstants',
 	'game/constants/PositionConstants',
 	'game/constants/WorldConstants',
 	'game/vos/PositionVO',
@@ -12,7 +13,7 @@ define([
 	'worldcreator/WorldCreatorLogger',
 	'worldcreator/SectorVO',
 	'worldcreator/CriticalPathVO',
-], function (Ash, ObjectUtils, MathUtils, PositionConstants, WorldConstants, PositionVO, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorLogger, SectorVO, CriticalPathVO) {
+], function (Ash, ObjectUtils, MathUtils, SectorConstants, PositionConstants, WorldConstants, PositionVO, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorLogger, SectorVO, CriticalPathVO) {
 	
 	let LevelStructureGenerator = {
 		
@@ -80,13 +81,7 @@ define([
 
 			// setup
 			levelVO.requiredPaths = WorldCreatorHelper.getRequiredPaths(worldVO, levelVO);
-			levelVO.structureSettings = {};
-			levelVO.structureSettings.diagonalRate = 0.5;
-			levelVO.structureSettings.rectangleRate = 0.5;
-			levelVO.structureSettings.minPathLength = 5;
-			levelVO.structureSettings.maxPathLength = 30;
-			levelVO.structureSettings.density = 0.5;
-			levelVO.structureSettings.symmetry = 0.5;
+			levelVO.structureSettings = this.getLevelStructureSettings(levelVO);
 			
 			// create central structure
 			this.createCentralStructure(seed, worldVO, levelVO);
@@ -117,6 +112,100 @@ define([
 			// cleanup
 			levelVO.structureSettings = null;
 		},
+
+		getLevelStructureSettings: function (levelVO) {
+			let result = {};
+			
+			result.diagonalRate = 0.5;
+			result.rectangleRate = 0.5;
+			result.minPathLength = 5;
+			result.maxPathLength = 30;
+			result.density = 0.5;
+			result.symmetry = 1;
+
+			switch (levelVO.levelStyle) {
+				case SectorConstants.STYLE_HUMANIST:
+					break;
+				case SectorConstants.STYLE_INDUSTRIAL:
+					result.diagonalRate = 0.25;
+					result.symmetry = 0.75;
+					result.density = 0.75;
+					break;
+				case SectorConstants.STYLE_KARBOQUE:
+					result.diagonalRate = 0;
+					result.density = 0.75;
+					result.symmetry = 0.75;
+					break;
+				case SectorConstants.STYLE_MODERN:
+					result.symmetry = 0.75;
+					break;
+				case SectorConstants.STYLE_NEOWESTERN:
+					result.diagonalRate = 0.75;
+					result.symmetry = 0.25;
+					result.rectangleRate = 0.25;
+					break;
+				case SectorConstants.STYLE_WESTERN:
+					result.symmetry = 0.25;
+					result.rectangleRate = 0.25;
+					break;
+			}
+
+			return result;
+		},
+
+		getPossibleCentralStructureShapes: function (seed, worldVO, levelVO) {
+			if (levelVO.level == 14) return [ this.createCentralStructureL14 ];
+
+			let possibleShapes = [];
+
+			let style = levelVO.levelStyle;
+
+			// always available
+			possibleShapes.push(this.createCentralAvenue);
+			possibleShapes.push(this.createCentralRectanglesSide);
+			possibleShapes.push(this.createCentralRectanglesSimple);
+
+			// depending on architectural style
+			switch (levelVO.levelStyle) {
+				case SectorConstants.STYLE_HUMANIST:
+					possibleShapes.push(this.createCentralCrossings);
+					possibleShapes.push(this.createCentralParallels);
+					possibleShapes.push(this.createCentralPlaza);
+					possibleShapes.push(this.createCentralRectanglesNested);
+					break;
+
+				case SectorConstants.STYLE_INDUSTRIAL:
+					possibleShapes.push(this.createCentralCrossings);
+					possibleShapes.push(this.createCentralGrid);
+					possibleShapes.push(this.createCentralParallels);
+					break;
+
+				case SectorConstants.STYLE_KARBOQUE:
+					possibleShapes.push(this.createCentralGrid);
+					possibleShapes.push(this.createCentralPlaza);
+					possibleShapes.push(this.createCentralRectanglesNested);
+					break;
+
+				case SectorConstants.STYLE_MODERN:
+					possibleShapes.push(this.createCentralCircle);
+					possibleShapes.push(this.createCentralCourt);
+					possibleShapes.push(this.createCentralGrid);
+					possibleShapes.push(this.createCentralPlaza);
+					possibleShapes.push(this.createCentralRectanglesNested);
+					possibleShapes.push(this.createCentralTriangle);
+					break;
+
+				case SectorConstants.STYLE_NEOWESTERN:
+				case SectorConstants.STYLE_WESTERN:
+					possibleShapes.push(this.createCentralCircle);
+					possibleShapes.push(this.createCentralCourt);
+					possibleShapes.push(this.createCentralPlaza);
+					possibleShapes.push(this.createCentralTriangle);
+					break;
+			}
+
+			return possibleShapes;
+		},
 		
 		createCentralStructure: function (seed, worldVO, levelVO) {
 			let l = levelVO.level;
@@ -132,21 +221,7 @@ define([
 			if (levelVO.passageDownPosition) pois.push(levelVO.passageDownPosition);
 			if (levelVO.campPosition) pois.push(levelVO.campPosition);
 			
-			let possibleShapes = [];
-
-			if (l == 13) {
-				possibleShapes = [ this.createCentralCrossings, this.createCentralRectanglesSide, this.createCentralRectanglesSimple, this.createCentralAvenue ];
-			} else if (l == 14) {
-				possibleShapes = [ this.createCentralStructureL14 ];
-			} else if (l == worldVO.topLevel) {
-				possibleShapes = [ this.createCentralRectanglesNested, this.createCentralGrid, this.createCentralAvenue, this.createCentralTriangle, this.createCentralCircle ];
-			} else if (l == worldVO.bottomLevel) {
-				possibleShapes = [ this.createCentralRectanglesSide, this.createCentralTriangle, this.createCentralCourt ];
-			} else if (levelVO.isCampable) {
-				possibleShapes = [ this.createCentralParallels, this.createCentralCrossings, this.createCentralPlaza, this.createCentralRectanglesSide, this.createCentralRectanglesNested, this.createCentralRectanglesSimple, this.createCentralGrid, this.createCentralAvenue, this.createCentralTriangle, this.createCentralCircle, this.createCentralCourt ];
-			} else {
-				possibleShapes = [ this.createCentralParallels, this.createCentralCrossings, this.createCentralRectanglesSide, this.createCentralAvenue, this.createCentralRectanglesSimple, this.createCentralGrid, this.createCentralTriangle, this.createCentralCircle, this.createCentralCourt ];
-			}
+			let possibleShapes = this.getPossibleCentralStructureShapes(seed, worldVO, levelVO);
 
 			if (possibleShapes.length == 0) {
 				return;
