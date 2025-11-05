@@ -67,7 +67,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 
 			this.invalidPositions = [];
 			this.localeSectors = [];
-			this.pendingConnectionPointsByStage = {};
+			this.pendingConnectionPoints = [];
 			this.allConnectionPoints = [];
 			this.sectorsByPos = [];
 			this.sectorsByStage = [];
@@ -248,33 +248,17 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			let sector = this.getSector(point.position.sectorX, point.position.sectorY);
 			if (!sector) return;
 			sector.isConnectionPoint = true;
-			let stage = sector.stage;
-			if (!this.pendingConnectionPointsByStage[stage]) this.pendingConnectionPointsByStage[stage] = [];
-			this.pendingConnectionPointsByStage[stage].push(point);
+			this.pendingConnectionPoints.push(point);
 			this.allConnectionPoints.push(point);
 		},
 		
-		getPendingConnectionPoints: function (stage) {
-			if (!stage) {
-				let result = [];
-				for (var key in this.pendingConnectionPointsByStage) {
-					result = result.concat(this.getPendingConnectionPoints(key));
-				}
-				return result;
-			}
-			if (!this.pendingConnectionPointsByStage[stage]) return [];
-			return this.pendingConnectionPointsByStage[stage];
-		},
-		
 		removePendingConnectionPoint: function (point) {
-			for (var key in this.pendingConnectionPointsByStage) {
-				var points = this.pendingConnectionPointsByStage[key];
-				for (let i = 0; i < points.length; i++) {
-					var p = points[i];
-					if (p.position.sectorX == point.position.sectorX && p.position.sectorY == point.position.sectorY) {
-						points.splice(i, 1);
-						return;
-					}
+			var points = this.pendingConnectionPoints;
+			for (let i = 0; i < points.length; i++) {
+				var p = points[i];
+				if (p.position.sectorX == point.position.sectorX && p.position.sectorY == point.position.sectorY) {
+					points.splice(i, 1);
+					return;
 				}
 			}
 		},

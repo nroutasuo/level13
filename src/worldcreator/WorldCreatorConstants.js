@@ -52,6 +52,12 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 		FEATURE_HOLE_COLLAPSE: "collapse",
 		FEATURE_HOLE_SEA: "sea",
 		FEATURE_HOLE_MOUNTAIN: "mountain",
+
+		SHAPE_LINE: "line",
+		SHAPE_RECTANGLE_CORNER: "rectangle-corner", // rectangle attaching to connection point via a corner
+		SHAPE_RECTANGLE_CENTER: "rectangle-center", // rectangle attaching to a connection point via a side
+		SHAPE_CIRCLE: "circle",
+		SHAPE_TRIANGLE: "triangele",
 		
 		getNumSectors: function (campOrdinal) {
 			let defaultBigLevel = 150;

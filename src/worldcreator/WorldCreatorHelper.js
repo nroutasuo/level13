@@ -715,6 +715,31 @@ define([
 			var highest = this.getHighestLevel(seed, level);
 			return level >= highest - 5;
 		},
+
+		getShortestPathToMatchingSector: function (worldVO, levelVO, position, filter) {
+			let result = null;
+
+			if (filter(position)) return [];
+
+			for (let i = 0; i < levelVO.sectors.length; i++) {
+				let candidate = levelVO.sectors[i];
+				if (!filter(candidate.position)) continue;
+
+				let distance = PositionConstants.getDistanceTo(position, candidate.position);
+				if (result && result.length > 0 && result.length < distance) continue;
+
+				let maxPathLength = result ? result.length : null;
+				let path = WorldCreatorRandom.findPath(worldVO, position, candidate.position, false, true, null, true, maxPathLength);
+
+				if (!path) continue;
+				
+				if (!result || path.length < result.length) {
+					result = path;
+				}
+			}
+
+			return result;
+		},
 		
 		containsBlockingFeature: function (pos, features, allowNonBuilt) {
 			for (let i = 0; i < features.length; i++) {

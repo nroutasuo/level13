@@ -116,6 +116,11 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		},
 		
 		getDirectionFrom: function (sectorPosFrom, sectorPosTo) {
+			if (!sectorPosFrom || !sectorPosTo) {
+				debugger;
+				return this.DIRECTION_NONE;
+			}
+			
 			let dx = sectorPosFrom.sectorX - sectorPosTo.sectorX;
 			let dy = sectorPosFrom.sectorY - sectorPosTo.sectorY;
 			let dl = sectorPosFrom.level - sectorPosTo.level;
@@ -204,6 +209,23 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 					return dl;
 			}
 			return 0;
+		},
+
+		getOffsetByDirection: function (direction) {
+			switch (direction) {
+				case this.DIRECTION_WEST: return { l: 0, x: -1, y: 0 };
+				case this.DIRECTION_EAST: return { l: 0, x: 1, y: 0 };
+				case this.DIRECTION_NORTH: return { l: 0, x: 0, y: -1 };
+				case this.DIRECTION_SOUTH: return { l: 0, x: 0, y: 1 };
+				case this.DIRECTION_NE: return { l: 0, x: 1, y: -1 };
+				case this.DIRECTION_SE: return { l: 0, x: 1, y: 1 };
+				case this.DIRECTION_SW: return { l: 0, x: -1, y: 1 };
+				case this.DIRECTION_NW: return { l: 0, x: -1, y: -1 };
+				case this.DIRECTION_UP: return { l: 1, x: 0, y: 0 };
+				case this.DIRECTION_DOWN: return { l: -1, x: 0, y: 0 };
+			}
+
+			return { l: 0, x: 0, y: 0 };
 		},
 		
 		getMiddlePoint: function (positions, rounded) {

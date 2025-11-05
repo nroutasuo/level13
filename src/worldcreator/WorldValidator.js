@@ -114,7 +114,7 @@ define([
 			let issues = [];
 
 			let notSavedKeysWorld = [ "districts", "features", "stages", "examineSpotsPerLevel" ];
-			let notSavedKeysLevel = [ "maxSectors", "neighboursCacheContext", "pendingConnectionPointsByStage", "allConnectionPoints", "invalidPositions", "paths", "requiredPaths", "sectorsByStage", "sectorsByPos", "levelCenterPosition", "localeSectors", "raidDangerFactor", "stageCenterPositions" ];
+			let notSavedKeysLevel = [ "maxSectors", "neighboursCacheContext", "pendingConnectionPoints", "allConnectionPoints", "invalidPositions", "paths", "requiredPaths", "sectorsByStage", "sectorsByPos", "levelCenterPosition", "localeSectors", "raidDangerFactor", "stageCenterPositions" ];
 			let notSavedKeysSector = [ "id", "distanceToCamp", "requiredFeatures", "requiredResources", "resourcesAll", "waymarks", "pathID", "possibleEnemies", "hasRegularEnemies", "isConnectionPoint", "resourcesScavengable", "campPosScore", "isFill", "criticalPathTypes", "graffiti" ];
 
 			// check worldTemplateVO matches worldVO
@@ -597,7 +597,7 @@ define([
 			let distanceToOrigo = Math.round(PositionConstants.getDistanceTo(sectorVO.position, { sectorX: 0, sectorY: 0 }));
 			if (distanceToOrigo > 40) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " is too far (" + distanceToOrigo + ") from origo" });
 
-			let pathToCrossing = WorldValidator.getShortestPathToMatchingSector(worldVO, levelVO, sectorVO, s => levelVO.isCrossing(s.position.sectorX, s.position.sectorY));
+			let pathToCrossing = WorldCreatorHelper.getShortestPathToMatchingSector(worldVO, levelVO, sectorVO.position, pos => levelVO.isCrossing(pos.sectorX, pos.sectorY));
 			let distanceToCrossing = pathToCrossing ? pathToCrossing.length : 999;
 			if (distanceToCrossing > 14) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " is too far (" + distanceToCrossing + ") from nearest crossing" });
 
@@ -688,31 +688,6 @@ define([
 			}
 			
 			return { isValid: issues.length === 0, issues: issues };
-		},
-
-		getShortestPathToMatchingSector: function (worldVO, levelVO, sectorVO, filter) {
-			let result = null;
-
-			if (filter(sectorVO)) return [];
-
-			for (let i = 0; i < levelVO.sectors.length; i++) {
-				let candidate = levelVO.sectors[i];
-				if (!filter(candidate)) continue;
-
-				let distance = PositionConstants.getDistanceTo(sectorVO.position, candidate.position);
-				if (result && result.length > 0 && result.length < distance) continue;
-
-				let maxPathLength = result ? result.length : null;
-				let path = WorldCreatorRandom.findPath(worldVO, sectorVO.position, candidate.position, false, true, null, true, maxPathLength);
-
-				if (!path) continue;
-				
-				if (!result || path.length < result.length) {
-					result = path;
-				}
-			}
-
-			return result;
 		},
 
 	};
