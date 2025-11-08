@@ -19,6 +19,7 @@ define([
 
 		SEVERITY_CRITICAL: 0, // world / template is broken
 		SEVERITY_MAJOR: 1, // world is not well balanced
+		SEVERITY_MINOR: 2, // world is not consistent / doesn't support story
 		SEVERITY_COMPABILITY: 11, // world differs from template in a way that should not happen
 		SEVERITY_CONTINUITY: 12, // world differs from template in a way that might be acceptable if the template is from an older version but needs to be handled properly in game logic
 		
@@ -70,8 +71,9 @@ define([
 
 			let levelChecks = [ 
 				this.checkLevelSize,
-				this.checkLevelCriticalPaths, 
-				this.checkLevelContinuousEarlyStage, 
+				this.checkLevelContinuous, 
+				this.checkLevelDensity,
+				this.checkLevelPathLengths, 
 				this.checkLevelCampsAndPassages, 
 				this.checkLevelNumberOfSectors, 
 				this.checkLevelNumberOfLocales,
@@ -277,31 +279,33 @@ define([
 			let width = Math.abs(levelVO.maxX - levelVO.minX);
 			let height = Math.abs(levelVO.maxY - levelVO.minY);
 
-			if (width > 55) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level " + levelVO.level + " is too wide (" + width + ")" });
-			if (height > 45) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level " + levelVO.level + " is too tall (" + height + ")" });
+			if (width > WorldConstants.MAX_WIDTH) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level " + levelVO.level + " is too wide (" + width + ")" });
+			if (height > WorldConstants.MAX_HEIGHT) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level " + levelVO.level + " is too tall (" + height + ")" });
 
 			return { isValid: issues.length === 0, issues: issues };
 		},
 		
-		checkLevelCriticalPaths: function (worldVO, levelVO) {
+		checkLevelPathLengths: function (worldVO, levelVO) {
 			let issues = [];
 
-			// required paths (between camp and passages)
-			let excursionStartPosition = levelVO.getExcursionStartPosition();
-			let excursionLen = WorldCreatorConstants.getMaxPathLength(levelVO.campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2);
+			// list paths to check
+			// - critical paths (between passages and camps, length defined per type)
 			let requiredPaths = WorldCreatorHelper.getRequiredPaths(worldVO, levelVO);
 
+			// - paths to all sectors (between excursion start position and all sectors, most permissive length just to check it's not entirely impossible)
+			let excursionStartPosition = levelVO.getExcursionStartPosition();
+			let defaultMaxPathLen = WorldCreatorConstants.getMaxPathLength(levelVO.campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2);
 			for (let i = 0; i < levelVO.sectors.length; i++) {
 				let sectorVO = levelVO.sectors[i];
 				let pathType = null;
 				if (sectorVO.locales.length > 0) pathType = "locale";
 				if (sectorVO.hasWorkshop) pathType = "workshop";
-				if (sectorVO.hasTradeConnectorSpot) pathType = "hasTradeConnectorSpot";
-				if (pathType) {
-					requiredPaths.push({ start: excursionStartPosition, end: sectorVO.position, maxlen: excursionLen, isValidationOnly: true, type: pathType });
-				}
+				if (sectorVO.hasTradeConnectorSpot) pathType = "trade connector spot";
+				if (!pathType) pathType = "s" + sectorVO.position.getCustomSaveObjectWithoutCamp();
+				requiredPaths.push({ start: excursionStartPosition, end: sectorVO.position, maxlen: defaultMaxPathLen, isValidationOnly: true, type: pathType });
 			}
 
+			// check lengths
 			for (let i = 0; i < requiredPaths.length; i++) {
 				let path = requiredPaths[i];
 				let startPos = path.start.clone();
@@ -310,12 +314,12 @@ define([
 				let sectorPath = WorldCreatorRandom.findPath(worldVO, startPos, endPos, false, true, path.stage);
 
 				if (!sectorPath || sectorPath.length < 1) {
-					issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "required path " + path.type + " on level " + levelVO.level + " is missing" });
+					issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "required path [" + path.type + "] on level " + levelVO.level + " is missing" });
 					continue;
 				} 
 
 				if (path.maxlen > 0 && sectorPath.length > path.maxlen) {
-					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "required path " + path.type + " on level " + levelVO.level + " is too long (" + sectorPath.length + "/" + path.maxlen + ")" });
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "required path [" + path.type + "] on level " + levelVO.level + " is too long (" + sectorPath.length + "/" + path.maxlen + ")" });
 				}
 
 				if (!path.isValidationOnly) {
@@ -323,7 +327,7 @@ define([
 						let pathPosition = sectorPath[i];
 						let pathSectorVO = levelVO.getSectorByPos(pathPosition);
 						if (pathSectorVO.criticalPathTypes.indexOf(path.type) < 0) {
-							issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "critical path " + path.type + " not marked on sector " + pathSectorVO.position });
+							issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "critical path " + path.type + " not marked on sector " + pathSectorVO.position });
 						}
 					}
 				}
@@ -335,7 +339,6 @@ define([
 		checkLevelNumberOfSectors: function (worldVO, levelVO) {
 			let issues = [];
 
-			// NOTE: sectors per stage is a minimum used for evidence balancing etc, a bit of overshoot is ok
 			if (levelVO.sectors.length < levelVO.numSectors) {
 				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too few sectors on level " + levelVO.level + ": " + levelVO.sectors.length + "/" + levelVO.numSectors });
 			}
@@ -344,8 +347,11 @@ define([
 			}
 
 			let stages = [ WorldConstants.CAMP_STAGE_EARLY, WorldConstants.CAMP_STAGE_LATE ];
+
 			for (let i = 0; i < stages.length; i++) {
 				let stage = stages[i];
+
+				// NOTE: sectors per stage is a minimum used for evidence balancing etc, a bit of overshoot is ok
 				let numSectorsCreated = levelVO.getNumSectorsByStage(stage);
 				let numSectorsPlanned = levelVO.numSectorsByStage[stage];
 				if (numSectorsCreated < numSectorsPlanned) {
@@ -394,21 +400,67 @@ define([
 			return { isValid: issues.length === 0, issues: issues };
 		},
 		
-		checkLevelContinuousEarlyStage: function (worldVO, levelVO) {
+		checkLevelContinuous: function (worldVO, levelVO) {
 			let issues = [];
 
-			let earlySectors = levelVO.sectorsByStage[WorldConstants.CAMP_STAGE_EARLY];
-			if (earlySectors && earlySectors.length > 1) {
-				for (let j = 1; j < earlySectors.length; j++) {
-					var sectorPath = WorldCreatorRandom.findPath(worldVO, earlySectors[0].position, earlySectors[j].position, false, true, WorldConstants.CAMP_STAGE_EARLY, true);
+			let checkIsContinuous = function (startPosition, sectors, stage, context) {
+				for (let i = 0; i < sectors.length; i++) {
+					if (sectors[i].position.equals(startPosition)) continue;
+					let sectorPath = WorldCreatorRandom.findPath(worldVO, startPosition, sectors[i].position, false, true, stage);
 					if (!sectorPath || sectorPath.length < 1) {
-						issues.push({ severity: WorldValidator.SEVERITY_COMPABILITY, desc: "early stage is not continuous on level " + levelVO.level });
+						issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: context + " is not continuous on level " + levelVO.level });
 					}
 				}
 			}
 
+			let excursionStartPosition = levelVO.getExcursionStartPosition();
+			checkIsContinuous(excursionStartPosition, levelVO.sectors, null, "whole level");
+
+			let earlySectors = levelVO.sectorsByStage[WorldConstants.CAMP_STAGE_EARLY];
+			if (earlySectors && earlySectors.length > 1) {
+				checkIsContinuous(earlySectors[0].position, earlySectors, WorldConstants.CAMP_STAGE_EARLY, "early stage");
+			}
+
 			return { isValid: issues.length === 0, issues: issues };
 		},
+
+		checkLevelDensity: function (worldVO, levelVO) {
+			let issues = [];
+
+			// good level is not too dense and not too spread out, giving player paths to choose from but not an open field
+
+			let averageNumNeighbours = levelVO.sectors.reduce((accumulator, s) => accumulator + levelVO.getNeighbourCount(s.position.sectorX, s.position.sectorY), 0) / levelVO.sectors.length;
+
+			if (averageNumNeighbours < 2.4) {
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level average num neighbours is too low: " + Math.round(averageNumNeighbours*100)/100 });
+			}
+
+			if (averageNumNeighbours > 3.1) {
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level average num neighbours is too high: " + Math.round(averageNumNeighbours*100)/100 });
+			}
+
+			let averageDensity = levelVO.sectors.reduce((accumulator, s) => accumulator + levelVO.getAreaDensity(s.position.sectorX, s.position.sectorY, 2), 0) / levelVO.sectors.length;
+
+			if (averageDensity < 0.25) {
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level average 2-area density is too low: " + Math.round(averageDensity*100)/100 });
+			}
+
+			if (averageDensity > 0.38) {
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level average 2-area density is too high: " + Math.round(averageDensity*100)/100 });
+			}
+
+			for (let s = 0; s < levelVO.sectors.length; s++) {
+				let sectorVO = levelVO.sectors[s];
+				let localDensity = levelVO.getAreaDensity(sectorVO.position.sectorX, sectorVO.position.sectorY, 2);
+
+				if (localDensity > 0.7) {
+					issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "sector local 2-area density is too high: " + Math.round(localDensity*100)/100 });
+				}
+
+			}
+
+			return { isValid: issues.length === 0, issues: issues };
+		},	
 		
 		checkLevelCampsAndPassages: function (worldVO, levelVO) {
 			let issues = [];

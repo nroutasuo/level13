@@ -6,6 +6,9 @@ define(['ash'], function (Ash) {
 	
 		LEVEL_NUMBER_MIN: 25,
 		LEVEL_NUMBER_MAX: 27,
+
+		MAX_WIDTH: 55,
+		MAX_HEIGHT: 45,
 		
 		CAMPS_TOTAL: 15,
 		CAMPS_BEFORE_GROUND: 8,
