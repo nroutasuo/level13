@@ -53,11 +53,12 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 		FEATURE_HOLE_SEA: "sea",
 		FEATURE_HOLE_MOUNTAIN: "mountain",
 
-		SHAPE_LINE: "line",
+		SHAPE_LINE_ANY: "line-any", // line starting from one connection point and going in any direction
+		SHAPE_LINE_CONNECTION: "line-connection", // line between two existing connection points
 		SHAPE_RECTANGLE_CORNER: "rectangle-corner", // rectangle attaching to connection point via a corner
 		SHAPE_RECTANGLE_CENTER: "rectangle-center", // rectangle attaching to a connection point via a side
-		SHAPE_CIRCLE: "circle",
-		SHAPE_TRIANGLE: "triangele",
+		SHAPE_CIRCLE: "circle", // same as SHAPE_RECTANGLE_CENTER but rounded
+		SHAPE_TRIANGLE: "triangele", // triangles using two connection points
 		
 		getNumSectors: function (campOrdinal) {
 			let defaultBigLevel = 150;

@@ -454,7 +454,7 @@ define([
 				let localDensity = levelVO.getAreaDensity(sectorVO.position.sectorX, sectorVO.position.sectorY, 2);
 
 				if (localDensity > 0.7) {
-					issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "sector local 2-area density is too high: " + Math.round(localDensity*100)/100 });
+					issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "sector local 2-area density is too high at " + sectorVO + " : " + Math.round(localDensity*100)/100 });
 				}
 
 			}

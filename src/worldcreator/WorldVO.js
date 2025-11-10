@@ -108,6 +108,19 @@ define(['ash'], function (Ash) {
 			if (sectorVO.passageDownType) return sectorVO.passageDownType;
 			return null;
 		},
+
+		getFeature: function (level, sectorX, sectorY) {
+			let pos = { level: level, sectorX: sectorX, sectorY: sectorY };
+
+			for (let i = 0; i < this.features.length; i++) {
+				let feature = this.features[i];
+				if (feature.containsPosition(pos)) {
+					return feature;
+				}
+			}
+			
+			return false;
+		}
 		
 	});
 

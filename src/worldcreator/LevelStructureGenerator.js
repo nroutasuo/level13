@@ -512,7 +512,7 @@ define([
 			let maxDist = Math.round(MathUtils.map(levelVO.structureSettings.density, 0, 1, 4, 3));
 			let dist = WorldCreatorRandom.randomInt(s3, minDist, maxDist + 1);
 
-			let trailingEndsProbability = MathUtils.map(levelVO.structureSettings.rectangleRate, 0, 1, 0.75, 0);
+			let trailingEndsProbability = MathUtils.map(levelVO.structureSettings.shapeWeights[WorldCreatorConstants.SHAPE_LINE_ANY], 0, 2, 0, 1);
 			
 			// define paths
 			let getStreetCenter = function (i, ox, oy) {
@@ -637,6 +637,41 @@ define([
 			this.createPaths(levelVO, paths, true);
 		},
 		
+		createCentralRectanglesOverlapping: function (s1, s2, s3, worldVO, levelVO, position, pois) {
+			let l = levelVO.level;
+
+			let directions = [ PositionConstants.DIRECTION_NE, PositionConstants.DIRECTION_SE, PositionConstants.DIRECTION_SW, PositionConstants.DIRECTION_NW ];
+			
+			let minSize = levelVO.numSectors > 80 ? 9 : 7;
+			let maxSize = MathUtils.clamp(levelVO.numSectors / 10, minSize, levelVO.structureSettings.maxPathLength);
+			let maxRandom = Math.floor((maxSize - minSize) / 2);
+			let size = minSize + WorldCreatorRandom.randomInt(s1, 0, maxRandom) * 2;
+			
+			let getPaths = function (ox, oy, params) {
+				let result = [];
+
+				let s = params.size;
+				s = MathUtils.clamp(s, minSize, maxSize);
+				if (s % 2 == 0) s--;
+
+				let offset = PositionConstants.getOffsetByDirection(params.dir);
+				let offsetLen = Math.floor(size/2);
+
+				let pos1 = new PositionVO(position.level, position.sectorX + ox, position.sectorY + oy);
+				let pos2 = new PositionVO(position.level, position.sectorX + ox + offset.x * offsetLen, position.sectorY + oy + offset.y * offsetLen);
+
+				result = result.concat(LevelStructureGenerator.getRectangleFromCenter(levelVO, pos1, size, size, true, false));
+				result = result.concat(LevelStructureGenerator.getRectangleFromCenter(levelVO, pos2, size, size, true, false));
+
+				return result;
+			};
+			
+			let params = { size: [ size, size - 2, size + 2, size - 4, size + 4 ], dir: directions };
+			let offset = this.getCentralStructureOffset(levelVO, pois, params, getPaths);
+			let paths = getPaths(offset.x, offset.y, offset.params);
+			this.createPaths(levelVO, paths, true);
+		},
+		
 		createCentralRectanglesNested: function (s1, s2, s3, worldVO, levelVO, position, pois) {
 			let diagonalProbability = levelVO.structureSettings.diagonalRate;
 			let isDiagonal = WorldCreatorRandom.randomBool(s1, diagonalProbability);
@@ -690,7 +725,7 @@ define([
 			let isDiagonal = WorldCreatorRandom.randomBool(s1, levelVO.structureSettings.diagonalRate * 0.75);
 
 			let minSize = isDiagonal ? 5 : 9;
-			let maxSize = Math.round(Math.min(levelVO.numSectors / 8, levelVO.structureSettings.maxPathLength * 1.5));
+			let maxSize = Math.round(Math.min(levelVO.numSectors / 9, levelVO.structureSettings.maxPathLength * 1.5));
 			if (isDiagonal) maxSize = Math.min(maxSize, 12);
 
 			let maxRandom = Math.floor((maxSize - minSize) / 2);
@@ -698,13 +733,14 @@ define([
 
 			let getPaths = function (ox, oy, params) {
 				let s = params.size;
+				s = MathUtils.clamp(s, minSize, maxSize);
 				let pos = new PositionVO(position.level, position.sectorX + ox, position.sectorY + oy)
 				let connectionPointType = LevelStructureGenerator.getDefaultRectangleConnectionPointType(levelVO, s);
 				let result = LevelStructureGenerator.getRectangleFromCenter(levelVO, pos, s, s, true, isDiagonal, connectionPointType);
 				return result;
 			};
 			
-			let offset = this.getCentralStructureOffset(levelVO, pois, { size: [ size, size - 2, size + 2 ] }, getPaths);
+			let offset = this.getCentralStructureOffset(levelVO, pois, { size: [ size, size - 2, size + 2, size - 4, size + 4 ] }, getPaths);
 			let paths = getPaths(offset.x, offset.y, offset.params);
 			this.createPaths(levelVO, paths, true);
 		},
@@ -1060,7 +1096,6 @@ define([
 				}
 
 				if (failures > 25) {
-					debugger
 					log.w("problems generating level stage " + levelVO.level + " " + stageVO.stage);
 				}
 			}
@@ -1076,7 +1111,7 @@ define([
 			let stage = stageVO.stage;
 			
 			let isFirstAttempt = attempt === 1;
-			let isLateAttempt = attempt > 5 && attempt % 4 == 0;
+			let isLateAttempt = (attempt > 10 && attempt % 3 == 0) || attempt > 50;
 			let canConnectToDifferentStage = (isFirstAttempt || isLateAttempt) && stage != WorldConstants.CAMP_STAGE_EARLY;
 
 			let options = this.getDefaultOptions({ stage: stage, canConnectToDifferentStage: canConnectToDifferentStage });
@@ -1098,20 +1133,29 @@ define([
 			let numBefore = levelVO.sectors.length;
 
 			switch (shape) {
-				case WorldCreatorConstants.SHAPE_LINE:
+				case WorldCreatorConstants.SHAPE_LINE_ANY:
+					options.requireSecondConnectionPoint = false;
+					this.createRandomLines(seed, attempt, levelVO, options, maxShapeSize, connectionPoint);
+					break;
+				case WorldCreatorConstants.SHAPE_LINE_CONNECTION:
+					options.requireSecondConnectionPoint = true;
 					this.createRandomLines(seed, attempt, levelVO, options, maxShapeSize, connectionPoint);
 					break;
 				case WorldCreatorConstants.SHAPE_RECTANGLE_CORNER:
+					options.requireSecondConnectionPoint = false;
 					this.createRandomCornerRectangles(seed, attempt, levelVO, options, maxShapeSize, connectionPoint);
 					break;
 				case WorldCreatorConstants.SHAPE_RECTANGLE_CENTER:
+					options.requireSecondConnectionPoint = false;
 					this.createRandomSideRectangles(seed, attempt, levelVO, options, maxShapeSize, connectionPoint);
 					break;
 				case WorldCreatorConstants.SHAPE_CIRCLE:
+					options.requireSecondConnectionPoint = false;
 					this.createRandomCircles(seed, attempt, levelVO, options, maxShapeSize, connectionPoint);
 					break;
 				case WorldCreatorConstants.SHAPE_TRIANGLE:
 					// currently not used, doesn't create very nice maps
+					options.requireSecondConnectionPoint = false;
 					this.createRandomTriangles(seed, attempt, levelVO, options, maxShapeSize, connectionPoint);
 					break;
 			}
@@ -1119,6 +1163,8 @@ define([
 			let numAfter = levelVO.sectors.length;
 			let numCreated = numAfter - numBefore;
 			let isSuccess = numCreated > 1;
+
+			log.i("try #" + attempt + ": from " + connectionPoint.position + " (score: " + connectionPointOriginal.connectionPointScore + ") " + shape + " - > " + isSuccess + " | " + canConnectToDifferentStage);
 
 			if (!isSuccess) {
 				if (!connectionPointOriginal.numFailures) connectionPointOriginal.numFailures = 0;
@@ -1129,7 +1175,6 @@ define([
 		},
 
 		pickRandomShape: function (seed, attempt, levelVO, connectionPoint, maxShapeSize) {
-			// select possible shapes
 			let options = [];
 
 			let neighbours = levelVO.getNeighbourList(connectionPoint.position.sectorX, connectionPoint.position.sectorY);
@@ -1138,10 +1183,13 @@ define([
 			let outwardsDirection = PositionConstants.getDirectionFrom(neighbours[0].position, connectionPoint.position);
 			let isPathOutwardsClear = this.isPathClear(levelVO, connectionPoint.position, outwardsDirection, 3);
 
-			if (numNeighbours > 1) options.push(WorldCreatorConstants.SHAPE_LINE);
+			if (numNeighbours > 1) options.push(WorldCreatorConstants.SHAPE_LINE_ANY);
+			if (numNeighbours < 3) options.push(WorldCreatorConstants.SHAPE_LINE_CONNECTION);
 			if (numNeighbours == 1 && isPathOutwardsClear) options.push(WorldCreatorConstants.SHAPE_RECTANGLE_CENTER);
 			if (numNeighbours == 1 && isPathOutwardsClear) options.push(WorldCreatorConstants.SHAPE_CIRCLE);
 			if (numNeighbours < 3) options.push(WorldCreatorConstants.SHAPE_RECTANGLE_CORNER);
+
+			options = options.filter(shape => levelVO.structureSettings.shapeWeights[shape] > 0);
 
 			if (options.length == 0) return null;
 			if (options.length == 1) return options[0];
@@ -1149,13 +1197,13 @@ define([
 			let getShapeScore = function (shape) {
 				let score = 0;
 
-				// TODO consider levelVO.structureSettings.rectangleRate
-				// TODO consider point directions
-
-				if (shape == WorldCreatorConstants.SHAPE_LINE) score -= 0.01;
-				if (shape == WorldCreatorConstants.SHAPE_LINE && maxShapeSize < 12) score++;
+				if (shape == WorldCreatorConstants.SHAPE_LINE_ANY) score -= 0.01;
+				if (shape == WorldCreatorConstants.SHAPE_LINE_ANY && maxShapeSize < 12) score++;
+				if (shape == WorldCreatorConstants.SHAPE_LINE_CONNECTION && maxShapeSize < 14) score++;
 				
 				if (attempt % options.length === options.indexOf(shape)) score++;
+
+				score *= (levelVO.structureSettings.shapeWeights[shape] || 1);
 
 				return score;
 			};
@@ -1221,7 +1269,7 @@ define([
 				return result;
 			};
 
-			let params = { w: [ w, w - 1, w + 1 ], h: [ h, h - 1, h + 1 ], dir: possibleDirections };
+			let params = { w: [ w, w - 1, w + 1, w - 2, w + 2 ], h: [ h, h - 1, h + 1, h - 2, h + 2 ], dir: possibleDirections };
 			if (canDuplicate) params.duplicate = [ true, false ];
 			let offset = this.getRandomPathsOffset(levelVO, params, getPaths, options);
 
@@ -1448,6 +1496,8 @@ define([
 			let pathStartPos = pathStartPoint.position.clone();
 
 			let possibleDirections = this.getPossiblePathDirections(s1, s2, levelVO, pathStartPoint);
+
+			if (possibleDirections.length == 0) return;
 			
 			let minPathLength = levelVO.structureSettings.minPathLength;
 			let maxPathLength = levelVO.structureSettings.maxPathLength;
@@ -1468,6 +1518,9 @@ define([
 
 			let lenParams = [ pathLength, pathLength - 1, pathLength - 2, pathLength - 3, pathLength + 1, pathLength + 2, pathLength + 3 ];
 			let params = this.getRandomPathsOffset(levelVO, { len: lenParams, dir: possibleDirections }, getPaths, options);
+
+			if (params.score < 0) return;
+
 			let path = getPath(params);
 			
 			let connectionPointType = LevelStructureGenerator.getDefaultPathConnectionPointType(levelVO, path.len);
@@ -2407,7 +2460,7 @@ define([
 
 		makeSector: function (levelVO, sectorPos, stage) {
 			let vo = new SectorVO(sectorPos);
-			// if (sectorPos.sectorX == -10 && sectorPos.sectorY == 7) debugger
+			// if (sectorPos.sectorX == 0 && sectorPos.sectorY == 7) debugger
 			vo.stage = stage;
 			vo.isCamp = levelVO.isCampPosition(sectorPos);
 			vo.isPassageUp = levelVO.isPassageUpPosition(sectorPos);
@@ -2436,7 +2489,7 @@ define([
 				sectorPos.level = levelVO.level;
 				if (levelVO.hasSector(sectorPos.sectorX, sectorPos.sectorY)) {
 					var sector = levelVO.getSector(sectorPos.sectorX, sectorPos.sectorY);
-					if (options.stage && sector.stage != options.stage) {
+					if (options.stage && sector.stage != options.stage && !options.canConnectToDifferentStage) {
 						return { isValid: false, reason: "contains sector of wrong stage: " + sector.stage + " " + sector.position };
 					}
 				}
@@ -2663,7 +2716,7 @@ define([
 			let secondaryBaseProbability = MathUtils.map(levelVO.structureSettings.symmetry, 0, 1, 0.5, 0);
 			if (result.length === 0) secondaryBaseProbability += 0.25;
 			let secondaryDigonalModifier = diagonalModifier * 0.5;
-			checkDirections(connectionPoint.dirs2, s2, secondaryBaseProbability, secondaryDigonalModifier, secondaryModifier);
+			checkDirections(connectionPoint.dirs2, s2, secondaryBaseProbability, secondaryDigonalModifier, secondaryModifier || 1);
 
 			if (result.length == 0) {
 				result.push(bestProbabilityDirection);
@@ -2717,7 +2770,7 @@ define([
 		},
 
 		// options:
-		// - stage, shape
+		// - stage, shape, requireSecondConnectionPoint
 		getRandomPathsOffset: function (levelVO, params, getPathsFunc, options) {
 			let candidates = this.getParamCombinations(params);
 
@@ -2926,7 +2979,7 @@ define([
 
 				// distance to level center pos
 				let averageDistance = Math.round(totalDistance / numPositions);
-				score -= averageDistance / 1000;
+				score -= averageDistance / 10;
 
 				return score || 0;
 			};
@@ -2951,7 +3004,7 @@ define([
 		},
 
 		// paths: array of PathVO
-		// options: stage, shape
+		// options: stage, shape, requireSecondConnectionPoint
 		getRandomPathsScore: function (levelVO, paths, options) {
 			let score = 0;
 
@@ -2962,40 +3015,69 @@ define([
 
 				let connectionPoints = levelVO.allConnectionPoints;
 
-				let numMatchingConnectionPoints = 0;
-				let numAlignedConnectionPoints = 0;
+				let pointsOnPath = []; // points that appear somewhere on the paths
+				let pointsOnPathEnds = []; // points that appear on path start/end/corner positions
+				let pointsAligned = []; // points that are aligned to some position on the paths (can draw straight line)
+				let pointsAlignedEnds = []; // points that are aligned to path start/end/corner positions
+				let pointsNearMiss = []; // points that are close to the path but not quite on it
+				
+				let hasSecondConnectionPoint = false;
 
-				for (let i = 0; i < paths.length; i++) {
-					let path = paths[i];
-					let direction = path.dir;
+				for (let k = 0; k < connectionPoints.length; k++) {
+					let connectionPoint = connectionPoints[k];
+					let isUsable = LevelStructureGenerator.isConnectionPointUsable(levelVO, connectionPoint);
 
-					for (let j = 0; j < path.len; j++) {
-						let pos = PositionConstants.getPositionOnPath(path.startPos, path.dir, j);
+					let isOnPath = false;
+					let isOnPathEnd = false;
+					let isAligned = false; 
+					let isAlignedEnd = false;
+					let isNearMiss = false;
 
-						for (let k = 0; k < connectionPoints.length; k++) {
-							let connectionPoint = connectionPoints[k];
-							let isUsable = LevelStructureGenerator.isConnectionPointUsable(levelVO, connectionPoint);
+					for (let i = 0; i < paths.length; i++) {
+						let path = paths[i];
+						let direction = path.dir;
+						let isLastPath = i == paths.length - 1;
+
+						for (let j = 0; j < path.len; j++) {
+							let pos = PositionConstants.getPositionOnPath(path.startPos, path.dir, j);
+
+							let isPathEnd = j == 0 || j == path.len - 1;
+							let isPathLastPosition = j == path.len - 1;
 
 							let distance = PositionConstants.getDistanceTo(pos, connectionPoint.position);
-							let isOnPath = PositionConstants.isOnPath(connectionPoint.position, path.startPos, path.dir, path.len);
-							
-							if (isUsable && distance === 0 && connectionPoint.dirs.indexOf(direction) >= 0) numMatchingConnectionPoints++;
-							if (isUsable && distance === 0 && connectionPoint.dirs2.indexOf(direction) >= 0) numMatchingConnectionPoints++;
+							let isPositionOnPath = PositionConstants.isOnPath(connectionPoint.position, path.startPos, path.dir, path.len);
 
-							if (distance > 0 && distance < 20 && PositionConstants.getPositionAlignment(pos, connectionPoint.position > 0)) numAlignedConnectionPoints++;
+							if (isPositionOnPath) isOnPath = true;
+							if (isPositionOnPath && isPathEnd) isOnPathEnd = true;
 
-							let isClose = distance > 0 && distance < 2;
-							if (!isOnPath && isClose) score -= 1;
-							if (!isOnPath && isClose && i > 0 && i < path.len - 1) score -= 1;
+							let isPositionAligned = distance > 0 && distance < 20 && PositionConstants.getPositionAlignment(pos, connectionPoint.position) > 0;
+							if (isPositionAligned) isAligned = true;
+							if (isPositionAligned && isPathEnd) isAlignedEnd = true;
+
+							let isPositionMiss = distance > 0 && distance < 2;
+							if (isPositionMiss) isNearMiss = true;
+
+							if (isUsable && distance === 0 && isPathLastPosition && (paths.length == 0 || !isLastPath)) {
+								hasSecondConnectionPoint = true;
+							}
 						}
 						
 					}
+
+					if (isOnPath) pointsOnPath.push(connectionPoint);
+					if (isOnPathEnd) pointsOnPathEnds.push(connectionPoint);
+					if (isAligned && !isOnPath) pointsAligned.push(connectionPoint);
+					if (isAlignedEnd && !isOnPath) pointsAlignedEnds.push(connectionPoint);
+					if (isNearMiss && !isOnPath) pointsNearMiss.push(connectionPoint);
 				}
 
-				if (numMatchingConnectionPoints > 0) score++;
-				if (numMatchingConnectionPoints > 1) score++;
-				if (numAlignedConnectionPoints > 0) score++;
-				if (numAlignedConnectionPoints > 1) score++;
+				score += pointsOnPath.length;
+				score += pointsOnPathEnds.length * 2;
+				score += pointsAligned.length * 0.5;
+				score += pointsAlignedEnds.length;
+				score -= pointsNearMiss.length;
+
+				if (options.requireSecondConnectionPoint && !hasSecondConnectionPoint) score -= 100;
 
 				return score || 0;
 			};
@@ -3011,7 +3093,13 @@ define([
 				for (let i = 0; i < paths.length; i++) {
 					let path = paths[i];
 					let validCheck = LevelStructureGenerator.isValidPath(levelVO, path, path.stage, options);
-					if (!validCheck.isValid) score -= 100;
+
+					if (!validCheck.isValid) {
+						score -= 100;
+						continue;
+					}
+
+					let pathScore = 0;
 
 					for (let j = 0; j < path.len; j++) {
 						let plannedStage = options.stage || path.stage;
@@ -3023,31 +3111,33 @@ define([
 						maxY = Math.max(maxY, pos.sectorY);
 
 						// awkwardness
-						score -= LevelStructureGenerator.getPositionAwkwardnessScore(levelVO, pos);
+						pathScore -= LevelStructureGenerator.getPositionAwkwardnessScore(levelVO, pos);
 
 						// stage 
-						score += LevelStructureGenerator.getPositionStageSuitabilityScore(levelVO, pos, plannedStage);
+						pathScore += LevelStructureGenerator.getPositionStageSuitabilityScore(levelVO, pos, plannedStage);
 						
 						// validity
 						let isValid = LevelStructureGenerator.isValidSectorPosition(levelVO, pos, path.stage, options);
-						if (!isValid) score -= 1;
+						if (!isValid) pathScore -= 1;
 
 						// stage
 						let defaultStage = LevelStructureGenerator.getDefaultStage(levelVO, pos);
-						if (plannedStage && plannedStage != defaultStage) score -= 1;
+						if (plannedStage && plannedStage != defaultStage) pathScore -= 1;
 
 						// distance
 						let distanceToCenter = PositionConstants.getDistanceTo(pos, levelVO.levelCenterPosition);
-						if (distanceToCenter > 20) score -= 1 * levelVO.structureSettings.density;
-						if (distanceToCenter > 30) score -= 1;
-						if (distanceToCenter > 40) score -= 1;
+						if (distanceToCenter > 20) pathScore -= 1 * levelVO.structureSettings.density;
+						if (distanceToCenter > 30) pathScore -= 1;
+						if (distanceToCenter > 40) pathScore -= 1;
 
 						// alignment to key points
-						if (pos.sectorX === 0) score++;
-						if (pos.sectorY === 0) score++;
-						if (pos.sectorX % 10 === 0) score++;
-						if (pos.sectorY % 10 === 0) score++;
+						if (pos.sectorX === 0) pathScore++;
+						if (pos.sectorY === 0) pathScore++;
+						if (pos.sectorX % 10 === 0) pathScore++;
+						if (pos.sectorY % 10 === 0) pathScore++;
 					}
+
+					score += pathScore / path.len;
 				}
 
 				let oldWidth = Math.abs(levelVO.maxX - levelVO.minX);
@@ -3077,7 +3167,7 @@ define([
 						averageNeighbourCount += neighbourCount;
 						minNeighbourCount = Math.min(minNeighbourCount, neighbourCount);
 
-						let density = levelVO.getAreaDensity(pos.sectorX, pos.sectorY, 1)
+						let density = levelVO.getAreaDensity(pos.sectorX, pos.sectorY, 2);
 						averageDensity += density;
 					}
 					averageNeighbourCount = Math.round(averageNeighbourCount/path.len);
@@ -3113,16 +3203,17 @@ define([
 					if (averageNeighbourCount > 2) score -= 1 * densityScoreModifier;
 					if (averageNeighbourCount > 3) score -= 1;
 					if (minNeighbourCount > 0) score -= path.len * densityScoreModifier;
+
+					// density
+					if (averageDensity > 0.4) score--;
+					if (averageDensity > 0.35) score--;
+					if (averageDensity > 0.25) score--;
+					if (averageDensity > 0.25) score--;
 					
 					if (paths.length > 1) continue;
 
 					let endPos = pathDetailed.path[pathDetailed.path.length - 1];
 					let endPosExists = levelVO.hasSector(endPos.sectorX, endPos.sectorY);
-
-					// density
-					if (averageDensity > 0.45) score--;
-					if (averageDensity > 0.35) score--;
-					if (averageDensity > 0.25) score--;
 
 					// end pos connection (single lines only)
 					if (endPosExists) score += 1;
@@ -3138,10 +3229,10 @@ define([
 				for (let i = 0; i < paths.length; i++) {
 					let path = paths[i];
 					
-					if (options.shape == WorldCreatorConstants.SHAPE_LINE && path.len > 12) score--;
+					if (options.shape == WorldCreatorConstants.SHAPE_LINE_ANY && path.len > 12) score--;
 					if (options.shape == WorldCreatorConstants.SHAPE_RECTANGLE_CENTER || WorldConstants.SHAPE_RECTANGLE_CORNER) {
 						let isSymmetrical = paths[0].len === paths[1].len;
-						if (isSymmetrical) score += levelVO.structureSettings.symmetry;
+						if (isSymmetrical) score += levelVO.structureSettings.symmetry * 2;
 						let isDiagonal = PositionConstants.isDiagonal(paths[0].dir);
 						if (isDiagonal && !isSymmetrical) score -= 1;
 					}
