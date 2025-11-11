@@ -374,8 +374,7 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		
 		getLevelDirections: function (excludeDiagonals) {
 			if (!excludeDiagonals)
-				return [this.DIRECTION_NORTH, this.DIRECTION_EAST, this.DIRECTION_SOUTH, this.DIRECTION_WEST,
-					this.DIRECTION_NE, this.DIRECTION_SE, this.DIRECTION_SW, this.DIRECTION_NW];
+				return [this.DIRECTION_NORTH, this.DIRECTION_NE, this.DIRECTION_EAST, this.DIRECTION_SE, this.DIRECTION_SOUTH, this.DIRECTION_SW, this.DIRECTION_WEST, this.DIRECTION_NW ];
 			else
 				return [this.DIRECTION_NORTH, this.DIRECTION_EAST, this.DIRECTION_SOUTH, this.DIRECTION_WEST];
 		},
