@@ -61,20 +61,26 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 		SHAPE_TRIANGLE: "triangele", // triangles using two connection points
 		
 		getNumSectors: function (campOrdinal) {
-			let defaultBigLevel = 150;
+			// sizes of levels if there is a campable and a non-campable level
+			let defaultBigLevel = 140;
 			let defaultSmallLevel = 80;
+
+			// slightly grow level size towards late game
+			let campOrdinalExtra = campOrdinal * 3;
 			
-			if (campOrdinal == 1)
-				return Math.round(defaultBigLevel * 0.7);
-			if (campOrdinal == 2)
-				return Math.round(defaultBigLevel + defaultSmallLevel * 0.7);
-			if (campOrdinal < WorldConstants.CAMPS_BEFORE_GROUND)
-				return Math.round(defaultBigLevel + defaultSmallLevel * 0.7 + campOrdinal * 5);
+			// slightly smaller first level
+			if (campOrdinal == 1) 
+				return Math.round(defaultBigLevel * 0.75);
+
+			// camp ordinal 8 has 3 levels (camp, ground, level 14)
 			if (campOrdinal == WorldConstants.CAMPS_BEFORE_GROUND)
-				return Math.round(defaultBigLevel * 2 + defaultSmallLevel * 0.7 + campOrdinal * 5); // ground and level 14 included
-			if (campOrdinal < WorldConstants.CAMPS_TOTAL)
-				return Math.round(defaultBigLevel + defaultSmallLevel * 0.7 + campOrdinal * 5);
-			return Math.round(defaultBigLevel * 1.25);
+				return Math.round(defaultBigLevel * 2 + defaultSmallLevel + campOrdinalExtra * 2);
+
+			// surface is only camp
+			if (campOrdinal == WorldConstants.CAMPS_TOTAL)
+				return defaultBigLevel + campOrdinalExtra;
+
+			return defaultBigLevel + defaultSmallLevel + campOrdinalExtra;
 		},
 		
 		getMaxSectorOverflow: function (levelOrdinal) {

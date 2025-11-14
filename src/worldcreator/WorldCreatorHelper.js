@@ -369,20 +369,28 @@ define([
 		},
 		
 		getNumSectorsForLevel: function (seed, level) {
-			let levelOrdinal = this.getLevelOrdinal(seed, level);
 			let campOrdinal = this.getCampOrdinal(seed, level);
-			let levels = this.getLevelsForCamp(seed, campOrdinal);
 			let numSectorsForCampOrdinal = WorldCreatorConstants.getNumSectors(campOrdinal);
-			if (levels.length == 1) return numSectorsForCampOrdinal;
-			
+			let ratio = 1;
+
 			let getSizeFactor = function (l) {
 				if (WorldCreatorHelper.isSmallLevel(seed, l))
 					return 0.5;
 				return 1;
 			};
-			let sizeFactor = getSizeFactor(level);
-			let totalSizeFactor = levels.map(level => getSizeFactor(level)).reduce((total, num) => total + num);
-			let ratio = sizeFactor / totalSizeFactor;
+			
+			let levels = this.getLevelsForCamp(seed, campOrdinal);
+			if (levels.length == 1) {
+				// only level: a little less than all sectors to avoid huge single levels (all sectors calculates with assumption of 2 levels for most camp ordinals)
+				ratio = getSizeFactor(levels[0]);
+				if (campOrdinal > 2 && campOrdinal < WorldConstants.CAMPS_TOTAL) ratio = 0.9;
+			} else {
+				// several levels: distribute on levels
+				let sizeFactor = getSizeFactor(level);
+				let totalSizeFactor = levels.map(level => getSizeFactor(level)).reduce((total, num) => total + num);
+				ratio = sizeFactor / totalSizeFactor;
+			}
+
 			return Math.round(numSectorsForCampOrdinal * ratio);
 		},
 		
@@ -404,7 +412,8 @@ define([
 		},
 		
 		getNumSectorsForLevelStage: function (seed, campOrdinal, level, stage) {
-			var isCampableLevel = this.isCampableLevel(seed, level);
+			let isCampableLevel = this.isCampableLevel(seed, level);
+
 			if (!isCampableLevel && stage == WorldConstants.CAMP_STAGE_EARLY)
 				return 0;
 			
@@ -413,7 +422,7 @@ define([
 				return numSectorsLevel;
 			}
 			
-			var campLevels = WorldCreatorHelper.getLevelsForCamp(seed, campOrdinal);
+			let campLevels = WorldCreatorHelper.getLevelsForCamp(seed, campOrdinal);
 			let earlyRatio = campLevels.length > 1 ? 0.6 : 0.5;
 			let numEarlySectors = Math.round(earlyRatio * numSectorsLevel);
 			if (stage == WorldConstants.CAMP_STAGE_EARLY) {
