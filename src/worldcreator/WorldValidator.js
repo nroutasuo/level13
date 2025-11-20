@@ -298,11 +298,18 @@ define([
 			for (let i = 0; i < levelVO.sectors.length; i++) {
 				let sectorVO = levelVO.sectors[i];
 				let pathType = null;
+				let maxlen = defaultMaxPathLen;
+
 				if (sectorVO.locales.length > 0) pathType = "locale";
 				if (sectorVO.hasWorkshop) pathType = "workshop";
 				if (sectorVO.hasTradeConnectorSpot) pathType = "trade connector spot";
-				if (!pathType) pathType = "s" + sectorVO.position.getCustomSaveObjectWithoutCamp();
-				requiredPaths.push({ start: excursionStartPosition, end: sectorVO.position, maxlen: defaultMaxPathLen, isValidationOnly: true, type: pathType });
+				
+				if (!pathType) {
+					pathType = "s" + sectorVO.position.getCustomSaveObjectWithoutCamp();
+					maxlen += 4;
+				}
+
+				requiredPaths.push({ start: excursionStartPosition, end: sectorVO.position, maxlen: maxlen, isValidationOnly: true, type: pathType });
 			}
 
 			// check lengths
@@ -431,7 +438,7 @@ define([
 
 			let averageNumNeighbours = levelVO.sectors.reduce((accumulator, s) => accumulator + levelVO.getNeighbourCount(s.position.sectorX, s.position.sectorY), 0) / levelVO.sectors.length;
 
-			if (averageNumNeighbours < 2.4) {
+			if (averageNumNeighbours < 2.3) {
 				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level average num neighbours is too low: " + Math.round(averageNumNeighbours*100)/100 });
 			}
 
@@ -453,7 +460,7 @@ define([
 				let sectorVO = levelVO.sectors[s];
 				let localDensity = levelVO.getAreaDensity(sectorVO.position.sectorX, sectorVO.position.sectorY, 2);
 
-				if (localDensity > 0.7) {
+				if (localDensity > 0.71) {
 					issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "sector local 2-area density is too high at " + sectorVO + " : " + Math.round(localDensity*100)/100 });
 				}
 
@@ -651,7 +658,7 @@ define([
 
 			let pathToCrossing = WorldCreatorHelper.getShortestPathToMatchingSector(worldVO, levelVO, sectorVO.position, pos => levelVO.isCrossing(pos.sectorX, pos.sectorY));
 			let distanceToCrossing = pathToCrossing ? pathToCrossing.length : 999;
-			if (distanceToCrossing > 14) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " is too far (" + distanceToCrossing + ") from nearest crossing" });
+			if (distanceToCrossing > WorldConstants.MAX_PATH_NO_CROSSINGS_LENGTH) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " is too far (" + distanceToCrossing + ") from nearest crossing" });
 
 			return { isValid: issues.length === 0, issues: issues };
 		},

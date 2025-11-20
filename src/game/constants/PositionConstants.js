@@ -23,7 +23,7 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		},
 		
 		getPositionOnPath: function (pathStartPos, pathDirection, pathStep, round) {
-			var resultPos = pathStartPos.clone();
+			let resultPos = pathStartPos.clone();
 			
 			if (pathDirection === this.DIRECTION_NORTH || pathDirection === this.DIRECTION_NE || pathDirection === this.DIRECTION_NW)
 				resultPos.sectorY -= pathStep;

@@ -205,6 +205,7 @@ define([
 			if (levelVO.level == 14) return SectorConstants.STYLE_INDUSTRIAL;
 			if (levelVO.level == 13) return SectorConstants.STYLE_HUMANIST;
 			if (levelVO.level == topLevel) return SectorConstants.STYLE_MODERN;
+			if (levelVO.isCampable && levelVO.campOrdinal == 12) return SectorConstants.STYLE_NEOWESTERN;
 
 			let possibleTypes = [];
 
