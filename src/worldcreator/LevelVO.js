@@ -42,15 +42,22 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			this.sectors = [];
 			
 			// caches for data used during generation
-			this.neighboursCacheContext = "LevelVO-" + this.level;
-			VOCache.create(this.neighboursCacheContext, 500);
+			this.neighboursDictCacheContext = "LevelVO-nd-" + this.level;
+			this.neighboursListCacheContext = "LevelVO-nl-" + this.level;
+			VOCache.create(this.neighboursDictCacheContext, 300);
+			VOCache.create(this.neighboursListCacheContext, 300);
+			this.sectorNeighourCountCache = {};
 			
 			this.resetCaches();
 		},
 
+		// called when sector added, movement blocker added, or stage set
 		resetPaths: function () {
-			VOCache.clear(this.neighboursCacheContext);
+			VOCache.clear(this.neighboursDictCacheContext);
+			VOCache.clear(this.neighboursListCacheContext);
+			this.sectorNeighourCountCache = {};
 		},
+
 		// called at the end of a world creation call
 		resetInternalData: function () {
 			this.localeSectors = [];
@@ -62,8 +69,11 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			}
 		},
 		
+		// called after entities created
 		resetCaches: function () {
-			VOCache.clear(this.neighboursCacheContext);
+			VOCache.clear(this.neighboursDictCacheContext);
+			VOCache.clear(this.neighboursListCacheContext);
+			this.sectorNeighourCountCache = {};
 
 			this.invalidPositions = [];
 			this.localeSectors = [];
@@ -110,21 +120,17 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 		},
 		
 		hasSector: function (sectorX, sectorY, stage, excludeStage) {
-			var colList = this.sectorsByPos[sectorX];
-			if (colList) {
-				var sector = this.sectorsByPos[sectorX][sectorY];
-				if (sector) {
-					if ((!stage || sector.stage == stage) && (!excludeStage || sector.stage != excludeStage)) {
-						return true;
-					}
-				}
-			}
-			
-			return false;
-		},
-		
-		hasSectorByPos: function (pos) {
-			return this.hasSector(pos.sectorX, pos.sectorY)
+			if (sectorX < this.minX || sectorX > this.maxX || sectorY < this.minY || sectorY > this.maxY) return false;
+
+			let sector = this.sectorsByPos[sectorX]?.[sectorY];
+			if (!sector) return false;
+
+			let s = sector.stage;
+
+			if (stage && s !== stage) return false;
+			if (excludeStage && s === excludeStage) return false;
+
+			return true;
 		},
 		
 		getSector: function (sectorX, sectorY) {
@@ -156,7 +162,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 		
 		getNeighbours: function (sectorX, sectorY, stage) {
 			var cacheKey = VOCache.getDefaultKey(sectorX, sectorY, stage);
-			var cached = VOCache.getVO(this.neighboursCacheContext, cacheKey);
+			var cached = VOCache.getVO(this.neighboursDictCacheContext, cacheKey);
 			if (cached) {
 				return Object.assign({}, cached);
 			}
@@ -172,11 +178,17 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 					neighbours[direction] = neighbour;
 				}
 			}
-			VOCache.addVO(this.neighboursCacheContext, cacheKey, Object.assign({}, neighbours));
+			VOCache.addVO(this.neighboursDictCacheContext, cacheKey, Object.assign({}, neighbours));
 			return neighbours;
 		},
 		
 		getNeighbourList: function (sectorX, sectorY, stage) {
+			let cacheKey = VOCache.getDefaultKey(sectorX, sectorY, stage);
+			let cached = VOCache.getVO(this.neighboursListCacheContext, cacheKey);
+			if (cached) {
+				return cached;
+			}
+
 			var neighbours = [];
 			var startingPos = new PositionVO(this.level, sectorX, sectorY);
 			for (let i in PositionConstants.getLevelDirections()) {
@@ -186,10 +198,16 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 					neighbours.push(this.getSector(neighbourPos.sectorX, neighbourPos.sectorY));
 				}
 			}
+
+			VOCache.addVO(this.neighboursListCacheContext, cacheKey, neighbours);
 			return neighbours;
 		},
 		
 		getNeighbourCount: function (sectorX, sectorY, stage, excludeStage, excludeDiagonals) {
+			let cacheKey = VOCache.getDefaultKey(sectorX, sectorY, stage, excludeStage, excludeDiagonals);
+			let cachedValue = this.sectorNeighourCountCache[cacheKey];
+			if (cachedValue || cachedValue === 0) return cachedValue;
+
 			let result = 0;
 			var startingPos = new PositionVO(this.level, sectorX, sectorY);
 			for (let i in PositionConstants.getLevelDirections()) {
@@ -199,6 +217,9 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 					result++;
 				}
 			}
+
+			this.sectorNeighourCountCache[cacheKey] = result;
+
 			return result;
 		},
 		

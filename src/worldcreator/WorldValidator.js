@@ -656,7 +656,7 @@ define([
 			let distanceToOrigo = Math.round(PositionConstants.getDistanceTo(sectorVO.position, { sectorX: 0, sectorY: 0 }));
 			if (distanceToOrigo > 40) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " is too far (" + distanceToOrigo + ") from origo" });
 
-			let pathToCrossing = WorldCreatorHelper.getShortestPathToMatchingSector(worldVO, levelVO, sectorVO.position, pos => levelVO.isCrossing(pos.sectorX, pos.sectorY));
+			let pathToCrossing = WorldCreatorHelper.getShortestPathToMatchingSector(worldVO, levelVO, sectorVO.position, pos => levelVO.isCrossing(pos.sectorX, pos.sectorY), 0, WorldConstants.MAX_PATH_NO_CROSSINGS_LENGTH);
 			let distanceToCrossing = pathToCrossing ? pathToCrossing.length : 999;
 			if (distanceToCrossing > WorldConstants.MAX_PATH_NO_CROSSINGS_LENGTH) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " is too far (" + distanceToCrossing + ") from nearest crossing" });
 

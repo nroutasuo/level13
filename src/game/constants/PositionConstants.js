@@ -43,6 +43,8 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		},
 		
 		isOnPath: function (pos, pathStartPos, pathDirection, len) {
+			if (this.getPositionAlignment(pos, pathStartPos) <= 0) return false;
+			
 			for (let i = 0; i < len; i++) {
 				let posOnPath = this.getPositionOnPath(pathStartPos, pathDirection, i);
 				if (posOnPath.equals(pos)) {
@@ -52,8 +54,24 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 			return false;
 		},
 
-		getIndexOnPath: function (pos, pathStartPos, pathDirection, len) {
-			let searchOffset = 30;
+		isOnExtendedPath: function (pos, pathStartPos, pathDirection, len, maxDistance) {
+			let alignment = PositionConstants.getPositionAlignment(pos, pathStartPos);
+			if (alignment <= 0) return false;
+
+			let direction = PositionConstants.getDirectionFrom(pathStartPos, pos);
+
+			let isInPathDirection = direction === pathDirection;
+			let isInOppositeDirection = direction === PositionConstants.getOppositeDirection(pathDirection);
+			if (!isInPathDirection && !isInOppositeDirection) return false;
+
+			let distance = PositionConstants.getDistanceTo(pathStartPos, pos);
+			let maxDistanceFromPathStartPos = isInPathDirection ? len + maxDistance : maxDistance;
+
+			return distance <= maxDistanceFromPathStartPos;
+		},
+
+		getIndexOnPath: function (pos, pathStartPos, pathDirection, len, maxDistance) {
+			let searchOffset = maxDistance || 30;
 			for (let i = -searchOffset; i < len + searchOffset; i++) {
 				let posOnPath = this.getPositionOnPath(pathStartPos, pathDirection, i);
 				if (posOnPath.equals(pos)) {
@@ -93,6 +111,8 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		getPositionAlignment: function (pos1, pos2) {
 			let diffX = Math.abs(pos1.sectorX - pos2.sectorX);
 			let diffY = Math.abs(pos1.sectorY - pos2.sectorY);
+
+			if (diffX === 0 && diffY === 0) return 1;
 
 			let isPathableStraight = (diffX === 0 && diffY > 1) || (diffY === 0 && diffX > 1);
 			if (isPathableStraight) return 1;

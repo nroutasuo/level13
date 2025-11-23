@@ -725,8 +725,11 @@ define([
 			return level >= highest - 5;
 		},
 
-		getShortestPathToMatchingSector: function (worldVO, levelVO, position, filter) {
+		getShortestPathToMatchingSector: function (worldVO, levelVO, position, filter, minDistance, maxDistance) {
 			let result = null;
+
+			minDistance = minDistance || 0;
+			maxDistance = maxDistance || 999;
 
 			if (filter(position)) return [];
 
@@ -735,7 +738,12 @@ define([
 				if (!filter(candidate.position)) continue;
 
 				let distance = PositionConstants.getDistanceTo(position, candidate.position);
+
+				// further than current best
 				if (result && result.length > 0 && result.length < distance) continue;
+
+				// too far to matter
+				if (distance > maxDistance) continue;
 
 				let maxPathLength = result ? result.length : null;
 				let path = WorldCreatorRandom.findPath(worldVO, position, candidate.position, false, true, null, true, maxPathLength);
@@ -744,6 +752,9 @@ define([
 				
 				if (!result || path.length < result.length) {
 					result = path;
+
+					// found short enough
+					if (result.length <= minDistance) break;
 				}
 			}
 
