@@ -135,9 +135,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 		
 		getSector: function (sectorX, sectorY) {
 			if (this.sectorsByPos) {
-				var colList = this.sectorsByPos[sectorX];
-				if (!colList) return null;
-				return this.sectorsByPos[sectorX][sectorY];
+				return this.sectorsByPos[sectorX]?.[sectorY];
 			} else {
 				for (let i = 0; i < this.sectors.length; i++) {
 					let sectorVO = this.sectors[i];
@@ -161,11 +159,9 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 		},
 		
 		getNeighbours: function (sectorX, sectorY, stage) {
-			var cacheKey = VOCache.getDefaultKey(sectorX, sectorY, stage);
-			var cached = VOCache.getVO(this.neighboursDictCacheContext, cacheKey);
-			if (cached) {
-				return Object.assign({}, cached);
-			}
+			let cacheKey = VOCache.getDefaultKey(sectorX, sectorY, stage);
+			let cached = VOCache.getVO(this.neighboursDictCacheContext, cacheKey);
+			if (cached) cached;
 			
 			var neighbours = {};
 			var startingPos = new PositionVO(this.level, sectorX, sectorY);
@@ -178,7 +174,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 					neighbours[direction] = neighbour;
 				}
 			}
-			VOCache.addVO(this.neighboursDictCacheContext, cacheKey, Object.assign({}, neighbours));
+			VOCache.addVO(this.neighboursDictCacheContext, cacheKey, neighbours);
 			return neighbours;
 		},
 		

@@ -17,27 +17,64 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		
 		DIRECTION_UP: 9,
 		DIRECTION_DOWN: 10,
+
+		areEqual: function (pos1, pos2) {
+			if (!pos1) return false;
+			if (!pos2) return false;
+			return pos1.level === pos2.level && pos1.sectorX === pos2.sectorX && pos1.sectorY === pos2.sectorY;
+		},
 		
 		getNeighbourPosition: function (sectorPos, direction) {
 			return this.getPositionOnPath(sectorPos, direction, 1);
 		},
 		
-		getPositionOnPath: function (pathStartPos, pathDirection, pathStep, round) {
-			let resultPos = pathStartPos.clone();
+		getPositionOnPath: function (pathStartPos, direction, pathStep, round) {
+			if (pathStep == 0) return pathStartPos;
+
+			let resultPos = { level: pathStartPos.level, sectorX: pathStartPos.sectorX, sectorY: pathStartPos.sectorY }
+
+			switch (direction) {
+				case this.DIRECTION_WEST: 
+					resultPos.sectorX -= pathStep;
+					break;
+				case this.DIRECTION_EAST: 
+					resultPos.sectorX += pathStep;
+					break;
+				case this.DIRECTION_NORTH: 
+					resultPos.sectorY -= pathStep;
+					break;
+				case this.DIRECTION_SOUTH: 
+					resultPos.sectorY += pathStep;
+					break;
+				case this.DIRECTION_NE: 
+					resultPos.sectorX += pathStep;
+					resultPos.sectorY -= pathStep;
+					break;
+				case this.DIRECTION_SE: 
+					resultPos.sectorX += pathStep;
+					resultPos.sectorY += pathStep;
+					break;
+				case this.DIRECTION_SW: 
+					resultPos.sectorX -= pathStep;
+					resultPos.sectorY += pathStep;
+					break;
+				case this.DIRECTION_NW: 
+					resultPos.sectorX -= pathStep;
+					resultPos.sectorY -= pathStep;
+					break;
+				case this.DIRECTION_UP: 
+					resultPos.level += pathStep;
+					break;
+				case this.DIRECTION_DOWN: 
+					resultPos.level -= pathStep;
+					break;
+			}
 			
-			if (pathDirection === this.DIRECTION_NORTH || pathDirection === this.DIRECTION_NE || pathDirection === this.DIRECTION_NW)
-				resultPos.sectorY -= pathStep;
-			if (pathDirection === this.DIRECTION_EAST || pathDirection === this.DIRECTION_NE || pathDirection === this.DIRECTION_SE)
-				resultPos.sectorX += pathStep;
-			if (pathDirection === this.DIRECTION_SOUTH || pathDirection === this.DIRECTION_SE || pathDirection === this.DIRECTION_SW)
-				resultPos.sectorY += pathStep;
-			if (pathDirection === this.DIRECTION_WEST || pathDirection === this.DIRECTION_SW || pathDirection === this.DIRECTION_NW)
-				resultPos.sectorX -= pathStep;
-			
-			if (pathDirection === this.DIRECTION_UP) resultPos.level += pathStep;
-			if (pathDirection === this.DIRECTION_DOWN) resultPos.level -= pathStep;
-			
-			if (round) resultPos.normalize();
+			if (round) {
+				resultPos.level = Math.round(resultPos.level);
+				resultPos.sectorX = Math.round(resultPos.sectorX);
+				resultPos.sectorY = Math.round(resultPos.sectorY);
+			}
 			
 			return resultPos;
 		},
@@ -47,7 +84,7 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 			
 			for (let i = 0; i < len; i++) {
 				let posOnPath = this.getPositionOnPath(pathStartPos, pathDirection, i);
-				if (posOnPath.equals(pos)) {
+				if (PositionConstants.areEqual(pos, posOnPath)) {
 					return true;
 				}
 			}

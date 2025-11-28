@@ -424,7 +424,7 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Po
 				WorldCreatorLogger.w("No goal pos defined.");
 			}
 			
-			if (startPos.equals(endPos)) {
+			if (PositionConstants.areEqual(startPos, endPos)) {
 				return [];
 			}
 			
@@ -432,7 +432,6 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Po
 				if (!position) return null;
 				let levelVO = worldVO.getLevel(position.level);
 				if (!levelVO.hasSector(position.sectorX, position.sectorY)) {
-					debugger;
 					return null;
 				}
 				return {

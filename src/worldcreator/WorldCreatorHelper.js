@@ -725,6 +725,34 @@ define([
 			return level >= highest - 5;
 		},
 
+		getShortestDistanceToMatchingSector: function (worldVO, levelVO, position, filter, minDistance, maxDistance) {
+			minDistance = minDistance || 0;
+			maxDistance = maxDistance || 999;
+			
+			let result = 999;
+
+			if (filter(position)) return 0;
+
+			for (let i = 0; i < levelVO.sectors.length; i++) {
+				let candidate = levelVO.sectors[i];
+				if (!filter(candidate.position)) continue;
+
+				let distance = PositionConstants.getDistanceTo(position, candidate.position);
+
+				// too far to matter
+				if (distance > maxDistance) continue;
+
+				if (distance < result) {
+					result = distance;
+
+					// found short enough
+					if (result <= minDistance) break;
+				}
+			}
+
+			return result;
+		},
+
 		getShortestPathToMatchingSector: function (worldVO, levelVO, position, filter, minDistance, maxDistance) {
 			let result = null;
 
