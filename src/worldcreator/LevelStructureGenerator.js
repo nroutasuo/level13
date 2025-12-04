@@ -473,7 +473,7 @@ define([
 		createCentralLine: function (s1, s2, s3, worldVO, levelVO, position, pois) {
 			// choose length
 			let minlen = levelVO.structureSettings.minPathLength * 2;
-			let maxlen = levelVO.structureSettings.maxPathLength + 2;
+			let maxlen = Math.min(levelVO.structureSettings.maxPathLength + 2, Math.ceil(levelVO.numSectors / 3.5));
 			let len = Math.floor(WorldCreatorRandom.randomInt(s1, minlen, maxlen + 1) / 2) * 2 + 1;
 
 			let getPaths = function (ox, oy, params) {
@@ -502,6 +502,7 @@ define([
 
 			let getPaths = function (ox, oy, params) {
 				let result = [];
+				let lenDiff = Math.abs(params.len1 - params.len2);
 				let dir2 = PositionConstants.getNextClockWise(PositionConstants.getNextClockWise(params.dir), true);
 				let pos = new PositionVO(levelVO.level, position.sectorX + ox, position.sectorY + oy);
 				result.push({ startPos: pos, dir: params.dir, len: params.len1, connectionPointType: WorldCreatorConstants.CONNECTION_POINTS_PATH_EXTRA });
@@ -534,10 +535,10 @@ define([
 			let perpendicularDir = PositionConstants.getNextClockWise(PositionConstants.getNextClockWise(dir, true), true);
 			
 			// choose distance between streets
-			let minDistance = Math.round(MathUtils.clamp(levelVO.structureSettings.density, 0, 1, 3, 4));
-			let maxDistance = Math.round(MathUtils.clamp(levelVO.structureSettings.density, 0, 1, 8, 4));
+			let minDistance = Math.round(MathUtils.map(levelVO.structureSettings.density, 0, 1, 3, 4));
+			let maxDistance = Math.round(MathUtils.map(levelVO.structureSettings.density, 0, 1, 8, 4));
 			let dist = minDistance + WorldCreatorRandom.randomInt(s1, 0, maxDistance - minDistance + 1);
-			
+
 			// define paths
 			let getStreetCenter = function (i, ox, oy, d) {
 				let streetDist = -(num-1)*d/2 + i*d;
@@ -548,6 +549,7 @@ define([
 			let getPaths = function (ox, oy, params) {
 				let d = params.d;
 				let result = [];
+				if (d < 2) return result;
 				for (let i = 0; i < num; i++) {
 					let streetCenter = getStreetCenter(i, ox, oy, d);
 					let startPos = PositionConstants.getPositionOnPath(streetCenter, oppositeDir, Math.floor(len / 2));
@@ -823,6 +825,7 @@ define([
 				s = MathUtils.clamp(s, minSize, maxSize);
 				let pos = new PositionVO(position.level, position.sectorX + ox, position.sectorY + oy)
 				let connectionPointType = LevelStructureGenerator.getDefaultRectangleConnectionPointType(levelVO, s);
+				if (connectionPointType == WorldCreatorConstants.CONNECTION_POINTS_RECT_CORNERS) connectionPointType = WorldCreatorConstants.CONNECTION_POINTS_RECT_MIDDLE;
 				let result = LevelStructureGenerator.getRectangleFromCenter(levelVO, pos, s, s, true, isDiagonal, connectionPointType);
 				return result;
 			};
