@@ -91,6 +91,7 @@ define([
 				this.checkSectorStashes,
 				this.checkSectorHazards,
 				this.checkSectorLocales,
+				this.checkSectorFeatures,
 				this.checkSectorMatchesTemplate,
 			];
 
@@ -115,9 +116,10 @@ define([
 		validateResultWorldTemplateVO: function (worldVO, worldTemplateVO, sourceWorldTemplateVO) {
 			let issues = [];
 
+			// TODO clear this data before validation step (some used during world creation, some during entity/debug vis creation, but none should be saved)
 			let notSavedKeysWorld = [ "districts", "features", "stages", "examineSpotsPerLevel" ];
-			let notSavedKeysLevel = [ "maxSectors", "neighboursCacheContext", "pendingConnectionPoints", "allConnectionPoints", "invalidPositions", "paths", "requiredPaths", "sectorsByStage", "sectorsByPos", "levelCenterPosition", "localeSectors", "raidDangerFactor", "stageCenterPositions" ];
-			let notSavedKeysSector = [ "id", "distanceToCamp", "requiredFeatures", "requiredResources", "resourcesAll", "waymarks", "pathID", "possibleEnemies", "hasRegularEnemies", "isConnectionPoint", "resourcesScavengable", "campPosScore", "isFill", "criticalPathTypes", "graffiti" ];
+			let notSavedKeysLevel = [ "maxSectors", "neighboursCacheContext", "pendingConnectionPoints", "allConnectionPoints", "invalidPositions", "paths", "requiredPaths", "sectorsByStage", "sectorsByPos", "levelCenterPosition", "localeSectors", "raidDangerFactor", "stageCenterPositions", "neighboursDictCacheContext", "neighboursListCacheContext", "sectorNeighourCountCache", "centralStructureType" ];
+			let notSavedKeysSector = [ "id", "distanceToCamp", "requiredFeatures", "requiredResources", "resourcesAll", "waymarks", "pathID", "possibleEnemies", "hasRegularEnemies", "isConnectionPoint", "resourcesScavengable", "campPosScore", "isFill", "criticalPathTypes", "graffiti", "shapeID", "shape" ];
 
 			// check worldTemplateVO matches worldVO
 			let properties = Object.keys(worldVO);
@@ -346,25 +348,30 @@ define([
 		checkLevelNumberOfSectors: function (worldVO, levelVO) {
 			let issues = [];
 
+			let maxOverflow = WorldCreatorConstants.getMaxSectorOverflow(levelVO.levelOrdinal);
+
 			if (levelVO.sectors.length < levelVO.numSectors) {
 				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too few sectors on level " + levelVO.level + ": " + levelVO.sectors.length + "/" + levelVO.numSectors });
 			}
-			if (levelVO.sectors.length > levelVO.maxSectors) {
+			if (levelVO.sectors.length > levelVO.maxSectors + maxOverflow) {
 				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too many sectors on level " + levelVO.level + ": " + levelVO.sectors.length + "/" + levelVO.maxSectors });
 			}
 
-			let stages = [ WorldConstants.CAMP_STAGE_EARLY, WorldConstants.CAMP_STAGE_LATE ];
+			let possibleStages = [ WorldConstants.CAMP_STAGE_EARLY, WorldConstants.CAMP_STAGE_LATE ];
+			let validStages = levelVO.isCampable ? [ WorldConstants.CAMP_STAGE_EARLY, WorldConstants.CAMP_STAGE_LATE ] : [  WorldConstants.CAMP_STAGE_LATE ];
+			let maxOverflowPerStage = Math.ceil(maxOverflow / validStages.length)
 
-			for (let i = 0; i < stages.length; i++) {
-				let stage = stages[i];
+			for (let i = 0; i < possibleStages.length; i++) {
+				let stage = possibleStages[i];
 
 				// NOTE: sectors per stage is a minimum used for evidence balancing etc, a bit of overshoot is ok
 				let numSectorsCreated = levelVO.getNumSectorsByStage(stage);
 				let numSectorsPlanned = levelVO.numSectorsByStage[stage];
+
 				if (numSectorsCreated < numSectorsPlanned) {
 					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too few sectors on level " + levelVO.level + " stage " + stage + ": " + numSectorsCreated + "/" + numSectorsPlanned });
 				}
-				if (numSectorsCreated > numSectorsPlanned * 1.1) {
+				if (numSectorsCreated > numSectorsPlanned + maxOverflowPerStage) {
 					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too many sectors on level " + levelVO.level + " stage " + stage + ": " + numSectorsCreated + "/" + numSectorsPlanned });
 				}
 			}
@@ -442,7 +449,7 @@ define([
 				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level average num neighbours is too low: " + Math.round(averageNumNeighbours*100)/100 });
 			}
 
-			if (averageNumNeighbours > 3.1) {
+			if (averageNumNeighbours > 3.15) {
 				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level average num neighbours is too high: " + Math.round(averageNumNeighbours*100)/100 });
 			}
 
@@ -460,7 +467,7 @@ define([
 				let sectorVO = levelVO.sectors[s];
 				let localDensity = levelVO.getAreaDensity(sectorVO.position.sectorX, sectorVO.position.sectorY, 2);
 
-				if (localDensity > 0.71) {
+				if (localDensity > 0.73) {
 					issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "sector local 2-area density is too high at " + sectorVO + " : " + Math.round(localDensity*100)/100 });
 				}
 
@@ -654,7 +661,7 @@ define([
 			let issues = [];
 
 			let distanceToOrigo = Math.round(PositionConstants.getDistanceTo(sectorVO.position, { sectorX: 0, sectorY: 0 }));
-			if (distanceToOrigo > 40) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " is too far (" + distanceToOrigo + ") from origo" });
+			if (distanceToOrigo > WorldConstants.MAX_DISTANCE_TO_ORIGO) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " is too far (" + distanceToOrigo + ") from origo" });
 
 			let distanceToCrossing = WorldCreatorHelper.getShortestPathToMatchingSector(worldVO, levelVO, sectorVO.position, pos => levelVO.isCrossing(pos.sectorX, pos.sectorY), WorldConstants.MAX_PATH_NO_CROSSINGS_LENGTH - 1, WorldConstants.MAX_PATH_NO_CROSSINGS_LENGTH);
 			if (distanceToCrossing > WorldConstants.MAX_PATH_NO_CROSSINGS_LENGTH) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " is too far from nearest crossing" });
@@ -693,6 +700,27 @@ define([
 				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " has too many locales (" + sectorVO.locales.length + ")" });
 			}
 
+			if ((sectorVO.isPassageUp || sectorVO.isPassageDown) && sectorVO.locales.length > 0) {
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " is a passage and has a locale (confusing for maps)" });
+			}
+
+			for (let i = 0; i < sectorVO.locales.length; i++) {
+				let localeVO = sectorVO.locales[i];
+				
+			}
+
+			return { isValid: issues.length === 0, issues: issues };
+		},
+
+		checkSectorFeatures: function (worldVO, levelVO, sectorVO, sectorTemplateVO) {
+			let issues = [];
+			
+			if (sectorVO.sunlit && levelVO.level < worldVO.topLevel) {
+				if (sectorVO.isCamp) {
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " is camp and sunlit" });
+				}
+			}
+
 			return { isValid: issues.length === 0, issues: issues };
 		},
 
@@ -701,24 +729,49 @@ define([
 
 			let itemsHelper = new ItemsHelper();
 
+			let checkMaxHazards = function (context, campOrdinal, step, isHardLevel) {
+				let maxCold = itemsHelper.getMaxHazardColdForLevel(campOrdinal, step, isHardLevel);
+				let maxRadiation = itemsHelper.getMaxHazardRadiationForLevel(campOrdinal, step, isHardLevel);
+				let maxPoison = itemsHelper.getMaxHazardPoisonForLevel(campOrdinal, step, isHardLevel);
+				let maxFlooded = itemsHelper.getMaxHazardFloodedForLevel(campOrdinal, step, isHardLevel);
+
+				if (sectorVO.hazards.cold > maxCold) 
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + (context ?? "") + " cold hazard (" + sectorVO.hazards.cold + ") is higher than max (" + maxCold + ")" });
+				if (sectorVO.hazards.radiation > maxRadiation)
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + (context ?? "") + " radiation hazard (" + sectorVO.hazards.radiation + ") is higher than max (" + maxRadiation + ")" });
+				if (sectorVO.hazards.poison > maxPoison)
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + (context ?? "") + " poison hazard (" + sectorVO.hazards.poison + ") is higher than max (" + maxPoison + ")" });
+				if (sectorVO.hazards.flooded > maxFlooded)
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + (context ?? "") + " flooded hazard (" + sectorVO.hazards.flooded + ") is higher than max (" + maxFlooded + ")" });
+			};
+
 			let zone = sectorVO.zone;
 			let isHardLevel = levelVO.isHard;
 			let campOrdinal = levelVO.campOrdinal;
 			let step = WorldConstants.getCampStep(zone);
 
-			let maxCold = itemsHelper.getMaxHazardColdForLevel(campOrdinal, step, isHardLevel);
-			let maxRadiation = itemsHelper.getMaxHazardRadiationForLevel(campOrdinal, step, isHardLevel);
-			let maxPoison = itemsHelper.getMaxHazardPoisonForLevel(campOrdinal, step, isHardLevel);
-			let maxFlooded = itemsHelper.getMaxHazardFloodedForLevel(campOrdinal, step, isHardLevel);
+			checkMaxHazards("", campOrdinal, step, isHardLevel);
 
-			if (sectorVO.hazards.cold > maxCold) 
-				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " cold hazard (" + sectorVO.hazards.cold + ") is higher than max (" + maxCold + ")" });
-			if (sectorVO.hazards.radiation > maxRadiation)
-				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " radiation hazard (" + sectorVO.hazards.radiation + ") is higher than max (" + maxRadiation + ")" });
-			if (sectorVO.hazards.poison > maxPoison)
-				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " poison hazard (" + sectorVO.hazards.poison + ") is higher than max (" + maxPoison + ")" });
-			if (sectorVO.hazards.flooded > maxFlooded)
-				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " flooded hazard (" + sectorVO.hazards.flooded + ") is higher than max (" + maxFlooded + ")" });
+			let entrancePosition = levelVO.getEntrancePassagePosition();
+			if (sectorVO.position.equals(entrancePosition)) {
+				let previousLevelOrdinal = levelVO.levelOrdinal - 1;
+				let previousLevel = WorldCreatorHelper.getLevelForOrdinal(worldVO.seed, previousLevelOrdinal);
+				let previousLevelCampOrdinal = WorldCreatorHelper.getCampOrdinal(worldVO.seed,previousLevel);
+
+				checkMaxHazards("entrance", previousLevelCampOrdinal, WorldConstants.CAMP_STEP_END, false);
+			}
+
+			let neighbours = levelVO.getNeighbourList(sectorVO.position.sectorX, sectorVO.position.sectorY);
+			let neighbourHazards = [];
+			for (let i = 0; i < neighbours.length; i++) {
+				let neighbour = neighbours[0];
+				let hazard = neighbour.hazards.getMainHazard();
+				if (hazard && neighbourHazards.indexOf(hazard) < 0) neighbourHazards.push(hazard);
+			}
+
+			if (neighbourHazards.length > 1) {
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " has neighbours with more than 1 type of hazard (" + neighbourHazards.join(",") + ")" });
+			}
 
 			return { isValid: issues.length === 0, issues: issues };
 		},
