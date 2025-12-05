@@ -383,19 +383,15 @@ define([
 			var attempts = 0;
 			var options = this.getDefaultOptions({ stage: stage });
 			var skip = 0;
+			
 			while (division.disconnected.length > 0 && division.connected.length > 0) {
 				if (attempts > 99) {
-					WorldCreatorLogger.i("disconnected sectors:");
-					WorldCreatorLogger.i(division.disconnected.map(sector => sector.position))
-					if (errorOnFail) {
-						throw new Error("couldn't connect disconnected parts of level " + levelVO.level + " stage " + stageName);
-					}
+					if (errorOnFail) log.e("couldn't connect disconnected parts of level " + levelVO.level + " stage " + stageName, "world");
 					break;
 				}
 			
-				WorldCreatorLogger.i("connecting disconnected parts of level " + levelVO.level + " stage " + stageName + ", division " + division.connected.length + "-" + division.disconnected.length + ", center: " + center + ", skip: " + skip);
-				var pair = WorldCreatorHelper.getClosestPair(division.connected, division.disconnected, skip);
-				var pairDist = PositionConstants.getDistanceTo(pair[0].position, pair[1].position);
+				log.i("connecting disconnected parts of level " + levelVO.level + " stage " + stageName + ", division " + division.connected.length + "-" + division.disconnected.length + " " + ", skip: " + skip);
+				let pair = WorldCreatorHelper.getConnectionPair(levelVO, division.connected, division.disconnected, skip);
 				let result = this.createPathBetween(worldVO, levelVO, pair[0].position, pair[1].position, -1, options);
 				if (result.path && result.path.length > 0) {
 					division = getConnectedSectors();
@@ -2288,27 +2284,32 @@ define([
 			return result;
 		},
 		
+		// options: stage
 		createPathBetween: function (worldVO, levelVO, startPos, endPos, maxlen, options, connectionPointType) {
-			options = options || {};
+			options = options || this.getDefaultOptions();
 
-			let dist = Math.ceil(PositionConstants.getDistanceTo(startPos, endPos));
+			let dist = PositionConstants.getDistanceTo(startPos, endPos);
 			let result = { path: [], isComplete: true };
 			
 			let startPosExists = levelVO.hasSector(startPos.sectorX, startPos.sectorY);
 			let endPosExists = levelVO.hasSector(endPos.sectorX, endPos.sectorY);
 
-			// WorldCreatorLogger.i("createPathBetween " + startPos + " " + endPos + " " + options.stage + " " + options.criticalPath + " / " + maxlen + ", dist: " + dist);
-
 			let isComplete = function () {
 				if (!startPosExists) return false;
 				if (!endPosExists) return false;
 				let stage = options.stage == WorldConstants.CAMP_STAGE_EARLY ? options.stage : null;
-				let currentDistance = LevelStructureGenerator.getCurrentSectorDistance(worldVO, startPos, endPos, stage);
+				let currentDistance = LevelStructureGenerator.getCurrentSectorPathDistance(worldVO, startPos, endPos, stage);
 				return currentDistance > 0 && (maxlen < 0 || currentDistance <= maxlen)
 			}
 			
 			if (isComplete()) {
-				return { path: [], isComplete: true };
+				return result;
+			}
+
+			if (dist < 2) {
+				this.createAddSector(result.path, levelVO, startPos, options);
+				this.createAddSector(result.path, levelVO, endPos, options);
+				return result;
 			}
 			
 			let validSectors = options.stage ? levelVO.getSectorsByStage(options.stage) : levelVO.sectors;
@@ -2318,41 +2319,56 @@ define([
 					return { paths: [], isValid: false, reason: "invalid positions" };
 				if (s1.equals(s2))
 					return { paths: [], isValid: true };
-				var startDirections = PositionConstants.getDirectionsFrom(s1, s2, allowDiagonals);
+
+				let startDirections = PositionConstants.getDirectionsFrom(s1, s2, allowDiagonals);
+
 				if (startDirections.length == 0) {
 					return { paths: [], isValid: false, reason: "no directions" };
 				}
+
+				let maxTotalLength = PositionConstants.getBlockDistanceTo(s1, s2);
 				
 				var frontier = [];
 				var validPaths = [];
 				var invalidPathReasons = [];
 				var invalidPaths = [];
+
 				for (let i = 0; i < startDirections.length; i++) {
 					frontier.push({ currentPos: s1, currentDirection: startDirections[i], paths: [], len: 0 });
 				}
 				
 				while (frontier.length > 0) {
-					var current = frontier.shift();
-					var currentPos = current.currentPos;
-					var direction = current.currentDirection;
-					var pathLength = PositionConstants.getDistanceInDirection(currentPos, s2, direction) + 1;
-					var pathCandidate = { startPos: currentPos, dir: direction, len: pathLength };
-					var validCheck = LevelStructureGenerator.isValidPath(levelVO, pathCandidate, null, options);
-					if (validCheck.isValid) {
-						var newPos = PositionConstants.getPositionOnPath(currentPos, direction, pathLength - 1);
-						current.paths.push(pathCandidate);
-						current.len += pathCandidate.len;
-						if (newPos.equals(s2)) {
-							validPaths.push(current);
+					let current = frontier.shift();
+					let currentPos = current.currentPos;
+					let direction = current.currentDirection;
+					if (current.paths.length > 3) continue;
+					if (current.len > maxTotalLength) continue;
+					let maxPathLength = PositionConstants.getDistanceInDirection(currentPos, s2, direction) + 1;
+					for (let pathLength = 2; pathLength <= maxPathLength; pathLength++) {
+						let pathCandidate = { startPos: currentPos, dir: direction, len: pathLength };
+						let validCheck = LevelStructureGenerator.isValidPath(levelVO, pathCandidate, null, options);
+
+						if (!validCheck.isValid) {
+							invalidPaths.push(pathCandidate);
+							invalidPathReasons.push(pathCandidate.startPos + " " + PositionConstants.getDirectionName(pathCandidate.dir) + " " + pathCandidate.len + " " + validCheck.reason);
+							continue;
+						}
+
+						let newPos = PositionConstants.getPositionOnPath(currentPos, direction, pathLength - 1);
+
+						let newPaths = current.paths.slice();
+						newPaths.push(pathCandidate);
+
+						if (PositionConstants.areEqual(newPos, s2)) {
+							validPaths.push({ currentPos: newPos, currentDirection: direction, paths: newPaths, len: current.len + pathCandidate.len });
 						} else {
-							var nextDirections = PositionConstants.getDirectionsFrom(currentPos, s2, allowDiagonals);
+							let nextDirections = PositionConstants.getDirectionsFrom(newPos, s2, allowDiagonals);
 							for (let i = 0; i < nextDirections.length; i++) {
-								frontier.push({ currentPos: newPos, currentDirection: nextDirections[i], paths: current.paths.slice(), len: current.len });
+								let nextDirection = nextDirections[i];
+								if (nextDirection == direction) continue;
+								frontier.push({ currentPos: newPos, currentDirection: nextDirection, paths: newPaths, len: current.len + pathCandidate.len });
 							}
 						}
-					} else {
-						invalidPaths.push(pathCandidate);
-						invalidPathReasons.push(pathCandidate.startPos + " " + PositionConstants.getDirectionName(pathCandidate.dir) + " " + pathCandidate.len + " " + validCheck.reason);
 					}
 				}
 				
@@ -2428,12 +2444,14 @@ define([
 			let getPointData = function (validSectors, point, otherPoint, allowDiagonals, maxNearestConnectedDist) {
 				let data = {};
 				data.pos = point;
-				if (validSectors.length > 0) {
-					data.closestExisting = getClosestValid(validSectors, point, allowDiagonals);
-					data.connectionPathsToCE = getConnectionPaths(point, data.closestExisting.position, allowDiagonals).paths;
-					data.nearestConnected = getNearestConnected(validSectors, point, otherPoint, maxNearestConnectedDist);
-					data.isExisting = levelVO.hasSector(point.sectorX, point.sectorY);
-				}
+				data.isExisting = levelVO.hasSector(point.sectorX, point.sectorY);
+				
+				if (validSectors.length <= 0) return data;
+
+				data.closestExisting = getClosestValid(validSectors, point, allowDiagonals);
+				data.connectionPathsToCE = getConnectionPaths(point, data.closestExisting.position, allowDiagonals).paths;
+				data.nearestConnected = getNearestConnected(validSectors, point, otherPoint, maxNearestConnectedDist);
+
 				return data;
 			};
 			
@@ -2448,63 +2466,50 @@ define([
 			let getPathLength = function (path) {
 				return path ? path.length : 0;
 			};
+
+			let allowDiagonals = dist > maxlen / 2 || levelVO.structureSettings.diagonalRateLine >= 0.25;
 			
-			options = options || this.getDefaultOptions();
-			if (dist == 0) {
-				this.createAddSector(result.path, levelVO, startPos, options);
-				this.createAddSector(result.path, levelVO, endPos, options);
-			} else if (dist == 1) {
-				this.createAddSector(result.path, levelVO, startPos, options);
-				this.createAddSector(result.path, levelVO, endPos, options);
+			// find important points and paths for both startPos and endPos (S)
+			// - closest existing point (sector in validSectors closest to S, can be S itself)
+			// - nearest connected (sector in validSectors that is connected to S, but closest to the other end point, can be null if S doesn't exist or is unconnected to anything else)
+			let startPosData = getPointData(validSectors, startPos, endPos, allowDiagonals, dist);
+			let endPosData = getPointData(validSectors, endPos, startPos, allowDiagonals, dist);
+			
+			// consider 3 alternative paths:
+			// - direct
+			let pathsDirect = getConnectionPaths(startPos, endPos, allowDiagonals).paths;
+			let lenDirect = getTotalLength(pathsDirect);
+			let maxIndirectLen = Math.max(lenDirect, maxlen);
+
+			// - via existing: startPos -> startPosData.closestExisting (already created ->) endPosData.closestExisting -> endPos
+			var pathBetweenExisting = startPosData.closestExisting && endPosData.closestExisting ?
+				WorldCreatorRandom.findPath(worldVO, startPosData.closestExisting.position, endPosData.closestExisting.position, false, true, options.stage) : null;
+			var pathsWithExisting = null;
+			if (startPosData.connectionPathsToCE && endPosData.connectionPathsToCE) {
+				pathsWithExisting = startPosData.connectionPathsToCE.concat(endPosData.connectionPathsToCE);
+			}
+			var isValidViaExisting = pathBetweenExisting && pathBetweenExisting.length > 0 && pathsWithExisting && pathsWithExisting.length > 0;
+			var lenViaExisting = getTotalLength(pathsWithExisting) + getTotalLength(pathBetweenExisting);
+
+			// - via nearest: startPos (already created ->) startPosData.nearestConnected -> endPosData.nearestConnected (already created- >) endPos
+			var pathsBetweenNearest = null;
+			if (startPosData.nearestConnected && endPosData.nearestConnected) {
+				pathsBetweenNearest = getConnectionPaths(startPosData.nearestConnected.position, endPosData.nearestConnected.position, allowDiagonals).paths;
+			}
+			var pathFromStart = startPosExists && startPosData.nearestConnected ? WorldCreatorRandom.findPath(worldVO, startPos, startPosData.nearestConnected.position, false, true, options.stage) : [];
+			var pathFromEnd = endPosExists && endPosData.nearestConnected ? WorldCreatorRandom.findPath(worldVO, endPos, endPosData.nearestConnected.position, false, true, options.stage) : [];
+			var isValidBetweenNearest = startPosExists && endPosExists && startPosData.nearestConnected && endPosData.nearestConnected && pathsBetweenNearest && pathsBetweenNearest.length > 0;
+			var lenBetweenNearest = getTotalLength(pathsBetweenNearest) + getPathLength(pathFromStart) + getPathLength(pathFromEnd);
+			
+			// make path via existing or nearest if they exist and are short enough, otherwise direct (direct is often ugly)
+			if (isValidBetweenNearest && lenBetweenNearest <= maxIndirectLen) {
+				createConnectionPath(startPosData.nearestConnected.position, endPosData.nearestConnected.position, allowDiagonals);
+			} else if (isValidViaExisting && lenViaExisting <= maxIndirectLen) {
+				// WorldCreatorLogger.i("- use existing " + startPosData.closestExisting + " " + endPosData.closestExisting);
+				createConnectionPath(startPos, startPosData.closestExisting.position, true);
+				createConnectionPath(endPosData.closestExisting.position, endPos, true);
 			} else {
-				var allowDiagonals = dist > maxlen / 2 || levelVO.structureSettings.diagonalRateLine >= 0.25;
-				
-				// find important points and paths for both startPos and endPos (S)
-				// - closest existing point (sector in validSectors closest to S, can be S itself)
-				// - nearest connected (sector in validSectors that is connected to S, but closest to the other end point, can be null if S doesn't exist or is unconnected to anything else)
-				var startPosData = getPointData(validSectors, startPos, endPos, allowDiagonals, dist);
-				var endPosData = getPointData(validSectors, endPos, startPos, allowDiagonals, dist);
-				
-				// consider 3 alternative paths:
-				// - direct
-				var pathsDirect = getConnectionPaths(startPos, endPos, allowDiagonals).paths;
-				var lenDirect = getTotalLength(pathsDirect);
-				let maxIndirectLen = Math.max(lenDirect, maxlen);
-
-				// - via existing: startPos -> startPosData.closestExisting (already created ->) endPosData.closestExisting -> endPos
-				var pathBetweenExisting = startPosData.closestExisting && endPosData.closestExisting ?
-					WorldCreatorRandom.findPath(worldVO, startPosData.closestExisting.position, endPosData.closestExisting.position, false, true, options.stage) : null;
-				var pathsWithExisting = null;
-				if (startPosData.connectionPathsToCE && endPosData.connectionPathsToCE) {
-					pathsWithExisting = startPosData.connectionPathsToCE.concat(endPosData.connectionPathsToCE);
-				}
-				var isValidViaExisting = pathBetweenExisting && pathBetweenExisting.length > 0 && pathsWithExisting && pathsWithExisting.length > 0;
-				var lenViaExisting = getTotalLength(pathsWithExisting) + getTotalLength(pathBetweenExisting);
-
-				// - via nearest: startPos (already created ->) startPosData.nearestConnected -> endPosData.nearestConnected (already created- >) endPos
-				var pathsBetweenNearest = null;
-				if (startPosData.nearestConnected && endPosData.nearestConnected) {
-					pathsBetweenNearest = getConnectionPaths(startPosData.nearestConnected.position, endPosData.nearestConnected.position, allowDiagonals).paths;
-				}
-				var pathFromStart = startPosExists && startPosData.nearestConnected ? WorldCreatorRandom.findPath(worldVO, startPos, startPosData.nearestConnected.position, false, true, options.stage) : [];
-				var pathFromEnd = endPosExists && endPosData.nearestConnected ? WorldCreatorRandom.findPath(worldVO, endPos, endPosData.nearestConnected.position, false, true, options.stage) : [];
-				var isValidBetweenNearest = startPosExists && endPosExists && startPosData.nearestConnected && endPosData.nearestConnected && pathsBetweenNearest && pathsBetweenNearest.length > 0;
-				var lenBetweenNearest = getTotalLength(pathsBetweenNearest) + getPathLength(pathFromStart) + getPathLength(pathFromEnd);
-				
-				// make path via existing or nearest if they exist and are short enough, otherwise direct (direct is often ugly)
-				// WorldCreatorLogger.i("- lenDirect: " + lenDirect + ", lenViaExisting: " + lenViaExisting + ", lenBetweenNearest: " + lenBetweenNearest + ", max alternative len: " + maxIndirectLen + ", allowDiagonals: " + allowDiagonals);
-				if (isValidBetweenNearest && lenBetweenNearest <= maxIndirectLen) {
-					// WorldCreatorLogger.i("- use nearest: " + startPosData.nearestConnected.position + " - " + endPosData.nearestConnected.position);
-					// WorldCreatorLogger.i(startPosData)
-					// WorldCreatorLogger.i(pathFromStart)
-					createConnectionPath(startPosData.nearestConnected.position, endPosData.nearestConnected.position, allowDiagonals);
-				} else if (isValidViaExisting && lenViaExisting <= maxIndirectLen) {
-					// WorldCreatorLogger.i("- use existing " + startPosData.closestExisting + " " + endPosData.closestExisting);
-					createConnectionPath(startPos, startPosData.closestExisting.position, true);
-					createConnectionPath(endPosData.closestExisting.position, endPos, true);
-				} else {
-					createConnectionPath(startPos, endPos, allowDiagonals);
-				}
+				createConnectionPath(startPos, endPos, allowDiagonals);
 			}
 			
 			return result;
@@ -2724,7 +2729,7 @@ define([
 				let skip = 0;
 				let attempts = 0;
 				while (attempts < 10) {
-					let pair = WorldCreatorHelper.getClosestPair(existingSectors, newSectors, skip);
+					let pair = WorldCreatorHelper.getConnectionPair(levelVO, existingSectors, newSectors, skip);
 					this.createPathBetween(worldVO, levelVO, pair[0].position, pair[1].position, -1, options);
 					if (result.path && result.path.length > 0) {
 						return;
@@ -2813,19 +2818,19 @@ define([
 		isValidPath: function (levelVO, path, stage, options) {
 			options = options || {};
 
-			var startPos = path.startPos;
-			var direction = path.dir;
-			var pathPositions = this.getPathVOPositions(path);
-			for (var si = 0; si < path.len; si++) {
+			let startPos = path.startPos;
+			let direction = path.dir;
+			let pathPositions = this.getPathVOPositions(path);
+			for (let si = 0; si < path.len; si++) {
 				let sectorPos = PositionConstants.getPositionOnPath(startPos, direction, si);
 				sectorPos.level = levelVO.level;
 				if (levelVO.hasSector(sectorPos.sectorX, sectorPos.sectorY)) {
-					var sector = levelVO.getSector(sectorPos.sectorX, sectorPos.sectorY);
+					let sector = levelVO.getSector(sectorPos.sectorX, sectorPos.sectorY);
 					if (options.stage && sector.stage != options.stage && !options.canConnectToDifferentStage) {
 						return { isValid: false, reason: "contains sector of wrong stage: " + sector.stage + " " + sector.position };
 					}
 				}
-				var validCheck = this.isValidSectorPosition(levelVO, sectorPos, stage, options, pathPositions);
+				let validCheck = this.isValidSectorPosition(levelVO, sectorPos, stage, options, pathPositions);
 				if (validCheck.isBlocked) {
 					return { isValid: false, reason: validCheck.reason };
 				}
