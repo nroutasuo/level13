@@ -58,7 +58,7 @@ define([
 			for (let i = 0; i < levelVO.predefinedExplorers.length; i++) {
 				let explorerID = levelVO.predefinedExplorers[i];
 				let explorerTemplate = ExplorerConstants.getPredefinedExplorerTemplate(explorerID);
-				let options = { excludingFeature: excludedFeatures, excludedZones: lateZones };
+				let options = { excludingFeature: excludedFeatures, excludedZones: lateZones, filter: SectorGeneratorHelper.isValidSectorForLocale };
 				let sector = WorldCreatorRandom.randomSectors(1000 + seed * 2, worldVO, levelVO, 1, 2, options)[0];
 				let locale = new LocaleVO(explorerTemplate.localeType, true, true);
 				locale.explorerID = explorerID;
@@ -81,7 +81,7 @@ define([
 				{ type: localeTypes.clinic, level: WorldCreatorHelper.getLastLevelForCamp(seed, 9), isEarly: true },
 				{ type: localeTypes.spacefactory, level: WorldCreatorHelper.getLastLevelForCamp(seed, 10), isEarly: false },
 				{ type: localeTypes.shelter, level: WorldCreatorHelper.getLastLevelForCamp(seed, 12), isEarly: false },
-				{ type: localeTypes.clinic, level: WorldCreatorHelper.getLastLevelForCamp(seed, 13), isEarly: true },
+				{ type: localeTypes.clinic, level: WorldCreatorHelper.getFirstLevelForCamp(seed, 13), isEarly: true },
 				{ type: localeTypes.isolationCenter, level: WorldCreatorHelper.getLastLevelForCamp(seed, 14), isEarly: false },
 				{ type: localeTypes.expedition, level: WorldCreatorHelper.getLastLevelForCamp(seed, 15), isEarly: false },
 			];
@@ -89,7 +89,7 @@ define([
 			for (let i = 0; i < storyLocales.length; i++) {
 				let def = storyLocales[i];
 				if (levelVO.level != def.level) continue;
-				let options = { excludingFeature: excludedFeatures };
+				let options = { excludingFeature: excludedFeatures, filter: SectorGeneratorHelper.isValidSectorForLocale };
 				let sector = WorldCreatorRandom.randomSectors(seed, worldVO, levelVO, 1, 2, options)[0];
 				if (def.type == localeTypes.grove) sector.sunlit = 1;
 				if (def.type == localeTypes.grove) sector.resourcesScavengable.food = Math.max(sector.resourcesScavengable.food, 3);

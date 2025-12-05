@@ -416,7 +416,8 @@ define([
 					if (!nextSector) break;
 					let path = WorldCreatorRandom.findPath(worldVO, currentPos, nextSector.position, false, true, pathStage);
 					if (!path) {
-						throw new Error("couldn't find level path " + currentPos + " " + nextSector.position);
+						log.e("couldn't find level path " + currentPos + " " + nextSector.position);
+						break;
 					}
 					pathID = result.length;
 					for (let j = 0; j < path.length; j++) {
@@ -491,6 +492,7 @@ define([
 			};
 
 			let addStash = function (sectorVO, reason, stashType, numItems, itemID, localeType) {
+				if (!sectorVO) return;
 				numItems = numItems || 1;
 				let stash = new StashVO(stashType, numItems, itemID, localeType);
 				sectorVO.stashes.push(stash);
@@ -504,7 +506,7 @@ define([
 			let addStashes = function (sectorSeed, reason, stashType, itemIDs, numStashes, numItemsPerStash, excludedZones, localeType) {
 				numStashes = WorldCreatorRandom.randomIntFromRange(sectorSeed / 2 + 222, numStashes);
 				
-				let options = { requireCentral: false, excludingFeature: "isCamp", excludedZones: excludedZones };
+				let options = { requireCentral: false, excludingFeature: "isCamp", excludedZones: excludedZones, filter: SectorGeneratorHelper.isValidSectorForLocale };
 				let numCandidates = numStashes * 2;
 				let stashSectorCandidates = WorldCreatorRandom.randomSectors(sectorSeed, worldVO, levelVO, numCandidates, numCandidates + 1, options);
 				let num = Math.min(numStashes, stashSectorCandidates.length);
@@ -645,17 +647,17 @@ define([
 				case "herbs":
 					let sea = worldVO.getFeaturesByType(WorldCreatorConstants.FEATURE_HOLE_SEA)[0];
 					let seaPos = sea.getPosition(l);
-					let sectorsByDistance = levelVO.sectors.slice(0).sort(WorldCreatorHelper.sortSectorsByDistanceTo(seaPos));
+					let sectorsByDistance = levelVO.sectors.slice(0).filter(s => SectorGeneratorHelper.isValidSectorForLocale(s)).sort(WorldCreatorHelper.sortSectorsByDistanceTo(seaPos));
 					let sector = sectorsByDistance[0];
 					workshopSectors.push(sector);
 					break;
 				default:
 					if (levelVO.campPosition) {
-						var startPos = levelVO.campPosition;
-						var maxLength = WorldCreatorConstants.getMaxPathLength(levelVO.campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1);
+						let startPos = levelVO.campPosition;
+						let maxLength = WorldCreatorConstants.getMaxPathLength(levelVO.campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1);
 						pathConstraints.push(new PathConstraintVO(startPos, maxLength, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1));
 					}
-					let options = { excludingFeature: "isCamp", pathConstraints: pathConstraints, excludedZones: [ WorldConstants.ZONE_ENTRANCE, WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_EXTRA_CAMPABLE ] };
+					let options = { pathConstraints: pathConstraints, excludedZones: [ WorldConstants.ZONE_ENTRANCE, WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_EXTRA_CAMPABLE ], filter: SectorGeneratorHelper.isValidSectorForLocale };
 					workshopSectors = WorldCreatorRandom.randomSectors(seed * l * 2 / 7 * l, worldVO, levelVO, 1, 2, options);
 					break;
 			}
@@ -903,6 +905,11 @@ define([
 			
 			if (sectorVO.requiredFeatures.beacon) {
 				minDensity = 2;
+				maxDensity = 8;
+			}
+
+			if (sectorVO.isPassageDown || sectorVO.isPassageUp) {
+				minDensity = 3;
 				maxDensity = 8;
 			}
 
@@ -1225,6 +1232,7 @@ define([
 				let r = WorldCreatorRandom.random(s);
 				let options = { requireCentral: false, excludingFeature: [ "isCamp", "workshopResource" ], excludedZones: excludedZones[stage], filter: sectorVO => sectorVO.itemsScavengeable.length == 0 };
 				let sector = WorldCreatorRandom.randomSectors(s, worldVO, levelVO, 1, 2, options)[0];
+				if (!sector) return;
 				sector.itemsScavengeable.push(itemID);
 				// WorldCreatorLogger.i("addItemLocation level " + levelVO.level + " " + stage + " " + itemID + " " + reason + " | " + sector.position);
 				i++;
@@ -1328,7 +1336,7 @@ define([
 					let existingSectors = WorldCreatorHelper.getLocaleDataFromTemplate(levelTemplateVO, levelVO, localeTypes.tradingpartner);
 					let sectorVO = existingSectors.length > 0 ? existingSectors[0].sectorVO : null;
 					if (!sectorVO) {
-						let options = { excludingFeature: excludedFeatures };
+						let options = { excludingFeature: excludedFeatures, filter: SectorGeneratorHelper.isValidSectorForLocale };
 						sectorVO = WorldCreatorRandom.randomSectors(seed - 9393 + i * i, worldVO, levelVO, 1, 2, options)[0];
 					}
 					let locale = new LocaleVO(localeTypes.tradingpartner, true, false);
@@ -1404,7 +1412,7 @@ define([
 					[ WorldConstants.ZONE_POI_2, WorldConstants.ZONE_CAMP_TO_PASSAGE, WorldConstants.ZONE_EXTRA_CAMPABLE ] :
 					[ WorldConstants.ZONE_ENTRANCE, WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_POI_1, WorldConstants.ZONE_EXTRA_CAMPABLE ];
 				
-				let options = { requireCentral: false, excludingFeature: excludedFeatures, pathConstraints: pathConstraints, excludedZones: excludedZones, numDuplicates: 2 };
+				let options = { requireCentral: false, excludingFeature: excludedFeatures, pathConstraints: pathConstraints, excludedZones: excludedZones, numDuplicates: 2, filter: SectorGeneratorHelper.isValidSectorForLocale };
 				let l = levelVO.level;
 				let sseed = Math.abs(seed - (isEarly ? 5555 : 0) + (l + 50) * 2);
 
@@ -1412,6 +1420,8 @@ define([
 					let isEasy = i <= countEasy;
 
 					let sectorVO = WorldCreatorRandom.randomSectors(sseed + i + i * 72 * sseed + i * l + i, worldVO, levelVO, 1, 2, options)[0];
+
+					if (!sectorVO) continue;
 
 					let s1 = sseed + sectorVO.position.sectorX * 871 + sectorVO.position.sectorY * 659 + i * 212;
 					let localeType = generator.getLocaleType(worldVO, levelVO, sectorVO, s1, isEarly);

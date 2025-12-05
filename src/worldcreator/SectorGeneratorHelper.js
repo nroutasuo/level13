@@ -154,6 +154,13 @@ define([
 			
 			return true;
 		},
+
+		isValidSectorForLocale: function (sectorVO) {
+			if (sectorVO.isCamp) return false;
+			if (sectorVO.isPassageUp) return false;
+			if (sectorVO.isPassageDown) return false;
+			return true;
+		}
 		
 	};
 

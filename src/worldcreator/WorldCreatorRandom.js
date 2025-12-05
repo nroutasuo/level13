@@ -92,6 +92,7 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Po
 				if (!selectedSectors[sector.id]) selectedSectors[sector.id] = 0;
 				selectedSectors[sector.id]++;
 			}
+
 			return result;
 		},
 		
