@@ -97,7 +97,7 @@ define([
 			levelVO.currentShapeID = 0;
 			this.connectLevelSectors(worldVO, levelVO, levelVO.getSectorsByStage(WorldConstants.CAMP_STAGE_EARLY), WorldConstants.CAMP_STAGE_EARLY, false);
 			
-			// create required paths
+			// create required paths (and sectors)
 			levelVO.currentShapeID = 0;
 			this.createRequiredPaths(seed, worldVO, levelVO);
 
@@ -153,6 +153,7 @@ define([
 					result.shapeWeights[WorldCreatorConstants.SHAPE_LINE_CONNECTION] = 0.5;
 					result.shapeWeights[WorldCreatorConstants.SHAPE_RECTANGLE_CORNER] = 1;
 					result.shapeWeights[WorldCreatorConstants.SHAPE_RECTANGLE_CENTER] = 0.5;
+					result.shapeWeights[WorldCreatorConstants.SHAPE_TRIANGLE] = 0.5;
 					break;
 				case SectorConstants.STYLE_INDUSTRIAL:
 					// only lines
@@ -163,6 +164,7 @@ define([
 					result.shapeOblongness = 0.5;
 					result.shapeWeights[WorldCreatorConstants.SHAPE_LINE_ANY] = 1;
 					result.shapeWeights[WorldCreatorConstants.SHAPE_LINE_CONNECTION] = 0.5;
+					result.shapeWeights[WorldCreatorConstants.SHAPE_TRIANGLE] = 1;
 					break;
 				case SectorConstants.STYLE_KARBOQUE:
 					// only rectangles, very symmetrical
@@ -186,6 +188,7 @@ define([
 					result.shapeWeights[WorldCreatorConstants.SHAPE_LINE_CONNECTION] = 0.5;
 					result.shapeWeights[WorldCreatorConstants.SHAPE_RECTANGLE_CENTER] = 1;
 					result.shapeWeights[WorldCreatorConstants.SHAPE_RECTANGLE_CORNER] = 0.5;
+					result.shapeWeights[WorldCreatorConstants.SHAPE_TRIANGLE] = 0.5;
 					break;
 				case SectorConstants.STYLE_NEOWESTERN:
 					// lines with cirlces
@@ -198,6 +201,7 @@ define([
 					result.shapeWeights[WorldCreatorConstants.SHAPE_LINE_ANY] = 1;
 					result.shapeWeights[WorldCreatorConstants.SHAPE_LINE_CONNECTION] = 0.5;
 					result.shapeWeights[WorldCreatorConstants.SHAPE_CIRCLE] = 0.75;
+					result.shapeWeights[WorldCreatorConstants.SHAPE_TRIANGLE] = 0.5;
 					break;
 				case SectorConstants.STYLE_WESTERN:
 					// a bit of everything
@@ -209,6 +213,7 @@ define([
 					result.shapeWeights[WorldCreatorConstants.SHAPE_LINE_ANY] = 0.25;
 					result.shapeWeights[WorldCreatorConstants.SHAPE_LINE_CONNECTION] = 0.5;
 					result.shapeWeights[WorldCreatorConstants.SHAPE_RECTANGLE_CORNER] = 1;
+					result.shapeWeights[WorldCreatorConstants.SHAPE_TRIANGLE] = 0.5;
 					break;
 			}
 
@@ -1218,12 +1223,12 @@ define([
 			let stages = worldVO.getStages(levelVO.level);
 
 			let numGoal = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO.seed, levelVO.campOrdinal, levelVO.level, stageVO.stage);
-			let maxOverflow = Math.ceil(WorldCreatorConstants.getMaxSectorOverflow(levelVO.levelOrdinal) / stages.length);
+			let maxOverflow = Math.max(0, Math.floor(WorldCreatorConstants.getMaxSectorOverflow(levelVO.levelOrdinal) / stages.length) - 2);
 
 			let attempts = 0;
 			let failures = 0;
 			let numCurrent = levelVO.getNumSectorsByStage(stage);
-
+			
 			while (numCurrent < numGoal && attempts < maxAttempts) {
 				attempts++;
 
@@ -1248,6 +1253,8 @@ define([
 
 			if (numFinal < numGoal) {
 				log.w("level " + levelVO.level + " " + stageVO.stage + " could not be completed in " + attempts + " attempts (created " + numFinal + "sectors)");
+			} else {
+				log.i("level " + levelVO.level + " " + stageVO.stage + " generated with " + numCurrent + " sectors (goal: " + numGoal + ")")
 			}
 		},
 
@@ -1298,7 +1305,6 @@ define([
 					this.createShapeCircle(seed, attempt, levelVO, options, maxShapeSize, connectionPoint);
 					break;
 				case WorldCreatorConstants.SHAPE_TRIANGLE:
-					// currently not used, doesn't create very nice maps
 					this.createShapeTriangle(seed, attempt, levelVO, options, maxShapeSize, connectionPoint);
 					break;
 			}
@@ -1307,7 +1313,12 @@ define([
 			let numCreated = numAfter - numBefore;
 			let isSuccess = numCreated > 1;
 
-			log.i("try #" + attempt + ": from " + connectionPoint.position + " (score: " + connectionPointOriginal.connectionPointScore + ") " + shape + " - > " + isSuccess);
+			log.i("try #" + attempt + ": from " 
+				+ connectionPoint.position.sectorX + "." + connectionPoint.position.sectorY 
+				+ " (score: " + Math.round(connectionPointOriginal.connectionPointScore*100)/100 + ") " 
+				+ shape 
+				+ ", max size: " + maxShapeSize
+				+ " - > " + isSuccess);
 
 			if (!isSuccess) {
 				if (!connectionPointOriginal.numFailures) connectionPointOriginal.numFailures = 0;
@@ -1336,6 +1347,7 @@ define([
 			if (numNeighbours == 1 && isPathOutwardsClear && numRemaining >= 8) options.push(WorldCreatorConstants.SHAPE_RECTANGLE_CENTER);
 			if (numNeighbours == 1 && isPathOutwardsClear && numRemaining >= 16) options.push(WorldCreatorConstants.SHAPE_CIRCLE);
 			if (numNeighbours < 3 && numRemaining >= 8) options.push(WorldCreatorConstants.SHAPE_RECTANGLE_CORNER);
+			if (numNeighbours < 4) options.push(WorldCreatorConstants.SHAPE_TRIANGLE);
 
 			options = options.filter(shape => levelVO.structureSettings.shapeWeights[shape] > 0);
 
@@ -1352,6 +1364,7 @@ define([
 				if (shape == WorldCreatorConstants.SHAPE_LINE_ANY && levelAverageDensity < 0.3) score -= 1;
 				if (shape == WorldCreatorConstants.SHAPE_LINE_ANY && numRemaining < 12) score++;
 				if (shape == WorldCreatorConstants.SHAPE_LINE_CONNECTION && numRemaining < 14) score++;
+				if (shape == WorldCreatorConstants.SHAPE_LINE_CONNECTION && numNeighbours > 2) score--;
 
 				if (shape == WorldCreatorConstants.SHAPE_RECTANGLE_CENTER && levelAverageDensity > 0.35) score -= 1;
 				
@@ -1576,9 +1589,6 @@ define([
 		},
 
 		createShapeTriangle: function (seed, pathSeed, levelVO, options, maxlen, connectionPoint) {
-
-			let stage = options.stage;
-
 			let maxSideLen = Math.round(Math.min(levelVO.structureSettings.maxPathLength, maxlen / 3));
 
 			if (maxSideLen < 5) return;
@@ -1645,24 +1655,28 @@ define([
 				if (!p1_to_p3_dir || !p2_to_p3_dir || !p1_to_p3_len || !p2_to_p3_len) return [];
 				
 				let result = [];
+
 				result.push({ startPos: p1.position, dir: direction, len: defaultSideLen }); // p1->p2
 				result.push({ startPos: p1.position, dir: p1_to_p3_dir, len: p1_to_p3_len }); // p1->p3
 				result.push({ startPos: p2.position, dir: p2_to_p3_dir, len: p2_to_p3_len }); // p2->p3
 
-				let p3 = PositionConstants.getPositionOnPath(p1.position, p1_to_p3_dir, p1_to_p3_len);
-				if (levelVO.hasSector(p3.sectorX, p3.sectory)) return [];
+				let p3 = PositionConstants.getPositionOnPath(p1.position, p1_to_p3_dir, p1_to_p3_len - 1);
+				if (levelVO.hasSector(p3.sectorX, p3.sectorY)) return [];
+				if (levelVO.getNeighbourCount(p3.sectorX, p3.sectorY) > 2) return [];
 				
 				return result;
 			};
 
 			let connectionPoints = levelVO.pendingConnectionPoints;
 
-			connectionPoints = connectionPoints.filter(c => levelVO.getNeighbourCount(c.position.sectorX, c.position.sectorY) <= 3);
+			connectionPoints = connectionPoints.filter(c => levelVO.getNeighbourCount(c.position.sectorX, c.position.sectorY) <= 2);
 
 			if (!connectionPoints || connectionPoints.length < 2) return;
 
-			let params = { p1: connectionPoints, p2: connectionPoints, type: [ TYPE_PYRAMID, TYPE_ARROW, TYPE_WING ] };
+			let params = { p1: [ connectionPoint ], p2: connectionPoints, type: [ TYPE_PYRAMID, TYPE_ARROW, TYPE_WING ] };
 			let offset = this.getRandomPathsOffset(levelVO, params, getPaths, options);
+
+			if (offset.score < 0) return;
 
 			let paths = getPaths(offset);
 
