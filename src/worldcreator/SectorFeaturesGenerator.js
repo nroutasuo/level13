@@ -212,10 +212,9 @@ define([
 				}
 				var options = { excludingFeature: "isCamp", excludedZones: [ WorldConstants.ZONE_PASSAGE_TO_CAMP ] };
 				var hazardSectors = WorldCreatorRandom.randomSectors(seed / 3 * levelOrdinal + 73 * levelVO.maxX, worldVO, levelVO, minHazardClusters, maxHazardClusters + 1, options);
-				for (var h = 0; h < hazardSectors.length; h++) {
-					var centerSector = hazardSectors[h];
-					var hrRandom = WorldCreatorRandom.random(84848 + levelOrdinal * 99 + (h+12) * 111 + seed / 777);
-					var radius = Math.round(hrRandom * 6) + 3;
+				for (let h = 0; h < hazardSectors.length; h++) {
+					let centerSector = hazardSectors[h];
+					let radius = 2 + Math.round(WorldCreatorRandom.randomInt(centerSector.position.sectorX + centerSector.position.sectorY, 0, 5))
 					this.addHazardCluster(seed, levelVO, centerSector, radius);
 				}
 				
@@ -235,7 +234,7 @@ define([
 					if (distanceToCamp < 3) continue;
 					var s = 2000 + seed % 26 * 3331 + 100 + (i + 5) * 6541 + distanceToCamp * 11;
 					if (WorldCreatorRandom.randomBool(s, 0.35)) {
-						var radius = WorldCreatorRandom.randomInt(s / 2, 2, 3);
+						let radius = 2 + WorldCreatorRandom.randomInt(s / 2, 0, 3);
 						this.addHazardCluster(seed, levelVO, pair.neighbour, radius);
 						break;
 					}
@@ -243,13 +242,13 @@ define([
 			} else {
 				// level completely covered in hazard
 				for (let i = 0; i < levelVO.sectors.length; i++) {
-					var sectorVO = levelVO.sectors[i];
+					let sectorVO = levelVO.sectors[i];
 					if (sectorVO.zone == WorldConstants.ZONE_ENTRANCE) continue;
-					var maxHazardValue = this.getMaxHazardValue(levelVO, sectorVO, defaultHazardType, sectorVO.zone);
-					var minHazardValue = Math.floor(maxHazardValue / 2);
+					let maxHazardValue = this.getMaxHazardValue(levelVO, sectorVO, defaultHazardType, sectorVO.zone);
+					let minHazardValue = Math.floor(maxHazardValue / 2);
 					if (levelVO.isHard) minHazardValue = maxHazardValue;
-					var hazardValueRand = WorldCreatorRandom.random(levelOrdinal * (i + 11) / seed * 55 + seed / (i + 99) - i * i);
-					var hazardValue = minHazardValue + hazardValueRand * (maxHazardValue - minHazardValue);
+					let hazardValueRand = WorldCreatorRandom.random(levelOrdinal * (i + 11) / seed * 55 + seed / (i + 99) - i * i);
+					let hazardValue = minHazardValue + hazardValueRand * (maxHazardValue - minHazardValue);
 					hazardValue = this.getHazardValue(hazardValue, maxHazardValue);
 					if (hazardValue > maxHazardValue) hazardValue = maxHazardValue;
 					if (isPollutedLevel) {
@@ -1469,17 +1468,39 @@ define([
 			let hazardIndex = WorldCreatorRandom.randomInt(s1, 0, validTypes.length);
 			let hazardType = validTypes[hazardIndex];
 			let value = WorldCreatorRandom.random(s2);
+
+			let sectors = [];
 			
-			for (var hx = centerSector.position.sectorX - radius; hx <= centerSector.position.sectorX + radius; hx++) {
-				for (var hy = centerSector.position.sectorY - radius; hy <= centerSector.position.sectorY + radius; hy++) {
-					var sectorVO = levelVO.getSector(hx, hy);
+			for (let hx = centerSector.position.sectorX - radius; hx <= centerSector.position.sectorX + radius; hx++) {
+				for (let hy = centerSector.position.sectorY - radius; hy <= centerSector.position.sectorY + radius; hy++) {
+					let sectorVO = levelVO.getSector(hx, hy);
 					if (!sectorVO) continue;
+
 					if (WorldCreatorConstants.isEarlierZone(sectorVO.zone, centerSector.zone)) {
 						continue;
 					}
-					let isClusterEdge = PositionConstants.getDistanceTo(sectorVO.position, centerSector.position) >= radius;
-					this.setSectorHazard(levelVO, sectorVO, value, hazardType, isClusterEdge);
+
+					let distance = PositionConstants.getDistanceTo(sectorVO.position, centerSector.position);
+
+					if (distance > radius - 3 && sectorVO.zone != centerSector.zone) continue;
+
+					let isClusterEdge = distance >= radius;
+
+					let maxHazardValue = this.getMaxHazardValue(levelVO, sectorVO, hazardType, sectorVO.zone);
+					if (maxHazardValue <= 0) continue;
+
+					sectors.push({ sectorVO: sectorVO, isClusterEdge: isClusterEdge })
 				}
+			}
+
+			if (sectors.length < 6 && radius < 10) {
+				this.addHazardCluster(seed, levelVO, centerSector, radius + 1);
+				return;
+			}
+
+			for (let i = 0; i < sectors.length; i++) {
+				let sector = sectors[i];
+				this.setSectorHazard(levelVO, sector.sectorVO, value, hazardType, sector.isClusterEdge);
 			}
 		},
 		
@@ -1739,9 +1760,7 @@ define([
 		},
 		
 		isSunlit: function (seed, worldVO, levelVO, sectorTemplateVO, sectorVO) {
-			let isSurfaceLevel = levelVO.level === worldVO.topLevel;
-			
-			if (sectorVO.isCamp && !isSurfaceLevel) return false;
+			if (!this.isSunlitAllowed(worldVO, levelVO, sectorVO, true)) return false;
 			
 			let l = sectorVO.position.level;
 			let savedValue = sectorTemplateVO.sunlit || 0;
@@ -1790,8 +1809,8 @@ define([
 		},
 		
 		isSunlitByNeighbours: function (worldVO, levelVO, sectorVO) {
-			let isSurfaceLevel = levelVO.level === worldVO.topLevel;
-			if (sectorVO.isCamp && !isSurfaceLevel) return false;
+			if (!this.isSunlitAllowed(worldVO, levelVO, sectorVO, false)) return false;
+			
 			let numTotal = 0;
 			let numSunlit = 0;
 			let neighbours = levelVO.getNeighbourList(sectorVO.position.sectorX, sectorVO.position.sectorY);
@@ -1801,6 +1820,17 @@ define([
 			}
 			let isSunlit = numSunlit / numTotal > 0.8;
 			return isSunlit ? 0.5 : 0;
+		},
+
+		isSunlitAllowed: function (worldVO, levelVO, sectorVO, isStrict) {
+			let isSurfaceLevel = levelVO.level === worldVO.topLevel;
+			let isLevelBelowSurfaceLevel = levelVO.level === worldVO.topLevel -1;
+			
+			if (sectorVO.isCamp && !isSurfaceLevel) return false;
+			if (isStrict && sectorVO.isPassageUp && !isSurfaceLevel && isLevelBelowSurfaceLevel) return false;
+			if (isStrict && sectorVO.isPassageDown && !isSurfaceLevel) return false;
+
+			return true;
 		},
 		
 		isRequiredResourceWaterSpring: function (levelVO, sectorVO) {
