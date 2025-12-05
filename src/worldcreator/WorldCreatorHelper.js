@@ -84,19 +84,31 @@ define([
 			}
 		},
 		
-		getClosestPair: function (sectors1, sectors2, skip) {
+		getConnectionPair: function (levelVO, sectors1, sectors2, skip) {
 			skip = skip || 0;
-			let result = [null, null];
-			var resultDist = 9999;
-			var pairs = [];
+			let pairs = [];
 			for (let i = 0; i < sectors1.length; i++) {
 				for (let j = 0; j < sectors2.length; j++) {
 					pairs.push([sectors1[i], sectors2[j]]);
 				}
 			}
-			pairs.sort(function (a, b) {
-				return PositionConstants.getDistanceTo(a[0].position, a[1].position) - PositionConstants.getDistanceTo(b[0].position, b[1].position);
-			});
+
+			let getSectorScore = function (sectorVO) {
+				let score = 0;
+				let numNeighbours = levelVO.getNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY);
+				if (numNeighbours < 3) score++;
+				if (numNeighbours > 3) score--;
+				if (levelVO.hasConnectionPointAt(sectorVO.position.sectorX, sectorVO.position.sectorY)) score++;
+				return score;
+			};
+
+			let getPairScore = function (pair) {
+ 				let distance = PositionConstants.getDistanceTo(pair[0].position, pair[1].position);
+				return getSectorScore(pair[0]) + getSectorScore(pair[1]) - distance;
+			};
+
+			pairs.sort(function (a, b) { return getPairScore(b) - getPairScore(a); });
+			
 			return pairs[skip];
 		},
 		
@@ -351,6 +363,11 @@ define([
 			}
 			
 			return result;
+		},
+
+		getFirstLevelForCamp: function (seed, campOrdinal) {
+			let levels = WorldCreatorHelper.getLevelsForCamp(seed, campOrdinal);
+			return levels[0];
 		},
 
 		getLastLevelForCamp: function (seed, campOrdinal) {

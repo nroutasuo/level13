@@ -58,10 +58,12 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			this.sectorNeighourCountCache = {};
 		},
 
-		// called at the end of a world creation call
+		// called at the end of a world creation call (before world returned)
 		resetInternalData: function () {
 			this.localeSectors = [];
 			this.paths = [];
+			delete this.currentShapeID;
+			delete this.lastConnectionPointUpdateSectorCount;
 			
 			for (let i = 0; i < this.sectors.length; i++) {
 				let sectorVO = this.sectors[i];
@@ -69,7 +71,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			}
 		},
 		
-		// called after entities created
+		// called after world creator caller is done with the world vo (entities created, debug vis ready)
 		resetCaches: function () {
 			VOCache.clear(this.neighboursDictCacheContext);
 			VOCache.clear(this.neighboursListCacheContext);
@@ -279,6 +281,10 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 				}
 			}
 		},
+
+		hasConnectionPointAt: function (sectorX, sectorY) {
+			return this.allConnectionPoints.filter(p => p.position.sectorX == sectorX && p.position.sectorY == sectorY).length > 0;
+		},
 		
 		getAllCampPositions: function () {
 			let result = [];
@@ -327,13 +333,27 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			return false;
 		},
 
-		getAreaDensity: function (sectorX, sectorY, d) {
+		getAreaDensity: function (sectorX, sectorY, d, pendingPositions) {
 			let filled = 0;
 			let total = 0;
 			for (let x = sectorX - d; x <= sectorX + d; x++) {
 				for (let y = sectorY - d; y <= sectorY + d; y++) {
 					total++;
-					if (this.hasSector(x, y)) filled++;
+
+					if (this.hasSector(x, y)) {
+						filled++;
+						continue;
+					}
+
+					if (pendingPositions) {
+						for (let i = 0; i < pendingPositions.length; i++) {
+							let pendingPosition = pendingPositions[i];
+							if (pendingPosition.sectorX == x && pendingPosition.sectorY == y) {
+								filled++;
+								continue;
+							}
+						}
+					}
 				}
 			}
 
