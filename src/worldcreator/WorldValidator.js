@@ -3,6 +3,7 @@ define([
 	'utils/MathUtils',
 	'utils/ObjectUtils',
 	'game/helpers/ItemsHelper',
+	'game/constants/MovementConstants',
 	'game/constants/PositionConstants',
 	'game/constants/WorldConstants',
 	'game/constants/UpgradeConstants',
@@ -11,7 +12,7 @@ define([
 	'worldcreator/WorldCreatorRandom',
 	'worldcreator/WorldTemplateVO',
 ], function (
-	Ash, MathUtils, ObjectUtils, ItemsHelper, PositionConstants, WorldConstants, UpgradeConstants, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldTemplateVO
+	Ash, MathUtils, ObjectUtils, ItemsHelper, MovementConstants, PositionConstants, WorldConstants, UpgradeConstants, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldTemplateVO
 ) {
 	let context = "WorldValidator";
 
@@ -77,6 +78,7 @@ define([
 				this.checkLevelCampsAndPassages, 
 				this.checkLevelNumberOfSectors, 
 				this.checkLevelNumberOfLocales,
+				this.checkLevelMovementBlockers,
 				this.checkLevelMatchesTemplate,
 			];
 
@@ -414,6 +416,140 @@ define([
 			return { isValid: issues.length === 0, issues: issues };
 		},
 		
+		checkLevelMovementBlockers: function (worldVO, levelVO) {
+			let issues = [];
+
+			let directions = PositionConstants.getLevelDirections();
+
+			let movementBlockers = [];
+
+			let getBlockerID = function (s1, s2, blockerType) {
+				let isSector1First = s1.position.sectorX + s1.position.sectorY < s2.position.sectorX + s2.position.sectorY;
+				let pos1 = isSector1First ? s1.position : s2.position;
+				let pos2 = isSector1First ? s2.position : s1.position;
+				return pos1.sectorX + "-" + pos1.sectorY + "-" + pos2.sectorX + "-" + pos2.sectorY + "-" + blockerType;
+			};
+
+			let getBlockerDistance = function (blocker1, blocker2) {
+				return Math.max(
+					PositionConstants.getDistanceTo(blocker1.sector1.position, blocker2.sector1.position),
+					PositionConstants.getDistanceTo(blocker1.sector2.position, blocker2.sector2.position),
+					PositionConstants.getDistanceTo(blocker1.sector1.position, blocker2.sector2.position),
+					PositionConstants.getDistanceTo(blocker1.sector2.position, blocker2.sector1.position),
+				) - 1;
+			};
+
+			let getSectorsBetweenBlockers = function (blocker1, blocker2) {
+				let result = [];
+				let d_b1s1_b2s1 = PositionConstants.getDistanceTo(blocker1.sector1.position, blocker2.sector1.position);
+				let d_b1s1_b2s2 = PositionConstants.getDistanceTo(blocker1.sector1.position, blocker2.sector2.position);
+				let d_b1s2_b2s1 = PositionConstants.getDistanceTo(blocker1.sector2.position, blocker2.sector1.position);
+				let d_b1s2_b2s2 = PositionConstants.getDistanceTo(blocker1.sector2.position, blocker2.sector2.position);
+
+				if (d_b1s1_b2s1 < d_b1s2_b2s1) 
+					result.push(blocker1.sector1);
+				else
+					result.push(blocker1.sector2);
+
+				if (d_b1s1_b2s1 < d_b1s1_b2s2) 
+					result.push(blocker2.sector1);
+				else
+					result.push(blocker2.sector2);
+
+				return result;
+			};
+
+			let checkIsValidMovementBlockerSector = function (sectorVO) {
+				if (sectorVO.isCamp) {
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "movement blocker at camp sector " + sectorVO });
+					return false;
+				}
+
+				if (sectorVO.isPassageDown || sectorVO.isPassageUp) {
+				}
+
+				let numNeighbours = levelVO.getNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY);
+
+				if (numNeighbours == 1) {
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "movement blocker at dead end sector " + sectorVO });
+					return false;
+				}
+				return true;
+			};
+
+			let hasSectorUnblockedDirections = function (sectorVO, ignoreSectors) {
+				for (let i in directions) {
+					let direction = directions[i];
+					let neighbourPos = PositionConstants.getPositionOnPath(sectorVO.position, direction, 1);
+					let neighbour = levelVO.getSector(neighbourPos.sectorX, neighbourPos.sectorY);
+					if (!neighbour) continue;
+					if (ignoreSectors.indexOf(neighbour) >= 0) continue;
+					let movementBlocker = sectorVO.movementBlockers[direction];
+					if (movementBlocker) continue;
+					return true;
+				}
+
+				return false;
+			};
+
+			// - find all movement blockers
+			for (let s = 0; s < levelVO.sectors.length; s++) {
+				let sectorVO = levelVO.sectors[s];
+				for (let i in directions) {
+					let direction = directions[i];
+					let neighbourPos = PositionConstants.getPositionOnPath(sectorVO.position, direction, 1);
+					let neighbour = levelVO.getSector(neighbourPos.sectorX, neighbourPos.sectorY);
+					if (!neighbour) continue;
+					let movementBlocker = sectorVO.movementBlockers[direction];
+					if (!movementBlocker) continue;
+
+					let id = getBlockerID(sectorVO, neighbour, movementBlocker);
+					
+					if (movementBlockers.find(b => b.id == id)) continue;
+
+					movementBlockers.push({ id: id, sector1: sectorVO, sector2: neighbour, blockerType: movementBlocker });
+				}
+			}
+
+			// - check all movement blockers are valid
+			for (let i = 0; i < movementBlockers.length; i++) {
+				let movementBlocker = movementBlockers[i];
+
+				checkIsValidMovementBlockerSector(movementBlocker.sector1);
+				checkIsValidMovementBlockerSector(movementBlocker.sector2);
+
+				if (movementBlocker.blockerType != MovementConstants.BLOCKER_TYPE_GANG) {
+					let pathAround =  WorldCreatorRandom.findPath(worldVO, movementBlocker.sector1.position, movementBlocker.sector2.position, true, true, null, true, 5);
+					if (pathAround && pathAround.length > 0) {
+						issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "path around movement blocker exists at " + movementBlocker.id });
+					}
+				}
+
+				for (let j = i + 1; j < movementBlockers.length; j++) {
+					let otherMovementBlocker = movementBlockers[j];
+					let distance = getBlockerDistance(movementBlocker, otherMovementBlocker);
+					if (distance > 3) continue;
+					
+					let sectorsInBetween = getSectorsBetweenBlockers(movementBlocker, otherMovementBlocker);
+					let sectorsInBetweenWithUnblockedDirections = sectorsInBetween.filter(s => hasSectorUnblockedDirections(s, sectorsInBetween));
+
+					if (sectorsInBetweenWithUnblockedDirections.length == 0) {					
+						issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "two movement blockers too close with no alternative path: " + movementBlocker.id + " " + otherMovementBlocker.id });
+					}
+				}
+			}
+
+			// - check there are some movement blockers
+			let minMovementBlockers = levelVO.isCampable ? 3 : 1;
+			if (movementBlockers.length < 1) {
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level " + levelVO.level + " doesn't have any movement blockers" });
+			} else if (movementBlockers.length < minMovementBlockers) {
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level " + levelVO.level + " has very few movement blockers" });
+			}
+
+			return { isValid: issues.length === 0, issues: issues };
+		},
+
 		checkLevelContinuous: function (worldVO, levelVO) {
 			let issues = [];
 
@@ -423,6 +559,7 @@ define([
 					let sectorPath = WorldCreatorRandom.findPath(worldVO, startPosition, sectors[i].position, false, true, stage);
 					if (!sectorPath || sectorPath.length < 1) {
 						issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: context + " is not continuous on level " + levelVO.level });
+						break;
 					}
 				}
 			}

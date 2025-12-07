@@ -89,6 +89,9 @@ define([
 			var direction = PositionConstants.getDirectionFrom(sectorVO.position, neighbourVO.position);
 			var neighbourDirection = PositionConstants.getDirectionFrom(neighbourVO.position, sectorVO.position);
 
+			if (sectorVO.position.sectorX == -17 && sectorVO.position.sectorY == 10) debugger
+			if (neighbourVO.position.sectorX == -17 && neighbourVO.position.sectorY == 10) debugger
+
 			if (sectorVO.movementBlockers[direction] || neighbourVO.movementBlockers[neighbourDirection]) {
 				var existing = sectorVO.movementBlockers[direction] || neighbourVO.movementBlockers[neighbourDirection];
 				if (!options.skipWarnings && blockerType != existing) {
@@ -107,10 +110,12 @@ define([
 				return false;
 			}
 
-			var allowedForGangs = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
+			let allowedCriticalPathTypes = options.allowedCriticalPathTypes || [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2 ];
+			let allowedForGangs = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
+
 			for (let i = 0; i < sectorVO.criticalPathTypes.length; i++) {
 				var pathType = sectorVO.criticalPathTypes[i];
-				if (options.allowedCriticalPathTypes && options.allowedCriticalPathTypes.indexOf(pathType) >= 0) continue;
+				if (allowedCriticalPathTypes && allowedCriticalPathTypes.indexOf(pathType) >= 0) continue;
 				if (blockerType === MovementConstants.BLOCKER_TYPE_GANG && allowedForGangs.indexOf(pathType) >= 0) continue;
 				for (let j = 0; j < neighbourVO.criticalPathTypes.length; j++) {
 					if (pathType === neighbourVO.criticalPathTypes[j]) {
@@ -131,13 +136,14 @@ define([
 				var diagonalsOptions = Object.assign({}, options);
 				diagonalsOptions.addDiagonals = false;
 				diagonalsOptions.skipWarnings = true;
-				var nextNeighbours = levelVO.getNextNeighbours(sectorVO, direction);
+				let nextNeighbours = levelVO.getNextNeighbours(sectorVO, direction);
 				for (let j = 0; j < nextNeighbours.length; j++) {
 					this.addMovementBlocker(worldVO, levelVO, sectorVO, nextNeighbours[j], blockerType, diagonalsOptions, sectorcb);
 				}
-				nextNeighbours = levelVO.getNextNeighbours(neighbourVO, neighbourDirection);
-				for (let j = 0; j < nextNeighbours.length; j++) {
-					this.addMovementBlocker(worldVO, levelVO, neighbourVO, nextNeighbours[j], blockerType, diagonalsOptions, sectorcb);
+				let nextNeighbours2 = levelVO.getNextNeighbours(neighbourVO, neighbourDirection);
+				for (let j = 0; j < nextNeighbours2.length; j++) {
+					if (nextNeighbours.indexOf(nextNeighbours2[j]) >= 0) continue;
+					this.addMovementBlocker(worldVO, levelVO, neighbourVO, nextNeighbours2[j], blockerType, diagonalsOptions, sectorcb);
 				}
 			}
 			

@@ -212,15 +212,17 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Po
 			return directions;
 		},
 		
-		getRandomSectorNeighbour: function (seed, levelVO, sectorVO, includeDiagonals) {
+		getRandomSectorNeighbour: function (seed, levelVO, sectorVO, filter) {
 			// TODO add a preference for non-camp sectors
 			var neighbour = null;
-			var directionOrder = this.randomDirections(seed * 3, 8, includeDiagonals);
+			var directionOrder = this.randomDirections(seed * 3, 8, true);
 			for (let i = 0; i < directionOrder.length; i++) {
 				var direction = directionOrder[i];
 				var directionNeighbourPos = PositionConstants.getPositionOnPath(sectorVO.position, direction, 1);
 				var directionNeighbour = levelVO.getSector(directionNeighbourPos.sectorX, directionNeighbourPos.sectorY);
-				if (directionNeighbour) neighbour = directionNeighbour;
+				if (!directionNeighbour) continue;
+				if (filter && !filter(directionNeighbour)) continue;
+				 neighbour = directionNeighbour;
 			}
 			return neighbour;
 		},

@@ -291,7 +291,7 @@ define([
 			};
 			
 			var addBlocker = function (seed, sectorVO, neighbourVO, type, addDiagonals, allowedCriticalPathTypes) {
-				neighbourVO = neighbourVO || WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, true);
+				neighbourVO = neighbourVO || WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, (s) => WorldCreatorHelper.canSectorHaveMovementBlocker(levelVO, s));
 				var blockerType = type || getBlockerType(seed, sectorVO);
 				var options = { addDiagonals: addDiagonals, allowedCriticalPathTypes: allowedCriticalPathTypes };
 				var sectorcb = function (s) {
@@ -347,12 +347,13 @@ define([
 			
 			// campable levels: zone borders
 			if (levelOrdinal > 1 && levelVO.isCampable) {
-				var freq = 0.75;
+				let freq = 0.75;
 				// - from ZONE_PASSAGE_TO_CAMP to other (to lead player towards camp)
-				var allowedCriticalPathTypes = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
-				var borderSectors1 = WorldCreatorHelper.getBorderSectorsForZone(levelVO, WorldConstants.ZONE_PASSAGE_TO_CAMP, true);
+				let allowedCriticalPathTypes = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
+				let borderSectors1 = WorldCreatorHelper.getBorderSectorsForZone(levelVO, WorldConstants.ZONE_PASSAGE_TO_CAMP, true);
 				for (let i = 0; i < borderSectors1.length; i++) {
-					var pair = borderSectors1[i];
+					let pair = borderSectors1[i];
+					if (pair.zone == WorldConstants.ZONE_ENTRANCE) continue;
 					if (WorldCreatorHelper.canHaveBlocker(levelVO, pair.sector, pair.neighbour, allowedCriticalPathTypes)) {
 						var s = seed % 26 * 3331 + 100 + (i + 5) * 654;
 						if (WorldCreatorRandom.random(s) < freq) {
@@ -370,8 +371,10 @@ define([
 				let i = WorldCreatorRandom.randomInt(rand, 0, localeSectors.length);
 				var poiSector = localeSectors[i];
 				var campPos = levelVO.campPosition;
-				var allowedCriticalPathTypes = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
-				addBlockersBetween(rand, levelVO, campPos, poiSector.position, null, 3, allowedCriticalPathTypes);
+				if (poiSector) {
+					var allowedCriticalPathTypes = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
+					addBlockersBetween(rand, levelVO, campPos, poiSector.position, null, 3, allowedCriticalPathTypes);
+				}
 			}
 			
 			// random ones
@@ -381,11 +384,16 @@ define([
 			if (l === worldVO.topLevel) numRandom = 8;
 			if (numRandom > 0) {
 				var randomSeed = seed % 8 * 1751 + 1000 + (l + 5) * 291;
-				var options = { excludingFeature: "isCamp" };
+				let isValidRandomBlockerSector = function (s) {
+					if (!WorldCreatorHelper.canSectorHaveMovementBlocker(levelVO, s)) return false;
+					if (levelVO.getNeighbourCount(s.position.sectorX, s.position.sectorY) > 3) return false;
+					return true;
+				}; 
+				var options = { excludingFeature: "isCamp", filter: (s) => isValidRandomBlockerSector(s) };
 				var sectors = WorldCreatorRandom.randomSectors(randomSeed, worldVO, levelVO, numRandom, numRandom + 1, options);
 				for (let i = 0; i < sectors.length; i++) {
 					var sector = sectors[i];
-					var addDiagonals = (l + i + 9) % 3 !== 0;
+					let addDiagonals = (l + i + 9) % 3 !== 0;
 					addBlocker(randomSeed - (i + 1) * 321, sector, null, null, addDiagonals);
 				}
 			}

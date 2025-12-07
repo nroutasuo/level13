@@ -239,6 +239,19 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			let numNeighboursWithDiagonals = this.getNeighbourCount(sectorX, sectorY, stage, excludeStage, true);
 			return numNeighboursWithoutDiagonals + numNeighboursWithDiagonals * 0.5;
 		},
+
+		getUnblockedNeighbourCount: function (sectorX, sectorY, stage) {
+			let result = 0;
+			let neighbours = this.getNeighbours(sectorX, sectorY, stage);
+
+			let sectorVO = this.getSector(sectorX, sectorY);
+
+			for (let direction in neighbours) {
+				if (!sectorVO || !sectorVO.movementBlockers[direction]) result++;
+			}
+
+			return result;
+		},
 		
 		getNextNeighbours: function (sectorVO, direction) {
 			let result = [];

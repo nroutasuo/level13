@@ -134,7 +134,7 @@ define([
 			};
 			
 			var addGang = function (sectorVO, neighbourVO, addDiagonals) {
-				if (!neighbourVO) neighbourVO = WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, true);
+				if (!neighbourVO) neighbourVO = WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO);
 				var direction = PositionConstants.getDirectionFrom(sectorVO.position, neighbourVO.position);
 				var neighbourDirection = PositionConstants.getDirectionFrom(neighbourVO.position, sectorVO.position);
 				
@@ -281,7 +281,7 @@ define([
 				var sectorVO = levelVO.sectors[i];
 				if (!WorldCreatorHelper.canSectorHaveGang(levelVO, sectorVO)) continue;
 				if (randomGangIndex >= randomGangFreq) {
-					var neighbourVO = WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, true);
+					var neighbourVO = WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO);
 					var direction = PositionConstants.getDirectionFrom(sectorVO.position, neighbourVO.position);
 					var neighbourDirection = PositionConstants.getDirectionFrom(neighbourVO.position, sectorVO.position);
 					if (!WorldCreatorHelper.canSectorHaveGang(levelVO, neighbourVO, neighbourDirection)) continue;

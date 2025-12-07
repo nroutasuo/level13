@@ -273,7 +273,7 @@ define([
 					var direction = directions[d];
 					var neighbour = neighbours[direction];
 					if (neighbour && neighbour.zone != zone) {
-						result.push({ sector: sector, neighbour: neighbour });
+						result.push({ sector: sector, neighbour: neighbour, zone: neighbour.zone });
 						if (!includeAllPairs) break;
 					}
 				}
@@ -690,9 +690,7 @@ define([
 			if (sectorVO.isCamp) return false;
 			if (sectorVO.zone == WorldConstants.ZONE_ENTRANCE) return false;
 			if (direction && sectorVO.movementBlockers[direction]) return false;
-			if (levelVO.getNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY) <= 1) return false;
-			
-			var minDist = levelVO.level == 13 ? 4 : 2;
+			if (levelVO.getNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY) <= 1) return false;			
 			if (this.getQuickMinDistanceToCamp(levelVO, sectorVO) < 3) return false;
 			return true;
 		},
@@ -705,6 +703,16 @@ define([
 			if (sectorVO1.possibleEnemies.length == 0 && sectorVO2.possibleEnemies.length == 0) {
 				return false;
 			}
+			if (!this.canPairHaveBlocker(levelVO, sectorVO1, sectorVO2)) {
+				return false;
+			}
+			return true;
+		},
+
+		canSectorHaveMovementBlocker: function (levelVO, sectorVO) {
+			if (levelVO.getNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY) < 2) return false;
+			if (levelVO.getUnblockedNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sector) < 1) return false;
+
 			return true;
 		},
 		
@@ -724,8 +732,57 @@ define([
 					}
 				}
 			}
+
+			if (!this.canSectorHaveMovementBlocker(levelVO, sectorVO1)) return false;
+			if (!this.canSectorHaveMovementBlocker(levelVO, sectorVO2)) return false;
 			
 			return true;
+		},
+
+		canPairHaveBlocker: function (levelVO, sectorVO1, sectorVO2) {
+			if (!this.hasOtherUnblockedPaths(levelVO, sectorVO1, sectorVO2, 2)) {
+				return false;
+			}
+
+			if (!this.hasOtherUnblockedPaths(levelVO, sectorVO2, sectorVO1, 2)) {
+				return false;
+			}			
+
+			return true;
+		},
+
+		hasOtherUnblockedPaths: function (levelVO, s1, s2, minLen) {
+			// checks if there are unblocked paths to SOMEWHERE from s1 excluding via s2 or if it's a dead end
+
+			let frontier = [ { sectorVO: s1, distance: 0 } ];
+
+			let visited = [];
+
+			while (frontier.length > 0) {
+				let current = frontier.pop();
+				let currentSector = current.sectorVO;
+
+				visited.push(currentSector);
+
+				let neighbours = levelVO.getNeighbourList(currentSector.position.sectorX, currentSector.position.sectorY); 
+
+				for (let i in neighbours) {
+					let neighbour = neighbours[i];
+					if (neighbour == s2) continue;
+					if (visited.indexOf(neighbour) >= 0) continue;
+
+					let direction = PositionConstants.getDirectionFrom(currentSector.position, neighbour.position);
+					if (currentSector.getBlockerByDirection(direction)) continue;
+
+					let newLen = current.distance + 1;
+
+					if (newLen > minLen) return true;
+
+					frontier.push({ sectorVO: neighbour, distance: newLen });
+				}
+			}
+
+			return false;
 		},
 		
 		isDarkLevel: function (seed, level) {
