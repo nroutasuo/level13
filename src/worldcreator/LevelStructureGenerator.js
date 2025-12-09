@@ -1999,7 +1999,7 @@ define([
 				if (PositionConstants.getDistanceTo(point.position, levelVO.getExcursionStartPosition()) < 30) score++;
 
 				if (neighbourCount < 3) {
-					let distanceToCrossing = WorldCreatorHelper.getShortestDistanceToMatchingSector(worldVO, levelVO, point.position, pos => levelVO.isCrossing(pos.sectorX, pos.sectorY), 0, WorldConstants.MAX_PATH_NO_CROSSINGS_LENGTH);
+					let distanceToCrossing = WorldCreatorHelper.getShortestDistanceToMatchingSector(worldVO, levelVO, point.position, s => levelVO.isCrossing(s.position.sectorX, s.position.sectorY), 0, WorldConstants.MAX_PATH_NO_CROSSINGS_LENGTH);
 					if (distanceToCrossing <= 2) score -= 99;
 					if (distanceToCrossing > 8) score++;
 					if (distanceToCrossing > 10) score++;

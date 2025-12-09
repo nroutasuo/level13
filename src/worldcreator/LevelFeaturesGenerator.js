@@ -115,12 +115,12 @@ define([
 				if (!sector) return;
 				forceArea = forceArea || 0;
 				setSectorZone(sector, zone, forceArea > 0);
-				var d = area - 1;
-				for (var x = sector.position.sectorX - d; x <= sector.position.sectorX + d; x++) {
-					for (var y = sector.position.sectorY - d; y <= sector.position.sectorY + d; y++) {
-						var neighbour = levelVO.getSector(x, y);
+				let d = area - 1;
+				for (let x = sector.position.sectorX - d; x <= sector.position.sectorX + d; x++) {
+					for (let y = sector.position.sectorY - d; y <= sector.position.sectorY + d; y++) {
+						let neighbour = levelVO.getSector(x, y);
 						if (neighbour) {
-							var path = WorldCreatorRandom.findPath(worldVO, sector.position, neighbour.position, false, true);
+							let path = WorldCreatorRandom.findPath(worldVO, sector.position, neighbour.position, false, true);
 							if (path && path.length <= d) {
 								setSectorZone(neighbour, zone, forceArea > path.length);
 							}
@@ -131,7 +131,10 @@ define([
 			
 			let setPathZone = function (path, zone, areaMin, areaMax, forceArea) {
 				if (!path) return;
-				for (let i = 0; i < path.length; i++) {
+				let startI = 0;
+				if (zone == WorldConstants.ZONE_PASSAGE_TO_CAMP) startI = 2; // start is entrance
+				let endI = path.length;
+				for (let i = startI; i <endI; i++) {
 					var pos = path[i];
 					var sector = levelVO.getSector(pos.sectorX, pos.sectorY);
 					var s = path.length * 987 + pos.sectorX * 76 + i * 276;
@@ -142,7 +145,7 @@ define([
 						
 			// entrance to level ZONE_ENTRANCE
 			if (level != 13) {
-				setAreaZone(passage1, WorldConstants.ZONE_ENTRANCE, 2, 2);
+				setAreaZone(passage1, WorldConstants.ZONE_ENTRANCE, 4, 4);
 			}
 			
 			if (isCampableLevel) {
@@ -150,10 +153,9 @@ define([
 				var campSector = levelVO.getSectorByPos(levelVO.campPosition);
 				// - path to camp ZONE_PASSAGE_TO_CAMP
 				if (level != 13) {
-					setAreaZone(passage1, WorldConstants.ZONE_PASSAGE_TO_CAMP, 3, 1);
-					setAreaZone(campSector, WorldConstants.ZONE_PASSAGE_TO_CAMP, 3, 1);
+					setAreaZone(campSector, WorldConstants.ZONE_PASSAGE_TO_CAMP, 2, 2);
 					var pathToCamp = WorldCreatorRandom.findPath(worldVO, passage1.position, campSector.position, false, true, WorldConstants.CAMP_STAGE_EARLY);
-					setPathZone(pathToCamp, WorldConstants.ZONE_PASSAGE_TO_CAMP, 1, 3);
+					setPathZone(pathToCamp, WorldConstants.ZONE_PASSAGE_TO_CAMP, 2, 2);
 				}
 				// - path to passage2 ZONE_CAMP_TO_PASSAGE
 				if (passage2) {

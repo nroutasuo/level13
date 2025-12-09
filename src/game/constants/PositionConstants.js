@@ -174,7 +174,6 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		
 		getDirectionFrom: function (sectorPosFrom, sectorPosTo) {
 			if (!sectorPosFrom || !sectorPosTo) {
-				debugger;
 				return this.DIRECTION_NONE;
 			}
 			

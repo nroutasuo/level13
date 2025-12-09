@@ -24,7 +24,7 @@ define([
 
 			// WorldCreatorLogger.i("add locale " + sectorVO.position + ": " + localeVO.type + " (" + localeFeatures.join(",") +")");
 		},
-		
+
 		getLevelBlockerTypes: function (worldVO, levelVO, campStage) {
 			var levelOrdinal = levelVO.levelOrdinal;
 			var campOrdinal = levelVO.campOrdinal;
@@ -89,8 +89,8 @@ define([
 			var direction = PositionConstants.getDirectionFrom(sectorVO.position, neighbourVO.position);
 			var neighbourDirection = PositionConstants.getDirectionFrom(neighbourVO.position, sectorVO.position);
 
-			if (sectorVO.position.sectorX == -17 && sectorVO.position.sectorY == 10) debugger
-			if (neighbourVO.position.sectorX == -17 && neighbourVO.position.sectorY == 10) debugger
+			if (sectorVO.position.sectorX == -7 && sectorVO.position.sectorY == -1) debugger
+			if (neighbourVO.position.sectorX == -7 && neighbourVO.position.sectorY == -1) debugger
 
 			if (sectorVO.movementBlockers[direction] || neighbourVO.movementBlockers[neighbourDirection]) {
 				var existing = sectorVO.movementBlockers[direction] || neighbourVO.movementBlockers[neighbourDirection];
@@ -134,7 +134,7 @@ define([
 			// add blockers to adjacent paths too (if present) so player can't just walk around the blocker
 			if (options.addDiagonals) {
 				var diagonalsOptions = Object.assign({}, options);
-				diagonalsOptions.addDiagonals = false;
+				diagonalsOptions.addDiagonals = true;
 				diagonalsOptions.skipWarnings = true;
 				let nextNeighbours = levelVO.getNextNeighbours(sectorVO, direction);
 				for (let j = 0; j < nextNeighbours.length; j++) {

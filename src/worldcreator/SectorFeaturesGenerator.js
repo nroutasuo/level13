@@ -267,40 +267,55 @@ define([
 			var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
 			var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
 			
-			var blockerTypesEarly = this.getLevelBlockerTypes(worldVO, levelVO, WorldConstants.CAMP_STAGE_EARLY);
-			var blockerTypesLate = this.getLevelBlockerTypes(worldVO, levelVO, WorldConstants.CAMP_STAGE_LATE);
+			var blockerTypesEarly = SectorGeneratorHelper.getLevelBlockerTypes(worldVO, levelVO, WorldConstants.CAMP_STAGE_EARLY);
+			var blockerTypesLate = SectorGeneratorHelper.getLevelBlockerTypes(worldVO, levelVO, WorldConstants.CAMP_STAGE_LATE);
+
 			if (blockerTypesLate.length < 1) return;
 			
-			var getBlockerType = function (seed, sectorVO) {
+			let getBlockerType = function (seed, sectorVO) {
 				let stage = sectorVO.stage;
 				let blockerTypes = stage == WorldConstants.CAMP_STAGE_LATE ? blockerTypesLate : blockerTypesEarly;
+				
 				if (sectorVO.hazards.radiation > 0) {
 					if (blockerTypes.indexOf(MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE) >= 0 && WorldCreatorRandom.randomBool(seed, 0.8)) {
 						return MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE;
 					}
 					blockerTypes = blockerTypes.filter(type => type != MovementConstants.BLOCKER_TYPE_WASTE_TOXIC);
 				}
+
 				if (sectorVO.hazards.poison > 0) {
 					if (blockerTypes.indexOf(MovementConstants.BLOCKER_TYPE_WASTE_TOXIC) >= 0 && WorldCreatorRandom.randomBool(seed, 0.8)) {
 						return MovementConstants.BLOCKER_TYPE_WASTE_TOXIC;
 					}
 					blockerTypes = blockerTypes.filter(type => type != MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE);
 				}
+
+				if (sectorVO.hazards.territory > 0) {
+					if (blockerTypes.indexOf(MovementConstants.BLOCKER_TYPE_TOLL_GATE) >= 0 && WorldCreatorRandom.randomBool(seed, 0.5)) {
+						return MovementConstants.BLOCKER_TYPE_TOLL_GATE;
+					}
+				} else {
+					blockerTypes = blockerTypes.filter(type => type != MovementConstants.BLOCKER_TYPE_TOLL_GATE);
+				}
+
 				let typeix = blockerTypes.length > 1 ? WorldCreatorRandom.randomInt(seed, 0, blockerTypes.length) : 0;
 				return blockerTypes[typeix];
 			};
 			
-			var addBlocker = function (seed, sectorVO, neighbourVO, type, addDiagonals, allowedCriticalPathTypes) {
-				neighbourVO = neighbourVO || WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, (s) => WorldCreatorHelper.canSectorHaveMovementBlocker(levelVO, s));
+			let addBlocker = function (seed, sectorVO, neighbourVO, type, addDiagonals, allowedCriticalPathTypes) {
+				if (sectorVO.position.sectorX == 7) debugger
+				neighbourVO = neighbourVO || WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, (s) => 
+					WorldCreatorHelper.canSectorHaveMovementBlocker(levelVO, s) && WorldCreatorHelper.canPairHaveBlocker(levelVO, sectorVO, s)
+				);
+
+				if (!neighbourVO) return;
+
 				var blockerType = type || getBlockerType(seed, sectorVO);
 				var options = { addDiagonals: addDiagonals, allowedCriticalPathTypes: allowedCriticalPathTypes };
-				var sectorcb = function (s) {
-					
-				};
-				SectorGeneratorHelper.addMovementBlocker(worldVO, levelVO, sectorVO, neighbourVO, blockerType, options, sectorcb);
+				SectorGeneratorHelper.addMovementBlocker(worldVO, levelVO, sectorVO, neighbourVO, blockerType, options);
 			};
 
-			var addBlockersBetween = function (seed, levelVO, pointA, pointB, type, maxPaths, allowedCriticalPathTypes) {
+			let addBlockersBetween = function (seed, levelVO, pointA, pointB, type, maxPaths, allowedCriticalPathTypes) {
 				var path;
 				var index;
 				for (let i = 0; i < maxPaths; i++) {
@@ -320,7 +335,7 @@ define([
 						if (index > max) index = min;
 						var sectorVO = levelVO.getSector(path[index].sectorX, path[index].sectorY);
 						var neighbourVO = levelVO.getSector(path[index + 1].sectorX, path[index + 1].sectorY);
-						if (!WorldCreatorHelper.canPairHaveGang(levelVO, sectorVO, neighbourVO)) {
+						if (!WorldCreatorHelper.canPairHaveBlocker(levelVO, sectorVO, neighbourVO)) {
 							continue;
 						} else {
 							addBlocker(finalSeed, sectorVO, neighbourVO, type, true, allowedCriticalPathTypes);
@@ -329,9 +344,22 @@ define([
 					}
 				}
 			};
+
+			let addBlockersOnZoneBorders = function (s, freq, zone) {
+				let allowedCriticalPathTypes = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
+				let borderSectors1 = WorldCreatorHelper.getBorderSectorsForZone(levelVO, zone, true);
+				for (let i = 0; i < borderSectors1.length; i++) {
+					let pair = borderSectors1[i];
+					if (!WorldCreatorHelper.canHaveBlocker(levelVO, pair.sector, pair.neighbour, allowedCriticalPathTypes)) continue;
+					if (!WorldCreatorHelper.canPairHaveBlocker(levelVO, pair.sector, pair.neighbour)) continue;
+					if (WorldCreatorRandom.random(s + i) < freq) {
+						addBlocker(s * 2, pair.sector, pair.neighbour, null, true, allowedCriticalPathTypes);
+					}
+				}
+			};
 			
 			// critical paths: between passages on certain levels
-			var numBetweenPassages = 0;
+			let numBetweenPassages = 0;
 			if (l === 14) numBetweenPassages = 5;
 			if (!levelVO.isCampable && campOrdinal == 7) numBetweenPassages = 3;
 			if (numBetweenPassages > 0) {
@@ -347,20 +375,9 @@ define([
 			
 			// campable levels: zone borders
 			if (levelOrdinal > 1 && levelVO.isCampable) {
-				let freq = 0.75;
 				// - from ZONE_PASSAGE_TO_CAMP to other (to lead player towards camp)
-				let allowedCriticalPathTypes = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
-				let borderSectors1 = WorldCreatorHelper.getBorderSectorsForZone(levelVO, WorldConstants.ZONE_PASSAGE_TO_CAMP, true);
-				for (let i = 0; i < borderSectors1.length; i++) {
-					let pair = borderSectors1[i];
-					if (pair.zone == WorldConstants.ZONE_ENTRANCE) continue;
-					if (WorldCreatorHelper.canHaveBlocker(levelVO, pair.sector, pair.neighbour, allowedCriticalPathTypes)) {
-						var s = seed % 26 * 3331 + 100 + (i + 5) * 654;
-						if (WorldCreatorRandom.random(s) < freq) {
-							addBlocker(s * 2, pair.sector, pair.neighbour, null, true, allowedCriticalPathTypes);
-						}
-					}
-				}
+				addBlockersOnZoneBorders(seed % 26, +.75, WorldConstants.ZONE_PASSAGE_TO_CAMP);
+				addBlockersOnZoneBorders(seed % 7, 0.5, WorldConstants.ZONE_ENTRANCE);
 			}
 			
 			// campable levels: block all paths to one POI
@@ -383,18 +400,20 @@ define([
 			if (l === worldVO.topLevel - 1) numRandom = 4;
 			if (l === worldVO.topLevel) numRandom = 8;
 			if (numRandom > 0) {
-				var randomSeed = seed % 8 * 1751 + 1000 + (l + 5) * 291;
+				let randomSeed = seed % 8 * 1751 + 1000 + (l + 5) * 291;
 				let isValidRandomBlockerSector = function (s) {
 					if (!WorldCreatorHelper.canSectorHaveMovementBlocker(levelVO, s)) return false;
 					if (levelVO.getNeighbourCount(s.position.sectorX, s.position.sectorY) > 3) return false;
+					if (s.isOnCriticalPath(WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE)) return false;
+					let distanceToExistingMovementBlocker = WorldCreatorHelper.getShortestDistanceToMatchingSector(worldVO, levelVO, s.position, nearbySector => nearbySector.hasMovementBlockers(), 0, 3);
+					if (distanceToExistingMovementBlocker < 3) return false;
 					return true;
 				}; 
 				var options = { excludingFeature: "isCamp", filter: (s) => isValidRandomBlockerSector(s) };
 				var sectors = WorldCreatorRandom.randomSectors(randomSeed, worldVO, levelVO, numRandom, numRandom + 1, options);
 				for (let i = 0; i < sectors.length; i++) {
-					var sector = sectors[i];
-					let addDiagonals = (l + i + 9) % 3 !== 0;
-					addBlocker(randomSeed - (i + 1) * 321, sector, null, null, addDiagonals);
+					let sector = sectors[i];
+					addBlocker(randomSeed - (i + 1) * 321, sector, null, null, true);
 				}
 			}
 		},
@@ -1480,7 +1499,7 @@ define([
 			let s2 = levelOrdinal * 11 / seed * 2 + seed/(s1 + 9 + 9 + levelOrdinal) - s1*s1;
 			
 			let validTypes = this.getPossibleWeightedHazardTypesForLevel(levelVO, centerSector);
-			
+
 			if (validTypes.length == 0) return;
 			
 			let hazardIndex = WorldCreatorRandom.randomInt(s1, 0, validTypes.length);
@@ -1926,8 +1945,10 @@ define([
 				if (distanceToCamp > 3) {
 					result.push(SectorConstants.HAZARD_TYPE_GANG_TERRITORY);
 					result.push(SectorConstants.HAZARD_TYPE_GANG_TERRITORY);
+					result.push(SectorConstants.HAZARD_TYPE_GANG_TERRITORY);
 
 					if (levelVO.habitability >= 1) {
+						result.push(SectorConstants.HAZARD_TYPE_GANG_TERRITORY);
 						result.push(SectorConstants.HAZARD_TYPE_GANG_TERRITORY);
 						result.push(SectorConstants.HAZARD_TYPE_GANG_TERRITORY);
 					}
@@ -1997,60 +2018,6 @@ define([
 			} else {
 				return 0;
 			}
-		},
-		
-		getLevelBlockerTypes: function (worldVO, levelVO, campStage) {
-			var levelOrdinal = levelVO.levelOrdinal;
-			var campOrdinal = levelVO.campOrdinal;
-			let isSurfaceLevel = levelVO.level === worldVO.topLevel;
-			var isPollutedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
-			var isRadiatedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
-
-			let blockerTypes = [];
-
-			blockerTypes.push(MovementConstants.BLOCKER_TYPE_DEBRIS);
-			blockerTypes.push(MovementConstants.BLOCKER_TYPE_DEBRIS);
-
-			if (levelVO.level < 13 && campOrdinal < 6) {
-				blockerTypes.push(MovementConstants.BLOCKER_TYPE_EXPLOSIVES);
-			}
-			
-			var unlockGapOrdinal = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade("unlock_building_bridge");
-			if (campOrdinal > unlockGapOrdinal || (campOrdinal == unlockGapOrdinal && campStage == WorldConstants.CAMP_STAGE_LATE)) {
-				blockerTypes.push(MovementConstants.BLOCKER_TYPE_GAP);
-			}
-			
-			let unlockToxicWasteOrdinal = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade("unlock_action_clear_waste_t");
-			let unlockToxicWasteStep = GameGlobals.upgradeEffectsHelper.getMinimumCampStepForUpgrade("unlock_action_clear_waste_t");
-			let unlockToxicWasteStage = WorldConstants.getStageForStep(unlockToxicWasteStep);
-			if (WorldConstants.isHigherCampOrdinalAndStage(campOrdinal, campStage, unlockToxicWasteOrdinal, unlockToxicWasteStage) && !isRadiatedLevel) {
-				blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_TOXIC);
-				if (isPollutedLevel) {
-					blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_TOXIC);
-					blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_TOXIC);
-				}
-			}
-			
-			var unlockRadioactiveWasteOrdinal = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade("unlock_action_clear_waste_r");
-			let unlockRadioactiveWasteStep = GameGlobals.upgradeEffectsHelper.getMinimumCampStepForUpgrade("unlock_action_clear_waste_r");
-			let unlockRadioactiveWasteStage = WorldConstants.getStageForStep(unlockRadioactiveWasteStep);
-			if (WorldConstants.isHigherCampOrdinalAndStage(campOrdinal, campStage, unlockRadioactiveWasteOrdinal, unlockRadioactiveWasteStage)) {
-				blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE);
-				if (isRadiatedLevel) {
-					blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE);
-					blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE);
-				}
-			}
-
-			if (levelVO.isCampable && campOrdinal > WorldConstants.CAMPS_BEFORE_GROUND && !isSurfaceLevel) {
-				blockerTypes.push(MovementConstants.BLOCKER_TYPE_TOLL_GATE);
-
-				if (levelVO.habitability >= 1) {
-					blockerTypes.push(MovementConstants.BLOCKER_TYPE_TOLL_GATE);
-				}
-			}
-			
-			return blockerTypes;
 		},
 		
 		getLocaleType: function (worldVO, levelVO, sectorVO, s1, isEarly) {

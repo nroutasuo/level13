@@ -492,6 +492,8 @@ define([
 				return false;
 			};
 
+			let blockerTypes = [];
+
 			// - find all movement blockers
 			for (let s = 0; s < levelVO.sectors.length; s++) {
 				let sectorVO = levelVO.sectors[s];
@@ -502,6 +504,8 @@ define([
 					if (!neighbour) continue;
 					let movementBlocker = sectorVO.movementBlockers[direction];
 					if (!movementBlocker) continue;
+
+					if (blockerTypes.indexOf(movementBlocker) < 0) blockerTypes.push(movementBlocker);
 
 					let id = getBlockerID(sectorVO, neighbour, movementBlocker);
 					
@@ -519,9 +523,9 @@ define([
 				checkIsValidMovementBlockerSector(movementBlocker.sector2);
 
 				if (movementBlocker.blockerType != MovementConstants.BLOCKER_TYPE_GANG) {
-					let pathAround =  WorldCreatorRandom.findPath(worldVO, movementBlocker.sector1.position, movementBlocker.sector2.position, true, true, null, true, 5);
+					let pathAround =  WorldCreatorRandom.findPath(worldVO, movementBlocker.sector1.position, movementBlocker.sector2.position, true, true, null, true, 2);
 					if (pathAround && pathAround.length > 0) {
-						issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "path around movement blocker exists at " + movementBlocker.id });
+						issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "path around movement blocker exists at " + movementBlocker.id + ", len: " + pathAround.length });
 					}
 				}
 
@@ -545,6 +549,11 @@ define([
 				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level " + levelVO.level + " doesn't have any movement blockers" });
 			} else if (movementBlockers.length < minMovementBlockers) {
 				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level " + levelVO.level + " has very few movement blockers" });
+			}
+
+			// - check there are some variety 
+			if (levelVO.isCampable && blockerTypes.length < 2) {
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level " + levelVO.level + " has has only " + blockerTypes.length + " type of movement blockers" });
 			}
 
 			return { isValid: issues.length === 0, issues: issues };

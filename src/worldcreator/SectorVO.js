@@ -103,6 +103,10 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 		getBlockerByDirection: function (direction) {
 			return this.movementBlockers[direction];
 		},
+
+		hasMovementBlockers() {
+			return Object.keys(this.movementBlockers).length > 0;	
+		},
 		
 		hasWater: function () {
 			return this.hasSpring || this.resourcesScavengable.getResource(resourceNames.water) > 0 || this.resourcesCollectable.getResource(resourceNames.water) > 0;

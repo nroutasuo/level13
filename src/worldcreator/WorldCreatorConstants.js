@@ -222,11 +222,11 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 	};
 	
 	WorldCreatorConstants.CRITICAL_PATHS_BY_ORDER = [
-			WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP,
-			WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE,
-			WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1,
-			WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2,
-			WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE,
+		WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP,
+		WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE,
+		WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1,
+		WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2,
+		WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE,
 	];
 	
 	return WorldCreatorConstants;

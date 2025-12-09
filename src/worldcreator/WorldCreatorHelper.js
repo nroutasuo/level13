@@ -264,14 +264,14 @@ define([
 		
 		getBorderSectorsForZone: function (levelVO, zone, includeAllPairs) {
 			let result = [];
-			var directions = PositionConstants.getLevelDirections();
+			let directions = PositionConstants.getLevelDirections();
 			for (let i = 0; i < levelVO.sectors.length; i++) {
-				var sector = levelVO.sectors[i];
+				let sector = levelVO.sectors[i];
 				if (sector.zone != zone) continue;
-				var neighbours = levelVO.getNeighbours(sector.position.sectorX, sector.position.sectorY);
-				for (var d in directions) {
-					var direction = directions[d];
-					var neighbour = neighbours[direction];
+				let neighbours = levelVO.getNeighbours(sector.position.sectorX, sector.position.sectorY);
+				for (let d in directions) {
+					let direction = directions[d];
+					let neighbour = neighbours[direction];
 					if (neighbour && neighbour.zone != zone) {
 						result.push({ sector: sector, neighbour: neighbour, zone: neighbour.zone });
 						if (!includeAllPairs) break;
@@ -711,7 +711,7 @@ define([
 
 		canSectorHaveMovementBlocker: function (levelVO, sectorVO) {
 			if (levelVO.getNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY) < 2) return false;
-			if (levelVO.getUnblockedNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sector) < 1) return false;
+			if (levelVO.getUnblockedNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY) < 1) return false;
 
 			return true;
 		},
@@ -746,7 +746,11 @@ define([
 
 			if (!this.hasOtherUnblockedPaths(levelVO, sectorVO2, sectorVO1, 2)) {
 				return false;
-			}			
+			}
+			
+			if (sectorVO1.zone == sectorVO2.zone && sectorVO1.zone == WorldConstants.ZONE_ENTRANCE) {
+				return false;
+			}
 
 			return true;
 		},
@@ -805,11 +809,11 @@ define([
 			
 			let result = 999;
 
-			if (filter(position)) return 0;
+			if (levelVO.hasSector(position.secotX, position.sectorY) && filter(levelVO.getSector(position.secotX, position.sectorY))) return 0;
 
 			for (let i = 0; i < levelVO.sectors.length; i++) {
 				let candidate = levelVO.sectors[i];
-				if (!filter(candidate.position)) continue;
+				if (!filter(candidate)) continue;
 
 				let distance = PositionConstants.getDistanceTo(position, candidate.position);
 

@@ -222,7 +222,6 @@ define([
 			var borderSectors = WorldCreatorHelper.getBorderSectorsForZone(levelVO, WorldConstants.ZONE_PASSAGE_TO_CAMP, true);
 			for (let i = 0; i < borderSectors.length; i++) {
 				var pair = borderSectors[i];
-				if (pair.sector.zone == WorldConstants.ZONE_ENTRANCE || pair.neighbour.zone == WorldConstants.ZONE_ENTRANCE) continue;
 				var direction = PositionConstants.getDirectionFrom(pair.sector.position, pair.neighbour.position);
 				if (pair.sector.movementBlockers[direction]) continue;
 				var distanceToCamp = Math.min(
