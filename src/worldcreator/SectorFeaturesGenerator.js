@@ -303,7 +303,6 @@ define([
 			};
 			
 			let addBlocker = function (seed, sectorVO, neighbourVO, type, addDiagonals, allowedCriticalPathTypes) {
-				if (sectorVO.position.sectorX == 7) debugger
 				neighbourVO = neighbourVO || WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, (s) => 
 					WorldCreatorHelper.canSectorHaveMovementBlocker(levelVO, s) && WorldCreatorHelper.canPairHaveBlocker(levelVO, sectorVO, s)
 				);
@@ -400,8 +399,8 @@ define([
 			if (l === worldVO.topLevel - 1) numRandom = 4;
 			if (l === worldVO.topLevel) numRandom = 8;
 			if (numRandom > 0) {
-				let randomSeed = seed % 8 * 1751 + 1000 + (l + 5) * 291;
 				let isValidRandomBlockerSector = function (s) {
+					if (s.hasMovementBlockers()) return false;
 					if (!WorldCreatorHelper.canSectorHaveMovementBlocker(levelVO, s)) return false;
 					if (levelVO.getNeighbourCount(s.position.sectorX, s.position.sectorY) > 3) return false;
 					if (s.isOnCriticalPath(WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE)) return false;
@@ -409,11 +408,11 @@ define([
 					if (distanceToExistingMovementBlocker < 3) return false;
 					return true;
 				}; 
-				var options = { excludingFeature: "isCamp", filter: (s) => isValidRandomBlockerSector(s) };
-				var sectors = WorldCreatorRandom.randomSectors(randomSeed, worldVO, levelVO, numRandom, numRandom + 1, options);
-				for (let i = 0; i < sectors.length; i++) {
-					let sector = sectors[i];
-					addBlocker(randomSeed - (i + 1) * 321, sector, null, null, true);
+				let options = { excludingFeature: "isCamp", filter: (s) => isValidRandomBlockerSector(s) };
+				for (let i = 0; i < numRandom; i++) {
+					let sectors = WorldCreatorRandom.randomSectors(seed + i, worldVO, levelVO, 1, 2, options);
+					let sector = sectors[0];
+					addBlocker(seed + i * 2, sector, null, null, true);
 				}
 			}
 		},
@@ -1060,7 +1059,7 @@ define([
 			
 			// scavengeable resources (not saved to template)
 			var r1 = WorldCreatorRandom.random(5000 + seed / (l+10) + x + x * y * 63 + sectorVO.buildingDensity * 3 + x % 3 * 123 + y % 4 * 81);
-			var r2 = WorldCreatorRandom.random(seed + l * x / y * 44 + 6);
+			var r2 = WorldCreatorRandom.random(seed + l * x / (y + 50) * 44 + 6);
 			var r3 = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66);
 
 			var sca = new ResourcesVO();
@@ -1127,7 +1126,7 @@ define([
 			var s12 = (x % 2 + 1) * 449 + (x + 11) * 521 + (y + 50) * 121 + 2 * Math.abs(x) * Math.abs(y) + sectorCentralness * 541;
 			var r12 = WorldCreatorRandom.random(s12);
 			var sectorNatureFactor = (WorldCreatorRandom.random(s11) * (sectorVO.wear)) / 10;
-			var sectorWaterFactor = (WorldCreatorRandom.random(seed / (x + 30) + (y + 102214)) * (sectorCentralness + 10)) / 25;
+			var sectorWaterFactor = (WorldCreatorRandom.random(seed / Math.max(Math.abs(x), 2) + (y + 102214)) * (sectorCentralness + 10)) / 25;
 			switch (sectorType) {
 				case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
 					col.food = sectorNatureFactor > 0.55 || r12 > 0.7 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
@@ -1165,12 +1164,12 @@ define([
 			if (l === worldVO.bottomLevel) {
 				col.food = col.food > 0 ? col.food + 2 : 0;
 				col.water = col.water > 0 ? col.water + 3 : 0;
-				sca.herbs = WorldCreatorRandom.random(seed * l / x + y * 423) * sectorVO.wear > 6 ? WorldConstants.resourcePrevalence.RARE : 0;
+				sca.herbs = WorldCreatorRandom.random(seed * l / (x + 50) + y * 423) * sectorVO.wear > 6 ? WorldConstants.resourcePrevalence.RARE : 0;
 			}
 			
 			// adjustments for sector features
 			if (sectorVO.sunlit) {
-				sca.herbs = WorldCreatorRandom.random(seed * l / x + y * 423) > 0.8 ? WorldConstants.resourcePrevalence.RARE : 0;
+				sca.herbs = WorldCreatorRandom.random(seed * l / (x + 50) + y * 423) > 0.8 ? WorldConstants.resourcePrevalence.RARE : 0;
 			}
 			if (sectorVO.workshopResource == "herbs") {
 				col.water = Math.max(col.water, WorldConstants.resourcePrevalence.RARE);

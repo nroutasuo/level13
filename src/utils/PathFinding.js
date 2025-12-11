@@ -135,7 +135,6 @@ define(function () {
 			}
 			
 			if (!foundGoal && !settings.omitWarnings) {
-				debugger
 				log.w("Couldn't find goal (mapping paths " + startVO.position + " - " + goalVO.position + ") (pass: " + pass + ")");
 				this.printPaths(startVO, goalVO, cameFrom);
 			}

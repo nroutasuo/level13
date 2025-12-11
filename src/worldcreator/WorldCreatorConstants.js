@@ -47,6 +47,7 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 		CONNECTION_POINTS_RECT_ALL: "r-all",
 		CONNECTION_POINTS_RECT_EXTRA: "r-extra",
 		CONNECTION_POINTS_RECT_DIAGONAL: "r-diagonal",
+		CONNECTION_POINTS_RECT_NONE: "r-none",
 		
 		FEATURE_HOLE_WELL: "well",
 		FEATURE_HOLE_COLLAPSE: "collapse",

@@ -711,13 +711,13 @@ define([
 
 		canSectorHaveMovementBlocker: function (levelVO, sectorVO) {
 			if (levelVO.getNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY) < 2) return false;
-			if (levelVO.getUnblockedNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY) < 1) return false;
+			if (levelVO.getUnblockedNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY) < 2) return false;
 
 			return true;
 		},
 		
 		canHaveBlocker: function (levelVO, sectorVO1, sectorVO2, allowedCriticalPathTypes) {
-			var distanceToCamp = Math.min(
+			let distanceToCamp = Math.min(
 				WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO1),
 				WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO2)
 			);
@@ -735,6 +735,12 @@ define([
 
 			if (!this.canSectorHaveMovementBlocker(levelVO, sectorVO1)) return false;
 			if (!this.canSectorHaveMovementBlocker(levelVO, sectorVO2)) return false;
+
+			let direction12 = PositionConstants.getDirectionFrom(sectorVO1.position, sectorVO2.position);
+			if (sectorVO2.movementBlockers[direction12]) return false;
+
+			let direction21 = PositionConstants.getDirectionFrom(sectorVO2.position, sectorVO1.position);
+			if (sectorVO1.movementBlockers[direction21]) return false;
 			
 			return true;
 		},

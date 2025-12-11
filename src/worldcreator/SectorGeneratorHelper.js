@@ -142,7 +142,7 @@ define([
 				}
 				let nextNeighbours2 = levelVO.getNextNeighbours(neighbourVO, neighbourDirection);
 				for (let j = 0; j < nextNeighbours2.length; j++) {
-					if (nextNeighbours.indexOf(nextNeighbours2[j]) >= 0) continue;
+					if (nextNeighbours.indexOf(nextNeighbours2[j]) >= 0 && nextNeighbours2[j].hasMovementBlockers()) continue;
 					this.addMovementBlocker(worldVO, levelVO, neighbourVO, nextNeighbours2[j], blockerType, diagonalsOptions, sectorcb);
 				}
 			}
