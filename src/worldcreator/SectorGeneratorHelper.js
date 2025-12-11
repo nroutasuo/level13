@@ -89,8 +89,8 @@ define([
 			var direction = PositionConstants.getDirectionFrom(sectorVO.position, neighbourVO.position);
 			var neighbourDirection = PositionConstants.getDirectionFrom(neighbourVO.position, sectorVO.position);
 
-			if (sectorVO.position.sectorX == -7 && sectorVO.position.sectorY == -1) debugger
-			if (neighbourVO.position.sectorX == -7 && neighbourVO.position.sectorY == -1) debugger
+			if (sectorVO.position.sectorX == -8 && sectorVO.position.sectorY == -2) debugger
+			if (neighbourVO.position.sectorX == -8 && neighbourVO.position.sectorY == -2) debugger
 
 			if (sectorVO.movementBlockers[direction] || neighbourVO.movementBlockers[neighbourDirection]) {
 				var existing = sectorVO.movementBlockers[direction] || neighbourVO.movementBlockers[neighbourDirection];
@@ -166,7 +166,23 @@ define([
 			if (sectorVO.isPassageUp) return false;
 			if (sectorVO.isPassageDown) return false;
 			return true;
-		}
+		},
+
+		getLocaleSectorScore: function (levelVO, sectorVO) {
+			let score = 0;
+			let zone = sectorVO.zone;
+			if (zone == WorldConstants.ZONE_ENTRANCE) score--;
+			if (zone == WorldConstants.ZONE_EXTRA_CAMPABLE) score--;
+			if (zone == WorldConstants.ZONE_CAMP_TO_PASSAGE) score--;
+			if (zone == WorldConstants.ZONE_PASSAGE_TO_CAMP) score--;
+			if (zone == WorldConstants.ZONE_PASSAGE_TO_PASSAGE) score--;
+			if (zone == WorldConstants.ZONE_POI_1) score++;
+			if (zone == WorldConstants.ZONE_POI_2) score++;
+			score -= sectorVO.locales.length;
+			let numNeighours = levelVO.getNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY);
+			if (numNeighours == 1) score++;
+			return score;
+		},
 		
 	};
 

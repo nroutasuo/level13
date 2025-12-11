@@ -503,6 +503,8 @@ define([
 					result += MathUtils.map(numNeighours, 1, 4, 3, 0);
 				}
 
+				if (numNeighours == 1) result++;
+
 				if (getMatchingUnusedTemplateStash(sectorVO, stashType, itemIDs)) result += 100;
 				
 				if (sectorVO.isCamp) result -= 2;
@@ -1363,7 +1365,7 @@ define([
 					let sectorVO = existingSectors.length > 0 ? existingSectors[0].sectorVO : null;
 					if (!sectorVO) {
 						let options = { excludingFeature: excludedFeatures, filter: SectorGeneratorHelper.isValidSectorForLocale };
-						sectorVO = WorldCreatorRandom.randomSectors(seed - 9393 + i * i, worldVO, levelVO, 1, 2, options)[0];
+						sectorVO = WorldCreatorRandom.randomSectorsScored(seed - 9393 + i * i, worldVO, levelVO, 1, 2, options, s => SectorGeneratorHelper.getLocaleSectorScore(levelVO, s))[0];
 					}
 					let locale = new LocaleVO(localeTypes.tradingpartner, true, false);
 					SectorGeneratorHelper.addLocale(levelVO, sectorVO, locale);
@@ -1442,14 +1444,13 @@ define([
 				let l = levelVO.level;
 				let sseed = Math.abs(seed - (isEarly ? 5555 : 0) + (l + 50) * 2);
 
-				for (let i = 0; i < count; i++) {
+				let sectors = WorldCreatorRandom.randomSectorsScored(sseed, worldVO, levelVO, count, count + 1, options, sectorVO => SectorGeneratorHelper.getLocaleSectorScore(levelVO, sectorVO));
+
+				for (let i = 0; i < sectors.length; i++) {
 					let isEasy = i <= countEasy;
+					let sectorVO = sectors[i];
 
-					let sectorVO = WorldCreatorRandom.randomSectors(sseed + i + i * 72 * sseed + i * l + i, worldVO, levelVO, 1, 2, options)[0];
-
-					if (!sectorVO) continue;
-
-					let s1 = sseed + sectorVO.position.sectorX * 871 + sectorVO.position.sectorY * 659 + i * 212;
+					let s1 = sseed + sectorVO.position.sectorX + 1;
 					let localeType = generator.getLocaleType(worldVO, levelVO, sectorVO, s1, isEarly);
 
 					let localeVO = new LocaleVO(localeType, isEasy, isEarly);
