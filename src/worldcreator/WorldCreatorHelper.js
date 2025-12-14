@@ -220,6 +220,38 @@ define([
 			}
 			return result;
 		},
+
+		getUnconncetedNeighbourCount: function (levelVO, sectorX, sectorY, stage) {
+			let neighbours = levelVO.getNeighbours(sectorX, sectorY, stage);
+
+			let groups = [];
+			let options = { blockedPositions: [ { level: levelVO.level, sectorX: sectorX, sectorY: sectorY } ] };
+
+			for (let direction in neighbours) {
+				let neighbour = neighbours[direction];
+				let matchingGroup = null;
+
+				for (let i = 0; i < groups.length; i++) {
+					let otherNeighbour = groups[i][0];
+					let path = WorldCreatorRandom.findPathOnLevel(levelVO, neighbour.position, otherNeighbour.position, false, true, null, 3, options);
+					if (path && path.length > 0 && path.length < 3) {
+						matchingGroup = groups[i];
+						break;
+					}
+				}
+
+				if (matchingGroup) {
+					matchingGroup.push(neighbour);
+				} else {
+					groups.push([neighbour]);
+					continue;
+				}
+			}
+
+			log.i("getUnconncetedNeighbourCount " + sectorX + "." + sectorY + ": " + groups.length)
+
+			return groups.length;
+		},
 		
 		getZoneVornoiPoints: function (seed, worldVO, levelVO) {
 			var level = levelVO.level;
@@ -710,8 +742,12 @@ define([
 		},
 
 		canSectorHaveMovementBlocker: function (levelVO, sectorVO) {
+			if (sectorVO.isCamp) return false;
+			if (sectorVO.isPassageUp && levelVO.level >= 13) return false;
+			if (sectorVO.isPassageDown && levelVO.level <= 13) return false;
 			if (levelVO.getNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY) < 2) return false;
 			if (levelVO.getUnblockedNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY) < 2) return false;
+			if (this.getUnconncetedNeighbourCount(levelVO, sectorVO.position.sectorX, sectorVO.position.sectorY) < 2) return false;
 
 			return true;
 		},

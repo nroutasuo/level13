@@ -22,6 +22,7 @@ define([
 
 			for (let l = topLevel; l >= bottomLevel; l--) {
 				let levelVO = new LevelVO(l);
+				levelVO.seed = seed;
 				let levelTemplateVO = worldTemplateVO.levels[l] || { };
 
 				this.generateLevel(seed, worldVO, levelTemplateVO, levelVO);

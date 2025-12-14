@@ -416,8 +416,73 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Po
 		getNewSeed: function() {
 			return Math.round(Math.random() * 10000);
 		},
+
+		// options: blockedPositions []
+		findPathOnLevel: function (levelVO, startPos, endPos, blockByBlockers, omitWarnings, stage, maxLength, options) {
+			if (!startPos) {
+				WorldCreatorLogger.w("No start pos defined.");
+			}
+			
+			if (!endPos) {
+				WorldCreatorLogger.w("No goal pos defined.");
+			}
+			
+			if (PositionConstants.areEqual(startPos, endPos)) {
+				return [];
+			}
+			
+			let makePathSectorVO = function (position) {
+				if (!position) return null;
+				if (!levelVO.hasSector(position.sectorX, position.sectorY)) {
+					return null;
+				}
+				if (options.blockedPositions) {
+					for (let i = 0; i < options.blockedPositions.length; i++) {
+						if (PositionConstants.areEqual(options.blockedPositions[i], position)) return null;
+					}
+				}
+				return {
+					position: position,
+					isVisited: false,
+					result: position
+				};
+			};
+			
+			let startVO = makePathSectorVO(startPos);
+			let goalVO = makePathSectorVO(endPos);
+			
+			let utilities = {
+				findPassageDown: function (level) {
+					return null;
+				},
+				findPassageUp: function (level) {
+					return null;
+				},
+				getSectorByPosition: function (level, sectorX, sectorY) {
+					return makePathSectorVO(new PositionVO(level, sectorX, sectorY));
+				},
+				getSectorNeighboursMap: function (pathSectorVO) {
+					var raw = levelVO.getNeighbours(pathSectorVO.result.sectorX, pathSectorVO.result.sectorY, stage);
+					var wrapped = {};
+					for (var dir in raw) {
+						wrapped[dir] = makePathSectorVO(raw[dir].position);
+					}
+					return wrapped;
+				},
+				isBlocked: function (pathSectorVO, direction) {
+					if (!blockByBlockers) return false;
+					var sectorVO = levelVO.getSector(pathSectorVO.position.sectorX, pathSectorVO.position.sectorY);
+					if (sectorVO.getBlockerByDirection(direction)) return true;
+					return false;
+				}
+			};
+			var settings = { includeUnbuiltPassages: true, skipUnrevealed: false, skipBlockers: blockByBlockers, omitWarnings: omitWarnings, maxLength: maxLength };
+			
+			let result = PathFinding.findPath(startVO, goalVO, utilities, settings);
+			
+			return result;
+		},
 		
-		// anyPath: if true, not necessarily SHORTEST path, just one known to exist
 		findPath: function (worldVO, startPos, endPos, blockByBlockers, omitWarnings, stage, anyPath, maxLength) {
 			if (!startPos) {
 				WorldCreatorLogger.w("No start pos defined.");
