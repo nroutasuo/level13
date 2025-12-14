@@ -1125,31 +1125,39 @@ define([
 		},
 		
 		createCentralGrid: function (s1, s2, s3, worldVO, levelVO, position, pois) {
+			let numMin = 2;
 			let numMax = MathUtils.clamp(Math.round(levelVO.numSectors / 32), 2, 4);
 			let isSymmetricalCount = WorldCreatorRandom.randomBool(s1);
-			let numX = WorldCreatorRandom.randomInt(s2 / 2, 2, numMax + 1);
-			if (isSymmetricalCount) numX = Math.min(numX, 3);
-			let numY = isSymmetricalCount ? numX : WorldCreatorRandom.randomInt(s3 / 2, 2, numMax + 1);
+			if (isSymmetricalCount) numMax = Math.min(numMax, 3);
 			let isSymmetricalSmallRects = WorldCreatorRandom.randomBool(s2, levelVO.structureSettings.symmetry * 0.4);
-			let maxSize = numX > 2 || numY > 2 ? 5 : 7;
+
+			let sizes = [];
+			for (let i = numMin; i <= numMax; i++) sizes.push(i);
+
+			let maxSize = numMax > 2 || numMax > 2 ? 5 : 7;
 			let w = WorldCreatorRandom.randomInt(s1 * 2, 4, maxSize + 1);
 			let h = isSymmetricalSmallRects ? w : WorldCreatorRandom.randomInt(s3 * 2, 4, maxSize + 1);
-			
-			let totalWidth = numX * w - (numX - 1);
-			let totalHeight = numY * h - (numY - 1);
-			
-			let startX = Math.round(position.sectorX + w/2 - totalWidth / 2);
-			let startY = Math.round(position.sectorY + h/2 - totalHeight / 2);
 
-			let forceSkipSomeEdges = numX > 2 && numY > 2;
-			let skipSomeEdgesProbability = (numX + numY) / 10;
-			let skipSomeEdges = forceSkipSomeEdges || WorldCreatorRandom.randomBool(worldVO.seed, skipSomeEdgesProbability);
-
-			let getPaths = function (ox, oy) {
+			let getPaths = function (ox, oy, params) {
 				let result = [];
+				let numX = MathUtils.clamp(params.numX, numMin, numMax);
+				let numY = MathUtils.clamp(params.numY, numMin, numMax);
+
+				if (isSymmetricalSmallRects || isSymmetricalCount && numX !== numY) return [];
+			
+				let totalWidth = numX * w - (numX - 1);
+				let totalHeight = numY * h - (numY - 1);
+				
+				let startX = Math.round(position.sectorX + w/2 - totalWidth / 2);
+				let startY = Math.round(position.sectorY + h/2 - totalHeight / 2);
+
+				let forceSkipSomeEdges = numX > 2 && numY > 2;
 				let skipEdgeProbability = forceSkipSomeEdges ? 0.85 : 0.2;
+				let skipSomeEdgesProbability = (numX + numY) / 10;
+				let skipSomeEdges = forceSkipSomeEdges || WorldCreatorRandom.randomBool(worldVO.seed, skipSomeEdgesProbability);
+
 				for (let x = 0; x < numX; x++) {
-					let isEdgex = x === 0 || x === numX - 1;
+					let isEdgex = x === 0 || x === numY - 1;
 					for (let y = 0; y < numY; y++) {
 						let isEdgeY = y === 0 || y === numY - 1;
 						let isCorner = isEdgex && isEdgeY;
@@ -1171,12 +1179,13 @@ define([
 				return result;
 			};
 
-			// the grid is so dense we only want the camp on it not passages
+			// the grid is so dense we only want the camp on it not necessarily the passages
 			let pois2 = levelVO.campPosition ? [ levelVO.campPosition ] : [];
 
-			let offset = this.getCentralStructureOffset(worldVO, levelVO, pois2, {}, getPaths);
+			let params = { numX: sizes, numY: sizes };
+			let offset = this.getCentralStructureOffset(worldVO, levelVO, pois2, params, getPaths);
 
-			let paths = getPaths(offset.x, offset.y);
+			let paths = getPaths(offset.x, offset.y, offset.params);
 			this.createPaths(levelVO, paths, true);
 		},
 
@@ -1897,7 +1906,7 @@ define([
 
 			for (let i = 0; i < levelVO.pendingConnectionPoints.length; i++) {
 				let point = levelVO.pendingConnectionPoints[i];
-				let isPreviouslyLowScore = point.connectionPointScore && point.connectionPointScore < 0;
+				let isPreviouslyLowScore = point.connectionPointScore && point.connectionPointScore < -80;
 				point.isDisabled = point.isDisabled || isPreviouslyLowScore || !LevelStructureGenerator.isConnectionPointUsable(levelVO, point);
 				point.connectionPointScore = LevelStructureGenerator.getConnectionPointScore(worldVO, levelVO, point, stage, isPartialUpdate);
 			}
@@ -1913,6 +1922,7 @@ define([
 			let filterResult = function (arr) {
 				let result = arr;
 				let maxNeighbourCount = 4;
+				result = LevelStructureGenerator.filterIfSomethingLeft(result, (point) => !point.isDisabled);
 				result = LevelStructureGenerator.filterIfSomethingLeft(result, (point) => levelVO.getNeighbourCount(point.position.sectorX, point.position.sectorY) <= maxNeighbourCount);
 				result = LevelStructureGenerator.filterIfSomethingLeft(result, (point) => levelVO.getAreaDensity(point.position.sectorX, point.position.sectorY, 2) < 0.55);
 				result = LevelStructureGenerator.filterIfSomethingLeft(result, (point) => levelVO.getAreaDensity(point.position.sectorX, point.position.sectorY, 3) < 0.5);
@@ -2019,7 +2029,7 @@ define([
 
 				if (neighbourCount < 3) {
 					let distanceToCrossing = WorldCreatorHelper.getShortestDistanceToMatchingSector(worldVO, levelVO, point.position, s => levelVO.isCrossing(s.position.sectorX, s.position.sectorY), 0, WorldConstants.MAX_PATH_NO_CROSSINGS_LENGTH);
-					if (distanceToCrossing <= 2) score -= 99;
+					if (distanceToCrossing <= 2) score -= 20;
 					if (distanceToCrossing > 8) score++;
 					if (distanceToCrossing > 10) score++;
 					if (distanceToCrossing >= WorldConstants.MAX_PATH_NO_CROSSINGS_LENGTH) score += 3;
@@ -2315,6 +2325,18 @@ define([
 		isConnectionPointUsable: function (levelVO, point) {
 			let numNeighbours = WorldCreatorHelper.getNeighbourCount(levelVO, point.position);
 			if (numNeighbours >= 4) return false;
+
+			let validDirections = [];
+			let allDirections = point.dirs.concat(point.dirs2);
+			for (let i = 0; i < allDirections.length; i++) {
+				let direction = allDirections[i];
+				let neighbourPos = PositionConstants.getNeighbourPosition(point.position, allDirections[i]);
+				if (levelVO.hasSector(neighbourPos.sectorX, neighbourPos.sectorY)) continue;
+				validDirections.push(direction);
+
+			}
+			if (validDirections.length == 0) return false;
+			
 			return true;
 		},
 
@@ -2420,6 +2442,9 @@ define([
 							continue;
 						}
 
+						let averageDensity = LevelStructureGenerator.getAverageDensityForPath(levelVO, pathCandidate, 1);
+						if (averageDensity > 0.5) continue;
+
 						let newPos = PositionConstants.getPositionOnPath(currentPos, direction, pathLength - 1);
 
 						let newPaths = current.paths.slice();
@@ -2451,7 +2476,8 @@ define([
 
 						if (path.len < 3) score--;
 
-						score -= LevelStructureGenerator.getAverageDensityForPath(levelVO, path);
+						score -= LevelStructureGenerator.getAverageDensityForPath(levelVO, path) * 10;
+						score -= LevelStructureGenerator.getAverageDensityForPath(levelVO, path, 1) * 10;
 
 						let existing = LevelStructureGenerator.getExistingPositionsOnPath(levelVO, path.startPos, path.dir, path.len);
 						let numExisiting = existing.length;
@@ -2545,6 +2571,17 @@ define([
 			// - nearest connected (sector in validSectors that is connected to S, but closest to the other end point, can be null if S doesn't exist or is unconnected to anything else)
 			let startPosData = getPointData(validSectors, startPos, endPos, allowDiagonals, dist);
 			let endPosData = getPointData(validSectors, endPos, startPos, allowDiagonals, dist);
+
+			// if it's enough to just create end/start pos do that and try again
+			if (!startPosExists && PositionConstants.getDistanceTo(startPos, startPosData.closestExisting.position) < 2) {
+				this.createAddSector(result.path, levelVO, startPos, options);
+				return this.createPathBetween(worldVO, levelVO, startPos, endPos, maxlen, options, connectionPointType);
+			}
+
+			if (!endPosExists && PositionConstants.getDistanceTo(endPos, endPosData.closestExisting.position) < 2) {
+				this.createAddSector(result.path, levelVO, endPos, options);
+				return this.createPathBetween(worldVO, levelVO, startPos, endPos, maxlen, options, connectionPointType);
+			}
 			
 			// consider 3 alternative paths:
 			// - direct
@@ -3208,7 +3245,7 @@ define([
 		},
 		
 		getCentralStructureOffset: function (worldVO, levelVO, pois, params, getPathsFunc) {
-			maxOffset = 10;
+			let maxOffset = 10;
 
 			// force centered on bottom level
 			if (levelVO.level == worldVO.bottomLevel) maxOffset = 0;
@@ -3514,6 +3551,40 @@ define([
 				return score || 0;
 			};
 
+			let scoreForLevelStages = function (paths) {
+				let score = 0;
+				let stages = Object.keys(levelVO.stageCenterPositions);
+				if (stages.length < 2) return score;
+
+				let numSectorsAddedByStage = {};
+				numSectorsAddedByStage[WorldConstants.CAMP_STAGE_EARLY] = 0;
+				numSectorsAddedByStage[WorldConstants.CAMP_STAGE_LATE] = 0;
+
+				for (let i = 0; i < paths.length; i++) {
+					let path = paths[i];
+					for (let j = 0; j < path.len; j++) {
+						let pos = PositionConstants.getPositionOnPath(path.startPos, path.dir, j);
+						let stage = LevelStructureGenerator.getDefaultStage(levelVO, pos);
+						numSectorsAddedByStage[stage]++;
+					}
+				}
+
+				for (let i = 0; i < stages.length; i++) {
+					let stage = stages[i];
+					let numSectorsCurrent = levelVO.getNumSectorsByStage(stage);
+					let numSectorsGoal = WorldCreatorHelper.getNumSectorsForLevelStage(levelVO.seed, levelVO.campOrdinal, levelVO.level, stage);
+					let numSectorsAdded = numSectorsAddedByStage[stage];
+					let numSectorsAfter = numSectorsCurrent + numSectorsAdded;
+
+					let stageCompletion = numSectorsAfter / numSectorsGoal;
+
+					if (stageCompletion > 0.8) score -= MathUtils.map(stageCompletion, 0.8, 1, 1, 10);
+					if (stageCompletion >= 1) score -= 99;
+				}
+
+				return score;
+			};
+
 			let score = 0;
 
 			// - primary: poi alignemnt (pois on paths, pois almost but not quite on paths)
@@ -3529,6 +3600,9 @@ define([
 
 			// - secondary: how paths align to level features (blocking features, level center position and bounds)
 			score += scoreForLevelFeatures(paths);
+
+			// - secondary: how paths fit to level stages (not too many sectors on one stage)
+			score += scoreForLevelStages(paths);
 
 			return score;
 		},
@@ -3813,12 +3887,14 @@ define([
 			return score;
 		},
 
-		getAverageDensityForPath: function (levelVO, path) {
+		getAverageDensityForPath: function (levelVO, path, d) {
+			d = d || 2;
+
 			let averageDensity = 0;
 			for (let j = 0; j < path.len; j++) {
 				let pos = PositionConstants.getPositionOnPath(path.startPos, path.dir, j);
 
-				let density = levelVO.getAreaDensity(pos.sectorX, pos.sectorY, 2);
+				let density = levelVO.getAreaDensity(pos.sectorX, pos.sectorY, d);
 				averageDensity += density;
 			}
 
