@@ -35,6 +35,19 @@ define(['game/constants/ColorConstants', 'game/constants/SectorConstants'], func
 		getGridSize: function () {
 			return 10;
 		},
+
+		getResourceFill: function (resourceName) {
+			switch (resourceName) {
+				case resourceNames.metal: return ColorConstants.getGlobalColor("res_metal");
+				case resourceNames.water: return ColorConstants.getGlobalColor("res_water");
+				case resourceNames.food: return ColorConstants.getGlobalColor("res_food");
+				case resourceNames.fuel: return ColorConstants.getGlobalColor("res_fuel");
+				case resourceNames.rubber: return ColorConstants.getGlobalColor("res_rubber");
+				case resourceNames.rope: return ColorConstants.getGlobalColor("res_rope");
+			}
+			log.w("no fill color defined for resource: " + resourceName);
+			return ColorConstants.getGlobalColor("res_metal");
+		},
 		
 		getDefaultSectorFill: function (sectorStatus, sunlit) {
 			switch (sectorStatus) {

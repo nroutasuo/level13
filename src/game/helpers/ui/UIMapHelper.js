@@ -418,12 +418,12 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 			
 			let nearestWaterSector = GameGlobals.levelHelper.findNearestKnownWaterSector(mapPosition, true);
 			if (nearestWaterSector != null) {
-				result.push({ id: "water", color: this.getResourceFill(resourceNames.water), position: nearestWaterSector.get(PositionComponent) });
+				result.push({ id: "water", color: MapUtils.getResourceFill(resourceNames.water), position: nearestWaterSector.get(PositionComponent) });
 			}
 			
 			let nearestFoodSector = GameGlobals.levelHelper.findNearestKnownFoodSector(mapPosition, true);
 			if (nearestFoodSector != null) {
-				result.push({ id: "food", color: this.getResourceFill(resourceNames.food), position: nearestFoodSector.get(PositionComponent) });
+				result.push({ id: "food", color: MapUtils.getResourceFill(resourceNames.food), position: nearestFoodSector.get(PositionComponent) });
 			}
 
 			if (isGround && GameGlobals.gameState.getStoryFlag(StoryConstants.flags.SPIRITS_SEARCHING_FOR_SPIRITS)) {
@@ -819,84 +819,29 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 		},
 		
 		drawResourcesOnSector: function (ctx, options, sector, knownResources, sectorXpx, sectorYpx, sectorSize) {
-			let allResources = [ resourceNames.water, resourceNames.food, resourceNames.metal, resourceNames.rope, resourceNames.herbs, resourceNames.fuel, resourceNames.rubber, resourceNames.medicine, resourceNames.tools, resourceNames.concrete, resourceNames.robots ];
-			let defaultResources = [ resourceNames.water, resourceNames.food ];
-			let mapResources = options.mapMode == MapUtils.MAP_MODE_SCAVENGING ? allResources : defaultResources;
-
 			let sectorImprovements = sector.get(SectorImprovementsComponent);
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
 			let sectorStatus = sector.get(SectorStatusComponent);
 			
-			let resourcesCollectable = sectorFeatures.resourcesCollectable;
-
 			let hasHeap = function (resourceName) {
 				if (!sectorFeatures.heapResource) return false;
 				if (sectorStatus.getHeapScavengedPercent() >= 100) return false;
 				if (sectorFeatures.heapResource !== resourceName) return false;
 				return true;
 			};
-				
-			let directResources = {};
-			directResources[resourceNames.water] = sectorImprovements.getCount(improvementNames.collector_water) > 0 || sectorFeatures.hasSpring;
-			directResources[resourceNames.food] = sectorImprovements.getCount(improvementNames.collector_food) > 0;
 
-			if (hasHeap(resourceNames.metal)) {
-				directResources[resourceNames.metal] = true;
-				defaultResources.push(resourceNames.metal);
-			}
+			let features = {};
+			features.knownResources = knownResources;
+			features.resourcesCollectable = sectorFeatures.resourcesCollectable;
+			features.resourcesScavengable = sectorFeatures.resourcesScavengable;
+			features.hasCollectorWater = sectorImprovements.getCount(improvementNames.collector_water) > 0;
+			features.hasCollectorFood = sectorImprovements.getCount(improvementNames.collector_food) > 0;
+			features.hasSpring = sectorFeatures.hasSpring;
+			features.hasHeap = hasHeap(resourceNames.metal);
+
+			options.isBigSectorSize = sectorSize >= this.getSectorSize(true);
 			
-			let totalWidth = 0;
-			let bigResSize = 5;
-			let smallResSize = 3;
-			let padding = 1;
-			let isBigSectorSize = sectorSize >= this.getSectorSize(true);
-			
-			let potentialResources = {};
-			
-			for (let i in mapResources) {
-				let name = mapResources[i];
-				let colAmount = resourcesCollectable.getResource(name);
-				if (colAmount > 0) {
-					potentialResources[name] = true;
-				} else if (knownResources.indexOf(name) >= 0) {
-					let minAmountToShow = name == resourceNames.metal ? WorldConstants.resourcePrevalence.COMMON : 1;
-					if (sectorFeatures.resourcesScavengable.getResource(name) >= minAmountToShow) {
-						potentialResources[name] = true;
-					}
-				} else if (hasHeap(name)) {
-					potentialResources[name] = true;
-				}
-				
-				if (directResources[name]) totalWidth += bigResSize + padding;
-				else if(potentialResources[name]) totalWidth += smallResSize + padding;
-			}
-			
-			if (totalWidth > 0) {
-				totalWidth -= padding;
-				let x = sectorXpx + sectorSize / 2 - totalWidth / 2;
-				let y = isBigSectorSize ? sectorYpx + sectorSize - 5 : sectorYpx + sectorSize / 2 - 1;
-				for (let i in mapResources) {
-					let name = mapResources[i];
-					let drawSize = 0;
-					let yOffset;
-					
-					if (directResources[name]) {
-						drawSize = bigResSize;
-						yOffset = -1;
-					} else if(potentialResources[name]) {
-						drawSize = smallResSize;
-						yOffset = 0;
-					} else {
-						drawSize = 0;
-					}
-					
-					if (drawSize > 0) {
-						ctx.fillStyle = this.getResourceFill(name);
-						ctx.fillRect(Math.round(x), Math.round(y + yOffset), drawSize, drawSize);
-						x = x + drawSize + padding;
-					}
-				}
-			}
+			MapElements.drawResourcesOnSector(ctx, sectorXpx, sectorYpx, sectorSize, features, options);
 		},
 
 		drawMovementLinesOnCanvas: function (ctx, options, sector, sectorPos, sectorXpx, sectorYpx, sectorSize, sectorPadding) {
@@ -1184,19 +1129,6 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 			}
 			
 			return ColorConstants.colors.global.transparent;
-		},
-
-		getResourceFill: function (resourceName) {
-			switch (resourceName) {
-				case resourceNames.metal: return ColorConstants.getGlobalColor("res_metal");
-				case resourceNames.water: return ColorConstants.getGlobalColor("res_water");
-				case resourceNames.food: return ColorConstants.getGlobalColor("res_food");
-				case resourceNames.fuel: return ColorConstants.getGlobalColor("res_fuel");
-				case resourceNames.rubber: return ColorConstants.getGlobalColor("res_rubber");
-				case resourceNames.rope: return ColorConstants.getGlobalColor("res_rope");
-			}
-			log.w("no fill color defined for resource: " + resourceName);
-			return ColorConstants.getGlobalColor("res_metal");
 		},
 		
 		hasHazard: function (sector) {

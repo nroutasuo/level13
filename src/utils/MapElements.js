@@ -2,9 +2,10 @@ define([
 	'utils/MapUtils',
 	'game/constants/ColorConstants',
 	'game/constants/MovementConstants',
-	'game/constants/SectorConstants'
+	'game/constants/SectorConstants',
+	'game/constants/WorldConstants',
 ], function (
-	MapUtils, ColorConstants, MovementConstants, SectorConstants
+	MapUtils, ColorConstants, MovementConstants, SectorConstants, WorldConstants
 ) {
 	
 	let MapElements = {
@@ -133,6 +134,74 @@ define([
 			}
 			
 			return false;
+		},
+
+		drawResourcesOnSector: function (ctx, sectorXpx, sectorYpx, sectorSize, features, options) {			
+			let allResources = [ resourceNames.water, resourceNames.food, resourceNames.metal, resourceNames.rope, resourceNames.herbs, resourceNames.fuel, resourceNames.rubber, resourceNames.medicine, resourceNames.tools, resourceNames.concrete, resourceNames.robots ];
+			let defaultResources = [ resourceNames.water, resourceNames.food ];
+			let mapResources = options.mapMode == MapUtils.MAP_MODE_SCAVENGING ? allResources : defaultResources;
+				
+			let directResources = {};
+			directResources[resourceNames.water] = features.hasCollectorWater || features.hasSpring;
+			directResources[resourceNames.food] = features.hasCollectorFood;
+
+			if (features.hasHeap) {
+				directResources[resourceNames.metal] = true;
+				defaultResources.push(resourceNames.metal);
+			}
+			
+			let potentialResources = {};
+			
+			let totalWidth = 0;
+			let bigResSize = 5;
+			let smallResSize = 3;
+			let padding = 1;
+			let isBigSectorSize = options.isBigSectorSize;
+
+			for (let i in mapResources) {
+				let name = mapResources[i];
+				let colAmount = features.resourcesCollectable.getResource(name);
+				if (colAmount > 0) {
+					potentialResources[name] = true;
+				} else if (!features.knownResources || features.knownResources.indexOf(name) >= 0) {
+					let minAmountToShow = name == resourceNames.metal ? WorldConstants.resourcePrevalence.COMMON : 1;
+					if (features.resourcesScavengable.getResource(name) >= minAmountToShow) {
+						potentialResources[name] = true;
+					}
+				} else if (name == resourceNames.metal && features.hasHeap) {
+					potentialResources[name] = true;
+				}
+				
+				if (directResources[name]) totalWidth += bigResSize + padding;
+				else if(potentialResources[name]) totalWidth += smallResSize + padding;
+			}
+			
+			if (totalWidth > 0) {
+				totalWidth -= padding;
+				let x = sectorXpx + sectorSize / 2 - totalWidth / 2;
+				let y = isBigSectorSize ? sectorYpx + sectorSize - 5 : sectorYpx + sectorSize / 2 - 1;
+				for (let i in mapResources) {
+					let name = mapResources[i];
+					let drawSize = 0;
+					let yOffset;
+					
+					if (directResources[name]) {
+						drawSize = bigResSize;
+						yOffset = -1;
+					} else if(potentialResources[name]) {
+						drawSize = smallResSize;
+						yOffset = 0;
+					} else {
+						drawSize = 0;
+					}
+					
+					if (drawSize > 0) {
+						ctx.fillStyle = MapUtils.getResourceFill(name);
+						ctx.fillRect(Math.round(x), Math.round(y + yOffset), drawSize, drawSize);
+						x = x + drawSize + padding;
+					}
+				}
+			}
 		},
 
 		drawMovementLine: function (ctx, sectorMiddleX, sectorMiddleY, sectorSize, distX, distY, sectorPadding) {
