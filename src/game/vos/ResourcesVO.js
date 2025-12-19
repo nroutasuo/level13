@@ -134,6 +134,10 @@ define(['ash'], function (Ash) {
 
 			return val;
 		},
+
+		hasResource: function (res) {
+			return this.getResource(res) > 0;
+		},
 		
 		getResourcesWithHighestAmount: function () {
 			let result = [];

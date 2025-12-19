@@ -339,7 +339,7 @@ define([
 
 				let excludedZones = [ WorldConstants.ZONE_ENTRANCE ];
 				let excludedFeatures = [ "isCamp", "isPassageUp", "isPassageDown", "workshopResource" ];
-				let options = { requireCentral: false, excludingFeature: excludedFeatures, pathConstraints: [], excludedZones: excludedZones, filter: filter };
+				let options = { excludingFeature: excludedFeatures, pathConstraints: [], excludedZones: excludedZones, filter: filter };
 				let sectors = WorldCreatorRandom.randomSectorsScored(1000 + i * 66, worldVO, levelVO, 1, 2, options, getExamineSpotSectorScore);
 				if (sectors.length == 0) {
 					WorldCreatorLogger.w("could not find sector for examine spot: " + spot.id);
@@ -354,7 +354,7 @@ define([
 		generateGraffiti: function (seed, worldVO, levelVO, sectorVO) {
 			if (sectorVO.hazards.territory > 0) {
 				let neighbours = levelVO.getNeighbourList(sectorVO.position.sectorX, sectorVO.position.sectorY);
-				if (neighbours.every(neighbourVO => neighbourVO.hazards.territory > 0 && neighbourVO.graffiti == null)) {
+				if (neighbours && neighbours.length > 1 && neighbours.every(neighbourVO => neighbourVO.hazards.territory > 0 && neighbourVO.graffiti == null)) {
 					return "Red Hats";
 				}
 			}

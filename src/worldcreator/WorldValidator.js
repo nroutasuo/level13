@@ -79,6 +79,7 @@ define([
 				this.checkLevelNumberOfSectors, 
 				this.checkLevelNumberOfLocales,
 				this.checkLevelMovementBlockers,
+				this.checkLevelResources,
 				this.checkLevelMatchesTemplate,
 			];
 
@@ -420,6 +421,7 @@ define([
 			let issues = [];
 
 			let directions = PositionConstants.getLevelDirections();
+			let entrancePosition = levelVO.getEntrancePassagePosition();
 
 			let movementBlockers = [];
 
@@ -465,7 +467,9 @@ define([
 					return false;
 				}
 
-				if (sectorVO.isPassageDown || sectorVO.isPassageUp) {
+				if (sectorVO.position.equals(entrancePosition)) {
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "movement blocker at entrance passage sector " + sectorVO });
+					return false;
 				}
 
 				let numNeighbours = levelVO.getNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY);
@@ -555,6 +559,72 @@ define([
 			if (levelVO.isCampable && blockerTypes.length < 2) {
 				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level " + levelVO.level + " has has only " + blockerTypes.length + " type of movement blockers" });
 			}
+
+			return { isValid: issues.length === 0, issues: issues };
+		},
+		
+		checkLevelResources: function (worldVO, levelVO) {
+			let issues = [];
+			let isGround = levelVO.level == worldVO.bottomLevel;
+			let isSurface = levelVO.level == worldVO.topLevel;
+
+			let thresholds = {};
+			thresholds[resourceNames.water] = { sca: { min: 0, max: 10 }, col: { min: 1, max: 15 } };
+			thresholds[resourceNames.food] = { sca: { min: 1, max: 50 }, col: { min: 3, max: 30 } };
+			thresholds[resourceNames.metal] = { sca: { min: 25, max: 99 } };
+			thresholds[resourceNames.rope] = { sca: { min: 0, max: 15 } };
+			thresholds[resourceNames.herbs] = { sca: { min: (isGround || isSurface ? 5 : 0), max: (isGround || isSurface ? 50 : 10) } };
+			thresholds[resourceNames.fuel] = { sca: { min: 0, max: 10 } };
+			thresholds[resourceNames.rubber] = { sca: { min: 0, max: 10 } };
+			thresholds[resourceNames.tools] = { sca: { min: 0, max: 10 } };
+			thresholds[resourceNames.medicine] = { sca: { min: 0, max: 10 } };
+			thresholds[resourceNames.concrete] = { sca: { min: 0, max: 10 } };
+			thresholds["any"] = { sca: { min: 30, max: 99 }, col: { min: 5, max: 45 } };
+			thresholds["rare"] = { sca: { min: 0, max: 10 } };
+
+			let hasScavengeable = function (sectorVO, name) {
+				if (name == "any") return sectorVO.resourcesScavengable.getTotal() > 0;
+				if (name == "rare") {
+					return hasScavengeable(sectorVO, resourceNames.fuel) 
+						|| hasScavengeable(sectorVO, resourceNames.rubber) 
+						|| hasScavengeable(sectorVO, resourceNames.tools) 
+						|| hasScavengeable(sectorVO, resourceNames.medicine);
+				}
+				return sectorVO.resourcesScavengable.hasResource(name);
+			};
+
+			let hasCollectable = function (sectorVO, name) {
+				if (name == "any") return sectorVO.resourcesCollectable.getTotal() > 0;
+				if (name == "rare") return false;
+				let value = sectorVO.resourcesCollectable.hasResource(name);
+				if (name == resourceNames.water) value = value || sectorVO.hasSpring;
+				return value;
+			};
+
+			let checkResource = function (name) {
+				let resourceScaCount = levelVO.sectors.filter(s => hasScavengeable(s, name)).length;
+				let resourceScaFrequency = Math.round(resourceScaCount / levelVO.sectors.length * 100);
+
+				if (thresholds[name] && thresholds[name].sca && resourceScaFrequency < thresholds[name].sca.min) 
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level " + levelVO.level + " has too few sectors with scavengeable " + name + " (" + resourceScaFrequency + "%)" });
+				if (thresholds[name] && thresholds[name].sca && resourceScaFrequency > thresholds[name].sca.max)
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level " + levelVO.level + " has too many sectors with scavengeable " + name + " (" + resourceScaFrequency + "%)" });
+
+				let resourceColCount = levelVO.sectors.filter(s => hasCollectable(s, name)).length;
+				let resourceColFrequency = Math.round(resourceColCount / levelVO.sectors.length * 100);
+
+				if (thresholds[name] && thresholds[name].col && resourceColFrequency < thresholds[name].col.min) 
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level " + levelVO.level + " has too few sectors with collectable " + name + " (" + resourceColFrequency + "%)" });
+				if (thresholds[name] && thresholds[name].col && resourceColFrequency > thresholds[name].col.max)
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level " + levelVO.level + " has too many sectors with collectable " + name + " (" + resourceColFrequency + "%)" });
+			}
+
+			for (let name in resourceNames) {
+				checkResource(name);
+			}
+
+			checkResource("any");
+			checkResource("rare");
 
 			return { isValid: issues.length === 0, issues: issues };
 		},

@@ -143,6 +143,10 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Po
 			candidates = candidates.sort((a, b) => scoringFunction(b) - scoringFunction(a));
 			return candidates.slice(0, numSectors);
 		},
+
+		randomSectorScored: function (seed, worldVO, levelVO, options, scoringFunction) {
+			return this.randomSectorsScored(seed, worldVO, levelVO, 1, 2, options, scoringFunction)[0];
+		},
 		
 		getSectorInvalidReason: function (worldVO, sectorVO, options) {
 			if (!sectorVO) return "null sector";
@@ -252,7 +256,7 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Po
 		
 		// Pseudo-random existing sector on the given level
 		// pathConstraints is an array of PathConstraintVOs and all paths must be satisfied if present
-		randomSector: function (seed, worldVO, levelVO, isCentral, pathConstraints) {
+		randomSector: function (seed, worldVO, levelVO, pathConstraints) {
 			var sectors = levelVO.sectors;
 			var startIndex = Math.floor(this.random(seed) * sectors.length);
 			

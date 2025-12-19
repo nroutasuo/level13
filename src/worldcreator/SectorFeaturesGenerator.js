@@ -73,16 +73,7 @@ define([
 			this.generateWorkshops(seed, worldVO, levelTemplateVO, levelVO);
 			this.generateStashes(seed, worldVO, levelTemplateVO, levelVO);
 			
-			// level path features
-			levelVO.paths = this.generatePaths(seed, worldVO, levelVO);
-
-			for (var p = 0; p < levelVO.paths.length; p++) {
-				this.generateRequiredResources(seed, worldVO, levelVO, levelVO.paths[p]);
-			}
-			
-			this.generateHazards(seed, worldVO, levelTemplateVO, levelVO);
-			
-			// sector features
+			// sector features 1
 			for (let s = 0; s < levelVO.sectors.length; s++) {
 				let sectorVO = levelVO.sectors[s];
 				let sectorTemplateVO = levelTemplateVO.sectors[s] || {};
@@ -91,13 +82,26 @@ define([
 				sectorVO.sectorType = this.getSectorType(seed, worldVO, levelVO, sectorTemplateVO, sectorVO);
 				sectorVO.sectorStyle = this.getSectorStyle(seed, worldVO, levelVO, sectorTemplateVO, sectorVO);
 				sectorVO.sunlit = this.isSunlit(seed, worldVO, levelVO, sectorTemplateVO, sectorVO) || 0;
+			}
+			
+			// level path features
+			levelVO.paths = this.generatePaths(worldVO, levelVO);
+			this.generateRequiredResources(seed, worldVO, levelVO, levelVO.paths);
+			
+			// level-wide features 2
+			this.generateHazards(seed, worldVO, levelTemplateVO, levelVO);
+			
+			// sector features 2
+			for (let s = 0; s < levelVO.sectors.length; s++) {
+				let sectorVO = levelVO.sectors[s];
+				let sectorTemplateVO = levelTemplateVO.sectors[s] || {};
 
 				this.generateTexture(seed, worldVO, levelVO, sectorTemplateVO, sectorVO);
 				this.generateDifficulty(seed, worldVO, levelVO, sectorVO);
 				this.generateResources(seed, worldVO, levelVO, sectorTemplateVO, sectorVO);
 			}
 			
-			// level-wide features 2
+			// level-wide features 3
 			levelVO.predefinedExplorers = this.getPredefinedExplorers(seed, levelVO.level);
 			this.generateInvestigateSectors(seed, worldVO, levelVO);
 			this.generateLocalesForTradingPartners(seed, worldVO, levelTemplateVO, levelVO);	
@@ -107,7 +111,7 @@ define([
 			this.generateHeaps(seed, worldVO, levelVO);
 			this.generateItems(seed, worldVO, levelVO);
 			
-			// sector features 2
+			// sector features 3
 			for (let s = 0; s < levelVO.sectors.length; s++) {
 				let sectorVO = levelVO.sectors[s];
 				sectorVO.sunlit = sectorVO.sunlit || this.isSunlitByNeighbours(worldVO, levelVO, sectorVO) || 0;
@@ -303,6 +307,8 @@ define([
 			};
 			
 			let addBlocker = function (seed, sectorVO, neighbourVO, type, addDiagonals, allowedCriticalPathTypes) {
+				if (!sectorVO) return;
+				
 				neighbourVO = neighbourVO || WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, (s) => 
 					WorldCreatorHelper.canSectorHaveMovementBlocker(levelVO, s) && WorldCreatorHelper.canPairHaveBlocker(levelVO, sectorVO, s)
 				);
@@ -417,47 +423,133 @@ define([
 			}
 		},
 		
-		generatePaths: function (seed, worldVO, levelVO) {
+		generatePaths: function (worldVO, levelVO) {
 			let result = [];
-			let unvisitedSectors = [];
-			let visitSector = function (pos, pathID) {
+
+			let maxLength = WorldCreatorConstants.getMaxPathLength(levelVO.campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2);
+
+			// all sectors that need to be visited some way or another
+			let unvisitedSectors = levelVO.sectors.concat();
+
+			// current sectors to be visited (can be empty if doing specific path)
+			let currentUnvisitedSectors = [];
+
+			let visitSector = function (pos, pathID, pathIndex) {
 				let posSector = levelVO.getSectorByPos(pos);
 				if (!posSector) return;
+
+				let index2 = currentUnvisitedSectors.indexOf(posSector);
+				if (index2 >= 0) currentUnvisitedSectors.splice(index2, 1);
+
 				if (posSector.pathID && pos.pathID != 0) return;
 				let index = unvisitedSectors.indexOf(posSector);
 				if (index < 0) return;
+				
 				posSector.pathID = pathID;
+				posSector.pathIndex = pathIndex;
 				unvisitedSectors.splice(index, 1);
 			};
+
 			let traverseSectors = function (startPos, sectors, pathStage) {
-				let positions = [];
 				if (sectors.length <= 0) return;
-				unvisitedSectors = sectors.concat();
+				
+				currentUnvisitedSectors = sectors.filter(s => unvisitedSectors.indexOf(s) >= 0);
+
+				let currentPath = [];
 				let currentPos = startPos;
-				let pathID = 0;
-				while (unvisitedSectors.length > 0) {
-					visitSector(currentPos, pathID);
-					let sectorsByDistance = unvisitedSectors.slice(0).sort(WorldCreatorHelper.sortSectorsByDistanceTo(currentPos));
+				let pathID = result.length;
+
+				let closeCurrentPath = function () {
+					if (currentPath.length == 0) return;
+					result.push({ pathID: pathID, path: currentPath.concat() });
+					currentPath = [];
+					currentPos = startPos;
+					pathID = result.length;
+				};
+
+				let extendCurrentPath = function (path) {
+					for (let j = 0; j < path.length; j++) {
+						let pathPos = path[j];
+						visitSector(pathPos, pathID, currentPath.length);
+						currentPath.push(pathPos);
+					}
+				}
+
+				let attempts = 0;
+				while (currentUnvisitedSectors.length > 0) {
+					attempts++;
+					if (attempts > 200) debugger
+					if (attempts > 300) {
+						log.e("couldn't complete traversal of sectors for generatePaths");
+						break;
+					}
+
+					visitSector(currentPos, pathID, 0);
+					let sectorsByDistance = currentUnvisitedSectors.slice(0).sort(WorldCreatorHelper.sortSectorsByDistanceTo(currentPos));
+
 					let nextSector = sectorsByDistance[0];
 					if (!nextSector) break;
+
 					let path = WorldCreatorRandom.findPath(worldVO, currentPos, nextSector.position, false, true, pathStage);
 					if (!path) {
 						log.e("couldn't find level path " + currentPos + " " + nextSector.position);
 						break;
 					}
-					pathID = result.length;
-					for (let j = 0; j < path.length; j++) {
-						let pathPos = path[j];
-						visitSector(pathPos, pathID);
-						positions.push(pathPos);
+
+					let isBacktracking = currentPath.length > 0 && path.length > 2;
+					let nextLength = currentPath.length + path.length;
+
+					let startNewPathBefore = isBacktracking && (nextLength >= (maxLength - 5) || path.length > 5);
+
+					if (startNewPathBefore) {
+						closeCurrentPath();
+						continue;
 					}
-					currentPos = nextSector.position;
+					
+					extendCurrentPath(path);
+
+					let lastPos = path[path.length - 1];
+					let lastPosNeigbours = levelVO.getNeighbourCount(lastPos.sectorX, lastPos.sectorY);
+					let isDeadEnd = lastPosNeigbours == 1;
+					let isCrossing = levelVO.isCrossing(lastPos.sectorX, lastPos.sectorY);
+					let startNewPathAfter = isDeadEnd || (isCrossing && currentPath.length >= maxLength - 3);
+
+					if (startNewPathAfter) {
+						closeCurrentPath();
+					} else {
+						currentPos = nextSector.position;
+					}
 				}
-				result.push(positions);
-			}
+
+				closeCurrentPath();
+			};
+
+			let traversePath = function (pathID, startPos, endPos) {
+				if (!startPos || !endPos) return;
+				let positions = [];
+				let path = WorldCreatorRandom.findPath(worldVO, startPos, endPos, false, true);
+				if (!path) debugger
+				for (let j = 0; j < path.length; j++) {
+					let pathPos = path[j];
+					visitSector(pathPos, pathID, positions.length);
+					positions.push(pathPos);
+				}
+				result.push({ pathID: pathID, path: positions });
+			};
+
 			let startPos = levelVO.getExcursionStartPosition();
+			let enterPos = levelVO.getEntrancePassagePosition();
+			let exitPos = levelVO.getExitPassagePosition();
 			let earlySectors = levelVO.getSectorsByStage(WorldConstants.CAMP_STAGE_EARLY);
 			let lateSectors = levelVO.getSectorsByStage(WorldConstants.CAMP_STAGE_LATE);
+
+			if (levelVO.isCampable) {
+				traversePath("c", enterPos, levelVO.campPosition);
+				traversePath("p", levelVO.campPosition, exitPos);
+			} else {
+				traversePath("p", enterPos, exitPos);
+			}
+
 			traverseSectors(startPos, earlySectors, WorldConstants.CAMP_STAGE_EARLY);
 			traverseSectors(startPos, lateSectors, null);
 			return result;
@@ -534,7 +626,7 @@ define([
 			let addStashes = function (sectorSeed, reason, stashType, itemIDs, numStashes, numItemsPerStash, excludedZones, localeType) {
 				numStashes = WorldCreatorRandom.randomIntFromRange(sectorSeed / 2 + 222, numStashes);
 				
-				let options = { requireCentral: false, excludingFeature: "isCamp", excludedZones: excludedZones, filter: SectorGeneratorHelper.isValidSectorForLocale };
+				let options = { excludingFeature: "isCamp", excludedZones: excludedZones, filter: SectorGeneratorHelper.isValidSectorForLocale };
 				let numCandidates = numStashes * 2;
 				let stashSectorCandidates = WorldCreatorRandom.randomSectors(sectorSeed, worldVO, levelVO, numCandidates, numCandidates + 1, options);
 				let num = Math.min(numStashes, stashSectorCandidates.length);
@@ -606,7 +698,7 @@ define([
 			// stashes: non-craftable equipment
 			// TODO don't do these per level but per equipment; place one instance of each non-craftable equipment somewhere
 			if (levelIndex == 0) {
-				var newEquipment = this.itemsHelper.getNewEquipment(levelVO.campOrdinal);
+				let newEquipment = this.itemsHelper.getNewEquipment(levelVO.campOrdinal);
 				for (let i = 0; i < newEquipment.length; i++) {
 					if (!newEquipment[i].craftable && newEquipment[i].scavengeRarity <= ItemConstants.MAX_RANDOM_EQUIPMENT_STASH_RARITY) {
 						addStashes(seed / 3 + (l+551)*8 + (i+103)*18, "non-craftable equipment", ItemConstants.STASH_TYPE_ITEM, [ newEquipment[i].id ], 1, 1, lateZones);
@@ -747,7 +839,7 @@ define([
 				excludedZones.push(WorldConstants.ZONE_POI_2);
 			}
 			let excludedFeatures = [ "isCamp", "isPassageUp", "isPassageDown", "hasWorkshop" ];
-			let options = { requireCentral: true, excludingFeature: excludedFeatures, excludedZones: excludedZones };
+			let options = { excludingFeature: excludedFeatures, excludedZones: excludedZones };
 			let heapSectors = WorldCreatorRandom.randomSectorsScored(seed, worldVO, levelVO, count, count + 1, options, getHeapSectorScore);
 
 			for (let i = 0; i < heapSectors.length; i++) {
@@ -757,17 +849,17 @@ define([
 			}
 		},
 		
-		generateRequiredResources: function (seed, worldVO, levelVO, path) {
-			// near passages
+		generateRequiredResources: function (seed, worldVO, levelVO, paths) {
+			// supplies near passages
 			let excludedZones = levelVO.isCampable ?
 				[ WorldConstants.ZONE_EXTRA_CAMPABLE ] :
 				[ WorldConstants.ZONE_EXTRA_UNCAMPABLE ];
-				
+			
 			for (let i = 0; i < levelVO.passagePositions.length; i++) {
 				let passagePos = levelVO.passagePositions[i];
 				let pathConstraints = [];
 				pathConstraints.push(new PathConstraintVO(passagePos, 3, null));
-				let options = { requireCentral: false, excludingFeature: "isCamp", pathConstraints: pathConstraints, excludedZones: excludedZones };
+				let options = { excludingFeature: "isCamp", pathConstraints: pathConstraints, excludedZones: excludedZones };
 				let safeSectors = WorldCreatorRandom.randomSectors(seed % 10000 + levelVO.level * 192 + i * 991, worldVO, levelVO, 1, 2, options);
 				if (safeSectors.length == 1) {
 					safeSectors[0].requiredResources.water = true;
@@ -776,7 +868,8 @@ define([
 					WorldCreatorLogger.w("Couldn't find safe sector for passage on level " + levelVO.level);
 				}
 			}
-			// near camps
+
+			// supplies near camps
 			if (levelVO.campPosition) {
 				let pathConstraintsCamp = [];
 				pathConstraintsCamp.push(new PathConstraintVO(levelVO.campPosition, 3, null));
@@ -794,43 +887,96 @@ define([
 					WorldCreatorLogger.w("Couldn't find safe sector for camp on level " + levelVO.level);
 				}
 			}
-			// based on paths
-			var bagSize = ItemConstants.getBagBonus(levelVO.campOrdinal);
-			var maxStepsWater = Math.floor(bagSize / 2.5);
-			var maxStepsFood = Math.floor(bagSize / 3);
-			var stepsWater = 0;
-			var stepsFood = 0;
-			var requireResource = function (i, count, sectorVO, steps, maxSteps) {
-				// end of path, probably a dead end and need supplies to return
-				if (i == count - 1 && steps > 3)
-					return true;
+
+			// supplies based on paths
+			let bagSize = ItemConstants.getBagBonus(levelVO.campOrdinal);
+			let maxStepsWater = Math.floor(bagSize / (levelVO.isHard ? 2.25 : 2.75));
+			let maxStepsFood = Math.floor(bagSize / (levelVO.isHard ? 2.75 : 3.25));
+
+			let requireResource = function (i, count, sectorVO, steps, maxSteps) {
+				let isDeadEnd = levelVO.getNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY) == 1;
+				let isPathEnd = i == count - 1;
+
 				// not too often
-				var minSteps = Math.floor(maxSteps * 0.75);
+				let minSteps = isDeadEnd ? 3 : isPathEnd ? Math.floor(maxSteps * 0.5) : Math.floor(maxSteps * 0.75);
 				if (steps < minSteps)
 					return false;
-				// guarantee max steps regardless of hazard factor etc
+				// guarantee at max steps regardless of hazard factor etc
 				if (steps >= maxSteps)
 					return true;
 				// probability
-				var hazardFactor = (sectorVO.hazards.poison || sectorVO.hazards.radiation) ? 0.25 : 1;
-				var probability = (steps - minSteps) / (maxSteps - minSteps) * hazardFactor;
-				var s1 = 2000 + seed % 1000 * 2 + levelVO.level * 103 + i * 5;
-				var r1 = WorldCreatorRandom.random(s1);
+				let hazardFactor = (sectorVO.hazards.poison || sectorVO.hazards.radiation) ? 0.25 : 1;
+				let positionFacctor = isDeadEnd ? 3 : isPathEnd ? 1.5 : 1;
+				let probability = (steps - minSteps) / (maxSteps - minSteps) * hazardFactor * positionFacctor;
+				let r1 = WorldCreatorRandom.random(seed + i + steps);
 				return r1 < probability;
 			};
-			for (let i = 0; i < path.length; i++) {
-				var pos = path[i];
-				var sectorVO = levelVO.getSectorByPos(pos);
-				if (requireResource(i, path.length, sectorVO, stepsWater, maxStepsWater)) {
-					sectorVO.requiredResources.water = true;
-					stepsWater = -1;
+
+			for (let p = 0; p < paths.length; p++) {
+				let path = paths[p].path;
+				
+				let stepsWater = 0;
+				let stepsFood = 0;
+
+				for (let i = 0; i < path.length; i++) {
+					let pos = path[i];
+					let sectorVO = levelVO.getSectorByPos(pos);
+
+					if (sectorVO.requiredResources.water) {
+						stepsWater = -1;
+					} else if (requireResource(i, path.length, sectorVO, stepsWater, maxStepsWater)) {
+						sectorVO.requiredResources.water = true;
+						stepsWater = -1;
+					}
+
+					if (sectorVO.requiredResources.food) {
+						stepsFood = -1;
+					} else if (requireResource(9000 + i, path.length, sectorVO, stepsFood, maxStepsFood)) {
+						sectorVO.requiredResources.food = true;
+						stepsFood = -1;
+					}
+
+					stepsWater++;
+					stepsFood++;
 				}
-				if (requireResource(9000 + i, path.length, sectorVO, stepsFood, maxStepsFood)) {
-					sectorVO.requiredResources.food = true;
-					stepsFood = -1;
-				}
-				stepsWater++;
-				stepsFood++;
+			}
+
+			// other resources (on campable levels not too far from camp)
+			let isValidRequiredResourceSector = function (sectorVO, allowedTypes) {
+				if (sectorVO.isPassageDown || sectorVO.isPassageUp || sectorVO.isCamp) return false;
+				if (allowedTypes.indexOf(sectorVO.sectorType) < 0) return false;
+				let distance = WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO);
+				if (distance < 2) return false;
+				if (distance > 20) return false;
+				if (sectorVO.requiredResources.getTotal() > 0) return false;
+				return true;
+			};
+			let getRequiredResourceSectorScore = function (sectorVO, scoreFeatures) {
+					let score = 1;
+					score += (-sectorVO.activity);
+					let distance = WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO);
+					if (distance < 10) score++;
+					if (scoreFeatures) {
+						for (let i = 0; i < scoreFeatures.length; i++) {
+							score += sectorVO[scoreFeatures[i]] / 10;
+						}
+					}
+					if (sectorVO.hazards.hasHazards()) score--;
+					return score;
+			};
+
+			if (levelVO.isCampable) {
+				let isValidMetalSector = (sectorVO) => isValidRequiredResourceSector(sectorVO, [ SectorConstants.SECTOR_TYPE_INDUSTRIAL, SectorConstants.SECTOR_TYPE_RESIDENTIAL, SectorConstants.SECTOR_TYPE_PUBLIC ]);
+				let getMetalSectorScore = (sectorVO) => getRequiredResourceSectorScore(sectorVO, [ "wear", "damage" ]);
+				let metalSector = WorldCreatorRandom.randomSectorScored(seed, worldVO, levelVO, { filter: isValidMetalSector }, getMetalSectorScore);
+				metalSector.requiredResources.metal = true;
+			}
+
+			if (levelVO.isCampable && levelVO.levelOrdinal < 8) {
+				let isValidRopeSector = (sectorVO) => isValidRequiredResourceSector(sectorVO, [ SectorConstants.SECTOR_TYPE_COMMERCIAL, SectorConstants.SECTOR_TYPE_RESIDENTIAL, SectorConstants.SECTOR_TYPE_INDUSTRIAL ]);
+				let getRopeSectorScore = (sectorVO) => getRequiredResourceSectorScore(sectorVO);
+				let ropeSector = WorldCreatorRandom.randomSectorScored(seed/5, worldVO, levelVO, { filter: isValidRopeSector }, getRopeSectorScore);
+				ropeSector.requiredResources.rope = true;
 			}
 		},
 		
@@ -1042,7 +1188,7 @@ define([
 				scavengeDifficultyScore *= 0.25;
 			}
 			
-						sectorVO.scavengeDifficulty = Math.round(MathUtils.map(scavengeDifficultyScore, 0, 1, 0, 10));
+			sectorVO.scavengeDifficulty = Math.round(MathUtils.map(scavengeDifficultyScore, 0, 1, 0, 10));
 			
 			var isStartPosition = levelVO.level == 13 && sectorVO.isCamp;
 			if (isStartPosition) {
@@ -1051,103 +1197,140 @@ define([
 		},
 		
 		generateResources: function (seed, worldVO, levelVO, sectorTemplateVO, sectorVO) {
-			var l = sectorVO.position.level;
-			var x = sectorVO.position.sectorX;
-			var y = sectorVO.position.sectorY;
-			var ll = levelVO.level === 0 ? levelVO.level : 50;
-			var sectorType = sectorVO.sectorType;
-			var campOrdinal = levelVO.campOrdinal;
-			var isStartPosition = l == 13 && sectorVO.isCamp;
+			let l = sectorVO.position.level;
+			let x = sectorVO.position.sectorX;
+			let y = sectorVO.position.sectorY;
+			let ll = levelVO.level === 0 ? levelVO.level : 50;
+			let sectorType = sectorVO.sectorType;
+			let campOrdinal = levelVO.campOrdinal;
+			let isStartPosition = l == 13 && sectorVO.isCamp;
+			let isEarly = campOrdinal < 3 && sectorVO.stage == WorldConstants.CAMP_STAGE_EARLY;
+			let isDeadEnd = levelVO.getNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY) == 1;
+			let isSurfaceLevel = levelVO.level === worldVO.topLevel;
 			
 			// scavengeable resources (not saved to template)
-			var r1 = WorldCreatorRandom.random(5000 + seed / (l+10) + x + x * y * 63 + sectorVO.buildingDensity * 3 + x % 3 * 123 + y % 4 * 81);
-			var r2 = WorldCreatorRandom.random(seed + l * x / (y + 50) * 44 + 6);
-			var r3 = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66);
+			let sca = new ResourcesVO();
+			let thresholds = {};
+			for (let name in resourceNames) thresholds[name] = { "ABUNDANT": 1, "COMMON": 1, "DEFAULT": 1, "RARE": 1 };
+			thresholds.metal = { "ABUNDANT": 0.95, "COMMON": 0.8, "DEFAULT": (isEarly || isSurfaceLevel) ? 0.02 : 0.25 };
+			thresholds.food = { "ABUNDANT": 0.99, "COMMON": 0.96, "DEFAULT": 0.90 };
 
-			var sca = new ResourcesVO();
-			let metalThresholds = { "ABUNDANT": 0.95, "COMMON": 0.8, "DEFAULT": Math.ceil(campOrdinal / 3) * 0.02 };
-			let foodThresholds = { "ABUNDANT": 0.98, "COMMON": 0.95, "DEFAULT": 0.75 };
-			let waterThresholds = { "ABUNDANT": 1, "COMMON": 0.95, "DEFAULT": 0.85 };
 			switch (sectorType) {
 				case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
-					metalThresholds.ABUNDANT = 1;
-					foodThresholds.DEFAULT = 0.65;
-					sca.rope = r1 > 0.98 ? WorldConstants.resourcePrevalence.DEFAULT : r1 > 0.94 ? WorldConstants.resourcePrevalence.RARE : 0;
-					sca.medicine = campOrdinal > 3 && r2 > 0.99 ? WorldConstants.resourcePrevalence.RARE : 0;
+					thresholds.metal.ABUNDANT = 1;
+					thresholds.food.COMMON -= 0.1;
+					thresholds.water.RARE -= 0.02;
+					thresholds.rope = { "DEFAULT": 0.98, "RARE": 0.94 };
+					thresholds.medicine = { "RARE": 0.99 };
 					break;
 				case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
-					metalThresholds.COMMON = 0.75;
-					foodThresholds.DEFAULT = 0.85;
-					sca.rope = r1 > 0.98 ? WorldConstants.resourcePrevalence.DEFAULT : r1 > 0.90 ? WorldConstants.resourcePrevalence.RARE : 0;
-					sca.tools = (l > 13) ? r2 > 0.95 ? WorldConstants.resourcePrevalence.RARE : 0 : 0;
-					sca.fuel = r3 > 0.90 ? WorldConstants.resourcePrevalence.RARE : 0;
+					thresholds.metal.COMMON -= 0.05;
+					thresholds.food.ABUNDANT = 1;
+					thresholds.food.COMMON = 1;
+					thresholds.food.DEFAULT = 1;
+					thresholds.fuel = { "RARE": 0.96 };
+					thresholds.tools = { "RARE": 0.97 };
 					break;
 				case SectorConstants.SECTOR_TYPE_MAINTENANCE:
-					metalThresholds.COMMON = 0.75;
-					foodThresholds.DEFAULT = 0.85;
-					sca.rope = r1 > 0.98 ? WorldConstants.resourcePrevalence.DEFAULT : r1 > 0.90 ? WorldConstants.resourcePrevalence.RARE : 0;
-					sca.fuel = r3 > 0.98 ? WorldConstants.resourcePrevalence.DEFAULT : r1 > 0.90 ? WorldConstants.resourcePrevalence.RARE : 0;
-					sca.tools = (l > 13) ? r2 > 0.90 ? WorldConstants.resourcePrevalence.RARE : 0 : 0;
+					thresholds.food.ABUNDANT = 1;
+					thresholds.food.COMMON = 1;
+					thresholds.food.DEFAULT = 1;
+					thresholds.metal.DEFAULT -= 0.1;
+					thresholds.metal.COMMON -= 0.1
+					thresholds.metal.ABUNDANT = 1;
+					thresholds.fuel = { "DEFAULT": 0.99, "RARE": 0.98 };
+					thresholds.tools = { "RARE": 0.99 };
 					break;
 				case SectorConstants.SECTOR_TYPE_COMMERCIAL:
-					foodThresholds.DEFAULT = 0.65;
-					waterThresholds.DEFAULT = 0.8;
-					sca.medicine = campOrdinal > 2 && r3 > 0.99 ? WorldConstants.resourcePrevalence.RARE : 0;
+					thresholds.metal.COMMON += 0.15;
+					thresholds.metal.DEFAULT += 0.15;
+					thresholds.food.DEFAULT -= 0.1;
+					thresholds.water.RARE -= 0.01;
+					thresholds.rope = { "DEFAULT": 0.98 };
+					thresholds.medicine = { "RARE": 0.99 };
 					break;
 				case SectorConstants.SECTOR_TYPE_PUBLIC:
+					thresholds.metal.COMMON -= 0.1;
+					thresholds.metal.DEFAULT -= 0.1;
+					thresholds.food.ABUNDANT = 1;
+					thresholds.food.COMMON = 1;
 					break;
 				case SectorConstants.SECTOR_TYPE_SLUM:
-					metalThresholds.ABUNDANT = 0.9;
-					metalThresholds.COMMON = 0.7;
-					foodThresholds.DEFAULT = 0.65;
-					waterThresholds.DEFAULT = 0.8;
-					sca.rope = r1 > 0.97 ? WorldConstants.resourcePrevalence.DEFAULT : r1 > 0.96 ? WorldConstants.resourcePrevalence.RARE : 0;
-					sca.fuel = r3 > 0.95 ? WorldConstants.resourcePrevalence.RARE : 0;
+					thresholds.metal.ABUNDANT -= 0.05;
+					thresholds.metal.COMMON -= 0.1;
 					break;
 			}
-			var rm = WorldCreatorRandom.random(seed * (x * 22 + y * 3000) + (x + 99) * 7 * (y - 888));
-			var rf = WorldCreatorRandom.random(seed / (l + 5) * 99 + x * x * y + 66);
-			let rw = WorldCreatorRandom.random(seed * (l + 1000) * (x * 1.5 + y + 900) + 10134) * Math.abs(5 - sectorVO.wear) / 5;
-			sca.metal =
-					rm > metalThresholds.ABUNDANT ? WorldConstants.resourcePrevalence.ABUNDANT :
-					rm > metalThresholds.COMMON ? WorldConstants.resourcePrevalence.COMMON :
-					rm > metalThresholds.DEFAULT ? WorldConstants.resourcePrevalence.DEFAULT : 0;
-			sca.food =
-					rf > foodThresholds.ABUNDANT ? WorldConstants.resourcePrevalence.ABUNDANT :
-					rf > foodThresholds.COMMON ? WorldConstants.resourcePrevalence.COMMON :
-					rf > foodThresholds.DEFAULT ? WorldConstants.resourcePrevalence.DEFAULT : 0;
-			sca.water =
-					rw > waterThresholds.ABUNDANT ? WorldConstants.resourcePrevalence.ABUNDANT :
-					rw > waterThresholds.COMMON ? WorldConstants.resourcePrevalence.COMMON :
-					rw > waterThresholds.DEFAULT ? WorldConstants.resourcePrevalence.DEFAULT : 0;
+
+			let setScaResource = function (name, s, modifier1, modifier2) {
+				if (name == resourceNames.fuel && campOrdinal < 3) return;
+				if (name == resourceNames.medicine && campOrdinal < 4) return;
+				if (name == resourceNames.tools && l <= 13) return;
+
+				let isSupplies = name == resourceNames.food || name == resourceNames.water;
+
+				let rawValue = WorldCreatorRandom.random(seed + s);
+				let value = rawValue;
+				if (isDeadEnd && isSupplies) value += 0.1;
+				if (sectorVO.isPassageDown || sectorVO.isPassageUp) value -= 0.1;
+				if (sectorVO.activity > 7) value -= 0.1;
+				if (sectorVO.activity < 3) value += 0.1;
+				if (modifier1) value += modifier1;
+				if (modifier2) value += modifier2;
+				value = MathUtils.clamp(value, 0, 1);
+
+				let t = thresholds[name];
+
+				if (name == resourceNames.metal) log.i(Math.round(rawValue*100)/100 + " > " + Math.round(value*100)/100 + " / " + t.DEFAULT);
+				
+				let prevalence = 0;
+				if (value > t.ABUNDANT) prevalence = WorldConstants.resourcePrevalence.ABUNDANT;
+				else if (value > t.COMMON) prevalence = WorldConstants.resourcePrevalence.COMMON;
+				else if (value > t.DEFAULT) prevalence = WorldConstants.resourcePrevalence.DEFAULT;
+				else if (value > t.RARE) prevalence = WorldConstants.resourcePrevalence.RARE;
+
+				if (prevalence > 0) {
+					sca.setResource(name, prevalence);
+				}
+			}
+			
+			setScaResource(resourceNames.metal, x + y, MathUtils.map(sectorVO.wealth, 0, 3, 0.1, -0.1), MathUtils.map(sectorVO.wear, 0, 10, -0.1, 0.1));
+			setScaResource(resourceNames.food, x - y, sectorVO.sunlit ? -0.2 : 0);
+			setScaResource(resourceNames.water, y * 2 - x);
+			setScaResource(resourceNames.rope, l + x * 2 + y);
+			setScaResource(resourceNames.herbs, x + y * 2);
+			setScaResource(resourceNames.fuel, l - x + y);
+			setScaResource(resourceNames.medicine, l + x + y);
+			setScaResource(resourceNames.tools, l * 2 + x - y);
 			
 			// collectable resources (saved to template)
-			var col = new ResourcesVO();
-			var sectorCentralness = (10 - (Math.abs(x) / 10) + 10 - (Math.abs(y) / 10)) / 2;
-			var s11 = seed + (x + 1453) * 3 + (y * 4155) / 71 + sectorVO.wear * 35;
-			var s12 = (x % 2 + 1) * 449 + (x + 11) * 521 + (y + 50) * 121 + 2 * Math.abs(x) * Math.abs(y) + sectorCentralness * 541;
-			var r12 = WorldCreatorRandom.random(s12);
-			var sectorNatureFactor = (WorldCreatorRandom.random(s11) * (sectorVO.wear)) / 10;
-			var sectorWaterFactor = (WorldCreatorRandom.random(seed / Math.max(Math.abs(x), 2) + (y + 102214)) * (sectorCentralness + 10)) / 25;
+			let col = new ResourcesVO();
+			let sectorCentralness = (10 - (Math.abs(x) / 10) + 10 - (Math.abs(y) / 10)) / 2;
+			let sectorNatureFactor = MathUtils.map(sectorVO.wear - sectorVO.activity, -10, 10, 0, 1);
+			let sectorWaterFactor = (WorldCreatorRandom.random(seed / Math.max(Math.abs(x), 2) + (y + 102214)) * (sectorCentralness + 10)) / 25;
+
 			switch (sectorType) {
 				case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
-					col.food = sectorNatureFactor > 0.55 || r12 > 0.7 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
-					col.water = sectorWaterFactor > 0.75 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
+					col.food = sectorNatureFactor > 0.92 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
+					col.water = sectorWaterFactor > 0.8 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
 					break;
 				case SectorConstants.SECTOR_TYPE_COMMERCIAL:
 				case SectorConstants.SECTOR_TYPE_PUBLIC:
-					col.food = sectorNatureFactor > 0.75 || r12 > 0.8 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
-					col.water = sectorWaterFactor > 0.7 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
+					col.food = sectorNatureFactor > 0.9 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
+					col.water = sectorWaterFactor > 0.9 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
 					break;
 				case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
 				case SectorConstants.SECTOR_TYPE_MAINTENANCE:
-					col.food = sectorNatureFactor > 0.85 || r12 > 0.9 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
-					col.water = sectorWaterFactor > 0.95 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
-					break;
-				case SectorConstants.SECTOR_TYPE_SLUM:
-					col.food = sectorNatureFactor > 0.5 || r12 > 0.6 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
+					col.food = sectorNatureFactor > 0.95 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
 					col.water = sectorWaterFactor > 0.9 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
 					break;
+				case SectorConstants.SECTOR_TYPE_SLUM:
+					col.food = sectorNatureFactor > 0.8 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
+					break;
+			}
+
+			// less sitting and waiting for collectors if sectors with collectable food also have some scavengeable
+			if (col.food > 0 && sca.food && WorldCreatorRandom.randomBool(x * y)) {
+				sca.food = Math.max(sca.food, WorldConstants.resourcePrevalence.RARE);
 			}
 			
 			// define springs (saved to template)
@@ -1188,6 +1371,12 @@ define([
 			
 			if (sectorVO.hazards.hasHazards()) {
 				sca.water = 0;
+			}
+
+			// adjustments to add variety
+
+			if (sectorVO.buildingDensity < 2) {
+				sca.metal = 0;
 			}
 			
 			// adjustments for camp positions
@@ -1237,6 +1426,12 @@ define([
 						sca.food = Math.max(sca.food, WorldConstants.resourcePrevalence.COMMON);
 					}
 				}
+				if (sectorVO.requiredResources.getResource("rope") > 0) {
+					sca.rope = Math.max(sca.rope, WorldConstants.resourcePrevalence.COMMON);
+				}
+				if (sectorVO.requiredResources.getResource("metal") > 0) {
+					sca.metal = Math.max(sca.metal, WorldConstants.resourcePrevalence.ABUNDANT);
+				}
 			}
 			
 			sectorVO.resourcesScavengable = sca;
@@ -1258,7 +1453,7 @@ define([
 			var addItemLocation = function (itemID, stage, reason) {
 				let s = 3223 + (itemID.length + 3) * 88 + levelVO.level * 208 + (i + 24) * 619;
 				let r = WorldCreatorRandom.random(s);
-				let options = { requireCentral: false, excludingFeature: [ "isCamp", "workshopResource" ], excludedZones: excludedZones[stage], filter: sectorVO => sectorVO.itemsScavengeable.length == 0 };
+				let options = { excludingFeature: [ "isCamp", "workshopResource" ], excludedZones: excludedZones[stage], filter: sectorVO => sectorVO.itemsScavengeable.length == 0 };
 				let sector = WorldCreatorRandom.randomSectors(s, worldVO, levelVO, 1, 2, options)[0];
 				if (!sector) return;
 				sector.itemsScavengeable.push(itemID);
@@ -1344,7 +1539,7 @@ define([
 			let maxLength = WorldCreatorConstants.getMaxPathLength(campOrdinal, pathType);
 			pathConstraints.push(new PathConstraintVO(startPos, maxLength, pathType));
 			
-			let options = { requireCentral: false, excludingFeature: excludedFeatures, pathConstraints: pathConstraints, excludedZones: excludedZones };
+			let options = { excludingFeature: excludedFeatures, pathConstraints: pathConstraints, excludedZones: excludedZones };
 			let count = levelVO.numInvestigateSectors;
 			let sectors = WorldCreatorRandom.randomSectorsScored(seed, worldVO, levelVO, count, count + 1, options, getInvestigateSectorScore);
 			WorldCreatorLogger.i("add investigate sectors on level " + l + ": " + sectors.length);
@@ -1440,7 +1635,7 @@ define([
 					[ WorldConstants.ZONE_POI_2, WorldConstants.ZONE_CAMP_TO_PASSAGE, WorldConstants.ZONE_EXTRA_CAMPABLE ] :
 					[ WorldConstants.ZONE_ENTRANCE, WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_POI_1, WorldConstants.ZONE_EXTRA_CAMPABLE ];
 				
-				let options = { requireCentral: false, excludingFeature: excludedFeatures, pathConstraints: pathConstraints, excludedZones: excludedZones, numDuplicates: 2, filter: SectorGeneratorHelper.isValidSectorForLocale };
+				let options = { excludingFeature: excludedFeatures, pathConstraints: pathConstraints, excludedZones: excludedZones, numDuplicates: 2, filter: SectorGeneratorHelper.isValidSectorForLocale };
 				let l = levelVO.level;
 				let sseed = Math.abs(seed - (isEarly ? 5555 : 0) + (l + 50) * 2);
 
@@ -1881,6 +2076,7 @@ define([
 				|| sectorVO.zone == WorldConstants.ZONE_PASSAGE_TO_PASSAGE
 				|| sectorVO.zone == WorldConstants.ZONE_POI_1
 				|| sectorVO.zone == WorldConstants.ZONE_POI_2
+				|| sectorVO.zone == WorldConstants.ZONE_EXTRA_UNCAMPABLE
 				|| sectorVO.zone == WorldConstants.ZONE_CAMP_TO_PASSAGE;
 			return isPreferredZone && sectorVO.hazards.radiation <= 0;
 		},

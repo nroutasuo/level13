@@ -329,11 +329,20 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 		
 		getEntrancePassagePosition: function () {
 			if (this.levelOrdinal == 1) return null;
-			var isGoingDown = this.level <= 13;
+			let isGoingDown = this.level <= 13;
 			if (isGoingDown) {
 				return this.passageUpPosition;
 			} else {
 				return this.passageDownPosition;
+			}
+		},
+
+		getExitPassagePosition: function () {
+			let isGoingDown = this.level <= 13;
+			if (isGoingDown) {
+				return this.passageDownPosition;
+			} else {
+				return this.passageUpPosition;
 			}
 		},
 		

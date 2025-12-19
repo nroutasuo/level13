@@ -11,7 +11,7 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			this.activity = 0; // 0-10
 			this.buildingDensity = 0; // 0-10
 			this.criticalPathTypes = [];
-			this.damage = 0;
+			this.damage = 0; // 0-10
 			this.examineSpots = [];
 			this.graffiti = 0;
 			this.hasBuildableWorkshop = false;
