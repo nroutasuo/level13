@@ -88,24 +88,18 @@ define([
 			WorldCreatorLogger.i("Step 1: World skeleton", this.context);
 
 			WorldSkeletonGenerator.generate(seed, worldVO, worldTemplateVO);
-
-			WorldCreatorDebug.printWorldTemplate(worldVO);
 		},
 
 		generateLevelSkeletons: function (seed, worldVO, worldTemplateVO) {
 			WorldCreatorLogger.i("Step 2: Level skeletons", this.context);
 
 			LevelSkeletonGenerator.generate(seed, worldVO, worldTemplateVO);
-
-			WorldCreatorDebug.printLevelTemplates(worldVO);
 		},
 
 		generateLevelStructure: function (seed, worldVO, worldTemplateVO, levels) {
 			WorldCreatorLogger.i("Step 3: Level structure", this.context);
 
 			LevelStructureGenerator.generate(seed, worldVO, worldTemplateVO, levels);
-
-			WorldCreatorDebug.printLevelStructure(worldVO);
 		},
 
 		generateLevelFeatures: function (seed, worldVO, worldTemplateVO, levels) {

@@ -89,8 +89,8 @@ define([
 			var direction = PositionConstants.getDirectionFrom(sectorVO.position, neighbourVO.position);
 			var neighbourDirection = PositionConstants.getDirectionFrom(neighbourVO.position, sectorVO.position);
 
-			if (sectorVO.position.sectorX == -8 && sectorVO.position.sectorY == -2) debugger
-			if (neighbourVO.position.sectorX == -8 && neighbourVO.position.sectorY == -2) debugger
+			// if (sectorVO.position.sectorX == 6 && sectorVO.position.sectorY == -10) debugger
+			// if (neighbourVO.position.sectorX == 6 && neighbourVO.position.sectorY == -10) debugger
 
 			if (sectorVO.movementBlockers[direction] || neighbourVO.movementBlockers[neighbourDirection]) {
 				var existing = sectorVO.movementBlockers[direction] || neighbourVO.movementBlockers[neighbourDirection];
