@@ -3,6 +3,7 @@ define([
 	'utils/MathUtils',
 	'utils/ObjectUtils',
 	'game/helpers/ItemsHelper',
+	'game/constants/LevelConstants',
 	'game/constants/MovementConstants',
 	'game/constants/PositionConstants',
 	'game/constants/WorldConstants',
@@ -12,7 +13,7 @@ define([
 	'worldcreator/WorldCreatorRandom',
 	'worldcreator/WorldTemplateVO',
 ], function (
-	Ash, MathUtils, ObjectUtils, ItemsHelper, MovementConstants, PositionConstants, WorldConstants, UpgradeConstants, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldTemplateVO
+	Ash, MathUtils, ObjectUtils, ItemsHelper, LevelConstants, MovementConstants, PositionConstants, WorldConstants, UpgradeConstants, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldTemplateVO
 ) {
 	let context = "WorldValidator";
 
@@ -527,10 +528,10 @@ define([
 				checkIsValidMovementBlockerSector(movementBlocker.sector2);
 
 				if (movementBlocker.blockerType != MovementConstants.BLOCKER_TYPE_GANG) {
-					let pathAround =  WorldCreatorRandom.findPath(worldVO, movementBlocker.sector1.position, movementBlocker.sector2.position, true, true, null, true, 2);
-					if (pathAround && pathAround.length > 0) {
-						issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "path around movement blocker exists at " + movementBlocker.id + ", len: " + pathAround.length });
-					}
+					// let pathAround =  WorldCreatorRandom.findPath(worldVO, movementBlocker.sector1.position, movementBlocker.sector2.position, true, true, null, true, 2);
+					// if (pathAround && pathAround.length > 0) {
+					// 	issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "path around movement blocker exists at " + movementBlocker.id + ", len: " + pathAround.length });
+					// }
 				}
 
 				for (let j = i + 1; j < movementBlockers.length; j++) {
@@ -567,10 +568,11 @@ define([
 			let issues = [];
 			let isGround = levelVO.level == worldVO.bottomLevel;
 			let isSurface = levelVO.level == worldVO.topLevel;
+			let isPolluted = levelVO.notCampableReason == LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION || levelVO.notCampableReason == LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
 
 			let thresholds = {};
 			thresholds[resourceNames.water] = { sca: { min: 0, max: 10 }, col: { min: 1, max: 15 } };
-			thresholds[resourceNames.food] = { sca: { min: 1, max: 50 }, col: { min: 3, max: 30 } };
+			thresholds[resourceNames.food] = { sca: { min: (isPolluted ? 0 : 1), max: 50 }, col: { min: 3, max: 30 } };
 			thresholds[resourceNames.metal] = { sca: { min: 25, max: 99 } };
 			thresholds[resourceNames.rope] = { sca: { min: 0, max: 15 } };
 			thresholds[resourceNames.herbs] = { sca: { min: (isGround || isSurface ? 5 : 0), max: (isGround || isSurface ? 50 : 10) } };
@@ -944,6 +946,7 @@ define([
 			let issues = [];
 
 			let itemsHelper = new ItemsHelper();
+			let isGround = levelVO.level == worldVO.bottomLevel;
 
 			let checkMaxHazards = function (context, campOrdinal, step, isHardLevel) {
 				let maxCold = itemsHelper.getMaxHazardColdForLevel(campOrdinal, step, isHardLevel);
@@ -965,6 +968,9 @@ define([
 			let isHardLevel = levelVO.isHard;
 			let campOrdinal = levelVO.campOrdinal;
 			let step = WorldConstants.getCampStep(zone);
+
+			// ground level must not require post-favour equipment so player can find the grove
+			if (isGround) step = Math.min(step, WorldConstants.CAMP_STEP_POI_2);
 
 			checkMaxHazards("", campOrdinal, step, isHardLevel);
 

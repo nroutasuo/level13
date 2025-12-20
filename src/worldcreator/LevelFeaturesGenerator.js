@@ -89,6 +89,8 @@ define([
 			let passage1 = isGoingDown ? passageUp : passageDown;
 			let passage2 = isGoingDown ? passageDown : passageUp;
 
+			if (!passage1) return;
+
 			WorldCreatorHelper.copyValueForAllSectors(levelTemplateVO, levelVO, "zone");
 			
 			let setSectorZone = function (sector, zone, force) {
@@ -191,15 +193,13 @@ define([
 					let pathPassageToPassage = WorldCreatorRandom.findPath(worldVO, passage1.position, passage2.position, false, true);
 					setPathZone(pathPassageToPassage, WorldConstants.ZONE_PASSAGE_TO_PASSAGE, 1, 3, true);
 				}
-				// - ground level: all ZONE_POI_2
-				if (level == bottomLevel) {
-					// TODO should be just the path from passage1 to grove instead but currently we don't know the grove position at this point
-					setAreaZone(passage1, WorldConstants.ZONE_POI_2, 50, true);
-				}
-				// - rest is ZONE_EXTRA_UNCAMPABLE
+				// - rest is ZONE_EXTRA_UNCAMPABLE 
+				// (except Ground which is a bit special because it is not the last level of the camp ordinal and must not yet require Hope upgrades)
+				let defaultZone = WorldConstants.ZONE_EXTRA_UNCAMPABLE;
+				if (level == bottomLevel) defaultZone = WorldConstants.ZONE_POI_2;
 				for (let i = 0; i < levelVO.sectors.length; i++) {
 					let sector = levelVO.sectors[i];
-					setSectorZone(sector, WorldConstants.ZONE_EXTRA_UNCAMPABLE, true);
+					setSectorZone(sector, defaultZone, true);
 				}
 			}
 		},
