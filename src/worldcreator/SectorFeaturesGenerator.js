@@ -1220,7 +1220,7 @@ define([
 					thresholds.metal.ABUNDANT = 1;
 					thresholds.food.COMMON -= 0.1;
 					thresholds.water.RARE -= 0.02;
-					thresholds.rope = { "DEFAULT": 0.98, "RARE": 0.94 };
+					thresholds.rope = { "DEFAULT": 0.98, "RARE": 0.95 };
 					thresholds.medicine = { "RARE": 0.99 };
 					break;
 				case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
@@ -1272,7 +1272,7 @@ define([
 				let value = rawValue;
 				if (isDeadEnd && isSupplies) value += 0.1;
 				if (sectorVO.isPassageDown || sectorVO.isPassageUp) value -= 0.1;
-				if (sectorVO.activity > 7) value -= 0.1;
+				if (sectorVO.activity > 5) value -= MathUtils.map(sectorVO.activity, 5, 10, -0.05, -0.5);
 				if (sectorVO.activity < 3) value += 0.1;
 				if (modifier1) value += modifier1;
 				if (modifier2) value += modifier2;
@@ -1326,11 +1326,6 @@ define([
 				case SectorConstants.SECTOR_TYPE_SLUM:
 					col.food = sectorNatureFactor > 0.8 ? WorldConstants.resourcePrevalence.DEFAULT : 0;
 					break;
-			}
-
-			// less sitting and waiting for collectors if sectors with collectable food also have some scavengeable
-			if (col.food > 0 && sca.food && WorldCreatorRandom.randomBool(x * y)) {
-				sca.food = Math.max(sca.food, WorldConstants.resourcePrevalence.RARE);
 			}
 			
 			// define springs (saved to template)
@@ -1432,6 +1427,11 @@ define([
 				if (sectorVO.requiredResources.getResource("metal") > 0) {
 					sca.metal = Math.max(sca.metal, WorldConstants.resourcePrevalence.ABUNDANT);
 				}
+			}
+
+			// less sitting and waiting for collectors if sectors with collectable food also have some scavengeable
+			if (col.food > 0 && WorldCreatorRandom.randomBool(x, 0.75)) {
+				sca.food = Math.max(sca.food, WorldConstants.resourcePrevalence.RARE);
 			}
 			
 			sectorVO.resourcesScavengable = sca;
