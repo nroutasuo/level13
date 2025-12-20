@@ -2573,12 +2573,12 @@ define([
 			let endPosData = getPointData(validSectors, endPos, startPos, allowDiagonals, dist);
 
 			// if it's enough to just create end/start pos do that and try again
-			if (!startPosExists && PositionConstants.getDistanceTo(startPos, startPosData.closestExisting.position) < 2) {
+			if (!startPosExists && startPosData.closestExisting && PositionConstants.getDistanceTo(startPos, startPosData.closestExisting.position) < 2) {
 				this.createAddSector(result.path, levelVO, startPos, options);
 				return this.createPathBetween(worldVO, levelVO, startPos, endPos, maxlen, options, connectionPointType);
 			}
 
-			if (!endPosExists && PositionConstants.getDistanceTo(endPos, endPosData.closestExisting.position) < 2) {
+			if (!endPosExists && endPosData.closestExisting && PositionConstants.getDistanceTo(endPos, endPosData.closestExisting.position) < 2) {
 				this.createAddSector(result.path, levelVO, endPos, options);
 				return this.createPathBetween(worldVO, levelVO, startPos, endPos, maxlen, options, connectionPointType);
 			}
