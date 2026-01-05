@@ -2,7 +2,7 @@ define(function (require) {
 
     var EnemyCreator = require("worldcreator/EnemyCreator");
     var EnemyConstants = require("game/constants/EnemyConstants");
-    var enemyCreator = new EnemyCreator();
+    var enemyCreator = new EnemyCreator({});
 
     QUnit.module("example/model/FightBalancing"); 
 

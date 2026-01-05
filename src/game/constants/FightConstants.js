@@ -1,15 +1,12 @@
-define(['ash',
-	'game/GameGlobals',
+define([
 	'game/constants/ItemConstants',
 	'game/constants/PerkConstants',
 	'game/constants/LocaleConstants',
 	'game/constants/PositionConstants',
 	'game/constants/UpgradeConstants',
-	'game/constants/WorldConstants',
-	'game/vos/ResourcesVO'],
-function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, PositionConstants, UpgradeConstants, WorldConstants, ResourcesVO) {
+], function (ItemConstants, PerkConstants, LocaleConstants, PositionConstants, UpgradeConstants) {
 
-	var FightConstants = {
+	let FightConstants = {
 	
 		FIGHT_PLAYER_BASE_ATT: 3,
 		FIGHT_PLAYER_BASE_DEF: 0,

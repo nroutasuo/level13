@@ -38,7 +38,7 @@ define([
 			this.engine = engine;
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
-			this.enemyCreator = new EnemyCreator();
+			this.enemyCreator = new EnemyCreator(GameGlobals.upgradeEffectsHelper.getProgressionConfig());
 			this.enemyCreator.createEnemies();
 		},
 

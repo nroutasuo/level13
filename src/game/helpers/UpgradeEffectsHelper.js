@@ -24,6 +24,23 @@ define([
 			this.improvementsByOccurrence[OccurrenceConstants.campOccurrenceTypes.refugees] = improvementNames.inn;
 			this.improvementsByOccurrence[OccurrenceConstants.campOccurrenceTypes.visitor] = improvementNames.inn;
 		},
+
+		getProgressionConfig: function () {
+			let config = {};
+
+			config.unlockCampOrdinals = {};
+			config.unlockCampOrdinals.actionClearWasteToxic = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade("unlock_action_clear_waste_t");
+			config.unlockCampOrdinals.actionClearWasteRadioactive = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade("unlock_action_clear_waste_r");
+			config.unlockCampOrdinals.passageElevator = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade("unlock_building_passage_elevator");
+			config.unlockCampOrdinals.passageHole = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade("unlock_building_passage_hole");
+			config.unlockCampOrdinals.inn = GameGlobals.upgradeEffectsHelper.getCampOrdinalToUnlockBuilding(improvementNames.inn);
+
+			config.unlockCampOrdinalAndSteps = {};
+			config.unlockCampOrdinalAndSteps.staminaPerk1 = GameGlobals.upgradeEffectsHelper.getExpectedCampAndStepForUpgrade("improve_building_hospital");
+			config.unlockCampOrdinalAndSteps.staminaPerk2 = GameGlobals.upgradeEffectsHelper.getExpectedCampAndStepForUpgrade("improve_building_hospital_3");
+
+			return config;
+		},
 		
 		getEffectDescription: function (upgradeID, showMultiline) {
 			let effects = "";

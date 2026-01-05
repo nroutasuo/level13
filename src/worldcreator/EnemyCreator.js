@@ -7,7 +7,6 @@ define([
 	'game/constants/PerkConstants',
 	'game/constants/ItemConstants',
 	'game/constants/FightConstants',
-	'game/constants/UpgradeConstants',
 	'game/constants/WorldConstants',
 	'game/components/player/ItemsComponent',
 	'game/components/player/ExplorersComponent',
@@ -22,7 +21,6 @@ define([
 	PerkConstants,
 	ItemConstants,
 	FightConstants,
-	UpgradeConstants,
 	WorldConstants,
 	ItemsComponent,
 	ExplorersComponent,
@@ -31,7 +29,9 @@ define([
 ) {
 	let EnemyCreator = Ash.Class.extend({
 		
-		constructor: function () {},
+		constructor: function (config) {
+			this.progressionConfig = config;
+		},
 		
 		createEnemies: function () {
 			EnemyConstants.enemyDefinitions = [];
@@ -335,10 +335,12 @@ define([
 			return (campOrdinal - 1)*3 + step;
 		},
 		
-		getTypicalItems: function (campOrdinal, step, isHardLevel) {
-			var typicalItems = new ItemsComponent();
-			var typicalWeapon = GameGlobals.itemsHelper.getDefaultWeapon(campOrdinal, step);
-			var typicalClothing = GameGlobals.itemsHelper.getDefaultClothing(campOrdinal, step, ItemConstants.itemBonusTypes.fight_def, isHardLevel);
+		getTypicalItems: function (campOrdinal, step) {
+			let typicalItems = new ItemsComponent();
+
+			// TODO get rid of GameGlobals in EnemyCreator
+			let typicalWeapon = GameGlobals.itemsHelper.getDefaultWeapon(campOrdinal, step);
+			let typicalClothing = GameGlobals.itemsHelper.getDefaultClothing(campOrdinal, step, ItemConstants.itemBonusTypes.fight_def, false);
 
 			if (typicalWeapon) {
 				typicalItems.addItem(typicalWeapon, false);
@@ -351,6 +353,7 @@ define([
 			}
 			
 			typicalItems.autoEquipAll();
+
 			return typicalItems;
 		},
 		
@@ -360,7 +363,7 @@ define([
 				return typicalExplorers;
 			}
 			
-			if (campOrdinal <= GameGlobals.upgradeEffectsHelper.getCampOrdinalToUnlockBuilding(improvementNames.inn)) {
+			if (campOrdinal <= this.progressionConfig.unlockCampOrdinals.inn) {
 				campOrdinal = ExplorerConstants.FIRST_EXPLORER_CAMP_ORDINAL;
 				step = WorldConstants.CAMP_STEP_POI_2;
 			}
@@ -373,11 +376,11 @@ define([
 			return typicalExplorers;
 		},
 		
-		getTypicalStamina: function (campOrdinal, step, isHardLevel) {
-			var healthyPerkFactor = 1;
+		getTypicalStamina: function (campOrdinal, step) {
+			let healthyPerkFactor = 1;
 			
-			let campAndStepPerk1 = GameGlobals.upgradeEffectsHelper.getExpectedCampAndStepForUpgrade("improve_building_hospital",);
-			let campAndStepPerk2 = GameGlobals.upgradeEffectsHelper.getExpectedCampAndStepForUpgrade("improve_building_hospital_3");
+			let campAndStepPerk1 = this.progressionConfig.unlockCampOrdinalAndSteps.staminaPerk1;
+			let campAndStepPerk2 = this.progressionConfig.unlockCampOrdinalAndSteps.staminaPerk2;
 
 			if (WorldConstants.isHigherOrEqualCampOrdinalAndStep(campOrdinal, step, campAndStepPerk2.campOrdinal, campAndStepPerk2.step)) {
 				healthyPerkFactor = PerkConstants.getPerk(PerkConstants.perkIds.healthBonus3).effect;
@@ -391,7 +394,7 @@ define([
 			
 			let typicalHealth = Math.round(100 * healthyPerkFactor * injuryFactor);
 				
-			let typicalItems = this.getTypicalItems(campOrdinal, step, isHardLevel);
+			let typicalItems = this.getTypicalItems(campOrdinal, step);
 				
 			var typicalStamina = {};
 			typicalStamina.health = typicalHealth;

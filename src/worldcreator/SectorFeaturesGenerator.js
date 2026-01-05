@@ -2,7 +2,6 @@
 define([
 	'ash',
 	'utils/MathUtils',
-	'game/GameGlobals',
 	'game/constants/ExplorerConstants',
 	'game/constants/ItemConstants',
 	'game/constants/LevelConstants',
@@ -27,7 +26,7 @@ define([
 	'worldcreator/SectorGeneratorHelper',
 	'worldcreator/CriticalPathVO',
 ], function (
-	Ash, MathUtils, GameGlobals,
+	Ash, MathUtils,
 	ExplorerConstants, ItemConstants, LevelConstants, MovementConstants, PositionConstants, SectorConstants, StoryConstants, TradeConstants, TribeConstants, UpgradeConstants, WorldConstants,
 	LocaleVO, PathConstraintVO, PositionVO, ResourcesVO, StashVO,
 	WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug, WorldCreatorLogger, SectorGeneratorHelper, CriticalPathVO
@@ -1498,7 +1497,7 @@ define([
 				for (let i = 0; i < numRandomIngredients; i++) {
 					var s1 = 4200 + seed % 3000 + (levelVO.level + 5) * 217 + i * 991;
 					var r1 = WorldCreatorRandom.random(s1);
-					var ingredient = GameGlobals.itemsHelper.getUsableIngredient(null, r1);
+					var ingredient = this.itemsHelper.getUsableIngredient(null, r1);
 					addItemLocation(ingredient.id, stageVO.stage, "random");
 				}
 			}

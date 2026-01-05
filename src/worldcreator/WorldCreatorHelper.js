@@ -1,7 +1,6 @@
 // Helper functions for the WorldCreator - stuff that may be useful outside of world creation as well
 define([
 	'ash',
-	'game/GameGlobals',
 	'game/vos/ResourcesVO',
 	'worldcreator/WorldCreatorRandom',
 	'worldcreator/WorldCreatorConstants',
@@ -9,7 +8,7 @@ define([
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
 	'game/constants/WorldConstants',
-], function (Ash, GameGlobals, ResourcesVO, WorldCreatorRandom, WorldCreatorConstants, LevelConstants, PositionConstants, SectorConstants, WorldConstants) {
+], function (Ash, ResourcesVO, WorldCreatorRandom, WorldCreatorConstants, LevelConstants, PositionConstants, SectorConstants, WorldConstants) {
 
 	let WorldCreatorHelper = {
 		
@@ -536,12 +535,12 @@ define([
 			let options = [];
 			let levelOrdinal = this.getLevelOrdinal(seed, level);
 			
-			let unlockToxicWasteCampOrdinal = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade("unlock_action_clear_waste_t");
+			let unlockToxicWasteCampOrdinal = WorldCreatorHelper.progressionConfig.unlockCampOrdinals.actionClearWasteToxic;
 			if (levelOrdinal == this.getNextUncampableLevelOrdinalForCampOrdinal(seed, unlockToxicWasteCampOrdinal)) {
 				return LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
 			}
 				
-			let unlockRadioactiveWasteCampOrdinal = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade("unlock_action_clear_waste_r");
+			let unlockRadioactiveWasteCampOrdinal = WorldCreatorHelper.progressionConfig.unlockCampOrdinals.actionClearWasteRadioactive;
 			if (levelOrdinal == this.getNextUncampableLevelOrdinalForCampOrdinal(seed, unlockRadioactiveWasteCampOrdinal)) {
 				return LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
 			}

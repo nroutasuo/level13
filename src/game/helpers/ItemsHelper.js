@@ -29,7 +29,7 @@ define([
 			
 			// craftable items: by craftable camp ordinal
 			if (item.craftable && includeCraftable) {
-				var req = GameGlobals.itemsHelper.getRequiredCampAndStepToCraft(item);
+				let req = this.getRequiredCampAndStepToCraft(item);
 				result = (req.campOrdinal < adjustedCampOrdinal || (req.campOrdinal == adjustedCampOrdinal && req.step <= adjustedStep));
 			}
 
@@ -336,7 +336,6 @@ define([
 			}
 			var foundMatching = false;
 			for (let i = 0; i < craftingRecipes.length; i++) {
-				var craftingResult = craftableItems[i];
 				var recipe = craftingRecipes[i].costs;
 				var matches = recipe && recipe["item_" + item.id];
 				if (!matches) continue;

@@ -1,11 +1,8 @@
 // generates an overall stucture for the world, independent of specific levels or sectors, first step in world gen
 define([
-	'ash',
-	'game/GameGlobals',
 	'worldcreator/WorldCreatorConstants',
 	'worldcreator/WorldCreatorHelper',
 	'worldcreator/WorldCreatorRandom',
-	'worldcreator/WorldCreatorLogger',
 	'worldcreator/WorldFeatureVO',
 	'worldcreator/StageVO',
 	'worldcreator/DistrictVO',
@@ -15,14 +12,15 @@ define([
 	'game/constants/PositionConstants',
 	'game/constants/WorldConstants',
 ], function (
-	Ash, GameGlobals, 
-	WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorLogger, 
+	WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, 
 	WorldFeatureVO, StageVO, DistrictVO, PositionVO, 
 	MovementConstants, SectorConstants, PositionConstants, WorldConstants) {
 	
 	let WorldSkeletonGenerator = {
 
-		generate: function (seed, worldVO, worldTemplateVO) {
+		generate: function (seed, worldVO, worldTemplateVO, progressionConfig) {
+			this.progressionConfig = progressionConfig;
+
 			worldVO.topLevel = this.getTopLevel(seed, worldTemplateVO);
 			worldVO.bottomLevel = this.getBottomLevel(seed, worldTemplateVO);
 
@@ -348,9 +346,8 @@ define([
 			let campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, startLevel);
 			let isCampable = WorldCreatorHelper.isCampableLevel(seed, startLevel);
 
-			// TODO get rid of game globals here
-			let unlockElevatorOrdinal = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade("unlock_building_passage_elevator");
-			let unlockHoleOrdinal = GameGlobals.upgradeEffectsHelper.getMinimumCampOrdinalForUpgrade("unlock_building_passage_hole");
+			let unlockElevatorOrdinal = WorldCreatorHelper.progressionConfig.unlockCampOrdinals.passageElevator;
+			let unlockHoleOrdinal = WorldCreatorHelper.progressionConfig.unlockCampOrdinals.passageHole;
 
 			let guaranteedReadyPassageLevel = this.getGuaranteedReadyPassageLevel(seed, worldVO);
 

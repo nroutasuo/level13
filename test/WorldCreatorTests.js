@@ -2,11 +2,12 @@ define([
 	'test/TestUtils',
 	'worldcreator/WorldCreator', 
 	'game/constants/WorldConstants', 
+	'worldcreator/WorldCreatorDebug', 
 	'worldcreator/WorldCreatorRandom', 
 	'worldcreator/WorldValidator',
 	'worldcreator/WorldTemplateVO',
 	'game/helpers/ItemsHelper',
-], function (TestUtils, WorldCreator, WorldConstants, WorldCreatorRandom, WorldValidator, WorldTemplateVO, ItemsHelper) {
+], function (TestUtils, WorldCreator, WorldConstants, WorldCreatorDebug, WorldCreatorRandom, WorldValidator, WorldTemplateVO, ItemsHelper) {
 
 	let worldSeeds = [ 24, 7534, WorldCreatorRandom.getNewSeed() ];
 
@@ -15,6 +16,8 @@ define([
 		for (let l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) levels.push(l);
 		return levels;
 	}
+
+	let defaultProgressionConfig = WorldCreatorDebug.getTestProgressionConfig();
 
 	QUnit.module("world/determinism", function (hooks) {
 
@@ -71,71 +74,71 @@ define([
 		});
 
 		QUnit.test.each("two empty worlds from same seed are equal", worldSeeds, async function (assert, seed) {
-			let worldVO1 = await WorldCreator.createWorld(seed);
-			let worldVO2 = await WorldCreator.createWorld(seed);
+			let worldVO1 = await WorldCreator.createWorld(seed, null, defaultProgressionConfig);
+			let worldVO2 = await WorldCreator.createWorld(seed, null, defaultProgressionConfig);
 			assert.propEqual(worldVO1, worldVO2);
 		});
 
 		QUnit.test.each("world created from template equals world created from seed", worldSeeds, async function (assert, seed) {
-			let worldVO1 = await WorldCreator.createWorld(seed);
+			let worldVO1 = await WorldCreator.createWorld(seed, null, defaultProgressionConfig);
 			let worldVO1Template = new WorldTemplateVO(worldVO1);
-			let worldVO2 = await WorldCreator.createWorld(seed, worldVO1Template);
+			let worldVO2 = await WorldCreator.createWorld(seed, worldVO1Template, defaultProgressionConfig);
 			assert.propEqual(worldVO1, worldVO2);
 		});
 
 		QUnit.test.each("two worlds with levels are equal", worldSeeds, async function (assert, seed) {
-			let worldVO1 = await WorldCreator.createWorld(seed);
+			let worldVO1 = await WorldCreator.createWorld(seed, null, defaultProgressionConfig);
 			let levels1 = [];
 			for (let l = worldVO1.topLevel; l >= worldVO1.bottomLevel; l--) levels1.push(l);
-			await WorldCreator.generateLevels(seed, worldVO1, null, levels1, mockItemsHelper);
+			await WorldCreator.generateLevels(seed, worldVO1, null, levels1, mockItemsHelper, defaultProgressionConfig);
 
-			let worldVO2 = await WorldCreator.createWorld(seed);
+			let worldVO2 = await WorldCreator.createWorld(seed, null, defaultProgressionConfig);
 			let levels2 = [];
 			for (let l = worldVO2.topLevel; l >= worldVO2.bottomLevel; l--) levels2.push(l);
-			await WorldCreator.generateLevels(seed, worldVO2, null, levels2, mockItemsHelper);
+			await WorldCreator.generateLevels(seed, worldVO2, null, levels2, mockItemsHelper, defaultProgressionConfig);
 
 			assertWorldVOsEqual(assert, worldVO1, worldVO2);
 		});
 
 		QUnit.test.each("world created from template equals world created from seed with levels", worldSeeds, async function (assert, seed) {
-			let worldVO1 = await WorldCreator.createWorld(seed);
+			let worldVO1 = await WorldCreator.createWorld(seed, null, defaultProgressionConfig);
 			let levels1 = getAllLevels(worldVO1);
-			await WorldCreator.generateLevels(seed, worldVO1, null, levels1, mockItemsHelper);
+			await WorldCreator.generateLevels(seed, worldVO1, null, levels1, mockItemsHelper, defaultProgressionConfig);
 
 			let worldVO1Template = new WorldTemplateVO(worldVO1);
 
-			let worldVO2 = await WorldCreator.createWorld(seed, worldVO1Template);
+			let worldVO2 = await WorldCreator.createWorld(seed, worldVO1Template, defaultProgressionConfig);
 			let levels2 = getAllLevels(worldVO2);
-			await WorldCreator.generateLevels(seed, worldVO2, null, levels2, mockItemsHelper);
+			await WorldCreator.generateLevels(seed, worldVO2, null, levels2, mockItemsHelper, defaultProgressionConfig);
 
 			assertWorldVOsEqual(assert, worldVO1, worldVO2);
 		});
 
 		QUnit.test.each("two worlds equal when levels generated in different order", worldSeeds, async function (assert, seed) {
-			let worldVO1 = await WorldCreator.createWorld(seed);
+			let worldVO1 = await WorldCreator.createWorld(seed, null, defaultProgressionConfig);
 			let levels1 = [];
 			for (let l = 13; l >= worldVO1.bottomLevel; l--) levels1.push(l);
 			levels1.push(14);
-			await WorldCreator.generateLevels(seed, worldVO1, null, levels1, mockItemsHelper);
+			await WorldCreator.generateLevels(seed, worldVO1, null, levels1, mockItemsHelper, defaultProgressionConfig);
 
-			let worldVO2 = await WorldCreator.createWorld(seed);
+			let worldVO2 = await WorldCreator.createWorld(seed, null, defaultProgressionConfig);
 			let levels2 = [];
 			for (let l = 13; l >= worldVO1.bottomLevel; l--) levels2.push(l);
 			levels2.splice(7, 0, 14);
-			await WorldCreator.generateLevels(seed, worldVO2, null, levels2, mockItemsHelper);
+			await WorldCreator.generateLevels(seed, worldVO2, null, levels2, mockItemsHelper, defaultProgressionConfig);
 
 			assertWorldVOsEqual(assert, worldVO1, worldVO2);
 		});
 
 		QUnit.test.each("two worlds equal when levels generated one by one or in one go", worldSeeds, async function (assert, seed) {
-			let worldVO1 = await WorldCreator.createWorld(seed);
+			let worldVO1 = await WorldCreator.createWorld(seed, null, defaultProgressionConfig);
 			let levels = getAllLevels(worldVO1);
-			await WorldCreator.generateLevels(seed, worldVO1, null, levels, mockItemsHelper);
+			await WorldCreator.generateLevels(seed, worldVO1, null, levels, mockItemsHelper, defaultProgressionConfig);
 
-			let worldVO2 = await WorldCreator.createWorld(seed);
+			let worldVO2 = await WorldCreator.createWorld(seed, null, defaultProgressionConfig);
 			for (let l = 0; l < levels.length; l++) {
 				let level = levels[l];
-				await WorldCreator.generateLevels(seed, worldVO2, null, [ level ], mockItemsHelper);
+				await WorldCreator.generateLevels(seed, worldVO2, null, [ level ], mockItemsHelper, defaultProgressionConfig);
 			}
 
 			assertWorldVOsEqual(assert, worldVO1, worldVO2);
@@ -162,15 +165,15 @@ define([
 		});
 
 		QUnit.test.each("world from seed is valid", worldSeeds, async function (assert, seed) {
-			let worldVO = await WorldCreator.createWorld(seed);
+			let worldVO = await WorldCreator.createWorld(seed, null, defaultProgressionConfig);
 			let validationResult = WorldValidator.validateWorld(worldVO);
 			assert.true(validationResult.isValid, WorldValidator.getSummary(validationResult));
 		});
 		
 		QUnit.test.each("levels are valid", worldSeeds, async function (assert, seed) {
-			let worldVO = await WorldCreator.createWorld(seed);
+			let worldVO = await WorldCreator.createWorld(seed, null, defaultProgressionConfig);
 			let levels = getAllLevels(worldVO);
-			await WorldCreator.generateLevels(seed, worldVO, null, levels, itemsHelper);
+			await WorldCreator.generateLevels(seed, worldVO, null, levels, itemsHelper, defaultProgressionConfig);
 			for (let i = 0; i < levels.length; i++) {
 				let level = levels[i];
 				let validationResult = WorldValidator.validateLevel(worldVO, null, worldVO.levels[level]);
@@ -179,9 +182,9 @@ define([
 		});
 		
 		QUnit.test.each("world template vo is valid", worldSeeds, async function (assert, seed) {
-			let worldVO = await WorldCreator.createWorld(seed);
+			let worldVO = await WorldCreator.createWorld(seed, null, defaultProgressionConfig);
 			let levels = getAllLevels(worldVO);
-			await WorldCreator.generateLevels(seed, worldVO, null, levels, itemsHelper);
+			await WorldCreator.generateLevels(seed, worldVO, null, levels, itemsHelper, defaultProgressionConfig);
 			let worldTemplateVO = new WorldTemplateVO(worldVO);
 			let validationResult = WorldValidator.validateResultWorldTemplateVO(worldVO, worldTemplateVO, null);
 			assert.true(validationResult.isValid, WorldValidator.getSummary(validationResult));
@@ -208,14 +211,14 @@ define([
 		});
 
 		QUnit.test.each("world contains version", worldSeeds, async function (assert, seed) {
-			let worldVO = await WorldCreator.createWorld(seed);
+			let worldVO = await WorldCreator.createWorld(seed, null, defaultProgressionConfig);
 			assert.equal(worldVO.version, WorldConstants.version);
 		});
 
 		QUnit.test.each("levels contains version when generated", worldSeeds, async function (assert, seed) {
-			let worldVO = await WorldCreator.createWorld(seed);
+			let worldVO = await WorldCreator.createWorld(seed, null, defaultProgressionConfig);
 			let levels = [ 13, 12, 11, 10 ];
-			await WorldCreator.generateLevels(seed, worldVO, null, levels, mockItemsHelper);
+			await WorldCreator.generateLevels(seed, worldVO, null, levels, mockItemsHelper, defaultProgressionConfig);
 			for (let l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
 				let isGenerated = levels.indexOf(l) >= 0;
 				let levelVO = worldVO.levels[l];
@@ -229,10 +232,10 @@ define([
 
 		QUnit.test.each("world keeps original version from template", worldSeeds, async function (assert, seed) {
 			let version = "0.6.3";
-			let worldVO1 = await WorldCreator.createWorld(seed);
+			let worldVO1 = await WorldCreator.createWorld(seed, null, defaultProgressionConfig);
 			let worldTemplateVO = new WorldTemplateVO(worldVO1);
 			worldTemplateVO.version = version;
-			let worldVO2 = await WorldCreator.createWorld(seed, worldTemplateVO);
+			let worldVO2 = await WorldCreator.createWorld(seed, worldTemplateVO, defaultProgressionConfig);
 			assert.equal(worldVO2.version, version);
 		});
 
@@ -240,15 +243,15 @@ define([
 			let version = "0.6.3";
 			let currentVersion = WorldConstants.version;
 			WorldConstants.version = version;
-			let worldVO1 = await WorldCreator.createWorld(seed);
+			let worldVO1 = await WorldCreator.createWorld(seed, null, defaultProgressionConfig);
 			let levels1 = [ 13, 12, 11, 10 ];
-			await WorldCreator.generateLevels(seed, worldVO1, null, levels1, mockItemsHelper);
+			await WorldCreator.generateLevels(seed, worldVO1, null, levels1, mockItemsHelper, defaultProgressionConfig);
 
 			let worldTemplateVO = new WorldTemplateVO(worldVO1);
 			WorldConstants.version = currentVersion;
-			let worldVO2 = await WorldCreator.createWorld(seed, worldTemplateVO);
+			let worldVO2 = await WorldCreator.createWorld(seed, worldTemplateVO, defaultProgressionConfig);
 			let levels2 = [ 13, 12, 11, 10, 9, 8 ];
-			await WorldCreator.generateLevels(seed, worldVO2, worldTemplateVO, levels2, mockItemsHelper);
+			await WorldCreator.generateLevels(seed, worldVO2, worldTemplateVO, levels2, mockItemsHelper, defaultProgressionConfig);
 			for (let l = worldVO1.topLevel; l >= worldVO1.bottomLevel; l--) {
 				let isGeneratedBefore = levels1.indexOf(l) >= 0;
 				let isGeneratedNow = levels2.indexOf(l) >= 0;
@@ -472,14 +475,14 @@ define([
 			let worldVOs = {};
 			for (let i = 0; i < worldSeeds.length; i++) {
 				let seed = worldSeeds[i];
-				let worldVO = await WorldCreator.createWorld(seed);
+				let worldVO = await WorldCreator.createWorld(seed, null, defaultProgressionConfig);
 				worldVOs[i] = worldVO;
 			}
 
 			let luxuryResources = {};
 			for (let i = 0; i < worldSeeds.length; i++) {
 				let seed = worldSeeds[i];
-				let worldVO = await WorldCreator.createWorld(seed);
+				let worldVO = await WorldCreator.createWorld(seed, null, defaultProgressionConfig);
 				let worldLuxuryResources = [];
 				for (let l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
 					let levelVO = worldVO.levels[l];

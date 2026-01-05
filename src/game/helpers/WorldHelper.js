@@ -153,7 +153,9 @@ define([
 				log.i("generating world, try " + tryNumber + "/" + maxTries, "world");
 				let s = seed + (tryNumber - 1) * 111;
 
-				WorldCreator.createWorld(s, worldTemplateVO, GameGlobals.itemsHelper).then(worldVO => {
+				let progressionConfig = GameGlobals.worldHelper.getWorldProgressionConfig();
+
+				WorldCreator.createWorld(s, worldTemplateVO, GameGlobals.itemsHelper, progressionConfig).then(worldVO => {
 					log.i("validating world (" + GameConstants.getTimeSinceStart() + ")", "start");
 					let validationResult = WorldValidator.validateWorld(worldVO, worldTemplateVO);
 					WorldValidator.logSummary(validationResult);
@@ -173,6 +175,9 @@ define([
 		},
 
 		generateLevels: function (levels, worldTemplateVO) {
+
+			let progessionConfig = this.getWorldProgressionConfig();
+
 			return new Promise((resolve, reject) => {
 				if (!this.isWorldGenerated()) {
 					this.logWorldNotGenerated("generateLevels");
@@ -185,7 +190,7 @@ define([
 
 				this.isBusy = true;
 
-				WorldCreator.generateLevels(this.worldVO.seed, this.worldVO, worldTemplateVO, levels, GameGlobals.itemsHelper)
+				WorldCreator.generateLevels(this.worldVO.seed, this.worldVO, worldTemplateVO, levels, GameGlobals.itemsHelper, progessionConfig)
 				.then(worldVO => {
 					this.validateLevels(levels, worldTemplateVO);
 					resolve(worldVO);
@@ -325,6 +330,10 @@ define([
 			sectorFeatures.examineSpots = sectorVO.examineSpots || [];
 			sectorFeatures.graffiti = sectorVO.graffiti || null;
 			return sectorFeatures;
+		},
+
+		getWorldProgressionConfig: function () {
+			return GameGlobals.upgradeEffectsHelper.getProgressionConfig();
 		},
 
 		getLocales: function (worldVO, level, sectorX, sectorY) {

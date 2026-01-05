@@ -13,14 +13,15 @@ define([], function () {
 
 		getMockItemsHelper: function () {
 			let result = {};
-			result.getNewEquipment = (campOrdinal) => [];
 			result.isAvailable = () => false;
-			result.getMinHazardColdForLevel = (campOrdinal) => campOrdinal * 2;
 			result.getMaxHazardColdForLevel = (campOrdinal) => campOrdinal * 3;
 			result.getMaxHazardFloodedForLevel = (campOrdinal) => campOrdinal * 2;
-			result.getMaxHazardRadiationForLevel = (campOrdinal) => campOrdinal * 2;
 			result.getMaxHazardPoisonForLevel = (campOrdinal) => campOrdinal * 2;
+			result.getMaxHazardRadiationForLevel = (campOrdinal) => campOrdinal * 2;
+			result.getMinHazardColdForLevel = (campOrdinal) => campOrdinal * 2;
+			result.getNewEquipment = (campOrdinal) => [];
 			result.getRequiredEquipment = (campOrdinal) => [];
+			result.getUsableIngredient = (availableIngredients, rand) => availableIngredients[0];
 			return result;
 		},
 

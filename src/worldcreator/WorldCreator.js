@@ -5,7 +5,6 @@ define([
 	'utils/FlowUtils',
 	'game/constants/WorldConstants',
 	'worldcreator/WorldCreatorHelper',
-	'worldcreator/WorldCreatorDebug',
 	'worldcreator/WorldCreatorLogger',
 	'worldcreator/EnemyCreator',
 	'worldcreator/WorldVO',
@@ -17,7 +16,7 @@ define([
 	'worldcreator/SectorContentGenerator',
 ], function (
 	Ash, FlowUtils, WorldConstants,
-	WorldCreatorHelper, WorldCreatorDebug, WorldCreatorLogger, EnemyCreator,
+	WorldCreatorHelper, WorldCreatorLogger, EnemyCreator,
 	WorldVO,
 	WorldSkeletonGenerator, LevelSkeletonGenerator, LevelStructureGenerator, LevelFeaturesGenerator, SectorFeaturesGenerator, SectorContentGenerator
 ) {
@@ -25,7 +24,7 @@ define([
 		
 		context: "WorldCreator",
 
-		createWorld: function (seed, worldTemplateVO) {
+		createWorld: function (seed, worldTemplateVO, progressionConfig) {
 			return new Promise(function(resolve, reject) {
 				worldTemplateVO = worldTemplateVO || { levels: [] };
 
@@ -35,6 +34,8 @@ define([
 				if( worldTemplateVO.version) version = worldTemplateVO.version;
 
 				let worldVO = new WorldVO(seed, version);
+
+				this.setProgressionConfig(progressionConfig);
 
 				let tasks = [];
 				tasks.push(() => WorldCreator.generateWorldSkeleton(seed, worldVO, worldTemplateVO));
@@ -54,12 +55,14 @@ define([
 			}.bind(this));
 		},
 
-		generateLevels: function (seed, worldVO, worldTemplateVO, levels, itemsHelper) {
+		generateLevels: function (seed, worldVO, worldTemplateVO, levels, itemsHelper, progressionConfig) {
 			return new Promise(function(resolve, reject) {
 				worldTemplateVO = worldTemplateVO || { levels: [] };
 				
-				let enemyCreator = new EnemyCreator();
+				let enemyCreator = new EnemyCreator(progressionConfig);
 				enemyCreator.createEnemies();
+				
+				this.setProgressionConfig(progressionConfig);
 
 				// generation order shouldn't matter but make it predictable anyway
 				levels = levels.sort((a, b) => WorldCreatorHelper.getLevelOrdinal(seed, a) - WorldCreatorHelper.getLevelOrdinal(seed, b));
@@ -112,8 +115,6 @@ define([
 			WorldCreatorLogger.i("Step 5: Sector features", this.context);
 
 			SectorFeaturesGenerator.generate(seed, worldVO, worldTemplateVO, levels, itemsHelper);
-
-			//WorldCreatorDebug.printSectorTemplates(worldVO);
 		},
 
 		generateSectorContent: function (seed, worldVO, worldTemplateVO, levels, enemyCreator) {
@@ -122,7 +123,13 @@ define([
 			SectorContentGenerator.generate(seed, worldVO, worldTemplateVO, levels, enemyCreator);
 		},
 
+		setProgressionConfig: function (progressionConfig) {
+			this.progressionConfig = progressionConfig;
+			WorldCreatorHelper.progressionConfig = progressionConfig;
+		},
+
 		resetInternalData: function (seed, worldVO) {
+			this.setProgressionConfig({});
 			worldVO.resetInternalData();
 		},
 

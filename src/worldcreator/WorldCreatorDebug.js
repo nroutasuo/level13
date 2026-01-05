@@ -2,7 +2,24 @@
 define(['ash', 'core/ConsoleLogger', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper', 'worldcreator/WorldCreatorLogger'],
 function (Ash, ConsoleLogger, WorldConstants, WorldCreatorHelper, WorldCreatorLogger) {
 
-	var WorldCreatorDebug = {
+	let WorldCreatorDebug = {
+
+		getTestProgressionConfig: function () {
+			let config = {};
+
+			config.unlockCampOrdinals = {};
+			config.unlockCampOrdinals.actionClearWasteToxic = 3;
+			config.unlockCampOrdinals.actionClearWasteRadioactive = 8;
+			config.unlockCampOrdinals.passageElevator = 5;
+			config.unlockCampOrdinals.passageHole = 7;
+			config.unlockCampOrdinals.inn = 3;
+
+			config.unlockCampOrdinalAndSteps = {};
+			config.unlockCampOrdinalAndSteps.staminaPerk1 = { campOrdinal: 11, step: WorldConstants.CAMP_STEP_POI_2 };
+			config.unlockCampOrdinalAndSteps.staminaPerk2 = { campOrdinal: 13, step: WorldConstants.CAMP_STEP_POI_2 };
+
+			return config;
+		},
 		
 		printWorldTemplate: function (worldVO) {
 			WorldCreatorLogger.groupCollapsed("World seed " + worldVO.seed);
