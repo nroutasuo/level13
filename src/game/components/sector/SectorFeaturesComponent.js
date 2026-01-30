@@ -20,6 +20,7 @@ define(
 		sunlit: false,
 		ground: false,
 		surface: false,
+		levelFeatures: [], // list of type
 		
 		// pathfinding attributes
 		isOnCriticalPath: false,
@@ -43,6 +44,7 @@ define(
 		
 		constructor: function (level, features) {
 			this.level = level;
+			this.levelFeatures = features.levelFeatures || [];
 			this.zone = features.zone;
 			this.activity = features.activity;
 			this.buildingDensity = features.buildingDensity;
@@ -78,6 +80,10 @@ define(
 
 		hasHazards: function () {
 			return this.hazards && this.hazards.hasHazards();
+		},
+
+		hasFeature: function (featureType) {
+			return this.levelFeatures.indexOf(featureType) >= 0;
 		},
 		
 		getCondition: function () {

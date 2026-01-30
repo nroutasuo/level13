@@ -61,6 +61,16 @@ define(['ash'], function (Ash) {
 			return result;
 		},
 		
+		getFeaturesByLevel: function (level) {
+			let result = [];
+			for (let i = 0; i < this.features.length; i++) {
+				if (this.features[i].spansLevel(level)) {
+					result.push(this.features[i]);
+				}
+			}
+			return result;
+		},
+		
 		getFeaturesByPos: function (pos) {
 			let result = [];
 			for (let i = 0; i < this.features.length; i++) {

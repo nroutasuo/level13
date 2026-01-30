@@ -165,6 +165,8 @@ define([
 			if (sectorVO.isCamp) return false;
 			if (sectorVO.isPassageUp) return false;
 			if (sectorVO.isPassageDown) return false;
+			if (sectorVO.hasFeature(WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER)) return false;
+			if (sectorVO.hasFeature(WorldConstants.FEATURE_HOLE_COLLAPSE_BORDER)) return false;
 			return true;
 		},
 

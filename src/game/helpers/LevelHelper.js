@@ -1093,6 +1093,23 @@ define([
 			return result;
 		},
 
+		getDirectionToFeature: function (sector, featureType) {
+			let result = null;
+			let neighbours = GameGlobals.levelHelper.getSectorNeighboursMap(sectorEntity);
+			for (let direction in neighbours) {
+				let neighbour = neighbours[direction];
+				let featuresComponent = neighbour.get(SectorFeaturesComponent);				
+				if (!featuresComponent.hasLevelFeature(featureType)) continue;
+
+				let isBetterDirection = PositionConstants.isDiagonal(result) && !PositionConstants.isDiagonal(direction);
+				
+				if (result == null || isBetterDirection) {
+					result = direction;
+				}
+			}
+			return result;
+		},
+
 		getFoundLuxuryResourceOnLevel: function (level) {
 			let resource = this.getLuxuryResourceOnLevel(level);
 			

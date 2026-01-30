@@ -23,6 +23,8 @@ define([
 			for (let l = topLevel; l >= bottomLevel; l--) {
 				let levelVO = new LevelVO(l);
 				levelVO.seed = seed;
+				levelVO.features = worldVO.getFeaturesByLevel(l);
+				
 				let levelTemplateVO = worldTemplateVO.levels[l] || { };
 
 				this.generateLevel(seed, worldVO, levelTemplateVO, levelVO);
@@ -60,13 +62,14 @@ define([
 			if (levelVO.passageDownPosition) levelVO.passagePositions.push(levelVO.passageDownPosition);
 			levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_EARLY] = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO.seed, levelVO.campOrdinal, levelVO.level, WorldConstants.CAMP_STAGE_EARLY);
 			levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_LATE] = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO.seed, levelVO.campOrdinal, levelVO.level, WorldConstants.CAMP_STAGE_LATE);
+
+			levelVO.mapCenterPosition = worldVO.levelCenterPositions[l];
 			levelVO.stageCenterPositions = this.getStageCenterPositions(worldVO, levelVO);
 			levelVO.levelCenterPosition = this.getLevelCenterPosition(worldVO, levelVO);
 			levelVO.workshopResource = this.getWorkshopResource(seed, worldVO, levelTemplateVO, levelVO);
 
 			// story stuff 
 			levelVO.levelStyle = levelTemplateVO.levelStyle || this.getLevelArchitecturalStyle(seed, levelVO);
-			levelVO.seaPadding = this.getSeaPadding(seed, levelVO);
 
 			// stuff that might need to be adjusted on worlds from old saves
 			levelVO.numInvestigateSectors = this.getNumInvestigateSectors(seed, l);
@@ -184,19 +187,6 @@ define([
 			let selectedLuxury = WorldCreatorRandom.randomItemFromArray(seed, validLuxuries);
 			
 			return [ selectedLuxury ];
-		},
-		
-		getSeaPadding: function (seed, levelVO) {
-			let bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
-			let isBottomLevel = bottomLevel == levelVO.level;
-			let s1 = 5000 + seed % 1000 + (levelVO.level + 5) * 471;
-			let min = Math.floor(levelVO.level / 7);
-			if (isBottomLevel) {
-				min = 3;
-			}
-			let max = Math.max(min + 3, 3);
-			let result = WorldCreatorRandom.randomInt(s1, min, max);
-			return result;
 		},
 
 		getLevelArchitecturalStyle: function (seed, levelVO) {

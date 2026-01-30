@@ -14,7 +14,7 @@ define(['ash'], function (Ash) {
 		CAMPS_BEFORE_GROUND: 8,
 
 		MAX_PATH_NO_CROSSINGS_LENGTH: 14,
-		MAX_DISTANCE_TO_ORIGO: 40,
+		MAX_DISTANCE_TO_MAP_CENTER: 40,
 		
 		CAMP_ORDINAL_FUEL: 3,
 		CAMP_ORDINAL_GREENHOUSE_1: 5,
@@ -44,9 +44,27 @@ define(['ash'], function (Ash) {
 		LEVEL_NUMBER_STASH_ADVANCED_MAP: 11,
 		LEVEL_NUMBER_STASH_ROBOT_1: 18,
 		LEVEL_NUMBER_STASH_ROBOT_2: 24,
+
+		LEVEL_NUMBER_GIGA_CENTER_1: 16,
+		LEVEL_NUMBER_GIGA_CENTER_2: 16,
 		
 		NUM_INVESTIGATE_SECTORS_TOTAL: 15,
 		NUM_INVESTIGATE_SECTORS_SURFACE: 10,
+		
+		// world features
+		FEATURE_HOLE_COLLAPSE: "collapse",
+		FEATURE_HOLE_COLLAPSE_BORDER: "collapse-border",
+		FEATURE_HOLE_EDGE: "edge", // mythical for now
+		FEATURE_HOLE_EDGE_BORDER: "edge-border", 
+		FEATURE_HOLE_WELL: "well",
+		FEATURE_HOLE_WELL_BORDER: "well-edge",
+		FEATURE_HOLE_MOUNTAIN: "mountain", 
+		FEATURE_HOLE_MOUNTAIN_BORDER: "mountain-border", 
+		FEATURE_STRUCTURE_GIGA_CENTER: "giga",
+		FEATURE_STRUCTURE_PILLAR: "pillar",
+		FEATURE_TRAIN_TRACKS_NEW: "tracks-new",
+		FEATURE_TRAIN_TRACKS_OLD: "tracks-old",
+		FEATURE_TRAIN_STATION: "station",
 		
 		resourcePrevalence: {
 			RARE: 1,		// only for rare resources
@@ -177,6 +195,18 @@ define(['ash'], function (Ash) {
 				return true;
 			if (campOrdinal == campOrdinal2 && campStep >= campStep2)
 				return true;
+			return false;
+		},
+
+		isFeatureHole: function (featureType) {
+			switch (featureType) {
+				case WorldConstants.FEATURE_HOLE_COLLAPSE:
+				case WorldConstants.FEATURE_HOLE_MOUNTAIN:
+				case WorldConstants.FEATURE_HOLE_EDGE:
+				case WorldConstants.FEATURE_HOLE_WELL:
+					return 1;
+			}
+
 			return false;
 		}
 		

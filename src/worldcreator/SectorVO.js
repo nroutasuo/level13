@@ -13,6 +13,7 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			this.criticalPathTypes = [];
 			this.damage = 0; // 0-10
 			this.examineSpots = [];
+			this.features = []; // list of type
 			this.graffiti = 0;
 			this.hasBuildableWorkshop = false;
 			this.hasClearableWorkshop = false;
@@ -124,6 +125,10 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 				if (this.stashes[i].localeType == localeType) return true;
 			}
 			return false;
+		},
+
+		hasFeature: function (featureType) {
+			return this.features.indexOf(featureType) >= 0;
 		},
 		
 		getCriticalPathPriority: function (pathType) {

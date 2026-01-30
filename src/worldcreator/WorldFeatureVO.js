@@ -1,71 +1,74 @@
 define(['ash', 'worldcreator/WorldCreatorConstants', 'game/vos/PositionVO'], function (Ash, WorldCreatorConstants, PositionVO) {
 
-	var WorldFeatureVO = Ash.Class.extend({
+	let WorldFeatureVO = Ash.Class.extend({
 		
-		posX: 0,
-		posY: 0,
-		sizeX: 0,
-		sizeY: 0,
-		levelMin: 0,
-		levelMax: 0,
 		type: null,
+		areas: [],
 		
-		constructor: function (posX, posY, sizeX, sizeY, levelMin, levelMax, type) {
-			this.posX = posX;
-			this.posY = posY;
-			this.sizeX = sizeX;
-			this.sizeY = sizeY;
-			this.levelMin = levelMin;
-			this.levelMax = levelMax;
+		constructor: function (type, areas) {
 			this.type = type;
+			this.areas = areas;
 		},
 		
-		containsPosition: function (position) {
-			return this.spansLevel(position.level) && position.sectorX >= this.getMinX() && position.sectorX <= this.getMaxX() && position.sectorY >= this.getMinY() && position.sectorY <= this.getMaxY();
+		containsPosition: function (positionVO) {
+			for (let i = 0; i < this.areas.length; i++) {
+				if (this.areas[i].containsPosition(positionVO)) return true;
+			}
+			return false;
 		},
-		
-		getPosition: function (level) {
-			return new PositionVO(level, this.posX, this.posY);
+
+		bordersPosition: function (positionVO) {
+			for (let i = 0; i < this.areas.length; i++) {
+				if (this.areas[i].bordersPosition(positionVO)) return true;
+			}
+			return false;
 		},
 		
 		spansLevel: function (l) {
-			return l >= this.levelMin && l <= this.levelMax;
+			for (let i = 0; i < this.areas.length; i++) {
+				if (this.areas[i].level == l) return true;
+			}
+			return false;
+		},
+
+		getPositions: function (level) {
+			let result = [];
+			for (let i = 0; i < this.areas.length; i++) {
+				let areaVO = this.areas[i];
+				if (areaVO.level !== level) continue;
+				let positions = areaVO.getPositions();
+				result = result.concat(positions);
+			}
+			return result; 
 		},
 		
 		getDistanceTo: function (pos) {
-			var dx = Math.max(Math.abs(pos.sectorX - this.posX) - this.sizeX / 2, 0);
-			var dy = Math.max(Math.abs(pos.sectorY - this.posY) - this.sizeY / 2, 0);
-			return Math.sqrt(dx * dx + dy * dy);
+			let min = -1;
+			for (let i = 0; i < this.areas.length; i++) {
+				let distance = this.areas[i].getDistanceTo(pos);
+				if (distance < 0) continue;
+				if (min < 0 || distance < min) {
+					min = distance;
+				}
+			}
+			return min;
 		},
 		
 		getMinX: function () {
-			if (this.sizeX <= 1) return this.posX;
-			return this.posX - Math.floor((this.sizeX)/2);
+			return this.posX;
 		},
 		
 		getMaxX: function () {
-			if (this.sizeX <= 1) return this.posX;
-			return this.posX + Math.floor((this.sizeX)/2);
+			return this.posX + (this.sizeX - 1);
 		},
 		
 		getMinY: function () {
-			if (this.sizeY <= 1) return this.posY;
-			return this.posY - Math.floor((this.sizeY)/2);
+			return this.posY;
 		},
 		
 		getMaxY: function () {
-			if (this.sizeY <= 1) return this.posY;
-			return this.posY + Math.floor((this.sizeY)/2);
+			return this.posY + (this.sizeY - 1);
 		},
-		
-		isBuilt: function () {
-			switch (this.type) {
-				case WorldCreatorConstants.FEATURE_HOLE_COLLAPSE:
-					return false;
-				default:
-					return true;
-			}
-		}
 		
 	});
 

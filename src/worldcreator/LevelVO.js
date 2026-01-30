@@ -11,11 +11,13 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 
 			this.additionalCampPositions = [];
 			this.campPosition = null; // PositionVO
+			this.features = []; // list of WorldFeatureVO
 			this.gangs = []; // list of GangVO
 			this.habitability = 1;
 			this.isCampable = false;
 			this.isHard = false;
-			this.levelCenterPosition = null; // PositionVO
+			this.mapCenterPosition  = null; // PositionVO, based on shift during player journey
+			this.levelCenterPosition = null; // PositionVO, based on camp and passage positions
 			this.levelStyle = null; // SectorConstants.STYLE_
 			this.luxuryResources = []; // list of string
 			this.maxSectors = 1;
@@ -34,7 +36,6 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			this.passageUpType = null;
 			this.predefinedExplorers = []; // list of id
 			this.raidDangerFactor = 1;
-			this.seaPadding = 0;
 			this.stageCenterPositions = {}; // e/l -> list of PositionVO
 			this.workshopPositions = [];
 			this.workshopResource = null;
@@ -113,10 +114,26 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			if (!this.sectorsByPos[sectorVO.position.sectorX]) this.sectorsByPos[sectorVO.position.sectorX] = {};
 			this.sectorsByPos[sectorVO.position.sectorX][sectorVO.position.sectorY] = sectorVO;
 			
-			this.minX = Math.min(this.minX, sectorVO.position.sectorX);
-			this.maxX = Math.max(this.maxX, sectorVO.position.sectorX);
-			this.minY = Math.min(this.minY, sectorVO.position.sectorY);
-			this.maxY = Math.max(this.maxY, sectorVO.position.sectorY);
+			// featurePositions are temp date used during structure gen and not available if structure gen not active (if recreating level from template)
+			if (this.featurePositions) {
+				for (let f = 0; f < this.featurePositions.length; f++) {
+					let featurePosition = this.featurePositions[f];
+					let matchingPosition = featurePosition.positions.find(position => sectorVO.position.equals(position));
+					if (matchingPosition) featurePosition.numPositionsAdded++;
+				}
+			}
+			
+			if (this.sectors.length == 1) {
+				this.minX = sectorVO.position.sectorX;
+				this.maxX = sectorVO.position.sectorX;
+				this.minY = sectorVO.position.sectorY;
+				this.maxY = sectorVO.position.sectorY;
+			} else {
+				this.minX = Math.min(this.minX, sectorVO.position.sectorX);
+				this.maxX = Math.max(this.maxX, sectorVO.position.sectorX);
+				this.minY = Math.min(this.minY, sectorVO.position.sectorY);
+				this.maxY = Math.max(this.maxY, sectorVO.position.sectorY);
+			}
 			
 			return true;
 		},
@@ -344,6 +361,43 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			} else {
 				return this.passageUpPosition;
 			}
+		},
+
+		getFeaturesByPosition: function (pos) {
+			let result = [];
+
+			for (let i = 0; i < this.features.length; i++) {
+				if (this.features[i].containsPosition(pos)) {
+					result.push(this.features[i]);
+				}
+			}
+
+			return result;
+		},
+
+		getDerivedFeaturesByPosition: function (pos) {
+			let result = [];
+
+			for (let i = 0; i < this.features.length; i++) {
+				let derivedFeature = WorldCreatorConstants.getBorderFeature(this.features[i].type);
+				if (!derivedFeature) continue;
+				if (this.features[i].bordersPosition(pos)) {
+					result.push(derivedFeature);
+				}
+			}
+
+			return result;
+		},
+
+		getDistanceToFeature: function (pos, featureType) {
+			let result = 999;
+
+			for (let i = 0; i < this.features.length; i++) {
+				if (this.features[i].type != featureType) continue;
+				result = Math.min(result, this.features[i].getDistanceTo(pos));
+			}
+
+			return result;
 		},
 		
 		isInvalidPosition: function (pos) {

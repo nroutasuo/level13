@@ -155,7 +155,7 @@ define([
 
 				let progressionConfig = GameGlobals.worldHelper.getWorldProgressionConfig();
 
-				WorldCreator.createWorld(s, worldTemplateVO, GameGlobals.itemsHelper, progressionConfig).then(worldVO => {
+				WorldCreator.createWorld(s, worldTemplateVO, progressionConfig).then(worldVO => {
 					log.i("validating world (" + GameConstants.getTimeSinceStart() + ")", "start");
 					let validationResult = WorldValidator.validateWorld(worldVO, worldTemplateVO);
 					WorldValidator.logSummary(validationResult);
@@ -301,6 +301,7 @@ define([
 			var sectorVO = worldVO.getLevel(level).getSector(sectorX, sectorY);
 			var sectorFeatures = {};
 			sectorFeatures.isOnCriticalPath = sectorVO.isOnCriticalPath();
+			sectorFeatures.levelFeatures = sectorVO.features || [];
 			sectorFeatures.zone = sectorVO.zone;
 			sectorFeatures.activity = sectorVO.activity;
 			sectorFeatures.buildingDensity = sectorVO.buildingDensity;

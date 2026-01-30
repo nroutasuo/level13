@@ -48,11 +48,6 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 		CONNECTION_POINTS_RECT_EXTRA: "r-extra",
 		CONNECTION_POINTS_RECT_DIAGONAL: "r-diagonal",
 		CONNECTION_POINTS_RECT_NONE: "r-none",
-		
-		FEATURE_HOLE_WELL: "well",
-		FEATURE_HOLE_COLLAPSE: "collapse",
-		FEATURE_HOLE_SEA: "sea",
-		FEATURE_HOLE_MOUNTAIN: "mountain",
 
 		SHAPE_LINE_ANY: "line-any", // line starting from one connection point and going in any direction
 		SHAPE_LINE_CONNECTION: "line-connection", // line between two existing connection points
@@ -218,6 +213,29 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 				this.getMinLocales(blueprints) + 2,
 				Math.round(blueprints + blueprints / 2)
 			);
+		},
+
+		isFeatureBlockingSectors: function (featureType) {
+			switch (featureType) {
+				case WorldConstants.FEATURE_HOLE_COLLAPSE:
+				case WorldConstants.FEATURE_HOLE_EDGE:
+				case WorldConstants.FEATURE_HOLE_MOUNTAIN:
+				case WorldConstants.FEATURE_HOLE_WELL:
+					return true;
+			}
+
+			return false;
+		},
+
+		getBorderFeature: function (featureType) {
+			switch (featureType) {
+				case WorldConstants.FEATURE_HOLE_COLLAPSE: return WorldConstants.FEATURE_HOLE_COLLAPSE_BORDER;
+				case WorldConstants.FEATURE_HOLE_EDGE: return WorldConstants.FEATURE_HOLE_EDGE_BORDER;
+				case WorldConstants.FEATURE_HOLE_MOUNTAIN: return WorldConstants.FEATURE_HOLE_MOUNTAIN_BORDER;
+				case WorldConstants.FEATURE_HOLE_WELL: return WorldConstants.FEATURE_HOLE_WELL_BORDER;
+			}
+
+			return null;
 		},
 
 	};

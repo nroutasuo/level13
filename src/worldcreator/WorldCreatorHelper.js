@@ -103,7 +103,8 @@ define([
 
 			let getPairScore = function (pair) {
  				let distance = PositionConstants.getDistanceTo(pair[0].position, pair[1].position);
-				return getSectorScore(pair[0]) + getSectorScore(pair[1]) - distance;
+				let alignment = PositionConstants.getPositionAlignment(pair[0].position, pair[1].position);
+				return getSectorScore(pair[0]) + getSectorScore(pair[1]) + alignment - distance;
 			};
 
 			pairs.sort(function (a, b) { return getPairScore(b) - getPairScore(a); });
@@ -181,11 +182,11 @@ define([
 			};
 		},
 		
-		sortSectorsByDistanceTo: function (position) {
+		sortSectorsByDistanceTo: function (position, invert) {
 			return function (a, b) {
 				var dista = PositionConstants.getDistanceTo(position, a.position);
 				var distb = PositionConstants.getDistanceTo(position, b.position);
-				return dista - distb;
+				return invert ? distb - dista : dista - distb;
 			};
 		},
 		
@@ -309,6 +310,31 @@ define([
 					}
 				}
 			}
+			return result;
+		},
+
+		getFeaturePositions: function (featureVO, level) {
+			let result = [];
+
+			for (let i = 0; i < featureVO.areas.length; i++) {
+				let areaVO = featureVO.areas[i];
+				if (areaVO.level != level) continue;
+				result = result.concat(areaVO.getPositions(level));
+			}
+
+			return result;
+		},
+		
+
+		getFeatureEdgePositions: function (featureVO, level) {
+			let result = [];
+
+			for (let i = 0; i < featureVO.areas.length; i++) {
+				let areaVO = featureVO.areas[i];
+				if (areaVO.level != level) continue;
+				result = result.concat(areaVO.getEdgePositions(level));
+			}
+
 			return result;
 		},
 		
@@ -908,10 +934,10 @@ define([
 			return result;
 		},
 		
-		containsBlockingFeature: function (pos, features, allowNonBuilt) {
+		containsBlockingFeature: function (pos, features) {
 			for (let i = 0; i < features.length; i++) {
-				var feature = features[i];
-				if (allowNonBuilt && !feature.isBuilt()) continue;
+				let feature = features[i];
+				if (!WorldCreatorConstants.isFeatureBlockingSectors(feature.type)) continue;
 				if (feature.containsPosition(pos)) {
 					return true;
 				}

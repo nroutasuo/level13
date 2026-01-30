@@ -54,6 +54,26 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					return baseActionID;
 			}
 		},
+
+		getLevelFeatureName: function (featureType) {
+			switch (featureType) {
+				case WorldConstants.FEATURE_HOLE_COLLAPSE_BORDER:
+					return "collapse";
+				case WorldConstants.FEATURE_HOLE_WELL_BORDER:
+					return "sunwell";
+				case WorldConstants.FEATURE_HOLE_MOUNTAIN_BORDER:
+					return "mountain";
+				case WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER:
+					return "giga center";
+				case WorldConstants.FEATURE_STRUCTURE_PILLAR:
+					return "pillar";
+				case WorldConstants.FEATURE_TRAIN_TRACKS_NEW:
+				case WorldConstants.FEATURE_TRAIN_TRACKS_OLD:
+					return "train tracks";
+			}
+			log.w("no name defined for feature type [" +  featureType + "]");
+			return featureType;
+		},
 		
 		getSectorName: function (isScouted, features) {
 			var template = "[a-sectortype] [n-street]";

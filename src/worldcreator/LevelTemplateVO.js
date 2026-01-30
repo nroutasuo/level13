@@ -33,7 +33,6 @@ function (Ash, SectorTemplateVO, PositionVO) {
 			this.passageUpPosition = levelVO.passageUpPosition;
 			this.passageUpType = levelVO.passageUpType;
 			this.predefinedExplorers = levelVO.predefinedExplorers;
-			this.seaPadding = levelVO.seaPadding;
 			this.workshopPositions = levelVO.workshopPositions;
 			this.workshopResource = levelVO.workshopResource;
 			
@@ -73,7 +72,6 @@ function (Ash, SectorTemplateVO, PositionVO) {
 			if (this.passageUpPosition) copy.passageUpPosition = this.passageUpPosition.getCustomSaveObjectWithoutCamp();
 			copy.passageUpType = this.passageUpType;
 			if (this.predefinedExplorers.length > 0) copy.predefinedExplorers = this.predefinedExplorers;
-			copy.seaPadding = this.seaPadding;
 			if (this.workshopResource) copy.workshopResource = this.workshopResource;
 			if (this.workshopPositions) copy.workshopPositions = this.workshopPositions;
 
@@ -127,7 +125,6 @@ function (Ash, SectorTemplateVO, PositionVO) {
 			this.passageUpType = saveObject.passageUpType;
 
 			this.predefinedExplorers = saveObject.predefinedExplorers || [];
-			this.seaPadding = saveObject.seaPadding;
 			this.workshopResource = saveObject.workshopResource || null;
 			this.workshopPositions = saveObject.workshopPositions || null;
 			

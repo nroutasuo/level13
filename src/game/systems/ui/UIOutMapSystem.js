@@ -789,6 +789,12 @@ define([
 				if (statusComponent.graffiti) {
 					result.push("Graffiti: '" + statusComponent.graffiti + "'");
 				}
+				
+				let levelFeatures = featuresComponent.levelFeatures;
+				for (let i = 0; i < levelFeatures.length; i++) {
+					let featureType = levelFeatures[i];
+					result.push(TextConstants.getLevelFeatureName(featureType));
+				}
 			}
 			
 			if (result.length < 1) return "-";

@@ -332,6 +332,7 @@ define([
 
 				let filter = function (sectorVO) {
 					if (sectorVO.examineSpots.length > 0) return false;
+					if (sectorVO.hasFeature(WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER)) return false;
 					if (spot.positionParams.sectorType && spot.positionParams.sectorType != sectorVO.sectorType) return false;
 					if (spot.positionParams.sunlit && !sectorVO.sunlit) return false;
 					return true;

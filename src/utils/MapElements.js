@@ -13,19 +13,21 @@ define([
 		icons: [],
 
 		initIcons: function () {
+			this.initIcon("beacon", "map-beacon");
+			this.initIcon("building", "map-building");
 			this.initIcon("camp", "map-camp");
 			this.initIcon("campable", "map-campable");
-			this.initIcon("passage-up", "map-passage-up");
-			this.initIcon("passage-up-disabled", "map-passage-up-disabled");
-			this.initIcon("passage-down", "map-passage-down");
-			this.initIcon("interest", "map-interest");
-			this.initIcon("unknown", "map-unvisited");
-			this.initIcon("workshop", "map-workshop");
-			this.initIcon("water", "map-water");
-			this.initIcon("beacon", "map-beacon");
-			this.initIcon("ingredient", "map-ingredient");
-			this.initIcon("investigate", "map-investigate");
 			this.initIcon("graffiti", "map-graffiti");
+			this.initIcon("ingredient", "map-ingredient");
+			this.initIcon("interest", "map-interest");
+			this.initIcon("investigate", "map-investigate");
+			this.initIcon("passage-down", "map-passage-down");
+			this.initIcon("passage-up-disabled", "map-passage-up-disabled");
+			this.initIcon("passage-up", "map-passage-up");
+			this.initIcon("track", "map-train-track");
+			this.initIcon("unknown", "map-unvisited");
+			this.initIcon("water", "map-water");
+			this.initIcon("workshop", "map-workshop");
 		},
 		
 		initIcon: function(key, name) {
@@ -127,6 +129,9 @@ define([
 				return true;
 			} else if (features.isRevealed && features.hasGraffiti) {
 				ctx.drawImage(this.icons["graffiti" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
+				return true;
+			} else if (features.isRevealed && features.hasTrainTracks) {
+				ctx.drawImage(this.icons["track" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
 				return true;
 			} else if (!features.isRevealed && !features.isPartiallyRevealed && !options.hideUnknownIcon) {
 				ctx.drawImage(this.icons["unknown" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosYCentered);

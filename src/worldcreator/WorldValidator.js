@@ -25,8 +25,6 @@ define([
 		SEVERITY_COMPABILITY: 11, // world differs from template in a way that should not happen
 		SEVERITY_CONTINUITY: 12, // world differs from template in a way that might be acceptable if the template is from an older version but needs to be handled properly in game logic
 		
-		// TODO check that there's at least a few (useful?) beacon spots per level
-
 		// validates overall world skeleton, not levels or sectors
 		// checks that the world is valid in itself, and also that it follows the template if one given
 		validateWorld: function (worldVO, worldTemplateVO) {
@@ -38,6 +36,7 @@ define([
 				this.checkWorldSeed, 
 				this.checkWorldCampPositions, 
 				this.checkWorldPassages,
+				this.checkWorldFeatures,
 				this.checkWorldMatchesTemplate,
 			];
 
@@ -74,12 +73,14 @@ define([
 			let levelChecks = [ 
 				this.checkLevelSize,
 				this.checkLevelContinuous, 
+				this.checkLevelPosition,
 				this.checkLevelDensity,
 				this.checkLevelPathLengths, 
 				this.checkLevelCampsAndPassages, 
 				this.checkLevelNumberOfSectors, 
 				this.checkLevelNumberOfLocales,
 				this.checkLevelMovementBlockers,
+				this.checkLevelLight,
 				this.checkLevelResources,
 				this.checkLevelMatchesTemplate,
 			];
@@ -274,6 +275,32 @@ define([
 			for (let l = worldVO.bottomLevel; l <= worldVO.topLevel; l++) {
 				if (!worldVO.passagePositions[l]) issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "no passage positions defined for level " + l });
 				if (!worldVO.passageTypes[l]) issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "no passage types defined for level " + l });
+			}
+
+			return { isValid: issues.length === 0, issues: issues };
+		},
+
+		checkWorldFeatures: function (worldVO) {
+			let issues = [];
+
+			let requiredFeatures = [
+				{ type: WorldConstants.FEATURE_HOLE_COLLAPSE, min: 1, max: 3 },
+				{ type: WorldConstants.FEATURE_HOLE_COLLAPSE_BORDER, min: 1, max: 3 },
+				{ type: WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER, min: 1, max: 1 },
+				{ type: WorldConstants.FEATURE_STRUCTURE_PILLAR, min: 20, max: -1 },
+				{ type: WorldConstants.FEATURE_TRAIN_TRACKS_NEW, min: 2, max: -1 },
+				{ type: WorldConstants.FEATURE_TRAIN_TRACKS_OLD, min: 2, max: -1 },
+			];
+
+			for (let i = 0; i < requiredFeatures.length; i++) {			
+				let reqs = requiredFeatures[i];
+				let featureVOs = worldVO.getFeaturesByType(reqs.type);
+
+				if (reqs.min > 0 && featureVOs.length < reqs.min)
+					issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "not enough features of type " + reqs.type + " defined" });
+				
+				if (reqs.max >= 0 && featureVOs.length > reqs.max)
+					issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "too many features of type " + reqs.type + " defined" });
 			}
 
 			return { isValid: issues.length === 0, issues: issues };
@@ -563,6 +590,47 @@ define([
 
 			return { isValid: issues.length === 0, issues: issues };
 		},
+
+		checkLevelLight: function (worldVO, levelVO) {
+			let issues = [];
+
+			let sunlitSectors = levelVO.sectors.filter(s => s.sunlit > 0);
+			let sunlitCount = sunlitSectors.length;
+			let sunlitPercentage = sunlitCount / levelVO.sectors.length;
+
+			let minSunlitPercentage = 0;
+			if (levelVO.level > 14) minSunlitPercentage = 10;
+
+			let maxSunlitPercentage = 0;
+			if (levelVO.level > 14) maxSunlitPercentage = 20;
+			if (levelVO.level < 10) maxSunlitPercentage = 10;
+			if (levelVO.level > 20) maxSunlitPercentage = 100;
+
+			if (sunlitPercentage < minSunlitPercentage)
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too few sunlit sectors on level " + levelVO.level + "(" + sunlitCount + ")" });
+
+			if (sunlitPercentage > maxSunlitPercentage)
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too many sunlit sectors on level " + levelVO.level + "(" + sunlitCount + ")" });
+
+
+			let numSunlitSectorsWithOnlyOneSunlitNeighbour = 0;
+			for (let i = 0; i < sunlitSectors.length; i++) {
+				let sectorVO = sunlitSectors[i];
+				let neighbours = levelVO.getNeighbourList(sectorVO.position.sectorX, sectorVO.position.sectorY);
+				let sunlitNeighbours = neighbours.filter(s => s.sunlit > 0);
+				if (sunlitNeighbours.length == 0) {
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "sunlit sector without sunlit neighbours at " + sectorVO.position });
+				}
+				if (sunlitNeighbours.length == 1) {
+					numSunlitSectorsWithOnlyOneSunlitNeighbour++;
+				}
+			}
+
+			if (numSunlitSectorsWithOnlyOneSunlitNeighbour / sunlitCount > 0.15)
+				issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "too many sunlit sectors with only one sunlit neighbour on level " + levelVO.level });
+
+			return { isValid: issues.length === 0, issues: issues };
+		},
 		
 		checkLevelResources: function (worldVO, levelVO) {
 			let issues = [];
@@ -651,6 +719,23 @@ define([
 			let earlySectors = levelVO.sectorsByStage[WorldConstants.CAMP_STAGE_EARLY];
 			if (earlySectors && earlySectors.length > 1) {
 				checkIsContinuous(earlySectors[0].position, earlySectors, WorldConstants.CAMP_STAGE_EARLY, "early stage");
+			}
+
+			return { isValid: issues.length === 0, issues: issues };
+		},
+
+		checkLevelPosition: function (worldVO, levelVO) {
+			let issues = [];
+
+			let middlePosition = PositionConstants.getMiddlePoint(levelVO.sectors.map(sectorVO => sectorVO.position));
+
+			let expectedMiddlePosition = { sectorX: 0, sectorY: 0 };
+			if (levelVO.level < 13) expectedMiddlePosition = { sectorX: Math.round((13 - levelVO.level) * -5), sectorY: 0 };
+
+			let distance = PositionConstants.getDistanceTo(middlePosition, expectedMiddlePosition);
+
+			if (distance > 20) {
+				issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "level average sector position too far (" + Math.round(distance) + ") from expected on level " + levelVO.level });
 			}
 
 			return { isValid: issues.length === 0, issues: issues };
@@ -878,8 +963,8 @@ define([
 		checkSectorPosition: function (worldVO, levelVO, sectorVO, sectorTemplateVO) {
 			let issues = [];
 
-			let distanceToOrigo = Math.round(PositionConstants.getDistanceTo(sectorVO.position, { sectorX: 0, sectorY: 0 }));
-			if (distanceToOrigo > WorldConstants.MAX_DISTANCE_TO_ORIGO) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " is too far (" + distanceToOrigo + ") from origo" });
+			let distanceToOrigo = Math.round(PositionConstants.getDistanceTo(sectorVO.position, levelVO.mapCenterPosition));
+			if (distanceToOrigo > WorldConstants.MAX_DISTANCE_TO_MAP_CENTER) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " is too far (" + distanceToOrigo + ") from level center (" + levelVO.mapCenterPosition + ")" });
 
 			let distanceToCrossing = WorldCreatorHelper.getShortestPathToMatchingSector(worldVO, levelVO, sectorVO.position, pos => levelVO.isCrossing(pos.sectorX, pos.sectorY), WorldConstants.MAX_PATH_NO_CROSSINGS_LENGTH - 1, WorldConstants.MAX_PATH_NO_CROSSINGS_LENGTH);
 			if (distanceToCrossing > WorldConstants.MAX_PATH_NO_CROSSINGS_LENGTH) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " is too far from nearest crossing" });

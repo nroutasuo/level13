@@ -283,6 +283,7 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 			var sectorPos;
 			var sectorPadding = this.getSectorPadding(options.centered);
 			
+			this.drawHolesOnCanvas(ctx, options.mapPosition, options.centered, dimensions, sunlit);
 			this.drawGridOnCanvas(ctx, sectorSize, dimensions, options.centered);
 			// this.drawVisibleAreaOnCanvas(ctx, mapPosition, centered, dimensions, visibleSectors, sunlit, true);
 			this.drawDistrictsOnCanvas(ctx, options.mapPosition, options.centered, dimensions, visibleSectors, allSectors, sunlit);
@@ -583,15 +584,38 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 			var endGridX = (Math.ceil(dimensions.mapMaxX / gridSize) + 2) * gridSize;
 			var startGridY = (Math.floor(dimensions.mapMinY / gridSize) - 1) * gridSize;
 			var endGridY = (Math.ceil(dimensions.mapMaxY / gridSize) + 1) * gridSize;
-			for (var y = startGridY; y <= endGridY; y += gridSize) {
-				for (var x = startGridX; x <= endGridX; x += gridSize) {
-					var gridX = x - (gridSize - 1 / 2);
-					var gridY = y - (gridSize - 1 / 2);
+			for (let y = startGridY; y <= endGridY; y += gridSize) {
+				for (let x = startGridX; x <= endGridX; x += gridSize) {
+					let gridX = x - (gridSize - 1 / 2);
+					let gridY = y - (gridSize - 1 / 2);
 					ctx.strokeRect(
 						this.getSectorPixelPos(dimensions, centered, sectorSize, gridX, gridY).x - sectorSize * 0.5 + 2,
 						this.getSectorPixelPos(dimensions, centered, sectorSize, gridX, gridY).y - sectorSize * 0.5 + 2,
 						(sectorSize + sectorSize * sectorPadding) * gridSize,
 						(sectorSize + sectorSize * sectorPadding) * gridSize);
+				}
+			}
+		},
+
+		drawHolesOnCanvas: function (ctx, mapPosition, centered, dimensions, sunlit) {
+			let sectorSize = this.getSectorSize(centered);
+
+			let level = mapPosition.level;
+			let levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
+			for (let i = 0; i < levelComponent.features.length; i++) {
+				let featureVO = levelComponent.features[i];
+				if (!WorldConstants.isFeatureHole(featureVO.type)) continue;
+				for (let j = 0; j < featureVO.areas.length; j++) {
+					let areaVO = featureVO.areas[j];
+					if (areaVO.level != level) continue;
+
+					let startX = this.getSectorPixelPos(dimensions, centered, sectorSize, areaVO.minX, areaVO.minY).x;
+					let startY = this.getSectorPixelPos(dimensions, centered, sectorSize, areaVO.minX, areaVO.minY).y;
+					let w = this.getAreaSize(areaVO.getWidth(), centered);
+					let h = this.getAreaSize(areaVO.getHeight(), centered);
+			
+					ctx.fillStyle = ColorConstants.getColor(sunlit, "map_background_hole");
+					ctx.fillRect(startX, startY, w, h);
 				}
 			}
 		},
@@ -799,6 +823,7 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 				hasPassageDown: sectorPassages.passageDown,
 				hasPassageUp: sectorPassages.passageUp,
 				hasStashOnSector: hasStashOnSector,
+				hasTrainTracks: sectorFeatures.hasFeature(WorldConstants.FEATURE_TRAIN_TRACKS_NEW) || sectorFeatures.hasFeature(WorldConstants.FEATURE_TRAIN_TRACKS_OLD),
 				hasUnexaminedSpots: numUnexaminedSpots > 0,
 				hasUnscoutedLocales: numUnscoutedLocales > 0,
 				isInvestigatable: GameGlobals.sectorHelper.canBeInvestigated(sector),
@@ -1052,6 +1077,14 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 		
 		getSectorMargin: function (centered) {
 			return MapUtils.getSectorMargin(centered ? MapUtils.MAP_ZOOM_MINIMAP : MapUtils.MAP_ZOOM_DEFAULT);
+		},
+
+		getAreaSize: function (size, centered) {
+			if (size <= 0) return 0;
+			let sectorSize = this.getSectorSize(centered);
+			let sectorPadding = this.getSectorPadding(centered);
+			if (size == 1) return sectorSize;
+			return (sectorSize + sectorSize * sectorPadding) * size;
 		},
 
 		getSectorFill: function (mapMode, sector) {

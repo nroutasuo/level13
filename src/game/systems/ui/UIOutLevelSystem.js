@@ -20,6 +20,7 @@ define([
 	'game/constants/StoryConstants',
 	'game/constants/TradeConstants',
 	'game/constants/TribeConstants',
+	'game/constants/WorldConstants',
 	'game/nodes/PlayerPositionNode',
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/NearestCampNode',
@@ -41,7 +42,7 @@ define([
 	Ash,
 	Text, MapUtils, UIList, UIState, ExceptionHandler, GameGlobals, GlobalSignals, DialogueConstants, ExplorationConstants, PlayerStatConstants, TextConstants,
 	LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, StoryConstants, TradeConstants,
-	TribeConstants, PlayerPositionNode, PlayerLocationNode, NearestCampNode, VisionComponent, StaminaComponent,
+	TribeConstants, WorldConstants, PlayerPositionNode, PlayerLocationNode, NearestCampNode, VisionComponent, StaminaComponent,
 	PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
 	MovementOptionsComponent, PositionComponent, CampComponent, LevelComponent, SectorImprovementsComponent,
 	WorkshopComponent, SectorStatusComponent, EnemiesComponent
@@ -458,8 +459,12 @@ define([
 			}
 
 			// world features
-			if (hasLight && PositionConstants.isWorldPillarPosition(position)) {
-				desc += "The area is dominated by a massive concrete pillar, one of the great spines of the City. ";
+			if (hasLight) {
+				let features = featuresComponent.levelFeatures;
+				for (let i = 0; i < features.length; i++) {
+					let featureType = features[i];
+					desc += this.getLevelFeatureDescription(sector, featureType);
+				}
 			}
 			
 			// locales / POIs description
@@ -477,6 +482,26 @@ define([
 			}
 
 			return desc;
+		},
+
+		getLevelFeatureDescription: function (sector, featureType) {
+			switch (featureType) {
+				case WorldConstants.FEATURE_HOLE_COLLAPSE_BORDER:
+					let directionToCollapse = GameGlobals.levelHelper.getDirectionToFeature(sector, WorldConstants.FEATURE_HOLE_COLLAPSE);
+					return "The area to the " + directionToCollapse + " has collapsed.";
+				case WorldConstants.FEATURE_HOLE_WELL_BORDER:
+					let directionToWell = GameGlobals.levelHelper.getDirectionToFeature(sector, WorldConstants.FEATURE_HOLE_WELL);
+					return "The area is lit by a nearby sunwell.";
+				case WorldConstants.FEATURE_HOLE_MOUNTAIN_BORDER:
+					let directionToMountain = GameGlobals.levelHelper.getDirectionToFeature(sector, WorldConstants.FEATURE_HOLE_MOUNTAIN);
+					return "A mountain interrupts the City to the " + PositionConstants.getDirectionName(directionToMountain);
+				case WorldConstants.FEATURE_STRUCTURE_PILLAR:
+					return "The area is dominated by a massive concrete pillar, one of the great spines of the City. ";
+				case WorldConstants.FEATURE_TRAIN_TRACKS_NEW:
+				case WorldConstants.FEATURE_TRAIN_TRACKS_OLD:
+					return "The area is crossed by train tracks."
+
+			}
 		},
 
 		// Existing improvements. Workshops. Potential improvements (camp).
