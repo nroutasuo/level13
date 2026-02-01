@@ -84,6 +84,18 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 			if (!areaVO) return false;
 			return this.level === areaVO.level && this.minX === areaVO.minX && this.maxX === areaVO.maxX && this.minY === areaVO.minY && this.maxY === areaVO.maxY;
 		},
+
+		getCustomSaveObject: function () {
+			return this;
+		},
+
+		customLoadFromSave: function (componentValues) {
+			this.level = componentValues.level;
+			this.minX = componentValues.minX;
+			this.maxX = componentValues.maxX;
+			this.minY = componentValues.minY;
+			this.maxY = componentValues.maxY;
+		},
 	});
 
 	return AreaVO;

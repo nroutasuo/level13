@@ -16,8 +16,8 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			this.habitability = 1;
 			this.isCampable = false;
 			this.isHard = false;
-			this.mapCenterPosition  = null; // PositionVO, based on shift during player journey
-			this.levelCenterPosition = null; // PositionVO, based on camp and passage positions
+			this.levelMapCenterPosition  = null; // PositionVO, based on shift during player journey
+			this.levelPOICenterPosition = null; // PositionVO, based on camp and passage positions
 			this.levelStyle = null; // SectorConstants.STYLE_
 			this.luxuryResources = []; // list of string
 			this.maxSectors = 1;
@@ -36,6 +36,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			this.passageUpType = null;
 			this.predefinedExplorers = []; // list of id
 			this.raidDangerFactor = 1;
+			this.seed = 0;
 			this.stageCenterPositions = {}; // e/l -> list of PositionVO
 			this.workshopPositions = [];
 			this.workshopResource = null;
@@ -76,7 +77,9 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 		resetCaches: function () {
 			VOCache.clear(this.neighboursDictCacheContext);
 			VOCache.clear(this.neighboursListCacheContext);
-			this.sectorNeighourCountCache = {};
+			delete this.neighboursDictCacheContext;
+			delete this.neighboursListCacheContext;
+			delete this.sectorNeighourCountCache;
 
 			this.invalidPositions = [];
 			this.localeSectors = [];

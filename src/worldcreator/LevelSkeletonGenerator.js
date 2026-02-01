@@ -63,9 +63,10 @@ define([
 			levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_EARLY] = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO.seed, levelVO.campOrdinal, levelVO.level, WorldConstants.CAMP_STAGE_EARLY);
 			levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_LATE] = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO.seed, levelVO.campOrdinal, levelVO.level, WorldConstants.CAMP_STAGE_LATE);
 
-			levelVO.mapCenterPosition = worldVO.levelCenterPositions[l];
+			levelVO.levelMapCenterPosition = worldVO.levelCenterPositions[l];
+			levelVO.levelPOICenterPosition = this.getLevelPOICenterPosition(worldVO, levelVO);
 			levelVO.stageCenterPositions = this.getStageCenterPositions(worldVO, levelVO);
-			levelVO.levelCenterPosition = this.getLevelCenterPosition(worldVO, levelVO);
+
 			levelVO.workshopResource = this.getWorkshopResource(seed, worldVO, levelTemplateVO, levelVO);
 
 			// story stuff 
@@ -121,8 +122,8 @@ define([
 			return result;
 		},
 		
-		getLevelCenterPosition: function (worldVO, levelVO) {
-			var pois = [];
+		getLevelPOICenterPosition: function (worldVO, levelVO) {
+			let pois = [];
 			if (levelVO.isCampable) {
 				pois.push(new PositionVO(levelVO.level, 0, 0));
 				pois.push(levelVO.campPosition);

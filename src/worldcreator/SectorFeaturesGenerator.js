@@ -57,7 +57,6 @@ define([
 			// WorldCreatorDebug.printWorld(worldVO, [ "enemyDifficulty" ]);
 			// WorldCreatorDebug.printWorld(worldVO, [ "hazards.radiation" ], "red");
 			// WorldCreatorDebug.printWorld(worldVO, [ "hazards.flooded" ], "blue");
-			// WorldCreatorDebug.printWorld(worldVO, [ "resourcesAll.water"], "blue");
 			// WorldCreatorDebug.printWorld(worldVO, [ "resourcesScavengable.food" ], "#ee8822");
 			// WorldCreatorDebug.printWorld(worldVO, [ "resourcesScavengable.metal" ], "#000");
 			// WorldCreatorDebug.printWorld(worldVO, [ "workshopResource" ]);
@@ -1445,8 +1444,6 @@ define([
 			
 			sectorVO.resourcesScavengable = sca;
 			sectorVO.resourcesCollectable = col;
-			sectorVO.resourcesAll = sca.clone();
-			sectorVO.resourcesAll.addAll(col);
 		},
 		
 		generateItems: function (seed, worldVO, levelVO) {

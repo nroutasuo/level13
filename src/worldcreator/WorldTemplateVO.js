@@ -1,5 +1,5 @@
 // subset of WorldVO that is saved after generation and can be used as input to world generation to ensure backwards compability and world consistency across versions
-define(['ash', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO'], function (Ash, LevelTemplateVO, PositionVO) {
+define(['ash', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO', 'worldcreator/WorldFeatureVO'], function (Ash, LevelTemplateVO, PositionVO, WorldFeatureVO) {
 
 	let WorldTemplateVO = Ash.Class.extend({
 	
@@ -12,6 +12,8 @@ define(['ash', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO'], function 
 			this.bottomLevel = worldVO.bottomLevel;
 
 			this.campPositions = worldVO.campPositions;
+			this.features = worldVO.features;
+			this.levelCenterPositions = worldVO.levelCenterPositions;
 			this.passagePositions = worldVO.passagePositions;
 			this.passageTypes = worldVO.passageTypes;
 
@@ -31,6 +33,7 @@ define(['ash', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO'], function 
 			copy.bottomLevel = this.bottomLevel;
 			
 			copy.campPositions = this.campPositions;
+			copy.levelCenterPositions = this.levelCenterPositions;
 			copy.passagePositions = this.passagePositions;
 			copy.passageTypes = this.passageTypes;
 
@@ -38,6 +41,11 @@ define(['ash', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO'], function 
 			
 			for (let l = this.topLevel; l >= this.bottomLevel; l--) {
 				copy.levels[l] = this.levels[l].getCustomSaveObject();
+			}
+
+			copy.features = [];
+			for (let i = 0; i < this.features.length; i++) {
+				copy.features[i] = this.features[i].getCustomSaveObject();
 			}
 
 			return copy;
@@ -57,6 +65,15 @@ define(['ash', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO'], function 
 					this.campPositions[l].customLoadFromSave(saveObjectCampPosition);
 				} else {
 					this.campPositions[l] = null;
+				}
+			}
+			
+			this.levelCenterPositions = {};
+			for (let l in saveObject.levelCenterPositions) {
+				let saveObjectPosition = saveObject.levelCenterPositions[l];
+				if (saveObjectPosition) {
+					this.levelCenterPositions[l] = new PositionVO();
+					this.levelCenterPositions[l].customLoadFromSave(saveObjectPosition);
 				}
 			}
 
@@ -90,6 +107,12 @@ define(['ash', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO'], function 
 				let levelData = saveObject.levels[l];
 				this.levels[l] = new LevelTemplateVO();
 				this.levels[l].customLoadFromSave(levelData);
+			}
+
+			this.features = [];
+			for (let i = 0; i < saveObject.features.length; i++) {
+				this.features[i] = new WorldFeatureVO();
+				this.features[i].customLoadFromSave(saveObject.features[i]);
 			}
 		},
 		

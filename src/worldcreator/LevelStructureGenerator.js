@@ -401,11 +401,7 @@ define([
 			while (currentPair && currentPair.pathDist > 15 && i < 10) {
 				let options = this.getDefaultOptions({ stage: currentPair.stage });
 				let pathResult = this.createPathBetween(worldVO, levelVO, currentPair.sectors[0].position, currentPair.sectors[1].position, currentPair.pathDist - 1, options);
-				if (pathResult.isComplete) {
-					for (let j = 0; j < pathResult.path.length; j++) {
-						pathResult.path[j].isFill = true;
-					}
-				} else {
+				if (!pathResult.isComplete) {
 					failedPairs.push(currentPair);
 				}
 				currentPair = getFurthestPair();
@@ -449,14 +445,14 @@ define([
 		
 		createCentralStructure: function (seed, worldVO, levelVO) {
 			let l = levelVO.level;
-			let position = levelVO.levelCenterPosition;
+			let position = levelVO.levelPOICenterPosition;
 
-			if (l == worldVO.bottomLevel) position = levelVO.mapCenterPosition;
+			if (l == worldVO.bottomLevel) position = levelVO.levelMapCenterPosition;
 			
 			let s1 = (seed % 4 + 1) * 11 + (l + 9) * 666;
 			let s2 = (seed % 6 + 1) * 9 + (l + 7) * 331;
 			let s3 = (seed % 3 + 1) * 5 + (l + 11) * 561;
-			let s4 = 1000 + (seed % 7 + 1) * 185 + (l + 3) * 121 + Math.abs(levelVO.levelCenterPosition.sectorX + 1) * 585;
+			let s4 = 1000 + (seed % 7 + 1) * 185 + (l + 3) * 121 + Math.abs(levelVO.levelPOICenterPosition.sectorX + 1) * 585;
 
 			let pois = [];
 			if (levelVO.passageUpPosition) pois.push(levelVO.passageUpPosition);
@@ -1407,8 +1403,8 @@ define([
 			let neighbours = levelVO.getNeighbourList(connectionPoint.position.sectorX, connectionPoint.position.sectorY);
 			let numNeighbours = levelVO.getNeighbourCount(connectionPoint.position.sectorX, connectionPoint.position.sectorY);
 
-			let outwardsDirection = PositionConstants.getDirectionFrom(neighbours[0].position, connectionPoint.position);
-			let isPathOutwardsClear = this.isPathClear(levelVO, connectionPoint.position, outwardsDirection, 3);
+			let outwardsDirection = neighbours.length > 0 ? PositionConstants.getDirectionFrom(neighbours[0].position, connectionPoint.position) : null;
+			let isPathOutwardsClear = outwardsDirection ? this.isPathClear(levelVO, connectionPoint.position, outwardsDirection, 3) : true;
 
 			let levelAverageDensity = levelVO.sectors.reduce((accumulator, s) => accumulator + levelVO.getAreaDensity(s.position.sectorX, s.position.sectorY, 2), 0) / levelVO.sectors.length;
 
@@ -2060,7 +2056,7 @@ define([
 				let immediateDensity = levelVO.getAreaDensity(point.position.sectorX, point.position.sectorY, 2);
 				if (immediateDensity < 0.4) score += densityScoreModifier;
 
-				let mapCenter = levelVO.mapCenterPosition;
+				let mapCenter = levelVO.levelMapCenterPosition;
 				let distanceToOrigo = PositionConstants.getDistanceTo(point.position, mapCenter);
 				if (distanceToOrigo < 10) score++;
 				if (distanceToOrigo < 20) score++;
@@ -3581,7 +3577,7 @@ define([
 						numPositions++;
 
 						// distance to center
-						let distance = PositionConstants.getDistanceTo(pos, levelVO.levelCenterPosition);
+						let distance = PositionConstants.getDistanceTo(pos, levelVO.levelPOICenterPosition);
 						totalDistance += distance;
 
 						// alignment to key points
@@ -3599,7 +3595,7 @@ define([
 				// shape center distance to level center pos
 				averagePosition.sectorX /= numPositions;
 				averagePosition.sectorY /= numPositions;
-				let centerDistance = PositionConstants.getDistanceTo(averagePosition, levelVO.levelCenterPosition);
+				let centerDistance = PositionConstants.getDistanceTo(averagePosition, levelVO.levelPOICenterPosition);
 				score -= centerDistance;
 
 				return score || 0;
@@ -3932,11 +3928,11 @@ define([
 					if (plannedStage && plannedStage == defaultStage) pathScore += 1;
 
 					// distance
-					let distanceToCenter = PositionConstants.getDistanceTo(pos, levelVO.levelCenterPosition);
+					let distanceToCenter = PositionConstants.getDistanceTo(pos, levelVO.levelPOICenterPosition);
 					if (distanceToCenter > 20) pathScore -= 1 * levelVO.structureSettings.density;
 					if (distanceToCenter > 30) pathScore -= 1;
 					if (distanceToCenter > 40) pathScore -= 1;
-					let distanceToOrigo = PositionConstants.getDistanceTo(pos, levelVO.mapCenterPosition);
+					let distanceToOrigo = PositionConstants.getDistanceTo(pos, levelVO.levelMapCenterPosition);
 					if (distanceToOrigo > 30) pathScore -= 1;
 					if (distanceToOrigo > 40) pathScore -= 3;
 

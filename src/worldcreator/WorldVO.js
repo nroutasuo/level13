@@ -13,6 +13,7 @@ define(['ash'], function (Ash) {
 			this.districts = {}; // level -> list of DistrictVO
 			this.examineSpotsPerLevel = {}; // level -> list of ids
 			this.features = []; // list of WorldFeatureVO
+			this.levelCenterPositions = {}; // level -> PositionVO
 			this.passagePositions = {}; // level -> { up: PositionVO, down: PositionVO }
 			this.passageTypes = {}; // level -> { up: string, down: string }
 			this.stages = []; // list of StageVO

@@ -1,4 +1,4 @@
-define(['ash', 'worldcreator/WorldCreatorConstants', 'game/vos/PositionVO'], function (Ash, WorldCreatorConstants, PositionVO) {
+define(['ash', 'worldcreator/WorldCreatorConstants', 'game/vos/PositionVO', 'game/vos/AreaVO'], function (Ash, WorldCreatorConstants, PositionVO, AreaVO) {
 
 	let WorldFeatureVO = Ash.Class.extend({
 		
@@ -68,6 +68,25 @@ define(['ash', 'worldcreator/WorldCreatorConstants', 'game/vos/PositionVO'], fun
 		
 		getMaxY: function () {
 			return this.posY + (this.sizeY - 1);
+		},
+
+		getCustomSaveObject: function () {
+			let copy = {};
+			copy.type = this.type;
+			copy.areas = [];
+			for (let i = 0; i < this.areas.length; i++) {
+				copy.areas[i] = this.areas[i].getCustomSaveObject();
+			}
+			return copy;
+		},
+
+		customLoadFromSave: function (componentValues) {
+			this.type = componentValues.type;
+			this.areas = [];
+			for (let i = 0; i < componentValues.areas.length; i++) {
+				this.areas[i] = new AreaVO();
+				this.areas[i].customLoadFromSave(componentValues.areas[i]);
+			}
 		},
 		
 	});

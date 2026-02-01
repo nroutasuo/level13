@@ -121,10 +121,50 @@ define([
 		validateResultWorldTemplateVO: function (worldVO, worldTemplateVO, sourceWorldTemplateVO) {
 			let issues = [];
 
-			// TODO clear this data before validation step (some used during world creation, some during entity/debug vis creation, but none should be saved)
-			let notSavedKeysWorld = [ "districts", "features", "stages", "examineSpotsPerLevel" ];
-			let notSavedKeysLevel = [ "maxSectors", "neighboursCacheContext", "pendingConnectionPoints", "allConnectionPoints", "invalidPositions", "paths", "requiredPaths", "sectorsByStage", "sectorsByPos", "levelCenterPosition", "localeSectors", "raidDangerFactor", "stageCenterPositions", "neighboursDictCacheContext", "neighboursListCacheContext", "sectorNeighourCountCache", "centralStructureType" ];
-			let notSavedKeysSector = [ "id", "distanceToCamp", "requiredFeatures", "requiredResources", "resourcesAll", "waymarks", "pathID", "possibleEnemies", "hasRegularEnemies", "isConnectionPoint", "resourcesScavengable", "campPosScore", "isFill", "criticalPathTypes", "graffiti", "shapeID", "shape" ];
+			// TODO clear more of this data after world gen is done
+			let notSavedKeysWorld = [ "districts", "stages", "examineSpotsPerLevel" ];
+			let notSavedKeysLevel = [ 
+				// derived data (no need to save in template per sector but available in SectorVO for convenience)
+				"localeSectors", 
+				"paths", 
+				"raidDangerFactor", 
+				"sectorNeighourCountCache",
+				"sectorsByPos", 
+				"sectorsByStage", 
+				"stageCenterPositions",
+				// debug data (no need to save but used for debug tools)
+				"allConnectionPoints", 
+				"centralStructureType",
+				"invalidPositions", 
+				"levelMapCenterPosition", 
+				"levelPOICenterPosition", 
+				"pendingConnectionPoints", 
+				// validation data (used during world gen and validation)
+				"maxSectors", 
+				"neighboursCacheContext", 
+				"requiredPaths", 
+			];
+			let notSavedKeysSector = [ 
+				// derived data
+				"criticalPathTypes", 
+				"distanceToCamp",
+				"features",
+				"hasRegularEnemies", 
+				"isConnectionPoint", 
+				"possibleEnemies", 
+				"requiredFeatures", 
+				"requiredResources", 
+				"resourcesScavengable", 
+				"waymarks", 
+				// debug data
+				"pathID", 
+				"pathIndex", 
+				"shape",
+				"shapeID", 
+				// unsorted
+				"graffiti", 
+				"id", 
+			];
 
 			// check worldTemplateVO matches worldVO
 			let properties = Object.keys(worldVO);
@@ -285,7 +325,6 @@ define([
 
 			let requiredFeatures = [
 				{ type: WorldConstants.FEATURE_HOLE_COLLAPSE, min: 1, max: 3 },
-				{ type: WorldConstants.FEATURE_HOLE_COLLAPSE_BORDER, min: 1, max: 3 },
 				{ type: WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER, min: 1, max: 1 },
 				{ type: WorldConstants.FEATURE_STRUCTURE_PILLAR, min: 20, max: -1 },
 				{ type: WorldConstants.FEATURE_TRAIN_TRACKS_NEW, min: 2, max: -1 },
@@ -963,8 +1002,8 @@ define([
 		checkSectorPosition: function (worldVO, levelVO, sectorVO, sectorTemplateVO) {
 			let issues = [];
 
-			let distanceToOrigo = Math.round(PositionConstants.getDistanceTo(sectorVO.position, levelVO.mapCenterPosition));
-			if (distanceToOrigo > WorldConstants.MAX_DISTANCE_TO_MAP_CENTER) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " is too far (" + distanceToOrigo + ") from level center (" + levelVO.mapCenterPosition + ")" });
+			let distanceToOrigo = Math.round(PositionConstants.getDistanceTo(sectorVO.position, levelVO.levelMapCenterPosition));
+			if (distanceToOrigo > WorldConstants.MAX_DISTANCE_TO_MAP_CENTER) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " is too far (" + distanceToOrigo + ") from level center (" + levelVO.levelMapCenterPosition + ")" });
 
 			let distanceToCrossing = WorldCreatorHelper.getShortestPathToMatchingSector(worldVO, levelVO, sectorVO.position, pos => levelVO.isCrossing(pos.sectorX, pos.sectorY), WorldConstants.MAX_PATH_NO_CROSSINGS_LENGTH - 1, WorldConstants.MAX_PATH_NO_CROSSINGS_LENGTH);
 			if (distanceToCrossing > WorldConstants.MAX_PATH_NO_CROSSINGS_LENGTH) issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: sectorVO.toString() + " is too far from nearest crossing" });

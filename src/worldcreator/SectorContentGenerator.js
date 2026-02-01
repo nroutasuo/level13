@@ -34,6 +34,7 @@ define([
 			for (let i = 0; i < levels.length; i++) {
 				let l = levels[i];
 				let levelVO = worldVO.levels[l];
+				let levelTemplateVO = worldTemplateVO.levels[l] || {};
 
 				this.generateLocalesForExplorers(seed, worldVO, levelVO);
 				this.generateLocalesForStory(seed, worldVO, levelVO);
@@ -133,7 +134,7 @@ define([
 				return result;
 			};
 			
-			var addGang = function (sectorVO, neighbourVO, addDiagonals) {
+			let addGang = function (sectorVO, neighbourVO, addDiagonals) {
 				if (!neighbourVO) neighbourVO = WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO);
 				var direction = PositionConstants.getDirectionFrom(sectorVO.position, neighbourVO.position);
 				var neighbourDirection = PositionConstants.getDirectionFrom(neighbourVO.position, sectorVO.position);
@@ -185,11 +186,9 @@ define([
 			};
 			
 			// sector-based: possible enemies, random encounters and locales
-			let center = levelVO.levelCenterPosition;
 			for (let i = 0; i < levelVO.sectors.length; i++) {
-				var sectorVO = levelVO.sectors[i];
-				let dist = PositionConstants.getDistanceTo(center, sectorVO.position);
-				var distanceToCamp = WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO);
+				let sectorVO = levelVO.sectors[i];
+				let distanceToCamp = WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO);
 				sectorVO.possibleEnemies = [];
 				sectorVO.hasRegularEnemies = 0;
 
@@ -205,7 +204,7 @@ define([
 					let r = WorldCreatorRandom.random(l * sectorVO.position.sectorX * seed + sectorVO.position.sectorY * seed + 4848);
 					let probability = WorldCreatorRandom.getProbabilityFromFactors([
 						{ name: "uncampable", value: !levelVO.isCampable },
-						{ name: "distance", value: dist, min: 0, max: 25 },
+						{ name: "distance", value: distanceToCamp, min: 0, max: 25 },
 						{ name: "hazards", value: sectorVO.hazards.hasHazards() },
 					]);
 					sectorVO.hasRegularEnemies = r < probability;

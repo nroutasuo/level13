@@ -54,6 +54,7 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 		
 		resetInternalData: function () {
 			this.id = 0;
+			delete this.campPosScore;
 		},
 
 		resetCaches: function () {
@@ -62,7 +63,6 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			delete this.pathID;
 			this.requiredFeatures = {};
 			this.requiredResources = new ResourcesVO();
-			this.resourcesAll = {};
 		},
 		
 		isOnCriticalPath: function (type) {
