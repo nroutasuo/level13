@@ -21,7 +21,7 @@ define([], function () {
 			result.getMinHazardColdForLevel = (campOrdinal) => campOrdinal * 2;
 			result.getNewEquipment = (campOrdinal) => [];
 			result.getRequiredEquipment = (campOrdinal) => [];
-			result.getUsableIngredient = (availableIngredients, rand) => availableIngredients[0];
+			result.getUsableIngredient = (availableIngredients, rand) => null;
 			return result;
 		},
 
