@@ -10,7 +10,6 @@ define(['ash'], function (Ash) {
 			this.bottomLevel = 0;
 			
 			this.campPositions = {}; // level -> position
-			this.districts = {}; // level -> list of DistrictVO
 			this.examineSpotsPerLevel = {}; // level -> list of ids
 			this.features = []; // list of WorldFeatureVO
 			this.levelCenterPositions = {}; // level -> PositionVO

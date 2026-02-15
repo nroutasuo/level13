@@ -1,6 +1,7 @@
-// creates LevelVOs and any details about them that do not require structure and sectors
+// creates LevelVOs and any details about them that do not require structure and sectors - created for all levels of a world when world is created
 define([
 	'ash',
+	'utils/MathUtils',
 	'game/constants/LevelConstants',
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
@@ -12,9 +13,12 @@ define([
 	'worldcreator/WorldCreatorLogger',
 	'worldcreator/WorldCreatorRandom',
 	'worldcreator/LevelVO',
-], function (Ash, LevelConstants, PositionConstants, SectorConstants, TribeConstants, WorldConstants, PositionVO, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorLogger, WorldCreatorRandom, LevelVO) {
+	'worldcreator/DistrictVO',
+], function (Ash, MathUtils, LevelConstants, PositionConstants, SectorConstants, TribeConstants, WorldConstants, PositionVO, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorLogger, WorldCreatorRandom, LevelVO, DistrictVO) {
 	
 	let LevelSkeletonGenerator = {
+
+		CITY_STATE_LEVEL: 10,
 
 		generate: function (seed, worldVO, worldTemplateVO) {
 			let topLevel = worldVO.topLevel;
@@ -22,9 +26,6 @@ define([
 
 			for (let l = topLevel; l >= bottomLevel; l--) {
 				let levelVO = new LevelVO(l);
-				levelVO.seed = seed;
-				levelVO.features = worldVO.getFeaturesByLevel(l);
-				
 				let levelTemplateVO = worldTemplateVO.levels[l] || { };
 
 				this.generateLevel(seed, worldVO, levelTemplateVO, levelVO);
@@ -40,6 +41,8 @@ define([
 			let campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
 			let isCampableLevel = WorldCreatorHelper.isCampableLevel(seed, l);
 
+			// basics derived directly from seed
+			levelVO.seed = seed;
 			levelVO.levelOrdinal = levelOrdinal;
 			levelVO.campOrdinal = campOrdinal;
 			levelVO.isCampable = isCampableLevel;
@@ -52,6 +55,7 @@ define([
 			levelVO.numSectors = numSectors;
 			levelVO.maxSectors = numSectors + WorldCreatorConstants.getMaxSectorOverflow(levelOrdinal);
 			
+			// basics derived from world skeleton
 			levelVO.campPosition = worldVO.campPositions[l] || null;
 			levelVO.passageUpPosition = worldVO.passagePositions[l].up;
 			levelVO.passageUpType = worldVO.passageTypes[l].up;
@@ -65,14 +69,13 @@ define([
 
 			levelVO.levelMapCenterPosition = worldVO.levelCenterPositions[l];
 			levelVO.levelPOICenterPosition = this.getLevelPOICenterPosition(worldVO, levelVO);
+
+			// generated
 			levelVO.stageCenterPositions = this.getStageCenterPositions(worldVO, levelVO);
-
 			levelVO.workshopResource = this.getWorkshopResource(seed, worldVO, levelTemplateVO, levelVO);
-
-			// story stuff 
 			levelVO.levelStyle = levelTemplateVO.levelStyle || this.getLevelArchitecturalStyle(seed, levelVO);
-
-			// stuff that might need to be adjusted on worlds from old saves
+			levelVO.districts = this.getDistricts(worldVO, levelVO);
+			levelVO.features = worldVO.getFeaturesByLevel(l);
 			levelVO.numInvestigateSectors = this.getNumInvestigateSectors(seed, l);
 			levelVO.luxuryResources = this.getLuxuryResources(seed, l, campOrdinal, worldVO.levels);
 		},
@@ -84,7 +87,7 @@ define([
 			if (stages.length == 1) {
 				result[WorldConstants.CAMP_STAGE_EARLY] = [];
 				result[WorldConstants.CAMP_STAGE_LATE] = [];
-				result[stages[0].stage].push(new PositionVO(level, 0, 0));
+				result[stages[0].stage].push(levelVO.levelMapCenterPosition);
 			} else {
 				for (let i = 0; i < stages.length; i++) {
 					var stageVO = stages[i];
@@ -121,11 +124,316 @@ define([
 			}
 			return result;
 		},
+
+		getDistricts: function (worldVO, levelVO) {
+			let result = [];
+
+			let getNumDistrictsFromNumSectors = (numSectors) => numSectors > 0 ? MathUtils.clamp(Math.round(numSectors / 40), 2, 4) : 0;
+			let numEarly = getNumDistrictsFromNumSectors(levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_EARLY]);
+			let numLate = getNumDistrictsFromNumSectors(levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_LATE]);
+			let numDistricts = numEarly + numLate;
+
+			let positions = [];
+			if (numEarly > 0) positions = positions.concat(this.getDistrictPositions(levelVO, WorldConstants.CAMP_STAGE_EARLY, numEarly));
+			if (numLate > 0) positions = positions.concat(this.getDistrictPositions(levelVO, WorldConstants.CAMP_STAGE_LATE, numLate));
+
+			let previousDistrict = null;
+
+			log.i("districts level " + levelVO.level + "(style: " + levelVO.levelStyle + ")");
+
+			for (let i = 0; i < numDistricts; i++) {
+				let isEarly = i < numEarly;
+				let stageI = isEarly ? i : i - numEarly;
+				let stage = isEarly ? WorldConstants.CAMP_STAGE_EARLY : WorldConstants.CAMP_STAGE_LATE;
+				let position = positions[i];
+				let type = this.getDistrictType(levelVO, stage, position, i, stageI, previousDistrict ? previousDistrict.type : null);
+				let districtVO = new DistrictVO(position, stage, type);
+				districtVO.wear = this.getDistrictWear(levelVO, type, i);
+				districtVO.wealth = this.getDistrictWealth(levelVO, type, i);
+				districtVO.size = this.getDistrictSize(levelVO, type, districtVO.wealth, districtVO.wear, position);
+				districtVO.affiliation = this.getDistrictAffiliation(levelVO, type, i);
+				districtVO.style = this.getDistrictStyle(levelVO, stage, type, districtVO.wealth, districtVO.affiliation, i);
+				log.i("level " + levelVO.level + " " + stage + " district " + i + ": " + type + " (wealth: " + districtVO.wealth + ", style: " + districtVO.style + ", affiliation: " + districtVO.affiliation + ", size: " + districtVO.size +  ")");
+				result.push(districtVO);
+				previousDistrict = districtVO;
+			}
+
+			return result;
+		},
+
+		getDistrictPositions: function (levelVO, stage, num) {
+			let otherStage = stage == WorldConstants.CAMP_STAGE_EARLY ? WorldConstants.CAMP_STAGE_LATE : WorldConstants.CAMP_STAGE_EARLY;
+			let stageMiddle = PositionConstants.getMiddlePoint(levelVO.stageCenterPositions[stage], true);
+			let otherStageMiddle = levelVO.hasStage(otherStage) ? PositionConstants.getMiddlePoint(levelVO.stageCenterPositions[otherStage], true) : null;
+
+			let wrongDirections = otherStageMiddle ? PositionConstants.getDirectionsFrom(stageMiddle, otherStageMiddle, true) : [];
+			let allowedDirections = PositionConstants.getLevelDirections().filter(d => wrongDirections.indexOf(d) < 0);
+			
+			let result = [];
+
+			let removeDirection = function (direction, requiredBuffer) {
+				let index = allowedDirections.indexOf(direction);
+				if (index < 0) return;
+
+				let numRemaining = num - result.length;
+				let numExtra = allowedDirections.length - numRemaining;
+
+				if (numExtra <= requiredBuffer) return;
+				allowedDirections.splice(index, 1);
+			};
+
+			for (let i = 0; i < num; i++) {
+				let direction = WorldCreatorRandom.randomItemFromArray(levelVO.level + i, allowedDirections);
+				let distance = WorldCreatorRandom.randomInt(levelVO.seed + i, 3, 12);
+				let pos = PositionConstants.getPositionOnPath(stageMiddle, direction, distance, true);
+				result.push(new PositionVO(pos.level, pos.sectorX, pos.sectorY));
+				
+				removeDirection(direction, 0);
+				removeDirection(PositionConstants.getNextClockWise(direction, true), 1);
+				removeDirection(PositionConstants.getNextCounterClockWise(direction, true), 1);
+			}
+
+			return result;
+		},
+
+		getDistrictType: function (levelVO, stage, position, i, stageI, previousType) {
+			let possibleTypes = [];
+
+			// hard-coded
+			// - one city state
+			if (levelVO.level == this.CITY_STATE_LEVEL && stage == WorldConstants.CAMP_STAGE_LATE) {
+				possibleTypes.push(SectorConstants.SECTOR_TYPE_RESIDENTIAL);
+				possibleTypes.push(SectorConstants.SECTOR_TYPE_COMMERCIAL);
+				return WorldCreatorRandom.randomItemFromArray(i, possibleTypes);
+			}
+
+			// - workshops
+			if (levelVO.workshopResource && stage == WorldConstants.CAMP_STAGE_LATE && stageI == 0) {
+				return SectorConstants.SECTOR_TYPE_INDUSTRIAL;
+			}
+
+			// - positions near certain features
+			if (levelVO.getDistanceToFeature(position, WorldConstants.FEATURE_HOLE_WELL) < 10) return SectorConstants.SECTOR_TYPE_RESIDENTIAL;
+
+			// - level 14
+			if (levelVO.level == 14) return SectorConstants.SECTOR_TYPE_INDUSTRIAL;
+
+			// random
+			let topLevel = WorldCreatorHelper.getHighestLevel(levelVO.seed);
+			let centrality = WorldCreatorHelper.getPositionCentrality(position);
+
+			// - residential: most places, especially a bit way from world zone center
+			if (levelVO.level != 14) {
+				possibleTypes.push(SectorConstants.SECTOR_TYPE_RESIDENTIAL);
+				possibleTypes.push(SectorConstants.SECTOR_TYPE_RESIDENTIAL);
+				if (centrality < 0.75) possibleTypes.push(SectorConstants.SECTOR_TYPE_RESIDENTIAL);
+				if (centrality < 0.5) possibleTypes.push(SectorConstants.SECTOR_TYPE_RESIDENTIAL);
+			}
+
+			// - industrial: away from top and world zone center
+			if (levelVO.level < topLevel - 1) {
+				if (levelVO.notCampableReason == LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION) possibleTypes.push(SectorConstants.SECTOR_TYPE_INDUSTRIAL);
+				if (levelVO.notCampableReason == LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION) possibleTypes.push(SectorConstants.SECTOR_TYPE_INDUSTRIAL);
+				if (levelVO.level < topLevel - 1) possibleTypes.push(SectorConstants.SECTOR_TYPE_INDUSTRIAL);
+				if (Math.abs(position.sectorY) > 5) possibleTypes.push(SectorConstants.SECTOR_TYPE_INDUSTRIAL);
+			}
+
+			// - commercial: near world zone centers
+			if (levelVO.level != 14) {
+				possibleTypes.push(SectorConstants.SECTOR_TYPE_COMMERCIAL);
+				possibleTypes.push(SectorConstants.SECTOR_TYPE_COMMERCIAL);
+			}
+			if (centrality > 0.5) possibleTypes.push(SectorConstants.SECTOR_TYPE_COMMERCIAL);
+
+			// - public: particularly on dictatorship and recent levels
+			if (centrality > 0.25) possibleTypes.push(SectorConstants.SECTOR_TYPE_PUBLIC);
+			if (levelVO.level < 10 || levelVO.level >= 20) possibleTypes.push(SectorConstants.SECTOR_TYPE_PUBLIC);
+
+			// - maintenance/empty: rare, but sometimes far from centers
+			if (levelVO.level < topLevel - 2 && levelVO.level > 3 && centrality < 0.5 && levelVO.habitability < 1) {
+				if (stage == WorldConstants.CAMP_STAGE_LATE) possibleTypes.push(SectorConstants.SECTOR_TYPE_MAINTENANCE);
+				if (centrality < 0.25) possibleTypes.push(SectorConstants.SECTOR_TYPE_EMPTY);
+			}
+
+			// - make previous one less likely to avoid repetition
+			if (previousType && possibleTypes.length > 1) {
+				let index = possibleTypes.indexOf(previousType);
+				while (index >= 0 && possibleTypes.length > 1) {
+					possibleTypes.splice(index, 1);
+					index = possibleTypes.indexOf(previousType);
+				}
+			}
+
+			return WorldCreatorRandom.randomItemFromArray(levelVO.level * 100 + i, possibleTypes);
+		},
+
+		getDistrictAffiliation: function (levelVO, type, i) {
+			let topLevel = WorldCreatorHelper.getHighestLevel(levelVO.seed);
+
+			if (levelVO.level == this.CITY_STATE_LEVEL) return null;
+
+			if (levelVO.level == topLevel) return null;
+
+			let possibleResults = [ null ];
+
+			if (type == SectorConstants.SECTOR_TYPE_INDUSTRIAL) {
+				possibleResults.push(SectorConstants.SECTOR_AFFILIATION_AGRICORP);
+				if (levelVO.level < topLevel - 3) possibleResults.push(SectorConstants.SECTOR_AFFILIATION_MINECORP);
+			}
+
+			if (type == SectorConstants.SECTOR_TYPE_RESIDENTIAL) {
+				if (levelVO.level > 15 && levelVO.level < topLevel - 2) {
+					possibleResults.push(SectorConstants.SECTOR_AFFILIATION_HANSA);
+				}
+
+				if (levelVO.level < topLevel - 3) {
+					if (i > 0) possibleResults.push(SectorConstants.SECTOR_AFFILIATION_DONBALISM);
+				}
+			}
+
+			return WorldCreatorRandom.randomItemFromArray(levelVO.seed + levelVO.level * 70 + i, possibleResults);
+		},
+
+		getDistrictWear: function (levelVO, type, i) {
+			let topLevel = WorldCreatorHelper.getHighestLevel(levelVO.seed);
+			let bottomLevel = WorldCreatorHelper.getBottomLevel(levelVO.seed);
+
+			let levelWear = MathUtils.map(levelVO.level, bottomLevel + 1, topLevel - 3, 10, 0);
+			let wear = levelWear;
+
+			// some districts (especially industry) were built recently on top of old infrastructure
+			let isRecentProbability = 0;
+			if (type == SectorConstants.SECTOR_TYPE_INDUSTRIAL) isRecentProbability = 0.5;
+			if (type == SectorConstants.SECTOR_TYPE_MAINTENANCE) isRecentProbability = 0.75;
+			if (type == SectorConstants.SECTOR_TYPE_EMPTY) isRecentProbability = 0.25;
+			let isRecent = WorldCreatorRandom.randomBool(levelVO.level + i, isRecentProbability);
+			if (isRecent) wear = Math.min(wear, 2);
+
+			// some districts are still inhabited and maintained by dark dwellers
+			let isInhabitedProbability = 0;
+			if (type == SectorConstants.SECTOR_TYPE_RESIDENTIAL) isInhabitedProbability = 0.2;
+			if (type == SectorConstants.SECTOR_TYPE_COMMERCIAL) isInhabitedProbability = 0.3;
+			if (type == SectorConstants.SECTOR_TYPE_PUBLIC) isInhabitedProbability = 0.1;
+			let isInhabited = WorldCreatorRandom.randomBool(levelVO.level * 100 + i * 2, isInhabitedProbability);
+			if (isInhabited) wear = Math.min(wear, 6);
+
+			return MathUtils.clamp(Math.round(wear), 0, 10);
+		},
+
+		getDistrictWealth: function (levelVO, type, i) {
+			if (type == SectorConstants.SECTOR_TYPE_EMPTY) return 0;
+			if (type == SectorConstants.SECTOR_TYPE_MAINTENANCE) return 5;
+
+			let topLevel = WorldCreatorHelper.getHighestLevel(levelVO.seed);
+
+			let min = 1;
+			let max = 10;
+
+			if (levelVO.level > topLevel - 3) {
+				// near surface
+				min = Math.max(min, 5);
+				max = 10;
+			} else if (levelVO.campOrdinal > 12) {
+				// between surface and slums
+				min = 4;
+				max = 8;
+			} else if (levelVO.level > 14) {
+				// slums
+				min = 1;
+				max = 4;
+			} else if (levelVO.level > 10) {
+				// dark levels, city states and chaos
+				min = 1;
+				max = 9;
+			} else if (levelVO.level > 3) {
+				// dictatorship
+				min = 3;
+				max = 8;
+			} else {
+				// near ground, anything but extreme luxury
+				min = 1;
+				max = 8;
+			}
+
+			if (type == SectorConstants.SECTOR_TYPE_COMMERCIAL) {
+				min = Math.max(min, 3);
+			}
+
+			if (type == SectorConstants.SECTOR_TYPE_INDUSTRIAL) {
+				min = Math.max(min, 3);
+				max = Math.min(max, 7);
+			}
+
+			if (type == SectorConstants.SECTOR_TYPE_PUBLIC) {
+				min = Math.max(min, 4);
+				max = Math.min(max, 8);
+			}
+
+			if (levelVO.level == this.CITY_STATE_LEVEL) {
+				min = Math.max(min, 4);
+			}
+
+			let result = WorldCreatorRandom.randomInt(levelVO.seed % 33 + levelVO.level + i * 3, min, max + 1);
+
+			return MathUtils.clamp(result, 1, 10);
+		},
+
+		getDistrictSize: function (levelVO, type, wealth, wear, position) {
+			let result = 1;
+
+			let isReuse = levelVO.level < 18 && wear < 5 && type == SectorConstants.SECTOR_TYPE_INDUSTRIAL;
+			
+			if (type == SectorConstants.SECTOR_TYPE_RESIDENTIAL) result *= 1.5;
+			if (type == SectorConstants.SECTOR_TYPE_MAINTENANCE) result *= 0.5;
+			if (type == SectorConstants.SECTOR_TYPE_COMMERCIAL) result *= 0.5;
+
+			if (!isReuse) {
+				let centrality = WorldCreatorHelper.getPositionCentrality(position);
+				if (centrality > 0.75) result = result *= 0.5;
+				if (centrality < 0.25) result = result *= 1.25;
+			}
+
+			if (wealth < 3) result = result * 0.9;
+			if (wealth > 7) result = result * 0.9;
+			if (wealth > 8) result = result * 0.9;
+			if (wealth > 9) result = result * 0.9;
+
+			return Math.round(result * 20) / 20;
+		},
+
+		getDistrictStyle: function (levelVO, stage, type, wealth, affiliation, i) {
+			let possibleResults = [];
+
+			if (levelVO.level == this.CITY_STATE_LEVEL && stage == WorldConstants.CAMP_STAGE_LATE) {
+				possibleResults.push(SectorConstants.STYLE_KIEVAN);
+				possibleResults.push(SectorConstants.STYLE_CITTADINIAN);
+				return WorldCreatorRandom.randomItemFromArray(levelVO.seed, possibleResults);
+			}
+
+			possibleResults.push(levelVO.levelStyle);
+			possibleResults.push(levelVO.levelStyle);
+
+			if (wealth < 4) possibleResults.push(SectorConstants.STYLE_SLUM_GENERAL);
+			if (wealth < 4 && i > 0) possibleResults.push(SectorConstants.STYLE_SLUM_HUN);
+			if (type == SectorConstants.SECTOR_TYPE_INDUSTRIAL) possibleResults.push(SectorConstants.STYLE_INDUSTRIAL);
+			if (type == SectorConstants.SECTOR_TYPE_MAINTENANCE) possibleResults.push(SectorConstants.STYLE_HUMANIST);
+			if (type == SectorConstants.SECTOR_TYPE_PUBLIC && levelVO.level > 12) possibleResults.push(SectorConstants.STYLE_HUMANIST);
+			if (type == SectorConstants.SECTOR_TYPE_RESIDENTIAL && levelVO.level > 16 && wealth > 3) possibleResults.push(SectorConstants.STYLE_NEOWESTERN);
+			if (type == SectorConstants.SECTOR_TYPE_COMMERCIAL && levelVO.level > 18) possibleResults.push(SectorConstants.STYLE_MODERN);
+			if (levelVO.level < 3) possibleResults.push(SectorConstants.STYLE_WESTERN);
+			if (affiliation == SectorConstants.SECTOR_AFFILIATION_AGRICORP) possibleResults.push(SectorConstants.STYLE_HUMANIST);
+			if (affiliation == SectorConstants.SECTOR_AFFILIATION_MINECORP) possibleResults.push(SectorConstants.STYLE_INDUSTRIAL);
+			if (levelVO.level > 1 && levelVO.level < 10) possibleResults.push(SectorConstants.STYLE_KARBOQUE);
+
+			// TODO figure out when to use STYLE_CITTADINIAN, STYLE_KIEVAN
+
+			return WorldCreatorRandom.randomItemFromArray(levelVO.seed / 2 + levelVO.level * 3 + i, possibleResults);
+		},
 		
 		getLevelPOICenterPosition: function (worldVO, levelVO) {
 			let pois = [];
 			if (levelVO.isCampable) {
-				pois.push(new PositionVO(levelVO.level, 0, 0));
+				pois.push(levelVO.levelMapCenterPosition);
 				pois.push(levelVO.campPosition);
 			} else {
 				if (levelVO.passageUpPosition) pois.push(levelVO.passageUpPosition);

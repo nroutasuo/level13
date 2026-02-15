@@ -182,6 +182,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 					if (features.level > 13) addOptions("an-items", [ "research samples" ]);
 					break;
 				case SectorConstants.SECTOR_TYPE_SLUM:
+					// TODO reuse these for other types based on wealth
 					addOptions("n-sector", [ "shanty town", "landfill site", "slum village" ]);
 					addOptions("a-street", [ "shabby", "chaotic" ]);
 					addOptions("a-street-past", [ "gloomy", "crowded", "lively" ]);
@@ -203,8 +204,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				addOptions("n-street", [ "square", "area", "hall" ]);
 				if (features.sectorType == SectorConstants.SECTOR_TYPE_RESIDENTIAL || features.sectorType == SectorConstants.SECTOR_TYPE_COMMERCIAL)
 					addOptions("n-street", [ "boulevard", "avenue", "arcade" ]);
-				if (features.sectorType != SectorConstants.SECTOR_TYPE_SLUM)
-					addOptions("n-street", [ "throughfare" ]);
+				addOptions("n-street", [ "throughfare" ]);
 				addOptions("a-street", [ "wide", "spacious" ]);
 			} else if (features.buildingDensity < 9) {
 				addOptions("n-street", [ "street", "street", "alley", "complex", "sector", "passageway", "arcade", "tunnel" ]);
@@ -314,12 +314,10 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				addOptions("a-building", [ "dated" ]);
 				addOptions("an-decos", [ "faux windows" ])
 			} else if (features.level < 18) {
-				if (features.sectorType != SectorConstants.SECTOR_TYPE_SLUM) {
-					addOptions("a-street", [ "modern" ]);
-					addOptions("a-building", [ "modern", "stylish", "functional" ]);
-				}
+				addOptions("a-street", [ "modern" ]);
+				addOptions("a-building", [ "modern", "stylish", "functional" ]);
 			} else {
-				if (features.sectorType != SectorConstants.SECTOR_TYPE_SLUM) {
+				if (features.wealth > 5) {
 					addOptions("a-street", [ "modern" ]);
 					addOptions("a-building", [ "glass-walled", "stylish" ]);
 				}
@@ -1085,7 +1083,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 			let sectorType = features.sectorType;
 			let condition = features.getCondition();
 			let isBadCondition = condition == SectorConstants.SECTOR_CONDITION_RUINED || condition == SectorConstants.SECTOR_CONDITION_DAMAGED;
-			let isHumbleSectorType = sectorType == SectorConstants.SECTOR_TYPE_SLUM || sectorType == features.SECTOR_TYPE_MAINTENANCE || sectorType == SectorConstants.SECTOR_TYPE_INDUSTRIAL;
+			let isHumbleSectorType = sectorType == features.SECTOR_TYPE_MAINTENANCE || sectorType == SectorConstants.SECTOR_TYPE_INDUSTRIAL;
 			let isLivable = !features.hasHazards() && !features.sunlit && features.buildingDensity > 1 && features.buildingDensity < 8;
 
 			switch (resourceName) {
@@ -1349,10 +1347,10 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				 && !hasHazards && type != SectorConstants.SECTOR_TYPE_INDUSTRIAL) {
 				return "stream";
 			}
-			if (type == SectorConstants.SECTOR_TYPE_SLUM && featuresComponent.damage < 3 && featuresComponent.buildingDensity < 8) {
+			if (featuresComponent.damage < 3 && featuresComponent.buildingDensity < 8) {
 				return "old well";
 			}
-			if (type != SectorConstants.SECTOR_TYPE_SLUM && type != SectorConstants.SECTOR_TYPE_MAINTENANCE && featuresComponent.wear < 5 && featuresComponent.damage < 3) {
+			if (type != SectorConstants.SECTOR_TYPE_MAINTENANCE && featuresComponent.wear < 5 && featuresComponent.damage < 3) {
 				return "drinking fountain";
 			}
 			if (featuresComponent.wear > 6 || featuresComponent.damage > 3) {
@@ -1591,6 +1589,8 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		let t_M = SectorConstants.SECTOR_TYPE_MAINTENANCE;
 		let t_C = SectorConstants.SECTOR_TYPE_COMMERCIAL;
 		let t_P = SectorConstants.SECTOR_TYPE_PUBLIC;
+
+		// TODO use wealth and reuse slum descriptions
 		let t_S = SectorConstants.SECTOR_TYPE_SLUM;
 		
 		// brackets for values like building density, wear, damage
@@ -1748,6 +1748,8 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		var t_M = SectorConstants.SECTOR_TYPE_MAINTENANCE;
 		var t_C = SectorConstants.SECTOR_TYPE_COMMERCIAL;
 		var t_P = SectorConstants.SECTOR_TYPE_PUBLIC;
+
+		// TODO use wealth and reuse slum descriptions
 		var t_S = SectorConstants.SECTOR_TYPE_SLUM;
 		
 		var wt_C = SectorConstants.WAYMARK_TYPE_CAMP;

@@ -11,6 +11,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 
 			this.additionalCampPositions = [];
 			this.campPosition = null; // PositionVO
+			this.districts = []; // list of DistrictVO 
 			this.features = []; // list of WorldFeatureVO
 			this.gangs = []; // list of GangVO
 			this.habitability = 1;
@@ -44,10 +45,8 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			this.sectors = [];
 			
 			// caches for data used during generation
-			this.neighboursDictCacheContext = "LevelVO-nd-" + this.level;
-			this.neighboursListCacheContext = "LevelVO-nl-" + this.level;
-			VOCache.create(this.neighboursDictCacheContext, 300);
-			VOCache.create(this.neighboursListCacheContext, 300);
+			VOCache.create(this.getNeighboursDictCacheContext(), 300);
+			VOCache.create(this.getNeighboursListCacheContext(), 300);
 			this.sectorNeighourCountCache = {};
 			
 			this.resetCaches();
@@ -55,8 +54,8 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 
 		// called when sector added, movement blocker added, or stage set
 		resetPaths: function () {
-			VOCache.clear(this.neighboursDictCacheContext);
-			VOCache.clear(this.neighboursListCacheContext);
+			VOCache.clear(this.getNeighboursDictCacheContext());
+			VOCache.clear(this.getNeighboursListCacheContext());
 			this.sectorNeighourCountCache = {};
 		},
 
@@ -75,11 +74,8 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 		
 		// called after world creator caller is done with the world vo (entities created, debug vis ready)
 		resetCaches: function () {
-			VOCache.clear(this.neighboursDictCacheContext);
-			VOCache.clear(this.neighboursListCacheContext);
-			delete this.neighboursDictCacheContext;
-			delete this.neighboursListCacheContext;
-			delete this.sectorNeighourCountCache;
+			VOCache.clear(this.getNeighboursDictCacheContext());
+			VOCache.clear(this.getNeighboursListCacheContext());
 
 			this.invalidPositions = [];
 			this.localeSectors = [];
@@ -92,6 +88,14 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 				let sectorVO = this.sectors[i];
 				sectorVO.resetCaches();
 			}
+		},
+
+		getNeighboursDictCacheContext: function () {
+			return "LevelVO-nd-" + this.level;
+		},
+
+		getNeighboursListCacheContext: function () {
+			return "LevelVO-nl-" + this.level;
 		},
 		
 		addSector: function (sectorVO) {
@@ -182,7 +186,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 		
 		getNeighbours: function (sectorX, sectorY, stage) {
 			let cacheKey = VOCache.getDefaultKey(sectorX, sectorY, stage);
-			let cached = VOCache.getVO(this.neighboursDictCacheContext, cacheKey);
+			let cached = VOCache.getVO(this.getNeighboursDictCacheContext(), cacheKey);
 			if (cached) cached;
 			
 			var neighbours = {};
@@ -196,13 +200,13 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 					neighbours[direction] = neighbour;
 				}
 			}
-			VOCache.addVO(this.neighboursDictCacheContext, cacheKey, neighbours);
+			VOCache.addVO(this.getNeighboursDictCacheContext(), cacheKey, neighbours);
 			return neighbours;
 		},
 		
 		getNeighbourList: function (sectorX, sectorY, stage) {
 			let cacheKey = VOCache.getDefaultKey(sectorX, sectorY, stage);
-			let cached = VOCache.getVO(this.neighboursListCacheContext, cacheKey);
+			let cached = VOCache.getVO(this.getNeighboursListCacheContext(), cacheKey);
 			if (cached) {
 				return cached;
 			}
@@ -217,7 +221,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 				}
 			}
 
-			VOCache.addVO(this.neighboursListCacheContext, cacheKey, neighbours);
+			VOCache.addVO(this.getNeighboursListCacheContext(), cacheKey, neighbours);
 			return neighbours;
 		},
 		
@@ -315,6 +319,10 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			}
 		},
 
+		hasStage: function (stage) {
+			return this.stageCenterPositions[stage].length > 0;
+		},
+
 		hasConnectionPointAt: function (sectorX, sectorY) {
 			return this.allConnectionPoints.filter(p => p.position.sectorX == sectorX && p.position.sectorY == sectorY).length > 0;
 		},
@@ -373,6 +381,28 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 				if (this.features[i].containsPosition(pos)) {
 					result.push(this.features[i]);
 				}
+			}
+
+			return result;
+		},
+
+		getDistrictIndexByPosition: function (pos, stage) {
+			let result = -1;
+			let resultVO = null;
+			let resultDistance = 9999;
+
+			for (let i = 0; i < this.districts.length; i++) {
+				let districtVO = this.districts[i];
+				if (districtVO.stage != stage) continue;
+				let position = districtVO.adjustedPosition || districtVO.position;
+				let dist = PositionConstants.getDistanceTo(pos, position);
+				let adjustedDist = dist;
+
+				if (adjustedDist > resultDistance) continue;
+
+				result = i;
+				resultVO = districtVO;
+				resultDistance = adjustedDist;
 			}
 
 			return result;

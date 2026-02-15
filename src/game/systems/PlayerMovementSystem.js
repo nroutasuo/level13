@@ -152,10 +152,8 @@ define([
 		updateStatsAfterMove: function (position, oldSector, newSector) {
 			let pathToCamp = GameGlobals.playerActionsHelper.getPathToNearestCamp();
 			let distanceToCamp = pathToCamp ? pathToCamp.length : -1;
-			let distanceToCenter = PositionConstants.getDistanceTo(position, new PositionVO(position.level, 0, 0, false));
 
 			GameGlobals.gameState.increaseGameStatHighScore("mostDistantSectorFromCampVisited", position, distanceToCamp);
-			GameGlobals.gameState.increaseGameStatHighScore("mostDistantSectorFromCenterVisited", position, distanceToCenter);
 			if (newSector.get(SectorFeaturesComponent).sunlit) GameGlobals.playerActionFunctions.unlockFeature("sunlight");
 		},
 

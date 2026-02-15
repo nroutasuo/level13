@@ -5,17 +5,15 @@ define([
 	'worldcreator/WorldCreatorRandom',
 	'worldcreator/WorldFeatureVO',
 	'worldcreator/StageVO',
-	'worldcreator/DistrictVO',
 	'game/vos/AreaVO',
 	'game/vos/PositionVO',
 	'game/constants/MovementConstants',
-	'game/constants/SectorConstants',
 	'game/constants/PositionConstants',
 	'game/constants/WorldConstants',
 ], function (
 	WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, 
-	WorldFeatureVO, StageVO, DistrictVO, AreaVO, PositionVO, 
-	MovementConstants, SectorConstants, PositionConstants, WorldConstants) {
+	WorldFeatureVO, StageVO, AreaVO, PositionVO, 
+	MovementConstants, PositionConstants, WorldConstants) {
 	
 	let WorldSkeletonGenerator = {
 
@@ -31,7 +29,6 @@ define([
 			worldVO.campPositions = worldTemplateVO.campPositions || this.generateCampPositions(seed, worldVO.features, worldVO.levelCenterPositions);
 			worldVO.passagePositions = worldTemplateVO.passagePositions || this.generatePassagePositions(seed, worldVO.features, worldVO.campPositions, worldVO.levelCenterPositions);
 			worldVO.passageTypes = worldTemplateVO.passageTypes || this.generatePassageTypes(seed, worldVO);
-			worldVO.districts = this.generateDistricts(seed, worldVO.features);
 		},
 
 		getTopLevel: function (seed, worldTemplateVO) {
@@ -99,8 +96,9 @@ define([
 			result.push(new WorldFeatureVO(WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER, gigaAreas));
 
 			// pillars (in a grid)
-			for (let x = -50; x <= 50; x += 50) {
-				for (let y = -50; y <= 50; y += 50) {
+			let centerDist = WorldConstants.WORLD_ZONE_GRID_SIZE;
+			for (let x = -centerDist; x <= centerDist; x += centerDist) {
+				for (let y = -centerDist; y <= centerDist; y += centerDist) {
 					for (let dx = -10; dx <= 10; dx += 20) {
 						for (let dy = -10; dy <= 10; dy += 20) {
 							let pillarAreas = [];
@@ -216,9 +214,9 @@ define([
 		},
 		
 		generateStages: function (seed) {
-			var stages = [];
-			for (var campOrdinal = 1; campOrdinal <= WorldConstants.CAMPS_TOTAL; campOrdinal++) {
-				var levels = WorldCreatorHelper.getLevelsForCamp(seed, campOrdinal);
+			let stages = [];
+			for (let campOrdinal = 1; campOrdinal <= WorldConstants.CAMPS_TOTAL; campOrdinal++) {
+				let levels = WorldCreatorHelper.getLevelsForCamp(seed, campOrdinal);
 				stages.push(new StageVO(campOrdinal, WorldConstants.CAMP_STAGE_EARLY, [ levels[0] ], WorldCreatorHelper.getNumSectorsForStage(seed, campOrdinal, WorldConstants.CAMP_STAGE_EARLY)));
 				stages.push(new StageVO(campOrdinal, WorldConstants.CAMP_STAGE_LATE, levels, WorldCreatorHelper.getNumSectorsForStage(seed, campOrdinal, WorldConstants.CAMP_STAGE_LATE)));
 			}
@@ -276,44 +274,6 @@ define([
 				result[l] = { up: up, down: down };
 			}
 			return result;
-		},
-		
-		generateDistricts: function (seed, features) {
-			let result = {};
-			let topLevel = WorldCreatorHelper.getHighestLevel(seed);
-			let bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
-			
-			// districts on specific levels
-			for (let l = topLevel; l >= bottomLevel; l--) {
-				result[l] = [];
-				if (l == 14) {
-					this.generateDistrict(seed, result, SectorConstants.SECTOR_TYPE_INDUSTRIAL, l, 0, 0, 8, 8);
-				}
-			}
-			
-			// districts around features
-			for (let i = 0; i < features.length; i++) {
-				let feature = features[i];
-				switch (feature.type) {
-					case WorldConstants.FEATURE_HOLE_MOUNTAIN:
-						this.generateDistrictAround(seed, result, feature, SectorConstants.SECTOR_TYPE_INDUSTRIAL, 2, bottomLevel, topLevel);
-						break;
-				}
-			}
-			
-			return result;
-		},
-		
-		generateDistrictAround: function (seed, districts, feature, type, padding, minLevel, maxLevel) {
-			for (var l = minLevel; l <= maxLevel; l++) {
-				if (feature.spansLevel(l)) {
-					this.generateDistrict(seed, districts, type, l, feature.posX, feature.posY, feature.sizeX + padding * 2, feature.sizeY + padding * 2);
-				}
-			}
-		},
-		
-		generateDistrict: function (seed, districts, type, level, x, y, sizeX, sizeY) {
-			districts[level].push(new DistrictVO(level, x, y, sizeX, sizeY, type));
 		},
 		
 		getPassageDownPosition: function (seed, level, features, levelCenter, passageUp, campPos1, campPos2) {

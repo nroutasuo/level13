@@ -117,6 +117,10 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 			}
 			return undefined;
 		},
+
+		getPositionOnGrid: function (pos, gridSize) {
+			return new PositionVO(pos.level, Math.round(pos.sectorX / gridSize) * gridSize, Math.round(pos.sectorY / gridSize) * gridSize);
+		},
 		
 		isBetween: function (pos1, pos2, testPos) {
 			var minx = Math.min(pos1.sectorX, pos2.sectorX);

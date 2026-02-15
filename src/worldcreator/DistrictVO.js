@@ -1,45 +1,66 @@
-define(['ash'], function (Ash) {
+define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 
-	var DistrictVO = Ash.Class.extend({
+	let DistrictVO = Ash.Class.extend({
 		
-		level: 0,
-		posX: 0,
-		posY: 0,
-		sizeX: 0,
-		sizeY: 0,
-		type: null,
+		position: null, // PositionVO
+		stage: null,
+		type: null, // sector type
+		size: 1, // weight, 0.5 - 2
+
+		affiliation: null, // sector affiliation, can be null
+		style: null, // sector (architectural) style
+		wear: 0, // 0-10
+		wealth: 0, // 0-10
+
+		adjustedPosition: null, // PositionVO (not saved)
 		
-		constructor: function (level, posX, posY, sizeX, sizeY, type) {
-			this.level = level;
-			this.posX = posX;
-			this.posY = posY;
-			this.sizeX = sizeX;
-			this.sizeY = sizeY;
+		constructor: function (position, stage, type) {
+			this.position = position || new PositionVO();
+			this.stage = stage;
 			this.type = type;
 		},
-		
-		containsPosition: function (position) {
-			return this.level == position.level && position.sectorX >= this.getMinX() && position.sectorX <= this.getMaxX() && position.sectorY >= this.getMinY() && position.sectorY <= this.getMaxY();
+
+		clone: function () {
+			let copy = new DistrictVO(this.position, this.stage, this.type);
+
+			copy.size = this.size;
+			copy.affiliation = this.affiliation;
+			copy.style = this.style;
+			copy.wear = this.wear;
+			copy.wealth = this.wealth;
+
+			return copy;
+		},
+
+		getCustomSaveObject: function () {
+			let copy = {};
+
+			copy.position = this.position.getCustomSaveObjectWithoutCamp();
+			copy.stage = this.stage;
+			copy.type = this.type;
+			copy.size = this.size;
+			copy.affiliation = this.affiliation;
+			copy.style = this.style;
+			copy.wear = this.wear;
+			copy.wealth = this.wealth;
+
+			return copy;
+		},
+
+		customLoadFromSave: function (data) {
+			this.position = new PositionVO();
+			this.position.customLoadFromSave(data.position);
+			this.stage = data.stage;
+			this.type = data.type;
+			this.size = data.size;
+			this.affiliation = data.affiliation;
+			this.style = data.style;
+			this.wear = data.wear;
+			this.wealth = data.wealth;
 		},
 		
-		getMinX: function () {
-			if (this.sizeX <= 1) return this.posX;
-			return this.posX - Math.floor((this.sizeX-1)/2);
-		},
-		
-		getMaxX: function () {
-			if (this.sizeX <= 1) return this.posX;
-			return this.posX + Math.ceil((this.sizeX-1)/2);
-		},
-		
-		getMinY: function () {
-			if (this.sizeY <= 1) return this.posY;
-			return this.posY - Math.floor((this.sizeY-1)/2);
-		},
-		
-		getMaxY: function () {
-			if (this.posY <= 1) return this.posY;
-			return this.posY + Math.ceil((this.sizeY-1)/2);
+		equals: function (districtVO) {
+			return this.position.equals(districtVO.position) && this.stage == districtVO.stage && this.type == districtVO.type && this.size == districtVO.size && this.affiliation == districtVO.affiliation && this.style == districtVO.style && this.wear == districtVO.wear && this.wealth == districtVO.wealth;
 		},
 		
 	});

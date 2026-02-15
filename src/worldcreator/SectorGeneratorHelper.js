@@ -3,13 +3,15 @@ define([
 	'ash',
 	'game/GameGlobals',
 	'worldcreator/WorldCreatorConstants',
+	'game/constants/ItemConstants',
 	'game/constants/LevelConstants',
 	'game/constants/MovementConstants',
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
 	'game/constants/WorldConstants',
+	'worldcreator/WorldCreatorHelper',
 	'worldcreator/WorldCreatorLogger',
-], function (Ash, GameGlobals, WorldCreatorConstants, LevelConstants, MovementConstants, PositionConstants, SectorConstants, WorldConstants, WorldCreatorLogger) {
+], function (Ash, GameGlobals, WorldCreatorConstants, ItemConstants, LevelConstants, MovementConstants, PositionConstants, SectorConstants, WorldConstants, WorldCreatorHelper, WorldCreatorLogger) {
 
 	let SectorGeneratorHelper = {
 
@@ -161,6 +163,94 @@ define([
 			return true;
 		},
 
+		getPossibleLocaleTypesForSector: function (levelVO, sectorVO) {
+			let possibleTypes = [];
+			let l = levelVO.level;
+			let sectorType = sectorVO.sectorType;
+			let distanceToCamp = WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO);
+
+			// always possible
+			possibleTypes.push(localeTypes.transport);
+
+			// level-based
+			let topLevel = WorldCreatorHelper.getHighestLevel(levelVO.seed);
+			if (l >= topLevel - 1) possibleTypes.push(localeTypes.lab);			
+			if (l == 14) possibleTypes.push(localeTypes.factory);
+			
+			let isValidForSettlement = distanceToCamp > 3 && levelVO.level !== 13 && levelVO.isCampable;
+				
+			// sector type based
+			switch (sectorType) {
+				case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
+					possibleTypes.push(localeTypes.grocery);
+					possibleTypes.push(localeTypes.grocery);
+					possibleTypes.push(localeTypes.house);
+					possibleTypes.push(localeTypes.house);
+					possibleTypes.push(localeTypes.warehouse);
+					if (isValidForSettlement) {
+						possibleTypes.push(localeTypes.camp);
+					}
+					break;
+
+				case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
+					possibleTypes.push(localeTypes.factory);
+					possibleTypes.push(localeTypes.factory);
+					possibleTypes.push(localeTypes.junkyard);
+					possibleTypes.push(localeTypes.warehouse);
+					possibleTypes.push(localeTypes.warehouse);
+					break;
+
+				case SectorConstants.SECTOR_TYPE_MAINTENANCE:
+					possibleTypes.push(localeTypes.bunker);
+					possibleTypes.push(localeTypes.maintenance);
+					possibleTypes.push(localeTypes.maintenance);
+					possibleTypes.push(localeTypes.junkyard);
+					possibleTypes.push(localeTypes.transport);
+					break;
+
+				case SectorConstants.SECTOR_TYPE_COMMERCIAL:
+					possibleTypes.push(localeTypes.farm);
+					possibleTypes.push(localeTypes.grocery);
+					possibleTypes.push(localeTypes.grocery);
+					possibleTypes.push(localeTypes.lab);
+					possibleTypes.push(localeTypes.market);
+					possibleTypes.push(localeTypes.market);
+					possibleTypes.push(localeTypes.office);
+					possibleTypes.push(localeTypes.office);
+					possibleTypes.push(localeTypes.restaurant);
+					possibleTypes.push(localeTypes.store);
+					possibleTypes.push(localeTypes.store);
+					possibleTypes.push(localeTypes.warehouse);
+					break;
+					
+				case SectorConstants.SECTOR_TYPE_PUBLIC:
+					possibleTypes.push(localeTypes.lab);
+					possibleTypes.push(localeTypes.library);
+					possibleTypes.push(localeTypes.office);
+					possibleTypes.push(localeTypes.hospital);
+					break;
+					
+				case SectorConstants.SECTOR_TYPE_EMPTY:
+					possibleTypes.push(localeTypes.maintenance);
+					break;
+
+				default:
+					WorldCreatorLogger.w("Unknown sector type " + sectorType);
+					return null;
+			}
+
+			// other
+			if (sectorVO.sunlit) {
+				possibleTypes.push(localeTypes.farm);
+			}
+
+			if (sectorVO.wealth < 4) {				
+				possibleTypes.push(localeTypes.junkyard);
+			}
+
+			return possibleTypes;
+		},
+
 		isValidSectorForLocale: function (sectorVO) {
 			if (sectorVO.isCamp) return false;
 			if (sectorVO.isPassageUp) return false;
@@ -173,6 +263,7 @@ define([
 		getLocaleSectorScore: function (levelVO, sectorVO) {
 			let score = 0;
 			let zone = sectorVO.zone;
+			if (sectorVO.sectorType == SectorConstants.SECTOR_TYPE_EMPTY) score--;
 			if (zone == WorldConstants.ZONE_ENTRANCE) score--;
 			if (zone == WorldConstants.ZONE_EXTRA_CAMPABLE) score--;
 			if (zone == WorldConstants.ZONE_CAMP_TO_PASSAGE) score--;
@@ -184,6 +275,14 @@ define([
 			let numNeighours = levelVO.getNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY);
 			if (numNeighours == 1) score++;
 			return score;
+		},
+
+		getSectorItemScore: function (sectorVO, itemIDs) {
+			let itemTags = ItemConstants.getCombinedItemTags(itemIDs);
+			if (itemTags.length == 0) return 0;
+			let sectorItemTags = ItemConstants.getSectorItemTags(sectorVO.sectorType, sectorVO.wear, sectorVO.hazards, false, sectorVO.sunlit);
+			let sharedTags = itemTags.filter(tag => sectorItemTags.indexOf(tag) >= 0);
+			return sharedTags.length;
 		},
 		
 	};

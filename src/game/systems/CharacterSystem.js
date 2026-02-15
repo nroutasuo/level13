@@ -388,7 +388,7 @@ define([
 				validTypes.push(CharacterConstants.characterTypes.shaman);
 			}
 
-			if (sectorFeatures.sectorType == SectorConstants.SECTOR_TYPE_SLUM) {
+			if (sectorFeatures.wealth < 5) {
 				validTypes.push(CharacterConstants.characterTypes.slumRefugee);
 			}
 			

@@ -25,6 +25,7 @@ define([
 		generateLevel: function (seed, worldVO, levelTemplateVO, levelVO) {
 			levelVO.additionalCampPositions = this.getAdditionalCampPositions(seed, worldVO, levelTemplateVO, levelVO);
 
+			this.generateDistricts(seed, worldVO, levelTemplateVO, levelVO);
 			this.generateZones(seed, worldVO, levelTemplateVO, levelVO);
 			this.generateBuildingProjectSpots(seed, worldVO, levelTemplateVO, levelVO);
 		},
@@ -77,6 +78,28 @@ define([
 			}
 
 			return result;
+		},
+
+		generateDistricts: function (seed, worldVO, levelTemplateVO, levelVO) {
+			// first pass: assign district based on initial district centers
+			for (let i = 0; i < levelVO.sectors.length; i++) {
+				let sectorVO = levelVO.sectors[i];
+				sectorVO.districtIndex = levelVO.getDistrictIndexByPosition(sectorVO.position, sectorVO.stage);
+			}
+
+			// calculate new centers weighted by actual existing sectors
+			for (let i = 0; i < levelVO.districts.length; i++) {
+				let districtVO = levelVO.districts[i];
+				let initialSectors = levelVO.sectors.filter(s => s.districtIndex == i);
+				let initialSectorPositions = initialSectors.map(s => s.position);
+				districtVO.adjustedPosition = PositionConstants.getMiddlePoint(initialSectorPositions, true);
+			}
+
+			// second pass: assign district based on new centers
+			for (let i = 0; i < levelVO.sectors.length; i++) {
+				let sectorVO = levelVO.sectors[i];
+				sectorVO.districtIndex = levelVO.getDistrictIndexByPosition(sectorVO.position, sectorVO.stage);
+			}
 		},
 		
 		generateZones: function (seed, worldVO, levelTemplateVO, levelVO) {

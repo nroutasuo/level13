@@ -6,6 +6,7 @@ define([
 	'game/constants/LevelConstants',
 	'game/constants/MovementConstants',
 	'game/constants/PositionConstants',
+	'game/constants/SectorConstants',
 	'game/constants/WorldConstants',
 	'game/constants/UpgradeConstants',
 	'worldcreator/WorldCreatorConstants',
@@ -13,7 +14,7 @@ define([
 	'worldcreator/WorldCreatorRandom',
 	'worldcreator/WorldTemplateVO',
 ], function (
-	Ash, MathUtils, ObjectUtils, ItemsHelper, LevelConstants, MovementConstants, PositionConstants, WorldConstants, UpgradeConstants, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldTemplateVO
+	Ash, MathUtils, ObjectUtils, ItemsHelper, LevelConstants, MovementConstants, PositionConstants, SectorConstants, WorldConstants, UpgradeConstants, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldTemplateVO
 ) {
 	let context = "WorldValidator";
 
@@ -37,6 +38,7 @@ define([
 				this.checkWorldCampPositions, 
 				this.checkWorldPassages,
 				this.checkWorldFeatures,
+				this.checkWorldDistricts,
 				this.checkWorldMatchesTemplate,
 			];
 
@@ -141,13 +143,13 @@ define([
 				"pendingConnectionPoints", 
 				// validation data (used during world gen and validation)
 				"maxSectors", 
-				"neighboursCacheContext", 
 				"requiredPaths", 
 			];
 			let notSavedKeysSector = [ 
 				// derived data
 				"criticalPathTypes", 
 				"distanceToCamp",
+				"districtIndex",
 				"features",
 				"hasRegularEnemies", 
 				"isConnectionPoint", 
@@ -185,6 +187,8 @@ define([
 							let levelTemplateVOValue = levelTemplateVO[key2];
 							if (notSavedKeysLevel.indexOf(key2) >= 0 && !levelTemplateVOValue) continue;
 							if (levelVOValue == levelTemplateVOValue) continue;
+							if (levelVOValue.equals && levelVOValue.equals(levelTemplateVOValue)) continue;
+
 							if (key2 === "sectors") {
 								for (let s in levelVOValue) {
 									let sectorVO = levelVOValue[s];
@@ -194,8 +198,8 @@ define([
 										let key3 = sectorProperties[k];
 										let sectorVOValue = sectorVO[key3];
 										let sectorTemplateVOValue = sectorTemplateVO[key3];
-										if (notSavedKeysSector.indexOf(key3) >= 0 && !sectorTemplateVOValue) continue;
 										if (sectorVOValue == sectorTemplateVOValue) continue;
+										if (notSavedKeysSector.indexOf(key3) >= 0 && !sectorTemplateVOValue) continue;
 										issues.push({ 
 											severity: WorldValidator.SEVERITY_CRITICAL, 
 											desc: "SectorVO->SectorTemplateVO mismatch: " + key3 + " [" + sectorVOValue + "] [" +  sectorTemplateVOValue + "]"
@@ -204,6 +208,19 @@ define([
 								}
 								continue;
 							}
+
+							if (Array.isArray(levelVOValue) && levelVOValue.length == levelTemplateVOValue.length) {
+								let hasWrongValues = false;
+								for (let i = 0; i < levelVOValue.length; i++) {
+									if (!levelVOValue[i].equals(levelTemplateVOValue[i])) {
+										hasWrongValues = true;
+										break;
+									}
+								}
+
+								if (!hasWrongValues) continue;
+							}
+
 							issues.push({ 
 								severity: WorldValidator.SEVERITY_CRITICAL, 
 								desc: "LevelVO->LevelTemplateVO mismatch: " + key2 + " [" + levelVOValue + "] [" +  levelTemplateVOValue + "]"
@@ -340,6 +357,53 @@ define([
 				
 				if (reqs.max >= 0 && featureVOs.length > reqs.max)
 					issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "too many features of type " + reqs.type + " defined" });
+			}
+
+			return { isValid: issues.length === 0, issues: issues };
+		},
+
+		checkWorldDistricts: function (worldVO) {
+			let issues = [];
+
+			let allDistrictTypes = [];
+			let allDistrictStyles = [];
+
+			for (let l = worldVO.bottomLevel; l <= worldVO.topLevel; l++) {
+				let districts = worldVO.levels[l].districts;
+				let levelDistrictTypes = [];
+
+				if (districts.length < 2) {
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too few districts (" + districts.length + ") on level " + l });
+					continue;
+				}
+
+				for (let i = 0; i < districts.length; i++) {
+					let districtVO = districts[i];
+					let districtType = districtVO.type;
+					if (allDistrictTypes.indexOf(districtType) < 0) allDistrictTypes.push(districtType);
+					if (levelDistrictTypes.indexOf(districtType) < 0) levelDistrictTypes.push(districtType);
+
+					let districtStyle = districtVO.style;
+					if (allDistrictStyles.indexOf(districtStyle) < 0) allDistrictStyles.push(districtStyle);
+				}
+
+				if (l == 14) continue;
+
+				if (levelDistrictTypes.length < 2) {
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too few district district types (" + levelDistrictTypes.length + ") on level " + l + " (" + districts.length + " districts)" });
+				}
+			}
+
+			if (allDistrictTypes.length < 4) {
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too few district district types (" + allDistrictTypes.length + ") in world" });
+			}
+
+			if (allDistrictStyles.length < 6) {
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too few district district styles (" + allDistrictStyles.length + ") in world" });
+			}
+
+			if (allDistrictStyles.indexOf(SectorConstants.STYLE_CITTADINIAN) < 0 && allDistrictStyles.indexOf(SectorConstants.STYLE_KIEVAN) < 0) {
+				issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "no city state found in world" });
 			}
 
 			return { isValid: issues.length === 0, issues: issues };
@@ -656,6 +720,7 @@ define([
 			for (let i = 0; i < sunlitSectors.length; i++) {
 				let sectorVO = sunlitSectors[i];
 				let neighbours = levelVO.getNeighbourList(sectorVO.position.sectorX, sectorVO.position.sectorY);
+				if (!neighbours || neighbours.length <= 0) continue;
 				let sunlitNeighbours = neighbours.filter(s => s.sunlit > 0);
 				if (sunlitNeighbours.length == 0) {
 					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "sunlit sector without sunlit neighbours at " + sectorVO.position });
@@ -667,6 +732,12 @@ define([
 
 			if (numSunlitSectorsWithOnlyOneSunlitNeighbour / sunlitCount > 0.15)
 				issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "too many sunlit sectors with only one sunlit neighbour on level " + levelVO.level });
+
+
+			let beaconSpots = levelVO.sectors.filter(s => !s.sunlit && s.buildingDensity > 1 && s.buildingDensity < 10 && !s.hazards.hasHazards());
+			let minBeaconSpots = levelVO.habitability > 0 ? 5 : 3;
+			if (beaconSpots.length < minBeaconSpots)
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "not enough valid beacon ("+ beaconSpots.length + "/" + minBeaconSpots + ") spots on level " + levelVO.level });
 
 			return { isValid: issues.length === 0, issues: issues };
 		},

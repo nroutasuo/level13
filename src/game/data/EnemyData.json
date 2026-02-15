@@ -133,6 +133,7 @@
 	},
 	"bandit__seasoned": {
 		"campOrdinal": 15,
+		"environment": [ "rich" ],
 		"name": "seasoned bandit"
 	},
 	"bandit__surface": {
@@ -161,7 +162,7 @@
 			"water"
 		],
 		"enemyType": "bandit",
-		"environment": [ "nohazard" ],
+		"environment": [ "nohazard", "inhabited" ],
 		"name": "berserk",
 		"rarity": 30,
 		"speed": 1
@@ -171,7 +172,7 @@
 		"campOrdinal": 8,
 		"difficulty": 6,
 		"enemyType": "big_animal",
-		"environment": [ "sunlit", "ground" ],
+		"environment": [ "sunlit", "ground", "nature" ],
 		"name": "black bear",
 		"size": 1.4,
 		"speed": 0.9
@@ -264,7 +265,7 @@
 		"campOrdinal": 2,
 		"difficulty": 4,
 		"enemyType": "small_animal",
-		"environment": [ "dark" ],
+		"environment": [ "dark", "dense" ],
 		"healthFactor": 1.2,
 		"name": "cave bat",
 		"rarity": 20,
@@ -356,6 +357,7 @@
 	},
 	"cockroach__template": {
 		"enemyType": "small_animal",
+		"environment": [ "poor" ],
 		"size": 0.3
 	},
 	"condor": {
@@ -420,7 +422,7 @@
 		"attackRatio": 0.45,
 		"difficulty": 3,
 		"enemyType": "robot",
-		"environment": [ "inhabited", "nogang" ],
+		"environment": [ "inhabited", "nogang", "nopoor" ],
 		"shieldRatio": 1,
 		"size": 0.5,
 		"speed": 1.15
@@ -429,7 +431,7 @@
 		"attackRatio": 0.6,
 		"campOrdinal": 4,
 		"enemyType": "fungi",
-		"environment": [ "nogang" ],
+		"environment": [ "nogang", "quiet" ],
 		"name": "Devil's Fingers"
 	},
 	"dire_boar": {
@@ -440,7 +442,7 @@
 			"food"
 		],
 		"enemyType": "big_animal",
-		"environment": [ "cold" ],
+		"environment": [ "cold", "nature" ],
 		"name": "dire boar",
 		"rarity": 75,
 		"size": 0.85,
@@ -451,7 +453,7 @@
 		"campOrdinal": 5,
 		"difficulty": 4,
 		"enemyType": "small_animal",
-		"environment": [ ],
+		"environment": [ "worn" ],
 		"name": "diseased slime",
 		"rarity": 40,
 		"size": 0.5,
@@ -473,7 +475,7 @@
 	"dog__template": {
 		"attackRatio": 0.6,
 		"enemyType": "small_animal",
-		"environment": [ "nohazard" ],
+		"environment": [ "nohazard", "busy" ],
 		"size": 0.5,
 		"speed": 1.1
 	},
@@ -514,7 +516,7 @@
 			"metal"
 		],
 		"enemyType": "robot",
-		"environment": [ "uninhabited" ],
+		"environment": [ "uninhabited", "worn" ],
 		"name": "drone from a forgotten war",
 		"rarity": 60,
 		"shieldRatio": 1,
@@ -562,7 +564,7 @@
 			"food"
 		],
 		"enemyType": "big_animal",
-		"environment": [ "cold" ],
+		"environment": [ "cold", "nature" ],
 		"name": "duskboar",
 		"rarity": 50,
 		"speed": 1
@@ -607,7 +609,7 @@
 			"food"
 		],
 		"enemyType": "big_animal",
-		"environment": [ "inhabited" ],
+		"environment": [ "inhabited", "industrial" ],
 		"healthFactor": 0.8,
 		"name": "escaped lab chimpanzee",
 		"rarity": 85,
@@ -622,7 +624,7 @@
 			"food"
 		],
 		"enemyType": "small_animal",
-		"environment": [ "inhabited" ],
+		"environment": [ "inhabited", "industrial" ],
 		"healthFactor": 0.8,
 		"name": "escaped lab monkey",
 		"rarity": 85,
@@ -637,7 +639,7 @@
 			"food"
 		],
 		"enemyType": "big_animal",
-		"environment": [ "dense" ],
+		"environment": [ "dense", "quiet" ],
 		"healthFactor": 0.9,
 		"name": "escaped pet boa",
 		"rarity": 85,
@@ -688,7 +690,7 @@
 			"metal"
 		],
 		"enemyType": "structure",
-		"environment": [ ],
+		"environment": [ "nogang" ],
 		"name": "malfunctioning fire door",
 		"rarity": 65,
 		"shieldRatio": 1,
@@ -723,7 +725,7 @@
 		"campOrdinal": 7,
 		"difficulty": 4,
 		"enemyType": "small_animal",
-		"environment": [ "dark" ],
+		"environment": [ "dark", "nature" ],
 		"name": "flying fox",
 		"rarity": 70,
 		"size": 0.4,
@@ -783,12 +785,12 @@
 	},
 	"garbage_robot__tattered": {
 		"campOrdinal": 10,
-		"environment": [ ],
 		"name": "Tattered garbage robot"
 	},
 	"garbage_robot__template": {
 		"attackRatio": 0.55,
 		"enemyType": "robot",
+		"environment": [ "residential", "nopoor" ],
 		"droppedResources": [
 			"metal", "fuel", "tools"
 		],
@@ -845,7 +847,7 @@
 	"ghoul": {
 		"campOrdinal": 9,
 		"enemyType": "humanoid",
-		"environment": [ "dark", "noflood" ],
+		"environment": [ "dark", "noflood", "industrial" ],
 		"name": "Ghoul",
 		"rarity": 5
 	},
@@ -857,7 +859,7 @@
 			"food"
 		],
 		"enemyType": "bird",
-		"environment": [ "cold" ],
+		"environment": [ "cold", "nature" ],
 		"name": "giant snow owl",
 		"rarity": 50,
 		"size": 0.9,
@@ -870,6 +872,7 @@
 	},
 	"giant_stagshorn__template": {
 		"attackRatio": 0.4,
+		"environment": [ "toxic", "norich" ],
 		"enemyType": "fungi",
 		"size": 0.45
 	},
@@ -942,7 +945,7 @@
 			"food"
 		],
 		"enemyType": "big_animal",
-		"environment": [ "cold" ],
+		"environment": [ "cold", "nature" ],
 		"name": "grizzly bear",
 		"rarity": 50,
 		"size": 1.5,
@@ -971,6 +974,7 @@
 	},
 	"guard_bot__ancient": {
 		"campOrdinal": 4,
+		"environment": [ "quiet" ],
 		"name": "ancient guard bot"
 	},
 	"guard_bot__enormous": {
@@ -985,6 +989,7 @@
 	},
 	"guard_bot__factory": {
 		"campOrdinal": 10,
+		"environment": [ "industrial" ],
 		"name": "factory guard bot"
 	},
 	"guard_bot__modified": {
@@ -1004,6 +1009,7 @@
 	},
 	"guard_bot__rusted": {
 		"campOrdinal": 2,
+		"environment": [ "worn" ],
 		"name": "rusted guard bot"
 	},
 	"guard_bot__slow": {
@@ -1042,7 +1048,7 @@
 			"metal", "fuel", "herbs"
 		],
 		"enemyType": "robot",
-		"environment": [ "uninhabited" ],
+		"environment": [ "uninhabited", "industrial" ],
 		"name": "Harvester bot",
 		"shieldFactor": 1
 	},
@@ -1331,7 +1337,7 @@
 			"herbs"
 		],
 		"enemyType": "flora",
-		"environment": [ "water" ],
+		"environment": [ "water", "residential" ],
 		"healthFactor": 1.1,
 		"size": 0.75,
 		"speed": 0.25
@@ -1341,7 +1347,7 @@
 		"campOrdinal": 8,
 		"difficulty": 4,
 		"enemyType": "small_animal",
-		"environment": [ "nohazard", "ground" ],
+		"environment": [ "nohazard", "ground", "nature" ],
 		"name": "Porcupine"
 	},
 	"raccoon__aggressive": {
@@ -1367,7 +1373,7 @@
 			"rope"
 		],
 		"enemyType": "small_animal",
-		"environment": [ "water" ],
+		"environment": [ "water", "residential" ],
 		"rarity": 1,
 		"size": 0.5,
 		"speed": 1.1
@@ -1443,7 +1449,7 @@
 			"food"
 		],
 		"enemyType": "small_animal",
-		"environment": [ "dense" ],
+		"environment": [ "dense", "industrial" ],
 		"size": 0.35,
 		"speed": 1.05
 	},
@@ -1533,6 +1539,7 @@
 	"robotic_dog__template": {
 		"attackRatio": 0.65,
 		"enemyType": "robot",
+		"environment": [ "nopoor", "inhabited" ],
 		"shieldRatio": 1,
 		"rarity": 5,
 		"size": 0.5
@@ -1607,6 +1614,7 @@
 	"security_bot__template": {
 		"attackRatio": 0.55,
 		"enemyType": "robot",
+		"environment": [ "nopoor" ],
 		"shieldRatio": 1,
 		"size": 0.7,
 		"speed": 0.65
@@ -1690,7 +1698,7 @@
 			"food"
 		],
 		"enemyType": "small_animal",
-		"environment": [ "sunlit" ],
+		"environment": [ "sunlit", "nature" ],
 		"name": "skunk",
 		"rarity": 50,
 		"size": 0.7,
@@ -1806,7 +1814,7 @@
 		"campOrdinal": 9,
 		"difficulty": 4,
 		"enemyType": "flora",
-		"environment": [ "dark" ],
+		"environment": [ "dark", "worn" ],
 		"name": "suspicious moss",
 		"rarity": 30,
 		"speed": 0.9
@@ -1897,7 +1905,7 @@
 		"attackRatio": 0.6,
 		"difficulty": 6,
 		"enemyType": "flora",
-		"environment": [ "nohazard" ],
+		"environment": [ "nohazard", "nature" ],
 		"name": "Tentacle sundew",
 		"size": 1.1
 	},
@@ -1909,7 +1917,7 @@
 			"herbs"
 		],
 		"enemyType": "flora",
-		"environment": [ "sunlit" ],
+		"environment": [ "sunlit", "nature" ],
 		"name": "thorny bush",
 		"size": 0.8,
 		"speed": 0.5
@@ -1981,7 +1989,7 @@
 			"metal", "rope"
 		],
 		"enemyType": "structure",
-		"environment": [ "nogang" ],
+		"environment": [ "nogang", "poor" ],
 		"rarity": 10,
 		"shieldRatio": 1,
 		"size": 0.8,
@@ -2010,7 +2018,7 @@
 		],
 		"difficulty": 8,
 		"enemyType": "robot",
-		"environment": [ ],
+		"environment": [ "norich", "worn" ],
 		"rarity": 10,
 		"shieldRatio": 1,
 		"speed": 1.25

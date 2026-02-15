@@ -142,7 +142,6 @@ define(['ash'], function (Ash) {
 			this.initHighScoreStat("longestExcrusion");
 			this.initHighScoreStat("longestSurvivedExcrusion");
 			this.initHighScoreStat("mostDistantSectorFromCampVisited"); // currently only counts when there is camp on level
-			this.initHighScoreStat("mostDistantSectorFromCenterVisited");
 			this.initHighScoreStat("mostResourcesLostInRaid");
 			this.initHighScoreStat("mostFightsWithExplorer");
 			this.initHighScoreStat("mostStepsWithExplorer");

@@ -173,6 +173,21 @@ define([
 			}
 			return result;
 		},
+
+		getQuickMinDistanceToPassage: function (levelVO, sectorVO) {
+			let result = 9999;
+			let passagePositions = levelVO.passagePositions;
+			for (let i = 0; i < passagePositions.length; i++) {
+				let passagePos = passagePositions[i];
+				let dist = PositionConstants.getDistanceTo(sectorVO.position, passagePos);
+				result = Math.min(result, dist);
+			}
+			return result;
+		},
+
+		getQuickMinDistanceToCampOrPassage: function (levelVO, sectorVO) {
+			return Math.min(this.getQuickMinDistanceToCamp(levelVO, sectorVO), this.getQuickMinDistanceToPassage(levelVO, sectorVO));
+		},
 		
 		sortSectorsByPathLenTo: function (worldVO, sector) {
 			return function (a, b) {
@@ -313,6 +328,25 @@ define([
 			return result;
 		},
 
+		getBorderSectorsForStages: function (levelVO, skipCrossings) {
+			let result = [];
+			let directions = PositionConstants.getLevelDirections();
+			for (let i = 0; i < levelVO.sectors.length; i++) {
+				let sector = levelVO.sectors[i];
+				let numNeighbours = levelVO.getNeighbourCount(sector.position.sectorX, sector.position.sectorY);
+				if (skipCrossings && numNeighbours > 3) continue;
+				let neighbours = levelVO.getNeighbours(sector.position.sectorX, sector.position.sectorY);
+				for (let d in directions) {
+					let direction = directions[d];
+					let neighbour = neighbours[direction];
+					if (neighbour && neighbour.stage != sector.stage) {
+						result.push({ sector: sector, neighbour: neighbour });
+					}
+				}
+			}
+			return result;
+		},
+
 		getFeaturePositions: function (featureVO, level) {
 			let result = [];
 
@@ -323,8 +357,7 @@ define([
 			}
 
 			return result;
-		},
-		
+		},		
 
 		getFeatureEdgePositions: function (featureVO, level) {
 			let result = [];
@@ -740,6 +773,29 @@ define([
 				requiredPaths.push({ start: passageUpPosition, end: passageDownPosition, maxlen: maxPathLenP2P, type: WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE, stage: WorldConstants.CAMP_STAGE_LATE });
 			}
 			return requiredPaths;
+		},
+
+		getPositionCentrality: function (position) {
+			let nearestZoneCenter = PositionConstants.getPositionOnGrid(position, WorldConstants.WORLD_ZONE_GRID_SIZE);
+			let worldZoneCenterDist = PositionConstants.getDistanceTo(position, nearestZoneCenter);
+			let maxDist = WorldConstants.WORLD_ZONE_GRID_SIZE / 2;
+			return Math.max(0, Math.round((1 - (worldZoneCenterDist / maxDist)) * 10)/10);
+		},
+
+		getPositionDistrictCentrality: function (levelVO, position, stage) {
+			let districtIndex = levelVO.getDistrictIndexByPosition(position, stage);
+			let districtVO = levelVO.districts[districtIndex];
+			let districtCenter = districtVO.adjustedPosition || districtVO.position;
+
+			let distance = PositionConstants.getDistanceTo(districtCenter, position);
+
+			let districtSectors = levelVO.sectors.filter(s => s.districtIndex == districtIndex);
+			let maxDistance = 0;
+			for (let i = 0; i < districtSectors.length; i++) {
+				maxDistance = Math.max(maxDistance, PositionConstants.getDistanceTo(districtCenter, districtSectors[i].position));
+			}
+
+			return Math.max(0, Math.round((1 - (distance / maxDistance)) * 10)/10);
 		},
 		
 		canSectorHaveGang: function (levelVO, sectorVO, direction) {

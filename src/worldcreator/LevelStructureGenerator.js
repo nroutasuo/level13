@@ -430,6 +430,7 @@ define([
 			
 				log.i("connecting disconnected parts of level " + levelVO.level + " stage " + stageName + ", division " + division.connected.length + "-" + division.disconnected.length + " " + ", skip: " + skip);
 				let pair = WorldCreatorHelper.getConnectionPair(levelVO, division.connected, division.disconnected, skip);
+				if (!pair) break;
 				let result = this.createPathBetween(worldVO, levelVO, pair[0].position, pair[1].position, -1, options);
 				if (result.path && result.path.length > 0) {
 					division = getConnectedSectors();
@@ -1928,7 +1929,7 @@ define([
 			}
 
 			removeDirections(levelVO.getExcursionStartPosition(), Math.min(this.getMaxExcursionDistance(levelVO) - 5, 30));
-			removeDirections(new PositionVO(levelVO.level, 0, 0), WorldConstants.MAX_DISTANCE_TO_MAP_CENTER - 5);
+			removeDirections(levelVO.levelMapCenterPosition, WorldConstants.MAX_DISTANCE_TO_MAP_CENTER - 5);
 
 			point.stage = levelVO.getSector(pos.sectorX, pos.sectorY).stage;
 			
@@ -3887,6 +3888,8 @@ define([
 			let minY = levelVO.minY;
 			let maxY = levelVO.maxY;
 
+			let districts = [];
+
 			for (let i = 0; i < paths.length; i++) {
 				let path = paths[i];
 				let validCheck = LevelStructureGenerator.isValidPath(levelVO, path, path.stage, options);
@@ -3902,6 +3905,7 @@ define([
 					let plannedStage = options.stage || path.stage;
 					let pos = PositionConstants.getPositionOnPath(path.startPos, path.dir, j);
 					let hasSector = levelVO.hasSector(pos.sectorX, pos.sectorY);
+					let actualStage = hasSector ? levelVO.getSector(pos.sectorX, pos.sectorY).stage : plannedStage;
 
 					minX = Math.min(minX, pos.sectorX);
 					maxX = Math.max(maxX, pos.sectorX);
@@ -3916,6 +3920,10 @@ define([
 
 					// stage 
 					pathScore += LevelStructureGenerator.getPositionStageSuitabilityScore(levelVO, pos, plannedStage);
+
+					// district
+					let district = levelVO.getDistrictIndexByPosition(pos, actualStage);
+					if (districts.indexOf(district) < 0) districts.push(district);
 
 					// features
 					if (LevelStructureGenerator.isFeaturePosition(levelVO, pos)) pathScore += 1;
@@ -3958,6 +3966,8 @@ define([
 			let oldHeight = Math.abs(levelVO.maxY - levelVO.minY);
 			let newHeight = Math.abs(maxY - minY);
 			if (newHeight > oldHeight && newHeight > WorldConstants.MAX_HEIGHT) score -= (newHeight - oldHeight);
+
+			if (districts.length > 1) score -= (districts.length - 1) * 3;
 
 			return score;
 		},

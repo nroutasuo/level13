@@ -1720,6 +1720,7 @@
         "rarityLocale": 5,
         "rarityScavenge": -1,
         "rarityTrade": -1,
+        "tags": [ "equipment", "maintenance" ],
         "type": "voucher"
     },
     "consumable_map_2": {
@@ -1732,6 +1733,7 @@
         "rarityLocale": 5,
         "rarityScavenge": -1,
         "rarityTrade": -1,
+        "tags": [ "equipment", "maintenance" ],
         "type": "voucher"
     },
     "consumable_map_explorer": {

@@ -26,13 +26,15 @@ define([
 				id: "world_monument_dictatorship",
 				positionParams: {
 					campOrdinal: 4,
-					sectorType: "public"
+					sectorType: "public",
+					environmentTags: [ "nopoor" ],
 				}
 			},
 			{
 				id: "story_apocalypse_settlement",
 				positionParams: {
 					campOrdinal: 5,
+					environmentTags: [ "residential" ],
 				}
 			},
 			{
@@ -54,12 +56,14 @@ define([
 				positionParams: {
 					campOrdinal: 6,
 					levelIndex: 0,
+					environmentTags: [ "uninhabited" ],
 				}
 			},
 			{
 				id: "story_apocalypse_solar_panels_02",
 				positionParams: {
 					campOrdinal: 7,
+					sectorType: "industrial",
 					sunlit: true
 				}
 			},
@@ -68,6 +72,7 @@ define([
 				positionParams: {
 					campOrdinal: 7,
 					levelIndex: 1,
+					environmentTags: [ "uninhabited" ],
 				}
 			},
 			{
@@ -80,7 +85,8 @@ define([
 				id: "story_apocalypse_measuring_station",
 				positionParams: {
 					campOrdinal: 8,
-					levelIndex: 0
+					levelIndex: 0,
+					environmentTags: [ "uninhabited" ],
 				}
 			},
 			{
@@ -99,13 +105,15 @@ define([
 			{
 				id: "world_fall_tent_village",
 				positionParams: {
-					campOrdinal: 13
+					campOrdinal: 13,
+					environmentTags: [ "inhabited" ],
 				}
 			},
 			{
 				id: "world_fall_supply_truck",
 				positionParams: {
-					campOrdinal: 14
+					campOrdinal: 14,
+					environmentTags: [ "inhabited" ],
 				}
 			},
 			{

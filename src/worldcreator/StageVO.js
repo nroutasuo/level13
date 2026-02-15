@@ -1,6 +1,6 @@
 define(['ash'], function (Ash) {
 
-	var StageVO = Ash.Class.extend({
+	let StageVO = Ash.Class.extend({
 		
 		constructor: function (campOrdinal, stage, levels, numSectors) {
 			this.campOrdinal = campOrdinal;

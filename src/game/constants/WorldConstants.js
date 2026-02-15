@@ -9,6 +9,8 @@ define(['ash'], function (Ash) {
 
 		MAX_WIDTH: 55,
 		MAX_HEIGHT: 45,
+
+		WORLD_ZONE_GRID_SIZE: 50,
 		
 		CAMPS_TOTAL: 15,
 		CAMPS_BEFORE_GROUND: 8,

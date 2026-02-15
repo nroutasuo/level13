@@ -1,5 +1,5 @@
-define(['ash', 'json!game/data/ItemData.json', 'text/Text', 'utils/MathUtils', 'game/constants/PlayerActionConstants', 'game/vos/ItemVO'],
-function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, ItemVO) {
+define(['ash', 'json!game/data/ItemData.json', 'text/Text', 'utils/MathUtils', 'game/constants/PlayerActionConstants', 'game/constants/SectorConstants', 'game/vos/ItemVO'],
+function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, SectorConstants, ItemVO) {
 
 	let ItemConstants = {
 		
@@ -204,6 +204,83 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, ItemVO) {
 					return [ ItemConstants.itemTags.community ];
 				default: return [];
 			}
+		},
+
+		getCombinedItemTags: function (itemIDs) {
+			let result = [];
+			for (let i = 0; i < itemIDs.length; i++) {
+				let item = this.getItemDefinitionByID(itemIDs[i]);
+				if (!item) continue;
+				for (let j = 0; j < item.tags.length; j++) {
+					if (result.indexOf(item.tags[j]) < 0) result.push(item.tags[j]);
+				}
+			}
+			return result;
+		},
+
+		getSectorItemTags: function (sectorType, wear, hazards, isGround, isSunlit) {
+			let tags = [];
+
+			tags.push(ItemConstants.itemTags.old);
+			
+			switch (sectorType) {
+				case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
+					tags.push(ItemConstants.itemTags.book);
+					tags.push(ItemConstants.itemTags.clothing);
+					tags.push(ItemConstants.itemTags.community);
+					tags.push(ItemConstants.itemTags.keepsake);
+					tags.push(ItemConstants.itemTags.perishable);
+					tags.push(ItemConstants.itemTags.valuable);
+					tags.push(ItemConstants.itemTags.weapon);
+					break;
+				case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
+					tags.push(ItemConstants.itemTags.clothing);
+					tags.push(ItemConstants.itemTags.community);
+					tags.push(ItemConstants.itemTags.industrial);
+					tags.push(ItemConstants.itemTags.medical);
+					tags.push(ItemConstants.itemTags.science);
+					tags.push(ItemConstants.itemTags.equipment);
+					break;
+				case SectorConstants.SECTOR_TYPE_MAINTENANCE:
+					tags.push(ItemConstants.itemTags.equipment);
+					tags.push(ItemConstants.itemTags.maintenance);
+					tags.push(ItemConstants.itemTags.weapon);
+					break;
+				case SectorConstants.SECTOR_TYPE_PUBLIC:
+					tags.push(ItemConstants.itemTags.book);
+					tags.push(ItemConstants.itemTags.community);
+					tags.push(ItemConstants.itemTags.history);
+					tags.push(ItemConstants.itemTags.science);
+					tags.push(ItemConstants.itemTags.medical);
+					break;
+				case SectorConstants.SECTOR_TYPE_COMMERCIAL:
+					tags.push(ItemConstants.itemTags.clothing);
+					tags.push(ItemConstants.itemTags.community);
+					tags.push(ItemConstants.itemTags.perishable);
+					tags.push(ItemConstants.itemTags.valuable);
+					break;
+			}
+
+			if (wear > 5) tags.push(ItemConstants.itemTags.history);
+			if (isGround) tags.push(ItemConstants.itemTags.nature);
+			if (isSunlit) tags.push(ItemConstants.itemTags.nature);
+			
+			if (hazards.territory > 0) tags.push(ItemConstants.itemTags.weapon);
+
+			if (hazards.flooded > 0) {
+				tags = tags.filter(t => t != ItemConstants.itemTags.book);
+				tags = tags.filter(t => t != ItemConstants.itemTags.perishable);
+			}
+			
+			if (hazards.radiation > 0) {
+				tags = tags.filter(t => t != ItemConstants.itemTags.perishable);
+			}
+			
+			if (hazards.poison > 0) {
+				tags = tags.filter(t => t != ItemConstants.itemTags.perishable);
+			}
+
+			return tags;
 		},
 		
 		getItemTypeDisplayName: function (type, short) {

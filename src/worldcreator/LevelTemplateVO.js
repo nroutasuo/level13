@@ -1,5 +1,5 @@
-define(['ash', 'worldcreator/SectorTemplateVO', 'game/vos/PositionVO'],
-function (Ash, SectorTemplateVO, PositionVO) {
+define(['ash', 'worldcreator/SectorTemplateVO', 'game/vos/PositionVO', 'worldcreator/DistrictVO'],
+function (Ash, SectorTemplateVO, PositionVO, DistrictVO) {
 
 	let LevelTemplateVO = Ash.Class.extend({
 	
@@ -13,6 +13,7 @@ function (Ash, SectorTemplateVO, PositionVO) {
 
 			this.additionalCampPositions = levelVO.additionalCampPositions;
 			this.campPosition = levelVO.campPosition;
+			this.districts = levelVO.districts.map(d => d.clone());
 			this.features = levelVO.features;
 			this.gangs = levelVO.gangs;
 			this.habitability = levelVO.habitability;
@@ -55,6 +56,7 @@ function (Ash, SectorTemplateVO, PositionVO) {
 
 			copy.additionalCampPositions = this.additionalCampPositions;
 			if (this.campPosition) copy.campPosition = this.campPosition.getCustomSaveObject();
+			copy.districts = this.districts.map(d => d.getCustomSaveObject());
 			copy.features = this.features;
 			copy.gangs = this.gangs;
 			copy.habitability = this.habitability;
@@ -100,6 +102,11 @@ function (Ash, SectorTemplateVO, PositionVO) {
 			this.campPosition = saveObject.campPosition ? new PositionVO() : null;
 			if (saveObject.campPosition) this.campPosition.customLoadFromSave(saveObject.campPosition);
 			this.features = saveObject.features || [];
+			this.districts = saveObject.districts ? saveObject.districts.map(districtData => {
+				let vo = new DistrictVO();
+				vo.customLoadFromSave(districtData);
+				return vo;}
+			) : [];
 			this.gangs = saveObject.gangs;
 			this.habitability = saveObject.habitability;
 			this.isCampable = saveObject.isCampable;

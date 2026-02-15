@@ -56,11 +56,35 @@ define([
 			let excludedFeatures = [ "isCamp", "isPassageUp", "isPassageDown", "workshopResource" ];
 			let lateZones = [ WorldConstants.ZONE_POI_2, WorldConstants.ZONE_EXTRA_CAMPABLE ];
 
+			let getSectorScore = (sectorVO, explorerTemplate) => {
+				let result = 0;
+
+				result += sectorVO.activity;
+				result += SectorGeneratorHelper.getLocaleSectorScore(levelVO, sectorVO);
+
+				if (SectorGeneratorHelper.getPossibleLocaleTypesForSector(levelVO, sectorVO).indexOf(explorerTemplate.localeType)) result += 5;
+				
+				let districtVO = levelVO.districts[sectorVO.districtIndex];
+				let explorerType = ExplorerConstants.getExplorerTypeForAbilityType(explorerTemplate.abilityType);
+				if (explorerType == ExplorerConstants.explorerType.FIGHTER && districtVO.type == SectorConstants.SECTOR_TYPE_INDUSTRIAL) result++;
+				if (explorerType == ExplorerConstants.explorerType.FIGHTER && districtVO.type == SectorConstants.SECTOR_TYPE_RESIDENTIAL) result++;
+				if (explorerType == ExplorerConstants.explorerType.FIGHTER && districtVO.type == SectorConstants.SECTOR_TYPE_PUBLIC) result++;
+				if (explorerType == ExplorerConstants.explorerType.SCOUT && districtVO.type == SectorConstants.SECTOR_TYPE_INDUSTRIAL) result++;
+				if (explorerType == ExplorerConstants.explorerType.SCOUT && districtVO.type == SectorConstants.SECTOR_TYPE_MAINTENANCE) result++;
+				if (explorerType == ExplorerConstants.explorerType.SCOUT && sectorVO.activity < 5) result += 10;
+				if (explorerType == ExplorerConstants.explorerType.SCAVENGER && districtVO.type == SectorConstants.SECTOR_TYPE_RESIDENTIAL) result++;
+				if (explorerType == ExplorerConstants.explorerType.SCAVENGER && districtVO.type == SectorConstants.SECTOR_TYPE_COMMERCIAL) result++;
+				if (explorerType == ExplorerConstants.explorerType.SCAVENGER && districtVO.type == SectorConstants.SECTOR_TYPE_INDUSTRIAL) result++;
+				if (explorerType == ExplorerConstants.explorerType.SCAVENGER && districtVO.wealth > 5) result++;
+				
+				return result;
+			};
+
 			for (let i = 0; i < levelVO.predefinedExplorers.length; i++) {
 				let explorerID = levelVO.predefinedExplorers[i];
 				let explorerTemplate = ExplorerConstants.getPredefinedExplorerTemplate(explorerID);
 				let options = { excludingFeature: excludedFeatures, excludedZones: lateZones, filter: SectorGeneratorHelper.isValidSectorForLocale };
-				let sector = WorldCreatorRandom.randomSectors(1000 + seed * 2, worldVO, levelVO, 1, 2, options)[0];
+				let sector = WorldCreatorRandom.randomSectorScored(1000 + seed * 2, worldVO, levelVO, options, (s) => getSectorScore(s, explorerTemplate));
 				let locale = new LocaleVO(explorerTemplate.localeType, true, true);
 				locale.explorerID = explorerID;
 				SectorGeneratorHelper.addLocale(levelVO, sector, locale);
@@ -74,24 +98,34 @@ define([
 			// NOTE: keep texts referring to fall story facilities up to date if changing levels here
 
 			let storyLocales = [
-				{ type: localeTypes.grove, level: worldVO.bottomLevel, isEasy: true },
-				{ type: localeTypes.compound, level: WorldCreatorHelper.getLastLevelForCamp(seed, 4), isEarly: false },
-				{ type: localeTypes.depot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 5), isEarly: false },
-				{ type: localeTypes.seedDepot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 6), isEarly: false },
-				{ type: localeTypes.depot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 7), isEarly: false },
-				{ type: localeTypes.clinic, level: WorldCreatorHelper.getLastLevelForCamp(seed, 9), isEarly: true },
-				{ type: localeTypes.spacefactory, level: WorldCreatorHelper.getLastLevelForCamp(seed, 10), isEarly: false },
-				{ type: localeTypes.shelter, level: WorldCreatorHelper.getLastLevelForCamp(seed, 12), isEarly: false },
-				{ type: localeTypes.clinic, level: WorldCreatorHelper.getFirstLevelForCamp(seed, 13), isEarly: true },
-				{ type: localeTypes.isolationCenter, level: WorldCreatorHelper.getLastLevelForCamp(seed, 14), isEarly: false },
-				{ type: localeTypes.expedition, level: WorldCreatorHelper.getLastLevelForCamp(seed, 15), isEarly: false },
+				{ type: localeTypes.grove, level: worldVO.bottomLevel, isEasy: true, sectorTypes: [ SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 0 },
+				{ type: localeTypes.compound, level: WorldCreatorHelper.getLastLevelForCamp(seed, 4), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL, SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 3 },
+				{ type: localeTypes.depot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 5), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 3 },
+				{ type: localeTypes.seedDepot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 6), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 1 },
+				{ type: localeTypes.depot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 7), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 3 },
+				{ type: localeTypes.clinic, level: WorldCreatorHelper.getLastLevelForCamp(seed, 9), isEarly: true, sectorTypes: [ SectorConstants.SECTOR_TYPE_RESIDENTIAL, SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 10 },
+				{ type: localeTypes.spacefactory, level: WorldCreatorHelper.getLastLevelForCamp(seed, 10), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 1 },
+				{ type: localeTypes.shelter, level: WorldCreatorHelper.getLastLevelForCamp(seed, 12), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_RESIDENTIAL ], activity: 8 },
+				{ type: localeTypes.clinic, level: WorldCreatorHelper.getFirstLevelForCamp(seed, 13), isEarly: true, sectorTypes: [ SectorConstants.SECTOR_TYPE_RESIDENTIAL, SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 10 },
+				{ type: localeTypes.isolationCenter, level: WorldCreatorHelper.getLastLevelForCamp(seed, 14), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 1 },
+				{ type: localeTypes.expedition, level: WorldCreatorHelper.getLastLevelForCamp(seed, 15), isEarly: false, sectorTypes: [ ], activity: 5 },
 			];
+
+			let getSectorScore = (sectorVO, def) => {
+				let result = 0;
+				let districtVO = levelVO.districts[sectorVO.districtIndex];
+				if (def.sectorTypes.indexOf(sectorVO.sectorType) >= 0) result += 3;
+				if (def.sectorTypes.indexOf(districtVO.type) >= 0) result += 1;
+				let activityDiff = Math.abs(def.activity - sectorVO.activity);
+				result += (10 - activityDiff)/10;
+				return result;
+			};
 
 			for (let i = 0; i < storyLocales.length; i++) {
 				let def = storyLocales[i];
 				if (levelVO.level != def.level) continue;
 				let options = { excludingFeature: excludedFeatures, filter: SectorGeneratorHelper.isValidSectorForLocale };
-				let sector = WorldCreatorRandom.randomSectors(seed, worldVO, levelVO, 1, 2, options)[0];
+				let sector = WorldCreatorRandom.randomSectorScored(seed, worldVO, levelVO, options, (s) => getSectorScore(s, def));
 				if (def.type == localeTypes.grove) sector.sunlit = 1;
 				if (def.type == localeTypes.grove) sector.resourcesScavengable.food = Math.max(sector.resourcesScavengable.food, 3);
 				if (def.type == localeTypes.grove) sector.resourcesScavengable.water = Math.max(sector.resourcesScavengable.water, 3);
@@ -103,12 +137,12 @@ define([
 		},
 
 		generateEnemies: function (seed, worldVO, levelVO, enemyCreator) {
-			var l = levelVO.level;
-			var randomGangFreq = 45;
+			let l = levelVO.level;
+			let randomGangFreq = 45;
 				
-			var blockerType = MovementConstants.BLOCKER_TYPE_GANG;
+			let blockerType = MovementConstants.BLOCKER_TYPE_GANG;
 			
-			var selectEnemyIDsForGang = function (s1, s2) {
+			let selectEnemyIDsForGang = function (s1, s2) {
 				let allEnemies = s1.possibleEnemies.concat(s2.possibleEnemies);
 				let allEnemiesWithTags = allEnemies.filter(e => e.environment.indexOf("nogang") < 0);
 
@@ -162,7 +196,7 @@ define([
 				}
 			};
 
-			var addGangs = function (seed, reason, levelVO, pointA, pointB, maxPaths) {
+			let addGangs = function (seed, reason, levelVO, pointA, pointB, maxPaths) {
 				var num = 0;
 				var path;
 				var index;
@@ -318,10 +352,18 @@ define([
 			let spots = worldVO.examineSpotsPerLevel[levelVO.level];
 			if (!spots || spots.length == 0) return;
 			
-			let getExamineSpotSectorScore = function (sectorVO) {
+			let getExamineSpotSectorScore = function (sectorVO, spot) {
 				let score = 0;
-				score -= sectorVO.locales.length;
-				if (sectorVO.isInvestigatable) score -= 1;
+				score -= sectorVO.locales.length * 10;
+				if (sectorVO.isInvestigatable) score -= 10;
+
+				if (spot.positionParams.environmentTags) {
+					let sectorTags = SectorContentGenerator.getSectorEnvironmentTags(worldVO, levelVO, sectorVO);
+					let spotTags = spot.positionParams.environmentTags;
+					let sharedTags = sectorTags.filter(tag => spotTags.indexOf(tag) >= 0);
+					score += sharedTags.length;
+				}				
+
 				return score;
 			};
 
@@ -340,7 +382,7 @@ define([
 				let excludedZones = [ WorldConstants.ZONE_ENTRANCE ];
 				let excludedFeatures = [ "isCamp", "isPassageUp", "isPassageDown", "workshopResource" ];
 				let options = { excludingFeature: excludedFeatures, pathConstraints: [], excludedZones: excludedZones, filter: filter };
-				let sectors = WorldCreatorRandom.randomSectorsScored(1000 + i * 66, worldVO, levelVO, 1, 2, options, getExamineSpotSectorScore);
+				let sectors = WorldCreatorRandom.randomSectorsScored(1000 + i * 66, worldVO, levelVO, 1, 2, options, (s) => getExamineSpotSectorScore(s, spot));
 				if (sectors.length == 0) {
 					WorldCreatorLogger.w("could not find sector for examine spot: " + spot.id);
 					continue;
@@ -603,11 +645,14 @@ define([
 			let l = sectorVO.position.level;
 			let x = sectorVO.position.sectorX;
 			let y = sectorVO.position.sectorY;
+			let districtVO = levelVO.districts[sectorVO.districtIndex];
 
 			let tags = [];
 
 			let isPollutedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
 			let isRadiatedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
+
+			let sectorTypeMatches = (type) => sectorVO.sectorType == type || districtVO.type == type;
 			
 			tags.push("nogang")
 			if (levelVO.level == worldVO.bottomLevel) tags.push("ground");
@@ -624,14 +669,22 @@ define([
 			if (sectorVO.buildingDensity < 5) tags.push("sparse");
 			if (sectorVO.activity < 4) tags.push("quiet");
 			if (sectorVO.activity > 6) tags.push("busy");
-			if (sectorVO.wealth == 3) tags.push("rich");
-			if (sectorVO.wealth == 1) tags.push("poor");
+			if (Math.max(sectorVO.wealth, districtVO.wealth) >= 8) tags.push("rich");
+			if (Math.max(sectorVO.wealth, districtVO.wealth) >= 4) tags.push("nopoor");
+			if (Math.min(sectorVO.wealth, districtVO.wealth) <= 6) tags.push("norich");
+			if (Math.min(sectorVO.wealth, districtVO.wealth) <= 3) tags.push("poor");
 			if (levelVO.habitability > 0) tags.push("inhabited");
 			if (levelVO.habitability <= 0) tags.push("uninhabited");
+			if (sectorTypeMatches(SectorConstants.SECTOR_TYPE_MAINTENANCE)) tags.push("uninhabited");
+			if (sectorTypeMatches(SectorConstants.SECTOR_TYPE_EMPTY)) tags.push("uninhabited");
 			if (sectorVO.hazards.flooded > 0) tags.push("flooded");
 			if (sectorVO.hazards.territory > 0) tags.push("territory");
 			if (sectorVO.hazards.flooded === 0) tags.push("noflood");
-			if (sectorVO.sectorType == SectorConstants.SECTOR_TYPE_INDUSTRIAL) tags.push("industrial");
+			if (sectorTypeMatches(SectorConstants.SECTOR_TYPE_RESIDENTIAL)) tags.push("residential");
+			if (sectorTypeMatches(SectorConstants.SECTOR_TYPE_INDUSTRIAL)) tags.push("industrial");
+			if (sectorVO.wear > 5 || districtVO.wear > 5) tags.push("worn");
+			if (sectorVO.wear < 5 || districtVO.wear < 5) tags.push("new");
+			if (sectorVO.wear > 5 || districtVO.wear > 5 || sectorTypeMatches(SectorConstants.SECTOR_TYPE_PUBLIC) || sectorTypeMatches(SectorConstants.SECTOR_TYPE_RESIDENTIAL) || sectorVO.sunlit) tags.push("nature");
 
 			let hasWater = sectorVO.hasWater();
 			let directions = PositionConstants.getLevelDirections();

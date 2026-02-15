@@ -14,7 +14,13 @@ define(['ash'], function (Ash) {
 		SECTOR_TYPE_MAINTENANCE: "maintenance",
 		SECTOR_TYPE_COMMERCIAL: "commercial",
 		SECTOR_TYPE_PUBLIC: "public",
-		SECTOR_TYPE_SLUM: "slum",
+		SECTOR_TYPE_EMPTY: "empty",
+		SECTOR_TYPE_SLUM: "slum", // unused
+
+		SECTOR_AFFILIATION_AGRICORP: "agricorp",
+		SECTOR_AFFILIATION_MINECORP: "minecorp",
+		SECTOR_AFFILIATION_HANSA: "hansa",
+		SECTOR_AFFILIATION_DONBALISM: "donbalism",
 		
 		SECTOR_CONDITION_MAINTAINED: 0, // currently maintained
 		SECTOR_CONDITION_RECENT: 1,     // well-kept pre-Fall
@@ -46,6 +52,7 @@ define(['ash'], function (Ash) {
 		HAZARD_TYPE_DEBRIS: "debris",
 		HAZARD_TYPE_FLOODED: "flooded",
 		HAZARD_TYPE_GANG_TERRITORY: "territory",
+		HAZARD_TYPE_COLD: "cold",
 		
 		isVisited: function (sectorStatus) {
 			switch (sectorStatus) {

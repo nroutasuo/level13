@@ -14,7 +14,7 @@ define(
 		sectorStyle: null, // SectorConstants
 		activity: 0, // 0-10
 		buildingDensity: 0, // 0-10
-		wealth: 0, // 0-3 where 1 is poorest, 0 is N/A
+		wealth: 0, // 0-10 where 1 is poorest, 0 is N/A
 		wear: 0, // 0-10
 		damage: 0, // 0-10
 		sunlit: false,
