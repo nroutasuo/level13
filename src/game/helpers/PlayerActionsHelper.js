@@ -2771,7 +2771,7 @@ define([
 				let itemID = this.getActionIDParam(action);
 				let useItemRewards = GameGlobals.playerActionResultsHelper.getUseItemRewards(itemID);
 				if (!useItemRewards.isEmpty()) {
-					let useItemRewardsMsg = GameGlobals.playerActionResultsHelper.getRewardsMessageText(useItemRewards, GameGlobals.playerActionResultsHelper.RESULT_MSG_FORMAT_PREVIW);
+					let useItemRewardsMsg = GameGlobals.playerActionResultsHelper.getRewardsMessageText(useItemRewards, GameGlobals.playerActionResultsHelper.RESULT_MSG_FORMAT_PREVIEW);
 					if (useItemRewardsMsg && useItemRewardsMsg.length > 0) {
 						entries.push(useItemRewardsMsg);
 					}

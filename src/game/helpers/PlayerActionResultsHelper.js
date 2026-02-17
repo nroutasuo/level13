@@ -90,7 +90,7 @@ define([
 		tribeUpgradesNodes: null,
 
 		RESULT_MGS_FORMAT_LOG: "RESULT_MGS_FORMAT_LOG",
-		RESULT_MSG_FORMAT_PREVIW: "RESULT_MSG_FORMAT_PREVIW",
+		RESULT_MSG_FORMAT_PREVIEW: "RESULT_MSG_FORMAT_PREVIEW",
 
 		fixedRewards: {
 			"scavenge": [
@@ -992,7 +992,7 @@ define([
 
 			if (rewards.gainedResources.getTotal() > 0) {
 				if (format == this.RESULT_MGS_FORMAT_LOG) fragments.push({ textKey: "Gained " });
-				if (format == this.RESULT_MGS_FORMAT_LOG) fragments.push({ textKey: "+" });
+				if (format == this.RESULT_MSG_FORMAT_PREVIEW) fragments.push({ textKey: "+" });
 
 				let resourcesTextVO = TextConstants.getResourcesTextVO(rewards.gainedResources);
 				fragments = fragments.concat(resourcesTextVO.textFragments);
