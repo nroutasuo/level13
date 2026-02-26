@@ -125,7 +125,7 @@ define(['ash',], function (Ash) {
 
 			let binding = signal.add(function () {
 				try {
-					listener.apply(system, arguments);
+					if (listener) listener.apply(system, arguments);
 				} catch (ex) {
 					if (GlobalSignals.exceptionCallback) {
 						GlobalSignals.exceptionCallback(ex);
