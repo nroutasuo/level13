@@ -385,6 +385,11 @@ define([
 
 					let districtStyle = districtVO.style;
 					if (allDistrictStyles.indexOf(districtStyle) < 0) allDistrictStyles.push(districtStyle);
+
+					let districtSectors =  worldVO.levels[l].sectors.filter(s => s.districtIndex == i);
+					if (districtSectors.length < 3) {
+						issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too few sectors on district (" + i + ") on level " + l });
+					}
 				}
 
 				if (l == 14) continue;
