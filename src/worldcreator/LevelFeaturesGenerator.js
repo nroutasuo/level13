@@ -81,25 +81,28 @@ define([
 		},
 
 		generateDistricts: function (seed, worldVO, levelTemplateVO, levelVO) {
-			// first pass: assign district based on initial district centers
-			for (let i = 0; i < levelVO.sectors.length; i++) {
-				let sectorVO = levelVO.sectors[i];
-				sectorVO.districtIndex = levelVO.getDistrictIndexByPosition(sectorVO.position, sectorVO.stage);
-			}
+			// assign districts based on centers
+			let assignDistricts = function () {
+				for (let i = 0; i < levelVO.sectors.length; i++) {
+					let sectorVO = levelVO.sectors[i];
+					sectorVO.districtIndex = levelVO.getDistrictIndexByPosition(sectorVO.position, sectorVO.stage);
+				}
+			};
 
-			// calculate new centers weighted by actual existing sectors
-			for (let i = 0; i < levelVO.districts.length; i++) {
-				let districtVO = levelVO.districts[i];
-				let initialSectors = levelVO.sectors.filter(s => s.districtIndex == i);
-				let initialSectorPositions = initialSectors.map(s => s.position);
-				districtVO.adjustedPosition = PositionConstants.getMiddlePoint(initialSectorPositions, true);
-			}
+			// update centers based on sectors assigned to district
+			let updateCenters = function () {
+				for (let i = 0; i < levelVO.districts.length; i++) {
+					let districtVO = levelVO.districts[i];
+					let districtSectors = levelVO.sectors.filter(s => s.districtIndex == i);
+					let districtSectorPositions = districtSectors.map(s => s.position);
+					districtVO.adjustedPosition = PositionConstants.getMiddlePoint(districtSectorPositions, true);
+				}
+			};
 
-			// second pass: assign district based on new centers
-			for (let i = 0; i < levelVO.sectors.length; i++) {
-				let sectorVO = levelVO.sectors[i];
-				sectorVO.districtIndex = levelVO.getDistrictIndexByPosition(sectorVO.position, sectorVO.stage);
-			}
+			assignDistricts();
+			updateCenters();
+			assignDistricts();
+			updateCenters();
 		},
 		
 		generateZones: function (seed, worldVO, levelTemplateVO, levelVO) {

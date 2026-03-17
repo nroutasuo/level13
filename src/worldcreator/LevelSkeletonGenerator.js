@@ -128,9 +128,10 @@ define([
 		getDistricts: function (worldVO, levelVO) {
 			let result = [];
 
-			let getNumDistrictsFromNumSectors = (numSectors) => numSectors > 0 ? MathUtils.clamp(Math.round(numSectors / 40), 2, 4) : 0;
+			let getNumDistrictsFromNumSectors = (numSectors) => numSectors > 0 ? MathUtils.clamp(Math.round(numSectors / 40), 1, 4) : 0;
 			let numEarly = getNumDistrictsFromNumSectors(levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_EARLY]);
 			let numLate = getNumDistrictsFromNumSectors(levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_LATE]);
+			if (numEarly + numLate < 2) numLate++;
 			let numDistricts = numEarly + numLate;
 
 			let positions = [];
