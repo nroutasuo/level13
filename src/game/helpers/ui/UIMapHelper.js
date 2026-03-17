@@ -10,6 +10,7 @@ define(['ash',
 	'game/constants/ColorConstants',
 	'game/constants/GameConstants',
 	'game/constants/ExplorerConstants',
+	'game/constants/LevelConstants',
 	'game/constants/UIConstants',
 	'game/constants/CanvasConstants',
 	'game/constants/ExplorationConstants',
@@ -32,7 +33,7 @@ define(['ash',
 	'game/components/sector/improvements/WorkshopComponent',
 	'game/vos/PositionVO'],
 function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
-	GameGlobals, GlobalSignals, ColorConstants, GameConstants, ExplorerConstants, UIConstants, CanvasConstants, ExplorationConstants, ItemConstants, MovementConstants, PositionConstants, SectorConstants, StoryConstants, WorldConstants,
+	GameGlobals, GlobalSignals, ColorConstants, GameConstants, ExplorerConstants, LevelConstants, UIConstants, CanvasConstants, ExplorationConstants, ItemConstants, MovementConstants, PositionConstants, SectorConstants, StoryConstants, WorldConstants,
 	PlayerPositionNode,
 	LevelComponent, CampComponent, PositionComponent, ItemsComponent,
 	SectorStatusComponent, SectorLocalesComponent, SectorFeaturesComponent, PassagesComponent, SectorImprovementsComponent, WorkshopComponent,
@@ -268,6 +269,7 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 			let sunlit = $("body").hasClass("sunlit");
 			let level = options.mapPosition.level;
 			let levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(level);
+			let districts = GameGlobals.levelHelper.getLevelDistricts(level);
 			
 			// background color
 			let colorBgMap = this.getBackgroundColor(level, sunlit);
@@ -283,10 +285,19 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 			var sectorPos;
 			var sectorPadding = this.getSectorPadding(options.centered);
 			
-			this.drawHolesOnCanvas(ctx, options.mapPosition, options.centered, dimensions, sunlit);
 			this.drawGridOnCanvas(ctx, sectorSize, dimensions, options.centered);
-			// this.drawVisibleAreaOnCanvas(ctx, mapPosition, centered, dimensions, visibleSectors, sunlit, true);
-			this.drawDistrictsOnCanvas(ctx, options.mapPosition, options.centered, dimensions, visibleSectors, allSectors, sunlit);
+
+			ctx.save();
+
+			// clip
+			if (!options.centered) this.clipCanvasToVisibleArea(ctx, dimensions, options.mapPosition, options.centered, sectorSize, visibleSectors);
+			
+			// elements inside clip
+			this.drawDistrictsOnCanvas(ctx, options.mapPosition, options.centered, dimensions, districts, visibleSectors, allSectors, sunlit);
+
+			ctx.restore();
+
+			this.drawHolesOnCanvas(ctx, options.mapPosition, options.centered, dimensions, sunlit);
 			
 			// borders on beacons
 			ctx.strokeStyle = ColorConstants.getColor(sunlit, "map_stroke_sector_lit");
@@ -317,7 +328,7 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 				this.drawSectorOnCanvas(ctx, options, sectorPos.sectorX, sectorPos.sectorY, sector, levelEntity, sectorStatus, sectorXpx, sectorYpx, sectorSize);
 			});
 
-			// border on current
+			// border on current sector
 			var playerPosVO = this.playerPosNodes.head.position.getPosition();
 			if (playerPosVO.level == level) {
 				sectorXpx = this.getSectorPixelPos(dimensions, options.centered, sectorSize, playerPosVO.sectorX, playerPosVO.sectorY).x;
@@ -510,6 +521,144 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 			return null;
 		},
 
+		clipCanvasToVisibleArea: function (ctx, dimensions, mapPosition, centered, sectorSize, visibleSectors) {
+			let visibleAreaPoints = this.getVisibleAreaPoints(ctx, dimensions, mapPosition, centered, sectorSize, visibleSectors);
+			CanvasUtils.tracePolygon(ctx, visibleAreaPoints);
+			ctx.clip();
+		},
+
+		getVisibleAreaPoints: function (ctx, dimensions, mapPosition, centered, sectorSize, visibleSectors) {
+			// determine in/out for each position in grid
+			let revealDistance = 2;
+
+			let padding = 3;
+			let gridSize = 1;
+
+			let settings = {
+				padding: padding,
+				minX: dimensions.minVisibleX,
+				maxX: dimensions.maxVisibleX,
+				minY: dimensions.minVisibleY,
+				maxY: dimensions.maxVisibleY,
+				gridSize: gridSize,
+			};
+
+			let visibleSectorsArray = [];
+			for (let key in visibleSectors) {
+				let s = visibleSectors[key];
+				if (!s) continue;
+				visibleSectorsArray.push({ position: s.get(PositionComponent).getPosition() });
+			}
+
+			let sys = this;
+			let isSectorVisibleOnMap = function (sector) {
+				if (!sector) return false;
+				let sectorStatus = sys.getSectorStatus(sector);
+				return sys.showSectorOnMap(centered, sector, sectorStatus);
+			}
+			let isPositionVisibleOnMap = function (x, y) {
+				let sectorX = Math.floor(x);
+				let sectorY = Math.floor(y);
+				
+				let sector = visibleSectors[sectorX + "." + sectorY];
+				if (sector) {
+					if (isSectorVisibleOnMap(sector)) {
+						return true;
+					}
+				} else if (LevelConstants.isPositionSurroundedBySectors(visibleSectorsArray, x, y)) {
+					return true;
+				} else {
+					let nearestSector = GameGlobals.levelHelper.findNearestSector(mapPosition.level, x, y, revealDistance, s => isSectorVisibleOnMap(s));
+					if (nearestSector) {
+						let pos = { sectorX: x, sectorY: y };
+						let nearestSectorPos = nearestSector.get(PositionComponent).getPosition();
+						let distance = PositionConstants.getDistanceTo(pos, nearestSectorPos);
+						if (distance <= revealDistance) return true;
+					}
+				}
+
+				return false;
+			};
+			let statusByPosition = MapUtils.getGridPositionMap(settings, isPositionVisibleOnMap);
+
+			// find edge points
+			let edgePoints = MapUtils.getEdgePointsFromGridPositionMap(settings, statusByPosition, 0);
+
+			// debug: draw points
+			/*
+			for (let x = dimensions.minVisibleX - padding; x <= dimensions.maxVisibleX + padding; x++) {
+				for (let y = dimensions.minVisibleY - padding; y <= dimensions.maxVisibleY + padding; y++) {
+					let status = statusByPosition[x][y] || 0;
+					let pixelPos = this.getSectorPixelPosCenter(dimensions, centered, sectorSize, x, y);
+					ctx.strokeStyle = status ? ColorConstants.getColor(false, "map_stroke_blocker") : ColorConstants.getColor(false, "map_stroke_sector");
+					ctx.lineWidth = 1;
+					ctx.beginPath();
+					ctx.arc(pixelPos.x, pixelPos.y, 5, 0, 2 * Math.PI);
+					ctx.stroke();
+				}
+			}
+
+			for (let i = 0; i < edgePoints.length; i++) {
+				let point = edgePoints[i];
+				let pixelPos = this.getSectorPixelPosCenter(dimensions, centered, sectorSize, point.sectorX, point.sectorY);
+				ctx.strokeStyle = ColorConstants.getColor(false, "map_stroke_blocker");
+				ctx.lineWidth = 1;
+				ctx.beginPath();
+				ctx.arc(pixelPos.x, pixelPos.y, 3, 0, 2 * Math.PI);
+				ctx.stroke();
+			}
+			*/
+
+			// sort edge points
+			let sortByAngle = (a, b, c) => {
+				let angleA = Math.atan2(a.sectorY - c.sectorY, a.sectorX - c.sectorX);
+				let angleB = Math.atan2(b.sectorY - c.sectorY, b.sectorX - c.sectorX);
+				return angleA - angleB;
+			};
+
+			let sortByDistance = (a, b, p) => {
+				let da = PositionConstants.getDistanceTo(p, a);
+				let db = PositionConstants.getDistanceTo(p, b);
+				return da - db;
+			};
+
+
+			let unsortedPoints = edgePoints.concat();
+			let sortedPoints = [];
+
+			let currentPoint = unsortedPoints[0];
+			let c = mapPosition;
+
+			while (currentPoint && unsortedPoints.length > 1) {
+				let currentPointIndex = unsortedPoints.indexOf(currentPoint);
+				unsortedPoints.splice(currentPointIndex, 1);
+				sortedPoints.push(currentPoint);
+
+				let closestPoints = unsortedPoints.sort((a, b) => sortByDistance(a, b, currentPoint));
+				let closestPoint = closestPoints[0];
+				let closestDistance = PositionConstants.getDistanceTo(currentPoint, closestPoint);
+
+				let neighbours = unsortedPoints.filter(p => PositionConstants.getDistanceTo(currentPoint, p) == closestDistance);
+				let sortedNeighbours = neighbours.sort((a, b) => sortByAngle(a, b, c));
+				let nextPoint = sortedNeighbours[0];
+				currentPoint = nextPoint;
+			}
+
+			// filter edge points
+
+			// adjust/round
+			
+			// convert to map coordinates
+			let result = [];
+			for (let i = 0; i < sortedPoints.length; i++) {
+				let point = sortedPoints[i];
+				let pixelPos = this.getSectorPixelPosCenter(dimensions, centered, sectorSize, point.sectorX, point.sectorY);
+				result.push(pixelPos);
+			}
+
+			return result;
+		},
+
 		getSectorPixelPos: function (dimensions, centered, sectorSize, x, y) {
 			let smallMapOffsetX = Math.max(0, (dimensions.canvasWidth - dimensions.mapWidth) / 2);
 			let paddingFactor = this.getSectorPadding(centered);
@@ -532,46 +681,6 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 				x: cornerPos.x + sectorSize / 2,
 				y: cornerPos.y + sectorSize / 2
 			};
-		},
-
-		drawVisibleAreaOnCanvas: function (ctx, mapPosition, centered, dimensions, visibleSectors, sunlit, stroke) {
-			let sectorSize = this.getSectorSize(centered);
-			let level = mapPosition.level;
-			let colorBgMap = this.getBackgroundColor(level, sunlit);
-			
-			let colorBorderVisibleArea = this.getVisibleAreaBackgroundColor(level, sunlit);
-			let radiusDefault = 2;
-			let radiusSmall = 0.75;
-			let paddingDefault = 2.3;
-			let paddingSmall = 0.4;
-			
-			ctx.lineWidth = 2;
-			
-			this.foreachVisibleSector(level, centered, dimensions, visibleSectors, (sector, sectorPos, sectorStatus, sectorXpx, sectorYpx) => {
-				let bgPadding = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * paddingSmall : sectorSize * paddingDefault;
-				let radius = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * radiusSmall : sectorSize * radiusDefault;
-				ctx.fillStyle = colorBorderVisibleArea;
-				ctx.strokeStyle = colorBorderVisibleArea;
-				let fillX = Mathr.sectorXpx - bgPadding;
-				let fillY = sectorYpx - bgPadding;
-				let fillSize = sectorSize + bgPadding * 2;
-				CanvasUtils.fillRoundedRect(ctx, fillX, fillY, fillSize, fillSize, radius);
-			});
-			
-			if (stroke) {
-				let borderSize = 3;
-				this.foreachVisibleSector(level, centered, dimensions, visibleSectors, (sector, sectorPos, sectorStatus, sectorXpx, sectorYpx) => {
-					let bgPadding = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * paddingSmall : sectorSize * paddingDefault;
-					let radius = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * radiusSmall : sectorSize * radiusDefault;
-					let sectorFeatures = sector.get(SectorFeaturesComponent);
-					ctx.fillStyle = sectorFeatures.isEarlyZone() ? colorBgMap : "#252525";
-					ctx.strokeStyle = sectorFeatures.isEarlyZone() ? colorBgMap : "#252525";
-					let strokeX = sectorXpx - bgPadding + borderSize;
-					let strokeY = sectorYpx - bgPadding + borderSize;
-					let strokeSize = sectorSize + bgPadding * 2 - borderSize * 2;
-					CanvasUtils.fillRoundedRect(ctx, strokeX, strokeY, strokeSize, strokeSize, radius);
-				});
-			}
 		},
 
 		drawGridOnCanvas: function (ctx, sectorSize, dimensions, centered) {
@@ -620,58 +729,64 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 			}
 		},
 
-		drawDistrictsOnCanvas: function (ctx, mapPosition, centered, dimensions, visibleSectors, allSectors, sunlit) {
+		drawDistrictsOnCanvas: function (ctx, mapPosition, centered, dimensions, districts, visibleSectors, allSectors, sunlit) {
 			let sectorSize = this.getSectorSize(centered);
-			let level = mapPosition.level;
-			
-			let radiusDefault = 3.15;
-			let radiusSmall = 0.75;
-			
-			let paddingDefault = 2.25;
-			let paddingSmall = 0.53;
-			let paddingSmallDiagonal = 0.65;
-			let paddingBig = 4.25;
-			
-			ctx.fillStyle = this.getVisibleAreaBackgroundColor(level, sunlit);
-			ctx.strokeStyle = this.getVisibleAreaBackgroundColor(level, sunlit);
-			this.foreachVisibleSector(mapPosition.level, centered, dimensions, visibleSectors, (sector, sectorPos, sectorStatus, sectorXpx, sectorYpx) => {
-				let sectorFeatures = sector.get(SectorFeaturesComponent);
-				if (!sectorFeatures.isEarlyZone()) return;
-				
-				let neighbours = GameGlobals.levelHelper.getSectorNeighboursMap(sector);
+			let paddingFactor = this.getSectorPadding(centered);
+			let padding = sectorSize * paddingFactor;
 
-				let isVisibleEdge = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE;
-				let hasDifferentZoneNeighbour = false;
-				let hasNonDiagonalNeighbour = false;
-				
-				for (let direction in neighbours) {
-					let neighbour = neighbours[direction];
-					if (!neighbour) continue;
-					
-					let neighbourFeatures = neighbour.get(SectorFeaturesComponent);
-					if (neighbourFeatures.isEarlyZone() != sectorFeatures.isEarlyZone()) {
-						hasDifferentZoneNeighbour = true;
-					}
-					if (!PositionConstants.isDiagonal(direction)) {
-						hasNonDiagonalNeighbour = true;
-					}
+			let gridSize = 0.5;
+
+			let allSectorsArray = [];
+			let visibleSectorsArray = [];
+			for (let key in allSectors) {
+				let s = allSectors[key];
+				if (!s) continue;
+				allSectorsArray.push({ position: s.get(PositionComponent).getPosition() });
+			}
+			for (let key in visibleSectors) {
+				let s = visibleSectors[key];
+				if (!s) continue;
+				visibleSectorsArray.push({ position: s.get(PositionComponent).getPosition() });
+			}
+
+			let levelDimensions = {
+				minX: dimensions.mapMinX,
+				maxX: dimensions.mapMaxX,
+				minY: dimensions.mapMinY,
+				maxY: dimensions.mapMaxY,
+			};
+			let getSectorData = function (sector) {
+				if (!sector) return null;
+				let features = sector.get(SectorFeaturesComponent);
+				let position = sector.get(PositionComponent).getPosition();
+				return { districtIndex: features.districtIndex, stage: WorldConstants.getStage(features.zone), position: position };
+			}
+			let levelHelper = {
+				hasSector: (x, y) =>GameGlobals.levelHelper.getSectorByPosition(mapPosition.level, x, y) != null,
+				getSector:(x, y) => getSectorData(GameGlobals.levelHelper.getSectorByPosition(mapPosition.level, x, y)),
+				getNearestSector: (x, y, maxDist, filter) => {
+					let innerFilter = s => (filter ? filter(getSectorData(s)) : true);
+					return getSectorData(GameGlobals.levelHelper.findNearestSector(mapPosition.level, x, y, maxDist, innerFilter));
+				},
+				getDistrictIndexByPosition: (pos, stage) => LevelConstants.getDistrictIndexByPosition(districts, pos, stage),
+				isPositionSurroundedBySectors: (x, y) => LevelConstants.isPositionSurroundedBySectors(visibleSectorsArray, x, y),
+			};
+
+			let pointsByDistrict = MapElements.getPolygonPointsByDistrict(levelDimensions, levelHelper, districts, allSectorsArray, gridSize);
+
+			let lines = [];
+			lines.push({ fillStyle: ColorConstants.getColor(sunlit, "map_background_district") });
+			lines.push({ lineWidth: padding - 2, strokeStyle: ColorConstants.getColor(sunlit, "map_background_default") });
+			//lines.push({ lineWidth: 2, strokeStyle: ColorConstants.getColor(sunlit, "map_background_district") });
+
+			// polygons
+			for (let l = 0; l < lines.length; l++) {
+				for (let i = 0; i < districts.length; i++) {
+					let getSectorPos = (sectorX, sectorY) => this.getSectorPixelPos(dimensions, centered, sectorSize, sectorX, sectorY);
+					MapElements.drawDistrict(ctx, pointsByDistrict[i], lines[l], getSectorPos);
 				}
-				
-				let isSingle = isVisibleEdge || hasDifferentZoneNeighbour;
-				
-				let bgPadding = sectorSize * (isSingle ? (hasNonDiagonalNeighbour ? paddingSmall : paddingSmallDiagonal) : paddingDefault);
-				let radius = sectorSize * (isSingle ? radiusSmall : radiusDefault);
-				
-				ctx.save();
-				ctx.translate(sectorXpx + sectorSize / 2, sectorYpx + sectorSize / 2);
-				if (!hasNonDiagonalNeighbour && !isSingle) {
-					ctx.rotate(Math.PI / 4);
-				}
-				
-				CanvasUtils.fillRoundedRect(ctx, - sectorSize / 2 - bgPadding, -sectorSize / 2 - bgPadding, sectorSize + bgPadding * 2, sectorSize + bgPadding * 2, radius);
-				
-				ctx.restore();
-			});
+			}
+			
 		},
 
 		drawSectorOnCanvas: function (ctx, options, x, y, sector, levelEntity, sectorStatus, sectorXpx, sectorYpx, sectorSize) {
@@ -702,9 +817,9 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 				MapElements.drawSectorShape(ctx, sectorXpx, sectorYpx, sectorSize, size, color, isKeySector);
 			};
 			
-			let drawSectorBorder = function (color, isAffected, partial) {
+			let drawSectorBorder = function (color, isAffected, partial, shadowBlur) {
 				let isKeySector = isScouted && (hasCampOnSector || sectorPassages.passageUp || sectorPassages.passageDown);
-				MapElements.drawSectorBorder(ctx, sectorXpx, sectorYpx, sectorSize, color, isAffected, partial, isKeySector);
+				MapElements.drawSectorBorder(ctx, sectorXpx, sectorYpx, sectorSize, color, isAffected, partial, isKeySector, shadowBlur);
 			};
 
 			// border(s) for sectors with hazards or sunlight
@@ -730,7 +845,7 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 				if (hasSunlitBorder) {
 					let extraBorderColor = ColorConstants.getColor(isLocationSunlit, "map_stroke_sector_sunlit");
 					let isPartial = hasHazardBorder && options.mapMode != MapUtils.MAP_MODE_HAZARDS;
-					drawSectorBorder(extraBorderColor, true, isPartial);
+					drawSectorBorder(extraBorderColor, true, isPartial, 10);
 				}
 			}
 			
@@ -1048,18 +1163,6 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 				return ColorConstants.getColor(sunlit, "map_background_surface");
 			} else {
 				return ColorConstants.getColor(sunlit, "map_background_default");
-			}
-		},
-		
-		getVisibleAreaBackgroundColor: function (level, sunlit) {
-			let isLevelSunlit = level == GameGlobals.worldState.getSurfaceLevel();
-			let isGround = level == GameGlobals.worldState.getGroundLevel();
-			if (isLevelSunlit) {
-				return ColorConstants.getColor(sunlit, "map_background_2_surface");
-			} else if (isGround) {
-				return ColorConstants.getColor(sunlit, "map_background_2_ground");
-			} else {
-				return ColorConstants.getColor(sunlit, "map_background_2_default");
 			}
 		},
 

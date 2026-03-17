@@ -84,6 +84,16 @@ define(function () {
 			ctx.closePath();
 			ctx.stroke();
 		},
+
+		tracePolygon: function (ctx, points) {
+			let endPoint = points[points.length - 1];
+			ctx.beginPath();
+			ctx.moveTo(endPoint.x, endPoint.y);
+
+			for (let i = 0; i < points.length; i++) {
+				ctx.lineTo(points[i].x, points[i].y);
+			}
+		},
 		
 		fillRoundedRect: function (ctx, x, y, w, h, radius) {
 			ctx.lineJoin = "round";

@@ -218,7 +218,7 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 			return result;
 		},
 
-		getAngleBetween: function (d1, d2) {
+		getAngleBetweenDirections: function (d1, d2) {
 			if (d1 == d2) return 0;
 			if (this.getOppositeDirection(d1) == d2) return 180;
 			if (this.getNextClockWise(d1) == d2) return 90;
@@ -226,6 +226,14 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 			if (this.getNextClockWise(d1, true) == d2) return 45;
 			if (this.getNextCounterClockWise(d1, true) == d2) return 45;
 			return 270;
+		},
+
+		getAngleBetweenPositions: function (p1, p2) {
+			let dy = p2.sectorY - p1.sectorY;
+			let dx = p2.sectorX - p1.sectorX;
+			let angleRad = Math.atan2(dy, dx);
+			let angleDeg = angleRad * 180 / Math.PI;
+			return (angleDeg + 360) % 360;
 		},
 		
 		getDistanceTo: function (sectorPosFrom, sectorPosTo) {
@@ -290,18 +298,21 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		
 		getMiddlePoint: function (positions, rounded) {
 			let result = new PositionVO(0, 0, 0);
+			let num = 0;
 			if (positions && positions.length > 0) {
 				for (let i = 0; i < positions.length; i++) {
 					if (positions[i]) {
 						result.level += positions[i].level;
 						result.sectorX += positions[i].sectorX;
 						result.sectorY += positions[i].sectorY;
+						num++;
 					}
 				}
-				result.level /= positions.length;
-				result.sectorX /= positions.length;
-				result.sectorY /= positions.length;
+				result.level /= num;
+				result.sectorX /= num;
+				result.sectorY /= num;
 			}
+
 			if (rounded) {
 				result.level = Math.round(result.level);
 				result.sectorX = Math.round(result.sectorX);

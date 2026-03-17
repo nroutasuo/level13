@@ -1,5 +1,5 @@
-define(['ash', 'utils/VOCache', 'worldcreator/WorldCreatorConstants', 'worldcreator/WorldCreatorLogger', 'game/constants/PositionConstants', 'game/vos/PositionVO'],
-function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConstants, PositionVO) {
+define(['ash', 'utils/VOCache', 'worldcreator/WorldCreatorConstants', 'worldcreator/WorldCreatorLogger', 'game/constants/LevelConstants', 'game/constants/PositionConstants', 'game/vos/PositionVO'],
+function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, LevelConstants, PositionConstants, PositionVO) {
 
 	let LevelVO = Ash.Class.extend({
 	
@@ -169,6 +169,38 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 				}
 				return null;
 			}
+		},
+
+		getNearestSector: function (sectorX, sectorY, maxDist, filter) {
+			maxDist = maxDist || 100;
+			if (this.hasSector(sectorX, sectorY)) return this.getSector(sectorX, sectorY);
+			
+			let position = { sectorX: sectorX, sectorY: sectorY };
+			let getDistance = (s) => PositionConstants.getDistanceTo(s.position, position);
+			let candidates = this.sectors.filter(s => getDistance(s) <= maxDist);
+			if (filter) candidates = candidates.filter(filter);
+			let sortedSectors = candidates.sort((a, b) => getDistance(a) - getDistance(b));
+
+			return sortedSectors[0];
+		},
+
+		getNearestSectorDistance: function (sectorX, sectorY, maxDist) {
+			maxDist = maxDist || 100;
+			let position = { sectorX: sectorX, sectorY: sectorY };
+			let sector = this.getNearestSector(sectorX, sectorY, maxDist);
+			return sector ? PositionConstants.getDistanceTo(position, sector.position) : maxDist;
+		},
+
+		isPositionSurroundedBySectors: function (sectorX, sectorY) {
+			return LevelConstants.isPositionSurroundedBySectors(this.sectors, sectorX, sectorY);
+		},
+
+		getStage: function (sectorX, sectorY) {
+			let sector = this.getSector(sectorX, sectorY);
+			if (sector) return sector.stage;
+			let nearestSector = this.getNearestSector(sectorX, sectorY, 10);
+			if (nearestSector) return nearestSector.stage;
+			return null;
 		},
 		
 		getSectorByPos: function (pos) {
@@ -386,26 +418,8 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			return result;
 		},
 
-		getDistrictIndexByPosition: function (pos, stage) {
-			let result = -1;
-			let resultVO = null;
-			let resultDistance = 9999;
-
-			for (let i = 0; i < this.districts.length; i++) {
-				let districtVO = this.districts[i];
-				if (districtVO.stage != stage) continue;
-				let position = districtVO.adjustedPosition || districtVO.position;
-				let dist = PositionConstants.getDistanceTo(pos, position);
-				let adjustedDist = dist;
-
-				if (adjustedDist > resultDistance) continue;
-
-				result = i;
-				resultVO = districtVO;
-				resultDistance = adjustedDist;
-			}
-
-			return result;
+		getDistrictIndexByPosition: function (pos, stage, ignoreDistrict) {
+			return LevelConstants.getDistrictIndexByPosition(this.districts, pos, stage, ignoreDistrict);
 		},
 
 		getDerivedFeaturesByPosition: function (pos) {
@@ -476,9 +490,9 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 
 			let neighbourDirections = this.getNeighbourDirections(sectorX, sectorY);
 			
-			if (PositionConstants.getAngleBetween(neighbourDirections[0], neighbourDirections[1]) < 90) return false;
-			if (PositionConstants.getAngleBetween(neighbourDirections[0], neighbourDirections[2]) < 90) return false;
-			if (PositionConstants.getAngleBetween(neighbourDirections[1], neighbourDirections[2]) < 90) return false;
+			if (PositionConstants.getAngleBetweenDirections(neighbourDirections[0], neighbourDirections[1]) < 90) return false;
+			if (PositionConstants.getAngleBetweenDirections(neighbourDirections[0], neighbourDirections[2]) < 90) return false;
+			if (PositionConstants.getAngleBetweenDirections(neighbourDirections[1], neighbourDirections[2]) < 90) return false;
 
 			return true;
 		},

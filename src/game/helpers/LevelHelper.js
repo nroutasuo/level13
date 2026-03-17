@@ -1263,6 +1263,12 @@ define([
 			return levelComponent.isCampable;
 		},
 		
+		getLevelDistricts: function (level) {
+			let levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(level);
+			let levelComponent = levelEntity.get(LevelComponent);
+			return levelComponent.districts;
+		},
+		
 		isCampReachableByTribeTraders: function (sector) {
 			let camp = sector.get(CampComponent);
 			if (!camp) return false;
@@ -1403,6 +1409,19 @@ define([
 				}
 			}
 			return result;
+		},
+
+		findNearestSector: function (level, sectorX, sectorY, maxDist, filter) {
+			maxDist = maxDist || 100;
+			
+			let sectors = this.getSectorsByLevel(level).slice();
+			let position = { sectorX: sectorX, sectorY: sectorY };
+			let getDistance = (s) => PositionConstants.getDistanceTo(s.get(PositionComponent), position);
+			let candidates = sectors.filter(s => getDistance(s) <= maxDist);
+			if (filter) candidates = candidates.filter(filter);
+			let sortedSectors = candidates.sort((a, b) => getDistance(a) - getDistance(b));
+
+			return sortedSectors[0];
 		},
 		
 		findNearestKnownWaterSector: function (pos, limitToCurrentLevel) {

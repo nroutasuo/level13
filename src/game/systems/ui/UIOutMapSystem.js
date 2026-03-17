@@ -291,7 +291,7 @@ define([
 				var header = isVisited ? TextConstants.getSectorName(isScouted, features) : "Sector";
 				$("#mainmap-sector-details-name").text(header);
 				$("#mainmap-sector-details-pos").text(position.getInGameFormat(false));
-				$("#mainmap-sector-details-district").text(this.getDistrictText(this.selectedSector));
+				$("#mainmap-sector-details-district").text(this.getDistrictText(position.level, this.selectedSector));
 				$("#mainmap-sector-details-distance").text(this.getDistanceText(this.selectedSector));
 				$("#mainmap-sector-details-poi").text(this.getPOIText(this.selectedSector, isScouted));
 				$("#mainmap-sector-details-res-sca").text(this.getResScaText(this.selectedSector, isScouted, statusComponent, sectorFeatures));
@@ -567,9 +567,12 @@ define([
 			$("#map-completion-hint").text(Text.compose(hint));
 		},
 		
-		getDistrictText: function (sector) {
+		getDistrictText: function (level, sector) {
+			let levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
-			return sectorFeatures.isEarlyZone() ? "central" : "outer";
+			let districtVO = levelComponent.districts[sectorFeatures.districtIndex];
+			let districtType = districtVO.type;
+			return (sectorFeatures.isEarlyZone() ? "central" : "outer") + " (" + sectorFeatures.districtIndex + " " + districtType + ")";
 		},
 		
 		getPOIText: function (sector, isScouted) {
