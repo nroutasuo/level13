@@ -17,6 +17,7 @@ define(
 		wealth: 0, // 0-10 where 1 is poorest, 0 is N/A
 		wear: 0, // 0-10
 		damage: 0, // 0-10
+		districtIndex: 0,
 		sunlit: false,
 		ground: false,
 		surface: false,
@@ -51,6 +52,7 @@ define(
 			this.wealth = features.wealth;
 			this.wear = features.wear;
 			this.damage = features.damage;
+			this.districtIndex = features.districtIndex;
 			this.sectorType = features.sectorType;
 			this.sectorStyle = features.sectorStyle;
 			this.sunlit = features.sunlit || false;

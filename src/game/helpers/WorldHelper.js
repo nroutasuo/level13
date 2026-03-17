@@ -308,6 +308,7 @@ define([
 			sectorFeatures.wealth = sectorVO.wealth;
 			sectorFeatures.wear = sectorVO.wear;
 			sectorFeatures.damage = sectorVO.damage;
+			sectorFeatures.districtIndex = sectorVO.districtIndex;
 			sectorFeatures.sunlit = sectorVO.sunlit > 0;
 			sectorFeatures.ground = level == worldVO.bottomLevel;
 			sectorFeatures.surface = level == worldVO.topLevel;

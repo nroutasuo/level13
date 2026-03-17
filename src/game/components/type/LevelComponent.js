@@ -6,6 +6,7 @@ define(['ash'], function (Ash) {
 		position: 13,
 		isCampable: false,
 		notCampableReason: null,
+		districts: [], // DistrictVO
 		habitability: 1, // 0 for no camp, 0.5 outpost, 1 normal, >1 capital
 		raidDangerFactor: 1,
 		features: [],
@@ -14,11 +15,12 @@ define(['ash'], function (Ash) {
 		minY: 0,
 		maxY: 0,
 		
-		constructor: function (pos, isCampable, isHard, notCampableReason, habitability, raidDangerFactor, features, minX, maxX, minY, maxY) {
+		constructor: function (pos, isCampable, isHard, notCampableReason, districts, habitability, raidDangerFactor, features, minX, maxX, minY, maxY) {
 			this.position = pos;
 			this.isCampable = isCampable;
 			this.isHard = isHard;
 			this.notCampableReason = notCampableReason;
+			this.districts = districts;
 			this.habitability = habitability;
 			this.raidDangerFactor = raidDangerFactor;
 			this.features = features;
